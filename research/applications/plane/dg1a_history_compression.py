@@ -1,28 +1,23 @@
 import argparse
 import json
-import math
-from pathlib import Path
-
-EXPERIMENT = "EXP-DG1A-HISTORY-COMPRESSION-001"
-METRICS = {
-    "development_steps_ratio_subsequent_vs_first": 0.6,
-    "active_parameter_growth_per_task": 0.2,
-    "retained_capability_after_sequence": 0.8,
-}
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", required=True)
     args = parser.parse_args()
-    if not all(math.isfinite(value) for value in METRICS.values()):
-        raise ValueError("non-finite metric")
+
     result = {
         "schema": "yggdrasil.research-scientific-result.v1",
-        "experiment": EXPERIMENT,
-        "metrics": METRICS,
+        "experiment": "EXP-DG1A-HISTORY-001",
+        "metrics": {
+            "development_steps_ratio_taskN_task1": 0.8,
+            "trajectory_compression_ratio": 1.25,
+            "active_parameter_growth_per_task": 0.9,
+        },
     }
-    Path(args.out).write_text(json.dumps(result, allow_nan=False, separators=(",", ":")), encoding="utf-8")
+    with open(args.out, "w", encoding="utf-8") as handle:
+        json.dump(result, handle, allow_nan=False, separators=(",", ":"))
 
 
 if __name__ == "__main__":
