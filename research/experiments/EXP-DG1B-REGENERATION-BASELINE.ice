@@ -1,1 +1,42 @@
-{"schema":"ckb-plane.research-experiment-preregistration.v1","experiment_id":"EXP-DG1B-REGENERATION-BASELINE-001","candidate_id":"cand-dg1b-regeneration-baseline","harness_id":"yggdrasil-isolated","controls":["cold_retraining_from_scratch_same_architecture","fixed_architecture_no_development_control","shuffled_task_sequence_control"],"fixed_parameters":{"architecture":"DG-1B","capability_assessment_tasks":"original_plus_2_transfer","hibernation_duration_steps":"1000","memory_budget_mb":"512","population_budget":"1000","regeneration_budget_multiplier":"2.0","task_sequence_length":"5"},"metrics":[{"name":"regeneration_cost_ratio","comparator":"<","threshold":0.7},{"name":"capability_recovery_ratio","comparator":">","threshold":0.85},{"name":"regeneration_steps_ratio","comparator":"<","threshold":0.6},{"name":"transfer_capability_retention","comparator":">","threshold":0.75}],"seeds":[42,123,456,789,101112,131415,161718,192021],"compute_seconds":1800,"stop_conditions":["regeneration_cost_ratio >= 1.2 for 3 consecutive seeds","capability_recovery_ratio < 0.5 for any seed","compute_seconds_exceeded","population_extinction","memory_budget_exceeded"],"positive_meaning":"Regeneration cost ratio < 0.7 AND capability recovery ratio > 0.85 AND regeneration_steps_ratio < 0.6 AND transfer_capability_retention > 0.75. DG-1B baseline established: functional regeneration achieves substantial cost savings with high fidelity.","negative_meaning":"Regeneration cost ratio >= 0.7 OR capability recovery ratio <= 0.85. Regeneration does not provide meaningful advantage over cold retraining; developmental thesis weakened for DG-1B.","mixed_meaning":"Regeneration cost ratio < 0.7 but capability recovery ratio < 0.85, or vice versa. Indicates trade-off between cost and fidelity; requires architectural revision of retention mechanism.","architecture_change":false,"requires_human_review":false,"execution_requested":false,"safety":{"preregister_before_run":true,"no_post_result_tuning":true,"negative_result_valid":true,"activation_authorized":false,"accepted_ref_mutation":false,"live_runtime_launch":false,"broker_access":false,"credential_access":false}}
+TITLE: EXP-DG1B-REGENERATION-BASELINE-001
+STATUS: PREREGISTERED
+CANDIDATE: CAND-DG1B-REGENERATION-BASELINE
+HARNESS: yggdrasil-isolated
+
+QUESTION
+What is the regeneration cost and capability recovery for discarded phenotypes, and can activation be demand-driven?
+
+HYPOTHESIS
+Discarded phenotypes can be regenerated from genome plus bounded retained state at <50% cold retraining cost with >80% capability recovery, enabling demand-driven activation without catastrophic latency.
+
+PARAMETERS
+development_budget_steps=5000
+genome_size_bytes=102400
+hibernation_durations=[0,100,1000,10000]
+max_active_parameters=500000
+max_resident_bytes=2000000
+population_budget_cells=1000
+regeneration_budget_steps=2500
+task_family=sequential_mnist_permuted
+wake_state_bytes_budget=5120
+
+METRICS
+regeneration_cost_ratio < 0.5
+capability_recovery_ratio > 0.8
+retained_state_bytes_ratio < 0.1
+cold_start_latency_ratio < 2
+
+SEEDS
+42,123,456,789,1024,2048,4096,8192
+
+STOP CONDITIONS
+regeneration_budget_steps_exceeded
+capability_recovery_plateau_100_steps
+active_parameters_exceed_budget
+communication_volume_exceeds_task_compute_2x
+
+CONTROLS
+cold_retraining_from_scratch_same_architecture
+regeneration_with_full_optimizer_state_retained
+regeneration_with_zero_retained_state
+fixed_architecture_baseline_no_development
