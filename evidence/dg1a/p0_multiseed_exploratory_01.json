@@ -1,0 +1,119 @@
+{
+  "schema": "yggdrasil.dg1a.p0.multiseed.exploratory.v1",
+  "date": "2026-09-17",
+  "source_revision_reference": "daf759dcabae637e7bb8ae197c1c823960b3e5e1",
+  "execution_provenance": "isolated reconstructed ChatGPT CPU workspace; not authenticated commit-bound checkout",
+  "environment": {
+    "device": "cpu",
+    "pytorch": "2.10.0+cpu",
+    "precision": "float32"
+  },
+  "fixed_lesion_validity": {
+    "damage_effect_positive": true,
+    "relative_damage_effect_min": 0.10,
+    "active_cell_removal_fraction_min": 0.10
+  },
+  "matched_envelope": {
+    "seeds": [0, 1, 2, 3, 4],
+    "variants": ["growth_only", "regeneration"],
+    "grid": [20, 20],
+    "state_channels": 16,
+    "hidden_channels": 32,
+    "training_iterations": 200,
+    "training_steps_min": 8,
+    "training_steps_max": 12,
+    "batch_size": 4,
+    "pool_size": 16,
+    "growth_eval_steps": 12,
+    "recovery_steps": 16,
+    "center_lesion_fraction": [0.5, 0.5],
+    "damage_min_active_cells": 16
+  },
+  "pairs": [
+    {
+      "seed": 0,
+      "both_valid": true,
+      "growth_relative_damage_effect": 0.8020684591,
+      "regeneration_relative_damage_effect": 0.1629011986,
+      "growth_active_cell_removal_fraction": 0.3975409836,
+      "regeneration_active_cell_removal_fraction": 0.4,
+      "growth_recovery_fraction": 0.0,
+      "regeneration_recovery_fraction": 1.0,
+      "delta_recovery": 1.0,
+      "regeneration_stable_t50": 3,
+      "regeneration_stable_t90": 5,
+      "growth_final_active_cells": 400,
+      "regeneration_final_active_cells": 254
+    },
+    {
+      "seed": 1,
+      "both_valid": true,
+      "growth_relative_damage_effect": 1.0831806771,
+      "regeneration_relative_damage_effect": 0.1236530415,
+      "growth_active_cell_removal_fraction": 0.3787234043,
+      "regeneration_active_cell_removal_fraction": 0.4444444444,
+      "growth_recovery_fraction": 0.0,
+      "regeneration_recovery_fraction": 1.0,
+      "delta_recovery": 1.0,
+      "regeneration_stable_t50": 2,
+      "regeneration_stable_t90": 3,
+      "growth_final_active_cells": 400,
+      "regeneration_final_active_cells": 168
+    },
+    {
+      "seed": 2,
+      "both_valid": false,
+      "growth_relative_damage_effect": 0.5439120828,
+      "regeneration_relative_damage_effect": 0.0834294988,
+      "growth_active_cell_removal_fraction": 0.2915451895,
+      "regeneration_active_cell_removal_fraction": 0.3636363636,
+      "growth_recovery_fraction": 0.0,
+      "regeneration_recovery_fraction": 1.0,
+      "delta_recovery": null,
+      "regeneration_stable_t50": 2,
+      "regeneration_stable_t90": 3,
+      "growth_final_active_cells": 400,
+      "regeneration_final_active_cells": 149,
+      "invalid_reason": "regeneration relative damage effect below frozen 0.10 threshold"
+    },
+    {
+      "seed": 3,
+      "both_valid": true,
+      "growth_relative_damage_effect": 1.5567602338,
+      "regeneration_relative_damage_effect": 0.1275485315,
+      "growth_active_cell_removal_fraction": 0.3307086614,
+      "regeneration_active_cell_removal_fraction": 0.3529411765,
+      "growth_recovery_fraction": 0.0,
+      "regeneration_recovery_fraction": 1.0,
+      "delta_recovery": 1.0,
+      "regeneration_stable_t50": 2,
+      "regeneration_stable_t90": 3,
+      "growth_final_active_cells": 398,
+      "regeneration_final_active_cells": 163
+    },
+    {
+      "seed": 4,
+      "both_valid": false,
+      "growth_relative_damage_effect": 0.9053181837,
+      "regeneration_relative_damage_effect": 0.0887850791,
+      "growth_active_cell_removal_fraction": 0.3698630137,
+      "regeneration_active_cell_removal_fraction": 0.375,
+      "growth_recovery_fraction": 0.0,
+      "regeneration_recovery_fraction": 1.0,
+      "delta_recovery": null,
+      "regeneration_stable_t50": 2,
+      "regeneration_stable_t90": 3,
+      "growth_final_active_cells": 399,
+      "regeneration_final_active_cells": 143,
+      "invalid_reason": "regeneration relative damage effect below frozen 0.10 threshold"
+    }
+  ],
+  "aggregate": {
+    "valid_pair_count": 3,
+    "minimum_required_valid_pairs": 4,
+    "minimum_data_adequacy_met": false,
+    "valid_pairs_favoring_regeneration": 3,
+    "median_delta_recovery_among_valid_pairs": 1.0,
+    "interpretation": "INCONCLUSIVE under preregistered gate because only 3/5 matched pairs had valid lesions in both variants"
+  }
+}
