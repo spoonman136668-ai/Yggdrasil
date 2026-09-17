@@ -143,10 +143,16 @@ def train(*, model: NeuralCellularAutomaton, seed_state: Tensor, target: Tensor,
         homeostasis_loss = None
         homeostasis_mature_samples = 0
         if config.loss_mode == 'global_plus_foreground_bg_alpha_homeostasis':
-            probe = _rng_neutral_homeostasis_probe(model=model, result=result, generator=device_rng)
-            ensure_finite(probe)
-            homeostasis_loss = homeostasis_background_velocity_loss(result, probe, target_batch, alpha_channel=3, foreground_threshold=0.1, alive_threshold=model.config.alive_threshold)
-            homeostasis_mature_samples = int(homeostasis_mature_sample_mask(result, target_batch, alpha_channel=3, foreground_threshold=0.1, alive_threshold=model.config.alive_threshold).sum().item())
+            mature_mask = homeostasis_mature_sample_mask(result, target_batch, alpha_channel=3, foreground_threshold=0.1, alive_threshold=model.config.alive_threshold)
+            homeostasis_mature_samples = int(mature_mask.sum().item())
+            if homeostasis_mature_samples > 0:
+                mature_result = result[mature_mask]
+                mature_target = target_batch[mature_mask]
+                probe = _rng_neutral_homeostasis_probe(model=model, result=mature_result, generator=device_rng)
+                ensure_finite(probe)
+                homeostasis_loss = homeostasis_background_velocity_loss(mature_result, probe, mature_target, alpha_channel=3, foreground_threshold=0.1, alive_threshold=model.config.alive_threshold)
+            else:
+                homeostasis_loss = result.sum() * 0.0
         morph = training_morphology_loss(result=result, target=target_batch, config=config, homeostasis_loss=homeostasis_loss)
         hidden = torch.mean(result[:, config.visible_channels:] ** 2) if config.visible_channels < result.shape[1] else torch.zeros((), device=device, dtype=result.dtype)
         loss = morph + config.hidden_state_l2_weight * hidden
