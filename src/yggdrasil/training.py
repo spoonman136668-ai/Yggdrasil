@@ -14,8 +14,10 @@ from .metrics import (
     ensure_finite,
     morphology_mse,
     normalized_recovery_auc,
+    normalized_recovery_fraction,
     recovery_fraction,
     recovery_threshold_step,
+    stable_recovery_threshold_step,
 )
 from .nca import NeuralCellularAutomaton
 from .pool import StatePool
@@ -272,6 +274,18 @@ def evaluate_growth_and_recovery(
         post_damage_error=post_damage_error,
         fraction=0.9,
     )
+    stable_t50 = stable_recovery_threshold_step(
+        errors,
+        pre_error=pre_error,
+        post_damage_error=post_damage_error,
+        fraction=0.5,
+    )
+    stable_t90 = stable_recovery_threshold_step(
+        errors,
+        pre_error=pre_error,
+        post_damage_error=post_damage_error,
+        fraction=0.9,
+    )
     active = active_cell_count(
         current,
         alive_channel=model.config.alive_channel,
@@ -279,7 +293,12 @@ def evaluate_growth_and_recovery(
     )
     resources = snapshot_resources(model=model, state=current, active_cells=active)
 
-    recovery = recovery_fraction(
+    recovery_raw = recovery_fraction(
+        pre_error=pre_error,
+        post_damage_error=post_damage_error,
+        recovered_error=final_error,
+    )
+    recovery = normalized_recovery_fraction(
         pre_error=pre_error,
         post_damage_error=post_damage_error,
         recovered_error=final_error,
@@ -298,8 +317,11 @@ def evaluate_growth_and_recovery(
         "final_recovery_error": final_error,
         "damage_effect": post_damage_error - pre_error,
         "recovery_fraction": _finite_or_none(recovery),
-        "t50_steps": t50,
-        "t90_steps": t90,
+        "recovery_fraction_raw": _finite_or_none(recovery_raw),
+        "t50_first_crossing_steps": t50,
+        "t90_first_crossing_steps": t90,
+        "t50_stable_steps": stable_t50,
+        "t90_stable_steps": stable_t90,
         "normalized_recovery_auc": _finite_or_none(auc),
         "recovery_error_curve": errors,
         "active_cells_final": active,
