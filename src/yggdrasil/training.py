@@ -11,9 +11,10 @@ from torch import Tensor
 from .damage import center_lesion
 from .metrics import (
     active_cell_count,
+    balanced_morphology_mse,
     ensure_finite,
-    mean_update_magnitude,
     morphology_mse,
+    mean_update_magnitude,
     normalized_recovery_auc,
     normalized_recovery_fraction,
     recovery_fraction,
@@ -25,6 +26,7 @@ from .pool import StatePool
 from .resources import snapshot_resources
 
 TrainingVariant = Literal["growth_only", "persistence", "regeneration"]
+TrainingLossMode = Literal["global_mse", "balanced_fg_bg"]
 
 
 @dataclass(frozen=True)
@@ -42,6 +44,7 @@ class TrainingConfig:
     damage_min_active_cells: int = 16
     gradient_clip_norm: float = 1.0
     hidden_state_l2_weight: float = 1.0e-5
+    loss_mode: TrainingLossMode = "global_mse"
     visible_channels: int = 4
     record_every: int = 10
     seed: int = 0
@@ -71,6 +74,8 @@ class TrainingConfig:
             raise ValueError("gradient_clip_norm must be positive")
         if self.hidden_state_l2_weight < 0.0:
             raise ValueError("hidden_state_l2_weight must be non-negative")
+        if self.loss_mode not in {"global_mse", "balanced_fg_bg"}:
+            raise ValueError(f"unsupported training loss mode: {self.loss_mode}")
         if not 0 < self.visible_channels <= model.config.state_channels:
             raise ValueError("visible_channels is outside model state")
         if self.record_every <= 0:
@@ -80,6 +85,7 @@ class TrainingConfig:
 @dataclass(frozen=True)
 class TrainingSummary:
     variant: str
+    loss_mode: str
     iterations: int
     initial_recorded_loss: float
     final_recorded_loss: float
@@ -163,10 +169,15 @@ def train(
         result = model.run(states, steps=steps, generator=device_rng)
         ensure_finite(result)
 
-        morphology_loss = morphology_mse(
+        global_morphology_mse = morphology_mse(
             result,
             target_batch,
             visible_channels=config.visible_channels,
+        )
+        morphology_loss = training_morphology_loss(
+            result=result,
+            target=target_batch,
+            config=config,
         )
         hidden_penalty = (
             torch.mean(result[:, config.visible_channels :] ** 2)
@@ -201,6 +212,7 @@ def train(
                     "steps": steps,
                     "loss": float(loss.detach().item()),
                     "morphology_loss": float(morphology_loss.detach().item()),
+                    "global_morphology_mse": float(global_morphology_mse.detach().item()),
                     "hidden_penalty": float(hidden_penalty.detach().item()),
                     "gradient_norm": grad_norm,
                 }
@@ -210,6 +222,7 @@ def train(
     losses = [float(item["loss"]) for item in history]
     return TrainingSummary(
         variant=config.variant,
+        loss_mode=config.loss_mode,
         iterations=config.iterations,
         initial_recorded_loss=losses[0],
         final_recorded_loss=losses[-1],
@@ -217,6 +230,30 @@ def train(
         elapsed_seconds=elapsed,
         history=tuple(history),
     )
+
+
+def training_morphology_loss(
+    *,
+    result: Tensor,
+    target: Tensor,
+    config: TrainingConfig,
+) -> Tensor:
+    if config.loss_mode == "global_mse":
+        return morphology_mse(
+            result,
+            target,
+            visible_channels=config.visible_channels,
+        )
+    if config.loss_mode == "balanced_fg_bg":
+        return balanced_morphology_mse(
+            result,
+            target,
+            visible_channels=config.visible_channels,
+            alpha_channel=3,
+            foreground_threshold=0.1,
+            foreground_weight=0.5,
+        )
+    raise ValueError(f"unsupported training loss mode: {config.loss_mode}")
 
 
 def evaluate_growth_and_recovery(
