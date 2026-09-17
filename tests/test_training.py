@@ -2,7 +2,12 @@ import torch
 
 from yggdrasil.nca import NCAConfig, NeuralCellularAutomaton, make_seed_state
 from yggdrasil.target import TargetSpec, make_target
-from yggdrasil.training import TrainingConfig, evaluate_growth_and_recovery, train
+from yggdrasil.training import (
+    TrainingConfig,
+    evaluate_growth_and_recovery,
+    evaluate_persistence,
+    train,
+)
 
 
 def test_tiny_growth_training_executes_and_records() -> None:
@@ -92,4 +97,33 @@ def test_evaluation_emits_recovery_and_resource_fields() -> None:
     )
 
     assert len(result["recovery_error_curve"]) == 3
+    assert "resources" in result
+
+
+def test_persistence_evaluation_emits_drift_fields() -> None:
+    model = NeuralCellularAutomaton(
+        NCAConfig(state_channels=8, hidden_channels=16, fire_rate=1.0, max_steps=8)
+    )
+    seed = make_seed_state(batch_size=1, channels=8, height=15, width=15)
+    target = make_target(
+        batch_size=1,
+        channels=8,
+        height=15,
+        width=15,
+        spec=TargetSpec(radius=3),
+    )
+
+    result = evaluate_persistence(
+        model=model,
+        seed_state=seed,
+        target=target,
+        growth_steps=2,
+        persistence_steps=2,
+        seed=2,
+    )
+
+    assert len(result["error_curve"]) == 3
+    assert len(result["active_cell_curve"]) == 3
+    assert "visible_state_drift_mse" in result
+    assert "max_error_degradation" in result
     assert "resources" in result
