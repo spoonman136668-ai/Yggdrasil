@@ -96,3 +96,33 @@ def test_pool_checkpoint_is_deep_copy():
     session.advance(1)
 
     assert torch.equal(state["pool_state_dict"]["storage"], before)
+
+
+def test_resumable_training_supports_balanced_loss_mode() -> None:
+    torch.manual_seed(12)
+    model = NeuralCellularAutomaton(
+        NCAConfig(state_channels=8, hidden_channels=16, fire_rate=1.0, max_steps=6)
+    )
+    seed = make_seed_state(batch_size=1, channels=8, height=9, width=9)
+    target = torch.zeros_like(seed)
+    target[:, :4, 3:6, 3:6] = 1.0
+    config = TrainingConfig(
+        variant="regeneration",
+        iterations=2,
+        learning_rate=1e-3,
+        steps_min=2,
+        steps_max=2,
+        batch_size=2,
+        pool_size=4,
+        damage_min_active_cells=4,
+        loss_mode="balanced_fg_bg",
+        record_every=1,
+        seed=5,
+    )
+    session = ResumableTrainingSession(model, seed, target, config)
+
+    session.advance(2)
+    summary = session.summary()
+
+    assert summary.loss_mode == "balanced_fg_bg"
+    assert "global_morphology_mse" in summary.history[-1]
