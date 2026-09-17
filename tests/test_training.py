@@ -131,3 +131,31 @@ def test_persistence_evaluation_emits_drift_fields() -> None:
     assert "visible_state_drift_mse" in result
     assert "max_error_degradation" in result
     assert "resources" in result
+
+
+def test_training_balanced_loss_mode_records_global_mse_telemetry() -> None:
+    torch.manual_seed(7)
+    model = NeuralCellularAutomaton(
+        NCAConfig(state_channels=8, hidden_channels=16, fire_rate=1.0, max_steps=6)
+    )
+    seed = make_seed_state(batch_size=1, channels=8, height=9, width=9)
+    target = torch.zeros_like(seed)
+    target[:, :4, 3:6, 3:6] = 1.0
+    config = TrainingConfig(
+        variant="growth_only",
+        iterations=2,
+        learning_rate=1e-3,
+        steps_min=2,
+        steps_max=2,
+        batch_size=2,
+        pool_size=2,
+        loss_mode="balanced_fg_bg",
+        record_every=1,
+        seed=3,
+    )
+
+    summary = train(model=model, seed_state=seed, target=target, config=config)
+
+    assert summary.loss_mode == "balanced_fg_bg"
+    assert "global_morphology_mse" in summary.history[-1]
+    assert summary.history[-1]["morphology_loss"] != summary.history[-1]["global_morphology_mse"]
