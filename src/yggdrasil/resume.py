@@ -5,10 +5,10 @@ import time
 import torch
 from torch import Tensor
 from .damage import center_lesion
-from .metrics import active_cell_count, background_alive_margin_loss, background_alpha_mse, ensure_finite, foreground_morphology_mse, far_field_background_alpha_mse, graded_background_alpha_mse, morphology_mse
+from .metrics import active_cell_count, background_alive_margin_loss, background_alpha_mse, ensure_finite, foreground_morphology_mse, far_field_background_alpha_mse, graded_background_alpha_mse, homeostasis_background_velocity_loss, homeostasis_mature_sample_mask, morphology_mse
 from .nca import NeuralCellularAutomaton
 from .pool import StatePool
-from .training import TrainingConfig, TrainingSummary, training_morphology_loss
+from .training import TrainingConfig, TrainingSummary, _rng_neutral_homeostasis_probe, training_morphology_loss
 
 @dataclass
 class ResumableTrainingSession:
@@ -76,7 +76,14 @@ class ResumableTrainingSession:
         result = self.model.run(states, steps=steps, generator=self.device_rng)
         ensure_finite(result)
         global_mse = morphology_mse(result, self.target_batch, visible_channels=self.config.visible_channels)
-        morph = training_morphology_loss(result=result, target=self.target_batch, config=self.config)
+        homeostasis_loss = None
+        homeostasis_mature_samples = 0
+        if self.config.loss_mode == 'global_plus_foreground_bg_alpha_homeostasis':
+            probe = _rng_neutral_homeostasis_probe(model=self.model, result=result, generator=self.device_rng)
+            ensure_finite(probe)
+            homeostasis_loss = homeostasis_background_velocity_loss(result, probe, self.target_batch, alpha_channel=3, foreground_threshold=0.1, alive_threshold=self.model.config.alive_threshold)
+            homeostasis_mature_samples = int(homeostasis_mature_sample_mask(result, self.target_batch, alpha_channel=3, foreground_threshold=0.1, alive_threshold=self.model.config.alive_threshold).sum().item())
+        morph = training_morphology_loss(result=result, target=self.target_batch, config=self.config, homeostasis_loss=homeostasis_loss)
         hidden = torch.mean(result[:, self.config.visible_channels:] ** 2) if self.config.visible_channels < result.shape[1] else torch.zeros((), device=self.device, dtype=result.dtype)
         loss = morph + self.config.hidden_state_l2_weight * hidden
         if not torch.isfinite(loss):
@@ -101,6 +108,11 @@ class ResumableTrainingSession:
             if self.config.loss_mode == 'global_plus_foreground_graded_bg_alpha':
                 item['foreground_morphology_mse'] = float(foreground_morphology_mse(result, self.target_batch, visible_channels=self.config.visible_channels, alpha_channel=3, foreground_threshold=0.1).detach().item())
                 item['graded_background_alpha_mse'] = float(graded_background_alpha_mse(result, self.target_batch, alpha_channel=3, foreground_threshold=0.1).detach().item())
+            if self.config.loss_mode == 'global_plus_foreground_bg_alpha_homeostasis':
+                item['foreground_morphology_mse'] = float(foreground_morphology_mse(result, self.target_batch, visible_channels=self.config.visible_channels, alpha_channel=3, foreground_threshold=0.1).detach().item())
+                item['background_alpha_mse'] = float(background_alpha_mse(result, self.target_batch, alpha_channel=3, foreground_threshold=0.1).detach().item())
+                item['homeostasis_background_velocity_loss'] = float(homeostasis_loss.detach().item()) if homeostasis_loss is not None else 0.0
+                item['homeostasis_mature_samples'] = homeostasis_mature_samples
             self.history.append(item)
         self.iteration += 1
 
