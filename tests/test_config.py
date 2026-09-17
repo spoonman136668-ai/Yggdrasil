@@ -95,3 +95,11 @@ def test_config_rejects_nonpositive_damage_maturity_threshold() -> None:
 
     with pytest.raises(ValueError, match="damage_min_active_cells"):
         validate_config(config)
+
+
+def test_config_rejects_unknown_training_loss_mode() -> None:
+    config = _base_config()
+    config["training"]["loss_mode"] = "magic"
+
+    with pytest.raises(ValueError, match="loss_mode"):
+        validate_config(config)
