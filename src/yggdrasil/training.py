@@ -38,6 +38,7 @@ class TrainingConfig:
     damage_probability: float = 0.5
     damage_height_fraction: float = 0.35
     damage_width_fraction: float = 0.35
+    damage_min_active_cells: int = 16
     gradient_clip_norm: float = 1.0
     hidden_state_l2_weight: float = 1.0e-5
     visible_channels: int = 4
@@ -63,6 +64,8 @@ class TrainingConfig:
             raise ValueError("damage_height_fraction must be in (0, 1]")
         if not 0.0 < self.damage_width_fraction <= 1.0:
             raise ValueError("damage_width_fraction must be in (0, 1]")
+        if self.damage_min_active_cells <= 0:
+            raise ValueError("damage_min_active_cells must be positive")
         if self.gradient_clip_norm <= 0.0:
             raise ValueError("gradient_clip_norm must be positive")
         if self.hidden_state_l2_weight < 0.0:
@@ -128,16 +131,23 @@ def train(
             if config.variant == "regeneration":
                 draw = float(torch.rand((), generator=cpu_rng).item())
                 if draw < config.damage_probability:
-                    candidates = states[1:]
-                    if candidates.shape[0] > 0:
-                        candidates = center_lesion(
-                            candidates,
-                            height_fraction=config.damage_height_fraction,
-                            width_fraction=config.damage_width_fraction,
+                    candidates = states[1:].clone()
+                    for candidate_index in range(candidates.shape[0]):
+                        candidate = candidates[candidate_index : candidate_index + 1]
+                        live_cells = active_cell_count(
+                            candidate,
                             alive_channel=model.config.alive_channel,
                             alive_threshold=model.config.alive_threshold,
                         )
-                        states = torch.cat((states[:1], candidates), dim=0)
+                        if live_cells >= config.damage_min_active_cells:
+                            candidates[candidate_index : candidate_index + 1] = center_lesion(
+                                candidate,
+                                height_fraction=config.damage_height_fraction,
+                                width_fraction=config.damage_width_fraction,
+                                alive_channel=model.config.alive_channel,
+                                alive_threshold=model.config.alive_threshold,
+                            )
+                    states = torch.cat((states[:1], candidates), dim=0)
 
         steps = int(
             torch.randint(
