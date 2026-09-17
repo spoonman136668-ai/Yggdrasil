@@ -5,12 +5,13 @@ from typing import Literal
 import torch
 from torch import Tensor
 from .damage import center_lesion
-from .metrics import active_cell_count, background_alive_margin_loss, background_alpha_mse, balanced_morphology_mse, ensure_finite, foreground_morphology_mse, far_field_background_alpha_mse, graded_background_alpha_mse, homeostasis_background_velocity_loss, homeostasis_mature_sample_mask, morphology_mse, mean_update_magnitude, normalized_recovery_auc, normalized_recovery_fraction, recovery_fraction, recovery_threshold_step, stable_recovery_threshold_step
+from .metrics import active_cell_count, background_alive_margin_loss, background_alpha_mse, balanced_morphology_mse, ensure_finite, foreground_morphology_mse, far_field_background_alpha_mse, graded_background_alpha_mse, homeostasis_background_velocity_loss, homeostasis_mature_sample_mask, homeostasis_trajectory_velocity_loss, morphology_mse, mean_update_magnitude, normalized_recovery_auc, normalized_recovery_fraction, recovery_fraction, recovery_threshold_step, stable_recovery_threshold_step
 from .nca import NeuralCellularAutomaton
 from .pool import StatePool
 from .resources import snapshot_resources
 TrainingVariant = Literal['growth_only', 'persistence', 'regeneration']
-TrainingLossMode = Literal['global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis']
+TrainingLossMode = Literal['global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis', 'global_plus_foreground_bg_alpha_homeostasis_t16']
+HOME_T16_PROBE_STEPS = 16
 
 @dataclass(frozen=True)
 class TrainingConfig:
@@ -57,7 +58,7 @@ class TrainingConfig:
             raise ValueError('gradient_clip_norm must be positive')
         if self.hidden_state_l2_weight < 0:
             raise ValueError('hidden_state_l2_weight must be non-negative')
-        if self.loss_mode not in {'global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis'}:
+        if self.loss_mode not in {'global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis', 'global_plus_foreground_bg_alpha_homeostasis_t16'}:
             raise ValueError(f'unsupported training loss mode: {self.loss_mode}')
         if not 0 < self.visible_channels <= model.config.state_channels:
             raise ValueError('visible_channels is outside model state')
@@ -97,6 +98,10 @@ def training_morphology_loss(*, result: Tensor, target: Tensor, config: Training
         if homeostasis_loss is None:
             raise ValueError('HOME-1 requires homeostasis_loss')
         return morphology_mse(result, target, visible_channels=config.visible_channels) + foreground_morphology_mse(result, target, visible_channels=config.visible_channels, alpha_channel=3, foreground_threshold=0.1) + background_alpha_mse(result, target, alpha_channel=3, foreground_threshold=0.1) + homeostasis_loss
+    if config.loss_mode == 'global_plus_foreground_bg_alpha_homeostasis_t16':
+        if homeostasis_loss is None:
+            raise ValueError('HOME-T16 requires homeostasis_loss')
+        return morphology_mse(result, target, visible_channels=config.visible_channels) + foreground_morphology_mse(result, target, visible_channels=config.visible_channels, alpha_channel=3, foreground_threshold=0.1) + background_alpha_mse(result, target, alpha_channel=3, foreground_threshold=0.1) + homeostasis_loss
     raise ValueError(f'unsupported training loss mode: {config.loss_mode}')
 
 def _rng_neutral_homeostasis_probe(*, model: NeuralCellularAutomaton, result: Tensor, generator: torch.Generator) -> Tensor:
@@ -106,6 +111,19 @@ def _rng_neutral_homeostasis_probe(*, model: NeuralCellularAutomaton, result: Te
     finally:
         generator.set_state(rng_state)
     return probe
+
+def _rng_neutral_homeostasis_trajectory(*, model: NeuralCellularAutomaton, result: Tensor, generator: torch.Generator) -> tuple[Tensor, ...]:
+    rng_state = generator.get_state().clone()
+    states = [result]
+    current = result
+    try:
+        for _ in range(HOME_T16_PROBE_STEPS):
+            current = model.step(current, generator=generator)
+            ensure_finite(current)
+            states.append(current)
+    finally:
+        generator.set_state(rng_state)
+    return tuple(states)
 
 def train(*, model: NeuralCellularAutomaton, seed_state: Tensor, target: Tensor, config: TrainingConfig) -> TrainingSummary:
     config.validate(model)
@@ -153,6 +171,16 @@ def train(*, model: NeuralCellularAutomaton, seed_state: Tensor, target: Tensor,
                 homeostasis_loss = homeostasis_background_velocity_loss(mature_result, probe, mature_target, alpha_channel=3, foreground_threshold=0.1, alive_threshold=model.config.alive_threshold)
             else:
                 homeostasis_loss = result.sum() * 0.0
+        elif config.loss_mode == 'global_plus_foreground_bg_alpha_homeostasis_t16':
+            mature_mask = homeostasis_mature_sample_mask(result, target_batch, alpha_channel=3, foreground_threshold=0.1, alive_threshold=model.config.alive_threshold)
+            homeostasis_mature_samples = int(mature_mask.sum().item())
+            if homeostasis_mature_samples > 0:
+                mature_result = result[mature_mask]
+                mature_target = target_batch[mature_mask]
+                trajectory = _rng_neutral_homeostasis_trajectory(model=model, result=mature_result, generator=device_rng)
+                homeostasis_loss = homeostasis_trajectory_velocity_loss(trajectory, mature_target, alpha_channel=3, foreground_threshold=0.1, alive_threshold=model.config.alive_threshold)
+            else:
+                homeostasis_loss = result.sum() * 0.0
         morph = training_morphology_loss(result=result, target=target_batch, config=config, homeostasis_loss=homeostasis_loss)
         hidden = torch.mean(result[:, config.visible_channels:] ** 2) if config.visible_channels < result.shape[1] else torch.zeros((), device=device, dtype=result.dtype)
         loss = morph + config.hidden_state_l2_weight * hidden
@@ -183,6 +211,12 @@ def train(*, model: NeuralCellularAutomaton, seed_state: Tensor, target: Tensor,
                 item['background_alpha_mse'] = float(background_alpha_mse(result, target_batch, alpha_channel=3, foreground_threshold=0.1).detach().item())
                 item['homeostasis_background_velocity_loss'] = float(homeostasis_loss.detach().item()) if homeostasis_loss is not None else 0.0
                 item['homeostasis_mature_samples'] = homeostasis_mature_samples
+            if config.loss_mode == 'global_plus_foreground_bg_alpha_homeostasis_t16':
+                item['foreground_morphology_mse'] = float(foreground_morphology_mse(result, target_batch, visible_channels=config.visible_channels, alpha_channel=3, foreground_threshold=0.1).detach().item())
+                item['background_alpha_mse'] = float(background_alpha_mse(result, target_batch, alpha_channel=3, foreground_threshold=0.1).detach().item())
+                item['homeostasis_trajectory_velocity_loss'] = float(homeostasis_loss.detach().item()) if homeostasis_loss is not None else 0.0
+                item['homeostasis_mature_samples'] = homeostasis_mature_samples
+                item['homeostasis_probe_steps'] = HOME_T16_PROBE_STEPS
             history.append(item)
     elapsed = time.perf_counter() - start
     losses = [float(x['loss']) for x in history]
