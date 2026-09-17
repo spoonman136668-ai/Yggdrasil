@@ -72,7 +72,7 @@ def test_tiny_persistence_and_regeneration_training_execute() -> None:
         assert summary.variant == variant
 
 
-def test_evaluation_emits_recovery_and_resource_fields() -> None:
+def test_evaluation_emits_recovery_resource_and_lesion_validity_fields() -> None:
     model = NeuralCellularAutomaton(
         NCAConfig(state_channels=8, hidden_channels=16, fire_rate=1.0, max_steps=8)
     )
@@ -97,6 +97,10 @@ def test_evaluation_emits_recovery_and_resource_fields() -> None:
     )
 
     assert len(result["recovery_error_curve"]) == 3
+    assert len(result["recovery_active_cell_curve"]) == 3
+    assert result["pre_damage_active_cells"] >= result["post_damage_active_cells"]
+    assert 0.0 <= result["active_cell_removal_fraction"] <= 1.0
+    assert "relative_damage_effect" in result
     assert "resources" in result
 
 
