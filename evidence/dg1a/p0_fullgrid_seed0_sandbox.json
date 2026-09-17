@@ -1,0 +1,90 @@
+{
+  "schema": "yggdrasil.dg1a.p0.fullgrid-seed0.sandbox.v1",
+  "date": "2026-09-17",
+  "execution_provenance": "isolated reconstructed ChatGPT CPU workspace; not commit-bound checkout",
+  "seed": 0,
+  "test_surface": {
+    "passed": 47,
+    "failed": 0,
+    "note": "after training/evaluation lesion separation fix"
+  },
+  "protocol": {
+    "grid": [40, 40],
+    "state_channels": 16,
+    "hidden_channels": 128,
+    "training_iterations": 200,
+    "training_steps": [64, 96],
+    "batch_size": 8,
+    "pool_size": 64,
+    "target": {"kind": "disk", "radius": 6},
+    "regeneration_training_lesion_fraction": 0.5,
+    "evaluation_lesion_fraction": 0.6,
+    "evaluation_growth_steps": 96,
+    "recovery_steps": 96,
+    "device": "cpu",
+    "precision": "float32"
+  },
+  "growth_only": {
+    "training": {
+      "initial_loss": 0.029417967423796654,
+      "final_loss": 0.006420341320335865,
+      "minimum_loss": 0.006025207228958607,
+      "elapsed_seconds": 145.92453188499985
+    },
+    "evaluation": {
+      "pre_error": 0.020264916121959686,
+      "post_damage_error": 0.03979736939072609,
+      "final_recovery_error": 0.3315545320510864,
+      "damage_effect": 0.019532453268766403,
+      "relative_damage_effect": 0.9638556188051741,
+      "pre_damage_active_cells": 395,
+      "post_damage_active_cells": 226,
+      "active_cell_removal_fraction": 0.4278481012658228,
+      "recovery_fraction": 0.0,
+      "recovery_fraction_raw": -14.937046496197077,
+      "stable_t50": null,
+      "stable_t90": null,
+      "normalized_recovery_auc": 0.0,
+      "active_cells_final": 1517,
+      "resident_state_bytes": 102400,
+      "active_state_bytes_estimate_final": 97088
+    }
+  },
+  "regeneration": {
+    "training": {
+      "initial_loss": 0.029417967423796654,
+      "final_loss": 0.026719624176621437,
+      "minimum_loss": 0.02664715051651001,
+      "elapsed_seconds": 151.47547634600005,
+      "checkpoint_bytes": 6671811
+    },
+    "evaluation": {
+      "pre_error": 0.02410900592803955,
+      "post_damage_error": 0.026712674647569656,
+      "final_recovery_error": 0.025611262768507004,
+      "damage_effect": 0.0026036687195301056,
+      "relative_damage_effect": 0.10799568954860785,
+      "pre_damage_active_cells": 130,
+      "post_damage_active_cells": 74,
+      "active_cell_removal_fraction": 0.4307692307692308,
+      "recovery_fraction": 0.42302304851649053,
+      "recovery_fraction_raw": 0.42302304851649053,
+      "t50_first_crossing": 15,
+      "t90_first_crossing": 31,
+      "stable_t50": null,
+      "stable_t90": null,
+      "normalized_recovery_auc": 0.7103716803998186,
+      "active_cells_final": 502,
+      "resident_state_bytes": 102400,
+      "active_state_bytes_estimate_final": 32128
+    }
+  },
+  "derived": {
+    "delta_recovery": 0.42302304851649053,
+    "delta_recovery_auc": 0.7103716803998186,
+    "growth_final_grid_occupancy": 0.948125,
+    "regeneration_final_grid_occupancy": 0.31375,
+    "final_active_cell_difference_regen_minus_growth": -1015
+  },
+  "interpretation_boundary": "exploratory single-seed full-grid result only; no confirmatory claim"
+}
