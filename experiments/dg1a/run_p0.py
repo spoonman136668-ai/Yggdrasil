@@ -85,6 +85,7 @@ def main() -> int:
         damage_probability=float(training_cfg["damage_probability"]),
         damage_height_fraction=float(lesion_cfg["height_fraction"]),
         damage_width_fraction=float(lesion_cfg["width_fraction"]),
+        damage_min_active_cells=int(training_cfg["damage_min_active_cells"]),
         gradient_clip_norm=float(training_cfg["gradient_clip_norm"]),
         hidden_state_l2_weight=float(training_cfg["hidden_state_l2_weight"]),
         visible_channels=int(raw["reporting"]["visible_channels"]),
