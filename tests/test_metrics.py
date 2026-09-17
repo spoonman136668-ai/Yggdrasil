@@ -5,6 +5,7 @@ import torch
 
 from yggdrasil.metrics import (
     active_cell_count,
+    balanced_morphology_mse,
     ensure_finite,
     mean_update_magnitude,
     morphology_mse,
@@ -114,3 +115,21 @@ def test_non_finite_state_fails_closed() -> None:
 
     with pytest.raises(FloatingPointError, match="non-finite"):
         ensure_finite(state)
+
+
+def test_balanced_morphology_mse_equalizes_target_regions() -> None:
+    state = torch.zeros((1, 4, 2, 2), dtype=torch.float32)
+    target = torch.zeros_like(state)
+    target[:, :, 0, 0] = 1.0
+
+    value = balanced_morphology_mse(state, target, visible_channels=4)
+
+    assert value.item() == pytest.approx(0.5)
+
+
+def test_balanced_morphology_mse_rejects_missing_foreground() -> None:
+    state = torch.zeros((1, 4, 2, 2), dtype=torch.float32)
+    target = torch.zeros_like(state)
+
+    with pytest.raises(ValueError, match="no foreground"):
+        balanced_morphology_mse(state, target, visible_channels=4)
