@@ -13,6 +13,7 @@ from .metrics import (
     active_cell_count,
     balanced_morphology_mse,
     ensure_finite,
+    foreground_morphology_mse,
     morphology_mse,
     mean_update_magnitude,
     normalized_recovery_auc,
@@ -26,7 +27,7 @@ from .pool import StatePool
 from .resources import snapshot_resources
 
 TrainingVariant = Literal["growth_only", "persistence", "regeneration"]
-TrainingLossMode = Literal["global_mse", "balanced_fg_bg"]
+TrainingLossMode = Literal["global_mse", "balanced_fg_bg", "global_plus_foreground"]
 
 
 @dataclass(frozen=True)
@@ -74,7 +75,7 @@ class TrainingConfig:
             raise ValueError("gradient_clip_norm must be positive")
         if self.hidden_state_l2_weight < 0.0:
             raise ValueError("hidden_state_l2_weight must be non-negative")
-        if self.loss_mode not in {"global_mse", "balanced_fg_bg"}:
+        if self.loss_mode not in {"global_mse", "balanced_fg_bg", "global_plus_foreground"}:
             raise ValueError(f"unsupported training loss mode: {self.loss_mode}")
         if not 0 < self.visible_channels <= model.config.state_channels:
             raise ValueError("visible_channels is outside model state")
@@ -253,6 +254,20 @@ def training_morphology_loss(
             foreground_threshold=0.1,
             foreground_weight=0.5,
         )
+    if config.loss_mode == "global_plus_foreground":
+        global_loss = morphology_mse(
+            result,
+            target,
+            visible_channels=config.visible_channels,
+        )
+        foreground_loss = foreground_morphology_mse(
+            result,
+            target,
+            visible_channels=config.visible_channels,
+            alpha_channel=3,
+            foreground_threshold=0.1,
+        )
+        return global_loss + foreground_loss
     raise ValueError(f"unsupported training loss mode: {config.loss_mode}")
 
 
