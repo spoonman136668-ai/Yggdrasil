@@ -14,6 +14,33 @@ def morphology_mse(state: Tensor, target: Tensor, *, visible_channels: int = 4) 
     return torch.mean((state[:, :visible_channels] - target[:, :visible_channels]) ** 2)
 
 
+def foreground_morphology_mse(
+    state: Tensor,
+    target: Tensor,
+    *,
+    visible_channels: int = 4,
+    alpha_channel: int = 3,
+    foreground_threshold: float = 0.1,
+) -> Tensor:
+    """Visible-channel MSE restricted to target-defined foreground pixels."""
+    _validate_pair(state, target)
+    if visible_channels <= 0 or visible_channels > state.shape[1]:
+        raise ValueError("visible_channels is outside the state vector")
+    if not 0 <= alpha_channel < target.shape[1]:
+        raise ValueError("alpha_channel is outside the target state vector")
+
+    foreground = target[:, alpha_channel : alpha_channel + 1] > foreground_threshold
+    if not bool(foreground.any()):
+        raise ValueError("target contains no foreground pixels")
+
+    squared_error = (
+        state[:, :visible_channels] - target[:, :visible_channels]
+    ) ** 2
+    return squared_error.masked_select(
+        foreground.expand(-1, visible_channels, -1, -1)
+    ).mean()
+
+
 def balanced_morphology_mse(
     state: Tensor,
     target: Tensor,
