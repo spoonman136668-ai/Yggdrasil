@@ -38,12 +38,31 @@ def recovery_fraction(
     recovered_error: float,
     eps: float = 1e-12,
 ) -> float:
-    """Recovery fraction for an error metric where lower is better."""
+    """Raw recovery fraction for a lower-is-better error metric."""
     lost = post_damage_error - pre_error
     if lost <= eps:
         return math.nan
     recovered = post_damage_error - recovered_error
     return recovered / lost
+
+
+def normalized_recovery_fraction(
+    *,
+    pre_error: float,
+    post_damage_error: float,
+    recovered_error: float,
+    eps: float = 1e-12,
+) -> float:
+    """Bounded recovery fraction in [0, 1] for a lower-is-better error metric."""
+    raw = recovery_fraction(
+        pre_error=pre_error,
+        post_damage_error=post_damage_error,
+        recovered_error=recovered_error,
+        eps=eps,
+    )
+    if math.isnan(raw):
+        return raw
+    return min(1.0, max(0.0, raw))
 
 
 def recovery_threshold_step(
@@ -62,6 +81,27 @@ def recovery_threshold_step(
     target = post_damage_error - fraction * lost
     for index, error in enumerate(errors):
         if error <= target:
+            return index
+    return None
+
+
+def stable_recovery_threshold_step(
+    errors: Sequence[float],
+    *,
+    pre_error: float,
+    post_damage_error: float,
+    fraction: float,
+    eps: float = 1e-12,
+) -> int | None:
+    """Earliest threshold crossing that remains satisfied for the rest of the window."""
+    if not 0.0 < fraction <= 1.0:
+        raise ValueError("fraction must be in (0, 1]")
+    lost = post_damage_error - pre_error
+    if lost <= eps:
+        return None
+    target = post_damage_error - fraction * lost
+    for index in range(len(errors)):
+        if all(error <= target for error in errors[index:]):
             return index
     return None
 
