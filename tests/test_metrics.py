@@ -9,8 +9,10 @@ from yggdrasil.metrics import (
     mean_update_magnitude,
     morphology_mse,
     normalized_recovery_auc,
+    normalized_recovery_fraction,
     recovery_fraction,
     recovery_threshold_step,
+    stable_recovery_threshold_step,
 )
 
 
@@ -47,6 +49,16 @@ def test_recovery_fraction_for_lower_is_better_error() -> None:
     assert value == pytest.approx(0.5)
 
 
+def test_normalized_recovery_fraction_clamps_over_recovery() -> None:
+    value = normalized_recovery_fraction(
+        pre_error=0.1,
+        post_damage_error=0.5,
+        recovered_error=0.0,
+    )
+
+    assert value == pytest.approx(1.0)
+
+
 def test_recovery_fraction_is_nan_when_damage_has_no_effect() -> None:
     value = recovery_fraction(pre_error=0.2, post_damage_error=0.2, recovered_error=0.1)
 
@@ -56,6 +68,28 @@ def test_recovery_fraction_is_nan_when_damage_has_no_effect() -> None:
 def test_recovery_threshold_step_returns_first_crossing() -> None:
     step = recovery_threshold_step(
         [0.5, 0.4, 0.3, 0.2, 0.1],
+        pre_error=0.1,
+        post_damage_error=0.5,
+        fraction=0.5,
+    )
+
+    assert step == 2
+
+
+def test_stable_threshold_rejects_transient_crossing() -> None:
+    step = stable_recovery_threshold_step(
+        [0.5, 0.2, 0.4],
+        pre_error=0.1,
+        post_damage_error=0.5,
+        fraction=0.5,
+    )
+
+    assert step is None
+
+
+def test_stable_threshold_returns_first_persistent_crossing() -> None:
+    step = stable_recovery_threshold_step(
+        [0.5, 0.4, 0.25, 0.2],
         pre_error=0.1,
         post_damage_error=0.5,
         fraction=0.5,
