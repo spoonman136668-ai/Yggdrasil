@@ -1,0 +1,66 @@
+{
+  "evidence_class": "MEASURED_SANDBOX_RESULT",
+  "schema": "yggdrasil.dg1a.p0.stab03.sandbox.v1",
+  "experiment": "DG-1A-P0-STAB-03_BAL-50",
+  "seed": 0,
+  "source_revision_intended": "a80abd3b95dc455dcd4b335207f797409f8005f6",
+  "source_revision": "UNKNOWN_RECONSTRUCTED_WORKSPACE",
+  "execution_provenance": "isolated reconstructed workspace; not commit-bound checkout",
+  "test_surface": {
+    "passed": 54,
+    "failed": 0,
+    "environment": "Python 3 / PyTorch 2.10.0+cpu"
+  },
+  "training": {
+    "variant": "regeneration",
+    "loss_mode": "balanced_fg_bg",
+    "iterations": 200,
+    "development_horizon": [64, 96],
+    "damage_probability": 0.5,
+    "training_damage_fraction": 0.5,
+    "maturity_threshold_active_cells": 16,
+    "initial_recorded_loss": 0.20826879143714905,
+    "minimum_recorded_loss": 0.03231058269739151,
+    "final_recorded_loss": 0.03731770068407059,
+    "final_recorded_balanced_morphology_loss": 0.03731618449091911,
+    "final_recorded_global_morphology_mse": 0.05808444321155548,
+    "elapsed_seconds": 232.98322694300077
+  },
+  "evaluation": {
+    "growth_steps": 96,
+    "recovery_steps": 96,
+    "evaluation_damage_fraction": 0.6,
+    "pre_error": 0.14115647971630096,
+    "post_damage_error": 0.10500530898571014,
+    "damage_effect": -0.03615117073059082,
+    "relative_damage_effect": -0.25610705794907995,
+    "pre_damage_active_cells": 1579,
+    "post_damage_active_cells": 1003,
+    "active_cell_removal_fraction": 0.3647878404053198,
+    "final_recovery_error": 0.07024409621953964,
+    "recovery_fraction": null,
+    "recovery_fraction_raw": null,
+    "normalized_recovery_auc": null,
+    "t50_stable_steps": null,
+    "t90_stable_steps": null,
+    "active_cells_final": 1164
+  },
+  "persistence": {
+    "initial_error": 0.13448095321655273,
+    "final_error": 0.09685874730348587,
+    "max_error_degradation": 0.03223782777786255,
+    "initial_active_cells": 1554,
+    "final_active_cells": 1244
+  },
+  "improvement_rule": {
+    "viable": true,
+    "valid_lesion": false,
+    "stable_t50_attained": false,
+    "recovery_gt_control": false,
+    "pre_error_within_limit": false,
+    "final_active_cells_within_limit": false,
+    "passes_all": false
+  },
+  "failure_mode": "OVERGROWN_POOR_MORPHOLOGY_WITH_DAMAGE_IMPROVING_GLOBAL_MSE",
+  "interpretation": "BAL-50 prevents the all-dead attractor but overweights foreground enough to produce an almost fully active, poor-morphology phenotype. The declared lesion removes 36.48% of active cells yet lowers global morphology MSE, so the trial is not a valid regeneration measurement."
+}
