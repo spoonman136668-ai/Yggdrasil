@@ -36,12 +36,16 @@ def main() -> int:
     parser.add_argument("--config", required=True)
     parser.add_argument("--evidence", required=True)
     parser.add_argument("--checkpoint")
+    parser.add_argument("--seed", type=int, help="Override the config seed while preserving config identity")
     args = parser.parse_args()
 
     config_path = Path(args.config)
     raw = load_config(config_path)
+    configured_seed = int(raw["seed"])
+    effective_seed = configured_seed if args.seed is None else int(args.seed)
+    raw["seed"] = effective_seed
 
-    torch.manual_seed(int(raw["seed"]))
+    torch.manual_seed(effective_seed)
     device = torch.device(raw["device"])
     dtype = torch.float32
     if raw.get("precision", "float32") != "float32":
@@ -101,7 +105,7 @@ def main() -> int:
         hidden_state_l2_weight=float(training_cfg["hidden_state_l2_weight"]),
         visible_channels=int(raw["reporting"]["visible_channels"]),
         record_every=int(raw["reporting"]["record_every_iterations"]),
-        seed=int(raw["seed"]),
+        seed=effective_seed,
     )
 
     training_summary = train(
@@ -116,7 +120,7 @@ def main() -> int:
         target=target,
         growth_steps=int(raw["evaluation"]["growth_steps"]),
         recovery_steps=int(raw["recovery"]["eval_steps"]),
-        seed=int(raw["seed"]) + 1,
+        seed=effective_seed + 1,
         lesion_height_fraction=float(lesion_cfg["height_fraction"]),
         lesion_width_fraction=float(lesion_cfg["width_fraction"]),
         visible_channels=int(raw["reporting"]["visible_channels"]),
@@ -127,7 +131,7 @@ def main() -> int:
         target=target,
         growth_steps=int(raw["evaluation"]["growth_steps"]),
         persistence_steps=int(raw["evaluation"]["persistence_steps"]),
-        seed=int(raw["seed"]) + 2,
+        seed=effective_seed + 2,
         visible_channels=int(raw["reporting"]["visible_channels"]),
     )
 
@@ -142,7 +146,7 @@ def main() -> int:
                 "target": target_cfg,
                 "experiment_id": raw["experiment_id"],
                 "variant": raw["variant"],
-                "seed": raw["seed"],
+                "seed": effective_seed,
             },
             checkpoint_path,
         )
@@ -155,6 +159,9 @@ def main() -> int:
         "source_revision": _git_revision(),
         "config_path": str(config_path),
         "config_sha256": file_sha256(config_path),
+        "configured_seed": configured_seed,
+        "seed_override": args.seed,
+        "effective_seed": effective_seed,
         "config": raw,
         "effective_training_damage": {
             "height_fraction": training_damage_height,
