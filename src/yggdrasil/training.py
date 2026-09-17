@@ -11,6 +11,7 @@ from torch import Tensor
 from .damage import center_lesion
 from .metrics import (
     active_cell_count,
+    background_alpha_mse,
     balanced_morphology_mse,
     ensure_finite,
     foreground_morphology_mse,
@@ -27,7 +28,12 @@ from .pool import StatePool
 from .resources import snapshot_resources
 
 TrainingVariant = Literal["growth_only", "persistence", "regeneration"]
-TrainingLossMode = Literal["global_mse", "balanced_fg_bg", "global_plus_foreground"]
+TrainingLossMode = Literal[
+    "global_mse",
+    "balanced_fg_bg",
+    "global_plus_foreground",
+    "global_plus_foreground_bg_alpha",
+]
 
 
 @dataclass(frozen=True)
@@ -75,7 +81,12 @@ class TrainingConfig:
             raise ValueError("gradient_clip_norm must be positive")
         if self.hidden_state_l2_weight < 0.0:
             raise ValueError("hidden_state_l2_weight must be non-negative")
-        if self.loss_mode not in {"global_mse", "balanced_fg_bg", "global_plus_foreground"}:
+        if self.loss_mode not in {
+            "global_mse",
+            "balanced_fg_bg",
+            "global_plus_foreground",
+            "global_plus_foreground_bg_alpha",
+        }:
             raise ValueError(f"unsupported training loss mode: {self.loss_mode}")
         if not 0 < self.visible_channels <= model.config.state_channels:
             raise ValueError("visible_channels is outside model state")
@@ -207,17 +218,34 @@ def train(
             or iteration == config.iterations - 1
             or (iteration + 1) % config.record_every == 0
         ):
-            history.append(
-                {
-                    "iteration": iteration + 1,
-                    "steps": steps,
-                    "loss": float(loss.detach().item()),
-                    "morphology_loss": float(morphology_loss.detach().item()),
-                    "global_morphology_mse": float(global_morphology_mse.detach().item()),
-                    "hidden_penalty": float(hidden_penalty.detach().item()),
-                    "gradient_norm": grad_norm,
-                }
-            )
+            history_item: dict[str, float | int] = {
+                "iteration": iteration + 1,
+                "steps": steps,
+                "loss": float(loss.detach().item()),
+                "morphology_loss": float(morphology_loss.detach().item()),
+                "global_morphology_mse": float(global_morphology_mse.detach().item()),
+                "hidden_penalty": float(hidden_penalty.detach().item()),
+                "gradient_norm": grad_norm,
+            }
+            if config.loss_mode == "global_plus_foreground_bg_alpha":
+                history_item["foreground_morphology_mse"] = float(
+                    foreground_morphology_mse(
+                        result,
+                        target_batch,
+                        visible_channels=config.visible_channels,
+                        alpha_channel=3,
+                        foreground_threshold=0.1,
+                    ).detach().item()
+                )
+                history_item["background_alpha_mse"] = float(
+                    background_alpha_mse(
+                        result,
+                        target_batch,
+                        alpha_channel=3,
+                        foreground_threshold=0.1,
+                    ).detach().item()
+                )
+            history.append(history_item)
 
     elapsed = time.perf_counter() - start
     losses = [float(item["loss"]) for item in history]
@@ -268,6 +296,26 @@ def training_morphology_loss(
             foreground_threshold=0.1,
         )
         return global_loss + foreground_loss
+    if config.loss_mode == "global_plus_foreground_bg_alpha":
+        global_loss = morphology_mse(
+            result,
+            target,
+            visible_channels=config.visible_channels,
+        )
+        foreground_loss = foreground_morphology_mse(
+            result,
+            target,
+            visible_channels=config.visible_channels,
+            alpha_channel=3,
+            foreground_threshold=0.1,
+        )
+        background_loss = background_alpha_mse(
+            result,
+            target,
+            alpha_channel=3,
+            foreground_threshold=0.1,
+        )
+        return global_loss + foreground_loss + background_loss
     raise ValueError(f"unsupported training loss mode: {config.loss_mode}")
 
 
