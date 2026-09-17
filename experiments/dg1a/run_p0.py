@@ -79,6 +79,12 @@ def main() -> int:
 
     training_cfg = raw["training"]
     lesion_cfg = raw["recovery"]["lesion"]
+    training_damage_height = float(
+        training_cfg.get("damage_height_fraction", lesion_cfg["height_fraction"])
+    )
+    training_damage_width = float(
+        training_cfg.get("damage_width_fraction", lesion_cfg["width_fraction"])
+    )
     train_config = TrainingConfig(
         variant=raw["variant"],
         iterations=int(training_cfg["iterations"]),
@@ -88,8 +94,8 @@ def main() -> int:
         batch_size=int(training_cfg["batch_size"]),
         pool_size=int(training_cfg["pool_size"]),
         damage_probability=float(training_cfg["damage_probability"]),
-        damage_height_fraction=float(lesion_cfg["height_fraction"]),
-        damage_width_fraction=float(lesion_cfg["width_fraction"]),
+        damage_height_fraction=training_damage_height,
+        damage_width_fraction=training_damage_width,
         damage_min_active_cells=int(training_cfg["damage_min_active_cells"]),
         gradient_clip_norm=float(training_cfg["gradient_clip_norm"]),
         hidden_state_l2_weight=float(training_cfg["hidden_state_l2_weight"]),
@@ -150,6 +156,14 @@ def main() -> int:
         "config_path": str(config_path),
         "config_sha256": file_sha256(config_path),
         "config": raw,
+        "effective_training_damage": {
+            "height_fraction": training_damage_height,
+            "width_fraction": training_damage_width,
+        },
+        "effective_evaluation_damage": {
+            "height_fraction": float(lesion_cfg["height_fraction"]),
+            "width_fraction": float(lesion_cfg["width_fraction"]),
+        },
         "target_identity": target_identity(
             target_spec,
             height=int(phenotype["height"]),
