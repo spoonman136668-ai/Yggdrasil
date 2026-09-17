@@ -1,0 +1,111 @@
+{
+  "schema": "yggdrasil.dg1a.p0.run.v1.compact",
+  "recorded_at_utc": "2026-09-17T22:16:43.041104+00:00",
+  "experiment_id": "DG1A-P0",
+  "experiment_packet": "DG-1A-P0-STAB-06",
+  "candidate": "AM-05",
+  "variant": "regeneration",
+  "evidence_class": "MEASURED_SANDBOX",
+  "evidence_scope": "durable compact summary of full local sandbox evidence",
+  "source_revision": "6e8d79b0fd47b7031b05f03b395bf49c1649f00e",
+  "source_revision_verified_checkout": false,
+  "sandbox_source_byte_identity": false,
+  "sandbox_source_materialization": "semantic reconstruction from connected GitHub readbacks of SOURCE_REVISION",
+  "single_writer": true,
+  "full_local_evidence_sha256": "ba29d40ae653d61a6bee97668e402158d4f42f235502b3925280a1136cf6bf59",
+  "config_path": "experiments/dg1a/configs/p0_stab06_am05.yaml",
+  "config_sha256": "dd10b89da814ff8cfe5c26aa2350a2e2ebee5d4f9f43b5a66f05bb58c8101fca",
+  "target_identity": "ab9878ff935e54b90188ec5d88f7109648962480b3cdcb2ec602f6ac4331787a",
+  "effective_seed": 0,
+  "effective_training_loss_mode": "global_plus_foreground_bg_alive_margin",
+  "effective_training_damage": {"height_fraction": 0.5, "width_fraction": 0.5},
+  "effective_evaluation_damage": {"height_fraction": 0.6, "width_fraction": 0.6},
+  "environment": {
+    "python_version": "3.13.5",
+    "torch_version": "2.10.0+cpu",
+    "cuda_available": false,
+    "device_family": "cpu"
+  },
+  "sandbox_regression": {"passed": 79, "failed": 0},
+  "training": {
+    "iterations": 200,
+    "loss_mode": "global_plus_foreground_bg_alive_margin",
+    "initial_recorded_loss": 0.4459555447101593,
+    "minimum_recorded_loss": 0.36123600602149963,
+    "final_recorded_loss": 0.3881474733352661,
+    "elapsed_seconds": 306.55884794,
+    "final_recorded_components": {
+      "global_morphology_mse": 0.026161031797528267,
+      "foreground_morphology_mse": 0.35965561866760254,
+      "background_alive_margin_loss": 0.0023307728115469217,
+      "morphology_loss": 0.3881474435329437
+    },
+    "notable_recorded_transients": [
+      {"iteration": 10, "background_alive_margin_loss": 2.5370, "gradient_norm": 673.55},
+      {"iteration": 40, "background_alive_margin_loss": 7.6314, "gradient_norm": 686.45}
+    ],
+    "non_finite_state": false
+  },
+  "evaluation": {
+    "growth_steps": 96,
+    "recovery_steps": 96,
+    "pre_error": 0.02835857681930065,
+    "post_damage_error": 0.028535479679703712,
+    "final_recovery_error": 0.029574217274785042,
+    "damage_effect": 0.0001769028604030609,
+    "relative_damage_effect": 0.006238072577840439,
+    "pre_damage_active_cells": 3,
+    "post_damage_active_cells": 2,
+    "active_cell_removal_fraction": 0.3333333333333333,
+    "active_cells_final": 0,
+    "recovery_fraction": 0.0,
+    "recovery_fraction_raw": -5.871796491671405,
+    "t50_stable_steps": null,
+    "t90_stable_steps": null,
+    "normalized_recovery_auc": 0.003618095478762609,
+    "resources": {
+      "genome_parameters": 8320,
+      "genome_parameter_bytes": 33280,
+      "resident_state_bytes": 102400,
+      "active_cells": 0,
+      "active_state_bytes_estimate": 0
+    }
+  },
+  "persistence": {
+    "growth_steps": 96,
+    "persistence_steps": 96,
+    "initial_error": 0.028386352583765984,
+    "final_error": 0.027131985872983932,
+    "error_degradation": -0.001254366710782051,
+    "max_error_degradation": 0.0001858249306678772,
+    "initial_active_cells": 2,
+    "final_active_cells": 5,
+    "active_cell_drift": 3,
+    "visible_state_drift_mse": 0.0007795979036018252,
+    "mean_step_update_magnitude": 0.0000453885,
+    "resources": {
+      "genome_parameters": 8320,
+      "genome_parameter_bytes": 33280,
+      "resident_state_bytes": 102400,
+      "active_cells": 5,
+      "active_state_bytes_estimate": 320
+    }
+  },
+  "preregistered_gates": {
+    "pre_damage_active_cells_gt_0": true,
+    "pre_damage_active_cells_lte_800": true,
+    "damage_effect_gt_0": true,
+    "relative_damage_effect_gte_0_10": false,
+    "active_cell_removal_fraction_gte_0_10": true,
+    "stable_t50_attained": false,
+    "final_recovery_fraction_gt_0_4230230485": false,
+    "pre_lesion_global_mse_lte_0_0361635": true,
+    "final_active_cells_lte_800": true,
+    "persistence_final_active_cells_lte_800": true,
+    "persistence_final_mse_lte_0_0361635": true,
+    "persistence_max_mse_lte_2x_initial": true,
+    "no_non_finite_state": true,
+    "candidate_worth_widening": false
+  },
+  "classification": "OVER_SUPPRESSED_NEAR_DEAD_PHENOTYPE_WITH_INSUFFICIENT_LESION_EFFECT_AND_ZERO_REGENERATION"
+}
