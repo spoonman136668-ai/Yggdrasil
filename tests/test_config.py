@@ -34,7 +34,7 @@ def _base_config() -> dict:
             "max_development_steps": 8,
         },
         "target": {"kind": "disk", "radius": 3, "rgba": [0.1, 0.8, 0.2, 1.0]},
-        "evaluation": {"growth_steps": 3},
+        "evaluation": {"growth_steps": 3, "persistence_steps": 3},
         "recovery": {
             "eval_steps": 3,
             "lesion": {"kind": "center", "height_fraction": 0.3, "width_fraction": 0.3},
@@ -60,6 +60,14 @@ def test_config_rejects_evaluation_steps_over_model_limit() -> None:
     config["evaluation"]["growth_steps"] = 9
 
     with pytest.raises(ValueError, match="evaluation growth_steps"):
+        validate_config(config)
+
+
+def test_config_rejects_persistence_steps_over_model_limit() -> None:
+    config = _base_config()
+    config["evaluation"]["persistence_steps"] = 9
+
+    with pytest.raises(ValueError, match="evaluation persistence_steps"):
         validate_config(config)
 
 
