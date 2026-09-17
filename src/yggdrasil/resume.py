@@ -79,10 +79,16 @@ class ResumableTrainingSession:
         homeostasis_loss = None
         homeostasis_mature_samples = 0
         if self.config.loss_mode == 'global_plus_foreground_bg_alpha_homeostasis':
-            probe = _rng_neutral_homeostasis_probe(model=self.model, result=result, generator=self.device_rng)
-            ensure_finite(probe)
-            homeostasis_loss = homeostasis_background_velocity_loss(result, probe, self.target_batch, alpha_channel=3, foreground_threshold=0.1, alive_threshold=self.model.config.alive_threshold)
-            homeostasis_mature_samples = int(homeostasis_mature_sample_mask(result, self.target_batch, alpha_channel=3, foreground_threshold=0.1, alive_threshold=self.model.config.alive_threshold).sum().item())
+            mature_mask = homeostasis_mature_sample_mask(result, self.target_batch, alpha_channel=3, foreground_threshold=0.1, alive_threshold=self.model.config.alive_threshold)
+            homeostasis_mature_samples = int(mature_mask.sum().item())
+            if homeostasis_mature_samples > 0:
+                mature_result = result[mature_mask]
+                mature_target = self.target_batch[mature_mask]
+                probe = _rng_neutral_homeostasis_probe(model=self.model, result=mature_result, generator=self.device_rng)
+                ensure_finite(probe)
+                homeostasis_loss = homeostasis_background_velocity_loss(mature_result, probe, mature_target, alpha_channel=3, foreground_threshold=0.1, alive_threshold=self.model.config.alive_threshold)
+            else:
+                homeostasis_loss = result.sum() * 0.0
         morph = training_morphology_loss(result=result, target=self.target_batch, config=self.config, homeostasis_loss=homeostasis_loss)
         hidden = torch.mean(result[:, self.config.visible_channels:] ** 2) if self.config.visible_channels < result.shape[1] else torch.zeros((), device=self.device, dtype=result.dtype)
         loss = morph + self.config.hidden_state_l2_weight * hidden
