@@ -11,6 +11,7 @@ from torch import Tensor
 from .damage import center_lesion
 from .metrics import (
     active_cell_count,
+    background_alive_margin_loss,
     background_alpha_mse,
     balanced_morphology_mse,
     ensure_finite,
@@ -33,6 +34,7 @@ TrainingLossMode = Literal[
     "balanced_fg_bg",
     "global_plus_foreground",
     "global_plus_foreground_bg_alpha",
+    "global_plus_foreground_bg_alive_margin",
 ]
 
 
@@ -86,6 +88,7 @@ class TrainingConfig:
             "balanced_fg_bg",
             "global_plus_foreground",
             "global_plus_foreground_bg_alpha",
+            "global_plus_foreground_bg_alive_margin",
         }:
             raise ValueError(f"unsupported training loss mode: {self.loss_mode}")
         if not 0 < self.visible_channels <= model.config.state_channels:
@@ -245,6 +248,26 @@ def train(
                         foreground_threshold=0.1,
                     ).detach().item()
                 )
+            if config.loss_mode == "global_plus_foreground_bg_alive_margin":
+                history_item["foreground_morphology_mse"] = float(
+                    foreground_morphology_mse(
+                        result,
+                        target_batch,
+                        visible_channels=config.visible_channels,
+                        alpha_channel=3,
+                        foreground_threshold=0.1,
+                    ).detach().item()
+                )
+                history_item["background_alive_margin_loss"] = float(
+                    background_alive_margin_loss(
+                        result,
+                        target_batch,
+                        alpha_channel=3,
+                        foreground_threshold=0.1,
+                        margin_floor=0.05,
+                        alive_threshold=0.1,
+                    ).detach().item()
+                )
             history.append(history_item)
 
     elapsed = time.perf_counter() - start
@@ -314,6 +337,28 @@ def training_morphology_loss(
             target,
             alpha_channel=3,
             foreground_threshold=0.1,
+        )
+        return global_loss + foreground_loss + background_loss
+    if config.loss_mode == "global_plus_foreground_bg_alive_margin":
+        global_loss = morphology_mse(
+            result,
+            target,
+            visible_channels=config.visible_channels,
+        )
+        foreground_loss = foreground_morphology_mse(
+            result,
+            target,
+            visible_channels=config.visible_channels,
+            alpha_channel=3,
+            foreground_threshold=0.1,
+        )
+        background_loss = background_alive_margin_loss(
+            result,
+            target,
+            alpha_channel=3,
+            foreground_threshold=0.1,
+            margin_floor=0.05,
+            alive_threshold=0.1,
         )
         return global_loss + foreground_loss + background_loss
     raise ValueError(f"unsupported training loss mode: {config.loss_mode}")
