@@ -108,6 +108,22 @@ def homeostasis_background_velocity_loss(result: Tensor, probe: Tensor, target: 
     mask = mature[:, None, None, None] & background
     return velocity.masked_select(mask).mean()
 
+def homeostasis_trajectory_velocity_loss(states: Sequence[Tensor], target: Tensor, *, alpha_channel: int=3, foreground_threshold: float=0.1, alive_threshold: float=0.1) -> Tensor:
+    if len(states) < 2:
+        raise ValueError('trajectory requires at least two states')
+    if alive_threshold <= 0.0:
+        raise ValueError('alive_threshold must be positive')
+    for state in states:
+        _validate_pair(state, target)
+    background = target[:, alpha_channel:alpha_channel + 1] <= foreground_threshold
+    if not bool(background.any()):
+        raise ValueError('target contains no background pixels')
+    step_losses = []
+    for before, after in zip(states, states[1:]):
+        velocity = torch.relu(after[:, alpha_channel:alpha_channel + 1] - before[:, alpha_channel:alpha_channel + 1]) / alive_threshold
+        step_losses.append(velocity.masked_select(background).mean())
+    return torch.stack(step_losses).mean()
+
 def background_alive_margin_loss(state: Tensor, target: Tensor, *, alpha_channel: int=3, foreground_threshold: float=0.1, margin_floor: float=0.05, alive_threshold: float=0.1) -> Tensor:
     _validate_pair(state, target)
     if not 0 <= alpha_channel < target.shape[1]:
