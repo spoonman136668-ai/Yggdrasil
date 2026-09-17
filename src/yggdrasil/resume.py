@@ -11,7 +11,7 @@ from .damage import center_lesion
 from .metrics import active_cell_count, ensure_finite, morphology_mse
 from .nca import NeuralCellularAutomaton
 from .pool import StatePool
-from .training import TrainingConfig, TrainingSummary
+from .training import TrainingConfig, TrainingSummary, training_morphology_loss
 
 
 @dataclass
@@ -107,10 +107,15 @@ class ResumableTrainingSession:
         self.optimizer.zero_grad(set_to_none=True)
         result = self.model.run(states, steps=steps, generator=self.device_rng)
         ensure_finite(result)
-        morphology_loss = morphology_mse(
+        global_morphology_mse = morphology_mse(
             result,
             self.target_batch,
             visible_channels=self.config.visible_channels,
+        )
+        morphology_loss = training_morphology_loss(
+            result=result,
+            target=self.target_batch,
+            config=self.config,
         )
         hidden_penalty = (
             torch.mean(result[:, self.config.visible_channels :] ** 2)
@@ -143,6 +148,7 @@ class ResumableTrainingSession:
                     "steps": steps,
                     "loss": float(loss.detach().item()),
                     "morphology_loss": float(morphology_loss.detach().item()),
+                    "global_morphology_mse": float(global_morphology_mse.detach().item()),
                     "hidden_penalty": float(hidden_penalty.detach().item()),
                     "gradient_norm": grad_norm,
                 }
@@ -155,6 +161,7 @@ class ResumableTrainingSession:
         losses = [float(item["loss"]) for item in self.history]
         return TrainingSummary(
             variant=self.config.variant,
+            loss_mode=self.config.loss_mode,
             iterations=self.iteration,
             initial_recorded_loss=losses[0],
             final_recorded_loss=losses[-1],
