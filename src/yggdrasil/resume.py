@@ -10,6 +10,7 @@ from torch import Tensor
 from .damage import center_lesion
 from .metrics import (
     active_cell_count,
+    background_alive_margin_loss,
     background_alpha_mse,
     ensure_finite,
     foreground_morphology_mse,
@@ -173,6 +174,26 @@ class ResumableTrainingSession:
                         self.target_batch,
                         alpha_channel=3,
                         foreground_threshold=0.1,
+                    ).detach().item()
+                )
+            if self.config.loss_mode == "global_plus_foreground_bg_alive_margin":
+                history_item["foreground_morphology_mse"] = float(
+                    foreground_morphology_mse(
+                        result,
+                        self.target_batch,
+                        visible_channels=self.config.visible_channels,
+                        alpha_channel=3,
+                        foreground_threshold=0.1,
+                    ).detach().item()
+                )
+                history_item["background_alive_margin_loss"] = float(
+                    background_alive_margin_loss(
+                        result,
+                        self.target_batch,
+                        alpha_channel=3,
+                        foreground_threshold=0.1,
+                        margin_floor=0.05,
+                        alive_threshold=0.1,
                     ).detach().item()
                 )
             self.history.append(history_item)
