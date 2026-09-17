@@ -49,6 +49,38 @@ def far_field_background_alpha_mse(state: Tensor, target: Tensor, *, alpha_chann
     alpha2 = state[:, alpha_channel:alpha_channel + 1] ** 2
     return alpha2.masked_select(far_field).mean()
 
+def target_chebyshev_distance_weights(target: Tensor, *, alpha_channel: int=3, foreground_threshold: float=0.1) -> Tensor:
+    _validate_state(target)
+    if not 0 <= alpha_channel < target.shape[1]:
+        raise ValueError('alpha_channel is outside the target state vector')
+    foreground = target[:, alpha_channel:alpha_channel + 1] > foreground_threshold
+    if not bool(foreground.any()):
+        raise ValueError('target contains no foreground pixels')
+    background = ~foreground
+    if not bool(background.any()):
+        raise ValueError('target contains no background pixels')
+    reached = foreground.clone()
+    weights = torch.zeros_like(target[:, alpha_channel:alpha_channel + 1])
+    max_distance = max(target.shape[-2], target.shape[-1])
+    for distance in range(1, max_distance + 1):
+        dilated = torch.nn.functional.max_pool2d(reached.to(dtype=target.dtype), kernel_size=3, stride=1, padding=1) > 0
+        new_ring = dilated & ~reached
+        if bool(new_ring.any()):
+            weights = torch.where(new_ring, torch.full_like(weights, distance / (distance + 1.0)), weights)
+        reached = dilated
+        if bool(reached.all()):
+            break
+    if bool((background & ~reached).any()):
+        raise RuntimeError('failed to assign target-distance weights to every background pixel')
+    return weights
+
+def graded_background_alpha_mse(state: Tensor, target: Tensor, *, alpha_channel: int=3, foreground_threshold: float=0.1) -> Tensor:
+    _validate_pair(state, target)
+    weights = target_chebyshev_distance_weights(target, alpha_channel=alpha_channel, foreground_threshold=foreground_threshold)
+    background = target[:, alpha_channel:alpha_channel + 1] <= foreground_threshold
+    alpha_squared = state[:, alpha_channel:alpha_channel + 1] ** 2
+    return (alpha_squared * weights).masked_select(background).mean()
+
 def background_alive_margin_loss(state: Tensor, target: Tensor, *, alpha_channel: int=3, foreground_threshold: float=0.1, margin_floor: float=0.05, alive_threshold: float=0.1) -> Tensor:
     _validate_pair(state, target)
     if not 0 <= alpha_channel < target.shape[1]:
