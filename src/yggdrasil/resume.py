@@ -8,7 +8,13 @@ import torch
 from torch import Tensor
 
 from .damage import center_lesion
-from .metrics import active_cell_count, ensure_finite, morphology_mse
+from .metrics import (
+    active_cell_count,
+    background_alpha_mse,
+    ensure_finite,
+    foreground_morphology_mse,
+    morphology_mse,
+)
 from .nca import NeuralCellularAutomaton
 from .pool import StatePool
 from .training import TrainingConfig, TrainingSummary, training_morphology_loss
@@ -142,17 +148,34 @@ class ResumableTrainingSession:
             or iteration == self.config.iterations - 1
             or (iteration + 1) % self.config.record_every == 0
         ):
-            self.history.append(
-                {
-                    "iteration": iteration + 1,
-                    "steps": steps,
-                    "loss": float(loss.detach().item()),
-                    "morphology_loss": float(morphology_loss.detach().item()),
-                    "global_morphology_mse": float(global_morphology_mse.detach().item()),
-                    "hidden_penalty": float(hidden_penalty.detach().item()),
-                    "gradient_norm": grad_norm,
-                }
-            )
+            history_item: dict[str, float | int] = {
+                "iteration": iteration + 1,
+                "steps": steps,
+                "loss": float(loss.detach().item()),
+                "morphology_loss": float(morphology_loss.detach().item()),
+                "global_morphology_mse": float(global_morphology_mse.detach().item()),
+                "hidden_penalty": float(hidden_penalty.detach().item()),
+                "gradient_norm": grad_norm,
+            }
+            if self.config.loss_mode == "global_plus_foreground_bg_alpha":
+                history_item["foreground_morphology_mse"] = float(
+                    foreground_morphology_mse(
+                        result,
+                        self.target_batch,
+                        visible_channels=self.config.visible_channels,
+                        alpha_channel=3,
+                        foreground_threshold=0.1,
+                    ).detach().item()
+                )
+                history_item["background_alpha_mse"] = float(
+                    background_alpha_mse(
+                        result,
+                        self.target_batch,
+                        alpha_channel=3,
+                        foreground_threshold=0.1,
+                    ).detach().item()
+                )
+            self.history.append(history_item)
         self.iteration += 1
 
     def summary(self) -> TrainingSummary:
