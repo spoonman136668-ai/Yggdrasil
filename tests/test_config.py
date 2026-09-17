@@ -47,6 +47,24 @@ def test_config_accepts_bounded_case() -> None:
     validate_config(_base_config())
 
 
+def test_config_accepts_training_damage_distinct_from_evaluation_damage() -> None:
+    config = _base_config()
+    config["training"]["damage_height_fraction"] = 0.5
+    config["training"]["damage_width_fraction"] = 0.5
+    config["recovery"]["lesion"]["height_fraction"] = 0.6
+    config["recovery"]["lesion"]["width_fraction"] = 0.6
+
+    validate_config(config)
+
+
+def test_config_rejects_partial_training_damage_geometry() -> None:
+    config = _base_config()
+    config["training"]["damage_height_fraction"] = 0.5
+
+    with pytest.raises(ValueError, match="specified together"):
+        validate_config(config)
+
+
 def test_config_rejects_width_over_limit() -> None:
     config = _base_config()
     config["phenotype"]["width"] = 21
