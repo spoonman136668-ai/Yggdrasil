@@ -41,6 +41,26 @@ def foreground_morphology_mse(
     ).mean()
 
 
+def background_alpha_mse(
+    state: Tensor,
+    target: Tensor,
+    *,
+    alpha_channel: int = 3,
+    foreground_threshold: float = 0.1,
+) -> Tensor:
+    """Alpha/liveness energy restricted to target-defined background pixels."""
+    _validate_pair(state, target)
+    if not 0 <= alpha_channel < target.shape[1]:
+        raise ValueError("alpha_channel is outside the target state vector")
+
+    background = target[:, alpha_channel : alpha_channel + 1] <= foreground_threshold
+    if not bool(background.any()):
+        raise ValueError("target contains no background pixels")
+
+    alpha_squared = state[:, alpha_channel : alpha_channel + 1] ** 2
+    return alpha_squared.masked_select(background).mean()
+
+
 def balanced_morphology_mse(
     state: Tensor,
     target: Tensor,
