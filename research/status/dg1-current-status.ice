@@ -1,6 +1,6 @@
 TITLE: DG-1 Current Research Status
 DATE: 2026-09-17
-STATUS: ACTIVE — DG-1A P0 OBJECTIVE / VIABILITY STABILIZATION
+STATUS: ACTIVE — DG-1A P0 OBJECTIVE / OCCUPANCY STABILIZATION
 TRACK: DG-1
 CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; EXPLORATORY FOR SANDBOX RESULTS
 
@@ -19,20 +19,21 @@ ACTIVE BRANCH
 dg1a-p0
 
 LATEST VERIFIED REPOSITORY FRONTIER BEFORE THIS STATUS UPDATE
-a0026df2561487a62061aa364208341777e623be
+8f9dedecb76c334264232c22c7e459f78055c92e
 
 P0 IMPLEMENTATION STATUS
-The bounded P0 substrate, training curricula, recovery/persistence telemetry, resource accounting, resumable training, explicit evidence, and three explicit training-loss modes are implemented:
+The bounded P0 substrate, training curricula, recovery/persistence telemetry, resource accounting, resumable training, explicit evidence, and four explicit training-loss modes are implemented:
 - global_mse;
 - balanced_fg_bg;
-- global_plus_foreground.
+- global_plus_foreground;
+- global_plus_foreground_bg_alpha.
 
 Latest reconstructed sandbox regression:
-61 passed
+69 passed
 0 failed
 Python 3.13.5 / PyTorch 2.10.0+cpu
 
-The execution source was semantically reconstructed from connected GitHub readbacks of implementation/test revision c90809c9b0c793f003e398731e931aa6a7058f5e because the sandbox could not obtain a native checkout. Byte identity was not established. Treat this as sandbox evidence, not authoritative hardware or commit-bound scientific acceptance.
+The STAB-05 execution source was semantically reconstructed from connected GitHub readbacks of implementation/test revision 8c1acff13ec5d6e43b7520793555dbc9ac849f34. Byte identity with a native checkout was not established. Treat STAB-05 as measured sandbox evidence, not commit-bound confirmatory scientific acceptance.
 
 CURRENT FULL-GRID FINDINGS
 STAB-01: NEGATIVE
@@ -42,60 +43,80 @@ STAB-02: NEGATIVE
 Longer 64..128 developmental training horizons converged to an all-dead phenotype, exposing sparse-target degeneracy in global unweighted morphology MSE.
 
 STAB-03: NEGATIVE
-Equal 0.5/0.5 foreground/background balanced training loss prevented the all-dead solution but overcorrected toward an overgrown phenotype.
-Measured seed-0 sandbox result:
-- pre-damage active cells: 1579 / 1600;
-- pre-lesion global morphology MSE: 0.1411564797;
-- 0.60 center lesion removed 36.48% of active cells;
-- post-lesion global MSE improved to 0.1050053090;
-- DamageEffect: -0.0361511707;
-- lesion invalid for regeneration inference;
-- final active cells: 1164 / 1600;
-- improvement rule failed.
+Equal foreground/background regional weighting avoided death but overcorrected into severe overgrowth and an invalid lesion.
 
 STAB-04: NEGATIVE
-Candidate FG+1 retained the global training loss and added one full foreground-visible MSE term.
-Exactly one fresh seed-0 candidate was executed with single-writer resumable checkpoints.
+GlobalVisibleMSE + ForegroundVisibleMSE also avoided death but produced 1578 / 1600 pre-damage active cells, pre-lesion global MSE 0.1845480204, negative DamageEffect, and invalid regeneration inference.
+
+STAB-05: NEGATIVE WITH DIRECTIONAL MECHANISTIC SIGNAL
+Candidate OCC-A1 added a fixed target-background alpha-energy term:
+
+TrainingMorphologyLoss = GlobalVisibleMSE + ForegroundVisibleMSE + BackgroundAlphaMSE
+
+Exactly one fresh seed-0 candidate completed the frozen 200-iteration H96/M16 envelope with single-writer resumable checkpoints.
+
 Measured sandbox result:
-- 200 / 200 training iterations;
-- minimum recorded loss: 0.0645382553;
-- final recorded loss: 0.0687634796;
-- pre-damage active cells: 1578 / 1600;
-- pre-lesion global morphology MSE: 0.1845480204;
-- 0.60 center lesion removed 36.50% of active cells;
-- post-lesion global MSE improved to 0.1184445843;
-- DamageEffect: -0.0661034361;
-- RelativeDamageEffect: -0.3581909788;
-- final active cells: 1073 / 1600;
-- stable T50/T90 undefined/not attained;
+- minimum recorded training loss: 0.1833379418;
+- final recorded training loss: 0.1999244839;
+- pre-damage active cells: 1206 / 1600;
+- pre-lesion global MSE: 0.0701904967;
+- post-lesion global MSE: 0.0557577237;
+- DamageEffect: -0.0144327730;
+- RelativeDamageEffect: -0.2056228929;
+- lesion removed 45.77% of active cells;
+- final recovery active cells: 1329 / 1600;
+- stable T50/T90 and bounded RecoveryFraction: undefined/not attained;
+- persistence active cells: 1140 -> 1378;
+- persistence global MSE: 0.0642844662 -> 0.1067116261;
 - candidate worth widening: NO.
 
+STAB-05 DIRECTIONAL EFFECT
+Relative to STAB-04:
+- pre-damage activity reduced 1578 -> 1206, approximately 23.57%;
+- pre-lesion global MSE reduced 0.1845480204 -> 0.0701904967, approximately 61.97%.
+
+Therefore explicit occupancy pressure demonstrably changes the learned phenotype in the intended direction, but the tested alpha-energy term is insufficient for canonical P0 stabilization.
+
 CURRENT INTERPRETATION
-The immediate P0 problem remains objective balancing, now with repeated evidence on both sides:
-- global occupancy-weighted MSE can make sparse-target death competitive;
-- strong foreground emphasis can avoid death while making excessive active structure competitive.
+The immediate P0 failure is now more specifically characterized:
+- pure global occupancy-weighted MSE can make sparse-target death competitive;
+- strong foreground protection can make excessive structure competitive;
+- explicit target-background alpha-energy suppression partially reduces that excess, but continuous alpha energy does not directly enforce thresholded active-cell cardinality or stable support geometry.
 
-STAB-03 and STAB-04 reached the latter class through different objective formulations. In both, removing more than one-third of active cells improved the common global morphology metric, so regeneration inference was invalid.
+The STAB-05 lesion still improved the common global morphology metric, proving substantial harmful/excess structure remained before damage. Persistence also expanded rather than stabilized.
 
-This narrows the next research question from generic regeneration failure to explicit occupancy/structure control during morphology learning.
+This narrows the next research question to bounded occupancy/support structure rather than generic foreground/background loss balancing.
 
-DURABLE STAB-04 RECORDS
-research/experiments/dg1a/dg1a-p0-stab04-spec.ice
-research/experiments/dg1a/dg1a-p0-stab04-result.ice
-evidence/dg1a/p0_stab04_sandbox.json
+DURABLE STAB-05 RECORDS
+research/experiments/dg1a/dg1a-p0-stab05-spec.ice
+research/experiments/dg1a/dg1a-p0-stab05-result.ice
+evidence/dg1a/p0_stab05_sandbox.json
 research/status/dg1a-p0-status.ice
 
+Full local sandbox evidence SHA-256:
+32108c4908e3328188dfe2223b032881bcd8944c73c22f1b41e96e6a7fb79f3c
+
+CURRENT DECISIONS
+- STAB-05 is closed negative;
+- OCC-A1 is not widened to additional seeds;
+- its coefficient is not tuned retroactively;
+- the global evaluation metric remains unchanged;
+- implemented historical loss modes remain preserved for reproducibility;
+- the directional occupancy reduction is retained as mechanistic evidence;
+- canonical full-grid P0 remains unresolved;
+- DG-1B remains unopened.
+
 NEXT BOUNDED PACKET
-Provisionally DG-1A-P0-STAB-05 — DESIGN / PREREGISTRATION ONLY.
+Provisionally DG-1A-P0-STAB-06 — DESIGN / PREREGISTRATION ONLY.
 
-No STAB-05 mechanism is selected by this status record.
+The next experiment should discriminate the mismatch between continuous alpha-energy pressure and actual bounded active/support structure. Candidate mechanism classes for design review include a differentiable occupancy/cardinality surrogate or target-support geometry control.
 
-The next mechanism must directly target occupancy/overgrowth rather than becoming a coefficient sweep of STAB-03 or STAB-04. Before execution it must define one fixed intervention, preserve the common global evaluation metric, retain the H96/M16 envelope unless that envelope is itself the preregistered single factor, and freeze viability, lesion-validity, morphology, active-cell, recovery, and finite-state gates.
+No STAB-06 mechanism is selected by this status ledger.
+No STAB-06 scientific execution is authorized until one mechanism, one fixed parameterization, the common evaluation metric, frozen envelope, and complete gates are preregistered in .ice.
 
 FIBONACCI TRACK
 DG-1A-FIB1 remains preserved and separate.
-Planned later questions include Fibonacci repair budgets, capacity ceilings, golden-angle topology priors, module-size vocabularies, and emergence tests.
-Do not introduce these into canonical P0 while the basic objective/viability problem remains unresolved.
+Do not introduce Fibonacci repair budgets, capacity ceilings, topology priors, or module-size schedules into canonical P0 while basic viability/stability remains unresolved.
 
 LARGER DG-1 TRAJECTORY
 stable local development
@@ -111,7 +132,7 @@ stable local development
 -> regenerable capability
 
 ANCESTOR INHERITANCE
-Remains a first-class future direction. The goal is to test whether useful capability from previous models can be transformed into compact persistent developmental information that can regenerate task-relevant phenotype without retaining every donor checkpoint.
+Remains a first-class future direction. It is not opened by STAB-05.
 
 BOUNDARIES
 Do not modify Wingless, ckb-plane, or Mind-Palace without explicit authorization.
@@ -119,4 +140,4 @@ Do not activate CKB runtime, Coinbase/live broker systems, TradeGuard, deploymen
 P0 remains morphology/developmental-substrate research and does not establish cognition or general intelligence.
 
 NEXT ACTION
-Design and preregister STAB-05. Do not execute it until its exact single factor and gates exist in .ice. Do not begin DG-1B, ancestor inheritance, structural growth, or Fibonacci scheduling until canonical P0 viability/stability is adequately characterized.
+Design and preregister STAB-06. Do not execute it until its exact single factor and gates exist in .ice. Do not begin DG-1B, ancestor inheritance, structural growth, or Fibonacci scheduling until canonical P0 viability/stability is adequately characterized.
