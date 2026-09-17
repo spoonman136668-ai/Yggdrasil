@@ -1,0 +1,150 @@
+{
+  "candidate": "DIST-1",
+  "classification": "VIABLE_BUT_SEVERE_OVERGROWTH_WITH_INVALID_LESION",
+  "config_path": "experiments/dg1a/configs/p0_stab08_dist1.yaml",
+  "config_sha256": "4d8c704a886de042ceb8edd4c7ba92d1b4075090cf7d71af687ed04206211b46",
+  "distance_geometry": {
+    "background_cells": 1487,
+    "foreground_cells": 113,
+    "max_distance": 16,
+    "mean_background_weight": 0.8635463277,
+    "metric": "Chebyshev distance to immutable target foreground",
+    "ring_counts": {
+      "1": 56,
+      "2": 64,
+      "3": 72,
+      "4": 80,
+      "5": 88,
+      "6": 96,
+      "7": 104,
+      "8": 112,
+      "9": 120,
+      "10": 128,
+      "11": 136,
+      "12": 144,
+      "13": 152,
+      "14": 102,
+      "15": 28,
+      "16": 5
+    },
+    "weight_function": "d/(d+1) on target-background cells"
+  },
+  "effective_evaluation_damage": {
+    "height_fraction": 0.6,
+    "width_fraction": 0.6
+  },
+  "effective_seed": 0,
+  "effective_training_damage": {
+    "height_fraction": 0.5,
+    "width_fraction": 0.5
+  },
+  "effective_training_loss_mode": "global_plus_foreground_graded_bg_alpha",
+  "environment": {
+    "cuda_available": false,
+    "cuda_device_name": null,
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "python_version": "3.13.5",
+    "torch_version": "2.10.0+cpu"
+  },
+  "evaluation": {
+    "active_cell_removal_fraction": 0.4,
+    "active_cells_final": 1095,
+    "damage_effect": -0.02728402614593506,
+    "elapsed_seconds": 0.3414394489991537,
+    "final_recovery_error": 0.06013130769133568,
+    "growth_steps": 96,
+    "normalized_recovery_auc": null,
+    "post_damage_active_cells": 864,
+    "post_damage_error": 0.07439953088760376,
+    "pre_damage_active_cells": 1440,
+    "pre_error": 0.10168355703353882,
+    "recovery_fraction": null,
+    "recovery_fraction_raw": null,
+    "recovery_steps": 96,
+    "relative_damage_effect": -0.26832289252957414,
+    "resources": {
+      "active_cells": 1095,
+      "active_state_bytes_estimate": 70080,
+      "genome_parameter_bytes": 33280,
+      "genome_parameters": 8320,
+      "resident_state_bytes": 102400
+    },
+    "t50_stable_steps": null,
+    "t90_stable_steps": null
+  },
+  "evidence_class": "MEASURED_SANDBOX",
+  "evidence_scope": "durable compact summary of full local sandbox evidence",
+  "experiment_id": "DG1A-P0",
+  "experiment_packet": "DG-1A-P0-STAB-08",
+  "full_local_evidence_sha256": "8c4a0c21319cdb06dc2d806faec2d593cb9233d6320d29bbc77e14b651b6532e",
+  "persistence": {
+    "active_cell_drift": -246,
+    "elapsed_seconds": 0.3102631660003681,
+    "error_degradation": 0.0093536376953125,
+    "final_active_cells": 1102,
+    "final_error": 0.0973186269402504,
+    "growth_steps": 96,
+    "initial_active_cells": 1348,
+    "initial_error": 0.0879649892449379,
+    "max_error_degradation": 0.045827992260456085,
+    "mean_step_update_magnitude": 0.005508315075227681,
+    "persistence_steps": 96,
+    "resources": {
+      "active_cells": 1102,
+      "active_state_bytes_estimate": 70528,
+      "genome_parameter_bytes": 33280,
+      "genome_parameters": 8320,
+      "resident_state_bytes": 102400
+    },
+    "visible_state_drift_mse": 0.037595897912979126
+  },
+  "preregistered_gates": {
+    "active_cell_removal_fraction_gte_0_10": true,
+    "candidate_worth_widening": false,
+    "damage_effect_gt_0": false,
+    "final_active_cells_gte_113": true,
+    "final_active_cells_lte_800": false,
+    "final_recovery_fraction_gt_0_4230230485": false,
+    "no_non_finite_state": true,
+    "persistence_final_active_cells_gte_113": true,
+    "persistence_final_active_cells_lte_800": false,
+    "persistence_final_mse_lte_0_0361635": false,
+    "persistence_max_mse_lte_2x_initial": true,
+    "pre_damage_active_cells_gte_113": true,
+    "pre_damage_active_cells_lte_800": false,
+    "pre_lesion_global_mse_lte_0_0361635": false,
+    "relative_damage_effect_gte_0_10": false,
+    "stable_t50_attained": false
+  },
+  "recorded_at_utc": "2026-09-17T23:01:03.519104+00:00",
+  "sandbox_regression": {
+    "execution_note": "95 non-runner tests + five subprocess runner tests executed in bounded clean-return batches",
+    "failed": 0,
+    "passed": 100
+  },
+  "sandbox_source_byte_identity": false,
+  "sandbox_source_materialization": "semantic reconstruction from connected GitHub readbacks of SOURCE_REVISION",
+  "schema": "yggdrasil.dg1a.p0.run.v1.compact",
+  "single_writer": true,
+  "source_revision": "5b67f6a6f2f748ee2da9a8208739173b8d4232cb",
+  "source_revision_verified_checkout": false,
+  "target_identity": "ab9878ff935e54b90188ec5d88f7109648962480b3cdcb2ec602f6ac4331787a",
+  "training": {
+    "elapsed_seconds": 271.81854133399884,
+    "final_recorded_components": {
+      "foreground_morphology_mse": 0.0863720178604126,
+      "global_morphology_mse": 0.06113620847463608,
+      "graded_background_alpha_mse": 0.05509520322084427,
+      "gradient_norm": 1.0809142589569092,
+      "hidden_penalty": 0.08867664635181427,
+      "morphology_loss": 0.20260342955589294
+    },
+    "final_recorded_loss": 0.20260432362556458,
+    "initial_recorded_loss": 0.4459555447101593,
+    "iterations": 200,
+    "loss_mode": "global_plus_foreground_graded_bg_alpha",
+    "minimum_recorded_loss": 0.20077183842658997,
+    "non_finite_state": false
+  },
+  "variant": "regeneration"
+}
