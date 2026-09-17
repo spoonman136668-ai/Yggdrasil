@@ -12,6 +12,7 @@ from .damage import center_lesion
 from .metrics import (
     active_cell_count,
     ensure_finite,
+    mean_update_magnitude,
     morphology_mse,
     normalized_recovery_auc,
     normalized_recovery_fraction,
@@ -335,6 +336,95 @@ def evaluate_growth_and_recovery(
         "normalized_recovery_auc": _finite_or_none(auc),
         "recovery_error_curve": errors,
         "active_cells_final": active,
+        "elapsed_seconds": elapsed,
+        "resources": resources.to_dict(),
+    }
+
+
+def evaluate_persistence(
+    *,
+    model: NeuralCellularAutomaton,
+    seed_state: Tensor,
+    target: Tensor,
+    growth_steps: int,
+    persistence_steps: int,
+    seed: int,
+    visible_channels: int = 4,
+) -> dict[str, object]:
+    _validate_seed_target(seed_state, target, model)
+    if not 0 <= growth_steps <= model.config.max_steps:
+        raise ValueError("growth_steps exceeds model development limit")
+    if not 0 <= persistence_steps <= model.config.max_steps:
+        raise ValueError("persistence_steps exceeds model development limit")
+
+    device_rng = torch.Generator(device=seed_state.device.type).manual_seed(seed)
+    started = time.perf_counter()
+    with torch.no_grad():
+        grown = model.run(seed_state, steps=growth_steps, generator=device_rng)
+        ensure_finite(grown)
+        initial_error = float(
+            morphology_mse(grown, target, visible_channels=visible_channels).item()
+        )
+        initial_active = active_cell_count(
+            grown,
+            alive_channel=model.config.alive_channel,
+            alive_threshold=model.config.alive_threshold,
+        )
+
+        errors = [initial_error]
+        active_cells = [initial_active]
+        update_magnitudes: list[float] = []
+        current = grown
+        for _ in range(persistence_steps):
+            next_state = model.step(current, generator=device_rng)
+            ensure_finite(next_state)
+            update_magnitudes.append(mean_update_magnitude(current, next_state))
+            current = next_state
+            errors.append(
+                float(
+                    morphology_mse(
+                        current,
+                        target,
+                        visible_channels=visible_channels,
+                    ).item()
+                )
+            )
+            active_cells.append(
+                active_cell_count(
+                    current,
+                    alive_channel=model.config.alive_channel,
+                    alive_threshold=model.config.alive_threshold,
+                )
+            )
+
+    elapsed = time.perf_counter() - started
+    final_error = errors[-1]
+    final_active = active_cells[-1]
+    visible_drift = float(
+        torch.mean(
+            (current[:, :visible_channels] - grown[:, :visible_channels]) ** 2
+        ).item()
+    )
+    resources = snapshot_resources(model=model, state=current, active_cells=final_active)
+
+    return {
+        "growth_steps": growth_steps,
+        "persistence_steps": persistence_steps,
+        "initial_error": initial_error,
+        "final_error": final_error,
+        "error_degradation": final_error - initial_error,
+        "max_error_degradation": max(errors) - initial_error,
+        "initial_active_cells": initial_active,
+        "final_active_cells": final_active,
+        "active_cell_drift": final_active - initial_active,
+        "visible_state_drift_mse": visible_drift,
+        "mean_step_update_magnitude": (
+            sum(update_magnitudes) / len(update_magnitudes)
+            if update_magnitudes
+            else 0.0
+        ),
+        "error_curve": errors,
+        "active_cell_curve": active_cells,
         "elapsed_seconds": elapsed,
         "resources": resources.to_dict(),
     }
