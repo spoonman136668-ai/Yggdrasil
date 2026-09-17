@@ -1,94 +1,101 @@
-TITLE: DG-1A-P0 Implementation Status
+TITLE: DG-1A-P0 Current Status
 DATE: 2026-09-17
-STATUS: IMPLEMENTATION OPEN — TESTS NOT YET EXECUTED
+STATUS: ACTIVE — STAB-03 CLOSED NEGATIVE / NEXT OBJECTIVE PACKET NOT YET EXECUTED
 TRACK: DG-1A
-CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE ONLY
-
-WORK PACKET
-DG1A-P0-SCAFFOLD-01
+CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; EXPLORATORY FOR SANDBOX RESULTS
 
 BRANCH
 dg1a-p0
 
-BASE
-main at DG-1 R8 reconciliation commit:
-cc9e9812001e86ee0c4860fff4eb0635370ef49f
+VERIFIED BRANCH HEAD BEFORE THIS STATUS UPDATE
+4627867bacfad9a80cdbb477de27f3ce05697ebf
 
-VERIFIED BRANCH HEAD BEFORE THIS STATUS RECORD
-5d289b8d965dfb7ca56377d01892d6f0a0799706
+CURRENT PURPOSE
+Establish a trustworthy canonical developmental NCA control with bounded growth, persistence, meaningful damage, and stable regeneration before DG-1B functional computation or later Yggdrasil mechanisms are opened.
 
-OBJECTIVE
-Create only the bounded DG-1A-P0 developmental substrate and acceptance surface required by the preregistered experiment specification.
+IMPLEMENTED SURFACE
+- fixed-grid shared-rule NCA substrate;
+- deterministic seed and repository-native target generation;
+- state-pool persistence/regeneration curricula;
+- maturity-gated training damage;
+- independent training/evaluation lesion geometry;
+- global and stable recovery metrics;
+- persistence telemetry;
+- resource accounting;
+- resumable deterministic training sessions;
+- machine-readable evidence writer and runner;
+- explicit global_mse versus balanced_fg_bg training loss modes;
+- foreground/background balanced morphology helper;
+- fail-closed config validation.
 
-IMPLEMENTED REPOSITORY SURFACE
-CONFIGURATION
-- pyproject.toml
-- experiments/dg1a/configs/p0_base.yaml
+LATEST TEST STATUS
+Sandbox isolated regression after STAB-03 edge coverage:
+54 passed
+0 failed
+Environment: Python 3 / PyTorch 2.10.0+cpu
 
-SOURCE
-- src/yggdrasil/__init__.py
-- src/yggdrasil/nca.py
-- src/yggdrasil/damage.py
-- src/yggdrasil/metrics.py
-- src/yggdrasil/resources.py
+This is not Windows or other authoritative hardware acceptance and is not commit-bound execution evidence.
 
-TESTS
-- tests/test_nca.py
-- tests/test_damage.py
-- tests/test_metrics.py
-- tests/test_resources.py
+SCIENTIFIC / EXPERIMENTAL FRONTIER
+Small-grid P0 work established a replicated exploratory pattern in which maturity-gated regeneration differs strongly from growth-only post-lesion collapse, but confirmatory support remains blocked by commit-bound provenance requirements.
 
-RESEARCH CONTRACT
-- research/experiments/dg1a/dg1a-p0-spec.ice
+Full-grid 40 x 40 stabilization remains unresolved.
 
-IMPLEMENTED BEHAVIOR
-- fixed-grid latent-state phenotype;
-- one shared local neural update network;
-- identity + Sobel local perception;
-- residual update;
-- stochastic firing with explicit RNG generator support;
-- alive-mask gating;
-- hard maximum development-step limit;
-- deterministic center seed state;
-- rectangular, active-bounding-box center, and live-cell-dropout lesions;
-- morphology error and active-cell metrics;
-- recovery fraction/threshold/AUC metrics;
-- non-finite state guard;
-- genome/resident/active-state resource accounting helpers.
+STAB-01 — CLOSED NEGATIVE
+Increasing fixed maturity threshold to M32/M64 did not provide a valid monotonic stabilization mechanism.
 
-EXPLICITLY NOT IMPLEMENTED
-- training loop;
-- state pool/persistence curriculum;
-- regeneration curriculum;
-- target asset/generator;
-- checkpoint format;
-- machine-readable run evidence writer;
-- graph topology;
-- functional P1 task;
-- structural growth/replication;
-- pretrained seed;
-- ancestor inheritance.
+STAB-02 — CLOSED NEGATIVE
+Extending training development horizon to 64..128 produced an all-dead phenotype.
+Key diagnostic: global unweighted morphology MSE allowed the sparse-target dead state to achieve approximately 0.0295742 loss.
 
-TEST STATUS
-UNEXECUTED.
-Repository contents have been read back through GitHub, but no Python test runner has yet produced authoritative execution evidence.
+STAB-03 — CLOSED NEGATIVE
+Candidate: BAL-50 foreground/background-balanced training morphology loss.
+Result:
+- all-dead attractor avoided;
+- pre-damage active cells: 1579 / 1600;
+- pre-lesion global morphology MSE: 0.1411564797;
+- 0.60 lesion removed 36.48% of active cells;
+- damage changed global MSE from 0.1411564797 to 0.1050053090;
+- DamageEffect = -0.0361511707;
+- lesion therefore INVALID for regeneration inference;
+- final active cells: 1164 / 1600;
+- stable T50/T90 not defined/attained;
+- preregistered STAB-03 improvement rule: FAIL.
 
-SCIENTIFIC RESULT STATUS
-NONE.
-No claim of NCA growth, persistence, regeneration, or resource advantage is authorized from scaffold creation.
+STAB-03 FAILURE MODE
+Foreground equalization prevented death but overcorrected toward an overgrown, poor-morphology phenotype. Damage improved the primary evaluation metric, proving excess/harmful structure was present before lesion.
 
-ACCEPTANCE INTENT
-Before training-loop work is treated as accepted:
-- execute unit tests in a declared environment;
-- fix root causes of failures without weakening assertions;
-- record environment and exact result;
-- then add the bounded P0 training/evidence path.
+DURABLE EVIDENCE
+research/experiments/dg1a/dg1a-p0-stab03-result.ice
+evidence/dg1a/p0_stab03_sandbox.json
 
-KNOWN LIMITATIONS
-- resource helpers currently estimate active state bytes from active-cell count; they do not claim realized sparse GPU memory savings;
-- recovery metrics assume a lower-is-better error metric;
-- generator/device compatibility must be tested on each target device family;
-- P0 base config values are exploratory starting values, not confirmatory thresholds.
+CURRENT DECISIONS
+- preserve global morphology MSE as the common evaluation metric;
+- do not widen BAL-50 to additional seeds;
+- do not tune BAL-50 weighting inside STAB-03;
+- do not reopen STAB-01 or STAB-02 with after-the-fact parameter inserts;
+- do not begin DG-1B yet;
+- do not introduce Fibonacci scheduling into canonical P0 yet;
+- retain Fibonacci as the separate DG-1A-FIB1 follow-on ablation;
+- retain negative results as first-class research knowledge.
+
+NEXT RECOMMENDED MECHANISM
+Open a new preregistered objective-design packet, provisionally DG-1A-P0-STAB-04.
+
+Candidate mechanism:
+TrainingMorphologyLoss = GlobalVisibleMSE + ForegroundVisibleMSE
+
+Reason:
+- preserve occupancy-proportional global/background pressure;
+- add explicit foreground pressure so the all-dead phenotype is no longer competitive;
+- avoid converting STAB-03 into an after-the-fact BAL-50 weight sweep;
+- preserve existing evaluation metrics and protocol.
+
+STAB-04 must be preregistered before execution and should use one fixed coefficient, one fresh seed-0 candidate, the H96/M16 full-grid envelope, the existing 0.50 training lesion and 0.60 evaluation lesion, and explicit viability/morphology/active-cell/regeneration gates.
+
+BOUNDARY
+P0 remains morphology/developmental-substrate research only.
+No claim of cognition, functional specialization, continual learning, ancestor inheritance, or general intelligence is authorized.
 
 NEXT ACTION
-Execute the existing unit-test surface in an isolated declared environment. If green, implement the P0 target/training/state-pool/evidence writer as the next bounded packet. Do not begin P1.
+Preregister STAB-04 before implementation or execution. Do not change STAB-03 after inspection.
