@@ -24,6 +24,7 @@ def _base_config() -> dict:
             "batch_size": 2,
             "iterations": 3,
             "pool_size": 4,
+            "damage_min_active_cells": 4,
         },
         "resource_limits": {
             "max_height": 20,
@@ -59,4 +60,12 @@ def test_config_rejects_evaluation_steps_over_model_limit() -> None:
     config["evaluation"]["growth_steps"] = 9
 
     with pytest.raises(ValueError, match="evaluation growth_steps"):
+        validate_config(config)
+
+
+def test_config_rejects_nonpositive_damage_maturity_threshold() -> None:
+    config = _base_config()
+    config["training"]["damage_min_active_cells"] = 0
+
+    with pytest.raises(ValueError, match="damage_min_active_cells"):
         validate_config(config)
