@@ -61,6 +61,8 @@ def validate_config(config: dict[str, Any]) -> None:
         raise ValueError("pool_size must be at least batch_size")
     if training["damage_min_active_cells"] <= 0:
         raise ValueError("damage_min_active_cells must be positive")
+    if training.get("loss_mode", "global_mse") not in {"global_mse", "balanced_fg_bg"}:
+        raise ValueError("unsupported training loss_mode")
 
     training_damage_h = training.get("damage_height_fraction")
     training_damage_w = training.get("damage_width_fraction")
