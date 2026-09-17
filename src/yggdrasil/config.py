@@ -30,6 +30,7 @@ def validate_config(config: dict[str, Any]) -> None:
     training = config["training"]
     limits = config["resource_limits"]
     recovery = config["recovery"]
+    evaluation = config["evaluation"]
     target = config["target"]
 
     if config["experiment_id"] != "DG1A-P0":
@@ -48,6 +49,8 @@ def validate_config(config: dict[str, Any]) -> None:
         raise ValueError("training steps exceed model max_steps")
     if recovery["eval_steps"] > model["max_steps"]:
         raise ValueError("recovery eval_steps exceed model max_steps")
+    if evaluation["growth_steps"] > model["max_steps"]:
+        raise ValueError("evaluation growth_steps exceed model max_steps")
     if training["steps_min"] <= 0 or training["steps_min"] > training["steps_max"]:
         raise ValueError("invalid training step range")
     if training["batch_size"] <= 0 or training["iterations"] <= 0:
