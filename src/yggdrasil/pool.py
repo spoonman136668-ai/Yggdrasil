@@ -57,3 +57,24 @@ class StatePool:
             raise ValueError("seed_state must have shape [1, channels, height, width]")
         reset_states = seed_state.detach().cpu().repeat(indices.numel(), 1, 1, 1)
         self.update(indices, reset_states)
+
+    def state_dict(self) -> dict[str, object]:
+        return {
+            "capacity": self._capacity,
+            "storage": self._storage.clone(),
+        }
+
+    def load_state_dict(self, state: dict[str, object]) -> None:
+        if set(state) != {"capacity", "storage"}:
+            raise ValueError("pool state must contain exactly capacity and storage")
+        capacity = int(state["capacity"])
+        storage = state["storage"]
+        if capacity != self._capacity:
+            raise ValueError("pool checkpoint capacity mismatch")
+        if not isinstance(storage, Tensor):
+            raise TypeError("pool checkpoint storage must be a tensor")
+        if tuple(storage.shape) != tuple(self._storage.shape):
+            raise ValueError("pool checkpoint storage shape mismatch")
+        if storage.dtype != self._storage.dtype:
+            raise TypeError("pool checkpoint storage dtype mismatch")
+        self._storage.copy_(storage.detach().cpu())
