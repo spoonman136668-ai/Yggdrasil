@@ -81,6 +81,33 @@ def graded_background_alpha_mse(state: Tensor, target: Tensor, *, alpha_channel:
     alpha_squared = state[:, alpha_channel:alpha_channel + 1] ** 2
     return (alpha_squared * weights).masked_select(background).mean()
 
+def homeostasis_mature_sample_mask(state: Tensor, target: Tensor, *, alpha_channel: int=3, foreground_threshold: float=0.1, alive_threshold: float=0.1) -> Tensor:
+    _validate_pair(state, target)
+    if not 0 <= alpha_channel < target.shape[1]:
+        raise ValueError('alpha_channel is outside the target state vector')
+    foreground = target[:, alpha_channel:alpha_channel + 1] > foreground_threshold
+    background = ~foreground
+    if not bool(foreground.any()):
+        raise ValueError('target contains no foreground pixels')
+    if not bool(background.any()):
+        raise ValueError('target contains no background pixels')
+    target_counts = foreground.flatten(1).sum(dim=1)
+    active_counts = (state[:, alpha_channel:alpha_channel + 1] > alive_threshold).flatten(1).sum(dim=1)
+    return active_counts >= target_counts
+
+def homeostasis_background_velocity_loss(result: Tensor, probe: Tensor, target: Tensor, *, alpha_channel: int=3, foreground_threshold: float=0.1, alive_threshold: float=0.1) -> Tensor:
+    _validate_pair(result, probe)
+    _validate_pair(result, target)
+    if alive_threshold <= 0.0:
+        raise ValueError('alive_threshold must be positive')
+    mature = homeostasis_mature_sample_mask(result, target, alpha_channel=alpha_channel, foreground_threshold=foreground_threshold, alive_threshold=alive_threshold)
+    background = target[:, alpha_channel:alpha_channel + 1] <= foreground_threshold
+    if not bool(mature.any()):
+        return probe[:, alpha_channel:alpha_channel + 1].sum() * 0.0
+    velocity = torch.relu(probe[:, alpha_channel:alpha_channel + 1] - result[:, alpha_channel:alpha_channel + 1]) / alive_threshold
+    mask = mature[:, None, None, None] & background
+    return velocity.masked_select(mask).mean()
+
 def background_alive_margin_loss(state: Tensor, target: Tensor, *, alpha_channel: int=3, foreground_threshold: float=0.1, margin_floor: float=0.05, alive_threshold: float=0.1) -> Tensor:
     _validate_pair(state, target)
     if not 0 <= alpha_channel < target.shape[1]:
