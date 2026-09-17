@@ -61,6 +61,37 @@ def background_alpha_mse(
     return alpha_squared.masked_select(background).mean()
 
 
+def background_alive_margin_loss(
+    state: Tensor,
+    target: Tensor,
+    *,
+    alpha_channel: int = 3,
+    foreground_threshold: float = 0.1,
+    margin_floor: float = 0.05,
+    alive_threshold: float = 0.1,
+) -> Tensor:
+    """Threshold-aligned background occupancy surrogate.
+
+    Background alpha at or below ``margin_floor`` is unpenalized. Alpha at the
+    hard alive threshold contributes exactly 1.0 before background averaging;
+    hard-active background cells contribute more than 1.0.
+    """
+    _validate_pair(state, target)
+    if not 0 <= alpha_channel < target.shape[1]:
+        raise ValueError("alpha_channel is outside the target state vector")
+    if not 0.0 <= margin_floor < alive_threshold:
+        raise ValueError("margin_floor must be non-negative and below alive_threshold")
+
+    background = target[:, alpha_channel : alpha_channel + 1] <= foreground_threshold
+    if not bool(background.any()):
+        raise ValueError("target contains no background pixels")
+
+    margin_width = alive_threshold - margin_floor
+    alpha = state[:, alpha_channel : alpha_channel + 1]
+    normalized_margin = torch.relu(alpha - margin_floor) / margin_width
+    return (normalized_margin ** 2).masked_select(background).mean()
+
+
 def balanced_morphology_mse(
     state: Tensor,
     target: Tensor,
