@@ -57,6 +57,8 @@ def validate_config(config: dict[str, Any]) -> None:
         raise ValueError("training batch_size and iterations must be positive")
     if training["pool_size"] < training["batch_size"]:
         raise ValueError("pool_size must be at least batch_size")
+    if training["damage_min_active_cells"] <= 0:
+        raise ValueError("damage_min_active_cells must be positive")
     if target["kind"] != "disk":
         raise ValueError("P0 currently supports only repository-native disk target")
     if target["radius"] <= 0:
