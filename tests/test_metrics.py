@@ -127,9 +127,31 @@ def test_balanced_morphology_mse_equalizes_target_regions() -> None:
     assert value.item() == pytest.approx(0.5)
 
 
+def test_balanced_morphology_mse_uses_fixed_half_weight_per_region() -> None:
+    state = torch.zeros((1, 4, 2, 2), dtype=torch.float32)
+    target = torch.zeros_like(state)
+    target[:, 3, 0, 0] = 1.0
+    state[:, 0, 0, 0] = 2.0
+    state[:, 0, 1, 1] = 1.0
+
+    value = balanced_morphology_mse(state, target, visible_channels=4)
+
+    foreground_mse = (4.0 + 0.0 + 0.0 + 1.0) / 4.0
+    background_mse = 1.0 / 12.0
+    assert value.item() == pytest.approx(0.5 * foreground_mse + 0.5 * background_mse)
+
+
 def test_balanced_morphology_mse_rejects_missing_foreground() -> None:
     state = torch.zeros((1, 4, 2, 2), dtype=torch.float32)
     target = torch.zeros_like(state)
 
     with pytest.raises(ValueError, match="no foreground"):
+        balanced_morphology_mse(state, target, visible_channels=4)
+
+
+def test_balanced_morphology_mse_rejects_missing_background() -> None:
+    state = torch.zeros((1, 4, 2, 2), dtype=torch.float32)
+    target = torch.ones_like(state)
+
+    with pytest.raises(ValueError, match="no background"):
         balanced_morphology_mse(state, target, visible_channels=4)
