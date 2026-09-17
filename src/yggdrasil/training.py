@@ -245,6 +245,11 @@ def evaluate_growth_and_recovery(
         pre_error = float(
             morphology_mse(grown, target, visible_channels=visible_channels).item()
         )
+        pre_active = active_cell_count(
+            grown,
+            alive_channel=model.config.alive_channel,
+            alive_threshold=model.config.alive_threshold,
+        )
         damaged = center_lesion(
             grown,
             height_fraction=lesion_height_fraction,
@@ -255,8 +260,14 @@ def evaluate_growth_and_recovery(
         post_damage_error = float(
             morphology_mse(damaged, target, visible_channels=visible_channels).item()
         )
+        post_damage_active = active_cell_count(
+            damaged,
+            alive_channel=model.config.alive_channel,
+            alive_threshold=model.config.alive_threshold,
+        )
 
         errors = [post_damage_error]
+        active_cells = [post_damage_active]
         current = damaged
         for _ in range(recovery_steps):
             current = model.step(current, generator=device_rng)
@@ -268,6 +279,13 @@ def evaluate_growth_and_recovery(
                         target,
                         visible_channels=visible_channels,
                     ).item()
+                )
+            )
+            active_cells.append(
+                active_cell_count(
+                    current,
+                    alive_channel=model.config.alive_channel,
+                    alive_threshold=model.config.alive_threshold,
                 )
             )
 
@@ -297,13 +315,12 @@ def evaluate_growth_and_recovery(
         post_damage_error=post_damage_error,
         fraction=0.9,
     )
-    active = active_cell_count(
-        current,
-        alive_channel=model.config.alive_channel,
-        alive_threshold=model.config.alive_threshold,
-    )
+    active = active_cells[-1]
     resources = snapshot_resources(model=model, state=current, active_cells=active)
 
+    damage_effect = post_damage_error - pre_error
+    relative_damage_effect = damage_effect / max(pre_error, 1.0e-12)
+    active_cell_removal_fraction = max(0, pre_active - post_damage_active) / max(pre_active, 1)
     recovery_raw = recovery_fraction(
         pre_error=pre_error,
         post_damage_error=post_damage_error,
@@ -326,7 +343,11 @@ def evaluate_growth_and_recovery(
         "pre_error": pre_error,
         "post_damage_error": post_damage_error,
         "final_recovery_error": final_error,
-        "damage_effect": post_damage_error - pre_error,
+        "damage_effect": damage_effect,
+        "relative_damage_effect": relative_damage_effect,
+        "pre_damage_active_cells": pre_active,
+        "post_damage_active_cells": post_damage_active,
+        "active_cell_removal_fraction": active_cell_removal_fraction,
         "recovery_fraction": _finite_or_none(recovery),
         "recovery_fraction_raw": _finite_or_none(recovery_raw),
         "t50_first_crossing_steps": t50,
@@ -335,6 +356,7 @@ def evaluate_growth_and_recovery(
         "t90_stable_steps": stable_t90,
         "normalized_recovery_auc": _finite_or_none(auc),
         "recovery_error_curve": errors,
+        "recovery_active_cell_curve": active_cells,
         "active_cells_final": active,
         "elapsed_seconds": elapsed,
         "resources": resources.to_dict(),
