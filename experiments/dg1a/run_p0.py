@@ -103,6 +103,7 @@ def main() -> int:
         damage_min_active_cells=int(training_cfg["damage_min_active_cells"]),
         gradient_clip_norm=float(training_cfg["gradient_clip_norm"]),
         hidden_state_l2_weight=float(training_cfg["hidden_state_l2_weight"]),
+        loss_mode=str(training_cfg.get("loss_mode", "global_mse")),
         visible_channels=int(raw["reporting"]["visible_channels"]),
         record_every=int(raw["reporting"]["record_every_iterations"]),
         seed=effective_seed,
@@ -171,6 +172,7 @@ def main() -> int:
             "height_fraction": float(lesion_cfg["height_fraction"]),
             "width_fraction": float(lesion_cfg["width_fraction"]),
         },
+        "effective_training_loss_mode": train_config.loss_mode,
         "target_identity": target_identity(
             target_spec,
             height=int(phenotype["height"]),
