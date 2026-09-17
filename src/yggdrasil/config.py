@@ -61,6 +61,25 @@ def validate_config(config: dict[str, Any]) -> None:
         raise ValueError("pool_size must be at least batch_size")
     if training["damage_min_active_cells"] <= 0:
         raise ValueError("damage_min_active_cells must be positive")
+
+    training_damage_h = training.get("damage_height_fraction")
+    training_damage_w = training.get("damage_width_fraction")
+    if (training_damage_h is None) != (training_damage_w is None):
+        raise ValueError("training damage height/width fractions must be specified together")
+    if training_damage_h is not None:
+        if not 0.0 < float(training_damage_h) <= 1.0:
+            raise ValueError("training damage_height_fraction must be in (0, 1]")
+        if not 0.0 < float(training_damage_w) <= 1.0:
+            raise ValueError("training damage_width_fraction must be in (0, 1]")
+
+    lesion = recovery["lesion"]
+    if lesion["kind"] != "center":
+        raise ValueError("P0 currently supports only center recovery lesion")
+    if not 0.0 < float(lesion["height_fraction"]) <= 1.0:
+        raise ValueError("recovery lesion height_fraction must be in (0, 1]")
+    if not 0.0 < float(lesion["width_fraction"]) <= 1.0:
+        raise ValueError("recovery lesion width_fraction must be in (0, 1]")
+
     if target["kind"] != "disk":
         raise ValueError("P0 currently supports only repository-native disk target")
     if target["radius"] <= 0:
