@@ -5,7 +5,7 @@ import time
 import torch
 from torch import Tensor
 from .damage import center_lesion
-from .metrics import active_cell_count, background_alive_margin_loss, background_alpha_mse, ensure_finite, foreground_morphology_mse, far_field_background_alpha_mse, morphology_mse
+from .metrics import active_cell_count, background_alive_margin_loss, background_alpha_mse, ensure_finite, foreground_morphology_mse, far_field_background_alpha_mse, graded_background_alpha_mse, morphology_mse
 from .nca import NeuralCellularAutomaton
 from .pool import StatePool
 from .training import TrainingConfig, TrainingSummary, training_morphology_loss
@@ -98,6 +98,9 @@ class ResumableTrainingSession:
             if self.config.loss_mode == 'global_plus_foreground_farfield_bg_alpha':
                 item['foreground_morphology_mse'] = float(foreground_morphology_mse(result, self.target_batch, visible_channels=self.config.visible_channels, alpha_channel=3, foreground_threshold=0.1).detach().item())
                 item['far_field_background_alpha_mse'] = float(far_field_background_alpha_mse(result, self.target_batch, alpha_channel=3, foreground_threshold=0.1, support_radius=1).detach().item())
+            if self.config.loss_mode == 'global_plus_foreground_graded_bg_alpha':
+                item['foreground_morphology_mse'] = float(foreground_morphology_mse(result, self.target_batch, visible_channels=self.config.visible_channels, alpha_channel=3, foreground_threshold=0.1).detach().item())
+                item['graded_background_alpha_mse'] = float(graded_background_alpha_mse(result, self.target_batch, alpha_channel=3, foreground_threshold=0.1).detach().item())
             self.history.append(item)
         self.iteration += 1
 
