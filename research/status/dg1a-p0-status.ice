@@ -1,6 +1,6 @@
 TITLE: DG-1A-P0 Current Status
 DATE: 2026-09-17
-STATUS: ACTIVE — STAB-09 CLOSED NEGATIVE / STAB-10 DESIGN NOT YET PREREGISTERED
+STATUS: ACTIVE — STAB-10 CLOSED NEGATIVE / STAB-11 DESIGN NOT YET PREREGISTERED
 TRACK: DG-1A
 CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; EXPLORATORY FOR SANDBOX RESULTS
 
@@ -8,7 +8,7 @@ BRANCH
 dg1a-p0
 
 LATEST VERIFIED REPOSITORY FRONTIER BEFORE THIS STATUS UPDATE
-e61018ed25b44b8f55b31996a4f9fc2477b6824a
+a9c5d5260f56057151ce06be231f663d3757a6a9
 
 CURRENT PURPOSE
 Establish a trustworthy canonical developmental NCA control with meaningful viable growth, bounded support, long-horizon homeostasis, meaningful damage, and stable regeneration before DG-1B functional computation or later Yggdrasil mechanisms are opened.
@@ -33,7 +33,9 @@ IMPLEMENTED SURFACE
 - target-derived homeostasis maturity mask;
 - mature-only background-alpha velocity loss;
 - RNG-neutral one-step virtual homeostasis probe;
-- virtual-probe pool isolation;
+- fixed 16-step RNG-neutral virtual homeostasis trajectory;
+- trajectory-mean positive background-alpha velocity loss;
+- virtual-probe / virtual-trajectory pool isolation;
 - fail-closed config/target-region validation.
 
 HISTORICAL TRAINING MODES
@@ -45,26 +47,23 @@ HISTORICAL TRAINING MODES
 6. global_plus_foreground_farfield_bg_alpha
 7. global_plus_foreground_graded_bg_alpha
 8. global_plus_foreground_bg_alpha_homeostasis
+9. global_plus_foreground_bg_alpha_homeostasis_t16
 
 LATEST TEST STATUS
-STAB-09 reconstructed sandbox regression:
-112 passed
+STAB-10 reconstructed sandbox regression:
+123 passed
 0 failed
-
-Execution groups:
-- 106 non-runner tests: PASS, return code 0;
-- six subprocess runner-evidence tests: PASS, all return code 0.
 
 Environment:
 Python 3.13.5
 PyTorch 2.10.0+cpu
 
-STAB-09 execution source revision:
-089ea0e6dd3a220ebc2e92e7ef819de24f87d0ef
+STAB-10 scientific source revision:
+7d19c34cb59d96d2d94e2d8e5b92fcf4c7255e77
 
-The source was semantically reconstructed from connected GitHub readbacks.
+The source was semantically reconstructed from independently verified connected-GitHub readbacks.
 Native byte-identical checkout was not established.
-Treat STAB-09 as MEASURED SANDBOX evidence, not commit-bound confirmatory acceptance.
+Treat STAB-10 as MEASURED_SANDBOX evidence, not commit-bound confirmatory acceptance.
 
 SCIENTIFIC FRONTIER
 Full-grid 40 x 40 canonical stabilization remains unresolved.
@@ -199,46 +198,78 @@ evidence/dg1a/p0_stab09_sandbox.json
 Full local sandbox evidence SHA-256:
 2efa48b1a32ac2604b75034ebce98e1acefa91ff86d5c4427b4bd24bec48a916
 
+
+STAB-10 — CLOSED NEGATIVE / FIXED 16-STEP DYNAMIC HOMEOSTASIS
+Candidate: HOME-T16
+
+HOME-T16 extended the HOME-1 local dynamic signal from one virtual step to exactly 16 sequential mature-only virtual steps while preserving the static objective, maturity rule, normalization, coefficient, canonical envelope, and gates.
+
+Exactly one seed-0 candidate completed 200 / 200 iterations.
+
+Measured result:
+- minimum/final recorded loss: 0.2100088596;
+- final HOME-T16 trajectory velocity loss: 0.0178935546;
+- final mature samples: 8 / 8;
+- pre-damage active: 1407 / 1600;
+- pre-lesion MSE: 0.0883897096;
+- post-lesion MSE: 0.0698274300;
+- DamageEffect: -0.0185622796;
+- RelativeDamageEffect: -0.2100049851;
+- active-cell removal: 40.94%;
+- final recovery active: 1339;
+- stable T50: not attained;
+- persistence active: 1360 -> 1353;
+- persistence peak active: 1501;
+- persistence drift: -7;
+- persistence MSE: 0.0818152428 -> 0.0922317058;
+- failed preregistered gates: 10 / 14;
+- candidate worth widening: NO.
+
+STAB-10 INTERPRETATION
+The 16-step trajectory changed net persistence drift from strongly positive in HOME-1 to slightly negative, but only around a severely overgrown phenotype that transiently reached 1501 active cells.
+
+The nominal 96-step growth phenotype worsened relative to HOME-1:
+- active cells: 993 -> 1407;
+- pre-lesion MSE: 0.0524558015 -> 0.0883897096.
+
+The lesion again improved morphology despite removing substantial active structure.
+Therefore the longer local velocity horizon did not establish a bounded target attractor and did not validate regeneration.
+
+This closes nearby HOME virtual-horizon ratcheting as the next move.
+The next mechanism should change objective architecture rather than tune the local velocity horizon.
+
+DURABLE STAB-10 RECORDS
+research/experiments/dg1a/dg1a-p0-stab10-spec.ice
+research/experiments/dg1a/dg1a-p0-stab10-result.ice
+evidence/dg1a/p0_stab10_sandbox.json
+
 CURRENT DECISIONS
-- close STAB-09 as negative;
-- do not widen HOME-1;
-- do not tune maturity rule, probe horizon, velocity normalization, coefficients, thresholds, or gates retroactively;
-- preserve the 113-cell viability floor;
-- preserve the 800-cell occupancy ceiling;
-- preserve the strengthened persistence gates:
-  * maximum persistence active cells <= 800;
-  * final active-cell drift <= 0;
-- preserve global visible morphology MSE as common evaluation metric;
-- preserve all eight historical modes;
-- retain STAB-05 through STAB-09 as first-class mechanistic negative knowledge;
-- do not reopen STAB-01 through STAB-09 with post-result parameter inserts;
-- do not begin DG-1B yet;
-- do not introduce Fibonacci scheduling into canonical P0 yet;
-- retain Fibonacci as separate DG-1A-FIB1 follow-on ablation.
+- close STAB-10 as negative;
+- do not widen HOME-T16;
+- do not test nearby HOME virtual horizons as an unregistered ratchet;
+- do not tune HOME-T16 coefficients, maturity, normalization, thresholds, or gates after seeing the result;
+- preserve all nine historical training modes;
+- preserve the 113-cell viability floor and 800-cell occupancy ceiling;
+- preserve strengthened persistence, lesion-validity, morphology, recovery, and finite-state gates;
+- retain global visible morphology MSE as the common evaluation metric;
+- retain STAB-05 through STAB-10 as first-class mechanistic negative knowledge;
+- canonical full-grid P0 remains unresolved;
+- do not begin DG-1B;
+- do not introduce Fibonacci scheduling into canonical P0.
 
 NEXT BOUNDED PACKET
-Provisionally DG-1A-P0-STAB-10 — DESIGN / PREREGISTRATION ONLY.
+Provisionally DG-1A-P0-STAB-11 — DESIGN / PREREGISTRATION ONLY.
 
-STAB-10 should test one fixed LONGER-HORIZON homeostasis mechanism.
+Preferred research seam:
+explicit persistence / attractor-state training, likely a bounded persistence curriculum term coupled to target-derived viability.
 
-Plausible design classes:
-- bounded multi-step virtual persistence probe;
-- short trajectory-integrated excess-support expansion loss;
-- explicit persistence curriculum term coupled to target-derived viability.
-
-NO STAB-10 mechanism is selected by this status record.
-
-Before execution, STAB-10 must preregister:
-- one explicit longer-horizon mechanism;
-- one fixed parameterization;
-- unchanged common evaluation metric;
-- frozen envelope;
-- explicit viability, occupancy, lesion-validity, morphology, recovery, persistence/homeostasis, and finite-state gates.
+No STAB-11 mechanism is selected by this status record.
+Do not execute STAB-11 until one exact mechanism, one fixed parameterization, the frozen envelope, unchanged common evaluation metric, and complete gates are durably preregistered in .ice.
 
 BOUNDARY
 P0 remains morphology/developmental-substrate research only.
-Do not begin DG-1B, ancestor inheritance, structural growth, or Fibonacci scheduling from this packet.
+Do not begin DG-1B, ancestor inheritance, structural growth, developmental adapters, or Fibonacci scheduling from this packet.
 
 NEXT ACTION
-Design and preregister STAB-10.
-Do not execute it until its exact mechanism and gates exist in .ice.
+Research and preregister one discriminating STAB-11 persistence/attractor-state mechanism.
+Do not execute it before preregistration.
