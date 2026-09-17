@@ -1,0 +1,99 @@
+{
+  "schema": "yggdrasil.dg1a.p0.stab10.sandbox.v1",
+  "recorded_date": "2026-09-17",
+  "experiment": "DG-1A-P0-STAB-10",
+  "candidate": "HOME-T16",
+  "status": "CLOSED_NEGATIVE",
+  "candidate_worth_widening": false,
+  "scientific_source_revision": "7d19c34cb59d96d2d94e2d8e5b92fcf4c7255e77",
+  "source_revision_verified_checkout": false,
+  "sandbox_source_byte_identity": false,
+  "evidence_class": "MEASURED_SANDBOX",
+  "reconstruction_basis": "independently verified connected-GitHub readbacks",
+  "regression": {
+    "passed": 123,
+    "failed": 0
+  },
+  "environment": {
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu",
+    "device": "cpu",
+    "precision": "float32"
+  },
+  "config": {
+    "path": "experiments/dg1a/configs/p0_stab10_home_t16.yaml",
+    "sha256": "670c74a939e64635ab4f8490a25810626a40c466e83962e5b16d229f9a7b465f",
+    "seed": 0,
+    "iterations": 200,
+    "virtual_probe_steps": 16,
+    "loss_mode": "global_plus_foreground_bg_alpha_homeostasis_t16"
+  },
+  "checkpoint": {
+    "iteration": 200,
+    "sha256": "166b6bf06a1596b81b82a2120562db1a18e9f98f9dd9d248cda2b87595292a4e",
+    "protocol": "deterministic single-writer atomic resumable checkpoints"
+  },
+  "local_full_evaluation_sha256": "bb77965af232dc8a82d1b04d63d1c036a5310424f1f9db1dff6c95cbe7877549",
+  "training": {
+    "iterations_completed": 200,
+    "initial_recorded_loss": 0.4459555447101593,
+    "minimum_recorded_loss": 0.21000885963439941,
+    "final_recorded_loss": 0.21000885963439941,
+    "final_global_morphology_mse": 0.06187612935900688,
+    "final_foreground_morphology_mse": 0.07981586456298828,
+    "final_background_alpha_mse": 0.05042192339897156,
+    "final_homeostasis_trajectory_velocity_loss": 0.017893554642796516,
+    "final_mature_samples": 8,
+    "final_batch_size": 8,
+    "homeostasis_probe_steps": 16,
+    "no_non_finite_state": true
+  },
+  "growth_recovery": {
+    "growth_steps": 96,
+    "recovery_steps": 96,
+    "pre_damage_active_cells": 1407,
+    "post_damage_active_cells": 831,
+    "final_recovery_active_cells": 1339,
+    "pre_lesion_global_mse": 0.08838970959186554,
+    "post_lesion_global_mse": 0.06982742995023727,
+    "final_recovery_global_mse": 0.06835722178220749,
+    "damage_effect": -0.018562279641628265,
+    "relative_damage_effect": -0.21000498505242904,
+    "active_cell_removal_fraction": 0.4093816631130064,
+    "recovery_fraction": null,
+    "stable_t50_steps": null,
+    "stable_t90_steps": null
+  },
+  "persistence": {
+    "growth_steps": 96,
+    "persistence_steps": 96,
+    "initial_active_cells": 1360,
+    "final_active_cells": 1353,
+    "maximum_active_cells": 1501,
+    "active_cell_drift": -7,
+    "initial_global_mse": 0.08181524276733398,
+    "final_global_mse": 0.09223170578479767,
+    "maximum_global_mse": 0.11093343794345856,
+    "max_error_degradation": 0.029118195176124573,
+    "visible_state_drift_mse": 0.022808773443102837
+  },
+  "gates": {
+    "pre_damage_active_113_800": false,
+    "final_recovery_active_113_800": false,
+    "final_persistence_active_113_800": false,
+    "maximum_persistence_active_le_800": false,
+    "final_persistence_active_drift_le_0": true,
+    "damage_effect_gt_0": false,
+    "relative_damage_effect_ge_0_10": false,
+    "active_cell_removal_fraction_ge_0_10": true,
+    "stable_t50_attained": false,
+    "final_recovery_fraction_gt_0_4230230485": false,
+    "pre_lesion_global_mse_le_0_0361635": false,
+    "final_persistence_global_mse_le_0_0361635": false,
+    "maximum_persistence_mse_le_2x_initial": true,
+    "no_non_finite_state": true
+  },
+  "failed_gate_count": 10,
+  "classification": "VIABLE BUT SEVERELY OVERGROWN; MULTI-STEP LOCAL HOMEOSTASIS DID NOT PRODUCE BOUNDED SUPPORT; INVALID LESION",
+  "interpretation": "HOME-T16 does not justify widening. Do not ratchet nearby virtual horizons. The next mechanism class should move toward explicit persistence/attractor-state training rather than another local velocity-horizon tweak."
+}
