@@ -1,6 +1,6 @@
 TITLE: DG-1 Current Research Status
 DATE: 2026-09-17
-STATUS: ACTIVE — DG-1A P0 VIABILITY / BOUNDED-SUPPORT STABILIZATION
+STATUS: ACTIVE — DG-1A P0 VIABILITY / SUPPORT-GEOMETRY STABILIZATION
 TRACK: DG-1
 CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; EXPLORATORY FOR SANDBOX RESULTS
 
@@ -19,25 +19,29 @@ ACTIVE BRANCH
 dg1a-p0
 
 LATEST VERIFIED REPOSITORY FRONTIER BEFORE THIS STATUS UPDATE
-64fb65cfa179bf76459843bb31998dfba60681ae
+41a2410c70980f2d2617a1c36a854d3610511420
 
 P0 IMPLEMENTATION STATUS
-The bounded P0 substrate, training curricula, recovery/persistence telemetry, resource accounting, resumable training, evidence paths, and five explicit historical training-loss modes are implemented:
+The bounded P0 substrate, training curricula, recovery/persistence telemetry, resource accounting, resumable training, evidence paths, and six explicit historical training-loss modes are implemented:
 - global_mse;
 - balanced_fg_bg;
 - global_plus_foreground;
 - global_plus_foreground_bg_alpha;
-- global_plus_foreground_bg_alive_margin.
+- global_plus_foreground_bg_alive_margin;
+- global_plus_foreground_farfield_bg_alpha.
+
+The current implementation also contains target-derived one-cell support-halo / far-field occupancy telemetry used by STAB-07.
 
 Latest reconstructed sandbox regression:
-79 passed
+89 passed
 0 failed
+pytest return code: 0
 Python 3.13.5 / PyTorch 2.10.0+cpu
 
-The STAB-06 execution source was semantically reconstructed from connected GitHub readbacks of implementation/test revision:
-6e8d79b0fd47b7031b05f03b395bf49c1649f00e
+The STAB-07 execution source was semantically reconstructed from connected GitHub readbacks of implementation/test revision:
+5635413653888f36e85305877be95b587c017d70
 
-Byte identity with a native checkout was not established. Treat STAB-06 as measured sandbox evidence, not commit-bound confirmatory scientific acceptance.
+Byte identity with a native checkout was not established. Treat STAB-07 as measured sandbox evidence, not commit-bound confirmatory scientific acceptance.
 
 CURRENT FULL-GRID FINDINGS
 STAB-01: NEGATIVE
@@ -46,84 +50,106 @@ Fixed maturity-threshold increases did not provide a valid monotonic stabilizati
 STAB-02: NEGATIVE
 Longer 64..128 development horizons converged to an all-dead phenotype, exposing sparse-target degeneracy in global morphology MSE.
 
-STAB-03: NEGATIVE
-Equal foreground/background regional weighting prevented death but produced severe overgrowth and an invalid lesion.
+STAB-03 / STAB-04: NEGATIVE
+Foreground protection avoided death but produced severe overgrowth and invalid lesions.
 
-STAB-04: NEGATIVE
-GlobalVisibleMSE + ForegroundVisibleMSE produced 1578 / 1600 pre-damage active cells, pre-lesion global MSE 0.1845480204, and negative DamageEffect.
+STAB-05: NEGATIVE WITH DIRECTIONAL OCCUPANCY SIGNAL
+Continuous alpha-energy pressure across all target-background cells reduced overgrowth relative to STAB-04 but remained expansive and invalid for regeneration inference.
+Key seed-0 values:
+- pre-damage active cells: 1206 / 1600;
+- pre-lesion global MSE: 0.0701904967;
+- DamageEffect: -0.0144327730;
+- final recovery active cells: 1329 / 1600;
+- persistence final active cells: 1378 / 1600.
 
-STAB-05: NEGATIVE WITH DIRECTIONAL SIGNAL
-OCC-A1 added continuous target-background alpha-energy pressure.
-It reduced pre-damage activity from STAB-04's 1578 to 1206 and pre-lesion global MSE from 0.1845480204 to 0.0701904967, but remained overgrown, expanded under persistence/recovery, and still had an invalid lesion.
-
-STAB-06: NEGATIVE — OPPOSITE-SIDE FAILURE
-AM-05 replaced continuous alpha-energy pressure with a threshold-aligned alive-margin term:
-
-BackgroundAliveMarginLoss = mean((ReLU(alpha - 0.05) / 0.05)^2 over target-background pixels)
-
-Exactly one fresh seed-0 candidate completed the frozen H96/M16 envelope.
-Measured sandbox result:
-- 200 / 200 training iterations;
-- minimum recorded loss: 0.3612360060;
-- final recorded loss: 0.3881474733;
+STAB-06: NEGATIVE — NEAR-DEAD SIDE
+Threshold-aligned background alive-margin pressure crossed the viability bracket too far.
+Key seed-0 values:
 - pre-damage active cells: 3 / 1600;
 - pre-lesion global MSE: 0.0283585768;
-- post-lesion global MSE: 0.0285354797;
-- DamageEffect: 0.0001769029;
 - RelativeDamageEffect: 0.0062380726;
-- final recovery active cells: 0 / 1600;
-- bounded RecoveryFraction: 0.0;
-- stable T50/T90: not attained;
-- normalized recovery AUC: 0.0036180955;
-- persistence active cells: 2 -> 5;
+- final recovery active cells: 0;
+- RecoveryFraction: 0.0.
+
+STAB-07: NEGATIVE — SUPPORT-GEOMETRY ABLATION
+HALO-1 exempted exactly one target-derived local support halo from dedicated continuous alpha pressure while retaining far-field occupancy pressure.
+
+Frozen support geometry:
+- radius-6 target foreground: 113 cells;
+- one-cell halo including foreground: 169 cells;
+- support ring only: 56 cells;
+- far field: 1431 cells.
+
+A target-derived viability floor of 113 hard-active cells was frozen before execution.
+
+Exactly one fresh seed-0 candidate completed the frozen 200-iteration H96/M16 envelope.
+Measured sandbox result:
+- minimum recorded training loss: 0.1897521913;
+- final recorded training loss: 0.2067640871;
+- pre-damage active cells: 1094 / 1600;
+- pre-lesion global MSE: 0.0625592172;
+- post-lesion global MSE: 0.0531895496;
+- DamageEffect: -0.0093696676;
+- RelativeDamageEffect: -0.1497727759;
+- lesion removed 47.90% of active cells;
+- final recovery active cells: 1232 / 1600;
+- stable T50/T90 and RecoveryFraction: undefined/not attained;
+- persistence active cells: 1005 -> 1276;
+- persistence global MSE: 0.0572690740 -> 0.0921664238;
 - candidate worth widening: NO.
 
-STAB-06 INTERPRETATION
-AM-05 suppressed occupancy strongly enough to eliminate the previous overgrowth regime but reopened the sparse-target near-dead attractor.
+STAB-07 INTERPRETATION
+HALO-1 restored robust viability relative to STAB-06's near-dead phenotype but remained substantially overgrown and dynamically expansive.
 
-Its pre-lesion global MSE is numerically below the morphology gate only because the phenotype had three active cells. Recovery converged to zero active cells and final global MSE approximately 0.0295742, the known near-all-zero target loss regime.
+The lesion removed nearly half of active cells yet improved the common global morphology metric. Therefore substantial harmful/excess structure remained before damage and regeneration inference was invalid.
 
-The lesion technically increased error, but RelativeDamageEffect was only approximately 0.00624 versus the preregistered minimum 0.10. The lesion was therefore not meaningful enough to support regeneration inference.
+Relative to STAB-05, HALO-1 produced modest directional improvement:
+- pre-damage activity 1206 -> 1094, approximately 9.29% lower;
+- pre-lesion global MSE 0.0701904967 -> 0.0625592172, approximately 10.87% lower;
+- final recovery activity 1329 -> 1232;
+- persistence final activity 1378 -> 1276.
 
-Persistence numerical gates passed on an almost-dead state and do not establish viable morphology stability.
+These changes establish that immutable target-support geometry influences the viability/occupancy tradeoff, but a binary one-cell exemption is insufficient for bounded canonical P0 behavior.
 
 CURRENT SCIENTIFIC BRACKET
-Canonical P0 is now more tightly bracketed:
-- global sparse-target morphology MSE can make death competitive;
-- strong foreground protection can make severe overgrowth competitive;
-- continuous background alpha-energy regularization partially reduces overgrowth but does not bound support;
-- the tested threshold-aligned margin regularizer crosses too far and produces near-death.
+Canonical P0 is now bracketed across objective pressure and spatial support:
+- sparse global morphology loss can make death competitive;
+- foreground protection can make severe overgrowth competitive;
+- continuous all-background alpha pressure partially reduces overgrowth but does not bound support;
+- strong threshold-aligned background pressure can collapse support to near-death;
+- one-cell support-halo exemption restores viability but still permits excessive support and expansion.
 
-The next research problem is to preserve meaningful foreground/support viability while bounding excess occupancy. It should not be treated as a simple scalar-weight sweep between STAB-05 and STAB-06.
+The next question is therefore not simply how much regularization to apply. The mechanism must preserve meaningful target support while controlling excess support geometry/cardinality and post-growth expansion.
 
-DURABLE STAB-06 RECORDS
-research/experiments/dg1a/dg1a-p0-stab06-spec.ice
-research/experiments/dg1a/dg1a-p0-stab06-result.ice
-evidence/dg1a/p0_stab06_sandbox.json
+DURABLE STAB-07 RECORDS
+research/experiments/dg1a/dg1a-p0-stab07-spec.ice
+research/experiments/dg1a/dg1a-p0-stab07-result.ice
+evidence/dg1a/p0_stab07_sandbox.json
 research/status/dg1a-p0-status.ice
 
 Full local sandbox evidence SHA-256:
-ba29d40ae653d61a6bee97668e402158d4f42f235502b3925280a1136cf6bf59
+7c239b160e65c5bbf42e85657262c551853f6b42d98946cd47b5a10c0a5823b4
 
 CURRENT DECISIONS
-- STAB-06 is closed negative;
-- AM-05 is not widened to additional seeds;
-- its coefficient, margin floor, margin width, and alive threshold are not tuned retroactively;
-- the global evaluation metric remains unchanged and must be interpreted jointly with viability telemetry;
-- all five historical training-loss modes remain preserved for reproducibility;
-- STAB-05 and STAB-06 jointly establish an occupancy/viability bracket worth retaining as first-class negative knowledge;
+- STAB-07 is closed negative;
+- HALO-1 is not widened to additional seeds;
+- halo radius, coefficients, and thresholds are not tuned retroactively;
+- the target-derived 113-cell viability floor and existing gates are retained;
+- the global evaluation metric remains unchanged and must be interpreted jointly with viability/occupancy telemetry;
+- all six historical training-loss modes remain preserved for reproducibility;
+- STAB-05/06/07 jointly establish a useful occupancy/viability/support-geometry bracket;
 - canonical full-grid P0 remains unresolved;
 - DG-1B remains unopened.
 
 NEXT BOUNDED PACKET
-Provisionally DG-1A-P0-STAB-07 — DESIGN / PREREGISTRATION ONLY.
+Provisionally DG-1A-P0-STAB-08 — DESIGN / PREREGISTRATION ONLY.
 
-STAB-07 should test one fixed mechanism that couples meaningful viable target support with bounded excess occupancy. Candidate design classes include a coupled viability/occupancy constraint or target-support geometry control.
+STAB-08 should test one fixed mechanism that preserves meaningful target viability while constraining excess support geometry/cardinality or dynamic expansion. Candidate design classes include graded support geometry, a coupled target-support/excess-occupancy objective, or an immutable-target support-expansion penalty.
 
-No STAB-07 mechanism is selected by this status ledger.
-No STAB-07 scientific execution is authorized until one mechanism, one fixed parameterization, the common evaluation metric, frozen envelope, and complete gates are preregistered in .ice.
+No STAB-08 mechanism is selected by this status ledger.
+No STAB-08 scientific execution is authorized until one mechanism, one fixed parameterization, the common evaluation metric, frozen envelope, and complete gates are preregistered in .ice.
 
-Do not convert STAB-07 into a coefficient or margin sweep of STAB-06.
+Do not convert STAB-08 into a coefficient or halo-radius sweep of STAB-07.
 
 FIBONACCI TRACK
 DG-1A-FIB1 remains preserved and separate.
@@ -143,7 +169,7 @@ stable local development
 -> regenerable capability
 
 ANCESTOR INHERITANCE
-Remains a first-class future direction. It is not opened by STAB-06.
+Remains a first-class future direction. It is not opened by STAB-07.
 
 BOUNDARIES
 Do not modify Wingless, ckb-plane, or Mind-Palace without explicit authorization.
@@ -151,4 +177,4 @@ Do not activate CKB runtime, Coinbase/live broker systems, TradeGuard, deploymen
 P0 remains morphology/developmental-substrate research and does not establish cognition or general intelligence.
 
 NEXT ACTION
-Design and preregister STAB-07. Do not execute it until its exact single factor and gates exist in .ice. Do not begin DG-1B, ancestor inheritance, structural growth, or Fibonacci scheduling until canonical P0 viability/stability is adequately characterized.
+Design and preregister STAB-08. Do not execute it until its exact single factor and gates exist in .ice. Do not begin DG-1B, ancestor inheritance, structural growth, or Fibonacci scheduling until canonical P0 viability/stability is adequately characterized.
