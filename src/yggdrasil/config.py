@@ -65,6 +65,7 @@ def validate_config(config: dict[str, Any]) -> None:
         "global_mse",
         "balanced_fg_bg",
         "global_plus_foreground",
+        "global_plus_foreground_bg_alpha",
     }:
         raise ValueError("unsupported training loss_mode")
 
