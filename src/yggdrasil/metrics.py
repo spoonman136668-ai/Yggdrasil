@@ -14,6 +14,51 @@ def morphology_mse(state: Tensor, target: Tensor, *, visible_channels: int = 4) 
     return torch.mean((state[:, :visible_channels] - target[:, :visible_channels]) ** 2)
 
 
+def balanced_morphology_mse(
+    state: Tensor,
+    target: Tensor,
+    *,
+    visible_channels: int = 4,
+    alpha_channel: int = 3,
+    foreground_threshold: float = 0.1,
+    foreground_weight: float = 0.5,
+) -> Tensor:
+    """Equalized foreground/background MSE for sparse morphology targets.
+
+    Foreground is defined from the immutable target alpha channel. The returned
+    loss is a fixed convex combination of per-element foreground and background
+    visible-channel MSE, so target occupancy cannot silently reweight the terms.
+    """
+    _validate_pair(state, target)
+    if visible_channels <= 0 or visible_channels > state.shape[1]:
+        raise ValueError("visible_channels is outside the state vector")
+    if not 0 <= alpha_channel < target.shape[1]:
+        raise ValueError("alpha_channel is outside the target state vector")
+    if not 0.0 < foreground_weight < 1.0:
+        raise ValueError("foreground_weight must be in (0, 1)")
+
+    foreground = target[:, alpha_channel : alpha_channel + 1] > foreground_threshold
+    background = ~foreground
+    if not bool(foreground.any()):
+        raise ValueError("target contains no foreground pixels")
+    if not bool(background.any()):
+        raise ValueError("target contains no background pixels")
+
+    squared_error = (
+        state[:, :visible_channels] - target[:, :visible_channels]
+    ) ** 2
+    foreground_error = squared_error.masked_select(
+        foreground.expand(-1, visible_channels, -1, -1)
+    ).mean()
+    background_error = squared_error.masked_select(
+        background.expand(-1, visible_channels, -1, -1)
+    ).mean()
+    return (
+        foreground_weight * foreground_error
+        + (1.0 - foreground_weight) * background_error
+    )
+
+
 def active_cell_count(
     state: Tensor,
     *,
