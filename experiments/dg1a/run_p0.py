@@ -12,7 +12,12 @@ from yggdrasil.config import load_config
 from yggdrasil.evidence import environment_fingerprint, file_sha256, write_evidence
 from yggdrasil.nca import NCAConfig, NeuralCellularAutomaton, make_seed_state
 from yggdrasil.target import TargetSpec, make_target, target_identity
-from yggdrasil.training import TrainingConfig, evaluate_growth_and_recovery, train
+from yggdrasil.training import (
+    TrainingConfig,
+    evaluate_growth_and_recovery,
+    evaluate_persistence,
+    train,
+)
 
 
 def _git_revision() -> str:
@@ -108,6 +113,15 @@ def main() -> int:
         seed=int(raw["seed"]) + 1,
         lesion_height_fraction=float(lesion_cfg["height_fraction"]),
         lesion_width_fraction=float(lesion_cfg["width_fraction"]),
+        visible_channels=int(raw["reporting"]["visible_channels"]),
+    )
+    evaluation["persistence"] = evaluate_persistence(
+        model=model,
+        seed_state=seed_state,
+        target=target,
+        growth_steps=int(raw["evaluation"]["growth_steps"]),
+        persistence_steps=int(raw["evaluation"]["persistence_steps"]),
+        seed=int(raw["seed"]) + 2,
         visible_channels=int(raw["reporting"]["visible_channels"]),
     )
 
