@@ -1,0 +1,41 @@
+{
+  "schema": "yggdrasil.dg1a.p0.damage_cal01.v1",
+  "date": "2026-09-17",
+  "execution_provenance": "isolated reconstructed ChatGPT CPU workspace; exploratory calibration only",
+  "candidate_center_lesion_fractions": [0.50, 0.60, 0.70],
+  "selection_rule": "select the smallest candidate with at least 4/5 valid lesions and at least 4/5 non-annihilating lesions",
+  "validity_rule": {
+    "damage_effect_positive": true,
+    "relative_damage_effect_min": 0.10,
+    "active_cell_removal_fraction_min": 0.10
+  },
+  "non_annihilation_rule": {
+    "post_damage_active_cells_positive": true,
+    "minimum_remaining_active_fraction": 0.20
+  },
+  "results": {
+    "0.50": {
+      "valid_count": 3,
+      "non_annihilating_count": 5,
+      "valid_seeds": [0, 1, 3],
+      "relative_damage_effect": {"0": 0.1629011986, "1": 0.1236530415, "2": 0.0834294988, "3": 0.1275485315, "4": 0.0887850791},
+      "remaining_active_fraction": {"0": 0.60, "1": 0.5555555556, "2": 0.6363636364, "3": 0.6470588235, "4": 0.625}
+    },
+    "0.60": {
+      "valid_count": 4,
+      "non_annihilating_count": 5,
+      "valid_seeds": [0, 1, 3, 4],
+      "relative_damage_effect": {"0": 0.2313890174, "1": 0.1411588047, "2": 0.0960338302, "3": 0.1590991467, "4": 0.1251117048},
+      "remaining_active_fraction": {"0": 0.45, "1": 0.4814814815, "2": 0.5909090909, "3": 0.5588235294, "4": 0.4583333333}
+    },
+    "0.70": {
+      "valid_count": 5,
+      "non_annihilating_count": 5,
+      "valid_seeds": [0, 1, 2, 3, 4],
+      "relative_damage_effect": {"0": 0.2599603799, "1": 0.1566557817, "2": 0.1201506297, "3": 0.1887103688, "4": 0.1251117048},
+      "remaining_active_fraction": {"0": 0.275, "1": 0.4444444444, "2": 0.4090909091, "3": 0.4705882353, "4": 0.4583333333}
+    }
+  },
+  "selected_fraction": 0.60,
+  "selection_reason": "0.60 is the smallest candidate satisfying both preregistered selection conditions"
+}
