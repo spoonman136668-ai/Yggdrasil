@@ -1,85 +1,95 @@
 TITLE: DG-1 Current Research Status
 DATE: 2026-09-17
-STATUS: ACTIVE
+STATUS: ACTIVE — DG-1A P0 STABILIZATION
 TRACK: DG-1
-CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE
+CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; EXPLORATORY FOR SANDBOX RESULTS
 
 PURPOSE
-Maintain an operator-readable, durable research status ledger. This record follows an evidence-first workflow: current objective -> bounded research packet -> evidence -> recommendation -> decision -> next gate. It is not an execution authority.
+Maintain an operator-readable durable research status ledger. This record summarizes the live DG-1 frontier and points to experiment-specific evidence. It is not an execution authority.
 
 CURRENT OBJECTIVE
-Complete YG-R8 — Developmental Intelligence Gap-Closure Study before substantial DG-1A implementation.
+Establish a viable canonical DG-1A developmental substrate that can grow a target morphology, remain stable, suffer meaningful damage, and exhibit measurable stable repair before opening DG-1B functional computation.
 
-CURRENT BOUNDED WORK PACKET
-R8-PASS-1
-Questions:
-- What recent work materially changes the DG-1A/B/D experimental design?
-- What constitutes functional regeneration rather than visual reconstruction?
-- How should functional specialization be measured rather than inferred from representational difference?
-- What local growth/pruning mechanisms are credible enough to test later?
-- What baselines constrain claims about continual specialization and compact active phenotype?
-- What telemetry is required to distinguish regeneration, persistence, reuse, and recomputation?
+RESEARCH FOUNDATION
+YG-R1 through YG-R8 research records exist.
+YG-R8 Pass 1 is closed and reconciled into the DG-1 implementation gate.
+Functional-regeneration, structural-plasticity, resource-pressure, and measurement contracts are adopted for early DG-1 work.
 
-AUTHORITY / BOUNDARY
-Yggdrasil owns this research record.
-No CKB runtime, broker, TradeGuard, deployment, promotion, or external execution authority is activated by this work.
-No modification is authorized to Wingless, ckb-plane, or Mind-Palace.
-Research records are advisory project knowledge; experimental results and source/tests will become authoritative for implementation claims once experiments exist.
+ACTIVE BRANCH
+dg1a-p0
 
-REPOSITORY STATE BEFORE R8
-Initial DG-1 research baseline exists on main.
-The first architecture decision previously marked DG-1A-P0 ready for bounded implementation.
-R8 was subsequently required to close recent-literature and measurement gaps before substantial implementation.
+LATEST VERIFIED REPOSITORY FRONTIER BEFORE THIS STATUS UPDATE
+72a7783c530faa736c178d0665acede8c51a16fa
 
-R8 PASS-1 STATUS
-IN PROGRESS / EVIDENCE CAPTURED
+P0 IMPLEMENTATION STATUS
+The bounded P0 substrate, training curricula, recovery/persistence telemetry, resource accounting, resumable training, explicit evidence, and training-loss modes are implemented.
 
-KEY OBSERVATIONS
-OBSERVED — Recent work strengthens the case that cellular/local rules can generate functional computational structures, not only morphology.
-OBSERVED — Recent work strengthens the case that graph-based substrates are important after the canonical grid reproduction.
-OBSERVED — Growth without pruning is a concrete failure mode in adaptive-architecture literature.
-OBSERVED — Apparent cell differentiation is insufficient; Yggdrasil must correlate specialization with causal task contribution.
-OBSERVED — Regeneration requires recovery of function under controlled damage, with retained-state and recomputation cost reported.
-OBSERVED — Conventional adapter routing, hypernetwork generation, and dynamic modular expansion remain mandatory later baselines.
+Latest isolated regression surface:
+54 passed
+0 failed
+Python 3 / PyTorch 2.10.0+cpu
 
-ACTIVE RECOMMENDATIONS
-YG-R8-REC-001 — RETAIN canonical grid NCA as DG-1A-P0 implementation sanity check.
-STATUS: RECOMMENDED
+This is sandbox execution evidence only, not authoritative hardware or commit-bound scientific acceptance.
 
-YG-R8-REC-002 — ADD graph-based functional substrate as an early follow-on after grid validation, rather than waiting until late DG-1F.
-STATUS: RECOMMENDED
+CURRENT FULL-GRID FINDINGS
+STAB-01: NEGATIVE
+Fixed maturity-threshold increases did not provide a valid monotonic stabilization mechanism.
 
-YG-R8-REC-003 — ADD dynamical telemetry for regeneration: convergence/recovery trajectories, state-space distance, local information-flow proxy where practical, and post-damage adaptation profile.
-STATUS: RECOMMENDED
+STAB-02: NEGATIVE
+Longer 64..128 developmental training horizons converged to an all-dead phenotype, exposing sparse-target degeneracy in global unweighted morphology MSE.
 
-YG-R8-REC-004 — DEFINE specialization causally using task-affinity, ablation sensitivity, routing/communication dependence, and contribution to output/recovery.
-STATUS: RECOMMENDED
+STAB-03: NEGATIVE
+Equal 0.5/0.5 foreground/background balanced training loss prevented the all-dead solution but overcorrected toward an overgrown phenotype.
+Measured seed-0 full-grid result:
+- pre-damage active cells: 1579 / 1600;
+- pre-lesion global morphology MSE: 0.1411564797;
+- 0.60 center lesion removed 36.48% of active cells;
+- post-lesion global MSE improved to 0.1050053090;
+- DamageEffect: -0.0361511707;
+- lesion invalid for regeneration inference;
+- final active cells: 1164 / 1600;
+- STAB-03 improvement rule failed.
 
-YG-R8-REC-005 — REQUIRE growth and pruning to be paired when structural plasticity begins; no growth-only architecture may be treated as resource-credible.
-STATUS: RECOMMENDED
+INTERPRETATION
+The immediate P0 problem is now identified as objective balancing:
+- global occupancy-weighted MSE can make death competitive;
+- equal foreground/background aggregate weighting can make overgrowth competitive.
 
-YG-R8-REC-006 — SUSPEND the substantial-implementation-ready label until YG-R8 measurement and protocol records are reconciled into the initial architecture decision.
-STATUS: ADOPTED FOR RESEARCH GOVERNANCE
+This is a narrower and more actionable failure than an undifferentiated regeneration failure.
 
-EVIDENCE CLASSES
-MEASURED YGGDRASIL RESULTS: NONE YET.
-SIMULATED YGGDRASIL RESULTS: NONE YET.
-ESTIMATED YGGDRASIL RESULTS: NONE USED AS EVIDENCE.
-EXTERNAL PUBLISHED EVIDENCE: ACTIVE INPUT TO R8.
-HYPOTHESES: KEPT SEPARATE FROM EXTERNAL RESULTS.
+NEXT BOUNDED PACKET
+Provisionally DG-1A-P0-STAB-04.
+Preregister a single fixed composite training objective that retains global background pressure while adding explicit foreground protection.
+Recommended candidate:
+GlobalVisibleMSE + ForegroundVisibleMSE
 
-OPEN QUESTIONS
-- Should DG-1B functional computation move directly from a 2D grid to graph substrates, or require one grid functional-recovery experiment first?
-- Which dynamical telemetry gives useful mechanistic information without making home-hardware runs impractical?
-- How should active phenotype size be normalized across cell-state, graph-module, and adapter-module experiments?
-- What is the minimal causal specialization test that is robust across task families?
+Do not execute until its exact formula, one fixed coefficient, fixed H96/M16 envelope, and improvement/failure gates are written in .ice.
 
-NEXT GATE
-Close R8-PASS-1 by committing:
-- the gap-closure synthesis;
-- functional-regeneration protocol;
-- structural-plasticity constraints;
-- measurement framework;
-- reconciliation of the initial architecture/prototype status.
+FIBONACCI TRACK
+DG-1A-FIB1 remains preserved and separate.
+Planned later questions include Fibonacci repair budgets, capacity ceilings, golden-angle topology priors, module-size vocabularies, and emergence tests.
+Do not introduce these into canonical P0 while the basic objective/viability problem remains unresolved.
 
-Only after that reconciliation may DG-1A-P0 return to READY FOR BOUNDED IMPLEMENTATION.
+LARGER DG-1 TRAJECTORY
+stable local development
+-> functional computation
+-> specialization
+-> functional regeneration
+-> continual development
+-> developmental neural modules
+-> frozen intelligent seed
+-> developmental adapters
+-> ancestor inheritance
+-> resource-constrained organism
+-> regenerable capability
+
+ANCESTOR INHERITANCE
+Remains a first-class future direction. The goal is to test whether useful capability from previous models can be transformed into compact persistent developmental information that can regenerate task-relevant phenotype without retaining every donor checkpoint.
+
+BOUNDARIES
+Do not modify Wingless, ckb-plane, or Mind-Palace without explicit authorization.
+Do not activate CKB runtime, Coinbase/live broker systems, TradeGuard, deployment/promotion, or external execution authority.
+P0 remains morphology/developmental-substrate research and does not establish cognition or general intelligence.
+
+NEXT ACTION
+Preregister STAB-04 as a new objective-design experiment. Do not modify STAB-03 after inspection and do not begin P1 until canonical P0 viability/stability is adequately characterized.
