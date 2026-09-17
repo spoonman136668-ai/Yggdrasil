@@ -52,3 +52,11 @@ def test_config_rejects_width_over_limit() -> None:
 
     with pytest.raises(ValueError, match="hard limit"):
         validate_config(config)
+
+
+def test_config_rejects_evaluation_steps_over_model_limit() -> None:
+    config = _base_config()
+    config["evaluation"]["growth_steps"] = 9
+
+    with pytest.raises(ValueError, match="evaluation growth_steps"):
+        validate_config(config)
