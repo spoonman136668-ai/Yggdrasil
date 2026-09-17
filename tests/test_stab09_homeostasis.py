@@ -169,6 +169,7 @@ def test_resumable_pool_never_stores_virtual_probe(monkeypatch) -> None:
         return torch.full_like(result, 999.0)
 
     monkeypatch.setattr(resume_module, "_rng_neutral_homeostasis_probe", extreme_probe)
+    monkeypatch.setattr(resume_module, "homeostasis_mature_sample_mask", lambda result, target, **kwargs: torch.ones(result.shape[0], dtype=torch.bool, device=result.device))
     session.advance(1)
     storage = session.pool.state_dict()["storage"]
     assert float(storage.abs().max().item()) < 999.0
