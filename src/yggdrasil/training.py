@@ -10,7 +10,7 @@ from .nca import NeuralCellularAutomaton
 from .pool import StatePool
 from .resources import snapshot_resources
 TrainingVariant = Literal['growth_only', 'persistence', 'regeneration']
-TrainingLossMode = Literal['global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis', 'global_plus_foreground_bg_alpha_homeostasis_t16']
+TrainingLossMode = Literal['global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis', 'global_plus_foreground_bg_alpha_homeostasis_t16', 'global_plus_foreground_bg_alpha_attractor_t16']
 HOME_T16_PROBE_STEPS = 16
 
 @dataclass(frozen=True)
@@ -58,7 +58,7 @@ class TrainingConfig:
             raise ValueError('gradient_clip_norm must be positive')
         if self.hidden_state_l2_weight < 0:
             raise ValueError('hidden_state_l2_weight must be non-negative')
-        if self.loss_mode not in {'global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis', 'global_plus_foreground_bg_alpha_homeostasis_t16'}:
+        if self.loss_mode not in {'global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis', 'global_plus_foreground_bg_alpha_homeostasis_t16', 'global_plus_foreground_bg_alpha_attractor_t16'}:
             raise ValueError(f'unsupported training loss mode: {self.loss_mode}')
         if not 0 < self.visible_channels <= model.config.state_channels:
             raise ValueError('visible_channels is outside model state')
@@ -79,7 +79,7 @@ class TrainingSummary:
     def to_dict(self) -> dict[str, object]:
         return asdict(self)
 
-def training_morphology_loss(*, result: Tensor, target: Tensor, config: TrainingConfig, homeostasis_loss: Tensor | None = None) -> Tensor:
+def training_morphology_loss(*, result: Tensor, target: Tensor, config: TrainingConfig, homeostasis_loss: Tensor | None = None, attractor_loss: Tensor | None = None) -> Tensor:
     if config.loss_mode == 'global_mse':
         return morphology_mse(result, target, visible_channels=config.visible_channels)
     if config.loss_mode == 'balanced_fg_bg':
@@ -102,6 +102,10 @@ def training_morphology_loss(*, result: Tensor, target: Tensor, config: Training
         if homeostasis_loss is None:
             raise ValueError('HOME-T16 requires homeostasis_loss')
         return morphology_mse(result, target, visible_channels=config.visible_channels) + foreground_morphology_mse(result, target, visible_channels=config.visible_channels, alpha_channel=3, foreground_threshold=0.1) + background_alpha_mse(result, target, alpha_channel=3, foreground_threshold=0.1) + homeostasis_loss
+    if config.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16':
+        if attractor_loss is None:
+            raise ValueError('ATTRACT-16 requires attractor_loss')
+        return morphology_mse(result, target, visible_channels=config.visible_channels) + foreground_morphology_mse(result, target, visible_channels=config.visible_channels, alpha_channel=3, foreground_threshold=0.1) + background_alpha_mse(result, target, alpha_channel=3, foreground_threshold=0.1) + attractor_loss
     raise ValueError(f'unsupported training loss mode: {config.loss_mode}')
 
 def _rng_neutral_homeostasis_probe(*, model: NeuralCellularAutomaton, result: Tensor, generator: torch.Generator) -> Tensor:
@@ -124,6 +128,19 @@ def _rng_neutral_homeostasis_trajectory(*, model: NeuralCellularAutomaton, resul
     finally:
         generator.set_state(rng_state)
     return tuple(states)
+
+def attractor_trajectory_loss(states: tuple[Tensor, ...], target: Tensor, *, visible_channels: int=4) -> Tensor:
+    if len(states) != HOME_T16_PROBE_STEPS:
+        raise ValueError(f'ATTRACT-16 requires exactly {HOME_T16_PROBE_STEPS} future states')
+    losses = []
+    for state in states:
+        ensure_finite(state)
+        losses.append(
+            morphology_mse(state, target, visible_channels=visible_channels)
+            + foreground_morphology_mse(state, target, visible_channels=visible_channels, alpha_channel=3, foreground_threshold=0.1)
+            + background_alpha_mse(state, target, alpha_channel=3, foreground_threshold=0.1)
+        )
+    return torch.stack(losses).mean()
 
 def train(*, model: NeuralCellularAutomaton, seed_state: Tensor, target: Tensor, config: TrainingConfig) -> TrainingSummary:
     config.validate(model)
@@ -160,6 +177,8 @@ def train(*, model: NeuralCellularAutomaton, seed_state: Tensor, target: Tensor,
         global_mse = morphology_mse(result, target_batch, visible_channels=config.visible_channels)
         homeostasis_loss = None
         homeostasis_mature_samples = 0
+        attractor_loss = None
+        attractor_mature_samples = 0
         if config.loss_mode == 'global_plus_foreground_bg_alpha_homeostasis':
             mature_mask = homeostasis_mature_sample_mask(result, target_batch, alpha_channel=3, foreground_threshold=0.1, alive_threshold=model.config.alive_threshold)
             homeostasis_mature_samples = int(mature_mask.sum().item())
@@ -181,7 +200,17 @@ def train(*, model: NeuralCellularAutomaton, seed_state: Tensor, target: Tensor,
                 homeostasis_loss = homeostasis_trajectory_velocity_loss(trajectory, mature_target, alpha_channel=3, foreground_threshold=0.1, alive_threshold=model.config.alive_threshold)
             else:
                 homeostasis_loss = result.sum() * 0.0
-        morph = training_morphology_loss(result=result, target=target_batch, config=config, homeostasis_loss=homeostasis_loss)
+        elif config.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16':
+            mature_mask = homeostasis_mature_sample_mask(result, target_batch, alpha_channel=3, foreground_threshold=0.1, alive_threshold=model.config.alive_threshold)
+            attractor_mature_samples = int(mature_mask.sum().item())
+            if attractor_mature_samples > 0:
+                mature_result = result[mature_mask]
+                mature_target = target_batch[mature_mask]
+                trajectory = _rng_neutral_homeostasis_trajectory(model=model, result=mature_result, generator=device_rng)
+                attractor_loss = attractor_trajectory_loss(trajectory[1:], mature_target, visible_channels=config.visible_channels)
+            else:
+                attractor_loss = result.sum() * 0.0
+        morph = training_morphology_loss(result=result, target=target_batch, config=config, homeostasis_loss=homeostasis_loss, attractor_loss=attractor_loss)
         hidden = torch.mean(result[:, config.visible_channels:] ** 2) if config.visible_channels < result.shape[1] else torch.zeros((), device=device, dtype=result.dtype)
         loss = morph + config.hidden_state_l2_weight * hidden
         if not torch.isfinite(loss):
@@ -217,6 +246,12 @@ def train(*, model: NeuralCellularAutomaton, seed_state: Tensor, target: Tensor,
                 item['homeostasis_trajectory_velocity_loss'] = float(homeostasis_loss.detach().item()) if homeostasis_loss is not None else 0.0
                 item['homeostasis_mature_samples'] = homeostasis_mature_samples
                 item['homeostasis_probe_steps'] = HOME_T16_PROBE_STEPS
+            if config.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16':
+                item['foreground_morphology_mse'] = float(foreground_morphology_mse(result, target_batch, visible_channels=config.visible_channels, alpha_channel=3, foreground_threshold=0.1).detach().item())
+                item['background_alpha_mse'] = float(background_alpha_mse(result, target_batch, alpha_channel=3, foreground_threshold=0.1).detach().item())
+                item['attractor_trajectory_loss'] = float(attractor_loss.detach().item()) if attractor_loss is not None else 0.0
+                item['attractor_mature_samples'] = attractor_mature_samples
+                item['attractor_probe_steps'] = HOME_T16_PROBE_STEPS
             history.append(item)
     elapsed = time.perf_counter() - start
     losses = [float(x['loss']) for x in history]
