@@ -1,6 +1,6 @@
 TITLE: DG-1A-P0 Current Status
 DATE: 2026-09-17
-STATUS: ACTIVE — STAB-13 CLOSED NEGATIVE / STAB-14 DESIGN NOT YET PREREGISTERED
+STATUS: ACTIVE — STAB-14 CLOSED NEGATIVE / STAB-15 DESIGN NOT YET PREREGISTERED
 TRACK: DG-1A
 CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; MEASURED_SANDBOX FOR CANONICAL EXPERIMENTS
 
@@ -45,18 +45,19 @@ HISTORICAL TRAINING MODES
 9. global_plus_foreground_bg_alpha_homeostasis_t16
 10. global_plus_foreground_bg_alpha_attractor_t16
 11. global_plus_foreground_bg_alpha_attractor_t16_ceil800\n12. global_plus_foreground_bg_alpha_attractor_t16_ceil800_traceceil800
+13. global_plus_foreground_bg_alpha_attractor_t16_ceil800_alloc_balanced_hard
 
 LATEST TEST STATUS
-STAB-13 reconstructed sandbox regression:
-163 passed
+STAB-14 reconstructed sandbox regression:
+176 passed
 0 failed
 
 Environment:
 Python 3.13.5
 PyTorch 2.10.0+cpu
 
-STAB-13 scientific source revision:
-422b8eec20f8089a40bb83b66f8452e0bf1b525e
+STAB-14 scientific source revision:
+81d70262fe2f3e66d83def3fa800fdef90f3fea0
 
 source_revision_verified_checkout = false
 sandbox_source_byte_identity = false
@@ -266,24 +267,89 @@ research/experiments/dg1a/dg1a-p0-stab13-spec.ice
 research/experiments/dg1a/dg1a-p0-stab13-result.ice
 evidence/dg1a/p0_stab13_sandbox.json
 
+STAB-14 — BALANCED-HARD-ALLOC + CEIL-800 + ATTRACT-16
+CLOSED NEGATIVE / SPATIAL-ALLOCATION REGRESSION.
+
+Scientific source:
+81d70262fe2f3e66d83def3fa800fdef90f3fea0
+
+Regression:
+176 passed
+0 failed
+
+Measured training endpoint:
+- global morphology MSE: 0.0589801818;
+- support allocation loss: 0.3512153029;
+- false-positive support rate: 0.6946872473;
+- false-negative support rate: 0.0077433628;
+- target true-positive cells mean: 112.125 / 113;
+- batch mean active: 1145.125;
+- batch max active: 1331.
+
+Measured growth/recovery:
+- pre-damage active: 1097;
+- final recovery active: 1078;
+- pre-lesion MSE: 0.0587935299;
+- DamageEffect: -0.0050131604;
+- RelativeDamageEffect: -0.0852672125;
+- stable T50: not attained.
+
+Measured persistence:
+- initial active: 1014;
+- peak active: 1477;
+- final active: 1112;
+- drift: +98;
+- initial MSE: 0.0554905981;
+- final MSE: 0.0712424740.
+
+Preregistered gates:
+11 / 14 failed.
+
+Interpretation:
+the hard target-mask allocation loss nearly saturated target foreground but tolerated widespread false-positive living support. The class-normalized 0.5 / 0.5 straight-through construction gives each missed foreground cell much greater gradient magnitude than each extra background cell because the foreground class is much smaller. The observed model repeatedly traded FP against FN and finished in a high-FP overgrown state.
+
+This closes exact hard visible-target support equality as the current direction.
+
+Do not:
+- tune FP/FN weights;
+- tune allocation coefficient;
+- change alpha threshold;
+- move BALANCED-HARD-ALLOC onto future ATTRACT states;
+- tighten CEIL-800;
+- alter ATTRACT-16;
+- weaken gates.
+
+Return to STAB-12 as the useful directional baseline.
+
+The unresolved seam is now:
+MORPHOLOGICALLY USEFUL SUPPORT REPRESENTATION.
+
+A future mechanism must distinguish:
+- visible target-critical structure;
+- potentially useful hidden/auxiliary living support;
+- redundant exterior living support.
+
+It must not assume that every alive cell belongs exactly on the visible target mask.
+
+DURABLE STAB-14 RECORDS
+research/experiments/dg1a/dg1a-p0-stab14-spec.ice
+research/experiments/dg1a/dg1a-p0-stab14-result.ice
+evidence/dg1a/p0_stab14_sandbox.json
+
 NEXT BOUNDED PACKET
-Provisionally DG-1A-P0-STAB-14 — DESIGN / PREREGISTRATION ONLY.
+Provisionally DG-1A-P0-STAB-15 — DESIGN / PREREGISTRATION ONLY.
 
 Preferred research seam:
-spatially target-aligned living-support allocation using the STAB-12 baseline, without changing the 800-cell ceiling or adding more trajectory-wide raw-cardinality pressure.
+a morphology-aware support-usefulness mechanism built on the STAB-12 baseline that allows auxiliary living support when it is functionally coupled to target-visible morphology, while penalizing redundant exterior support.
 
-A new mechanism should address the specific pattern:
-799 -> 1015 -> 623 active cells,
-with morphology MSE rising from 0.04447 to 0.07369 before contracting.
+Do not use another raw-count extension or exact hard target-mask equality objective.
 
-It should distinguish morphologically useful target support from transient excess living support instead of merely tightening the same raw count ceiling.
-
-No STAB-14 mechanism is selected by this status record.
+No STAB-15 mechanism is selected by this status record.
 
 BOUNDARY
 P0 remains morphology/developmental-substrate research only.
 Do not begin DG-1B, ancestor inheritance, structural growth, developmental adapters, or Fibonacci scheduling from this packet.
 
 NEXT ACTION
-Research and preregister one discriminating STAB-14 spatial support-allocation mechanism using STAB-12 as the directional baseline.
+Research and preregister one discriminating STAB-15 morphologically useful-support mechanism using STAB-12 as the directional baseline.
 Do not execute it before exact mechanism and gates exist in .ice.
