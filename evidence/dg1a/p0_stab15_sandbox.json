@@ -1,0 +1,101 @@
+{
+  "schema": "yggdrasil.dg1a.p0.stab15.sandbox.v1",
+  "recorded_date": "2026-09-17",
+  "experiment": "DG-1A-P0-STAB-15",
+  "candidate": "LIFE4-DECOUPLE + CEIL-800 + ATTRACT-16",
+  "status": "CLOSED_NEGATIVE",
+  "candidate_worth_widening": false,
+  "scientific_source_revision": "5e3d52602ff38fbc2285cff9d495b79cfeb5826e",
+  "source_revision_verified_checkout": false,
+  "sandbox_source_byte_identity": false,
+  "evidence_class": "MEASURED_SANDBOX",
+  "reconstruction_basis": "independently verified connected-GitHub readbacks",
+  "regression": {
+    "passed": 192,
+    "failed": 0
+  },
+  "environment": {
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu",
+    "device": "cpu",
+    "precision": "float32"
+  },
+  "config": {
+    "path": "experiments/dg1a/configs/p0_stab15_life4_ceil800_attract_t16.yaml",
+    "sha256": "20b6407423a815d9b2beb6576f08923cf0e1e26433c502fee5dcb5b5db964237",
+    "seed": 0,
+    "iterations": 200,
+    "visible_alpha_channel": 3,
+    "life_channel": 4,
+    "life_threshold": 0.1,
+    "loss_mode": "global_plus_foreground_bg_alpha_attractor_t16_life4_ceil800"
+  },
+  "checkpoint": {
+    "iteration": 200,
+    "sha256": "ca1eba1fbbcbc8ee5f28f53817bb9d1f721cb213015f59116a846beff87e6f45",
+    "protocol": "deterministic single-writer atomic resumable checkpoints"
+  },
+  "local_full_evaluation_sha256": "89b20e28cd097deb31574ba16e544408d94b5bb03b9d8199a6bc5aa45599195d",
+  "training": {
+    "iterations_completed": 200,
+    "initial_recorded_loss": 0.44832420349121094,
+    "minimum_recorded_loss": 0.4188809394836426,
+    "final_recorded_loss": 0.43512237071990967,
+    "final_global_morphology_mse": 0.028703343123197556,
+    "final_foreground_morphology_mse": 0.406419038772583,
+    "final_background_alpha_mse": 0,
+    "final_attractor_trajectory_loss": 0,
+    "final_attractor_mature_samples": 0,
+    "final_formation_life_occupancy_ceiling_loss": 0,
+    "final_formation_life_active_mean": 0.375,
+    "final_formation_life_active_max": 1,
+    "final_hidden_penalty": 0.00018473235832061619,
+    "life_channel": 4,
+    "visible_alpha_channel": 3,
+    "no_non_finite_state": true
+  },
+  "growth_recovery": {
+    "pre_damage_active_cells": 1,
+    "post_damage_active_cells": 0,
+    "final_recovery_active_cells": 0,
+    "pre_lesion_global_mse": 0.027232110500335693,
+    "post_lesion_global_mse": 0.027493271976709366,
+    "final_recovery_global_mse": 0.029574217274785042,
+    "damage_effect": 0.0002611614763736725,
+    "relative_damage_effect": 0.009590203314225429,
+    "active_cell_removal_fraction": 1,
+    "recovery_fraction": 0,
+    "stable_t50_steps": null,
+    "stable_t90_steps": null
+  },
+  "persistence": {
+    "initial_active_cells": 1,
+    "final_active_cells": 0,
+    "maximum_active_cells": 1,
+    "active_cell_drift": -1,
+    "initial_global_mse": 0.027232451364398003,
+    "final_global_mse": 0.029574217274785042,
+    "maximum_global_mse": 0.029574217274785042,
+    "max_error_degradation": 0.002341765910387039,
+    "visible_state_drift_mse": 0.002235361374914646
+  },
+  "gates": {
+    "pre_damage_active_113_800": false,
+    "final_recovery_active_113_800": false,
+    "final_persistence_active_113_800": false,
+    "maximum_persistence_active_le_800": true,
+    "final_persistence_active_drift_le_0": true,
+    "damage_effect_gt_0": true,
+    "relative_damage_effect_ge_0_10": false,
+    "active_cell_removal_fraction_ge_0_10": true,
+    "stable_t50_attained": false,
+    "final_recovery_fraction_gt_0_4230230485": false,
+    "pre_lesion_global_mse_le_0_0361635": true,
+    "final_persistence_global_mse_le_0_0361635": true,
+    "maximum_persistence_mse_le_2x_initial": true,
+    "no_non_finite_state": true
+  },
+  "failed_gate_count": 6,
+  "classification": "DECOUPLED HIDDEN LIFE COLLAPSED; VISIBLE SPARSE-OUTPUT LOSS REMAINED LOW WHILE ORGANISM VIABILITY DISAPPEARED",
+  "interpretation": "Separating hidden liveness from visible alpha removed incidental viability pressure. Under the unchanged visible morphology objective, hidden L2, maturity gate, and no direct life target, channel-4 life never reached maturity and collapsed to the seed/dead regime. The apparently low visible MSE is not a viable morphology success. Do not exempt LIFE4 from hidden L2 or add direct life supervision inside STAB-15. The next packet should explicitly couple viability to useful morphology rather than re-conflate visible alpha and life or simply tune hidden-life pressure."
+}
