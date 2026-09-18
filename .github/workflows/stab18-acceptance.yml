@@ -1,0 +1,25 @@
+name: STAB-18 acceptance
+
+on:
+  push:
+    branches:
+      - validation/stab18-1e50388
+  workflow_dispatch:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[test]"
+      - name: Full regression
+        run: |
+          python -m pytest -q
