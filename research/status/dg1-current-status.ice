@@ -1,6 +1,6 @@
 TITLE: DG-1 Current Research Status
 DATE: 2026-09-17
-STATUS: ACTIVE — DG-1A P0 STAB-12 CLOSED NEGATIVE / STAB-13 DESIGN
+STATUS: ACTIVE — DG-1A P0 STAB-13 CLOSED NEGATIVE / STAB-14 DESIGN
 TRACK: DG-1
 CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; MEASURED_SANDBOX FOR CANONICAL EXPERIMENTS
 
@@ -89,13 +89,36 @@ CURRENT DECISIONS
 - canonical full-grid P0 remains unresolved;
 - DG-1B remains unopened.
 
+STAB-13 TRACE-CEIL-800 + CEIL-800 + ATTRACT-16:
+CLOSED NEGATIVE / CLEAR REGRESSION.
+- scientific source: 422b8eec20f8089a40bb83b66f8452e0bf1b525e;
+- regression: 163 passed / 0 failed;
+- pre-damage active: 1193;
+- persistence: 1130 -> peak 1517 -> 1456;
+- drift: +326;
+- final recovery active: 1439;
+- DamageEffect: negative;
+- pre-lesion MSE: 0.0645737201;
+- final persistence MSE: 0.0938185528;
+- 11 / 14 gates failed.
+
+STAB-13 INTERPRETATION
+Applying the existing 800-cell ceiling across ATTRACT-16's whole future trajectory did not remove transient overshoot.
+It destroyed the near-bound STAB-12 regime and returned gross overgrowth, invalid lesion response, and failed recovery.
+
+This closes repeated raw-cardinality pressure as the current direction.
+Do not tune TRACE-CEIL horizon, ceiling, coefficient, reduction, or STE scope.
+
+Return to STAB-12 as the useful directional baseline.
+The unresolved seam is spatial/morphological allocation of living support.
+
 NEXT BOUNDED PACKET
-DG-1A-P0-STAB-13 — DESIGN / PREREGISTRATION ONLY.
+DG-1A-P0-STAB-14 — DESIGN / PREREGISTRATION ONLY.
 
 Preferred seam:
-target-aligned support allocation over the persistence trajectory.
+spatially target-aligned living-support allocation using the STAB-12 baseline, without tightening the 800-cell ceiling and without more trajectory-wide raw-cardinality pressure.
 
-The next mechanism must:
+The STAB-14 mechanism must:
 - address transient overshoot rather than only endpoint count;
 - distinguish useful target support from redundant living support;
 - avoid STAB-06-style blanket threshold suppression;
@@ -112,5 +135,5 @@ Do not activate CKB runtime, Coinbase/live broker systems, TradeGuard, deploymen
 P0 remains morphology/developmental-substrate research and does not establish cognition or general intelligence.
 
 NEXT ACTION
-Research and preregister one discriminating STAB-13 support-allocation / transient-persistence mechanism.
+Research and preregister one discriminating STAB-14 spatial support-allocation mechanism.
 Do not execute it before preregistration.
