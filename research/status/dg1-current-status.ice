@@ -1,6 +1,6 @@
 TITLE: DG-1 Current Research Status
 DATE: 2026-09-17
-STATUS: ACTIVE — DG-1A P0 STAB-15 CLOSED NEGATIVE / STAB-16 DESIGN
+STATUS: ACTIVE — DG-1A P0 STAB-16 CLOSED NEGATIVE / STAB-17 DESIGN
 TRACK: DG-1
 CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; MEASURED_SANDBOX FOR CANONICAL EXPERIMENTS
 
@@ -24,11 +24,11 @@ Establish a viable canonical DG-1A developmental substrate that:
 before DG-1B functional computation is opened.
 
 LATEST RECONSTRUCTED TEST STATUS
-192 passed
+209 passed
 0 failed
 
-STAB-15 scientific source:
-5e3d52602ff38fbc2285cff9d495b79cfeb5826e
+STAB-16 scientific source:
+986e3953365a2aa47682a3147cc6ae56a64c9485
 
 source_revision_verified_checkout = false
 sandbox_source_byte_identity = false
@@ -164,13 +164,40 @@ Do not tune hidden L2, seed visible alpha, lower maturity, or add a direct life 
 The unresolved seam is now explicit:
 POSITIVE VIABILITY-TO-MORPHOLOGY COUPLING FOR DECOUPLED LIFE.
 
+STAB-16 FRONTIER-FLOOR-113 + LIFE4-DECOUPLE + CEIL-800 + ATTRACT-16:
+CLOSED NEGATIVE / VIABILITY RESTORED, MORPHOLOGY COUPLING UNRESOLVED.
+- scientific source: 986e3953365a2aa47682a3147cc6ae56a64c9485;
+- regression: 209 passed / 0 failed;
+- pre-damage hidden-life cells: 1082;
+- final recovery hidden-life cells: 797;
+- persistence: 1047 -> peak 1049 -> 750;
+- drift: -297;
+- pre-lesion visible MSE: 0.0673088878;
+- final persistence visible MSE: 0.0488450378;
+- DamageEffect: negative;
+- RelativeDamageEffect: -0.0768766287;
+- stable T50: not attained;
+- 8 / 14 gates failed.
+
+STAB-16 INTERPRETATION
+The local 113-cell viability floor solved STAB-15 hidden-life collapse without forcing hidden life to equal visible target geometry.
+Hidden life became sustained and ATTRACT-16 remained active.
+
+However, canonical formation still overgrew and lesion damage improved visible morphology, showing that much of the viable latent support remains redundant or negatively coupled to the phenotype.
+
+The unresolved seam is now:
+FUNCTIONAL COUPLING BETWEEN LATENT SUPPORT AND VISIBLE MORPHOLOGY.
+
+STAB-12 remains the best overall phenotype by gate count.
+STAB-16 establishes the architectural viability of decoupled hidden life with a minimal local survival signal.
+
 NEXT BOUNDED PACKET
-DG-1A-P0-STAB-16 — DESIGN / PREREGISTRATION ONLY.
+DG-1A-P0-STAB-17 — DESIGN / PREREGISTRATION ONLY.
 
 Preferred seam:
-a positive viability-to-morphology coupling for hidden life that prevents collapse while allowing useful auxiliary support and preserving visible morphology separation.
+functional coupling that makes viable hidden support causally useful to visible morphology while preserving decoupled liveness and avoiding exact life-mask equality.
 
-The STAB-16 mechanism must:
+The STAB-17 mechanism must:
 - not simply reduce or remove hidden L2;
 - not directly force hidden life to equal the visible target mask;
 - not lower the 113 viability floor or 800 ceiling;
@@ -186,5 +213,5 @@ Do not activate CKB runtime, Coinbase/live broker systems, TradeGuard, deploymen
 P0 remains morphology/developmental-substrate research and does not establish cognition or general intelligence.
 
 NEXT ACTION
-Research and preregister one discriminating STAB-16 positive viability-to-morphology coupling mechanism.
+Research and preregister one discriminating STAB-17 latent-support / visible-morphology functional-coupling mechanism.
 Do not execute it before preregistration.
