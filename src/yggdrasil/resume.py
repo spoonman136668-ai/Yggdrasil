@@ -8,7 +8,7 @@ from .damage import center_lesion
 from .metrics import active_cell_count, background_alive_margin_loss, background_alpha_mse, ensure_finite, foreground_morphology_mse, far_field_background_alpha_mse, graded_background_alpha_mse, homeostasis_background_velocity_loss, homeostasis_mature_sample_mask, homeostasis_trajectory_velocity_loss, morphology_mse
 from .nca import NeuralCellularAutomaton
 from .pool import StatePool
-from .training import FORMATION_OCCUPANCY_CEILING, HOME_T16_PROBE_STEPS, LIFE_VIABILITY_FLOOR, TrainingConfig, TrainingSummary, _rng_neutral_homeostasis_probe, _rng_neutral_homeostasis_trajectory, attractor_trajectory_loss, formation_hard_active_counts, formation_occupancy_ceiling_loss, trace_occupancy_ceiling_loss, balanced_hard_support_allocation_terms, decoupled_life_occupancy_ceiling_loss, decoupled_mature_sample_mask, frontier_life_floor_loss, mature_visible_anchor_terms, training_morphology_loss
+from .training import CAUSAL_LATENT_DROPOUT_FRACTION, FORMATION_OCCUPANCY_CEILING, HOME_T16_PROBE_STEPS, LIFE_VIABILITY_FLOOR, TrainingConfig, TrainingSummary, _rng_neutral_homeostasis_probe, _rng_neutral_homeostasis_trajectory, apply_latent_probe_intervention, attractor_trajectory_loss, attractor_trajectory_loss_per_sample, causal_latent_probe_mask, causal_latent_prune_terms, formation_hard_active_counts, formation_occupancy_ceiling_loss, trace_occupancy_ceiling_loss, balanced_hard_support_allocation_terms, decoupled_life_occupancy_ceiling_loss, decoupled_mature_sample_mask, frontier_life_floor_loss, mature_visible_anchor_terms, training_morphology_loss
 
 @dataclass
 class ResumableTrainingSession:
@@ -96,6 +96,18 @@ class ResumableTrainingSession:
         anchor_mature_samples = 0
         unanchored_life_fraction_mean = 0.0
         unanchored_life_cells_mean = 0.0
+        causal_prune_loss = None
+        causal_probe_mature_samples = 0
+        causal_probe_classified_samples = 0
+        causal_probe_nonbeneficial_samples = 0
+        causal_probe_nonbeneficial_fraction = 0.0
+        causal_probe_dropped_cells_mean = 0.0
+        causal_probe_actual_drop_fraction_mean = 0.0
+        causal_delta_mean = 0.0
+        causal_delta_min = 0.0
+        causal_delta_max = 0.0
+        causal_intact_future_loss_mean = 0.0
+        causal_counterfactual_future_loss_mean = 0.0
         if self.config.loss_mode == 'global_plus_foreground_bg_alpha_homeostasis':
             mature_mask = homeostasis_mature_sample_mask(result, self.target_batch, alpha_channel=3, foreground_threshold=0.1, alive_threshold=self.model.config.alive_threshold)
             homeostasis_mature_samples = int(mature_mask.sum().item())
@@ -230,7 +242,46 @@ class ResumableTrainingSession:
             if anchor_mature_samples > 0:
                 unanchored_life_fraction_mean = float(anchor_fractions[anchor_mature_mask].mean().item())
                 unanchored_life_cells_mean = float(anchor_counts[anchor_mature_mask].mean().item())
-        morph = training_morphology_loss(result=result, target=self.target_batch, config=self.config, homeostasis_loss=homeostasis_loss, attractor_loss=attractor_loss, occupancy_loss=occupancy_loss, trace_occupancy_loss=trace_occupancy_loss, allocation_loss=allocation_loss, frontier_floor_loss=frontier_floor_loss, visible_anchor_loss=visible_anchor_loss)
+        elif self.config.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_causal_latent_dropout25_prune_t16':
+            mature_mask = decoupled_mature_sample_mask(result, self.target_batch, state_alive_channel=self.model.config.alive_channel, target_alpha_channel=3, foreground_threshold=0.1, alive_threshold=self.model.config.alive_threshold)
+            attractor_mature_samples = int(mature_mask.sum().item())
+            causal_probe_mature_samples = attractor_mature_samples
+            if attractor_mature_samples > 0:
+                mature_result = result[mature_mask]
+                mature_target = self.target_batch[mature_mask]
+                intact_trajectory = _rng_neutral_homeostasis_trajectory(model=self.model, result=mature_result, generator=self.device_rng)
+                intact_future = intact_trajectory[1:]
+                attractor_loss = attractor_trajectory_loss(intact_future, mature_target, visible_channels=self.config.visible_channels)
+                probe_mask = causal_latent_probe_mask(mature_result.detach(), generator=self.device_rng, life_channel=self.model.config.alive_channel, alive_threshold=self.model.config.alive_threshold, fraction=CAUSAL_LATENT_DROPOUT_FRACTION)
+                counterfactual_start = apply_latent_probe_intervention(mature_result.detach(), probe_mask, visible_channels=self.config.visible_channels)
+                with torch.no_grad():
+                    counterfactual_trajectory = _rng_neutral_homeostasis_trajectory(model=self.model, result=counterfactual_start, generator=self.device_rng)
+                    intact_per_sample = attractor_trajectory_loss_per_sample(tuple(x.detach() for x in intact_future), mature_target.detach(), visible_channels=self.config.visible_channels)
+                    counterfactual_per_sample = attractor_trajectory_loss_per_sample(counterfactual_trajectory[1:], mature_target.detach(), visible_channels=self.config.visible_channels)
+                    causal_delta = (counterfactual_per_sample - intact_per_sample).detach()
+                causal_prune_loss, _, classified_mask, nonbeneficial_mask, dropped_counts, actual_drop_fractions = causal_latent_prune_terms(mature_result, probe_mask, causal_delta, life_channel=self.model.config.alive_channel, alive_threshold=self.model.config.alive_threshold, maturity_floor=LIFE_VIABILITY_FLOOR)
+                causal_probe_classified_samples = int(classified_mask.sum().item())
+                causal_probe_nonbeneficial_samples = int(nonbeneficial_mask.sum().item())
+                causal_probe_nonbeneficial_fraction = causal_probe_nonbeneficial_samples / causal_probe_classified_samples if causal_probe_classified_samples > 0 else 0.0
+                causal_probe_dropped_cells_mean = float(dropped_counts.to(dtype=torch.float32).mean().item())
+                causal_probe_actual_drop_fraction_mean = float(actual_drop_fractions.to(dtype=torch.float32).mean().item())
+                if causal_probe_classified_samples > 0:
+                    classified_delta = causal_delta[classified_mask]
+                    causal_delta_mean = float(classified_delta.mean().item())
+                    causal_delta_min = float(classified_delta.min().item())
+                    causal_delta_max = float(classified_delta.max().item())
+                    causal_intact_future_loss_mean = float(intact_per_sample[classified_mask].mean().item())
+                    causal_counterfactual_future_loss_mean = float(counterfactual_per_sample[classified_mask].mean().item())
+            else:
+                attractor_loss = result.sum() * 0.0
+                causal_prune_loss = result.sum() * 0.0
+            occupancy_loss = decoupled_life_occupancy_ceiling_loss(result, self.target_batch, state_alive_channel=self.model.config.alive_channel, target_alpha_channel=3, foreground_threshold=0.1, alive_threshold=self.model.config.alive_threshold)
+            formation_counts = formation_hard_active_counts(result, alpha_channel=self.model.config.alive_channel, alive_threshold=self.model.config.alive_threshold)
+            formation_active_cells_mean = float(formation_counts.to(dtype=torch.float32).mean().detach().item())
+            formation_active_cells_max = int(formation_counts.max().detach().item())
+            frontier_floor_loss, frontier_counts = frontier_life_floor_loss(result, life_channel=self.model.config.alive_channel, alive_threshold=self.model.config.alive_threshold, viability_floor=LIFE_VIABILITY_FLOOR)
+            frontier_cells_mean = float(frontier_counts.to(dtype=torch.float32).mean().detach().item())
+        morph = training_morphology_loss(result=result, target=self.target_batch, config=self.config, homeostasis_loss=homeostasis_loss, attractor_loss=attractor_loss, occupancy_loss=occupancy_loss, trace_occupancy_loss=trace_occupancy_loss, allocation_loss=allocation_loss, frontier_floor_loss=frontier_floor_loss, visible_anchor_loss=visible_anchor_loss, causal_prune_loss=causal_prune_loss)
         hidden = torch.mean(result[:, self.config.visible_channels:] ** 2) if self.config.visible_channels < result.shape[1] else torch.zeros((), device=self.device, dtype=result.dtype)
         loss = morph + self.config.hidden_state_l2_weight * hidden
         if not torch.isfinite(loss):
@@ -354,6 +405,35 @@ class ResumableTrainingSession:
                 item['anchor_mature_samples'] = anchor_mature_samples
                 item['unanchored_life_fraction_mean'] = unanchored_life_fraction_mean
                 item['unanchored_life_cells_mean'] = unanchored_life_cells_mean
+                item['life_channel'] = self.model.config.alive_channel
+                item['visible_alpha_channel'] = 3
+            if self.config.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_causal_latent_dropout25_prune_t16':
+                item['foreground_morphology_mse'] = float(foreground_morphology_mse(result, self.target_batch, visible_channels=self.config.visible_channels, alpha_channel=3, foreground_threshold=0.1).detach().item())
+                item['background_alpha_mse'] = float(background_alpha_mse(result, self.target_batch, alpha_channel=3, foreground_threshold=0.1).detach().item())
+                item['attractor_trajectory_loss'] = float(attractor_loss.detach().item()) if attractor_loss is not None else 0.0
+                item['attractor_mature_samples'] = attractor_mature_samples
+                item['attractor_probe_steps'] = HOME_T16_PROBE_STEPS
+                item['formation_occupancy_ceiling_loss'] = float(occupancy_loss.detach().item()) if occupancy_loss is not None else 0.0
+                item['formation_active_cells_mean'] = formation_active_cells_mean
+                item['formation_active_cells_max'] = formation_active_cells_max
+                item['formation_occupancy_ceiling'] = FORMATION_OCCUPANCY_CEILING
+                item['frontier_floor_loss'] = float(frontier_floor_loss.detach().item()) if frontier_floor_loss is not None else 0.0
+                item['frontier_cells_mean'] = frontier_cells_mean
+                item['causal_latent_prune_loss'] = float(causal_prune_loss.detach().item()) if causal_prune_loss is not None else 0.0
+                item['causal_probe_mature_samples'] = causal_probe_mature_samples
+                item['causal_probe_classified_samples'] = causal_probe_classified_samples
+                item['causal_probe_nonbeneficial_samples'] = causal_probe_nonbeneficial_samples
+                item['causal_probe_nonbeneficial_fraction'] = causal_probe_nonbeneficial_fraction
+                item['causal_probe_dropped_cells_mean'] = causal_probe_dropped_cells_mean
+                item['causal_probe_actual_drop_fraction_mean'] = causal_probe_actual_drop_fraction_mean
+                item['causal_delta_mean'] = causal_delta_mean
+                item['causal_delta_min'] = causal_delta_min
+                item['causal_delta_max'] = causal_delta_max
+                item['causal_intact_future_loss_mean'] = causal_intact_future_loss_mean
+                item['causal_counterfactual_future_loss_mean'] = causal_counterfactual_future_loss_mean
+                item['causal_dropout_fraction'] = CAUSAL_LATENT_DROPOUT_FRACTION
+                item['causal_probe_steps'] = HOME_T16_PROBE_STEPS
+                item['life_viability_floor'] = LIFE_VIABILITY_FLOOR
                 item['life_channel'] = self.model.config.alive_channel
                 item['visible_alpha_channel'] = 3
             self.history.append(item)
