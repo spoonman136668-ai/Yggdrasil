@@ -1,0 +1,103 @@
+{
+  "schema": "yggdrasil.dg1a.p0.stab17.sandbox.v1",
+  "recorded_date": "2026-09-17",
+  "experiment": "DG-1A-P0-STAB-17",
+  "candidate": "MATURE-VIS-ANCHOR-R1 + FRONTIER-FLOOR-113 + LIFE4-DECOUPLE + CEIL-800 + ATTRACT-16",
+  "status": "CLOSED_NEGATIVE",
+  "candidate_worth_widening": false,
+  "scientific_source_revision": "23263694d9bd2188d7c6bc40fdc2a920754901e2",
+  "source_revision_verified_checkout": false,
+  "sandbox_source_byte_identity": false,
+  "evidence_class": "MEASURED_SANDBOX",
+  "regression": {
+    "passed": 226,
+    "failed": 0
+  },
+  "environment": {
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu",
+    "device": "cpu",
+    "precision": "float32"
+  },
+  "config": {
+    "path": "experiments/dg1a/configs/p0_stab17_life4_band113_800_visanchor_r1.yaml",
+    "sha256": "546d9053cdeb975b979096c312511c3ea39dfdc565f767cb8cf79e3f4be6b0ee",
+    "seed": 0,
+    "iterations": 200,
+    "loss_mode": "global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_visanchor_r1",
+    "visible_anchor_radius": 1,
+    "anchor_maturity_floor": 113,
+    "occupancy_ceiling": 800,
+    "visible_alpha_channel": 3,
+    "life_channel": 4
+  },
+  "checkpoint": {
+    "iteration": 200,
+    "sha256": "5b20f9b694c57d321069240e8df45f222ebfa668e59852acca9d504e538c03a5",
+    "protocol": "deterministic single-writer atomic resumable checkpoints"
+  },
+  "local_full_evaluation_sha256": "877ff069cecba36de4f955d6bba1c192091132f770c6229582033cced8f0190a",
+  "training": {
+    "initial_recorded_loss": 1.4307032823562622,
+    "minimum_recorded_loss": 0.5240716934204102,
+    "final_recorded_loss": 0.5387070775032043,
+    "final_global_morphology_mse": 0.06450759619474411,
+    "final_foreground_morphology_mse": 0.1509581357240677,
+    "final_background_alpha_mse": 0.03414209559559822,
+    "final_attractor_trajectory_loss": 0.2855977714061737,
+    "final_attractor_mature_samples": 8,
+    "final_formation_occupancy_ceiling_loss": 0.0001156250000349246,
+    "final_formation_active_cells_mean": 708,
+    "final_formation_active_cells_max": 824,
+    "final_frontier_floor_loss": 0,
+    "final_mature_visible_anchor_loss": 0.0033855533692985773,
+    "final_anchor_mature_samples": 8,
+    "final_unanchored_life_fraction_mean": 0.0033855533692985773,
+    "final_unanchored_life_cells_mean": 2.25,
+    "no_non_finite_state": true,
+    "anchor_dynamics_note": "Anchor loss was zero at many mature checkpoints; the largest recorded activation was at iteration 150 with unanchored fraction 0.0864302441 and mean 69.67 unanchored life cells, then returned to zero by iteration 170."
+  },
+  "growth_recovery": {
+    "pre_damage_active_cells": 1038,
+    "post_damage_active_cells": 650,
+    "final_recovery_active_cells": 681,
+    "pre_lesion_global_mse": 0.06554613262414932,
+    "post_lesion_global_mse": 0.057521332055330276,
+    "final_recovery_global_mse": 0.05694600194692612,
+    "damage_effect": -0.008024800568819046,
+    "relative_damage_effect": -0.12242981008253184,
+    "active_cell_removal_fraction": 0.3737957610789981,
+    "recovery_fraction": null,
+    "stable_t50_steps": null
+  },
+  "persistence": {
+    "initial_active_cells": 919,
+    "final_active_cells": 690,
+    "maximum_active_cells": 1043,
+    "active_cell_drift": -229,
+    "initial_global_mse": 0.059166938066482544,
+    "final_global_mse": 0.06685813516378403,
+    "maximum_global_mse": 0.07704857736825943,
+    "max_error_degradation": 0.017881639301776886,
+    "visible_state_drift_mse": 0.019095484167337418
+  },
+  "gates": {
+    "pre_damage_active_113_800": false,
+    "final_recovery_active_113_800": true,
+    "final_persistence_active_113_800": true,
+    "maximum_persistence_active_le_800": false,
+    "final_persistence_active_drift_le_0": true,
+    "damage_effect_gt_0": false,
+    "relative_damage_effect_ge_0_10": false,
+    "active_cell_removal_fraction_ge_0_10": true,
+    "stable_t50_attained": false,
+    "final_recovery_fraction_gt_0_4230230485": false,
+    "pre_lesion_global_mse_le_0_0361635": false,
+    "final_persistence_global_mse_le_0_0361635": false,
+    "maximum_persistence_mse_le_2x_initial": true,
+    "no_non_finite_state": true
+  },
+  "failed_gate_count": 8,
+  "classification": "LOCAL VISIBLE PROXIMITY MOSTLY ALREADY SATISFIED; FUNCTIONAL MORPHOLOGY COUPLING REMAINS UNRESOLVED",
+  "interpretation": "MATURE-VIS-ANCHOR-R1 did not produce a canonical improvement. Hidden life was already within R1 of current visible alpha for most mature checkpoints, so the new loss was usually zero and only intermittently active. Formation occupancy improved modestly relative to STAB-16, but visible morphology worsened, lesion damage still improved the phenotype, and recovery remained invalid. This falsifies simple R1 spatial proximity as the dominant latent-support usefulness seam. Do not widen radius, increase coefficient, alter threshold, or switch to target-mask anchoring inside STAB-17. The next discriminating mechanism should test causal contribution of latent support to visible morphology rather than geometric proximity."
+}
