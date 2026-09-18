@@ -100,6 +100,22 @@ Frozen occupancy-ceiling surrogate is inactive below 800.
 At n=824 its per-site direct derivative is approximately 9.375e-6, making the causal term roughly 16.2x larger on a selected pruned site.
 At n=984 occupancy derivative is approximately 7.188e-5 and causal derivative approximately 1.270e-4, ratio approximately 1.77.
 
+CEILING-EXCESS SCALE CHECK
+Historical evaluation overgrowth relative to the fixed ceiling 800:
+- STAB-16 pre-damage: 1082 -> requires removal of 282 cells = 26.0628%
+- STAB-17 pre-damage: 1038 -> requires removal of 238 cells = 22.9287%
+- STAB-16 persistence maximum: 1049 -> requires removal of 249 cells = 23.7369%
+- STAB-17 persistence maximum: 1043 -> requires removal of 243 cells = 23.2982%
+
+Relative to the frozen 25% causal probe:
+- STAB-16 pre-damage excess / 25% = 1.0425
+- STAB-17 pre-damage excess / 25% = 0.9171
+- STAB-16 persistence-max excess / 25% = 0.9495
+- STAB-17 persistence-max excess / 25% = 0.9319
+
+Interpretation:
+The preregistered 25% probe fraction is on the same order as one full historical ceiling-excess correction. This supports the intervention as materially capable of changing occupancy, while reinforcing the need to interpret collateral pruning carefully. It does not justify changing the frozen fraction.
+
 INTERPRETATION BOUNDARY
 R1 remains scientifically worth executing because:
 - STAB-16 restored hidden-life viability but remained overgrown and morphologically weak;
