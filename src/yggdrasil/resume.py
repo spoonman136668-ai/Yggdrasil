@@ -280,7 +280,8 @@ class ResumableTrainingSession:
             formation_active_cells_mean = float(formation_counts.to(dtype=torch.float32).mean().detach().item())
             formation_active_cells_max = int(formation_counts.max().detach().item())
             frontier_floor_loss, frontier_counts = frontier_life_floor_loss(result, life_channel=self.model.config.alive_channel, alive_threshold=self.model.config.alive_threshold, viability_floor=LIFE_VIABILITY_FLOOR)
-            frontier_cells_mean = float(frontier_counts.to(dtype=torch.float32).mean().detach().item())        elif self.config.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_causal_latent_dropout25_prune_t16_domainsep':
+            frontier_cells_mean = float(frontier_counts.to(dtype=torch.float32).mean().detach().item())
+        elif self.config.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_causal_latent_dropout25_prune_t16_domainsep':
             mature_mask = decoupled_mature_sample_mask(result, self.target_batch, state_alive_channel=self.model.config.alive_channel, target_alpha_channel=3, foreground_threshold=0.1, alive_threshold=self.model.config.alive_threshold)
             attractor_mature_samples = int(mature_mask.sum().item())
             causal_probe_mature_samples = attractor_mature_samples
@@ -473,7 +474,8 @@ class ResumableTrainingSession:
                 item['causal_probe_steps'] = HOME_T16_PROBE_STEPS
                 item['life_viability_floor'] = LIFE_VIABILITY_FLOOR
                 item['life_channel'] = self.model.config.alive_channel
-                item['visible_alpha_channel'] = 3            if self.config.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_causal_latent_dropout25_prune_t16_domainsep':
+                item['visible_alpha_channel'] = 3
+            if self.config.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_causal_latent_dropout25_prune_t16_domainsep':
                 item['foreground_morphology_mse'] = float(foreground_morphology_mse(result, self.target_batch, visible_channels=self.config.visible_channels, alpha_channel=3, foreground_threshold=0.1).detach().item())
                 item['background_alpha_mse'] = float(background_alpha_mse(result, self.target_batch, alpha_channel=3, foreground_threshold=0.1).detach().item())
                 item['attractor_trajectory_loss'] = float(attractor_loss.detach().item()) if attractor_loss is not None else 0.0
