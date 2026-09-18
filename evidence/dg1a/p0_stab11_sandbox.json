@@ -1,0 +1,99 @@
+{
+  "schema": "yggdrasil.dg1a.p0.stab11.sandbox.v1",
+  "recorded_date": "2026-09-17",
+  "experiment": "DG-1A-P0-STAB-11",
+  "candidate": "ATTRACT-16",
+  "status": "CLOSED_NEGATIVE",
+  "candidate_worth_widening": false,
+  "scientific_source_revision": "6db241bce7ba21c51baedb80152f0e031bf233de",
+  "source_revision_verified_checkout": false,
+  "sandbox_source_byte_identity": false,
+  "evidence_class": "MEASURED_SANDBOX",
+  "reconstruction_basis": "independently verified connected-GitHub readbacks",
+  "regression": {
+    "passed": 135,
+    "failed": 0
+  },
+  "environment": {
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu",
+    "device": "cpu",
+    "precision": "float32"
+  },
+  "config": {
+    "path": "experiments/dg1a/configs/p0_stab11_attract_t16.yaml",
+    "sha256": "90879b9c8a8c7cadde77db23fc1c2f63df7ca354b3b52d602f6f870c08d7b05c",
+    "seed": 0,
+    "iterations": 200,
+    "virtual_probe_steps": 16,
+    "loss_mode": "global_plus_foreground_bg_alpha_attractor_t16"
+  },
+  "checkpoint": {
+    "iteration": 200,
+    "sha256": "daf4c43152dfbf13e7781ed458cebdbfb5bca2f555e5a332d0ffdf5374a1f0c4",
+    "protocol": "deterministic single-writer atomic resumable checkpoints"
+  },
+  "local_full_evaluation_sha256": "518579b685a78a04e340c0a3fc64e73fb3322e64702d51d25efa83cdcfd66da6",
+  "training": {
+    "iterations_completed": 200,
+    "initial_recorded_loss": 0.4459555447101593,
+    "minimum_recorded_loss": 0.39621201157569885,
+    "final_recorded_loss": 0.39621201157569885,
+    "final_global_morphology_mse": 0.042425889521837234,
+    "final_foreground_morphology_mse": 0.12037447094917297,
+    "final_background_alpha_mse": 0.03515799343585968,
+    "final_attractor_trajectory_loss": 0.19825303554534912,
+    "final_mature_samples": 8,
+    "final_batch_size": 8,
+    "attractor_probe_steps": 16,
+    "no_non_finite_state": true
+  },
+  "growth_recovery": {
+    "growth_steps": 96,
+    "recovery_steps": 96,
+    "pre_damage_active_cells": 1252,
+    "post_damage_active_cells": 701,
+    "final_recovery_active_cells": 882,
+    "pre_lesion_global_mse": 0.06650203466415405,
+    "post_lesion_global_mse": 0.056291695684194565,
+    "final_recovery_global_mse": 0.04040282219648361,
+    "damage_effect": -0.010210338979959488,
+    "relative_damage_effect": -0.15353423442641023,
+    "active_cell_removal_fraction": 0.44009584664536744,
+    "recovery_fraction": null,
+    "stable_t50_steps": null,
+    "stable_t90_steps": null
+  },
+  "persistence": {
+    "growth_steps": 96,
+    "persistence_steps": 96,
+    "initial_active_cells": 1160,
+    "final_active_cells": 592,
+    "maximum_active_cells": 1335,
+    "active_cell_drift": -568,
+    "initial_global_mse": 0.061627358198165894,
+    "final_global_mse": 0.05478537082672119,
+    "maximum_global_mse": 0.08524700999259949,
+    "max_error_degradation": 0.023619651794433594,
+    "visible_state_drift_mse": 0.030012689530849457
+  },
+  "gates": {
+    "pre_damage_active_113_800": false,
+    "final_recovery_active_113_800": false,
+    "final_persistence_active_113_800": true,
+    "maximum_persistence_active_le_800": false,
+    "final_persistence_active_drift_le_0": true,
+    "damage_effect_gt_0": false,
+    "relative_damage_effect_ge_0_10": false,
+    "active_cell_removal_fraction_ge_0_10": true,
+    "stable_t50_attained": false,
+    "final_recovery_fraction_gt_0_4230230485": false,
+    "pre_lesion_global_mse_le_0_0361635": false,
+    "final_persistence_global_mse_le_0_0361635": false,
+    "maximum_persistence_mse_le_2x_initial": true,
+    "no_non_finite_state": true
+  },
+  "failed_gate_count": 9,
+  "classification": "OVERGROWN INITIAL PHENOTYPE WITH STRONG CONTRACTIVE PERSISTENCE; TARGET-TRAJECTORY SUPERVISION IMPROVED ATTRACTOR DIRECTION BUT DID NOT PRODUCE VALID CANONICAL HOMEOSTASIS OR LESION",
+  "interpretation": "ATTRACT-16 provides directional evidence that direct future target-state supervision can reverse long-horizon expansion, but the phenotype enters persistence already severely overgrown and lesion-invalid. Do not widen ATTRACT-16 by horizon or coefficient tuning. The next mechanism should change how viable support occupancy is represented or controlled."
+}
