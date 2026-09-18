@@ -1,6 +1,6 @@
 TITLE: DG-1A-P0 Current Status
 DATE: 2026-09-17
-STATUS: ACTIVE — STAB-14 CLOSED NEGATIVE / STAB-15 DESIGN NOT YET PREREGISTERED
+STATUS: ACTIVE — STAB-15 CLOSED NEGATIVE / STAB-16 DESIGN NOT YET PREREGISTERED
 TRACK: DG-1A
 CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; MEASURED_SANDBOX FOR CANONICAL EXPERIMENTS
 
@@ -46,18 +46,19 @@ HISTORICAL TRAINING MODES
 10. global_plus_foreground_bg_alpha_attractor_t16
 11. global_plus_foreground_bg_alpha_attractor_t16_ceil800\n12. global_plus_foreground_bg_alpha_attractor_t16_ceil800_traceceil800
 13. global_plus_foreground_bg_alpha_attractor_t16_ceil800_alloc_balanced_hard
+14. global_plus_foreground_bg_alpha_attractor_t16_life4_ceil800
 
 LATEST TEST STATUS
-STAB-14 reconstructed sandbox regression:
-176 passed
+STAB-15 reconstructed sandbox regression:
+192 passed
 0 failed
 
 Environment:
 Python 3.13.5
 PyTorch 2.10.0+cpu
 
-STAB-14 scientific source revision:
-81d70262fe2f3e66d83def3fa800fdef90f3fea0
+STAB-15 scientific source revision:
+5e3d52602ff38fbc2285cff9d495b79cfeb5826e
 
 source_revision_verified_checkout = false
 sandbox_source_byte_identity = false
@@ -336,20 +337,81 @@ research/experiments/dg1a/dg1a-p0-stab14-spec.ice
 research/experiments/dg1a/dg1a-p0-stab14-result.ice
 evidence/dg1a/p0_stab14_sandbox.json
 
+STAB-15 — LIFE4-DECOUPLE + CEIL-800 + ATTRACT-16
+CLOSED NEGATIVE / HIDDEN-LIFE COLLAPSE.
+
+Scientific source:
+5e3d52602ff38fbc2285cff9d495b79cfeb5826e
+
+Regression:
+192 passed
+0 failed
+
+Measured training endpoint:
+- global visible MSE: 0.0287033431;
+- foreground morphology MSE: 0.4064190388;
+- ATTRACT mature samples: 0 / 8;
+- hidden-life batch mean: 0.375;
+- hidden-life batch max: 1;
+- CEIL-800 loss: 0.0.
+
+Measured growth/recovery:
+- pre-damage hidden-life cells: 1;
+- post-damage hidden-life cells: 0;
+- final recovery hidden-life cells: 0;
+- pre-lesion visible MSE: 0.0272321105;
+- DamageEffect: +0.0002611615;
+- RelativeDamageEffect: 0.0095902033;
+- RecoveryFraction: 0.0;
+- stable T50: not attained.
+
+Measured persistence:
+- initial hidden-life cells: 1;
+- peak hidden-life cells: 1;
+- final hidden-life cells: 0;
+- drift: -1;
+- initial visible MSE: 0.0272324514;
+- final visible MSE: 0.0295742173.
+
+Preregistered gates:
+6 / 14 failed.
+
+Interpretation:
+decoupling liveness from visible alpha removed incidental survival pressure. Under visible-only morphology supervision, unchanged hidden L2, an upper-bound-only CEIL term, and mature-only ATTRACT, hidden life never reached the 113-cell maturity floor and repeatedly collapsed to seed/dead occupancy.
+
+The low global visible MSE is the sparse-target blank-output pathology, not a viable morphology success. Foreground morphology MSE remained ~0.406.
+
+This establishes:
+- visible-alpha/liveness conflation is not itself the complete solution;
+- a dedicated hidden-life channel is architecturally possible but needs positive viability-to-morphology coupling;
+- an upper bound cannot create missing life;
+- mature-only ATTRACT cannot help if life never reaches maturity.
+
+Do not:
+- exempt LIFE4 from hidden L2 after observing this result;
+- reduce hidden L2;
+- seed visible alpha as a rescue;
+- add a direct hidden-life target mask inside STAB-15;
+- lower maturity threshold;
+- weaken viability gates.
+
+DURABLE STAB-15 RECORDS
+research/experiments/dg1a/dg1a-p0-stab15-spec.ice
+research/experiments/dg1a/dg1a-p0-stab15-result.ice
+evidence/dg1a/p0_stab15_sandbox.json
+
 NEXT BOUNDED PACKET
-Provisionally DG-1A-P0-STAB-15 — DESIGN / PREREGISTRATION ONLY.
+Provisionally DG-1A-P0-STAB-16 — DESIGN / PREREGISTRATION ONLY.
 
 Preferred research seam:
-a morphology-aware support-usefulness mechanism built on the STAB-12 baseline that allows auxiliary living support when it is functionally coupled to target-visible morphology, while penalizing redundant exterior support.
+a positive viability-to-morphology coupling for decoupled life that prevents hidden-life collapse without forcing life to equal the visible target mask and without merely tuning hidden L2 or the 800-cell ceiling.
 
-Do not use another raw-count extension or exact hard target-mask equality objective.
-
-No STAB-15 mechanism is selected by this status record.
+No STAB-16 mechanism is selected by this status record.
 
 BOUNDARY
 P0 remains morphology/developmental-substrate research only.
 Do not begin DG-1B, ancestor inheritance, structural growth, developmental adapters, or Fibonacci scheduling from this packet.
 
 NEXT ACTION
-Research and preregister one discriminating STAB-15 morphologically useful-support mechanism using STAB-12 as the directional baseline.
+Research and preregister one discriminating STAB-16 positive viability-to-morphology coupling mechanism.
 Do not execute it before exact mechanism and gates exist in .ice.
