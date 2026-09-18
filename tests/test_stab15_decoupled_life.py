@@ -29,13 +29,13 @@ ROOT = Path(__file__).resolve().parents[1]
 MODE = "global_plus_foreground_bg_alpha_attractor_t16_life4_ceil800"
 
 
-def _target(channels: int = 8, size: int = 40) -> torch.Tensor:
+def _target(channels: int = 8, size: int = 40, radius: int = 6) -> torch.Tensor:
     return make_target(
         batch_size=1,
         channels=channels,
         height=size,
         width=size,
-        spec=TargetSpec(radius=6),
+        spec=TargetSpec(radius=radius),
     )
 
 
@@ -125,7 +125,7 @@ def test_life4_ceiling_gradient_uses_target_alpha_mask_and_only_life_channel() -
 
 
 def test_visible_morphology_loss_ignores_life4_directly() -> None:
-    target = _target(channels=8, size=9)
+    target = _target(channels=8, size=9, radius=2)
     result_a = torch.zeros_like(target)
     result_b = result_a.clone()
     result_b[:, 4].fill_(9.0)
@@ -142,7 +142,7 @@ def test_visible_morphology_loss_ignores_life4_directly() -> None:
 
 def test_life4_full_objective_matches_stab12_visible_formula() -> None:
     result = torch.zeros((1, 8, 9, 9), dtype=torch.float32)
-    target = _target(channels=8, size=9)
+    target = _target(channels=8, size=9, radius=2)
     attractor = torch.tensor(0.25)
     occupancy = torch.tensor(0.125)
     cfg = TrainingConfig(loss_mode=MODE, visible_channels=4)
