@@ -1,6 +1,6 @@
 TITLE: DG-1A-P0 Current Status
 DATE: 2026-09-18
-STATUS: ACTIVE — STAB-18 PREREGISTERED / IMPLEMENTED / ACCEPTANCE IN PROGRESS
+STATUS: ACTIVE — STAB-18 CLOSED UNEXECUTED / STAB-18-R1 PREREGISTERED + IMPLEMENTED / ACCEPTANCE IN PROGRESS
 TRACK: DG-1A
 CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; MEASURED_SANDBOX FOR CANONICAL EXPERIMENTS
 
@@ -8,7 +8,7 @@ BRANCH
 dg1a-p0
 
 LATEST VERIFIED REPOSITORY FRONTIER BEFORE THIS STATUS UPDATE
-714cb10bf5963d47b07ecaf8184ea89a179692a5
+771235595b19602fa61189f3bf2b9d2fca1c63cf
 
 CURRENT PURPOSE
 Establish a trustworthy canonical developmental NCA control with meaningful viable growth, bounded support, long-horizon homeostasis, meaningful damage, and stable regeneration before DG-1B functional computation or later Yggdrasil mechanisms are opened.
@@ -499,22 +499,85 @@ research/experiments/dg1a/dg1a-p0-stab17-spec.ice
 research/experiments/dg1a/dg1a-p0-stab17-result.ice
 evidence/dg1a/p0_stab17_sandbox.json
 
-STAB-18 — CAUSAL-LATENT-DROPOUT25-PRUNE-T16 + FRONTIER-FLOOR-113 + LIFE4-DECOUPLE + CEIL-800 + ATTRACT-16
-PREREGISTERED / IMPLEMENTED / ACCEPTANCE IN PROGRESS — NOT EXECUTED.
+STAB-18 — ORIGINAL CAUSAL-LATENT-DROPOUT25-PRUNE-T16
+CLOSED UNEXECUTED — ACCEPTANCE-DISCOVERED RNG STREAM ALIASING CONFOUND.
 
-Preregistration:
+Original preregistration:
 research/experiments/dg1a/dg1a-p0-stab18-spec.ice
 preregistration commit:
 e6cb795c0bfa7de96400214bb0978878658368c3
 
-Frozen scientific implementation source:
+Original frozen implementation source:
 1e50388cc4fe0f86ac68e304cca62e7944b7a8bf
 
-Frozen loss mode:
-global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_causal_latent_dropout25_prune_t16
+The original candidate was never scientifically executed and is not a scientific negative.
 
-Acceptance evidence completed:
-- STAB-18 targeted contracts: 19 passed / 0 failed;
+Acceptance review found:
+- the original probe helper saved the main generator state;
+- it sampled torch.rand([B,1,H,W]) for ProbeDrop < 0.25;
+- it restored the main generator state;
+- the first future NCA step then sampled torch.rand([B,1,H,W]) from that same restored state for fire mask <= 0.50;
+- therefore ProbeDrop was necessarily a subset of the first-step fire mask.
+
+Conclusion:
+save/restore gave zero durable RNG consumption but did not provide pseudorandom-domain independence.
+The original causal measurement was confounded by immediate update-schedule membership.
+
+STAB-18-R1 — CAUSAL-LATENT-DROPOUT25-PRUNE-T16-DOMAINSEP
+PREREGISTERED / IMPLEMENTED / ACCEPTANCE IN PROGRESS — NOT EXECUTED.
+
+R1 preregistration:
+research/experiments/dg1a/dg1a-p0-stab18-r1-spec.ice
+commit:
+f9e09f36470c1d718c3e30a1a954cd18570b83f2
+
+R1 fixed loss mode:
+global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_causal_latent_dropout25_prune_t16_domainsep
+
+R1 correction:
+- preserve Bernoulli probe fraction 0.25;
+- preserve mature-only LIFE4 probe scope;
+- preserve T16 matched intact/counterfactual trajectories;
+- preserve causal delta classification and one-sided LIFE4 STE prune gradient;
+- preserve FRONTIER-FLOOR-113, CEIL-800, ATTRACT-16, hidden L2, canonical envelope, and all 14 gates;
+- derive a temporary probe-generator seed as SHA256(main_generator_state_bytes || fixed domain tag);
+- use first 8 digest bytes unsigned big-endian, masked to 63 bits;
+- never sample the probe from the main trajectory generator;
+- discard the temporary probe generator after mask generation.
+
+Fixed domain tag:
+DG1A_P0_STAB18_R1_CAUSAL_PROBE_V1
+
+Reference seed contract:
+main torch.Generator manual_seed(1)
+=> probe seed 3494006018084941813
+
+Runtime-equivalent reference check completed:
+- 9 x 9 all-live LIFE4 fixture;
+- 14 cells selected by R1 probe;
+- 7 selected probe cells have first-main-stream random value > 0.50;
+- R1 probe is not equal to first-main-stream < 0.25;
+- main generator state unchanged;
+- same main generator state reproduces same mask;
+- different main generator state changes mask.
+
+R1 implementation commits:
+- normal training: 26b319443f43cf10a08f4185c782e28e87de5002
+- normal branch join repair: b7bda76423822935b04cf01b418027f226e45bba
+- resumable parity: de0d8e24696730c1ce9f2d482ecb1a654c751c5c
+- resumable branch join repair: 8fd556f7bd6de4e2fcb34ca31279edca9d23151c
+- config allow mode: 84bcbb9eb7fa2e62c9bf43d4b67d298a241d8aed
+- frozen R1 YAML: 46c17de13b59d0bac2fb1dd0c1236b43f87a9f75
+- R1 contracts: 4265688cda2c5a6f43cd59185881a54512c746a2
+- R1 contract import repair: 771235595b19602fa61189f3bf2b9d2fca1c63cf
+
+R1 test surface:
+tests/test_stab18_r1_domain_separation.py
+20 test functions present.
+Executable pytest is not yet claimed because the current sandbox cannot resolve github.com and the reconstructed checkout from the prior sandbox was reset.
+
+Historical acceptance evidence preserved:
+- original STAB-18 targeted contracts before discovery: 19 passed / 0 failed;
 - core historical regression: 54 passed / 0 failed;
 - reconstructed STAB-06: 10 passed / 0 failed;
 - reconstructed STAB-07: 10 passed / 0 failed;
@@ -527,47 +590,43 @@ Acceptance evidence completed:
 - reconstructed STAB-14: 13 passed / 0 failed.
 
 STAB-15 acceptance defect:
-The original STAB-15 test helper hard-coded TargetSpec(radius=6) while two tests requested a 9 x 9 target. The strict radius-fit validator already existed before STAB-15 was introduced, so those two tests were invalid at fixture construction and did not demonstrate a scientific-code regression.
+The original STAB-15 test helper hard-coded TargetSpec(radius=6) while two tests requested a 9 x 9 target. The radius-fit validator already existed before STAB-15 was introduced, so this was a historical fixture defect rather than a scientific-code regression.
 
 Fixture-only repair:
 714cb10bf5963d47b07ecaf8184ea89a179692a5
 
-Repair scope:
-- parameterize the historical helper radius with default 6;
-- use radius 2 only for the two 9 x 9 tiny fixtures;
-- no assertions changed;
-- no scientific source changed;
-- both previously blocked assertions were independently exercised with the exact repository target/metric/objective formulas and passed.
+No assertions were weakened or removed.
 
-Static compatibility proof:
-- STAB-15 normal and resumable mode branches are byte-identical to the STAB-17-qualified source;
-- STAB-16 normal and resumable mode branches are byte-identical to the STAB-17-qualified source;
-- STAB-17 normal and resumable mode branches are byte-identical to the STAB-17-qualified source;
-- STAB-16 test/config blobs are unchanged;
-- STAB-17 test/config blobs are unchanged;
-- STAB-18 additions are exact loss-mode-gated branches and do not rewrite STAB-15/16/17 execution paths.
+Compatibility proof after R1:
+- STAB-15 normal/resumable execution branches are byte-identical to original STAB-18 source 1e50388...;
+- STAB-16 normal/resumable execution branches are byte-identical;
+- STAB-17 normal/resumable execution branches are byte-identical;
+- original STAB-18 normal/resumable execution branches are byte-identical;
+- R1 is isolated behind a new loss mode.
 
 Acceptance still outstanding before scientific execution:
 - executable STAB-04 / STAB-05 replay;
 - executable repaired STAB-15 replay;
 - executable STAB-16 / STAB-17 replay;
+- executable STAB-18-R1 targeted contracts;
 - final combined reconstructed regression.
 
 Scientific execution state:
 NOT STARTED.
-No seed-0 STAB-18 training may begin until the remaining executable acceptance surface is green.
+No seed-0 R1 training may begin until the complete executable acceptance surface is green.
 
 NEXT BOUNDED PACKET
-DG-1A-P0-STAB-18 — ACCEPTANCE CLOSEOUT, THEN EXACTLY ONE SEED-0 CANONICAL RUN.
+DG-1A-P0-STAB-18-R1 — ACCEPTANCE CLOSEOUT, THEN EXACTLY ONE SEED-0 CANONICAL RUN.
 
 Preferred research seam:
-causal contribution of latent support to visible morphology, not raw count, target-mask equality, or geometric proximity.
+causal contribution of latent support to visible morphology under a domain-separated intervention.
 
-The STAB-18 mechanism is frozen by preregistration; do not alter it during acceptance or after observing the scientific run.
+The R1 mechanism is frozen by preregistration.
+Do not tune it during acceptance or after observing the scientific run.
 
 BOUNDARY
 P0 remains morphology/developmental-substrate research only.
 Do not begin DG-1B, ancestor inheritance, structural growth, developmental adapters, or Fibonacci scheduling from this packet.
 
 NEXT ACTION
-Finish the remaining executable historical regression with zero failures. If and only if acceptance is fully green, execute exactly one canonical seed-0 STAB-18 200-iteration candidate with no tuning.
+Finish the remaining executable historical regression plus STAB-18-R1 contracts with zero failures. If and only if acceptance is fully green, execute exactly one canonical seed-0 STAB-18-R1 200-iteration candidate with no tuning.
