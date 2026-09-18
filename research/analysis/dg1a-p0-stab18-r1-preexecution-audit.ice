@@ -62,6 +62,27 @@ Interpretation:
 No residual probe/fire schedule coupling was detected across the full T16 horizon.
 The original STAB-18 first-step RNG aliasing confound is not present in R1.
 
+FULL TRAINING RNG-SCHEDULE ISOLATION
+STAB-16 and STAB-18-R1 share the same seed and all non-loss-mode configuration.
+
+CPU schedule:
+- pool.sample uses the same cpu_rng;
+- damage-mode selection uses the same cpu_rng;
+- rollout-step selection uses the same cpu_rng;
+- the R1 auxiliary branch does not consume cpu_rng.
+
+Device schedule:
+- the primary model.run consumes device_rng exactly as in STAB-16;
+- intact T16 auxiliary rollout snapshots/restores device_rng;
+- the R1 probe mask uses a separate temporary generator seeded from a hash of the read-only main RNG state;
+- counterfactual T16 auxiliary rollout snapshots/restores device_rng.
+
+Therefore the causal auxiliary machinery is designed to leave the main stochastic update stream at exactly the same post-iteration generator state it would have had without the auxiliary trajectories.
+
+This is stronger causal isolation than first-step decorrelation alone:
+scientific differences from STAB-16 should not be attributable to a shifted canonical random schedule, subject to executable acceptance confirming the implementation contract.
+
+
 INTERVENTION SEMANTICS
 The intervention zeros latent channels 4..15 at selected hard-live sites while preserving visible RGBA 0..3.
 
