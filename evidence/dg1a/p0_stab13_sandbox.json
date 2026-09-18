@@ -1,0 +1,102 @@
+{
+  "schema": "yggdrasil.dg1a.p0.stab13.sandbox.v1",
+  "recorded_date": "2026-09-17",
+  "experiment": "DG-1A-P0-STAB-13",
+  "candidate": "TRACE-CEIL-800 + CEIL-800 + ATTRACT-16",
+  "status": "CLOSED_NEGATIVE",
+  "candidate_worth_widening": false,
+  "scientific_source_revision": "422b8eec20f8089a40bb83b66f8452e0bf1b525e",
+  "source_revision_verified_checkout": false,
+  "sandbox_source_byte_identity": false,
+  "evidence_class": "MEASURED_SANDBOX",
+  "reconstruction_basis": "independently verified connected-GitHub readbacks",
+  "regression": {
+    "passed": 163,
+    "failed": 0
+  },
+  "environment": {
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu",
+    "device": "cpu",
+    "precision": "float32"
+  },
+  "config": {
+    "path": "experiments/dg1a/configs/p0_stab13_traceceil800.yaml",
+    "sha256": "0eaafecf239a2e33aeb82494887a46a41f9f138682f1737c667fc115588c5fbd",
+    "seed": 0,
+    "iterations": 200,
+    "virtual_probe_steps": 16,
+    "endpoint_occupancy_ceiling": 800,
+    "trace_occupancy_ceiling": 800,
+    "loss_mode": "global_plus_foreground_bg_alpha_attractor_t16_ceil800_traceceil800"
+  },
+  "checkpoint": {
+    "iteration": 200,
+    "sha256": "9d14cd00abe55e61a927e243a8c1827680f17cc5ffe32e9269814e90515cf204",
+    "protocol": "deterministic single-writer atomic resumable checkpoints"
+  },
+  "local_full_evaluation_sha256": "df8fa4e2123f51942308b8f89ebc0deb0c7cbfb3df581cd4e7cc59c402b742da",
+  "training": {
+    "iterations_completed": 200,
+    "initial_recorded_loss": 0.4459555447101593,
+    "minimum_recorded_loss": 0.4079751670360565,
+    "final_recorded_loss": 0.9951227307319641,
+    "final_global_morphology_mse": 0.06094479560852051,
+    "final_foreground_morphology_mse": 0.1257571280002594,
+    "final_background_alpha_mse": 0.04109293594956398,
+    "final_attractor_trajectory_loss": 0.2293405532836914,
+    "final_formation_occupancy_ceiling_loss": 0.24371954798698425,
+    "final_formation_active_cells_mean": 1167.75,
+    "final_formation_active_cells_max": 1434,
+    "final_trace_occupancy_ceiling_loss": 0.2942671477794647,
+    "final_trace_active_cells_mean": 1215.046875,
+    "final_trace_active_cells_max": 1446,
+    "final_mature_samples": 8,
+    "final_batch_size": 8,
+    "no_non_finite_state": true
+  },
+  "growth_recovery": {
+    "pre_damage_active_cells": 1193,
+    "post_damage_active_cells": 641,
+    "final_recovery_active_cells": 1439,
+    "pre_lesion_global_mse": 0.06457372009754181,
+    "post_lesion_global_mse": 0.0561438612639904,
+    "final_recovery_global_mse": 0.08838319033384323,
+    "damage_effect": -0.008429858833551407,
+    "relative_damage_effect": -0.13054627828190302,
+    "active_cell_removal_fraction": 0.46269907795473597,
+    "recovery_fraction": null,
+    "stable_t50_steps": null,
+    "stable_t90_steps": null
+  },
+  "persistence": {
+    "initial_active_cells": 1130,
+    "final_active_cells": 1456,
+    "maximum_active_cells": 1517,
+    "active_cell_drift": 326,
+    "initial_global_mse": 0.061497725546360016,
+    "final_global_mse": 0.0938185527920723,
+    "maximum_global_mse": 0.09983174502849579,
+    "max_error_degradation": 0.03833401948213577,
+    "visible_state_drift_mse": 0.021383799612522125
+  },
+  "gates": {
+    "pre_damage_active_113_800": false,
+    "final_recovery_active_113_800": false,
+    "final_persistence_active_113_800": false,
+    "maximum_persistence_active_le_800": false,
+    "final_persistence_active_drift_le_0": false,
+    "damage_effect_gt_0": false,
+    "relative_damage_effect_ge_0_10": false,
+    "active_cell_removal_fraction_ge_0_10": true,
+    "stable_t50_attained": false,
+    "final_recovery_fraction_gt_0_4230230485": false,
+    "pre_lesion_global_mse_le_0_0361635": false,
+    "final_persistence_global_mse_le_0_0361635": false,
+    "maximum_persistence_mse_le_2x_initial": true,
+    "no_non_finite_state": true
+  },
+  "failed_gate_count": 11,
+  "classification": "TRACE-WIDE OCCUPANCY PRESSURE DESTABILIZED THE STAB-12 NEAR-BOUND REGIME; GROSS OVERGROWTH AND INVALID LESION RETURNED",
+  "interpretation": "Applying CEIL-800 to all 16 ATTRACT future states did not suppress transient overshoot. It materially worsened formation, persistence, morphology, and recovery relative to STAB-12. Do not tune trace horizon, ceiling, coefficient, reduction, or STE mask. The next packet should abandon repeated raw-cardinality pressure and target spatial/morphological allocation of living support."
+}
