@@ -28,7 +28,7 @@ IMPLEMENTED SURFACE
 - HOME-1 mature-only one-step local velocity control;
 - HOME-T16 fixed 16-step local velocity control;
 - ATTRACT-16 fixed 16-step future target-state supervision;
-- CEIL-800 formation-stage hard occupancy ceiling with restricted straight-through gradient;
+- CEIL-800 formation-stage hard occupancy ceiling with restricted straight-through gradient;\n- TRACE-CEIL-800 trajectory-wide occupancy-pressure negative control;
 - RNG-neutral virtual trajectories;
 - virtual-trajectory pool isolation;
 - fail-closed config/finite-state validation.
@@ -44,7 +44,7 @@ HISTORICAL TRAINING MODES
 8. global_plus_foreground_bg_alpha_homeostasis
 9. global_plus_foreground_bg_alpha_homeostasis_t16
 10. global_plus_foreground_bg_alpha_attractor_t16
-11. global_plus_foreground_bg_alpha_attractor_t16_ceil800
+11. global_plus_foreground_bg_alpha_attractor_t16_ceil800\n12. global_plus_foreground_bg_alpha_attractor_t16_ceil800_traceceil800
 
 LATEST TEST STATUS
 STAB-12 reconstructed sandbox regression:
