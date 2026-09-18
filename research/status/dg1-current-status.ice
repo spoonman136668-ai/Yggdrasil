@@ -1,6 +1,6 @@
 TITLE: DG-1 Current Research Status
 DATE: 2026-09-17
-STATUS: ACTIVE — DG-1A P0 STAB-13 CLOSED NEGATIVE / STAB-14 DESIGN
+STATUS: ACTIVE — DG-1A P0 STAB-14 CLOSED NEGATIVE / STAB-15 DESIGN
 TRACK: DG-1
 CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; MEASURED_SANDBOX FOR CANONICAL EXPERIMENTS
 
@@ -24,11 +24,11 @@ Establish a viable canonical DG-1A developmental substrate that:
 before DG-1B functional computation is opened.
 
 LATEST RECONSTRUCTED TEST STATUS
-148 passed
+176 passed
 0 failed
 
-STAB-12 scientific source:
-19c758e7d006b3a4da46ee5d5c15ce01acf5fba4
+STAB-14 scientific source:
+81d70262fe2f3e66d83def3fa800fdef90f3fea0
 
 source_revision_verified_checkout = false
 sandbox_source_byte_identity = false
@@ -112,17 +112,42 @@ Do not tune TRACE-CEIL horizon, ceiling, coefficient, reduction, or STE scope.
 Return to STAB-12 as the useful directional baseline.
 The unresolved seam is spatial/morphological allocation of living support.
 
+STAB-14 BALANCED-HARD-ALLOC + CEIL-800 + ATTRACT-16:
+CLOSED NEGATIVE / SPATIAL-ALLOCATION REGRESSION.
+- scientific source: 81d70262fe2f3e66d83def3fa800fdef90f3fea0;
+- regression: 176 passed / 0 failed;
+- pre-damage active: 1097;
+- persistence: 1014 -> peak 1477 -> 1112;
+- drift: +98;
+- final recovery active: 1078;
+- DamageEffect: negative;
+- pre-lesion MSE: 0.0587935299;
+- final persistence MSE: 0.0712424740;
+- support FP rate at final training record: 0.6946872473;
+- support FN rate: 0.0077433628;
+- target TP cells mean: 112.125 / 113;
+- 11 / 14 gates failed.
+
+STAB-14 INTERPRETATION
+Exact hard living-support equality with the visible target mask is not the missing solution.
+The allocation loss strongly protected target foreground but allowed large redundant exterior living support and destroyed the STAB-12 near-bound regime.
+
+This closes hard target-mask overlap as the current direction.
+Do not tune FP/FN weights, allocation coefficient, threshold, temporal scope, CEIL-800, or ATTRACT-16 after observing this result.
+
+Return to STAB-12 as the useful baseline.
+The unresolved seam is now morphologically useful support representation: auxiliary living support may be legitimate, but redundant exterior support must be distinguishable from target-critical or functionally coupled support.
+
 NEXT BOUNDED PACKET
-DG-1A-P0-STAB-14 — DESIGN / PREREGISTRATION ONLY.
+DG-1A-P0-STAB-15 — DESIGN / PREREGISTRATION ONLY.
 
 Preferred seam:
-spatially target-aligned living-support allocation using the STAB-12 baseline, without tightening the 800-cell ceiling and without more trajectory-wide raw-cardinality pressure.
+a morphology-aware support-usefulness mechanism using the STAB-12 baseline that can retain useful auxiliary living cells without rewarding redundant exterior support.
 
-The STAB-14 mechanism must:
-- address transient overshoot rather than only endpoint count;
-- distinguish useful target support from redundant living support;
-- avoid STAB-06-style blanket threshold suppression;
-- avoid post-result tuning of the 800 ceiling;
+The STAB-15 mechanism must:
+- avoid another raw-cardinality extension;
+- avoid exact hard visible-target mask equality;
+- preserve CEIL-800 and ATTRACT-16 unchanged unless explicitly superseded;
 - remain one fixed preregistered mechanism.
 
 FIBONACCI TRACK
@@ -135,5 +160,5 @@ Do not activate CKB runtime, Coinbase/live broker systems, TradeGuard, deploymen
 P0 remains morphology/developmental-substrate research and does not establish cognition or general intelligence.
 
 NEXT ACTION
-Research and preregister one discriminating STAB-14 spatial support-allocation mechanism.
+Research and preregister one discriminating STAB-15 morphologically useful-support mechanism.
 Do not execute it before preregistration.
