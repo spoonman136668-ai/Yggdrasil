@@ -630,3 +630,135 @@ Do not begin DG-1B, ancestor inheritance, structural growth, developmental adapt
 
 NEXT ACTION
 Finish the remaining executable historical regression plus STAB-18-R1 contracts with zero failures. If and only if acceptance is fully green, execute exactly one canonical seed-0 STAB-18-R1 200-iteration candidate with no tuning.
+
+
+RESEARCH-FRONTIER RECONCILIATION — 2026-09-18
+This section records post-preregistration research/audit work only.
+It does NOT change STAB-18-R1 implementation, scientific source, acceptance requirements, seed budget, or gates.
+
+CURRENT VERIFIED BRANCH HEAD AT RECONCILIATION
+4bbc7a835be218b69ac9a93c988608c4751929be
+
+FROZEN STAB-18-R1 SCIENTIFIC IMPLEMENTATION BASIS
+e7710a29768ebc852a19796ea42eba4c10629412
+
+CANONICAL R1 STATE
+- scientific execution: NOT STARTED;
+- single seed-0 / 200-iteration budget: UNSPENT;
+- 14 scientific gates: UNCHANGED;
+- mandatory historical executable acceptance: STILL OUTSTANDING;
+- no post-hoc tuning authorized.
+
+POST-PREREGISTRATION RESEARCH AUDITS
+1. CAUSAL CREDIT RESOLUTION
+research/experiments/dg1a/dg1a-p0-stab18-r1-credit-resolution-audit.ice
+Finding:
+the frozen 25% global group probe is scientifically meaningful but coarse; in balanced additive toys it can apply substantial collateral pressure to beneficial cells.
+
+2. LOCAL PROBE RESOLUTION
+research/experiments/dg1a/dg1a-p0-stab18-r1-local-probe-resolution-audit.ice
+Finding:
+if latent causal roles have even modest spatial correlation, small local counterfactual probes can outperform global 25% dropout on both attribution precision and causal-signal magnitude.
+This is contingency research only; R1 remains global25.
+
+3. DAMAGE-OCCUPANCY RELATION
+research/experiments/dg1a/dg1a-p0-stab18-r1-damage-occupancy-audit.ice
+Finding:
+across viable STAB-04..17 candidates, mature occupancy and RelativeDamageEffect are strongly negatively associated post hoc.
+Severe overgrowth repeatedly predicts lesions that improve morphology.
+The relation is descriptive, non-IID, and NON-GATING.
+
+4. INJURY-RECRUITMENT GAP
+research/experiments/dg1a/dg1a-p0-stab18-r1-injury-recruitment-audit.ice
+Finding:
+pre-LIFE4 viable STAB-07..14 candidates restored a median ~92% of lesion-removed active population, whereas STAB-16/17 restored ~0.7% / ~8.0%.
+The gap survives a basic post-lesion occupancy-matching control.
+
+5. LIFE4 GRADIENT-TOPOLOGY AUDIT
+research/experiments/dg1a/dg1a-p0-stab18-r1-life4-gradient-topology-audit.ice
+Finding:
+LIFE4 decoupling removes the direct visible-alpha/liveness gradient bridge.
+FRONTIER-FLOOR-113 restores baseline viability but supplies no positive frontier gradient while LIFE4 count remains >=113.
+R1 adds additional explicit downward causal pressure but no injury-conditioned upward recruitment signal.
+
+6. TEMPORAL WOUND-SIGNAL FEASIBILITY
+research/experiments/dg1a/dg1a-p0-stab18-r1-temporal-wound-signal-audit.ice
+Finding:
+current binary LIFE4 geometry cannot reliably distinguish acute internal wound boundary from stable exterior boundary; one-step temporal support information can.
+Canonical synthetic wounds are locally detectable and spatially traversable within the existing rollout horizon.
+
+7. ACTUAL-PERCEPTION WOUND-MEMORY POC
+research/experiments/dg1a/dg1a-p0-stab18-r1-wound-memory-perception-poc.ice
+Finding:
+the existing identity/Sobel NCA perception plus a small local MLP is sufficient to decode a synthetic temporal support-memory cue without increasing state width or receptive field.
+
+8. RECURRENT REPAIR ROLLOUT POC
+research/experiments/dg1a/dg1a-p0-stab18-r1-wound-memory-repair-rollout-poc.ice
+Finding:
+a clean held-out synthetic wound can be filled layer-by-layer with zero outward growth, but ungated memory propagation becomes unstable under small maintenance turnover.
+A distinct injury-licensing stage is therefore required.
+
+9. WOUND-MEMORY ROBUSTNESS BOUNDARY
+research/experiments/dg1a/dg1a-p0-stab18-r1-wound-memory-robustness-audit.ice
+Finding:
+persistent structured analog memory noise can trigger rare catastrophic or frequent false repair cascades.
+Spatial consensus helps but is insufficient at stronger persistent noise.
+Raw wound memory is NOT ready to become a candidate.
+
+10. SPATIOTEMPORAL INJURY-GATE AUDIT
+research/experiments/dg1a/dg1a-p0-stab18-r1-spatiotemporal-injury-gate-audit.ice
+Finding:
+time persistence + local cluster agreement suppress moderate noise but cannot reliably separate highly persistent structured noise without large wound-recall loss.
+Do not ratchet threshold/persistence/component parameters.
+
+11. REDUNDANT INJURY-CUE RELIABILITY
+research/experiments/dg1a/dg1a-p0-stab18-r1-redundant-injury-cue-audit.ice
+Finding:
+multiple overlapping injury cues can sharply reduce false decisions only when their error modes retain meaningful independence.
+Raw duplicated channels with highly correlated noise give little reliability gain.
+This yields a testable Yggdrasil hypothesis for repair-associated redundancy.
+
+12. REPAIR-SIGNAL LIFETIME GEOMETRY NEGATIVE
+research/experiments/dg1a/dg1a-p0-stab18-r1-repair-signal-lifetime-geometry-audit.ice
+Finding:
+for the canonical 35% central lesion across tested 113..797-cell disk bodies, a simple isotropic repair wave can reach the ordinary exterior before it reaches the deepest wound cell.
+Signal TTL/decay alone therefore cannot guarantee inward repair without outward growth.
+Propagation and LIFE4 recruitment must remain contextually distinct.
+
+13. OOD GEOMETRY GENERALIZATION
+research/experiments/dg1a/dg1a-p0-stab18-r1-wound-cue-geometry-generalization-audit.ice
+Finding:
+a temporal classifier trained only on disks generalized strongly across 140 lesions on ellipse/rectangle/cross/dumbbell/crescent/annulus/C-shape morphologies, including stable internal cavities.
+Hard concave/large-wound cases remain incomplete, supporting richer learned predictive state rather than a single scalar memory cue.
+
+14. AUXILIARY LATENT INJURY DIAGNOSTIC PREREGISTRATION
+research/experiments/dg1a/dg1a-p0-stab18-r1-latent-injury-diagnostic-spec.ice
+Finding:
+a non-gating post-R1 observational protocol is now frozen before the R1 result exists.
+It measures per-channel injury discriminability, pooled ensemble gain, hidden noise covariance/effective dimension, spatial lesion response, LIFE4/alpha turnover, and maintenance-to-recovery regime changes.
+The synthetic validation explicitly prevents covariance/effective-rank alone from being misread as redundant injury information.
+
+CURRENT CONTINGENCY MODEL
+The post-R1 research branch is now decomposed into three control problems:
+
+A. MAINTENANCE ECONOMY
+retain causally useful latent support and suppress redundant/harmful bulk.
+STAB-18-R1 is the frozen canonical test of this seam.
+
+B. INJURY-STATE INFERENCE
+if repair remains absent after useful maintenance is established, infer acute damage from robust local multi-cue predictive error rather than absolute population count or one noisy memory scalar.
+
+C. REPAIR RECRUITMENT / TERMINATION
+communicate injury through transient local state while licensing LIFE4 recruitment contextually toward missing internal support, then return toward economical maintenance.
+Signal propagation must not be equated with unrestricted growth.
+
+RESEARCH STOPPING RULE
+Do NOT implement a new repair mechanism before R1 is resolved.
+The contingency work exists to reduce post-R1 search entropy, not to bypass the frozen experiment.
+
+NEXT CANONICAL ACTION REMAINS UNCHANGED
+Finish mandatory executable historical acceptance with zero failures.
+If and only if acceptance is fully green:
+execute exactly one seed-0 STAB-18-R1 candidate,
+apply all 14 gates,
+then execute the already-preregistered non-gating latent diagnostic on the saved checkpoint.
