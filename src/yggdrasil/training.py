@@ -10,10 +10,11 @@ from .nca import NeuralCellularAutomaton
 from .pool import StatePool
 from .resources import snapshot_resources
 TrainingVariant = Literal['growth_only', 'persistence', 'regeneration']
-TrainingLossMode = Literal['global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis', 'global_plus_foreground_bg_alpha_homeostasis_t16', 'global_plus_foreground_bg_alpha_attractor_t16', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_traceceil800', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_alloc_balanced_hard', 'global_plus_foreground_bg_alpha_attractor_t16_life4_ceil800', 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800', 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_visanchor_r1']
+TrainingLossMode = Literal['global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis', 'global_plus_foreground_bg_alpha_homeostasis_t16', 'global_plus_foreground_bg_alpha_attractor_t16', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_traceceil800', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_alloc_balanced_hard', 'global_plus_foreground_bg_alpha_attractor_t16_life4_ceil800', 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800', 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_visanchor_r1', 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_causal_latent_dropout25_prune_t16']
 HOME_T16_PROBE_STEPS = 16
 FORMATION_OCCUPANCY_CEILING = 800
 LIFE_VIABILITY_FLOOR = 113
+CAUSAL_LATENT_DROPOUT_FRACTION = 0.25
 
 @dataclass(frozen=True)
 class TrainingConfig:
@@ -60,7 +61,7 @@ class TrainingConfig:
             raise ValueError('gradient_clip_norm must be positive')
         if self.hidden_state_l2_weight < 0:
             raise ValueError('hidden_state_l2_weight must be non-negative')
-        if self.loss_mode not in {'global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis', 'global_plus_foreground_bg_alpha_homeostasis_t16', 'global_plus_foreground_bg_alpha_attractor_t16', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_traceceil800', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_alloc_balanced_hard', 'global_plus_foreground_bg_alpha_attractor_t16_life4_ceil800', 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800', 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_visanchor_r1'}:
+        if self.loss_mode not in {'global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis', 'global_plus_foreground_bg_alpha_homeostasis_t16', 'global_plus_foreground_bg_alpha_attractor_t16', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_traceceil800', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_alloc_balanced_hard', 'global_plus_foreground_bg_alpha_attractor_t16_life4_ceil800', 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800', 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_visanchor_r1', 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_causal_latent_dropout25_prune_t16'}:
             raise ValueError(f'unsupported training loss mode: {self.loss_mode}')
         if not 0 < self.visible_channels <= model.config.state_channels:
             raise ValueError('visible_channels is outside model state')
@@ -81,6 +82,11 @@ class TrainingConfig:
                 raise ValueError('STAB-17 requires model alive_channel 4')
             if self.visible_channels != 4:
                 raise ValueError('STAB-17 requires exactly four visible morphology channels')
+        if self.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_causal_latent_dropout25_prune_t16':
+            if model.config.alive_channel != 4:
+                raise ValueError('STAB-18 requires model alive_channel 4')
+            if self.visible_channels != 4:
+                raise ValueError('STAB-18 requires exactly four visible morphology channels')
 
 @dataclass(frozen=True)
 class TrainingSummary:
@@ -96,7 +102,7 @@ class TrainingSummary:
     def to_dict(self) -> dict[str, object]:
         return asdict(self)
 
-def training_morphology_loss(*, result: Tensor, target: Tensor, config: TrainingConfig, homeostasis_loss: Tensor | None = None, attractor_loss: Tensor | None = None, occupancy_loss: Tensor | None = None, trace_occupancy_loss: Tensor | None = None, allocation_loss: Tensor | None = None, frontier_floor_loss: Tensor | None = None, visible_anchor_loss: Tensor | None = None) -> Tensor:
+def training_morphology_loss(*, result: Tensor, target: Tensor, config: TrainingConfig, homeostasis_loss: Tensor | None = None, attractor_loss: Tensor | None = None, occupancy_loss: Tensor | None = None, trace_occupancy_loss: Tensor | None = None, allocation_loss: Tensor | None = None, frontier_floor_loss: Tensor | None = None, visible_anchor_loss: Tensor | None = None, causal_prune_loss: Tensor | None = None) -> Tensor:
     if config.loss_mode == 'global_mse':
         return morphology_mse(result, target, visible_channels=config.visible_channels)
     if config.loss_mode == 'balanced_fg_bg':
@@ -169,6 +175,16 @@ def training_morphology_loss(*, result: Tensor, target: Tensor, config: Training
         if visible_anchor_loss is None:
             raise ValueError('STAB-17 requires visible_anchor_loss')
         return morphology_mse(result, target, visible_channels=config.visible_channels) + foreground_morphology_mse(result, target, visible_channels=config.visible_channels, alpha_channel=3, foreground_threshold=0.1) + background_alpha_mse(result, target, alpha_channel=3, foreground_threshold=0.1) + attractor_loss + occupancy_loss + frontier_floor_loss + visible_anchor_loss
+    if config.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_causal_latent_dropout25_prune_t16':
+        if attractor_loss is None:
+            raise ValueError('STAB-18 requires attractor_loss')
+        if occupancy_loss is None:
+            raise ValueError('STAB-18 requires occupancy_loss')
+        if frontier_floor_loss is None:
+            raise ValueError('STAB-18 requires frontier_floor_loss')
+        if causal_prune_loss is None:
+            raise ValueError('STAB-18 requires causal_prune_loss')
+        return morphology_mse(result, target, visible_channels=config.visible_channels) + foreground_morphology_mse(result, target, visible_channels=config.visible_channels, alpha_channel=3, foreground_threshold=0.1) + background_alpha_mse(result, target, alpha_channel=3, foreground_threshold=0.1) + attractor_loss + occupancy_loss + frontier_floor_loss + causal_prune_loss
     raise ValueError(f'unsupported training loss mode: {config.loss_mode}')
 
 def _rng_neutral_homeostasis_probe(*, model: NeuralCellularAutomaton, result: Tensor, generator: torch.Generator) -> Tensor:
@@ -204,6 +220,100 @@ def attractor_trajectory_loss(states: tuple[Tensor, ...], target: Tensor, *, vis
             + background_alpha_mse(state, target, alpha_channel=3, foreground_threshold=0.1)
         )
     return torch.stack(losses).mean()
+
+def attractor_trajectory_loss_per_sample(states: tuple[Tensor, ...], target: Tensor, *, visible_channels: int=4) -> Tensor:
+    if len(states) != HOME_T16_PROBE_STEPS:
+        raise ValueError(f'ATTRACT-16 requires exactly {HOME_T16_PROBE_STEPS} future states')
+    if target.ndim != 4:
+        raise ValueError('target must have shape [batch, channels, height, width]')
+    if visible_channels <= 0 or visible_channels > target.shape[1]:
+        raise ValueError('visible_channels is outside the state vector')
+    foreground = target[:, 3:4] > 0.1
+    background = ~foreground
+    foreground_counts = foreground.expand(-1, visible_channels, -1, -1).flatten(1).sum(dim=1)
+    background_counts = background.flatten(1).sum(dim=1)
+    if bool((foreground_counts == 0).any()):
+        raise ValueError('target contains a sample with no foreground pixels')
+    if bool((background_counts == 0).any()):
+        raise ValueError('target contains a sample with no background pixels')
+    per_step = []
+    for state in states:
+        ensure_finite(state)
+        if state.shape != target.shape:
+            raise ValueError('state and target must have identical shape')
+        squared = (state[:, :visible_channels] - target[:, :visible_channels]) ** 2
+        global_loss = squared.flatten(1).mean(dim=1)
+        fg_loss = (squared * foreground.expand(-1, visible_channels, -1, -1).to(dtype=state.dtype)).flatten(1).sum(dim=1) / foreground_counts.to(dtype=state.dtype)
+        alpha_squared = state[:, 3:4] ** 2
+        bg_loss = (alpha_squared * background.to(dtype=state.dtype)).flatten(1).sum(dim=1) / background_counts.to(dtype=state.dtype)
+        per_step.append(global_loss + fg_loss + bg_loss)
+    return torch.stack(per_step, dim=0).mean(dim=0)
+
+def causal_latent_probe_mask(state: Tensor, *, generator: torch.Generator, life_channel: int=4, alive_threshold: float=0.1, fraction: float=CAUSAL_LATENT_DROPOUT_FRACTION) -> Tensor:
+    if state.ndim != 4:
+        raise ValueError('state must have shape [batch, channels, height, width]')
+    if not state.is_floating_point():
+        raise TypeError('state must use a floating-point dtype')
+    if not 0 <= life_channel < state.shape[1]:
+        raise ValueError('life_channel is outside the state vector')
+    if not 0.0 <= fraction <= 1.0:
+        raise ValueError('fraction must be in [0, 1]')
+    hard_alive = state[:, life_channel:life_channel + 1] > alive_threshold
+    rng_state = generator.get_state().clone()
+    try:
+        random_values = torch.rand(hard_alive.shape, device=state.device, dtype=state.dtype, generator=generator)
+    finally:
+        generator.set_state(rng_state)
+    return hard_alive & (random_values < fraction)
+
+def apply_latent_probe_intervention(state: Tensor, probe_mask: Tensor, *, visible_channels: int=4) -> Tensor:
+    if state.ndim != 4:
+        raise ValueError('state must have shape [batch, channels, height, width]')
+    if probe_mask.shape != (state.shape[0], 1, state.shape[2], state.shape[3]):
+        raise ValueError('probe_mask must have shape [batch, 1, height, width]')
+    if probe_mask.dtype != torch.bool:
+        raise TypeError('probe_mask must use bool dtype')
+    if not 0 < visible_channels < state.shape[1]:
+        raise ValueError('visible_channels must leave at least one latent channel')
+    result = state.clone()
+    latent = result[:, visible_channels:]
+    result[:, visible_channels:] = latent.masked_fill(probe_mask.expand(-1, latent.shape[1], -1, -1), 0)
+    return result
+
+def causal_latent_prune_terms(state: Tensor, probe_mask: Tensor, causal_delta: Tensor, *, life_channel: int=4, alive_threshold: float=0.1, maturity_floor: int=LIFE_VIABILITY_FLOOR) -> tuple[Tensor, Tensor, Tensor, Tensor, Tensor, Tensor]:
+    if state.ndim != 4:
+        raise ValueError('state must have shape [batch, channels, height, width]')
+    if not state.is_floating_point():
+        raise TypeError('state must use a floating-point dtype')
+    if probe_mask.shape != (state.shape[0], 1, state.shape[2], state.shape[3]):
+        raise ValueError('probe_mask must have shape [batch, 1, height, width]')
+    if probe_mask.dtype != torch.bool:
+        raise TypeError('probe_mask must use bool dtype')
+    if causal_delta.shape != (state.shape[0],):
+        raise ValueError('causal_delta must have shape [batch]')
+    if maturity_floor <= 0:
+        raise ValueError('maturity_floor must be positive')
+    if not 0 <= life_channel < state.shape[1]:
+        raise ValueError('life_channel is outside the state vector')
+    life = state[:, life_channel:life_channel + 1]
+    hard_alive = life > alive_threshold
+    hard_counts = hard_alive.flatten(1).sum(dim=1)
+    mature = hard_counts >= maturity_floor
+    dropped = probe_mask & hard_alive
+    dropped_counts = dropped.flatten(1).sum(dim=1)
+    classified = mature & (dropped_counts > 0)
+    detached_delta = causal_delta.detach()
+    nonbeneficial = classified & (detached_delta <= 0)
+    denom = hard_counts.to(dtype=state.dtype).clamp_min(1.0)
+    hard_fraction = nonbeneficial.to(dtype=state.dtype) * dropped_counts.to(dtype=state.dtype) / denom
+    correction = ((life - life.detach()) * dropped.to(dtype=state.dtype).detach() * nonbeneficial[:, None, None, None].to(dtype=state.dtype).detach()).flatten(1).sum(dim=1) / denom.detach()
+    per_sample = hard_fraction.detach() + correction
+    if bool(mature.any()):
+        loss = per_sample[mature].mean()
+    else:
+        loss = state.sum() * 0.0
+    actual_drop_fraction = dropped_counts.to(dtype=state.dtype) / denom
+    return loss, mature, classified, nonbeneficial, dropped_counts.detach(), actual_drop_fraction.detach()
 
 def formation_hard_active_counts(state: Tensor, *, alpha_channel: int=3, alive_threshold: float=0.1) -> Tensor:
     if state.ndim != 4:
@@ -439,6 +549,18 @@ def train(*, model: NeuralCellularAutomaton, seed_state: Tensor, target: Tensor,
         anchor_mature_samples = 0
         unanchored_life_fraction_mean = 0.0
         unanchored_life_cells_mean = 0.0
+        causal_prune_loss = None
+        causal_probe_mature_samples = 0
+        causal_probe_classified_samples = 0
+        causal_probe_nonbeneficial_samples = 0
+        causal_probe_nonbeneficial_fraction = 0.0
+        causal_probe_dropped_cells_mean = 0.0
+        causal_probe_actual_drop_fraction_mean = 0.0
+        causal_delta_mean = 0.0
+        causal_delta_min = 0.0
+        causal_delta_max = 0.0
+        causal_intact_future_loss_mean = 0.0
+        causal_counterfactual_future_loss_mean = 0.0
         if config.loss_mode == 'global_plus_foreground_bg_alpha_homeostasis':
             mature_mask = homeostasis_mature_sample_mask(result, target_batch, alpha_channel=3, foreground_threshold=0.1, alive_threshold=model.config.alive_threshold)
             homeostasis_mature_samples = int(mature_mask.sum().item())
@@ -573,7 +695,46 @@ def train(*, model: NeuralCellularAutomaton, seed_state: Tensor, target: Tensor,
             if anchor_mature_samples > 0:
                 unanchored_life_fraction_mean = float(anchor_fractions[anchor_mature_mask].mean().item())
                 unanchored_life_cells_mean = float(anchor_counts[anchor_mature_mask].mean().item())
-        morph = training_morphology_loss(result=result, target=target_batch, config=config, homeostasis_loss=homeostasis_loss, attractor_loss=attractor_loss, occupancy_loss=occupancy_loss, trace_occupancy_loss=trace_occupancy_loss, allocation_loss=allocation_loss, frontier_floor_loss=frontier_floor_loss, visible_anchor_loss=visible_anchor_loss)
+        elif config.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_causal_latent_dropout25_prune_t16':
+            mature_mask = decoupled_mature_sample_mask(result, target_batch, state_alive_channel=model.config.alive_channel, target_alpha_channel=3, foreground_threshold=0.1, alive_threshold=model.config.alive_threshold)
+            attractor_mature_samples = int(mature_mask.sum().item())
+            causal_probe_mature_samples = attractor_mature_samples
+            if attractor_mature_samples > 0:
+                mature_result = result[mature_mask]
+                mature_target = target_batch[mature_mask]
+                intact_trajectory = _rng_neutral_homeostasis_trajectory(model=model, result=mature_result, generator=device_rng)
+                intact_future = intact_trajectory[1:]
+                attractor_loss = attractor_trajectory_loss(intact_future, mature_target, visible_channels=config.visible_channels)
+                probe_mask = causal_latent_probe_mask(mature_result.detach(), generator=device_rng, life_channel=model.config.alive_channel, alive_threshold=model.config.alive_threshold, fraction=CAUSAL_LATENT_DROPOUT_FRACTION)
+                counterfactual_start = apply_latent_probe_intervention(mature_result.detach(), probe_mask, visible_channels=config.visible_channels)
+                with torch.no_grad():
+                    counterfactual_trajectory = _rng_neutral_homeostasis_trajectory(model=model, result=counterfactual_start, generator=device_rng)
+                    intact_per_sample = attractor_trajectory_loss_per_sample(tuple(x.detach() for x in intact_future), mature_target.detach(), visible_channels=config.visible_channels)
+                    counterfactual_per_sample = attractor_trajectory_loss_per_sample(counterfactual_trajectory[1:], mature_target.detach(), visible_channels=config.visible_channels)
+                    causal_delta = (counterfactual_per_sample - intact_per_sample).detach()
+                causal_prune_loss, _, classified_mask, nonbeneficial_mask, dropped_counts, actual_drop_fractions = causal_latent_prune_terms(mature_result, probe_mask, causal_delta, life_channel=model.config.alive_channel, alive_threshold=model.config.alive_threshold, maturity_floor=LIFE_VIABILITY_FLOOR)
+                causal_probe_classified_samples = int(classified_mask.sum().item())
+                causal_probe_nonbeneficial_samples = int(nonbeneficial_mask.sum().item())
+                causal_probe_nonbeneficial_fraction = causal_probe_nonbeneficial_samples / causal_probe_classified_samples if causal_probe_classified_samples > 0 else 0.0
+                causal_probe_dropped_cells_mean = float(dropped_counts.to(dtype=torch.float32).mean().item())
+                causal_probe_actual_drop_fraction_mean = float(actual_drop_fractions.to(dtype=torch.float32).mean().item())
+                if causal_probe_classified_samples > 0:
+                    classified_delta = causal_delta[classified_mask]
+                    causal_delta_mean = float(classified_delta.mean().item())
+                    causal_delta_min = float(classified_delta.min().item())
+                    causal_delta_max = float(classified_delta.max().item())
+                    causal_intact_future_loss_mean = float(intact_per_sample[classified_mask].mean().item())
+                    causal_counterfactual_future_loss_mean = float(counterfactual_per_sample[classified_mask].mean().item())
+            else:
+                attractor_loss = result.sum() * 0.0
+                causal_prune_loss = result.sum() * 0.0
+            occupancy_loss = decoupled_life_occupancy_ceiling_loss(result, target_batch, state_alive_channel=model.config.alive_channel, target_alpha_channel=3, foreground_threshold=0.1, alive_threshold=model.config.alive_threshold)
+            formation_counts = formation_hard_active_counts(result, alpha_channel=model.config.alive_channel, alive_threshold=model.config.alive_threshold)
+            formation_active_cells_mean = float(formation_counts.to(dtype=torch.float32).mean().detach().item())
+            formation_active_cells_max = int(formation_counts.max().detach().item())
+            frontier_floor_loss, frontier_counts = frontier_life_floor_loss(result, life_channel=model.config.alive_channel, alive_threshold=model.config.alive_threshold, viability_floor=LIFE_VIABILITY_FLOOR)
+            frontier_cells_mean = float(frontier_counts.to(dtype=torch.float32).mean().detach().item())
+        morph = training_morphology_loss(result=result, target=target_batch, config=config, homeostasis_loss=homeostasis_loss, attractor_loss=attractor_loss, occupancy_loss=occupancy_loss, trace_occupancy_loss=trace_occupancy_loss, allocation_loss=allocation_loss, frontier_floor_loss=frontier_floor_loss, visible_anchor_loss=visible_anchor_loss, causal_prune_loss=causal_prune_loss)
         hidden = torch.mean(result[:, config.visible_channels:] ** 2) if config.visible_channels < result.shape[1] else torch.zeros((), device=device, dtype=result.dtype)
         loss = morph + config.hidden_state_l2_weight * hidden
         if not torch.isfinite(loss):
@@ -697,6 +858,35 @@ def train(*, model: NeuralCellularAutomaton, seed_state: Tensor, target: Tensor,
                 item['anchor_mature_samples'] = anchor_mature_samples
                 item['unanchored_life_fraction_mean'] = unanchored_life_fraction_mean
                 item['unanchored_life_cells_mean'] = unanchored_life_cells_mean
+                item['life_channel'] = model.config.alive_channel
+                item['visible_alpha_channel'] = 3
+            if config.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_causal_latent_dropout25_prune_t16':
+                item['foreground_morphology_mse'] = float(foreground_morphology_mse(result, target_batch, visible_channels=config.visible_channels, alpha_channel=3, foreground_threshold=0.1).detach().item())
+                item['background_alpha_mse'] = float(background_alpha_mse(result, target_batch, alpha_channel=3, foreground_threshold=0.1).detach().item())
+                item['attractor_trajectory_loss'] = float(attractor_loss.detach().item()) if attractor_loss is not None else 0.0
+                item['attractor_mature_samples'] = attractor_mature_samples
+                item['attractor_probe_steps'] = HOME_T16_PROBE_STEPS
+                item['formation_occupancy_ceiling_loss'] = float(occupancy_loss.detach().item()) if occupancy_loss is not None else 0.0
+                item['formation_active_cells_mean'] = formation_active_cells_mean
+                item['formation_active_cells_max'] = formation_active_cells_max
+                item['formation_occupancy_ceiling'] = FORMATION_OCCUPANCY_CEILING
+                item['frontier_floor_loss'] = float(frontier_floor_loss.detach().item()) if frontier_floor_loss is not None else 0.0
+                item['frontier_cells_mean'] = frontier_cells_mean
+                item['causal_latent_prune_loss'] = float(causal_prune_loss.detach().item()) if causal_prune_loss is not None else 0.0
+                item['causal_probe_mature_samples'] = causal_probe_mature_samples
+                item['causal_probe_classified_samples'] = causal_probe_classified_samples
+                item['causal_probe_nonbeneficial_samples'] = causal_probe_nonbeneficial_samples
+                item['causal_probe_nonbeneficial_fraction'] = causal_probe_nonbeneficial_fraction
+                item['causal_probe_dropped_cells_mean'] = causal_probe_dropped_cells_mean
+                item['causal_probe_actual_drop_fraction_mean'] = causal_probe_actual_drop_fraction_mean
+                item['causal_delta_mean'] = causal_delta_mean
+                item['causal_delta_min'] = causal_delta_min
+                item['causal_delta_max'] = causal_delta_max
+                item['causal_intact_future_loss_mean'] = causal_intact_future_loss_mean
+                item['causal_counterfactual_future_loss_mean'] = causal_counterfactual_future_loss_mean
+                item['causal_dropout_fraction'] = CAUSAL_LATENT_DROPOUT_FRACTION
+                item['causal_probe_steps'] = HOME_T16_PROBE_STEPS
+                item['life_viability_floor'] = LIFE_VIABILITY_FLOOR
                 item['life_channel'] = model.config.alive_channel
                 item['visible_alpha_channel'] = 3
             history.append(item)
