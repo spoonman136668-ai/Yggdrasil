@@ -47,16 +47,16 @@ HISTORICAL TRAINING MODES
 11. global_plus_foreground_bg_alpha_attractor_t16_ceil800\n12. global_plus_foreground_bg_alpha_attractor_t16_ceil800_traceceil800
 
 LATEST TEST STATUS
-STAB-12 reconstructed sandbox regression:
-148 passed
+STAB-13 reconstructed sandbox regression:
+163 passed
 0 failed
 
 Environment:
 Python 3.13.5
 PyTorch 2.10.0+cpu
 
-STAB-12 scientific source revision:
-19c758e7d006b3a4da46ee5d5c15ce01acf5fba4
+STAB-13 scientific source revision:
+422b8eec20f8089a40bb83b66f8452e0bf1b525e
 
 source_revision_verified_checkout = false
 sandbox_source_byte_identity = false
