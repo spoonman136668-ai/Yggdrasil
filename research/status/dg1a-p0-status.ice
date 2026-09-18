@@ -1,6 +1,6 @@
 TITLE: DG-1A-P0 Current Status
 DATE: 2026-09-17
-STATUS: ACTIVE — STAB-12 CLOSED NEGATIVE / STAB-13 DESIGN NOT YET PREREGISTERED
+STATUS: ACTIVE — STAB-13 CLOSED NEGATIVE / STAB-14 DESIGN NOT YET PREREGISTERED
 TRACK: DG-1A
 CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; MEASURED_SANDBOX FOR CANONICAL EXPERIMENTS
 
@@ -223,11 +223,54 @@ CURRENT DECISIONS
 - do not begin DG-1B;
 - do not introduce Fibonacci scheduling into canonical P0.
 
+STAB-13 — TRACE-CEIL-800 + CEIL-800 + ATTRACT-16
+CLOSED NEGATIVE / CLEAR REGRESSION.
+
+Scientific source:
+422b8eec20f8089a40bb83b66f8452e0bf1b525e
+
+Regression:
+163 passed
+0 failed
+
+Measured result:
+- pre-damage active: 1193;
+- final recovery active: 1439;
+- persistence active: 1130 -> 1456;
+- persistence peak: 1517;
+- persistence drift: +326;
+- pre-lesion MSE: 0.0645737201;
+- final persistence MSE: 0.0938185528;
+- DamageEffect: -0.0084298588;
+- RelativeDamageEffect: -0.1305462783;
+- stable T50: not attained;
+- 11 / 14 gates failed.
+
+Interpretation:
+extending the exact same raw CEIL-800 pressure across ATTRACT-16's future trajectory destabilized the STAB-12 near-bound regime rather than suppressing transient overshoot.
+
+STAB-13 therefore closes the raw-cardinality temporal-scope family:
+- do not lengthen TRACE-CEIL;
+- do not lower its ceiling;
+- do not increase its coefficient;
+- do not use max reduction as a post-result variant;
+- do not alter the STE mask;
+- do not weaken gates.
+
+Return to STAB-12 as the useful directional baseline.
+
+The unresolved seam is spatial / morphological allocation of living support, not more raw active-cell count pressure.
+
+DURABLE STAB-13 RECORDS
+research/experiments/dg1a/dg1a-p0-stab13-spec.ice
+research/experiments/dg1a/dg1a-p0-stab13-result.ice
+evidence/dg1a/p0_stab13_sandbox.json
+
 NEXT BOUNDED PACKET
-Provisionally DG-1A-P0-STAB-13 — DESIGN / PREREGISTRATION ONLY.
+Provisionally DG-1A-P0-STAB-14 — DESIGN / PREREGISTRATION ONLY.
 
 Preferred research seam:
-target-aligned support allocation across the persistence trajectory.
+spatially target-aligned living-support allocation using the STAB-12 baseline, without changing the 800-cell ceiling or adding more trajectory-wide raw-cardinality pressure.
 
 A new mechanism should address the specific pattern:
 799 -> 1015 -> 623 active cells,
@@ -235,12 +278,12 @@ with morphology MSE rising from 0.04447 to 0.07369 before contracting.
 
 It should distinguish morphologically useful target support from transient excess living support instead of merely tightening the same raw count ceiling.
 
-No STAB-13 mechanism is selected by this status record.
+No STAB-14 mechanism is selected by this status record.
 
 BOUNDARY
 P0 remains morphology/developmental-substrate research only.
 Do not begin DG-1B, ancestor inheritance, structural growth, developmental adapters, or Fibonacci scheduling from this packet.
 
 NEXT ACTION
-Research and preregister one discriminating STAB-13 support-allocation / transient-persistence mechanism.
+Research and preregister one discriminating STAB-14 spatial support-allocation mechanism using STAB-12 as the directional baseline.
 Do not execute it before exact mechanism and gates exist in .ice.
