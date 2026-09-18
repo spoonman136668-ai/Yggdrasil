@@ -1,6 +1,6 @@
 TITLE: DG-1 Current Research Status
 DATE: 2026-09-17
-STATUS: ACTIVE — DG-1A P0 STAB-14 CLOSED NEGATIVE / STAB-15 DESIGN
+STATUS: ACTIVE — DG-1A P0 STAB-15 CLOSED NEGATIVE / STAB-16 DESIGN
 TRACK: DG-1
 CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; MEASURED_SANDBOX FOR CANONICAL EXPERIMENTS
 
@@ -24,11 +24,11 @@ Establish a viable canonical DG-1A developmental substrate that:
 before DG-1B functional computation is opened.
 
 LATEST RECONSTRUCTED TEST STATUS
-176 passed
+192 passed
 0 failed
 
-STAB-14 scientific source:
-81d70262fe2f3e66d83def3fa800fdef90f3fea0
+STAB-15 scientific source:
+5e3d52602ff38fbc2285cff9d495b79cfeb5826e
 
 source_revision_verified_checkout = false
 sandbox_source_byte_identity = false
@@ -138,17 +138,43 @@ Do not tune FP/FN weights, allocation coefficient, threshold, temporal scope, CE
 Return to STAB-12 as the useful baseline.
 The unresolved seam is now morphologically useful support representation: auxiliary living support may be legitimate, but redundant exterior support must be distinguishable from target-critical or functionally coupled support.
 
+STAB-15 LIFE4-DECOUPLE + CEIL-800 + ATTRACT-16:
+CLOSED NEGATIVE / HIDDEN-LIFE COLLAPSE.
+- scientific source: 5e3d52602ff38fbc2285cff9d495b79cfeb5826e;
+- regression: 192 passed / 0 failed;
+- pre-damage hidden-life cells: 1;
+- persistence: 1 -> peak 1 -> 0;
+- final recovery hidden-life cells: 0;
+- pre-lesion visible MSE: 0.0272321105;
+- foreground training MSE: 0.4064190388;
+- RelativeDamageEffect: 0.0095902033;
+- stable T50: not attained;
+- ATTRACT mature samples: 0 / 8;
+- 6 / 14 gates failed.
+
+STAB-15 INTERPRETATION
+Moving liveness to hidden channel 4 cleanly removed visible-alpha/liveness coupling, but the unchanged objective contained no positive incentive to maintain hidden life.
+
+The life channel never reached the 113-cell maturity floor, so ATTRACT-16 never activated.
+CEIL-800 was always inactive because life was far below its upper bound.
+The system returned to the sparse-target blank-output pathology: low global visible MSE with very poor target-foreground morphology and no viable organism.
+
+Do not tune hidden L2, seed visible alpha, lower maturity, or add a direct life target inside STAB-15.
+
+The unresolved seam is now explicit:
+POSITIVE VIABILITY-TO-MORPHOLOGY COUPLING FOR DECOUPLED LIFE.
+
 NEXT BOUNDED PACKET
-DG-1A-P0-STAB-15 — DESIGN / PREREGISTRATION ONLY.
+DG-1A-P0-STAB-16 — DESIGN / PREREGISTRATION ONLY.
 
 Preferred seam:
-a morphology-aware support-usefulness mechanism using the STAB-12 baseline that can retain useful auxiliary living cells without rewarding redundant exterior support.
+a positive viability-to-morphology coupling for hidden life that prevents collapse while allowing useful auxiliary support and preserving visible morphology separation.
 
-The STAB-15 mechanism must:
-- avoid another raw-cardinality extension;
-- avoid exact hard visible-target mask equality;
-- preserve CEIL-800 and ATTRACT-16 unchanged unless explicitly superseded;
-- remain one fixed preregistered mechanism.
+The STAB-16 mechanism must:
+- not simply reduce or remove hidden L2;
+- not directly force hidden life to equal the visible target mask;
+- not lower the 113 viability floor or 800 ceiling;
+- preserve one fixed preregistered construction.
 
 FIBONACCI TRACK
 DG-1A-FIB1 remains separate.
@@ -160,5 +186,5 @@ Do not activate CKB runtime, Coinbase/live broker systems, TradeGuard, deploymen
 P0 remains morphology/developmental-substrate research and does not establish cognition or general intelligence.
 
 NEXT ACTION
-Research and preregister one discriminating STAB-15 morphologically useful-support mechanism.
+Research and preregister one discriminating STAB-16 positive viability-to-morphology coupling mechanism.
 Do not execute it before preregistration.
