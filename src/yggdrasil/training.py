@@ -10,7 +10,7 @@ from .nca import NeuralCellularAutomaton
 from .pool import StatePool
 from .resources import snapshot_resources
 TrainingVariant = Literal['growth_only', 'persistence', 'regeneration']
-TrainingLossMode = Literal['global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis', 'global_plus_foreground_bg_alpha_homeostasis_t16', 'global_plus_foreground_bg_alpha_attractor_t16', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_traceceil800', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_alloc_balanced_hard']
+TrainingLossMode = Literal['global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis', 'global_plus_foreground_bg_alpha_homeostasis_t16', 'global_plus_foreground_bg_alpha_attractor_t16', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_traceceil800', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_alloc_balanced_hard', 'global_plus_foreground_bg_alpha_attractor_t16_life4_ceil800']
 HOME_T16_PROBE_STEPS = 16
 FORMATION_OCCUPANCY_CEILING = 800
 
@@ -59,12 +59,17 @@ class TrainingConfig:
             raise ValueError('gradient_clip_norm must be positive')
         if self.hidden_state_l2_weight < 0:
             raise ValueError('hidden_state_l2_weight must be non-negative')
-        if self.loss_mode not in {'global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis', 'global_plus_foreground_bg_alpha_homeostasis_t16', 'global_plus_foreground_bg_alpha_attractor_t16', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_traceceil800', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_alloc_balanced_hard'}:
+        if self.loss_mode not in {'global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis', 'global_plus_foreground_bg_alpha_homeostasis_t16', 'global_plus_foreground_bg_alpha_attractor_t16', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_traceceil800', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_alloc_balanced_hard', 'global_plus_foreground_bg_alpha_attractor_t16_life4_ceil800'}:
             raise ValueError(f'unsupported training loss mode: {self.loss_mode}')
         if not 0 < self.visible_channels <= model.config.state_channels:
             raise ValueError('visible_channels is outside model state')
         if self.record_every <= 0:
             raise ValueError('record_every must be positive')
+        if self.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16_life4_ceil800':
+            if model.config.alive_channel != 4:
+                raise ValueError('STAB-15 requires model alive_channel 4')
+            if self.visible_channels != 4:
+                raise ValueError('STAB-15 requires exactly four visible morphology channels')
 
 @dataclass(frozen=True)
 class TrainingSummary:
@@ -129,6 +134,12 @@ def training_morphology_loss(*, result: Tensor, target: Tensor, config: Training
         if trace_occupancy_loss is None:
             raise ValueError('STAB-13 requires trace_occupancy_loss')
         return morphology_mse(result, target, visible_channels=config.visible_channels) + foreground_morphology_mse(result, target, visible_channels=config.visible_channels, alpha_channel=3, foreground_threshold=0.1) + background_alpha_mse(result, target, alpha_channel=3, foreground_threshold=0.1) + attractor_loss + occupancy_loss + trace_occupancy_loss
+    if config.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16_life4_ceil800':
+        if attractor_loss is None:
+            raise ValueError('STAB-15 requires attractor_loss')
+        if occupancy_loss is None:
+            raise ValueError('STAB-15 requires occupancy_loss')
+        return morphology_mse(result, target, visible_channels=config.visible_channels) + foreground_morphology_mse(result, target, visible_channels=config.visible_channels, alpha_channel=3, foreground_threshold=0.1) + background_alpha_mse(result, target, alpha_channel=3, foreground_threshold=0.1) + attractor_loss + occupancy_loss
     raise ValueError(f'unsupported training loss mode: {config.loss_mode}')
 
 def _rng_neutral_homeostasis_probe(*, model: NeuralCellularAutomaton, result: Tensor, generator: torch.Generator) -> Tensor:
@@ -191,6 +202,42 @@ def formation_occupancy_ceiling_loss(result: Tensor, target: Tensor, *, alpha_ch
     background = target[:, alpha_channel:alpha_channel + 1] <= foreground_threshold
     active_background = hard_alive * background.to(dtype=result.dtype)
     surrogate_correction = ((alpha - alpha.detach()) * active_background.detach()).flatten(1).sum(dim=1)
+    ste_counts = hard_counts + surrogate_correction
+    normalized_excess = torch.relu(ste_counts - float(occupancy_ceiling)) / float(occupancy_ceiling)
+    return torch.mean(normalized_excess ** 2)
+
+def decoupled_mature_sample_mask(state: Tensor, target: Tensor, *, state_alive_channel: int, target_alpha_channel: int=3, foreground_threshold: float=0.1, alive_threshold: float=0.1) -> Tensor:
+    if state.shape != target.shape:
+        raise ValueError('state and target must have identical shape')
+    if not 0 <= state_alive_channel < state.shape[1]:
+        raise ValueError('state_alive_channel is outside the state vector')
+    if not 0 <= target_alpha_channel < target.shape[1]:
+        raise ValueError('target_alpha_channel is outside the target vector')
+    hard_alive = state[:, state_alive_channel:state_alive_channel + 1] > alive_threshold
+    foreground = target[:, target_alpha_channel:target_alpha_channel + 1] > foreground_threshold
+    active_counts = hard_alive.flatten(1).sum(dim=1)
+    target_counts = foreground.flatten(1).sum(dim=1)
+    return active_counts >= target_counts
+
+def decoupled_life_occupancy_ceiling_loss(result: Tensor, target: Tensor, *, state_alive_channel: int, target_alpha_channel: int=3, foreground_threshold: float=0.1, alive_threshold: float=0.1, occupancy_ceiling: int=FORMATION_OCCUPANCY_CEILING) -> Tensor:
+    if result.shape != target.shape:
+        raise ValueError('result and target must have identical shape')
+    if result.dtype != target.dtype:
+        raise TypeError('result and target must have identical dtype')
+    if result.device != target.device:
+        raise ValueError('result and target must be on the same device')
+    if occupancy_ceiling <= 0:
+        raise ValueError('occupancy_ceiling must be positive')
+    if not 0 <= state_alive_channel < result.shape[1]:
+        raise ValueError('state_alive_channel is outside the state vector')
+    if not 0 <= target_alpha_channel < target.shape[1]:
+        raise ValueError('target_alpha_channel is outside the target vector')
+    life = result[:, state_alive_channel:state_alive_channel + 1]
+    hard_alive = (life > alive_threshold).to(dtype=result.dtype)
+    hard_counts = hard_alive.flatten(1).sum(dim=1)
+    background = target[:, target_alpha_channel:target_alpha_channel + 1] <= foreground_threshold
+    active_background = hard_alive * background.to(dtype=result.dtype)
+    surrogate_correction = ((life - life.detach()) * active_background.detach()).flatten(1).sum(dim=1)
     ste_counts = hard_counts + surrogate_correction
     normalized_excess = torch.relu(ste_counts - float(occupancy_ceiling)) / float(occupancy_ceiling)
     return torch.mean(normalized_excess ** 2)
@@ -371,6 +418,20 @@ def train(*, model: NeuralCellularAutomaton, seed_state: Tensor, target: Tensor,
             support_false_positive_rate = float(fp_rate.item())
             support_false_negative_rate = float(fn_rate.item())
             support_true_positive_cells_mean = float(tp_mean.item())
+        elif config.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16_life4_ceil800':
+            mature_mask = decoupled_mature_sample_mask(result, target_batch, state_alive_channel=model.config.alive_channel, target_alpha_channel=3, foreground_threshold=0.1, alive_threshold=model.config.alive_threshold)
+            attractor_mature_samples = int(mature_mask.sum().item())
+            if attractor_mature_samples > 0:
+                mature_result = result[mature_mask]
+                mature_target = target_batch[mature_mask]
+                trajectory = _rng_neutral_homeostasis_trajectory(model=model, result=mature_result, generator=device_rng)
+                attractor_loss = attractor_trajectory_loss(trajectory[1:], mature_target, visible_channels=config.visible_channels)
+            else:
+                attractor_loss = result.sum() * 0.0
+            occupancy_loss = decoupled_life_occupancy_ceiling_loss(result, target_batch, state_alive_channel=model.config.alive_channel, target_alpha_channel=3, foreground_threshold=0.1, alive_threshold=model.config.alive_threshold)
+            formation_counts = formation_hard_active_counts(result, alpha_channel=model.config.alive_channel, alive_threshold=model.config.alive_threshold)
+            formation_active_cells_mean = float(formation_counts.to(dtype=torch.float32).mean().detach().item())
+            formation_active_cells_max = int(formation_counts.max().detach().item())
         morph = training_morphology_loss(result=result, target=target_batch, config=config, homeostasis_loss=homeostasis_loss, attractor_loss=attractor_loss, occupancy_loss=occupancy_loss, trace_occupancy_loss=trace_occupancy_loss, allocation_loss=allocation_loss)
         hidden = torch.mean(result[:, config.visible_channels:] ** 2) if config.visible_channels < result.shape[1] else torch.zeros((), device=device, dtype=result.dtype)
         loss = morph + config.hidden_state_l2_weight * hidden
@@ -451,6 +512,18 @@ def train(*, model: NeuralCellularAutomaton, seed_state: Tensor, target: Tensor,
                 item['support_false_positive_rate'] = support_false_positive_rate
                 item['support_false_negative_rate'] = support_false_negative_rate
                 item['support_true_positive_cells_mean'] = support_true_positive_cells_mean
+            if config.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16_life4_ceil800':
+                item['foreground_morphology_mse'] = float(foreground_morphology_mse(result, target_batch, visible_channels=config.visible_channels, alpha_channel=3, foreground_threshold=0.1).detach().item())
+                item['background_alpha_mse'] = float(background_alpha_mse(result, target_batch, alpha_channel=3, foreground_threshold=0.1).detach().item())
+                item['attractor_trajectory_loss'] = float(attractor_loss.detach().item()) if attractor_loss is not None else 0.0
+                item['attractor_mature_samples'] = attractor_mature_samples
+                item['attractor_probe_steps'] = HOME_T16_PROBE_STEPS
+                item['formation_occupancy_ceiling_loss'] = float(occupancy_loss.detach().item()) if occupancy_loss is not None else 0.0
+                item['formation_active_cells_mean'] = formation_active_cells_mean
+                item['formation_active_cells_max'] = formation_active_cells_max
+                item['formation_occupancy_ceiling'] = FORMATION_OCCUPANCY_CEILING
+                item['life_channel'] = model.config.alive_channel
+                item['visible_alpha_channel'] = 3
             history.append(item)
     elapsed = time.perf_counter() - start
     losses = [float(x['loss']) for x in history]
