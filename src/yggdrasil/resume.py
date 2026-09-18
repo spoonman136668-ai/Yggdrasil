@@ -8,7 +8,7 @@ from .damage import center_lesion
 from .metrics import active_cell_count, background_alive_margin_loss, background_alpha_mse, ensure_finite, foreground_morphology_mse, far_field_background_alpha_mse, graded_background_alpha_mse, homeostasis_background_velocity_loss, homeostasis_mature_sample_mask, homeostasis_trajectory_velocity_loss, morphology_mse
 from .nca import NeuralCellularAutomaton
 from .pool import StatePool
-from .training import FORMATION_OCCUPANCY_CEILING, HOME_T16_PROBE_STEPS, TrainingConfig, TrainingSummary, _rng_neutral_homeostasis_probe, _rng_neutral_homeostasis_trajectory, attractor_trajectory_loss, formation_hard_active_counts, formation_occupancy_ceiling_loss, trace_occupancy_ceiling_loss, training_morphology_loss
+from .training import FORMATION_OCCUPANCY_CEILING, HOME_T16_PROBE_STEPS, TrainingConfig, TrainingSummary, _rng_neutral_homeostasis_probe, _rng_neutral_homeostasis_trajectory, attractor_trajectory_loss, formation_hard_active_counts, formation_occupancy_ceiling_loss, trace_occupancy_ceiling_loss, balanced_hard_support_allocation_terms, training_morphology_loss
 
 @dataclass
 class ResumableTrainingSession:
@@ -86,6 +86,10 @@ class ResumableTrainingSession:
         trace_occupancy_loss = None
         trace_active_cells_mean = 0.0
         trace_active_cells_max = 0
+        allocation_loss = None
+        support_false_positive_rate = 0.0
+        support_false_negative_rate = 0.0
+        support_true_positive_cells_mean = 0.0
         if self.config.loss_mode == 'global_plus_foreground_bg_alpha_homeostasis':
             mature_mask = homeostasis_mature_sample_mask(result, self.target_batch, alpha_channel=3, foreground_threshold=0.1, alive_threshold=self.model.config.alive_threshold)
             homeostasis_mature_samples = int(mature_mask.sum().item())
@@ -151,7 +155,25 @@ class ResumableTrainingSession:
             formation_counts = formation_hard_active_counts(result, alpha_channel=3, alive_threshold=self.model.config.alive_threshold)
             formation_active_cells_mean = float(formation_counts.to(dtype=torch.float32).mean().detach().item())
             formation_active_cells_max = int(formation_counts.max().detach().item())
-        morph = training_morphology_loss(result=result, target=self.target_batch, config=self.config, homeostasis_loss=homeostasis_loss, attractor_loss=attractor_loss, occupancy_loss=occupancy_loss, trace_occupancy_loss=trace_occupancy_loss)
+        elif self.config.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_alloc_balanced_hard':
+            mature_mask = homeostasis_mature_sample_mask(result, self.target_batch, alpha_channel=3, foreground_threshold=0.1, alive_threshold=self.model.config.alive_threshold)
+            attractor_mature_samples = int(mature_mask.sum().item())
+            if attractor_mature_samples > 0:
+                mature_result = result[mature_mask]
+                mature_target = self.target_batch[mature_mask]
+                trajectory = _rng_neutral_homeostasis_trajectory(model=self.model, result=mature_result, generator=self.device_rng)
+                attractor_loss = attractor_trajectory_loss(trajectory[1:], mature_target, visible_channels=self.config.visible_channels)
+            else:
+                attractor_loss = result.sum() * 0.0
+            occupancy_loss = formation_occupancy_ceiling_loss(result, self.target_batch, alpha_channel=3, foreground_threshold=0.1, alive_threshold=self.model.config.alive_threshold)
+            formation_counts = formation_hard_active_counts(result, alpha_channel=3, alive_threshold=self.model.config.alive_threshold)
+            formation_active_cells_mean = float(formation_counts.to(dtype=torch.float32).mean().detach().item())
+            formation_active_cells_max = int(formation_counts.max().detach().item())
+            allocation_loss, fp_rate, fn_rate, tp_mean = balanced_hard_support_allocation_terms(result, self.target_batch, alpha_channel=3, foreground_threshold=0.1, alive_threshold=self.model.config.alive_threshold)
+            support_false_positive_rate = float(fp_rate.item())
+            support_false_negative_rate = float(fn_rate.item())
+            support_true_positive_cells_mean = float(tp_mean.item())
+        morph = training_morphology_loss(result=result, target=self.target_batch, config=self.config, homeostasis_loss=homeostasis_loss, attractor_loss=attractor_loss, occupancy_loss=occupancy_loss, trace_occupancy_loss=trace_occupancy_loss, allocation_loss=allocation_loss)
         hidden = torch.mean(result[:, self.config.visible_channels:] ** 2) if self.config.visible_channels < result.shape[1] else torch.zeros((), device=self.device, dtype=result.dtype)
         loss = morph + self.config.hidden_state_l2_weight * hidden
         if not torch.isfinite(loss):
@@ -217,6 +239,20 @@ class ResumableTrainingSession:
                 item['trace_active_cells_mean'] = trace_active_cells_mean
                 item['trace_active_cells_max'] = trace_active_cells_max
                 item['trace_occupancy_ceiling'] = FORMATION_OCCUPANCY_CEILING
+            if self.config.loss_mode == 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_alloc_balanced_hard':
+                item['foreground_morphology_mse'] = float(foreground_morphology_mse(result, self.target_batch, visible_channels=self.config.visible_channels, alpha_channel=3, foreground_threshold=0.1).detach().item())
+                item['background_alpha_mse'] = float(background_alpha_mse(result, self.target_batch, alpha_channel=3, foreground_threshold=0.1).detach().item())
+                item['attractor_trajectory_loss'] = float(attractor_loss.detach().item()) if attractor_loss is not None else 0.0
+                item['attractor_mature_samples'] = attractor_mature_samples
+                item['attractor_probe_steps'] = HOME_T16_PROBE_STEPS
+                item['formation_occupancy_ceiling_loss'] = float(occupancy_loss.detach().item()) if occupancy_loss is not None else 0.0
+                item['formation_active_cells_mean'] = formation_active_cells_mean
+                item['formation_active_cells_max'] = formation_active_cells_max
+                item['formation_occupancy_ceiling'] = FORMATION_OCCUPANCY_CEILING
+                item['support_allocation_loss'] = float(allocation_loss.detach().item()) if allocation_loss is not None else 0.0
+                item['support_false_positive_rate'] = support_false_positive_rate
+                item['support_false_negative_rate'] = support_false_negative_rate
+                item['support_true_positive_cells_mean'] = support_true_positive_cells_mean
             self.history.append(item)
         self.iteration += 1
 
