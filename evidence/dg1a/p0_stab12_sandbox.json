@@ -1,0 +1,111 @@
+{
+  "schema": "yggdrasil.dg1a.p0.stab12.sandbox.v1",
+  "recorded_date": "2026-09-17",
+  "experiment": "DG-1A-P0-STAB-12",
+  "candidate": "CEIL-800 + ATTRACT-16",
+  "status": "CLOSED_NEGATIVE",
+  "candidate_worth_widening": false,
+  "scientific_source_revision": "19c758e7d006b3a4da46ee5d5c15ce01acf5fba4",
+  "source_revision_verified_checkout": false,
+  "sandbox_source_byte_identity": false,
+  "evidence_class": "MEASURED_SANDBOX",
+  "reconstruction_basis": "independently verified connected-GitHub readbacks",
+  "regression": {
+    "passed": 148,
+    "failed": 0
+  },
+  "environment": {
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu",
+    "device": "cpu",
+    "precision": "float32"
+  },
+  "config": {
+    "path": "experiments/dg1a/configs/p0_stab12_ceil800_attract_t16.yaml",
+    "sha256": "9282a481baeadb4035f5cdbe65c1d7870c208ff994c6f210e125d315e09faaa0",
+    "seed": 0,
+    "iterations": 200,
+    "virtual_probe_steps": 16,
+    "formation_occupancy_ceiling": 800,
+    "loss_mode": "global_plus_foreground_bg_alpha_attractor_t16_ceil800"
+  },
+  "checkpoint": {
+    "iteration": 200,
+    "sha256": "d599dee7a8634e459c00b3979768dbf81261b3b124551362d5967f4f8c09cdb7",
+    "protocol": "deterministic single-writer atomic resumable checkpoints"
+  },
+  "local_full_evaluation_sha256": "9b0a0a0a44752bc2b57642f3c9aa66558910742bf8326eea6c1a065d615e5064",
+  "training": {
+    "iterations_completed": 200,
+    "initial_recorded_loss": 0.4459555447101593,
+    "minimum_recorded_loss": 0.4229927361011505,
+    "final_recorded_loss": 0.4229927361011505,
+    "final_global_morphology_mse": 0.034597478806972504,
+    "final_foreground_morphology_mse": 0.16257141530513763,
+    "final_background_alpha_mse": 0.018452338874340057,
+    "final_attractor_trajectory_loss": 0.2073710411787033,
+    "final_formation_occupancy_ceiling_loss": 0,
+    "final_formation_active_cells_mean": 588.375,
+    "final_formation_active_cells_max": 780,
+    "final_mature_samples": 8,
+    "final_batch_size": 8,
+    "attractor_probe_steps": 16,
+    "no_non_finite_state": true
+  },
+  "growth_recovery": {
+    "growth_steps": 96,
+    "recovery_steps": 96,
+    "pre_damage_active_cells": 857,
+    "post_damage_active_cells": 435,
+    "final_recovery_active_cells": 655,
+    "pre_lesion_global_mse": 0.04567475616931915,
+    "post_lesion_global_mse": 0.045724380761384964,
+    "final_recovery_global_mse": 0.03180495649576187,
+    "damage_effect": 0.00004962459206581116,
+    "relative_damage_effect": 0.0010864774380371011,
+    "active_cell_removal_fraction": 0.49241540256709454,
+    "recovery_fraction": 1,
+    "stable_t50_steps": 59,
+    "stable_t90_steps": 59,
+    "normalized_recovery_auc": 0.390625
+  },
+  "persistence": {
+    "growth_steps": 96,
+    "persistence_steps": 96,
+    "initial_active_cells": 799,
+    "final_active_cells": 623,
+    "maximum_active_cells": 1015,
+    "active_cell_drift": -176,
+    "initial_global_mse": 0.044469136744737625,
+    "final_global_mse": 0.043481484055519104,
+    "maximum_global_mse": 0.07369300723075867,
+    "max_error_degradation": 0.029223870486021042,
+    "visible_state_drift_mse": 0.016673825681209564
+  },
+  "gates": {
+    "pre_damage_active_113_800": false,
+    "final_recovery_active_113_800": true,
+    "final_persistence_active_113_800": true,
+    "maximum_persistence_active_le_800": false,
+    "final_persistence_active_drift_le_0": true,
+    "damage_effect_gt_0": true,
+    "relative_damage_effect_ge_0_10": false,
+    "active_cell_removal_fraction_ge_0_10": true,
+    "stable_t50_attained": true,
+    "final_recovery_fraction_gt_0_4230230485": true,
+    "pre_lesion_global_mse_le_0_0361635": false,
+    "final_persistence_global_mse_le_0_0361635": false,
+    "maximum_persistence_mse_le_2x_initial": true,
+    "no_non_finite_state": true
+  },
+  "failed_gate_count": 5,
+  "failed_gates": [
+    "pre_damage_active_113_800",
+    "maximum_persistence_active_le_800",
+    "relative_damage_effect_ge_0_10",
+    "pre_lesion_global_mse_le_0_0361635",
+    "final_persistence_global_mse_le_0_0361635"
+  ],
+  "classification": "NEAR-BOUND FORMATION WITH TRANSIENT PERSISTENCE OVERSHOOT; LESION SIGN RESTORED BUT TOO WEAK; MORPHOLOGY THRESHOLDS STILL MISSED",
+  "interpretation": "CEIL-800 substantially reduced formation overgrowth while preserving ATTRACT-16 contraction and restored a positive lesion effect. Remaining failures are small formation overshoot, transient persistence overshoot, weak lesion salience, and morphology error above threshold. Do not ratchet the ceiling or coefficient inside STAB-12."
+}
