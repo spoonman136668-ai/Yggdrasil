@@ -1,0 +1,99 @@
+{
+  "schema": "yggdrasil.dg1a.p0.stab14.sandbox.v1",
+  "recorded_date": "2026-09-17",
+  "experiment": "DG-1A-P0-STAB-14",
+  "candidate": "BALANCED-HARD-ALLOC + CEIL-800 + ATTRACT-16",
+  "status": "CLOSED_NEGATIVE",
+  "candidate_worth_widening": false,
+  "scientific_source_revision": "81d70262fe2f3e66d83def3fa800fdef90f3fea0",
+  "source_revision_verified_checkout": false,
+  "sandbox_source_byte_identity": false,
+  "evidence_class": "MEASURED_SANDBOX",
+  "reconstruction_basis": "independently verified connected-GitHub readbacks",
+  "regression": {
+    "passed": 176,
+    "failed": 0
+  },
+  "environment": {
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu",
+    "device": "cpu",
+    "precision": "float32"
+  },
+  "config": {
+    "path": "experiments/dg1a/configs/p0_stab14_alloc_balanced_hard.yaml",
+    "sha256": "263351a199f6c7757517e7d27c53743c3c601113b2976f6d1a6ebc4f2ac7211c",
+    "seed": 0,
+    "iterations": 200,
+    "loss_mode": "global_plus_foreground_bg_alpha_attractor_t16_ceil800_alloc_balanced_hard"
+  },
+  "checkpoint": {
+    "iteration": 200,
+    "sha256": "7c935be3015774e8eaf78e2a0e2032f77ee8ed8d99a036731ffb7935f544f4c6",
+    "protocol": "deterministic single-writer atomic resumable checkpoints"
+  },
+  "local_full_evaluation_sha256": "81e16e4bfd5110d147b5d7fe72c7240bb8a71fb3cdf867cd3890c7daccda02af",
+  "training": {
+    "iterations_completed": 200,
+    "initial_recorded_loss": 0.9415307641029358,
+    "minimum_recorded_loss": 0.6897137761116028,
+    "final_recorded_loss": 0.9957820177078247,
+    "final_global_morphology_mse": 0.05898018181324005,
+    "final_foreground_morphology_mse": 0.11771927028894424,
+    "final_background_alpha_mse": 0.03764498606324196,
+    "final_attractor_trajectory_loss": 0.2149733453989029,
+    "final_formation_occupancy_ceiling_loss": 0.2152482271194458,
+    "final_support_allocation_loss": 0.35121530294418335,
+    "final_support_false_positive_rate": 0.6946872472763062,
+    "final_support_false_negative_rate": 0.007743362803012133,
+    "final_support_true_positive_cells_mean": 112.125,
+    "final_formation_active_cells_mean": 1145.125,
+    "final_formation_active_cells_max": 1331,
+    "final_mature_samples": 8,
+    "no_non_finite_state": true
+  },
+  "growth_recovery": {
+    "pre_damage_active_cells": 1097,
+    "post_damage_active_cells": 613,
+    "final_recovery_active_cells": 1078,
+    "pre_lesion_global_mse": 0.058793529868125916,
+    "post_lesion_global_mse": 0.05378036946058273,
+    "final_recovery_global_mse": 0.06248519942164421,
+    "damage_effect": -0.005013160407543182,
+    "relative_damage_effect": -0.08526721254511709,
+    "active_cell_removal_fraction": 0.4412032816773017,
+    "recovery_fraction": null,
+    "stable_t50_steps": null,
+    "stable_t90_steps": null
+  },
+  "persistence": {
+    "initial_active_cells": 1014,
+    "final_active_cells": 1112,
+    "maximum_active_cells": 1477,
+    "active_cell_drift": 98,
+    "initial_global_mse": 0.05549059808254242,
+    "final_global_mse": 0.07124247401952744,
+    "maximum_global_mse": 0.08737659454345703,
+    "max_error_degradation": 0.03188599646091461,
+    "visible_state_drift_mse": 0.018957260996103287
+  },
+  "gates": {
+    "pre_damage_active_113_800": false,
+    "final_recovery_active_113_800": false,
+    "final_persistence_active_113_800": false,
+    "maximum_persistence_active_le_800": false,
+    "final_persistence_active_drift_le_0": false,
+    "damage_effect_gt_0": false,
+    "relative_damage_effect_ge_0_10": false,
+    "active_cell_removal_fraction_ge_0_10": true,
+    "stable_t50_attained": false,
+    "final_recovery_fraction_gt_0_4230230485": false,
+    "pre_lesion_global_mse_le_0_0361635": false,
+    "final_persistence_global_mse_le_0_0361635": false,
+    "maximum_persistence_mse_le_2x_initial": true,
+    "no_non_finite_state": true
+  },
+  "failed_gate_count": 11,
+  "classification": "HARD SUPPORT ALLOCATION SATURATED TARGET FOREGROUND BUT REINTRODUCED WIDESPREAD FALSE-POSITIVE SUPPORT AND UNBOUNDED PERSISTENCE",
+  "interpretation": "Balanced hard support allocation did not preserve the STAB-12 near-bound regime. Its class-normalized straight-through gradient strongly repaired false-negative target support, but the resulting candidate tolerated large false-positive living support, returned to overgrowth, lost lesion validity, and failed stable recovery. Do not tune FP/FN weights, coefficient, threshold, or temporal scope inside STAB-14. Return to STAB-12 as the useful baseline and change the representation of support usefulness rather than adding another hard support-classification penalty."
+}
