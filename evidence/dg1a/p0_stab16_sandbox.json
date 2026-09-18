@@ -1,0 +1,98 @@
+{
+  "schema": "yggdrasil.dg1a.p0.stab16.sandbox.v1",
+  "recorded_date": "2026-09-17",
+  "experiment": "DG-1A-P0-STAB-16",
+  "candidate": "FRONTIER-FLOOR-113 + LIFE4-DECOUPLE + CEIL-800 + ATTRACT-16",
+  "status": "CLOSED_NEGATIVE",
+  "candidate_worth_widening": false,
+  "scientific_source_revision": "986e3953365a2aa47682a3147cc6ae56a64c9485",
+  "source_revision_verified_checkout": false,
+  "sandbox_source_byte_identity": false,
+  "evidence_class": "MEASURED_SANDBOX",
+  "regression": {
+    "passed": 209,
+    "failed": 0
+  },
+  "environment": {
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu",
+    "device": "cpu",
+    "precision": "float32"
+  },
+  "config": {
+    "path": "experiments/dg1a/configs/p0_stab16_life4_band113_800.yaml",
+    "sha256": "bf5c35409f1b0b06e0a90a1473d0a82f293f8140c433f66d49cbf6ff190df6d2",
+    "seed": 0,
+    "iterations": 200,
+    "loss_mode": "global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800",
+    "life_viability_floor": 113,
+    "occupancy_ceiling": 800,
+    "visible_alpha_channel": 3,
+    "life_channel": 4
+  },
+  "checkpoint": {
+    "iteration": 200,
+    "sha256": "94004a0d0ee3400f0b20daad3415d042309b28f3b27b9262c1ffdc656f709f63",
+    "protocol": "deterministic single-writer atomic resumable checkpoints"
+  },
+  "local_full_evaluation_sha256": "b72746e9fc657639cae489703cb74b737db394dfff3c4d70b1470409313c4a55",
+  "training": {
+    "initial_recorded_loss": 1.4307032823562622,
+    "minimum_recorded_loss": 0.370656281709671,
+    "final_recorded_loss": 0.6650499701499939,
+    "final_global_morphology_mse": 0.04232876002788544,
+    "final_foreground_morphology_mse": 0.25031739473342896,
+    "final_background_alpha_mse": 0.01881404221057892,
+    "final_attractor_trajectory_loss": 0.3450603187084198,
+    "final_attractor_mature_samples": 8,
+    "final_formation_occupancy_ceiling_loss": 0.008526758290827274,
+    "final_formation_active_cells_mean": 704.75,
+    "final_formation_active_cells_max": 984,
+    "final_frontier_floor_loss": 0,
+    "final_frontier_cells_mean": 678.5,
+    "no_non_finite_state": true
+  },
+  "growth_recovery": {
+    "pre_damage_active_cells": 1082,
+    "post_damage_active_cells": 795,
+    "final_recovery_active_cells": 797,
+    "pre_lesion_global_mse": 0.06730888783931732,
+    "post_lesion_global_mse": 0.062134407460689545,
+    "final_recovery_global_mse": 0.04428522661328316,
+    "damage_effect": -0.005174480378627777,
+    "relative_damage_effect": -0.07687662869992028,
+    "active_cell_removal_fraction": 0.26524953789279115,
+    "recovery_fraction": null,
+    "stable_t50_steps": null
+  },
+  "persistence": {
+    "initial_active_cells": 1047,
+    "final_active_cells": 750,
+    "maximum_active_cells": 1049,
+    "active_cell_drift": -297,
+    "initial_global_mse": 0.06458315998315811,
+    "final_global_mse": 0.04884503781795502,
+    "maximum_global_mse": 0.0682063028216362,
+    "max_error_degradation": 0.0036231428384780884,
+    "visible_state_drift_mse": 0.022068500518798828
+  },
+  "gates": {
+    "pre_damage_active_113_800": false,
+    "final_recovery_active_113_800": true,
+    "final_persistence_active_113_800": true,
+    "maximum_persistence_active_le_800": false,
+    "final_persistence_active_drift_le_0": true,
+    "damage_effect_gt_0": false,
+    "relative_damage_effect_ge_0_10": false,
+    "active_cell_removal_fraction_ge_0_10": true,
+    "stable_t50_attained": false,
+    "final_recovery_fraction_gt_0_4230230485": false,
+    "pre_lesion_global_mse_le_0_0361635": false,
+    "final_persistence_global_mse_le_0_0361635": false,
+    "maximum_persistence_mse_le_2x_initial": true,
+    "no_non_finite_state": true
+  },
+  "failed_gate_count": 8,
+  "classification": "VIABILITY RESTORED BUT FORMATION OVERGROWTH AND VISIBLE-MORPHOLOGY COUPLING REMAIN",
+  "interpretation": "FRONTIER-FLOOR-113 successfully prevented the STAB-15 hidden-life collapse without forcing a target life mask. Hidden life repeatedly entered the 113..800 deadband and ATTRACT-16 remained active. However, canonical formation still entered evaluation overgrown, persistence began above the occupancy ceiling, the lesion improved visible morphology instead of degrading it, and visible morphology remained above threshold. This supports decoupled hidden liveness with a minimal local viability floor as a viable substrate mechanism, but shows that latent life remains insufficiently coupled to useful visible morphology. Do not tune floor, frontier radius, coefficient, ceiling, hidden L2, or ATTRACT horizon inside STAB-16."
+}
