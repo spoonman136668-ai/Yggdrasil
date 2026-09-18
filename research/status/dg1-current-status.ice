@@ -1,6 +1,6 @@
 TITLE: DG-1 Current Research Status
 DATE: 2026-09-17
-STATUS: ACTIVE — DG-1A P0 STAB-11 CLOSED NEGATIVE / STAB-12 DESIGN
+STATUS: ACTIVE — DG-1A P0 STAB-12 CLOSED NEGATIVE / STAB-13 DESIGN
 TRACK: DG-1
 CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; MEASURED_SANDBOX FOR CANONICAL EXPERIMENTS
 
@@ -12,7 +12,7 @@ ACTIVE BRANCH
 dg1a-p0
 
 LATEST VERIFIED REPOSITORY FRONTIER BEFORE THIS STATUS UPDATE
-032dc0a47578ffdc4036d90be54e9955b4dc0a7b
+493073a538c108668e6ac7ea90456d981232c440
 
 CURRENT OBJECTIVE
 Establish a viable canonical DG-1A developmental substrate that:
@@ -23,40 +23,12 @@ Establish a viable canonical DG-1A developmental substrate that:
 - exhibits measurable stable repair;
 before DG-1B functional computation is opened.
 
-IMPLEMENTED P0 SURFACE
-The bounded fixed-grid NCA substrate now includes:
-- deterministic seed and target generation;
-- state-pool persistence/regeneration curricula;
-- maturity-gated training damage;
-- independent training/evaluation lesion geometry;
-- recovery/persistence/resource telemetry;
-- resumable deterministic training;
-- static morphology mechanisms through STAB-08;
-- HOME-1 one-step local dynamic homeostasis;
-- HOME-T16 fixed 16-step local velocity homeostasis;
-- ATTRACT-16 fixed 16-step future target-state supervision;
-- RNG-neutral virtual trajectories;
-- virtual-trajectory pool isolation;
-- fail-closed finite/config validation.
-
-HISTORICAL TRAINING MODES
-1. global_mse
-2. balanced_fg_bg
-3. global_plus_foreground
-4. global_plus_foreground_bg_alpha
-5. global_plus_foreground_bg_alive_margin
-6. global_plus_foreground_farfield_bg_alpha
-7. global_plus_foreground_graded_bg_alpha
-8. global_plus_foreground_bg_alpha_homeostasis
-9. global_plus_foreground_bg_alpha_homeostasis_t16
-10. global_plus_foreground_bg_alpha_attractor_t16
-
 LATEST RECONSTRUCTED TEST STATUS
-135 passed
+148 passed
 0 failed
 
-STAB-11 scientific source:
-6db241bce7ba21c51baedb80152f0e031bf233de
+STAB-12 scientific source:
+19c758e7d006b3a4da46ee5d5c15ce01acf5fba4
 
 source_revision_verified_checkout = false
 sandbox_source_byte_identity = false
@@ -66,60 +38,69 @@ CURRENT FULL-GRID FINDINGS
 STAB-01 through STAB-08 established the death/overgrowth bracket and showed that endpoint/static occupancy geometry alone is insufficient.
 
 STAB-09 HOME-1:
-one-step local velocity control improved the nominal snapshot but persistence expanded strongly:
-941 -> 1406 active; drift +465.
+local one-step homeostasis improved the nominal snapshot but persistence expanded strongly.
 
 STAB-10 HOME-T16:
-holding the same local velocity mechanism over 16 virtual steps produced only slight negative drift around a severely overgrown phenotype:
-1360 -> 1353 active; peak 1501; pre-damage active 1407.
+extending the same local velocity signal to 16 virtual steps produced only slight net contraction around a severely overgrown phenotype.
 
 STAB-11 ATTRACT-16:
-direct future target-state supervision over the same 16-step horizon materially changed the long-horizon dynamics:
-- pre-damage active: 1252;
-- pre-lesion MSE: 0.0665020347;
-- persistence active: 1160 -> 592;
-- persistence peak: 1335;
-- persistence drift: -568;
-- persistence MSE: 0.0616273582 -> 0.0547853708;
-- final recovery active: 882;
-- lesion improved morphology;
+direct future target-state supervision materially changed the attractor:
+- pre-damage active 1252;
+- persistence 1160 -> 592;
+- drift -568;
+- lesion still invalid;
 - 9 / 14 gates failed.
 
-STAB-11 INTERPRETATION
-Direct future target-state supervision is directionally superior to local velocity suppression for shaping the persistence attractor.
+STAB-12 CEIL-800 + ATTRACT-16:
+adding one-sided formation occupancy control materially narrowed the remaining defect:
+- pre-damage active: 857;
+- final recovery active: 655;
+- persistence: 799 -> peak 1015 -> 623;
+- drift: -176;
+- pre-lesion MSE: 0.0456747562;
+- final persistence MSE: 0.0434814841;
+- DamageEffect: positive;
+- RelativeDamageEffect: 0.0010864774;
+- active removal: 49.24%;
+- stable T50: 59;
+- RecoveryFraction: 1.0;
+- 5 / 14 gates failed.
 
-The candidate contracts toward the target regime over time rather than continuing to expand.
+STAB-12 INTERPRETATION
+The canonical P0 problem has narrowed from gross unbounded support to:
+TRANSIENT SUPPORT OVERSHOOT + INSUFFICIENT TARGET MORPHOLOGY / LESION SALIENCE.
 
-However, it reaches the persistence regime already severely overgrown.
-The lesion remains invalid because removing 44.01% of active cells improves morphology.
+The strongest observations are:
+- formation is only 57 cells above the accepted ceiling at the canonical pre-damage snapshot;
+- persistence begins inside the accepted occupancy window at 799;
+- persistence transiently expands to 1015 before contracting to 623;
+- morphology error rises with the transient expansion;
+- removing nearly half the living support barely changes morphology.
 
-Therefore the dominant unresolved seam is now:
-FORMATION-STAGE VIABLE SUPPORT OCCUPANCY.
-
-The next mechanism should control excess living support during formation while retaining the useful target-trajectory attractor signal.
+This indicates excess living support is still too morphologically redundant or allocated outside the target-critical structure.
 
 CURRENT DECISIONS
-- STAB-11 closed negative;
-- ATTRACT-16 is not widened;
-- no ATTRACT horizon/coefficient/reduction sweep;
-- preserve all ten historical modes;
-- preserve viability floor 113 and occupancy ceiling 800;
-- preserve all lesion, recovery, persistence, morphology, and finite-state gates;
-- global visible MSE remains the common evaluation metric;
+- STAB-12 closed negative;
+- do not widen/tune CEIL-800;
+- do not lower the 800 ceiling;
+- do not change the CEIL straight-through mask;
+- preserve ATTRACT-16 unchanged unless a future preregistered packet explicitly tests a new architecture;
+- preserve all historical modes and all scientific gates;
 - canonical full-grid P0 remains unresolved;
 - DG-1B remains unopened.
 
 NEXT BOUNDED PACKET
-DG-1A-P0-STAB-12 — DESIGN / PREREGISTRATION ONLY.
+DG-1A-P0-STAB-13 — DESIGN / PREREGISTRATION ONLY.
 
 Preferred seam:
-a target-derived differentiable occupancy-setpoint mechanism applied during formation while retaining trajectory-level target supervision.
+target-aligned support allocation over the persistence trajectory.
 
-The next mechanism must differ materially from STAB-06 broad threshold pressure:
-- it should penalize excess support relative to a target-derived cardinality/setpoint;
-- it should not penalize every near-threshold background cell equally;
-- it should preserve target foreground viability;
-- it should remain one fixed preregistered construction, not a sweep.
+The next mechanism must:
+- address transient overshoot rather than only endpoint count;
+- distinguish useful target support from redundant living support;
+- avoid STAB-06-style blanket threshold suppression;
+- avoid post-result tuning of the 800 ceiling;
+- remain one fixed preregistered mechanism.
 
 FIBONACCI TRACK
 DG-1A-FIB1 remains separate.
@@ -131,5 +112,5 @@ Do not activate CKB runtime, Coinbase/live broker systems, TradeGuard, deploymen
 P0 remains morphology/developmental-substrate research and does not establish cognition or general intelligence.
 
 NEXT ACTION
-Research and preregister one discriminating STAB-12 formation-stage occupancy-setpoint mechanism.
+Research and preregister one discriminating STAB-13 support-allocation / transient-persistence mechanism.
 Do not execute it before preregistration.
