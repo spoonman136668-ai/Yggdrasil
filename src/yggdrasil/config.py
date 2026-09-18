@@ -52,7 +52,7 @@ def validate_config(config: dict[str, Any]) -> None:
         raise ValueError('pool_size must be at least batch_size')
     if training['damage_min_active_cells'] <= 0:
         raise ValueError('damage_min_active_cells must be positive')
-    if training.get('loss_mode', 'global_mse') not in {'global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis', 'global_plus_foreground_bg_alpha_homeostasis_t16', 'global_plus_foreground_bg_alpha_attractor_t16', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800'}:
+    if training.get('loss_mode', 'global_mse') not in {'global_mse', 'balanced_fg_bg', 'global_plus_foreground', 'global_plus_foreground_bg_alpha', 'global_plus_foreground_bg_alive_margin', 'global_plus_foreground_farfield_bg_alpha', 'global_plus_foreground_graded_bg_alpha', 'global_plus_foreground_bg_alpha_homeostasis', 'global_plus_foreground_bg_alpha_homeostasis_t16', 'global_plus_foreground_bg_alpha_attractor_t16', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800', 'global_plus_foreground_bg_alpha_attractor_t16_ceil800_traceceil800'}:
         raise ValueError('unsupported training loss_mode')
     h = training.get('damage_height_fraction')
     w = training.get('damage_width_fraction')
