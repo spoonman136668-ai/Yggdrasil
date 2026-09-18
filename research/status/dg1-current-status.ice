@@ -1,6 +1,6 @@
 TITLE: DG-1 Current Research Status
-DATE: 2026-09-17
-STATUS: ACTIVE — DG-1A P0 STAB-17 CLOSED NEGATIVE / STAB-18 DESIGN
+DATE: 2026-09-18
+STATUS: ACTIVE — DG-1A P0 STAB-18 PREREGISTERED / IMPLEMENTED / ACCEPTANCE IN PROGRESS
 TRACK: DG-1
 CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; MEASURED_SANDBOX FOR CANONICAL EXPERIMENTS
 
@@ -12,7 +12,7 @@ ACTIVE BRANCH
 dg1a-p0
 
 LATEST VERIFIED REPOSITORY FRONTIER BEFORE THIS STATUS UPDATE
-493073a538c108668e6ac7ea90456d981232c440
+d803f1c4a77baa4b1d89af6deea61cc8f6df9393
 
 CURRENT OBJECTIVE
 Establish a viable canonical DG-1A developmental substrate that:
@@ -219,17 +219,33 @@ STAB-12 remains the best overall phenotype by gate count.
 STAB-16 remains the architectural proof that decoupled hidden life can be kept viable without exact target-mask equality.
 STAB-17 shows proximity is not enough.
 
+STAB-18 CAUSAL-LATENT-DROPOUT25-PRUNE-T16:
+PREREGISTERED / IMPLEMENTED / ACCEPTANCE IN PROGRESS — NOT EXECUTED.
+- preregistration commit: e6cb795c0bfa7de96400214bb0978878658368c3;
+- frozen scientific implementation source: 1e50388cc4fe0f86ac68e304cca62e7944b7a8bf;
+- targeted STAB-18 contracts: 19 passed / 0 failed;
+- core historical regression: 54 passed / 0 failed;
+- reconstructed STAB-06 through STAB-14 suites are individually green;
+- original STAB-15 suite exposed a pre-existing invalid 9 x 9 / radius-6 test fixture, not a scientific-code regression;
+- fixture-only repair commit: 714cb10bf5963d47b07ecaf8184ea89a179692a5;
+- no STAB-15 assertions were changed;
+- STAB-15/16/17 normal and resumable mode branches remain byte-identical to the STAB-17-qualified scientific source;
+- STAB-16/17 test/config blobs remain unchanged.
+
+Acceptance still required:
+- executable STAB-04 / STAB-05 replay;
+- executable repaired STAB-15 replay;
+- executable STAB-16 / STAB-17 replay;
+- final combined reconstructed regression.
+
+Scientific execution remains blocked until that executable acceptance is green.
+
 NEXT BOUNDED PACKET
-DG-1A-P0-STAB-18 — DESIGN / PREREGISTRATION ONLY.
+DG-1A-P0-STAB-18 — ACCEPTANCE CLOSEOUT, THEN EXACTLY ONE SEED-0 CANONICAL RUN.
 
-Preferred seam:
-a causal-contribution mechanism that distinguishes useful hidden support from redundant support by measurable effect on visible morphology, without target-mask equality or raw count pressure.
-
-The STAB-18 mechanism must:
-- not simply reduce or remove hidden L2;
-- not directly force hidden life to equal the visible target mask;
-- not lower the 113 viability floor or 800 ceiling;
-- preserve one fixed preregistered construction.
+Frozen seam:
+causal contribution of latent support to visible morphology using the preregistered RNG-neutral 25% latent dropout intervention and one-sided prune signal.
+Do not change the mechanism, floor, ceiling, ATTRACT horizon, hidden L2, or gates during acceptance or after observing the run.
 
 FIBONACCI TRACK
 DG-1A-FIB1 remains separate.
@@ -241,5 +257,4 @@ Do not activate CKB runtime, Coinbase/live broker systems, TradeGuard, deploymen
 P0 remains morphology/developmental-substrate research and does not establish cognition or general intelligence.
 
 NEXT ACTION
-Research and preregister one discriminating STAB-18 causal-contribution mechanism for latent support.
-Do not execute it before preregistration.
+Finish the remaining executable historical regression with zero failures. If and only if acceptance is fully green, execute exactly one canonical seed-0 STAB-18 candidate with no tuning.
