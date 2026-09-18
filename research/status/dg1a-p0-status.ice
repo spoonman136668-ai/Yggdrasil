@@ -1,6 +1,6 @@
 TITLE: DG-1A-P0 Current Status
-DATE: 2026-09-17
-STATUS: ACTIVE — STAB-17 CLOSED NEGATIVE / STAB-18 DESIGN NOT YET PREREGISTERED
+DATE: 2026-09-18
+STATUS: ACTIVE — STAB-18 PREREGISTERED / IMPLEMENTED / ACCEPTANCE IN PROGRESS
 TRACK: DG-1A
 CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; MEASURED_SANDBOX FOR CANONICAL EXPERIMENTS
 
@@ -8,7 +8,7 @@ BRANCH
 dg1a-p0
 
 LATEST VERIFIED REPOSITORY FRONTIER BEFORE THIS STATUS UPDATE
-03c01f658361ca1a80cd72afb284b563e0d223ae
+714cb10bf5963d47b07ecaf8184ea89a179692a5
 
 CURRENT PURPOSE
 Establish a trustworthy canonical developmental NCA control with meaningful viable growth, bounded support, long-horizon homeostasis, meaningful damage, and stable regeneration before DG-1B functional computation or later Yggdrasil mechanisms are opened.
@@ -499,18 +499,75 @@ research/experiments/dg1a/dg1a-p0-stab17-spec.ice
 research/experiments/dg1a/dg1a-p0-stab17-result.ice
 evidence/dg1a/p0_stab17_sandbox.json
 
+STAB-18 — CAUSAL-LATENT-DROPOUT25-PRUNE-T16 + FRONTIER-FLOOR-113 + LIFE4-DECOUPLE + CEIL-800 + ATTRACT-16
+PREREGISTERED / IMPLEMENTED / ACCEPTANCE IN PROGRESS — NOT EXECUTED.
+
+Preregistration:
+research/experiments/dg1a/dg1a-p0-stab18-spec.ice
+preregistration commit:
+e6cb795c0bfa7de96400214bb0978878658368c3
+
+Frozen scientific implementation source:
+1e50388cc4fe0f86ac68e304cca62e7944b7a8bf
+
+Frozen loss mode:
+global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_causal_latent_dropout25_prune_t16
+
+Acceptance evidence completed:
+- STAB-18 targeted contracts: 19 passed / 0 failed;
+- core historical regression: 54 passed / 0 failed;
+- reconstructed STAB-06: 10 passed / 0 failed;
+- reconstructed STAB-07: 10 passed / 0 failed;
+- reconstructed STAB-08: 11 passed / 0 failed;
+- reconstructed STAB-09: 12 passed / 0 failed;
+- reconstructed STAB-10: 11 passed / 0 failed;
+- reconstructed STAB-11: 12 passed / 0 failed;
+- reconstructed STAB-12: 13 passed / 0 failed;
+- reconstructed STAB-13: 15 passed / 0 failed;
+- reconstructed STAB-14: 13 passed / 0 failed.
+
+STAB-15 acceptance defect:
+The original STAB-15 test helper hard-coded TargetSpec(radius=6) while two tests requested a 9 x 9 target. The strict radius-fit validator already existed before STAB-15 was introduced, so those two tests were invalid at fixture construction and did not demonstrate a scientific-code regression.
+
+Fixture-only repair:
+714cb10bf5963d47b07ecaf8184ea89a179692a5
+
+Repair scope:
+- parameterize the historical helper radius with default 6;
+- use radius 2 only for the two 9 x 9 tiny fixtures;
+- no assertions changed;
+- no scientific source changed;
+- both previously blocked assertions were independently exercised with the exact repository target/metric/objective formulas and passed.
+
+Static compatibility proof:
+- STAB-15 normal and resumable mode branches are byte-identical to the STAB-17-qualified source;
+- STAB-16 normal and resumable mode branches are byte-identical to the STAB-17-qualified source;
+- STAB-17 normal and resumable mode branches are byte-identical to the STAB-17-qualified source;
+- STAB-16 test/config blobs are unchanged;
+- STAB-17 test/config blobs are unchanged;
+- STAB-18 additions are exact loss-mode-gated branches and do not rewrite STAB-15/16/17 execution paths.
+
+Acceptance still outstanding before scientific execution:
+- executable STAB-04 / STAB-05 replay;
+- executable repaired STAB-15 replay;
+- executable STAB-16 / STAB-17 replay;
+- final combined reconstructed regression.
+
+Scientific execution state:
+NOT STARTED.
+No seed-0 STAB-18 training may begin until the remaining executable acceptance surface is green.
+
 NEXT BOUNDED PACKET
-Provisionally DG-1A-P0-STAB-18 — DESIGN / PREREGISTRATION ONLY.
+DG-1A-P0-STAB-18 — ACCEPTANCE CLOSEOUT, THEN EXACTLY ONE SEED-0 CANONICAL RUN.
 
 Preferred research seam:
 causal contribution of latent support to visible morphology, not raw count, target-mask equality, or geometric proximity.
 
-No STAB-18 mechanism is selected by this status record.
+The STAB-18 mechanism is frozen by preregistration; do not alter it during acceptance or after observing the scientific run.
 
 BOUNDARY
 P0 remains morphology/developmental-substrate research only.
 Do not begin DG-1B, ancestor inheritance, structural growth, developmental adapters, or Fibonacci scheduling from this packet.
 
 NEXT ACTION
-Research and preregister one discriminating STAB-18 causal-contribution mechanism for latent support.
-Do not execute it before exact mechanism and gates exist in .ice.
+Finish the remaining executable historical regression with zero failures. If and only if acceptance is fully green, execute exactly one canonical seed-0 STAB-18 200-iteration candidate with no tuning.
