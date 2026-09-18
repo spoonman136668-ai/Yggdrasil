@@ -24,7 +24,8 @@ from yggdrasil.training import (
     apply_latent_probe_intervention,
     attractor_trajectory_loss,
     attractor_trajectory_loss_per_sample,
-    causal_latent_probe_mask,
+    causal_latent_probe_mask_domain_separated,
+    causal_probe_domain_seed,
     causal_latent_prune_terms,
     train,
     training_morphology_loss,
@@ -352,7 +353,7 @@ def test_stab18_r1_frozen_config() -> None:
 
 def test_stab18_r1_config_fails_closed_without_life4() -> None:
     model = NeuralCellularAutomaton(NCAConfig(state_channels=8, hidden_channels=16, alive_channel=3))
-    with pytest.raises(ValueError, match="STAB-18 requires model alive_channel 4"):
+    with pytest.raises(ValueError, match="STAB-18-R1 requires model alive_channel 4"):
         TrainingConfig(loss_mode=MODE).validate(model)
 
 
