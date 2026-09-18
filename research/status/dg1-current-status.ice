@@ -1,6 +1,6 @@
 TITLE: DG-1 Current Research Status
 DATE: 2026-09-18
-STATUS: ACTIVE — DG-1A P0 STAB-18 PREREGISTERED / IMPLEMENTED / ACCEPTANCE IN PROGRESS
+STATUS: ACTIVE — DG-1A P0 STAB-18 CLOSED UNEXECUTED / STAB-18-R1 ACCEPTANCE
 TRACK: DG-1
 CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; MEASURED_SANDBOX FOR CANONICAL EXPERIMENTS
 
@@ -12,7 +12,7 @@ ACTIVE BRANCH
 dg1a-p0
 
 LATEST VERIFIED REPOSITORY FRONTIER BEFORE THIS STATUS UPDATE
-d803f1c4a77baa4b1d89af6deea61cc8f6df9393
+68f5001378c76e3475c97c2b3cf224203ae59ca2
 
 CURRENT OBJECTIVE
 Establish a viable canonical DG-1A developmental substrate that:
@@ -219,33 +219,62 @@ STAB-12 remains the best overall phenotype by gate count.
 STAB-16 remains the architectural proof that decoupled hidden life can be kept viable without exact target-mask equality.
 STAB-17 shows proximity is not enough.
 
-STAB-18 CAUSAL-LATENT-DROPOUT25-PRUNE-T16:
+STAB-18 ORIGINAL CAUSAL-LATENT-DROPOUT25-PRUNE-T16:
+CLOSED UNEXECUTED — PRE-EXECUTION RNG STREAM ALIASING CONFOUND.
+- original preregistration commit: e6cb795c0bfa7de96400214bb0978878658368c3;
+- original frozen source: 1e50388cc4fe0f86ac68e304cca62e7944b7a8bf;
+- no canonical scientific run occurred;
+- save/restore probe sampling reused the same [B,1,H,W] random field as the first future NCA fire mask;
+- probe threshold <0.25 therefore made every probed cell a member of first-step fire mask <=0.50;
+- this is an acceptance-discovered design confound, not a scientific negative.
+
+STAB-18-R1 CAUSAL-LATENT-DROPOUT25-PRUNE-T16-DOMAINSEP:
 PREREGISTERED / IMPLEMENTED / ACCEPTANCE IN PROGRESS — NOT EXECUTED.
-- preregistration commit: e6cb795c0bfa7de96400214bb0978878658368c3;
-- frozen scientific implementation source: 1e50388cc4fe0f86ac68e304cca62e7944b7a8bf;
-- targeted STAB-18 contracts: 19 passed / 0 failed;
-- core historical regression: 54 passed / 0 failed;
-- reconstructed STAB-06 through STAB-14 suites are individually green;
-- original STAB-15 suite exposed a pre-existing invalid 9 x 9 / radius-6 test fixture, not a scientific-code regression;
-- fixture-only repair commit: 714cb10bf5963d47b07ecaf8184ea89a179692a5;
-- no STAB-15 assertions were changed;
-- STAB-15/16/17 normal and resumable mode branches remain byte-identical to the STAB-17-qualified scientific source;
-- STAB-16/17 test/config blobs remain unchanged.
+- R1 preregistration: research/experiments/dg1a/dg1a-p0-stab18-r1-spec.ice;
+- R1 preregistration commit: f9e09f36470c1d718c3e30a1a954cd18570b83f2;
+- fixed probe fraction remains 0.25;
+- causal intervention, T16 horizon, floor113, ceiling800, ATTRACT16, hidden L2, canonical envelope, and 14 gates are unchanged;
+- probe randomness is domain-separated using SHA256(main generator state bytes || fixed domain tag);
+- fixed domain tag: DG1A_P0_STAB18_R1_CAUSAL_PROBE_V1;
+- reference seed contract: main manual_seed(1) -> probe seed 3494006018084941813;
+- runtime-equivalent reference check: 14 probed cells on 9x9 all-live fixture, with 7 selected cells outside first-step fire mask;
+- main generator state remains unchanged by probe construction;
+- normal/resumable R1 paths implemented;
+- 20 R1 test functions committed;
+- no executable pytest claim is made yet because the current sandbox cannot resolve github.com.
+
+R1 implementation frontier:
+- normal implementation: 26b319443f43cf10a08f4185c782e28e87de5002;
+- normal join repair: b7bda76423822935b04cf01b418027f226e45bba;
+- resumable parity: de0d8e24696730c1ce9f2d482ecb1a654c751c5c;
+- resumable join repair: 8fd556f7bd6de4e2fcb34ca31279edca9d23151c;
+- config: 84bcbb9eb7fa2e62c9bf43d4b67d298a241d8aed;
+- frozen YAML: 46c17de13b59d0bac2fb1dd0c1236b43f87a9f75;
+- tests: 4265688cda2c5a6f43cd59185881a54512c746a2;
+- test import repair: 771235595b19602fa61189f3bf2b9d2fca1c63cf.
+
+Historical compatibility:
+- STAB-15, STAB-16, STAB-17, and original STAB-18 normal execution branches remain byte-identical to source 1e50388...;
+- corresponding resumable branches remain byte-identical;
+- repaired STAB-15 fixture changed no assertions.
 
 Acceptance still required:
 - executable STAB-04 / STAB-05 replay;
 - executable repaired STAB-15 replay;
 - executable STAB-16 / STAB-17 replay;
+- executable STAB-18-R1 targeted contracts;
 - final combined reconstructed regression.
 
-Scientific execution remains blocked until that executable acceptance is green.
+Scientific execution:
+NOT STARTED.
+Exactly one canonical seed-0 STAB-18-R1 run is allowed only after full executable acceptance is green.
 
 NEXT BOUNDED PACKET
-DG-1A-P0-STAB-18 — ACCEPTANCE CLOSEOUT, THEN EXACTLY ONE SEED-0 CANONICAL RUN.
+DG-1A-P0-STAB-18-R1 — ACCEPTANCE CLOSEOUT, THEN ONE CANONICAL SEED-0 RUN.
 
 Frozen seam:
-causal contribution of latent support to visible morphology using the preregistered RNG-neutral 25% latent dropout intervention and one-sided prune signal.
-Do not change the mechanism, floor, ceiling, ATTRACT horizon, hidden L2, or gates during acceptance or after observing the run.
+causal contribution of latent support to visible morphology under a pseudorandomly domain-separated intervention.
+Do not alter probe fraction, domain derivation, horizon, floor, ceiling, ATTRACT16, hidden L2, or scientific gates after observing the run.
 
 FIBONACCI TRACK
 DG-1A-FIB1 remains separate.
@@ -257,4 +286,4 @@ Do not activate CKB runtime, Coinbase/live broker systems, TradeGuard, deploymen
 P0 remains morphology/developmental-substrate research and does not establish cognition or general intelligence.
 
 NEXT ACTION
-Finish the remaining executable historical regression with zero failures. If and only if acceptance is fully green, execute exactly one canonical seed-0 STAB-18 candidate with no tuning.
+Finish the remaining executable historical regression plus STAB-18-R1 contracts with zero failures. If and only if acceptance is fully green, execute exactly one canonical seed-0 STAB-18-R1 candidate with no tuning.
