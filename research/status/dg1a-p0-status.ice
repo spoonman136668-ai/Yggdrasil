@@ -1,6 +1,6 @@
 TITLE: DG-1A-P0 Current Status
 DATE: 2026-09-17
-STATUS: ACTIVE — STAB-16 CLOSED NEGATIVE / STAB-17 DESIGN NOT YET PREREGISTERED
+STATUS: ACTIVE — STAB-17 CLOSED NEGATIVE / STAB-18 DESIGN NOT YET PREREGISTERED
 TRACK: DG-1A
 CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; MEASURED_SANDBOX FOR CANONICAL EXPERIMENTS
 
@@ -48,18 +48,19 @@ HISTORICAL TRAINING MODES
 13. global_plus_foreground_bg_alpha_attractor_t16_ceil800_alloc_balanced_hard
 14. global_plus_foreground_bg_alpha_attractor_t16_life4_ceil800
 15. global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800
+16. global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800_visanchor_r1
 
 LATEST TEST STATUS
-STAB-16 reconstructed sandbox regression:
-209 passed
+STAB-17 reconstructed sandbox regression:
+226 passed
 0 failed
 
 Environment:
 Python 3.13.5
 PyTorch 2.10.0+cpu
 
-STAB-16 scientific source revision:
-986e3953365a2aa47682a3147cc6ae56a64c9485
+STAB-17 scientific source revision:
+23263694d9bd2188d7c6bc40fdc2a920754901e2
 
 source_revision_verified_checkout = false
 sandbox_source_byte_identity = false
@@ -448,18 +449,68 @@ research/experiments/dg1a/dg1a-p0-stab16-spec.ice
 research/experiments/dg1a/dg1a-p0-stab16-result.ice
 evidence/dg1a/p0_stab16_sandbox.json
 
+STAB-17 — MATURE-VIS-ANCHOR-R1 + FRONTIER-FLOOR-113 + LIFE4-DECOUPLE + CEIL-800 + ATTRACT-16
+CLOSED NEGATIVE / LOCAL VISIBLE PROXIMITY MOSTLY ALREADY SATISFIED.
+
+Scientific source:
+23263694d9bd2188d7c6bc40fdc2a920754901e2
+
+Regression:
+226 passed
+0 failed
+
+Measured result:
+- pre-damage hidden-life cells: 1038;
+- final recovery hidden-life cells: 681;
+- persistence: 919 -> peak 1043 -> 690;
+- drift: -229;
+- pre-lesion visible MSE: 0.0655461326;
+- final persistence visible MSE: 0.0668581352;
+- DamageEffect: -0.0080248006;
+- RelativeDamageEffect: -0.1224298101;
+- active-cell removal: 37.38%;
+- stable T50: not attained;
+- 8 / 14 gates failed.
+
+Mechanistic result:
+MATURE-VIS-ANCHOR-R1 was zero or near-zero for most mature checkpoints. Hidden life was already locally adjacent to current visible alpha, yet formation remained overgrown, lesion damage improved visible morphology, and morphology/recovery gates remained failed.
+
+This falsifies simple R1 spatial proximity as the dominant latent-support usefulness seam.
+
+Do not tune:
+- anchor radius;
+- anchor coefficient;
+- visible threshold;
+- anchor temporal scope;
+- target-mask anchoring;
+- FRONTIER-FLOOR-113;
+- CEIL-800;
+- hidden L2;
+- ATTRACT-16;
+- scientific gates.
+
+Return references:
+- STAB-12 remains the best overall canonical phenotype by gate count;
+- STAB-16 remains the strongest evidence that decoupled hidden liveness can be sustained without exact target-mask equality;
+- STAB-17 shows that geometric proximity to visible alpha is not sufficient evidence of functional usefulness.
+
+DURABLE STAB-17 RECORDS
+research/experiments/dg1a/dg1a-p0-stab17-spec.ice
+research/experiments/dg1a/dg1a-p0-stab17-result.ice
+evidence/dg1a/p0_stab17_sandbox.json
+
 NEXT BOUNDED PACKET
-Provisionally DG-1A-P0-STAB-17 — DESIGN / PREREGISTRATION ONLY.
+Provisionally DG-1A-P0-STAB-18 — DESIGN / PREREGISTRATION ONLY.
 
 Preferred research seam:
-functional coupling between viable latent support and visible morphology, without reverting to exact target-mask life equality or raw cardinality pressure.
+causal contribution of latent support to visible morphology, not raw count, target-mask equality, or geometric proximity.
 
-No STAB-17 mechanism is selected by this status record.
+No STAB-18 mechanism is selected by this status record.
 
 BOUNDARY
 P0 remains morphology/developmental-substrate research only.
 Do not begin DG-1B, ancestor inheritance, structural growth, developmental adapters, or Fibonacci scheduling from this packet.
 
 NEXT ACTION
-Research and preregister one discriminating STAB-17 latent-support / visible-morphology functional-coupling mechanism.
+Research and preregister one discriminating STAB-18 causal-contribution mechanism for latent support.
 Do not execute it before exact mechanism and gates exist in .ice.
