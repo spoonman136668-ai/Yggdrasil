@@ -215,3 +215,80 @@ LIFE4 decoupling removed that incidental coupling.
 FRONTIER-FLOOR-113 restored baseline viability, but because it is a static minimum-population mechanism, it did not restore damage-conditioned recruitment when post-lesion LIFE4 remained above 113.
 
 This remains observational across sequential seed-0 candidates and is not a randomized architectural ablation.
+
+
+POST-LESION OCCUPANCY CONFOUND CHECK
+A possible alternative explanation is that STAB-16/17 recruit less simply because their immediate post-lesion populations differ from the earlier candidates.
+
+That explanation is not supported by the historical range.
+
+Pre-decoupling post-lesion populations:
+- STAB-07: 570
+- STAB-08: 864
+- STAB-09: 511
+- STAB-10: 831
+- STAB-11: 701
+- STAB-12: 435
+- STAB-13: 641
+- STAB-14: 613
+
+Range:
+435 .. 864 cells
+
+Decoupled LIFE4:
+- STAB-16: 795
+- STAB-17: 650
+
+Both decoupled starting populations fall inside the historical pre-decoupling range.
+
+Nearest historical occupancy controls:
+
+STAB-16 post-lesion = 795
+nearest pre-decoupling:
+- STAB-10 post = 831; restored 88.19% of removed cells
+- STAB-08 post = 864; restored 40.10%
+- STAB-11 post = 701; restored 32.85%
+
+STAB-16 restored:
+0.70%
+
+STAB-17 post-lesion = 650
+nearest pre-decoupling:
+- STAB-13 post = 641; restored 144.57% of removed cells
+- STAB-14 post = 613; restored 96.07%
+- STAB-11 post = 701; restored 32.85%
+
+STAB-17 restored:
+7.99%
+
+A simple descriptive regression within the eight pre-decoupling candidates predicts:
+- approximately 74.0% removed-population restoration at post-lesion occupancy 795;
+- approximately 94.8% at post-lesion occupancy 650.
+
+Observed decoupled values are lower by approximately:
+- STAB-16: 73.3 percentage points
+- STAB-17: 86.8 percentage points
+
+The historical regression itself is not strong enough to use inferentially, and the sequential candidates are not IID.
+The important control is simpler:
+both decoupled results fall within the historical post-lesion occupancy support, while both restoration fractions fall below the entire pre-decoupling restoration range.
+
+POST-LESION POPULATION-GROWTH VIEW
+Pre-decoupling population growth from immediate post-lesion count to final recovery count:
+- median = approximately +68.49%
+- range = +25.82% to +172.60%
+
+Decoupled LIFE4:
+- STAB-16 = +0.25%
+- STAB-17 = +4.77%
+
+This again indicates that the architectural discontinuity is not merely an artifact of normalizing by the number of cells removed.
+
+UPDATED INTERPRETATION
+The injury-recruitment gap survives a basic occupancy-matching control.
+
+This does not prove that LIFE4 decoupling alone caused the discontinuity because STAB-16/17 also differ in training mechanisms.
+However, it makes the specific control-law explanation substantially more plausible:
+the pre-decoupled alpha-linked system had a strong post-lesion population response throughout the same occupancy range where the LIFE4 deadband is largely silent.
+
+A future repair mechanism should therefore be keyed to injury/state change, not merely to absolute population falling below a fixed minimum.
