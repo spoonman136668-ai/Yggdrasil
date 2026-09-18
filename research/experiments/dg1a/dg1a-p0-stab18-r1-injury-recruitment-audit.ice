@@ -160,3 +160,58 @@ PROVENANCE
 evidence_class = CROSS_CANDIDATE_MEASURED_RESULT_ANALYSIS
 canonical_scientific_execution = false
 new_training_run = false
+
+
+BROAD PRE-DECOUPLING RECOVERY BASELINE
+The initial audit used STAB-12 as the closest near-bound architectural reference.
+A wider post-hoc check now includes all viable pre-LIFE4 stabilization candidates with comparable lesion population telemetry from STAB-07 through STAB-14.
+
+Candidate | removed cells | post-lesion regrowth | fraction of removed population restored
+STAB-07   | 524           | 662                   | 126.34%
+STAB-08   | 576           | 231                   | 40.10%
+STAB-09   | 482           | 882                   | 182.99%
+STAB-10   | 576           | 508                   | 88.19%
+STAB-11   | 551           | 181                   | 32.85%
+STAB-12   | 422           | 220                   | 52.13%
+STAB-13   | 552           | 798                   | 144.57%
+STAB-14   | 484           | 465                   | 96.07%
+
+Pre-decoupling summary:
+- mean fraction restored = 95.41%
+- median fraction restored = 92.13%
+- observed range = 32.85% to 182.99%
+
+Decoupled LIFE4:
+STAB-16:
+- removed = 287
+- regrown = 2
+- fraction restored = 0.70%
+
+STAB-17:
+- removed = 388
+- regrown = 31
+- fraction restored = 7.99%
+
+Decoupled mean/median fraction restored:
+4.34%
+
+Ratio:
+decoupled median / pre-decoupling median = approximately 0.0471.
+
+Equivalently, the typical removed-population restoration response is roughly twenty-one times smaller after LIFE4 decoupling in this historical series.
+
+INTERPRETATION OF THE WIDER BASELINE
+The low STAB-16/17 recruitment response is not explained by selecting STAB-12 as an unusually regenerative comparator.
+
+Every viable pre-decoupling candidate in STAB-07..14 restored at least 32.85% of the removed population.
+Both decoupled candidates are far below that historical range.
+
+The pre-decoupling candidates often over-regrew and were scientifically unsuccessful, so greater regrowth is NOT itself a desirable outcome.
+What changes sharply after decoupling is the existence of a strong population response to injury.
+
+This strengthens the architectural hypothesis:
+visible-alpha/liveness coupling carried an implicit lesion-responsive growth signal.
+LIFE4 decoupling removed that incidental coupling.
+FRONTIER-FLOOR-113 restored baseline viability, but because it is a static minimum-population mechanism, it did not restore damage-conditioned recruitment when post-lesion LIFE4 remained above 113.
+
+This remains observational across sequential seed-0 candidates and is not a randomized architectural ablation.
