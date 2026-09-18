@@ -1,6 +1,6 @@
 TITLE: DG-1A-P0 Current Status
 DATE: 2026-09-17
-STATUS: ACTIVE — STAB-15 CLOSED NEGATIVE / STAB-16 DESIGN NOT YET PREREGISTERED
+STATUS: ACTIVE — STAB-16 CLOSED NEGATIVE / STAB-17 DESIGN NOT YET PREREGISTERED
 TRACK: DG-1A
 CONFIDENCE: ESTABLISHED FOR REPOSITORY STATE; MEASURED_SANDBOX FOR CANONICAL EXPERIMENTS
 
@@ -47,18 +47,19 @@ HISTORICAL TRAINING MODES
 11. global_plus_foreground_bg_alpha_attractor_t16_ceil800\n12. global_plus_foreground_bg_alpha_attractor_t16_ceil800_traceceil800
 13. global_plus_foreground_bg_alpha_attractor_t16_ceil800_alloc_balanced_hard
 14. global_plus_foreground_bg_alpha_attractor_t16_life4_ceil800
+15. global_plus_foreground_bg_alpha_attractor_t16_life4_band113_800
 
 LATEST TEST STATUS
-STAB-15 reconstructed sandbox regression:
-192 passed
+STAB-16 reconstructed sandbox regression:
+209 passed
 0 failed
 
 Environment:
 Python 3.13.5
 PyTorch 2.10.0+cpu
 
-STAB-15 scientific source revision:
-5e3d52602ff38fbc2285cff9d495b79cfeb5826e
+STAB-16 scientific source revision:
+986e3953365a2aa47682a3147cc6ae56a64c9485
 
 source_revision_verified_checkout = false
 sandbox_source_byte_identity = false
@@ -400,18 +401,65 @@ research/experiments/dg1a/dg1a-p0-stab15-spec.ice
 research/experiments/dg1a/dg1a-p0-stab15-result.ice
 evidence/dg1a/p0_stab15_sandbox.json
 
+STAB-16 — FRONTIER-FLOOR-113 + LIFE4-DECOUPLE + CEIL-800 + ATTRACT-16
+CLOSED NEGATIVE / VIABILITY RESTORED, MORPHOLOGY COUPLING UNRESOLVED.
+
+Scientific source:
+986e3953365a2aa47682a3147cc6ae56a64c9485
+
+Regression:
+209 passed
+0 failed
+
+Measured result:
+- pre-damage hidden-life cells: 1082;
+- final recovery hidden-life cells: 797;
+- persistence: 1047 -> peak 1049 -> 750;
+- drift: -297;
+- pre-lesion visible MSE: 0.0673088878;
+- final persistence visible MSE: 0.0488450378;
+- DamageEffect: -0.0051744804;
+- RelativeDamageEffect: -0.0768766287;
+- active-cell removal: 26.52%;
+- stable T50: not attained;
+- 8 / 14 gates failed.
+
+Mechanistic result:
+FRONTIER-FLOOR-113 eliminated STAB-15 hidden-life collapse without specifying a target life mask. Hidden life repeatedly entered the 113..800 deadband and ATTRACT-16 remained active. However, formation still entered evaluation overgrown, and lesion damage improved visible morphology instead of degrading it.
+
+This establishes that decoupled hidden liveness can be viable with a minimal local survival signal, but latent support remains insufficiently coupled to useful visible morphology.
+
+Do not tune:
+- viability floor 113;
+- frontier radius or definition;
+- floor coefficient;
+- CEIL-800;
+- hidden L2;
+- ATTRACT-16;
+- life threshold;
+- scientific gates.
+
+Return references:
+- STAB-12 remains the best overall canonical phenotype by gate count;
+- STAB-16 is the strongest evidence that hidden liveness can be sustained without exact target-mask equality.
+
+DURABLE STAB-16 RECORDS
+research/experiments/dg1a/dg1a-p0-stab16-spec.ice
+research/experiments/dg1a/dg1a-p0-stab16-result.ice
+evidence/dg1a/p0_stab16_sandbox.json
+
 NEXT BOUNDED PACKET
-Provisionally DG-1A-P0-STAB-16 — DESIGN / PREREGISTRATION ONLY.
+Provisionally DG-1A-P0-STAB-17 — DESIGN / PREREGISTRATION ONLY.
 
 Preferred research seam:
-a positive viability-to-morphology coupling for decoupled life that prevents hidden-life collapse without forcing life to equal the visible target mask and without merely tuning hidden L2 or the 800-cell ceiling.
+functional coupling between viable latent support and visible morphology, without reverting to exact target-mask life equality or raw cardinality pressure.
 
-No STAB-16 mechanism is selected by this status record.
+No STAB-17 mechanism is selected by this status record.
 
 BOUNDARY
 P0 remains morphology/developmental-substrate research only.
 Do not begin DG-1B, ancestor inheritance, structural growth, developmental adapters, or Fibonacci scheduling from this packet.
 
 NEXT ACTION
-Research and preregister one discriminating STAB-16 positive viability-to-morphology coupling mechanism.
+Research and preregister one discriminating STAB-17 latent-support / visible-morphology functional-coupling mechanism.
 Do not execute it before exact mechanism and gates exist in .ice.
