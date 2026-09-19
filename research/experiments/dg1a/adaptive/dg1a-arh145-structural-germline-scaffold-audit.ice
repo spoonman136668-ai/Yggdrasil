@@ -568,3 +568,303 @@ canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 parent_h144_primary_complete = false
 preregistered_from_head = 09e4360a850a4ed27cd8128d87fc4088667a56f8
+
+
+IMPLEMENTATION FREEZE — BEFORE H145 EXECUTION
+
+The following previously-unspecified mechanics are fixed before primary H145 execution.
+
+PROTECTED EDGE WEIGHT
+
+Each surviving protected scaffold edge contributes:
+
+effective evidence mass = 3.0.
+
+If expected relation = SAME:
+
+same_mass += 3.0
+total_mass += 3.0.
+
+If DIFFERENT:
+
+same_mass += 0
+total_mass += 3.0.
+
+Protected scaffold evidence:
+
+does not decay
+inside the 12-episode primary recovery horizon.
+
+Fresh post-damage evidence:
+
+decays at:
+0.92 per episode.
+
+Thus the scaffold is:
+slow memory
+
+while:
+fresh evidence is:
+fast current evidence.
+
+PRIMARY EDGE BUDGET
+
+Target protected edge count:
+
+min(2N, N(N-1)/2).
+
+Duplicate pair relations:
+count once.
+
+If a constructor produces fewer than the target
+because of deduplication:
+
+remaining budget is filled
+according to that constructor's own rule.
+
+SCAFFOLD CONSTRUCTORS
+
+RANDOM-2N
+
+Uniformly sample unique unordered member pairs.
+
+POSITIVE-ONLY-2N
+
+Repeatedly choose:
+the currently lowest-degree member
+
+and connect it to:
+a randomly selected member from the same historical group.
+
+Continue until:
+the 2N unique-edge budget is filled
+
+or:
+all possible within-group edges are exhausted.
+
+If within-group edges exhaust:
+leave the remaining budget unused.
+
+BALANCED-COVERAGE-2N
+
+Pass 1:
+
+for each member,
+attempt to add:
+one SAME edge
+
+to:
+a member in its historical group.
+
+Pass 2:
+
+for each member,
+attempt to add:
+one DIFFERENT edge
+
+to:
+a member outside its historical group.
+
+Deduplicate.
+
+Budget-repair pass:
+
+repeatedly choose:
+the lowest protected-degree member
+
+and add a missing edge
+whose SAME/DIFFERENT sign
+reduces that member's current sign imbalance.
+
+Continue until:
+2N unique edges.
+
+LANDMARK-SIGNATURE-2N
+
+Choose:
+one historical representative
+per group.
+
+Representative identities are retained.
+
+Group identifiers are not retained.
+
+For each member:
+
+first add:
+the edge to its own historical representative
+when distinct.
+
+Then add:
+one edge to a representative
+from a different historical group.
+
+Budget-repair pass:
+
+add member-to-landmark edges
+favoring:
+lowest-degree members
+and:
+unused landmark relations
+
+until:
+2N unique edges
+or:
+all member-to-landmark pairs are exhausted.
+
+RANDOM-REDUNDANT-2N
+
+Repeatedly:
+
+choose one of the currently lowest-degree members,
+
+then connect it to:
+a uniformly random member
+
+through an unused pair.
+
+Continue until:
+2N unique edges.
+
+This equalizes degree coverage
+without using:
+historical SAME/DIFFERENT balance.
+
+SCAFFOLD CORRUPTION
+
+For scaffold corruption fraction c:
+
+select:
+round(c * protected_edge_count)
+edges uniformly without replacement.
+
+Of selected edges:
+
+50% are erased.
+
+50% have their SAME/DIFFERENT sign flipped.
+
+The corruption selector is:
+common across scaffold policies
+to the extent edge identities overlap.
+
+Fresh evidence is not:
+corrupted by this mechanism.
+
+PRIMARY FRESH EVIDENCE
+
+12 recovery episodes.
+
+Each episode:
+
+0.5N unique pair observations.
+
+Pair selection:
+uniform without replacement
+inside each episode.
+
+Sensor error:
+10%.
+
+Fresh evidence decay:
+0.92.
+
+RECONSTRUCTION CHECKPOINTS
+
+Attempt scratch reconstruction at:
+
+episodes:
+4,
+8,
+12.
+
+Primary headline reconstruction uses:
+episode 12.
+
+Recovery latency to:
+ARI >=0.75
+
+uses:
+the first successful checkpoint.
+
+No original group labels
+or:
+latent K
+
+enter:
+the reconstruction algorithm.
+
+SPECTRAL IMPLEMENTATION
+
+Use:
+the H144 positive-affinity construction.
+
+Infer:
+K = 3..8
+
+from:
+largest normalized-Laplacian eigengap.
+
+Then:
+row-normalized spectral embedding
++
+K-means
+
+constructs:
+the partition.
+
+Minimum reconstructed region size:
+
+5.
+
+A reconstruction failing this minimum:
+counts as:
+regeneration failure.
+
+FOSSILIZATION EDGE STATUS
+
+IMMUTABLE:
+
+old scaffold edges keep full weight 3.0.
+
+EPOCH-GATED:
+
+old-epoch scaffold edge enters current reconstruction
+at:
+weight 0.5
+
+until:
+fresh evidence reconfirms it.
+
+CONTRADICTION-CHALLENGED:
+
+old edge begins at:
+weight 3.0.
+
+Two fresh contradictory observations:
+quarantine it to weight 0.
+
+Three fresh consistent observations:
+restore it to weight 3.0.
+
+DUAL-GENERATION:
+
+the old scaffold remains:
+hibernating.
+
+Fresh current evidence may construct:
+one candidate replacement scaffold
+using:
+BALANCED-COVERAGE logic
+over current relational predictions.
+
+Only one:
+old
+and:
+one candidate
+generation may coexist.
+
+No implementation parameter above
+will change after primary execution begins.
+
+Do not execute STAB-18-R1 during this lane.
