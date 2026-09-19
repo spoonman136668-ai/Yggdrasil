@@ -1307,3 +1307,58 @@ consolidation rule
 
 will change
 after primary execution begins.
+
+
+IMPLEMENTATION FREEZE ADDENDUM — ROUTING MICROBATCHES
+
+Routing priorities are recomputed in:
+
+small evidence microbatches.
+
+Microbatch size:
+
+max(
+4,
+ceil(0.10 N)
+).
+
+At the start of each microbatch:
+
+recompute:
+
+- quarantine state;
+- own support;
+- own observations;
+- best alternative support;
+- support margin;
+- EXPECTED-RELEASE priority;
+- mature exemplar set.
+
+All queries inside that microbatch
+use:
+that frozen priority snapshot.
+
+Evidence still updates:
+the ledger immediately.
+
+The next microbatch
+therefore sees:
+the accumulated new evidence.
+
+HYBRID policy selection
+is sampled:
+per query
+
+using:
+the frozen 50/25/15/10 mixture.
+
+This is:
+
+a computational batching rule,
+
+not:
+a scientific threshold change.
+
+PRIMARY EXECUTION
+begins only after:
+this addendum.
