@@ -661,3 +661,81 @@ PRIMARY EXECUTION HAS NOT YET BEEN ACCEPTED
 The implementation freeze above is now part of the preregistered execution contract.
 
 The earlier harness sanity pass is not evidence for or against H143.
+
+
+IMPLEMENTATION FREEZE ADDENDUM — RECOVERY / CHURN METRICS
+
+This addendum is also frozen before primary execution.
+
+RECOVERY LATENCY
+
+For each real split,
+damage,
+or merge event:
+
+record the policy ARI immediately before the event.
+
+Recovery occurs at the first later episode where:
+
+ARI >= pre_event_ARI - 0.05.
+
+If the policy had not yet achieved:
+ARI >= 0.60
+
+before the event,
+the recovery latency is also reported separately as:
+UNINFORMATIVE BASELINE
+
+rather than treating poor pre-event topology as success.
+
+TRANSIENT FALSE-SHIFT CHURN
+
+Episodes:
+66..70
+
+contain false structural evidence.
+
+Episodes:
+66..75
+
+form the false-shift mutation accounting window.
+
+Any accepted split or merge in that window is counted as:
+transient-stress structural churn.
+
+A churn event is counted as:
+harmful false structural mutation
+
+when it reduces true-partition ARI by more than:
+0.02
+
+at acceptance.
+
+SUBFAMILY EXPLOSION
+
+A policy is considered over-fragmented if:
+
+accepted region count >
+true current region count + 2
+
+for:
+5 consecutive episodes.
+
+ACTIVE TOPOLOGY COST
+
+Recorded separately from pair-evidence cost.
+
+One unit is charged for:
+one full candidate-generation pass.
+
+HIBERNATED candidate metadata incurs:
+storage accounting
+
+but:
+zero active candidate-generation units.
+
+This keeps:
+active topology compute
+
+distinct from:
+dormant structural option value.
