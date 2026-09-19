@@ -1061,3 +1061,73 @@ All H145 result claims will explicitly refer to:
 this region-stratified primary realization.
 
 No further execution-semantic change is permitted after primary run begins.
+
+
+MEASUREMENT CORRECTION — BEFORE PRIMARY ACCEPTANCE
+
+The first complete primary execution exposed a metric-timing bug.
+
+The simulator recorded:
+
+episodes-to-50%
+and:
+episodes-to-80%
+
+from:
+the pre-audit state at the start of each episode.
+
+But:
+
+the episode's maturation evidence
+is part of:
+that episode's developmental work.
+
+Therefore:
+
+the preregistered latency metrics must be measured from:
+the post-audit state
+at the end of each episode.
+
+No policy,
+routing weight,
+evidence outcome,
+maturity threshold,
+budget,
+seed,
+or consolidation rule
+is changed.
+
+The pre-audit latency aggregates are:
+
+DISCARDED.
+
+The identical:
+2,000 primary worlds
+and:
+all 8 policies
+
+will be rerun with:
+
+first50
+and:
+first80
+
+recorded after:
+the episode's evidence updates.
+
+Additional diagnostic counters will record:
+
+- fraction reaching 50% by episode 20;
+- fraction reaching 80% by episode 20.
+
+This is a measurement correction only.
+
+The already observed:
+mature -> quarantine reversal count
+
+is retained as:
+a preregistered re-quarantine metric
+
+and will be treated as:
+a potential maturation-stability failure,
+not tuned away.
