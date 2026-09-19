@@ -1,9 +1,10 @@
-TITLE: DG-1A-AR-H141 — Epistemic Effect System / Action-Derived Proof-Obligation Audit Preregistration
+TITLE: DG-1A-AR-H141 — Epistemic Effect System / Action-Derived Proof-Obligation Audit
 DATE: 2026-09-19
-STATUS: PREREGISTERED / SYNTHETIC / UNEXECUTED
+STATUS: SYNTHETIC / MEASURED_SANDBOX POSITIVE ACTION-SCOPE CONTRACTION RESULT + TOPOLOGY-QUALITY LIMIT
 TRACK: DG-1A / ADAPTIVE-RULE RESEARCH
 BRANCH: dg1a-ar
 PARENT: dg1a-arh140-typed-epistemic-certificate-audit.ice
+PREREGISTRATION_COMMIT: be265af8a62d0f94ea56c9ab5a1fc057d9df3269
 
 PURPOSE
 
@@ -534,3 +535,811 @@ evidence_class_target = SYNTHETIC_MEASURED_SANDBOX
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 preregistered_from_head = 74e55461a101e695cd37f48f41a6855eaeb9bfb1
+
+
+EXECUTION RESULT
+
+PRIMARY SANDBOX
+
+20 activity/price cells.
+
+3,000 worlds per cell.
+
+Total:
+60,000 primary worlds.
+
+Common worlds were used across comparators.
+
+Primary implementation realization:
+
+family size:
+uniform integer 80..120.
+
+subfamily count:
+4..6.
+
+primary observed subfamily-label noise:
+10%.
+
+member value:
+positive lognormal,
+mean approximately one,
+sigma 0.60.
+
+The WHOLE-FAMILY-SHIFT regime is represented as:
+a coherent current candidate model
+whose stored predecessor was stale.
+
+Thus:
+its current proposed family action has no hidden incompatible subgroup.
+
+PRIMARY AGGREGATE RESULT
+
+BLIND-GLOBAL
+
+mean net:
+66.1921.
+
+1st percentile:
+-42.1134.
+
+mean evidence:
+4.3861.
+
+active weighted coverage:
+73.10%.
+
+mean false-promotion rate:
+2.78%.
+
+family-wide action:
+74.18%.
+
+type-invalid family-wide action:
+74.18%.
+
+PRICE-DEGRADED-GLOBAL
+
+mean net:
+42.1125.
+
+1st percentile:
+-45.8145.
+
+mean evidence:
+15.2754.
+
+active weighted coverage:
+44.38%.
+
+mean false-promotion rate:
+0.26%.
+
+family-wide action:
+39.87%.
+
+proof weakening attempted:
+55.65%.
+
+type-invalid action:
+22.87%.
+
+GLOBAL-OR-ABSTAIN
+
+mean net:
+21.1352.
+
+1st percentile:
+-22.6832.
+
+mean evidence:
+16.3323.
+
+active weighted coverage:
+30.30%.
+
+family-wide action:
+25.47%.
+
+abstention:
+67.29%.
+
+type-invalid action:
+0.
+
+EFFECT-TYPED CONTRACTION
+
+mean net:
+22.8007.
+
+1st percentile:
+-25.3605.
+
+mean evidence:
+18.1562.
+
+active weighted coverage:
+33.12%.
+
+mean false-promotion rate:
+0.36%.
+
+family-wide action:
+25.47%.
+
+subfamily action:
+10.84%.
+
+local action:
+63.69%.
+
+action-radius contraction:
+67.29%.
+
+proof weakening:
+0.
+
+type-invalid action:
+0.
+
+FULL-FAMILY
+
+mean net:
+-156.0444.
+
+mean evidence:
+92.8020.
+
+PRIMARY ACTION-RADIUS PHASE MAP
+
+EFFECT-TYPED by evidence price:
+
+PRICE 0.5
+
+mean net:
+60.0577.
+
+family-wide:
+43.38%.
+
+subfamily:
+19.07%.
+
+local:
+37.56%.
+
+mean evidence:
+30.36.
+
+PRICE 1
+
+mean net:
+45.9364.
+
+family-wide:
+41.62%.
+
+subfamily:
+15.42%.
+
+local:
+42.97%.
+
+mean evidence:
+28.68.
+
+PRICE 2
+
+mean net:
+23.8633.
+
+family-wide:
+27.97%.
+
+subfamily:
+13.10%.
+
+local:
+58.93%.
+
+mean evidence:
+20.01.
+
+PRICE 4
+
+mean net:
+-3.9049.
+
+family-wide:
+14.39%.
+
+subfamily:
+6.60%.
+
+local:
+79.01%.
+
+mean evidence:
+10.73.
+
+PRICE 8
+
+mean net:
+-11.9491.
+
+family-wide:
+0%.
+
+subfamily:
+approximately 0.01%.
+
+local:
+99.99%.
+
+mean evidence:
+approximately 1.
+
+PHASE-TRANSITION RESULT
+
+As evidence price rises:
+
+THE RADIUS OF ACTION
+CONTRACTS.
+
+The proof obligation for:
+
+FAMILY-WIDE
+
+remains:
+5% subgroup / 1% miss.
+
+The proof obligation for:
+
+SUBFAMILY
+
+remains:
+10% subgroup / 5% miss.
+
+Neither changes with price.
+
+This passes the central H141 invariant.
+
+UTILITY OF CONTRACTION
+
+Compared with GLOBAL-OR-ABSTAIN:
+
+PRICE 0.5
+
+EFFECT:
+60.06.
+
+GLOBAL-OR-ABSTAIN:
+55.84.
+
+PRICE 1
+
+EFFECT:
+45.94.
+
+GLOBAL-OR-ABSTAIN:
+42.67.
+
+PRICE 2
+
+EFFECT:
+23.86.
+
+GLOBAL-OR-ABSTAIN:
+22.55.
+
+Thus:
+narrower certified action recovers useful work
+that a global-only safe policy would discard.
+
+At price 4:
+
+EFFECT:
+-3.90.
+
+GLOBAL-OR-ABSTAIN:
+-3.44.
+
+At price 8:
+
+both are approximately:
+-11.95.
+
+Therefore contraction is not universally free.
+
+At very high evidence price:
+even subfamily proof can become uneconomic.
+
+The correct endpoint becomes:
+LOCAL.
+
+MEDIUM/HIGH-PRICE SAFETY COMPARISON
+
+Across price >= 2:
+
+PRICE-DEGRADED-GLOBAL
+
+mean net:
+37.3496.
+
+1st percentile:
+-54.4555.
+
+mean false-promotion rate:
+0.43%.
+
+type-invalid action:
+38.12%.
+
+EFFECT-TYPED
+
+mean net:
+2.6698.
+
+1st percentile:
+-30.6066.
+
+mean false-promotion rate:
+0.20%.
+
+type-invalid action:
+0.
+
+The degraded controller earns much more scalar reward.
+
+It does so by:
+maintaining a broad action radius
+while weakening proof obligations.
+
+The effect-typed controller gives up that reward
+and materially improves:
+epistemic validity,
+false-promotion rate,
+and severe tail.
+
+LOCAL-SUBFAMILY-DRIFT RESULT
+
+In the preregistered local-subfamily drift regime:
+
+BLIND-GLOBAL
+
+mean net:
+1.8445.
+
+1st percentile:
+-53.6021.
+
+false-promotion rate:
+6.51%.
+
+coverage:
+29.16%.
+
+PRICE-DEGRADED-GLOBAL
+
+mean net:
+-7.6756.
+
+1st percentile:
+-56.3433.
+
+false-promotion:
+0.38%.
+
+GLOBAL-OR-ABSTAIN
+
+mean net:
+-5.9336.
+
+1st percentile:
+-23.3706.
+
+false-promotion:
+approximately 0%.
+
+coverage:
+5.83%.
+
+EFFECT-TYPED
+
+mean net:
+-1.6595.
+
+1st percentile:
+-28.1614.
+
+false-promotion:
+0.63%.
+
+coverage:
+11.22%.
+
+Thus subfamily contraction:
+
+recovers more useful active value
+than global abstention
+
+while:
+
+containing local drift
+far better than blind global action.
+
+It does not:
+eliminate all subfamily false promotion.
+
+That residual becomes important below.
+
+LOW-PRICE COHERENT-FAMILY CHECK
+
+COHERENT regime,
+price 0.5.
+
+EFFECT-TYPED:
+
+family-wide action:
+78.12%.
+
+coverage:
+82.57%.
+
+mean net:
+99.08.
+
+Thus:
+the strong global proof does not eliminate broad action
+when evidence is cheap
+and the family is coherent.
+
+EVIDENCE-EFFICIENCY RESULT
+
+Primary mean evidence:
+
+EFFECT-TYPED:
+18.16.
+
+FULL-FAMILY:
+92.80.
+
+Therefore:
+action-derived proof obligations do not collapse into full-family inspection.
+
+SUDDEN PRICE-SHOCK STRESS
+
+Active fraction:
+90%.
+
+Initial trigger evidence price:
+0.5.
+
+All evidence after trigger:
+8.
+
+20,000 worlds.
+
+PRICE-DEGRADED-GLOBAL
+
+mean net:
+90.0958.
+
+1st percentile:
+-62.4760.
+
+mean evidence:
+8.4916.
+
+coverage:
+63.74%.
+
+false-promotion:
+1.03%.
+
+family-wide action:
+63.04%.
+
+proof weakening:
+92.56%.
+
+type-invalid action:
+63.04%.
+
+EFFECT-TYPED
+
+mean net:
+-10.8499.
+
+1st percentile:
+-16.1497.
+
+mean evidence:
+1.0176.
+
+family-wide action:
+0%.
+
+subfamily:
+0.14%.
+
+local:
+99.86%.
+
+proof weakening:
+0.
+
+type-invalid action:
+0.
+
+GLOBAL-OR-ABSTAIN
+
+mean net:
+-10.8299.
+
+1st percentile:
+-16.0641.
+
+family-wide:
+0%.
+
+abstention:
+92.56%.
+
+PRICE-SHOCK INTERPRETATION
+
+The effect system responds to a sudden compute shock by:
+
+COLLAPSING
+ACTION RADIUS
+
+almost entirely to:
+LOCAL.
+
+The degraded controller responds by:
+
+KEEPING
+GLOBAL ACTION
+
+and:
+
+SELLING
+PROOF QUALITY.
+
+This creates a sharp scalar-reward difference.
+
+That difference is real.
+
+H141 does not hide it.
+
+The claimed architectural principle is:
+
+when validity is non-negotiable,
+high resource pressure should degrade:
+
+SCOPE
+
+before:
+
+EPISTEMIC CONTRACT.
+
+SUBFAMILY-TOPOLOGY ROBUSTNESS
+
+A targeted label-quality sweep tested:
+
+0% label noise;
+10%;
+25%.
+
+Operating point:
+
+active fraction 60%.
+evidence price 2.
+
+EFFECT-TYPED
+
+0% label noise:
+
+mean net:
+23.5891.
+
+1st percentile:
+-22.3928.
+
+false-promotion:
+0.33%.
+
+coverage:
+63.64%.
+
+10% label noise:
+
+mean net:
+22.9694.
+
+1st percentile:
+-23.3892.
+
+false-promotion:
+0.73%.
+
+coverage:
+62.93%.
+
+25% label noise:
+
+mean net:
+22.5457.
+
+1st percentile:
+-24.0978.
+
+false-promotion:
+0.96%.
+
+coverage:
+61.63%.
+
+TOPOLOGY-QUALITY LIMIT
+
+Scope contraction assumes:
+
+THE SUBFAMILY
+IS A MEANINGFUL
+ACTION BOUNDARY.
+
+As subfamily labels become noisy:
+
+- false promotion rises;
+- coverage falls;
+- severe tail worsens.
+
+The effect system remains type-valid
+with respect to the declared subfamily.
+
+But:
+the declared subfamily itself
+can be a poor representation of causal structure.
+
+This is analogous to H140's action-obligation limit one level deeper.
+
+A valid certificate over:
+THE WRONG PARTITION
+
+can still support:
+A POOR ACTION.
+
+DECISION
+
+AR-H141 is:
+
+POSITIVE
+
+for:
+
+ACTION-DERIVED PROOF OBLIGATIONS
++
+RESOURCE-DRIVEN ACTION-SCOPE CONTRACTION.
+
+SUPPORTED
+
+- proof requirements can be attached to actions rather than chosen opportunistically;
+- compute price changes action radius without changing same-action proof quality;
+- subfamily action recovers value that global-or-abstain loses in low/medium-price regions;
+- effect-typed contraction improves severe-tail and false-promotion behavior relative to price-degraded global action in the medium/high-price region;
+- coherent low-price families still support broad action;
+- sudden price shock contracts almost completely to local action;
+- no type-invalid or proof-weakened action is authorized by EFFECT-TYPED;
+- evidence remains far below full-family audit.
+
+LIMIT
+
+ACTION SCOPE
+IS ONLY AS GOOD AS
+THE PARTITION
+THAT DEFINES IT.
+
+A typed:
+SUBFAMILY ACTION
+
+requires not only:
+a certificate over members inside the named subfamily,
+
+but confidence that:
+
+THE SUBFAMILY BOUNDARY
+IS ITSELF
+THE RIGHT CAUSAL BOUNDARY.
+
+NEXT HIGH-VALUE MOVE
+
+AR-H142 — PROOF-BEARING TOPOLOGY / PARTITION-UNCERTAINTY FIREWALL AUDIT
+
+Question:
+
+CAN
+THE ORGANISM
+TREAT
+ITS OWN
+FAMILY / SUBFAMILY
+BOUNDARIES
+
+AS:
+CHALLENGEABLE
+EPISTEMIC OBJECTS?
+
+Candidate principle:
+
+DO NOT
+CERTIFY
+AN ACTION REGION
+
+MORE STRONGLY
+THAN
+THE REGION'S
+OWN BOUNDARY
+IS JUSTIFIED.
+
+Test:
+
+A.
+hard fixed subfamily labels;
+
+B.
+boundary-confidence tags;
+
+C.
+quarantine of uncertain boundary members;
+
+D.
+overlapping certificates for ambiguous members;
+
+E.
+recursive split when internal dissent clusters near a boundary;
+
+F.
+merge when adjacent subfamilies repeatedly co-move;
+
+G.
+price shock with topology uncertainty;
+
+H.
+adversarial/stale partition where hidden drift intentionally crosses the stored boundary.
+
+Desired:
+
+TOPOLOGY
+SHOULD BE
+PROOF-CARRYING,
+
+not:
+an unquestioned index.
+
+Do not execute STAB-18-R1 during this lane.
+
+EXECUTION PROVENANCE
+
+evidence_class = SYNTHETIC_MEASURED_SANDBOX
+canonical_scientific_execution = false
+canonical_r1_execution_spent = false
+primary_worlds_per_cell = 3000
+primary_cells = 20
+primary_total_worlds = 60000
+primary_label_noise = 0.10
+effect_mean_net = 22.8007
+effect_p01 = -25.3605
+effect_mean_evidence = 18.1562
+effect_type_invalid = 0
+effect_proof_weaken = 0
+effect_global_rate_price_0_5 = 0.4338
+effect_global_rate_price_8 = 0
+effect_local_rate_price_0_5 = 0.3756
+effect_local_rate_price_8 = 0.9999
+effect_subfamily_rate_price_0_5 = 0.1907
+effect_subfamily_rate_price_2 = 0.1310
+degraded_mid_high_p01 = -54.4555
+effect_mid_high_p01 = -30.6066
+shock_degraded_type_invalid = 0.6304
+shock_effect_type_invalid = 0
+label_noise_0_effect_fpr = 0.0033
+label_noise_25_effect_fpr = 0.0096
