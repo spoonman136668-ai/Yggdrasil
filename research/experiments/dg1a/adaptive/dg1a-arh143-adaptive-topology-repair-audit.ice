@@ -848,3 +848,75 @@ candidate rule,
 acceptance condition,
 or event schedule
 will be altered after the primary run begins.
+
+
+ONE-EVENT CONTROL FREEZE
+
+The preregistered one-event controls will now be executed on:
+48 held-out worlds per control.
+
+Each control keeps:
+the same family-size range,
+same initial 10% stored-topology corruption,
+same 80-episode horizon,
+same <=2N pair-evidence budget,
+same sensor error,
+same candidate thresholds,
+same hysteresis,
+same policies.
+
+CONTROL BASELINE
+
+Episodes 1..20:
+stable.
+
+CONTROL SPLIT
+
+Episode 21:
+one real near-equal split of the largest true subfamily.
+
+Episodes 21..80:
+stable post-split ecology.
+
+CONTROL MERGE
+
+Episode 21:
+two similarly-sized true subfamilies merge.
+
+Episodes 21..80:
+stable post-merge ecology.
+
+CONTROL DAMAGE
+
+Episode 21:
+25% stored topology damage using the frozen damage realization.
+
+True topology remains unchanged.
+
+CONTROL FALSE SHIFT
+
+Episodes 21..25:
+observation process mimics one false split or merge.
+
+True topology remains unchanged.
+
+Episode 26 onward:
+observation process returns to the unchanged true topology.
+
+CONTROL METRICS
+
+In addition to the H143 primary metrics:
+
+- ARI at episode 20;
+- minimum ARI after event;
+- ARI at episodes 35, 50, and 80;
+- accepted structural mutation count after event;
+- harmful false mutation count;
+- quarantine fraction at episodes 20, 35, 50, and 80.
+
+These controls are diagnostic.
+
+They do not replace:
+the frozen longitudinal primary acceptance shape.
+
+No control threshold will be tuned after control execution begins.
