@@ -1,6 +1,6 @@
 TITLE: DG-1A-AR-H148 — Non-Fungible Repair Envelope / Scoped Re-Development + Dependency-Certificate Audit Preregistration
 DATE: 2026-09-19
-STATUS: PREREGISTERED / SYNTHETIC / UNEXECUTED
+STATUS: PREREGISTERED / SYNTHETIC / PRIMARY RELEASED AFTER CORRECTED H147 CLOSURE
 TRACK: DG-1A / ADAPTIVE-RULE RESEARCH
 BRANCH: dg1a-ar
 PARENT: dg1a-arh147-structural-trust-region-audit.ice
@@ -1924,3 +1924,39 @@ is measured.
 
 Harness-only H148 sanity outputs before this hold are:
 NON-EVIDENCE.
+
+
+LINEAGE HOLD RELEASE — BEFORE PRIMARY EXECUTION
+
+The H147 correction hold is:
+SATISFIED.
+
+Corrected H147 same-seed protocol replay
+was closed at:
+40349ac04d5c5bdcd5b09d0bcf9d41b8d87b4450.
+
+Relevant corrected H147 findings carried forward:
+
+- scalar repair debt remains too fungible under accumulated micropatching;
+- aggregate false inherited-certificate rate falls below 1%;
+- MOVING-WOUND remains above the certificate-safety target at approximately 3.27%;
+- local-versus-diffuse handoff signal remains strong;
+- transient-noise rejection remains intact.
+
+Therefore:
+the already-frozen H148 questions remain live.
+
+No H148 threshold,
+policy,
+regime,
+seed block,
+implementation mechanic,
+or:
+acceptance rule
+is changed by this release.
+
+Primary execution is now:
+AUTHORIZED FOR THIS SYNTHETIC RESEARCH LANE.
+
+STAB-18-R1 remains:
+UNTOUCHED.
