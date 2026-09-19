@@ -1785,3 +1785,112 @@ budget1_triggered_final_ari = 1.0
 budget1_triggered_mean_coverage = 0.1673
 budget4_triggered_final_ari = 1.0
 budget4_triggered_mean_coverage = 0.8272
+
+
+FUTURE-TEST NOTE — BOUNDED INCREMENTAL PATCHING / STRUCTURAL TRUST REGION
+
+This note is prospective only.
+
+It does NOT modify:
+- the frozen H144 trigger;
+- the H144 blastema contract;
+- H144 acceptance criteria;
+- H144 primary execution.
+
+Future testing should evaluate whether incremental repair is most effective when explicitly constrained to a:
+
+STRUCTURAL TRUST REGION.
+
+Candidate principle:
+
+PATCH
+WHILE
+DAMAGE REMAINS
+BOUNDED.
+
+RE-DEVELOP
+WHEN
+REPAIR DEMAND
+LEAVES
+THE TRUST REGION.
+
+The repair envelope should consider more than one-step mutation size.
+
+Candidate cumulative variables:
+
+- membership reassignment mass;
+- split / merge impact;
+- quarantined population fraction;
+- unresolved boundary mass;
+- relational disagreement;
+- repeated repair failures;
+- cumulative structural displacement from the last validated topology;
+- number of consecutive local patches;
+- affected action-value mass.
+
+Important distinction:
+
+DAMAGE MAGNITUDE
+and:
+DAMAGE DISTRIBUTION
+
+should be measured separately.
+
+Example:
+
+10% damage concentrated inside one subfamily
+
+may remain:
+locally repairable.
+
+The same 10% damage
+distributed across every subfamily
+
+may indicate:
+global scaffold corruption.
+
+Candidate future invariant:
+
+REPAIR LOCALLY
+WHILE
+DAMAGE REMAINS
+SPATIALLY BOUNDED.
+
+RE-DEVELOP
+WHEN
+DAMAGE BECOMES
+STRUCTURALLY DIFFUSE.
+
+Potential future comparator ladder:
+
+A.
+unbounded incremental patching.
+
+B.
+fixed per-operation repair cap.
+
+C.
+cumulative structural-debt budget.
+
+D.
+spatially aware structural trust region.
+
+E.
+trust-region patching
+with automatic blastema handoff.
+
+F.
+immediate blastema.
+
+Key metric:
+
+whether trust-region patching
+extends useful incremental repair
+
+without recreating the H143 failure mode of:
+
+PATCHING
+A SCAFFOLD
+THAT HAS
+STOPPED BEING
+A RELIABLE PRIOR.
