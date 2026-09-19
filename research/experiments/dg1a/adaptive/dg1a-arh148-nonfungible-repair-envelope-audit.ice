@@ -2307,3 +2307,149 @@ the exact frozen seed blocks.
 No threshold tuning
 is permitted.
 
+
+
+SECOND PRIMARY HARNESS CORRECTION — WARM-UP AUTHORITY LEAK
+
+The comparator-corrected full batch
+is also:
+DISCARDED / NON-EVIDENCE.
+
+Reason:
+
+post-run consistency review found:
+
+R8 PURE-RELABEL
+showing:
+structural redevelopment handoffs
+
+while:
+zero H148 repair-envelope dimensions
+had been exhausted
+after:
+the declared episode-10 repair-ledger origin.
+
+Root cause:
+
+VECTOR / HARD-DISPLACEMENT / ORACLE
+handoff authority
+was active during:
+episodes 1..10
+
+even though:
+the final pre-primary freeze defines
+episode 10
+as:
+the initial relevant structural validation origin.
+
+Thus:
+pre-baseline maturation residuals
+could launch:
+regional or global redevelopment
+
+before:
+the repair ledger's experiment epoch
+legally began.
+
+That contradicts:
+the frozen ledger-origin interpretation.
+
+CORRECTION
+
+Episodes 1..10 remain:
+stable maturation / evidence warm-up.
+
+During this warm-up:
+
+- bounded incremental maturation patches remain allowed;
+- dependency checks remain active;
+- H146 contradiction semantics remain active;
+- revalidation remains active;
+
+but:
+
+H148
+HARD-DISPLACEMENT,
+VECTOR-GLOBAL,
+VECTOR-DEPENDENCY,
+VECTOR-SCOPED-DEPENDENCY,
+and:
+ORACLE-SCOPE
+
+may NOT launch:
+
+- regional redevelopment;
+- global redevelopment;
+- envelope-exhaustion handoff.
+
+At the end of episode 10:
+
+the frozen H148 repair-ledger reset occurs.
+
+Beginning episode 11:
+
+H148 repair authority
+and:
+all projected/current envelope handoff rules
+become active.
+
+H147-SCALAR remains:
+its own frozen comparator.
+
+F — IMMEDIATE GLOBAL
+remains:
+its frozen no-patch comparator
+with:
+its persistent-disturbance trigger.
+
+WHY THIS IS A HARNESS CORRECTION,
+NOT THRESHOLD TUNING
+
+No:
+P,
+U,
+diffusion,
+P_r,
+quarantine,
+patch-cap,
+failure,
+witness,
+maturation,
+scope,
+or:
+acceptance threshold
+
+is changed.
+
+The correction only enforces:
+the already-frozen
+episode-10
+initial repair-ledger origin.
+
+SANITY REQUIREMENT BEFORE RERUN
+
+R8 PURE-RELABEL
+must show:
+
+- no pre-baseline H148 handoff;
+- zero false handoff
+  when no post-baseline structural envelope dimension is exhausted.
+
+This sanity requirement passed.
+
+DISPOSITION
+
+All H148 full-batch numerical outputs
+before this correction
+are:
+NON-EVIDENCE.
+
+The entire:
+4,000-world,
+28,000 policy-regime-world
+primary
+
+will be rerun again
+from:
+the exact frozen seed blocks.
+
