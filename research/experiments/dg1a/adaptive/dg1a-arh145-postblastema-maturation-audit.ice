@@ -1362,3 +1362,30 @@ a scientific threshold change.
 PRIMARY EXECUTION
 begins only after:
 this addendum.
+
+
+PRIMARY EXECUTION SEED FREEZE
+
+Routing primary seed base:
+145100000.
+
+Routing worlds:
+145100000..145100599.
+
+Plasticity primary seed base:
+145200000.
+
+Plasticity worlds:
+145200000..145200599.
+
+These deterministic blocks are separate from:
+H144 seeds
+and:
+each other.
+
+No scientific threshold,
+routing policy,
+plasticity schedule,
+or:
+acceptance criterion
+changes in this addendum.
