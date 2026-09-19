@@ -1,6 +1,6 @@
 TITLE: DG-1A-AR-H148 — Non-Fungible Repair Envelope / Scoped Re-Development + Dependency-Certificate Audit Preregistration
 DATE: 2026-09-19
-STATUS: PREREGISTERED / SYNTHETIC / PRIMARY RELEASED AFTER CORRECTED H147 CLOSURE
+STATUS: PRIMARY COMPLETE / MIXED-NEGATIVE — SCOPED NON-FUNGIBLE REPAIR SUPPORTED IN ACCUMULATED LOCAL DAMAGE; MOVING-WOUND + DEPENDENCY-PROOF LIMITS
 TRACK: DG-1A / ADAPTIVE-RULE RESEARCH
 BRANCH: dg1a-ar
 PARENT: dg1a-arh147-structural-trust-region-audit.ice
@@ -2746,4 +2746,941 @@ evidence-hygiene only.
 All previously inspected H148 worlds remain:
 
 NON-EVIDENCE / DISCARDED.
+
+
+
+PRE-PRIMARY HARNESS RECORD — MOVING-WOUND + PATCH-PERSISTENCE CORRECTIONS
+
+These corrections were present in:
+the accepted fresh-seed primary harness
+before:
+accepted primary execution.
+
+They were not:
+threshold tuning.
+
+MOVING-WOUND
+
+The R4 realization is:
+a relocated instantaneous 10% wound.
+
+Before each new 10% wound:
+the previous wound is restored
+to:
+its pre-wound functional labels.
+
+Then:
+a fresh 10% local wound
+is placed in:
+the next source region.
+
+Thus:
+instantaneous changed mass remains
+approximately 10%
+
+while:
+the challenged spatial footprint
+moves across the family.
+
+This matches:
+the frozen phrase
+"10% instantaneous local wound moves to a new region."
+
+PATCH-PERSISTENCE RESET
+
+After:
+an accepted incremental patch,
+
+coherent-patch persistence state
+is reset.
+
+A candidate must therefore:
+re-establish
+two consecutive structural checkpoints
+
+after:
+each accepted topology operation.
+
+This prevents:
+one stale pre-patch persistence observation
+from:
+authorizing the next patch.
+
+All smoke outputs used to identify these issues remain:
+NON-EVIDENCE.
+
+ACCEPTED H148 PRIMARY
+
+DATE:
+2026-09-19.
+
+EVIDENCE CLASS:
+SYNTHETIC
+MEASURED_SANDBOX
+LONGITUDINAL
+STRUCTURAL-REPAIR
+CERTIFICATE-PROVENANCE.
+
+CANONICAL SCIENTIFIC EXECUTION:
+false.
+
+STAB-18-R1:
+UNTOUCHED.
+
+Primary worlds:
+4,000.
+
+Worlds / regime:
+400.
+
+Regimes:
+10.
+
+Policies:
+7.
+
+Policy-regime-world rows:
+28,000.
+
+Held-out replacement seed family:
+
+R0:
+20260919200000..20260919200399.
+
+Each next regime:
++1000.
+
+Accepted primary dataset SHA-256:
+
+ee0bc5c36ee5494b289fe80b9fc87cfb1292fcefa5f3b435ac96c3c42919aaf9
+
+Accepted protocol-replay harness SHA-256:
+
+b60dce32ada2357acec43595aafe30f48a92b923c036e6537b59906f9156ddef
+
+PROVENANCE LIMIT
+
+The original failed chat did not persist:
+its ephemeral simulator source.
+
+As with:
+the corrected H147 closure,
+
+this H148 execution is:
+a frozen-contract
+protocol replay
+
+reconstructed from:
+the committed preregistration,
+implementation freezes,
+harness corrections,
+H146 contradiction semantics,
+H147 comparator semantics,
+and:
+the pre-primary H148 amendments above.
+
+It is not claimed to be:
+a byte-identical recovery
+of:
+any lost ephemeral harness.
+
+PRIMARY CANDIDATE
+
+E —
+VECTOR-SCOPED-DEPENDENCY.
+
+PRIMARY CANDIDATE RESULTS
+
+R0 — LOCAL-5
+
+final ARI:
+1.0000.
+
+patches:
+3.3075 / world.
+
+regional redevelopment:
+0.3000 / world.
+
+global blastema:
+0.
+
+scratch units:
+0.3000 / world.
+
+action downtime:
+40.70%.
+
+revalidation:
+332.15 observations / world.
+
+original-certificate retention:
+62.49%.
+
+mean per-world false inherited-certificate rate:
+1.77%.
+
+R1 — LOCAL-10
+
+final ARI:
+1.0000.
+
+patches:
+2.4250.
+
+regional redevelopment:
+1.0000 / world.
+
+global blastema:
+0.
+
+scratch:
+1.0000.
+
+action downtime:
+43.24%.
+
+revalidation:
+467.03.
+
+retention:
+51.78%.
+
+false inherited-certificate:
+3.83%.
+
+R2 — DIFFUSE-10
+
+final ARI:
+1.0000.
+
+regional:
+0.
+
+global blastema:
+1.0000 / world.
+
+scratch:
+3.0000.
+
+action downtime:
+44.97%.
+
+revalidation:
+1029.50.
+
+false inherited-certificate:
+2.52%.
+
+R3 — ACCUMULATED-MICROPATCH
+
+final ARI:
+0.9752.
+
+H147-SCALAR comparator:
+0.9031.
+
+paired final-ARI improvement:
+
++0.0721.
+
+Approximate 95% paired interval:
+
++0.0655
+to:
++0.0787.
+
+regional redevelopment:
+2.0150 / world.
+
+global blastema:
+0.6500 / world.
+
+scratch:
+3.9650.
+
+maximum P:
+mean:
+0.0536.
+
+maximum observed per-world P:
+0.09375.
+
+Thus:
+handoff occurs
+well before:
+25% cumulative accepted path.
+
+action downtime:
+48.24%.
+
+revalidation:
+654.90.
+
+false inherited-certificate:
+1.85%.
+
+R4 — MOVING-WOUND
+
+final ARI:
+0.8042.
+
+regional redevelopment:
+0.
+
+global blastema:
+0.
+
+scratch:
+0.
+
+maximum P:
+0.0135.
+
+maximum cumulative diffusion exposure:
+0.0174.
+
+false inherited-certificate:
+5.14%.
+
+This is:
+a decisive H148 failure.
+
+The moving wound:
+changes location
+faster than:
+accepted topology repair
+accumulates.
+
+Therefore:
+a ledger based primarily on:
+ACCEPTED STRUCTURAL MOVES
+
+can remain:
+nearly empty
+
+while:
+the organism experiences
+repeated structural challenge
+across:
+multiple regions.
+
+R5 — HIGH-VALUE-LOCAL
+
+final ARI:
+1.0000.
+
+regional:
+0.3175.
+
+global:
+0.
+
+scratch:
+0.3175.
+
+false inherited-certificate:
+2.19%.
+
+Value concentration:
+does not purchase
+additional structural repair authority.
+
+R6 — BOUNDARY-PING-PONG
+
+final ARI:
+0.9986.
+
+regional:
+0.
+
+global:
+0.
+
+maximum P:
+0.0131.
+
+false inherited-certificate:
+2.62%.
+
+Repeated challenge / reversal:
+can therefore also remain
+weakly represented
+when:
+accepted topology
+does not repeatedly move.
+
+R7 — DIFFUSE-THEN-LOCAL
+
+final ARI:
+0.9992.
+
+global blastema:
+1.0000 / world.
+
+scratch:
+3.0000.
+
+false inherited-certificate:
+3.52%.
+
+R8 — PURE RELABEL
+
+final ARI:
+1.0000.
+
+regional:
+0.
+
+global:
+0.
+
+dependency-aware unnecessary invalidation
+at:
+the relabel event:
+
+0%.
+
+false inherited-certificate:
+0%.
+
+This is:
+a strong positive result.
+
+The dependency representation is:
+RELABEL-INVARIANT
+
+when:
+same/different structural relations
+are unchanged.
+
+R9 — STACKED
+
+final ARI:
+0.9570.
+
+regional redevelopment:
+2.1875.
+
+global blastema:
+0.5800.
+
+scratch:
+3.9275.
+
+action downtime:
+49.90%.
+
+revalidation:
+917.79.
+
+false inherited-certificate:
+3.79%.
+
+VECTOR-DEPENDENCY
+global-only comparator:
+
+final ARI:
+0.9760.
+
+Thus:
+the scoped handoff
+is:
+too eager / too coarse
+under:
+stacked structural transitions.
+
+KEY COMPARISONS
+
+LOCAL-5
+
+E versus IMMEDIATE GLOBAL:
+
+downtime improvement:
+-8.60 percentage points.
+
+paired 95% interval:
+approximately
+-8.71
+to:
+-8.48 points.
+
+revalidation difference:
+-118.23 observations / world.
+
+scratch:
+0.30
+versus:
+3.00.
+
+LOCAL-10
+
+E versus IMMEDIATE GLOBAL:
+
+downtime improvement:
+-6.75 percentage points.
+
+paired 95% interval:
+approximately
+-6.85
+to:
+-6.65 points.
+
+scratch:
+1.00
+versus:
+3.00.
+
+However:
+
+revalidation:
+E:
+467.03.
+
+IMMEDIATE GLOBAL:
+446.64.
+
+paired excess:
++20.39 observations / world.
+
+Approximate 95% interval:
++10.46
+to:
++30.31.
+
+Thus:
+LOCAL-10 preserves:
+availability
+and:
+scratch-cost advantage,
+
+but NOT:
+deliberate revalidation-cost advantage.
+
+DEPENDENCY-WITNESS COST
+
+Across all regimes:
+
+VECTOR-SCOPED-DEPENDENCY
+mean revalidation:
+552.69.
+
+IMMEDIATE GLOBAL:
+463.50.
+
+H147-SCALAR:
+105.30.
+
+The 4+2 witness object:
+does NOT
+produce:
+a general revalidation-cost reduction.
+
+The failure mechanism is:
+dependency fan-out.
+
+When:
+one structurally challenged / moved member
+is used as:
+a witness
+
+multiple otherwise-valid certificates
+can lose:
+their proof dependency
+
+even when:
+their own local state
+remains stable.
+
+PROOF STALENESS
+
+Dependency-aware surviving certificates
+still show:
+nontrivial true-structure witness staleness.
+
+Examples:
+
+LOCAL-5:
+7.41%.
+
+LOCAL-10:
+9.78%.
+
+DIFFUSE-10:
+13.49%.
+
+MOVING-WOUND:
+13.69%.
+
+DIFFUSE-THEN-LOCAL:
+18.29%.
+
+Thus:
+accepted-topology witness relations
+are:
+not enough
+
+to guarantee:
+the underlying structural proof
+remains current.
+
+PRIMARY ACCEPTANCE REVIEW
+
+SUPPORTED
+
+1.
+NON-FUNGIBLE REPAIR HISTORY
+materially improves:
+ACCUMULATED-MICROPATCH
+over:
+H147-SCALAR.
+
+2.
+SCOPED REGIONAL RE-DEVELOPMENT
+is preferred over:
+global blastema
+in:
+R3.
+
+R3:
+regional:
+2.015 / world.
+
+global:
+0.650 / world.
+
+3.
+R3 handoff occurs:
+far before
+25% accepted path length.
+
+4.
+LOCAL-10
+and:
+DIFFUSE-10
+
+produce:
+different repair modes.
+
+LOCAL-10:
+regional.
+
+DIFFUSE-10:
+global.
+
+5.
+DIFFUSE-10
+and:
+DIFFUSE-THEN-LOCAL
+
+use:
+global redevelopment
+in:
+100% of primary worlds.
+
+6.
+PURE RELABEL
+is handled:
+cleanly
+by:
+relation-based dependency transfer.
+
+7.
+E uses:
+fewer scratch units
+than:
+IMMEDIATE GLOBAL
+in:
+LOCAL-5,
+LOCAL-10,
+and:
+ACCUMULATED-MICROPATCH.
+
+PARTIAL / MIXED
+
+1.
+LOCAL-5 preserves:
+downtime,
+scratch,
+and:
+revalidation advantage
+over:
+IMMEDIATE GLOBAL.
+
+LOCAL-10 preserves:
+downtime
+and:
+scratch advantage,
+
+but:
+loses
+the revalidation-cost advantage.
+
+2.
+Regional scope improves:
+R3
+
+but:
+under:
+STACKED
+
+the current scope controller
+re-develops too eagerly
+and:
+reduces final ARI
+relative to:
+VECTOR-DEPENDENCY.
+
+NOT SUPPORTED
+
+1.
+MOVING-WOUND
+does NOT:
+force handoff.
+
+Handoff rate:
+0%.
+
+The accepted-change ledger:
+cannot see
+challenge history
+that moves
+before:
+accepted repair catches up.
+
+2.
+FALSE INHERITED-CERTIFICATE
+<1%
+in every structural regime:
+
+FAIL.
+
+Candidate E mean per-world rates:
+
+LOCAL-5:
+1.77%.
+
+LOCAL-10:
+3.83%.
+
+DIFFUSE-10:
+2.52%.
+
+ACCUMULATED-MICROPATCH:
+1.85%.
+
+MOVING-WOUND:
+5.14%.
+
+HIGH-VALUE-LOCAL:
+2.19%.
+
+BOUNDARY-PING-PONG:
+2.62%.
+
+DIFFUSE-THEN-LOCAL:
+3.52%.
+
+STACKED:
+3.79%.
+
+Only:
+PURE RELABEL
+is:
+0%.
+
+3.
+Dependency-aware inheritance
+does NOT:
+generally use fewer
+revalidation observations
+than:
+IMMEDIATE GLOBAL.
+
+4.
+The 4+2 fixed individual-witness object
+does NOT:
+achieve:
+cheap,
+safe,
+local proof persistence.
+
+5.
+The current regional handoff
+does NOT:
+preserve enough structural quality
+under:
+STACKED.
+
+H148 CLASSIFICATION
+
+MIXED-NEGATIVE.
+
+The experiment supports:
+
+- non-fungible repair debt;
+- scoped regional re-development;
+- relabel-invariant proof dependencies.
+
+It rejects:
+
+- accepted-change history
+  as the only cumulative repair-history signal;
+- fixed individual 4+2 witnesses
+  as the certificate dependency primitive;
+- the current scope controller
+  as sufficient for stacked damage.
+
+CORE NEW RESULT 1 — REPAIR HISTORY HAS TWO CHANNELS
+
+H148 exposes:
+
+ACCEPTED REPAIR HISTORY
+
+and:
+
+UNRESOLVED CHALLENGE HISTORY
+
+as:
+different quantities.
+
+A system can experience:
+substantial distributed structural challenge
+
+while:
+accepting almost no topology moves.
+
+Therefore:
+
+P
+cannot be:
+the sole path-history state.
+
+A future controller needs:
+a second,
+non-fungible
+CHALLENGE-EXPOSURE ledger
+
+that accumulates:
+where
+and:
+how long
+
+structural contradiction
+has appeared
+
+even when:
+no patch
+is accepted.
+
+CORE NEW RESULT 2 — PROOF DEPENDENCIES SHOULD NOT BE INDIVIDUAL-WITNESS FRAGILE
+
+A fixed witness list
+behaves like:
+a cache artifact
+with:
+too many brittle direct dependencies.
+
+One witness changing
+can:
+fan invalidation
+across:
+many otherwise-stable certificates.
+
+But:
+removing witness sensitivity
+would recreate:
+stale inheritance.
+
+The next design target is therefore:
+
+RELATION-PROOF OBJECTS
+
+that are:
+
+- relabel-invariant;
+- structure-sensitive;
+- locally refreshable;
+- not tied to:
+  a handful of individual members;
+- directly revocable
+  by:
+  H146 contradiction evidence.
+
+CORE NEW RESULT 3 — REGIONAL VALIDATION
+IS NOT THE SAME AS:
+REGIONAL RE-DEVELOPMENT
+
+LOCAL-10 often exhausts:
+a regional repair ledger
+
+after:
+successful local repair.
+
+Immediately launching:
+regional scratch reconstruction
+
+can preserve:
+global structure
+
+but:
+incurs unnecessary
+certificate / revalidation cost.
+
+A missing intermediate mode is:
+
+REGIONAL RE-VALIDATION.
+
+That mode would:
+
+- retain the repaired membership candidate;
+- collect:
+  bounded fresh structural evidence;
+- establish:
+  a new regional validation baseline;
+- reset:
+  only the proven regional ledgers;
+- avoid:
+  scratch redevelopment
+  when:
+  the local topology is already coherent.
+
+NEXT RESEARCH TARGET
+
+H149 should test:
+
+1.
+accepted-change path debt
+PLUS:
+challenge-exposure debt;
+
+2.
+PATCH
+->
+REGIONAL RE-VALIDATION
+->
+REGIONAL RE-DEVELOPMENT
+->
+GLOBAL RE-DEVELOPMENT;
+
+3.
+region / relation proof objects
+instead of:
+fixed individual witness lists;
+
+4.
+moving-wound
+and:
+ping-pong
+as:
+first-class cumulative-exposure tests;
+
+5.
+stacked damage
+with:
+scope confidence
+that depends on:
+both repair history
+and:
+challenge history.
 
