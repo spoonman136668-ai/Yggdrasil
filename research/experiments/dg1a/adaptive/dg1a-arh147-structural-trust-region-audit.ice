@@ -1398,3 +1398,133 @@ No H146 seed is reused.
 No execution-semantic change is permitted
 after:
 primary H147 execution begins.
+
+
+HARNESS CORRECTION — BEFORE PRIMARY ACCEPTANCE
+
+The first harness-only sanity worlds are:
+DISCARDED.
+
+They exposed four implementation ambiguities.
+No H147 acceptance threshold,
+damage regime,
+trust-region threshold,
+or policy comparator is changed.
+
+1. TRUST-REGION EVALUATION REQUIRES A PERSISTENT DISTURBANCE GATE
+
+The initial accepted topology is intentionally:
+98% correct,
+not:
+perfect.
+
+A few scattered maturation residuals can have:
+high entropy
+despite:
+very small structural mass.
+
+Therefore:
+the full trust-region exit test
+
+is evaluated only after:
+
+structurally challenged fraction >=3%
+
+for:
+2 consecutive checkpoints,
+
+OR:
+
+failed_patch_cycles >=1.
+
+This uses the same persistent-disturbance gate
+already frozen for:
+IMMEDIATE BLASTEMA.
+
+A 2% background residual
+does not by itself become:
+a global redevelopment event.
+
+2. VALIDATED BLASTEMA RESETS DAMAGE-EPISODE MEMORY
+
+After:
+a validated de-novo topology
+becomes:
+the new globally validated baseline,
+
+reset:
+
+- rolling 12-episode diffusion history;
+- persistent-disturbance streak;
+- failed-patch pressure;
+- patch-candidate persistence state.
+
+This is required because:
+the previous damage episode
+has been closed.
+
+It does not erase:
+member state,
+values,
+or:
+vested certificates that validly survive inheritance.
+
+3. STRUCTURALLY CHALLENGED CERTIFICATE IS NOT VALID INHERITANCE
+
+At each structural checkpoint:
+
+if a member is:
+structurally challenged
+
+then:
+its H146 certificate becomes:
+CHALLENGED / INVALID
+
+before:
+patch / blastema inheritance accounting.
+
+This implements the frozen requirement that:
+
+no contradiction / boundary assumption
+may already be violated
+
+for:
+certificate survival.
+
+Such a member may:
+revalidate later
+
+under:
+the frozen 6-observation rule.
+
+4. NOMINAL DAMAGE FRACTION FOR ORACLE CEILING
+
+Synthetic regimes use:
+ceil(fraction * N)
+members.
+
+For ORACLE mode selection:
+
+a nominal 10% regime remains:
+the <=10% class
+
+when the realized ceil count exceeds:
+0.10N
+by:
+at most one member.
+
+This prevents:
+integer rounding
+
+from redefining:
+the preregistered LOCAL-10 regime
+
+as:
+>10% damage.
+
+All sanity-world outputs before these corrections are:
+NON-EVIDENCE.
+
+Primary H147 execution restarts
+from:
+the frozen primary seed blocks.
