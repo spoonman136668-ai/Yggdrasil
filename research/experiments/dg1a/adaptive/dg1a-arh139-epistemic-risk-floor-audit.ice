@@ -1,9 +1,10 @@
-TITLE: DG-1A-AR-H139 — Non-Negotiable Epistemic Risk Floor / Compute-Shock Invariance Audit Preregistration
+TITLE: DG-1A-AR-H139 — Non-Negotiable Epistemic Risk Floor / Compute-Shock Invariance Audit
 DATE: 2026-09-19
-STATUS: PREREGISTERED / SYNTHETIC / UNEXECUTED
+STATUS: SYNTHETIC / MEASURED_SANDBOX MIXED-POSITIVE RISK-FLOOR RESULT + CLAIM-SCOPE LIMIT
 TRACK: DG-1A / ADAPTIVE-RULE RESEARCH
 BRANCH: dg1a-ar
 PARENT: dg1a-arh138-evidence-price-abstention-phase-audit.ice
+PREREGISTRATION_COMMIT: 57dd665730eb12063e73eda0fe955d2d5fe15852
 
 PURPOSE
 
@@ -339,3 +340,899 @@ evidence_class_target = SYNTHETIC_MEASURED_SANDBOX
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 preregistered_from_head = 2e47dd4359eadee30765cb544f3d54e82b608c80
+
+
+EXECUTION RESULT
+
+CORRECTED PRIMARY RUN
+
+The H139 implementation uses the preregistered:
+- 10%-minority claim class;
+- exact hypergeometric certificate;
+- 5% and 10% miss floors;
+- H138 active-value-decoupled economics;
+- H138 pre-probe economic gate;
+- certificate-or-abstain hard-floor behavior;
+- audit-cap refusal behavior.
+
+The previously discarded run that rounded the hidden-10 minority size was not used.
+
+For this corrected run:
+
+m = ceil(0.10 N).
+
+Primary grid:
+5 active fractions x 5 evidence prices.
+
+3,000 worlds per cell.
+
+Total:
+75,000 worlds.
+
+Deterministic replication seed:
+20260919139.
+
+IMPLEMENTATION REALIZATION NOTE
+
+The repository preregistration inherited H138's "primary value variance" but did not encode the exact generating distribution used in the original H138 sandbox.
+
+This corrected H139 run therefore records the explicit realization used here:
+
+member value:
+lognormal,
+mean normalized to approximately 1,
+sigma = 0.60.
+
+Family size:
+uniform integer 40..100.
+
+Active count:
+round(active_fraction x N),
+minimum 1.
+
+Minority membership:
+uniform without replacement in the primary ecology.
+
+Active status:
+independent of minority membership in the primary ecology.
+
+Trigger:
+uniform among active members.
+
+Fresh non-trigger audit order:
+uniform without replacement.
+
+This is a measured-sandbox realization,
+not a claim that every H138 numeric aggregate is bit-for-bit reproduced.
+
+The H138 comparator under this realization nevertheless reproduces the same qualitative phase behavior and approximately the previously recorded aggregate evidence use.
+
+PRIMARY AGGREGATE RESULT
+
+H138 ECONOMIC OPTIMIZER
+
+mean net:
+23.94272.
+
+1st percentile net:
+-35.66749.
+
+mean evidence:
+3.60109 audits/event.
+
+active weighted coverage:
+51.187%.
+
+mean false-promotion rate:
+1.631%.
+
+conditional HIDDEN-10 false-broadcast rate:
+29.853%.
+
+conditional HIDDEN-20 false-broadcast rate:
+16.673%.
+
+broadcast rate:
+41.588%.
+
+certificate purchase:
+2.915%.
+
+economic local/defer:
+57.500%.
+
+HARD-FLOOR-5
+
+mean net:
+7.26990.
+
+1st percentile net:
+-48.88667.
+
+mean evidence:
+8.41480 audits/event.
+
+active weighted coverage:
+36.395%.
+
+mean false-promotion rate:
+0.0714%.
+
+conditional HIDDEN-10 false-broadcast rate:
+1.845%.
+
+conditional HIDDEN-20 false-broadcast rate:
+0.062%.
+
+broadcast rate:
+21.039%.
+
+certificate purchase:
+30.193%.
+
+epistemic abstention:
+12.412%.
+
+economic local/defer:
+57.395%.
+
+HARD-FLOOR-10
+
+mean net:
+9.13332.
+
+1st percentile net:
+-56.32179.
+
+mean evidence:
+7.53064 audits/event.
+
+active weighted coverage:
+38.418%.
+
+mean false-promotion rate:
+0.1629%.
+
+conditional HIDDEN-10 false-broadcast rate:
+4.044%.
+
+conditional HIDDEN-20 false-broadcast rate:
+0.363%.
+
+broadcast rate:
+23.956%.
+
+certificate purchase:
+33.367%.
+
+epistemic abstention:
+9.239%.
+
+economic local/defer:
+57.395%.
+
+HARD-FLOOR-5 / AUDIT-CAP-23
+
+mean net:
+2.56361.
+
+1st percentile net:
+-42.51922.
+
+mean evidence:
+6.71096 audits/event.
+
+active weighted coverage:
+30.143%.
+
+conditional HIDDEN-10 false-broadcast rate:
+1.397%.
+
+conditional HIDDEN-20 false-broadcast rate:
+0.036%.
+
+broadcast rate:
+14.909%.
+
+certificate purchase:
+21.372%.
+
+epistemic abstention:
+21.233%.
+
+audit-cap refusal:
+12.053%.
+
+HARM-BOUNDED
+
+mean net:
+8.54833.
+
+1st percentile net:
+-48.99467.
+
+mean evidence:
+7.52473 audits/event.
+
+active weighted coverage:
+40.806%.
+
+conditional HIDDEN-10 false-broadcast rate:
+9.197%.
+
+conditional HIDDEN-20 false-broadcast rate:
+4.334%.
+
+broadcast rate:
+27.261%.
+
+certificate purchase:
+24.783%.
+
+epistemic abstention:
+7.828%.
+
+FULL-FAMILY
+
+mean net:
+-152.09246.
+
+mean evidence:
+70.09465 audits/event.
+
+active weighted coverage:
+100%.
+
+false family promotion:
+0%.
+
+PRIMARY RISK-FLOOR RESULT
+
+The core H139 thesis passes in the corrected primary ecology.
+
+HARD-FLOOR-5 HIDDEN-10 false-broadcast remains below the preregistered 5% floor at every evidence price.
+
+By evidence price:
+
+PRICE 0.5
+
+HARD-FLOOR-5:
+HIDDEN-10 false-broadcast:
+2.810%.
+
+certificate purchase:
+48.753%.
+
+epistemic abstention:
+0.967%.
+
+evidence:
+11.9797.
+
+PRICE 1
+
+HIDDEN-10 false-broadcast:
+2.858%.
+
+certificate:
+42.540%.
+
+epistemic abstention:
+5.107%.
+
+evidence:
+10.8056.
+
+PRICE 2
+
+HIDDEN-10 false-broadcast:
+1.833%.
+
+certificate:
+31.273%.
+
+epistemic abstention:
+13.507%.
+
+evidence:
+8.7106.
+
+PRICE 4
+
+HIDDEN-10 false-broadcast:
+1.315%.
+
+certificate:
+20.327%.
+
+epistemic abstention:
+19.807%.
+
+evidence:
+6.5747.
+
+PRICE 8
+
+HIDDEN-10 false-broadcast:
+0.405%.
+
+certificate:
+8.073%.
+
+epistemic abstention:
+22.673%.
+
+evidence:
+4.0034.
+
+Thus:
+
+AS EVIDENCE PRICE RISES,
+
+THE POLICY
+MAKES FEWER
+FAMILY-WIDE CLAIMS
+
+AND
+
+ABSTAINS MORE.
+
+It does not:
+
+RELAX
+THE CLAIM'S
+EVIDENCE FLOOR.
+
+This is the desired compute-shock invariance shape.
+
+MEAN-VALUE / EPISTEMIC TRADEOFF
+
+The H138 economic optimizer retains much higher aggregate mean value:
+
+23.94
+
+versus:
+
+HARD-FLOOR-5:
+7.27.
+
+The difference is not a free improvement.
+
+The risk floor purchases:
+
+epistemic admissibility
+
+with:
+
+evidence,
+abstention,
+and foregone immediate coverage.
+
+Therefore:
+
+SAFETY
+AND
+SCALAR MEAN VALUE
+
+ARE
+NON-IDENTICAL OBJECTIVES.
+
+HARD-5 VERSUS HARD-10
+
+The preregistered tradeoff is observed.
+
+HARD-10 uses less evidence:
+
+7.53
+versus
+8.41.
+
+It obtains more active weighted coverage:
+
+38.42%
+versus
+36.40%.
+
+But it accepts a higher HIDDEN-10 false-broadcast rate:
+
+4.04%
+versus
+1.85%.
+
+Therefore:
+
+A LOOSER FLOOR
+BUYS
+MORE COVERAGE
+WITH
+MORE EPISTEMIC RISK.
+
+AUDIT-CAP RESULT
+
+The CAP-23 policy does not silently weaken its floor.
+
+When the exact 5% certificate does not fit the cap:
+
+it refuses the family-wide claim.
+
+Observed audit-cap refusal:
+
+12.053%.
+
+Observed HIDDEN-10 false-broadcast:
+
+1.397%.
+
+This supports:
+
+BUDGET FAILURE
+SHOULD PRODUCE
+EPISTEMIC SILENCE,
+
+NOT:
+
+QUIETLY
+LOWERED CONFIDENCE.
+
+COMPUTE-SHOCK STRESS
+
+Separate stress:
+
+first five compatible canaries cost:
+0.5 each.
+
+Then incremental certificate evidence price jumps to:
+8.
+
+Stress active fractions:
+40% and 80%.
+
+12,000 total worlds.
+
+H138 ECONOMIC OPTIMIZER
+
+mean net:
+70.86714.
+
+mean evidence:
+4.7150.
+
+conditional HIDDEN-10 false-broadcast:
+55.445%.
+
+certificate purchase:
+0%.
+
+broadcast:
+73.942%.
+
+HARD-FLOOR-5
+
+mean net:
+-0.04141.
+
+mean evidence:
+8.3640.
+
+conditional HIDDEN-10 false-broadcast:
+1.113%.
+
+certificate purchase:
+20.108%.
+
+epistemic abstention:
+53.833%.
+
+broadcast:
+13.875%.
+
+HARD-FLOOR-10
+
+mean net:
+5.97185.
+
+conditional HIDDEN-10 false-broadcast:
+4.235%.
+
+epistemic abstention:
+41.633%.
+
+CAP-23
+
+conditional HIDDEN-10 false-broadcast:
+0.774%.
+
+epistemic abstention:
+62.483%.
+
+audit-cap refusal:
+20.283%.
+
+This is the strongest H139 confirmation.
+
+When evidence suddenly becomes expensive:
+
+the scalar optimizer frequently sells confidence.
+
+The hard-floor controller instead:
+
+withdraws the claim.
+
+CLAIM-SCOPE ROBUSTNESS
+
+The most important H139 boundary is:
+
+A CERTIFICATE
+IS ONLY VALID
+FOR
+THE FAILURE CLASS
+IT CERTIFIES.
+
+A 10%-minority / 5%-miss certificate was challenged against exact hidden fractions:
+
+5%,
+10%,
+20%.
+
+High-activity,
+cheap-evidence stress:
+
+12,000 worlds per hidden fraction.
+
+ACTUAL HIDDEN 5%
+
+false-broadcast:
+20.058%.
+
+ACTUAL HIDDEN 10%
+
+false-broadcast:
+4.558%.
+
+ACTUAL HIDDEN 20%
+
+false-broadcast:
+0.200%.
+
+Therefore:
+
+THE 10% CERTIFICATE
+DOES NOT
+PROTECT AGAINST
+AN ARBITRARY 5% MINORITY.
+
+This is not a failure of the hypergeometric bound.
+
+It is:
+
+CLAIM-SCOPE MISMATCH.
+
+A family may be certified against:
+
+UNMARKED SUBGROUPS
+AT OR ABOVE
+ONE SIZE SCALE
+
+without being certified against:
+
+SMALLER SUBGROUPS.
+
+DELTA ROBUSTNESS
+
+Exact HIDDEN-10 stress,
+high activity,
+cheap evidence.
+
+Target delta 1%:
+
+observed false-broadcast:
+0.942%.
+
+mean evidence:
+19.1152.
+
+Target delta 5%:
+
+observed:
+4.867%.
+
+mean evidence:
+14.1303.
+
+Target delta 10%:
+
+observed:
+9.083%.
+
+mean evidence:
+11.7687.
+
+The empirical miss curve tracks the intended risk floor.
+
+HIGH-VALUE MINORITY STRESS
+
+One active minority member is forced to high value.
+
+Exact HIDDEN-10.
+
+Active fraction:
+40%.
+
+Evidence price:
+1.
+
+15,000 worlds per policy.
+
+H138 ECONOMIC OPTIMIZER
+
+mean net:
+3.8347.
+
+1st percentile:
+-30.8763.
+
+false-broadcast:
+54.420%.
+
+HARD-FLOOR-5
+
+mean net:
+4.8574.
+
+1st percentile:
+-27.5957.
+
+false-broadcast:
+4.680%.
+
+HARD-FLOOR-10
+
+1st percentile:
+-29.7391.
+
+false-broadcast:
+8.853%.
+
+CAP-23
+
+1st percentile:
+-27.9646.
+
+false-broadcast:
+3.607%.
+
+HARM-BOUNDED
+
+1st percentile:
+-25.4689.
+
+false-broadcast:
+4.507%.
+
+The hard floor materially suppresses catastrophic false family promotion in this stress.
+
+HARM-BOUNDED INTERPRETATION
+
+HARM-BOUNDED is not equivalent to an epistemic certificate.
+
+Primary HIDDEN-10 false-broadcast:
+
+9.197%.
+
+This can be rational if:
+
+current predicted harm
+is the objective.
+
+It is not valid if the claim being made is:
+
+THE FAMILY MODEL
+IS CERTIFIED
+AGAINST
+AN UNMARKED 10% MINORITY
+AT 5% MISS RISK.
+
+Thus:
+
+HARM ADMISSIBILITY
+
+and:
+
+KNOWLEDGE ADMISSIBILITY
+
+must remain distinct types.
+
+TRIGGER-SELECTION CORRELATION LIMIT
+
+The primary exact hypergeometric calculation assumes the counted sample is uniform with respect to minority identity.
+
+The active trigger is uniform over members only when:
+
+activation
+is independent of
+minority membership.
+
+A high-activity HIDDEN-10 stress with active members deliberately concentrated outside the minority produced:
+
+independent activation:
+4.585% false-broadcast.
+
+active concentrated inside minority:
+4.520%.
+
+active concentrated outside minority:
+5.040%.
+
+The outside-minority case shows the expected small upward pressure because the trigger is no longer an exchangeable uniform draw.
+
+This is near the Monte Carlo boundary,
+not a large failure,
+but it establishes the rule:
+
+A BIASED TRIGGER
+MUST NOT
+BE COUNTED
+AS UNIFORM EVIDENCE
+WITHOUT CALIBRATION.
+
+FAMILY-SIZE EVIDENCE RESULT
+
+For the 10%-minority / 5%-miss certificate:
+
+N = 40:
+k_cert = 21.
+
+N = 70:
+k_cert = 24.
+
+N = 100:
+k_cert = 25.
+
+Thus certificate cost rises sublinearly over this range and remains far below full-family inspection.
+
+Representative active=40%, price=1 runs:
+
+N=40:
+mean evidence 16.77
+versus full 40.
+
+N=70:
+18.98
+versus full 70.
+
+N=100:
+19.88
+versus full 100.
+
+The hard floor therefore does not collapse into full-family audit everywhere.
+
+PRIMARY DECISION
+
+AR-H139 is:
+
+MIXED-POSITIVE.
+
+POSITIVE FOR:
+
+NON-NEGOTIABLE,
+CLAIM-SCOPED
+EPISTEMIC RISK FLOORS.
+
+SUPPORTED
+
+- evidence price can change whether a claim is attempted;
+- evidence price need not change the admissibility requirement for the same claim;
+- compute shocks can correctly produce abstention instead of lower-confidence broadcast;
+- a hard 5% floor controls the preregistered HIDDEN-10 claim class;
+- a 10% floor spends less evidence and accepts more miss risk;
+- audit caps can refuse claims without degrading the floor;
+- full-family inspection is not required everywhere;
+- hard floors substantially reduce high-value hidden-minority catastrophic promotion;
+- scalar expected-value optimization can remain more profitable while being less epistemically reliable.
+
+LIMITS
+
+- certification is typed by its target failure class;
+- a 10%-minority certificate does not certify 5%-minority safety;
+- biased trigger selection can slightly invalidate exchangeability if counted as uniform evidence;
+- the exact H138 primary value generator was not fully encoded in the repository preregistration, so this result is a deterministic measured-sandbox realization rather than a bit-for-bit H138 replay;
+- no production confidence threshold is established.
+
+GENERAL PRINCIPLE
+
+CONFIDENCE
+SHOULD NOT
+BE A SCALAR
+THAT CAN BE SOLD
+FOR COMPUTE.
+
+It should be:
+
+A TYPED EPISTEMIC CONTRACT
+
+specifying at least:
+
+- failure class;
+- detectable subgroup scale;
+- tolerated miss probability;
+- sampling assumptions;
+- evidence provenance;
+- expiration/context conditions.
+
+If resources cannot satisfy that contract:
+
+THE ORGANISM
+SHOULD SAY LESS.
+
+It should not:
+
+CLAIM THE SAME THING
+WITH LESS EVIDENCE.
+
+NEXT HIGH-VALUE MOVE
+
+AR-H140 — CLAIM-SCOPE CONTRACT / TRIGGER-BIAS-CORRECTED MULTISCALE CERTIFICATE AUDIT
+
+Question:
+
+CAN
+A DEVELOPMENTAL ORGANISM
+CARRY
+TYPED CONFIDENCE
+
+SO THAT:
+
+A 10% SUBGROUP CERTIFICATE
+IS NEVER
+MISTAKEN FOR
+
+A 5% SUBGROUP CERTIFICATE,
+
+AND
+
+A BIASED ACTIVE TRIGGER
+IS NEVER
+COUNTED AS
+UNIFORM EVIDENCE?
+
+Candidate mechanisms:
+
+A.
+explicit claim-scope tags;
+
+B.
+trigger-excluded uniform certificate counts;
+
+C.
+task-requested subgroup scale;
+
+D.
+multiscale 5% / 10% / 20% contracts;
+
+E.
+certificate downgrade to a weaker claim rather than silent overclaim;
+
+F.
+abstention when the requested scope cannot fit current audit budget.
+
+Do not execute STAB-18-R1 during this lane.
+
+EXECUTION PROVENANCE
+
+evidence_class = SYNTHETIC_MEASURED_SANDBOX
+canonical_scientific_execution = false
+canonical_r1_execution_spent = false
+corrected_primary_worlds = 75000
+corrected_primary_seed = 20260919139
+hidden_fraction_rule = ceil
+hard5_mean_net = 7.269899
+hard5_mean_evidence = 8.414800
+hard5_h10_false_broadcast = 0.018454
+hard10_h10_false_broadcast = 0.040439
+cap23_refusal_rate = 0.120533
+shock_h138_h10_false_broadcast = 0.55445
+shock_hard5_h10_false_broadcast = 0.01113
+hidden5_under_10pct_certificate_false_broadcast = 0.200583
+delta01_h10_false_broadcast = 0.009417
+delta05_h10_false_broadcast = 0.048667
+delta10_h10_false_broadcast = 0.090833
