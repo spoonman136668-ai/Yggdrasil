@@ -1,9 +1,10 @@
-TITLE: DG-1A-AR-H146 — Evidence Vesting / Dormant Maturity-Certificate + Contradiction-Triggered Reactivation Audit Preregistration
+TITLE: DG-1A-AR-H146 — Evidence Vesting / Dormant Maturity-Certificate + Contradiction-Triggered Reactivation Audit
 DATE: 2026-09-19
-STATUS: PREREGISTERED / SYNTHETIC / UNEXECUTED
+STATUS: SYNTHETIC / MEASURED_SANDBOX POSITIVE DORMANT-CERTIFICATE RESULT + CONTRADICTION-BUDGET / RECALIBRATION COST LIMIT
 TRACK: DG-1A / ADAPTIVE-RULE RESEARCH
 BRANCH: dg1a-ar
 PARENT: dg1a-arh145-post-blastema-maturation-audit.ice
+PREREGISTRATION_COMMIT: db79f0214429c65d1d114e7b2f8cff60f26de7ca
 
 PURPOSE
 
@@ -1335,3 +1336,822 @@ from:
 the same frozen seed blocks
 after:
 these corrections.
+
+
+EXECUTION RESULT
+
+PRIMARY CONFIRMATION
+
+6 event classes.
+
+1,000 held-out worlds / event.
+
+7 policies.
+
+42,000 policy-event-worlds.
+
+Horizon:
+60 episodes.
+
+Primary sensor error:
+5%.
+
+Primary post-maturation deliberate revalidation budget:
+0.5N.
+
+The discarded pre-correction harness pass remains:
+NON-EVIDENCE.
+
+INITIAL VESTING
+
+Across primary event blocks:
+
+approximately:
+52.3% to 52.95%
+of members
+
+vested:
+a phase-1 maturity certificate.
+
+Because EXPECTED-RELEASE preferentially matured:
+current active value,
+
+this member fraction represented:
+substantially more than half
+of:
+event-phase active-value coverage.
+
+E0 — STABLE RETURN
+
+DECAYING-RAW
+
+episode-41 safe coverage:
+3.77%.
+
+mean event-phase safe coverage:
+1.46%.
+
+post-episode-20 deliberate audits:
+178.72 / world.
+
+final quarantine:
+99.83%.
+
+HYBRID-VESTED
+
+original-certificate retention at episode 40:
+99.942%.
+
+episode-41 safe coverage:
+70.68%.
+
+mean event-phase safe coverage:
+70.52%.
+
+post-episode-20 deliberate audits:
+0.474 / world.
+
+final quarantine:
+47.10%.
+
+false trusted action:
+0%.
+
+Thus:
+
+DORMANT CERTIFICATES
+
+retain:
+approximately 48x
+
+the stable-return safe coverage
+
+of:
+decaying raw evidence
+
+while using:
+approximately 377x fewer
+
+post-maturation deliberate audits.
+
+This passes:
+the central H146 gate.
+
+FOREVER-CERT
+
+stable-return safe coverage:
+70.52%.
+
+post-maturation deliberate audits:
+0.
+
+This establishes:
+
+persistence itself
+is cheap.
+
+But later event classes show:
+persistence without invalidation
+is unsafe.
+
+WALL-CLOCK EXPIRY
+
+episode-40 original-certificate retention:
+0%.
+
+mean event-phase safe coverage:
+62.08%.
+
+post-maturation audits:
+661.97 / world.
+
+unnecessary invalidations:
+102.22 / world.
+
+The simple:
+10-episode clock
+
+recreates:
+the maintenance tax
+
+that vesting was intended to remove.
+
+ACTIVITY-COUNT EXPIRY
+
+retention:
+85.27%.
+
+mean safe coverage:
+66.95%.
+
+post-maturation audits:
+345.60 / world.
+
+unnecessary invalidations:
+43.03 / world.
+
+Activity-based age is better than:
+wall-clock age,
+
+but still far more expensive than:
+event-driven validity.
+
+E1 — TOPOLOGY EPOCH CHANGE
+
+FOREVER-CERT
+
+mean safe coverage:
+63.62%.
+
+mean action coverage:
+70.59%.
+
+false trusted active member-episodes:
+9.80%.
+
+stale-epoch action rate:
+100%.
+
+Thus:
+
+FOREVER-CERT
+fails.
+
+CONTRADICTION-BUDGET
+
+mean safe coverage:
+63.62%.
+
+false trusted rate:
+3.34%.
+
+stale-epoch action rate:
+99.95%.
+
+It detects:
+changed members
+
+but does not understand:
+global epoch invalidity.
+
+Thus:
+
+LOCAL CONTRADICTION
+IS NOT
+A SUBSTITUTE
+FOR:
+EPOCH TYPING.
+
+EPOCH-CERT
+
+mean safe coverage:
+55.55%.
+
+post-maturation audits:
+464.32 / world.
+
+false trusted rate:
+0%.
+
+stale-epoch action:
+0%.
+
+HYBRID-VESTED
+
+mean safe coverage:
+55.55%.
+
+post-maturation audits:
+464.62 / world.
+
+false trusted rate:
+0%.
+
+stale-epoch action:
+0%.
+
+The cost is:
+explicit reacquisition
+
+after:
+a legitimate structural epoch change.
+
+That is:
+intended.
+
+E2 — LOCAL NEIGHBORHOOD CHANGE
+
+10% of members change:
+functional region
+
+without:
+global epoch increment.
+
+FOREVER-CERT
+
+false trusted rate:
+10.59%.
+
+EPOCH-CERT
+
+false trusted rate:
+10.59%.
+
+Because:
+the epoch did not change.
+
+CONTRADICTION-BUDGET
+
+changed-member detection:
+98.896%.
+
+false trusted rate:
+3.63%.
+
+HYBRID-VESTED
+
+changed-member detection:
+98.896%.
+
+false trusted rate:
+3.63%.
+
+post-maturation audits:
+128.29 / world.
+
+Thus:
+
+LOCAL CHANGE
+REQUIRES
+LOCAL CONTRADICTION
+OR:
+AN EQUIVALENT CHANGE SIGNAL.
+
+Epoch typing alone:
+is insufficient.
+
+E3 — TRANSIENT CONTRADICTION BURST
+
+True topology:
+unchanged.
+
+CONTRADICTION-BUDGET
+
+false invalidation of valid vested members:
+1.273%.
+
+post-maturation deliberate audits:
+4.86 / world.
+
+mean safe coverage:
+70.39%.
+
+HYBRID-VESTED
+
+same:
+1.273% false invalidation,
+4.86 audits / world,
+70.39% safe coverage.
+
+This supports:
+
+HYSTERETIC
+CONTRADICTION DEBT
+
+rather than:
+single-observation invalidation.
+
+E4 — CALIBRATION SHIFT
+
+Known sensor class:
+5%
+->
+20%.
+
+FOREVER-CERT
+
+mean safe/action coverage:
+70.25%.
+
+stale-calibration action rate:
+100%.
+
+EPOCH-CERT
+
+same:
+100%
+stale-calibration action.
+
+CONTRADICTION-BUDGET
+
+mean safe coverage:
+69.62%.
+
+stale-calibration action:
+99.02%.
+
+Thus:
+
+CONTRADICTION DEBT
+DOES NOT
+REPLACE
+CALIBRATION TYPING.
+
+HYBRID-VESTED
+
+stale-calibration action:
+0%.
+
+mean safe coverage:
+36.98%.
+
+post-maturation audits:
+707.29 / world.
+
+final quarantine:
+62.01%.
+
+Interpretation:
+
+HYBRID
+FAILS CLOSED.
+
+It is:
+safe
+
+but:
+expensive
+
+under:
+a global evidence-quality regime change.
+
+E5 — HIGH-VALUE DORMANT RETURN
+
+A vested,
+long-dormant member
+returns at:
+
+8x baseline value.
+
+HYBRID-VESTED
+
+mean event-phase safe coverage:
+71.11%.
+
+high-value return check:
+2.0 deliberate audits / world.
+
+total post-maturation audits:
+3.236 / world.
+
+false trusted action:
+0%.
+
+Thus:
+
+HIGH-VALUE RETURN
+DOES NOT REQUIRE
+FULL RE-AUDIT.
+
+The member can:
+
+wake,
+perform:
+a bounded freshness check,
+and:
+reuse
+its vested certificate.
+
+CONTRADICTION-BUDGET ROBUSTNESS
+
+500 held-out E2 worlds
+and:
+500 held-out E3 worlds
+
+per contradiction budget.
+
+BUDGET = 1
+
+local-change detection:
+98.72%.
+
+false trusted action under E2:
+0.088%.
+
+transient-burst false invalidation:
+15.04%.
+
+burst revalidation audits:
+274.76 / world.
+
+Interpretation:
+
+extremely responsive
+
+but:
+too trigger-happy.
+
+BUDGET = 3
+
+local-change detection:
+99.06%.
+
+false trusted action:
+3.66%.
+
+transient-burst false invalidation:
+1.33%.
+
+burst audits:
+5.10 / world.
+
+This is:
+the best tested balance
+
+under:
+the frozen primary ecology.
+
+BUDGET = 5
+
+local-change detection:
+88.20%.
+
+false trusted action:
+6.94%.
+
+transient-burst false invalidation:
+0.051%.
+
+burst audits:
+0.192 / world.
+
+Interpretation:
+
+very stable
+
+but:
+too slow to challenge
+real local change.
+
+Thus:
+
+CONTRADICTION BUDGET
+
+is:
+a genuine
+RESPONSIVENESS / STABILITY
+control parameter.
+
+CALIBRATION-SEVERITY ROBUSTNESS
+
+HYBRID-VESTED.
+
+POST-SHIFT SENSOR ERROR 10%
+
+mean safe coverage:
+55.46%.
+
+stale-calibration action:
+0%.
+
+post-maturation audits:
+466.14 / world.
+
+final quarantine:
+48.83%.
+
+POST-SHIFT SENSOR ERROR 30%
+
+mean safe coverage:
+19.15%.
+
+stale-calibration action:
+0%.
+
+post-maturation audits:
+788.69 / world.
+
+final quarantine:
+81.37%.
+
+Thus:
+
+as:
+evidence quality collapses,
+
+HYBRID preserves:
+validity
+
+by:
+shrinking
+action availability.
+
+This matches:
+the earlier Yggdrasil principle:
+
+RESOURCE / EVIDENCE DEGRADATION
+SHOULD REDUCE
+ACTION SCOPE,
+
+NOT:
+QUIETLY
+LOWER
+THE TRUST STANDARD.
+
+PRIMARY DECISION
+
+AR-H146 is:
+
+POSITIVE.
+
+SUPPORTED
+
+- maturity can vest into durable dormant state;
+- stable inactivity no longer destroys earned trust;
+- dormant certificates require effectively zero active maintenance compute;
+- post-maturation audit cost can fall by orders of magnitude;
+- epoch typing blocks global structural staleness;
+- contradiction debt detects unannounced local change;
+- calibration typing blocks reuse across evidence-quality changes;
+- high-value dormant return needs only a bounded freshness check;
+- wall-clock expiry is materially wasteful;
+- activity-count expiry is better than wall-clock expiry but still inferior to event-driven validity;
+- forever-valid certificates are unsafe;
+- contradiction hysteresis gives a real stability/responsiveness control surface.
+
+LIMITS
+
+1. CONTRADICTION-BUDGET TRADEOFF
+
+A low budget:
+
+reacts quickly
+
+but:
+burns evidence
+and:
+false-invalidates under noise.
+
+A high budget:
+
+is stable
+
+but:
+permits longer stale action.
+
+No universal production budget is established.
+
+2. GLOBAL RECALIBRATION IS EXPENSIVE
+
+When:
+the sensor / evidence-quality class changes globally,
+
+safe revalidation can require:
+hundreds of fresh audits / family
+
+and:
+temporarily reduce coverage.
+
+H146 establishes:
+safe failure,
+
+not:
+cheap global recalibration.
+
+3. INITIAL VESTING REMAINS PARTIAL
+
+Only:
+approximately 53%
+of members
+
+vest under:
+the stronger phase-1 contract.
+
+This is intentional.
+
+H146 tests:
+retention,
+
+not:
+continued maturation
+of never-vested members.
+
+4. CERTIFICATE TRANSFER ACROSS LOCAL STRUCTURAL REPAIR IS UNTESTED
+
+H146 invalidates:
+epoch-mismatched state.
+
+It does not yet establish:
+
+when:
+a bounded local topology patch
+
+should preserve:
+some existing certificates
+
+versus:
+invalidate them.
+
+GENERAL PRINCIPLE
+
+EPISTEMIC MATURITY
+SHOULD
+HAVE
+TWO TIMESCALES.
+
+FAST:
+
+LABILE EVIDENCE.
+
+SLOW:
+
+VESTED
+DORMANT CERTIFICATE.
+
+Inactivity is:
+not
+negative evidence.
+
+Validity changes when:
+
+THE CONDITIONS
+THAT MADE
+THE CERTIFICATE TRUE
+
+change.
+
+NEXT HIGH-VALUE MOVE
+
+AR-H147 — STRUCTURAL TRUST REGION / BOUNDED PATCHING + CERTIFICATE-INHERITANCE AUDIT
+
+This directly activates:
+the future-test hypothesis
+recorded during H144.
+
+Question:
+
+CAN
+YGGDRASIL
+PATCH
+A TOPOLOGY
+INCREMENTALLY
+
+WHILE:
+
+THE DAMAGE
+REMAINS
+INSIDE
+A MEASURED
+STRUCTURAL TRUST REGION,
+
+AND:
+
+HAND OFF
+TO BLASTEMA
+ONLY WHEN
+THE ACCEPTED SCAFFOLD
+LEAVES
+THAT REPAIR ENVELOPE?
+
+Additional certificate question:
+
+CAN
+UNCHANGED
+MEMBERS / REGIONS
+
+retain:
+H146 vested certificates
+
+through:
+a bounded local patch
+
+without:
+re-auditing
+the whole family?
+
+Candidate control variables:
+
+- cumulative membership displacement;
+- number / size of splits and merges;
+- unresolved boundary mass;
+- quarantine fraction;
+- relational disagreement;
+- repeated repair failures;
+- cumulative repair debt;
+- spatial concentration versus diffusion of damage;
+- affected active-value mass.
+
+Candidate principle:
+
+REPAIR LOCALLY
+WHILE
+DAMAGE REMAINS
+SPATIALLY BOUNDED.
+
+RE-DEVELOP
+WHEN
+DAMAGE BECOMES
+STRUCTURALLY DIFFUSE.
+
+Certificate inheritance should be:
+
+PROOF-BOUND.
+
+Unaffected regions may:
+retain certificates.
+
+Affected boundaries should:
+downgrade
+or:
+invalidate
+only the certificates
+whose assumptions changed.
+
+The trust-region experiment should compare:
+
+A.
+unbounded incremental patching;
+
+B.
+fixed per-operation cap;
+
+C.
+cumulative repair-debt budget;
+
+D.
+spatially aware structural trust region;
+
+E.
+trust-region patching + automatic blastema handoff;
+
+F.
+immediate blastema.
+
+Do not execute STAB-18-R1 during this lane.
+
+EXECUTION PROVENANCE
+
+evidence_class = SYNTHETIC_MEASURED_SANDBOX_LONGITUDINAL_POST_MATURATION
+canonical_scientific_execution = false
+canonical_r1_execution_spent = false
+primary_event_worlds = 6000
+primary_policy_event_worlds = 42000
+initial_vested_fraction_approx = 0.527
+stable_hybrid_retention = 0.999422
+stable_hybrid_safe_coverage = 0.705218
+stable_hybrid_post20_audits = 0.474
+stable_raw_safe_coverage = 0.014583
+stable_raw_post20_audits = 178.72
+epoch_forever_false_trusted = 0.098008
+epoch_forever_stale_epoch_action = 1.0
+epoch_hybrid_false_trusted = 0
+epoch_hybrid_stale_epoch_action = 0
+local_hybrid_detection = 0.988961
+local_hybrid_false_trusted = 0.036308
+burst_hybrid_false_invalidation = 0.012726
+calibration_forever_stale_action = 1.0
+calibration_hybrid_stale_action = 0
+calibration_hybrid_safe_coverage = 0.369785
+high_value_hybrid_check_audits = 2.0
+contradiction_budget3_detection = 0.990645
+contradiction_budget3_burst_false_invalidation = 0.013287
