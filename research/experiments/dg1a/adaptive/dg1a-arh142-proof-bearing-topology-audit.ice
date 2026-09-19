@@ -1,9 +1,10 @@
-TITLE: DG-1A-AR-H142 — Proof-Bearing Topology / Partition-Uncertainty Firewall Audit Preregistration
+TITLE: DG-1A-AR-H142 — Proof-Bearing Topology / Partition-Uncertainty Firewall Audit
 DATE: 2026-09-19
-STATUS: PREREGISTERED / SYNTHETIC / UNEXECUTED
+STATUS: SYNTHETIC / MEASURED_SANDBOX MIXED-POSITIVE TOPOLOGY-FIREWALL RESULT + QUARANTINE/CALIBRATION TRADEOFF
 TRACK: DG-1A / ADAPTIVE-RULE RESEARCH
 BRANCH: dg1a-ar
 PARENT: dg1a-arh141-epistemic-effect-system-audit.ice
+PREREGISTRATION_COMMIT: 1df579008f4513a365a1be5674dde0a39a997eee
 
 PURPOSE
 
@@ -360,3 +361,755 @@ evidence_class_target = SYNTHETIC_MEASURED_SANDBOX
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 preregistered_from_head = 65d638cb700322f43f9c6d368e3ca8d04e9d71f5
+
+
+EXECUTION RESULT
+
+PRIMARY SANDBOX
+
+Primary topology-noise conditions:
+
+10%
+and
+25%.
+
+Active fractions:
+30%, 60%, 90%.
+
+Evidence prices:
+1, 2, 4.
+
+3,000 worlds per:
+noise x activity x price cell.
+
+54,000 primary worlds.
+
+Common worlds were used across policy comparisons.
+
+PRIMARY CONFIDENCE REALIZATION
+
+Boundary confidence was generated as a calibrated correctness probability.
+
+For a member with confidence q:
+
+observed-label correctness
+was sampled with probability q.
+
+Thus the primary confidence state is calibrated by construction.
+
+Observed wrong labels are therefore concentrated toward:
+lower confidence
+
+without:
+being perfectly separable.
+
+This is:
+a synthetic calibration realization,
+not a production confidence model.
+
+PRIMARY AGGREGATE RESULT
+
+HARD-PARTITION EFFECT
+
+mean net:
+-1.1293.
+
+1st percentile:
+-19.5341.
+
+mean evidence:
+6.7053.
+
+active weighted coverage:
+10.50%.
+
+mean false-promotion rate:
+0.51%.
+
+mean cross-boundary false promotions:
+0.0328 members/event.
+
+subfamily action:
+36.78%.
+
+topology-invalid action:
+33.77%.
+
+CORE-QUARANTINE
+
+mean net:
+-3.6734.
+
+1st percentile:
+-17.9872.
+
+mean evidence:
+5.0948.
+
+active weighted coverage:
+7.72%.
+
+mean false-promotion:
+0.24%.
+
+cross-boundary false promotions:
+0.0105 members/event.
+
+mean quarantined active value:
+3.8893.
+
+subfamily action:
+38.41%.
+
+BOUNDARY-AUDIT
+
+mean net:
+-4.6932.
+
+1st percentile:
+-23.3795.
+
+mean evidence:
+7.3276.
+
+coverage:
+9.97%.
+
+false-promotion:
+0.24%.
+
+cross-boundary false promotion:
+0.0105.
+
+mean boundary audits:
+2.2328.
+
+OVERLAP-GUARD
+
+mean net:
+-6.5262.
+
+1st percentile:
+-55.0378.
+
+mean evidence:
+11.3279.
+
+coverage:
+13.91%.
+
+false-promotion:
+0.24%.
+
+cross-boundary false promotion:
+0.0105.
+
+TOPOLOGY-TYPED
+
+Under valid current calibration,
+this primary implementation behaves like:
+CORE-QUARANTINE.
+
+mean net:
+-3.6734.
+
+1st percentile:
+-17.9872.
+
+evidence:
+5.0948.
+
+coverage:
+7.72%.
+
+false-promotion:
+0.24%.
+
+topology-invalid action:
+0.
+
+FULL-FAMILY
+
+mean net:
+-48.5205.
+
+mean evidence:
+88.9177.
+
+PRIMARY RESULT
+
+A calibrated high-confidence action core:
+
+substantially reduces:
+false promotion
+
+and:
+cross-boundary leakage
+
+relative to:
+hard observed labels.
+
+It also improves:
+the severe net tail.
+
+But:
+
+it sacrifices:
+current coverage
+and
+mean reward
+
+by quarantining uncertain members.
+
+Thus:
+
+TOPOLOGY FIREWALL
+IS NOT FREE.
+
+LABEL-NOISE PHASE
+
+10% OBSERVED LABEL NOISE
+
+HARD
+
+mean net:
+-0.5863.
+
+1st percentile:
+-18.6582.
+
+false-promotion:
+0.42%.
+
+cross-boundary false:
+0.0277.
+
+coverage:
+11.04%.
+
+CORE / TOPOLOGY-TYPED
+
+mean net:
+-1.5456.
+
+1st percentile:
+-18.1255.
+
+false-promotion:
+0.33%.
+
+cross-boundary false:
+0.0177.
+
+coverage:
+9.97%.
+
+quarantined active value:
+1.2841.
+
+25% OBSERVED LABEL NOISE
+
+HARD
+
+mean net:
+-1.6724.
+
+1st percentile:
+-20.4058.
+
+false-promotion:
+0.61%.
+
+cross-boundary false:
+0.0379.
+
+coverage:
+9.97%.
+
+CORE / TOPOLOGY-TYPED
+
+mean net:
+-5.8012.
+
+1st percentile:
+-17.8751.
+
+false-promotion:
+0.15%.
+
+cross-boundary false:
+0.0034.
+
+coverage:
+5.47%.
+
+quarantined active value:
+6.4945.
+
+NOISE INTERPRETATION
+
+As topology degrades:
+
+quarantine becomes:
+more protective
+
+and:
+more expensive in foregone action.
+
+At 25% label noise:
+
+cross-boundary leakage is reduced by:
+approximately 91%.
+
+But:
+coverage falls by roughly:
+45% relative to hard partition.
+
+This is a real:
+BOUNDARY-SAFETY / ACTION-COVERAGE
+tradeoff.
+
+BOUNDARY-AUDIT RESULT
+
+The naive preregistered boundary-audit policy does not dominate CORE.
+
+It buys:
+more direct local resolution
+and:
+more active coverage
+
+at:
+additional evidence cost.
+
+Aggregate:
+
+CORE
+
+coverage:
+7.72%.
+
+evidence:
+5.09.
+
+BOUNDARY-AUDIT
+
+coverage:
+9.97%.
+
+evidence:
+7.33.
+
+Both have:
+approximately the same family-action false-promotion rate.
+
+Thus:
+boundary auditing is useful as:
+LOCAL RECOVERY WORK,
+
+but the tested implementation does not improve:
+the broadcast certificate itself.
+
+This part of H142 is:
+MIXED.
+
+OVERLAP-GUARD RESULT
+
+The naive overlap implementation audits ambiguous members individually
+while excluding them from broadcast.
+
+This recovers:
+more active coverage.
+
+But:
+the evidence bill is large.
+
+Aggregate:
+
+coverage:
+13.91%.
+
+evidence:
+11.33.
+
+1st percentile:
+-55.04.
+
+The overlap mechanism therefore does not dominate CORE.
+
+It converts:
+uncertain boundary state
+
+into:
+expensive local work.
+
+This is not yet:
+an efficient proof-composition mechanism.
+
+CONFIDENCE-THRESHOLD SWEEP
+
+25% label noise.
+
+active fraction:
+60%.
+
+evidence price:
+2.
+
+CORE threshold 0.70
+
+mean net:
+-5.4847.
+
+1st percentile:
+-15.1268.
+
+coverage:
+9.48%.
+
+false-promotion:
+0.61%.
+
+cross-boundary false:
+0.0215.
+
+quarantined active value:
+3.2649.
+
+CORE threshold 0.80
+
+mean net:
+-6.7992.
+
+1st percentile:
+-12.8069.
+
+coverage:
+5.92%.
+
+false-promotion:
+0.15%.
+
+cross-boundary false:
+0.0033.
+
+quarantined active value:
+6.4844.
+
+CORE threshold 0.90
+
+mean net:
+-7.6834.
+
+1st percentile:
+-12.4386.
+
+coverage:
+2.99%.
+
+false-promotion:
+approximately 0%.
+
+cross-boundary false:
+0.
+
+quarantined active value:
+9.5523.
+
+THRESHOLD PRINCIPLE
+
+TOPOLOGY CONFIDENCE
+CREATES
+AN ACTION-RADIUS CONTROL
+INSIDE THE SUBFAMILY ITSELF.
+
+Higher threshold:
+
+shrinks the trusted core.
+
+This improves:
+boundary safety
+
+while reducing:
+coverage
+and:
+usable value.
+
+This is structurally analogous to H141:
+
+resource pressure shrinks action radius.
+
+Here:
+
+topology uncertainty
+shrinks:
+trusted topology radius.
+
+ADVERSARIAL CALIBRATION STRESS
+
+Primary operating point:
+
+25% nominal label noise.
+
+active fraction:
+60%.
+
+evidence price:
+2.
+
+15,000 worlds.
+
+The confidence generator is deliberately broken:
+
+wrong labels can receive:
+high confidence.
+
+CORE,
+which trusts raw confidence without validating calibration:
+
+mean net:
+-5.3901.
+
+1st percentile:
+-16.1254.
+
+false-promotion:
+0.86%.
+
+cross-boundary false:
+0.0339.
+
+subfamily action:
+42.61%.
+
+HARD
+
+mean net:
+-3.8987.
+
+1st percentile:
+-17.9423.
+
+false-promotion:
+0.87%.
+
+cross-boundary false:
+0.0539.
+
+TOPOLOGY-TYPED
+
+The topology calibration state is marked:
+INVALID.
+
+Subfamily action:
+0%.
+
+local fallback:
+100%.
+
+false-promotion:
+0%.
+
+cross-boundary false:
+0.
+
+mean evidence:
+1.
+
+mean net:
+-7.8413.
+
+1st percentile:
+-12.0499.
+
+CALIBRATION RESULT
+
+RAW CONFIDENCE
+IS NOT
+TOPOLOGY EVIDENCE.
+
+The topology object must carry:
+
+CALIBRATION STATUS.
+
+When that status is invalid:
+
+the correct response is:
+locality / reacquisition,
+
+not:
+continued action based on high-looking scores.
+
+This passes the preregistered adversarial-calibration gate.
+
+EVIDENCE EFFICIENCY
+
+Primary mean evidence:
+
+TOPOLOGY-TYPED:
+5.09.
+
+FULL-FAMILY:
+88.92.
+
+Thus:
+topology validity does not require
+full-family inspection
+in the calibrated primary ecology.
+
+PRIMARY DECISION
+
+AR-H142 is:
+
+MIXED-POSITIVE.
+
+POSITIVE FOR:
+
+PROOF-BEARING TOPOLOGY
++
+CALIBRATION-GATED ACTION CORES.
+
+SUPPORTED
+
+- boundary confidence can be carried as part of topology state;
+- calibrated high-confidence cores substantially reduce cross-boundary leakage;
+- topology uncertainty can shrink action scope without weakening the subfamily proof itself;
+- topology calibration status prevents adversarial confidence from being treated as evidence;
+- evidence remains far below full-family audit;
+- useful subfamily action survives at both 10% and 25% label noise.
+
+MIXED / NOT YET SOLVED
+
+- core quarantine sacrifices substantial current coverage;
+- naive boundary audits add useful local resolution but do not strengthen the broadcast certificate;
+- naive overlap handling is too evidence-expensive;
+- a static confidence threshold merely chooses a point on the safety/coverage tradeoff;
+- quarantined members can accumulate into a large unresolved pool.
+
+NEW HIGH-VALUE QUESTION
+
+QUARANTINE
+IS SAFE
+
+but:
+
+CAN THE ORGANISM
+REPAIR
+THE BOUNDARY
+THAT CAUSED
+THE QUARANTINE?
+
+The next move should not be:
+audit the same ambiguous members forever.
+
+It should test:
+TOPOLOGY REPAIR.
+
+NEXT HIGH-VALUE MOVE
+
+AR-H143 — ADAPTIVE TOPOLOGY REPAIR / SPLIT-MERGE-QUARANTINE RECOVERY AUDIT
+
+Question:
+
+CAN
+QUARANTINED
+BOUNDARY EVIDENCE
+
+CAUSE
+THE ORGANISM
+TO REWRITE
+ITS OWN
+SUBFAMILY STRUCTURE
+
+WITHOUT:
+OSCILLATION,
+OVER-FRAGMENTATION,
+OR
+UNSAFE MERGE?
+
+Candidate mechanisms:
+
+A.
+STATIC QUARANTINE baseline.
+
+B.
+DISSENT-ACCUMULATION SPLIT.
+
+Repeated local contradictions near one boundary
+create a candidate split.
+
+C.
+CO-MOVEMENT MERGE.
+
+Adjacent subfamilies that repeatedly pass
+shared fresh evidence
+may merge.
+
+D.
+HIBERNATING ALTERNATE PARTITION.
+
+Do not immediately delete the old topology.
+
+Retain:
+old partition
+and:
+candidate replacement
+
+until:
+one accumulates enough evidence.
+
+E.
+REGENERATION AFTER TOPOLOGY DAMAGE.
+
+Delete or corrupt a subset of topology labels.
+
+Test whether:
+local relational evidence
+can regrow a useful partition.
+
+F.
+HYSTERESIS / COOLDOWN.
+
+Prevent:
+split-merge oscillation
+under noisy environments.
+
+Desired:
+
+UNCERTAINTY
+SHOULD NOT
+ONLY
+CAUSE
+PERMANENT QUARANTINE.
+
+IT SHOULD
+CREATE
+PRESSURE
+FOR
+STRUCTURAL REPAIR.
+
+Do not execute STAB-18-R1 during this lane.
+
+EXECUTION PROVENANCE
+
+evidence_class = SYNTHETIC_MEASURED_SANDBOX
+canonical_scientific_execution = false
+canonical_r1_execution_spent = false
+primary_worlds = 54000
+primary_noise_levels = 0.10,0.25
+hard_mean_fpr = 0.0051
+core_mean_fpr = 0.0024
+hard_cross_boundary_false = 0.0328
+core_cross_boundary_false = 0.0105
+hard_p01 = -19.5341
+core_p01 = -17.9872
+core_mean_evidence = 5.0948
+full_mean_evidence = 88.9177
+noise25_hard_fpr = 0.0061
+noise25_core_fpr = 0.0015
+noise25_core_quarantined_active_value = 6.4945
+threshold70_fpr = 0.0061
+threshold80_fpr = 0.0015
+threshold90_fpr = 0
+adversarial_core_fpr = 0.0086
+adversarial_topology_typed_fpr = 0
+adversarial_topology_typed_subfamily_rate = 0
