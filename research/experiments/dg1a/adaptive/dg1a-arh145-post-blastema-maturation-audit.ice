@@ -1,9 +1,10 @@
-TITLE: DG-1A-AR-H145 — Post-Blastema Maturation / Critical-Plasticity Window + Directed Evidence Routing Audit Preregistration
+TITLE: DG-1A-AR-H145 — Post-Blastema Maturation / Critical-Plasticity Window + Directed Evidence Routing Audit
 DATE: 2026-09-19
-STATUS: PREREGISTERED / SYNTHETIC / UNEXECUTED
+STATUS: SYNTHETIC / MEASURED_SANDBOX MIXED-NEGATIVE DIRECTED-MATURATION RESULT + CONSOLIDATION-MEMORY FAILURE
 TRACK: DG-1A / ADAPTIVE-RULE RESEARCH
 BRANCH: dg1a-ar
 PARENT: dg1a-arh144-topology-blastema-audit.ice
+PREREGISTRATION_COMMIT: 925a3504030850c1013f7c63560c613acb147913
 
 PURPOSE
 
@@ -1131,3 +1132,959 @@ a preregistered re-quarantine metric
 and will be treated as:
 a potential maturation-stability failure,
 not tuned away.
+
+
+EXECUTION RESULT
+
+PRIMARY CONFIRMATION
+
+2,000 held-out common worlds.
+
+8 policies.
+
+16,000 policy-worlds.
+
+20 maturation episodes.
+
+Primary promoted topology:
+98% member assignments correct.
+
+Primary evidence budget:
+0.5N target-region observations / episode.
+
+Primary sensor error:
+5%.
+
+The accepted primary execution uses:
+the frozen region-stratified sufficient-statistic realization.
+
+The discarded pre-audit latency aggregates are not used.
+
+PRIMARY RESULT
+
+UNIFORM
+
+episodes to 50% active-value maturity:
+20.749.
+
+fraction reaching 80% by episode 20:
+0.05%.
+
+consolidation:
+0%.
+
+mean safe active-value coverage:
+7.81%.
+
+pooled mature-member precision:
+99.998%.
+
+final quarantined fraction:
+68.68%.
+
+UNCERTAINTY-FIRST
+
+episodes to 50%:
+17.151.
+
+fraction reaching 80%:
+17.05%.
+
+consolidation:
+0.75%.
+
+mean safe coverage:
+12.17%.
+
+pooled precision:
+100%.
+
+final quarantine:
+33.72%.
+
+mature->quarantine reversals:
+74.66 / world.
+
+VALUE-FIRST
+
+episodes to 50%:
+8.308.
+
+episodes to 80%:
+13.878.
+
+fraction reaching 80%:
+99.00%.
+
+consolidation:
+82.95%.
+
+mean safe coverage:
+17.62%.
+
+pooled precision:
+100%.
+
+mean observations:
+705.32.
+
+observations to consolidation:
+693.15.
+
+final quarantine:
+74.73%.
+
+mature->quarantine reversals:
+76.74 / world.
+
+BOUNDARY-FIRST
+
+fraction reaching 50%:
+0%.
+
+mean safe coverage:
+1.14%.
+
+pooled precision:
+100%.
+
+residual wrong-assignment discovery:
+100%.
+
+final quarantine:
+95.41%.
+
+This policy is:
+
+GOOD
+AT
+FINDING CONTRADICTIONS
+
+and:
+
+BAD
+AT
+RELEASING USEFUL ACTION.
+
+REPRESENTATIVE-CANARY
+
+fraction reaching 50%:
+99.25%.
+
+fraction reaching 80%:
+17.35%.
+
+consolidation:
+1.00%.
+
+mean safe coverage:
+16.85%.
+
+pooled precision:
+100%.
+
+final quarantine:
+35.44%.
+
+mature->quarantine reversals:
+92.24 / world.
+
+Representative maturity does not create:
+unsupported maturity
+
+but:
+it does not materially reduce evidence
+or:
+produce efficient consolidation
+in this implementation.
+
+EXPECTED-RELEASE
+
+episodes to 50%:
+7.861.
+
+episodes to 80%:
+14.572.
+
+fraction reaching 80%:
+99.35%.
+
+consolidation:
+87.60%.
+
+mean safe active-value coverage:
+31.64%.
+
+pooled mature-member precision:
+100%.
+
+residual wrong-assignment discovery:
+100%.
+
+mean observations:
+705.94.
+
+observations to consolidation:
+693.86.
+
+final quarantine:
+63.97%.
+
+mature->quarantine reversals:
+122.98 / world.
+
+This is:
+the strongest primary routing policy
+
+for:
+rapid useful-value release.
+
+It is also:
+the clearest maturation-stability failure.
+
+HYBRID
+
+episodes to 50%:
+12.258.
+
+fraction reaching 80%:
+37.70%.
+
+consolidation:
+6.30%.
+
+mean safe coverage:
+17.01%.
+
+pooled precision:
+100%.
+
+final quarantine:
+54.95%.
+
+mature->quarantine reversals:
+81.08 / world.
+
+The frozen hybrid does not dominate:
+EXPECTED-RELEASE.
+
+PERMANENT-PLASTIC
+
+fraction reaching 80%:
+0%.
+
+mean safe coverage:
+3.74%.
+
+structural compute:
+20 scratch-equivalent units / world.
+
+final quarantine:
+78.08%.
+
+At the primary 0.5N budget:
+
+continuing structural plasticity
+does not improve maturation.
+
+PRIMARY POSITIVE RESULT
+
+DIRECTED MATURATION
+IS REAL.
+
+Compared with:
+UNIFORM,
+
+EXPECTED-RELEASE:
+
+reaches:
+50% active-value maturity
+
+approximately:
+12.9 episodes earlier,
+
+and reaches:
+80% active-value maturity
+
+in:
+99.35% of worlds
+
+versus:
+0.05%.
+
+VALUE-FIRST also matures current active value quickly.
+
+This establishes:
+
+AFTER STRUCTURAL RECOVERY,
+
+WHERE
+EVIDENCE IS SENT
+
+matters strongly.
+
+PRIMARY SAFETY RESULT
+
+Rapid maturation is not being purchased through:
+
+FALSE MEMBER MATURITY.
+
+Primary pooled mature-member precision:
+
+VALUE-FIRST:
+100%.
+
+EXPECTED-RELEASE:
+100%.
+
+HYBRID:
+100%.
+
+UNCERTAINTY:
+100%.
+
+Uniform:
+99.998%.
+
+Residual wrong assignments are overwhelmingly:
+
+QUARANTINED,
+
+not:
+silently matured.
+
+Thus:
+the speed advantage is not a simple false-positive artifact.
+
+PRIMARY NEGATIVE RESULT
+
+THE CURRENT
+CONSOLIDATION MODEL
+DOES NOT
+CREATE
+DURABLE MATURITY.
+
+EXPECTED-RELEASE:
+
+consolidates in:
+87.6% of primary worlds
+
+but:
+
+ends with:
+63.97%
+of members quarantined
+
+and experiences:
+122.98
+mature->quarantine reversals / world.
+
+VALUE-FIRST:
+
+consolidates in:
+82.95%
+
+but ends with:
+74.73%
+quarantined.
+
+The cause is mechanistically clear:
+
+during maturation:
+
+evidence mass decays at:
+0.95 / episode.
+
+After consolidation:
+
+specialized routing shuts down
+
+and maintenance drops to:
+0.05N uniform observations / episode.
+
+Therefore:
+
+A MEMBER
+CAN LOSE
+ACTION MATURITY
+
+SIMPLY BECAUSE:
+
+IT BECAME
+DORMANT
+AND
+STOPPED RECEIVING
+FRESH EVIDENCE.
+
+That behavior is:
+
+INCONSISTENT
+WITH
+THE YGGDRASIL END GOAL.
+
+Dormant structure should not require:
+continuous active evidence expenditure
+
+merely to retain:
+already-earned epistemic status.
+
+SENSOR-NOISE ROBUSTNESS
+
+10% sensor error.
+500 held-out worlds.
+
+EXPECTED-RELEASE
+
+fraction reaching 80%:
+86.8%.
+
+consolidation:
+48.4%.
+
+mean safe coverage:
+30.98%.
+
+pooled precision:
+100%.
+
+20% sensor error.
+500 held-out worlds.
+
+EXPECTED-RELEASE
+
+fraction reaching 80%:
+3.4%.
+
+consolidation:
+0%.
+
+mean safe coverage:
+22.45%.
+
+pooled precision:
+99.9936%.
+
+wrong-assignment discovery:
+99.9%.
+
+Thus:
+
+HIGH SENSOR NOISE
+
+causes:
+locality
+and:
+failed consolidation
+
+rather than:
+widespread false maturity.
+
+This is:
+the correct safety direction.
+
+RESIDUAL-TOPOLOGY-ERROR ROBUSTNESS
+
+5% residual wrong assignments.
+
+EXPECTED-RELEASE
+
+fraction reaching 80%:
+87.4%.
+
+consolidation:
+47.4%.
+
+mean coverage:
+31.40%.
+
+pooled precision:
+100%.
+
+10% residual wrong assignments.
+
+EXPECTED-RELEASE
+
+fraction reaching 80%:
+28.0%.
+
+consolidation:
+2.8%.
+
+mean coverage:
+26.56%.
+
+pooled precision:
+100%.
+
+The maturation contract:
+
+fails closed
+
+as:
+the promoted topology becomes less trustworthy.
+
+HIGH-VALUE WRONG-MEMBER STRESS
+
+5% residual topology error.
+
+Wrong members are forced:
+high value.
+
+EXPECTED-RELEASE
+
+fraction reaching 80%:
+12.8%.
+
+consolidation:
+1.2%.
+
+mean safe coverage:
+18.08%.
+
+pooled precision:
+100%.
+
+VALUE-FIRST
+
+fraction reaching 80%:
+15.8%.
+
+consolidation:
+0%.
+
+mean coverage:
+7.59%.
+
+pooled precision:
+100%.
+
+Interpretation:
+
+pure value routing
+becomes:
+less useful
+
+when:
+the high-value target itself
+is the residual topology error.
+
+EXPECTED-RELEASE is more resilient
+
+because:
+audit cost
+and:
+release likelihood
+
+remain part of:
+the routing objective.
+
+EVIDENCE-BUDGET ROBUSTNESS
+
+0.25N
+
+EXPECTED-RELEASE
+
+consolidation:
+0%.
+
+mean safe coverage:
+14.20%.
+
+final quarantine:
+73.71%.
+
+1N
+
+EXPECTED-RELEASE
+
+consolidation:
+100%.
+
+mean safe coverage:
+25.58%.
+
+final quarantine:
+94.05%.
+
+2N
+
+EXPECTED-RELEASE
+
+consolidation:
+100%.
+
+mean safe coverage:
+23.28%.
+
+final quarantine:
+94.53%.
+
+The higher-budget result is decisive.
+
+MORE
+MATURATION EVIDENCE
+
+causes:
+EARLIER CONSOLIDATION,
+
+then:
+
+EARLIER TRANSITION
+TO
+UNDERPOWERED MAINTENANCE.
+
+Therefore:
+
+ADDING EVIDENCE
+DOES NOT
+SOLVE
+THE DURABILITY FAILURE.
+
+It can:
+make the failure happen sooner.
+
+PERMANENT-PLASTIC at 1N and 2N
+
+does retain:
+much more final member maturity
+
+but requires:
+
+continuous specialized evidence
++
+20 structural-compute units.
+
+Thus:
+
+PERMANENT PLASTICITY
+CAN BUY
+PERSISTENCE,
+
+but violates:
+the intended low-active-cost developmental architecture.
+
+MATURATION-WINDOW ROBUSTNESS
+
+10-episode window.
+
+EXPECTED-RELEASE
+
+consolidation:
+0%.
+
+mean coverage:
+17.19%.
+
+40-episode window.
+
+EXPECTED-RELEASE
+
+consolidation:
+100%.
+
+mean coverage:
+20.60%.
+
+mature->quarantine reversals:
+164.18 / world.
+
+final quarantine:
+99.04%.
+
+VALUE-FIRST 40 episodes:
+
+consolidation:
+100%.
+
+final quarantine:
+99.34%.
+
+Thus:
+
+A LONGER
+MATURATION HORIZON
+
+does NOT:
+repair the current representation.
+
+Once consolidation occurs:
+
+wall-clock evidence decay
+plus:
+weak uniform maintenance
+
+eventually erases:
+action maturity.
+
+CRITICAL DISTINCTION
+
+H145 separates:
+
+EVIDENCE ACQUISITION
+
+from:
+
+EVIDENCE RETENTION.
+
+Directed routing solves:
+the first problem.
+
+It does not solve:
+the second.
+
+The current representation stores:
+
+MATURITY
+
+as:
+a continuously decaying quantity.
+
+That forces the organism toward:
+
+either:
+
+PERMANENT RE-AUDITING
+
+or:
+
+FORGETTING
+WHY
+A DORMANT MEMBER
+WAS TRUSTED.
+
+Neither is acceptable
+for the target architecture.
+
+OUT-OF-BOX INTERPRETATION
+
+Maturation evidence may need to:
+
+VEST.
+
+Instead of:
+
+all evidence decays
+with wall-clock time,
+
+a member that satisfies:
+a strong maturation contract
+
+could convert:
+
+labile evidence
+
+into:
+
+A DORMANT
+MATURITY CERTIFICATE.
+
+That certificate should not decay merely because:
+the member is inactive.
+
+It should become stale only when:
+
+- the relevant topology epoch changes;
+- the member's local relational neighborhood changes;
+- predictive calibration fails;
+- contradictory evidence appears;
+- a bounded hazard / expiry condition is reached.
+
+This creates:
+
+FAST
+LABILE
+DEVELOPMENTAL EVIDENCE
+
+and:
+
+SLOW
+CONSOLIDATED
+EPISTEMIC STATE.
+
+The analogy is not:
+biological memory as proof.
+
+The architectural principle is:
+
+INACTIVITY
+SHOULD NOT
+BE EQUIVALENT TO
+EVIDENCE AGAINST
+A PREVIOUSLY VALIDATED STATE.
+
+DECISION
+
+AR-H145 is:
+
+MIXED-NEGATIVE.
+
+POSITIVE FOR
+
+- directed post-blastema evidence routing;
+- EXPECTED-RELEASE as the strongest tested rapid-release heuristic;
+- safe quarantine of residual wrong assignments;
+- graceful failure under sensor noise;
+- the importance of stopping permanent structural plasticity.
+
+NEGATIVE FOR
+
+- the frozen consolidation contract as a durable maturation mechanism;
+- uniform low-rate maintenance as sufficient post-consolidation support;
+- representative-canary routing as an evidence-saving maturation strategy;
+- the preregistered expectation that a longer maturation window would produce cheap stable maturity;
+- repeated mature/quarantine oscillation.
+
+NEXT HIGH-VALUE MOVE
+
+AR-H146 — EVIDENCE VESTING / DORMANT MATURITY-CERTIFICATE + CONTRADICTION-TRIGGERED REACTIVATION AUDIT
+
+Question:
+
+CAN
+A MEMBER
+EARN
+DURABLE
+ACTION MATURITY
+
+WITHOUT:
+
+PERMANENT
+RE-AUDITING?
+
+Candidate architecture:
+
+LABILE PHASE
+
+Use:
+H145 directed evidence routing.
+
+Evidence remains:
+fast-decaying
+and:
+revocable.
+
+VESTING EVENT
+
+When:
+a member / region
+satisfies a stronger maturation contract,
+
+convert:
+raw support history
+
+into:
+a typed dormant certificate.
+
+Certificate fields should include:
+
+- topology epoch;
+- member identity;
+- provisional region identity;
+- support class;
+- boundary class;
+- sensor / calibration class;
+- evidence provenance;
+- vesting time;
+- contradiction budget;
+- hazard / expiry class.
+
+DORMANT PHASE
+
+No wall-clock decay
+merely because:
+the member is inactive.
+
+No continuous audit cost.
+
+REACTIVATION TRIGGERS
+
+Require fresh evidence when:
+
+- topology epoch changes;
+- local neighborhood changes materially;
+- member becomes high-value active after long dormancy;
+- contradictory evidence arrives;
+- calibration changes;
+- certificate hazard expires.
+
+Candidate comparators:
+
+A.
+H145 decaying raw evidence.
+
+B.
+frozen certificate forever.
+
+C.
+fixed wall-clock expiry.
+
+D.
+activity-count expiry.
+
+E.
+topology-epoch expiry.
+
+F.
+contradiction-budget certificate.
+
+G.
+hybrid:
+epoch
++
+contradiction
++
+bounded hazard.
+
+Desired:
+
+MATURITY
+SHOULD
+HIBERNATE,
+
+NOT:
+
+EVAPORATE.
+
+The prospective:
+
+BOUNDED INCREMENTAL PATCHING
+/
+STRUCTURAL TRUST REGION
+
+hypothesis remains recorded
+for later testing.
+
+H146 focuses only on:
+post-maturation evidence retention.
+
+Do not execute STAB-18-R1 during this lane.
+
+EXECUTION PROVENANCE
+
+evidence_class = SYNTHETIC_MEASURED_SANDBOX_POST_REDEVELOPMENT
+canonical_scientific_execution = false
+canonical_r1_execution_spent = false
+primary_worlds = 2000
+primary_policy_worlds = 16000
+primary_region_stratified_realization = true
+primary_sensor_error = 0.05
+primary_residual_topology_error = 0.02
+primary_budget = 0.5N
+expected_release_first50 = 7.8605
+expected_release_first80 = 14.5720
+expected_release_reach80_rate = 0.9935
+expected_release_consolidation_rate = 0.8760
+expected_release_mean_coverage = 0.316379
+expected_release_pooled_precision = 1.0
+expected_release_mean_requarantine = 122.982
+expected_release_final_quarantine = 0.639731
+value_reach80_rate = 0.9900
+value_consolidation_rate = 0.8295
+uniform_reach80_rate = 0.0005
+sensor20_expected_pooled_precision = 0.999936
+sensor20_expected_consolidation = 0
+residual10_expected_pooled_precision = 1.0
+budget1_expected_final_quarantine = 0.940541
+budget2_expected_final_quarantine = 0.945251
+window40_expected_final_quarantine = 0.990436
+window40_expected_requarantine = 164.1767
