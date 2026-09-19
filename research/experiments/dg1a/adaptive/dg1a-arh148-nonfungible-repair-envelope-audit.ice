@@ -2235,3 +2235,75 @@ Each subsequent regime:
 
 All sanity outputs before this freeze remain:
 NON-EVIDENCE.
+
+
+PRIMARY HARNESS CORRECTION — FIRST BATCH DISCARDED
+
+During:
+the first full H148 primary batch,
+
+a comparator-only implementation mismatch was detected in:
+
+F — IMMEDIATE GLOBAL BLASTEMA.
+
+Frozen F semantics require:
+
+persistent disturbance
+->
+GLOBAL BLASTEMA
+
+with:
+NO incremental patch mode.
+
+The first batch incorrectly allowed F
+to accept:
+incremental patches
+
+before:
+its persistent-disturbance trigger.
+
+This violates:
+the preregistered F policy identity.
+
+CORRECTION
+
+F now:
+
+- never accepts incremental topology patches;
+- waits for the frozen persistent-disturbance trigger;
+- then launches global blastema;
+- globally invalidates certificates on promoted redevelopment;
+- preserves the frozen full-action-freeze semantics during maturation.
+
+No E candidate,
+vector-envelope,
+dependency-certificate,
+regional redevelopment,
+world,
+seed,
+threshold,
+or:
+acceptance rule
+is changed.
+
+DISPOSITION
+
+For conservative evidence hygiene:
+
+ALL numerical outputs
+from the first H148 full batch
+are:
+NON-EVIDENCE / DISCARDED.
+
+The full:
+4,000-world,
+28,000 policy-regime-world
+primary
+
+will be rerun
+from:
+the exact frozen seed blocks.
+
+No threshold tuning
+is permitted.
+
