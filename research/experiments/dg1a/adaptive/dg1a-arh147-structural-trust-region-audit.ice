@@ -1,6 +1,6 @@
 TITLE: DG-1A-AR-H147 — Structural Trust Region / Bounded Incremental Patching + Certificate-Inheritance Audit
 DATE: 2026-09-19
-STATUS: SYNTHETIC / MEASURED_SANDBOX MIXED-NEGATIVE TRUST-REGION RESULT + POSITIVE SPATIAL-DIFFUSION SIGNAL + DEBT / INHERITANCE LIMIT
+STATUS: CORRECTION REOPENED / PRIOR PRIMARY SUPERSEDED PENDING H146-CONTRADICTION-SEMANTICS RERUN
 TRACK: DG-1A / ADAPTIVE-RULE RESEARCH
 BRANCH: dg1a-ar
 PARENT: dg1a-arh146-evidence-vesting-audit.ice
@@ -2821,3 +2821,220 @@ high_value_local_trust_blast_rate = 0.004
 stacked_trust_final_ari = 1.0
 stacked_trust_false_inherit = 0.0377
 primary_trust_false_inherit_mean = 0.026324
+
+
+POST-COMPLETION HARNESS CORRECTION — PRIOR PRIMARY SUPERSEDED
+
+During:
+pre-primary H148 dependency-certificate harness validation,
+
+a lineage omission was identified in:
+the H147 simulator used for the result above.
+
+The H147 preregistration and inheritance rules explicitly require:
+
+H146-style
+contradiction-budget validity
+
+to remain part of:
+vested certificate semantics.
+
+The prior H147 execution implemented:
+
+- structural-challenge invalidation;
+- patch invalidation;
+- region-ID inheritance;
+- six-observation revalidation;
+
+but omitted:
+
+H146
+opportunistic active-feedback
+contradiction debt.
+
+That omission can:
+overstate
+stale certificate survival
+
+and therefore affects:
+
+- false inherited-certificate rate;
+- false trusted-action rate;
+- certificate retention;
+- revalidation cost;
+- action coverage;
+- any H147 conclusion
+  whose evidence depends on:
+  certificate persistence.
+
+CORRECTION
+
+The H147 primary will be rerun
+with:
+
+the identical:
+- 5,000 worlds;
+- seed blocks;
+- 10 regimes;
+- 7 policies;
+- topology disturbances;
+- repair thresholds;
+- relational structural evidence;
+- patch / blastema mechanics;
+- trust-region formula;
+- certificate inheritance rules.
+
+Add only:
+the already-required H146 contradiction semantics.
+
+OPPORTUNISTIC ACTIVE FEEDBACK
+
+Every active member
+that currently owns:
+a valid vested certificate
+
+produces:
+
+one zero-deliberate-cost
+certificate feedback observation / episode.
+
+The feedback reports:
+the member's current true functional region
+
+with:
+the same current observation error class
+as:
+that world's current sensor regime.
+
+Primary:
+5%.
+
+R7 localized noise:
+45%
+for members inside:
+the affected noisy region
+during:
+episodes 11..15.
+
+R9 sensor degradation:
+20%
+during:
+episodes 35..42.
+
+CONTRADICTION DEBT
+
+For a valid certificate:
+
+feedback matching:
+certificate_region
+
+reduces debt:
+by 1
+to minimum 0.
+
+Feedback conflicting with:
+certificate_region
+
+increases debt:
+by 1.
+
+Keep:
+the most recent 6
+active-feedback outcomes.
+
+Before:
+broad action,
+
+invalidate the certificate
+when:
+
+debt >=3
+
+AND
+
+at least:
+3 contradictions
+
+occur inside:
+the recent-6 window.
+
+This is:
+the H146 primary contradiction budget.
+
+REVALIDATION
+
+After contradiction invalidation:
+
+reuse:
+the already-frozen H147
+six-observation revalidation contract.
+
+Successful revalidation:
+
+- debt resets to 0;
+- recent contradiction window clears.
+
+Never-vested members:
+still do not gain
+new certificates.
+
+ACTION ORDER
+
+Per episode:
+
+1.
+true disturbance / sensor regime applies;
+
+2.
+structural evidence updates;
+
+3.
+structural checkpoint / patch / blastema
+when scheduled;
+
+4.
+opportunistic active certificate feedback;
+
+5.
+contradiction invalidation;
+
+6.
+bounded deliberate revalidation;
+
+7.
+broad action accounting.
+
+Thus:
+
+a contradiction-challenged certificate
+does NOT receive:
+one stale action
+before:
+invalidation.
+
+PRIOR RESULT STATUS
+
+All numerical H147 primary results recorded above are:
+
+SUPERSEDED
+
+for:
+final acceptance.
+
+They remain:
+an audit trail
+of the omitted-semantics run.
+
+No H147 acceptance criterion
+is altered.
+
+No threshold is tuned.
+
+Corrected primary execution will use:
+the original frozen seed blocks.
+
+H148 primary execution remains:
+NOT STARTED
+
+until:
+the corrected H147 baseline is closed.
