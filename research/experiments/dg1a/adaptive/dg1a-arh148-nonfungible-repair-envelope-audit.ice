@@ -2649,3 +2649,101 @@ MAY PROCEED
 under:
 this amended B3 realization.
 
+
+
+PRE-PRIMARY EVIDENCE-HYGIENE CORRECTION — REPLACEMENT HELD-OUT SEED BLOCKS
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE ACCEPTED PRIMARY EXECUTION.
+
+The post-amendment sanity work
+inspected outcomes
+from:
+a subset of the originally preregistered H148 seed family.
+
+Therefore:
+
+those worlds are no longer
+strictly held-out
+for:
+confirmatory primary inference.
+
+They will NOT be reused
+as accepted H148 primary evidence.
+
+This corrects the earlier shorthand statement
+that:
+no primary world was spent.
+
+More precisely:
+
+no H148 primary result
+has been accepted,
+
+but:
+some originally designated seed worlds
+were exposed during:
+non-evidence harness validation.
+
+REPLACEMENT PRIMARY SEEDS
+
+To restore:
+clean held-out status,
+
+the complete H148 accepted primary
+moves to:
+a fresh,
+previously unobserved seed family.
+
+R0:
+20260919200000..20260919200399.
+
+Each subsequent regime:
+
+add:
+1000
+to the regime seed base.
+
+Thus:
+
+R1:
+20260919201000..20260919201399.
+
+...
+
+R9:
+20260919209000..20260919209399.
+
+PRIMARY SIZE REMAINS
+
+400 worlds / regime.
+
+10 regimes.
+
+7 policies.
+
+28,000 policy-regime-worlds.
+
+No:
+threshold,
+policy,
+regime,
+metric,
+acceptance gate,
+witness rule,
+repair mechanic,
+or:
+sample size
+
+is changed.
+
+The replacement is:
+evidence-hygiene only.
+
+All previously inspected H148 worlds remain:
+
+NON-EVIDENCE / DISCARDED.
+
