@@ -1836,3 +1836,53 @@ change.
 No execution-semantic change is permitted
 after:
 primary H148 execution begins.
+
+
+PRE-EXECUTION CLARIFICATION — PROJECTED PATCH LEDGER
+
+Before accepting an incremental patch:
+
+the controller evaluates:
+the repair envelope
+
+against:
+the CURRENT ledger
+
+and:
+
+the PROJECTED ledger
+after:
+the candidate patch.
+
+A patch is inadmissible when:
+accepting it
+
+would itself:
+cross
+P,
+U,
+P_r,
+or:
+single-patch bounds.
+
+This prevents:
+one final patch
+
+from:
+overshooting
+the declared repair envelope
+
+before:
+handoff logic can run.
+
+This is an interpretation of:
+"incremental patch is allowed only while every bound remains inside its limit."
+
+No numerical bound,
+policy,
+regime,
+or:
+acceptance criterion
+is changed.
+
+Primary execution has not begun.
