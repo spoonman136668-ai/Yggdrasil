@@ -967,3 +967,97 @@ through:
 
 No implementation rule above
 will be changed after primary execution begins.
+
+
+EXECUTION OPTIMIZATION FREEZE — REGION-STRATIFIED SUFFICIENT STATISTIC
+
+The literal interpreted pair-by-pair harness was rejected before primary evidence because its runtime did not scale to the preregistered 16,000 policy-world comparison.
+
+No scientific result from that aborted runtime pass is used.
+
+Primary execution keeps:
+the full 2,000 held-out worlds
+and:
+all 8 policies.
+
+To preserve the frozen evidence semantics efficiently:
+
+once a routing policy selects:
+
+target member i
+and:
+comparison provisional region r,
+
+the implementation analytically marginalizes:
+uniform partner selection inside region r.
+
+For member i and comparison region r:
+
+true_same_fraction(i,r) =
+fraction of provisional-region-r members
+whose latent true region equals:
+latent true region(i).
+
+Therefore:
+
+P(observed SAME | i,r) =
+true_same_fraction * (1-sensor_error)
++
+(1-true_same_fraction) * sensor_error.
+
+Each target-region audit consumes:
+one deterministic potential Bernoulli outcome
+
+keyed by:
+
+world,
+episode,
+target member,
+comparison provisional region,
+audit-slot index.
+
+Thus:
+
+identical target-region audit slots
+receive identical potential outcomes
+across policies.
+
+The resulting SAME / DIFFERENT observation updates:
+
+same_mass[i,r]
+or:
+different_mass[i,r]
+
+exactly as in:
+the frozen member-support state.
+
+This is:
+
+a compiled,
+region-stratified
+sufficient-statistic realization
+
+of:
+the frozen random-partner pair process.
+
+It does NOT change:
+
+- member target weights;
+- 60/40 own-versus-alternative routing;
+- 70% boundary alternative routing;
+- sensor error;
+- evidence decay;
+- maturity thresholds;
+- region/family contracts;
+- evidence budgets;
+- policy identities;
+- sample size;
+- primary seeds.
+
+Symmetric partner-side evidence is omitted in this optimized primary realization because:
+the partner identity has been marginalized.
+
+All H145 result claims will explicitly refer to:
+this region-stratified primary realization.
+
+No further execution-semantic change is permitted after primary run begins.
