@@ -739,3 +739,112 @@ active topology compute
 
 distinct from:
 dormant structural option value.
+
+
+PRIMARY EXECUTION FREEZE — FINAL UNSPECIFIED MECHANICS
+
+The preceding harness-validation worlds are discarded from primary H143 evidence.
+
+They are used only to verify:
+runtime,
+metric collection,
+and:
+whether the frozen candidate machinery is executable.
+
+Primary confirmation will use:
+96 new held-out worlds
+
+with:
+80 episodes/world
+and:
+all five non-oracle policy comparators.
+
+These worlds do not reuse:
+the harness-validation seeds.
+
+DRIFT ALARM
+
+A dormant candidate lane wakes when any of:
+
+- quarantined member fraction >= 0.15;
+- weighted relational disagreement >= 0.18;
+- one-episode disagreement increase >= 0.04.
+
+The alarm does not authorize structural mutation.
+
+It only authorizes:
+candidate-generation work.
+
+PAIR-SAMPLING MIXTURE
+
+Inside the frozen <=2N evidence budget:
+
+approximately 35%:
+active-member pairs.
+
+20%:
+pairs touching quarantined members.
+
+20%:
+within-current-region probes.
+
+15%:
+cross-current-region probes.
+
+10%:
+uniform exploration.
+
+Sampling remains bounded.
+
+No policy receives:
+latent true labels.
+
+DAMAGE REALIZATION
+
+At episode 36:
+
+25% of stored labels are selected.
+
+Approximately one-third are erased to:
+UNKNOWN.
+
+The remainder are reassigned to:
+an incorrect currently-known region.
+
+No original-label backup is available.
+
+TRUE STRUCTURAL EVENT REALIZATION
+
+Episode 21 split:
+
+the largest current true subfamily is divided into:
+two near-equal descendants.
+
+Episode 51 merge:
+
+two similarly-sized current true subfamilies become:
+functionally exchangeable.
+
+Episodes 66..70 transient false shift:
+
+the observation process temporarily mimics:
+either a split or a merge,
+
+chosen per world.
+
+Accepted true topology does not change during:
+the transient false-shift window.
+
+PRIMARY SEED SEPARATION
+
+Harness-validation seed block:
+
+excluded.
+
+Primary confirmation uses a separate seed block.
+
+No threshold,
+candidate rule,
+acceptance condition,
+or event schedule
+will be altered after the primary run begins.
