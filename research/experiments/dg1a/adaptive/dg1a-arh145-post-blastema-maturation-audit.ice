@@ -515,3 +515,455 @@ evidence_class_target = SYNTHETIC_MEASURED_SANDBOX_POST_REDEVELOPMENT
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 preregistered_from_head = 97b71ab018682cf02dfe2be7370d0451dd191c93
+
+
+IMPLEMENTATION FREEZE — BEFORE PRIMARY EXECUTION
+
+The following mechanics resolve details not fixed in the initial preregistration.
+
+No acceptance threshold,
+routing-policy identity,
+primary ecology,
+world count,
+or evidence budget
+is changed.
+
+PROVISIONAL TOPOLOGY REALIZATION
+
+For each primary world:
+
+- draw N uniformly from 60..100;
+- draw K uniformly from 4..6;
+- create near-balanced latent true regions;
+- copy true membership into the promoted scratch topology;
+- corrupt exactly ceil(0.02N) memberships by assigning each selected member to a different provisional region.
+
+Policies receive only:
+the provisional topology.
+
+They do not receive:
+latent true membership.
+
+MEMBER VALUES
+
+Fixed within each world.
+
+Draw:
+lognormal sigma 0.60
+
+and normalize:
+mean value approximately 1.
+
+ACTIVE SCHEDULE
+
+At each episode:
+
+draw active fraction uniformly from:
+20%..50%.
+
+Sample active members:
+without replacement.
+
+The active schedule is common across policies.
+
+PAIR-EVIDENCE POTENTIAL OUTCOME
+
+For queried pair i,j:
+
+true relation =
+SAME
+iff:
+latent true region(i) == latent true region(j).
+
+Observed relation flips
+with probability:
+sensor_error.
+
+Potential outcome is keyed by:
+
+world,
+episode,
+unordered pair(i,j)
+
+so identical queried pairs
+receive identical potential outcomes
+across policies.
+
+EVIDENCE MEMORY
+
+For each member i
+and provisional region r:
+
+maintain decayed:
+
+same_mass[i,r]
+and:
+different_mass[i,r].
+
+At the start of each new episode:
+
+all masses *= 0.95.
+
+If pair i,j is queried:
+
+the observed relation updates:
+
+member i
+against:
+provisional region(j)
+
+and symmetrically:
+
+member j
+against:
+provisional region(i).
+
+REGION SUPPORT SCORE
+
+For member i
+against provisional region r:
+
+if:
+effective_mass[i,r] < 1
+
+score = 0.50.
+
+Otherwise:
+
+score =
+same_mass
+/
+(same_mass + different_mass).
+
+For member i's currently assigned provisional region a:
+
+own_support =
+score(i,a).
+
+best_alternative_support =
+max score(i,r)
+for r != a.
+
+support_margin =
+own_support - best_alternative_support.
+
+MEMBER EFFECTIVE OBSERVATIONS
+
+effective observations =
+sum over all provisional regions of:
+
+same_mass + different_mass.
+
+MEMBER MATURITY
+
+Exactly the preregistered contract:
+
+effective observations >= 6
+AND
+own_support >= 0.80
+AND
+support_margin >= 0.20.
+
+A member failing any condition is:
+QUARANTINED.
+
+CUT-BOUNDARY CONTRADICTION
+
+For provisional region r:
+
+use all decayed evidence observations
+that crossed:
+r
+to:
+another provisional region.
+
+A cross-region observation reporting:
+SAME
+
+is a:
+boundary contradiction.
+
+Boundary contradiction rate:
+
+same_cross_mass
+/
+total_cross_mass.
+
+If:
+cross evidence mass < 6
+
+the boundary is:
+UNMATURE.
+
+REGION MATURITY
+
+A region is mature when:
+
+- >=70% of its current active-value mass is member-mature;
+- >=3 members in the region are member-mature;
+- cross-boundary evidence mass >=6;
+- boundary contradiction rate <=5%.
+
+EXPLICIT REGION QUARANTINE
+
+A non-mature region satisfies:
+explicit quarantine
+
+only when:
+
+its unresolved active-value mass
+<=10%
+of total current family active-value mass.
+
+This prevents:
+a large unsupported region
+
+from being hidden behind the word:
+quarantine.
+
+FAMILY CONSOLIDATION
+
+Use the preregistered conditions.
+
+The two-consecutive-episode requirement
+is literal.
+
+After consolidation:
+
+the policy performs:
+no specialized maturation routing
+
+for the remaining horizon.
+
+Only a minimal:
+0.05N uniform maintenance budget
+
+is charged per episode.
+
+This is recorded separately as:
+post-consolidation evidence cost.
+
+ROUTING CANDIDATE MEMBER SET
+
+Unless a policy explicitly says otherwise:
+
+prioritize members that are:
+not member-mature.
+
+If all members are mature:
+
+fall back to:
+uniform maintenance.
+
+PAIR SELECTION FOR MEMBER-TARGETED ROUTES
+
+Once target member i is chosen:
+
+with probability 0.60:
+
+query i
+against:
+a member assigned to i's provisional region.
+
+with probability 0.40:
+
+query i
+against:
+the provisional region currently having
+the highest alternative support for i.
+
+If alternative support is tied / unseen:
+
+choose:
+a different provisional region uniformly.
+
+This directly tests:
+assignment support
+and:
+the strongest competing region.
+
+UNIFORM
+
+Choose:
+two distinct members uniformly.
+
+UNCERTAINTY-FIRST
+
+Target-member weight:
+
+1 / (0.05 + abs(own_support - 0.80))
++
+2 / (0.05 + abs(support_margin - 0.20)).
+
+Members with:
+effective observations <6
+
+receive:
+an additional +2 weight.
+
+VALUE-FIRST
+
+Among:
+active,
+unmature members,
+
+weight by:
+member value.
+
+If none exist:
+
+fall back to:
+unmature members weighted by value.
+
+BOUNDARY-FIRST
+
+Target members with:
+
+smallest support margin
+
+and:
+
+evidence indicating:
+a plausible alternative region.
+
+At least 70% of its targeted queries
+compare the member to:
+its strongest alternative region.
+
+REPRESENTATIVE-CANARY
+
+At world initialization:
+
+select:
+3 fixed representatives
+per provisional region
+
+using:
+the highest-value member,
+the median-value member,
+and:
+one deterministic random member.
+
+Until all three representatives
+of a region are mature:
+
+70% of evidence directed to that region
+is spent on:
+its representatives.
+
+After all three mature:
+
+evidence for that region
+is directed to:
+its remaining unmature members.
+
+Representative maturity:
+
+does NOT
+automatically mature
+other members.
+
+EXPECTED-RELEASE
+
+For each unmature member:
+
+estimate remaining audits as:
+
+max(1, 6 - effective_observations)
+
+plus:
+
+4 * max(0, 0.80 - own_support)
+
+plus:
+
+4 * max(0, 0.20 - support_margin).
+
+Score:
+
+current active value
+/
+estimated remaining audits.
+
+Inactive member current value weight:
+25%
+of its fixed member value.
+
+HYBRID
+
+Episode evidence budget is divided:
+
+30%:
+BOUNDARY-FIRST.
+
+30%:
+EXPECTED-RELEASE.
+
+20%:
+VALUE-FIRST.
+
+20%:
+REPRESENTATIVE-CANARY / minimum region coverage.
+
+Unused quota:
+rolls to UNIFORM.
+
+No component exceeds:
+50%
+of the episode budget.
+
+PERMANENT-PLASTIC
+
+Consumes:
+
+25%
+of the 0.5N episode evidence budget
+
+as:
+scratch / structural reconstruction compute.
+
+The remaining:
+75%
+
+uses:
+UNCERTAINTY-FIRST maturation routing.
+
+It never enters:
+CONSOLIDATED / hibernated mode.
+
+Structural compute:
+
+1 scratch-equivalent unit / episode.
+
+Its topology is not given:
+additional latent information.
+
+PRIMARY BUDGET ROUNDING
+
+Episode evidence budget:
+
+ceil(0.5N)
+pair observations.
+
+PERMANENT-PLASTIC maturation observations:
+
+floor(0.75 * ceil(0.5N)).
+
+Post-consolidation maintenance:
+
+ceil(0.05N).
+
+PRIMARY RANDOMNESS
+
+2,000 held-out worlds.
+
+No H144 world seed is reused.
+
+Primary seed block:
+
+20260919145000
+through:
+20260919146999.
+
+No implementation rule above
+will be changed after primary execution begins.
