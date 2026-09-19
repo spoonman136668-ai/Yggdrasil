@@ -1960,3 +1960,278 @@ AUTHORIZED FOR THIS SYNTHETIC RESEARCH LANE.
 
 STAB-18-R1 remains:
 UNTOUCHED.
+
+
+FINAL HARNESS FREEZE — BEFORE H148 PRIMARY
+
+The following resolves initialization and deterministic-realization details
+found during NON-EVIDENCE sanity execution.
+
+No primary world has been spent.
+
+No repair threshold,
+acceptance gate,
+policy,
+regime,
+or:
+sample size
+is changed.
+
+INITIAL REPAIR-LEDGER ORIGIN
+
+H148 B1..B5 ledgers measure:
+repair history
+since:
+the last relevant structural validation.
+
+The inherited H147-style stable warm-up
+occupies:
+episodes 1..10.
+
+At the end of:
+episode 10,
+
+the current accepted topology
+becomes:
+the initial relevant validation origin
+
+for:
+HARD-DISPLACEMENT,
+VECTOR-GLOBAL,
+VECTOR-DEPENDENCY,
+VECTOR-SCOPED-DEPENDENCY,
+and:
+ORACLE-SCOPE
+repair ledgers.
+
+Therefore at:
+the episode-10 / episode-11 boundary,
+
+reset only:
+
+- path_count;
+- distinct displacement state;
+- region repair ledgers;
+- cumulative touch mass;
+- corresponding H148 ledger maxima.
+
+Do NOT reset:
+
+- accepted topology;
+- structural evidence memory;
+- certificates;
+- H146 contradiction state;
+- revalidation history;
+- member value;
+- activity;
+- topology churn already observed.
+
+H147-SCALAR remains:
+the frozen H147 comparator
+
+and retains:
+its own H147 baseline semantics.
+
+This prevents:
+pre-damage maturation cleanup
+
+from being mislabeled as:
+post-validation repair debt.
+
+It does NOT:
+forgive
+any repair operation
+after:
+the damage-trial origin.
+
+DETERMINISTIC WITNESS HASH
+
+The preregistered deterministic
+hash ranking
+
+is realized as:
+
+SHA-256(
+world_seed |
+certificate_member_id |
+candidate_member_id |
+witness_kind
+)
+
+using:
+the bytewise lexical digest order.
+
+Witness count remains:
+4 support
++
+2 contrast
+where available.
+
+PURE-RELABEL EVIDENCE MEMORY
+
+R8 is:
+a semantic numeric-ID permutation
+with:
+no structural relation change.
+
+At episode 21:
+
+- true labels are permuted;
+- accepted labels are permuted;
+- subsequent observation labels are permuted;
+- region-indexed accumulated evidence columns are permuted by the same mapping;
+- region-indexed repair-ledger arrays are relabeled, not consumed.
+
+Thus:
+R8 tests certificate / provenance transfer
+
+rather than:
+an artificial stale-integer-index artifact.
+
+Coarse region-ID certificate policies:
+
+require:
+revalidation
+when:
+their stored numeric certificate region
+no longer equals:
+the relabeled accepted region.
+
+Dependency-aware policies:
+
+may:
+transfer
+without revalidation
+
+when:
+all witness relation predicates
+remain unchanged.
+
+H146 CONTRADICTION SEMANTICS
+
+Corrected H147 semantics
+are inherited into H148:
+
+every active valid certificate
+receives:
+one opportunistic feedback observation / episode.
+
+Primary error:
+5%.
+
+Contradiction debt:
+
+match:
+debt -1
+to minimum 0.
+
+conflict:
+debt +1.
+
+Keep:
+recent 6 active-feedback outcomes.
+
+Invalidate before broad action when:
+
+debt >=3
+
+AND
+
+recent-6 contradictions >=3.
+
+Successful six-observation revalidation:
+
+resets:
+debt
+and:
+recent contradiction history.
+
+REGIONAL RE-DEVELOPMENT ATTEMPT COUNTING
+
+regional_redevelopment_count
+counts:
+regional candidate launches.
+
+Each matured regional candidate attempt:
+consumes
+1 scratch unit.
+
+A failed candidate:
+
+may retry
+only after:
+3 additional episodes.
+
+Two failed regional candidates:
+
+force:
+global handoff
+under:
+the frozen H148 scoped rule.
+
+GLOBAL BLASTEMA COUNTING
+
+global_blastema_count
+counts:
+global launches.
+
+Each global promotion attempt:
+consumes:
+3 scratch units.
+
+BOUNDARY-PING-PONG REALIZATION
+
+R6 chooses:
+one deterministic adjacent source-target pair
+per world
+
+from:
+the world RNG.
+
+A matched 5% cohort
+alternates:
+
+A -> B
+at:
+11,27,43
+
+and:
+
+B -> A
+at:
+19,35,51.
+
+The same cohort is preferred
+for reverse movement
+
+so:
+net displacement
+can fall
+
+while:
+path length
+continues to accumulate.
+
+This is:
+the preregistered path-length-debt challenge.
+
+PRIMARY EXECUTION MAY NOW BEGIN
+
+Primary seed blocks remain:
+
+R0:
+20260919170000..20260919170399.
+
+Each subsequent regime:
++1000 seed base.
+
+400 worlds / regime.
+
+10 regimes.
+
+7 policies.
+
+28,000 policy-regime-worlds.
+
+All sanity outputs before this freeze remain:
+NON-EVIDENCE.
