@@ -1894,3 +1894,477 @@ A SCAFFOLD
 THAT HAS
 STOPPED BEING
 A RELIABLE PRIOR.
+
+
+EXECUTION CHECKPOINT — PRIMARY INCOMPLETE
+
+H144 remains:
+PREREGISTERED / PARTIALLY EXECUTED.
+
+Do NOT interpret this checkpoint as:
+the final H144 decision.
+
+A tool/runtime reset interrupted the remaining primary blocks after:
+the full DAMAGE-25 block
+and:
+an initial DAMAGE-40 probe.
+
+Completed results are preserved below so they are not lost.
+
+FULL PRIMARY BLOCK — DAMAGE-25
+
+48 held-out worlds.
+
+All five preregistered policy comparators were executed.
+
+INCREMENTAL-ONLY
+
+final ARI:
+0.3943.
+
+mean ARI:
+0.4849.
+
+final quarantine:
+53.99%.
+
+DAMAGE-25 recovery to ARI >=0.75 within 20 episodes:
+0%.
+
+PERIODIC-SCRATCH
+
+final ARI:
+1.0000.
+
+mean ARI:
+0.9338.
+
+final quarantine:
+0%.
+
+recovery within 20 episodes:
+100%.
+
+mean scratch builds:
+17.0/world.
+
+mean promotions:
+1.96/world.
+
+harmful promotions:
+0.
+
+SCRATCH-WITHOUT-HOLDOUT
+
+final ARI:
+0.9900.
+
+mean ARI:
+0.9122.
+
+final quarantine:
+0.57%.
+
+recovery within 20 episodes:
+97.92%.
+
+mean scratch builds:
+1.67/world.
+
+mean promotions:
+1.60/world.
+
+harmful promotions in this DAMAGE-25 block:
+0.
+
+TRIGGERED-BLASTEMA
+
+final ARI:
+0.9354.
+
+mean ARI:
+0.8495.
+
+final quarantine:
+3.86%.
+
+recovery within 20 episodes:
+93.75%.
+
+mean scratch builds:
+3.92/world.
+
+mean promotions:
+1.23/world.
+
+harmful promotions:
+0.
+
+ORACLE-DAMAGE-MODE-SWITCH
+
+final ARI:
+1.0000.
+
+mean ARI:
+0.8937.
+
+final quarantine:
+0%.
+
+recovery within 20 episodes:
+100%.
+
+mean scratch builds:
+3.0/world.
+
+mean promotions:
+1.0/world.
+
+DAMAGE-25 INTERIM FINDING
+
+The central preregistered damage gate is strongly supported in this completed block:
+
+TRIGGERED-BLASTEMA
+materially outperforms
+INCREMENTAL-ONLY
+
+after 25% stored-topology damage.
+
+The majority-world recovery criterion also passes:
+
+93.75%
+recover within 20 episodes
+
+versus required:
+majority >50%.
+
+This result is not yet sufficient to close H144 because:
+the other seven primary regimes remain required.
+
+EARLY DAMAGE-40 PROBE — NOT PRIMARY COMPLETE
+
+8 held-out worlds.
+
+INCREMENTAL-ONLY final ARI:
+approximately 0.195.
+
+TRIGGERED-BLASTEMA final ARI:
+approximately 0.939.
+
+TRIGGERED recovery within 20 episodes:
+75%.
+
+TRIGGERED final quarantine:
+approximately 3.5%.
+
+PERIODIC,
+SCRATCH-WITHOUT-HOLDOUT,
+and:
+ORACLE
+
+all reached:
+approximately 1.0 final ARI
+
+in this small probe.
+
+This is encouraging for:
+substantial DAMAGE-40 recovery,
+
+but:
+8/48 worlds
+is not the preregistered primary block.
+
+Do not promote this probe to:
+H144 primary evidence.
+
+INDEPENDENT TRANSIENT-FALSE-SHIFT STRESS
+
+Separate lightweight corroboration.
+
+32 synthetic worlds.
+
+A de-novo scratch candidate was built near the end of:
+a five-episode false structural signal.
+
+IMMEDIATE PROMOTION
+
+harmful promotion rate:
+50%.
+
+mean candidate ARI against unchanged true topology:
+0.8804.
+
+minimum candidate ARI:
+0.6922.
+
+TWO-CHECKPOINT FRESH HOLDOUT
+
+fresh evidence returned to:
+the unchanged true topology.
+
+candidate rejection rate:
+100%.
+
+Interpretation:
+
+FIT EVIDENCE
+IS NOT
+SUFFICIENT
+FOR
+STRUCTURAL AUTHORITY.
+
+Fresh post-construction evidence provides:
+a real firewall
+against:
+transient topology hallucination.
+
+This stress corroborates the H144 validation design.
+
+It is not:
+a substitute for the preregistered R6 primary block.
+
+EXPLORATORY RELATIONAL-EVIDENCE PHASE BOUNDARY
+
+Independent scratch-reconstruction probes.
+
+Small sample:
+8 worlds/cell.
+
+15 evidence episodes.
+
+No accepted labels were used in reconstruction.
+
+Representative cells:
+
+UNIFORM SAMPLING
+
+0.5N evidence/episode,
+10% sensor error:
+
+mean ARI:
+approximately 0.088.
+
+correct-K rate:
+12.5%.
+
+2N evidence/episode,
+5% sensor error:
+
+mean ARI:
+approximately 0.997.
+
+correct-K rate:
+87.5%.
+
+2N evidence/episode,
+20% sensor error:
+
+mean ARI:
+approximately 0.806.
+
+correct-K rate:
+75%.
+
+ACTIVE-BIASED SAMPLING
+
+0.5N,
+10% error:
+
+mean ARI:
+approximately 0.208.
+
+correct-K rate:
+25%.
+
+2N,
+5% error:
+
+mean ARI:
+approximately 0.984.
+
+correct-K rate:
+75%.
+
+2N,
+20% error:
+
+mean ARI:
+approximately 0.442.
+
+correct-K rate:
+25%.
+
+INTERIM PRINCIPLE
+
+Blastema success depends on:
+RELATIONAL GRAPH QUALITY.
+
+A de-novo mode does not remove:
+an information requirement.
+
+At low graph density
+or:
+high correlated/sampling-biased noise,
+
+the regenerative substrate itself becomes:
+insufficient.
+
+This creates a new design pressure:
+
+PROTECT
+A SMALL AMOUNT
+OF
+TOPOLOGY-INDEPENDENT
+RELATIONAL STRUCTURE.
+
+EXPLORATORY STRUCTURAL-GERMLINE PROBE
+
+Question:
+
+If:
+accepted topology
+AND
+recent relational memory
+
+are both damaged,
+
+can a tiny protected relational memory
+accelerate re-development?
+
+Harsh recovery condition:
+
+- recent relational memory removed;
+- only 0.5N new pair observations/episode;
+- 8 recovery episodes;
+- 10% sensor error;
+- family size about 70..90;
+- 4..6 latent groups.
+
+Two protected-memory designs used:
+approximately the same edge budget.
+
+RANDOM RELATIONAL ANCHORS
+
+approximately:
+156 protected pair relations.
+
+32 worlds.
+
+mean reconstructed ARI:
+0.128.
+
+correct-K rate:
+15.6%.
+
+10th-percentile ARI:
+approximately 0.
+
+Result:
+poor.
+
+COVERAGE-SCAFFOLD RELATIONAL ANCHORS
+
+approximately:
+155 protected pair relations.
+
+The historical scaffold stores,
+for each member,
+approximately:
+
+- one positive same-region relational link;
+- one negative cross-region relational link.
+
+No group label is required at reconstruction time.
+
+32 worlds.
+
+mean reconstructed ARI:
+0.993.
+
+correct-K rate:
+93.8%.
+
+10th-percentile ARI:
+0.968.
+
+CRITICAL EXPLORATORY RESULT
+
+THE SAME
+MEMORY BUDGET
+
+CAN BE:
+
+NEARLY USELESS
+
+or:
+
+NEARLY SUFFICIENT
+
+depending on:
+
+RELATIONAL COVERAGE TOPOLOGY.
+
+Thus:
+
+A REGENERATIVE MEMORY
+SHOULD NOT
+MERELY
+STORE MORE EDGES.
+
+It should preserve:
+
+A SMALL
+STRUCTURAL SCAFFOLD
+
+whose failure mode is:
+different from
+the active topology's failure mode.
+
+This result is exploratory.
+
+It does not alter:
+H144 primary acceptance.
+
+CANDIDATE NEXT DIRECTION
+
+AR-H145 — STRUCTURAL GERMLINE / COVERAGE-SCAFFOLD MEMORY AUDIT
+
+Candidate question:
+
+CAN
+A VERY SMALL,
+TOPOLOGY-INDEPENDENT
+RELATIONAL SCAFFOLD
+
+ACT AS:
+A REGENERATIVE SEED
+
+WHEN:
+
+ACTIVE TOPOLOGY
+AND
+RECENT RELATIONAL MEMORY
+
+ARE BOTH DAMAGED?
+
+Do not execute STAB-18-R1 during this lane.
+
+CHECKPOINT PROVENANCE
+
+h144_primary_complete = false
+damage25_primary_worlds = 48
+damage25_triggered_final_ari = 0.9354
+damage25_triggered_recover20 = 0.9375
+damage25_triggered_final_quarantine = 0.0386
+damage25_incremental_final_ari = 0.3943
+damage25_incremental_final_quarantine = 0.5399
+damage40_probe_worlds = 8
+damage40_probe_triggered_final_ari = 0.939
+transient_false_shift_probe_worlds = 32
+transient_immediate_harmful_promotion = 0.50
+transient_holdout_rejection = 1.0
+germline_random_worlds = 32
+germline_random_mean_ari = 0.128
+germline_scaffold_worlds = 32
+germline_scaffold_mean_ari = 0.993
+germline_scaffold_correct_k = 0.938
