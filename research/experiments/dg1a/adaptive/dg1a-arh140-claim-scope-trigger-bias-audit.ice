@@ -1,10 +1,11 @@
-TITLE: DG-1A-AR-H140 — Claim-Scope Contract / Trigger-Bias-Corrected Multiscale Certificate Audit Preregistration
+TITLE: DG-1A-AR-H140 — Claim-Scope Contract / Trigger-Bias-Corrected Multiscale Certificate Audit
 DATE: 2026-09-19
-STATUS: PREREGISTERED / SYNTHETIC / UNEXECUTED
+STATUS: SYNTHETIC / MEASURED_SANDBOX MIXED-POSITIVE TYPED-CONFIDENCE RESULT + RESOURCE-BLINDNESS LIMIT
 TRACK: DG-1A / ADAPTIVE-RULE RESEARCH
 BRANCH: dg1a-ar
 PARENT: dg1a-arh139-epistemic-risk-floor-audit.ice
 PARENT_RESULT_COMMIT: 73e2d1d7ef2eab8f58cd144b2fb85ca7424a8de1
+PREREGISTRATION_COMMIT: 22ae1e90ac6b38ad69f3cc1616233fd5944e2e99
 
 PURPOSE
 
@@ -619,3 +620,747 @@ primary_seed = 20260919140
 primary_worlds = 18000
 primary_delta = 0.05
 primary_audit_cap = 24
+
+
+EXECUTION RESULT
+
+PRIMARY RUN
+
+The preregistered deterministic generator was used unchanged.
+
+Seed:
+
+20260919140.
+
+Primary worlds:
+
+18,000.
+
+Primary cells:
+
+9.
+
+Policies:
+
+GENERIC-10,
+TYPED-10,
+SCOPE-MATCHED / TRIGGER-COUNTED,
+SCOPE-MATCHED / TRIGGER-EXCLUDED,
+CAP-24,
+EXPLICIT DOWNGRADE,
+FULL-FAMILY.
+
+PRIMARY AGGREGATE
+
+GENERIC-10
+
+mean net:
+-25.84958.
+
+1st percentile:
+-188.12199.
+
+mean evidence:
+20.80611.
+
+active weighted coverage:
+62.997%.
+
+broadcast:
+44.872%.
+
+semantic overclaim among broadcasts:
+32.784%.
+
+claim-valid false-broadcast:
+5.246%.
+
+TYPED-10
+
+mean net:
+-19.32636.
+
+mean evidence:
+14.25644.
+
+coverage:
+44.613%.
+
+broadcast:
+30.161%.
+
+semantic overclaim:
+0%.
+
+claim-valid false-broadcast:
+1.127%.
+
+epistemic abstention:
+30.717%.
+
+SCOPE-MATCHED / TRIGGER-COUNTED
+
+mean net:
+-27.48149.
+
+mean evidence:
+21.99706.
+
+coverage:
+65.824%.
+
+broadcast:
+47.189%.
+
+semantic overclaim:
+0%.
+
+claim-valid false-broadcast:
+2.630%.
+
+SCOPE-MATCHED / TRIGGER-EXCLUDED
+
+mean net:
+-29.34790.
+
+mean evidence:
+22.58544.
+
+coverage:
+65.862%.
+
+broadcast:
+46.594%.
+
+semantic overclaim:
+0%.
+
+claim-valid false-broadcast:
+2.312%.
+
+CAP-24
+
+mean net:
+-9.37079.
+
+mean evidence:
+10.10022.
+
+coverage:
+40.992%.
+
+broadcast:
+29.944%.
+
+semantic overclaim:
+0%.
+
+claim-valid false-broadcast:
+1.301%.
+
+epistemic abstention:
+36.967%.
+
+audit-cap refusal:
+36.967%.
+
+EXPLICIT DOWNGRADE
+
+mean net:
+-23.74937.
+
+mean evidence:
+16.92150.
+
+coverage:
+50.592%.
+
+broadcast:
+29.944%.
+
+semantic overclaim:
+0%.
+
+claim-valid false-broadcast:
+1.301%.
+
+explicit downgrade:
+36.967%.
+
+weaker or requested claim returned:
+48.956%.
+
+FULL-FAMILY
+
+mean net:
+-154.59792.
+
+mean evidence:
+70.05994.
+
+coverage:
+100%.
+
+false family promotion:
+0%.
+
+PRIMARY SEMANTIC RESULT
+
+The typed-confidence thesis passes.
+
+GENERIC-10 produces substantial semantic overclaim because it exposes:
+
+CERTIFIED
+
+without preserving:
+
+WHAT WAS CERTIFIED.
+
+Approximately one third of its successful broadcasts are presented as satisfying a stronger task claim than its actual 10%-minority certificate supports.
+
+Observed semantic overclaim:
+
+32.784%.
+
+Every typed policy records:
+
+0%.
+
+Therefore:
+
+A CERTIFICATE
+MUST CARRY
+ITS CLAIM DOMAIN.
+
+A scalar or generic confidence flag is insufficient.
+
+HIDDEN-5 / REQUIRED-5 STRESS INSIDE PRIMARY MATRIX
+
+This is the direct H139 scope-mismatch test.
+
+GENERIC-10
+
+false-broadcast:
+18.27%.
+
+Every such broadcast is semantically overclaimed.
+
+SCOPE-MATCHED / TRIGGER-COUNTED
+
+false-broadcast:
+4.49%.
+
+SCOPE-MATCHED / TRIGGER-EXCLUDED
+
+false-broadcast:
+4.40%.
+
+CAP-24
+
+broadcast:
+0%.
+
+The 5%-scope certificate exceeds the cap in these cases,
+so the policy refuses the claim.
+
+EXPLICIT DOWNGRADE
+
+task-authorizing broadcast:
+0%.
+
+It may return a weaker explicit claim,
+but that weaker claim does not authorize the 5%-scope task.
+
+Thus:
+
+SCOPE MATCHING
+REMOVES
+THE H139
+10%-CERTIFICATE / 5%-MINORITY
+SEMANTIC FAILURE.
+
+REQUEST / ACTUAL SCALE MATRIX
+
+Representative matching or stronger challenges:
+
+ACTUAL 10% / REQUIRED 10%
+
+GENERIC-10:
+4.89%.
+
+SCOPE-COUNTED:
+4.89%.
+
+SCOPE-EXCLUDED:
+4.29%.
+
+ACTUAL 20% / REQUIRED 20%
+
+SCOPE-COUNTED:
+5.65%.
+
+SCOPE-EXCLUDED:
+4.49%.
+
+The trigger-excluded policy remains inside the intended floor
+in these sampled cells.
+
+The trigger-counted 20% cell is slightly above 5%,
+consistent with finite-sample noise plus trigger exchangeability effects.
+
+TRIGGER-BIAS ROBUSTNESS
+
+Exact HIDDEN-10.
+
+Required scope:
+10%.
+
+Active fraction:
+80%.
+
+Evidence price:
+0.5.
+
+20,000 worlds per policy/correlation condition.
+
+INDEPENDENT ACTIVATION
+
+TRIGGER-COUNTED false-broadcast:
+4.625%.
+
+TRIGGER-EXCLUDED:
+4.025%.
+
+ACTIVE CONCENTRATED INSIDE MINORITY
+
+TRIGGER-COUNTED:
+4.565%.
+
+TRIGGER-EXCLUDED:
+4.025%.
+
+ACTIVE CONCENTRATED OUTSIDE MINORITY
+
+TRIGGER-COUNTED:
+5.340%.
+
+TRIGGER-EXCLUDED:
+4.500%.
+
+The preregistered trigger-bias hypothesis is supported.
+
+When active selection makes the trigger preferentially majority-compatible:
+
+COUNTING THAT TRIGGER
+AS THOUGH IT WERE
+A UNIFORM FAMILY DRAW
+
+slightly weakens the nominal floor.
+
+Excluding it from the uniform certificate restores calibration.
+
+The cost is small.
+
+Outside-minority stress mean evidence:
+
+TRIGGER-COUNTED:
+22.3159.
+
+TRIGGER-EXCLUDED:
+22.9758.
+
+Approximately:
+
+0.66 additional audit/event
+
+buys:
+
+correct sampling semantics.
+
+CAP-24 RESULT
+
+The cap behaves as intended.
+
+When the requested scope cannot fit:
+
+the policy refuses the claim.
+
+Observed primary cap refusal:
+
+36.967%.
+
+Semantic overclaim:
+
+0%.
+
+This strongly supports:
+
+RESOURCE LIMIT
+MAY REMOVE
+A CLAIM.
+
+It must not:
+
+CHANGE
+WHAT THE CLAIM MEANS.
+
+EXPLICIT DOWNGRADE RESULT
+
+The downgrade policy preserves information without authorizing the wrong task.
+
+Observed explicit downgrade:
+
+36.967%.
+
+Semantic overclaim:
+
+0%.
+
+It can return:
+
+for example,
+
+SAFE_AGAINST_MINORITY >= 10%
+
+when:
+
+SAFE_AGAINST_MINORITY >= 5%
+
+was requested but unaffordable.
+
+The returned weaker contract can remain useful for:
+
+other decisions
+
+while being explicitly insufficient for:
+
+the stronger current task.
+
+This is preferable to:
+
+one undifferentiated
+confidence score.
+
+EVIDENCE EFFICIENCY
+
+SCOPE-EXCLUDED mean evidence:
+
+22.59.
+
+FULL-FAMILY:
+
+70.06.
+
+Thus exact scope matching remains materially below full-family inspection.
+
+For weaker requested scopes:
+
+20% certificates are especially cheap.
+
+For stronger 5% scope:
+
+certificate sizes become much larger.
+
+This is not an implementation defect.
+
+It is the information cost of the stronger claim.
+
+RESOURCE-PRICE LIMIT
+
+H140 reveals a new problem.
+
+The typed policies preserve certificate semantics across evidence prices,
+but the preregistered policy set does not include an economic purchase gate.
+
+As a result:
+
+SCOPE-EXCLUDED broadcast rate is nearly price-invariant.
+
+Price 0.5:
+
+46.05%.
+
+Price 2:
+
+46.40%.
+
+Price 8:
+
+47.33%.
+
+Mean evidence is also nearly invariant:
+
+22.81,
+22.44,
+22.51.
+
+But mean net collapses:
+
+price 0.5:
+37.7676.
+
+price 2:
+4.3169.
+
+price 8:
+-130.1282.
+
+CAP-24 shows the same qualitative limitation.
+
+Its cap changes behavior by certificate size,
+not by evidence price.
+
+Therefore H140 does NOT satisfy the preregistered resource-adaptation criterion.
+
+This is a genuine negative result.
+
+TYPED EPISTEMICS
+SOLVE
+SEMANTIC SAFETY.
+
+They do not,
+by themselves,
+solve:
+
+RESOURCE ALLOCATION.
+
+PRICE-SHOCK ROBUSTNESS
+
+Initial first-five evidence price:
+
+0.5.
+
+Incremental evidence price after five observations:
+
+8.
+
+12,000 high-activity worlds.
+
+GENERIC-10
+
+mean net:
+-41.2363.
+
+evidence:
+20.8305.
+
+broadcast:
+44.367%.
+
+semantic overclaim:
+33.884%.
+
+claim-valid false-broadcast:
+5.642%.
+
+SCOPE-EXCLUDED
+
+mean net:
+-51.8007.
+
+evidence:
+22.6694.
+
+broadcast:
+45.542%.
+
+semantic overclaim:
+0%.
+
+claim-valid false-broadcast:
+2.057%.
+
+CAP-24
+
+mean net:
+-7.2556.
+
+evidence:
+10.0834.
+
+broadcast:
+29.258%.
+
+epistemic abstention:
+37.125%.
+
+claim-valid false-broadcast:
+1.060%.
+
+EXPLICIT DOWNGRADE
+
+mean net:
+-33.7660.
+
+evidence:
+16.9382.
+
+broadcast:
+29.258%.
+
+explicit downgrade:
+37.125%.
+
+semantic overclaim:
+0%.
+
+The typed policies keep meaning stable through the shock.
+
+But uncapped typed policies continue purchasing evidence
+even when the resulting economics become strongly negative.
+
+PRIMARY DECISION
+
+AR-H140 is:
+
+MIXED-POSITIVE.
+
+POSITIVE FOR:
+
+TYPED,
+SCOPE-EXPLICIT
+EPISTEMIC CONTRACTS
+
+AND:
+
+TRIGGER-BIAS-CORRECTED
+CERTIFICATE ACCOUNTING.
+
+SUPPORTED
+
+- a generic CERTIFIED bit causes semantic overclaim;
+- claim scope removes the H139 hidden-5 mismatch;
+- a 10% certificate remains explicitly different from a 5% certificate;
+- stronger certificates can satisfy weaker requested scopes;
+- weaker certificates cannot satisfy stronger requested scopes;
+- biased active triggers should not be counted as exchangeable uniform evidence;
+- trigger exclusion restores the nominal miss floor under the tested bias;
+- hard audit caps can refuse claims without changing their semantics;
+- explicit downgrade preserves weaker information with zero task overclaim;
+- typed scope matching remains much cheaper than full-family inspection on average.
+
+NEGATIVE / LIMIT
+
+- semantic typing alone does not make evidence spending resource-rational;
+- the current scope-matched controller continues buying costly certificates under evidence-price shock;
+- price changes net value but not claim frequency;
+- a separate economic admission layer is still required.
+
+GENERAL PRINCIPLE
+
+YGGDRASIL SHOULD REPRESENT:
+
+EPISTEMIC ADMISSIBILITY
+
+AND:
+
+RESOURCE ADMISSION
+
+AS TWO DIFFERENT GATES.
+
+Gate 1:
+
+WHAT CLAIM
+WOULD THIS EVIDENCE
+LEGITIMATELY SUPPORT?
+
+Gate 2:
+
+IS THAT CLAIM
+WORTH BUYING
+RIGHT NOW?
+
+The second gate may answer:
+
+NO.
+
+It may not answer:
+
+BUY LESS EVIDENCE
+AND PRETEND
+THE SAME CLAIM
+WAS CERTIFIED.
+
+NEXT HIGH-VALUE MOVE
+
+AR-H141 — DUAL-GATE CLAIM PURCHASE / RESOURCE-RATIONAL TYPED EPISTEMICS AUDIT
+
+Question:
+
+CAN
+A TWO-GATE CONTROLLER
+
+FIRST:
+
+FIX
+THE REQUIRED
+EPISTEMIC CONTRACT
+
+THEN:
+
+DECIDE
+WHETHER
+TO BUY IT
+
+WITHOUT:
+
+EVER
+TRADING DOWN
+THE CLAIM
+SILENTLY?
+
+Compare:
+
+A.
+resource-blind scope-matched certificate;
+
+B.
+economic expected-value gate before certificate purchase;
+
+C.
+economic gate + hard epistemic contract;
+
+D.
+budget cap + hard contract;
+
+E.
+explicit weaker-scope offer that cannot authorize the stronger task;
+
+F.
+price shock after partial evidence;
+
+G.
+multi-family competition for one shared audit budget.
+
+Desired:
+
+RESOURCE PRICE
+CHANGES
+WHICH CLAIMS
+GET PURCHASED,
+
+NOT:
+
+WHAT A PURCHASED CLAIM
+MEANS.
+
+Do not execute STAB-18-R1 during this lane.
+
+EXECUTION PROVENANCE
+
+evidence_class = SYNTHETIC_MEASURED_SANDBOX
+canonical_scientific_execution = false
+canonical_r1_execution_spent = false
+primary_seed = 20260919140
+primary_worlds = 18000
+generic10_semantic_overclaim = 0.32784
+generic10_claim_valid_false = 0.05246
+scope_counted_claim_valid_false = 0.02630
+scope_excluded_claim_valid_false = 0.02312
+cap24_claim_valid_false = 0.01301
+cap24_refusal = 0.36967
+downgrade_rate = 0.36967
+trigger_outside_counted_false = 0.05340
+trigger_outside_excluded_false = 0.04500
+scope_excluded_mean_evidence = 22.58544
+full_mean_evidence = 70.05994
