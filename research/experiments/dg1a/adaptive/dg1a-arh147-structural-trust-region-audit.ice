@@ -1528,3 +1528,199 @@ NON-EVIDENCE.
 Primary H147 execution restarts
 from:
 the frozen primary seed blocks.
+
+
+METRIC / ACTION ACCOUNTING FREEZE — BEFORE PRIMARY EXECUTION
+
+The following definitions close the remaining measurement ambiguity.
+They do not change:
+policy behavior,
+trust-region thresholds,
+damage regimes,
+or:
+certificate inheritance.
+
+ACTION ELIGIBILITY
+
+An active member is eligible for:
+broad certificate-backed action
+
+only when:
+
+- it currently has a valid vested certificate;
+- it is not structurally challenged;
+- its certificate region equals its current accepted region;
+- the policy is not globally freezing that member's scope.
+
+SAFE ACTIVE-VALUE COVERAGE
+
+Per episode:
+
+sum active value
+for:
+action-eligible members
+
+whose current true functional region
+equals:
+their certificate / accepted region
+
+divided by:
+
+total active value.
+
+FALSE-PROMOTION PROXY
+
+Per episode:
+
+sum active value
+for:
+action-eligible members
+
+whose current true functional region
+differs from:
+their certificate / accepted region
+
+divided by:
+
+total active value.
+
+ACTION DOWNTIME
+
+Per episode:
+
+1 - action-eligible active-value fraction,
+
+regardless of:
+whether ineligibility is due to
+quarantine,
+invalid certificate,
+revalidation,
+or:
+blastema freeze.
+
+Report:
+mean downtime across episodes 11..60.
+
+CERTIFICATE RETENTION RATE
+
+At episode 60:
+
+fraction of:
+the originally valid vested certificates
+
+that remain valid
+
+without:
+requiring a new full six-observation revalidation block.
+
+A certificate that:
+is invalidated,
+revalidates,
+and re-vests
+
+is counted as:
+recovered,
+not:
+retained.
+
+CERTIFICATE REVALIDATION COST
+
+Count:
+deliberate six-observation blocks attempted
+
+multiplied by:
+6 observations.
+
+This excludes:
+the standing 2N structural relational stream.
+
+RELATIONAL EVIDENCE COST
+
+Count:
+all structural region-identity observations.
+
+Primary normal cost:
+2N / episode.
+
+Blastema does not receive:
+additional free relational observations.
+
+Its scratch builds consume:
+the same accumulated evidence
+
+plus:
+the separately recorded scratch-reconstruction units.
+
+SCRATCH RECONSTRUCTION COUNT
+
+Each blastema promotion attempt:
+
+3 scratch units
+
+as already frozen.
+
+Report:
+units / world.
+
+RECOVERY LATENCY
+
+For a true disturbance at episode t:
+
+first later episode
+where:
+
+accepted-topology ARI >=0.95
+
+and:
+
+false-promotion proxy <=1%.
+
+If never recovered by episode 60:
+censored at:
+> horizon.
+
+For regimes with repeated disturbances:
+
+also report:
+final ARI
+and:
+time since last disturbance to recovery.
+
+TOPOLOGY CHURN
+
+Count:
+fraction of family memberships
+changed by accepted incremental patches
+
+plus:
+fraction changed by validated blastema promotion,
+
+summed over the run.
+
+FALSE TRUST-REGION EXIT — R7
+
+A trust-region exit / blastema launch
+during:
+TRANSIENT-LOCAL-NOISE
+
+is false because:
+true topology never changed.
+
+PRIMARY RESULT AGGREGATION
+
+Each regime:
+
+500 worlds.
+
+Each policy metric:
+
+world-level mean first,
+then:
+aggregate across worlds.
+
+No world weighting by:
+family size.
+
+No metric definition above
+will change after:
+primary execution begins.
