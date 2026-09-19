@@ -1070,3 +1070,769 @@ evidence_class_target = SYNTHETIC_MEASURED_SANDBOX_LONGITUDINAL_STRUCTURAL_REPAI
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 preregistered_from_head = bb4d54789546e11635633ad1deafd0f31c2cb17d
+
+
+IMPLEMENTATION FREEZE — BEFORE PRIMARY EXECUTION
+
+The following mechanics resolve details intentionally left abstract in the initial preregistration.
+
+No repair bound,
+policy identity,
+regime,
+acceptance gate,
+or primary sample size
+is changed.
+
+BASE STRUCTURAL EVIDENCE
+
+Reuse the H147 sufficient-statistic realization.
+
+Family size:
+80..120.
+
+Regions:
+4..6.
+
+Initial accepted topology:
+98% correct.
+
+Initial vested certificates:
+55%
+of correctly assigned members,
+value-biased as in H147.
+
+Every episode:
+
+2 noisy region-identity observations
+per member.
+
+Primary sensor error:
+5%.
+
+Relational memory decay:
+0.92 / episode.
+
+Structural checkpoint:
+every 3 episodes.
+
+Structural challenge:
+
+effective mass >=4
+
+AND
+
+candidate region != accepted region
+
+AND
+
+candidate support >=0.70
+
+AND
+
+candidate margin >=0.20.
+
+Patch candidate:
+
+coherent
+accepted-source -> observed-candidate-target
+
+present at:
+2 consecutive structural checkpoints.
+
+Patch selection:
+
+highest mean candidate support,
+then:
+largest candidate size.
+
+Maximum incremental patch:
+ceil(0.08N).
+
+PATCH LEDGER ACCOUNTING
+
+For every accepted membership move:
+
+member i:
+source s -> target t.
+
+PATH LENGTH
+
+path_count[i] += 1.
+
+P =
+sum_i path_count[i] / N.
+
+DISTINCT DISPLACEMENT
+
+A member is in:
+the distinct ledger
+
+when:
+path_count[i] > 0
+
+since:
+the last validation scope
+that explicitly reset that member.
+
+U =
+count(path_count > 0) / N.
+
+REGION LEDGER
+
+P_r[s] += 1 / baseline_region_size[s].
+
+P_r[t] += 1 / baseline_region_size[t].
+
+Thus:
+a move consumes repair capacity
+in:
+both the region being left
+and:
+the region being entered.
+
+CUMULATIVE DIFFUSION
+
+Maintain:
+non-decaying source-region path mass
+
+touch_mass[r].
+
+For every accepted move:
+
+touch_mass[source] +=1.
+
+Normalized entropy of:
+touch_mass
+
+is:
+the cumulative diffusion ledger.
+
+Successful local repair:
+does not reduce
+P,
+U,
+P_r,
+or:
+touch_mass.
+
+Only:
+validated regional
+or:
+global
+re-development
+
+may reset:
+the corresponding ledgers.
+
+REGIONAL RESET
+
+After:
+validated regional redevelopment
+
+over scope S:
+
+- path_count[i] = 0
+  for:
+  members whose new accepted region
+  lies in S;
+
+- P_r[r] = 0
+  for r in S;
+
+- touch_mass[r] = 0
+  for r in S;
+
+- recompute:
+  P,
+  U,
+  diffusion
+
+from:
+remaining ledger state.
+
+GLOBAL RESET
+
+After:
+validated global blastema:
+
+reset:
+all repair ledgers
+
+to:
+the new globally validated baseline.
+
+REGIONAL HANDOFF CONCENTRATION
+
+At envelope closure:
+
+construct cumulative changed-mass by:
+accepted source region
+
+from:
+touch_mass
+plus:
+current structurally challenged mass.
+
+Regional concentration passes when:
+
+the largest one-region
+or:
+two-region
+combined mass
+
+contains:
+>=70%
+of total nonzero repair footprint.
+
+Regional scope is:
+
+the dominant source region
+plus:
+its dominant observed candidate-target region.
+
+AMBIGUOUS DIFFUSION ZONE
+
+If:
+0.30 < cumulative diffusion <=0.45
+
+freeze:
+currently challenged members
+
+for:
+one additional 3-episode checkpoint.
+
+At the next checkpoint:
+
+- regional redevelopment
+  if:
+  concentration >=70%
+  and:
+  diffusion <=0.45;
+
+- otherwise:
+  global blastema.
+
+REGIONAL RE-DEVELOPMENT CHECKS
+
+Launch only:
+at a structural checkpoint.
+
+Scope:
+members whose accepted region
+is in:
+the two-region regional scope.
+
+Snapshot:
+scratch candidate assignment
+=
+argmax decayed evidence mass.
+
+During the 4-episode maturation window:
+
+candidate stability is checked
+at:
+launch +2 episodes
+and:
+launch +4 episodes.
+
+Promotion at:
+launch +4
+
+requires:
+
+- mean support over scoped members >=0.85;
+- >=90% of scoped members
+  preserve:
+  their scratch candidate assignment
+  from:
+  launch -> +2;
+- >=90%
+  preserve:
+  candidate assignment
+  from:
+  +2 -> +4.
+
+If failed:
+
+remain:
+affected-scope local only
+
+and:
+retry a regional candidate
+after:
+3 additional episodes.
+
+Each regional candidate attempt:
+1 scratch unit.
+
+GLOBAL BLASTEMA
+
+Reuse H147 realization.
+
+Promotion after:
+6 episodes.
+
+Scratch candidate:
+argmax decayed evidence mass
+for:
+every member.
+
+Promotion support:
+mean >=0.80.
+
+Each attempt:
+3 scratch units.
+
+ACTION FREEZE
+
+REGIONAL redevelopment:
+
+freeze broad action only for:
+members currently inside:
+the regional scope
+or:
+already certificate-invalid.
+
+GLOBAL blastema
+under:
+A/B/C/D/E/G:
+
+freeze only:
+structurally challenged
+or:
+certificate-invalid
+members.
+
+IMMEDIATE GLOBAL BLASTEMA:
+
+freeze:
+all certificate-backed broad action
+
+during:
+maturation.
+
+CERTIFICATE WITNESS CREATION
+
+For every valid vested certificate:
+
+SUPPORT WITNESSES
+
+choose:
+up to 4 members
+
+from:
+the certificate member's accepted region
+
+excluding:
+the member itself.
+
+CONTRAST WITNESSES
+
+choose:
+up to 2 members
+
+from:
+different accepted regions.
+
+Selection is deterministic:
+
+rank candidate witness IDs by:
+
+hash(
+world_seed,
+certificate_member_id,
+candidate_member_id,
+"support"
+or
+"contrast"
+)
+
+and take:
+lowest-ranked IDs.
+
+No latent true labels.
+
+Stored witness signature records:
+
+SAME
+
+for:
+support witnesses.
+
+DIFFERENT
+
+for:
+contrast witnesses.
+
+DEPENDENCY CHECK
+
+At every structural checkpoint
+and:
+immediately after
+patch / redevelopment:
+
+a dependency-aware certificate
+remains transferable only when:
+
+- the member is not structurally challenged;
+- no witness is structurally challenged;
+- every support witness
+  remains in:
+  the member's current accepted region;
+- every contrast witness
+  remains outside:
+  the member's current accepted region;
+- calibration class is unchanged.
+
+If all relations remain valid
+but:
+region numeric IDs changed,
+
+update:
+certificate_region
+
+to:
+the member's current accepted region
+
+without:
+revalidation.
+
+This implements:
+relabel-invariant transfer.
+
+REGION-ID COMPARATOR
+
+A/B/C:
+
+retain H147 inheritance.
+
+Unchanged numeric region ID
+plus:
+support >=0.90
+
+is required after:
+redevelopment.
+
+PATCH invalidation:
+patched member only,
+plus:
+ordinary structural challenge.
+
+DEPENDENCY-AWARE POLICIES
+
+D/E/G:
+
+run:
+the dependency check
+
+after:
+every accepted structural operation.
+
+A member whose dependency check fails:
+
+certificate ->
+INVALID.
+
+REVALIDATION
+
+Reuse H147/H146:
+
+active invalidated previously-vested member
+with:
+accepted region == current true region
+
+may spend:
+one 6-observation block.
+
+Primary pass probability:
+0.95^6.
+
+Re-vested certificate receives:
+a NEW witness set
+
+from:
+the current accepted topology.
+
+REVALIDATION BUDGET
+
+ceil(0.5N)
+observations / episode.
+
+Priority:
+current active value.
+
+PURE RELABEL — R8
+
+At episode 21:
+
+draw:
+a non-identity permutation
+of:
+region numeric IDs.
+
+Apply the same permutation to:
+
+- accepted topology;
+- true functional region labels;
+- subsequent region-identity observation labels.
+
+No member's:
+same / different
+structural relation changes.
+
+H147 region-ID inheritance comparator:
+
+treats:
+numeric-ID change
+
+as:
+certificate region mismatch
+
+and:
+requires revalidation.
+
+Dependency-aware policies:
+
+may transfer certificate
+without revalidation
+
+when:
+all witness relation predicates
+remain unchanged.
+
+REGIME TIMING
+
+R0 LOCAL-5:
+episode 11.
+
+R1 LOCAL-10:
+episode 11.
+
+R2 DIFFUSE-10:
+episode 11.
+
+R3 ACCUMULATED-MICROPATCH:
+5% local,
+same original structural region,
+episodes:
+11,19,27,35,43.
+
+R4 MOVING-WOUND:
+10% local,
+source region advances,
+episodes:
+11,19,27,35,43,51.
+
+R5 HIGH-VALUE-LOCAL:
+5% local,
+episode 11.
+
+R6 BOUNDARY-PING-PONG:
+
+5% of family
+
+moves:
+region A -> B
+at:
+11,27,43
+
+and:
+
+a matched 5% cohort
+moves:
+B -> A
+at:
+19,35,51.
+
+Prefer:
+previously moved members
+
+when:
+the reverse move
+can restore:
+current displacement
+
+while:
+increasing:
+path length.
+
+R7 DIFFUSE-THEN-LOCAL:
+
+episode 11:
+DIFFUSE-10.
+
+episode 27:
+LOCAL-5
+
+inside:
+one region touched
+by:
+the earlier diffuse event.
+
+R8 PURE RELABEL:
+episode 21.
+
+R9 STACKED:
+
+episode 11:
+LOCAL-10.
+
+episode 19:
+LOCAL-5
+same source.
+
+episode 27:
+LOCAL-5
+same source.
+
+episode 35:
+DIFFUSE-10.
+
+Then:
+stable.
+
+POLICY HANDOFF
+
+A — H147-SCALAR
+
+reuse:
+the frozen H147 scalar D,
+rolling diffusion,
+and:
+H147 blastema behavior.
+
+B — HARD-DISPLACEMENT
+
+incremental patch while:
+P <=0.15.
+
+When:
+P >0.15
+
+launch:
+GLOBAL blastema.
+
+C — VECTOR-GLOBAL
+
+incremental patch only while:
+all B1..B6
+remain inside:
+their bounds.
+
+Any envelope closure:
+
+GLOBAL blastema.
+
+D — VECTOR-DEPENDENCY
+
+same:
+vector envelope
+
+and:
+global blastema
+
+with:
+dependency-aware inheritance.
+
+E — VECTOR-SCOPED-DEPENDENCY
+
+full:
+patch / regional / global
+handoff.
+
+F — IMMEDIATE GLOBAL
+
+persistent disturbance:
+
+challenged fraction >=3%
+for:
+2 consecutive structural checkpoints
+
+launches:
+global blastema.
+
+G — ORACLE SCOPE
+
+True-event class is used only for:
+scope selection.
+
+Incremental:
+single local disturbance <=10%
+and:
+no exhausted true cumulative path budget.
+
+Regional:
+cumulative local path >15%
+while:
+true changed footprint
+remains concentrated in:
+<=2 regions.
+
+Global:
+diffuse event
+or:
+true changed footprint
+spans:
+>2 regions.
+
+R8 pure relabel:
+no repair.
+
+All actual topology reconstruction:
+uses:
+observed evidence.
+
+FAILED PATCH
+
+Reuse H147:
+
+if:
+>50%
+of patched members
+
+remain:
+structurally challenged
+
+at:
+the second later structural checkpoint,
+
+count:
+one failed patch cycle.
+
+Three consecutive:
+closes:
+patch authority.
+
+PRIMARY RANDOMNESS
+
+400 held-out worlds / regime.
+
+Seed blocks:
+
+R0:
+20260919170000..20260919170399.
+
+Each next regime:
+
+add:
+1000.
+
+No H147 seed reused.
+
+EXECUTION BATCHING
+
+Primary worlds may be executed:
+in deterministic chunks
+
+for:
+runtime only.
+
+No sampling,
+policy,
+or:
+metric semantics
+change.
+
+No execution-semantic change is permitted
+after:
+primary H148 execution begins.
