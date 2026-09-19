@@ -1,9 +1,10 @@
-TITLE: DG-1A-AR-H144 — Topology Blastema / De-Novo Re-Development Gate Audit Preregistration
+TITLE: DG-1A-AR-H144 — Topology Blastema / De-Novo Re-Development Gate Audit
 DATE: 2026-09-19
-STATUS: PREREGISTERED / SYNTHETIC / UNEXECUTED
+STATUS: SYNTHETIC / MEASURED_SANDBOX POSITIVE DE-NOVO RE-DEVELOPMENT RESULT + MATURATION / TRIGGER-SELECTIVITY LIMIT
 TRACK: DG-1A / ADAPTIVE-RULE RESEARCH
 BRANCH: dg1a-ar
 PARENT: dg1a-arh143-adaptive-topology-repair-audit.ice
+PREREGISTRATION_COMMIT: b47ac696a32fddcd8b53cb8efea3d39b305147fc
 
 PURPOSE
 
@@ -1021,3 +1022,766 @@ It does NOT change:
 - primary acceptance criteria.
 
 Harness-only worlds remain excluded from H144 primary evidence.
+
+
+EXECUTION RESULT
+
+PRIMARY CONFIRMATION
+
+384 held-out primary worlds.
+
+48 worlds per preregistered regime:
+
+R0 STABLE.
+R1 ISOLATED SPLIT.
+R2 ISOLATED MERGE.
+R3 DAMAGE-10.
+R4 DAMAGE-25.
+R5 DAMAGE-40.
+R6 TRANSIENT FALSE SHIFT.
+R7 STACKED.
+
+Each world:
+
+80 episodes.
+
+Primary relational evidence budget:
+
+2N pair observations / episode.
+
+Primary sensor error:
+
+5%.
+
+No latent K
+and:
+no original membership labels
+
+were supplied to scratch reconstruction.
+
+PRIMARY DAMAGE-25 RESULT
+
+INCREMENTAL-ONLY
+
+final ARI:
+0.3976.
+
+mean quarantine:
+46.49%.
+
+20-episode recovery-to-ARI>=0.75:
+0%.
+
+TRIGGERED-BLASTEMA
+
+final ARI:
+1.0000.
+
+mean quarantine:
+10.99%.
+
+ARI approximately 20 episodes after damage:
+0.9829.
+
+20-episode recovery-to-ARI>=0.75:
+100%.
+
+mean scratch builds:
+7.1042.
+
+Thus:
+
+TRIGGERED-BLASTEMA
+materially outperforms
+INCREMENTAL-ONLY
+
+after:
+25% topology damage.
+
+The central H144 recovery gate passes.
+
+DAMAGE-10
+
+TRIGGERED-BLASTEMA
+
+final ARI:
+0.9964.
+
+20-episode recovery:
+100%.
+
+DAMAGE-40
+
+INCREMENTAL-ONLY
+
+final ARI:
+0.2220.
+
+TRIGGERED-BLASTEMA
+
+final ARI:
+0.9960.
+
+20-episode recovery:
+100%.
+
+Thus:
+
+DE-NOVO RE-DEVELOPMENT
+survives
+substantially more than
+the primary 25% damage level.
+
+STACKED RESULT
+
+Hard sequence:
+
+split
+->
+25% topology damage
+->
+merge
+->
+transient false shift.
+
+INCREMENTAL-ONLY
+
+final ARI:
+0.2853.
+
+TRIGGERED-BLASTEMA
+
+final ARI:
+0.8499.
+
+ARI approximately 20 episodes after the damage event:
+0.7640.
+
+20-episode damage recovery:
+100%.
+
+final quarantine:
+14.98%.
+
+This is materially above:
+
+the H143 REGENERATIVE reference final ARI:
+approximately 0.303.
+
+The stacked recovery gate passes.
+
+FALSE-SHIFT PRIMARY
+
+At 5% sensor error:
+
+TRIGGERED-BLASTEMA
+
+harmful de-novo promotion worlds:
+0 / 48.
+
+SCRATCH-WITHOUT-HOLDOUT
+
+harmful de-novo promotion worlds:
+0 / 48.
+
+Thus:
+
+the primary false-shift ecology
+does NOT demonstrate
+a holdout-validation advantage.
+
+This primary comparison alone
+would be inconclusive.
+
+A preregistered sensor-error robustness sweep below
+resolves that question.
+
+SCRATCH-BUILD ECONOMY
+
+Across all 384 primary worlds:
+
+TRIGGERED-BLASTEMA
+
+mean scratch builds:
+8.9219 / world.
+
+PERIODIC-SCRATCH
+
+mean scratch builds:
+20.0677 / world.
+
+Thus:
+
+event-triggered re-development
+uses materially fewer
+de-novo reconstructions
+
+than:
+
+a permanently recurring
+scratch lane.
+
+H144 therefore does not require:
+a continuously active
+parallel topology engine.
+
+ORDINARY STABLE / SPLIT / MERGE LIMIT
+
+TRIGGERED-BLASTEMA entered at least once
+in essentially every:
+
+stable,
+split,
+and:
+merge
+
+primary world.
+
+It also promoted
+approximately one scratch topology
+in those worlds.
+
+However:
+
+harmful structural promotions:
+0.
+
+The reason is important:
+
+every primary world begins with:
+10% stored membership corruption.
+
+The trigger is therefore serving two roles:
+
+1.
+damage-mode switch;
+
+2.
+initial topology maturation / cleanup.
+
+This means:
+
+the trigger is not yet selective enough
+to cleanly separate:
+
+DEVELOPMENTAL MATURATION
+
+from:
+
+DAMAGE REGENERATION.
+
+This does not invalidate recovery.
+
+It is a real architectural limit.
+
+SENSOR-ERROR ROBUSTNESS
+
+TRANSIENT FALSE SHIFT
+
+held-out robustness.
+
+SENSOR ERROR 1%
+
+SCRATCH-WITHOUT-HOLDOUT
+
+harmful promotion worlds:
+0%.
+
+TRIGGERED-BLASTEMA
+
+harmful promotion worlds:
+0%.
+
+SENSOR ERROR 10%
+
+SCRATCH-WITHOUT-HOLDOUT
+
+harmful promotion worlds:
+0%.
+
+TRIGGERED-BLASTEMA
+
+harmful promotion worlds:
+0%.
+
+SENSOR ERROR 20%
+
+24 held-out worlds.
+
+SCRATCH-WITHOUT-HOLDOUT
+
+harmful promotion worlds:
+79.17%.
+
+mean harmful promotions:
+1.0833 / world.
+
+mean active coverage:
+85.49%.
+
+TRIGGERED-BLASTEMA
+
+harmful promotion worlds:
+0%.
+
+mean active coverage:
+7.56%.
+
+mean scratch builds:
+24.6667 / world.
+
+PERIODIC-SCRATCH
+
+harmful promotion worlds:
+0%.
+
+mean active coverage:
+36.71%.
+
+INTERPRETATION
+
+At modest sensor noise:
+
+immediate scratch promotion
+can appear safe.
+
+At sufficiently noisy evidence:
+
+FIT EVIDENCE
+IS NOT
+VALIDATION EVIDENCE.
+
+Without holdout:
+
+the scratch lane becomes:
+structurally trigger-happy.
+
+Fresh validation:
+
+prevents harmful promotion
+
+but can respond by:
+freezing broad action.
+
+Therefore:
+
+VALIDATION
+IS A REAL
+SAFETY FIREWALL,
+
+not:
+mere overhead.
+
+The cost is:
+
+ACTION AVAILABILITY
+UNDER
+HIGH OBSERVATION NOISE.
+
+DAMAGE-60 ROBUSTNESS
+
+24 held-out worlds.
+
+60% stored membership damage.
+
+INCREMENTAL-ONLY
+
+final ARI:
+0.0632.
+
+final quarantine:
+96.84%.
+
+TRIGGERED-BLASTEMA
+
+final ARI:
+1.0000.
+
+20-episode recovery:
+100%.
+
+final quarantine:
+0%.
+
+mean scratch builds:
+7.2917.
+
+Thus:
+
+the re-development mechanism
+remains effective
+well beyond:
+the primary damage regime.
+
+EVIDENCE-BUDGET ROBUSTNESS
+
+DAMAGE-25.
+
+12 held-out worlds per budget point.
+
+0.5N PAIRS / EPISODE
+
+TRIGGERED-BLASTEMA
+
+final ARI:
+0.8830.
+
+20-episode recovery:
+83.33%.
+
+mean quarantine:
+94.00%.
+
+mean active coverage:
+3.89%.
+
+mean scratch builds:
+25.25.
+
+1N PAIRS / EPISODE
+
+TRIGGERED-BLASTEMA
+
+final ARI:
+1.0000.
+
+20-episode recovery:
+91.67%.
+
+mean quarantine:
+34.80%.
+
+mean active coverage:
+16.73%.
+
+mean scratch builds:
+22.5833.
+
+4N PAIRS / EPISODE
+
+TRIGGERED-BLASTEMA
+
+final ARI:
+1.0000.
+
+20-episode recovery:
+100%.
+
+mean quarantine:
+7.59%.
+
+mean active coverage:
+82.72%.
+
+mean scratch builds:
+5.1667.
+
+PRIMARY 2N
+
+final ARI:
+1.0000.
+
+20-episode recovery:
+100%.
+
+mean active coverage:
+approximately 75%.
+
+GENERAL RESOURCE RESULT
+
+A regenerated topology can become:
+
+STRUCTURALLY CORRECT
+
+before it becomes:
+
+ACTION-MATURE.
+
+At very low evidence budget:
+
+global partition recovery
+can be strong
+
+while:
+
+most individual members remain:
+insufficiently evidenced
+for broad action.
+
+Thus:
+
+TOPOLOGY RECOVERY
+
+and:
+
+ACTIONABLE TOPOLOGY MATURATION
+
+are:
+distinct developmental phases.
+
+PRIMARY DECISION
+
+AR-H144 is:
+
+POSITIVE
+
+for:
+
+BOUNDED
+DE-NOVO TOPOLOGY
+RE-DEVELOPMENT
+AFTER
+SCAFFOLD FAILURE.
+
+SUPPORTED
+
+- a damaged accepted topology can be treated as a replaceable hypothesis;
+- relational evidence can serve as the regenerative substrate;
+- inferred group count does not require latent K;
+- 25% topology damage recovers within the preregistered 20-episode window;
+- 40% primary damage and 60% robustness damage also recover;
+- stacked recovery is materially above H143 incremental regeneration;
+- triggered scratch reconstruction is much cheaper than periodic scratch reconstruction;
+- fresh validation prevents harmful structural promotion under high sensor noise;
+- primary recovery is achieved at the frozen <=2N evidence budget;
+- old membership labels are not used to seed de-novo reconstruction.
+
+LIMITS
+
+1. MATURATION / REGENERATION ENTANGLEMENT
+
+With 10% initial stored corruption:
+
+the blastema trigger also performs:
+baseline topology cleanup.
+
+A future controller should distinguish:
+
+ordinary maturation
+
+from:
+
+damage-induced re-development.
+
+2. STRUCTURE / ACTION MATURITY SPLIT
+
+At 0.5N to 1N evidence:
+
+the partition can recover
+before:
+member-level support matures.
+
+A correct graph partition
+is not automatically:
+permission for broad action.
+
+3. HIGH-NOISE FREEZE
+
+At 20% sensor error:
+
+holdout validation prevents harmful promotions
+
+but:
+
+can force:
+very low active coverage
+and:
+repeated scratch attempts.
+
+The safe failure mode is:
+locality,
+
+but:
+the maturation mechanism is inefficient.
+
+4. FIT / VALIDATION SEPARATION
+
+Scratch fit
+and:
+scratch validation
+
+must remain separate
+when evidence quality deteriorates.
+
+EXTERNAL CONCEPTUAL CROSS-CHECK
+
+This section is design context only.
+
+It is not evidence for H144.
+
+Recent graph research independently reinforces several useful pressures:
+
+- Hume and Balzano, 2025,
+  A Spectral Framework for Tracking Communities in Evolving Networks,
+  treats temporal community structure as a spectral tracking problem rather than unrelated static clusterings.
+
+- Wang and Lopes, AISTATS 2025,
+  Empirical Error Estimates for Graph Sparsification,
+  shows that sparse graph approximations can be paired with empirical error estimates for spectral tasks.
+
+- recent dynamic-community work emphasizes:
+  stability
+  versus:
+  responsiveness
+  under changing graph structure.
+
+A biological analogy is also suggestive but NOT imported as proof:
+
+2025 work on axolotl limb positional memory
+reports that regenerative positional identity can be reprogrammed during blastema formation.
+
+For Yggdrasil,
+the useful abstraction is only:
+
+STRUCTURAL STATE
+MAY HAVE
+A TEMPORARY
+HIGH-PLASTICITY PHASE
+
+followed by:
+re-stabilization.
+
+No biological tissue implementation is implied.
+
+NEXT HIGH-VALUE MOVE
+
+AR-H145 — POST-BLASTEMA MATURATION / CRITICAL-PLASTICITY-WINDOW + DIRECTED EVIDENCE ROUTING AUDIT
+
+Question:
+
+AFTER
+A DE-NOVO TOPOLOGY
+HAS BEEN
+STRUCTURALLY RECOVERED,
+
+HOW SHOULD
+THE ORGANISM
+TURN IT
+INTO
+AN ACTION-MATURE
+TOPOLOGY
+
+WITHOUT:
+
+RE-AUDITING
+EVERY MEMBER
+
+OR:
+
+REMAINING
+PERMANENTLY
+PLASTIC?
+
+Candidate architecture:
+
+PHASE 1
+BLASTEMA / RE-DEVELOPMENT
+
+high structural plasticity.
+
+Broad action frozen.
+
+PHASE 2
+MATURATION WINDOW
+
+topology fixed provisionally.
+
+Evidence is routed preferentially toward:
+
+- low-support members;
+- uncertain cut boundaries;
+- high-value active members;
+- cluster representatives;
+- regions whose local support controls the largest amount of quarantined value.
+
+PHASE 3
+CONSOLIDATION
+
+once:
+member support
+and:
+boundary support
+
+cross a maturation contract,
+
+reduce:
+topology plasticity
+
+and:
+hibernate scratch machinery.
+
+Compare:
+
+A.
+uniform evidence routing;
+
+B.
+uncertainty-first routing;
+
+C.
+value-first routing;
+
+D.
+cut-edge / boundary routing;
+
+E.
+representative-canary routing;
+
+F.
+expected quarantine-release-per-audit routing;
+
+G.
+hybrid:
+boundary safety
++
+value
++
+quarantine-release.
+
+Desired:
+
+A CORRECT
+REGENERATED STRUCTURE
+
+SHOULD
+BECOME
+CHEAPLY ACTIONABLE
+
+AND THEN:
+
+STOP
+BEHAVING
+LIKE
+A WOUND.
+
+Do not execute STAB-18-R1 during this lane.
+
+EXECUTION PROVENANCE
+
+evidence_class = SYNTHETIC_MEASURED_SANDBOX_LONGITUDINAL
+canonical_scientific_execution = false
+canonical_r1_execution_spent = false
+primary_worlds = 384
+primary_worlds_per_regime = 48
+primary_pair_budget = 2N
+primary_sensor_error = 0.05
+damage25_incremental_final_ari = 0.3976
+damage25_triggered_final_ari = 1.0000
+damage25_triggered_recovery20_rate = 1.0
+damage40_triggered_final_ari = 0.9960
+stacked_incremental_final_ari = 0.2853
+stacked_triggered_final_ari = 0.8499
+triggered_primary_mean_scratch_builds = 8.9219
+periodic_primary_mean_scratch_builds = 20.0677
+false_shift_primary_triggered_harmful_promotion_rate = 0
+false_shift_primary_noholdout_harmful_promotion_rate = 0
+sensor20_noholdout_harmful_world_rate = 0.7917
+sensor20_triggered_harmful_world_rate = 0
+sensor20_triggered_mean_coverage = 0.0756
+damage60_triggered_final_ari = 1.0
+budget05_triggered_final_ari = 0.8830
+budget05_triggered_mean_coverage = 0.0389
+budget1_triggered_final_ari = 1.0
+budget1_triggered_mean_coverage = 0.1673
+budget4_triggered_final_ari = 1.0
+budget4_triggered_mean_coverage = 0.8272
