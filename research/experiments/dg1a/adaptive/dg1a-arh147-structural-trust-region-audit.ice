@@ -828,3 +828,573 @@ evidence_class_target = SYNTHETIC_MEASURED_SANDBOX_LONGITUDINAL_STRUCTURAL_REPAI
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 preregistered_from_head = 43f3084837a3cc6fb48b4436d1c62dbd3993af40
+
+
+IMPLEMENTATION FREEZE — BEFORE PRIMARY EXECUTION
+
+The following mechanics resolve details not fixed in the initial preregistration.
+
+No damage regime,
+trust-region threshold,
+policy identity,
+certificate rule,
+acceptance gate,
+or primary sample size
+is changed.
+
+INITIAL TOPOLOGY REALIZATION
+
+N:
+uniform integer 80..120.
+
+K:
+uniform integer 4..6.
+
+True regions:
+near-balanced,
+then member order randomized.
+
+Accepted topology:
+copy true membership,
+then corrupt exactly ceil(0.02N) memberships
+to a different accepted region.
+
+INITIAL CERTIFICATES
+
+Target vested fraction:
+55% of family members,
+subject to:
+member accepted region == true region.
+
+Selection is:
+value-biased without replacement
+
+with weight proportional to:
+sqrt(member value).
+
+Member values:
+lognormal sigma 0.60,
+normalized to mean approximately 1.
+
+No initially wrong assignment receives:
+a valid certificate.
+
+ACTIVITY
+
+Each episode:
+
+active fraction sampled uniformly from:
+20%..50%.
+
+Active members sampled without replacement.
+
+Activity schedule is:
+common across policies within a world.
+
+RELATIONAL SUFFICIENT-STATISTIC OBSERVATION
+
+Primary 2N relational budget is realized as:
+
+2 region-identity observations
+per member / episode.
+
+For member i:
+
+an observation reports:
+the member's current true functional region
+
+with probability:
+0.95.
+
+Otherwise:
+it reports one different region uniformly.
+
+Observation potentials are keyed by:
+
+world,
+episode,
+member,
+observation slot
+
+and are common across policies.
+
+Each policy interprets the same observation stream
+against:
+its own accepted topology.
+
+RELATIONAL MEMORY
+
+For each member and candidate region:
+
+decayed vote mass.
+
+Per-episode retention:
+0.92.
+
+Candidate region:
+highest vote mass.
+
+Candidate support:
+best mass / total mass.
+
+Candidate margin:
+best support - second-best support.
+
+STRUCTURAL CHALLENGE
+
+At a 3-episode checkpoint,
+a member is structurally challenged when:
+
+effective vote mass >=4
+
+AND
+
+candidate region != accepted region
+
+AND
+
+candidate support >=0.70
+
+AND
+
+candidate margin >=0.20.
+
+A coherent patch candidate groups challenged members by:
+
+(current accepted region,
+candidate region).
+
+PATCH PERSISTENCE
+
+A coherent source->target candidate
+must be present at:
+2 consecutive checkpoints
+
+before:
+incremental acceptance.
+
+PATCH SELECTION
+
+UNBOUNDED PATCH:
+
+accept the full highest-confidence coherent candidate.
+
+FIXED PER-OP CAP:
+
+accept at most:
+ceil(0.08N)
+highest-confidence members
+from the coherent candidate.
+
+CUMULATIVE-DEBT:
+
+accept the full coherent candidate
+while:
+D <=0.25.
+
+It does not enforce:
+the diffusion hard boundary
+or:
+single-patch hard cap.
+
+SPATIAL TRUST REGION
+and
+TRUST-REGION + BLASTEMA:
+
+inside the full trust region,
+accept at most:
+ceil(0.08N)
+members / patch.
+
+Affected patch members receive:
+the candidate region identity.
+
+No latent true label is used:
+to choose the patch target.
+
+FAILED PATCH CYCLE
+
+After an accepted patch:
+
+if,
+at the next two checkpoints,
+more than 50% of the patched members
+remain structurally challenged,
+
+count:
+one failed patch cycle.
+
+Three consecutive failed cycles:
+failed_patch_pressure = 1
+and:
+close the full trust region.
+
+OBSERVABLE DAMAGE ESTIMATES
+
+QUARANTINE FRACTION
+
+fraction of members:
+currently structurally challenged.
+
+RELATIONAL DISAGREEMENT
+
+mean:
+1 - support(accepted region)
+
+across members with:
+effective vote mass >=1.
+
+AFFECTED VALUE MASS
+
+current active-value fraction
+inside:
+the challenged set.
+
+If no challenged member is active:
+
+use:
+fixed-value fraction
+inside the challenged set.
+
+DAMAGE DIFFUSION
+
+Maintain:
+a rolling 12-episode history
+of structurally challenged source-region mass.
+
+Compute:
+normalized Shannon entropy
+across accepted source regions.
+
+0:
+one-region concentration.
+
+1:
+approximately even family-wide spread.
+
+This makes:
+moving wounds
+and:
+repeated spatial footprints
+
+observable without:
+latent damage labels.
+
+CUMULATIVE MEMBERSHIP DISPLACEMENT
+
+Fraction of current accepted memberships
+that differ from:
+the last globally validated topology.
+
+After:
+validated blastema promotion,
+
+the promoted topology becomes:
+the new globally validated baseline
+
+and:
+this term resets to 0.
+
+REPAIR DEBT
+
+Use exactly the preregistered formula:
+
+D =
+0.30 * cumulative displacement
++
+0.20 * quarantine
++
+0.15 * relational disagreement
++
+0.15 * affected value mass
++
+0.10 * rolling diffusion
++
+0.10 * failed patch pressure.
+
+TRUST-REGION EXIT IS EVALUATED
+
+at each 3-episode checkpoint
+
+before:
+accepting a new incremental patch.
+
+IMMEDIATE BLASTEMA DISTURBANCE TRIGGER
+
+A persistent disturbance exists when:
+
+structurally challenged fraction >=3%
+
+for:
+2 consecutive checkpoints.
+
+IMMEDIATE BLASTEMA launches then.
+
+No true disturbance label is used.
+
+BLASTEMA REALIZATION
+
+On launch:
+
+promotion requires:
+6 episodes.
+
+During those episodes:
+
+scratch candidate =
+argmax decayed region-vote mass
+for each member.
+
+At promotion:
+
+require:
+mean scratch candidate support >=0.80.
+
+If met:
+
+accept the scratch candidate
+as:
+the new topology.
+
+Count:
+3 scratch reconstruction units.
+
+If not met:
+
+remain local
+and:
+retry after 3 episodes.
+
+TRUST-REGION + BLASTEMA ACTION FREEZE
+
+During blastema maturation:
+
+only:
+structurally challenged
+or:
+certificate-invalid members
+
+are frozen from broad action.
+
+Unaffected valid certificates:
+remain actionable.
+
+IMMEDIATE BLASTEMA ACTION FREEZE
+
+During blastema maturation:
+
+all family-wide certificate-backed action
+is frozen.
+
+CERTIFICATE INVALIDATION — PATCH
+
+An accepted patch invalidates certificates
+only for:
+patched members.
+
+Other certificates remain valid
+unless:
+their own contradiction / boundary assumptions fail.
+
+CERTIFICATE REVALIDATION
+
+An invalidated certificate can re-vest when:
+
+member is active
+and:
+accepted region == current true region.
+
+Spend:
+6 deliberate local observations.
+
+Pass probability:
+0.95^6.
+
+Primary deliberate revalidation budget:
+ceil(0.5N) observations / episode.
+
+Priority:
+current active value.
+
+A failed six-observation block:
+may retry
+on a later active episode.
+
+CERTIFICATE INHERITANCE — BLASTEMA
+
+TRUST-REGION + BLASTEMA
+and:
+ORACLE
+
+may preserve an existing certificate only when:
+
+pre- and post-blastema accepted region identity is unchanged
+
+AND
+
+current scratch support for that member >=0.90.
+
+Otherwise:
+invalidate.
+
+IMMEDIATE BLASTEMA:
+
+treat the global redevelopment as:
+full certificate epoch invalidation.
+
+All vested certificates:
+require revalidation.
+
+This provides:
+the explicit full-revalidation comparator
+for inheritance cost.
+
+FALSE INHERITED CERTIFICATE
+
+Count inherited certificate as false when:
+
+certificate remains valid after patch / blastema
+
+while:
+
+member current true region
+differs from:
+its certificate region.
+
+PRIMARY REGIME TIMING
+
+R0..R4 and R8:
+
+single disturbance at episode 11.
+
+R5:
+
+5% local disturbances at:
+11,19,27,35,43.
+
+All five are concentrated inside:
+the same original source region
+
+so:
+the regime isolates cumulative repair debt
+rather than spatial diffusion.
+
+R6:
+
+10% local disturbance at episode 11,
+then the disturbed source region advances
+to an adjacent region at:
+19,27,35,43,51.
+
+R7:
+
+no true structural change.
+
+Episodes 11..15:
+
+one accepted region receives:
+45% observation error
+instead of:
+5%.
+
+Episode 16 onward:
+return to:
+5%.
+
+R9:
+
+episode 11:
+LOCAL-10.
+
+episode 27:
+DIFFUSE-10 on currently unaffected members where possible.
+
+episodes 35..42:
+sensor error rises:
+5% ->20%.
+
+episode 43 onward:
+returns to:
+5%.
+
+DISTURBANCE MEMBER SELECTION
+
+LOCAL regimes:
+
+>=80% of changed members
+come from:
+one current true region.
+
+Each selected member changes to:
+one adjacent / different existing true region.
+
+DIFFUSE regimes:
+
+changed members are distributed
+as evenly as possible
+across current true regions.
+
+ACCUMULATED MICRO-PATCH:
+
+prefer previously unchanged members
+inside:
+the same source region.
+
+MOVING WOUND:
+
+prefer previously unchanged members
+inside:
+the currently targeted source region.
+
+HIGH-VALUE LOCAL:
+
+5% of members
+inside one region
+
+are selected by:
+highest fixed member value.
+
+If their expected active-value mass
+is below:
+35%,
+
+their event-period active value is scaled
+only enough to reach:
+the preregistered >=35% condition.
+
+ORACLE MODE SWITCH
+
+Oracle chooses:
+
+incremental repair
+
+when:
+true instantaneous magnitude <=10%
+AND
+>=80% of affected members are in one true region.
+
+Otherwise:
+blastema.
+
+Oracle repair still uses:
+the same observed candidate region
+and:
+the same patch evidence.
+
+PRIMARY RANDOMNESS
+
+500 held-out worlds / regime.
+
+Seed block:
+
+R0:
+20260919160000..20260919160499.
+
+Each subsequent regime:
+add 1000 to the seed base.
+
+No H146 seed is reused.
+
+No execution-semantic change is permitted
+after:
+primary H147 execution begins.
