@@ -1,27 +1,31 @@
-TITLE: DG-1A-AR-H136 — Representative Canary Topology / Subgroup-Coverage Audit Preregistration
+TITLE: DG-1A-AR-H136 — Representative Canary Topology / Subgroup-Coverage Audit
 DATE: 2026-09-19
-STATUS: PREREGISTERED / SYNTHETIC / UNEXECUTED
+STATUS: SYNTHETIC / MEASURED_SANDBOX MIXED-NEGATIVE PRIMARY HYPOTHESIS + REPRESENTATIVENESS LOWER-BOUND SIGNAL
 TRACK: DG-1A / ADAPTIVE-RULE RESEARCH
 BRANCH: dg1a-ar
 PARENT: dg1a-arh135-debt-family-reactivation-audit.ice
+PREREGISTRATION_COMMITS:
+- de676115f3dd18bbd49f534bb14586f0c0d2fb3e
+- cb6b26834cb4893a22c2433766a38c3216fbe6ec
 
 PURPOSE
 
-H135 established a positive shared re-audition result but exposed a topology failure:
+H135 established that a small fresh canary probe can make debt-family re-audition much safer than blind broadcast.
+
+Its main failure mode was:
 
 CANARY AGREEMENT
 WITHOUT
-CANARY REPRESENTATIVENESS
+REPRESENTATIVENESS
 CAN CREATE FALSE CONFIDENCE.
 
-H136 asks:
-
-HOW SHOULD A DEBT FAMILY CHOOSE THE SMALLEST FRESH CANARY SET THAT IS REPRESENTATIVE ENOUGH TO DISTINGUISH:
+H136 asks whether topological/context coverage can make the small probe representative enough to detect:
 
 - coherent family reuse;
-- isolated drift;
+- sparse local drift;
 - local subgroup drift;
-- whole-family change?
+- two disjoint subgroup drifts;
+- whole-family change.
 
 BOUNDARY
 
@@ -34,212 +38,686 @@ It does not:
 - execute or modify STAB-18-R1;
 - spend canonical scientific execution.
 
-EVIDENCE CLASS TARGET
+EVIDENCE
 
 SYNTHETIC
 MEASURED_SANDBOX
 
-PRIMARY HYPOTHESIS
+PREREGISTERED PRIMARY HYPOTHESIS
 
-A coverage-constrained adaptive two-stage canary policy will reduce subgroup false broadcast relative to random, fixed, value-only, and uncertainty-only canary selection while retaining materially lower evidence cost than a full-family audit.
+A coverage-constrained adaptive two-stage canary policy should:
 
-A second-stage evidence purchase should occur only when:
-- the first probe is not topologically representative enough; or
-- fresh residual evidence is ambiguous.
+- beat RANDOM and FIXED on mean net value;
+- reduce false promotion relative to RANDOM;
+- reduce subgroup false broadcast relative to RANDOM;
+- stay below 9 mean audits/event;
+- preserve >90% stable-family weighted coverage;
+- preserve >75% whole-family-shift weighted coverage;
+- hold subgroup false promotion below 10%;
+- remain positive across all four topology classes.
 
-SYNTHETIC ECOLOGY
+PRIMARY SYNTHETIC ECOLOGY
 
-Primary confirmation:
 2,500 worlds.
 
 Family size:
-24 to 90 members.
+24 to 90.
 
-Family context topology:
+Topologies:
 - uniform field;
 - two-lobe field;
 - corridor;
-- ring / shell.
+- ring/shell.
 
-Each member has:
+Member metadata:
 - context coordinates;
-- value weight;
-- historical uncertainty metadata;
+- value;
+- historical uncertainty;
 - dormant residual state.
 
 Fresh regimes:
-R1 stable family;
-R2 sparse local drift;
-R3 coherent subgroup drift;
-R4 two-subgroup drift;
-R5 whole-family coherent shift.
+- stable;
+- sparse drift;
+- one coherent subgroup drift;
+- two disjoint subgroup drifts;
+- whole-family shift.
 
-Subgroup drift is spatial/context-local so representativeness can matter.
+Primary non-adaptive canary budget:
+5 members including trigger.
 
-Historical uncertainty is informative but imperfect.
-High value is independent of representativeness.
+Adaptive:
+3-member first stage,
+maximum 9.
 
-COMPARATORS
-
-A — RANDOM
-Trigger plus random canaries.
-
-B — FIXED
-Trigger plus a stable fixed member set.
-
-C — GEOMETRIC-DIVERSE
-Trigger plus farthest-point context-diverse members.
-
-D — UNCERTAINTY-WEIGHTED
-Trigger plus highest historical-uncertainty members.
-
-E — VALUE-WEIGHTED
-Trigger plus highest-value members.
-
-F — COVERAGE-CONSTRAINED
-Trigger plus members selected to reduce uncovered context radius and occupy distinct context strata.
-
-G — ADAPTIVE TWO-STAGE
-Start with three coverage-oriented canaries.
-Then:
-- if topology coverage is insufficient, buy more canaries;
-- if residual evidence is ambiguous, buy more canaries;
-- stop when confidence is decisive or the canary budget is reached.
-
-Maximum adaptive canary budget:
-9.
-
-PRIMARY CANARY BUDGET
-
-Non-adaptive comparator canary count:
-5 total members including the trigger.
-
-Adaptive first stage:
-3 total members including the trigger.
-
-Adaptive maximum:
-9 total members.
-
-PRIMARY BROADCAST GATE
+Primary family-wide gate:
 
 fresh agreement >= 0.80
 AND
 normalized residual dispersion <= 0.65
-AND
+AND, for coverage-constrained policies,
 normalized topology coverage radius <= 0.45.
 
-Non-adaptive comparators use the same residual gate.
-Coverage-constrained policies additionally require the topology coverage criterion.
+COMPARATORS
 
-PRIMARY COST SCALE
+A — RANDOM.
 
-Correct resolution benefit:
-3.0 x value.
+B — FIXED.
 
-False promotion penalty:
-5.0 x value.
+C — GEOMETRIC-DIVERSE.
 
-Audit cost:
-1.0 per member.
+D — UNCERTAINTY-WEIGHTED.
 
-Broadcast application:
-0.20 per member reached.
+E — VALUE-WEIGHTED.
 
-Unresolved carry:
-0.15 x value.
+F — COVERAGE-CONSTRAINED.
 
-PRIMARY METRICS
+G — ADAPTIVE TWO-STAGE.
 
-1. mean net value;
-2. evidence audits/event;
-3. weighted family coverage;
-4. false-promotion rate;
-5. subgroup false-broadcast rate;
-6. stable-family broadcast acceptance;
-7. whole-family-shift recovery;
-8. topology coverage radius;
-9. second-stage purchase rate;
-10. tail net value.
+PRIMARY RESULTS
 
-PRIMARY ACCEPTANCE SHAPE FOR ADAPTIVE TWO-STAGE
+ADAPTIVE TWO-STAGE
 
-Support requires:
+mean net:
+92.37072.
 
-- mean net value > RANDOM;
-- mean net value > FIXED;
-- mean false-promotion rate < RANDOM;
-- subgroup false-broadcast rate < RANDOM;
-- mean evidence < 9 audits/event;
-- stable-family weighted coverage > 90%;
-- whole-family-shift weighted coverage > 75%;
-- subgroup false-promotion rate < 10%;
-- positive result across all four topology classes;
-- no dependence on one exact topology-coverage threshold.
+10th percentile net:
+6.50102.
 
-FAILURE CONDITIONS
+1st percentile net:
+-17.28860.
 
-Treat as mixed or negative if:
-- coverage checks require nearly full-family evidence;
-- geometric coverage does not improve subgroup detection;
-- adaptive second-stage purchases frequently exceed 9;
-- stable families are suppressed too often;
-- value or uncertainty selection is consistently better than representativeness selection;
-- topology-aware selection only works in one synthetic geometry.
+mean evidence:
+4.1136 audits/event.
 
-ROBUSTNESS SWEEPS
+mean weighted coverage:
+78.783%.
 
-Topology coverage threshold:
+mean false-promotion rate:
+12.995%.
+
+broadcast rate:
+89.16%.
+
+mean topology coverage radius:
+0.31607.
+
+second-stage purchase rate:
+60.04%.
+
+RANDOM
+
+mean net:
+87.64755.
+
+mean evidence:
+5.0.
+
+mean weighted coverage:
+72.082%.
+
+mean false-promotion rate:
+10.085%.
+
+broadcast rate:
+78.92%.
+
+FIXED
+
+mean net:
+87.47415.
+
+mean evidence:
+5.0.
+
+mean weighted coverage:
+71.583%.
+
+mean false-promotion rate:
+9.945%.
+
+VALUE-WEIGHTED
+
+mean net:
+93.86870.
+
+10th percentile net:
+16.33029.
+
+1st percentile net:
+-0.13297.
+
+mean weighted coverage:
+74.687%.
+
+mean false-promotion rate:
+10.250%.
+
+UNCERTAINTY-WEIGHTED
+
+mean net:
+75.22753.
+
+mean weighted coverage:
+63.043%.
+
+mean false-promotion rate:
+8.502%.
+
+1st percentile net:
+-244.38603.
+
+COVERAGE-CONSTRAINED / GEOMETRIC
+
+mean net:
+91.49898.
+
+mean weighted coverage:
+75.666%.
+
+mean false-promotion rate:
+11.245%.
+
+PRIMARY DECISION
+
+The preregistered H136 hypothesis is NOT SUPPORTED.
+
+It passes:
+
+- adaptive mean net > RANDOM;
+- adaptive mean net > FIXED;
+- adaptive mean evidence < 9;
+- stable-family coverage > 90%;
+- whole-family-shift coverage > 75%;
+- positive mean net in all four topology classes.
+
+It fails the safety-critical subgroup criteria:
+
+- adaptive overall false-promotion rate is higher than RANDOM;
+- subgroup false-broadcast rate is higher than RANDOM;
+- subgroup false-promotion rate is far above 10%.
+
+Therefore:
+
+GEOMETRIC / CONTEXT COVERAGE
+IS NOT
+A SUFFICIENT CERTIFICATE
+OF REPRESENTATIVENESS.
+
+SUBGROUP-DRIFT PRIMARY SLICE
+
+For one- and two-subgroup regimes:
+
+ADAPTIVE
+
+mean net:
+28.5340.
+
+mean evidence:
+4.8191.
+
+mean weighted coverage:
+58.00%.
+
+mean false-promotion rate:
+22.16%.
+
+broadcast rate:
+74.61%.
+
+subgroup false-broadcast rate:
+74.61%.
+
+RANDOM
+
+mean net:
+21.6810.
+
+mean weighted coverage:
+45.56%.
+
+mean false-promotion rate:
+16.73%.
+
+broadcast / false-broadcast rate:
+55.84%.
+
+FIXED
+
+mean net:
+20.4695.
+
+mean false-promotion rate:
+16.59%.
+
+broadcast / false-broadcast rate:
+54.47%.
+
+VALUE-WEIGHTED
+
+mean net:
+31.5228.
+
+mean false-promotion rate:
+17.19%.
+
+broadcast / false-broadcast rate:
+56.03%.
+
+UNCERTAINTY-WEIGHTED
+
+mean net:
+-3.8992.
+
+mean false-promotion rate:
+13.54%.
+
+broadcast / false-broadcast rate:
+31.91%.
+
+INTERPRETATION
+
+Adaptive topological coverage increases the chance of broad family reuse.
+
+That improves average coverage and net value.
+
+But:
+
+A SMALL DRIFT SUBGROUP
+CAN OCCUPY
+A SMALL TOPOLOGICAL REGION
+
+THAT DOES NOT CONTROL
+THE FAMILY'S
+MAXIMUM COVERAGE RADIUS.
+
+The canary set can be:
+
+geometrically broad
+
+and still:
+
+causally blind.
+
+STABLE-FAMILY SLICE
+
+Adaptive weighted coverage:
+96.23%.
+
+Adaptive broadcast:
+100%.
+
+Adaptive mean net:
+149.12.
+
+WHOLE-FAMILY-SHIFT SLICE
+
+Adaptive weighted coverage:
+89.53%.
+
+Adaptive broadcast:
+97.23%.
+
+Adaptive mean net:
+123.99.
+
+Thus H136 does not fail because the coverage mechanism cannot detect coherent family reuse.
+
+It fails because:
+
+COHERENT MINORITY STRUCTURE
+IS NOT GUARANTEED
+TO APPEAR
+IN A SMALL GEOMETRIC SAMPLE.
+
+TOPOLOGY-CLASS RESULT
+
+Adaptive mean net remained positive and above RANDOM in:
+
+corridor:
+89.41 vs 86.41.
+
+ring:
+92.13 vs 87.53.
+
+two-lobe:
+93.01 vs 86.51.
+
+uniform:
+94.86 vs 90.02.
+
+But adaptive false-promotion rates remained approximately:
+10.95% to 14.75%
+across topology classes.
+
+The failure therefore is not confined to one geometry.
+
+ROBUSTNESS SWEEP
+
+27 preregistered combinations across:
+
+topology coverage threshold:
 0.35, 0.45, 0.55.
 
-Initial canary count:
+initial canaries:
 3, 4, 5.
 
-Maximum canary budget:
+maximum budget:
 7, 9, 12.
 
-Subgroup size:
-small, medium, large.
+Adaptive mean net range:
+82.72 to 106.60.
 
-Historical uncertainty correlation:
-weak, medium, strong.
+Adaptive mean evidence range:
+3.72 to 5.88.
 
-Additional stress:
-- very small high-value subgroup;
-- uncertainty concentrated in the wrong region;
-- trigger inside a minority subgroup;
-- two simultaneous disjoint drift regions;
-- ring/corridor topology where Euclidean center-based intuition is misleading.
+Adaptive stable coverage range:
+95.46% to 98.15%.
 
-INTERPRETATION GUARDRAIL
+Adaptive whole-shift coverage range:
+77.46% to 93.96%.
 
-A positive result supports:
+But subgroup false-promotion rate range:
+18.33% to 26.26%.
 
-BUY EVIDENCE
-TO COVER
-THE FAMILY'S
-CONTEXT TOPOLOGY,
+Subgroup false-broadcast range:
+60.92% to 86.96%.
 
-not:
+Even the best subgroup-false-rate working point remained:
 
-ALWAYS SAMPLE
-THE HIGHEST VALUE
-OR
-MOST UNCERTAIN MEMBERS.
+18.33%.
 
-The aim is not perfect coverage.
+That is:
 
-The aim is:
-the smallest fresh evidence purchase that makes family-wide inference defensible.
+well above
+the preregistered 10% threshold.
 
-FROZEN BEFORE EXECUTION
+Tightening geometric coverage therefore:
 
-Comparators, primary gate, cost scale, primary metrics, acceptance shape, and robustness dimensions above are fixed before synthetic execution.
+DOES NOT
+SOLVE
+THE HIDDEN-SUBGROUP PROBLEM.
+
+HIGH-VALUE MINORITY STRESS
+
+A targeted stress forced:
+
+- a small 7% to 12% local subgroup;
+- high value concentrated in that subgroup;
+- trigger inside the minority subgroup;
+- historical uncertainty concentrated in the wrong region.
+
+1,200 worlds.
+
+ADAPTIVE
+
+mean net:
+80.75867.
+
+mean evidence:
+5.21833.
+
+mean weighted coverage:
+77.999%.
+
+mean false-promotion rate:
+11.925%.
+
+subgroup false-broadcast:
+96.333%.
+
+VALUE-WEIGHTED
+
+mean net:
+-230.68038.
+
+mean weighted coverage:
+21.110%.
+
+mean false-promotion rate:
+86.499%.
+
+subgroup false-broadcast:
+88.167%.
+
+RANDOM
+
+mean net:
+51.33908.
+
+mean false-promotion rate:
+7.782%.
+
+subgroup false-broadcast:
+59.833%.
+
+PRIMARY VALUE-WEIGHTING FAILURE
+
+When the highest-value members belong to a coherent minority anomaly,
+value-weighted canaries can:
+
+over-sample the anomaly
+
+then:
+
+mistake it
+for the family-wide model.
+
+This creates:
+
+VALUE-AMPLIFIED FALSE CONSENSUS.
+
+Therefore:
+
+VALUE
+IS NOT
+REPRESENTATIVENESS.
+
+UNCERTAINTY-WEIGHTING LIMIT
+
+Uncertainty-weighted selection is more conservative in the primary ecology.
+
+But:
+
+- it sacrifices too much coverage/net value;
+- if uncertainty metadata points to the wrong region, it is not a representativeness guarantee;
+- uncertainty is useful as one sampling axis, not as the sole audit topology.
+
+GENERAL PRINCIPLE
+
+A SMALL CANARY SET
+CANNOT CERTIFY
+AN ARBITRARY HIDDEN MINORITY
+
+UNLESS:
+
+SOME PRE-AUDIT FEATURE
+CORRELATES
+WITH THAT MINORITY
+
+OR:
+
+THE ORGANISM
+BUYS
+ENOUGH EVIDENCE
+
+OR:
+
+THE ORGANISM
+ABSTAINS
+FROM FAMILY-WIDE PROMOTION.
+
+This is the central H136 result.
+
+The failure is deeper than:
+
+pick better geometric points.
+
+It is:
+
+AN INFORMATION LIMIT.
+
+REPRESENTATIVENESS
+MUST BE DEFINED
+IN THE SPACE
+WHERE FAILURE MODES
+CAN ACTUALLY DIFFER.
+
+That space may include:
+
+- context;
+- lineage;
+- historical residual signature;
+- translator family;
+- uncertainty;
+- value;
+- causal source independence;
+- recent disturbance history;
+- prior contradiction topology.
+
+No one axis is sufficient by itself.
+
+DECISION
+
+AR-H136 is:
+
+MIXED-NEGATIVE
+
+for:
+
+RAW TOPOLOGY-COVERAGE CANARIES
+
+and:
+
+STRONGLY POSITIVE
+
+for the new inference:
+
+REPRESENTATIVENESS REQUIRES
+AN EVIDENCE-SUFFICIENCY CERTIFICATE,
+NOT JUST
+A GEOMETRIC COVERAGE CERTIFICATE.
+
+NEXT HIGH-VALUE MOVE
+
+AR-H137 — HIDDEN-MINORITY DETECTION LOWER BOUND / ABSTENTION ECONOMY AUDIT
+
+Question:
+
+IF
+A COHERENT MINORITY
+IS NOT PREDICTABLE
+FROM PRE-AUDIT METADATA,
+
+HOW MANY CANARIES
+ARE REQUIRED
+TO DETECT IT
+WITH A CHOSEN CONFIDENCE?
+
+And:
+
+WHEN THAT EVIDENCE COST
+IS TOO HIGH,
+
+SHOULD THE ORGANISM:
+
+BUY MORE EVIDENCE
+
+or:
+
+REFUSE
+FAMILY-WIDE PROMOTION?
+
+Analytic starting point:
+
+For a hidden minority fraction f
+sampled without useful predictive metadata,
+
+miss probability is approximately:
+
+(1 - f)^k
+
+for k independent canaries.
+
+To make miss probability <= delta:
+
+k >= log(delta) / log(1 - f).
+
+This implies approximately:
+
+f = 10%, delta = 5%:
+about 29 canaries.
+
+f = 20%, delta = 5%:
+about 14 canaries.
+
+f = 30%, delta = 5%:
+about 9 canaries.
+
+Thus:
+
+A FIXED MAXIMUM BUDGET OF 9
+
+CANNOT
+GUARANTEE
+95% DETECTION
+
+OF AN ARBITRARY
+10% HIDDEN MINORITY.
+
+H137 should test:
+
+A.
+forced fixed-budget broadcast;
+
+B.
+confidence-bound evidence purchase;
+
+C.
+metadata-stratified sampling at varying predictive power;
+
+D.
+abstain / keep debt dormant;
+
+E.
+cost-aware escalation;
+
+F.
+rare high-value minority;
+
+G.
+whole-family shift.
+
+Desired principle:
+
+IF REPRESENTATIVENESS
+CANNOT BE CERTIFIED
+CHEAPLY,
+
+DO NOT
+TURN
+UNCERTAINTY
+INTO
+FAMILY-WIDE FACT.
 
 Do not execute STAB-18-R1 during this lane.
 
 PROVENANCE
 
-evidence_class_target = SYNTHETIC_MEASURED_SANDBOX
+evidence_class = SYNTHETIC_MEASURED_SANDBOX
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
-preregistered_from_head = ab555c51bf697e29b20feed79600e3f8278c8939
+primary_worlds = 2500
+adaptive_mean_net = 92.37072
+adaptive_mean_evidence = 4.1136
+adaptive_mean_coverage = 0.78783
+adaptive_mean_false_rate = 0.12995
+random_mean_net = 87.64755
+random_mean_false_rate = 0.10085
+value_mean_net = 93.86870
+value_mean_false_rate = 0.10250
+subgroup_adaptive_false_rate = 0.2216
+subgroup_random_false_rate = 0.1673
+robustness_combinations = 27
+best_robust_subgroup_false_rate = 0.18328334795517717
+high_value_minority_value_policy_net = -230.68038
+high_value_minority_value_policy_false_rate = 0.86499
