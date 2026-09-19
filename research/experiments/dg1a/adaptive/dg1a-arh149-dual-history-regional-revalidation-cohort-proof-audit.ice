@@ -1811,3 +1811,487 @@ H149 accepted primary execution.
 
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
+
+
+PRE-PRIMARY AMENDMENT 01 — FAST RESIDUAL EXPOSURE / ACTION SUSPENSION / PRIMARY-SEED ROLLOVER
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H149 PRIMARY EXECUTION.
+
+WHY THIS AMENDMENT EXISTS
+
+Post-H148 harness diagnosis,
+performed before:
+any H149 primary execution,
+showed that:
+
+the long-memory structural challenge channel
+
+can:
+attenuate a moving wound
+
+before:
+accepted repair
+or:
+two-checkpoint slow challenge persistence
+captures it.
+
+In the diagnostic realization:
+
+MOVING-WOUND true structural path
+was approximately:
+1.15 family-equivalents,
+
+while:
+accepted-change P
+captured only:
+approximately 1.1%
+of that path.
+
+The existing slow structural-challenge exposure
+also remained:
+near background.
+
+A separate:
+short-timescale observable residual
+did recover:
+the missing signal.
+
+Therefore:
+
+H149 keeps:
+DUAL STRUCTURAL HISTORY
+
+but:
+changes how
+CHALLENGE EXPOSURE
+is observed.
+
+No latent labels
+are introduced.
+
+FAST RESIDUAL WINDOW
+
+For each member:
+
+retain:
+the most recent
+6 normal region-identity observations
+
+corresponding to:
+3 episodes
+at:
+2 observations / episode.
+
+For each observation:
+
+record:
+MATCH
+
+when:
+observed region
+equals:
+the member's accepted region
+at observation time;
+
+otherwise:
+MISMATCH.
+
+FAST-SUSPECT STATE
+
+A member becomes:
+
+FAST-SUSPECT
+
+when:
+
+>=4
+of:
+the most recent 6 observations
+
+are:
+MISMATCH.
+
+FAST-SUSPECT is:
+
+an action-safety state,
+
+not:
+a topology decision
+and:
+not:
+automatic permanent certificate invalidation.
+
+ACTION SUSPENSION
+
+Before:
+broad action accounting,
+
+a valid certificate held by:
+a FAST-SUSPECT member
+
+is:
+
+SUSPENDED_FAST.
+
+SUSPENDED_FAST:
+
+- remains cached;
+- is NOT action-eligible;
+- may not contribute broad active value;
+- does not require immediate deliberate member revalidation;
+- clears when:
+  the fast residual condition clears,
+  provided:
+  H146 contradiction invalidation
+  has not separately fired
+  and:
+  structural proof state remains valid.
+
+Thus:
+
+CACHE RETENTION
+DOES NOT EQUAL
+ACTION AUTHORITY.
+
+This state exists to:
+prevent stale action
+during:
+fast structural nonstationarity
+
+without:
+forcing epistemic amnesia.
+
+DURABLE CHALLENGE-EXPOSURE CONFIRMATION
+
+The existing H149 two-checkpoint consistency rule
+is retained,
+
+but:
+its input is now
+FAST-SUSPECT evidence
+
+rather than:
+the slow 0.92 structural-candidate challenge alone.
+
+At each:
+3-episode structural checkpoint,
+
+derive for every FAST-SUSPECT member:
+
+- accepted source region;
+- dominant non-accepted observed target region
+  from:
+  the same six-observation fast window.
+
+Member i contributes:
+one durable challenge-exposure incidence
+
+only when:
+
+- i is FAST-SUSPECT
+  at:
+  the current checkpoint;
+
+- i was FAST-SUSPECT
+  at:
+  the immediately previous checkpoint;
+
+- accepted source region
+  is unchanged;
+
+- dominant non-accepted target region
+  is identical
+  at:
+  both checkpoints.
+
+Then:
+
+q_i += 1.
+
+Q,
+V,
+Q_r,
+challenge_touch,
+H_Q,
+and:
+C_Q
+
+retain:
+their already-preregistered definitions
+and:
+numerical bounds.
+
+NO H149
+Q,
+V,
+C_Q,
+or:
+Q_r
+threshold
+is changed
+by this amendment.
+
+FAST RESIDUALS
+THAT DO NOT
+PASS
+TWO-CHECKPOINT
+SOURCE-TARGET CONSISTENCY
+
+may:
+temporarily suspend action,
+
+but:
+
+do NOT
+consume:
+durable challenge-history authority.
+
+This is intended to:
+reject:
+transient sensor disturbance
+
+while:
+retaining sensitivity
+to:
+moving / roaming wounds.
+
+RESET SEMANTICS
+
+Accepted patch:
+
+- reset the six-observation fast window
+  for:
+  members whose accepted region changes.
+
+Validated regional re-validation
+or:
+regional redevelopment:
+
+- reset:
+  FAST-SUSPECT state
+  and:
+  fast-window history
+  for:
+  the validated scope;
+
+- reset:
+  durable Q state
+  only according to:
+  the already-preregistered regional validation rules.
+
+Validated global redevelopment:
+
+- reset:
+  fast-window state
+  and:
+  all durable challenge-exposure history
+  to:
+  the new global validation origin.
+
+CERTIFICATE METRICS
+
+Retain:
+the preregistered
+false inherited-certificate rate.
+
+Add:
+
+FALSE ACTIONABLE INHERITED-CERTIFICATE RATE
+
+A transferred / retained certificate counts
+as:
+false actionable
+
+when:
+
+- it is action-eligible;
+- its current true functional region
+  differs from:
+  its accepted / certified region.
+
+SUSPENDED_FAST certificates:
+
+are:
+not actionable
+
+and therefore:
+do NOT count as:
+false actionable authority.
+
+Also report:
+
+STALE CACHED CERTIFICATE RATE
+
+for:
+cached certificates
+whose current true structural relation
+is stale
+while:
+action is suspended.
+
+This prevents:
+a safety improvement
+from being hidden
+
+and also prevents:
+cached stale state
+from being mislabeled
+as:
+authorized action.
+
+EXPLORATORY RESULT THAT MOTIVATED THIS AMENDMENT
+
+NON-EVIDENCE only.
+
+A separate exploratory fast-residual ablation
+used:
+
+4-of-6 fast suspension
+
+plus:
+a provisional,
+non-H149,
+fast-diffusion global trigger.
+
+On:
+100 worlds / regime,
+
+it reduced:
+false active-value promotion
+
+in:
+MOVING-WOUND
+
+from approximately:
+3.81%
+
+to:
+0.82%,
+
+while:
+LOCAL-5
+and:
+LOCAL-10
+
+kept:
+final ARI 1.0
+
+and:
+unchanged global-redevelopment counts.
+
+It also reduced:
+STACKED false promotion
+
+from approximately:
+1.25%
+
+to:
+0.28%.
+
+The exploratory global-trigger thresholds
+used in that ablation
+
+are:
+NOT
+adopted by H149.
+
+H149 retains:
+its preregistered
+Q,
+V,
+C_Q,
+and:
+Q_r
+handoff thresholds.
+
+PRIMARY-SEED CONTAMINATION
+
+The previously reserved H149 primary seed family:
+
+R0:
+20260919300000..20260919300399,
+
+with:
++1000 per subsequent regime,
+
+was unintentionally consumed by:
+the separate exploratory fast-residual ablation
+before:
+H149 primary execution.
+
+Therefore:
+
+that entire seed family is:
+
+CONTAMINATED
+/
+NON-EVIDENCE
+FOR H149 PRIMARY.
+
+It must NOT:
+be reused
+for:
+accepted H149 confirmation.
+
+REPLACEMENT H149 PRIMARY SEEDS
+
+New held-out primary family:
+
+R0:
+20260919400000..20260919400399.
+
+Each subsequent regime:
++1000 seed base.
+
+These replacement seeds:
+
+have not been used
+for:
+sanity,
+debugging,
+threshold selection,
+or:
+exploratory analysis.
+
+HARNESS / SANITY SEEDS
+
+Remain:
+
+20260919250000 family.
+
+They remain:
+NON-EVIDENCE.
+
+PRIMARY EXECUTION STATUS
+
+H149 accepted primary execution:
+
+HAS NOT STARTED.
+
+This amendment is:
+pre-primary.
+
+No H149 accepted primary world
+has been spent.
+
+STAB-18-R1 remains:
+UNTOUCHED.
+
+AMENDMENT PROVENANCE
+
+reason_1 =
+slow structural memory can attenuate moving wounds before durable challenge capture.
+
+reason_2 =
+fast residuals recover an observable short-timescale injury signal.
+
+reason_3 =
+previously reserved H149 seed family was consumed by exploratory work and is no longer held out.
+
+threshold_tuning_from_replacement_primary = false.
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
