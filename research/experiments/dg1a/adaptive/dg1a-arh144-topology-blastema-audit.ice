@@ -929,3 +929,95 @@ validation,
 promotion,
 or rollback threshold
 will change after H144 primary execution begins.
+
+
+IMPLEMENTATION FREEZE ADDENDUM — CANDIDATE ABANDONMENT
+
+Harness-only validation exposed a lifecycle ambiguity:
+
+a scratch candidate that is merely:
+equivalent to
+an already-good accepted topology
+
+cannot satisfy:
+the frozen +0.08 validation improvement margin.
+
+Without an explicit exit rule,
+PERIODIC-SCRATCH could remain:
+indefinitely frozen
+
+despite:
+no evidence of structural damage.
+
+The following lifecycle rule is fixed before primary execution.
+
+VALIDATION FAILURE COUNT
+
+A blastema candidate accrues:
+one failure
+
+when a validation checkpoint is informative
+but fails either:
+
+- +0.08 fresh-error improvement;
+- ARI(candidate_t, candidate_t+1) >=0.90 stability.
+
+After:
+2 consecutive informative failures
+
+the current scratch candidate is:
+REJECTED.
+
+PERIODIC-SCRATCH
+
+After rejection:
+
+exit blastema mode immediately.
+
+Return to:
+normal incremental mode.
+
+The next periodic attempt may occur:
+no earlier than 6 episodes later.
+
+TRIGGERED-BLASTEMA
+
+After rejection:
+
+if the blastema trigger has cleared:
+exit to normal mode.
+
+If the trigger remains positive:
+remain local,
+discard the failed candidate,
+and begin a fresh scratch-candidate cycle
+at the next checkpoint.
+
+ORACLE-DAMAGE-MODE-SWITCH
+
+After rejection:
+
+remain local
+and:
+begin one new scratch cycle.
+
+If the second oracle-triggered cycle also fails:
+exit to local-only mode
+for the remainder of that damage event.
+
+This addendum changes:
+
+candidate lifecycle only.
+
+It does NOT change:
+
+- blastema trigger thresholds;
+- scratch reconstruction;
+- K inference;
+- +0.08 validation margin;
+- two-checkpoint promotion requirement;
+- action freeze boundary;
+- rollback rule;
+- primary acceptance criteria.
+
+Harness-only worlds remain excluded from H144 primary evidence.
