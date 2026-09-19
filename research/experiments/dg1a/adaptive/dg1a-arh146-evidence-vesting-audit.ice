@@ -1201,3 +1201,137 @@ E5:
 
 No execution-semantic change is permitted after:
 primary H146 execution begins.
+
+
+HARNESS CORRECTION — BEFORE PRIMARY ACCEPTANCE
+
+The first full executable pass is:
+
+DISCARDED.
+
+It exposed two implementation errors.
+
+ERROR 1 — NEVER-VESTED MEMBERS WERE TREATED AS INVALID CERTIFICATES
+
+The frozen H146 lifecycle says:
+
+revalidation applies when:
+a previously vested certificate
+is invalidated / challenged.
+
+A member that:
+never vested
+
+does NOT own:
+an invalid certificate.
+
+It remains:
+ordinary quarantined / unmatured state.
+
+The discarded harness incorrectly allowed:
+never-vested active members
+
+to consume:
+post-maturation revalidation budget
+
+and:
+earn new certificates.
+
+This inflated:
+post-episode-20 audit cost
+and:
+certificate coverage.
+
+CORRECTION
+
+Post-maturation deliberate revalidation budget
+may be spent only on:
+
+members that:
+previously vested
+
+and then:
+became invalid / challenged.
+
+Never-vested members:
+remain quarantined
+throughout H146.
+
+H146 is:
+a retention / reactivation experiment,
+
+not:
+a second maturation experiment.
+
+ERROR 2 — HIGH-VALUE DORMANCY WAS MEASURED AFTER UPDATING LAST-ACTIVE
+
+The discarded harness wrote:
+last_active = current episode
+
+before:
+evaluating the high-value dormancy condition.
+
+This made:
+the preregistered >=15-episode dormancy check
+
+impossible to trigger.
+
+CORRECTION
+
+For HYBRID-VESTED E5:
+
+dormancy duration is measured
+from:
+last_active_episode
+
+BEFORE:
+the current episode's opportunistic feedback
+updates:
+last_active_episode.
+
+ADDITIONAL METRIC CORRECTION
+
+Dormant certificate retention at episode 40
+is:
+
+fraction of:
+the ORIGINAL PHASE-1 VESTED SET
+
+whose certificates
+remain valid.
+
+Newly re-vested certificates
+cannot make:
+retention exceed 100%.
+
+FALSE / STALE ACTION ACCOUNTING
+
+The corrected harness must explicitly record:
+
+- trusted active member-episodes;
+- false trusted active member-episodes;
+- old-epoch trusted actions under E1;
+- old-calibration trusted actions under E4.
+
+The earlier pass did not correctly accumulate
+these counters.
+
+No policy rule,
+threshold,
+event realization,
+seed block,
+or:
+acceptance condition
+is changed.
+
+All numbers from:
+the discarded pass
+
+are:
+NON-EVIDENCE.
+
+Primary H146 execution restarts
+from:
+the same frozen seed blocks
+after:
+these corrections.
