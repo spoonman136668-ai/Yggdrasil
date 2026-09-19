@@ -692,3 +692,512 @@ evidence_class_target = SYNTHETIC_MEASURED_SANDBOX_LONGITUDINAL_POST_MATURATION
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 preregistered_from_head = 156e02cfb0e8d0875cfbd7639b18a3390c375f15
+
+
+IMPLEMENTATION FREEZE — BEFORE PRIMARY EXECUTION
+
+The following mechanics resolve details not fixed in the initial preregistration.
+
+No policy,
+certificate invalidation rule,
+event class,
+acceptance gate,
+world count,
+or evidence budget
+is changed.
+
+PHASE-1 MATURATION REALIZATION
+
+Episodes 1..20 use:
+
+H145 EXPECTED-RELEASE
+member targeting
+
+under:
+the H145 region-stratified sufficient-statistic evidence realization.
+
+Primary sensor error:
+5%.
+
+Episode deliberate-audit budget:
+ceil(0.5N).
+
+For H146 vesting:
+
+member-targeted evidence is summarized as:
+assignment-confirming
+versus:
+assignment-contradicting.
+
+A correct provisional assignment produces:
+a confirming observation
+with probability:
+0.95.
+
+A residual wrong assignment produces:
+a confirming observation
+with probability:
+0.05.
+
+The potential outcome stream is keyed by:
+
+world,
+episode,
+member,
+audit-slot.
+
+Vesting uses:
+the preregistered 10-observation,
+0.90 support,
+0.35 margin-equivalent,
+last-three-no-contradiction contract.
+
+The H144-promoted topology is treated as carrying:
+a valid region-boundary class
+
+for members whose provisional assignment is correct.
+
+Residual wrong assignments:
+cannot inherit that member-level validity.
+
+PHASE-2 ACTIVITY ROTATION
+
+Episodes 21..30:
+
+activity is sampled only from:
+a fixed world-specific half of the population
+
+plus:
+the minimum random supplement needed to satisfy
+20%..50% active fraction.
+
+Episodes 31..40:
+
+the complementary half becomes:
+the preferred active pool.
+
+This guarantees:
+substantial 10+ episode dormancy
+
+without:
+changing the preregistered active-fraction range.
+
+OPPORTUNISTIC ACTIVE FEEDBACK
+
+Every active member produces:
+
+one local relational feedback observation / episode
+
+as a byproduct of:
+ordinary active use.
+
+This feedback:
+
+costs:
+0 deliberate audits.
+
+It may:
+confirm
+or:
+contradict
+a vested certificate.
+
+It does NOT:
+by itself
+satisfy:
+the six-audit revalidation contract.
+
+Its only authority is:
+
+- contradiction-debt update;
+- challenge / invalidation triggering;
+- calibration / epoch mismatch observation.
+
+This prevents:
+
+ZERO-MAINTENANCE DORMANCY
+
+from implying:
+
+ZERO DETECTABILITY
+ON REACTIVATION.
+
+DELIBERATE REVALIDATION BUDGET
+
+When one or more active members require:
+revalidation,
+
+the policy may spend up to:
+
+ceil(0.5N)
+
+deliberate member-targeted observations / episode.
+
+Allocation:
+
+EXPECTED-RELEASE style:
+
+current active member value
+/
+estimated remaining revalidation observations.
+
+No deliberate audit is spent on:
+valid dormant certificates.
+
+REVALIDATION OUTCOME
+
+For current correct assignment:
+
+confirm probability =
+1 - current sensor error.
+
+For current wrong / changed assignment:
+
+confirm probability =
+current sensor error.
+
+After:
+6 fresh deliberate observations:
+
+support >=0.85
+
+is equivalent in this binary realization to:
+
+at least:
+6 confirming observations
+
+when six observations are present.
+
+Therefore:
+
+primary revalidation pass requires:
+6 / 6 confirming observations.
+
+If failed:
+
+the member remains:
+QUARANTINED
+
+and:
+a new six-observation revalidation block
+may begin on a later active episode.
+
+This is intentionally strict.
+
+EVENT TIMING
+
+All E1..E5 event changes occur:
+
+at the start of episode 41
+
+before:
+that episode's active feedback.
+
+E0 has:
+no change.
+
+E1 — TOPOLOGY EPOCH CHANGE
+
+Increment:
+topology_epoch.
+
+Additionally:
+
+select one current true region
+and:
+one second region.
+
+Move:
+approximately half
+of the first region's members
+
+into:
+the second region's functional identity.
+
+This creates:
+a real epoch-level topology change
+
+while:
+keeping K fixed.
+
+No policy receives:
+the changed member identities.
+
+E2 — LOCAL NEIGHBORHOOD CHANGE
+
+At episode 41:
+
+select:
+ceil(0.10N) members.
+
+Each changes:
+functional true region
+
+to:
+a different existing region.
+
+topology_epoch:
+
+does NOT change.
+
+E3 — CONTRADICTION BURST
+
+True topology:
+unchanged.
+
+Select:
+20% of members.
+
+Episodes 41..45:
+
+their opportunistic feedback
+has:
+45% contradiction probability.
+
+Episode 46 onward:
+
+return to:
+5% primary sensor error.
+
+Deliberate revalidation audits
+retain:
+5% sensor error.
+
+E4 — CALIBRATION SHIFT
+
+At episode 41:
+
+known calibration class changes.
+
+Opportunistic
+and:
+deliberate observation error:
+
+5%
+->
+20%.
+
+No true topology change.
+
+HYBRID-VESTED:
+
+invalidates certificates carrying:
+the old calibration class.
+
+E5 — HIGH-VALUE DORMANT RETURN
+
+Before phase 2:
+
+choose:
+one vested candidate member
+
+from:
+the half scheduled for long dormancy
+when available.
+
+Force it:
+inactive
+for episodes 21..40.
+
+At episode 41:
+
+force active.
+
+Temporary active value:
+
+8x
+its baseline value.
+
+True topology:
+unchanged.
+
+HYBRID-VESTED:
+
+requires:
+2 deliberate fresh observations
+
+before:
+certificate-backed broad action
+
+when:
+the preregistered dormancy / value conditions are met.
+
+POLICY ACTION RULE
+
+An active member contributes:
+certificate-backed action coverage
+
+only when:
+
+its certificate is:
+currently valid
+
+or:
+
+for DECAYING-RAW:
+its current labile maturity contract passes.
+
+A challenged,
+expired,
+stale,
+or:
+revalidating member
+
+is:
+QUARANTINED
+from broad action.
+
+FALSE TRUSTED ACTION
+
+Count an action as false trusted when:
+
+the member is allowed:
+certificate-backed / mature broad action
+
+while:
+
+its current true functional region
+differs from:
+the certificate / provisional region.
+
+CALIBRATION-STALE ACTION
+
+For E4:
+
+also record:
+
+action performed under:
+a certificate whose calibration class
+does not match:
+the current known calibration class.
+
+This is an epistemic invalidity
+
+even when:
+the member's true region is unchanged.
+
+DECAYING-RAW COMPARATOR
+
+After episode 20:
+
+continue:
+H145-style 0.95 evidence decay.
+
+Spend:
+ceil(0.05N)
+uniform maintenance observations / episode.
+
+No vested certificate exists.
+
+This reproduces:
+the H145 retention failure mode.
+
+WALL-CLOCK EXPIRY
+
+Age is measured from:
+last vest / re-vest episode.
+
+At age:
+>10 episodes
+
+certificate becomes invalid.
+
+ACTIVITY-COUNT EXPIRY
+
+Increment:
+certificate active-age
+
+for every episode
+the member is active
+while certificate is valid.
+
+At:
+>8 active episodes
+
+certificate becomes invalid.
+
+EPOCH-CERT
+
+Episode E1 epoch mismatch:
+
+invalidates:
+all old-epoch certificates
+
+before:
+episode-41 action.
+
+CONTRADICTION-BUDGET
+
+Maintain:
+
+integer contradiction debt.
+
+Opportunistic contradiction:
+
+debt += 1.
+
+Opportunistic confirmation:
+
+debt -= 1
+to minimum:
+0.
+
+If:
+
+debt >=3
+
+before the episode's broad action decision:
+
+invalidate
+and:
+enter revalidation.
+
+The implementation also retains:
+the most recent six opportunistic outcomes
+
+to verify:
+the challenge occurred within
+the preregistered local window.
+
+HYBRID-VESTED
+
+Applies:
+
+- topology epoch mismatch;
+- calibration class mismatch;
+- region-identity mismatch when known;
+- contradiction-budget rule;
+- high-value dormant-return two-audit check.
+
+No wall-clock expiry.
+
+No inactivity expiry.
+
+PRIMARY RANDOMNESS
+
+1,000 held-out worlds / event.
+
+No H145 primary or robustness seed is reused.
+
+Event seed blocks:
+
+E0:
+20260919146000..20260919146999.
+
+E1:
+20260919147000..20260919147999.
+
+E2:
+20260919148000..20260919148999.
+
+E3:
+20260919149000..20260919149999.
+
+E4:
+20260919150000..20260919150999.
+
+E5:
+20260919151000..20260919151999.
+
+No execution-semantic change is permitted after:
+primary H146 execution begins.
