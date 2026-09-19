@@ -1,6 +1,6 @@
 TITLE: DG-1A-AR-H147 — Structural Trust Region / Bounded Incremental Patching + Certificate-Inheritance Audit
 DATE: 2026-09-19
-STATUS: CORRECTION REOPENED / PRIOR PRIMARY SUPERSEDED PENDING H146-CONTRADICTION-SEMANTICS RERUN
+STATUS: CORRECTED SAME-SEED PROTOCOL REPLAY COMPLETE / MIXED-NEGATIVE STRUCTURAL-DEBT LIMIT + RESIDUAL MOVING-WOUND CERTIFICATE LIMIT
 TRACK: DG-1A / ADAPTIVE-RULE RESEARCH
 BRANCH: dg1a-ar
 PARENT: dg1a-arh146-evidence-vesting-audit.ice
@@ -3038,3 +3038,718 @@ NOT STARTED
 
 until:
 the corrected H147 baseline is closed.
+
+
+CORRECTED H147 SAME-SEED PROTOCOL REPLAY — H146 CONTRADICTION SEMANTICS RESTORED
+
+DATE:
+2026-09-19.
+
+STATUS:
+CORRECTION CLOSED FOR SYNTHETIC RESEARCH INTERPRETATION.
+
+IMPORTANT PROVENANCE NOTE
+
+The failed prior chat did not persist its ephemeral simulator source.
+
+Therefore:
+this correction is a
+SAME-SEED PROTOCOL REPLAY
+
+reconstructed from:
+the frozen H147 preregistration,
+implementation freeze,
+harness corrections,
+metric freeze,
+and:
+the H146 contradiction-budget contract.
+
+It is not claimed to be:
+a byte-identical recovery
+of the lost ephemeral harness.
+
+Before enabling the H146 contradiction correction,
+the reconstructed replay was checked against:
+the superseded H147 result
+
+on:
+LOCAL-5,
+LOCAL-10,
+DIFFUSE-10,
+ACCUMULATED-MICROPATCH,
+MOVING-WOUND,
+and:
+STACKED.
+
+It reproduced:
+the same policy ordering,
+the same handoff behavior,
+the same failure modes,
+and:
+close numerical behavior
+on the principal recorded metrics.
+
+No H147 threshold,
+acceptance rule,
+damage regime,
+seed block,
+policy identity,
+or:
+structural repair mechanic
+was tuned from the frozen contract.
+
+CORRECTED PRIMARY
+
+5,000 held-out worlds.
+
+500 worlds / regime.
+
+7 policies.
+
+35,000 policy-regime-worlds.
+
+60 episodes / world.
+
+Original frozen H147 seed blocks.
+
+Correction added only:
+the already-required H146
+opportunistic active-feedback
+contradiction debt
+
+before:
+broad action accounting.
+
+PRIMARY CANDIDATE
+
+E —
+TRUST-REGION + BLASTEMA.
+
+CORRECTED REGIME RESULTS — PRIMARY CANDIDATE
+
+R0 — LOCAL-5
+
+final ARI:
+1.0000.
+
+safe active-value coverage:
+59.57%.
+
+false-promotion proxy:
+0.36%.
+
+action downtime:
+40.07%.
+
+blastema launches:
+0.
+
+revalidation cost:
+24.48 observations / world.
+
+original-certificate retention:
+94.50%.
+
+false inherited-certificate rate:
+0%.
+
+mean recovery:
+13.36 episodes.
+
+IMMEDIATE BLASTEMA comparator:
+
+final ARI:
+1.0000.
+
+action downtime:
+49.69%.
+
+blastema launches:
+1.0 / world.
+
+revalidation cost:
+445.67 observations / world.
+
+retention:
+0%.
+
+mean recovery:
+19.21 episodes.
+
+LOCAL-5 therefore retains:
+the local-patching cost / availability advantage.
+
+R1 — LOCAL-10
+
+final ARI:
+1.0000.
+
+blastema launches:
+0.046 / world.
+
+action downtime:
+40.67%.
+
+revalidation cost:
+50.34.
+
+retention:
+88.91%.
+
+false inherited-certificate rate:
+0%.
+
+mean recovery:
+14.43 episodes.
+
+IMMEDIATE BLASTEMA:
+
+blastema launches:
+1.0 / world.
+
+action downtime:
+50.18%.
+
+revalidation cost:
+450.85.
+
+LOCAL-10 therefore remains:
+predominantly incrementally repairable.
+
+R2 — LOCAL-20
+
+final ARI:
+1.0000.
+
+blastema launches:
+0.178 / world.
+
+action downtime:
+42.51%.
+
+revalidation cost:
+99.67.
+
+retention:
+78.05%.
+
+false inherited-certificate rate:
+0%.
+
+mean recovery:
+19.13 episodes.
+
+LOCAL-20 remains:
+near the handoff boundary.
+
+R3 — DIFFUSE-10
+
+final ARI:
+1.0000.
+
+blastema launches:
+0.996 / world.
+
+action downtime:
+41.01%.
+
+revalidation cost:
+82.94.
+
+retention:
+81.85%.
+
+false inherited-certificate rate:
+0%.
+
+mean recovery:
+19.34 episodes.
+
+LOCAL-10 blastema launch rate:
+4.6%.
+
+DIFFUSE-10 blastema launch rate:
+99.6%.
+
+Therefore:
+equal raw magnitude
+still produces:
+sharply different repair modes
+from:
+spatial distribution.
+
+The H147 spatial-diffusion signal:
+SURVIVES THE CORRECTION.
+
+R4 — DIFFUSE-20
+
+final ARI:
+1.0000.
+
+blastema launches:
+1.0 / world.
+
+false inherited-certificate rate:
+0%.
+
+UNBOUNDED PATCH also reaches:
+final ARI 1.0000.
+
+Therefore:
+the preregistered
+DIFFUSE-20 final-ARI superiority gate
+still does NOT pass.
+
+R5 — ACCUMULATED-MICROPATCH
+
+This remains:
+the decisive structural failure.
+
+TRUST-REGION + BLASTEMA:
+
+final ARI:
+0.9566.
+
+blastema launches:
+0.008 / world.
+
+mean maximum scalar repair debt:
+0.1253.
+
+topology churn:
+24.46% membership-equivalent.
+
+false-promotion proxy:
+1.63%.
+
+false inherited-certificate rate:
+approximately 0.005%.
+
+revalidation cost:
+84.65.
+
+UNBOUNDED PATCH:
+
+final ARI:
+0.9574.
+
+blastema launches:
+0.
+
+IMMEDIATE BLASTEMA:
+
+final ARI:
+0.9973.
+
+The H146 contradiction correction
+nearly eliminates:
+stale certificate inheritance
+
+but:
+does NOT change
+the structural trust-region defect.
+
+Repeated successful local patches
+still leave:
+
+D
+far below:
+0.25
+
+while:
+cumulative structural displacement
+moves substantially away from:
+the last globally validated topology.
+
+Therefore:
+
+THE H147 SCALAR DEBT
+IS STILL
+TOO FUNGIBLE.
+
+Current local certainty
+can still numerically dilute:
+historical structural displacement.
+
+R6 — MOVING-WOUND
+
+TRUST-REGION + BLASTEMA:
+
+final ARI:
+0.7332.
+
+blastema launches:
+1.336 / world.
+
+false-promotion proxy:
+3.84%.
+
+revalidation cost:
+236.09.
+
+retention:
+38.11%.
+
+false inherited-certificate rate:
+3.265%.
+
+UNBOUNDED PATCH:
+
+final ARI:
+0.7395.
+
+false inherited-certificate rate:
+5.837%.
+
+IMMEDIATE BLASTEMA:
+
+final ARI:
+0.7623.
+
+false inherited-certificate rate:
+0%.
+
+CORRECTION EFFECT
+
+Superseded H147
+TRUST-REGION + BLASTEMA
+moving-wound false inheritance:
+
+11.24%.
+
+Corrected replay:
+
+3.27%.
+
+Thus:
+H146 contradiction feedback
+materially repairs:
+the stale-certificate problem
+
+but:
+does NOT satisfy:
+the <1% certificate-safety target
+in:
+MOVING-WOUND.
+
+Therefore:
+region identity
+plus:
+contradiction debt
+
+is still:
+not a sufficient
+certificate dependency graph.
+
+R7 — TRANSIENT-LOCAL-NOISE
+
+final ARI:
+1.0000.
+
+false blastema launches:
+0 / 500.
+
+false trust-region exits:
+0 / 500.
+
+revalidation cost:
+4.75.
+
+retention:
+99.02%.
+
+false inherited-certificate rate:
+0%.
+
+Thus:
+the H146 contradiction correction
+adds only:
+small local revalidation pressure
+
+while:
+preserving
+the no-false-global-handoff result.
+
+R8 — HIGH-VALUE-LOCAL
+
+final ARI:
+1.0000.
+
+blastema launches:
+0.
+
+revalidation cost:
+31.52.
+
+retention:
+93.02%.
+
+false inherited-certificate rate:
+0%.
+
+High local value:
+still increases repair pressure
+without:
+forcing global redevelopment.
+
+R9 — STACKED
+
+final ARI:
+1.0000.
+
+blastema launches:
+1.07 / world.
+
+action downtime:
+44.02%.
+
+revalidation cost:
+198.90.
+
+retention:
+57.96%.
+
+false inherited-certificate rate:
+0%.
+
+mean recovery:
+26.54 episodes.
+
+The contradiction correction
+removes:
+the superseded STACKED
+stale-inheritance failure
+
+while:
+retaining:
+event-triggered blastema
+and:
+selective certificate preservation.
+
+CORRECTED PRIMARY AGGREGATE — TRUST-REGION + BLASTEMA
+
+Across 10 regimes:
+
+mean final ARI:
+0.9690.
+
+mean safe active-value coverage:
+56.12%.
+
+mean false-promotion proxy:
+1.381%.
+
+mean action downtime:
+42.50%.
+
+mean blastema launches:
+0.4634 / world.
+
+mean revalidation cost:
+93.72 observations / world.
+
+mean original-certificate retention:
+78.28%.
+
+mean false inherited-certificate rate:
+0.327%.
+
+mean maximum scalar repair debt:
+0.1389.
+
+mean topology churn:
+18.79% membership-equivalent.
+
+INTERPRETATION OF THE <1% INHERITANCE GATE
+
+The aggregate false-inheritance mean
+is now:
+below 1%.
+
+However:
+the preregistered critical moving-wound regime
+remains:
+3.27%.
+
+Therefore:
+the correction narrows
+but does not eliminate:
+the dependency-aware inheritance problem.
+
+A low aggregate mean
+must not hide:
+a systematic failure mode
+under:
+moving structural dependencies.
+
+CORRECTED ACCEPTANCE REVIEW
+
+SUPPORTED / PRESERVED
+
+1.
+LOCAL-5 / LOCAL-10:
+incremental repair retains
+large cost and action-availability advantages
+over immediate blastema.
+
+2.
+LOCAL-10 versus DIFFUSE-10:
+same magnitude,
+different spatial distribution,
+different repair mode.
+
+3.
+Spatial diffusion:
+remains a useful
+global-handoff signal.
+
+4.
+Transient local noise:
+still does not spuriously launch blastema.
+
+5.
+High-value local damage:
+raises repair urgency
+without:
+buying global repair authority.
+
+6.
+H146 contradiction feedback:
+materially reduces stale certificate inheritance.
+
+7.
+Selective certificate preservation:
+still saves large deliberate revalidation cost
+in clean local repair.
+
+NOT SUPPORTED / STILL OPEN
+
+1.
+CUMULATIVE MICROPATCH HANDOFF.
+
+R5 still evades:
+the scalar trust-region exit.
+
+2.
+UNIVERSAL <1% CERTIFICATE SAFETY.
+
+The aggregate is:
+below 1%,
+
+but:
+MOVING-WOUND remains:
+3.27%.
+
+3.
+DIFFUSE-20 FINAL-ARI SUPERIORITY.
+
+Unbounded patching still reaches:
+final ARI 1.0
+under:
+the sufficient-statistic ecology.
+
+REVISED H147 DECISION
+
+AR-H147 remains:
+
+MIXED-NEGATIVE.
+
+The correction changes:
+the diagnosis
+of the certificate failure.
+
+Before correction:
+the omission of H146 contradiction semantics
+overstated:
+stale-certificate persistence.
+
+After correction:
+most regimes fall to:
+approximately zero
+false inherited certificates.
+
+But:
+MOVING-WOUND remains:
+materially above target.
+
+Therefore:
+
+H146 CONTRADICTION DEBT
+IS NECESSARY
+
+BUT:
+NOT SUFFICIENT
+
+FOR:
+STRUCTURAL CERTIFICATE INHERITANCE.
+
+The structural-debt failure is stronger:
+
+H146 contradiction semantics
+does not alter:
+the R5 cumulative-micropatch escape.
+
+Therefore:
+
+STRUCTURAL REPAIR AUTHORITY
+SHOULD REMAIN
+NON-FUNGIBLE
+
+WITH:
+CURRENT LOCAL CERTAINTY.
+
+NEXT EXPERIMENTAL MOVE
+
+AR-H148 remains the correct next test:
+
+NON-FUNGIBLE REPAIR ENVELOPE
++
+STRUCTURAL DEPENDENCY CERTIFICATES.
+
+The H148 preregistration
+remains frozen.
+
+Its primary can now test:
+
+- independent displacement budget;
+- independent diffusion budget;
+- independent failed-repair budget;
+- value risk as urgency, not repair authority;
+- dependency-set certificate invalidation;
+- moving-wound safety;
+- accumulated-micropatch handoff;
+- preservation of cheap local repair.
+
+Do not execute STAB-18-R1 during this lane.
+
+CORRECTED REPLAY PROVENANCE
+
+evidence_class = SYNTHETIC_MEASURED_SANDBOX_LONGITUDINAL_STRUCTURAL_REPAIR
+canonical_scientific_execution = false
+canonical_r1_execution_spent = false
+replay_source = FROZEN_H147_PROTOCOL_RECONSTRUCTION
+lost_ephemeral_harness_recovered_byte_identically = false
+primary_worlds = 5000
+primary_policy_regime_worlds = 35000
+primary_episodes = 60
+same_frozen_seed_blocks = true
+h146_contradiction_semantics_restored = true
+corrected_trust_mean_final_ari = 0.9689817721
+corrected_trust_mean_safe_coverage = 0.5612268026
+corrected_trust_mean_false_promotion = 0.0138137922
+corrected_trust_mean_action_downtime = 0.4249594052
+corrected_trust_mean_blastema_launches = 0.4634
+corrected_trust_mean_revalidation_cost = 93.7236
+corrected_trust_mean_certificate_retention = 0.7827524673
+corrected_trust_mean_false_inherited_certificate = 0.0032695024
+corrected_trust_mean_max_scalar_debt = 0.1389165493
+corrected_trust_mean_topology_churn = 0.1878618980
+corrected_r5_final_ari = 0.9565980553
+corrected_r5_blastema_launches = 0.008
+corrected_r5_max_scalar_debt = 0.1252975682
+corrected_r5_false_inherited_certificate = 0.0000476190
+corrected_r6_final_ari = 0.7332196653
+corrected_r6_blastema_launches = 1.336
+corrected_r6_false_inherited_certificate = 0.0326474050
+corrected_r7_false_trust_exits = 0
+corrected_r9_false_inherited_certificate = 0
