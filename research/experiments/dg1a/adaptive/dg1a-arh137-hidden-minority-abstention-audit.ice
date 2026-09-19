@@ -1,29 +1,31 @@
-TITLE: DG-1A-AR-H137 — Hidden-Minority Detection Lower Bound / Abstention Economy Audit Preregistration
+TITLE: DG-1A-AR-H137 — Hidden-Minority Detection Lower Bound / Abstention Economy Audit
 DATE: 2026-09-19
-STATUS: PREREGISTERED / SYNTHETIC + ANALYTIC / UNEXECUTED
+STATUS: ANALYTIC + SYNTHETIC / MEASURED_SANDBOX POSITIVE DETECTABILITY LOWER BOUND + POSITIVE TAIL-RISK CERTIFICATION + MIXED ABSTENTION ECONOMY
 TRACK: DG-1A / ADAPTIVE-RULE RESEARCH
 BRANCH: dg1a-ar
 PARENT: dg1a-arh136-representative-canary-topology-audit.ice
+PREREGISTRATION_COMMIT: 2a0edee8170e9f23926425a1cac84b8dc6744b26
 
 PURPOSE
 
-H136 showed that small canary sets can be geometrically representative while still missing a causally coherent minority.
+H136 showed that a small canary set can be geometrically representative and still miss a causally coherent hidden minority.
 
 H137 asks:
 
-WHEN A MINORITY FAILURE MODE IS NOT PREDICTABLE FROM PRE-AUDIT METADATA,
+WHEN MINORITY MEMBERSHIP
+IS NOT PREDICTABLE
+FROM PRE-AUDIT METADATA,
 
-what evidence budget is mathematically required to detect it with a chosen confidence?
+what evidence budget is mathematically required to detect that minority with a chosen confidence?
 
 And:
 
-when that evidence budget is too expensive,
+what is gained or lost by:
 
-should the organism buy more evidence
-
-or
-
-abstain from family-wide promotion?
+- forcing broadcast from a small sample;
+- buying a statistical evidence certificate;
+- using predictive metadata;
+- escalating or abstaining?
 
 BOUNDARY
 
@@ -32,225 +34,837 @@ Synthetic + analytic research only.
 It does not:
 - implement biological tissue;
 - establish production thresholds;
-- prove one universal risk tolerance;
+- freeze one universal risk tolerance;
 - execute or modify STAB-18-R1;
 - spend canonical scientific execution.
 
-ANALYTIC STARTING POINT
+EVIDENCE
+
+ANALYTIC
+SYNTHETIC
+MEASURED_SANDBOX
+
+ANALYTIC LOWER BOUND
 
 For family size N,
 hidden minority size m,
-and k uniformly sampled canaries without replacement,
+and k uniformly sampled canaries without replacement:
 
-the exact probability of missing every minority member is:
+P_miss =
+C(N - m, k)
+/
+C(N, k).
 
-P_miss = C(N - m, k) / C(N, k)
-
-when k <= N - m.
+This is exact when:
+- minority identity is hidden from pre-audit metadata;
+- canaries do not have oracle access to current residuals before selection.
 
 Large-N approximation:
 
-P_miss approximately (1 - f)^k
+P_miss approximately (1 - f)^k.
 
-where:
+The finite-family hypergeometric correction matters substantially for small N.
 
-f = m / N.
+PRIMARY EXACT 95%-DETECTION GRID
 
-For target miss probability delta,
+Target:
+P_miss <= 0.05.
 
-approximate required sample count is:
+N = 30
 
-k >= log(delta) / log(1 - f).
+5% hidden:
+m = 2,
+k_exact = 23,
+certificate fraction = 76.67%.
 
-This is a detectability lower bound when:
-- minority membership is not predictable from available metadata;
-- canaries are not allowed oracle access to current residuals before purchase.
+10% hidden:
+m = 3,
+k_exact = 19,
+certificate fraction = 63.33%.
 
-PRIMARY ANALYTIC GRID
+20% hidden:
+m = 6,
+k_exact = 11,
+certificate fraction = 36.67%.
 
-N:
-30, 50, 70, 90.
+30% hidden:
+m = 9,
+k_exact = 8,
+certificate fraction = 26.67%.
 
-Hidden minority fraction:
-5%, 10%, 20%, 30%.
+N = 50
 
-Target miss probability:
-5%.
+5% hidden:
+m = 3,
+k_exact = 31,
+certificate fraction = 62.00%.
 
-Record:
-- exact k required;
-- approximate k required;
-- gap between fixed budgets 5 and 9 and the exact certificate.
+10% hidden:
+m = 5,
+k_exact = 22,
+certificate fraction = 44.00%.
 
-PRIMARY SYNTHETIC ECOLOGY
+20% hidden:
+m = 10,
+k_exact = 12,
+certificate fraction = 24.00%.
 
+30% hidden:
+m = 15,
+k_exact = 8,
+certificate fraction = 16.00%.
+
+N = 70
+
+5% hidden:
+m = 4,
+k_exact = 37,
+certificate fraction = 52.86%.
+
+10% hidden:
+m = 7,
+k_exact = 24,
+certificate fraction = 34.29%.
+
+20% hidden:
+m = 14,
+k_exact = 13,
+certificate fraction = 18.57%.
+
+30% hidden:
+m = 21,
+k_exact = 8,
+certificate fraction = 11.43%.
+
+N = 90
+
+5% hidden:
+m = 5,
+k_exact = 40,
+certificate fraction = 44.44%.
+
+10% hidden:
+m = 9,
+k_exact = 25,
+certificate fraction = 27.78%.
+
+20% hidden:
+m = 18,
+k_exact = 13,
+certificate fraction = 14.44%.
+
+30% hidden:
+m = 27,
+k_exact = 8,
+certificate fraction = 8.89%.
+
+PRIMARY LOWER-BOUND RESULT
+
+A 9-canary maximum is enough for:
+
+approximately 30% hidden minorities at 95% detection
+
+but:
+
+NOT
+
+for arbitrary 5% or 10% hidden minorities.
+
+This is not a canary-placement bug.
+
+Under uninformative metadata:
+
+THE REQUIRED INFORMATION
+HAS NOT BEEN PURCHASED.
+
+FIXED-BUDGET MISS PROBABILITIES
+
+For a hidden 10% minority:
+
+N = 30:
+k=5 miss = 56.65%.
+k=9 miss = 32.76%.
+
+N = 50:
+k=5 miss = 57.66%.
+k=9 miss = 35.37%.
+
+N = 70:
+k=5 miss = 58.08%.
+k=9 miss = 36.39%.
+
+N = 90:
+k=5 miss = 58.30%.
+k=9 miss = 36.94%.
+
+For a hidden 5% minority:
+
+N = 30:
+k=5 miss = 68.97%.
+k=9 miss = 48.28%.
+
+N = 50:
+k=5 miss = 72.40%.
+k=9 miss = 54.39%.
+
+N = 70:
+k=5 miss = 73.84%.
+k=9 miss = 56.92%.
+
+N = 90:
+k=5 miss = 74.64%.
+k=9 miss = 58.30%.
+
+EMPIRICAL CHECK
+
+20,000 Monte Carlo draws per:
+N / hidden-fraction / k cell.
+
+Tested:
+N = 30, 50, 70, 90.
+f = 5%, 10%, 20%, 30%.
+k = 5, 9.
+
+Maximum absolute empirical-minus-exact miss-probability error:
+
+0.00633.
+
+Thus the synthetic miss behavior agrees with the exact hypergeometric prediction within ordinary sampling error.
+
+PRIMARY ANALYTIC CLAIM
+
+SUPPORTED.
+
+TARGET-CONFIDENCE SENSITIVITY
+
+For a hidden 10% minority:
+
+N = 30
+
+99% detection:
+k = 23.
+
+95% detection:
+k = 19.
+
+90% detection:
+k = 16.
+
+N = 50
+
+99%:
+29.
+
+95%:
+22.
+
+90%:
+18.
+
+N = 70
+
+99%:
+33.
+
+95%:
+24.
+
+90%:
+19.
+
+N = 90
+
+99%:
+35.
+
+95%:
+25.
+
+90%:
+20.
+
+Thus:
+
+DETECTION CONFIDENCE
+IS A DIRECT
+EVIDENCE-BUDGET CONTROL KNOB.
+
+SYNTHETIC POLICY ECOLOGY
+
+Primary:
 2,500 worlds.
 
 Family size:
 30 to 90.
 
 Regimes:
-R1 stable;
-R2 hidden 5% minority;
-R3 hidden 10% minority;
-R4 hidden 20% minority;
-R5 hidden 30% minority;
-R6 whole-family coherent shift.
+- stable;
+- hidden 5%;
+- hidden 10%;
+- hidden 20%;
+- hidden 30%;
+- coherent whole-family shift.
 
-Hidden minority membership is deliberately independent of ordinary topology in the primary uninformative-metadata condition.
+Primary metadata condition:
+uninformative.
 
-Member value is heterogeneous.
+Economic scale retained from preregistration:
 
-A separate stress makes the hidden minority disproportionately high value.
+correct resolution:
++3 x value.
 
-METADATA PREDICTABILITY CONDITIONS
+false promotion:
+-5 x value.
 
-P0 — UNINFORMATIVE
-Metadata carries no useful minority signal.
+audit:
+-1 per member.
 
-P1 — WEAK
-Risk score is weakly correlated with minority membership.
+broadcast application:
+-0.20 per member.
 
-P2 — MEDIUM
-Risk score is materially but imperfectly correlated.
+unresolved carry:
+-0.15 x value.
 
-P3 — STRONG
-Risk score is strongly but imperfectly correlated.
+PRIMARY POLICY RESULTS
 
-COMPARATORS
+FIXED-5 FORCED
 
-A — FIXED-5 FORCED
-Audit 5.
-If fresh sampled evidence is coherent, broadcast.
+mean net:
+96.77124.
 
-B — FIXED-9 FORCED
-Audit 9.
-If fresh sampled evidence is coherent, broadcast.
+10th percentile:
+-5.28174.
 
-C — CERTIFY-10
-Buy enough uniform evidence to certify detection of a 10% hidden minority at <=5% miss probability, unless dissent is found earlier.
-If the exact required k is reached with no dissent, broadcast.
+1st percentile:
+-9.98781.
 
-D — METADATA-STRATIFIED-9
-Use 9 canaries with risk-stratified selection.
+mean evidence:
+4.2864.
 
-E — COST-AWARE ESCALATE-OR-ABSTAIN
-Begin with 5 canaries.
-If dissent appears, do not broadcast.
-If no dissent appears:
-- compute the exact remaining sample requirement for the target minority certificate;
-- buy additional evidence only when the expected value of family-wide resolution exceeds the evidence cost plus a preregistered risk reserve;
-- otherwise abstain and keep unresolved debt dormant.
+weighted coverage:
+64.255%.
 
-F — FULL FAMILY CHECK
-Audit every member.
+mean false-promotion rate:
+3.518%.
 
-PRIMARY ECONOMIC SCALE
+hidden-minority false-broadcast / miss rate:
+25.36%.
 
-Correct resolution benefit:
-3.0 x member value.
+broadcast rate:
+65.60%.
 
-False promotion penalty:
-5.0 x member value.
+FIXED-9 FORCED
 
-Audit cost:
-1.0 per member.
+mean net:
+86.23572.
 
-Broadcast application cost:
-0.20 per reached member.
+10th percentile:
+-5.32633.
 
-Dormant unresolved carry cost:
-0.15 x member value.
+1st percentile:
+-10.45066.
 
-Risk reserve for policy E:
-2.0 expected-value units per uncertified expected false member.
+mean evidence:
+6.7292.
 
-The scale is synthetic and comparative only.
+weighted coverage:
+56.574%.
 
-PRIMARY METRICS
+mean false-promotion rate:
+1.604%.
 
-1. analytic miss probability;
-2. exact required k;
-3. mean net value;
-4. evidence audits/event;
-5. weighted coverage;
-6. false-promotion rate;
-7. hidden-minority miss/broadcast rate;
-8. abstention rate;
-9. 10th and 1st percentile net;
-10. high-value-minority loss;
-11. certificate cost as fraction of family size.
+hidden-minority miss:
+14.28%.
 
-PRIMARY ACCEPTANCE SHAPE
+broadcast:
+54.52%.
 
-The hidden-minority lower-bound claim is supported if:
-- empirical miss rates agree with exact hypergeometric predictions within sampling error;
-- fixed budgets 5 and 9 materially exceed 5% miss probability for hidden 5% and 10% minorities across much of N=30..90.
+CERTIFY-10
 
-The abstention claim is supported if COST-AWARE ESCALATE-OR-ABSTAIN:
-- reduces hidden-minority false promotion relative to FIXED-5 and FIXED-9;
-- materially improves 1st-percentile net in high-value-minority stress;
-- uses less evidence than FULL FAMILY CHECK;
-- does not require universal escalation to the full family;
-- preserves a defensible positive mean net or explicitly exposes a mean/tail tradeoff.
+Target:
+95% detection of a 10% hidden minority.
 
-FAILURE CONDITIONS
+mean net:
+71.89025.
 
-Treat H137 as mixed/negative if:
-- empirical miss rates contradict the analytic lower bound;
-- metadata-stratified 9-canary selection reliably certifies uninformative hidden minorities;
-- abstention fails to improve downside risk;
-- confidence certification always costs essentially full-family audit;
-- the result depends on one family size.
+10th percentile:
+-5.58568.
 
-ROBUSTNESS
+1st percentile:
+-10.76472.
 
-Target miss probability:
-1%, 5%, 10%.
+mean evidence:
+12.754.
 
-Hidden minority fraction:
-5%, 10%, 20%, 30%.
+weighted coverage:
+49.829%.
 
-Family size:
-30..90.
+mean false-promotion rate:
+0.426%.
 
-Metadata predictive power:
-uninformative, weak, medium, strong.
+hidden-minority miss:
+3.96%.
 
-High-value minority multiplier:
-1x, 2x, 3x.
+broadcast:
+44.20%.
 
-INTERPRETATION GUARDRAIL
+COST-AWARE ESCALATE-OR-ABSTAIN
 
-A positive lower-bound result means:
+mean net:
+73.08590.
 
-WHEN FAILURE MEMBERSHIP
-IS HIDDEN
-FROM AVAILABLE FEATURES,
+10th percentile:
+-0.86004.
 
-NO CLEVER CANARY TOPOLOGY
-CAN CREATE INFORMATION
-THAT WAS NOT PURCHASED.
+1st percentile:
+-5.54560.
 
-Metadata can reduce evidence cost only to the extent that it predicts the hidden partition.
+mean evidence:
+13.492.
 
-Abstention is a legitimate developmental action:
+weighted coverage:
+50.952%.
 
-KEEP THE DEBT DORMANT
+mean false-promotion rate:
+0.385%.
 
-rather than:
+hidden-minority miss:
+3.60%.
 
-PROMOTE AN UNCERTIFIED FAMILY MODEL.
+broadcast:
+43.84%.
 
-FROZEN BEFORE EXECUTION
+METADATA-STRATIFIED-9
+under uninformative metadata:
 
-Analytic grid, comparators, economic scale, primary metrics, acceptance shape, and robustness dimensions above are fixed before execution.
+mean net:
+91.37631.
+
+1st percentile:
+1.93688.
+
+evidence:
+9.
+
+weighted coverage:
+60.956%.
+
+false-promotion rate:
+1.663%.
+
+hidden-minority miss:
+14.72%.
+
+This is statistically similar in hidden-minority detection to another 9-sample policy when metadata carries no real signal.
+
+FULL FAMILY CHECK
+
+mean net:
+129.44423.
+
+mean evidence:
+60.3108.
+
+coverage:
+100%.
+
+false promotion:
+0.
+
+PRIMARY POLICY INTERPRETATION
+
+The aggressive fixed-5 policy has the highest mean net among bounded policies in the primary low-tail-cost ecology.
+
+But it purchases that mean by:
+
+ACCEPTING
+A LARGE
+UNCERTIFIED
+HIDDEN-MINORITY MISS RATE.
+
+CERTIFY-10 and COST-AWARE:
+
+reduce hidden-minority false broadcast by roughly:
+7x
+relative to FIXED-5,
+
+at the cost of:
+more evidence
+and:
+lower mean coverage.
+
+Thus:
+
+CERTIFICATION
+IS NOT FREE.
+
+It trades:
+average opportunistic reuse
+
+for:
+lower false-family promotion risk.
+
+HIGH-VALUE MINORITY STRESS
+
+Minority member values multiplied by 3x.
+
+2,500 worlds.
+
+FIXED-5
+
+mean net:
+83.44178.
+
+1st percentile net:
+-163.91975.
+
+hidden-minority miss:
+26.92%.
+
+FIXED-9
+
+mean net:
+81.75164.
+
+1st percentile:
+-59.30959.
+
+hidden-minority miss:
+15.28%.
+
+CERTIFY-10
+
+mean net:
+73.74392.
+
+1st percentile:
+-12.65201.
+
+hidden-minority miss:
+4.28%.
+
+COST-AWARE
+
+mean net:
+76.38467.
+
+1st percentile:
+-6.11913.
+
+hidden-minority miss:
+4.20%.
+
+PRIMARY TAIL-RISK POSITIVE
+
+As hidden-minority value rises:
+
+small forced-broadcast samples develop:
+catastrophic negative tails.
+
+The 3x stress changes FIXED-5 1st percentile from:
+
+approximately -10
+
+to:
+
+approximately -164.
+
+Certification policies hold the 1st-percentile loss near:
+
+-6 to -13.
+
+This supports:
+
+EVIDENCE CERTIFICATION
+AS A TAIL-RISK CONTROL,
+
+even when:
+its mean value is lower.
+
+2x HIGH-VALUE STRESS
+
+FIXED-5:
+mean net 91.392,
+1st percentile -65.5455.
+
+FIXED-9:
+mean net 85.0583,
+1st percentile -12.9662.
+
+CERTIFY-10:
+mean net 73.2059,
+1st percentile -10.8339.
+
+COST-AWARE:
+mean net 75.2560,
+1st percentile -5.5151.
+
+The downside transition is smooth:
+
+as minority value rises,
+uncertified small-sample broadcast becomes increasingly fragile.
+
+METADATA PREDICTABILITY RESULT
+
+9-canary metadata-stratified hidden-minority miss rate:
+
+UNINFORMATIVE:
+15.61%.
+
+WEAK:
+13.17%.
+
+MEDIUM:
+8.11%.
+
+STRONG:
+1.33%.
+
+The strong-predictor condition beats the fixed 9-canary hidden-minority miss rate dramatically.
+
+But:
+
+this improvement appears only because:
+metadata now contains information about minority identity.
+
+Thus H137 confirms:
+
+METADATA
+CAN BUY
+EVIDENCE EFFICIENCY
+
+ONLY TO THE EXTENT
+THAT IT PREDICTS
+THE HIDDEN PARTITION.
+
+No predictive signal:
+no free reduction in the statistical sample requirement.
+
+ABSTENTION ECONOMY RESULT
+
+The preregistered COST-AWARE policy did not frequently abstain for economic-price reasons after unanimous first-stage evidence.
+
+Across 5,000 diagnostic worlds:
+
+unanimous first-stage cases:
+3,301.
+
+economic escalation margin <= 0:
+0.
+
+minimum positive escalation margin:
+34.72 value units.
+
+Therefore:
+
+under the current synthetic reward scale,
+additional evidence is economically too cheap relative to:
+per-member resolution benefit.
+
+COST-AWARE abstention is driven primarily by:
+observed dissent,
+
+not:
+evidence-price refusal.
+
+This is a real limitation of the current toy economics.
+
+FULL-AUDIT DOMINANCE LIMIT
+
+FULL FAMILY CHECK has the highest primary mean net:
+
+129.44.
+
+Why?
+
+Because the current toy gives:
++3 resolution benefit
+for each audited member
+against:
+1 audit cost.
+
+Therefore:
+auditing another member
+is often intrinsically profitable.
+
+That makes:
+
+EVIDENCE
+ARTIFICIALLY CHEAP.
+
+This does not invalidate the hidden-minority lower bound.
+
+It does mean:
+
+H137 CANNOT YET
+ESTABLISH
+THE ECONOMIC
+ABSTENTION BOUNDARY
+
+for a resource-constrained organism.
+
+GENERAL PRINCIPLE
+
+H137 establishes two separate layers:
+
+LAYER 1 — INFORMATION LAW
+
+If minority identity is hidden from available metadata,
+the probability of missing it is governed by the amount of evidence purchased.
+
+No sampling cleverness removes that requirement.
+
+LAYER 2 — ECONOMIC POLICY
+
+Whether to buy the required evidence
+depends on:
+
+- evidence cost;
+- active-member value;
+- latency;
+- opportunity cost;
+- tail-risk tolerance;
+- how many members are actually worth resolving now.
+
+The current H137 economic toy makes evidence too cheap to locate that boundary cleanly.
+
+DECISION
+
+AR-H137 is:
+
+POSITIVE
+
+for:
+
+HIDDEN-MINORITY DETECTION LOWER BOUND
+
+and:
+
+POSITIVE
+
+for:
+
+CERTIFICATION AS TAIL-RISK CONTROL.
+
+It is:
+
+MIXED / INCOMPLETE
+
+for:
+
+ECONOMIC ABSTENTION POLICY
+
+because:
+the current per-audit reward structure makes escalation almost always economically favorable.
+
+SUPPORTED
+
+- empirical miss rates match hypergeometric predictions;
+- fixed 5/9 budgets cannot certify small hidden minorities;
+- 95% detection of a hidden 10% minority often requires roughly 19 to 25 audits for N=30..90;
+- hidden 5% minorities can require 23 to 40 audits;
+- high-value hidden minorities create severe downside tails under forced small-sample broadcast;
+- statistical certification sharply reduces those tails;
+- predictive metadata reduces sample cost only when it genuinely carries minority information.
+
+NOT DEMONSTRATED
+
+- realistic compute/latency price of evidence;
+- sparse activation where most dormant members have no immediate resolution value;
+- dynamic evidence prices under load;
+- multi-family competition for audit budget;
+- optimal risk reserve;
+- sequential Bayesian stopping with learned priors;
+- adversarial metadata corruption.
+
+NEXT HIGH-VALUE MOVE
+
+AR-H138 — EVIDENCE-PRICE / ACTIVE-VALUE SPARSITY / ABSTENTION PHASE-TRANSITION AUDIT
+
+Question:
+
+WHEN
+ONLY A SMALL FRACTION
+OF DEBT-FAMILY MEMBERS
+ARE CURRENTLY
+WORTH RESOLVING,
+
+and:
+
+AUDIT CAPACITY
+HAS
+REAL OPPORTUNITY COST,
+
+where is the boundary between:
+
+BROADCAST,
+
+BUY MORE EVIDENCE,
+
+LOCAL-ONLY RESOLUTION,
+
+and:
+
+ABSTAIN / KEEP DEBT DORMANT?
+
+Critical change:
+
+DO NOT
+PAY
+A +3 RESOLUTION BENEFIT
+FOR EVERY AUDITED DORMANT MEMBER.
+
+Instead model:
+
+- active-value sparsity;
+- audit compute price;
+- latency/opportunity cost;
+- competing family audit demand;
+- tail-risk reserve.
+
+Hypothesis:
+
+A genuine abstention region should emerge
+once:
+
+EVIDENCE COST
+AND
+ACTIVE VALUE
+ARE DECOUPLED.
+
+Desired result:
+
+THE ORGANISM
+SHOULD KNOW
+WHEN
+NOT TO THINK
+ABOUT A DORMANT FAMILY
+YET.
+
+This is directly aligned with:
+
+permanently active structure
+and:
+resource-bounded developmental intelligence.
 
 Do not execute STAB-18-R1 during this lane.
 
 PROVENANCE
 
-evidence_class_target = ANALYTIC_PLUS_SYNTHETIC_MEASURED_SANDBOX
+evidence_class = ANALYTIC_PLUS_SYNTHETIC_MEASURED_SANDBOX
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
-preregistered_from_head = 71027e77fc154268dc6f026f2e4c2a1d26d66eac
+primary_worlds = 2500
+empirical_draws_per_grid_cell = 20000
+max_empirical_exact_miss_error = 0.00633
+fixed5_hidden_miss = 0.2536
+fixed9_hidden_miss = 0.1428
+certify10_hidden_miss = 0.0396
+costaware_hidden_miss = 0.0360
+fixed5_primary_mean_net = 96.77124
+certify10_primary_mean_net = 71.89025
+costaware_primary_mean_net = 73.08590
+fixed5_high_value_3x_p01 = -163.91975
+certify10_high_value_3x_p01 = -12.65201
+costaware_high_value_3x_p01 = -6.11913
+full_family_primary_mean_evidence = 60.3108
