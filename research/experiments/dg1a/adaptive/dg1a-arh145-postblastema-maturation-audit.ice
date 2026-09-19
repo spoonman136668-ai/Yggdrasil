@@ -1389,3 +1389,76 @@ plasticity schedule,
 or:
 acceptance criterion
 changes in this addendum.
+
+
+ROBUSTNESS / STRESS EXECUTION FREEZE
+
+The following held-out sizes and seed blocks are fixed before execution.
+
+TRANSIENT-NOISE PLASTICITY STRESS
+
+300 common worlds.
+
+Seed block:
+145300000..145300299.
+
+Policies:
+HYBRID under P10, P20, PERSISTENT.
+
+Episodes 8..12 sensor error:
+20%.
+
+All other episodes:
+5%.
+
+TOPOLOGY-CORRECTNESS ROBUSTNESS
+
+240 worlds per condition.
+
+0% accepted-topology misassignment seed block:
+145400000..145400239.
+
+10% accepted-topology misassignment seed block:
+145410000..145410239.
+
+Policies:
+UNIFORM,
+BOUNDARY-FIRST,
+EXPECTED-RELEASE,
+HYBRID.
+
+BUDGET ROBUSTNESS
+
+240 common worlds per budget point.
+
+Seed blocks:
+0.25N: 145500000..145500239.
+1N: 145510000..145510239.
+2N: 145520000..145520239.
+
+Policies:
+UNIFORM,
+HYBRID.
+
+Primary 0.5N result remains the preregistered primary reference.
+
+SENSOR-ERROR ROBUSTNESS
+
+240 common worlds per error point.
+
+1%: 145600000..145600239.
+10%: 145610000..145610239.
+20%: 145620000..145620239.
+
+Policies:
+UNIFORM,
+HYBRID.
+
+These are held-out robustness/stress blocks.
+
+They do not change:
+primary acceptance criteria,
+member-release thresholds,
+plasticity windows,
+or:
+consolidation contract.
