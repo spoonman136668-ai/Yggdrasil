@@ -2453,3 +2453,199 @@ will be rerun again
 from:
 the exact frozen seed blocks.
 
+
+
+PRE-PRIMARY AMENDMENT — MASS-AWARE CUMULATIVE DIFFUSION
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE PRIMARY EXECUTION.
+
+All H148 primary worlds remain:
+UNSPENT.
+
+A corrected post-harness smoke review exposed:
+a scale pathology
+in the literal raw-entropy realization
+of B3.
+
+With:
+only two very small accepted repair moves
+from:
+different source regions,
+
+raw normalized source-region entropy
+can exceed:
+0.45
+
+even while:
+total structural path length
+is only:
+approximately 1%..2% of the family.
+
+That would let:
+two tiny cleanup moves
+
+consume:
+global diffusion authority
+
+despite:
+negligible cumulative structural travel.
+
+This contradicts:
+the intended H148 distinction
+between:
+
+DISTRIBUTION
+of repair history
+
+and:
+
+MAGNITUDE
+of repair history.
+
+It also creates:
+false redevelopment
+in:
+R8 PURE RELABEL
+
+without:
+post-baseline structural damage.
+
+AMENDED B3 REALIZATION
+
+Let:
+
+H_touch =
+normalized Shannon entropy
+of cumulative source-region touch mass.
+
+Let:
+
+P =
+the already-frozen global path-length ledger.
+
+The cumulative diffusion ledger used for:
+repair-envelope authority
+
+is now:
+
+C =
+H_touch
+*
+min(1, P / 0.15).
+
+The existing:
+P = 0.15
+repair bound
+
+is reused as:
+the normalization scale.
+
+No new numerical threshold
+is introduced.
+
+The H148 global diffusion bound remains:
+
+C <= 0.45.
+
+INTERPRETATION
+
+H_touch answers:
+
+HOW BROADLY
+HAS REPAIR HISTORY
+SPREAD?
+
+P answers:
+
+HOW MUCH
+STRUCTURAL TRAVEL
+HAS OCCURRED?
+
+C therefore measures:
+
+BROADNESS
+AT
+MEANINGFUL
+STRUCTURAL MASS.
+
+A tiny two-region cleanup:
+cannot masquerade as
+family-wide structural diffusion.
+
+A genuinely diffuse 10% event:
+still accumulates
+substantial diffusion exposure.
+
+A moving or repeated wound:
+can increase C
+as:
+path length accumulates
+across regions.
+
+SCIENTIFIC-HYGIENE DISPOSITION
+
+All numerical outputs
+used to discover this scale pathology
+are:
+
+NON-EVIDENCE / DISCARDED.
+
+The amendment is:
+mechanistic
+and:
+pre-primary.
+
+It does not alter:
+
+- P bound;
+- U bound;
+- regional P_r bound;
+- quarantine bound;
+- failed-repair bound;
+- patch cap;
+- regional concentration requirement;
+- regional maturation;
+- global maturation;
+- witness count;
+- certificate rules;
+- policies;
+- regimes;
+- seed blocks;
+- primary sample size;
+- acceptance gates.
+
+POST-AMENDMENT SANITY
+
+100 held-out R8 smoke worlds
+using:
+the frozen primary seed family
+
+showed:
+
+VECTOR-GLOBAL:
+0 false handoffs.
+
+VECTOR-DEPENDENCY:
+0 false handoffs.
+
+VECTOR-SCOPED-DEPENDENCY:
+0 false handoffs.
+
+ORACLE-SCOPE:
+0 false handoffs.
+
+Dependency-aware policies:
+0 pure-relabel unnecessary invalidation.
+
+No H148 primary world
+was spent by this sanity check.
+
+PRIMARY EXECUTION
+MAY PROCEED
+under:
+this amended B3 realization.
+
