@@ -109,6 +109,17 @@ Then:
 Maximum adaptive canary budget:
 9.
 
+PRIMARY CANARY BUDGET
+
+Non-adaptive comparator canary count:
+5 total members including the trigger.
+
+Adaptive first stage:
+3 total members including the trigger.
+
+Adaptive maximum:
+9 total members.
+
 PRIMARY BROADCAST GATE
 
 fresh agreement >= 0.80
