@@ -615,3 +615,317 @@ evidence_class_target = SYNTHETIC_MEASURED_SANDBOX_LONGITUDINAL
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 preregistered_from_head = e65e5d12b10dbeee4434203420cba5233b1700d2
+
+
+IMPLEMENTATION FREEZE — BEFORE H144 EXECUTION
+
+The following previously-unspecified mechanics are fixed before any H144 primary result is accepted.
+
+NORMAL-MODE INCREMENTAL LANE
+
+Reuse the frozen H143 DUAL/HYSTERETIC mechanics unchanged:
+
+- evidence decay 0.92;
+- <=2N pair observations/episode;
+- H143 pair-sampling mixture;
+- H143 reassign/split/merge candidate thresholds;
+- three candidate checkpoints for incremental structural acceptance;
+- five-episode incremental cooldown;
+- bounded one-candidate hibernation.
+
+INITIAL / DAMAGE REALIZATION
+
+Initial stored topology:
+10% membership corruption.
+
+Damage events reuse the H143 realization:
+
+selected stored memberships are:
+- erased to UNKNOWN for approximately one-third;
+- reassigned to an incorrect known region otherwise.
+
+RELATIONAL AFFINITY FOR SCRATCH RECONSTRUCTION
+
+For pair i,j:
+
+p_ij =
+decayed observed same-family mass
+/
+decayed total observation mass.
+
+c_ij =
+1 - exp(-total_mass / 3).
+
+Positive affinity:
+
+A_ij =
+max(0, 2*(p_ij - 0.5)) * c_ij.
+
+Diagonal:
+1.
+
+Unobserved pairs:
+0 off-diagonal affinity.
+
+K INFERENCE
+
+Construct normalized Laplacian from:
+A.
+
+For K = 3..8:
+
+compute:
+lambda_(K+1) - lambda_K
+
+using ascending Laplacian eigenvalues.
+
+Choose:
+the K with the largest admissible eigengap.
+
+Then:
+
+spectral clustering
+with:
+the inferred K
+
+constructs the scratch candidate.
+
+No accepted membership label:
+seeds
+or:
+constrains
+this clustering.
+
+BLASTEMA TRIGGER IMPLEMENTATION
+
+At every third episode:
+
+measure:
+
+Q =
+current quarantine fraction.
+
+D =
+current weighted relational disagreement.
+
+U =
+current UNKNOWN membership fraction.
+
+Maintain:
+alarm episode count.
+
+A checkpoint is trigger-positive when:
+
+Q >= 0.35
+OR
+D >= 0.25
+OR
+U >= 0.10
+OR
+the lane has remained H143-alarmed for >=6 consecutive episodes
+without at least 0.05 reduction in weighted relational disagreement.
+
+Ordinary trigger-positive state must persist for:
+two consecutive checkpoints.
+
+If:
+U >= 0.20
+
+blastema mode may enter immediately.
+
+FRESH VALIDATION BUFFER
+
+Once a scratch candidate is built:
+
+ordinary post-build queried pair observations are copied into:
+a validation-only buffer
+
+before:
+those later observations may influence the next scratch candidate.
+
+For each fresh observation:
+
+candidate error =
+1
+when:
+candidate same/different prediction
+disagrees with:
+fresh observed relation;
+
+else:
+0.
+
+Accepted-topology error:
+same definition.
+
+A checkpoint passes the validation margin when:
+
+accepted_error
+-
+candidate_error
+>= 0.08.
+
+No pre-build pair observation can count as:
+fresh validation evidence.
+
+TWO-CHECKPOINT PROMOTION
+
+At checkpoint t:
+
+build:
+candidate C_t.
+
+At checkpoint t+3:
+
+1. score C_t on fresh validation evidence;
+2. build:
+new scratch candidate C_(t+3);
+3. require:
+ARI(C_t, C_(t+3)) >= 0.90.
+
+This can produce:
+validation pass 1.
+
+At checkpoint t+6:
+
+repeat with:
+C_(t+3).
+
+Promotion requires:
+two consecutive validation/stability passes.
+
+Thus:
+minimum ordinary blastema maturation time
+after first candidate construction
+
+is:
+6 episodes.
+
+MINIMUM VALIDATION SUPPORT
+
+A validation checkpoint is informative only when:
+
+at least:
+20 fresh pair observations
+
+are present.
+
+Otherwise:
+no pass is awarded.
+
+SCRATCH-WITHOUT-HOLDOUT
+
+Uses the same:
+trigger
+and:
+scratch construction.
+
+It promotes:
+the first admissible scratch candidate immediately
+
+without:
+fresh validation.
+
+PERIODIC-SCRATCH
+
+Attempts scratch reconstruction every:
+6 episodes
+
+while not already validating a candidate.
+
+It uses:
+the same two-checkpoint validation gate.
+
+ORACLE-DAMAGE-MODE-SWITCH
+
+Enters blastema mode:
+at the exact synthetic damage event.
+
+It receives:
+no latent K
+and:
+no original labels.
+
+ROLLBACK
+
+After scratch promotion:
+
+retain old accepted topology for:
+10 episodes.
+
+At each third-episode checkpoint during fallback:
+
+use fresh post-promotion validation evidence.
+
+Rollback occurs if:
+
+old_topology_error
++
+0.08
+<=
+new_topology_error.
+
+After rollback:
+
+remain local
+until:
+a new blastema candidate independently matures.
+
+ACTION-COVERAGE ACCOUNTING
+
+While blastema candidate is immature:
+
+broad action is frozen.
+
+For coverage accounting:
+
+one active triggering member
+may be resolved locally.
+
+Thus blastema immature coverage is:
+
+1 / current_active_count.
+
+After promotion or in normal mode:
+
+use:
+the H143 quarantine-defined action core.
+
+ACTIVE TOPOLOGY COMPUTE
+
+One unit:
+
+one H143 incremental candidate-generation pass.
+
+One scratch-build unit:
+
+one full affinity + eigengap + spectral candidate reconstruction.
+
+These are recorded separately.
+
+Primary comparison of:
+TRIGGERED-BLASTEMA
+versus:
+PERIODIC-SCRATCH
+
+uses:
+scratch-build count
+
+as the main re-development compute metric.
+
+PRIMARY EXECUTION SEEDS
+
+Each regime uses:
+48 held-out worlds.
+
+No H143 primary,
+control,
+or exploratory seed
+is reused.
+
+No trigger,
+affinity,
+validation,
+promotion,
+or rollback threshold
+will change after H144 primary execution begins.
