@@ -1886,3 +1886,41 @@ acceptance criterion
 is changed.
 
 Primary execution has not begun.
+
+
+LINEAGE HOLD — BEFORE PRIMARY EXECUTION
+
+H148 primary execution is:
+
+NOT STARTED.
+
+Pre-primary harness validation exposed:
+an omitted H146 contradiction-budget semantic
+in the H147 execution baseline.
+
+H147 has been:
+reopened
+for:
+same-seed corrected execution.
+
+H148 preregistration remains frozen.
+
+No H148 threshold,
+policy,
+regime,
+or:
+acceptance rule
+is being changed.
+
+H148 primary will begin only after:
+
+the corrected H147 baseline
+is closed
+
+and:
+its effect on
+certificate-inheritance failure
+is measured.
+
+Harness-only H148 sanity outputs before this hold are:
+NON-EVIDENCE.
