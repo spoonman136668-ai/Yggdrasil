@@ -487,3 +487,177 @@ evidence_class_target = SYNTHETIC_MEASURED_SANDBOX_LONGITUDINAL
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 preregistered_from_head = a2ca038133fcce9517ee67f32600e4d09fa4c65e
+
+
+IMPLEMENTATION FREEZE — BEFORE PRIMARY EXECUTION
+
+A preliminary harness-only sanity pass was discarded before primary acceptance analysis.
+
+It revealed that a proposal generator anchored too strongly to the accepted labels could fail to discover a real split.
+
+No H143 acceptance criterion,
+event schedule,
+policy definition,
+or primary metric was changed.
+
+The following previously-unspecified implementation mechanics are now frozen before the primary run.
+
+INITIAL OBSERVED TOPOLOGY
+
+The stored starting partition receives:
+10% label corruption.
+
+The latent true partition is never exposed to repair policies.
+
+RELATIONAL EVIDENCE MEMORY
+
+Pair observations are stored as decaying same/different evidence.
+
+Per-episode retained evidence factor:
+
+0.92.
+
+This gives recent relational evidence enough authority to challenge stale topology while retaining short-term continuity.
+
+Sensor error remains:
+5%.
+
+PAIR SAMPLING
+
+Primary budget:
+
+2N pair observations per episode.
+
+Sampling is a mixture of:
+
+- active-member pairs;
+- quarantined / low-margin-member pairs;
+- within-current-region probes;
+- cross-current-region probes;
+- uniform exploration.
+
+Potential observation noise is keyed by:
+world,
+episode,
+pair
+
+so identical queried pairs receive identical potential outcomes across policies.
+
+CANDIDATE CHECKPOINTS
+
+GREEDY:
+every episode.
+
+HYSTERETIC:
+every 3 episodes.
+
+DUAL-PARTITION:
+every 3 episodes when awake.
+
+REGENERATIVE:
+every 3 episodes when awake.
+
+A drift alarm can wake a hibernating candidate lane.
+
+HYSTERETIC / DUAL / REGENERATIVE still require:
+
+3 consecutive candidate checkpoints
+
+before structural acceptance.
+
+Cooldown remains:
+5 episodes.
+
+Thus a persistent structural event can mature inside the 15-episode adaptation windows,
+while the 5-episode transient false shift does not automatically receive three post-shift-confirmed checkpoints.
+
+LOCAL SUPPORT RULES
+
+A damaged / unknown or challenged member may be assigned to an existing region only when:
+
+same-region support >= 0.70,
+
+and:
+
+support margin over the next-best region >= 0.15,
+
+with:
+
+at least 6 effective pair observations contributing to the decision.
+
+MERGE CANDIDATE
+
+Two current regions become a merge candidate only when:
+
+cross-region same-family evidence rate >= 0.80
+
+with:
+
+at least 12 effective pair observations.
+
+SPLIT CANDIDATE
+
+A current region becomes split-eligible when:
+
+internal same-family evidence rate < 0.72
+
+and:
+
+at least 12 effective contradictory pair observations exist.
+
+The split generator:
+
+1. chooses the strongest supported different-family pair as opposite seeds;
+2. assigns other members by relative accumulated relational support;
+3. performs four bounded refinement passes;
+4. rejects daughters smaller than 5;
+5. requires within-daughter same-family evidence >= 0.70 where observed;
+6. requires cross-daughter same-family evidence <= 0.30 where observed.
+
+CANDIDATE PREFERENCE
+
+All repair policies use the same evidence-disagreement objective.
+
+A structural candidate must improve the current partition's weighted relational disagreement by:
+
+at least 0.03 absolute
+
+before it is eligible.
+
+GREEDY applies an eligible candidate immediately.
+
+HYSTERETIC / DUAL / REGENERATIVE apply only after the frozen persistence rule.
+
+QUARANTINE
+
+A member is quarantined when:
+
+- its stored label is unknown; or
+- relational support for its accepted region is below 0.65; or
+- its support margin over the best alternative region is below 0.10.
+
+QUARANTINE is an action restriction.
+
+It does not itself mutate topology.
+
+DUAL-PARTITION HIBERNATION
+
+At most:
+one alternate candidate partition
+
+may be retained.
+
+When no drift alarm is present:
+
+the alternate remains metadata-only
+
+and:
+expensive candidate reconstruction is skipped.
+
+This provides the active-cost comparison against continuously recomputed repair.
+
+PRIMARY EXECUTION HAS NOT YET BEEN ACCEPTED
+
+The implementation freeze above is now part of the preregistered execution contract.
+
+The earlier harness sanity pass is not evidence for or against H143.
