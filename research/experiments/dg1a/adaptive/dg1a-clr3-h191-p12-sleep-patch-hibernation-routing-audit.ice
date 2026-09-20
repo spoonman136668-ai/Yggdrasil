@@ -711,3 +711,125 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — H191-P12 CONDITIONAL PATCH HIBERNATION HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST H191-P12 WORLD.
+
+HARNESS
+
+research/experiments/dg1a/adaptive/harnesses/h191_p12_sleep_patch_hibernation_routing_v1.py
+
+Harness commit:
+
+141509179e9c6c91c38e36509ffd27b0734f2372.
+
+Git blob SHA:
+
+37086c14a28ef5ae7085463e154f1efc4f4f203f.
+
+Source SHA-256:
+
+17585ed7fcbc2411393e02e8c9f9da1db9f2a6783b4e2e10829f3e9bee055296.
+
+Source bytes:
+
+13614.
+
+DEPENDENCIES
+
+H191-P11 harness Git blob:
+
+ec1ee8e3a53dd68166dd6c9cdc486a20d3dde956.
+
+H191-P11 source SHA-256:
+
+923a055bbd840f681aeeea33351e4124dbae2340587d59f17a256275c80efa69.
+
+H191-P10 harness Git blob:
+
+736e78364340dd355a8ecd163a2deef29edf1a2a.
+
+H191-P10 source SHA-256:
+
+9efde966ddf02c4695462af2959555098edfdcc447e6c5c95e26c86c9540d8b4.
+
+LOCAL EXECUTION PRECHECK
+
+P10,
+P11,
+and:
+P12
+
+execution copies
+were:
+verified
+against:
+their:
+Git blob identities.
+
+P12:
+Python compile:
+
+PASS.
+
+No:
+P12 experimental world
+was:
+executed
+before:
+this freeze.
+
+FROZEN WORLD FAMILY
+
+20260925300000..20260925300005.
+
+6 worlds.
+
+GLOBAL PATCH POOL
+
+Final:
+developmental:
+post-CORE3:
+patch geometry.
+
+No:
+geometry deletion.
+
+No:
+new:
+geometry creation.
+
+Routing is:
+per-capability.
+
+SLEEP_ALPHA:
+
+1e-9.
+
+ACTIVE_ZERO:
+
+1e-12.
+
+REPRODUCIBILITY
+
+Execute:
+two complete:
+6-world:
+development-plus-routing sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
