@@ -834,3 +834,534 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL CLOSURE — DG-1R-05Y PARTITIONED SOVEREIGNTY AND CAUSAL RE-MERGE AUDIT
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED /
+REPRODUCIBLE /
+PARTITIONED SOVEREIGNTY RE-MERGE POSITIVE /
+POPULATION-MAJORITY CONTROL FAILED AS EXPECTED /
+EVENT-DISCOVERY COMPLETENESS BOUNDARY PRESERVED /
+NON-CANONICAL.
+
+FROZEN PROVENANCE
+
+Preregistration commit:
+
+5b245172ed52d5c5b2f764a7862242f0111f9c6f.
+
+Harness source commit:
+
+9a43e89af22e63ed9b93105d1d5ad936794b8d55.
+
+Harness Git blob:
+
+9d227f8b4350cd45ec48e98319b3a7519c5fd3e2.
+
+Harness source SHA-256:
+
+1078430e8f6ad9f4989055849ec25a763c2601ba77332ad1c306003ee347b0cf.
+
+Harness bytes:
+
+18413.
+
+Freeze commit:
+
+3915188045e4361ea0ddb95f48d14473797bebca.
+
+PRIMARY EXECUTION
+
+Two complete deterministic frozen sweeps were executed.
+
+Sweep 1 serialized output SHA-256:
+
+fc309aa50acfaf58472012d6f9285114c95d20979f5513ba759018e69b8b7d18.
+
+Sweep 2 serialized output SHA-256:
+
+fc309aa50acfaf58472012d6f9285114c95d20979f5513ba759018e69b8b7d18.
+
+BYTE_IDENTICAL_REPRODUCIBILITY:
+
+TRUE.
+
+MECHANICAL_VALID:
+
+TRUE.
+
+PRIMARY PARTITION SIGNAL
+
+PARTITIONED_SOVEREIGNTY_REMERGES:
+
+TRUE.
+
+Every preregistered primary signal is TRUE:
+
+CLEAN_PARTITION_REJOINS_EXACTLY.
+ONE_SIDED_PROVISIONAL_ACTION_MERGES.
+DISJOINT_CONCURRENT_EVENTS_COMMUTE.
+CONCURRENT_ROLE_CONFLICT_ABSTAINS.
+IDENTICAL_CONCURRENT_OUTCOME_COALESCES.
+PARTITIONING_DOES_NOT_MULTIPLY_PROVENANCE.
+INSUFFICIENT_PARTITION_ROOTS_CANNOT_MINT_AUTHORITY.
+STALE_PARTITION_REPLAY_REJECTED.
+PARTITION_REGISTRY_LIVENESS_BOUND_PRESERVED.
+TARGET_SCOPED_CONFLICT_ISOLATION.
+MERGE_ORDER_INDEPENDENT_FOR_COMMUTING_EVENTS.
+NO_DANGLING_PROVISIONAL_AUTHORITY.
+
+AUDIT A — CLEAN PARTITION / NO MUTATION
+
+Cases:
+
+1.
+
+Exact BASE0 rejoin:
+
+1 / 1.
+
+No synthetic generation change,
+no split brain,
+and no provisional event remained.
+
+AUDIT B — ONE-SIDED LEGITIMATE PROVISIONAL ACTION
+
+Cases:
+
+60.
+
+Merged globally:
+
+60 / 60.
+
+Exactly one global merge per provisional action:
+
+60 / 60.
+
+This covered:
+
+- 12 repair events;
+- 12 role-preserving adaptations;
+- 36 legitimate role migrations.
+
+AUDIT C — COMPATIBLE CHANGES ON BOTH PARTITIONS
+
+Cases:
+
+36.
+
+Both independent target changes merged:
+
+36 / 36.
+
+Concurrent changes to different cells therefore commute.
+
+AUDIT D — CONFLICTING SAME-TARGET ROLE MIGRATION
+
+Cases:
+
+72.
+
+CAUSAL_PROVENANCE_MERGE:
+
+conflict abstentions / rollback to BASE0:
+
+72 / 72.
+
+Split-brain outcomes:
+
+0.
+
+POPULATION_MAJORITY_MERGE:
+
+selected one conflicting branch:
+
+72 / 72.
+
+Thus a disconnected majority is not a safe authority selector.
+
+AUDIT E — IDENTICAL CONCURRENT SAME-TARGET OUTCOME
+
+Cases:
+
+36.
+
+Successful single global outcomes:
+
+36 / 36.
+
+Each case ended with:
+
+- one MERGED_GLOBAL history;
+- one COALESCED history;
+- one generation-1 authoritative result.
+
+Two causal paths therefore did not become two authority votes.
+
+AUDIT F — SHARED-ANCESTOR PROVENANCE FANOUT
+
+Cases:
+
+48.
+
+False independent merge quorums:
+
+0.
+
+PARTITIONING_DOES_NOT_MULTIPLY_PROVENANCE:
+
+TRUE.
+
+Separating copies of one lineage across disconnected holders does not create new evidence roots.
+
+AUDIT G — ASYMMETRIC GOVERNANCE ROOT LOSS
+
+Cases:
+
+8.
+
+Ineligible partition actions rejected:
+
+8 / 8.
+
+An incomplete local governance fixture remained LOCAL_OBSERVATION
+rather than becoming merge-eligible authority.
+
+AUDIT H — STALE PARTITION REPLAY
+
+Cases:
+
+12.
+
+Newer global generation preserved:
+
+12 / 12.
+
+Stale BASE0 role histories could not overwrite generation 1.
+
+AUDIT I — PARTITION REGISTRY LIVENESS BOUND
+
+Cases:
+
+20.
+
+With one unavailable registry root:
+
+8 / 8 events remained merge-eligible from the three surviving pairwise-disjoint roots.
+
+With two unavailable roots:
+
+12 / 12 events were rejected as ineligible.
+
+PARTITION_REGISTRY_LIVENESS_BOUND_PRESERVED:
+
+TRUE.
+
+AUDIT J — ONE CONFLICTING TARGET PLUS ONE NON-CONFLICTING TARGET
+
+Cases:
+
+36.
+
+Conflicting target rolled back:
+
+36 / 36.
+
+Independent non-conflicting target merged:
+
+36 / 36.
+
+The conflict therefore remains target-scoped.
+
+One bad target does not erase unrelated valid partition work.
+
+AUDIT K — MERGE INPUT ORDER
+
+Merge presentations:
+
+72.
+
+Order-independent final authoritative states:
+
+72 / 72.
+
+A-then-B and B-then-A produce the same state for commuting events.
+
+AUDIT L — PROVISIONAL STATUS EXHAUSTIVENESS
+
+Resolved events:
+
+24.
+
+Terminal-status events:
+
+24.
+
+Dangling PARTITION_PROVISIONAL events:
+
+0.
+
+Every examined provisional event ended in an explicit terminal merge status.
+
+NEGATIVE CONTROL — POPULATION MAJORITY
+
+Control population weights:
+
+Partition A = 7.
+Partition B = 5.
+
+For the 12 representative same-target conflict controls,
+the larger partition was selected:
+
+12 / 12.
+
+Across the exhaustive Audit D conflict family,
+the majority merge selected one conflicting branch:
+
+72 / 72.
+
+POPULATION_MAJORITY_FAILURE_EXPOSED:
+
+TRUE.
+
+The larger disconnected population is not thereby more causally correct.
+
+CORRELATED / CONSTITUTIONAL BOUNDARIES
+
+H1 — BOTH PARTITIONS INDEPENDENTLY COLLude ON THE SAME FALSE OUTCOME
+
+Cases:
+
+12.
+
+False merged outcomes:
+
+12 / 12.
+
+DUAL_PARTITION_INDEPENDENT_COLLUSION_FAILURE:
+
+TRUE.
+
+Independent provenance does not guarantee honesty.
+
+H2 — ROOT COMPROMISE SPANS PARTITIONS
+
+Cases:
+
+12.
+
+Reported root identities satisfy the synthetic independence fixture
+while the evaluator models their actual causal source as compromised.
+
+False merged outcomes:
+
+12 / 12.
+
+PARTITION_ROOT_COMPROMISE_FAILURE:
+
+TRUE.
+
+H3 — FORGED COMMON ANCESTOR
+
+Cases:
+
+12.
+
+False merges:
+
+0.
+
+FORGED_COMMON_ANCESTOR_REJECTED_WITH_IMMUTABLE_ANCHOR:
+
+TRUE.
+
+This success depends on the frozen assumption that BASE0 is an immutable authenticated global-commit anchor.
+
+05Y does not solve genesis / root-anchor compromise.
+
+H4 — CROSS-PARTITION CAUSAL-LOG OMISSION
+
+Cases:
+
+12.
+
+A real conflicting event was modeled as existing
+but absent from every history presented to the merge engine.
+
+False surviving-branch merges:
+
+12 / 12.
+
+OMITTED_PARTITION_EVENT_FAILURE:
+
+TRUE.
+
+This is a discovery-completeness boundary,
+not a failure of the frozen conflict-resolution rule.
+
+A merge engine cannot resolve a conflict it cannot discover.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-05Y extends the closed cellular-sovereignty architecture
+from connected distributed governance
+to temporary communication partition.
+
+The useful distinction is:
+
+LOCAL OPERATION
+
+versus
+
+GLOBAL AUTHORITY.
+
+A sufficiently qualified partition can continue useful bounded work,
+but its events remain provisional until causal reconciliation.
+
+At re-merge:
+
+- verified descendants supersede stale histories;
+- independent changes to different targets commute;
+- identical concurrent outcomes coalesce without multiplying votes;
+- same-target concurrent conflicts roll back to the last common committed state;
+- conflicts remain target-scoped;
+- pre-partition provenance remains one lineage after physical separation;
+- local root loss produces ineligible observations rather than synthetic authority;
+- generation monotonicity prevents stale partition takeover;
+- every provisional event receives an explicit terminal disposition.
+
+The population-majority control establishes that merge safety is not reducible to headcount.
+
+The remaining limit is now particularly clear:
+
+CAUSAL DISCOVERY COMPLETENESS.
+
+The merge logic safely handles every conflict that is present in its verified histories.
+
+It cannot infer an omitted real event that no surviving causal record exposes.
+
+This suggests that partition-safe sovereignty requires two separate properties:
+
+1. SAFE MERGE SEMANTICS;
+2. SUFFICIENTLY DURABLE EVENT DISCOVERY.
+
+05Y establishes the first under the frozen model.
+
+It does not prove the second against arbitrary correlated omission.
+
+PLAIN-SPEAK INTERPRETATION
+
+The organism can be temporarily cut into two disconnected pieces
+without forcing either piece to shut down completely.
+
+Each side can still do qualified local work.
+
+But neither half becomes the whole organism just because it has more cells.
+
+When they reconnect:
+
+- changes to different cells can both survive;
+- the same change discovered twice becomes one change;
+- old history cannot overwrite newer history;
+- two different changes to the same cell do not get decided by a headcount vote.
+
+That conflicted cell goes back to the last state both sides agreed was real
+and needs a fresh decision.
+
+Meanwhile unrelated healthy work still survives.
+
+The biggest remaining weakness is not the merge rule.
+
+It is missing history.
+
+If a conflicting event really happened
+and every surviving record of it disappears,
+the other branch looks conflict-free.
+
+The organism cannot reconcile evidence it no longer has.
+
+So the emerging rule is:
+
+PROVISIONAL AUTONOMY IS SAFE
+ONLY WHEN CAUSAL HISTORY IS BOTH
+MERGE-SAFE
+AND
+DURABLY DISCOVERABLE.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05Z —
+
+HIBERNATION / REACTIVATION AND DORMANT AUTHORITY AUDIT.
+
+Partitioning tested temporarily disconnected active tissue.
+
+The North Star also requires cells to hibernate and reactivate.
+
+Dormancy creates a different authority problem:
+
+a sleeping cell intentionally stops observing,
+stops voting,
+and accumulates stale local state
+while the rest of the organism may continue to repair,
+adapt,
+change roles,
+rotate witnesses,
+and advance provenance generations.
+
+Question:
+
+Can a dormant cell preserve useful identity
+without retaining stale governance authority,
+then safely reactivate by catching up to the current causal history
+before it resumes any vote or repair role?
+
+05Z should test:
+
+- clean short dormancy;
+- long dormancy across multiple role generations;
+- organism role change while target sleeps;
+- witness-holder replacement while asleep;
+- registry generation advance during dormancy;
+- dormant cell carrying stale self-health snapshot;
+- damage present at hibernation entry;
+- damage acquired while dormant;
+- reactivation with incomplete causal catch-up;
+- reactivation with one missing provenance root;
+- stale dormant vote attempted before catch-up;
+- successful catch-up followed by restored voting;
+- hibernation of current witness holders;
+- replacement witness activation;
+- repeated hibernate / reactivate cycles;
+- no dormant population-size inflation;
+- omitted history during catch-up as an explicit boundary;
+- full independent collusion as an explicit boundary.
+
+Frozen design principle:
+
+DORMANT CELLS PRESERVE IDENTITY,
+NOT AUTHORITY.
+
+A dormant cell may carry:
+
+- last committed phenotype identity;
+- last committed role;
+- last verified causal cursor.
+
+It may not exercise current governance authority
+until it proves that its cursor has caught up
+through verified sealed history
+and its reactivated health state is consistent with the current organism state.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
