@@ -836,3 +836,387 @@ SYNTHETIC_MEASURED_SANDBOX_SENTINEL_TRIGGERED_FUNCTIONAL_ANCHOR_TURNOVER
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — SENTINEL-TRIGGERED ANCHOR HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H164 HELD-OUT PRIMARY EXECUTION.
+
+SCHEMA-ONLY SANITY REPAIR
+
+The first sandbox wrapper:
+
+h164_sentinel_anchor_v1.py
+
+executed:
+the sentinel policies
+
+but:
+failed while writing:
+mixed parent / sentinel rows
+
+because:
+sentinel rows contained:
+frac_ge20
+
+while:
+parent H163 rows
+ended at:
+frac_ge10.
+
+This was:
+a CSV schema mismatch only.
+
+No:
+sentinel trigger,
+repair,
+noise,
+query,
+threshold,
+policy,
+or:
+scientific calculation
+
+was changed.
+
+The incomplete first sanity output
+is:
+NON-EVIDENCE.
+
+FINAL H164 SANDBOX HARNESS
+
+File:
+
+h164_sentinel_anchor_v2.py
+
+SHA-256:
+
+f606744bf16c3cae3c38c5d227c8ba7a7d5ba75f009a95f0cb98f9f3181c77d4.
+
+The only v1 -> v2 change:
+
+drop:
+frac_ge20
+
+from:
+the sentinel CSV row schema
+
+so:
+all six policies
+share:
+one output schema.
+
+PARENT HASHES
+
+H161:
+
+ae89e645e9f00f33a581c05298a0b2e930b450bbc9a55f0e0f46f87de86a8248.
+
+H162:
+
+2a8e405055d88906285934778898b02072dcdf683afd8cbc4d8f392c7461ae2c.
+
+H163:
+
+553a1edf2da195aff37a3a4ee6dcfa0f6072b2945bee8b46d64e916791edd5c2.
+
+SENTINEL MECHANICS
+
+Sentinel counts:
+
+2
+and:
+4.
+
+Sentinel queries:
+
+lesion-local,
+member-centered,
+Gaussian jitter sd=0.12.
+
+Sentinel observations:
+
+detection-only.
+
+They NEVER:
+enter:
+the full ridge solve.
+
+Trigger metric:
+
+rho =
+E_context
+/
+max(
+E_lesion,
+1e-14
+).
+
+Full functional anchor
+iff:
+
+rho > 0.10.
+
+Threshold:
+
+unchanged
+from:
+preregistration.
+
+Trigger evaluation occurs:
+
+after:
+100%
+membership return
+
+and:
+before:
+post-membership
+functional-anchor correction.
+
+No:
+held-out evaluation target
+or:
+lost coefficient
+
+enters:
+the trigger.
+
+FULL ANCHOR
+
+Triggered cycles use:
+
+- lambda=0.01;
+- global leverage local query design;
+- 24-observation cap;
+- 6 observations / maturation step;
+- complete restored lesion
+  as:
+  joint variable domain;
+- surviving coefficients fixed.
+
+NOISE
+
+Sentinel target noise
+and:
+full-anchor target noise
+
+use:
+independent deterministic potentials
+
+at:
+the same eta:
+
+0,
+0.25.
+
+SENTINEL FALSE-NEGATIVE DIAGNOSTIC
+
+For:
+an untriggered cycle,
+
+count:
+false negative
+
+iff:
+
+the policy's:
+post-cycle GlobalFidelity
+
+drops:
+by:
+more than 0.01
+
+relative to:
+that policy's
+previous post-cycle fidelity.
+
+This is:
+diagnostic only.
+
+FALSE-POSITIVE DIAGNOSTIC
+
+Noise-free sentinel target values
+are used:
+analysis-only
+
+to ask:
+
+whether:
+a noisy trigger
+would have:
+rho_true <=0.10.
+
+This diagnostic
+does NOT:
+affect:
+repair authority.
+
+SANITY
+
+Disjoint family:
+
+20260921390000...
+
+6 representative
+condition-world lifetimes.
+
+36 policy lifetimes.
+
+Mechanical checks:
+
+- exactly six policies / sanity seed;
+- exact six sanity seeds;
+- LOCAL-CHECKPOINT-ORACLE:
+  final fidelity exactly 1.0;
+- sentinel policies:
+  max full-anchor observations / triggered cycle = 24;
+- no sentinel observation
+  enters:
+  the full solve;
+- sentinel and parent policies
+  share:
+  one CSV schema;
+- zero sentinel false negatives
+  in:
+  the disjoint sanity matrix.
+
+Accepted sanity-output SHA-256:
+
+b192cff335197ebc527e9ff404e1e86ec3a9b095c54ea4d38e3c99907cf47717.
+
+NON-EVIDENCE SIGNAL
+
+Coarse:
+g=1,
+ROAMING,
+eta=0.
+
+SENTINEL2:
+
+final fidelity:
+approximately 0.9987.
+
+full-anchor duty:
+0.60.
+
+SENTINEL4:
+
+approximately 0.9973.
+
+duty:
+0.55.
+
+Coarse:
+ROAMING,
+eta=0.25.
+
+SENTINEL2:
+
+final fidelity:
+approximately 0.9939.
+
+duty:
+0.55.
+
+SENTINEL4:
+
+approximately 0.99935.
+
+duty:
+0.75.
+
+Fine:
+g=0.25,
+ROAMING,
+eta=0.
+
+SENTINEL2:
+
+final fidelity:
+approximately 0.99994.
+
+duty:
+approximately 0.281.
+
+SENTINEL4:
+
+approximately 0.99993.
+
+duty:
+approximately 0.260.
+
+Fine:
+ROAMING,
+eta=0.25.
+
+SENTINEL2:
+
+duty:
+approximately 0.411.
+
+SENTINEL4:
+
+approximately 0.435.
+
+Fine:
+HOTSPOT,
+eta=0.25.
+
+SENTINEL2:
+
+duty:
+approximately 0.086.
+
+SENTINEL4:
+
+approximately 0.062.
+
+Sanity therefore suggests:
+
+- sentinel gating can remain:
+  functionally safe;
+- trigger duty may be:
+  scale / regime / noise dependent;
+- some groups may fail:
+  the preregistered cost targets.
+
+No:
+sentinel count,
+rho threshold,
+noise rule,
+repair rule,
+sample size,
+or:
+acceptance gate
+
+was changed
+from:
+these NON-EVIDENCE results.
+
+PRIMARY FAMILY
+
+20260921300000..20260921300119.
+
+120 held-out condition-world lifetimes.
+
+6 policies.
+
+720 policy lifetimes.
+
+H164 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H164 lifetime.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
