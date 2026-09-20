@@ -627,3 +627,312 @@ SYNTHETIC_MEASURED_DISTRIBUTED_DEVELOPMENTAL_CAPABILITY_ADDITION
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — DISTRIBUTED CAPABILITY-GROWTH HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H179 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H179 SANDBOX HARNESS
+
+File:
+
+h179_distributed_add_v1.py
+
+SHA-256:
+
+f5a7da30a44a4017b18f9e6df018bfd9346090e775607d426ba65f6c3d36f083.
+
+PARENT CAPABILITY MODEL
+
+Exact H178
+accepted capability-addition substrate:
+
+- g=.25;
+- N=3209;
+- A context-silence training;
+- smooth learned A/B teachers;
+- frozen parent A coefficients;
+- B-residual daughter fitting;
+- same daughter basis / offset;
+- same B training / validation / test;
+- same hibernation / reactivation mechanics.
+
+ONLY CHANGED VARIABLE
+
+Spatial morphology
+of:
+the new daughter-cell budget.
+
+Residual score:
+
+identical to H178.
+
+MULTI-PATCH SEEDS
+
+Seed 1:
+
+maximum B-residual correlation.
+
+Later seeds:
+
+prefer:
+right-half cells
+
+at least:
+0.20
+normalized macro distance
+
+from:
+all previous seeds,
+
+then:
+choose:
+highest residual score.
+
+If:
+the 0.20
+separation constraint
+cannot be met,
+
+use:
+residual score
+times:
+minimum seed distance.
+
+No:
+B validation
+or:
+B held-out
+target
+enters:
+seed selection.
+
+GROWTH
+
+Each micro-patch:
+
+Moore-connected.
+
+Patches:
+
+grow:
+round-robin.
+
+Each patch:
+takes:
+its highest-residual-score
+unclaimed boundary cell.
+
+All:
+daughter coefficients
+
+across:
+all patches
+
+are:
+fit JOINTLY
+
+to:
+the same:
+B training residual.
+
+Thus:
+
+multi-patch policies
+
+are:
+one capability substrate
+
+with:
+distributed morphology,
+
+not:
+separately trained
+ensembles.
+
+POLICIES
+
+CONN64.
+
+MULTI4_64.
+
+MULTI8_64.
+
+MULTI4_32.
+
+MULTI8_32.
+
+MULTI4_128.
+
+MULTI8_128.
+
+RANDOM_MULTI8_64.
+
+CONN256.
+
+GLOBAL_DAUGHTER.
+
+SANITY
+
+Disjoint family:
+
+20260922890000
+and:
+20260922890001.
+
+2 worlds.
+
+10 policies.
+
+20 evaluations.
+
+Accepted sanity-output SHA-256:
+
+5f8abbbeec8ff7ff72da99c4bece20f4589889dc89244a973486212da9b97271.
+
+Mechanical checks:
+
+- exact 10 policies / world;
+- total daughter-cell counts:
+  match:
+  each frozen budget;
+- multi-patch counts:
+  exact:
+  4 or 8;
+- joint daughter solve:
+  spans:
+  all micro-patches;
+- parent A coefficients:
+  frozen;
+- no:
+  A replay;
+- no:
+  B validation / test
+  leakage;
+- hibernation / reactivation:
+  unchanged.
+
+NON-EVIDENCE SIGNAL
+
+Median sanity
+B held-out R^2:
+
+CONN64:
+approximately 0.808.
+
+MULTI4_64:
+approximately 0.807.
+
+MULTI8_64:
+approximately 0.891.
+
+Thus:
+
+8-way distribution
+
+improves:
+B coverage
+
+at:
+the same:
+64-cell budget.
+
+MULTI8_32:
+
+B:
+approximately 0.879.
+
+MULTI8_128:
+
+approximately 0.902.
+
+A preservation:
+
+MULTI8_64
+median A loss:
+
+approximately 0.0277.
+
+MULTI8_32:
+
+approximately 0.0260.
+
+MULTI8_128:
+
+approximately 0.0311.
+
+Thus:
+
+distribution creates:
+a genuine:
+coverage / interference
+trade-off.
+
+RANDOM_MULTI8_64:
+
+B:
+approximately 0.958
+
+but:
+median A loss:
+approximately 0.139.
+
+Therefore:
+
+broad coverage alone
+can:
+learn B
+
+while:
+badly interfering:
+with A.
+
+Residual-driven placement
+appears:
+important
+for:
+preservation.
+
+These values are:
+
+NON-EVIDENCE.
+
+No:
+seed-separation rule,
+patch count,
+cell budget,
+residual score,
+daughter fit,
+sample size,
+or:
+acceptance gate
+
+was changed.
+
+PRIMARY FAMILY
+
+20260922800000..20260922800019.
+
+20 held-out worlds.
+
+10 policies.
+
+200 policy evaluations.
+
+H179 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H179 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
