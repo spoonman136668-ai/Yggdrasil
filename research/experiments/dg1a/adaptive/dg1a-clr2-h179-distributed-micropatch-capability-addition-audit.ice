@@ -936,3 +936,655 @@ the first held-out H179 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — DISTRIBUTED MICRO-PATCH CAPABILITY ADDITION
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / NEGATIVE FOR <=2%-BODY CAPABILITY ADDITION / POSITIVE MORPHOLOGY + ROUTING DIAGNOSTIC.
+
+FINAL H179 HARNESS SHA-256
+
+f5a7da30a44a4017b18f9e6df018bfd9346090e775607d426ba65f6c3d36f083.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+c0866820a050f6c22634c1efcab2dadc3f65b2617bfb7b26e51cd22206b918fd.
+
+ACCEPTED PRIMARY FAMILY
+
+20260922800000..20260922800019.
+
+PRIMARY MATRIX
+
+20 held-out capability-addition worlds.
+
+10 policies.
+
+200 policy evaluations.
+
+Validation:
+
+- exact 20 primary seeds;
+- exact 10 policies / world;
+- no missing evaluations;
+- no post-primary morphology tuning.
+
+A BASELINE
+
+Parent A
+remains:
+highly competent
+
+before:
+B addition.
+
+DISTRIBUTED MORPHOLOGY EFFECT
+
+Same:
+64-cell
+active-structure budget.
+
+CONN64:
+
+median B held-out R^2:
+approximately 0.7171.
+
+median A loss:
+approximately 0.0031.
+
+MULTI4_64:
+
+B:
+approximately 0.7428.
+
+A loss:
+approximately 0.0054.
+
+MULTI8_64:
+
+B:
+approximately 0.8704.
+
+A loss:
+approximately 0.0126.
+
+Thus:
+
+8-way
+distributed growth
+
+improves:
+B held-out R^2
+
+by:
+approximately +0.1533
+
+relative to:
+one connected
+64-cell colony
+
+at:
+the same:
+active-cell budget.
+
+Frozen morphology-value target:
+
+>= +0.15.
+
+PASS
+at:
+the preregistered boundary.
+
+K=32 DISTRIBUTION
+
+MULTI8_32:
+
+median B:
+approximately 0.8585.
+
+median A loss:
+approximately 0.0091.
+
+Thus:
+
+approximately 1%
+new active cells
+
+already:
+approach:
+the B capability threshold
+
+when:
+spatially distributed.
+
+K=128 DISTRIBUTION
+
+MULTI8_128:
+
+median B:
+approximately 0.8889.
+
+median A loss:
+approximately 0.0152.
+
+Despite:
+double:
+the K=64 budget,
+
+median B
+still remains:
+below:
+0.90.
+
+This indicates:
+
+spatial coverage
+is:
+important
+
+but:
+raw distributed capacity
+alone
+is:
+not:
+the complete missing mechanism.
+
+WORLD-LEVEL B RELIABILITY
+
+MULTI8_64:
+
+B >=0.85:
+55%.
+
+B >=0.90:
+30%.
+
+A loss <=0.05:
+65%.
+
+Joint:
+B>=0.85
+AND:
+A loss<=0.05:
+
+30%.
+
+Frozen requirements:
+
+>=90%
+B>=0.85
+
+and:
+a median B>=0.90.
+
+FAIL.
+
+Thus:
+
+the same-budget
+morphology improvement
+
+is:
+real
+
+but:
+not:
+sufficiently reliable.
+
+RANDOM DISTRIBUTED CONTROL
+
+RANDOM_MULTI8_64:
+
+median B held-out R^2:
+approximately 0.9473.
+
+median A loss:
+approximately 0.1959.
+
+median normalized A-output drift:
+approximately 0.1961.
+
+World rate:
+B>=0.90:
+
+75%.
+
+But:
+A loss<=0.05:
+
+20%.
+
+This is:
+the key mechanism diagnostic.
+
+A randomly:
+broadly distributed
+64-cell daughter population
+
+already has:
+enough representational coverage
+
+to:
+learn:
+capability B
+well.
+
+Its failure is:
+
+INTERFERENCE
+WITH:
+CAPABILITY A.
+
+Therefore:
+
+the H179 negative result
+is NOT:
+
+"64 cells cannot represent B."
+
+It is:
+
+"64 ungated daughter cells
+cannot reliably represent B
+AND:
+remain functionally silent
+for A."
+
+ERROR-DRIVEN PLACEMENT VALUE
+
+Error-driven MULTI8_64:
+
+B:
+approximately 0.8704.
+
+A loss:
+approximately 0.0126.
+
+Random MULTI8_64:
+
+B:
+approximately 0.9473.
+
+A loss:
+approximately 0.1959.
+
+Thus:
+
+residual-driven placement
+
+strongly:
+protects A
+
+but:
+sacrifices:
+some broad B coverage.
+
+Random distribution
+
+maximizes:
+coverage
+
+but:
+causes:
+severe cross-capability leakage.
+
+This exposes:
+
+a:
+COVERAGE / ROUTING
+trade-off.
+
+CONN256 REFERENCE
+
+CONN256:
+
+median B:
+approximately 0.9211.
+
+median A loss:
+approximately 0.0235.
+
+World rates:
+
+B>=0.85:
+80%.
+
+B>=0.90:
+65%.
+
+A loss<=0.05:
+75%.
+
+Joint:
+B>=0.85
+and:
+A<=0.05:
+
+60%.
+
+Even:
+the larger:
+8%-body
+single patch
+
+does not:
+meet:
+the frozen:
+90%
+world-level
+capability-addition
+reliability.
+
+GENERALIZATION
+
+MULTI8_64:
+
+median validation-test
+B R^2 gap:
+approximately 0.0362.
+
+median train-test gap:
+approximately 0.0255.
+
+MULTI8_32:
+
+approximately:
+0.0399
+and:
+0.0276.
+
+Thus:
+
+the bounded distributed
+policies
+do:
+generalize.
+
+The failure is:
+not:
+simple:
+B training overfit.
+
+ACTIVE STRUCTURE
+
+MULTI8_64:
+
+64 daughter cells.
+
+approximately:
+1.994%
+of:
+the original:
+3209-cell
+parent body.
+
+MULTI8_32:
+
+approximately:
+0.997%.
+
+Thus:
+
+the targeted:
+North-Star
+active-structure regime
+
+is:
+being exercised.
+
+But:
+
+the functional integration gate
+is:
+not yet met.
+
+COMPUTE
+
+All:
+bounded
+distributed policies
+
+remain:
+orders of magnitude
+below:
+GLOBAL-DAUGHTER
+compute.
+
+Thus:
+
+the failure
+is:
+architectural
+integration,
+
+not:
+a compute-budget
+collapse.
+
+HIBERNATION / REACTIVATION
+
+Exact:
+for:
+all daughter policies.
+
+PASS.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+A baseline.
+
+7.
+Same-budget
+morphology value:
+
+MULTI8_64
+beats:
+CONN64
+
+by:
+approximately +0.1533 B R^2
+
+without:
+material A-loss increase.
+
+9.
+Generalization.
+
+10.
+64-cell
+active structure
+stays:
+<=2%.
+
+11.
+Bounded compute
+well below:
+GLOBAL-DAUGHTER.
+
+12.
+Hibernation / reactivation.
+
+13.
+GLOBAL-DAUGHTER
+capacity ceiling.
+
+FAIL:
+
+2.
+No distributed
+K<=64 policy
+reaches:
+median B >=0.90.
+
+3.
+No:
+K<=64 policy
+has:
+>=90%
+of worlds
+B>=0.85.
+
+4-6.
+No:
+K<=64
+policy
+simultaneously satisfies:
+the full B capability
+and:
+A-preservation
+requirements.
+
+8.
+Error-driven distributed growth
+does NOT:
+beat:
+RANDOM_MULTI8_64
+on:
+B R^2,
+
+although:
+it dramatically
+beats it
+on:
+A preservation.
+
+STRONG SUPPORT:
+
+FAIL.
+
+FINAL INTERPRETATION
+
+H179 is:
+
+NEGATIVE
+
+for:
+
+UNGATED
+DISTRIBUTED
+<=2%-BODY
+CAPABILITY ADDITION.
+
+But:
+
+it identifies:
+the next architectural variable
+with unusually clear evidence.
+
+The 64-cell budget
+already has:
+sufficient:
+B representational capacity.
+
+The missing mechanism is:
+
+CONTEXTUAL ROUTING
+/
+CAPABILITY GATING.
+
+The new capability's
+daughter cells
+need:
+broad enough
+spatial coverage
+to represent B
+
+while:
+
+remaining:
+quiet
+when:
+capability A
+is active.
+
+H178/H179 therefore imply:
+
+CAPABILITY GROWTH
+SHOULD NOT:
+BE CONTROLLED
+BY:
+SPATIAL LOCATION ALONE.
+
+A developmental cognitive cell
+likely needs:
+
+ROLE / CONTEXT
+ACTIVATION
+
+as well as:
+
+POSITION.
+
+NEXT:
+
+CLR2-H180 —
+CONTEXT-GATED
+DISTRIBUTED
+CAPABILITY ADDITION.
+
+Primary constraint:
+
+DO NOT:
+increase:
+the 64-cell budget.
+
+Use:
+the same:
+MULTI8_64
+distributed morphology
+
+and test:
+
+whether:
+learned or developmental
+context gating
+
+can:
+
+- recover:
+  B R^2 >=0.90;
+- preserve:
+  A;
+- keep:
+  <=2%
+  active structural growth;
+- avoid:
+  A replay
+  when:
+  possible;
+- hibernate / reactivate
+  cleanly.
+
+If:
+routing solves:
+the 64-cell
+coverage / interference
+trade-off,
+
+proceed immediately to:
+
+SEQUENTIAL:
+A -> B -> C
+capability accumulation.
+
+H179 DOES NOT AUTHORIZE
+
+- production use;
+- live model modification;
+- biological claims;
+- whole-model retraining
+  as:
+  the candidate architecture;
+- canonical scientific claims;
+- STAB-18-R1 execution.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
