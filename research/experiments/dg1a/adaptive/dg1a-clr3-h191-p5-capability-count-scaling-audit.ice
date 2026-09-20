@@ -591,3 +591,95 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — H191-P5 CAPABILITY-COUNT HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST H191-P5 WORLD.
+
+HARNESS
+
+research/experiments/dg1a/adaptive/harnesses/h191_p5_capability_count_scaling_v1.py
+
+Harness commit:
+
+9f66f4589c1879188334550adc4e7cace57493bc.
+
+Git blob SHA:
+
+85407e300382d8c918c2d51156582a5d69444e2f.
+
+Source SHA-256:
+
+b832f2a9030fae786e18f596360c4ed4eb880048336e5043373a76e1119ab87c.
+
+Source bytes:
+
+12707.
+
+DEPENDENCY
+
+Frozen H191-P0 helper harness Git blob:
+
+6ac31f5cc3e091be7ef24ea74879903dd21cc2fa.
+
+Pinned P0 source SHA-256:
+
+da6643d35ae6bd5256d400d219702e37ed379ac867ea81583acd2986fa45eabb.
+
+FROZEN CONDITIONS
+
+CAP3:
+20260924600000..20260924600005.
+
+CAP4:
+20260924610000..20260924610005.
+
+CAP5:
+20260924620000..20260924620005.
+
+CAP6:
+20260924630000..20260924630005.
+
+CAP8:
+20260924640000..20260924640005.
+
+6 worlds per condition.
+30 worlds total.
+
+Shared source factors:
+8.
+
+DICT8 shared factor count:
+8.
+
+Fixed scales:
+0.22,
+0.44,
+0.88.
+
+Context radius:
+0.60.
+
+Context sd:
+0.14.
+
+REPRODUCIBILITY
+
+Execute:
+two complete 30-world sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
