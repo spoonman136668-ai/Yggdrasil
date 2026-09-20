@@ -1247,3 +1247,93 @@ simply.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN CLARIFICATION 01 — GREEDY LOCATION REUSE
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLARIFIED BEFORE:
+ANY:
+DG-1R-05H:
+WORLD.
+
+Within:
+one:
+logical:
+bit plane,
+
+GREEDY_SYNDROME
+and:
+GREEDY_SINGLE_PASS
+
+may:
+select:
+a:
+given:
+logical:
+block:
+location
+
+at most:
+
+ONCE.
+
+Reason:
+
+an:
+inferred:
+fault:
+bit
+
+is:
+a:
+binary:
+correction.
+
+Repeatedly:
+selecting:
+the:
+same:
+location
+
+would:
+toggle:
+the:
+same:
+hypothesis
+back:
+off
+
+and:
+turn:
+the:
+iteration:
+count
+
+into:
+an:
+implementation:
+artifact.
+
+All:
+other:
+frozen:
+decoder:
+semantics
+remain:
+unchanged.
+
+No:
+DG-1R-05H:
+scenario
+was:
+executed
+before:
+this:
+clarification.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
