@@ -1125,3 +1125,105 @@ FIX.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05B CONFIDENCE-AWARE SECDED REPAIR
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE:
+THE:
+FIRST:
+DG-1R-05B:
+WORLD.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05b_confidence_secded_v1.py
+
+Harness commit:
+
+7b1caac463f839dede7ecf4eda572551d8f4d0ac.
+
+Git blob SHA:
+
+841e1336cd57abb853689b49ad664be8644e201b.
+
+Source SHA-256:
+
+3fb2fe2e67a83a46b10eedfa978d47f7b130dc245568faf4afe13759aef35179.
+
+Source bytes:
+
+16033.
+
+LOCAL PRECHECK
+
+Git blob identity:
+
+PASS.
+
+Python syntax:
+
+PASS.
+
+No:
+DG-1R-05B:
+world
+was:
+executed
+before:
+this:
+freeze.
+
+FROZEN WORLD FAMILY
+
+20260926052000..20260926052007.
+
+8 worlds.
+
+FROZEN METHODS
+
+HAM74_REPAIR_ALWAYS_REFERENCE.
+
+SECDED84_DETECT_ONLY.
+
+SECDED84_REPAIR_ABSTAIN.
+
+SECDED84_BLIND_SYNDROME.
+
+FROZEN DAMAGE FAMILIES
+
+SINGLE1_LOCAL.
+
+PARITY1_LOCAL.
+
+DOUBLE2_LOCAL.
+
+TRIPLE3_LOCAL.
+
+DISTRIBUTED3.
+
+DISTRIBUTED5.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+sweeps.
+
+Output:
+SHA-256
+must:
+match exactly.
+
+DG-1R-05:
+canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
