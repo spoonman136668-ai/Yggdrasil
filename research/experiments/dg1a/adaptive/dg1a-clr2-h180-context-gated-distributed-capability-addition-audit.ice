@@ -759,3 +759,184 @@ SYNTHETIC_MEASURED_CONTEXT_GATED_DEVELOPMENTAL_CAPABILITY_ADDITION
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-SANITY DESIGN CORRECTION 01 — ROUTING CANDIDATE SET
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H180 SANITY AND PRIMARY EXECUTION.
+
+REASON
+
+Accepted H179 evidence already established:
+
+- residual-driven MULTI8_64:
+  strong A preservation
+  but:
+  insufficient B coverage;
+
+- RANDOM_MULTI8_64:
+  sufficient B representational coverage
+  at:
+  the same 64-cell budget
+  but:
+  severe A interference.
+
+Therefore:
+
+the clean routing hypothesis is:
+
+CAN:
+CONTEXT GATING
+
+make:
+ANY
+64-cell distributed morphology
+
+simultaneously:
+
+B-capable
+
+and:
+A-preserving?
+
+Restricting H180 success
+only to:
+LEARNED_GATE_MULTI8_64
+
+would:
+retest:
+the already-known
+residual-placement coverage limit
+
+rather than:
+isolate:
+routing.
+
+CORRECTED PRIMARY CANDIDATE SET
+
+Candidate learned-gate policies:
+
+1.
+LEARNED_GATE_MULTI8_64.
+
+2.
+LEARNED_GATE_RANDOM8_64.
+
+H180 supports:
+bounded learned context routing
+
+if:
+AT LEAST ONE
+of:
+these two
+64-cell learned-gate policies
+
+passes:
+the frozen:
+B capability,
+world reliability,
+A preservation,
+A drift,
+gate quality,
+generalization,
+active-structure,
+parameter-growth,
+compute,
+hibernation,
+and:
+reactivation gates.
+
+ROUTING VALUE
+
+For:
+LEARNED_GATE_MULTI8_64,
+
+compare:
+against:
+UNGATED_MULTI8_64.
+
+For:
+LEARNED_GATE_RANDOM8_64,
+
+compare:
+against:
+the accepted H179
+RANDOM_MULTI8_64
+ungated control.
+
+The qualifying learned-gate policy
+must:
+
+either:
+
+- improve:
+  median B held-out R^2
+  or:
+  joint B/A success
+
+without:
+  >0.01
+  additional median A loss
+
+relative to:
+its ungated paired morphology;
+
+OR:
+
+- reduce:
+  median A loss
+  by:
+  >=0.10
+
+  or:
+  below:
+  0.05
+
+  while:
+  preserving:
+  median B held-out R^2
+  within:
+  0.03
+  of:
+  the ungated paired morphology.
+
+All:
+other preregistered
+H180 gates
+
+remain:
+unchanged.
+
+HARD-GATE ceilings
+remain:
+diagnostic only.
+
+No:
+gate feature,
+gate samples,
+gate L2,
+daughter count,
+daughter morphology,
+daughter training,
+task,
+or:
+threshold
+
+is changed.
+
+No:
+H180 sanity
+or:
+held-out primary world
+
+has been executed
+at:
+this correction.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
