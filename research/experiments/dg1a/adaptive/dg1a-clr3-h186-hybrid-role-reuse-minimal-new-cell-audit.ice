@@ -692,3 +692,161 @@ SYNTHETIC_MEASURED_HYBRID_ROLE_REUSE_MINIMAL_NEW_CELL_CAPABILITY_ADDITION
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-SANITY PROVENANCE RECOVERY 01 — EXACT PARENT SUBSTRATE RESTORED
+
+DATE:
+2026-09-20.
+
+STATUS:
+RECORDED BEFORE H186 SANITY OR PRIMARY EXECUTION.
+
+BACKGROUND
+
+The transient sandbox Python files used by:
+H183,
+H184,
+and:
+H185
+
+were no longer present
+when:
+H186 implementation began.
+
+The committed .ice specifications
+remained intact,
+but:
+the exact transient code path
+was temporarily unavailable.
+
+RECOVERY
+
+The prior execution history
+was inspected
+
+and:
+the original source commands
+for:
+
+- H178 capability substrate;
+- H181 deterministic k-means routine;
+- H183 sequential capability substrate;
+- H185 role-reuse wrapper
+
+were recovered.
+
+A semantic parent chain
+was rebuilt from:
+those exact prior source commands.
+
+H186 parent substrate:
+
+h183_seq_caps_v3.py
+
+plus:
+the recovered:
+H178 / H181 helper semantics.
+
+PARENT REPRODUCTION CHECK
+
+Before:
+any H186 sanity seed
+was executed,
+
+the rebuilt parent chain
+was run on:
+accepted H185 sanity seed:
+
+20260923490000.
+
+H186 control:
+
+ROLE48
+
+was compared against:
+accepted H185:
+
+PARENT_ROLE48.
+
+H186 control:
+
+NEW48
+
+was compared against:
+accepted H185:
+
+NEW_C48.
+
+The following fields
+match exactly
+at:
+floating-point output precision:
+
+- postB_B_r2;
+- postC_A_r2;
+- postC_B_r2;
+- postC_C_r2;
+- A_total_loss;
+- B_loss_after_C;
+- joint_ABC.
+
+Example:
+
+PARENT_ROLE48 / ROLE48:
+
+postB_B_r2 =
+0.8975810028292733.
+
+postC_C_r2 =
+0.9177317158342284.
+
+A_total_loss =
+3.030536145387508e-05.
+
+NEW_C48 / NEW48:
+
+postC_C_r2 =
+0.9155105882475112.
+
+Thus:
+
+H186 now continues:
+the accepted H185
+scientific substrate
+
+rather than:
+an approximate reconstruction.
+
+NON-EVIDENCE
+
+All:
+earlier approximate
+parent-reconstruction trials
+
+are:
+NON-EVIDENCE
+
+and:
+cannot enter:
+H186 acceptance.
+
+H186 SCIENTIFIC STATUS
+
+Sanity:
+NOT STARTED
+at:
+this provenance note.
+
+Primary:
+NOT STARTED.
+
+No:
+H186 scientific variable
+or:
+acceptance gate
+was changed.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
