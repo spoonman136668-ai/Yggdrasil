@@ -1181,3 +1181,115 @@ information.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05 BOUNDED-INTERVENTION STABILIZER HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST DG-1R-05 PRIMARY WORLD.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05_bounded_nanite_v1.py
+
+Harness commit:
+
+edf9afa83012402615ede334b5fdc703dde68c14.
+
+Git blob SHA:
+
+c3a0ede2a2ccd7593410be855ffdf882da834330.
+
+Source SHA-256:
+
+c80225f8a516bc722ec93e23c6e668cfa351785802471460af866700c79a3ec8.
+
+Source bytes:
+
+10299.
+
+DEPENDENCIES
+
+DG-1R-04 harness Git blob:
+
+2c5542ac27e0871ff1b96b9d085a0e9bb1f40d49.
+
+DG-1R-03 harness Git blob:
+
+7b5d6995450195f10d7ae2c474cf6936093dcf96.
+
+PRE-FREEZE SANITY
+
+Python compile:
+
+PASS.
+
+Non-primary:
+short-stream:
+sanity:
+
+REFRACTORY_T50:
+veto fraction:
+approximately:
+0.213.
+
+REFRACTORY_T35:
+approximately:
+0.295.
+
+BUDGET_K1:
+approximately:
+0.061.
+
+BUDGET_K2:
+approximately:
+0.122.
+
+Maximum:
+budgeted:
+vetoes
+per:
+active:
+microtick:
+
+K1:
+1.
+
+K2:
+2.
+
+No:
+primary:
+DG-1R-05:
+world
+was:
+executed
+before:
+this freeze.
+
+FROZEN WORLD FAMILY
+
+20260926050000..20260926050007.
+
+8 worlds.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+canonical sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+Runtime sidecars:
+are:
+non-canonical.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
