@@ -867,3 +867,605 @@ the first held-out H190 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — SPARSE SLEEP-PROXY BASIS DISTILLATION
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-POSITIVE FOR LEARNED-SCHEDULED FIDELITY / NEGATIVE FOR STRICT KNOWN-CONTEXT FIDELITY AND STORED JOINT RELIABILITY.
+
+FINAL H190 HARNESS SHA-256
+
+518fb8b96d7118784e3bdd73d5e7d2c1b3395ab8e0be1b36dbb73a01fc3a7bba.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+bf44f9751d5c4cf442ca14be13171fd5406f8b5b7fa7de81df19be86257f4bfd.
+
+ACCEPTED PRIMARY FAMILY
+
+20260923900000..20260923900019.
+
+PRIMARY MATRIX
+
+20 held-out worlds.
+
+3 contexts / world.
+
+60 context rows.
+
+STORED FULL PHENOTYPE
+
+Median full held-out R^2:
+
+A:
+approximately:
+0.98833.
+
+B:
+approximately:
+0.95522.
+
+C:
+approximately:
+0.97736.
+
+Median competence:
+PASS.
+
+Worlds:
+A,
+B,
+C
+all:
+R^2>=0.85:
+
+15 / 20
+=
+75%.
+
+Frozen target:
+>=90%.
+
+FAIL.
+
+Thus:
+
+this fresh H190 family
+contains:
+a substantial:
+stored-phenotype
+joint tail
+
+before:
+sleep proxies
+are considered.
+
+PROXY8
+KNOWN-CONTEXT
+PREDICTION FIDELITY
+
+Median normalized MSE
+versus:
+full phenotype:
+
+A:
+approximately:
+0.00180.
+
+B:
+approximately:
+0.01682.
+
+C:
+approximately:
+0.01314.
+
+Frozen target:
+<=0.01.
+
+A:
+PASS.
+
+B:
+FAIL.
+
+C:
+FAIL.
+
+PROXY8
+LEARNED-SCHEDULED
+PREDICTION FIDELITY
+
+Median normalized MSE:
+
+A:
+approximately:
+0.01216.
+
+B:
+approximately:
+0.01785.
+
+C:
+approximately:
+0.01314.
+
+Frozen target:
+<=0.02.
+
+PASS:
+A,
+B,
+C.
+
+This is:
+the strongest:
+positive H190 result.
+
+Eight:
+reused parent-basis
+sleep proxies
+
+are:
+sufficient
+to bring:
+the practical:
+learned-router
+scheduled path
+
+inside:
+the frozen:
+2%
+prediction-fidelity
+ceiling
+
+for:
+all three
+capability contexts.
+
+TASK PERFORMANCE
+
+PROXY8
+known-context
+task R^2
+
+does NOT:
+drop:
+more than:
+0.01
+from:
+full
+
+for:
+A,
+B,
+or:
+C.
+
+PASS.
+
+PROXY8
+learned-scheduled
+task R^2
+
+also:
+stays:
+within:
+0.02
+
+for:
+all contexts.
+
+PASS.
+
+ROUTING
+
+Median:
+learned route accuracy:
+
+approximately:
+0.99674.
+
+Minimum world:
+
+approximately:
+0.99154.
+
+PASS.
+
+COMPUTE
+
+PROXY8:
+
+B-only:
+
+approximately:
+2.438%
+of:
+full.
+
+C-only:
+
+approximately:
+2.288%.
+
+Equal A/B/C:
+
+approximately:
+34.056%.
+
+Frozen limits:
+
+3%,
+3%,
+36%.
+
+PASS.
+
+MEMORY
+
+PROXY8:
+
+8 coefficients
+per:
+capability
+
+=
+24:
+sleep-proxy
+learned coefficients.
+
+Growth relative to:
+3322:
+H188 learned-state
+parameters:
+
+approximately:
+0.722%.
+
+Frozen limit:
+<=0.80%.
+
+PASS.
+
+WAKE / SWITCH
+
+Wake learning:
+
+0.
+
+Maximum:
+300-switch
+prediction drift:
+
+0.
+
+Physical cells:
+
+3257.
+
+PASS.
+
+PROXY16 DIAGNOSTIC
+
+Known-context
+median normalized MSE:
+
+A:
+approximately:
+0.00195.
+
+B:
+approximately:
+0.01348.
+
+C:
+approximately:
+0.01065.
+
+Thus:
+
+doubling:
+from:
+8
+to:
+16
+proxy bases
+
+still does NOT:
+clear:
+the frozen:
+1%
+known-context
+fidelity threshold
+
+for:
+B
+
+and:
+misses narrowly
+for:
+C.
+
+Therefore:
+
+the remaining:
+known-context
+residual
+
+is NOT:
+efficiently eliminated
+by:
+simply:
+doubling:
+sparse proxy count.
+
+PROXY4 DIAGNOSTIC
+
+Also:
+fails:
+the strict:
+B/C
+fidelity gates.
+
+Thus:
+
+the result
+is:
+not:
+a four-proxy
+strong support.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+Stored median competence.
+
+4.
+PROXY8 learned-scheduled fidelity.
+
+5.
+Known-context task R^2.
+
+6.
+Learned-scheduled task R^2.
+
+7.
+Routing.
+
+8.
+B compute.
+
+9.
+C compute.
+
+10.
+Equal-mix compute.
+
+11.
+Sleep-proxy memory.
+
+12.
+Zero task-target replay.
+
+13.
+Zero wake learning.
+
+14.
+Zero switch drift.
+
+15.
+Physical cells unchanged.
+
+FAIL:
+
+2.
+Stored joint competence.
+
+Observed:
+75%.
+
+3.
+PROXY8 known-context
+strict prediction fidelity
+for:
+B/C.
+
+16.
+PROXY16
+does NOT:
+fully rescue:
+strict known-context fidelity.
+
+17.
+PROXY4
+does NOT:
+pass:
+all fidelity gates.
+
+STRONG SUPPORT:
+
+FAIL.
+
+FINAL INTERPRETATION
+
+H190 is:
+
+MIXED-POSITIVE.
+
+Sparse:
+reused basis proxies
+
+are:
+materially more effective
+
+than:
+the H189
+global-polynomial
+sleep summary.
+
+For:
+the actual:
+learned-router
+scheduled path,
+
+eight:
+proxy basis functions
+per:
+capability
+
+bring:
+all three contexts
+
+inside:
+the:
+2%
+prediction-fidelity
+ceiling
+
+while:
+
+- B/C active compute
+  remains:
+  below:
+  2.5%
+  of:
+  naive:
+  all-branch compute;
+
+- equal:
+  A/B/C
+  scheduled compute
+  remains:
+  near:
+  34%;
+
+- added sleep memory
+  remains:
+  below:
+  1%;
+
+- no:
+  physical cells
+  are added;
+
+- wake:
+  remains:
+  zero-learning
+  and:
+  drift-free.
+
+But:
+
+the:
+1%
+strict:
+known-context
+fidelity target
+
+is not:
+efficiently reached
+
+even:
+with:
+16 proxies.
+
+Do NOT:
+
+keep:
+increasing:
+sparse proxy count.
+
+The remaining residual
+appears:
+distributed /
+low-rank
+
+rather than:
+well represented
+by:
+a handful:
+of:
+independent:
+local basis sites.
+
+NEXT:
+
+CLR3-H191 —
+LOW-RANK
+CROSS-CAPABILITY
+SLEEP-FACTOR
+DISTILLATION.
+
+Use:
+the same:
+unlabeled:
+full-minus-branch
+residual targets.
+
+Construct:
+a tiny:
+shared:
+low-rank
+latent basis
+
+across:
+all:
+A/B/C
+contexts,
+
+rather than:
+separate:
+sparse sites
+per:
+capability.
+
+Primary question:
+
+can:
+a small:
+shared:
+latent factor set
+
+capture:
+the cross-capability
+sleep residual
+
+with:
+
+less:
+memory
+and:
+equal or:
+better:
+fidelity
+
+than:
+24 separate:
+PROXY8
+coefficients,
+
+while:
+retaining:
+the:
+~2%
+B/C
+active-compute regime?
+
+H190 DOES NOT AUTHORIZE
+
+- production use;
+- live model modification;
+- biological claims;
+- canonical scientific claims;
+- STAB-18-R1 execution.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
