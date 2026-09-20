@@ -1,3 +1,22 @@
+RENAMING NOTICE — 2026-09-20
+
+STATUS: RENUMBERED BEFORE HARNESS / BEFORE PRIMARY EXECUTION.
+
+A parallel preregistration independently claimed DG-1R-05Z for the Dormant Temporal Sentinel / Hereditary Capsule Audit after this preregistration was written.
+
+To preserve one experiment identity per sequence number without discarding either frozen question, this Hibernation / Reactivation and Dormant Authority Audit is continued as:
+
+DG-1R-05AA — Hibernation / Reactivation and Dormant Authority Audit.
+
+No harness was committed for this 05Z identity.
+No primary case was executed.
+No result was observed.
+No scientific rule was changed because of data.
+
+The text below is preserved as the original preregistration record.
+
+---
+
 TITLE: DG-1R-05Z — Hibernation / Reactivation and Dormant Authority Audit
 DATE: 2026-09-20
 STATUS: PREREGISTERED / DORMANCY LIFECYCLE AUDIT / NON-CANONICAL
