@@ -202,3 +202,92 @@ NOT_STARTED_PROVENANCE_BLOCKED
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — H191-P0 SURROGATE MECHANICAL HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST H191-P0 SURROGATE WORLD.
+
+HARNESS
+
+Repository path:
+
+research/experiments/dg1a/adaptive/harnesses/h191_p0_surrogate_mechanical_v1.py
+
+Harness commit:
+
+bcbc7969148f73fc0895a7e59cdcc48561119213
+
+Git blob SHA:
+
+6ac31f5cc3e091be7ef24ea74879903dd21cc2fa
+
+Exact UTF-8 source byte length:
+
+11507.
+
+Exact source SHA-256:
+
+da6643d35ae6bd5256d400d219702e37ed379ac867ea81583acd2986fa45eabb.
+
+RNG
+
+NumPy Generator
+with:
+PCG64(world_seed).
+
+Source-factor parameter draws occur before:
+context-coordinate sampling.
+
+Each context draws:
+640 accepted coordinates
+in one deterministic rejection stream,
+then splits:
+first 128 distillation,
+remaining 512 held-out.
+
+SERIALIZATION
+
+Canonical compact JSON:
+sort_keys=true,
+separators=(",",":"),
+UTF-8,
+one trailing newline.
+
+The output file SHA-256 is recorded by the harness.
+
+REPRODUCIBILITY CHECK
+
+The complete frozen 40-world run
+must be executed twice.
+
+Both canonical output files
+must have:
+identical SHA-256.
+
+If not:
+the pilot is mechanically invalid.
+
+NO POST-RUN CHANGE
+
+No source edit,
+seed edit,
+generator edit,
+candidate edit,
+metric edit,
+or:
+diagnostic edit
+is permitted
+after:
+the first world executes.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
