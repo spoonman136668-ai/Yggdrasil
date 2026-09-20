@@ -1293,3 +1293,684 @@ non-canonical.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-05A NON-EVIDENCE PILOT CLOSURE — BOUNDED-INTERVENTION NANITE STABILITY / PLASTICITY
+
+DATE:
+2026-09-20.
+
+PROVENANCE ALIAS
+
+The original preregistered title remains:
+
+DG-1R-05 —
+Bounded-Intervention Software-Nanite Stability / Plasticity Audit.
+
+A concurrent sibling experiment was later created from the same frozen parent frontier:
+
+dg1r-05-local-damage-counterfactual-recovery-audit.ice
+
+To preserve both immutable preregistrations without renaming history:
+
+THIS experiment is henceforth referred to as:
+
+DG-1R-05A.
+
+The counterfactual-repair sibling is referred to as:
+
+DG-1R-05B.
+
+No:
+preregistered:
+experimental:
+mechanic,
+threshold,
+seed,
+or:
+result
+
+is:
+changed
+by:
+this:
+disambiguation.
+
+STATUS:
+COMPLETE /
+PLASTICITY RECOVERY POSITIVE /
+LONG-MEMORY RECOVERY NEGATIVE /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+c80225f8a516bc722ec93e23c6e668cfa351785802471460af866700c79a3ec8.
+
+CANONICAL OUTPUT
+
+RUN 1 SHA-256:
+
+44148b9d35f12000149c8c5cbb97e9988cadd8ffe8c7caa0cdfe7f0b575165b7.
+
+RUN 2 SHA-256:
+
+44148b9d35f12000149c8c5cbb97e9988cadd8ffe8c7caa0cdfe7f0b575165b7.
+
+Byte-identical:
+
+PASS.
+
+PRIMARY SIGNALS
+
+BOUNDED_STABILIZATION_SIGNAL:
+
+FALSE.
+
+PASSIVE_COMPARISON_SIGNAL:
+
+FALSE.
+
+NANITE_MEMORY_RECOVERY:
+
+FALSE.
+
+TEMPORAL_SUBSTRATE_CANDIDATES:
+
+NONE.
+
+PLASTICITY_RECOVERY:
+
+PASS
+for:
+all:
+four:
+bounded-intervention:
+methods.
+
+REFERENCE — INERT112_16_FAST4
+
+Median:
+
+D16:
+0.517578125.
+
+D32:
+0.50048828125.
+
+Memory score:
+0.5068359375.
+
+Nonlinear score:
+0.5029032090050232.
+
+Feature-rank fraction:
+0.5703125.
+
+State entropy:
+0.6191873953796614.
+
+Worker-change fraction:
+0.3757741110665458.
+
+REFRACTORY T50
+
+Median:
+
+veto fraction:
+0.193878173828125.
+
+forced-release fraction:
+0.1938648223876953.
+
+proposed worker-change fraction:
+0.39688927786690853.
+
+realized worker-change fraction:
+0.2684072766985212.
+
+Feature-rank fraction:
+0.7001953125.
+
+State entropy:
+0.6865394179272819.
+
+Thus:
+
+the:
+reservoir:
+remains:
+high-dimensional
+and:
+active.
+
+D16:
+0.5029296875.
+
+D32:
+0.51025390625.
+
+Memory score:
+0.50634765625.
+
+Paired versus INERT:
+
+D16:
+-0.0087890625.
+
+D32:
++0.0068359375.
+
+No:
+meaningful:
+long-memory:
+gain.
+
+REFRACTORY T35
+
+Median:
+
+veto fraction:
+0.29117584228515625.
+
+forced-release fraction:
+0.29116058349609375.
+
+realized worker-change fraction:
+0.2295513153076172.
+
+Feature-rank fraction:
+0.7119140625.
+
+State entropy:
+0.7083568445231638.
+
+D16:
+0.50244140625.
+
+D32:
+0.49853515625.
+
+Memory score:
+0.5008138020833333.
+
+Again:
+
+plasticity:
+is:
+restored,
+
+but:
+
+long:
+delay-memory:
+remains:
+near:
+chance.
+
+BUDGET K1
+
+Median:
+
+veto fraction:
+0.0625.
+
+Maximum:
+one:
+sector:
+veto
+per:
+active:
+microtick.
+
+Realized worker-change fraction:
+0.3360007149832589.
+
+Feature-rank fraction:
+0.64453125.
+
+State entropy:
+0.6347753095060632.
+
+D16:
+0.5146484375.
+
+D32:
+0.4990234375.
+
+Paired versus INERT:
+
+D16:
++0.00146484375.
+
+D32:
+-0.0009765625.
+
+No:
+memory:
+recovery.
+
+BUDGET K2
+
+Median:
+
+veto fraction:
+0.125.
+
+Maximum:
+two:
+sector:
+vetoes
+per:
+active:
+microtick.
+
+Realized worker-change fraction:
+0.2978793552943638.
+
+Feature-rank fraction:
+0.638671875.
+
+State entropy:
+0.6277530587138144.
+
+D16:
+0.5087890625.
+
+D32:
+0.494140625.
+
+Paired versus INERT:
+
+D16:
+-0.0078125.
+
+D32:
++0.01025390625.
+
+No:
+memory:
+recovery.
+
+PASSIVE SLOW REFERENCE
+
+SLOW128_MIXED1:
+
+D16:
+0.5078125.
+
+D32:
+0.49169921875.
+
+Memory score:
+0.5133463541666667.
+
+None:
+of:
+the:
+bounded:
+nanite methods
+
+produce:
+the:
+preregistered:
+>=0.10:
+D16
+or:
+D32:
+gain
+
+versus:
+
+INERT112_16
+
+or:
+
+SLOW128.
+
+MECHANISTIC RESULT
+
+DG-1R-04 showed:
+
+UNBOUNDED:
+generic:
+stabilization
+
+can:
+collapse:
+the:
+reservoir
+into:
+a:
+low-dimensional:
+near-frozen:
+state.
+
+DG-1R-05A now shows:
+
+BOUNDING:
+the:
+same:
+stabilization
+
+successfully:
+solves:
+that:
+plasticity:
+failure.
+
+All:
+four:
+bounded:
+controllers
+
+recover:
+
+healthy:
+entropy
+
+and:
+
+healthy:
+feature rank.
+
+Therefore:
+
+the:
+nanite:
+control architecture
+
+can:
+regulate:
+HOW MUCH:
+the:
+organism changes
+
+without:
+freezing:
+the:
+organism.
+
+But:
+
+D16 /
+D32
+remain:
+near:
+chance.
+
+Therefore:
+
+generic:
+local:
+volatility
+
+is:
+NOT:
+a:
+sufficient:
+proxy
+
+for:
+
+WHICH:
+state:
+contains:
+memory-relevant:
+information.
+
+This is:
+the:
+central:
+DG-1R-05A:
+result.
+
+ARCHITECTURAL CONSEQUENCE
+
+The:
+next:
+memory-oriented:
+nanite
+should NOT:
+
+merely:
+brake:
+the:
+largest:
+local:
+changes.
+
+It needs:
+
+TRACE:
+RELEVANCE.
+
+A:
+controller
+must:
+have:
+some:
+bounded:
+way
+to:
+distinguish:
+
+STATE:
+THAT:
+CARRIES:
+A:
+USEFUL:
+TRACE
+
+from:
+
+STATE:
+THAT:
+IS:
+SIMPLY:
+VOLATILE.
+
+Any:
+such:
+mechanism
+must:
+remain:
+inside:
+the:
+same:
+fixed:
+persistent:
+state budget.
+
+No:
+hidden:
+history buffer
+is:
+permitted.
+
+CONCURRENT SIBLING
+
+DG-1R-05B:
+
+Local Damage Containment /
+Counterfactual Recovery Audit
+
+has:
+already:
+been:
+preregistered
+and:
+frozen
+on:
+the:
+same:
+branch.
+
+Its:
+question
+is:
+different:
+
+not:
+arbitrary:
+delay-memory,
+
+but:
+
+whether:
+nanites:
+can:
+contain:
+damage
+and:
+return:
+a:
+damaged:
+organism
+
+toward:
+its:
+own:
+undamaged:
+counterfactual:
+trajectory.
+
+DG-1R-05A
+does NOT:
+prejudge:
+that:
+self-repair:
+question.
+
+PLAIN-SPEAK SUMMARY
+
+We:
+fixed:
+the:
+first:
+nanite:
+problem.
+
+The:
+original:
+nanites
+hit:
+the:
+brakes
+so:
+hard
+that:
+the:
+cell system
+almost:
+froze.
+
+These:
+new:
+bounded:
+nanites
+do NOT:
+do that.
+
+The:
+reservoir
+stays:
+active,
+diverse,
+and:
+high-dimensional.
+
+So:
+we now know
+how:
+to:
+control:
+the:
+amount:
+of:
+stabilization
+without:
+killing:
+the:
+organism.
+
+But:
+
+they:
+still:
+do not:
+remember:
+16
+or:
+32:
+steps
+back.
+
+Why?
+
+Because:
+they are:
+protecting:
+whatever:
+looks:
+volatile.
+
+They:
+do not:
+know:
+which:
+local:
+pattern
+actually:
+contains:
+the:
+important:
+old:
+information.
+
+So:
+we solved:
+
+"how hard:
+should:
+the:
+nanite:
+brake?"
+
+We have NOT:
+solved:
+
+"what:
+should:
+the:
+nanite:
+protect?"
+
+That:
+is:
+the:
+next:
+memory:
+problem.
+
+Meanwhile:
+
+the:
+already-frozen:
+DG-1R-05B:
+sibling
+
+tests:
+a:
+different:
+and:
+very:
+important:
+nanite ability:
+
+SELF-REPAIR
+AFTER:
+LOCAL:
+DAMAGE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
