@@ -363,3 +363,561 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL H191-P4 NON-EVIDENCE PILOT CLOSURE — DICT8 CAPACITY STRESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE / POSITIVE CAPACITY-STRESS RESULT /
+DICT8 ROBUST THROUGH SRC12 /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+f81abefdc5dd40670d107968d6c03d7272eb8654eb56dcffa17df0ed31763e7f.
+
+CANONICAL OUTPUT
+
+RUN 1 SHA-256:
+
+4c215735ac5d28d1697266b1058684b940723eb97927edd340472860010412ef.
+
+RUN 2 SHA-256:
+
+4c215735ac5d28d1697266b1058684b940723eb97927edd340472860010412ef.
+
+Byte-identical:
+
+PASS.
+
+PRIMARY MECHANICAL QUESTION
+
+Does:
+fixed:
+eight-factor:
+shared multiscale DICT8
+
+lose:
+its advantage over:
+separate PROXY8
+
+as:
+the hidden shared residual source
+grows from:
+
+4
+to:
+6
+to:
+8
+to:
+12
+
+Gaussian generating factors?
+
+RESULT
+
+No:
+capacity cliff
+was observed
+through:
+SRC12.
+
+All four:
+preregistered conditions
+classify:
+
+ROBUST.
+
+SRC4
+
+PROXY8 median world mean NMSE:
+
+0.02322961247261152.
+
+DICT8:
+
+0.0069478247811130805.
+
+DICT8 - PROXY8
+median paired delta:
+
+-0.007184637062129084.
+
+Win rate:
+
+70%.
+
+All A/B/C <=0.01:
+
+PROXY8:
+10%.
+
+DICT8:
+40%.
+
+All A/B/C <=0.02:
+
+PROXY8:
+30%.
+
+DICT8:
+60%.
+
+SRC6
+
+PROXY8 median world mean NMSE:
+
+0.02375066610732246.
+
+DICT8:
+
+0.013811613793575133.
+
+Median paired delta:
+
+-0.008559794867874646.
+
+Win rate:
+
+80%.
+
+SRC8
+
+PROXY8 median world mean NMSE:
+
+0.029815087927511447.
+
+DICT8:
+
+0.021302490560160505.
+
+Median paired delta:
+
+-0.011500244811178457.
+
+Win rate:
+
+100%.
+
+SRC12
+
+PROXY8 median world mean NMSE:
+
+0.04954405073759835.
+
+DICT8:
+
+0.021530002367270915.
+
+Median paired delta:
+
+-0.026431925265883074.
+
+Win rate:
+
+80%.
+
+P90 DICT8 world mean NMSE:
+
+0.046486227819219336.
+
+P90 PROXY8:
+
+0.10445927436180616.
+
+Thus:
+
+even at:
+12 hidden shared generating factors,
+
+the fixed:
+eight-factor:
+multiscale shared dictionary
+
+remains:
+mechanically competitive
+and:
+usually superior
+
+to:
+three separate:
+eight-site sparse caches.
+
+CAPABILITY MEDIANS AT SRC12
+
+DICT8:
+
+A:
+0.018149861133043507.
+
+B:
+0.01642088836839559.
+
+C:
+0.022129012704616702.
+
+PROXY8:
+
+A:
+0.03303576121608823.
+
+B:
+0.02514360371501266.
+
+C:
+0.06763012384960546.
+
+All three:
+DICT8 capability medians
+are:
+lower.
+
+GENERALIZATION
+
+Median:
+distillation-to-held-out
+mean NMSE gap:
+
+SRC4 DICT8:
+0.0014406941550340966.
+
+SRC6:
+0.006858730182313221.
+
+SRC8:
+0.005424429344096134.
+
+SRC12:
+0.006599758499044579.
+
+No:
+gross:
+distillation overfit
+appears.
+
+SHARING
+
+DICT8 decoder-concentration median:
+
+SRC4:
+0.6906783571323083.
+
+SRC6:
+0.679906464772672.
+
+SRC8:
+0.7064419914517026.
+
+SRC12:
+0.6771934040551979.
+
+Thus:
+
+increasing source complexity
+does NOT:
+cause:
+the shared factors
+to partition
+into:
+capability-local islands.
+
+SCALE USE
+
+All three:
+fixed scale slots
+remain:
+materially recruited
+at every condition.
+
+SRC12 selections:
+
+sigma 0.22:
+38.
+
+sigma 0.44:
+29.
+
+sigma 0.88:
+13.
+
+This supports:
+the P3 conclusion
+that:
+multiscale geometry
+is:
+structurally useful.
+
+PILOT CLASSIFICATION
+
+SRC4:
+ROBUST.
+
+SRC6:
+ROBUST.
+
+SRC8:
+ROBUST.
+
+SRC12:
+ROBUST.
+
+No:
+TRANSITION
+or:
+OVER-CAPACITY
+regime
+was reached.
+
+TECHNICAL INTERPRETATION
+
+P4 does NOT:
+show:
+that DICT8 has unlimited capacity.
+
+It shows:
+
+within:
+this surrogate residual family,
+
+raising:
+the number of:
+hidden shared Gaussian sources
+
+from:
+4
+through:
+12
+
+does NOT:
+erase:
+the advantage
+of:
+eight shared:
+fixed multiscale factors.
+
+This is:
+stronger
+than:
+a simple:
+rank-equals-source-count
+interpretation.
+
+The likely reason is:
+
+the selected DICT8 factors
+are:
+not:
+trying to reconstruct:
+the hidden generating basis
+one-for-one.
+
+Instead:
+
+they approximate:
+the residual function
+over:
+three bounded capability contexts
+
+using:
+a shared:
+multiscale function basis.
+
+Thus:
+
+effective coordination dimension
+can be:
+lower
+than:
+the literal:
+number of hidden source components.
+
+IMPORTANT LIMIT
+
+This remains:
+
+NON-EVIDENCE.
+
+The accepted:
+H190 residual matrix
+was not used.
+
+H191 accepted-lineage primary remains:
+
+NOT STARTED / PROVENANCE BLOCKED.
+
+NEXT JUSTIFIED EXPERIMENT
+
+The P4 preregistration stated:
+
+if:
+DICT8 remains ROBUST
+through:
+SRC12,
+
+move to:
+
+CAPABILITY-COUNT SCALING.
+
+Next:
+
+H191-P5 —
+SHARED-DICTIONARY
+CAPABILITY-COUNT
+SCALING AUDIT.
+
+Keep:
+
+- DICT8 rank fixed;
+- 24 learned scalars only for A/B/C is no longer possible as capability count rises,
+  so report decoder-state growth explicitly;
+- factor geometry fixed;
+- factor support fixed-size;
+- per-query factor compute fixed;
+- add synthetic capability contexts progressively.
+
+Primary question:
+
+does:
+shared factor geometry
+remain:
+compact
+
+while:
+capability-specific decoder memory
+grows:
+only linearly
+and:
+active factor compute
+remains:
+constant?
+
+Also determine:
+
+when:
+a fixed 8-factor shared core
+stops:
+supporting:
+additional capabilities
+without:
+factor expansion.
+
+PLAIN-SPEAK SUMMARY
+
+What did we try?
+
+We made the hidden residual problem harder.
+Instead of six underlying shared pieces,
+we tested:
+4,
+6,
+8,
+and:
+12.
+
+We did NOT:
+give DICT8
+more factors,
+more memory,
+or:
+more compute.
+
+What happened?
+
+It held up.
+
+Even with:
+12 hidden source factors,
+DICT8
+still beat:
+the separate PROXY8 approach
+in:
+80% of the worlds.
+
+Did it work?
+
+Yes,
+for this:
+non-evidence mechanical stress test.
+
+We did not find:
+the point
+where:
+eight shared factors
+break.
+
+What did we actually learn?
+
+The eight stored factors
+do not seem to need:
+a one-for-one match
+with:
+the hidden number of residual generators.
+
+They can:
+compress:
+a more complicated residual field
+into:
+a smaller shared representation.
+
+Why does it matter?
+
+That is:
+exactly the scaling behavior
+Yggdrasil needs.
+
+If:
+coordination structure
+had to grow:
+one factor
+for:
+every underlying piece
+of capability interaction,
+
+the architecture
+would eventually:
+lose its advantage.
+
+P4 did NOT:
+show that behavior
+through:
+the tested range.
+
+What should we try next?
+
+Stop:
+making the same three capabilities
+internally harder.
+
+Start:
+adding:
+more capabilities.
+
+The next test should ask:
+
+can:
+the same:
+eight-factor shared core
+
+serve:
+4,
+5,
+6,
+and:
+more capability contexts
+
+without:
+growing:
+the shared factor geometry
+or:
+per-query active factor compute?
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
