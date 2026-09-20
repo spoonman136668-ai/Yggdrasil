@@ -772,3 +772,422 @@ the first held-out H154 primary world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — RESIDUAL-DIRECTED COMPONENT-LOCAL REPAIR
+
+DATE:
+2026-09-19.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / NEGATIVE.
+
+FROZEN HARNESS SHA-256
+
+8dff18f3a5e192c42f5211174d624385d0125fb153278d53e82fbd7f5e06e6ae.
+
+ACCEPTED PRIMARY FAMILY
+
+20260920100000..20260920102399.
+
+PRIMARY MATRIX
+
+2,400 underlying worlds.
+
+6 policies.
+
+14,400 policy-world evaluations.
+
+Validation:
+
+- exactly 2,400 unique accepted world seeds;
+- exact held-out seed interval;
+- exactly six policy rows / seed;
+- zero duplicate seed x policy rows;
+- zero functionally-trivial worlds;
+- no post-primary threshold tuning.
+
+PRIMARY CANDIDATE
+
+COMP-ADAPT2.
+
+MIXED 1%..5%
+median final recovery:
+
+1%:
+0.8817.
+
+2%:
+0.8725.
+
+5%:
+0.8823.
+
+All:
+fail
+the frozen:
+>=0.93
+target.
+
+T90 world fraction:
+
+1%:
+49.0%.
+
+2%:
+48.5%.
+
+5%:
+47.5%.
+
+All:
+fail
+the frozen reliability target.
+
+H152 FIXED GLOBAL-SOLVE COMPARATOR
+
+H152-FIXED-FB2
+median final recovery:
+
+1%:
+0.9327.
+
+2%:
+0.9155.
+
+5%:
+0.9364.
+
+T90 world fraction:
+
+1%:
+61.5%.
+
+2%:
+56.0%.
+
+5%:
+69.0%.
+
+Therefore:
+
+COMPONENT-LOCAL REPAIR
+is:
+materially worse
+than:
+the parent global lesion solve.
+
+FOUR-PATCH
+
+COMP-ADAPT2
+T90 world fraction:
+
+1%:
+43%.
+
+2%:
+30%.
+
+5%:
+32%.
+
+H152-FIXED-FB2:
+
+1%:
+57%.
+
+2%:
+37%.
+
+5%:
+61%.
+
+Residual-directed component-local repair
+does not:
+remove:
+multi-wound interference.
+
+At:
+5%,
+it substantially worsens it.
+
+FEEDBACK COST
+
+Pooled MIXED
+COMP-ADAPT2
+median feedback observations:
+
+1%:
+24.
+
+2%:
+24.
+
+5%:
+24.
+
+Thus:
+
+the adaptive mechanism
+does not:
+satisfy:
+the <=18-observation
+cost target.
+
+Some:
+single compact wounds
+stop early.
+
+Examples:
+
+MIXED 2% COMPACT:
+median 16 observations.
+
+MIXED 5% COMPACT:
+20.
+
+But:
+
+pooled multi-geometry behavior
+returns to:
+the full 24 cap.
+
+LOCAL VALIDATION MISMATCH
+
+Representative COMP-ADAPT2:
+
+MIXED 2% COMPACT:
+
+median component residual ratio:
+approximately 0.095
+
+with:
+median final held-out recovery:
+approximately 0.894.
+
+MIXED 5% COMPACT:
+
+residual ratio:
+approximately 0.097
+
+with:
+final recovery:
+approximately 0.891.
+
+Thus:
+
+a component can satisfy:
+the local 0.10
+validation residual
+
+without:
+achieving:
+global functional T90.
+
+Local validation closure
+is not:
+a sufficiently calibrated proxy
+for:
+held-out whole-colony recovery.
+
+CROSS-COMPONENT FAILURE
+
+For:
+FOUR-PATCH,
+
+component-local solves
+hold:
+other wound estimates fixed.
+
+But:
+
+one scalar functional output
+contains:
+overlapping RBF contributions
+from:
+multiple wound components.
+
+Therefore:
+
+the residual assigned to:
+one wound
+is not:
+strictly separable
+from:
+the current estimates
+of:
+the others.
+
+Sequential local solves can:
+misattribute:
+shared functional error.
+
+Increasing:
+COMP-ADAPT4
+to:
+48 observations
+
+does NOT:
+repair the architecture cleanly.
+
+MIXED median final recovery:
+
+1%:
+0.8547.
+
+2%:
+0.8506.
+
+5%:
+0.8811.
+
+Thus:
+
+this is:
+not merely:
+a budget shortage.
+
+PREREGISTERED GATE REVIEW
+
+FAIL:
+
+1.
+MIXED 1%..5%
+median recovery >=0.93.
+
+2.
+MIXED reliability target.
+
+3.
+>=10-point reliability gain
+over:
+H152 fixed.
+
+4.
+FOUR-PATCH non-interference.
+
+5.
+<=18 median observations
+in:
+two of three
+small-lesion groups.
+
+6.
+COMP-ADAPT2
+within 0.03
+of:
+COMP-ADAPT4
+
+does not:
+rescue:
+the low absolute quality.
+
+7.
+Residual routing
+does not:
+beat:
+fixed component routing
+on:
+FOUR-PATCH reliability.
+
+PASS:
+
+SMOOTH repair remains:
+high.
+
+CHECKPOINT-ORACLE
+remains:
+the ceiling.
+
+FINAL INTERPRETATION
+
+H154 is:
+
+NEGATIVE.
+
+The failure identifies:
+a structural mistake
+in:
+the repair decomposition.
+
+FUNCTIONAL ERROR
+CAN BE:
+LOCALLY OBSERVED
+
+without:
+being:
+LOCALLY SEPARABLE
+IN PARAMETER SPACE.
+
+The wound components'
+basis responses
+overlap
+in:
+the same scalar task output.
+
+Therefore:
+
+using:
+per-wound residuals
+to decide:
+WHERE TO PROBE
+
+may still be useful,
+
+but:
+
+using:
+per-wound residuals
+to justify:
+INDEPENDENT COEFFICIENT SOLVES
+
+is not.
+
+NEXT SCOPED DIRECTION
+
+RESIDUAL-ROUTED
+GLOBAL JOINT SOLVE.
+
+Keep:
+
+- component-tagged local feedback;
+- observed component residuals;
+- adaptive query routing.
+
+Change:
+
+ALL acquired training feedback
+contributes to:
+one joint solve
+over:
+all regenerated lesion coefficients.
+
+Thus:
+
+routing remains local,
+
+while:
+
+parameter inference
+respects:
+cross-component coupling.
+
+Do NOT:
+
+increase:
+the 24-observation primary cap
+
+as:
+the first response.
+
+H154 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
