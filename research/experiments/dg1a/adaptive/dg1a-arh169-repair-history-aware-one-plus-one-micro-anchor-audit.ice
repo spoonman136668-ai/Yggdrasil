@@ -1019,3 +1019,594 @@ the first held-out H169 lifetime.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — REPAIR-HISTORY-AWARE ONE-PLUS-ONE MICRO-ANCHOR
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-POSITIVE.
+
+FINAL H169 HARNESS SHA-256
+
+fda1fe47f3a77ef449a642193c5ab3a9c67a439909a0b8f297c0544d2e5fc0d3.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+65da2a3a142ce0b2dfa24da6f944492b60c64eb5ab641ceeb64dde55987dfdb8.
+
+ACCEPTED PRIMARY FAMILY
+
+20260921800000..20260921800119.
+
+PRIMARY MATRIX
+
+120 held-out condition-world lifetimes.
+
+6 policies.
+
+720 policy lifetimes.
+
+Validation:
+
+- exactly 120 unique held-out seeds;
+- exact accepted seed interval;
+- exactly six policy rows / seed;
+- zero duplicate seed x policy rows;
+- no missing accepted seeds;
+- no post-primary novelty / geometry tuning.
+
+PRIMARY CANDIDATE
+
+HIST-GEOM-1PLUS1.
+
+SAFETY
+
+Minimum group median
+FINAL GlobalFidelity:
+
+approximately:
+0.998989.
+
+World fraction
+FINAL >=0.95:
+
+100%
+in:
+every group.
+
+Maximum group-median
+HALF-to-FINAL loss:
+
+approximately:
+0.000329.
+
+Minimum group-median
+late-life SelfRecovery:
+
+remains:
+above:
+the frozen 0.95 floor.
+
+PASS.
+
+GLOBAL EXPOSURE QUALIFICATION
+
+Cumulative absolute error exposure
+relative to:
+MICRO2-LEVERAGE.
+
+Median ratios:
+
+fine:
+
+HOTSPOT clean:
+approximately 1.140.
+
+HOTSPOT eta=.25:
+1.151.
+
+ROAMING clean:
+1.152.
+
+ROAMING eta=.25:
+1.169.
+
+coarse:
+
+HOTSPOT clean:
+approximately 1.040.
+
+HOTSPOT eta=.25:
+1.096.
+
+ROAMING clean:
+1.033.
+
+ROAMING eta=.25:
+1.043.
+
+Frozen ceiling:
+
+<=1.25
+for:
+EVERY group.
+
+PASS:
+8 / 8.
+
+Thus:
+
+repair-history novelty
+closes:
+the single H168
+coarse noisy-roaming
+exposure failure
+
+without:
+breaking:
+fine-scale exposure safety.
+
+SECOND-QUERY DUTY
+
+COARSE HOTSPOT
+
+median duty:
+
+0
+for:
+both eta classes.
+
+Frozen target:
+<=0.10.
+
+PASS.
+
+COARSE ROAMING
+
+median duty:
+
+0.45
+for:
+eta=0
+
+and:
+0.45
+for:
+eta=.25.
+
+Frozen range:
+0.25..0.70.
+
+PASS.
+
+Difference versus:
+coarse HOTSPOT:
+
++0.45
+for:
+both eta classes.
+
+Frozen minimum:
++0.20.
+
+PASS.
+
+Thus:
+
+the target-blind
+repair-history signal
+
+correctly distinguishes:
+
+MOVING DAMAGE
+
+from:
+
+REPEATED LOCAL HOTSPOT
+TURNOVER.
+
+FINE SCALE
+
+HIST-GEOM duty
+matches:
+H168-GEOM duty
+
+because:
+the novelty branch
+is:
+gated to:
+rho_geom<=0.50.
+
+Median duty:
+
+approximately:
+0.620..0.644.
+
+No:
+>0.05
+fine-scale duty inflation.
+
+PASS.
+
+OBSERVATION COST
+
+Pooled observation reduction
+relative to:
+MICRO2-LEVERAGE:
+
+g=1.00:
+
+approximately:
+41.25%
+median reduction.
+
+Frozen target:
+>=25%.
+
+PASS.
+
+g=.25:
+
+approximately:
+18.66%.
+
+Frozen target:
+>=15%.
+
+PASS.
+
+EXPOSURE IMPROVEMENT
+VERSUS:
+H168-GEOM
+
+COARSE ROAMING
+
+eta=0:
+
+median exposure reduction:
+
+approximately:
+4.30%.
+
+Frozen target:
+>=5%.
+
+FAIL,
+narrowly.
+
+eta=.25:
+
+approximately:
+5.94%.
+
+PASS.
+
+Thus:
+
+repair history
+provides:
+the intended
+coarse-roaming
+exposure improvement,
+
+but:
+
+the clean-roaming
+effect-size gate
+misses
+by:
+approximately:
+0.70 percentage points.
+
+COARSE HOTSPOT
+NON-REGRESSION
+
+Exposure change
+versus:
+H168-GEOM:
+
+approximately:
+0%
+in:
+both eta classes.
+
+Frozen maximum increase:
+5%.
+
+PASS.
+
+ORACLE
+
+LOCAL-CHECKPOINT-ORACLE:
+
+FINAL GlobalFidelity
+exactly:
+1.0.
+
+PASS.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+MICRO2-LEVERAGE baseline.
+
+2.
+HIST-GEOM safety qualification.
+
+3.
+HIST-GEOM global exposure qualification.
+
+4.
+Coarse HOTSPOT low second-query duty.
+
+5.
+Coarse ROAMING selective duty.
+
+6.
+ROAMING / HOTSPOT duty separation.
+
+7.
+No fine-scale duty inflation.
+
+8.
+Observation reduction:
+coarse and fine.
+
+10.
+No coarse HOTSPOT exposure regression.
+
+11.
+Oracle ceiling.
+
+FAIL / MIXED:
+
+9.
+>=5%
+exposure reduction
+versus:
+H168-GEOM
+
+in:
+both coarse ROAMING eta groups.
+
+Observed:
+
+clean:
+approximately 4.30%.
+
+noisy:
+approximately 5.94%.
+
+FAIL:
+1 / 2
+by:
+approximately 0.70 percentage points.
+
+STRONG SUPPORT:
+
+FAIL.
+
+FINAL INTERPRETATION
+
+H169 is:
+
+MIXED-POSITIVE.
+
+The important architectural question
+is:
+answered positively.
+
+TARGET-BLIND
+REPAIR HISTORY
+
+adds:
+useful functional-risk information
+
+that:
+query geometry alone
+does not contain.
+
+The combined controller:
+
+- uses:
+  one query
+  in:
+  coarse stable HOTSPOT repair;
+
+- uses:
+  approximately 1.45 queries / cycle
+  in:
+  coarse ROAMING repair;
+
+- uses:
+  approximately 1.62 queries / cycle
+  at:
+  fine scale;
+
+- remains:
+  globally exposure-qualified;
+
+- preserves:
+  near-perfect
+  long-horizon task fidelity;
+
+- does NOT:
+  need:
+  held-out task error
+  to:
+  choose:
+  query count.
+
+This is:
+the first accepted controller
+in this chain
+that combines:
+
+SCALE-AWARE
+INFORMATION DEMAND
+
+with:
+
+TURNOVER-HISTORY
+RISK
+
+while:
+
+remaining:
+target-blind
+at:
+the query-purchase layer.
+
+ARCHITECTURAL CONSEQUENCE
+
+The synthetic repair-control stack
+is now:
+
+1.
+detect / localize:
+the lesion;
+
+2.
+regrow:
+membership;
+
+3.
+use:
+developmental context
+as:
+the local prior;
+
+4.
+always acquire:
+one:
+maximum-leverage
+functional observation;
+
+5.
+buy:
+a second
+only when:
+
+   a.
+   geometric residual information
+   is:
+   high;
+
+   OR:
+
+   b.
+   coarse repair history
+   says:
+   the wound
+   is:
+   moving through:
+   novel cognitive territory;
+
+6.
+jointly solve:
+the local lesion state;
+
+7.
+carry:
+the repaired state
+forward.
+
+This is:
+substantially cheaper
+than:
+the original:
+24-observation
+full-anchor architecture
+
+and:
+retains:
+the transient-error
+safety envelope.
+
+RESEARCH PHASE CONSEQUENCE
+
+At this point:
+
+further tuning
+of:
+synthetic query-purchase thresholds
+
+has:
+diminishing architectural value.
+
+The next major risk
+is no longer:
+
+HOW MANY
+synthetic observations
+to buy.
+
+It is:
+
+DO THESE
+REGENERATIVE CONTROL LAWS
+TRANSFER
+TO:
+ACTUALLY LEARNED
+FUNCTIONAL SPECIALIZATION?
+
+NEXT:
+
+H170 —
+LEARNED MICRO-FUNCTION
+REGENERATION / TURNOVER
+TRANSFER AUDIT.
+
+The next model should:
+
+- learn:
+  local task specialization
+  from data
+  rather than:
+  receive:
+  an analytically generated
+  coefficient field;
+
+- preserve:
+  small-cell
+  local repair;
+
+- remove:
+  local learned state
+  without:
+  checkpoint restoration;
+
+- regenerate:
+  from:
+  developmental context;
+
+- use:
+  the accepted:
+  leverage + repair-history
+  micro-anchor controller;
+
+- test:
+  whether:
+  task accuracy,
+  calibration,
+  and:
+  long-horizon turnover
+  remain stable.
+
+H169 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- global retraining;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
