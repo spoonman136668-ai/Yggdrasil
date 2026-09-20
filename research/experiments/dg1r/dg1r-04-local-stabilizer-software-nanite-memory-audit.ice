@@ -1565,3 +1565,140 @@ destroy.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-04 SOFTWARE-NANITE HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST DG-1R-04 PRIMARY WORLD.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_04_software_nanite_v1.py
+
+Harness commit:
+
+4fbc1defa505653ac638d0d21fdd5c8e37b6f025.
+
+Git blob SHA:
+
+6eeaf70c97174fd40483256db9c6e600989a6b47.
+
+Source SHA-256:
+
+debcaf7c79632740dbccd4ad8b0f6ebfcd034515cb144b9a21bc537f7a8f7eed.
+
+Source bytes:
+
+23776.
+
+PRE-FREEZE SANITY
+
+Python compile:
+
+PASS.
+
+Nanite-safe:
+input mapping:
+
+PASS.
+
+A:
+short:
+non-primary:
+10-step:
+mechanical:
+sanity
+
+confirmed:
+
+- no:
+  input:
+  mapping
+  lands:
+  on:
+  nanite:
+  sites;
+
+- nanite:
+  controller:
+  state
+  remains:
+  inside:
+  the:
+  same:
+  128-bit:
+  organism;
+
+- DAMP:
+  can:
+  suppress:
+  worker:
+  erosion
+  without:
+  hidden:
+  state.
+
+No:
+primary:
+DG-1R-04:
+world
+was:
+executed
+before:
+this freeze.
+
+FROZEN METHODS
+
+SLOW128_MIXED1.
+
+N16_H5.
+
+N16_H6.
+
+N16_H6_DAMP.
+
+N16_H6_REPAIR.
+
+All:
+ReCA methods:
+
+128:
+persistent:
+bits.
+
+All:
+
+512:
+readout:
+feature bits
+per:
+external:
+input.
+
+FROZEN WORLD FAMILY
+
+20260926040000..20260926040007.
+
+8 worlds.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+canonical sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+Runtime sidecars:
+are:
+non-canonical.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
