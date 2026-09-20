@@ -658,3 +658,324 @@ SYNTHETIC_MEASURED_SANDBOX_LEARNED_STATE_TRUST_REGION_TAIL_CONTAINMENT
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — LEARNED-STATE TRUST-REGION HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H172 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H172 SANDBOX HARNESS
+
+File:
+
+h172_trust_region_v1.py
+
+SHA-256:
+
+7e0ddc689ff094af85b2629b8adb5044fb920758a42eac493aff55d7ca89e888.
+
+PARENT H171 MODEL
+
+Reuse:
+the accepted H171
+fine-scale learned
+matched-turnover substrate.
+
+Cell scale:
+
+g=0.25.
+
+Repair lifetime:
+
+292 cycles.
+
+Tasks:
+
+SMOOTH,
+MIXED.
+
+Turnover:
+
+ROAMING,
+HOTSPOT.
+
+Label noise eta:
+
+0,
+0.10.
+
+Observation controller:
+
+exact H171/H169
+HIST-GEOM one-plus-one rule.
+
+No:
+functional observation count
+or:
+purchase rule
+
+is changed.
+
+TRUST-REGION PRIOR
+
+At:
+100%
+membership restoration
+for:
+each repair cycle,
+
+freeze:
+
+p_cycle =
+the current context-repaired
+lesion coefficient vector.
+
+Estimate:
+
+rms_local =
+RMS
+of:
+currently surviving live-neighbor
+coefficients
+touching:
+the lesion.
+
+rms_global =
+RMS
+of:
+all surviving
+coefficients.
+
+s_cycle =
+max(
+rms_local,
+0.25 * rms_global,
+1e-6
+).
+
+For lesion size K:
+
+R_tau =
+tau
+*
+s_cycle
+*
+sqrt(K).
+
+No:
+target label,
+lost coefficient,
+held-out test output,
+or:
+teacher output
+
+enters:
+the trust radius.
+
+PROJECTION
+
+After:
+every local ridge solve
+
+inside:
+the repair cycle,
+
+candidate:
+u.
+
+d =
+u - p_cycle.
+
+If:
+
+||d||_2
+<=
+R_tau,
+
+accept u.
+
+Else:
+
+project:
+
+p_cycle
++
+R_tau
+*
+d / ||d||_2.
+
+The same:
+
+p_cycle
+and:
+R_tau
+
+remain:
+fixed
+for:
+all post-membership
+maturation solves
+within:
+that cycle.
+
+TRUST LEVELS
+
+TRUST2:
+
+tau=2.0.
+
+TRUST4:
+
+tau=4.0.
+
+No:
+tau adjustment
+after:
+sanity.
+
+POLICIES
+
+H171_UNCONSTRAINED.
+
+TRUST2_HIST_GEOM.
+
+TRUST4_HIST_GEOM.
+
+MICRO2_LEVERAGE.
+
+LOCAL_CHECKPOINT_ORACLE.
+
+SANITY
+
+Disjoint family:
+
+20260922190000...
+
+6 representative
+condition-world lifetimes.
+
+5 policies.
+
+30 policy lifetimes.
+
+Sanity-output SHA-256:
+
+38bc8caf98baae54c82b7d709d493c3f7dd635a8c9857303ddfd29b9daff1ff8.
+
+Mechanical checks:
+
+- exactly five policies / seed;
+- exact six sanity seeds;
+- oracle final learned-output fidelity:
+  exactly 1.0;
+- observation counts:
+  unchanged
+  between:
+  H171_UNCONSTRAINED,
+  TRUST2,
+  TRUST4;
+- trust projection
+  affects:
+  only:
+  repaired lesion coefficients;
+- no:
+  lost learned coefficient,
+  held-out test output,
+  teacher output,
+  or:
+  target label
+
+enters:
+the trust-region bound.
+
+NON-EVIDENCE SIGNAL
+
+TRUST2:
+
+minimum sanity
+FINAL learned-output fidelity:
+
+approximately 0.9625.
+
+No:
+negative-fidelity sanity world.
+
+Median projection duty:
+
+approximately 3.1%.
+
+Maximum sanity projection duty:
+
+approximately 8.2%.
+
+TRUST4:
+
+is:
+mostly inactive
+in:
+the sanity matrix,
+
+with:
+maximum projection duty:
+
+approximately 1.0%.
+
+No:
+sanity policy
+shows:
+material observation-count
+increase.
+
+These values are:
+
+NON-EVIDENCE.
+
+No:
+
+- tau;
+- prior definition;
+- local-scale definition;
+- projection center;
+- teacher;
+- training rule;
+- damage law;
+- query rule;
+- history window;
+- lambda;
+- feedback-noise rate;
+- lifetime;
+- acceptance gate
+
+was changed.
+
+PRIMARY FAMILY
+
+20260922100000..20260922100079.
+
+80 held-out worlds.
+
+5 policies.
+
+400 policy lifetimes.
+
+Approximately:
+
+116,800
+policy repair cycles.
+
+H172 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H172 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
