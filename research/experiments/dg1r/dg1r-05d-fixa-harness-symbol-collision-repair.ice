@@ -182,3 +182,103 @@ byte-for-byte.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05D-FIXA
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE:
+THE:
+FIRST:
+DG-1R-05D-FIXA:
+SCENARIO.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05d_fixa_symbol_v1.py
+
+Harness commit:
+
+0ce4dd1b35f7c39a01fcb8dec37a7f229e78b5e6.
+
+Git blob SHA:
+
+c171336a4a9445c2c3269d85fbde3427bbd93bcf.
+
+Source SHA-256:
+
+2cd277dbdb77d8324b02710edd3c41725de25d498c95920c62e81462ebed3943.
+
+Source bytes:
+
+11032.
+
+ALLOWED DELTA
+
+Exactly:
+
+- rename:
+  tissue-state:
+  encode(logical)
+  to:
+  encode_tissue(logical);
+
+- update:
+  step()
+  tissue-state:
+  call;
+
+- update:
+  prefix()
+  initial-state:
+  call.
+
+No:
+experimental:
+semantic:
+change.
+
+LOCAL PRECHECK
+
+Exact:
+Git blob:
+identity:
+
+PASS.
+
+Python:
+compile:
+
+PASS.
+
+No:
+DG-1R-05D:
+scenario
+was:
+executed
+before:
+this:
+freeze.
+
+WORLD FAMILY
+
+20260926054000..20260926054007.
+
+8 worlds.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+sweeps.
+
+Output SHA-256
+must:
+match exactly.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
