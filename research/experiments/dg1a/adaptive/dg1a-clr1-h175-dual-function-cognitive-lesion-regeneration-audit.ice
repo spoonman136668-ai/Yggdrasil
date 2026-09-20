@@ -1464,3 +1464,1015 @@ the first held-out H175 primary world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — COGNITIVE LESION–REGENERATION 1 / DUAL LEARNED FUNCTION SELECTIVE REPAIR
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-POSITIVE GLOBALLY / POSITIVE FINE-SCALE COGNITIVE MICRO-PATCH INFLECTION.
+
+FINAL H175 HARNESS SHA-256
+
+0d087886ca034c07b808f194de87074991f9e226b683838cadf782a4ac1144be.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+2c7bb9ed285b538bcec371d8b1bff54b963e5b87a1ae48c6ae7ac0aac9c982d1.
+
+ACCEPTED PRIMARY FAMILY
+
+20260922400000..20260922400079.
+
+PRIMARY MATRIX
+
+80 held-out target-lesion worlds.
+
+5 repair policies.
+
+400 policy lifetimes.
+
+5 repeated repair cycles / lifetime.
+
+2,000 policy repair cycles.
+
+Validation:
+
+- exactly 80 unique held-out seeds;
+- exact accepted seed interval;
+- exactly five policy rows / target-lesion world;
+- zero duplicate seed x policy rows;
+- no missing accepted seeds;
+- no post-primary task / lesion / repair tuning.
+
+BASELINE LEARNING
+
+Median held-out R^2:
+
+g=1.00:
+
+A:
+approximately 0.9784.
+
+B:
+approximately 0.9786.
+
+g=0.25:
+
+A:
+approximately 0.9787.
+
+B:
+approximately 0.9762.
+
+Frozen target:
+>=0.90.
+
+PASS.
+
+WORLD-LEVEL BASELINE
+
+100%
+of:
+accepted worlds
+
+have:
+
+both:
+A and B
+held-out R^2
+>=0.85.
+
+Frozen target:
+>=90%.
+
+PASS.
+
+MEASURED FUNCTIONAL LOCALIZATION
+
+Localization success:
+
+g=1.00:
+
+A target:
+70%.
+
+B target:
+80%.
+
+g=0.25:
+
+A:
+85%.
+
+B:
+95%.
+
+Overall:
+
+66 / 80
+=
+82.5%.
+
+Frozen global target:
+>=80%.
+
+PASS
+globally.
+
+Important scale result:
+
+fine cells
+produce:
+more reliable
+selective functional localization.
+
+SELECTIVE LESION SPECIFICITY
+
+Median selective-patch
+target R^2 loss:
+
+g=1.00:
+
+approximately 0.231.
+
+g=0.25:
+
+approximately 0.195.
+
+Median matched-random
+target loss:
+
+g=1.00:
+
+approximately 0.0174.
+
+g=0.25:
+
+approximately 0.00518.
+
+Selective / random
+median-damage ratio:
+
+approximately:
+
+13.3x
+at:
+g=1.00.
+
+37.7x
+at:
+g=0.25.
+
+Frozen target:
+>=2x.
+
+PASS:
+both scales.
+
+COLLATERAL DAMAGE
+
+Median unrelated-function
+R^2 loss
+from:
+the selective lesion:
+
+g=1.00:
+
+approximately:
+0.000482.
+
+g=0.25:
+
+approximately:
+0.000161.
+
+Thus:
+
+fine-scale
+selective lesions
+
+produce:
+approximately 3x
+lower
+median collateral
+functional damage.
+
+TASK SEPARABILITY
+
+Median selected
+A/B lesion-patch
+Jaccard:
+
+0
+at:
+both scales.
+
+Frozen target:
+<=0.25.
+
+PASS.
+
+Top-10%
+importance-map overlap
+is also:
+very small.
+
+Therefore:
+
+the two:
+genuinely learned
+functions
+
+develop:
+measurably separable
+cellular responsibility maps
+
+without:
+hard-coded
+task-specific cells.
+
+PATCH GRANULARITY
+
+Median selected patch:
+
+g=1.00:
+
+13 cells.
+
+approximately:
+6.60%
+of:
+the body.
+
+macro RMS radius:
+approximately 0.283.
+
+macro area proxy:
+approximately 0.251.
+
+g=0.25:
+
+104 cells.
+
+approximately:
+3.24%
+of:
+the body.
+
+macro RMS radius:
+approximately 0.185.
+
+macro area proxy:
+approximately 0.108.
+
+Fine / coarse:
+
+cell count:
+approximately 8x.
+
+body fraction:
+approximately 0.49x.
+
+macro radius:
+approximately 0.65x.
+
+macro area proxy:
+approximately 0.43x.
+
+Thus:
+
+smaller cells do NOT:
+reduce:
+the NUMBER
+of cells touched.
+
+They reduce:
+
+the:
+fractional
+and:
+macro-spatial
+repair footprint.
+
+This is:
+the correct interpretation
+of:
+the cognitive micro-patch advantage.
+
+TARGET2 SELECTIVE REPAIR
+
+TARGET2 receives:
+
+exactly:
+2
+target-task
+functional observations
+per:
+repair cycle
+
+and:
+
+zero:
+unrelated-task
+functional observations.
+
+Five cycles:
+
+10 total
+target observations.
+
+ONE-CYCLE RECOVERY FRACTION
+
+Median:
+
+g=0.25,
+target A:
+
+approximately:
+0.937.
+
+g=0.25,
+target B:
+
+approximately:
+0.950.
+
+Frozen target:
+>=0.90.
+
+PASS:
+fine scale.
+
+g=1.00,
+target A:
+
+approximately:
+0.780.
+
+g=1.00,
+target B:
+
+approximately:
+0.741.
+
+FAIL:
+coarse scale.
+
+Therefore:
+
+the same:
+two-observation
+bounded local repair
+
+is:
+sufficient
+at:
+fine granularity
+
+but:
+not:
+at:
+coarse granularity.
+
+WORLD-LEVEL ONE-CYCLE REPAIR
+
+Among:
+localization-success worlds,
+
+fine:
+
+35 / 36
+approximately:
+97.2%
+
+finish:
+cycle 1
+
+with:
+both:
+
+target R^2
+within:
+0.05
+of:
+baseline
+
+and:
+unrelated R^2
+within:
+0.05
+of:
+baseline.
+
+PASS:
+>=90%.
+
+Coarse:
+
+approximately:
+53%
+pass.
+
+FAIL.
+
+COLLATERAL PRESERVATION
+
+TARGET2
+median unrelated-function
+post-repair loss:
+
+all groups:
+
+far below:
+0.03.
+
+Representative median
+cycle-1 collateral loss:
+
+fine:
+
+approximately:
+1.6e-5
+to:
+2.0e-5.
+
+coarse:
+
+approximately:
+6e-4
+to:
+7e-4.
+
+PASS.
+
+DUAL2 DIAGNOSTIC
+
+Giving:
+two additional
+unrelated-task observations
+
+does:
+slightly reduce
+already tiny
+collateral error.
+
+But:
+
+the improvement
+is:
+not material.
+
+TARGET2 already:
+
+preserves:
+the unrelated learned function
+
+without:
+explicit unrelated-task
+functional feedback.
+
+Therefore:
+
+selective repair
+does NOT:
+depend on:
+supervising:
+the unrelated function
+
+inside:
+this primary.
+
+REPEATED REPAIR
+
+After:
+5 repeated lesions
+of:
+the same selective
+cognitive population,
+
+TARGET2
+group-median
+target R^2
+remains:
+
+within:
+0.05
+of:
+original baseline
+
+for:
+all:
+scale x target groups.
+
+Unrelated-function
+median R^2
+
+also remains:
+within:
+0.05
+of:
+baseline.
+
+PASS:
+median repeated-repair gate.
+
+WORLD-LEVEL
+cycle-5 success:
+
+fine:
+approximately:
+97%.
+
+coarse:
+approximately:
+57%.
+
+Thus:
+
+fine-scale
+cognitive repair
+also:
+survives repeated
+lesion / regeneration
+
+much more reliably.
+
+RESPONSIBILITY-MAP DRIFT
+
+Fine-scale
+cycle-5
+responsibility-map drift
+
+remains:
+small
+for:
+the unrelated function
+
+and:
+bounded
+for:
+the repaired target.
+
+Coarse:
+target-B
+shows:
+larger
+responsibility redistribution.
+
+This is:
+consistent with:
+coarse repair
+being:
+less local
+and:
+less stable.
+
+COARSE VERSUS FINE
+COMPUTE TRADE-OFF
+
+TARGET2
+median deterministic
+local repair
+compute proxy:
+
+g=1.00:
+
+approximately:
+2.46k
+cell-level operations
+per:
+5-cycle lifetime.
+
+g=0.25:
+
+approximately:
+21.2k.
+
+Thus:
+
+fine repair
+uses:
+approximately:
+8.6x
+more:
+raw cell-level work.
+
+This is:
+a real cost.
+
+However:
+
+GLOBAL-RETRAIN
+control
+compute proxy:
+
+g=1.00:
+
+approximately:
+202k.
+
+g=0.25:
+
+approximately:
+3.29M.
+
+Therefore:
+
+fine TARGET2
+remains:
+roughly:
+two orders of magnitude
+cheaper
+
+than:
+whole-phenotype retraining
+
+inside:
+the experiment's
+deterministic operation model.
+
+Architectural trade-off:
+
+FINE CELLS
+BUY:
+
+- smaller macro lesion footprint;
+- lower collateral interference;
+- higher localization success;
+- much higher selective-repair reliability;
+
+at:
+the cost of:
+
+MORE
+local cell operations.
+
+GENERALIZATION TELEMETRY NOTE
+
+The preregistered primary
+records:
+
+held-out
+post-repair R^2
+
+on:
+a test set
+disjoint from:
+repair observations.
+
+Thus:
+
+the successful fine-scale
+repair result
+is:
+not:
+repair-query-set accuracy.
+
+However:
+
+the harness
+did NOT record:
+
+repair-query-set
+post-repair error
+
+as:
+a separate telemetry field.
+
+Therefore:
+
+the exact:
+repair-query versus held-out
+gap
+
+in:
+Gate 13
+
+cannot:
+be numerically evaluated
+from:
+the accepted matrix.
+
+Gate 13 is:
+
+UNRESOLVED
+due:
+telemetry omission.
+
+It is NOT:
+retroactively passed.
+
+No:
+primary result
+is:
+discarded
+
+because:
+the held-out
+generalization metric
+itself:
+was measured
+as preregistered.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+Baseline learning.
+
+2.
+World-level baseline competence.
+
+3.
+Global measured-localization rate:
+82.5%.
+
+4.
+Selective lesion specificity
+versus random patch.
+
+5.
+Task-patch separability.
+
+7.
+Collateral preservation.
+
+9.
+Median repeated repair.
+
+10.
+No wholesale retraining
+for TARGET2.
+
+11.
+DUAL2 diagnostic:
+unrelated-task supervision
+not required.
+
+12.
+Fine granularity:
+lower collateral damage,
+same observation count.
+
+14.
+Oracle ceiling.
+
+SCALE-SPLIT:
+
+6.
+One-cycle target repair.
+
+Fine:
+PASS.
+
+Coarse:
+FAIL.
+
+8.
+World-level one-cycle repair.
+
+Fine:
+PASS.
+
+Coarse:
+FAIL.
+
+13.
+Repair-query / held-out
+overfit telemetry.
+
+UNRESOLVED
+due:
+missing query-error field.
+
+FINAL INTERPRETATION
+
+CLR1-H175 is:
+
+MIXED-POSITIVE
+globally
+
+and:
+
+POSITIVE
+for:
+FINE-SCALE
+SELECTIVE
+COGNITIVE MICRO-PATCHING.
+
+This is:
+the first:
+proof-of-cognition
+inflection result
+in:
+the current Yggdrasil program.
+
+A single:
+shared developmental
+cellular phenotype
+
+can:
+
+- learn:
+  two separate nonlinear functions;
+- develop:
+  measurably different
+  responsibility maps;
+- support:
+  a selective causal lesion;
+- lose:
+  the targeted learned function
+  while:
+  preserving:
+  the unrelated function;
+- regenerate:
+  the damaged local population;
+- restore:
+  the target function
+  using:
+  only two:
+  target-task
+  functional observations;
+- preserve:
+  the unrelated learned function
+  without:
+  unrelated-task feedback;
+- repeat:
+  the lesion / repair cycle.
+
+The effect is:
+strongly:
+granularity dependent.
+
+COARSE CELLS:
+
+learn:
+successfully
+
+and:
+can:
+be selectively lesioned,
+
+but:
+
+the same:
+two-observation
+local repair
+is:
+not reliably sufficient.
+
+FINE CELLS:
+
+show:
+
+- stronger localization;
+- smaller macro repair patches;
+- lower collateral interference;
+- reliable target-only repair;
+- repeated-repair stability.
+
+ARCHITECTURAL CONSEQUENCE
+
+The developing hypothesis:
+
+A LARGE
+COGNITIVE BODY
+OF:
+MANY SMALL
+COMPUTATIONAL CELLS
+
+CAN:
+SUPPORT
+COGNITIVE MICRO-PATCHING
+
+has now moved from:
+
+substrate speculation
+
+to:
+
+direct:
+two-function
+learned-behavior evidence.
+
+The cost is:
+
+more:
+local cell-level operations.
+
+Therefore:
+
+future Yggdrasil architecture
+should NOT:
+optimize
+only:
+cell count
+or:
+repair FLOPs.
+
+It should optimize:
+
+FUNCTIONAL DAMAGE
+PER:
+ACTIVE REPAIR COMPUTE.
+
+MAJOR INFLECTION-POINT PAUSE
+
+Per:
+the current research directive,
+
+this result:
+materially changes:
+the architecture
+
+and:
+is:
+a valid pause point.
+
+NEXT COGNITIVE EXPERIMENT
+
+Do NOT:
+return to:
+another long
+substrate-only block.
+
+Next:
+
+CLR1-H176 —
+FINE-SCALE
+COGNITIVE LESION
+ROBUSTNESS / REPAIR-BUDGET
+BOUNDARY.
+
+Use:
+g=0.25
+as:
+the primary cognitive substrate.
+
+Vary:
+
+- lesion magnitude;
+- lesion location;
+- responsibility selectivity;
+- repair observations:
+  0,
+  1,
+  2,
+  4;
+- repeated lesion:
+  same patch
+  versus:
+  moving target-functional patch.
+
+Primary question:
+
+what is:
+the minimum:
+local functional budget
+
+and:
+maximum:
+bounded cognitive lesion
+
+for:
+reliable target restoration
+without:
+collateral behavior loss?
+
+If:
+that boundary is:
+stable,
+
+the next inflection
+should be:
+
+CAPABILITY ADDITION:
+
+learn A
+->
+preserve A
+->
+grow bounded patch for B
+->
+integrate B
+->
+preserve A+B.
+
+H175 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- global retraining
+  as:
+  candidate architecture;
+- canonical scientific claims;
+- STAB-18-R1 execution.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
