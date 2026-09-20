@@ -1040,3 +1040,749 @@ the first held-out H160 condition-world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — SMALL-CELL FUNCTIONAL MICRO-PATCH SCALE TRANSFER
+
+DATE:
+2026-09-19.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-POSITIVE SCALE TRANSFER.
+
+FINAL PINNED HARNESS SHA-256
+
+dde8d09cf75085c521c12960e408aa017581b1f308509c7df2c5c71ded9ac564.
+
+ACCEPTED PRIMARY MACRO FAMILY
+
+20260920900000..20260920900479.
+
+PRIMARY MATRIX
+
+480 held-out macro worlds.
+
+5 cell scales.
+
+2 feedback-noise classes.
+
+4,800 g x eta condition-worlds.
+
+3 policies.
+
+14,400 policy-condition evaluations.
+
+Validation:
+
+- exactly 480 unique macro seeds;
+- exactly 4,800 macro-seed x g x eta conditions;
+- exactly three policy rows per condition;
+- zero duplicate condition x policy rows;
+- zero functionally-trivial worlds;
+- no non-oracle policy exceeds the 24-observation cap;
+- START50 and START100 use identical query-sequence hashes in every paired condition;
+- no post-primary parameter tuning.
+
+BODY SCALE
+
+Observed body sizes:
+
+g=1.00:
+N=197.
+
+g=0.75:
+N=377.
+
+g=0.50:
+N=797.
+
+g=0.35:
+N=1653.
+
+g=0.25:
+N=3209.
+
+Thus:
+
+the finest tested representation
+contains:
+approximately 16.3x
+as many computational cells
+as:
+the reference body.
+
+BETA-2 PATCH SIZE
+
+Median damaged-cell count
+across:
+g.
+
+f0=0.05:
+
+10,
+11,
+10,
+11,
+11
+cells
+for:
+g=1.00,
+0.75,
+0.50,
+0.35,
+0.25.
+
+f0=0.10:
+
+20,
+22,
+20,
+21,
+21.
+
+Coefficient of variation
+across g:
+
+approximately:
+3.6%..4.6%
+depending on:
+f0 / geometry.
+
+Frozen limit:
+<=20%.
+
+PASS.
+
+Therefore:
+
+the H150 beta=2
+localization law
+successfully converts:
+
+LARGER BODY
++
+SMALLER CELLS
+
+into:
+
+APPROXIMATELY CONSTANT
+LOCAL REPAIR BURDEN.
+
+FUNCTIONAL QUALITY
+
+MIXED START50
+median final recovery
+across:
+all g
+and:
+both eta classes
+
+has:
+minimum group median:
+
+approximately:
+0.9973.
+
+This exceeds:
+
+f0=0.05 target:
+0.95.
+
+f0=0.10 target:
+0.93.
+
+PASS:
+every g,
+both noise classes.
+
+STABLE-T90 RELIABILITY
+
+MIXED START50
+stable-T90 world fraction
+
+across:
+all g,
+f0,
+and:
+eta
+
+has:
+minimum group rate:
+
+approximately:
+98.33%.
+
+Frozen target:
+>=90%.
+
+PASS:
+every group.
+
+START50 REGRESSION
+
+Maximum MIXED
+T90-regression rate
+across:
+g x f0 x eta:
+
+approximately:
+0.83%.
+
+Frozen limit:
+<=10%.
+
+PASS.
+
+SMOOTH CONTROL
+
+START50
+SMOOTH
+minimum group
+median final recovery:
+
+approximately:
+0.9976.
+
+Frozen target:
+>=0.98.
+
+PASS:
+every g,
+f0,
+eta.
+
+INTERLEAVING ADVANTAGE ACROSS SCALE
+
+MIXED
+FOUR-PATCH
+f0=0.10.
+
+Median stable T90:
+
+g=1.00:
+
+START100:
+3.
+
+START50:
+2.
+
+reduction:
+33.3%.
+
+g=0.75:
+
+3
+->
+2.
+
+33.3%.
+
+g=0.50:
+
+3
+->
+2.
+
+33.3%.
+
+g=0.35:
+
+2
+->
+2.
+
+0%.
+
+g=0.25:
+
+2
+->
+2.
+
+0%.
+
+The pattern is:
+identical
+for:
+eta=0
+and:
+eta=0.25.
+
+Frozen gate:
+
+>=20% improvement
+at:
+4 / 5
+g values
+
+for:
+both eta classes.
+
+Observed:
+
+3 / 5.
+
+FAIL.
+
+Interpretation:
+
+START50 does NOT:
+break
+at:
+fine granularity.
+
+Instead:
+
+the serial START100 baseline
+itself reaches:
+the two-step latency floor
+
+at:
+g=0.35
+and:
+g=0.25.
+
+There is:
+no remaining latency
+for:
+interleaving
+to remove.
+
+This is:
+a SATURATION
+of:
+the interleaving advantage,
+
+not:
+a scale-transfer loss
+of:
+functional recovery.
+
+FINE-SCALE STABLE-T90 TRANSFER
+
+MIXED START50.
+
+Compare:
+
+g=0.25
+to:
+g=1.00
+
+within:
+each f0 x geometry group.
+
+eta=0:
+
+f0=.05 COMPACT:
+2 vs 2.
+
+f0=.05 FOUR:
+2 vs 2.
+
+f0=.10 COMPACT:
+3 vs 2.
+
+f0=.10 FOUR:
+2 vs 2.
+
+eta=.25:
+
+same pass/fail shape.
+
+Thus:
+
+g=0.25
+is:
+no more than 25% slower
+
+in:
+3 / 4 groups
+
+for:
+each noise class.
+
+Frozen gate:
+3 / 4.
+
+PASS
+at:
+the boundary.
+
+NORMALIZED DOWNTIME GATE
+
+The preregistered
+normalized functional-downtime
+comparison
+does NOT pass.
+
+g=0.25 / g=1.00
+median normalized downtime ratios:
+
+eta=0:
+
+f0=.05 COMPACT:
+approximately 1.30.
+
+f0=.05 FOUR:
+1.85.
+
+f0=.10 COMPACT:
+1.05.
+
+f0=.10 FOUR:
+1.54.
+
+Only:
+1 / 4
+meets:
+the <=1.25 limit.
+
+eta=.25:
+
+approximately:
+
+1.24,
+1.56,
+1.01,
+1.29.
+
+Only:
+2 / 4
+pass.
+
+Frozen requirement:
+3 / 4.
+
+FAIL.
+
+POST-PRIMARY DIAGNOSTIC —
+ABSOLUTE FUNCTIONAL ERROR EXPOSURE
+
+This diagnostic does NOT:
+replace
+the failed preregistered gate.
+
+It explains:
+what the normalized metric is measuring.
+
+As:
+g shrinks,
+
+the beta=2 lesion occupies:
+a much smaller fraction
+of:
+the macro body.
+
+Accordingly:
+
+lesion-induced functional MSE
+falls sharply.
+
+Define,
+for diagnostic interpretation only:
+
+absolute_error_exposure_proxy =
+normalized functional downtime
+*
+lesion MSE.
+
+Median:
+g=0.25 / g=1.00
+ratios
+
+across:
+MIXED
+f0 x geometry groups
+
+are:
+
+eta=0:
+
+approximately:
+
+0.037,
+0.008,
+0.019,
+0.011.
+
+eta=.25:
+
+approximately:
+
+0.031,
+0.008,
+0.017,
+0.009.
+
+Thus:
+
+although:
+recovery can consume
+more lesion-normalized downtime
+
+at:
+fine granularity,
+
+the absolute macro functional-error exposure
+is only:
+approximately 0.8%..3.7%
+
+of:
+the g=1.0 reference
+in these groups.
+
+This diagnostic is:
+consistent with:
+
+smaller cells
+shrinking:
+the functional blast radius
+
+rather than:
+creating:
+a larger macro failure.
+
+It does NOT:
+retroactively pass
+the normalized-downtime gate.
+
+CHECKPOINT ORACLE
+
+Remains:
+the functional ceiling
+at:
+1.0.
+
+PASS.
+
+PREREGISTERED GATE REVIEW
+
+PASS:
+
+1.
+Bounded damaged-cell count
+under:
+beta=2.
+
+2.
+MIXED f0=.05
+final quality.
+
+3.
+MIXED f0=.10
+final quality.
+
+4.
+Stable-T90 reliability
+across scale.
+
+6.
+Fine-scale stable-T90 transfer:
+3 / 4 groups
+for:
+each eta.
+
+8.
+Low T90-regression rate.
+
+9.
+Fixed 24-observation cap.
+
+10.
+SMOOTH quality.
+
+11.
+ORACLE ceiling.
+
+FAIL / MIXED:
+
+5.
+START50
+retains:
+>=20%
+advantage
+at:
+4 / 5 scales.
+
+Observed:
+3 / 5.
+
+7.
+Fine-scale
+normalized functional-downtime transfer.
+
+Observed:
+1 / 4
+for:
+eta=0
+
+and:
+2 / 4
+for:
+eta=.25.
+
+FINAL INTERPRETATION
+
+H160 is:
+
+MIXED-POSITIVE.
+
+The central:
+SMALL-CELL
+SCALE-TRANSFER
+hypothesis
+
+is strongly supported.
+
+A macro body
+can grow from:
+
+197
+to:
+3209
+computational cells
+
+while:
+
+- local patch size remains:
+  approximately constant;
+- final functional recovery remains:
+  approximately 0.997..1.000;
+- stable-T90 reliability remains:
+  approximately 98%..100%;
+- the same:
+  24-observation
+  local functional budget
+  remains sufficient;
+- noisy feedback
+  eta=.25
+  does not:
+  break scale transfer.
+
+The important correction is:
+
+INTERLEAVING AUTHORITY
+SHOULD NOT:
+BE A FIXED
+GRANULARITY-INDEPENDENT RULE.
+
+At:
+coarser scales,
+
+START50 materially reduces:
+end-to-end latency.
+
+At:
+the finest scales,
+
+membership regeneration
+already reaches:
+the latency floor,
+
+so:
+START50 offers:
+no additional speedup.
+
+This suggests:
+
+repair-control policy
+should depend on:
+
+EXPECTED STRUCTURAL REPAIR LATENCY,
+
+not:
+cell scale
+or:
+membership percentage
+alone.
+
+SECOND ARCHITECTURAL RESULT
+
+The preregistered normalized downtime
+becomes:
+a poor sole macro-cost indicator
+when:
+the lesion's own macro functional impact
+shrinks strongly with:
+cell granularity.
+
+Future long-horizon work should report:
+
+BOTH:
+
+1.
+lesion-normalized recovery latency / downtime;
+
+AND:
+
+2.
+absolute macro functional-error exposure.
+
+NEXT SCOPED QUESTION
+
+The small-cell architecture
+has now passed:
+
+- geometric scaling;
+- functional reconstruction;
+- weak-prior calibration;
+- noisy-feedback robustness;
+- structural/functional interleaving;
+- scale transfer.
+
+The next high-leverage risk is:
+
+CUMULATIVE DRIFT
+UNDER:
+REPEATED CELL TURNOVER.
+
+A regenerative intelligence architecture
+is useful only if:
+
+many local cognitive micro-patches
+
+do NOT:
+slowly corrupt
+the global function.
+
+NEXT:
+
+H161 —
+LONG-HORIZON
+REPEATED COGNITIVE TURNOVER /
+MICRO-PATCH DRIFT AUDIT.
+
+Use:
+
+- fine-grained bodies;
+- beta=2 bounded local lesions;
+- lambda=0.01;
+- fixed 24-observation ceiling;
+- H159 START50 where structural ETA
+  leaves overlap headroom;
+- serial completion
+  as:
+  a comparator;
+- repeated local wounds
+  across:
+  many repair cycles;
+- no checkpoint restoration;
+- cumulative:
+  final-function drift,
+  repair latency,
+  absolute error exposure,
+  and:
+  local-state turnover.
+
+H160 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
