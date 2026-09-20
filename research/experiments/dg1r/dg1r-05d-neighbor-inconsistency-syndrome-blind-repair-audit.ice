@@ -1175,3 +1175,121 @@ match exactly.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+MECHANICAL INVALIDATION 01 — ORIGINAL DG-1R-05D HARNESS
+
+The:
+first:
+execution attempt
+
+terminated:
+before:
+any:
+result
+because:
+
+the:
+physical-state:
+encode()
+helper
+
+was:
+shadowed
+by:
+the:
+JSON:
+encode()
+helper.
+
+Observed failure:
+
+TypeError:
+ndarray
+is:
+not:
+JSON serializable.
+
+This:
+is:
+a:
+mechanical:
+name-collision
+defect.
+
+No:
+DG-1R-05D:
+result
+was:
+produced.
+
+No:
+experimental:
+parameter
+or:
+state:
+transition:
+semantics
+are:
+changed
+by:
+FixA.
+
+FIXA FREEZE
+
+Harness:
+
+research/experiments/dg1r/harnesses/dg1r_05d_syndrome_blind_fixa_v1.py
+
+FixA commit:
+
+cc0d4e92d4eefce87e414fbceb8f11c086cd2cc3.
+
+Git blob SHA:
+
+d2bdec439f9f6d4573ddd264fbfd1fe1e5bd3f5e.
+
+Source SHA-256:
+
+57557eb12e025e90e59c64fb513c0dbe97028e8bab4a7db09d528cc7879161fb.
+
+Source bytes:
+
+11027.
+
+Only:
+semantic delta:
+
+NONE.
+
+Only:
+implementation delta:
+
+rename:
+JSON:
+serializer
+from:
+encode()
+
+to:
+encode_json().
+
+Python syntax:
+
+PASS.
+
+All:
+preregistered:
+worlds,
+lesions,
+trigger rules,
+repair rules,
+thresholds,
+and:
+metrics
+
+remain:
+unchanged.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
