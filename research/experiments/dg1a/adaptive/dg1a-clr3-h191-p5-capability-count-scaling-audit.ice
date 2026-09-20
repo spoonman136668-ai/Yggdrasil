@@ -683,3 +683,663 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL H191-P5 NON-EVIDENCE PILOT CLOSURE — CAPABILITY-COUNT SCALING
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE / POSITIVE CAPABILITY-SCALING RESULT /
+DICT8 ROBUST THROUGH CAP8 /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+b832f2a9030fae786e18f596360c4ed4eb880048336e5043373a76e1119ab87c.
+
+CANONICAL OUTPUT
+
+RUN 1 SHA-256:
+
+32565fd836f67da19798e3c3138466f8448660aab7be8eb9bc253db924ef0b24.
+
+RUN 2 SHA-256:
+
+32565fd836f67da19798e3c3138466f8448660aab7be8eb9bc253db924ef0b24.
+
+Byte-identical:
+
+PASS.
+
+MECHANICAL RESULT
+
+DICT8 remains:
+
+ROBUST
+
+at:
+
+CAP3,
+CAP4,
+CAP5,
+CAP6,
+and:
+CAP8.
+
+No:
+TRANSITION
+or:
+OVER-CAPACITY
+condition
+was reached.
+
+CAP3
+
+PROXY8
+median world-mean NMSE:
+
+0.04916488473771472.
+
+DICT8:
+
+0.011911339922129607.
+
+Paired median delta:
+
+-0.03749456153458612.
+
+Win rate:
+
+83.33%.
+
+CAP4
+
+PROXY8:
+
+0.038427543982785806.
+
+DICT8:
+
+0.014047568006810965.
+
+Paired median delta:
+
+-0.018264385068262858.
+
+Win rate:
+
+100%.
+
+CAP5
+
+PROXY8:
+
+0.03972977147828376.
+
+DICT8:
+
+0.029652565122721162.
+
+Paired median delta:
+
+-0.016772129555774666.
+
+Win rate:
+
+83.33%.
+
+CAP6
+
+PROXY8:
+
+0.030613119359411238.
+
+DICT8:
+
+0.024245175325622877.
+
+Paired median delta:
+
+-0.01223530621397731.
+
+Win rate:
+
+83.33%.
+
+CAP8
+
+PROXY8:
+
+0.020300520369964.
+
+DICT8:
+
+0.013000500876131603.
+
+Paired median delta:
+
+-0.006592096587869552.
+
+Win rate:
+
+83.33%.
+
+CAP8 WORST-CAPABILITY TELEMETRY
+
+Median:
+world worst-capability NMSE:
+
+PROXY8:
+
+0.04063982752973476.
+
+DICT8:
+
+0.03968481035919817.
+
+P90:
+
+PROXY8:
+
+0.08878713451595702.
+
+DICT8:
+
+0.051714471734825.
+
+Thus:
+
+the:
+shared-core advantage
+does NOT:
+come only from:
+averaging away:
+one badly served capability.
+
+MEMORY SCALING
+
+Learned decoder scalars:
+
+CAP3:
+24.
+
+CAP4:
+32.
+
+CAP5:
+40.
+
+CAP6:
+48.
+
+CAP8:
+64.
+
+This is:
+
+exactly:
+8:
+new learned decoder coefficients
+per:
+additional capability.
+
+DICT8 shared geometry metadata:
+
+remains:
+
+8 site IDs
++
+8 scale slots
+
+at:
+every capability count.
+
+PROXY8 geometry metadata:
+
+grows:
+
+24,
+32,
+40,
+48,
+64:
+site IDs.
+
+PER-QUERY RESIDUAL COMPUTE
+
+DICT8:
+
+16 operations
+
+at:
+CAP3
+through:
+CAP8.
+
+PROXY8:
+
+also:
+16 operations
+
+for:
+one selected capability,
+
+but:
+with:
+separate per-capability support geometry.
+
+Thus:
+
+the:
+shared structural coordination core
+
+stays:
+constant-size
+and:
+constant-active-compute
+
+while:
+
+capability-specific decoder memory
+grows:
+linearly.
+
+SHARING TELEMETRY
+
+DICT8:
+effective decoder participation median:
+
+CAP3:
+1.6797415068272223.
+
+CAP4:
+2.52429299441836.
+
+CAP5:
+2.756901423033268.
+
+CAP6:
+3.0854940687769883.
+
+CAP8:
+4.634632966535009.
+
+Decoder concentration median:
+
+CAP3:
+0.7407498344304928.
+
+CAP4:
+0.5515515692203633.
+
+CAP5:
+0.5216409775296245.
+
+CAP6:
+0.48389156882571005.
+
+CAP8:
+0.3672319321515812.
+
+Interpret cautiously:
+
+the metric's scale
+changes naturally
+as:
+capability count increases.
+
+However:
+
+the selected factors
+do NOT:
+collapse
+into:
+single-capability ownership.
+
+GENERALIZATION
+
+DICT8:
+median distillation-to-held-out
+mean NMSE gap:
+
+CAP3:
+0.005428825553493338.
+
+CAP4:
+0.002859007532959452.
+
+CAP5:
+0.010260561048714405.
+
+CAP6:
+0.0070969609105704.
+
+CAP8:
+0.0037610740371577123.
+
+No:
+gross generalization failure
+appears.
+
+IMPORTANT INTERPRETATION LIMIT
+
+The condition seed families
+are:
+disjoint.
+
+Therefore:
+
+do NOT:
+interpret:
+the absolute NMSE sequence
+across:
+CAP3..CAP8
+
+as:
+a monotonic:
+difficulty curve.
+
+The supported conclusion is:
+
+within:
+every preregistered:
+capability-count condition,
+
+DICT8 remained:
+mechanically ROBUST
+relative to:
+PROXY8
+
+while:
+shared support size
+and:
+per-query residual compute
+stayed:
+fixed.
+
+TECHNICAL INTERPRETATION
+
+P5 supplies:
+a stronger:
+scaling signal
+than:
+P4.
+
+P4 showed:
+
+shared residual complexity
+can:
+rise
+without:
+forcing:
+shared factor-count growth.
+
+P5 shows:
+
+capability count
+can:
+also rise
+
+while:
+
+shared factor geometry:
+remains:
+8 factors,
+
+per-query factor compute:
+remains:
+16 operations,
+
+and:
+only:
+capability-specific decoder state
+grows.
+
+This is:
+
+the desired:
+separation
+
+between:
+
+SHARED COORDINATION STRUCTURE
+
+and:
+
+CAPABILITY-SPECIFIC MEMORY.
+
+But:
+
+P5 still:
+jointly recruits
+the shared DICT8 support
+using:
+all capabilities
+present
+in:
+each condition.
+
+Therefore:
+
+it does NOT:
+yet demonstrate:
+developmental addition
+into:
+a frozen:
+existing:
+shared core.
+
+NEXT JUSTIFIED EXPERIMENT
+
+H191-P6 —
+FROZEN SHARED-CORE
+CAPABILITY ADDITION.
+
+Procedure:
+
+1.
+Recruit:
+DICT8
+on:
+an initial:
+three-capability set.
+
+2.
+Freeze:
+
+- 8 site IDs;
+- 8 scale slots;
+- old capability decoders.
+
+3.
+Introduce:
+capability 4,
+then:
+5,
+then:
+6,
+then:
+8.
+
+4.
+For:
+each new capability,
+
+fit ONLY:
+
+its:
+new:
+8-coefficient decoder.
+
+5.
+No:
+shared-support re-recruitment.
+
+6.
+No:
+old-decoder refit.
+
+Measure:
+
+- new-capability fidelity;
+- old-capability exact preservation;
+- gap versus:
+  jointly recruited:
+  DICT8 reference;
+- incremental memory:
+  +8 scalars/capability;
+- geometry growth:
+  zero;
+- per-query residual compute:
+  constant 16.
+
+This is:
+the developmental:
+shared-core test
+that:
+P5 now justifies.
+
+PLAIN-SPEAK SUMMARY
+
+What did we try?
+
+We stopped:
+making three capabilities
+more complicated
+
+and instead:
+gave the system:
+more capabilities.
+
+We tested:
+3,
+4,
+5,
+6,
+and:
+8
+different capability contexts.
+
+The shared core
+was always limited to:
+the same eight factors.
+
+What happened?
+
+It held up.
+
+At every tested capability count,
+the shared DICT8 representation
+was still:
+better overall
+than:
+giving every capability
+its own:
+eight-site PROXY8 cache.
+
+Did it work?
+
+Yes,
+for:
+this non-evidence pilot.
+
+We reached:
+eight capabilities
+without:
+growing:
+the shared factor geometry
+or:
+the per-query residual compute.
+
+What did we actually learn?
+
+The part of the system
+that describes:
+shared coordination
+
+does not:
+have to grow
+one-for-one
+with:
+capability count
+
+in:
+this tested regime.
+
+The only thing
+that had to grow
+was:
+the small:
+eight-number decoder
+for:
+each new capability.
+
+Why does it matter?
+
+That is:
+much closer
+to:
+the Yggdrasil end goal.
+
+Instead of:
+building:
+another mini-network
+every time:
+the organism learns:
+something new,
+
+the system can:
+reuse:
+one:
+small:
+shared structural core
+
+and add:
+compact:
+capability-specific state.
+
+What should we try next?
+
+Make the test:
+developmental.
+
+Build:
+the shared core
+using:
+only the first:
+three capabilities.
+
+Then:
+freeze it.
+
+After that,
+add:
+new capabilities
+without:
+letting:
+the old core
+move.
+
+If:
+the newcomers
+can still:
+plug in
+by learning:
+only:
+their own:
+small decoder,
+
+that would be:
+a much stronger:
+proof-of-mechanism
+for:
+incremental cognitive growth.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
