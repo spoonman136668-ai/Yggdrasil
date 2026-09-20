@@ -1261,3 +1261,174 @@ match exactly.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+MECHANICAL INVALIDATION 01 — ORIGINAL FROZEN HARNESS
+
+The:
+first:
+DG-1R-05B:
+execution attempt
+
+terminated:
+before:
+producing:
+a:
+result
+
+with:
+
+KeyError:
+'35'.
+
+Cause:
+
+correction-target:
+telemetry
+
+was:
+keyed
+for:
+local:
+positions:
+
+1..8
+
+but:
+the:
+recorder
+used:
+
+global:
+128-cell:
+indices.
+
+This:
+affected:
+
+telemetry:
+histogram indexing
+
+only.
+
+It did NOT:
+change:
+
+- repair:
+  target;
+- syndrome:
+  logic;
+- parity:
+  logic;
+- state:
+  evolution;
+- lesion:
+  geometry;
+- classification:
+  thresholds.
+
+The:
+original:
+frozen:
+harness
+
+is:
+
+MECHANICALLY INVALID /
+NO RESULT.
+
+Its:
+execution attempt
+must NOT:
+be:
+interpreted
+as:
+experimental:
+evidence.
+
+FIXA IMPLEMENTATION FREEZE — TELEMETRY-ONLY REPAIR
+
+FixA harness:
+
+research/experiments/dg1r/harnesses/dg1r_05b_parity_guardian_fixa_v1.py
+
+FixA commit:
+
+e54504b75f4e032c368e96825c0d2a714f7256da.
+
+Git blob SHA:
+
+0b69afde3a1fad7d2f7659f9f76d8b53013b1c6b.
+
+Source SHA-256:
+
+b2d828f43ebd31b85c6245b858be90aba1e196f3d7ce9ca03e6576153c9dcf7f.
+
+Source bytes:
+
+12528.
+
+Only:
+semantic delta
+from:
+the:
+invalid:
+original:
+
+correction-target:
+histogram
+
+now:
+receives:
+the:
+local:
+codeword:
+position
+
+1..8
+
+while:
+
+the:
+actual:
+state:
+correction
+
+continues:
+to:
+use:
+the:
+same:
+global:
+physical:
+cell:
+index.
+
+Python syntax:
+
+PASS.
+
+No:
+complete:
+DG-1R-05B:
+result
+exists
+before:
+FixA:
+execution.
+
+All:
+preregistered:
+experimental:
+semantics /
+worlds /
+lesions /
+metrics /
+thresholds
+
+remain:
+
+UNCHANGED.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
