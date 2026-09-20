@@ -773,3 +773,133 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — H191-P11 SLEEP PATCH CONSOLIDATION HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST H191-P11 WORLD.
+
+HARNESS
+
+research/experiments/dg1a/adaptive/harnesses/h191_p11_sleep_patch_consolidation_v1.py
+
+Harness commit:
+
+7d0d8ffb0c989ebe5beeda6fafb6c06fd8870849.
+
+Git blob SHA:
+
+ec1ee8e3a53dd68166dd6c9cdc486a20d3dde956.
+
+Source SHA-256:
+
+923a055bbd840f681aeeea33351e4124dbae2340587d59f17a256275c80efa69.
+
+Source bytes:
+
+23460.
+
+DEPENDENCY
+
+Frozen H191-P10 harness Git blob:
+
+736e78364340dd355a8ecd163a2deef29edf1a2a.
+
+Pinned P10 source SHA-256:
+
+9efde966ddf02c4695462af2959555098edfdcc447e6c5c95e26c86c9540d8b4.
+
+LOCAL EXECUTION PRECHECK
+
+The execution copies were verified against:
+the exact Git blob SHA
+for:
+both:
+P10
+and:
+P11.
+
+P11:
+Python compile:
+
+PASS.
+
+No:
+P11 experimental world
+was:
+executed
+before:
+this freeze.
+
+FROZEN NORMALIZATION DETAIL
+
+Capability-normalized:
+sleep recruitment mismatch
+
+uses:
+
+MSE(
+candidate post-sleep prediction,
+frozen pre-sleep prediction
+)
+
+divided by:
+
+Var(
+frozen pre-sleep prediction
+)
++
+1e-12.
+
+This:
+prevents:
+near-zero:
+patch residual variance
+
+from:
+overweighting:
+a capability
+
+while:
+keeping:
+the metric
+anchored
+to:
+actual:
+waking-state distortion.
+
+FROZEN WORLD FAMILY
+
+20260925200000..20260925200005.
+
+6 worlds.
+
+SLEEP_ALPHA:
+
+1e-9.
+
+ACTIVE_ZERO threshold:
+
+1e-12.
+
+REPRODUCIBILITY
+
+Execute:
+two complete:
+6-world:
+development-plus-sleep sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
