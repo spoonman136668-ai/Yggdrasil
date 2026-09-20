@@ -1,6 +1,6 @@
 TITLE: DG-1A-AR-H149 — Dual-Channel Structural Memory / Regional Re-Validation + Cohort-Proof Audit
 DATE: 2026-09-19
-STATUS: PREREGISTERED / SYNTHETIC / PRIMARY NOT STARTED
+STATUS: ACCEPTED PRIMARY COMPLETE / MIXED-NEGATIVE / CHALLENGE-HISTORY SIGNAL CONFIRMED / HANDOFF-SPECIFICITY + REGIONAL-REVALIDATION LIMIT
 TRACK: DG-1A / ADAPTIVE-RULE RESEARCH
 BRANCH: dg1a-ar
 PARENT: dg1a-arh148-nonfungible-repair-envelope-audit.ice
@@ -2984,6 +2984,540 @@ H150 remains:
 UNASSIGNED
 and:
 UNSPENT.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — FULL COMPARATOR MATRIX
+
+DATE:
+2026-09-19.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE.
+
+FROZEN HARNESS SHA-256
+
+36408075f911e0a0ea4b44184f95f298198fd56a1228e39dd61368fd74a32b22.
+
+ACCEPTED PRIMARY FAMILY
+
+R0:
+20260919500000..20260919500399.
+
+Each subsequent regime:
++1000 seed base.
+
+MATRIX
+
+400 worlds / regime.
+
+10 regimes.
+
+7 policies.
+
+28,000 policy-regime-worlds.
+
+Validation before analysis:
+
+- every policy-regime cell contains exactly 400 unique seeds;
+- no accepted-seed gaps;
+- no accepted-seed duplicates;
+- all accepted seeds belong to the final 20260919500000 family;
+- contaminated 20260919300000 and 20260919400000 families remain NON-EVIDENCE.
+
+PRIMARY CANDIDATE E — FINAL READOUT
+
+R0 LOCAL-5
+
+final ARI:
+0.9910.
+
+global redevelopment:
+12.0% of worlds.
+
+regional re-validation:
+1.0075 / world.
+
+regional redevelopment:
+0.3050 / world.
+
+scratch:
+0.665 / world.
+
+deliberate observations:
+468.915 / world.
+
+false inherited-certificate rate:
+0.0056%.
+
+R1 LOCAL-10
+
+final ARI:
+1.0000.
+
+global redevelopment:
+21.5% of worlds.
+
+regional re-validation:
+1.1000 / world.
+
+regional redevelopment:
+0.8450 / world.
+
+scratch:
+1.490 / world.
+
+deliberate observations:
+590.355 / world.
+
+false inherited-certificate rate:
+0%.
+
+R2 DIFFUSE-10
+
+final ARI:
+1.0000.
+
+global redevelopment:
+100%.
+
+false inherited-certificate rate:
+0.1062%.
+
+R3 ACCUMULATED-MICROPATCH
+
+final ARI:
+0.9121.
+
+structural handoff:
+95.75%.
+
+max accepted path P:
+0.0446.
+
+regional re-validation:
+2.5025 / world.
+
+regional redevelopment:
+2.1850 / world.
+
+global redevelopment:
+0.5650 / world.
+
+R4 MOVING-WOUND
+
+final ARI:
+0.8062.
+
+structural handoff:
+100%.
+
+max accepted path P:
+0.0108.
+
+max challenge exposure Q:
+0.4984.
+
+max distinct challenge exposure V:
+0.2840.
+
+max challenge diffusion C_Q:
+0.5968.
+
+false inherited-certificate rate:
+0.0836%.
+
+false actionable inherited-certificate rate:
+1.3789%.
+
+R5 BOUNDARY-PING-PONG
+
+final ARI:
+0.9861.
+
+structural handoff:
+93.25%.
+
+global redevelopment:
+9.0%.
+
+R6 TRANSIENT-LOCAL-NOISE
+
+final ARI:
+1.0000.
+
+false structural handoff:
+9.5%.
+
+R7 PURE RELABEL
+
+final ARI:
+1.0000.
+
+structural handoff:
+11.75%.
+
+pure-relabel unnecessary invalidation:
+0.1736%.
+
+false inherited-certificate rate:
+0%.
+
+R8 STACKED
+
+final ARI:
+0.9964.
+
+B / C comparator final ARI:
+0.9993.
+
+difference from better B/C:
+approximately 0.0029.
+
+E scratch:
+5.900 / world.
+
+IMMEDIATE GLOBAL scratch:
+6.000 / world.
+
+false inherited-certificate rate:
+0.2964%.
+
+R9 ROAMING-SUBPATCH
+
+final ARI:
+0.8776.
+
+structural handoff:
+100%.
+
+max accepted path P:
+0.0127.
+
+max challenge exposure Q:
+0.2163.
+
+max distinct challenge exposure V:
+0.2010.
+
+max challenge diffusion C_Q:
+0.5941.
+
+false inherited-certificate rate:
+0.1776%.
+
+false actionable inherited-certificate rate:
+0.9876%.
+
+PREREGISTERED GATE REVIEW
+
+SUPPORTED
+
+1.
+LOCAL structural quality.
+
+LOCAL-5:
+ARI 0.9910.
+
+LOCAL-10:
+ARI 1.0000.
+
+Both exceed:
+0.99.
+
+2.
+LOCAL-10 regional re-validation
+is used more often than:
+regional redevelopment.
+
+1.1000
+versus:
+0.8450 / world.
+
+3.
+MOVING-WOUND structural handoff:
+100%.
+
+Required:
+>=90%.
+
+4.
+ROAMING-SUBPATCH structural handoff:
+100%.
+
+Required:
+>=90%.
+
+5.
+Challenge-exposure history becomes material
+while:
+accepted repair path remains low.
+
+MOVING-WOUND:
+Q approximately 0.498
+while P approximately 0.011.
+
+ROAMING-SUBPATCH:
+Q approximately 0.216
+while P approximately 0.013.
+
+This confirms:
+accepted repair history alone
+is insufficient
+for fast moving structural injury.
+
+6.
+False inherited-certificate rate
+remains:
+<1%
+in every primary structural-damage regime.
+
+7.
+STACKED quality remains:
+within 0.01
+of the better B/C comparator
+
+and:
+uses fewer scratch units
+than IMMEDIATE GLOBAL.
+
+MIXED / FAILED
+
+1.
+LOCAL GLOBAL-REDEVELOPMENT CEILING.
+
+LOCAL-5:
+12.0%.
+
+Required:
+<=5%.
+
+LOCAL-10:
+21.5%.
+
+Required:
+<=10%.
+
+FAIL.
+
+2.
+LOCAL SCRATCH ADVANTAGE OVER H148.
+
+LOCAL-5:
+E 0.665
+versus A 0.795.
+
+PASS.
+
+LOCAL-10:
+E 1.490
+versus A 1.185.
+
+FAIL.
+
+3.
+LOCAL DELIBERATE-EVIDENCE ADVANTAGE
+OVER IMMEDIATE GLOBAL.
+
+LOCAL-5:
+E 468.915
+versus F 449.985.
+
+LOCAL-10:
+E 590.355
+versus F 450.165.
+
+FAIL.
+
+Regional re-validation
+is not yet:
+an evidence-cost saving operation
+under this realization.
+
+4.
+ACCUMULATED-MICROPATCH QUALITY.
+
+E final ARI:
+0.9121.
+
+Required:
+>=0.97.
+
+FAIL.
+
+Handoff occurs before:
+P reaches 0.25,
+
+but:
+the handoff / re-validation sequence
+does not preserve enough final topology quality.
+
+5.
+TRANSIENT-LOCAL-NOISE FALSE HANDOFF.
+
+Observed:
+9.5%.
+
+Required:
+<=5%.
+
+FAIL.
+
+6.
+PURE-RELABEL STRUCTURAL HANDOFF.
+
+Observed:
+11.75%.
+
+Required:
+<=1%.
+
+FAIL.
+
+The cohort proof itself:
+remains relabel-safe
+with:
+zero false inherited-certificate rate
+
+and:
+very low direct unnecessary invalidation,
+
+but:
+the structural controller
+still launches unnecessary handoff.
+
+7.
+MOVING-WOUND ACTION SAFETY.
+
+Although:
+cached false inheritance
+remains below 1%,
+
+false actionable inherited-certificate rate
+is:
+approximately 1.379%.
+
+This new amendment metric
+exposes:
+residual stale action authority
+during fast wound motion.
+
+FINAL INTERPRETATION
+
+H149 is:
+
+MIXED-NEGATIVE.
+
+The experiment establishes a useful architectural result:
+
+DUAL STRUCTURAL HISTORY
+IS REAL.
+
+Accepted-change history P
+and:
+challenge-exposure history Q
+
+measure:
+different failure modes.
+
+Q materially detects:
+moving / roaming structural injury
+
+that:
+P almost completely misses.
+
+However:
+
+THE CURRENT HANDOFF CONTROLLER
+IS TOO EAGER
+
+and:
+
+REGIONAL RE-VALIDATION
+IS TOO EXPENSIVE /
+TOO DISRUPTIVE
+
+to serve as:
+the default intermediate repair mode.
+
+The failure is not:
+that challenge history lacks signal.
+
+The failure is:
+signal-to-action conversion.
+
+A future repair-controller experiment
+should separate:
+
+1.
+FAST ACTION SUSPENSION,
+
+from:
+
+2.
+DURABLE STRUCTURAL HISTORY,
+
+from:
+
+3.
+AUTHORITY TO RE-DEVELOP.
+
+These should not:
+share one effective threshold path.
+
+A fast residual
+may justify:
+temporary action suspension
+
+without:
+consuming redevelopment authority.
+
+Likewise:
+
+regional baseline refresh
+should only be attempted
+when:
+current topology is already strongly coherent
+and:
+the evidence cost is demonstrably below
+scratch reconstruction.
+
+COHORT PROOF RESULT
+
+Cohort / relation proof objects remain:
+promising.
+
+They avoid:
+the worst fixed-witness brittleness,
+
+remain:
+numeric-relabel invariant,
+
+and:
+keep cached false inheritance
+below:
+1%
+through all primary structural-damage regimes.
+
+But:
+
+certificate provenance alone
+cannot compensate for:
+incorrect structural handoff timing.
+
+H149 DOES NOT AUTHORIZE
+
+- production thresholds;
+- biological claims;
+- STAB-18-R1 execution;
+- runtime activation;
+- canonical scientific claims.
+
+STAB-18-R1:
+UNTOUCHED.
 
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
