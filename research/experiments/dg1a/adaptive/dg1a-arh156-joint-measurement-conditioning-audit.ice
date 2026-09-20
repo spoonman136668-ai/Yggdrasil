@@ -730,3 +730,193 @@ SYNTHETIC_MEASURED_SANDBOX_JOINT_MEASUREMENT_CONDITIONING_MICROPATCH
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 stab18_r1_touched = false
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — JOINT MEASUREMENT CONDITIONING HARNESS
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H156 HELD-OUT PRIMARY EXECUTION.
+
+UNIQUE SANDBOX HARNESS SHA-256
+
+eeac43258028700bb8d7c7bd00e6e7eee48ba9c55a22307e611e195ab4a75d2d.
+
+The harness is pinned under:
+a unique H156-specific filename.
+
+No generic prior-experiment filename
+is used
+for:
+accepted H156 execution.
+
+FIXED DESIGN
+
+Consumes:
+the H152 64-query local candidate pool
+in:
+deterministic generated order.
+
+GLOBAL LEVERAGE DESIGN
+
+Greedy:
+maximum
+
+p^T A^-1 p
+
+over:
+all unqueried local candidates.
+
+This is:
+the frozen greedy D-optimal design.
+
+GLOBAL A-OPT DESIGN
+
+Greedy:
+maximum expected
+trace-covariance reduction
+
+(p^T Sigma^2 p)
+/
+(1 + p^T Sigma p).
+
+All query-selection policies:
+
+- read query geometry / basis rows;
+- do NOT read:
+  unacquired target values.
+
+RIDGE VALUES
+
+Primary:
+
+0.10
+and:
+0.03.
+
+Sanity-only diagnostic:
+
+0.30.
+
+All were:
+declared before:
+sanity.
+
+SANITY MATRIX
+
+Disjoint:
+20260920490000...
+family.
+
+140 underlying worlds.
+
+1,260 policy-world evaluations.
+
+Validation:
+
+- exactly 140 unique sanity seeds;
+- nine declared sanity policies / seed;
+- zero duplicate seed x policy rows;
+- zero functionally-trivial worlds.
+
+SANITY — NON-EVIDENCE SCIENTIFIC SIGNAL
+
+The dominant effect is:
+PRIOR STRENGTH.
+
+Representative MIXED results:
+
+1% COMPACT:
+
+FIXED-L10
+T90 reach:
+80%.
+
+FIXED-L03:
+85%.
+
+1% FOUR:
+
+FIXED-L10:
+40%.
+
+FIXED-L03:
+80%.
+
+LEV-L03:
+95%.
+
+AOPT-L03:
+95%.
+
+2% FOUR:
+
+FIXED-L10:
+20%.
+
+FIXED-L03:
+60%.
+
+LEV-L03:
+85%.
+
+AOPT-L03:
+90%.
+
+5% FOUR:
+
+FIXED-L10:
+55%.
+
+FIXED-L03:
+85%.
+
+LEV-L03:
+90%.
+
+AOPT-L03:
+90%.
+
+Strong prior lambda=0.30
+is generally worse.
+
+Thus:
+
+the sanity evidence
+is consistent with:
+lambda=0.10
+over-regularizing
+the small local inverse problem.
+
+Information-optimal design
+appears:
+secondary but potentially useful,
+especially:
+for:
+multi-wound geometry.
+
+No:
+lambda,
+query policy,
+budget,
+candidate pool,
+or:
+acceptance threshold
+is changed
+from:
+these sanity outcomes.
+
+PRIMARY FAMILY REMAINS
+
+20260920400000..20260920402399.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H156 primary world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
