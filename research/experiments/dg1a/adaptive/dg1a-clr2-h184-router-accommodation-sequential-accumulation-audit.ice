@@ -791,3 +791,548 @@ the first held-out H184 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — CONTEXT-ONLY ROUTER ACCOMMODATION
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / NEGATIVE FOR JOINT-RELIABILITY CORRECTION / POSITIVE ROUTING-MECHANISM DIAGNOSTIC.
+
+FINAL H184 HARNESS SHA-256
+
+5b70b29f3a4e878f97e04783db3f1c1f1cd700587e883973c8f897b209330542.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+6845c99fe3d6ba8835ad3fce7241816a0eaff8e2bbd8be749a111f3707b9530c.
+
+ACCEPTED PRIMARY FAMILY
+
+20260923300000..20260923300019.
+
+PRIMARY MATRIX
+
+20 held-out worlds.
+
+6 policies.
+
+120 evaluations.
+
+ROUTER ACCOMMODATION MECHANISM
+
+ADAPT48_48:
+
+median:
+B-gate activation
+on:
+future C context
+
+before:
+accommodation:
+
+approximately:
+0.20766.
+
+after:
+context-only accommodation:
+
+approximately:
+0.00625.
+
+Median B-gate activation
+on:
+its own B context:
+
+approximately:
+0.99674.
+
+Median B R^2 loss
+from:
+router accommodation:
+
+approximately:
+0.00053.
+
+100%
+of:
+worlds
+
+retain:
+B within:
+0.05
+
+through:
+router accommodation.
+
+Thus:
+
+context-only
+routing adaptation
+
+works:
+mechanically
+
+and:
+does NOT:
+require:
+B functional replay.
+
+PASS:
+routing mechanism.
+
+STAGE C RESULT
+
+ADAPT48_48:
+
+median C held-out R^2:
+
+approximately:
+0.92510.
+
+World:
+C>=0.85:
+
+80%.
+
+Frozen targets:
+
+median >=0.90:
+PASS.
+
+world reliability >=90%:
+FAIL.
+
+JOINT A+B+C
+
+ADAPT48_48:
+
+75%.
+
+STATIC48_48:
+
+75%.
+
+Frozen target:
+
+>=90%.
+
+FAIL.
+
+Thus:
+
+removing:
+old B-router leakage
+
+does NOT:
+repair:
+the sequential
+world-level tail.
+
+A / B RETENTION
+
+ADAPT48_48:
+
+median A total loss:
+
+approximately:
+0.00820.
+
+median B loss
+after C:
+
+approximately:
+0.00236.
+
+World:
+A+B retention:
+
+95%.
+
+PASS.
+
+LOWER C BUDGET
+
+ADAPT48_32:
+
+median C:
+
+approximately:
+0.91934.
+
+C>=0.85:
+
+80%.
+
+joint A+B+C:
+
+75%.
+
+Thus:
+
+32 C daughters
+
+perform:
+similarly
+to:
+48
+
+on:
+the decisive
+world-level reliability metric.
+
+This suggests:
+
+the remaining tail
+is NOT:
+a simple:
+32-versus-48
+capacity threshold.
+
+B-MARGIN COMPARATOR
+
+ADAPT64_48:
+
+median C:
+
+approximately:
+0.92519.
+
+C>=0.85:
+
+80%.
+
+joint:
+
+75%.
+
+Increasing:
+B
+from:
+48
+to:
+64 daughters
+
+does NOT:
+improve:
+C reliability.
+
+Thus:
+
+the failure
+is NOT:
+insufficient:
+stage-B margin.
+
+RANDOM C MORPHOLOGY
+
+ADAPT48_RANDOM_C:
+
+median C:
+
+approximately:
+0.86551.
+
+C>=0.85:
+
+60%.
+
+joint:
+
+60%.
+
+Coverage-balanced C growth
+remains:
+materially better.
+
+PASS:
+coverage mechanism value.
+
+GLOBAL C
+
+GLOBAL_C:
+
+median C:
+approximately:
+0.99883.
+
+C>=0.85:
+100%.
+
+But:
+
+median A loss:
+approximately:
+0.0522.
+
+A+B retention:
+45%.
+
+joint A+B+C:
+80%.
+
+Thus:
+
+raw C capacity
+can:
+learn C
+
+but:
+global activation
+reintroduces:
+interference.
+
+The remaining challenge is:
+
+representational
+integration
+with:
+bounded active structure.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+Stage-B reproduction
+at:
+the median / boundary.
+
+2.
+Median B route-adaptation loss.
+
+3.
+World B route retention.
+
+4.
+B-on-C suppression.
+
+5.
+B-on-B activation.
+
+6.
+Median C capability.
+
+8.
+Median A retention.
+
+9.
+Median B retention.
+
+11.
+World A+B retention.
+
+12.
+C generalization.
+
+13.
+Routing-only discipline.
+
+14.
+Active structure.
+
+15.
+Permanent parameters.
+
+17.
+Coverage value.
+
+18.
+Hibernation / reactivation.
+
+19.
+Global C ceiling.
+
+FAIL:
+
+7.
+C world reliability.
+
+Observed:
+80%.
+
+10.
+Joint A+B+C competence.
+
+Observed:
+75%.
+
+16.
+Adaptation value.
+
+STATIC:
+75%.
+
+ADAPT:
+75%.
+
+No:
+>=10-point improvement
+and:
+does not reach:
+90%.
+
+STRONG SUPPORT:
+
+FAIL.
+
+FINAL INTERPRETATION
+
+H184 is:
+
+NEGATIVE
+
+for:
+ROUTER ACCOMMODATION
+AS:
+THE JOINT-RELIABILITY FIX.
+
+It confirms:
+
+routing state
+can:
+adapt:
+to:
+new contexts
+
+using:
+context identity alone
+
+without:
+retraining:
+old functions.
+
+That is:
+useful.
+
+But:
+
+the H183 sequential tail
+
+is:
+not primarily caused
+by:
+B-gate leakage.
+
+The next:
+North-Star-relevant
+question
+
+should NOT:
+be:
+more gate surgery
+
+or:
+simply:
+more daughter cells.
+
+H184 also shows:
+
+32 and 48
+new C daughters
+
+have:
+similar:
+world-level tail behavior.
+
+This motivates:
+
+STRUCTURAL / ROLE REUSE.
+
+Can:
+existing:
+active computational cells
+
+acquire:
+a new:
+context-gated
+role state
+
+for:
+capability C
+
+without:
+adding:
+another:
+physical daughter population?
+
+NEXT:
+
+CLR3-H185 —
+CONTEXT-GATED
+ROLE-MULTIPLEXED
+CAPABILITY REUSE.
+
+Candidate:
+
+attach:
+new:
+C-specific
+coefficients
+
+to:
+a bounded set
+of:
+already active:
+parent cells
+
+selected by:
+C coverage geometry,
+
+while:
+their:
+existing A role
+remains:
+frozen.
+
+Route:
+the C role
+with:
+the learned C gate.
+
+Compare:
+
+- 48 reused parent cells;
+- 64 reused parent cells;
+- 48 new daughter cells;
+- reused B-daughter locations;
+- global role head.
+
+Primary question:
+
+can:
+capability C
+be added
+
+with:
+little or:
+zero:
+new active-cell growth
+
+while:
+A+B remain:
+frozen
+and:
+competent?
+
+This directly attacks:
+
+capability growth
+faster than:
+permanently active
+neural structure.
+
+H184 DOES NOT AUTHORIZE
+
+- production use;
+- live model modification;
+- biological claims;
+- whole-model retraining;
+- canonical scientific claims;
+- STAB-18-R1 execution.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
