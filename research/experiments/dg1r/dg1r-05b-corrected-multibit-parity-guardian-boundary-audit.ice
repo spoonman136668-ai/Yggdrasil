@@ -1108,3 +1108,156 @@ GUARDIANSHIP.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05B PARITY-GUARDIAN BOUNDARY HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE:
+THE:
+FIRST:
+DG-1R-05B:
+SCENARIO.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05b_parity_guardian_v1.py
+
+Harness commit:
+
+fee4a543657668efee7f82abb60557502e585606.
+
+Git blob SHA:
+
+30779a50cfd35029581f767408605c0ce3a6478b.
+
+Source SHA-256:
+
+05d11a8e5002940c1b2378ad4b1f3c9fe847d7cbc15729961078943f73297836.
+
+Source bytes:
+
+12500.
+
+LOCAL PRECHECK
+
+Exact:
+Git blob:
+identity:
+
+PASS.
+
+Python:
+syntax:
+
+PASS.
+
+No:
+DG-1R-05B:
+scenario
+was:
+executed
+before:
+this:
+freeze.
+
+FROZEN DISTRIBUTED_TWO2 DETAIL
+
+Use:
+damage blocks:
+
+0
+and:
+8.
+
+Inside:
+each:
+
+flip:
+physical:
+positions:
+
+3
+and:
+5.
+
+Actual total:
+lesion cardinality:
+
+4.
+
+FROZEN CARDINALITY ASSERTIONS
+
+ONE1:
+
+1.
+
+TWO2:
+
+2.
+
+THREE3:
+
+3.
+
+PARITY1:
+
+1.
+
+DISTRIBUTED_TWO2:
+
+4.
+
+The:
+harness
+must:
+assert:
+
+- expected:
+  lesion:
+  cardinality;
+- unique:
+  lesion:
+  indices;
+- no:
+  lesion:
+  index
+  overlaps:
+  an:
+  input-mapped:
+  physical:
+  position.
+
+FROZEN WORLD FAMILY
+
+20260926052000..20260926052007.
+
+8 worlds.
+
+DG-1R-05 CANONICAL STATUS
+
+Still:
+
+UNSPENT.
+
+DG-1R-05B:
+
+NON-CANONICAL /
+NON-EVIDENCE.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+sweeps.
+
+Output SHA-256
+must:
+match exactly.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
