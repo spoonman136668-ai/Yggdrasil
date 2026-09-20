@@ -2295,3 +2295,236 @@ previously reserved H149 seed family was consumed by exploratory work and is no 
 threshold_tuning_from_replacement_primary = false.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
+
+
+PRE-PRIMARY CORRECTION 02 — FINAL HARNESS LINEAGE FREEZE / PRIMARY-SEED ROLLOVER
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE ACCEPTED H149 PRIMARY EXECUTION.
+
+BACKGROUND
+
+After Amendment 01,
+an H149 implementation audit found three remaining lineage mismatches
+before:
+any H149 result was accepted.
+
+1.
+ACCEPTED-CHANGE DIFFUSION C_P
+
+The inherited H148 accepted-change diffusion ledger
+must be:
+
+the unattenuated normalized entropy
+of:
+accepted source-region touch mass.
+
+A provisional harness still multiplied:
+H_P
+by:
+min(1, P / 0.15).
+
+That attenuation belonged to:
+an obsolete H148 implementation path.
+
+It is removed.
+
+H149 now uses:
+
+C_P = H_P
+
+when:
+accepted touch mass is nonzero.
+
+The frozen H149 numerical bounds:
+
+0.30 regional / ambiguous boundary
+and:
+0.45 global boundary
+
+are unchanged.
+
+2.
+PURE-RELABEL COHORT TRANSFER
+
+A provisional harness directly rewrote:
+certificate numeric region IDs
+for:
+cohort-proof policies
+during:
+PURE RELABEL.
+
+The frozen H149 rule requires:
+ordinary cohort-proof transfer.
+
+Therefore:
+PURE RELABEL transfer now passes through:
+
+- Jaccard cohort matching;
+- current region-proof validity;
+- own-member support;
+- H146 contradiction validity.
+
+Numeric IDs remain:
+irrelevant.
+
+No cohort threshold is changed.
+
+3.
+REGIONAL RE-VALIDATION COHORT TRANSFER
+
+After:
+successful regional re-validation,
+
+cohort certificates now transfer
+only when:
+
+- member remains unchallenged;
+- fresh member support passes;
+- ordinary own-member support passes;
+- the current region proof itself is valid.
+
+This enforces:
+the already-preregistered
+cohort-proof contract.
+
+No numerical threshold is changed.
+
+AMENDMENT 01 FAST-RESIDUAL REALIZATION
+
+The final frozen harness also implements:
+the already-preregistered Amendment 01 semantics exactly.
+
+FAST-SUSPECT:
+
+>=4 mismatches
+inside:
+the most recent six normal structural observations.
+
+Durable challenge exposure:
+
+requires:
+FAST-SUSPECT
+at:
+two consecutive structural checkpoints
+
+with:
+the same accepted source region
+and:
+the same dominant non-accepted target region.
+
+FAST-SUSPECT:
+
+suspends broad action
+
+but:
+does not itself
+invalidate the cached certificate.
+
+Accepted patch:
+
+resets fast-window state
+for:
+moved members.
+
+Validated regional scope:
+
+resets fast-window state
+for:
+that scope.
+
+Validated global redevelopment:
+
+resets:
+all fast-window state
+and:
+all durable challenge-exposure history.
+
+PRIMARY FAMILY 20260919400000 DISPOSITION
+
+The seed family beginning:
+
+20260919400000
+
+was touched by:
+a provisional primary harness
+before:
+the implementation audit above
+was fully closed.
+
+Those outputs were not:
+used to tune
+Q,
+V,
+C_Q,
+Q_r,
+P,
+U,
+C_P,
+P_r,
+regional-validation,
+cohort-Jaccard,
+or:
+any other numerical threshold.
+
+Nevertheless,
+for conservative evidence hygiene:
+
+THE ENTIRE
+20260919400000 PRIMARY FAMILY
+IS:
+
+CONTAMINATED /
+NON-EVIDENCE.
+
+No numerical result
+from that family
+may be used
+for:
+H149 acceptance.
+
+FINAL HELD-OUT H149 PRIMARY SEEDS
+
+R0:
+
+20260919500000..20260919500399.
+
+Each subsequent regime:
+
++1000 seed base.
+
+This family was selected:
+before inspecting
+or accepting
+H149 primary outcome metrics.
+
+HARNESS / SANITY SEEDS
+
+Remain:
+
+20260919250000 family.
+
+They are:
+NON-EVIDENCE.
+
+FINAL FROZEN HARNESS SHA-256
+
+36408075f911e0a0ea4b44184f95f298198fd56a1228e39dd61368fd74a32b22
+
+No execution-semantic change is permitted
+after:
+the first accepted 20260919500000-family world is executed.
+
+H149 accepted primary execution status:
+
+NOT STARTED
+at the moment of this freeze.
+
+STAB-18-R1 remains:
+UNTOUCHED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
