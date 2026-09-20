@@ -1157,3 +1157,746 @@ CLR2-H183.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — SPARSE FUNCTION-SPACE DAUGHTER-BASIS RECRUITMENT
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / STRONG POSITIVE / MAJOR CAPABILITY-ADDITION INFLECTION.
+
+FINAL H182 HARNESS SHA-256
+
+80bbb44c4fff4abfb384df534bfe55f0a8076db2c9c3c4b041642f9f1648a64c.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+ec05cbccf6b5231de675cfd0c432c3a1b05a59eb0763020acd34ecff19fb49a5.
+
+ACCEPTED PRIMARY FAMILY
+
+20260923100000..20260923100019.
+
+PRIMARY MATRIX
+
+20 held-out capability-addition worlds.
+
+8 policies.
+
+160 policy evaluations.
+
+Validation:
+
+- exact 20 primary seeds;
+- exact 8 policies / world;
+- no missing evaluations;
+- no post-primary recruitment tuning.
+
+A BASELINE
+
+Median parent A held-out R^2:
+
+approximately:
+0.99756.
+
+Minimum:
+
+approximately:
+0.99112.
+
+PASS.
+
+OMP64 CAPABILITY
+
+OMP_LEARNED64:
+
+median B held-out R^2:
+
+approximately:
+0.99315.
+
+World fraction:
+B>=0.85:
+
+100%.
+
+World fraction:
+B>=0.90:
+
+95%.
+
+Median A loss:
+
+approximately:
+0.00349.
+
+World fraction:
+A loss<=0.05:
+
+100%.
+
+Joint:
+B>=0.85
+AND:
+A loss<=0.05:
+
+100%.
+
+PASS.
+
+OMP32 STRONG-SUPPORT RESULT
+
+OMP_LEARNED32:
+
+median B held-out R^2:
+
+approximately:
+0.98863.
+
+World fraction:
+B>=0.85:
+
+100%.
+
+World fraction:
+B>=0.90:
+
+95%.
+
+Median A loss:
+
+approximately:
+0.00248.
+
+World fraction:
+A loss<=0.05:
+
+100%.
+
+Thus:
+
+32 daughter cells
+
+plus:
+the six-parameter
+learned context gate
+
+are sufficient
+for:
+reliable capability B addition
+
+while:
+preserving:
+capability A
+
+inside:
+the accepted primary.
+
+Active-cell growth:
+
+32 / 3209
+
+approximately:
+0.997%.
+
+Permanent parameter growth:
+
+32 daughter coefficients
++
+6 gate parameters
+
+approximately:
+1.184%
+relative to:
+the parent coefficient count.
+
+This satisfies:
+the H182
+STRONG SUPPORT condition.
+
+OMP16 BOUNDARY
+
+OMP_LEARNED16:
+
+median B:
+
+approximately:
+0.95330.
+
+World fraction:
+B>=0.85:
+
+90%.
+
+World fraction:
+B>=0.90:
+
+80%.
+
+A loss<=0.05:
+
+95%.
+
+Joint:
+B>=0.85
+and:
+A loss<=0.05:
+
+85%.
+
+Therefore:
+
+16 cells
+show:
+substantial capability
+
+but:
+do NOT:
+reach:
+the frozen
+world-level reliability
+boundary.
+
+The accepted:
+minimum reliable tested point
+
+is:
+
+32 daughter cells.
+
+FUNCTION-SPACE RECRUITMENT VALUE
+
+Matched-primary
+H180_LEARNED_RANDOM64:
+
+median B:
+
+approximately:
+0.94372.
+
+world B>=0.85:
+
+90%.
+
+H181_KCOVER_LEARNED64:
+
+median B:
+
+approximately:
+0.89674.
+
+world B>=0.85:
+
+95%.
+
+OMP_LEARNED64:
+
+median B:
+
+approximately:
+0.99315.
+
+world B>=0.85:
+
+100%.
+
+Thus:
+
+sequential:
+function-space recruitment
+
+improves:
+both:
+median B competence
+
+and:
+world-level reliability.
+
+Median B gain
+versus:
+H181 KCOVER:
+
+approximately:
++0.0964.
+
+PASS.
+
+HARD-GATE CEILING
+
+OMP_HARD64:
+
+median B:
+
+approximately:
+0.99497.
+
+World fraction:
+B>=0.85:
+
+100%.
+
+World fraction:
+B>=0.90:
+
+100%.
+
+A loss:
+
+0.
+
+PASS.
+
+The learned gate
+therefore operates:
+close to:
+the ideal routing ceiling.
+
+ROUTING NECESSITY
+
+OMP_UNGATED64:
+
+median B:
+
+approximately:
+0.99497.
+
+Median A R^2:
+
+approximately:
+0.57582.
+
+Median A loss:
+
+approximately:
+0.42162.
+
+World fraction:
+A loss<=0.05:
+
+0%.
+
+Thus:
+
+function-space recruitment
+alone
+
+does NOT:
+solve:
+cross-capability interference.
+
+The successful architecture
+requires:
+
+BASIS RECRUITMENT
++
+CONTEXT ROUTING.
+
+GENERALIZATION
+
+OMP_LEARNED64:
+
+median validation-test
+B R^2 gap:
+
+approximately:
+0.00221.
+
+median train-test gap:
+
+approximately:
+0.00218.
+
+OMP_LEARNED32:
+
+approximately:
+0.00243
+and:
+0.00265.
+
+PASS.
+
+No:
+meaningful:
+B overfit
+is observed.
+
+RECRUITMENT RESIDUAL
+
+Median final:
+B-training residual ratio
+
+relative to:
+the initial:
+A-only B residual:
+
+OMP16:
+
+approximately:
+0.0128.
+
+OMP32:
+
+approximately:
+0.00474.
+
+OMP64:
+
+approximately:
+0.00230.
+
+The OMP rule
+therefore:
+
+adds:
+new daughter basis functions
+
+that:
+systematically explain:
+the remaining
+new-capability function.
+
+SPATIAL MORPHOLOGY
+
+OMP-selected sites
+remain:
+highly distributed.
+
+Median pairwise spread:
+
+OMP32:
+approximately:
+0.892.
+
+OMP64:
+approximately:
+0.920.
+
+Median selected-site
+nearest-neighbor distance:
+
+OMP32:
+approximately:
+0.186.
+
+OMP64:
+approximately:
+0.103.
+
+Thus:
+
+function-space recruitment
+naturally creates:
+a distributed capability substrate
+
+rather than:
+one compact cognitive colony.
+
+COMPUTE
+
+Median compute ratio
+to:
+GLOBAL_DAUGHTER:
+
+OMP16:
+approximately:
+1.19%.
+
+OMP32:
+approximately:
+2.59%.
+
+OMP64:
+approximately:
+7.67%.
+
+All:
+well below:
+the frozen:
+25%
+ceiling.
+
+PASS.
+
+The accepted strong-support point:
+
+OMP32
+
+uses:
+approximately:
+2.6%
+of:
+GLOBAL_DAUGHTER
+deterministic compute proxy.
+
+ACTIVE STRUCTURE
+
+OMP32:
+
+approximately:
+0.997%
+new active cells.
+
+OMP64:
+
+approximately:
+1.994%.
+
+PASS.
+
+PERMANENT PARAMETER GROWTH
+
+OMP32:
+approximately:
+1.184%.
+
+OMP64:
+approximately:
+2.181%.
+
+PASS.
+
+HIBERNATION / REACTIVATION
+
+Exact:
+under:
+the accepted mechanics.
+
+PASS.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+A baseline.
+
+2.
+OMP64 median B>=0.90.
+
+3.
+OMP64
+>=90%
+world B>=0.85.
+
+4.
+Median A preservation.
+
+5.
+World-level A preservation.
+
+6.
+A-output drift.
+
+7.
+Gate quality.
+
+8.
+Reliability value.
+
+9.
+Function-space value.
+
+10.
+Hard-gate ceiling.
+
+11.
+Generalization.
+
+12.
+Active structure.
+
+13.
+Permanent parameter growth.
+
+14.
+Compute.
+
+15.
+Hibernation / reactivation.
+
+16.
+GLOBAL_DAUGHTER
+capacity ceiling.
+
+STRONG SUPPORT:
+
+PASS.
+
+OMP_LEARNED32
+also satisfies:
+
+- median B>=0.90;
+- >=90%
+  world B>=0.85;
+- median A loss<=0.03.
+
+FINAL INTERPRETATION
+
+H182 is:
+
+STRONG POSITIVE.
+
+This is:
+the second major:
+proof-of-cognition
+inflection point
+
+after:
+H175.
+
+A developmental cellular phenotype
+can now:
+
+1.
+learn:
+capability A;
+
+2.
+freeze / preserve:
+A;
+
+3.
+receive:
+previously unseen:
+capability B;
+
+4.
+recruit:
+a sparse:
+function-aware
+daughter-cell substrate
+
+using:
+B training residuals;
+
+5.
+route:
+that substrate
+with:
+a tiny:
+context-only gate;
+
+6.
+learn:
+B
+
+without:
+global retraining
+of:
+A;
+
+7.
+preserve:
+A;
+
+8.
+hibernate:
+the added capability;
+
+9.
+reactivate:
+it
+without:
+retraining.
+
+The accepted strong-support point
+adds:
+
+32 daughter cells
+
+to:
+a:
+3209-cell
+parent body.
+
+That is:
+
+approximately:
+1%
+permanent active-cell growth
+
+for:
+a full new learned capability
+
+in:
+this two-capability synthetic setting.
+
+The result directly advances:
+the Yggdrasil North Star.
+
+It does NOT yet prove:
+
+capability growth
+can remain:
+sublinear
+
+over:
+many sequential capabilities.
+
+But:
+
+the required next experiment
+is now justified.
+
+NEXT:
+
+CLR2-H183 —
+SEQUENTIAL CAPABILITY ACCUMULATION.
+
+A
+->
+add B
+using:
+OMP32 + learned context routing
+
+->
+freeze:
+A+B
+
+->
+add:
+previously unseen C
+
+without:
+retraining:
+A or B.
+
+Primary North-Star metrics:
+
+- A/B/C held-out competence;
+- permanent active-cell growth;
+- routing parameter growth;
+- memory;
+- compute;
+- interference;
+- hibernation / reactivation;
+- whether:
+  B infrastructure
+  can be reused:
+  while adding C;
+- capability gained
+  per:
+  new active cell.
+
+MAJOR INFLECTION-POINT PAUSE
+
+Per:
+the active research directive,
+
+this is:
+a valid:
+major architectural pause.
+
+H182 DOES NOT AUTHORIZE
+
+- production use;
+- live model modification;
+- biological claims;
+- canonical scientific claims;
+- STAB-18-R1 execution.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
