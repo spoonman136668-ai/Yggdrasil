@@ -843,3 +843,141 @@ idea.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-02 RECURRENT OVERWRITE FIDELITY HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST DG-1R-02 WORLD.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_02_recurrent_overwrite_v1.py
+
+Harness commit:
+
+9adb583bcb33d1b1bc430b8c350a6d5a6ddd0438.
+
+Git blob SHA:
+
+f82218188792185f1880386b4de10a5f8301b826.
+
+Source SHA-256:
+
+79d4da0f5585054debfdd873181d3e7463872c294a9dcf61e22e434c7c65ea1b.
+
+Source bytes:
+
+11697.
+
+DEPENDENCY
+
+DG-1R-01 frozen harness Git blob:
+
+e053bf7f1088c5c8751d96afbd394dfa19f8a07c.
+
+DG-1R-01 source SHA-256:
+
+f1c97e345f83bc6a12efa6d9aa72a4a8309c300a4d3f044ebccfdf80e473f483.
+
+LOCAL PRECHECK
+
+P1 and P2 execution copies:
+Git blob identity:
+
+PASS.
+
+DG-1R-02:
+Python compile:
+
+PASS.
+
+No:
+DG-1R-02:
+experimental world
+was:
+executed
+before:
+this freeze.
+
+FROZEN RECURRENCE
+
+R:
+
+8.
+
+L_d:
+
+16.
+
+I:
+
+4.
+
+One:
+fixed:
+mapped position
+inside:
+each:
+16-cell:
+mapping compartment.
+
+OVERWRITE:
+
+state[mapped]
+=
+u_t.
+
+XOR CONTROL:
+
+if:
+u_t == 1:
+
+state[mapped]
+XOR=
+1.
+
+if:
+u_t == 0:
+
+no:
+input-state:
+change.
+
+All other:
+rule,
+feature,
+task,
+readout,
+and:
+evaluation:
+semantics
+remain:
+paired.
+
+FROZEN WORLD FAMILY
+
+20260926020000..20260926020007.
+
+8 worlds.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+canonical sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+Runtime sidecars:
+are:
+non-canonical.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
