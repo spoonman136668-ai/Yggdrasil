@@ -940,3 +940,367 @@ this correction.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — CONTEXT-GATED CAPABILITY-ADDITION HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H180 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H180 SANDBOX HARNESS
+
+File:
+
+h180_context_gate_v1.py
+
+SHA-256:
+
+02983201c9d51d15c44356fd1c9b146d2b2a2b84a07113f558dc87af79d236f2.
+
+PARENT CAPABILITY MODEL
+
+Exact H178 / H179 accepted substrate:
+
+- g=.25;
+- N=3209;
+- frozen parent capability A;
+- A context-silence training;
+- smooth nonlinear A/B teachers;
+- B-residual daughter fitting;
+- 64-cell distributed daughter morphologies;
+- same daughter basis width and micro-offset;
+- same hibernation / reactivation mechanics.
+
+LEARNED ROUTER
+
+One:
+shared learned gate
+is fit:
+per world
+
+and reused by:
+all learned-gate policies
+inside:
+that world.
+
+Gate training:
+
+64:
+A-context coordinates
+labeled:
+0.
+
+64:
+B-context coordinates
+labeled:
+1.
+
+No:
+A or B teacher output
+enters:
+gate fitting.
+
+Features:
+
+[1,
+x,
+y,
+x^2,
+x*y,
+y^2].
+
+Non-bias features:
+
+standardized
+using:
+the gate-training set.
+
+Logistic fit:
+
+deterministic Newton / IRLS.
+
+L2:
+
+0.01.
+
+Maximum iterations:
+
+100.
+
+The six:
+gate parameters
+
+are counted:
+as:
+permanent active parameters
+
+inside:
+the structure-growth accounting.
+
+SOFT GATING
+
+For learned-gate policies:
+
+daughter output:
+
+sigmoid(theta^T z(x))
+*
+Phi_D(x) w_D.
+
+The gate is:
+frozen
+before:
+daughter fitting.
+
+Daughter fit
+uses:
+the gated B-training
+design matrix.
+
+Parent A coefficients:
+
+remain:
+frozen.
+
+HARD-GATE CEILING
+
+Exact preregistered
+context boundary:
+
+0:
+x<=-0.05.
+
+1:
+x>=+0.05.
+
+Linear transition:
+inside:
+(-0.05,+0.05).
+
+Hard gate:
+
+diagnostic ceiling only.
+
+POLICIES
+
+UNGATED_MULTI8_64.
+
+LEARNED_GATE_MULTI8_64.
+
+HARD_GATE_MULTI8_64.
+
+LEARNED_GATE_RANDOM8_64.
+
+HARD_GATE_RANDOM8_64.
+
+LEARNED_GATE_MULTI8_32.
+
+UNGATED_MULTI8_32.
+
+CONN256.
+
+GLOBAL_DAUGHTER.
+
+SANITY
+
+Disjoint family:
+
+20260922990000
+and:
+20260922990001.
+
+2 worlds.
+
+9 policies.
+
+18 policy evaluations.
+
+Accepted sanity-output SHA-256:
+
+dbcfb0f565240c324692f8f95b7cdf52b2e9151617cbe8709833e80bd0501d23.
+
+Mechanical checks:
+
+- exact 9 policies / world;
+- shared learned gate
+  reused:
+  across learned-gate policies;
+- no:
+  teacher target,
+  validation target,
+  or:
+  held-out target
+  enters:
+  gate fitting;
+- parent A coefficients:
+  frozen;
+- daughter coefficients:
+  B-residual only;
+- gate parameter count:
+  6;
+- LEARNED_GATE_*64
+  permanent parameter growth:
+  approximately:
+  2.1814%;
+- LEARNED_GATE_MULTI8_32:
+  approximately:
+  1.1842%;
+- hibernation / reactivation:
+  exact.
+
+NON-EVIDENCE GATE SIGNAL
+
+Gate context classification accuracy:
+
+1.0
+in:
+both sanity worlds.
+
+Mean A-context activation:
+
+approximately:
+0.0041..0.0049.
+
+Mean B-context activation:
+
+approximately:
+0.9951..0.9961.
+
+A-context 95th percentile activation:
+
+approximately:
+0.0058..0.0292.
+
+B-context 5th percentile activation:
+
+approximately:
+0.9663..0.9891.
+
+Thus:
+
+the small learned gate
+cleanly separates:
+the declared contexts
+
+without:
+task-output supervision.
+
+NON-EVIDENCE CAPABILITY SIGNAL
+
+LEARNED_GATE_MULTI8_64:
+
+median B held-out R^2:
+
+approximately:
+0.8300.
+
+median A loss:
+
+approximately:
+0.0188.
+
+LEARNED_GATE_RANDOM8_64:
+
+median B held-out R^2:
+
+approximately:
+0.9077.
+
+median A loss:
+
+approximately:
+0.0301.
+
+HARD_GATE_RANDOM8_64:
+
+median B:
+
+approximately:
+0.8991.
+
+median A loss:
+
+0.
+
+Thus:
+
+routing can:
+strongly suppress
+the H179 random-morphology
+A interference
+
+while:
+retaining:
+substantial B capacity.
+
+However:
+
+the learned-gated
+random morphology
+
+sits:
+near:
+the frozen
+A-preservation boundary
+
+inside:
+sanity.
+
+Small:
+nonzero gate leakage
+
+can:
+still produce:
+meaningful A interference
+
+when:
+daughter output magnitude
+is large.
+
+This is:
+a held-out
+primary question.
+
+No:
+
+- gate feature;
+- gate sample count;
+- gate L2;
+- context boundary;
+- daughter morphology;
+- K;
+- daughter ridge;
+- task;
+- sample size;
+- candidate-set correction;
+- acceptance gate
+
+was changed
+from:
+sanity outcomes.
+
+PRIMARY FAMILY
+
+20260922900000..20260922900019.
+
+20 held-out worlds.
+
+9 policies.
+
+180 policy evaluations.
+
+H180 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H180 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
