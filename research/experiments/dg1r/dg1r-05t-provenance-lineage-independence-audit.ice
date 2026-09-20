@@ -639,3 +639,434 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL CLOSURE — DG-1R-05T PROVENANCE-LINEAGE INDEPENDENCE AUDIT
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED /
+REPRODUCIBLE /
+PROVENANCE-INDEPENDENCE GAIN POSITIVE /
+ZERO FALSE PRIMARY AUTHORIZATION /
+SELF-REPORTED LINEAGE BOUNDARY FAILED AS EXPECTED /
+NON-CANONICAL.
+
+FROZEN PROVENANCE
+
+Preregistration commit:
+
+7807634671627e6557c4326330bce85612ed3490.
+
+Harness source commit:
+
+50d884909ae56f4104317c3b5b0f923a2a50846f.
+
+Harness Git blob:
+
+0636abc1851e879894817bd254d5875930a96957.
+
+Harness source SHA-256:
+
+19509748db897cb4e9971ebea734f0983774332edb561c0c757e0742f612d2ab.
+
+Harness bytes:
+
+10463.
+
+Freeze commit:
+
+61f0586ab2edb47b01ed063ad523b51bfeed1c66.
+
+PRIMARY EXECUTION
+
+Two complete deterministic frozen sweeps were executed.
+
+Sweep 1 serialized output SHA-256:
+
+3501736160ba4d3e4f8f7785d2f3c002d34f7bd459a590c81aa61103ef6d9a09.
+
+Sweep 2 serialized output SHA-256:
+
+3501736160ba4d3e4f8f7785d2f3c002d34f7bd459a590c81aa61103ef6d9a09.
+
+BYTE_IDENTICAL_REPRODUCIBILITY:
+
+TRUE.
+
+MECHANICAL_VALID:
+
+TRUE.
+
+PRIMARY SIGNALS
+
+CLEAN_SINGLE_ROOT_ACCEPTANCE:
+TRUE.
+
+DUPLICATE_SINGLE_ROOT_REJECTION:
+TRUE.
+
+DISTINCT_HOLDER_FALSE_QUORUM_EXPOSED:
+TRUE.
+
+PARTIAL_OVERLAP_REJECTION:
+TRUE.
+
+DESCENDANT_INFLATION_REJECTED:
+TRUE.
+
+HEADCOUNT_INFLATION_EXPOSED:
+TRUE.
+
+HOLDER_ROTATION_PRESERVES_AUTHORITY:
+TRUE.
+
+MISSING_ROOT_ABSTAINS:
+TRUE.
+
+COMPOUND_DISJOINT_ACCEPTANCE:
+TRUE.
+
+COPY_FANOUT_NOT_COUNTED_AS_QUORUM:
+TRUE.
+
+ZERO_FALSE_PRIMARY:
+TRUE.
+
+PROVENANCE_INDEPENDENCE_GAIN:
+TRUE.
+
+AUDIT A — EXHAUSTIVE SINGLE-ROOT ASSIGNMENTS
+
+Cases:
+
+4096.
+
+Genuinely independent four-root assignments:
+
+1680.
+
+Duplicated-provenance assignments:
+
+2416.
+
+LINEAGE_DISJOINT4:
+
+TRUE_AUTHORIZATION:
+1680.
+
+SAFE_ABSTAIN:
+2416.
+
+FALSE_QUORUM_AUTHORIZATION:
+0.
+
+HEADCOUNT4:
+
+TRUE_AUTHORIZATION:
+1680.
+
+FALSE_QUORUM_AUTHORIZATION:
+2416.
+
+DISTINCT_HOLDER4:
+
+TRUE_AUTHORIZATION:
+1680.
+
+FALSE_QUORUM_AUTHORIZATION:
+2416.
+
+Therefore four distinct cells are not sufficient evidence of four independent sources.
+
+AUDIT B — PARTIAL ANCESTRY OVERLAP
+
+Cases:
+
+10080.
+
+Every case began with four distinct roots,
+then one additional shared ancestor was injected into one witness pair.
+
+LINEAGE_DISJOINT4:
+
+SAFE_ABSTAIN:
+10080.
+
+FALSE_QUORUM_AUTHORIZATION:
+0.
+
+HEADCOUNT4:
+
+FALSE_QUORUM_AUTHORIZATION:
+10080.
+
+DISTINCT_HOLDER4:
+
+FALSE_QUORUM_AUTHORIZATION:
+10080.
+
+Even a single hidden common ancestor invalidates the frozen four-way independence claim.
+
+AUDIT C — DESCENDANT INFLATION
+
+Cases:
+
+48.
+
+Each population contained distinct holder IDs
+but only one effective provenance root.
+
+LINEAGE_DISJOINT4:
+
+SAFE_ABSTAIN:
+48.
+
+FALSE_QUORUM_AUTHORIZATION:
+0.
+
+HEADCOUNT4 false authorizations:
+
+32.
+
+DISTINCT_HOLDER4 false authorizations:
+
+32.
+
+The false cases begin when descendant count reaches four
+and all four nominal slot labels are represented.
+
+Adding more descendants does not create new independent evidence.
+
+AUDIT D — LINEAGE-PRESERVING HOLDER ROTATION
+
+Cases:
+
+1680.
+
+Authorized after holder rotation:
+
+1680.
+
+Decision changes:
+
+0.
+
+Authority therefore follows evidence lineage,
+not permanent cell identity.
+
+AUDIT E — MISSING INDEPENDENT ROOT
+
+Cases:
+
+6720.
+
+LINEAGE_DISJOINT4 authorizations:
+
+0.
+
+No surviving lineage is promoted into the missing slot.
+
+AUDIT F — COMPOUND BUT DISJOINT ANCESTRY
+
+Cases:
+
+2520.
+
+Each witness carried two provenance roots.
+
+All four ancestry sets were pairwise disjoint.
+
+LINEAGE_DISJOINT4 authorizations:
+
+2520.
+
+False authorizations:
+
+0.
+
+Thus the rule is not merely:
+
+"trust singleton roots."
+
+It accepts compound ancestry when the causal source sets are actually disjoint.
+
+AUDIT G — COPIED WITNESS FANOUT
+
+Cases:
+
+160.
+
+Only one required quorum slot existed in each case.
+
+That one lineage was copied through up to sixteen distinct holders.
+
+LINEAGE_DISJOINT4:
+
+SAFE_ABSTAIN:
+160.
+
+TRUE_AUTHORIZATION:
+0.
+
+HEADCOUNT4 false authorizations:
+
+96.
+
+A copied answer cannot manufacture the missing evidence classes.
+
+METADATA-FORGERY BOUNDARY
+
+H1 — ALL FOUR WITNESSES SHARE ONE ACTUAL ROOT
+BUT REPORT FOUR DISJOINT ROOTS
+
+Cases:
+
+8.
+
+False LINEAGE_DISJOINT4 authorizations:
+
+8 / 8.
+
+Truthful-metadata control abstentions:
+
+8 / 8.
+
+FORGED_LINEAGE_FALSE_AUTHORIZATION:
+
+TRUE.
+
+H2 — ONE WITNESS HIDES ONE SHARED ANCESTOR
+
+Cases:
+
+1680.
+
+Ground truth:
+
+DEMAND_A and DEMAND_B share a root.
+
+Reported metadata:
+
+DEMAND_B omits that shared root,
+making all four reported masks appear disjoint.
+
+False LINEAGE_DISJOINT4 authorizations:
+
+1680 / 1680.
+
+Truthful-metadata control abstentions:
+
+1680 / 1680.
+
+SINGLE_LINEAGE_LIE_FAILURE:
+
+TRUE.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-05T establishes that provenance-aware quorum
+can operationalize the constitutional distinction between:
+
+WITNESS COUNT
+
+and
+
+INDEPENDENT EVIDENCE COUNT.
+
+Raw headcount and distinct-holder identity
+are both vulnerable to evidence duplication.
+
+An exact ancestry-intersection rule removes those false quorums
+across the frozen primary family
+without rejecting genuinely disjoint compound lineages
+or healthy holder rotation.
+
+The decisive new boundary is metadata authenticity.
+
+Lineage awareness only works when lineage records themselves
+cannot be rewritten by the witness whose independence is being evaluated.
+
+A single witness that can erase one shared ancestor from its own record
+can recreate a false four-way quorum.
+
+Therefore provenance metadata cannot be self-certified.
+
+This is the same architectural pattern encountered earlier:
+
+- a cell cannot be its own sole health authority;
+- a quorum cannot be its own sole independence authority;
+- provenance cannot be its own sole provenance authority.
+
+PLAIN-SPEAK INTERPRETATION
+
+Counting cells is not enough.
+
+We proved that directly.
+
+Four different cells can still be one source wearing four faces.
+
+When the organism tracks where each answer came from,
+it can spot that.
+
+It also handles more complicated cases correctly:
+
+a witness can have several ancestors
+and still count as independent
+as long as none of those ancestors are shared with the other witnesses.
+
+Changing which healthy cell carries the evidence does not break authority either.
+
+The bad news is also very useful:
+
+the ancestry label itself cannot be trusted just because the cell says so.
+
+One witness hid one shared ancestor
+and fooled the quorum every single time in that holdout.
+
+So the next rule is unavoidable:
+
+A CELL MAY CARRY ITS PROVENANCE,
+BUT IT MAY NOT BE THE SOLE AUTHOR
+OF ITS PROVENANCE.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05U —
+
+NON-SELF-CERTIFYING LINEAGE ATTESTATION AUDIT.
+
+Question:
+
+Can provenance lineage be reconstructed and verified
+from independently issued parent / root attestations
+so that a witness cannot erase shared ancestry from its own history?
+
+05U should remain detection / authorization only.
+
+It should test:
+
+- honest root-issued lineage;
+- child inheritance of parent ancestry;
+- witness rotation with preserved certificate chain;
+- omission of one ancestor by the child;
+- missing parent attestation;
+- stale lineage certificate replay;
+- lineage generation monotonicity;
+- one corrupted parent;
+- two colluding parents;
+- root-compromise boundary;
+- whether verified ancestry reproduces the positive 05T lineage-quorum results.
+
+No repair,
+role migration,
+or health-memory update should execute in 05U.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
