@@ -915,3 +915,388 @@ SYNTHETIC_MEASURED_SANDBOX_GRADUATED_MICRO_ANCHOR_TURNOVER
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — GRADUATED MICRO-ANCHOR HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H165 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H165 SANDBOX HARNESS
+
+File:
+
+h165_micro_anchor_v1.py
+
+SHA-256:
+
+69e3a195ae9485b153a7a6efba254e5b68837359f0a0f5eb022108b1d5ede808.
+
+PARENT HASHES
+
+H161:
+
+ae89e645e9f00f33a581c05298a0b2e930b450bbc9a55f0e0f46f87de86a8248.
+
+H162:
+
+2a8e405055d88906285934778898b02072dcdf683afd8cbc4d8f392c7461ae2c.
+
+H163:
+
+553a1edf2da195aff37a3a4ee6dcfa0f6072b2945bee8b46d64e916791edd5c2.
+
+H164:
+
+f606744bf16c3cae3c38c5d227c8ba7a7d5ba75f009a95f0cb98f9f3181c77d4.
+
+MICRO-ANCHOR IMPLEMENTATION
+
+Two lesion-local observations
+are acquired:
+after:
+100%
+membership return.
+
+They are:
+immediately used
+in:
+a joint lesion solve
+
+with:
+
+lambda=0.01.
+
+Current:
+context-repaired lesion state
+
+is:
+the ridge prior.
+
+Surviving coefficients:
+
+fixed.
+
+The same:
+two observations
+
+are used:
+for:
+two-point leave-one-out
+predictive checking.
+
+For each observation:
+
+fit:
+using:
+the other observation only;
+
+predict:
+the held-out observation.
+
+Define:
+
+rho_micro =
+E_LOO
+/
+max(
+E_LESION,
+1e-14
+).
+
+Escalate:
+
+iff:
+
+rho_micro >0.10.
+
+Threshold:
+
+unchanged
+from:
+preregistration.
+
+FULL ESCALATION
+
+The two:
+micro-anchor observations
+
+remain:
+active repair data.
+
+Acquire:
+
+at most:
+22
+additional observations.
+
+The:
+22-query
+additional leverage sequence
+
+is computed:
+conditional on:
+the two already-observed
+micro-anchor design rows.
+
+Thus:
+
+maximum total
+external observations
+inside:
+one escalated cycle
+
+=
+24.
+
+No:
+micro-anchor observation
+is discarded.
+
+NO ESCALATION
+
+The two:
+micro-anchor observations
+
+remain:
+active constraints
+
+through:
+all:
+12
+post-membership
+maturation steps.
+
+MICRO2-ONLY
+
+Uses:
+the same:
+2-observation micro-anchor
+
+every cycle
+
+and:
+never escalates.
+
+COMPARATORS
+
+EVERY1,
+EVERY2:
+
+exact H163
+fixed-cadence policies.
+
+H164-SENTINEL2:
+
+exact H164
+detection-only
+2-sentinel controller.
+
+CONTEXT-ONLY:
+
+exact H163.
+
+LOCAL-CHECKPOINT-ORACLE:
+
+exact H163/H162
+local target-state ceiling.
+
+SANITY
+
+Disjoint family:
+
+20260921490000...
+
+6 representative
+condition-world lifetimes.
+
+7 policies.
+
+42 policy lifetimes.
+
+Mechanical checks:
+
+- exactly seven policies / seed;
+- exact six sanity seeds;
+- LOCAL-CHECKPOINT-ORACLE
+  final fidelity:
+  exactly 1.0;
+- MICRO2-ESCALATE
+  maximum external observations / cycle:
+  24;
+- MICRO2-ONLY:
+  exactly two observations / cycle;
+- all micro-anchor data:
+  remains:
+  active repair evidence;
+- no:
+  lost target coefficient;
+  held-out evaluation target;
+  latent context label
+
+enters:
+non-oracle repair.
+
+Accepted sanity-output SHA-256:
+
+875b24210eca12797280727fe25a4cd8843e0f697e3805be8a25689971632da8.
+
+NON-EVIDENCE SIGNAL
+
+Coarse ROAMING,
+eta=0:
+
+MICRO2-ESCALATE:
+
+final fidelity:
+approximately 0.99920.
+
+escalation duty:
+0.05.
+
+total external observations:
+62.
+
+MICRO2-ONLY:
+
+final fidelity:
+approximately 0.99910.
+
+total observations:
+40.
+
+Coarse ROAMING,
+eta=.25:
+
+MICRO2-ESCALATE:
+
+final:
+approximately 0.99975.
+
+duty:
+0.20.
+
+observations:
+128.
+
+MICRO2-ONLY:
+
+approximately 0.99941.
+
+Coarse HOTSPOT,
+eta=.25:
+
+MICRO2-ESCALATE:
+
+final:
+approximately 0.99997.
+
+duty:
+0.35.
+
+MICRO2-ONLY:
+
+approximately 0.99997.
+
+Fine ROAMING,
+eta=0:
+
+MICRO2-ESCALATE:
+
+final:
+approximately 0.99998.
+
+duty:
+approximately 0.137.
+
+observations:
+1464.
+
+MICRO2-ONLY:
+
+approximately 0.99997.
+
+Fine ROAMING,
+eta=.25:
+
+MICRO2-ESCALATE:
+
+final:
+approximately 0.99999.
+
+duty:
+approximately 0.103.
+
+MICRO2-ONLY:
+
+approximately 0.99998.
+
+Fine HOTSPOT,
+eta=.25:
+
+MICRO2-ESCALATE:
+
+final:
+approximately 1.0.
+
+duty:
+approximately 0.668.
+
+MICRO2-ONLY:
+
+approximately 0.999995.
+
+This final sanity cell
+suggests:
+
+the two-point LOO trigger
+can:
+be conservative
+
+even when:
+the micro-anchor itself
+appears:
+functionally sufficient.
+
+This is:
+a held-out
+primary hypothesis.
+
+No:
+
+- micro-anchor count;
+- rho threshold;
+- query rule;
+- escalation cap;
+- noise rule;
+- lifetime;
+- sample size;
+- acceptance gate
+
+is changed.
+
+PRIMARY FAMILY
+
+20260921400000..20260921400119.
+
+120 held-out condition-world lifetimes.
+
+7 policies.
+
+840 policy lifetimes.
+
+H165 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H165 lifetime.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
