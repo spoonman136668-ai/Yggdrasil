@@ -1268,3 +1268,757 @@ match exactly.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-07 NON-EVIDENCE PILOT CLOSURE — REDUNDANCY COMPRESSION / STRIPE-COUNT FLOOR
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+STRONG POSITIVE REDUNDANCY-COMPRESSION RESULT /
+RESOURCE FLOOR LOCATED /
+BYTE-EXACT REPRODUCIBLE /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+05e4d126c7887d52ff526afcae99eb4d1e9849c909de14bf52efb38c3d593d8a.
+
+CANONICAL OUTPUT
+
+RUN 1 SHA-256:
+
+af25e9b63f93334839adc3f4b595567883f8e609449bac1f78adf39266dab24d.
+
+RUN 2 SHA-256:
+
+af25e9b63f93334839adc3f4b595567883f8e609449bac1f78adf39266dab24d.
+
+Byte-identical:
+
+PASS.
+
+MECHANICAL CONTROLS
+
+NO_DAMAGE_CONTROL_PASS:
+
+TRUE.
+
+ENCODING_CONTROL_PASS:
+
+TRUE.
+
+REFERENCE_PRESERVATION:
+
+TRUE.
+
+G8_COMPRESSED_REPAIR:
+
+TRUE.
+
+G5_COMPRESSED_REPAIR:
+
+TRUE.
+
+G4_COMPRESSED_REPAIR:
+
+FALSE.
+
+RESOURCE_FLOOR_SIGNAL:
+
+TRUE.
+
+STRONG_REDUNDANCY_COMPRESSION:
+
+TRUE.
+
+FULL16_SECDED64
+
+Maintenance:
+
+64 bits.
+
+Reclaimable:
+
+0 bits.
+
+SMALL3:
+h1 exact-full recovery:
+
+1.0.
+
+LARGE5:
+h1 exact-full recovery:
+
+1.0.
+
+Combined:
+h32 exact-full recovery:
+
+1.0.
+
+Worker-divergence area:
+
+0.
+
+G8_HAMMING32
+
+Maintenance:
+
+32 bits.
+
+Reclaimable:
+
+32 bits.
+
+SMALL3:
+h1 exact-full recovery:
+
+1.0.
+
+LARGE5:
+h1 exact-full recovery:
+
+1.0.
+
+Combined:
+h32 exact-full recovery:
+
+1.0.
+
+Worker-divergence area:
+
+0.
+
+Oracle:
+maximum:
+damaged bits
+inside:
+one:
+code group:
+
+1.
+
+G5_HAMMING25
+
+Maintenance:
+
+25 bits.
+
+Reclaimable:
+
+39 bits.
+
+Maintenance reduction
+versus:
+FULL16:
+
+60.9375%.
+
+Used:
+persistent:
+state:
+
+89 bits.
+
+SMALL3:
+h1 exact-full recovery:
+
+1.0.
+
+LARGE5:
+h1 exact-full recovery:
+
+1.0.
+
+Combined:
+h32 exact-full recovery:
+
+1.0.
+
+Worker-divergence area:
+
+0.
+
+Oracle:
+maximum:
+damaged bits
+inside:
+one:
+code group:
+
+1.
+
+Median:
+corrected:
+data bits
+across:
+combined:
+3/
+5:
+lesions:
+
+4.
+
+No:
+out-of-range:
+syndrome:
+failure.
+
+Thus:
+
+25:
+maintenance bits
+
+preserve:
+the:
+same:
+tested:
+perfect:
+repair
+as:
+
+64:
+maintenance bits.
+
+G4_HAMMING20
+
+Maintenance:
+
+20 bits.
+
+Reclaimable:
+
+44 bits.
+
+SMALL3:
+h1 exact-full recovery:
+
+1.0.
+
+LARGE5:
+h1 exact-full recovery:
+
+0.
+
+Combined:
+h32 exact-full recovery:
+
+0.53125.
+
+Worker-divergence area:
+
+0.40625.
+
+Oracle:
+SMALL3:
+max group load:
+
+1.
+
+Oracle:
+LARGE5:
+max group load:
+
+2.
+
+Thus:
+
+the:
+five-cell:
+burst
+
+crosses:
+the:
+one-error-per-group:
+capacity
+when:
+only:
+four:
+stripes
+exist.
+
+The:
+resource floor
+appears:
+where:
+the:
+damage geometry
+predicts.
+
+BASE64_INERT64
+
+Maintenance:
+
+0.
+
+Combined:
+worker-divergence area:
+
+2.7578125.
+
+SMALL3:
+h1 exact-full recovery:
+
+0.
+
+LARGE5:
+h1 exact-full recovery:
+
+0.
+
+Combined:
+h32 exact-full recovery:
+
+0.0625.
+
+Thus:
+
+normal:
+cellular:
+dynamics
+alone
+
+do NOT:
+explain:
+the:
+compressed:
+repair result.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-07 establishes:
+
+the:
+DG-1R-06:
+perfect:
+repair
+
+did NOT:
+require:
+50%
+of:
+the:
+128-bit:
+persistent:
+organism
+
+to:
+remain:
+maintenance:
+state.
+
+For:
+the:
+tested:
+maximum:
+five-cell:
+contiguous:
+burst,
+
+five:
+independent:
+spatial:
+stripes
+
+were:
+sufficient.
+
+Four:
+
+were:
+not.
+
+The:
+maintenance:
+cost
+
+therefore:
+tracked:
+
+DAMAGE:
+GEOMETRY
+
+more closely
+than:
+
+TOTAL:
+WORKER:
+COUNT.
+
+This is:
+important
+for:
+Yggdrasil's:
+resource:
+objective.
+
+The:
+system
+can:
+
+retain:
+perfect:
+local:
+self-repair
+
+while:
+
+freeing:
+39:
+persistent:
+bits
+
+for:
+other:
+roles.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-08 —
+RECLAIMED STATE REDEPLOYMENT AUDIT.
+
+Question:
+
+can:
+the:
+39:
+bits
+freed
+by:
+
+G5_HAMMING25
+
+be:
+returned
+to:
+
+dynamic:
+worker /
+specialist:
+capacity
+
+without:
+
+breaking:
+the:
+five-cell:
+repair:
+guarantee?
+
+Reference:
+
+64 workers
++
+25 maintenance
++
+39 inactive.
+
+Candidate:
+
+103:
+dynamic:
+workers
++
+25:
+maintenance bits.
+
+Total:
+
+128 bits.
+
+But:
+
+the:
+repair topology
+must:
+be:
+re-derived
+for:
+
+103 workers.
+
+The:
+critical:
+constraint:
+
+every:
+tested:
+five-cell:
+local:
+burst
+
+must:
+still:
+hit:
+
+at most:
+one:
+worker
+per:
+repair:
+stripe.
+
+Therefore:
+
+a:
+simple:
+five-way:
+index-modulo:
+stripe
+remains:
+a:
+candidate
+
+because:
+
+five:
+consecutive:
+indices
+
+have:
+five:
+different:
+mod-5:
+residues.
+
+Primary questions:
+
+1.
+
+Does:
+103-worker /
+25-maintenance:
+G5 repair
+
+retain:
+
+100%:
+exact:
+five-cell:
+burst recovery?
+
+2.
+
+Does:
+the:
+additional:
+39:
+worker:
+capacity
+
+produce:
+measurably:
+richer:
+cellular:
+state
+
+or:
+greater:
+feature:
+rank /
+task:
+capacity
+
+than:
+the:
+64-worker:
+reference?
+
+3.
+
+Does:
+repair:
+compute
+remain:
+bounded?
+
+PLAIN-SPEAK SUMMARY
+
+We:
+cut:
+the:
+repair:
+system
+
+from:
+
+64:
+bits
+
+to:
+
+25:
+bits
+
+and:
+it:
+still:
+repaired:
+every:
+three-
+and:
+five-cell:
+injury
+perfectly.
+
+That:
+freed:
+39:
+bits.
+
+Then:
+we:
+pushed:
+one:
+step:
+too far.
+
+With:
+only:
+20:
+repair bits,
+
+three-cell:
+injuries
+still:
+worked,
+
+but:
+five-cell:
+injuries
+stopped:
+being:
+reliably:
+repairable.
+
+Why?
+
+Five:
+damaged:
+neighboring:
+cells
+
+need:
+five:
+different:
+repair:
+groups
+
+if:
+each:
+group
+can:
+correct:
+one:
+error.
+
+Five:
+stripes:
+
+works.
+
+Four:
+stripes:
+
+forces:
+two:
+damaged:
+cells
+into:
+the:
+same:
+repair:
+group.
+
+That:
+crosses:
+the:
+repair:
+capacity.
+
+So:
+
+we:
+now:
+have:
+a:
+measured:
+repair:
+overhead
+instead:
+of:
+just:
+a:
+working:
+design.
+
+The:
+next:
+move
+is:
+important:
+
+take:
+the:
+39:
+bits
+we:
+just:
+freed
+
+and:
+turn:
+them
+back
+into:
+useful:
+cells.
+
+If:
+we:
+can:
+grow:
+from:
+64:
+workers
+to:
+103:
+workers
+
+while:
+keeping:
+the:
+same:
+25-bit:
+repair:
+system
+
+and:
+still:
+repair:
+five-cell:
+damage
+perfectly,
+
+then:
+we:
+have:
+a:
+much:
+stronger:
+Yggdrasil:
+pattern:
+
+more:
+capability
+
+without:
+giving:
+up:
+self-repair.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
