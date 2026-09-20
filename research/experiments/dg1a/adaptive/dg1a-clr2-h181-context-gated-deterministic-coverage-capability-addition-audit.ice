@@ -702,3 +702,311 @@ SYNTHETIC_MEASURED_CONTEXT_GATED_DETERMINISTIC_COVERAGE_CAPABILITY_ADDITION
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — DETERMINISTIC COVERAGE MORPHOLOGY HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H181 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H181 SANDBOX HARNESS
+
+File:
+
+h181_kcover_v1.py
+
+SHA-256:
+
+59b84d97f570b54bbd83cc4438d74c33892e3ca6912548638b40ef3c40a4cf26.
+
+PARENT MODEL
+
+Reuse:
+H180
+context-gated capability-addition
+substrate.
+
+No:
+task,
+gate,
+daughter-cell budget,
+daughter fit,
+or:
+active-structure
+change.
+
+ONLY SCIENTIFIC CHANGE
+
+Morphology selection
+for:
+the candidate daughter cells
+
+uses:
+
+B TRAINING INPUT
+GEOMETRY ONLY.
+
+No:
+B target value
+or:
+B residual value
+
+enters:
+KCOVER selection.
+
+DENSITY SCORE
+
+For every:
+right-half parent site j,
+
+D_j =
+mean_B_train(
+phi_j(x)^2
+).
+
+This is:
+target-blind.
+
+SEED RULE
+
+Seed 1:
+
+right-half parent site
+nearest:
+the B-training input mean.
+
+Seeds 2..8:
+
+choose:
+the unselected
+right-half site
+
+maximizing:
+
+D_j
+*
+minimum distance
+to:
+existing seeds.
+
+Tie:
+
+lower cell index.
+
+GROWTH RULE
+
+Eight:
+Moore-connected
+patches
+
+grow:
+round-robin.
+
+Each patch:
+
+adds:
+the unclaimed
+right-half
+frontier cell
+
+with:
+maximum D_j.
+
+If:
+frontier recovery fails,
+
+use:
+the unclaimed
+right-half cell
+
+maximizing:
+
+D_j
+/
+(
+1
++
+distance
+to:
+that patch centroid
+).
+
+All:
+daughter coefficients
+are:
+fit jointly.
+
+POLICIES
+
+H180_LEARNED_RANDOM64.
+
+H180_HARD_RANDOM64.
+
+H180_LEARNED_RESIDUAL64.
+
+KCOVER_LEARNED64.
+
+KCOVER_HARD64.
+
+KCOVER_LEARNED32.
+
+KCOVER_UNGATED64.
+
+GLOBAL_DAUGHTER.
+
+SANITY
+
+Disjoint family:
+
+20260923090000
+and:
+20260923090001.
+
+2 worlds.
+
+8 policies.
+
+16 evaluations.
+
+Accepted sanity-output SHA-256:
+
+ace455c08529c29f2ee48760ab1a1967a72eb82c30800bd1062708d29002a5a3.
+
+Mechanical checks:
+
+- exact 8 policies / world;
+- K=64 / K=32
+  counts exact;
+- exactly 8
+  candidate micro-patches;
+- learned gate:
+  exact H180 mechanics;
+- parent A coefficients:
+  frozen;
+- no:
+  B target,
+  validation target,
+  or:
+  held-out target
+  enters:
+  KCOVER morphology;
+- hibernation / reactivation:
+  unchanged.
+
+NON-EVIDENCE COVERAGE SIGNAL
+
+KCOVER64
+mean:
+nearest-daughter
+B-input distance
+
+is:
+approximately:
+
+0.106..0.110
+
+inside:
+the two sanity worlds.
+
+H180 learned-random64:
+
+approximately:
+
+0.176..0.249.
+
+Thus:
+
+KCOVER
+does:
+materially improve:
+raw input-space
+geometric coverage.
+
+NON-EVIDENCE CAPABILITY SIGNAL
+
+Despite:
+better:
+Euclidean input coverage,
+
+KCOVER_LEARNED64
+B held-out R^2:
+
+approximately:
+
+0.866
+and:
+0.893.
+
+H180_LEARNED_RANDOM64:
+
+approximately:
+
+0.989
+and:
+0.904.
+
+Therefore:
+
+simple:
+input-space
+k-center coverage
+
+does NOT:
+pre-confirm:
+better:
+function-space
+coverage.
+
+This is:
+a live:
+held-out hypothesis.
+
+A preservation
+under:
+learned routing
+
+remains:
+strong.
+
+No:
+
+- density score;
+- seed rule;
+- growth rule;
+- K;
+- patch count;
+- gate;
+- daughter fit;
+- sample size;
+- threshold;
+- acceptance gate
+
+was changed
+from:
+sanity outcomes.
+
+PRIMARY FAMILY
+
+20260923000000..20260923000019.
+
+20 held-out worlds.
+
+8 policies.
+
+160 policy evaluations.
+
+H181 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H181 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
