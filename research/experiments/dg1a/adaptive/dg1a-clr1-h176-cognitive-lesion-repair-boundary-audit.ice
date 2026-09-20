@@ -596,3 +596,493 @@ SYNTHETIC_MEASURED_COGNITIVE_LESION_REPAIR_BOUNDARY
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — FINE-SCALE COGNITIVE REPAIR-BOUNDARY HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H176 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H176 SANDBOX HARNESS
+
+File:
+
+h176_clr1_boundary_v4.py
+
+SHA-256:
+
+4951c521d2582965b79b4c3026e847189bacf0fd41c2ec1bbecc1d350c786875.
+
+PRE-PRIMARY TASK-DIFFICULTY CALIBRATION
+
+The first reconstructed H176 teacher
+was:
+too easy.
+
+Representative sanity
+held-out R^2:
+
+approximately:
+0.9999.
+
+This was:
+materially easier
+than:
+the accepted H175
+learned-function band
+around:
+0.97..0.98.
+
+Two:
+NON-EVIDENCE
+teacher variants
+
+were also tested
+before:
+primary.
+
+One:
+overshot
+and:
+underfit severely.
+
+One:
+remained:
+too easy
+and:
+weakened:
+functional localization.
+
+Neither:
+entered:
+held-out primary.
+
+FINAL TEACHER
+
+Retains:
+the original smooth
+H175-style:
+
+- random tanh field;
+- low-frequency sinusoid;
+
+and adds:
+
+a small:
+high-frequency
+deterministic residual
+
+with:
+three random Fourier components
+
+and:
+amplitude:
+0.12.
+
+This yields:
+
+sanity median
+held-out R^2:
+
+approximately:
+0.9763.
+
+Representative:
+sanity held-out R^2
+
+ranges:
+
+approximately:
+0.904
+to:
+0.987.
+
+All remain:
+above:
+the frozen
+world-level competence floor
+used by:
+the parent cognitive program.
+
+No:
+lesion,
+repair,
+budget,
+trajectory,
+or:
+acceptance rule
+
+was tuned
+from:
+repair outcomes.
+
+REPRESENTATION
+
+g=0.25.
+
+R=32.
+
+N=3209.
+
+RBF sigma:
+
+0.22.
+
+Student ridge:
+
+alpha =
+0.01 * g^2
+=
+0.000625.
+
+LEARNED FUNCTIONS
+
+Two:
+independent nonlinear teachers
+
+A
+and:
+B.
+
+Training:
+
+768 samples / task.
+
+Validation:
+
+256.
+
+Held-out global test:
+
+512.
+
+Localization geometry:
+
+256
+task-distributed
+input points
+
+disjoint from:
+training
+and:
+global held-out test.
+
+RESPONSIBILITY / K-STAR
+
+Exact frozen H176 rule.
+
+One:
+Moore-connected
+selective path
+
+is grown
+from:
+the highest
+target / unrelated
+responsibility ratio.
+
+k_star:
+
+first patch
+with:
+
+target held-out
+R^2 loss >=0.20,
+
+unrelated loss <=0.05,
+
+and:
+body fraction <=0.10.
+
+No localization-success world
+is discarded.
+
+LESION MAGNITUDES
+
+HALF:
+0.5*k_star.
+
+BASE:
+1.0*k_star.
+
+DOUBLE:
+2.0*k_star.
+
+TRIPLE:
+3.0*k_star.
+
+All:
+bounded by:
+10%
+of:
+the body.
+
+TRAJECTORIES
+
+SAME:
+
+repeat:
+the original
+selected cell IDs.
+
+FOLLOW:
+
+recompute:
+current responsibility
+
+and:
+the connected
+target-selective path
+
+at:
+every cycle.
+
+If:
+a current causal k_star
+cannot be found,
+
+preserve:
+the previous cycle
+lesion-cell count
+on:
+the current selective path.
+
+REPAIR BUDGETS
+
+CONTEXT0:
+0.
+
+TARGET1:
+1
+target-task
+maximum-leverage
+local observation / cycle.
+
+TARGET2:
+2.
+
+TARGET4:
+4.
+
+ORACLE:
+local exact
+pre-lesion
+two-head state restore.
+
+No:
+unrelated-task
+functional observation
+
+is available
+to:
+TARGET1,
+TARGET2,
+or:
+TARGET4.
+
+DEVELOPMENTAL REPAIR
+
+Membership:
+
+local Moore-frontier.
+
+Return probability:
+
+0.50.
+
+Returning cell:
+
+live-neighbor mean
+for:
+both heads.
+
+Then:
+
+4
+synchronous
+context-refinement steps.
+
+Functional local solve:
+
+target head only.
+
+lambda:
+0.01.
+
+Surviving coefficients:
+
+fixed.
+
+GENERALIZATION TELEMETRY
+
+Per cycle:
+
+- actual repair-query MSE;
+- 128-point
+  lesion-local
+  evaluation-only
+  validation MSE;
+- global held-out
+  target R^2.
+
+The local validation set:
+
+is:
+disjoint
+from:
+repair observations
+
+and:
+cannot:
+enter repair.
+
+SANITY
+
+Disjoint family:
+
+20260922590000
+and:
+20260922590001.
+
+2 base learned worlds.
+
+4 target-lesion worlds.
+
+4 lesion magnitudes.
+
+2 trajectory modes.
+
+5 policies.
+
+160 policy lifetimes.
+
+Accepted sanity-output SHA-256:
+
+ce2ff5f924b742c26e13ba17847d21e1837664f5b3f9221396ca5bd1e08b2183.
+
+Mechanical checks:
+
+- exact 160 rows;
+- exact 5 policies
+  in:
+  every target / magnitude / mode cell;
+- 4 / 4
+  target conditions
+  localize successfully;
+- TARGET1 / TARGET2 / TARGET4
+  use:
+  exactly:
+  1 / 2 / 4
+  target observations
+  per cycle;
+- zero:
+  unrelated-task
+  observations;
+- FOLLOW
+  responsibility patches
+  move:
+  materially
+  in:
+  sanity.
+
+Representative FOLLOW
+median previous-patch Jaccard:
+
+often:
+approximately:
+0..0.27.
+
+Representative
+centroid displacement:
+
+approximately:
+0.4..0.7
+normalized macro units.
+
+NON-EVIDENCE REPAIR SIGNAL
+
+HALF:
+
+1 observation
+is:
+generally sufficient
+in:
+sanity.
+
+BASE:
+
+1..2
+observations
+are:
+strong.
+
+DOUBLE:
+
+2 observations
+are:
+strong
+for:
+cycle 1,
+
+while:
+FOLLOW repeated repair
+begins:
+to separate:
+2 versus 4
+observations.
+
+TRIPLE:
+
+4 observations
+is:
+materially more reliable
+than:
+1..2.
+
+This creates:
+the intended
+nontrivial
+budget / lesion boundary.
+
+These values are:
+
+NON-EVIDENCE.
+
+No:
+teacher parameter,
+magnitude,
+trajectory,
+repair budget,
+threshold,
+sample size,
+or:
+acceptance gate
+
+may change
+after:
+this freeze.
+
+PRIMARY FAMILY
+
+20260922500000..20260922500011.
+
+12 held-out
+base learned worlds.
+
+24 target-lesion worlds.
+
+960 policy lifetimes.
+
+4,800
+policy repair cycles.
+
+H176 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
