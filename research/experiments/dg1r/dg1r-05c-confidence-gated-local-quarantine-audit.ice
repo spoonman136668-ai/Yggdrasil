@@ -919,3 +919,92 @@ organism.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+SUPERSESSION NOTE — UNEXECUTED ALTERNATE BRANCH
+
+DATE:
+2026-09-20.
+
+STATUS:
+NOT EXECUTED /
+SUPERSEDED AS:
+PRIMARY 05C FRONTIER.
+
+This:
+quarantine:
+preregistration
+
+was:
+never:
+implemented,
+frozen,
+or:
+executed.
+
+Its:
+preregistered:
+seed family:
+
+20260926053000..007
+
+was:
+subsequently:
+used
+by:
+
+DG-1R-05C —
+OVERLAPPING:
+NEIGHBOR:
+RECONSTRUCTION,
+
+which:
+was:
+implemented,
+frozen,
+executed,
+and:
+closed.
+
+Therefore:
+
+this:
+alternate:
+quarantine:
+draft
+
+must NOT:
+be:
+executed
+with:
+its:
+original:
+seed family.
+
+If:
+revisited:
+
+it:
+requires:
+a:
+fresh:
+experiment ID,
+fresh:
+disjoint:
+seeds,
+and:
+a:
+new:
+pre-run:
+freeze.
+
+No:
+result
+is:
+claimed
+for:
+this:
+draft.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
