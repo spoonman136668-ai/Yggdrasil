@@ -662,3 +662,309 @@ SYNTHETIC_MEASURED_SANDBOX_LEARNED_MICRO_FUNCTION_REGENERATION_TRANSFER
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — LEARNED MICRO-FUNCTION HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H170 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H170 SANDBOX HARNESS
+
+File:
+
+h170_learned_micro_v2.py
+
+SHA-256:
+
+a3dbe6da369f3e0784e975c32f17ed9e1ad3b3043b0c3362cb00fc01c8f05b1a.
+
+LEARNED SUBSTRATE
+
+Binary nonlinear teacher.
+
+Teacher hidden width:
+12.
+
+Student:
+distributed Gaussian-RBF cellular readout.
+
+Training:
+512 labeled examples.
+
+Validation:
+256.
+
+Test:
+512.
+
+Ridge alpha:
+0.01.
+
+Cell scales:
+
+g=1.00
+and:
+g=0.25.
+
+No analytic specialization coefficient field
+is injected.
+
+All mutable cell coefficients
+come from:
+the data-trained ridge readout.
+
+FUNCTIONAL FEEDBACK
+
+Local micro-anchor target:
+
+teacher binary label.
+
+Noise:
+
+eta=0
+or:
+0.10
+deterministic label-flip potential.
+
+No clean label
+is exposed
+when:
+a flip occurs.
+
+QUERY PURCHASE
+
+Exact accepted H169
+target-blind controller:
+
+always:
+q1 maximum leverage.
+
+buy q2 iff:
+
+rho_geom >=0.98
+
+OR:
+
+cycle>1
+AND:
+rho_geom<=0.50
+AND:
+novelty5>=0.75.
+
+LOCAL REPAIR
+
+After:
+100%
+membership return:
+
+jointly solve:
+restored lesion coefficients only.
+
+lambda:
+0.01.
+
+Prior:
+current context-repaired lesion state.
+
+Surviving learned coefficients:
+fixed.
+
+Selected observations:
+remain active
+through:
+12 post-membership maturation steps.
+
+PERSISTENT STATE
+
+Repaired learned coefficients
+carry directly into:
+the next repair cycle.
+
+No:
+global reset.
+
+No:
+lost learned coefficient
+available
+to:
+non-oracle repair.
+
+ORACLE CORRECTION
+
+Initial sanity exposed:
+a mechanical oracle-path defect
+in:
+h170_learned_micro_v1.py.
+
+The oracle:
+restored exact learned coefficients
+
+but:
+was then context-refined
+during the post-membership horizon.
+
+That violated:
+the preregistered oracle ceiling.
+
+Disposition:
+
+h170_learned_micro_v1.py
+sanity output:
+NON-EVIDENCE.
+
+v2 correction:
+
+LOCAL-CHECKPOINT-ORACLE
+restores:
+the exact original learned coefficient
+
+on:
+each membership-return batch
+
+and:
+
+does NOT:
+context-refine
+the restored lesion afterward.
+
+No:
+non-oracle policy,
+query rule,
+teacher,
+training rule,
+noise,
+threshold,
+or:
+acceptance gate
+
+changed.
+
+SANITY
+
+Disjoint family:
+
+20260921990000...
+
+6 representative learned-task worlds.
+
+4 policies.
+
+24 policy lifetimes.
+
+Mechanical checks:
+
+- exactly four policies / seed;
+- exact six sanity seeds;
+- learned baseline test accuracy:
+  approximately 0.969..1.000;
+- median baseline competence
+  by task x scale:
+  all >0.97;
+- LOCAL-CHECKPOINT-ORACLE
+  final learned-output fidelity:
+  exactly 1.0;
+- no:
+  lost learned coefficient,
+  held-out test label,
+  or:
+  latent task class
+  enters:
+  non-oracle repair.
+
+Accepted sanity matrix SHA-256:
+
+0858bac34156350512ba05e87bbf19368f231f95b9bd25c83d997272ece612e3.
+
+NON-EVIDENCE SIGNAL
+
+Fine:
+g=0.25
+
+HIST-GEOM
+generally retains:
+learned classification accuracy
+
+within:
+approximately 0..0.4 percentage points
+of:
+baseline
+in:
+the representative MIXED worlds.
+
+Coarse:
+g=1.00
+
+is:
+materially harder.
+
+Representative learned-task
+HIST-GEOM accuracy losses:
+
+SMOOTH ROAMING clean:
+
+approximately:
+-3.1 percentage points.
+
+MIXED ROAMING eta=.10:
+
+approximately:
+-5.3 points.
+
+MIXED HOTSPOT eta=.10:
+
+approximately:
+-5.1 points.
+
+Representative coarse
+learned-output fidelity:
+
+approximately:
+0.836..0.930.
+
+This is:
+a live held-out hypothesis.
+
+No:
+
+- teacher architecture;
+- training size;
+- ridge alpha;
+- damage law;
+- query rule;
+- history window;
+- lambda;
+- feedback-noise rate;
+- lifetime;
+- sample size;
+- acceptance gate
+
+is changed.
+
+PRIMARY FAMILY
+
+20260921900000..20260921900159.
+
+160 held-out learned-task worlds.
+
+4 policies.
+
+640 policy lifetimes.
+
+40 repair cycles / lifetime.
+
+H170 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H170 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
