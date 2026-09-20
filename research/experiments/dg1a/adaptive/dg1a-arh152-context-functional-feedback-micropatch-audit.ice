@@ -1635,3 +1635,729 @@ H152 DOES NOT AUTHORIZE
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — CONTEXT + BOUNDED LOCAL FUNCTIONAL FEEDBACK
+
+DATE:
+2026-09-19.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-POSITIVE.
+
+FROZEN HARNESS
+
+H151 parent:
+3f6042716b4e5a26f41569376a4dca833f5bae5f3c053aa2280615bfadb32e37.
+
+H152 wrapper:
+e8be77384de4fef8a6b8eda875575f581edfc97794d5060e57e4e3bfa7b3b4e3.
+
+ACCEPTED PRIMARY FAMILY
+
+20260919900000..20260919902399.
+
+PRIMARY MATRIX
+
+2,400 underlying worlds.
+
+6 policies.
+
+14,400 unique policy-world evaluations.
+
+Validation:
+
+- exact held-out seed interval;
+- six policies per seed;
+- no seed gaps;
+- no policy gaps;
+- overlapping sandbox checkpoint shards
+  were verified:
+  byte-identical
+  for:
+  duplicated seed-policy pairs;
+- acceptance uses:
+  one unique record
+  per:
+  seed x policy;
+- zero functionally-trivial worlds;
+- no post-primary tuning.
+
+PRIMARY CANDIDATE
+
+CONTEXT-FB2.
+
+Maximum local functional feedback:
+
+24 observations.
+
+Only:
+regenerated lesion coefficients
+were mutable.
+
+Surviving original coefficients:
+remained fixed.
+
+MIXED CONTEXT — PRIMARY TARGET
+
+Median final functional recovery:
+
+1%:
+0.9303.
+
+2%:
+0.9010.
+
+5%:
+0.9354.
+
+10%:
+0.9373.
+
+Thus:
+
+the H151 MIXED-context gap
+is:
+substantially closed
+at:
+the median.
+
+H151 parent
+CONTEXT-0
+in the same H152 worlds:
+
+1%:
+0.7977.
+
+2%:
+0.8015.
+
+5%:
+0.7080.
+
+10%:
+0.5769.
+
+Therefore:
+
+24 local functional observations
+plus:
+the developmental prior
+
+recover:
+a large residual
+that:
+neighbor context alone
+cannot infer.
+
+MIXED T90 WORLD FRACTION
+
+CONTEXT-FB2:
+
+1%:
+65.5%.
+
+2%:
+50.5%.
+
+5%:
+66.0%.
+
+10%:
+68.0%.
+
+Required
+for:
+1%..5%:
+
+>=90%.
+
+FAIL.
+
+Interpretation:
+
+median final quality
+is:
+high,
+
+but:
+reliability / latency
+is:
+not yet high enough
+across:
+worlds.
+
+SMOOTH CONTEXT
+
+CONTEXT-FB2
+median final recovery:
+
+1%:
+0.9956.
+
+2%:
+0.9955.
+
+5%:
+0.9967.
+
+10%:
+0.9947.
+
+Thus:
+
+bounded functional feedback
+does NOT:
+destabilize
+the already-good
+developmental-context repair.
+
+It improves:
+or:
+preserves
+SMOOTH recovery.
+
+DEVELOPMENTAL PRIOR VALUE
+
+Median final recovery difference:
+
+CONTEXT-FB2
+minus:
+FEEDBACK-ONLY-FB2.
+
+SMOOTH:
+
+1%:
++0.584.
+
+2%:
++0.737.
+
+5%:
++0.546.
+
+MIXED:
+
+1%:
++0.511.
+
+2%:
++0.638.
+
+5%:
++0.485.
+
+Thus:
+
+the 24-observation feedback budget
+does NOT:
+replace:
+developmental context.
+
+The local prior
+provides:
+large information value.
+
+FEEDBACK BUDGET SCALING
+
+MIXED median final recovery:
+
+1%:
+
+FB1:
+0.8965.
+
+FB2:
+0.9303.
+
+FB4:
+0.9645.
+
+2%:
+
+FB1:
+0.8770.
+
+FB2:
+0.9010.
+
+FB4:
+0.9327.
+
+5%:
+
+FB1:
+0.9012.
+
+FB2:
+0.9354.
+
+FB4:
+0.9606.
+
+CFB4 minus CFB2:
+
+1%:
+approximately 0.0342.
+
+2%:
+approximately 0.0317.
+
+5%:
+approximately 0.0252.
+
+Frozen gate:
+
+within:
+0.03
+for:
+two of:
+three.
+
+Observed:
+only:
+5%
+passes exactly.
+
+This is:
+a narrow fail.
+
+Interpretation:
+
+24 observations
+capture:
+most
+but:
+not all
+of:
+the 48-observation benefit.
+
+MULTI-PATCH FEEDBACK ROUTING LIMIT
+
+MIXED,
+CONTEXT-FB2:
+
+1%:
+
+COMPACT:
+final 0.9568,
+median T90 3.5.
+
+FOUR-PATCH:
+final 0.9076,
+median T90 6.
+
+2%:
+
+COMPACT:
+final 0.9715,
+T90 5.
+
+FOUR-PATCH:
+final 0.8639,
+T90 8.
+
+5%:
+
+COMPACT:
+final 0.9677,
+T90 9.
+
+FOUR-PATCH:
+final 0.9089,
+T90 9.
+
+Thus:
+
+H151 established:
+distributed holes
+can:
+increase useful developmental boundary.
+
+H152 shows:
+a fixed undirected
+functional-feedback pool
+
+can:
+waste that advantage.
+
+With:
+four damaged components,
+
+the 24 observations
+are not:
+explicitly allocated
+by:
+component need.
+
+The frozen
+FOUR-PATCH
+T90 non-inferiority gate
+fails
+at:
+1%
+and:
+2%.
+
+This is:
+the clearest H152 controller defect.
+
+SCRAMBLED CONTEXT
+
+CONTEXT-FB2
+median final recovery:
+
+1%:
+0.5640.
+
+2%:
+0.3455.
+
+5%:
+0.5346.
+
+10%:
+0.6794.
+
+FEEDBACK-ONLY-FB2:
+
+1%:
+0.3901.
+
+2%:
+0.2330.
+
+5%:
+0.3951.
+
+10%:
+0.4782.
+
+Context advantage:
+
+approximately:
+
++0.174,
++0.112,
++0.139,
++0.201.
+
+The preregistered
+SCRAMBLED
+<0.05
+context-advantage gate
+therefore:
+FAILS.
+
+Interpretation:
+
+harmonic context
+acts as:
+a useful regularizer
+even when:
+the lost coefficient field
+is:
+spatially scrambled.
+
+This means:
+
+the H152
+mechanism-specificity test
+was:
+too strict
+for:
+the combined
+regularized inverse problem.
+
+However:
+
+SCRAMBLED final recovery
+remains:
+far below:
+SMOOTH
+
+and:
+generally below:
+MIXED.
+
+Thus:
+
+local representational organization
+still matters materially.
+
+OBSERVATION EFFICIENCY LIMIT
+
+At:
+R=8,
+N=197,
+
+nominal damaged cells:
+
+1%:
+2.
+
+2%:
+4.
+
+5%:
+10.
+
+10%:
+20.
+
+CFB2 always consumes:
+24 feedback observations.
+
+Therefore:
+
+at:
+1%,
+
+feedback count
+is:
+12x
+the missing coefficient count.
+
+At:
+10%:
+
+approximately:
+1.2x.
+
+A fixed:
+24-observation budget
+
+is:
+inefficient
+for:
+very small patches
+
+and:
+potentially under-routed
+for:
+distributed patches.
+
+This directly motivates:
+adaptive budget allocation.
+
+PREREGISTERED GATE REVIEW
+
+SUPPORTED
+
+1.
+MIXED 1%..5%:
+
+CFB2
+median final recovery
+>=0.90.
+
+Observed:
+
+0.9303,
+0.9010,
+0.9354.
+
+PASS.
+
+2.
+SMOOTH 1%..5%:
+
+CFB2
+>=0.95
+
+without:
+>0.02 regression
+from:
+CONTEXT-0.
+
+PASS.
+
+3.
+Developmental prior value:
+
+CFB2
+beats:
+FBONLY2
+by:
+>=0.05
+
+in:
+all six
+SMOOTH / MIXED
+1%..5%
+groups.
+
+PASS.
+
+4.
+CHECKPOINT-ORACLE
+remains:
+the ceiling.
+
+PASS.
+
+FAILED / MIXED
+
+1.
+MIXED
+T90-world fraction
+>=90%.
+
+Observed:
+50.5%..66%.
+
+FAIL.
+
+2.
+CFB2
+within:
+0.03
+of:
+CFB4
+for:
+two of:
+three
+MIXED small-damage groups.
+
+Observed:
+one of three.
+
+NARROW FAIL.
+
+3.
+SCRAMBLED
+context advantage
+<0.05
+for:
+three of four
+fractions.
+
+FAIL.
+
+4.
+FOUR-PATCH
+T90 penalty
+<=20%
+versus:
+COMPACT
+for:
+MIXED 1%..5%.
+
+FAIL
+at:
+1%
+and:
+2%.
+
+FINAL INTERPRETATION
+
+H152 is:
+
+MIXED-POSITIVE.
+
+The central hypothesis is:
+SUPPORTED.
+
+A small,
+bounded,
+local functional-error signal
+
+can:
+close most
+of:
+the higher-frequency
+learned-state gap
+
+left by:
+developmental context.
+
+But:
+
+A FIXED FEEDBACK BUDGET
+IS NOT:
+A GOOD
+MICRO-PATCH CONTROLLER.
+
+The remaining problem is:
+
+ROUTING
+AND:
+STOPPING.
+
+The controller needs to decide:
+
+- which damaged component
+  receives:
+  the next functional query;
+
+- when:
+  one component
+  is:
+  already sufficiently reconstructed;
+
+- when:
+  another component
+  remains:
+  underdetermined;
+
+- how:
+  feedback budget
+  should scale
+  with:
+  missing mutable-state dimension.
+
+NEXT SCOPED EXPERIMENT
+
+H153 —
+COMPONENT-AWARE
+ADAPTIVE FUNCTIONAL FEEDBACK
+MICRO-PATCH.
+
+Primary hypothesis:
+
+allocate:
+local functional feedback
+to:
+the damaged component
+with:
+the highest current
+held-local residual / uncertainty,
+
+and:
+
+stop:
+querying
+a component
+
+once:
+its bounded validation error
+passes:
+a frozen threshold.
+
+Target:
+
+preserve:
+H152 MIXED
+median recovery >=0.90
+
+while:
+
+- raising:
+  T90-world fraction
+  toward:
+  >=90%;
+
+- reducing:
+  tiny-patch feedback waste;
+
+- removing:
+  FOUR-PATCH routing penalty;
+
+- using:
+  fewer observations
+  than:
+  fixed FB4.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
