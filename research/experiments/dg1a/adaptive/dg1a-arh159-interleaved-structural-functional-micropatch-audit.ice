@@ -1156,3 +1156,679 @@ the first held-out H159 condition-world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — INTERLEAVED STRUCTURAL-FUNCTIONAL MICRO-PATCH REGENERATION
+
+DATE:
+2026-09-19.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / POSITIVE.
+
+FINAL PINNED HARNESS SHA-256
+
+a38c58d2a15cb7125dc3e02199ea8bbd0de0e14c937e1e7e6d87c13d54ba99e8.
+
+ACCEPTED PRIMARY STRUCTURAL FAMILY
+
+20260920800000..20260920801799.
+
+PRIMARY MATRIX
+
+1,800 held-out structural worlds.
+
+2 feedback-noise classes.
+
+3,600 condition-worlds.
+
+5 policies.
+
+18,000 policy-condition evaluations.
+
+Validation:
+
+- exactly 1,800 unique structural seeds;
+- exactly 3,600 seed x eta conditions;
+- exactly five policy rows / condition;
+- zero functionally-trivial worlds;
+- zero common-query-sequence mismatches
+  among:
+  START100,
+  START75,
+  START50,
+  START25;
+- no post-primary parameter tuning.
+
+START100 BASELINE
+
+MIXED pooled geometry.
+
+eta=0:
+
+1%:
+median final recovery 0.9968.
+stable-T90 world fraction 95.5%.
+
+2%:
+0.9903.
+97.0%.
+
+5%:
+0.9951.
+99.5%.
+
+eta=0.25:
+
+1%:
+0.9962.
+95.5%.
+
+2%:
+0.9889.
+96.5%.
+
+5%:
+0.9935.
+99.5%.
+
+Baseline gates:
+
+PASS.
+
+MIXED FOUR-PATCH
+STABLE T90
+
+eta=0.
+
+1%:
+
+START100:
+3.
+
+START75:
+3.
+
+START50:
+2.
+
+START25:
+2.
+
+2%:
+
+START100:
+4.
+
+START75:
+3.
+
+START50:
+3.
+
+START25:
+3.
+
+5%:
+
+START100:
+4.5.
+
+START75:
+3.
+
+START50:
+2.
+
+START25:
+2.
+
+eta=0.25.
+
+1%:
+
+START100:
+3.
+
+START75:
+3.
+
+START50:
+2.
+
+START25:
+2.
+
+2%:
+
+START100:
+4.
+
+START75:
+3.
+
+START50:
+3.
+
+START25:
+3.
+
+5%:
+
+START100:
+4.
+
+START75:
+3.
+
+START50:
+2.
+
+START25:
+2.
+
+START50
+stable-T90 reduction
+relative to:
+START100:
+
+eta=0:
+
+1%:
+33.3%.
+
+2%:
+25.0%.
+
+5%:
+55.6%.
+
+eta=0.25:
+
+1%:
+33.3%.
+
+2%:
+25.0%.
+
+5%:
+50.0%.
+
+Thus:
+
+the >=20%
+stable-T90 gate
+
+passes:
+
+3 / 3
+damage fractions
+
+for:
+both noise classes.
+
+PASS.
+
+RELIABILITY
+
+START50
+MIXED pooled
+stable-T90 world fractions
+
+match:
+START100
+
+to:
+within:
+the frozen 3-point tolerance
+
+in:
+all six
+eta x damage groups.
+
+Observed START50
+stable-T90 rates:
+
+eta=0:
+
+1%:
+95.5%.
+
+2%:
+97.0%.
+
+5%:
+99.5%.
+
+eta=0.25:
+
+1%:
+95.5%.
+
+2%:
+96.5%.
+
+5%:
+99.5%.
+
+PASS.
+
+FINAL QUALITY
+
+START50
+median final recovery
+
+is:
+effectively identical
+to:
+START100
+
+inside:
+all MIXED
+eta x damage groups.
+
+No:
+>0.02
+quality loss.
+
+PASS.
+
+FUNCTIONAL DOWNTIME
+
+MIXED FOUR-PATCH
+START50
+median downtime reduction
+relative to:
+START100
+
+passes:
+the >=15% gate
+
+in:
+4 / 6
+eta x damage groups.
+
+The strongest gains occur
+at:
+2%
+and:
+5%
+damage.
+
+PASS
+at:
+the frozen boundary.
+
+REGRESSION
+
+START50
+MIXED
+T90-regression rate:
+
+eta=0:
+
+1%:
+0.5%.
+
+2%:
+0%.
+
+5%:
+0%.
+
+eta=0.25:
+
+1%:
+0.5%.
+
+2%:
+0%.
+
+5%:
+0%.
+
+All:
+far below:
+the 10%
+limit.
+
+PASS.
+
+TRUE PIPELINE OVERLAP
+
+For Gate 8,
+analysis uses:
+the frozen clarification:
+
+stable T90 must be:
+
+- strictly before:
+  membership completion;
+
+AND:
+
+- at least one full step earlier
+  than:
+  paired START100.
+
+MIXED FOUR-PATCH,
+eta=0,
+START50:
+
+1%:
+5%.
+
+2%:
+21%.
+
+5%:
+84%.
+
+Required:
+
+>=20%
+in:
+at least:
+two of three
+damage fractions.
+
+Observed:
+
+2 / 3.
+
+PASS.
+
+Thus:
+
+the result is:
+true pipeline overlap,
+
+not:
+merely:
+context-only pre-completion recovery.
+
+START25:
+
+also passes
+the overlap gate,
+
+with:
+approximately:
+
+5%,
+21%,
+86%
+
+for:
+1%,
+2%,
+5%.
+
+POLICY SELECTION
+
+START50
+and:
+START25
+
+tie
+on:
+the frozen pooled
+MIXED FOUR-PATCH
+stable-T90 reduction metric.
+
+Per:
+the preregistered tie rule,
+
+prefer:
+the LATER
+start threshold.
+
+SELECTED H159 POLICY:
+
+START50.
+
+Interpretation:
+
+begin:
+functional specialization repair
+
+once:
+approximately half
+of:
+the local structural membership
+has regenerated.
+
+Starting at:
+25%
+
+does not:
+provide enough additional
+stable-T90 benefit
+
+to justify:
+the earlier coupling.
+
+SMOOTH CONTROL
+
+START50
+SMOOTH
+1%..5%
+median final recovery:
+
+eta=0:
+
+approximately:
+0.9995..0.9998.
+
+eta=0.25:
+
+approximately:
+0.9985..0.9995.
+
+PASS:
+all >=0.98.
+
+CHECKPOINT-ORACLE
+
+Remains:
+the final-recovery ceiling
+at:
+1.0.
+
+PASS.
+
+PRIMARY ACCEPTANCE REVIEW
+
+PASS:
+
+1.
+START100 quality baseline.
+
+2.
+START100 stable-T90 reliability.
+
+3.
+START50
+>=20%
+FOUR-PATCH stable-T90 reduction
+in:
+3 / 3 damage groups
+for:
+both eta classes.
+
+4.
+No material reliability loss.
+
+5.
+No material final-quality loss.
+
+6.
+Downtime reduction:
+4 / 6 groups.
+
+7.
+T90 regression:
+well below 10%.
+
+8.
+True pre-completion pipeline overlap:
+2 / 3 eta=0 damage groups.
+
+9.
+Common query identity.
+
+10.
+SMOOTH quality.
+
+11.
+ORACLE ceiling.
+
+FINAL INTERPRETATION
+
+H159 is:
+
+POSITIVE.
+
+The serial repair assumption
+was:
+a real latency bottleneck.
+
+Yggdrasil does NOT need
+to wait for:
+
+complete structural regeneration
+
+before:
+
+functional specialization repair
+can safely begin.
+
+In this synthetic model,
+
+the preferred handoff point is:
+
+approximately:
+50%
+local membership restoration.
+
+At that point:
+
+- enough local structure exists
+  to support:
+  functional inference;
+
+- early task feedback
+  can begin:
+  correcting specialization;
+
+- the solve can:
+  expand
+  as:
+  additional cells regenerate;
+
+- previously acquired evidence
+  remains useful;
+
+- early compensation
+  does not:
+  materially destabilize
+  when:
+  new cells join.
+
+ARCHITECTURAL CONSEQUENCE
+
+The micro-patch pipeline becomes:
+
+DETECT / ISOLATE
+
+->
+
+BEGIN LOCAL MEMBERSHIP REGENERATION
+
+->
+
+AT ~50% LOCAL STRUCTURAL RETURN:
+BEGIN FUNCTIONAL RECALIBRATION
+
+->
+
+CONTINUE:
+GROWTH + FUNCTIONAL SOLVE
+IN PARALLEL
+
+->
+
+STABLE T90
+
+->
+
+COMPLETE:
+STRUCTURAL / FUNCTIONAL MATURATION.
+
+This is:
+materially closer
+to:
+continuous intelligence maintenance
+
+than:
+serial:
+rebuild-then-retrain.
+
+NEXT SCOPED QUESTION
+
+The main architecture claim
+that now needs:
+direct confirmation
+
+is:
+SCALE TRANSFER.
+
+H150 established:
+geometric small-cell scaling.
+
+H159 establishes:
+functional interleaving
+at:
+N approximately 197.
+
+The next experiment should combine them:
+
+CAN
+THE SELECTED START50
+INTERLEAVED FUNCTIONAL MICRO-PATCH
+
+RETAIN:
+LATENCY,
+QUALITY,
+AND:
+FIXED FEEDBACK COST
+
+AS:
+
+THE COGNITIVE BODY
+BECOMES:
+LARGER
+
+AND:
+
+THE COMPUTATIONAL CELLS
+BECOME:
+SMALLER?
+
+NEXT:
+
+H160 —
+FUNCTIONAL MICRO-PATCH
+SMALL-CELL SCALE-TRANSFER AUDIT.
+
+H159 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
