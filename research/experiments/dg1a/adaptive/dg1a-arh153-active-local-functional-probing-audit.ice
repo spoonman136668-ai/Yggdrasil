@@ -833,3 +833,516 @@ the restored harness hash.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — ACTIVE LOCAL FUNCTIONAL PROBING
+
+DATE:
+2026-09-19.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-NEGATIVE.
+
+FROZEN RESTORED HARNESS SHA-256
+
+fb8cb34ba01ddb2508dde2f4056f8fac14226d2f3d7640af9ca6908f6900bd45.
+
+FINAL STOP THRESHOLD
+
+rho =
+0.50.
+
+ACCEPTED PRIMARY FAMILY
+
+20260920000000..20260920002399.
+
+PRIMARY MATRIX
+
+2,400 underlying worlds.
+
+7 policies.
+
+16,800 policy-world evaluations.
+
+Validation:
+
+- exactly 2,400 unique accepted world seeds;
+- exact held-out seed interval;
+- exactly seven policy rows / seed;
+- zero duplicate seed x policy rows;
+- zero functionally-trivial worlds;
+- no post-primary parameter tuning.
+
+MIXED PRIMARY TARGET
+
+COMPONENT24
+median final recovery:
+
+1%:
+0.9504.
+
+2%:
+0.9411.
+
+5%:
+0.9370.
+
+10%:
+0.9639.
+
+Thus:
+
+active component-balanced probing
+preserves:
+strong median recovery
+
+and:
+passes:
+the >=0.92
+1%..5%
+median gate.
+
+However:
+
+T90 world fraction:
+
+1%:
+73.5%.
+
+2%:
+67.0%.
+
+5%:
+70.5%.
+
+These remain:
+below:
+the frozen reliability target.
+
+ACTIVE VERSUS RANDOM
+
+RANDOM24
+T90 world fraction:
+
+MIXED 1%:
+65.5%.
+
+2%:
+63.0%.
+
+5%:
+62.5%.
+
+COMPONENT24:
+
+1%:
+73.5%.
+
+2%:
+67.0%.
+
+5%:
+70.5%.
+
+Absolute improvement:
+
+1%:
++8.0 percentage points.
+
+2%:
++4.0.
+
+5%:
++8.0.
+
+This is:
+real but:
+below:
+the frozen >=10-point
+two-of-three gate.
+
+ACTIVE24
+and:
+COMPONENT24
+are:
+very similar.
+
+Therefore:
+
+posterior geometric uncertainty
+contains:
+some useful query-allocation signal,
+
+but:
+
+component round-robin
+does not add:
+a large reliability gain.
+
+FOUR-PATCH INTERFERENCE
+
+MIXED COMPONENT24:
+
+1%:
+
+COMPACT:
+median T90 5,
+reach 83%.
+
+FOUR:
+median T90 5,
+reach 64%.
+
+2%:
+
+COMPACT:
+median T90 5,
+reach 90%.
+
+FOUR:
+median T90 6,
+reach 44%.
+
+5%:
+
+COMPACT:
+median T90 6.5,
+reach 68%.
+
+FOUR:
+median T90 11,
+reach 73%.
+
+At:
+5%,
+
+FOUR-PATCH
+median T90 penalty
+is:
+approximately 69%.
+
+Thus:
+
+component-balanced query counting
+does NOT solve:
+multi-wound functional interference.
+
+This gate:
+FAILS.
+
+24 VERSUS 48 OBSERVATIONS
+
+COMPONENT48
+minus:
+COMPONENT24
+median final-recovery gap:
+
+MIXED 1%:
+approximately 0.0210.
+
+2%:
+approximately 0.0148.
+
+5%:
+approximately 0.0263.
+
+All three:
+are within:
+0.03.
+
+Therefore:
+
+24 intelligently allocated observations
+capture:
+most of:
+the 48-observation
+median recovery value.
+
+This gate:
+PASSES.
+
+The remaining failure
+is:
+reliability,
+not:
+median capacity.
+
+EARLY STOPPING
+
+STOP24:
+
+median feedback observations:
+24
+
+for:
+MIXED 1%,
+2%,
+5%.
+
+Primary early-stop rate:
+
+0%
+across:
+those groups.
+
+Median final posterior
+uncertainty ratio:
+
+1%:
+approximately 0.464.
+
+2%:
+approximately 0.447.
+
+5%:
+approximately 0.341.
+
+Thus:
+
+the posterior geometry
+does not:
+close enough uncertainty
+inside:
+24 observations
+
+to support:
+safe early stopping
+under:
+the frozen rule.
+
+This gate:
+FAILS.
+
+DEVELOPMENTAL PRIOR VALUE
+
+COMPONENT24
+minus:
+FBONLY-ACTIVE24
+median final recovery:
+
+SMOOTH:
+
+1%:
++0.508.
+
+2%:
++0.684.
+
+5%:
++0.444.
+
+MIXED:
+
+1%:
++0.453.
+
+2%:
++0.631.
+
+5%:
++0.416.
+
+Thus:
+
+the developmental prior
+remains:
+strongly useful
+
+even when:
+query placement
+is active.
+
+This gate:
+strongly PASSES.
+
+ORACLE
+
+CHECKPOINT-ORACLE
+final recovery:
+1.0.
+
+It remains:
+the ceiling.
+
+PREREGISTERED GATE REVIEW
+
+PASS:
+
+1.
+MIXED 1%..5%
+COMPONENT24
+median final recovery
+>=0.92.
+
+2.
+COMPONENT24
+within 0.03
+of:
+COMPONENT48
+
+for:
+all three
+MIXED small-lesion groups.
+
+3.
+Developmental-prior value
+>=0.05
+
+in:
+all six
+SMOOTH / MIXED
+1%..5%
+groups.
+
+4.
+CHECKPOINT-ORACLE
+remains:
+the ceiling.
+
+FAIL:
+
+1.
+MIXED 1%..5%
+T90 reliability
+>=0.85
+for all three
+and:
+>=0.90
+for two.
+
+Observed:
+0.670..0.735.
+
+2.
+COMPONENT24
+>=10 percentage-point
+T90 improvement
+over:
+RANDOM24
+
+in:
+two of three.
+
+Observed:
++4..+8 points.
+
+3.
+FOUR-PATCH
+<=20%
+median T90 penalty.
+
+Fails:
+most clearly
+at:
+MIXED 5%.
+
+4.
+COMPONENT-STOP24
+median feedback
+<=16.
+
+Observed:
+24.
+
+FINAL INTERPRETATION
+
+H153 is:
+
+MIXED-NEGATIVE.
+
+The useful result is:
+
+QUERY PLACEMENT
+MATTERS SOMEWHAT,
+
+and:
+
+24 ACTIVE OBSERVATIONS
+ARE ALREADY CLOSE
+TO:
+THE 48-OBSERVATION
+MEDIAN CEILING.
+
+Therefore:
+
+the H152 reliability problem
+is NOT primarily:
+insufficient total feedback.
+
+It is:
+
+FEEDBACK
+NOT BEING CONDITIONED
+ON:
+THE ACTUAL FUNCTIONAL ERROR
+OF:
+EACH WOUND.
+
+Posterior parameter uncertainty
+is:
+a geometry signal.
+
+It does not tell:
+which wound currently contributes:
+the largest task error.
+
+NEXT SCOPED DIRECTION
+
+RESIDUAL-DIRECTED
+COMPONENT-LOCAL
+FUNCTIONAL FEEDBACK.
+
+Use:
+observed feedback residuals
+
+to:
+estimate:
+which wound component
+still carries:
+functional error.
+
+Allocate:
+future queries
+toward:
+that component.
+
+Update:
+only:
+the selected wound's
+regenerated coefficients
+per:
+local solve,
+
+while:
+holding:
+surviving cells
+and:
+other wound estimates
+fixed.
+
+The target is:
+
+convert:
+the current
+~67%..74%
+MIXED T90 reliability
+
+toward:
+>=90%
+
+without:
+increasing:
+the 24-observation cap.
+
+H153 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- global retraining;
+- biological claims;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
