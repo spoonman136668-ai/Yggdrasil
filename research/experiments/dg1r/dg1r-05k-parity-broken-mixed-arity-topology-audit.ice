@@ -287,3 +287,99 @@ can imitate real data failures.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05K PARITY-BROKEN TOPOLOGY
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY CANDIDATE ENUMERATION.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05k_parity_broken_v1.py
+
+Harness alignment commit:
+
+51e8612aee637d153af75125015ab438448bfb21.
+
+Git blob SHA:
+
+341ddf20b52bce2b8f2549b29d2630ac3c2e22a2.
+
+Source SHA-256:
+
+a66d292dd4cd8eeec34f366c2fb64df60e977cc67d5394287f2402e6d95ddf36.
+
+Source bytes:
+
+10253.
+
+PRE-FREEZE DEFECT BOUNDING
+
+The first repository harness commit was not frozen and was not executed.
+
+Inspection found:
+- a misspelled columns helper reference;
+- corrupted source bytes in the holdout section.
+
+Those defects were repaired before freeze and before any primary candidate was evaluated.
+
+No result-driven tuning occurred.
+
+LOCAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Baseline edge count:
+
+20.
+
+Baseline total incidence:
+
+80.
+
+Baseline degree vector:
+
+(7,7,7,7,7,6,6,7,6,7,7,6).
+
+Baseline maximum pair co-occurrence:
+
+2.
+
+Frozen one-incidence-transfer candidate triples:
+
+1064.
+
+For all 1064 mechanically generated candidates:
+- check count remained 20;
+- total incidence remained 80;
+- the baseline degree vector was preserved;
+- the source check had arity 3;
+- the target check had arity 5;
+- the other 18 checks had arity 4.
+
+These are mechanical checks only and are NON-EVIDENCE.
+
+No rank, feasibility, selection, holdout, or primary candidate result was generated before this freeze.
+
+REPRODUCIBILITY
+
+Two complete deterministic exhaustive sweeps.
+
+Serialized output SHA-256 must match exactly.
+
+No RNG.
+
+No post-result tuning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
