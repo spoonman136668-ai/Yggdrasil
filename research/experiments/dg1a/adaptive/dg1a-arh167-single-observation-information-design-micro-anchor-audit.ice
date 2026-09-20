@@ -1063,3 +1063,624 @@ the first held-out H167 lifetime.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — SINGLE-OBSERVATION INFORMATION-DESIGN MICRO-ANCHOR
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-POSITIVE.
+
+FINAL H167 HARNESS SHA-256
+
+f9c1689f1ca9112b3c698d401a7f20308d1f70b7285be13ca3fb852bd5c2733d.
+
+ACCEPTED SANITY MATRIX SHA-256
+
+d2fad4e22c60cff87ea7b46ba29a7f606066ee117b11c05b9f59eb15370c961a.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+7a3d1c0dbb0a49e67c273f0c1efaac90369cf498315eb6456e4a86797555581f.
+
+ACCEPTED PRIMARY FAMILY
+
+20260921600000..20260921600119.
+
+PRIMARY MATRIX
+
+120 held-out condition-world lifetimes.
+
+6 policies.
+
+720 policy lifetimes.
+
+Validation:
+
+- exactly 120 unique held-out seeds;
+- exact accepted seed interval;
+- exactly six policy rows / seed;
+- zero duplicate seed x policy rows;
+- no missing accepted seeds;
+- no post-primary query-rule tuning.
+
+BASELINE
+
+MICRO2-EVERY1.
+
+Minimum group median
+FINAL GlobalFidelity:
+
+approximately:
+0.998173.
+
+World fraction
+FINAL >=0.95:
+
+100%
+in:
+every group.
+
+Maximum group-median
+HALF-to-FINAL loss:
+
+approximately:
+0.000369.
+
+Minimum group-median
+late-life SelfRecovery:
+
+approximately:
+0.979395.
+
+Baseline:
+
+GLOBALLY QUALIFIED.
+
+PRIMARY CANDIDATE
+
+MICRO1-LEVERAGE.
+
+QUALITY
+
+Minimum group median
+FINAL GlobalFidelity:
+
+approximately:
+0.998312.
+
+World fraction
+FINAL >=0.95:
+
+100%
+in:
+every group.
+
+Maximum group-median
+HALF-to-FINAL loss:
+
+approximately:
+0.000585.
+
+Minimum group-median
+late-life SelfRecovery:
+
+approximately:
+0.979762.
+
+Therefore:
+
+quality,
+world reliability,
+long-horizon drift,
+and:
+late-life SelfRecovery
+
+all:
+PASS.
+
+EXPOSURE
+VERSUS:
+MICRO2-EVERY1
+
+MICRO1-LEVERAGE
+group-median
+cumulative absolute error exposure ratio:
+
+g=1.00:
+
+HOTSPOT clean:
+approximately 1.010.
+
+HOTSPOT eta=.25:
+1.052.
+
+ROAMING clean:
+1.016.
+
+ROAMING eta=.25:
+1.053.
+
+All:
+<=1.25.
+
+COARSE SCALE:
+
+QUALIFIED.
+
+g=.25:
+
+HOTSPOT clean:
+approximately 1.272.
+
+HOTSPOT eta=.25:
+1.119.
+
+ROAMING clean:
+1.221.
+
+ROAMING eta=.25:
+1.285.
+
+Frozen limit:
+<=1.25
+for:
+EVERY group.
+
+FAIL:
+
+2 / 4
+fine-scale groups
+
+miss narrowly:
+
+approximately:
+1.272
+and:
+1.285.
+
+Therefore:
+
+MICRO1-LEVERAGE
+is NOT:
+globally qualified.
+
+It IS:
+coarse-scale qualified.
+
+INFORMATION-DESIGN VALUE
+VERSUS:
+MICRO1-FIRST
+
+MICRO1-LEVERAGE
+has:
+lower cumulative exposure
+
+in:
+8 / 8
+g x regime x eta groups.
+
+PASS.
+
+Per-group reduction:
+
+approximately:
+14.8%
+to:
+40.2%.
+
+Pooled exposure reduction:
+
+g=1.00:
+
+approximately:
+27.8%.
+
+g=.25:
+
+approximately:
+18.5%.
+
+Frozen target:
+>=10%
+at:
+both scales.
+
+PASS.
+
+FINAL-FIDELITY NON-REGRESSION
+
+MICRO1-LEVERAGE
+does NOT:
+reduce:
+median FINAL fidelity
+
+relative to:
+MICRO1-FIRST
+
+in:
+any group.
+
+It improves:
+all eight
+group medians.
+
+Largest observed gain:
+
+approximately:
++0.0031
+
+in:
+coarse noisy ROAMING.
+
+PASS.
+
+SELF-RECOVERY NON-REGRESSION
+
+MICRO1-LEVERAGE
+does NOT:
+reduce:
+late-life SelfRecovery
+
+relative to:
+MICRO1-FIRST
+
+in:
+any group.
+
+It improves:
+all eight
+group medians.
+
+Largest gain:
+
+approximately:
++0.0589.
+
+PASS.
+
+TWO-OBSERVATION INFORMATION DESIGN
+
+MICRO2-LEVERAGE
+
+also improves:
+the two-observation
+H166 baseline.
+
+Exposure ratio
+versus:
+MICRO2-EVERY1:
+
+g=1.00:
+
+approximately:
+0.927..0.981.
+
+g=.25:
+
+approximately:
+0.715..0.778.
+
+Thus:
+
+two leverage-selected observations
+reduce:
+cumulative exposure
+
+relative to:
+the deterministic
+two-query baseline
+
+in:
+8 / 8 groups.
+
+Pooled exposure reduction:
+
+g=1.00:
+
+approximately:
+4.2%.
+
+g=.25:
+
+approximately:
+23.7%.
+
+No:
+material final-fidelity
+or:
+SelfRecovery
+regression.
+
+PASS.
+
+ORACLE
+
+LOCAL-CHECKPOINT-ORACLE
+
+FINAL GlobalFidelity:
+
+exactly:
+1.0.
+
+PASS.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+MICRO2-EVERY1
+baseline qualification.
+
+3.
+MICRO1-LEVERAGE
+lower exposure
+than:
+MICRO1-FIRST
+in:
+>=6 / 8.
+
+Observed:
+8 / 8.
+
+4.
+Pooled exposure reduction
+>=10%
+at:
+both scales.
+
+5.
+No:
+>0.005
+FINAL-fidelity loss.
+
+6.
+No:
+>0.02
+SelfRecovery loss.
+
+7.
+MICRO2-LEVERAGE
+non-regression.
+
+8.
+Oracle ceiling.
+
+FAIL / MIXED:
+
+2.
+MICRO1-LEVERAGE
+global qualification.
+
+Fails:
+the exposure ceiling
+in:
+2 fine-scale groups.
+
+STRONG SUPPORT:
+
+FAIL.
+
+SCALE-SPECIFIC RESULT
+
+g=1.00:
+
+MICRO1-LEVERAGE
+is:
+SCALE-QUALIFIED.
+
+g=.25:
+
+MICRO1-LEVERAGE
+is:
+NOT:
+SCALE-QUALIFIED
+
+because:
+2 / 4
+exposure groups
+remain:
+slightly above:
+1.25x
+MICRO2-EVERY1.
+
+FINAL INTERPRETATION
+
+H167 is:
+
+MIXED-POSITIVE.
+
+The central result is:
+
+ONE
+TARGET-BLIND
+INFORMATION-DESIGNED
+FUNCTIONAL OBSERVATION
+PER:
+REPAIR CYCLE
+
+is sufficient
+to:
+meet:
+the full H166
+quality,
+reliability,
+drift,
+SelfRecovery,
+and:
+transient-exposure
+requirements
+
+at:
+the coarse scale.
+
+At:
+the fine scale,
+
+one leverage query
+comes:
+very close
+
+but:
+misses:
+the strict exposure ceiling
+
+in:
+two groups
+by:
+approximately:
+1.8%
+and:
+2.8%
+above:
+the allowed 1.25 ratio.
+
+This is:
+not:
+a terminal-capability failure.
+
+It is:
+a residual
+transient-error
+budget miss.
+
+SECOND ARCHITECTURAL RESULT
+
+QUERY QUALITY
+MATTERS
+AS MUCH AS:
+OBSERVATION COUNT.
+
+Replacing:
+the arbitrary
+first query
+
+with:
+a single
+maximum-leverage
+query
+
+reduces:
+one-observation
+cumulative exposure
+
+by:
+approximately:
+18.5%
+to:
+27.8%
+pooled
+
+without:
+increasing:
+supervision cost.
+
+TWO-query
+information design
+improves:
+the already-safe
+two-observation baseline
+as well.
+
+NEXT SCOPED DIRECTION
+
+The remaining gap
+is small enough
+that:
+
+returning to:
+two observations
+on:
+EVERY cycle
+
+is:
+unnecessarily expensive.
+
+The next experiment should test:
+
+ONE
+LEVERAGE-SELECTED
+OBSERVATION
+
+ON:
+EVERY CYCLE
+
+PLUS:
+
+A SECOND
+LEVERAGE-SELECTED
+OBSERVATION
+
+ONLY WHEN:
+THE FIRST QUERY
+LEAVES:
+HIGH
+GEOMETRIC POSTERIOR UNCERTAINTY.
+
+Critically:
+
+the second-query decision
+should be:
+TARGET-BLIND.
+
+Use:
+
+the design matrix
+after:
+the first selected query
+
+to estimate:
+remaining lesion uncertainty.
+
+This avoids:
+the noisy:
+single-target risk score
+from:
+the superseded
+adaptive-one-plus-one draft.
+
+NEXT:
+
+H168 —
+GEOMETRIC
+ONE-PLUS-ONE
+MICRO-ANCHOR
+EXPOSURE-CONTROL AUDIT.
+
+NUMBERING NOTE
+
+An earlier unexecuted
+adaptive-one-plus-one
+H167 draft
+was:
+superseded
+
+after:
+a duplicate-numbering collision.
+
+No primary evidence
+was produced
+from:
+that draft.
+
+H168
+must use:
+
+a fresh held-out
+seed family.
+
+H167 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- global retraining;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
