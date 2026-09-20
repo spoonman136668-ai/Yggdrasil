@@ -752,3 +752,314 @@ SYNTHETIC_MEASURED_SANDBOX_SINGLE_OBSERVATION_INFORMATION_DESIGN_TURNOVER
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — SINGLE-OBSERVATION INFORMATION-DESIGN HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H167 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H167 SANDBOX HARNESS
+
+File:
+
+h167_single_obs_info_v1.py
+
+SHA-256:
+
+f9c1689f1ca9112b3c698d401a7f20308d1f70b7285be13ca3fb852bd5c2733d.
+
+PARENT HASHES
+
+H161:
+
+ae89e645e9f00f33a581c05298a0b2e930b450bbc9a55f0e0f46f87de86a8248.
+
+H162:
+
+2a8e405055d88906285934778898b02072dcdf683afd8cbc4d8f392c7461ae2c.
+
+H165:
+
+69e3a195ae9485b153a7a6efba254e5b68837359f0a0f5eb022108b1d5ede808.
+
+H166:
+
+1adf59a6d4ef84cb84165e78334b3c3ac8db9ac07bb3d1f4a03d0523c662a164.
+
+QUERY DESIGN
+
+Each repair cycle:
+
+construct:
+64 deterministic
+lesion-local candidate queries.
+
+Selection:
+
+MICRO1-FIRST:
+
+exact H166
+first deterministic candidate.
+
+MICRO1-LEVERAGE:
+
+one target-blind query
+maximizing:
+
+q^T
+(lambda I)^-1
+q.
+
+MICRO2-LEVERAGE:
+
+two target-blind queries
+selected greedily
+
+with:
+rank-one information-matrix updates.
+
+lambda:
+
+0.01.
+
+No:
+
+- candidate functional target;
+- lost coefficient;
+- held-out evaluation target;
+- latent context label
+
+enters:
+query ranking.
+
+Only:
+the selected query target(s)
+
+are:
+used as:
+repair evidence
+
+and:
+charged:
+to supervision cost.
+
+ONE-QUERY A-OPT NOTE
+
+Under:
+
+A =
+lambda I
+
+and:
+one selected query,
+
+A-optimal
+trace reduction
+
+is:
+monotonic
+in:
+the same candidate
+row norm
+
+as:
+one-query leverage.
+
+Therefore:
+
+one-query A-optimal
+is:
+not treated
+as:
+an independent policy.
+
+REPAIR
+
+All micro-anchor policies:
+
+- wait for:
+  100% membership return;
+- joint-solve:
+  the restored lesion coefficients;
+- current context state:
+  ridge prior;
+- surviving coefficients:
+  fixed;
+- retain:
+  selected observation(s)
+  as:
+  active constraints
+  through:
+  all 12
+  post-membership
+  maturation steps;
+- persist:
+  repaired mutable state
+  into:
+  later repair cycles.
+
+No:
+raw observation
+is reused
+across:
+different wounds.
+
+SANITY
+
+Disjoint family:
+
+20260921690000...
+
+6 representative
+condition-world lifetimes.
+
+6 policies.
+
+36 policy lifetimes.
+
+Mechanical checks:
+
+- exactly six policies / seed;
+- exact six sanity seeds;
+- LOCAL-CHECKPOINT-ORACLE
+  final fidelity:
+  exactly 1.0;
+- MICRO1 policies:
+  exactly one external observation / cycle;
+- MICRO2 policies:
+  exactly two / cycle;
+- target-blind query ranking;
+- no global reset.
+
+A first sanity build
+used:
+Python's process-randomized
+hash()
+
+only for:
+a query-identity
+diagnostic column.
+
+Before:
+any H167 primary world,
+
+that diagnostic
+was replaced with:
+deterministic SHA-256.
+
+No:
+
+repair,
+query ranking,
+functional target,
+observation count,
+or:
+scientific metric
+
+changed.
+
+Accepted sanity output
+SHA-256:
+
+d2fad4e22c60cff87ea7b46ba29a7f606066ee117b11c05b9f59eb15370c961a.
+
+NON-EVIDENCE SIGNAL
+
+Across:
+all six
+representative sanity lifetimes,
+
+MICRO1-LEVERAGE
+
+had:
+lower cumulative
+absolute error exposure
+
+than:
+MICRO1-FIRST.
+
+Representative:
+
+g=1
+ROAMING
+eta=0:
+
+MICRO1-FIRST exposure:
+approximately 1.250.
+
+MICRO1-LEVERAGE:
+approximately 1.039.
+
+g=1
+ROAMING
+eta=.25:
+
+approximately:
+1.233
+->
+0.813.
+
+g=.25
+ROAMING
+eta=0:
+
+approximately:
+0.304
+->
+0.229.
+
+g=.25
+ROAMING
+eta=.25:
+
+approximately:
+0.369
+->
+0.287.
+
+Final fidelity
+remained:
+near:
+the two-observation baseline.
+
+These outputs are:
+
+NON-EVIDENCE.
+
+No:
+query rule,
+observation count,
+cadence,
+sample size,
+exposure threshold,
+or:
+acceptance gate
+
+was changed.
+
+PRIMARY FAMILY
+
+20260921600000..20260921600119.
+
+120 held-out condition-world lifetimes.
+
+6 policies.
+
+720 policy lifetimes.
+
+H167 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H167 lifetime.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
