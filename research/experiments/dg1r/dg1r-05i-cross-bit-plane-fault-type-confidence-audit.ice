@@ -2319,3 +2319,140 @@ NON-EVIDENCE.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05I CROSS-BIT-PLANE CONFIDENCE
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE:
+THE:
+FIRST:
+DG-1R-05I:
+WORLD.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05i_cross_plane_confidence_v1.py
+
+Harness commit:
+
+2de820a82832a1f72d5a07cd798f3739e0b7b9e7.
+
+Git blob SHA:
+
+3b41748cc3832602d53e28370e9e06ea0bc21bf0.
+
+Remote source SHA-256:
+
+989bc8499f3c087596072053132461ade0c39153b42f3d03b99834e9f6d2731e.
+
+Remote source bytes:
+
+13527.
+
+LOCAL PRECHECK
+
+Exact:
+Git blob:
+identity:
+
+PASS.
+
+Python syntax:
+
+PASS.
+
+Frozen:
+hypergraph:
+mechanical:
+validation:
+
+PASS.
+
+Pre-run:
+algebra:
+sanity:
+
+LOCAL_DATA2_D6:
+
+block 5:
+plane support:
+
+2.
+
+CHECK4_BIT0_D6:
+
+block 5:
+plane support:
+
+1.
+
+CHECK4_BITS01_D6:
+
+block 5:
+plane support:
+
+2.
+
+SINGLE_DATA1_D6:
+
+block 5:
+plane support:
+
+1.
+
+These:
+sanity:
+checks
+
+are:
+NON-EVIDENCE.
+
+No:
+DG-1R-05I:
+world
+was:
+executed
+before:
+this:
+freeze.
+
+FROZEN WORLD FAMILY
+
+20260926059000..20260926059007.
+
+8 worlds.
+
+FROZEN METHODS
+
+GREEDY_BASELINE.
+
+CROSSPLANE2_GATE.
+
+CROSSPLANE2_DETECT_ONLY.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+sweeps.
+
+Output SHA-256
+must:
+match exactly.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+DG-1R-05I:
+
+NON-CANONICAL /
+NON-EVIDENCE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
