@@ -522,3 +522,120 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05T PROVENANCE-LINEAGE INDEPENDENCE
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY LINEAGE AUTHORIZATION CASE.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05t_provenance_lineage_v1.py
+
+Harness source commit:
+
+50d884909ae56f4104317c3b5b0f923a2a50846f.
+
+Git blob SHA:
+
+0636abc1851e879894817bd254d5875930a96957.
+
+Source SHA-256:
+
+19509748db897cb4e9971ebea734f0983774332edb561c0c757e0742f612d2ab.
+
+Source bytes:
+
+10463.
+
+FROZEN IMPLEMENTATION
+
+The harness implements:
+
+- exactly eight synthetic provenance roots;
+- exactly four required quorum slots;
+- exact ancestry bitmask semantics;
+- exact pairwise-disjoint independence test;
+- HEADCOUNT4 negative control;
+- DISTINCT_HOLDER4 negative control;
+- LINEAGE_DISJOINT4 candidate rule;
+- exhaustive single-root assignments;
+- partial-overlap injection;
+- same-root descendant inflation;
+- holder rotation with fixed lineage;
+- missing-root abstention;
+- compound but disjoint two-root ancestry;
+- copied witness fanout;
+- explicit actual-versus-reported lineage holdouts.
+
+LOCAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Roots:
+
+8.
+
+Quorum slots:
+
+4.
+
+Unordered slot pairs:
+
+6.
+
+Audit A cases:
+
+4096.
+
+Audit A independent cases:
+
+1680.
+
+Audit A duplicated-provenance cases:
+
+2416.
+
+Audit B partial-overlap cases:
+
+10080.
+
+Audit E missing-root cases:
+
+6720.
+
+Audit F compound-disjoint cases:
+
+2520.
+
+No primary authorization,
+false-quorum result,
+inflation result,
+rotation result,
+or metadata-forgery result
+was generated before this freeze.
+
+REPRODUCIBILITY
+
+Execute two complete deterministic sweeps from this exact frozen harness.
+
+Serialized output SHA-256 must match exactly.
+
+No post-result tuning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
