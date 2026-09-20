@@ -507,3 +507,287 @@ SYNTHETIC_MEASURED_CONTEXT_ONLY_ROUTER_ACCOMMODATION
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — CONTEXT-ONLY ROUTER ACCOMMODATION HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H184 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H184 SANDBOX HARNESS
+
+File:
+
+h184_router_accom_v1.py
+
+SHA-256:
+
+5b70b29f3a4e878f97e04783db3f1c1f1cd700587e883973c8f897b209330542.
+
+PARENT MODEL
+
+Exact H183
+three-capability
+sequential substrate.
+
+No:
+context,
+teacher,
+cell budget,
+coverage morphology,
+daughter fit,
+or:
+acceptance rule
+changes.
+
+ROUTER ACCOMMODATION
+
+After:
+B addition
+
+and:
+before:
+C functional learning,
+
+replace:
+B's six routing parameters
+
+with:
+a newly fit
+six-parameter gate.
+
+Positive:
+
+64 B-context coordinates.
+
+Negative:
+
+32 A-context
++
+32 C-context coordinates.
+
+No:
+functional target
+enters:
+this fit.
+
+B daughter coefficients:
+
+remain:
+frozen.
+
+A coefficients:
+
+remain:
+frozen.
+
+Thus:
+
+only:
+B's context-routing state
+
+is:
+developmentally accommodated
+
+to:
+the newly available
+C context.
+
+STAGE C
+
+Exact H183
+coverage-balanced
+C addition
+
+unless:
+a comparator
+declares:
+32 cells,
+64-B margin,
+random C,
+or:
+global C.
+
+POLICIES
+
+STATIC48_48.
+
+ADAPT48_48.
+
+ADAPT48_32.
+
+ADAPT64_48.
+
+ADAPT48_RANDOM_C.
+
+GLOBAL_C.
+
+SANITY
+
+Disjoint family:
+
+20260923390000
+and:
+20260923390001.
+
+2 worlds.
+
+6 policies.
+
+12 evaluations.
+
+Accepted sanity-output SHA-256:
+
+0d620e6429312a814eedff7acd062f7419878b4609aa86ef031029ec8285d069.
+
+Mechanical checks:
+
+- exact 6 policies / world;
+- A coefficients:
+  frozen;
+- B daughter coefficients:
+  frozen;
+- B router:
+  only state modified
+  in:
+  accommodation policies;
+- zero:
+  A/B/C
+  functional targets
+  enter:
+  B-router accommodation;
+- C addition:
+  exact:
+  H183 mechanics;
+- hibernation / reactivation:
+  exact.
+
+NON-EVIDENCE ROUTING SIGNAL
+
+World:
+20260923390000.
+
+Pre-adaptation
+B-gate activation
+on:
+C context:
+
+approximately:
+0.252.
+
+Post-adaptation:
+
+approximately:
+0.0029.
+
+B-gate activation
+on:
+B context:
+
+approximately:
+0.9948.
+
+B R^2 route-adaptation change:
+
+slightly positive
+at:
+approximately:
++0.0023.
+
+World:
+20260923390001.
+
+B-on-C:
+
+approximately:
+0.305
+->
+0.0052.
+
+B-on-B:
+
+approximately:
+0.9941.
+
+B R^2 loss:
+
+approximately:
+0.0014.
+
+Thus:
+
+context-only
+router accommodation
+
+can:
+suppress:
+future-context leakage
+
+without:
+materially damaging:
+the old capability
+
+inside:
+sanity.
+
+NON-EVIDENCE SEQUENTIAL SIGNAL
+
+ADAPT48_48:
+
+both sanity worlds
+
+finish:
+A,
+B,
+C
+all:
+above:
+R^2 0.85.
+
+ADAPT48_32:
+
+also:
+passes:
+both sanity worlds.
+
+This is:
+NON-EVIDENCE.
+
+No:
+
+- gate samples;
+- gate L2;
+- cell budget;
+- coverage rule;
+- context geometry;
+- teacher;
+- ridge;
+- acceptance gate
+
+was changed.
+
+PRIMARY FAMILY
+
+20260923300000..20260923300019.
+
+20 held-out worlds.
+
+6 policies.
+
+120 evaluations.
+
+H184 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H184 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
