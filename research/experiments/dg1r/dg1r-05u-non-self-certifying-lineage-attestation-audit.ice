@@ -701,3 +701,414 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL CLOSURE — DG-1R-05U NON-SELF-CERTIFYING LINEAGE ATTESTATION AUDIT
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED /
+REPRODUCIBLE /
+NON-SELF-CERTIFYING LINEAGE GAIN POSITIVE /
+DG-1R-05T QUORUM REPRODUCED /
+DUAL-OBSERVER COLLUSION BOUNDARY PRESERVED /
+ROOT-OF-TRUST BOUNDARY PRESERVED /
+NON-CANONICAL.
+
+FROZEN PROVENANCE
+
+Preregistration commit:
+
+153f6fd07fc24778b8ac4dc45f2b41ae9c5e7665.
+
+Harness source commit:
+
+2ae3243ddb402c3796b566baa35a320a2c0231a9.
+
+Harness Git blob:
+
+46f782ba8160eadaee8ef37774570a9e4c8f5b60.
+
+Harness source SHA-256:
+
+6a1bc53d7c061f62d0b9820a5a911503f6557cf1592036e4184d3bfe8515db5b.
+
+Harness bytes:
+
+15159.
+
+Freeze commit:
+
+08c9f73e1220eb80aa946e0f0339e81ab0f5b0cb.
+
+PRIMARY EXECUTION
+
+Two complete deterministic frozen sweeps were executed.
+
+Sweep 1 serialized output SHA-256:
+
+c1d92a4f99dddbf9869438f99d521f567a48edca67afa1409f9a0f0daaaa3761.
+
+Sweep 2 serialized output SHA-256:
+
+c1d92a4f99dddbf9869438f99d521f567a48edca67afa1409f9a0f0daaaa3761.
+
+BYTE_IDENTICAL_REPRODUCIBILITY:
+
+TRUE.
+
+MECHANICAL_VALID:
+
+TRUE.
+
+PRIMARY SIGNALS
+
+ROOT_CERTIFICATES_VALID:
+TRUE.
+
+SINGLE_PARENT_INHERITANCE_EXACT:
+TRUE.
+
+TWO_PARENT_UNION_EXACT:
+TRUE.
+
+OMITTED_PARENT_REJECTED:
+TRUE.
+
+INCLUDED_PARENT_OMISSION_EXPOSED:
+TRUE.
+
+MISSING_PARENT_EDGE_REJECTED:
+TRUE.
+
+SINGLE_OBSERVER_CORRUPTION_REJECTED:
+TRUE.
+
+STALE_OR_NONMONOTONIC_REJECTED:
+TRUE.
+
+HOLDER_ROTATION_PRESERVES_VERIFIED_LINEAGE:
+TRUE.
+
+PARENT_SELF_CLAIM_IGNORED:
+TRUE.
+
+ATTESTED_LINEAGE_REPRODUCES_05T:
+TRUE.
+
+ATTESTED_COMPOUND_DISJOINT_ACCEPTANCE:
+TRUE.
+
+NON_SELF_CERTIFYING_LINEAGE_GAIN:
+TRUE.
+
+ONE_OBSERVER_COLLUSION_REJECTED:
+TRUE.
+
+AUDIT A — ROOT CERTIFICATES
+
+8 / 8 immutable synthetic root certificates reconstructed exactly.
+
+AUDIT B — SINGLE-PARENT INHERITANCE
+
+64 / 64 derived certificates reconstructed the original root lineage exactly.
+
+The child self-claimed lineage was deliberately misleading and had no authority.
+
+AUDIT C — TWO-PARENT MERGES
+
+28 / 28 honest two-root unions reconstructed exactly.
+
+AUDIT D — OMITTED ACTUAL PARENT
+
+Cases:
+
+56.
+
+DUAL_OBSERVED_PARENTSET rejects:
+
+56 / 56.
+
+INCLUDED_PARENT_ONLY accepts the incomplete presented lineage:
+
+56 / 56.
+
+SELF_DECLARED_LINEAGE accepts:
+
+56 / 56.
+
+Thus verifying only included parents is insufficient.
+
+Completeness is the critical property.
+
+AUDIT E — MISSING PARENT EDGE
+
+Cases:
+
+56.
+
+Candidate rejects:
+
+56 / 56.
+
+AUDIT F — ONE COMPLETE-PARENT OBSERVER DISAGREES
+
+Cases:
+
+56.
+
+Candidate rejects:
+
+56 / 56.
+
+No one observer becomes sole parent-set authority.
+
+AUDIT G — STALE / NONMONOTONIC GENERATION
+
+Cases:
+
+32.
+
+Candidate rejects:
+
+32 / 32.
+
+AUDIT H — HOLDER ROTATION
+
+64 / 64 verified lineage masks remained unchanged.
+
+Authority follows attested lineage,
+not permanent holder identity.
+
+AUDIT I — PARENT SELF-CLAIM TAMPER
+
+Cases:
+
+8.
+
+Final verified lineage remained exact:
+
+8 / 8.
+
+A parent's self-declared ancestry therefore cannot poison descendants
+when recursive verification ignores self-claims.
+
+AUDIT J — DG-1R-05T SINGLE-ROOT QUORUM REPLAY
+
+Cases:
+
+4096.
+
+True independent authorizations:
+
+1680.
+
+Duplicated-provenance abstentions:
+
+2416.
+
+False authorizations:
+
+0.
+
+The attested lineage system reproduces the closed 05T result exactly.
+
+AUDIT K — COMPOUND DISJOINT QUORUM
+
+Cases:
+
+2520.
+
+Authorizations:
+
+2520 / 2520.
+
+False authorizations:
+
+0.
+
+Compound ancestry remains acceptable when the reconstructed root sets are actually disjoint.
+
+ATTESTATION-FORGERY BOUNDARY
+
+H1 — CHILD PLUS BOTH COMPLETE-PARENT OBSERVERS COLLude TO OMIT ONE ACTUAL PARENT
+
+Cases:
+
+56.
+
+False candidate authorizations:
+
+56 / 56.
+
+DUAL_OBSERVER_COLLUSION_FAILURE:
+
+TRUE.
+
+If every mechanism responsible for parent-set completeness lies together,
+the omitted parent is still removable from the presented history.
+
+H2 — ONLY ONE COMPLETE-PARENT OBSERVER COLLUDES
+
+Cases:
+
+56.
+
+False authorizations:
+
+0.
+
+Rejects:
+
+56 / 56.
+
+One corrupted completeness witness is insufficient.
+
+H3 — CONSTITUTIONAL ROOT CERTIFICATES MINT FALSELY INDEPENDENT ROOTS FROM ONE ACTUAL CAUSAL SOURCE
+
+Ordered four-root cases:
+
+1680.
+
+False independence authorizations:
+
+1680 / 1680.
+
+ROOT_COMPROMISE_FAILURE:
+
+TRUE.
+
+This is a root-of-trust boundary,
+not an ordinary child-certificate failure.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-05U removes witness self-certification from ordinary lineage reconstruction.
+
+A child cannot:
+
+- rewrite an included parent's lineage;
+- invent a lower-generation ancestry chain;
+- omit an included parent's edge;
+- override one honest complete-parent observer;
+- poison descendants by changing only its own lineage field.
+
+The candidate verifier reconstructs ancestry from externally issued evidence.
+
+The remaining weakness is now sharply localized:
+
+PARENT-SET COMPLETENESS.
+
+The verifier can prove that every presented parent is valid.
+
+It cannot prove that an unpresented causal parent never existed
+when all completeness observers collude with the child.
+
+This suggests a better architecture than adding more observers indefinitely:
+
+make causal parent edges independently discoverable.
+
+Instead of asking a child bundle to contain every parent,
+and asking observers to certify that the bundle is complete,
+a parent contribution should create an append-only edge record indexed by:
+
+(child_id,
+child_generation).
+
+Lineage reconstruction can then obtain the complete parent set
+from the independently maintained edge index.
+
+This converts completeness from:
+
+A CLAIM ABOUT A BUNDLE
+
+into:
+
+A QUERY OVER COMMITTED CAUSAL EVENTS.
+
+The constitutional root boundary remains separate.
+
+Even a perfect lineage graph cannot recover truth
+if its root identities were falsely minted as independent at genesis.
+
+PLAIN-SPEAK INTERPRETATION
+
+We solved the problem of a cell rewriting its own family tree.
+
+The child can lie about its ancestry now,
+and the verifier ignores that lie.
+
+Its parents leave receipts,
+and two other witnesses check the parent list.
+
+That worked perfectly in the normal tests.
+
+It also reproduced the previous provenance-quorum result exactly.
+
+But we found the next weak spot very clearly.
+
+If the child and BOTH people responsible for saying
+"this is the complete parent list"
+lie together,
+they can still erase a parent from history.
+
+So adding a third,
+fourth,
+or fifth person to remember the list is probably the wrong direction.
+
+A better rule is:
+
+WHEN A PARENT CONTRIBUTES,
+THE CONTRIBUTION ITSELF LEAVES A RECORD
+THAT THE CHILD CANNOT HIDE LATER.
+
+Then ancestry is rebuilt by looking up the recorded parent events,
+not by trusting the child to hand us a complete folder.
+
+There is also one final constitutional boundary underneath all of this:
+
+if the organism starts by falsely declaring one source to be four independent roots,
+everything downstream can faithfully preserve a false history.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05V —
+
+APPEND-ONLY CAUSAL-EDGE COMPLETENESS AUDIT.
+
+Question:
+
+Can every causal parent contribution be committed to a distributed append-only edge index
+so that lineage reconstruction discovers all parents for a child generation
+without relying on child-supplied completeness?
+
+05V should remain detection / authorization only.
+
+It should test:
+
+- honest single-parent edge registration;
+- honest multi-parent registration;
+- child omission of a registered parent;
+- observer omission after edge registration;
+- one registry replica withholding an edge;
+- partial registry writes;
+- duplicate edge fanout;
+- stale-generation edge replay;
+- conflicting child-generation forks;
+- holder rotation;
+- recovery from one unavailable registry replica;
+- correlated registry-majority forgery as an explicit boundary;
+- replay of DG-1R-05U omitted-parent cases using registry-derived parent sets.
+
+No repair,
+role migration,
+or health-memory update should execute.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
