@@ -1572,3 +1572,631 @@ the first held-out H161 lifetime.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — LONG-HORIZON REPEATED COGNITIVE TURNOVER
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / POSITIVE.
+
+FINAL PINNED HARNESS SHA-256
+
+ae89e645e9f00f33a581c05298a0b2e930b450bbc9a55f0e0f46f87de86a8248.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+26ef063183123e4e18458d2c04d6b6198369c71d9a3e1fdf1679b1ade655f366.
+
+ACCEPTED PRIMARY FAMILY
+
+20260921000000..20260921000719.
+
+PRIMARY MATRIX
+
+720 held-out condition-world lifetimes.
+
+4 policies.
+
+2,880 policy lifetimes.
+
+40 repair cycles / lifetime.
+
+115,200 total policy repair cycles.
+
+Validation:
+
+- exactly 720 unique held-out seeds;
+- exact accepted seed interval;
+- exactly four policy rows / seed;
+- zero duplicate seed x policy rows;
+- no missing accepted seeds;
+- no post-primary parameter tuning.
+
+PRIMARY CANDIDATE
+
+INTERLEAVED24.
+
+MIXED LONG-HORIZON FIDELITY
+
+Across all:
+3 cell scales
+x
+2 turnover regimes
+x
+2 noise classes,
+
+minimum group median
+cycle-40 GlobalFidelity:
+
+0.9998858.
+
+Frozen target:
+>=0.98.
+
+PASS:
+12 / 12 groups.
+
+WORLD-LEVEL FIDELITY
+
+Fraction of MIXED INTERLEAVED24 worlds
+finishing:
+cycle 40
+
+with:
+GlobalFidelity >=0.95:
+
+100%
+in:
+every
+g x regime x eta group.
+
+Frozen target:
+>=90%.
+
+PASS:
+12 / 12.
+
+The worst accepted individual
+MIXED INTERLEAVED24
+cycle-40 fidelity:
+
+approximately:
+0.999660.
+
+CUMULATIVE DRIFT
+
+Maximum group-median decline:
+
+median GF20
+minus:
+median GF40
+
+across:
+all MIXED groups:
+
+approximately:
+4.6e-6.
+
+Frozen limit:
+0.01.
+
+PASS.
+
+Thus:
+
+there is:
+no measurable cumulative
+capability erosion
+
+over:
+cycles 20..40
+
+at:
+the preregistered scale.
+
+HOTSPOT REPEAT LOAD
+
+Median maximum
+single-cell replacement count
+under:
+MIXED HOTSPOT INTERLEAVED24:
+
+g=1.00:
+39.
+
+g=0.50:
+25.
+
+g=0.25:
+12.
+
+All:
+exceed 10.
+
+Median cycle-40 GlobalFidelity
+remains:
+
+g=1.00:
+approximately 0.99999
+clean
+
+and:
+approximately 0.99997
+at eta=0.25.
+
+g=0.50:
+approximately 0.999998.
+
+g=0.25:
+approximately 1.0.
+
+PASS.
+
+Repeated repair
+of:
+the same local cognitive micro-organ
+
+does NOT:
+produce progressive specialization loss
+under:
+this 40-cycle protocol.
+
+CONTEXT-ONLY COMPARATOR
+
+Context-only behavior
+is:
+strongly scale dependent.
+
+At:
+fine scales,
+
+the small beta=2 wound
+can be:
+so locally constrained
+that:
+context alone
+often remains near:
+target function.
+
+At:
+g=1.0 ROAMING,
+
+context-only
+median cycle-40 fidelity:
+
+eta=0:
+approximately 0.871.
+
+eta=0.25:
+approximately 0.896.
+
+One accepted context-only world
+fell to:
+
+approximately:
+0.445
+cycle-40 GlobalFidelity
+
+while:
+its self-recovery metric
+remained locally plausible.
+
+This directly confirms:
+the H161 warning.
+
+A patch can:
+approximately restore
+the function it inherited
+
+while:
+the original task function
+quietly drifts.
+
+Gate 5:
+
+INTERLEAVED24
+beats:
+CONTEXT-ONLY
+by:
+>=0.05
+
+in:
+the two non-neutral
+coarse roaming groups.
+
+All other:
+10 / 12 groups
+
+already have:
+CONTEXT-ONLY
+median fidelity >=0.98
+
+and:
+are neutral
+under:
+the frozen rule.
+
+PASS.
+
+SERIAL VERSUS INTERLEAVED
+LONG-HORIZON QUALITY
+
+Maximum absolute difference
+between:
+MIXED INTERLEAVED24
+and:
+SERIAL24
+
+group-median
+cycle-40 fidelity:
+
+approximately:
+2.5e-8.
+
+Frozen limit:
+0.01.
+
+PASS:
+12 / 12.
+
+Thus:
+
+interleaving does NOT:
+trade away:
+long-horizon fidelity.
+
+ABSOLUTE ERROR EXPOSURE
+
+INTERLEAVED24
+median cumulative
+absolute error exposure
+
+is:
+LOWER
+than:
+SERIAL24
+
+in:
+12 / 12
+MIXED groups.
+
+INTERLEAVED / SERIAL
+median exposure ratio:
+
+best:
+approximately 0.663.
+
+worst:
+approximately 0.971.
+
+Equivalent exposure reduction:
+
+approximately:
+2.9%
+to:
+33.7%.
+
+Median reduction:
+
+approximately:
+16.1%.
+
+Frozen gate:
+
+no group
+>10%
+above serial
+
+and:
+lower
+in:
+at least 6 / 12.
+
+PASS:
+lower in:
+12 / 12.
+
+FINE-SCALE TRANSFER
+
+MIXED INTERLEAVED24
+cycle-40 median fidelity
+
+at:
+g=0.25
+
+is:
+slightly ABOVE,
+not below,
+
+the corresponding:
+g=1.0
+
+median
+
+for:
+both turnover regimes
+and:
+both eta classes.
+
+PASS:
+4 / 4.
+
+SELF-RECOVERY
+
+Minimum group median
+INTERLEAVED24
+SelfRecovery
+
+across:
+cycles 21..40:
+
+approximately:
+0.99807.
+
+Frozen target:
+>=0.95.
+
+PASS:
+12 / 12.
+
+FEEDBACK BUDGET
+
+Maximum:
+INTERLEAVED24
+or:
+SERIAL24
+feedback observations
+inside:
+one repair cycle:
+
+24.
+
+PASS.
+
+SMOOTH CONTROL
+
+Minimum group median
+SMOOTH INTERLEAVED24
+cycle-40 GlobalFidelity:
+
+approximately:
+0.999898.
+
+Frozen target:
+>=0.99.
+
+PASS.
+
+LOCAL-CHECKPOINT-ORACLE
+
+Final GlobalFidelity:
+
+exactly:
+1.0
+
+through:
+the accepted matrix.
+
+Remains:
+the capability ceiling.
+
+PASS.
+
+PREREGISTERED GATE REVIEW
+
+PASS:
+
+1.
+MIXED median final fidelity.
+
+2.
+MIXED world-level >=0.95 reliability.
+
+3.
+No cycle-20 to cycle-40 cumulative drift.
+
+4.
+Deep HOTSPOT repeated turnover.
+
+5.
+Context-only comparison / neutral handling.
+
+6.
+Interleaved long-horizon quality
+matches:
+serial.
+
+7.
+Interleaved cumulative error exposure
+beats:
+serial.
+
+8.
+Fine-scale transfer.
+
+9.
+Late-life self-recovery.
+
+10.
+24-observation per-cycle ceiling.
+
+11.
+SMOOTH fidelity.
+
+12.
+Oracle ceiling.
+
+ALL PRIMARY GATES PASS.
+
+FINAL INTERPRETATION
+
+H161 is:
+
+POSITIVE.
+
+Under:
+the tested synthetic architecture,
+
+repeated cognitive micro-patching
+does NOT:
+accumulate detectable
+functional drift
+
+over:
+40 repair cycles
+
+when:
+local structural regeneration
+
+is combined with:
+
+- a weak developmental prior;
+- bounded local task feedback;
+- joint local-state inference;
+- persistent repaired state;
+- no global retraining;
+- no checkpoint restoration
+  of:
+  lost mutable state.
+
+The strongest architectural result is:
+
+LOCAL SELF-RECOVERY
+IS NOT:
+A SUFFICIENT
+LONG-HORIZON SAFETY METRIC.
+
+CONTEXT-ONLY
+can:
+repair each local wound
+plausibly
+
+while:
+original-task fidelity
+drifts severely.
+
+Therefore:
+
+a regenerative intelligence system
+needs:
+an immutable or externally anchored
+FUNCTIONAL REFERENCE CHANNEL
+
+against which:
+long-horizon capability drift
+can be detected.
+
+Functional feedback
+serves:
+that role
+in:
+H161.
+
+IMPORTANT SCALE CAVEAT
+
+The primary uses:
+40 repair events
+at:
+every g.
+
+Because:
+beta=2 keeps
+absolute patch size
+approximately constant,
+
+body-equivalent turnover
+decreases
+as:
+the body becomes finer.
+
+Median body-equivalent turnover
+under:
+INTERLEAVED24:
+
+g=1.00:
+approximately 2.03 body equivalents.
+
+g=0.50:
+approximately 0.50.
+
+g=0.25:
+approximately 0.137.
+
+Median unique-turnover fraction:
+
+g=1.00:
+approximately 35.3%.
+
+g=0.50:
+approximately 16.6%.
+
+g=0.25:
+approximately 8.1%.
+
+Therefore:
+
+H161 strongly supports:
+
+FIXED OPERATIONAL EVENT COUNT
+long-horizon stability.
+
+It does NOT yet prove:
+
+MATCHED CUMULATIVE TURNOVER FRACTION
+stability
+
+across:
+cell scales.
+
+POST-PRIMARY STRESS IS NOW AUTHORIZED
+
+Per:
+the preregistration,
+
+the next scoped stress
+should match:
+
+approximately one
+BODY-EQUIVALENT
+cumulative turnover
+
+across:
+g.
+
+This specifically tests:
+
+whether:
+fine-scale bodies
+remain stable
+
+when:
+they experience
+enough repeated micro-patches
+
+to replace:
+an equivalent fraction
+of:
+their total computational cells.
+
+NEXT:
+
+H162 —
+MATCHED BODY-EQUIVALENT
+COGNITIVE TURNOVER
+SCALE STRESS.
+
+H161 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- global retraining;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
