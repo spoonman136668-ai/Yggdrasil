@@ -1200,3 +1200,634 @@ the first held-out H185 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — CONTEXT-GATED ROLE-MULTIPLEXED CAPABILITY REUSE
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-POSITIVE FOR ACTIVE-STRUCTURE REUSE / NEGATIVE FOR STRICT WORLD-LEVEL RELIABILITY.
+
+FINAL H185 HARNESS SHA-256
+
+40b00c908c10f156b80dffd4d449b96f1d6b153c738954cfafd60d01a25e0512.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+be4e015b273c81f256d5625ddd47fc89ee2f136dec7e5bbb9c993e857ba91cc9.
+
+ACCEPTED PRIMARY FAMILY
+
+20260923400000..20260923400019.
+
+PRIMARY MATRIX
+
+20 held-out worlds.
+
+6 policies.
+
+120 evaluations.
+
+STAGE A+B
+
+Median post-B
+held-out B R^2:
+
+approximately:
+0.96316.
+
+World B>=0.85:
+
+95%.
+
+Thus:
+
+the accepted:
+A+B
+substrate
+
+is:
+competent
+before:
+C role reuse.
+
+PRIMARY CANDIDATE
+
+PARENT_ROLE48.
+
+C MEDIAN CAPABILITY
+
+Median C held-out R^2:
+
+approximately:
+0.92336.
+
+Frozen target:
+>=0.90.
+
+PASS.
+
+WORLD C RELIABILITY
+
+C>=0.85:
+
+15 / 20
+=
+75%.
+
+Frozen target:
+>=90%.
+
+FAIL.
+
+A / B RETENTION
+
+Median A total loss:
+
+approximately:
+0.00748.
+
+Median B loss
+after C:
+
+approximately:
+0.00125.
+
+World A+B retention:
+
+95%.
+
+PASS.
+
+JOINT A+B+C
+
+PARENT_ROLE48:
+
+75%.
+
+Frozen target:
+>=90%.
+
+FAIL.
+
+GENERALIZATION
+
+Median C
+validation-test gap:
+
+approximately:
+0.01845.
+
+Median C
+train-test gap:
+
+approximately:
+0.02956.
+
+PASS.
+
+ACTIVE-CELL NORTH-STAR RESULT
+
+PARENT_ROLE48:
+
+new physical C cells:
+
+ZERO.
+
+Total physical active cells
+after:
+A+B+C:
+
+N
++
+48 B daughters.
+
+Active-cell growth
+relative to:
+the original parent body:
+
+approximately:
+1.496%.
+
+Capability count:
+
+A,
+B,
+C.
+
+Thus:
+
+the third:
+learned capability
+
+is added
+without:
+increasing:
+physical active-cell count
+
+beyond:
+the stage-B
+48-cell addition.
+
+This is:
+the strongest:
+North-Star-aligned
+H185 signal.
+
+PERMANENT PARAMETERS
+
+48:
+B daughter coefficients.
+
+48:
+C role coefficients
+stored on:
+already-active parent cells.
+
+12:
+routing parameters.
+
+Total:
+108
+added parameters.
+
+Parameter-growth fraction:
+
+approximately:
+3.366%.
+
+Thus:
+
+active structure
+stays:
+nearly flat
+
+while:
+memory / role state
+continues:
+to grow.
+
+This distinction
+is:
+important.
+
+ROLE48 VERSUS NEW_C48
+
+PARENT_ROLE48:
+
+median C:
+approximately 0.92336.
+
+joint A+B+C:
+75%.
+
+active growth:
+approximately 1.496%.
+
+NEW_C48:
+
+median C:
+approximately 0.92627.
+
+joint:
+70%.
+
+active growth:
+approximately 2.992%.
+
+Thus:
+
+reusing:
+existing parent cells
+
+produces:
+essentially the same
+C capability
+
+and:
+slightly higher:
+joint reliability
+
+while:
+HALVING:
+the physical
+active-structure growth
+
+relative to:
+adding:
+another:
+48-cell
+daughter population.
+
+This is:
+a positive:
+role-multiplexing
+mechanism result
+
+despite:
+the absolute:
+90%
+reliability miss.
+
+ROLE32
+
+PARENT_ROLE32:
+
+median C:
+approximately 0.92008.
+
+C>=0.85:
+70%.
+
+joint:
+70%.
+
+active growth:
+approximately 1.496%.
+
+Parameter growth:
+approximately:
+2.867%.
+
+Thus:
+
+32 role coefficients
+
+retain:
+substantial C capability
+
+but:
+do not:
+improve:
+the reliability tail.
+
+ROLE64
+
+PARENT_ROLE64:
+
+median C:
+approximately 0.92481.
+
+C>=0.85:
+75%.
+
+joint:
+75%.
+
+No improvement
+over:
+ROLE48
+on:
+world-level reliability.
+
+Thus:
+
+the tail
+is NOT:
+cleanly:
+32 / 48 / 64
+role-state capacity.
+
+DIRECT B-DAUGHTER ROLE REUSE
+
+B_DAUGHTER_ROLE48:
+
+median C R^2:
+
+approximately:
+-0.487.
+
+C>=0.85:
+0%.
+
+joint:
+0%.
+
+Thus:
+
+the same:
+48 B daughter
+physical locations
+
+cannot:
+support:
+the separated C context
+
+merely by:
+adding:
+a C-specific
+coefficient state.
+
+Spatial geometry
+still matters.
+
+This falsifies:
+
+"any existing
+active cell
+can:
+be reused
+for:
+any new capability."
+
+Role reuse
+must:
+respect:
+functional / input geometry.
+
+GLOBAL PARENT ROLE
+
+GLOBAL_PARENT_ROLE:
+
+median C:
+
+approximately:
+0.99877.
+
+C>=0.85:
+
+100%.
+
+But:
+
+median A loss:
+
+approximately:
+0.0403.
+
+World A+B retention:
+
+40%.
+
+Joint:
+70%.
+
+Thus:
+
+existing parent-cell geometry
+
+has:
+ample:
+raw:
+C role capacity.
+
+But:
+adding:
+C role state
+everywhere
+
+creates:
+cross-capability interference
+
+despite:
+context gating.
+
+Sparse role selection
+is:
+essential.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+Stage-B median competence.
+
+2.
+Stage-B world reliability.
+
+3.
+PARENT_ROLE48 median C.
+
+5.
+Median A retention.
+
+6.
+Median B retention.
+
+8.
+World A+B retention.
+
+9.
+Generalization.
+
+10.
+C router quality.
+
+11.
+ZERO new C physical cells.
+
+12.
+Permanent parameter growth.
+
+13.
+Role reuse:
+performance
+is:
+at least as good
+as:
+NEW_C48
+on:
+joint competence.
+
+15.
+Compute
+well below:
+GLOBAL_PARENT_ROLE.
+
+16.
+Hibernation / reactivation.
+
+17.
+GLOBAL_PARENT_ROLE ceiling.
+
+FAIL:
+
+4.
+C world reliability.
+
+Observed:
+75%.
+
+7.
+Joint A+B+C world competence.
+
+Observed:
+75%.
+
+14.
+Direct B-daughter
+role multiplexing.
+
+FAIL strongly.
+
+STRONG SUPPORT:
+
+FAIL.
+
+FINAL INTERPRETATION
+
+H185 is:
+
+MIXED-POSITIVE.
+
+It does NOT:
+establish:
+reliable:
+zero-new-cell
+three-capability
+accumulation.
+
+But:
+
+it directly supports
+the North-Star
+architecture concept:
+
+CAPABILITY
+CAN:
+INCREASE
+
+WITHOUT:
+PROPORTIONAL
+ACTIVE-CELL
+GROWTH.
+
+A new C function
+can be represented:
+
+by:
+new:
+context-gated
+role state
+
+on:
+already-active:
+parent cells
+
+with:
+no:
+new C physical cells
+
+and:
+no material:
+median penalty
+relative to:
+new daughter growth.
+
+The remaining:
+75% reliability tail
+
+appears:
+geometric /
+coverage-specific,
+
+not:
+a simple:
+role-state capacity
+limit.
+
+NEXT:
+
+CLR3-H186 —
+HYBRID
+ROLE-REUSE
++
+MINIMAL NEW-CELL
+GROWTH.
+
+Keep:
+C functional-state budget
+bounded.
+
+Compare:
+
+- 32 reused parent roles
+  +
+  16 new C daughters;
+
+- 32 reused roles
+  +
+  32 new daughters;
+
+- 48 reused roles
+  +
+  16 new daughters;
+
+against:
+
+- ROLE48;
+- NEW_C48;
+- global role ceiling.
+
+Primary question:
+
+can:
+a small:
+fresh geometric
+scaffold
+
+close:
+the reliability tail
+
+while:
+most:
+new capability state
+is stored:
+on:
+already-active cells?
+
+H185 DOES NOT AUTHORIZE
+
+- production use;
+- live model modification;
+- biological claims;
+- whole-model retraining;
+- canonical scientific claims;
+- STAB-18-R1 execution.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
