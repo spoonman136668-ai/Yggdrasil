@@ -1393,3 +1393,159 @@ goal.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05 COUNTERFACTUAL SELF-REPAIR HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST DG-1R-05 PRIMARY DAMAGE SCENARIO.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05_counterfactual_repair_v1.py
+
+Harness commit:
+
+6b349004ae1dd65994345b933f0906afee61105e.
+
+Git blob SHA:
+
+2d6cb69e586aced8aa87c4ab789b44c305ef1536.
+
+Source SHA-256:
+
+b4a35269bd99560b8c13613bab284ae47d253b245cf7e4304fde246254e644d3.
+
+Source bytes:
+
+16905.
+
+PARENT HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_04_software_nanite_v1.py
+
+Parent Git blob SHA:
+
+6eeaf70c97174fd40483256db9c6e600989a6b47.
+
+Parent source SHA-256:
+
+debcaf7c79632740dbccd4ad8b0f6ebfcd034515cb144b9a21bc537f7a8f7eed.
+
+PARENT CLOSURE
+
+cc980deb4a1ec87d3e405de52162e97632620314.
+
+PRE-FREEZE SANITY
+
+Exact local Git blob identity:
+
+PASS.
+
+Python compile:
+
+PASS.
+
+A:
+non-primary:
+out-of-family:
+mechanical sanity
+
+confirmed:
+
+- no-damage:
+  duplicate clones
+  remain:
+  byte-identical;
+
+- SMALL3:
+  lesion workers
+  exclude:
+  input-mapped:
+  positions;
+
+- lesion workers
+  exclude:
+  nanite:
+  controller sites;
+
+- all:
+  five:
+  frozen methods
+  can:
+  complete:
+  the:
+  shortened:
+  counterfactual:
+  path.
+
+No:
+primary:
+DG-1R-05:
+damage scenario
+was:
+executed
+before:
+this freeze.
+
+FROZEN WORLD FAMILY
+
+20260926050000..20260926050007.
+
+8 worlds.
+
+FROZEN DAMAGE FAMILY
+
+Four:
+unmapped:
+sibling blocks
+
+from:
+input compartments:
+
+0,
+2,
+4,
+6.
+
+SMALL3:
+
+worker offsets:
+2,
+3,
+4.
+
+LARGE5:
+
+worker offsets:
+1,
+2,
+3,
+4,
+5.
+
+POST-DAMAGE HORIZON
+
+32:
+external steps.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+canonical sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+Runtime sidecars:
+are:
+non-canonical.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
