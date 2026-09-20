@@ -762,3 +762,249 @@ SYNTHETIC_MEASURED_SANDBOX_CONTEXT_BOUNDED_FUNCTIONAL_FEEDBACK_MICROPATCH
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 stab18_r1_touched = false
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H152 HELD-OUT PRIMARY EXECUTION.
+
+No H152 primary world
+has been executed.
+
+PARENT HARNESS SHA-256
+
+H151:
+3f6042716b4e5a26f41569376a4dca833f5bae5f3c053aa2280615bfadb32e37.
+
+H152 WRAPPER SHA-256
+
+e8be77384de4fef8a6b8eda875575f581edfc97794d5060e57e4e3bfa7b3b4e3.
+
+All H151 colony,
+learned-state,
+lesion,
+membership,
+and:
+evaluation mechanics
+are inherited unchanged.
+
+LOCAL FEEDBACK QUERY REALIZATION
+
+Feedback pool:
+
+64 queries / world.
+
+RNG:
+
+SHA-256-derived
+from:
+world seed
+and:
+"feedback_queries".
+
+For each query:
+
+- choose:
+  one lesion member
+  uniformly;
+
+- use:
+  its normalized response center;
+
+- add:
+  isotropic Gaussian jitter
+  sd=0.12;
+
+- reject:
+  points outside:
+  the unit disk.
+
+Feedback query points:
+are disjoint
+from:
+the 256 held-out
+evaluation query points.
+
+Feedback target:
+
+pre-lesion colony output
+at:
+that feedback query.
+
+No lost coefficient:
+is exposed.
+
+FEEDBACK BEGINS
+
+only after:
+complete membership regeneration.
+
+Twelve:
+post-membership maturation steps.
+
+Budgets:
+
+CFB1:
+1 new feedback pair / step.
+
+CFB2:
+2.
+
+CFB4:
+4.
+
+FBONLY2:
+2.
+
+Maximum observations:
+
+12,
+24,
+48,
+24.
+
+CONTEXT POLICIES
+
+CONTEXT0,
+CFB1,
+CFB2,
+CFB4
+
+use:
+the exact H151
+context initialization
+and:
+0.50 harmonic refinement.
+
+FUNCTIONAL RIDGE CORRECTION
+
+At each feedback maturation step:
+
+solve only for:
+the lesion-cell coefficients.
+
+Surviving original coefficients:
+are fixed.
+
+Use:
+all accumulated feedback
+available to:
+that policy.
+
+Objective:
+
+||Phi_R w - r||^2
++
+0.10 ||w - prior||^2.
+
+CONTEXT feedback prior:
+
+current harmonic
+lesion-cell coefficients.
+
+FBONLY2 prior:
+
+zero vector.
+
+The solve is:
+ordinary dense linear solve.
+
+Least-squares fallback:
+only if:
+the ridge system
+cannot be directly solved.
+
+ORACLE
+
+restores:
+exact lost coefficient
+on:
+membership return.
+
+Evaluation only.
+
+SANITY
+
+Disjoint:
+20260919990000...
+family.
+
+Five representative underlying worlds.
+
+NON-EVIDENCE signals:
+
+MIXED 1% compact:
+
+CONTEXT0:
+approximately 0.855.
+
+CFB2:
+approximately 0.974.
+
+FBONLY2:
+approximately 0.662.
+
+MIXED 5% compact:
+
+CONTEXT0:
+approximately 0.491.
+
+CFB2:
+approximately 0.979.
+
+FBONLY2:
+approximately 0.915.
+
+MIXED 5% four-patch:
+
+CONTEXT0:
+approximately 0.937.
+
+CFB2:
+approximately 0.969.
+
+FBONLY2:
+approximately 0.342.
+
+SMOOTH 5% compact:
+
+CFB2:
+approximately 0.995.
+
+SCRAMBLED 5% compact:
+
+CFB2:
+approximately 0.307.
+
+FBONLY2:
+approximately 0.295.
+
+No:
+policy,
+budget,
+lambda,
+jitter,
+threshold,
+seed,
+or:
+sample size
+
+was changed
+from:
+these sanity results.
+
+PRIMARY FAMILY REMAINS
+
+20260919900000..20260919902399.
+
+No execution-semantic change
+after:
+the first held-out H152 primary world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
