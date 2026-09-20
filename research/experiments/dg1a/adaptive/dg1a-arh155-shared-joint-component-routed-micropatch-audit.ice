@@ -707,3 +707,196 @@ SYNTHETIC_MEASURED_SANDBOX_SHARED_JOINT_COMPONENT_ROUTED_MICROPATCH
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 stab18_r1_touched = false
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — SHARED JOINT / COMPONENT ROUTING
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H155 HELD-OUT PRIMARY EXECUTION.
+
+No H155 primary world
+has been executed.
+
+SANDBOX HARNESS SHA-256
+
+218273da8e2a8bb91793a24c54e2f4c19e28f594bc49cc9a31dccf1a92ab3b4f.
+
+JOINT SOLVE
+
+All acquired TRAIN observations
+from:
+all actual lesion components
+
+enter:
+one ridge solve
+over:
+all regenerated lesion coefficients.
+
+Ridge lambda:
+0.10.
+
+Surviving original coefficients:
+fixed.
+
+Context-harmonic current reconstruction:
+joint prior.
+
+No lost coefficient:
+is read.
+
+COMPONENT ROUTING
+
+Actual:
+Moore-connected lesion components.
+
+Stable ordering:
+ascending minimum member ID.
+
+Each component:
+32 deterministic local query candidates.
+
+TRAIN:
+0-based even candidate index.
+
+VALIDATION:
+0-based odd.
+
+Adaptive bootstrap:
+
+- no TRAIN first;
+- then no VALIDATION;
+- then largest observed validation residual ratio.
+
+Tie:
+
+larger component,
+then:
+lower component ID.
+
+STOP / REOPEN
+
+Component recovered:
+
+>=2 validation observations
+
+AND:
+
+residual ratio <=0.10
+
+for:
+two consecutive maturation steps.
+
+Reopen:
+
+ratio >0.15.
+
+JOINT-ADAPT-FB2
+stops acquiring
+only when:
+all actual components
+are stopped
+
+or:
+24 total observations
+are spent.
+
+JOINT-RR-FB2
+
+2 observations / step.
+
+24 total.
+
+Round-robin:
+component routing.
+
+No:
+adaptive stop.
+
+JOINT-ADAPT-FB4
+
+4 observations / step.
+
+48 total.
+
+Same:
+joint solve
+and:
+adaptive routing.
+
+PARENT COMPARATOR
+
+H152-FIXED-FB2
+uses:
+the exact inherited H152
+shared feedback-pool
+joint lesion solve.
+
+SANITY
+
+Disjoint:
+20260920290000...
+family.
+
+140 underlying worlds.
+
+840 policy-world evaluations.
+
+NON-EVIDENCE.
+
+Mechanical checks passed:
+
+- all frozen policies completed;
+- only lesion coefficients changed;
+- query routing remained component-local;
+- all training data entered:
+  one joint solve;
+- validation targets never entered:
+  the solve;
+- no lost coefficients entered:
+  non-oracle repair.
+
+Scientific sanity signal:
+
+- SMOOTH remained:
+  highly recoverable;
+
+- MIXED compact wounds
+  sometimes reduced:
+  feedback use;
+
+- MIXED FOUR-PATCH
+  remained:
+  difficult;
+
+- more feedback
+  did not:
+  obviously resolve:
+  validation/routing mismatch.
+
+No:
+threshold,
+budget,
+lambda,
+routing rule,
+sample size,
+or:
+acceptance gate
+
+was changed
+from:
+sanity results.
+
+PRIMARY FAMILY REMAINS
+
+20260920200000..20260920202399.
+
+No execution-semantic change
+after:
+the first held-out H155 primary world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
