@@ -2528,3 +2528,462 @@ UNTOUCHED.
 
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
+
+
+ACCEPTED PRIMARY CHECKPOINT — PRIMARY CANDIDATE COMPLETE / COMPARATOR MATRIX IN PROGRESS
+
+DATE:
+2026-09-19.
+
+STATUS:
+PRIMARY IN PROGRESS.
+DO NOT INTERPRET AS FINAL H149 CLOSURE.
+
+FROZEN HARNESS
+
+sha256:
+36408075f911e0a0ea4b44184f95f298198fd56a1228e39dd61368fd74a32b22.
+
+Accepted primary family:
+
+R0:
+20260919500000..20260919500399.
+
+Each subsequent regime:
++1000.
+
+PRIMARY CANDIDATE E
+
+E —
+DUAL-HISTORY-REVALIDATE-COHORT
+
+has completed:
+
+400 worlds / regime
+across:
+all 10 primary regimes.
+
+Candidate-only accepted primary metrics:
+
+R0 LOCAL-5
+
+final ARI:
+0.9910.
+
+global redevelopment:
+0.1200 / world.
+
+regional re-validation:
+1.0075 / world.
+
+regional redevelopment:
+0.3050 / world.
+
+false inherited-certificate rate:
+0.0056%.
+
+structural handoff worlds:
+92.25%.
+
+R1 LOCAL-10
+
+final ARI:
+1.0000.
+
+global redevelopment:
+0.2150 / world.
+
+regional re-validation:
+1.1000 / world.
+
+regional redevelopment:
+0.8450 / world.
+
+false inherited-certificate rate:
+0%.
+
+structural handoff worlds:
+100%.
+
+R2 DIFFUSE-10
+
+final ARI:
+1.0000.
+
+global redevelopment:
+1.0000 / world.
+
+false inherited-certificate rate:
+0.106%.
+
+R3 ACCUMULATED-MICROPATCH
+
+final ARI:
+0.9121.
+
+global redevelopment:
+0.5650 / world.
+
+regional re-validation:
+2.5025 / world.
+
+regional redevelopment:
+2.1850 / world.
+
+max accepted P:
+0.0446.
+
+false inherited-certificate rate:
+0.0052%.
+
+R4 MOVING-WOUND
+
+final ARI:
+0.8062.
+
+global redevelopment:
+1.3175 / world.
+
+regional re-validation:
+2.7575 / world.
+
+regional redevelopment:
+1.9600 / world.
+
+structural handoff worlds:
+100%.
+
+max accepted P:
+0.0108.
+
+max challenge exposure Q:
+0.4984.
+
+false inherited-certificate rate:
+0.0836%.
+
+false actionable inherited-certificate rate:
+1.379%.
+
+R5 BOUNDARY-PING-PONG
+
+final ARI:
+0.9861.
+
+global redevelopment:
+0.0900 / world.
+
+regional re-validation:
+2.1475 / world.
+
+regional redevelopment:
+1.1325 / world.
+
+false inherited-certificate rate:
+0.0031%.
+
+R6 TRANSIENT-LOCAL-NOISE
+
+final ARI:
+1.0000.
+
+structural handoff worlds:
+9.50%.
+
+false inherited-certificate rate:
+0%.
+
+R7 PURE RELABEL
+
+final ARI:
+1.0000.
+
+structural handoff worlds:
+11.75%.
+
+pure-relabel unnecessary invalidation:
+0.174%.
+
+false inherited-certificate rate:
+0%.
+
+R8 STACKED
+
+final ARI:
+0.9964.
+
+global redevelopment:
+1.4875 / world.
+
+regional re-validation:
+1.7375 / world.
+
+regional redevelopment:
+1.4375 / world.
+
+scratch units:
+5.9000 / world.
+
+false inherited-certificate rate:
+0.296%.
+
+R9 ROAMING-SUBPATCH
+
+final ARI:
+0.8776.
+
+structural handoff worlds:
+100%.
+
+max accepted P:
+0.0127.
+
+max challenge exposure Q:
+0.2163.
+
+false inherited-certificate rate:
+0.178%.
+
+false actionable inherited-certificate rate:
+0.988%.
+
+INTERIM GATE SIGNALS
+
+These are:
+candidate-batch observations only.
+
+They are not:
+a final H149 disposition.
+
+POSITIVE SIGNALS
+
+1.
+MOVING-WOUND handoff:
+
+100%.
+
+2.
+ROAMING-SUBPATCH handoff:
+
+100%.
+
+3.
+Challenge history becomes:
+material
+
+while:
+accepted repair path remains low.
+
+MOVING-WOUND:
+
+Q approximately:
+0.498.
+
+P approximately:
+0.011.
+
+ROAMING-SUBPATCH:
+
+Q approximately:
+0.216.
+
+P approximately:
+0.013.
+
+4.
+Cohort-proof false inherited-certificate rate
+is below:
+1%
+
+in:
+every candidate structural-damage regime
+measured so far.
+
+5.
+PURE RELABEL:
+direct unnecessary certificate invalidation
+remains:
+well below 5%.
+
+NEGATIVE SIGNALS
+
+1.
+ACCUMULATED-MICROPATCH final ARI:
+
+0.9121,
+
+below:
+the preregistered
+0.97 gate.
+
+2.
+TRANSIENT-LOCAL-NOISE structural handoff:
+
+9.5%,
+
+above:
+the preregistered
+5% false-handoff gate.
+
+3.
+PURE RELABEL structural handoff:
+
+11.75%,
+
+above:
+the preregistered
+1% handoff gate.
+
+4.
+LOCAL global-redevelopment frequency:
+
+LOCAL-5:
+12%.
+
+LOCAL-10:
+21.5%.
+
+Both exceed:
+their preregistered
+5% / 10% ceilings.
+
+5.
+MOVING-WOUND structural detection improves,
+but:
+final topology quality remains low
+
+at:
+0.8062.
+
+COMPLETED ACCEPTED COMPARATORS
+
+A —
+H148-SCOPED-WITNESS
+
+complete on:
+
+LOCAL-5,
+LOCAL-10.
+
+F —
+IMMEDIATE GLOBAL
+
+complete on:
+
+LOCAL-5,
+LOCAL-10,
+STACKED.
+
+B —
+DUAL-HISTORY-WITNESS
+
+complete on:
+STACKED.
+
+C —
+DUAL-HISTORY-COHORT
+
+complete on:
+STACKED.
+
+SELECTED COMPARATOR GATE READOUT
+
+LOCAL-5 scratch units:
+
+E:
+0.665.
+
+A:
+0.795.
+
+LOCAL-10 scratch units:
+
+E:
+1.490.
+
+A:
+1.185.
+
+Thus:
+E improves scratch cost on LOCAL-5
+but:
+not LOCAL-10.
+
+LOCAL-5 deliberate observations:
+
+E:
+468.915.
+
+F:
+449.985.
+
+LOCAL-10 deliberate observations:
+
+E:
+590.355.
+
+F:
+450.165.
+
+Thus:
+the preregistered local deliberate-observation cost advantage
+does not currently hold.
+
+STACKED final ARI:
+
+E:
+0.9964.
+
+B:
+0.9993.
+
+C:
+0.9993.
+
+Difference from better B/C:
+
+approximately:
+0.0029.
+
+STACKED scratch units:
+
+E:
+5.900.
+
+F:
+6.000.
+
+Thus:
+the STACKED quality / scratch gate
+currently appears:
+supported.
+
+FULL PRIMARY STATUS
+
+The full:
+
+28,000 policy-regime-world
+
+comparator matrix
+is:
+
+NOT YET COMPLETE.
+
+Do not:
+close H149
+until:
+the remaining accepted comparator cells
+are completed
+or:
+an explicit protocol-compliant stopping rule
+is documented.
+
+No stopping rule has been invoked.
+
+H150 remains:
+UNASSIGNED
+and:
+UNSPENT.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
