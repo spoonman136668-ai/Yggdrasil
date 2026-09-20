@@ -941,3 +941,440 @@ SYNTHETIC_MEASURED_DEVELOPMENTAL_CAPABILITY_ADDITION
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — BOUNDED CAPABILITY-ADDITION HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H178 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H178 SANDBOX HARNESS
+
+File:
+
+h178_cap_add_v2.py
+
+SHA-256:
+
+e7f0c006a1e6b340373e448667dcc8dfa5d3b53a02554d8e3fe48572aa4394d2.
+
+PRE-PRIMARY CONTEXT-SEPARATION CORRECTION
+
+The first H178 sanity harness
+trained:
+capability A
+
+only on:
+A-domain examples.
+
+Because:
+the same scalar phenotype
+was then evaluated
+on:
+the previously unseen B domain,
+
+the frozen A model
+extrapolated:
+large arbitrary outputs
+
+into:
+the B context.
+
+Representative:
+pre-add B R^2
+
+was:
+hundreds of points
+below zero.
+
+That made:
+the candidate daughter patch
+
+spend:
+most of:
+its capacity
+
+canceling:
+out-of-domain
+A extrapolation
+
+rather than:
+learning:
+new capability B.
+
+This was:
+a task-routing
+confound,
+
+not:
+a developmental
+capability-addition result.
+
+No:
+H178 held-out primary world
+was executed
+under:
+that harness.
+
+CORRECTION
+
+Capability A
+is now trained with:
+
+768:
+A-domain
+functional examples
+
+plus:
+
+256:
+B-domain
+SILENCE examples
+
+with:
+target output:
+0.
+
+Interpretation:
+
+the developmental phenotype
+learns:
+
+A is active
+in:
+its own context
+
+and:
+silent
+in:
+the reserved
+B context.
+
+This is:
+a context-routing constraint,
+
+not:
+B capability information.
+
+The silence examples:
+
+contain:
+no B teacher output.
+
+They do NOT:
+teach:
+capability B.
+
+They only prevent:
+arbitrary
+A extrapolation
+into:
+an unseen
+capability context.
+
+TEACHER CALIBRATION
+
+H178 uses:
+the smooth learned teacher
+component:
+
+- random tanh field;
+- low-frequency sinusoid.
+
+The small:
+H176/H177
+high-frequency residual
+
+is omitted
+for:
+the first
+capability-addition proof.
+
+This keeps:
+the experiment focused
+on:
+
+bounded developmental
+capability growth
+
+rather than:
+high-frequency
+function reconstruction.
+
+No:
+teacher parameter
+was tuned
+from:
+held-out primary.
+
+PARENT BODY
+
+g=.25.
+
+N=3209.
+
+Parent:
+Gaussian RBF cells.
+
+Parent A ridge:
+
+alpha=.000625.
+
+DAUGHTER GROWTH
+
+Exact:
+preregistered
+error-driven
+connected right-half
+growth path.
+
+Growth levels:
+
+8,
+16,
+32,
+64,
+128,
+256.
+
+Daughter micro-offset:
+
+0.25
+parent-grid spacing.
+
+Daughter basis width:
+
+same:
+sigma=.22.
+
+Parent A coefficients:
+
+frozen.
+
+Daughter coefficients:
+
+fit:
+B training residual only.
+
+No:
+A replay
+inside:
+candidate addition.
+
+CONTROLS
+
+NO-GROW.
+
+RANDOM64.
+
+GLOBAL-DAUGHTER.
+
+GLOBAL-DAUGHTER:
+
+adds:
+one daughter
+at:
+every parent site
+
+and:
+is:
+a high-capacity
+addition ceiling,
+
+not:
+a candidate architecture.
+
+SANITY
+
+Disjoint family:
+
+20260922790000
+and:
+20260922790001.
+
+2 learned worlds.
+
+9 policies.
+
+18 policy evaluations.
+
+Accepted sanity-output SHA-256:
+
+71f76b3a795885af30c4259795c1234d374a7eb3a41a70a446a2e819943ab3c9.
+
+Mechanical checks:
+
+- exact 9 policies / world;
+- parent A coefficients:
+  frozen
+  after stage-1 learning;
+- daughter training:
+  B residual only;
+- no:
+  A held-out,
+  B validation,
+  or:
+  B held-out
+  targets
+  enter:
+  growth-site selection;
+- hibernation:
+  daughter contribution
+  removable
+  without:
+  coefficient change;
+- reactivation:
+  exact daughter state
+  restored
+  without:
+  retraining.
+
+NON-EVIDENCE SIGNAL
+
+A baseline:
+
+approximately:
+0.999
+held-out R^2
+in:
+both sanity worlds.
+
+Pre-add B:
+
+approximately:
+-0.45
+to:
+-0.96.
+
+Thus:
+
+B is:
+genuinely absent
+before:
+addition.
+
+Small connected patches:
+
+preserve:
+A
+more strongly
+
+but:
+underfit:
+B.
+
+Representative:
+GROW32
+
+B R^2:
+
+approximately:
+0.50..0.58.
+
+GROW64:
+
+approximately:
+0.74..0.76.
+
+Larger patches:
+
+GROW256
+
+B R^2:
+
+approximately:
+0.92..0.94.
+
+A loss:
+
+varies:
+by world
+
+from:
+approximately:
+0.01
+to:
+0.06.
+
+Therefore:
+
+the sanity result
+shows:
+a real:
+capability / interference
+growth trade-off.
+
+RANDOM64:
+
+is:
+high-variance
+and:
+sometimes:
+less interfering
+
+but:
+less consistently
+B-capable.
+
+GLOBAL-DAUGHTER:
+
+learns:
+B
+near:
+the ceiling
+
+but:
+can:
+severely disturb:
+A,
+
+confirming:
+
+capacity alone
+does NOT:
+guarantee
+non-interfering
+integration.
+
+These values are:
+
+NON-EVIDENCE.
+
+No:
+growth level,
+growth-site score,
+daughter ridge,
+silence count,
+sample size,
+or:
+acceptance gate
+
+was changed
+from:
+these outcomes.
+
+PRIMARY FAMILY
+
+20260922700000..20260922700019.
+
+20 held-out worlds.
+
+9 policies.
+
+180 policy evaluations.
+
+H178 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H178 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
