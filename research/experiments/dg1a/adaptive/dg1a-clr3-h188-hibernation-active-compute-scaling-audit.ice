@@ -1392,3 +1392,756 @@ the first held-out H188 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — CAPABILITY HIBERNATION / ACTIVE-COMPUTE SCALING
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-POSITIVE FOR ACTIVE-COMPUTE SCALING / NEGATIVE FOR STRICT B-BRANCH DECOMPOSABILITY.
+
+FINAL H188 HARNESS SHA-256
+
+ccfefb13dc331cae7b568502ff762253219164cc78da5873af561656bafea447.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+19dd52579c9704dcdc2bea4a23f5e66a09b912748687a4d88070f25190a5709d.
+
+ACCEPTED PRIMARY FAMILY
+
+20260923700000..20260923700019.
+
+PRIMARY MATRIX
+
+20 held-out stored phenotypes.
+
+3 contexts / world.
+
+60 context-evaluation rows.
+
+No:
+training,
+refit,
+or:
+parameter update
+
+occurs:
+inside:
+H188.
+
+STORED FULL PHENOTYPE
+
+Median full held-out R^2:
+
+A:
+approximately:
+0.99522.
+
+B:
+approximately:
+0.96483.
+
+C:
+approximately:
+0.94932.
+
+Frozen target:
+>=0.90.
+
+PASS.
+
+Worlds:
+A,
+B,
+C
+all:
+R^2 >=0.85:
+
+18 / 20
+=
+90%.
+
+Frozen target:
+>=90%.
+
+PASS
+at:
+the boundary.
+
+KNOWN-CONTEXT BRANCH SCHEDULING
+
+Median branch-only R^2:
+
+A:
+approximately:
+0.99922.
+
+B:
+approximately:
+0.96385.
+
+C:
+approximately:
+0.95883.
+
+Median change
+relative to:
+full phenotype:
+
+A:
+improves.
+
+B:
+approximately:
+0.00034 lower.
+
+C:
+improves.
+
+Frozen:
+no more than:
+0.02 lower.
+
+PASS.
+
+KNOWN-CONTEXT
+PREDICTION FIDELITY
+
+Median normalized MSE
+of:
+branch-only
+versus:
+full phenotype:
+
+A:
+approximately:
+0.00406.
+
+B:
+approximately:
+0.03357.
+
+C:
+approximately:
+0.01375.
+
+Frozen target:
+<=0.02.
+
+A:
+PASS.
+
+C:
+PASS.
+
+B:
+FAIL.
+
+Thus:
+
+B task competence
+is:
+preserved
+
+but:
+
+the exact:
+full phenotype's
+B-context output
+
+contains:
+a measurable:
+approximately 3.36%
+normalized contribution
+
+from:
+nominally non-B branches.
+
+LEARNED ROUTING
+
+Median overall
+context-routing accuracy:
+
+approximately:
+0.99642.
+
+Minimum world:
+
+approximately:
+0.98893.
+
+Frozen target:
+>=0.95.
+
+PASS.
+
+LEARNED-SCHEDULED
+TASK COMPETENCE
+
+Median R^2:
+
+A:
+approximately:
+0.99039.
+
+B:
+approximately:
+0.96019.
+
+C:
+approximately:
+0.95606.
+
+Median drop
+relative to:
+full:
+
+A:
+approximately:
+0.00575.
+
+B:
+approximately:
+0.00217.
+
+C:
+improves.
+
+Frozen allowance:
+<=0.03.
+
+PASS.
+
+LEARNED-SCHEDULED
+PREDICTION FIDELITY
+
+Median normalized MSE:
+
+A:
+approximately:
+0.00822.
+
+B:
+approximately:
+0.03382.
+
+C:
+approximately:
+0.01361.
+
+Frozen target:
+<=0.03.
+
+A:
+PASS.
+
+C:
+PASS.
+
+B:
+FAIL narrowly.
+
+Thus:
+
+the learned scheduler
+selects:
+the correct branch
+
+but:
+
+B remains:
+slightly dependent
+
+on:
+small:
+cross-capability
+residual contributions
+
+inside:
+the full phenotype.
+
+ACTIVE COMPUTE
+
+Frozen full:
+all-branch
+compute proxy:
+
+3322
+units / sample.
+
+Learned-scheduled:
+
+A:
+3221.
+
+B:
+65.
+
+C:
+60.
+
+B-only ratio:
+
+approximately:
+1.9567%
+of:
+full.
+
+Frozen ceiling:
+<=5%.
+
+PASS.
+
+C-only ratio:
+
+approximately:
+1.8061%.
+
+PASS.
+
+Equal:
+A/B/C
+workload
+
+average scheduled compute:
+
+approximately:
+1115.3.
+
+Ratio:
+
+approximately:
+33.574%.
+
+Frozen ceiling:
+<=40%.
+
+PASS.
+
+Strong-support compute threshold:
+
+<=35%.
+
+PASS.
+
+Thus:
+
+for:
+equal-context use,
+
+three:
+stored learned capabilities
+
+require:
+
+approximately:
+one-third
+of:
+naive:
+all-branch
+active compute
+
+when:
+the router
+activates:
+only:
+the selected capability branch.
+
+HIBERNATION STATE
+
+Stored learned parameter count:
+
+3322.
+
+Physical cells:
+
+3257
+=
+3209 parent
++
+48 B daughters.
+
+Hibernation:
+
+does NOT:
+delete:
+or:
+duplicate
+parameters.
+
+State hash:
+
+unchanged
+through:
+the full:
+300-switch sequence
+
+in:
+100%
+of:
+worlds.
+
+PASS.
+
+WAKE LEARNING
+
+Gradient updates:
+
+0.
+
+Ridge fits:
+
+0.
+
+Router fits:
+
+0.
+
+Parameter updates:
+
+0.
+
+PASS.
+
+WAKE PREDICTION RETURN
+
+Maximum normalized
+switch-sequence
+reactivation drift:
+
+0.
+
+Across:
+100:
+A->B->C
+switch cycles.
+
+PASS.
+
+TWO-BRANCH HIBERNATION
+
+Maximum:
+two-active-branch
+arithmetic return error:
+
+0.
+
+PASS.
+
+WORLD-LEVEL SCHEDULED COMPETENCE
+
+Diagnostic:
+
+known-context
+branch scheduling
+
+finishes:
+A,
+B,
+C
+all:
+R^2>=0.85
+
+in:
+75%
+of:
+worlds.
+
+Learned routing:
+
+65%.
+
+These:
+were NOT:
+preregistered
+acceptance gates,
+
+but:
+they reinforce:
+the strict:
+cross-branch
+decomposability issue.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+Stored median competence.
+
+2.
+Stored joint competence.
+
+3.
+Known-context task competence.
+
+5.
+Learned routing accuracy.
+
+6.
+Learned-scheduled task competence.
+
+8.
+B-only compute.
+
+9.
+C-only compute.
+
+10.
+Equal A/B/C compute.
+
+11.
+Stored-state retention.
+
+12.
+Zero wake learning.
+
+13.
+Zero wake prediction drift.
+
+14.
+Two-branch hibernation exactness.
+
+15.
+Stored memory unchanged.
+
+16.
+Physical structure unchanged.
+
+FAIL:
+
+4.
+Known-context
+prediction fidelity
+for:
+B.
+
+Observed:
+approximately 0.03357
+versus:
+0.02.
+
+7.
+Learned-scheduled
+prediction fidelity
+for:
+B.
+
+Observed:
+approximately 0.03382
+versus:
+0.03.
+
+STRONG SUPPORT:
+
+FAIL
+because:
+not all:
+primary gates pass,
+
+despite:
+the:
+33.57%
+compute result
+meeting:
+the strong-support
+compute threshold.
+
+FINAL INTERPRETATION
+
+H188 is:
+
+MIXED-POSITIVE.
+
+The North-Star
+active-compute mechanism
+
+is:
+strongly supported.
+
+A phenotype storing:
+
+A,
+B,
+C
+
+can:
+
+- keep:
+  all learned state
+  resident;
+- switch:
+  capabilities
+  without:
+  retraining;
+- reactivate:
+  with:
+  zero prediction drift;
+- run:
+  B or C
+  at:
+  approximately 2%
+  of:
+  naive:
+  all-capability
+  active compute;
+- run:
+  an equal:
+  A/B/C
+  workload
+  at:
+  approximately:
+  33.6%
+  of:
+  full all-branch compute.
+
+But:
+
+the learned phenotype
+is NOT:
+perfectly:
+branch-separable.
+
+Some:
+small:
+cross-capability
+residual computation
+
+has become:
+functionally useful,
+
+especially:
+inside:
+B context.
+
+Therefore:
+
+simply:
+turning off:
+all non-selected
+branches
+
+changes:
+the exact:
+stored phenotype
+
+more than:
+the frozen:
+B fidelity
+allowance.
+
+ARCHITECTURAL CONSEQUENCE
+
+Do NOT:
+
+keep:
+all branches active
+just to preserve:
+small residuals.
+
+That would:
+discard:
+the compute advantage.
+
+Instead:
+
+compress:
+the needed:
+cross-capability
+residual contribution
+
+into:
+a tiny:
+branch-local
+sleep compensation state.
+
+NEXT:
+
+CLR3-H189 —
+DORMANCY
+CROSS-BRANCH
+RESIDUAL
+DISTILLATION AUDIT.
+
+Candidate:
+
+for each:
+A,
+B,
+C context,
+
+fit:
+a tiny:
+six-parameter
+quadratic
+compensation function
+
+to:
+
+full phenotype output
+minus:
+that capability's
+branch-only output
+
+using:
+UNLABELED:
+context coordinates
+
+and:
+the model's OWN
+stored full predictions
+
+only.
+
+No:
+task target
+is replayed.
+
+Then:
+
+hibernate:
+the other branches
+
+and:
+evaluate:
+
+selected branch
++
+tiny compensation.
+
+Primary question:
+
+can:
+approximately:
+6 extra:
+sleep-compensation parameters
+per capability
+
+recover:
+full-phenotype
+prediction fidelity
+
+while:
+preserving:
+the:
+~2%
+B/C
+and:
+~34%
+equal-workload
+active-compute advantage?
+
+H188 DOES NOT AUTHORIZE
+
+- production use;
+- live model modification;
+- biological claims;
+- canonical scientific claims;
+- STAB-18-R1 execution.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
