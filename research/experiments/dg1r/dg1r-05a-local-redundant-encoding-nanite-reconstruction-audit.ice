@@ -1532,3 +1532,886 @@ match exactly.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-05A NON-EVIDENCE CLOSURE — LOCAL REDUNDANCY + NANITE RECONSTRUCTION
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+STRONG POSITIVE CORRECTABLE-LESION RECONSTRUCTION /
+DOUBLE2 NEGATIVE CONTROL INVALIDATED BY HARNESS DEFECT /
+NON-CANONICAL /
+NON-EVIDENCE.
+
+FROZEN HARNESS
+
+Git blob SHA:
+
+dbf445ba089343d708be4c06076a17c6bdcdb853.
+
+Source SHA-256:
+
+3f9097e5198b2f7e831b779ee773ef2ffd108e3481300bb29630c0dcf00140d6.
+
+Source bytes:
+
+19104.
+
+REPRODUCIBILITY
+
+RUN 1 SHA-256:
+
+06e426e1cc8f195d3271d784d5779478c885f200d91fb9b39fd618c62d61c056.
+
+RUN 2 SHA-256:
+
+06e426e1cc8f195d3271d784d5779478c885f200d91fb9b39fd618c62d61c056.
+
+Byte-identical:
+
+PASS.
+
+MECHANICAL CONTROL
+
+No-damage duplicate trajectories:
+
+PASS.
+
+mechanical_valid:
+
+TRUE.
+
+FROZEN CLASSIFICATIONS
+
+SINGLE_ERROR_RECONSTRUCTION_SIGNAL:
+
+TRUE.
+
+Signal methods:
+
+HAM74_REPAIR_ALWAYS.
+HAM74_REPAIR_H6.
+
+DISTRIBUTED_RECONSTRUCTION_SIGNAL:
+
+TRUE.
+
+Signal method:
+
+HAM74_REPAIR_ALWAYS.
+
+REDUNDANCY_VALUE_SIGNAL:
+
+TRUE.
+
+Value methods:
+
+HAM74_REPAIR_ALWAYS.
+HAM74_REPAIR_H6.
+
+PRIMARY RESULT — HAM74_REPAIR_ALWAYS
+
+SINGLE1_LOCAL:
+
+median:
+excess divergence area:
+
+0.
+
+full recovery rate:
+
+1.0.
+
+h4:
+damaged-site recovery:
+
+1.0.
+
+h4:
+whole-state divergence:
+
+0.
+
+h32:
+whole-state divergence:
+
+0.
+
+Thus:
+
+a:
+single:
+correctable:
+local lesion
+
+is:
+reconstructed
+before:
+it:
+creates:
+persistent:
+counterfactual:
+divergence.
+
+DISTRIBUTED3:
+
+three:
+simultaneous:
+one-bit:
+lesions
+in:
+three:
+different:
+local:
+code blocks.
+
+Median:
+excess divergence area:
+
+0.
+
+full recovery rate:
+
+1.0.
+
+h8:
+damaged-site recovery:
+
+1.0.
+
+h8:
+outside-lesion divergence:
+
+0.
+
+h32:
+whole-state divergence:
+
+0.
+
+DISTRIBUTED5:
+
+five:
+simultaneous:
+one-bit:
+lesions
+in:
+five:
+different:
+local:
+code blocks.
+
+Median:
+excess divergence area:
+
+0.
+
+full recovery rate:
+
+1.0.
+
+h8:
+damaged-site recovery:
+
+1.0.
+
+h8:
+outside-lesion divergence:
+
+0.
+
+h32:
+whole-state divergence:
+
+0.
+
+Thus:
+
+local:
+independent:
+redundant:
+repair
+
+scales:
+across:
+multiple:
+spatially:
+distributed:
+correctable:
+lesions
+
+without:
+requiring:
+a:
+global:
+repair controller.
+
+HAM74_REPAIR_H6
+
+SINGLE1_LOCAL:
+
+median:
+excess divergence area:
+
+0.
+
+full recovery rate:
+
+0.6875.
+
+h4:
+damaged-site recovery:
+
+1.0.
+
+h32:
+whole-state divergence:
+
+0.
+
+Thus:
+
+the:
+H6:
+homeostatic:
+gate
+
+is:
+sufficient
+for:
+many:
+isolated:
+single-bit:
+lesions.
+
+However:
+
+DISTRIBUTED3:
+
+median:
+excess divergence area:
+
+2.69921875.
+
+full recovery rate:
+
+0.25.
+
+h8:
+damaged-site recovery:
+
+0.6666666666666667.
+
+h8:
+outside-lesion divergence:
+
+0.07200000000000001.
+
+DISTRIBUTED5:
+
+median:
+excess divergence area:
+
+3.4609375.
+
+full recovery rate:
+
+0.25.
+
+h8:
+damaged-site recovery:
+
+0.9.
+
+h8:
+outside-lesion divergence:
+
+0.17479674796747968.
+
+Therefore:
+
+H6 gating
+is:
+too selective
+for:
+reliable:
+distributed:
+state reconstruction.
+
+It:
+throws away:
+valid:
+syndrome-based:
+repair information
+when:
+local:
+consensus
+is:
+insufficiently:
+strong.
+
+DETECT-ONLY CONTROL
+
+HAM74_DETECT_ONLY
+
+did NOT:
+match:
+the:
+reconstruction:
+performance.
+
+SINGLE1_LOCAL:
+
+median:
+excess divergence area:
+
+2.12109375.
+
+full recovery rate:
+
+0.25.
+
+h4:
+damaged-site recovery:
+
+0.
+
+Thus:
+
+the:
+positive result
+does NOT:
+come:
+merely:
+from:
+having:
+a:
+64-bit:
+logical:
+state
+inside:
+a:
+coded:
+physical:
+representation.
+
+The:
+actual:
+local:
+correction
+provides:
+the:
+repair value.
+
+CORE MECHANISTIC CONCLUSION
+
+DG-1R-05A strongly supports:
+
+THE:
+MISSING:
+INGREDIENT
+
+in:
+DG-1R-05's:
+containment-only:
+nanites
+
+was:
+
+RECOVERY INFORMATION.
+
+One-bit:
+homeostatic:
+controllers
+
+could:
+contain:
+damage
+
+but:
+could not:
+infer:
+the:
+lost:
+worker state.
+
+Local:
+redundant:
+encoding
+
+provides:
+that:
+missing:
+information.
+
+With:
+a:
+correctable:
+local:
+codeword,
+
+the:
+repair program
+can:
+
+- detect:
+  local:
+  inconsistency;
+- identify:
+  the:
+  damaged:
+  physical:
+  position;
+- restore:
+  the:
+  exact:
+  pre-damage:
+  logical:
+  information;
+- return:
+  the:
+  organism
+  to:
+  its:
+  undamaged:
+  counterfactual:
+  trajectory.
+
+This:
+is:
+qualitatively:
+different
+from:
+
+FREEZING.
+
+The:
+repaired:
+organism
+
+continues:
+along:
+the:
+same:
+future:
+trajectory
+as:
+the:
+undamaged:
+organism.
+
+IMPORTANT HARNESS DEFECT — DOUBLE2 CONTROL
+
+The:
+frozen:
+DOUBLE2_LOCAL:
+negative control
+
+is:
+INVALID.
+
+Preregistered intent:
+
+flip:
+two:
+physical:
+bits
+inside:
+one:
+local:
+7-bit:
+codeword.
+
+Frozen harness implementation:
+
+lesion_scenarios()
+constructs:
+
+blocks = (b,)
+
+offsets = (2,4).
+
+lesion_indices()
+uses:
+
+zip(blocks, offsets).
+
+Therefore:
+
+only:
+the:
+first:
+pair
+is:
+used.
+
+Observed:
+actual:
+lesion cardinality:
+
+SINGLE1_LOCAL:
+
+1 bit.
+
+DOUBLE2_LOCAL:
+
+1 bit.
+
+DISTRIBUTED3:
+
+3 bits.
+
+DISTRIBUTED5:
+
+5 bits.
+
+Thus:
+
+DOUBLE2_LOCAL
+did NOT:
+exercise:
+a:
+two-bit:
+error.
+
+Consequences:
+
+- DOUBLE2:
+  recovery numbers
+  must NOT:
+  be interpreted;
+- overcorrection_failure_methods:
+  must NOT:
+  be interpreted;
+- the:
+  Hamming(7,4):
+  two-bit:
+  failure boundary
+  remains:
+  UNTESTED.
+
+This defect:
+
+does NOT:
+invalidate:
+
+SINGLE1_LOCAL.
+
+DISTRIBUTED3.
+
+DISTRIBUTED5.
+
+Those:
+actual:
+lesion cardinalities
+match:
+their:
+preregistered:
+intent.
+
+NEXT REQUIRED BOUNDARY TEST
+
+DG-1R-05B —
+CORRECTED:
+MULTI-BIT:
+LOCAL:
+DAMAGE:
+BOUNDARY AUDIT.
+
+Purpose:
+
+test:
+the:
+repair-information:
+boundary
+honestly.
+
+Within:
+one:
+7-bit:
+codeword:
+
+- ONE1:
+  one-bit:
+  correctable;
+- TWO2:
+  two-bit:
+  uncorrectable /
+  potentially:
+  miscorrected;
+- THREE3:
+  three-bit:
+  adversarial:
+  local damage.
+
+Require:
+
+actual:
+lesion cardinality
+assertions
+before:
+execution.
+
+Measure:
+
+- syndrome;
+- correction target;
+- false-correction rate;
+- counterfactual divergence;
+- damage spread;
+- whether:
+  a:
+  nanite:
+  can:
+  recognize:
+  uncertainty
+  and:
+  abstain
+  rather:
+  than:
+  confidently:
+  misrepair.
+
+ARCHITECTURAL IMPLICATION
+
+The:
+interesting:
+next:
+step
+
+is NOT:
+to:
+hard-code:
+larger:
+human-designed:
+error-correcting:
+codes
+indefinitely.
+
+The:
+important:
+finding
+is:
+
+LOCAL:
+REDUNDANCY
+
+can:
+turn:
+homeostatic:
+containment
+
+into:
+true:
+counterfactual:
+repair.
+
+The:
+longer-term:
+Yggdrasil:
+question
+is:
+
+can:
+development /
+evolution
+
+discover:
+
+- redundant:
+  representations;
+- local:
+  parity /
+  consistency:
+  relations;
+- confidence:
+  signals;
+- abstention:
+  rules;
+- repair:
+  roles;
+
+without:
+being:
+given:
+Hamming(7,4)
+by:
+the:
+designer?
+
+PLAIN-SPEAK SUMMARY
+
+This:
+worked.
+
+The:
+earlier:
+nanites
+could:
+stop:
+damage
+from:
+spreading,
+
+but:
+they:
+did not:
+know:
+what:
+the:
+damaged:
+cell
+was:
+supposed:
+to:
+be.
+
+We:
+used:
+some:
+of:
+the:
+same:
+128:
+bits
+
+as:
+local:
+backup:
+information.
+
+No:
+extra:
+memory
+was:
+added.
+
+When:
+one:
+bit:
+was:
+damaged,
+
+the:
+local:
+redundancy
+told:
+the:
+repair system
+
+which:
+bit
+was:
+wrong
+
+and:
+what:
+state
+had:
+been:
+lost.
+
+The:
+always-repair:
+version
+
+restored:
+single:
+local:
+damage
+
+and:
+even:
+five:
+simultaneous:
+damages
+in:
+different:
+local:
+blocks
+
+back:
+to:
+the:
+exact:
+undamaged:
+trajectory.
+
+So:
+
+the:
+nanites
+were:
+not:
+missing:
+the:
+ability
+to:
+repair.
+
+They:
+were:
+missing:
+the:
+information
+needed:
+to:
+know:
+what:
+to:
+repair:
+toward.
+
+One:
+warning:
+
+our:
+intended:
+two-bit:
+failure test
+contained:
+a:
+frozen:
+harness:
+bug
+and:
+only:
+flipped:
+one:
+bit.
+
+So:
+
+the:
+positive:
+single /
+distributed:
+result
+stands,
+
+but:
+
+we:
+still:
+need:
+a:
+clean:
+two-bit:
+boundary:
+experiment.
+
+DG-1R-05:
+canonical frozen primary remains:
+
+UNSPENT.
+
+DG-1R-05A remains:
+
+NON-CANONICAL /
+NON-EVIDENCE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
