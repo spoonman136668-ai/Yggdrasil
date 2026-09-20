@@ -1927,3 +1927,595 @@ H173 DOES NOT AUTHORIZE
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — NON-RATCHETING LEARNED-STATE AMPLITUDE ENVELOPE
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / NEGATIVE FOR WORLD-LEVEL TAIL CONTAINMENT / POSITIVE FOR GROUP-MEDIAN STABILITY AND EXPOSURE REDUCTION.
+
+FINAL H173 HARNESS SHA-256
+
+f4d599f7bd8e5ec2dfcc311bdd529214b7d27d73e4b629fe3cc32672b051c905.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+1c5ef934f148afcc81ce990a382bb505a721559844b09e78dff4412d1baecb48.
+
+ACCEPTED PRIMARY FAMILY
+
+20260922200000..20260922200079.
+
+PRIMARY MATRIX
+
+80 held-out learned-task worlds.
+
+6 policies.
+
+480 policy lifetimes.
+
+292 repair cycles / lifetime.
+
+Approximately:
+
+140,160
+policy repair cycles.
+
+Validation:
+
+- exactly 80 unique held-out seeds;
+- exact accepted seed interval;
+- exactly six policy rows / seed;
+- zero duplicate seed x policy rows;
+- no missing accepted seeds;
+- no post-primary kappa tuning.
+
+PRIMARY CANDIDATE
+
+ENV2-HIST-GEOM.
+
+TASK ACCURACY
+
+ENV2
+median FINAL accuracy
+remains:
+within:
+0.03
+of:
+its own baseline
+
+in:
+all:
+8 task x regime x eta groups.
+
+World-level:
+
+100%
+of:
+ENV2 worlds
+
+finish:
+within:
+0.05 accuracy
+of:
+their own baseline.
+
+PASS.
+
+BRIER / CALIBRATION
+
+Maximum group-median
+Brier degradation:
+
+approximately:
+0.00622.
+
+Frozen target:
+<=0.03.
+
+PASS.
+
+GROUP-MEDIAN
+LEARNED-OUTPUT FIDELITY
+
+Minimum ENV2
+group-median
+FINAL learned-output fidelity:
+
+approximately:
+0.96825.
+
+Frozen target:
+>=0.95.
+
+PASS:
+8 / 8.
+
+WORLD-LEVEL TAIL
+
+ENV2 worlds
+with:
+FINAL learned-output fidelity
+>=0.95:
+
+65 / 80
+=
+81.25%.
+
+Frozen target:
+>=95%.
+
+FAIL.
+
+ENV2 worlds
+with:
+FINAL fidelity <0:
+
+8 / 80.
+
+Frozen target:
+ZERO.
+
+FAIL.
+
+ENV2 worlds
+with:
+FINAL fidelity <-10:
+
+4 / 80.
+
+Frozen target:
+ZERO.
+
+FAIL.
+
+Minimum ENV2
+FINAL learned-output fidelity:
+
+approximately:
+-94.82.
+
+Therefore:
+
+the catastrophic
+learned-logit tail
+
+is:
+NOT contained.
+
+COMPARISON TO H172 TRUST2
+
+H172 TRUST2
+inside:
+the matched H173 primary:
+
+world fraction
+FINAL fidelity >=0.95:
+
+approximately:
+81.25%.
+
+Negative-fidelity worlds:
+
+8 / 80.
+
+Minimum:
+
+approximately:
+-74.78.
+
+ENV2:
+
+81.25%.
+
+Negative worlds:
+
+8 / 80.
+
+Minimum:
+
+approximately:
+-94.82.
+
+Thus:
+
+the absolute
+zero-centered
+amplitude envelope
+
+does NOT:
+remove:
+the H172 tail class.
+
+In some tail worlds,
+it reduces:
+ordinary exposure
+
+while:
+leaving:
+rare catastrophic
+learned-logit drift.
+
+EXPOSURE
+VERSUS MICRO2-LEVERAGE
+
+ENV2
+paired group-median
+cumulative exposure ratio:
+
+approximately:
+0.68
+to:
+0.92
+
+across:
+the eight groups.
+
+Frozen ceiling:
+<=1.35.
+
+PASS:
+8 / 8.
+
+EXPOSURE
+VERSUS H171 UNCONSTRAINED
+
+ENV2
+median cumulative exposure
+is:
+lower
+
+in:
+8 / 8 groups.
+
+Frozen requirement:
+at least:
+6 / 8.
+
+PASS.
+
+EXPOSURE
+VERSUS H172 TRUST2
+
+ENV2
+median cumulative exposure
+is:
+lower
+
+in:
+4 / 8 groups.
+
+Frozen requirement:
+at least:
+6 / 8.
+
+FAIL.
+
+OBSERVATION COST
+
+ENV2
+uses:
+the same
+HIST-GEOM
+functional observation controller
+
+and:
+the same
+group-median
+observation count
+
+as:
+H171_UNCONSTRAINED.
+
+PASS.
+
+ENVELOPE ACTIVITY
+
+ENV2
+maximum:
+group-median
+projection duty:
+
+approximately:
+7.2%.
+
+Pooled median duty:
+
+approximately:
+4.6%.
+
+Frozen limit:
+<50%.
+
+PASS.
+
+The envelope therefore:
+
+is active
+but:
+does NOT:
+succeed by:
+freezing:
+the learned state.
+
+ENV4 ROBUSTNESS
+
+ENV4
+does not:
+produce:
+a new
+group-median
+accuracy,
+Brier,
+or:
+median-fidelity
+failure
+
+that:
+ENV2 avoids.
+
+But:
+
+ENV4
+also fails:
+world-level tail containment.
+
+World fraction:
+FINAL fidelity >=0.95:
+
+approximately:
+80%.
+
+Negative worlds:
+
+9 / 80.
+
+Minimum:
+
+approximately:
+-98.19.
+
+Thus:
+
+the result is:
+not:
+a kappa=2
+knife-edge.
+
+ORACLE
+
+LOCAL-CHECKPOINT-ORACLE:
+
+FINAL learned-output fidelity:
+exactly 1.0.
+
+FINAL accuracy:
+exactly baseline.
+
+PASS.
+
+PREREGISTERED GATE REVIEW
+
+PASS:
+
+1.
+Baseline competence.
+
+2.
+ENV2 median FINAL accuracy.
+
+3.
+World-level accuracy retention.
+
+4.
+Brier degradation.
+
+5.
+Group-median FINAL learned-output fidelity.
+
+9.
+Exposure versus MICRO2-LEVERAGE.
+
+10.
+Exposure lower than H171_UNCONSTRAINED
+in:
+8 / 8 groups.
+
+12.
+Observation-count parity.
+
+13.
+Projection duty below:
+50%.
+
+14.
+ENV4
+no new:
+group-median
+accuracy / Brier / median-fidelity failure.
+
+15.
+Oracle ceiling.
+
+FAIL:
+
+6.
+>=95%
+of ENV2 worlds
+FINAL fidelity >=0.95.
+
+Observed:
+81.25%.
+
+7.
+ZERO:
+ENV2 negative-fidelity worlds.
+
+Observed:
+8.
+
+8.
+ZERO:
+ENV2 worlds
+below:
+-10.
+
+Observed:
+4.
+
+11.
+Exposure lower than:
+H172 TRUST2
+in:
+>=6 / 8 groups.
+
+Observed:
+4 / 8.
+
+STRONG SUPPORT:
+
+FAIL.
+
+FINAL INTERPRETATION
+
+H173 is:
+
+NEGATIVE
+
+for:
+
+TARGET-BLIND
+ABSOLUTE
+LOCAL-STATE
+AMPLITUDE-ENVELOPE
+TAIL CONTAINMENT.
+
+H172 showed:
+
+cycle-relative
+delta bounds
+can:
+ratchet.
+
+H173 now shows:
+
+a simple:
+zero-centered
+absolute magnitude envelope
+
+is also:
+insufficient.
+
+The learned-logit tail
+is therefore:
+not explained solely by:
+
+unbounded coefficient norm.
+
+The more likely remaining mechanism is:
+
+FUNCTIONAL UNDERDETERMINATION.
+
+Sparse binary-label repair
+can:
+choose:
+very different
+local coefficient configurations
+
+that:
+
+preserve:
+classification decisions
+
+while:
+
+changing:
+the learned output manifold
+substantially.
+
+A scalar amplitude certificate
+cannot determine:
+
+WHICH
+learned local function
+
+should be restored.
+
+ARCHITECTURAL CONSEQUENCE
+
+This is:
+a good stopping point
+for:
+substrate-only
+containment research.
+
+Do NOT:
+
+continue:
+tightening:
+trust radii,
+amplitude bounds,
+or:
+observation count
+
+as:
+the primary program.
+
+The unresolved tail
+now directly motivates:
+
+PROOF-OF-COGNITION
+experiments
+
+with:
+
+- multiple learned functions;
+- measured functional localization;
+- selective lesions;
+- explicit collateral-interference measurement;
+- bounded local regeneration;
+- repeated repair.
+
+The next program should ask:
+
+CAN
+A DEVELOPMENTAL
+CELLULAR PHENOTYPE
+
+LEARN:
+MULTIPLE
+SEPARABLE FUNCTIONS
+
+AND:
+
+REPAIR:
+ONE
+LOCALIZED
+LEARNED FUNCTION
+
+WITHOUT:
+
+DISTURBING:
+ANOTHER?
+
+This transitions:
+
+proof-of-mechanism
+->
+proof-of-cognition.
+
+H173 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- global retraining;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
