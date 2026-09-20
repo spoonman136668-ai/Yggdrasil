@@ -1124,3 +1124,80 @@ distinguish.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN LINEAGE NOTE — AUTHORITATIVE DG-1R-05I
+
+DATE:
+2026-09-20.
+
+STATUS:
+AUTHORITATIVE:
+DG-1R-05I:
+PREREGISTRATION.
+
+A:
+prior:
+same-branch:
+preregistration
+
+used:
+the:
+same:
+05I:
+identifier
+for:
+a:
+local-max:
+message-passing:
+audit.
+
+That:
+prior:
+experiment
+
+was:
+never:
+implemented,
+frozen,
+or:
+executed
+
+and:
+is:
+explicitly:
+DEFERRED.
+
+This:
+later:
+cross-bit-plane:
+confidence:
+audit
+
+is:
+the:
+authoritative:
+DG-1R-05I:
+experiment.
+
+Frozen:
+seed family:
+
+20260926059000..20260926059007.
+
+No:
+DG-1R-05I:
+world
+has:
+been:
+executed
+at:
+the:
+time:
+of:
+this:
+lineage:
+clarification.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
