@@ -614,3 +614,455 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL CLOSURE — DG-1R-05W LINEAGE-QUALIFIED REGISTRY QUORUM AUDIT
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED /
+REPRODUCIBLE /
+LINEAGE-QUALIFIED REGISTRY GAIN POSITIVE /
+ZERO FALSE PRIMARY AUTHORIZATION /
+SAME-LINEAGE FALSE MAJORITY COLLAPSED /
+INDEPENDENT-COLLUSION AND ROOT-COMPROMISE BOUNDARIES PRESERVED /
+NON-CANONICAL.
+
+FROZEN PROVENANCE
+
+Preregistration commit:
+
+92ef24297cdc4fc9cfa68e7fe5915cc928c30a3c.
+
+Harness source commit:
+
+86d50303df1a25054760a2a1654163800f1661e2.
+
+Harness Git blob:
+
+ba0f86c17978e611af28468faad179ca66c35c0d.
+
+Harness source SHA-256:
+
+de7084d399ff368de1038e490b79b7a3f8a6067e2705a3a0b79172883f5ea5c1.
+
+Harness bytes:
+
+11307.
+
+Freeze commit:
+
+3a3bf444961afd9345174a86ebb88319e0487640.
+
+PRIMARY EXECUTION
+
+Two complete deterministic frozen sweeps were executed.
+
+Sweep 1 serialized output SHA-256:
+
+de6711a3d2dd688bc098e9497884daf15dc9111482958663ff1997b4a22ba81d.
+
+Sweep 2 serialized output SHA-256:
+
+de6711a3d2dd688bc098e9497884daf15dc9111482958663ff1997b4a22ba81d.
+
+BYTE_IDENTICAL_REPRODUCIBILITY:
+
+TRUE.
+
+MECHANICAL_VALID:
+
+TRUE.
+
+PRIMARY SIGNALS
+
+SINGLE_ROOT_QUORUM_EXACT:
+TRUE.
+
+HEADCOUNT_DUPLICATION_EXPOSED:
+TRUE.
+
+TRIPLE_DESCENDANT_FALSE_QUORUM_REJECTED:
+TRUE.
+
+PAIR_DUPLICATION_REJECTED:
+TRUE.
+
+THREE_ROOT_LIVENESS_PRESERVED:
+TRUE.
+
+ONE_REPLICA_LOSS_WITH_INDEPENDENT_QUORUM:
+TRUE.
+
+COMPOUND_DISJOINT_REGISTRY_ACCEPTANCE:
+TRUE.
+
+PARTIAL_REGISTRY_OVERLAP_REJECTED:
+TRUE.
+
+REGISTRY_HOLDER_ROTATION_PRESERVES_QUORUM:
+TRUE.
+
+REGISTRY_DESCENDANT_FANOUT_NOT_QUORUM:
+TRUE.
+
+SAME_LINEAGE_REGISTRY_MAJORITY_COLLAPSED:
+TRUE.
+
+REGISTRY_SELF_CLAIM_IGNORED:
+TRUE.
+
+LINEAGE_QUALIFIED_REGISTRY_GAIN:
+TRUE.
+
+AUDIT A — EXHAUSTIVE FOUR-REPLICA SINGLE-ROOT ASSIGNMENTS
+
+Cases:
+
+4096.
+
+Qualified by at least three independent roots:
+
+3696.
+
+Unqualified:
+
+400.
+
+LINEAGE_QUORUM3:
+
+TRUE_AUTH:
+3696.
+
+ABSTAIN:
+400.
+
+FALSE_AUTH:
+0.
+
+HEADCOUNT3:
+
+TRUE_AUTH:
+3696.
+
+FALSE_AUTH:
+400.
+
+DISTINCT_HOLDER3:
+
+TRUE_AUTH:
+3696.
+
+FALSE_AUTH:
+400.
+
+Thus four distinct registry slots or holder IDs do not establish provenance independence.
+
+AUDIT B — THREE SAME-ROOT HOLDERS PLUS ONE OTHER ROOT
+
+Cases:
+
+224.
+
+LINEAGE_QUORUM3 authorizations:
+
+0.
+
+HEADCOUNT3 authorizations:
+
+224.
+
+DISTINCT_HOLDER3 authorizations:
+
+224.
+
+AUDIT C — TWO ROOTS DUPLICATED AS TWO PAIRS
+
+Cases:
+
+168.
+
+LINEAGE_QUORUM3 authorizations:
+
+0.
+
+HEADCOUNT3 authorizations:
+
+168.
+
+DISTINCT_HOLDER3 authorizations:
+
+168.
+
+AUDIT D — EXACTLY THREE INDEPENDENT ROOTS PLUS ONE DUPLICATE
+
+Cases:
+
+2016.
+
+LINEAGE_QUORUM3 authorizations:
+
+2016 / 2016.
+
+The candidate therefore preserves liveness when exactly three effective independent sources are present.
+
+AUDIT E — ONE REPLICA UNAVAILABLE WITH THREE INDEPENDENT ROOTS
+
+Cases:
+
+1344.
+
+LINEAGE_QUORUM3 authorizations:
+
+1344 / 1344.
+
+AUDIT F — COMPOUND BUT DISJOINT REGISTRY LINEAGES
+
+Cases:
+
+2520.
+
+LINEAGE_QUORUM3 authorizations:
+
+2520 / 2520.
+
+The candidate accepts compound ancestry when the three effective source sets remain pairwise disjoint.
+
+AUDIT G — PARTIAL REGISTRY ANCESTRY OVERLAP
+
+Cases:
+
+7560.
+
+LINEAGE_QUORUM3 authorizations:
+
+0.
+
+One shared ancestry root between any pair of the three voting lineages invalidates the frozen independence requirement.
+
+AUDIT H — LINEAGE-PRESERVING REGISTRY HOLDER ROTATION
+
+Cases:
+
+3696.
+
+Quorum decisions unchanged:
+
+3696 / 3696.
+
+Registry authority follows verified evidence lineage,
+not persistent holder identity.
+
+AUDIT I — DESCENDANT FANOUT
+
+Cases:
+
+32.
+
+LINEAGE_QUORUM3 authorizations:
+
+0.
+
+HEADCOUNT3 authorizations:
+
+32.
+
+DISTINCT_HOLDER3 authorizations:
+
+32.
+
+More copies of one source never create additional effective registry roots.
+
+AUDIT J — DG-1R-05V FALSE MAJORITY REPLAY WITH SHARED LINEAGE
+
+Cases:
+
+112.
+
+LINEAGE_QUORUM3 false-history authorizations:
+
+0.
+
+HEADCOUNT3 false-history authorizations:
+
+112.
+
+DISTINCT_HOLDER3 false-history authorizations:
+
+112.
+
+Thus the exact raw three-replica majority weakness exposed in DG-1R-05V collapses when the three false-voting replicas share one verified lineage.
+
+CORRELATED / CONSTITUTIONAL BOUNDARIES
+
+H1 — THREE GENUINELY DISJOINT REGISTRY ROOTS COLLude
+
+Cases:
+
+1680.
+
+False authorizations:
+
+1680 / 1680.
+
+INDEPENDENT_THREE_ROOT_COLLUSION_FAILURE:
+
+TRUE.
+
+Provenance independence is not proof of honesty.
+
+H2 — CONSTITUTIONAL ROOT COMPROMISE
+
+Cases:
+
+336.
+
+Three distinct verified root identities were modeled as one actual causal source.
+
+False authorizations:
+
+336 / 336.
+
+ROOT_COMPROMISE_FAILURE:
+
+TRUE.
+
+H3 — REGISTRY SELF-CLAIM FORGERY
+
+Cases:
+
+4096.
+
+Candidate decisions unchanged despite bogus self-claimed lineage:
+
+4096 / 4096.
+
+REGISTRY_SELF_CLAIM_IGNORED:
+
+TRUE.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-05W closes the specific quorum-composition gap left by DG-1R-05V.
+
+Registry event authority can be based on:
+
+verified independent provenance sets
+
+rather than:
+
+replica count
+or
+distinct holder count.
+
+This prevents copied or ancestrally correlated registry replicas from manufacturing an effective three-source quorum.
+
+It preserves:
+
+- exact liveness with three independent roots;
+- one-replica loss;
+- compound but disjoint ancestry;
+- holder rotation.
+
+It rejects:
+
+- same-root triples;
+- two-pair duplication;
+- partial ancestry overlap;
+- descendant fanout;
+- the exact same-lineage false-majority replay from 05V.
+
+The remaining boundaries are qualitatively different.
+
+An independently rooted quorum may still collude.
+
+And a false constitutional root partition can make one physical source appear independently rooted.
+
+Those are not fixed by adding more lineage bookkeeping inside the same trust model.
+
+At this point,
+the more valuable next question is compositional:
+
+do the individually positive governance layers still behave safely when used together across an organism lifecycle?
+
+PLAIN-SPEAK INTERPRETATION
+
+The registry now understands the difference between:
+
+three machines saying yes
+
+and
+
+three genuinely separate evidence families saying yes.
+
+That matters.
+
+Three copies of one poisoned history no longer become a majority just because they live in three places.
+
+The registry still works when one machine disappears,
+when holders rotate,
+and when each registry lineage has more than one ancestor.
+
+But ancestry does not make witnesses honest.
+
+Three truly independent bad actors can still agree on a lie.
+
+And if the organism is born with fake root identities,
+the rest of the system can faithfully preserve that false foundation.
+
+We have pushed that boundary about as far down as this trust model can go without simply inventing another authority underneath it.
+
+The better next move is to test the whole system we have built.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05X —
+
+LINEAGE-QUALIFIED CELLULAR SOVEREIGNTY COMPOSITION AUDIT.
+
+Question:
+
+When the positive mechanisms from DG-1R-05Q through DG-1R-05W are composed,
+can the independently qualified healthy-cell population safely govern a complete synthetic lifecycle containing:
+
+- damage detection and first-shot repair;
+- health-memory refresh;
+- legitimate within-role adaptation;
+- legitimate role migration;
+- witness-holder rotation;
+- causal-lineage update;
+- registry edge and seal closure;
+
+without cross-layer authority leaks,
+split brain,
+stale provenance,
+or accidental normalization of corruption?
+
+The experiment should use the existing frozen mechanisms,
+not tune them again.
+
+It should include:
+
+- clean lifecycle sequences;
+- repair followed by health-memory commit;
+- adaptation followed by role migration;
+- role migration followed by holder rotation;
+- registry replica loss during lifecycle transition;
+- stale generation replay across subsystem boundaries;
+- partial final writes;
+- correlated same-lineage witness fanout;
+- one corrupted provenance class;
+- cross-layer rollback;
+- full independent-quorum collusion as an explicit remaining boundary.
+
+The primary goal is COMPOSITION,
+not another local threshold search.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
