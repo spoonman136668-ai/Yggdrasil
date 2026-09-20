@@ -1346,3 +1346,308 @@ H153 DOES NOT AUTHORIZE
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY HARNESS CORRECTION 03 — STOP-RULE WIRING / PRIMARY-SEED ROLLOVER
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE RESTARTED H153 ACCEPTED PRIMARY EXECUTION.
+
+DISCOVERY
+
+After:
+the restored-harness freeze,
+
+the first:
+100 held-out worlds
+from:
+the 20260920000000 family
+
+were executed.
+
+Post-block audit found:
+
+STOP24
+was:
+behaviorally identical
+to:
+COMPONENT24
+
+on:
+all 100 worlds
+
+and:
+did not record:
+the selected stop threshold.
+
+This exposed:
+a restored-harness wiring defect.
+
+The selected:
+rho=0.50
+threshold
+
+was not:
+bound into:
+the STOP24 primary execution path.
+
+This is:
+an execution-semantic mismatch
+with:
+the frozen H153 policy definition.
+
+DISPOSITION
+
+The entire primary family:
+
+20260920000000..20260920002399
+
+is:
+CONTAMINATED /
+NON-EVIDENCE
+
+for:
+H153 acceptance.
+
+No result
+from:
+that family
+
+may be used:
+for:
+H153 acceptance,
+threshold tuning,
+or:
+policy ranking.
+
+The 100 touched worlds
+were used only to:
+detect:
+the wiring mismatch.
+
+CORRECTED STOP SEMANTICS
+
+Minimum acquisitions before:
+STOP24 eligibility:
+
+4.
+
+Define:
+
+u0 =
+maximum candidate posterior uncertainty
+before:
+any functional-feedback observation.
+
+At:
+the beginning
+of:
+each post-membership maturation step,
+
+after:
+at least 4 observations
+and:
+before:
+acquiring that step's next feedback batch,
+
+compute:
+
+rho =
+current maximum unqueried-candidate posterior uncertainty
+/
+u0.
+
+If:
+
+rho <=
+the frozen stop threshold,
+
+STOP24:
+acquires no additional feedback
+for:
+the remainder of the world.
+
+Already acquired feedback:
+remains:
+an active ridge constraint.
+
+No held-out target,
+lost coefficient,
+or:
+evaluation query
+is used:
+for stopping.
+
+ACTIVE / COMPONENT QUERY SEMANTICS
+
+Unchanged.
+
+ACTIVE24:
+
+global maximum posterior uncertainty.
+
+COMPONENT24 / COMPONENT48 / STOP24:
+
+stable round-robin
+across:
+initial Moore-connected lesion components;
+
+inside:
+the chosen component,
+
+select:
+maximum posterior uncertainty.
+
+Selection uses:
+basis geometry
+and:
+already-selected query identities only.
+
+Unselected target values:
+remain hidden.
+
+CORRECTED SANITY REPLAY
+
+Disjoint sanity family remains:
+
+20260920090000...
+
+20 worlds
+per:
+declared sanity cell.
+
+Candidate rho:
+
+0.50,
+0.25,
+0.10.
+
+Deterministic selection rule remains:
+
+choose:
+the LARGEST rho
+
+whose STOP24
+median final recovery
+is:
+within 0.03
+of:
+COMPONENT24
+
+on:
+every declared MIXED sanity cell.
+
+rho=0.50:
+
+PASS.
+
+Observed COMPONENT24 minus STOP24
+median-final-recovery deficits:
+
+MIXED 1% COMPACT:
+approximately 0.0194.
+
+MIXED 1% FOUR:
+0.
+
+MIXED 2% FOUR:
+0.
+
+MIXED 5% COMPACT:
+approximately 0.0260.
+
+MIXED 5% FOUR:
+0.
+
+All:
+<=0.03.
+
+Therefore:
+
+FINAL PRIMARY STOP THRESHOLD
+
+rho =
+0.50.
+
+Sanity-only median STOP24 observations:
+
+MIXED 1% COMPACT:
+16.
+
+MIXED 1% FOUR:
+24.
+
+MIXED 2% FOUR:
+24.
+
+MIXED 5% COMPACT:
+6.
+
+MIXED 5% FOUR:
+24.
+
+This preserves:
+the early-stop hypothesis
+
+without:
+changing:
+the preregistered acceptance gates.
+
+CORRECTED H153 HARNESS SHA-256
+
+0e50797675d9ca106e2ec0b90944e765d5e37398cfdb3059114c9512d0586be9.
+
+PARENT HASHES REMAIN
+
+H151:
+3f6042716b4e5a26f41569376a4dca833f5bae5f3c053aa2280615bfadb32e37.
+
+H152:
+e8be77384de4fef8a6b8eda875575f581edfc97794d5060e57e4e3bfa7b3b4e3.
+
+REPLACEMENT H153 PRIMARY FAMILY
+
+20260920100000
+through:
+20260920102399.
+
+This replacement family:
+
+has not been used
+for:
+sanity,
+debugging,
+threshold selection,
+or:
+exploratory analysis.
+
+No:
+acceptance threshold,
+query budget,
+ridge lambda,
+policy identity,
+sample size,
+or:
+parent mechanic
+
+is changed.
+
+RESTARTED HELD-OUT PRIMARY STATUS
+
+NOT STARTED
+at:
+this freeze.
+
+No execution-semantic change
+is permitted
+after:
+the first accepted world
+from:
+the replacement family.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
