@@ -514,3 +514,103 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05W LINEAGE-QUALIFIED REGISTRY QUORUM
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY REGISTRY-QUORUM CASE.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05w_lineage_registry_quorum_v1.py
+
+Harness source commit:
+
+86d50303df1a25054760a2a1654163800f1661e2.
+
+Git blob SHA:
+
+ba0f86c17978e611af28468faad179ca66c35c0d.
+
+Source SHA-256:
+
+de7084d399ff368de1038e490b79b7a3f8a6067e2705a3a0b79172883f5ea5c1.
+
+Source bytes:
+
+11307.
+
+FROZEN IMPLEMENTATION
+
+The harness implements:
+
+- exactly eight verified provenance roots;
+- exactly four registry replica slots;
+- quorum size 3;
+- HEADCOUNT3 negative control;
+- DISTINCT_HOLDER3 negative control;
+- LINEAGE_QUORUM3 candidate rule;
+- exact nonzero pairwise-disjoint lineage-subset test;
+- exhaustive four-replica singleton-root assignments;
+- same-root triple plus one independent root;
+- duplicated two-root pairs;
+- exactly-three-root liveness;
+- one-replica loss with three independent roots;
+- compound pairwise-disjoint registry ancestry;
+- injected partial ancestry overlap;
+- lineage-preserving holder rotation;
+- descendant fanout;
+- DG-1R-05V false-majority replay with same-lineage replicas;
+- independent three-root collusion holdout;
+- root-compromise holdout;
+- self-claimed-lineage irrelevance holdout.
+
+LOCAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Independent mechanical case-count verification:
+
+PASS.
+
+Case counts:
+
+A = 4096.
+A qualified = 3696.
+A unqualified = 400.
+B = 224.
+C = 168.
+D = 2016.
+E = 1344.
+F = 2520.
+H = 3696.
+I = 32.
+J = 112.
+
+No primary quorum result,
+false-authorization result,
+fanout result,
+overlap result,
+or correlated-boundary result
+was generated before this freeze.
+
+REPRODUCIBILITY
+
+Execute two complete deterministic sweeps from this exact frozen harness.
+
+Serialized output SHA-256 must match exactly.
+
+No post-result tuning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
