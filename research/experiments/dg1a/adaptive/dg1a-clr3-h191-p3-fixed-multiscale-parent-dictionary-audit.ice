@@ -266,3 +266,62 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — H191-P3 MULTISCALE DICTIONARY HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST H191-P3 WORLD.
+
+HARNESS
+
+research/experiments/dg1a/adaptive/harnesses/h191_p3_multiscale_dictionary_v1.py
+
+Harness commit:
+
+e80720cf94d312e88b9599e1b505dcc080aab42f.
+
+Git blob SHA:
+
+1954ce689973f36d0a44d36271a0f002de0150d9.
+
+Source SHA-256:
+
+75770a9d05d09db8ab7cdc054e89d209402a5f7d8c3ae0dd83896985bf32fbd7.
+
+Source bytes:
+
+6271.
+
+DEPENDENCIES
+
+H191-P2 harness Git blob:
+689b1c9a20559e090c41763c9174da7a43590fad.
+
+H191-P0 base harness Git blob:
+6ac31f5cc3e091be7ef24ea74879903dd21cc2fa.
+
+P3 fixed scale family:
+
+0.22,
+0.44,
+0.88.
+
+P3 world family:
+
+20260924490000..20260924490039.
+
+REPRODUCIBILITY
+
+Two complete unchanged executions required.
+Canonical output SHA-256 must match exactly.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
