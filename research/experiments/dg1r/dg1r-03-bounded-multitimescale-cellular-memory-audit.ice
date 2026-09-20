@@ -1349,3 +1349,632 @@ non-canonical.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-03 NON-EVIDENCE PILOT CLOSURE — BOUNDED MULTI-TIMESCALE CELLULAR MEMORY
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+NEGATIVE LONG-MEMORY RECOVERY /
+POSITIVE SHORT-TO-MEDIUM RETENTION EFFECT /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+f75e7089f1ff3ac8bd55d9126c2cb7950f08feb775a1ce8e5571269eee4fefb9.
+
+CANONICAL OUTPUT
+
+RUN 1 SHA-256:
+
+7d9c0f5265f3b963fcb61c133002b1c156167e1e6100a95210fd8b5cdc7f5391.
+
+RUN 2 SHA-256:
+
+7d9c0f5265f3b963fcb61c133002b1c156167e1e6100a95210fd8b5cdc7f5391.
+
+Byte-identical:
+
+PASS.
+
+PRIMARY CLASSIFICATION
+
+SLOWING_SIGNAL:
+
+FALSE
+under:
+the:
+frozen:
+>=0.10:
+D16/D32:
+gain gate.
+
+MULTITIMESCALE_SIGNAL:
+
+FALSE.
+
+STRONG_MULTITIMESCALE_RECOVERY:
+
+FALSE.
+
+SPECIALIZATION_SIGNAL:
+
+FALSE.
+
+TEMPORAL_SUBSTRATE_CANDIDATES:
+
+NONE.
+
+FAST128_MIXED4 REFERENCE
+
+Median:
+
+D1:
+0.83447265625.
+
+D4:
+0.55517578125.
+
+D8:
+0.4951171875.
+
+D16:
+0.4951171875.
+
+D32:
+0.49951171875.
+
+Memory score:
+
+0.5017903645833333.
+
+SLOW128_MIXED1
+
+Median:
+
+D1:
+0.98779296875.
+
+D4:
+0.69189453125.
+
+D8:
+0.56298828125.
+
+D16:
+0.50146484375.
+
+D32:
+0.50927734375.
+
+Memory score:
+
+0.52783203125.
+
+Relative to:
+FAST128:
+
+D1:
++0.12109375.
+
+D4:
++0.08935546875.
+
+D8:
++0.06396484375.
+
+D16:
+-0.0029296875:
+paired median.
+
+D32:
++0.00732421875:
+paired median.
+
+Thus:
+
+slowing:
+the:
+entire:
+cellular state
+
+materially:
+improves:
+recent:
+retention
+
+but:
+
+does NOT:
+recover:
+long:
+D16 /
+D32:
+identity.
+
+PASSIVE MULTI-TIMESCALE LANES
+
+DUAL64_64_MIXED41:
+
+D8:
+0.521484375.
+
+D16:
+0.5009765625.
+
+D32:
+0.50439453125.
+
+TRI64_32_32_MIXED421:
+
+D8:
+0.51611328125.
+
+D16:
+0.50048828125.
+
+D32:
+0.49755859375.
+
+TRI32_32_64_MIXED421:
+
+D8:
+0.52783203125.
+
+D16:
+0.50439453125.
+
+D32:
+0.5029296875.
+
+None:
+
+produce:
+a:
+material:
+D16 /
+D32:
+recovery.
+
+ROLE-SPECIALIZED METHOD
+
+SPEC32_32_64_90M182:
+
+D1:
+1.0.
+
+D4:
+0.69873046875.
+
+D8:
+0.52294921875.
+
+D16:
+0.50927734375.
+
+D32:
+0.49072265625.
+
+Nonlinear score:
+
+0.547616281500878.
+
+Its:
+
+MOTIF2_12:
+0.6163198762591717.
+
+This is:
+an:
+interesting:
+nonlinear:
+task-specific:
+signal,
+
+but:
+
+the:
+method
+does NOT:
+recover:
+long memory.
+
+RESOURCE RESULT
+
+The:
+slow-heavy:
+TRI32_32_64
+
+uses:
+
+256:
+cell updates
+per:
+external:
+input
+
+versus:
+
+512:
+for:
+FAST128.
+
+SLOW128:
+
+uses:
+128:
+updates.
+
+Despite:
+large:
+compute reduction,
+
+D16 /
+D32:
+remain:
+near:
+chance.
+
+Therefore:
+
+the:
+failure
+is NOT:
+simply:
+"too many:
+cell updates"
+in:
+a:
+linear:
+sense.
+
+Fewer:
+updates
+delay:
+information loss,
+
+but:
+passive:
+clock separation
+does not:
+create:
+a:
+stable:
+long-term:
+trace.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-03 refines:
+the:
+timescale hypothesis.
+
+The:
+system
+was:
+indeed:
+evolving:
+too aggressively
+for:
+recent:
+memory.
+
+Evidence:
+
+slowing:
+improves:
+D1,
+D4,
+and:
+D8.
+
+But:
+
+simply:
+running:
+cells:
+more slowly
+
+does NOT:
+protect:
+specific:
+older:
+information
+through:
+D16 /
+D32.
+
+This implies:
+
+passive:
+timescale separation
+
+is:
+insufficient.
+
+The:
+remaining:
+leading mechanism
+is:
+
+ACTIVE:
+LOCAL:
+STABILIZATION.
+
+The:
+system
+needs:
+a:
+mechanism
+that:
+detects:
+when:
+local:
+state evolution
+is:
+too destructive
+
+and:
+selectively:
+suppresses /
+damps:
+that:
+evolution,
+
+rather than:
+merely:
+slowing:
+every:
+update
+on:
+a:
+fixed:
+clock.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-04 —
+PROGRAMMED:
+SOFTWARE-NANITE:
+LOCAL STABILIZATION AUDIT.
+
+Fixed:
+total:
+persistent:
+state:
+
+128:
+bits.
+
+Candidate architecture:
+
+112:
+ordinary:
+worker cells.
+
+16:
+programmed:
+stabilizer /
+"nanite":
+controller cells.
+
+Each:
+nanite
+controls:
+one:
+local:
+7-worker:
+sector.
+
+At:
+a:
+worker:
+micro-update:
+
+1.
+compute:
+the:
+sector's:
+proposed:
+CA update;
+
+2.
+measure:
+the:
+local:
+fraction:
+of:
+worker bits
+that:
+would:
+change;
+
+3.
+if:
+that:
+local:
+change
+exceeds:
+a:
+frozen:
+threshold,
+
+the:
+nanite:
+vetoes:
+that:
+sector's:
+CA transition
+
+for:
+that:
+microtick;
+
+4.
+the:
+post-input:
+worker state
+is:
+preserved
+instead.
+
+The:
+nanite
+does NOT:
+
+store:
+the:
+old:
+input bit
+in:
+a:
+hidden:
+register.
+
+It only:
+
+locally:
+regulates:
+whether:
+a:
+destructive:
+state transition
+is:
+allowed.
+
+This directly tests:
+
+ACTIVE:
+STABILITY CONTROL
+
+versus:
+
+PASSIVE:
+SLOWING.
+
+PLAIN-SPEAK SUMMARY
+
+What happened?
+
+Slowing:
+the:
+cells down
+helped.
+
+They remembered:
+recent:
+information
+better.
+
+But:
+it only:
+pushed:
+the:
+forgetting point
+back:
+a:
+little.
+
+By:
+16
+or:
+32:
+inputs ago,
+
+the:
+old:
+bit
+was:
+still:
+basically:
+gone.
+
+So:
+
+we were:
+partly right.
+
+The cells:
+were:
+changing:
+too quickly.
+
+But:
+simply:
+making:
+them:
+slower
+is:
+not enough.
+
+What does that mean?
+
+The:
+system
+probably:
+needs:
+something
+that:
+actively says:
+
+"this:
+local:
+change
+is:
+too destructive;
+do not:
+let it:
+happen."
+
+That is:
+exactly:
+where:
+the:
+software-nanite:
+idea
+fits.
+
+The:
+next:
+experiment
+will:
+give:
+a:
+small:
+fraction:
+of:
+the:
+same:
+128-cell:
+budget
+
+a:
+local:
+stabilizer:
+job.
+
+They will:
+not:
+be:
+extra:
+memory.
+
+They will:
+act:
+like:
+tiny:
+local:
+shock absorbers
+that:
+can:
+veto:
+overly:
+destructive:
+cellular:
+changes.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
