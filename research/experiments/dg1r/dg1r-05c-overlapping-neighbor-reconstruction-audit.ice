@@ -1286,3 +1286,1007 @@ match exactly.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-05C NON-EVIDENCE CLOSURE — OVERLAPPING NEIGHBOR RECONSTRUCTION
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+STRONG POSITIVE DISTRIBUTED-RECONSTRUCTION RESULT /
+TWO-SIDED VALIDATION POSITIVE /
+SYNDROME-BLIND THREE-BIT BOUNDARY DISCOVERED /
+NON-CANONICAL /
+NON-EVIDENCE.
+
+FROZEN HARNESS
+
+Git blob SHA:
+
+e1171314c4448555b5893e80ce22387d70be511d.
+
+Source SHA-256:
+
+94f4825aab9bffbd67f6aaff03ac3e3fa7925e03c86eaeb67a25614614f7b049.
+
+Source bytes:
+
+13208.
+
+CANONICAL OUTPUT FOR THIS NON-EVIDENCE PILOT
+
+RUN 1 SHA-256:
+
+33267aaf8dd074a79acb43bc061a283d445d94168f118ae2bb74e9b4e82ac342.
+
+RUN 2 SHA-256:
+
+33267aaf8dd074a79acb43bc061a283d445d94168f118ae2bb74e9b4e82ac342.
+
+Byte-identical:
+
+PASS.
+
+MECHANICAL VALIDITY
+
+No-damage controls:
+
+PASS.
+
+Lesion-cardinality assertions:
+
+PASS.
+
+mechanical_valid:
+
+TRUE.
+
+FROZEN SIGNALS
+
+NEIGHBOR_RECONSTRUCTION_SIGNAL:
+
+TRUE.
+
+BLOCK_RECONSTRUCTION_SIGNAL:
+
+TRUE.
+
+DISTRIBUTED_TISSUE_SIGNAL:
+
+TRUE.
+
+TWO_SIDED_VALIDATION_VALUE:
+
+TRUE.
+
+TWO-DATA-BIT LOCAL DAMAGE
+
+LOCAL84_GUARD:
+
+median:
+logical divergence area:
+
+1.9791666666666665.
+
+sustained:
+exact logical recovery rate:
+
+0.375.
+
+h1:
+logical divergence:
+
+0.0625.
+
+TISSUE74_XOR_BOTH:
+
+median:
+logical divergence area:
+
+0.
+
+physical divergence area:
+
+0.
+
+sustained:
+exact logical recovery rate:
+
+1.0.
+
+h1:
+logical divergence:
+
+0.
+
+h4:
+logical divergence:
+
+0.
+
+false-repair fraction:
+
+0.
+
+Thus:
+
+two:
+locally:
+damaged:
+data bits
+
+that:
+exceed:
+isolated:
+Hamming:
+correction capacity
+
+are:
+
+exactly:
+reconstructed
+
+from:
+independent:
+neighbor:
+consistency:
+relations.
+
+The:
+damaged:
+organism
+
+returns:
+to:
+the:
+exact:
+undamaged:
+counterfactual:
+trajectory
+
+before:
+persistent:
+divergence
+appears.
+
+DISTRIBUTED TWO-BIT DAMAGE
+
+Two:
+separated:
+logical:
+blocks
+
+are:
+simultaneously:
+damaged
+
+with:
+
+two:
+data-bit:
+lesions
+per:
+block.
+
+TISSUE74_XOR_BOTH:
+
+median:
+logical divergence area:
+
+0.
+
+physical divergence area:
+
+0.
+
+sustained:
+exact logical recovery rate:
+
+1.0.
+
+h1:
+logical divergence:
+
+0.
+
+h4:
+logical divergence:
+
+0.
+
+false-repair fraction:
+
+0.
+
+Thus:
+
+distributed:
+neighbor reconstruction
+
+operates:
+locally
+and:
+in:
+parallel.
+
+No:
+global:
+repair:
+controller
+is:
+required.
+
+ALL-FOUR-DATA-BIT LOCAL DAMAGE
+
+TISSUE74_XOR_BOTH:
+
+median:
+logical divergence area:
+
+0.
+
+physical divergence area:
+
+0.
+
+sustained:
+exact logical recovery rate:
+
+1.0.
+
+h1:
+logical divergence:
+
+0.
+
+false-repair fraction:
+
+0.
+
+This is:
+important.
+
+The:
+local:
+Hamming:
+codeword
+alone
+
+cannot:
+recover:
+four:
+lost:
+data bits.
+
+But:
+
+the:
+neighbor:
+relations
+carry:
+an:
+independent:
+description
+of:
+the:
+logical:
+block.
+
+Both:
+neighbors
+agree
+on:
+
+all:
+four:
+data bits.
+
+The:
+block
+can:
+therefore:
+reconstruct:
+its:
+entire:
+logical:
+content.
+
+TWO-SIDED VALIDATION
+
+Damage family:
+
+DATA2_PLUS_LEFT_CHECK1.
+
+Two:
+local:
+data bits
+are:
+damaged
+
+plus:
+
+one:
+left:
+neighbor:
+cross-check:
+bit.
+
+TISSUE74_XOR_LEFT:
+
+repairs:
+
+24.
+
+false-repair fraction:
+
+1.0.
+
+median:
+logical divergence area:
+
+2.125.
+
+sustained:
+exact logical recovery rate:
+
+0.20833333333333334.
+
+TISSUE74_XOR_BOTH:
+
+repairs:
+
+0.
+
+abstentions:
+
+24.
+
+false-repair fraction:
+
+0.
+
+median:
+logical divergence area:
+
+1.9791666666666665.
+
+sustained:
+exact logical recovery rate:
+
+0.375.
+
+Thus:
+
+one-sided:
+reconstruction
+can:
+confidently:
+misrepair
+
+when:
+its:
+single:
+recovery:
+channel
+is:
+also:
+damaged.
+
+Two-sided:
+independent:
+agreement
+
+recognizes:
+the:
+conflict
+
+and:
+refuses:
+the:
+unsafe:
+repair.
+
+This:
+is:
+a:
+distributed:
+confidence:
+mechanism.
+
+DETECT-ONLY CONTROL
+
+TISSUE74_DETECT_ONLY:
+
+TWO_DATA2:
+
+median:
+logical divergence area:
+
+1.9791666666666665.
+
+sustained:
+exact logical recovery:
+
+0.375.
+
+DISTRIBUTED_TWO_DATA2:
+
+median:
+logical divergence area:
+
+3.3020833333333335.
+
+sustained:
+exact logical recovery:
+
+0.125.
+
+Thus:
+
+the:
+positive:
+tissue result
+
+comes:
+from:
+active:
+neighbor:
+reconstruction,
+
+not:
+merely:
+from:
+the:
+48-bit:
+logical:
+capacity
+or:
+cross-check:
+representation.
+
+THREE-DATA-BIT BOUNDARY
+
+TISSUE74_XOR_BOTH:
+
+THREE_DATA3:
+
+median:
+logical divergence area:
+
+2.3854166666666665.
+
+sustained:
+exact logical recovery rate:
+
+0.2916666666666667.
+
+repairs:
+
+0.
+
+abstentions:
+
+0.
+
+Why?
+
+The:
+frozen:
+three-bit:
+lesion
+
+flips:
+Hamming:
+physical:
+positions:
+
+3,
+5,
+6.
+
+Their:
+syndrome:
+combination
+is:
+
+3 XOR 5 XOR 6
+=
+0.
+
+Therefore:
+
+the:
+damaged:
+local:
+codeword
+
+presents:
+
+ZERO:
+Hamming:
+syndrome.
+
+The:
+frozen:
+repair trigger
+
+requires:
+
+local syndrome
+!=
+0.
+
+So:
+
+the:
+tissue
+never:
+asks:
+its:
+neighbors
+
+even though:
+
+the:
+left
+and:
+right:
+neighbor:
+relations
+
+contain:
+enough:
+information
+to:
+reconstruct:
+the:
+block.
+
+This is:
+not:
+a:
+failure
+of:
+distributed:
+recovery:
+information.
+
+It is:
+a:
+failure
+of:
+LOCAL:
+DAMAGE:
+TRIGGERING.
+
+CORE MECHANISTIC CONCLUSION
+
+DG-1R-05C establishes:
+
+OVERLAPPING:
+LOCAL:
+REDUNDANCY
+
+can:
+extend:
+repair
+far:
+beyond:
+the:
+correction:
+radius
+of:
+an:
+isolated:
+local:
+code.
+
+The:
+architecture
+now:
+has:
+
+1.
+LOCAL:
+integrity:
+checks.
+
+2.
+NEIGHBOR:
+reconstruction:
+channels.
+
+3.
+TWO-SIDED:
+repair:
+validation.
+
+4.
+LOCAL:
+abstention
+when:
+independent:
+sources
+disagree.
+
+This:
+resembles:
+
+DISTRIBUTED:
+SOFTWARE:
+TISSUE
+
+more:
+than:
+
+isolated:
+error-correcting:
+memory.
+
+CAPACITY COST
+
+DG-1R-05C uses:
+
+48:
+logical:
+data bits
+
+inside:
+128:
+physical:
+bits.
+
+DG-1R-05A/B used:
+
+64:
+logical:
+data bits
+
+inside:
+128:
+physical:
+bits.
+
+Thus:
+
+the:
+strong:
+repair:
+gain
+
+costs:
+
+25%:
+of:
+logical:
+capacity
+
+relative:
+to:
+the:
+64-bit:
+coded:
+architecture.
+
+This:
+tradeoff
+must:
+remain:
+explicit.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05D —
+NEIGHBOR-INCONSISTENCY:
+DAMAGE:
+TRIGGER /
+SYNDROME-BLIND:
+REPAIR AUDIT.
+
+Key change:
+
+do NOT:
+require:
+local:
+Hamming:
+syndrome
+to:
+be:
+nonzero.
+
+For:
+each:
+interior:
+block:
+
+compute:
+
+- current:
+  decoded:
+  local:
+  data;
+- left:
+  neighbor-derived:
+  candidate;
+- right:
+  neighbor-derived:
+  candidate.
+
+Trigger:
+repair
+when:
+
+LEFT
+==
+RIGHT
+
+AND:
+
+CURRENT_LOCAL
+!=
+LEFT/RIGHT.
+
+Thus:
+
+two:
+independent:
+neighbors
+
+can:
+flag:
+a:
+locally:
+silent:
+corruption
+
+even:
+when:
+
+local:
+syndrome
+=
+0.
+
+Primary target:
+
+the:
+THREE_DATA3:
+syndrome-zero:
+lesion.
+
+Also test:
+
+NO-DAMAGE:
+false-trigger:
+rate
+
+and:
+
+cross-check:
+damage
+to:
+ensure:
+the:
+new:
+trigger
+does NOT:
+turn:
+neighbor:
+noise
+into:
+confident:
+repair.
+
+PLAIN-SPEAK SUMMARY
+
+This:
+worked:
+better
+than:
+the:
+isolated:
+repair system.
+
+A:
+damaged:
+block
+can:
+now:
+ask:
+both:
+neighbors:
+
+"What:
+should:
+my:
+four:
+data bits
+be?"
+
+When:
+both:
+neighbors
+independently:
+give:
+the:
+same:
+answer,
+
+the:
+block
+can:
+restore:
+itself.
+
+That:
+repaired:
+
+two:
+lost:
+data bits,
+
+four:
+lost:
+data bits,
+
+and:
+
+two:
+different:
+damaged:
+blocks
+at:
+the:
+same:
+time
+
+back:
+to:
+the:
+exact:
+undamaged:
+trajectory.
+
+We also:
+found:
+why:
+two:
+neighbors
+matter.
+
+When:
+one:
+neighbor:
+check
+was:
+damaged,
+
+a:
+one-sided:
+repairer
+made:
+the:
+wrong:
+repair
+every:
+time.
+
+The:
+two-sided:
+repairer
+noticed:
+the:
+neighbors
+disagreed
+
+and:
+refused:
+to:
+guess.
+
+The:
+remaining:
+failure
+is:
+interesting.
+
+One:
+three-bit:
+damage pattern
+fooled:
+the:
+local:
+Hamming:
+check
+into:
+saying:
+
+"Everything:
+looks:
+fine."
+
+So:
+the:
+block
+never:
+asked:
+its:
+neighbors
+for:
+help.
+
+But:
+the:
+neighbors
+actually:
+had:
+the:
+correct:
+answer.
+
+The:
+next:
+test
+removes:
+that:
+blind spot.
+
+Instead of:
+waiting:
+for:
+the:
+damaged:
+block
+to:
+announce:
+that:
+it:
+is:
+damaged,
+
+the:
+neighbors
+can:
+say:
+
+"Your:
+state
+does not:
+match:
+what:
+both:
+of:
+us
+independently:
+say:
+it:
+should:
+be."
+
+That:
+is:
+a:
+step
+toward:
+distributed:
+self-diagnosis,
+
+not:
+just:
+distributed:
+repair.
+
+DG-1R-05:
+canonical frozen primary remains:
+
+UNSPENT.
+
+DG-1R-05C remains:
+
+NON-CANONICAL /
+NON-EVIDENCE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
