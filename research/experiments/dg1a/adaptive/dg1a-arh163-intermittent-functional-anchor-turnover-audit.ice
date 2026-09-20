@@ -727,3 +727,276 @@ SYNTHETIC_MEASURED_SANDBOX_INTERMITTENT_FUNCTIONAL_ANCHOR_TURNOVER
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — INTERMITTENT ANCHOR DUTY HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H163 HELD-OUT PRIMARY EXECUTION.
+
+PARENT H161 HARNESS
+
+SHA-256:
+
+ae89e645e9f00f33a581c05298a0b2e930b450bbc9a55f0e0f46f87de86a8248.
+
+PARENT H162 WRAPPER
+
+SHA-256:
+
+2a8e405055d88906285934778898b02072dcdf683afd8cbc4d8f392c7461ae2c.
+
+H163 WRAPPER
+
+File:
+
+h163_anchor_duty_v1.py
+
+SHA-256:
+
+553a1edf2da195aff37a3a4ee6dcfa0f6072b2945bee8b46d64e916791edd5c2.
+
+IMPLEMENTATION
+
+Matched-turnover lifetimes:
+
+g=1.00:
+20 cycles.
+
+g=0.25:
+292 cycles.
+
+Anchored cycle:
+
+uses:
+H162 INTERLEAVED24
+
+with:
+
+- START50;
+- lambda=0.01;
+- 24-observation maximum;
+- 6 observations / active step;
+- global leverage query selection;
+- expanding joint solve.
+
+Unanchored cycle:
+
+uses:
+H151 context-harmonic
+membership / specialization repair
+
+with:
+zero task-feedback observations.
+
+Mutable repaired state:
+
+persists:
+through:
+the entire lifetime.
+
+ANCHOR SCHEDULES
+
+EVERY1:
+
+(c-1) mod 1 = 0.
+
+EVERY2:
+
+(c-1) mod 2 = 0.
+
+EVERY5:
+
+(c-1) mod 5 = 0.
+
+EVERY10:
+
+(c-1) mod 10 = 0.
+
+Cycle 1:
+anchored
+for:
+all feedback policies.
+
+CONTEXT-ONLY:
+
+zero anchored cycles.
+
+LOCAL-CHECKPOINT-ORACLE:
+
+target coefficient restore
+on:
+membership return;
+evaluation ceiling only.
+
+OBSERVATION ACCOUNTING
+
+EVERY1:
+
+g=1:
+20 anchored cycles,
+480 total observations maximum.
+
+g=0.25:
+292,
+7008 maximum.
+
+EVERY2:
+
+10 / 146 anchored cycles.
+
+EVERY5:
+
+4 / 59.
+
+EVERY10:
+
+2 / 30.
+
+No:
+raw functional observations
+are reused
+as:
+measurements
+across:
+different repair cycles.
+
+Only:
+the repaired coefficient state
+persists.
+
+SANITY
+
+Disjoint family:
+
+20260921290000...
+
+6 representative
+condition-world lifetimes.
+
+36 policy lifetimes.
+
+Mechanical checks:
+
+- exactly six policies / sanity lifetime;
+- realized anchor counts
+  match:
+  frozen cadence;
+- max per anchored cycle:
+  24 observations;
+- unanchored cycles:
+  zero observations;
+- matched body-equivalent lifetime
+  preserved;
+- oracle final fidelity:
+  exactly 1.0.
+
+NON-EVIDENCE SIGNAL
+
+Coarse:
+g=1
+ROAMING.
+
+Clean representative:
+
+EVERY1:
+final fidelity
+approximately 0.99994.
+
+EVERY2:
+approximately 0.9876.
+
+EVERY5:
+approximately 0.9388.
+
+EVERY10:
+approximately 0.9369.
+
+CONTEXT-ONLY:
+approximately 0.9370.
+
+Noisy representative:
+
+EVERY1:
+approximately 0.99976.
+
+EVERY2:
+approximately 0.9827.
+
+EVERY5:
+approximately 0.9630.
+
+EVERY10:
+approximately 0.8978.
+
+CONTEXT-ONLY:
+approximately 0.8875.
+
+Fine:
+g=0.25
+ROAMING.
+
+EVERY10:
+
+clean:
+approximately 0.99984.
+
+eta=0.25:
+approximately 0.99996.
+
+Fine:
+HOTSPOT,
+eta=0.25:
+
+EVERY10:
+approximately 0.99997
+
+after:
+292 cycles.
+
+These values are:
+
+NON-EVIDENCE.
+
+They suggest:
+a possible:
+scale-dependent
+anchor-duty requirement.
+
+No:
+cadence,
+sample size,
+lifetime,
+lambda,
+feedback budget,
+noise level,
+or:
+acceptance gate
+
+is changed.
+
+PRIMARY FAMILY
+
+20260921200000..20260921200119.
+
+120 held-out condition-world lifetimes.
+
+720 policy lifetimes.
+
+112,320 policy repair cycles.
+
+H163 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H163 lifetime.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
