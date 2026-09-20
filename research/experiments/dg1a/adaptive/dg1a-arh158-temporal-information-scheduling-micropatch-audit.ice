@@ -992,3 +992,260 @@ the first held-out H158 condition-world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — TEMPORAL SCHEDULING HARNESS
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H158 HELD-OUT PRIMARY EXECUTION.
+
+FINAL PINNED EXECUTABLE
+
+h158_temporal_schedule_frozen_v2.py
+
+SHA-256:
+
+af3af9f9c1fa8b8e550578150db5a29fdea822f5dd7dce7755c0f84b5032698e.
+
+IMPLEMENTATION
+
+lambda:
+0.01.
+
+Query design:
+
+global leverage /
+greedy D-optimal.
+
+Candidate pool:
+
+64 H152-style
+lesion-local queries.
+
+All non-oracle temporal policies:
+
+- consume exactly 24 queries;
+- select the same query identities;
+- alter only acquisition cadence;
+- retain every acquired query
+  as:
+  an active constraint;
+- re-solve:
+  the full lesion coefficient vector
+  after:
+  every post-membership
+  context-refinement step.
+
+Schedules:
+
+EVEN2:
+2 x 12.
+
+FRONT4:
+4 x 6.
+
+FRONT6:
+6 x 4.
+
+FRONT8:
+8 x 3.
+
+FRONT12:
+12 x 2.
+
+BURST24:
+24 x 1.
+
+Feedback noise:
+
+eta=0
+and:
+eta=0.25.
+
+Noise potential:
+
+deterministic
+per:
+structural seed
+and:
+eta domain.
+
+Held-out evaluation:
+noise-free.
+
+CORRECTED SANITY MATRIX
+
+Disjoint structural family:
+
+20260920790000...
+
+7 declared structural cells.
+
+20 worlds / cell.
+
+2 noise classes.
+
+7 policies.
+
+140 structural worlds.
+
+280 condition-worlds.
+
+1,960 policy-condition evaluations.
+
+Validation:
+
+- exact declared matrix;
+- zero functionally-trivial worlds;
+- all A..F temporal policies
+  finish with:
+  identical 24-query hashes
+  inside:
+  every sanity condition;
+- accumulated feedback
+  remains active
+  after:
+  acquisition ends;
+- ORACLE remains:
+  evaluation-only.
+
+NON-EVIDENCE SANITY SIGNAL
+
+MIXED 1% FOUR:
+
+eta=0:
+
+EVEN2 median T90:
+5.
+
+FRONT4:
+4.5.
+
+FRONT6:
+4.
+
+FRONT8:
+4.
+
+FRONT12:
+4.
+
+BURST24:
+3.5.
+
+eta=0.25:
+
+EVEN2:
+5.
+
+FRONT4:
+4.
+
+FRONT6:
+3.
+
+FRONT8:
+3.
+
+FRONT12:
+3.
+
+BURST24:
+3.
+
+MIXED 2% FOUR:
+
+eta=0:
+
+EVEN2:
+5.
+
+FRONT4:
+4.5.
+
+FRONT6:
+4.
+
+FRONT8:
+4.
+
+eta=0.25:
+
+EVEN2:
+5.
+
+FRONT4:
+4.5.
+
+FRONT6:
+4.5.
+
+FRONT8:
+4.
+
+MIXED 5% FOUR:
+
+EVEN2:
+6
+
+versus:
+
+FRONT4:
+5
+
+for:
+both noise classes.
+
+Median final recovery
+remained:
+effectively unchanged
+
+between:
+EVEN2
+and:
+front-loaded schedules.
+
+The sanity matrix
+therefore supports:
+executing the already-preregistered
+temporal hypothesis.
+
+No:
+schedule,
+lambda,
+noise level,
+query rule,
+budget,
+sample size,
+or:
+acceptance gate
+is changed.
+
+PRIMARY FAMILY
+
+20260920700000..20260920701799.
+
+Repository / sandbox check:
+
+no H158 held-out primary output
+from:
+this family
+exists
+at:
+this freeze.
+
+No execution-semantic change
+is permitted
+after:
+the first accepted H158 primary condition-world.
+
+H158 accepted primary status:
+
+NOT STARTED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
