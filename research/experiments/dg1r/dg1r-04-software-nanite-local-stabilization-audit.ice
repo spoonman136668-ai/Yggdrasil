@@ -1459,3 +1459,146 @@ slower?
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-04 SOFTWARE-NANITE STABILIZATION HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST DG-1R-04 PRIMARY WORLD.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_04_nanite_stabilization_v1.py
+
+Harness commit:
+
+94f86d02a05847b56bad5508c8fc870810810d83.
+
+Git blob SHA:
+
+2c5542ac27e0871ff1b96b9d085a0e9bb1f40d49.
+
+Source SHA-256:
+
+d9c176a232ee90e2a138a47f153a0d2f99b28cdf618e680dc38be9b6c9299905.
+
+Source bytes:
+
+15774.
+
+DEPENDENCY
+
+DG-1R-03 harness Git blob:
+
+7b5d6995450195f10d7ae2c474cf6936093dcf96.
+
+DG-1R-03 source SHA-256:
+
+f75e7089f1ff3ac8bd55d9126c2cb7950f08feb775a1ce8e5571269eee4fefb9.
+
+PRE-FREEZE SANITY
+
+Python compile:
+
+PASS.
+
+All:
+nanite /
+inert:
+feature surfaces:
+
+512:
+bits:
+per:
+external:
+input.
+
+Non-primary:
+short-stream:
+sanity:
+
+INERT112_16_FAST4:
+veto fraction:
+0.
+
+NANITE112_16_FAST4_T50:
+veto fraction:
+approximately:
+0.428.
+
+NANITE112_16_FAST4_T35:
+veto fraction:
+approximately:
+0.497.
+
+NANITE112_16_SLOW1_T50:
+veto fraction:
+approximately:
+0.413.
+
+These:
+sanity:
+values
+are:
+NON-EVIDENCE.
+
+No:
+primary:
+DG-1R-04:
+world
+was:
+executed
+before:
+this freeze.
+
+FROZEN WORLD FAMILY
+
+20260926040000..20260926040007.
+
+8 worlds.
+
+FROZEN TOTAL STATE
+
+All:
+ReCA methods:
+
+128:
+persistent:
+bits.
+
+Nanite methods:
+
+112:
+worker bits
++
+16:
+controller bits.
+
+No:
+hidden:
+input register.
+
+No:
+hidden:
+timer.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+canonical sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+Runtime sidecars:
+
+non-canonical.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
