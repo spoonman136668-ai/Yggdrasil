@@ -1,0 +1,69 @@
+name: DG1R05P Self-Health Consensus Frozen Execution
+
+on:
+  push:
+    branches:
+      - dg1a-ar
+    paths:
+      - .github/workflows/dg1r05p-self-health-consensus-frozen.yml
+
+permissions:
+  contents: read
+
+jobs:
+  run-frozen-dg1r05p:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify frozen source hash
+        shell: bash
+        run: |
+          set -euo pipefail
+          H="research/experiments/dg1r/harnesses/dg1r_05p_self_health_consensus_v1.py"
+          echo "source=$(sha256sum "$H" | awk '{print $1}')"
+          test "$(sha256sum "$H" | awk '{print $1}')" = "41dfa288ffc542d1bc536ca676ad8f34712338c3f73d66e05949b68c14901259"
+
+      - name: Frozen sweep 1
+        run: |
+          python research/experiments/dg1r/harnesses/dg1r_05p_self_health_consensus_v1.py --out dg1r05p-run1.json
+          sha256sum dg1r05p-run1.json
+
+      - name: Frozen sweep 2
+        run: |
+          python research/experiments/dg1r/harnesses/dg1r_05p_self_health_consensus_v1.py --out dg1r05p-run2.json
+          sha256sum dg1r05p-run2.json
+
+      - name: Verify byte-exact reproducibility and print signals
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmp dg1r05p-run1.json dg1r05p-run2.json
+          python - <<'PY'
+          import json, hashlib
+          raw=open("dg1r05p-run1.json","rb").read()
+          obj=json.loads(raw)
+          print("CANONICAL_SHA256="+hashlib.sha256(raw).hexdigest())
+          print("MECHANICAL_VALID="+str(obj["mechanical_valid"]))
+          print("CASE_COUNTS="+json.dumps(obj["case_counts"],sort_keys=True))
+          print("SIGNALS="+json.dumps(obj["signals"],sort_keys=True))
+          print("AUDIT_A="+json.dumps({k:v["labels"] for k,v in obj["audit_a_single_plane_logical"].items()},sort_keys=True))
+          print("AUDIT_B="+json.dumps({k:v["labels"] for k,v in obj["audit_b_check_only"].items()},sort_keys=True))
+          print("AUDIT_C="+json.dumps(obj["audit_c_challenges"]["summary"],sort_keys=True))
+          print("AUDIT_D="+json.dumps(obj["audit_d_intra_cell_multiplane"],sort_keys=True))
+          print("AUDIT_E="+json.dumps(obj["audit_e_cross_plane_alias"]["summary"],sort_keys=True))
+          print("CORRELATED="+json.dumps({k:v for k,v in obj["correlated_forgery_boundary"].items() if k!="F2_examples"},sort_keys=True))
+          PY
+
+      - name: Upload frozen outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: dg1r05p-frozen-results
+          path: |
+            dg1r05p-run1.json
+            dg1r05p-run2.json
