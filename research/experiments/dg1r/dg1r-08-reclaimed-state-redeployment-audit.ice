@@ -1285,3 +1285,774 @@ match exactly.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-08 NON-EVIDENCE PILOT CLOSURE — RECLAIMED STATE REDEPLOYMENT
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+STRONG REDEPLOYMENT SIGNAL /
+PERFECT REPAIR PRESERVED /
+REPRESENTATIONAL HEADROOM GAIN /
+TASK SCORE GAIN NOT YET REALIZED /
+BYTE-EXACT REPRODUCIBLE /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+c3dd41677e5fabab9f69c9e49e77ded50ea6b8813b99a11a67f149094c85da61.
+
+CANONICAL OUTPUT
+
+RUN 1 SHA-256:
+
+6aed859ec84e583b8283577b9a5afb17b8c4cedc6e8a37fc10a30a3f55e2c99a.
+
+RUN 2 SHA-256:
+
+6aed859ec84e583b8283577b9a5afb17b8c4cedc6e8a37fc10a30a3f55e2c99a.
+
+Byte-identical:
+
+PASS.
+
+MECHANICAL CONTROLS
+
+NO_DAMAGE_CONTROL_PASS:
+
+TRUE.
+
+ENCODING_CONTROL_PASS:
+
+TRUE.
+
+BASE103_WORKER_TRACE_EQUIVALENCE:
+
+TRUE.
+
+Thus:
+
+the:
+25-bit:
+repair:
+metadata
+
+does NOT:
+perturb:
+healthy:
+103-worker:
+dynamics.
+
+REPAIR_PRESERVED_103
+
+TRUE.
+
+EXP103_G5_25:
+
+SMALL3:
+h1 exact-worker recovery:
+
+1.0.
+
+SMALL3:
+h1 exact-full recovery:
+
+1.0.
+
+LARGE5:
+h1 exact-worker recovery:
+
+1.0.
+
+LARGE5:
+h1 exact-full recovery:
+
+1.0.
+
+Combined:
+h32 exact-full recovery:
+
+1.0.
+
+Combined:
+worker-divergence area:
+
+0.
+
+Median:
+corrected:
+data bits:
+
+SMALL3:
+3.
+
+LARGE5:
+5.
+
+Median:
+out-of-range:
+syndrome events:
+
+0.
+
+Therefore:
+
+the:
+five-stripe:
+25-bit:
+repair:
+architecture
+
+remains:
+perfect
+under:
+
+103:
+dynamic:
+workers.
+
+WORKER REDEPLOYMENT
+
+REF64:
+
+64:
+workers.
+
+25:
+maintenance bits.
+
+39:
+inactive bits.
+
+EXP103:
+
+103:
+workers.
+
+25:
+maintenance bits.
+
+0:
+inactive bits.
+
+Additional:
+dynamic workers:
+
+39.
+
+Worker-count increase:
+
+60.9375%.
+
+Worker share
+of:
+the:
+128-bit:
+organism:
+
+50%
+
+to:
+
+80.46875%.
+
+Workers:
+per:
+maintenance bit:
+
+2.56
+
+to:
+
+4.12.
+
+CAPABILITY CONTROL
+
+EXP103_G5_25
+
+and:
+
+BASE103_NOECC
+
+produce:
+
+identical:
+undamaged:
+worker trajectories.
+
+Their:
+capability metrics
+are:
+identical.
+
+Therefore:
+
+the:
+repair layer
+is:
+not:
+creating:
+artificial:
+task features.
+
+CAPABILITY METRICS
+
+REF64_G5_25:
+
+median:
+memory score:
+
+0.5065104166666666.
+
+Median:
+nonlinear score:
+
+0.5089506578737137.
+
+Median:
+state entropy:
+
+0.6606294476422401.
+
+Median:
+worker feature rank:
+
+43.
+
+Feature-rank fraction:
+
+0.671875.
+
+EXP103_G5_25:
+
+median:
+memory score:
+
+0.5022786458333333.
+
+Median:
+nonlinear score:
+
+0.5065619135389914.
+
+Median:
+state entropy:
+
+0.6486124105401294.
+
+Median:
+worker feature rank:
+
+68.5.
+
+Feature-rank fraction:
+
+0.6650485436893204.
+
+PAIRED ARCHITECTURAL DELTA
+
+Memory score:
+
+-0.00423177083333337.
+
+Nonlinear score:
+
+-0.002388744334722359.
+
+Feature-rank gain:
+
++59.30232558139535%.
+
+Thus:
+
+the:
+extra:
+39:
+workers
+
+did NOT:
+improve:
+the:
+current:
+task:
+scores.
+
+However:
+
+they:
+created:
+substantially:
+more:
+independent:
+worker-state:
+dimensions
+
+without:
+material:
+loss
+of:
+memory
+or:
+nonlinear:
+performance.
+
+CAPABILITY_GAIN:
+
+TRUE
+
+under:
+the:
+frozen:
+rank-or-task:
+criterion.
+
+STRONG_REDEPLOYMENT_SIGNAL:
+
+TRUE.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-08 separates:
+
+CAPACITY
+
+from:
+
+UTILIZATION.
+
+The:
+repair:
+compression
+from:
+DG-1R-07
+
+can:
+be:
+converted:
+back
+into:
+dynamic:
+cellular:
+state
+
+while:
+preserving:
+perfect:
+tested:
+self-repair.
+
+That:
+additional:
+state
+
+is:
+not:
+dead.
+
+Feature rank:
+
+43
+to:
+68.5
+
+shows:
+
+the:
+larger:
+organism
+occupies:
+a:
+substantially:
+richer:
+state space.
+
+But:
+
+the:
+same:
+four:
+input writes
+
+and:
+same:
+simple:
+linear:
+readout tasks
+
+do NOT:
+extract:
+additional:
+performance
+from:
+that:
+state.
+
+Therefore:
+
+the:
+next:
+bottleneck
+is:
+not:
+raw:
+cell count.
+
+It is:
+
+DEVELOPMENTAL:
+ROLE /
+ROUTING:
+UTILIZATION.
+
+The:
+new:
+workers
+need:
+
+- differentiated:
+  roles;
+- input:
+  routing;
+- local:
+  specialization;
+- or:
+  developmental:
+  allocation
+
+before:
+their:
+extra:
+representational:
+capacity
+
+can:
+become:
+functional:
+capability.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-09 —
+DEVELOPMENTAL ROLE ALLOCATION /
+SPECIALIZATION AUDIT.
+
+Hold:
+
+128:
+persistent bits.
+
+Hold:
+
+25:
+repair:
+maintenance bits.
+
+Hold:
+
+103:
+dynamic:
+workers.
+
+Keep:
+
+the:
+same:
+five-stripe:
+repair:
+guarantee.
+
+Compare:
+
+UNIFORM103:
+
+the:
+DG-1R-08:
+103-worker:
+MIXED5:
+reference.
+
+VERSUS:
+
+DEVELOPMENTAL:
+ROLE-SPECIALIZED:
+103-worker:
+architectures
+
+that:
+allocate:
+bounded:
+worker:
+subpopulations
+to:
+
+- fast:
+  nonlinear:
+  processing;
+- slow:
+  retention;
+- local:
+  relay /
+  propagation;
+- repair-adjacent:
+  stabilization.
+
+Primary question:
+
+can:
+role differentiation
+
+convert:
+the:
+59.3%:
+feature-rank:
+headroom
+
+into:
+
+actual:
+task:
+improvement
+
+without:
+sacrificing:
+the:
+repair:
+guarantee?
+
+PLAIN-SPEAK SUMMARY
+
+This:
+worked
+in:
+an:
+important:
+way.
+
+We:
+took:
+the:
+39:
+bits
+we:
+saved
+from:
+the:
+repair:
+system
+
+and:
+turned:
+all:
+39
+into:
+working:
+cells.
+
+That:
+grew:
+the:
+working:
+part
+of:
+the:
+organism
+
+from:
+
+64:
+cells
+
+to:
+
+103:
+cells
+
+without:
+making:
+the:
+body
+any:
+larger.
+
+The:
+repair:
+system
+still:
+fixed:
+
+every:
+three-cell
+and:
+five-cell:
+injury
+
+perfectly.
+
+So:
+
+we:
+did:
+successfully:
+trade:
+wasted:
+repair:
+overhead
+
+for:
+
+more:
+active:
+organism.
+
+Did:
+the:
+extra:
+cells
+make:
+it:
+smarter
+on:
+our:
+current:
+tests?
+
+Not:
+yet.
+
+The:
+scores:
+were:
+basically:
+the:
+same.
+
+But:
+
+the:
+internal:
+state
+became:
+much:
+richer.
+
+We:
+went:
+from:
+about:
+
+43:
+independent:
+state:
+directions
+
+to:
+
+68.5.
+
+That:
+is:
+roughly:
+59%:
+more:
+representational:
+headroom.
+
+So:
+the:
+new:
+cells
+are:
+doing:
+something,
+
+but:
+
+we:
+have:
+not:
+given:
+them:
+specialized:
+jobs
+or:
+better:
+routing
+that:
+turns:
+their:
+extra:
+activity
+into:
+useful:
+behavior.
+
+The:
+next:
+step
+is:
+not:
+more:
+cells.
+
+It:
+is:
+
+TEACHING:
+THE:
+BODY:
+TO:
+SPECIALIZE.
+
+Some:
+cells:
+should:
+process:
+quickly.
+
+Some:
+should:
+retain:
+state.
+
+Some:
+should:
+relay:
+information.
+
+Some:
+should:
+support:
+repair.
+
+The:
+goal
+of:
+DG-1R-09
+is:
+to:
+see:
+whether:
+that:
+division:
+of:
+labor
+can:
+turn:
+the:
+extra:
+internal:
+capacity
+we:
+just:
+created
+
+into:
+actual:
+functional:
+gain.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
