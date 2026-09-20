@@ -920,3 +920,720 @@ the first held-out H156 primary world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — JOINT MEASUREMENT CONDITIONING / PRIOR STRENGTH
+
+DATE:
+2026-09-19.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / POSITIVE.
+
+FROZEN HARNESS SHA-256
+
+eeac43258028700bb8d7c7bd00e6e7eee48ba9c55a22307e611e195ab4a75d2d.
+
+ACCEPTED PRIMARY FAMILY
+
+20260920400000..20260920402399.
+
+PRIMARY MATRIX
+
+2,400 underlying worlds.
+
+7 policies.
+
+16,800 policy-world evaluations.
+
+Validation:
+
+- exactly 2,400 unique accepted world seeds;
+- exact held-out seed interval;
+- exactly seven policy rows / seed;
+- zero duplicate seed x policy rows;
+- zero functionally-trivial worlds;
+- no post-primary parameter tuning.
+
+PRIMARY CANDIDATE
+
+LEV-L03.
+
+Global greedy leverage /
+D-optimal local-query design.
+
+Ridge lambda:
+0.03.
+
+24-observation maximum.
+
+MIXED CONTEXT — PRIMARY TARGET
+
+LEV-L03
+median final recovery:
+
+1%:
+0.9877.
+
+2%:
+0.9678.
+
+5%:
+0.9829.
+
+10%:
+0.9857.
+
+Thus:
+
+all:
+1%..5%
+groups
+exceed:
+the frozen
+0.95 median target.
+
+T90 world fraction:
+
+1%:
+92.0%.
+
+2%:
+83.5%.
+
+5%:
+96.0%.
+
+10%:
+96.0%.
+
+Frozen reliability requirement:
+
+>=80%
+for:
+all 1%..5%
+
+and:
+>=85%
+for:
+at least two of three.
+
+PASS.
+
+PRIOR-STRENGTH EFFECT
+
+FIXED-L10
+T90 world fraction:
+
+1%:
+62.5%.
+
+2%:
+57.0%.
+
+5%:
+71.5%.
+
+FIXED-L03:
+
+1%:
+88.5%.
+
+2%:
+76.5%.
+
+5%:
+92.5%.
+
+Absolute gain from:
+weaker prior
+
+with:
+identical query order:
+
+1%:
++26.0 percentage points.
+
+2%:
++19.5.
+
+5%:
++21.0.
+
+Therefore:
+
+lambda=0.10
+was:
+materially over-regularizing
+the local lost-state inverse problem.
+
+This is:
+the dominant H156 result.
+
+MEASUREMENT-DESIGN EFFECT
+AT:
+PARENT PRIOR
+
+LEV-L10
+T90 world fraction:
+
+1%:
+68.5%.
+
+2%:
+60.0%.
+
+5%:
+78.5%.
+
+Versus:
+FIXED-L10:
+
+gain:
+
+1%:
++6.0 points.
+
+2%:
++3.0.
+
+5%:
++7.0.
+
+The frozen:
+>=5-point
+two-of-three diagnostic
+passes:
+
+1%
+and:
+5%.
+
+Thus:
+
+information-optimal query placement
+is:
+material,
+
+but:
+smaller
+than:
+the prior-strength effect.
+
+COMBINED EFFECT
+
+LEV-L03
+versus:
+FIXED-L10
+T90 gain:
+
+1%:
++29.5 points.
+
+2%:
++26.5.
+
+5%:
++24.5.
+
+The full combined policy
+therefore:
+closes most
+of:
+the H152-H155
+reliability gap
+
+without:
+increasing:
+the 24-observation cap.
+
+COMPLEMENTARITY TEST
+
+LEV-L03
+versus:
+FIXED-L03
+T90 gain:
+
+1%:
++3.5 points.
+
+2%:
++7.0.
+
+5%:
++3.5.
+
+Only:
+2%
+exceeds:
+the frozen
+5-point threshold.
+
+Therefore:
+
+query design
+and:
+prior weakening
+are NOT:
+strongly complementary
+under:
+the frozen gate.
+
+Interpretation:
+
+once:
+prior bias
+is corrected,
+
+simple local feedback order
+already performs:
+much better.
+
+Information design
+provides:
+incremental robustness,
+especially:
+where geometry
+is harder.
+
+A-OPTIMAL COMPARATOR
+
+AOPT-L03
+median final recovery:
+
+1%:
+0.9874.
+
+2%:
+0.9678.
+
+5%:
+0.9846.
+
+T90 world fraction:
+
+1%:
+92.0%.
+
+2%:
+83.5%.
+
+5%:
+97.5%.
+
+Difference from:
+LEV-L03
+median final recovery:
+
+well below:
+0.03
+for:
+all three
+small-lesion groups.
+
+PASS.
+
+Thus:
+
+the positive result
+does not depend on:
+one fragile
+experimental-design objective.
+
+FOUR-PATCH RELIABILITY
+
+LEV-L03
+T90 world fraction:
+
+1%:
+
+COMPACT:
+91%.
+
+FOUR:
+93%.
+
+2%:
+
+COMPACT:
+91%.
+
+FOUR:
+76%.
+
+5%:
+
+COMPACT:
+93%.
+
+FOUR:
+99%.
+
+FOUR-PATCH
+is:
+within 15 percentage points
+of:
+COMPACT
+
+in:
+all three
+small-lesion groups
+at:
+the frozen boundary.
+
+The severe:
+H152-H155
+multi-wound reliability failure
+is therefore:
+substantially reduced.
+
+Median T90
+can still be:
+longer
+for:
+distributed wounds.
+
+Example:
+
+1%:
+COMPACT 4
+versus:
+FOUR 6.
+
+2%:
+5
+versus:
+8.
+
+5%:
+6
+versus:
+7.
+
+Thus:
+
+reliability
+and:
+latency
+remain:
+distinct optimization targets.
+
+SMOOTH CONTEXT
+
+LEV-L03
+median final recovery:
+
+1%:
+0.9993.
+
+2%:
+0.9989.
+
+5%:
+0.9990.
+
+T90 reach:
+
+99.5%,
+100%,
+100%.
+
+PASS.
+
+CHECKPOINT ORACLE
+
+Final functional recovery:
+1.0.
+
+It remains:
+the ceiling.
+
+MEASUREMENT-CONDITIONING DIAGNOSTIC
+
+Information-optimal designs
+generally:
+
+- increase:
+  useful singular-direction coverage;
+- reduce:
+  posterior covariance
+  relative to:
+  same-lambda fixed order;
+- improve:
+  held-out T90 reliability
+  modestly.
+
+However:
+
+the main performance jump
+comes from:
+reducing prior strength.
+
+This means:
+
+the prior was:
+too authoritative
+relative to:
+the local task evidence.
+
+A developmental prior
+should be:
+
+A STARTING POINT,
+
+not:
+
+A HARD ANCHOR.
+
+This is directly analogous to:
+the earlier structural-repair lesson:
+
+use:
+existing organization
+
+while:
+it remains informative,
+
+but:
+do not let:
+historical structure
+overrule:
+fresh local evidence.
+
+PREREGISTERED GATE REVIEW
+
+PASS:
+
+1.
+LEV-L03
+MIXED 1%..5%
+median final recovery
+>=0.95.
+
+2.
+LEV-L03
+T90 reliability:
+>=80% all three
+
+and:
+>=85%
+in:
+1%
+and:
+5%.
+
+3.
+LEV-L03
+improves:
+FIXED-L10
+by:
+>=15 points
+
+in:
+all three.
+
+4.
+FIXED-L03
+improves:
+FIXED-L10
+by:
+>=5 points
+
+in:
+all three.
+
+Prior over-regularization:
+material.
+
+5.
+LEV-L10
+improves:
+FIXED-L10
+by:
+>=5 points
+in:
+two of three.
+
+Measurement design:
+material.
+
+6.
+AOPT-L03
+remains:
+within 0.03
+of:
+LEV-L03
+in:
+all three.
+
+7.
+FOUR-PATCH reliability
+is:
+within:
+the frozen 15-point boundary
+for:
+all three
+small-lesion groups.
+
+8.
+SMOOTH quality:
+PASS.
+
+9.
+ORACLE ceiling:
+PASS.
+
+FAIL:
+
+LEV-L03
+does not improve:
+FIXED-L03
+by:
+>=5 points
+in:
+two of three.
+
+Strong design/prior
+complementarity:
+NOT SUPPORTED.
+
+FINAL INTERPRETATION
+
+H156 is:
+
+POSITIVE.
+
+The H152-H155 reliability limit
+was not:
+primarily a failure
+of:
+cognitive micro-patching.
+
+It was substantially:
+a calibration failure.
+
+The developmental prior
+was:
+too strong
+for:
+the amount of:
+fresh local functional evidence.
+
+Once:
+the prior is weakened
+to:
+the preregistered
+lambda=0.03 regime,
+
+24 local functional observations
+can recover:
+
+approximately:
+0.97..0.99
+median function
+
+for:
+MIXED
+1%..5%
+micro-lesions
+
+with:
+approximately:
+84%..96%
+T90 world reliability.
+
+Global information-optimal
+query design
+adds:
+a smaller but real gain.
+
+ARCHITECTURAL CONSEQUENCE
+
+The emerging micro-patch rule is:
+
+1.
+regenerate:
+membership locally;
+
+2.
+initialize:
+from developmental context;
+
+3.
+treat that context as:
+a SOFT PRIOR;
+
+4.
+allow:
+fresh local task evidence
+to override:
+the prior;
+
+5.
+choose:
+informative local measurements
+when:
+geometry is difficult;
+
+6.
+solve:
+all coupled lost state
+jointly.
+
+This is:
+a substantially stronger
+cognitive micro-patch architecture
+than:
+H151-H155.
+
+NEXT SCOPED QUESTION
+
+H157 should test:
+
+ADAPTIVE PRIOR AUTHORITY.
+
+Can:
+the system infer,
+from:
+observable local evidence,
+
+how strongly:
+to trust:
+developmental context
+
+per:
+micro-patch,
+
+instead of:
+hard-coding
+lambda=0.03?
+
+The goal is:
+
+preserve:
+H156 reliability
+
+while:
+automatically increasing:
+prior authority
+when:
+feedback is sparse/noisy
+
+and:
+decreasing it
+when:
+fresh evidence
+strongly contradicts:
+the inherited local prior.
+
+H156 DOES NOT AUTHORIZE
+
+- production model repair;
+- live cognitive replacement;
+- biological claims;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
