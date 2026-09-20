@@ -1566,3 +1566,1175 @@ NON-EVIDENCE.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-05G NON-EVIDENCE CLOSURE — COMPRESSED HYPERGRAPH INTEGRITY
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+STRONG POSITIVE LOCAL CAPACITY RESULT /
+POSITIVE TWO-AND-THREE-BAD-WITNESS TOLERANCE /
+SAFE TIE ABSTENTION /
+NEGATIVE DISTRIBUTED-DATA RESULT /
+CORRELATED-MAJORITY BOUNDARY CONFIRMED /
+NON-CANONICAL /
+NON-EVIDENCE.
+
+FROZEN HARNESS
+
+Git blob SHA:
+
+54777d7cbde8549039e72e8b2bc96d09870b6d36.
+
+Source SHA-256:
+
+e59b7bc4989f79af8d10d6dabef7e9630df31f070b8af9c749938a91251bded5.
+
+Source bytes:
+
+12441.
+
+OUTPUT
+
+RUN 1 SHA-256:
+
+5a8cc9d89aba799fae0b26d459ba9da28540d07b2c84103e076d7ba4b4a3a150.
+
+RUN 2 SHA-256:
+
+5a8cc9d89aba799fae0b26d459ba9da28540d07b2c84103e076d7ba4b4a3a150.
+
+Byte-identical:
+
+PASS.
+
+MECHANICAL VALIDITY
+
+mechanical_valid:
+
+TRUE.
+
+FROZEN SIGNALS
+
+HYPERGRAPH_CAPACITY_SIGNAL:
+
+TRUE.
+
+THREE_WITNESS_TOLERANCE_SIGNAL:
+
+TRUE.
+
+TIE_SAFETY_SIGNAL:
+
+TRUE.
+
+DISTRIBUTED_HYPERGRAPH_REPAIR_SIGNAL:
+
+FALSE.
+
+COMPRESSION_ADVANTAGE:
+
+TRUE.
+
+CORRELATED_FAULT_BOUNDARY_FAMILIES:
+
+CHECK4_CORRELATED_D6.
+CHECK4_CORRELATED_D7.
+
+CAPACITY
+
+PAIR20:
+
+48 logical bits.
+
+80 integrity bits.
+
+128 total bits.
+
+40 total witness-incidence units.
+
+HYPER20:
+
+48 logical bits.
+
+80 integrity bits.
+
+128 total bits.
+
+80 total witness-incidence units.
+
+Minimum region degree:
+
+6.
+
+Maximum region degree:
+
+7.
+
+Thus:
+
+the:
+same:
+80:
+integrity bits
+
+double:
+
+simultaneous:
+region-to-check:
+coverage.
+
+LOCAL DATA REPAIR
+
+HYPER20_MAJORITY_48:
+
+LOCAL_DATA2_D6:
+
+median:
+logical divergence area:
+
+0.
+
+sustained:
+exact logical recovery:
+
+1.0.
+
+false repairs:
+
+0.
+
+Thus:
+
+ordinary:
+local:
+data damage
+
+remains:
+exactly:
+repairable.
+
+TWO BAD WITNESSES PLUS DATA DAMAGE
+
+DATA2_PLUS_CHECK2_D6.
+
+HYPER20:
+
+median:
+h1 logical divergence:
+
+0.
+
+median:
+logical divergence area:
+
+0.
+
+sustained exact logical recovery:
+
+1.0.
+
+repairs:
+
+8.
+
+false repairs:
+
+0.
+
+PAIR20 degree-3 reference:
+
+median:
+h1 logical divergence:
+
+0.020833333333333332.
+
+median:
+logical divergence area:
+
+2.666666666666667.
+
+sustained exact recovery:
+
+0.25.
+
+repairs:
+
+8.
+
+false repairs:
+
+8.
+
+false-repair fraction:
+
+1.0.
+
+Thus:
+
+compressed:
+four-region:
+checks
+
+convert:
+
+the:
+same:
+80-bit:
+integrity budget
+
+from:
+
+degree-3:
+pairwise:
+failure
+
+to:
+
+exact:
+repair
+under:
+two:
+bad:
+integrity witnesses.
+
+HYPERGRAPH_CAPACITY_SIGNAL:
+
+PASS.
+
+THREE BAD WITNESSES PLUS DATA DAMAGE
+
+DATA2_PLUS_CHECK3_D7.
+
+HYPER20:
+
+7:
+incident:
+witnesses.
+
+4:
+healthy.
+
+3:
+corrupted.
+
+median:
+h1 logical divergence:
+
+0.
+
+logical divergence area:
+
+0.
+
+sustained exact logical recovery:
+
+1.0.
+
+false repairs:
+
+0.
+
+THREE_WITNESS_TOLERANCE_SIGNAL:
+
+PASS.
+
+Thus:
+
+degree-7:
+hypergraph majority
+
+tolerates:
+
+three:
+corrupted:
+integrity witnesses
+
+while:
+still:
+reconstructing:
+the:
+damaged:
+local:
+state.
+
+SAFE TIE
+
+CHECK3_CORRELATED_D6.
+
+No:
+logical:
+data damage.
+
+3:
+correct:
+candidates.
+
+3:
+wrong:
+candidates.
+
+Strict majority:
+
+NONE.
+
+Observed:
+
+repairs:
+
+0.
+
+false repairs:
+
+0.
+
+median:
+logical divergence area:
+
+0.
+
+sustained exact logical recovery:
+
+1.0.
+
+TIE_SAFETY_SIGNAL:
+
+PASS.
+
+Thus:
+
+the:
+repair system
+
+correctly:
+refuses:
+to:
+invent:
+a:
+repair
+
+when:
+
+evidence
+is:
+exactly:
+split.
+
+CORRELATED MAJORITY BOUNDARY
+
+CHECK4_CORRELATED_D6.
+
+4:
+wrong:
+witnesses.
+
+2:
+correct:
+witnesses.
+
+Observed:
+
+repairs:
+
+8.
+
+false repairs:
+
+8.
+
+false-repair fraction:
+
+1.0.
+
+median:
+logical divergence area:
+
+3.041666666666667.
+
+CHECK4_CORRELATED_D7.
+
+4:
+wrong.
+
+3:
+correct.
+
+Observed:
+
+repairs:
+
+8.
+
+false repairs:
+
+8.
+
+false-repair fraction:
+
+1.0.
+
+median:
+logical divergence area:
+
+2.666666666666667.
+
+Thus:
+
+hypergraph compression
+does NOT:
+remove:
+the:
+fundamental:
+majority:
+boundary.
+
+A:
+wrong:
+strict:
+majority
+
+still:
+drives:
+confident:
+misrepair.
+
+DISTRIBUTED LOCAL DATA DAMAGE — NEGATIVE RESULT
+
+DISTRIBUTED_LOCAL_DATA2.
+
+Damaged:
+logical:
+blocks:
+
+2
+and:
+8.
+
+No:
+integrity:
+slot:
+damage.
+
+PAIR20 reference:
+
+median:
+logical divergence area:
+
+0.
+
+sustained exact logical recovery:
+
+1.0.
+
+repairs:
+
+16.
+
+false repairs:
+
+0.
+
+HYPER20:
+
+median:
+h1 logical divergence:
+
+0.20833333333333334.
+
+median:
+h4 logical divergence:
+
+0.22916666666666669.
+
+median:
+h32 logical divergence:
+
+0.27083333333333337.
+
+median:
+logical divergence area:
+
+9.583333333333332.
+
+sustained exact logical recovery:
+
+0.
+
+repairs:
+
+16.
+
+false repairs:
+
+16.
+
+false-repair fraction:
+
+1.0.
+
+DISTRIBUTED_HYPERGRAPH_REPAIR_SIGNAL:
+
+FAIL.
+
+WHY THIS HAPPENS
+
+A:
+pairwise:
+check
+
+couples:
+two:
+regions.
+
+A:
+four-region:
+hypercheck
+
+couples:
+four:
+regions.
+
+That:
+compression
+creates:
+more:
+witness:
+coverage,
+
+but:
+
+a:
+damaged:
+logical:
+region
+
+also:
+contaminates:
+
+candidate:
+reconstructions
+
+for:
+every:
+other:
+region
+sharing:
+its:
+hyperchecks.
+
+Under:
+multiple:
+simultaneous:
+logical:
+lesions,
+
+healthy:
+regions
+
+can:
+receive:
+
+multiple:
+mutually:
+correlated:
+wrong:
+candidates.
+
+In:
+the:
+frozen:
+two-region:
+damage case,
+
+this:
+was:
+strong:
+enough
+
+to:
+create:
+wrong:
+majorities
+
+and:
+secondary:
+false:
+repairs.
+
+Thus:
+
+HYPERGRAPH:
+COMPRESSION
+
+trades:
+
+MORE:
+LOCAL:
+FAULT:
+TOLERANCE
+
+for:
+
+LESS:
+FAULT:
+ISOLATION.
+
+This:
+is:
+the:
+central:
+DG-1R-05G:
+result.
+
+UNANIMOUS CONTROL
+
+HYPER20_UNANIMOUS_48
+
+avoids:
+false:
+majority:
+repair,
+
+but:
+
+DATA2_PLUS_CHECK2_D6:
+
+repairs:
+
+0.
+
+median:
+logical divergence area:
+
+3.677083333333333.
+
+sustained exact logical recovery:
+
+0.
+
+Thus:
+
+requiring:
+complete:
+agreement
+
+is:
+too:
+conservative.
+
+DETECT-ONLY CONTROL
+
+HYPER20_DETECT_ONLY
+
+does NOT:
+recover:
+ordinary:
+local:
+data damage.
+
+LOCAL_DATA2_D6:
+
+median:
+logical divergence area:
+
+3.677083333333333.
+
+sustained exact logical recovery:
+
+0.
+
+Thus:
+
+the:
+positive:
+local:
+result
+
+comes:
+from:
+active:
+reconstruction,
+
+not:
+merely:
+from:
+the:
+hypergraph:
+representation.
+
+TECHNICAL CONCLUSION
+
+DG-1R-05G establishes:
+
+INTEGRITY:
+INFORMATION:
+DENSITY
+
+can:
+be:
+increased
+
+without:
+
+adding:
+persistent:
+bits.
+
+One:
+four-bit:
+hypercheck
+
+can:
+simultaneously:
+support:
+
+four:
+logical:
+regions.
+
+This:
+substantially:
+raises:
+local:
+witness:
+fault tolerance.
+
+However:
+
+higher-order:
+checks
+
+create:
+shared:
+failure:
+domains.
+
+The:
+repair problem
+now:
+requires:
+
+FAULT:
+LOCALIZATION
+
+before:
+
+MAJORITY:
+RECONSTRUCTION.
+
+A:
+candidate:
+should NOT:
+be:
+trusted
+simply:
+because:
+many:
+checks
+agree
+
+if:
+
+those:
+checks
+share:
+the:
+same:
+damaged:
+logical:
+contributors.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05H —
+HYPERGRAPH:
+SYNDROME /
+FAULT-LOCALIZATION:
+AUDIT.
+
+Keep:
+
+48:
+logical bits.
+
+80:
+integrity bits.
+
+128:
+total:
+persistent bits.
+
+Keep:
+
+the:
+same:
+20:
+four-region:
+hyperchecks.
+
+Do NOT:
+change:
+the:
+representation.
+
+Compare:
+
+1.
+NAIVE_MAJORITY:
+the:
+DG-1R-05G:
+reference.
+
+2.
+MINIMUM-WEIGHT:
+SYNDROME:
+DECODER:
+information-content:
+upper-bound.
+
+Per:
+logical:
+bit plane,
+
+treat:
+
+12:
+logical:
+data bits
+
+plus:
+
+20:
+stored:
+check bits
+
+as:
+
+32:
+possible:
+fault:
+locations.
+
+Use:
+
+the:
+20:
+hypercheck:
+syndromes
+
+to:
+search:
+the:
+lowest-weight:
+fault pattern
+
+up:
+to:
+a:
+frozen:
+small:
+weight:
+bound.
+
+Repair only if:
+
+the:
+minimum-weight:
+explanation
+
+is:
+
+UNIQUE.
+
+Purpose:
+
+ask:
+whether:
+the:
+same:
+stored:
+integrity:
+state
+
+contains:
+enough:
+information
+
+to:
+localize:
+distributed:
+faults,
+
+even:
+though:
+naive:
+majority
+cannot.
+
+3.
+ITERATIVE:
+SYNDROME:
+BIT-FLIP:
+decoder.
+
+Purpose:
+
+test:
+a:
+more:
+local /
+distributed:
+approximation
+
+to:
+the:
+minimum-weight:
+upper bound.
+
+Primary question:
+
+is:
+DG-1R-05G's:
+distributed:
+failure
+
+a:
+REPRESENTATION:
+LIMIT
+
+or:
+
+a:
+DECODER:
+LIMIT?
+
+If:
+
+minimum-weight:
+decoding
+also:
+fails:
+
+the:
+hypergraph:
+does NOT:
+contain:
+enough:
+independent:
+information.
+
+If:
+
+minimum-weight:
+decoding
+succeeds:
+
+but:
+iterative:
+local:
+decoding
+fails:
+
+the:
+information
+exists,
+
+but:
+
+Yggdrasil
+needs:
+a:
+better:
+local:
+inference:
+mechanism.
+
+If:
+
+both:
+succeed:
+
+the:
+next:
+step
+
+is:
+developmental:
+learning
+of:
+repair:
+message-passing
+rather:
+than:
+more:
+redundancy.
+
+PLAIN-SPEAK SUMMARY
+
+We:
+found:
+a:
+real:
+win
+
+and:
+a:
+new:
+problem.
+
+By:
+making:
+each:
+backup:
+check
+cover:
+four:
+regions
+instead:
+of:
+two,
+
+we:
+made:
+each:
+backup:
+bit
+work:
+harder.
+
+A:
+region
+could:
+survive:
+
+two:
+bad:
+witnesses
+
+and:
+even:
+three:
+bad:
+witnesses
+
+without:
+adding:
+any:
+memory.
+
+That:
+is:
+a:
+big:
+efficiency:
+gain.
+
+But:
+
+when:
+two:
+actual:
+data:
+regions
+
+were:
+damaged
+at:
+the:
+same:
+time,
+
+their:
+errors
+leaked:
+through:
+the:
+shared:
+hyperchecks
+
+and:
+made:
+healthy:
+regions
+look:
+wrong.
+
+The:
+system
+then:
+started:
+repairing:
+healthy:
+cells
+into:
+bad:
+states.
+
+So:
+
+more:
+connected:
+backup:
+information
+
+is:
+powerful,
+
+but:
+also:
+more:
+contagious.
+
+The:
+next:
+question
+is:
+
+can:
+the:
+organism
+figure:
+out:
+
+WHERE:
+THE:
+DAMAGE:
+ACTUALLY:
+IS
+
+before:
+it:
+starts:
+repairing?
+
+If:
+yes,
+
+we:
+may:
+keep:
+the:
+hypergraph's:
+high:
+efficiency
+
+without:
+its:
+distributed:
+damage:
+cascade.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+DG-1R-05G remains:
+
+NON-CANONICAL /
+NON-EVIDENCE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
