@@ -706,3 +706,464 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-05P NON-CANONICAL CLOSURE — INDEPENDENT SELF-HEALTH CONSENSUS AUTHORIZATION
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+REPRODUCIBLE MECHANICALLY-EQUIVALENT EXECUTION /
+INDEPENDENT CONSENSUS GAIN POSITIVE /
+CORRELATED-FORGERY BOUNDARY PRESERVED /
+NON-CANONICAL.
+
+FROZEN REFERENCE HARNESS
+
+Git blob SHA:
+
+f8975a8fe5f87c62bf0c1f3af90a3a0cef241a98.
+
+Source SHA-256:
+
+41dfa288ffc542d1bc536ca676ad8f34712338c3f73d66e05949b68c14901259.
+
+Source bytes:
+
+15319.
+
+EXECUTION INFRASTRUCTURE NOTE
+
+The exact frozen CPython reference implementation exceeded the available single-process sandbox execution window.
+
+A Cython compilation of the same unchanged source also exceeded that window.
+
+A read-only GitHub Actions workflow was added to run the exact frozen source twice with a source-hash gate.
+Workflow run 35541992773 failed before any step executed:
+no runner was allocated,
+the job contained zero steps,
+and no experiment output was produced.
+
+These failed infrastructure paths generated no scientific result.
+
+MECHANICALLY-EQUIVALENT EXECUTION ADAPTER
+
+To complete this NON-CANONICAL audit without altering the frozen scientific rules,
+a local execution adapter imported the exact frozen reference module and replaced only two computational primitives with algebraically equivalent accelerators:
+
+- candidate-list enumeration:
+  vectorized Hamming-weight computation with the exact frozen ordering
+  (candidate size ascending,
+   syndrome reduction descending,
+   numeric mask ascending);
+
+- single-plane fingerprint compatibility:
+  reduced to its unique compatible proposal mask implied by the exact frozen per-block fingerprint delta.
+
+The frozen module's:
+
+- topology;
+- fingerprint definitions;
+- candidate bound;
+- multi-plane compatibility logic;
+- Audits A through E;
+- correlated-forgery construction;
+- truth labels;
+- signal definitions;
+- output schema;
+- serialization
+
+were reused unchanged.
+
+ADAPTER VALIDATION
+
+Frozen source SHA-256 verification:
+
+PASS.
+
+All 4096 logical-code syndromes:
+first selected candidate matched an independent scalar implementation.
+
+PASS.
+
+All 6195 check-only patterns of weights 1 through 4:
+first selected candidate matched the frozen scalar ordering exactly.
+
+PASS.
+
+All 27 syndromes used by:
+- intra-cell multi-plane evaluation;
+- cross-plane alias evaluation;
+- frozen challenge families
+
+had byte-for-byte equivalent complete candidate lists between scalar and accelerated enumeration.
+
+PASS.
+
+Representative single-plane fingerprint compatibility comparisons against the frozen primitive:
+
+PASS.
+
+Adapter source SHA-256:
+
+ec7f1206de46ccdef60b699f6c54ec80461adbd69300734e4971c420f1037097.
+
+Independent adapter-verification script SHA-256:
+
+dcdd372c658ebd0cd1a776a053f7ba4fda2a5ab50a7da6f9ad3b11f591523b78.
+
+REPRODUCIBILITY
+
+Complete sweep 1 serialized output SHA-256:
+
+f956b22f8adc2426c2feb6012484f7d79610b1749bff78162a4ccefe4e3767a9.
+
+Complete sweep 2 serialized output SHA-256:
+
+f956b22f8adc2426c2feb6012484f7d79610b1749bff78162a4ccefe4e3767a9.
+
+BYTE_IDENTICAL:
+
+TRUE.
+
+MECHANICAL_VALID:
+
+TRUE.
+
+PRIMARY AUDIT A — SINGLE-PLANE LOGICAL MASKS
+
+COORD6_SYNDROME_ONLY:
+
+COMPLETE_AUTHORIZATION:
+100.
+
+SAFE_PARTIAL_AUTHORIZATION:
+7588.
+
+FALSE_AUTHORIZATION:
+8660.
+
+ABSTAIN:
+32.
+
+Every FP1 through FP4 consensus method:
+
+COMPLETE_AUTHORIZATION:
+10036.
+
+FALSE_AUTHORIZATION:
+0.
+
+ABSTAIN:
+6344.
+
+The abstentions are exactly the logical masks above the frozen six-block candidate bound.
+
+PRIMARY AUDIT B — CHECK-ONLY SAFETY
+
+COORD6_SYNDROME_ONLY:
+
+FALSE_AUTHORIZATION:
+20376.
+
+ABSTAIN:
+4404.
+
+Every FP1 through FP4 consensus method:
+
+FALSE_AUTHORIZATION:
+0.
+
+ABSTAIN:
+24780.
+
+INDEPENDENT_CHECK_ONLY_SPECIFICITY_B:
+
+TRUE for FP1, FP2, FP3, and FP4.
+
+PRIMARY AUDIT C — FROZEN COORDINATION CHALLENGES
+
+COORD6_SYNDROME_ONLY:
+
+COMPLETE_AUTHORIZATION:
+4 / 12.
+
+FALSE_AUTHORIZATION:
+8 / 12.
+
+FP1_CONSENSUS:
+12 / 12 complete,
+0 false.
+
+FP2_CONSENSUS:
+12 / 12 complete,
+0 false.
+
+FP3_CONSENSUS:
+12 / 12 complete,
+0 false.
+
+FP4_CONSENSUS:
+12 / 12 complete,
+0 false.
+
+CHALLENGE_COORDINATION_RECOVERY_B:
+
+TRUE for FP1 through FP4.
+
+PRIMARY AUDIT D — INTRA-CELL MULTI-PLANE HEALTH RESOLUTION
+
+FP1:
+
+one-plane:
+48 / 48 complete.
+
+two-plane:
+0 / 72 complete;
+72 abstain.
+
+three-plane:
+48 / 48 complete.
+
+four-plane:
+0 / 12 complete;
+12 abstain.
+
+FP2:
+
+one-plane:
+48 / 48 complete.
+
+two-plane:
+48 / 72 complete;
+24 abstain.
+
+three-plane:
+48 / 48 complete.
+
+four-plane:
+0 / 12 complete;
+12 abstain.
+
+FP3:
+
+one-plane:
+48 / 48 complete.
+
+two-plane:
+72 / 72 complete.
+
+three-plane:
+48 / 48 complete.
+
+four-plane:
+0 / 12 complete;
+12 abstain.
+
+FP4:
+
+one-plane:
+48 / 48 complete.
+
+two-plane:
+72 / 72 complete.
+
+three-plane:
+48 / 48 complete.
+
+four-plane:
+12 / 12 complete.
+
+No fingerprint depth produced a false authorization in this audit.
+
+PRIMARY AUDIT E — CROSS-PLANE HEALTH ALIAS
+
+COORD6_SYNDROME_ONLY:
+
+FALSE healthy-plane authorization:
+144 / 144.
+
+FP1 through FP4:
+
+healthy false plane suppressed:
+144 / 144.
+
+PLANE_ALIAS_SUPPRESSION_B:
+
+TRUE for FP1 through FP4.
+
+PRIMARY CONSENSUS SIGNAL
+
+For FP1, FP2, FP3, and FP4:
+
+INDEPENDENT_CHECK_ONLY_SPECIFICITY:
+TRUE.
+
+CHALLENGE_COORDINATION_RECOVERY:
+TRUE.
+
+PLANE_ALIAS_SUPPRESSION:
+TRUE.
+
+ZERO_FALSE_AUTH_PRIMARY_A_TO_E:
+TRUE.
+
+INDEPENDENT_CONSENSUS_GAIN:
+TRUE.
+
+CORRELATED FORGERY BOUNDARY
+
+F1 — logical damage plus fingerprint erasure:
+
+all FP depths:
+
+48 / 48 ABSTAIN.
+
+Thus corruption of the logical state plus its independent temporal witness can erase authorization evidence and create an unsafe miss.
+
+F2 — check-only damage plus forged fingerprint support:
+
+all FP depths:
+
+FALSE_AUTHORIZATION:
+5094.
+
+CORRELATED_FORGERY_FAILURE:
+
+TRUE for FP1 through FP4.
+
+This is expected.
+
+The fingerprint is an independent evidence class only while its provenance is actually independent.
+Once both integrity evidence and self-health history are coherently forged,
+agreement does not establish truth.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-05P establishes a positive authorization result under the preregistered independent-witness model.
+
+Raw coordinated syndrome descent is unsafe.
+
+Adding one separate temporal self-health evidence class changes the authorization geometry materially:
+
+- false logical authorization drops to zero across primary Audits A through E;
+- all three previously difficult coordinated logical challenge families become completely authorizable;
+- cross-plane reuse of a generic "unhealthy cell" signal is suppressed;
+- the result remains explicitly vulnerable when both provenance classes are corrupted together.
+
+The fingerprint depth controls information resolution,
+not the number of independent witnesses.
+
+FP1,
+FP2,
+FP3,
+and FP4 are still two provenance classes total:
+
+1. distributed integrity geometry;
+2. temporal self-health history.
+
+The resource/sensitivity frontier is:
+
+FP1:
++12 bits organism-wide;
+strong single-plane authorization;
+blind to every tested two-plane and four-plane intra-cell change.
+
+FP2:
++24 bits;
+resolves 48 / 72 two-plane cases;
+still misses all four-plane changes.
+
+FP3:
++36 bits;
+fully resolves one-, two-, and three-plane intra-cell damage;
+misses the all-four-plane change.
+
+FP4:
++48 bits;
+exact four-plane temporal witness;
+fully resolves every intra-cell damage pattern tested.
+
+No preferred fingerprint depth is selected by 05P.
+
+PLAIN-SPEAK INTERPRETATION
+
+This is the first strong evidence that the healthy cells can actually form a trustworthy operational authority.
+
+The shared backup network by itself was not enough.
+It frequently found groups of healthy cells that looked like good repairs.
+
+But when the proposed cells also had to match their own separate memory of what changed,
+the false permissions disappeared across every normal test we ran.
+
+Even the smallest one-bit self-health memory per cell was enough to make the main consensus gate safe in these tests.
+
+More self-health bits did not create more independent votes.
+They simply let each cell describe its own damage more precisely.
+
+One bit could say enough for the main authorization job,
+but it could not distinguish several kinds of multi-bit damage inside the same cell.
+Four bits could.
+
+The important boundary also held exactly where it should:
+
+if an attacker or fault corrupts both the shared evidence and the cell's supposedly independent health memory in a coordinated way,
+the population can still be fooled.
+
+So the emerging rule is stronger now:
+
+HEALTHY-CELL CONSENSUS CAN BE THE OPERATIONAL AUTHORITY,
+
+provided that
+
+HEALTH
+and
+INDEPENDENT WITNESS PROVENANCE
+
+are constitutional requirements for participating in that consensus.
+
+A population agreeing with itself is not enough.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05Q —
+
+SELF-HEALTH-CONSENSUS GUARDED DYNAMIC REPAIR TRANSFER AUDIT.
+
+Question:
+
+When the 05P authorization rule is allowed to control actual repair in the frozen DG-1R-05N dynamic worlds,
+does independently qualified healthy-cell consensus:
+
+- cross the coordinated repair plateaus that defeated the old greedy decoder;
+- preserve the solved legacy logical cases;
+- suppress integrity-only false repair;
+- preserve cross-plane alias protection;
+- expose the correlated-forgery boundary without silently treating correlated evidence as independent?
+
+Run FP1 through FP4 without preselecting a winner.
+
+Keep:
+
+- exact DIST4_05M topology;
+- exact 05N dynamics;
+- exact repair timing;
+- exact 05P candidate bound and ordering;
+- explicit abstention;
+- no central oracle;
+- no provenance-class inflation.
+
+Only after dynamic transfer should a resource tradeoff choose whether FP1,
+FP2,
+FP3,
+FP4,
+or a later compressed equivalent is justified.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
