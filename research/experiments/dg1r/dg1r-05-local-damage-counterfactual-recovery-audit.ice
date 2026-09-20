@@ -1549,3 +1549,1048 @@ non-canonical.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-05 NON-EVIDENCE PILOT CLOSURE — LOCAL DAMAGE CONTAINMENT / COUNTERFACTUAL RECOVERY
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+POSITIVE DAMAGE-CONTAINMENT SIGNAL /
+NEGATIVE LOST-STATE RECONSTRUCTION SIGNAL /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+b4a35269bd99560b8c13613bab284ae47d253b245cf7e4304fde246254e644d3.
+
+CANONICAL OUTPUT
+
+RUN 1 SHA-256:
+
+1ad17fc729eefb0d8a8f241d1d7d02d6bbf2b62cb6c5997e32574967c03df64d.
+
+RUN 2 SHA-256:
+
+1ad17fc729eefb0d8a8f241d1d7d02d6bbf2b62cb6c5997e32574967c03df64d.
+
+Byte-identical:
+
+PASS.
+
+MECHANICAL VALIDITY
+
+No-damage:
+duplicate-clone:
+maximum divergence:
+
+0.
+
+Across:
+
+all:
+8 worlds
+
+and:
+all:
+five:
+methods.
+
+MECHANICAL_VALID:
+
+TRUE.
+
+FULL SELF-REPAIR SIGNAL
+
+FALSE.
+
+HOMEOSTATIC REPAIR CANDIDATES
+
+NONE.
+
+However:
+
+two:
+eligible:
+nanite:
+methods
+
+show:
+strong:
+DAMAGE CONTAINMENT.
+
+REFERENCE — SLOW128_MIXED1
+
+Combined:
+64:
+damage scenarios.
+
+Median:
+excess divergence area:
+
+1.51953125.
+
+h16:
+whole-state divergence:
+
+0.0546875.
+
+h32:
+whole-state divergence:
+
+0.0390625.
+
+h16:
+outside-lesion divergence:
+
+0.04.
+
+h32:
+outside-lesion divergence:
+
+0.032.
+
+h16:
+lesion recovery:
+
+0.60.
+
+h32:
+lesion recovery:
+
+0.6666666666666667.
+
+Sustained:
+full-recovery rate:
+
+0.078125.
+
+N16_H6 — CONTAINMENT POSITIVE
+
+Median:
+excess divergence area:
+
+0.984375.
+
+Reduction versus:
+SLOW128:
+
+35.218508997429304%.
+
+h16:
+whole-state divergence:
+
+0.03125.
+
+h32:
+whole-state divergence:
+
+0.03125.
+
+h16:
+outside-lesion divergence:
+
+0.016.
+
+Reduction versus:
+SLOW128:
+
+60%.
+
+h32:
+outside-lesion divergence:
+
+0.012065040650406506.
+
+Reduction versus:
+SLOW128:
+
+62.29674796747967%.
+
+Sustained:
+full-recovery rate:
+
+0.140625.
+
+This is:
+higher than:
+SLOW128:
+
+0.078125.
+
+Frozen:
+
+CONTAINMENT_SIGNAL:
+
+PASS.
+
+But:
+
+h32:
+lesion recovery:
+
+0.40.
+
+This is:
+lower than:
+SLOW128:
+
+0.6666666666666667.
+
+Frozen:
+
+REPAIR_SIGNAL:
+
+FAIL.
+
+Interpretation:
+
+H6:
+keeps:
+the:
+damage
+more:
+localized
+
+and:
+reduces:
+total:
+trajectory:
+disruption,
+
+but:
+
+does NOT:
+reconstruct:
+the:
+specific:
+lost:
+lesion:
+state.
+
+N16_H6_REPAIR — STRONGEST ELIGIBLE CONTAINMENT
+
+Median:
+excess divergence area:
+
+0.87109375.
+
+Reduction versus:
+SLOW128:
+
+42.67352185089974%.
+
+h16:
+whole-state divergence:
+
+0.03125.
+
+h32:
+whole-state divergence:
+
+0.03125.
+
+h16:
+outside-lesion divergence:
+
+0.012065040650406506.
+
+Reduction versus:
+SLOW128:
+
+69.83739837398374%.
+
+h32:
+outside-lesion divergence:
+
+0.008130081300813009.
+
+Reduction versus:
+SLOW128:
+
+74.59349593495934%.
+
+Median:
+damage-triggered:
+extra:
+REPAIR attempts:
+
+9.5.
+
+Median:
+damage-triggered:
+extra:
+state-changing:
+repair writes:
+
+2.
+
+Frozen:
+
+CONTAINMENT_SIGNAL:
+
+PASS.
+
+But:
+
+h16:
+lesion recovery:
+
+0.40.
+
+h32:
+lesion recovery:
+
+0.50.
+
+Relative:
+lesion-recovery gains:
+
+h16:
+
+-0.20.
+
+h32:
+
+-0.16666666666666674.
+
+Frozen:
+
+REPAIR_SIGNAL:
+
+FAIL.
+
+Thus:
+
+the:
+bounded:
+repair rule
+
+actively:
+responds:
+to:
+damage
+
+and:
+strongly:
+reduces:
+damage spread,
+
+but:
+
+its:
+local:
+one-bit:
+controller
+
+does NOT:
+contain:
+enough:
+information
+
+to:
+know:
+what:
+the:
+destroyed:
+worker:
+state
+should:
+have:
+been.
+
+N16_H5
+
+Median:
+excess divergence area:
+
+1.48828125.
+
+Only:
+
+2.056555269922879%:
+lower
+than:
+SLOW128.
+
+h32:
+outside divergence:
+
+0.03626016260162602.
+
+This is:
+worse
+than:
+SLOW128.
+
+CONTAINMENT_SIGNAL:
+
+FAIL.
+
+REPAIR_SIGNAL:
+
+FAIL.
+
+Interpretation:
+
+H5:
+changes:
+too:
+frequently
+to:
+provide:
+useful:
+damage:
+containment.
+
+N16_H6_DAMP — NEGATIVE CONTROL
+
+Median:
+excess divergence area:
+
+0.51953125.
+
+Reduction:
+
+65.80976863753213%.
+
+h16:
+whole-state divergence:
+
+0.015625.
+
+h32:
+whole-state divergence:
+
+0.015625.
+
+h32:
+outside-lesion divergence:
+
+0.012065040650406506.
+
+Its:
+containment:
+is:
+extremely:
+strong.
+
+But:
+
+DG-1R-04
+already:
+proved:
+
+this:
+architecture
+is:
+severely:
+over-stabilized
+
+with:
+
+state entropy
+approximately:
+
+0.0596
+
+and:
+
+feature rank:
+
+1 / 512.
+
+Therefore:
+
+N16_H6_DAMP:
+
+remains:
+INELIGIBLE
+
+as:
+a:
+repair:
+candidate.
+
+Its:
+result
+demonstrates:
+
+FREEZING
+can:
+look:
+like:
+excellent:
+damage:
+containment.
+
+That is:
+exactly:
+why:
+the:
+counterfactual:
+repair distinction
+is:
+necessary.
+
+LESION SIZE OBSERVATION
+
+For:
+N16_H6_REPAIR:
+
+SMALL3:
+
+median:
+excess divergence area:
+
+0.83203125.
+
+h32:
+lesion recovery:
+
+0.6666666666666667.
+
+h32:
+outside divergence:
+
+0.016.
+
+LARGE5:
+
+median:
+excess divergence area:
+
+0.91015625.
+
+h32:
+lesion recovery:
+
+0.40.
+
+h32:
+outside divergence:
+
+0.008130081300813009.
+
+Thus:
+
+the:
+repair layer
+
+is:
+particularly:
+effective
+at:
+preventing:
+large:
+lesions
+from:
+spreading,
+
+but:
+
+larger:
+information loss
+
+makes:
+exact:
+local:
+reconstruction
+harder.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-05 separates:
+
+two:
+different:
+capabilities.
+
+1.
+
+DAMAGE CONTAINMENT.
+
+The:
+H6:
+controller family
+
+can:
+substantially:
+reduce:
+
+- propagation;
+- cumulative:
+  trajectory:
+  divergence;
+- outside-lesion:
+  corruption.
+
+This is:
+a:
+real:
+positive:
+homeostatic:
+signal.
+
+2.
+
+LOST-STATE RECONSTRUCTION.
+
+The:
+same:
+one-bit:
+controller family
+
+cannot:
+infer:
+
+what:
+the:
+damaged:
+worker bits
+
+should:
+have:
+been
+
+relative:
+to:
+the:
+undamaged:
+counterfactual:
+trajectory.
+
+Therefore:
+
+the:
+missing:
+ingredient
+
+is NOT:
+
+more:
+stability.
+
+The:
+missing:
+ingredient
+is:
+
+REDUNDANT /
+RECONSTRUCTABLE:
+LOCAL:
+INFORMATION.
+
+This suggests:
+
+repair:
+requires:
+two:
+functions.
+
+A.
+
+CONTAIN:
+the:
+lesion
+
+so:
+corruption
+does not:
+spread.
+
+B.
+
+RECONSTRUCT:
+destroyed:
+state
+
+from:
+information
+stored:
+elsewhere.
+
+The:
+current:
+nanites
+
+have:
+A.
+
+They:
+do NOT:
+yet have:
+B.
+
+NEXT ARCHITECTURAL HYPOTHESIS
+
+Do NOT:
+increase:
+global:
+cell count.
+
+Do NOT:
+increase:
+nanite:
+damping.
+
+Instead:
+
+use:
+the:
+same:
+fixed:
+128-bit:
+state budget
+
+to:
+introduce:
+
+LOCAL:
+REDUNDANCY.
+
+Candidate mechanism:
+
+each:
+maintenance:
+territory
+
+stores:
+a:
+small:
+distributed:
+syndrome /
+parity /
+echo
+
+of:
+neighboring:
+worker:
+state
+
+across:
+multiple:
+controller /
+worker:
+locations.
+
+The:
+repair system
+then:
+
+1.
+detects:
+local:
+inconsistency;
+
+2.
+contains:
+propagation;
+
+3.
+uses:
+redundant:
+local:
+information
+
+to:
+choose:
+a:
+repair
+that:
+is:
+better:
+informed
+than:
+
+"make:
+this:
+cell
+match:
+one:
+controller bit."
+
+This is:
+closer:
+to:
+
+error-correcting:
+development
+
+than:
+simple:
+stabilization.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-06 —
+REDUNDANT LOCAL ENCODING /
+NANITE RECONSTRUCTION AUDIT.
+
+Keep:
+
+128:
+persistent bits.
+
+Compare:
+
+- SLOW128:
+  passive reference;
+
+- H6:
+  containment-only reference;
+
+- H6_REPAIR:
+  one-bit repair reference;
+
+- bounded:
+  redundant:
+  local-code:
+  variants.
+
+Fairness:
+
+any:
+redundancy
+must:
+consume:
+bits
+from:
+the:
+same:
+128-bit:
+organism.
+
+No:
+free:
+shadow:
+copy.
+
+No:
+external:
+history.
+
+No:
+counterfactual:
+reference
+available
+to:
+the:
+organism.
+
+Primary question:
+
+can:
+a:
+small:
+amount:
+of:
+distributed:
+redundancy
+
+convert:
+
+CONTAINMENT
+
+into:
+
+TRUE:
+COUNTERFACTUAL:
+RECONSTRUCTION?
+
+PLAIN-SPEAK SUMMARY
+
+Your:
+software-nanite:
+idea
+did:
+produce:
+something:
+important.
+
+The:
+nanites
+can:
+act:
+like:
+a:
+firebreak.
+
+When:
+we:
+damage:
+the:
+organism,
+
+the:
+H6:
+nanites
+
+keep:
+the:
+damage
+from:
+spreading
+nearly:
+as:
+far.
+
+The:
+repair:
+nanites
+
+cut:
+overall:
+damage:
+divergence
+
+by:
+about:
+43%
+
+and:
+cut:
+damage:
+outside:
+the:
+injured:
+area
+
+by:
+roughly:
+70-75%.
+
+That:
+is:
+real:
+headroom.
+
+But:
+
+they:
+cannot:
+rebuild:
+information
+that:
+was:
+actually:
+destroyed.
+
+Why?
+
+Because:
+
+one:
+nanite:
+has:
+only:
+one:
+bit
+about:
+its:
+local:
+neighborhood.
+
+If:
+several:
+worker:
+bits
+are:
+destroyed,
+
+there:
+is:
+not:
+enough:
+remaining:
+information
+to:
+know:
+exactly:
+what:
+those:
+bits
+should:
+be.
+
+So:
+
+we:
+now:
+have:
+half:
+of:
+a:
+self-healing:
+system.
+
+The:
+nanites
+can:
+
+STOP:
+THE:
+BLEEDING.
+
+They:
+cannot:
+yet:
+
+REGENERATE:
+THE:
+MISSING:
+INFORMATION.
+
+The:
+next:
+experiment
+should:
+give:
+the:
+organism
+
+distributed:
+local:
+redundancy
+
+inside:
+the:
+same:
+128-bit:
+budget.
+
+Then:
+
+when:
+a:
+cell
+is:
+damaged,
+
+the:
+nanites
+may:
+have:
+enough:
+independent:
+information
+
+to:
+reconstruct:
+what:
+was:
+lost
+
+instead:
+of:
+merely:
+preventing:
+the:
+damage
+from:
+spreading.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
