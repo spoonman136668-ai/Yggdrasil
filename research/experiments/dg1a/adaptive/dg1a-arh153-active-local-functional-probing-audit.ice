@@ -688,3 +688,148 @@ the first held-out H153 primary world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY HARNESS CORRECTION 02 — RESTORED HARNESS HASH / SANITY REPLAY
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H153 HELD-OUT PRIMARY EXECUTION.
+
+The sandbox copy
+of:
+the first H153 harness
+
+was overwritten
+before:
+any held-out H153 primary world
+was successfully executed.
+
+The exact prior source bytes
+could not be recovered
+byte-for-byte.
+
+Therefore:
+
+the prior sandbox harness hash
+36965c4de5c491aa64da06397f78fb484c88f0ffd640b72c2a5b687aafbe450d
+
+is:
+SUPERSEDED
+for:
+primary execution.
+
+No H153 primary result
+exists
+under:
+that hash.
+
+The active-query semantics
+were reconstructed
+from:
+the frozen H153 preregistration.
+
+The restored harness was:
+recompiled
+and:
+the complete declared sanity-threshold procedure
+was rerun
+on:
+the same non-evidence sanity family.
+
+RESTORED HARNESS SHA-256
+
+fb8cb34ba01ddb2508dde2f4056f8fac14226d2f3d7640af9ca6908f6900bd45.
+
+SANITY REPLAY
+
+rho candidates:
+
+0.50,
+0.25,
+0.10.
+
+Under:
+the restored harness,
+
+STOP24 consumed:
+the full 24-observation maximum
+
+for:
+every declared MIXED sanity cell
+
+at:
+all three rho values.
+
+Therefore:
+
+all three candidates
+produce:
+the same final result
+as:
+COMPONENT24
+
+on:
+the declared sanity cells.
+
+By:
+the preregistered deterministic selection rule,
+
+choose:
+the LARGEST qualifying threshold.
+
+FINAL PRIMARY STOP THRESHOLD
+
+rho =
+0.50.
+
+Interpretation:
+
+the current posterior-uncertainty rule
+does not:
+cross even the 0.50 threshold
+inside:
+24 observations
+on:
+the declared sanity cells.
+
+Thus:
+
+the early-stop policy
+is expected to:
+behave like:
+fixed COMPONENT24
+
+unless:
+some held-out geometries
+close uncertainty faster.
+
+No:
+acceptance threshold,
+query budget,
+ridge lambda,
+primary seed,
+or:
+policy identity
+is changed.
+
+HELD-OUT PRIMARY STATUS
+
+NOT STARTED.
+
+Primary family remains:
+
+20260920000000..20260920002399.
+
+No execution-semantic change
+is permitted
+after:
+the first accepted primary world
+under:
+the restored harness hash.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
