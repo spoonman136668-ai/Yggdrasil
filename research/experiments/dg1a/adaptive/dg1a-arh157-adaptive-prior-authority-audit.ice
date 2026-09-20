@@ -1013,3 +1013,203 @@ the first held-out H157 primary world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — ADAPTIVE PRIOR / NOISY FEEDBACK HARNESS
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H157 HELD-OUT PRIMARY EXECUTION.
+
+CORRECTED H157 SANDBOX HARNESS SHA-256
+
+c4a67f7d875bcb92e1f38803d9bcb389764713b9409ebe9dd6a9a71f32f8170e.
+
+PARENT HASHES
+
+H151:
+3f6042716b4e5a26f41569376a4dca833f5bae5f3c053aa2280615bfadb32e37.
+
+H152:
+e8be77384de4fef8a6b8eda875575f581edfc97794d5060e57e4e3bfa7b3b4e3.
+
+H156 final measurement-conditioning harness:
+40e39df728c731d8f03c16084cd57a0d4c5d54287e3c5ae99e04446eaa325847.
+
+IMPLEMENTATION
+
+Lambda grid:
+
+0.01,
+0.03,
+0.10,
+0.30.
+
+Before:
+four acquired feedback observations,
+
+adaptive lambda:
+0.03.
+
+After:
+four observations,
+
+choose lambda by:
+leave-one-out predictive error
+on:
+already-acquired local feedback only.
+
+Tie:
+larger lambda.
+
+Adaptive query selection:
+
+- ADAPT-CV:
+  global leverage / D-optimal proxy;
+- AOPT-ADAPT-CV:
+  A-optimal trace-reduction proxy.
+
+The currently selected lambda
+is used:
+both for:
+query design
+and:
+the joint ridge solve
+for that maturation step.
+
+Fixed comparators:
+
+LEV-L03:
+lambda 0.03.
+
+LEV-L10:
+lambda 0.10.
+
+FIXED-L03:
+generated-order queries,
+lambda 0.03.
+
+CHECKPOINT-ORACLE:
+exact lost-state restore,
+evaluation ceiling only.
+
+ORACLE-LAMBDA:
+
+analysis-only.
+
+It uses:
+the final LEV-L03
+selected query set
+and:
+developmental prior
+
+to identify:
+which declared lambda
+would minimize:
+noise-free held-out evaluation MSE.
+
+It does NOT:
+alter:
+any repair trajectory.
+
+FEEDBACK NOISE
+
+For each world:
+
+noise scale =
+eta
+*
+sqrt(
+MSE(
+lesioned output,
+pre-lesion output
+)
+).
+
+eta:
+
+0,
+0.10,
+0.25.
+
+Noise potentials:
+
+deterministic from:
+world seed,
+eta,
+and:
+feedback query index;
+
+common across:
+policies
+within:
+the same world / eta cell.
+
+Evaluation remains:
+noise-free.
+
+SANITY
+
+Disjoint family:
+
+20260920590000...
+
+120 underlying sanity worlds.
+
+720 policy-world evaluations.
+
+Mechanical checks:
+
+- exact six executed policies / world;
+- all policies complete;
+- surviving original coefficients remain fixed;
+- adaptive lambda uses only acquired feedback;
+- unacquired targets remain hidden;
+- oracle checkpoint remains evaluation-only;
+- no functionally-trivial sanity world observed.
+
+NON-EVIDENCE scientific signal:
+
+ADAPT-CV selected:
+lambda=0.01
+for:
+nearly all declared sanity worlds,
+
+including:
+most eta=0.25 worlds.
+
+This does NOT:
+change:
+the lambda grid,
+LOOCV rule,
+noise levels,
+acceptance criteria,
+or:
+primary design.
+
+It is:
+a live hypothesis test
+for:
+the held-out primary.
+
+REPLACEMENT H157 PRIMARY FAMILY
+
+20260920600000..20260920605399.
+
+No H157 primary world
+from:
+this family
+has been executed
+at:
+this freeze.
+
+No execution-semantic change
+is permitted
+after:
+the first accepted replacement-primary world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
