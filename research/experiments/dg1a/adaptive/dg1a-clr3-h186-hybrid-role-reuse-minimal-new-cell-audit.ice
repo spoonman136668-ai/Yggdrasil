@@ -850,3 +850,336 @@ was changed.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — HYBRID ROLE-REUSE + MINIMAL NEW-CELL HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H186 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H186 SANDBOX HARNESS
+
+File:
+
+h186_hybrid_role_v1.py
+
+SHA-256:
+
+5d400ebd2f6f9686a201adfa1e323fc3593ce9ac6711bd349e52799efa3635b8.
+
+PARENT SUBSTRATE
+
+Recovered:
+the exact prior
+H178 / H183 / H185
+scientific semantics
+
+from:
+the original
+execution-source history.
+
+Parent validation:
+
+H186
+ROLE48
+and:
+NEW48
+
+reproduce:
+accepted H185
+PARENT_ROLE48
+and:
+NEW_C48
+
+exactly
+on:
+accepted H185
+sanity seed:
+20260923490000.
+
+Thus:
+
+H186 scientific differences
+are limited to:
+the preregistered
+hybrid C substrate.
+
+HYBRID MECHANICS
+
+ROLE32_NEW16:
+
+1.
+select:
+32 reused parent-role sites
+
+with:
+the exact H185
+coverage-balanced
+C geometry;
+
+2.
+fit:
+an intermediate
+32-role
+C function
+
+only to:
+identify:
+remaining residual structure;
+
+3.
+compute:
+residual_2;
+
+4.
+select:
+16 fresh
+C daughter sites
+
+from:
+the same:
+8-center
+C coverage geometry
+
+using:
+residual_2
+for:
+local frontier scoring;
+
+5.
+exclude:
+role-selected
+parent sites
+from:
+actual new-daughter
+site occupation
+
+when:
+an unused alternative exists;
+
+6.
+allow:
+role sites
+to:
+act only as:
+connected-growth
+traversal locations
+if needed;
+
+7.
+instantiate:
+standard:
+C-specific
+micro-offset daughter centers;
+
+8.
+fit:
+all:
+32 reused role coefficients
++
+16 new daughter coefficients
+
+JOINTLY
+
+to:
+the original:
+A+B
+C residual.
+
+The intermediate:
+role-only fit
+
+does NOT:
+define:
+final coefficients.
+
+Parent A,
+B daughter coefficients,
+and:
+the accommodated B router
+
+remain:
+frozen.
+
+C router:
+
+exact H185.
+
+No:
+A/B functional replay.
+
+POLICIES
+
+ROLE32_NEW16.
+
+ROLE32_NEW32.
+
+ROLE48_NEW16.
+
+ROLE48.
+
+NEW48.
+
+GLOBAL_PARENT_ROLE.
+
+SANITY
+
+Disjoint family:
+
+20260923590000
+and:
+20260923590001.
+
+2 worlds.
+
+6 policies.
+
+12 evaluations.
+
+Accepted sanity-output SHA-256:
+
+597c8a0a411c2296063d8fe52291d66efe75f779ae46ae3deefcfc79aa21a151.
+
+Mechanical checks:
+
+- exact 6 policies / sanity world;
+- ROLE32_NEW16:
+  32 reused role coefficients;
+- ROLE32_NEW16:
+  16 new C physical cells;
+- ROLE32_NEW32:
+  32 new C cells;
+- ROLE48_NEW16:
+  16 new C cells;
+- ROLE48:
+  zero new C cells;
+- NEW48:
+  48 new C cells;
+- parent A/B state:
+  frozen;
+- hibernation / reactivation:
+  exact zero error;
+- accepted primary family:
+  no prior sandbox use detected.
+
+NON-EVIDENCE SIGNAL
+
+World:
+20260923590000.
+
+Parent stage-B:
+
+B R^2:
+approximately 0.7787.
+
+Thus:
+joint competence
+is already impossible
+before:
+C addition.
+
+C results:
+
+ROLE48:
+approximately 0.9705.
+
+NEW48:
+approximately 0.9697.
+
+ROLE32_NEW16:
+approximately 0.9842.
+
+ROLE32_NEW32:
+approximately 0.9906.
+
+ROLE48_NEW16:
+approximately 0.9850.
+
+World:
+20260923590001.
+
+Stage-B B R^2:
+approximately 0.9687.
+
+C results:
+
+ROLE48:
+approximately 0.9417.
+
+NEW48:
+approximately 0.9452.
+
+ROLE32_NEW16:
+approximately 0.9740.
+
+ROLE32_NEW32:
+approximately 0.9776.
+
+ROLE48_NEW16:
+approximately 0.9742.
+
+Thus:
+
+inside:
+the disjoint sanity pair,
+
+a small:
+fresh geometric scaffold
+
+improves:
+C competence
+
+relative to:
+role-only
+and:
+new-only
+48-state references
+
+without:
+materially increasing:
+A/B interference.
+
+These values are:
+
+NON-EVIDENCE.
+
+No:
+
+- role count;
+- new-cell count;
+- residual-stage rule;
+- site-selection rule;
+- gate;
+- teacher;
+- ridge;
+- acceptance gate
+
+was changed
+from:
+sanity outcomes.
+
+PRIMARY FAMILY
+
+20260923500000..20260923500019.
+
+20 held-out worlds.
+
+6 policies.
+
+120 evaluations.
+
+H186 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H186 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
