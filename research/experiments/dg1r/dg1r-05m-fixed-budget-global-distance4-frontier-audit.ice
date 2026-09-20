@@ -356,3 +356,91 @@ we will have strengthened the representation again without spending more persist
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05M GLOBAL DISTANCE-4 FRONTIER
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST 05M PRIMARY CANDIDATE METRIC EVALUATION.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05m_distance4_frontier_v1.py
+
+Harness commit:
+
+eab365a6627edf43de4710d1db66abc1bac46d32.
+
+Git blob SHA:
+
+046499ab7498b753ff1d1f85e3a6eb84bccea7ab.
+
+Source SHA-256:
+
+15b19de7d76cd93f67f8a63e2c7a2031abd42a4a908cedc6e69c7997b3717f64.
+
+Source bytes:
+
+13100.
+
+LOCAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Regenerated closed 05L frontier parents:
+
+49.
+
+This exactly matches the closed 05L result and is prior-result consistency,
+not new 05M evidence.
+
+Valid third-move paths from those parents:
+
+32782.
+
+Unique normalized 05M final topologies:
+
+32408.
+
+For all mechanically generated 05M final topologies:
+
+- check count remained 20;
+- total incidence remained 80;
+- exact baseline degree vector was preserved;
+- exactly three checks had arity 3;
+- exactly three checks had arity 5;
+- exactly fourteen checks had arity 4.
+
+These are mechanical candidate-family checks only and are NON-EVIDENCE.
+
+No 05M candidate rank,
+kernel,
+pair co-occurrence,
+local floor,
+global distance,
+distance-4 feasibility,
+selection,
+or holdout result
+was evaluated before this freeze.
+
+REPRODUCIBILITY
+
+Two complete deterministic exhaustive sweeps.
+
+Serialized output SHA-256 must match exactly.
+
+No RNG.
+
+No post-result tuning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
