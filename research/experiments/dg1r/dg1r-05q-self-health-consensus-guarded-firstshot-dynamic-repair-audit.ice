@@ -900,3 +900,634 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL CLOSURE — DG-1R-05Q SELF-HEALTH CONSENSUS GUARDED FIRST-SHOT DYNAMIC REPAIR
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED /
+REPRODUCIBLE /
+FP2+ FIRST-SHOT AUTHORITY TRANSFER POSITIVE /
+FP1 SAFE-BUT-UNDERINFORMED /
+CORRELATED-FORGERY BOUNDARY PRESERVED /
+NON-CANONICAL.
+
+FROZEN PROVENANCE
+
+Preregistration commit:
+
+31e0c02812483f799a43fb724ba9737b991e3823.
+
+Harness source commit:
+
+42200edc88a5f05fcfd9dad60af8e6569ab8fc60.
+
+Harness Git blob:
+
+57c79ba365e4f3443d1c34322aec096cd8a9050d.
+
+Harness source SHA-256:
+
+6f6bb827f97352a45c47aa4932beeb4a505c83b06c1b3d81285c708b36e701ee.
+
+Harness bytes:
+
+23938.
+
+Freeze commit:
+
+e4e96b3ef65d442a01067a43bd94b7ec1d6e098e.
+
+PRIMARY EXECUTION
+
+Two complete frozen 12-world sweeps were executed.
+
+Sweep 1 serialized output SHA-256:
+
+8ca80d49fc87c730c28aff46e5f12fe9c4601bcfa218f357a17be0f0ce9f2ed9.
+
+Sweep 2 serialized output SHA-256:
+
+8ca80d49fc87c730c28aff46e5f12fe9c4601bcfa218f357a17be0f0ce9f2ed9.
+
+BYTE_IDENTICAL_REPRODUCIBILITY:
+
+TRUE.
+
+MECHANICAL_VALID:
+
+TRUE.
+
+PRIMARY SIGNALS — FP1
+
+LEGACY_LOGICAL_PRESERVATION:
+
+FALSE.
+
+CHECK_ONLY_SPECIFICITY:
+
+TRUE.
+
+SINGLE_BIT_RECOVERY:
+
+TRUE.
+
+CHALLENGE_DYNAMIC_RECOVERY:
+
+TRUE.
+
+ZERO_FALSE_APPLIED_PRIMARY:
+
+TRUE.
+
+FIRSTSHOT_AUTHORITY_TRANSFER:
+
+FALSE.
+
+PRIMARY SIGNALS — FP2
+
+LEGACY_LOGICAL_PRESERVATION:
+
+TRUE.
+
+CHECK_ONLY_SPECIFICITY:
+
+TRUE.
+
+SINGLE_BIT_RECOVERY:
+
+TRUE.
+
+CHALLENGE_DYNAMIC_RECOVERY:
+
+TRUE.
+
+ZERO_FALSE_APPLIED_PRIMARY:
+
+TRUE.
+
+FIRSTSHOT_AUTHORITY_TRANSFER:
+
+TRUE.
+
+PRIMARY SIGNALS — FP3
+
+All five signals above:
+
+TRUE.
+
+PRIMARY SIGNALS — FP4
+
+All five signals above:
+
+TRUE.
+
+FP1 FAILURE MECHANISM
+
+The frozen local and distributed legacy logical lesions damage planes 0 and 1 together.
+
+Under FP1,
+the sole fingerprint row is:
+
+x0 XOR x1 XOR x2 XOR x3.
+
+A simultaneous flip of planes 0 and 1 therefore contributes:
+
+1 XOR 1
+=
+0.
+
+The self-health witness reports zero delta.
+
+As frozen,
+zero fingerprint delta is not affirmative repair evidence.
+
+Therefore FP1 correctly ABSTAINS rather than guessing.
+
+Across the four two-plane legacy logical families,
+FP1 produced:
+
+48 / 48 abstentions.
+
+It produced:
+
+0 false applied logical flips.
+
+This is a sensitivity failure,
+not a specificity failure.
+
+FP1 dynamic examples:
+
+LOCAL_DATA2_D6:
+
+complete first-shot correction:
+0 / 12.
+
+abstain:
+12 / 12.
+
+median logical divergence area:
+
+2.697916666666667.
+
+sustained exact logical recovery rate:
+
+0.25.
+
+DISTRIBUTED_DATA2:
+
+complete first-shot correction:
+0 / 12.
+
+abstain:
+12 / 12.
+
+median logical divergence area:
+
+4.885416666666666.
+
+sustained exact logical recovery rate:
+
+0.0.
+
+FP2 / FP3 / FP4 LEGACY LOGICAL RESULT
+
+For all four frozen legacy logical families,
+FP2,
+FP3,
+and FP4 each produced:
+
+complete first-shot correction:
+12 / 12 per family.
+
+false applied logical flips:
+0.
+
+median logical divergence area:
+0.
+
+sustained exact logical recovery rate:
+1.0.
+
+Thus FP2 is the minimum tested fingerprint depth
+that carries enough information
+for every frozen two-plane legacy injury.
+
+CHECK-ONLY SPECIFICITY
+
+For:
+
+CHECK4_BIT0_D6,
+CHECK4_BIT0_D7,
+CHECK4_BITS01_D6,
+
+all FP depths produced:
+
+applied logical flips:
+0.
+
+false applied logical flips:
+0.
+
+median logical divergence area:
+0.
+
+Thus even FP1 retained the principal specificity gain
+against integrity-only false repair.
+
+For comparison:
+
+GREEDY_FIRSTSHOT false-applied logical flips across the three families:
+
+12,
+12,
+24.
+
+CROSSPLANE2_FIRSTSHOT still false-repaired CHECK4_BITS01_D6:
+
+24 false applied logical flips.
+
+COORD6_SYNDROME_FIRSTSHOT likewise produced:
+
+12,
+12,
+24
+
+false applied logical flips.
+
+SINGLE-BIT RECOVERY
+
+SINGLE_DATA1_D6:
+
+FP1,
+FP2,
+FP3,
+FP4:
+
+complete first-shot correction:
+12 / 12.
+
+false applied logical flips:
+0.
+
+median logical divergence area:
+0.
+
+sustained exact logical recovery rate:
+1.0.
+
+CROSSPLANE2_FIRSTSHOT:
+
+complete first-shot correction:
+0 / 12.
+
+abstain:
+12 / 12.
+
+median logical divergence area:
+
+2.7916666666666665.
+
+Thus self-health qualification recovered the single-plane sensitivity
+that the cross-plane support gate intentionally sacrificed.
+
+COORDINATED CHALLENGE RECOVERY
+
+For:
+
+BASE_WEAK4_MASK1106,
+DIST3_WEAK5_MASK2243,
+DIST4_MIN6_MASK249,
+
+every FP depth produced:
+
+complete first-shot correction:
+12 / 12 per family.
+
+false applied logical flips:
+0.
+
+median logical divergence area:
+0.
+
+sustained exact logical recovery rate:
+1.0.
+
+This is the dynamic transfer that DG-1R-05N lacked.
+
+The exact same coordinated lesions
+that trapped the one-step greedy decoder
+were repaired completely
+when syndrome geometry was qualified by independent self-health evidence.
+
+RAW COORD6 CONTROL
+
+COORD6_SYNDROME_FIRSTSHOT demonstrated why the fingerprint gate matters.
+
+BASE_WEAK4_MASK1106:
+
+complete:
+0 / 12.
+
+false applied logical flips:
+24.
+
+median logical divergence area:
+
+9.208333333333334.
+
+DIST3_WEAK5_MASK2243:
+
+complete:
+0 / 12.
+
+false applied logical flips:
+12.
+
+median logical divergence area:
+
+7.968749999999999.
+
+DIST4_MIN6_MASK249:
+
+complete:
+12 / 12.
+
+false applied logical flips:
+0.
+
+Thus larger coordinated search can cross a plateau,
+but without independent health evidence
+it can cross it in the wrong direction.
+
+RESOURCE / SENSITIVITY RESULT
+
+FP1:
+
+total persistent bits:
+140.
+
+primary abstentions:
+84.
+
+applied logical repairs:
+192.
+
+complete primary corrections:
+84.
+
+false applied primary flips:
+0.
+
+FP2:
+
+total persistent bits:
+152.
+
+primary abstentions:
+36.
+
+applied logical repairs:
+312.
+
+complete primary corrections:
+132.
+
+false applied primary flips:
+0.
+
+FP3:
+
+total persistent bits:
+164.
+
+primary abstentions:
+36.
+
+applied logical repairs:
+312.
+
+complete primary corrections:
+132.
+
+false applied primary flips:
+0.
+
+FP4:
+
+total persistent bits:
+176.
+
+primary abstentions:
+36.
+
+applied logical repairs:
+312.
+
+complete primary corrections:
+132.
+
+false applied primary flips:
+0.
+
+Within the frozen 05Q family,
+FP2 is the minimum depth that attains full first-shot authority transfer.
+
+This is NOT a final depth selection.
+
+DG-1R-05P already established a broader intra-cell resolution frontier:
+
+FP2 does not resolve every possible two-plane intra-cell pattern.
+
+FP3 resolves every tested one-,
+two-,
+and three-plane intra-cell pattern
+but not the all-four-plane change.
+
+FP4 resolves the complete four-plane cell state exactly.
+
+Therefore 05Q establishes:
+
+minimum depth for this dynamic family = FP2,
+
+not:
+
+globally sufficient organism health memory = FP2.
+
+CORRELATED-FORGERY BOUNDARY
+
+CF1 — LOGICAL PLUS FINGERPRINT ERASURE
+
+For every FP depth:
+
+12 / 12 abstentions.
+
+CF1_ERASURE_FAILURE:
+
+TRUE.
+
+Median logical divergence area:
+
+2.7916666666666665.
+
+Thus when logical damage and its temporal self-health evidence
+are coherently corrupted together,
+the authority mechanism can miss the lesion.
+
+CF2 — CHECK-ONLY PLUS FORGED FINGERPRINT SUPPORT
+
+For every FP depth:
+
+false applied logical flips:
+12.
+
+CF2_FORGED_SUPPORT_FAILURE:
+
+TRUE.
+
+Median logical divergence area:
+
+2.7916666666666665.
+
+Thus forged agreement across both witness classes
+can create false authority.
+
+The constitutional boundary is preserved:
+
+agreement is evidence only to the extent
+that the contributing provenance classes are actually independent.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-05Q establishes the first dynamic transfer
+from independently-qualified healthy-cell consensus
+to an actual logical repair action.
+
+The result separates three properties:
+
+1. SEARCH REACHABILITY
+
+COORD6 can cross multi-cell plateaus
+that defeat the frozen one-block greedy decoder.
+
+2. AUTHORIZATION SPECIFICITY
+
+COORD6 alone is unsafe.
+
+Independent temporal self-health evidence
+removes the false first-shot repairs
+across the frozen primary family.
+
+3. HEALTH-WITNESS INFORMATION DEPTH
+
+One self-health bit is not enough
+when two changed planes alias to the same fingerprint.
+
+Two bits are enough for every primary dynamic lesion in 05Q.
+
+Broader 05P coverage still justifies retaining FP3 and FP4
+as candidates for later lifecycle testing.
+
+Most importantly,
+the successful FP methods have no central oracle.
+
+The repair authority is the qualified cell population itself.
+
+The immutable requirement is only constitutional:
+
+a repair coalition may exercise authority
+when its shared structural evidence
+and an independently-provenanced self-health witness
+are mutually compatible.
+
+PLAIN-SPEAK INTERPRETATION
+
+The cells were allowed to act for real this time.
+
+Not repeatedly.
+Just once,
+right after the injury.
+
+When they only followed the shared warning system,
+they could make confident but wrong group repairs.
+
+When they also had to match their own separate health memory,
+the false repairs disappeared in the normal test family.
+
+And the difficult multi-cell injuries
+that the old repairer could see but could not solve
+were fixed immediately.
+
+One bit of health memory per cell was too crude.
+
+Two damaged parts inside the same cell could cancel each other out
+and make that cell look healthy.
+
+Two bits per cell were enough for every injury in this particular dynamic test.
+
+That does not mean two bits are enough forever.
+
+Our earlier exhaustive test already found cell-damage patterns
+where deeper fingerprints carry information that FP2 loses.
+
+The bigger result is this:
+
+HEALTHY-CELL CONSENSUS DID FUNCTION
+AS THE SOLE OPERATIONAL AUTHORITY
+FOR A REAL REPAIR ACTION,
+
+with no central repair oracle,
+
+as long as the consensus was qualified
+by genuinely independent self-health evidence.
+
+And when we deliberately corrupted both evidence paths,
+the organism could still be fooled.
+
+That is exactly the boundary we wanted to preserve.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05R —
+
+CONSENSUS-GATED HEALTH-MEMORY COMMIT AND DRIFT AUDIT.
+
+The remaining architectural problem is lifecycle.
+
+05Q deliberately avoided fingerprint refresh.
+
+A real developmental organism cannot keep one old health snapshot forever.
+
+Its cells must be able to change legitimately,
+specialize,
+learn,
+reorganize,
+hibernate,
+reactivate,
+and then update what "healthy me" means.
+
+But an unsafe refresh rule can absorb corruption into the health record
+and permanently redefine damage as normal.
+
+05R should therefore test:
+
+- normal clean evolution followed by health-memory refresh;
+- abrupt damage immediately before a proposed refresh;
+- slow internal drift;
+- legitimate coordinated adaptation;
+- independent-quorum-gated refresh versus self-only refresh;
+- whether corrupted cells can poison the next health baseline;
+- abstention when refresh provenance is not independently sufficient.
+
+No repeated repair policy should be added
+until health-memory commit itself is shown not to normalize corruption.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
