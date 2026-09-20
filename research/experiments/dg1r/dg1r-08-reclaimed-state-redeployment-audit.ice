@@ -1079,3 +1079,209 @@ efficient.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-08 RECLAIMED STATE REDEPLOYMENT HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST DG-1R-08 PRIMARY WORLD.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_08_redeployment_v1.py
+
+Harness source commit:
+
+9f356aecff46e47cb7dedc74ff759fc2302511f6.
+
+Git blob SHA:
+
+3c5beae6bf6ad93ad66bf4e100d015aecd78a3ac.
+
+Source SHA-256:
+
+c3dd41677e5fabab9f69c9e49e77ded50ea6b8813b99a11a67f149094c85da61.
+
+Source bytes:
+
+20819.
+
+TRANSFER INTEGRITY
+
+An:
+initial:
+GitHub:
+transfer
+introduced:
+one:
+duplicate:
+dead:
+return line.
+
+This was:
+
+detected:
+by:
+remote:
+blob:
+mismatch
+
+BEFORE:
+freeze
+
+and:
+BEFORE:
+any:
+primary:
+execution.
+
+Repair commit:
+
+9f356aecff46e47cb7dedc74ff759fc2302511f6.
+
+After:
+repair:
+
+remote:
+Git blob:
+
+3c5beae6bf6ad93ad66bf4e100d015aecd78a3ac
+
+matches:
+the:
+pre-tested:
+local:
+Git blob
+
+exactly.
+
+PRE-FREEZE SANITY
+
+Python compile:
+
+PASS.
+
+Out-of-family seed:
+
+20260928999999.
+
+Observed:
+mapped:
+input positions:
+
+14,
+30,
+40,
+59.
+
+Input /
+lesion:
+separation:
+
+PASS.
+
+EXP103_G5_25
+versus:
+BASE103_NOECC:
+
+full:
+4096-step:
+undamaged:
+worker trace:
+
+byte-identical:
+
+PASS.
+
+Thus:
+
+repair metadata
+does NOT:
+change:
+healthy:
+worker dynamics.
+
+For:
+coded methods:
+
+pre-damage:
+encoding control:
+
+PASS.
+
+For:
+all:
+methods:
+
+duplicate:
+no-damage:
+repair trajectories:
+
+byte-identical:
+
+PASS.
+
+No:
+primary:
+DG-1R-08:
+world
+
+was:
+executed
+before:
+this freeze.
+
+FROZEN WORLD FAMILY
+
+20260926080000..20260926080007.
+
+8 worlds.
+
+FROZEN STATE ALLOCATION
+
+REF64_G5_25:
+
+64:
+workers.
+
+25:
+maintenance bits.
+
+39:
+inactive bits.
+
+EXP103_G5_25:
+
+103:
+workers.
+
+25:
+maintenance bits.
+
+0:
+inactive bits.
+
+BASE103_NOECC:
+
+103:
+workers.
+
+25:
+inert bits.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+canonical sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
