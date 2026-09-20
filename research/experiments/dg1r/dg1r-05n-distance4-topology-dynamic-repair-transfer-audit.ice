@@ -720,3 +720,162 @@ and the next bottleneck is the decoder or the dynamics rather than the represent
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05N DISTANCE-4 DYNAMIC REPAIR TRANSFER
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY DAMAGED-SCENARIO EXECUTION.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05n_dynamic_transfer_v1.py
+
+Harness commit:
+
+dd1a39f27eef62e268acd989c6d670590b0d2e36.
+
+Git blob SHA:
+
+e546ffc18579c059514033896398f49ac33863cb.
+
+Source SHA-256:
+
+b0e13fe095d7ec79ed541ffd2b28eafb024274b3168284c323567526d3571623.
+
+Source bytes:
+
+21101.
+
+FROZEN IMPLEMENTATION
+
+The harness carries forward the exact DG-1R-05I dynamic substrate and decoder family,
+parameterized only by the three preregistered topology matrices:
+
+- HYPER20_BASELINE;
+- DIST3_05L;
+- DIST4_05M.
+
+Decoder methods remain exactly:
+
+- GREEDY_BASELINE;
+- CROSSPLANE2_GATE with PLANE_SUPPORT >= 2.
+
+No decoder threshold,
+repair timing,
+CA rule,
+mapped-block rule,
+damage family,
+challenge mask,
+safe-plane rule,
+world seed,
+horizon,
+metric,
+or primary signal was altered after preregistration.
+
+LOCAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Exact topology / static-geometry assertions:
+
+PASS.
+
+Scenario-structure validations:
+
+396.
+
+This is:
+
+12 worlds
+x
+3 topologies
+x
+11 frozen damage families.
+
+No-damage topology-method controls:
+
+72.
+
+This is:
+
+12 worlds
+x
+3 topologies
+x
+2 frozen decoder methods.
+
+For every world,
+the complete undamaged 32-step post-prefix logical trajectory was asserted byte-identical across all six topology x decoder configurations.
+
+The 1024-step pre-damage logical state was likewise asserted identical across all topology x decoder configurations.
+
+Static geometry reproduced exactly:
+
+HYPER20_BASELINE:
+rank 11;
+kernel mask 4095;
+single floor 6;
+two-region floor 8;
+global floor 3;
+maximum pair co-occurrence 2;
+80 incidences.
+
+DIST3_05L:
+rank 12;
+kernel free;
+single floor 6;
+two-region floor 8;
+global floor 3;
+maximum pair co-occurrence 2;
+80 incidences.
+
+DIST4_05M:
+rank 12;
+kernel free;
+single floor 6;
+two-region floor 8;
+global floor 4;
+maximum pair co-occurrence 2;
+80 incidences.
+
+All three retain the exact frozen logical-region degree vector:
+
+(7,7,7,7,7,6,6,7,6,7,7,6).
+
+Frozen world seeds:
+
+20260926060000
+through
+20260926060011.
+
+No primary damaged scenario,
+dynamic transfer metric,
+repair comparison,
+or primary transfer signal
+was generated before this freeze.
+
+REPRODUCIBILITY
+
+Execute two complete 12-world primary sweeps from this exact frozen harness.
+
+Serialized output SHA-256 must match exactly.
+
+No RNG change.
+No seed substitution.
+No post-result tuning.
+
+Once the first damaged primary world begins,
+the frozen implementation and preregistered interpretation gates are closed to modification.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
