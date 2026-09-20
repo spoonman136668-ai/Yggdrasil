@@ -662,3 +662,287 @@ SYNTHETIC_MEASURED_SANDBOX_COMPONENT_ADAPTIVE_FUNCTIONAL_FEEDBACK_MICROPATCH
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 stab18_r1_touched = false
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H153 HELD-OUT PRIMARY EXECUTION.
+
+No H153 primary world
+has been executed.
+
+H153 SANDBOX HARNESS SHA-256
+
+e8f353f6e5d38a5732eb1c9c47778103134c6d7e331c53efb5b6005974637f71.
+
+PARENT HASHES
+
+H151:
+3f6042716b4e5a26f41569376a4dca833f5bae5f3c053aa2280615bfadb32e37.
+
+H152:
+e8be77384de4fef8a6b8eda875575f581edfc97794d5060e57e4e3bfa7b3b4e3.
+
+STABLE COMPONENT ORDER
+
+Actual Moore-connected lesion components
+are:
+
+- rooted from:
+  lowest remaining cell ID;
+- traversed with:
+  sorted neighbor IDs;
+- ordered by:
+  lowest member ID.
+
+This makes:
+component identity
+deterministic.
+
+COMPONENT FEEDBACK RNG
+
+For component c:
+
+SHA-256-derived
+from:
+
+world seed,
+"component_feedback",
+component ID.
+
+32 feedback queries
+per:
+actual component.
+
+TRAIN / VALIDATION INDEXING
+
+Within a component pool:
+
+0-based even query indices:
+TRAIN.
+
+0-based odd:
+VALIDATION.
+
+Thus:
+
+first acquisition:
+TRAIN.
+
+second:
+VALIDATION.
+
+Both:
+count against:
+feedback budget.
+
+COMPONENT SOLVE
+
+Only:
+that component's lesion coefficients
+are variables.
+
+All:
+surviving cells
+
+and:
+
+all other lesion components
+use:
+their current coefficients
+
+when:
+forming:
+the functional residual.
+
+Ridge lambda:
+
+0.10.
+
+Prior:
+
+the current:
+context-harmonic
+component coefficients.
+
+ADAPTIVE PRIORITY
+
+For each acquisition:
+
+1.
+unstopped component
+with:
+no TRAIN;
+
+2.
+unstopped component
+with:
+no VALIDATION;
+
+3.
+otherwise:
+highest:
+current validation residual ratio;
+
+4.
+then:
+largest component;
+
+5.
+then:
+lowest stable component ID.
+
+Priority is:
+recomputed
+after:
+every acquisition.
+
+VALIDATION / STOP
+
+At:
+the end of:
+each post-membership maturation step,
+
+component residual ratio:
+
+current validation MSE
+/
+original-lesion validation MSE.
+
+Validated recovered:
+
+>=2 validation observations
+
+AND:
+
+ratio <=0.10
+
+for:
+two consecutive
+maturation steps.
+
+Reopen:
+
+ratio >0.15.
+
+Reopen count:
+is recorded.
+
+COMPONENT-FIXED-FB2
+
+2 observations / maturation step.
+
+24 total maximum.
+
+Round-robin:
+stable component order.
+
+No:
+early stop.
+
+COMPONENT-ADAPTIVE-FB2
+
+2 observations / step.
+
+24 total maximum.
+
+Adaptive:
+routing
+and:
+stopping.
+
+COMPONENT-ADAPTIVE-FB4
+
+4 observations / step.
+
+48 total maximum.
+
+Same:
+routing / stopping.
+
+H152 FIXED COMPARATOR
+
+H152_FIXED_FB2
+uses:
+the exact frozen H152
+shared-pool
+CONTEXT-FB2 mechanics.
+
+SANITY
+
+Disjoint:
+20260920090000...
+family.
+
+Six representative underlying worlds.
+
+NON-EVIDENCE examples:
+
+MIXED 1% COMPACT:
+
+CONTEXT0:
+approximately 0.943.
+
+H152 fixed FB2:
+approximately 0.991
+with:
+24 observations.
+
+COMP_ADAPT2:
+approximately 0.943
+with:
+6 observations.
+
+MIXED 1% FOUR:
+
+COMP_ADAPT2:
+approximately 0.925
+with:
+16 observations.
+
+MIXED 5% FOUR:
+
+COMP_ADAPT2:
+approximately 0.947
+with:
+24 observations.
+
+SMOOTH 2% FOUR:
+
+COMP_ADAPT2:
+approximately 0.993.
+
+SCRAMBLED 5% FOUR:
+
+COMP_ADAPT2:
+approximately 0.
+
+No:
+routing rule,
+threshold,
+budget,
+hysteresis,
+lambda,
+sample size,
+or:
+acceptance gate
+
+was changed
+from:
+sanity outcomes.
+
+PRIMARY FAMILY REMAINS
+
+20260920000000..20260920002399.
+
+No execution-semantic change
+after:
+the first held-out H153 primary world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
