@@ -479,3 +479,143 @@ the right integrity topology.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05F SPARSE INTEGRITY GRAPH HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE:
+THE:
+FIRST:
+DG-1R-05F:
+SCENARIO.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05f_sparse_integrity_v1.py
+
+Exact-byte commit:
+
+2560a2c44acbc59008b2e695724dc1e27e27a564.
+
+Git blob SHA:
+
+76d2e77fd8c2d5170f77dd6085a66c1326cd544b.
+
+Source SHA-256:
+
+3e6f76b7f83689e32cca13236b440f06cb9f20313cd6006bc255857a1e733e12.
+
+Source bytes:
+
+12919.
+
+PACKAGING RECONCILIATION
+
+Initial:
+repository:
+transfer
+
+omitted:
+the:
+source's:
+final:
+newline.
+
+Initial remote blob:
+
+d22927cf3192decf67053ce9b4bf0b497c75ad27.
+
+No:
+DG-1R-05F:
+world
+was:
+executed
+from:
+that:
+artifact.
+
+The:
+newline
+was:
+restored.
+
+Corrected:
+remote:
+Git blob:
+
+76d2e77fd8c2d5170f77dd6085a66c1326cd544b.
+
+Local:
+git hash-object:
+
+76d2e77fd8c2d5170f77dd6085a66c1326cd544b.
+
+Exact byte identity:
+
+PASS.
+
+Python syntax:
+
+PASS.
+
+No:
+DG-1R-05F:
+world
+was:
+executed
+before:
+this:
+freeze.
+
+FROZEN WORLD FAMILY
+
+20260926056000..20260926056007.
+
+8 worlds.
+
+FROZEN CAPACITY
+
+48:
+logical bits.
+
+128:
+physical bits.
+
+FROZEN GRAPH METHODS
+
+CHAIN_HAMMING_48.
+
+SPARSE18_MAJORITY_48.
+
+SPARSE20_MAJORITY_48.
+
+SPARSE20_DETECT_ONLY.
+
+DG-1R-05 CANONICAL STATUS
+
+Still:
+
+UNSPENT.
+
+DG-1R-05F:
+
+NON-CANONICAL /
+NON-EVIDENCE.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+sweeps.
+
+Output SHA-256
+must:
+match exactly.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
