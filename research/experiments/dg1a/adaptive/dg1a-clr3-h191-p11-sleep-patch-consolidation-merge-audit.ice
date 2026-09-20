@@ -903,3 +903,715 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL H191-P11 NON-EVIDENCE PILOT CLOSURE — SLEEP PATCH CONSOLIDATION / MERGE
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+NEGATIVE FIXED-DICTIONARY CONSOLIDATION RESULT /
+CONTROL VALID /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+923a055bbd840f681aeeea33351e4124dbae2340587d59f17a256275c80efa69.
+
+CANONICAL OUTPUT
+
+RUN 1 SHA-256:
+
+9f7b3a8c3f39fea36366941a22220b9e327335200d6ec3cf7d7593163a258178.
+
+RUN 2 SHA-256:
+
+9f7b3a8c3f39fea36366941a22220b9e327335200d6ec3cf7d7593163a258178.
+
+Byte-identical:
+
+PASS.
+
+MECHANICAL CONTROL
+
+ORIGINAL_PATCH_RECODE:
+
+median:
+world-worst:
+held-out:
+prediction mismatch:
+
+5.654867747154479e-16.
+
+Frozen gate:
+
+<=1e-10.
+
+PASS.
+
+Median:
+world-mean:
+held-out:
+prediction mismatch:
+
+9.360998319070633e-17.
+
+Median:
+world-mean:
+distillation mismatch:
+
+1.571092975652627e-16.
+
+Thus:
+
+the:
+sleep reconstruction path
+
+can:
+reproduce:
+the:
+original:
+patch-state prediction
+
+to:
+floating-point:
+accuracy.
+
+The:
+negative:
+compression result
+is therefore:
+
+NOT:
+a:
+mechanical:
+reconstruction failure.
+
+PRE-SLEEP DEVELOPMENTAL STATE
+
+All:
+6 worlds
+
+are:
+compressible
+under:
+the:
+P >=2:
+preregistered definition.
+
+Median:
+post-CORE3:
+patch factor count:
+
+4.
+
+Median:
+stored:
+patch decoder scalars
+under:
+birth-time support:
+
+24.5.
+
+Median:
+oldest capability:
+active residual ops:
+
+16.
+
+Median:
+capability:
+active residual ops:
+
+21.
+
+Median:
+newest capability:
+active residual ops:
+
+24.
+
+HALF CONSOLIDATION
+
+Median:
+patch geometry:
+
+2:
+factors
+
+from:
+4.
+
+Median:
+geometry reduction:
+
+50%.
+
+However:
+
+median:
+world-mean:
+held-out:
+prediction mismatch:
+
+0.12906838153681524.
+
+Frozen gate:
+
+<=0.01.
+
+FAIL.
+
+Median:
+world-worst:
+prediction mismatch:
+
+0.5113286471040668.
+
+Frozen gate:
+
+<=0.02.
+
+FAIL.
+
+P90:
+world-worst mismatch:
+
+0.7767605342636865.
+
+Frozen gate:
+
+<=0.05.
+
+FAIL.
+
+Median:
+task-target:
+world-mean:
+held-out NMSE delta:
+
++0.1294316234584605.
+
+Thus:
+
+HALF compression
+causes:
+large:
+waking-state distortion.
+
+HALF_STRONG_CONSOLIDATION:
+
+FAIL.
+
+MINUS1 CONSOLIDATION
+
+Median:
+patch geometry:
+
+3:
+factors
+
+from:
+4.
+
+Median:
+geometry reduction:
+
+25%.
+
+Median:
+world-mean:
+held-out:
+prediction mismatch:
+
+0.030971545526342483.
+
+Frozen gate:
+
+<=0.01.
+
+FAIL.
+
+Median:
+world-worst:
+prediction mismatch:
+
+0.17011705778008157.
+
+Frozen gate:
+
+<=0.02.
+
+FAIL.
+
+P90:
+world-worst mismatch:
+
+0.4998726743798482.
+
+Median:
+task-target:
+world-mean:
+held-out NMSE delta:
+
++0.03271895402385065.
+
+MINUS1_USEFUL_CONSOLIDATION:
+
+FAIL.
+
+FINAL CLASSIFICATION
+
+NEGATIVE_FIXED_DICTIONARY_CONSOLIDATION.
+
+TECHNICAL INTERPRETATION
+
+P11 shows:
+
+the:
+developmental:
+patch factors
+
+are:
+not:
+well represented
+
+by:
+one:
+smaller:
+globally shared:
+fixed-dictionary:
+patch basis
+
+under:
+the:
+frozen:
+prediction-state:
+sleep distillation
+mechanism.
+
+This is:
+important
+because:
+
+P10
+showed:
+later capabilities
+can:
+reuse:
+existing:
+patch geometry.
+
+P11 now shows:
+
+REUSE
+does NOT imply:
+
+GLOBAL MERGEABILITY.
+
+The:
+same:
+patch factor
+can:
+be:
+useful:
+across:
+multiple capabilities
+
+while:
+the:
+full:
+patch set
+
+still:
+contains:
+distinct:
+capability-local:
+directions
+that:
+cannot:
+be:
+collapsed
+without:
+substantial:
+prediction loss.
+
+RESOURCE OBSERVATION
+
+HALF:
+reduced:
+shared geometry
+
+and:
+newest-capability:
+active compute
+
+from:
+24
+to:
+20:
+median operations.
+
+But:
+
+the:
+quality cost
+was:
+far:
+too high.
+
+MINUS1:
+
+newest-capability:
+median:
+post-sleep ops:
+
+22.
+
+But:
+
+quality
+still:
+missed:
+the:
+frozen:
+preservation gates.
+
+Therefore:
+
+do NOT:
+trade:
+prediction state
+for:
+global:
+factor merging
+under:
+this mechanism.
+
+NEXT ARCHITECTURAL DIRECTION
+
+Retain:
+
+the:
+full:
+shared:
+patch geometry.
+
+Instead:
+
+investigate:
+
+CAPABILITY-SPECIFIC:
+PATCH HIBERNATION /
+CONDITIONAL ACTIVATION.
+
+Question:
+
+can:
+the:
+same:
+stored:
+patch factor set
+
+remain:
+available:
+globally
+
+while:
+each capability
+activates:
+only:
+the:
+small:
+subset
+it:
+actually needs?
+
+This changes:
+
+ACTIVE COMPUTE
+and:
+possibly:
+decoder storage,
+
+without:
+forcing:
+global:
+geometry compression.
+
+NEXT JUSTIFIED EXPERIMENT
+
+H191-P12 —
+SLEEP-TIME:
+PATCH HIBERNATION /
+CONDITIONAL ACTIVATION AUDIT.
+
+Use:
+
+the:
+same:
+P10-style:
+fully developed:
+pre-sleep organism.
+
+Keep:
+
+- all:
+  CORE3 factors;
+- all:
+  developmental:
+  patch factor geometry;
+- all:
+  factor identities;
+- all:
+  core decoder coefficients;
+
+frozen.
+
+During sleep:
+
+for:
+each capability
+independently,
+
+derive:
+a:
+minimal:
+patch activation subset
+
+using ONLY:
+
+- distillation coordinates;
+- frozen:
+  pre-sleep:
+  prediction state.
+
+No:
+task target.
+
+No:
+held-out target.
+
+No:
+global:
+factor deletion.
+
+Evaluate:
+
+FULL:
+all:
+birth-time patch factors.
+
+HALF_ACTIVE:
+at most:
+half:
+of:
+that capability's:
+birth-time:
+patch factors.
+
+MINUS1_ACTIVE:
+one fewer:
+active:
+patch factor
+where possible.
+
+Primary question:
+
+can:
+per-capability:
+conditional activation
+
+reduce:
+median:
+active:
+patch compute
+
+without:
+the:
+large:
+global:
+prediction distortion
+seen:
+in:
+P11?
+
+If:
+yes:
+
+the:
+correct:
+sleep behavior
+
+is:
+HIBERNATION /
+ROUTING,
+
+not:
+MERGING.
+
+PLAIN-SPEAK SUMMARY
+
+What did we try?
+
+We let:
+the:
+developed system
+sleep
+
+and:
+asked it
+to:
+replace:
+several:
+small:
+growth patches
+
+with:
+a:
+smaller:
+shared:
+patch set.
+
+Nothing:
+from:
+the:
+original core
+was:
+allowed:
+to:
+move.
+
+What happened?
+
+The:
+sleep machinery
+itself
+worked:
+perfectly.
+
+When:
+we gave it:
+the:
+original:
+patch factors,
+
+it recreated:
+the:
+pre-sleep behavior
+almost:
+exactly.
+
+But:
+
+when:
+we removed:
+half:
+the:
+patch geometry,
+
+behavior changed:
+a lot.
+
+Even:
+removing:
+just:
+one:
+patch factor
+
+changed:
+some:
+capabilities
+far:
+too much.
+
+Did it work?
+
+No,
+for:
+global:
+patch merging.
+
+That is:
+a:
+useful:
+negative result.
+
+What did we learn?
+
+The patches:
+are:
+reused,
+
+but:
+they are:
+not:
+interchangeable.
+
+Different:
+capabilities
+still:
+need:
+different:
+pieces
+of:
+that:
+shared:
+patch set.
+
+Why does it matter?
+
+We should:
+stop:
+trying:
+to:
+physically:
+merge:
+those:
+pieces
+for now.
+
+A:
+better:
+idea
+is:
+
+keep:
+the:
+patches
+stored,
+
+but:
+let:
+each:
+capability
+wake:
+only:
+the:
+patches
+it:
+actually:
+needs.
+
+That could:
+reduce:
+active compute
+
+without:
+destroying:
+the:
+distinct:
+information
+stored:
+in:
+the:
+patch geometry.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
