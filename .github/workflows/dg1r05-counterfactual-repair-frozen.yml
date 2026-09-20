@@ -1,0 +1,75 @@
+name: DG1R05 Counterfactual Repair Frozen Execution
+
+on:
+  push:
+    branches:
+      - dg1a-ar
+    paths:
+      - .github/workflows/dg1r05-counterfactual-repair-frozen.yml
+
+permissions:
+  contents: read
+
+jobs:
+  run-frozen-dg1r05:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENBLAS_NUM_THREADS: "1"
+      OMP_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+      NUMEXPR_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+
+      - name: Verify frozen source hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHILD="research/experiments/dg1r/harnesses/dg1r_05_counterfactual_repair_v1.py"
+          PARENT="research/experiments/dg1r/harnesses/dg1r_04_software_nanite_v1.py"
+          echo "child=$(sha256sum "$CHILD" | awk '{print $1}')"
+          echo "parent=$(sha256sum "$PARENT" | awk '{print $1}')"
+          test "$(sha256sum "$CHILD" | awk '{print $1}')" = "b4a35269bd99560b8c13613bab284ae47d253b245cf7e4304fde246254e644d3"
+          test "$(sha256sum "$PARENT" | awk '{print $1}')" = "debcaf7c79632740dbccd4ad8b0f6ebfcd034515cb144b9a21bc537f7a8f7eed"
+
+      - name: Frozen sweep 1
+        run: |
+          python research/experiments/dg1r/harnesses/dg1r_05_counterfactual_repair_v1.py --out dg1r05-run1.json --runtime-out dg1r05-runtime1.json
+          sha256sum dg1r05-run1.json
+
+      - name: Frozen sweep 2
+        run: |
+          python research/experiments/dg1r/harnesses/dg1r_05_counterfactual_repair_v1.py --out dg1r05-run2.json --runtime-out dg1r05-runtime2.json
+          sha256sum dg1r05-run2.json
+
+      - name: Verify byte-exact reproducibility and print summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmp dg1r05-run1.json dg1r05-run2.json
+          python - <<'PY'
+          import json, hashlib
+          p = "dg1r05-run1.json"
+          raw = open(p, "rb").read()
+          obj = json.loads(raw)
+          print("CANONICAL_SHA256=" + hashlib.sha256(raw).hexdigest())
+          print(json.dumps(obj["summary"], sort_keys=True, indent=2))
+          PY
+
+      - name: Upload frozen outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: dg1r05-frozen-results
+          path: |
+            dg1r05-run1.json
+            dg1r05-run2.json
+            dg1r05-runtime1.json
+            dg1r05-runtime2.json
