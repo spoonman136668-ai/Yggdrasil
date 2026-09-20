@@ -618,3 +618,128 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05R HEALTH-MEMORY COMMIT AND DRIFT
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY STATE-TRANSITION CASE.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05r_health_commit_v1.py
+
+Harness source commit:
+
+dbbca5fdb493b5c007a0eb45c3e3d4a5388c272e.
+
+Git blob SHA:
+
+685521c3305cf120c3bb050d01c498faa6b1bced.
+
+Source SHA-256:
+
+f83f7288b51eee90edb85e969d6dd01b71a557eb66df8fe37befe2a3731a20d7.
+
+Source bytes:
+
+11591.
+
+FROZEN IMPLEMENTATION
+
+The harness implements:
+
+- exact DIST4_05M topology;
+- exact FP2 / FP3 / FP4 nested self-health rows from DG-1R-05P;
+- ROLE2 functional identity rows exactly as preregistered;
+- witness A holder = (cell + 4) mod 12;
+- witness B holder = (cell + 8) mod 12;
+- fixed four-observation dwell;
+- SELF_STABLE, STRUCTURAL_STABLE, and INDEPENDENT_QUORUM commit methods;
+- exhaustive coherent and stale-damage state transitions;
+- slow-drift sequences;
+- coordinated role-preserving adaptation;
+- degraded-provenance abstention;
+- correlated peer-forgery and fingerprint-alias boundaries;
+- commit-only mutation of stored self-health fingerprint;
+- no logical repair mutation;
+- no peer ROLE2 refresh.
+
+LOCAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Exact DIST4 static geometry:
+
+rank 12;
+kernel count 0;
+single-region floor 6;
+two-region floor 8;
+global logical floor 4;
+maximum pair co-occurrence 2;
+80 incidences;
+degree vector
+(7,7,7,7,7,6,6,7,6,7,7,6).
+
+Fingerprint ranks:
+
+FP2 = 2.
+FP3 = 3.
+FP4 = 4.
+
+ROLE2 rank:
+
+2.
+
+Resource totals:
+
+FP2 + peer witnesses = 200 bits.
+FP3 + peer witnesses = 212 bits.
+FP4 + peer witnesses = 224 bits.
+
+Audit A exhaustive transition count:
+
+2880.
+
+Role-preserving nonzero state deltas:
+
+3.
+
+Role-changing nonzero state deltas:
+
+12.
+
+Coordinated adaptation coalition count:
+
+287.
+
+No primary transition,
+commit result,
+poisoning result,
+drift result,
+or correlated-forgery result
+was generated before this freeze.
+
+REPRODUCIBILITY
+
+Execute two complete deterministic sweeps from this exact frozen harness.
+
+Serialized output SHA-256 must match exactly.
+
+No post-result tuning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
