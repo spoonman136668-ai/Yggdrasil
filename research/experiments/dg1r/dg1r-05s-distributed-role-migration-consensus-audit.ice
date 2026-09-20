@@ -643,3 +643,112 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05S DISTRIBUTED ROLE MIGRATION
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY MIGRATION CASE.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05s_role_migration_v1.py
+
+Harness source commit:
+
+cae31db152912a2d366cdd22946e890a09fcff7d.
+
+Git blob SHA:
+
+b460931ad038ae86ea7e2de5db74b27522deec69.
+
+Source SHA-256:
+
+c8c6139607149d4b912f772ab49ef2725e3be213a7489a6b74234857f24df531.
+
+Source bytes:
+
+15419.
+
+FROZEN IMPLEMENTATION
+
+The harness implements:
+
+- exact FP2 and ROLE2 transforms;
+- exhaustive FP2 <-> ROLE2 invertible-equivalence assertion;
+- initial role population 3 / 3 / 3 / 3;
+- exact peer-holder maps;
+- fixed four-observation dwell;
+- monotonic target generation;
+- old-role authority until complete commit;
+- TARGET_SELF_MIGRATION negative control;
+- TARGET_PLUS_STRUCTURE negative control;
+- SINGLE_PEER_MIGRATION negative control;
+- INDEPENDENT_ROLE_MIGRATION candidate architecture;
+- exact three-record atomic authority rule;
+- rollback for every incomplete final-record subset;
+- legitimate single-cell migration;
+- coordinated pair / triple / full-population migration;
+- transient and oscillatory dwell challenges;
+- partial-provenance challenges;
+- damaged-witness challenges;
+- precommit cancellation;
+- correlated-forgery holdouts.
+
+LOCAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Single-cell migration cases:
+
+36.
+
+Coordinated coalitions:
+
+287.
+
+Initial role counts:
+
+ROLE0 = 3.
+ROLE1 = 3.
+ROLE2 = 3.
+ROLE3 = 3.
+
+Partial-commit nonempty proper subsets:
+
+6.
+
+Dwell:
+
+4 observations.
+
+No primary migration,
+authority result,
+split-brain result,
+rollback result,
+or correlated-forgery result
+was generated before this freeze.
+
+REPRODUCIBILITY
+
+Execute two complete deterministic sweeps from this exact frozen harness.
+
+Serialized output SHA-256 must match exactly.
+
+No post-result tuning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
