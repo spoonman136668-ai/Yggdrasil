@@ -1010,3 +1010,534 @@ the first held-out H181 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — DETERMINISTIC B-CONTEXT COVERAGE MORPHOLOGY
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / NEGATIVE FOR SIMPLE INPUT-SPACE COVERAGE / POSITIVE DIAGNOSTIC THAT FUNCTION COVERAGE != EUCLIDEAN COVERAGE.
+
+FINAL H181 HARNESS SHA-256
+
+59b84d97f570b54bbd83cc4438d74c33892e3ca6912548638b40ef3c40a4cf26.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+16fe29d952fae15e2f7d28b942bb4b373deafc38feb7a141714a2b2a1ed14225.
+
+ACCEPTED PRIMARY FAMILY
+
+20260923000000..20260923000019.
+
+PRIMARY MATRIX
+
+20 held-out capability-addition worlds.
+
+8 policies.
+
+160 policy evaluations.
+
+Validation:
+
+- exact 20 primary seeds;
+- exact 8 policies / world;
+- no missing evaluations;
+- no post-primary morphology tuning.
+
+A BASELINE
+
+Median parent A held-out R^2:
+
+approximately:
+0.99814.
+
+Minimum:
+
+approximately:
+0.98175.
+
+PASS.
+
+GEOMETRIC COVERAGE
+
+KCOVER64
+median B-input
+nearest-daughter distance:
+
+approximately:
+0.1039.
+
+H180 random64:
+
+approximately:
+0.1435.
+
+Thus:
+
+KCOVER
+materially improves:
+Euclidean B-context
+input coverage.
+
+PASS
+as:
+a geometry result.
+
+CAPABILITY RESULT
+
+KCOVER_LEARNED64:
+
+median B held-out R^2:
+
+approximately:
+0.90098.
+
+median A loss:
+
+approximately:
+0.00020.
+
+Thus:
+
+median B
+just crosses:
+0.90
+
+while:
+A is:
+well preserved.
+
+But:
+
+world-level B>=0.85:
+
+75%.
+
+Frozen target:
+>=90%.
+
+FAIL.
+
+HARD-GATE CEILING
+
+KCOVER_HARD64:
+
+median B:
+
+approximately:
+0.90756.
+
+world-level B>=0.85:
+
+75%.
+
+Thus:
+
+ideal context routing
+
+does NOT:
+solve:
+the reliability failure.
+
+FAIL.
+
+COMPARISON TO RANDOM BROAD MORPHOLOGY
+
+H180_LEARNED_RANDOM64
+inside:
+the matched H181 primary:
+
+median B:
+
+approximately:
+0.94942.
+
+world-level B>=0.85:
+
+85%.
+
+KCOVER_LEARNED64:
+
+median B:
+
+approximately:
+0.90098.
+
+world-level:
+
+75%.
+
+Therefore:
+
+deterministic:
+Euclidean coverage
+
+is:
+worse
+
+than:
+broad random
+function-space sampling
+
+despite:
+better:
+nearest-center
+input geometry.
+
+This is:
+the central H181 result.
+
+COMPARISON TO RESIDUAL-DRIVEN MORPHOLOGY
+
+H180_LEARNED_RESIDUAL64:
+
+median B:
+
+approximately:
+0.88284.
+
+world-level B>=0.85:
+
+60%.
+
+KCOVER_LEARNED64:
+
+improves:
+median B
+by:
+approximately +0.0181
+
+and:
+world reliability
+by:
+15 points.
+
+But:
+
+this is:
+insufficient
+for:
+the frozen H181 reliability target.
+
+A PRESERVATION
+
+KCOVER_LEARNED64:
+
+median A loss:
+approximately:
+0.00020.
+
+100%
+of worlds:
+A loss <=0.05.
+
+PASS.
+
+A-output drift:
+
+approximately:
+0.00020.
+
+PASS.
+
+GENERALIZATION
+
+KCOVER_LEARNED64:
+
+median validation-test B gap:
+
+approximately:
+0.0265.
+
+median train-test gap:
+
+approximately:
+0.0212.
+
+PASS.
+
+LEARNED GATE
+
+Same:
+H180
+high-quality
+context routing.
+
+PASS.
+
+ACTIVE STRUCTURE
+
+64 daughter cells:
+
+approximately:
+1.994%
+of:
+parent body.
+
+Permanent params
+including:
+6 gate parameters:
+
+approximately:
+2.181%.
+
+PASS.
+
+COMPUTE
+
+Median:
+KCOVER_LEARNED64
+compute ratio
+to:
+GLOBAL_DAUGHTER:
+
+approximately:
+0.0030.
+
+PASS.
+
+32-CELL STRONG SUPPORT
+
+KCOVER_LEARNED32:
+
+median B:
+
+approximately:
+0.89762.
+
+world-level B>=0.85:
+
+75%.
+
+FAIL.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+A baseline.
+
+2.
+KCOVER_LEARNED64
+median B >=0.90.
+
+4.
+Median A preservation.
+
+5.
+World-level A preservation.
+
+6.
+A drift.
+
+7.
+Gate quality.
+
+9.
+KCOVER improves:
+over:
+residual-driven
+median B
+without:
+A-loss penalty.
+
+11.
+Generalization.
+
+12.
+Active structure.
+
+13.
+Permanent parameter growth.
+
+14.
+Compute.
+
+15.
+Hibernation / reactivation.
+
+16.
+GLOBAL_DAUGHTER
+capacity ceiling.
+
+FAIL:
+
+3.
+KCOVER_LEARNED64
+world-level B>=0.85
+is:
+75%,
+not:
+>=90%.
+
+8.
+Reliability value
+versus:
+random broad morphology.
+
+Observed:
+-10 percentage points.
+
+10.
+KCOVER_HARD64
+world-level B>=0.85:
+
+75%.
+
+STRONG SUPPORT:
+
+FAIL.
+
+FINAL INTERPRETATION
+
+H181 is:
+
+NEGATIVE
+
+for:
+
+SIMPLE
+TARGET-BLIND
+EUCLIDEAN
+B-CONTEXT
+COVERAGE
+MORPHOLOGY.
+
+The key cognitive result is:
+
+INPUT-SPACE COVERAGE
+IS NOT:
+FUNCTION-SPACE COVERAGE.
+
+A morphology can:
+
+place daughter cells
+closer:
+to:
+the B input distribution
+
+while:
+
+representing:
+the learned B function
+less reliably.
+
+This rules out:
+another naive spatial-growth rule.
+
+H179/H180/H181 together now establish:
+
+1.
+64 daughter cells
+have enough:
+B capacity.
+
+2.
+Context routing
+can:
+protect A.
+
+3.
+Neither:
+residual-local compact growth
+
+nor:
+Euclidean k-center coverage
+
+reliably chooses:
+the right:
+64-cell basis.
+
+The next missing mechanism is:
+
+FUNCTION-SPACE
+BASIS RECRUITMENT.
+
+Because:
+capability B is:
+being actively learned,
+
+its TRAINING TARGETS
+are:
+legitimate information
+
+for:
+choosing:
+which daughter basis functions
+are useful.
+
+NEXT:
+
+CLR2-H182 —
+SPARSE
+FUNCTION-SPACE
+DAUGHTER-BASIS
+RECRUITMENT.
+
+Keep:
+
+- K=64;
+- same learned context gate;
+- same A/B tasks;
+- same parent frozen;
+- same active-structure budget.
+
+Change:
+
+daughter-site selection
+
+to:
+a supervised
+sequential residual / orthogonal
+basis-recruitment rule
+
+that:
+avoids:
+redundant daughter functions.
+
+Candidate:
+
+orthogonal matching pursuit
+or:
+greedy residual-variance reduction
+
+over:
+right-half candidate daughter sites.
+
+Primary question:
+
+can:
+a function-aware
+64-cell daughter basis
+
+reach:
+>=90%
+world-level B competence
+
+while:
+the learned context gate
+preserves A?
+
+If:
+yes:
+
+proceed to:
+sequential:
+A -> B -> C
+capability accumulation.
+
+H181 DOES NOT AUTHORIZE
+
+- production use;
+- live model modification;
+- biological claims;
+- canonical scientific claims;
+- STAB-18-R1 execution.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
