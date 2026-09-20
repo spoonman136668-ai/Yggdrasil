@@ -2594,3 +2594,260 @@ spreading.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05 COUNTERFACTUAL SELF-REPAIR HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST DG-1R-05 PRIMARY DAMAGE SCENARIO.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05_counterfactual_repair_v1.py
+
+Harness commit:
+
+6b349004ae1dd65994345b933f0906afee61105e.
+
+Git blob SHA:
+
+2d6cb69e586aced8aa87c4ab789b44c305ef1536.
+
+Source SHA-256:
+
+b4a35269bd99560b8c13613bab284ae47d253b245cf7e4304fde246254e644d3.
+
+Source bytes:
+
+16905.
+
+FROZEN PARENT DEPENDENCY
+
+research/experiments/dg1r/harnesses/dg1r_04_software_nanite_v1.py
+
+Parent Git blob SHA:
+
+6eeaf70c97174fd40483256db9c6e600989a6b47.
+
+Parent source SHA-256:
+
+debcaf7c79632740dbccd4ad8b0f6ebfcd034515cb144b9a21bc537f7a8f7eed.
+
+Parent source bytes:
+
+23776.
+
+EXACT EXECUTION COPY PROOF
+
+Local child Git blob:
+
+2d6cb69e586aced8aa87c4ab789b44c305ef1536.
+
+Local parent Git blob:
+
+6eeaf70c97174fd40483256db9c6e600989a6b47.
+
+Both:
+
+MATCH:
+the:
+committed:
+GitHub:
+blobs.
+
+PRE-FREEZE SANITY
+
+Python compile:
+
+PASS.
+
+Across:
+
+8 worlds
+x
+5 methods
+=
+40:
+
+NO-DAMAGE:
+determinism controls,
+
+maximum:
+whole-state divergence:
+
+0.
+
+PASS.
+
+For:
+
+all:
+preregistered:
+lesion locations
+and:
+sizes:
+
+lesion /
+input-mapping overlap:
+
+NONE.
+
+lesion /
+nanite-site overlap:
+
+NONE.
+
+PASS.
+
+No:
+
+primary:
+damage:
+scenario
+
+was:
+executed
+before:
+this:
+freeze.
+
+FROZEN RECOVERY-RATE DETAIL
+
+full_recovery_rate
+
+means:
+
+fraction:
+of:
+damage scenarios
+
+that:
+reach:
+exact:
+128-bit:
+counterfactual equality
+
+and:
+
+remain:
+exactly:
+equal
+
+through:
+post-damage:
+step:
+32.
+
+exact_match_rate_h32
+
+is:
+reported:
+separately
+
+and:
+means:
+
+fraction:
+of:
+damage scenarios
+
+that:
+match:
+the:
+counterfactual
+exactly
+at:
+step:
+32
+
+regardless:
+of:
+whether:
+the:
+match
+occurred:
+earlier.
+
+FROZEN INTERVENTION TELEMETRY DETAIL
+
+Post-damage:
+nanite telemetry
+
+is:
+initialized
+from:
+
+the:
+actual:
+nanite:
+bit state
+at:
+damage time.
+
+Thus:
+
+DAMAGED minus REFERENCE
+controller-activity deltas
+
+do NOT:
+count:
+a:
+spurious:
+initial:
+transition
+from:
+zero.
+
+FROZEN WORLD FAMILY
+
+20260926050000..20260926050007.
+
+8 worlds.
+
+FROZEN DAMAGE FAMILY
+
+4:
+unmapped:
+sibling:
+blocks
+
+x:
+
+SMALL3
+and:
+LARGE5
+
+=
+
+8:
+damage scenarios
+per:
+method /
+world.
+
+POST-DAMAGE HORIZON:
+
+32:
+external:
+steps.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+canonical sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+Runtime sidecars:
+
+non-canonical.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
