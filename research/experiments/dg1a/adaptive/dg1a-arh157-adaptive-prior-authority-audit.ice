@@ -801,3 +801,215 @@ primary world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — ADAPTIVE PRIOR AUTHORITY HARNESS
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H157 HELD-OUT PRIMARY EXECUTION.
+
+UNIQUE SANDBOX HARNESS SHA-256
+
+6f827ef787cf936f6f7135e7d8423a14dec4b977a25b91092aabdfddee844cbe.
+
+The harness is pinned
+under:
+an H157-specific filename.
+
+ADAPTIVE PRIOR GRID
+
+0.01,
+0.03,
+0.10,
+0.30.
+
+Before:
+four acquired observations:
+
+lambda=0.03.
+
+After:
+four or more:
+
+choose lambda
+by:
+exact ridge
+leave-one-out predictive error
+on:
+already-acquired local feedback.
+
+LOOCV is evaluated
+using:
+the standard linear-smoother
+leave-one-out residual identity.
+
+Tie-break:
+
+larger lambda.
+
+QUERY DESIGN
+
+ADAPT-CV:
+
+global leverage /
+greedy D-optimal.
+
+AOPT-ADAPT-CV:
+
+global A-optimal.
+
+Query selection reads:
+basis geometry
+
+and:
+the lambda
+selected from:
+already-acquired feedback.
+
+It does not read:
+unacquired targets.
+
+FEEDBACK NOISE
+
+Observed local target:
+
+true target
++
+Gaussian noise.
+
+Noise sd:
+
+eta
+*
+sqrt(
+lesion held-out MSE
+).
+
+Primary eta:
+
+0,
+0.10,
+0.25.
+
+Noise draws:
+
+- deterministic per world / eta;
+- common across policies;
+- absent from:
+  held-out functional evaluation.
+
+SANITY MATRIX
+
+Disjoint:
+20260920590000...
+family.
+
+120 underlying worlds.
+
+720 executed policy-world evaluations.
+
+Validation:
+
+- exactly 120 unique sanity seeds;
+- six executed policies / seed;
+- zero duplicate seed x policy rows;
+- zero functionally-trivial worlds.
+
+NON-EVIDENCE SANITY SIGNAL
+
+Representative MIXED 2% FOUR:
+
+eta=0:
+
+LEV-L03:
+median final recovery
+approximately 0.950,
+T90 reach 95%.
+
+ADAPT-CV:
+approximately 0.988,
+T90 reach 100%,
+median final lambda 0.01.
+
+eta=0.25:
+
+LEV-L03:
+approximately 0.937,
+T90 reach 65%.
+
+ADAPT-CV:
+approximately 0.983,
+T90 reach 100%,
+median final lambda 0.01.
+
+Representative MIXED 5% COMPACT:
+
+eta=0:
+
+ADAPT-CV:
+approximately 0.997,
+T90 reach 100%,
+median final lambda 0.01.
+
+eta=0.25:
+
+approximately 0.997,
+T90 reach 100%,
+median final lambda 0.01.
+
+The non-deployable
+oracle-lambda analysis
+also selected:
+0.01
+through:
+these representative sanity cells.
+
+Thus:
+
+sanity does NOT support:
+the pre-experiment intuition
+that:
+eta=0.25
+must restore:
+stronger prior authority.
+
+No:
+noise level,
+lambda grid,
+selection rule,
+query rule,
+budget,
+or:
+acceptance gate
+is changed.
+
+This creates:
+a genuine falsifiable primary question:
+
+does:
+the selected prior
+increase with noise
+across:
+the full held-out factorial,
+
+or:
+is the correct authority
+still:
+weaker than:
+lambda=0.03?
+
+PRIMARY FAMILY REMAINS
+
+20260920500000..20260920505399.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H157 primary world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
