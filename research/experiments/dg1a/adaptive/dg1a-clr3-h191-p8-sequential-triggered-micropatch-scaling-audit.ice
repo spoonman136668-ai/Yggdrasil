@@ -744,3 +744,871 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL H191-P8 NON-EVIDENCE PILOT CLOSURE — SEQUENTIAL TRIGGERED MICROPATCH SCALING
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+POSITIVE BOUNDED SEQUENTIAL MICROPATCH RESULT /
+ENCOURAGING BUT NOT STRONG BY PREREGISTERED PATCH-COUNT GATE /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+007644e97e88f6c1e178bbaddb6357804401dd1dc5c872fb93c427c2d071672f.
+
+CANONICAL OUTPUT
+
+RUN 1 SHA-256:
+
+e907e3edaf795840fda8daabfbf02ea77baf79d3c29ded6026361acf29cc183c.
+
+RUN 2 SHA-256:
+
+e907e3edaf795840fda8daabfbf02ea77baf79d3c29ded6026361acf29cc183c.
+
+Byte-identical:
+
+PASS.
+
+FROZEN TRIGGER
+
+A:
+new capability
+receives:
+one:
+new fixed-dictionary factor
+
+only if:
+
+decoder-only:
+distillation NMSE
+
+>0.02.
+
+Otherwise:
+
+no:
+shared-core growth.
+
+Only:
+one:
+factor
+is:
+allowed
+per:
+new capability.
+
+SEQUENTIAL RESULT
+
+All:
+five:
+addition stages
+
+CAP4,
+CAP5,
+CAP6,
+CAP7,
+CAP8
+
+classify:
+
+ROBUST.
+
+No:
+TRANSITION.
+
+No:
+OVER-CAPACITY.
+
+CAP4
+
+Patch trigger rate:
+
+100%.
+
+Median:
+decoder-only:
+distillation NMSE:
+
+0.11536068254741542.
+
+After:
+the triggered:
+one-factor patch:
+
+median:
+new-capability:
+distillation NMSE:
+
+0.005605018807122694.
+
+Median:
+held-out NMSE:
+
+0.008356748009941541.
+
+Median:
+new-capability gap
+versus:
+fresh:
+JOINT_REFIT8:
+
++0.001307072928272868.
+
+Median:
+world-mean gap:
+
+-0.0014259307212867785.
+
+Cumulative patches:
+
+1.
+
+Shared factors:
+
+9.
+
+CAP5
+
+Patch trigger rate:
+
+100%.
+
+Decoder-only:
+median distillation NMSE:
+
+0.1514343453757548.
+
+Post-rule:
+distillation:
+
+0.00216941967838689.
+
+Held-out:
+
+0.00333667917228634.
+
+New-capability gap:
+
++0.0003325710963577107.
+
+World-mean gap:
+
+-0.000034459410840495443.
+
+Cumulative patches:
+
+2.
+
+Shared factors:
+
+10.
+
+CAP6
+
+Patch trigger rate:
+
+87.5%.
+
+Decoder-only:
+median distillation NMSE:
+
+0.0960255514473366.
+
+Post-rule:
+distillation:
+
+0.0027128195566195777.
+
+Held-out:
+
+0.0038203836891947465.
+
+New-capability gap:
+
+-0.008845286505478896.
+
+World-mean gap:
+
+-0.0018925197705128096.
+
+Cumulative patches:
+
+3.
+
+Shared factors:
+
+11.
+
+CAP7
+
+Patch trigger rate:
+
+87.5%.
+
+Decoder-only:
+median distillation NMSE:
+
+0.025339897432963367.
+
+Post-rule:
+distillation:
+
+0.004549812436372014.
+
+Held-out:
+
+0.005349968736790509.
+
+New-capability gap:
+
+-0.0026932690110023274.
+
+World-mean gap:
+
+-0.0027106853749492973.
+
+Cumulative patches:
+
+4.
+
+Shared factors:
+
+12.
+
+CAP8
+
+Patch trigger rate:
+
+50%.
+
+Decoder-only:
+median distillation NMSE:
+
+0.03270920727854777.
+
+Post-rule:
+distillation:
+
+0.006253502842658531.
+
+Held-out:
+
+0.011547204057637444.
+
+P90:
+held-out:
+
+0.021911588290800102.
+
+New-capability gap:
+
+-0.010768193456061483.
+
+World-mean gap:
+
+-0.006751142641616437.
+
+Median:
+cumulative patches:
+
+4.
+
+Median:
+shared factors:
+
+12.
+
+PATCH-COUNT SCALING
+
+Five:
+new capabilities
+were introduced.
+
+Median:
+total:
+new factors:
+
+4.
+
+Median:
+patches per:
+new capability:
+
+0.8.
+
+Thus:
+
+factor addition
+was:
+
+less than:
+one-for-one
+
+over:
+the tested:
+five-capability:
+developmental sequence.
+
+This passes:
+
+SEQUENTIAL SCALING ENCOURAGEMENT.
+
+However:
+
+the preregistered:
+STRONG MECHANICAL SIGNAL
+required:
+
+all stages:
+ROBUST
+
+AND:
+
+median:
+final patch count
+<=3.
+
+Observed:
+
+4.
+
+Therefore:
+
+STRONG MECHANICAL SIGNAL:
+
+FAIL.
+
+Do NOT:
+soften:
+this:
+mixed-positive distinction.
+
+PRESERVATION
+
+Across:
+all stages:
+
+old decoder:
+maximum absolute change:
+
+0.
+
+Old prediction:
+maximum drift:
+
+0.
+
+PASS:
+exact.
+
+PER-CAPABILITY ACTIVE COMPUTE
+
+Oldest capabilities:
+
+residual ops:
+
+16
+
+through:
+the entire sequence.
+
+They do NOT:
+pay:
+for:
+later:
+patch factors.
+
+Median:
+newest-capability:
+residual operations:
+
+CAP4:
+18.
+
+CAP5:
+20.
+
+CAP6:
+22.
+
+CAP7:
+24.
+
+CAP8:
+24.
+
+At:
+CAP8,
+
+the median:
+new capability
+uses:
+
+12 factors
+
+rather than:
+
+the:
+full:
+final support
+necessarily:
+in every world.
+
+This is:
+birth-time:
+active support
+accounting.
+
+GEOMETRY TELEMETRY
+
+Across:
+all:
+triggered patches:
+
+scale-slot counts:
+
+sigma 0.22:
+25.
+
+sigma 0.44:
+8.
+
+sigma 0.88:
+1.
+
+Median:
+new patch center
+distance
+from:
+nearest:
+pre-existing:
+factor center:
+
+0.37230357578573503.
+
+Only:
+
+approximately:
+5.88%
+
+of:
+patch factors
+
+are:
+exact:
+same-stage:
+JOINT_REFIT8
+support candidates.
+
+Thus:
+
+sequential:
+local:
+new-capability-driven patches
+
+are:
+not:
+simply:
+reconstructing:
+the fresh:
+global:
+8-factor optimum.
+
+TECHNICAL INTERPRETATION
+
+P8 establishes:
+
+a:
+bounded:
+triggered:
+developmental growth mechanism
+
+can:
+
+- preserve:
+  all old predictions
+  exactly;
+
+- preserve:
+  old active compute
+  exactly;
+
+- add:
+  later capabilities
+  with:
+  one-factor:
+  local patches
+  only when:
+  needed;
+
+- avoid:
+  OVER-CAPACITY
+  through:
+  eight total capabilities;
+
+- use:
+  fewer:
+  added factors
+  than:
+  new capabilities
+  on:
+  the median.
+
+This is:
+
+a:
+meaningful:
+mechanical scaling result.
+
+But:
+
+the:
+patch rate
+
+is:
+still:
+high.
+
+Four:
+new factors
+for:
+five:
+new capabilities
+
+does NOT:
+demonstrate:
+a:
+strongly:
+sublinear:
+shared-geometry regime.
+
+It shows:
+
+PARTIAL:
+GEOMETRY REUSE.
+
+Not:
+
+NEAR-CONSTANT:
+GEOMETRY.
+
+The next experiment
+must:
+stress:
+whether:
+the accumulated:
+12-factor:
+developmental core
+
+can:
+absorb:
+a:
+genuinely:
+out-of-distribution:
+capability
+
+and:
+whether:
+bounded:
+elastic:
+expansion
+
+still:
+repairs it
+without:
+global:
+reorganization.
+
+NEXT JUSTIFIED EXPERIMENT
+
+H191-P9 —
+OUT-OF-DISTRIBUTION:
+CAPABILITY INSERTION
+AND:
+ELASTIC:
+CORE EXPANSION.
+
+Use:
+a:
+sequentially developed:
+P8-style:
+core.
+
+Then:
+introduce:
+an:
+OOD capability
+whose:
+context geometry
+and:
+residual frequency
+are:
+outside:
+the:
+original:
+ring-context:
+training regime.
+
+Compare:
+
+PATCH0:
+decoder only.
+
+PATCH1:
+one-factor:
+elastic patch.
+
+PATCH2:
+two-factor:
+elastic patch.
+
+Keep:
+
+all:
+existing:
+factors
+and:
+old decoder coefficients
+
+frozen.
+
+Measure:
+
+- newcomer fidelity;
+- old-state preservation;
+- extra geometry;
+- old versus:
+  newcomer compute;
+- whether:
+  OOD insertion
+  requires:
+  qualitatively:
+  larger:
+  structural growth
+  than:
+  in-distribution:
+  additions.
+
+PLAIN-SPEAK SUMMARY
+
+What did we try?
+
+We started:
+with:
+three capabilities
+
+and:
+added:
+five more
+one at a time.
+
+Before:
+growing:
+the shared core,
+
+each newcomer
+had to:
+try:
+using:
+what already existed.
+
+Only:
+when:
+that fit
+was:
+bad enough
+
+could:
+the system
+grow:
+one:
+new shared factor.
+
+What happened?
+
+It worked:
+through:
+all:
+eight capabilities.
+
+Every:
+addition stage
+stayed:
+inside:
+the frozen:
+robust range.
+
+Nothing:
+old
+changed.
+
+Nothing:
+old
+got:
+more expensive
+to run.
+
+Did it work?
+
+Yes,
+with:
+an important:
+qualification.
+
+We added:
+five:
+new capabilities
+
+and:
+needed:
+four:
+new shared factors
+on:
+the median.
+
+So:
+the geometry
+grew:
+slower
+than:
+capability count,
+
+but:
+only:
+a little:
+slower.
+
+This passed:
+the:
+encouraging:
+scaling gate
+
+but:
+missed:
+the:
+strong:
+gate.
+
+What did we actually learn?
+
+The organism
+can:
+
+try:
+reuse first,
+
+detect:
+when:
+reuse is:
+not enough,
+
+and:
+grow:
+a:
+small:
+structural patch
+
+without:
+damaging:
+anything:
+already learned.
+
+We also learned:
+
+the:
+current:
+shared geometry
+is:
+not:
+so universal
+that:
+most:
+new capabilities
+need:
+no growth.
+
+Why does it matter?
+
+This is:
+much better
+than:
+rebuilding:
+or:
+retraining:
+everything.
+
+But:
+
+if:
+almost:
+every:
+new capability
+eventually:
+needs:
+another:
+factor,
+
+we still:
+have:
+a scaling problem
+to solve.
+
+The architecture
+is:
+developmental,
+
+but:
+not yet:
+showing:
+near-constant:
+shared structure.
+
+What should we try next?
+
+Give:
+the:
+developed:
+organism
+
+a:
+capability
+that is:
+deliberately:
+outside:
+what:
+its:
+existing:
+shared geometry
+was:
+built around.
+
+Then:
+measure:
+
+whether:
+one:
+or:
+two:
+small patches
+can:
+absorb:
+that:
+novelty
+
+without:
+rebuilding:
+the:
+old core.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
