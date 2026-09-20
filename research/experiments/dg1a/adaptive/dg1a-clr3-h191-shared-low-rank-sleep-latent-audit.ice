@@ -696,3 +696,532 @@ SYNTHETIC_MEASURED_SHARED_LOW_RANK_SLEEP_LATENT
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY DESIGN REVISION 01 — FIXED MULTISCALE PARENT-DICTIONARY LATENT
+
+DATE:
+2026-09-20.
+
+STATUS:
+RECORDED BEFORE ANY H191 ACCEPTED-LINEAGE SANITY OR PRIMARY EXECUTION.
+
+WHY THIS REVISION EXISTS
+
+H191-P0,
+H191-P1,
+H191-P2,
+and:
+H191-P3
+
+were:
+explicit:
+NON-EVIDENCE
+mechanical pilots
+
+performed while:
+the accepted H190 parent remained:
+provenance-blocked.
+
+They do NOT:
+count:
+toward:
+H191 acceptance.
+
+They DO:
+identify:
+a mechanical defect
+in:
+the original:
+nearest-neighbor-width
+virtual Gaussian factor family.
+
+P0 showed:
+
+nearest-neighbor widths
+approximately:
+0.017 / 0.028 / 0.042
+
+were:
+far below:
+the accepted parent RBF scale:
+0.22,
+
+causing:
+capability-local factor collapse.
+
+P1 showed:
+
+multiscale geometry
+restores:
+genuine:
+cross-capability sharing,
+
+and:
+rank-8-like capacity
+can:
+beat:
+separate PROXY8.
+
+P2 showed:
+
+one:
+shared:
+sigma=0.22
+support set
+
+is:
+too rigid.
+
+P3 showed:
+
+a fixed:
+three-scale:
+parent dictionary
+
+can:
+combine:
+
+- genuine sharing;
+- rank-8 expressive capacity;
+- 24 learned decoder scalars;
+- PROXY8-equivalent inference overhead.
+
+Therefore:
+
+the ORIGINAL H191 factor family
+and:
+LATENT4 primary candidate
+
+are:
+SUPERSEDED
+BEFORE:
+accepted-lineage execution.
+
+No:
+held-out H191 primary world
+has:
+been spent.
+
+No:
+accepted H191 sanity world
+has:
+been spent.
+
+REVISED H191 SHARED LATENT FAMILY
+
+Candidate factor dictionary:
+
+for every:
+existing:
+3209 parent site j,
+
+provide:
+
+D[j,0]:
+center = parent_site_j,
+sigma = 0.22.
+
+D[j,1]:
+center = parent_site_j,
+sigma = 0.44.
+
+D[j,2]:
+center = parent_site_j,
+sigma = 0.88.
+
+These are:
+
+1x,
+2x,
+4x
+
+the accepted parent RBF scale.
+
+No:
+factor center
+is learned.
+
+No:
+factor width
+is learned.
+
+No:
+new physical cell
+is created.
+
+No:
+new morphological coordinate
+is created.
+
+Candidate count:
+
+3209 * 3
+=
+9627.
+
+REVISED JOINT RECRUITMENT
+
+Use:
+the same:
+128 unlabeled:
+full-minus-selected-branch
+residual distillation targets
+per:
+A/B/C context.
+
+Jointly recruit:
+one:
+shared:
+factor sequence
+
+by:
+the already-declared:
+mean A/B/C
+normalized residual reconstruction MSE
+
+with:
+ridge alpha:
+0.001.
+
+Candidate tie:
+
+lower parent-site index,
+then:
+0.22,
+0.44,
+0.88.
+
+Nested candidates:
+
+DICT2.
+DICT4.
+DICT8.
+
+REVISED PRIMARY CANDIDATE
+
+DICT8.
+
+LEARNED SLEEP MEMORY
+
+DICT8:
+
+8 factors
+*
+3 capability decoder coefficients
+
+=
+24:
+learned scalar values.
+
+This exactly matches:
+H190 PROXY8
+learned coefficient count.
+
+Structural metadata:
+
+DICT8:
+
+8:
+shared parent-site indices
+
++
+8:
+scale-slot IDs.
+
+H190 PROXY8:
+
+24:
+parent-site indices
+across:
+three:
+separate:
+8-site caches.
+
+Report:
+both:
+learned scalar state
+and:
+structural metadata.
+
+Do NOT:
+hide:
+the scale-slot metadata.
+
+REVISED COMPUTE
+
+DICT8:
+
+8:
+factor evaluations
+
++
+8:
+selected capability decoder
+multiply-adds
+
+=
+16:
+sleep-residual proxy operations.
+
+Thus:
+
+learned-scheduled:
+
+A:
+3237.
+
+B:
+81.
+
+C:
+76.
+
+B-only:
+approximately:
+2.438%.
+
+C-only:
+approximately:
+2.288%.
+
+Equal A/B/C:
+approximately:
+34.056%.
+
+Same:
+as:
+H190 PROXY8.
+
+REVISED COMPARATORS
+
+NO_COMP.
+
+PROXY8.
+
+DICT2.
+
+DICT4.
+
+DICT8.
+
+The old:
+
+LATENT2,
+LATENT4,
+LATENT8
+
+nearest-neighbor-width
+virtual factor family
+
+is:
+retained in:
+the historical preregistration
+
+but:
+is NOT:
+an accepted-lineage H191 comparator
+after:
+this:
+pre-primary revision.
+
+REVISED ACCEPTANCE SHAPE
+
+All original:
+stored phenotype,
+routing,
+task performance,
+wake,
+drift,
+physical-cell,
+task-replay,
+and:
+functional-retraining
+requirements
+
+remain:
+unchanged.
+
+Where:
+the original acceptance gates
+say:
+LATENT4,
+
+substitute:
+
+DICT8.
+
+Specifically:
+
+DICT8:
+known-context prediction fidelity
+
+median normalized MSE
+<=0.01
+for:
+A,
+B,
+C.
+
+DICT8:
+learned-scheduled prediction fidelity
+
+median normalized MSE
+<=0.02
+for:
+A,
+B,
+C.
+
+DICT8:
+known-context task R^2
+median drop
+<=0.01
+for:
+A/B/C.
+
+DICT8:
+learned-scheduled task R^2
+median drop
+<=0.02.
+
+DICT8:
+B-only compute
+<=3%.
+
+DICT8:
+C-only compute
+<=3%.
+
+DICT8:
+equal A/B/C compute
+<=35%.
+
+DICT8:
+learned sleep memory
+<=24 learned scalars.
+
+DICT8:
+must:
+beat or match:
+PROXY8
+
+on:
+median:
+known-context
+normalized MSE
+
+for:
+both:
+B
+and:
+C.
+
+DICT4 DIAGNOSTIC
+
+If:
+DICT4
+passes:
+all:
+fidelity/task gates,
+
+report:
+rank 4
+as:
+the minimum tested
+sufficient shared dictionary rank.
+
+DICT2 DIAGNOSTIC
+
+If:
+DICT2
+passes,
+report:
+rank 2.
+
+STRONG SUPPORT
+
+H191 strong support now requires:
+
+all:
+DICT8 primary gates
+
+AND:
+
+DICT8:
+learned-scheduled:
+B and C
+prediction fidelity
+
+both:
+<=0.01
+
+AND:
+
+learned sleep scalar memory
+<=24.
+
+MIXED / NEGATIVE
+
+Treat:
+H191
+as:
+mixed / negative
+if:
+
+- DICT8 cannot:
+  clear:
+  strict B/C fidelity;
+- DICT8 does not:
+  improve:
+  B/C
+  relative to:
+  PROXY8;
+- shared support:
+  degenerates:
+  into:
+  capability-local factors;
+- all useful factors:
+  collapse:
+  to:
+  one scale
+  and:
+  cross-capability value
+  disappears;
+- parent functional state
+  must:
+  change;
+- wake:
+  requires:
+  refit.
+
+PROVENANCE STATUS
+
+UNCHANGED.
+
+The accepted H190 transient harness
+and:
+accepted H190 primary matrix bytes
+
+remain:
+unrecovered.
+
+Therefore:
+
+H191 accepted-lineage
+sanity and:
+primary
+
+remain:
+
+NOT STARTED.
+
+This design revision
+does NOT:
+authorize:
+a reconstructed-parent
+primary claim.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
