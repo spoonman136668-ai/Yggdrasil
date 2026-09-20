@@ -848,3 +848,317 @@ SYNTHETIC_MEASURED_SANDBOX_NON_RATCHETING_LEARNED_STATE_AMPLITUDE_ENVELOPE
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — NON-RATCHETING AMPLITUDE-ENVELOPE HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H173 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H173 SANDBOX HARNESS
+
+File:
+
+h173_amplitude_envelope_v1.py
+
+SHA-256:
+
+f4d599f7bd8e5ec2dfcc311bdd529214b7d27d73e4b629fe3cc32672b051c905.
+
+PARENT MECHANICS
+
+Reuse:
+
+H171
+learned matched-turnover substrate,
+
+H169
+HIST-GEOM one-plus-one
+functional observation controller,
+
+and:
+H172
+comparison mechanics.
+
+No:
+teacher,
+training,
+damage,
+query,
+history,
+lambda,
+noise,
+or:
+lifetime
+change.
+
+LIFETIME AMPLITUDE CERTIFICATE
+
+At:
+pre-turnover initialization,
+
+compute:
+
+s0 =
+RMS
+of:
+the original learned
+student coefficient vector.
+
+Persist:
+
+one scalar only.
+
+No:
+coefficient checkpoint
+is retained.
+
+LOCAL SCALE
+
+At:
+100%
+membership return
+each cycle,
+
+rms_boundary =
+RMS
+of:
+surviving cells
+touching:
+the lesion.
+
+s_local =
+clip(
+rms_boundary,
+0.25*s0,
+2.0*s0
+).
+
+If:
+no boundary exists,
+
+s_local=s0.
+
+ABSOLUTE ENVELOPE
+
+For:
+K lesion cells,
+
+ENV2:
+
+bound =
+2.0
+*
+s_local
+*
+sqrt(K).
+
+ENV4:
+
+bound =
+4.0
+*
+s_local
+*
+sqrt(K).
+
+After:
+every local ridge solve,
+
+if:
+||u||_2
+exceeds:
+the bound,
+
+project radially
+toward:
+zero amplitude.
+
+The envelope:
+
+is NOT centered
+on:
+the current lesion prior
+
+and:
+cannot expand beyond:
+the frozen
+s0-based scale cap.
+
+H172-TRUST2 COMPARATOR
+
+Exact:
+cycle-relative
+delta projection
+
+is retained
+as:
+a comparator.
+
+POLICIES
+
+H171_UNCONSTRAINED.
+
+H172_TRUST2.
+
+ENV2_HIST_GEOM.
+
+ENV4_HIST_GEOM.
+
+MICRO2_LEVERAGE.
+
+LOCAL_CHECKPOINT_ORACLE.
+
+SANITY
+
+Disjoint family:
+
+20260922290000...
+
+6 condition-world lifetimes.
+
+6 policies.
+
+36 policy lifetimes.
+
+Sanity-output SHA-256:
+
+b529dbaed3134e77fd6e45edcff11451f2443a7f1f9d7011e03c8b161f11393b.
+
+Mechanical checks:
+
+- exactly six policies / seed;
+- exact six sanity seeds;
+- oracle:
+  final learned-output fidelity
+  exactly 1.0;
+- ENV2 / ENV4
+  use:
+  identical observation counts
+  to:
+  H171_UNCONSTRAINED;
+- projection changes:
+  repaired lesion coefficients only;
+- no:
+  teacher output,
+  lost coefficient,
+  held-out test output,
+  or:
+  target label
+
+enters:
+the amplitude certificate
+or:
+envelope.
+
+NON-EVIDENCE SIGNAL
+
+ENV2:
+
+minimum sanity
+FINAL learned-output fidelity:
+
+approximately:
+0.9482.
+
+No:
+negative-fidelity
+sanity world.
+
+Median projection duty:
+
+approximately:
+5.8%.
+
+Maximum:
+
+approximately:
+11.3%.
+
+Median maximum
+candidate-norm /
+envelope ratio:
+
+approximately:
+1.16.
+
+ENV4:
+
+mostly inactive
+
+with:
+median projection duty:
+0%
+
+and:
+maximum:
+approximately 0.68%.
+
+Thus:
+
+ENV2
+is active
+without:
+approaching:
+frozen-state behavior.
+
+One:
+sanity world
+
+falls:
+slightly below:
+0.95
+FINAL fidelity.
+
+This is:
+NON-EVIDENCE.
+
+No:
+
+- kappa;
+- amplitude-certificate rule;
+- boundary-scale cap;
+- projection rule;
+- teacher;
+- training;
+- damage law;
+- query rule;
+- history window;
+- lambda;
+- feedback-noise rate;
+- lifetime;
+- sample size;
+- acceptance gate
+
+was changed.
+
+PRIMARY FAMILY
+
+20260922200000..20260922200079.
+
+80 held-out worlds.
+
+6 policies.
+
+480 policy lifetimes.
+
+Approximately:
+
+140,160
+policy repair cycles.
+
+H173 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H173 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
