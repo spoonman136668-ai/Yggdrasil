@@ -1911,3 +1911,615 @@ H180 DOES NOT AUTHORIZE
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — CONTEXT-GATED DISTRIBUTED CAPABILITY ADDITION
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-POSITIVE FOR ROUTING / NEGATIVE FOR 64-CELL WORLD-LEVEL RELIABILITY.
+
+FINAL H180 HARNESS SHA-256
+
+02983201c9d51d15c44356fd1c9b146d2b2a2b84a07113f558dc87af79d236f2.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+22d20db87a57cda75c22ab6dedf467de64e6c2f647a889b0f325e73d549f25e8.
+
+ACCEPTED PRIMARY FAMILY
+
+20260922900000..20260922900019.
+
+PRIMARY MATRIX
+
+20 held-out worlds.
+
+9 policies.
+
+180 evaluations.
+
+Validation:
+
+- exact 20 primary seeds;
+- exact 9 policies / world;
+- no missing evaluations;
+- no post-primary gate tuning.
+
+LEARNED GATE QUALITY
+
+Median context classification accuracy:
+
+1.0.
+
+Median A-context activation:
+
+approximately:
+0.00444.
+
+Median B-context activation:
+
+approximately:
+0.99562.
+
+Median A-context
+95th percentile activation:
+
+approximately:
+0.0253.
+
+Median B-context
+5th percentile activation:
+
+approximately:
+0.97545.
+
+Thus:
+
+the six-parameter learned router
+successfully learns:
+context identity
+
+without:
+task-output supervision.
+
+LEARNED-GATED RESIDUAL MORPHOLOGY
+
+LEARNED_GATE_MULTI8_64:
+
+median B held-out R^2:
+
+approximately:
+0.87348.
+
+median A loss:
+
+approximately:
+0.00027.
+
+B>=0.85 world rate:
+
+60%.
+
+A loss <=0.05:
+
+100%.
+
+Joint:
+
+60%.
+
+Thus:
+
+routing protects A
+
+but:
+
+the residual-driven
+64-cell morphology
+
+still:
+under-covers B.
+
+LEARNED-GATED BROAD MORPHOLOGY
+
+LEARNED_GATE_RANDOM8_64:
+
+median B held-out R^2:
+
+approximately:
+0.95417.
+
+median A loss:
+
+approximately:
+0.00190.
+
+median A-output drift:
+
+approximately:
+0.00126.
+
+B>=0.85:
+
+80%.
+
+A loss <=0.05:
+
+100%.
+
+Joint B/A world success:
+
+80%.
+
+Therefore:
+
+routing solves:
+the H179
+A-interference failure
+
+for:
+the broad 64-cell morphology.
+
+Compared with:
+the accepted H179
+UNGATED RANDOM_MULTI8_64:
+
+median B:
+approximately 0.9473.
+
+median A loss:
+approximately 0.1959.
+
+H180 learned gating:
+
+preserves:
+essentially the same
+B capability
+
+while:
+reducing:
+A loss
+
+by:
+approximately:
+0.194
+R^2 points.
+
+This is:
+a strong routing mechanism result.
+
+However:
+
+the frozen world-level
+B reliability target
+
+requires:
+
+>=90%
+of worlds
+B R^2 >=0.85.
+
+Observed:
+
+80%.
+
+FAIL.
+
+HARD-GATE ROUTING CEILING
+
+HARD_GATE_RANDOM8_64:
+
+median B:
+
+approximately:
+0.95964.
+
+median A loss:
+
+0.
+
+B>=0.85:
+
+85%.
+
+Thus:
+
+even:
+perfect experimental
+context routing
+
+does NOT:
+raise:
+the current broad-random
+64-cell morphology
+
+to:
+the frozen:
+90%
+world-level
+reliability threshold.
+
+Therefore:
+
+the remaining failure
+is NOT:
+gate leakage.
+
+It is:
+
+SPATIAL COVERAGE VARIANCE.
+
+The morphology is:
+broad enough
+on average
+
+but:
+not:
+reliably placed
+for:
+every learned B function.
+
+64-CELL CAPACITY
+
+The result confirms:
+
+64 new cells
+can:
+represent:
+capability B
+
+in:
+most worlds
+
+and:
+can do so
+without:
+material A interference
+
+when:
+properly routed.
+
+Thus:
+
+raw:
+active-cell capacity
+
+is:
+not:
+the primary blocker.
+
+The missing mechanism is:
+
+DETERMINISTIC
+COVERAGE-BALANCED
+DEVELOPMENTAL PLACEMENT.
+
+LEARNED-GATED 32-CELL POLICY
+
+LEARNED_GATE_MULTI8_32:
+
+median B:
+
+approximately:
+0.85247.
+
+median A loss:
+
+approximately:
+0.00024.
+
+B>=0.85:
+
+55%.
+
+Thus:
+
+routing alone
+does not:
+compress:
+the new capability
+to:
+32 cells
+
+under:
+the current morphology.
+
+GENERALIZATION
+
+LEARNED_GATE_RANDOM8_64:
+
+median validation-test
+B R^2 gap:
+
+approximately:
+0.0142.
+
+median train-test gap:
+
+approximately:
+0.0060.
+
+PASS.
+
+ACTIVE STRUCTURE
+
+64 daughter cells:
+
+growth fraction:
+
+approximately:
+1.994%.
+
+PASS.
+
+PERMANENT PARAMETER GROWTH
+
+64 daughter coefficients
++
+6 gate parameters:
+
+approximately:
+2.181%
+of:
+the parent coefficient count.
+
+Frozen ceiling:
+
+2.25%.
+
+PASS.
+
+COMPUTE
+
+LEARNED_GATE_RANDOM8_64
+median compute proxy:
+
+approximately:
+0.30%
+of:
+GLOBAL_DAUGHTER.
+
+PASS.
+
+HIBERNATION / REACTIVATION
+
+Exact:
+
+hibernation A-return error:
+0.
+
+reactivation B-return error:
+0.
+
+PASS.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+A baseline.
+
+2.
+At least one learned-gate
+64-cell policy:
+median B>=0.90.
+
+LEARNED_GATE_RANDOM8_64:
+PASS.
+
+4.
+Median A preservation.
+
+5.
+World-level A preservation.
+
+6.
+A-output drift.
+
+7.
+Gate classification accuracy.
+
+8.
+Gate activation separation.
+
+9.
+Routing value.
+
+10.
+Random-morphology
+interference suppression.
+
+11.
+Generalization.
+
+12.
+Active structure.
+
+13.
+Permanent parameter growth.
+
+14.
+Compute.
+
+15.
+Hibernation / reactivation.
+
+17.
+GLOBAL_DAUGHTER
+capacity ceiling.
+
+FAIL:
+
+3.
+World-level B reliability.
+
+LEARNED_GATE_RANDOM8_64:
+
+80%
+versus:
+required:
+90%.
+
+16.
+Hard-gate ceiling
+also:
+does not:
+reach:
+90%
+world-level
+B reliability.
+
+STRONG SUPPORT:
+
+FAIL.
+
+FINAL INTERPRETATION
+
+H180 is:
+
+MIXED-POSITIVE.
+
+It resolves:
+one major architectural uncertainty.
+
+CAPABILITY ROUTING
+IS:
+A REAL
+AND:
+EFFECTIVE
+MECHANISM.
+
+A tiny:
+six-parameter
+context router
+
+can:
+
+- preserve:
+  capability A;
+- activate:
+  daughter capability B;
+- retain:
+  high B generalization;
+- keep:
+  permanent active growth
+  near:
+  2%;
+- hibernate / reactivate
+  exactly.
+
+But:
+
+context routing
+does NOT:
+solve:
+the remaining:
+world-to-world
+coverage variance.
+
+The broad 64-cell
+distributed morphology
+
+is:
+high-capacity
+but:
+stochastically unreliable.
+
+The next architectural variable is:
+
+COVERAGE-BALANCED
+DEVELOPMENTAL PLACEMENT.
+
+Do NOT:
+
+increase:
+cell count.
+
+Do NOT:
+
+increase:
+gate size.
+
+Do NOT:
+
+retrain:
+A.
+
+NEXT:
+
+CLR2-H181 —
+COVERAGE-BALANCED
+CONTEXT-GATED
+64-CELL
+CAPABILITY ADDITION.
+
+Primary design:
+
+retain:
+the same:
+64-cell budget
+and:
+same:
+six-parameter gate.
+
+Replace:
+random / residual-only
+seed placement
+
+with:
+deterministic
+B-input-geometry coverage
+
+using:
+unlabeled or training-input
+coverage centroids
+
+plus:
+residual score.
+
+Primary question:
+
+can:
+the SAME
+64 daughter cells
+
+reach:
+>=90%
+world-level
+B competence
+
+while:
+preserving:
+A
+
+and:
+keeping:
+the same:
+~2%
+active-structure budget?
+
+If H181 passes:
+
+proceed immediately to:
+SEQUENTIAL:
+A -> B -> C
+capability accumulation.
+
+H180 DOES NOT AUTHORIZE
+
+- production use;
+- live model modification;
+- biological claims;
+- whole-model retraining
+  as:
+  candidate architecture;
+- canonical scientific claims;
+- STAB-18-R1 execution.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
