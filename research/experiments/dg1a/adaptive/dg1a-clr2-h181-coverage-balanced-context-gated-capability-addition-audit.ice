@@ -772,3 +772,351 @@ SYNTHETIC_MEASURED_COVERAGE_BALANCED_CONTEXT_GATED_CAPABILITY_ADDITION
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — COVERAGE-BALANCED CONTEXT-GATED HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H181 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H181 SANDBOX HARNESS
+
+File:
+
+h181_coverage_gate_v1.py
+
+SHA-256:
+
+be0db4e7e4a68a4da324905456d50db3453742941640b6bce5531248ba576c45.
+
+PARENT MODEL
+
+Exact H180:
+context-gated
+capability-addition substrate.
+
+Same:
+
+- g=.25;
+- N=3209;
+- A/B contexts;
+- teachers;
+- parent A training;
+- six-parameter learned gate;
+- 64-cell daughter budget;
+- daughter basis / offset;
+- B-residual fitting;
+- gate fitting;
+- hibernation / reactivation.
+
+Only:
+daughter seed morphology
+changes.
+
+COVERAGE CENTROIDS
+
+Use:
+B training input coordinates only.
+
+Deterministic:
+8-center k-means.
+
+Initialization:
+
+farthest-point.
+
+First center:
+
+training point
+with:
+largest x.
+
+Later centers:
+
+training point
+maximizing:
+minimum squared distance
+to:
+existing centers.
+
+Lloyd:
+
+maximum 50 iterations.
+
+Stop:
+unchanged assignments.
+
+No:
+random initialization.
+
+No:
+B targets,
+validation,
+or:
+held-out data
+
+enter:
+centroid construction.
+
+CENTROID TO CELL MAP
+
+Each centroid:
+
+maps:
+to:
+nearest:
+right-half parent cell.
+
+Duplicate seed conflicts:
+
+resolved:
+by:
+nearest:
+unused
+right-half parent cell.
+
+Tie:
+
+lower parent-cell index.
+
+MICRO-PATCH GROWTH
+
+Eight:
+coverage seeds.
+
+Round-robin:
+Moore-connected growth.
+
+Within:
+each patch frontier,
+
+select:
+highest:
+H179 residual score.
+
+Thus:
+
+input geometry controls:
+global coverage.
+
+B residual
+controls:
+local expansion.
+
+All daughter coefficients:
+
+jointly fit.
+
+POLICIES
+
+LEARNED_GATE_COVER8_64.
+
+HARD_GATE_COVER8_64.
+
+LEARNED_GATE_COVER8_48.
+
+LEARNED_GATE_RANDOM8_64.
+
+HARD_GATE_RANDOM8_64.
+
+LEARNED_GATE_RESIDUAL8_64.
+
+HARD_GATE_RESIDUAL8_64.
+
+CONN256.
+
+GLOBAL_DAUGHTER.
+
+COVERAGE TELEMETRY
+
+For every non-global morphology:
+
+maximum:
+
+B-training-point
+distance
+to:
+nearest seed.
+
+Mean:
+
+B-training-point
+distance
+to:
+nearest seed.
+
+Micro-patch count.
+
+Seed-centroid spread.
+
+SANITY
+
+Disjoint family:
+
+20260923090000
+and:
+20260923090001.
+
+2 worlds.
+
+9 policies.
+
+18 evaluations.
+
+Accepted sanity-output SHA-256:
+
+c9d0abf96512e77c710ae17f541e5dab21c1b93a1470db3864b47a6204f0a288.
+
+Mechanical checks:
+
+- exact 9 policies / world;
+- learned gate:
+  identical
+  across:
+  learned-gate policies
+  inside:
+  one world;
+- coverage:
+  uses:
+  B input coordinates only;
+- parent A:
+  frozen;
+- daughter fit:
+  B residual only;
+- no:
+  B validation / held-out
+  leakage;
+- 64 / 48
+  daughter counts exact.
+
+NON-EVIDENCE SIGNAL
+
+World 20260923090000:
+
+LEARNED_GATE_COVER8_64:
+
+B R^2:
+approximately 0.9528.
+
+A loss:
+approximately:
+-0.00007.
+
+coverage max distance:
+approximately:
+0.468.
+
+RANDOM8_64:
+
+B:
+approximately 0.9891.
+
+coverage max:
+approximately 0.562.
+
+RESIDUAL8_64:
+
+B:
+approximately 0.9484.
+
+coverage max:
+approximately 0.939.
+
+World 20260923090001:
+
+LEARNED_GATE_COVER8_64:
+
+B:
+approximately 0.9597.
+
+A loss:
+approximately:
+0.00036.
+
+coverage max:
+approximately:
+0.434.
+
+RANDOM8_64:
+
+B:
+approximately 0.9038.
+
+coverage max:
+approximately:
+0.483.
+
+RESIDUAL8_64:
+
+B:
+approximately 0.8325.
+
+coverage max:
+approximately:
+0.630.
+
+Thus:
+
+coverage-balanced placement
+reduces:
+worst-case
+input-to-seed distance
+
+and:
+appears:
+less variable
+than:
+random / residual placement
+
+inside:
+the disjoint sanity pair.
+
+LEARNED_GATE_COVER8_48:
+
+also:
+exceeds:
+B R^2 0.95
+in:
+both sanity worlds.
+
+This is:
+NON-EVIDENCE.
+
+No:
+
+- k-means rule;
+- seed map;
+- K;
+- gate;
+- daughter fit;
+- task;
+- sample size;
+- acceptance gate
+
+was changed.
+
+PRIMARY FAMILY
+
+20260923000000..20260923000019.
+
+20 held-out worlds.
+
+9 policies.
+
+180 evaluations.
+
+H181 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H181 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
