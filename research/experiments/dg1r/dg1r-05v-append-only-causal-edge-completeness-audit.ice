@@ -705,3 +705,454 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL CLOSURE — DG-1R-05V APPEND-ONLY CAUSAL-EDGE COMPLETENESS AUDIT
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED /
+REPRODUCIBLE /
+APPEND-ONLY COMPLETENESS GAIN POSITIVE /
+BUNDLE-COMPLETENESS DEPENDENCY REMOVED /
+THREE-REPLICA CORRELATED REGISTRY BOUNDARY PRESERVED /
+NON-CANONICAL.
+
+FROZEN PROVENANCE
+
+Preregistration commit:
+
+2a0b6e4aa71df5ef50773b90d467c96c1d46616d.
+
+Harness source commit:
+
+259b296da36ab8dd7422abcead1e8e469ae90f29.
+
+Harness Git blob:
+
+0636a715757655149aaab7dd41385f652458bae4.
+
+Harness source SHA-256:
+
+1232e16f1afb154833c4f34a582c5ffc9303e049ef2e4c31801d7a403437017b.
+
+Harness bytes:
+
+15483.
+
+Freeze commit:
+
+106629d1dcef327f085185644c77c109c751e78b.
+
+PRIMARY EXECUTION
+
+Two complete deterministic frozen sweeps were executed.
+
+Sweep 1 serialized output SHA-256:
+
+1d90729a75f401a96576032ef674146d5fb49295a02afac4928a457020745194.
+
+Sweep 2 serialized output SHA-256:
+
+1d90729a75f401a96576032ef674146d5fb49295a02afac4928a457020745194.
+
+BYTE_IDENTICAL_REPRODUCIBILITY:
+
+TRUE.
+
+MECHANICAL_VALID:
+
+TRUE.
+
+PRIMARY SIGNALS
+
+SINGLE_PARENT_REGISTRY_EXACT:
+TRUE.
+
+TWO_PARENT_REGISTRY_UNION_EXACT:
+TRUE.
+
+CHILD_OMISSION_IRRELEVANT:
+TRUE.
+
+OBSERVER_COLLUSION_BYPASSED_BY_REGISTRY:
+TRUE.
+
+ONE_REPLICA_WITHHOLDING_TOLERATED:
+TRUE.
+
+PARTIAL_EDGE_WRITE_ABORTS:
+TRUE.
+
+PARTIAL_SEAL_WRITE_ABORTS:
+TRUE.
+
+DUPLICATE_EDGE_FANOUT_COLLAPSED:
+TRUE.
+
+STALE_EDGE_REPLAY_REJECTED:
+TRUE.
+
+LATE_EDGE_INVALIDATES_SEAL:
+TRUE.
+
+CONFLICTING_SEALS_ABORT:
+TRUE.
+
+REGISTRY_HOLDER_ROTATION_PRESERVES_LINEAGE:
+TRUE.
+
+ONE_REGISTRY_REPLICA_LOSS_TOLERATED:
+TRUE.
+
+REGISTRY_REPRODUCES_05U_WITHOUT_BUNDLE_COMPLETENESS:
+TRUE.
+
+APPEND_ONLY_COMPLETENESS_GAIN:
+TRUE.
+
+NO_SEAL_TIMING_AMBIGUITY_EXPOSED:
+TRUE.
+
+AUDIT A — SINGLE-PARENT REGISTRY
+
+8 / 8 exact.
+
+AUDIT B — TWO-PARENT REGISTRY
+
+28 / 28 exact.
+
+AUDIT C — CHILD OMITS REGISTERED PARENT
+
+Cases:
+
+56.
+
+Child bundle incomplete:
+
+56 / 56.
+
+SEALED_EDGE_REGISTRY exact reconstruction:
+
+56 / 56.
+
+The child's bundle is therefore no longer authoritative for completeness.
+
+AUDIT D — BOTH DG-1R-05U BUNDLE OBSERVERS OMIT THE SAME REGISTERED PARENT
+
+Cases:
+
+56.
+
+Registry exact reconstruction:
+
+56 / 56.
+
+The closed 05U dual-observer omission weakness is bypassed when parent existence is independently recorded at contribution time.
+
+AUDIT E — ONE REGISTRY REPLICA WITHHOLDS AN HONEST EDGE
+
+Cases:
+
+112.
+
+Exact reconstruction:
+
+112 / 112.
+
+A single withholding replica cannot erase a quorum-committed causal edge.
+
+AUDIT F — PARTIAL EDGE WRITE
+
+Cases:
+
+56.
+
+Candidate abstentions:
+
+56 / 56.
+
+A causal contribution present on fewer than three replicas never becomes ACTIVE.
+
+AUDIT G — PARTIAL SEAL WRITE
+
+Cases:
+
+56.
+
+Candidate abstentions:
+
+56 / 56.
+
+Committed edges without a quorum seal do not become an authoritative closed generation.
+
+AUDIT H — DUPLICATE EDGE FANOUT
+
+Cases:
+
+224.
+
+Exact reconstruction:
+
+224 / 224.
+
+Replica-local copies and repeated event copies never create extra registry votes.
+
+AUDIT I — STALE GENERATION EDGE REPLAY
+
+Cases:
+
+32.
+
+Current-generation lineage preserved:
+
+32 / 32.
+
+A stale edge tuple bound to another generation does not contaminate the sealed current generation.
+
+AUDIT J — LATE EDGE AFTER SEAL
+
+Cases:
+
+56.
+
+EDGE_QUORUM_NO_SEAL early incomplete acceptance:
+
+56 / 56.
+
+SEALED_EDGE_REGISTRY abstention after late edge:
+
+56 / 56.
+
+This establishes why edge quorum alone is insufficient.
+
+Without a closure boundary,
+a verifier can authorize before all causal edges have arrived.
+
+The generation seal converts that timing ambiguity into an explicit invalid state.
+
+AUDIT K — CONFLICTING AUTHORITATIVE SEALS
+
+Cases:
+
+28.
+
+Abstentions:
+
+28 / 28.
+
+No candidate seal is selected when two quorum-valid closed histories coexist.
+
+AUDIT L — REGISTRY HOLDER ROTATION
+
+Cases:
+
+36.
+
+Verified lineage unchanged:
+
+36 / 36.
+
+Authority follows committed registry history,
+not permanent replica-holder identity.
+
+AUDIT M — ONE REGISTRY REPLICA UNAVAILABLE
+
+Cases:
+
+112.
+
+Exact reconstruction from remaining three replicas:
+
+112 / 112.
+
+AUDIT N — DG-1R-05U OMITTED-PARENT FAMILY REPLAY
+
+Cases:
+
+56.
+
+Exact reconstruction:
+
+56 / 56.
+
+The 05U omitted-parent family is recovered without any child-bundle completeness claim.
+
+CORRELATED REGISTRY BOUNDARY
+
+H1 — THREE-REPLICA OMITTING FORK
+
+Cases:
+
+28.
+
+False incomplete lineage authorizations:
+
+28 / 28.
+
+REGISTRY_MAJORITY_OMISSION_FAILURE:
+
+TRUE.
+
+H2 — THREE-REPLICA FALSE EDGE INSERTION
+
+Cases:
+
+28.
+
+False extra-lineage authorizations:
+
+28 / 28.
+
+REGISTRY_MAJORITY_INSERTION_FAILURE:
+
+TRUE.
+
+H3 — TWO CORRUPTED REPLICAS ATTEMPT FALSE HISTORY
+
+Cases:
+
+28.
+
+False authorizations:
+
+0.
+
+TWO_CORRUPT_REPLICAS_SUPPRESSED:
+
+TRUE.
+
+H4 — CONSTITUTIONAL ROOT COMPROMISE
+
+Ordered four-root false-independence cases:
+
+1680.
+
+False independence authorizations:
+
+1680 / 1680.
+
+ROOT_COMPROMISE_FAILURE:
+
+TRUE.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-05V converts lineage completeness from a witness assertion
+into a property of committed causal events.
+
+The architecture now distinguishes:
+
+EDGE EXISTENCE
+
+a parent contribution becomes active only after quorum registration;
+
+from
+
+GENERATION CLOSURE
+
+one unique quorum seal must exactly match the current committed parent set.
+
+This removes the specific 05U weakness where the child and both bundle-completeness observers could jointly hide one actual parent.
+
+The candidate also handles:
+
+- one replica withholding;
+- one replica loss;
+- duplicate copies;
+- partial writes;
+- partial seals;
+- stale generation replay;
+- late-arriving edges;
+- conflicting closures.
+
+The active boundary is now the registry quorum itself.
+
+A plain 3-of-4 replica threshold still assumes
+that three agreeing registry replicas represent three sufficiently independent sources.
+
+The holdouts show that this assumption is unsafe under correlated three-replica history forgery.
+
+The next architectural step should therefore reuse the closed DG-1R-05T / 05U provenance machinery
+inside the registry quorum itself.
+
+Registry votes should count by verified evidence lineage,
+not merely by replica count.
+
+PLAIN-SPEAK INTERPRETATION
+
+The family-tree problem is getting much cleaner.
+
+A child can no longer hide a parent just by leaving that parent out of its paperwork.
+
+The parent leaves a shared record when it contributes.
+
+And the generation gets sealed only after the registry agrees on the complete committed parent set.
+
+That fixed the exact problem from the last experiment.
+
+It also caught late-arriving parents.
+
+Without the seal,
+the system would have accepted an incomplete family tree before the second parent appeared.
+
+With the seal,
+the late parent makes the old closure invalid
+and the organism stops instead of guessing.
+
+The next weak spot is the registry itself.
+
+Right now three out of four replicas can define history.
+
+If those three are really independent,
+that is useful.
+
+If those three are all descendants of one poisoned source,
+or are otherwise correlated,
+we are back to counting the same evidence several times.
+
+So the next step is straightforward:
+
+THE REGISTRY'S VOTES ALSO NEED PROVENANCE.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05W —
+
+LINEAGE-QUALIFIED REGISTRY QUORUM AUDIT.
+
+Question:
+
+Can registry edge and seal votes be counted by verified provenance lineage
+rather than raw replica headcount,
+so that several replica holders derived from one causal source
+cannot manufacture a false 3-of-4 history quorum?
+
+05W should remain detection / authorization only.
+
+It should test:
+
+- four genuinely independent registry lineages;
+- three independent lineages with one replica unavailable;
+- three holders copied from one registry root;
+- two holders sharing ancestry plus independent others;
+- compound but disjoint registry ancestry;
+- lineage-preserving registry-holder rotation;
+- many descendants of one registry root;
+- false 3-of-4 quorum created by same-lineage replicas;
+- independently rooted three-replica collusion as an explicit remaining boundary;
+- constitutional root-compromise boundary.
+
+No repair,
+role migration,
+health-memory update,
+or production mutation should execute.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
