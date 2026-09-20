@@ -738,3 +738,305 @@ SYNTHETIC_MEASURED_SANDBOX_SMALL_CELL_FUNCTIONAL_MICROPATCH_SCALE_TRANSFER
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — SMALL-CELL SCALE-TRANSFER HARNESS
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H160 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H160 SANDBOX HARNESS
+
+File:
+
+h160_scale_transfer_frozen_v1.py
+
+SHA-256:
+
+dde8d09cf75085c521c12960e408aa017581b1f308509c7df2c5c71ded9ac564.
+
+CELL-SCALE REALIZATION
+
+g:
+
+1.00,
+0.75,
+0.50,
+0.35,
+0.25.
+
+R(g):
+
+round(
+8 / g
+).
+
+Observed body sizes:
+
+g=1.00:
+N=197.
+
+g=0.75:
+N=377.
+
+g=0.50:
+N=797.
+
+g=0.35:
+N=1653.
+
+g=0.25:
+N=3209.
+
+BETA-2 DAMAGE
+
+For:
+base defect f0,
+
+actual fraction:
+
+f0 * g^2.
+
+Damage count:
+
+ceil(
+N(g) * f0 * g^2
+).
+
+Thus:
+
+the intended small-cell architecture
+keeps:
+absolute local patch size
+approximately bounded
+
+while:
+the total body grows.
+
+RESOLUTION-INVARIANT FUNCTIONAL FIELD
+
+SMOOTH:
+
+24 continuous Gaussian macro anchors.
+
+width:
+0.35.
+
+MIXED:
+
+16 broad anchors:
+width 0.35.
+
+32 fine anchors:
+width 0.10.
+
+Contribution weights:
+
+0.65 broad,
+0.35 fine.
+
+The same:
+continuous macro field parameters
+
+are sampled
+at:
+every g
+
+inside:
+one macro world.
+
+Each sampled coefficient field
+is normalized:
+mean 0,
+standard deviation 1.
+
+FUNCTIONAL READOUT
+
+Gaussian RBF:
+
+sigma=0.22
+in:
+normalized macro coordinates.
+
+The same:
+256 evaluation query points
+
+are used:
+across:
+all g
+
+inside:
+one macro world.
+
+FOUR-PATCH GEOMETRY
+
+Four normalized centers:
+
+radius:
+0.55.
+
+One:
+macro-world rotation.
+
+Centers:
+90 degrees apart.
+
+The same:
+macro geometry
+
+is mapped
+to:
+each cell resolution.
+
+REPAIR
+
+START100:
+
+serial functional-calibration baseline.
+
+START50:
+
+H159 selected policy.
+
+Both:
+
+- p=0.50 membership frontier;
+- lambda=0.01;
+- 24 feedback observations maximum;
+- 6 observations / active step;
+- precomputed leverage query sequence;
+- expanding joint solve;
+- surviving coefficients fixed.
+
+ORACLE:
+
+evaluation ceiling only.
+
+NOISE
+
+eta:
+
+0,
+0.25.
+
+Noise:
+scaled to:
+lesion-induced functional error.
+
+SANITY
+
+Disjoint macro family:
+
+20260920990000...
+
+12 macro worlds.
+
+5 g values.
+
+2 eta classes.
+
+3 policies.
+
+360 policy-condition evaluations.
+
+Mechanical checks:
+
+- all declared scales completed;
+- no functionally-trivial worlds;
+- body size rises:
+  approximately as 1/g^2;
+- no non-oracle policy exceeds:
+  24 observations;
+- ORACLE remains:
+  evaluation-only.
+
+NON-EVIDENCE SIGNAL
+
+Representative MIXED
+f0=0.10
+FOUR-PATCH:
+
+g=1.00:
+
+N=197.
+damage approximately 20 cells.
+
+START100 stable T90:
+approximately 3.5.
+
+START50:
+approximately 2.
+
+g=0.50:
+
+N=797.
+damage approximately 20 cells.
+
+START100:
+approximately 2.5.
+
+START50:
+approximately 2.5.
+
+g=0.25:
+
+N=3209.
+damage approximately 21 cells.
+
+START100:
+approximately 2.
+
+START50:
+approximately 2.
+
+Final recovery
+remained:
+approximately 0.997..0.999+
+across:
+these representative scales
+and:
+both eta classes.
+
+This sanity output is:
+
+NON-EVIDENCE.
+
+No:
+g value,
+beta,
+field generator,
+macro geometry,
+lambda,
+feedback budget,
+noise level,
+sample size,
+or:
+acceptance gate
+
+is changed.
+
+PRIMARY MACRO FAMILY
+
+20260920900000..20260920900479.
+
+480 held-out macro worlds.
+
+4,800 g x eta condition-worlds.
+
+14,400 policy-condition evaluations.
+
+H160 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H160 condition-world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
