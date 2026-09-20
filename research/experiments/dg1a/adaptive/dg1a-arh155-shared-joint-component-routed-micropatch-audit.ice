@@ -900,3 +900,625 @@ the first held-out H155 primary world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — SHARED JOINT / COMPONENT-ROUTED FUNCTIONAL MICRO-PATCH
+
+DATE:
+2026-09-19.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / NEGATIVE.
+
+FROZEN HARNESS SHA-256
+
+218273da8e2a8bb91793a24c54e2f4c19e28f594bc49cc9a31dccf1a92ab3b4f.
+
+ACCEPTED PRIMARY FAMILY
+
+20260920200000..20260920202399.
+
+PRIMARY MATRIX
+
+2,400 underlying worlds.
+
+6 policies.
+
+14,400 policy-world evaluations.
+
+Validation:
+
+- exactly 2,400 unique held-out seeds;
+- exact accepted seed interval;
+- exactly six policy rows per seed;
+- no accepted-seed gaps;
+- no accepted-seed duplicates;
+- zero functionally-trivial worlds;
+- no post-primary parameter tuning.
+
+PRIMARY CANDIDATE
+
+JOINT-ADAPT-FB2.
+
+MIXED 1%..5%
+median final recovery:
+
+1%:
+0.8927.
+
+2%:
+0.8632.
+
+5%:
+0.8843.
+
+Required:
+>=0.93.
+
+FAIL:
+all three.
+
+MIXED T90-world fraction:
+
+1%:
+54.0%.
+
+2%:
+46.0%.
+
+5%:
+52.0%.
+
+Required:
+
+>=70%
+for all three
+
+and:
+>=75%
+pooled.
+
+FAIL.
+
+PARENT H152 FIXED SHARED-POOL COMPARATOR
+
+H152-FIXED-FB2
+median final recovery:
+
+1%:
+0.9425.
+
+2%:
+0.9099.
+
+5%:
+0.9378.
+
+T90-world fraction:
+
+1%:
+67.0%.
+
+2%:
+54.0%.
+
+5%:
+66.0%.
+
+Thus:
+
+the H155 adaptive component router
+is:
+materially worse
+than:
+the simpler H152
+shared-pool joint solve.
+
+LOCAL ROUTING VERSUS H152
+
+JOINT-ADAPT-FB2
+does NOT:
+
+improve:
+T90 world fraction
+
+by:
+>=5 points
+
+in:
+two small-lesion groups.
+
+Observed differences:
+
+1%:
+-13 points.
+
+2%:
+-8.
+
+5%:
+-14.
+
+It also:
+
+does NOT:
+match within 5 points
+
+while:
+saving >=20%
+observations.
+
+Pooled median observations:
+
+1%:
+24.
+
+2%:
+24.
+
+5%:
+24.
+
+FAIL.
+
+FOUR-PATCH RELIABILITY
+
+JOINT-ADAPT-FB2
+T90-world fraction:
+
+MIXED 1%:
+
+COMPACT:
+65%.
+
+FOUR:
+43%.
+
+gap:
+22 points.
+
+MIXED 2%:
+
+COMPACT:
+70%.
+
+FOUR:
+22%.
+
+gap:
+48 points.
+
+MIXED 5%:
+
+COMPACT:
+74%.
+
+FOUR:
+30%.
+
+gap:
+44 points.
+
+Required:
+
+FOUR
+within:
+10 points
+of:
+COMPACT
+
+in:
+at least two of three.
+
+FAIL:
+0 / 3.
+
+Thus:
+
+global joint parameter inference
+alone
+does NOT:
+remove:
+the distributed-wound feedback-allocation failure.
+
+FEEDBACK COST
+
+JOINT-ADAPT-FB2
+pooled median observations:
+
+1%:
+24.
+
+2%:
+24.
+
+5%:
+24.
+
+Required:
+
+<24
+for:
+at least two of three.
+
+FAIL.
+
+At:
+1% MIXED,
+
+required:
+<=12.
+
+Observed pooled:
+24.
+
+FAIL.
+
+Compact-only
+can stop earlier:
+
+1% compact:
+18.
+
+2% compact:
+20.
+
+5% compact:
+18.
+
+But:
+FOUR-PATCH
+drives:
+the pooled behavior
+back to:
+the full cap.
+
+ROUND-ROBIN JOINT COMPATIBILITY
+
+JOINT-RR-FB2
+median final recovery:
+
+1%:
+0.9075.
+
+2%:
+0.8746.
+
+5%:
+0.9116.
+
+H152-FIXED-FB2:
+
+1%:
+0.9425.
+
+2%:
+0.9099.
+
+5%:
+0.9378.
+
+Deficits:
+
+approximately:
+0.0350,
+0.0354,
+0.0263.
+
+Required:
+
+no more than:
+0.02
+in:
+at least two of three.
+
+FAIL.
+
+Therefore:
+
+the information loss
+is not:
+only the adaptive routing rule.
+
+Partitioning the feedback stream
+into:
+component-local TRAIN / VALIDATION pools
+
+already:
+reduces:
+joint inference quality.
+
+FB2 VERSUS FB4
+
+JOINT-ADAPT-FB4
+median final recovery:
+
+1%:
+0.8642.
+
+2%:
+0.8619.
+
+5%:
+0.8860.
+
+Absolute FB2 / FB4 gaps:
+
+1%:
+approximately 0.0284.
+
+2%:
+approximately 0.0013.
+
+5%:
+approximately 0.0017.
+
+Thus:
+
+FB2 is:
+within 0.03
+of:
+FB4
+
+for:
+all three.
+
+PASS.
+
+But:
+
+the absolute quality
+of:
+both
+is:
+below target.
+
+More observations
+do NOT:
+repair:
+the architecture.
+
+SMOOTH
+
+JOINT-ADAPT-FB2
+median final recovery:
+
+1%:
+0.9866.
+
+2%:
+0.9828.
+
+5%:
+0.9768.
+
+PASS:
+all >=0.95.
+
+SCRAMBLED
+
+JOINT-ADAPT-FB2
+median final recovery:
+
+1%:
+0.3568.
+
+2%:
+0.2230.
+
+5%:
+0.4121.
+
+Remains:
+materially below:
+SMOOTH.
+
+PASS:
+mechanism specificity remains.
+
+CHECKPOINT-ORACLE
+
+Remains:
+the ceiling
+at:
+1.0.
+
+PASS.
+
+PREREGISTERED GATE REVIEW
+
+PASS:
+
+1.
+FB2 is:
+within 0.03
+of:
+FB4
+for:
+all three small MIXED damage fractions.
+
+2.
+SMOOTH
+1%..5%
+final recovery
+>=0.95.
+
+3.
+SCRAMBLED
+remains:
+materially below:
+SMOOTH.
+
+4.
+CHECKPOINT-ORACLE
+remains:
+the ceiling.
+
+FAIL:
+
+1.
+MIXED final-recovery target.
+
+2.
+MIXED T90 reliability target.
+
+3.
+Improvement / efficient-match
+versus:
+H152 fixed.
+
+4.
+FOUR-PATCH reliability parity.
+
+5.
+<24 observation target.
+
+6.
+1% <=12 observation target.
+
+7.
+Round-robin joint compatibility
+with:
+H152 fixed.
+
+FINAL INTERPRETATION
+
+H155 is:
+
+NEGATIVE.
+
+H154 correctly identified:
+that parameter inference
+must preserve:
+cross-wound coupling.
+
+H155 confirms:
+
+A GLOBAL JOINT SOLVE
+IS NECESSARY
+
+but:
+
+IT IS NOT SUFFICIENT.
+
+The new failure is:
+
+FEEDBACK PARTITIONING.
+
+The component-routed design
+spends:
+approximately half
+of:
+its local feedback stream
+
+on:
+VALIDATION-only observations
+
+that:
+do not train:
+the joint solve.
+
+It also:
+
+allocates training data
+through:
+component-local pools
+
+whose sampling distribution
+can be:
+less informative
+than:
+H152's shared local pool.
+
+The result:
+
+simpler H152
+shared-pool feedback
+
+beats:
+both:
+adaptive
+and:
+round-robin
+component-routed H155.
+
+ARCHITECTURAL CONSEQUENCE
+
+Do NOT:
+
+return to:
+independent component parameter solves.
+
+Do NOT:
+
+increase:
+the observation cap
+as:
+the first response.
+
+Next:
+
+retain:
+
+- joint inference;
+- component identity;
+- local candidate pools;
+
+but:
+
+make:
+EVERY ACQUIRED QUERY
+TRAIN:
+the shared solve.
+
+Use:
+
+the PRE-FIT
+observed task residual
+of:
+each acquired local query
+
+to update:
+a component need score.
+
+Then:
+
+route:
+the next query
+
+toward:
+the component
+with:
+highest observed residual pressure.
+
+This avoids:
+
+- validation-only information waste;
+- independent parameter decomposition;
+- hidden-target routing.
+
+The already-preregistered
+residual-routed global-joint design
+captures:
+this correction
+
+and should be:
+reissued
+under:
+the next unused experiment identifier
+
+rather than:
+running a second H155 primary.
+
+H155 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- global retraining;
+- biological claims;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
