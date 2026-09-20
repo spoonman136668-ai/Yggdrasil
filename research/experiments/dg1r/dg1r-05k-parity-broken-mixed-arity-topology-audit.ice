@@ -383,3 +383,309 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-05K NON-EVIDENCE CLOSURE — PARITY-BROKEN MIXED-ARITY TOPOLOGY
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+TOPOLOGICAL NULLSPACE REMOVED /
+LOCAL SEPARATION PRESERVED /
+GLOBAL DISTANCE TRADEOFF EXPOSED /
+TWO BYTE-IDENTICAL EXHAUSTIVE SWEEPS /
+NON-CANONICAL /
+NON-EVIDENCE.
+
+FROZEN HARNESS
+
+Git blob SHA:
+
+341ddf20b52bce2b8f2549b29d2630ac3c2e22a2.
+
+Source SHA-256:
+
+a66d292dd4cd8eeec34f366c2fb64df60e977cc67d5394287f2402e6d95ddf36.
+
+Source bytes:
+
+10253.
+
+OUTPUT
+
+Sweep 1 SHA-256:
+
+00668f349f76e66378c7ce54a94f253a42a54ba3a89af6831b10df468470dc28.
+
+Sweep 2 SHA-256:
+
+00668f349f76e66378c7ce54a94f253a42a54ba3a89af6831b10df468470dc28.
+
+Byte-identical:
+
+PASS.
+
+Mechanical validity:
+
+TRUE.
+
+PRIMARY ENUMERATION
+
+Frozen one-incidence-transfer candidates:
+
+1064.
+
+Feasible candidates:
+
+18.
+
+PARITY_BROKEN_FEASIBLE:
+
+TRUE.
+
+SELECTED MOVE
+
+block:
+
+5.
+
+source check:
+
+3.
+
+target check:
+
+6.
+
+Resulting check arities:
+
+one arity-3 check,
+one arity-5 check,
+eighteen arity-4 checks.
+
+Total checks:
+
+20.
+
+Total incidence:
+
+80.
+
+Degree vector:
+
+unchanged.
+
+SELECTED LOGICAL-ONLY GEOMETRY
+
+GF(2) rank:
+
+12 of 12.
+
+SELECTED_FULL_RANK:
+
+TRUE.
+
+Nonzero logical kernel masks:
+
+0.
+
+SELECTED_KERNEL_FREE:
+
+TRUE.
+
+Distinct logical-only syndromes:
+
+4096 of 4096 logical masks.
+
+Multiplicity histogram:
+
+4096 syndromes with multiplicity 1.
+
+The 05J all-region same-plane blind mode is removed.
+
+LOCAL EXACT-MIMIC FLOORS
+
+Single-region floor:
+
+6.
+
+Two-region floor:
+
+8.
+
+LOCAL_FLOORS_PRESERVED:
+
+TRUE.
+
+Maximum pair co-occurrence:
+
+2.
+
+PAIR_COOCCURRENCE_PRESERVED:
+
+TRUE.
+
+GLOBAL DISTANCE
+
+Baseline HYPER20 global minimum positive logical syndrome weight:
+
+3.
+
+Selected mixed-arity topology:
+
+2.
+
+GLOBAL_DISTANCE_IMPROVED:
+
+FALSE.
+
+The new weight-2 minimum occurs at logical weight 12.
+
+Thus the all-region fault is no longer invisible,
+but after parity breaking it becomes weakly visible through only two syndrome bits.
+
+This is a real tradeoff.
+
+The topology removes the exact nullspace without increasing the worst-case global syndrome distance.
+For the selected one-move family it actually lowers that worst-case positive distance from 3 to 2.
+
+HOLDOUT — EQUAL-COST CHECK-ONLY WEIGHT 4
+
+Baseline:
+
+4503 / 4845 d=0 unique minimum.
+
+282 / 4845 d=0 tied minimum.
+
+60 / 4845 all minimum-cost explanations nonzero.
+
+Selected:
+
+4504 / 4845 d=0 unique minimum.
+
+281 / 4845 d=0 tied minimum.
+
+60 / 4845 all minimum-cost explanations nonzero.
+
+CHECK4_EQUAL_COST_NOT_WORSE:
+
+TRUE.
+
+The selected topology does not increase the frozen weight-4 false-logical-preference count.
+
+FROZEN CHECK4 INCIDENT TESTS
+
+Degree-6 block 5:
+
+baseline:
+TRUE_EXPLANATION_NOT_MINIMUM.
+
+selected:
+TRUE_EXPLANATION_NOT_MINIMUM.
+
+Degree-7 block 2:
+
+baseline:
+TRUE_EXPLANATION_TIED_MINIMUM.
+
+selected:
+TRUE_EXPLANATION_TIED_MINIMUM.
+
+Thus the local weighted-prior boundary is neither repaired nor worsened by the selected topology.
+
+CROSS-PLANE EXACT COLLISION
+
+All frozen logical-versus-incident-integrity constructions remain exact.
+
+CROSSPLANE_ARBITRARY_CORRELATION_SOLVED:
+
+FALSE.
+
+This is expected and confirms the 05J separation:
+
+topology can repair the logical-only nullspace,
+but it cannot make arbitrary correlated integrity faults distinguishable from logical faults when both generate the same syndrome.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-05K establishes that the HYPER20 rank-11 defect was not an unavoidable consequence of the 20-check / 80-incidence / 12-region state budget.
+
+A single incidence transfer is sufficient to produce a full-rank, kernel-free 20 x 12 incidence matrix while preserving:
+- the exact regional degree vector;
+- the 6-bit single-region exact-mimic floor;
+- the 8-bit two-region exact-mimic floor;
+- maximum pair co-occurrence <=2;
+- the frozen CHECK4 holdout false-preference count.
+
+However, the same minimal parity break creates a low-weight global syndrome:
+the former invisible all-region mode becomes a two-bit syndrome.
+
+Therefore:
+FULL RANK
+is necessary,
+but
+FULL RANK ALONE
+is not a sufficient topology objective.
+
+The next representation search must optimize rank and minimum logical syndrome distance jointly,
+rather than treating kernel elimination as the sole global criterion.
+
+PLAIN-SPEAK INTERPRETATION
+
+We fixed the hidden global blind spot with almost no structural cost.
+
+Moving one region from one backup check to another was enough to make every possible logical state produce a distinct backup pattern.
+The system can now notice the all-region fault that used to disappear completely.
+
+But the fix made that particular global fault only barely visible:
+instead of producing no warning, it produces just two warning bits.
+
+So this is progress, but not the final topology.
+
+The important lesson is:
+do not optimize only for whether a fault is visible at all.
+We also need to optimize how strongly different faults show up.
+
+The local behavior stayed intact:
+one-region and two-region damage are still just as hard to fake,
+and the known four-check ambiguity did not get worse.
+
+The deeper data-versus-backup ambiguity is still present and still requires independent evidence.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05L —
+FIXED-BUDGET TOPOLOGY DISTANCE FRONTIER AUDIT.
+
+Question:
+
+Within the same:
+20 checks,
+80 incidences,
+12 logical regions,
+and no added persistent state,
+
+can a bounded parity-broken topology family achieve simultaneously:
+
+- rank 12;
+- zero logical kernel;
+- single-region floor >=6;
+- two-region floor >=8;
+- maximum pair co-occurrence <=2;
+- global minimum positive logical syndrome weight >=3,
+
+while preserving the CHECK4 equal-cost holdout?
+
+The next audit should expand the frozen topology family beyond a single incidence transfer
+without introducing a decoder change.
+
+No post-result tuning was performed.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
