@@ -1702,3 +1702,776 @@ non-canonical.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-04 NON-EVIDENCE PILOT CLOSURE — SOFTWARE-NANITE MEMORY PROTECTION
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+NEGATIVE RAW LONG-MEMORY RESULT /
+POSITIVE STABILITY-REGULATION MECHANISTIC SIGNAL /
+ONE OVERSTABILIZATION FAILURE /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+debcaf7c79632740dbccd4ad8b0f6ebfcd034515cb144b9a21bc537f7a8f7eed.
+
+CANONICAL OUTPUT
+
+RUN 1 SHA-256:
+
+bc6c5be432f8a4d9b439df860ebe3aabfd69e81cfa084a9f8e2776aa0415461f.
+
+RUN 2 SHA-256:
+
+bc6c5be432f8a4d9b439df860ebe3aabfd69e81cfa084a9f8e2776aa0415461f.
+
+Byte-identical:
+
+PASS.
+
+FROZEN SIGNALS
+
+NANITE_LONG_MEMORY_SIGNAL:
+
+FALSE.
+
+STRONG_NANITE_SIGNAL:
+
+FALSE.
+
+FULL_NANITE_RECOVERY:
+
+FALSE.
+
+TEMPORAL_SUBSTRATE_CANDIDATES:
+
+NONE.
+
+OVERSTABILIZED_METHODS:
+
+N16_H6_DAMP.
+
+REFERENCE — SLOW128_MIXED1
+
+D1:
+
+1.0.
+
+D4:
+
+0.69189453125.
+
+D8:
+
+0.5517578125.
+
+D16:
+
+0.50439453125.
+
+D32:
+
+0.49365234375.
+
+Memory score:
+
+0.52001953125.
+
+State entropy:
+
+0.6964955425142572.
+
+N16_H5
+
+D1:
+
+1.0.
+
+D4:
+
+0.68701171875.
+
+D8:
+
+0.53759765625.
+
+D16:
+
+0.5107421875.
+
+D32:
+
+0.4912109375.
+
+Memory score:
+
+0.5105794270833333.
+
+Nonlinear score:
+
+0.5405493253414746.
+
+State entropy:
+
+0.4143528104789671.
+
+Median:
+nanite:
+bit-change count:
+
+5232.
+
+Median:
+nanite:
+run length:
+
+3:
+external steps.
+
+Interpretation:
+
+H5:
+remains:
+active
+and:
+dynamically balanced
+
+but:
+does NOT:
+extend:
+raw:
+delay memory.
+
+N16_H6
+
+D16:
+
+0.50537109375.
+
+D32:
+
+0.49951171875.
+
+Median:
+nanite:
+bit-change count:
+
+931.
+
+Median:
+nanite:
+run length:
+
+10.5:
+steps.
+
+Thus:
+
+stronger:
+hysteresis
+creates:
+much:
+longer-lived:
+controller state
+
+without:
+producing:
+recoverable:
+D16 /
+D32:
+input identity.
+
+This is:
+important:
+
+PERSISTENT:
+LOCAL STATE
+
+is NOT:
+automatically:
+
+USEFUL:
+TASK-RELEVANT:
+MEMORY.
+
+N16_H6_REPAIR
+
+D1:
+
+0.99169921875.
+
+D4:
+
+0.62158203125.
+
+D8:
+
+0.5322265625.
+
+D16:
+
+0.5048828125.
+
+D32:
+
+0.501953125.
+
+Memory score:
+
+0.51220703125.
+
+Nonlinear score:
+
+0.5474283611489688.
+
+PARITY5:
+
+0.5771484375.
+
+Median:
+repair:
+state changes:
+
+8713.5
+per:
+4096-step:
+world.
+
+Median:
+repair:
+changes
+per:
+external:
+step:
+
+2.1273193359375.
+
+Median:
+nanite:
+bit changes:
+
+466.
+
+Median:
+nanite:
+run length:
+
+9.5:
+steps.
+
+Interpretation:
+
+bounded:
+local:
+repair
+
+changes:
+the:
+feature geometry
+
+and:
+improves:
+some:
+nonlinear:
+structure
+
+but:
+does NOT:
+preserve:
+arbitrary:
+old:
+input bits.
+
+N16_H6_DAMP
+
+OVERSTABILIZED.
+
+State entropy:
+
+0.05956502927131284.
+
+Feature rank:
+
+1
+of:
+512.
+
+D1:
+
+0.49267578125.
+
+D16:
+
+0.49853515625.
+
+D32:
+
+0.494140625.
+
+Median:
+nanite:
+bit changes:
+
+0.
+
+Median:
+nanite:
+run length:
+
+4096.
+
+Median:
+suppressed:
+worker transitions:
+
+25032.
+
+Interpretation:
+
+the:
+controller:
+successfully:
+stabilized:
+the:
+state
+
+so:
+aggressively
+
+that:
+
+the:
+reservoir
+ceased:
+to:
+carry:
+useful:
+dynamic:
+information.
+
+This is:
+a:
+clean:
+STABILITY /
+PLASTICITY:
+failure.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-04 rejects:
+
+the:
+simple:
+hypothesis
+
+that:
+
+local:
+one-bit:
+homeostatic:
+controllers
+
+can:
+turn:
+this:
+ReCA architecture
+into:
+a:
+general:
+16-32:
+step:
+delay-memory:
+substrate.
+
+However:
+
+the:
+experiment
+does NOT:
+show:
+
+software nanites
+are:
+useless.
+
+It shows:
+
+their:
+natural:
+effect
+is:
+
+STATE:
+REGULATION,
+
+not:
+
+ARBITRARY:
+HISTORY:
+ENCODING.
+
+Evidence:
+
+1.
+H6 creates:
+long-lived:
+local:
+controller:
+state.
+
+2.
+REPAIR performs:
+thousands:
+of:
+bounded:
+local:
+corrections
+
+while:
+remaining:
+dynamically:
+alive.
+
+3.
+DAMP demonstrates:
+that:
+too much:
+protection
+can:
+collapse:
+the:
+organism
+into:
+near-static:
+state.
+
+Therefore:
+
+the:
+next:
+correct:
+question
+is NOT:
+
+"can nanites remember old random bits?"
+
+It is:
+
+"can nanites prevent local damage from spreading
+and restore an organism toward
+the state it would have occupied
+without the damage?"
+
+This aligns:
+directly
+with:
+Yggdrasil's:
+repair /
+homeostasis:
+north-star.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05 —
+LOCAL DAMAGE CONTAINMENT /
+COUNTERFACTUAL RECOVERY AUDIT.
+
+Use:
+
+the:
+same:
+128-bit:
+organism.
+
+Develop:
+the:
+system
+under:
+a:
+common:
+input stream.
+
+At:
+a:
+frozen:
+damage time:
+
+clone:
+the:
+organism.
+
+Reference clone:
+
+undamaged.
+
+Damage clone:
+
+flip:
+a:
+frozen:
+set
+of:
+worker:
+cells.
+
+Continue:
+
+both:
+under:
+identical:
+future:
+input.
+
+Measure:
+
+Hamming:
+divergence
+between:
+
+damaged
+and:
+undamaged:
+counterfactual trajectories
+
+at:
+
+1,
+4,
+8,
+16,
+32:
+steps.
+
+Also measure:
+
+- damage:
+  spread
+  outside:
+  the:
+  original:
+  lesion;
+
+- recovered:
+  lesion:
+  cells;
+
+- total:
+  excess:
+  divergence:
+  area;
+
+- controller:
+  intervention:
+  count;
+
+- whether:
+  repair:
+  returns:
+  the:
+  organism:
+  toward:
+  its:
+  own:
+  undamaged:
+  trajectory.
+
+Primary comparison:
+
+SLOW128_MIXED1
+
+versus:
+
+N16_H5,
+N16_H6,
+N16_H6_REPAIR.
+
+Exclude:
+
+N16_H6_DAMP
+from:
+primary:
+repair:
+candidate
+classification
+
+because:
+
+DG-1R-04
+already:
+demonstrated:
+severe:
+overstabilization.
+
+It may remain:
+as:
+an:
+overstabilized:
+negative:
+control.
+
+PLAIN-SPEAK SUMMARY
+
+What happened to:
+the:
+nanite idea?
+
+It did NOT:
+solve:
+long-term:
+random-bit:
+memory.
+
+But:
+
+it:
+did:
+something:
+real.
+
+The:
+nanites:
+changed:
+how:
+stable
+the:
+organism
+was.
+
+Mild:
+nanites
+could:
+hold:
+local:
+state
+for:
+longer.
+
+Repair:
+nanites
+could:
+make:
+thousands:
+of:
+small:
+local:
+corrections
+without:
+completely:
+freezing:
+the:
+system.
+
+The:
+aggressive:
+damping:
+nanites
+went:
+too far:
+
+they:
+basically:
+froze:
+the:
+organism.
+
+That:
+is:
+actually:
+useful:
+information.
+
+We now:
+have:
+direct:
+evidence
+of:
+the:
+balance
+we:
+need:
+
+too little:
+protection
+=
+memory /
+structure:
+washes away.
+
+too much:
+protection
+=
+the:
+organism:
+cannot:
+change.
+
+So:
+
+the:
+next:
+test
+uses:
+the:
+nanites
+for:
+what:
+they:
+appear:
+naturally:
+suited:
+to:
+
+REPAIR.
+
+We will:
+damage:
+the:
+software organism
+
+and:
+see:
+whether:
+nanites
+help:
+it:
+return:
+toward:
+the:
+trajectory
+it:
+would:
+have:
+followed
+if:
+it:
+had:
+never:
+been:
+damaged.
+
+That:
+is:
+much:
+closer
+to:
+Yggdrasil's:
+self-healing:
+goal
+than:
+forcing:
+the:
+nanites
+to:
+act:
+like:
+a:
+history:
+buffer.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
