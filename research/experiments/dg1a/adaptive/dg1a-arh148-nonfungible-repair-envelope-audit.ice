@@ -3684,3 +3684,446 @@ both repair history
 and:
 challenge history.
 
+
+
+PRIMARY CLOSURE — EXACT-SEED CORRECTED CONFIRMATION
+
+DATE:
+2026-09-19.
+
+STATUS:
+CLOSED / SYNTHETIC / MIXED-NEGATIVE.
+
+EVIDENCE SET
+
+The accepted H148 primary is the homogeneous exact-seed corrected replay:
+
+400 worlds / regime.
+10 regimes.
+7 policies.
+28,000 policy-regime-worlds.
+
+Primary seeds:
+
+R0:
+20260919170000..20260919170399.
+
+Each subsequent regime:
++1000 seed base.
+
+All earlier batches affected by:
+
+- the F comparator patch leak;
+- pre-baseline handoff authority;
+- attenuated cumulative-diffusion implementation;
+- wrong-seed corrected-lane runs;
+- or incomplete frozen E spread-handoff semantics
+
+remain:
+
+NON-EVIDENCE / DISCARDED.
+
+PRIMARY CANDIDATE
+
+E —
+VECTOR-SCOPED-DEPENDENCY.
+
+CORRECTED PRIMARY RESULTS — E
+
+R0 LOCAL-5
+
+final ARI:
+1.0000.
+
+regional redevelopment:
+0.2650 / world.
+
+global redevelopment:
+0.1850 / world.
+
+scratch units:
+0.8200 / world.
+
+action downtime:
+40.92%.
+
+member revalidation observations:
+343.41 / world.
+
+false inherited-certificate rate:
+1.80%.
+
+R1 LOCAL-10
+
+final ARI:
+1.0000.
+
+regional redevelopment:
+0.9025 / world.
+
+global redevelopment:
+0.0975 / world.
+
+scratch units:
+1.1950 / world.
+
+action downtime:
+42.84%.
+
+member revalidation observations:
+469.44 / world.
+
+false inherited-certificate rate:
+3.92%.
+
+R2 DIFFUSE-10
+
+final ARI:
+1.0000.
+
+regional redevelopment:
+0.
+
+global redevelopment:
+1.0000 / world.
+
+scratch units:
+3.0000 / world.
+
+false inherited-certificate rate:
+3.68%.
+
+R3 ACCUMULATED-MICROPATCH
+
+final ARI:
+0.9701.
+
+regional redevelopment:
+1.8825 / world.
+
+global redevelopment:
+0.7300 / world.
+
+scratch units:
+4.0725 / world.
+
+max accepted path P:
+0.0495.
+
+false inherited-certificate rate:
+1.87%.
+
+H147-SCALAR comparator final ARI:
+0.8958.
+
+Therefore:
+
+NON-FUNGIBLE ACCEPTED-REPAIR HISTORY
+MATERIALLY IMPROVES
+ACCUMULATED-MICROPATCH CONTROL.
+
+R4 MOVING-WOUND
+
+final ARI:
+0.8050.
+
+regional redevelopment:
+0.0025 / world.
+
+global redevelopment:
+0.1275 / world.
+
+scratch units:
+0.3850 / world.
+
+max accepted path P:
+0.0132.
+
+false inherited-certificate rate:
+5.43%.
+
+Therefore:
+
+ACCEPTED-REPAIR HISTORY
+DOES NOT CAPTURE
+STRUCTURAL CHALLENGE
+THAT MOVES
+FASTER THAN
+ACCEPTED TOPOLOGY REPAIR.
+
+R5 HIGH-VALUE-LOCAL
+
+final ARI:
+1.0000.
+
+regional redevelopment:
+0.2700 / world.
+
+global redevelopment:
+0.1800 / world.
+
+false inherited-certificate rate:
+2.38%.
+
+R6 BOUNDARY-PING-PONG
+
+final ARI:
+0.9986.
+
+global redevelopment:
+0.1125 / world.
+
+max accepted path P:
+0.0132.
+
+false inherited-certificate rate:
+2.66%.
+
+R7 DIFFUSE-THEN-LOCAL
+
+final ARI:
+1.0000.
+
+global redevelopment:
+1.0000 / world.
+
+false inherited-certificate rate:
+3.63%.
+
+Thus:
+
+CUMULATIVE DIFFUSE HISTORY
+DOES FORCE
+GLOBAL HANDOFF
+IN THE DIFFUSE-THEN-LOCAL REGIME.
+
+R8 PURE RELABEL
+
+final ARI:
+1.0000.
+
+false inherited-certificate rate:
+0%.
+
+pure-relabel unnecessary invalidation:
+0%.
+
+Dependency-aware transfer therefore:
+
+IS
+RELABEL-INVARIANT
+AT THE RELABEL EVENT.
+
+End-of-horizon original-certificate retention:
+85.37%.
+
+That end-state retention is not:
+the pure-relabel invalidation metric;
+ordinary H146 contradiction / revalidation dynamics continue after the relabel.
+
+R9 STACKED
+
+final ARI:
+0.9616.
+
+regional redevelopment:
+1.9500 / world.
+
+global redevelopment:
+0.9025 / world.
+
+scratch units:
+4.6575 / world.
+
+false inherited-certificate rate:
+3.83%.
+
+PRIMARY ACCEPTANCE REVIEW
+
+SUPPORTED
+
+1.
+R3 accumulated micropatching is materially improved over:
+H147-SCALAR.
+
+2.
+R3 uses regional redevelopment more often than:
+global redevelopment.
+
+3.
+R2 DIFFUSE-10 uses:
+global redevelopment.
+
+4.
+R7 DIFFUSE-THEN-LOCAL preserves:
+cumulative diffuse handoff.
+
+5.
+R8 PURE RELABEL produces:
+zero unnecessary invalidation
+from the numeric relabel itself.
+
+6.
+R0 / R1 preserve:
+perfect final ARI
+and:
+substantially fewer scratch units
+than immediate global redevelopment.
+
+NOT SUPPORTED
+
+1.
+FALSE INHERITED-CERTIFICATE <1%
+IN EVERY STRUCTURAL-DAMAGE REGIME.
+
+This fails broadly.
+
+Primary E examples:
+
+LOCAL-5:
+1.80%.
+
+LOCAL-10:
+3.92%.
+
+DIFFUSE-10:
+3.68%.
+
+ACCUMULATED-MICROPATCH:
+1.87%.
+
+MOVING-WOUND:
+5.43%.
+
+BOUNDARY-PING-PONG:
+2.66%.
+
+DIFFUSE-THEN-LOCAL:
+3.63%.
+
+STACKED:
+3.83%.
+
+2.
+MOVING-WOUND HANDOFF.
+
+The moving wound leaves:
+accepted P
+near:
+1.3%
+
+while:
+final ARI remains only:
+0.8050.
+
+The repair envelope therefore:
+under-observes
+structural challenge
+that relocates before accepted repair accumulates.
+
+3.
+DEPENDENCY-WITNESS COST / ROBUSTNESS.
+
+Fixed individual 4+2 witnesses:
+
+reduce:
+numeric-region brittleness,
+
+but:
+
+create:
+substantial invalidation / revalidation pressure
+and:
+do not achieve
+the <1% stale-inheritance target.
+
+4.
+STACKED DAMAGE.
+
+Scoped repair does not:
+cleanly preserve
+the structural quality
+of the stronger global comparator.
+
+CORE H148 CONCLUSION
+
+H148 separates two distinct kinds of structural history.
+
+A.
+
+ACCEPTED REPAIR HISTORY.
+
+The non-fungible vector envelope is useful
+and fixes:
+the H147 accumulated-micropatch scalar-debt failure.
+
+B.
+
+CHALLENGE HISTORY.
+
+Accepted repair history alone is insufficient.
+
+A wound can:
+move,
+oscillate,
+or:
+repeatedly contradict structure
+
+without:
+producing enough accepted membership movement
+to consume:
+P,
+U,
+C_P,
+or:
+P_r.
+
+Therefore:
+
+THE NEXT CONTROLLER
+MUST REMEMBER
+WHAT CHALLENGED IT
+
+IN ADDITION TO:
+WHAT IT CHANGED.
+
+CERTIFICATE CONCLUSION
+
+Fixed named dependency witnesses
+are not:
+the final proof object.
+
+The next experiment should test:
+
+- structural challenge-exposure history;
+- local regional re-validation;
+- aggregate cohort / relation proofs
+  instead of:
+  brittle named witnesses.
+
+DISPOSITION
+
+H148:
+MIXED-NEGATIVE.
+
+Carry forward:
+
+- non-fungible accepted-repair ledgers;
+- regional versus global handoff distinction;
+- relabel-invariant proof semantics.
+
+Do not carry forward as solved:
+
+- moving-wound detection;
+- certificate inheritance safety;
+- fixed individual witness sets.
+
+Next experiment:
+
+DG-1A-AR-H149
+Dual-Channel Structural Memory /
+Regional Re-Validation +
+Cohort-Proof Audit.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
