@@ -599,3 +599,109 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05V APPEND-ONLY CAUSAL-EDGE COMPLETENESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY REGISTRY CASE.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05v_causal_edge_registry_v1.py
+
+Harness source commit:
+
+259b296da36ab8dd7422abcead1e8e469ae90f29.
+
+Git blob SHA:
+
+0636a715757655149aaab7dd41385f652458bae4.
+
+Source SHA-256:
+
+1232e16f1afb154833c4f34a582c5ffc9303e049ef2e4c31801d7a403437017b.
+
+Source bytes:
+
+15483.
+
+FROZEN IMPLEMENTATION
+
+The harness implements:
+
+- exactly eight provenance roots;
+- exactly four registry replicas;
+- 3-of-4 edge quorum;
+- 3-of-4 generation-seal quorum;
+- exact causal edge tuples;
+- exact seal tuples;
+- replica-local duplicate collapse by event identity;
+- child-bundle-only negative control;
+- edge-quorum-without-seal timing negative control;
+- SEALED_EDGE_REGISTRY candidate rule;
+- one-replica withholding;
+- partial edge writes;
+- partial seal writes;
+- duplicate edge fanout;
+- stale-generation replay;
+- late edge after seal;
+- conflicting authoritative seals;
+- registry-holder rotation;
+- one-replica unavailability;
+- DG-1R-05U omitted-parent replay;
+- correlated three-replica omission and insertion holdouts;
+- two-corrupt-replica control;
+- constitutional root-compromise holdout.
+
+LOCAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Case counts:
+
+A = 8.
+B = 28.
+C = 56.
+D = 56.
+E = 112.
+F = 56.
+G = 56.
+H = 224.
+I = 32.
+J = 56.
+K = 28.
+L = 36.
+M = 112.
+N = 56.
+
+No primary registry result,
+completeness result,
+seal result,
+timing result,
+or correlated-registry result
+was generated before this freeze.
+
+REPRODUCIBILITY
+
+Execute two complete deterministic sweeps from this exact frozen harness.
+
+Serialized output SHA-256 must match exactly.
+
+No post-result tuning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
