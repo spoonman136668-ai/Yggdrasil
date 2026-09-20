@@ -1162,3 +1162,768 @@ the first held-out H173 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — NON-RATCHETING LEARNED-STATE AMPLITUDE ENVELOPE
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / NEGATIVE FOR WORLD-LEVEL TAIL CONTAINMENT / POSITIVE TARGET-BLIND EXPOSURE REDUCTION.
+
+FINAL H173 HARNESS SHA-256
+
+f4d599f7bd8e5ec2dfcc311bdd529214b7d27d73e4b629fe3cc32672b051c905.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+ea4447732a758eff095501eaafb11588c1cee74dce7834df73eaf51fc611766e.
+
+ACCEPTED PRIMARY FAMILY
+
+20260922200000..20260922200079.
+
+PRIMARY MATRIX
+
+80 held-out learned-task worlds.
+
+6 policies.
+
+480 policy lifetimes.
+
+292 repair cycles / lifetime.
+
+Approximately:
+
+140,160 policy repair cycles.
+
+Validation:
+
+- exactly 80 unique held-out seeds;
+- exact accepted seed interval;
+- exactly six policy rows / seed;
+- zero duplicate seed x policy rows;
+- no missing accepted seeds;
+- no post-primary kappa tuning.
+
+PRIMARY CANDIDATE
+
+ENV2-HIST-GEOM.
+
+TASK ACCURACY
+
+ENV2
+median FINAL accuracy
+
+remains:
+within:
+0.03
+of:
+its own baseline
+
+in:
+every:
+task x regime x eta group.
+
+PASS.
+
+World-level accuracy retention:
+
+100%
+of:
+ENV2 worlds
+
+finish:
+within:
+0.05
+of:
+their own baseline.
+
+PASS.
+
+BRIER / CALIBRATION
+
+ENV2
+group-median
+Brier degradation
+
+remains:
+well below:
+0.03
+
+for:
+every group.
+
+PASS.
+
+GROUP-MEDIAN
+LEARNED-OUTPUT FIDELITY
+
+ENV2
+median FINAL fidelity:
+
+MIXED HOTSPOT eta=0:
+approximately 0.9935.
+
+MIXED HOTSPOT eta=.10:
+approximately 0.9964.
+
+MIXED ROAMING eta=0:
+approximately 0.9778.
+
+MIXED ROAMING eta=.10:
+approximately 0.9813.
+
+SMOOTH HOTSPOT eta=0:
+approximately 0.9908.
+
+SMOOTH HOTSPOT eta=.10:
+approximately 0.9936.
+
+SMOOTH ROAMING eta=0:
+approximately 0.9779.
+
+SMOOTH ROAMING eta=.10:
+approximately 0.9683.
+
+Frozen target:
+>=0.95.
+
+PASS:
+8 / 8.
+
+WORLD-LEVEL TAIL
+
+ENV2 worlds
+with:
+FINAL learned-output fidelity
+>=0.95:
+
+65 / 80
+=
+81.25%.
+
+Frozen target:
+>=95%.
+
+FAIL.
+
+ENV2 worlds
+with:
+FINAL fidelity <0:
+
+8 / 80.
+
+Frozen target:
+ZERO.
+
+FAIL.
+
+ENV2 worlds
+with:
+FINAL fidelity <-10:
+
+4 / 80.
+
+Frozen target:
+ZERO.
+
+FAIL.
+
+Minimum ENV2
+FINAL learned-output fidelity:
+
+approximately:
+-94.82.
+
+Thus:
+
+the non-ratcheting
+coefficient-amplitude envelope
+
+does NOT:
+contain:
+the learned-logit tail.
+
+COMPARATORS
+
+H171_UNCONSTRAINED
+on:
+the same held-out worlds:
+
+FINAL >=0.95:
+
+80.0%.
+
+negative worlds:
+
+9.
+
+<-10:
+
+4.
+
+minimum:
+
+approximately:
+-99.11.
+
+H172_TRUST2:
+
+81.25%.
+
+negative:
+
+8.
+
+<-10:
+
+4.
+
+minimum:
+
+approximately:
+-74.78.
+
+ENV2:
+
+81.25%.
+
+negative:
+
+8.
+
+<-10:
+
+4.
+
+minimum:
+
+approximately:
+-94.82.
+
+Therefore:
+
+ENV2
+does:
+slightly improve:
+world-level pass count
+
+relative to:
+unconstrained
+
+but:
+
+does NOT:
+improve:
+tail incidence
+
+over:
+H172 TRUST2,
+
+and:
+
+its worst world
+is:
+more extreme
+than:
+H172 TRUST2
+on:
+this seed family.
+
+EXPOSURE
+VERSUS:
+MICRO2-LEVERAGE
+
+ENV2
+group-median
+cumulative exposure ratios:
+
+approximately:
+0.68
+to:
+0.92.
+
+Frozen ceiling:
+<=1.35.
+
+PASS:
+8 / 8.
+
+EXPOSURE
+VERSUS:
+H171_UNCONSTRAINED
+
+ENV2
+group-median exposure
+is:
+lower
+
+in:
+8 / 8 groups.
+
+PASS.
+
+EXPOSURE
+VERSUS:
+H172-TRUST2
+
+ENV2
+group-median exposure
+is:
+lower
+
+in:
+4 / 8 groups.
+
+Frozen requirement:
+6 / 8.
+
+FAIL.
+
+OBSERVATION COST
+
+ENV2
+and:
+H171_UNCONSTRAINED
+
+have:
+identical
+functional observation counts
+
+in:
+100%
+of:
+paired worlds.
+
+PASS.
+
+PROJECTION DUTY
+
+ENV2
+pooled median
+projection duty:
+
+approximately:
+4.6%.
+
+Maximum:
+single-world duty:
+
+approximately:
+62.3%.
+
+Group-median duties
+remain:
+well below:
+0.50.
+
+PASS:
+the frozen-state guard.
+
+The rare:
+high-duty world
+
+does NOT:
+translate into:
+world-level tail elimination.
+
+ENV4 ROBUSTNESS
+
+ENV4
+is:
+mostly inactive.
+
+It does NOT:
+create:
+a new:
+group-median
+accuracy,
+Brier,
+or:
+median-fidelity
+failure
+
+that:
+ENV2 avoids.
+
+PASS
+for:
+the frozen robustness gate.
+
+But:
+
+ENV4
+also:
+does not:
+contain:
+the tail.
+
+ORACLE
+
+LOCAL-CHECKPOINT-ORACLE:
+
+FINAL learned-output fidelity:
+exactly 1.0.
+
+FINAL accuracy:
+exactly baseline.
+
+PASS.
+
+CRITICAL POST-PRIMARY MECHANISM DIAGNOSTIC
+
+Several:
+catastrophic
+ENV2 worlds
+
+remain:
+inside:
+the absolute
+coefficient-norm envelope
+
+for:
+most
+or:
+all
+repair cycles.
+
+Examples include:
+
+FINAL fidelity
+approximately:
+
+-7.83
+and:
+-0.64
+
+with:
+
+zero:
+ENV2 projection cycles.
+
+Their maximum:
+candidate coefficient-norm
+/
+absolute-envelope
+ratio
+
+remains:
+
+well below:
+1.
+
+Other:
+extreme noisy worlds
+
+project only:
+approximately:
+2%..7%
+of:
+repair cycles
+
+yet:
+finish at:
+
+approximately:
+
+-94.82,
+-43.13,
+-41.08,
+-19.71.
+
+Thus:
+
+the residual failure
+is NOT:
+
+unbounded
+coefficient L2 magnitude.
+
+A coefficient vector
+can:
+remain:
+moderate in Euclidean norm
+
+while:
+
+aligning with:
+HIGH-GAIN
+READOUT DIRECTIONS
+
+that:
+produce:
+very large
+learned-logit changes.
+
+This explains:
+
+why:
+
+coefficient-space
+delta bounds
+
+and:
+
+coefficient-space
+absolute bounds
+
+both:
+fail
+to:
+guarantee:
+function-space stability.
+
+PREREGISTERED GATE REVIEW
+
+PASS:
+
+1.
+Baseline competence.
+
+2.
+ENV2 median FINAL accuracy.
+
+3.
+World-level accuracy retention.
+
+4.
+Brier degradation.
+
+5.
+Group-median FINAL fidelity.
+
+9.
+Exposure versus MICRO2.
+
+10.
+Exposure lower than H171
+in:
+8 / 8.
+
+12.
+Observation-count equality.
+
+13.
+Projection-duty guard.
+
+14.
+ENV4
+no new group-median
+accuracy / Brier failure.
+
+15.
+Oracle ceiling.
+
+FAIL:
+
+6.
+>=95%
+world-level fidelity >=0.95.
+
+Observed:
+81.25%.
+
+7.
+ZERO negative-fidelity worlds.
+
+Observed:
+8.
+
+8.
+ZERO fidelity <-10.
+
+Observed:
+4.
+
+11.
+Exposure lower than H172
+in:
+6 / 8.
+
+Observed:
+4 / 8.
+
+STRONG SUPPORT:
+
+FAIL.
+
+FINAL INTERPRETATION
+
+H173 is:
+
+NEGATIVE
+
+for:
+
+COEFFICIENT-SPACE
+NON-RATCHETING
+LEARNED-STATE
+TAIL CONTAINMENT.
+
+The experiment establishes:
+
+the remaining learned tail
+is:
+NOT fundamentally
+a coefficient-norm problem.
+
+It is:
+
+A FUNCTION-SPACE
+GAIN / DIRECTION
+PROBLEM.
+
+The local cellular readout
+contains:
+
+directions in:
+coefficient space
+
+that:
+have:
+disproportionately large
+effect
+
+on:
+the learned output.
+
+A repaired state
+can:
+stay:
+
+inside:
+a reasonable
+coefficient-amplitude envelope
+
+while:
+
+moving:
+far
+in:
+output space.
+
+ARCHITECTURAL CONSEQUENCE
+
+Do NOT:
+
+tighten:
+kappa
+post hoc.
+
+Do NOT:
+
+increase:
+label count.
+
+Do NOT:
+
+return to:
+coefficient checkpoints.
+
+The next containment metric
+must:
+respect:
+
+THE READOUT GEOMETRY.
+
+Use:
+an unlabeled,
+target-blind
+probe geometry
+
+to measure:
+
+the functional energy
+of:
+a candidate local
+coefficient vector.
+
+Candidate:
+
+for:
+fixed unlabeled probes Q,
+
+P =
+Phi(
+Q,
+lesion
+).
+
+Define:
+
+G =
+P^T P
+/
+|Q|.
+
+Then:
+
+functional_energy(u)
+=
+u^T
+G
+u.
+
+Normalize:
+against:
+
+the lifetime learned-state
+RMS certificate
+and:
+the geometry trace:
+
+expected_energy_scale
+=
+s0^2
+*
+trace(G).
+
+Constrain:
+
+sqrt(
+u^T G u
+/
+(
+s0^2 * trace(G)
+)
+)
+
+<=
+gamma.
+
+This is:
+
+- target-blind;
+- label-free;
+- sensitive to:
+  high-gain coefficient directions;
+- independent of:
+  stored lost weights;
+- non-ratcheting
+  if:
+  s0
+  is:
+  lifetime-frozen.
+
+NEXT:
+
+H174 —
+TARGET-BLIND
+FUNCTION-SPACE
+ENERGY-ENVELOPE
+TAIL-CONTAINMENT AUDIT.
+
+H173 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- global retraining;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
