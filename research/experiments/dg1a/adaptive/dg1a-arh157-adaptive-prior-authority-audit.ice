@@ -1213,3 +1213,143 @@ the first accepted replacement-primary world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY PROVENANCE CORRECTION 02 — AUTHORITATIVE H156 PARENT / EXECUTABLE SEED BINDING
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H157 ACCEPTED PRIMARY EXECUTION.
+
+AUTHORITATIVE PARENT
+
+The header parent pointer:
+
+dg1a-arh156-joint-measurement-conditioning-audit.ice
+
+does not identify:
+the accepted H156 artifact
+that closed:
+the measurement-conditioning experiment.
+
+The authoritative accepted parent is:
+
+dg1a-arh156-global-information-design-micropatch-audit.ice
+
+with:
+final accepted status
+MIXED-POSITIVE.
+
+This correction changes:
+provenance only.
+
+No H157 policy,
+factor,
+threshold,
+or:
+acceptance criterion
+changes.
+
+EXECUTABLE SEED-BINDING CORRECTION
+
+Provenance Correction 01
+already declared:
+
+20260920500000..20260920505399
+
+INELIGIBLE /
+NON-EVIDENCE
+
+because:
+it overlaps:
+the accepted H156 primary family.
+
+It declared:
+the replacement H157 family:
+
+20260920600000..20260920605399.
+
+The later implementation-freeze text
+incorrectly repeated:
+
+20260920500000..20260920505399
+
+in:
+one trailing
+"PRIMARY FAMILY REMAINS"
+statement.
+
+That trailing statement is:
+SUPERSEDED.
+
+No H157 accepted primary world
+has been executed
+from:
+the replacement 202609206... family.
+
+FINAL H157 PRIMARY FAMILY
+
+20260920600000
+through:
+20260920605399.
+
+FINAL PINNED EXECUTABLE
+
+h157_adaptive_prior_frozen_v2.py
+
+SHA-256:
+
+c4a67f7d875bcb92e1f38803d9bcb389764713b9409ebe9dd6a9a71f32f8170e.
+
+The executable differs from:
+the previous pinned H157 source
+
+only in:
+binding primary execution
+to:
+the already-declared
+202609206...
+replacement family.
+
+SANITY REPLAY
+
+The full disjoint H157 sanity matrix
+was rerun under:
+the final pinned executable.
+
+Output SHA-256:
+
+aeef98609945a1f14a5db205eb31c76144e0b37ffca48d9bfe55cf2e3eaf22f5.
+
+This is:
+byte-identical
+
+to:
+the previous H157 sanity output.
+
+Therefore:
+
+- adaptive lambda mechanics unchanged;
+- feedback-noise mechanics unchanged;
+- leverage / A-optimal mechanics unchanged;
+- LOOCV rule unchanged;
+- sanity-selected interpretation unchanged.
+
+H157 ACCEPTED PRIMARY STATUS
+
+NOT STARTED
+at:
+this freeze.
+
+No execution-semantic change
+is permitted
+after:
+the first accepted
+202609206...
+primary world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
