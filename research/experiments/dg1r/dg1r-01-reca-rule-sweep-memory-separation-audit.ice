@@ -1302,3 +1302,957 @@ match.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-01 NON-EVIDENCE PILOT CLOSURE — ReCA RULE-SWEEP MEMORY / SEPARATION / PERTURBATION
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+NEGATIVE SINGLE-TIMESCALE TEMPORAL-SUBSTRATE RESULT /
+USEFUL MECHANISTIC SIGNALS /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+f1c97e345f83bc6a12efa6d9aa72a4a8309c300a4d3f044ebccfdf80e473f483.
+
+CANONICAL OUTPUT
+
+RUN 1 SHA-256:
+
+139739396503208e3a88d90663cb2a465e163f8d68ad59095332a3c6f5a42afe.
+
+RUN 2 SHA-256:
+
+139739396503208e3a88d90663cb2a465e163f8d68ad59095332a3c6f5a42afe.
+
+Byte-identical:
+
+PASS.
+
+TEMPORAL SUBSTRATE CANDIDATES
+
+0.
+
+No:
+ECA90,
+ECA150,
+ECA110,
+ECA22,
+ECA30,
+or:
+MIXED5
+
+met:
+all:
+memory,
+nonlinearity,
+and:
+dynamic-balance:
+gates.
+
+LONG-MEMORY RESULT
+
+All:
+ReCA methods
+
+are:
+near chance
+by:
+D16 /
+D32.
+
+Median D16:
+
+ECA90:
+0.501953125.
+
+ECA150:
+0.50439453125.
+
+ECA110:
+0.48876953125.
+
+ECA22:
+0.49853515625.
+
+ECA30:
+0.5029296875.
+
+MIXED5:
+0.505859375.
+
+Median D32:
+
+ECA90:
+0.4990234375.
+
+ECA150:
+0.4970703125.
+
+ECA110:
+0.4990234375.
+
+ECA22:
+0.5009765625.
+
+ECA30:
+0.4931640625.
+
+MIXED5:
+0.482421875.
+
+Thus:
+
+the:
+frozen:
+128-cell /
+16-site XOR injection /
+4-internal-step:
+single-timescale:
+configuration
+
+does NOT:
+retain:
+useful:
+16-32-step:
+linear memory.
+
+MIXED5 SHORT-MEMORY SIGNAL
+
+MIXED5:
+
+D1 median:
+
+0.744140625.
+
+P10:
+
+0.7056640625.
+
+This is:
+the:
+strongest:
+reliable:
+short-memory:
+signal
+among:
+the:
+tested:
+cellular reservoirs.
+
+D4:
+
+0.521484375.
+
+D8:
+
+0.49853515625.
+
+Thus:
+
+heterogeneous:
+rule assignment
+
+improves:
+immediate:
+input retention,
+
+but:
+that:
+memory
+decays:
+rapidly.
+
+RULE 90 NONLINEAR SIGNAL
+
+ECA90:
+
+XOR3_11 median:
+
+0.7587890625.
+
+However:
+
+P10:
+
+0.48056640625.
+
+Thus:
+
+Rule 90
+shows:
+a:
+strong:
+median:
+nonlinear:
+XOR feature
+
+but:
+the:
+effect
+is:
+not:
+robust:
+across:
+worlds.
+
+Its:
+overall:
+nonlinear score:
+
+0.5886826039658208.
+
+This misses:
+the:
+0.60:
+frozen:
+nonlinear-capable gate.
+
+Its:
+PARITY5
+and:
+MOTIF2_12
+
+remain:
+near:
+chance.
+
+DYNAMIC REGIMES
+
+ECA22:
+
+state entropy median:
+
+0.9424848711089135.
+
+Horizon-16:
+perturbation Hamming:
+
+0.3515625.
+
+Classification:
+
+DYNAMICALLY_BALANCED:
+PASS.
+
+But:
+
+memory:
+FAIL.
+
+Nonlinearity:
+FAIL.
+
+MIXED5:
+
+state entropy median:
+
+0.7518172060639444.
+
+Horizon-16 perturbation:
+
+0.1328125.
+
+Classification:
+
+DYNAMICALLY_BALANCED:
+PASS.
+
+But:
+
+long memory:
+FAIL.
+
+Nonlinearity:
+FAIL.
+
+ECA110:
+
+perturbation persists:
+
+h1:
+0.03125.
+
+h4:
+0.07421875.
+
+h8:
+0.14453125.
+
+h16:
+0.234375.
+
+But:
+
+state entropy:
+
+0.9893807715718957
+
+exceeds:
+the:
+frozen:
+0.95:
+dynamic-balance:
+upper bound.
+
+ECA30:
+
+h16:
+0.31640625.
+
+State entropy:
+
+0.9993079297966428.
+
+Thus:
+
+its:
+perturbations
+spread,
+
+but:
+the:
+state
+is:
+too:
+near:
+maximal:
+binary entropy
+under:
+the:
+frozen:
+balance definition.
+
+ECA90:
+
+h16:
+
+0.
+
+Thus:
+
+the:
+single-cell:
+perturbation
+dies:
+by:
+horizon 16
+
+in:
+this:
+periodic:
+width-128 /
+4-step:
+configuration.
+
+ECA150:
+
+h16:
+
+0.0078125,
+
+below:
+the:
+frozen:
+0.01:
+balance floor.
+
+FEATURE RANK
+
+High:
+feature rank
+alone
+does NOT:
+produce:
+usable:
+temporal memory.
+
+Median:
+rank / dimension:
+
+ECA110:
+511 / 512.
+
+ECA22:
+511 / 512.
+
+ECA30:
+511 / 512.
+
+Yet:
+their:
+D16 /
+D32:
+readouts
+remain:
+near:
+chance.
+
+Therefore:
+
+high-dimensional:
+state diversity
+
+is:
+not:
+sufficient.
+
+The:
+feature map
+must:
+preserve:
+task-relevant:
+temporal information.
+
+BASELINE CONTEXT
+
+RAW32:
+
+D1,
+D4,
+D8,
+D16,
+D32:
+
+all:
+1.0 median.
+
+This is:
+expected.
+
+RAW32 explicitly:
+stores:
+the:
+32-bit:
+history.
+
+Its:
+nonlinear:
+tasks
+remain:
+weak
+with:
+a:
+linear readout.
+
+RANDOM512:
+
+memory score:
+
+0.9990234375.
+
+XOR3_11:
+
+0.63671875.
+
+MOTIF2_12:
+
+0.6139696079324364.
+
+PARITY5:
+
+0.5029296875.
+
+This:
+fixed:
+static:
+nonlinear:
+feature map
+
+preserves:
+explicit:
+32-step history
+and:
+adds:
+some:
+nonlinear separability.
+
+It is:
+not:
+a:
+dynamic:
+reservoir.
+
+Its:
+role
+is:
+to:
+show:
+that:
+the:
+readout /
+sample size
+are:
+capable
+of:
+solving:
+the:
+memory tasks
+when:
+the:
+relevant:
+history
+is:
+actually present.
+
+RESOURCE TELEMETRY
+
+ReCA methods:
+
+persistent:
+dynamic state:
+
+128 bits
+=
+16:
+bit-packed bytes.
+
+Readout:
+space-time feature:
+
+512 bits
+=
+64:
+bit-packed bytes.
+
+Reservoir:
+trainable parameters:
+
+0.
+
+Cell updates:
+per:
+external step:
+
+512.
+
+Readout scalars:
+per:
+task:
+
+513.
+
+Observed:
+feature-generation:
+wall-clock
+on:
+the:
+sandbox
+was:
+approximately:
+
+0.33
+to:
+0.39 seconds
+median
+per:
+4096-step:
+ReCA world/method
+
+across:
+the:
+two:
+runtime sidecars.
+
+This:
+wall-clock data
+is:
+NON-CANONICAL
+telemetry only.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-01 does NOT show:
+
+"ReCA cannot work."
+
+It shows:
+
+the:
+specific:
+single-timescale:
+configuration
+
+WIDTH:
+128.
+
+INPUT INJECTION:
+16 XOR sites.
+
+INTERNAL EVOLUTION:
+4:
+cellular updates
+per:
+input bit.
+
+READOUT:
+current:
+4-step:
+space-time block.
+
+does NOT:
+preserve:
+long-range:
+input identity
+well enough
+for:
+D16 /
+D32.
+
+The:
+mechanistic signals
+split:
+
+MIXED5:
+best:
+short memory
++
+balanced dynamics.
+
+ECA90:
+isolated:
+nonlinear XOR signal.
+
+ECA22 /
+ECA110 /
+ECA30:
+persistent:
+perturbation propagation.
+
+No:
+single:
+rule/configuration
+combines:
+all:
+three.
+
+NEXT ARCHITECTURAL HYPOTHESIS
+
+Do NOT:
+simply:
+increase:
+width
+or:
+select:
+one:
+famous:
+rule.
+
+The:
+failure mode
+points to:
+
+MULTI-TIMESCALE:
+CELLULAR MEMORY.
+
+Use:
+
+parallel:
+software-cell:
+reservoir lanes
+
+that:
+evolve
+at:
+different:
+external clocks.
+
+Example:
+
+FAST:
+update:
+every:
+input.
+
+MEDIUM:
+update:
+every:
+2:
+inputs.
+
+SLOW:
+update:
+every:
+4:
+inputs.
+
+Keep:
+
+total:
+persistent:
+cell count
+bounded.
+
+Allow:
+
+different:
+rule classes
+per:
+lane.
+
+The:
+slow lanes
+should:
+protect:
+older:
+input information
+
+while:
+fast:
+lanes
+supply:
+nonlinear:
+mixing.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-02 —
+MULTI-TIMESCALE /
+HETEROGENEOUS:
+CELLULAR RESERVOIR AUDIT.
+
+Primary comparisons:
+
+1.
+SINGLE128-MIXED5:
+the:
+DG-1R-01:
+mixed-rule:
+reference.
+
+2.
+PARALLEL-3:
+bounded:
+total:
+128:
+cells
+
+split:
+across:
+fast /
+medium /
+slow:
+lanes.
+
+3.
+STACKED-3:
+fast:
+lane
+feeds:
+medium,
+medium:
+feeds:
+slow
+
+under:
+the:
+same:
+total:
+cell budget.
+
+4.
+CLOCKED-HETEROGENEOUS:
+lane-specific:
+rule families.
+
+Primary target:
+
+recover:
+
+D8 /
+D16 /
+D32:
+memory
+
+without:
+destroying:
+nonlinear:
+separability
+or:
+dynamic:
+stability.
+
+PLAIN-SPEAK SUMMARY
+
+What did we try?
+
+We gave:
+tiny:
+128-cell:
+software organisms
+
+a:
+stream:
+of:
+bits
+
+and:
+asked:
+their:
+evolving:
+cell patterns
+to:
+remember:
+the past
+
+well enough
+that:
+a:
+simple:
+linear:
+reader
+could:
+recover it.
+
+What happened?
+
+The:
+single-speed:
+reservoirs
+forgot:
+too quickly.
+
+The:
+mixed-rule:
+organism
+could:
+remember:
+the:
+immediately previous:
+bit
+fairly well,
+
+but:
+by:
+16
+or:
+32:
+steps
+the:
+information
+was:
+effectively gone.
+
+Rule 90
+showed:
+an:
+interesting:
+nonlinear:
+XOR effect,
+
+but:
+it was:
+not:
+stable
+across:
+worlds.
+
+Did ReCA fail?
+
+No.
+
+This:
+specific:
+single-speed:
+design
+failed:
+the:
+long-memory:
+goal.
+
+What did we learn?
+
+Different:
+cellular dynamics
+are:
+good at:
+different:
+things.
+
+Some:
+preserve:
+short memory.
+
+Some:
+spread:
+perturbations.
+
+Some:
+create:
+nonlinear:
+features.
+
+The:
+next:
+design
+should:
+combine:
+different:
+timescales
+
+instead of:
+forcing:
+one:
+cell population
+to:
+do:
+everything
+at:
+one:
+speed.
+
+What should we try next?
+
+Build:
+a:
+small:
+multi-speed:
+cellular memory.
+
+Some:
+cells
+react:
+quickly.
+
+Some:
+change:
+more slowly.
+
+The:
+goal
+is:
+for:
+the:
+slow:
+cells
+to:
+protect:
+older:
+information
+
+while:
+the:
+fast:
+cells
+do:
+the:
+nonlinear:
+mixing.
+
+This:
+directly tests:
+whether:
+TIME
+can:
+replace:
+some:
+permanent:
+stored:
+history.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
