@@ -824,3 +824,799 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL H191-P7 NON-EVIDENCE PILOT CLOSURE — BOUNDED SHARED-CORE FACTOR MICROPATCH
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+POSITIVE ONE-FACTOR MICROPATCH RESULT /
+PATCH1 PREFERRED /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+575471bf0c8bea2e62a7f8e80a6803c5c135f5173f8b7b3c5829ad03044f816a.
+
+CANONICAL OUTPUT
+
+RUN 1 SHA-256:
+
+5cbdca1c55980487059ad16c1d0fe4eae066ba4f6186bba012e66fa5ea8960d8.
+
+RUN 2 SHA-256:
+
+5cbdca1c55980487059ad16c1d0fe4eae066ba4f6186bba012e66fa5ea8960d8.
+
+Byte-identical:
+
+PASS.
+
+REFERENCE
+
+JOINT_REFIT8:
+
+median CAP4 held-out NMSE:
+
+0.013278544858767356.
+
+Median four-capability world-mean NMSE:
+
+0.009513592573576321.
+
+Median world-worst NMSE:
+
+0.02212671272711558.
+
+CORE3-vs-JOINT_REFIT8
+exact support overlap median:
+
+0 / 8.
+
+Jaccard median:
+
+0.
+
+Thus:
+
+CAP4 creates:
+strong:
+geometry pressure
+
+relative to:
+the original:
+CORE3 support.
+
+PATCH0 — DECODER ONLY
+
+Median CAP4 held-out NMSE:
+
+0.08807601818132867.
+
+P90:
+
+0.3243280544331875.
+
+Median CAP4 gap
+versus:
+JOINT_REFIT8:
+
++0.0707364584340544.
+
+Median:
+world-mean gap:
+
++0.01269033694022106.
+
+Median:
+distillation-to-held-out
+CAP4 gap:
+
+0.016022570226603604.
+
+Old prediction drift:
+
+0.
+
+Old decoder change:
+
+0.
+
+Classification:
+
+MIXED_UNCLASSIFIED.
+
+This reproduces:
+
+the P6 finding
+that:
+decoder-only addition
+is:
+not:
+reliable enough.
+
+PATCH1 — ONE NEW FACTOR
+
+Median CAP4 held-out NMSE:
+
+0.005538819338426324.
+
+P90:
+
+0.04812101479582891.
+
+Median CAP4 gap
+versus:
+JOINT_REFIT8:
+
+-0.0028729326412371935.
+
+Thus:
+
+on:
+the median,
+
+PATCH1
+slightly:
+outperforms:
+the fully:
+jointly re-recruited:
+8-factor reference
+
+for:
+the new capability.
+
+Median:
+four-capability:
+world-mean NMSE:
+
+0.011389480884563288.
+
+Median:
+world-mean gap
+versus:
+JOINT_REFIT8:
+
+-0.0006339155554066613.
+
+P90:
+world-mean gap:
+
+0.005481030523138516.
+
+Median:
+distillation-to-held-out
+CAP4 gap:
+
+0.0022510884009005042.
+
+Old prediction drift:
+
+0.
+
+Old decoder change:
+
+0.
+
+Geometry growth:
+
+1 / 8
+=
+12.5%.
+
+New capability:
+
+9 decoder scalars.
+
+New-cap residual compute:
+
+18:
+operations.
+
+Old-cap residual compute:
+
+remains:
+16.
+
+Classification:
+
+ROBUST_MICROPATCH.
+
+All:
+frozen PATCH1 gates:
+
+PASS.
+
+PATCH2 — TWO NEW FACTORS
+
+Median CAP4 held-out NMSE:
+
+0.0029130099256414795.
+
+Median CAP4 gap
+versus:
+JOINT_REFIT8:
+
+-0.00599850263378141.
+
+Median:
+world-mean gap:
+
+-0.002310317467609388.
+
+Old prediction drift:
+
+0.
+
+Old decoder change:
+
+0.
+
+Classification:
+
+ROBUST_MICROPATCH.
+
+However:
+
+PATCH2
+uses:
+
+25%:
+shared geometry growth
+
+versus:
+
+12.5%
+for:
+PATCH1.
+
+Since:
+
+PATCH1
+already:
+passes:
+all:
+quality
+and:
+preservation gates,
+
+PATCH1 is:
+
+the preferred:
+minimum:
+micropatch.
+
+PATCH FACTOR GEOMETRY
+
+PATCH1:
+scale-slot selections
+across:
+12 worlds:
+
+sigma 0.22:
+9.
+
+sigma 0.44:
+2.
+
+sigma 0.88:
+1.
+
+Median:
+distance:
+from:
+the nearest:
+existing:
+CORE3 factor center:
+
+0.4085611334217505.
+
+Only:
+
+8.33%
+
+of:
+PATCH1 factors
+
+are:
+exact candidate matches
+to:
+the:
+JOINT_REFIT8:
+support.
+
+Thus:
+
+the successful:
+micropatch
+
+does NOT:
+simply:
+recover:
+one:
+obvious factor
+from:
+the:
+fully reoptimized:
+joint support.
+
+Instead:
+
+it finds:
+a:
+new-capability-local:
+increment
+
+that:
+works:
+alongside:
+the old:
+frozen core.
+
+PRESERVATION
+
+For:
+all:
+old capabilities:
+
+maximum decoder change:
+
+0.
+
+Maximum prediction drift:
+
+0.
+
+This is:
+
+exact:
+non-regression.
+
+TECHNICAL INTERPRETATION
+
+P7 resolves:
+the central:
+P6 failure
+with:
+the smallest:
+allowed:
+structural growth.
+
+The result supports:
+
+BOUNDED:
+INCREMENTAL:
+SHARED-CORE:
+MICROPATCHING.
+
+A:
+three-capability:
+shared core
+
+does NOT:
+need:
+full:
+geometry reorganization
+
+when:
+CAP4 arrives.
+
+Instead:
+
+one:
+new:
+fixed-dictionary:
+factor
+
+recruited:
+from:
+the:
+new capability's:
+own:
+unlabeled:
+distillation residual
+
+is:
+sufficient
+on:
+the:
+median
+
+to:
+repair:
+the newcomer
+
+while:
+
+- old factors:
+  remain frozen;
+- old decoders:
+  remain frozen;
+- old predictions:
+  remain exact;
+- old per-query residual compute:
+  remains unchanged;
+- shared geometry:
+  grows only:
+  12.5%.
+
+This is:
+
+a direct:
+mechanical analogue
+of:
+developmental:
+micropatching.
+
+IMPORTANT LIMIT
+
+P7 tests:
+
+only:
+the:
+first:
+new capability.
+
+It does NOT:
+show:
+
+that:
+one-factor patches
+
+remain:
+sufficient
+through:
+many:
+sequential:
+capability additions.
+
+The next:
+critical question
+
+is:
+
+whether:
+small patches
+can:
+accumulate
+
+without:
+
+- patch-count explosion;
+- old-state drift;
+- uncontrolled active compute;
+- eventual:
+  need:
+  for:
+  global:
+  shared-core replacement.
+
+NEXT JUSTIFIED EXPERIMENT
+
+H191-P8 —
+SEQUENTIAL:
+BOUNDED:
+SHARED-CORE:
+MICROPATCH
+SCALING.
+
+Start:
+CORE3.
+
+For:
+each:
+new:
+capability
+in:
+3,
+4,
+5,
+6,
+7:
+
+first:
+attempt:
+decoder-only
+on:
+the:
+current:
+shared core.
+
+If:
+the:
+new capability's:
+distillation fit
+fails:
+a frozen:
+predeclared:
+trigger,
+
+allow:
+
+at most:
+
+ONE:
+new:
+fixed-dictionary:
+factor
+
+for:
+that capability.
+
+Then:
+
+freeze:
+that factor.
+
+Extend:
+all:
+older:
+capability decoders
+with:
+implicit:
+zero
+for:
+the new factor.
+
+Never:
+
+- move:
+  existing factors;
+- delete:
+  factors;
+- refit:
+  old decoder coefficients.
+
+Measure:
+
+- number:
+  of:
+  factors:
+  actually added;
+- total:
+  factor growth;
+- new-capability:
+  held-out fidelity;
+- old prediction drift;
+- per-query compute:
+  old versus:
+  newest capability;
+- cumulative:
+  shared-core size;
+- gap:
+  versus:
+  fresh:
+  JOINT_REFIT
+  reference.
+
+Primary North-Star question:
+
+does:
+shared coordination structure
+
+grow:
+
+SUBLINEARLY
+
+relative to:
+
+capability count
+
+under:
+sequential:
+developmental:
+micropatching?
+
+PLAIN-SPEAK SUMMARY
+
+What did we try?
+
+The frozen:
+three-capability:
+core
+could not:
+handle:
+the fourth capability
+well enough.
+
+So:
+instead of:
+rebuilding:
+the whole core,
+
+we let it:
+grow:
+one:
+new shared factor.
+
+Nothing old
+was allowed:
+to move.
+
+What happened?
+
+One:
+new factor
+was enough.
+
+The new capability's:
+median error
+fell from:
+
+about:
+8.8%
+
+to:
+
+about:
+0.55%.
+
+The:
+freshly rebuilt:
+joint reference
+was:
+about:
+1.33%.
+
+So:
+the one-factor patch
+was:
+at least:
+as good
+on:
+the median
+
+without:
+reorganizing:
+the old core.
+
+Did it work?
+
+Yes.
+
+One factor:
+passed:
+all:
+the frozen:
+micropatch criteria.
+
+The:
+second:
+factor
+helped further,
+
+but:
+was:
+not necessary.
+
+What did we actually learn?
+
+The P6 problem
+was:
+not:
+that:
+the whole:
+shared core
+had become:
+obsolete.
+
+It was:
+
+missing:
+a:
+small:
+piece
+of:
+geometry
+
+for:
+the newcomer.
+
+Adding:
+that:
+small piece
+fixed:
+the newcomer
+
+while:
+leaving:
+everything old
+exactly:
+unchanged.
+
+Why does it matter?
+
+This is:
+much closer
+to:
+the developmental behavior
+Yggdrasil is:
+trying to achieve.
+
+Instead of:
+retraining:
+the organism
+or:
+building:
+a:
+new:
+mini-network
+
+for:
+every:
+new capability,
+
+the architecture
+can:
+
+keep:
+what it already knows
+
+and:
+grow:
+a:
+tiny:
+structural patch
+
+only:
+where:
+the:
+existing body
+is:
+insufficient.
+
+What should we try next?
+
+Repeat:
+this:
+developmentally.
+
+Add:
+capability 5,
+then:
+6,
+then:
+7,
+then:
+8.
+
+At:
+each step:
+
+try:
+the:
+existing core
+first.
+
+Only:
+grow:
+one:
+new factor
+when:
+the:
+new capability
+actually:
+needs it.
+
+Then:
+measure:
+
+whether:
+the:
+shared core
+grows:
+slower
+than:
+the:
+number of:
+capabilities.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
