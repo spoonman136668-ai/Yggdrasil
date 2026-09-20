@@ -981,3 +981,115 @@ self-checking.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN LINEAGE NOTE — DEFERRED IDENTIFIER COLLISION
+
+DATE:
+2026-09-20.
+
+STATUS:
+PREREGISTERED /
+NOT EXECUTED /
+DEFERRED BEFORE HARNESS CREATION.
+
+A:
+later:
+same-branch:
+preregistration
+
+at:
+
+374302bf08564a2c3328bc908f73d525460f7fc7
+
+also:
+used:
+the:
+DG-1R-05I:
+identifier
+
+for:
+
+Cross-Bit-Plane Fault-Type Confidence Audit.
+
+Commit order:
+
+this:
+LOCAL_MAX:
+preregistration:
+
+6fc8b82d3616eb00ed86a1393c4fae1811377286.
+
+later:
+CROSS-BIT-PLANE:
+preregistration:
+
+374302bf08564a2c3328bc908f73d525460f7fc7.
+
+Therefore:
+
+the:
+later:
+cross-bit-plane:
+experiment
+
+is:
+the:
+authoritative:
+DG-1R-05I:
+frontier.
+
+This:
+local-max:
+message-passing:
+experiment
+
+is:
+DEFERRED.
+
+It:
+has:
+NO:
+committed:
+harness.
+
+NO:
+freeze.
+
+NO:
+executed:
+world.
+
+NO:
+result.
+
+Its:
+design
+may:
+be:
+renumbered
+and:
+revisited
+after:
+the:
+authoritative:
+05I:
+confidence:
+audit.
+
+Its:
+seed family
+must NOT:
+be:
+used
+by:
+this:
+deferred:
+version
+while:
+05I:
+is:
+active.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
