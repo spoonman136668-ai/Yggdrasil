@@ -746,3 +746,179 @@ the first held-out H155 primary world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY HARNESS CORRECTION 02 — PINNED RESTORE / PRIMARY-SEED ROLLOVER
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE ACCEPTED H155 PRIMARY EXECUTION.
+
+PROVENANCE INCIDENT
+
+After:
+the H155 sanity run
+and:
+the first pre-primary freeze,
+
+the generic sandbox filename:
+
+h155_sim.py
+
+was overwritten
+by:
+an older interrupted draft
+
+before:
+the nominal 202609202... primary batch
+completed.
+
+The resulting 202609202... files
+contain:
+a different policy matrix
+
+and therefore:
+DO NOT MATCH
+the frozen H155 protocol.
+
+DISPOSITION
+
+The entire seed family:
+
+20260920200000..20260920202399
+
+is:
+
+CONTAMINATED /
+NON-EVIDENCE.
+
+No numerical result
+from:
+that family
+
+may be used
+for:
+H155 acceptance,
+threshold selection,
+or:
+scientific interpretation.
+
+No H155 threshold,
+budget,
+routing coefficient,
+or:
+acceptance gate
+was tuned
+from:
+those contaminated outputs.
+
+PINNED RESTORED HARNESS
+
+The intended H155 semantics
+were reconstructed
+from:
+the preregistered artifact
+and:
+the first freeze.
+
+The restored harness
+is stored under:
+a unique immutable working filename
+
+and has:
+
+SHA-256
+
+f2d9269f93d3d9e8d570d175f9ada0677167f94488e2e46c2505a4f484f178d6.
+
+It implements exactly:
+
+- CONTEXT0;
+- H152-FIXED-FB2;
+- JOINT-FIXED24;
+- JOINT-UNCERT24;
+- JOINT-RESID24;
+- JOINT-RESID48;
+- CHECKPOINT-ORACLE;
+
+with:
+
+- global joint lesion solve;
+- component-tagged local feedback pools;
+- all acquired queries used for training;
+- residual-routing EWMA alpha 0.50;
+- posterior-leverage selection inside the routed component;
+- surviving original coefficients immutable.
+
+FRESH SANITY FAMILY
+
+The pinned harness was replayed
+only on:
+a new disjoint
+NON-EVIDENCE
+sanity family:
+
+20260920390000...
+
+Sanity matrix:
+
+140 underlying worlds.
+
+980 policy-world evaluations.
+
+Validation:
+
+- exactly 140 unique seeds;
+- seven policies per seed;
+- zero duplicate seed x policy rows;
+- zero functionally-trivial worlds.
+
+Scientific sanity signal:
+
+- residual routing
+  sometimes helps:
+  multi-wound repair;
+- it is not:
+  uniformly superior
+  to:
+  fixed or uncertainty routing;
+- 48 observations
+  may:
+  overfit compact local-support geometry.
+
+No:
+threshold,
+budget,
+alpha,
+pool size,
+or:
+acceptance criterion
+is changed.
+
+FINAL HELD-OUT H155 PRIMARY FAMILY
+
+20260920300000
+through:
+20260920302399.
+
+This family
+has not been used
+for:
+sanity,
+debugging,
+threshold selection,
+or:
+exploratory interpretation.
+
+No execution-semantic change
+is permitted
+after:
+the first accepted primary world
+under:
+the pinned harness hash.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
