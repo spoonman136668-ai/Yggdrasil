@@ -1183,3 +1183,769 @@ the first held-out H186 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — HYBRID ROLE-REUSE + MINIMAL NEW-CELL CAPABILITY ADDITION
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-NEGATIVE FOR JOINT RELIABILITY / POSITIVE FOR MINIMAL-CELL C ADDITION.
+
+FINAL H186 HARNESS SHA-256
+
+5d400ebd2f6f9686a201adfa1e323fc3593ce9ac6711bd349e52799efa3635b8.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+8c30191499c3e1aae6bcfa3bf9601f334088461e13cb0f06fd9e4ae42764b43f.
+
+ACCEPTED PRIMARY FAMILY
+
+20260923500000..20260923500019.
+
+PRIMARY MATRIX
+
+20 held-out worlds.
+
+6 policies.
+
+120 evaluations.
+
+Validation:
+
+- exact 20 primary seeds;
+- exact 6 policies / seed;
+- no duplicate seed x policy rows;
+- no missing evaluations;
+- no post-primary hybrid tuning.
+
+PRIMARY CANDIDATE
+
+ROLE32_NEW16.
+
+STAGE-B BASELINE
+
+Median post-B held-out R^2:
+
+approximately:
+0.95070.
+
+Frozen median target:
+>=0.90.
+
+PASS.
+
+Worlds with:
+B R^2 >=0.85:
+
+16 / 20
+=
+80%.
+
+Frozen target:
+>=90%.
+
+FAIL.
+
+The weak stage-B worlds are:
+
+20260923500001,
+20260923500003,
+20260923500016,
+20260923500017.
+
+Thus:
+
+the accepted H181
+48-cell B mechanism
+
+does not:
+reproduce:
+its prior 95%
+world-level reliability
+
+on:
+this independent H186 family.
+
+This inherited stage-B tail
+limits:
+all downstream
+joint competence.
+
+HYBRID C CAPABILITY
+
+ROLE32_NEW16
+median C held-out R^2:
+
+approximately:
+0.96966.
+
+Frozen target:
+>=0.90.
+
+PASS.
+
+Worlds:
+C R^2 >=0.85:
+
+19 / 20
+=
+95%.
+
+Frozen target:
+>=90%.
+
+PASS.
+
+Only:
+one candidate world
+
+misses:
+the C competence floor.
+
+Therefore:
+
+32 reused parent roles
++
+16 new physical C cells
+
+is:
+a high-reliability
+C representation
+
+inside:
+the H186 family.
+
+A / B PRESERVATION
+
+Median A total loss:
+
+approximately:
+0.00877.
+
+Frozen target:
+<=0.03.
+
+PASS.
+
+Median B loss
+after C:
+
+approximately:
+0.00233.
+
+Frozen target:
+<=0.03.
+
+PASS.
+
+World:
+A+B retention:
+
+19 / 20
+=
+95%.
+
+PASS.
+
+JOINT A+B+C
+
+ROLE32_NEW16:
+
+15 / 20
+=
+75%.
+
+Frozen target:
+>=90%.
+
+FAIL.
+
+Failure decomposition:
+
+- four worlds
+  already fail:
+  B>=0.85
+  before:
+  C addition;
+
+- one additional world
+  has:
+  C<0.85;
+
+- the remaining:
+  15 worlds
+  retain:
+  A,
+  B,
+  C
+  competence jointly.
+
+Thus:
+
+the H186 joint failure
+is dominated by:
+
+INHERITED
+STAGE-B
+RELIABILITY,
+
+not:
+the 16-cell
+C hybrid.
+
+HYBRID VALUE
+
+ROLE48
+joint competence:
+
+75%.
+
+ROLE32_NEW16:
+
+75%.
+
+Frozen hybrid-value gate:
+
+must:
+beat ROLE48
+by:
+>=10 points
+
+OR:
+reach:
+>=90%
+when:
+ROLE48
+remains below.
+
+FAIL.
+
+However:
+
+C reliability itself
+improves:
+
+ROLE48
+C>=0.85:
+
+95%.
+
+ROLE32_NEW16:
+
+95%.
+
+The hybrid therefore:
+
+does not:
+increase:
+world-level C pass count
+
+but:
+raises:
+median C quality
+
+from:
+approximately:
+0.96051
+
+to:
+approximately:
+0.96966.
+
+ACTIVE-STRUCTURE VALUE
+
+NEW48
+joint competence:
+
+75%.
+
+ROLE32_NEW16:
+
+75%.
+
+Thus:
+
+ROLE32_NEW16
+matches:
+NEW48
+joint competence
+
+while:
+using:
+
+16
+new C physical cells
+
+versus:
+
+48.
+
+PASS.
+
+That is:
+
+one-third
+the new C
+physical-cell growth
+
+for:
+the same:
+joint world-level outcome.
+
+C QUALITY
+VERSUS REFERENCES
+
+Median C R^2:
+
+ROLE48:
+approximately 0.96051.
+
+NEW48:
+approximately 0.96152.
+
+ROLE32_NEW16:
+approximately 0.96966.
+
+ROLE48_NEW16:
+approximately 0.97009.
+
+ROLE32_NEW32:
+approximately 0.97779.
+
+Thus:
+
+a small:
+fresh geometric scaffold
+
+does:
+improve:
+median C reconstruction
+
+over:
+role-only
+and:
+new-only
+48-state references.
+
+But:
+
+the remaining:
+joint tail
+
+is:
+not:
+a C median-quality problem.
+
+HIGHER HYBRID MARGINS
+
+ROLE32_NEW32:
+
+C>=0.85:
+95%.
+
+joint:
+75%.
+
+ROLE48_NEW16:
+
+C>=0.85:
+95%.
+
+joint:
+75%.
+
+Neither:
+
+additional new C cells
+
+nor:
+
+additional reused C-role state
+
+improves:
+joint reliability.
+
+This confirms:
+
+the dominant limiter
+is:
+upstream:
+stage-B reliability.
+
+GENERALIZATION
+
+ROLE32_NEW16
+median C:
+
+validation-test
+R^2 gap:
+
+approximately:
+0.01018.
+
+train-test gap:
+
+approximately:
+0.00446.
+
+PASS.
+
+ACTIVE CELLS
+
+ROLE32_NEW16:
+
+48 B daughters
++
+16 C daughters.
+
+Total new physical cells:
+
+64.
+
+Active-cell growth fraction:
+
+approximately:
+1.994%.
+
+Frozen ceiling:
+<=2.0%.
+
+PASS.
+
+Thus:
+
+three:
+learned capabilities
+
+operate
+with:
+only:
+approximately 2%
+physical active-cell growth
+
+beyond:
+the original
+A body.
+
+PERMANENT PARAMETERS
+
+48:
+B daughter coefficients.
+
+32:
+C reused role coefficients.
+
+16:
+C daughter coefficients.
+
+12:
+router parameters.
+
+Total:
+
+108
+added parameters.
+
+Growth fraction:
+
+approximately:
+3.366%.
+
+Frozen ceiling:
+<=3.5%.
+
+PASS.
+
+COMPUTE
+
+ROLE32_NEW16
+median total compute:
+
+approximately:
+11.18 million
+deterministic proxy units.
+
+GLOBAL_PARENT_ROLE:
+
+approximately:
+2.048 billion.
+
+Ratio:
+
+approximately:
+0.00546.
+
+Frozen ceiling:
+<0.25.
+
+PASS.
+
+HIBERNATION / REACTIVATION
+
+Exact:
+
+maximum:
+hibernation-return error:
+0.
+
+maximum:
+reactivation error:
+0.
+
+PASS.
+
+GLOBAL ROLE CEILING
+
+GLOBAL_PARENT_ROLE:
+
+median C R^2:
+
+approximately:
+0.99938.
+
+C>=0.85:
+
+100%.
+
+Remains:
+the C-role
+capacity ceiling.
+
+PASS.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+Stage-B median competence.
+
+3.
+ROLE32_NEW16 median C.
+
+4.
+ROLE32_NEW16 C world reliability.
+
+5.
+Median A preservation.
+
+6.
+Median B preservation.
+
+8.
+World A+B retention.
+
+9.
+Generalization.
+
+10.
+Active-cell growth.
+
+11.
+Permanent parameter growth.
+
+13.
+Active-structure value
+versus NEW48.
+
+15.
+Compute.
+
+16.
+Hibernation / reactivation.
+
+17.
+Global role ceiling.
+
+FAIL:
+
+2.
+Stage-B world reliability.
+
+Observed:
+80%.
+
+7.
+Joint A+B+C competence.
+
+Observed:
+75%.
+
+12.
+Hybrid joint-reliability value.
+
+Observed:
+75%
+versus:
+75% ROLE48.
+
+14.
+Diagnostic higher hybrids
+do not:
+close:
+the joint tail.
+
+STRONG SUPPORT:
+
+FAIL.
+
+FINAL INTERPRETATION
+
+H186 is:
+
+MIXED-NEGATIVE
+
+for:
+the preregistered
+joint-reliability hypothesis.
+
+But:
+
+it gives:
+a strong:
+North-Star-aligned
+sub-result.
+
+Capability C
+can:
+reach:
+95%
+world-level competence
+
+using:
+
+32:
+reused parent-role states
+
+plus:
+
+only:
+16:
+new physical cells.
+
+That keeps:
+
+TOTAL
+physical active growth
+
+for:
+A+B+C
+
+at:
+approximately:
+2%.
+
+The remaining:
+three-capability
+joint reliability
+
+is NOT:
+improved
+by:
+adding:
+more C role state
+or:
+more C cells
+
+inside:
+the tested hybrid range.
+
+The dominant failure
+is:
+
+the inherited:
+B capability tail.
+
+Therefore:
+
+do NOT:
+
+increase:
+C structure.
+
+Do NOT:
+
+increase:
+C role coefficients.
+
+Do NOT:
+
+return to:
+C routing surgery.
+
+The next architectural test
+should improve:
+
+FUNCTIONAL BASIS
+EFFICIENCY / SHARING
+
+at:
+the B stage
+
+without:
+adding:
+more physical cells.
+
+NEXT:
+
+CLR3-H187 —
+CONTEXT-CONDITIONED
+BASIS-STATE SHARING
+FOR:
+ROBUST CAPABILITY ADDITION.
+
+Primary question:
+
+can:
+a fixed:
+48-cell
+B daughter population
+
+use:
+a small:
+context-conditioned
+internal basis transformation
+
+or:
+shared role/basis state
+
+to:
+raise:
+world-level B reliability
+
+without:
+
+- increasing:
+  active-cell count;
+- replaying:
+  A functional targets;
+- expanding:
+  router size materially?
+
+Then:
+
+carry:
+the accepted H186
+32-role + 16-cell
+C hybrid
+
+on top
+to test:
+three-capability
+joint reliability.
+
+H186 DOES NOT AUTHORIZE
+
+- production use;
+- live model modification;
+- biological claims;
+- whole-model retraining;
+- canonical scientific claims;
+- STAB-18-R1 execution.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
