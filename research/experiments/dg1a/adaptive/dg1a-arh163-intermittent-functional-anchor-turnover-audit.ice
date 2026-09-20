@@ -1000,3 +1000,623 @@ the first held-out H163 lifetime.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — INTERMITTENT FUNCTIONAL ANCHOR TURNOVER
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-POSITIVE.
+
+FINAL H163 WRAPPER SHA-256
+
+553a1edf2da195aff37a3a4ee6dcfa0f6072b2945bee8b46d64e916791edd5c2.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+37c639df48459636ccd1826a421d9289b2db034110c4c757f3e6c09248e64a97.
+
+ACCEPTED PRIMARY FAMILY
+
+20260921200000..20260921200119.
+
+PRIMARY MATRIX
+
+120 held-out condition-world lifetimes.
+
+6 policies.
+
+720 policy lifetimes.
+
+112,320 policy repair cycles.
+
+Validation:
+
+- exactly 120 unique held-out seeds;
+- exact accepted seed interval;
+- exactly six policy rows / seed;
+- zero duplicate seed x policy rows;
+- no missing accepted seeds;
+- no post-primary cadence tuning.
+
+EVERY1 BASELINE
+
+Minimum group median
+FINAL GlobalFidelity:
+
+approximately:
+0.999859.
+
+Minimum group
+world fraction
+FINAL >=0.95:
+
+100%.
+
+PASS.
+
+EVERY2 — 50% ANCHOR DUTY
+
+Minimum group median
+FINAL GlobalFidelity:
+
+approximately:
+0.995443.
+
+Minimum group
+FINAL >=0.95
+world fraction:
+
+100%.
+
+PASS:
+every:
+g x regime x eta group.
+
+Maximum group-median
+HALF-to-FINAL decline:
+
+approximately:
+0.000201.
+
+Thus:
+
+50%
+full-anchor duty
+
+preserves:
+long-horizon
+original-task fidelity
+
+across:
+both scales,
+both turnover regimes,
+and:
+both noise classes.
+
+FEEDBACK SAVING
+
+EVERY2
+uses:
+
+50%
+fewer:
+full functional-feedback observations
+
+than:
+EVERY1
+
+at:
+both scales.
+
+Coarse:
+
+480
+->
+240
+observations / lifetime.
+
+Fine:
+
+7008
+->
+3504.
+
+SPARSE EVERY5 — 20% DUTY
+
+Fine scale:
+
+g=0.25
+
+remains:
+extremely stable.
+
+Median FINAL fidelity:
+
+ROAMING,
+eta=0:
+approximately 0.999973.
+
+ROAMING,
+eta=0.25:
+approximately 0.999971.
+
+HOTSPOT,
+eta=0:
+approximately 0.999994.
+
+HOTSPOT,
+eta=0.25:
+approximately 0.999996.
+
+World reliability:
+100%.
+
+But:
+
+coarse:
+g=1.00
+
+fails:
+the global sparse-policy gate.
+
+ROAMING,
+eta=0:
+
+median FINAL:
+approximately 0.967285.
+
+FINAL >=0.95:
+approximately 66.7%.
+
+ROAMING,
+eta=0.25:
+
+median FINAL:
+approximately 0.985009.
+
+HOTSPOT groups
+remain:
+approximately 0.994..0.996.
+
+Thus:
+
+20% anchor duty
+is:
+NOT:
+scale-invariant.
+
+SPARSE EVERY10 — 10% DUTY
+
+Fine scale:
+
+g=0.25
+
+still remains:
+highly stable.
+
+Median FINAL fidelity:
+
+approximately:
+0.999920
+to:
+0.999994.
+
+All fine-scale worlds:
+finish >=0.95.
+
+Feedback reduction
+versus:
+EVERY1:
+
+approximately:
+89.7%.
+
+But:
+
+coarse ROAMING:
+
+eta=0:
+
+median FINAL:
+approximately 0.957122.
+
+FINAL >=0.95:
+approximately 53.3%.
+
+eta=0.25:
+
+median FINAL:
+approximately 0.976737.
+
+FINAL >=0.95:
+approximately 80%.
+
+Therefore:
+
+10% anchor duty
+fails:
+the all-scale requirement.
+
+CONTEXT-ONLY
+
+Fine scale:
+
+remains:
+near:
+target function
+under:
+the localized beta=2
+repair regime.
+
+Coarse ROAMING:
+
+eta=0:
+
+median FINAL:
+approximately 0.923518.
+
+eta=0.25:
+
+approximately 0.973141.
+
+One accepted
+coarse clean roaming
+CONTEXT-ONLY world:
+
+FINAL fidelity:
+approximately 0.7873.
+
+This again confirms:
+
+local developmental repair
+can:
+look plausible
+
+while:
+original-task function
+drifts.
+
+SCALE-DEPENDENT ANCHOR REQUIREMENT
+
+The primary produces:
+a clear architectural split.
+
+COARSE:
+
+g=1.00.
+
+Safe tested full-anchor duty:
+
+approximately:
+50%.
+
+20%
+is:
+not reliable
+under:
+ROAMING turnover.
+
+FINE:
+
+g=0.25.
+
+Safe tested full-anchor duty:
+
+at least as low as:
+approximately 10%.
+
+EVERY10
+passes:
+all fine-scale
+quality / reliability
+groups.
+
+Thus:
+
+SMALLER,
+MORE LOCALIZED
+COMPUTATIONAL CELLS
+
+not only:
+reduce:
+repair blast radius.
+
+They also:
+reduce:
+the required
+EXTERNAL FUNCTIONAL-ANCHOR
+DUTY CYCLE
+
+under:
+the tested architecture.
+
+LATE-LIFE SELF-RECOVERY
+
+EVERY2:
+
+original-task fidelity
+remains:
+high.
+
+However:
+
+some coarse groups
+show:
+lower
+per-cycle
+SelfRecovery
+
+on:
+unanchored / alternating cycles.
+
+Minimum group median:
+
+approximately:
+0.889.
+
+This does NOT:
+break:
+the EVERY2
+fidelity gates,
+
+but:
+it reinforces:
+
+SelfRecovery
+is:
+not:
+the same metric
+as:
+long-horizon
+task fidelity.
+
+EVERY5 / EVERY10
+show:
+stronger:
+coarse roaming
+SelfRecovery degradation
+
+alongside:
+target drift.
+
+PREREGISTERED GATE REVIEW
+
+PASS:
+
+1.
+EVERY1
+H162-level baseline.
+
+2.
+EVERY2
+median FINAL >=0.98
+all groups.
+
+3.
+EVERY2
+>=90%
+world reliability
+all groups.
+
+7.
+Fine-scale transfer
+for:
+the tested cadence policies
+is:
+not degraded.
+
+11.
+24-observation
+anchored-cycle ceiling.
+
+12.
+Oracle ceiling.
+
+FAIL / MIXED:
+
+4.
+At least one:
+EVERY5 / EVERY10
+policy
+with:
+median FINAL >=0.98
+for:
+EVERY group.
+
+FAIL.
+
+5.
+Sparse policy
+>=90%
+world reliability
+for:
+EVERY group.
+
+FAIL.
+
+6.
+Sparse-policy
+HALF-to-FINAL
+drift constraint
+cannot qualify
+because:
+no sparse policy
+passes:
+the all-group quality gates.
+
+8.
+>=70%
+feedback reduction
+cannot be claimed
+as:
+globally safe,
+
+because:
+the required:
+EVERY5 / EVERY10
+policy
+does not:
+qualify across:
+coarse scale.
+
+9.
+Qualifying sparse-policy
+late-life SelfRecovery:
+not applicable
+because:
+no sparse all-scale policy qualifies.
+
+10.
+Qualifying sparse-policy
+HOTSPOT gate:
+not sufficient
+to rescue:
+the roaming failures.
+
+SECONDARY DUTY-CYCLE RESULT
+
+The preregistered
+secondary rule applies:
+
+EVERY2:
+
+PASS.
+
+EVERY5 / EVERY10:
+
+FAIL
+as:
+all-scale policies.
+
+Therefore:
+
+H163 is:
+
+MIXED-POSITIVE.
+
+Measured safe:
+ALL-SCALE
+full functional-anchor duty:
+
+approximately:
+50%.
+
+Measured safe:
+FINE-SCALE
+full-anchor duty:
+
+approximately:
+10%
+or lower
+
+within:
+the tested range.
+
+FINAL INTERPRETATION
+
+H163 identifies:
+a new scaling advantage.
+
+As:
+computational cells become:
+smaller
+
+and:
+damage localization improves,
+
+the organism needs:
+less frequent:
+external functional correction
+
+to:
+remain:
+anchored
+to:
+the original task.
+
+This supports:
+
+A SCALE-AWARE
+REGENERATIVE CONTROL POLICY.
+
+Do NOT:
+
+hard-code:
+one global anchor cadence.
+
+Instead:
+
+anchor duty
+should depend on:
+
+- repair-cell granularity;
+- expected functional blast radius;
+- observed drift risk;
+- turnover pattern.
+
+NEXT HIGH-LEVERAGE QUESTION
+
+A fixed:
+50%
+coarse anchor duty
+
+is:
+still expensive.
+
+The next experiment should ask:
+
+CAN
+A CHEAP
+FUNCTIONAL SENTINEL
+
+observe:
+a few local task points
+on:
+every repair cycle
+
+and:
+
+trigger:
+the full 24-observation
+functional anchor
+
+ONLY WHEN:
+developmental repair
+is:
+actually drifting?
+
+This could:
+
+- retain:
+  coarse-scale safety;
+- preserve:
+  fine-scale low anchor duty;
+- eliminate:
+  unnecessary full correction;
+- adapt automatically
+  to:
+  ROAMING / HOTSPOT
+  differences.
+
+NEXT:
+
+H164 —
+SENTINEL-TRIGGERED
+FUNCTIONAL ANCHOR
+TURNOVER AUDIT.
+
+H163 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- global retraining;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
