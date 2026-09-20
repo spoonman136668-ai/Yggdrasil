@@ -1012,3 +1012,383 @@ SYNTHETIC_MEASURED_CAPABILITY_HIBERNATION_ACTIVE_COMPUTE_SCALING
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — HIBERNATION / ACTIVE-COMPUTE HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H188 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H188 SANDBOX HARNESS
+
+File:
+
+h188_hibernation_compute_v1.py
+
+SHA-256:
+
+ccfefb13dc331cae7b568502ff762253219164cc78da5873af561656bafea447.
+
+PARENT PHENOTYPE
+
+Exact H187:
+WARP48_ROLE48_C architecture.
+
+Stored learned state:
+
+- 3209 A parent coefficients;
+- 48 B daughter coefficients;
+- 5 B shared warp parameters;
+- 48 C parent-role coefficients;
+- 6 B router parameters;
+- 6 C router parameters.
+
+Physical cells:
+
+3209 parent
++
+48 B daughters
+=
+3257.
+
+No:
+new H188 training.
+
+No:
+parameter update.
+
+No:
+coefficient fit.
+
+No:
+router fit.
+
+KNOWN-CONTEXT SCHEDULE
+
+A context:
+
+A branch only.
+
+B context:
+
+B branch only.
+
+C context:
+
+C branch only.
+
+LEARNED-ROUTER SCHEDULE
+
+Evaluate:
+B and C routers.
+
+Choose:
+
+B
+if:
+B gate >=0.5
+and:
+B gate >= C gate.
+
+Else:
+C
+if:
+C gate >=0.5.
+
+Else:
+A.
+
+Then:
+evaluate:
+the chosen branch only.
+
+SWITCH TEST
+
+300 steps:
+
+A,
+B,
+C
+
+repeated:
+100 times.
+
+32 fixed held-out probes
+per:
+activated context.
+
+No:
+state mutation.
+
+State hashes:
+
+recorded before
+and:
+after.
+
+COMPUTE ACCOUNTING
+
+Functional basis / transform proxy:
+
+A:
+3209.
+
+B functional branch:
+48 basis
++
+5 warp.
+
+C:
+48 role-basis.
+
+Always-active learned scheduler:
+
+12 router-parameter ops.
+
+Full all-branch compute:
+
+3322
+proxy units / sample.
+
+Learned scheduled:
+
+A:
+3221.
+
+B:
+65.
+
+C:
+60.
+
+Equal A/B/C workload:
+
+approximately:
+1115.3
+
+=
+33.57%
+of:
+full.
+
+B only:
+
+approximately:
+1.96%.
+
+C only:
+
+approximately:
+1.81%.
+
+These compute ratios
+are:
+deterministic
+under:
+the frozen architecture.
+
+SANITY
+
+Disjoint family:
+
+20260923790000
+and:
+20260923790001.
+
+2 worlds.
+
+3 contexts / world.
+
+6 context rows.
+
+Accepted sanity-output SHA-256:
+
+04fc156b03595cbbbe2765db0bad8593fd940d99ff1add661f53d48344c1d3f0.
+
+Mechanical checks:
+
+- exact:
+  3 contexts / world;
+- stored state hash:
+  unchanged
+  through:
+  300 switches;
+- maximum:
+  switch reactivation drift:
+  0;
+- wake learning cost:
+  0;
+- two-branch arithmetic:
+  exact;
+- no:
+  parameter duplication
+  during:
+  hibernation;
+- physical cell count:
+  unchanged.
+
+NON-EVIDENCE ROUTING SIGNAL
+
+Overall learned routing accuracy:
+
+approximately:
+0.9915
+and:
+0.9967
+
+in:
+the two sanity worlds.
+
+Thus:
+
+context routing
+is:
+highly accurate.
+
+NON-EVIDENCE COMPUTE SIGNAL
+
+B-only learned-scheduled compute:
+
+approximately:
+1.96%
+of:
+full.
+
+C-only:
+
+approximately:
+1.81%.
+
+Equal A/B/C:
+
+approximately:
+33.57%.
+
+These are:
+structural:
+compute-accounting results
+
+and:
+do not depend:
+on:
+held-out task targets.
+
+NON-EVIDENCE DECOMPOSABILITY SIGNAL
+
+Known-context
+branch-only
+B:
+
+stays:
+close to:
+the full phenotype
+
+inside:
+sanity.
+
+But:
+C context
+shows:
+material:
+full-versus-C-only
+prediction difference.
+
+Representative:
+
+world:
+20260923790000.
+
+Full C R^2:
+approximately:
+0.9194.
+
+C-only:
+approximately:
+0.8944.
+
+Normalized:
+C-only
+versus:
+full
+prediction MSE:
+
+approximately:
+0.1155.
+
+World:
+20260923790001.
+
+Full C:
+approximately:
+0.9454.
+
+C-only:
+approximately:
+0.9464.
+
+Normalized difference:
+
+approximately:
+0.0528.
+
+Frozen fidelity target:
+
+<=0.02.
+
+Thus:
+
+the accepted H187 phenotype
+may:
+use:
+small residual
+cross-capability contributions
+
+even when:
+one:
+nominal capability
+is:
+contextually dominant.
+
+This is:
+the central:
+held-out H188 question.
+
+No:
+
+- branch definition;
+- routing rule;
+- compute accounting;
+- threshold;
+- context;
+- parent phenotype;
+- acceptance gate
+
+was changed
+from:
+sanity outcomes.
+
+PRIMARY FAMILY
+
+20260923700000..20260923700019.
+
+20 held-out worlds.
+
+3 context rows / world.
+
+60 evaluation rows.
+
+H188 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H188 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
