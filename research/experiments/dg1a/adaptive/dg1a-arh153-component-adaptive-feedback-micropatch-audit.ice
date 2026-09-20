@@ -946,3 +946,814 @@ the first held-out H153 primary world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — COMPONENT-AWARE ADAPTIVE FUNCTIONAL FEEDBACK
+
+DATE:
+2026-09-19.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-NEGATIVE.
+
+FROZEN HARNESS SHA-256
+
+e8f353f6e5d38a5732eb1c9c47778103134c6d7e331c53efb5b6005974637f71.
+
+ACCEPTED PRIMARY FAMILY
+
+20260920000000..20260920002399.
+
+PRIMARY MATRIX
+
+2,400 underlying worlds.
+
+6 frozen policies.
+
+14,400 unique policy-world evaluations.
+
+PROVENANCE AUDIT
+
+A post-freeze sandbox script mutation was detected
+before:
+the affected shard was accepted.
+
+The mutated:
+600..899
+shard
+was:
+DISCARDED / NON-EVIDENCE.
+
+The exact frozen H153 harness
+was reconstructed
+at:
+the preregistered SHA-256.
+
+A replay of:
+accepted seed 0
+was:
+byte-for-byte identical
+to:
+the original accepted output.
+
+Accepted evidence therefore uses only:
+
+- worlds 0..599 from the original exact-hash execution;
+- worlds 600..2399 replayed from the restored exact-hash harness.
+
+Final matrix validation:
+
+- exactly 2,400 unique held-out seeds;
+- exact seed interval;
+- exactly six frozen policies / seed;
+- no missing policy cells;
+- no duplicate seed-policy cells;
+- contaminated seven-policy / theta-bearing shard excluded.
+
+PRIMARY CANDIDATE
+
+COMPONENT-ADAPTIVE-FB2.
+
+MIXED CONTEXT — PRIMARY TARGET
+
+Median final functional recovery:
+
+1%:
+0.8802.
+
+2%:
+0.8805.
+
+5%:
+0.8574.
+
+10%:
+0.8691.
+
+Required:
+>=0.90
+for:
+1%..5%.
+
+FAIL.
+
+H152 shared-pool fixed-FB2 comparator
+on the same H153 worlds:
+
+1%:
+0.9370.
+
+2%:
+0.9283.
+
+5%:
+0.9235.
+
+Thus:
+
+strict component isolation
+REDUCES:
+functional recovery
+
+despite:
+more explicit routing.
+
+MIXED T90 WORLD FRACTION
+
+COMPONENT-ADAPTIVE-FB2:
+
+1%:
+53.5%.
+
+2%:
+50.5%.
+
+5%:
+41.5%.
+
+Pooled:
+48.5%.
+
+Required:
+
+>=80%
+each
+
+and:
+>=85%
+pooled.
+
+FAIL.
+
+H152 shared-pool comparator:
+
+1%:
+65.5%.
+
+2%:
+63.0%.
+
+5%:
+62.5%.
+
+Pooled:
+63.67%.
+
+Thus:
+
+component isolation
+does not:
+solve
+the H152 reliability limit.
+
+It worsens it.
+
+FEEDBACK USE
+
+MIXED
+COMPONENT-ADAPTIVE-FB2
+median observations:
+
+1%:
+24.
+
+2%:
+24.
+
+5%:
+24.
+
+Required:
+
+1%:
+<=8.
+
+2%:
+<=12.
+
+FAIL.
+
+The adaptive controller
+almost always:
+spends the full budget
+on:
+MIXED state.
+
+The stopping rule therefore:
+does not discover
+a cheap reconstruction regime
+for:
+the cases that need feedback most.
+
+COMPONENT VALIDATION
+
+Across:
+MIXED
+1%..5%,
+
+median number
+of:
+validated-recovered components
+
+under:
+COMPONENT-ADAPTIVE-FB2
+
+is:
+0.
+
+Median reopen count:
+
+0.
+
+Interpretation:
+
+the problem is NOT:
+oscillatory reopening.
+
+The controller simply:
+rarely reaches
+its component validation criterion
+before:
+budget exhaustion.
+
+GEOMETRY / ROUTING
+
+MIXED
+COMPONENT-ADAPTIVE-FB2.
+
+1%:
+
+COMPACT:
+final recovery 0.8887,
+T90 5,
+T90-world fraction 64%.
+
+FOUR-PATCH:
+final recovery 0.8746,
+T90 3,
+T90-world fraction 43%.
+
+2%:
+
+COMPACT:
+final recovery 0.9037,
+T90 4.5,
+T90-world fraction 76%.
+
+FOUR-PATCH:
+final recovery 0.8441,
+T90 3,
+T90-world fraction 25%.
+
+5%:
+
+COMPACT:
+final recovery 0.8722,
+T90 7,
+T90-world fraction 53%.
+
+FOUR-PATCH:
+final recovery 0.8471,
+T90 4,
+T90-world fraction 30%.
+
+The frozen
+FOUR-PATCH median-T90
+non-inferiority gate
+technically passes
+
+among:
+worlds that reach T90.
+
+But:
+
+the T90-world fraction
+collapses.
+
+Therefore:
+
+the apparent latency advantage
+is:
+survivor-selected
+
+and:
+does NOT represent
+reliable distributed-patch recovery.
+
+ROUTING-ONLY COMPARATOR
+
+COMPONENT-FIXED-FB2
+versus:
+H152 shared-pool fixed-FB2
+on:
+FOUR-PATCH
+MIXED small damage.
+
+Median T90:
+
+1%:
+3
+versus:
+4.
+
+2%:
+4.5
+versus:
+6.
+
+5%:
+5
+versus:
+9.
+
+Thus:
+
+the preregistered
+routing-latency isolation gate
+passes
+for:
+3 / 3 fractions
+
+among:
+successful worlds.
+
+However:
+
+T90-world fraction
+for:
+COMPONENT-FIXED-FB2
+
+is:
+
+44%,
+28%,
+33%
+
+versus:
+H152 shared-pool:
+
+57%,
+37%,
+57%.
+
+And:
+median final recovery
+is lower
+for:
+all three fractions.
+
+Therefore:
+
+routing alone
+accelerates:
+the easier solved cases
+
+while:
+strict component solves
+strand:
+a larger unsolved tail.
+
+H152 COMPARATOR LOSS
+
+MIXED
+COMPONENT-ADAPTIVE-FB2
+versus:
+H152 fixed-FB2:
+
+1%:
+
+final:
+0.8802
+versus:
+0.9370.
+
+2%:
+
+0.8805
+versus:
+0.9283.
+
+5%:
+
+0.8574
+versus:
+0.9235.
+
+Adaptive observations:
+
+24,
+24,
+24.
+
+H152:
+
+24,
+24,
+24.
+
+Thus:
+
+H153 does NOT:
+use fewer observations
+
+and:
+
+loses:
+approximately
+0.048..0.066
+median recovery.
+
+FAIL.
+
+FB4 FRONTIER
+
+MIXED pooled
+1%..5%
+T90-world fraction:
+
+ADAPTIVE-FB2:
+48.5%.
+
+ADAPTIVE-FB4:
+57.67%.
+
+Absolute improvement:
+
+approximately:
+9.17 percentage points.
+
+This is:
+<0.10.
+
+Therefore:
+the frozen
+near-budget-frontier
+OR gate
+technically passes.
+
+Median observations:
+
+FB2:
+24.
+
+FB4:
+approximately 32..36
+by fraction.
+
+But:
+
+FB4
+does NOT:
+restore:
+the missing reliability.
+
+More budget
+inside:
+the same
+component-isolated solve
+is:
+not the main answer.
+
+SMOOTH CONTEXT
+
+COMPONENT-ADAPTIVE-FB2
+median final recovery:
+
+1%:
+0.9836.
+
+2%:
+0.9851.
+
+5%:
+0.9751.
+
+10%:
+0.9636.
+
+SMOOTH 1%..5%
+all remain:
+>=0.95.
+
+PASS.
+
+In:
+SMOOTH state,
+
+adaptive stopping
+can sometimes:
+reduce budget.
+
+However:
+
+this is:
+the already-easy
+locally smooth regime.
+
+SCRAMBLED CONTEXT
+
+COMPONENT-ADAPTIVE-FB2
+median final recovery:
+
+1%:
+0.3984.
+
+2%:
+0.2001.
+
+5%:
+0.3394.
+
+10%:
+0.4028.
+
+This remains:
+far below:
+SMOOTH.
+
+PASS:
+mechanism still depends
+on:
+representational organization.
+
+PREREGISTERED GATE REVIEW
+
+SUPPORTED
+
+1.
+FOUR-PATCH median T90
+is not:
+>20%
+worse
+than:
+COMPACT
+
+among:
+successful MIXED worlds.
+
+Qualified:
+success fraction is poor.
+
+2.
+Routing-only
+COMPONENT-FIXED-FB2
+has:
+lower median T90
+than:
+H152 fixed FB2
+in:
+3 / 3
+FOUR-PATCH
+MIXED small-damage groups.
+
+Qualified:
+final recovery
+and:
+success fraction
+are worse.
+
+3.
+ADAPTIVE-FB4
+improves:
+pooled T90-world fraction
+by:
+<0.10 absolute
+
+relative to:
+ADAPTIVE-FB2.
+
+4.
+SMOOTH
+1%..5%
+final recovery
+remains:
+>=0.95.
+
+5.
+SCRAMBLED
+does not:
+reach:
+SMOOTH-level recovery.
+
+FAILED
+
+1.
+MIXED
+1%..5%
+median final recovery
+>=0.90.
+
+FAIL.
+
+2.
+MIXED
+T90-world fraction:
+
+>=80%
+each
+and:
+>=85%
+pooled.
+
+FAIL.
+
+3.
+1%
+median observations
+<=8.
+
+FAIL:
+24.
+
+4.
+2%
+median observations
+<=12.
+
+FAIL:
+24.
+
+5.
+Adaptive FB2
+uses:
+less feedback
+than:
+H152 fixed FB2
+
+while:
+staying within:
+0.02 recovery.
+
+FAIL.
+
+It uses:
+the same feedback
+
+and:
+performs materially worse.
+
+CORE FINDING
+
+H153 is:
+
+MIXED-NEGATIVE.
+
+The failure is:
+highly informative.
+
+FUNCTIONAL MICRO-PATCHES
+ARE NOT:
+INDEPENDENT
+MERELY BECAUSE:
+THE DAMAGE GEOMETRY
+IS DISCONNECTED.
+
+The RBF functional readout
+creates:
+overlapping influence fields.
+
+Therefore:
+
+a query localized near:
+one wound
+
+can still contain:
+information about:
+coefficients
+in:
+another wound.
+
+Likewise:
+
+solving:
+one lesion component
+
+while:
+treating:
+other damaged components
+
+as:
+fixed current state
+
+creates:
+cross-component residual error.
+
+STRICT COMPONENT ISOLATION
+THROWS AWAY:
+SHARED FUNCTIONAL INFORMATION.
+
+This explains:
+
+- faster T90
+  among easy solved components;
+
+- lower total success rate;
+
+- worse median final recovery;
+
+- failure of:
+  adaptive early stopping;
+
+- weak benefit
+  from:
+  simply doubling feedback budget.
+
+ARCHITECTURAL UPDATE
+
+Keep:
+
+COMPONENT-AWARE
+QUERY ROUTING.
+
+Reject:
+
+COMPONENT-INDEPENDENT
+FUNCTIONAL SOLVES.
+
+The next design should use:
+
+A SHARED
+COUPLED
+FUNCTIONAL RESIDUAL MODEL
+
+across:
+all regenerated cells,
+
+while:
+
+using:
+component-specific uncertainty
+only to decide:
+
+WHERE
+THE NEXT QUERY
+SHOULD COME FROM.
+
+In other words:
+
+ROUTE LOCALLY.
+
+SOLVE JOINTLY.
+
+This preserves:
+cross-wound information
+
+without:
+returning to:
+undirected fixed feedback.
+
+NEXT SCOPED EXPERIMENT
+
+H154 —
+SHARED-RESIDUAL /
+COMPONENT-ROUTED
+FUNCTIONAL MICRO-PATCH.
+
+Primary hypothesis:
+
+- maintain:
+  one coupled ridge solve
+  over:
+  all regenerated lesion coefficients;
+
+- estimate:
+  per-component validation residual;
+
+- route:
+  new functional queries
+  toward:
+  the highest-uncertainty component;
+
+- scale:
+  total feedback budget
+  with:
+  missing mutable-state dimension;
+
+- stop:
+  globally only when:
+  every component
+  passes:
+  bounded validation.
+
+Target:
+
+recover:
+H152 shared-solve quality
+
+while:
+
+- eliminating:
+  FOUR-PATCH routing waste;
+
+- reducing:
+  tiny-patch observation cost;
+
+- raising:
+  MIXED T90-world reliability;
+
+- preserving:
+  fixed surviving state.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
