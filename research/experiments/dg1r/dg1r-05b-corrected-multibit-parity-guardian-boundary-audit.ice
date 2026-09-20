@@ -1432,3 +1432,1030 @@ UNCHANGED.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-05B NON-EVIDENCE CLOSURE — MULTI-BIT BOUNDARY / PARITY GUARDIAN
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+POSITIVE DOUBLE-ERROR DETECTION /
+POSITIVE PARITY-GUARDIAN ROLE /
+ABSTENTION-ONLY RECOVERY NEGATIVE /
+TRIPLE-ERROR BOUNDARY CONFIRMED /
+DETECT_ONLY CONTROL INVALIDATED /
+NON-CANONICAL /
+NON-EVIDENCE.
+
+FIXA HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05b_parity_guardian_fixa_v1.py
+
+FixA Git blob SHA:
+
+0b69afde3a1fad7d2f7659f9f76d8b53013b1c6b.
+
+FixA source SHA-256:
+
+b2d828f43ebd31b85c6245b858be90aba1e196f3d7ce9ca03e6576153c9dcf7f.
+
+FixA source bytes:
+
+12528.
+
+CANONICAL OUTPUT FOR THIS NON-EVIDENCE PILOT
+
+RUN 1 SHA-256:
+
+2c553f11372107c3555fe82459113872cf8033464d27e01ecfa13a325dea7f44.
+
+RUN 2 SHA-256:
+
+2c553f11372107c3555fe82459113872cf8033464d27e01ecfa13a325dea7f44.
+
+Byte-identical:
+
+PASS.
+
+MECHANICAL VALIDITY
+
+no-damage duplicate trajectories:
+
+PASS.
+
+lesion cardinality assertions:
+
+PASS.
+
+ONE1:
+
+1 actual bit.
+
+TWO2:
+
+2 actual bits.
+
+THREE3:
+
+3 actual bits.
+
+DISTRIBUTED_TWO2:
+
+4 actual bits.
+
+mechanical_valid:
+
+TRUE.
+
+FROZEN SIGNALS
+
+ONE_BIT_REPAIR_SIGNAL:
+
+TRUE.
+
+DOUBLE_ERROR_DETECTION_SIGNAL:
+
+TRUE.
+
+ABSTENTION_VALUE_SIGNAL:
+
+FALSE.
+
+PARITY_GUARDIAN_SIGNAL:
+
+TRUE.
+
+ONE-BIT INVARIANT
+
+HAM74_ALWAYS:
+
+ONE1:
+median divergence area:
+
+0.
+
+full recovery rate:
+
+1.0.
+
+h32:
+whole-state divergence:
+
+0.
+
+SECDED84_GUARD:
+
+ONE1:
+median divergence area:
+
+0.
+
+full recovery rate:
+
+1.0.
+
+h32:
+whole-state divergence:
+
+0.
+
+PARITY1:
+
+median divergence area:
+
+0.
+
+full recovery rate:
+
+1.0.
+
+Thus:
+
+the:
+overall:
+parity guardian
+does NOT:
+break:
+single-error:
+repair.
+
+It:
+also:
+repairs:
+damage
+to:
+its:
+own:
+integrity:
+bit.
+
+TRUE TWO-BIT BOUNDARY
+
+HAM74_ALWAYS:
+
+TWO2:
+
+median divergence area:
+
+2.2734375.
+
+full recovery rate:
+
+0.25.
+
+false-correction fraction:
+
+1.0.
+
+Thus:
+
+plain:
+Hamming(7,4)
+always-repair
+
+confidently:
+miscorrects:
+true:
+two-bit:
+local:
+damage.
+
+HAM74_H6_GATE:
+
+TWO2:
+
+median divergence area:
+
+2.48046875.
+
+full recovery rate:
+
+0.1875.
+
+false-correction fraction:
+
+1.0
+among:
+performed:
+corrections.
+
+H6:
+abstained:
+14:
+times
+but:
+did NOT:
+reliably:
+identify:
+the:
+uncorrectable:
+boundary.
+
+Thus:
+
+homeostatic:
+consensus
+is:
+not:
+a:
+substitute
+for:
+integrity:
+information.
+
+SECDED84_GUARD
+
+TWO2:
+
+detected-double count:
+
+32
+across:
+32:
+scenarios.
+
+Detection rate:
+
+100%.
+
+Corrections:
+
+0.
+
+False-correction fraction:
+
+0.
+
+Abstentions:
+
+32.
+
+Thus:
+
+the:
+parity guardian
+perfectly:
+distinguishes:
+this:
+true:
+two-bit:
+local:
+damage
+from:
+a:
+single:
+correctable:
+error.
+
+However:
+
+median divergence area:
+
+2.359375.
+
+full recovery rate:
+
+0.25.
+
+h32:
+whole-state divergence:
+
+0.0625.
+
+Therefore:
+
+DETECTION
+does NOT:
+equal:
+
+RECONSTRUCTION.
+
+The:
+guardian:
+correctly:
+knows:
+
+"I do not know
+the:
+safe:
+repair."
+
+It:
+does NOT:
+possess:
+enough:
+information
+
+to:
+recover:
+the:
+two:
+lost:
+bits.
+
+SECDED84_FORCE
+
+TWO2:
+
+detected-double count:
+
+32.
+
+Corrections:
+
+32.
+
+false-correction fraction:
+
+1.0.
+
+median divergence area:
+
+2.578125.
+
+Thus:
+
+ignoring:
+the:
+double-error:
+warning
+
+and:
+forcing:
+a:
+repair
+
+creates:
+confident:
+miscorrection.
+
+ABSTENTION VALUE
+
+Frozen:
+ABSTENTION_VALUE_SIGNAL:
+
+FALSE.
+
+Although:
+
+SECDED84_GUARD
+avoids:
+false:
+correction,
+
+its:
+median:
+trajectory:
+advantage
+over:
+SECDED84_FORCE
+
+did not:
+reach:
+the:
+frozen:
+25%:
+threshold.
+
+TWO2:
+
+GUARD AUC:
+
+2.359375.
+
+FORCE AUC:
+
+2.578125.
+
+Distributed TWO2:
+
+GUARD AUC:
+
+5.140625.
+
+FORCE AUC:
+
+4.5.
+
+Thus:
+
+abstention:
+prevents:
+inventing:
+a:
+known-wrong:
+repair,
+
+but:
+
+the:
+unrepaired:
+damage
+still:
+propagates
+
+and:
+can:
+be:
+as:
+costly
+or:
+worse
+than:
+a:
+forced:
+miscorrection
+on:
+some:
+trajectories.
+
+This:
+is:
+a:
+critical:
+distinction.
+
+DISTRIBUTED TWO-BIT DAMAGE
+
+SECDED84_GUARD:
+
+two:
+simultaneous:
+double-error:
+blocks
+
+produced:
+
+16:
+detected-double:
+events
+across:
+8:
+world scenarios.
+
+Corrections:
+
+0.
+
+False corrections:
+
+0.
+
+But:
+
+median divergence area:
+
+5.140625.
+
+full recovery rate:
+
+0.
+
+Thus:
+
+local:
+uncertainty:
+detection
+scales:
+
+but:
+
+reconstruction:
+does NOT.
+
+TRIPLE-ERROR BOUNDARY
+
+SECDED84_GUARD:
+
+THREE3:
+
+detected-double count:
+
+0.
+
+Corrections:
+
+32.
+
+false-correction fraction:
+
+1.0.
+
+median divergence area:
+
+2.359375.
+
+Thus:
+
+three-bit:
+damage
+can:
+masquerade
+as:
+a:
+single:
+correctable:
+error
+under:
+SECDED.
+
+This:
+confirms:
+the:
+expected:
+coding:
+boundary.
+
+No:
+triple-error:
+repair:
+claim
+is:
+made.
+
+PARITY-GUARDIAN ROLE
+
+PARITY_GUARDIAN_SIGNAL:
+
+TRUE.
+
+The:
+eighth:
+same-budget:
+local:
+bit
+
+adds:
+a:
+new:
+specialized:
+role:
+
+INTEGRITY:
+GUARDIAN.
+
+It:
+does NOT:
+store:
+task:
+memory.
+
+It:
+stores:
+enough:
+check:
+information
+
+to:
+answer:
+
+SAFE:
+TO:
+REPAIR?
+
+versus:
+
+LOCAL:
+DAMAGE:
+EXCEEDS:
+MY:
+REPAIR:
+KNOWLEDGE.
+
+This:
+role
+is:
+mechanistically:
+distinct
+from:
+
+- computational:
+  cells;
+- temporal:
+  memory:
+  cells;
+- homeostatic:
+  stabilizers;
+- repair:
+  effectors.
+
+DETECT_ONLY CONTROL DEFECT
+
+The:
+preregistered:
+DETECT_ONLY:
+method
+
+is:
+INVALID
+as:
+a:
+detect-without-repair:
+control.
+
+Frozen implementation:
+
+routes:
+SECDED:
+single-error:
+states
+
+through:
+the:
+same:
+single-error:
+correction
+path
+as:
+SECDED84_GUARD.
+
+Observed:
+
+DETECT_ONLY
+therefore:
+matches:
+GUARD
+on:
+ONE1 /
+PARITY1
+and:
+double-error:
+abstention.
+
+Consequences:
+
+DETECT_ONLY:
+results
+must NOT:
+be:
+used
+to:
+claim:
+a:
+pure:
+detection-only:
+control.
+
+This defect:
+
+does NOT:
+invalidate:
+
+- HAM74_ALWAYS;
+- HAM74_H6_GATE;
+- SECDED84_GUARD;
+- SECDED84_FORCE;
+- ONE1;
+- TWO2;
+- THREE3;
+- PARITY1;
+- DISTRIBUTED_TWO2;
+- frozen:
+  primary:
+  parity-guardian:
+  classifications.
+
+TECHNICAL CONCLUSION
+
+The:
+repair problem
+now:
+separates
+into:
+three:
+layers.
+
+LAYER 1:
+
+CONTAINMENT.
+
+Previously:
+shown
+by:
+homeostatic:
+nanites.
+
+LAYER 2:
+
+LOCAL:
+CORRECTABLE:
+RECONSTRUCTION.
+
+Shown:
+by:
+redundant:
+Hamming:
+state.
+
+LAYER 3:
+
+UNCERTAINTY:
+DETECTION.
+
+Shown:
+by:
+the:
+parity guardian.
+
+But:
+
+when:
+damage
+exceeds:
+the:
+local:
+code's:
+correction:
+capacity,
+
+the:
+organism
+still:
+needs:
+
+ADDITIONAL:
+RECOVERY:
+INFORMATION.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05C —
+OVERLAPPING:
+LOCAL:
+REDUNDANCY /
+NEIGHBOR:
+RECONSTRUCTION:
+AUDIT.
+
+Keep:
+
+128:
+persistent:
+bits.
+
+Do NOT:
+simply:
+increase:
+local:
+code:
+size.
+
+Instead:
+
+allow:
+redundancy:
+relations
+to:
+cross:
+neighboring:
+local:
+blocks.
+
+Question:
+
+when:
+one:
+local:
+block
+reports:
+
+DETECTED:
+UNSAFE:
+TO:
+REPAIR,
+
+can:
+independent:
+neighboring:
+consistency:
+relations
+
+supply:
+enough:
+information
+to:
+
+- reconstruct:
+  a:
+  two-bit:
+  local:
+  lesion;
+- validate:
+  the:
+  proposed:
+  repair;
+- avoid:
+  triple-error:
+  confident:
+  misrepair?
+
+This moves:
+Yggdrasil
+from:
+
+isolated:
+local:
+error-correction
+
+toward:
+
+DISTRIBUTED:
+TISSUE-LIKE:
+INTEGRITY.
+
+PLAIN-SPEAK SUMMARY
+
+We:
+finally:
+tested:
+real:
+two-bit:
+damage.
+
+The:
+ordinary:
+Hamming:
+repairer
+did:
+exactly:
+what:
+we:
+were:
+worried
+about.
+
+It:
+thought:
+it:
+knew:
+which:
+bit
+was:
+wrong,
+
+but:
+it:
+was:
+wrong
+every:
+time
+it:
+tried:
+to:
+repair:
+the:
+two-bit:
+damage.
+
+The:
+new:
+parity-guardian
+did:
+better
+in:
+an:
+important:
+way.
+
+It:
+recognized:
+
+"Two:
+things:
+are:
+wrong.
+
+I:
+cannot:
+safely:
+fix:
+this."
+
+It:
+refused:
+to:
+make:
+up:
+a:
+repair.
+
+That:
+is:
+a:
+real:
+new:
+capability.
+
+But:
+
+refusing:
+a:
+bad:
+repair
+does not:
+restore:
+the:
+lost:
+information.
+
+So:
+the:
+next:
+problem
+is:
+
+where:
+does:
+the:
+extra:
+repair:
+information
+come:
+from?
+
+The:
+best:
+next:
+idea
+is:
+overlapping:
+local:
+redundancy.
+
+Instead of:
+each:
+little:
+block
+being:
+alone,
+
+neighboring:
+blocks
+carry:
+some:
+independent:
+consistency:
+information
+about:
+one:
+another.
+
+Then:
+if:
+one:
+block
+says:
+
+"I know:
+I am:
+damaged,
+but:
+I do not:
+know:
+the:
+repair,"
+
+its:
+neighbors
+may:
+be:
+able:
+to:
+help:
+reconstruct:
+what:
+was:
+lost.
+
+That:
+starts:
+to:
+look:
+less:
+like:
+a:
+computer:
+memory chip
+
+and:
+more:
+like:
+a:
+self-checking:
+software:
+tissue.
+
+DG-1R-05:
+canonical frozen primary remains:
+
+UNSPENT.
+
+DG-1R-05B remains:
+
+NON-CANONICAL /
+NON-EVIDENCE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
