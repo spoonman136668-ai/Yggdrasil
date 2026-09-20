@@ -815,3 +815,569 @@ the first held-out H171 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — FINE-SCALE LEARNED MICRO-FUNCTION MATCHED TURNOVER
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / POSITIVE / STRONG SUPPORT UNDER PREREGISTERED GATES / CRITICAL POST-PRIMARY TAIL-RISK CAVEAT.
+
+FINAL H171 HARNESS SHA-256
+
+59141dc4bcea2c6befa58869c63ba725f5637d53360bf74bf3c67dbd4f6f5457.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+938ee2ecc5ac6eaf6cc0d28aa71313733dc8c283b40c27a4330e4a861998e8fc.
+
+ACCEPTED PRIMARY FAMILY
+
+20260922000000..20260922000079.
+
+PRIMARY MATRIX
+
+80 held-out learned-task worlds.
+
+4 policies.
+
+320 policy lifetimes.
+
+Approximately:
+93,440 policy repair cycles.
+
+Validation:
+
+- exactly 80 unique held-out seeds;
+- exact accepted seed interval;
+- exactly four policy rows / seed;
+- zero duplicate seed x policy rows;
+- no missing accepted seeds;
+- no post-primary repair / query / noise tuning.
+
+BASELINE COMPETENCE
+
+Median pre-lesion test accuracy:
+
+SMOOTH:
+approximately 0.9834.
+
+MIXED:
+approximately 0.9795.
+
+Frozen floor:
+>=0.85.
+
+PASS.
+
+PRIMARY CANDIDATE
+
+HIST-GEOM-1PLUS1.
+
+FINAL TASK ACCURACY
+
+Median FINAL accuracy remains:
+within:
+approximately 0..0.3 percentage points
+of:
+baseline
+
+across:
+all task x regime x eta groups.
+
+All groups satisfy:
+
+median FINAL loss
+<=0.03.
+
+PASS.
+
+WORLD-LEVEL ACCURACY RETENTION
+
+Fraction of HIST-GEOM worlds
+finishing within:
+0.05 accuracy
+of:
+their own baseline:
+
+100%
+in:
+every group.
+
+Frozen target:
+>=90%.
+
+PASS.
+
+GROUP-MEDIAN LEARNED-OUTPUT FIDELITY
+
+Median FINAL learned-output fidelity:
+
+SMOOTH:
+
+HOTSPOT clean:
+approximately 0.9882.
+
+HOTSPOT eta=.10:
+0.9866.
+
+ROAMING clean:
+0.9529.
+
+ROAMING eta=.10:
+0.9665.
+
+MIXED:
+
+HOTSPOT clean:
+0.9846.
+
+HOTSPOT eta=.10:
+0.9827.
+
+ROAMING clean:
+0.9783.
+
+ROAMING eta=.10:
+0.9633.
+
+Frozen target:
+>=0.95.
+
+PASS:
+8 / 8 groups.
+
+HALF-TO-FINAL FIDELITY DRIFT
+
+Maximum group-median decline:
+
+approximately:
+0.0170.
+
+Frozen limit:
+0.02.
+
+PASS:
+8 / 8.
+
+BRIER / CALIBRATION
+
+Median Brier degradation
+remains:
+
+well below:
+0.03
+
+for:
+every group.
+
+PASS.
+
+EXPOSURE
+VERSUS:
+MICRO2-LEVERAGE
+
+HIST-GEOM
+median cumulative
+absolute test-logit exposure
+
+relative to:
+MICRO2-LEVERAGE:
+
+approximately:
+0.80..0.99
+
+across:
+the eight groups.
+
+Frozen ceiling:
+<=1.35.
+
+PASS.
+
+HIST-GEOM therefore:
+
+uses:
+fewer observations
+
+AND:
+
+has:
+lower or comparable
+cumulative test-logit exposure
+
+than:
+the two-query reference.
+
+OBSERVATION COST
+
+Median average observations / cycle:
+
+approximately:
+1.61..1.64.
+
+MICRO2-LEVERAGE:
+
+2.0.
+
+PASS:
+fewer observations
+in:
+every group.
+
+HOTSPOT REPEAT LOAD
+
+Median maximum
+single-cell replacement count:
+
+approximately:
+66.5..73
+
+across:
+HOTSPOT groups.
+
+Frozen minimum:
+>=20.
+
+PASS.
+
+Thus:
+
+learned local specialization
+can:
+survive:
+dozens of repeated
+same-region coefficient erasures
+
+through:
+one body-equivalent
+fine-scale turnover.
+
+ORACLE
+
+LOCAL-CHECKPOINT-ORACLE:
+
+FINAL learned-output fidelity:
+exactly 1.0.
+
+FINAL accuracy:
+exactly baseline.
+
+PASS.
+
+PREREGISTERED GATE REVIEW
+
+PASS:
+
+1.
+Baseline competence.
+
+2.
+Median FINAL accuracy retention.
+
+3.
+World-level accuracy retention.
+
+4.
+Median FINAL learned-output fidelity.
+
+5.
+HALF-to-FINAL learned-output drift.
+
+6.
+Brier degradation.
+
+7.
+Exposure versus MICRO2-LEVERAGE.
+
+8.
+Observation reduction.
+
+9.
+Deep repeated HOTSPOT turnover.
+
+10.
+Oracle ceiling.
+
+ALL PRIMARY GATES PASS.
+
+STRONG SUPPORT
+
+Pooled median FINAL accuracy loss:
+
+approximately 0.
+
+Pooled cumulative exposure
+relative to:
+MICRO2-LEVERAGE:
+
+approximately:
+0.876.
+
+Frozen strong-support limits:
+
+accuracy loss <=0.01.
+
+exposure <=1.15x.
+
+PASS.
+
+Therefore:
+
+H171 receives:
+
+STRONG SUPPORT
+
+under:
+the preregistered acceptance rules.
+
+CRITICAL POST-PRIMARY TAIL DIAGNOSTIC
+
+The group-median acceptance result
+does NOT:
+capture:
+a heavy learned-output tail.
+
+Across:
+all 80
+HIST-GEOM worlds:
+
+FINAL learned-output fidelity <0.95:
+
+20 / 80
+=
+25%.
+
+<0.90:
+
+16 / 80
+=
+20%.
+
+<0:
+
+10 / 80
+=
+12.5%.
+
+<-10:
+
+3 / 80
+=
+3.75%.
+
+Several:
+tail worlds
+
+retain:
+
+perfect or near-perfect
+classification accuracy
+
+while:
+
+their learned logits
+move:
+far away
+from:
+the original learned function.
+
+Examples include:
+
+FINAL learned-output fidelity
+approximately:
+
+-37.9,
+-36.5,
+-17.5,
+
+with:
+classification accuracy
+remaining:
+1.0.
+
+This is:
+
+NOT:
+a preregistered failure
+
+because:
+H171 acceptance
+was:
+group-median based.
+
+No gate is:
+retroactively changed.
+
+But:
+
+this tail
+is:
+architecturally unacceptable
+for:
+a future regenerative intelligence system
+
+because:
+
+TOP-LINE TASK ACCURACY
+CAN:
+MASK
+INTERNAL
+FUNCTIONAL / CALIBRATION
+DRIFT.
+
+INTERPRETATION
+
+H171 establishes:
+
+FINE-SCALE
+LEARNED CAPABILITY
+CAN SURVIVE
+ONE BODY-EQUIVALENT
+OF:
+LOCAL STATE TURNOVER
+
+at:
+high median task quality
+and:
+low observation cost.
+
+But:
+
+sparse binary-label repair
+can:
+occasionally drive
+the local learned coefficients
+into:
+large-magnitude
+functionally sign-correct
+states.
+
+The likely issue is:
+
+LABEL-ONLY
+LOCAL REPAIR
+UNDERCONSTRAINS:
+LOGIT MAGNITUDE.
+
+A classifier can:
+preserve:
+the decision boundary
+
+while:
+its internal score scale
+drifts severely.
+
+ARCHITECTURAL CONSEQUENCE
+
+Do NOT:
+
+move directly
+to:
+more complex:
+memory / reasoning tasks
+
+until:
+this tail risk
+is contained.
+
+Do NOT:
+
+simply increase:
+functional observation count.
+
+The two-query reference
+does not:
+eliminate:
+the conceptual underconstraint.
+
+The next experiment should:
+
+preserve:
+the one-plus-one
+low-bandwidth label channel
+
+while:
+
+adding:
+a TARGET-BLIND
+LOCAL STATE TRUST REGION
+
+that prevents:
+coefficient / logit magnitude
+runaway.
+
+Candidate control:
+
+after:
+the local ridge solve,
+
+project:
+the repaired lesion-state update
+
+into:
+a norm bound
+derived only from:
+
+- current developmental prior;
+- live-neighbor coefficient scale;
+- lesion size.
+
+No:
+held-out task target
+may:
+set:
+the bound.
+
+NEXT:
+
+H172 —
+LEARNED-STATE
+TRUST-REGION /
+LOGIT-TAIL
+CONTAINMENT AUDIT.
+
+Primary target:
+
+retain:
+H171 accuracy / Brier / observation cost
+
+while:
+
+reducing:
+world-level
+FINAL learned-output-fidelity tail risk.
+
+New mandatory tail gates
+should include:
+
+- >=95%
+  of worlds
+  FINAL learned-output fidelity >=0.95;
+
+- zero:
+  FINAL fidelity <0;
+
+- no:
+  catastrophic logit-exposure outlier
+  beyond:
+  a preregistered bound;
+
+- preserve:
+  one-body-equivalent
+  matched turnover.
+
+H171 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- global retraining;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
