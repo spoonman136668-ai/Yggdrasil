@@ -1266,3 +1266,615 @@ through:
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — FUNCTIONAL COGNITIVE MICRO-PATCH
+
+DATE:
+2026-09-19.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-POSITIVE.
+
+FROZEN HARNESS SHA-256
+
+3f6042716b4e5a26f41569376a4dca833f5bae5f3c053aa2280615bfadb32e37.
+
+ACCEPTED PRIMARY FAMILY
+
+20260919800000..20260919802999.
+
+PRIMARY MATRIX
+
+3,000 underlying worlds.
+
+4 policies.
+
+12,000 policy-world evaluations.
+
+Validation:
+
+- exactly 3,000 unique accepted world seeds;
+- exact held-out seed interval;
+- exactly one result
+  per:
+  seed x policy;
+- zero functionally-trivial worlds;
+- no post-primary parameter tuning.
+
+PRIMARY CANDIDATE
+
+CONTEXT-HARMONIC.
+
+SMOOTH CONTEXT
+
+Pooled across:
+COMPACT
+and:
+FOUR-PATCH.
+
+Median final functional recovery:
+
+1%:
+0.9861.
+
+2%:
+0.9846.
+
+5%:
+0.9666.
+
+10%:
+0.9412.
+
+20%:
+0.8768.
+
+Therefore:
+
+small,
+locally organized
+functional damage
+
+can:
+recover most
+of:
+the pre-lesion distributed function
+
+without:
+restoring:
+the lost cells'
+saved mutable coefficients.
+
+SMOOTH functional-T90 world fraction:
+
+1%:
+91.5%.
+
+2%:
+90.0%.
+
+5%:
+84.5%.
+
+10%:
+69.0%.
+
+20%:
+51.0%.
+
+Pooled:
+1%..5%:
+
+88.67%
+reach:
+functional T90
+inside:
+the allowed horizon.
+
+This narrowly misses:
+the preregistered
+90% gate.
+
+SMOOTH GEOMETRY EFFECT
+
+Median final recovery:
+
+1%:
+
+COMPACT:
+0.9793.
+
+FOUR:
+0.9886.
+
+2%:
+
+COMPACT:
+0.9671.
+
+FOUR:
+0.9902.
+
+5%:
+
+COMPACT:
+0.9232.
+
+FOUR:
+0.9843.
+
+10%:
+
+COMPACT:
+0.8243.
+
+FOUR:
+0.9737.
+
+20%:
+
+COMPACT:
+0.6024.
+
+FOUR:
+0.9488.
+
+Median functional T90:
+
+1%..10%:
+
+FOUR-PATCH
+is:
+never worse
+than:
+COMPACT
+
+by:
+the frozen 20% allowance.
+
+At:
+larger damage,
+
+FOUR-PATCH
+is dramatically easier
+to reconstruct.
+
+Interpretation:
+
+THE NUMBER OF
+INTACT CONTEXT BOUNDARIES
+MATTERS.
+
+A distributed set
+of:
+small holes
+
+can:
+retain more:
+developmental reconstruction information
+
+than:
+one large contiguous hole
+
+with:
+the same lost-cell count.
+
+MIXED CONTEXT
+
+Median final functional recovery:
+
+1%:
+0.8128.
+
+2%:
+0.7899.
+
+5%:
+0.7017.
+
+10%:
+0.6284.
+
+20%:
+0.4645.
+
+Thus:
+
+pure local harmonic context
+does:
+materially recover function
+
+but:
+does NOT reach:
+the frozen
+0.90
+small-lesion target.
+
+This is:
+the decisive generalization limit
+of H151.
+
+MIXED FOUR-PATCH
+still improves:
+larger lesions.
+
+Examples:
+
+5%:
+
+COMPACT:
+0.5833.
+
+FOUR:
+0.8020.
+
+10%:
+
+COMPACT:
+0.4500.
+
+FOUR:
+0.7147.
+
+20%:
+
+COMPACT:
+0.2360.
+
+FOUR:
+0.5610.
+
+Therefore:
+distributed micro-patching
+remains:
+structurally useful
+
+even when:
+pure local context
+is insufficient
+for:
+full learned-state reconstruction.
+
+SCRAMBLED CONTEXT
+
+CONTEXT-HARMONIC
+median final recovery:
+
+approximately:
+0
+across:
+all primary damage fractions.
+
+ZERO-STATE
+and:
+RANDOM-STATE
+also remain:
+approximately 0
+at:
+the median.
+
+Thus:
+
+H151 does NOT:
+recover arbitrary missing mutable state.
+
+Its success requires:
+local representational organization.
+
+This is:
+a strong mechanism-specificity result.
+
+COMPARATOR RESULT
+
+ZERO-STATE:
+
+median final functional recovery
+approximately:
+0
+across:
+primary conditions.
+
+RANDOM-STATE:
+
+median final recovery
+approximately:
+0
+across:
+primary conditions.
+
+CHECKPOINT-ORACLE:
+
+final recovery:
+1.0.
+
+Therefore:
+
+membership regeneration alone
+is:
+not enough.
+
+Generic state replacement
+is:
+not enough.
+
+Exact checkpoint restoration
+remains:
+the upper bound.
+
+The useful signal is:
+developmental context.
+
+PREREGISTERED GATE REVIEW
+
+SUPPORTED
+
+1.
+SMOOTH,
+1%..5%:
+
+median final recovery
+>=0.95.
+
+Observed:
+
+0.9861,
+0.9846,
+0.9666.
+
+2.
+CONTEXT-HARMONIC
+materially outperforms:
+ZERO-STATE
+and:
+RANDOM-STATE
+
+through:
+the small / mid
+SMOOTH and MIXED
+damage groups.
+
+3.
+SMOOTH functional recovery
+declines:
+near-monotonically
+as:
+lesion fraction
+increases.
+
+4.
+FOUR-PATCH
+does not:
+incur
+>20%
+functional-T90 penalty
+relative to:
+COMPACT
+
+for:
+SMOOTH 1%..10%.
+
+It frequently:
+improves
+final recovery.
+
+5.
+SCRAMBLED
+removes:
+the context-reconstruction advantage.
+
+This passes:
+the mechanism-specificity gate.
+
+6.
+CHECKPOINT-ORACLE
+remains:
+the functional ceiling.
+
+FAILED / MIXED
+
+1.
+MIXED,
+1%..5%:
+
+median final recovery
+does NOT reach:
+0.90.
+
+Observed:
+
+0.8128,
+0.7899,
+0.7017.
+
+FAIL.
+
+2.
+SMOOTH
+1%..5%
+T90-world fraction:
+
+88.67%.
+
+Required:
+>=90%.
+
+NARROW FAIL.
+
+CORE FINDING
+
+H151 demonstrates:
+
+LEARNED FUNCTIONAL STATE
+CAN BE
+LOCALLY REGENERATIVE
+
+WHEN:
+THE REPRESENTATION
+IS DEVELOPMENTALLY
+LOCAL.
+
+But:
+
+PURE NEIGHBOR CONTEXT
+IS NOT SUFFICIENT
+FOR:
+LESS-LOCAL
+LEARNED SPECIALIZATION.
+
+The key architectural implication is:
+
+YGGDRASIL SHOULD NOT
+ASSUME
+THAT:
+CELL REGENERATION
+ALONE
+RECONSTRUCTS
+COGNITIVE STATE.
+
+Instead:
+
+local developmental context
+can provide:
+a strong prior,
+
+but:
+mixed / higher-frequency specialization
+requires:
+an additional
+functional correction signal.
+
+OUT-OF-BOX INTERPRETATION
+
+H150 established:
+
+small holes
+are:
+geometrically cheap.
+
+H151 adds:
+
+small holes
+are:
+functionally reconstructible
+
+ONLY WHEN:
+the surviving neighborhood
+contains enough information
+about:
+the lost specialization.
+
+This suggests:
+
+COGNITIVE MICRO-PATCHING
+SHOULD COMBINE
+
+1.
+LOCAL DEVELOPMENTAL PRIOR
+
+with:
+
+2.
+SMALL,
+BOUNDED
+FUNCTIONAL ERROR FEEDBACK.
+
+The local prior
+should:
+reconstruct most state cheaply.
+
+Functional feedback
+should:
+correct:
+the residual component
+that:
+neighbor interpolation
+cannot infer.
+
+This is preferable to:
+
+full checkpoint restore
+
+or:
+
+global retraining
+
+if:
+a small feedback budget
+can close:
+the MIXED-context gap.
+
+FINAL INTERPRETATION
+
+H151 is:
+
+MIXED-POSITIVE.
+
+SUPPORTED:
+
+developmental-context reconstruction
+is a real functional repair mechanism.
+
+NOT YET SUPPORTED:
+
+general learned-state regeneration
+from:
+neighbor context alone.
+
+NEXT SCOPED EXPERIMENT
+
+H152 —
+CONTEXT + BOUNDED FUNCTIONAL FEEDBACK
+MICRO-PATCH.
+
+Question:
+
+CAN
+LOCAL DEVELOPMENTAL CONTEXT
+RECONSTRUCT
+THE LOW-FREQUENCY
+PART
+OF:
+LOST SPECIALIZATION,
+
+WHILE:
+A SMALL
+LOCAL FUNCTIONAL-ERROR BUDGET
+
+RECOVERS:
+THE RESIDUAL
+HIGHER-FREQUENCY STATE
+
+WITHOUT:
+GLOBAL RETRAINING
+OR:
+CHECKPOINT RESTORE?
+
+Primary target:
+
+raise:
+MIXED
+1%..5%
+functional recovery
+from:
+approximately
+0.70..0.81
+
+to:
+>=0.90
+
+with:
+a bounded
+local feedback budget
+
+while:
+preserving:
+SMOOTH
+micro-patch speed
+and:
+SCRAMBLED
+mechanism specificity.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
