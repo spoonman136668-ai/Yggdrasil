@@ -369,3 +369,87 @@ from perfectly coordinated backup damage.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05L TOPOLOGY DISTANCE FRONTIER
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY TOPOLOGY METRIC EVALUATION.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05l_topology_distance_frontier_v1.py
+
+Harness commit:
+
+ecd48585f6e6eea3521211b3680f4a68361ed742.
+
+Git blob SHA:
+
+c388b95f1c83609bf31221ab71285befa2c02848.
+
+Source SHA-256:
+
+6bee913941c0d87c20d333f0a6176284f91af341371b74243b20f22d995ea980.
+
+Source bytes:
+
+12412.
+
+LOCAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Atomic baseline-valid moves:
+
+1064.
+
+Structurally valid unordered move pairs with four distinct affected checks:
+
+455924.
+
+Unique normalized final topologies:
+
+437360.
+
+For every structurally enumerated final topology:
+- check count remained 20;
+- total incidence remained 80;
+- exact baseline degree vector was preserved;
+- exactly two checks had arity 3;
+- exactly two checks had arity 5;
+- exactly sixteen checks had arity 4.
+
+These are mechanical candidate-family checks only and are NON-EVIDENCE.
+
+No candidate rank,
+kernel,
+pair-cooccurrence result,
+local floor,
+global distance,
+frontier feasibility,
+selection,
+or holdout result
+was computed before this freeze.
+
+REPRODUCIBILITY
+
+Two complete deterministic exhaustive sweeps.
+
+Serialized output SHA-256 must match exactly.
+
+No RNG.
+
+No post-result tuning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
