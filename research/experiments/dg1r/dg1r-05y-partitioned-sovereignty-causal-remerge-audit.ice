@@ -737,3 +737,100 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05Y PARTITIONED SOVEREIGNTY RE-MERGE
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY PARTITION / MERGE CASE.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05y_partition_remerge_v1.py
+
+Harness source commit:
+
+9a43e89af22e63ed9b93105d1d5ad936794b8d55.
+
+Git blob SHA:
+
+9d227f8b4350cd45ec48e98319b3a7519c5fd3e2.
+
+Source SHA-256:
+
+1078430e8f6ad9f4989055849ec25a763c2601ba77332ad1c306003ee347b0cf.
+
+Source bytes:
+
+18413.
+
+FROZEN IMPLEMENTATION
+
+The harness implements:
+
+- exact partitions A = cells 0..5 and B = cells 6..11;
+- exact BASE0 role state;
+- partition-local independent governance roots;
+- partition-local lineage-qualified registry roots;
+- PARTITION_PROVISIONAL versus LOCAL_OBSERVATION event eligibility;
+- exact terminal merge-status set;
+- common-ancestor gate;
+- stale-generation rejection;
+- target-scoped merge;
+- strict descendant supersession;
+- identical concurrent-outcome coalescing;
+- same-target conflict rollback;
+- provenance fanout collapse;
+- registry three-root liveness;
+- population-majority negative control with weights 7 / 5;
+- immutable BASE0 anchor assumption for common-ancestor verification;
+- collusion, root-compromise, and omitted-event holdouts.
+
+LOCAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Primary case counts:
+
+A = 1.
+B = 60.
+C = 36.
+D = 72.
+E = 36.
+F = 48.
+G = 8.
+H = 12.
+I = 20.
+J = 36.
+K = 72 merge presentations.
+
+No primary partition result,
+merge result,
+conflict result,
+provenance result,
+or holdout result
+was generated before this freeze.
+
+REPRODUCIBILITY
+
+Execute two complete deterministic sweeps from this exact frozen harness.
+
+Serialized output SHA-256 must match exactly.
+
+No post-result tuning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
