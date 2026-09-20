@@ -291,3 +291,448 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL H191-P0 NON-EVIDENCE PILOT CLOSURE — SHARED LATENT MECHANICAL AUDIT
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE / NEGATIVE FOR THE PREREGISTERED NEAREST-NEIGHBOR WIDTH RULE /
+DETERMINISM PASS / NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+da6643d35ae6bd5256d400d219702e37ed379ac867ea81583acd2986fa45eabb.
+
+FROZEN HARNESS COMMIT
+
+bcbc7969148f73fc0895a7e59cdcc48561119213.
+
+PILOT WORLD FAMILY
+
+20260924190000..20260924190039.
+
+40 surrogate worlds.
+
+3 capability contexts / world.
+
+Two complete executions were performed without source change.
+
+RUN 1 OUTPUT SHA-256
+
+bfb7778f25c253abdabb470c2454bb05b73640c2c8139196683ea5129cbf19ea.
+
+RUN 2 OUTPUT SHA-256
+
+bfb7778f25c253abdabb470c2454bb05b73640c2c8139196683ea5129cbf19ea.
+
+Byte comparison:
+identical.
+
+DETERMINISM:
+PASS.
+
+HELD-OUT NMSE — MEDIANS
+
+PROXY8:
+
+A:
+0.04065404099868991.
+
+B:
+0.017314566748504692.
+
+C:
+0.01779141097040926.
+
+Median mean-capability held-out NMSE:
+0.03570859490398067.
+
+P90 mean-capability held-out NMSE:
+0.11323014820456453.
+
+LATENT2:
+
+A:
+2.7503293815554395.
+
+B:
+2.167666184383136.
+
+C:
+2.2420071047157424.
+
+Median mean-capability:
+3.2773268373072106.
+
+LATENT4:
+
+A:
+2.7503293815554404.
+
+B:
+2.167666184383136.
+
+C:
+2.2420071047157424.
+
+Median mean-capability:
+2.9057337043260665.
+
+P90:
+6.55248985720454.
+
+LATENT8:
+
+A:
+2.4200203544544294.
+
+B:
+1.7932009726446183.
+
+C:
+1.98334575072763.
+
+Median mean-capability:
+2.3923482796274635.
+
+P90:
+5.626829042884027.
+
+PAIRED VALUE VERSUS PROXY8
+
+LATENT4 minus PROXY8
+median world mean-capability NMSE:
+
++2.882927390052756.
+
+LATENT4 win rate:
+
+0%.
+
+LATENT8 minus PROXY8
+median:
+
++2.369541965354152.
+
+LATENT8 win rate:
+
+0%.
+
+THRESHOLD TELEMETRY
+
+All A/B/C <=0.01:
+
+PROXY8:
+0%.
+
+LATENT2:
+0%.
+
+LATENT4:
+0%.
+
+LATENT8:
+0%.
+
+All A/B/C <=0.02:
+
+PROXY8:
+5%.
+
+LATENT2:
+0%.
+
+LATENT4:
+0%.
+
+LATENT8:
+0%.
+
+WIDTH DIAGNOSTIC
+
+Median frozen width candidates across worlds:
+
+W25 nearest-neighbor:
+approximately 0.01723.
+
+W50:
+approximately 0.02765.
+
+W75:
+approximately 0.04246.
+
+Selected LATENT4 factor widths:
+
+median:
+approximately 0.04246.
+
+range:
+approximately 0.02882..0.04565.
+
+LATENT4 selections:
+
+159 / 160
+
+used:
+the widest W75 slot.
+
+Thus:
+
+the recruiter itself
+systematically asks for:
+the broadest factor available,
+
+but:
+
+the broadest factor
+is still:
+only:
+approximately 0.04
+in normalized input coordinates.
+
+For reference:
+
+the accepted parent RBF width
+is:
+0.22.
+
+The H191 preregistered
+nearest-neighbor width rule
+
+therefore:
+constructs:
+virtual factors
+roughly:
+five times narrower
+
+than:
+the parent local basis scale.
+
+CAPABILITY LOCALIZATION DIAGNOSTIC
+
+LATENT4 selected factor-center origins
+across the 40 worlds:
+
+A-context:
+57.
+
+B-context:
+52.
+
+C-context:
+51.
+
+This is:
+balanced spatial recruitment.
+
+However:
+
+median LATENT4
+decoder concentration:
+
+0.9999995325750876.
+
+A value near 1
+means:
+each selected factor
+effectively serves:
+one capability only.
+
+Therefore:
+
+the factors are:
+nominally shared
+in parameter structure
+
+but:
+functionally:
+capability-local islands.
+
+They are NOT:
+operating as:
+a cross-capability shared latent.
+
+GENERALIZATION
+
+Median distillation-to-held-out
+mean NMSE gap:
+
+PROXY8:
+approximately 0.01614.
+
+LATENT4:
+approximately 0.14663.
+
+LATENT8:
+approximately 0.29685.
+
+Thus:
+
+adding more:
+very narrow latent factors
+
+improves:
+distillation fit
+
+but:
+increases:
+the held-out generalization gap.
+
+MECHANICAL PILOT GATE REVIEW
+
+1.
+LATENT4 median mean held-out NMSE < PROXY8:
+
+FAIL.
+
+2.
+LATENT4 no capability median worse than PROXY8 by >0.005:
+
+FAIL strongly.
+
+3.
+LATENT8 improves on LATENT4:
+
+PASS mechanically,
+but remains grossly inferior to PROXY8.
+
+4.
+No gross distillation-to-held-out overfit:
+
+FAIL.
+
+5.
+Byte-identical repeat:
+
+PASS.
+
+FINAL TECHNICAL INTERPRETATION
+
+H191-P0 is:
+NEGATIVE.
+
+It does NOT:
+fail the accepted H191 hypothesis,
+because:
+this pilot is explicitly:
+NON-EVIDENCE
+and:
+the accepted H190 parent was not used.
+
+It DOES:
+falsify:
+the mechanical suitability
+of:
+H191's original
+nearest-neighbor-derived
+Gaussian width rule.
+
+The width generator
+was measuring:
+sample spacing,
+
+not:
+cross-context residual scale.
+
+As a result:
+
+the shared latent
+degenerates into:
+several tiny:
+capability-local kernels.
+
+Rank expansion
+then:
+adds more local islands
+
+instead of:
+discovering:
+shared residual structure.
+
+PRE-PRIMARY DESIGN CONSEQUENCE
+
+H191 accepted-lineage primary
+has NOT started.
+
+Therefore:
+a documented pre-primary
+factor-width correction
+is justified
+before:
+any accepted-lineage execution.
+
+The correction must:
+
+- remain geometry/model-scale derived;
+- not use task targets;
+- not use held-out H191 outcomes;
+- preserve:
+  ranks 2/4/8;
+- preserve:
+  6 learned scalars / factor;
+- preserve:
+  the greedy joint recruitment rule;
+- preserve:
+  LATENT4 equal-memory accounting.
+
+PLAIN-SPEAK SUMMARY
+
+What did we try?
+
+We tested the exact planned H191 shared-latent selection machinery
+on a separate synthetic residual problem,
+without pretending it was the real H191 experiment.
+
+What happened?
+
+The sparse PROXY8 method worked reasonably well.
+The planned shared latent failed badly.
+
+Why?
+
+The supposed shared factors were much too narrow.
+The algorithm chose the widest factor almost every time,
+but that width was still only about 0.04,
+while Yggdrasil's parent basis width is 0.22.
+
+So instead of one factor helping A, B, and C,
+each factor mostly helped only one capability.
+
+Did it work?
+
+No.
+
+The original width rule is mechanically unsuitable.
+
+What did we learn?
+
+The low-rank idea itself has not been disproved.
+The problem is earlier:
+the candidate latent geometry prevents sharing from happening.
+
+Why does this matter?
+
+A shared sleep core only helps Yggdrasil
+if the same small state actually carries information across capabilities.
+A set of tiny capability-local factors is just another sparse cache
+with worse behavior.
+
+What should we try next?
+
+Correct the pre-primary width rule
+so candidate factors exist at:
+the parent functional scale
+and:
+broader cross-context scales,
+then repeat the mechanical audit
+on disjoint surrogate worlds.
+
+H191 primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
