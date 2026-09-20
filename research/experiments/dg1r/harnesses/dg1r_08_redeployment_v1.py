@@ -133,7 +133,6 @@ def hamming_decode(workers, maint, idx, maint_start, telemetry, correct=True):
     if syndrome > n:
         telemetry["out_of_range_syndromes"] += 1
         return True
-        return True
     if syndrome in ppositions:
         pj = ppositions.index(syndrome)
         maint[maint_start + pj] ^= 1
