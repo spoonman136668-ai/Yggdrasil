@@ -914,3 +914,494 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL CLOSURE — DG-1R-05X LINEAGE-QUALIFIED CELLULAR SOVEREIGNTY COMPOSITION AUDIT
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED /
+REPRODUCIBLE /
+FULL PRIMARY COMPOSITION POSITIVE /
+CROSS-LAYER TRANSACTION GUARDS REQUIRED /
+CORRELATED / CONSTITUTIONAL BOUNDARIES PRESERVED /
+NON-CANONICAL.
+
+FROZEN PROVENANCE
+
+Preregistration commit:
+
+3bec77058e48be67f0f673aa5cc75b2bfc87cb2e.
+
+Harness source commit:
+
+fd9d6acaf994c31ad0b16b5a0a37b1c957ecec0b.
+
+Harness Git blob:
+
+c2cb66e22d9a58cefe9f1267261011ba86be41f0.
+
+Harness source SHA-256:
+
+0ed846c767ce729b7a52b8d5d648fdb0fdf3073bb9b269aa47ef2882ad1858b5.
+
+Harness bytes:
+
+20189.
+
+Freeze commit:
+
+374aa416c851954808204e129cbc090d7ab567f6.
+
+PRIMARY EXECUTION
+
+Two complete deterministic frozen sweeps were executed.
+
+Sweep 1 serialized output SHA-256:
+
+b56e3988db57c9efb609dd6e40f7deb1eda4b0c71577553943994e2b9ea04efc.
+
+Sweep 2 serialized output SHA-256:
+
+b56e3988db57c9efb609dd6e40f7deb1eda4b0c71577553943994e2b9ea04efc.
+
+BYTE_IDENTICAL_REPRODUCIBILITY:
+
+TRUE.
+
+MECHANICAL_VALID:
+
+TRUE.
+
+PRIMARY COMPOSITION SIGNAL
+
+CELLULAR_SOVEREIGNTY_COMPOSES:
+
+TRUE.
+
+Every preregistered primary signal is TRUE:
+
+CLEAN_LIFECYCLE_COMPOSES.
+DAMAGE_NOT_NORMALIZED_BEFORE_REPAIR.
+UNRESOLVED_DAMAGE_BLOCKS_ROLE_COMMIT.
+CROSS_LAYER_PARTIAL_WRITE_ROLLBACK.
+CROSS_LAYER_STALE_REPLAY_REJECTED.
+GOVERNANCE_FANOUT_NOT_INDEPENDENT_QUORUM.
+SINGLE_GOVERNANCE_CLASS_CORRUPTION_REJECTED.
+REGISTRY_LOSS_DURING_LIFECYCLE_TOLERATED.
+ROLE_THEN_HOLDER_ROTATION_COHERENT.
+LOWER_LAYER_ABSTENTION_PROPAGATES.
+REPEATED_LIFECYCLE_GENERATIONS_MONOTONIC.
+COMPOSED_SAME_LINEAGE_REGISTRY_ATTACK_REJECTED.
+
+AUDIT A — CLEAN FULL LIFECYCLE
+
+Cases:
+
+36.
+
+Successful complete lifecycles:
+
+36 / 36.
+
+Every final state preserved:
+
+- repaired logical state;
+- correct phenotype baseline;
+- committed new role;
+- matching peer role records;
+- role generation 1;
+- holder rotation only after registry closure;
+- no stale authority;
+- no split brain.
+
+AUDIT B — REPAIR / HEALTH ORDERING
+
+Cases:
+
+48.
+
+Premature phenotype commits blocked before true repair:
+
+36 / 36.
+
+True repair families completed:
+
+36 / 36.
+
+CHECK_ONLY repair abstentions:
+
+12 / 12.
+
+Successful ordering cases:
+
+48 / 48.
+
+No damaged state was normalized into phenotype health.
+
+AUDIT C — ROLE MIGRATION WHILE DAMAGE UNRESOLVED
+
+Cases:
+
+36.
+
+Initial migration aborts while damage unresolved:
+
+36 / 36.
+
+Repair followed by retry success:
+
+36 / 36.
+
+AUDIT D — PARTIAL ROLE COMMIT PLUS REGISTRY PARTIALITY
+
+Cases:
+
+216.
+
+Cross-layer rollback success:
+
+216 / 216.
+
+The local-only negative control leaked tentative metadata in:
+
+216 / 216
+
+of these injected partial-write cases.
+
+Thus atomic composition is doing real work.
+
+AUDIT E — STALE GENERATION REPLAY
+
+Cases:
+
+72.
+
+Rejected without authority change:
+
+72 / 72.
+
+This covered both:
+
+- stale role generation;
+- stale witness-lineage generation.
+
+AUDIT F — SAME-LINEAGE GOVERNANCE FANOUT
+
+Cases:
+
+48.
+
+False independent-quorum authorizations:
+
+0.
+
+Distinct-holder headcount remained a non-authoritative control.
+
+AUDIT G — ONE CORRUPTED GOVERNANCE PROVENANCE CLASS
+
+Cases:
+
+144.
+
+False role commits:
+
+0.
+
+One corrupted:
+
+DEMAND_A,
+DEMAND_B,
+PEER_A,
+or
+PEER_B
+
+was insufficient to create authority.
+
+AUDIT H — REGISTRY REPLICA LOSS DURING WITNESS ROTATION
+
+Cases:
+
+144.
+
+Successful composed holder rotations:
+
+144 / 144.
+
+The remaining three pairwise-disjoint registry lineages preserved liveness.
+
+AUDIT I — ROLE MIGRATION FOLLOWED BY HOLDER ROTATION
+
+Cases:
+
+36.
+
+Coherent later governance reads:
+
+36 / 36.
+
+The effective PEER_A evidence lineage remained the same despite holder identity rotation.
+
+AUDIT J — LOWER-LAYER ABSTENTION CASCADE
+
+Cases:
+
+108.
+
+Clean higher-layer aborts:
+
+108 / 108.
+
+No authoritative metadata changed when the lower-layer blocker was:
+
+- unverified governance lineage;
+- insufficient registry seal;
+- unresolved logical damage.
+
+AUDIT K — REPEATED GENERATION MONOTONICITY
+
+Cells:
+
+12.
+
+Committed role migrations:
+
+36.
+
+Every cell completed exactly three sequential role migrations.
+
+Final role generation:
+
+3 / cell.
+
+All 12 chains preserved:
+
+- monotonic generation;
+- FP2 / current-role agreement;
+- peer-role agreement;
+- prior-generation non-authority.
+
+AUDIT L — SAME-LINEAGE REGISTRY FALSE MAJORITY
+
+Cases:
+
+36.
+
+False composed role commits:
+
+0.
+
+The raw three-holder majority attack remained blocked when the three false registry votes shared one verified lineage.
+
+NEGATIVE CONTROL — LOCAL LAYERS WITHOUT COMPOSITION GUARDS
+
+Cross-layer leaks were deliberately exposed.
+
+Premature phenotype-health leaks:
+
+12.
+
+Partial role-write leaks:
+
+12.
+
+Stale generation overwrite leaks:
+
+12.
+
+LOCAL_COMPOSITION_LEAK_EXPOSED:
+
+TRUE.
+
+Therefore individually positive local mechanisms do not automatically compose safely.
+
+The cross-layer constitutional rules are not redundant.
+
+CORRELATED / CONSTITUTIONAL BOUNDARIES
+
+H1 — FULL INDEPENDENT GOVERNANCE QUORUM COLLUSION
+
+False commits:
+
+36 / 36.
+
+FULL_INDEPENDENT_GOVERNANCE_COLLUSION_FAILURE:
+
+TRUE.
+
+H2 — THREE INDEPENDENT REGISTRY ROOTS COLLUSION
+
+False registry-history authorizations:
+
+36 / 36.
+
+INDEPENDENT_REGISTRY_COLLUSION_FAILURE:
+
+TRUE.
+
+H3 — ROOT COMPROMISE
+
+Distinct verified root IDs were modeled as one actual causal source.
+
+False independence authorizations:
+
+36 / 36.
+
+ROOT_COMPROMISE_FAILURE:
+
+TRUE.
+
+H4 — CROSS-LAYER CORRELATED FORGERY
+
+Simultaneously forged:
+
+- repair self-health evidence;
+- all four role-governance classes;
+- three lineage-disjoint registry roots.
+
+False authoritative composed states:
+
+36 / 36.
+
+CROSS_LAYER_CORRELATED_FORGERY_FAILURE:
+
+TRUE.
+
+These are expected boundaries.
+
+05X does not establish an information-theoretic truth oracle.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-05X establishes that the individually positive governance mechanisms from DG-1R-05Q through DG-1R-05W remain mutually compatible when composed under explicit transaction ordering.
+
+The key result is not merely that each component still passes.
+
+The local-only negative control proves that cross-layer ordering is itself a necessary mechanism.
+
+The successful architecture has a clear authority discipline:
+
+1. damage is resolved before identity can advance;
+2. phenotype health cannot normalize unresolved corruption;
+3. old role remains authoritative until the complete role transaction commits;
+4. new witness lineage cannot vote before recursive verification and sealed registry activation;
+5. stale generations cannot overwrite newer authority;
+6. one provenance lineage cannot multiply itself through holder fanout;
+7. any lower-layer abstention propagates upward;
+8. failed composed transactions leave the last fully committed authority intact.
+
+Under that discipline,
+the healthy-cell population is operationally sovereign across:
+
+- repair;
+- phenotype-health maintenance;
+- within-role adaptation;
+- role migration;
+- witness rotation;
+- causal-lineage update;
+- registry closure.
+
+No permanent central operational controller is required in the tested model.
+
+The remaining limits are constitutional rather than transactional:
+
+- truly independent witnesses may collude;
+- truly independent registry roots may collude;
+- falsely minted root identities can poison the trust substrate;
+- simultaneous cross-layer corruption can still manufacture false authority.
+
+These limits should not be hidden by adding another ordinary quorum beneath the existing quorum.
+
+PLAIN-SPEAK INTERPRETATION
+
+The pieces work together.
+
+That matters more than it sounds.
+
+A system can have several safe parts
+and still become unsafe when the parts hand authority to one another.
+
+We tested that exact problem.
+
+With the cross-layer rules turned on:
+
+- damage could not be saved as healthy;
+- a damaged cell could not change jobs;
+- half-written role changes rolled back;
+- old records could not overwrite newer ones;
+- copied witnesses did not become extra votes;
+- losing one registry replica did not stop a healthy transition;
+- a new watcher could not vote before its history was verified;
+- uncertainty in a lower layer stopped the higher action cleanly.
+
+With those composition rules removed,
+the control system immediately leaked authority across layer boundaries.
+
+So we now have evidence for a stronger Yggdrasil principle:
+
+THE HEALTHY CELL POPULATION CAN GOVERN THE ORGANISM,
+BUT AUTHORITY MUST MOVE THROUGH ATOMIC,
+PROVENANCE-QUALIFIED STATE TRANSITIONS.
+
+The remaining weakness is not ordinary coordination.
+
+It is the possibility that every supposedly independent source agrees on the same lie,
+or that independence was false at the root.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05Y —
+
+PARTITIONED SOVEREIGNTY AND CAUSAL RE-MERGE AUDIT.
+
+Question:
+
+Can the composed healthy-cell governance system split into temporarily disconnected sub-populations,
+allow each sufficiently independent healthy partition to make bounded provisional decisions,
+and later merge causal histories without:
+
+- silently choosing authority by population size;
+- overwriting a newer valid history with a stale partition;
+- normalizing corruption during isolation;
+- double-counting shared pre-partition provenance;
+- creating permanent split brain?
+
+05Y should test:
+
+- clean partition with no mutations;
+- one-sided legitimate repair;
+- one-sided within-role adaptation;
+- one-sided role migration;
+- compatible changes on both partitions;
+- conflicting role migrations on the same target;
+- shared-ancestor provenance across both partitions;
+- asymmetric root loss;
+- stale partition replay;
+- provisional authority that never obtains enough independent roots;
+- deterministic merge / abstention / rollback semantics;
+- re-establishment of one authoritative history after reconnection;
+- full independent collusion on both sides as an explicit boundary.
+
+The key design rule should be:
+
+PARTITION AUTHORITY IS PROVISIONAL
+UNTIL CAUSAL HISTORIES CAN BE RECONCILED.
+
+Population size must not break ties.
+
+Verified causal order,
+generation monotonicity,
+and independent provenance must determine whether histories:
+
+- merge;
+- supersede;
+- or require abstention.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
