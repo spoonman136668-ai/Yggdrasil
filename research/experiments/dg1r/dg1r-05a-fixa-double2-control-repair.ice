@@ -237,3 +237,96 @@ do not alter:
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05A-FIXA DOUBLE2 CONTROL
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE:
+THE:
+FIRST:
+FIXA:
+WORLD.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05a_fixa_double2_v1.py
+
+Harness commit:
+
+5efb76a745de950f528ac5790e3495a98b3f5c62.
+
+Git blob SHA:
+
+cabd2574625378b7f6a8cf7f30cc9f30a0a58f2a.
+
+Source SHA-256:
+
+cfc93793426168dfa02a68be90d4bde14b6ed7c0b3209a171a666f6cefe6b64c.
+
+Source bytes:
+
+19106.
+
+ALLOWED DELTA
+
+Exactly:
+
+DOUBLE2_LOCAL:
+block tuple
+
+changed from:
+
+(b,)
+
+to:
+
+(b, b).
+
+No:
+other:
+semantic:
+change.
+
+LOCAL PRECHECK
+
+Git blob identity:
+
+PASS.
+
+Python syntax:
+
+PASS.
+
+No:
+FIXA:
+world
+was:
+executed
+before:
+this:
+freeze.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+sweeps.
+
+Required:
+
+- byte-identical:
+  output;
+- SINGLE1_LOCAL:
+  unchanged;
+- DISTRIBUTED3:
+  unchanged;
+- DISTRIBUTED5:
+  unchanged.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
