@@ -453,3 +453,385 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-05L NON-EVIDENCE CLOSURE — FIXED-BUDGET TOPOLOGY DISTANCE FRONTIER
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+FULL-RANK KERNEL-FREE TOPOLOGY FOUND /
+BASELINE GLOBAL DISTANCE RESTORED /
+LOCAL FLOORS PRESERVED /
+TWO BYTE-IDENTICAL EXHAUSTIVE SWEEPS /
+NON-CANONICAL /
+NON-EVIDENCE.
+
+FROZEN HARNESS
+
+Git blob SHA:
+
+c388b95f1c83609bf31221ab71285befa2c02848.
+
+Source SHA-256:
+
+6bee913941c0d87c20d333f0a6176284f91af341371b74243b20f22d995ea980.
+
+Source bytes:
+
+12412.
+
+OUTPUT
+
+Sweep 1 SHA-256:
+
+934e2ac6abe12f2a9db6d3cc99bca93aa781f542826d3a2f8d00343b76724419.
+
+Sweep 2 SHA-256:
+
+934e2ac6abe12f2a9db6d3cc99bca93aa781f542826d3a2f8d00343b76724419.
+
+Byte-identical:
+
+PASS.
+
+Mechanical validity:
+
+TRUE.
+
+PRIMARY ENUMERATION
+
+Atomic moves:
+
+1064.
+
+Structurally valid two-move pairs with four distinct affected checks:
+
+455924.
+
+Unique normalized final topologies:
+
+437360.
+
+Candidates reaching frozen global-distance evaluation:
+
+107.
+
+FRONTIER-FEASIBLE topologies:
+
+49.
+
+DISTANCE_FRONTIER_FEASIBLE:
+
+TRUE.
+
+SELECTED WITNESS
+
+Move 1:
+
+block 1,
+source check 8,
+target check 14.
+
+Move 2:
+
+block 5,
+source check 16,
+target check 11.
+
+Selected arity profile:
+
+two arity-3 checks,
+two arity-5 checks,
+sixteen arity-4 checks.
+
+Persistent budget:
+
+unchanged.
+
+20 checks.
+
+80 incidences.
+
+12 logical regions.
+
+128 persistent bits total.
+
+SELECTED LOGICAL GEOMETRY
+
+GF(2) rank:
+
+12 of 12.
+
+SELECTED_FULL_RANK:
+
+TRUE.
+
+Nonzero logical kernel masks:
+
+0.
+
+SELECTED_KERNEL_FREE:
+
+TRUE.
+
+Distinct logical-only syndromes:
+
+4096 of 4096.
+
+Multiplicity histogram:
+
+4096 syndromes with multiplicity exactly 1.
+
+Single-region minimum syndrome weight:
+
+6.
+
+Two-region minimum syndrome weight:
+
+8.
+
+LOCAL_FLOORS_PRESERVED:
+
+TRUE.
+
+Maximum pair co-occurrence:
+
+2.
+
+PAIR_COOCCURRENCE_PRESERVED:
+
+TRUE.
+
+GLOBAL DISTANCE
+
+Frozen HYPER20 baseline global minimum positive logical syndrome weight:
+
+3.
+
+Frozen DG-1R-05K selected topology:
+
+2.
+
+DG-1R-05L selected topology:
+
+3.
+
+GLOBAL_DISTANCE_AT_LEAST_BASELINE:
+
+TRUE.
+
+GLOBAL_DISTANCE_IMPROVED_OVER_BASELINE:
+
+FALSE.
+
+Minimum positive syndrome weight by logical-fault weight:
+
+weight 1:
+6.
+
+weight 2:
+8.
+
+weight 3:
+7.
+
+weight 4:
+4.
+
+weight 5:
+3.
+
+weight 6:
+4.
+
+weight 7:
+4.
+
+weight 8:
+3.
+
+weight 9:
+4.
+
+weight 10:
+6.
+
+weight 11:
+4.
+
+weight 12:
+4.
+
+The old all-region kernel is therefore not merely made weakly visible.
+Under the selected 05L topology, the all-region same-plane fault has syndrome weight 4.
+
+The global floor of 3 is instead attained by some weight-5 and weight-8 logical patterns.
+
+HOLDOUT — EQUAL-COST CHECK-ONLY BOUNDARY
+
+Weights 1 through 3:
+
+all check-only patterns retain d=0 as unique minimum.
+
+Weight 4 selected topology:
+
+4502 / 4845:
+d=0 unique minimum.
+
+283 / 4845:
+d=0 tied minimum.
+
+60 / 4845:
+all minimum-cost explanations nonzero.
+
+Frozen HYPER20 baseline:
+
+4503 unique,
+282 tied,
+60 all-minima nonzero.
+
+Frozen 05K selected:
+
+4504 unique,
+281 tied,
+60 all-minima nonzero.
+
+CHECK4_EQUAL_COST_NOT_WORSE:
+
+TRUE.
+
+The frozen false-logical-preference count remains exactly 60 / 4845.
+
+FROZEN CHECK4 INCIDENT TESTS
+
+Degree-6 block 5:
+
+selected:
+TRUE_EXPLANATION_NOT_MINIMUM.
+
+baseline:
+TRUE_EXPLANATION_NOT_MINIMUM.
+
+05K:
+TRUE_EXPLANATION_NOT_MINIMUM.
+
+Degree-7 block 2:
+
+selected:
+TRUE_EXPLANATION_TIED_MINIMUM.
+
+baseline:
+TRUE_EXPLANATION_TIED_MINIMUM.
+
+05K:
+TRUE_EXPLANATION_TIED_MINIMUM.
+
+The known local prior-sensitive boundary is unchanged.
+
+CROSS-PLANE EXACT COLLISION
+
+All frozen logical-versus-incident-integrity constructions remain exact.
+
+CROSSPLANE_ARBITRARY_CORRELATION_SOLVED:
+
+FALSE.
+
+This remains an information-theoretic fault-type ambiguity and was not a 05L success criterion.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-05L establishes that the 05K distance-2 tradeoff was not forced by the fixed 20-check / 80-incidence / 128-bit budget.
+
+Within a bounded two-transfer mixed-arity family,
+49 topologies jointly satisfy:
+
+- rank 12;
+- zero logical kernel;
+- single-region floor >=6;
+- two-region floor >=8;
+- maximum pair co-occurrence <=2;
+- global minimum positive logical syndrome weight >=3.
+
+The selected topology exactly restores the original HYPER20 global distance of 3 while eliminating HYPER20's rank-11 blind mode.
+
+Therefore:
+
+KERNEL ELIMINATION
+AND
+BASELINE WORST-CASE LOGICAL DETECTION DISTANCE
+
+can coexist at the same persistent-state budget.
+
+However:
+
+the bounded 05L family did not produce a selected global distance above 3,
+and the deeper logical-versus-integrity exact-collision family remains untouched.
+
+The representation frontier is therefore now:
+
+topological observability is materially improvable without more persistent bits,
+but stronger distance and independent fault-type evidence remain separate objectives.
+
+PLAIN-SPEAK INTERPRETATION
+
+This is the topology result we were looking for after 05K.
+
+We do not have to choose between:
+seeing every logical fault at all,
+and keeping the original worst-case warning strength.
+
+With two tiny rewiring moves,
+we found 49 layouts that remove the invisible global fault
+while keeping the original local protection and the original worst-case distance.
+
+The chosen layout makes every one of the 4096 logical fault patterns distinct.
+
+It also keeps:
+one-region damage at least six warning bits away,
+two-region damage at least eight warning bits away,
+and the overall worst case at three warning bits,
+which matches the original system instead of dropping to two like 05K.
+
+What it does not do is make corrupted backup information magically trustworthy.
+If backup failures coordinate perfectly,
+they can still imitate real data damage.
+
+So topology has now fixed the structural blind spot without extra memory.
+The next question is whether the same fixed budget can push the minimum distance above 3,
+or whether distance 3 is the practical frontier under the existing degree and pair-overlap constraints.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05M —
+FIXED-BUDGET GLOBAL-DISTANCE UPPER-BOUND / FRONTIER AUDIT.
+
+Question:
+
+Under the same:
+
+- 20 checks;
+- 80 incidences;
+- 12 logical regions;
+- exact frozen degree vector;
+- maximum pair co-occurrence <=2;
+- single-region floor >=6;
+- two-region floor >=8;
+- rank 12;
+- kernel-free constraint;
+
+is global minimum positive logical syndrome weight 4 achievable in a materially broader bounded topology family?
+
+The next experiment should test the feasibility boundary directly,
+not introduce a new decoder.
+
+No post-result tuning was performed.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
