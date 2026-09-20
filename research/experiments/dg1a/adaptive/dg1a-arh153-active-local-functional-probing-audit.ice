@@ -505,3 +505,186 @@ SYNTHETIC_MEASURED_SANDBOX_ACTIVE_LOCAL_FUNCTIONAL_PROBING
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 stab18_r1_touched = false
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — ACTIVE QUERY REALIZATION / EARLY-STOP THRESHOLD
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H153 HELD-OUT PRIMARY EXECUTION.
+
+No H153 held-out primary world
+has been executed.
+
+ACTIVE POSTERIOR GEOMETRY
+
+For selected query set S:
+
+A =
+Phi_S,R^T Phi_S,R
++
+0.10 I.
+
+Candidate uncertainty:
+
+u_j =
+phi_j,R^T A^-1 phi_j,R.
+
+Selection uses:
+u_j only.
+
+The target output
+of:
+an unselected query
+is not:
+available to selection.
+
+ACTIVE24
+
+Two query slots / maturation step.
+
+Each slot selects:
+the currently unqueried
+maximum-u_j
+candidate.
+
+COMPONENT24 / COMPONENT48
+
+Each feedback query is tagged by:
+the initial Moore-connected lesion component
+of:
+the lesion member
+that generated its local candidate point.
+
+Successive query slots:
+round-robin across components
+with:
+remaining candidates.
+
+Inside the selected component:
+
+choose:
+maximum u_j.
+
+RANDOM24
+
+Consumes:
+the same candidate pool
+in:
+deterministic generated order.
+
+FBONLY-ACTIVE24
+
+Uses:
+the ACTIVE24 query sequence
+
+with:
+zero coefficient prior.
+
+Surviving original coefficients:
+remain fixed
+for:
+all non-oracle policies.
+
+EARLY-STOP THRESHOLD SELECTION
+
+Declared sanity candidates:
+
+rho:
+0.50,
+0.25,
+0.10.
+
+Minimum observations:
+4.
+
+Selection rule:
+
+choose:
+the largest rho
+
+whose STOP24
+median final recovery
+remains:
+within 0.03
+of:
+COMPONENT24
+
+on:
+every declared MIXED sanity cell.
+
+SANITY RESULT — NON-EVIDENCE
+
+rho=0.50:
+
+fails.
+
+Representative deficits:
+
+MIXED 1% COMPACT:
+approximately 0.141.
+
+MIXED 5% COMPACT:
+approximately 0.336.
+
+rho=0.25:
+
+fails.
+
+MIXED 5% COMPACT deficit:
+approximately 0.0394.
+
+rho=0.10:
+
+passes.
+
+Observed sanity median deficits:
+0
+on:
+all declared MIXED sanity cells.
+
+Therefore:
+
+PRIMARY STOP THRESHOLD
+
+rho =
+0.10.
+
+Sanity also shows:
+
+rho=0.10
+usually consumes:
+the full 24-observation budget.
+
+Thus:
+
+early stopping
+is:
+a live hypothesis,
+
+but:
+pre-primary evidence does not suggest:
+large savings.
+
+This observation does not:
+change:
+the primary acceptance criteria.
+
+FROZEN SANDBOX HARNESS SHA-256
+
+36965c4de5c491aa64da06397f78fb484c88f0ffd640b72c2a5b687aafbe450d.
+
+PRIMARY FAMILY REMAINS
+
+20260920000000..20260920002399.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H153 primary world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
