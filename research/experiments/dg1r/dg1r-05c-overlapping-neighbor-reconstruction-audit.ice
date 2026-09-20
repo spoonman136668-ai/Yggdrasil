@@ -1188,3 +1188,101 @@ another.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05C NEIGHBOR RECONSTRUCTION HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE:
+THE:
+FIRST:
+DG-1R-05C:
+SCENARIO.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05c_neighbor_reconstruction_v1.py
+
+Harness commit:
+
+beafdbfcbde60cfbad7f4d69e4f67b92799b68d3.
+
+Git blob SHA:
+
+e1171314c4448555b5893e80ce22387d70be511d.
+
+Source SHA-256:
+
+94f4825aab9bffbd67f6aaff03ac3e3fa7925e03c86eaeb67a25614614f7b049.
+
+Source bytes:
+
+13208.
+
+LOCAL PRECHECK
+
+Exact:
+Git blob:
+identity:
+
+PASS.
+
+Python:
+syntax:
+
+PASS.
+
+No:
+DG-1R-05C:
+world
+was:
+executed
+before:
+this:
+freeze.
+
+FROZEN PRIMARY DAMAGE BLOCKS
+
+2,
+6,
+10.
+
+FROZEN DISTRIBUTED DAMAGE BLOCKS
+
+2
+and:
+10.
+
+FROZEN WORLD FAMILY
+
+20260926053000..20260926053007.
+
+8 worlds.
+
+DG-1R-05 CANONICAL STATUS
+
+Still:
+
+UNSPENT.
+
+DG-1R-05C:
+
+NON-CANONICAL /
+NON-EVIDENCE.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+sweeps.
+
+Output SHA-256
+must:
+match exactly.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
