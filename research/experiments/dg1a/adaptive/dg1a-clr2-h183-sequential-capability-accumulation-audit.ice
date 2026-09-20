@@ -1645,3 +1645,734 @@ the first held-out H183 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — SEQUENTIAL CAPABILITY ACCUMULATION
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-POSITIVE / JOINT WORLD-LEVEL RELIABILITY BELOW TARGET.
+
+FINAL H183 HARNESS SHA-256
+
+95e0f635a47f3e2b7f2fb00401c328577ce6af2b366b6b88bfc2655c94f9ff58.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+4837d8dc6fc9cd5e8061c2384ee677c86e9ee4606781aeb0870e64da14c028ad.
+
+ACCEPTED PRIMARY FAMILY
+
+20260923200000..20260923200019.
+
+PRIMARY MATRIX
+
+20 held-out worlds.
+
+5 policies.
+
+100 evaluations.
+
+Validation:
+
+- exact 20 primary seeds;
+- exact 5 policies / world;
+- no missing evaluations;
+- no post-primary router / cell-budget tuning.
+
+PRIMARY CANDIDATE
+
+SEQ48_48.
+
+STAGE A
+
+Median A held-out R^2:
+
+approximately:
+0.99869.
+
+PASS.
+
+STAGE B REPRODUCTION
+
+After:
+adding B
+
+with:
+48 coverage-balanced daughters
+and:
+the six-parameter B router:
+
+median B held-out R^2:
+
+approximately:
+0.96314.
+
+World B>=0.85:
+
+95%.
+
+Median A loss:
+
+approximately:
+0.000169.
+
+Thus:
+
+H181-level
+bounded B addition
+is:
+reproduced
+inside:
+the sequential
+three-context experiment.
+
+PASS.
+
+STAGE C ADDITION
+
+After:
+freezing A,
+B daughter coefficients,
+and:
+the B router,
+
+then:
+adding:
+48 C daughters
+and:
+one new:
+six-parameter C router:
+
+median C held-out R^2:
+
+approximately:
+0.95204.
+
+World C>=0.85:
+
+90%.
+
+Frozen C capability
+thresholds:
+
+median >=0.90.
+
+world reliability >=90%.
+
+PASS
+at:
+the world-level boundary.
+
+A RETENTION AFTER C
+
+Median total A loss
+from:
+stage-1 baseline:
+
+approximately:
+0.00211.
+
+World A>=0.85:
+
+95%.
+
+World A retained
+within:
+0.05
+of:
+stage-1 baseline:
+
+95%.
+
+PASS.
+
+B RETENTION AFTER C
+
+Median B loss
+relative to:
+post-B baseline:
+
+approximately:
+0.00021.
+
+World B>=0.85
+after C:
+
+90%.
+
+World B retained
+within:
+0.05
+of:
+post-B baseline:
+
+95%.
+
+PASS:
+median retention.
+
+JOINT A+B+C COMPETENCE
+
+Worlds finishing:
+
+A >=0.85
+AND:
+B >=0.85
+AND:
+C >=0.85:
+
+16 / 20
+=
+80%.
+
+Frozen target:
+
+>=90%.
+
+FAIL.
+
+The failure is:
+a tail-intersection problem.
+
+Individually:
+
+A competence:
+95%.
+
+B competence:
+90%.
+
+C competence:
+90%.
+
+But:
+
+the failing worlds
+are:
+not:
+the exact same worlds.
+
+Therefore:
+
+joint reliability
+falls:
+to:
+80%.
+
+WORLD-LEVEL A+B RETENTION
+
+Retain:
+A within 0.05
+
+AND:
+
+B within 0.05:
+
+90%.
+
+PASS.
+
+GENERALIZATION
+
+Median B:
+validation-test gap:
+
+approximately:
+0.00343.
+
+train-test gap:
+
+approximately:
+0.00627.
+
+Median C:
+validation-test gap:
+
+approximately:
+0.01506.
+
+train-test gap:
+
+approximately:
+0.00923.
+
+PASS.
+
+ROUTERS
+
+Median B router:
+context accuracy:
+
+1.0.
+
+Median C router:
+context accuracy:
+
+1.0.
+
+C router
+cross-context activation:
+
+A:
+approximately:
+0.00745.
+
+B:
+approximately:
+0.00510.
+
+C:
+approximately:
+0.99485.
+
+Thus:
+
+the new:
+C router
+is:
+clean.
+
+OLD B ROUTER
+ON FUTURE C CONTEXT
+
+Median B-gate activation
+on:
+C held-out inputs:
+
+approximately:
+0.1742.
+
+95th percentile
+across worlds
+of:
+world-mean B-on-C activation:
+
+approximately:
+0.3421.
+
+This is:
+the main new
+sequential-routing
+diagnostic.
+
+B coefficients
+remain:
+frozen
+
+but:
+
+the old B router
+
+was trained
+before:
+C existed.
+
+It therefore:
+
+does NOT:
+consistently remain:
+silent
+
+in:
+the future C context.
+
+The C residual fit
+can:
+compensate
+for:
+some:
+B leakage,
+
+but:
+
+the added burden
+appears:
+world dependent.
+
+STRUCTURE
+
+SEQ48_48:
+
+B daughters:
+48.
+
+C daughters:
+48.
+
+Total:
+96.
+
+Active-cell growth:
+
+approximately:
+2.992%.
+
+Frozen target:
+<=3.1%.
+
+PASS.
+
+PERMANENT PARAMETERS
+
+96 daughter coefficients
++
+12 router parameters:
+
+approximately:
+3.366%
+of:
+the original
+parent coefficient count.
+
+Frozen target:
+<=3.5%.
+
+PASS.
+
+COMPUTE
+
+Median sequential
+addition compute:
+
+approximately:
+0.423%
+of:
+the GLOBAL_C
+comparison
+plus:
+the same:
+stage-B addition path.
+
+PASS.
+
+HIBERNATION / REACTIVATION
+
+Exact:
+for:
+B
+and:
+C.
+
+PASS.
+
+ROUTING NECESSITY
+
+SEQ48_48_NO_C_GATE:
+
+median post-C B R^2:
+
+approximately:
+0.8005.
+
+Joint A+B+C competence:
+
+30%.
+
+Median B loss
+after C:
+
+approximately:
+0.1496.
+
+Thus:
+
+context routing
+is:
+decisively necessary
+for:
+sequential accumulation.
+
+PASS.
+
+COVERAGE VALUE
+
+SEQ48_48:
+
+joint competence:
+
+80%.
+
+SEQ48_48_RANDOM_C:
+
+65%.
+
+Median C held-out R^2:
+
+coverage-balanced:
+approximately 0.9520.
+
+random:
+approximately 0.9220.
+
+Difference:
+
+approximately:
++0.0300.
+
+Coverage balancing
+remains:
+valuable
+for:
+the second capability addition.
+
+PASS
+at:
+the preregistered boundary.
+
+SEQ64_64
+
+Increasing:
+both:
+B and C
+to:
+64 cells
+
+produces:
+
+joint A+B+C competence:
+
+85%.
+
+Still below:
+the 90%
+target.
+
+Thus:
+
+the H183 failure
+is NOT:
+cleanly solved
+by:
+adding:
+more daughter cells.
+
+This supports:
+
+routing-tail
+rather than:
+raw capacity
+as:
+the next variable.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+Stage-A baseline.
+
+2-4.
+Stage-B capability
+and:
+A preservation.
+
+5-6.
+Stage-C median
+and:
+world capability.
+
+7.
+Median A retention.
+
+8.
+Median B retention.
+
+10.
+World-level A+B retention.
+
+11.
+Generalization.
+
+12.
+Router quality.
+
+13.
+Active structure.
+
+14.
+Permanent parameters.
+
+15.
+Compute.
+
+16.
+Hibernation / reactivation.
+
+17.
+Routing necessity.
+
+18.
+Coverage value.
+
+19.
+GLOBAL_C ceiling.
+
+FAIL:
+
+9.
+World-level joint A+B+C competence.
+
+Observed:
+80%.
+
+Required:
+90%.
+
+STRONG SUPPORT:
+
+FAIL.
+
+FINAL INTERPRETATION
+
+H183 is:
+
+MIXED-POSITIVE.
+
+The core:
+sequential accumulation
+mechanism works.
+
+Yggdrasil can:
+
+learn A,
+
+add B
+with:
+48 new cells,
+
+freeze:
+A+B,
+
+then:
+add C
+with:
+another:
+48 cells
+
+without:
+functional replay
+or:
+coefficient changes
+to:
+A or B,
+
+while:
+
+median:
+A,
+B,
+C
+competence
+remains:
+high.
+
+The remaining failure is:
+
+WORLD-LEVEL
+JOINT
+RELIABILITY.
+
+The primary mechanism signal is:
+
+ROUTERS
+MUST:
+ACCOMMODATE
+FUTURE
+CONTEXTS.
+
+A router
+trained:
+before:
+a future capability exists
+
+can:
+remain:
+partially active
+in:
+that new context.
+
+That creates:
+a residual burden
+for:
+later capability growth.
+
+NEXT:
+
+CLR2-H184 —
+CONTEXT-ONLY
+ROUTER ACCOMMODATION
+FOR:
+SEQUENTIAL CAPABILITY
+ACCUMULATION.
+
+Primary rule:
+
+when:
+C appears,
+
+allow:
+the B router
+to learn:
+
+C-context identity
+as:
+an additional negative context
+
+using:
+coordinates only.
+
+Do NOT:
+
+change:
+B daughter coefficients.
+
+Do NOT:
+
+replay:
+B functional targets.
+
+Then:
+
+add C
+with:
+the same:
+48-cell
+coverage-balanced mechanism.
+
+Primary question:
+
+can:
+ROUTING-ONLY
+developmental adaptation
+
+raise:
+joint A+B+C
+world competence
+
+from:
+80%
+to:
+>=90%
+
+without:
+functional retraining
+or:
+additional active cells?
+
+H183 DOES NOT AUTHORIZE
+
+- production use;
+- live model modification;
+- biological claims;
+- whole-model retraining
+  as:
+  candidate architecture;
+- canonical scientific claims;
+- STAB-18-R1 execution.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
