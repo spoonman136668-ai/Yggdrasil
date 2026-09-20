@@ -1456,3 +1456,974 @@ NON-EVIDENCE.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-05E NON-EVIDENCE CLOSURE — THREE-WITNESS REPAIR QUORUM
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+STRONG POSITIVE ONE-BAD-WITNESS TOLERANCE /
+POSITIVE DISTRIBUTED QUORUM /
+EXPECTED TWO-BAD-WITNESS BOUNDARY /
+UNANIMOUS SAFETY-AVAILABILITY TRADEOFF /
+NON-CANONICAL /
+NON-EVIDENCE.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05e_three_witness_v1.py
+
+Git blob SHA:
+
+51504187dee59803a60620aa6966ba1e1839afd4.
+
+Source SHA-256:
+
+3b8305dcf1c56f9a4b3c9ec0c88b669a82bcc97bd0c25126245de555d0e94450.
+
+Source bytes:
+
+12960.
+
+REPRODUCIBILITY
+
+RUN 1 SHA-256:
+
+4198d4f23f2e713d8907a2b602179445a36a21c40c153195d8af7031365cf5e8.
+
+RUN 2 SHA-256:
+
+4198d4f23f2e713d8907a2b602179445a36a21c40c153195d8af7031365cf5e8.
+
+Byte-identical:
+
+PASS.
+
+MECHANICAL VALIDITY
+
+no-damage duplicate trajectories:
+
+PASS.
+
+all lesion-cardinality assertions:
+
+PASS.
+
+mechanical_valid:
+
+TRUE.
+
+FROZEN SIGNALS
+
+THREE_WITNESS_REPAIR_SIGNAL:
+
+TRUE.
+
+ONE_BAD_WITNESS_TOLERANCE_SIGNAL:
+
+TRUE.
+
+ONE_BAD_WITNESS_HEALTHY_TARGET_SAFETY:
+
+TRUE.
+
+DISTRIBUTED_QUORUM_SIGNAL:
+
+TRUE.
+
+TWO_BAD_WITNESS_BOUNDARY_METHODS:
+
+PAIR2.
+MAJORITY3.
+
+UNANIMOUS_SAFETY_SIGNAL:
+
+TRUE.
+
+BASE SILENT DAMAGE
+
+MAJORITY3:
+
+SILENT_DATA3:
+
+median:
+h1 logical divergence:
+
+0.
+
+median:
+h32 logical divergence:
+
+0.
+
+logical divergence area:
+
+0.
+
+sustained exact logical recovery:
+
+1.0.
+
+repairs:
+
+24.
+
+false repairs:
+
+0.
+
+Thus:
+
+three:
+healthy:
+witnesses
+
+repair:
+syndrome-silent:
+local:
+damage
+exactly.
+
+ONE BAD WITNESS
+
+SILENT_DATA3_PLUS_ONE_WITNESS1:
+
+one:
+of:
+three:
+witness:
+cross-checks
+
+is:
+wrong.
+
+MAJORITY3:
+
+median:
+h1 logical divergence:
+
+0.
+
+median:
+h4 logical divergence:
+
+0.
+
+median:
+h32 logical divergence:
+
+0.
+
+logical divergence area:
+
+0.
+
+sustained exact logical recovery:
+
+1.0.
+
+repairs:
+
+24.
+
+false repairs:
+
+0.
+
+two-of-three:
+majority events:
+
+24.
+
+Thus:
+
+one:
+bad:
+witness
+
+is:
+fully:
+tolerated.
+
+PAIR2:
+
+abstains:
+
+24:
+times.
+
+repairs:
+
+0.
+
+sustained exact recovery:
+
+0.3333333333333333.
+
+UNANIMOUS3:
+
+also:
+abstains:
+
+24:
+times.
+
+repairs:
+
+0.
+
+sustained exact recovery:
+
+0.3333333333333333.
+
+Therefore:
+
+2-of-3:
+quorum
+
+adds:
+repair:
+availability
+
+that:
+strict:
+two-source /
+three-source:
+agreement
+cannot:
+provide
+under:
+one:
+faulty:
+witness.
+
+HEALTHY TARGET / ONE BAD WITNESS
+
+ONE_WITNESS1_ONLY:
+
+MAJORITY3:
+
+repairs:
+
+0.
+
+false repairs:
+
+0.
+
+median:
+h4 logical divergence:
+
+0.
+
+sustained exact logical recovery:
+
+1.0.
+
+Thus:
+
+a:
+single:
+bad:
+witness
+
+does NOT:
+cause:
+a:
+false:
+repair
+of:
+an:
+otherwise:
+healthy:
+target.
+
+DISTRIBUTED QUORUM
+
+DISTRIBUTED_ONE_BAD_WITNESS:
+
+three:
+simultaneously:
+silent-damaged:
+target:
+blocks.
+
+Each:
+also:
+has:
+
+one:
+bad:
+witness.
+
+MAJORITY3:
+
+median:
+h1 logical divergence:
+
+0.
+
+median:
+h4 logical divergence:
+
+0.
+
+median:
+h32 logical divergence:
+
+0.
+
+logical divergence area:
+
+0.
+
+sustained exact logical recovery:
+
+1.0.
+
+repairs:
+
+24
+across:
+8 worlds.
+
+false repairs:
+
+0.
+
+Thus:
+
+three:
+independent:
+2-of-3:
+local:
+quorums
+
+operate:
+in:
+parallel
+
+without:
+a:
+central:
+repair:
+controller.
+
+TWO CORRELATED BAD WITNESSES
+
+SILENT_DATA3_PLUS_TWO_WITNESS2:
+
+two:
+of:
+three:
+witnesses
+
+carry:
+the:
+same:
+wrong:
+d1:
+candidate.
+
+MAJORITY3:
+
+repairs:
+
+24.
+
+false repairs:
+
+24.
+
+false-repair fraction:
+
+1.0.
+
+median:
+logical divergence area:
+
+2.510416666666667.
+
+sustained exact recovery:
+
+0.25.
+
+Thus:
+
+2-of-3:
+quorum
+
+reaches:
+its:
+expected:
+fault-tolerance:
+boundary.
+
+TWO BAD WITNESSES AGAINST A HEALTHY TARGET
+
+TWO_WITNESS2_ONLY:
+
+target:
+data
+is:
+initially:
+correct.
+
+Two:
+correlated:
+witnesses
+are:
+wrong.
+
+MAJORITY3:
+
+repairs:
+
+24.
+
+false repairs:
+
+24.
+
+false-repair fraction:
+
+1.0.
+
+median:
+logical divergence area:
+
+2.510416666666667.
+
+Thus:
+
+two:
+correlated:
+bad:
+witnesses
+
+can:
+turn:
+the:
+repair:
+system
+
+against:
+a:
+healthy:
+region.
+
+This:
+is:
+the:
+critical:
+Byzantine-style:
+boundary.
+
+UNANIMOUS SAFETY
+
+UNANIMOUS3:
+
+TWO_WITNESS2_ONLY:
+
+repairs:
+
+0.
+
+false repairs:
+
+0.
+
+median:
+h4 logical divergence:
+
+0.
+
+sustained exact logical recovery:
+
+1.0.
+
+UNANIMOUS_SAFETY_SIGNAL:
+
+TRUE.
+
+But:
+
+on:
+SILENT_DATA3_PLUS_ONE_WITNESS1:
+
+UNANIMOUS3:
+
+cannot:
+repair.
+
+Thus:
+
+the:
+tradeoff
+is:
+explicit.
+
+MAJORITY3:
+
+higher:
+availability
+and:
+one-fault:
+tolerance.
+
+UNANIMOUS3:
+
+higher:
+correlated-fault:
+safety
+
+but:
+lower:
+repair:
+availability.
+
+TECHNICAL CONCLUSION
+
+DG-1R-05E establishes:
+
+a:
+clean:
+local:
+repair:
+quorum:
+law
+inside:
+Yggdrasil's:
+same:
+128-bit:
+state budget.
+
+THREE:
+direct:
+witnesses
+
+with:
+2-of-3:
+quorum
+
+can:
+
+- repair:
+  silent:
+  target:
+  corruption;
+- survive:
+  one:
+  faulty:
+  witness;
+- operate:
+  across:
+  multiple:
+  damaged:
+  regions
+  simultaneously;
+- avoid:
+  false:
+  repair
+  when:
+  only:
+  one:
+  witness
+  attacks:
+  a:
+  healthy:
+  target.
+
+But:
+
+two:
+correlated:
+bad:
+witnesses
+
+defeat:
+the:
+2-of-3:
+quorum.
+
+This:
+is:
+not:
+an:
+unexpected:
+failure.
+
+It is:
+the:
+mathematical:
+fault:
+boundary
+of:
+the:
+quorum:
+size.
+
+ARCHITECTURAL IMPLICATION
+
+The:
+system
+now:
+has:
+several:
+distinct:
+software-cell:
+roles:
+
+- COMPUTE:
+  cells;
+
+- HOMEOSTATIC:
+  stabilizers;
+
+- REDUNDANT:
+  state:
+  carriers;
+
+- INTEGRITY:
+  guardians;
+
+- REPAIR:
+  effectors;
+
+- WITNESS:
+  cells /
+  regions;
+
+- QUORUM:
+  repair:
+  decisions.
+
+This:
+is:
+becoming:
+a:
+distributed:
+self-checking:
+software:
+tissue
+
+rather:
+than:
+a:
+uniform:
+cellular:
+automaton.
+
+NEXT DIRECTION
+
+Do NOT:
+pretend:
+local:
+syndrome /
+health:
+metadata
+
+can:
+identify:
+the:
+observed:
+two-corrupted-cross-check:
+case.
+
+Those:
+faults
+live:
+inside:
+the:
+integrity:
+channels
+themselves.
+
+A:
+more:
+direct:
+next:
+test
+is:
+
+DG-1R-05F —
+FIXED-BUDGET:
+COVERAGE /
+RESILIENCE:
+QUORUM-SCALING AUDIT.
+
+Keep:
+
+128:
+persistent:
+bits.
+
+Compare:
+
+A.
+3:
+protected:
+regions
+
+x:
+3:
+witnesses
+
+versus:
+
+B.
+2:
+protected:
+regions
+
+x:
+5:
+witnesses.
+
+Five:
+witnesses
+with:
+3-of-5:
+quorum
+
+should:
+tolerate:
+
+two:
+correlated:
+bad:
+witnesses.
+
+The:
+cost:
+
+fewer:
+regions
+can:
+receive:
+that:
+strong:
+protection
+under:
+the:
+same:
+integrity:
+bit:
+budget.
+
+Primary question:
+
+what:
+is:
+the:
+coverage /
+resilience:
+frontier
+
+for:
+self-healing:
+software:
+tissue
+
+under:
+a:
+fixed:
+memory:
+budget?
+
+PLAIN-SPEAK SUMMARY
+
+The:
+three-neighbor:
+idea
+worked:
+exactly:
+the:
+way:
+we:
+hoped.
+
+If:
+one:
+neighbor
+lies:
+
+the:
+other:
+two
+outvote:
+it.
+
+The:
+damaged:
+region
+gets:
+repaired
+perfectly.
+
+We:
+even:
+damaged:
+three:
+different:
+regions
+at:
+the:
+same:
+time,
+
+gave:
+each:
+one:
+bad:
+neighbor,
+
+and:
+all:
+three:
+were:
+repaired
+back:
+to:
+the:
+correct:
+trajectory.
+
+But:
+
+if:
+two:
+of:
+the:
+three:
+neighbors
+are:
+wrong
+together,
+
+they:
+win:
+the:
+vote.
+
+They:
+can:
+even:
+convince:
+a:
+healthy:
+region
+to:
+damage:
+itself.
+
+The:
+ultra-cautious:
+version
+that:
+requires:
+all:
+three:
+neighbors
+to:
+agree
+
+does:
+not:
+make:
+that:
+mistake,
+
+but:
+it:
+also:
+cannot:
+repair
+when:
+only:
+one:
+neighbor
+is:
+bad.
+
+So:
+we:
+have:
+a:
+real:
+engineering:
+tradeoff:
+
+more:
+repair:
+availability
+
+versus:
+
+more:
+correlated-fault:
+safety.
+
+The:
+next:
+clean:
+test
+is:
+five:
+witnesses.
+
+A:
+3-of-5:
+vote
+can:
+survive:
+two:
+bad:
+witnesses.
+
+But:
+with:
+the:
+same:
+128:
+bits,
+
+we:
+cannot:
+protect:
+as:
+many:
+regions
+that:
+strongly.
+
+That:
+lets:
+us:
+measure:
+how:
+a:
+software:
+organism
+should:
+spend:
+its:
+limited:
+integrity:
+resources.
+
+DG-1R-05:
+canonical frozen primary remains:
+
+UNSPENT.
+
+DG-1R-05E remains:
+
+NON-CANONICAL /
+NON-EVIDENCE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
