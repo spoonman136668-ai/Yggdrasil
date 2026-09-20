@@ -1668,3 +1668,659 @@ H166 DOES NOT AUTHORIZE
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — MINIMAL MICRO-ANCHOR DUTY / OBSERVATION BUDGET
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-NEGATIVE FOR SUB-TWO-OBSERVATION GLOBAL QUALIFICATION / POSITIVE CADENCE DISCOVERY.
+
+FINAL H166 HARNESS SHA-256
+
+1adf59a6d4ef84cb84165e78334b3c3ac8db9ac07bb3d1f4a03d0523c662a164.
+
+ACCEPTED SANITY MATRIX SHA-256
+
+dcb17eb9028a42355de8b7178f0095f2f8c53a6be7f23445d97489b6df9a17eb.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+de24c68be7043d246a3bc3555b02441d18c08034c311191acaa57118ba476bdc.
+
+ACCEPTED PRIMARY FAMILY
+
+20260921500000..20260921500119.
+
+PRIMARY MATRIX
+
+120 held-out condition-world lifetimes.
+
+7 policies.
+
+840 policy lifetimes.
+
+Validation:
+
+- exactly 120 unique held-out seeds;
+- exact accepted seed interval;
+- exactly seven policy rows / seed;
+- zero duplicate seed x policy rows;
+- no missing accepted seeds;
+- no post-primary observation-count or cadence tuning.
+
+BASELINE
+
+MICRO2-EVERY1.
+
+Minimum group median
+FINAL GlobalFidelity:
+
+approximately:
+0.998288.
+
+Minimum:
+world fraction FINAL >=0.95:
+
+100%.
+
+Maximum group-median
+HALF-to-FINAL fidelity loss:
+
+approximately:
+0.001024.
+
+Minimum group-median
+late-life SelfRecovery:
+
+approximately:
+0.987546.
+
+Exposure ratio
+versus itself:
+
+1.0.
+
+Therefore:
+
+MICRO2-EVERY1
+is:
+GLOBALLY QUALIFIED.
+
+This faithfully reproduces:
+the H165
+two-observation-every-cycle
+secondary result.
+
+ONE OBSERVATION EVERY CYCLE
+
+MICRO1-EVERY1.
+
+Minimum group median
+FINAL fidelity:
+
+approximately:
+0.996244.
+
+World fraction
+FINAL >=0.95:
+
+100%
+in:
+every group.
+
+Maximum group-median
+HALF-to-FINAL loss:
+
+approximately:
+0.002001.
+
+Minimum group-median
+late-life SelfRecovery:
+
+approximately:
+0.975301.
+
+Thus:
+
+quality,
+world reliability,
+drift,
+and:
+late-life SelfRecovery
+
+all:
+PASS.
+
+However:
+
+cumulative absolute error exposure
+
+relative to:
+MICRO2-EVERY1
+
+ranges:
+
+approximately:
+1.14
+to:
+1.77.
+
+Worst group:
+
+approximately:
+1.769.
+
+Frozen limit:
+
+<=1.25
+for:
+EVERY group.
+
+FAIL.
+
+Therefore:
+
+ONE OBSERVATION
+EVERY CYCLE
+
+preserves:
+end-state capability
+
+but:
+does NOT:
+meet:
+the frozen transient-error
+exposure requirement.
+
+SAME AVERAGE BUDGET —
+TEMPORAL REGULARITY
+
+Compare:
+
+MICRO1-EVERY1
+
+versus:
+
+MICRO2-EVERY2.
+
+Both average:
+
+approximately:
+1 observation / repair cycle.
+
+MICRO1-EVERY1
+is:
+consistently better.
+
+MICRO2-EVERY2:
+
+minimum group median
+FINAL:
+
+approximately:
+0.990691.
+
+World reliability:
+
+100%.
+
+Maximum HALF-to-FINAL loss:
+
+approximately:
+0.004990.
+
+Minimum late-life SelfRecovery:
+
+approximately:
+0.927844.
+
+FAIL:
+SelfRecovery.
+
+Worst exposure ratio
+versus:
+MICRO2-EVERY1:
+
+approximately:
+2.921.
+
+FAIL.
+
+At coarse scale:
+
+MICRO1-EVERY1
+also improves:
+final fidelity
+over:
+MICRO2-EVERY2
+
+by:
+approximately:
+0.0010
+to:
+0.0056
+
+and:
+improves:
+late-life SelfRecovery
+
+by:
+approximately:
+0.036
+to:
+0.048.
+
+Thus:
+
+AT THE SAME AVERAGE
+SUPERVISION COST,
+
+DISTRIBUTING:
+ONE OBSERVATION
+EVERY CYCLE
+
+IS:
+MATERIALLY SAFER
+
+THAN:
+
+BATCHING:
+TWO OBSERVATIONS
+EVERY OTHER CYCLE.
+
+This is:
+a primary architectural result.
+
+SUB-ONE-OBSERVATION SCHEDULES
+
+MICRO1-EVERY2:
+
+average:
+approximately 0.5 obs / cycle.
+
+Minimum group median FINAL:
+
+approximately:
+0.986401.
+
+World reliability:
+
+100%.
+
+Maximum HALF-to-FINAL loss:
+
+approximately:
+0.007900.
+
+Minimum late-life SelfRecovery:
+
+approximately:
+0.930965.
+
+Worst exposure ratio:
+
+approximately:
+3.231.
+
+FAIL:
+SelfRecovery
+and:
+exposure.
+
+MICRO2-EVERY5:
+
+average:
+approximately 0.4 obs / cycle.
+
+Minimum group median FINAL:
+
+approximately:
+0.975418.
+
+Minimum group
+world reliability:
+
+approximately:
+73.3%.
+
+Maximum HALF-to-FINAL loss:
+
+approximately:
+0.015598.
+
+Minimum late-life SelfRecovery:
+
+approximately:
+0.941263.
+
+Worst exposure ratio:
+
+approximately:
+4.526.
+
+FAIL:
+quality,
+reliability,
+drift,
+SelfRecovery,
+and:
+exposure.
+
+GLOBAL QUALIFICATION
+
+Globally qualified:
+
+MICRO2-EVERY1
+only.
+
+NOT globally qualified:
+
+MICRO1-EVERY1.
+
+Reason:
+exposure ceiling.
+
+MICRO2-EVERY2.
+
+Reasons:
+SelfRecovery
+and:
+exposure.
+
+MICRO1-EVERY2.
+
+Reasons:
+SelfRecovery
+and:
+exposure.
+
+MICRO2-EVERY5.
+
+Reasons:
+quality,
+reliability,
+drift,
+SelfRecovery,
+exposure.
+
+PRIMARY SUPPORT REVIEW
+
+1.
+MICRO2-EVERY1
+reproduces:
+H165 safety.
+
+PASS.
+
+2.
+At least one policy
+with:
+average <=1.0 observation / cycle
+
+is:
+GLOBALLY QUALIFIED.
+
+FAIL.
+
+3.
+Same-average comparison:
+
+the two:
+1-observation/cycle-equivalent
+policies
+
+do NOT:
+both qualify.
+
+However:
+
+the diagnostic result
+strongly favors:
+MICRO1-EVERY1.
+
+STRONG SUPPORT:
+
+policy <=0.5 obs / cycle
+globally qualified.
+
+FAIL.
+
+ULTRA-SPARSE:
+
+MICRO2-EVERY5
+globally qualified.
+
+FAIL.
+
+SCALE-SPECIFIC QUALIFICATION
+
+Using:
+the same full qualification rules
+inside:
+one scale,
+
+no:
+sub-two-observation policy
+
+qualifies
+at:
+g=1.00
+
+or:
+g=0.25
+
+because:
+the frozen exposure ceiling
+
+is exceeded
+even where:
+end-state fidelity
+remains:
+near-perfect.
+
+Thus:
+
+the current measured:
+fully-qualified
+minimum
+
+remains:
+
+2 observations
+per:
+repair cycle
+
+at:
+both tested scales.
+
+FINAL INTERPRETATION
+
+H166 is:
+
+MIXED-NEGATIVE
+
+for:
+
+SUB-TWO-OBSERVATION
+MICRO-ANCHOR QUALIFICATION.
+
+But:
+
+the experiment discovers
+an important control law:
+
+SUPERVISION REGULARITY
+MATTERS.
+
+A tiny:
+one-observation
+functional correction
+
+on:
+every repair cycle
+
+is:
+much safer
+
+than:
+the same average
+observation budget
+
+delivered:
+in:
+larger,
+less frequent batches.
+
+This means:
+
+functional anchoring
+behaves less like:
+
+periodic retraining
+
+and more like:
+
+CONTINUOUS
+LOW-BANDWIDTH
+ERROR CONTROL.
+
+SECOND IMPORTANT RESULT
+
+The reason:
+MICRO1-EVERY1
+fails
+
+is NOT:
+
+terminal capability collapse.
+
+Its final fidelity
+and:
+world-level reliability
+remain:
+strong.
+
+It fails because:
+
+TRANSIENT
+ABSOLUTE FUNCTIONAL ERROR
+ACCUMULATES
+TOO MUCH
+
+between / during:
+local repairs
+
+relative to:
+the two-observation baseline.
+
+Therefore:
+
+the next experiment
+should NOT:
+simply increase:
+anchor cadence.
+
+One observation / cycle
+already has:
+the desirable cadence.
+
+The open question is:
+
+CAN
+THAT ONE OBSERVATION
+BE CHOSEN
+MORE INTELLIGENTLY?
+
+H166 currently uses:
+
+the first deterministic
+lesion-local micro-anchor query.
+
+That is:
+NOT:
+information-designed.
+
+NEXT SCOPED DIRECTION
+
+H167 —
+SINGLE-OBSERVATION
+INFORMATION-DESIGN
+MICRO-ANCHOR AUDIT.
+
+Keep:
+
+- one observation
+  every repair cycle;
+- matched body-equivalent turnover;
+- same:
+  lambda=0.01;
+- same:
+  persistent-state architecture.
+
+Compare:
+
+1.
+current deterministic
+single local observation;
+
+2.
+single:
+global-leverage
+selected observation
+from:
+the 64-query local pool;
+
+3.
+single:
+A-optimal
+trace-reduction
+selected observation;
+
+4.
+possibly:
+one query targeted at:
+maximum predicted lesion-output variance
+
+without:
+reading:
+the functional target.
+
+Primary question:
+
+CAN:
+ONE
+INFORMATION-DESIGNED
+OBSERVATION / CYCLE
+
+preserve:
+
+the final-fidelity success
+of:
+MICRO1-EVERY1
+
+while:
+
+bringing:
+cumulative absolute error exposure
+
+inside:
+the frozen:
+1.25x
+MICRO2-EVERY1
+envelope?
+
+H166 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- global retraining;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
