@@ -391,3 +391,324 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL H191-P2 NON-EVIDENCE PILOT CLOSURE — SHARED PARENT SUPPORT
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE / NEAR-COMPETITIVE BUT NEGATIVE FOR SHARED SUPPORT8 /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+17d84f5115a202e20b71bd43c3781342c0a0fe19825b947229f62f8b246ec6f9.
+
+WORLD FAMILY
+
+20260924390000..20260924390039.
+
+40 disjoint surrogate worlds.
+
+RUN 1 OUTPUT SHA-256
+
+bc46cd5cfbf9889e956bad54cbe9757be84f0ac819d3b3dbf5b256ed86b69913.
+
+RUN 2 OUTPUT SHA-256
+
+bc46cd5cfbf9889e956bad54cbe9757be84f0ac819d3b3dbf5b256ed86b69913.
+
+Byte-identical:
+PASS.
+
+HELD-OUT NMSE MEDIANS
+
+PROXY8:
+
+A:
+0.06776780083329029.
+
+B:
+0.016735485499554493.
+
+C:
+0.015851036931113737.
+
+Median mean:
+0.038650130315266734.
+
+SUPPORT8:
+
+A:
+0.061747735732558984.
+
+B:
+0.029794173298771.
+
+C:
+0.028154303455178664.
+
+Median mean:
+0.04276866840107872.
+
+SUPPORT8 - PROXY8
+paired world mean NMSE:
+
+median:
++0.01567850683483796.
+
+P90:
++0.054757894223958894.
+
+SUPPORT8 win rate:
+
+25%.
+
+THRESHOLD TELEMETRY
+
+All A/B/C <=0.02:
+
+PROXY8:
+12.5%.
+
+SUPPORT8:
+5%.
+
+GENERALIZATION
+
+Median mean distillation-to-held-out gap:
+
+PROXY8:
+0.022530772815077003.
+
+SUPPORT8:
+0.016225066562361452.
+
+SUPPORT8 generalization
+is:
+not:
+the problem.
+
+SHARING
+
+SUPPORT8 decoder concentration median:
+
+0.7112631609028746.
+
+Support spatial spread median:
+
+0.9297723959404396.
+
+Thus:
+
+the shared support
+does:
+span:
+the full geometry
+
+and:
+does:
+carry:
+multi-capability decoder state.
+
+PILOT GATES
+
+1.
+SUPPORT8 median mean <= PROXY8:
+
+FAIL narrowly.
+
+2.
+Paired win rate >=50%:
+
+FAIL.
+Observed:
+25%.
+
+3.
+No capability median worse by >0.01:
+
+FAIL.
+
+B penalty:
+approximately +0.0131.
+
+C penalty:
+approximately +0.0123.
+
+A:
+slightly better.
+
+4.
+Generalization gap <=0.05:
+
+PASS.
+
+5.
+Decoder concentration materially below 1:
+
+PASS.
+
+6.
+Byte-identical rerun:
+
+PASS.
+
+TECHNICAL INTERPRETATION
+
+A single:
+shared:
+sigma=0.22
+support set
+
+is:
+too rigid.
+
+It must compromise
+between:
+three:
+different residual geometries.
+
+The result is:
+near:
+PROXY8 overall
+
+and:
+slightly better for A,
+
+but:
+loses:
+B/C precision.
+
+This is useful because:
+
+P1 showed:
+multi-scale rank 8
+CAN:
+beat PROXY8.
+
+P2 shows:
+fixed parent-scale rank 8
+cannot:
+reliably do so.
+
+Therefore:
+
+the missing ingredient is:
+SCALE FLEXIBILITY,
+
+not:
+more learned decoder coefficients.
+
+NEXT JUSTIFIED PILOT
+
+Use:
+the existing 3209 parent centers
+
+with:
+a FIXED:
+three-scale dictionary:
+
+sigma:
+0.22,
+0.44,
+0.88.
+
+These are:
+1x,
+2x,
+4x
+the accepted parent basis width.
+
+Jointly recruit:
+8 shared:
+(center, scale)
+dictionary entries.
+
+Store:
+
+24 learned decoder coefficients
+
+plus:
+
+8 shared parent-site indices
+
+and:
+8 tiny scale-slot identifiers.
+
+No:
+new learned center.
+No:
+new learned sigma.
+No:
+new physical cell.
+
+This combines:
+
+P1's successful:
+multi-scale shared geometry
+
+with:
+
+P2's:
+equal-learned-scalar
+fixed-dictionary accounting.
+
+PLAIN-SPEAK SUMMARY
+
+What did we try?
+
+We forced A, B, and C
+to share the same eight existing parent basis locations.
+
+What happened?
+
+It came close to PROXY8,
+but not close enough.
+A improved slightly,
+while B and C got worse.
+
+Did it work?
+
+No,
+not by the frozen pilot criteria.
+
+What did we learn?
+
+Sharing the support locations is possible,
+but forcing every shared factor
+to have the same narrow parent width
+removes too much flexibility.
+
+Why does it matter?
+
+P1 already showed that eight shared factors can work.
+P2 shows we do not need more factors;
+we need those eight factors
+to operate at more than one spatial scale.
+
+What next?
+
+Keep the factor centers on existing parent sites,
+but allow each selected factor
+to use one of three fixed,
+pre-existing scale choices:
+1x,
+2x,
+or:
+4x
+the parent width.
+
+That preserves:
+24 learned decoder scalars
+while restoring:
+multi-scale geometry.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
