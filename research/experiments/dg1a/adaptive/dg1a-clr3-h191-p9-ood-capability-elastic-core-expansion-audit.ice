@@ -773,3 +773,142 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — H191-P9 OOD ELASTIC-CORE HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST H191-P9 WORLD.
+
+HARNESS
+
+research/experiments/dg1a/adaptive/harnesses/h191_p9_ood_elastic_core_expansion_v1.py
+
+Harness commit:
+
+9650e2c8f474e0c48575bd84ee204ceb5d36f560.
+
+Git blob SHA:
+
+9e76eb9caac3c440f3aa743678d80738439e8dd4.
+
+Source SHA-256:
+
+a254c188fff28dc26dacfefd0eb1b69d0ba2f22968754697401e7c6d3bdd2a66.
+
+Source bytes:
+
+20828.
+
+IMPLEMENTATION FORM
+
+The P9 harness is:
+self-contained.
+
+It embeds:
+the frozen:
+P8-style developmental rule,
+fixed dictionary,
+context sampling,
+source generator,
+support recruitment,
+patch recruitment,
+references,
+metrics,
+and:
+classification logic.
+
+No:
+transient parent harness
+is required
+at:
+execution time.
+
+This changes:
+artifact packaging only.
+
+It does NOT:
+change:
+the preregistered:
+P9 semantics.
+
+FROZEN WORLD FAMILY
+
+20260925000000..20260925000007.
+
+8 worlds.
+
+FROZEN OOD INSERTION
+
+Capability:
+
+8.
+
+Context center:
+
+(0.0,0.0).
+
+Context sd:
+
+0.10.
+
+Radius cutoff:
+
+<=0.30.
+
+OOD sinusoid frequencies:
+
+wx,
+wy
+uniform [5,8].
+
+Shared hidden Gaussian source count:
+
+8.
+
+FROZEN POLICIES
+
+PATCH0:
+decoder only.
+
+PATCH1:
+exactly one:
+new:
+fixed-dictionary factor.
+
+PATCH2:
+nested:
+exactly one:
+additional:
+fixed-dictionary factor.
+
+OOD_LOCAL8:
+new-capability-local:
+8-factor:
+dictionary ceiling.
+
+JOINT_REFIT8:
+all-nine-capability:
+8-factor:
+reference.
+
+REPRODUCIBILITY
+
+Execute:
+two complete:
+8-world:
+development-plus-OOD sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
