@@ -2415,3 +2415,127 @@ NON-EVIDENCE.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-CLOSURE FIXA RESOLUTION
+
+DATE:
+2026-09-20.
+
+The:
+previously:
+missing:
+two-bit:
+local:
+boundary
+
+has:
+now:
+been:
+executed
+through:
+
+DG-1R-05A-FIXA.
+
+FIXA closure commit:
+
+8a087987634f443cdb737ed63f7b60cab54ca3d4.
+
+Corrected:
+DOUBLE2_LOCAL:
+
+actually:
+flips:
+two:
+bits
+inside:
+one:
+7-bit:
+local:
+codeword.
+
+Result:
+
+HAM74_REPAIR_ALWAYS:
+
+32:
+corrections.
+
+32:
+false corrections.
+
+False correction fraction:
+
+1.0.
+
+HAM74_REPAIR_H6:
+
+17:
+corrections.
+
+17:
+false corrections.
+
+False correction fraction:
+
+1.0.
+
+Thus:
+
+the:
+two-bit:
+repair-information:
+boundary
+
+is:
+CONFIRMED.
+
+Also:
+
+SINGLE1_LOCAL,
+DISTRIBUTED3,
+and:
+DISTRIBUTED5
+
+were:
+verified:
+unchanged
+by:
+FIXA.
+
+NEXT UNRESOLVED QUESTION
+
+DG-1R-05B:
+
+CONFIDENCE-AWARE:
+REPAIR /
+ABSTENTION.
+
+Goal:
+
+preserve:
+exact:
+single /
+distributed:
+correctable:
+repair
+
+while:
+
+detecting:
+ambiguous:
+multi-bit:
+local:
+damage
+
+and:
+
+ABSTAINING /
+QUARANTINING
+
+instead:
+of:
+mis-correcting.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
