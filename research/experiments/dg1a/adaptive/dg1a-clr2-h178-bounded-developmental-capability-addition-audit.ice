@@ -1378,3 +1378,575 @@ the first held-out H178 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — BOUNDED DEVELOPMENTAL CAPABILITY ADDITION
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / NEGATIVE FOR SINGLE CONNECTED <=2% GROWTH / POSITIVE CAPACITY-INTERFERENCE BOUNDARY.
+
+FINAL H178 HARNESS SHA-256
+
+e7f0c006a1e6b340373e448667dcc8dfa5d3b53a02554d8e3fe48572aa4394d2.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+c93f67fc4f441e1aa88ee03dfebb157027345f90e4be6674ee3e20014b8c2323.
+
+ACCEPTED PRIMARY FAMILY
+
+20260922700000..20260922700019.
+
+PRIMARY MATRIX
+
+20 held-out capability-addition worlds.
+
+9 policies.
+
+180 policy evaluations.
+
+Validation:
+
+- exact 20 primary seeds;
+- exact 9 policies / world;
+- no missing evaluations;
+- no post-primary growth tuning.
+
+CAPABILITY A BASELINE
+
+Median held-out A R^2:
+
+approximately:
+0.99815.
+
+100%
+of:
+worlds
+
+finish:
+stage-1 A learning
+above:
+R^2 0.85.
+
+PASS.
+
+CAPABILITY B IS ABSENT PRE-ADD
+
+Median:
+pre-add B R^2
+
+approximately:
+-1.81.
+
+Thus:
+
+B is:
+not:
+already present
+
+before:
+developmental addition.
+
+BOUNDED CONNECTED GROWTH
+
+Median B held-out R^2:
+
+GROW8:
+approximately 0.417.
+
+GROW16:
+0.462.
+
+GROW32:
+0.523.
+
+GROW64:
+0.644.
+
+GROW128:
+0.827.
+
+GROW256:
+0.917.
+
+The first:
+median B R^2 >=0.90
+
+appears only at:
+GROW256.
+
+That adds:
+
+approximately:
+7.98%
+new active cells.
+
+Frozen target:
+
+some:
+K<=64
+
+with:
+median B R^2 >=0.90.
+
+FAIL.
+
+WORLD-LEVEL B COMPETENCE
+
+GROW64:
+
+10%
+of worlds
+reach:
+B R^2 >=0.85.
+
+GROW128:
+
+40%.
+
+GROW256:
+
+95%.
+
+Thus:
+
+the capability threshold
+is:
+not:
+a median-only artifact.
+
+A PRESERVATION
+
+Median A R^2 loss:
+
+GROW8:
+approximately 0.0025.
+
+GROW16:
+0.0101.
+
+GROW32:
+0.0083.
+
+GROW64:
+0.0086.
+
+GROW128:
+0.0159.
+
+GROW256:
+0.0521.
+
+Small patches:
+
+preserve:
+A
+
+but:
+underfit:
+B.
+
+Large patch:
+
+learns:
+B
+
+but:
+crosses:
+the frozen
+median A-loss
+limit
+of:
+0.03.
+
+This establishes:
+
+a real:
+CAPACITY / INTERFERENCE
+trade-off.
+
+A OUTPUT DRIFT
+
+Median normalized
+A-output drift:
+
+GROW64:
+approximately 0.0111.
+
+GROW128:
+0.0165.
+
+GROW256:
+0.0497.
+
+The interference
+grows:
+with:
+new daughter capacity.
+
+RANDOM64 CONTROL
+
+Median B R^2:
+
+approximately 0.282.
+
+Median A loss:
+
+approximately 0.039.
+
+Error-driven GROW64:
+
+B:
+approximately 0.644.
+
+A loss:
+approximately 0.0086.
+
+Thus:
+
+error-driven
+growth placement
+
+is:
+materially better
+
+than:
+random connected growth.
+
+PASS:
+mechanism value.
+
+GLOBAL-DAUGHTER CONTROL
+
+B R^2:
+
+approximately 0.9992.
+
+But:
+
+median A R^2:
+
+approximately:
+-11.39.
+
+Global daughter capacity:
+
+learns:
+B
+
+while:
+catastrophically
+interfering:
+with A.
+
+Therefore:
+
+CAPACITY ALONE
+
+does NOT:
+solve:
+capability integration.
+
+GENERALIZATION
+
+For:
+GROW256,
+
+median:
+
+B validation / test
+R^2 gap:
+
+approximately 0.023.
+
+B train / test gap:
+
+approximately 0.016.
+
+Thus:
+
+the B-capable
+large patch
+
+does:
+generalize.
+
+Its failure is:
+
+A interference
+and:
+active-structure size,
+
+not:
+B overfitting.
+
+RESOURCE COST
+
+Median compute ratio
+to:
+GLOBAL-DAUGHTER:
+
+GROW64:
+approximately 0.0028.
+
+GROW128:
+approximately 0.0077.
+
+GROW256:
+approximately 0.0286.
+
+Thus:
+
+bounded local growth
+
+is:
+orders of magnitude
+cheaper
+
+than:
+the global-daughter
+capacity ceiling.
+
+HIBERNATION / REACTIVATION
+
+All:
+daughter policies
+
+return:
+exactly
+to:
+the frozen A phenotype
+
+when:
+daughter outputs
+are hibernated.
+
+Reactivation:
+
+restores:
+the integrated
+B predictions
+
+without:
+retraining.
+
+PASS:
+mechanically exact.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+A baseline learning.
+
+2.
+World-level A competence.
+
+8.
+Error-driven growth
+materially outperforms:
+random connected growth.
+
+9.
+B generalization
+for:
+the B-capable
+large patch.
+
+11.
+Bounded-growth compute
+well below:
+GLOBAL-DAUGHTER.
+
+12.
+Hibernation.
+
+13.
+Reactivation.
+
+14.
+GLOBAL-DAUGHTER
+is:
+the B-capacity ceiling.
+
+FAIL:
+
+3.
+No:
+K<=64
+reaches:
+median B R^2 >=0.90.
+
+4.
+No:
+K<=64
+has:
+>=90%
+world-level B R^2 >=0.85.
+
+5-7.
+The only:
+median B>=0.90
+connected patch
+is:
+GROW256,
+
+which:
+exceeds:
+the A-preservation
+and:
+A-drift
+limits.
+
+10.
+The B-capable:
+GROW256
+
+adds:
+approximately 8%
+new active cells,
+
+not:
+<=2%.
+
+STRONG SUPPORT:
+
+FAIL.
+
+FINAL INTERPRETATION
+
+H178 is:
+
+NEGATIVE
+
+for:
+
+ONE
+BOUNDED
+CONNECTED
+<=2%-OF-BODY
+CAPABILITY PATCH.
+
+But:
+
+the failure is:
+highly informative.
+
+A broad new capability
+is:
+not naturally represented
+by:
+one tiny
+spatially compact
+daughter colony.
+
+The B-capacity curve
+improves steadily
+as:
+the connected patch expands.
+
+At the same time:
+
+A interference
+also rises.
+
+This suggests:
+
+CAPABILITY ADDITION
+SHOULD NOT:
+BE MODELED AS:
+
+ONE BIGGER
+COGNITIVE PATCH.
+
+The prior repair research
+already showed:
+
+multiple:
+small,
+distributed
+micro-patches
+
+can:
+gain:
+parallel coverage
+without:
+one large wound.
+
+The capability-addition
+analogue is:
+
+DISTRIBUTED
+DEVELOPMENTAL GROWTH.
+
+NEXT:
+
+CLR2-H179 —
+DISTRIBUTED
+MICRO-PATCH
+CAPABILITY ADDITION.
+
+Keep:
+the SAME
+total new-cell budget.
+
+Compare:
+
+- one connected patch;
+- 4 distributed
+  connected micro-patches;
+- 8 distributed
+  connected micro-patches;
+
+selected:
+from:
+B residual geometry.
+
+Primary question:
+
+can:
+distributed
+64-cell growth
+
+achieve:
+the B coverage
+of:
+a much larger
+single patch
+
+while:
+
+preserving:
+A
+and:
+retaining:
+the <=2%
+active-structure
+budget?
+
+If:
+distributed growth succeeds,
+
+proceed to:
+sequential:
+A -> B -> C
+capability accumulation.
+
+H178 DOES NOT AUTHORIZE
+
+- production use;
+- live model modification;
+- biological claims;
+- whole-model retraining
+  as:
+  the candidate architecture;
+- canonical scientific claims;
+- STAB-18-R1 execution.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
