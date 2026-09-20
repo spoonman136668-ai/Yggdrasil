@@ -1066,3 +1066,94 @@ the first held-out H182 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PROGRAM-LINEAGE STATUS CORRECTION — SUPERSEDED BEFORE ACCEPTED PRIMARY
+
+DATE:
+2026-09-20.
+
+STATUS:
+SUPERSEDED / NON-EVIDENCE.
+
+This H182
+function-space recruitment experiment
+
+was:
+preregistered and frozen
+
+from:
+a concurrent stale lineage
+
+before:
+the accepted replacement-family
+H181 closure.
+
+The accepted H181 result now establishes:
+
+- deterministic coverage-balanced placement
+  PASSES:
+  the 64-cell
+  world-level capability gate;
+
+- the 48-cell
+  coverage-balanced
+  learned-gated policy
+
+  ALSO passes:
+  capability
+  and:
+  A-preservation
+  reliability;
+
+- therefore:
+  additional sparse
+  function-space recruitment
+
+  is NOT:
+  the next authorized
+  cognitive bottleneck.
+
+Sandbox files
+associated with:
+this stale H182 design
+
+exist
+and:
+some primary execution
+may have occurred.
+
+They are:
+
+NON-EVIDENCE.
+
+No:
+H182 result
+from:
+this artifact
+
+may:
+enter:
+the accepted Yggdrasil
+cognitive lineage.
+
+The accepted next inflection
+from:
+H181
+
+is:
+
+SEQUENTIAL
+CAPABILITY ACCUMULATION.
+
+To avoid:
+number / provenance collision,
+
+the sequential experiment
+will begin as:
+
+CLR2-H183.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
