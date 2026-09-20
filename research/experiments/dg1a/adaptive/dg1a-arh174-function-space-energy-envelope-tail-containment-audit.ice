@@ -1080,3 +1080,97 @@ the first held-out H174 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PROGRAM-DIRECTION STATUS CORRECTION — PRIMARY NOT STARTED
+
+DATE:
+2026-09-20.
+
+STATUS:
+SUPERSEDED BEFORE PRIMARY / NON-EVIDENCE.
+
+H174 was preregistered as:
+a continuation
+of:
+learned-logit
+substrate tail-containment work.
+
+Before:
+any H174 held-out primary world
+was executed,
+
+the research program
+was explicitly redirected
+from:
+
+proof-of-mechanism
+toward:
+
+proof-of-cognition.
+
+The new allocation is:
+
+approximately:
+20%
+substrate de-risking
+
+and:
+80%
+cognitive inflection-point
+research.
+
+H173 already established:
+
+additional:
+coefficient-space
+containment tuning
+
+is not:
+the highest-leverage
+primary question.
+
+Therefore:
+
+H174
+is:
+SUPERSEDED.
+
+Any:
+H174 sanity output
+
+is:
+NON-EVIDENCE.
+
+No:
+H174 primary family
+may be spent
+under:
+this preregistration.
+
+The underlying:
+function-space containment idea
+
+may:
+return later
+
+only if:
+a cognitive lesion /
+regeneration experiment
+
+shows:
+that learned-function
+tail containment
+
+is:
+a direct blocker
+for:
+cognitive repair.
+
+NEXT ACTIVE PROGRAM:
+
+Cognitive Lesion–Regeneration 1.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
