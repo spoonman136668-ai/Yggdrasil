@@ -1359,3 +1359,963 @@ NON-EVIDENCE.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-05I NON-EVIDENCE CLOSURE — CROSS-BIT-PLANE FAULT-TYPE CONFIDENCE
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+STRONG POSITIVE ONE-PLANE FALSE-REPAIR SUPPRESSION /
+FULL TWO-PLANE LOGICAL-REPAIR PRESERVATION /
+SINGLE-BIT SENSITIVITY COST CONFIRMED /
+CROSS-PLANE CORRELATED-INTEGRITY BOUNDARY CONFIRMED /
+NON-CANONICAL /
+NON-EVIDENCE.
+
+FROZEN HARNESS
+
+Git blob SHA:
+
+00dc7efc861c1289a15266b85cd260a54ec2a178.
+
+Source SHA-256:
+
+444ae03bccdf292b3a40a3a2a62ad069d507ac72ea8ba2c6886077483d330778.
+
+Source bytes:
+
+12107.
+
+OUTPUT
+
+RUN 1 SHA-256:
+
+822512fb20c2b2f943767f3e92a3f6188889a183a09487b975775c157b8ef8a2.
+
+RUN 2 SHA-256:
+
+822512fb20c2b2f943767f3e92a3f6188889a183a09487b975775c157b8ef8a2.
+
+Byte-identical:
+
+PASS.
+
+MECHANICAL VALIDITY
+
+mechanical_valid:
+
+TRUE.
+
+FROZEN SIGNALS
+
+CROSSPLANE_FALSE_REPAIR_SUPPRESSION:
+
+TRUE.
+
+LOGICAL_REPAIR_PRESERVATION:
+
+TRUE.
+
+CROSSPLANE_CONFIDENCE_SIGNAL:
+
+TRUE.
+
+CROSSPLANE_CORRELATED_FAILURE:
+
+TRUE.
+
+SUPPORT THRESHOLD:
+
+2:
+bit planes.
+
+ONE-PLANE CORRELATED-INTEGRITY FAILURE — FIXED
+
+CHECK4_BIT0_D6.
+
+GREEDY_BASELINE:
+
+inferred flips:
+
+8.
+
+applied flips:
+
+8.
+
+false applied flips:
+
+8.
+
+false-applied fraction:
+
+1.0.
+
+median:
+logical divergence area:
+
+2.875.
+
+CROSSPLANE2_GATE:
+
+inferred flips:
+
+8.
+
+applied flips:
+
+0.
+
+abstained inferred flips:
+
+8.
+
+false applied flips:
+
+0.
+
+median:
+logical divergence area:
+
+0.
+
+sustained exact logical recovery:
+
+1.0.
+
+CHECK4_BIT0_D7.
+
+GREEDY_BASELINE:
+
+false applied flips:
+
+8.
+
+median:
+logical divergence area:
+
+1.9999999999999998.
+
+CROSSPLANE2_GATE:
+
+applied flips:
+
+0.
+
+false applied flips:
+
+0.
+
+logical divergence area:
+
+0.
+
+sustained exact logical recovery:
+
+1.0.
+
+Thus:
+
+one-plane:
+integrity:
+corruption
+
+can:
+still:
+fool:
+the:
+05H:
+localizer,
+
+but:
+
+the:
+cross-plane:
+confidence:
+gate
+
+correctly:
+recognizes:
+
+the:
+same:
+logical:
+region
+
+is:
+NOT:
+independently:
+implicated
+on:
+multiple:
+bit planes.
+
+TRUE LOGICAL REPAIR — PRESERVED
+
+LOCAL_DATA2_D6.
+
+CROSSPLANE2_GATE:
+
+logical divergence area:
+
+0.
+
+sustained exact recovery:
+
+1.0.
+
+false applied flips:
+
+0.
+
+DISTRIBUTED_DATA2.
+
+Two:
+damaged:
+logical:
+regions.
+
+CROSSPLANE2_GATE:
+
+logical divergence area:
+
+0.
+
+sustained exact recovery:
+
+1.0.
+
+applied flips:
+
+32.
+
+false applied flips:
+
+0.
+
+DATA2_PLUS_CHECK2_D6.
+
+logical divergence area:
+
+0.
+
+sustained exact recovery:
+
+1.0.
+
+false applied flips:
+
+0.
+
+DATA2_PLUS_CHECK3_D7.
+
+logical divergence area:
+
+0.
+
+sustained exact recovery:
+
+1.0.
+
+false applied flips:
+
+0.
+
+Thus:
+
+the:
+confidence:
+gate
+
+preserves:
+all:
+frozen:
+two-plane:
+logical:
+repair:
+positives
+
+while:
+
+eliminating:
+the:
+one-plane:
+CHECK4:
+false-repair:
+mode.
+
+LOGICAL_REPAIR_PRESERVATION:
+
+PASS.
+
+SINGLE-BIT SENSITIVITY COST
+
+SINGLE_DATA1_D6.
+
+GREEDY_BASELINE:
+
+logical divergence area:
+
+0.
+
+sustained exact recovery:
+
+1.0.
+
+false applied flips:
+
+0.
+
+CROSSPLANE2_GATE:
+
+inferred flips:
+
+8.
+
+applied flips:
+
+0.
+
+abstained inferred flips:
+
+8.
+
+false applied flips:
+
+0.
+
+median:
+logical divergence area:
+
+2.875.
+
+sustained exact recovery:
+
+0.25.
+
+Thus:
+
+the:
+same:
+confidence:
+rule
+
+that:
+suppresses:
+single-plane:
+integrity:
+masquerades
+
+also:
+suppresses:
+
+true:
+single-plane:
+logical:
+faults.
+
+This:
+is:
+the:
+frozen:
+specificity /
+sensitivity:
+tradeoff.
+
+ADVERSARIAL CROSS-PLANE BOUNDARY
+
+CHECK4_BITS01_D6.
+
+Four:
+corrupted:
+integrity:
+channels.
+
+Each:
+lies
+on:
+
+bit plane 0
+and:
+bit plane 1.
+
+GREEDY_BASELINE:
+
+false applied flips:
+
+16.
+
+logical divergence area:
+
+3.166666666666667.
+
+CROSSPLANE2_GATE:
+
+inferred flips:
+
+16.
+
+plane support:
+
+2:
+for:
+the:
+same:
+healthy:
+logical:
+region.
+
+applied flips:
+
+16.
+
+false applied flips:
+
+16.
+
+false-applied fraction:
+
+1.0.
+
+logical divergence area:
+
+3.166666666666667.
+
+sustained exact recovery:
+
+0.
+
+CROSSPLANE_CORRELATED_FAILURE:
+
+TRUE.
+
+Thus:
+
+cross-plane:
+agreement
+
+is:
+useful:
+
+only:
+to:
+the:
+extent
+that:
+
+faults:
+across:
+bit planes
+
+are:
+not:
+themselves:
+correlated.
+
+MECHANISTIC CONCLUSION
+
+DG-1R-05I adds:
+
+FAULT-TYPE:
+CONFIDENCE
+
+as:
+a:
+distinct:
+software-tissue:
+function.
+
+The:
+same:
+hypergraph:
+syndrome:
+
+can:
+suggest:
+a:
+logical:
+repair
+
+without:
+proving:
+that:
+logical:
+state
+is:
+the:
+source:
+of:
+the:
+fault.
+
+Cross-plane:
+coherence
+
+provides:
+additional:
+evidence:
+
+multi-bit:
+logical:
+damage
+often:
+implicates:
+the:
+same:
+region
+
+across:
+multiple:
+planes.
+
+That:
+lets:
+the:
+system
+
+reject:
+some:
+integrity:
+masquerades
+
+without:
+additional:
+persistent:
+state.
+
+However:
+
+the:
+confidence:
+signal
+
+is:
+not:
+independent:
+truth.
+
+If:
+integrity:
+faults
+
+are:
+correlated
+across:
+the:
+same:
+multiple:
+planes,
+
+they:
+can:
+manufacture:
+the:
+same:
+confidence:
+pattern.
+
+Likewise:
+
+true:
+single-bit:
+logical:
+damage
+
+does:
+not:
+provide:
+cross-plane:
+support
+
+and:
+is:
+missed.
+
+Therefore:
+
+the:
+remaining:
+problem
+
+is:
+not:
+
+which:
+static:
+threshold
+to:
+choose.
+
+It is:
+
+IDENTIFIABILITY.
+
+Some:
+fault:
+classes
+
+produce:
+overlapping:
+observations
+
+under:
+the:
+current:
+128-bit:
+snapshot.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05J —
+FAULT:
+IDENTIFIABILITY /
+SYNDROME-COLLISION:
+AUDIT.
+
+No:
+new:
+repair:
+heuristic.
+
+Instead:
+
+exhaustively:
+analyze:
+
+the:
+frozen:
+HYPER20:
+observation:
+space.
+
+For:
+each:
+bit plane:
+
+enumerate:
+bounded:
+combinations
+of:
+
+- logical:
+  faults;
+- integrity:
+  faults.
+
+Map:
+
+fault explanation
+->
+20-bit syndrome.
+
+Measure:
+
+- exact:
+  syndrome collisions;
+- minimum:
+  integrity-fault:
+  count
+  that:
+  can:
+  imitate:
+  one:
+  logical:
+  fault;
+- minimum:
+  logical-plus-integrity:
+  explanation
+  for:
+  check-only:
+  patterns;
+- degree-6:
+  and:
+  degree-7:
+  decision:
+  boundaries;
+- ambiguity:
+  under:
+  weighted:
+  fault-cost:
+  ratios.
+
+Then:
+lift:
+the:
+analysis
+
+across:
+multiple:
+bit planes
+
+to:
+measure:
+
+when:
+cross-plane:
+support
+is:
+actually:
+independent
+
+and:
+
+when:
+correlated:
+integrity:
+faults
+can:
+exactly:
+imitate:
+multi-bit:
+logical:
+damage.
+
+Primary question:
+
+WHAT:
+FAULT:
+CLASSES
+
+ARE:
+DISTINGUISHABLE
+
+FROM:
+THE:
+CURRENT:
+128-BIT:
+STATE
+
+IN:
+PRINCIPLE?
+
+If:
+two:
+different:
+fault:
+classes
+
+produce:
+the:
+same:
+observable:
+syndrome:
+
+no:
+decoder:
+can:
+distinguish:
+them
+without:
+
+additional:
+information,
+time,
+prior:
+assumptions,
+or:
+independent:
+state.
+
+That:
+boundary
+should:
+be:
+mapped
+before:
+adding:
+another:
+repair:
+heuristic.
+
+PLAIN-SPEAK SUMMARY
+
+This:
+worked
+exactly:
+the:
+way:
+we:
+hoped.
+
+When:
+four:
+backup:
+channels
+lied
+on:
+only:
+one:
+bit:
+plane,
+
+the:
+old:
+decoder
+thought:
+healthy:
+data
+was:
+damaged.
+
+The:
+new:
+confidence:
+rule
+asked:
+
+"Does:
+this:
+same:
+data:
+region
+look:
+damaged
+on:
+more:
+than:
+one:
+plane?"
+
+The:
+answer
+was:
+no,
+
+so:
+it:
+refused:
+the:
+bad:
+repair.
+
+At:
+the:
+same:
+time,
+
+real:
+two-bit:
+data:
+damage
+still:
+repaired:
+perfectly,
+
+including:
+two:
+damaged:
+regions
+at:
+once.
+
+But:
+there:
+are:
+two:
+costs.
+
+A:
+real:
+single-bit:
+data:
+fault
+only:
+shows:
+up:
+on:
+one:
+plane,
+
+so:
+the:
+new:
+rule
+refuses:
+to:
+repair:
+that:
+too.
+
+And:
+if:
+the:
+backup:
+channels
+lie:
+on:
+two:
+planes
+at:
+the:
+same:
+time,
+
+they:
+can:
+fake:
+the:
+same:
+confidence:
+signal
+
+and:
+the:
+system
+is:
+fooled
+again.
+
+So:
+we:
+have:
+reached:
+a:
+more:
+fundamental:
+question:
+
+are:
+some:
+different:
+kinds:
+of:
+damage
+
+literally:
+indistinguishable
+from:
+the:
+information
+currently:
+stored?
+
+The:
+next:
+experiment
+will:
+map:
+that:
+boundary
+directly
+
+instead:
+of:
+guessing:
+another:
+threshold.
+
+DG-1R-05:
+canonical frozen primary remains:
+
+UNSPENT.
+
+DG-1R-05I remains:
+
+NON-CANONICAL /
+NON-EVIDENCE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
