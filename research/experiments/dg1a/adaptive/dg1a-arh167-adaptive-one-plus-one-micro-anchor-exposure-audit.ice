@@ -846,3 +846,89 @@ SYNTHETIC_MEASURED_SANDBOX_ADAPTIVE_ONE_PLUS_ONE_MICRO_ANCHOR_EXPOSURE_CONTROL
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+STATUS CORRECTION — SUPERSEDED NUMBERING-COLLISION DRAFT
+
+DATE:
+2026-09-20.
+
+STATUS:
+SUPERSEDED / PRIMARY NOT STARTED / NON-EVIDENCE.
+
+A second H167 preregistration:
+
+dg1a-arh167-single-observation-information-design-micro-anchor-audit.ice
+
+was created after:
+this draft
+
+and:
+was subsequently frozen
+and:
+executed
+on:
+the originally overlapping:
+
+20260921600000..20260921600119
+
+held-out family.
+
+Therefore:
+
+this adaptive-one-plus-one draft
+can no longer use:
+that seed family
+
+as:
+held-out evidence.
+
+No:
+ADAPT-1PLUS1
+H167 primary
+was executed.
+
+No:
+result from:
+this file
+
+is:
+accepted evidence.
+
+DISPOSITION
+
+This draft is:
+SUPERSEDED.
+
+Its underlying question:
+
+adaptive purchase
+of:
+a second micro-anchor observation
+
+remains:
+scientifically relevant.
+
+It must be:
+
+reissued
+under:
+the next unused experiment ID
+
+with:
+
+- a fresh held-out seed family;
+- parent:
+  the completed
+  single-observation information-design experiment;
+- any query-selection changes
+  justified by:
+  that completed result
+
+frozen:
+before:
+new primary execution.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
