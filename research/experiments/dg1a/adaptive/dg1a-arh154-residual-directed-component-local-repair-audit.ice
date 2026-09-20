@@ -583,3 +583,192 @@ SYNTHETIC_MEASURED_SANDBOX_RESIDUAL_DIRECTED_COMPONENT_LOCAL_MICROPATCH
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 stab18_r1_touched = false
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — COMPONENT RESIDUAL HARNESS
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H154 HELD-OUT PRIMARY EXECUTION.
+
+SANDBOX HARNESS SHA-256
+
+8dff18f3a5e192c42f5211174d624385d0125fb153278d53e82fbd7f5e06e6ae.
+
+COMPONENT REALIZATION
+
+Initial wound components:
+
+deterministic Moore-connected components
+of:
+the declared lesion.
+
+Component ordering:
+
+ascending minimum member ID.
+
+Each component receives:
+32 deterministic local feedback candidates.
+
+TRAIN / VALIDATION ACQUISITION
+
+Within each component pool:
+
+candidate index parity determines:
+
+even:
+TRAIN.
+
+odd:
+VALIDATION.
+
+Only:
+TRAIN
+targets
+enter:
+the ridge coefficient solve.
+
+VALIDATION targets
+enter only:
+
+- residual-ratio estimation;
+- routing;
+- stop;
+- reopen.
+
+COMPONENT SOLVE
+
+Only:
+the selected component's
+lesion coefficients
+are updated.
+
+All:
+surviving original cells
+
+and:
+all other component estimates
+are held:
+fixed.
+
+ADAPTIVE ROUTING
+
+Before:
+residual-directed ranking,
+
+each active component
+is bootstrapped toward:
+
+- at least one TRAIN observation;
+- at least one VALIDATION observation.
+
+After bootstrap:
+
+the next query goes to:
+the unstopped component
+with:
+largest observed validation residual ratio.
+
+STOP
+
+Requires:
+
+- at least two validation observations;
+- residual ratio <=0.10;
+- for two consecutive maturation steps.
+
+REOPEN
+
+A stopped component
+reopens when:
+
+residual ratio >0.15.
+
+FIXED COMPARATOR
+
+COMP-FIXED2:
+
+2 observations / step,
+maximum 24,
+round-robin component allocation.
+
+ADAPTIVE PRIMARY
+
+COMP-ADAPT2:
+
+2 observations / step,
+maximum 24.
+
+ADAPTIVE CEILING
+
+COMP-ADAPT4:
+
+4 observations / step,
+maximum 48.
+
+SANITY
+
+140 underlying worlds.
+
+840 policy-world evaluations.
+
+Disjoint:
+20260920190000
+sanity family.
+
+NON-EVIDENCE.
+
+Mechanical checks:
+
+- all policies completed;
+- component routing remained local;
+- surviving coefficients remained fixed;
+- no hidden lost coefficient
+  entered:
+  non-oracle repair.
+
+Scientific sanity signal:
+
+COMP-ADAPT2
+did NOT:
+consistently outperform
+H152-FIXED-FB2.
+
+FOUR-PATCH
+remained:
+difficult.
+
+Some:
+compact small wounds
+stopped:
+with:
+fewer than 24 observations,
+
+but:
+local validation closure
+did not always:
+translate to:
+high held-out recovery.
+
+No:
+threshold,
+budget,
+or:
+acceptance gate
+is changed
+from:
+this sanity result.
+
+PRIMARY FAMILY REMAINS
+
+20260920100000..20260920102399.
+
+No execution-semantic change
+after:
+the first held-out H154 primary world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
