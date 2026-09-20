@@ -528,3 +528,119 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — H191-P10 REPEATED OOD PATCH-REUSE HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST H191-P10 WORLD.
+
+HARNESS
+
+research/experiments/dg1a/adaptive/harnesses/h191_p10_repeated_ood_patch_reuse_v1.py
+
+Harness commit:
+
+841e9582f75edaf3707fe9ae4b1c845bf580aa9e.
+
+Git blob SHA:
+
+736e78364340dd355a8ecd163a2deef29edf1a2a.
+
+Source SHA-256:
+
+9efde966ddf02c4695462af2959555098edfdcc447e6c5c95e26c86c9540d8b4.
+
+Source bytes:
+
+17830.
+
+IMPLEMENTATION FORM
+
+Self-contained.
+
+No:
+transient parent harness
+is required
+for:
+P10 execution.
+
+FROZEN WORLD FAMILY
+
+20260925100000..20260925100005.
+
+6 worlds.
+
+FROZEN OOD ORDER
+
+OOD8:
+(0.00,0.00).
+
+OOD9:
+(+0.18,0.00).
+
+OOD10:
+(0.00,+0.18).
+
+OOD11:
+(-0.18,0.00).
+
+OOD sd:
+
+0.08.
+
+OOD global radius cutoff:
+
+<=0.40.
+
+OOD frequency range:
+
+[5,8].
+
+PATCH RULE
+
+At:
+each:
+OOD insertion,
+
+try:
+decoder-only.
+
+If:
+distillation NMSE
+>0.02,
+
+allow:
+exactly:
+one:
+new:
+fixed-dictionary:
+factor.
+
+Otherwise:
+
+no:
+factor growth.
+
+REPRODUCIBILITY
+
+Execute:
+two complete:
+6-world:
+P8-development
+plus:
+four-OOD-insertion sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
