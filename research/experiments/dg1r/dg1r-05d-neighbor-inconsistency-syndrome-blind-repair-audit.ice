@@ -1393,3 +1393,105 @@ correction.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN PACKAGING CORRECTION 02 — AUTHORITATIVE FIXA IDENTITY
+
+DATE:
+2026-09-20.
+
+STATUS:
+CORRECTED BEFORE:
+THE:
+FIRST:
+DG-1R-05D:
+SCENARIO.
+
+The:
+previous:
+packaging correction
+incorrectly:
+named:
+the:
+mechanically invalid:
+original:
+harness
+
+as:
+the:
+authoritative:
+execution source.
+
+That:
+was:
+a:
+documentation:
+error only.
+
+AUTHORITATIVE EXECUTABLE
+
+research/experiments/dg1r/harnesses/dg1r_05d_syndrome_blind_fixa_v1.py
+
+FixA commit:
+
+cc0d4e92d4eefce87e414fbceb8f11c086cd2cc3.
+
+Git blob SHA:
+
+d2bdec439f9f6d4573ddd264fbfd1fe1e5bd3f5e.
+
+Source SHA-256:
+
+57557eb12e025e90e59c64fb513c0dbe97028e8bab4a7db09d528cc7879161fb.
+
+Source bytes:
+
+11027.
+
+The:
+execution copy
+
+matches:
+the:
+frozen:
+FixA:
+source SHA-256
+and:
+byte count.
+
+The:
+invalid:
+original:
+dg1r_05d_syndrome_blind_v1.py
+
+must NOT:
+be:
+executed
+or:
+interpreted
+as:
+DG-1R-05D:
+evidence.
+
+No:
+DG-1R-05D:
+scenario
+was:
+executed
+before:
+this:
+correction.
+
+No:
+world,
+lesion,
+trigger,
+repair,
+metric,
+threshold,
+or:
+classification
+changed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
