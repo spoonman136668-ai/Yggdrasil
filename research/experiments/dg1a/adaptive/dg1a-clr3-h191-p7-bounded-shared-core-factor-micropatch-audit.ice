@@ -729,3 +729,98 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — H191-P7 BOUNDED SHARED-CORE MICROPATCH HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST H191-P7 WORLD.
+
+HARNESS
+
+research/experiments/dg1a/adaptive/harnesses/h191_p7_bounded_shared_core_micropatch_v1.py
+
+Harness commit:
+
+32f3db885223b41d26d54e3d964e5947b32dee7b.
+
+Git blob SHA:
+
+d39ae30800b27e9ddc65802026d41aa4d6dc973d.
+
+Source SHA-256:
+
+575471bf0c8bea2e62a7f8e80a6803c5c135f5173f8b7b3c5829ad03044f816a.
+
+Source bytes:
+
+12689.
+
+DEPENDENCY
+
+Frozen H191-P6 harness Git blob:
+
+6e945c8a6d5ac1f1891ce79945717acd1192a5c6.
+
+Pinned P6 source SHA-256:
+
+8460bdef124a1d42f9e338249fbbbf99c88e85494bea35a56ecc7530cfc1d31e.
+
+FROZEN WORLD FAMILY
+
+20260924800000..20260924800011.
+
+12 worlds.
+
+FROZEN POLICIES
+
+PATCH0:
+8 frozen CORE3 factors;
+new capability decoder only.
+
+PATCH1:
+CORE3 +
+exactly 1:
+new fixed-dictionary factor.
+
+PATCH2:
+nested PATCH1 +
+exactly 1:
+additional fixed-dictionary factor.
+
+JOINT_REFIT8:
+reference only.
+
+Patch factor recruitment:
+
+new capability 3:
+unlabeled distillation residual only.
+
+No:
+old decoder refit.
+No:
+old support move.
+No:
+factor replacement.
+No:
+factor deletion.
+
+REPRODUCIBILITY
+
+Execute:
+two complete:
+12-world sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
