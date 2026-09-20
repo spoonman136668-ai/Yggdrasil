@@ -807,3 +807,718 @@ SYNTHETIC_MEASURED_SANDBOX_GLOBAL_INFORMATION_DESIGN_MICROPATCH
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 stab18_r1_touched = false
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — GLOBAL INFORMATION-DESIGN / MEASUREMENT-CONDITIONED MICRO-PATCH
+
+DATE:
+2026-09-19.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-POSITIVE.
+
+FROZEN HARNESS SHA-256
+
+40e39df728c731d8f03c16084cd57a0d4c5d54287e3c5ae99e04446eaa325847.
+
+ACCEPTED PRIMARY FAMILY
+
+20260920500000..20260920502399.
+
+PRIMARY MATRIX
+
+2,400 underlying worlds.
+
+7 policies.
+
+16,800 policy-world evaluations.
+
+Validation:
+
+- exactly 2,400 unique held-out seeds;
+- exact accepted seed interval;
+- exactly seven policy rows / seed;
+- no accepted-seed gaps;
+- no accepted-seed duplicates;
+- zero functionally-trivial worlds;
+- contaminated 202609204... family excluded;
+- no post-primary parameter tuning.
+
+PRIMARY CANDIDATE
+
+AOPT-L03.
+
+MIXED CONTEXT — FINAL RECOVERY
+
+Pooled across:
+COMPACT
+and:
+FOUR-PATCH.
+
+AOPT-L03 median final functional recovery:
+
+1%:
+0.9830.
+
+2%:
+0.9644.
+
+5%:
+0.9854.
+
+10%:
+0.9896.
+
+Frozen 1%..5% target:
+
+>=0.94.
+
+PASS:
+all three.
+
+MIXED T90 RELIABILITY
+
+AOPT-L03
+T90-world fraction:
+
+1%:
+88.0%.
+
+2%:
+88.0%.
+
+5%:
+95.5%.
+
+Frozen target:
+
+>=80%
+for all three
+
+and:
+>=85%
+for:
+at least two of three.
+
+PASS:
+all three exceed 85%.
+
+This is:
+the strongest reliable
+small-lesion functional-recovery result
+in:
+the H151..H156 sequence.
+
+COMBINED BIAS + INFORMATION-DESIGN EFFECT
+
+FIXED-L10
+T90-world fraction:
+
+1%:
+58.5%.
+
+2%:
+51.0%.
+
+5%:
+70.5%.
+
+AOPT-L03 improvement:
+
+1%:
++29.5 percentage points.
+
+2%:
++37.0.
+
+5%:
++25.0.
+
+Required:
+
+>=15 points
+in:
+at least two of three.
+
+PASS:
+3 / 3.
+
+Thus:
+
+the H152/H153 reliability ceiling
+was not:
+an unavoidable consequence
+of:
+the 24-observation cap.
+
+Measurement / inference configuration
+was:
+a major part
+of:
+the limit.
+
+QUERY-DESIGN VALUE
+AT FIXED REGULARIZATION
+
+FIXED-L03
+T90-world fraction:
+
+1%:
+81.5%.
+
+2%:
+76.0%.
+
+5%:
+93.5%.
+
+AOPT-L03:
+
+88.0%,
+88.0%,
+95.5%.
+
+Improvement:
+
+1%:
++6.5 points.
+
+2%:
++12.0.
+
+5%:
++2.0.
+
+Required:
+
+>=5 points
+in:
+at least two of three
+
+OR:
+the frozen downtime alternative.
+
+PASS:
+1%
+and:
+2%.
+
+Median functional downtime:
+
+1%:
+AOPT 1.764
+versus:
+FIXED 1.967.
+
+Reduction:
+approximately 10.3%.
+
+2%:
+2.398
+versus:
+2.658.
+
+Reduction:
+approximately 9.8%.
+
+5%:
+2.554
+versus:
+2.805.
+
+Reduction:
+approximately 8.9%.
+
+Therefore:
+
+query design adds:
+measurable value
+beyond:
+the lambda change.
+
+AOPT VERSUS GREEDY D-OPT / LEVERAGE
+
+LEV-L03
+T90-world fraction:
+
+1%:
+88.0%.
+
+2%:
+86.5%.
+
+5%:
+95.0%.
+
+AOPT-L03:
+
+88.0%,
+88.0%,
+95.5%.
+
+AOPT matches / exceeds:
+LEV
+in:
+3 / 3.
+
+Median final recovery difference
+AOPT minus LEV:
+
+1%:
+approximately -0.0006.
+
+2%:
+approximately +0.0015.
+
+5%:
+approximately +0.0013.
+
+No:
+>0.02
+AOPT deficit.
+
+PASS.
+
+Interpretation:
+
+both:
+global D-optimal / leverage
+and:
+A-optimal conditioning
+
+are:
+effective.
+
+A-optimal trace reduction
+has:
+a small edge
+at:
+2% / 5%
+without:
+meaningful quality sacrifice.
+
+DIRECT CONDITIONING MECHANISM
+
+FOUR-PATCH,
+MIXED 2%:
+
+median posterior covariance trace:
+
+FIXED-L03:
+96.19.
+
+AOPT-L03:
+86.92.
+
+Reduction:
+approximately 9.6%.
+
+FOUR-PATCH,
+MIXED 5%:
+
+FIXED-L03:
+272.32.
+
+AOPT-L03:
+260.56.
+
+Reduction:
+approximately 4.3%.
+
+PASS:
+both required cells.
+
+This directly links:
+the designed measurement set
+
+to:
+lower posterior uncertainty
+for:
+the joint missing-state solve.
+
+MULTI-WOUND RELIABILITY
+
+AOPT-L03
+T90-world fraction:
+
+MIXED 1%:
+
+COMPACT:
+87%.
+
+FOUR:
+89%.
+
+gap:
+2 points.
+
+MIXED 2%:
+
+COMPACT:
+91%.
+
+FOUR:
+85%.
+
+gap:
+6 points.
+
+MIXED 5%:
+
+COMPACT:
+94%.
+
+FOUR:
+97%.
+
+gap:
+3 points.
+
+Thus:
+
+FOUR-PATCH reliability
+is:
+within 10 points
+of:
+COMPACT
+
+in:
+3 / 3.
+
+This is:
+a major improvement
+over:
+H152..H155.
+
+MULTI-WOUND LATENCY
+
+Median functional T90
+among worlds reaching T90:
+
+MIXED 1%:
+
+COMPACT:
+3.
+
+FOUR:
+6.
+
+MIXED 2%:
+
+COMPACT:
+4.
+
+FOUR:
+9.
+
+MIXED 5%:
+
+COMPACT:
+7.
+
+FOUR:
+8.
+
+Frozen <=20% latency-penalty gate:
+
+PASS:
+5%.
+
+FAIL:
+1%,
+2%.
+
+Therefore:
+
+H156 removes:
+the distributed-wound
+RELIABILITY gap
+
+but:
+
+does NOT remove:
+the distributed-wound
+LATENCY gap
+for:
+the smallest lesions.
+
+This is:
+the principal remaining limit.
+
+SMOOTH CONTEXT
+
+AOPT-L03
+median final recovery:
+
+1%:
+0.9994.
+
+2%:
+0.9985.
+
+5%:
+0.9990.
+
+PASS:
+all >=0.95.
+
+Lower regularization
+and:
+information design
+
+do NOT:
+destabilize:
+smooth developmental repair.
+
+SCRAMBLED CONTEXT
+
+At:
+5% damage:
+
+AOPT-L03
+median final recovery:
+0.8642.
+
+SMOOTH:
+0.9990.
+
+SCRAMBLED remains:
+materially below:
+SMOOTH.
+
+The gap:
+approximately 0.135.
+
+Mechanism specificity:
+retained,
+although:
+functional feedback can still
+recover substantial arbitrary-state signal.
+
+CHECKPOINT-ORACLE
+
+Final recovery:
+1.0.
+
+Remains:
+the ceiling.
+
+PASS.
+
+PREREGISTERED GATE REVIEW
+
+PASS:
+
+1.
+MIXED 1%..5%
+median final recovery >=0.94.
+
+2.
+MIXED T90 reliability
+>=0.80 all
+and:
+>=0.85 in at least two.
+
+3.
+>=15-point gain
+over:
+FIXED-L10
+in:
+3 / 3.
+
+4.
+Information-design value
+over:
+FIXED-L03
+at:
+1%
+and:
+2%.
+
+5.
+AOPT
+matches / exceeds:
+LEV
+without:
+material final-recovery loss.
+
+6A.
+FOUR-PATCH
+T90-world reliability parity
+within:
+10 points
+in:
+3 / 3.
+
+7.
+Posterior-trace reduction
+in:
+FOUR-PATCH
+2%
+and:
+5%.
+
+8.
+SMOOTH quality.
+
+9.
+SCRAMBLED remains:
+below:
+SMOOTH.
+
+10.
+ORACLE ceiling.
+
+FAIL:
+
+6B.
+FOUR-PATCH
+median T90 latency penalty
+<=20%
+in:
+at least two of three.
+
+Observed pass:
+1 / 3.
+
+FINAL INTERPRETATION
+
+H156 is:
+
+MIXED-POSITIVE.
+
+The core H156 hypothesis is:
+SUPPORTED.
+
+The 24-query limit
+was NOT:
+intrinsically too small.
+
+A major portion
+of:
+the prior reliability failure
+
+came from:
+
+- overly strong regularization;
+- poorly conditioned measurement selection;
+- component-first allocation
+  that did not optimize:
+  the joint inverse problem.
+
+With:
+
+lambda=0.03
+
+and:
+
+global information-designed queries,
+
+MIXED
+1%..5%
+functional T90 reliability rises to:
+
+88%,
+88%,
+95.5%.
+
+This is:
+a substantial step
+toward:
+reliable intelligence micro-patching.
+
+The remaining failure
+has changed character.
+
+It is no longer primarily:
+
+CAN
+THE PATCH
+RECOVER?
+
+It is:
+
+HOW FAST
+CAN
+MULTIPLE
+SMALL PATCHES
+RECOVER?
+
+The multi-wound reliability gap
+is essentially removed,
+
+but:
+1% / 2%
+FOUR-PATCH worlds
+
+often require:
+more maturation steps
+than:
+compact worlds.
+
+ARCHITECTURAL CONSEQUENCE
+
+The next experiment should NOT:
+
+increase:
+the 24-observation cap.
+
+It should:
+
+change:
+the temporal schedule
+of:
+the same 24
+information-designed observations.
+
+Candidate:
+
+FRONT-LOADED /
+SUFFICIENCY-TRIGGERED
+FEEDBACK BURSTS.
+
+Examples:
+
+- 4 observations / step
+  for:
+  6 steps;
+
+- 6 observations / step
+  for:
+  4 steps;
+
+- adaptive batch size
+  driven by:
+  posterior trace / rank sufficiency.
+
+The target is:
+
+preserve:
+H156 reliability
+
+while:
+
+reducing:
+FOUR-PATCH functional T90
+
+without:
+more total observations.
+
+NEXT SCOPED EXPERIMENT
+
+H157 —
+TEMPORAL INFORMATION-SCHEDULING /
+FRONT-LOADED MICRO-PATCH FEEDBACK.
+
+H156 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- global retraining;
+- biological claims;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
