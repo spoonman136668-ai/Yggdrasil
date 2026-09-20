@@ -227,3 +227,77 @@ NON_EVIDENCE_SURROGATE_MECHANICAL_AUDIT
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — H191-P1 MULTISCALE LATENT HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST H191-P1 WORLD.
+
+HARNESS
+
+research/experiments/dg1a/adaptive/harnesses/h191_p1_multiscale_shared_latent_v1.py
+
+Harness commit:
+
+6cfcbc20b1f4910dec8864ed160d95cbc548c536.
+
+Git blob SHA:
+
+67c5ba8d185a69e7f3fe9dfd0cb3d0053bd44029.
+
+Source SHA-256:
+
+c49c4ed0c8a262db1d448c440e907648dce76f287b07f3263dd49d714447654f.
+
+Source bytes:
+
+1458.
+
+DEPENDENCY
+
+Imports the frozen H191-P0 base harness:
+
+research/experiments/dg1a/adaptive/harnesses/h191_p0_surrogate_mechanical_v1.py
+
+Pinned base source SHA-256:
+
+da6643d35ae6bd5256d400d219702e37ed379ac867ea81583acd2986fa45eabb.
+
+Pinned base Git blob SHA:
+
+6ac31f5cc3e091be7ef24ea74879903dd21cc2fa.
+
+P1 overrides only:
+
+- world start:
+  20260924290000;
+- world count:
+  40;
+- width generator:
+  [0.22, pooled pairwise Q25, pooled pairwise Q50];
+- output schema label.
+
+All other generator,
+comparator,
+recruitment,
+metric,
+and serialization semantics
+come from:
+the frozen P0 base harness.
+
+REPRODUCIBILITY
+
+Run the complete P1 matrix twice.
+Canonical JSON output SHA-256
+must match exactly.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
