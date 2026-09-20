@@ -979,3 +979,343 @@ the first held-out H172 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — LEARNED-STATE TRUST-REGION HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H172 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H172 SANDBOX HARNESS
+
+File:
+
+h172_trust_region_v1.py
+
+SHA-256:
+
+7e0ddc689ff094af85b2629b8adb5044fb920758a42eac493aff55d7ca89e888.
+
+PARENT H171 HARNESS
+
+SHA-256:
+
+59141dc4bcea2c6befa58869c63ba725f5637d53360bf74bf3c67dbd4f6f5457.
+
+TRUST-REGION IMPLEMENTATION
+
+After:
+100%
+membership return
+and:
+context reconstruction,
+
+capture:
+
+p_cycle
+
+as:
+the complete current
+context-repaired lesion vector.
+
+Compute:
+
+rms_local
+
+from:
+currently live
+non-lesion Moore neighbors
+touching:
+the lesion.
+
+Compute:
+
+rms_global
+
+from:
+all surviving coefficients.
+
+Define:
+
+s_cycle =
+max(
+rms_local,
+0.25 * rms_global,
+1e-6
+).
+
+For:
+K lesion cells,
+
+radius:
+
+R_tau =
+tau
+*
+s_cycle
+*
+sqrt(K).
+
+After:
+each local functional ridge solve,
+
+candidate:
+
+u.
+
+Displacement:
+
+d =
+u - p_cycle.
+
+If:
+||d||_2
+<=R_tau,
+
+accept:
+u.
+
+Otherwise:
+
+project:
+onto:
+the Euclidean ball
+centered at:
+p_cycle
+with:
+radius R_tau.
+
+The same:
+
+p_cycle
+and:
+R_tau
+
+remain:
+fixed
+through:
+the complete repair cycle.
+
+TRUST LEVELS
+
+TRUST2:
+
+tau=2.0.
+
+TRUST4:
+
+tau=4.0.
+
+No:
+target output,
+teacher label,
+lost learned coefficient,
+held-out evaluation output
+
+enters:
+trust-center
+or:
+trust-radius authority.
+
+QUERY / OBSERVATION CONTROL
+
+Identical to:
+H171.
+
+HIST-GEOM-1PLUS1:
+
+always:
+one maximum-leverage
+task label.
+
+Second label iff:
+
+rho_geom>=0.98
+
+OR:
+
+cycle>1
+AND:
+rho_geom<=0.50
+AND:
+novelty5>=0.75.
+
+No:
+new observation
+is introduced
+by:
+the trust region.
+
+POLICIES
+
+H171-UNCONSTRAINED.
+
+TRUST2-HIST-GEOM.
+
+TRUST4-HIST-GEOM.
+
+MICRO2-LEVERAGE.
+
+LOCAL-CHECKPOINT-ORACLE.
+
+SANITY
+
+Disjoint family:
+
+20260922190000...
+
+6 representative
+learned matched-turnover worlds.
+
+5 policies.
+
+30 policy lifetimes.
+
+292 repair cycles / lifetime.
+
+Mechanical checks:
+
+- exactly five policies / seed;
+- exact six sanity seeds;
+- LOCAL-CHECKPOINT-ORACLE
+  final learned-output fidelity:
+  exactly 1.0;
+- TRUST2 / TRUST4
+  use:
+  the same functional observation count
+  as:
+  H171-UNCONSTRAINED
+  inside:
+  each paired sanity world;
+- trust center / radius
+  are:
+  target-blind;
+- no:
+  lost learned coefficient,
+  held-out test label,
+  or:
+  teacher output
+  enters:
+  projection authority;
+- mutable repaired state
+  persists:
+  through:
+  all 292 cycles.
+
+Accepted sanity matrix SHA-256:
+
+38bc8caf98baae54c82b7d709d493c3f7dd635a8c9857303ddfd29b9daff1ff8.
+
+NON-EVIDENCE SIGNAL
+
+TRUST2:
+
+selective projection duty
+in:
+the six representative sanity worlds
+
+is:
+approximately:
+0.003
+to:
+0.082.
+
+Maximum observed
+candidate displacement / radius ratio:
+
+approximately:
+1.06
+to:
+1.27.
+
+Thus:
+
+TRUST2
+is:
+not:
+freezing:
+ordinary local repair.
+
+Representative
+TRUST2
+FINAL learned-output fidelities:
+
+approximately:
+0.962
+to:
+0.994.
+
+Representative
+TRUST2
+cumulative logit exposure:
+
+approximately:
+36
+to:
+128.
+
+TRUST4:
+
+is:
+mostly inactive
+in:
+the same sanity worlds
+
+and:
+closely tracks:
+the unconstrained H171 policy.
+
+No representative sanity world
+contains:
+the catastrophic
+H171 logit-tail event.
+
+Therefore:
+
+the primary remains:
+a live:
+tail-containment test.
+
+No:
+
+- tau;
+- local-scale definition;
+- projection center;
+- teacher;
+- training rule;
+- damage law;
+- query rule;
+- observation count;
+- lifetime;
+- sample size;
+- acceptance gate
+
+is changed.
+
+PRIMARY FAMILY
+
+20260922100000..20260922100079.
+
+80 held-out learned-task worlds.
+
+5 policies.
+
+400 policy lifetimes.
+
+292 repair cycles / lifetime.
+
+H172 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H172 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
