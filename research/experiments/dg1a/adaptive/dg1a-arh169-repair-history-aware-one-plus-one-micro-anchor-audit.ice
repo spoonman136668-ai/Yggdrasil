@@ -760,3 +760,262 @@ SYNTHETIC_MEASURED_SANDBOX_REPAIR_HISTORY_AWARE_ONE_PLUS_ONE_MICRO_ANCHOR
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — REPAIR-HISTORY-AWARE ONE-PLUS-ONE HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H169 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H169 SANDBOX HARNESS
+
+File:
+
+h169_history_1plus1_v1.py
+
+SHA-256:
+
+fda1fe47f3a77ef449a642193c5ab3a9c67a439909a0b8f297c0544d2e5fc0d3.
+
+PARENT H168 HARNESS
+
+SHA-256:
+
+85053ccadd5557d57f1590fc1a99653acd2352f3823f56499b7165d0dfb3e83e.
+
+PURCHASE RULE
+
+Always:
+
+one:
+maximum-leverage
+target-blind query.
+
+Second query
+iff:
+
+rho_geom >=0.98
+
+OR:
+
+cycle >1
+
+AND:
+
+rho_geom <=0.50
+
+AND:
+
+novelty5 >=0.75.
+
+novelty5:
+
+1 -
+fraction
+of:
+current lesion cells
+
+contained in:
+the union
+of:
+the previous
+five lesion sets.
+
+No:
+functional target
+enters:
+rho_geom
+or:
+novelty5.
+
+REPAIR
+
+Identical to:
+H168.
+
+Selected query target(s):
+
+- acquired only
+  after:
+  purchase decision;
+- used:
+  in:
+  one joint lesion solve;
+- retained:
+  as:
+  active constraints
+  through:
+  12 post-membership
+  maturation steps.
+
+lambda:
+
+0.01.
+
+Persistent mutable state:
+carries forward.
+
+SANITY
+
+Disjoint family:
+
+20260921890000...
+
+6 representative
+condition-world lifetimes.
+
+6 policies.
+
+36 policy lifetimes.
+
+Mechanical checks:
+
+- exactly six policies / seed;
+- exact six sanity seeds;
+- LOCAL-CHECKPOINT-ORACLE
+  final fidelity exactly 1.0;
+- fine-scale
+  HIST-GEOM
+  matches:
+  H168-GEOM
+  duty / behavior
+  because:
+  novelty trigger
+  is:
+  gated to:
+  rho_geom<=0.50;
+- no:
+  target value
+  enters:
+  purchase decision;
+- no global reset.
+
+Accepted sanity matrix
+SHA-256:
+
+71bf89c76a239980b41945af25db0e5df3878b72c865e0c1c5a34f3f0b8f50b8.
+
+NON-EVIDENCE SIGNAL
+
+Coarse ROAMING:
+
+eta=0:
+
+H168-GEOM:
+
+second duty:
+0.
+
+exposure:
+approximately 1.568.
+
+HIST-GEOM:
+
+second duty:
+0.45.
+
+history-trigger count:
+9 / 20.
+
+exposure:
+approximately 1.520.
+
+MICRO2-LEVERAGE:
+
+approximately 1.469.
+
+eta=.25:
+
+H168-GEOM:
+
+duty:
+0.
+
+exposure:
+approximately 1.456.
+
+HIST-GEOM:
+
+duty:
+0.55.
+
+history-trigger count:
+11 / 20.
+
+exposure:
+approximately 1.030.
+
+MICRO2-LEVERAGE:
+
+approximately 1.051.
+
+Coarse HOTSPOT,
+eta=.25:
+
+HIST-GEOM:
+
+second duty:
+0.
+
+history-trigger count:
+0.
+
+Behavior:
+identical
+to:
+H168-GEOM.
+
+Fine:
+
+HIST-GEOM
+
+matches:
+H168-GEOM
+
+in:
+all three
+representative
+fine sanity lifetimes.
+
+These outputs are:
+
+NON-EVIDENCE.
+
+No:
+
+- rho_geom threshold;
+- novelty window;
+- novelty threshold;
+- query rule;
+- observation cap;
+- sample size;
+- acceptance gate
+
+is changed.
+
+PRIMARY FAMILY
+
+20260921800000..20260921800119.
+
+120 held-out
+condition-world lifetimes.
+
+6 policies.
+
+720 policy lifetimes.
+
+H169 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H169 lifetime.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
