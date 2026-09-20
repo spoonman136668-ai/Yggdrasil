@@ -752,3 +752,468 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL CLOSURE — DG-1R-05S DISTRIBUTED ROLE-MIGRATION CONSENSUS AUDIT
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED /
+REPRODUCIBLE /
+SAFE ROLE MIGRATION POSITIVE /
+PARTIAL-COMMIT ROLLBACK POSITIVE /
+CORRELATED FULL-QUORUM FORGERY BOUNDARY PRESERVED /
+NON-CANONICAL.
+
+FROZEN PROVENANCE
+
+Preregistration commit:
+
+710ff567b4553aab8dad496322f3fb2e6290b603.
+
+Harness source commit:
+
+cae31db152912a2d366cdd22946e890a09fcff7d.
+
+Harness Git blob:
+
+b460931ad038ae86ea7e2de5db74b27522deec69.
+
+Harness source SHA-256:
+
+c8c6139607149d4b912f772ab49ef2725e3be213a7489a6b74234857f24df531.
+
+Harness bytes:
+
+15419.
+
+Freeze commit:
+
+e93dad0f27219672d8376e93cc2f7236aa9a5697.
+
+PRIMARY EXECUTION
+
+Two complete deterministic frozen sweeps were executed.
+
+Sweep 1 serialized output SHA-256:
+
+790f4d8cdd59ea6e6756c235fb6f9b4c0a16703caaf6b1de0c5c410369bd9376.
+
+Sweep 2 serialized output SHA-256:
+
+790f4d8cdd59ea6e6756c235fb6f9b4c0a16703caaf6b1de0c5c410369bd9376.
+
+BYTE_IDENTICAL_REPRODUCIBILITY:
+
+TRUE.
+
+MECHANICAL_VALID:
+
+TRUE.
+
+PRIMARY SIGNALS
+
+SINGLE_ROLE_MIGRATION_SUCCESS:
+TRUE.
+
+COORDINATED_ROLE_MIGRATION_SUCCESS:
+TRUE.
+
+DWELL_DISCIPLINE_PRESERVED:
+TRUE.
+
+PARTIAL_PROVENANCE_ABORTS:
+TRUE.
+
+PARTIAL_COMMIT_ROLLBACK:
+TRUE.
+
+DAMAGED_WITNESS_ABORTS:
+TRUE.
+
+PRECOMMIT_ROLLBACK_CLEAN:
+TRUE.
+
+SAFE_ROLE_MIGRATION:
+TRUE.
+
+ONE_OF_FOUR_FORGERY_SUPPRESSED:
+TRUE.
+
+AUDIT A — LEGITIMATE SINGLE-CELL ROLE MIGRATION
+
+Cases:
+
+36.
+
+INDEPENDENT_ROLE_MIGRATION:
+
+legitimate commits:
+36 / 36.
+
+split brain:
+0.
+
+All four methods commit the fully legitimate cases.
+
+This audit establishes liveness under complete healthy evidence;
+it does not distinguish the unsafe controls.
+
+AUDIT B — COORDINATED MULTI-CELL ROLE MIGRATION
+
+Frozen coalitions:
+
+287.
+
+Target migration transactions:
+
+804.
+
+Successful target commits:
+
+804 / 804.
+
+False or missed target commits:
+
+0.
+
+Split brain:
+
+0.
+
+Non-target metadata changes:
+
+0.
+
+Thus the transaction rule composes across simultaneous pair,
+triple,
+and full-population role reassignment
+without cross-target interference in the frozen semantic model.
+
+AUDIT C — TRANSIENT / GRADUAL ROLE CHANGE
+
+C1:
+
+one wrong intermediate observation,
+then four consecutive desired-role observations.
+
+Commit after final full dwell:
+
+36 / 36.
+
+Early commit:
+
+0.
+
+C2:
+
+alternating OLD_ROLE / NEW_ROLE for eight observations.
+
+Abort:
+
+36 / 36.
+
+C3:
+
+only three consecutive NEW_ROLE observations.
+
+Abort:
+
+36 / 36.
+
+The four-observation dwell therefore behaves as a real gate,
+not merely a label.
+
+AUDIT D — PARTIAL PROVENANCE
+
+Each condition covered all 36 single-cell migration cases.
+
+DEMAND_A absent:
+
+commits:
+0.
+
+DEMAND_B absent:
+
+commits:
+0.
+
+peer A unavailable:
+
+commits:
+0.
+
+peer B unavailable:
+
+commits:
+0.
+
+demand paths disagree:
+
+commits:
+0.
+
+peer observers disagree:
+
+commits:
+0.
+
+No surviving witness is promoted to multiple provenance slots.
+
+AUDIT E — PARTIAL FINAL COMMIT
+
+Nonempty proper subsets of:
+
+TARGET,
+PEER_A,
+PEER_B:
+
+6.
+
+Injected partial-commit cases:
+
+216.
+
+Rollback to OLD_ROLE:
+
+216 / 216.
+
+NEW_ROLE authority after partial write:
+
+0.
+
+Final split brain:
+
+0.
+
+The semantic commit certificate is therefore atomic at the authority layer:
+
+a partially written migration is not a partially authoritative migration.
+
+AUDIT F — WITNESS-HOLDER DAMAGE
+
+Each condition covered 36 migrations.
+
+peer A damaged:
+
+commits:
+0.
+
+peer B damaged:
+
+commits:
+0.
+
+one demand-observer cohort damaged:
+
+commits:
+0.
+
+Damaged provenance is treated as unavailable,
+not as implicit agreement.
+
+AUDIT G — CANCEL BEFORE FINAL COMMIT
+
+Cases:
+
+36.
+
+Commits:
+
+0.
+
+Metadata changes:
+
+0.
+
+A successfully observed and fully qualified shadow role
+can still be cancelled before final authority transfer
+without contaminating authoritative role history.
+
+NEGATIVE CONTROLS
+
+Frozen false-role cases:
+
+36.
+
+TARGET_SELF_MIGRATION authorizations:
+
+36 / 36.
+
+TARGET_PLUS_STRUCTURE authorizations:
+
+36 / 36.
+
+SINGLE_PEER_MIGRATION authorizations:
+
+36 / 36.
+
+INDEPENDENT_ROLE_MIGRATION authorizations:
+
+0 / 36.
+
+Thus:
+
+stable target behavior alone is unsafe;
+
+stable target behavior plus clean structure is unsafe;
+
+one demand path plus one peer witness is still insufficient under the frozen adversarial case.
+
+The complete independent quorum is doing real authorization work.
+
+CORRELATED-FORGERY BOUNDARY
+
+H1 — both demand paths forged,
+honest peer observers reject:
+
+false commits:
+0 / 36.
+
+H2 — both peer observers forged,
+honest demand paths reject:
+
+false commits:
+0 / 36.
+
+H3 — all four provenance paths forged coherently:
+
+false commits:
+36 / 36.
+
+CORRELATED_ROLE_FORGERY_FAILURE:
+
+TRUE.
+
+H4 — exactly one of four quorum paths forged:
+
+false commits:
+0.
+
+ONE_OF_FOUR_FORGERY_SUPPRESSED:
+
+TRUE.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-05S establishes a distributed role-migration transaction
+that can move phenotype-level authority
+without a permanent central controller
+under the frozen independent-witness model.
+
+The protocol separates:
+
+PROVISIONAL FUNCTION
+
+the target may demonstrate a new role in shadow mode;
+
+from
+
+AUTHORITATIVE IDENTITY
+
+the old role remains authoritative
+until independent demand,
+independent peer observation,
+and the complete three-record commit certificate agree.
+
+This distinction prevents ordinary partial writes,
+transient behavior,
+single-path corruption,
+and witness loss
+from silently redefining cell identity.
+
+The important remaining weakness is no longer ordinary quorum mechanics.
+
+It is provenance itself.
+
+05S labels four evidence paths as distinct,
+and the holdouts show that this distinction matters.
+
+But a real developmental organism cannot merely assume
+that nominally different witnesses are causally independent.
+
+Several cells may inherit the same corrupted ancestor,
+share one poisoned measurement,
+or derive their confidence from one common hidden source.
+
+The next architectural task is therefore to make evidence lineage
+part of the consensus substrate.
+
+PLAIN-SPEAK INTERPRETATION
+
+The cells can now change jobs safely in this model.
+
+A cell can try a new role without immediately rewriting what the organism believes it is.
+
+The old job stays official while the new one is tested.
+
+Two separate demand sources
+and two separate peers
+have to agree.
+
+Then the cell and both peer records have to finish the same commit.
+
+If only one or two records update,
+the new job does not become half-official.
+
+It rolls back.
+
+If a witness disappears,
+the organism waits instead of pretending the missing vote was yes.
+
+If the cell changes its mind before the final commit,
+nothing permanent changes.
+
+And one bad witness cannot force a role migration.
+
+The remaining problem is deeper:
+
+how do we know those four witnesses are actually independent?
+
+Four different cells can still be repeating the same bad source.
+
+So the next step is to make the organism understand where evidence came from,
+not just how many cells repeated it.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05T —
+
+PROVENANCE-LINEAGE INDEPENDENCE AUDIT.
+
+Question:
+
+Can the healthy-cell consensus identify when nominally separate witnesses
+share the same causal evidence ancestry,
+collapse correlated witnesses into one effective source,
+and abstain when apparent quorum is actually duplicated provenance?
+
+The first 05T stage should remain detection / authorization only.
+
+It should test:
+
+- fully independent witness roots;
+- two holders derived from one common root;
+- partial ancestry overlap;
+- one witness copied through multiple cells;
+- lineage-preserving witness rotation;
+- loss of an independent root;
+- false quorum created by many descendants of one poisoned source;
+- forged lineage metadata as an explicit boundary.
+
+No repair or role migration should execute in 05T.
+
+The purpose is to test the constitutional rule:
+
+DIFFERENT CELLS
+DO NOT AUTOMATICALLY MEAN
+DIFFERENT EVIDENCE.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
