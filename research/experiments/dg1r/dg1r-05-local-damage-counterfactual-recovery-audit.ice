@@ -2851,3 +2851,679 @@ non-canonical.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+SUPPLEMENTAL EXECUTION NOTE — DG-1R-05 SEMANTIC MIRROR
+
+DATE:
+2026-09-20.
+
+STATUS:
+SUPPLEMENTAL /
+NON-CANONICAL /
+FROZEN PRIMARY HARNESS REMAINS UNSPENT.
+
+GITHUB ACTIONS ATTEMPT
+
+One-shot:
+repository-side:
+execution wrapper:
+
+.github/workflows/dg1r05-counterfactual-repair-frozen.yml
+
+commit:
+
+d4937a8c6ec3a740de892ab39a1ff3050920f522.
+
+Workflow run:
+
+35533570805.
+
+Result:
+
+INFRASTRUCTURE FAILURE
+BEFORE:
+ANY:
+JOB STEP.
+
+Runner ID:
+
+0.
+
+Executed steps:
+
+0.
+
+Therefore:
+
+NO:
+DG-1R-05:
+primary:
+damage scenario
+
+was:
+executed
+by:
+that:
+workflow.
+
+The:
+frozen:
+GitHub:
+primary
+
+remains:
+
+UNSPENT.
+
+SEMANTIC MIRROR
+
+Because:
+the:
+repository runner
+failed:
+before:
+execution,
+
+an:
+independent:
+local:
+semantic mirror
+
+was:
+executed
+using:
+
+- NumPy:
+  PCG64;
+- the:
+  frozen:
+  20260926050000..007:
+  seeds;
+- exact:
+  DG-1R-04:
+  worker /
+  nanite:
+  update semantics;
+- exact:
+  DG-1R-05:
+  lesion selection;
+- exact:
+  SMALL3 /
+  LARGE5:
+  lesions;
+- exact:
+  1024-step:
+  pre-damage:
+  development;
+- exact:
+  32-step:
+  counterfactual:
+  horizon;
+- exact:
+  summary:
+  equations.
+
+This:
+
+does NOT:
+replace:
+the:
+frozen:
+canonical:
+execution.
+
+It is:
+
+supplemental:
+mechanistic:
+evidence
+inside:
+an:
+already:
+NON-EVIDENCE:
+research line.
+
+SEMANTIC-MIRROR REPRODUCIBILITY
+
+RUN 1 SHA-256:
+
+1ad17fc729eefb0d8a8f241d1d7d02d6bbf2b62cb6c5997e32574967c03df64d.
+
+RUN 2 SHA-256:
+
+1ad17fc729eefb0d8a8f241d1d7d02d6bbf2b62cb6c5997e32574967c03df64d.
+
+Byte-identical:
+
+PASS.
+
+NO-DAMAGE:
+determinism control:
+
+PASS.
+
+SUPPLEMENTAL RESULT
+
+PRIMARY REFERENCE —
+SLOW128_MIXED1.
+
+Combined:
+median:
+excess-divergence area:
+
+1.51953125.
+
+h16:
+whole-state divergence:
+
+0.0546875.
+
+h32:
+whole-state divergence:
+
+0.0390625.
+
+h16:
+outside-lesion divergence:
+
+0.04.
+
+h32:
+outside-lesion divergence:
+
+0.032.
+
+h16:
+lesion recovery:
+
+0.6.
+
+h32:
+lesion recovery:
+
+0.6666666666666667.
+
+Full:
+sustained recovery rate:
+
+0.078125.
+
+N16_H6
+
+Median:
+excess-divergence area:
+
+0.984375.
+
+Reduction versus:
+SLOW128:
+
+35.218508997429304%.
+
+h16:
+outside-lesion divergence:
+
+0.016.
+
+Reduction:
+
+60%.
+
+h32:
+outside-lesion divergence:
+
+0.012065040650406506.
+
+Reduction:
+
+62.29674796747967%.
+
+CONTAINMENT_SIGNAL:
+
+TRUE.
+
+REPAIR_SIGNAL:
+
+FALSE.
+
+Lesion recovery:
+
+h16:
+0.6.
+
+h32:
+0.4.
+
+Thus:
+
+H6:
+strongly:
+contains:
+damage spread
+
+but:
+
+does NOT:
+reconstruct:
+the:
+original:
+lesion.
+
+N16_H6_REPAIR
+
+Median:
+excess-divergence area:
+
+0.87109375.
+
+Reduction versus:
+SLOW128:
+
+42.67352185089974%.
+
+h16:
+outside-lesion divergence:
+
+0.012065040650406506.
+
+Reduction:
+
+69.83739837398374%.
+
+h32:
+outside-lesion divergence:
+
+0.008130081300813009.
+
+Reduction:
+
+74.59349593495934%.
+
+CONTAINMENT_SIGNAL:
+
+TRUE.
+
+REPAIR_SIGNAL:
+
+FALSE.
+
+Median:
+extra:
+repair attempts
+relative to:
+the:
+undamaged:
+counterfactual:
+
+9.5.
+
+Median:
+extra:
+repair state changes:
+
+2.
+
+Lesion recovery:
+
+h16:
+0.4.
+
+h32:
+0.5.
+
+Thus:
+
+the:
+bounded:
+repair:
+program
+
+further:
+reduces:
+damage spread
+
+without:
+recovering:
+the:
+missing:
+counterfactual:
+state.
+
+N16_H5
+
+CONTAINMENT_SIGNAL:
+
+FALSE.
+
+REPAIR_SIGNAL:
+
+FALSE.
+
+Its:
+lower:
+h16:
+spread
+
+does NOT:
+persist:
+to:
+h32.
+
+N16_H6_DAMP
+
+Negative:
+overstabilized:
+control.
+
+Median:
+excess-divergence area:
+
+0.51953125.
+
+Reduction versus:
+SLOW128:
+
+65.80976863753213%.
+
+But:
+
+DG-1R-04
+already:
+showed:
+
+state entropy:
+
+0.05956502927131284.
+
+Feature rank:
+
+1 /
+512.
+
+Therefore:
+
+its:
+apparent:
+containment
+
+is:
+not:
+eligible:
+self-repair.
+
+It:
+contains:
+damage
+
+largely:
+by:
+making:
+the:
+organism:
+too:
+static.
+
+SUPPLEMENTAL CLASSIFICATION
+
+HOMEOSTATIC_REPAIR_CANDIDATES:
+
+NONE.
+
+FULL_SELF_REPAIR_SIGNAL:
+
+FALSE.
+
+But:
+
+CONTAINMENT_SIGNAL:
+
+TRUE
+
+for:
+
+N16_H6
+
+and:
+
+N16_H6_REPAIR.
+
+MECHANISTIC INTERPRETATION
+
+This:
+separates:
+
+two:
+functions
+that:
+had:
+previously:
+been:
+conflated.
+
+1.
+
+DAMAGE CONTAINMENT.
+
+Nanites:
+can:
+reduce:
+how far:
+a:
+local:
+lesion
+perturbs:
+the:
+rest:
+of:
+the:
+organism.
+
+SUPPORTED:
+mechanically.
+
+2.
+
+STATE RECONSTRUCTION.
+
+Nanites:
+must:
+know:
+what:
+the:
+damaged:
+cells
+should:
+have:
+been
+
+in:
+order:
+to:
+restore:
+the:
+counterfactual:
+trajectory.
+
+One:
+hysteretic:
+bit
+per:
+local:
+block
+
+does NOT:
+carry:
+enough:
+redundant:
+information
+for:
+that.
+
+NOT SUPPORTED.
+
+Therefore:
+
+the:
+next:
+research axis
+
+is:
+
+REDUNDANT:
+DEVELOPMENTAL:
+ENCODING
++
+LOCAL:
+NANITE:
+REPAIR.
+
+The:
+repair:
+agent
+already:
+has:
+a:
+containment:
+role.
+
+What:
+it:
+lacks
+is:
+
+LOCAL:
+RECOVERY:
+INFORMATION.
+
+PLAIN-SPEAK SUPPLEMENT
+
+The:
+nanites
+did:
+something:
+useful.
+
+When:
+we damaged:
+the:
+organism,
+
+the:
+H6:
+nanites
+made:
+the:
+damage
+spread:
+much less.
+
+The:
+repair:
+version
+contained:
+it:
+even:
+better.
+
+But:
+
+they:
+could not:
+put:
+the:
+damaged:
+cells
+back:
+to:
+the:
+right:
+values.
+
+Why?
+
+Because:
+the:
+nanite
+only:
+has:
+one:
+local:
+bit.
+
+It can:
+tell:
+
+"this area
+should stay
+stable."
+
+It cannot:
+fully tell:
+
+"these:
+three
+or:
+five:
+specific:
+cells
+used to:
+look:
+exactly:
+like:
+THIS."
+
+That:
+requires:
+redundant:
+information.
+
+So:
+the:
+next:
+idea
+is:
+
+keep:
+the:
+nanites'
+damage-containment:
+ability,
+
+but:
+give:
+the:
+organism
+a:
+distributed:
+error-correcting:
+developmental:
+representation
+
+inside:
+the:
+same:
+fixed:
+state budget.
+
+Then:
+
+the:
+nanites
+would not:
+guess:
+what:
+to:
+repair.
+
+The:
+surrounding:
+redundant:
+structure
+would:
+tell:
+them.
+
+canonical_scientific_execution = false.
+canonical_dg1r05_frozen_execution_spent = false.
+stab18_r1_touched = false.
