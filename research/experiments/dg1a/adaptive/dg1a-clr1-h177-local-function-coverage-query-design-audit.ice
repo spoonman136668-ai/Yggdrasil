@@ -861,3 +861,545 @@ the first held-out H177 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — LOCAL FUNCTION-COVERAGE INFORMATION DESIGN
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / NEGATIVE FOR TWO-QUERY COVERAGE REPAIR / REPAIR-OPTIMIZATION LINE CLOSED.
+
+FINAL H177 HARNESS SHA-256
+
+670830bbe048ae170e196902af23f2ee8f37e05e4e4ad8e105de0531a3462834.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+3275b03f336509b6a8a184f237cc4e38aa6a2758a8485f2652418f6b3a92adbd.
+
+ACCEPTED PRIMARY FAMILY
+
+20260922600000..20260922600011.
+
+PRIMARY MATRIX
+
+12 held-out learned worlds.
+
+24 target-lesion worlds.
+
+2 magnitudes.
+
+2 trajectories.
+
+5 policies.
+
+480 policy lifetimes.
+
+2,400 repair cycles.
+
+BASELINE
+
+Median held-out R^2:
+
+A:
+approximately 0.9694.
+
+B:
+approximately 0.9543.
+
+100%
+of:
+accepted target worlds
+
+retain:
+both learned functions
+above:
+R^2 0.85.
+
+PASS.
+
+LOCALIZATION
+
+22 / 24
+target-lesion worlds
+
+localize successfully
+
+under:
+the frozen H176/H177
+causal selective-patch rule.
+
+Rate:
+
+91.7%.
+
+Frozen target:
+>=85%.
+
+PASS.
+
+GOPT2 — BASE / SAME
+
+Cycle-1 joint success:
+100%.
+
+Cycle-5:
+100%.
+
+But:
+
+local-validation / ORACLE ratio
+
+cycle 1:
+approximately 1.769.
+
+cycle 5:
+approximately 1.356.
+
+Frozen limit:
+<=1.25.
+
+FAIL.
+
+GOPT2 — BASE / FOLLOW
+
+Cycle-1 joint success:
+100%.
+
+Cycle-5:
+approximately 77.3%.
+
+Local-validation / ORACLE ratio:
+
+cycle 1:
+approximately 1.649.
+
+cycle 5:
+approximately 2.174.
+
+FAIL.
+
+Thus:
+
+GOPT2
+is NOT:
+strictly reliable
+for:
+either decisive
+BASE condition.
+
+QUERY-DESIGN COMPARISON
+
+BASE / SAME:
+
+GOPT2
+cycle-5 local-validation MSE
+
+is:
+approximately 16.9%
+lower
+than:
+LEV2.
+
+But:
+
+cycle-1 local-validation MSE
+
+is:
+approximately 26.2%
+higher.
+
+BASE / FOLLOW:
+
+GOPT2
+cycle-5 local-validation MSE
+
+is:
+approximately 36.7%
+HIGHER
+than:
+LEV2.
+
+Cycle-1:
+
+approximately 17.7%
+higher.
+
+Therefore:
+
+target-blind
+worst-case local-variance
+coverage
+
+does NOT:
+consistently improve:
+the learned-function
+repair manifold.
+
+It can:
+trade:
+one part
+of:
+local geometry
+
+against:
+another.
+
+FOLLOW RELIABILITY
+
+GOPT2
+BASE / FOLLOW
+
+also loses:
+world-level repeated-repair reliability:
+
+cycle 5:
+
+approximately 77.3%
+
+versus:
+
+LEV2:
+approximately 95.5%.
+
+Thus:
+
+the failure is:
+not:
+only:
+a strict oracle-relative
+local-validation threshold.
+
+It also:
+appears:
+in:
+world-level repeated repair.
+
+LEV4 REFERENCE
+
+LEV4
+also fails:
+the strict local-generalization
+envelope.
+
+BASE / SAME:
+
+local-validation / ORACLE ratio
+
+approximately:
+1.254
+at cycle 1
+
+and:
+1.270
+at cycle 5.
+
+BASE / FOLLOW:
+
+approximately:
+1.341
+and:
+1.106.
+
+Even:
+four:
+pointwise leverage observations
+
+do not:
+cleanly establish:
+the frozen
+local-function reconstruction
+criterion.
+
+This indicates:
+
+the remaining issue
+is NOT:
+simply:
+two versus four
+query count.
+
+It is:
+the underdetermined mapping
+between:
+
+a tiny:
+local observation set
+
+and:
+
+the full:
+lesion-local
+learned function.
+
+FOLLOW MOVEMENT
+
+BASE / FOLLOW
+patch motion remains:
+strong.
+
+Median:
+patch Jaccard
+
+approximately:
+0.006
+for:
+GOPT2.
+
+Median centroid displacement:
+
+approximately:
+0.744
+normalized macro units.
+
+Thus:
+
+the moving-repair challenge
+is:
+genuine.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+Baseline learning.
+
+2.
+Localization success.
+
+7.
+Collateral preservation.
+
+8.
+Exactly two:
+target-only
+observations
+for:
+GOPT2.
+
+9.
+FOLLOW motion.
+
+12.
+Oracle ceiling.
+
+FAIL:
+
+3.
+GOPT2 reliable
+BASE / SAME.
+
+4.
+GOPT2 reliable
+BASE / FOLLOW.
+
+5.
+Required:
+BASE / FOLLOW
+>=15%
+local-validation
+improvement
+versus LEV2.
+
+Observed:
+worse.
+
+6.
+GOPT2
+does not:
+preserve:
+cycle-5
+BASE / FOLLOW
+joint success
+within:
+5 points
+of:
+LEV2.
+
+Observed:
+approximately -18.2 points.
+
+10.
+Strict local generalization.
+
+11.
+LEV4 diagnostic:
+more observations
+do not:
+cleanly solve:
+the local-function gap.
+
+STRONG SUPPORT:
+
+FAIL.
+
+FINAL INTERPRETATION
+
+H177 is:
+
+NEGATIVE
+
+for:
+
+TWO-OBSERVATION
+LOCAL FUNCTION-COVERAGE
+QUERY DESIGN.
+
+H175 remains:
+direct evidence
+that:
+
+selective
+fine-scale
+cognitive micro-patching
+
+can:
+restore:
+global learned behavior
+
+with:
+very low collateral interference.
+
+H176 / H177 add:
+
+a stricter warning.
+
+A local repair
+can:
+
+restore:
+top-line task behavior
+
+without:
+uniquely reconstructing:
+the lesion-local
+function manifold.
+
+Neither:
+
+more pointwise leverage
+
+nor:
+
+target-blind
+G-optimal coverage
+
+fully resolves:
+that underdetermination.
+
+ARCHITECTURAL CONSEQUENCE
+
+Stop:
+the long
+repair-query
+optimization line.
+
+The program directive is:
+
+proof-of-cognition,
+not:
+perfect local-state reconstruction.
+
+The unresolved:
+local-function fidelity
+risk
+
+must:
+remain:
+an explicit open constraint,
+
+but:
+
+it should NOT:
+block:
+the next:
+cognitive inflection experiment.
+
+H175 has already demonstrated:
+
+- learned multi-function specialization;
+- causal selective lesions;
+- bounded local regeneration;
+- low collateral interference;
+- repeated behavioral repair.
+
+Therefore:
+
+proceed to:
+DEVELOPMENTAL CAPABILITY ADDITION
+
+while:
+
+measuring:
+local-function drift
+and:
+interference
+
+as:
+mandatory safety metrics.
+
+NEXT:
+
+CLR2-H178 —
+BOUNDED DEVELOPMENTAL
+CAPABILITY ADDITION.
+
+learn A
+
+->
+
+freeze / preserve A
+
+->
+
+grow:
+a bounded
+new cellular patch
+
+for:
+previously unseen capability B
+
+->
+
+learn B
+using:
+local patch plasticity
+
+->
+
+integrate:
+A+B
+
+->
+
+measure:
+
+A retention,
+B generalization,
+new active cells,
+new compute,
+interference,
+reuse,
+and:
+whether:
+B can be added
+without:
+global retraining.
+
+H177 DOES NOT AUTHORIZE
+
+- production use;
+- live model repair;
+- biological claims;
+- whole-model retraining
+  as:
+  the candidate architecture;
+- canonical scientific claims;
+- STAB-18-R1 execution.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
