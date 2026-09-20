@@ -1851,3 +1851,228 @@ be."
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-06 LOCAL SECDED NANITE REPAIR HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST DG-1R-06 PRIMARY DAMAGE SCENARIO.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_06_secded_nanite_repair_v1.py
+
+Harness commit:
+
+68a1f4725dffba0c21e33929dfe4d88a6440531f.
+
+Git blob SHA:
+
+64c085270562e69e227629e6080386ef50942dbe.
+
+Source SHA-256:
+
+e7e77fe1c9ad32981d4b885739af5d175920da96dda068ff044d3ee9084e03fe.
+
+FROZEN PARENT DEPENDENCY
+
+research/experiments/dg1r/harnesses/dg1r_04_software_nanite_v1.py
+
+Parent Git blob SHA:
+
+6eeaf70c97174fd40483256db9c6e600989a6b47.
+
+Parent source SHA-256:
+
+debcaf7c79632740dbccd4ad8b0f6ebfcd034515cb144b9a21bc537f7a8f7eed.
+
+EXACT EXECUTION COPY PROOF
+
+Local DG-1R-06 Git blob:
+
+64c085270562e69e227629e6080386ef50942dbe.
+
+MATCH:
+remote:
+GitHub:
+blob.
+
+Python compile:
+
+PASS.
+
+EXHAUSTIVE SECDED SINGLE-ERROR CONTROL
+
+All:
+
+16:
+possible:
+4-bit:
+data words
+
+x:
+
+8:
+possible:
+single-bit:
+codeword corruptions
+
+=
+
+128:
+cases.
+
+Exact:
+original:
+8-bit:
+codeword
+restoration:
+
+128 / 128.
+
+PASS.
+
+HEALTHY CODE CONTROL
+
+Across:
+
+8:
+worlds
+
+and:
+
+all:
+three:
+SECDED:
+methods,
+
+after:
+
+1024:
+healthy:
+external:
+steps,
+
+every:
+local:
+8-bit:
+codeword
+
+had:
+
+syndrome = 0
+
+and:
+
+overall parity = 0.
+
+PASS.
+
+NO-DAMAGE DETERMINISM CONTROL
+
+Across:
+
+8:
+worlds
+
+x:
+
+4:
+methods,
+
+maximum:
+whole-state:
+divergence
+between:
+identical:
+healthy:
+clones
+
+over:
+32:
+future:
+steps:
+
+0.
+
+PASS.
+
+LESION / INPUT CONTROL
+
+Across:
+
+the:
+full:
+preregistered:
+SECDED:
+lesion family,
+
+lesion:
+overlap
+with:
+input-mapped:
+data cells:
+
+0.
+
+PASS.
+
+No:
+
+primary:
+damage:
+scenario
+
+was:
+executed
+before:
+this:
+freeze.
+
+FROZEN WORLD FAMILY
+
+20260926060000..20260926060007.
+
+8 worlds.
+
+FROZEN DAMAGE FAMILY
+
+4:
+unmapped:
+local:
+blocks
+
+x:
+
+5:
+lesion:
+families
+
+=
+
+20:
+damage scenarios
+per:
+method /
+world.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+canonical sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+Runtime sidecars:
+
+non-canonical.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
