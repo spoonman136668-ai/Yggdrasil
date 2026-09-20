@@ -879,3 +879,456 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL CLOSURE — DG-1R-05N DISTANCE-4 TOPOLOGY DYNAMIC REPAIR TRANSFER AUDIT
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED — REPRODUCIBLE NEGATIVE TRANSFER RESULT.
+
+FROZEN PROVENANCE
+
+Preregistration existed before harness construction.
+
+Frozen harness commit:
+
+c689780d75e39cf6c5a2f9eee9e0fb4f6ca69216.
+
+Harness source commit:
+
+dd1a39f27eef62e268acd989c6d670590b0d2e36.
+
+Harness Git blob:
+
+e546ffc18579c059514033896398f49ac33863cb.
+
+Harness source SHA-256:
+
+b0e13fe095d7ec79ed541ffd2b28eafb024274b3168284c323567526d3571623.
+
+Harness bytes:
+
+21101.
+
+PRIMARY EXECUTION
+
+Two complete frozen 12-world sweeps were executed.
+
+Sweep 1 serialized output SHA-256:
+
+b82636a8ebe23a2c2f27041dc85a6eb831e3ebe6902b16768b38249c2590496f.
+
+Sweep 2 serialized output SHA-256:
+
+b82636a8ebe23a2c2f27041dc85a6eb831e3ebe6902b16768b38249c2590496f.
+
+BYTE_IDENTICAL_REPRODUCIBILITY:
+
+TRUE.
+
+MECHANICAL_VALID:
+
+TRUE.
+
+PRIMARY SIGNALS
+
+LEGACY_LOGICAL_NO_REGRESSION:
+
+TRUE.
+
+CHECK_ONLY_NO_REGRESSION:
+
+TRUE.
+
+BASE_WEAK_DYNAMIC_GAIN:
+
+FALSE.
+
+DIST3_WEAK_DYNAMIC_GAIN:
+
+FALSE.
+
+DIST4_BOUNDARY_PRESERVED:
+
+FALSE.
+
+DYNAMIC_DISTANCE_TRANSFER:
+
+FALSE.
+
+CROSSPLANE_CORRELATED_FAILURE:
+
+TRUE.
+
+LEGACY LOGICAL FAMILIES
+
+For all four preregistered legacy logical families:
+
+- LOCAL_DATA2_D6;
+- DISTRIBUTED_DATA2;
+- DATA2_PLUS_CHECK2_D6;
+- DATA2_PLUS_CHECK3_D7;
+
+DIST4_05M matched HYPER20_BASELINE under both frozen decoder methods:
+
+median logical divergence area:
+
+0.
+
+sustained exact logical recovery rate:
+
+1.0.
+
+false applied logical flips:
+
+0.
+
+Thus the stronger topology did not regress the already-solved local and distributed logical cases.
+
+CHECK-ONLY FAMILIES
+
+CHECK4_BIT0_D6 under GREEDY_BASELINE:
+
+HYPER20_BASELINE:
+median logical divergence area 3.0;
+false applied logical flips 12.
+
+DIST4_05M:
+median logical divergence area 3.0;
+false applied logical flips 12.
+
+Under CROSSPLANE2_GATE both had:
+
+median logical divergence area 0;
+false applied logical flips 0.
+
+CHECK4_BIT0_D7 under GREEDY_BASELINE:
+
+HYPER20_BASELINE:
+median logical divergence area 3.46875;
+false applied logical flips 12.
+
+DIST4_05M:
+median logical divergence area 3.46875;
+false applied logical flips 12.
+
+Under CROSSPLANE2_GATE both had:
+
+median logical divergence area 0;
+false applied logical flips 0.
+
+CHECK4_BITS01_D6 remains the correlated-integrity boundary.
+
+For both HYPER20_BASELINE and DIST4_05M,
+CROSSPLANE2_GATE produced:
+
+median logical divergence area:
+
+2.8333333333333335.
+
+false applied logical flips:
+
+24.
+
+The topology improvement therefore did not solve the previously established arbitrary-correlation failure.
+
+STATIC-GEOMETRY CHALLENGE TRANSFER
+
+BASE_WEAK4_MASK1106
+
+Frozen static syndrome weights:
+
+HYPER20_BASELINE:
+3.
+
+DIST3_05L:
+5.
+
+DIST4_05M:
+5.
+
+GREEDY_BASELINE dynamic result for all three topologies:
+
+median logical divergence area:
+
+6.645833333333334.
+
+sustained exact logical recovery rate:
+
+0.
+
+inferred logical flips:
+
+0.
+
+applied logical flips:
+
+0.
+
+Median residual inferred syndrome weight tracked the stronger representation:
+
+HYPER20_BASELINE:
+3.
+
+DIST3_05L:
+5.
+
+DIST4_05M:
+5.
+
+The decoder saw the stronger syndrome but did not act on it.
+
+DIST3_WEAK5_MASK2243
+
+Frozen static syndrome weights:
+
+HYPER20_BASELINE:
+3.
+
+DIST3_05L:
+3.
+
+DIST4_05M:
+7.
+
+GREEDY_BASELINE dynamic result for all three topologies:
+
+median logical divergence area:
+
+6.760416666666666.
+
+sustained exact logical recovery rate:
+
+0.08333333333333333.
+
+inferred logical flips:
+
+0.
+
+applied logical flips:
+
+0.
+
+Median residual inferred syndrome weight:
+
+HYPER20_BASELINE:
+3.
+
+DIST3_05L:
+3.
+
+DIST4_05M:
+7.
+
+Again,
+the distance-4 topology produced substantially stronger evidence
+without changing the repair behavior.
+
+DIST4_MIN6_MASK249
+
+Frozen static syndrome weights:
+
+HYPER20_BASELINE:
+4.
+
+DIST3_05L:
+6.
+
+DIST4_05M:
+4.
+
+GREEDY_BASELINE dynamic result for all three topologies:
+
+median logical divergence area:
+
+8.333333333333332.
+
+sustained exact logical recovery rate:
+
+0.
+
+inferred logical flips:
+
+0.
+
+applied logical flips:
+
+0.
+
+Therefore DIST4_BOUNDARY_PRESERVED is FALSE under the frozen operational definition.
+
+SINGLE-PLANE SENSITIVITY
+
+For SINGLE_DATA1_D6 under CROSSPLANE2_GATE,
+all three topologies retained the already-known confidence tradeoff:
+
+median logical divergence area:
+
+3.0.
+
+sustained exact logical recovery rate:
+
+0.25.
+
+applied logical flips:
+
+0.
+
+abstained inferred logical flips:
+
+12.
+
+Topology alone does not remove the gate's single-plane sensitivity cost.
+
+POST-RESULT MECHANISTIC CHECK — EXPLANATORY / NON-PRIMARY
+
+No implementation,
+threshold,
+damage family,
+seed,
+or primary signal was changed.
+
+The frozen challenge syndromes were examined only to explain the observed zero-inference behavior.
+
+For every preregistered multi-region challenge mask
+under every frozen topology,
+there is no single logical-block flip that strictly reduces the current syndrome weight.
+
+BASE_WEAK4_MASK1106 best one-flip syndrome-weight reduction:
+
+HYPER20_BASELINE:
+0.
+
+DIST3_05L:
+0.
+
+DIST4_05M:
+0.
+
+DIST3_WEAK5_MASK2243:
+
+HYPER20_BASELINE:
+-1.
+
+DIST3_05L:
+-1.
+
+DIST4_05M:
+0.
+
+DIST4_MIN6_MASK249:
+
+HYPER20_BASELINE:
+-1.
+
+DIST3_05L:
+-1.
+
+DIST4_05M:
+-1.
+
+The frozen greedy decoder requires a strictly positive one-flip reduction before taking a step.
+
+Therefore these challenge lesions are local minima or plateaus in that decoder's search landscape.
+
+This explains why increasing static syndrome distance from 3 to 5 or 7
+can increase visible evidence
+while still producing zero inferred repair moves.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-05N separates representation quality from decoder reachability.
+
+DG-1R-05M remains a genuine representation improvement:
+
+- full rank;
+- no logical kernel;
+- global logical syndrome floor 4;
+- preserved local floors;
+- unchanged persistent-state budget.
+
+However,
+that stronger observability does not automatically transfer to the frozen one-step greedy repair algorithm.
+
+The limiting mechanism in the preregistered challenge families is now more specific:
+
+the decoder is a strict local hill-climber over single logical-block flips,
+while the multi-region lesions occupy syndrome configurations for which no individual flip is immediately downhill.
+
+The stronger topology raises the amount of error evidence,
+but the decoder lacks a bounded way to interpret coordinated evidence.
+
+This is not evidence that the distance-4 topology is useless.
+
+It is evidence that topology improvement and repair inference are separate architectural layers,
+and that the current decoder has become the active bottleneck for these multi-region states.
+
+At the same time,
+the correlated-integrity ambiguity remains information-theoretic rather than merely search-related.
+A stronger search procedure must not be treated as an independent-truth mechanism.
+
+PLAIN-SPEAK INTERPRETATION
+
+The new layout really does make some damage easier to see.
+
+But the old repair logic still does not know what to do with it.
+
+On one test,
+the warning strength rose from 3 to 7,
+yet the repair system made exactly zero repair guesses.
+
+Why?
+
+Because the current repairer only asks:
+
+"Can I flip one cell right now and immediately make the warning smaller?"
+
+For these larger injuries,
+the answer is no.
+
+Sometimes several cells have to be considered together before the repair direction becomes obvious.
+
+So the stronger layout passed the information test,
+but it did not pass the old repairer's action test.
+
+That is useful progress.
+
+It tells us not to keep rearranging the same backup bits looking for a fix to this particular failure.
+
+The next bottleneck is how the software tissue evaluates coordinated evidence and reaches a repair decision.
+
+NEXT JUSTIFIED EXPERIMENT
+
+A bounded,
+preregistered coordinated-inference audit is justified.
+
+It should preserve:
+
+- the frozen DIST4_05M representation;
+- the same 128-bit persistent-state budget;
+- the same dynamics;
+- the same repair timing;
+- the same provenance / correlated-failure boundary.
+
+It should test whether a tightly bounded multi-block inference mechanism
+can cross the one-flip local minima exposed here
+without increasing false repair on integrity-only lesions.
+
+No unbounded search.
+No post-result tuning.
+No claim that coordinated inference solves arbitrary correlated evidence.
+
+This is also the appropriate bridge toward the broader Yggdrasil cell-governance requirement:
+
+cells may contribute self-evaluation and confidence,
+but repair authority must remain aware of witness independence and provenance.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
