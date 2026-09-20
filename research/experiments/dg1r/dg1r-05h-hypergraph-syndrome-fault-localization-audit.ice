@@ -1337,3 +1337,144 @@ clarification.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05H HYPERGRAPH SYNDROME DECODING
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE:
+THE:
+FIRST:
+DG-1R-05H:
+WORLD.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05h_hypergraph_syndrome_v1.py
+
+Harness commit:
+
+599253a50aa9bcbe0d2327cb07ee3f7771d6830a.
+
+Git blob SHA:
+
+95f3aaf2b195197e459db6d18584f912a7598e9f.
+
+Remote source SHA-256:
+
+53c5585408734648883b1063d79cf19f99feb207e6ebe3a68c75f15d4122e127.
+
+Remote source bytes:
+
+14718.
+
+LOCAL PRECHECK
+
+Python syntax:
+
+PASS.
+
+Hypergraph mechanical validation:
+
+PASS.
+
+Distributed:
+block-2 /
+block-8:
+bit-plane:
+fault
+
+minimum-weight:
+solution:
+
+weight:
+
+2.
+
+Unique logical fault mask:
+
+{2,8}.
+
+PASS.
+
+No:
+DG-1R-05H:
+experimental:
+world
+was:
+executed
+before:
+this:
+freeze.
+
+PACKAGING NOTE
+
+GitHub:
+stored:
+the:
+same:
+Python:
+source
+
+without:
+the:
+local:
+final:
+newline.
+
+No:
+experimental:
+semantic:
+changed.
+
+The:
+execution copy
+was:
+aligned
+to:
+the:
+authoritative:
+remote:
+bytes.
+
+FROZEN WORLD FAMILY
+
+20260926058000..20260926058007.
+
+8 worlds.
+
+FROZEN METHODS
+
+NAIVE_MAJORITY.
+
+MW_UNIQUE.
+
+GREEDY_SYNDROME.
+
+GREEDY_SINGLE_PASS.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+sweeps.
+
+Output SHA-256
+must:
+match exactly.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+DG-1R-05H:
+
+NON-CANONICAL /
+NON-EVIDENCE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
