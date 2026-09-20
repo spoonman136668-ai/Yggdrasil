@@ -912,3 +912,790 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL H191-P9 NON-EVIDENCE PILOT CLOSURE — OOD CAPABILITY ELASTIC CORE EXPANSION
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+POSITIVE OOD ELASTIC-EXPANSION RESULT /
+PATCH1 ROBUST ELASTIC /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+a254c188fff28dc26dacfefd0eb1b69d0ba2f22968754697401e7c6d3bdd2a66.
+
+CANONICAL OUTPUT
+
+RUN 1 SHA-256:
+
+32c856a020d7f7cecc79e2aa79f943a253831fc8b46987f8783873620f6fa603.
+
+RUN 2 SHA-256:
+
+32c856a020d7f7cecc79e2aa79f943a253831fc8b46987f8783873620f6fa603.
+
+Byte-identical:
+
+PASS.
+
+PRE-OOD DEVELOPED CORE
+
+Median:
+in-distribution:
+P8-style patch count:
+
+4.
+
+Median:
+shared factor count
+before:
+OOD insertion:
+
+12.
+
+Oldest capability:
+residual ops:
+
+16.
+
+Newest pre-OOD capability:
+residual ops:
+
+24.
+
+Thus:
+
+P9 begins from:
+an actually:
+developed:
+heterogeneous:
+shared core.
+
+DICTIONARY FAMILY CHECK
+
+OOD_LOCAL8:
+
+median:
+held-out NMSE:
+
+0.0043087380175839025.
+
+Median:
+distillation NMSE:
+
+0.0019331900247210013.
+
+Frozen:
+dictionary-capable gate:
+
+held-out NMSE
+<=0.05.
+
+PASS.
+
+Therefore:
+
+the:
+fixed:
+parent-center
+x
+0.22 / 0.44 / 0.88
+dictionary
+
+is:
+capable
+of:
+representing:
+the OOD capability.
+
+No:
+dictionary-family limit
+was reached.
+
+JOINT_REFIT8 REFERENCE
+
+Fresh:
+all-nine-capability:
+8-factor:
+joint reference.
+
+OOD median:
+held-out NMSE:
+
+0.010961866171580216.
+
+Median:
+distillation NMSE:
+
+0.00851645585359304.
+
+PATCH0 — DECODER ONLY
+
+Median:
+OOD held-out NMSE:
+
+0.009785119183417016.
+
+P90:
+
+0.03721833802942498.
+
+Median:
+distillation NMSE:
+
+0.007438182268568473.
+
+Median:
+world mean NMSE:
+
+0.0202923031229581.
+
+Median:
+world worst NMSE:
+
+0.063169605425705.
+
+Median:
+OOD gap
+versus:
+OOD_LOCAL8:
+
++0.0030188145823780185.
+
+Median:
+OOD gap
+versus:
+JOINT_REFIT8:
+
++0.0002279957303579236.
+
+Thus:
+
+the:
+already developed:
+12-factor:
+shared core
+
+is:
+surprisingly:
+fairly capable
+of:
+the OOD insertion
+
+even:
+without:
+growth.
+
+However:
+
+the preregistered:
+elastic question
+asks:
+whether:
+a:
+small:
+new factor
+can:
+materially improve:
+the newcomer.
+
+PATCH1 — ONE OOD FACTOR
+
+Classification:
+
+PATCH1_ROBUST_ELASTIC.
+
+Median:
+OOD held-out NMSE:
+
+0.000769563245632436.
+
+P90:
+
+0.015302371790277613.
+
+Median:
+OOD distillation NMSE:
+
+0.0005953744410857411.
+
+Median:
+OOD error reduction
+versus:
+PATCH0:
+
+83.63346920978489%.
+
+Frozen target:
+
+>=50%.
+
+PASS.
+
+Median:
+OOD gap
+versus:
+OOD_LOCAL8:
+
+-0.001851165098957185.
+
+PASS.
+
+Median:
+OOD gap
+versus:
+JOINT_REFIT8:
+
+-0.010199372880957317.
+
+PATCH1 therefore:
+outperforms:
+both:
+reference medians.
+
+Median:
+OOD generalization gap:
+
+0.0004483299528855807.
+
+PASS.
+
+Median:
+world mean NMSE:
+
+0.019032931889862624.
+
+Median:
+world worst NMSE:
+
+0.05791577144067522.
+
+Old decoder change:
+
+0.
+
+Old prediction drift:
+
+0.
+
+PASS:
+exact preservation.
+
+Median:
+factor count:
+
+13.
+
+Median:
+OOD residual ops:
+
+26.
+
+Shared factor growth:
+
++1.
+
+PATCH2 — TWO OOD FACTORS
+
+Median:
+OOD held-out NMSE:
+
+0.0006503804401597079.
+
+Median:
+OOD error reduction
+versus PATCH0:
+
+85.90792009583534%.
+
+Median:
+OOD gap
+versus OOD_LOCAL8:
+
+-0.0025335831295961488.
+
+Median:
+world mean NMSE:
+
+0.019013859724776396.
+
+Old prediction drift:
+
+0.
+
+Old decoder change:
+
+0.
+
+PATCH2:
+also:
+passes quality,
+but:
+
+PATCH1
+already:
+passes:
+every:
+frozen:
+ROBUST ELASTIC gate.
+
+Therefore:
+
+PATCH1 is:
+preferred.
+
+OOD PATCH GEOMETRY
+
+PATCH1:
+scale-slot counts
+across:
+8 worlds:
+
+sigma 0.22:
+7.
+
+sigma 0.44:
+1.
+
+sigma 0.88:
+0.
+
+Median:
+distance:
+from:
+nearest:
+pre-existing:
+factor center:
+
+0.2260215935270531.
+
+Exact:
+OOD_LOCAL8 support overlap:
+
+12.5%.
+
+Exact:
+JOINT_REFIT8 support overlap:
+
+0%.
+
+Thus:
+
+the:
+successful:
+OOD patch
+
+is:
+usually:
+not:
+one:
+of:
+the exact:
+factors
+selected
+by:
+either:
+fresh:
+reference.
+
+This again supports:
+
+LOCAL:
+INCREMENTAL:
+COMPLEMENT
+
+rather than:
+
+partial reconstruction
+of:
+a:
+global optimum.
+
+TECHNICAL INTERPRETATION
+
+P9 provides:
+a:
+stronger:
+novelty result
+than:
+P7/P8.
+
+The:
+developed:
+shared core
+
+can:
+absorb:
+a:
+new:
+central:
+high-frequency:
+capability
+
+without:
+
+- moving:
+  any:
+  existing factor;
+- changing:
+  any:
+  old decoder;
+- changing:
+  any:
+  old prediction;
+- increasing:
+  old capability:
+  active compute.
+
+One:
+new:
+fixed-dictionary:
+factor
+
+is:
+sufficient
+to:
+improve:
+the OOD newcomer
+by:
+approximately:
+84%
+relative to:
+decoder-only.
+
+The result also shows:
+
+the:
+existing:
+fixed multiscale dictionary
+
+has:
+not:
+yet:
+reached:
+an expressivity limit.
+
+IMPORTANT LIMIT
+
+P9 tests:
+
+one:
+OOD insertion.
+
+It does NOT:
+show:
+
+that:
+repeated:
+OOD insertions
+
+can:
+remain:
+bounded.
+
+The next:
+scaling problem
+is:
+
+whether:
+novel:
+OOD capabilities
+cause:
+
+one-factor-per-novelty
+growth
+
+or:
+
+whether:
+later:
+OOD capabilities
+can:
+reuse:
+earlier:
+OOD patches.
+
+NEXT JUSTIFIED EXPERIMENT
+
+H191-P10 —
+REPEATED OOD:
+INSERTION /
+ELASTIC PATCH REUSE AUDIT.
+
+Begin from:
+
+a:
+P8-style:
+developed:
+8-capability core.
+
+Then:
+sequentially insert:
+multiple:
+inner-region:
+high-frequency:
+OOD capabilities.
+
+At:
+each OOD insertion:
+
+1.
+try:
+decoder-only
+against:
+the:
+current:
+shared core;
+
+2.
+if:
+new-capability:
+distillation NMSE
+>0.02,
+allow:
+exactly:
+one:
+new:
+fixed-dictionary factor;
+
+3.
+freeze:
+the newcomer;
+
+4.
+preserve:
+all:
+older:
+factors,
+decoders,
+predictions,
+and:
+birth-time:
+active support.
+
+Primary question:
+
+do:
+later:
+OOD capabilities
+
+reuse:
+earlier:
+OOD patches
+
+often enough
+that:
+
+OOD patch growth
+is:
+less than:
+one-for-one?
+
+Also report:
+
+whether:
+new OOD:
+patch factors
+cluster:
+in:
+the:
+inner-region
+geometry
+
+and:
+whether:
+active compute
+remains:
+birth-time bounded.
+
+PLAIN-SPEAK SUMMARY
+
+What did we try?
+
+We took:
+the:
+already developed:
+eight-capability organism
+
+and:
+gave it:
+a:
+ninth capability
+that was:
+deliberately:
+different.
+
+It lived:
+in:
+the center
+instead of:
+the old ring
+
+and:
+its:
+local signal
+changed:
+faster.
+
+What happened?
+
+The existing:
+shared core
+handled it:
+reasonably well
+even:
+without:
+growth.
+
+But:
+adding:
+just:
+one:
+new factor
+
+made it:
+dramatically better.
+
+Median:
+error
+fell from:
+about:
+0.98%
+
+to:
+about:
+0.077%.
+
+Nothing old:
+changed.
+
+Did it work?
+
+Yes.
+
+One:
+new factor
+passed:
+every:
+frozen:
+elastic-growth gate.
+
+A:
+second:
+factor
+helped:
+slightly more,
+
+but:
+was:
+not needed.
+
+What did we actually learn?
+
+The:
+small:
+shared-core patches
+are:
+not:
+limited
+to:
+more of:
+the same:
+in-distribution:
+capabilities.
+
+They can:
+also:
+absorb:
+a:
+meaningfully:
+novel:
+capability.
+
+The:
+fixed dictionary
+was:
+not:
+the bottleneck.
+
+Why does it matter?
+
+A:
+developmental system
+needs:
+to:
+meet:
+new situations
+
+without:
+rebuilding:
+itself
+or:
+forgetting:
+what:
+already works.
+
+P9 shows:
+that:
+one:
+small:
+new structural element
+can:
+handle:
+a:
+fairly:
+different:
+new capability
+
+while:
+everything:
+old
+stays:
+exact.
+
+What should we try next?
+
+Do it:
+more than once.
+
+Give:
+the:
+same:
+developed system
+several:
+new:
+OOD capabilities
+one after another.
+
+The important question
+is now:
+
+does:
+every:
+novel capability
+need:
+another:
+new factor,
+
+or:
+do:
+earlier:
+novelty patches
+become:
+reusable:
+shared structure
+for:
+later:
+novel capabilities?
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
