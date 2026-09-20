@@ -3790,3 +3790,668 @@ lost specialization.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — REGENERATION SCALING / MICRO-PATCH GRANULARITY
+
+DATE:
+2026-09-19.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / POSITIVE GEOMETRIC-RESOURCE PLAUSIBILITY.
+
+FROZEN HARNESS SHA-256
+
+51be6032bda5f3a42ca922bdef4cc62eb3d7f9c1c405380711fb0892b5fc646d.
+
+PRIMARY MATRIX INTEGRITY
+
+Axis A:
+12,600 / 12,600 unique held-out worlds.
+
+Seed range:
+20260919600000..20260919612599.
+
+Axis B:
+1,000 / 1,000 unique held-out worlds.
+
+Seed range:
+20260919620000..20260919620999.
+
+Axis C:
+7,500 / 7,500 unique held-out worlds.
+
+Seed range:
+20260919630000..20260919637499.
+
+Axis D:
+2,400 / 2,400 unique held-out worlds.
+
+Seed range:
+20260919640000..20260919642399.
+
+Across all four primary axes:
+
+- no duplicate accepted seed;
+- no accepted-seed gap;
+- no T90 censoring;
+- no unrepaired final lesion.
+
+PRIMARY AXIS A — BODY SIZE x PATCH FRACTION
+
+Pooled median T90 by patch fraction:
+
+1%:
+4 steps.
+
+2%:
+4.
+
+5%:
+4.
+
+10%:
+4.
+
+20%:
+5.
+
+40%:
+6.
+
+60%:
+7.
+
+Within every tested body size:
+
+1%..5% lesions
+recover materially faster
+than:
+20%..60% lesions.
+
+Representative body-size effect
+at:
+5% damage:
+
+R=6,
+N=113:
+median T90 4.
+
+R=8,
+N=197:
+3.
+
+R=11,
+N=377:
+4.
+
+R=15,
+N=709:
+4.
+
+R=21,
+N=1373:
+5.
+
+R=30,
+N=2821:
+6.
+
+A log-log fit to:
+median T90
+across body size
+within fixed patch / geometry cells
+
+gave:
+median body-size exponent
+approximately 0.19,
+
+with:
+no strongly superlinear scaling.
+
+Larger bodies therefore:
+slow local repair,
+
+but:
+the measured latency growth
+is sublinear
+over the tested range.
+
+Patch-size scaling:
+
+median log-log T90 exponent
+approximately:
+0.22
+
+across:
+body / lesion-family cells.
+
+PRIMARY AXIS B — SAME DAMAGE / MANY MICRO-PATCHES
+
+Body:
+R=21.
+
+Total damage:
+approximately 20%.
+
+Median T90:
+
+1 patch:
+8 steps.
+
+2 patches:
+7.
+
+4 patches:
+5.
+
+8 patches:
+4.
+
+16 patches:
+4.
+
+Relative to:
+one compact patch,
+
+4 patches:
+37.5% lower median T90.
+
+8 patches:
+50% lower.
+
+16 patches:
+50% lower.
+
+Median repair opportunities:
+
+1:
+547.
+
+2:
+553.
+
+4:
+552.
+
+8:
+548.5.
+
+16:
+553.
+
+Thus:
+
+the parallel-frontier latency gain
+does NOT come from:
+substantially increased total repair opportunity count.
+
+Macro downtime
+falls from:
+approximately 0.916
+
+at:
+one patch
+
+to:
+approximately 0.428
+
+at:
+16 patches.
+
+PRIMARY AXIS C — GRANULARITY / LOCALIZATION BREAK-EVEN
+
+Reference:
+g=1,
+R=15,
+N=709,
+base macro defect:
+10%.
+
+When:
+beta=0,
+
+smaller cells are harmful:
+
+g=0.50:
+median T90 8
+versus:
+5 at g=1,
+
+with:
+approximately 4x repair opportunities.
+
+Finer granularity
+without better localization
+therefore:
+fails.
+
+When:
+beta=1.5,
+
+macro downtime improves,
+
+but:
+g<=0.50
+still incurs:
+>20% repair-opportunity penalty.
+
+Therefore:
+beta=1.5
+does NOT satisfy:
+the frozen break-even rule.
+
+At:
+beta=2.0,
+
+g=0.50:
+
+median T90:
+5
+versus:
+5 at g=1.
+
+median repair opportunities:
+140.5
+versus:
+143.
+
+median macro downtime:
+approximately 0.072
+versus:
+0.291.
+
+g=0.25:
+
+median T90:
+5.
+
+median repair opportunities:
+141.
+
+median macro downtime:
+approximately 0.018.
+
+Thus:
+
+finer granularity
+provides:
+large functional-downtime reduction
+
+without:
+latency penalty
+or:
+repair-opportunity penalty.
+
+ARCHITECTURAL BREAK-EVEN
+
+beta* =
+2.0.
+
+Interpretation:
+
+micro-patch granularity becomes advantageous
+when:
+localizable damaged macro area
+improves approximately:
+in proportion to cell area.
+
+It does NOT require:
+beta >2
+super-localization.
+
+At:
+beta=2.5,
+
+g<=0.50
+also begins to reduce:
+T90 itself
+
+to:
+approximately 4 steps.
+
+PRIMARY AXIS D — PARALLEL REPAIR INTERFERENCE
+
+R=30.
+
+2% body-equivalent lesion per requested focus.
+
+UNLIMITED LOCAL
+median T90:
+
+1:
+5.
+
+2:
+5.
+
+4:
+5.
+
+8:
+5.
+
+16:
+5.
+
+32:
+5.
+
+BOUNDED 10%-OF-BODY OPPORTUNITY BANDWIDTH
+median T90:
+
+1:
+5.
+
+2:
+5.
+
+4:
+5.
+
+8:
+5.
+
+16:
+7.
+
+32:
+12.
+
+Thus:
+
+bounded repair bandwidth
+does NOT erase:
+the micro-patch advantage
+at:
+moderate concurrency.
+
+The bandwidth knee appears:
+between:
+8 and 16
+simultaneous 2%-body wounds
+in this realization.
+
+At:
+32 requested foci,
+
+damage occupies:
+approximately 64.7% of body
+
+and:
+geometric merging reduces:
+median initial disconnected components
+to:
+4.
+
+This is:
+the preregistered saturation regime,
+
+not:
+32 independent wounds.
+
+Even there:
+
+bounded median T90:
+12
+
+is below:
+the R=30
+single compact 60% lesion
+median T90:
+16.
+
+ROBUSTNESS CONTROLS
+
+Disjoint control seeds:
+
+repair probability:
+0.25
+and:
+1.0.
+
+No T90 censoring occurred.
+
+At:
+p=0.25,
+
+Axis-C beta=2,
+g=0.50:
+
+median T90:
+10
+versus:
+10 at g=1.
+
+repair opportunities:
+287.5
+versus:
+281.
+
+macro downtime:
+approximately 0.133
+versus:
+0.518.
+
+Opportunity increase:
+approximately 2.3%,
+well below:
+the frozen 20% penalty ceiling.
+
+At:
+p=1.0,
+
+Axis-C beta=2,
+g=0.50:
+
+median T90:
+3
+versus:
+3 at g=1.
+
+repair opportunities:
+71
+versus:
+71.
+
+macro downtime:
+approximately 0.044
+versus:
+0.175.
+
+Therefore:
+
+the beta=2
+small-cell advantage
+survives:
+repair probability
+0.25..1.0.
+
+PRIMARY ACCEPTANCE REVIEW
+
+SUPPORTED.
+
+1.
+Small lesions:
+1%..5%
+
+recover materially faster
+than:
+20%..60%
+within the same body size.
+
+PASS.
+
+2.
+At fixed 20% damage,
+4+ separated micro-patches
+reduce:
+median T90
+
+relative to:
+one compact patch.
+
+PASS.
+
+3.
+Parallel micro-patch advantage
+does not disappear completely
+under:
+bounded repair bandwidth.
+
+PASS.
+
+Moderate concurrency:
+1..8 foci
+
+shows:
+no median T90 penalty
+relative to:
+unlimited-local repair.
+
+4.
+There exists:
+beta <=2
+
+with:
+g <=0.50
+
+that improves:
+macro downtime
+
+without:
+>20%
+opportunity-cost increase.
+
+PASS.
+
+beta* = 2.0.
+
+5.
+Break-even does NOT require:
+beta >2.
+
+PASS.
+
+6.
+Small-cell advantage
+is robust to:
+repair probability
+0.25..1.0
+
+in:
+the frozen stratified controls.
+
+PASS.
+
+FINAL INTERPRETATION
+
+H150 is:
+
+POSITIVE
+
+for:
+
+GEOMETRIC / RESOURCE PLAUSIBILITY
+OF
+COGNITIVE MICRO-PATCHING.
+
+The strongest architectural result is:
+
+SMALLER CELLS
+ARE NOT BENEFICIAL
+BY THEMSELVES.
+
+The advantage appears when:
+
+FINER CELL GRANULARITY
+ALSO SHRINKS
+THE FUNCTIONAL / REPAIR BLAST RADIUS
+
+approximately:
+with cell area.
+
+Under that condition:
+
+a larger organism
+made of:
+more,
+smaller,
+independently repairable cells
+
+can:
+reduce functional downtime
+
+without:
+paying a larger repair-opportunity bill
+for the same macro defect.
+
+The second strong result is:
+
+MULTIPLE SMALL WOUNDS
+CAN REPAIR IN PARALLEL
+
+through:
+larger aggregate frontier area
+
+without:
+materially increasing
+total repair opportunities,
+
+until:
+repair bandwidth
+or:
+geometric crowding
+becomes the limiting resource.
+
+ARCHITECTURAL CONSEQUENCE
+
+The next experiment should NOT ask:
+
+whether:
+more small cells
+are intrinsically better.
+
+It should ask:
+
+whether:
+a local computational specialization
+can actually be:
+
+- damaged;
+- quarantined;
+- regenerated from neighboring developmental context;
+- restored functionally;
+- and reintegrated
+
+without:
+restoring saved mutable state.
+
+That is:
+the semantic requirement
+for:
+intelligence micro-patching.
+
+NEXT SCOPED EXPERIMENT
+
+H151 —
+FUNCTIONAL COGNITIVE MICRO-PATCH.
+
+H150 DOES NOT ESTABLISH
+
+- learned cognitive specialization;
+- injury localization;
+- semantic capability restoration;
+- memory inheritance;
+- safe live cognitive replacement;
+- production cell granularity.
+
+It establishes:
+the geometric / resource regime
+in which:
+testing those capabilities
+is justified.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
