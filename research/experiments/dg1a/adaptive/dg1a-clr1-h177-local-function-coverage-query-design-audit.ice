@@ -556,3 +556,308 @@ SYNTHETIC_MEASURED_COGNITIVE_LOCAL_FUNCTION_COVERAGE_QUERY_DESIGN
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — LOCAL FUNCTION-COVERAGE QUERY-DESIGN HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H177 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H177 SANDBOX HARNESS
+
+File:
+
+h177_clr1_gopt_v1.py
+
+SHA-256:
+
+670830bbe048ae170e196902af23f2ee8f37e05e4e4ad8e105de0531a3462834.
+
+PARENT COGNITIVE MODEL
+
+Exact H176
+fine-scale cognitive model:
+
+g=.25.
+
+N=3209.
+
+Same:
+teacher,
+training distribution,
+scale-aware ridge,
+responsibility map,
+k_star,
+BASE / DOUBLE lesions,
+SAME / FOLLOW trajectories,
+developmental repair,
+lambda=.01,
+five-cycle lifetime.
+
+PRE-PRIMARY COMPARISON ISOLATION
+
+To isolate:
+QUERY SELECTION
+
+rather than:
+candidate-pool randomness,
+
+H177 uses:
+
+one COMMON
+64-point
+candidate query pool
+
+per:
+
+seed
+x
+target
+x
+magnitude
+x
+trajectory
+x
+cycle.
+
+LEV2,
+GOPT2,
+and:
+LEV4
+
+select from:
+the same candidate coordinates.
+
+This is:
+a methodological
+pre-primary control.
+
+It does NOT:
+use:
+any target value.
+
+The LEV2 result
+is therefore:
+
+the H176
+maximum-leverage
+algorithm
+
+re-evaluated
+on:
+the H177 common pool,
+
+not:
+a byte-identical
+H176 random-pool replay.
+
+No:
+repair budget,
+lambda,
+teacher,
+or:
+acceptance gate
+changes.
+
+GOPT2
+
+Unlabeled coverage probes:
+
+128
+lesion-local points.
+
+Domain:
+
+separate from:
+
+- repair candidates;
+- lesion-local validation;
+- global held-out test.
+
+No:
+target value
+is observed
+at:
+coverage probes.
+
+For:
+candidate design row x,
+
+choose:
+the point that minimizes:
+
+the maximum
+posterior predictive variance
+
+over:
+the 128
+unlabeled coverage probes
+
+after:
+adding x.
+
+Repeat:
+for:
+two total selected queries.
+
+lambda=.01
+sets:
+the design prior.
+
+Tie:
+
+lower candidate index.
+
+POLICIES
+
+CONTEXT0.
+
+LEV2.
+
+GOPT2.
+
+LEV4.
+
+ORACLE.
+
+All:
+functional repair policies
+
+observe:
+target-task values only.
+
+Zero:
+unrelated-task
+functional observations.
+
+SANITY
+
+Disjoint family:
+
+20260922690000
+and:
+20260922690001.
+
+2 base worlds.
+
+4 target-lesion worlds.
+
+2 magnitudes.
+
+2 trajectories.
+
+5 policies.
+
+80 policy lifetimes.
+
+Accepted sanity-output SHA-256:
+
+80d466a38825027e06789aa7879c342cd6181433062524b822ff6391e8d814fd.
+
+Mechanical checks:
+
+- exact 80 rows;
+- exact 5 policies
+  per:
+  target x magnitude x trajectory;
+- 4 / 4
+  target conditions
+  localize;
+- LEV2 / GOPT2:
+  exactly 2 observations / cycle;
+- LEV4:
+  exactly 4;
+- zero unrelated-task observations;
+- coverage probes:
+  target-blind;
+- local validation:
+  disjoint from:
+  repair queries
+  and:
+  coverage probes.
+
+NON-EVIDENCE SIGNAL
+
+GOPT2
+does NOT:
+uniformly dominate
+LEV2
+in:
+the sanity matrix.
+
+Representative:
+
+BASE / FOLLOW,
+cycle 1:
+
+GOPT2
+local-validation MSE:
+approximately 0.0083.
+
+LEV2:
+approximately 0.0103.
+
+But:
+cycle 5:
+
+GOPT2:
+approximately 0.0115.
+
+LEV2:
+approximately 0.0083.
+
+DOUBLE cells
+are also:
+mixed.
+
+Thus:
+
+the hypothesis is:
+live
+and:
+nontrivial.
+
+No:
+coverage distribution,
+selection criterion,
+query count,
+lambda,
+magnitude,
+trajectory,
+sample size,
+or:
+acceptance gate
+
+was changed
+from:
+sanity outcomes.
+
+PRIMARY FAMILY
+
+20260922600000..20260922600011.
+
+12 held-out
+base learned worlds.
+
+24 target-lesion worlds.
+
+480 policy lifetimes.
+
+2,400
+policy repair cycles.
+
+H177 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H177 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
