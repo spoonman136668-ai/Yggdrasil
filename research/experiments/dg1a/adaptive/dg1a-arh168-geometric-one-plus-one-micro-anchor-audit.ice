@@ -732,3 +732,269 @@ SYNTHETIC_MEASURED_SANDBOX_GEOMETRIC_ONE_PLUS_ONE_MICRO_ANCHOR_EXPOSURE_CONTROL
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — GEOMETRIC ONE-PLUS-ONE HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H168 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H168 SANDBOX HARNESS
+
+File:
+
+h168_geom_1plus1_v1.py
+
+SHA-256:
+
+85053ccadd5557d57f1590fc1a99653acd2352f3823f56499b7165d0dfb3e83e.
+
+PARENT H167 HARNESS
+
+SHA-256:
+
+f9c1689f1ca9112b3c698d401a7f20308d1f70b7285be13ca3fb852bd5c2733d.
+
+GEOMETRIC PURCHASE RULE
+
+Always:
+
+select:
+q1
+
+as:
+maximum-leverage
+target-blind query.
+
+Compute:
+
+q2
+
+as:
+maximum remaining leverage
+after:
+rank-one
+information update.
+
+Define:
+
+rho_geom =
+L2 / L1.
+
+Acquire:
+q2
+
+iff:
+
+rho_geom >=0.98.
+
+No:
+functional target value
+
+enters:
+rho_geom.
+
+REPAIR
+
+Selected:
+one or two
+functional observations
+
+are:
+used
+in:
+one joint lesion solve
+
+after:
+100%
+membership return.
+
+lambda:
+
+0.01.
+
+Current context state:
+
+ridge prior.
+
+Selected observations
+remain:
+active constraints
+through:
+all 12
+post-membership
+maturation steps.
+
+Mutable repaired state:
+persists
+cycle to cycle.
+
+SANITY
+
+Disjoint family:
+
+20260921790000...
+
+6 representative
+condition-world lifetimes.
+
+5 policies.
+
+30 policy lifetimes.
+
+Mechanical checks:
+
+- exactly five policies / seed;
+- exact six sanity seeds;
+- LOCAL-CHECKPOINT-ORACLE
+  final fidelity exactly 1.0;
+- MICRO1-LEVERAGE:
+  exactly one observation / cycle;
+- MICRO2-LEVERAGE:
+  exactly two / cycle;
+- GEOM-1PLUS1:
+  one or two only;
+- no target value
+  enters:
+  query purchase decision;
+- no global reset.
+
+Accepted sanity matrix
+SHA-256:
+
+a916f25dfec5a29237a167ebe4eafc14322faa04b89da5399293427875b9193b.
+
+NON-EVIDENCE SIGNAL
+
+Coarse:
+g=1.
+
+GEOM-1PLUS1
+second-query duty:
+
+0
+in:
+all three
+representative coarse sanity lifetimes.
+
+Therefore:
+
+it behaves:
+identically
+to:
+MICRO1-LEVERAGE
+
+on:
+those coarse geometries.
+
+Fine:
+g=.25.
+
+Second-query duty:
+
+approximately:
+0.616
+to:
+0.623
+
+in:
+the three
+representative fine-scale
+sanity lifetimes.
+
+Thus:
+
+the geometry-only
+rho threshold
+
+creates:
+selective:
+one-plus-one behavior
+
+rather than:
+always-two.
+
+Representative fine exposure:
+
+ROAMING,
+eta=0:
+
+MICRO1-LEVERAGE:
+approximately 0.304.
+
+GEOM-1PLUS1:
+approximately 0.209.
+
+MICRO2-LEVERAGE:
+approximately 0.170.
+
+ROAMING,
+eta=.25:
+
+approximately:
+0.435
+->
+0.305
+->
+0.241.
+
+HOTSPOT,
+eta=.25:
+
+approximately:
+0.437
+->
+0.287
+->
+0.239.
+
+One:
+fine noisy sanity cell
+
+remains:
+slightly above:
+the frozen
+1.25x
+MICRO2-LEVERAGE
+exposure envelope.
+
+This is:
+NON-EVIDENCE.
+
+No:
+
+- rho threshold;
+- query rule;
+- observation cap;
+- sample size;
+- exposure ceiling;
+- acceptance gate
+
+is changed.
+
+PRIMARY FAMILY
+
+20260921700000..20260921700119.
+
+120 held-out
+condition-world lifetimes.
+
+5 policies.
+
+600 policy lifetimes.
+
+H168 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H168 lifetime.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
