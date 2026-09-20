@@ -1602,3 +1602,661 @@ non-canonical.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-04 NON-EVIDENCE PILOT CLOSURE — SOFTWARE-NANITE LOCAL STABILIZATION
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+NEGATIVE THRESHOLD-VETO NANITE RESULT /
+MECHANISTIC OVER-STABILIZATION SIGNAL /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+d9c176a232ee90e2a138a47f153a0d2f99b28cdf618e680dc38be9b6c9299905.
+
+CANONICAL OUTPUT
+
+RUN 1 SHA-256:
+
+34cab21965bc7c61f4499b0b6059982695ed49d94815f03cfe7537e7e0257a30.
+
+RUN 2 SHA-256:
+
+34cab21965bc7c61f4499b0b6059982695ed49d94815f03cfe7537e7e0257a30.
+
+Byte-identical:
+
+PASS.
+
+PRIMARY CLASSIFICATION
+
+ACTIVE_STABILIZATION_SIGNAL:
+
+FALSE.
+
+PASSIVE_COMPARISON_SIGNAL:
+
+FALSE.
+
+NANITE_MEMORY_RECOVERY:
+
+FALSE.
+
+TEMPORAL_SUBSTRATE_CANDIDATES:
+
+NONE.
+
+INERT112_16_FAST4 CONTROL
+
+Median:
+
+D8:
+0.50146484375.
+
+D16:
+0.49462890625.
+
+D32:
+0.498046875.
+
+Memory score:
+
+0.4957682291666667.
+
+Feature rank:
+
+269 / 512.
+
+Feature-rank fraction:
+
+0.525390625.
+
+State entropy:
+
+0.5926879752853804.
+
+Realized worker-change fraction:
+
+0.3930424281529018.
+
+NANITE112_16_FAST4_T50
+
+Median:
+
+veto fraction:
+
+0.6675834655761719.
+
+Proposed worker-change fraction:
+
+0.45544569832938053.
+
+Realized worker-change fraction:
+
+0.02727508544921875.
+
+Thus:
+
+the:
+nanites
+reduced:
+realized:
+worker-state change
+
+by:
+approximately:
+an:
+order of magnitude.
+
+However:
+
+D8:
+0.49462890625.
+
+D16:
+0.5068359375.
+
+D32:
+0.4931640625.
+
+Memory score:
+
+0.5003255208333334.
+
+Paired:
+versus:
+INERT112_16:
+
+D16:
++0.0185546875.
+
+D32:
+-0.0048828125.
+
+These:
+miss:
+the:
+frozen:
+>=0.10:
+active-stabilization gate.
+
+Feature rank:
+
+7 / 512.
+
+Feature-rank fraction:
+
+0.013671875.
+
+State entropy:
+
+0.10852350921262315.
+
+The:
+reservoir
+became:
+extremely:
+low-dimensional.
+
+NANITE112_16_FAST4_T35
+
+Median:
+
+veto fraction:
+
+0.5049991607666016.
+
+Proposed worker-change fraction:
+
+0.2657996586390904.
+
+Realized worker-change fraction:
+
+0.009014947073800223.
+
+Feature rank:
+
+2.5 / 512.
+
+Feature-rank fraction:
+
+0.0048828125.
+
+State entropy:
+
+0.084579629018642.
+
+D16:
+0.49658203125.
+
+D32:
+0.49853515625.
+
+No:
+long-memory:
+gain.
+
+NANITE112_16_SLOW1_T50
+
+Median:
+
+veto fraction:
+
+0.585845947265625.
+
+Realized worker-change fraction:
+
+0.041445050920758925.
+
+Feature rank:
+
+16 / 512.
+
+State entropy:
+
+0.11822014982000272.
+
+D16:
+0.49169921875.
+
+D32:
+0.4912109375.
+
+Combining:
+
+passive:
+slowing
+
+with:
+the:
+same:
+threshold-veto:
+stabilization
+
+does NOT:
+recover:
+long memory.
+
+FROZEN OVERSTABILIZED FLAG
+
+The:
+pre-registered:
+OVERSTABILIZED:
+flag
+
+did NOT:
+fire
+
+because:
+
+its:
+veto-fraction:
+condition
+required:
+
+>=0.75.
+
+Observed:
+median:
+veto fractions
+
+were:
+below:
+0.75.
+
+However:
+
+the:
+observed:
+feature-rank
+and:
+entropy:
+collapse
+
+show:
+a:
+clear:
+practical:
+over-stabilization:
+mechanism.
+
+This:
+does NOT:
+retroactively:
+change:
+the:
+frozen:
+flag.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-04 establishes:
+
+ACTIVE:
+LOCAL:
+STABILIZATION
+
+can:
+strongly:
+suppress:
+state change.
+
+Therefore:
+
+the:
+software-nanite:
+controller
+has:
+real:
+causal:
+authority
+over:
+reservoir dynamics.
+
+But:
+
+the:
+current:
+threshold rule
+
+protects:
+TOO MUCH:
+STATE
+
+and:
+does not:
+know:
+which:
+state changes
+are:
+useful
+versus:
+destructive.
+
+The:
+resulting:
+system
+
+becomes:
+stable
+
+but:
+not:
+informative.
+
+This is:
+the:
+stability /
+plasticity:
+tradeoff
+we:
+expected
+as:
+the:
+main:
+risk.
+
+The:
+important:
+negative finding
+is:
+
+MAXIMIZING:
+STABILITY
+
+does NOT:
+
+MAXIMIZE:
+MEMORY.
+
+A:
+useful:
+memory substrate
+
+must:
+preserve:
+specific:
+information
+
+while:
+still:
+allowing:
+enough:
+state evolution
+to:
+encode:
+new:
+inputs.
+
+NEXT HYPOTHESIS
+
+Do NOT:
+abandon:
+active:
+stabilizers.
+
+Instead:
+
+BOUND:
+their:
+intervention.
+
+Two:
+mechanisms
+are:
+now:
+justified:
+
+1.
+REFRACTORY NANITES
+
+After:
+a:
+nanite
+vetoes:
+one:
+transition,
+
+it:
+must:
+allow:
+the:
+next:
+eligible:
+transition
+
+before:
+it:
+may:
+veto:
+again.
+
+This:
+uses:
+the:
+controller's:
+existing:
+one-bit:
+state
+
+as:
+a:
+refractory:
+flag.
+
+No:
+additional:
+persistent:
+memory.
+
+2.
+GLOBAL INTERVENTION BUDGET
+
+At:
+each:
+worker:
+microtick:
+
+rank:
+sectors
+by:
+proposed:
+flip fraction.
+
+Allow:
+only:
+the:
+K:
+most:
+volatile:
+sectors
+
+to:
+veto.
+
+Examples:
+
+K=1:
+6.25%:
+maximum:
+sector intervention.
+
+K=2:
+12.5%.
+
+This:
+prevents:
+the:
+whole:
+reservoir
+from:
+freezing.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05 —
+BOUNDED-INTERVENTION:
+SOFTWARE-NANITE:
+STABILITY /
+PLASTICITY:
+AUDIT.
+
+Compare:
+
+- INERT112_16_FAST4;
+- REFRACTORY_T50;
+- REFRACTORY_T35;
+- BUDGET_K1;
+- BUDGET_K2;
+- SLOW128_MIXED1.
+
+Primary question:
+
+can:
+nanites
+protect:
+a:
+small:
+fraction:
+of:
+the:
+most:
+destructive:
+local:
+changes
+
+without:
+collapsing:
+feature rank
+and:
+entropy?
+
+PLAIN-SPEAK SUMMARY
+
+The:
+nanites
+definitely:
+worked
+as:
+brakes.
+
+They:
+worked:
+too well.
+
+They:
+stopped:
+so much:
+cellular:
+change
+that:
+the:
+reservoir
+lost:
+almost:
+all:
+of:
+its:
+interesting:
+internal:
+patterns.
+
+It became:
+
+stable,
+
+but:
+mostly:
+dead.
+
+That:
+did not:
+help:
+16-step
+or:
+32-step:
+memory.
+
+So:
+
+the:
+idea
+is:
+not:
+"stabilization:
+doesn't work."
+
+The:
+lesson
+is:
+
+the:
+nanites
+cannot:
+be:
+allowed
+to:
+slam:
+the:
+brakes
+every:
+time:
+a:
+neighborhood
+changes:
+a lot.
+
+They:
+need:
+rules
+that:
+force:
+them
+to:
+let:
+the:
+system
+move
+again.
+
+The:
+next:
+version
+will:
+put:
+a:
+hard:
+budget
+on:
+how:
+much:
+stabilization
+they:
+can:
+apply.
+
+That:
+tests:
+whether:
+we:
+can:
+find:
+a:
+middle ground
+between:
+
+forgetting:
+too fast
+
+and:
+
+freezing:
+too hard.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
