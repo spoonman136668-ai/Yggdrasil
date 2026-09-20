@@ -1889,3 +1889,161 @@ rebuild.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-06 REDUNDANT LOCAL RECONSTRUCTION HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST DG-1R-06 PRIMARY DAMAGE SCENARIO.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_06_redundant_local_reconstruction_v1.py
+
+Harness commit:
+
+d64f06713c9de823152355c12bed12ed710da4f7.
+
+Git blob SHA:
+
+c979c2650d1fd05cc0ee05b7c6cdf109c7b402f0.
+
+Source SHA-256:
+
+d60a5bc665f69ba708858e4a16a49256b13ecf77c6ff3afac8b36ceaa5c897b0.
+
+Source bytes:
+
+18629.
+
+PRE-FREEZE SANITY
+
+Exact:
+local /
+remote:
+Git blob identity:
+
+PASS.
+
+Python compile:
+
+PASS.
+
+Direct:
+SECDED:
+single-data-bit:
+correction:
+
+PASS.
+
+Direct:
+same-block:
+two-data-bit:
+detection:
+
+PASS.
+
+Non-primary:
+out-of-family:
+trajectory:
+sanity:
+
+PASS.
+
+No-damage:
+logical divergence:
+
+0.
+
+No-damage:
+physical divergence:
+
+0.
+
+Damage:
+logical positions
+exclude:
+mapped:
+input:
+positions:
+
+PASS.
+
+No:
+primary:
+DG-1R-06:
+world
+or:
+damage scenario
+was:
+executed
+before:
+this freeze.
+
+FROZEN METHODS
+
+UNCODED64_PAD64.
+
+SECDED64_LOCAL.
+
+Both:
+
+128:
+physical:
+persistent bits.
+
+Both:
+
+64:
+logical:
+dynamic:
+worker bits.
+
+UNCODED:
+
+64:
+padding bits.
+
+SECDED:
+
+64:
+structured:
+redundancy bits.
+
+FROZEN WORLD FAMILY
+
+20260926060000..20260926060007.
+
+8 worlds.
+
+FROZEN DAMAGE FAMILIES
+
+SPREAD4.
+
+SPREAD8.
+
+LOCAL2.
+
+LOCAL3.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+canonical:
+sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+Runtime sidecars:
+are:
+non-canonical.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
