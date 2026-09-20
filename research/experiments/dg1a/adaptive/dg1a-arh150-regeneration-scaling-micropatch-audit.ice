@@ -1261,3 +1261,419 @@ at the moment of this freeze.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — GEOMETRY / COST / SATURATION SEMANTICS
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H150 HELD-OUT PRIMARY EXECUTION.
+
+No H150 held-out primary world
+has been executed.
+
+BODY REALIZATION
+
+A radius-R body contains every integer lattice point:
+
+x^2 + y^2 <= R^2.
+
+Neighborhood:
+
+Moore 8-neighborhood
+restricted to:
+body cells.
+
+DAMAGE COUNT
+
+For declared fraction f:
+
+damaged_cells =
+ceil(f * N),
+
+bounded to:
+1..N-1.
+
+REPAIR STEP
+
+At each synchronous step:
+
+a missing body cell is:
+frontier-eligible
+
+iff:
+
+at least one live Moore neighbor exists.
+
+Every selected eligible cell receives:
+one Bernoulli repair opportunity.
+
+Successful repair:
+restores membership permanently
+for the remainder of the world.
+
+Repair stops when:
+
+all lesion cells are restored
+
+or:
+
+256 steps are reached.
+
+THRESHOLD LATENCIES
+
+T50,
+T90,
+T99
+
+are:
+
+the first completed repair step
+at which:
+50%,
+90%,
+99%
+
+of initial lesion membership
+has been restored.
+
+REPAIR OPPORTUNITY COST
+
+One repair opportunity =
+one Bernoulli trial
+for:
+one eligible missing cell.
+
+opportunities_per_restored_cell =
+total repair opportunities
+/
+successful restored cells.
+
+MACRO FUNCTIONAL DOWNTIME PROXY
+
+Equal functional mass per body cell.
+
+For each world:
+
+macro downtime =
+the discrete area under:
+
+currently missing body-cell fraction
+
+from:
+the initial damaged state
+through:
+repair completion / censoring.
+
+This is:
+a geometry / availability proxy only.
+
+AXIS A LESION REALIZATION
+
+CENTER COMPACT:
+
+select cells nearest:
+(0,0).
+
+OFF-CENTER COMPACT:
+
+draw one held-out RNG angle.
+
+Lesion center radius:
+0.45R.
+
+Select:
+nearest body cells
+to:
+that off-center point.
+
+IRREGULAR CONNECTED:
+
+choose:
+one held-out RNG seed cell
+from:
+the inner 0.5R disk.
+
+Grow:
+a Moore-connected cluster
+by:
+repeated random frontier recruitment
+
+until:
+the declared lesion count.
+
+AXIS B MULTI-PATCH REALIZATION
+
+Body:
+R=21.
+
+Total damage:
+20%.
+
+Requested patch counts:
+1,2,4,8,16.
+
+Choose patch centers:
+with deterministic farthest-point placement
+
+inside:
+0.78R.
+
+Split total damaged-cell count
+as evenly as possible
+across:
+requested patches.
+
+Each patch:
+selects nearest currently unused cells
+to:
+its center.
+
+The realized initial Moore-connected component count
+is recorded.
+
+Sanity execution confirms:
+1,2,4,8,16 requested patches
+remain:
+1,2,4,8,16 initial wound components
+in the checked non-evidence worlds.
+
+AXIS C FIXED-MACRO-AREA REALIZATION
+
+Reference macro body:
+
+R_base = 15
+at:
+g=1.
+
+For cell scale g:
+
+R(g) =
+round(15 / g).
+
+Thus:
+body-cell count scales approximately
+as:
+1/g^2
+
+while:
+macro radius is held fixed
+in relative units.
+
+Primary Axis-C lesion:
+CENTER COMPACT.
+
+f_damage(g) =
+0.10 * g^beta.
+
+No latent repair information
+other than:
+the declared missing-body membership
+is introduced.
+
+AXIS D MULTI-WOUND REALIZATION
+
+Body:
+R=30.
+
+Each requested focus:
+ceil(0.02N)
+damaged cells.
+
+Requested focus counts:
+1,2,4,8,16,32.
+
+Centers use:
+deterministic farthest-point placement
+inside:
+0.84R.
+
+Damage is allocated:
+compactly around each center
+without duplicate damaged cells.
+
+GEOMETRIC SATURATION CLARIFICATION
+
+At:
+32 requested 2%-body foci,
+
+declared damage is approximately:
+64% of the body.
+
+Under:
+Moore connectivity,
+
+it is not geometrically possible
+to guarantee:
+32 disconnected compact wounds
+at that occupancy.
+
+Therefore:
+
+requested_patch_count
+and:
+actual_initial_connected_components
+
+are both recorded.
+
+Bandwidth allocation uses:
+the ACTUAL current
+Moore-connected missing components.
+
+The 32-focus condition is interpreted as:
+a deliberate geometric saturation regime,
+
+not:
+as proof that 32 independent wounds remain disconnected.
+
+No primary Axis-D level is removed
+or retuned.
+
+BOUNDED REPAIR BANDWIDTH
+
+Per repair step:
+
+at most:
+
+floor(0.10N)
+
+with minimum 1
+
+missing cells
+may receive:
+repair opportunities.
+
+When raw frontier demand
+exceeds capacity:
+
+- compute current Moore-connected missing components;
+- allocate opportunity slots:
+  round-robin across components;
+- rotate the round-robin start
+  by repair step;
+- randomize frontier order
+  only within each component
+  from the world repair RNG.
+
+UNLIMITED LOCAL:
+
+every frontier-eligible missing cell
+receives:
+one opportunity.
+
+RANDOMNESS
+
+Primary world seeds remain:
+exactly the preregistered H150 families.
+
+Lesion geometry consumes:
+the primary world RNG.
+
+Repair Bernoulli scheduling uses:
+a deterministic SHA-256-derived
+sub-seed
+from:
+world seed
+and:
+the literal domain tag
+"repair".
+
+CONTROLS
+
+After primary:
+
+repair probability controls
+use only:
+disjoint 20260919695xxx
+non-primary seeds.
+
+Stratified control subset:
+
+Axis A:
+R = 6,15,30;
+damage = 2%,10%,40%;
+lesion = CENTER, IRREGULAR;
+50 worlds / cell.
+
+Axis C:
+g = 1.0,0.5,0.25;
+beta = 0,1,2;
+100 worlds / cell.
+
+Control repair probabilities:
+
+1.0
+and:
+0.25.
+
+SANITY RESULTS — NON-EVIDENCE
+
+Representative Axis-B sanity:
+
+20% total damage.
+
+1 patch:
+median T90 approximately 8.5 steps.
+
+2:
+7.
+
+4:
+5.
+
+8:
+4.
+
+16:
+4.
+
+Opportunity count remained:
+approximately flat
+across:
+the split conditions.
+
+Representative Axis-D sanity:
+
+1..8 requested 2% foci:
+bounded 10% repair bandwidth
+did not materially bind.
+
+16 foci:
+median T90
+increased from:
+5
+to:
+7 steps
+under bounded bandwidth.
+
+32 requested foci:
+geometric merging occurred
+and:
+bounded-bandwidth median T90
+increased from:
+5
+to:
+12 steps.
+
+These sanity outputs are:
+NON-EVIDENCE.
+
+No H150 acceptance threshold
+was selected
+from:
+these values.
+
+FROZEN SANDBOX HARNESS SHA-256
+
+51be6032bda5f3a42ca922bdef4cc62eb3d7f9c1c405380711fb0892b5fc646d
+
+No execution-semantic change is permitted
+after:
+the first held-out H150 primary world
+is executed.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
