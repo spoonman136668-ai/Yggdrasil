@@ -698,3 +698,371 @@ SYNTHETIC_MEASURED_FUNCTION_SPACE_DAUGHTER_BASIS_RECRUITMENT
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — FUNCTION-SPACE DAUGHTER RECRUITMENT HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H182 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H182 SANDBOX HARNESS
+
+File:
+
+h182_omp_recruit_v1.py
+
+SHA-256:
+
+80bbb44c4fff4abfb384df534bfe55f0a8076db2c9c3c4b041642f9f1648a64c.
+
+PARENT MODEL
+
+Reuse:
+H180/H181
+context-gated
+capability-addition
+substrate.
+
+No:
+task,
+gate,
+daughter-cell budget,
+daughter fit,
+or:
+active-structure
+change.
+
+ONLY SCIENTIFIC CHANGE
+
+Daughter sites
+are recruited:
+
+sequentially
+
+from:
+B TRAINING FUNCTION
+residuals.
+
+Candidate sites:
+
+all parent sites
+with:
+x>=0.
+
+For selection geometry:
+
+use:
+parent-site RBF columns.
+
+After:
+selection,
+
+instantiate:
+the standard:
+micro-offset daughter cells
+
+and:
+perform:
+the same:
+actual daughter fit
+as:
+H180/H181.
+
+LEARNED GATE
+
+Exact:
+H180/H181
+six-parameter
+context-only router.
+
+The gate is:
+
+fit and frozen
+
+before:
+site recruitment.
+
+No:
+A or B
+functional target
+
+enters:
+gate fitting.
+
+EFFECTIVE CANDIDATE COLUMN
+
+x_j =
+gate(X_B_train)
+*
+phi_j(X_B_train).
+
+INITIAL B RESIDUAL
+
+r0 =
+y_B
+-
+f_A_frozen(X_B_train).
+
+OMP RECRUITMENT
+
+At:
+each step t,
+
+for:
+every unselected
+candidate j,
+
+Q_j =
+(
+x_j^T r_t
+)^2
+/
+(
+x_j^T x_j
++
+0.01
+).
+
+Select:
+maximum Q_j.
+
+Tie:
+lower parent index.
+
+Then:
+
+jointly ridge-fit:
+all selected columns
+
+with:
+alpha=.01,
+
+update:
+the B training residual,
+
+and:
+continue.
+
+B validation
+and:
+B held-out
+targets
+
+never enter:
+recruitment.
+
+A functional targets:
+
+never enter:
+recruitment.
+
+FINAL FIT
+
+After:
+K sites
+are recruited,
+
+instantiate:
+K standard
+daughter centers.
+
+Fit:
+the actual
+gated daughter design
+
+to:
+the same:
+B training residual
+
+with:
+alpha=.01.
+
+POLICIES
+
+H180_LEARNED_RANDOM64.
+
+H181_KCOVER_LEARNED64.
+
+OMP_LEARNED16.
+
+OMP_LEARNED32.
+
+OMP_LEARNED64.
+
+OMP_HARD64.
+
+OMP_UNGATED64.
+
+GLOBAL_DAUGHTER.
+
+SANITY
+
+Disjoint family:
+
+20260923190000
+and:
+20260923190001.
+
+2 worlds.
+
+8 policies.
+
+16 evaluations.
+
+Accepted sanity-output SHA-256:
+
+49d860b645ced7f847b9fd607381f00d87879f31a1b9baec7834fda363b1c3de.
+
+Mechanical checks:
+
+- exact 8 policies / world;
+- exact:
+  16 / 32 / 64
+  OMP site counts;
+- one shared:
+  learned context gate
+  per world;
+- parent A coefficients:
+  frozen;
+- no:
+  validation target,
+  held-out target,
+  or:
+  A target replay
+  enters:
+  OMP recruitment;
+- final daughter fit:
+  uses:
+  actual micro-offset
+  daughter centers;
+- hibernation / reactivation:
+  unchanged.
+
+NON-EVIDENCE FUNCTION-SPACE SIGNAL
+
+OMP_LEARNED64
+B held-out R^2:
+
+approximately:
+
+0.991
+and:
+0.998.
+
+OMP_LEARNED32:
+
+approximately:
+
+0.984
+and:
+0.997.
+
+OMP_LEARNED16:
+
+approximately:
+
+0.839
+and:
+0.991.
+
+Thus:
+
+sequential:
+function-space recruitment
+
+can:
+materially outperform:
+the prior:
+random,
+residual-local,
+and:
+Euclidean-coverage
+morphologies
+
+inside:
+sanity.
+
+A preservation
+under:
+learned routing
+
+remains:
+strong.
+
+UNGATED OMP64:
+
+learns:
+B strongly
+
+but:
+again:
+materially interferes:
+with A.
+
+Thus:
+
+function-space recruitment
+does NOT:
+remove:
+the need for:
+context routing.
+
+GENERALIZATION WARNING
+
+One:
+sanity world
+
+shows:
+a large:
+learned-gate
+B validation / held-out
+difference
+
+despite:
+high:
+B held-out R^2.
+
+This is:
+NON-EVIDENCE.
+
+No:
+
+- gate;
+- OMP score;
+- ridge alpha;
+- K;
+- candidate domain;
+- final daughter fit;
+- sample size;
+- threshold;
+- acceptance gate
+
+was changed
+from:
+this warning.
+
+PRIMARY FAMILY
+
+20260923100000..20260923100019.
+
+20 held-out worlds.
+
+8 policies.
+
+160 policy evaluations.
+
+H182 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H182 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
