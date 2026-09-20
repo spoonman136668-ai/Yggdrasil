@@ -2290,3 +2290,103 @@ NON-EVIDENCE.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN PACKAGING CORRECTION 01 — REMOTE BYTE IDENTITY
+
+DATE:
+2026-09-20.
+
+STATUS:
+CORRECTED BEFORE:
+THE:
+FIRST:
+DG-1R-05C:
+SCENARIO.
+
+The:
+previous:
+freeze entry
+
+recorded:
+the:
+local:
+pre-transfer:
+source identity
+
+including:
+one:
+final:
+newline.
+
+The:
+GitHub:
+contents transfer
+
+stored:
+the:
+same:
+source
+
+without:
+that:
+final:
+newline.
+
+No:
+Python:
+token,
+statement,
+constant,
+branch,
+metric,
+seed,
+or:
+experimental:
+semantic
+
+changed.
+
+AUTHORITATIVE REMOTE HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05c_neighbor_reconstruction_v1.py
+
+Git blob SHA:
+
+e1171314c4448555b5893e80ce22387d70be511d.
+
+Remote source SHA-256:
+
+fd77b84f8b12e42c48cf76d5d67fdb86b9bdedcdd717453eb256081c930a5c18.
+
+Remote source bytes:
+
+13207.
+
+The:
+execution copy
+
+was:
+aligned
+to:
+these:
+exact:
+remote:
+bytes
+
+before:
+any:
+world:
+execution.
+
+No:
+DG-1R-05C:
+scenario
+was:
+executed
+before:
+this:
+correction.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
