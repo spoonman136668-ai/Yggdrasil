@@ -583,3 +583,121 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05U NON-SELF-CERTIFYING LINEAGE ATTESTATION
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY ATTESTATION CASE.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05u_lineage_attestation_v1.py
+
+Harness source commit:
+
+2ae3243ddb402c3796b566baa35a320a2c0231a9.
+
+Git blob SHA:
+
+46f782ba8160eadaee8ef37774570a9e4c8f5b60.
+
+Source SHA-256:
+
+6a1bc53d7c061f62d0b9820a5a911503f6557cf1592036e4184d3bfe8515db5b.
+
+Source bytes:
+
+15159.
+
+FROZEN IMPLEMENTATION
+
+The harness implements:
+
+- exactly eight immutable synthetic root certificates;
+- recursive parent-issued edge attestations;
+- two complete-parent-set observer attestations;
+- child self-claimed lineage ignored by candidate verification;
+- INCLUDED_PARENT_ONLY and SELF_DECLARED_LINEAGE negative controls;
+- exact recursive lineage union;
+- strict generation monotonicity;
+- holder rotation independent of lineage identity;
+- omitted-parent, missing-edge, observer-disagreement, replay, and self-claim tamper audits;
+- exact DG-1R-05T 4096 single-root quorum replay;
+- exact 2520 compound-disjoint quorum replay;
+- dual-observer collusion holdout;
+- one-observer collusion holdout;
+- constitutional root-compromise holdout.
+
+LOCAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Roots:
+
+8.
+
+Quorum slots:
+
+4.
+
+Audit B:
+64.
+
+Audit C:
+28.
+
+Audit D:
+56.
+
+Audit E:
+56.
+
+Audit F:
+56.
+
+Audit G:
+32.
+
+Audit H:
+64.
+
+Audit I:
+8.
+
+Audit J:
+4096.
+
+Audit K:
+2520.
+
+No primary attestation result,
+lineage authorization result,
+omission result,
+replay result,
+or forgery result
+was generated before this freeze.
+
+REPRODUCIBILITY
+
+Execute two complete deterministic sweeps from this exact frozen harness.
+
+Serialized output SHA-256 must match exactly.
+
+No post-result tuning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
