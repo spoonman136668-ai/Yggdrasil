@@ -1130,3 +1130,141 @@ cell roles.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-07 REDUNDANCY COMPRESSION HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST DG-1R-07 PRIMARY DAMAGE SCENARIO.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_07_redundancy_compression_v1.py
+
+Harness commit:
+
+33738d7cd471a9104f6a7d1f3e1c3e1edb944f89.
+
+Git blob SHA:
+
+89fb496d3735754e0654640d1e606eeaa49505ba.
+
+Source SHA-256:
+
+05e4d126c7887d52ff526afcae99eb4d1e9849c909de14bf52efb38c3d593d8a.
+
+Source bytes:
+
+19247.
+
+PRE-FREEZE SANITY
+
+Python compile:
+
+PASS.
+
+Out-of-family seed:
+
+20260927999999.
+
+Observed input positions:
+
+12,
+28,
+44,
+62.
+
+Input /
+damage:
+separation:
+
+PASS.
+
+For:
+all:
+five:
+methods:
+
+duplicate:
+no-damage:
+trajectories
+
+remain:
+
+byte-exact:
+
+PASS.
+
+For:
+all:
+active:
+coding:
+methods:
+
+pre-damage:
+syndrome-free:
+encoding:
+
+PASS.
+
+No:
+primary:
+DG-1R-07:
+damage scenario
+
+was:
+executed
+before:
+this freeze.
+
+FROZEN WORLD FAMILY
+
+20260926070000..20260926070007.
+
+8 worlds.
+
+FROZEN MAINTENANCE BUDGETS
+
+FULL16_SECDED64:
+
+64 bits.
+
+G8_HAMMING32:
+
+32 bits.
+
+G5_HAMMING25:
+
+25 bits.
+
+G4_HAMMING20:
+
+20 bits.
+
+BASE64_INERT64:
+
+0 active:
+maintenance bits.
+
+All:
+
+64:
+dynamic:
+worker bits.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+canonical sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
