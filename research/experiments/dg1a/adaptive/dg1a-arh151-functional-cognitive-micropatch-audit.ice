@@ -909,3 +909,360 @@ SYNTHETIC_MEASURED_SANDBOX_FUNCTIONAL_COGNITIVE_MICROPATCH
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 stab18_r1_touched = false
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H151 HELD-OUT PRIMARY EXECUTION.
+
+No H151 primary world
+has been executed.
+
+COLONY REALIZATION
+
+Primary body:
+
+integer lattice disk
+R=8.
+
+N=197.
+
+Moore 8-neighborhood.
+
+IMMUTABLE RESPONSE CENTERS
+
+Cell response center =
+lattice coordinate
+divided by:
+R.
+
+QUERY REALIZATION
+
+Per world:
+
+256 query points
+sampled uniformly
+inside:
+the unit disk
+
+using:
+a deterministic SHA-256-derived
+query RNG.
+
+PRIMARY BASIS
+
+Gaussian radial basis.
+
+sigma:
+0.22.
+
+Each query row:
+normalized to:
+unit total response mass.
+
+LEARNED-STATE FIELD
+
+World RNG draws:
+iid standard-normal
+initial coefficients.
+
+SMOOTH:
+
+12 synchronous graph-diffusion rounds.
+
+MIXED:
+
+3 rounds.
+
+SCRAMBLED:
+
+0 rounds.
+
+Every diffusion round:
+
+0.50 self
++
+0.50 Moore-neighbor mean.
+
+Final field:
+
+zero mean,
+unit standard deviation.
+
+LESION REALIZATION
+
+Damage count:
+
+ceil(fraction * N),
+
+bounded:
+1..N-1.
+
+COMPACT:
+
+select:
+cells nearest:
+body center.
+
+FOUR-PATCH:
+
+select:
+four deterministic farthest-point centers
+
+inside:
+0.66R,
+
+with:
+held-out world RNG
+resolving ties.
+
+Split:
+total lesion count
+as evenly as possible.
+
+Allocate:
+nearest currently unused cells
+around each center.
+
+Both geometries:
+lose the same declared total cell count.
+
+MEMBERSHIP REGENERATION
+
+Reuse:
+H150 frontier membership rule.
+
+A missing cell is eligible
+iff:
+at least one live Moore neighbor exists.
+
+Primary restoration probability:
+
+0.50.
+
+Membership RNG:
+
+SHA-256-derived
+from:
+world seed
+and:
+"membership".
+
+Maximum membership schedule:
+
+52 steps.
+
+All four functional policies
+receive:
+the identical realized membership schedule.
+
+CONTEXT-HARMONIC
+
+At each membership step:
+
+new cells initialize
+synchronously
+
+from:
+the arithmetic mean
+of:
+pre-step live Moore-neighbor coefficients.
+
+After initialization:
+
+all currently regenerated cells
+receive:
+one synchronous refinement:
+
+0.50 current
++
+0.50 current live-neighbor mean.
+
+Original surviving cells:
+never change.
+
+After:
+membership completion,
+
+continue:
+12 context-refinement steps.
+
+Maximum total functional horizon:
+
+64.
+
+ZERO-STATE
+
+Restored coefficient:
+0.
+
+No refinement.
+
+RANDOM-STATE
+
+Restored coefficient:
+
+Gaussian draw
+using:
+mean and standard deviation
+of:
+the original surviving-cell coefficients.
+
+RNG:
+SHA-256-derived
+by:
+world seed
+and:
+policy domain.
+
+No:
+neighbor conditioning.
+
+No:
+refinement.
+
+CHECKPOINT-ORACLE
+
+Restored coefficient:
+
+exact original coefficient.
+
+Evaluation comparator only.
+
+FUNCTIONAL RECOVERY
+
+Y_BASE:
+pre-lesion colony output.
+
+Y_BASE is:
+evaluation-only.
+
+Repair policies:
+cannot read it.
+
+Y_LESION:
+output with:
+all lesion members absent.
+
+MSE_LESION:
+MSE(Y_LESION,Y_BASE).
+
+At each step:
+
+FR_raw =
+1 -
+MSE(Y_t,Y_BASE)
+/
+MSE_LESION.
+
+Threshold latency uses:
+
+FR_clip =
+clip(
+FR_raw,
+0,
+1
+).
+
+T50 / T90 / T99:
+
+first evaluated step
+crossing:
+0.50 / 0.90 / 0.99.
+
+Functional downtime:
+
+sum:
+1 - FR_clip
+
+over:
+evaluated repair / maturation steps.
+
+Weight RMSE on:
+lesioned coefficients
+
+is:
+analysis only.
+
+It is not:
+available to repair policies.
+
+FUNCTIONALLY TRIVIAL
+
+MSE_LESION < 1e-14.
+
+Such a world:
+would remain in:
+damage accounting
+
+but:
+be excluded from:
+functional threshold-ratio analysis.
+
+SANITY
+
+Disjoint sanity family:
+
+20260919890000...
+
+Seven representative worlds
+were executed.
+
+NON-EVIDENCE signals:
+
+SMOOTH:
+
+2% compact:
+CONTEXT final recovery
+approximately 0.979.
+
+5% four-patch:
+approximately 0.970.
+
+20% compact:
+approximately 0.564.
+
+SCRAMBLED:
+
+context reconstruction
+showed:
+no strong recovery.
+
+MIXED:
+
+intermediate behavior.
+
+These sanity values:
+did NOT alter:
+
+- policy identity;
+- diffusion rounds;
+- context mixing;
+- basis width;
+- lesion fractions;
+- acceptance thresholds;
+- primary sample size;
+- primary seeds.
+
+FROZEN SANDBOX HARNESS SHA-256
+
+3f6042716b4e5a26f41569376a4dca833f5bae5f3c053aa2280615bfadb32e37.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H151 primary world.
+
+PRIMARY SEEDS REMAIN
+
+20260919800000
+through:
+20260919802999.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
