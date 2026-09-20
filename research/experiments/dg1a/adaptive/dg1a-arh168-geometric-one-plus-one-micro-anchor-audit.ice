@@ -998,3 +998,575 @@ the first held-out H168 lifetime.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — GEOMETRIC ONE-PLUS-ONE MICRO-ANCHOR
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-POSITIVE.
+
+FINAL H168 HARNESS SHA-256
+
+85053ccadd5557d57f1590fc1a99653acd2352f3823f56499b7165d0dfb3e83e.
+
+ACCEPTED SANITY MATRIX SHA-256
+
+a916f25dfec5a29237a167ebe4eafc14322faa04b89da5399293427875b9193b.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+dc80f2e1a9e78bf07bd06f01df3ee0693c660cee622173b5f7a2bf483a8f305f.
+
+ACCEPTED PRIMARY FAMILY
+
+20260921700000..20260921700119.
+
+PRIMARY MATRIX
+
+120 held-out condition-world lifetimes.
+
+5 policies.
+
+600 policy lifetimes.
+
+Validation:
+
+- exactly 120 unique held-out seeds;
+- exact accepted seed interval;
+- exactly five policy rows / seed;
+- zero duplicate seed x policy rows;
+- no missing accepted seeds;
+- no post-primary threshold or query-rule tuning.
+
+REFERENCE
+
+MICRO2-LEVERAGE.
+
+Minimum group median
+FINAL GlobalFidelity:
+
+approximately:
+0.998272.
+
+World fraction
+FINAL >=0.95:
+
+100%
+in:
+every group.
+
+Maximum group-median
+HALF-to-FINAL loss:
+
+approximately:
+0.000828.
+
+Minimum group-median
+late-life SelfRecovery:
+
+approximately:
+0.989181.
+
+PASS.
+
+PRIMARY CANDIDATE
+
+GEOM-1PLUS1-098.
+
+SAFETY
+
+Minimum group median
+FINAL GlobalFidelity:
+
+approximately:
+0.998059.
+
+World fraction
+FINAL >=0.95:
+
+100%
+in:
+every group.
+
+Maximum group-median
+HALF-to-FINAL loss:
+
+approximately:
+0.000604.
+
+Minimum group-median
+late-life SelfRecovery:
+
+approximately:
+0.987891.
+
+Therefore:
+
+quality,
+reliability,
+drift,
+and:
+late-life SelfRecovery
+
+all:
+PASS.
+
+SECOND-QUERY DUTY
+
+Coarse:
+g=1.00.
+
+Median second-query duty:
+
+0
+in:
+all:
+four
+regime x eta groups.
+
+Frozen target:
+<=0.10.
+
+PASS.
+
+Fine:
+g=.25.
+
+Median second-query duty:
+
+HOTSPOT,
+eta=0:
+approximately 0.616.
+
+HOTSPOT,
+eta=.25:
+approximately 0.623.
+
+ROAMING,
+eta=0:
+approximately 0.616.
+
+ROAMING,
+eta=.25:
+approximately 0.630.
+
+Frozen selective range:
+
+>0.10
+and:
+<0.90
+
+in:
+at least:
+3 / 4 groups.
+
+Observed:
+
+4 / 4.
+
+PASS.
+
+Thus:
+
+rho_geom
+strongly separates:
+
+coarse
+one-query geometry
+
+from:
+
+fine
+one-plus-one geometry.
+
+OBSERVATION COST
+
+GEOM-1PLUS1
+median average observations / cycle:
+
+coarse:
+
+1.0.
+
+fine:
+
+approximately:
+1.616..1.630.
+
+All:
+<2.0.
+
+PASS.
+
+Relative to:
+MICRO2-LEVERAGE:
+
+pooled observation reduction:
+
+g=1.00:
+
+50%.
+
+Frozen target:
+>=40%.
+
+PASS.
+
+g=.25:
+
+approximately:
+18.9%.
+
+Frozen target:
+>=15%.
+
+PASS.
+
+FINE EXPOSURE IMPROVEMENT
+VERSUS:
+MICRO1-LEVERAGE
+
+GEOM-1PLUS1
+has:
+lower exposure
+
+in:
+4 / 4
+fine-scale groups.
+
+Per-group reduction:
+
+approximately:
+9.9%
+to:
+34.8%.
+
+Pooled reduction:
+
+approximately:
+25.5%.
+
+Frozen target:
+>=5%.
+
+PASS.
+
+EXPOSURE
+VERSUS:
+MICRO2-LEVERAGE
+
+Fine scale:
+
+all four groups
+remain:
+inside:
+the 1.25x envelope.
+
+Ratios:
+
+approximately:
+1.125
+to:
+1.217.
+
+PASS.
+
+Coarse:
+
+HOTSPOT clean:
+approximately 1.024.
+
+HOTSPOT eta=.25:
+approximately 0.971.
+
+ROAMING clean:
+approximately 1.030.
+
+ROAMING eta=.25:
+approximately 1.286.
+
+Frozen ceiling:
+1.25.
+
+FAIL:
+
+one:
+coarse,
+noisy,
+ROAMING
+group
+
+exceeds:
+the envelope
+
+by:
+approximately:
+0.036
+absolute ratio
+
+or:
+about:
+2.9%
+relative to:
+the allowed ceiling.
+
+Because:
+
+coarse rho_geom
+never reaches:
+0.98,
+
+GEOM-1PLUS1
+is:
+identical
+to:
+MICRO1-LEVERAGE
+
+in:
+all coarse worlds.
+
+Therefore:
+
+this miss
+is:
+a real limitation
+of:
+geometry-only
+second-query control.
+
+ORACLE
+
+LOCAL-CHECKPOINT-ORACLE:
+
+FINAL GlobalFidelity
+exactly:
+1.0.
+
+PASS.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+MICRO2-LEVERAGE baseline.
+
+2.
+GEOM-1PLUS1 safety.
+
+4.
+Coarse second-query duty.
+
+5.
+Selective fine second-query duty.
+
+6.
+Average observations <2.
+
+7.
+Observation reduction:
+coarse and fine.
+
+8.
+Fine exposure lower than:
+MICRO1-LEVERAGE
+in:
+>=3 / 4.
+
+Observed:
+4 / 4.
+
+9.
+Pooled fine exposure reduction
+>=5%.
+
+10.
+Oracle ceiling.
+
+FAIL / MIXED:
+
+3.
+Global exposure qualification.
+
+Observed:
+
+7 / 8 groups
+inside:
+the 1.25x envelope.
+
+One:
+coarse noisy ROAMING
+group:
+approximately 1.286x.
+
+STRONG SUPPORT:
+
+FAIL.
+
+FINAL INTERPRETATION
+
+H168 is:
+
+MIXED-POSITIVE.
+
+The target-blind:
+geometric purchase controller
+
+works:
+very well
+
+for:
+the scale-dependent
+information demand
+
+discovered in:
+H167.
+
+It automatically chooses:
+
+ONE observation
+at:
+coarse scale
+
+and:
+
+approximately:
+1.62 observations / cycle
+at:
+fine scale,
+
+while:
+retaining:
+high final capability
+and:
+reducing:
+fine-scale transient exposure.
+
+But:
+
+GEOMETRY ALONE
+IS NOT:
+THE COMPLETE
+RISK SIGNAL.
+
+The remaining failure
+is:
+
+COARSE
++
+ROAMING
++
+NOISY FEEDBACK.
+
+In that group:
+
+query geometry
+still says:
+one observation
+
+while:
+long-horizon transient error
+says:
+occasional second observations
+would be useful.
+
+ARCHITECTURAL CONSEQUENCE
+
+The next controller
+should preserve:
+
+rho_geom
+
+as:
+the primary:
+scale / information-demand
+signal.
+
+It should add:
+
+a second:
+TARGET-BLIND
+TURNOVER-HISTORY signal
+
+for:
+coarse roaming risk.
+
+Do NOT:
+
+use:
+held-out task error.
+
+Do NOT:
+
+lower:
+rho_geom
+globally.
+
+That would:
+unnecessarily buy:
+second queries
+in:
+stable coarse HOTSPOT
+repair.
+
+The natural observable is:
+
+LESION NOVELTY / MOBILITY.
+
+A local wound
+that:
+moves into:
+previously untouched
+or:
+recently unrefreshed
+cognitive territory
+
+should:
+accumulate:
+higher functional-anchor risk
+
+than:
+a repeatedly repaired
+HOTSPOT.
+
+NEXT:
+
+H169 —
+REPAIR-HISTORY-AWARE
+ONE-PLUS-ONE
+MICRO-ANCHOR AUDIT.
+
+Candidate target-blind
+purchase rule:
+
+buy q2
+if:
+
+rho_geom >=0.98
+
+OR:
+
+current lesion
+has:
+high novelty
+relative to:
+the recent repair footprint.
+
+Use:
+fresh held-out seeds.
+
+H168 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- global retraining;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
