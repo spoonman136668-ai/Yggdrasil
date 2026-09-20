@@ -330,3 +330,389 @@ Required:
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-05A-FIXA CLOSURE — CORRECTED DOUBLE2 CONTROL
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+MECHANICAL CONTROL REPAIRED /
+EXPECTED OVER-CORRECTION BOUNDARY CONFIRMED /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+cfc93793426168dfa02a68be90d4bde14b6ed7c0b3209a171a666f6cefe6b64c.
+
+CANONICAL NON-EVIDENCE OUTPUT
+
+RUN 1 SHA-256:
+
+49f5975834c10ddf1a216cc1088b7a57dca7d1e29d3c297e23f1ffbab01330e8.
+
+RUN 2 SHA-256:
+
+49f5975834c10ddf1a216cc1088b7a57dca7d1e29d3c297e23f1ffbab01330e8.
+
+Byte-identical:
+
+PASS.
+
+UNAFFECTED FAMILY CHECK
+
+SINGLE1_LOCAL:
+
+exact summary match
+to:
+original:
+DG-1R-05A:
+
+PASS.
+
+DISTRIBUTED3:
+
+PASS.
+
+DISTRIBUTED5:
+
+PASS.
+
+Thus:
+
+the:
+mechanical:
+repair
+
+changed:
+ONLY:
+
+DOUBLE2_LOCAL.
+
+CORRECTED DOUBLE2 — HAM74_REPAIR_ALWAYS
+
+Median:
+excess divergence area:
+
+2.28515625.
+
+Full recovery rate:
+
+0.1875.
+
+Median:
+damaged-site recovery:
+
+h1:
+
+0.5.
+
+h4:
+
+0.5.
+
+Total:
+corrections:
+
+32.
+
+False corrections:
+
+32.
+
+False correction fraction:
+
+1.0.
+
+OVER-CORRECTION FAILURE:
+
+CONFIRMED.
+
+CORRECTED DOUBLE2 — HAM74_REPAIR_H6
+
+Median:
+excess divergence area:
+
+2.15625.
+
+Full recovery rate:
+
+0.25.
+
+Median:
+damaged-site recovery:
+
+h1:
+
+0.5.
+
+h4:
+
+0.5.
+
+Total:
+corrections:
+
+17.
+
+False corrections:
+
+17.
+
+False correction fraction:
+
+1.0.
+
+OVER-CORRECTION FAILURE:
+
+CONFIRMED.
+
+DOUBLE2 DETECT-ONLY CONTROL
+
+Median:
+excess divergence area:
+
+2.13671875.
+
+Full recovery rate:
+
+0.25.
+
+Thus:
+
+attempting:
+single-error:
+Hamming correction
+
+on:
+two-bit:
+local:
+damage
+
+does NOT:
+improve:
+the:
+counterfactual:
+trajectory
+
+and:
+
+every:
+performed:
+correction
+is:
+wrong
+under:
+the:
+frozen:
+counterfactual:
+telemetry.
+
+TECHNICAL INTERPRETATION
+
+The:
+repair-information:
+hypothesis
+
+is:
+supported
+
+but:
+strictly:
+capacity-bounded.
+
+Hamming(7,4):
+
+contains:
+enough:
+local:
+redundancy
+
+to:
+reconstruct:
+one:
+damaged:
+physical:
+bit
+per:
+codeword.
+
+It does NOT:
+contain:
+enough:
+information
+
+to:
+uniquely:
+reconstruct:
+arbitrary:
+two-bit:
+damage.
+
+The:
+nanite:
+
+must therefore:
+know:
+
+WHEN:
+ITS:
+LOCAL:
+REPAIR:
+INFORMATION
+
+IS:
+SUFFICIENT
+
+and:
+
+WHEN:
+TO:
+ABSTAIN.
+
+This introduces:
+
+REPAIR:
+CONFIDENCE /
+UNCERTAINTY
+
+as:
+a:
+new:
+architectural:
+requirement.
+
+PLAIN-SPEAK SUMMARY
+
+The:
+backup:
+information
+worked.
+
+When:
+one:
+bit
+inside:
+a:
+local:
+group
+was:
+damaged,
+
+the:
+system
+could:
+figure out:
+exactly:
+which:
+bit
+was:
+wrong
+
+and:
+put:
+the:
+organism
+back:
+onto:
+the:
+exact:
+undamaged:
+path.
+
+But:
+
+when:
+two:
+bits
+inside:
+the:
+same:
+group
+were:
+damaged,
+
+the:
+same:
+repair:
+rule
+became:
+overconfident.
+
+It:
+thought:
+a:
+third:
+bit
+was:
+wrong
+
+and:
+changed:
+the:
+wrong:
+cell.
+
+So:
+we learned:
+two:
+important:
+things.
+
+1.
+
+The:
+nanites
+really:
+were:
+missing:
+repair:
+information.
+
+Local:
+redundancy
+can:
+supply:
+that:
+information.
+
+2.
+
+Repair:
+must:
+know:
+its:
+limits.
+
+A:
+self-healing:
+system
+cannot:
+blindly:
+repair
+every:
+error
+it:
+detects.
+
+Sometimes:
+the:
+correct:
+action
+must:
+be:
+
+CONTAIN:
+THE:
+DAMAGE
+
+and:
+
+DO:
+NOT:
+GUESS.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
