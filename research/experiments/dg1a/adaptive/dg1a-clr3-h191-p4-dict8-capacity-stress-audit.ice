@@ -271,3 +271,95 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — H191-P4 DICT8 CAPACITY STRESS HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST H191-P4 WORLD.
+
+HARNESS
+
+research/experiments/dg1a/adaptive/harnesses/h191_p4_dict8_capacity_stress_v1.py
+
+Harness commit:
+
+ecd511281c425072102f84ae51ad8798265fa4cb.
+
+Git blob SHA:
+
+00824eb329fe329f44821a60a2175f1dd0a8b65f.
+
+Source SHA-256:
+
+f81abefdc5dd40670d107968d6c03d7272eb8654eb56dcffa17df0ed31763e7f.
+
+Source bytes:
+
+4675.
+
+DEPENDENCIES
+
+H191-P3 multiscale dictionary harness Git blob:
+
+1954ce689973f36d0a44d36271a0f002de0150d9.
+
+H191-P2 shared-support harness Git blob:
+
+689b1c9a20559e090c41763c9174da7a43590fad.
+
+H191-P0 base harness Git blob:
+
+6ac31f5cc3e091be7ef24ea74879903dd21cc2fa.
+
+FROZEN CONDITIONS
+
+SRC4:
+20260924500000..20260924500009.
+
+SRC6:
+20260924510000..20260924510009.
+
+SRC8:
+20260924520000..20260924520009.
+
+SRC12:
+20260924530000..20260924530009.
+
+10 worlds per condition.
+40 worlds total.
+
+Only:
+shared Gaussian source-factor count
+changes.
+
+All:
+DICT8 architecture,
+PROXY8 comparator,
+context geometry,
+remainder amplitude,
+source distributions,
+ridge,
+metrics,
+and:
+classification thresholds
+remain frozen.
+
+REPRODUCIBILITY
+
+Execute:
+two complete 40-world sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
