@@ -2456,3 +2456,250 @@ NON-EVIDENCE.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-FREEZE REVALIDATION CLOSURE — CURRENT AUTHORITATIVE DG-1R-05I HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+PROVENANCE RECONCILED /
+TWO BYTE-IDENTICAL SWEEPS /
+NON-CANONICAL /
+NON-EVIDENCE.
+
+WHY THIS REVALIDATION WAS REQUIRED
+
+An earlier DG-1R-05I closure certified the earlier harness blob:
+
+00dc7efc861c1289a15266b85cd260a54ec2a178.
+
+The branch later re-froze a byte-distinct authoritative harness.
+Therefore the earlier closure was historical evidence for the earlier bytes,
+not certification of the current frozen bytes.
+
+LIVE BRANCH VERIFICATION BEFORE WRITE
+
+Branch:
+dg1a-ar.
+
+Verified pre-write HEAD:
+
+3e98be98cbc3ea875efa77ad933e253ceeba6e08.
+
+Commit message:
+
+Freeze DG-1R-05I cross-plane confidence harness.
+
+CURRENT AUTHORITATIVE HARNESS
+
+Path:
+
+research/experiments/dg1r/harnesses/dg1r_05i_cross_plane_confidence_v1.py
+
+Git blob SHA:
+
+3b41748cc3832602d53e28370e9e06ea0bc21bf0.
+
+Source SHA-256:
+
+989bc8499f3c087596072053132461ade0c39153b42f3d03b99834e9f6d2731e.
+
+Source bytes:
+
+13527.
+
+The executed local copy was verified byte-for-byte by source size and SHA-256
+against the frozen remote source before primary execution.
+
+PRIMARY EXECUTION
+
+Frozen worlds:
+
+20260926059000..20260926059007.
+
+World count:
+
+8.
+
+Sweep 1 output SHA-256:
+
+fe4a36fad97f1c166a058b4593d3753c2cb62cde4f324c9e9d6a627d05208cc5.
+
+Sweep 2 output SHA-256:
+
+fe4a36fad97f1c166a058b4593d3753c2cb62cde4f324c9e9d6a627d05208cc5.
+
+Byte-identical:
+
+PASS.
+
+Mechanical validity:
+
+TRUE.
+
+FROZEN SIGNALS
+
+CROSSPLANE_FALSE_REPAIR_SUPPRESSION:
+
+TRUE.
+
+LOGICAL_REPAIR_PRESERVATION:
+
+TRUE.
+
+CROSSPLANE_CONFIDENCE_SIGNAL:
+
+TRUE.
+
+CROSSPLANE_CORRELATED_FAILURE:
+
+TRUE.
+
+TECHNICAL EVIDENCE
+
+CHECK4_BIT0_D6:
+
+GREEDY_BASELINE false applied logical flips:
+8.
+
+GREEDY_BASELINE median logical divergence area:
+2.875.
+
+CROSSPLANE2_GATE false applied logical flips:
+0.
+
+CROSSPLANE2_GATE median logical divergence area:
+0.0.
+
+CROSSPLANE2_GATE sustained exact logical recovery:
+1.0.
+
+CHECK4_BIT0_D7:
+
+GREEDY_BASELINE false applied logical flips:
+8.
+
+GREEDY_BASELINE median logical divergence area:
+1.9999999999999998.
+
+CROSSPLANE2_GATE false applied logical flips:
+0.
+
+CROSSPLANE2_GATE median logical divergence area:
+0.0.
+
+CROSSPLANE2_GATE sustained exact logical recovery:
+1.0.
+
+TRUE TWO-PLANE LOGICAL DAMAGE
+
+LOCAL_DATA2_D6:
+gate median logical divergence area 0.0;
+sustained exact logical recovery 1.0;
+false applied flips 0.
+
+DISTRIBUTED_DATA2:
+gate median logical divergence area 0.0;
+sustained exact logical recovery 1.0;
+false applied flips 0;
+applied logical flips 32 across the sweep.
+
+DATA2_PLUS_CHECK2_D6:
+gate median logical divergence area 0.0;
+sustained exact logical recovery 1.0;
+false applied flips 0.
+
+DATA2_PLUS_CHECK3_D7:
+gate median logical divergence area 0.0;
+sustained exact logical recovery 1.0;
+false applied flips 0.
+
+SINGLE-BIT SENSITIVITY COST
+
+SINGLE_DATA1_D6:
+
+GREEDY_BASELINE median logical divergence area:
+0.0.
+
+GREEDY_BASELINE sustained exact logical recovery:
+1.0.
+
+CROSSPLANE2_GATE applied logical flips:
+0.
+
+CROSSPLANE2_GATE median logical divergence area:
+2.875.
+
+CROSSPLANE2_GATE sustained exact logical recovery:
+0.25.
+
+CORRELATED CROSS-PLANE BOUNDARY
+
+CHECK4_BITS01_D6:
+
+GREEDY_BASELINE false applied logical flips:
+16.
+
+CROSSPLANE2_GATE false applied logical flips:
+16.
+
+CROSSPLANE2_GATE median logical divergence area:
+3.166666666666667.
+
+CROSSPLANE2_GATE sustained exact logical recovery:
+0.0.
+
+INTERPRETATION
+
+The current authoritative harness reproduces the same mechanistic conclusion
+as the historical DG-1R-05I closure.
+
+Cross-plane agreement is a useful confidence signal when integrity faults are
+not themselves correlated across planes.
+
+It suppresses the frozen one-plane integrity masquerades without sacrificing
+the frozen two-plane logical-repair positives.
+
+It is not an independent truth signal.
+
+A true single-plane logical fault is rejected by the same confidence rule,
+and correlated integrity faults spanning two planes can manufacture the
+required support and trigger a false logical repair.
+
+The unresolved boundary is therefore IDENTIFIABILITY, not threshold tuning.
+
+PLAIN-SPEAK INTERPRETATION
+
+The extra confidence check really does help.
+
+If only one bit plane says a region is damaged, the system can refuse a bad
+repair and avoid being tricked by several corrupted backup checks.
+
+But that safety comes with a cost: a real one-bit data fault also looks like
+only one vote, so it can be missed.
+
+And if corrupted backup checks coordinate across two bit planes, they can
+fake two votes and fool the system again.
+
+So the next problem is not finding a cleverer cutoff. We need to determine
+which kinds of damage can actually be told apart from the information stored
+in the current 128-bit state.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05J —
+FAULT IDENTIFIABILITY / SYNDROME-COLLISION AUDIT.
+
+No new repair heuristic should be introduced before that boundary is mapped.
+
+No post-result tuning was performed.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
