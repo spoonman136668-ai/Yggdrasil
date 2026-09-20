@@ -791,3 +791,292 @@ SYNTHETIC_MEASURED_SANDBOX_TARGET_BLIND_FUNCTION_SPACE_ENERGY_ENVELOPE
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — FUNCTION-SPACE ENERGY-ENVELOPE HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H174 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H174 SANDBOX HARNESS
+
+File:
+
+h174_function_energy_v1.py
+
+SHA-256:
+
+6c08a6fb98d1b5a3e8ea3341196304883bc64416726fcca0f23ec3665072a554.
+
+PARENT MECHANICS
+
+Reuse:
+H171 learned matched-turnover substrate,
+H169 HIST-GEOM one-plus-one controller,
+and:
+H173 comparator mechanics.
+
+No:
+teacher,
+training,
+damage,
+query,
+history,
+lambda,
+noise,
+or:
+lifetime change.
+
+UNLABELED PROBES
+
+128 deterministic
+unit-disk points
+
+from domain:
+
+world seed
+|
+"H174_UNLABELED_PROBES".
+
+No:
+target,
+teacher,
+training,
+validation,
+or:
+held-out test
+value
+
+is read
+at:
+these probes.
+
+FUNCTION-SPACE ENERGY
+
+For:
+one lesion,
+
+P =
+Phi(
+unlabeled probes,
+lesion cells
+).
+
+G =
+P^T P
+/
+128.
+
+Candidate:
+u.
+
+E =
+u^T G u.
+
+Lifetime coefficient-scale certificate:
+
+s0 =
+RMS
+of:
+the original learned
+student coefficient vector.
+
+E_scale =
+s0^2
+*
+trace(G).
+
+z =
+sqrt(
+E / E_scale
+).
+
+If:
+trace(G)<=1e-15,
+
+projection:
+inactive.
+
+Otherwise:
+
+FENV2:
+
+gamma=2.
+
+FENV4:
+
+gamma=4.
+
+When:
+z>gamma,
+
+project radially:
+
+u <- u * gamma / z.
+
+No:
+functional target
+enters:
+z.
+
+POLICIES
+
+H171_UNCONSTRAINED.
+
+H173_ENV2.
+
+FENV2_HIST_GEOM.
+
+FENV4_HIST_GEOM.
+
+MICRO2_LEVERAGE.
+
+LOCAL_CHECKPOINT_ORACLE.
+
+SANITY
+
+Disjoint family:
+
+20260922390000...
+
+6 condition-worlds.
+
+6 policies.
+
+36 policy lifetimes.
+
+Sanity-output SHA-256:
+
+0baee1dc5b049c5725d330ef91c79296e6f6c7b86b385aa2b1b0d0ffca98dd77.
+
+Mechanical checks:
+
+- exactly six policies / seed;
+- exact six sanity seeds;
+- oracle fidelity:
+  exactly 1.0;
+- FENV2 / FENV4:
+  identical functional-observation counts
+  to:
+  H171_UNCONSTRAINED;
+- function-space projection
+  changes:
+  lesion coefficients only;
+- no:
+  label,
+  teacher output,
+  lost coefficient,
+  or:
+  held-out test output
+
+enters:
+the envelope.
+
+NON-EVIDENCE SIGNAL
+
+FENV2:
+
+minimum sanity
+FINAL learned-output fidelity:
+
+approximately:
+0.866.
+
+Median projection duty:
+
+approximately:
+97.3%.
+
+Maximum:
+
+approximately:
+99.0%.
+
+Minimum accuracy delta:
+
+approximately:
+-0.0332.
+
+Thus:
+
+gamma=2
+appears:
+highly restrictive
+in:
+sanity.
+
+FENV4:
+
+minimum sanity
+FINAL learned-output fidelity:
+
+approximately:
+0.944.
+
+Median projection duty:
+
+approximately:
+47.8%.
+
+Maximum:
+
+approximately:
+71.6%.
+
+This sanity signal
+suggests:
+a possible:
+overconstraint failure.
+
+It is:
+NON-EVIDENCE.
+
+No:
+
+- gamma;
+- probe count;
+- probe generator;
+- normalization;
+- teacher;
+- training;
+- damage law;
+- query rule;
+- history window;
+- lambda;
+- feedback-noise rate;
+- lifetime;
+- sample size;
+- acceptance gate
+
+was changed.
+
+PRIMARY FAMILY
+
+20260922300000..20260922300079.
+
+80 held-out worlds.
+
+6 policies.
+
+480 policy lifetimes.
+
+Approximately:
+
+140,160
+policy repair cycles.
+
+H174 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H174 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
