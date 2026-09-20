@@ -547,3 +547,202 @@ SYNTHETIC_MEASURED_SANDBOX_RESIDUAL_ROUTED_GLOBAL_JOINT_MICROPATCH
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 stab18_r1_touched = false
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — RESIDUAL-ROUTED JOINT SOLVE HARNESS
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H155 HELD-OUT PRIMARY EXECUTION.
+
+SANDBOX HARNESS SHA-256
+
+8f786b54cfdc42e4f48aa9b35d4682cd754c3212a37ba3bf2b5ac85938464d8c.
+
+COMPONENT POOLS
+
+32 candidate local feedback queries
+per:
+initial lesion component.
+
+All acquired queries:
+enter:
+the global joint training solve.
+
+No:
+separate validation pool.
+
+PREFIT INNOVATION
+
+For selected query j:
+
+measure:
+the current model residual
+
+BEFORE:
+training on j.
+
+Normalize by:
+the same query's
+lesioned-baseline residual.
+
+Clip:
+to:
+[0,10].
+
+Component score:
+
+EWMA alpha 0.50.
+
+BOOTSTRAP
+
+Each wound component
+receives:
+at least one observation
+when:
+budget permits
+
+before:
+pure residual ranking.
+
+GLOBAL SOLVE
+
+After:
+each acquired query,
+
+all lesion coefficients
+are:
+jointly solved
+
+using:
+all acquired training observations.
+
+Within one maturation step:
+
+the harmonic context state
+at:
+the beginning of the step
+
+is used as:
+the ridge prior
+
+for:
+all sequential query updates
+inside:
+that step.
+
+Surviving original coefficients:
+remain fixed.
+
+WITHIN-COMPONENT SELECTION
+
+Maximum posterior leverage
+among:
+unqueried candidates
+of:
+the selected component.
+
+COMPARATORS
+
+JOINT-FIXED24:
+
+round-robin component routing.
+
+JOINT-UNCERT24:
+
+mean posterior coefficient variance
+per component.
+
+JOINT-RESID24:
+
+observed prefit residual EWMA.
+
+JOINT-RESID48:
+
+same residual routing
+with:
+48 nominal maximum observations.
+
+NOTE:
+
+a single-component lesion
+has:
+only 32 candidate queries.
+
+Therefore:
+JOINT-RESID48
+can consume:
+at most 32
+in:
+that geometry.
+
+This is:
+a candidate-pool ceiling,
+
+not:
+an execution error.
+
+SANITY
+
+140 underlying worlds.
+
+980 policy-world evaluations.
+
+Disjoint:
+20260920290000
+family.
+
+NON-EVIDENCE.
+
+Mechanical checks:
+
+- all seven policies completed;
+- acquired targets
+  entered:
+  global joint inference;
+- unacquired targets
+  did not:
+  enter routing;
+- surviving coefficients
+  remained fixed;
+- oracle remained:
+  evaluation-only.
+
+Scientific sanity signal:
+
+- residual routing sometimes improves:
+  FOUR-PATCH T90 reach;
+- it is not:
+  uniformly superior
+  to:
+  fixed or uncertainty routing;
+- larger local-feedback budget
+  can:
+  reduce held-out final recovery
+  in:
+  some single-component worlds,
+  consistent with:
+  local-support overfitting.
+
+No:
+threshold,
+budget,
+alpha,
+pool size,
+or:
+acceptance gate
+is changed.
+
+PRIMARY FAMILY REMAINS
+
+20260920200000..20260920202399.
+
+No execution-semantic change
+after:
+the first held-out H155 primary world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
