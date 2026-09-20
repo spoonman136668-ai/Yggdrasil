@@ -826,3 +826,307 @@ SYNTHETIC_MEASURED_CONTEXT_CONDITIONED_SHARED_BASIS_WARP_CAPABILITY_RELIABILITY
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — SHARED BASIS-WARP HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H187 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H187 SANDBOX HARNESS
+
+File:
+
+h187_basis_warp_v1.py
+
+SHA-256:
+
+bdc1ac91733e4e8f3cb2b362f7daa23978d9b27013206bdad3f0ccdbd0ba070a.
+
+PARENT SUBSTRATE
+
+Exact H186 / H183
+accepted substrate.
+
+No:
+cell count,
+gate,
+coverage morphology,
+C hybrid,
+teacher,
+context geometry,
+or:
+acceptance rule
+changes.
+
+B BASIS WARP
+
+Physical B daughter centers:
+
+remain:
+exactly:
+the H181
+coverage-balanced
+48-cell geometry.
+
+The B basis
+evaluates:
+one:
+shared,
+bounded
+5-parameter
+input warp
+
+only when:
+the accepted B gate
+is active.
+
+Parameters:
+
+log_sx,
+log_sy,
+theta,
+tx,
+ty.
+
+Bounds:
+
+log scales:
+[-0.40,+0.40].
+
+theta:
+[-20,+20] degrees.
+
+translation:
+each:
+[-0.08,+0.08].
+
+Warp fitting:
+
+B training coordinates
++
+B training targets only.
+
+No:
+validation,
+held-out,
+A functional target,
+C data
+
+enters:
+warp optimization.
+
+Coordinate search:
+
+identity start.
+
+5 deterministic sweeps.
+
+Initial steps:
+
+0.20,
+0.20,
+10 degrees,
+0.04,
+0.04.
+
+Step sizes:
+halve
+after:
+each sweep.
+
+At:
+each candidate warp,
+
+B daughter coefficients
+are:
+ridge-refit
+
+with:
+alpha=.01.
+
+The chosen warp
+and:
+B coefficients
+
+are:
+frozen
+before:
+C appears.
+
+SANITY
+
+Disjoint family:
+
+20260923690000
+and:
+20260923690001.
+
+2 worlds.
+
+6 policies.
+
+12 evaluations.
+
+Accepted sanity-output SHA-256:
+
+6db6fbfd7c0b3857fa15311300215d65fc999fe8a21036ae5566ef649697daa8.
+
+Mechanical checks:
+
+- exact 6 policies / world;
+- B physical centers:
+  unchanged
+  by:
+  warp;
+- B active-cell count:
+  unchanged;
+- B gate:
+  exact parent;
+- no:
+  held-out / validation
+  leakage;
+- C hybrid:
+  exact H186;
+- hibernation / reactivation:
+  exact.
+
+NON-EVIDENCE SIGNAL
+
+World:
+20260923690000.
+
+BASE48
+post-B R^2:
+
+approximately:
+0.8587.
+
+WARP48:
+
+approximately:
+0.9189.
+
+WARP32:
+
+approximately:
+0.9194.
+
+World:
+20260923690001.
+
+BASE48:
+
+approximately:
+0.8925.
+
+WARP48:
+
+approximately:
+0.9328.
+
+WARP32:
+
+approximately:
+0.9433.
+
+Thus:
+
+the shared basis warp
+can:
+materially improve
+B competence
+
+without:
+adding:
+physical cells
+
+inside:
+sanity.
+
+Generalization:
+
+validation R^2
+remains:
+close to:
+held-out R^2
+
+in:
+both sanity worlds.
+
+BOUNDARY DIAGNOSTIC
+
+One:
+log-scale parameter
+
+lands:
+near:
+the frozen:
+0.40
+absolute bound
+
+in:
+each sanity world.
+
+Representative:
+
+-0.3875
+or:
++/-0.3875
+
+on:
+one axis.
+
+This is:
+NON-EVIDENCE.
+
+No:
+warp bound,
+warp regularizer,
+coordinate-search schedule,
+cell count,
+router,
+or:
+acceptance gate
+
+is changed.
+
+The held-out primary
+will determine:
+
+whether:
+the gain
+is:
+robust
+
+or:
+depends:
+too strongly
+on:
+the search boundary.
+
+PRIMARY FAMILY
+
+20260923600000..20260923600019.
+
+20 held-out worlds.
+
+6 policies.
+
+120 evaluations.
+
+H187 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H187 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
