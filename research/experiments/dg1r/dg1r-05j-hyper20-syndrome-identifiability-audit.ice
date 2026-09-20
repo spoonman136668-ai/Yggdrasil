@@ -319,3 +319,83 @@ or merely gives confidence when failures happen independently.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05J IDENTIFIABILITY
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY AUDIT.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05j_identifiability_v1.py
+
+Harness commit:
+
+c4746d4f4ef2a1897cd96e4b4f8705aabcf491f3.
+
+Git blob SHA:
+
+00e6d2adcb929be43f95116c55e19d5a08f0b561.
+
+Source SHA-256:
+
+55d0c075a00be6c9a3677b7ca9d760743e0cac41a6c0c4574fc21fe72b5a5749.
+
+Source bytes:
+
+12734.
+
+LOCAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Frozen hypergraph edge count:
+
+20.
+
+Frozen degree vector:
+
+(7,7,7,7,7,6,6,7,6,7,7,6).
+
+Maximum pair co-occurrence:
+
+2.
+
+Logical masks enumerated:
+
+4096.
+
+Two-region masks enumerated:
+
+66.
+
+Check-only weight-1-to-4 patterns:
+
+6195.
+
+These checks are mechanical only and are NON-EVIDENCE.
+
+No DG-1R-05J primary output was generated before this freeze.
+
+REPRODUCIBILITY
+
+Two complete deterministic exhaustive sweeps.
+
+Output SHA-256 must match exactly.
+
+No RNG.
+
+No post-result tuning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
