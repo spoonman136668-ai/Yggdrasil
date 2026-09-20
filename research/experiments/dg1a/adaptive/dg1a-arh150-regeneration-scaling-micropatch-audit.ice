@@ -839,3 +839,425 @@ SYNTHETIC_MEASURED_SANDBOX_REGENERATION_SCALING_MICROPATCH
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 stab18_r1_touched = false
+
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — SANITY-SEED ROLLOVER / EXACT METRIC REALIZATION
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE ACCEPTED H150 PRIMARY EXECUTION.
+
+SANITY-SEED CONTAMINATION
+
+The first harness smoke check accidentally exercised:
+a small number of seeds
+from:
+the initially reserved H150 primary families.
+
+Those smoke rows were inspected.
+
+Therefore:
+for conservative evidence hygiene,
+the entire originally reserved H150 primary families
+beginning:
+
+20260919600000,
+20260919620000,
+20260919630000,
+20260919640000
+
+are:
+CONTAMINATED / NON-EVIDENCE.
+
+They must not:
+be used for accepted H150 primary conclusions.
+
+No primary threshold,
+acceptance criterion,
+repair probability,
+body size,
+patch fraction,
+granularity,
+or:
+bandwidth parameter
+was changed from those smoke outputs.
+
+FINAL HELD-OUT PRIMARY SEEDS
+
+Axis A:
+20260919700000
+through:
+20260919712599.
+
+Axis B:
+20260919720000
+through:
+20260919720999.
+
+Axis C:
+20260919730000
+through:
+20260919737499.
+
+Axis D:
+20260919740000
+through:
+20260919742399.
+
+These replacement families:
+were selected before:
+accepted primary execution.
+
+SANITY FAMILY
+
+20260919690000
+family.
+
+A full stratified sanity/control run
+on this family produced:
+4320 NON-EVIDENCE rows
+with:
+zero 256-step censoring.
+
+HARNESS SHA-256
+
+be1954b9bee838ff6ba42d442bd447cb4b457206bb1617995d71e165f13ac6d7
+
+No execution-semantic change is permitted
+after:
+the first accepted replacement-primary world
+is executed.
+
+EXACT STOCHASTIC REPAIR REALIZATION
+
+For unlimited-local repair:
+
+each damaged cell i
+draws an independent:
+
+W_i ~ Geometric(p)
+
+with support:
+1,2,3,...
+
+A boundary-damaged cell
+becomes eligible at:
+time 0.
+
+An interior damaged cell
+becomes eligible
+after:
+the first neighboring damaged cell
+repairs.
+
+Repair time is therefore:
+
+T_i =
+W_i
++
+min(
+repair time of an already-repaired damaged neighbor
+or:
+0 for a live boundary neighbor
+).
+
+The harness computes this exactly
+as:
+weighted first-passage / Dijkstra propagation.
+
+This is equivalent to:
+synchronous Bernoulli local repair opportunities
+under:
+unlimited local parallelism.
+
+BOUNDED-BANDWIDTH REALIZATION
+
+Axis D bounded mode
+is simulated explicitly by step.
+
+Per repair step:
+
+at most:
+floor(0.10 * body_cells)
+
+eligible damaged cells
+receive:
+one Bernoulli opportunity.
+
+Allocation is:
+round-robin
+across:
+the originally declared micro-patch components.
+
+Within a component:
+eligible cell IDs
+are served:
+deterministically.
+
+PRIMARY activation probability:
+0.50.
+
+AXIS A EXACT LESION REALIZATION
+
+CENTER COMPACT:
+nearest body cells
+to:
+(0,0).
+
+OFF-CENTER COMPACT:
+nearest body cells
+to:
+(0.42R,0).
+
+IRREGULAR CONNECTED:
+seed inside:
+0.65R,
+
+then:
+connected Moore-neighbor growth
+with:
+selected-neighbor preference
+plus:
+held-out seeded jitter.
+
+AXIS B EXACT MULTI-PATCH REALIZATION
+
+Total damage:
+ceil(0.20N).
+
+Patch centers:
+equally spaced
+on:
+radius 0.58R
+
+with:
+held-out random angular rotation.
+
+Damage cells:
+assigned as:
+nearest still-unselected body cells
+to:
+each patch center.
+
+All patches:
+repair concurrently.
+
+AXIS C EXACT GRANULARITY REALIZATION
+
+Base macro radius at:
+g=1
+is:
+15.
+
+For granularity g:
+
+R(g) =
+round(15/g).
+
+Thus:
+cell count grows approximately:
+1/g^2.
+
+Localized damage fraction:
+
+f(g,beta) =
+0.10 * g^beta.
+
+The lesion is:
+center compact.
+
+No macro defect center jitter
+is used
+in primary Axis C.
+
+This isolates:
+granularity / localization scaling
+from:
+lesion-position variance.
+
+AXIS D EXACT PATCH REALIZATION
+
+Body radius:
+30.
+
+Each micro-patch requests:
+
+ceil(0.02N)
+cells.
+
+Patch centers:
+use the same:
+equally spaced 0.58R ring
+with:
+held-out angular rotation.
+
+Overlap is prevented
+by:
+nearest still-unselected assignment.
+
+At high concurrency:
+declared patch identities
+remain:
+the bandwidth-allocation components
+
+even when:
+their spatial frontiers approach.
+
+METRIC FREEZE
+
+T50,
+T90,
+T99:
+
+first repair step
+where:
+50%,
+90%,
+99%
+of initially damaged cells
+are restored.
+
+COMPLETION:
+
+first step where:
+all damaged cells
+are restored.
+
+REPAIR OPPORTUNITIES:
+
+number of Bernoulli local-update opportunities
+spent on:
+damaged cells.
+
+Under unlimited-local repair:
+this equals:
+sum_i W_i.
+
+SUCCESSFUL REPAIR UPDATES:
+
+number of restored damaged cells.
+
+OPPORTUNITIES PER RESTORED CELL:
+
+repair_opportunities
+/
+successful_repair_updates.
+
+PEAK FRONTIER:
+
+maximum number
+of simultaneously eligible unrepaired cells
+over:
+the repair trajectory.
+
+MEAN FRONTIER:
+
+mean eligible unrepaired cells
+through:
+repair completion
+or:
+the 256-step censoring horizon.
+
+MACRO FUNCTIONAL DOWNTIME PROXY:
+
+sum over repair steps
+of:
+
+unrepaired damaged cells
+/
+total body cells.
+
+This has units of:
+body-fraction x repair-step.
+
+It measures:
+integrated unavailable local functional mass
+under:
+the equal-cell functional proxy.
+
+RESTORED CELLS / STEP:
+
+successful repaired cells
+/
+completion time,
+
+or:
+256
+when censored.
+
+NORMALIZED RECOVERY / STEP:
+
+final recovered fraction
+/
+completion time,
+
+or:
+256
+when censored.
+
+AXIS C COST PER MACRO DAMAGE:
+
+repair opportunities
+/
+0.10.
+
+The denominator is:
+the fixed base macro defect fraction f0,
+not:
+the localized cell-level fraction.
+
+This intentionally penalizes:
+fine granularity
+when:
+it increases cell count
+without:
+sufficient localization benefit.
+
+PRIMARY CONTROL SUBSET
+
+Repair-probability robustness
+uses the NON-EVIDENCE sanity family only
+until:
+the main p=0.50 primary is closed.
+
+Stratified controls:
+
+Axis-A-like:
+R in:
+8,15,30;
+
+damage:
+0.02,0.10,0.40;
+
+p:
+0.25,0.50,1.00.
+
+Axis-C-like:
+g:
+1.00,0.50,0.25;
+
+beta:
+0,1,2;
+
+p:
+0.25,0.50,1.00.
+
+80 sanity worlds
+per:
+condition.
+
+These controls:
+do not alter primary parameters.
+
+PRIMARY EXECUTION STATUS
+
+Accepted H150 replacement-primary execution:
+HAS NOT STARTED
+at the moment of this freeze.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
