@@ -747,3 +747,156 @@ agreement is trustworthy only when its provenance is actually independent.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05Q FIRST-SHOT CONSENSUS REPAIR
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY DAMAGED WORLD.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05q_firstshot_dynamic_v1.py
+
+Harness source commit:
+
+42200edc88a5f05fcfd9dad60af8e6569ab8fc60.
+
+Git blob SHA:
+
+57c79ba365e4f3443d1c34322aec096cd8a9050d.
+
+Source SHA-256:
+
+6f6bb827f97352a45c47aa4932beeb4a505c83b06c1b3d81285c708b36e701ee.
+
+Source bytes:
+
+23938.
+
+FROZEN IMPLEMENTATION
+
+The harness carries forward:
+
+- exact DIST4_05M topology;
+- exact MIXED5 dynamics;
+- 1024-step undamaged prefix;
+- 32-step post-damage episode;
+- repair before current input overwrite;
+- exact DG-1R-05N primary damage families and safe-plane rule;
+- exact DG-1R-05P fingerprint rows;
+- exact DG-1R-05P COORD6 candidate bound and ordering;
+- one first-shot repair opportunity only;
+- no fingerprint refresh;
+- no later repair.
+
+Methods:
+
+- NO_REPAIR;
+- GREEDY_FIRSTSHOT;
+- CROSSPLANE2_FIRSTSHOT;
+- COORD6_SYNDROME_FIRSTSHOT;
+- FP1_FIRSTSHOT;
+- FP2_FIRSTSHOT;
+- FP3_FIRSTSHOT;
+- FP4_FIRSTSHOT.
+
+LOCAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Exact DIST4 static geometry:
+
+rank 12;
+kernel count 0;
+single-region floor 6;
+two-region floor 8;
+global logical floor 4;
+maximum pair co-occurrence 2;
+80 incidences;
+degree vector
+(7,7,7,7,7,6,6,7,6,7,7,6).
+
+Fingerprint ranks:
+
+FP1 = 1.
+FP2 = 2.
+FP3 = 3.
+FP4 = 4.
+
+Resource totals:
+
+FP0 = 128.
+FP1 = 140.
+FP2 = 152.
+FP3 = 164.
+FP4 = 176.
+
+COORD6 candidate masks:
+
+2509.
+
+Lesion validations:
+
+132.
+
+This is:
+
+12 worlds
+x
+11 frozen primary damage families.
+
+No-damage controls:
+
+96.
+
+This is:
+
+12 worlds
+x
+8 methods.
+
+Every no-damage method applied zero logical repair
+and remained byte-identical to its undamaged reference trajectory.
+
+Repair opportunities per damaged episode:
+
+1.
+
+The harness explicitly asserts the expected FP1 parity alias:
+
+damage to planes 0 and 1 of one cell
+produces zero FP1 delta,
+while FP2 retains nonzero evidence.
+
+Frozen world seeds:
+
+20260926061000
+through
+20260926061011.
+
+No primary damaged world,
+dynamic repair result,
+primary transfer signal,
+or correlated-forgery outcome
+was generated before this freeze.
+
+REPRODUCIBILITY
+
+Execute two complete frozen 12-world sweeps.
+
+Serialized output SHA-256 must match exactly.
+
+No post-result tuning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
