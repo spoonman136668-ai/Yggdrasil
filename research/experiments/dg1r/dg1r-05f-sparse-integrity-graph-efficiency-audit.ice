@@ -619,3 +619,1090 @@ match exactly.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-05F NON-EVIDENCE CLOSURE — SPARSE INTEGRITY GRAPH EFFICIENCY
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+STRONG POSITIVE SPARSE-CAPACITY-EFFICIENCY RESULT /
+DEGREE-4 CORRELATED-FAULT SAFETY PASS /
+DEGREE-3 CORRELATED-FAULT BOUNDARY CONFIRMED /
+NON-CANONICAL /
+NON-EVIDENCE.
+
+FROZEN HARNESS
+
+Git blob SHA:
+
+76d2e77fd8c2d5170f77dd6085a66c1326cd544b.
+
+Source SHA-256:
+
+3e6f76b7f83689e32cca13236b440f06cb9f20313cd6006bc255857a1e733e12.
+
+Source bytes:
+
+12919.
+
+OUTPUT
+
+RUN 1 SHA-256:
+
+750f07a03b75c1c584bb67c8674739c08e25cd09823a59286f3f9d0c555c96cf.
+
+RUN 2 SHA-256:
+
+750f07a03b75c1c584bb67c8674739c08e25cd09823a59286f3f9d0c555c96cf.
+
+Byte-identical:
+
+PASS.
+
+MECHANICAL VALIDITY
+
+mechanical_valid:
+
+TRUE.
+
+FROZEN SIGNALS
+
+SPARSE_CAPACITY_EFFICIENCY_SIGNAL:
+
+TRUE.
+
+DEGREE4_TWO_FAULT_SAFETY:
+
+TRUE.
+
+DEGREE3_BOUNDARY_METHODS:
+
+SPARSE18_MAJORITY_48.
+SPARSE20_MAJORITY_48.
+
+ALLOCATION_ADVANTAGE:
+
+TRUE.
+
+DISTRIBUTED_SPARSE_REPAIR_SIGNAL:
+
+TRUE.
+
+CAPACITY
+
+CHAIN_HAMMING_48:
+
+48 logical bits.
+80 redundancy bits.
+
+SPARSE18_MAJORITY_48:
+
+48 logical bits.
+72 active redundancy bits.
+8 inert bits.
+
+SPARSE20_MAJORITY_48:
+
+48 logical bits.
+80 redundancy bits.
+
+DG-1R-05E four-witness reference:
+
+32 logical bits.
+96 redundancy bits.
+
+Thus:
+
+SPARSE20
+
+recovers:
+
+16:
+logical bits
+
+relative:
+to:
+DG-1R-05E
+
+while:
+retaining:
+selected:
+four-witness:
+fault tolerance.
+
+BASIC LOCAL REPAIR
+
+LOCAL_DATA2_DEG3.
+
+SPARSE18:
+
+median:
+logical divergence area:
+
+0.
+
+sustained:
+exact logical recovery:
+
+1.0.
+
+repairs:
+
+8.
+
+false repairs:
+
+0.
+
+SPARSE20:
+
+same:
+exact:
+result.
+
+Thus:
+
+degree-3:
+majority
+is:
+sufficient
+for:
+ordinary:
+local:
+damage
+
+when:
+all:
+three:
+witnesses
+are:
+healthy.
+
+ONE BAD WITNESS — DEGREE 3
+
+LOCAL_DATA2_PLUS_ONE_WITNESS_DEG3.
+
+SPARSE18:
+
+logical divergence area:
+
+0.
+
+sustained:
+exact logical recovery:
+
+1.0.
+
+false repairs:
+
+0.
+
+SPARSE20:
+
+same:
+exact:
+result.
+
+Thus:
+
+2-of-3:
+majority
+correctly:
+repairs:
+the:
+damaged:
+local:
+state
+
+despite:
+
+one:
+corrupted:
+witness.
+
+ONE BAD WITNESS — DEGREE 4
+
+LOCAL_DATA2_PLUS_ONE_WITNESS_DEG4.
+
+SPARSE20:
+
+logical divergence area:
+
+0.
+
+sustained:
+exact logical recovery:
+
+1.0.
+
+repairs:
+
+8.
+
+false repairs:
+
+0.
+
+The:
+degree-4:
+region
+
+repairs:
+with:
+three:
+correct:
+witnesses
+against:
+one:
+bad:
+witness.
+
+SPARSE_CAPACITY_EFFICIENCY_SIGNAL:
+
+PASS.
+
+TWO CORRELATED BAD WITNESSES — DEGREE 3
+
+TWO_CORRELATED_WITNESSES_DEG3.
+
+SPARSE18:
+
+repairs:
+
+8.
+
+false-repair fraction:
+
+1.0.
+
+median:
+logical divergence area:
+
+2.916666666666667.
+
+sustained:
+exact logical recovery:
+
+0.
+
+SPARSE20:
+
+same:
+degree-3:
+failure
+at:
+block 2.
+
+Thus:
+
+a:
+degree-3:
+region
+
+with:
+
+two:
+correlated:
+bad:
+witnesses
+
+versus:
+
+one:
+healthy:
+witness
+
+forms:
+
+a:
+wrong:
+2-of-3:
+majority.
+
+This:
+is:
+the:
+expected:
+degree-3:
+boundary.
+
+TWO CORRELATED BAD WITNESSES — DEGREE 4
+
+TWO_CORRELATED_WITNESSES_DEG4.
+
+SPARSE20:
+
+repairs:
+
+0.
+
+abstentions:
+
+8.
+
+false repairs:
+
+0.
+
+logical divergence area:
+
+0.
+
+sustained:
+exact logical recovery:
+
+1.0.
+
+The:
+vote:
+
+2 correct
+versus:
+2 wrong
+
+creates:
+
+no:
+strict:
+majority.
+
+The:
+system
+safely:
+abstains.
+
+DEGREE4_TWO_FAULT_SAFETY:
+
+PASS.
+
+SPARSE18:
+
+the:
+same:
+target:
+block
+has:
+only:
+degree 3.
+
+It:
+repairs:
+
+8.
+
+false-repair fraction:
+
+1.0.
+
+median:
+logical divergence area:
+
+3.21875.
+
+Thus:
+
+the:
+extra:
+two:
+graph:
+edges
+in:
+SPARSE20
+
+provide:
+real:
+fault-tolerance
+at:
+their:
+endpoints.
+
+DISTRIBUTED DAMAGE
+
+DISTRIBUTED_LOCAL_DATA2.
+
+SPARSE20:
+
+two:
+separate:
+damaged:
+logical:
+regions.
+
+median:
+logical divergence area:
+
+0.
+
+sustained:
+exact logical recovery:
+
+1.0.
+
+repairs:
+
+16.
+
+false repairs:
+
+0.
+
+DISTRIBUTED_SPARSE_REPAIR_SIGNAL:
+
+PASS.
+
+CHAIN REFERENCE
+
+CHAIN_HAMMING_48
+
+repairs:
+ordinary:
+local
+and:
+distributed:
+data damage
+
+exactly
+
+when:
+its:
+two:
+neighbor:
+checks
+remain:
+healthy.
+
+But:
+
+LOCAL_DATA2_PLUS_ONE_WITNESS_DEG3:
+
+median:
+logical divergence area:
+
+2.8541666666666665.
+
+sustained:
+exact logical recovery:
+
+0.25.
+
+LOCAL_DATA2_PLUS_ONE_WITNESS_DEG4:
+
+median:
+logical divergence area:
+
+2.78125.
+
+sustained:
+exact logical recovery:
+
+0.125.
+
+The:
+chain:
+requires:
+both:
+neighbor:
+reconstruction:
+channels
+to:
+agree.
+
+One:
+damaged:
+channel
+removes:
+repair:
+quorum.
+
+SPARSE20
+therefore:
+outperforms:
+the:
+same-capacity:
+chain
+on:
+witness:
+damage
+
+without:
+degrading:
+ordinary:
+local:
+repair.
+
+ALLOCATION_ADVANTAGE:
+
+PASS.
+
+DETECT-ONLY CONTROL
+
+SPARSE20_DETECT_ONLY:
+
+does NOT:
+recover:
+local:
+data damage.
+
+For example:
+
+LOCAL_DATA2_DEG3:
+
+median:
+logical divergence area:
+
+2.8541666666666665.
+
+sustained:
+exact logical recovery:
+
+0.25.
+
+DISTRIBUTED_LOCAL_DATA2:
+
+median:
+logical divergence area:
+
+5.177083333333333.
+
+sustained:
+exact logical recovery:
+
+0.25.
+
+Thus:
+
+the:
+positive:
+SPARSE20:
+result
+
+comes:
+from:
+active:
+majority:
+reconstruction,
+
+not:
+merely:
+from:
+the:
+graph:
+representation.
+
+CORE MECHANISTIC CONCLUSION
+
+DG-1R-05F establishes:
+
+INTEGRITY:
+TOPOLOGY
+
+matters:
+as:
+much
+as:
+
+INTEGRITY:
+BUDGET.
+
+With:
+the:
+same:
+48:
+logical bits
+
+and:
+the:
+same:
+128:
+physical bits,
+
+reallocating:
+redundancy
+
+from:
+
+local Hamming
++
+a:
+fragile:
+two-neighbor:
+chain
+
+to:
+
+a:
+sparse:
+cross-region:
+integrity:
+graph
+
+produces:
+
+- exact:
+  ordinary:
+  local:
+  repair;
+- exact:
+  distributed:
+  repair;
+- one-bad-witness:
+  tolerance;
+- selected:
+  two-correlated-witness:
+  safety;
+- without:
+  dropping:
+  to:
+  32:
+  logical:
+  bits.
+
+The:
+fault-tolerance:
+boundary
+
+is:
+now:
+LOCAL:
+GRAPH:
+DEGREE.
+
+Degree 3:
+
+one:
+bad:
+witness
+is:
+tolerable.
+
+two:
+correlated:
+bad:
+witnesses
+can:
+control:
+the:
+majority.
+
+Degree 4:
+
+two:
+correct
+and:
+two:
+wrong
+
+produce:
+safe:
+abstention.
+
+Thus:
+
+repair:
+strength
+can:
+be:
+allocated:
+spatially
+
+rather:
+than:
+maximized:
+uniformly.
+
+IMPORTANT LIMIT
+
+SPARSE20
+does NOT:
+give:
+degree-4:
+protection
+to:
+every:
+logical:
+region.
+
+20:
+edges
+
+provide:
+
+40:
+total:
+graph-degree:
+units
+
+across:
+12:
+regions.
+
+Average degree:
+
+3.3333333333333335.
+
+Therefore:
+
+with:
+48:
+logical bits
+and:
+80:
+edge-check:
+bits,
+
+uniform:
+degree 4
+is:
+mathematically:
+unavailable
+under:
+this:
+full-4-bit:
+edge:
+representation.
+
+The:
+remaining:
+question
+is:
+how:
+to:
+use:
+time /
+adaptation /
+compressed:
+integrity
+to:
+move:
+stronger:
+protection
+where:
+it:
+is:
+needed
+
+without:
+permanently:
+paying
+for:
+degree 4
+everywhere.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05G —
+TIME-MULTIPLEXED:
+INTEGRITY:
+WITNESS /
+QUARANTINE:
+AUDIT.
+
+Keep:
+
+48:
+logical bits.
+
+128:
+physical bits.
+
+20:
+four-bit:
+integrity:
+edge slots.
+
+Instead:
+of:
+keeping:
+all:
+20:
+edges
+permanently:
+mapped
+to:
+one:
+static:
+graph,
+
+use:
+a:
+frozen:
+multi-phase:
+topology
+schedule.
+
+When:
+a:
+region
+becomes:
+SUSPECT:
+
+do NOT:
+immediately:
+overwrite:
+all:
+incident:
+integrity:
+evidence.
+
+Temporarily:
+quarantine:
+that:
+region's:
+logical:
+update
+
+while:
+
+edge slots
+rotate
+through:
+additional:
+spatially:
+diverse:
+witness:
+relations.
+
+Question:
+
+can:
+TIME
+
+supply:
+additional:
+witness:
+diversity
+
+without:
+
+adding:
+more:
+persistent:
+integrity:
+bits
+
+or:
+
+reducing:
+logical:
+capacity
+below:
+48?
+
+This:
+directly:
+connects:
+
+the:
+earlier:
+multi-timescale:
+research
+
+with:
+
+the:
+new:
+self-repair:
+tissue:
+line.
+
+PLAIN-SPEAK SUMMARY
+
+This:
+was:
+a:
+very:
+useful:
+result.
+
+We:
+got:
+back:
+to:
+48:
+usable:
+logical:
+bits
+
+without:
+giving:
+up:
+the:
+stronger:
+repair
+everywhere.
+
+The:
+trick
+was:
+how:
+we:
+wired:
+the:
+backup:
+information.
+
+A:
+region
+with:
+three:
+witnesses
+can:
+survive:
+one:
+bad:
+witness.
+
+But:
+if:
+two:
+of:
+the:
+three
+are:
+wrong
+the:
+same:
+way,
+
+they:
+become:
+the:
+majority
+and:
+the:
+repair
+is:
+wrong.
+
+A:
+region
+with:
+four:
+witnesses
+behaves:
+better.
+
+With:
+two:
+correct
+and:
+two:
+wrong,
+
+there:
+is:
+no:
+majority,
+
+so:
+it:
+refuses:
+to:
+guess.
+
+The:
+important:
+part
+is:
+
+we:
+did:
+not:
+need:
+to:
+give:
+every:
+region
+four:
+witnesses
+all:
+the:
+time.
+
+We:
+can:
+spend:
+stronger:
+protection
+only:
+where:
+the:
+graph
+places:
+it.
+
+That:
+suggests:
+the:
+next:
+idea:
+
+make:
+the:
+integrity:
+network
+move
+through:
+time.
+
+Instead:
+of:
+paying:
+for:
+four:
+witnesses
+everywhere
+permanently,
+
+a:
+suspicious:
+region
+could:
+be:
+temporarily:
+quarantined
+
+while:
+the:
+same:
+backup:
+bits
+are:
+reassigned
+to:
+collect:
+more:
+independent:
+evidence.
+
+That:
+would:
+let:
+TIME
+act:
+like:
+extra:
+repair:
+capacity
+
+without:
+adding:
+more:
+persistent:
+bits.
+
+DG-1R-05:
+canonical frozen primary remains:
+
+UNSPENT.
+
+DG-1R-05F remains:
+
+NON-CANONICAL /
+NON-EVIDENCE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
