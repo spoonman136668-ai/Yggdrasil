@@ -743,3 +743,594 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL CLOSURE — DG-1R-05R CONSENSUS-GATED HEALTH-MEMORY COMMIT AND DRIFT AUDIT
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED /
+REPRODUCIBLE /
+SAFE COMMIT GATE POSITIVE FOR FP2 / FP3 / FP4 /
+FP2 FUNCTIONAL-EQUIVALENCE INFLECTION /
+CORRELATED TWO-PEER FORGERY BOUNDARY PRESERVED /
+NON-CANONICAL.
+
+FROZEN PROVENANCE
+
+Preregistration commit:
+
+074b4ed6c7c7b946552a8431cf1efabf0b294f5d.
+
+Harness source commit:
+
+dbbca5fdb493b5c007a0eb45c3e3d4a5388c272e.
+
+Harness Git blob:
+
+685521c3305cf120c3bb050d01c498faa6b1bced.
+
+Harness source SHA-256:
+
+f83f7288b51eee90edb85e969d6dd01b71a557eb66df8fe37befe2a3731a20d7.
+
+Harness bytes:
+
+11591.
+
+Freeze commit:
+
+232ea01baf77fe9ac5a313b6175879e658a6683f.
+
+PRIMARY EXECUTION
+
+Two complete deterministic frozen sweeps were executed.
+
+Sweep 1 serialized output SHA-256:
+
+4b36a5b6a1eb1899e1a1dc40a7530bd6b179b4f5d2db6c834fcbecc928a12aae.
+
+Sweep 2 serialized output SHA-256:
+
+4b36a5b6a1eb1899e1a1dc40a7530bd6b179b4f5d2db6c834fcbecc928a12aae.
+
+BYTE_IDENTICAL_REPRODUCIBILITY:
+
+TRUE.
+
+MECHANICAL_VALID:
+
+TRUE.
+
+PRIMARY SIGNALS
+
+FP2:
+
+BENIGN_REFRESH_PRESERVED:
+TRUE.
+
+HARMFUL_POISON_REJECTED:
+TRUE.
+
+HARMFUL_ALIAS_FREE:
+TRUE.
+
+STALE_DAMAGE_REJECTED:
+TRUE.
+
+SLOW_DRIFT_POISON_REJECTED:
+TRUE.
+
+COORDINATED_BENIGN_REFRESH:
+TRUE.
+
+DEGRADED_PROVENANCE_ABSTAINS:
+TRUE.
+
+SAFE_HEALTH_MEMORY_COMMIT:
+TRUE.
+
+ONE_PEER_FORGERY_SUPPRESSED:
+TRUE.
+
+FP3:
+
+all signals above:
+TRUE.
+
+FP4:
+
+all signals above:
+TRUE.
+
+AUDIT A — COHERENT SINGLE-CELL TRANSITIONS
+
+Exact transitions:
+
+2880.
+
+ROLE_PRESERVING:
+
+576.
+
+ROLE_CHANGING:
+
+2304.
+
+Harmful fingerprint aliases:
+
+FP2:
+0.
+
+FP3:
+0.
+
+FP4:
+0.
+
+Thus every role-changing state transition remained visible at every tested fingerprint depth.
+
+INDEPENDENT_QUORUM results:
+
+FP2:
+
+BENIGN_COMMIT:
+0.
+
+SAFE_ABSTAIN:
+2880.
+
+POISON_COMMIT:
+0.
+
+FP3:
+
+BENIGN_COMMIT:
+384.
+
+SAFE_ABSTAIN:
+2496.
+
+POISON_COMMIT:
+0.
+
+FP4:
+
+BENIGN_COMMIT:
+576.
+
+SAFE_ABSTAIN:
+2304.
+
+POISON_COMMIT:
+0.
+
+The FP2 zero benign-commit count is not a missed visible refresh.
+
+Every ROLE_PRESERVING transition also produces zero FP2 delta.
+
+Therefore the FP2 stored signature already matches the new within-role state and requires no refresh.
+
+NEGATIVE CONTROL — STABILITY AND STRUCTURAL CONSISTENCY
+
+For coherent ROLE_CHANGING transitions:
+
+SELF_STABLE and STRUCTURAL_STABLE both normalized harmful states whenever the fingerprint saw the change.
+
+FP2:
+
+POISON_COMMIT:
+2304 / 2304.
+
+FP3:
+
+POISON_COMMIT:
+2304 / 2304.
+
+FP4:
+
+POISON_COMMIT:
+2304 / 2304.
+
+Thus:
+
+stable
+AND
+structurally self-consistent
+
+does not imply healthy.
+
+The independent peer role witness is doing real work.
+
+AUDIT B — STALE-CHECK ABRUPT DAMAGE
+
+ROLE_CHANGING cases:
+
+2304.
+
+INDEPENDENT_QUORUM poison commits:
+
+FP2:
+0.
+
+FP3:
+0.
+
+FP4:
+0.
+
+STALE_DAMAGE_REJECTED:
+
+TRUE for all depths.
+
+AUDIT C — SLOW DRIFT
+
+Sequences per depth:
+
+6912.
+
+Each sequence contains:
+
+1. a role-preserving first transition;
+2. a later coherent role-changing transition.
+
+INDEPENDENT_QUORUM harmful second commits:
+
+FP2:
+0 / 6912.
+
+FP3:
+0 / 6912.
+
+FP4:
+0 / 6912.
+
+SLOW_DRIFT_POISON_REJECTED:
+
+TRUE for all depths.
+
+Benign first-step refresh behavior:
+
+FP2:
+
+0 / 6912 commits,
+because all role-preserving changes alias exactly to the existing FP2 signature.
+
+FP3:
+
+4608 / 6912 commits.
+
+FP4:
+
+6912 / 6912 commits.
+
+AUDIT D — COORDINATED ROLE-PRESERVING ADAPTATION
+
+Frozen coalitions:
+
+287.
+
+Changed-cell participations:
+
+804.
+
+Frozen first role-preserving delta:
+
+5.
+
+FP2:
+
+delta fingerprint:
+0.
+
+Eligible visible changes:
+0.
+
+Commits required:
+0.
+
+Unchanged-cell commits:
+0.
+
+FP3:
+
+eligible visible changes:
+804.
+
+Commits:
+804.
+
+Unchanged-cell commits:
+0.
+
+FP4:
+
+eligible visible changes:
+804.
+
+Commits:
+804.
+
+Unchanged-cell commits:
+0.
+
+COORDINATED_BENIGN_REFRESH:
+
+TRUE for all depths under the frozen visibility rule.
+
+AUDIT E — DEGRADED PROVENANCE
+
+Role-preserving cases per condition:
+
+576.
+
+Witness A unavailable:
+
+commits:
+0.
+
+Witness B unavailable:
+
+commits:
+0.
+
+Witness disagreement:
+
+commits:
+0.
+
+This holds for FP2, FP3, and FP4.
+
+DEGRADED_PROVENANCE_ABSTAINS:
+
+TRUE.
+
+No surviving witness is silently promoted to two votes.
+
+CORRELATED FORGERY BOUNDARY
+
+F1 — BOTH PEER ROLE WITNESSES FORGED TO THE HARMFUL NEW ROLE
+
+Cases:
+
+2304.
+
+Poison commits:
+
+FP2:
+2304.
+
+FP3:
+2304.
+
+FP4:
+2304.
+
+CORRELATED_PEER_FORGERY_FAILURE:
+
+TRUE for all depths.
+
+F3 — ONLY ONE PEER FORGED
+
+Poison commits:
+
+FP2:
+0.
+
+FP3:
+0.
+
+FP4:
+0.
+
+ONE_PEER_FORGERY_SUPPRESSED:
+
+TRUE.
+
+Thus the second distinct peer location has operational value.
+
+POST-RESULT MECHANISTIC CHECK — FP2 / ROLE2 EQUIVALENCE
+
+This explanatory check did not alter the frozen implementation or any primary signal.
+
+Exhaustive all-16-state comparison showed:
+
+FP2 kernel nonzero deltas:
+
+5,
+10,
+15.
+
+ROLE2 kernel nonzero deltas:
+
+5,
+10,
+15.
+
+The two maps are exactly invertibly related.
+
+Let:
+
+FP2 bit 0 = f0.
+FP2 bit 1 = f1.
+
+ROLE2 bit 0 = r0.
+ROLE2 bit 1 = r1.
+
+Then:
+
+f1 = r1.
+
+f0 = r0 XOR r1.
+
+Therefore:
+
+r1 = f1.
+
+r0 = f0 XOR f1.
+
+FP2 and ROLE2 carry the same two bits of functional information,
+stored in separately located historical provenance paths.
+
+This explains simultaneously why:
+
+- every role-preserving internal transition is invisible to FP2;
+- every role-changing transition remains visible to FP2;
+- FP2 needs no self-health refresh for within-role adaptation;
+- FP3 and FP4 retain additional within-role state identity.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-05R establishes that safe health-memory lifecycle control cannot be based on persistence or structural consistency alone.
+
+A coherent corrupted state can be stable indefinitely
+and can have a perfectly recomputed DIST4 integrity graph.
+
+Both naive commit controls therefore normalize corruption.
+
+The independent-quorum rule avoids that failure under the preregistered independent-witness model.
+
+The most important new architectural result is the FP2 equivalence.
+
+Under the frozen ROLE2 functional definition,
+FP2 is already a compact phenotype-level health signature.
+
+It does not remember exact internal implementation.
+
+Instead,
+it partitions the four-bit cell state into exactly the same functional equivalence classes as ROLE2.
+
+This suggests two distinct health-memory layers:
+
+PHENOTYPE HEALTH
+
+compact,
+stable across benign within-role internal adaptation,
+represented here by FP2 / ROLE2-equivalent information.
+
+INTERNAL IDENTITY HEALTH
+
+higher-resolution,
+sensitive to within-role internal changes,
+represented by FP3 / FP4.
+
+That distinction is directly relevant to developmental AI.
+
+A cell should not necessarily treat every internal parameter change as damage.
+
+Some changes may be legitimate learning or reorganization while preserving role.
+
+At the same time,
+higher-resolution state memory remains useful when exact internal reconstruction matters.
+
+The correlated-forgery boundary remains intact:
+
+if both independently located peer histories are coherently forged,
+the distributed population can authorize a harmful baseline.
+
+The result therefore strengthens,
+rather than removes,
+the constitutional requirement for real provenance independence.
+
+PLAIN-SPEAK INTERPRETATION
+
+This worked,
+and it exposed something better than the original question.
+
+Just waiting for a cell to stop changing is unsafe.
+
+A damaged cell can become perfectly stable.
+
+And rebuilding all the backup checks around that damaged state is also unsafe.
+
+The backups can become perfectly consistent with the wrong answer.
+
+The safe version was:
+
+the cell settles,
+the tissue is structurally consistent,
+and two separate peers still agree that the cell is doing the same job it was supposed to do.
+
+Under that rule,
+none of the harmful changes were written into the new health baseline.
+
+Slow corruption did not sneak through either.
+
+But if we forged both peer memories too,
+the system could still be fooled.
+
+That is the expected boundary.
+
+The surprising part is FP2.
+
+Its two self-health bits turned out to describe exactly the same functional distinction as the two-bit role signature.
+
+So if a cell changes internally but still performs the same role,
+FP2 does not see that as damage at all.
+
+That is probably desirable for a developmental organism.
+
+It means the cell can learn or reorganize internally without constantly rewriting its definition of healthy,
+as long as its role stays intact.
+
+FP3 and FP4 remember more of the internal details.
+
+So we now have a useful architectural split:
+
+- a compact memory of what the cell DOES;
+- a deeper memory of exactly HOW the cell is internally arranged.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05S —
+
+DISTRIBUTED ROLE-MIGRATION CONSENSUS AUDIT.
+
+05R deliberately froze peer role witnesses.
+
+A developmental organism must eventually be allowed to change roles legitimately.
+
+The next question is therefore harder:
+
+How can the population update:
+
+- the cell's functional role identity;
+- both independently located peer role witnesses;
+- and the cell's self-health baseline
+
+without allowing corruption to vote itself into legitimacy?
+
+05S should test:
+
+- legitimate single-cell role specialization;
+- coordinated multi-cell role reassignment;
+- gradual role migration;
+- partial peer disagreement;
+- old-role / new-role split brain;
+- witness-holder damage during migration;
+- migration rollback before final commit;
+- correlated false role consensus;
+- authority transfer without a permanent central controller.
+
+Role migration should use an explicit multi-stage commit:
+
+PROPOSE
+->
+OBSERVE
+->
+INDEPENDENT QUORUM
+->
+COMMIT
+
+with the old role remaining authoritative until final commit.
+
+No repeated autonomous repair policy is justified before role migration itself is shown not to normalize corruption.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
