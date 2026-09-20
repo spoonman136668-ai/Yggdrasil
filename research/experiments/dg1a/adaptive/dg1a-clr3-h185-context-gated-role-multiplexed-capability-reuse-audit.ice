@@ -764,3 +764,439 @@ SYNTHETIC_MEASURED_CONTEXT_GATED_ROLE_MULTIPLEXED_CAPABILITY_REUSE
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — ROLE-MULTIPLEXED CAPABILITY-REUSE HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H185 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H185 SANDBOX HARNESS
+
+File:
+
+h185_role_reuse_v2.py
+
+SHA-256:
+
+40b00c908c10f156b80dffd4d449b96f1d6b153c738954cfafd60d01a25e0512.
+
+SANITY-ONLY IMPLEMENTATION REPAIR
+
+The first:
+h185_role_reuse_v1.py
+
+sanity attempt
+
+terminated:
+before:
+writing:
+any output row
+
+because:
+one:
+reuse-telemetry
+line
+
+called:
+len()
+
+on:
+an integer:
+union size.
+
+No:
+policy lifetime
+completed
+and:
+no:
+scientific result
+
+was produced
+under:
+v1.
+
+v2 changes:
+
+ONLY:
+
+the telemetry assignment:
+
+distinct_growth_sites
+=
+union_size
+
+instead of:
+
+len(union_size).
+
+No:
+fit,
+gate,
+site selection,
+role coefficient,
+prediction,
+resource count,
+or:
+acceptance logic
+
+changed.
+
+PARENT MODEL
+
+Exact H184 substrate
+through:
+
+- A learning;
+- 48-cell B addition;
+- context-only B-router accommodation.
+
+A:
+frozen.
+
+B daughter coefficients:
+frozen.
+
+B router:
+frozen
+after:
+accommodation.
+
+C ROUTER
+
+Exact H184:
+
+C-positive.
+
+A+B-negative.
+
+Context coordinates only.
+
+No:
+functional target
+enters:
+router fitting.
+
+ROLE-MULTIPLEXED C
+
+For:
+PARENT_ROLE policies,
+
+selected:
+already-active
+original parent cells
+
+receive:
+an additional:
+C-specific
+role coefficient.
+
+Their:
+original A coefficient
+
+remains:
+unchanged.
+
+C contribution:
+
+C gate
+*
+selected-parent
+RBF basis
+*
+C-role coefficient.
+
+No:
+new physical cell
+is created.
+
+SITE SELECTION
+
+Exact:
+coverage-balanced
+C geometry:
+
+8 deterministic
+k-means coverage seeds
+
+from:
+C training inputs
+
+with:
+residual-driven
+connected frontier growth.
+
+PARENT_ROLE32.
+
+PARENT_ROLE48.
+
+PARENT_ROLE64.
+
+DIRECT B-DAUGHTER REUSE
+
+B_DAUGHTER_ROLE48:
+
+adds:
+C-specific
+role coefficients
+
+to:
+the already active
+48 B daughter basis centers.
+
+No:
+new physical cells.
+
+NEW-C REFERENCE
+
+NEW_C48:
+
+exact:
+48-cell
+new-daughter
+C addition
+under:
+the same:
+adapted B router
+and:
+C gate.
+
+GLOBAL ROLE CEILING
+
+GLOBAL_PARENT_ROLE:
+
+C-specific
+gated role coefficient
+
+on:
+every:
+original parent cell.
+
+No:
+new physical cells,
+
+but:
+large:
+memory / parameter growth.
+
+SANITY
+
+Disjoint family:
+
+20260923490000
+and:
+20260923490001.
+
+2 worlds.
+
+6 policies.
+
+12 evaluations.
+
+Accepted sanity-output SHA-256:
+
+0d5850b40581cd1e5b58e1bfcb81482bae44225f9cd4adfb754f93a74f84a616.
+
+Mechanical checks:
+
+- exact 6 policies / world;
+- A frozen;
+- B daughter coefficients frozen;
+- B router frozen after accommodation;
+- C role fit:
+  changes:
+  C-specific role coefficients only;
+- PARENT_ROLE:
+  zero new C physical cells;
+- B_DAUGHTER_ROLE:
+  zero new C physical cells;
+- NEW_C48:
+  exactly 48 new C cells;
+- hibernation / reactivation:
+  exact.
+
+NON-EVIDENCE SIGNAL
+
+World:
+20260923490000.
+
+PARENT_ROLE48:
+
+C R^2:
+approximately 0.918.
+
+A:
+approximately 1.000.
+
+B:
+approximately 0.895.
+
+joint:
+PASS.
+
+NEW_C48:
+
+C:
+approximately 0.916.
+
+A/B:
+similar.
+
+Thus:
+
+parent-role reuse
+
+matches:
+new-cell growth
+
+inside:
+this sanity world.
+
+World:
+20260923490001.
+
+PARENT_ROLE48:
+
+C:
+approximately 0.842.
+
+joint:
+FAIL.
+
+PARENT_ROLE64:
+
+C:
+approximately 0.856.
+
+joint:
+PASS.
+
+NEW_C48:
+
+C:
+approximately 0.845.
+
+joint:
+FAIL.
+
+Thus:
+
+the hard world
+is:
+not:
+a role-reuse-specific
+failure.
+
+The new-cell
+reference
+also:
+misses:
+the joint threshold.
+
+B_DAUGHTER_ROLE48:
+
+performs:
+poorly
+
+in:
+both sanity worlds.
+
+Representative C R^2:
+
+approximately:
+0.077
+and:
+0.143.
+
+This indicates:
+
+reusing:
+the SAME
+physical B daughter
+basis locations
+
+does NOT:
+provide:
+sufficient C geometry
+
+for:
+the separated C context.
+
+GLOBAL_PARENT_ROLE:
+
+C R^2:
+
+approximately:
+0.9994
+
+in:
+both sanity worlds.
+
+Thus:
+
+existing parent-cell
+geometry
+
+has:
+ample:
+C role capacity
+
+when:
+memory is:
+unbounded.
+
+The key primary question is:
+
+how sparse
+can:
+parent-cell role multiplexing
+
+remain
+
+while:
+meeting:
+world-level
+joint reliability?
+
+These sanity outputs are:
+
+NON-EVIDENCE.
+
+No:
+
+- role count;
+- site-selection rule;
+- gate;
+- cell budget;
+- context geometry;
+- teacher;
+- ridge;
+- acceptance gate
+
+was changed.
+
+PRIMARY FAMILY
+
+20260923400000..20260923400019.
+
+20 held-out worlds.
+
+6 policies.
+
+120 evaluations.
+
+H185 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H185 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
