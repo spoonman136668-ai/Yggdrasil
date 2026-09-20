@@ -652,3 +652,95 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — H191-P8 SEQUENTIAL TRIGGERED MICROPATCH HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST H191-P8 WORLD.
+
+HARNESS
+
+research/experiments/dg1a/adaptive/harnesses/h191_p8_sequential_triggered_micropatch_v1.py
+
+Harness commit:
+
+b4d6b0bb28b7b85e6d7605838070a382979fc5c7.
+
+Git blob SHA:
+
+cd0ad363f6bf515f584ba3aaef8ff519dc728fa3.
+
+Source SHA-256:
+
+007644e97e88f6c1e178bbaddb6357804401dd1dc5c872fb93c427c2d071672f.
+
+Source bytes:
+
+13298.
+
+DEPENDENCY
+
+Frozen H191-P7 harness Git blob:
+
+d39ae30800b27e9ddc65802026d41aa4d6dc973d.
+
+Pinned P7 source SHA-256:
+
+575471bf0c8bea2e62a7f8e80a6803c5c135f5173f8b7b3c5829ad03044f816a.
+
+FROZEN WORLD FAMILY
+
+20260924900000..20260924900007.
+
+8 worlds.
+
+FROZEN ADDITION ORDER
+
+3,
+4,
+5,
+6,
+7.
+
+FROZEN PATCH TRIGGER
+
+decoder-only:
+new-capability:
+distillation NMSE
+
+>0.02.
+
+Patch ceiling:
+
+exactly:
+one factor
+per:
+new capability.
+
+If:
+trigger not crossed,
+
+no:
+factor growth.
+
+REPRODUCIBILITY
+
+Execute:
+two complete:
+8-world:
+all-stage sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
