@@ -1275,3 +1275,899 @@ match exactly.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-05E NON-EVIDENCE CLOSURE — MULTI-WITNESS REPAIR QUORUM
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+STRONG POSITIVE ONE-BAD-WITNESS TOLERANCE /
+STRONG POSITIVE TWO-CORRELATED-WITNESS SAFETY /
+DISTRIBUTED QUORUM REPAIR PASS /
+THREE-CORRELATED-WITNESS BOUNDARY CONFIRMED /
+NON-CANONICAL /
+NON-EVIDENCE.
+
+FROZEN HARNESS
+
+Git blob SHA:
+
+2af536002441f63ea46a1fad714cc44484435392.
+
+Source SHA-256:
+
+1c35eae936d76542fccd757c9b26fe153b69ad81083888638e9c05181c382e88.
+
+Source bytes:
+
+11803.
+
+OUTPUT
+
+RUN 1 SHA-256:
+
+e686fc0fe1b7e459e1396b581c5ff38c8d5126e3bde72f8426c7b4c011b16419.
+
+RUN 2 SHA-256:
+
+e686fc0fe1b7e459e1396b581c5ff38c8d5126e3bde72f8426c7b4c011b16419.
+
+Byte-identical:
+
+PASS.
+
+MECHANICAL VALIDITY
+
+mechanical_valid:
+
+TRUE.
+
+FROZEN SIGNALS
+
+ONE_BAD_WITNESS_TOLERANCE_SIGNAL:
+
+TRUE.
+
+TWO_CORRELATED_WITNESS_SAFETY:
+
+TRUE.
+
+TWO_WITNESS_CONTROL_FAILURE:
+
+TRUE.
+
+DISTRIBUTED_QUORUM_SIGNAL:
+
+TRUE.
+
+THREE_CORRELATED_WITNESS_BOUNDARY:
+
+TRUE.
+
+ONE BAD WITNESS + LOCAL DAMAGE
+
+LOCAL_DATA2_PLUS_ONE_WITNESS.
+
+QUORUM3_OF_4:
+
+median:
+logical divergence area:
+
+0.
+
+sustained:
+exact logical recovery:
+
+1.0.
+
+h1:
+logical divergence:
+
+0.
+
+repairs:
+
+32.
+
+3-vote repairs:
+
+32.
+
+false-repair fraction:
+
+0.
+
+Thus:
+
+one:
+corrupted:
+integrity:
+channel
+
+does NOT:
+prevent:
+
+exact:
+local:
+state:
+reconstruction
+
+when:
+
+three:
+independent:
+witnesses
+still:
+agree.
+
+TWO CORRELATED BAD WITNESSES
+
+TWO_CORRELATED_WITNESSES.
+
+QUORUM3_OF_4:
+
+repairs:
+
+0.
+
+abstentions:
+
+32.
+
+false repairs:
+
+0.
+
+logical divergence area:
+
+0.
+
+sustained:
+exact logical recovery:
+
+1.0.
+
+The:
+local:
+data
+was:
+healthy.
+
+Two:
+witnesses
+agree
+on:
+one:
+wrong:
+candidate.
+
+Two:
+witnesses
+agree
+on:
+the:
+correct:
+candidate.
+
+No:
+3-of-4:
+quorum
+exists.
+
+The:
+system
+therefore:
+
+REFUSES:
+TO:
+REPAIR.
+
+The:
+damaged:
+witness:
+state
+is:
+subsequently:
+refreshed
+from:
+healthy:
+logical:
+state.
+
+TWO_CORRELATED_WITNESS_SAFETY:
+
+PASS.
+
+TWO-WITNESS REFERENCE FAILURE
+
+TWO_WITNESS_NEAREST:
+
+same:
+two-correlated-witness:
+damage.
+
+repairs:
+
+32.
+
+false-repair fraction:
+
+1.0.
+
+median:
+logical divergence area:
+
+2.875.
+
+sustained:
+exact logical recovery:
+
+0.46875.
+
+Thus:
+
+the:
+additional:
+spatially:
+diverse:
+witnesses
+
+directly:
+eliminate:
+the:
+pairwise:
+consensus:
+failure
+from:
+DG-1R-05D.
+
+LOCAL DAMAGE
+
+LOCAL_DATA2.
+
+QUORUM3_OF_4:
+
+logical divergence area:
+
+0.
+
+sustained:
+exact logical recovery:
+
+1.0.
+
+4-vote repairs:
+
+32.
+
+LOCAL_SILENT3:
+
+logical divergence area:
+
+0.
+
+sustained:
+exact logical recovery:
+
+1.0.
+
+4-vote repairs:
+
+32.
+
+Thus:
+
+the:
+quorum
+retains:
+syndrome-blind:
+self-diagnosis
+and:
+repair.
+
+DISTRIBUTED DAMAGE
+
+DISTRIBUTED_LOCAL_DATA2:
+
+two:
+separated:
+damaged:
+logical:
+regions.
+
+QUORUM3_OF_4:
+
+logical divergence area:
+
+0.
+
+sustained:
+exact logical recovery:
+
+1.0.
+
+repairs:
+
+16.
+
+false repairs:
+
+0.
+
+DISTRIBUTED_QUORUM_SIGNAL:
+
+PASS.
+
+THREE CORRELATED BAD WITNESSES
+
+THREE_CORRELATED_WITNESSES.
+
+QUORUM3_OF_4:
+
+repairs:
+
+32.
+
+3-vote repairs:
+
+32.
+
+false-repair fraction:
+
+1.0.
+
+median:
+logical divergence area:
+
+2.875.
+
+sustained:
+exact logical recovery:
+
+0.46875.
+
+Thus:
+
+a:
+3-of-4:
+quorum
+
+can:
+be:
+confidently:
+wrong
+
+when:
+
+three:
+integrity:
+channels
+
+share:
+the:
+same:
+correlated:
+fault.
+
+This:
+is:
+the:
+expected:
+quorum:
+boundary.
+
+QUORUM2_OF_4
+
+Under:
+the:
+frozen:
+unique-largest-group:
+rule,
+
+QUORUM2_OF_4:
+
+also:
+abstains
+on:
+
+2-vs-2:
+ties.
+
+Therefore:
+
+for:
+the:
+specific:
+frozen:
+fault:
+families,
+
+its:
+primary:
+outcomes
+match:
+QUORUM3_OF_4.
+
+This:
+does NOT:
+show:
+
+2-of-4
+and:
+3-of-4
+
+are:
+generally:
+equivalent.
+
+It shows:
+
+the:
+current:
+fault:
+geometry
+
+creates:
+
+4-0,
+3-1,
+2-2,
+or:
+1-3:
+vote:
+patterns
+
+where:
+the:
+unique-largest:
+tie:
+rule
+already:
+blocks:
+2-2.
+
+CAPACITY COST
+
+DG-1R-05E:
+
+32:
+logical:
+data bits
+
+inside:
+
+128:
+physical:
+bits.
+
+DG-1R-05C/D:
+
+48:
+logical bits.
+
+DG-1R-05A/B:
+
+64:
+logical bits.
+
+Therefore:
+
+the:
+strong:
+quorum:
+fault tolerance
+
+uses:
+
+50%:
+less:
+logical:
+capacity
+
+than:
+the:
+64-bit:
+local-code:
+architecture.
+
+The:
+next:
+research question
+
+should NOT:
+be:
+
+"How many more witnesses
+can:
+we:
+add?"
+
+It should be:
+
+"How much:
+fault tolerance
+can:
+we:
+obtain
+
+per:
+redundancy:
+bit?"
+
+CORE MECHANISTIC CONCLUSION
+
+The:
+software-tissue:
+line
+
+now:
+supports
+a:
+layered:
+integrity:
+architecture:
+
+1.
+local:
+state
+can:
+carry:
+redundant:
+repair:
+information;
+
+2.
+neighbors
+can:
+reconstruct:
+a:
+damaged:
+region;
+
+3.
+neighbors
+can:
+diagnose:
+damage
+that:
+the:
+region
+cannot:
+see;
+
+4.
+spatial:
+witness:
+quorums
+can:
+tolerate:
+damage
+to:
+the:
+repair:
+network
+itself;
+
+5.
+correlated:
+faults
+still:
+define:
+a:
+quorum:
+failure:
+boundary.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05F —
+SPARSE:
+INTEGRITY:
+GRAPH /
+FAULT-TOLERANCE-PER-BIT:
+AUDIT.
+
+Goal:
+
+recover:
+more:
+logical:
+capacity
+
+without:
+falling:
+all:
+the:
+way
+back
+to:
+fragile:
+two-witness:
+repair.
+
+Candidate architecture:
+
+12:
+logical:
+blocks
+
+x:
+4:
+data bits
+
+=
+48:
+logical:
+bits.
+
+Do NOT:
+use:
+full:
+local:
+Hamming
+plus:
+four:
+witnesses.
+
+Instead:
+
+store:
+a:
+sparse:
+graph
+of:
+cross-block:
+XOR:
+constraints
+
+inside:
+the:
+remaining:
+
+80:
+physical:
+bits.
+
+20:
+4-bit:
+integrity:
+edges
+
+over:
+12:
+logical:
+regions.
+
+Average:
+graph degree:
+
+3.33.
+
+Compare:
+
+- 48-bit:
+  sparse:
+  integrity:
+  graph;
+- 48-bit:
+  two-witness:
+  DG-1R-05C-style:
+  tissue;
+- 32-bit:
+  four-witness:
+  DG-1R-05E:
+  quorum.
+
+Measure:
+
+repair:
+success
+
+per:
+
+redundancy bit,
+
+logical:
+capacity,
+
+fault:
+class,
+
+and:
+correlated:
+witness:
+damage.
+
+PLAIN-SPEAK SUMMARY
+
+The:
+repair quorum
+worked.
+
+With:
+four:
+witnesses,
+
+one:
+bad:
+witness
+does not:
+matter.
+
+Three:
+healthy:
+witnesses
+still:
+agree
+on:
+the:
+right:
+repair.
+
+If:
+two:
+witnesses
+are:
+damaged
+in:
+the:
+same:
+way,
+
+the:
+votes
+split:
+
+two:
+correct,
+two:
+wrong.
+
+The:
+system
+does:
+the:
+safe:
+thing:
+
+nothing.
+
+It:
+refuses:
+to:
+guess.
+
+That:
+fixed:
+the:
+exact:
+failure
+we:
+found
+with:
+two-neighbor:
+repair.
+
+But:
+if:
+three:
+witnesses
+are:
+all:
+damaged
+the:
+same:
+way,
+
+the:
+quorum
+can:
+still:
+be:
+fooled.
+
+So:
+we:
+now:
+know
+the:
+fault:
+boundary
+very:
+cleanly.
+
+The:
+problem
+is:
+cost.
+
+To:
+get:
+four:
+witnesses
+inside:
+the:
+same:
+128:
+bits,
+
+we:
+reduced:
+usable:
+logical:
+state
+to:
+32:
+bits.
+
+That:
+is:
+too:
+expensive
+to:
+accept
+without:
+trying:
+to:
+do:
+better.
+
+The:
+next:
+experiment
+will:
+ask:
+
+can:
+we:
+wire:
+the:
+integrity:
+network
+more:
+cleverly
+
+so:
+the:
+same:
+repair:
+strength
+
+uses:
+fewer:
+backup:
+bits?
+
+That:
+moves:
+the:
+research
+from:
+
+"Can:
+software tissue
+self-repair?"
+
+toward:
+
+"How:
+efficiently
+can:
+software tissue
+self-repair?"
+
+DG-1R-05:
+canonical frozen primary remains:
+
+UNSPENT.
+
+DG-1R-05E remains:
+
+NON-CANONICAL /
+NON-EVIDENCE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
