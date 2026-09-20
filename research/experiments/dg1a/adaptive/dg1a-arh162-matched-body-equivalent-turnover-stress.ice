@@ -705,3 +705,215 @@ SYNTHETIC_MEASURED_SANDBOX_MATCHED_BODY_EQUIVALENT_COGNITIVE_TURNOVER
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — MATCHED BODY-EQUIVALENT STRESS HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H162 HELD-OUT PRIMARY EXECUTION.
+
+PARENT HARNESS
+
+H161:
+
+h161_turnover_reconstructed_v1.py
+
+SHA-256:
+
+ae89e645e9f00f33a581c05298a0b2e930b450bbc9a55f0e0f46f87de86a8248.
+
+H162 WRAPPER
+
+File:
+
+h162_matched_turnover_v1.py
+
+SHA-256:
+
+2a8e405055d88906285934778898b02072dcdf683afd8cbc4d8f392c7461ae2c.
+
+The H162 wrapper:
+
+imports:
+the pinned H161 repair mechanics
+
+and changes only:
+
+- lifetime cycle count
+  as:
+  a deterministic function
+  of:
+  body size / patch size;
+
+- matched-turnover checkpoints;
+
+- long-lifetime summary metrics.
+
+No H161:
+
+- field generator;
+- lesion realization;
+- membership rule;
+- context rule;
+- query pool;
+- leverage rule;
+- lambda;
+- feedback budget;
+- feedback-noise rule;
+- repair policy
+
+is altered.
+
+MATCHED LIFETIMES
+
+Observed:
+
+g=1.00:
+
+N=197.
+damage=10.
+cycles=20.
+body-equivalent turnover:
+approximately 1.01523.
+
+g=0.50:
+
+N=797.
+damage=10.
+cycles=80.
+body-equivalent turnover:
+approximately 1.00376.
+
+g=0.25:
+
+N=3209.
+damage=11.
+cycles=292.
+body-equivalent turnover:
+approximately 1.00094.
+
+SANITY
+
+Disjoint family:
+
+20260921190000...
+
+6 representative
+condition-world lifetimes.
+
+24 policy lifetimes.
+
+Mechanical checks:
+
+- exactly four policies / sanity lifetime;
+- matched body-equivalent turnover
+  realized at:
+  all three scales;
+- SERIAL24 / INTERLEAVED24
+  never exceed:
+  24 observations / cycle;
+- LOCAL-CHECKPOINT-ORACLE
+  finishes:
+  exactly 1.0
+  fidelity;
+- mutable state persists
+  through:
+  the complete:
+  20 / 80 / 292
+  cycle lifetime;
+- no global reset.
+
+NON-EVIDENCE SIGNAL
+
+MIXED,
+g=1,
+ROAMING,
+eta=0:
+
+INTERLEAVED24
+final fidelity:
+
+approximately:
+0.999993.
+
+g=0.50,
+ROAMING,
+eta=0:
+
+approximately:
+0.999983.
+
+g=0.25,
+ROAMING,
+eta=0:
+
+approximately:
+0.999997.
+
+HOTSPOT
+maximum single-cell repeat load
+in representative sanity:
+
+g=1:
+20.
+
+g=0.50:
+47.
+
+g=0.25:
+56.
+
+INTERLEAVED24
+final fidelity remains:
+
+approximately:
+0.99996..1.0
+
+in those hotspot sanity lifetimes.
+
+These values are:
+
+NON-EVIDENCE.
+
+No:
+cycle formula,
+f0,
+beta,
+cell scale,
+turnover regime,
+lambda,
+feedback budget,
+noise level,
+sample size,
+or:
+acceptance gate
+
+was changed.
+
+PRIMARY FAMILY
+
+20260921100000..20260921100239.
+
+240 held-out
+condition-world lifetimes.
+
+960 policy lifetimes.
+
+125,440
+policy repair cycles.
+
+H162 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H162 lifetime.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
