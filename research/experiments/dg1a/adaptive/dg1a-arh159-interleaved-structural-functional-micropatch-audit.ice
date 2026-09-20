@@ -794,3 +794,365 @@ SYNTHETIC_MEASURED_SANDBOX_INTERLEAVED_STRUCTURAL_FUNCTIONAL_MICROPATCH
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — INTERLEAVED REGENERATION HARNESS
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H159 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H159 SANDBOX HARNESS
+
+File:
+
+h159_interleaved_frozen_v1.py
+
+SHA-256:
+
+a38c58d2a15cb7125dc3e02199ea8bbd0de0e14c937e1e7e6d87c13d54ba99e8.
+
+PARENT MECHANICS
+
+H151:
+3f6042716b4e5a26f41569376a4dca833f5bae5f3c053aa2280615bfadb32e37.
+
+H152:
+e8be77384de4fef8a6b8eda875575f581edfc97794d5060e57e4e3bfa7b3b4e3.
+
+H159:
+
+lambda=0.01.
+
+Total feedback cap:
+24.
+
+Acquisition batch:
+6 observations / active step.
+
+COMMON QUERY SEQUENCE
+
+For each structural world:
+
+one ordered:
+24-query
+global-leverage sequence
+
+is computed
+before:
+repair execution
+
+using:
+
+- full lesion geometry;
+- full lesion coefficient column set;
+- lambda=0.01;
+- basis geometry only.
+
+No feedback target
+enters:
+query sequence construction.
+
+START100,
+START75,
+START50,
+START25
+
+all use:
+the identical ordered sequence.
+
+PARTIAL SOLVE
+
+At:
+each repair / maturation step:
+
+1.
+scheduled membership returns;
+
+2.
+new cells initialize:
+from live-neighbor context;
+
+3.
+all regenerated lesion cells:
+context-refine;
+
+4.
+if:
+the policy's membership threshold
+has been reached,
+
+acquire:
+the next:
+up to 6
+query-target pairs;
+
+5.
+jointly solve:
+ALL currently regenerated lesion coefficients
+
+using:
+all acquired feedback
+
+and:
+the current context state
+as:
+lambda=0.01 prior.
+
+Not-yet-regenerated lesion cells:
+
+remain:
+absent
+with:
+zero output contribution.
+
+Surviving original cells:
+
+remain fixed.
+
+As:
+new cells join,
+
+the joint variable domain expands
+
+and:
+all prior feedback
+is reused.
+
+STABLE T90
+
+STABLE T90
+is:
+the first step
+at which:
+
+FunctionalRecovery >=0.90
+
+and:
+
+all subsequent steps
+remain:
+>=0.90.
+
+T90 REGRESSION
+
+A world is:
+T90_REGRESSION
+
+when:
+
+first T90 is reached
+
+and:
+
+a later step
+falls:
+below 0.90.
+
+Maximum post-crossing drop
+is:
+peak-minus-trough recovery
+from:
+the first T90 step onward.
+
+PRE-PRIMARY GATE-8 CLARIFICATION
+
+Sanity revealed:
+
+START100
+can occasionally reach:
+stable T90
+
+before:
+formal membership completion
+
+from:
+context / surviving-function recovery alone,
+
+even though:
+START100 feedback
+has not yet begun.
+
+Therefore:
+
+the preregistered Gate 8 phrase:
+
+"true pipeline overlap"
+
+is operationalized as:
+
+an early policy world counts
+toward:
+the >=20%
+overlap fraction
+
+only when:
+
+1.
+the early policy reaches:
+STABLE T90
+before:
+membership completion;
+
+AND
+
+2.
+its STABLE T90
+is:
+at least one full step earlier
+than:
+the paired START100 world
+
+with:
+the same structural seed
+and:
+eta.
+
+This clarification:
+
+does NOT change:
+the 20% threshold,
+the damage groups,
+the eta requirement,
+or:
+any policy behavior.
+
+It prevents:
+context-only pre-completion recovery
+from being mislabeled as:
+an interleaving benefit.
+
+SANITY
+
+Disjoint structural family:
+
+20260920890000...
+
+140 structural worlds.
+
+280 eta condition-worlds.
+
+1,400 policy-condition evaluations.
+
+Mechanical checks:
+
+- exact 5 policies / condition;
+- zero common-query-sequence mismatches;
+- only regenerated lesion coefficients
+  enter:
+  non-oracle solves;
+- missing lesion cells
+  remain:
+  absent;
+- surviving original coefficients
+  remain:
+  fixed;
+- no functionally-trivial world observed.
+
+NON-EVIDENCE SIGNAL
+
+Representative MIXED FOUR-PATCH:
+
+2% eta=0:
+
+START100
+median stable T90:
+4.
+
+START75:
+3.
+
+START50:
+3.
+
+START25:
+3.
+
+2% eta=0.25:
+
+START100:
+4.
+
+START75:
+3.
+
+START50:
+3.
+
+START25:
+3.
+
+5% eta=0:
+
+START100:
+4.5.
+
+START75:
+3.
+
+START50:
+2.
+
+START25:
+2.
+
+5% eta=0.25:
+
+START100:
+5.
+
+START75:
+3.
+
+START50:
+2.
+
+START25:
+2.
+
+No representative sanity group
+showed:
+material final-recovery loss
+or:
+T90 regression.
+
+These outputs are:
+NON-EVIDENCE.
+
+No:
+start threshold,
+batch size,
+lambda,
+noise level,
+query sequence,
+budget,
+sample size,
+or:
+acceptance threshold
+
+is changed.
+
+PRIMARY STRUCTURAL FAMILY
+
+20260920800000..20260920801799.
+
+1,800 held-out structural worlds.
+
+3,600 eta condition-worlds.
+
+18,000 policy-condition evaluations.
+
+H159 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H159 condition-world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
