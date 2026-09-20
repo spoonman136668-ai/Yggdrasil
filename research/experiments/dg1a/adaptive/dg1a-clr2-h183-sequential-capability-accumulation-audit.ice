@@ -1244,3 +1244,404 @@ SYNTHETIC_MEASURED_SEQUENTIAL_DEVELOPMENTAL_CAPABILITY_ACCUMULATION
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — SEQUENTIAL A→B→C ACCUMULATION HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H183 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H183 SANDBOX HARNESS
+
+File:
+
+h183_seq_caps_v3.py
+
+SHA-256:
+
+95e0f635a47f3e2b7f2fb00401c328577ce6af2b366b6b88bfc2655c94f9ff58.
+
+PRE-PRIMARY MORPHOLOGY CORRECTION
+
+The first sanity implementation
+restricted:
+B daughter growth
+to:
+upper-right parent sites
+
+and:
+C daughter growth
+to:
+lower-right parent sites.
+
+That was:
+stricter
+than:
+the accepted H181
+coverage-balanced mechanism,
+
+which uses:
+the full:
+right-half
+developmental substrate
+
+and:
+relies on:
+context routing
+for:
+functional separation.
+
+Before:
+any H183 primary world,
+
+B and C
+growth eligibility
+was therefore corrected to:
+
+parent x >=0
+
+for:
+both capabilities.
+
+Their:
+k-means centroids
+
+remain:
+inside:
+their own:
+B / C training-input contexts.
+
+Thus:
+
+capability context
+still controls:
+where:
+coverage seeds begin,
+
+while:
+
+local patch growth
+is not:
+artificially clipped
+at:
+the y=0 boundary.
+
+No:
+cell budget,
+gate,
+teacher,
+training sample,
+ridge,
+or:
+acceptance criterion
+
+changed.
+
+This correction
+did NOT:
+materially change:
+the two-world
+sanity outcomes.
+
+TELEMETRY-ONLY ADDITION
+
+Before primary,
+
+cross-context
+router activation
+
+was added:
+as:
+telemetry only.
+
+Record:
+
+B gate
+on:
+A,
+B,
+C
+held-out contexts.
+
+C gate
+on:
+A,
+B,
+C
+held-out contexts.
+
+This:
+does NOT:
+affect:
+any prediction,
+fit,
+growth,
+or:
+routing behavior.
+
+SEQUENTIAL MECHANICS
+
+Stage A:
+
+learn:
+A
+
+plus:
+right-side
+context-silence examples.
+
+Freeze:
+all:
+A coefficients.
+
+Stage B:
+
+- fit:
+  B gate
+  from:
+  A/B context identity only;
+- grow:
+  48:
+  H181-style
+  coverage-balanced daughters;
+- fit:
+  only:
+  B daughter coefficients;
+- freeze:
+  B coefficients
+  and:
+  B router.
+
+Stage C:
+
+- A:
+  remains frozen;
+- B:
+  remains frozen;
+- B router:
+  remains frozen;
+- fit:
+  C gate
+  from:
+  C-positive
+  and:
+  A/B-negative
+  context coordinates only;
+- grow:
+  48:
+  coverage-balanced
+  C daughters;
+- fit:
+  only:
+  C daughter coefficients
+  to:
+  the current:
+  A+B
+  residual.
+
+No:
+A or B
+functional target
+is replayed
+during:
+C addition.
+
+SANITY
+
+Disjoint family:
+
+20260923290000
+and:
+20260923290001.
+
+2 worlds.
+
+5 policies.
+
+10 evaluations.
+
+Accepted sanity-output SHA-256:
+
+e7f00aa45d7c216a6a5418ca36deb45e4d7792e07752f5d947cf6fa440538563.
+
+Mechanical checks:
+
+- exact 5 policies / world;
+- A coefficients:
+  frozen after:
+  stage 1;
+- B daughter coefficients:
+  frozen after:
+  stage 2;
+- B router:
+  frozen after:
+  stage 2;
+- C addition:
+  changes:
+  C daughter coefficients
+  and:
+  C router only;
+- no:
+  A/B functional replay
+  during:
+  C addition;
+- SEQ48_48:
+  exactly:
+  96 new cells;
+- two routers:
+  12 total parameters;
+- hibernation / reactivation:
+  algebraically exact.
+
+NON-EVIDENCE SIGNAL
+
+World:
+20260923290000.
+
+SEQ48_48:
+
+post-B B R^2:
+approximately:
+0.873.
+
+post-C:
+
+A:
+approximately 0.993.
+
+B:
+approximately 0.864.
+
+C:
+approximately 0.745.
+
+World:
+20260923290001.
+
+SEQ48_48:
+
+post-B B:
+approximately 0.915.
+
+post-C:
+
+A:
+approximately 0.988.
+
+B:
+approximately 0.914.
+
+C:
+approximately 0.977.
+
+Thus:
+
+sequential C addition
+is:
+high-variance
+inside:
+the two-world sanity pair.
+
+Old-router
+cross-context telemetry:
+
+B-gate mean activation
+on:
+future C context:
+
+approximately:
+0.125
+in:
+both sanity worlds.
+
+B-gate activation
+on:
+its own B context:
+
+high,
+as designed.
+
+New C router:
+
+mean activation
+on:
+A:
+
+approximately:
+0.0047..0.0051.
+
+on:
+B:
+
+approximately:
+0.0038..0.0063.
+
+on:
+C:
+
+approximately:
+0.991..0.994.
+
+Thus:
+
+C routing
+is:
+clean.
+
+The sequential challenge
+may involve:
+
+- residual:
+  B-router leakage
+  into:
+  future C context;
+- per-world:
+  C representational
+  coverage / difficulty;
+- or:
+  both.
+
+This is:
+a held-out
+primary question.
+
+No:
+
+- old-router update;
+- cell budget;
+- gate feature;
+- gate sample count;
+- context geometry;
+- teacher;
+- ridge;
+- acceptance gate
+
+was changed
+from:
+sanity outcomes.
+
+PRIMARY FAMILY
+
+20260923200000..20260923200019.
+
+20 held-out worlds.
+
+5 policies.
+
+100 policy evaluations.
+
+H183 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H183 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
