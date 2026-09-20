@@ -1,6 +1,6 @@
 TITLE: DG-1A-AR-H150 — Regeneration Scaling / Cognitive Micro-Patch Granularity Audit
 DATE: 2026-09-19
-STATUS: PREREGISTERED / SYNTHETIC / PRIMARY NOT STARTED
+STATUS: PRIMARY COMPLETE / POSITIVE GEOMETRIC MICRO-PATCH PLAUSIBILITY / AREA-LOCALIZATION BREAK-EVEN
 TRACK: DG-1A / ADAPTIVE-RULE RESEARCH
 BRANCH: dg1a-ar
 PARENT: dg1a-arh149-dual-history-regional-revalidation-cohort-proof-audit.ice
@@ -1673,6 +1673,572 @@ No execution-semantic change is permitted
 after:
 the first held-out H150 primary world
 is executed.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
+
+
+
+FINAL PRIMARY CLOSURE — REGENERATION SCALING
+
+DATE:
+2026-09-19.
+
+STATUS:
+PRIMARY COMPLETE / POSITIVE WITH LOCALIZATION REQUIREMENT.
+
+ACCEPTED PRIMARY
+
+Axis A:
+12,600 worlds.
+
+Axis B:
+1,000 worlds.
+
+Axis C:
+7,500 worlds.
+
+Axis D:
+2,400 worlds.
+
+Total:
+23,500 held-out primary worlds.
+
+All:
+unique replacement seeds.
+
+256-step censoring:
+0 worlds.
+
+POST-PRIMARY ROBUSTNESS
+
+4,320 fresh worlds.
+
+Censoring:
+0.
+
+AXIS A — BODY SIZE / PATCH SIZE
+
+Median log-log T90 body-size exponent
+across patch fractions:
+
+approximately 0.27.
+
+Observed range:
+
+approximately 0.16 .. 0.36.
+
+Thus:
+recovery latency grows:
+sublinearly
+with:
+cell count
+in this local-frontier geometry.
+
+Small patches recover much faster
+than:
+large patches.
+
+At radius 30
+(2821 cells):
+
+1% lesion:
+median T90 = 4.
+
+2%:
+5.
+
+5%:
+6.
+
+20%:
+10.
+
+40%:
+14.
+
+60%:
+19.
+
+The same qualitative ordering:
+holds across:
+all tested body sizes.
+
+AXIS B — SAME DAMAGE / MANY MICRO-PATCHES
+
+Body:
+1373 cells.
+
+Total damage:
+approximately 20%.
+
+Median T90:
+
+1 patch:
+8.
+
+2 patches:
+6.
+
+4 patches:
+5.
+
+8 patches:
+4.
+
+16 patches:
+4.
+
+Median repair opportunities remain:
+approximately constant
+at:
+546..554.
+
+Median macro downtime:
+
+1 patch:
+0.931 body-fraction-steps.
+
+16 patches:
+0.437.
+
+Thus:
+splitting equal damage
+into:
+many separated local wounds
+
+approximately halves:
+T90
+and:
+integrated downtime
+
+without:
+materially increasing
+repair opportunities.
+
+The mechanism is:
+parallel local frontier area.
+
+AXIS C — GRANULARITY / LOCALIZATION BREAK-EVEN
+
+At:
+g = 1,
+
+body:
+709 cells.
+
+10% macro defect:
+approximately 71 damaged cells.
+
+Primary median:
+
+T90:
+5.
+
+repair opportunities:
+approximately 141.
+
+macro downtime:
+approximately 0.289.
+
+NO LOCALIZATION IMPROVEMENT
+
+beta = 0.
+
+At:
+g = 0.25,
+
+body:
+11289 cells.
+
+Damage remains:
+10%.
+
+Damaged cells:
+1129.
+
+Median:
+
+T90:
+14.
+
+repair opportunities:
+2258.
+
+This is:
+strongly worse.
+
+Therefore:
+
+MORE SMALL CELLS
+BY ITSELF
+IS NOT
+A REGENERATION ADVANTAGE.
+
+LINEAR LOCALIZATION
+
+beta = 1.
+
+At:
+g = 0.25:
+
+damage:
+approximately 2.5%.
+
+damaged cells:
+283.
+
+T90:
+8.
+
+repair opportunities:
+566.
+
+Still worse than:
+g = 1.
+
+AREA-PROPORTIONAL LOCALIZATION
+
+beta = 2.
+
+At:
+g = 0.50:
+
+body:
+2821.
+
+damage:
+approximately 2.5%.
+
+damaged cells:
+71.
+
+T90:
+5.
+
+repair opportunities:
+approximately 142.
+
+macro downtime:
+approximately 0.073.
+
+At:
+g = 0.25:
+
+body:
+11289.
+
+damage:
+approximately 0.63%.
+
+damaged cells:
+71.
+
+T90:
+5.
+
+repair opportunities:
+approximately 143.
+
+macro downtime:
+approximately 0.018.
+
+Thus:
+
+beta approximately 2
+is:
+the measured break-even.
+
+Finer cells:
+do not yet repair the damaged cell set faster,
+
+but:
+they preserve:
+approximately constant repair work
+and:
+constant T90
+
+while:
+shrinking
+the fraction of the macro-organ
+that is functionally unavailable.
+
+SUPER-LOCALIZATION
+
+beta = 2.5.
+
+At:
+g = 0.50:
+
+T90:
+4.
+
+repair opportunities:
+approximately 100.
+
+At:
+g = 0.25:
+
+T90:
+4.
+
+repair opportunities:
+approximately 70.
+
+Thus:
+actual repair-latency improvement
+appears only when:
+functional localization improves
+faster than:
+simple area scaling.
+
+PRIMARY BREAK-EVEN
+
+beta*:
+approximately 2.0.
+
+AXIS D — PARALLEL REPAIR BANDWIDTH
+
+10% of body cells / step
+was the frozen bounded opportunity cap.
+
+Median T90,
+unlimited versus bounded:
+
+1 patch:
+5 / 5.
+
+2:
+5 / 5.
+
+4:
+5 / 5.
+
+8:
+5 / 5.
+
+16:
+6 / 7.
+
+32:
+9 / 12.
+
+Bandwidth contention therefore:
+appears after:
+roughly 8 concurrent 2% wounds
+in this 2821-cell body.
+
+It degrades:
+but does not erase:
+parallel micro-patch benefit.
+
+For comparison:
+
+32 bounded micro-patches
+cover:
+approximately 64.7% of the body
+
+and recover to T90:
+12.
+
+A single compact:
+60% lesion
+in the same-size Axis-A body
+
+has median T90:
+19.
+
+ROBUSTNESS — UPDATE RATE
+
+Fresh stratified robustness used:
+
+p:
+0.25,
+0.50,
+1.00.
+
+At:
+beta = 2,
+
+g = 0.50
+and:
+g = 0.25
+
+retain:
+approximately the same T90
+as:
+g = 1
+
+at each tested update rate,
+
+while:
+macro downtime remains:
+substantially lower
+and:
+repair opportunities remain:
+approximately comparable.
+
+Therefore:
+the beta approximately 2
+break-even
+is not:
+an artifact
+of:
+p = 0.50 alone.
+
+PRIMARY ACCEPTANCE REVIEW
+
+SUPPORTED:
+
+1.
+Small 1%..5% lesions:
+recover materially faster
+than:
+20%..60% lesions.
+
+2.
+Four or more separated micro-patches:
+reduce T90
+relative to:
+one compact patch
+at:
+fixed total damage.
+
+3.
+The parallel advantage:
+survives:
+bounded repair bandwidth,
+though:
+it saturates.
+
+4.
+A beta <=2
+break-even exists.
+
+Measured:
+beta approximately 2.
+
+5.
+The architecture does not require:
+beta >2
+merely to gain:
+macro downtime advantage.
+
+6.
+The area-localization break-even:
+survives:
+p = 0.25..1.00
+robustness.
+
+FINAL INTERPRETATION
+
+H150 is:
+
+POSITIVE
+FOR
+GEOMETRIC / RESOURCE PLAUSIBILITY
+OF
+COGNITIVE MICRO-PATCHING.
+
+But:
+the result is conditional.
+
+The useful architecture is NOT:
+
+MAKE CELLS SMALLER
+AND REGENERATION
+AUTOMATICALLY GETS FASTER.
+
+The supported architecture is:
+
+MAKE CELLS SMALLER
+ONLY IF
+FUNCTIONAL FAILURE
+CAN BE LOCALIZED
+AT LEAST
+APPROXIMATELY
+WITH CELL AREA.
+
+At:
+area-proportional localization,
+
+more numerous smaller cells
+can:
+hold repair work roughly constant
+
+while:
+reducing:
+functional blast radius
+and:
+integrated downtime.
+
+If:
+localization becomes:
+better than area-proportional,
+
+actual repair latency:
+can also improve.
+
+This converts:
+cell granularity
+
+from:
+an aesthetic architectural choice
+
+into:
+a measurable trade:
+
+granularity
+x
+functional localization
+x
+repair bandwidth.
+
+NEXT CLEAN QUESTION
+
+H151 —
+FUNCTIONAL COGNITIVE MICRO-PATCH.
+
+Does:
+the beta approximately 2
+localization assumption
+actually hold
+for:
+distributed computational function?
+
+A functional experiment must:
+
+- assign measurable computational specialization
+  to local cell colonies;
+- lesion:
+  1%..20%
+  of participating cells;
+- produce:
+  a meaningful task-performance drop;
+- regenerate:
+  without restoring saved mutable cell state;
+- measure:
+  functional T50 / T90;
+- compare:
+  no repair,
+  random replacement,
+  exact-state reload,
+  and:
+  developmental local regeneration;
+- test:
+  whether smaller cells
+  reduce the functional blast radius
+  enough to realize:
+  H150's geometric benefit.
+
+H150 DOES NOT AUTHORIZE
+
+- production cell granularity;
+- learned cognitive regeneration claims;
+- biological claims;
+- STAB-18-R1 execution;
+- runtime activation.
 
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
