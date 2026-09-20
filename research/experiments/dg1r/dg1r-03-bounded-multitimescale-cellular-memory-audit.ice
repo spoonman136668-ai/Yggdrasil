@@ -1255,3 +1255,97 @@ slowing.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-03 BOUNDED MULTI-TIMESCALE HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST DG-1R-03 PRIMARY WORLD.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_03_multitimescale_v1.py
+
+Harness commit:
+
+b9b13fe30c75800e83574f9d930d71da48df49e6.
+
+Git blob SHA:
+
+7b5d6995450195f10d7ae2c474cf6936093dcf96.
+
+Source SHA-256:
+
+f75e7089f1ff3ac8bd55d9126c2cb7950f08feb775a1ce8e5571269eee4fefb9.
+
+Source bytes:
+
+17130.
+
+PRE-FREEZE SANITY
+
+Python compile:
+
+PASS.
+
+Feature surface:
+
+all ReCA methods:
+512 bits:
+per external input.
+
+Frozen cell-update counts:
+
+FAST128_MIXED4:
+512.
+
+SLOW128_MIXED1:
+128.
+
+DUAL64_64_MIXED41:
+320.
+
+TRI64_32_32_MIXED421:
+352.
+
+TRI32_32_64_MIXED421:
+256.
+
+SPEC32_32_64_90M182:
+256.
+
+No:
+primary:
+DG-1R-03:
+world
+was:
+executed
+before:
+this freeze.
+
+FROZEN WORLD FAMILY
+
+20260926030000..20260926030007.
+
+8 worlds.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+canonical sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+Runtime sidecars:
+are:
+non-canonical.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
