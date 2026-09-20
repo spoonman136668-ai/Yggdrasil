@@ -1293,3 +1293,103 @@ unchanged.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN PACKAGING CORRECTION 01 — REMOTE BYTE IDENTITY
+
+DATE:
+2026-09-20.
+
+STATUS:
+CORRECTED BEFORE:
+THE:
+FIRST:
+DG-1R-05D:
+SCENARIO.
+
+The:
+previous:
+freeze entry
+
+recorded:
+the:
+local:
+pre-transfer:
+source identity
+
+including:
+one:
+final:
+newline.
+
+The:
+GitHub:
+contents transfer
+
+stored:
+the:
+same:
+source
+
+without:
+that:
+final:
+newline.
+
+No:
+Python:
+token,
+statement,
+constant,
+branch,
+metric,
+seed,
+or:
+experimental:
+semantic
+
+changed.
+
+AUTHORITATIVE REMOTE HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05d_syndrome_blind_v1.py
+
+Git blob SHA:
+
+3b908ac1f6d0fe70b319174be7be9e109a8ee95b.
+
+Remote source SHA-256:
+
+ab319072aca730b9d8bae4ae65e37298269ad1e5b9fb3dbe04d9c0f088597dd5.
+
+Remote source bytes:
+
+11011.
+
+The:
+execution copy
+
+was:
+aligned
+to:
+these:
+exact:
+remote:
+bytes
+
+before:
+any:
+scenario:
+execution.
+
+No:
+DG-1R-05D:
+scenario
+was:
+executed
+before:
+this:
+correction.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
