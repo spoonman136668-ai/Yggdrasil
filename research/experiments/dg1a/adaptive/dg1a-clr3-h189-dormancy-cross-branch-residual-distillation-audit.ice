@@ -1108,3 +1108,554 @@ the first held-out H189 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — DORMANCY CROSS-BRANCH RESIDUAL DISTILLATION
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / NEGATIVE FOR 6-PARAMETER POLYNOMIAL SLEEP COMPENSATION / POSITIVE FOR TASK-PRESERVING LOW-COMPUTE SCHEDULING.
+
+FINAL H189 HARNESS SHA-256
+
+c6a6145526cef24a7e23955a8270e474d908d439146499833420869f3fb9ad72.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+6a9f29881188488be7b3be3682b4bfb0bbb44bb81cca01154f262e622e11f09d.
+
+ACCEPTED PRIMARY FAMILY
+
+20260923800000..20260923800019.
+
+PRIMARY MATRIX
+
+20 held-out worlds.
+
+3 contexts / world.
+
+60 context rows.
+
+STORED FULL PHENOTYPE
+
+Median full held-out R^2:
+
+A:
+approximately:
+0.99286.
+
+B:
+approximately:
+0.96392.
+
+C:
+approximately:
+0.94092.
+
+PASS.
+
+Worlds:
+A,
+B,
+C
+all:
+R^2 >=0.85:
+
+18 / 20
+=
+90%.
+
+PASS.
+
+COMP6 KNOWN-CONTEXT
+PREDICTION FIDELITY
+
+Median normalized MSE
+versus:
+full phenotype:
+
+A:
+approximately:
+0.00543.
+
+B:
+approximately:
+0.03206.
+
+C:
+approximately:
+0.02613.
+
+Frozen target:
+<=0.01
+for:
+all contexts.
+
+A:
+PASS.
+
+B:
+FAIL.
+
+C:
+FAIL.
+
+COMP6 LEARNED-SCHEDULED
+PREDICTION FIDELITY
+
+Median normalized MSE:
+
+A:
+approximately:
+0.01448.
+
+B:
+approximately:
+0.03859.
+
+C:
+approximately:
+0.02848.
+
+Frozen target:
+<=0.02.
+
+A:
+PASS.
+
+B:
+FAIL.
+
+C:
+FAIL.
+
+TASK PERFORMANCE
+
+Despite:
+strict prediction-fidelity
+failure,
+
+COMP6 known-context
+median task R^2
+
+does NOT:
+drop:
+more than:
+0.01
+from:
+the full phenotype
+
+for:
+A,
+B,
+or:
+C.
+
+PASS.
+
+COMP6 learned-scheduled
+median task-R^2 drop:
+
+A:
+approximately:
+0.0183.
+
+B:
+approximately:
+0.0074.
+
+C:
+improves
+at:
+the median.
+
+Frozen limit:
+<=0.02.
+
+PASS.
+
+Thus:
+
+the tiny:
+sleep compensation
+
+preserves:
+behavioral competence
+
+but:
+
+does NOT:
+reproduce:
+the exact:
+stored full phenotype
+closely enough.
+
+ROUTING
+
+Median:
+learned-route accuracy:
+
+approximately:
+0.99707.
+
+Minimum world:
+
+approximately:
+0.98958.
+
+PASS.
+
+ACTIVE COMPUTE
+
+COMP6:
+
+B-only:
+
+approximately:
+2.137%
+of:
+full.
+
+C-only:
+
+approximately:
+1.987%.
+
+Equal A/B/C:
+
+approximately:
+33.755%.
+
+All:
+pass:
+the frozen:
+2.5%,
+2.5%,
+35%
+compute gates.
+
+MEMORY
+
+18:
+sleep-compensation
+parameters.
+
+Increment:
+
+approximately:
+0.542%
+of:
+the H188:
+3322-parameter
+functional state.
+
+Frozen ceiling:
+<=0.60%.
+
+PASS.
+
+WAKE / SWITCH
+
+Wake learning cost:
+
+0.
+
+Maximum:
+300-switch
+prediction drift:
+
+0.
+
+Physical cells:
+
+3257.
+
+PASS.
+
+RESIDUAL DISTILLATION QUALITY
+
+Median:
+COMP6
+held-out residual
+normalized error
+
+is:
+high:
+
+A:
+approximately:
+0.881.
+
+B:
+approximately:
+0.883.
+
+C:
+approximately:
+0.829.
+
+Thus:
+
+the low-order
+quadratic function
+
+explains:
+only:
+a small:
+fraction
+of:
+the true:
+cross-branch
+residual structure.
+
+COMP3 DIAGNOSTIC
+
+The:
+three-parameter
+linear compensation
+
+does NOT:
+clear:
+the strict:
+B / C
+fidelity gates either.
+
+In some groups:
+
+COMP3
+slightly outperforms:
+COMP6.
+
+This reinforces:
+
+the failure is NOT:
+simply:
+insufficient:
+polynomial degree
+inside:
+the tiny:
+global feature family.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+Stored full competence.
+
+2.
+Stored joint competence.
+
+5.
+Known-context task R^2.
+
+6.
+Learned-scheduled task R^2.
+
+7.
+Routing.
+
+8.
+B compute.
+
+9.
+C compute.
+
+10.
+Equal-mix compute.
+
+11.
+Memory overhead.
+
+12.
+Zero target replay.
+
+13.
+Zero wake learning.
+
+14.
+Zero switch drift.
+
+15.
+Physical structure.
+
+FAIL:
+
+3.
+COMP6 known-context
+prediction fidelity.
+
+4.
+COMP6 learned-scheduled
+prediction fidelity.
+
+16.
+COMP3 diagnostic
+does not:
+pass:
+all fidelity gates.
+
+STRONG SUPPORT:
+
+FAIL.
+
+FINAL INTERPRETATION
+
+H189 is:
+
+NEGATIVE
+
+for:
+
+TINY
+GLOBAL-POLYNOMIAL
+SLEEP COMPENSATION.
+
+The cross-capability residual
+
+is:
+too:
+spatially structured
+
+to:
+compress
+into:
+six:
+global quadratic
+parameters
+per:
+capability
+
+at:
+the required:
+prediction-fidelity
+level.
+
+However:
+
+H188/H189 jointly show:
+
+- task competence
+  can:
+  survive:
+  aggressive branch hibernation;
+
+- compute
+  remains:
+  near:
+  2%
+  for:
+  B/C single-context use;
+
+- equal:
+  A/B/C
+  workloads
+  remain:
+  near:
+  one-third
+  of:
+  all-branch compute;
+
+- wake:
+  remains:
+  zero-learning
+  and:
+  drift-free.
+
+Therefore:
+
+do NOT:
+
+reactivate:
+all dormant branches.
+
+Do NOT:
+
+inflate:
+a dense:
+sleep-state network.
+
+NEXT:
+
+CLR3-H190 —
+SPARSE
+SLEEP-PROXY
+BASIS DISTILLATION.
+
+Use:
+the same:
+unlabeled
+self-distillation target
+
+but represent:
+the dormant residual
+
+with:
+a very small:
+sparse set
+of:
+reused:
+parent basis functions.
+
+Candidate budgets:
+
+4,
+8,
+16
+sleep-proxy basis sites
+per:
+capability.
+
+Select:
+sites
+with:
+OMP-style
+residual recruitment
+
+on:
+unlabeled:
+context coordinates
+
+using:
+the full phenotype's
+own predictions.
+
+No:
+task targets.
+
+No:
+new:
+physical cells.
+
+Primary question:
+
+can:
+a handful:
+of:
+existing basis functions
+
+carry:
+the structured:
+cross-capability
+sleep residual
+
+while:
+preserving:
+the:
+~2%
+single-context
+active-compute regime?
+
+H189 DOES NOT AUTHORIZE
+
+- production use;
+- live model modification;
+- biological claims;
+- canonical scientific claims;
+- STAB-18-R1 execution.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
