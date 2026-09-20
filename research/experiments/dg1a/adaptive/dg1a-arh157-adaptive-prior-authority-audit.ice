@@ -1353,3 +1353,650 @@ primary world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — ADAPTIVE DEVELOPMENTAL-PRIOR AUTHORITY
+
+DATE:
+2026-09-19.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-NEGATIVE FOR ADAPTIVE AUTHORITY / POSITIVE WEAKER-PRIOR DISCOVERY.
+
+FINAL PINNED HARNESS SHA-256
+
+c4a67f7d875bcb92e1f38803d9bcb389764713b9409ebe9dd6a9a71f32f8170e.
+
+ACCEPTED PRIMARY FAMILY
+
+20260920600000..20260920605399.
+
+PRIMARY MATRIX
+
+5,400 underlying worlds.
+
+6 executed policies.
+
+32,400 executed policy-world evaluations.
+
+Validation:
+
+- exactly 5,400 unique held-out seeds;
+- exact accepted seed interval;
+- exactly six executed policy rows / seed;
+- zero duplicate seed x policy rows;
+- zero functionally-trivial worlds;
+- ineligible 202609205... H157 family excluded;
+- no post-primary parameter tuning.
+
+PRIMARY CANDIDATE
+
+ADAPT-CV.
+
+CLEAN MIXED FUNCTIONAL QUALITY
+
+eta=0.
+
+ADAPT-CV median final recovery:
+
+1%:
+0.9965.
+
+2%:
+0.9902.
+
+5%:
+0.9943.
+
+Frozen target:
+>=0.95.
+
+PASS:
+3 / 3.
+
+CLEAN MIXED T90 RELIABILITY
+
+ADAPT-CV:
+
+1%:
+95.0%.
+
+2%:
+98.5%.
+
+5%:
+99.0%.
+
+LEV-L03:
+
+1%:
+87.5%.
+
+2%:
+87.5%.
+
+5%:
+91.5%.
+
+Thus:
+
+ADAPT-CV
+does NOT sacrifice:
+the H156 gain.
+
+It materially improves it.
+
+The preregistered wording:
+"within 5 percentage points"
+
+is:
+literally exceeded
+in the favorable direction
+by:
+
++7.5,
++11.0,
++7.5 points.
+
+Therefore:
+
+the literal symmetric gate
+does not pass,
+
+but:
+the stated no-sacrifice intent
+is strongly satisfied.
+
+This wording issue
+does NOT:
+alter:
+the final H157 adaptive-authority conclusion.
+
+NOISY MIXED PERFORMANCE
+
+eta=0.10.
+
+ADAPT-CV T90-world fraction:
+
+1%:
+96.0%.
+
+2%:
+98.0%.
+
+5%:
+99.5%.
+
+LEV-L03:
+
+1%:
+91.0%.
+
+2%:
+86.5%.
+
+5%:
+96.5%.
+
+Improvement:
+
++5.0,
++11.5,
++3.0 points.
+
+eta=0.25.
+
+ADAPT-CV:
+
+1%:
+94.5%.
+
+2%:
+97.0%.
+
+5%:
+98.5%.
+
+LEV-L03:
+
+1%:
+90.0%.
+
+2%:
+86.0%.
+
+5%:
+95.0%.
+
+Improvement:
+
++4.5,
++11.0,
++3.5 points.
+
+Frozen noisy-feedback gate:
+
+>=8-point improvement
+in:
+at least 3 of:
+6 eta x damage groups.
+
+Observed:
+
+2 / 6.
+
+FAIL.
+
+Thus:
+
+adaptive lambda improves:
+noisy repair,
+
+but:
+not broadly enough
+to satisfy:
+the preregistered effect-size gate.
+
+PRIOR-AUTHORITY RESPONSE TO NOISE
+
+ADAPT-CV
+median final selected lambda:
+
+eta=0:
+
+1%:
+0.01.
+
+2%:
+0.01.
+
+5%:
+0.01.
+
+eta=0.10:
+
+1%:
+0.01.
+
+2%:
+0.01.
+
+5%:
+0.01.
+
+eta=0.25:
+
+1%:
+0.01.
+
+2%:
+0.01.
+
+5%:
+0.01.
+
+Frozen hypothesis:
+
+eta=0.25
+should increase:
+median prior authority
+above:
+eta=0
+
+in:
+at least 2 / 3
+MIXED damage fractions.
+
+Observed:
+
+0 / 3.
+
+FAIL.
+
+This is:
+the decisive H157 result.
+
+Under:
+the tested feedback-noise range,
+
+the correct inferred prior
+does NOT:
+become stronger.
+
+CLEAN PRIOR RELEASE
+
+At:
+eta=0,
+
+median selected lambda:
+0.01
+for:
+3 / 3.
+
+Required:
+<=0.03
+for:
+at least 2 / 3.
+
+PASS.
+
+LOOCV VERSUS NON-DEPLOYABLE ORACLE-LAMBDA
+
+MIXED agreement rate:
+
+eta=0:
+
+1%:
+100%.
+
+2%:
+100%.
+
+5%:
+100%.
+
+eta=0.10:
+
+1%:
+98.5%.
+
+2%:
+100%.
+
+5%:
+99.0%.
+
+eta=0.25:
+
+1%:
+97.0%.
+
+2%:
+95.0%.
+
+5%:
+93.5%.
+
+Median oracle lambda:
+
+0.01
+
+for:
+every:
+eta x MIXED small-lesion group.
+
+Thus:
+
+LOOCV is:
+not failing
+to discover:
+a hidden stronger-prior optimum.
+
+The oracle diagnostic
+agrees:
+
+WEAKER PRIOR AUTHORITY
+REMAINS OPTIMAL
+THROUGH:
+eta=0.25
+
+in:
+this synthetic model.
+
+LAMBDA STABILITY
+
+Median lambda changes / world:
+
+1.
+
+The adaptive trajectory
+typically transitions:
+
+0.03
+->
+0.01
+
+and:
+stays there.
+
+No:
+excessive oscillation.
+
+AOPT VERSUS LEVERAGE UNDER ADAPTATION
+
+For:
+MIXED
+eta=0
+and:
+eta=0.25,
+1%..5%,
+
+AOPT-ADAPT-CV
+median final recovery
+differs from:
+ADAPT-CV
+
+by:
+far less than 0.03
+in:
+all six groups.
+
+PASS.
+
+Their T90 reliability
+is also:
+closely aligned.
+
+Therefore:
+
+the weaker-prior result
+is not:
+an artifact
+of:
+one information-design rule.
+
+SMOOTH QUALITY
+
+ADAPT-CV
+median final recovery
+for:
+SMOOTH
+1%..5%,
+eta=0 or 0.10:
+
+approximately:
+0.9994..0.9998.
+
+PASS:
+all >=0.95.
+
+CHECKPOINT-ORACLE
+
+Remains:
+the functional ceiling
+at:
+1.0.
+
+PASS.
+
+PREREGISTERED GATE REVIEW
+
+PASS:
+
+1.
+Clean MIXED final recovery.
+
+5.
+Clean feedback releases:
+prior authority
+to:
+<=0.03.
+
+6.
+AOPT / leverage
+adaptive-design robustness.
+
+7.
+SMOOTH quality.
+
+8.
+ORACLE ceiling.
+
+FAIL / MIXED:
+
+2.
+Literal "within 5 points"
+clean T90 gate
+
+only because:
+ADAPT-CV
+outperforms:
+LEV-L03
+by:
+more than 5 points.
+
+No-sacrifice intent:
+PASS.
+
+3.
+Noisy-feedback
+>=8-point improvement
+in:
+3 / 6 groups.
+
+Observed:
+2 / 6.
+
+FAIL.
+
+4.
+Higher eta
+increases:
+median selected lambda
+
+in:
+2 / 3.
+
+Observed:
+0 / 3.
+
+FAIL.
+
+FINAL INTERPRETATION
+
+H157 is:
+
+MIXED-NEGATIVE
+for:
+
+ADAPTIVE DEVELOPMENTAL-PRIOR AUTHORITY.
+
+The expected controller behavior:
+
+MORE NOISE
+->
+TRUST DEVELOPMENTAL PRIOR MORE
+
+is:
+not supported.
+
+Instead:
+
+both:
+local LOOCV
+
+and:
+the non-deployable
+held-out oracle-lambda diagnostic
+
+converge strongly on:
+
+lambda =
+0.01.
+
+This remains true
+through:
+25%
+feedback noise
+scaled to:
+lesion functional error.
+
+The important positive discovery is:
+
+H156's lambda=0.03
+was still:
+more conservative
+than necessary
+
+for:
+this synthetic inverse problem.
+
+WEAKER PRIOR AUTHORITY
+PLUS:
+INFORMATION-DESIGNED FEEDBACK
+
+raises:
+MIXED T90 reliability
+
+to:
+approximately:
+95%..99%
+under:
+clean feedback
+
+and:
+94.5%..99.5%
+under:
+the tested noisy feedback.
+
+Therefore:
+
+the next architecture
+should NOT:
+add:
+a complex adaptive-authority controller
+
+unless:
+future regimes
+actually produce:
+a prior/noise tradeoff.
+
+Use:
+the simpler measured:
+weak-prior regime
+
+as:
+the next baseline.
+
+REMAINING OPEN PROBLEM
+
+H156 already isolated:
+
+MULTI-WOUND LATENCY.
+
+H157 does not:
+change:
+the 24-observation temporal schedule.
+
+Therefore:
+
+the next experiment should return to:
+
+HOW
+THE 24
+INFORMATION-DESIGNED
+OBSERVATIONS
+
+ARE DISTRIBUTED
+OVER TIME.
+
+Use:
+
+lambda=0.01
+
+as:
+the measured weak-prior baseline,
+
+then compare:
+
+- 2 observations x 12 steps;
+- 4 x 6;
+- 6 x 4;
+- possibly:
+  information-sufficiency-triggered
+  batch sizes
+
+while:
+keeping:
+the same total
+24-observation cap.
+
+Target:
+
+reduce:
+FOUR-PATCH
+functional T90
+
+without:
+sacrificing:
+the now-high
+T90-world reliability.
+
+NEXT SCOPED EXPERIMENT
+
+H158 —
+TEMPORAL INFORMATION-SCHEDULING /
+FRONT-LOADED FUNCTIONAL MICRO-PATCH FEEDBACK.
+
+H157 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- global retraining;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
