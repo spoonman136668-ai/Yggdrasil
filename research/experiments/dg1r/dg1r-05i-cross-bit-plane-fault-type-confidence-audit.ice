@@ -1201,3 +1201,161 @@ clarification.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05I CROSS-BIT-PLANE CONFIDENCE
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE:
+THE:
+FIRST:
+DG-1R-05I:
+WORLD.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05i_crossplane_confidence_v1.py
+
+Harness commit:
+
+ef6295de65066d0fe022c3a567e54f2e5525bc3d.
+
+Git blob SHA:
+
+00dc7efc861c1289a15266b85cd260a54ec2a178.
+
+Remote source SHA-256:
+
+444ae03bccdf292b3a40a3a2a62ad069d507ac72ea8ba2c6886077483d330778.
+
+Remote source bytes:
+
+12107.
+
+LOCAL PRECHECK
+
+Python syntax:
+
+PASS.
+
+Frozen support threshold:
+
+2:
+bit planes
+per:
+logical region.
+
+Inference:
+
+exact:
+DG-1R-05H:
+iterative:
+greedy:
+syndrome:
+localization.
+
+Application:
+
+GREEDY_BASELINE:
+
+apply:
+all:
+inferred:
+logical flips.
+
+CROSSPLANE2_GATE:
+
+apply:
+only:
+inferred:
+logical flips
+for:
+blocks
+with:
+plane support
+>=2.
+
+CROSSPLANE2_DETECT_ONLY:
+
+apply:
+none.
+
+No:
+DG-1R-05I:
+experimental:
+world
+
+was:
+executed
+before:
+this:
+freeze.
+
+PACKAGING NOTE
+
+Local:
+pre-transfer:
+source
+contained:
+one:
+final:
+newline.
+
+GitHub:
+stored:
+the:
+same:
+Python:
+source
+without:
+that:
+final:
+newline.
+
+No:
+experimental:
+semantic:
+changed.
+
+Execution copy
+was:
+aligned
+to:
+the:
+authoritative:
+remote:
+bytes
+before:
+execution.
+
+FROZEN WORLD FAMILY
+
+20260926059000..20260926059007.
+
+8 worlds.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+sweeps.
+
+Output SHA-256
+must:
+match exactly.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+DG-1R-05I:
+
+NON-CANONICAL /
+NON-EVIDENCE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
