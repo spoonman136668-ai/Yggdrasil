@@ -1,0 +1,1126 @@
+TITLE: DG-1R-05I — Cross-Bit-Plane Fault-Type Confidence Audit
+DATE: 2026-09-20
+STATUS: PREREGISTERED / NON-EVIDENCE CONFIDENCE-GATING PILOT
+TRACK: DG-1R / SOFTWARE TISSUE / DISTRIBUTED INTEGRITY / FAULT-TYPE CONFIDENCE
+BRANCH: dg1a-ar
+PARENT: DG-1R-05H
+
+PURPOSE
+
+DG-1R-05H established:
+
+- the HYPER20 representation contains enough information to localize
+  simultaneous logical faults;
+- iterative GREEDY_SYNDROME exactly repaired distributed two-region damage;
+- iterative decoding outperformed one-pass decoding;
+- four correlated integrity faults can still masquerade as a logical fault;
+- some minimum-weight explanations are ambiguous, while others confidently
+  prefer the wrong logical-plus-check explanation under equal fault cost.
+
+DG-1R-05I asks:
+
+CAN:
+FAULT:
+EVIDENCE
+ACROSS:
+THE:
+FOUR:
+BIT PLANES
+
+PROVIDE:
+A:
+CONFIDENCE:
+SIGNAL
+
+FOR:
+
+WHEN:
+A:
+LOGICAL:
+REGION
+SHOULD:
+ACTUALLY:
+BE:
+REPAIRED?
+
+BOUNDARY
+
+Synthetic software-only pilot.
+
+No living tissue.
+No wetware.
+No biological nanotechnology.
+No production modification.
+No canonical H191 execution.
+No STAB-18-R1 execution.
+
+NON-CANONICAL / NON-EVIDENCE.
+
+DG-1R-05 canonical frozen primary remains:
+UNSPENT.
+
+STATE REPRESENTATION
+
+Exact DG-1R-05H HYPER20 representation.
+
+48 logical bits.
+
+80 integrity bits.
+
+128 persistent bits.
+
+20 frozen four-region hyperchecks.
+
+No extra persistent state.
+
+No hidden history.
+
+No task labels.
+
+No counterfactual information visible to decoder.
+
+BASE LOCALIZER
+
+Exact DG-1R-05H GREEDY_SYNDROME inference.
+
+For each bit plane independently:
+
+- compute 20-bit syndrome;
+- choose the logical block whose hypothetical bit flip yields the largest
+  strictly positive syndrome-weight reduction;
+- tie by lowest logical block index;
+- never select the same logical block twice inside one bit plane;
+- iterate up to 4 logical flips per bit plane;
+- stop if no logical flip strictly reduces syndrome weight.
+
+Important:
+
+DG-1R-05I separates:
+
+INFERENCE
+
+from:
+
+APPLICATION.
+
+The greedy engine first produces:
+
+a:
+proposed:
+12 x 4:
+logical-flip matrix
+
+without:
+mutating:
+persistent:
+logical state.
+
+CROSS-PLANE SUPPORT
+
+For logical block b:
+
+PLANE_SUPPORT_b
+
+=
+number:
+of:
+bit planes
+k in 0..3
+
+for which:
+
+the:
+greedy:
+inference
+
+proposes:
+a:
+logical:
+flip
+at:
+(b,k).
+
+Frozen confidence threshold:
+
+2.
+
+A logical block is:
+
+CROSS-PLANE-CONFIDENT
+
+if:
+
+PLANE_SUPPORT_b
+>=2.
+
+METHODS
+
+1.
+GREEDY_BASELINE
+
+Exact:
+DG-1R-05H:
+GREEDY_SYNDROME.
+
+Apply:
+every:
+greedy-inferred:
+logical:
+bit flip.
+
+2.
+CROSSPLANE2_GATE
+
+Run:
+the:
+same:
+greedy:
+inference.
+
+Apply:
+
+only:
+proposed:
+logical:
+bit flips
+
+belonging:
+to:
+logical:
+blocks
+
+with:
+
+PLANE_SUPPORT
+>=2.
+
+All:
+proposed:
+flips
+for:
+blocks
+with:
+support:
+0
+or:
+1
+
+are:
+ABSTAINED.
+
+3.
+CROSSPLANE2_DETECT_ONLY
+
+Run:
+same:
+inference.
+
+Compute:
+same:
+support.
+
+Apply:
+no:
+logical:
+repair.
+
+Purpose:
+
+detection-only control.
+
+EPHEMERAL ONLY
+
+The:
+
+12-region:
+plane-support:
+vector
+
+is:
+computed:
+combinationally
+
+from:
+the:
+current:
+syndrome.
+
+It:
+is:
+not:
+stored
+between:
+external:
+steps.
+
+Persistent state remains:
+
+128 bits.
+
+DYNAMICS
+
+Exact:
+DG-1R-05H.
+
+48 logical bits.
+
+MIXED5:
+one CA update per external input.
+
+Input-mapped logical blocks:
+
+1,
+4,
+7,
+10.
+
+Repair:
+
+before:
+current:
+input overwrite.
+
+Then:
+
+logical CA update.
+
+Then:
+
+all 20 hyperchecks
+recomputed.
+
+Pre-damage:
+
+1024 steps.
+
+Post-damage:
+
+32 steps.
+
+WORLD FAMILY
+
+8 worlds.
+
+Seeds:
+
+20260926059000
+through:
+20260926059007.
+
+No prior DG-1R seed reuse.
+
+DAMAGE FAMILIES
+
+A.
+LOCAL_DATA2_D6
+
+Block 5.
+
+Flip logical bit planes:
+
+0,
+1.
+
+Purpose:
+
+basic:
+two-plane:
+logical-region:
+damage.
+
+Expected:
+
+plane support for block 5:
+
+2.
+
+B.
+DISTRIBUTED_DATA2
+
+Blocks:
+
+2
+and:
+8.
+
+Flip logical planes:
+
+0,
+1
+in both.
+
+Purpose:
+
+preserve:
+DG-1R-05H:
+distributed:
+repair.
+
+Expected:
+
+each:
+damaged:
+block
+receives:
+cross-plane:
+support >=2.
+
+C.
+DATA2_PLUS_CHECK2_D6
+
+Block 5:
+logical planes:
+0,
+1.
+
+Plus:
+
+two:
+incident:
+integrity:
+faults
+
+in:
+bit plane:
+0.
+
+Purpose:
+
+preserve:
+mixed:
+logical-plus-integrity:
+repair.
+
+D.
+DATA2_PLUS_CHECK3_D7
+
+Block 2:
+logical planes:
+0,
+1.
+
+Plus:
+
+three:
+incident:
+integrity:
+faults
+
+in:
+bit plane:
+0.
+
+Purpose:
+
+preserve:
+the:
+05H:
+greedy:
+positive
+where:
+MW_UNIQUE:
+was:
+ambiguous.
+
+E.
+CHECK4_BIT0_D6
+
+No logical damage.
+
+Flip:
+
+bit plane 0
+
+in:
+four:
+incident:
+integrity:
+checks
+
+for:
+degree-6:
+block 5.
+
+Purpose:
+
+the:
+05H:
+false-repair:
+boundary.
+
+Expected:
+
+GREEDY_BASELINE
+infers:
+one:
+logical:
+plane
+at:
+block 5.
+
+Cross-plane support:
+
+1.
+
+CROSSPLANE2_GATE
+should:
+ABSTAIN.
+
+F.
+CHECK4_BIT0_D7
+
+No logical damage.
+
+Flip:
+
+bit plane 0
+
+in:
+four:
+incident:
+integrity:
+checks
+
+for:
+degree-7:
+block 2.
+
+Purpose:
+
+second:
+05H:
+false-repair:
+boundary.
+
+Expected:
+cross-plane support:
+
+1.
+
+G.
+CHECK4_BITS01_D6
+
+No logical damage.
+
+Use:
+the:
+same:
+four:
+degree-6:
+integrity:
+checks
+
+but:
+
+flip:
+both:
+bit planes:
+0
+and:
+1
+
+in:
+each:
+check.
+
+Purpose:
+
+adversarial:
+cross-plane:
+correlated-integrity:
+boundary.
+
+Expected:
+
+the:
+same:
+healthy:
+logical:
+region
+
+may:
+be:
+falsely:
+implicated
+on:
+two:
+bit planes.
+
+If:
+
+CROSSPLANE2_GATE
+repairs:
+healthy:
+logical:
+state,
+
+record:
+the:
+boundary.
+
+H.
+SINGLE_DATA1_D6
+
+Block 5.
+
+Flip:
+only:
+logical:
+bit plane:
+0.
+
+Purpose:
+
+sensitivity:
+boundary.
+
+A:
+true:
+single-bit:
+logical:
+fault
+
+provides:
+
+cross-plane support:
+
+1.
+
+CROSSPLANE2_GATE
+
+is:
+expected
+to:
+ABSTAIN.
+
+This:
+is:
+not:
+an:
+implementation:
+failure.
+
+It:
+measures:
+the:
+specificity /
+sensitivity:
+tradeoff
+created:
+by:
+the:
+confidence:
+gate.
+
+LESION ASSERTIONS
+
+Harness MUST assert:
+
+- exact logical flip count;
+- exact integrity flip count;
+- physical uniqueness;
+- no logical lesion overlaps current input-mapped logical position.
+
+PRIMARY TELEMETRY
+
+Per scenario:
+
+- inferred logical flips;
+- applied logical flips;
+- abstained inferred flips;
+- false inferred logical flips;
+- false applied logical flips;
+- per-block plane support;
+- max plane support;
+- support histogram;
+- final syndrome weight.
+
+COUNTERFACTUAL METRICS
+
+At horizons:
+
+1,
+4,
+8,
+16,
+32:
+
+- logical divergence;
+- physical divergence;
+- exact logical match.
+
+Also:
+
+- logical divergence area;
+- physical divergence area;
+- sustained exact logical recovery;
+- logical recovery time.
+
+FALSE APPLIED LOGICAL FLIP
+
+An:
+applied:
+repair:
+bit
+is:
+FALSE
+
+if:
+
+its:
+post-correction:
+logical:
+value
+
+does NOT:
+match:
+the:
+undamaged:
+counterfactual:
+logical:
+bit
+
+immediately:
+before:
+current:
+input.
+
+Decoder never sees this label.
+
+It is evaluation telemetry only.
+
+FROZEN SIGNALS
+
+CROSSPLANE_FALSE_REPAIR_SUPPRESSION
+
+TRUE
+if:
+
+CROSSPLANE2_GATE
+
+on:
+
+CHECK4_BIT0_D6
+and
+CHECK4_BIT0_D7
+
+has:
+
+false applied logical flips
+=
+0
+
+AND:
+
+logical divergence area
+=
+0
+
+while:
+
+GREEDY_BASELINE
+
+has:
+
+false applied logical flips
+>
+0
+
+on:
+at least:
+one:
+of:
+those:
+families.
+
+LOGICAL_REPAIR_PRESERVATION
+
+TRUE
+if:
+
+CROSSPLANE2_GATE
+
+has:
+
+logical divergence area median
+=
+0
+
+AND:
+
+sustained exact logical recovery
+>=0.90
+
+AND:
+
+false applied logical flip fraction
+<=0.01
+
+for:
+
+LOCAL_DATA2_D6.
+
+DISTRIBUTED_DATA2.
+
+DATA2_PLUS_CHECK2_D6.
+
+DATA2_PLUS_CHECK3_D7.
+
+CROSSPLANE_CONFIDENCE_SIGNAL
+
+TRUE
+if:
+
+CROSSPLANE_FALSE_REPAIR_SUPPRESSION
+=
+TRUE
+
+AND:
+
+LOGICAL_REPAIR_PRESERVATION
+=
+TRUE.
+
+SINGLE-BIT SENSITIVITY COST
+
+Report:
+
+SINGLE_DATA1_D6
+
+for:
+
+GREEDY_BASELINE
+versus:
+CROSSPLANE2_GATE.
+
+No:
+positive:
+single-bit:
+repair:
+criterion
+is:
+required
+for:
+the:
+cross-plane:
+gate.
+
+The:
+expected:
+tradeoff:
+
+higher:
+specificity
+
+at:
+the:
+cost
+of:
+single-plane:
+logical:
+fault:
+sensitivity.
+
+CORRELATED CROSS-PLANE BOUNDARY
+
+CHECK4_BITS01_D6
+
+is:
+the:
+frozen:
+adversarial:
+boundary.
+
+If:
+
+CROSSPLANE2_GATE
+
+false-repairs
+the:
+healthy:
+logical:
+region,
+
+report:
+
+CROSSPLANE_CORRELATED_FAILURE.
+
+No:
+post-run:
+threshold:
+change
+is:
+allowed.
+
+IMPORTANT
+
+A:
+positive:
+result
+
+would NOT:
+show:
+
+that:
+two-plane:
+support
+is:
+a:
+universal:
+fault:
+truth:
+criterion.
+
+It would show:
+
+the:
+four-bit:
+regional:
+organization
+
+contains:
+a:
+useful:
+fault-type:
+confidence:
+signal
+
+that:
+was:
+ignored
+by:
+05H's:
+independent:
+per-plane:
+decoder.
+
+A:
+failure:
+on:
+CHECK4_BITS01_D6
+
+would:
+bound:
+that:
+signal:
+
+correlated:
+integrity:
+damage
+across:
+multiple:
+bit planes
+
+can:
+imitate:
+
+multi-bit:
+logical:
+region:
+damage.
+
+That:
+would:
+justify:
+
+time,
+history,
+or:
+independent:
+topological:
+evidence
+
+as:
+the:
+next:
+confidence:
+axis.
+
+REPRODUCIBILITY
+
+Two complete 8-world sweeps.
+
+Output SHA-256 must match exactly.
+
+NO POST-RUN TUNING
+
+After the first DG-1R-05I scenario:
+
+do not alter:
+
+- hypergraph;
+- greedy inference;
+- plane support definition;
+- threshold 2;
+- lesions;
+- world family;
+- metrics;
+- classifications.
+
+PLAIN-SPEAK PRE-REGISTERED QUESTION
+
+The:
+last:
+decoder
+could:
+find:
+two:
+damaged:
+regions
+perfectly.
+
+But:
+
+four:
+bad:
+backup:
+channels
+could:
+sometimes:
+trick:
+it
+into:
+repairing:
+healthy:
+data.
+
+This:
+test
+asks:
+for:
+one:
+more:
+piece
+of:
+confidence:
+
+"Does:
+the:
+same:
+data:
+region
+look:
+damaged
+in:
+more:
+than:
+one:
+bit:
+plane?"
+
+Our:
+data:
+damage
+usually:
+hits:
+two:
+bits
+inside:
+the:
+same:
+region.
+
+The:
+bad:
+backup:
+channels
+in:
+the:
+05H:
+failure
+only:
+lied
+on:
+one:
+bit:
+plane.
+
+So:
+
+if:
+a:
+region
+is:
+only:
+accused
+on:
+one:
+plane,
+
+the:
+new:
+decoder
+will:
+refuse:
+to:
+repair:
+it.
+
+If:
+the:
+same:
+region
+is:
+independently:
+accused
+on:
+two:
+planes,
+
+the:
+decoder
+can:
+act.
+
+That:
+may:
+stop:
+the:
+false:
+repairs
+without:
+adding:
+any:
+persistent:
+memory.
+
+We:
+also:
+include:
+two:
+important:
+failure:
+tests:
+
+a:
+real:
+single-bit:
+data:
+fault
+
+and:
+
+backup:
+damage
+that:
+lies
+on:
+two:
+bit:
+planes.
+
+Those:
+will:
+show:
+exactly:
+what:
+this:
+confidence:
+rule
+can:
+and:
+cannot:
+distinguish.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
