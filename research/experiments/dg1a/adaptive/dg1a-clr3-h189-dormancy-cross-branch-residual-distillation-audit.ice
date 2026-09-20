@@ -833,3 +833,278 @@ SYNTHETIC_MEASURED_DORMANCY_CROSS_BRANCH_RESIDUAL_DISTILLATION
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — DORMANCY RESIDUAL-DISTILLATION HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H189 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H189 SANDBOX HARNESS
+
+File:
+
+h189_sleep_comp_v1.py
+
+SHA-256:
+
+c6a6145526cef24a7e23955a8270e474d908d439146499833420869f3fb9ad72.
+
+PARENT PHENOTYPE
+
+Exact H188/H187:
+
+WARP48_ROLE48_C.
+
+No:
+A/B/C
+functional state
+
+is:
+modified.
+
+DISTILLATION
+
+For:
+each capability context:
+
+128:
+unlabeled
+context coordinates.
+
+Target:
+
+full phenotype prediction
+minus:
+selected branch prediction.
+
+No:
+task target
+is:
+read.
+
+COMP6
+
+Features:
+
+1,
+x,
+y,
+x^2,
+x*y,
+y^2.
+
+Ridge:
+
+0.001.
+
+Six:
+parameters
+per:
+capability.
+
+18:
+total.
+
+COMP3
+
+Diagnostic:
+
+1,
+x,
+y.
+
+Three:
+parameters
+per:
+capability.
+
+9:
+total.
+
+ROUTING
+
+Exact H188:
+
+B/C learned routers.
+
+One selected branch
+per:
+input.
+
+Sleep compensation:
+
+added:
+only
+to:
+the selected branch.
+
+COMPUTE
+
+COMP6 learned scheduled:
+
+B-only:
+
+approximately:
+2.137%
+of:
+full.
+
+C-only:
+
+approximately:
+1.987%.
+
+Equal A/B/C:
+
+approximately:
+33.755%.
+
+Functional learned-state
+memory increase:
+
+18 / 3322
+=
+approximately:
+0.542%.
+
+No:
+physical cell
+is added.
+
+SANITY
+
+Disjoint family:
+
+20260923890000
+and:
+20260923890001.
+
+2 worlds.
+
+3 contexts / world.
+
+6 rows.
+
+Accepted sanity-output SHA-256:
+
+900c59714c1f0a8988ba474c4b77488880c9c65ddfa8584b59561fc60573b84d.
+
+Mechanical checks:
+
+- exact 3 contexts / world;
+- no:
+  task-target
+  replay;
+- no:
+  functional coefficient
+  update;
+- no:
+  router
+  update;
+- compensation:
+  fitted once
+  before:
+  switch test;
+- wake learning cost:
+  0;
+- maximum:
+  300-switch
+  prediction drift:
+  0;
+- physical cells:
+  unchanged.
+
+NON-EVIDENCE SIGNAL
+
+One sanity world:
+
+COMP6
+reduces:
+B/C residual mismatch
+into:
+approximately:
+0.9%..1.2%
+normalized error.
+
+The second:
+
+B context
+remains:
+highly:
+cross-branch dependent.
+
+Representative:
+
+full B R^2:
+approximately:
+0.905.
+
+branch-only
+normalized mismatch:
+
+approximately:
+0.129.
+
+COMP6 mismatch:
+
+approximately:
+0.145.
+
+COMP3:
+
+approximately:
+0.121.
+
+Thus:
+
+a tiny:
+quadratic
+sleep summary
+
+does NOT:
+uniformly solve:
+the hardest:
+cross-capability
+residual structure
+
+inside:
+sanity.
+
+No:
+
+- feature map;
+- parameter count;
+- ridge;
+- distillation sample count;
+- routing rule;
+- compute accounting;
+- acceptance gate
+
+was changed.
+
+PRIMARY FAMILY
+
+20260923800000..20260923800019.
+
+20 held-out worlds.
+
+3 context rows / world.
+
+60 rows.
+
+H189 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H189 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
