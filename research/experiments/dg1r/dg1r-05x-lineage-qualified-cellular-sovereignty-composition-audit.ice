@@ -810,3 +810,107 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05X CELLULAR SOVEREIGNTY COMPOSITION
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY COMPOSITION CASE.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05x_sovereignty_composition_v1.py
+
+Harness source commit:
+
+fd9d6acaf994c31ad0b16b5a0a37b1c957ecec0b.
+
+Git blob SHA:
+
+c2cb66e22d9a58cefe9f1267261011ba86be41f0.
+
+Source SHA-256:
+
+0ed846c767ce729b7a52b8d5d648fdb0fdf3073bb9b269aa47ef2882ad1858b5.
+
+Source bytes:
+
+20189.
+
+FROZEN IMPLEMENTATION
+
+The harness composes the already-closed semantic contracts from DG-1R-05Q through DG-1R-05W without retuning their thresholds.
+
+It implements:
+
+- exact FP2 / ROLE2 phenotype mapping;
+- unresolved-damage gate before health or identity authority;
+- FP2 first-shot repair contract;
+- role-preserving adaptation;
+- four-class governance provenance fixture;
+- old-role authority until complete target / peer commit;
+- lineage-qualified registry edge and seal activation;
+- copy-on-write cross-layer rollback;
+- stale role-generation rejection;
+- stale witness-lineage-generation rejection;
+- same-lineage governance fanout collapse;
+- same-lineage registry false-majority collapse;
+- one-replica-loss liveness;
+- holder rotation after sealed lineage update;
+- lower-layer abstention propagation;
+- repeated role-generation monotonicity;
+- explicit local-composition negative control;
+- full independent-collusion,
+  registry-collusion,
+  root-compromise,
+  and cross-layer correlated-forgery holdouts.
+
+LOCAL PRECHECK — NON-EVIDENCE
+
+Python implementation syntax / construction:
+
+PASS.
+
+Independent mechanical contract checks:
+
+PASS.
+
+Primary case counts:
+
+A = 36.
+B = 48.
+C = 36.
+D = 216.
+E = 72.
+F = 48.
+G = 144.
+H = 144.
+I = 36.
+J = 108.
+K committed migrations = 36 across 12 chains.
+L = 36.
+
+No primary composition result,
+authority-leak result,
+rollback result,
+generation result,
+or correlated-boundary result
+was generated before this freeze.
+
+REPRODUCIBILITY
+
+Execute two complete deterministic sweeps from this exact frozen harness.
+
+Serialized output SHA-256 must match exactly.
+
+No post-result tuning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
