@@ -1300,3 +1300,662 @@ the first held-out H165 lifetime.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — GRADUATED MICRO-ANCHOR / ESCALATION TURNOVER
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-POSITIVE PRIMARY ESCALATION / POSITIVE SECONDARY MICRO2-ONLY DISCOVERY.
+
+FINAL H165 HARNESS SHA-256
+
+69e3a195ae9485b153a7a6efba254e5b68837359f0a0f5eb022108b1d5ede808.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+54498206d44e3885b3d70b2bafa71337a537337582fdd9a7bb69f2bcf70f194c.
+
+ACCEPTED PRIMARY FAMILY
+
+20260921400000..20260921400119.
+
+PRIMARY MATRIX
+
+120 held-out condition-world lifetimes.
+
+7 policies.
+
+840 policy lifetimes.
+
+Validation:
+
+- exactly 120 unique held-out seeds;
+- exact accepted seed interval;
+- exactly seven policy rows / seed;
+- zero duplicate seed x policy rows;
+- no missing accepted seeds;
+- no post-primary threshold tuning.
+
+PRIMARY CANDIDATE
+
+MICRO2-ESCALATE.
+
+PRIMARY SAFETY
+
+Minimum group median
+FINAL GlobalFidelity:
+
+approximately:
+0.999327.
+
+Frozen target:
+>=0.98.
+
+PASS:
+8 / 8 groups.
+
+World fraction
+FINAL >=0.95:
+
+100%
+in:
+every group.
+
+PASS.
+
+Maximum group-median
+HALF-to-FINAL
+fidelity loss:
+
+approximately:
+0.000238.
+
+Frozen limit:
+0.01.
+
+PASS.
+
+COARSE ESCALATION DUTY
+
+MICRO2-ESCALATE
+median escalation duty:
+
+g=1.
+
+HOTSPOT,
+eta=0:
+0.10.
+
+HOTSPOT,
+eta=.25:
+0.25.
+
+ROAMING,
+eta=0:
+0.20.
+
+ROAMING,
+eta=.25:
+0.35.
+
+Frozen target:
+
+strictly <0.50.
+
+PASS:
+4 / 4.
+
+FINE ESCALATION DUTY
+
+g=.25.
+
+Median duty:
+
+HOTSPOT,
+eta=0:
+approximately 0.192.
+
+HOTSPOT,
+eta=.25:
+approximately 0.216.
+
+ROAMING,
+eta=0:
+approximately 0.175.
+
+ROAMING,
+eta=.25:
+approximately 0.171.
+
+Frozen target:
+<=0.15.
+
+FAIL:
+0 / 4.
+
+Thus:
+
+micro-repair
+substantially lowers:
+full escalation duty
+
+relative to:
+H164,
+
+but:
+not enough
+to satisfy:
+the frozen fine-scale
+15% ceiling.
+
+TOTAL OBSERVATION COST
+VERSUS:
+EVERY2
+
+MICRO2-ESCALATE
+median external observations:
+
+g=1:
+
+84,
+150,
+128,
+194
+
+depending on:
+regime / eta
+
+versus:
+240
+for:
+EVERY2.
+
+g=.25:
+
+1684..1970
+
+versus:
+3504.
+
+Lower than:
+EVERY2
+in:
+EVERY group.
+
+PASS.
+
+POOLED COST REDUCTION
+VERSUS:
+EVERY2
+
+g=1:
+
+approximately:
+35.36%
+fewer observations.
+
+Frozen target:
+>=20%.
+
+PASS.
+
+g=.25:
+
+approximately:
+48.38%
+fewer.
+
+Frozen target:
+>=50%.
+
+FAIL,
+narrowly:
+
+short by:
+approximately:
+1.62 percentage points.
+
+COST VERSUS:
+H164 SENTINEL2
+
+MICRO2-ESCALATE
+reduces:
+pooled total external observations
+
+relative to:
+the exact
+detection-only H164 SENTINEL2
+comparator
+
+by:
+
+g=1:
+
+approximately:
+46.28%.
+
+g=.25:
+
+approximately:
+21.54%.
+
+Frozen target:
+>=10%
+at:
+both scales.
+
+PASS.
+
+This directly confirms:
+
+REUSING
+THE CHEAP SENTINEL DATA
+AS:
+REPAIR DATA
+
+is:
+materially more efficient
+
+than:
+H164's:
+
+observe
+->
+classify
+->
+discard.
+
+LATE-LIFE SELF RECOVERY
+
+Minimum group median:
+
+approximately:
+0.9911.
+
+Frozen target:
+>=0.95.
+
+PASS.
+
+FALSE-NEGATIVE SAFETY
+
+Cycle-weighted
+non-escalated-cycle
+false-negative rate:
+
+maximum group rate:
+
+approximately:
+0.42%.
+
+Frozen limit:
+5%.
+
+PASS:
+all groups.
+
+ORACLE
+
+LOCAL-CHECKPOINT-ORACLE:
+
+FINAL fidelity
+exactly:
+1.0.
+
+PASS.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+EVERY1 baseline.
+
+2.
+MICRO2-ESCALATE
+median FINAL quality.
+
+3.
+world reliability.
+
+4.
+HALF-to-FINAL drift.
+
+5.
+coarse escalation duty.
+
+7.
+lower total observations
+than:
+EVERY2
+in:
+every group.
+
+9.
+>=10%
+cost reduction
+versus:
+H164 SENTINEL2
+at:
+both scales.
+
+10.
+late-life SelfRecovery.
+
+11.
+false-negative safety.
+
+12.
+oracle ceiling.
+
+FAIL / MIXED:
+
+6.
+fine escalation duty
+<=15%.
+
+Observed:
+approximately:
+17%..22%.
+
+8.
+pooled fine-scale
+>=50%
+observation reduction
+versus:
+EVERY2.
+
+Observed:
+approximately:
+48.38%.
+
+PRIMARY INTERPRETATION
+
+MICRO2-ESCALATE
+is:
+
+MIXED-POSITIVE.
+
+The graduated controller:
+
+CONTEXT
+->
+2-OBSERVATION MICRO-ANCHOR
+->
+OPTIONAL ESCALATION
+
+is:
+safer
+and:
+substantially more efficient
+
+than:
+
+the H164
+detection-only sentinel.
+
+But:
+
+the two-point LOO score
+still:
+over-escalates
+at:
+fine scale.
+
+SECONDARY MICRO2-ONLY RESULT
+
+The preregistered
+stronger secondary condition
+is:
+
+MICRO2-ONLY
+
+median FINAL fidelity
+>=0.98
+
+and:
+>=90%
+world reliability
+
+for:
+EVERY group.
+
+Observed:
+
+minimum group median
+FINAL fidelity:
+
+approximately:
+0.998490.
+
+World fraction
+FINAL >=0.95:
+
+100%
+in:
+every group.
+
+PASS.
+
+MICRO2-ONLY COST
+
+Exactly:
+
+2 observations
+per:
+repair cycle.
+
+Matched-turnover lifetime:
+
+g=1:
+
+40 observations.
+
+g=.25:
+
+584 observations.
+
+Relative to:
+EVERY2:
+
+g=1:
+
+40
+versus:
+240.
+
+Reduction:
+83.33%.
+
+g=.25:
+
+584
+versus:
+3504.
+
+Reduction:
+83.33%.
+
+This is:
+a stronger architectural discovery
+than:
+the primary escalation hypothesis.
+
+Under:
+the tested
+one-body-equivalent lifetime,
+
+A TWO-OBSERVATION
+FUNCTIONAL MICRO-ANCHOR
+ON EVERY REPAIR CYCLE
+
+IS SUFFICIENT
+TO PRESERVE:
+
+high:
+original-task fidelity
+
+without:
+
+full 24-observation
+functional-anchor escalation.
+
+MICRO2-ONLY GROUP MEDIANS
+
+MIXED:
+
+g=.25:
+
+median FINAL
+approximately:
+0.999935..0.999988.
+
+g=1:
+
+approximately:
+0.998490..0.999645.
+
+All:
+well above:
+the secondary threshold.
+
+IMPORTANT CAVEAT
+
+The secondary gate
+was intentionally limited to:
+
+FINAL fidelity
+and:
+world-level reliability.
+
+MICRO2-ONLY
+also shows:
+
+one accepted coarse noisy-roaming world
+with:
+FINAL fidelity
+approximately:
+0.9785,
+
+still:
+above:
+the 0.95 world-reliability threshold.
+
+Some individual worlds
+show:
+larger:
+HALF-to-FINAL
+or:
+per-cycle SelfRecovery
+variation
+
+than:
+the group medians.
+
+Therefore:
+
+H165 does NOT prove:
+
+that:
+two observations / cycle
+
+are:
+the minimal safe
+long-horizon supervision budget.
+
+It proves:
+
+that:
+full anchors
+are not required
+under:
+the tested lifetime.
+
+FINAL INTERPRETATION
+
+H165 changes:
+the architecture substantially.
+
+The emerging hierarchy is no longer:
+
+CONTEXT
+->
+SENTINEL
+->
+FULL ANCHOR.
+
+It is:
+
+CONTEXT REGENERATION
+
+->
+
+TINY
+FUNCTIONAL MICRO-ANCHOR
+
+as:
+the NORMAL repair path.
+
+Full functional anchoring
+becomes:
+
+an exception path
+
+whose necessity
+has NOT:
+been demonstrated
+by:
+H165.
+
+NEXT HIGH-LEVERAGE QUESTION
+
+Find:
+
+THE MINIMUM
+FUNCTIONAL MICRO-ANCHOR
+BUDGET.
+
+The next experiment should compare:
+
+- 0 observations / cycle;
+- 1 observation / cycle;
+- 2 observations / cycle;
+- 2 observations every 2 cycles;
+- 2 observations every 5 cycles;
+- possibly:
+  a tiny accumulated
+  functional-debt trigger.
+
+Keep:
+
+matched body-equivalent turnover.
+
+Do NOT:
+
+reintroduce:
+24-observation full anchors
+as:
+the default.
+
+NEXT:
+
+H166 —
+MINIMAL MICRO-ANCHOR
+DUTY / OBSERVATION-BUDGET
+TURNOVER AUDIT.
+
+H165 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- global retraining;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
