@@ -1978,3 +1978,641 @@ changes.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-03 NON-EVIDENCE PILOT CLOSURE — BOUNDED MULTI-TIMESCALE CELLULAR MEMORY
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+NEGATIVE D16-D32 RECOVERY /
+POSITIVE SHORT-MEMORY SLOWING SIGNAL BELOW FROZEN THRESHOLD /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+f75e7089f1ff3ac8bd55d9126c2cb7950f08feb775a1ce8e5571269eee4fefb9.
+
+CANONICAL OUTPUT
+
+RUN 1 SHA-256:
+
+7d9c0f5265f3b963fcb61c133002b1c156167e1e6100a95210fd8b5cdc7f5391.
+
+RUN 2 SHA-256:
+
+7d9c0f5265f3b963fcb61c133002b1c156167e1e6100a95210fd8b5cdc7f5391.
+
+Byte-identical:
+
+PASS.
+
+FROZEN SIGNALS
+
+SLOWING_SIGNAL:
+
+FALSE.
+
+MULTITIMESCALE_SIGNAL:
+
+FALSE.
+
+STRONG_MULTITIMESCALE_RECOVERY:
+
+FALSE.
+
+SPECIALIZATION_SIGNAL:
+
+FALSE.
+
+TEMPORAL_SUBSTRATE_CANDIDATES:
+
+NONE.
+
+FAST128_MIXED4 REFERENCE
+
+D1:
+
+0.83447265625.
+
+D4:
+
+0.55517578125.
+
+D8:
+
+0.4951171875.
+
+D16:
+
+0.4951171875.
+
+D32:
+
+0.49951171875.
+
+Memory score:
+
+0.5017903645833333.
+
+SLOW128_MIXED1
+
+D1:
+
+0.98779296875.
+
+D4:
+
+0.69189453125.
+
+D8:
+
+0.56298828125.
+
+D16:
+
+0.50146484375.
+
+D32:
+
+0.50927734375.
+
+Memory score:
+
+0.52783203125.
+
+PAIRED SLOWING EFFECT
+
+Relative to:
+FAST128_MIXED4.
+
+D1:
+
++0.12109375.
+
+D4:
+
++0.08935546875.
+
+D8:
+
++0.06396484375.
+
+D16:
+
+-0.0029296875.
+
+D32:
+
++0.00732421875.
+
+Memory score:
+
++0.02620442708333337.
+
+Interpretation:
+
+slower:
+whole-reservoir:
+evolution
+
+substantially improves:
+
+immediate
+and:
+short:
+memory
+
+but:
+
+does NOT:
+meaningfully:
+extend:
+the:
+memory horizon
+to:
+D16 /
+D32.
+
+MULTI-TIMESCALE PARTITIONS
+
+DUAL64_64_MIXED41:
+
+D8:
+
+0.521484375.
+
+D16:
+
+0.5009765625.
+
+D32:
+
+0.50439453125.
+
+TRI64_32_32_MIXED421:
+
+D8:
+
+0.51611328125.
+
+D16:
+
+0.50048828125.
+
+D32:
+
+0.49755859375.
+
+TRI32_32_64_MIXED421:
+
+D8:
+
+0.52783203125.
+
+D16:
+
+0.50439453125.
+
+D32:
+
+0.5029296875.
+
+No:
+partitioned:
+clock architecture
+
+produced:
+the:
+frozen:
+>=0.10:
+D16 /
+D32:
+gain.
+
+ROLE SPECIALIZATION
+
+SPEC32_32_64_90M182:
+
+D1:
+
+1.0.
+
+D4:
+
+0.69873046875.
+
+D8:
+
+0.52294921875.
+
+D16:
+
+0.50927734375.
+
+D32:
+
+0.49072265625.
+
+Nonlinear score:
+
+0.547616281500878.
+
+MOTIF2_12:
+
+0.6163198762591717.
+
+This:
+specialized:
+architecture
+
+creates:
+a:
+useful:
+motif:
+signal
+
+and:
+perfect:
+median:
+D1
+
+but:
+
+does NOT:
+restore:
+long memory.
+
+SPECIALIZATION_SIGNAL:
+
+FALSE
+under:
+the:
+frozen:
+joint:
+criteria.
+
+RESOURCE RESULT
+
+The:
+strongest:
+passive:
+slowing:
+method
+
+SLOW128_MIXED1
+
+uses:
+
+128:
+cell updates
+per:
+external:
+input
+
+versus:
+
+512
+for:
+FAST128_MIXED4.
+
+Thus:
+
+it:
+improves:
+D1 /
+D4 /
+D8
+
+while:
+using:
+75% fewer:
+cell updates.
+
+This is:
+a:
+real:
+efficiency:
+signal.
+
+However:
+
+long:
+memory
+remains:
+absent.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-03 sharpens:
+the:
+memory-loss:
+mechanism.
+
+The:
+reservoir
+does:
+benefit
+from:
+less:
+evolution.
+
+Therefore:
+
+"too much evolution too fast"
+
+was:
+partly:
+correct.
+
+But:
+
+simply:
+slowing:
+the:
+entire:
+state
+
+or:
+splitting:
+the:
+same:
+128 cells
+into:
+passive:
+fast /
+medium /
+slow:
+lanes
+
+is:
+not:
+enough
+to:
+preserve:
+specific:
+information
+for:
+16-32:
+external steps.
+
+The:
+problem
+is therefore:
+
+NOT ONLY:
+RATE.
+
+It is also:
+
+RETENTION:
+CONTROL.
+
+The:
+system
+needs:
+a:
+mechanism
+that:
+recognizes:
+locally useful:
+state
+
+and:
+actively:
+protects,
+refreshes,
+or:
+temporarily:
+freezes:
+that:
+state
+
+instead of:
+letting:
+every:
+trace
+decay
+under:
+the:
+same:
+passive:
+clock policy.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-04 —
+LOCAL STABILIZER /
+"SOFTWARE NANITE":
+MEMORY PROTECTION AUDIT.
+
+Core question:
+
+can:
+a:
+small:
+fixed:
+fraction
+of:
+the:
+same:
+128-cell:
+budget
+
+act as:
+local:
+maintenance /
+stabilizer:
+controllers
+
+and:
+extend:
+D16 /
+D32:
+memory
+
+without:
+turning:
+the:
+system
+into:
+a:
+conventional:
+explicit:
+history register?
+
+Fairness requirement:
+
+the:
+nanite design
+must NOT:
+receive:
+free:
+task labels,
+future:
+targets,
+or:
+unbounded:
+hidden:
+memory.
+
+The:
+same:
+128-bit:
+persistent:
+cell budget
+
+must:
+remain:
+the:
+primary:
+state budget.
+
+The:
+nanites
+may:
+only:
+alter:
+local:
+state-evolution behavior
+through:
+frozen:
+programmed:
+rules.
+
+PLAIN-SPEAK SUMMARY
+
+What did we try?
+
+We kept:
+the:
+same:
+128 cells
+
+but:
+made:
+some:
+cell groups
+run:
+fast
+and:
+others:
+slow.
+
+What happened?
+
+Slowing:
+the:
+cells
+really did:
+help:
+short-term:
+memory.
+
+The:
+slow:
+128-cell:
+reservoir
+
+remembered:
+D4
+and:
+D8
+
+better
+than:
+the:
+fast:
+one
+
+while:
+doing:
+far:
+less:
+cellular:
+work.
+
+But:
+
+D16
+and:
+D32
+were:
+still:
+basically:
+guessing.
+
+What did we learn?
+
+Yes:
+
+the:
+system
+was:
+evolving:
+too:
+fast.
+
+But:
+
+just:
+telling:
+some:
+cells
+to:
+move:
+more slowly
+
+is:
+not:
+enough.
+
+Something:
+has to:
+actively:
+protect:
+important:
+state
+from:
+being:
+mixed away.
+
+That is:
+exactly:
+where:
+the:
+software-nanite:
+idea
+fits.
+
+The:
+next:
+experiment
+will:
+test:
+whether:
+a:
+small:
+local:
+maintenance:
+population
+
+can:
+detect:
+and:
+stabilize:
+fragile:
+memory traces
+
+without:
+simply:
+adding:
+a:
+hidden:
+conventional:
+memory buffer.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
