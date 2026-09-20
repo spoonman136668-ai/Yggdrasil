@@ -1086,3 +1086,712 @@ NOT STARTED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — FINE-SCALE COGNITIVE LESION / REPAIR-BUDGET BOUNDARY
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-NEGATIVE FOR STRICT LOCAL-GENERALIZATION BOUNDARY / POSITIVE FOR GLOBAL BEHAVIORAL REPAIR SIGNAL.
+
+FINAL H176 HARNESS SHA-256
+
+4951c521d2582965b79b4c3026e847189bacf0fd41c2ec1bbecc1d350c786875.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+6dad49c6883ccbf32a6256bfa6d2a55d901795d28d967e03ef16e68e97817f97.
+
+ACCEPTED PRIMARY FAMILY
+
+20260922500000..20260922500011.
+
+PRIMARY MATRIX
+
+12 held-out learned worlds.
+
+24 target-lesion worlds.
+
+4 lesion magnitudes.
+
+2 trajectory modes.
+
+5 repair policies.
+
+960 policy lifetimes.
+
+5 cycles / lifetime.
+
+4,800 policy repair cycles.
+
+Validation:
+
+- exact 12 primary seeds;
+- exact 960 policy lifetimes;
+- exact 5 policies per:
+  seed x target x magnitude x trajectory;
+- no missing target condition;
+- no post-primary tuning.
+
+BASELINE LEARNING
+
+Median held-out R^2:
+
+A:
+approximately 0.9682.
+
+B:
+approximately 0.9719.
+
+100%
+of:
+target-lesion worlds
+
+have:
+both learned functions
+R^2 >=0.85.
+
+PASS.
+
+LOCALIZATION
+
+24 / 24
+target-lesion worlds
+
+produce:
+a causal selective
+k_star
+
+inside:
+the frozen
+10%-of-body cap.
+
+Localization success:
+
+100%.
+
+PASS.
+
+GLOBAL HELD-OUT REPAIR SIGNAL
+
+TARGET2
+at:
+BASE magnitude.
+
+SAME:
+
+cycle-1
+joint success:
+95.8%.
+
+cycle-5:
+100%.
+
+FOLLOW:
+
+cycle-1:
+95.8%.
+
+cycle-5:
+95.8%.
+
+Median:
+target recovery fraction
+
+is:
+approximately 0.99.
+
+Collateral:
+unrelated-function loss
+
+remains:
+near zero.
+
+Thus:
+
+by:
+global held-out R^2
+
+the H175
+two-observation
+cognitive micro-patch
+appears:
+robust
+at:
+BASE magnitude
+
+including:
+moving responsibility.
+
+STRICT LOCAL-GENERALIZATION RESULT
+
+H176 added:
+a lesion-local
+128-point
+evaluation-only
+validation set.
+
+This exposes:
+a different result.
+
+For:
+TARGET2,
+BASE magnitude:
+
+SAME:
+
+median local-validation
+error / ORACLE error
+
+cycle 1:
+approximately 1.376.
+
+cycle 5:
+approximately 1.515.
+
+FOLLOW:
+
+cycle 1:
+approximately 1.441.
+
+cycle 5:
+approximately 2.094.
+
+Frozen limit:
+
+<=1.25.
+
+FAIL.
+
+The repair-query MSE
+is:
+orders of magnitude smaller
+
+than:
+the lesion-local
+held-out error.
+
+Representative:
+TARGET2 BASE
+
+SAME:
+
+repair-query MSE
+approximately:
+8e-5,
+
+local-validation MSE:
+approximately:
+0.011.
+
+FOLLOW:
+
+repair-query MSE:
+approximately:
+6e-5,
+
+local-validation MSE:
+approximately:
+0.012
+at cycle 1
+
+and:
+approximately 0.015
+at cycle 5.
+
+Therefore:
+
+SPARSE LOCAL REPAIR
+CAN:
+FIT
+THE ACQUIRED
+FUNCTIONAL OBSERVATIONS
+
+AND:
+RESTORE
+GLOBAL TASK R^2
+
+WHILE:
+STILL:
+MIS-RECONSTRUCTING
+THE LOCAL FUNCTION
+AROUND:
+THE REPAIR PATCH.
+
+This is:
+the central H176 result.
+
+STRICT RELIABLE BOUNDARY
+
+Using:
+the frozen:
+joint success,
+collateral,
+repeated-repair,
+local-validation,
+and:
+local-generalization
+rules:
+
+SAME / HALF:
+
+minimum reliable budget:
+1 observation / cycle.
+
+SAME / BASE:
+
+minimum reliable budget:
+4 observations / cycle.
+
+SAME / DOUBLE:
+
+no non-oracle
+budget through:
+4
+qualifies.
+
+SAME / TRIPLE:
+
+no non-oracle
+budget qualifies.
+
+FOLLOW / HALF:
+
+minimum reliable budget:
+4 observations / cycle.
+
+FOLLOW / BASE:
+
+no non-oracle
+budget through:
+4
+qualifies.
+
+FOLLOW / DOUBLE:
+
+none.
+
+FOLLOW / TRIPLE:
+
+none.
+
+Thus:
+
+the preregistered
+<=2-observation
+BASE / DOUBLE
+boundary hypothesis
+
+is:
+NOT supported
+under:
+the stricter
+local-function
+generalization metric.
+
+FOLLOW MOVEMENT IS REAL
+
+At:
+BASE FOLLOW,
+
+median:
+previous-patch Jaccard
+
+is:
+approximately:
+0.03..0.08
+
+for:
+target-repair policies.
+
+Median centroid displacement:
+
+approximately:
+0.55..0.58
+normalized macro units.
+
+Therefore:
+
+the FOLLOW failure
+is NOT:
+a trivial
+same-patch replay.
+
+The repaired
+functional responsibility
+actually moves.
+
+COLLATERAL PRESERVATION
+
+Even:
+TARGET4
+
+does NOT:
+materially increase:
+unrelated-function damage
+
+relative to:
+TARGET2.
+
+Median cycle-5
+collateral difference:
+
+well below:
+0.001
+for:
+all:
+magnitude / trajectory cells
+
+except:
+still only:
+approximately 0.0042
+at:
+FOLLOW / TRIPLE.
+
+Thus:
+
+the failure
+is NOT:
+cross-task interference.
+
+It is:
+target-function
+local reconstruction.
+
+CONTEXT-ONLY
+
+CONTEXT0
+can:
+repair:
+HALF / SAME
+
+by:
+global behavior,
+
+but:
+fails:
+the local-validation envelope.
+
+At:
+larger lesions
+
+context-only
+fails:
+global joint reliability
+as well.
+
+This confirms:
+
+developmental locality
+remains:
+useful,
+
+but:
+is not:
+a sufficient
+functional reference.
+
+RESOURCE SIGNAL
+
+Median:
+BASE patch
+
+is only:
+
+approximately:
+4.5 cells
+
+or:
+0.14%
+of:
+the 3,209-cell body.
+
+Median macro radius:
+
+approximately:
+0.037.
+
+Thus:
+
+the strict local-generalization
+failure occurs
+
+even:
+for:
+very small
+cognitive patches.
+
+It is:
+an information
+problem,
+
+not:
+a large-repair-footprint
+problem.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+Baseline learning.
+
+2.
+Localization success.
+
+7.
+CONTEXT0
+not used:
+to define success.
+
+8.
+TARGET4
+does not:
+materially worsen collateral damage.
+
+10.
+FOLLOW
+moves:
+meaningfully.
+
+12.
+Oracle ceiling.
+
+FAIL / MIXED:
+
+3.
+TARGET2
+RELIABLE
+at:
+BASE
+under:
+SAME and FOLLOW.
+
+Fails:
+local-generalization envelope.
+
+4.
+<=2 observations
+RELIABLE
+at:
+DOUBLE / SAME.
+
+FAIL.
+
+5.
+<=2 observations
+RELIABLE
+at:
+DOUBLE / FOLLOW.
+
+FAIL.
+
+6.
+TARGET1
+RELIABLE
+at:
+HALF
+under:
+both modes.
+
+SAME:
+PASS.
+
+FOLLOW:
+FAIL.
+
+9.
+Repeated repair
+for:
+strictly reliable
+moving conditions
+
+is:
+not:
+established
+at BASE.
+
+11.
+Generalization:
+global held-out R^2 is strong,
+but:
+local-validation fidelity
+fails:
+the frozen oracle-relative envelope
+for:
+the key sparse-repair conditions.
+
+FINAL INTERPRETATION
+
+H176 is:
+
+MIXED-NEGATIVE
+
+for:
+the preregistered
+strict repair-boundary hypothesis.
+
+But:
+
+it strengthens:
+the cognitive research program
+
+by:
+finding:
+the next real bottleneck.
+
+H175 established:
+
+SELECTIVE COGNITIVE REPAIR
+CAN WORK.
+
+H176 establishes:
+
+GLOBAL TASK ACCURACY
+IS NOT:
+A SUFFICIENT
+REPAIR METRIC.
+
+A micro-patch
+must restore:
+
+THE LOCAL
+LEARNED FUNCTION
+
+not merely:
+the aggregate task score.
+
+The current:
+maximum-leverage
+1..4 point
+query design
+
+is:
+too willing
+to:
+interpolate:
+a few observed values.
+
+ARCHITECTURAL CONSEQUENCE
+
+Do NOT:
+
+return to:
+substrate repair tuning.
+
+Do NOT:
+
+increase:
+observation count
+indiscriminately.
+
+Do NOT:
+
+move yet
+to:
+capability addition
+
+without:
+resolving:
+local-function
+generalization.
+
+The next:
+cognitive experiment
+
+should keep:
+
+- g=.25;
+- dual learned functions;
+- target-only supervision;
+- BASE / DOUBLE lesions;
+- SAME / FOLLOW trajectories;
+- two-observation budget;
+
+and change:
+
+ONLY:
+HOW
+THE TWO
+FUNCTIONAL OBSERVATIONS
+ARE CHOSEN.
+
+NEXT:
+
+CLR1-H177 —
+LOCAL FUNCTION-COVERAGE
+INFORMATION-DESIGN AUDIT.
+
+Primary candidate:
+
+two:
+target-blind
+coverage-designed
+queries
+
+chosen to:
+minimize:
+worst posterior
+predictive variance
+
+over:
+an unlabeled
+lesion-local probe set.
+
+Compare:
+
+- current:
+  two maximum-leverage queries;
+- coverage / G-optimal
+  two-query design;
+- four-query leverage reference;
+- oracle.
+
+Primary question:
+
+can:
+the SAME
+two target observations
+
+restore:
+
+lesion-local
+held-out function fidelity
+
+without:
+sacrificing:
+global R^2
+or:
+unrelated learned behavior?
+
+If:
+BASE / FOLLOW
+passes:
+the strict local-generalization
+boundary
+
+with:
+two observations,
+
+proceed immediately
+to:
+
+DEVELOPMENTAL
+CAPABILITY ADDITION.
+
+H176 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- global retraining
+  as:
+  candidate architecture;
+- canonical scientific claims;
+- STAB-18-R1 execution.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
