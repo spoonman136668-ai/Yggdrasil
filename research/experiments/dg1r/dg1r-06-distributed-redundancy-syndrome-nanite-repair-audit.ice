@@ -1294,3 +1294,140 @@ REDUNDANCY.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-06 DISTRIBUTED REDUNDANCY REPAIR HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST DG-1R-06 PRIMARY DAMAGE SCENARIO.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_06_redundant_repair_v1.py
+
+Harness commit:
+
+ff1ef386ad8619ca927f2abbd48757798c2f805b.
+
+Git blob SHA:
+
+a7e84c9b2903222ff13ccee09dc50363caf414ba.
+
+Source SHA-256:
+
+8f9f78e7031172298fa19f5c74190431f35c6b6f23f0b4f1f36f1e341b17ee62.
+
+Source bytes:
+
+17606.
+
+PRE-FREEZE SANITY
+
+Python compile:
+
+PASS.
+
+Out-of-family seed:
+
+20260926999999.
+
+Input compartments:
+
+1,
+3,
+5,
+7.
+
+Observed mapped positions:
+
+9,
+26,
+45,
+57.
+
+Thus:
+
+input /
+lesion:
+separation:
+
+PASS.
+
+For:
+all:
+four:
+methods:
+
+duplicate:
+no-damage:
+trajectories
+
+remain:
+
+byte-exact:
+
+PASS.
+
+For:
+all:
+ECC:
+methods:
+
+pre-damage:
+encoding:
+syndrome-free:
+
+PASS.
+
+No:
+primary:
+DG-1R-06:
+damage scenario
+
+was:
+executed
+before:
+this freeze.
+
+FROZEN WORLD FAMILY
+
+20260926060000..20260926060007.
+
+8 worlds.
+
+FROZEN METHODS
+
+BASE64_INERT64.
+
+STRIPE_ECC_DETECT.
+
+LOCAL_ECC_REPAIR.
+
+STRIPE_ECC_REPAIR.
+
+Every method:
+
+128:
+persistent bits.
+
+Every method:
+
+64:
+dynamic worker bits.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+canonical sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
