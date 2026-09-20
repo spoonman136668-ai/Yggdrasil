@@ -732,3 +732,263 @@ SYNTHETIC_MEASURED_SANDBOX_TEMPORAL_INFORMATION_SCHEDULING_MICROPATCH
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — TEMPORAL SCHEDULING HARNESS
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H158 HELD-OUT PRIMARY EXECUTION.
+
+DISCARDED SANDBOX DRAFT
+
+A concurrent pre-primary draft:
+
+h158_temporal_schedule_frozen_v1.py
+
+is:
+NON-EVIDENCE /
+NOT THE H158 HARNESS.
+
+It differed from:
+the preregistration by:
+
+- using A-optimal rather than leverage selection;
+- omitting eta=0.25;
+- adding CONTEXT0 as an extra primary policy;
+- using the wrong sanity seed family.
+
+No H158 held-out primary world
+was executed
+under:
+that draft.
+
+FINAL H158 SANDBOX HARNESS
+
+File:
+
+h158_temporal_schedule_frozen_v2.py
+
+SHA-256:
+
+af3af9f9c1fa8b8e550578150db5a29fdea822f5dd7dce7755c0f84b5032698e.
+
+PARENT MECHANICS
+
+H151:
+3f6042716b4e5a26f41569376a4dca833f5bae5f3c053aa2280615bfadb32e37.
+
+H152:
+e8be77384de4fef8a6b8eda875575f581edfc97794d5060e57e4e3bfa7b3b4e3.
+
+H158 fixed prior:
+
+lambda=0.01.
+
+Query design:
+
+global leverage /
+greedy D-optimal proxy.
+
+Feedback cap:
+
+24.
+
+SCHEDULES
+
+EVEN2:
+2 x 12.
+
+FRONT4:
+4 x 6.
+
+FRONT6:
+6 x 4.
+
+FRONT8:
+8 x 3.
+
+FRONT12:
+12 x 2.
+
+BURST24:
+24 x 1.
+
+After:
+all 24 observations
+have been acquired,
+
+every later maturation step
+still:
+
+- performs context refinement;
+- re-solves the coupled lesion coefficients
+  using:
+  all 24 accumulated observations
+  and:
+  the current context prior.
+
+Thus:
+
+information remains:
+an active constraint
+
+after:
+acquisition stops.
+
+NOISE
+
+eta:
+
+0,
+0.25.
+
+Noise is:
+deterministic
+from:
+structural world seed,
+eta domain,
+and:
+query identity.
+
+All timing policies
+receive:
+the same observed target
+for:
+the same query
+inside:
+one condition-world.
+
+COMMON STRUCTURAL WORLDS
+
+The same structural seed
+is evaluated
+at:
+both eta values.
+
+Thus:
+
+noise-class comparisons
+share:
+
+- colony;
+- learned field;
+- lesion;
+- membership schedule;
+- candidate query geometry;
+- evaluation queries.
+
+SANITY
+
+Structural seed family:
+
+20260920790000...
+
+140 structural worlds.
+
+280 condition-worlds.
+
+1,960 policy-condition evaluations.
+
+Mechanical checks:
+
+- exactly 7 policies / condition;
+- all sanity conditions complete;
+- zero query-set hash mismatches
+  among:
+  EVEN2,
+  FRONT4,
+  FRONT6,
+  FRONT8,
+  FRONT12,
+  BURST24;
+- all non-oracle policies acquire:
+  exactly 24 observations;
+- no policy modifies:
+  surviving original coefficients;
+- no functionally-trivial sanity world observed.
+
+NON-EVIDENCE SIGNAL
+
+Representative MIXED FOUR-PATCH sanity:
+
+2%,
+eta=0:
+
+EVEN2 median T90:
+5.
+
+FRONT6 / FRONT8:
+4.
+
+2%,
+eta=0.25:
+
+EVEN2:
+5.
+
+FRONT8:
+4.
+
+5%,
+eta=0:
+
+EVEN2:
+6.
+
+FRONT4..BURST24:
+approximately 5.
+
+5%,
+eta=0.25:
+
+EVEN2:
+6.
+
+FRONT4..BURST24:
+approximately 5.
+
+Median final recovery
+remained:
+essentially unchanged
+
+inside:
+these representative sanity cells.
+
+No:
+schedule,
+threshold,
+lambda,
+noise level,
+sample size,
+or:
+acceptance gate
+
+was changed
+from:
+sanity outcomes.
+
+PRIMARY STRUCTURAL FAMILY
+
+20260920700000..20260920701799.
+
+1,800 held-out structural worlds.
+
+3,600 eta condition-worlds.
+
+25,200 policy-condition evaluations.
+
+H158 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H158 condition-world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
