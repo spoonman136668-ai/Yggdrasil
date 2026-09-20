@@ -1120,3 +1120,144 @@ the first held-out H181 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY PROVENANCE CORRECTION 01 — H181 SEED-FAMILY ROLLOVER
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE ACCEPTED H181 PRIMARY INTERPRETATION.
+
+DISCOVERY
+
+After:
+the H181 harness
+was frozen,
+
+the shared sandbox
+was found to contain:
+
+pre-existing:
+H181 primary output files
+
+for:
+portions of:
+the originally declared family
+
+20260923000000..20260923000019
+
+that were produced by:
+
+a DIFFERENT
+stale H181 harness
+
+with:
+a different:
+8-policy schema.
+
+The stale rows
+were NOT:
+
+the frozen:
+be0db4e7e4a68a4da324905456d50db3453742941640b6bce5531248ba576c45
+
+H181 harness.
+
+No:
+stale H181 scientific metrics
+
+were inspected
+before:
+this correction.
+
+Four:
+worlds
+from:
+the frozen harness
+
+were also:
+executed
+inside:
+the original family
+
+before:
+the collision
+was discovered.
+
+To preserve:
+strict held-out
+primary provenance,
+
+the ENTIRE original
+H181 primary family:
+
+20260923000000..20260923000019
+
+is:
+CONTAMINATED /
+NON-EVIDENCE.
+
+No row
+from:
+that family
+
+may:
+enter:
+H181 acceptance.
+
+SCIENTIFIC DISPOSITION
+
+This is:
+a provenance-only
+seed rollover.
+
+No:
+
+- k-means rule;
+- seed map;
+- coverage geometry;
+- daughter count;
+- learned gate;
+- hard gate;
+- daughter fit;
+- task;
+- sample size;
+- policy;
+- acceptance gate
+
+changes.
+
+REPLACEMENT H181 PRIMARY FAMILY
+
+20260923100000
+through:
+20260923100019.
+
+Repository search
+and:
+sandbox search
+
+found:
+no prior use
+of:
+the 202609231...
+family
+
+at:
+this correction.
+
+The frozen harness remains:
+
+be0db4e7e4a68a4da324905456d50db3453742941640b6bce5531248ba576c45.
+
+H181 ACCEPTED PRIMARY STATUS
+
+NOT STARTED
+on:
+the replacement family.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
