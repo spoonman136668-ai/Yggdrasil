@@ -1073,3 +1073,502 @@ SYNTHETIC_MEASURED_SANDBOX_LONG_HORIZON_COGNITIVE_TURNOVER
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — RECONSTRUCTED LONG-HORIZON TURNOVER HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H161 HELD-OUT PRIMARY EXECUTION.
+
+RUNTIME RECOVERY NOTE
+
+The earlier H161 sandbox harness
+did not survive:
+the runtime transition.
+
+No H161 held-out primary lifetime
+had been executed.
+
+The harness was therefore:
+reconstructed
+
+from:
+
+- the accepted H160
+  resolution-invariant field mechanics;
+- the accepted H159
+  START50 interleaving mechanics;
+- this H161 preregistration.
+
+The reconstruction was tested only on:
+the disjoint H161 sanity family
+
+before:
+this freeze.
+
+FINAL H161 SANDBOX HARNESS
+
+File:
+
+h161_turnover_reconstructed_v1.py
+
+SHA-256:
+
+ae89e645e9f00f33a581c05298a0b2e930b450bbc9a55f0e0f46f87de86a8248.
+
+WORLD / BODY REALIZATION
+
+Cell scales:
+
+g =
+1.00,
+0.50,
+0.25.
+
+R(g) =
+round(
+8 / g
+).
+
+Body:
+integer lattice disk.
+
+Continuous target field:
+
+exact H160
+SMOOTH / MIXED
+macro-anchor construction.
+
+Evaluation:
+
+256 fixed macro query points
+per:
+lifetime.
+
+REPAIR EVENT
+
+Damage:
+
+f0=0.05.
+
+beta=2.
+
+damage count:
+
+ceil(
+N(g) * 0.05 * g^2
+).
+
+Thus:
+approximately 10..11 cells / event.
+
+ROAMING:
+
+new compact macro-center
+each cycle
+inside:
+normalized radius 0.65.
+
+HOTSPOT:
+
+one macro hotspot
+inside:
+radius 0.50;
+
+cycle center =
+hotspot
++
+Gaussian jitter
+sd=0.08,
+
+rejected outside:
+radius 0.75.
+
+MEMBERSHIP
+
+H150/H151 Moore-frontier repair.
+
+p=0.50.
+
+Fresh deterministic schedule
+per:
+world seed x cycle.
+
+CONTEXT
+
+New cell:
+
+mean
+of:
+currently live Moore-neighbor
+mutable coefficients.
+
+Every repair / maturation step:
+
+regenerated lesion cells
+receive:
+one synchronous
+
+0.50 current
++
+0.50 live-neighbor mean
+
+context refinement.
+
+Surviving cells:
+
+immutable
+inside:
+that repair cycle.
+
+FUNCTIONAL FEEDBACK
+
+64 lesion-local candidate queries
+per:
+cycle.
+
+Query generation:
+
+- choose one lesion member;
+- center on:
+  its normalized macro coordinate;
+- Gaussian jitter:
+  sd=0.12;
+- reject outside:
+  unit disk.
+
+Query design:
+
+global leverage /
+greedy D-optimal proxy.
+
+lambda:
+
+0.01.
+
+Maximum selected queries:
+
+24.
+
+Batch:
+
+6 observations / active step.
+
+The leverage sequence:
+
+uses:
+full declared lesion geometry
+
+and:
+basis geometry only.
+
+No target value
+enters:
+query selection.
+
+SERIAL24:
+
+functional calibration begins
+after:
+100%
+membership return.
+
+INTERLEAVED24:
+
+functional calibration begins
+when:
+restored lesion membership
+reaches:
+50%.
+
+At:
+each active step:
+
+all currently regenerated lesion coefficients
+are:
+joint variables.
+
+All acquired feedback
+is reused
+as:
+the variable domain expands.
+
+Surviving coefficients
+remain:
+fixed.
+
+FEEDBACK NOISE
+
+A deterministic standard-normal
+noise potential
+
+is common by:
+
+world seed,
+cycle,
+eta,
+feedback-query index.
+
+Per:
+the H161 declared noise definition,
+
+the potential is scaled
+inside each policy by:
+
+eta
+*
+sqrt(
+MSE(
+that policy's current lesioned output,
+Y_target
+)
+).
+
+Thus:
+
+noise potentials
+are common-world,
+
+while:
+the declared current-lesion scaling
+can differ slightly
+after policies accumulate:
+different historical drift.
+
+No:
+true lost coefficient
+or:
+held-out evaluation target
+
+enters:
+non-oracle repair.
+
+LOCAL-CHECKPOINT-ORACLE
+
+On:
+membership return,
+
+restore:
+the immutable original
+w_target coefficient
+
+for:
+that returned cell.
+
+No global reset.
+
+Oracle remains:
+evaluation ceiling only.
+
+PERSISTENT STATE
+
+Every non-oracle policy:
+
+carries:
+its repaired coefficient vector
+
+directly into:
+the next cycle.
+
+There is:
+no:
+global reset,
+target-state reset,
+or:
+checkpoint restore.
+
+GLOBAL FIDELITY
+
+After:
+every cycle:
+
+1 -
+MSE(
+current evaluation output,
+immutable Y_target
+)
+/
+Var(
+Y_target
+).
+
+SELF RECOVERY
+
+Per cycle:
+
+1 -
+MSE(
+post-repair output,
+pre-lesion policy output
+)
+/
+MSE(
+lesioned output,
+pre-lesion policy output
+).
+
+ABSOLUTE ERROR EXPOSURE
+
+Accumulated over:
+
+- the immediate lesion state;
+- every membership-repair step;
+- every post-membership maturation step
+
+as:
+
+MSE(
+current output,
+Y_target
+)
+/
+Var(
+Y_target
+).
+
+TURNOVER
+
+Track:
+
+- total cell-replacement events;
+- unique cells touched;
+- body-equivalent turnover;
+- maximum repeat count;
+- >=2,
+  >=5,
+  >=10
+  replacement fractions.
+
+SANITY
+
+Disjoint family:
+
+20260921090000...
+
+12 representative lifetimes.
+
+48 policy lifetimes.
+
+40 repair cycles each.
+
+Mechanical checks:
+
+- exactly four policies / sanity lifetime;
+- LOCAL-CHECKPOINT-ORACLE
+  final fidelity:
+  exactly 1.0
+  in every sanity lifetime;
+- SERIAL24 / INTERLEAVED24
+  max observations per cycle:
+  24;
+- persistent mutable state
+  carried across:
+  all 40 cycles;
+- no target coefficient
+  entered:
+  non-oracle repair;
+- no global state reset.
+
+NON-EVIDENCE SCIENTIFIC SIGNAL
+
+MIXED,
+g=1,
+ROAMING,
+eta=0:
+
+CONTEXT-ONLY
+final GlobalFidelity:
+
+approximately:
+0.817.
+
+SERIAL24:
+
+approximately:
+0.99996.
+
+INTERLEAVED24:
+
+approximately:
+0.99996.
+
+MIXED,
+g=1,
+HOTSPOT,
+eta=0:
+
+maximum single-cell
+replacement count:
+
+approximately:
+40.
+
+INTERLEAVED24
+final GlobalFidelity:
+
+approximately:
+0.99999.
+
+MIXED,
+g=0.25,
+HOTSPOT:
+
+maximum single-cell
+replacement count:
+
+approximately:
+12
+in:
+the representative sanity lifetimes,
+
+with:
+INTERLEAVED24
+final GlobalFidelity
+approximately:
+1.0.
+
+These sanity outputs are:
+
+NON-EVIDENCE.
+
+No:
+
+- cycle count;
+- f0;
+- beta;
+- cell scale;
+- turnover regime;
+- lambda;
+- feedback budget;
+- noise level;
+- acceptance gate
+
+was changed.
+
+PRIMARY FAMILY
+
+20260921000000..20260921000719.
+
+720 held-out condition-world lifetimes.
+
+4 policies.
+
+2,880 policy lifetimes.
+
+115,200 repair cycles.
+
+H161 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H161 lifetime.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
