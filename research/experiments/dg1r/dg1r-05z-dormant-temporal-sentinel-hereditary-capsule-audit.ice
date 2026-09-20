@@ -369,3 +369,88 @@ then the mechanism starts to look much more like a compact hereditary record tha
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05Z TEMPORAL SENTINEL / HEREDITARY CAPSULE
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY TEMPORAL CASE.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05z_temporal_sentinel_capsule_v1.py
+
+Harness source commit:
+
+973f76d1d5de7867f431cbc30f4cc0713bbb6b59.
+
+Git blob SHA:
+
+86f0c26797ec06dcdc2983305caba8bfee5c7645.
+
+Source SHA-256:
+
+2b5d7a66e46db2174c311ef877b2ee00285b14575e8943f11dede9a89f6361ad.
+
+Source bytes:
+
+19374.
+
+FROZEN IMPLEMENTATION
+
+The harness implements:
+
+- legitimate generations 0 through 6;
+- temporal cohorts at generations 0, 2, and 4;
+- three sealed sentinels per cohort;
+- two pairwise-disjoint provenance roots required to establish one temporal anchor;
+- newest-valid-cohort-first escalation;
+- no fallback past a contradictory valid newer cohort;
+- compact hereditary capsule fields checkpoint_id, generation, role, FP2, causal_cursor;
+- full dormant-cell representation with additional synthetic internal state;
+- exact full-cell versus capsule authorization equivalence audit;
+- dormant non-voting semantics;
+- catch-up-before-vote semantics;
+- silent-current-state mutation detection;
+- sealed-checkpoint rewrite detection;
+- incomplete-history rejection;
+- older-cohort fallback only when a newer cohort lacks quorum;
+- one-sentinel tamper tolerance;
+- same-root holder fanout collapse;
+- naive exact-snapshot-veto negative control;
+- repeated hibernate/reactivate cycles;
+- corruption-before-seal, archive-quorum forgery, causally valid false descendant, and complete-event-omission holdouts.
+
+LOCAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+No primary temporal result,
+authorization result,
+equivalence result,
+or holdout result
+was generated from the frozen GitHub bytes before this freeze.
+
+REPRODUCIBILITY
+
+Execute two complete deterministic sweeps from this exact frozen harness.
+
+Serialized output SHA-256 must match exactly.
+
+No post-result tuning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
