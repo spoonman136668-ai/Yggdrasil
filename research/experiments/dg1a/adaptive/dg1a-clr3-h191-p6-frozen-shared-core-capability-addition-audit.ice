@@ -781,3 +781,746 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL H191-P6 NON-EVIDENCE PILOT CLOSURE — FROZEN SHARED-CORE CAPABILITY ADDITION
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+MIXED-NEGATIVE FOR INDEFINITE DECODER-ONLY ADDITION /
+FIRST DEVELOPMENTAL SHARED-CORE CAPACITY BOUNDARY FOUND /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+8460bdef124a1d42f9e338249fbbbf99c88e85494bea35a56ecc7530cfc1d31e.
+
+CANONICAL OUTPUT
+
+RUN 1 SHA-256:
+
+0843acb45a6114e5759dfdf7b1f65409f64b331cf8a02e21c0ab0e8ae62e6c11.
+
+RUN 2 SHA-256:
+
+0843acb45a6114e5759dfdf7b1f65409f64b331cf8a02e21c0ab0e8ae62e6c11.
+
+Byte-identical:
+
+PASS.
+
+CORE3
+
+Initial:
+three-capability:
+shared core.
+
+Frozen-core
+median world-mean NMSE:
+
+0.002554091413544949.
+
+Joint-refit:
+
+identical.
+
+Support overlap:
+
+8 / 8.
+
+Jaccard:
+
+1.0.
+
+Status:
+
+ROBUST.
+
+CAP4 — FIRST NEW CAPABILITY
+
+Frozen-core
+median world-mean NMSE:
+
+0.044062030774989956.
+
+Joint-refit:
+
+0.007363538840224595.
+
+Median world-mean gap:
+
+0.03735983848021791.
+
+New-capability:
+frozen-core
+median NMSE:
+
+0.15927656660615858.
+
+New-capability gap
+versus joint refit:
+
+0.15496358662935866.
+
+Status:
+
+TRANSITION.
+
+Core-vs-joint:
+exact candidate overlap median:
+
+1 / 8.
+
+Jaccard:
+
+0.06666666666666667.
+
+Thus:
+
+the first:
+new capability
+
+already:
+creates:
+strong:
+shared-geometry pressure.
+
+CAP5
+
+Frozen-core
+median world-mean:
+
+0.0507423412319613.
+
+Joint-refit:
+
+0.006669618175332484.
+
+Median gap:
+
+0.044072723056628814.
+
+New-capability frozen NMSE:
+
+0.05481606225760664.
+
+New-capability gap:
+
+0.052096920873508555.
+
+Status:
+
+TRANSITION.
+
+Core-vs-joint support overlap median:
+
+0 / 8.
+
+Jaccard:
+
+0.
+
+CAP6
+
+Frozen-core
+median world-mean:
+
+0.059225581850206876.
+
+Joint-refit:
+
+0.010629806932442275.
+
+Median gap:
+
+0.05086026419532064.
+
+New-capability frozen NMSE:
+
+0.17593439405418443.
+
+New-capability gap:
+
+0.15847789011055874.
+
+Status:
+
+OVER-CAPACITY.
+
+This is:
+
+the first:
+formal:
+preregistered:
+over-capacity stage.
+
+CAP8
+
+Frozen-core
+median world-mean:
+
+0.05748948676387023.
+
+Joint-refit:
+
+0.014068516960071588.
+
+Median gap:
+
+0.04581932648746955.
+
+New-capability frozen NMSE:
+
+0.057973797804671545.
+
+New-capability gap:
+
+0.046554969832528395.
+
+Stage-local classification:
+
+TRANSITION.
+
+Important:
+
+this does NOT:
+mean:
+the frozen core:
+recovered
+after:
+CAP6.
+
+CAP8's:
+newly added:
+capabilities 6/7
+
+are:
+less mismatched
+than:
+capability 5
+in:
+this seed family,
+
+while:
+the previously accumulated:
+badly represented capability
+remains:
+present.
+
+Median:
+frozen-core:
+world worst NMSE
+at:
+CAP8:
+
+0.26018594904606646.
+
+Thus:
+
+the:
+developmental path
+remains:
+materially impaired.
+
+PRESERVATION RESULT
+
+Across:
+all stages:
+
+old decoder
+maximum absolute change:
+
+0.
+
+Old capability:
+prediction drift:
+
+0.
+
+PASS:
+exact.
+
+This is:
+important.
+
+Decoder-only addition:
+
+does:
+exactly preserve:
+all:
+previous capability state.
+
+The failure is:
+
+NOT:
+catastrophic forgetting.
+
+The failure is:
+
+INSUFFICIENT:
+SHARED GEOMETRY
+FOR:
+NEW CAPABILITIES.
+
+SUPPORT PRESSURE
+
+Median exact:
+CORE3-vs-joint support overlap:
+
+CORE3:
+8.
+
+CAP4:
+1.
+
+CAP5:
+0.
+
+CAP6:
+0.
+
+CAP8:
+0.
+
+The:
+joint optimum
+therefore:
+wants:
+substantial:
+geometry reorganization
+
+almost:
+immediately
+after:
+the original:
+three-capability core.
+
+This is:
+direct mechanical evidence
+against:
+
+INDEFINITE:
+FULLY FROZEN:
+SHARED SUPPORT.
+
+MEMORY / COMPUTE
+
+Candidate developmental path:
+
+CORE3:
+24 decoder scalars.
+
+CAP4:
+32.
+
+CAP5:
+40.
+
+CAP6:
+48.
+
+CAP8:
+64.
+
+Geometry growth:
+
+0.
+
+Per-query residual compute:
+
+16.
+
+These:
+resource targets
+are:
+excellent,
+
+but:
+
+prediction quality
+does NOT:
+remain:
+within:
+the frozen:
+developmental reuse bounds.
+
+FINAL TECHNICAL INTERPRETATION
+
+P6 identifies:
+the next architectural requirement.
+
+A:
+shared coordination core
+
+can:
+support:
+multiple capabilities
+
+and:
+P5 showed:
+an 8-factor core
+can:
+serve:
+up to 8 capabilities
+
+when:
+the core
+is:
+recruited jointly.
+
+But:
+
+a core
+formed:
+using:
+only:
+the first 3 capabilities
+
+cannot:
+remain:
+completely frozen
+
+while:
+arbitrary:
+later capabilities
+join.
+
+Therefore:
+
+Yggdrasil should NOT:
+treat:
+shared coordination geometry
+
+as:
+permanently immutable.
+
+Instead:
+
+shared geometry
+must:
+be allowed:
+bounded:
+developmental growth.
+
+The correct next mechanism is:
+
+MICROPATCHED:
+SHARED-CORE EXPANSION.
+
+Do NOT:
+
+replace:
+the old 8 factors.
+
+Do NOT:
+
+retrain:
+old factors.
+
+Do NOT:
+
+refit:
+old decoders.
+
+Instead:
+
+when:
+a new capability
+cannot:
+fit:
+the old shared core,
+
+allow:
+
+1
+or:
+2
+
+new:
+fixed-dictionary factors
+
+to:
+be recruited
+
+from:
+the:
+same:
+parent-center
+x
+fixed-scale
+dictionary.
+
+Then:
+
+- freeze:
+  the new factors;
+- learn:
+  the new capability decoder
+  across:
+  old + new factors;
+- extend:
+  old capability decoders
+  with:
+  ZERO coefficients
+  for:
+  new factors
+  initially;
+- verify:
+  old predictions
+  remain:
+  exact;
+- test:
+  whether:
+  small:
+  incremental:
+  factor growth
+  repairs:
+  the new capability.
+
+This is:
+
+the:
+shared-core analogue
+of:
+bounded:
+cellular micropatching.
+
+NEXT JUSTIFIED EXPERIMENT
+
+H191-P7 —
+BOUNDED:
+SHARED-CORE:
+FACTOR MICROPATCH
+AUDIT.
+
+Start:
+from:
+CORE3.
+
+At:
+CAP4 failure:
+
+compare:
+
+PATCH0:
+decoder-only.
+
+PATCH1:
+add:
+one:
+new factor.
+
+PATCH2:
+add:
+two:
+new factors.
+
+Old:
+8 factors:
+frozen.
+
+Old:
+capability decoders:
+frozen,
+extended:
+with:
+zeros
+for:
+new factors.
+
+Recruit:
+new factors
+using:
+ONLY:
+the:
+new capability's:
+unlabeled:
+residual distillation error
+against:
+the frozen core.
+
+No:
+old capability:
+task target
+or:
+functional refit.
+
+Primary question:
+
+can:
+one or two:
+incremental:
+shared factors
+
+repair:
+CAP4
+
+while:
+
+old predictions:
+remain:
+exact
+
+and:
+shared geometry
+grows:
+only:
+12.5%
+or:
+25%
+relative to:
+the original:
+8-factor core?
+
+PLAIN-SPEAK SUMMARY
+
+What did we try?
+
+We built:
+the shared core
+using:
+only:
+the first three capabilities.
+
+Then:
+we locked it.
+
+After that,
+new capabilities
+were only allowed:
+to learn:
+their own:
+eight-number decoder.
+
+What happened?
+
+The old capabilities
+were preserved:
+perfectly.
+
+Nothing old moved.
+Nothing old drifted.
+
+But:
+the new capabilities
+quickly:
+ran out of:
+useful geometry.
+
+The fourth capability
+already:
+struggled.
+
+By:
+the sixth capability,
+the frozen core
+was:
+formally:
+over capacity.
+
+Did it work?
+
+Partly.
+
+The:
+preservation side
+worked:
+perfectly.
+
+The:
+indefinite growth side
+did not.
+
+What did we actually learn?
+
+The shared core
+can be:
+stable,
+
+but:
+it cannot:
+stay:
+completely:
+frozen forever.
+
+New capabilities
+sometimes:
+need:
+new shared geometric features,
+not:
+just:
+new decoder numbers.
+
+Why does it matter?
+
+This tells us:
+what kind of growth
+Yggdrasil needs.
+
+We do NOT:
+need:
+to rebuild:
+the organism
+every time.
+
+But:
+we also cannot:
+pretend:
+the original:
+coordination structure
+will:
+fit:
+everything forever.
+
+The likely:
+middle path
+is:
+small:
+local:
+structural patches.
+
+What should we try next?
+
+When:
+CAP4
+does not fit,
+
+let:
+the organism
+grow:
+one
+or:
+two:
+new shared factors.
+
+Do not:
+move:
+the old eight.
+
+Do not:
+retrain:
+old capabilities.
+
+If:
+that tiny patch
+repairs:
+the newcomer
+
+while:
+everything old
+remains:
+exact,
+
+we will have:
+a much stronger:
+developmental growth mechanism.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
