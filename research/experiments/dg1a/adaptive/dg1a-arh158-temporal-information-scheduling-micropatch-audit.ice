@@ -1249,3 +1249,527 @@ NOT STARTED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — TEMPORAL INFORMATION SCHEDULING
+
+DATE:
+2026-09-19.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-NEGATIVE FOR PREREGISTERED FRONT-LOAD MAGNITUDE / POSITIVE LATENCY SIGNAL.
+
+FINAL PINNED HARNESS SHA-256
+
+af3af9f9c1fa8b8e550578150db5a29fdea822f5dd7dce7755c0f84b5032698e.
+
+ACCEPTED PRIMARY STRUCTURAL FAMILY
+
+20260920700000..20260920701799.
+
+PRIMARY MATRIX
+
+1,800 held-out structural worlds.
+
+2 feedback-noise classes.
+
+3,600 condition-worlds.
+
+7 policies.
+
+25,200 policy-condition evaluations.
+
+Validation:
+
+- exactly 1,800 unique structural seeds;
+- exactly 3,600 seed x eta conditions;
+- exactly seven policy rows / condition;
+- zero functionally-trivial worlds;
+- zero final query-set hash mismatches
+  among:
+  EVEN2,
+  FRONT4,
+  FRONT6,
+  FRONT8,
+  FRONT12,
+  BURST24;
+- all timing policies consume:
+  the same 24 final query identities;
+- no post-primary parameter tuning.
+
+EVEN2 BASELINE
+
+MIXED pooled geometry.
+
+eta=0:
+
+1%:
+median final recovery 0.9973.
+T90-world fraction 96.0%.
+
+2%:
+0.9916.
+97.5%.
+
+5%:
+0.9952.
+100%.
+
+eta=0.25:
+
+1%:
+0.9972.
+95.5%.
+
+2%:
+0.9904.
+97.5%.
+
+5%:
+0.9936.
+100%.
+
+Baseline quality / reliability gates:
+
+PASS.
+
+FOUR-PATCH TEMPORAL RESULT
+
+MIXED eta=0.
+
+Median functional T90:
+
+1%:
+EVEN2 4.
+FRONT4 3.
+FRONT6 3.
+FRONT8 3.
+FRONT12 3.
+BURST24 3.
+
+2%:
+EVEN2 6.
+FRONT4 5.
+FRONT6 5.
+FRONT8 5.
+FRONT12 4.
+BURST24 4.
+
+5%:
+EVEN2 6.
+FRONT4 5.5.
+FRONT6 5.
+FRONT8 5.
+FRONT12 5.
+BURST24 5.
+
+MIXED eta=0.25.
+
+1%:
+EVEN2 4.
+FRONT4 3.
+FRONT6 3.
+FRONT8 3.
+FRONT12 3.
+BURST24 3.
+
+2%:
+EVEN2 6.
+FRONT4 5.
+FRONT6 5.
+FRONT8 5.
+FRONT12 4.
+BURST24 4.
+
+5%:
+EVEN2 6.
+FRONT4 5.
+FRONT6 5.
+FRONT8 5.
+FRONT12 5.
+BURST24 5.
+
+Thus:
+
+earlier evidence
+does:
+reduce latency.
+
+But:
+
+FRONT4,
+FRONT6,
+and:
+FRONT8
+
+reach:
+the preregistered >=20%
+median-T90 improvement
+
+in only:
+1 / 3
+damage fractions
+per noise class.
+
+Required:
+2 / 3
+for:
+both eta classes.
+
+FAIL.
+
+RELIABILITY
+
+For:
+all MIXED
+eta x damage groups,
+
+front-loaded policies
+retain:
+essentially the same
+T90-world fraction
+as:
+EVEN2.
+
+No moderate schedule
+loses:
+>3 percentage points.
+
+PASS.
+
+FINAL RECOVERY
+
+Median final recovery
+is:
+effectively invariant
+across:
+the temporal policies.
+
+No moderate schedule
+loses:
+>0.02
+relative to:
+EVEN2.
+
+PASS.
+
+FUNCTIONAL DOWNTIME
+
+FOUR-PATCH
+median downtime reduction
+relative to:
+EVEN2.
+
+FRONT4:
+
+>=15%
+in:
+1 / 6
+eta x damage groups.
+
+FRONT6:
+
+2 / 6.
+
+FRONT8:
+
+2 / 6.
+
+Required:
+
+4 / 6
+for:
+the same qualifying
+moderate schedule.
+
+FAIL.
+
+Diagnostic extremes:
+
+FRONT12
+and:
+BURST24
+
+provide:
+larger latency / downtime reductions
+
+without:
+material quality loss.
+
+But:
+
+even these extremes
+do not establish:
+the preregistered
+moderate-schedule
+downtime gate.
+
+NO TEMPORAL QUALITY PENALTY
+
+The feared failure:
+
+early evidence
+being erased by:
+later context maturation
+
+is:
+NOT observed.
+
+Because:
+
+accumulated functional evidence
+remains:
+an active constraint
+and:
+the lesion is re-solved
+after:
+each later context step,
+
+front-loaded correction
+remains stable.
+
+SMOOTH CONTROL
+
+Across:
+1%..5%
+and:
+eta=0 / 0.25,
+
+EVEN2,
+FRONT8,
+and:
+BURST24
+
+all retain:
+median final recovery
+approximately:
+0.9990..0.9998.
+
+No smooth-state destabilization.
+
+CHECKPOINT-ORACLE
+
+Remains:
+the final-recovery ceiling
+at:
+1.0.
+
+PRIMARY ACCEPTANCE REVIEW
+
+PASS:
+
+1.
+EVEN2 final-quality baseline.
+
+2.
+EVEN2 T90 reliability baseline.
+
+4.
+Front-loading does not:
+materially reduce reliability.
+
+5.
+Front-loading does not:
+materially reduce final recovery.
+
+7.
+Timing-only query identity control.
+
+8.
+SMOOTH quality.
+
+9.
+ORACLE ceiling.
+
+FAIL:
+
+3.
+Moderate front-loading
+does not reach:
+the frozen >=20%
+FOUR-PATCH T90 reduction
+in:
+2 / 3
+damage fractions
+for:
+each noise class.
+
+6.
+Moderate front-loading
+does not reach:
+the frozen >=15%
+downtime reduction
+in:
+4 / 6
+eta x damage groups.
+
+FINAL INTERPRETATION
+
+H158 is:
+
+MIXED-NEGATIVE
+for:
+the preregistered
+front-loading effect size.
+
+But:
+
+the directional result
+is:
+clean and useful.
+
+EARLIER INFORMATION
+DOES:
+HELP.
+
+It does so:
+
+- without changing:
+  final query content;
+- without increasing:
+  observation count;
+- without reducing:
+  reliability;
+- without reducing:
+  final recovery;
+- without becoming fragile
+  at:
+  eta=0.25.
+
+The reason H158
+does not become:
+a strong positive
+
+is:
+a LATENCY FLOOR.
+
+For:
+FOUR-PATCH MIXED worlds,
+
+membership completion itself
+typically consumes:
+
+approximately:
+2 steps
+at:
+1%,
+
+3 steps
+at:
+2%,
+
+and:
+4..5 steps
+at:
+5%.
+
+After:
+membership completion,
+
+front-loaded policies
+often reach:
+functional T90
+
+within:
+the first:
+post-membership step.
+
+Thus:
+
+there is:
+little remaining
+post-membership latency
+for:
+temporal scheduling alone
+to remove.
+
+ARCHITECTURAL CONSEQUENCE
+
+The next experiment
+should NOT:
+
+increase:
+the feedback budget,
+
+or:
+front-load:
+more aggressively.
+
+H158 indicates:
+
+the structural / functional pipeline
+is now:
+serially gated.
+
+Current order:
+
+1.
+finish:
+membership regeneration;
+
+2.
+then:
+begin:
+functional evidence correction.
+
+The next high-leverage question is:
+
+CAN
+FUNCTIONAL CALIBRATION
+BEGIN
+WHILE:
+MEMBERSHIP IS STILL
+REGENERATING?
+
+That would overlap:
+
+STRUCTURAL REGENERATION
+
+with:
+
+FUNCTIONAL SPECIALIZATION
+RECOVERY.
+
+NEXT SCOPED EXPERIMENT
+
+H159 —
+INTERLEAVED STRUCTURAL-FUNCTIONAL
+MICRO-PATCH REGENERATION.
+
+Primary direction:
+
+- same lambda=0.01;
+- same 24-observation cap;
+- same leverage query design;
+- permit feedback only for:
+  currently regenerated lesion support;
+- progressively expand:
+  the coupled solve
+  as:
+  new cells reappear;
+- compare:
+  feedback start at:
+  25%,
+  50%,
+  75%,
+  100%
+  membership restoration;
+- measure:
+  end-to-end T90
+  and:
+  whether early partial solves
+  remain stable
+  as:
+  the repair domain grows.
+
+H158 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
