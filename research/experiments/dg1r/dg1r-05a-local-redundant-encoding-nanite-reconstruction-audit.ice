@@ -1415,3 +1415,120 @@ clarification.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05A REDUNDANT NANITE RECONSTRUCTION
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE:
+THE:
+FIRST:
+DG-1R-05A:
+WORLD.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05a_redundant_nanite_v1.py
+
+Harness commit:
+
+4cc509639aa52f424ced1ac05d5d11a18f508779.
+
+Git blob SHA:
+
+dbf445ba089343d708be4c06076a17c6bdcdb853.
+
+Source SHA-256:
+
+3f9097e5198b2f7e831b779ee773ef2ffd108e3481300bb29630c0dcf00140d6.
+
+Source bytes:
+
+19104.
+
+LOCAL EXECUTION PRECHECK
+
+Exact:
+Git blob:
+identity:
+
+PASS.
+
+Python:
+syntax:
+
+PASS.
+
+No:
+DG-1R-05A:
+world
+was:
+executed
+before:
+this:
+freeze.
+
+FROZEN WORLD FAMILY
+
+20260926051000..20260926051007.
+
+8 worlds.
+
+FROZEN METHODS
+
+UNCODED_H6_REPAIR_REFERENCE.
+
+HAM74_DETECT_ONLY.
+
+HAM74_REPAIR_ALWAYS.
+
+HAM74_REPAIR_H6.
+
+HAM74_REPAIR_ONCE.
+
+FROZEN DAMAGE FAMILIES
+
+SINGLE1_LOCAL.
+
+DOUBLE2_LOCAL.
+
+DISTRIBUTED3.
+
+DISTRIBUTED5.
+
+CANONICAL DG-1R-05 STATUS
+
+The:
+frozen:
+DG-1R-05:
+canonical:
+primary
+
+remains:
+
+UNSPENT.
+
+DG-1R-05A:
+
+is:
+NON-CANONICAL /
+NON-EVIDENCE.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+DG-1R-05A:
+sweeps.
+
+Output:
+SHA-256
+must:
+match exactly.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
