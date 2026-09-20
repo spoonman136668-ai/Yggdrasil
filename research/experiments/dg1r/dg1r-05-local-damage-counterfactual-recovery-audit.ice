@@ -4559,3 +4559,552 @@ SELF-REPAIR.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+NON-CANONICAL SEMANTIC-MIRROR CORROBORATION 01
+
+DATE:
+2026-09-20.
+
+STATUS:
+NON-CANONICAL /
+NON-EVIDENCE /
+FROZEN PRIMARY REMAINS UNSPENT.
+
+WHY THIS EXISTS
+
+The:
+one-shot:
+GitHub Actions:
+execution path
+
+failed:
+before:
+runner assignment.
+
+Observed:
+
+runner_id = 0.
+
+Job steps:
+
+0.
+
+Therefore:
+
+no:
+DG-1R-05:
+primary:
+damage scenario
+
+was:
+executed
+by:
+that:
+failed:
+hosted:
+workflow.
+
+The:
+frozen:
+canonical:
+DG-1R-05:
+harness
+
+remains:
+
+UNSPENT.
+
+INDEPENDENT MIRROR
+
+A:
+local:
+semantic mirror
+
+implemented:
+
+the:
+frozen:
+DG-1R-04:
+parent mechanics
+
+plus:
+
+the:
+frozen:
+DG-1R-05:
+damage /
+counterfactual /
+summary:
+semantics.
+
+It used:
+
+- NumPy PCG64;
+- the:
+  exact:
+  frozen:
+  seed family:
+  20260926050000..007;
+- the:
+  frozen:
+  1024-step:
+  pre-damage:
+  development;
+- four:
+  unmapped:
+  sibling:
+  lesion blocks;
+- SMALL3;
+- LARGE5;
+- the:
+  same:
+  post-damage:
+  32-step:
+  horizon;
+- the:
+  same:
+  frozen:
+  signal equations.
+
+MIRROR REPRODUCIBILITY
+
+RUN 1:
+
+e0140825ce5e683095f3c7cb6b27bbe7c7bf09535fd447b38c7d4509f4e43a79.
+
+RUN 2:
+
+e0140825ce5e683095f3c7cb6b27bbe7c7bf09535fd447b38c7d4509f4e43a79.
+
+Byte-exact mirror determinism:
+
+PASS.
+
+NO-DAMAGE CONTROL
+
+mechanical_valid:
+
+TRUE.
+
+PRIMARY MIRROR RESULT
+
+HOMEOSTATIC_REPAIR_CANDIDATES:
+
+NONE.
+
+FULL_SELF_REPAIR_SIGNAL:
+
+FALSE.
+
+SLOW128_MIXED1 reference:
+
+median:
+excess divergence area:
+
+1.51953125.
+
+h16:
+whole-state divergence:
+
+0.0546875.
+
+h32:
+whole-state divergence:
+
+0.0390625.
+
+h16:
+lesion recovery:
+
+0.6.
+
+h32:
+lesion recovery:
+
+0.6666666666666667.
+
+h16:
+outside-lesion divergence:
+
+0.04.
+
+h32:
+outside-lesion divergence:
+
+0.032.
+
+full sustained recovery rate:
+
+0.078125.
+
+N16_H6
+
+Median:
+excess divergence area:
+
+0.984375.
+
+Reduction versus reference:
+
+35.218508997429304%.
+
+h16:
+outside-lesion divergence:
+
+0.016.
+
+Reduction versus reference:
+
+60%.
+
+h32:
+outside-lesion divergence:
+
+0.012065040650406506.
+
+Reduction versus reference:
+
+62.29674796747967%.
+
+CONTAINMENT_SIGNAL:
+
+TRUE.
+
+However:
+
+h16:
+lesion recovery gain:
+
+0.
+
+h32:
+lesion recovery gain:
+
+-0.2666666666666667.
+
+REPAIR_SIGNAL:
+
+FALSE.
+
+Interpretation:
+
+H6:
+strongly:
+contains:
+damage spread
+
+but:
+
+does NOT:
+reconstruct:
+the:
+lost:
+local:
+counterfactual:
+state.
+
+N16_H6_REPAIR
+
+Median:
+excess divergence area:
+
+0.87109375.
+
+Reduction versus reference:
+
+42.67352185089974%.
+
+h16:
+outside-lesion divergence:
+
+0.012065040650406506.
+
+Reduction versus reference:
+
+69.83739837398374%.
+
+h32:
+outside-lesion divergence:
+
+0.008130081300813009.
+
+Reduction versus reference:
+
+74.59349593495934%.
+
+CONTAINMENT_SIGNAL:
+
+TRUE.
+
+But:
+
+h16:
+lesion recovery gain:
+
+-0.2.
+
+h32:
+lesion recovery gain:
+
+-0.16666666666666674.
+
+REPAIR_SIGNAL:
+
+FALSE.
+
+Median:
+damage-induced:
+repair-state-change delta:
+
++2.
+
+Interpretation:
+
+the:
+repair nanites
+
+react:
+to:
+damage
+
+and:
+sharply:
+reduce:
+propagation,
+
+but:
+
+their:
+one-bit:
+local:
+state
+
+does NOT:
+contain:
+enough:
+information
+
+to:
+restore:
+the:
+specific:
+counterfactual:
+worker pattern.
+
+N16_H5
+
+CONTAINMENT_SIGNAL:
+
+FALSE.
+
+REPAIR_SIGNAL:
+
+FALSE.
+
+N16_H6_DAMP
+
+Negative:
+overstabilized:
+control only.
+
+Median:
+excess divergence area:
+
+0.51953125.
+
+Reduction:
+
+65.80976863753213%.
+
+CONTAINMENT_SIGNAL:
+
+TRUE.
+
+But:
+
+it:
+remains:
+ineligible
+because:
+DG-1R-04:
+already:
+showed:
+severe:
+overstabilization.
+
+MECHANISTIC CONCLUSION FROM MIRROR
+
+The:
+software-nanite:
+idea
+
+shows:
+a:
+real:
+two-part:
+behavior.
+
+1.
+
+LOCAL HOMEOSTATIC:
+CONTAINMENT
+
+is:
+supported:
+mechanically.
+
+H6
+and:
+H6_REPAIR
+
+reduce:
+
+- damage spread;
+- whole-organism:
+  divergence area;
+- outside-lesion:
+  divergence.
+
+2.
+
+STATE RECONSTRUCTION
+
+is:
+NOT:
+supported
+by:
+one-bit:
+local:
+controller state.
+
+The:
+nanites
+
+can:
+recognize /
+resist:
+local:
+disruption
+
+but:
+
+they:
+do not:
+know:
+
+WHAT:
+THE:
+LOST:
+WORKER:
+BITS
+
+SHOULD:
+HAVE:
+BEEN.
+
+This:
+matches:
+the:
+pre-registered:
+CONTAINMENT-ONLY:
+branch.
+
+NEXT JUSTIFIED NON-EVIDENCE PILOT
+
+DG-1R-05A —
+REDUNDANT:
+LOCAL:
+DEVELOPMENTAL:
+ENCODING
++
+NANITE:
+REPAIR.
+
+Hypothesis:
+
+containment
+already:
+works.
+
+The:
+missing:
+ingredient
+
+is:
+RECOVERY INFORMATION.
+
+Instead of:
+giving:
+nanites:
+hidden:
+memory,
+
+reserve:
+part:
+of:
+the:
+same:
+128-bit:
+organism
+
+for:
+local:
+redundant:
+state coding.
+
+Then:
+test:
+
+can:
+nanites
+
+use:
+local:
+redundancy
+
+to:
+reconstruct:
+damaged:
+worker state
+
+while:
+preserving:
+
+- fixed:
+  128-bit:
+  persistent:
+  budget;
+- local:
+  rules;
+- no:
+  task:
+  targets;
+- no:
+  external:
+  history buffer;
+- no:
+  hidden:
+  repair oracle?
+
+CANONICAL STATUS
+
+DG-1R-05:
+canonical frozen primary:
+
+NOT EXECUTED.
+
+This:
+mirror
+
+must NOT:
+be:
+reported
+as:
+
+canonical:
+DG-1R-05:
+evidence.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
