@@ -968,3 +968,603 @@ the first held-out H170 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — LEARNED MICRO-FUNCTION REGENERATION / TURNOVER TRANSFER
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-NEGATIVE GLOBAL TRANSFER / POSITIVE FINE-SCALE LEARNED TRANSFER.
+
+FINAL H170 HARNESS SHA-256
+
+a3dbe6da369f3e0784e975c32f17ed9e1ad3b3043b0c3362cb00fc01c8f05b1a.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+03fc5ae5e192e63c2d585e9e8997ce7e41af63d571a2a08ca66fafd520910d55.
+
+ACCEPTED PRIMARY FAMILY
+
+20260921900000..20260921900159.
+
+PRIMARY MATRIX
+
+160 held-out learned-task worlds.
+
+4 policies.
+
+640 policy lifetimes.
+
+40 repair cycles / lifetime.
+
+Validation:
+
+- exactly 160 unique held-out seeds;
+- exact accepted seed interval;
+- exactly four policy rows / seed;
+- zero duplicate seed x policy rows;
+- no missing accepted seeds;
+- no post-primary teacher / repair / query tuning.
+
+BASELINE LEARNED COMPETENCE
+
+Median pre-lesion held-out accuracy:
+
+SMOOTH,
+g=1.00:
+approximately 0.9873.
+
+SMOOTH,
+g=.25:
+approximately 0.9883.
+
+MIXED,
+g=1.00:
+approximately 0.9844.
+
+MIXED,
+g=.25:
+approximately 0.9824.
+
+Frozen competence floor:
+>=0.85.
+
+PASS:
+all task x scale groups.
+
+Thus:
+
+the cellular substrate genuinely learned:
+nontrivial held-out classification.
+
+PRIMARY CANDIDATE
+
+HIST-GEOM-1PLUS1.
+
+FINE-SCALE LEARNED TRANSFER
+
+g=.25.
+
+Across:
+SMOOTH / MIXED,
+ROAMING / HOTSPOT,
+eta=0 / .10,
+
+median FINAL accuracy
+remains:
+within approximately:
+0..0.4 percentage points
+of:
+the pre-lesion baseline
+in nearly all groups.
+
+Representative MIXED:
+
+ROAMING,
+eta=0:
+
+baseline:
+approximately 0.9834.
+
+FINAL:
+0.9824.
+
+eta=.10:
+
+0.9805
+->
+0.9795.
+
+HOTSPOT,
+eta=0:
+
+0.9922
+->
+0.9902.
+
+eta=.10:
+
+0.9775
+->
+0.9785.
+
+Fine-scale learned-output fidelity:
+
+approximately:
+0.979
+to:
+0.995.
+
+Brier degradation:
+
+near zero,
+often slightly improved.
+
+World-level accuracy-retention:
+
+100%
+within:
+0.05
+of baseline
+
+for:
+all fine-scale groups.
+
+Thus:
+
+the learned micro-function
+transfer hypothesis
+is:
+strongly supported
+at:
+small-cell scale.
+
+COARSE LEARNED TRANSFER FAILURE
+
+g=1.00.
+
+The same controller
+does NOT:
+transfer reliably.
+
+MIXED ROAMING:
+
+eta=0:
+
+baseline:
+approximately 0.9873.
+
+FINAL:
+0.9609.
+
+median learned-output fidelity:
+approximately 0.9167.
+
+eta=.10:
+
+baseline:
+approximately 0.9824.
+
+FINAL:
+approximately 0.8730.
+
+median accuracy loss:
+approximately 0.116.
+
+learned-output fidelity:
+approximately 0.558.
+
+HALF-to-FINAL fidelity loss:
+approximately 0.136.
+
+Brier degradation:
+approximately 0.0439.
+
+SMOOTH ROAMING,
+eta=.10:
+
+baseline:
+approximately 0.9893.
+
+FINAL:
+approximately 0.9268.
+
+learned-output fidelity:
+approximately 0.760.
+
+Thus:
+
+coarse learned specialization
+is:
+materially more fragile
+
+than:
+the prior synthetic coefficient-field model.
+
+GLOBAL GATE REVIEW
+
+PASS:
+
+1.
+Baseline competence.
+
+6.
+Brier degradation
+for:
+most groups.
+
+9.
+HIST-GEOM
+uses fewer observations
+than:
+MICRO2-LEVERAGE
+in:
+every group.
+
+10.
+Fine-scale FINAL accuracy
+is:
+not below:
+coarse accuracy
+by:
+>0.03
+in:
+corresponding groups.
+
+12.
+LOCAL-CHECKPOINT-ORACLE
+remains:
+exact learned-state ceiling.
+
+FAIL / MIXED:
+
+2.
+FINAL accuracy
+within:
+0.03
+of baseline
+for:
+every group.
+
+Fails:
+coarse noisy ROAMING
+for:
+both task classes.
+
+3.
+>=90%
+of worlds
+within:
+0.05
+of baseline
+for:
+every group.
+
+Fails:
+multiple coarse ROAMING groups.
+
+4.
+FINAL learned-output fidelity
+>=0.95
+for:
+every group.
+
+Fails:
+five coarse groups.
+
+5.
+HALF-to-FINAL
+learned-output fidelity loss
+<=0.02
+for:
+every group.
+
+Fails:
+coarse noisy ROAMING
+for:
+both task classes.
+
+6.
+Brier degradation
+<=0.03
+for:
+every group.
+
+Fails:
+MIXED coarse noisy ROAMING.
+
+7.
+Late-life SelfRecovery
+>=0.90
+for:
+every group.
+
+Fails:
+multiple noisy-label groups
+including:
+some fine-scale conditions.
+
+8.
+Cumulative logit-error exposure
+<=1.35x
+MICRO2-LEVERAGE
+for:
+every group.
+
+Fails:
+MIXED
+coarse HOTSPOT
+eta=.10
+at:
+approximately 1.49x.
+
+STRONG SUPPORT:
+
+FAIL.
+
+IMPORTANT SELF-RECOVERY NOTE
+
+Fine-scale:
+FINAL task accuracy
+and:
+learned-output fidelity
+
+remain:
+strong
+
+even in:
+some noisy-label groups
+where:
+the relative SelfRecovery metric
+falls below:
+0.90.
+
+Because:
+
+small lesions
+can create:
+very small
+pre/post lesion denominators,
+
+the relative SelfRecovery ratio
+is:
+numerically sensitive
+
+in:
+this learned-task regime.
+
+The gate remains:
+FAILED
+as frozen.
+
+Future learned-task work
+should report:
+
+both:
+
+- relative SelfRecovery;
+
+and:
+
+- absolute task-error exposure /
+  accuracy restoration.
+
+No gate is:
+retroactively changed.
+
+EXPOSURE VERSUS MICRO2
+
+HIST-GEOM
+is:
+often LOWER exposure
+than:
+MICRO2-LEVERAGE
+at:
+fine scale.
+
+Representative ratios:
+
+approximately:
+0.70..1.02.
+
+At coarse scale:
+
+most groups remain:
+near:
+1.05..1.25,
+
+but:
+
+MIXED HOTSPOT
+eta=.10:
+
+approximately:
+1.49.
+
+Thus:
+
+cheap one-plus-one control
+does NOT:
+explain:
+the coarse learned-transfer failure.
+
+The learned substrate itself
+requires:
+more local functional information
+or:
+finer representational granularity.
+
+FINAL INTERPRETATION
+
+H170 is:
+
+MIXED-NEGATIVE
+for:
+
+GLOBAL
+LEARNED-MICRO-FUNCTION
+TRANSFER.
+
+But:
+
+it is:
+POSITIVE
+
+for:
+
+FINE-SCALE
+LEARNED-MICRO-FUNCTION
+TRANSFER.
+
+This is:
+a major architectural result.
+
+The prior synthetic program suggested:
+
+SMALLER CELLS
+should:
+reduce repair blast radius
+and:
+functional supervision burden.
+
+H170 now shows:
+
+that advantage
+becomes:
+MORE IMPORTANT,
+not less,
+
+when:
+the local specialization
+was actually learned
+from data.
+
+At:
+fine granularity:
+
+- learned classification competence survives;
+- calibration remains stable;
+- learned logits remain near baseline;
+- one-plus-one local feedback remains sufficient;
+- noisy labels do not cause:
+  terminal capability drift.
+
+At:
+coarse granularity:
+
+local developmental context
+plus sparse labels
+cannot reliably reconstruct:
+the lost learned specialization,
+especially:
+under moving damage
+and:
+label noise.
+
+ARCHITECTURAL CONSEQUENCE
+
+Do NOT:
+
+spend the next phase
+trying to rescue:
+coarse learned cells
+
+with:
+ever-larger repair budgets.
+
+That would:
+fight:
+the small-cell architecture
+the research now supports.
+
+Instead:
+
+stress the:
+FINE-SCALE
+learned-function regime
+
+under:
+matched cumulative turnover.
+
+H170 used:
+40 fixed repair events.
+
+At:
+g=.25,
+that is:
+far below:
+one full body-equivalent
+learned-state turnover.
+
+NEXT:
+
+H171 —
+FINE-SCALE
+LEARNED-MICRO-FUNCTION
+MATCHED-TURNOVER STRESS.
+
+Primary target:
+
+g=.25 only.
+
+Use:
+approximately one
+body-equivalent
+local learned-state turnover
+
+with:
+292 repair cycles.
+
+Test:
+
+SMOOTH / MIXED learned tasks;
+ROAMING / HOTSPOT;
+eta=0 / .10.
+
+Compare:
+
+- CONTEXT-ONLY;
+- MICRO2-LEVERAGE;
+- HIST-GEOM-1PLUS1;
+- LOCAL-CHECKPOINT-ORACLE.
+
+Measure:
+
+- FINAL task accuracy;
+- baseline-relative accuracy retention;
+- Brier drift;
+- learned-output fidelity;
+- absolute logit-error exposure;
+- long-horizon drift;
+- repeated HOTSPOT learned-state replacement;
+- observation cost.
+
+If:
+fine-scale learned capability
+survives:
+one body-equivalent turnover,
+
+the next research phase
+can move beyond:
+synthetic coordinate classification
+
+into:
+multi-function /
+memory-bearing
+learned micro-organs.
+
+H170 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- global retraining;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
