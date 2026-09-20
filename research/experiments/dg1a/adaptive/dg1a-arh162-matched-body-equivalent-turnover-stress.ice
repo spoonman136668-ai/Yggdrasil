@@ -917,3 +917,659 @@ the first held-out H162 lifetime.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — MATCHED BODY-EQUIVALENT TURNOVER STRESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / MIXED-POSITIVE.
+
+FINAL H162 WRAPPER SHA-256
+
+2a8e405055d88906285934778898b02072dcdf683afd8cbc4d8f392c7461ae2c.
+
+PARENT H161 HARNESS SHA-256
+
+ae89e645e9f00f33a581c05298a0b2e930b450bbc9a55f0e0f46f87de86a8248.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+e4114b321ec8e26a7b2ae5eb3ed1a3a2d6a0bd313fb875ff017a595715de0b08.
+
+ACCEPTED PRIMARY FAMILY
+
+20260921100000..20260921100239.
+
+PRIMARY MATRIX
+
+240 held-out condition-world lifetimes.
+
+4 policies.
+
+960 policy lifetimes.
+
+Matched turnover:
+
+g=1.00:
+20 cycles.
+
+g=0.50:
+80 cycles.
+
+g=0.25:
+292 cycles.
+
+Total:
+
+125,440 policy repair cycles.
+
+Validation:
+
+- exactly 240 unique held-out seeds;
+- exact accepted seed interval;
+- exactly four policy rows / seed;
+- zero duplicate seed x policy rows;
+- no missing accepted seeds;
+- no post-primary parameter tuning.
+
+MATCHED BODY-EQUIVALENT TURNOVER
+
+Median realized turnover:
+
+g=1.00:
+approximately 1.01523.
+
+g=0.50:
+approximately 1.00376.
+
+g=0.25:
+approximately 1.00093.
+
+Thus:
+
+cross-scale cumulative replacement load
+is:
+successfully matched
+to:
+approximately one body equivalent.
+
+PRIMARY CANDIDATE
+
+INTERLEAVED24.
+
+FINAL FIDELITY
+
+Minimum group median
+INTERLEAVED24
+FINAL GlobalFidelity
+
+across:
+all
+g x regime x eta groups:
+
+approximately:
+0.999886.
+
+Frozen target:
+>=0.98.
+
+PASS:
+12 / 12.
+
+WORLD-LEVEL RELIABILITY
+
+Fraction of:
+INTERLEAVED24 worlds
+finishing:
+with:
+GlobalFidelity >=0.95:
+
+100%
+in:
+every group.
+
+Frozen target:
+>=90%.
+
+PASS:
+12 / 12.
+
+SECOND-HALF DRIFT
+
+Maximum:
+
+median HALF fidelity
+minus:
+median FINAL fidelity
+
+across:
+all groups:
+
+approximately:
+4.72e-5.
+
+Frozen limit:
+0.01.
+
+PASS.
+
+Thus:
+
+even:
+292-cycle
+fine-scale lifetimes
+
+do NOT:
+show:
+meaningful
+second-half capability drift.
+
+SERIAL VERSUS INTERLEAVED
+
+Maximum absolute difference
+between:
+INTERLEAVED24
+and:
+SERIAL24
+
+group-median
+FINAL fidelity:
+
+approximately:
+4.1e-8.
+
+Frozen limit:
+0.01.
+
+PASS:
+12 / 12.
+
+Interleaving therefore:
+preserves
+matched-turnover
+long-horizon quality.
+
+ABSOLUTE ERROR EXPOSURE
+
+INTERLEAVED24
+cumulative absolute error exposure
+
+is:
+lower
+than:
+SERIAL24
+
+in:
+12 / 12 groups.
+
+INTERLEAVED / SERIAL
+median exposure ratio:
+
+approximately:
+0.634
+to:
+0.971.
+
+PASS.
+
+FINE-SCALE FINAL FIDELITY
+
+For:
+both:
+ROAMING / HOTSPOT
+
+and:
+eta=0 / 0.25,
+
+g=0.25
+INTERLEAVED24
+
+finishes:
+slightly ABOVE
+
+the corresponding:
+g=1.00
+median fidelity.
+
+PASS:
+4 / 4.
+
+MATCHED-TURNOVER
+FINE-SCALE ERROR EXPOSURE
+
+g=0.25
+INTERLEAVED24
+
+relative to:
+g=1.00
+
+median cumulative
+absolute error exposure:
+
+ROAMING,
+eta=0:
+approximately 0.151.
+
+ROAMING,
+eta=0.25:
+approximately 0.110.
+
+HOTSPOT,
+eta=0:
+approximately 0.226.
+
+HOTSPOT,
+eta=0.25:
+approximately 0.135.
+
+Frozen limit:
+<=1.25.
+
+PASS:
+4 / 4.
+
+Thus:
+
+once:
+body-equivalent turnover
+is matched,
+
+fine-grained bodies
+do NOT:
+hide:
+a cumulative error-exposure penalty.
+
+They show:
+substantially LOWER
+absolute target-error exposure
+than:
+the coarse reference
+
+under:
+the beta=2
+localized-repair regime.
+
+LATE-LIFE SELF RECOVERY
+
+Minimum group median
+INTERLEAVED24
+SelfRecovery
+
+over:
+the final 25%
+of:
+each lifetime:
+
+approximately:
+0.99819.
+
+Frozen target:
+>=0.95.
+
+PASS.
+
+HOTSPOT REPEAT LOAD
+
+Median maximum
+single-cell replacement count:
+
+g=1.00:
+
+approximately:
+19..20.
+
+g=0.50:
+
+approximately:
+49..50.
+
+g=0.25:
+
+approximately:
+72..75.5.
+
+All:
+naturally exceed:
+10.
+
+INTERLEAVED24
+median FINAL fidelity
+remains:
+
+approximately:
+0.99998..1.0.
+
+PASS.
+
+CONTEXT-ONLY COMPARATOR
+
+Most groups are:
+neutral
+under:
+the frozen rule
+
+because:
+CONTEXT-ONLY
+median FINAL fidelity
+already exceeds:
+0.98.
+
+Coarse ROAMING:
+
+g=1.00,
+eta=0:
+
+CONTEXT-ONLY:
+approximately 0.96118.
+
+INTERLEAVED24:
+approximately 0.99998.
+
+Gain:
+approximately +0.0388.
+
+Frozen comparator margin:
+>=0.05.
+
+FAIL.
+
+g=1.00,
+eta=0.25:
+
+CONTEXT-ONLY:
+approximately 0.94618.
+
+INTERLEAVED24:
+approximately 0.99989.
+
+Gain:
+approximately +0.0537.
+
+PASS.
+
+Therefore:
+
+Gate 10
+fails narrowly
+in:
+1 / 12 groups.
+
+This miss
+does NOT:
+indicate:
+INTERLEAVED24 drift.
+
+It means:
+
+the preregistered
+minimum comparator-margin
+was not reached
+for:
+one:
+coarse clean roaming group.
+
+The core matched-turnover
+scale-stability hypothesis
+remains:
+strongly supported.
+
+FEEDBACK CEILING
+
+Maximum:
+non-oracle feedback observations
+inside:
+one cycle:
+
+24.
+
+PASS.
+
+ORACLE
+
+LOCAL-CHECKPOINT-ORACLE:
+
+FINAL GlobalFidelity
+exactly:
+1.0
+
+through:
+the accepted matrix.
+
+PASS.
+
+PREREGISTERED GATE REVIEW
+
+PASS:
+
+1.
+FINAL median fidelity.
+
+2.
+World-level >=0.95 reliability.
+
+3.
+HALF-to-FINAL drift.
+
+4.
+Interleaved / serial quality parity.
+
+5.
+Interleaved exposure versus serial.
+
+6.
+Fine-scale final fidelity transfer.
+
+7.
+Matched-turnover
+fine-scale exposure transfer.
+
+8.
+Late-life SelfRecovery.
+
+9.
+HOTSPOT repeat-load stability.
+
+11.
+24-observation cycle ceiling.
+
+12.
+Oracle ceiling.
+
+FAIL / MIXED:
+
+10.
+CONTEXT-ONLY comparator margin.
+
+Observed:
+one non-neutral group
+at:
++0.0388
+versus:
+required +0.05.
+
+FINAL INTERPRETATION
+
+H162 is:
+
+MIXED-POSITIVE.
+
+The central question is:
+answered positively.
+
+THE SMALL-CELL
+COGNITIVE MICRO-PATCH
+ARCHITECTURE
+
+REMAINS:
+FUNCTIONALLY STABLE
+
+WHEN:
+CUMULATIVE TURNOVER
+IS MATCHED
+ACROSS:
+CELL SCALES.
+
+This removes:
+the principal scale caveat
+from:
+H161.
+
+At:
+g=0.25,
+
+the organism survives:
+
+292 consecutive
+local repair cycles
+
+representing:
+approximately one:
+full body-equivalent
+replacement load
+
+while:
+
+- median original-task fidelity
+  remains:
+  approximately 1.0;
+- every accepted world
+  finishes:
+  above 0.95 fidelity;
+- late-life self-recovery
+  remains:
+  approximately 1.0;
+- no fixed feedback-budget expansion
+  is required;
+- repeated HOTSPOT cells
+  may be:
+  replaced:
+  more than 70 times
+  in:
+  the median world;
+- cumulative absolute
+  target-error exposure
+  remains:
+  materially BELOW:
+  coarse scale.
+
+OUT-OF-BOX ARCHITECTURAL RESULT
+
+Smaller computational cells
+do not merely:
+
+permit:
+more localized repair.
+
+Under:
+the tested beta=2 regime,
+
+they also reduce:
+
+THE ABSOLUTE
+FUNCTIONAL DAMAGE
+EXPOSED
+PER:
+BODY-EQUIVALENT
+OF:
+TURNOVER.
+
+This is:
+a stronger result
+than:
+H160's fixed-event-count scaling.
+
+REMAINING DEPENDENCY
+
+H161 / H162
+assume:
+
+every repair cycle
+can obtain:
+
+up to:
+24 local task-feedback observations
+
+anchored to:
+the original target function.
+
+A real regenerative cognitive system
+may not always have:
+
+immediate,
+dense,
+ground-truth
+functional feedback.
+
+Therefore:
+
+the next high-leverage risk is:
+
+FUNCTIONAL ANCHOR
+AVAILABILITY.
+
+NEXT SCOPED EXPERIMENT
+
+H163 —
+INTERMITTENT FUNCTIONAL-ANCHOR /
+SPARSE-SUPERVISION TURNOVER AUDIT.
+
+Question:
+
+HOW OFTEN
+MUST:
+A REGENERATIVE COGNITIVE ORGANISM
+
+RECEIVE:
+EXTERNAL FUNCTIONAL ANCHORING
+
+to prevent:
+long-horizon drift
+
+when:
+most local patches
+must rely first on:
+developmental context?
+
+Candidate regimes:
+
+- feedback every repair cycle;
+- every 2 cycles;
+- every 5;
+- every 10;
+- event-triggered anchor
+  from:
+  a cheap sentinel error channel.
+
+The primary objective is:
+
+identify:
+the minimum external
+functional-reference duty cycle
+
+that:
+preserves:
+the H161/H162
+long-horizon stability
+
+without:
+turning:
+micro-patching
+
+into:
+continuous global supervision.
+
+H162 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- global retraining;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
