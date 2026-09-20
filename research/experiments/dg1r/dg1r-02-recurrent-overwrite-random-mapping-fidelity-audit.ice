@@ -981,3 +981,811 @@ non-canonical.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-02 NON-EVIDENCE PILOT CLOSURE — RECURRENT OVERWRITE / RANDOM-MAPPING FIDELITY
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+NEGATIVE LONG-MEMORY RECOVERY /
+POSITIVE IMMEDIATE-INPUT CAPTURE EFFECT /
+NON-EVIDENCE.
+
+FROZEN HARNESS SHA-256
+
+79d4da0f5585054debfdd873181d3e7463872c294a9dcf61e22e434c7c65ea1b.
+
+CANONICAL OUTPUT
+
+RUN 1 SHA-256:
+
+e03b1d428550a7469812cc7ec3086e66c5e61202ee8290ef392bc42253652064.
+
+RUN 2 SHA-256:
+
+e03b1d428550a7469812cc7ec3086e66c5e61202ee8290ef392bc42253652064.
+
+Byte-identical:
+
+PASS.
+
+OVERWRITE RECOVERY SIGNAL
+
+FALSE.
+
+STRONG RECURRENCE SIGNAL
+
+FALSE.
+
+TEMPORAL SUBSTRATE CANDIDATES
+
+NONE.
+
+PRIMARY RESULT
+
+Literature-style:
+input overwrite
+
+materially improves:
+
+IMMEDIATE:
+INPUT CAPTURE
+
+for:
+several:
+rule families.
+
+It does NOT:
+
+restore:
+D16 /
+D32:
+long memory
+
+under:
+
+width:
+128.
+
+R:
+8.
+
+L_d:
+16.
+
+I:
+4.
+
+OW90
+
+D1 median:
+
+1.0.
+
+Paired:
+OVERWRITE - XOR:
+D1 median:
+
++0.49462890625.
+
+However:
+
+D8:
+
+0.50390625.
+
+D16:
+
+0.5029296875.
+
+D32:
+
+0.50732421875.
+
+Memory score:
+
+0.5091145833333333.
+
+Thus:
+
+the:
+mapped:
+current input
+can:
+become:
+perfectly:
+linearly visible
+in:
+some worlds
+
+without:
+creating:
+long:
+temporal memory.
+
+OW182
+
+D1 median:
+
+0.9052734375.
+
+P10:
+
+0.83212890625.
+
+Paired:
+D1 improvement:
+
++0.4013671875.
+
+This is:
+a:
+more:
+world-robust:
+immediate-input:
+signal
+than:
+OW90.
+
+But:
+
+D16:
+
+0.49462890625.
+
+D32:
+
+0.4833984375.
+
+Memory score:
+
+0.49609375.
+
+OW_MIXED5
+
+D1 median:
+
+0.91943359375.
+
+P10:
+
+0.858984375.
+
+Paired:
+D1 improvement:
+
++0.1669921875.
+
+D4:
+
+0.5693359375.
+
+D8:
+
+0.484375.
+
+D16:
+
+0.50244140625.
+
+D32:
+
+0.50341796875.
+
+Thus:
+
+heterogeneous:
+overwrite recurrence
+
+extends:
+the:
+short-memory:
+signal
+slightly:
+beyond:
+one step,
+
+but:
+not:
+to:
+the:
+long-memory:
+targets.
+
+OW22
+
+D1:
+
+0.57568359375.
+
+D16:
+
+0.50634765625.
+
+D32:
+
+0.49609375.
+
+No:
+long-memory:
+recovery.
+
+OW150
+
+D1:
+
+0.517578125.
+
+D16:
+
+0.50244140625.
+
+D32:
+
+0.49951171875.
+
+No:
+long-memory:
+recovery.
+
+RULE-90 NONLINEAR SIGNAL
+
+OW90:
+
+XOR3_11 median:
+
+1.0.
+
+But:
+
+P10:
+for:
+D1
+and:
+the:
+overall:
+nonlinear family
+shows:
+substantial:
+world dependence.
+
+OW90 nonlinear score:
+
+0.6740991260850427.
+
+It still fails:
+NONLINEAR_CAPABLE
+
+because:
+
+PARITY5:
+
+0.48876953125.
+
+MOTIF2_12:
+
+0.5555442055471458.
+
+Only:
+one:
+of:
+the:
+three:
+nonlinear tasks
+
+clears:
+0.60.
+
+XR90:
+
+XOR3_11 median:
+
+1.0.
+
+P10:
+
+0.8523437500000001.
+
+Thus:
+
+Rule 90's:
+XOR feature
+
+is:
+not:
+an:
+overwrite-specific:
+effect.
+
+It is:
+consistent
+with:
+Rule 90's:
+additive /
+XOR:
+dynamics.
+
+DYNAMIC BALANCE
+
+OW90:
+
+DYNAMICALLY_BALANCED:
+PASS.
+
+Entropy:
+
+0.8509753637813233.
+
+h16 perturbation:
+
+0.015625.
+
+OW150:
+
+PASS.
+
+OW182:
+
+PASS.
+
+OW22:
+
+PASS.
+
+OW_MIXED5:
+
+FAILS:
+the:
+h16:
+perturbation floor
+
+with:
+median:
+
+0.0078125.
+
+Thus:
+
+overwrite:
+can:
+move:
+several:
+single-rule:
+reservoirs
+into:
+the:
+frozen:
+dynamic-balance:
+window,
+
+but:
+this:
+still:
+does not:
+yield:
+long memory.
+
+RECURRENCE EFFECT
+
+Overwrite versus:
+paired XOR
+
+produces:
+large:
+D1 gains
+for:
+
+Rule 90:
++0.49462890625.
+
+Rule 182:
++0.4013671875.
+
+MIXED5:
++0.1669921875.
+
+Rule 22:
++0.05126953125.
+
+Rule 150:
++0.0185546875.
+
+But:
+
+paired:
+D16 /
+D32:
+deltas
+
+remain:
+near:
+zero
+and:
+inconsistent.
+
+Therefore:
+
+OVERWRITE
+corrects:
+input observability
+
+but:
+
+does NOT:
+solve:
+the:
+memory-decay:
+mechanism.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-02 answers:
+an:
+important:
+methodological concern.
+
+DG-1R-01's:
+failure
+
+was NOT:
+simply:
+caused
+by:
+using:
+XOR
+instead of:
+the:
+literature-style:
+overwrite recurrence.
+
+Overwrite:
+
+does:
+matter.
+
+It:
+greatly improves:
+current-input:
+capture.
+
+But:
+
+the:
+128-cell:
+single-state:
+reservoir
+
+still:
+loses:
+specific:
+input identity
+
+well before:
+D16 /
+D32.
+
+The:
+next:
+research axis
+therefore:
+should NOT:
+be:
+another:
+minor:
+input-update:
+change.
+
+The:
+evidence now points to:
+
+TEMPORAL:
+STRUCTURE.
+
+Specifically:
+
+- multiple:
+  timescales;
+- layered:
+  reservoirs;
+- slower:
+  state evolution;
+- recurrent:
+  hierarchy.
+
+This also aligns:
+with:
+Nichele / Molund's:
+reported:
+improvement
+from:
+a:
+second:
+layered:
+CA reservoir.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-03 —
+BOUNDED:
+MULTI-TIMESCALE:
+CELLULAR MEMORY AUDIT.
+
+Keep:
+
+total:
+persistent:
+cell budget:
+
+128.
+
+Compare:
+
+1.
+OW_MIXED5-I4:
+single-timescale:
+reference.
+
+2.
+SLOW-MIXED:
+same:
+128 cells
+
+but:
+slower:
+internal:
+evolution.
+
+3.
+PARALLEL-FAST/SLOW:
+
+split:
+the:
+128 cells
+between:
+fast:
+and:
+slow:
+reservoir lanes.
+
+4.
+PARALLEL-3-TIMESCALE:
+
+fast /
+medium /
+slow:
+lanes
+
+under:
+the:
+same:
+total:
+cell budget.
+
+5.
+HETEROGENEOUS-TIMESCALE:
+
+use:
+different:
+rule families
+in:
+fast /
+slow:
+lanes.
+
+Primary question:
+
+can:
+slower:
+or:
+hierarchical:
+cellular:
+state
+
+retain:
+D8 /
+D16 /
+D32:
+information
+
+while:
+preserving:
+the:
+useful:
+nonlinear:
+feature generation
+seen:
+in:
+Rule 90
+and:
+the:
+short-memory:
+capture
+seen:
+in:
+overwrite:
+MIXED5 /
+Rule 182?
+
+PLAIN-SPEAK SUMMARY
+
+What did we change?
+
+The first:
+ReCA test
+flipped:
+mapped cells
+when:
+the:
+input was:
+1
+
+and:
+did nothing
+when:
+the:
+input was:
+0.
+
+The:
+published:
+recurrent:
+ReCA design
+instead:
+writes:
+the:
+new:
+input value
+onto:
+the:
+old:
+state.
+
+So:
+we tested:
+that:
+properly.
+
+What happened?
+
+It:
+made:
+the:
+current:
+input
+much easier
+to:
+see.
+
+For:
+some:
+rules,
+the:
+previous:
+immediate:
+bit
+became:
+very:
+easy
+to:
+recover.
+
+But:
+
+the:
+older:
+history
+still:
+disappeared.
+
+By:
+16
+or:
+32:
+steps,
+
+the:
+reservoirs
+were:
+basically:
+guessing.
+
+Did it work?
+
+It fixed:
+one:
+part
+of:
+our:
+implementation:
+
+INPUT CAPTURE.
+
+It did NOT:
+fix:
+
+LONG MEMORY.
+
+What did we learn?
+
+The:
+problem
+is now:
+much less likely
+to be:
+a:
+simple:
+input-mapping:
+mistake.
+
+The:
+cellular state
+is:
+evolving:
+too:
+quickly
+or:
+too:
+uniformly
+
+to:
+hold:
+specific:
+older:
+information.
+
+What should we try next?
+
+Give:
+different:
+parts
+of:
+the:
+cell system
+
+different:
+speeds.
+
+Let:
+some:
+cells
+mix:
+quickly
+
+and:
+some:
+change:
+slowly.
+
+Keep:
+the:
+same:
+total:
+128-cell:
+budget.
+
+Then:
+see:
+whether:
+the:
+slow:
+cells
+can:
+protect:
+old:
+information
+
+while:
+the:
+fast:
+cells
+still:
+create:
+useful:
+nonlinear:
+features.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
