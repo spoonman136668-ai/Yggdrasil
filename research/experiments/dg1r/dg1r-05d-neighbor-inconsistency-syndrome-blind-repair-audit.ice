@@ -1495,3 +1495,849 @@ changed.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+FINAL DG-1R-05D NON-EVIDENCE CLOSURE — SYNDROME-BLIND DISTRIBUTED SELF-DIAGNOSIS
+
+DATE:
+2026-09-20.
+
+STATUS:
+COMPLETE /
+STRONG POSITIVE SYNDROME-BLIND REPAIR /
+STRONG POSITIVE DISTRIBUTED SELF-DIAGNOSIS /
+ONE-SOURCE DAMAGE SAFETY PASS /
+CORRELATED-CONSENSUS FAILURE CONFIRMED /
+NON-CANONICAL /
+NON-EVIDENCE.
+
+FIXA HARNESS
+
+Git blob SHA:
+
+d2bdec439f9f6d4573ddd264fbfd1fe1e5bd3f5e.
+
+Source SHA-256:
+
+57557eb12e025e90e59c64fb513c0dbe97028e8bab4a7db09d528cc7879161fb.
+
+Source bytes:
+
+11027.
+
+OUTPUT
+
+RUN 1 SHA-256:
+
+9f37eaac2ba8a98e1cbd64a06e7da5d2f5223c1e234ce5ca393c969395bc0c60.
+
+RUN 2 SHA-256:
+
+9f37eaac2ba8a98e1cbd64a06e7da5d2f5223c1e234ce5ca393c969395bc0c60.
+
+Byte-identical:
+
+PASS.
+
+MECHANICAL VALIDITY
+
+mechanical_valid:
+
+TRUE.
+
+FROZEN SIGNALS
+
+SYNDROME_BLIND_REPAIR_SIGNAL:
+
+TRUE.
+
+Signal methods:
+
+NEIGHBOR_TRIGGER.
+HYBRID_TRIGGER.
+
+DISTRIBUTED_SELF_DIAGNOSIS_SIGNAL:
+
+TRUE.
+
+ONE_SOURCE_DAMAGE_SAFETY:
+
+TRUE.
+
+CORRELATED_CONSENSUS_FAILURE_METHODS:
+
+NEIGHBOR_TRIGGER.
+HYBRID_TRIGGER.
+
+PRIMARY SILENT-LESION RESULT
+
+THREE_DATA3_SILENT:
+
+local:
+Hamming syndrome:
+
+0.
+
+SYNDROME_TRIGGER:
+
+median:
+logical divergence area:
+
+2.2395833333333335.
+
+sustained:
+exact logical recovery:
+
+0.2916666666666667.
+
+repairs:
+
+0.
+
+NEIGHBOR_TRIGGER:
+
+median:
+logical divergence area:
+
+0.
+
+sustained:
+exact logical recovery:
+
+1.0.
+
+h1:
+logical divergence:
+
+0.
+
+syndrome-blind repairs:
+
+24.
+
+false-repair fraction:
+
+0.
+
+HYBRID_TRIGGER:
+
+same:
+primary:
+recovery result.
+
+Thus:
+
+healthy:
+neighboring:
+regions
+
+can:
+diagnose
+and:
+repair:
+
+damage
+that:
+the:
+damaged:
+region's:
+own:
+integrity:
+check
+
+cannot:
+see.
+
+The:
+damage:
+signal
+can:
+originate
+outside:
+the:
+damaged:
+region.
+
+DISTRIBUTED SILENT DAMAGE
+
+DISTRIBUTED_SILENT3:
+
+two:
+separate:
+blocks
+
+each:
+receive:
+the:
+three-bit:
+syndrome-zero:
+lesion.
+
+HYBRID_TRIGGER:
+
+median:
+logical divergence area:
+
+0.
+
+sustained:
+exact logical recovery:
+
+1.0.
+
+h1:
+logical divergence:
+
+0.
+
+syndrome-blind repairs:
+
+16.
+
+false-repair fraction:
+
+0.
+
+Thus:
+
+distributed:
+self-diagnosis
+
+operates:
+in:
+parallel.
+
+ONE BAD RECOVERY CHANNEL
+
+LEFT_CHECK1_ONLY:
+
+one:
+left:
+cross-check:
+bit
+is:
+damaged.
+
+HYBRID_TRIGGER:
+
+repairs:
+
+0.
+
+false repairs:
+
+0.
+
+logical divergence area:
+
+0.
+
+sustained:
+exact logical recovery:
+
+1.0.
+
+The:
+two:
+neighbor:
+candidates
+disagree.
+
+The:
+tissue
+does:
+NOT:
+guess.
+
+ONE_SOURCE_DAMAGE_SAFETY:
+
+PASS.
+
+LOCAL DAMAGE + ONE BAD RECOVERY CHANNEL
+
+DATA3_PLUS_LEFT_CHECK1:
+
+the:
+local:
+block
+has:
+silent:
+three-data-bit:
+damage
+
+and:
+
+the:
+left:
+recovery:
+channel
+is:
+also:
+damaged.
+
+HYBRID_TRIGGER:
+
+repairs:
+
+0.
+
+median:
+logical divergence area:
+
+2.2395833333333335.
+
+sustained:
+exact logical recovery:
+
+0.2916666666666667.
+
+Interpretation:
+
+two-sided:
+validation
+
+correctly:
+refuses:
+an:
+unsafe:
+repair,
+
+but:
+
+with:
+only:
+two:
+witnesses,
+
+one:
+damaged:
+witness
+removes:
+the:
+quorum
+needed:
+for:
+reconstruction.
+
+CORRELATED TWO-WITNESS FAILURE
+
+BOTH_CHECK1_CORRELATED:
+
+the:
+local:
+data
+is:
+healthy.
+
+Both:
+
+left
+and:
+right:
+cross-check:
+bits
+
+for:
+d1
+
+are:
+flipped.
+
+Thus:
+
+both:
+neighbor:
+channels
+
+agree
+on:
+the:
+same:
+wrong:
+candidate.
+
+HYBRID_TRIGGER:
+
+repairs:
+
+24.
+
+syndrome-blind repairs:
+
+24.
+
+false-repair fraction:
+
+1.0.
+
+median:
+logical divergence area:
+
+1.9166666666666665.
+
+sustained:
+exact logical recovery:
+
+0.4583333333333333.
+
+NEIGHBOR_TRIGGER:
+
+same:
+false-repair:
+boundary.
+
+Thus:
+
+TWO:
+AGREEING:
+WITNESSES
+
+are:
+not:
+proof
+when:
+
+the:
+witnesses
+can:
+share:
+correlated:
+damage.
+
+ONE-SIDE CONTROL
+
+ONE_SIDE_TRIGGER:
+
+LEFT_CHECK1_ONLY:
+
+false-repair fraction:
+
+1.0.
+
+DATA3_PLUS_LEFT_CHECK1:
+
+false-repair fraction:
+
+1.0.
+
+This:
+reconfirms:
+
+single-source:
+repair
+is:
+not:
+sufficiently:
+safe.
+
+CORE MECHANISTIC CONCLUSION
+
+DG-1R-05D establishes:
+
+DAMAGE:
+DIAGNOSIS
+
+can:
+be:
+DISTRIBUTED.
+
+A:
+region
+does NOT:
+need:
+to:
+recognize
+its:
+own:
+damage
+
+if:
+
+independent:
+neighbors
+can:
+detect:
+that:
+its:
+state
+is:
+inconsistent
+with:
+the:
+state
+they:
+expect.
+
+This:
+adds:
+a:
+new:
+architectural:
+role:
+
+EXTERNAL:
+LOCAL:
+WITNESSES.
+
+However:
+
+two:
+witnesses
+create:
+a:
+new:
+failure mode:
+
+CORRELATED:
+CONSENSUS:
+ERROR.
+
+If:
+both:
+witness:
+channels
+are:
+damaged
+in:
+the:
+same:
+way,
+
+the:
+tissue
+can:
+confidently:
+repair:
+healthy:
+state
+into:
+wrong:
+state.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05E —
+MULTI-WITNESS:
+REPAIR:
+QUORUM /
+CORRELATED-FAULT:
+TOLERANCE AUDIT.
+
+Same:
+
+128-bit:
+physical:
+budget.
+
+Use:
+
+a:
+smaller:
+logical:
+tissue
+
+so:
+each:
+logical:
+region
+
+can:
+have:
+multiple:
+spatially:
+diverse:
+integrity:
+witnesses.
+
+Candidate:
+
+8:
+logical:
+blocks
+
+x:
+4:
+data bits
+
+=
+32:
+logical:
+data bits.
+
+Local:
+Hamming(7,4):
+
+56 bits.
+
+Nearest-neighbor:
+XOR:
+ring:
+
+8 edges
+x:
+4 bits
+
+=
+32 bits.
+
+Second-neighbor:
+XOR:
+ring:
+
+8 edges
+x:
+4 bits
+
+=
+32 bits.
+
+Subtotal:
+
+120 bits.
+
+Remaining:
+
+8 bits
+
+for:
+one:
+integrity:
+guardian /
+confidence:
+bit
+per:
+logical:
+block.
+
+Each:
+block
+can:
+receive:
+multiple:
+independent:
+candidate:
+reconstructions
+
+from:
+
+- left-1;
+- right-1;
+- left-2;
+- right-2.
+
+Test:
+
+3-of-4:
+repair:
+quorum
+
+versus:
+
+2-of-2:
+consensus.
+
+Primary question:
+
+can:
+spatially:
+diverse:
+repair:
+witnesses
+
+tolerate:
+
+one:
+or:
+two:
+corrupted:
+integrity:
+channels
+
+without:
+
+false:
+reconstruction?
+
+PLAIN-SPEAK SUMMARY
+
+We:
+fixed:
+the:
+blind spot.
+
+The:
+damaged:
+block
+does not:
+have:
+to:
+know:
+it:
+is:
+damaged.
+
+Its:
+neighbors
+can:
+notice:
+
+"Your:
+state
+does not:
+match:
+what:
+we:
+both:
+say:
+it:
+should:
+be."
+
+That:
+repaired:
+the:
+previously:
+invisible:
+three-bit:
+damage
+perfectly.
+
+It:
+also:
+worked:
+when:
+two:
+different:
+blocks
+were:
+silently:
+damaged
+at:
+the:
+same:
+time.
+
+But:
+we:
+found:
+the:
+next:
+weakness.
+
+If:
+one:
+neighbor:
+is:
+wrong,
+
+the:
+two:
+neighbors
+disagree
+
+and:
+the:
+system
+safely:
+refuses:
+to:
+guess.
+
+If:
+both:
+neighbors
+are:
+wrong
+in:
+the:
+same:
+way,
+
+they:
+agree
+on:
+the:
+same:
+bad:
+answer.
+
+Then:
+the:
+repairer
+can:
+damage:
+a:
+healthy:
+block.
+
+So:
+the:
+next:
+step
+is:
+a:
+repair:
+quorum.
+
+Instead:
+of:
+two:
+witnesses,
+
+give:
+each:
+region
+several:
+spatially:
+different:
+witnesses
+
+and:
+require:
+a:
+strong:
+majority
+before:
+repair.
+
+That:
+costs:
+more:
+redundancy
+
+and:
+therefore:
+more:
+logical:
+capacity,
+
+but:
+it:
+tests:
+whether:
+the:
+software:
+tissue
+can:
+become:
+fault-tolerant
+against:
+damage
+to:
+its:
+repair:
+network
+itself.
+
+DG-1R-05:
+canonical frozen primary remains:
+
+UNSPENT.
+
+DG-1R-05D remains:
+
+NON-CANONICAL /
+NON-EVIDENCE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
