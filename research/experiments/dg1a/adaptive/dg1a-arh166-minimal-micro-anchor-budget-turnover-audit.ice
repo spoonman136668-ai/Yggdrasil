@@ -738,3 +738,321 @@ SYNTHETIC_MEASURED_SANDBOX_MINIMAL_MICRO_ANCHOR_BUDGET_TURNOVER
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — MINIMAL MICRO-ANCHOR BUDGET HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H166 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H166 SANDBOX HARNESS
+
+File:
+
+h166_micro_budget_v1.py
+
+SHA-256:
+
+1adf59a6d4ef84cb84165e78334b3c3ac8db9ac07bb3d1f4a03d0523c662a164.
+
+PARENT HASHES
+
+H161:
+ae89e645e9f00f33a581c05298a0b2e930b450bbc9a55f0e0f46f87de86a8248.
+
+H162:
+2a8e405055d88906285934778898b02072dcdf683afd8cbc4d8f392c7461ae2c.
+
+H163:
+553a1edf2da195aff37a3a4ee6dcfa0f6072b2945bee8b46d64e916791edd5c2.
+
+H164:
+f606744bf16c3cae3c38c5d227c8ba7a7d5ba75f009a95f0cb98f9f3181c77d4.
+
+H165:
+69e3a195ae9485b153a7a6efba254e5b68837359f0a0f5eb022108b1d5ede808.
+
+MICRO-ANCHOR MECHANICS
+
+Anchored micro-cycle:
+
+- complete membership regeneration;
+- context-repair lesion;
+- acquire:
+  policy-declared
+  1 or 2
+  local functional observations;
+- joint solve:
+  restored lesion coefficients;
+- lambda=0.01;
+- current context state:
+  ridge prior;
+- surviving coefficients:
+  fixed;
+- same micro observations
+  remain:
+  active constraints
+  through:
+  all 12
+  post-membership
+  maturation steps.
+
+Unanchored cycle:
+
+- context reconstruction;
+- zero:
+  external functional observations;
+- 12:
+  post-membership
+  context maturation steps.
+
+No:
+raw observations
+are reused
+across:
+different repair cycles.
+
+Persistent repaired state:
+
+does:
+carry forward.
+
+POLICY REALIZATION
+
+MICRO2-EVERY1:
+
+2 observations
+every cycle.
+
+MICRO1-EVERY1:
+
+1 every cycle.
+
+MICRO2-EVERY2:
+
+2 on:
+cycle 1,3,5,...
+
+MICRO1-EVERY2:
+
+1 on:
+cycle 1,3,5,...
+
+MICRO2-EVERY5:
+
+2 on:
+cycle 1,6,11,...
+
+CONTEXT-ONLY:
+
+0.
+
+LOCAL-CHECKPOINT-ORACLE:
+
+target coefficient restore
+on:
+membership return.
+
+LINEAGE CHECK
+
+On:
+all six
+H166 sanity worlds,
+
+H166:
+MICRO2-EVERY1
+
+was compared
+against:
+H165:
+MICRO2-ONLY
+
+using:
+the same:
+world,
+lesion,
+membership,
+query,
+noise,
+and:
+repair mechanics.
+
+Maximum numerical difference
+across:
+FINAL fidelity,
+HALF fidelity,
+minimum fidelity,
+late-life SelfRecovery,
+cumulative error exposure,
+and:
+total observation count:
+
+approximately:
+1.11e-16.
+
+Therefore:
+
+MICRO2-EVERY1
+is:
+a faithful
+H165 baseline carry-forward.
+
+SANITY
+
+Disjoint family:
+
+20260921590000...
+
+6 representative
+condition-world lifetimes.
+
+7 policies.
+
+42 policy lifetimes.
+
+Mechanical checks:
+
+- exactly seven policies / seed;
+- exact six sanity seeds;
+- LOCAL-CHECKPOINT-ORACLE:
+  final fidelity exactly 1.0;
+- observation counts:
+  match:
+  frozen cadence formulas;
+- no policy exceeds:
+  declared per-cycle
+  micro-anchor count;
+- no:
+  lost target coefficient,
+  held-out evaluation target,
+  or:
+  latent context label
+
+enters:
+non-oracle repair.
+
+Accepted sanity-output SHA-256:
+
+dcb17eb9028a42355de8b7178f0095f2f8c53a6be7f23445d97489b6df9a17eb.
+
+NON-EVIDENCE SIGNAL
+
+Coarse ROAMING,
+eta=0:
+
+MICRO2-EVERY1:
+
+FINAL:
+approximately 0.9978.
+
+late-life SelfRecovery:
+approximately 0.988.
+
+MICRO1-EVERY1:
+
+FINAL:
+approximately 0.9966.
+
+SelfRecovery:
+approximately 0.856.
+
+MICRO2-EVERY2:
+
+FINAL:
+approximately 0.9843.
+
+SelfRecovery:
+approximately 0.961.
+
+MICRO1-EVERY2:
+
+FINAL:
+approximately 0.9793.
+
+MICRO2-EVERY5:
+
+approximately 0.9772.
+
+Coarse HOTSPOT,
+eta=.25:
+
+MICRO1-EVERY1:
+
+FINAL:
+approximately 0.9988.
+
+MICRO2-EVERY2:
+
+approximately 0.9903.
+
+Fine:
+g=.25
+
+remains:
+highly stable
+across:
+all tested micro-anchor budgets
+in:
+the sanity worlds.
+
+These values are:
+
+NON-EVIDENCE.
+
+They suggest:
+
+- temporal regularity
+  may matter
+  at:
+  coarse scale;
+- one observation / cycle
+  may be:
+  safer
+  than:
+  the same average budget
+  delivered:
+  as two observations
+  every two cycles;
+- sub-one-observation schedules
+  may:
+  approach:
+  coarse-scale limits.
+
+No:
+observation count,
+cadence,
+lifetime,
+cell scale,
+noise rule,
+qualification rule,
+or:
+acceptance criterion
+
+is changed.
+
+PRIMARY FAMILY
+
+20260921500000..20260921500119.
+
+120 held-out
+condition-world lifetimes.
+
+7 policies.
+
+840 policy lifetimes.
+
+H166 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H166 lifetime.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
