@@ -1166,3 +1166,301 @@ SYNTHETIC_MEASURED_COGNITIVE_DUAL_FUNCTION_LESION_REGENERATION
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — CLR1 DUAL-FUNCTION LEARNED COGNITIVE HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE CLR1-H175 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H175 SANDBOX HARNESS
+
+File:
+
+h175_clr1_v2.py
+
+SHA-256:
+
+0d087886ca034c07b808f194de87074991f9e226b683838cadf782a4ac1144be.
+
+PRE-PRIMARY REPRESENTATION-SCALE CORRECTION
+
+Initial sanity harness:
+
+h175_clr1_v1.py
+
+used:
+
+fixed ridge alpha:
+0.01
+
+at:
+both cell scales.
+
+That caused:
+
+fine g=0.25
+learned-task underfitting
+
+despite:
+otherwise healthy
+localization / repair mechanics.
+
+Representative fine-scale
+held-out R^2
+under:
+the v1 sanity run:
+
+approximately:
+0.74..0.92.
+
+This was:
+a scale-of-representation
+training defect,
+
+not:
+a lesion / repair result.
+
+Before:
+any held-out H175 primary world
+was executed,
+
+the student ridge penalty
+was changed to:
+
+alpha(g)
+=
+0.01
+*
+g^2.
+
+Thus:
+
+g=1.00:
+alpha=0.01.
+
+g=0.25:
+alpha=0.000625.
+
+This follows:
+the existing small-cell
+area-scaling logic
+
+and:
+prevents:
+finer cellular discretization
+from:
+receiving:
+disproportionately strong
+coefficient shrinkage.
+
+No:
+
+- teacher;
+- task distribution;
+- localization threshold;
+- lesion search;
+- repair observation budget;
+- repair policy;
+- cycle count;
+- acceptance gate
+
+was changed.
+
+The v1 sanity output
+is:
+
+NON-EVIDENCE.
+
+SANITY
+
+Disjoint family:
+
+20260922490000...
+
+8 target-lesion worlds.
+
+5 policies.
+
+40 policy lifetimes.
+
+Accepted sanity-output SHA-256:
+
+f349b2cf52fd0b07b3b6889907f7e103d00050bf773dbcedb5a34e482e474205.
+
+Mechanical checks:
+
+- exactly five policies / sanity world;
+- exact eight sanity worlds;
+- both learned heads
+  share:
+  one cell population;
+- no task-specific cell identity
+  is hard-coded;
+- localization uses:
+  a dedicated localization set
+  disjoint from:
+  training
+  and:
+  held-out test;
+- repair observations
+  are disjoint from:
+  held-out test;
+- TARGET2:
+  exactly two target-task
+  functional observations / cycle;
+- TARGET2:
+  zero other-task observations;
+- GLOBAL-RETRAIN:
+  control only;
+- LOCAL-CHECKPOINT-ORACLE:
+  local-state ceiling only.
+
+NON-EVIDENCE LEARNING SIGNAL
+
+Coarse held-out R^2:
+
+approximately:
+0.94..0.99.
+
+Fine held-out R^2:
+
+approximately:
+0.96..0.99
+in:
+the accepted v2 sanity
+except:
+no target condition
+below:
+the preregistered world-level
+0.85 floor.
+
+NON-EVIDENCE LOCALIZATION SIGNAL
+
+All:
+8 / 8
+target conditions
+
+find:
+a selective
+connected target lesion
+
+inside:
+the frozen
+10%-of-body cap.
+
+Representative target-function
+R^2 loss:
+
+approximately:
+0.19..0.28.
+
+Representative collateral loss:
+
+approximately:
+0..0.004.
+
+Matched random-patch
+target loss:
+
+typically:
+much smaller
+
+at:
+approximately:
+0.002..0.031.
+
+Selected A/B patch Jaccard:
+
+0
+in:
+the eight sanity conditions.
+
+NON-EVIDENCE REPAIR SIGNAL
+
+TARGET2
+median cycle-1
+recovery fraction
+
+by:
+scale / target
+
+is:
+approximately:
+0.92..0.99
+at:
+g=1.00
+
+and:
+approximately:
+0.93..0.94
+at:
+g=0.25.
+
+Other-task R^2
+remains:
+near:
+pre-lesion baseline
+
+without:
+other-task
+functional observations.
+
+Repeated:
+cycle-5
+target / collateral
+metrics
+
+remain:
+near:
+baseline
+in:
+the sanity matrix.
+
+These outputs are:
+
+NON-EVIDENCE.
+
+No:
+scientific threshold,
+task,
+lesion rule,
+repair budget,
+or:
+acceptance gate
+
+was selected
+from:
+these values.
+
+PRIMARY FAMILY
+
+20260922400000..20260922400079.
+
+80 held-out
+target-lesion worlds.
+
+5 policies.
+
+400 policy lifetimes.
+
+5 repair cycles / lifetime.
+
+2,000
+policy repair cycles.
+
+H175 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H175 primary world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
