@@ -1651,3 +1651,530 @@ the replacement family.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+CORRECTED FINAL ACCEPTED PRIMARY CLOSURE — ACTIVE LOCAL FUNCTIONAL PROBING
+
+DATE:
+2026-09-19.
+
+STATUS:
+ACCEPTED REPLACEMENT PRIMARY COMPLETE / MIXED-NEGATIVE.
+
+THIS CLOSURE SUPERSEDES
+
+the earlier H153 primary closure
+that used:
+the contaminated
+20260920000000
+seed family.
+
+CORRECTED HARNESS SHA-256
+
+0e50797675d9ca106e2ec0b90944e765d5e37398cfdb3059114c9512d0586be9.
+
+ACCEPTED REPLACEMENT PRIMARY FAMILY
+
+20260920100000..20260920102399.
+
+PRIMARY MATRIX
+
+2,400 underlying worlds.
+
+7 policies.
+
+16,800 policy-world evaluations.
+
+Validation:
+
+- exactly 2,400 unique held-out seeds;
+- exact replacement seed interval;
+- exactly seven policy results per seed;
+- no accepted-seed gaps;
+- no accepted-seed duplicates;
+- zero functionally-trivial worlds;
+- rho=0.50 wired only to STOP24;
+- no post-primary parameter change.
+
+PRIMARY CANDIDATE
+
+COMPONENT24.
+
+MIXED CONTEXT — FINAL RECOVERY
+
+Pooled across:
+COMPACT
+and:
+FOUR-PATCH.
+
+COMPONENT24 median final recovery:
+
+1%:
+0.9496.
+
+2%:
+0.9272.
+
+5%:
+0.9471.
+
+All:
+>=0.92.
+
+PASS.
+
+MIXED T90 RELIABILITY
+
+COMPONENT24
+T90-world fraction:
+
+1%:
+68.0%.
+
+2%:
+61.0%.
+
+5%:
+78.0%.
+
+Required:
+
+>=85%
+for all three
+
+and:
+>=90%
+for at least two.
+
+FAIL.
+
+ACTIVE QUERY VALUE
+
+RANDOM24
+T90-world fraction:
+
+1%:
+61.5%.
+
+2%:
+56.0%.
+
+5%:
+69.0%.
+
+COMPONENT24 gain:
+
+1%:
++6.5 percentage points.
+
+2%:
++5.0.
+
+5%:
++9.0.
+
+Required:
+>=10 points
+in:
+at least two of three.
+
+FAIL.
+
+Thus:
+
+query placement helps,
+but:
+not enough
+to close reliability.
+
+FOUR-PATCH INTERACTION
+
+COMPONENT24
+median functional T90
+among worlds reaching T90:
+
+MIXED 1%:
+
+COMPACT:
+4.
+
+FOUR:
+4.
+
+PASS.
+
+MIXED 2%:
+
+COMPACT:
+5.
+
+FOUR:
+6.
+
+20% penalty.
+
+PASS at:
+the frozen boundary.
+
+MIXED 5%:
+
+COMPACT:
+7.
+
+FOUR:
+10.
+
+approximately:
+43% penalty.
+
+FAIL.
+
+FOUR-PATCH T90-world fractions:
+
+1%:
+64%.
+
+2%:
+43%.
+
+5%:
+78%.
+
+Thus:
+
+component-balanced uncertainty selection
+does NOT:
+eliminate:
+distributed-wound interference.
+
+24 VERSUS 48 OBSERVATIONS
+
+COMPONENT48
+minus:
+COMPONENT24
+median final recovery:
+
+1%:
++0.0195.
+
+2%:
++0.0206.
+
+5%:
++0.0204.
+
+All:
+within:
+0.03.
+
+PASS.
+
+This is:
+an important negative diagnostic.
+
+The H152/H153 reliability problem
+is NOT primarily:
+insufficient final median quality
+from:
+a 24-observation cap.
+
+Doubling:
+24 -> 48
+
+provides:
+only:
+approximately 0.02
+median-final-recovery gain.
+
+EARLY STOP
+
+STOP24
+median observations:
+
+1%:
+22.
+
+2%:
+18.
+
+5%:
+15.
+
+STOP24 final-recovery deficit
+versus:
+COMPONENT24:
+
+1%:
+0.0073.
+
+2%:
+0.0052.
+
+5%:
+0.0087.
+
+T90-world-fraction deficit:
+
+1%:
+3.0 points.
+
+2%:
+2.5 points.
+
+5%:
+7.5 points.
+
+Quality / reliability tolerances:
+PASS.
+
+Observation ceiling:
+<=16
+
+passes only:
+5%.
+
+Required:
+at least:
+two of three.
+
+FAIL.
+
+Therefore:
+
+posterior-uncertainty early stopping
+can:
+save some observations,
+
+but:
+not enough
+to satisfy:
+the preregistered efficiency target.
+
+DEVELOPMENTAL-PRIOR VALUE
+
+COMPONENT24
+minus:
+FBONLY-ACTIVE24
+median final recovery:
+
+SMOOTH:
+
+1%:
++0.5055.
+
+2%:
++0.6773.
+
+5%:
++0.4151.
+
+MIXED:
+
+1%:
++0.4627.
+
+2%:
++0.6091.
+
+5%:
++0.4267.
+
+6 / 6
+groups
+exceed:
++0.05.
+
+PASS.
+
+The active-query signal
+does NOT replace:
+the developmental prior.
+
+CHECKPOINT ORACLE
+
+Remains:
+the final-recovery ceiling
+at:
+1.0.
+
+PASS.
+
+PREREGISTERED GATE REVIEW
+
+PASS:
+
+1.
+MIXED 1%..5%
+COMPONENT24
+median final recovery >=0.92.
+
+2.
+COMPONENT24
+within:
+0.03
+of:
+COMPONENT48
+for:
+all three
+small MIXED damage levels.
+
+3.
+Developmental-prior value
+in:
+6 / 6
+required groups.
+
+4.
+CHECKPOINT-ORACLE
+remains:
+the ceiling.
+
+FAIL / MIXED:
+
+1.
+MIXED T90 reliability.
+
+2.
+>=10-point
+reliability gain
+over:
+RANDOM24.
+
+3.
+FOUR-PATCH
+non-interference
+at:
+5%.
+
+4.
+Early-stop
+median observation target.
+
+FINAL INTERPRETATION
+
+H153 is:
+
+MIXED-NEGATIVE.
+
+The corrected replacement primary
+preserves:
+the substantive direction
+of:
+the superseded closure.
+
+POSTERIOR GEOMETRIC UNCERTAINTY
+IS:
+USEFUL
+
+but:
+
+NOT SUFFICIENT
+FOR:
+RELIABLE FUNCTIONAL
+MICRO-PATCH RECOVERY.
+
+The strongest result is:
+
+24 well-placed observations
+are already:
+within about 0.02
+median final recovery
+of:
+48 observations,
+
+yet:
+world-level T90 reliability
+remains:
+61%..78%.
+
+Therefore:
+
+the dominant missing variable
+is not:
+raw feedback quantity.
+
+It is:
+
+TASK-ERROR-AWARE
+FEEDBACK ROUTING
+AND:
+CROSS-WOUND
+FUNCTIONAL COUPLING.
+
+Component balancing
+based only on:
+parameter uncertainty
+
+does not know:
+
+which wound
+currently causes:
+the largest task residual.
+
+ARCHITECTURAL CONSEQUENCE
+
+The next valid repair experiment may:
+
+route:
+where feedback is acquired
+
+using:
+observed local functional residual,
+
+but:
+
+should NOT assume:
+wound components
+are:
+independent parameter systems.
+
+Any parameter solve
+must preserve:
+cross-component coupling
+in:
+the shared functional readout.
+
+LINEAGE NOTE
+
+The already-recorded H154
+residual-directed component-local experiment
+was motivated by:
+the superseded H153 closure.
+
+Its central premise:
+
+residual-directed routing
+
+remains:
+supported by:
+this corrected H153 result.
+
+However:
+
+any H154/H155 acceptance interpretation
+that depends on:
+the contaminated H153 seed family
+
+must be treated:
+with provenance caution.
+
+The corrected H153 result
+does not:
+authorize reinterpretation
+of:
+their accepted primary worlds
+without:
+an independent lineage audit.
+
+H153 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- global retraining;
+- biological claims;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
