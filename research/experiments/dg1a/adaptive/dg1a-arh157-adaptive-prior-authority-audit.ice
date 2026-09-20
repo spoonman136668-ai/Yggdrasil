@@ -694,3 +694,110 @@ SYNTHETIC_MEASURED_SANDBOX_ADAPTIVE_PRIOR_AUTHORITY_MICROPATCH
 canonical_scientific_execution = false
 canonical_r1_execution_spent = false
 stab18_r1_touched = false
+
+
+PRE-PRIMARY PROVENANCE CORRECTION 01 — HELD-OUT SEED ROLLOVER
+
+DATE:
+2026-09-19.
+
+STATUS:
+FROZEN BEFORE H157 HELD-OUT PRIMARY EXECUTION.
+
+DISCOVERY
+
+The originally preregistered H157 primary interval:
+
+20260920500000..20260920505399
+
+overlaps:
+
+the accepted H156 primary family:
+
+20260920500000..20260920502399.
+
+Therefore:
+
+the original H157 interval
+is NOT:
+held out.
+
+No H157 primary output
+has been executed or accepted
+from:
+that interval.
+
+DISPOSITION
+
+The entire originally declared H157 primary family:
+
+20260920500000..20260920505399
+
+is:
+INELIGIBLE /
+NON-EVIDENCE
+
+for:
+H157 acceptance.
+
+This rollover is:
+provenance-only.
+
+No:
+
+- lambda grid;
+- LOOCV rule;
+- feedback-noise level;
+- query-design policy;
+- observation budget;
+- context;
+- damage fraction;
+- geometry;
+- sample size;
+- acceptance gate
+
+is changed.
+
+REPLACEMENT H157 PRIMARY FAMILY
+
+20260920600000
+through:
+20260920605399.
+
+The 5,400 seeds map:
+one-to-one
+to:
+the frozen H157 factorial worlds.
+
+Repository and sandbox checks
+found:
+no prior H157 use
+of:
+the 202609206... family
+
+before:
+this freeze.
+
+SANITY FAMILY
+
+Remains:
+
+20260920590000...
+
+Sanity outputs remain:
+NON-EVIDENCE.
+
+H157 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first accepted
+202609206...
+primary world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
