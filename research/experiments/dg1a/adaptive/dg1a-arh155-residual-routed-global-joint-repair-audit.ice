@@ -922,3 +922,580 @@ the pinned harness hash.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — RESIDUAL-ROUTED GLOBAL JOINT FUNCTIONAL REPAIR
+
+DATE:
+2026-09-19.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / NEGATIVE.
+
+FINAL PINNED HARNESS SHA-256
+
+f2d9269f93d3d9e8d570d175f9ada0677167f94488e2e46c2505a4f484f178d6.
+
+ACCEPTED PRIMARY FAMILY
+
+20260920300000..20260920302399.
+
+PRIMARY MATRIX
+
+2,400 underlying worlds.
+
+7 policies.
+
+16,800 policy-world evaluations.
+
+Validation:
+
+- exactly 2,400 unique accepted world seeds;
+- exact held-out seed interval;
+- exactly seven policy rows / seed;
+- zero duplicate seed x policy rows;
+- zero functionally-trivial worlds;
+- contaminated 202609202... family excluded completely;
+- no post-primary parameter tuning.
+
+PRIMARY CANDIDATE
+
+JOINT-RESID24.
+
+MIXED CONTEXT — PRIMARY TARGET
+
+Pooled across:
+COMPACT
+and:
+FOUR-PATCH.
+
+Median final functional recovery:
+
+1%:
+0.9384.
+
+2%:
+0.9271.
+
+5%:
+0.9398.
+
+10%:
+0.9547.
+
+Frozen 1%..5% target:
+
+>=0.94.
+
+Observed:
+
+1%:
+narrow fail.
+
+2%:
+fail.
+
+5%:
+narrow fail.
+
+T90 world fraction:
+
+1%:
+60.5%.
+
+2%:
+59.0%.
+
+5%:
+67.5%.
+
+Frozen reliability target:
+
+>=85%
+for all three
+
+and:
+>=90%
+for at least two.
+
+FAIL.
+
+RESIDUAL ROUTING VERSUS H152 FIXED
+
+H152-FIXED-FB2
+T90 world fraction:
+
+1%:
+57.5%.
+
+2%:
+56.0%.
+
+5%:
+66.5%.
+
+JOINT-RESID24:
+
+1%:
+60.5%.
+
+2%:
+59.0%.
+
+5%:
+67.5%.
+
+Improvement:
+
++3,
++3,
++1
+percentage points.
+
+Frozen target:
+
+>=10 percentage points
+in:
+at least two of three.
+
+FAIL.
+
+RESIDUAL ROUTING VERSUS JOINT FIXED / UNCERTAINTY
+
+JOINT-FIXED24
+T90 world fraction:
+
+1%:
+61.0%.
+
+2%:
+59.5%.
+
+5%:
+73.0%.
+
+JOINT-UNCERT24:
+
+1%:
+61.0%.
+
+2%:
+59.5%.
+
+5%:
+73.5%.
+
+JOINT-RESID24:
+
+1%:
+60.5%.
+
+2%:
+59.0%.
+
+5%:
+67.5%.
+
+Thus:
+
+residual routing
+does NOT:
+beat:
+fixed component allocation
+
+and:
+does NOT:
+beat:
+posterior-uncertainty routing.
+
+At:
+5% damage,
+
+it is:
+materially worse.
+
+FOUR-PATCH RESULT
+
+JOINT-RESID24
+MIXED median T90
+among worlds reaching T90:
+
+1%:
+
+COMPACT:
+4.
+
+FOUR:
+5.
+
+ratio:
+1.25.
+
+2%:
+
+COMPACT:
+5.
+
+FOUR:
+5.
+
+ratio:
+1.00.
+
+5%:
+
+COMPACT:
+7.
+
+FOUR:
+8.
+
+ratio:
+approximately 1.14.
+
+Frozen <=20% penalty gate:
+
+passes:
+2%
+and:
+5%.
+
+fails:
+1%.
+
+Thus:
+
+the joint solve
+does:
+reduce the severe
+H154 parameter-separation failure.
+
+However:
+
+world-level T90 reach
+still differs strongly
+between:
+COMPACT
+and:
+FOUR-PATCH
+
+at:
+2%:
+
+80%
+versus:
+38%.
+
+The multi-wound
+reliability problem
+remains.
+
+FOUR-PATCH ROUTING COMPARISON
+
+T90 world fraction:
+
+1%:
+
+JOINT-FIXED24:
+57%.
+
+JOINT-UNCERT24:
+57%.
+
+JOINT-RESID24:
+56%.
+
+2%:
+
+39%,
+39%,
+38%.
+
+5%:
+
+70%,
+71%,
+59%.
+
+Residual routing:
+does not improve
+FOUR-PATCH reliability.
+
+FAIL.
+
+24 VERSUS 48 OBSERVATIONS
+
+JOINT-RESID48
+median final recovery:
+
+1%:
+0.9135.
+
+2%:
+0.8895.
+
+5%:
+0.9246.
+
+Absolute difference
+from:
+JOINT-RESID24:
+
+1%:
+approximately 0.0249.
+
+2%:
+approximately 0.0376.
+
+5%:
+approximately 0.0152.
+
+The frozen within-0.03 gate
+passes:
+1%
+and:
+5%.
+
+But:
+
+48 observations
+often reduce:
+final held-out recovery
+
+while:
+increasing:
+T90 reach.
+
+This reinforces:
+the sanity warning:
+
+MORE LOCAL FEEDBACK
+CAN:
+OVERFIT
+THE LOCAL QUERY SUPPORT.
+
+The problem is:
+measurement design / conditioning,
+
+not:
+simple feedback quantity.
+
+UNCERTAINTY ROUTING COMPARISON
+
+JOINT-RESID24
+does NOT:
+match or exceed
+JOINT-UNCERT24
+T90 fraction
+
+in:
+any of:
+MIXED 1%,
+2%,
+5%.
+
+FAIL.
+
+SMOOTH CONTEXT
+
+JOINT-RESID24
+median final recovery:
+
+1%:
+0.9968.
+
+2%:
+0.9950.
+
+5%:
+0.9961.
+
+SMOOTH safety / quality:
+PASS.
+
+SCRAMBLED CONTEXT
+
+JOINT-RESID24
+median final recovery:
+
+1%:
+0.6455.
+
+2%:
+0.4677.
+
+5%:
+0.6393.
+
+10%:
+0.6720.
+
+Thus:
+
+feedback plus harmonic prior
+still recovers:
+some arbitrary-state function,
+
+consistent with:
+H152's generic-regularization warning.
+
+ORACLE
+
+CHECKPOINT-ORACLE
+final recovery:
+1.0.
+
+It remains:
+the ceiling.
+
+PREREGISTERED GATE REVIEW
+
+PASS:
+
+- FOUR-PATCH median-T90 penalty
+  <=20%
+  in:
+  two of three
+  MIXED small-lesion groups;
+
+- JOINT-RESID24
+  within 0.03 median final recovery
+  of:
+  JOINT-RESID48
+  in:
+  two of three
+  small-lesion groups;
+
+- SMOOTH 1%..5%
+  median recovery >=0.95;
+
+- CHECKPOINT-ORACLE
+  remains:
+  the ceiling.
+
+FAIL:
+
+- MIXED 1%..5%
+  median >=0.94;
+
+- MIXED T90 reliability;
+
+- >=10-point reliability gain
+  over:
+  H152 fixed feedback;
+
+- residual-routing gain
+  over:
+  fixed component routing;
+
+- residual-routing gain
+  over:
+  uncertainty routing;
+
+- FOUR-PATCH reliability improvement.
+
+FINAL INTERPRETATION
+
+H155 is:
+
+NEGATIVE.
+
+The negative result is:
+informative.
+
+H154 showed:
+
+do NOT:
+solve wound components
+independently.
+
+H155 now shows:
+
+even when:
+all wound parameters
+are solved jointly,
+
+routing queries
+toward:
+the largest observed wound residual
+
+does NOT:
+solve:
+the reliability limit.
+
+The best 24-observation policies
+in H155 are:
+the simpler:
+
+JOINT-FIXED24
+and:
+JOINT-UNCERT24.
+
+Therefore:
+
+the remaining bottleneck
+is not primarily:
+
+WHICH WOUND
+GETS THE NEXT QUERY?
+
+It is:
+
+WHETHER
+THE 24-QUERY
+MEASUREMENT SET
+SUFFICIENTLY CONDITIONS
+THE JOINT
+LOST-STATE
+INVERSE PROBLEM.
+
+NEXT SCOPED DIRECTION
+
+GLOBAL INFORMATION-DESIGN
+FOR:
+LOCAL MICRO-PATCH FEEDBACK.
+
+Use:
+the same 24-observation cap,
+
+but choose queries
+to maximize:
+joint information
+about:
+all missing coefficients,
+
+rather than:
+first allocating by:
+wound identity.
+
+Candidate directions:
+
+- global posterior leverage;
+- D-optimal log-determinant gain;
+- diversity / conditioning penalty;
+- explicit rank / effective-dimension tracking;
+- feedback stopping
+  based on:
+  measurement sufficiency
+  rather than:
+  wound residual.
+
+Do NOT:
+
+increase:
+the primary observation cap
+as:
+the first response.
+
+H155 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- global retraining;
+- biological claims;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
