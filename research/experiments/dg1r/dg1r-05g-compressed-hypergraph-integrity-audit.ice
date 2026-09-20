@@ -1402,3 +1402,167 @@ carries.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05G COMPRESSED HYPERGRAPH INTEGRITY
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE:
+THE:
+FIRST:
+DG-1R-05G:
+WORLD.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05g_hypergraph_integrity_v1.py
+
+Harness commit:
+
+21d593e97b12c1eb4cabbd1433b41f85e263d602.
+
+Git blob SHA:
+
+54777d7cbde8549039e72e8b2bc96d09870b6d36.
+
+Remote source SHA-256:
+
+e59b7bc4989f79af8d10d6dabef7e9630df31f070b8af9c749938a91251bded5.
+
+Remote source bytes:
+
+12441.
+
+LOCAL PRECHECK
+
+Python syntax:
+
+PASS.
+
+Hypergraph degree vector:
+
+7,7,7,7,7,6,6,7,6,7,7,6.
+
+Minimum degree:
+
+6.
+
+Maximum degree:
+
+7.
+
+Maximum pair co-occurrence:
+
+2.
+
+PAIR20 reference degrees:
+
+block 2:
+
+3.
+
+block 3:
+
+4.
+
+Lesion:
+cardinality /
+uniqueness /
+input-overlap:
+prechecks:
+
+PASS.
+
+No:
+DG-1R-05G:
+experimental:
+world
+
+was:
+executed
+before:
+this:
+freeze.
+
+PACKAGING NOTE
+
+The:
+local:
+pre-transfer:
+source
+
+contained:
+one:
+final:
+newline.
+
+GitHub:
+stored:
+the:
+same:
+Python:
+source
+
+without:
+that:
+final:
+newline.
+
+No:
+Python:
+token,
+statement,
+constant,
+seed,
+method,
+metric,
+or:
+experimental:
+semantic
+
+changed.
+
+The:
+execution copy
+was:
+aligned
+to:
+the:
+authoritative:
+remote:
+bytes
+
+before:
+execution.
+
+FROZEN WORLD FAMILY
+
+20260926057000..20260926057007.
+
+8 worlds.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+sweeps.
+
+Output SHA-256
+must:
+match exactly.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+DG-1R-05G:
+
+NON-CANONICAL /
+NON-EVIDENCE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
