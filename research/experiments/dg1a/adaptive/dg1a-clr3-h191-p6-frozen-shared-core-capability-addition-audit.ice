@@ -674,3 +674,110 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — H191-P6 FROZEN SHARED-CORE HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST H191-P6 WORLD.
+
+HARNESS
+
+research/experiments/dg1a/adaptive/harnesses/h191_p6_frozen_shared_core_addition_v1.py
+
+Harness commit:
+
+b7d23c935d0656fc535b3212dfd66ee49c89d4cc.
+
+Git blob SHA:
+
+6e945c8a6d5ac1f1891ce79945717acd1192a5c6.
+
+Source SHA-256:
+
+8460bdef124a1d42f9e338249fbbbf99c88e85494bea35a56ecc7530cfc1d31e.
+
+Source bytes:
+
+13772.
+
+DEPENDENCY
+
+Frozen H191-P5 harness Git blob:
+
+85407e300382d8c918c2d51156582a5d69444e2f.
+
+Pinned P5 source SHA-256:
+
+b832f2a9030fae786e18f596360c4ed4eb880048336e5043373a76e1119ab87c.
+
+P5 transitively pins:
+
+H191-P0 helper blob:
+
+6ac31f5cc3e091be7ef24ea74879903dd21cc2fa.
+
+FROZEN WORLD FAMILY
+
+20260924700000..20260924700005.
+
+6 worlds.
+
+Every world contains:
+all 8 potential capability datasets
+before:
+CORE3 recruitment.
+
+FROZEN DEVELOPMENTAL STAGES
+
+CORE3:
+0,1,2.
+
+CAP4:
+add 3.
+
+CAP5:
+add 4.
+
+CAP6:
+add 5.
+
+CAP8:
+add 6 and 7.
+
+Candidate developmental core:
+
+support:
+frozen after CORE3.
+
+Old decoders:
+frozen after first fit.
+
+Only:
+new 8-coefficient decoders
+may be added.
+
+JOINT_REFIT:
+
+reference only.
+
+REPRODUCIBILITY
+
+Execute:
+two complete:
+6-world:
+all-stage sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
