@@ -613,3 +613,205 @@ SYNTHETIC_MEASURED_SANDBOX_FINE_SCALE_LEARNED_MICRO_FUNCTION_MATCHED_TURNOVER
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-PRIMARY IMPLEMENTATION FREEZE 01 — FINE-SCALE LEARNED MATCHED-TURNOVER HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE H171 HELD-OUT PRIMARY EXECUTION.
+
+FINAL H171 SANDBOX HARNESS
+
+File:
+
+h171_learned_matched_v1.py
+
+SHA-256:
+
+59141dc4bcea2c6befa58869c63ba725f5637d53360bf74bf3c67dbd4f6f5457.
+
+PARENT H170 HARNESS
+
+SHA-256:
+
+a3dbe6da369f3e0784e975c32f17ed9e1ad3b3043b0c3362cb00fc01c8f05b1a.
+
+CHANGED VARIABLE
+
+H171 reuses:
+the exact H170
+learned-task substrate,
+teacher,
+training,
+damage,
+query,
+repair,
+and:
+policy mechanics.
+
+Only:
+
+- cell scale is fixed to:
+  g=0.25;
+
+- lifetime is extended to:
+  292 repair cycles;
+
+- HALF checkpoint
+  is:
+  cycle 146;
+
+- late-life window
+  is:
+  final 25%
+  of:
+  the lifetime.
+
+This corresponds to:
+approximately one
+body-equivalent
+fine-scale turnover.
+
+SANITY
+
+Disjoint family:
+
+20260922090000...
+
+6 representative
+learned-task lifetimes.
+
+4 policies.
+
+24 policy lifetimes.
+
+Mechanical checks:
+
+- exact four policies / sanity seed;
+- baseline learned test accuracy:
+  approximately 0.965..1.000;
+- median baseline competence
+  >0.97
+  for:
+  both task classes;
+- LOCAL-CHECKPOINT-ORACLE:
+  final learned-output fidelity
+  exactly 1.0;
+- realized body-equivalent turnover:
+  approximately 1.0009;
+- HOTSPOT representative
+  maximum single-cell replacement count:
+  approximately 72..90;
+- no:
+  lost learned coefficient,
+  held-out test label,
+  or:
+  latent task class
+  enters:
+  non-oracle repair.
+
+Accepted sanity matrix SHA-256:
+
+efcab65a679fa4595007595c95f1e61513773865e8243364e7e0611b436a0cf9.
+
+NON-EVIDENCE SIGNAL
+
+Most representative
+fine-scale learned lifetimes
+
+retain:
+
+- classification accuracy;
+- high learned-output fidelity;
+- low Brier degradation.
+
+However:
+
+one:
+MIXED
+ROAMING
+eta=.10
+
+representative world
+
+finishes with:
+
+baseline accuracy:
+1.0.
+
+FINAL accuracy:
+1.0.
+
+But:
+
+FINAL learned-output fidelity:
+
+approximately:
+-56.47.
+
+Cumulative absolute
+test-logit error exposure:
+
+approximately:
+254,703.
+
+Thus:
+
+TOP-LINE CLASSIFICATION ACCURACY
+CAN:
+MASK
+CATASTROPHIC
+LOGIT / CALIBRATION DRIFT
+
+under:
+long noisy learned-state turnover.
+
+This sanity result is:
+
+NON-EVIDENCE.
+
+It is:
+a live primary hypothesis.
+
+No:
+
+- teacher;
+- training rule;
+- repair policy;
+- query controller;
+- noise rate;
+- lifetime;
+- exposure metric;
+- accuracy metric;
+- acceptance gate
+
+is changed.
+
+PRIMARY FAMILY
+
+20260922000000..20260922000079.
+
+80 held-out learned-task worlds.
+
+4 policies.
+
+320 policy lifetimes.
+
+Approximately:
+93,440 policy repair cycles.
+
+H171 ACCEPTED PRIMARY STATUS
+
+NOT STARTED.
+
+No execution-semantic change
+is permitted
+after:
+the first held-out H171 world.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
