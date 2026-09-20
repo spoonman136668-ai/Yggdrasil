@@ -319,3 +319,75 @@ NOT STARTED / PROVENANCE BLOCKED.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — H191-P2 SHARED-SUPPORT HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST H191-P2 WORLD.
+
+HARNESS
+
+research/experiments/dg1a/adaptive/harnesses/h191_p2_shared_support_v1.py
+
+Harness commit:
+
+3307f18d3fb6b9ce70f09da88d5cc9191f960441.
+
+Git blob SHA:
+
+689b1c9a20559e090c41763c9174da7a43590fad.
+
+Source SHA-256:
+
+17d84f5115a202e20b71bd43c3781342c0a0fe19825b947229f62f8b246ec6f9.
+
+Source bytes:
+
+6865.
+
+DEPENDENCY
+
+Frozen H191-P0 base harness:
+
+source SHA-256:
+
+da6643d35ae6bd5256d400d219702e37ed379ac867ea81583acd2986fa45eabb.
+
+Git blob SHA:
+
+6ac31f5cc3e091be7ef24ea74879903dd21cc2fa.
+
+P2 override:
+
+- world family 20260924390000..20260924390039;
+- latent recruiter replaced by:
+  joint shared support over:
+  all 3209 fixed parent sigma=0.22 basis sites;
+- nested shared support:
+  2 / 4 / 8;
+- reporting labels:
+  SUPPORT2 / SUPPORT4 / SUPPORT8.
+
+Everything else:
+
+frozen P0 semantics.
+
+REPRODUCIBILITY
+
+Execute:
+two complete runs.
+
+Canonical JSON SHA-256
+must:
+match exactly.
+
+H191 accepted-lineage primary remains:
+NOT STARTED / PROVENANCE BLOCKED.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
