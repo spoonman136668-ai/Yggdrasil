@@ -1109,3 +1109,196 @@ reservoir weights.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-01 ReCA RULE-SWEEP HARNESS
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE THE FIRST DG-1R-01 WORLD.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_01_reca_rule_sweep_v1.py
+
+Harness commit:
+
+05179e938aee726e6a503b81e9a45672576e2eb6.
+
+Git blob SHA:
+
+e053bf7f1088c5c8751d96afbd394dfa19f8a07c.
+
+Source SHA-256:
+
+f1c97e345f83bc6a12efa6d9aa72a4a8309c300a4d3f044ebccfdf80e473f483.
+
+Source bytes:
+
+14518.
+
+LOCAL PRECHECK
+
+Git blob identity:
+
+PASS.
+
+Python compile:
+
+PASS.
+
+No:
+DG-1R-01:
+world
+was:
+executed
+before:
+this freeze.
+
+FROZEN READOUT DETAIL
+
+Ridge alpha:
+
+1e-3.
+
+Feature coefficients:
+
+regularized.
+
+Bias coefficient:
+
+NOT:
+regularized.
+
+All:
+eight:
+task readouts
+
+are:
+solved
+in:
+one:
+multi-target:
+linear system
+
+per:
+method /
+world.
+
+FROZEN ECA DETAIL
+
+Wolfram neighborhood index:
+
+4*left
++
+2*center
++
+right.
+
+Rule bit:
+
+(rule >> index)
+&
+1.
+
+Periodic:
+boundaries.
+
+Input:
+XOR injection
+occurs:
+once
+before:
+the:
+four:
+internal:
+cellular updates
+at:
+each:
+external:
+time step.
+
+PERTURBATION SNAPSHOT
+
+Reference state:
+
+after:
+external:
+step:
+512
+
+and:
+its:
+fourth:
+internal:
+update.
+
+Perturbed clone:
+
+flip:
+cell:
+64.
+
+Horizon 1:
+
+uses:
+input:
+step:
+513.
+
+Both:
+reference
+and:
+perturbed:
+reservoirs
+receive:
+identical:
+future:
+input.
+
+RUNTIME
+
+Feature-generation:
+wall-clock timing
+
+is:
+written:
+only:
+to:
+the:
+runtime sidecar.
+
+It is:
+excluded:
+from:
+canonical:
+result bytes.
+
+FROZEN WORLD FAMILY
+
+20260926010000..20260926010007.
+
+8 worlds.
+
+REPRODUCIBILITY
+
+Two:
+complete:
+8-world:
+canonical sweeps.
+
+Canonical output SHA-256
+must:
+match exactly.
+
+Runtime sidecars:
+are:
+telemetry only
+and:
+need not:
+match.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
