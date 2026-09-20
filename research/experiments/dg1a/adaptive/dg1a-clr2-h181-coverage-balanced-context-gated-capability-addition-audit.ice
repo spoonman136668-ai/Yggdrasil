@@ -1261,3 +1261,605 @@ the replacement family.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — COVERAGE-BALANCED CONTEXT-GATED CAPABILITY ADDITION
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / STRONG POSITIVE / BOUNDED CAPABILITY-ADDITION GATE PASSED.
+
+FINAL H181 HARNESS SHA-256
+
+be0db4e7e4a68a4da324905456d50db3453742941640b6bce5531248ba576c45.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+0e385a29bebd953a75f244f5635e08566c6d9dbe605efbbc3cf404a62de004ee.
+
+ACCEPTED REPLACEMENT PRIMARY FAMILY
+
+20260923100000..20260923100019.
+
+The originally declared
+20260923000000..20260923000019
+family remains:
+NON-EVIDENCE
+due:
+stale-harness contamination.
+
+PRIMARY MATRIX
+
+20 held-out worlds.
+
+9 policies.
+
+180 evaluations.
+
+Validation:
+
+- exact 20 replacement seeds;
+- exact 9 policies / world;
+- zero duplicate seed x policy rows;
+- no missing evaluations;
+- no post-primary morphology / gate tuning.
+
+A BASELINE
+
+Median held-out A R^2:
+
+approximately:
+0.99756.
+
+PASS.
+
+PRIMARY CANDIDATE
+
+LEARNED_GATE_COVER8_64.
+
+Median B held-out R^2:
+
+approximately:
+0.94288.
+
+Frozen target:
+>=0.90.
+
+PASS.
+
+WORLD-LEVEL B RELIABILITY
+
+B R^2 >=0.85:
+
+19 / 20
+=
+95%.
+
+Frozen target:
+>=90%.
+
+PASS.
+
+This closes:
+the H180
+world-to-world
+coverage reliability gap.
+
+A PRESERVATION
+
+Median A R^2 loss:
+
+approximately:
+0.000529.
+
+World rate:
+A loss <=0.05:
+
+100%.
+
+PASS.
+
+A OUTPUT DRIFT
+
+Median normalized A-output drift:
+
+approximately:
+0.000740.
+
+Frozen limit:
+<=0.05.
+
+PASS.
+
+LEARNED ROUTER
+
+Median context accuracy:
+
+1.0.
+
+Median A-context activation:
+
+approximately:
+0.00441.
+
+Median B-context activation:
+
+approximately:
+0.99564.
+
+PASS.
+
+GENERALIZATION
+
+Median B
+validation-test R^2 gap:
+
+approximately:
+0.01794.
+
+Median B
+train-test gap:
+
+approximately:
+0.01544.
+
+PASS.
+
+ACTIVE STRUCTURE
+
+64 daughter cells:
+
+growth fraction:
+
+approximately:
+1.994%.
+
+Frozen ceiling:
+<=2%.
+
+PASS.
+
+PERMANENT PARAMETER GROWTH
+
+64 daughter coefficients
++
+6 gate parameters:
+
+approximately:
+2.181%.
+
+Frozen ceiling:
+<=2.25%.
+
+PASS.
+
+COMPUTE
+
+Median compute proxy:
+
+approximately:
+0.301%
+of:
+GLOBAL_DAUGHTER.
+
+PASS.
+
+HIBERNATION / REACTIVATION
+
+Exact:
+
+A hibernation-return error:
+0.
+
+B reactivation-return error:
+0.
+
+PASS.
+
+COVERAGE VALUE
+
+LEARNED_GATE_RANDOM8_64:
+
+world B>=0.85:
+
+90%.
+
+LEARNED_GATE_COVER8_64:
+
+95%.
+
+Absolute:
++5 percentage points.
+
+Because:
+the random comparator
+already reaches:
+the frozen:
+>=90%
+new-family threshold,
+
+the preregistered
+variance criterion applies.
+
+B R^2
+population standard deviation:
+
+COVER8_64:
+
+approximately:
+0.03554.
+
+RANDOM8_64:
+
+approximately:
+0.04458.
+
+Reduction:
+
+approximately:
+20.29%.
+
+Frozen requirement:
+>=20%.
+
+PASS
+at:
+the boundary.
+
+Coverage geometry:
+
+median maximum
+B-training-point
+distance
+to:
+nearest seed:
+
+COVER8:
+
+approximately:
+0.44385.
+
+RANDOM8:
+
+approximately:
+0.49179.
+
+PASS.
+
+Thus:
+
+deterministic
+input-coverage balancing
+
+reduces:
+coverage variance
+
+without:
+adding:
+cells,
+gate parameters,
+or:
+functional supervision.
+
+HARD-GATE CEILING
+
+HARD_GATE_COVER8_64:
+
+B>=0.85:
+
+100%.
+
+LEARNED_GATE_COVER8_64:
+
+95%.
+
+Gap:
+
+5 percentage points.
+
+Frozen gate:
+
+hard gate
+must not exceed:
+learned gate
+by:
+>5 points.
+
+PASS
+at:
+the boundary.
+
+This indicates:
+
+the learned gate
+is:
+near:
+the routing ceiling
+
+for:
+the accepted morphology.
+
+STRONG-SUPPORT
+LOWER-BUDGET RESULT
+
+LEARNED_GATE_COVER8_48:
+
+48 daughter cells.
+
+Growth fraction:
+
+approximately:
+1.496%.
+
+Permanent parameter growth:
+
+approximately:
+1.683%.
+
+Median B held-out R^2:
+
+approximately:
+0.94128.
+
+B>=0.85:
+
+95%.
+
+Median A R^2 loss:
+
+approximately:
+0.000548.
+
+World A loss<=0.05:
+
+100%.
+
+Thus:
+
+the 48-cell
+coverage-balanced
+learned-gated policy
+
+also:
+passes:
+the central:
+B capability
+and:
+A preservation
+requirements.
+
+STRONG SUPPORT:
+
+PASS.
+
+ARCHITECTURAL RESULT
+
+Yggdrasil has now demonstrated:
+
+A
+LEARNED,
+FROZEN
+CAPABILITY A
+
+can be preserved
+
+while:
+
+a previously absent
+CAPABILITY B
+
+is added by:
+
+- 48 new computational cells;
+- distributed as:
+  8 coverage-balanced
+  micro-patches;
+- controlled by:
+  one:
+  6-parameter
+  learned context router;
+- trained:
+  only on:
+  B function examples;
+- with:
+  no:
+  A task-output replay;
+- with:
+  exact:
+  hibernation / reactivation.
+
+The added active structure:
+
+approximately:
+1.50%
+of:
+the original cellular body.
+
+Permanent parameters:
+
+approximately:
+1.68%
+of:
+the parent coefficient count.
+
+This is:
+the first:
+bounded
+developmental
+capability-addition
+result
+that clears:
+both:
+capability
+and:
+preservation
+reliability.
+
+PRIMARY GATE REVIEW
+
+PASS:
+
+1.
+A baseline.
+
+2.
+COVER8_64 median B.
+
+3.
+COVER8_64 world B reliability.
+
+4.
+Median A preservation.
+
+5.
+World-level A preservation.
+
+6.
+A output drift.
+
+7.
+Learned gate quality.
+
+8.
+Coverage value.
+
+9.
+Coverage geometry.
+
+10.
+Generalization.
+
+11.
+Active structure.
+
+12.
+Permanent parameter growth.
+
+13.
+Compute.
+
+14.
+Hibernation / reactivation.
+
+15.
+Hard-gate ceiling relationship.
+
+16.
+GLOBAL_DAUGHTER capacity ceiling.
+
+STRONG SUPPORT:
+
+PASS.
+
+FINAL INTERPRETATION
+
+H181 is:
+
+STRONG POSITIVE.
+
+The H178-H180
+failure sequence
+is now resolved:
+
+H178:
+one compact patch
+under-covered B.
+
+H179:
+distributed morphology
+improved coverage
+but:
+ungated cells interfered
+with A.
+
+H180:
+context routing
+removed interference
+but:
+random broad placement
+remained:
+world-to-world variable.
+
+H181:
+coverage-balanced
+distributed placement
++
+learned context routing
+
+crosses:
+the full:
+bounded capability-addition
+reliability threshold.
+
+NEXT COGNITIVE INFLECTION
+
+Proceed immediately to:
+
+CLR2-H182 —
+SEQUENTIAL CAPABILITY ACCUMULATION.
+
+Learn:
+A.
+
+Add:
+B
+
+with:
+the accepted:
+48-cell
+coverage-balanced
+context-gated
+developmental mechanism.
+
+Freeze:
+A+B.
+
+Then:
+introduce:
+a previously unseen
+capability C.
+
+Add:
+C
+with:
+another:
+bounded
+coverage-balanced
+developmental patch.
+
+Measure:
+
+- A retention;
+- B retention;
+- C competence;
+- permanent active-cell growth;
+- routing-parameter growth;
+- memory;
+- compute;
+- cross-capability interference;
+- hibernation / reactivation;
+- whether:
+  the same:
+  developmental substrate
+  can:
+  accumulate:
+  multiple capabilities
+  without:
+  global retraining.
+
+H181 DOES NOT AUTHORIZE
+
+- production use;
+- live model modification;
+- biological claims;
+- whole-model retraining
+  as:
+  the candidate architecture;
+- canonical scientific claims;
+- STAB-18-R1 execution.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
