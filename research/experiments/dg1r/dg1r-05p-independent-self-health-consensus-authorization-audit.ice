@@ -586,3 +586,123 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05P SELF-HEALTH CONSENSUS AUTHORIZATION
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY AUTHORIZATION CASE.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05p_self_health_consensus_v1.py
+
+Harness source commit:
+
+052f3cc00dcaccf9abd8c4e0df7003900bcded74.
+
+Git blob SHA:
+
+f8975a8fe5f87c62bf0c1f3af90a3a0cef241a98.
+
+Source SHA-256:
+
+41dfa288ffc542d1bc536ca676ad8f34712338c3f73d66e05949b68c14901259.
+
+Source bytes:
+
+15319.
+
+IMPLEMENTATION ALIGNMENT
+
+The frozen harness implements:
+
+- exact DIST4_05M topology;
+- COORD6 candidate masks of Hamming weight 1 through 6;
+- candidate ordering by smallest coalition size, largest syndrome reduction, then numeric mask;
+- FP1 through FP4 nested temporal fingerprint rows exactly as preregistered;
+- exact per-block fingerprint-delta compatibility;
+- combined multi-plane proposals before fingerprint compatibility;
+- detection / authorization only;
+- no logical repair mutation.
+
+For multi-plane cases, the implementation deterministically enumerates active planes in ascending plane index and the already-frozen per-plane COORD6 candidate order. This resolves combination traversal only; it does not alter candidate eligibility, fingerprint compatibility, or any success signal.
+
+LOCAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Exact static geometry:
+
+rank 12;
+kernel count 0;
+single-region floor 6;
+two-region floor 8;
+global logical floor 4;
+maximum pair co-occurrence 2;
+80 incidences;
+exact degree vector
+(7,7,7,7,7,6,6,7,6,7,7,6).
+
+Fingerprint transform ranks:
+
+FP1 = 1.
+FP2 = 2.
+FP3 = 3.
+FP4 = 4.
+
+Exact resource totals:
+
+FP0 = 128.
+FP1 = 140.
+FP2 = 152.
+FP3 = 164.
+FP4 = 176.
+
+Frozen case counts mechanically asserted:
+
+Audit A = 16380.
+Audit B = 24780.
+Audit C = 12.
+Audit D = 180.
+Audit E = 144.
+
+Candidate bound:
+
+6 logical blocks.
+
+Candidate masks within bound:
+
+2509.
+
+No primary authorization case,
+truth-performance result,
+specificity result,
+challenge result,
+alias result,
+or correlated-forgery result
+was generated before this freeze.
+
+REPRODUCIBILITY
+
+Two complete deterministic frozen sweeps.
+
+Serialized output SHA-256 must match exactly.
+
+No post-result tuning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
