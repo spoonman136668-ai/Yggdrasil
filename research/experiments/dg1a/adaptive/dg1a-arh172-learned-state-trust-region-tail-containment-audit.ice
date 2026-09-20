@@ -1319,3 +1319,770 @@ the first held-out H172 world.
 canonical_scientific_execution = false.
 canonical_r1_execution_spent = false.
 stab18_r1_touched = false.
+
+
+FINAL ACCEPTED PRIMARY CLOSURE — LEARNED-STATE TRUST-REGION / LOGIT-TAIL CONTAINMENT
+
+DATE:
+2026-09-20.
+
+STATUS:
+ACCEPTED PRIMARY COMPLETE / NEGATIVE FOR WORLD-LEVEL TAIL CONTAINMENT / POSITIVE EXPOSURE REDUCTION DIAGNOSTIC.
+
+FINAL H172 HARNESS SHA-256
+
+7e0ddc689ff094af85b2629b8adb5044fb920758a42eac493aff55d7ca89e888.
+
+ACCEPTED PRIMARY MATRIX SHA-256
+
+b4baadd693b8cf550a16153536d06cc1242eccca9a45271d5cc50e2578b6ae4f.
+
+ACCEPTED PRIMARY FAMILY
+
+20260922100000..20260922100079.
+
+PRIMARY MATRIX
+
+80 held-out learned-task worlds.
+
+5 policies.
+
+400 policy lifetimes.
+
+292 repair cycles / lifetime.
+
+Approximately:
+
+116,800 policy repair cycles.
+
+Validation:
+
+- exactly 80 unique held-out seeds;
+- exact accepted seed interval;
+- exactly five policy rows / seed;
+- zero duplicate seed x policy rows;
+- no missing accepted seeds;
+- no post-primary tau tuning.
+
+PRIMARY CANDIDATE
+
+TRUST2-HIST-GEOM.
+
+TASK ACCURACY
+
+Across:
+all
+task x turnover x eta groups,
+
+TRUST2
+median FINAL accuracy
+remains:
+within:
+0.03
+of:
+its own baseline.
+
+PASS.
+
+World-level accuracy retention:
+
+100%
+of:
+TRUST2 worlds
+
+finish:
+within:
+0.05 accuracy
+of:
+their own baseline.
+
+PASS.
+
+BRIER / CALIBRATION
+
+TRUST2
+median Brier degradation
+
+remains:
+well below:
+0.03
+
+in:
+every group.
+
+PASS.
+
+GROUP-MEDIAN
+LEARNED-OUTPUT FIDELITY
+
+TRUST2
+group-median
+FINAL learned-output fidelity:
+
+MIXED HOTSPOT eta=0:
+approximately 0.9950.
+
+MIXED HOTSPOT eta=.10:
+approximately 0.9925.
+
+MIXED ROAMING eta=0:
+approximately 0.9755.
+
+MIXED ROAMING eta=.10:
+approximately 0.9597.
+
+SMOOTH HOTSPOT eta=0:
+approximately 0.9943.
+
+SMOOTH HOTSPOT eta=.10:
+approximately 0.9859.
+
+SMOOTH ROAMING eta=0:
+approximately 0.9783.
+
+SMOOTH ROAMING eta=.10:
+approximately 0.9797.
+
+Frozen target:
+>=0.95
+for:
+every group.
+
+PASS:
+8 / 8.
+
+WORLD-LEVEL TAIL
+
+TRUST2 worlds
+with:
+FINAL learned-output fidelity
+>=0.95:
+
+62 / 80
+=
+77.5%.
+
+Frozen target:
+>=95%.
+
+FAIL.
+
+TRUST2 worlds
+with:
+FINAL fidelity <0:
+
+11 / 80.
+
+Frozen target:
+ZERO.
+
+FAIL.
+
+TRUST2 worlds
+with:
+FINAL fidelity <-10:
+
+3 / 80.
+
+Frozen target:
+ZERO.
+
+FAIL.
+
+Minimum TRUST2
+FINAL learned-output fidelity:
+
+approximately:
+-91.92.
+
+Therefore:
+
+the catastrophic
+learned-logit tail
+
+is:
+NOT contained.
+
+COMPARISON TO:
+H171-UNCONSTRAINED
+
+H171_UNCONSTRAINED:
+
+world fraction
+FINAL fidelity >=0.95:
+
+76.25%.
+
+negative-fidelity worlds:
+
+11 / 80.
+
+minimum:
+
+approximately:
+-110.72.
+
+TRUST2:
+
+77.5%.
+
+negative-fidelity worlds:
+
+11 / 80.
+
+minimum:
+
+approximately:
+-91.92.
+
+Thus:
+
+TRUST2
+reduces:
+the magnitude
+of:
+some runaway worlds
+
+but:
+
+does NOT:
+remove:
+the tail class.
+
+TRUST4
+
+WORLD fraction
+>=0.95:
+
+76.25%.
+
+Negative worlds:
+
+11 / 80.
+
+Minimum:
+
+approximately:
+-112.49.
+
+Thus:
+
+the looser:
+tau=4
+
+does NOT:
+improve:
+tail containment.
+
+EXPOSURE
+VERSUS:
+MICRO2-LEVERAGE
+
+TRUST2
+group-median
+cumulative exposure ratio
+relative to:
+MICRO2-LEVERAGE:
+
+approximately:
+
+0.61
+to:
+0.91
+
+across:
+the eight groups.
+
+Frozen ceiling:
+<=1.35.
+
+PASS:
+8 / 8.
+
+TRUST2 therefore:
+
+uses:
+the same sparse
+HIST-GEOM
+observation budget
+
+while:
+remaining:
+exposure-cheaper
+than:
+the two-query reference.
+
+EXPOSURE
+VERSUS:
+H171-UNCONSTRAINED
+
+TRUST2
+group-median
+exposure
+
+is:
+lower
+than:
+H171_UNCONSTRAINED
+
+in:
+6 / 8 groups.
+
+Frozen requirement:
+at least:
+6 / 8.
+
+PASS
+at:
+the boundary.
+
+The remaining:
+2 groups
+
+are:
+effectively unchanged
+
+because:
+TRUST2
+almost never projects.
+
+OBSERVATION COST
+
+TRUST2
+and:
+H171_UNCONSTRAINED
+
+have:
+identical observation counts
+
+in:
+100%
+of:
+paired worlds.
+
+PASS.
+
+TRUST REGION ACTIVITY
+
+TRUST2
+median projection duty
+pooled across:
+the primary:
+
+approximately:
+2.2%.
+
+Several:
+catastrophic
+clean-feedback worlds
+
+have:
+
+projection duty:
+0%.
+
+Examples:
+
+FINAL fidelity
+approximately:
+
+-9.27,
+-8.22,
+-7.94,
+-7.80,
+-1.60
+
+with:
+zero TRUST2 projections.
+
+Their maximum:
+candidate-update /
+trust-radius ratio
+
+remains:
+
+far below:
+1.
+
+This is:
+the critical mechanism result.
+
+The catastrophic state
+does NOT require:
+
+one giant
+out-of-envelope update.
+
+Instead:
+
+many individually admissible
+local repair updates
+
+can:
+ratchet:
+
+the accepted learned state
+
+far away
+over:
+many turnover cycles.
+
+NOISY TAIL WORLDS
+
+In:
+some eta=.10
+catastrophic worlds,
+
+TRUST2 does:
+project
+
+on:
+approximately:
+8%..15%
+of:
+repair cycles.
+
+This reduces:
+runaway magnitude
+
+relative to:
+the unconstrained policy
+
+but:
+does not:
+restore:
+world-level tail safety.
+
+Thus:
+
+the problem is:
+not merely:
+failure to activate.
+
+It is:
+the fact that:
+
+the trust region
+is centered on:
+
+THE CURRENT
+CYCLE DEVELOPMENTAL PRIOR,
+
+which itself:
+inherits:
+historically drifted
+mutable state.
+
+TRUST4 ROBUSTNESS
+
+TRUST4
+does not create:
+a new
+group-median:
+accuracy,
+Brier,
+or:
+median-fidelity
+failure
+
+that:
+TRUST2 avoids.
+
+But:
+
+it also:
+does not:
+contain:
+the world-level tail.
+
+Therefore:
+
+the result is:
+not:
+a knife-edge
+tau=2 success.
+
+It is:
+a failure
+of:
+the cycle-relative
+trust-region form.
+
+ORACLE
+
+LOCAL-CHECKPOINT-ORACLE:
+
+FINAL learned-output fidelity:
+exactly 1.0.
+
+FINAL accuracy:
+exactly baseline.
+
+PASS.
+
+PREREGISTERED GATE REVIEW
+
+PASS:
+
+1.
+Baseline competence.
+
+2.
+TRUST2 median FINAL accuracy.
+
+3.
+World-level accuracy retention.
+
+4.
+Brier degradation.
+
+5.
+Group-median FINAL learned-output fidelity.
+
+9.
+Exposure versus MICRO2-LEVERAGE.
+
+10.
+Exposure lower than unconstrained
+in:
+6 / 8 groups.
+
+11.
+Observation-count equality.
+
+12.
+TRUST4
+does not create:
+a new group-median
+accuracy / Brier failure.
+
+13.
+Oracle ceiling.
+
+FAIL:
+
+6.
+>=95%
+of:
+TRUST2 worlds
+FINAL fidelity >=0.95.
+
+Observed:
+77.5%.
+
+7.
+ZERO:
+TRUST2
+FINAL fidelity <0.
+
+Observed:
+11.
+
+8.
+ZERO:
+TRUST2
+FINAL fidelity <-10.
+
+Observed:
+3.
+
+STRONG SUPPORT:
+
+FAIL.
+
+FINAL INTERPRETATION
+
+H172 is:
+
+NEGATIVE
+
+for:
+
+TARGET-BLIND
+CYCLE-RELATIVE
+LEARNED-STATE
+TRUST-REGION
+TAIL CONTAINMENT.
+
+The experiment confirms:
+
+TOP-LINE ACCURACY
+AND:
+GROUP MEDIANS
+
+CAN:
+MASK
+SEVERE
+WORLD-LEVEL
+INTERNAL FUNCTION DRIFT.
+
+It also identifies:
+why
+the proposed containment
+fails.
+
+The H172 rule bounds:
+
+DELTA
+FROM:
+THE CURRENT
+CYCLE DEVELOPMENTAL PRIOR.
+
+That prior:
+
+is derived from:
+surviving mutable state.
+
+Therefore:
+
+it can:
+RATCHET.
+
+A sequence of:
+small,
+individually admissible
+updates
+
+can:
+move:
+the learned-state manifold
+
+arbitrarily far
+
+without:
+ever violating:
+one cycle's
+delta bound.
+
+ARCHITECTURAL CONSEQUENCE
+
+Do NOT:
+
+simply tighten:
+tau
+
+post hoc.
+
+Do NOT:
+
+increase:
+functional observation count.
+
+Do NOT:
+
+return to:
+checkpoint restoration.
+
+The next control
+must be:
+
+NON-RATCHETING.
+
+It must constrain:
+
+ABSOLUTE
+LOCAL LEARNED-STATE
+AMPLITUDE
+
+relative to:
+current surrounding
+surviving-state scale,
+
+not:
+
+only:
+the incremental step
+from:
+the current
+possibly drifted prior.
+
+Candidate:
+
+for lesion state u,
+live-neighbor mean:
+m_B,
+
+and:
+target-blind local scale:
+s_cycle,
+
+enforce:
+
+||u - m_B||_2
+
+<=
+
+kappa
+*
+s_cycle
+*
+sqrt(K).
+
+This envelope:
+
+is recomputed
+from:
+surviving local / global state
+
+but:
+
+is NOT centered
+on:
+the lesion's
+historically accepted
+mutable prior.
+
+Therefore:
+
+historical coefficient magnitude
+cannot:
+ratchet
+without bound
+
+through:
+repeated local repair.
+
+NEXT:
+
+H173 —
+NON-RATCHETING
+LOCAL LEARNED-STATE
+AMPLITUDE-ENVELOPE
+TAIL-CONTAINMENT AUDIT.
+
+Primary question:
+
+can:
+an absolute
+target-blind
+local-state envelope
+
+eliminate:
+negative learned-output-fidelity
+tail worlds
+
+while:
+
+- retaining:
+  H171 task accuracy;
+- preserving:
+  Brier calibration;
+- preserving:
+  HIST-GEOM
+  low observation cost;
+- avoiding:
+  near-100%
+  clipping / frozen-state behavior?
+
+H172 DOES NOT AUTHORIZE
+
+- live model repair;
+- production thresholds;
+- biological claims;
+- global retraining;
+- STAB-18-R1 execution;
+- canonical scientific claims.
+
+canonical_scientific_execution = false.
+canonical_r1_execution_spent = false.
+stab18_r1_touched = false.
