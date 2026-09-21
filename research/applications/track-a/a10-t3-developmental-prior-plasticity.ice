@@ -817,3 +817,159 @@ No A10 result has been observed.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A10 T3 DEVELOPMENTAL PRIOR PLASTICITY
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY PRIMARY A10 LATENT PRIOR,
+TRAINING SEQUENCE,
+EVALUATION SEQUENCE,
+LEARNER ORDER,
+OR REPLACEMENT PLAN.
+
+IMPLEMENTATION COMMIT
+
+bc2bfd0456b475f081950305b8cd6c075dfedb4d.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a10_t3_developmental_prior_v1.py
+
+Loader Git blob:
+
+f62c1ffadc384b8746269f1a52cafb7b1906bbb1.
+
+Payload:
+
+research/applications/track-a/a10_t3_developmental_prior_v1.py.gz
+
+Payload Git blob:
+
+bcbb0e864d5acb71025c3fcb92bfb38d3c64f20c.
+
+Compressed payload SHA-256:
+
+7c655aa5910e0645d3bea880dae215107b0e5ec986613706661873bc420fa248.
+
+Compressed payload bytes:
+
+8199.
+
+Decompressed exact source SHA-256:
+
+d27d0074f08b6ae613e72a03d018af6b4bda9fd7dffb9615c687c286aca5e73e.
+
+Decompressed source bytes:
+
+26838.
+
+FROZEN PARENT
+
+A09 source SHA-256:
+
+9b508deb63c8c923b9ec300831446dcf68b2d9de6c9a76506449a277c7f72162.
+
+A09 freeze:
+
+db770987c53e623bb86ad229cac3252388f50cc2.
+
+A09 memory-stress manifest:
+
+8600dd8ff89d7190cf5f4c2c825442dc95e6c7f7803a759d8f8054e37510c6e7.
+
+A09 accepted primary result:
+
+1fa4b91eb629cc7a3757d3e6317b425981d5d709703369864029f8c772d0ec2b.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Role-prior catalog size:
+
+124.
+
+Mechanical manifest SHA-256:
+
+1d3e0ffba65c9755bcb610c5419e9753926d4714f686103a4f6525e866ff9c19.
+
+Exact zero-mean training pairs:
+
+PASS.
+
+Exact zero-mean held-out evaluation pairs:
+
+PASS.
+
+64 training observations per scenario:
+
+PASS.
+
+64 held-out evaluation observations per scenario:
+
+PASS.
+
+Distributed developmental-memory reconstruction:
+
+PASS.
+
+Mechanical full T3 smoke used only:
+
+MECHANICAL-NONPRIMARY-FREEZE.
+
+Mechanical smoke summary:
+
+12 / 12 Learner A exact developmental priors;
+12 / 12 Learner B exact developmental priors;
+12 / 12 learner agreement;
+12 / 12 developmental-policy commits;
+1977 candidate first-four-epoch served requests;
+1893 untrained-baseline first-four-epoch served requests;
+1977 evaluator-oracle first-four-epoch served requests;
+candidate >= baseline in 11 / 12 scenarios;
+24 baseline migrations avoided;
+candidate incorrect = 0;
+stale-program served = 0;
+all restart checks equivalent;
+all T3 probes PASS;
+all unsafe controls exposed;
+all existing constitutional safety totals = 0.
+
+These results use the literal fake mechanical freeze label.
+
+They are implementation checks only.
+
+They are NOT A10 scientific evidence.
+
+PRIMARY STATUS AT THIS FREEZE
+
+NOT DERIVED.
+
+Let the resulting commit SHA of this freeze update be F10.
+
+Only after F10 exists may the harness derive:
+
+- 12 latent developmental priors;
+- 12 x 64 training demand observations;
+- 12 x 64 held-out evaluation demands;
+- learner A / B observation orders;
+- four replacement target sets per scenario.
+
+No primary developmental prior or evaluation sequence has been observed.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
