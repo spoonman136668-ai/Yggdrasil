@@ -992,3 +992,506 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — DG-1R-05AA HIBERNATION / REACTIVATION
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED / POSITIVE PRIMARY / REPRODUCIBLE / NON-CANONICAL.
+
+FROZEN HARNESS EXECUTED
+
+Path:
+
+research/experiments/dg1r/harnesses/dg1r_05aa_hibernation_reactivation_v1.py
+
+Frozen Git blob:
+
+ecabd1d360660e69a0ce15cd877d5b230f607247.
+
+Frozen source SHA-256:
+
+3e254c15ffb526833caa635e8e8a7ef14f26fd2c0098b16d243c9be7f4308fde.
+
+Frozen source bytes:
+
+27031.
+
+EXECUTION PROVENANCE
+
+A repository-native GitHub Actions attempt was triggered first.
+
+Run:
+
+35547481674.
+
+It failed before any workflow step was allocated:
+
+runner_id = 0;
+steps = [].
+
+Therefore it produced no scientific result.
+
+The connector-fetched frozen source was then reconstructed in the sandbox.
+
+Before execution:
+
+reconstructed source bytes = 27031.
+
+reconstructed source SHA-256 =
+3e254c15ffb526833caa635e8e8a7ef14f26fd2c0098b16d243c9be7f4308fde.
+
+This exactly matched the preregistered freeze.
+
+Mechanical-only validation:
+
+PASS.
+
+No source change was made after the first primary case began.
+
+REPRODUCIBILITY
+
+Two complete deterministic sweeps.
+
+Sweep 1 serialized output SHA-256:
+
+0dd715b05320083fb224562173ac0eb858b845293a0eea1453bec825bdf1eb22.
+
+Sweep 2 serialized output SHA-256:
+
+0dd715b05320083fb224562173ac0eb858b845293a0eea1453bec825bdf1eb22.
+
+Byte-identical:
+
+TRUE.
+
+PRIMARY RESULT
+
+DORMANCY_REACTIVATION_SAFE:
+
+TRUE.
+
+All preregistered primary component signals:
+
+TRUE.
+
+AUDIT A — SHORT DORMANCY
+
+Cases:
+
+12.
+
+Safe reactivations:
+
+12 / 12.
+
+Stale votes:
+
+0.
+
+AUDIT B — LONG DORMANCY
+
+Cases:
+
+60.
+
+Safe reactivations:
+
+60 / 60.
+
+Current causal cursor reached:
+
+60 / 60.
+
+AUDIT C — ROLE CHANGE WHILE ASLEEP
+
+Cases:
+
+36.
+
+Safe reactivations:
+
+36 / 36.
+
+Newer authoritative role preserved:
+
+36 / 36.
+
+A dormant cell did not force the organism back to its remembered role.
+
+AUDIT D — STALE WITNESS RECLAIM
+
+Stale reclaim cases:
+
+12.
+
+Stale reclaim rejected:
+
+12 / 12.
+
+Fresh reassignment cases:
+
+6.
+
+Fresh reassignment accepted:
+
+6 / 6.
+
+Dormancy preserves memory of prior witness identity,
+not automatic ownership of the old governance slot.
+
+AUDIT E — REGISTRY HISTORY CATCH-UP
+
+Cases:
+
+48.
+
+Safe catch-up:
+
+48 / 48.
+
+Verified terminal cursor:
+
+48 / 48.
+
+AUDIT F — STALE SELF-HEALTH SNAPSHOT
+
+Cases:
+
+12.
+
+Stale snapshot reconciled to current authoritative phenotype:
+
+12 / 12.
+
+Current phenotype preserved:
+
+12 / 12.
+
+AUDIT G — KNOWN DAMAGE BEFORE SLEEP
+
+Cases:
+
+36.
+
+Authority blocked before repair:
+
+36 / 36.
+
+Healthy reactivation after repair:
+
+36 / 36.
+
+Known damage survived dormancy as quarantine state.
+
+AUDIT H — DAMAGE ACQUIRED WHILE DORMANT
+
+Cases:
+
+12.
+
+Authority blocked on wake:
+
+12 / 12.
+
+Authoritative baseline preserved:
+
+12 / 12.
+
+AUDIT I — INCOMPLETE CAUSAL CATCH-UP
+
+Cases:
+
+36.
+
+Blocked:
+
+36 / 36.
+
+AUDIT J — REGISTRY LIVENESS BOUND
+
+One missing registry root:
+
+48 / 48 safely reactivated.
+
+Two missing registry roots:
+
+12 / 12 correctly blocked.
+
+Total:
+
+60 cases.
+
+AUDIT K — PRE-CATCH-UP DORMANT VOTE
+
+Cases:
+
+48.
+
+Rejected:
+
+48 / 48.
+
+AUDIT L — POST-CATCH-UP AUTHORITY RE-EARNING
+
+Cases:
+
+12.
+
+Accepted after fresh current registration:
+
+12 / 12.
+
+AUDIT M — CURRENT WITNESS HIBERNATION
+
+Cases:
+
+12.
+
+Governance remained live after replacement:
+
+12 / 12.
+
+Dormant votes:
+
+0.
+
+Lineage count preserved:
+
+12 / 12.
+
+AUDIT N — REPEATED HIBERNATE / REACTIVATE
+
+Cell-cycles:
+
+96.
+
+Cursor monotonic:
+
+96 / 96.
+
+Stale votes:
+
+0.
+
+Final E8 cursor exact:
+
+12 / 12 cells.
+
+Authority duplication:
+
+0.
+
+AUDIT O — DORMANT POPULATION HEADCOUNT
+
+Nominal dormant copy counts:
+
+4, 8, 16, 32, 64.
+
+Cases:
+
+5.
+
+Active votes contributed:
+
+0.
+
+Dormant population size did not manufacture authority.
+
+NEGATIVE CONTROLS
+
+IMMEDIATE_WAKE_AUTHORITY failed as expected for:
+
+- target role changed;
+- witness replacement;
+- stale self-health;
+- dormant local damage;
+- stale vote before catch-up.
+
+CURSOR_ONLY_WAKE failed as expected for:
+
+- stale phenotype / role reconciliation;
+- obsolete witness reclaim;
+- dormant local damage.
+
+CAUSAL_CATCHUP_NECESSARY_NOT_SUFFICIENT:
+
+TRUE.
+
+CORRELATED / CONSTITUTIONAL HOLDOUTS
+
+H1 — OMITTED DORMANCY HISTORY
+
+Failure observed:
+
+TRUE.
+
+H2 — INDEPENDENT REGISTRY COLLUSION
+
+Failure observed:
+
+TRUE.
+
+H3 — FULL GOVERNANCE COLLUSION
+
+Failure observed:
+
+TRUE.
+
+H4 — ROOT COMPROMISE
+
+Failure observed:
+
+TRUE.
+
+These are expected boundaries.
+
+05AA does not establish a truth oracle.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-05AA establishes a clean authority separation between:
+
+PERSISTENT IDENTITY
+
+and
+
+CURRENT GOVERNANCE AUTHORITY.
+
+A dormant cell may preserve:
+
+- its last role;
+- its last FP2 phenotype;
+- its role generation;
+- its witness-lineage generation;
+- its registry generation;
+- its causal cursor;
+- unresolved damage state.
+
+But all current authority is revoked while dormant.
+
+On wake,
+authority returns only after:
+
+1. verified causal catch-up;
+2. reconciliation to current authoritative role / FP2;
+3. damage / health reconciliation;
+4. the frozen four-observation health dwell;
+5. fresh current holder registration when governance authority is needed.
+
+This prevents:
+
+- stale role rollback;
+- stale health baseline overwrite;
+- automatic witness-slot reclaim;
+- dormant vote inflation;
+- damaged-state promotion;
+- cursor-only authority restoration.
+
+The repeated-cycle result is important:
+
+the protocol remained monotonic across 96 hibernate / reactivate cell-cycles,
+with zero stale votes and zero authority duplication.
+
+This supports the North Star requirement that cells can intentionally stop participating,
+retain useful identity,
+and later rejoin without freezing the organism or silently reclaiming obsolete authority.
+
+Combined with DG-1R-05AB,
+the current evidence favors a split architecture:
+
+HEREDITARY / TEMPORAL MEMORY:
+compact ancestry-linked capsule.
+
+LIVE AUTHORITY:
+current lineage-qualified, health-qualified participation.
+
+The dormant memory survives.
+
+The authority expires.
+
+PLAIN-SPEAK INTERPRETATION
+
+Sleeping worked.
+
+A cell can go offline,
+remember who it was,
+and come back later without assuming the rest of the organism waited for it.
+
+If its job changed while it slept,
+it accepts the newer legitimate job.
+
+If somebody else took over its old voting role,
+it does not automatically get that chair back.
+
+If it went to sleep damaged,
+the damage is still a problem when it wakes.
+
+If it was damaged while sleeping,
+it gets quarantined instead of teaching the organism that the damaged state is healthy.
+
+And simply remembering the newest history pointer is not enough.
+
+The cell has to catch up,
+match the organism's current identity,
+prove health,
+and then earn any current authority again.
+
+We also cycled every cell through sleep and wake eight times.
+
+Across 96 cycles:
+
+no stale votes;
+no backwards cursor;
+no duplicated authority.
+
+That gives hibernation a real developmental meaning:
+
+MEMORY CAN SURVIVE SLEEP
+WITHOUT AUTHORITY SURVIVING SLEEP.
+
+NEXT JUSTIFIED EXPERIMENT
+
+DG-1R-05AC —
+
+PERSISTENT DEVELOPMENTAL LIFECYCLE INTEGRATION AUDIT.
+
+Primary question:
+
+Can the positive mechanisms now coexist across one persistent synthetic organism lifecycle:
+
+- ancestry-linked hereditary capsules from DG-1R-05AB;
+- hibernation / reactivation from DG-1R-05AA;
+- self-health qualification;
+- first-shot repair;
+- health-memory commit;
+- legitimate within-role adaptation;
+- role migration;
+- witness replacement;
+- provenance / lineage registry;
+- temporal sentinels;
+- partition / re-merge;
+- repeated developmental epochs;
+
+without hidden central operational authority,
+cross-layer authority leaks,
+stale identity normalization,
+or contradictory historical anchors?
+
+05AC should be a composition experiment,
+not another local threshold search.
+
+No component threshold should be retuned.
+
+A positive 05AC should be treated as the final research gate
+before a separate first application prototype track.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
