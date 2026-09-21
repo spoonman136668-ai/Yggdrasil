@@ -437,3 +437,99 @@ We solve it by making ancestry verifiable.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05AB ANCESTRY-LINKED HEREDITARY CAPSULE
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY ANCESTRY CASE.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05ab_ancestry_linked_capsule_v1.py
+
+Harness source commit:
+
+b9ccbc0c42ca35c9b6d8d669045d685ecb91fc57.
+
+Git blob SHA:
+
+e2ff32afa026d3d016cd7db0f3920326dd7e2bc8.
+
+Source SHA-256:
+
+cc49c97543a87b7449bb585b165c79bd620c822d973f0c41004c012a831b73db.
+
+Source bytes:
+
+23290.
+
+FROZEN IMPLEMENTATION
+
+The harness implements:
+
+- exact legitimate role sequence 0,1,1,2,2,3,3;
+- exact temporal cohorts at generations 0, 2, and 4;
+- exact five-field hereditary capsule unchanged from DG-1R-05Z;
+- exact synthetic commit rule SHA-256(parent|generation|role) truncated to 16 hex;
+- full verification from generation 0;
+- generation-0 ROOT-parent validation;
+- complete parent-edge continuity validation;
+- recomputation of every commit ID from ROOT forward;
+- selected-anchor role / FP2 / generation / causal-cursor validation;
+- verification of every older independently qualified sealed checkpoint at or before the selected anchor;
+- newest-qualified-cohort-first semantics;
+- no bypass around a contradictory qualified newer cohort;
+- dormant non-voting semantics;
+- catch-up-before-vote semantics;
+- full-cell versus compact-capsule decision-equivalence audit;
+- corruption-before-seal, temporal-quorum forgery, causally valid false-governance descendant,
+  complete-event omission, and replacement-genesis holdouts.
+
+LOCAL PRECHECK — NON-EVIDENCE
+
+Exact connector-fetched GitHub source was reconstructed byte-for-byte locally.
+
+Local reconstructed source bytes:
+
+23290.
+
+Local reconstructed source SHA-256:
+
+cc49c97543a87b7449bb585b165c79bd620c822d973f0c41004c012a831b73db.
+
+Matches frozen GitHub source:
+
+TRUE.
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+No primary ancestry result,
+authorization result,
+equivalence result,
+or holdout result
+was generated before this freeze.
+
+REPRODUCIBILITY
+
+Execute two complete deterministic sweeps from this exact frozen harness.
+
+Serialized output SHA-256 must match exactly.
+
+No post-result tuning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
