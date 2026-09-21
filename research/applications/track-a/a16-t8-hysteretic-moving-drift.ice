@@ -1226,3 +1226,522 @@ The frozen A16 harness bytes remain unchanged.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — A16 T8 HYSTERETIC WORKING-STATE PLASTICITY
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / POSITIVE PRIMARY / REPRODUCIBLE /
+HYSTERETIC MOVING-DRIFT TRACKING PASSED / NON-CANONICAL.
+
+FROZEN HARNESS
+
+Implementation commit:
+
+c6d4bd66bb9bde1dc72a3176ac0ffa1c40ee16f8.
+
+Freeze F16:
+
+90279bc5b90682e2538721ef152aa3accdedbddf.
+
+Source SHA-256:
+
+cd89dbc46174c97e0bea0bc0a1db4b65eea9b5732521ca30f00ed30f06b792fa.
+
+Source bytes:
+
+19762.
+
+Compressed payload SHA-256:
+
+c12d811d0ec68558330425a657f2faf6e2ff2d43648552365910b10806ed5173.
+
+Compressed payload bytes:
+
+6868.
+
+PRIMARY MANIFEST
+
+Derived only after F16 existed.
+
+Moving-drift manifest SHA-256:
+
+5feef8c8bde1e8a6380d68fb7ab55f57ab7f29c93879b766fc4f48b30041313e.
+
+No path,
+observation,
+attestation,
+learner order,
+evaluation sequence,
+restart point,
+or replacement target
+was redrawn after derivation.
+
+REPRODUCIBILITY
+
+Two complete deterministic A16 primary sweeps.
+
+Sweep 1 serialized result SHA-256:
+
+c4ecb7c90742fd737d370e2f378f398ccddd948bf5154c46d917fd3250fb339f.
+
+Sweep 2 serialized result SHA-256:
+
+c4ecb7c90742fd737d370e2f378f398ccddd948bf5154c46d917fd3250fb339f.
+
+Byte-identical primary evidence files:
+
+TRUE.
+
+PRIMARY RESULT
+
+A16_T8_HYSTERETIC_MOVING_DRIFT_SUCCESS:
+
+TRUE.
+
+Every frozen primary component:
+
+TRUE.
+
+HYSTERESIS / TEMPORARY FLUCTUATION
+
+Single-block P1 transient:
+
+12 / 12 scenarios
+produced no working-state update.
+
+The following one-block P0 return:
+
+12 / 12
+cleared the pending P1 nomination.
+
+Working generation after the temporary excursion:
+
+0 / unchanged
+in all scenarios.
+
+Thus one short-lived developmental shift
+did not change future-cell specialization.
+
+TRUE MOVING DRIFT
+
+Every scenario followed exactly:
+
+P0
+-> P1
+-> P2
+-> P3
+-> P4
+-> P3
+-> P2
+-> P0.
+
+Every true phase:
+
+abstained after the first 8-observation block.
+
+Every true phase:
+
+authorized the intended update only after the second consistent block.
+
+Authorized working-state updates:
+
+7 per scenario.
+
+Final working generation:
+
+7
+in 12 / 12 scenarios.
+
+Final working prior:
+
+exactly the accepted A15 C-v2 / P0 anchor
+in 12 / 12 scenarios.
+
+DURABLE DEVELOPMENTAL HISTORY
+
+C durable history:
+
+[v1,v2]
+
+remained immutable in:
+
+12 / 12 scenarios.
+
+Context-slot count:
+
+3
+in all scenarios.
+
+C-v3 creations:
+
+0.
+
+New context-slot creations:
+
+0.
+
+Working adaptation therefore remained an overlay
+instead of becoming permanent version or context proliferation.
+
+WORKING-STATE CAUSALITY
+
+Every committed working update:
+
+used the exact current working digest as parent.
+
+Parent-effective chains:
+
+exact in all scenarios.
+
+Stale-parent dedicated probe:
+
+rejected.
+
+No silent working-parent bypass entered the primary path.
+
+USEFULNESS
+
+Non-P0 moving-drift evaluations:
+
+72.
+
+Candidate first-four service:
+
+2980.
+
+Stale durable-C-v2 baseline:
+
+2929.
+
+Evaluator-only oracle:
+
+2980.
+
+Oracle efficiency:
+
+1.0.
+
+Candidate >= stale-v2:
+
+62 / 72 evaluations.
+
+Migrations avoided relative to stale-v2:
+
+54.
+
+Final P0 return service:
+
+matched the durable-P0 evaluator oracle exactly.
+
+Thus the working overlay improved moving-niche response
+without leaving a residual penalty when the original durable niche returned.
+
+RESTART
+
+Primary restart occurred:
+
+after the first 8-observation block of forward P3
+and before its second block.
+
+Required one-block pending state survived.
+
+Working prior remained P2 before confirmation.
+
+No premature P3 update occurred.
+
+After the second P3 block:
+
+the same P3 update committed as in the uninterrupted shadow.
+
+All complete restart comparisons:
+
+equivalent.
+
+TASK / CONSTITUTIONAL SAFETY
+
+Task accuracy:
+
+1.0.
+
+Incorrect served requests:
+
+0.
+
+Stale-program served requests:
+
+0.
+
+Existing constitutional safety violations:
+
+0.
+
+DEDICATED T8 PROBES
+
+P1 — single-block fluctuation:
+
+PASS.
+
+P2 — fluctuation reversion:
+
+PASS.
+
+P3 — two consistent blocks authorize update:
+
+PASS.
+
+P4 — same-root fanout rejected:
+
+PASS.
+
+P5 — learner disagreement rejected:
+
+PASS.
+
+P6 — stale working parent rejected:
+
+PASS.
+
+P7 — context-boundary evidence not eligible:
+
+PASS.
+
+P8 — out-of-step jump rejected:
+
+PASS.
+
+P9 — durable history immutable:
+
+PASS.
+
+P10 — explicit working-overlay clear to P0:
+
+PASS.
+
+NEGATIVE / LIMIT CONTROLS
+
+N1 — update after one block:
+
+unsafe shortcut exposed.
+
+N2 — durable version per working step:
+
+version-explosion shortcut exposed.
+
+N3 — new context per working step:
+
+context-proliferation shortcut exposed.
+
+N4 — force nearest prior on a large jump:
+
+working-lineage corruption shortcut exposed.
+
+N5 — silent parent bypass:
+
+causal-regression shortcut exposed.
+
+BOUNDARIES
+
+N6 — forged observation-root identities:
+
+trust boundary preserved.
+
+N7 — drift faster than two-block hysteresis:
+
+boundary preserved.
+
+N8 — multidimensional / nonlocal drift:
+
+boundary preserved.
+
+TECHNICAL INTERPRETATION
+
+A15 showed that a stable major change could become C-v2.
+
+A16 demonstrates a different adaptation layer.
+
+The accepted C-v2 durable policy remains an immutable checkpoint.
+
+Above it,
+the organism can maintain a bounded working developmental state
+that moves through local one-unit allocation changes.
+
+The update is hysteretic:
+
+one evidence block is insufficient.
+
+Two independent,
+provenance-qualified blocks must agree
+before the working developmental prior moves.
+
+This suppresses temporary fluctuation
+without requiring a new 64-observation durable policy version
+for every small environmental movement.
+
+The working state successfully moved forward,
+reversed,
+and returned exactly to its durable C-v2 anchor.
+
+No C-v3 was created.
+
+No additional context slot was consumed.
+
+The demonstrated chain is:
+
+DURABLE C-V2
+->
+SHORT FLUCTUATION
+->
+NO UPDATE
+->
+SUSTAINED LOCAL DRIFT
+->
+HYSTERETIC WORKING UPDATE
+->
+MULTIPLE LOCAL STEPS
+->
+REVERSE TRACKING
+->
+EXACT RETURN TO DURABLE C-V2
+
+while preserving causal ancestry,
+restart state,
+and constitutional limits.
+
+PLAIN-SPEAK INTERPRETATION
+
+This is the first test where Yggdrasil followed an environment
+that kept moving
+without saving a permanent new developmental version at every step.
+
+First we gave it a short-lived change.
+
+It noticed it,
+but did not overreact.
+
+Then the change disappeared.
+
+Its developmental state stayed exactly where it was.
+
+After that,
+we made the environment move in several real small steps.
+
+Each time,
+one block of evidence was still not enough.
+
+When the same change persisted for a second block,
+Yggdrasil moved its working developmental state one bounded step.
+
+It followed the environment:
+
+forward,
+farther forward,
+then backward,
+and finally all the way home.
+
+At the end,
+the working state was exactly back at the accepted C-v2 developmental memory.
+
+The permanent history never grew past:
+
+C-v1;
+C-v2.
+
+No C-v3.
+
+No fourth context.
+
+While the environment was moving,
+the adaptive working state served:
+
+2980
+
+immediate post-replacement requests,
+
+versus:
+
+2929
+
+for stubbornly staying at C-v2,
+
+and it avoided:
+
+54
+
+migrations.
+
+When the original C-v2 environment returned,
+there was no lingering penalty.
+
+So Yggdrasil now has two timescales of developmental memory:
+
+DURABLE HISTORY
+
+and
+
+BOUNDED WORKING PLASTICITY.
+
+That is materially closer to continuous adaptation
+without allowing developmental memory to explode.
+
+NEXT JUSTIFIED GATE
+
+A17 is already preregistered:
+
+BOUNDED INCREMENTAL DEVELOPMENTAL PATCH TRACKING.
+
+A16 used one replaceable working overlay.
+
+A17 asks the complementary question:
+
+can bounded local adaptations be preserved as
+a short immutable digest-chained patch journal
+with exact rollback / reactivation
+while the accepted C-v2 checkpoint remains intact?
+
+This should execute next unchanged.
+
+ACCEPTED TRAINING FRONTIER
+
+A07 / T1:
+positive hereditary task-program learning.
+
+A08 / T2:
+positive provenance-aware noisy learning.
+
+A09 / T2B:
+positive distributed cellular training memory.
+
+A10 / T3:
+positive bounded developmental-policy learning via FIXA.
+
+A11 / T4:
+positive context-conditional continual developmental memory.
+
+A12 / T5:
+positive latent-context inference.
+
+A13 / T6:
+positive bounded novel-context discovery.
+
+A14 / strict T6:
+positive on definitive exact-F14 evidence.
+
+A15 / T7:
+positive versioned developmental-context revision.
+
+A16 / T8:
+positive hysteretic moving-drift working-state plasticity.
+
+A17:
+preregistered / unexecuted.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
