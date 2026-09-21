@@ -1080,3 +1080,97 @@ NO POST-RESULT RECRUITMENT CHANGE.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A30 SPATIAL LOCAL CROSS-INHIBITION
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A30 CELL DEFECTION
+OR SCIENTIFIC OUTCOME.
+
+F30:
+
+9516d67c71915d2bdf572142b59f662f614922ab.
+
+FROZEN SOURCE SHA-256:
+
+7f560e87e54210f1d24826403ff040cab69dda9422d9d4920009df1e3388d7d4.
+
+TRIAL COUNT:
+
+384.
+
+STRUCTURE:
+
+48 frozen challenge contexts
+x
+8 F30-derived replicas.
+
+CELLS:
+
+48.
+
+EPOCHS:
+
+40.
+
+COMPLETE CHALLENGE-MANIFEST SHA-256:
+
+c2897d96fe41998afcbe70f48b9018595d3bd36f3b33c79e342a65b67fb01681.
+
+Serialized manifest-wrapper SHA-256:
+
+c56baa3d1eb52919945407ff0e4a8776a9f000ebfa7ee07ef2a17b71e353f2f8.
+
+Serialized manifest-wrapper bytes:
+
+267977.
+
+The manifest binds:
+
+trial identity;
+
+challenge family;
+
+replica;
+
+and the exact opposing-emitter identities
+for all 40 epochs.
+
+PRIMARY STATUS AT MANIFEST BIND
+
+Real local defections observed:
+
+0.
+
+Real wound outcomes observed:
+
+0.
+
+Real oscillation outcomes observed:
+
+0.
+
+Real qualification outcomes observed:
+
+0.
+
+The next permitted operation is:
+
+two complete deterministic A30 primary sweeps
+using F30 as the experimental seed.
+
+NO CHALLENGE REDRAW.
+NO ARM CHANGE.
+NO RADIUS CHANGE.
+NO HILL-N CHANGE.
+NO K CHANGE.
+NO RECRUITMENT CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
