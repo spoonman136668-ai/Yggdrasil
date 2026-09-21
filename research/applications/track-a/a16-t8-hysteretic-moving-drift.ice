@@ -1078,3 +1078,151 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-FREEZE PRIMARY T8 MANIFEST — BEFORE FIRST PRIMARY MOVING-DRIFT OBSERVATION
+
+DATE:
+2026-09-21.
+
+FREEZE COMMIT F16
+
+90279bc5b90682e2538721ef152aa3accdedbddf.
+
+MOVING-DRIFT MANIFEST SHA-256
+
+5feef8c8bde1e8a6380d68fb7ab55f57ab7f29c93879b766fc4f48b30041313e.
+
+PRIMARY LOCAL DRIFT PATHS
+
+S00:
+(2,1,4,5)
+-> (3,1,4,4)
+-> (3,1,3,5)
+-> (3,1,2,6)
+-> (2,1,3,6).
+
+S01:
+(1,3,6,2)
+-> (2,3,6,1)
+-> (1,4,6,1)
+-> (1,5,5,1)
+-> (2,4,5,1).
+
+S02:
+(6,4,1,1)
+-> (5,4,1,2)
+-> (4,5,1,2)
+-> (4,4,1,3)
+-> (4,3,1,4).
+
+S03:
+(5,3,1,3)
+-> (5,4,1,2)
+-> (6,4,1,1)
+-> (5,4,2,1)
+-> (4,4,3,1).
+
+S04:
+(4,1,5,2)
+-> (3,1,6,2)
+-> (4,1,6,1)
+-> (5,1,5,1)
+-> (5,1,4,2).
+
+S05:
+(1,4,3,4)
+-> (1,4,4,3)
+-> (2,4,3,3)
+-> (2,3,4,3)
+-> (2,2,4,4).
+
+S06:
+(5,1,5,1)
+-> (6,1,4,1)
+-> (6,1,3,2)
+-> (5,1,4,2)
+-> (4,2,4,2).
+
+S07:
+(5,2,1,4)
+-> (6,2,1,3)
+-> (6,2,2,2)
+-> (5,2,3,2)
+-> (5,3,2,2).
+
+S08:
+(1,6,1,4)
+-> (1,6,2,3)
+-> (1,5,2,4)
+-> (1,5,1,5)
+-> (1,4,1,6).
+
+S09:
+(4,2,2,4)
+-> (4,1,3,4)
+-> (5,1,3,3)
+-> (4,2,3,3)
+-> (4,2,4,2).
+
+S10:
+(2,4,4,2)
+-> (3,4,4,1)
+-> (2,4,5,1)
+-> (3,3,5,1)
+-> (2,3,5,2).
+
+S11:
+(3,1,2,6)
+-> (3,2,2,5)
+-> (3,3,2,4)
+-> (4,2,2,4)
+-> (5,2,1,4).
+
+For primary execution,
+each scenario then follows the preregistered reverse path:
+
+P4 -> P3 -> P2 -> P0.
+
+Therefore every complete working trajectory is:
+
+P0 -> P1 -> P2 -> P3 -> P4 -> P3 -> P2 -> P0.
+
+The exact:
+
+- transient P1 and P0 evidence blocks;
+- two 8-observation blocks for every true drift phase;
+- two-root observation attestations;
+- Learner A / Learner B block orders;
+- seven held-out service sequences per scenario;
+- replacement target sets;
+- forward-P3 mid-hysteresis restart detail;
+
+are fixed by F16
+and bound by the manifest SHA above.
+
+No path prior,
+evidence observation,
+attestation root,
+learner order,
+evaluation sequence,
+restart detail,
+or replacement target
+was rejected,
+redrawn,
+or replaced after derivation.
+
+At the moment this manifest was recorded:
+
+A16 primary moving-drift observations consumed = 0.
+
+A16 working-state updates committed = 0.
+
+A16 primary held-out evaluations executed = 0.
+
+The separate manifest-only workflow contains no scientific logic.
+Its post-freeze CLI transport typo was corrected before primary execution.
+The frozen A16 harness bytes remain unchanged.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
