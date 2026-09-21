@@ -976,3 +976,358 @@ A13 primary service phases executed = 0.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — A13 T6 BOUNDED NOVEL-CONTEXT DISCOVERY
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / POSITIVE PRIMARY / REPRODUCIBLE /
+BOUNDED NOVEL-CONTEXT DISCOVERY PASSED / NON-CANONICAL.
+
+FROZEN HARNESS
+
+Implementation commit:
+
+c25ca70bb8013f4b6671372b9c22c262baaa50bd.
+
+Freeze commit F13:
+
+6810864daae9578da9e5de3ac59acdfc659d17d7.
+
+Source SHA-256:
+
+f373a8f8a60eff9c26ffe0793da844a946d8bb9916f79eb66ab9d5971cf5a561.
+
+Source bytes:
+
+13510.
+
+Compressed payload SHA-256:
+
+bd50f3068d0751647d4e1caa3ab8b295f8c72f0836ed93edb1e3be6c3041250d.
+
+Compressed payload bytes:
+
+4994.
+
+PRIMARY MANIFEST
+
+Derived only after F13 existed.
+
+Novel-context manifest SHA-256:
+
+920b71bd9dd01ae631ba13994e8fe83705eb1f212c708875b41087ffe8a8a5af.
+
+All 12 C priors:
+
+distinct from A and B.
+
+All C derivation counters:
+
+0.
+
+No primary C prior,
+novelty observation,
+service sequence,
+or replacement target was replaced after derivation.
+
+REPRODUCIBILITY
+
+Two complete deterministic A13 primary sweeps.
+
+Sweep 1 serialized output SHA-256:
+
+9d804132dbefde457f42e99ff72eb2971528ecac668f7e15ef5a86084b7f50b2.
+
+Sweep 2 serialized output SHA-256:
+
+9d804132dbefde457f42e99ff72eb2971528ecac668f7e15ef5a86084b7f50b2.
+
+Byte-identical:
+
+TRUE.
+
+PRIMARY RESULT
+
+A13_T6_BOUNDED_NOVEL_CONTEXT_DISCOVERY_SUCCESS:
+
+TRUE.
+
+NOVELTY DISCOVERY
+
+First C encounter:
+
+two-probe known-context selector abstained:
+
+12 / 12.
+
+The organism therefore did not force an unknown niche into A or B.
+
+After the bounded C dwell:
+
+Learner A exact C prior:
+
+12 / 12.
+
+Learner B exact C prior:
+
+12 / 12.
+
+C slot created:
+
+12 / 12.
+
+Final developmental context-slot count:
+
+3 / 3 in every scenario.
+
+Duplicate C slot creations:
+
+0.
+
+RETURN RECOGNITION
+
+C return phases:
+
+24.
+
+Stored C selected:
+
+24 / 24.
+
+C retraining observations consumed on return:
+
+0.
+
+No C2 duplicate slot was created.
+
+USEFULNESS
+
+Candidate C first-four-epoch service:
+
+1424.
+
+Permanent-unknown fallback:
+
+1379.
+
+Evaluator-only oracle:
+
+1424.
+
+Oracle efficiency:
+
+1.0.
+
+Candidate >= fallback:
+
+31 / 36 C service phases.
+
+Migrations avoided versus fallback:
+
+44.
+
+TASK / SAFETY
+
+Task accuracy:
+
+1.0.
+
+Incorrect served requests:
+
+0.
+
+Stale-program served requests:
+
+0.
+
+All restart comparisons:
+
+equivalent.
+
+Existing constitutional safety totals:
+
+zero.
+
+T6 PROBES
+
+P1 — two unknown probes:
+
+PASS.
+
+P2 — unstable novelty:
+
+PASS / abstention rule preserved.
+
+P3 — duplicate memory fanout:
+
+PASS.
+
+P4 — loss of one unique C observation:
+
+PASS / incomplete learner abstains.
+
+P5 — one novelty learner:
+
+PASS / no slot.
+
+P6 — governance unavailable:
+
+PASS / no slot.
+
+P7 — C return coalescence:
+
+PASS.
+
+P8 — slot capacity:
+
+PASS / fourth slot blocked.
+
+P9 — explicit C retirement:
+
+PASS / A and B preserved.
+
+NEGATIVE / LIMIT CONTROLS
+
+N1 — create slot after two probes:
+
+unsafe shortcut exposed.
+
+N2 — one-learner context creation:
+
+unsafe shortcut exposed.
+
+N3 — physical-copy count as novelty support:
+
+unsafe shortcut exposed.
+
+N4 — unbounded slot creation:
+
+unsafe shortcut exposed.
+
+N5 — coherently forged novelty stream:
+
+observation-truth boundary preserved.
+
+TECHNICAL INTERPRETATION
+
+A12 could recognize known developmental contexts
+and abstain on unknown ones.
+
+A13 closes the next bounded loop:
+
+UNKNOWN
+->
+ABSTAIN
+->
+ACCUMULATE STABLE DISTRIBUTED EXPERIENCE
+->
+INDEPENDENT NOVELTY LEARNERS AGREE
+->
+GOVERNED CONTEXT SLOT CREATION
+->
+LATER RECOGNITION WITHOUT RETRAINING.
+
+This is the first accepted result where the developmental memory table itself grows from experience.
+
+That growth is bounded:
+
+A;
+B;
+C.
+
+The system does not create duplicate C memories on return.
+
+It does not create a fourth slot when capacity is full.
+
+The learned C memory changed how future clean cells specialized
+and improved held-out post-turnover service relative to remaining permanently unknown.
+
+PLAIN-SPEAK INTERPRETATION
+
+A12 could say:
+
+"I know A."
+
+"I know B."
+
+or:
+
+"I do not know this."
+
+A13 taught it what to do after:
+
+"I do not know this."
+
+It did not create a new memory immediately.
+
+It waited,
+watched the unfamiliar environment,
+and learned a stable developmental pattern.
+
+Two independent learners had to agree.
+
+Then the new memory had to be authorized.
+
+After that,
+C became a real stored developmental context.
+
+When C came back later,
+Yggdrasil recognized it from two observations
+and reused the old C memory without relearning it.
+
+It never made C twice.
+
+And once A,
+B,
+and C filled the allowed capacity,
+the system refused to grow another slot automatically.
+
+So developmental memory can now grow from experience
+without immediately becoming unbounded.
+
+NEXT JUSTIFIED GATE
+
+A14 is already preregistered as the stricter T6 replication:
+
+64 C training observations;
+minimum novelty dwell;
+observation-root provenance qualification;
+known-context nonregression;
+duplicate-context coalescence;
+hard three-slot capacity.
+
+A14 should now execute unchanged.
+
+ACCEPTED TRAINING FRONTIER
+
+A07 / T1:
+positive hereditary task-program learning.
+
+A08 / T2:
+positive provenance-aware noisy learning.
+
+A09 / T2B:
+positive distributed cellular training memory.
+
+A10 / T3:
+positive bounded developmental-policy learning via FIXA.
+
+A11 / T4:
+positive context-conditional continual developmental memory.
+
+A12 / T5:
+positive latent-context inference.
+
+A13 / T6:
+positive bounded novel-context discovery and memory creation.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
