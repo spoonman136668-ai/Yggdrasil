@@ -943,3 +943,111 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-FREEZE PRIMARY T4 MANIFEST — BEFORE FIRST PRIMARY TRAINING OBSERVATION
+
+DATE:
+2026-09-21.
+
+FREEZE COMMIT F11
+
+77874019c9f8cc8716873161f920e249a07ec4fa.
+
+CONTEXT-DEVELOPMENT MANIFEST SHA-256
+
+b0e00f29d36637a1365ab2407678aacf232ac4f4cf05d387f68af975a5b4bedd.
+
+LATENT CONTEXT PRIORS
+
+S00:
+A (2,5,2,3);
+B (1,6,2,3).
+
+S01:
+A (4,5,1,2);
+B (6,3,2,1).
+
+S02:
+A (1,6,2,3);
+B (4,4,2,2).
+
+S03:
+A (4,4,2,2);
+B (1,5,3,3).
+
+S04:
+A (2,4,4,2);
+B (4,4,2,2).
+
+S05:
+A (2,4,5,1);
+B (3,4,1,4).
+
+S06:
+A (3,1,2,6);
+B (3,3,5,1).
+
+S07:
+A (2,4,5,1);
+B (5,1,2,4).
+
+S08:
+A (1,4,5,2);
+B (1,4,2,5).
+
+S09:
+A (5,3,2,2);
+B (4,3,3,2).
+
+S10:
+A (4,1,4,3);
+B (5,1,1,5).
+
+S11:
+A (2,4,4,2);
+B (2,5,2,3).
+
+All A derivation counters:
+
+0.
+
+All B derivation counters:
+
+0.
+
+All A/B prior pairs:
+
+distinct.
+
+The exact:
+
+- 64 A training observations per scenario;
+- 64 B training observations per scenario;
+- 32 A1 held-out evaluation observations per scenario;
+- 32 B held-out evaluation observations per scenario;
+- 32 A2 held-out evaluation observations per scenario;
+- learner A/B observation orders;
+- A1/B/A2 replacement targets;
+
+are fixed by the frozen harness and F11
+and bound by the manifest SHA above.
+
+No latent prior,
+training pair,
+evaluation pair,
+learner order,
+or replacement target was rejected,
+redrawn,
+or replaced.
+
+At the moment this manifest was recorded:
+
+A11 primary training observations consumed = 0.
+
+A11 primary replacement events executed = 0.
+
+A11 primary evaluation events executed = 0.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
