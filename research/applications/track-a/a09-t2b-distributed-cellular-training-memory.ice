@@ -1488,3 +1488,94 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-CLOSURE ARTIFACT AUDIT — A09 TRANSPORT REPAIR
+
+DATE:
+2026-09-21.
+
+STATUS:
+PACKAGING ARTIFACT DEFECT CORRECTED;
+SCIENTIFIC SOURCE / F09 / MANIFEST / PRIMARY RESULT UNCHANGED.
+
+DISCOVERY
+
+After the A09 positive closure,
+an explicit live-tree audit found that the committed gzip transport blob was:
+
+9976 bytes
+
+while the pre-run freeze record correctly described the intended deterministic transport as:
+
+9977 bytes.
+
+Historical defective gzip Git blob:
+
+def920dc3eae9a3e793589c7279151ee84436d3b.
+
+The loader and scientific freeze had always pinned the decompressed source to:
+
+35570 bytes.
+
+SHA-256:
+
+9b508deb63c8c923b9ec300831446dcf68b2d9de6c9a76506449a277c7f72162.
+
+ROOT CAUSE
+
+The committed transport's normalized base64 had:
+
+- one literal B missing at character position 6600;
+- one extra terminal = padding character.
+
+The corrupted transport therefore did not faithfully materialize the intended frozen gzip.
+
+CORRECTION
+
+The transport was corrected mechanically by:
+
+- inserting B at normalized base64 position 6600;
+- removing the extra terminal =.
+
+Corrected normalized base64 length:
+
+13304.
+
+Corrected normalized base64 text SHA-256:
+
+ce44584a93cdf88620f3a71968289e4bbdcfdf5ceffd32f70bae27f4d48069cf.
+
+This exactly matches the deterministic 9977-byte gzip created from the frozen source before primary execution.
+
+Corrected gzip SHA-256:
+
+f9c0891d785b4cd6c663a679e39c710db691bd61d3f4e5fcd4d26669548c41b3.
+
+The loader remains unchanged
+and continues to require decompression to source SHA-256:
+
+9b508deb63c8c923b9ec300831446dcf68b2d9de6c9a76506449a277c7f72162.
+
+SCIENTIFIC PROVENANCE
+
+No A09 semantic source byte changed.
+
+Freeze F09 remains:
+
+db770987c53e623bb86ad229cac3252388f50cc2.
+
+Memory-stress manifest remains:
+
+8600dd8ff89d7190cf5f4c2c825442dc95e6c7f7803a759d8f8054e37510c6e7.
+
+Previously recorded primary output remains:
+
+1fa4b91eb629cc7a3757d3e6317b425981d5d709703369864029f8c772d0ec2b.
+
+This is a repository packaging repair only.
+
+A fresh post-repair reproduction is required and must match the accepted primary output exactly.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
