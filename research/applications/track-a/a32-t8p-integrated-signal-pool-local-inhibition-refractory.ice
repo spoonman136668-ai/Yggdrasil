@@ -1115,3 +1115,90 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A32 INTEGRATED SIGNAL-POOL / LOCAL-INHIBITION / REFRACTORY CONTROLLER
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A32 CONTROLLER OUTCOME.
+
+F32:
+
+04c32ff5195fa295872a729e4203eab0bd69fba5.
+
+TRIAL COUNT:
+
+384.
+
+STRUCTURE:
+
+48 frozen environmental contexts
+x
+8 F32-derived replicas.
+
+CELLS:
+
+48.
+
+EPOCHS:
+
+48.
+
+COMPLETE WORLD-MANIFEST SHA-256:
+
+ac1c775d35efbe9471dfb9786f81ee646d368e3c75d022d401866ff3baaf92c6.
+
+Serialized manifest-wrapper SHA-256:
+
+46c2485e0d6f9c2c5594629f016b6d5d1aa74742868eb725c70dff62621ec97d.
+
+Serialized manifest-wrapper bytes:
+
+40003.
+
+The manifest binds:
+
+trial identity;
+context family;
+replica;
+reversal epoch where applicable;
+spatial region where applicable;
+all 48 x 48 true local consequence values;
+all 48 x 48 sensed local consequence values.
+
+PRIMARY STATUS AT MANIFEST BIND
+
+Real GLOBAL outcomes observed:
+
+0.
+
+Real LOCAL_D0 outcomes observed:
+
+0.
+
+Real LOCAL_D2 outcomes observed:
+
+0.
+
+Real LOCAL_D3 outcomes observed:
+
+0.
+
+The next permitted operation is:
+
+two complete deterministic A32 primary sweeps
+using F32 as the experimental seed.
+
+NO WORLD REDRAW.
+NO RECRUITMENT CHANGE.
+NO POOL CHANGE.
+NO LOCAL-INHIBITION CHANGE.
+NO REFRACTORY CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
