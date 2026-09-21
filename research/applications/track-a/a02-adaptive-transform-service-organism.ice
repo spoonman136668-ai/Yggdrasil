@@ -761,3 +761,351 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — A02 ADAPTIVE TRANSFORM SERVICE
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED / POSITIVE PRIMARY APPLICATION / REPRODUCIBLE / NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+1453740811a5b5c9c7b5452e7d543be4d67878d6.
+
+Decompressed exact harness SHA-256:
+
+b2eeb1e589a029f16b0437ce1f3dd05826b81a91ab6c6d91ce25bb28b96db60b.
+
+Source bytes:
+
+28011.
+
+REPRODUCIBILITY
+
+Two complete deterministic primary sweeps.
+
+Sweep 1 serialized result SHA-256:
+
+ad408ca964108c3212bc55db1dd1c932ecbd588774323ebffdb755c32d361271.
+
+Sweep 2 serialized result SHA-256:
+
+ad408ca964108c3212bc55db1dd1c932ecbd588774323ebffdb755c32d361271.
+
+Byte-identical:
+
+TRUE.
+
+Each sweep served the preregistered:
+
+4 scenarios x 256 epochs x 12 requests
+=
+12,288 task requests.
+
+PRIMARY APPLICATION SIGNAL
+
+A02_APPLICATION_SUCCESS:
+
+TRUE.
+
+USEFULNESS
+
+Candidate requests served:
+
+11,928 / 12,288.
+
+Candidate task coverage:
+
+0.970703125.
+
+Correct served requests:
+
+11,928.
+
+Incorrect served requests:
+
+0.
+
+Task accuracy:
+
+1.0.
+
+Static-allocation requests served:
+
+9,892 / 12,288.
+
+Static coverage:
+
+0.8050130208333334.
+
+Candidate coverage gain over static:
+
+0.16569010416666663.
+
+Required gain:
+
+>= 0.08.
+
+PASS.
+
+Evaluator-only ideal-capacity ceiling:
+
+11,961 requests.
+
+Candidate / oracle efficiency:
+
+0.9972410333584149.
+
+Required:
+
+>= 0.90.
+
+PASS.
+
+All four rotated workload scenarios individually outperformed their static baseline:
+
+TRUE.
+
+Per-scenario candidate coverage:
+
+scenario 0:
+0.9700520833333334.
+
+scenario 1:
+0.9703776041666666.
+
+scenario 2:
+0.9703776041666666.
+
+scenario 3:
+0.9720052083333334.
+
+Per-scenario static coverage:
+
+scenario 0:
+0.8033854166666666.
+
+scenario 1:
+0.8040364583333334.
+
+scenario 2:
+0.8059895833333334.
+
+scenario 3:
+0.806640625.
+
+ADAPTATION
+
+Maximum ordinary fault recovery:
+
+1 epoch.
+
+Required:
+
+<= 2.
+
+PASS.
+
+Maximum non-partition workload reallocation:
+
+2 epochs.
+
+Required:
+
+<= 3.
+
+PASS.
+
+Observed role migrations:
+
+131.
+
+Migration service-cost epochs:
+
+131.
+
+Observed hibernations:
+
+20.
+
+Observed reactivations:
+
+20.
+
+Damage quarantines:
+
+16.
+
+Repairs:
+
+16.
+
+Partition provisional role transitions:
+
+19.
+
+The strongest multi-role phase transition completed within the preregistered bound.
+
+SAFETY
+
+Incorrect served results:
+
+0.
+
+Stale vote attempts accepted:
+
+0.
+
+Authority violations:
+
+0.
+
+Causal regressions:
+
+0.
+
+Duplicate effective provenance:
+
+0.
+
+Split-brain final states:
+
+0.
+
+Resource-budget violations:
+
+0.
+
+Rolled-back conflicting primary transitions:
+
+0.
+
+The primary partition fixture used disjoint cell ownership and produced no same-cell conflict requiring rollback.
+
+RESTART
+
+All four scenarios:
+
+authoritative restart state equivalence =
+TRUE.
+
+output and cumulative-metric equivalence =
+TRUE.
+
+The uninterrupted and epoch-127 restarted organisms therefore reached identical authoritative state and produced identical service behavior.
+
+NEGATIVE CONTROLS
+
+No-damage-quarantine control produced an incorrect result:
+
+TRUE.
+
+Old-role restore on wake creates a capacity regression or authority violation:
+
+TRUE.
+
+Headcount provenance makes false authority reachable from copied lineage:
+
+TRUE.
+
+TECHNICAL INTERPRETATION
+
+A02 raises the application evidence above YGG-A01.
+
+YGG-A01 showed that the architecture could keep one fixed telemetry-integrity service alive under pressure.
+
+A02 required the population to alter its own functional allocation as task demand changed.
+
+The organism was not given an evaluator-selected migration schedule.
+
+It used current public demand counters,
+current qualified role counts,
+frozen deterministic proposal ordering,
+and lineage-qualified governance to decide which healthy cells should change jobs.
+
+The result is useful for the North Star because adaptation was not merely tolerated.
+
+It materially improved service.
+
+Compared with the same population under static role allocation,
+adaptive allocation recovered approximately 16.57 percentage points of request coverage.
+
+The candidate also reached 99.724% of the evaluator-only ideal capacity ceiling while producing no incorrect served answer.
+
+The application therefore demonstrated:
+
+TASK PRESSURE
++
+AUTONOMOUS ROLE REALLOCATION
++
+RESOURCE HIBERNATION
++
+DAMAGE QUARANTINE / REPAIR
++
+PARTITIONED PROVISIONAL OPERATION
++
+CAUSAL / PROVENANCE GOVERNANCE
++
+RESTART PERSISTENCE
+
+in one persistent synthetic service.
+
+PLAIN-SPEAK INTERPRETATION
+
+This was harder than the first application.
+
+The cells were no longer doing one fixed job forever.
+
+Customer demand kept moving between four kinds of work.
+
+If too many cells were assigned to a quiet job
+and too few were assigned to a busy one,
+the organism had to reorganize itself.
+
+It did.
+
+Out of 12,288 requests,
+it correctly served 11,928
+and never served a wrong answer.
+
+If we prevented the cells from changing jobs,
+the same population only served 9,892 requests.
+
+So the self-reorganization was not decorative.
+
+It recovered a large amount of useful work.
+
+The organism also stayed deterministic after restart,
+handled every scheduled fault within one epoch,
+kept sleeping cells from regaining stale authority,
+and never exceeded the imposed resource budget.
+
+The important milestone is:
+
+Yggdrasil has now shown useful adaptation,
+not just useful persistence.
+
+NEXT JUSTIFIED APPLICATION QUESTION
+
+The next application should test GENERALIZATION rather than another known phase schedule.
+
+A03 should hide future demand and fault timing from the organism
+and evaluate it across a preregistered held-out family of deterministic workload seeds.
+
+The organism should still see only current local/public evidence.
+
+Primary question:
+
+CAN THE SAME FROZEN CONSTITUTIONAL ARCHITECTURE
+ADAPT TO WORKLOADS AND PRESSURES
+THAT WERE NOT HAND-DESIGNED AROUND ITS ROLE-REALLOCATION PATH?
+
+That is the next important step before claiming broad adaptive usefulness.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
