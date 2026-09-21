@@ -264,3 +264,105 @@ still helps under the complete turnover schedule.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A16-FIXA EVALUATION ALIGNMENT
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE FIRST CORRECTED A16-FIXA PRIMARY EXECUTION.
+
+IMPLEMENTATION COMMIT
+
+5baae9f8146661844500a3a3ac13e5da6afb5f6b.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a16_fixa_evaluation_alignment_v1.py
+
+Loader Git blob:
+
+95c41b0062dfe5275c2bde7f6e9cdcf8e503e8e3.
+
+Payload:
+
+research/applications/track-a/a16_fixa_evaluation_alignment_v1.py.gz
+
+Payload Git blob:
+
+e7f1428e02a23ddf11cc70be6d942aecc9acf7f5.
+
+Compressed payload SHA-256:
+
+7226ecf6fc34562fd68899cf28f64c246dafcc173c6b47bc33388cc56d065646.
+
+Compressed payload bytes:
+
+2451.
+
+Decompressed source SHA-256:
+
+a3760a2857c06dd12e3bbaf293c600147b98c45384bde24e69b3edaddf4476f3.
+
+Decompressed source bytes:
+
+5537.
+
+FROZEN PARENT
+
+F16:
+
+90279bc5b90682e2538721ef152aa3accdedbddf.
+
+Exact A16 source SHA-256:
+
+cd89dbc46174c97e0bea0bc0a1db4b65eea9b5732521ca30f00ed30f06b792fa.
+
+A16 manifest SHA-256:
+
+5feef8c8bde1e8a6380d68fb7ab55f57ab7f29c93879b766fc4f48b30041313e.
+
+Historical exact-F16 result SHA-256:
+
+c4ecb7c90742fd737d370e2f378f398ccddd948bf5154c46d917fd3250fb339f.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Parent source / manifest verification:
+
+PASS.
+
+Frozen replacement keys in all 84 held-out evaluations:
+
+0 and 4.
+
+Corrected helper mechanically executes:
+
+epoch 0;
+epoch 4.
+
+No corrected primary service aggregate
+was executed or observed before this freeze.
+
+The wrapper changes no moving-drift scientific state.
+
+It substitutes only the evaluation helper.
+
+PRIMARY STATUS
+
+NOT EXECUTED.
+
+Two complete deterministic corrective sweeps are required.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
