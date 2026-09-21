@@ -37,7 +37,7 @@ jobs:
         run: |
           set -euo pipefail
           cd research/applications/track-a
-          python3 a16_t8_hysteretic_moving_drift_v1.py             --freeze-commit 90279bc5b90682e2538721ef152aa3accdedbddf             --manifest-only | tee /tmp/a16_manifest.json
+          python3 a16_t8_hysteretic_moving_drift_v1.py             --freeze 90279bc5b90682e2538721ef152aa3accdedbddf             --manifest-only | tee /tmp/a16_manifest.json
           echo "A16_MANIFEST_SHA256=$(sha256sum /tmp/a16_manifest.json | awk '{print $1}')"
           echo "=== A16_MANIFEST_BEGIN ==="
           cat /tmp/a16_manifest.json
