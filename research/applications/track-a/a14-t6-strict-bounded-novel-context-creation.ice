@@ -1027,3 +1027,491 @@ A14 primary evaluation events executed = 0.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-FREEZE INTEGRITY AUDIT — A14
+
+DATE:
+2026-09-21.
+
+A post-freeze branch commit:
+
+6ecac7648df44cc3f8f9a9a555143ec0017d6839
+
+was labeled:
+
+"Refine A14 pre-freeze primary slot telemetry".
+
+That commit occurred after:
+
+F14 =
+c0957332578557efc2975ca2da31cf11d07b45ff
+
+and after the primary manifest anchor:
+
+9f7ebc87a7e936a335aee6367352bce08996e550.
+
+Byte-level audit established that the change was NOT telemetry-only.
+
+It changed substantial A14 harness source,
+including derivation tags,
+manifest representation,
+distributed-memory implementation,
+probe construction,
+and primary execution structure.
+
+Therefore that post-freeze source is:
+
+NON-AUTHORITATIVE FOR A14 SCIENTIFIC EVIDENCE.
+
+No A14 result from that mutated source is accepted or used below.
+
+The branch was repaired without rewriting history by restoring the exact F14-frozen blobs:
+
+loader blob:
+4a1659ecc02d7d3bbaa4982a3901d50e8238a76f;
+
+payload blob:
+6614f091da3215fd19b3966c2af36f4dd68e6f7a.
+
+Restoration commit:
+
+73b0920f4ccd2d79978d2d5cf00e4d2af6a366cc.
+
+The authoritative source remains exactly:
+
+SHA-256:
+d2187358170045ddd9869be1a53d6938c4ade6547c0b8d83415e16cc6dc40045;
+
+bytes:
+18358.
+
+The primary results below were generated from those exact frozen bytes
+and the already-recorded F14 manifest.
+
+This integrity repair changes no primary observation,
+manifest,
+threshold,
+or result.
+
+POST-RUN CLOSURE — A14 STRICT BOUNDED NOVEL-CONTEXT CREATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / POSITIVE PRIMARY / REPRODUCIBLE /
+STRICT NOVEL-CONTEXT REPLICATION PASSED /
+POST-FREEZE MUTATION DETECTED AND EXCLUDED /
+NON-CANONICAL.
+
+FROZEN HARNESS
+
+Implementation commit:
+
+54aebc9e550eabc6d0026c7c407c362908c156f7.
+
+Freeze F14:
+
+c0957332578557efc2975ca2da31cf11d07b45ff.
+
+Source SHA-256:
+
+d2187358170045ddd9869be1a53d6938c4ade6547c0b8d83415e16cc6dc40045.
+
+Source bytes:
+
+18358.
+
+Compressed payload SHA-256:
+
+0b96cc478dc5d77a04aa892fed5c850851ac1333b7778754841223443da73f3d.
+
+Compressed payload bytes:
+
+6327.
+
+PRIMARY MANIFEST
+
+Manifest anchor commit:
+
+9f7ebc87a7e936a335aee6367352bce08996e550.
+
+Manifest SHA-256:
+
+ebc5115a9554012b219a59fc9bcde5f4f005838f98f2898a049ecbce46f33c48.
+
+The manifest was recorded before:
+
+any primary novelty observation;
+any C-slot creation;
+any primary evaluation event.
+
+S07 used the preregistered equality-only C-prior rejection path
+and therefore derived at counter 1.
+
+All other scenarios derived at counter 0.
+
+REPRODUCIBILITY
+
+Two complete deterministic A14 primary sweeps.
+
+Sweep 1 serialized output SHA-256:
+
+5a8f277dc591acda355ec0b8e901474b5576c09e28c7474bd208aa05f81e351e.
+
+Sweep 2 serialized output SHA-256:
+
+5a8f277dc591acda355ec0b8e901474b5576c09e28c7474bd208aa05f81e351e.
+
+Byte-identical:
+
+TRUE.
+
+PRIMARY RESULT
+
+A14_T6_STRICT_NOVEL_CONTEXT_CREATION_SUCCESS:
+
+TRUE.
+
+KNOWN-CONTEXT NONREGRESSION
+
+Known A/B selections correct:
+
+24 / 24.
+
+Incorrect known-context selections:
+
+0.
+
+NOVELTY ENTRY / DWELL
+
+Initial C two-probe attempts:
+
+12 / 12 ABSTAIN.
+
+Novelty dwell rule respected:
+
+12 / 12.
+
+No premature C slot was created.
+
+STRICT PROVENANCE-QUALIFIED LEARNING
+
+Each C developmental training observation required:
+
+two distinct observation roots.
+
+The primary manifest fixed every two-root attestation pair before execution.
+
+Learner A / Learner B exact C reconstruction:
+
+12 / 12.
+
+Qualified 64-observation learning path:
+
+PASS in all scenarios.
+
+CONTEXT CREATION / CAPACITY
+
+C slots created:
+
+12 / 12.
+
+Final context-slot count:
+
+3 / 3 in all scenarios.
+
+Duplicate C slots:
+
+0.
+
+Fourth-slot creations:
+
+0.
+
+C RETURN / REUSE
+
+C return recognized:
+
+12 / 12.
+
+C retraining observations on return:
+
+0.
+
+Thus C was learned once
+and later reused as existing developmental memory.
+
+USEFULNESS
+
+Candidate C1+C2 first-four-epoch service:
+
+1986.
+
+Permanent-unknown fallback:
+
+1929.
+
+Evaluator-only oracle:
+
+1986.
+
+Oracle efficiency:
+
+1.0.
+
+Candidate >= fallback:
+
+24 / 24 evaluations.
+
+Migrations avoided relative to fallback:
+
+42.
+
+TASK / SAFETY
+
+Task accuracy:
+
+1.0.
+
+Incorrect served requests:
+
+0.
+
+Stale-program served requests:
+
+0.
+
+All restart comparisons:
+
+equivalent.
+
+Existing constitutional safety violations:
+
+0.
+
+DEDICATED STRICT-T6 PROBES
+
+P1 — two-probe unknown abstention:
+
+PASS in 12 / 12.
+
+P2 — seven-observation dwell floor:
+
+PASS in 12 / 12.
+
+P3 — eight-observation nomination without premature slot:
+
+PASS in 12 / 12.
+
+P4 — same-root attestation fanout rejected:
+
+PASS in 12 / 12.
+
+P5 — exact duplicate context coalesces:
+
+PASS in 12 / 12.
+
+P6 — hard capacity blocks fourth slot:
+
+PASS in 12 / 12.
+
+P7 — C return without retraining:
+
+PASS in 12 / 12.
+
+P8 — explicit retirement path:
+
+PASS in 12 / 12.
+
+NEGATIVE / LIMIT CONTROLS
+
+N1 — create context after two probes:
+
+unsafe shortcut exposed.
+
+N2 — nearest-prior auto-coalescence:
+
+unsafe shortcut exposed.
+
+N3 — duplicate-context creation:
+
+unsafe shortcut exposed.
+
+N4 — automatic eviction at capacity:
+
+unsafe shortcut exposed.
+
+N5 — forged observation-root identities:
+
+trust boundary preserved.
+
+N6 — nonstationary novel niche:
+
+boundary preserved.
+
+TECHNICAL INTERPRETATION
+
+A13 established bounded novel-context discovery with an 18-observation discovery / training path.
+
+A14 independently strengthens that result.
+
+Novel context C must now survive:
+
+- a minimum unresolved novelty dwell;
+- 64 unique developmental training observations;
+- two-root observation provenance qualification;
+- distributed memory;
+- two independent developmental learners;
+- constitutional authorization;
+- duplicate-context coalescence;
+- hard three-slot capacity;
+- restart;
+- disappearance and later return.
+
+The stricter path still learned C exactly in every scenario,
+created exactly one new developmental memory,
+preserved A/B selection,
+blocked uncontrolled context growth,
+and reused C later without retraining.
+
+The scientific result is therefore no longer dependent on the shorter A13 novelty window.
+
+The demonstrated chain is:
+
+UNKNOWN EXPERIENCE
+->
+ABSTENTION
+->
+MINIMUM NOVELTY DWELL
+->
+PROVENANCE-QUALIFIED DISTRIBUTED EXPERIENCE
+->
+64-OBSERVATION DEVELOPMENTAL LEARNING
+->
+INDEPENDENT LEARNER AGREEMENT
+->
+GOVERNED CONTEXT CREATION
+->
+DUPLICATE COALESCENCE / CAPACITY CONTROL
+->
+LATER RECOGNITION WITHOUT RETRAINING.
+
+PLAIN-SPEAK INTERPRETATION
+
+A13 showed that Yggdrasil could encounter a new environment,
+wait,
+learn it,
+and remember it.
+
+A14 made that much harder to fake.
+
+The organism had to watch the unfamiliar environment for longer.
+
+Each training observation needed evidence from two independent provenance roots.
+
+It then learned from 64 unique observations,
+not the shorter A13 training window.
+
+Only after two independent learners agreed
+and governance approved
+could C become a real developmental memory.
+
+It still worked.
+
+All twelve organisms learned the new C environment.
+
+None created C twice.
+
+None created a fourth memory after capacity was full.
+
+When C returned,
+all twelve reused the old C memory without training again.
+
+The learned developmental memory also performed better than staying permanently uncertain:
+
+1986 immediate-service requests
+
+versus
+
+1929
+
+for the unknown fallback,
+
+while matching the evaluator-only oracle.
+
+A separate branch-integrity check also caught a post-freeze harness rewrite
+before it could contaminate the record.
+
+That rewrite was excluded,
+and the repository was restored to the exact frozen F14 bytes.
+
+So A14 gives us both:
+
+a stronger novel-context learning result
+
+and
+
+a successful proof that the freeze discipline can detect and reject post-freeze drift.
+
+NEXT JUSTIFIED QUESTION
+
+The strongest remaining T6 boundary is no longer:
+
+can the organism create a new bounded context?
+
+That is now replicated.
+
+The materially different next question is:
+
+CAN AN EXISTING DEVELOPMENTAL CONTEXT CHANGE OVER TIME
+WITHOUT BEING MISCLASSIFIED AS A DUPLICATE NEW CONTEXT
+OR SILENTLY OVERWRITING ITS OLD LINEAGE?
+
+A next gate should therefore test bounded,
+versioned developmental-context revision under environmental drift:
+
+- detect stable drift inside an existing context;
+- preserve the old policy as ancestry;
+- learn a version-2 developmental prior;
+- require provenance / learner / governance authorization;
+- avoid spawning a duplicate context slot;
+- permit rollback to the old version;
+- later distinguish recurrence of the old niche from the revised niche;
+- retain hard slot capacity and constitutional invariants.
+
+This directly attacks the preserved N6 nonstationary-niche boundary.
+
+ACCEPTED TRAINING FRONTIER
+
+A07 / T1:
+positive hereditary task-program learning.
+
+A08 / T2:
+positive provenance-aware noisy learning.
+
+A09 / T2B:
+positive distributed cellular training memory.
+
+A10 / T3:
+positive bounded developmental-policy learning via FIXA.
+
+A11 / T4:
+positive context-conditional continual developmental memory.
+
+A12 / T5:
+positive latent-context inference.
+
+A13 / T6:
+positive bounded novel-context discovery.
+
+A14 / strict T6:
+positive provenance-qualified 64-observation replication.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
