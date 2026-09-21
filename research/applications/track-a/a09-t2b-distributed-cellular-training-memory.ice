@@ -917,3 +917,132 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-FREEZE PRIMARY MEMORY-STRESS MANIFEST — BEFORE FIRST PRIMARY MEMORY EVENT
+
+DATE:
+2026-09-21.
+
+FREEZE COMMIT F09
+
+db770987c53e623bb86ad229cac3252388f50cc2.
+
+MEMORY-STRESS MANIFEST SHA-256
+
+8600dd8ff89d7190cf5f4c2c825442dc95e6c7f7803a759d8f8054e37510c6e7.
+
+SCENARIOS
+
+S00:
+damage A 89;
+hibernation start 88;
+hibernation duration 4;
+copy delete 92;
+damage B 98;
+cell replacement 98.
+
+S01:
+damage A 165;
+hibernation start 166;
+hibernation duration 6;
+copy delete 171;
+damage B 174;
+cell replacement 171.
+
+S02:
+damage A 87;
+hibernation start 88;
+hibernation duration 5;
+copy delete 92;
+damage B 94;
+cell replacement 99.
+
+S03:
+damage A 108;
+hibernation start 107;
+hibernation duration 4;
+copy delete 113;
+damage B 116;
+cell replacement 116.
+
+S04:
+damage A 193;
+hibernation start 191;
+hibernation duration 5;
+copy delete 197;
+damage B 201;
+cell replacement 204.
+
+S05:
+damage A 103;
+hibernation start 105;
+hibernation duration 4;
+cell replacement 110;
+copy delete 112;
+damage B 113.
+
+S06:
+damage A 137;
+hibernation start 141;
+hibernation duration 6;
+damage B 145;
+cell replacement 146;
+copy delete 148.
+
+S07:
+damage A 136;
+hibernation start 138;
+hibernation duration 6;
+copy delete 144;
+damage B 147;
+cell replacement 148.
+
+S08:
+damage A 141;
+hibernation start 145;
+hibernation duration 6;
+damage B 152;
+cell replacement 153;
+copy delete 154.
+
+S09:
+damage A 101;
+hibernation start 104;
+hibernation duration 6;
+cell replacement 111;
+copy delete 112;
+damage B 113.
+
+S10:
+damage A 123;
+hibernation start 124;
+hibernation duration 5;
+cell replacement 132;
+copy delete 133;
+damage B 135.
+
+S11:
+damage A 91;
+hibernation start 91;
+hibernation duration 4;
+copy delete 98;
+damage B 102;
+cell replacement 103.
+
+All derivation counters:
+
+0.
+
+No stress event was rejected,
+redrawn,
+or replaced.
+
+At the moment this manifest was recorded:
+
+A09 primary memory-stress events executed = 0.
+A09 primary training events consumed = 0.
+A09 primary service requests served = 0.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
