@@ -816,3 +816,108 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-FREEZE PRIMARY T5 MANIFEST — BEFORE FIRST PRIMARY CONTEXT OBSERVATION
+
+DATE:
+2026-09-21.
+
+FREEZE COMMIT F12
+
+3308697f2594212be565639bc57c0179e83e831a.
+
+LATENT-CONTEXT MANIFEST SHA-256
+
+502009818ea9d6e57089a91424e7cf399e7c5e95024a9623816e733c58c3f63a.
+
+HIDDEN CONTEXT SEQUENCES
+
+S00:
+A A B B A B.
+counter 0.
+restart phase 3.
+
+S01:
+B A B B A A.
+counter 0.
+restart phase 2.
+
+S02:
+B B A B B A.
+counter 1.
+restart phase 2.
+
+S03:
+B A B B A B.
+counter 0.
+restart phase 5.
+
+S04:
+B B B A B A.
+counter 0.
+restart phase 1.
+
+S05:
+A B A B B A.
+counter 3.
+restart phase 5.
+
+S06:
+A B B A A B.
+counter 1.
+restart phase 1.
+
+S07:
+A B B A B A.
+counter 3.
+restart phase 1.
+
+S08:
+A B B A B B.
+counter 0.
+restart phase 5.
+
+S09:
+B A A A B A.
+counter 2.
+restart phase 5.
+
+S10:
+B A B A A A.
+counter 0.
+restart phase 2.
+
+S11:
+B A B A B A.
+counter 0.
+restart phase 1.
+
+All accepted sequences:
+
+contain A and B;
+contain at least 3 switches.
+
+The exact:
+
+- 72 context-probe pairs;
+- 72 held-out service sequences;
+- 12 restart phases;
+- 144 replacement target sets;
+
+are fixed by F12 and bound by the manifest SHA above.
+
+No accepted hidden sequence,
+probe,
+service phase,
+restart point,
+or replacement target was redrawn after acceptance.
+
+At the moment this manifest was recorded:
+
+A12 primary context observations consumed = 0.
+A12 primary replacement events executed = 0.
+A12 primary service evaluation events executed = 0.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
