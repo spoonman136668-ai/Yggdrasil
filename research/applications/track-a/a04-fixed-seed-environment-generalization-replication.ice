@@ -587,3 +587,124 @@ No A04 primary request has been served.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A04 FIXED-SEED GENERALIZATION REPLICATION
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST A04 PRIMARY REQUEST.
+
+IMPLEMENTATION COMMIT
+
+cd431a6ac3411e716fb929df246acb38c1ce5291.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a04_fixed_seed_generalization_v1.py
+
+Loader Git blob:
+
+0e0448b2560048d768a5165801434250cf2a1a06.
+
+Payload:
+
+research/applications/track-a/a04_fixed_seed_generalization_v1.py.gz
+
+Payload Git blob:
+
+534461fac8cee9bcdcd05b9a8450c79784defe4a.
+
+Compressed payload SHA-256:
+
+ec93b954af125b3009309aeb739cddee3ef70b8927aa9869a2f96ba4ad591f9c.
+
+Compressed payload bytes:
+
+7013.
+
+Decompressed source SHA-256:
+
+d40fd3ac9b9b792df62e5e40b1b83627a24eac3ee906d8a1519ae74c8cf07122.
+
+Decompressed source bytes:
+
+24236.
+
+FROZEN A02 DEPENDENCY
+
+Accepted A02 source SHA-256:
+
+b2eeb1e589a029f16b0437ce1f3dd05826b81a91ab6c6d91ce25bb28b96db60b.
+
+Mechanical A02 regression guard:
+
+PASS.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Fixed primary seed count:
+
+12.
+
+Epochs per seed:
+
+384.
+
+Requests per epoch:
+
+12.
+
+Restart after epoch:
+
+191.
+
+Fixed-seed schedule manifest SHA-256:
+
+24cfb3a9fa92b1013948739b7a9f022e0457bd550c91cc591fbbb9f7fbd9df43.
+
+Environment diversity mechanical gate:
+
+all four hot roles = TRUE;
+both cap values 9 / 10 = TRUE;
+faults inside and outside partition = TRUE;
+cap / fault overlap = TRUE;
+cap / partition overlap = TRUE;
+distinct demand vectors = 145;
+ENVIRONMENT_DIVERSITY_VALID = TRUE.
+
+Non-primary structural smoke:
+
+4608 requests accounted for;
+six faults represented;
+two partition windows represented;
+two explicit dynamic re-merges executed;
+final provisional count = 0;
+no unresolved reallocation entry disappeared;
+restart authoritative state equivalent;
+restart output / metric state equivalent;
+environment impossibilities = 0.
+
+No A04 primary organism request was executed before this freeze.
+
+PARTITION IMPLEMENTATION NOTE
+
+To faithfully implement the preregistered two generated partition windows,
+the A04 wrapper carries the accepted A02 partition semantics but triggers re-merge dynamically
+at each generated partition end + 1.
+
+This is protocol implementation,
+not a new A04 performance threshold.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
