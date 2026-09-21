@@ -892,3 +892,540 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — A17-FIXA / A17 T8 BOUNDED INCREMENTAL PATCH TRACKING
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE PRIMARY /
+STRUCTURAL PATCH-TRACKING MECHANICS PASSED /
+PREREGISTERED USEFULNESS-CONSISTENCY THRESHOLD FAILED /
+A17 PRIMARY SIGNAL FALSE /
+NON-CANONICAL.
+
+FROZEN EXECUTABLE
+
+A17-FIXA implementation commit:
+
+402348d2c0b8fd0bee887cee12f0c726f04233a6.
+
+F17A:
+
+c33df49a8b171c1f6cd8e64820dd3bca0e2f4492.
+
+FIXA source SHA-256:
+
+066e66e36e601effa777052e54f7470d96ddee21d5b1153e767b0ebe6aa43c9f.
+
+SCIENTIFIC FREEZE
+
+Original A17 science seed F17:
+
+3ec24f8242285688a537f5e7dd6e9a231a645597.
+
+F17 source SHA-256:
+
+a1ef99dc5948328d5b8a85d87b7e62a718b4238474322c16aeec6a730244d5c5.
+
+PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+794d7486d194f20c71747aca1cde62cf15d370e8.
+
+Manifest SHA-256:
+
+8284e3f1e47a17f234eb02f2b427cddaee16999e0df795d38f1b0b457cf8e43f.
+
+No primary path,
+observation,
+attestation,
+learner order,
+evaluation sequence,
+replacement plan,
+restart detail,
+baseline,
+or oracle
+was redrawn after the manifest was committed.
+
+REPRODUCIBILITY
+
+Two complete deterministic real F17-seeded primary sweeps.
+
+Sweep 1 serialized output SHA-256:
+
+ee53b151295a5d31ba1e54e4cd8d4deae0aff604ff3b66406fb87b748a08306d.
+
+Sweep 2 serialized output SHA-256:
+
+ee53b151295a5d31ba1e54e4cd8d4deae0aff604ff3b66406fb87b748a08306d.
+
+Serialized evidence-file SHA-256 for both sweeps:
+
+201c3daecccfa95cc33b4834a9bddb344849c39a4f271aea72467c4c143cc7c9.
+
+Byte-identical:
+
+TRUE.
+
+PRIMARY SIGNAL
+
+A17_T8_BOUNDED_INCREMENTAL_PATCH_TRACKING_SUCCESS:
+
+FALSE.
+
+The only failed preregistered primary signal was:
+
+CANDIDATE_GE_STALE_40_OF_48.
+
+Observed:
+
+37 / 48.
+
+Required:
+
+at least 40 / 48.
+
+No threshold was altered.
+No scenario was discarded.
+No post-result tuning was performed.
+
+PATCH LEARNING / AUTHORIZATION
+
+Valid bounded patch targets:
+
+48 / 48.
+
+Learner A exact target:
+
+48 / 48.
+
+Learner B exact target:
+
+48 / 48.
+
+Authorized patch commits:
+
+48 / 48.
+
+All patch deltas:
+
+L1 == 2.
+
+Every patch record was digest-chained to its exact parent effective state.
+
+Tip-0 ancestry was anchored to the actual accepted A15 C-v2 policy digest.
+
+Every patch evidence digest bound all 16 qualified observation records
+including both distinct provenance roots.
+
+Learner roots were independent.
+
+Inherited governance qualification:
+
+PASS.
+
+Inherited registry qualification:
+
+PASS.
+
+PATCH STRUCTURE
+
+Patch journal length:
+
+4
+in 12 / 12 scenarios.
+
+Final active tip:
+
+4
+in 12 / 12 scenarios.
+
+Major C history:
+
+[v1,v2]
+in 12 / 12 scenarios.
+
+Context-slot count:
+
+3
+in 12 / 12 scenarios.
+
+C-v3 creations:
+
+0.
+
+Duplicate context creations:
+
+0.
+
+Patch-5 creations:
+
+0.
+
+An otherwise-valid fifth patch attempt was:
+
+PATCH_CAPACITY_BLOCKED.
+
+ROLLBACK / REACTIVATION
+
+Patch-3 rollback / reactivation:
+
+exact in 12 / 12 scenarios.
+
+Full tip-4 -> tip-0 rollback:
+
+returned exactly to the immutable accepted A15 C-v2 base.
+
+Tip-0 -> tip-4 reactivation:
+
+exact without retraining.
+
+Patch records and digests remained immutable.
+
+RESTART
+
+Patch-3 restart after observation 8:
+
+equivalent to uninterrupted shadow
+in 12 / 12 scenarios.
+
+Qualified evidence,
+journal state,
+tip,
+eventual targets,
+service outputs,
+and rollback/reactivation state
+remained equivalent.
+
+USEFULNESS
+
+48 frozen patch evaluations.
+
+Candidate aggregate first-four service:
+
+3978.
+
+Stale-previous aggregate first-four service:
+
+3950.
+
+Evaluator-only oracle:
+
+3978.
+
+Aggregate candidate > stale:
+
+TRUE.
+
+Oracle efficiency:
+
+1.0.
+
+Migrations avoided relative to stale-previous:
+
+38.
+
+Candidate >= stale-previous:
+
+37 / 48.
+
+This fails the preregistered minimum:
+
+40 / 48.
+
+CANDIDATE-BELOW-STALE PATCH EVALUATIONS
+
+S00 / patch 1:
+candidate 81;
+stale 82.
+
+S00 / patch 2:
+candidate 85;
+stale 86.
+
+S00 / patch 3:
+candidate 82;
+stale 83.
+
+S02 / patch 4:
+candidate 83;
+stale 84.
+
+S04 / patch 1:
+candidate 80;
+stale 82.
+
+S04 / patch 2:
+candidate 84;
+stale 85.
+
+S04 / patch 3:
+candidate 83;
+stale 84.
+
+S10 / patch 2:
+candidate 82;
+stale 83.
+
+S10 / patch 4:
+candidate 79;
+stale 80.
+
+S11 / patch 1:
+candidate 80;
+stale 83.
+
+S11 / patch 4:
+candidate 83;
+stale 84.
+
+Per-scenario candidate >= stale counts:
+
+S00: 1 / 4.
+S01: 4 / 4.
+S02: 3 / 4.
+S03: 4 / 4.
+S04: 1 / 4.
+S05: 4 / 4.
+S06: 4 / 4.
+S07: 4 / 4.
+S08: 4 / 4.
+S09: 4 / 4.
+S10: 2 / 4.
+S11: 2 / 4.
+
+Thus the aggregate benefit is real in this frozen world,
+but its per-patch consistency is not high enough
+for the preregistered A17 acceptance criterion.
+
+TASK / CONSTITUTIONAL SAFETY
+
+Task accuracy:
+
+1.0.
+
+Incorrect served:
+
+0.
+
+Stale-program served:
+
+0.
+
+Existing constitutional safety violations:
+
+0.
+
+DEDICATED T8 PROBES
+
+P1 — two observations:
+PASS / real authorization gate abstained for insufficient evidence.
+
+P2 — three observations:
+PASS / real authorization gate abstained for insufficient evidence.
+
+P3 — four-observation nomination:
+PASS / nomination possible but commit remained blocked before 16.
+
+P4 — oversized delta:
+PASS / rejected.
+
+P5 — context-boundary evidence:
+PASS / ABSTAIN / UNATTRIBUTED_UNKNOWN.
+
+P6 — same-root fanout:
+PASS / observation not qualified.
+
+P7 — stale parent effective digest:
+PASS / rejected.
+
+P8 — patch-3 rollback / reactivation:
+PASS.
+
+P9 — full base rollback / reactivation:
+PASS.
+
+P10 — patch capacity:
+PASS / fifth patch blocked.
+
+P11 — no major-version growth:
+PASS / [v1,v2].
+
+P12 — no duplicate-context growth:
+PASS / slot count 3.
+
+All P1-P12:
+
+PASS.
+
+NEGATIVE / LIMIT CONTROLS
+
+N1 — remove 16-observation commit floor:
+unsafe early patch reachable.
+
+N2 — remove L1 patch bound:
+oversized patch reachable.
+
+N3 — make C-v2 base mutable:
+checkpoint loss reachable.
+
+N4 — remove parent-effective-digest verification:
+ancestry discontinuity reachable.
+
+N5 — auto-consolidate patches into C-v3:
+A15 major-version boundary bypass reachable.
+
+N6 — forged observation-root identities:
+external trust boundary remains.
+
+N7 — drift faster than 16 qualified observations:
+scientific rate boundary remains.
+
+TECHNICAL INTERPRETATION
+
+A17 answers two different questions with different outcomes.
+
+First:
+
+CAN A BOUNDED PATCH JOURNAL TRACK FOUR SMALL DEVELOPMENTAL CHANGES
+WITH VERIFIED ANCESTRY,
+PROVENANCE,
+RESTART,
+ROLLBACK,
+REACTIVATION,
+AND HARD CAPACITY?
+
+For the frozen A17 worlds:
+
+YES.
+
+All 48 bounded targets were learned and authorized correctly.
+All parent chains verified.
+The immutable C-v2 checkpoint survived.
+No new context slot or C-v3 was created.
+Rollback and reactivation were exact.
+
+Second:
+
+IS THE PATCHED POLICY CONSISTENTLY BETTER THAN
+THE IMMEDIATELY PREVIOUS EFFECTIVE POLICY
+AT THE PREREGISTERED 40 / 48 LEVEL?
+
+NO.
+
+The patched policy matched the evaluator-only oracle exactly in aggregate,
+and beat stale-previous aggregate service by 28,
+but only met or exceeded stale-previous service in:
+
+37 / 48
+
+individual evaluations.
+
+Therefore the architecture demonstrated
+bounded reversible incremental developmental patching,
+but not the preregistered level of per-step usefulness robustness.
+
+This is not an authorization failure.
+
+It is not a provenance failure.
+
+It is not a restart failure.
+
+It is not a lineage failure.
+
+It is a usefulness-consistency failure
+under the frozen F17 drift paths and turnover schedule.
+
+PLAIN-SPEAK INTERPRETATION
+
+The patch mechanism itself worked.
+
+Yggdrasil learned all four small changes in every scenario.
+It kept the original C-v2 memory safe underneath them.
+It could walk backward through the patch chain,
+return all the way to C-v2,
+and then reactivate the newest patch without retraining.
+
+It also refused:
+
+too-early updates;
+oversized updates;
+stale parents;
+context-crossing evidence;
+a fifth patch.
+
+So the safety and memory machinery did what we wanted.
+
+But A17 required more than:
+
+"the patches help overall."
+
+They did help overall:
+
+3978
+versus
+3950.
+
+And the patched policy matched the oracle.
+
+But we required the patch to be at least as useful as the previous policy
+in 40 of the 48 individual patch tests.
+
+It managed:
+
+37 of 48.
+
+That is three short.
+
+So A17 does not get a pass.
+
+What we learned is more useful than simply calling the architecture broken:
+
+the bounded patch journal is technically viable,
+reversible,
+and causally clean,
+
+but a one-step developmental patch is not reliably beneficial enough
+under every local turnover geometry.
+
+The next research question should target
+WHY those locally correct patches can temporarily underperform
+the immediately previous policy
+despite matching the target-policy oracle.
+
+That should be studied as a new preregistered experiment,
+not repaired by changing A17 after seeing the result.
+
+ACCEPTED / RESEARCH FRONTIER
+
+A16 / T8:
+
+ACCEPTED via A16-FIXA.
+
+A17 / T8:
+
+CLOSED NEGATIVE / MIXED.
+
+Structural bounded incremental patch tracking:
+
+DEMONSTRATED.
+
+Full preregistered A17 acceptance:
+
+NOT GRANTED.
+
+Failure criterion:
+
+candidate >= stale-previous 37 / 48
+versus required 40 / 48.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
