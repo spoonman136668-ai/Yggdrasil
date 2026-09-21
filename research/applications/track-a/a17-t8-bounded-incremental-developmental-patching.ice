@@ -1050,3 +1050,157 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-PRIMARY DISPOSITION — A17 EXECUTED THROUGH PRE-PRIMARY FIXA
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED NEGATIVE / MIXED /
+FULL A17 PREREGISTERED ACCEPTANCE NOT GRANTED /
+NON-CANONICAL.
+
+PRE-PRIMARY EVIDENCE-INTEGRITY REPAIR
+
+The original F17 source audit found missing operational enforcement in:
+
+- 16-observation commit floor;
+- context-boundary patch exclusion;
+- four-patch capacity;
+- exact C-v2 policy-digest anchoring;
+- provenance-root binding;
+- inherited governance / registry qualification;
+- learner-root independence;
+- several dedicated probes and unsafe controls.
+
+No real A17 primary manifest or primary observation had been consumed.
+
+The original F17 scientific environment therefore remained unchanged,
+and a preregistered pre-primary repair was executed as:
+
+A17-FIXA — Incremental Patch Authorization / Provenance / Capacity Gate Repair.
+
+FIXA preregistration:
+
+9d2ee4d2ff1b694bcece75f38e810705a9559fb5.
+
+FIXA implementation:
+
+402348d2c0b8fd0bee887cee12f0c726f04233a6.
+
+Corrected executable freeze F17A:
+
+c33df49a8b171c1f6cd8e64820dd3bca0e2f4492.
+
+The original scientific derivation seed remained:
+
+F17 =
+3ec24f8242285688a537f5e7dd6e9a231a645597.
+
+PRIMARY MANIFEST
+
+Manifest commit:
+
+794d7486d194f20c71747aca1cde62cf15d370e8.
+
+Manifest SHA-256:
+
+8284e3f1e47a17f234eb02f2b427cddaee16999e0df795d38f1b0b457cf8e43f.
+
+PRIMARY CLOSURE
+
+Authoritative A17-FIXA closure:
+
+d225ab1a8168660afb0c0c6547c3c67594428e3d.
+
+Two complete corrected primary sweeps were byte-identical.
+
+Serialized output SHA-256:
+
+ee53b151295a5d31ba1e54e4cd8d4deae0aff604ff3b66406fb87b748a08306d.
+
+PRIMARY OUTCOME
+
+A17_T8_BOUNDED_INCREMENTAL_PATCH_TRACKING_SUCCESS:
+
+FALSE.
+
+Structural / safety results:
+
+48 / 48 valid bounded patch targets;
+48 / 48 Learner A exact targets;
+48 / 48 Learner B exact targets;
+48 / 48 patch commits authorized;
+all patch deltas L1 == 2;
+all parent-effective-digest chains exact;
+actual accepted C-v2 policy digest anchored at tip 0;
+provenance roots bound into evidence digests;
+all restart comparisons equivalent;
+all rollback / reactivation checks exact;
+all P1-P12 PASS;
+all N1-N5 unsafe shortcuts exposed;
+major C history remained [v1,v2];
+context-slot count remained 3;
+C-v3 creations = 0;
+duplicate context creations = 0;
+patch-5 creations = 0;
+task accuracy = 1.0;
+incorrect served = 0;
+stale-program served = 0;
+constitutional safety violations = 0.
+
+Usefulness:
+
+candidate first-four service = 3978;
+stale-previous = 3950;
+oracle = 3978;
+oracle efficiency = 1.0;
+migrations avoided = 38.
+
+However:
+
+candidate >= stale-previous = 37 / 48.
+
+Preregistered requirement:
+
+at least 40 / 48.
+
+Therefore:
+
+FULL A17 ACCEPTANCE = NOT GRANTED.
+
+INTERPRETATION
+
+The bounded,
+digest-chained,
+reversible developmental patch mechanism is demonstrated.
+
+The failed claim is narrower:
+
+the one-step patches were not consistently useful enough
+across the frozen local turnover geometries
+to satisfy the preregistered 40 / 48 robustness threshold.
+
+This result must remain a negative / mixed result.
+
+Do not repair it by:
+
+changing the threshold;
+dropping unfavorable scenarios;
+redrawing patch paths;
+reshaping evaluation demand;
+or adding another A17 FIXA.
+
+A later experiment may investigate
+why target-correct incremental patches can transiently underperform
+the immediately previous developmental policy
+under local replacement geometry.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
