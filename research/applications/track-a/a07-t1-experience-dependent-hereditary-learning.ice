@@ -910,3 +910,64 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-FREEZE PRIMARY TRAINING MANIFEST — BEFORE FIRST PRIMARY TRAINING EXAMPLE
+
+DATE:
+2026-09-20.
+
+FREEZE COMMIT F07
+
+ee9014bde9c210ca31fbea7d94bb2a514c6e6f62.
+
+TARGET / LEARNER-ORDER MANIFEST SHA-256
+
+6abcdd47683edf0b5b4c814518b19709d205f69f25e5db49b3057526f3818139.
+
+PRIMARY TARGETS
+
+S00 role 0; train 93..103; commit 104; mask 322; target 0xcaca.
+S01 role 2; train 169..179; commit 180; mask 197; target 0x3993.
+S02 role 2; train 92..102; commit 103; mask 1031; target 0x6999.
+S03 role 0; train 112..122; commit 123; mask 1055; target 0x6669.
+S04 role 3; train 197..207; commit 208; mask 172; target 0x1eb4.
+S05 role 1; train 108..118; commit 119; mask 1458; target 0x47e2.
+S06 role 3; train 143..153; commit 154; mask 280; target 0xcf30.
+S07 role 0; train 144..154; commit 155; mask 383; target 0x7e81.
+S08 role 0; train 149..159; commit 160; mask 1011; target 0x24bd.
+S09 role 0; train 108..118; commit 119; mask 1798; target 0x9aa6.
+S10 role 3; train 129..139; commit 140; mask 1359; target 0xf909.
+S11 role 3; train 97..107; commit 108; mask 266; target 0x9a9a.
+
+All target derivation counters:
+
+0.
+
+LEARNER ORDERS
+
+S00 A [1,2,5,3,4,10,12,0,6,9,8]; B [1,12,3,5,2,10,6,4,0,8,9].
+S01 A [2,8,3,12,5,1,9,10,6,0,4]; B [12,0,3,6,4,2,10,8,9,1,5].
+S02 A [1,8,2,12,0,10,9,4,3,6,5]; B [8,0,3,4,10,9,1,12,5,6,2].
+S03 A [6,3,5,10,2,4,8,12,1,9,0]; B [2,8,10,3,4,12,9,5,6,1,0].
+S04 A [10,8,2,9,1,6,3,0,4,5,12]; B [10,4,12,3,0,9,6,8,5,1,2].
+S05 A [5,4,12,9,0,3,6,1,8,2,10]; B [8,1,2,4,0,5,3,12,9,6,10].
+S06 A [8,2,3,5,6,10,9,0,1,4,12]; B [5,2,6,12,10,8,9,0,4,1,3].
+S07 A [3,2,10,12,4,6,1,0,9,8,5]; B [12,1,9,6,3,4,2,5,8,10,0].
+S08 A [4,8,9,0,6,1,3,2,10,5,12]; B [4,10,2,5,9,8,1,3,0,12,6].
+S09 A [10,1,8,9,2,12,4,3,0,6,5]; B [0,3,1,4,8,6,5,12,2,10,9].
+S10 A [4,6,9,12,3,2,5,8,1,0,10]; B [2,4,6,0,8,1,3,5,12,10,9].
+S11 A [3,2,5,0,1,9,12,4,6,10,8]; B [5,9,12,4,6,10,2,8,1,3,0].
+
+No target,
+training example,
+learner order,
+or held-out label was replaced after derivation.
+
+At the moment this manifest was recorded:
+
+A07 primary training examples consumed = 0.
+A07 primary service requests served = 0.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
