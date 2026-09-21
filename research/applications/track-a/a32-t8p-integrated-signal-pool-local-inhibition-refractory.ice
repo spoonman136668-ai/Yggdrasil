@@ -822,3 +822,296 @@ but are not the 48-cell A32 execution constants.
 
 No F32 exists yet.
 No scientific A32 world has been derived.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A32 INTEGRATED SIGNAL-POOL / LOCAL-INHIBITION / REFRACTORY CONTROLLER
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F32-DERIVED WORLD,
+PULSE,
+POOL STATE,
+LOCAL DEFECTION,
+REFRACTORY TRANSITION,
+OR SCIENTIFIC OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+ad9096361d51a66addbaebe713e8618502c06858.
+
+SOURCE
+
+research/applications/track-a/a32_t8p_integrated_signal_pool_local_inhibition_refractory_v1.py
+
+Git blob:
+
+d03d623af8c9c78c4360e6d8198e831574fb715d.
+
+PACKAGING NOTE
+
+The normal compressed/base64 source-bundle write
+was blocked by an automated connector safety scan.
+
+A32 therefore uses a plain UTF-8 Python source artifact.
+
+This is a packaging change only.
+
+The experiment semantics,
+mechanical results,
+and freeze discipline are unchanged.
+
+PRE-FREEZE POPULATION-SCALE REPAIR
+
+The first developer-only integration attempt
+used literal A29 12-cell pool constants
+inside the 48-cell A32 organism.
+
+That made the opposition ceiling effectively unreachable.
+
+Before freeze,
+the pool constants were dimensionally normalized by 4:
+
+COMMIT:
+20 -> 80.
+
+OPPOSITION_CEILING:
+8 -> 32.
+
+POP_GATE:
+6 -> 24.
+
+GLOBAL retreat K:
+12 -> 48.
+
+GLOBAL opposing-emitter minimum:
+4 -> 16.
+
+The local density-based A30/A31 law remained unchanged:
+
+R = 12;
+n = 3;
+K = 1/2.
+
+This repair occurred before F32
+and before any scientific A32 world existed.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake seed:
+
+MECHANICAL-F32-NONPRIMARY.
+
+Two complete developer-only sweeps were byte-identical.
+
+Serialized output SHA-256:
+
+f75955a097ba914c44f9f51bfe5fdbea1e0e4c12268e066dbf832ec64f1b5f20.
+
+All P1-P21 integrity probes:
+
+PASS.
+
+Mechanical manifest:
+
+384 trials.
+
+Manifest SHA-256:
+
+64ba0c322cc08177d953f801e6c153c615e945ad6181744fe286345b1ceb18d2.
+
+MECHANICAL GLOBAL
+
+aggregate service:
+
++154555.
+
+harmful trajectories:
+
+103 / 384;
+26.82%.
+
+false dominance:
+
+47 total.
+
+contradictory epochs without majority:
+
+56.29%.
+
+oscillatory:
+
+3 / 384;
+0.78%.
+
+reversal acquisition:
+
+79.69%.
+
+MECHANICAL LOCAL_D0
+
+aggregate service:
+
++220712.
+
+harmful:
+
+68 / 384;
+17.71%.
+
+false dominance:
+
+57.
+
+contradictory epochs without majority:
+
+55.52%.
+
+oscillatory:
+
+30 / 384;
+7.81%.
+
+chatter trials:
+
+184 / 384;
+47.92%.
+
+reversal acquisition:
+
+87.5%.
+
+MECHANICAL LOCAL_D2
+
+aggregate service:
+
++214083.
+
+harmful:
+
+65 / 384;
+16.93%.
+
+false dominance:
+
+57.
+
+contradictory epochs without majority:
+
+55.89%.
+
+oscillatory:
+
+31 / 384;
+8.07%.
+
+chatter trials:
+
+123 / 384;
+32.03%.
+
+reversal acquisition:
+
+87.5%.
+
+MECHANICAL LOCAL_D3
+
+aggregate service:
+
++212301.
+
+harmful:
+
+64 / 384;
+16.67%.
+
+false dominance:
+
+57.
+
+contradictory epochs without majority:
+
+56.05%.
+
+oscillatory:
+
+30 / 384;
+7.81%.
+
+chatter trials:
+
+84 / 384;
+21.88%.
+
+reversal acquisition:
+
+87.5%.
+
+No arm mechanically qualified.
+
+A32_INTEGRATION_INFORMATION_GAIN:
+
+FALSE
+
+in the fake world.
+
+MECHANICAL INTERPRETATION
+
+The dedicated A31 refractory effect
+did transfer at the CELL level:
+
+D2 / D3 reduced recommit-defect chatter substantially.
+
+But it did not transfer at the POPULATION level:
+
+D2 / D3 did not reduce majority-state oscillation
+relative to LOCAL_D0.
+
+The likely structural cause is frozen into A32:
+
+when a pool recruitment condition fires,
+all currently eligible U cells
+join the same side together.
+
+Thus cell-local memory can desynchronize
+recently defected cells,
+while the shared recruitment event
+still synchronizes the rest of the unresolved population.
+
+This is not repaired before the scientific run.
+
+The real experiment will determine
+whether that composition failure replicates
+on fresh post-F32 worlds.
+
+REAL A32 STATUS
+
+No F32-derived scientific world exists.
+
+No real A32 pulse has been observed.
+
+No real A32 result exists.
+
+Let the resulting commit SHA be:
+
+F32.
+
+After F32 exists:
+
+1. derive exactly 384 fresh worlds from F32;
+2. bind the complete world manifest SHA;
+3. only then execute two complete primary sweeps;
+4. require byte-identical output;
+5. report GLOBAL / LOCAL_D0 / LOCAL_D2 / LOCAL_D3
+without post-result tuning.
+
+NO RECRUITMENT CHANGE.
+NO POOL CHANGE.
+NO LOCAL-INHIBITION CHANGE.
+NO REFRACTORY-DURATION CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
