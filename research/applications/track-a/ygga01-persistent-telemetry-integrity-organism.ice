@@ -942,3 +942,73 @@ A corrective rerun must change only that bookkeeping rule.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — YGG-A01 PERSISTENT TELEMETRY INTEGRITY ORGANISM
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FRAME 0 OF FIRST PRIMARY TRIAL.
+
+HARNESS
+
+research/applications/track-a/ygga01_telemetry_organism_v1.py
+
+Harness implementation commit:
+
+f59f765ea1cc996c1ffc9cc3ff1a007f560507c3.
+
+Git blob SHA:
+
+f6774dd9400dccbcffa5a5df78f07c5f8c2eeb2d.
+
+Source SHA-256:
+
+0101cf351b9805360e6549a9f29129f86757777fa5475c4b72bd9176b6e33e94.
+
+Source bytes:
+
+28392.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Exact committed source reconstructed from the GitHub connector:
+
+PASS.
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Frozen controls include:
+
+- 12 cells;
+- roles 0..3;
+- connected role threshold 2;
+- partition role threshold 1;
+- 512 deterministic telemetry frames;
+- partition windows 192..223 and 400..415;
+- five-field hereditary capsule;
+- four pairwise-disjoint governance roots;
+- four pairwise-disjoint registry roots;
+- initial 3/3/3/3 role distribution;
+- evaluator reference unavailable to organism governance.
+
+No primary application frame was executed before this freeze.
+
+REPRODUCIBILITY
+
+Execute two complete deterministic 512-frame trials from these exact frozen bytes.
+
+Serialized trial SHA-256 must match exactly.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
