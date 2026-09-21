@@ -1088,3 +1088,584 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A29 / T8M DISTRIBUTED COMPETING SIGNAL POOLS
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE MIXED-POSITIVE MECHANISM RESULT /
+DISTRIBUTED SIGNAL POOLS IMPROVED ATTRACTOR QUALITY
+AND AGGREGATE SERVICE RELATIVE TO BLOCK-SIGN CONTROL,
+BUT CONTRADICTORY SIGNALS PERSISTED TOO OFTEN AFTER COMMITMENT /
+NO CONTROLLER QUALIFIED /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+a64c827ca0ec4f689c4c947abb02d81d9191dd45.
+
+F29:
+
+d3647d6860626113ba6b3e5b042b47091925d7e1.
+
+Source SHA-256:
+
+4736c3b525be005db46dba17122a6e772da0297919fae95bb28546149c3fe94c.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+4e3d43f829f004e730cb7be68bf39c0e7bc29e3f.
+
+Trial-manifest SHA-256:
+
+9c04f4611117978bbffb8089c6a5edadef462e2b6d331212507f3506b7bb4f16.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete F29-derived primary sweeps were byte-identical.
+
+Serialized semantic output SHA-256:
+
+921733321d6a644091a7ff8f670895ee58611115295a9069c95949262341dd10.
+
+All P1-P24 integrity probes:
+
+PASS.
+
+STATIC C3
+
+aggregate delta versus stale:
+
++4636.
+
+beneficial:
+
+211.
+
+harmful:
+
+173 / 384;
+45.05%.
+
+worst cumulative drawdown:
+
+-257.
+
+BLOCK_SIGN
+
+aggregate delta:
+
++9806.
+
+beneficial:
+
+177.
+
+neutral:
+
+2.
+
+harmful:
+
+205 / 384;
+53.39%.
+
+worst drawdown:
+
+-137.
+
+end states:
+
+C = 189;
+S = 182;
+U = 13.
+
+false candidate commitments:
+
+29 / 189;
+15.34%.
+
+false stale commitments:
+
+34.
+
+POOL_FULL
+
+aggregate delta:
+
++12876.
+
+beneficial:
+
+191.
+
+neutral:
+
+2.
+
+harmful:
+
+191 / 384;
+49.74%.
+
+worst drawdown:
+
+-84.
+
+end states:
+
+C = 161;
+S = 142;
+U = 81.
+
+commits:
+
+702.
+
+retreats:
+
+399.
+
+recommits:
+
+318.
+
+false candidate commitments:
+
+10 / 161;
+6.21%.
+
+false stale commitments:
+
+8.
+
+contradictory epochs:
+
+1736.
+
+contradictory epochs remaining U:
+
+77.02%.
+
+all six rotating U 2-of-4 subsets were exercised.
+
+POOL_FULL retained:
+
+189 / 210
+
+R4-beneficial trajectories as beneficial:
+
+90%.
+
+POOL_FULL QUALIFIED:
+
+FALSE.
+
+Reason:
+
+harmful trajectory rate:
+
+49.74%
+
+versus required:
+
+<= 5%.
+
+false candidate commitment rate:
+
+6.21%
+
+also exceeded the 5% limit.
+
+A29_SIGNAL_POOL_INFORMATION_GAIN:
+
+FALSE
+
+under the exact preregistered definition.
+
+Reason:
+
+POOL_FULL improved harm,
+aggregate service,
+and false candidate commitment
+relative to BLOCK_SIGN,
+
+but contradictory epochs remaining U were:
+
+77.02%
+
+below the preregistered:
+
+90%.
+
+ATTRACTOR-QUALITY RESULT
+
+Relative to BLOCK_SIGN:
+
+false candidate commitment fell from:
+
+29 / 189
+=
+15.34%
+
+to:
+
+10 / 161
+=
+6.21%.
+
+false stale commitment fell from:
+
+34
+
+to:
+
+8.
+
+Thus the distributed pools
+substantially improved the quality
+of final attractor selection.
+
+The signal pool did not merely
+increase aggregate reward.
+
+It reduced incorrect committed end states.
+
+PAIRWISE TRAJECTORY RESULT
+
+POOL_FULL versus BLOCK_SIGN:
+
+POOL_FULL better:
+
+225 trajectories.
+
+equal:
+
+19.
+
+POOL_FULL worse:
+
+140.
+
+POOL_FULL versus NO_FREQ:
+
+better:
+
+274.
+
+equal:
+
+5.
+
+worse:
+
+105.
+
+POOL_FULL versus NO_PF:
+
+better:
+
+45.
+
+equal:
+
+284.
+
+worse:
+
+55.
+
+POOL_FULL versus NO_HET:
+
+better:
+
+155.
+
+equal:
+
+76.
+
+worse:
+
+153.
+
+FREQUENCY-CODING ABLATION
+
+NO_FREQ:
+
+aggregate delta:
+
++3087.
+
+harmful:
+
+176 / 384;
+45.83%.
+
+commits:
+
+0.
+
+No-frequency pools never crossed
+the commitment rule.
+
+Thus repeated local pulsing
+is not decorative.
+
+It materially controls
+whether collective state transitions occur.
+
+However,
+NO_FREQ's lower harm came with
+severe indecision / undercommitment
+and much lower aggregate benefit.
+
+POSITIVE-FEEDBACK ABLATION
+
+NO_PF:
+
+aggregate delta:
+
++12906.
+
+harmful rate:
+
+48.96%.
+
+false candidate commitments:
+
+11.
+
+false stale commitments:
+
+14.
+
+POOL_FULL:
+
+aggregate:
+
++12876.
+
+harmful rate:
+
+49.74%.
+
+false candidate commitments:
+
+10.
+
+false stale commitments:
+
+8.
+
+Under this mechanism harness,
+the preregistered positive-feedback pulse
+did not materially improve aggregate performance.
+
+It modestly improved attractor quality,
+especially stale-side false commitment,
+but did not earn a strong independent claim.
+
+Do not treat the tested positive-feedback rule
+as validated.
+
+HETEROGENEITY ABLATION
+
+NO_HET:
+
+aggregate delta:
+
++12925.
+
+harmful rate:
+
+50.26%.
+
+POOL_FULL:
+
+aggregate delta:
+
++12876.
+
+harmful rate:
+
+49.74%.
+
+Pairwise:
+
+POOL_FULL better = 155;
+equal = 76;
+worse = 153.
+
+Unlike A28,
+rotating U heterogeneity did not show
+a strong aggregate advantage
+inside this dedicated signal-pool harness.
+
+This does NOT invalidate the A28 result.
+
+It shows that once local signal pools
+dominate regime transitions,
+the specific exploration-slot rotation
+is not the main remaining failure.
+
+CONTRADICTION FAILURE
+
+The preregistered contradiction criterion failed.
+
+Only:
+
+77.02%
+
+of epochs with:
+
+C_pool >= 12
+AND
+S_pool >= 12
+
+were in U.
+
+The remaining contradictory epochs occurred
+while the system was already committed.
+
+The U commit rule itself
+correctly prevents commitment
+when both pools are high.
+
+Therefore the failure is not:
+
+"contradictory evidence is being averaged away before commitment."
+
+The failure is:
+
+"after commitment,
+opposing evidence can become strong
+while the current attractor remains active
+for too long."
+
+This localizes the next problem to:
+
+CROSS-INHIBITION / RETREAT DYNAMICS.
+
+TECHNICAL INTERPRETATION
+
+A29 supports several architectural claims.
+
+1. LOCAL RATE-CODED POOLS ARE FUNCTIONAL.
+
+Removing repeated per-cell pulse frequency
+prevented commitment entirely.
+
+2. DISTRIBUTED POOLS IMPROVE ATTRACTOR QUALITY.
+
+False candidate commitment dropped
+from 15.34% under centralized BLOCK_SIGN
+to 6.21%.
+
+3. A SINGLE CENTRAL CONFIDENCE SCORE
+IS NOT REQUIRED
+TO GET BETTER REGIME SELECTION.
+
+The pool system used:
+
+local pulses;
+decay;
+population participation;
+committed reinforcement;
+cross-inhibition;
+population state.
+
+4. CONTRADICTION IS NOW THE DOMINANT FAILURE.
+
+Strong competing pools frequently coexist
+after commitment.
+
+The current nonlinear retreat response
+does not resolve that conflict quickly enough.
+
+5. THE NEXT EXPERIMENT SHOULD NOT
+ADD ANOTHER CONFIDENCE SCORE.
+
+It should test
+LOCAL CROSS-INHIBITORY RETREAT DYNAMICS.
+
+Specifically:
+
+can opposing cells suppress committed recruitment
+progressively as contradiction grows,
+
+rather than waiting for one global retreat event?
+
+That would move cross-inhibition
+from a state-transition gate
+into the population dynamics themselves.
+
+PLAIN-SPEAK INTERPRETATION
+
+The shared signal pools did something real.
+
+They made better final commitments
+than the old block-level controller.
+
+The old controller ended committed
+to the candidate in 29 bad cases.
+
+The signal-pool organism
+cut that to 10.
+
+It also made far fewer
+wrong commitments back to the stale state.
+
+And it earned much more total service
+than the central block-sign controller.
+
+So cells pulsing into a shared pool
+is not just a biological-looking decoration.
+
+The population is actually using it.
+
+But we found the next weakness.
+
+Sometimes the organism commits.
+
+Then both sides start shouting.
+
+Candidate signals are high.
+
+Opposition signals are also high.
+
+The organism should say:
+
+"this commitment is no longer trustworthy;
+go back to uncertainty."
+
+Our current system does that too slowly.
+
+About 23% of strongly contradictory epochs
+were still spent in a committed state.
+
+So the next question is very specific:
+
+CAN OPPOSING CELLS
+DIRECTLY ERODE A COMMITTED POPULATION
+AS DISAGREEMENT GROWS,
+WITHOUT A CENTRAL RETREAT DECISION?
+
+That is the next clean test.
+
+No autonomous activation controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
