@@ -668,3 +668,151 @@ instead of being handed the context label.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A12 T5 LATENT CONTEXT INFERENCE
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY PRIMARY A12 HIDDEN CONTEXT SEQUENCE,
+PROBE PAIR,
+SERVICE SEQUENCE,
+RESTART PHASE,
+OR REPLACEMENT PLAN.
+
+IMPLEMENTATION COMMIT
+
+c1d281dbacfeafd6ed2f859e2845b67ae5894672.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a12_t5_latent_context_inference_v1.py
+
+Loader Git blob:
+
+55dfab23b8331ef1f52dd514bc5c8127fc05ee02.
+
+Payload:
+
+research/applications/track-a/a12_t5_latent_context_inference_v1.py.gz
+
+Payload Git blob:
+
+2efd6e324211d734717f33aa3cda11e435f239dc.
+
+Compressed payload SHA-256:
+
+1897e52ea301bb980480a9970e1ac3385d7c8eb8ca62bd1eab9afcca7cf55e9d.
+
+Compressed payload bytes:
+
+4539.
+
+Decompressed source SHA-256:
+
+628c23f8319aa0e429a5c0e4dd8b0007e1346a799428c1678d33189dda10bdfd.
+
+Decompressed source bytes:
+
+12683.
+
+FROZEN PARENT
+
+A11 source SHA-256:
+
+a45e4b74b0d2f2c8981da7f94bde4e9072048109226854a881162ecb47f9d235.
+
+A11 freeze F11:
+
+77874019c9f8cc8716873161f920e249a07ec4fa.
+
+A11 context-development manifest:
+
+b0e00f29d36637a1365ab2407678aacf232ac4f4cf05d387f68af975a5b4bedd.
+
+A11 accepted result SHA-256:
+
+21e3ae20cad080cd65c138722d96079f27c6d2d4479fd3506f2dd40c06f32c05.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Scenarios:
+
+12.
+
+Hidden phases:
+
+72.
+
+Every mechanical scenario:
+
+contains both A and B
+and at least 3 switches.
+
+One-probe inference:
+
+ABSTAIN.
+
+Two-probe exact-mean inference:
+
+correct unique slot.
+
+Full non-primary T5 smoke used only:
+
+MECHANICAL-NONPRIMARY-FREEZE.
+
+Mechanical smoke summary:
+
+72 / 72 phases inferred correctly;
+0 incorrect context selections;
+all inference latencies = 2;
+no replacement before successful inference;
+candidate first-four service = 2908;
+sticky-context baseline = 2843;
+evaluator oracle = 2908;
+candidate >= sticky baseline in 67 / 72 phases;
+candidate > sticky baseline in 32 / 72 phases;
+81 migrations avoided;
+all restart checks equivalent;
+all T5 probes PASS;
+unsafe one-probe / nearest-prior controls exposed;
+existing constitutional safety totals = 0.
+
+These outcomes use a fake mechanical freeze label only.
+
+They are implementation checks.
+
+They are NOT A12 scientific evidence.
+
+PRIMARY STATUS AT THIS FREEZE
+
+NOT DERIVED.
+
+Let the resulting commit SHA of this freeze update be F12.
+
+Only after F12 exists may the harness derive:
+
+- 12 six-phase hidden context sequences;
+- 72 two-observation context probes;
+- 72 held-out service sequences;
+- 12 restart phases;
+- 144 replacement target sets.
+
+No primary A12 context observation has been consumed.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
