@@ -915,3 +915,80 @@ or observed result,
 because an independent parallel lane also preregistered DG-1R-05Z.
 
 The scientific question and frozen audit families were not changed in response to data.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05AA HIBERNATION / REACTIVATION
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY DORMANCY CASE.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05aa_hibernation_reactivation_v1.py
+
+Git blob SHA:
+
+ecabd1d360660e69a0ce15cd877d5b230f607247.
+
+Source SHA-256:
+
+3e254c15ffb526833caa635e8e8a7ef14f26fd2c0098b16d243c9be7f4308fde.
+
+Source bytes:
+
+27031.
+
+PRE-FREEZE REPAIR HISTORY
+
+The latest harness repair before this freeze was committed before any primary scientific execution.
+
+Branch commit immediately before freeze:
+
+94f1b75b22f84a7e47c00e557cfdc82aae339148.
+
+Commit message:
+
+Fix pre-freeze DG-1R-05AA dormancy semantics.
+
+No primary result from this exact harness was observed before this freeze.
+
+FROZEN IMPLEMENTATION
+
+The harness implements the preregistered:
+
+- 12-cell initial ROLE(cell)=cell mod 4 fixture;
+- exact FP2 / ROLE2 mapping;
+- R0 through R4 reactivation stages;
+- four-observation health dwell;
+- dormant authority count = 0;
+- causal cursor catch-up and monotonicity;
+- lineage-qualified registry quorum of three pairwise-disjoint roots;
+- stale witness-slot rejection and fresh reassignment;
+- known-damage quarantine through dormancy;
+- damage-acquired-while-dormant detection;
+- incomplete causal-history rejection;
+- one-root registry loss tolerance and two-root loss abstention;
+- pre-catch-up dormant-vote rejection;
+- post-catch-up authority re-earning;
+- witness-holder hibernation and replacement;
+- eight-cycle repeated hibernate/reactivate audit;
+- dormant headcount non-authority;
+- preregistered negative controls and correlated / constitutional holdouts.
+
+REPRODUCIBILITY
+
+Execute two complete deterministic sweeps from this exact frozen harness.
+
+Serialized output SHA-256 must match exactly.
+
+NO POST-RESULT TUNING.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
