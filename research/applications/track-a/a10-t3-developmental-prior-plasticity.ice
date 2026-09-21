@@ -736,3 +736,84 @@ PERSISTENT CHANGE IN HOW FUTURE CELLS DEVELOP.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-IMPLEMENTATION PREREGISTRATION CORRECTION 01 — EXACT ZERO-MEAN DEMAND PAIRS
+
+DATE:
+2026-09-21.
+
+STATUS:
+CORRECTED BEFORE ANY A10 HARNESS COMMIT,
+FREEZE,
+MECHANICAL PRIMARY,
+OR SCIENTIFIC EXECUTION.
+
+ISSUE
+
+The original pair wording said:
+
+epoch 2k:
+move one request a -> b;
+
+epoch 2k+1:
+apply the exact inverse perturbation b -> a.
+
+Read literally as a sequential operation,
+the second epoch would return to the latent prior.
+
+The two-epoch arithmetic mean would therefore not equal the latent prior,
+contradicting the explicit preregistered invariant.
+
+CORRECTED FROZEN PAIR RULE
+
+For every training or evaluation pair,
+derive two DISTINCT role indices a,b.
+
+Let p be the latent prior.
+
+Define delta:
+
+delta[a] = +1;
+delta[b] = -1;
+all other components = 0.
+
+The two demand vectors are:
+
+v_even = p + delta.
+
+v_odd = p - delta.
+
+Because every latent-prior component is in 1..6:
+
+every generated demand component lies in 0..7.
+
+Both vectors still sum to:
+
+12.
+
+And exactly:
+
+(v_even + v_odd) / 2 = p.
+
+No fallback role-pair substitution is required.
+
+Role-pair derivation remains post-freeze and deterministic.
+
+This correction changes no:
+
+catalog;
+learner;
+authorization rule;
+replacement rule;
+baseline;
+oracle;
+threshold;
+probe;
+control;
+or primary signal.
+
+No A10 result has been observed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
