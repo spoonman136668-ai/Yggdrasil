@@ -839,3 +839,50 @@ WITHOUT WAITING FOR A CENTRAL JUDGE?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-IMPLEMENTATION CLARIFICATION 01 — FIXED RECRUITMENT RADIUS
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE IMPLEMENTATION FREEZE
+AND BEFORE ANY REAL F30-DERIVED WORLD EXISTS.
+
+The preregistered recruitment law depends on local committed density
+and local opposition density.
+
+Its sensing neighborhood is now fixed explicitly:
+
+R_join = 3.
+
+This radius is used for recruitment in:
+
+all 12 primary local-inhibition arms;
+R3N12;
+CENTRAL;
+NO_INHIB.
+
+The inhibition-radius sweep:
+
+R1 / R3 / R6 / R12
+
+changes only committed-cell opposition sensing.
+
+It does NOT change recruitment sensing.
+
+Therefore the experiment isolates:
+
+cross-inhibition locality
+
+rather than jointly changing:
+
+cross-inhibition locality
+and wound-healing locality.
+
+No other A30 rule is changed.
+
+No scientific A30 trajectory has been derived.
+
+No F30 exists yet.
