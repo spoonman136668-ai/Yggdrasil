@@ -903,3 +903,178 @@ No A16 scientific result has been observed.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A16 T8 HYSTERETIC MOVING DRIFT
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY PRIMARY A16 P1..P4 PATH,
+EVIDENCE BLOCK,
+ATTESTATION ROOT,
+LEARNER ORDER,
+HELD-OUT SEQUENCE,
+OR REPLACEMENT PLAN.
+
+IMPLEMENTATION COMMIT
+
+c6d4bd66bb9bde1dc72a3176ac0ffa1c40ee16f8.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a16_t8_hysteretic_moving_drift_v1.py
+
+Loader Git blob:
+
+975db196eb63afef03efa219368e501932d6ba7d.
+
+Payload:
+
+research/applications/track-a/a16_t8_hysteretic_moving_drift_v1.py.gz
+
+Payload Git blob:
+
+b6efecf28ad3cc742365b194ae80efa57db4f778.
+
+Compressed payload SHA-256:
+
+c12d811d0ec68558330425a657f2faf6e2ff2d43648552365910b10806ed5173.
+
+Compressed payload bytes:
+
+6868.
+
+Decompressed exact source SHA-256:
+
+cd89dbc46174c97e0bea0bc0a1db4b65eea9b5732521ca30f00ed30f06b792fa.
+
+Decompressed source bytes:
+
+19762.
+
+FROZEN PARENT
+
+Latest accepted A15 closure:
+
+1bea52944ed3b836c6dc6612c73e5e430b69bd2d.
+
+A15 source SHA-256:
+
+4dfd8814c869380317bb90d8baf68f79f4c2ce9874db7bc9278546b56001c071.
+
+A15 freeze F15:
+
+dd9cd2cfee331d94631af17b0f0a61684e5091a4.
+
+A15 manifest SHA-256:
+
+0e7d6c14cff50e8e8705cbf4082d5f333267b2e4646eea333559db4b4b28cef9.
+
+A15 primary result SHA-256:
+
+494b3096e407790a341d66ee37833546b5ce50e2a88a2308a17c1c5bfb0941d3.
+
+The exact accepted A15 C-v2 priors are embedded as immutable parent state.
+
+The developmental/service execution substrate is the exact F14 lineage:
+
+A14 source SHA-256:
+d2187358170045ddd9869be1a53d6938c4ade6547c0b8d83415e16cc6dc40045;
+
+F14:
+c0957332578557efc2975ca2da31cf11d07b45ff;
+
+authoritative A14 manifest:
+83a0ad4d67d7a3f3625e49c311f5d2a85c73fee40cde96e24937ae79e1e944ae.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax / import:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Mechanical manifest SHA-256:
+
+5490f68239c8122133c4888c00d216207659916c46312778e2190f168ccd85da.
+
+Two complete fake-freeze mechanical sweeps:
+
+serialized output SHA-256:
+
+d2efd2bc6544b79687a0ea3134512fb0db5af652d8b9bb5f7a980e34c5399253
+
+for both sweeps.
+
+Mechanical T8 primary signal:
+
+TRUE.
+
+Mechanical aggregate:
+
+candidate non-P0 first-four service = 2962;
+stale-v2 baseline = 2913;
+oracle = 2962;
+candidate >= stale = 63 / 72;
+oracle efficiency = 1.0;
+migrations avoided = 49;
+final P0 service matches oracle;
+all restart comparisons equivalent;
+all P1..P10 probes PASS;
+all N1..N5 unsafe controls exposed.
+
+All mechanical paths:
+
+P0 -> P1 -> P2 -> P3 -> P4 -> P3 -> P2 -> P0.
+
+All transient one-block P1 excursions:
+
+NO working-state update.
+
+All transient P0 reversions:
+
+pending nomination cleared;
+working generation remained 0.
+
+These outcomes use only:
+
+MECHANICAL-NONPRIMARY-FREEZE.
+
+They are implementation checks,
+not A16 scientific evidence.
+
+PRIMARY STATUS AT THIS FREEZE
+
+NOT DERIVED.
+
+Let the resulting commit SHA of this freeze update be:
+
+F16.
+
+Only after F16 exists may the harness derive:
+
+- 12 P1..P4 moving-drift paths;
+- transient P1/P0 evidence blocks;
+- all true-drift evidence blocks;
+- two-root attestations;
+- learner A / B orders;
+- held-out moving-drift sequences;
+- replacement targets;
+- restart details.
+
+No A16 primary developmental observation has been consumed.
+
+A17 remains a separate later bounded patch-journal gate
+and is not part of this A16 freeze.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
