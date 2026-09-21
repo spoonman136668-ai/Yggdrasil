@@ -2226,3 +2226,700 @@ UNSPENT.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A32 / T8P INTEGRATED SIGNAL-POOL / LOCAL-INHIBITION / REFRACTORY SYSTEM
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE NEGATIVE INTEGRATION RESULT /
+A29-A31 COMPONENTS DID NOT COMPOSE CLEANLY UNDER SYNCHRONIZED POOL RECRUITMENT /
+REFRACTORY MEMORY REDUCED CELL-LEVEL CHATTER
+BUT DID NOT REDUCE POPULATION OSCILLATION /
+NO INTEGRATED ARM QUALIFIED /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+ad9096361d51a66addbaebe713e8618502c06858.
+
+F32:
+
+acf6050b5677efd715fb14abde70c93237c3d334.
+
+Source SHA-256:
+
+ca346e8bd0866481c10fc3c0e6c92dcb9b685468e2f88244d98f634907028aa0.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+e98e18bf235da653ced79ea8bd367a23fb7a8b3e.
+
+World-manifest SHA-256:
+
+2d51a59cff8dd43808ae9bb7d7f9d5281c5fe12540b91f367240190202b23300.
+
+Manifest-wrapper SHA-256:
+
+14d7450a8d2d6a819cd3eb25abaed69c183031e8d7c36b25aa52ea806261c992.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete F32-derived primary sweeps were byte-identical.
+
+Serialized semantic output SHA-256:
+
+cd9e7fafe2bf75b78248c4dfeba58c33ba675e65768705eefcf42d2b6a5fc4c2.
+
+Serialized output bytes:
+
+3505.
+
+All P1-P21 integrity probes:
+
+PASS.
+
+PRIMARY RESULT
+
+A32_ANY_INTEGRATION_QUALIFIED:
+
+FALSE.
+
+A32_INTEGRATION_INFORMATION_GAIN:
+
+FALSE.
+
+GLOBAL
+
+Aggregate service:
+
+154115.
+
+Beneficial trajectories:
+
+282.
+
+Harmful trajectories:
+
+102 / 384
+=
+26.56%.
+
+False C dominance:
+
+26.
+
+False C rate on S-favoring worlds:
+
+14.53%.
+
+False S dominance:
+
+21.
+
+False S rate on C-favoring worlds:
+
+10.24%.
+
+Contradiction no-majority fraction:
+
+55.10%.
+
+Oscillatory trajectories:
+
+0.
+
+Median old-majority loss latency on reversal worlds:
+
+1 epoch.
+
+Reversal acquisition:
+
+100 / 128
+=
+78.13%.
+
+Worst cumulative drawdown:
+
+-244.
+
+LOCAL_D0
+
+Aggregate service:
+
+221206.
+
+Beneficial:
+
+307.
+
+Neutral:
+
+9.
+
+Harmful:
+
+68 / 384
+=
+17.71%.
+
+False C dominance:
+
+31.
+
+False S dominance:
+
+28.
+
+Contradiction no-majority fraction:
+
+55.20%.
+
+Oscillatory trajectories:
+
+28 / 384
+=
+7.29%.
+
+Chatter trials:
+
+184 / 384
+=
+47.92%.
+
+Chatter events:
+
+746.
+
+Median old-majority loss latency:
+
+0 epochs.
+
+Reversal acquisition:
+
+112 / 128
+=
+87.50%.
+
+Worst cumulative drawdown:
+
+-9.
+
+LOCAL_D2
+
+Aggregate service:
+
+214965.
+
+Beneficial:
+
+304.
+
+Neutral:
+
+8.
+
+Harmful:
+
+72 / 384
+=
+18.75%.
+
+False C dominance:
+
+31.
+
+False S dominance:
+
+28.
+
+Contradiction no-majority fraction:
+
+55.44%.
+
+Oscillatory trajectories:
+
+28 / 384
+=
+7.29%.
+
+Chatter trials:
+
+127 / 384
+=
+33.07%.
+
+Chatter events:
+
+381.
+
+Median old-majority loss latency:
+
+0 epochs.
+
+Reversal acquisition:
+
+112 / 128
+=
+87.50%.
+
+Worst cumulative drawdown:
+
+-8.
+
+LOCAL_D2 QUALIFIED:
+
+FALSE.
+
+LOCAL_D3
+
+Aggregate service:
+
+212371.
+
+Beneficial:
+
+307.
+
+Neutral:
+
+6.
+
+Harmful:
+
+71 / 384
+=
+18.49%.
+
+False C dominance:
+
+31.
+
+False S dominance:
+
+28.
+
+Contradiction no-majority fraction:
+
+55.71%.
+
+Oscillatory trajectories:
+
+28 / 384
+=
+7.29%.
+
+Chatter trials:
+
+78 / 384
+=
+20.31%.
+
+Chatter events:
+
+201.
+
+Median old-majority loss latency:
+
+0 epochs.
+
+Reversal acquisition:
+
+112 / 128
+=
+87.50%.
+
+Worst cumulative drawdown:
+
+-10.
+
+LOCAL_D3 QUALIFIED:
+
+FALSE.
+
+REFRACTORY TRANSFER RESULT
+
+The A31 local-memory effect DID transfer at the cell level.
+
+Relative to LOCAL_D0:
+
+D2 chatter trials:
+
+184 -> 127.
+
+D2 chatter events:
+
+746 -> 381.
+
+D3 chatter trials:
+
+184 -> 78.
+
+D3 chatter events:
+
+746 -> 201.
+
+Thus refractory memory still prevents
+many immediate recommit-defect cycles.
+
+However:
+
+population oscillation remained exactly:
+
+28 trajectories
+
+under:
+
+LOCAL_D0;
+LOCAL_D2;
+LOCAL_D3.
+
+Therefore:
+
+CELL-LEVEL CHATTER SUPPRESSION
+
+did NOT become:
+
+POPULATION-LEVEL OSCILLATION SUPPRESSION
+
+after integration.
+
+FAMILY-LEVEL DIAGNOSTIC
+
+All 28 oscillatory trials
+in every local arm came from:
+
+FAMILY 5 —
+TRANSIENT / OSCILLATORY UNCERTAINTY.
+
+Oscillatory-trial identity overlap:
+
+D0 ∩ D2:
+
+28 / 28.
+
+D0 ∩ D3:
+
+28 / 28.
+
+D0 ∩ D2 ∩ D3:
+
+28 / 28.
+
+No other environmental family
+produced a population-oscillatory trajectory.
+
+This strongly localizes the failure.
+
+TRANSITION-VOLUME DIAGNOSTIC
+
+LOCAL_D0 transitions:
+
+U -> C:
+17536.
+
+C -> U:
+15289.
+
+U -> S:
+9390.
+
+S -> U:
+8128.
+
+LOCAL_D2:
+
+U -> C:
+17015.
+
+C -> FC:
+14892.
+
+FC -> U:
+14073.
+
+U -> S:
+9068.
+
+S -> FS:
+7897.
+
+FS -> U:
+7799.
+
+LOCAL_D3:
+
+U -> C:
+16707.
+
+C -> FC:
+14611.
+
+FC -> U:
+13772.
+
+U -> S:
+8846.
+
+S -> FS:
+7734.
+
+FS -> U:
+7603.
+
+The refractory states reduce rapid local recycling.
+
+But recruitment remains population-synchronous:
+
+when one side satisfies the shared-pool recruitment condition,
+EVERY eligible U cell joins that side simultaneously.
+
+That creates a large coherent population jump.
+
+The refractory delay changes how many cells are eligible.
+
+It does not change the fact that all eligible cells
+receive the same recruitment event at the same epoch.
+
+This is the dominant A32 composability failure.
+
+CONTRADICTION RESULT
+
+The integrated local arms did NOT solve A29's contradiction target.
+
+No-majority fraction during high-C/high-S epochs:
+
+D0:
+55.20%.
+
+D2:
+55.44%.
+
+D3:
+55.71%.
+
+Frozen qualification requirement:
+
+>= 90%.
+
+Thus contradiction still commonly coexists
+with a population majority.
+
+The local retreat mechanism
+cannot fully compensate
+for globally synchronized recruitment.
+
+ATTRACTOR QUALITY
+
+D2 / D3 did not reduce false final dominance
+relative to D0.
+
+All three local arms ended with:
+
+false C dominance:
+
+31.
+
+false S dominance:
+
+28.
+
+Therefore the refractory mechanism
+changed transient microdynamics
+without improving the integrated final attractor classification.
+
+REVERSAL RESULT
+
+Local arms remained faster than GLOBAL
+at losing the old majority:
+
+GLOBAL median:
+
+1 epoch.
+
+LOCAL arms:
+
+0 epochs.
+
+Local arms also acquired the new majority
+on:
+
+112 / 128
+=
+87.5%
+
+of reversal worlds,
+
+versus GLOBAL:
+
+100 / 128
+=
+78.1%.
+
+Thus A30's fast local retreat capability
+does transfer into the integrated system.
+
+The failure lies in how the organism
+recruits the next population,
+not in its ability to abandon the old one.
+
+TECHNICAL INTERPRETATION
+
+A32 distinguishes three levels of composition.
+
+1. A30 LOCAL RETREAT COMPOSES.
+
+The integrated organism abandons old majority state
+faster than GLOBAL.
+
+2. A31 REFRACTORY MEMORY COMPOSES LOCALLY.
+
+D2 / D3 suppress immediate per-cell chatter.
+
+3. A29 GLOBAL RECRUITMENT DOES NOT COMPOSE
+WITH THOSE MECHANISMS AT POPULATION SCALE.
+
+The shared pool is still acting
+as a centralized synchronization event.
+
+It does not calculate a confidence scalar,
+but functionally:
+
+POOL THRESHOLD CROSSED
+->
+ALL ELIGIBLE U CELLS JOIN C OR S.
+
+That creates coherent majority jumps.
+
+So the remaining centralization is not:
+
+measurement.
+
+It is:
+
+ACTUATION.
+
+A32 therefore identifies a new architectural distinction:
+
+DISTRIBUTED SENSING
+IS NOT ENOUGH
+IF RECRUITMENT / ACTUATION
+REMAINS GLOBALLY SYNCHRONIZED.
+
+The next experiment should leave:
+
+A29 pulse generation;
+A30 local cross-inhibition;
+A31 D2 / D3 refractory memory
+
+unchanged,
+
+and alter only:
+
+HOW ELIGIBLE U CELLS RESPOND
+TO A STRONG SHARED POOL.
+
+The clean next mechanism is:
+
+LOCAL / PROBABILISTIC RECRUITMENT.
+
+Instead of:
+
+shared pool crosses threshold
+->
+all U cells join,
+
+test:
+
+shared pool biases each U cell's own local recruitment rate,
+with local neighborhood support
+and deterministic stochastic draws.
+
+This would preserve the shared pool
+as a population-level chemical field
+while removing the synchronized all-cell actuator.
+
+PLAIN-SPEAK INTERPRETATION
+
+The pieces did not fully snap together.
+
+The good news:
+
+cells still leave a bad commitment quickly.
+
+And the two- or three-epoch memory
+still stops individual cells
+from bouncing in and out as often.
+
+The bad news:
+
+the shared pool still has one hidden centralizing effect.
+
+When it says:
+
+"candidate has enough support,"
+
+every unresolved cell that is allowed to join
+joins at once.
+
+That creates a population stampede.
+
+The cells may have local sensing.
+
+They may have local retreat.
+
+They may have local memory.
+
+But if recruitment is still:
+
+EVERYBODY GO NOW,
+
+the whole population can oscillate together.
+
+That is exactly what happened.
+
+The same 28 oscillatory worlds
+oscillated under:
+
+no refractory memory;
+two-epoch memory;
+three-epoch memory.
+
+The memory length was not the problem.
+
+The recruitment event was.
+
+So A32 gives us a very specific next target:
+
+DO NOT CHANGE
+HOW CELLS SENSE.
+
+DO NOT CHANGE
+HOW CELLS LEAVE.
+
+DO NOT CHANGE
+THEIR SHORT MEMORY.
+
+CHANGE ONLY
+HOW CELLS JOIN.
+
+The shared signal pool should bias
+individual local recruitment,
+
+not issue one population-wide command.
+
+No autonomous controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
