@@ -1515,3 +1515,319 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+EVIDENCE-INTEGRITY CORRECTION 02 — DEFINITIVE EXACT-F14 PRIMARY RESULT
+
+DATE:
+2026-09-21.
+
+STATUS:
+APPEND-ONLY SCIENTIFIC CORRECTION /
+EARLIER WRONG-SOURCE CLOSURE SUPERSEDED AS EVIDENCE /
+EXACT F14 PRIMARY POSITIVE / REPRODUCIBLE / NON-CANONICAL.
+
+HISTORICAL CLOSURE STATUS
+
+The prior closure commit:
+
+faa1bd8fa6f4538fea62f99eeef1890378baf494
+
+recorded:
+
+result SHA-256 =
+5a8f277dc591acda355ec0b8e901474b5576c09e28c7474bd208aa05f81e351e;
+
+manifest SHA-256 =
+ebc5115a9554012b219a59fc9bcde5f4f005838f98f2898a049ecbce46f33c48;
+
+candidate first-four service =
+1986;
+
+fallback =
+1929.
+
+Those values reproduce the post-freeze mutated source family
+299df0843e90524d3ace88373925f35c8d1418d52086a5d042321a20e69106ca,
+
+NOT the exact F14 frozen source.
+
+Therefore that closure remains in history
+but is:
+
+NON-AUTHORITATIVE AS A14 SCIENTIFIC EVIDENCE.
+
+It is not treated as a positive,
+negative,
+or mixed A14 result.
+
+AUTHORITATIVE F14 SOURCE
+
+Freeze F14:
+
+c0957332578557efc2975ca2da31cf11d07b45ff.
+
+Exact source SHA-256:
+
+d2187358170045ddd9869be1a53d6938c4ade6547c0b8d83415e16cc6dc40045.
+
+Source bytes:
+
+18358.
+
+Loader Git blob:
+
+4a1659ecc02d7d3bbaa4982a3901d50e8238a76f.
+
+Payload Git blob:
+
+6614f091da3215fd19b3966c2af36f4dd68e6f7a.
+
+The branch was restored to these exact frozen bytes before the definitive runs.
+
+AUTHORITATIVE F14 MANIFEST
+
+Exact frozen-source recomputation:
+
+83a0ad4d67d7a3f3625e49c311f5d2a85c73fee40cde96e24937ae79e1e944ae.
+
+This manifest is reproducible from:
+
+exact F14 source d2187358...;
+accepted A12 source 628c23f8...;
+accepted A11 source a45e4b74....
+
+The previously recorded ebc5115a... manifest is superseded as wrong-source provenance.
+
+DEFINITIVE REPRODUCIBILITY
+
+Two complete deterministic primary sweeps
+were executed from the exact restored F14 source.
+
+Sweep 1 serialized output SHA-256:
+
+378ac5e53a61df6d772fb675d7d386374e865310fb8f99fd77f5a6132331c14a.
+
+Sweep 2 serialized output SHA-256:
+
+378ac5e53a61df6d772fb675d7d386374e865310fb8f99fd77f5a6132331c14a.
+
+Byte-identical:
+
+TRUE.
+
+DEFINITIVE PRIMARY RESULT
+
+A14_T6_STRICT_NOVEL_CONTEXT_CREATION_SUCCESS:
+
+TRUE.
+
+Every frozen-source primary signal:
+
+TRUE.
+
+KNOWN-CONTEXT NONREGRESSION
+
+Known A/B selections correct:
+
+24 / 24.
+
+A/B policy digests preserved:
+
+12 / 12.
+
+NOVELTY / LEARNING
+
+Initial C two-probe attempts abstained:
+
+12 / 12.
+
+Eight-observation dwell floors respected:
+
+12 / 12.
+
+Learner A exact C prior:
+
+12 / 12.
+
+Learner B exact C prior:
+
+12 / 12.
+
+Exactly one C slot created:
+
+12 / 12.
+
+Final slot count:
+
+3 / 3 in every scenario.
+
+Duplicate C slots:
+
+0.
+
+Fourth-slot creations:
+
+0.
+
+C2 returns reused without retraining:
+
+12 / 12.
+
+USEFULNESS
+
+Candidate C1+C2 first-four-epoch service:
+
+1982.
+
+Unknown-fallback baseline:
+
+1920.
+
+Evaluator-only oracle:
+
+1982.
+
+Oracle efficiency:
+
+1.0.
+
+Candidate >= fallback:
+
+24 / 24 evaluations.
+
+Candidate > fallback:
+
+21 / 24 evaluations.
+
+Migrations avoided relative to fallback:
+
+63.
+
+TASK / SAFETY
+
+Task accuracy:
+
+1.0.
+
+Incorrect served requests:
+
+0.
+
+Stale-program served requests:
+
+0.
+
+All restart comparisons:
+
+equivalent.
+
+Existing constitutional safety violations:
+
+0.
+
+DEDICATED PROBES
+
+P1..P8:
+
+PASS in all scenarios.
+
+UNSAFE CONTROLS
+
+N1..N4:
+
+unsafe shortcuts exposed as preregistered.
+
+BOUNDARIES
+
+N5 — forged observation-root identity:
+
+boundary preserved.
+
+N6 — nonstationary novel niche:
+
+boundary preserved.
+
+SCIENTIFIC INTERPRETATION
+
+The stricter T6 result remains positive
+after enforcing the exact F14 freeze discipline.
+
+The corrected evidence is slightly different numerically
+from the invalid mutated-source run,
+but the scientific conclusion is unchanged:
+
+UNKNOWN
+->
+ABSTAIN
+->
+MINIMUM NOVELTY DWELL
+->
+PROVENANCE-QUALIFIED DISTRIBUTED EXPERIENCE
+->
+64-OBSERVATION DEVELOPMENTAL LEARNING
+->
+INDEPENDENT LEARNER AGREEMENT
+->
+GOVERNED CONTEXT CREATION
+->
+CAPACITY / COALESCENCE CONTROL
+->
+RETURN RECOGNITION WITHOUT RETRAINING.
+
+The integrity incident itself is also informative:
+
+the freeze guard successfully identified
+that a post-freeze implementation drift
+could not be treated as frozen evidence.
+
+PLAIN-SPEAK INTERPRETATION
+
+The stricter new-environment experiment still passes
+when we use the exact code that was actually frozen.
+
+Yggdrasil watched a genuinely unfamiliar environment,
+waited long enough,
+used provenance-qualified observations,
+learned the new developmental pattern,
+created one authorized memory for it,
+and recognized that memory later without retraining.
+
+The corrected numbers are:
+
+1982 immediate-service requests
+
+versus
+
+1920
+
+for staying permanently uncertain,
+
+with:
+
+63
+
+migrations avoided.
+
+The earlier 1986 / 1929 result came from code that changed after freeze,
+so it is not counted.
+
+The important point is that the real frozen experiment passes anyway.
+
+ACCEPTED TRAINING FRONTIER
+
+A14 / strict T6:
+
+POSITIVE
+on exact F14 evidence via this correction.
+
+Earlier wrong-source closure:
+
+historical / invalid as scientific evidence.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
