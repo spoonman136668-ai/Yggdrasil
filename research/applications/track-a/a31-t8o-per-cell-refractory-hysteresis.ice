@@ -963,3 +963,506 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A31 / T8O PER-CELL REFRACTORY HYSTERESIS
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE POSITIVE MECHANISM RESULT /
+D2 AND D3 MET EVERY FROZEN QUALIFICATION CRITERION /
+LOCAL REFRACTORY MEMORY SUPPRESSED CHATTER
+WITHOUT SACRIFICING FAST BROAD-OPPOSITION EROSION /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+094eaab7f8d717781cd4568915a61941114914bb.
+
+F31:
+
+154a59206aa9056d2b8ba40ca3ff95da648bebfe.
+
+Source SHA-256:
+
+dfb3290ee3d2c2efc059546930349ce18b3c3dc17a12367755c0006f03643192.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+9d8597203247f1136715a7cfb1b09664babd85b8.
+
+Challenge-manifest SHA-256:
+
+c743fe0b201de624d90057d203dcc54f7504d24278843bf9073cd42d0404be3f.
+
+Manifest-wrapper SHA-256:
+
+24bbd2314791802141f5f3255777073041a947949277be5c61323edcb26723a8.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete F31-derived primary sweeps were byte-identical.
+
+Serialized semantic output SHA-256:
+
+cfca3d7ed4bc4ba71b556b260e67c8e788127676a0a706e64b76136ef84f6cef.
+
+All P1-P20 integrity probes:
+
+PASS.
+
+PRIMARY RESULT
+
+A31_REFRACTORY_INFORMATION_GAIN:
+
+TRUE.
+
+REFRACTORY-QUALIFIED durations:
+
+D2;
+D3.
+
+No production duration is selected.
+
+D0 — NO REFRACTORY MEMORY
+
+Oscillatory:
+
+49 / 384
+=
+12.7604%.
+
+Chatter trials:
+
+246 / 384
+=
+64.0625%.
+
+Chatter events:
+
+2524.
+
+Broad-opposition median erosion latency:
+
+0 epochs.
+
+One-emitter robustness:
+
+100%.
+
+Strategic one/two-emitter collapse:
+
+0%.
+
+Finite D0 recoveries:
+
+231.
+
+D1 — ONE EPOCH
+
+Oscillatory:
+
+15 / 384
+=
+3.90625%.
+
+Chatter trials:
+
+219.
+
+Chatter reduction vs D0:
+
+10.98%.
+
+Recovery within D0 +4:
+
+89.61%.
+
+Broad erosion latency:
+
+0.
+
+D1 DID NOT QUALIFY.
+
+Failure:
+
+chatter reduction < 25%.
+
+Interpretation:
+
+one epoch of refractory memory
+strongly reduced majority-level oscillation,
+but was too short to suppress enough per-cell recommit-defect chatter.
+
+D2 — TWO EPOCHS
+
+Oscillatory:
+
+1 / 384
+=
+0.2604%.
+
+Chatter trials:
+
+171.
+
+Chatter reduction vs D0:
+
+30.49%.
+
+Chatter events:
+
+526
+
+versus D0:
+
+2524.
+
+Broad erosion latency:
+
+0.
+
+Broad never-eroded:
+
+0 / 48.
+
+One-emitter robustness:
+
+100%.
+
+Strategic one/two-emitter collapse:
+
+0%.
+
+Recovery within D0 +4:
+
+83.98%.
+
+Mean refractory occupancy:
+
+2.4375 cells.
+
+Wounds:
+
+HEALS = 177;
+PERSISTS = 41;
+PROPAGATES = 166.
+
+D2 REFRACTORY-QUALIFIED:
+
+TRUE.
+
+D3 — THREE EPOCHS
+
+Oscillatory:
+
+7 / 384
+=
+1.8229%.
+
+Chatter trials:
+
+125.
+
+Chatter reduction vs D0:
+
+49.19%.
+
+Chatter events:
+
+225.
+
+Broad erosion latency:
+
+0.
+
+One-emitter robustness:
+
+100%.
+
+Strategic one/two-emitter collapse:
+
+0%.
+
+Recovery within D0 +4:
+
+81.39%.
+
+Mean refractory occupancy:
+
+3.1544 cells.
+
+Wounds:
+
+HEALS = 180;
+PERSISTS = 32;
+PROPAGATES = 172.
+
+D3 REFRACTORY-QUALIFIED:
+
+TRUE.
+
+D4 — FOUR EPOCHS
+
+Oscillatory:
+
+1.0417%.
+
+Chatter reduction:
+
+78.86%.
+
+Recovery within D0 +4:
+
+77.49%.
+
+D4 DID NOT QUALIFY.
+
+Failure:
+
+recovery < 80%.
+
+D6 — SIX EPOCHS
+
+Oscillatory:
+
+0.5208%.
+
+Chatter:
+
+0.
+
+Recovery within D0 +4:
+
+70.13%.
+
+D6 DID NOT QUALIFY.
+
+D8 — OVERSLOW NEGATIVE CONTROL
+
+Oscillatory:
+
+0.78125%.
+
+Chatter:
+
+0.
+
+Recovery within D0 +4:
+
+64.07%.
+
+D8 was nonqualifying by design
+and confirms the sticky-memory failure mode.
+
+TRADEOFF CURVE
+
+The real sweep reproduced a coherent refractory-memory curve:
+
+D0:
+
+high oscillation;
+high chatter;
+fast recovery.
+
+D1:
+
+large oscillation improvement;
+insufficient cell-level chatter suppression.
+
+D2-D3:
+
+low oscillation;
+substantial chatter suppression;
+acceptable recovery.
+
+D4+:
+
+very low chatter,
+but recovery becomes too slow.
+
+This supports a finite local-memory regime
+rather than:
+
+no memory
+
+or:
+
+permanent / excessive memory.
+
+TECHNICAL INTERPRETATION
+
+A31 directly resolves the specific A30 near-pass failure.
+
+A30's R12N3 local cross-inhibition
+already provided:
+
+fast broad-opposition erosion;
+small-minority robustness;
+spatial selectivity.
+
+Its remaining problem was
+immediate re-recruitment and majority-boundary chatter.
+
+A31 changed only
+post-defection eligibility.
+
+With two or three complete refractory epochs,
+the system retained:
+
+zero-median broad erosion latency;
+
+100% one-emitter robustness;
+
+0% collapse from the tested strategic one/two-emitter minorities;
+
+while pushing oscillation
+well below the frozen 5% ceiling.
+
+Therefore:
+
+LOCAL CROSS-INHIBITION
++
+SHORT PER-CELL REFRACTORY MEMORY
+
+is materially more stable
+than local cross-inhibition with immediate re-entry.
+
+The mechanism remains distributed.
+
+A cell's local history changes
+its own future eligibility.
+
+There is no:
+
+global confidence score;
+global retreat gate;
+global refractory timer;
+or centralized state reset.
+
+The memory is embodied in cell state.
+
+IMPORTANT LIMIT
+
+A31 is a dedicated mechanism harness.
+
+It does not yet prove
+that D2 or D3 should be integrated
+into the full A29 distributed signal-pool organism.
+
+That integration requires a separate
+post-A31 preregistered experiment.
+
+A31 also does not select between D2 and D3.
+
+Both qualified.
+
+Any later integration can preserve both
+as frozen candidate mechanisms
+or preregister an independent discrimination test.
+
+PLAIN-SPEAK INTERPRETATION
+
+This worked.
+
+A30 taught a cell:
+
+"if enough of my neighborhood disagrees,
+leave commitment."
+
+But the cell could immediately be talked back into commitment.
+
+That caused chatter.
+
+A31 gave the cell one extra piece of local state:
+
+"I was just contradicted."
+
+For a short time,
+it cannot recommit.
+
+Two or three epochs of that memory
+was enough.
+
+With no memory,
+49 of 384 populations oscillated.
+
+With two epochs of memory:
+
+1 did.
+
+With three epochs:
+
+7 did.
+
+The two-epoch system also cut
+cell-level chatter by about 30%.
+
+The three-epoch system cut it
+by about 49%.
+
+And both still reacted immediately
+when broad opposition appeared.
+
+Longer memory kept reducing chatter,
+but started hurting recovery.
+
+So we found a real middle region:
+
+TOO LITTLE MEMORY:
+
+cells forget contradiction too quickly.
+
+TOO MUCH MEMORY:
+
+cells stay uncertain too long.
+
+SHORT LOCAL MEMORY:
+
+the population changes its mind
+without immediately changing it back.
+
+That is exactly the hysteresis behavior
+A31 was meant to test.
+
+A24:
+distributed breadth signal useful.
+
+A25:
+temporal persistence useful.
+
+A26:
+magnitude threshold insufficient.
+
+A27:
+negative feedback useful but noisy.
+
+A28:
+uncertainty-as-population-state useful.
+
+A29:
+local signal pools improve attractor quality.
+
+A30:
+local nonlinear retreat is fast and selective,
+but chatters.
+
+A31:
+short per-cell refractory memory suppresses that chatter
+while retaining fast retreat and minority robustness.
+
+No autonomous production controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
