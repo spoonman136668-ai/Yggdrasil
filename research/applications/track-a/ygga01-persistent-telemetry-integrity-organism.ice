@@ -712,3 +712,233 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE 01 — YGG-A01 FROZEN PRIMARY
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED / REPRODUCIBLE FROZEN PRIMARY FALSE / MEASUREMENT-SEMANTIC DEFECT / NOT ACCEPTED AS APPLICATION FAILURE.
+
+FROZEN HARNESS EXECUTED
+
+research/applications/track-a/ygga01_telemetry_organism_v1.py
+
+Frozen Git blob:
+
+f6774dd9400dccbcffa5a5df78f07c5f8c2eeb2d.
+
+Frozen source SHA-256:
+
+0101cf351b9805360e6549a9f29129f86757777fa5475c4b72bd9176b6e33e94.
+
+Source bytes:
+
+28392.
+
+REPRODUCIBILITY
+
+Two complete deterministic 512-frame trials.
+
+Sweep 1 serialized output SHA-256:
+
+e3cc4dcba7265322bb98716a4207ec2962023e55b2bc44e7f266266c36b34629.
+
+Sweep 2 serialized output SHA-256:
+
+e3cc4dcba7265322bb98716a4207ec2962023e55b2bc44e7f266266c36b34629.
+
+Byte-identical:
+
+TRUE.
+
+FROZEN HARNESS PRIMARY SIGNAL
+
+FIRST_PERSISTENT_ORGANISM_USEFUL:
+
+FALSE.
+
+OBSERVED METRICS
+
+Authoritative false outputs:
+
+0.
+
+Connected availability:
+
+0.9978448275862069.
+
+Budget-8 steady availability:
+
+1.0.
+
+Budget-8 steady accuracy:
+
+1.0.
+
+Fault recovery latencies recorded by harness:
+
+F96 = 0 frames.
+F204 = 20 frames.
+F480 = 1 frame.
+
+Role-shortage recovery latency:
+
+0 frames.
+
+Partition false promotions:
+
+0.
+
+Dormant votes:
+
+0.
+
+Stale witness reclaims:
+
+0.
+
+Hereditary rewrite contested:
+
+TRUE.
+
+Hereditary evolution preserved:
+
+TRUE.
+
+Provenance multiplication:
+
+0.
+
+Restart suffix identical:
+
+TRUE.
+
+Restart final state identical:
+
+TRUE.
+
+Role migrations:
+
+1.
+
+Hibernations:
+
+12.
+
+Reactivations:
+
+8.
+
+Repairs:
+
+3.
+
+Same-target conflict rollbacks:
+
+1.
+
+MEASUREMENT-SEMANTIC DEFECT
+
+The preregistered M4 definition is explicit:
+
+For F96 and F480 damage events,
+when sufficient recoverable resources exist,
+authoritative service must restore within <=2 frames.
+
+F204 is separately preregistered inside the communication-partition scenario.
+
+During F192..223:
+
+partition outputs are provisional;
+one partition output is not globally authoritative by itself;
+global connected authority resumes at re-merge F224.
+
+The frozen harness incorrectly computed:
+
+fault_recovery_within_2
+
+over every entry in fault_recovery,
+including F204.
+
+Therefore F204 was assigned a 20-frame connected-authority latency:
+
+224 - 204 = 20.
+
+That caused:
+
+fault_recovery_within_2 = FALSE
+
+and therefore:
+
+FIRST_PERSISTENT_ORGANISM_USEFUL = FALSE.
+
+This does not match the preregistered metric scope.
+
+The two preregistered M4 events were:
+
+F96 = 0.
+F480 = 1.
+
+Both satisfy <=2.
+
+SCIENTIFIC DISPOSITION
+
+Do NOT reinterpret this frozen output as a pass.
+
+Do NOT alter the frozen harness or overwrite its result.
+
+The frozen primary remains:
+
+FALSE.
+
+However,
+the failing predicate is not a valid implementation of preregistered M4.
+
+Therefore this run is classified as:
+
+MEASUREMENT IMPLEMENTATION DEFECT.
+
+It is not accepted as evidence that the organism failed the preregistered application criterion.
+
+The correct next action is a separate preregistered corrective rerun
+that changes only the recovery-metric event selection:
+
+M4 keys = {96, 480}.
+
+F204 remains reported,
+but only under partition safety / partition recovery observability.
+
+No task logic,
+governance rule,
+resource schedule,
+fault schedule,
+partition window,
+recovery action,
+or application threshold may change.
+
+PLAIN-SPEAK INTERPRETATION
+
+The organism did not actually take 20 frames to recover from the normal fault test.
+
+That 20-frame number came from a fault we intentionally injected while the organism was split in half.
+
+During that split,
+global authority was intentionally unavailable until the halves rejoined.
+
+The experiment specification never counted that partition fault as one of the two-frame recovery tests.
+
+The program accidentally did.
+
+So we keep the failed run exactly as it happened.
+
+We do not call it a success.
+
+But we also do not call the organism a failure for a test it was never supposed to be taking.
+
+A corrective rerun must change only that bookkeeping rule.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
