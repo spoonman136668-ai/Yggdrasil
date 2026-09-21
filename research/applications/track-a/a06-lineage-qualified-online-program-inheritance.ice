@@ -829,3 +829,141 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-FREEZE PRIMARY UPDATE MANIFEST — BEFORE FIRST PRIMARY REQUEST
+
+DATE:
+2026-09-20.
+
+FREEZE COMMIT F06
+
+890046dba7004bdceebb8b49f2516779dc7b08ee.
+
+UPDATE MANIFEST SHA-256
+
+2146c42b61663afede16745123af96bb760a3f886793e9e2d741522c546c2404.
+
+PRIMARY UPDATE PROGRAMS
+
+S00:
+target role 0;
+update epoch 104;
+demand transition 105;
+old 0x5792;
+new 0x3b89;
+counter 0;
+new digest fc108d5cbfd7eaf184c355ace5da15581a9d79708d28a3afbe4d5e7ced189683.
+
+S01:
+target role 2;
+update epoch 180;
+demand transition 181;
+old 0x98f8;
+new 0x21bb;
+counter 0;
+new digest 7c64c489ec0b85ea8687515221ec72821d2c2c30e9e8f7c3dd520fb8558b6e9f.
+
+S02:
+target role 2;
+update epoch 103;
+demand transition 104;
+old 0xd2a9;
+new 0x5a6a;
+counter 0;
+new digest 7779ae993d65b9673a1967721a1af7d56d4afe88346f6c847c7d79193b69d731.
+
+S03:
+target role 0;
+update epoch 123;
+demand transition 124;
+old 0x4e53;
+new 0xcce2;
+counter 0;
+new digest b55420add813370220b36dc4948cac4570a2612b43ab2465c92522cf07ca87ec.
+
+S04:
+target role 3;
+update epoch 208;
+demand transition 209;
+old 0x366a;
+new 0x51c7;
+counter 0;
+new digest 6fafe52a37fa64646e034f9dac17e6c10bce8339f7ddd89440b3802efb2f64d7.
+
+S05:
+target role 1;
+update epoch 119;
+demand transition 120;
+old 0x6f11;
+new 0x9dc2;
+counter 0;
+new digest 536e1e68f09d4c8117191d2681689783aeeec07cba3ef80b7c3fd329ca6941c4.
+
+S06:
+target role 3;
+update epoch 154;
+demand transition 155;
+old 0xd649;
+new 0xa8e5;
+counter 0;
+new digest 1a1acd1d7ddb18487d50ca05d0b591dde79565230807c2b8f601526f2b45e899.
+
+S07:
+target role 0;
+update epoch 155;
+demand transition 156;
+old 0x8657;
+new 0x23d5;
+counter 0;
+new digest 73eea818e6a3c6fcfac3d9404613629dc70def17a74fe4f04c7b54e2052000e1.
+
+S08:
+target role 0;
+update epoch 160;
+demand transition 161;
+old 0x0f9c;
+new 0x6ba1;
+counter 0;
+new digest bcb7550f3d7a8c458fb48de89484852cbbc19ac604b51745db452714561bd04d.
+
+S09:
+target role 0;
+update epoch 119;
+demand transition 120;
+old 0xac69;
+new 0x5732;
+counter 0;
+new digest 47f8705eda061904e57ea89e21ded07d6423a2219eea5ed92f6618a2d3fd4553.
+
+S10:
+target role 3;
+update epoch 140;
+demand transition 141;
+old 0x3b58;
+new 0x4af8;
+counter 0;
+new digest 7fc1766a6a58c246b4eb85abef496d4478f599b63d0bdb133cdaa0ce82ed6e33.
+
+S11:
+target role 3;
+update epoch 108;
+demand transition 109;
+old 0x039f;
+new 0xfa30;
+counter 0;
+new digest 542ad23b0ac6d7fab12d78d3f55ac9736be81bad2d2377b4fcce8c63b2030a94.
+
+All 12 derivation counters:
+
+0.
+
+No update program was rejected except the preregistered equality rule;
+in this manifest no equality retry was required.
+
+At the moment this manifest was recorded:
+
+A06 primary requests served = 0.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
