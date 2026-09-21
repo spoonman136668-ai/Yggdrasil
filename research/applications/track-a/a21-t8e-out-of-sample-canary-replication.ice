@@ -604,3 +604,453 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A21 / T8E OUT-OF-SAMPLE CANARY ACTIVATION REPLICATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / CONFIRMATORY REPLICATION FAILED /
+NO CANARY ARM QUALIFIED /
+NO SEQUENTIAL CONTROLLER AUTHORIZED /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+ec883251552c80873697eb085eba5c90657ce3d2.
+
+F21:
+
+f0467a9aaf92aab4b57e1b299c99ffa688164d99.
+
+Source SHA-256:
+
+7a9779ef291d828bc124eb6b8d00ee33e03bd7ea6122952ed0ae1b183b457f6d.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+07259c714616c78d43167994b5edcfdb0115b331.
+
+384-trajectory manifest SHA-256:
+
+9f0dddac51009f46ea5ded21a86d77ea8487ab6af149da1209d1c6a6fa2bf070.
+
+Manifest-wrapper serialized SHA-256:
+
+719f4feca1db36245b1a74fa3820b541b83a6eae2c58a9182a9b1515e2afeb55.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete real F21-derived primary sweeps were byte-identical.
+
+Serialized result-file SHA-256:
+
+f5f42006a681af49d9c7c433aea477925f83c7a8ce87b77b24afaf4b51f68b70.
+
+Serialized semantic output SHA-256:
+
+dca6a819bc3d2669d2fc915202113ac4ed5c3a144f30d0bdcf462234cf8b2ae0.
+
+All P1-P12 integrity probes:
+
+PASS.
+
+A17 replay remained exact:
+
+3978 / 3950 / 37-of-48 / 38.
+
+FRESH-WORLD BASELINE
+
+Fresh R1 all-candidate second-half harmful trajectories:
+
+48 / 384.
+
+Unconditional R1 second-half harm rate:
+
+0.125.
+
+Thus the fresh post-F21 worlds contain substantial nontrivial activation risk.
+
+C1 — 25% UNPROVEN EXPOSURE
+
+EXPAND:
+
+14.
+
+HOLD:
+
+364.
+
+REVOKE:
+
+6.
+
+Actual second-half EXPAND outcomes:
+
+beneficial = 6;
+neutral = 5;
+harmful = 3.
+
+Actual EXPAND harm rate:
+
+0.2142857143.
+
+Full-candidate second-half labels among EXPAND:
+
+beneficial = 5;
+neutral = 6;
+harmful = 3.
+
+Full-label EXPAND harm rate:
+
+0.2142857143.
+
+Canary evidence-phase aggregate delta:
+
++15.
+
+Second-half aggregate delta versus stale twins:
+
++17.
+
+Complete service delta versus R0 all-stale:
+
++32.
+
+Complete service delta versus R1 all-candidate:
+
+-320.
+
+Coverage floor:
+
+FAIL.
+
+Harm ceiling:
+
+FAIL.
+
+C1 REPLICATION-QUALIFIED:
+
+FALSE.
+
+C2 — 50% UNPROVEN EXPOSURE
+
+EXPAND:
+
+35.
+
+HOLD:
+
+317.
+
+REVOKE:
+
+32.
+
+Actual second-half EXPAND outcomes:
+
+beneficial = 10;
+neutral = 17;
+harmful = 8.
+
+Actual EXPAND harm rate:
+
+0.2285714286.
+
+Full-candidate second-half labels among EXPAND:
+
+beneficial = 9;
+neutral = 19;
+harmful = 7.
+
+Full-label EXPAND harm rate:
+
+0.20.
+
+Canary evidence-phase aggregate delta:
+
+-11.
+
+Second-half aggregate delta versus stale twins:
+
++23.
+
+Complete service delta versus R0:
+
++12.
+
+Complete service delta versus R1:
+
+-340.
+
+Coverage floor:
+
+FAIL.
+
+Harm ceiling:
+
+FAIL.
+
+C2 REPLICATION-QUALIFIED:
+
+FALSE.
+
+C3 — 75% UNPROVEN EXPOSURE
+
+EXPAND:
+
+85.
+
+HOLD:
+
+221.
+
+REVOKE:
+
+78.
+
+Actual second-half EXPAND outcomes:
+
+beneficial = 36;
+neutral = 38;
+harmful = 11.
+
+Actual EXPAND harm rate:
+
+0.1294117647.
+
+Full-candidate second-half labels among EXPAND:
+
+beneficial = 35;
+neutral = 38;
+harmful = 12.
+
+Full-label EXPAND harm rate:
+
+0.1411764706.
+
+Canary evidence-phase aggregate delta:
+
++13.
+
+Second-half aggregate delta versus stale twins:
+
++67.
+
+Complete service delta versus R0:
+
++80.
+
+Complete service delta versus R1:
+
+-272.
+
+Coverage floor:
+
+PASS.
+
+Harm ceiling:
+
+FAIL.
+
+Relative-harm requirement:
+
+FAIL.
+
+C3 REPLICATION-QUALIFIED:
+
+FALSE.
+
+MINIMUM-EXPOSURE SELECTION
+
+C1:
+not qualified.
+
+C2:
+not qualified.
+
+C3:
+not qualified.
+
+Selected arm:
+
+NONE.
+
+A21_OUT_OF_SAMPLE_CANARY_REPLICATION_SUCCESS:
+
+FALSE.
+
+DIAGNOSTIC DISTRIBUTION
+
+The failure is not isolated to one trajectory replica.
+
+For C3,
+harmful EXPAND labels occurred across all eight replica indices.
+
+The failure is not isolated to one patch context.
+
+Multiple scenarios and patch positions contributed harmful expansions.
+
+Positive evidence magnitude alone is not a reliable repair.
+
+For C3:
+
+evidence delta +1:
+58 expansions;
+9 full-label harmful.
+
+delta +2:
+16 expansions;
+2 harmful.
+
+delta +3:
+4 expansions;
+0 harmful.
+
+delta +4:
+5 expansions;
+1 harmful.
+
+delta +5:
+1 expansion;
+0 harmful.
+
+delta +8:
+1 expansion;
+0 harmful.
+
+For C2,
+even one delta +4 expansion was harmful.
+
+Therefore a simple:
+
+"require a larger positive margin"
+
+is not justified by A21.
+
+TECHNICAL INTERPRETATION
+
+A20's one-sided positive signal
+was a real property of the known A17 worlds,
+but it did not generalize to fresh trajectory variation.
+
+A21 falsifies the stronger claim:
+
+ONE POSITIVE 8-EPOCH CANARY WINDOW
+IS SUFFICIENT TO EARN SAFE EXPANSION AUTHORITY.
+
+Even under:
+
+fresh post-freeze trajectories;
+exact stale twins;
+bounded exposure;
+exact state restoration;
+no future leakage;
+deterministic replay;
+
+the sign of one observed canary window
+can reverse in the next independent window.
+
+The problem is therefore temporal,
+not merely geometric.
+
+The organism is seeing:
+
+REAL CONSEQUENCE,
+
+but still only one finite slice
+of a variable future.
+
+A positive first window
+does not prove that the underlying patch effect is persistent.
+
+PLAIN-SPEAK INTERPRETATION
+
+A20 looked like a breakthrough:
+
+when the small live trial won,
+expanding it never hurt us.
+
+A21 gave that idea hundreds of futures
+we had never seen before.
+
+It did not hold up.
+
+Sometimes the canary really did better
+for the first eight steps,
+we expanded the patch,
+and the next eight steps were worse.
+
+That happened too often
+for any canary size to pass our safety rule.
+
+The important lesson is not:
+
+"canaries do not work."
+
+The lesson is:
+
+ONE GOOD CANARY WINDOW IS NOT ENOUGH.
+
+The trial gave us real information,
+but the environment can fluctuate enough
+that one good stretch can still be misleading.
+
+Making the first win bigger
+does not obviously solve it either.
+
+We saw harmful cases
+even after larger positive margins.
+
+So the next sensible move is hysteresis again:
+
+do not grant full authority
+because the patch won once.
+
+Require it to prove itself
+across more than one independent real window.
+
+A likely next experiment is:
+
+CANARY WINDOW 1
+->
+still provisional
+
+CANARY WINDOW 2
+->
+if positive again, earn expansion
+
+then:
+
+WINDOW 3
+->
+untouched confirmation.
+
+This combines what A16 taught us about sustained drift
+with what A20-A21 taught us about bounded live experimentation.
+
+A17 remains closed mixed / negative.
+
+A18 explanatory.
+
+A19 shadow authority failed.
+
+A20 discovery positive but unconfirmed.
+
+A21 confirmatory replication failed.
+
+No canary arm is authorized for sequential autonomous control.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
