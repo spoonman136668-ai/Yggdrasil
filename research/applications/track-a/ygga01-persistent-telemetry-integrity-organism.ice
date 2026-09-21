@@ -1012,3 +1012,158 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — YGG-A01 FROZEN PRIMARY V1
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED / REPRODUCIBLE / IMPLEMENTED PRIMARY SIGNAL FALSE / SCORING-SCOPE DEFECT IDENTIFIED / NON-CANONICAL.
+
+FROZEN HARNESS
+
+research/applications/track-a/ygga01_telemetry_organism_v1.py
+
+Implementation commit:
+
+f59f765ea1cc996c1ffc9cc3ff1a007f560507c3.
+
+Git blob:
+
+f6774dd9400dccbcffa5a5df78f07c5f8c2eeb2d.
+
+Source SHA-256:
+
+0101cf351b9805360e6549a9f29129f86757777fa5475c4b72bd9176b6e33e94.
+
+Source bytes:
+
+28392.
+
+REPRODUCIBILITY
+
+Two complete deterministic 512-frame trials were byte-identical.
+
+Serialized output SHA-256:
+
+e3cc4dcba7265322bb98716a4207ec2962023e55b2bc44e7f266266c36b34629.
+
+Frozen implemented primary signal:
+
+FIRST_PERSISTENT_ORGANISM_USEFUL = FALSE.
+
+UNCHANGED BEHAVIORAL RESULTS
+
+authoritative false outputs = 0.
+
+connected availability =
+0.9978448275862069.
+
+budget-8 steady availability =
+1.0.
+
+budget-8 steady accuracy =
+1.0.
+
+raw fault-recovery latencies:
+
+F96 = 0.
+F204 = 20.
+F480 = 1.
+
+role-shortage recovery latency =
+0.
+
+partition false promotions =
+0.
+
+dormant votes =
+0.
+
+stale witness reclaims =
+0.
+
+hereditary rewrite contested =
+TRUE.
+
+hereditary evolution preserved =
+TRUE.
+
+all capsules valid =
+TRUE.
+
+provenance multiplication =
+0.
+
+restart suffix identical =
+TRUE.
+
+restart final state identical =
+TRUE.
+
+same-target partition conflict rollback =
+1.
+
+records SHA-256:
+
+a41a6bf75d1632b5d27b9b1a6d1fb67feb41f1f411c749ecd986d57a9b2c6b4e.
+
+final-state SHA-256:
+
+f304152651384c8176860b988045424ced9283549a962e4d798d12798efe735e.
+
+SCORING-SCOPE DEFECT
+
+The frozen harness calculated:
+
+fault_recovery_within_2
+
+over every damage event,
+including F204.
+
+The preregistered M4 criterion explicitly applies the <=2-frame authoritative-service recovery threshold only to:
+
+F96
+and
+F480.
+
+F204 occurs inside the F192..223 communication partition and is governed by M6 partition safety.
+
+No globally authoritative service is expected during that partition.
+
+The 20-frame raw F204 interval ends at re-merge
+and remains useful telemetry,
+but it was not a preregistered M4 pass/fail event.
+
+Therefore:
+
+the frozen V1 result remains FALSE exactly as executed;
+
+the raw output is not rewritten;
+
+the discrepancy is classified as a post-freeze scoring-scope implementation defect;
+
+a separate preregistered FIXA replication is required.
+
+PLAIN-SPEAK INTERPRETATION
+
+The organism itself did not fail the recovery test we wrote.
+
+The scoreboard accidentally counted a fault that happened while the organism was intentionally split in half
+as though normal global service were supposed to be restored within two frames.
+
+The two actual fast-recovery tests were:
+
+F96 = 0 frames.
+F480 = 1 frame.
+
+Both passed.
+
+But we do not erase the frozen FALSE result.
+
+We preserve it and rerun the exact same organism with only the scoreboard corrected.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
