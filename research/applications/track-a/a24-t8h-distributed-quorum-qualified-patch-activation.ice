@@ -765,3 +765,94 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A24 DISTRIBUTED QUORUM ACTIVATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A24 QUORUM DECISION
+OR W2 OUTCOME.
+
+F24:
+
+0e15a849e918a51c3ccbdfa912a3ba1011d9f2c8.
+
+FROZEN SOURCE SHA-256:
+
+762b7eb72ed0301b978cc2ae01d7934d55eed760eb02b13db5b98dbfd477a5b2.
+
+TRAJECTORY COUNT:
+
+384.
+
+STRUCTURE:
+
+48 fixed A17 patch contexts
+x
+8 fresh F24-derived replicas.
+
+EPOCHS PER TRAJECTORY:
+
+16.
+
+W1:
+0-7.
+
+UNTOUCHED W2:
+8-15.
+
+REPLACEMENT EPISODES:
+
+0 / 8.
+
+COMPLETE MANIFEST SHA-256:
+
+edd2ec3055a78f2ba69236757ca88e9fe102ce0e471453769286eb14587caf18.
+
+Serialized manifest-wrapper SHA-256:
+
+a129d4d9abd9e7b8d96d0700e51040b0f34995b49ebcaed103a1f8fd5e62cfb8.
+
+Serialized manifest-wrapper bytes:
+
+129405.
+
+Every 16-demand sequence has exact mean equal to its candidate target.
+
+Every replacement set contains exactly four unique cell IDs.
+
+All namespaces are:
+
+YGG-A24-*.
+
+PRIMARY STATUS AT MANIFEST BIND
+
+Real cell-level quorum signals observed:
+
+0.
+
+Real G0 / Q1 / Q2 / Q3 decisions observed:
+
+0.
+
+Real W2 outcomes observed:
+
+0.
+
+The next permitted operation is:
+
+two complete deterministic A24 primary sweeps
+over this exact manifest.
+
+NO TRAJECTORY REDRAW.
+NO QUORUM THRESHOLD CHANGE.
+NO PROVENANCE CHANGE.
+NO NICHE-DIVERSITY CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
