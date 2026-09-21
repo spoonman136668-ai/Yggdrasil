@@ -559,3 +559,143 @@ ACT OR REMAIN DORMANT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A19 DISTRIBUTED SHADOW ACTIVATION CALIBRATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL A19 SHADOW OBSERVATION,
+SHADOW ATTESTATION,
+EVALUATOR GEOMETRY ORDER,
+OR ACTIVATION DECISION.
+
+IMPLEMENTATION COMMIT
+
+05ce27bf71d47e54d65599317fad61658bb2aafa.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a19_t8c_shadow_activation_calibration_v1.py
+
+Loader Git blob:
+
+708b958c0976dea8976d96f7d0a0bb84aae8c3e5.
+
+Payload:
+
+research/applications/track-a/a19_t8c_shadow_activation_calibration_v1.py.gz
+
+Payload Git blob:
+
+2dbc72e820f815ca0ed8845e617f718bb91890a6.
+
+Decompressed source SHA-256:
+
+d9637729a6b53526efd4a3fb7f90f37efea6185ab5f0f863419a63cff8ad649f.
+
+Decompressed source bytes:
+
+23829.
+
+Deterministic gzip SHA-256:
+
+42665aa79a3c6b12b9f184d2dfbc71134adc6e9e7a8368962796afcc2812cf2e.
+
+Compressed payload bytes:
+
+6733.
+
+LINEAGE VALIDATION
+
+The exact source independently reconstructs and verifies:
+
+A11 manifest:
+b0e00f29d36637a1365ab2407678aacf232ac4f4cf05d387f68af975a5b4bedd.
+
+A12 manifest:
+502009818ea9d6e57089a91424e7cf399e7c5e95024a9623816e733c58c3f63a.
+
+A14 exact-F14 manifest:
+83a0ad4d67d7a3f3625e49c311f5d2a85c73fee40cde96e24937ae79e1e944ae.
+
+Exact A17 replay:
+candidate first-four 3978;
+stale first-four 3950;
+target-policy reference 3978;
+candidate >= stale 37 / 48;
+migrations avoided 38.
+
+Exact 11 A17 below-stale pairs:
+
+S00/P1;
+S00/P2;
+S00/P3;
+S02/P4;
+S04/P1;
+S04/P2;
+S04/P3;
+S10/P2;
+S10/P4;
+S11/P1;
+S11/P4.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Two complete fake-freeze sweeps using:
+
+MECHANICAL-F19
+
+were byte-identical.
+
+Serialized output SHA-256:
+
+6f0784b0b7f9b896119168fe4c38a77cd8482d555752eb27ae09d743bf205637.
+
+Serialized file SHA-256:
+
+26429edc06c3a2fa40293135cb26c603f5fe22123d69f5558c82a83a0c47bea3.
+
+Both independent evaluator lineages enumerated all:
+
+495
+
+four-cell geometries per patch
+and produced identical order-independent summaries.
+
+Mechanical source / gate logic:
+
+PASS.
+
+The fake-freeze calibration values remain NON-SCIENTIFIC.
+They were observed only to validate deterministic execution
+and may not be used to tune G1 / G2 / G3.
+
+PRIMARY SHADOW STATUS
+
+No real F19-derived shadow evidence exists yet.
+
+No real A19 activation decision exists yet.
+
+No real A19 held-out gated evaluation exists yet.
+
+Let the resulting commit SHA of this freeze record be:
+
+F19.
+
+Only after F19 exists may the harness derive:
+
+- four shadow observations per patch;
+- shadow attestations;
+- independent evaluator enumeration orders;
+- shadow confidence statistics;
+- G1 / G2 / G3 activation decisions.
+
+NO POST-FREEZE GATE TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
