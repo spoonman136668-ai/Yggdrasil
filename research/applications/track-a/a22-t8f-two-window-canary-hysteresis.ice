@@ -581,3 +581,400 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A22 / T8F TWO-WINDOW CANARY HYSTERESIS
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / SAFETY IMPROVED /
+COVERAGE INSUFFICIENT /
+NO ARM QUALIFIED /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+8085aea24e78a954f133e4460bd25449a750064c.
+
+F22:
+
+89299d7480dc39a093888798ac9789d550e8e913.
+
+Source SHA-256:
+
+7305db14a246c20522e3977e12e61ac06a64786f0b966bf0f288b5e5985da073.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+fe77f5aebabab76b81e2045ae641d43499513437.
+
+384-trajectory manifest SHA-256:
+
+b413e65063149a141e54e6eb906766807b9a94c7d3a407309b3e0ce1d46756bf.
+
+Manifest-wrapper SHA-256:
+
+99808975634e6677b2855ac60f73ca7de6b1723d1b28290b9a1a4203c5be8a1a.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete primary sweeps were byte-identical.
+
+Serialized result-file SHA-256:
+
+56b39f4f1be0ad32eba27722705a76fd009a2921264e3511464124a4f73e1487.
+
+Serialized semantic output SHA-256:
+
+3f606fc1ef1dd5b42a56955156d12370f8a57ddf58a815796458ae10d2b4bc93.
+
+All P1-P14 probes:
+
+PASS.
+
+FRESH R1 WINDOW-3 BASELINE
+
+Unconditional all-candidate Window-3 harmful:
+
+52 / 384.
+
+Unconditional harm rate:
+
+0.1354166667.
+
+C1 — 25% STATIC CANARY
+
+Window-1 positive:
+
+10.
+
+Window-1 positive but Window-2 nonpositive:
+
+8.
+
+EARNED_EXPANSION:
+
+2.
+
+Actual Window-3 outcomes after earned expansion:
+
+beneficial = 0;
+neutral = 2;
+harmful = 0.
+
+Actual harm rate:
+
+0.0.
+
+R1 Window-3 labels among earned expansions:
+
+beneficial = 0;
+neutral = 2;
+harmful = 0.
+
+R1-label harm rate:
+
+0.0.
+
+One-hit reference expansions:
+
+10.
+
+One-hit reference harm rate:
+
+0.20.
+
+Two-hit harm reduction:
+
+20 percentage points
+to zero observed harm.
+
+Coverage floor:
+
+2 / 48 required minimum.
+
+FAIL.
+
+C1 HYSTERESIS-QUALIFIED:
+
+FALSE.
+
+C2 — 50% STATIC CANARY
+
+Window-1 positive:
+
+36.
+
+Window-1 positive but Window-2 nonpositive:
+
+28.
+
+EARNED_EXPANSION:
+
+8.
+
+Actual Window-3 outcomes:
+
+beneficial = 1;
+neutral = 7;
+harmful = 0.
+
+Actual harm rate:
+
+0.0.
+
+R1 Window-3 labels:
+
+beneficial = 1;
+neutral = 7;
+harmful = 0.
+
+R1-label harm rate:
+
+0.0.
+
+One-hit reference expansions:
+
+36.
+
+One-hit harm rate:
+
+0.1666666667.
+
+Two-hit harm reduction:
+
+16.67 percentage points
+to zero observed harm.
+
+Coverage:
+
+8 / 48 required minimum.
+
+FAIL.
+
+C2 HYSTERESIS-QUALIFIED:
+
+FALSE.
+
+C3 — 75% STATIC CANARY
+
+Window-1 positive:
+
+89.
+
+Window-1 positive but Window-2 nonpositive:
+
+73.
+
+EARNED_EXPANSION:
+
+16.
+
+Actual Window-3 outcomes:
+
+beneficial = 6;
+neutral = 9;
+harmful = 1.
+
+Actual harm rate:
+
+0.0625.
+
+R1 Window-3 labels:
+
+beneficial = 6;
+neutral = 9;
+harmful = 1.
+
+R1-label harm rate:
+
+0.0625.
+
+One-hit reference expansions:
+
+89.
+
+One-hit harm rate:
+
+0.1573033708.
+
+Two-hit harm reduction:
+
+9.48 percentage points.
+
+Harm ceiling:
+
+6.25%
+versus
+required <= 5%.
+
+FAIL.
+
+Coverage:
+
+16 / 48 required minimum.
+
+FAIL.
+
+C3 HYSTERESIS-QUALIFIED:
+
+FALSE.
+
+PRIMARY RESULT
+
+Selected arm:
+
+NONE.
+
+A22_TWO_WINDOW_CANARY_HYSTERESIS_SUCCESS:
+
+FALSE.
+
+TECHNICAL INTERPRETATION
+
+A22 confirms that temporal persistence
+contains real safety information.
+
+Compared with the same fresh-world one-hit reference,
+requiring two consecutive positive canary windows
+substantially reduced false-positive expansion.
+
+But the static canary fraction
+does not produce enough decisive evidence.
+
+Most first-window positive cases
+failed to remain positive
+through Window 2.
+
+Observed retention:
+
+C1:
+2 / 10.
+
+C2:
+8 / 36.
+
+C3:
+16 / 89.
+
+Thus a second independent live window
+filters transient positives aggressively.
+
+That is useful.
+
+But it also leaves the controller
+without enough qualified expansions
+to satisfy the preregistered usefulness / coverage floor.
+
+The architecture has therefore reached a new tradeoff:
+
+ONE WINDOW:
+too noisy.
+
+TWO STATIC WINDOWS:
+much safer,
+but too indecisive.
+
+The next problem is not:
+
+"how do we lower the safety threshold?"
+
+The next problem is:
+
+"how do we gather more informative evidence
+without prematurely granting full authority?"
+
+PLAIN-SPEAK INTERPRETATION
+
+Making the patch prove itself twice helped a lot.
+
+With one good trial,
+we were fooled fairly often.
+
+With two good trials in a row,
+the bad expansions almost disappeared.
+
+That is exactly what we hoped hysteresis would do.
+
+But almost everything got stuck waiting.
+
+A patch would win once,
+then the next small trial would tie or lose,
+so it never earned full control.
+
+The safest arms ended up approving only:
+
+2 patches;
+8 patches;
+and 16 patches
+
+out of 384 fresh futures.
+
+That is too little useful authority
+for the system we ultimately want.
+
+So we should NOT respond by weakening the rule.
+
+That would throw away the safety lesson.
+
+Instead,
+Yggdrasil needs a better way to accumulate evidence.
+
+Right now it treats each window almost like:
+
+win;
+win again;
+or start over.
+
+A more mature organism should be able to say:
+
+"I have some evidence for this patch.
+Not enough to trust it yet.
+Keep the patch dormant or partially active.
+Add future independent evidence to the same confidence record."
+
+That points toward a persistent:
+
+PATCH CONFIDENCE LEDGER
+
+rather than a simple consecutive-win switch.
+
+Evidence should accumulate across real experiences,
+decay or reverse when contradicted,
+and grant authority only when confidence becomes strong enough.
+
+That is the next research direction.
+
+A17:
+mixed / negative.
+
+A18:
+diagnostic.
+
+A19:
+shadow confidence insufficient.
+
+A20:
+real-canary discovery.
+
+A21:
+one-hit replication failed.
+
+A22:
+two-hit hysteresis safer but insufficiently decisive.
+
+No sequential autonomous activation controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
