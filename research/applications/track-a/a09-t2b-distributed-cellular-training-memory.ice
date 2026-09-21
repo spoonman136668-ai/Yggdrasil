@@ -771,3 +771,149 @@ can experience change the developmental policy itself?
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A09 DISTRIBUTED CELLULAR TRAINING MEMORY
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY PRIMARY A09 MEMORY-STRESS EVENT.
+
+IMPLEMENTATION COMMIT
+
+2782d1c44173faf5a7e92ea1915e3eca19f0b87f.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a09_t2b_distributed_memory_v1.py
+
+Loader Git blob:
+
+0ff41d548d186948bb15265201954a5f705e4b34.
+
+Payload:
+
+research/applications/track-a/a09_t2b_distributed_memory_v1.py.gz
+
+Payload Git blob:
+
+def920dc3eae9a3e793589c7279151ee84436d3b.
+
+Compressed payload SHA-256:
+
+f9c0891d785b4cd6c663a679e39c710db691bd61d3f4e5fcd4d26669548c41b3.
+
+Compressed payload bytes:
+
+9977.
+
+Decompressed source SHA-256:
+
+9b508deb63c8c923b9ec300831446dcf68b2d9de6c9a76506449a277c7f72162.
+
+Decompressed source bytes:
+
+35570.
+
+FROZEN PARENT
+
+A08 source SHA-256:
+
+0dc330887718767812b2143877b751dc1ad580e0cefe834afac88486ad5707e0.
+
+A08 freeze F08:
+
+de08cc900d6e306411ae879114b3b648f0a94708.
+
+A08 training / noise manifest:
+
+1324fa1fd16e0250520f380f1872006627a5777207b2b537a6297dc26605274a.
+
+A08 accepted primary result:
+
+ad675542d86b604520066d093654ba30b8c243b644b17e4faaa4a693a1920739.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Central evidence ledger:
+
+FALSE.
+
+Memory neighborhoods:
+
+M0 = cells 0..5.
+M1 = cells 6..11.
+
+Mechanical stress manifest used only:
+
+MECHANICAL-NONPRIMARY-FREEZE.
+
+Mechanical stress-manifest SHA-256:
+
+43c1f7abd00c0137dad3318152a0e7cef6e5f296b3311230fd6b631571f86d9e.
+
+A08 manifest reproduced:
+
+1324fa1fd16e0250520f380f1872006627a5777207b2b537a6297dc26605274a.
+
+Latest full non-primary memory smoke:
+
+A09_DISTRIBUTED_CELLULAR_TRAINING_MEMORY_SUCCESS = TRUE;
+12 / 12 learner A exact targets;
+12 / 12 learner B exact targets;
+120 / 120 held-out predictions;
+12 / 12 hereditary commits;
+66 unique causal observations per scenario;
+physical replication present;
+replication repair exercised;
+all memory-stress events executed;
+irrecoverable memory loss = 0;
+restart equivalence = TRUE;
+all M1..M8 probes PASS;
+unsafe N1..N3 shortcuts exposed;
+existing constitutional safety totals = 0.
+
+The earlier mechanical smoke preceded the explicit
+UNIQUE_CAUSAL_OBSERVATIONS_66_PER_SCENARIO acceptance signal.
+
+The current source and latest mechanical smoke include that signal.
+
+Both mechanical runs occurred before this freeze
+and used only the fake mechanical freeze label.
+
+They are implementation validation,
+not A09 primary evidence.
+
+PRIMARY MEMORY-STRESS STATUS AT THIS FREEZE
+
+NOT DERIVED.
+
+Let the resulting freeze-update commit SHA be F09.
+
+Only after F09 exists may the harness derive:
+
+- holder damage A;
+- holder damage B;
+- holder hibernation interval;
+- copy-deletion epoch;
+- cell-replacement epoch;
+- deterministic stress targets.
+
+No stress event may be redrawn because of an unfavorable learning result.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
