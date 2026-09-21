@@ -745,3 +745,80 @@ No other A32 rule changes.
 
 No F32 exists yet.
 No scientific A32 world has been derived.
+
+
+PRE-IMPLEMENTATION AMENDMENT 02 — POPULATION-SCALE NORMALIZATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE IMPLEMENTATION FREEZE
+AND BEFORE ANY REAL F32-DERIVED WORLD EXISTS.
+
+A developer-only mechanical run exposed a dimensional mismatch.
+
+A29's pool recruitment constants:
+
+COMMIT = 20;
+OPPOSITION_CEILING = 8;
+POP_GATE = 6;
+
+were defined on a 12-cell organism.
+
+A32 uses:
+
+48 cells.
+
+Literal reuse therefore quadruples the expected pulse supply
+without scaling the thresholds.
+
+In the developer-only run,
+the opposition ceiling became effectively unreachable
+under ordinary mixed signaling
+and the GLOBAL reference remained unresolved almost all the time.
+
+This is a population-size scaling defect,
+not a scientific result.
+
+A32 now preserves the A29 per-capita thresholds
+by scaling all population-count / pooled-signal constants by:
+
+48 / 12 = 4.
+
+Therefore the frozen A32 values are:
+
+COMMIT = 80.
+
+OPPOSITION_CEILING = 32.
+
+POP_GATE = 24 distinct emitters.
+
+GLOBAL nonlinear-retreat half-saturation:
+
+K_RETREAT = 48.
+
+GLOBAL opposing-emitter minimum:
+
+16.
+
+The dimensionless dominance condition remains:
+
+winning pool >= 2 * opposing pool.
+
+The local A30/A31 cross-inhibition law is NOT scaled:
+
+R = 12;
+n = 3;
+K = 1/2,
+
+because it already operates on local density rather than raw population count.
+
+No other A32 rule changes.
+
+The original 20 / 8 / 6 values remain documented
+as their 12-cell A29 source constants,
+but are not the 48-cell A32 execution constants.
+
+No F32 exists yet.
+No scientific A32 world has been derived.
