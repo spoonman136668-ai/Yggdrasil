@@ -1132,3 +1132,274 @@ A10 primary service requests served = 0.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — A10 T3 DEVELOPMENTAL PRIOR R1
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE / MIXED-NEGATIVE IMPLEMENTED PRIMARY /
+N3 NEGATIVE-CONTROL CONSTRUCTION DEFECT IDENTIFIED / NON-CANONICAL.
+
+FROZEN HARNESS
+
+Implementation commit:
+
+bc2bfd0456b475f081950305b8cd6c075dfedb4d.
+
+Freeze commit F10:
+
+cf1a9f459861177cb1e9a0e22c6c68684a543514.
+
+Source SHA-256:
+
+d27d0074f08b6ae613e72a03d018af6b4bda9fd7dffb9615c687c286aca5e73e.
+
+Source bytes:
+
+26838.
+
+Developmental manifest SHA-256:
+
+917d82b907a01b7bba4fff972b3f9aca691df7a7f368d0bd34fe9baf7c243cc2.
+
+REPRODUCIBILITY
+
+Sweep 1 serialized output SHA-256:
+
+2290d3caabf38c6bd052885f3e70c5e06756a7609b46e44d0940dd7f83b60615.
+
+Sweep 2 serialized output SHA-256:
+
+2290d3caabf38c6bd052885f3e70c5e06756a7609b46e44d0940dd7f83b60615.
+
+Byte-identical:
+
+TRUE.
+
+IMPLEMENTED PRIMARY RESULT
+
+A10_T3_DEVELOPMENTAL_PRIOR_LEARNING_SUCCESS:
+
+FALSE.
+
+Every substantive developmental,
+learning,
+service,
+restart,
+and constitutional signal:
+
+TRUE.
+
+The only false component was:
+
+UNSAFE_CONTROLS_EXPOSED.
+
+DEVELOPMENTAL LEARNING RESULT
+
+Learner A exact latent priors:
+
+12 / 12.
+
+Learner B exact latent priors:
+
+12 / 12.
+
+Learner agreement:
+
+12 / 12.
+
+Developmental-policy commits:
+
+12 / 12.
+
+Unique developmental observations:
+
+64 / 64 per scenario.
+
+Physical memory replication present:
+
+TRUE.
+
+Replacement-role assignments differed from the untrained developmental baseline:
+
+TRUE.
+
+USEFULNESS RESULT
+
+Candidate first-four-epoch service after replacement:
+
+1985.
+
+Untrained baseline:
+
+1922.
+
+Evaluator-only oracle:
+
+1985.
+
+Candidate oracle efficiency:
+
+1.0.
+
+Scenarios candidate >= baseline:
+
+12 / 12.
+
+Scenarios candidate > baseline:
+
+12 / 12.
+
+Baseline migrations avoided:
+
+29.
+
+TASK / SAFETY
+
+Candidate incorrect served requests:
+
+0.
+
+Stale-program served requests:
+
+0.
+
+All restart comparisons:
+
+equivalent.
+
+Existing constitutional safety totals:
+
+all zero.
+
+Task-output stream SHA-256:
+
+09b8fc2000917642b526c3a065839b81d2f6a2c50d2db9d1a37c4c3bfe82844d.
+
+T3 PROBES
+
+P1..P6:
+
+PASS.
+
+NEGATIVE CONTROL DEFECT
+
+N1 direct latent-prior injection:
+
+exposed as expected.
+
+N2 physical-copy-count averaging:
+
+bias reachable as expected.
+
+N3 one-learner auto-commit:
+
+R1 attempted to construct an incorrect developmental prior by swapping:
+
+latent[0]
+and
+latent[1].
+
+This worked in ten scenarios.
+
+It failed as a control-construction mechanism in:
+
+S07 latent prior:
+
+(2,2,3,5).
+
+S08 latent prior:
+
+(2,2,6,2).
+
+In those scenarios:
+
+latent[0] == latent[1].
+
+Therefore swapping those two components produced:
+
+the exact original prior.
+
+The control then reported:
+
+ONE_LEARNER_FALSE_POLICY_AUTHORITY_REACHABLE = FALSE
+
+not because one-learner auto-authorization was safe,
+but because the test failed to construct a false candidate.
+
+SCIENTIFIC STATUS
+
+The frozen R1 FALSE result is preserved.
+
+It is not rewritten as positive.
+
+The observed developmental behavior remains valid:
+
+experience learned a role-allocation prior;
+the prior became versioned constitutional state;
+future clean replacement cells used it;
+held-out post-turnover service improved;
+task semantics remained unchanged.
+
+A separate preregistered FIXA must correct only the N3 false-prior construction.
+
+FIXA EQUIVALENCE ANCHORS
+
+Same F10:
+
+cf1a9f459861177cb1e9a0e22c6c68684a543514.
+
+Same developmental manifest:
+
+917d82b907a01b7bba4fff972b3f9aca691df7a7f368d0bd34fe9baf7c243cc2.
+
+Same task-output stream:
+
+09b8fc2000917642b526c3a065839b81d2f6a2c50d2db9d1a37c4c3bfe82844d.
+
+Same primary aggregates required:
+
+candidate first4 served = 1985;
+baseline first4 served = 1922;
+oracle first4 served = 1985;
+baseline migrations avoided = 29;
+candidate incorrect = 0;
+stale-program served = 0;
+candidate >= baseline = 12 / 12;
+candidate > baseline = 12 / 12.
+
+No organism,
+learner,
+developmental policy,
+training sequence,
+evaluation sequence,
+replacement plan,
+threshold,
+or primary metric may change.
+
+PLAIN-SPEAK INTERPRETATION
+
+The developmental-learning experiment itself worked.
+
+Yggdrasil learned how future cells should specialize
+and that learned developmental bias improved performance after cell replacement.
+
+The failed result came from one deliberately unsafe test.
+
+That test tried to create a bad developmental policy by swapping two numbers.
+
+In two scenarios,
+the two numbers happened to be the same.
+
+So the supposedly bad policy was not bad at all.
+
+We keep the failed R1 result on the record.
+
+Then FIXA will construct a guaranteed different valid prior
+and rerun the same frozen worlds without changing how Yggdrasil behaves.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
