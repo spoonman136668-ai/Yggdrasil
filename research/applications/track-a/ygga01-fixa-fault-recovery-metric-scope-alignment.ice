@@ -178,3 +178,75 @@ does the application gate pass?
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — YGG-A01-FIXA
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST CORRECTIVE PRIMARY FRAME.
+
+HARNESS
+
+research/applications/track-a/ygga01_telemetry_organism_fixa.py
+
+Harness source commit:
+
+b3d11a6a789989676c553f28a87fae1f2e708cf9.
+
+Git blob SHA:
+
+7db60f02e9d7eb50e75800c082585a511af44e4f.
+
+Source SHA-256:
+
+0bdd414b57c708abb41786a35296bc907b99234bf8430a273acb7c1617548cbb.
+
+Source bytes:
+
+28411.
+
+PRE-FREEZE VALIDATION — NON-EVIDENCE
+
+Exact committed GitHub bytes reconstructed in sandbox:
+
+PASS.
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Allowed delta from frozen R1 source:
+
+one metric-selection block only.
+
+Raw recovery telemetry remains part of output.
+
+No task logic or organism transition changed.
+
+REPRODUCIBILITY
+
+Execute two complete deterministic trials from these exact bytes.
+
+Serialized output SHA-256 must match exactly.
+
+EQUIVALENCE GUARDS
+
+records_sha256 must remain:
+
+a41a6bf75d1632b5d27b9b1a6d1fb67feb41f1f411c749ecd986d57a9b2c6b4e.
+
+final_state_sha256 must remain:
+
+f304152651384c8176860b988045424ced9283549a962e4d798d12798efe735e.
+
+No post-result tuning.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
