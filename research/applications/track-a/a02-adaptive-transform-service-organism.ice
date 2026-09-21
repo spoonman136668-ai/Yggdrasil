@@ -9,7 +9,7 @@ PURPOSE
 
 DG-1R-05AC closed the preregistered pre-application integration gate positive.
 
-A02 is the second preregistered standalone application prototype. It was originally preregistered as A01 before a parallel telemetry prototype reached implementation first under YGG-A01.
+A02 is the second preregistered standalone application prototype. It was originally preregistered as A02 before a parallel telemetry prototype reached implementation first under YGG-A02.
 
 The task is deliberately simple enough to evaluate exactly,
 but external to the governance mechanisms themselves.
@@ -48,7 +48,7 @@ No financial task.
 No canonical DG-1R-05 execution.
 No STAB-18-R1 execution.
 
-A01 is disposable application research.
+A02 is disposable application research.
 
 APPLICATION TASK
 
@@ -523,7 +523,7 @@ They establish that the safety machinery affects application behavior.
 
 HOLDOUTS / LIMITS
 
-A01 does not test arbitrary malicious collusion.
+A02 does not test arbitrary malicious collusion.
 
 Carry forward explicit constitutional limits:
 
@@ -533,7 +533,7 @@ Carry forward explicit constitutional limits:
 - a real event may disappear from every surviving history;
 - constitutional genesis may be replaced.
 
-A01 tests whether the architecture remains useful
+A02 tests whether the architecture remains useful
 without crossing those known boundaries.
 
 MECHANICAL CONTROLS
@@ -566,7 +566,7 @@ The restart sub-run must also reproduce the uninterrupted shadow result exactly.
 
 NO POST-RESULT TUNING
 
-After first primary A01 request is served,
+After first primary A02 request is served,
 do not alter:
 
 - transform functions;
