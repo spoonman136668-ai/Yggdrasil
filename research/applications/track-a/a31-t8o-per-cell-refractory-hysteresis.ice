@@ -874,3 +874,92 @@ NO QUALIFICATION CHANGE.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A31 PER-CELL REFRACTORY HYSTERESIS
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A31 REFRACTORY TRANSITION
+OR SCIENTIFIC OUTCOME.
+
+F31:
+
+154a59206aa9056d2b8ba40ca3ff95da648bebfe.
+
+FROZEN SOURCE SHA-256:
+
+dfb3290ee3d2c2efc059546930349ce18b3c3dc17a12367755c0006f03643192.
+
+TRIAL COUNT:
+
+384.
+
+STRUCTURE:
+
+48 frozen challenge contexts
+x
+8 F31-derived replicas.
+
+CELLS:
+
+48.
+
+EPOCHS:
+
+40.
+
+COMPLETE CHALLENGE-MANIFEST SHA-256:
+
+c743fe0b201de624d90057d203dcc54f7504d24278843bf9073cd42d0404be3f.
+
+Serialized manifest-wrapper SHA-256:
+
+24bbd2314791802141f5f3255777073041a947949277be5c61323edcb26723a8.
+
+Serialized manifest-wrapper bytes:
+
+297262.
+
+The manifest binds:
+
+trial identity;
+challenge family;
+replica;
+and exact opposition-emitter identities
+for all 40 epochs.
+
+PRIMARY STATUS AT MANIFEST BIND
+
+Real refractory transitions observed:
+
+0.
+
+Real oscillation outcomes observed:
+
+0.
+
+Real recovery outcomes observed:
+
+0.
+
+Real qualification outcomes observed:
+
+0.
+
+The next permitted operation is:
+
+two complete deterministic A31 primary sweeps
+using F31 as the experimental seed.
+
+NO CHALLENGE REDRAW.
+NO DURATION CHANGE.
+NO INHIBITION CHANGE.
+NO RECRUITMENT CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
