@@ -967,3 +967,421 @@ A06 primary requests served = 0.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — A06 LINEAGE-QUALIFIED ONLINE PROGRAM INHERITANCE
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED / POSITIVE PRIMARY / REPRODUCIBLE /
+ONLINE HEREDITARY PROGRAM UPDATE PASSED / NON-CANONICAL.
+
+FROZEN HARNESS
+
+Implementation commit:
+
+f1dd0c3fec863e5f2e27b8f735511527290183a1.
+
+Freeze commit F06:
+
+890046dba7004bdceebb8b49f2516779dc7b08ee.
+
+Source SHA-256:
+
+eb7a83320983168fe63d46852ee5d84bebf4c4cf80674ab2a885502e3bfb5a73.
+
+Source bytes:
+
+31344.
+
+Compressed payload SHA-256:
+
+e89436630aaecc6eb7fb455252613e952cb63138cdd49b4abad1cf8a187a68dc.
+
+Compressed payload bytes:
+
+7989.
+
+PRIMARY UPDATE MANIFEST
+
+Derived only after F06 existed.
+
+Update manifest SHA-256:
+
+2146c42b61663afede16745123af96bb760a3f886793e9e2d741522c546c2404.
+
+Primary program updates:
+
+12.
+
+All derivation counters:
+
+0.
+
+No update replacement,
+difficulty shaping,
+or post-freeze program substitution occurred.
+
+REPRODUCIBILITY
+
+Two complete deterministic A06 primary sweeps.
+
+Each sweep:
+
+12 scenarios x 384 epochs x 12 requests
+=
+55296 requests.
+
+Sweep 1 serialized output SHA-256:
+
+f5d51b8a44b88974809aaef332187bddec6a2a2df9b4a7a2d2a48a5e33fa6e08.
+
+Sweep 2 serialized output SHA-256:
+
+f5d51b8a44b88974809aaef332187bddec6a2a2df9b4a7a2d2a48a5e33fa6e08.
+
+Byte-identical:
+
+TRUE.
+
+PRIMARY RESULT
+
+A06_ONLINE_PROGRAM_INHERITANCE_SUCCESS:
+
+TRUE.
+
+Every preregistered primary component signal:
+
+TRUE.
+
+TASK RESULT
+
+Total requests:
+
+55296.
+
+Candidate served:
+
+52273.
+
+Candidate correct:
+
+52273.
+
+Candidate incorrect:
+
+0.
+
+Task accuracy:
+
+1.0.
+
+The online role-program updates therefore introduced:
+
+0
+
+incorrect served results.
+
+PROGRAM AUTHORITY
+
+Authoritative program updates committed:
+
+12 / 12.
+
+Program update abstentions on the valid primary path:
+
+0.
+
+Program authority regressions:
+
+0.
+
+Program parent-chain breaks:
+
+0.
+
+Program digest mismatches:
+
+0.
+
+Program-state restart mismatches:
+
+0.
+
+STALE PROGRAM SAFETY
+
+Stale-program served requests:
+
+0.
+
+Stale-program service attempts accepted:
+
+0.
+
+No cell was permitted to serve using a program version that no longer matched
+the authoritative program for its role.
+
+NATURAL HEREDITARY INHERITANCE
+
+Natural migration program inheritances:
+
+245.
+
+Per scenario:
+
+S00 = 27.
+S01 = 22.
+S02 = 20.
+S03 = 19.
+S04 = 12.
+S05 = 25.
+S06 = 18.
+S07 = 19.
+S08 = 18.
+S09 = 21.
+S10 = 18.
+S11 = 26.
+
+Thus the primary workload naturally exercised the key inheritance path:
+
+CELL CHANGES ROLE
+->
+CELL ACQUIRES CURRENT AUTHORITATIVE PROGRAM FOR NEW ROLE
+->
+CELL BECOMES SERVICE-ELIGIBLE.
+
+Active target-role cells updated directly at commit in scenarios where such cells were present.
+
+Natural wake / repair program catch-up counters were zero in the primary workload.
+
+Those pathways were therefore tested by the preregistered dedicated hereditary probes rather than inferred from absent natural events.
+
+DEDICATED HEREDITARY PROBES
+
+H1 — STALE DORMANT WAKE:
+
+PASS in all 12 scenarios.
+
+A stale dormant cell could not serve old code;
+it caught up to current authoritative program before returning to service.
+
+H2 — POST-UPDATE MIGRATION:
+
+PASS in all 12 scenarios.
+
+A cell migrating into an updated role inherited the current role program before service.
+
+H3 — REPAIR AFTER UPDATE:
+
+PASS in all 12 scenarios.
+
+A repaired target-role cell returned either:
+
+current-program qualified
+
+or
+
+healthy but non-serving dormant,
+
+with no stale-program service.
+
+SOURCE / AUTHORITY NEGATIVE CONTROLS
+
+S1 — one source only:
+
+FAIL CLOSED in all 12 scenarios.
+
+S2 — same-root fanout:
+
+FAIL CLOSED in all 12 scenarios.
+
+S3 — source disagreement:
+
+FAIL CLOSED in all 12 scenarios.
+
+S4 — stale parent:
+
+FAIL CLOSED in all 12 scenarios.
+
+S5 — governance unavailable:
+
+FAIL CLOSED in all 12 scenarios.
+
+S6 — unsafe auto-trust one-source control:
+
+false authority reachable as expected.
+
+S7 — stale wake without program catch-up:
+
+wrong output reachable as expected.
+
+Thus the safety result is not automatic from the task.
+
+RESTART / EXISTING CONSTITUTIONAL SAFETY
+
+All 12 restart authoritative-state comparisons:
+
+TRUE.
+
+All 12 restart task-output / metric comparisons:
+
+TRUE.
+
+Partition / re-merge complete:
+
+TRUE.
+
+Aggregate existing safety totals:
+
+stale votes accepted = 0;
+authority violations = 0;
+causal regressions = 0;
+duplicate effective provenance = 0;
+split-brain final states = 0;
+resource-budget violations = 0.
+
+TECHNICAL INTERPRETATION
+
+A06 crosses an important boundary.
+
+A05 showed:
+
+TASK PROGRAM SEMANTICS CAN CHANGE BETWEEN FROZEN SCENARIOS
+WITHOUT CHANGING THE DEVELOPMENTAL POLICY.
+
+A06 now shows:
+
+TASK PROGRAM SEMANTICS CAN CHANGE DURING THE ORGANISM'S OWN LIFETIME
+AND THE NEW PROGRAM CAN BECOME HEREDITARY CELL STATE
+WITHOUT BYPASSING SOURCE PROVENANCE OR ORGANISM GOVERNANCE.
+
+The authoritative role program is no longer merely an evaluator / scenario lookup.
+
+It is explicit organism state with:
+
+version;
+truth table;
+parent digest;
+program digest;
+commit epoch.
+
+Cells carry their own local copy.
+
+That creates real stale lineage.
+
+Dormant cells retain their prior local program.
+Migrating cells inherit the destination role's current program.
+Restart preserves both authoritative and local program state.
+
+The successful result therefore supports a DNA-like split:
+
+CONSTITUTIONAL DEVELOPMENTAL RULES
+
+plus
+
+HERITABLE ROLE PROGRAM STATE.
+
+However A06 is NOT yet training.
+
+The new role program is still supplied externally by two independent task-definition sources.
+
+The organism decides whether the proposed program may become authoritative
+and safely propagates it,
+but it does not discover the program from experience.
+
+That distinction should remain explicit.
+
+PLAIN-SPEAK INTERPRETATION
+
+This is the first experiment where the organism changed what one of its jobs actually meant while it was alive.
+
+The new program was not built into the organism before freeze.
+
+It appeared later.
+
+One cell hearing about it was not enough.
+
+Two independent program sources had to agree,
+and Yggdrasil's own healthy governance still had to approve the change.
+
+After that,
+the program behaved like inherited information.
+
+Cells changing into that job picked up the new version.
+
+Sleeping cells did not magically know it.
+They had to catch up before working.
+
+A stale cell was never allowed to quietly run the old program.
+
+Across 55,296 requests,
+the organism served 52,273 and every served answer was correct.
+
+The population naturally performed 245 program inheritances through role migration.
+
+So the DNA-like idea has moved beyond archived memory:
+
+the organism now has compact,
+versioned,
+heritable program state that can change during its lifetime.
+
+But this is still one step short of learning.
+
+The program came from outside.
+
+The next important question is whether EXPERIENCE
+can generate or select a useful program change
+that then passes through this same hereditary authority pipeline.
+
+NEXT JUSTIFIED GATE
+
+TRAINING T1 / A07 —
+
+EXPERIENCE-DEPENDENT LOCAL PLASTICITY WITH HEREDITARY COMMIT.
+
+The organism should receive examples / task consequences,
+not an authoritative replacement truth table.
+
+A local cell population should produce candidate program variation from experience.
+
+The existing A06 program-authority system should remain the only path by which
+an experience-derived candidate can become hereditary.
+
+That experiment should separate:
+
+LEARNING A CANDIDATE
+
+from
+
+AUTHORIZING / INHERITING THE CANDIDATE.
+
+A successful A07 would be the first actual training result in this lineage.
+
+ACCEPTED APPLICATION FRONTIER
+
+YGG-A01:
+positive via FIXA.
+
+A02:
+positive adaptive transform service.
+
+A03:
+positive blind environment generalization via FIXA.
+
+A04:
+positive fixed-seed replication via FIXA.
+
+A05:
+positive post-freeze task-semantic transfer.
+
+A06:
+positive lineage-qualified online program inheritance.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
