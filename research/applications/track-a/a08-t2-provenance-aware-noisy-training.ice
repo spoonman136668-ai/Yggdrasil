@@ -881,3 +881,205 @@ can now protect learning itself.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A08 TRAINING T2 PROVENANCE-AWARE NOISY EXPERIENCE
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY PRIMARY A08 TARGET,
+CORRUPTED-ROOT PAIR,
+ROOT-ARRIVAL ORDER,
+DUPLICATE FANOUT,
+OR LEARNER EVENT ORDER.
+
+IMPLEMENTATION COMMIT
+
+4a25d1e417f10dbe854a43f712c926d323bfb53f.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a08_t2_provenance_noisy_training_v1.py
+
+Loader Git blob:
+
+c2f2477917bac636a68adadc4b1fdd9dfb8a3aaa.
+
+Payload:
+
+research/applications/track-a/a08_t2_provenance_noisy_training_v1.py.gz
+
+Payload Git blob:
+
+1204196e7b4f39bf1ac6d1371924d564187a56b3.
+
+Compressed payload SHA-256:
+
+ef3e87bd5a9a7484a3f640805e9451287f134632e08c2d0a56beb0552a4d1ae4.
+
+Compressed payload bytes:
+
+8414.
+
+Decompressed source SHA-256:
+
+0dc330887718767812b2143877b751dc1ad580e0cefe834afac88486ad5707e0.
+
+Decompressed source bytes:
+
+29943.
+
+FROZEN PARENT
+
+A07 source SHA-256:
+
+de26ba2c1530f9086a878521f4705896c8f2ad332179ceec0fde9d5f6d71d0ad.
+
+A07 freeze:
+
+ee9014bde9c210ca31fbea7d94bb2a514c6e6f62.
+
+A07 manifest:
+
+6abcdd47683edf0b5b4c814518b19709d205f69f25e5db49b3057526f3818139.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Experience roots:
+
+6 pairwise distinct roots.
+
+Primary corruption budget:
+
+2 roots per scenario.
+
+Qualification threshold:
+
+4 distinct non-conflicted roots.
+
+Quadratic target catalog:
+
+840.
+
+Training feature rank:
+
+11 / 11.
+
+Mechanical manifest used only:
+
+MECHANICAL-NONPRIMARY-FREEZE.
+
+Mechanical manifest SHA-256:
+
+1a3946154c88bb654848ba000e8dc82ab6ef67e0803b0a5d3e125e89035ad22f.
+
+No real primary target,
+corruption pair,
+arrival order,
+duplicate pattern,
+or learner event order derived:
+
+TRUE.
+
+FULL NON-PRIMARY T2 SMOKE
+
+12 / 12 learner A exact reconstructions.
+
+12 / 12 learner B exact reconstructions.
+
+12 / 12 learner-pair agreement.
+
+120 / 120 unseen held-out predictions correct.
+
+12 / 12 hereditary commits.
+
+Service requests:
+
+55296.
+
+Candidate served / correct:
+
+52273 / 52273.
+
+Candidate incorrect:
+
+0.
+
+Raw experience observations across both learners:
+
+3936.
+
+Same-root duplicate observations collapsed:
+
+2352.
+
+Stale-program served:
+
+0.
+
+Natural migration inheritance:
+
+245.
+
+All dedicated noisy-experience probes:
+
+PASS.
+
+All required unsafe controls / governance fail-closed checks:
+
+PASS.
+
+Four-corrupted-root boundary:
+
+EXPOSED.
+
+Forged-root-metadata boundary:
+
+EXPOSED.
+
+All restarts:
+
+equivalent.
+
+All existing constitutional safety totals:
+
+zero.
+
+These used the literal fake freeze label
+MECHANICAL-NONPRIMARY-FREEZE
+and are implementation validation only.
+
+They are not A08 scientific evidence.
+
+PRIMARY STATUS AT THIS FREEZE
+
+NOT DERIVED.
+
+Let the resulting freeze-update commit SHA be F08.
+
+Only after F08 exists may the harness derive:
+
+- 12 target programs;
+- 12 corrupted-root pairs;
+- per-input six-root arrival orders;
+- per-root duplicate fanout;
+- learner-local raw-event processing orders.
+
+No post-freeze rejection or replacement is allowed except the preregistered target equality retry.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
