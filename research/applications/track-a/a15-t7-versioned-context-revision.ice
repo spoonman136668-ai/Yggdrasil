@@ -1171,3 +1171,151 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-FREEZE PRIMARY T7 MANIFEST — BEFORE FIRST PRIMARY DRIFT OBSERVATION
+
+DATE:
+2026-09-21.
+
+FREEZE COMMIT F15
+
+dd9cd2cfee331d94631af17b0f0a61684e5091a4.
+
+VERSIONED-DRIFT MANIFEST SHA-256
+
+0e7d6c14cff50e8e8705cbf4082d5f333267b2e4646eea333559db4b4b28cef9.
+
+C VERSION-2 PRIORS
+
+S00:
+C-v1 (4,5,2,1);
+C-v2 (2,1,4,5);
+counter 0;
+old-C interlude B;
+new-C interlude B.
+
+S01:
+C-v1 (2,5,2,3);
+C-v2 (1,3,6,2);
+counter 0;
+old-C interlude A;
+new-C interlude B.
+
+S02:
+C-v1 (3,3,4,2);
+C-v2 (6,4,1,1);
+counter 0;
+old-C interlude A;
+new-C interlude A.
+
+S03:
+C-v1 (6,3,2,1);
+C-v2 (5,3,1,3);
+counter 0;
+old-C interlude A;
+new-C interlude A.
+
+S04:
+C-v1 (3,3,1,5);
+C-v2 (4,1,5,2);
+counter 0;
+old-C interlude A;
+new-C interlude B.
+
+S05:
+C-v1 (4,4,2,2);
+C-v2 (1,4,3,4);
+counter 0;
+old-C interlude A;
+new-C interlude B.
+
+S06:
+C-v1 (1,4,2,5);
+C-v2 (5,1,5,1);
+counter 0;
+old-C interlude B;
+new-C interlude A.
+
+S07:
+C-v1 (6,1,3,2);
+C-v2 (5,2,1,4);
+counter 0;
+old-C interlude B;
+new-C interlude B.
+
+S08:
+C-v1 (3,6,1,2);
+C-v2 (1,6,1,4);
+counter 0;
+old-C interlude A;
+new-C interlude B.
+
+S09:
+C-v1 (3,1,5,3);
+C-v2 (4,2,2,4);
+counter 0;
+old-C interlude B;
+new-C interlude A.
+
+S10:
+C-v1 (5,5,1,1);
+C-v2 (2,4,4,2);
+counter 0;
+old-C interlude B;
+new-C interlude A.
+
+S11:
+C-v1 (1,2,3,6);
+C-v2 (3,1,2,6);
+counter 0;
+old-C interlude A;
+new-C interlude A.
+
+All C-v2 derivation counters:
+
+0.
+
+Every C-v2 differs from:
+
+A;
+B;
+C-v1.
+
+The exact:
+
+- 64 drift observations per scenario;
+- two-root drift-attestation pairs;
+- learner A / B observation orders;
+- C-v2 held-out evaluation sequences;
+- C-v1 recurrence sequences;
+- C-v2 recurrence sequences;
+- restart point after observation 32;
+- replacement target sets;
+
+are fixed by F15
+and bound by the manifest SHA above.
+
+Every drift observation has two distinct attestation roots.
+
+No C-v2 prior,
+drift observation,
+attestation root,
+learner order,
+interlude,
+evaluation sequence,
+restart detail,
+or replacement target was rejected,
+redrawn,
+or replaced after derivation.
+
+At the moment this manifest was recorded:
+
+A15 primary drift observations consumed = 0.
+
+A15 C-v2 revisions committed = 0.
+
+A15 primary held-out evaluations executed = 0.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
