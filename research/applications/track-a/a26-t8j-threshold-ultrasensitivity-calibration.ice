@@ -639,3 +639,94 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A26 THRESHOLD / ULTRASENSITIVITY CALIBRATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A26 THRESHOLD DECISION
+OR W2 OUTCOME.
+
+F26:
+
+1a9fb005e8fbdad1bc683ff744c1b84624b8d470.
+
+FROZEN SOURCE SHA-256:
+
+67522a26a83b457014453634db2deef3ffb539fea4fe78d2ca165883f19372c4.
+
+TRAJECTORY COUNT:
+
+384.
+
+STRUCTURE:
+
+48 fixed A17 patch contexts
+x
+8 fresh F26-derived replicas.
+
+EPOCHS PER TRAJECTORY:
+
+16.
+
+EVIDENCE WINDOW:
+
+W1 = 0-7.
+
+UNTOUCHED CONFIRMATION:
+
+W2 = 8-15.
+
+REPLACEMENT EPISODES:
+
+0 / 8.
+
+COMPLETE MANIFEST SHA-256:
+
+89864ad4a5ee97d186f14e85c7824fb05fcdfe069d2ecdca5bf621bb034f0b76.
+
+Serialized manifest-wrapper SHA-256:
+
+5fd9144bda9e3d583c0e1dc26ab69549ca561253a170469383dedb3792ec7ed3.
+
+Serialized manifest-wrapper bytes:
+
+129390.
+
+Every 16-demand sequence has exact mean equal to its candidate target.
+
+Every replacement set contains exactly four unique cell IDs.
+
+All trajectory namespaces are:
+
+YGG-A26-*.
+
+PRIMARY STATUS AT MANIFEST BIND
+
+Real B1 signals observed:
+
+0.
+
+Real T1 / T2 / T3 / T4 decisions observed:
+
+0.
+
+Real W2 outcomes observed:
+
+0.
+
+The next permitted operation is:
+
+two complete deterministic A26 primary sweeps
+over this exact manifest.
+
+NO TRAJECTORY REDRAW.
+NO THRESHOLD CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
