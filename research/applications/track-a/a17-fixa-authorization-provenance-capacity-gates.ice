@@ -722,3 +722,173 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-FREEZE PRIMARY A17 MANIFEST — BEFORE FIRST PRIMARY PATCH OBSERVATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND AFTER F17A /
+BEFORE FIRST REAL A17 PRIMARY PATCH OBSERVATION /
+NON-CANONICAL.
+
+EXECUTABLE FREEZE F17A
+
+c33df49a8b171c1f6cd8e64820dd3bca0e2f4492.
+
+SCIENTIFIC DERIVATION SEED F17
+
+3ec24f8242285688a537f5e7dd6e9a231a645597.
+
+This manifest uses F17,
+not F17A,
+as the A17 scientific path/evidence/evaluation/replacement derivation seed.
+
+F17A changes only the pre-primary authorization,
+provenance-binding,
+capacity,
+and operational probe/control implementation.
+
+PRIMARY MANIFEST SHA-256
+
+8284e3f1e47a17f234eb02f2b427cddaee16999e0df795d38f1b0b457cf8e43f.
+
+PRIMARY FOUR-PATCH PATHS
+
+S00:
+(2,1,4,5)
+-> (1,1,4,6)
+-> (2,1,3,6)
+-> (2,2,3,5)
+-> (3,2,2,5).
+
+S01:
+(1,3,6,2)
+-> (1,4,5,2)
+-> (2,4,5,1)
+-> (3,4,4,1)
+-> (2,4,4,2).
+
+S02:
+(6,4,1,1)
+-> (6,3,2,1)
+-> (6,3,1,2)
+-> (6,2,1,3)
+-> (5,3,1,3).
+
+S03:
+(5,3,1,3)
+-> (5,2,2,3)
+-> (6,1,2,3)
+-> (5,1,3,3)
+-> (5,1,2,4).
+
+S04:
+(4,1,5,2)
+-> (4,2,4,2)
+-> (3,2,4,3)
+-> (4,1,4,3)
+-> (3,1,5,3).
+
+S05:
+(1,4,3,4)
+-> (1,3,3,5)
+-> (2,3,3,4)
+-> (2,2,4,4)
+-> (1,3,4,4).
+
+S06:
+(5,1,5,1)
+-> (4,1,6,1)
+-> (3,2,6,1)
+-> (3,1,6,2)
+-> (3,2,5,2).
+
+S07:
+(5,2,1,4)
+-> (4,2,1,5)
+-> (3,2,2,5)
+-> (2,2,3,5)
+-> (1,2,3,6).
+
+S08:
+(1,6,1,4)
+-> (1,5,2,4)
+-> (2,5,1,4)
+-> (2,4,2,4)
+-> (2,3,3,4).
+
+S09:
+(4,2,2,4)
+-> (3,3,2,4)
+-> (3,4,1,4)
+-> (3,4,2,3)
+-> (2,4,2,4).
+
+S10:
+(2,4,4,2)
+-> (1,5,4,2)
+-> (1,6,4,1)
+-> (2,5,4,1)
+-> (2,4,5,1).
+
+S11:
+(3,1,2,6)
+-> (3,1,3,5)
+-> (3,2,3,4)
+-> (3,2,4,3)
+-> (2,2,5,3).
+
+BOUND PRIMARY MATERIAL
+
+The manifest SHA above binds the exact F17-derived:
+
+- 12 four-patch paths;
+- 16 developmental observations per patch;
+- two-root observation attestations;
+- Learner A / Learner B reconstruction orders;
+- 16-epoch held-out service sequences;
+- replacement target sets at epochs 0 and 8;
+- patch-3 restart state after observation 8;
+- immutable A15 C-v2 base priors;
+- stale-previous baselines;
+- evaluator-only target oracles.
+
+Every patch target is one valid +1/-1 transfer from its parent effective prior.
+
+No target,
+observation,
+attestation root,
+learner order,
+evaluation sequence,
+replacement plan,
+restart detail,
+baseline,
+or oracle
+was rejected,
+redrawn,
+or performance-shaped after derivation.
+
+PRIMARY STATUS AT MANIFEST COMMIT
+
+A17 primary patch observations consumed = 0.
+
+A17 primary patch commits = 0.
+
+A17 primary held-out evaluations executed = 0.
+
+A17 primary rollback/reactivation probes executed = 0.
+
+A17 primary result observed = FALSE.
+
+The next permitted operation is:
+
+two complete deterministic F17-seeded primary sweeps
+through the frozen F17A executable.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
