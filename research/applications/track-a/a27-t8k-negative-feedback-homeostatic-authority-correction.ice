@@ -865,3 +865,100 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A27 NEGATIVE-FEEDBACK HOMEOSTATIC AUTHORITY CORRECTION
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A27 FEEDBACK ERROR,
+AUTHORITY UPDATE,
+OR SCIENTIFIC OUTCOME.
+
+F27:
+
+091508defe3a0162fdd6aeb8c9c980feef4e3c9c.
+
+FROZEN SOURCE SHA-256:
+
+d7f97f2acd4e4cac1e8d1990ca4111e263d5942ebec9968b9ae2e803c4c655c3.
+
+TRAJECTORY COUNT:
+
+384.
+
+STRUCTURE:
+
+48 fixed A17 patch contexts
+x
+8 fresh F27-derived replicas.
+
+EPOCHS PER TRAJECTORY:
+
+32.
+
+CONTROL BLOCKS:
+
+B1 = 0-3;
+B2 = 4-7;
+B3 = 8-11;
+B4 = 12-15;
+B5 = 16-19;
+B6 = 20-23;
+B7 = 24-27;
+B8 = 28-31.
+
+REPLACEMENT EPISODES:
+
+0 / 4 / 8 / 12 / 16 / 20 / 24 / 28.
+
+COMPLETE MANIFEST SHA-256:
+
+423cda3dbc6668efbc20c5465ec2790e642180278923321284996f48447bd997.
+
+Serialized manifest-wrapper SHA-256:
+
+af1dc7e9f6f113e1e0a5a7960378a0712412c39b5d99a0860af6d447b4f4cd3e.
+
+Serialized manifest-wrapper bytes:
+
+226581.
+
+Every 32-demand sequence has exact mean equal to its candidate target.
+
+Every replacement set contains exactly four unique cell IDs.
+
+All trajectory namespaces are:
+
+YGG-A27-*.
+
+PRIMARY STATUS AT MANIFEST BIND
+
+Real feedback errors observed:
+
+0.
+
+Real H1 / H2 / H3 authority updates observed:
+
+0.
+
+Real A27 controller outcomes observed:
+
+0.
+
+The next permitted operation is:
+
+two complete deterministic A27 primary sweeps
+over this exact manifest.
+
+NO TRAJECTORY REDRAW.
+NO BLOCK-SIZE CHANGE.
+NO FEEDBACK-LAW CHANGE.
+NO AUTHORITY-BOUND CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
