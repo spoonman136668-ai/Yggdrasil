@@ -1,0 +1,70 @@
+name: A33 Frozen Primary Execution
+
+on:
+  push:
+    branches:
+      - exec/a33-primary-r1
+    paths:
+      - .github/workflows/a33-frozen-primary-exec.yml
+
+jobs:
+  primary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact execution commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Verify frozen A33 bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research/applications/track-a
+          python3 - <<'PY'
+          import gzip, hashlib
+          from pathlib import Path
+          p=Path("a33_t8q_independent_competing_hazard_recruitment_v1.py.gz")
+          raw=p.read_bytes()
+          src=gzip.decompress(raw)
+          assert len(raw)==6101, len(raw)
+          assert hashlib.sha256(raw).hexdigest()=="9be363718962dce8390046bb8a386e06a70e5ab3ad032eb1e6fafb4510373284"
+          assert len(src)==22282, len(src)
+          assert hashlib.sha256(src).hexdigest()=="d483897b88d2948e8c96f375e257702425b5d2ab32ec9599894a73967e03803e"
+          print("A33_FROZEN_SOURCE_OK")
+          PY
+
+      - name: Run frozen primary twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research/applications/track-a
+          F33="3809ccb3af68310227607e4d8d6a63865d84564a"
+          python3 a33_t8q_independent_competing_hazard_recruitment_v1.py "$F33" > /tmp/a33_run1.json
+          python3 a33_t8q_independent_competing_hazard_recruitment_v1.py "$F33" > /tmp/a33_run2.json
+          cmp /tmp/a33_run1.json /tmp/a33_run2.json
+          echo "BYTE_IDENTICAL=TRUE"
+          echo "RUN1_SHA256=$(sha256sum /tmp/a33_run1.json | awk '{print $1}')"
+          echo "RUN2_SHA256=$(sha256sum /tmp/a33_run2.json | awk '{print $1}')"
+          python3 - <<'PY'
+          import json, hashlib
+          p="/tmp/a33_run1.json"
+          b=open(p,"rb").read()
+          r=json.loads(b)
+          print("SERIALIZED_SHA256="+hashlib.sha256(b).hexdigest())
+          print("MANIFEST="+json.dumps(r.get("manifest"),sort_keys=True,separators=(",",":")))
+          print("QUALIFIED="+json.dumps(r.get("qualified"),sort_keys=True,separators=(",",":")))
+          print("INFORMATION_GAIN="+json.dumps(r.get("information_gain"),sort_keys=True,separators=(",",":")))
+          print("INTEGRITY="+json.dumps(r.get("integrity"),sort_keys=True,separators=(",",":")))
+          print("SUMMARIES="+json.dumps(r.get("summaries"),sort_keys=True,separators=(",",":")))
+          # Print oscillatory identity details if present anywhere useful.
+          for key in ("oscillatory_identities","oscillatory_overlap","family5_oscillation"):
+              if key in r:
+                  print(key.upper()+"="+json.dumps(r[key],sort_keys=True,separators=(",",":")))
+          PY
+
+      - name: Upload exact A33 primary
+        uses: actions/upload-artifact@v4
+        with:
+          name: a33-frozen-primary
+          path: /tmp/a33_run1.json
