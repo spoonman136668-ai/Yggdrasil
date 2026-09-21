@@ -737,3 +737,262 @@ OR ARE THEY JUST BIOLOGICAL DECORATION?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A29 DISTRIBUTED COMPETING SIGNAL POOLS
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F29-DERIVED TRAJECTORY,
+LOCAL PULSE,
+POOL STATE,
+REGIME TRANSITION,
+OR SCIENTIFIC OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+a64c827ca0ec4f689c4c947abb02d81d9191dd45.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a29_t8m_distributed_signal_pools_v1.py
+
+Loader Git blob:
+
+a75928ba13428483193e2cbc4f0b2743628be0a8.
+
+Payload:
+
+research/applications/track-a/a29_t8m_distributed_signal_pools_v1.py.gz
+
+Payload Git blob:
+
+64a7af0b9fd3161132c90337ed33811ba09db55d.
+
+Decompressed source SHA-256:
+
+4736c3b525be005db46dba17122a6e772da0297919fae95bb28546149c3fe94c.
+
+Decompressed source bytes:
+
+12162.
+
+Deterministic gzip SHA-256:
+
+331e5f931b2a5be7aa89ce1b3756a8e5ee566284fcf57a0031dd7bf86a67f2c3.
+
+Compressed payload bytes:
+
+3837.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake seed:
+
+MECHANICAL-F29-NONPRIMARY.
+
+Two complete sweeps were byte-identical.
+
+Serialized semantic output SHA-256:
+
+f094d774bab369adaa99086f03d7ab4041a9d77d209c31272d80df7e983b492e.
+
+All P1-P24 implementation / integrity probes:
+
+PASS.
+
+MECHANICAL STATIC_C3
+
+aggregate delta versus stale:
+
++5680.
+
+harmful trajectories:
+
+164 / 384;
+42.71%.
+
+worst cumulative drawdown:
+
+-288.
+
+MECHANICAL BLOCK_SIGN
+
+aggregate delta:
+
++10734.
+
+harmful:
+
+195 / 384;
+50.78%.
+
+worst drawdown:
+
+-132.
+
+MECHANICAL POOL_FULL
+
+aggregate delta:
+
++13940.
+
+beneficial:
+
+198.
+
+neutral:
+
+4.
+
+harmful:
+
+182 / 384;
+47.40%.
+
+worst drawdown:
+
+-70.
+
+end regimes:
+
+C = 159;
+S = 131;
+U = 94.
+
+commits:
+
+693.
+
+retreats:
+
+403.
+
+recommits:
+
+310.
+
+false candidate commitments:
+
+10.
+
+false stale commitments:
+
+13.
+
+contradictory epochs:
+
+1723.
+
+fraction of contradictory epochs remaining U:
+
+0.7661056297.
+
+POOL_FULL SIGNAL_POOL_INFORMATION_GAIN:
+
+FALSE
+
+in this mechanical fake world.
+
+POOL_FULL qualified:
+
+FALSE.
+
+MECHANICAL NO_FREQ
+
+aggregate delta:
+
++3903.
+
+harmful:
+
+163 / 384;
+42.45%.
+
+commits:
+
+0.
+
+The no-frequency arm never crossed commitment conditions.
+
+This demonstrates that repeated local pulsing
+materially changes pool dynamics.
+
+MECHANICAL NO_PF
+
+aggregate delta:
+
++13956.
+
+harmful:
+
+182 / 384;
+47.40%.
+
+false candidate commitments:
+
+19
+
+versus POOL_FULL:
+
+10.
+
+Positive feedback altered commitment quality
+without making the fake world safe.
+
+MECHANICAL NO_HET
+
+aggregate delta:
+
++13866.
+
+harmful:
+
+180 / 384;
+46.88%.
+
+Only fixed U subset:
+
+slots 0 and 1.
+
+No ablation mechanically demonstrates
+a safe controller.
+
+This is NON-SCIENTIFIC mechanical evidence only.
+
+REAL A29 STATUS
+
+No real F29-derived trajectory exists.
+
+No real local pulse has been observed.
+
+No real signal-pool outcome has been observed.
+
+No real A29 manifest exists.
+
+Let the resulting commit SHA be:
+
+F29.
+
+After F29 exists:
+
+1. derive exactly 384 fresh trial identities from F29;
+2. bind the complete manifest SHA;
+3. only then execute two complete deterministic primary sweeps using F29 as seed;
+4. require byte-identical output;
+5. report POOL_FULL and every preregistered comparator without post-result tuning.
+
+NO SIGNAL THRESHOLD CHANGE.
+NO DECAY CHANGE.
+NO POPULATION-GATE CHANGE.
+NO INHIBITION CHANGE.
+NO HETEROGENEITY CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
