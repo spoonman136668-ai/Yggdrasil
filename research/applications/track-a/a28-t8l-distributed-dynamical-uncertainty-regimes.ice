@@ -659,3 +659,213 @@ WITHOUT FALSELY CORRECTING AS MANY GOOD ONES?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A28 DISTRIBUTED DYNAMICAL UNCERTAINTY REGIMES
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F28-DERIVED TRAJECTORY,
+REGIME TRANSITION,
+OR SCIENTIFIC OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+e62838c07378ad2ec80d65924396746f8923d3a8.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a28_t8l_dynamical_uncertainty_regimes_v1.py
+
+Loader Git blob:
+
+d6462600858c47602cb525b83107b3387ff9821c.
+
+Payload:
+
+research/applications/track-a/a28_t8l_dynamical_uncertainty_regimes_v1.py.gz
+
+Payload Git blob:
+
+4e08a2fa6b87116b1811ef88e156c319a2fef224.
+
+Decompressed source SHA-256:
+
+26878a56abe92a9a42fb47af7e4b0e301fceb2843a7c12d259dfa217b44081cd.
+
+Decompressed source bytes:
+
+17881.
+
+Deterministic gzip SHA-256:
+
+cd001cf6735f7d3e74fc8cfc6da1579deb5daf3507eb288b0fa95f8b5a43ae1c.
+
+Compressed payload bytes:
+
+5438.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake seed:
+
+MECHANICAL-F28-NONPRIMARY.
+
+Two complete sweeps were byte-identical.
+
+Serialized result-file SHA-256:
+
+fdc8d2d647ea93e90133e87229b5e67d047cfbd6c90bf3b28bfb56a115eb6a2a.
+
+Serialized semantic output SHA-256:
+
+5910a026790a45e36cdb271f177c1a56359ae874cba4bbbf7dee7ad5f9f1cbe1.
+
+All P1-P20 integrity probes:
+
+PASS.
+
+Exact A17 replay remained:
+
+3978 / 3950 / 37-of-48
+with the exact 11 below-stale pairs.
+
+MECHANICAL R3
+
+delta versus R0:
+
+-100.
+
+harmful trajectories:
+
+177 / 384;
+46.09%.
+
+MECHANICAL H1
+
+delta versus R0:
+
++30.
+
+harmful trajectories:
+
+170 / 384;
+44.27%.
+
+static-harmful rescued:
+
+41.
+
+false harm from static-nonharm:
+
+34.
+
+MECHANICAL DYN
+
+delta versus R0:
+
++191.
+
+harmful trajectories:
+
+144 / 384;
+37.50%.
+
+static-harmful improved:
+
+127.
+
+static-harmful rescued:
+
+65.
+
+static-beneficial retained:
+
+123.
+
+false harm from static-nonharm:
+
+32.
+
+regime occupancy:
+
+STABLE = 492 blocks;
+METASTABLE = 2780 blocks;
+COMMITTED = 568 blocks.
+
+transitions:
+
+METASTABLE -> COMMITTED = 118;
+METASTABLE -> STABLE = 96;
+COMMITTED -> METASTABLE = 4.
+
+all six 2-of-4 METASTABLE birth-slot subsets were exercised.
+
+MECHANICAL NO_HYST
+
+delta versus R0:
+
++181.
+
+harmful trajectories:
+
+144 / 384;
+37.50%.
+
+MECHANICAL NO_HET
+
+delta versus R0:
+
++30.
+
+harmful trajectories:
+
+160 / 384;
+41.67%.
+
+The mechanical result suggests
+that heterogeneous metastable population state
+can matter materially.
+
+However:
+
+DYN remained far above
+the absolute 5% harmful-trajectory ceiling.
+
+DYN was NOT qualified.
+
+This mechanical evidence is NON-SCIENTIFIC.
+
+REAL A28 STATUS
+
+No real F28 trajectory has been derived.
+
+No real regime transition has been observed.
+
+No real scientific population-composition outcome exists.
+
+Let the resulting commit SHA be:
+
+F28.
+
+After F28 exists:
+
+1. derive exactly 384 fresh 40-epoch trajectories from F28;
+2. bind the complete manifest SHA;
+3. only then execute two complete deterministic primary sweeps;
+4. require byte-identical output;
+5. compare DYN to H1, NO_HYST, and NO_HET without post-result tuning.
+
+NO TRANSITION-RULE CHANGE.
+NO PERSISTENCE-RULE CHANGE.
+NO HETEROGENEITY-RULE CHANGE.
+NO QUALIFICATION CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
