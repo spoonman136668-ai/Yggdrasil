@@ -856,3 +856,98 @@ NO POST-RESULT LOCAL-INHIBITION CHANGE.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A35 PROTECTED BET-HEDGING THIRD STATE
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A35 ARM EXECUTION,
+HEDGE ENTRY,
+HEDGE RELEASE,
+OR SCIENTIFIC OUTCOME.
+
+F35:
+
+a1fefb2cf0a507f630717be86f57e02e2899efe0.
+
+FROZEN SOURCE SHA-256:
+
+073f60c43f16b80e47e359998e8477a2ddf112d5567790ec7729bbc9b39ec030.
+
+TRIAL COUNT:
+
+384.
+
+STRUCTURE:
+
+48 frozen environmental contexts
+x
+8 F35-derived replicas.
+
+CELLS:
+
+48.
+
+EPOCHS:
+
+48.
+
+COMPLETE WORLD-MANIFEST SHA-256:
+
+778799b6777e6214f2f19684db24237bbb95853c1a8b5025e97a3874894963fa.
+
+Serialized manifest-wrapper SHA-256:
+
+d23c18e2cf989edf5923e503f1f239a1bab89e42de650475be34230bd7eeb320.
+
+Serialized manifest-wrapper bytes:
+
+40016.
+
+The bound world identity includes:
+
+context;
+replica;
+family;
+reversal location where applicable;
+spatial region where applicable;
+full true local-consequence field hash;
+full sensed field hash.
+
+PRIMARY STATUS AT MANIFEST BIND
+
+Real hedge entries observed:
+
+0.
+
+Real hedge releases observed:
+
+0.
+
+Real hedge occupancy observed:
+
+0.
+
+Real A35 qualification outcomes observed:
+
+0.
+
+The next permitted operation is:
+
+two complete deterministic A35 primary sweeps
+using F35 as seed.
+
+NO WORLD REDRAW.
+NO HEDGE-LAW CHANGE.
+NO RELEASE-LAW CHANGE.
+NO SUPPRESSION CHANGE.
+NO REFRACTORY CHANGE.
+NO LOCAL-INHIBITION CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
