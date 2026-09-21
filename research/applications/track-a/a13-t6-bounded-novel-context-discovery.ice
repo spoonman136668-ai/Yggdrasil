@@ -890,3 +890,89 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-FREEZE PRIMARY T6 MANIFEST — BEFORE FIRST PRIMARY NOVELTY OBSERVATION
+
+DATE:
+2026-09-21.
+
+FREEZE COMMIT F13
+
+6810864daae9578da9e5de3ac59acdfc659d17d7.
+
+NOVEL-CONTEXT MANIFEST SHA-256
+
+920b71bd9dd01ae631ba13994e8fe83705eb1f212c708875b41087ffe8a8a5af.
+
+LATENT C PRIORS
+
+S00:
+C (1,1,4,6).
+
+S01:
+C (5,1,4,2).
+
+S02:
+C (5,5,1,1).
+
+S03:
+C (2,1,5,4).
+
+S04:
+C (1,4,2,5).
+
+S05:
+C (1,5,2,4).
+
+S06:
+C (1,4,1,6).
+
+S07:
+C (1,3,6,2).
+
+S08:
+C (4,1,3,4).
+
+S09:
+C (4,2,1,5).
+
+S10:
+C (1,5,5,1).
+
+S11:
+C (6,1,1,4).
+
+All C derivation counters:
+
+0.
+
+Every C prior differs from both inherited A and B priors.
+
+The exact:
+
+- known-context phase choices;
+- first C probe pairs;
+- 16 C novelty-dwell observations per scenario;
+- C return probes;
+- C service sequences;
+- replacement target sets;
+
+are fixed by F13
+and bound by the manifest SHA above.
+
+No C prior,
+novelty observation,
+service sequence,
+or replacement target was rejected,
+redrawn,
+or replaced after derivation.
+
+At the moment this manifest was recorded:
+
+A13 primary novelty observations consumed = 0.
+A13 C slots created = 0.
+A13 primary service phases executed = 0.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
