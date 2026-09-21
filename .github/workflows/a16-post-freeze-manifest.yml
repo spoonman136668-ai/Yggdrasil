@@ -1,0 +1,44 @@
+name: A16 Post-Freeze Manifest Derivation
+
+on:
+  push:
+    branches:
+      - dg1a-ar
+    paths:
+      - .github/workflows/a16-post-freeze-manifest.yml
+
+jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact triggering commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Verify frozen A16 source bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research/applications/track-a
+          test "$(sha256sum a16_t8_hysteretic_moving_drift_v1.py.gz | awk '{print $1}')" = "c12d811d0ec68558330425a657f2faf6e2ff2d43648552365910b10806ed5173"
+          python3 - <<'PY'
+          import gzip, hashlib
+          from pathlib import Path
+          p=Path("a16_t8_hysteretic_moving_drift_v1.py.gz")
+          src=gzip.decompress(p.read_bytes())
+          assert len(src)==19762, len(src)
+          assert hashlib.sha256(src).hexdigest()=="cd89dbc46174c97e0bea0bc0a1db4b65eea9b5732521ca30f00ed30f06b792fa"
+          print("A16_FROZEN_SOURCE_OK")
+          PY
+
+      - name: Derive post-freeze manifest only
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research/applications/track-a
+          python3 a16_t8_hysteretic_moving_drift_v1.py             --freeze-commit 90279bc5b90682e2538721ef152aa3accdedbddf             --manifest-only | tee /tmp/a16_manifest.json
+          echo "A16_MANIFEST_SHA256=$(sha256sum /tmp/a16_manifest.json | awk '{print $1}')"
+          echo "=== A16_MANIFEST_BEGIN ==="
+          cat /tmp/a16_manifest.json
+          echo "=== A16_MANIFEST_END ==="
