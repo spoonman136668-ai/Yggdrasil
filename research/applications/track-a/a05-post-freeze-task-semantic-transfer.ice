@@ -480,3 +480,144 @@ That is an important step toward reusable developmental architecture.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A05 POST-FREEZE TASK-SEMANTIC TRANSFER
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY PRIMARY A05 ROLE PROGRAM.
+
+IMPLEMENTATION COMMIT
+
+5c4e950a40b0e87f2c979612801c9467226c8276.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a05_task_semantic_transfer_v1.py
+
+Loader Git blob:
+
+965e8f2a5635cedd0da015ac1ac97c9ae39e4644.
+
+Payload:
+
+research/applications/track-a/a05_task_semantic_transfer_v1.py.gz
+
+Payload Git blob:
+
+44f84f5cf5747ed903684ed2c9e822efdf47aeb2.
+
+Compressed payload SHA-256:
+
+cdc4c2c253a66ce91b0d0bee0bb94f447490fdde3e9fa638478b3cdb034272ba.
+
+Compressed payload bytes:
+
+4092.
+
+Decompressed source SHA-256:
+
+9efc8e31c08b60b6decff06c7ffc5b5a1ad10df7bb4440d4b2ab4d1fb5876fce.
+
+Decompressed source bytes:
+
+13485.
+
+FROZEN DEPENDENCIES
+
+A02 source SHA-256:
+
+b2eeb1e589a029f16b0437ce1f3dd05826b81a91ab6c6d91ce25bb28b96db60b.
+
+A03-FIXA source SHA-256:
+
+f38fbe4823c6f8e3093a45b701cc39054c3bc814a67a97053d180bacb5087234.
+
+A03 blind environment freeze:
+
+6f010ce561d958a324664b2d3e0c04e3e113d91b.
+
+A03 schedule manifest SHA-256:
+
+842d8f03f1f1229e633c783a895b5b6ceb81f813c2fb104a81000c25baa40848.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Balanced nonlinear program catalog size:
+
+12840.
+
+Affine truth-table count:
+
+32.
+
+Mechanical-only program manifest SHA-256:
+
+42b75ccbf2e3813b91d064cc95c3a1b79069617e0b78ee96dc9e43e3bd53ea42.
+
+Mechanical primary program derivation:
+
+FALSE.
+
+Generic interpreter exhaustive check on mechanical programs:
+
+PASS.
+
+Non-primary single-scenario semantic smoke:
+
+candidate service capacity preserved;
+incorrect served = 0;
+restart authoritative state equivalent;
+restart output / metrics equivalent;
+dynamic re-merge count = 1;
+final provisional count = 0.
+
+Old XOR engine mismatch against the mechanical unseen programs:
+
+380 truth-table points.
+
+This is mechanical control evidence only.
+
+PRIMARY PROGRAM STATUS
+
+NOT DERIVED.
+
+No A05 primary program truth table exists in experimental evidence before this freeze.
+
+Let the resulting commit SHA of this freeze update be:
+
+F05.
+
+Only after F05 exists may the harness derive:
+
+12 scenarios x 4 roles
+=
+48 primary truth tables
+
+using the preregistered:
+
+SHA-256("YGG-A05-PROGRAM|" + F05 + ...)
+
+rule.
+
+The full task-program manifest must be recorded before the first primary request.
+
+No post-freeze program replacement,
+difficulty filtering,
+or policy change is permitted.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
