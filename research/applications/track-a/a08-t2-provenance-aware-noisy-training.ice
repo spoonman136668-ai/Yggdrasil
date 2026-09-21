@@ -1442,3 +1442,495 @@ do not consume partial primary experience.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — A08 TRAINING T2 PROVENANCE-AWARE NOISY EXPERIENCE
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / POSITIVE PRIMARY / REPRODUCIBLE /
+PROVENANCE-AWARE NOISY TRAINING PASSED / NON-CANONICAL.
+
+FROZEN HARNESS
+
+Implementation commit:
+
+4a25d1e417f10dbe854a43f712c926d323bfb53f.
+
+Freeze commit F08:
+
+de08cc900d6e306411ae879114b3b648f0a94708.
+
+A08 source SHA-256:
+
+0dc330887718767812b2143877b751dc1ad580e0cefe834afac88486ad5707e0.
+
+A08 source bytes:
+
+29943.
+
+Frozen payload SHA-256:
+
+ef3e87bd5a9a7484a3f640805e9451287f134632e08c2d0a56beb0552a4d1ae4.
+
+PRIMARY MANIFEST
+
+Previously recorded before any primary experience event:
+
+training / noise manifest SHA-256:
+
+1324fa1fd16e0250520f380f1872006627a5777207b2b537a6297dc26605274a.
+
+learner event-order manifest SHA-256:
+
+ebcbc5dae8a06128f43753ad5350c12adc365241729de1a66d53a253f44fa062.
+
+The exact-runtime manifest-only execution reproduced:
+
+1324fa1fd16e0250520f380f1872006627a5777207b2b537a6297dc26605274a.
+
+No target,
+corruption pair,
+arrival order,
+duplicate fanout,
+or learner order was replaced.
+
+EXECUTION DEPENDENCY RESTORATION
+
+The earlier static audit correctly left primary UNSPENT
+because the sandbox was missing accepted A02 / A03 runtime sources.
+
+Before primary execution,
+the dependency chain was restored and hash-verified.
+
+A02 exact source:
+
+28011 bytes.
+
+SHA-256:
+
+b2eeb1e589a029f16b0437ce1f3dd05826b81a91ab6c6d91ce25bb28b96db60b.
+
+A03-FIXA exact source:
+
+25934 bytes.
+
+SHA-256:
+
+f38fbe4823c6f8e3093a45b701cc39054c3bc814a67a97053d180bacb5087234.
+
+The A03-FIXA source was deterministically reconstructed from the exact accepted A03-R1 source
+using the original accepted FIXA construction sequence.
+
+The resulting bytes matched the frozen A03-FIXA source SHA-256 exactly.
+
+A local gzip wrapper was generated only so the inherited source-hash verifier could read those exact A03 source bytes.
+
+No claim is made that this local transport gzip equals the historical GitHub compressed artifact.
+
+A05 exact source SHA-256:
+
+9efc8e31c08b60b6decff06c7ffc5b5a1ad10df7bb4440d4b2ab4d1fb5876fce.
+
+A06 exact source SHA-256:
+
+eb7a83320983168fe63d46852ee5d84bebf4c4cf80674ab2a885502e3bfb5a73.
+
+A07 exact source SHA-256:
+
+de26ba2c1530f9086a878521f4705896c8f2ad332179ceec0fde9d5f6d71d0ad.
+
+The frozen A08 mechanical dependency validator then passed,
+including reproduction of the accepted A07 manifest:
+
+6abcdd47683edf0b5b4c814518b19709d205f69f25e5db49b3057526f3818139.
+
+Only after those checks passed was A08 primary consumed.
+
+REPRODUCIBILITY
+
+Two complete deterministic A08 primary sweeps.
+
+Each sweep includes:
+
+12 scenarios;
+6 provenance roots per training input;
+2 persistently corrupted roots per scenario;
+11 training inputs;
+5 held-out inputs;
+384 service epochs per scenario;
+55296 service requests total.
+
+Sweep 1 serialized output SHA-256:
+
+ad675542d86b604520066d093654ba30b8c243b644b17e4faaa4a693a1920739.
+
+Sweep 2 serialized output SHA-256:
+
+ad675542d86b604520066d093654ba30b8c243b644b17e4faaa4a693a1920739.
+
+Byte-identical:
+
+TRUE.
+
+PRIMARY RESULT
+
+A08_T2_PROVENANCE_AWARE_NOISY_TRAINING_SUCCESS:
+
+TRUE.
+
+Every required primary signal:
+
+TRUE.
+
+LEARNING RESULT
+
+Learner A exact target reconstruction:
+
+12 / 12.
+
+Learner B exact target reconstruction:
+
+12 / 12.
+
+Learner-pair agreement:
+
+12 / 12.
+
+Held-out learner predictions correct:
+
+120 / 120.
+
+Training error:
+
+0
+
+for every learner in every scenario.
+
+Held-out error:
+
+0
+
+for every learner in every scenario.
+
+NOISY EXPERIENCE RESULT
+
+Across both learners:
+
+raw experience observations:
+
+3868.
+
+same-root duplicate observations collapsed:
+
+2284.
+
+effective distinct root observations:
+
+1584.
+
+Thus:
+
+3868 raw observations
+
+became exactly:
+
+12 scenarios
+x 11 inputs
+x 6 provenance roots
+x 2 learners
+=
+1584 effective observations.
+
+Duplicate fanout added no independent voting weight.
+
+For every primary training input
+for both learners:
+
+correct effective roots:
+
+4.
+
+incorrect effective roots:
+
+2.
+
+The correct label qualified.
+
+The corrupted label did not.
+
+PROGRAM / SERVICE RESULT
+
+Learned hereditary program commits:
+
+12 / 12.
+
+Total service requests:
+
+55296.
+
+Candidate served:
+
+52273.
+
+Candidate correct:
+
+52273.
+
+Candidate incorrect:
+
+0.
+
+Task accuracy:
+
+1.0.
+
+Stale-program served requests:
+
+0.
+
+Natural migration program inheritances:
+
+245.
+
+Task-output stream SHA-256:
+
+300bf369e6128a35961bbfd899ce7e4e384ebafb037cf948e23ac1cfcb55f41b.
+
+RESTART / PARTITION / CONSTITUTIONAL SAFETY
+
+Restart mismatches:
+
+0.
+
+All restarted authoritative states:
+
+equivalent.
+
+All restarted output / metric states:
+
+equivalent.
+
+Partition / re-merge complete:
+
+TRUE.
+
+Existing safety totals:
+
+stale votes accepted = 0;
+authority violations = 0;
+causal regressions = 0;
+duplicate effective provenance = 0;
+split-brain final states = 0;
+resource-budget violations = 0.
+
+DEDICATED NOISY-EXPERIENCE PROBES
+
+P1 — same-root amplification:
+
+PASS.
+
+Sixty-four copies from one bad root still counted as one bad root.
+
+P2 — copied descendants:
+
+PASS.
+
+Copied witnesses from one provenance family did not become independent evidence.
+
+P3 — unresolved 3 / 3 conflict:
+
+PASS.
+
+The learner abstained.
+
+P4 — self-contradicting root:
+
+PASS.
+
+The root became conflicted and contributed no vote.
+
+P5 — two correlated bad roots:
+
+PASS.
+
+Four independent honest roots still recovered the exact target program.
+
+P6 / M1 — round-1 memory restart:
+
+PASS.
+
+Training-evidence memory survived restart and converged byte-equivalently.
+
+P7 — learner event-order invariance:
+
+PASS.
+
+Different event-processing orders produced the same evidence,
+coefficients,
+and learned candidate.
+
+P8 — hereditary propagation:
+
+PASS.
+
+The learned program retained A06 wake,
+migration,
+repair,
+and stale-program safety.
+
+UNSAFE CONTROLS
+
+N1 — raw headcount voting:
+
+false training evidence reachable.
+
+N2 — provenance identity removed:
+
+copied correlated evidence can become false independent support.
+
+N3 — forced 3 / 3 tie-break:
+
+arbitrary false label reachable.
+
+N6 — organism governance unavailable:
+
+FAIL CLOSED.
+
+A correctly learned candidate could not bypass constitutional authorization.
+
+BOUNDARIES
+
+N4 — four genuinely corrupted roots:
+
+BOUNDARY EXPOSED.
+
+With four truly independent corrupted roots,
+the frozen 4-of-6 evidence quorum can authorize the wrong label.
+
+N5 — forged root metadata:
+
+BOUNDARY EXPOSED.
+
+If one bad source can forge multiple independent root identities,
+provenance counting can be defeated.
+
+These are preserved constitutional trust boundaries,
+not hidden primary failures.
+
+TECHNICAL INTERPRETATION
+
+A07 established supervised learning from clean experience.
+
+A08 establishes that the same hereditary learning path can tolerate
+persistent source-correlated label noise
+when evidence retains independently verifiable provenance.
+
+The important mechanism is not majority by observation count.
+
+It is majority by independent causal source.
+
+The primary contained substantial duplicate fanout:
+
+2284 redundant copies.
+
+Those copies provided zero additional authority.
+
+Two roots were wrong across the complete training episode in every scenario.
+
+Because four independent roots remained correct,
+the learner qualified the correct label for every one of the 132 scenario/input pairs.
+
+Both learner lineages then reconstructed the exact hidden quadratic programs,
+generalized perfectly to unseen inputs,
+and committed those programs through the existing constitutional hereditary path.
+
+This strengthens the training result from:
+
+THE ORGANISM CAN LEARN FROM CLEAN LABELED EXPERIENCE
+
+to:
+
+THE ORGANISM CAN LEARN FROM NOISY,
+DUPLICATED,
+SOURCE-CORRELATED EXPERIENCE
+WHEN EXPERIENCE PROVENANCE IS PRESERVED.
+
+The result does not establish truth under majority source compromise
+or forged provenance identity.
+
+PLAIN-SPEAK INTERPRETATION
+
+A07 was a clean classroom.
+
+A08 deliberately put bad teachers in the room.
+
+There were six sources of experience.
+
+Two lied for the entire lesson.
+
+Some repeated the same claim up to several times.
+
+Yggdrasil did not count repetitions as extra truth.
+
+It remembered who the information came from.
+
+For every training example,
+four independent sources told the truth
+and two independent sources were wrong.
+
+The four real sources won every time.
+
+Both learners still reconstructed all twelve hidden programs
+and got every unseen test answer right.
+
+Then the learned programs passed the same governance checks
+and became inherited state without any stale program serving a request.
+
+So the training system is no longer dependent on perfectly clean observations.
+
+But there is still a clear limit:
+
+if four genuinely independent sources are wrong,
+or if one bad source can successfully pretend to be several independent sources,
+this quorum can be fooled.
+
+NEXT JUSTIFIED TRAINING QUESTION
+
+A08's evidence ledger is persistent,
+but it is still represented as organism-level learner state.
+
+The next training gate should test whether learning memory itself can become
+distributed cellular state rather than a central learner ledger.
+
+A09 should ask:
+
+CAN PROVENANCE-QUALIFIED EXPERIENCE MEMORY
+SURVIVE CELL TURNOVER,
+HIBERNATION,
+DAMAGE,
+AND PARTIAL MEMORY LOSS
+WITHOUT A CENTRAL TRAINING LEDGER
+AND WITHOUT DOUBLE-COUNTING REPLICATED MEMORY?
+
+Only after that should the lineage move to the larger T3 question:
+
+CAN EXPERIENCE ALTER THE DEVELOPMENTAL POLICY ITSELF,
+rather than only the task program attached to a role?
+
+ACCEPTED TRAINING FRONTIER
+
+A07 / Training T1:
+positive clean experience-dependent hereditary learning.
+
+A08 / Training T2:
+positive provenance-aware noisy hereditary learning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
