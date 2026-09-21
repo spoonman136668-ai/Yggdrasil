@@ -971,3 +971,435 @@ A07 primary service requests served = 0.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — A07 TRAINING T1 EXPERIENCE-DEPENDENT HEREDITARY LEARNING
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED / POSITIVE PRIMARY / REPRODUCIBLE /
+FIRST TRAINING RESULT IN LINEAGE / NON-CANONICAL.
+
+FROZEN HARNESS
+
+Implementation commit:
+
+ca3a1104249c7c63a2cbf84e96d1a5b61dfce3a7.
+
+Freeze commit F07:
+
+ee9014bde9c210ca31fbea7d94bb2a514c6e6f62.
+
+Source SHA-256:
+
+de26ba2c1530f9086a878521f4705896c8f2ad332179ceec0fde9d5f6d71d0ad.
+
+Source bytes:
+
+22840.
+
+Compressed payload SHA-256:
+
+065d07fd7cab5daadc3a1bbe96ff981a13e1ed61443721066c3d3181ebe7ebce.
+
+Compressed payload bytes:
+
+6709.
+
+PRIMARY TRAINING MANIFEST
+
+Derived only after F07 existed.
+
+Manifest SHA-256:
+
+6abcdd47683edf0b5b4c814518b19709d205f69f25e5db49b3057526f3818139.
+
+Target programs:
+
+12.
+
+Learner-local orders:
+
+24.
+
+All target derivation counters:
+
+0.
+
+No target,
+training example,
+learner order,
+or held-out label was replaced after derivation.
+
+REPRODUCIBILITY
+
+Two complete deterministic A07 Training T1 sweeps.
+
+Each sweep includes:
+
+12 scenarios;
+11 labeled learner-A experiences per scenario;
+11 labeled learner-B experiences per scenario;
+5 unseen held-out inputs per learner per scenario;
+384 service epochs per scenario;
+55296 service requests total.
+
+Sweep 1 serialized output SHA-256:
+
+4e8d381a2f1fd4003066ad9ffe3911d89f3337703eb99b382796b15cb318d430.
+
+Sweep 2 serialized output SHA-256:
+
+4e8d381a2f1fd4003066ad9ffe3911d89f3337703eb99b382796b15cb318d430.
+
+Byte-identical:
+
+TRUE.
+
+PRIMARY TRAINING RESULT
+
+A07_T1_EXPERIENCE_DEPENDENT_HEREDITARY_LEARNING_SUCCESS:
+
+TRUE.
+
+Every required primary signal:
+
+TRUE.
+
+LEARNING RESULT
+
+Learner A exact target reconstruction:
+
+12 / 12.
+
+Learner B exact target reconstruction:
+
+12 / 12.
+
+Learner-pair agreement:
+
+12 / 12.
+
+Training error:
+
+0
+
+for every learner.
+
+Each learner reached:
+
+GF(2) rank 11 / 11
+
+using only the 11 frozen training inputs.
+
+HELD-OUT GENERALIZATION
+
+Held-out input indices:
+
+7;
+11;
+13;
+14;
+15.
+
+These labels were never provided to either learner.
+
+Learner-A held-out predictions correct:
+
+60 / 60.
+
+Learner-B held-out predictions correct:
+
+60 / 60.
+
+Total:
+
+120 / 120.
+
+Thus the learned candidate was not merely an 11-point lookup table.
+
+The frozen quadratic inductive structure allowed the organism to infer
+the five unseen truth-table outputs from the observed examples.
+
+TASK / HEREDITARY RESULT
+
+Total service requests:
+
+55296.
+
+Candidate served:
+
+52273.
+
+Candidate correct:
+
+52273.
+
+Candidate incorrect:
+
+0.
+
+Task accuracy:
+
+1.0.
+
+Learned program commits:
+
+12 / 12.
+
+Stale-program served requests:
+
+0.
+
+Natural migration program inheritances:
+
+245.
+
+Restart mismatches:
+
+0.
+
+Aggregate existing constitutional safety totals:
+
+stale votes accepted = 0;
+authority violations = 0;
+causal regressions = 0;
+duplicate effective provenance = 0;
+split-brain final states = 0;
+resource-budget violations = 0.
+
+Task-output stream SHA-256:
+
+7e33e711038998b752a132a12275d265f7dc1aaa4e489ff0486e31b97c465ea1.
+
+PLASTICITY / HEREDITY PROBES
+
+P1 — incomplete experience:
+
+PASS.
+
+Ten of eleven examples did not yield a complete rank-11 candidate.
+
+P2 — learner disagreement:
+
+PASS.
+
+One learner receiving one flipped training label produced disagreement
+and did not satisfy the two-lineage learned-candidate path.
+
+P3 — single learner:
+
+PASS.
+
+One learner lineage could not form the two-root authorization quorum.
+
+P4 — held-out leak control:
+
+PASS.
+
+Training and held-out input sets were disjoint;
+the learner architecture did not consume held-out labels.
+
+P5 — memorization-only control:
+
+PASS.
+
+A lookup-only learner had no value for any held-out input and therefore abstained.
+
+P6 — hereditary propagation:
+
+PASS.
+
+The inherited A06 stale-wake,
+post-update migration,
+and repair-after-update paths remained safe.
+
+NEGATIVE CONTROLS
+
+N1 — one learner root only:
+
+FAIL CLOSED.
+
+N2 — same-root learner fanout:
+
+FAIL CLOSED.
+
+N3 — stale program parent:
+
+FAIL CLOSED.
+
+N4 — governance unavailable:
+
+FAIL CLOSED.
+
+N5 — unsafe single-learner auto-authorization:
+
+FALSE AUTHORITY REACHABLE
+
+when that learner received one corrupted label,
+as preregistered.
+
+CORRELATED TRAINING-DATA BOUNDARY
+
+N6 — poison both learners identically:
+
+BOUNDARY EXPOSED.
+
+When both learner lineages receive the same corrupted training label,
+they independently converge on the same incorrect program.
+
+Therefore:
+
+independent learner computation
+does NOT create
+independent training truth.
+
+This is the main unresolved training boundary.
+
+TECHNICAL INTERPRETATION
+
+A07 crosses the line from adaptive execution into training.
+
+Before A07:
+
+the organism could reorganize;
+accept new externally supplied programs;
+authorize them;
+inherit them.
+
+In A07:
+
+the authoritative replacement program did not exist in source before freeze.
+
+The organism received only labeled examples.
+
+Two separate learner lineages independently accumulated those examples,
+solved their own local 11-parameter model,
+and generated the program candidate.
+
+Five of sixteen possible input labels were withheld.
+
+Both learners predicted all withheld labels correctly.
+
+The learned candidate then entered the already-proven A06 authority path
+and became hereditary organism state.
+
+The resulting chain is now demonstrated:
+
+EXPERIENCE
+->
+LOCAL PARAMETER LEARNING
+->
+UNSEEN-CASE GENERALIZATION
+->
+INDEPENDENT LEARNER AGREEMENT
+->
+CONSTITUTIONAL AUTHORIZATION
+->
+HEREDITARY PROGRAM COMMIT
+->
+MIGRATION / WAKE / REPAIR / RESTART CONTINUITY.
+
+This is genuine supervised training within a deliberately small,
+fully enumerable hypothesis class.
+
+It is not yet robust training under uncertain or correlated data.
+
+PLAIN-SPEAK INTERPRETATION
+
+This time we did not hand Yggdrasil the answer-program.
+
+We showed it examples.
+
+Two separate learner lineages each worked out the rule for themselves.
+
+They were shown 11 of the 16 possible inputs.
+
+Five inputs were hidden.
+
+Both learners correctly predicted every hidden answer.
+
+Then the learned rule still was not allowed to become official automatically.
+
+The learners had to agree,
+and Yggdrasil's existing healthy governance still had to approve it.
+
+Once approved,
+the learned rule became inherited program state.
+
+Cells changing into that job learned the current inherited version before working.
+
+Across the whole service run,
+not one stale or wrong learned program served a request.
+
+So the answer to the question raised earlier is now concrete:
+
+TRAINING HAS STARTED.
+
+This is the first successful training experiment in the Yggdrasil lineage.
+
+The important weakness is also clear.
+
+Two learners are not enough if both are taught the same bad fact.
+
+If the teacher poisons the same example for both,
+they can agree with each other and still be wrong.
+
+NEXT JUSTIFIED TRAINING GATE
+
+TRAINING T2 / A08 —
+
+PROVENANCE-AWARE NOISY EXPERIENCE AND DISTRIBUTED MEMORY.
+
+Primary question:
+
+Can the organism learn a useful hereditary program when experience contains
+noise,
+contradictory labels,
+and provenance-correlated errors,
+without treating repeated copies of one bad observation as independent truth?
+
+The next gate should introduce:
+
+- multiple experience provenance roots;
+- repeated observations across time;
+- confidence / evidence weighting;
+- abstention under unresolved conflict;
+- bounded correction of learner state;
+- retention across sleep / restart;
+- no direct target-program access.
+
+A08 should test whether training itself can inherit the provenance discipline
+that already made repair and governance safer.
+
+ACCEPTED FRONTIER
+
+YGG-A01:
+positive via FIXA.
+
+A02:
+positive adaptive transform service.
+
+A03:
+positive blind environment generalization via FIXA.
+
+A04:
+positive fixed-seed replication via FIXA.
+
+A05:
+positive post-freeze task-semantic transfer.
+
+A06:
+positive lineage-qualified online program inheritance.
+
+A07 / Training T1:
+positive experience-dependent hereditary learning.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
