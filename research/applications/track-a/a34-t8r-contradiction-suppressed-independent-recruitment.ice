@@ -754,3 +754,467 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A34 / T8R CONTRADICTION-SUPPRESSED INDEPENDENT RECRUITMENT
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE NEGATIVE MECHANISM RESULT /
+MULTIPLICATIVE OPPOSITION SUPPRESSION WAS SELECTIVE
+BUT TOO WEAK TO CREATE A TRUE DISTRIBUTED DEADBAND /
+NO PRIMARY ARM QUALIFIED /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+d1723f67b18041c8a5704f7cdd558428eacbf0ff.
+
+F34:
+
+41efa57ccd12c3b6e7a375feecf9741a863a79bd.
+
+Source SHA-256:
+
+b8095a5839b5bef2567e28fe6c8d2d9aeaf85b697d46f9bf2507078088c53d88.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+9a2875f009a8883532856852145679b754896810.
+
+World-manifest SHA-256:
+
+016bfb2365bc6c44d65d37b88706bf7fe83f2a376246333e1f8b5fe5e289f43d.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete F34-derived arm-isolated primary sweeps
+were byte-identical.
+
+Serialized combined output SHA-256:
+
+e07cd2a798df6899e1a4c7e165c5e792bc0dfafd7cedb5075724e236e05ab547.
+
+All P1-P24 integrity probes:
+
+PASS.
+
+PRIMARY RESULT
+
+A34_ANY_CONTRADICTION_SUPPRESSION_QUALIFIED:
+
+FALSE.
+
+A34_CONTRADICTION_SUPPRESSION_INFORMATION_GAIN:
+
+FALSE.
+
+PAIRED CONTRADICTION-SUPPRESSION EFFECT
+
+Contradictory-epoch join reduction
+relative to exact unsuppressed A33-style references:
+
+D2_S_P75L25:
+25.14%.
+
+D2_S_P50L50:
+17.39%.
+
+D2_S_P25L75:
+9.76%.
+
+D3_S_P75L25:
+22.95%.
+
+D3_S_P50L50:
+16.36%.
+
+D3_S_P25L75:
+9.07%.
+
+The effect was directionally selective.
+
+For the most pool-weighted arms:
+
+D2_S_P75L25:
+
+contradictory recruitment:
+-25.14%.
+
+noncontradictory recruitment:
+approximately +1.09%.
+
+selectivity gap:
+approximately 26.23 percentage points.
+
+D3_S_P75L25:
+
+contradictory recruitment:
+-22.95%.
+
+noncontradictory recruitment:
+approximately +0.12%.
+
+selectivity gap:
+approximately 23.07 percentage points.
+
+Thus the suppressor did preferentially damp
+recruitment under conflict.
+
+It did NOT merely reduce all recruitment uniformly.
+
+DEADBAND FAILURE
+
+Despite that selectivity,
+contradiction rarely became truly quiet.
+
+Contradictory epochs with zero recruitment:
+
+D2 suppressed arms:
+
+6.54% to 7.64%.
+
+D3 suppressed arms:
+
+9.05% to 10.70%.
+
+Therefore roughly:
+
+89% to 94%
+
+of contradictory epochs
+still contained at least one recruitment event.
+
+The system had:
+
+DAMPED CONFLICT,
+
+not:
+
+A DISTRIBUTED QUIET ZONE.
+
+OSCILLATION RESULT
+
+Suppressed primary-arm oscillation:
+
+D2_S_P75L25:
+15.63%.
+
+D2_S_P50L50:
+16.67%.
+
+D2_S_P25L75:
+17.71%.
+
+D3_S_P75L25:
+15.63%.
+
+D3_S_P50L50:
+16.93%.
+
+D3_S_P25L75:
+16.41%.
+
+Frozen requirement:
+
+<= 5%.
+
+No arm came close.
+
+Suppression sometimes reduced oscillation modestly
+relative to its paired reference,
+but not consistently.
+
+Example:
+
+D2_P75L25:
+
+16.15%
+->
+15.63%.
+
+D3_P50L50 moved in the wrong direction:
+
+15.10%
+->
+16.93%.
+
+FAMILY-5 OSCILLATOR RESULT
+
+Paired-reference FAMILY-5 oscillators broken:
+
+D2_P75L25:
+1 / 35.
+
+D2_P50L50:
+3 / 40.
+
+D2_P25L75:
+2 / 41.
+
+D3_P75L25:
+0 / 31.
+
+D3_P50L50:
+1 / 30.
+
+D3_P25L75:
+4 / 37.
+
+Several suppressed arms also created
+new FAMILY-5 oscillators.
+
+Thus smooth opposition suppression
+did not break the persistent oscillatory family.
+
+COORDINATION / SERVICE EFFECT
+
+Suppression consistently improved
+directional coordination.
+
+Examples:
+
+D2_P75L25:
+
+70.83%
+->
+86.67%.
+
+D2_P50L50:
+
+75.0%
+->
+88.89%.
+
+D2_P25L75:
+
+81.48%
+->
+91.67%.
+
+D3_P50L50:
+
+76.92%
+->
+90.0%.
+
+Aggregate service also increased
+for every paired comparison observed.
+
+Examples:
+
+D2_P50L50:
+
+239392
+->
+245537.
+
+D3_P50L50:
+
+230422
+->
+235861.
+
+Cell-level chatter also fell materially.
+
+Therefore the suppressor is not useless.
+
+It improves:
+
+direction choice;
+service;
+micro-level churn.
+
+But it does not produce
+the uncertainty behavior A34 was designed to test.
+
+CONTRADICTION STATE
+
+High-high contradiction no-majority fraction
+for suppressed arms ranged approximately:
+
+81.0%
+to
+86.8%.
+
+Frozen requirement:
+
+>= 90%.
+
+The linear D3_P50L50 negative control reached:
+
+90.66%
+
+no-majority contradiction,
+
+but still had:
+
+15.63% oscillation;
+
+high false-dominance rates;
+
+and did not satisfy the primary architecture requirements.
+
+Therefore a higher no-majority fraction alone
+is not sufficient.
+
+ATTRACTOR QUALITY
+
+False final dominance remained very high.
+
+Typical suppressed-arm values:
+
+false C dominance:
+approximately 20.7% to 21.8%.
+
+false S dominance:
+approximately 15.9% to 16.8%.
+
+Frozen limits:
+
+<= 5%.
+
+The suppressor changed transient recruitment behavior
+without solving final attractor correctness.
+
+TECHNICAL INTERPRETATION
+
+A34 falsifies the simple hypothesis:
+
+A MODERATE SMOOTH MULTIPLICATIVE SUPPRESSOR
+IS ENOUGH
+TO TURN CONTRADICTION INTO DISTRIBUTED QUIESCENCE.
+
+The mechanism is selective.
+
+It senses opposition correctly.
+
+It damps the relevant hazards.
+
+But:
+
+G(OPP)
+
+leaves both hazards nonzero
+through most contradictory epochs.
+
+With 48 independently ticking cells,
+many small nonzero hazards still generate
+a substantial stream of recruitment events.
+
+This reveals an important distributed-systems effect:
+
+SMALL PER-CELL ACTIVITY
+x
+MANY INDEPENDENT CELLS
+=
+PERSISTENT POPULATION ACTIVITY.
+
+Therefore a useful contradiction regime
+may require a qualitatively distinct population state,
+not merely lower clock rates.
+
+The next justified mechanism is:
+
+DISTRIBUTED BET-HEDGING / PROTECTED UNRESOLVED STATE.
+
+Instead of forcing every eligible U cell
+to keep choosing between:
+
+C
+or
+S,
+
+a contradictory cell can have a third local action:
+
+remain deliberately unresolved
+for a bounded period.
+
+That should be represented
+as cell state,
+not as a confidence scalar
+and not as a global gate.
+
+A future experiment should test
+a third competing hazard:
+
+candidate commitment;
+
+stale commitment;
+
+protected / hedged uncertainty.
+
+The hedging hazard should emerge specifically
+when both support fields are simultaneously strong.
+
+This directly tests the biological idea
+that irreducible uncertainty
+can be represented by population diversification
+rather than endlessly attempting to resolve it.
+
+PLAIN-SPEAK INTERPRETATION
+
+A34 taught each cell:
+
+"if the other side is strong,
+slow down."
+
+That helped.
+
+Cells chose the better direction more often.
+
+They churned less.
+
+The organism earned more service.
+
+But it did not become quiet.
+
+Even when both sides were shouting,
+about nine out of ten contradictory epochs
+still had cells joining one side or the other.
+
+Why?
+
+Because slowing 48 independent clocks
+is not the same as stopping them.
+
+A tiny chance,
+repeated across many cells,
+still creates a lot of action.
+
+So we learned something important:
+
+UNCERTAINTY MAY NEED TO BE
+A REAL CELL STATE.
+
+Not:
+
+"I am 63% uncertain."
+
+Not:
+
+"my clock is a little slower."
+
+But:
+
+"I am deliberately staying uncommitted
+while this conflict remains unresolved."
+
+That takes us back to the bet-hedging idea,
+now for a concrete experimental reason.
+
+No autonomous controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
