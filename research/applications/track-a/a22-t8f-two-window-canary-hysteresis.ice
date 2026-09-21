@@ -397,3 +397,117 @@ the third day tells us whether our confidence was justified.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A22 TWO-WINDOW CANARY HYSTERESIS
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL A22 TRAJECTORY.
+
+IMPLEMENTATION COMMIT
+
+8085aea24e78a954f133e4460bd25449a750064c.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a22_t8f_two_window_canary_hysteresis_v1.py
+
+Loader Git blob:
+
+5c8ed0ab2deb3ceae5d3795deb224975a6765440.
+
+Payload:
+
+research/applications/track-a/a22_t8f_two_window_canary_hysteresis_v1.py.gz
+
+Payload Git blob:
+
+95fa001a1cb80ac9842d716146244a24a562e4e2.
+
+Decompressed source SHA-256:
+
+7305db14a246c20522e3977e12e61ac06a64786f0b966bf0f288b5e5985da073.
+
+Decompressed source bytes:
+
+10576.
+
+Deterministic gzip SHA-256:
+
+0e91184955407713260dee8cfda1b1a0e27eef514250cba28a31ade03e59d5c4.
+
+Compressed payload bytes:
+
+3839.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake freeze:
+
+MECHANICAL-F22-NONPRIMARY.
+
+Two complete sweeps:
+
+BYTE-IDENTICAL.
+
+Serialized file SHA-256:
+
+6ce7114971e14d3bdb17d531effcc4cc8c16cdbf793017fb759a50faaf6163ef.
+
+Serialized semantic output SHA-256:
+
+b56159f82cb2229536a213a37a9b7c5892e9a2861cc76e81b3eb90d50c8f49dc.
+
+All P1-P14 probes:
+
+PASS.
+
+Fake-world unconditional R1 Window-3 harm rate:
+
+0.15364583333333334.
+
+Mechanical earned expansions:
+
+C1 = 2.
+C2 = 8.
+C3 = 19.
+
+No arm met the preregistered 48-expansion coverage floor.
+
+No arm qualified.
+
+This is NON-SCIENTIFIC mechanical evidence only.
+
+REAL A22 STATUS
+
+No real post-F22 trajectory has been derived.
+
+No real A22 manifest exists.
+
+No real D1,
+D2,
+earned expansion,
+or Window-3 outcome has been observed.
+
+Let the resulting commit SHA be:
+
+F22.
+
+After F22 exists:
+
+1. derive exactly 384 fresh 24-epoch trajectories;
+2. bind the complete manifest SHA;
+3. only then execute two complete primary sweeps;
+4. require byte-identical output;
+5. apply the frozen C1 -> C2 -> C3 minimum-exposure selection rule.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
