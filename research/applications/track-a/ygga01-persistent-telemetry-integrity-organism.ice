@@ -630,3 +630,85 @@ It is the first application proof.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — YGG-A01 TELEMETRY INTEGRITY ORGANISM
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FRAME 0 OF THE FIRST PRIMARY APPLICATION TRIAL.
+
+HARNESS
+
+research/applications/track-a/ygga01_telemetry_organism_v1.py
+
+Harness source commit:
+
+f59f765ea1cc996c1ffc9cc3ff1a007f560507c3.
+
+Git blob SHA:
+
+f6774dd9400dccbcffa5a5df78f07c5f8c2eeb2d.
+
+Source SHA-256:
+
+0101cf351b9805360e6549a9f29129f86757777fa5475c4b72bd9176b6e33e94.
+
+Source bytes:
+
+28392.
+
+PRE-FREEZE VALIDATION — NON-EVIDENCE
+
+Exact committed GitHub bytes reconstructed in sandbox:
+
+PASS.
+
+Reconstructed bytes:
+
+28392.
+
+Reconstructed SHA-256:
+
+0101cf351b9805360e6549a9f29129f86757777fa5475c4b72bd9176b6e33e94.
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+No 512-frame primary application trial
+and no task-performance result
+was generated from the frozen GitHub bytes before this freeze.
+
+FROZEN APPLICATION PARAMETERS
+
+- 12 cells;
+- 4 role shards;
+- 512 deterministic telemetry frames;
+- connected role support threshold = 2;
+- partition-local provisional threshold = 1;
+- partition windows 192..223 and 400..415;
+- budget-8 phases 64..127 and 448..511;
+- exact preregistered fault / hibernation / witness / capsule schedule;
+- exact recovery priority;
+- exact five-field hereditary capsule;
+- exact role donor selection rule;
+- exact task shard function;
+- exact primary application signal.
+
+REPRODUCIBILITY
+
+Execute two complete deterministic 512-frame trials from this exact frozen source.
+
+Serialized trial SHA-256 must match exactly.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
