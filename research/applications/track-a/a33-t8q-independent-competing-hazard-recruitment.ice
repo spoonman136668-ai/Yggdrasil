@@ -796,3 +796,329 @@ EVERY CELL ACTS?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A33 INDEPENDENT COMPETING-HAZARD RECRUITMENT
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F33-DERIVED WORLD,
+HAZARD,
+RECRUITMENT EVENT,
+OR SCIENTIFIC OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+7772b346b44cc583e70e24db60f9650fa71db903.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a33_t8q_independent_competing_hazard_recruitment_v1.py
+
+Loader Git blob:
+
+3197a1c9436628d8b46a3acff3e9df36e2366bf5.
+
+Payload:
+
+research/applications/track-a/a33_t8q_independent_competing_hazard_recruitment_v1.py.gz
+
+Payload Git blob:
+
+7c602605af82dd7a217505a9a0134db08ae1c392.
+
+Decompressed source SHA-256:
+
+d483897b88d2948e8c96f375e257702425b5d2ab32ec9599894a73967e03803e.
+
+Decompressed source bytes:
+
+22282.
+
+Deterministic gzip SHA-256:
+
+9be363718962dce8390046bb8a386e06a70e5ab3ad032eb1e6fafb4510373284.
+
+Compressed payload bytes:
+
+6101.
+
+PRE-FREEZE IMPLEMENTATION REPAIRS
+
+1. Recruitment-wave instrumentation.
+
+The first developer-only pass grouped recruitment by joined side,
+which made directional coordination trivially read 100%
+and compressed apparent wave width.
+
+The instrumentation was corrected before freeze.
+
+A recruitment wave is now anchored to:
+
+the pool-biased side at onset;
+
+the exact U cells eligible at onset;
+
+and ends only when the pool-biased side reverses
+or the trial ends.
+
+This changed measurement only.
+
+It did NOT change:
+
+hazards;
+weights;
+ETA;
+local inhibition;
+refractory duration;
+or recruitment decisions.
+
+2. Deterministic draw optimization.
+
+The initial implementation performed a fresh SHA-256
+for every cell-level stochastic draw.
+
+This was replaced before freeze by:
+
+one cryptographic seed per trial / arm;
+
+then a frozen SplitMix64-style 64-bit mixer
+for per-epoch / per-cell draws.
+
+The statistical mechanism and identities remain deterministic.
+
+No scientific rule changed.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake seed:
+
+MECHANICAL-F33-NONPRIMARY.
+
+Two complete sweeps were byte-identical.
+
+Serialized output SHA-256:
+
+610614f62838179d3338e603bd6d8e6541d5677231e2f3bff59816dd7caebd78.
+
+Mechanical world-manifest SHA-256:
+
+64b8885802b31850730e625f32616aa2287683ff42237164f8b062e390480853.
+
+All P1-P23 integrity probes:
+
+PASS.
+
+SYNC_D2 mechanical reference:
+
+oscillation:
+7.55%.
+
+harm:
+19.01%.
+
+recruitment width median:
+0 epochs.
+
+directional coordination:
+1.0.
+
+reversal acquisition:
+87.5%.
+
+SYNC_D3:
+
+oscillation:
+7.55%.
+
+harm:
+20.05%.
+
+width:
+0.
+
+coordination:
+1.0.
+
+reversal acquisition:
+87.5%.
+
+D2_P75L25:
+
+oscillation:
+16.41%.
+
+harm:
+16.67%.
+
+finite width median:
+6 epochs.
+
+width NEVER fraction:
+86.11%.
+
+directional coordination median:
+71.20%.
+
+D2_P50L50:
+
+oscillation:
+17.45%.
+
+harm:
+16.41%.
+
+finite width median:
+6 epochs.
+
+width NEVER fraction:
+86.23%.
+
+directional coordination:
+75.0%.
+
+D2_P25L75:
+
+oscillation:
+16.67%.
+
+harm:
+16.67%.
+
+finite width median:
+6 epochs.
+
+width NEVER fraction:
+84.85%.
+
+directional coordination:
+81.82%.
+
+D3_P75L25:
+
+oscillation:
+14.84%.
+
+harm:
+16.67%.
+
+finite width median:
+6 epochs.
+
+directional coordination:
+71.43%.
+
+D3_P50L50:
+
+oscillation:
+15.89%.
+
+harm:
+16.41%.
+
+finite width median:
+7 epochs.
+
+directional coordination:
+75.30%.
+
+D3_P25L75:
+
+oscillation:
+15.36%.
+
+harm:
+16.67%.
+
+finite width median:
+6 epochs.
+
+directional coordination:
+80.0%.
+
+POOL-ONLY D2:
+
+oscillation:
+16.93%.
+
+directional coordination:
+66.67%.
+
+LOCAL-ONLY D2:
+
+oscillation:
+17.97%.
+
+directional coordination:
+88.46%.
+
+MECHANICAL PRIMARY RESULT
+
+No primary Poisson arm qualified.
+
+No primary Poisson arm met
+A33_DISTRIBUTED_ACTUATION_INFORMATION_GAIN.
+
+The synchronized FAMILY-5 oscillatory worlds
+were not broken materially by Poisson recruitment
+in the fake world.
+
+The mechanical result therefore does NOT demonstrate
+that independent clocks solve A32.
+
+It demonstrates three separate effects:
+
+1. independent hazards successfully spread recruitment in time;
+
+2. increasing local weight improves directional coordination
+under this mechanism;
+
+3. temporal desynchronization alone can INCREASE
+population-level oscillation.
+
+This is an important falsifiable setup.
+
+No ETA,
+weight,
+normalization,
+qualification,
+or refractory rule
+is changed in response.
+
+REAL A33 STATUS
+
+No real F33-derived world exists.
+
+No real hazard has been observed.
+
+No real recruitment outcome has been observed.
+
+No real A33 manifest exists.
+
+Let the resulting commit SHA be:
+
+F33.
+
+After F33 exists:
+
+1. derive exactly 384 fresh worlds from F33;
+2. bind the complete world-manifest SHA;
+3. only then execute two complete deterministic primary sweeps;
+4. require byte-identical output;
+5. report synchronized references,
+all six primary Poisson arms,
+and both extreme controls.
+
+NO POST-RESULT ETA TUNING.
+NO POST-RESULT WEIGHT TUNING.
+NO POST-RESULT NORMALIZATION TUNING.
+NO POST-RESULT REFRACTORY CHANGE.
+NO POST-RESULT LOCAL-INHIBITION CHANGE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
