@@ -628,3 +628,140 @@ and move to the next biological mechanism.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A24 DISTRIBUTED QUORUM ACTIVATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F24-DERIVED TRAJECTORY,
+CELL-LEVEL QUORUM SIGNAL,
+OR W2 OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+9c8ec00ccd61f534d5875c58e3b1e9715b0e5c90.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a24_t8h_distributed_quorum_activation_v1.py
+
+Loader Git blob:
+
+22ee5583758e78f99cb19bab9a64eb0fca42cd6a.
+
+Payload:
+
+research/applications/track-a/a24_t8h_distributed_quorum_activation_v1.py.gz
+
+Payload Git blob:
+
+c7dcc9c81f219c1d7abad19655048534755d81b7.
+
+Decompressed source SHA-256:
+
+762b7eb72ed0301b978cc2ae01d7934d55eed760eb02b13db5b98dbfd477a5b2.
+
+Decompressed source bytes:
+
+14657.
+
+Deterministic gzip SHA-256:
+
+c53b676201be9215dee01e95b20e598bbd80b1a52e1869c8b3c0d03fb168a392.
+
+Compressed payload bytes:
+
+5037.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake freeze:
+
+MECHANICAL-F24-NONPRIMARY.
+
+Two complete sweeps were byte-identical.
+
+Serialized semantic output SHA-256:
+
+4283c0c78315db70724feb9464d34d9e9bd469fccfa2520ab2f31da00fdbfe9b.
+
+All P1-P18 integrity probes:
+
+PASS.
+
+Exact A17 replay:
+
+3978 candidate first-four;
+3950 stale first-four;
+37 / 48 candidate >= stale;
+exact 11 below-stale pairs reproduced.
+
+Mechanical unconditional all-candidate W2 harm rate:
+
+0.15625.
+
+Mechanical G0 global one-hit:
+
+expansions = 64;
+actual harm rate = 0.15625.
+
+Mechanical Q1 population quorum:
+
+expansions = 19;
+actual harm rate = 0.0526315789.
+
+Mechanical Q2 provenance-qualified quorum:
+
+expansions = 18;
+actual harm rate = 0.0555555556.
+
+Mechanical Q3 provenance+niche quorum:
+
+expansions = 18;
+actual harm rate = 0.0555555556.
+
+No quorum gate met
+the preregistered 48-expansion coverage floor.
+
+No gate qualified.
+
+This is NON-SCIENTIFIC mechanical evidence only.
+
+It demonstrates that:
+
+- quorum can change decisions materially;
+- the safety / coverage criteria are not trivial;
+- the implementation can legitimately return no qualifying gate.
+
+REAL A24 STATUS
+
+No real F24 trajectory has been derived.
+
+No real quorum signal has been observed.
+
+No real A24 manifest exists.
+
+No real W2 outcome has been observed.
+
+Let the resulting commit SHA be:
+
+F24.
+
+After F24 exists:
+
+1. derive exactly 384 fresh 16-epoch trajectories from F24;
+2. bind the complete manifest SHA;
+3. only then execute two complete deterministic primary sweeps;
+4. require byte-identical output;
+5. report G0 / Q1 / Q2 / Q3 without post-result gate selection.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
