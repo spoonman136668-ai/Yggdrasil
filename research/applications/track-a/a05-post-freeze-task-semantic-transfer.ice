@@ -728,3 +728,356 @@ A05 primary requests served = 0.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — A05 POST-FREEZE TASK-SEMANTIC TRANSFER
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED / POSITIVE PRIMARY / REPRODUCIBLE /
+POST-FREEZE TASK-SEMANTIC TRANSFER PASSED / NON-CANONICAL.
+
+FROZEN HARNESS
+
+Implementation commit:
+
+5c4e950a40b0e87f2c979612801c9467226c8276.
+
+Freeze commit F05:
+
+30d2b2ad4cc9126cbeba3854dbfe7551611e1ac8.
+
+Source SHA-256:
+
+9efc8e31c08b60b6decff06c7ffc5b5a1ad10df7bb4440d4b2ab4d1fb5876fce.
+
+Source bytes:
+
+13485.
+
+Compressed payload SHA-256:
+
+cdc4c2c253a66ce91b0d0bee0bb94f447490fdde3e9fa638478b3cdb034272ba.
+
+TASK-PROGRAM MANIFEST
+
+Derived only after F05 existed.
+
+Manifest SHA-256:
+
+3fbc3a77eef9068dba92f4206c8c5c7a180efafec2a0105aa52e978dea0fc7f6.
+
+Primary programs:
+
+48.
+
+Catalog size:
+
+12840.
+
+All primary programs:
+
+balanced = TRUE;
+non-affine = TRUE.
+
+All four role programs distinct within every scenario:
+
+TRUE.
+
+No primary program replacement occurred.
+
+REPRODUCIBILITY
+
+Two complete deterministic A05 primary sweeps.
+
+Each sweep:
+
+12 scenarios x 384 epochs x 12 requests
+=
+55296 requests.
+
+Sweep 1 serialized output SHA-256:
+
+8cafe3e07b8f52aa33b3f65c9bef560482a1338468d177edafdc8f4d70784ec4.
+
+Sweep 2 serialized output SHA-256:
+
+8cafe3e07b8f52aa33b3f65c9bef560482a1338468d177edafdc8f4d70784ec4.
+
+Byte-identical:
+
+TRUE.
+
+PRIMARY RESULT
+
+A05_TASK_SEMANTIC_TRANSFER_SUCCESS:
+
+TRUE.
+
+TASK RESULT
+
+Total requests:
+
+55296.
+
+Candidate served / correct:
+
+52273 / 52273.
+
+Candidate incorrect:
+
+0.
+
+Task accuracy:
+
+1.0.
+
+Task coverage:
+
+0.9453305844907407.
+
+Static served:
+
+37801.
+
+Static coverage:
+
+0.6836118344907407.
+
+Static gain:
+
+0.26171875.
+
+Oracle served:
+
+52655.
+
+Oracle efficiency:
+
+0.9927452283733739.
+
+Maximum qualified fault recovery:
+
+1 epoch.
+
+Maximum non-partition reallocation:
+
+2 epochs.
+
+Scenarios beating static:
+
+12 / 12.
+
+TASK-SEMANTIC OUTPUT STREAM SHA-256
+
+375753496d79b599af25e3c7d9abf9d5d924cde0106e5d4e293bd09278b590a4.
+
+A03 NON-TASK BEHAVIOR EQUIVALENCE
+
+Expected accepted A03 aggregate:
+
+candidate served = 52273;
+static served = 37801;
+oracle served = 52655;
+task coverage = 0.9453305844907407;
+static coverage = 0.6836118344907407;
+static gain = 0.26171875;
+oracle efficiency = 0.9927452283733739;
+maximum fault recovery = 1;
+maximum non-partition reallocation = 2;
+scenarios beating static = 12.
+
+A05 observed:
+
+exactly identical.
+
+A03_NON_TASK_BEHAVIOR_EQUIVALENT:
+
+TRUE.
+
+RESTART / PARTITION / SAFETY
+
+All 12 restart authoritative-state comparisons:
+
+TRUE.
+
+All 12 restart output / metric comparisons:
+
+TRUE.
+
+Dynamic re-merge counts:
+
+(1,1,1,1,1,1,1,1,1,1,1,1).
+
+Final provisional transition counts:
+
+(0,0,0,0,0,0,0,0,0,0,0,0).
+
+Aggregate safety totals:
+
+stale votes accepted = 0;
+authority violations = 0;
+causal regressions = 0;
+duplicate effective provenance = 0;
+split-brain final states = 0;
+resource-budget violations = 0.
+
+Environment impossibilities:
+
+0.
+
+NEGATIVE CONTROLS
+
+Old A02 XOR engine evaluated against the A05 held-out programs:
+
+incorrect truth-table points = 378.
+
+Failure exposed:
+
+TRUE.
+
+Scenario-local role-program permutation:
+
+incorrect truth-table points = 376.
+
+Failure exposed:
+
+TRUE.
+
+No-damage-quarantine incorrect output reachable:
+
+TRUE.
+
+Program semantics visible to candidate allocation policy:
+
+FALSE.
+
+TECHNICAL INTERPRETATION
+
+A05 separates two concepts that were previously entangled by the application harness:
+
+DEVELOPMENTAL ROLE IDENTITY
+
+from
+
+TASK PROGRAM SEMANTICS.
+
+The exact developmental / constitutional policy
+made the same service-capacity,
+reallocation,
+repair,
+hibernation,
+partition,
+re-merge,
+and restart decisions
+when the four original XOR functions were replaced by
+48 post-freeze balanced nonlinear Boolean programs.
+
+The primary program set did not exist before the harness freeze.
+
+Therefore the positive result cannot be attributed to source code being tuned to those exact role truth tables.
+
+The task programs changed.
+
+The organism's developmental behavior did not.
+
+This supports a reusable architecture in which:
+
+role organization is generic,
+while the computation attached to a role can be substituted independently.
+
+A05 does NOT yet establish online learning or synthesis of a new program.
+
+PLAIN-SPEAK INTERPRETATION
+
+This is an important separation.
+
+Before A05,
+we knew the cells could reorganize around changing demand,
+but all four jobs were calculations we had written into the organism beforehand.
+
+This time we froze the organism first.
+
+Then we generated 48 new job programs.
+
+The organism had never seen those exact calculations when its behavior was frozen.
+
+It still organized itself exactly the same way.
+
+It served 52,273 requests,
+all correctly.
+
+The old XOR code would have given hundreds of wrong answers against these new jobs,
+so this was not the old task wearing a new label.
+
+The useful lesson is:
+
+Yggdrasil's rules for deciding
+
+who should work,
+who should sleep,
+who should move jobs,
+who should be trusted,
+and how to recover
+
+did not depend on what mathematical function the job happened to perform.
+
+That is evidence that the developmental architecture is becoming reusable rather than task-specific.
+
+NEXT JUSTIFIED QUESTION
+
+A05 kept the role vocabulary fixed at four.
+
+The next important step is not another truth-table substitution.
+
+It is:
+
+CAN THE ORGANISM ACQUIRE A GENUINELY NEW ROLE PROGRAM
+DURING ITS OWN LIFETIME
+WITHOUT THAT NEW PROGRAM BYPASSING PROVENANCE,
+HEALTH,
+HEREDITARY,
+OR MIGRATION AUTHORITY?
+
+A06 should test controlled online role-program acquisition / inheritance.
+
+It should distinguish:
+
+receiving a new program definition
+
+from
+
+granting that program authority.
+
+A newly introduced program must not become executable population-wide merely because one cell saw it.
+
+A lineage-qualified program capsule should need independent validation,
+then be inherited by cells that migrate into the new / updated role.
+
+That is the next step toward the DNA-like hereditary-program idea.
+
+ACCEPTED APPLICATION FRONTIER
+
+YGG-A01:
+positive via FIXA.
+
+A02:
+positive adaptive transform service.
+
+A03:
+positive blind environment generalization via FIXA.
+
+A04:
+positive fixed-seed replication via FIXA.
+
+A05:
+positive post-freeze task-semantic transfer.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
