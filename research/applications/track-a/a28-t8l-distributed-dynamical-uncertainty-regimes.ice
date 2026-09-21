@@ -962,3 +962,622 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A28 / T8L DISTRIBUTED DYNAMICAL UNCERTAINTY REGIMES
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE MIXED-POSITIVE INFORMATION-GAIN RESULT /
+DISTRIBUTED DYNAMICAL STATE OUTPERFORMED A27 H1 /
+POPULATION HETEROGENEITY WAS MATERIAL /
+ABSOLUTE SAFETY STILL INSUFFICIENT /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+e62838c07378ad2ec80d65924396746f8923d3a8.
+
+F28:
+
+2994159bf6b17b14a0c444c2cad388eb6a81a0b8.
+
+Source SHA-256:
+
+26878a56abe92a9a42fb47af7e4b0e301fceb2843a7c12d259dfa217b44081cd.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+c87bc7013d9fcd3fa6f68c9952dc84122476ee05.
+
+384-trajectory manifest SHA-256:
+
+ff89829d8952ce0e38792a0105cb86d2a0a8cd7405ecd39d714d7f93372f9009.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete F28-derived primary sweeps were byte-identical.
+
+Serialized result-file SHA-256:
+
+67603f03bdb679caf7ee7251a53d92e298d51946330f53d11b00bb671ab5fbb8.
+
+Serialized semantic output SHA-256:
+
+888392d687f0410af55b57cbb5932eaf327808bea29467263d8486b6899e006e.
+
+All P1-P20 integrity probes:
+
+PASS.
+
+A17 replay remained exact.
+
+STATIC C3 — R3
+
+Aggregate delta versus R0:
+
+-121.
+
+Trajectory outcomes:
+
+beneficial = 168;
+neutral = 57;
+harmful = 159.
+
+Harmful-trajectory rate:
+
+41.41%.
+
+Worst cumulative drawdown:
+
+-11.
+
+A27 H1 REFERENCE
+
+Aggregate delta versus R0:
+
+-40.
+
+Trajectory outcomes:
+
+beneficial = 162;
+neutral = 50;
+harmful = 172.
+
+Harmful-trajectory rate:
+
+44.79%.
+
+Static-harmful improved:
+
+89 / 159.
+
+Static-harmful fully rescued:
+
+30 / 159.
+
+Static-beneficial retained:
+
+141 / 168.
+
+False harm from STATIC-NONHARM:
+
+43.
+
+Worst cumulative drawdown:
+
+-13.
+
+DYN — FULL DISTRIBUTED DYNAMICAL CONTROLLER
+
+Aggregate delta versus R0:
+
++188.
+
+Delta versus R3:
+
++309.
+
+Trajectory outcomes:
+
+beneficial = 193;
+neutral = 43;
+harmful = 148.
+
+Harmful-trajectory rate:
+
+38.54%.
+
+Static-harmful improved:
+
+103 / 159;
+64.78%.
+
+Static-harmful fully rescued:
+
+53 / 159.
+
+Static-beneficial retained:
+
+137 / 168;
+81.55%.
+
+False harm from STATIC-NONHARM:
+
+42.
+
+Worst cumulative drawdown:
+
+-13.
+
+A28_DYNAMICAL_STATE_INFORMATION_GAIN:
+
+TRUE.
+
+Reason:
+
+DYN harmful rate < H1 harmful rate;
+
+DYN false harm from STATIC-NONHARM < H1;
+
+DYN rescued 53 static-harmful trajectories,
+well above 75% of H1's 30 rescues;
+
+DYN aggregate service exceeded R0.
+
+A28_DYN_QUALIFIED:
+
+FALSE.
+
+Reason:
+
+absolute harmful-trajectory rate remained:
+
+38.54%
+
+versus required:
+
+<= 5%.
+
+DYNAMIC STATE OCCUPANCY
+
+Across:
+
+384 trajectories
+x
+10 blocks
+=
+3840 block states:
+
+STABLE:
+
+502 blocks;
+13.07%.
+
+METASTABLE:
+
+2722 blocks;
+70.89%.
+
+COMMITTED:
+
+616 blocks;
+16.04%.
+
+Transitions:
+
+METASTABLE -> COMMITTED:
+
+121.
+
+METASTABLE -> STABLE:
+
+102.
+
+COMMITTED -> METASTABLE:
+
+2.
+
+This is not a controller that simply collapsed into STABLE.
+
+Most of its runtime remained genuinely METASTABLE.
+
+OUTCOME / REGIME DIAGNOSTIC
+
+Among DYN beneficial trajectories:
+
+193 total;
+
+100 entered COMMITTED;
+
+9 entered STABLE.
+
+Among DYN harmful trajectories:
+
+148 total;
+
+13 entered COMMITTED;
+
+86 entered STABLE.
+
+Thus the dynamical state showed meaningful association
+with eventual trajectory outcome:
+
+beneficial trajectories
+were much more likely to commit;
+
+harmful trajectories
+were much more likely to resolve into STABLE.
+
+But:
+
+50 harmful trajectories
+remained METASTABLE;
+
+12 harmful trajectories
+ended COMMITTED.
+
+Therefore regime dynamics
+still do not perfectly separate future outcomes.
+
+HETEROGENEITY ABLATION — NO_HET
+
+Aggregate delta versus R0:
+
+-80.
+
+Trajectory outcomes:
+
+beneficial = 146;
+neutral = 61;
+harmful = 177.
+
+Harmful-trajectory rate:
+
+46.09%.
+
+Static-harmful fully rescued:
+
+45.
+
+Static-beneficial retained:
+
+107.
+
+False harm from STATIC-NONHARM:
+
+63.
+
+Regime occupancy:
+
+STABLE = 366;
+METASTABLE = 3208;
+COMMITTED = 266.
+
+Transitions:
+
+METASTABLE -> COMMITTED = 64;
+METASTABLE -> STABLE = 77;
+COMMITTED -> METASTABLE = 1.
+
+Only one fixed METASTABLE subset was used:
+
+newborn slots 0 and 1.
+
+By contrast,
+full DYN exercised all six possible 2-of-4 subsets.
+
+DYN versus NO_HET trajectory comparison:
+
+DYN better:
+
+193 trajectories.
+
+equal:
+
+59.
+
+DYN worse:
+
+132.
+
+This is strong evidence
+that the METASTABLE population composition
+was not merely decorative.
+
+Changing which lineages explored candidate authority
+altered both developmental trajectory
+and later regime evidence.
+
+Population heterogeneity therefore earned
+a real experimental role.
+
+HYSTERESIS ABLATION — NO_HYST
+
+Aggregate delta versus R0:
+
++187.
+
+Harmful trajectories:
+
+148.
+
+Harmful rate:
+
+38.54%.
+
+DYN and NO_HYST were nearly identical:
+
+DYN better:
+
+3 trajectories.
+
+equal:
+
+379.
+
+DYN worse:
+
+2.
+
+NO_HYST COMMITTED -> METASTABLE transitions:
+
+12.
+
+DYN:
+
+2.
+
+Thus the preregistered three-negative hysteresis
+did change commitment persistence,
+but under these fresh worlds
+it contributed little to aggregate or trajectory-level performance.
+
+A28 therefore does NOT claim
+that the specific hysteresis rule has earned its place.
+
+The dominant A28 gain came from:
+
+METASTABLE DISTRIBUTED HETEROGENEITY
++
+REGIME-BASED STATE DYNAMICS,
+
+not from the tested commitment hysteresis strength.
+
+FALSE-CORRECTION INTERPRETATION
+
+A28 did not eliminate A27's false-correction problem.
+
+H1 false harm from STATIC-NONHARM:
+
+43.
+
+DYN:
+
+42.
+
+That is only a one-trajectory reduction.
+
+However,
+DYN simultaneously rescued far more
+STATIC-HARMFUL trajectories:
+
+53
+
+versus:
+
+30.
+
+Thus the major gain was not
+"false correction disappeared."
+
+It was:
+
+the organism became much better
+at finding useful developmental paths
+while uncertainty remained unresolved.
+
+The METASTABLE state functioned
+as an exploration regime.
+
+Its rotating 2-of-4 candidate population
+generated different developmental trajectories
+without granting full authority.
+
+This altered the evidence produced by the organism itself.
+
+TECHNICAL INTERPRETATION
+
+A28 supports the architectural hypothesis:
+
+UNCERTAINTY CAN BE REPRESENTED
+AS A DYNAMICAL POPULATION STATE
+RATHER THAN AS ONE CUMULATIVE CONFIDENCE NUMBER.
+
+The evidence is not merely semantic.
+
+Removing distributed METASTABLE heterogeneity
+substantially degraded behavior:
+
+DYN aggregate delta:
+
++188.
+
+NO_HET:
+
+-80.
+
+DYN harmful rate:
+
+38.54%.
+
+NO_HET:
+
+46.09%.
+
+DYN commitments:
+
+121.
+
+NO_HET commitments:
+
+64.
+
+The population's uncertainty state
+therefore changed what evidence became available later.
+
+This is qualitatively different from:
+
+calculate confidence
+->
+compare threshold
+->
+take action.
+
+Here:
+
+population composition
+->
+changes trajectory
+->
+changes later evidence
+->
+changes regime.
+
+The uncertainty handling
+and the developmental behavior
+are part of the same feedback process.
+
+That is the architectural property A28 was designed to test.
+
+However,
+A28 is not safe enough for autonomous activation.
+
+The remaining harmful rate is very high.
+
+The next research question is no longer simply:
+
+"should we add another scalar?"
+
+A stronger next direction is to examine
+the remaining METASTABLE and falsely COMMITTED harmful cases
+and determine whether:
+
+distributed quorum state;
+temporal persistence;
+or local homeostatic error
+
+can become endogenous inputs
+to regime transition
+without collapsing back into a centralized confidence score.
+
+PLAIN-SPEAK INTERPRETATION
+
+This is the first experiment
+where the idea you described
+actually started behaving like the idea.
+
+Yggdrasil did not keep one confidence number.
+
+It lived in one of three states.
+
+STABLE:
+
+the patch was dormant.
+
+METASTABLE:
+
+the organism was uncertain,
+so half of each newborn group explored the patch
+and half stayed with the old policy.
+
+The exploring cells changed from turnover to turnover.
+
+COMMITTED:
+
+repeated good experience moved the organism
+into a high-authority state.
+
+That changed the result a lot.
+
+Compared with our A27 feedback controller,
+the dynamical organism:
+
+hurt less often;
+
+rescued many more bad trajectories;
+
+and finished far ahead of the old-policy baseline overall.
+
+The really important part was the uncertain state.
+
+When we removed the changing population mixture
+and always let the same two newborn slots explore,
+performance collapsed.
+
+So uncertainty was not just being reported.
+
+The uncertain population state
+was actively creating different experiences
+that helped the organism discover better developmental paths.
+
+That is very close to the principle we wanted to test:
+
+THE UNCERTAINTY HANDLING
+AND THE BEHAVIOR
+BECOME THE SAME PROCESS.
+
+But it is not finished.
+
+38.5% harmful trajectories
+is nowhere near acceptable.
+
+And 12 harmful trajectories
+still ended in COMMITTED.
+
+So A28 says:
+
+the architecture has substance.
+
+It does not say:
+
+the architecture is safe.
+
+The next experiments should study
+why harmful trajectories remain METASTABLE
+or falsely become COMMITTED,
+using distributed signals
+rather than returning to one confidence number.
+
+A24 quorum:
+useful distributed breadth signal.
+
+A25 persistence:
+useful temporal durability signal.
+
+A26 threshold magnitude:
+insufficient alone.
+
+A27 negative feedback:
+useful correction but noisy.
+
+A28 distributed dynamical uncertainty:
+real information gain;
+population heterogeneity materially useful;
+absolute safety still insufficient.
+
+No autonomous activation controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
