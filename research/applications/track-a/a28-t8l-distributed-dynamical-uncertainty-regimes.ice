@@ -869,3 +869,96 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A28 DISTRIBUTED DYNAMICAL UNCERTAINTY REGIMES
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A28 REGIME TRANSITION
+OR SCIENTIFIC OUTCOME.
+
+F28:
+
+2994159bf6b17b14a0c444c2cad388eb6a81a0b8.
+
+FROZEN SOURCE SHA-256:
+
+26878a56abe92a9a42fb47af7e4b0e301fceb2843a7c12d259dfa217b44081cd.
+
+TRAJECTORY COUNT:
+
+384.
+
+STRUCTURE:
+
+48 fixed A17 patch contexts
+x
+8 fresh F28-derived replicas.
+
+EPOCHS PER TRAJECTORY:
+
+40.
+
+CONTROL BLOCKS:
+
+10 blocks of 4 epochs.
+
+REPLACEMENT EPISODES:
+
+0 / 4 / 8 / 12 / 16 / 20 / 24 / 28 / 32 / 36.
+
+COMPLETE MANIFEST SHA-256:
+
+ff89829d8952ce0e38792a0105cb86d2a0a8cd7405ecd39d714d7f93372f9009.
+
+Serialized manifest-wrapper SHA-256:
+
+71355406c0a219b8e9fe8761260fad2d04ed9a00ddbf8cf16b8ee752ac3ee864.
+
+Serialized manifest-wrapper bytes:
+
+269345.
+
+Every 40-demand sequence has exact mean equal to its candidate target.
+
+Every replacement set contains exactly four unique cell IDs.
+
+All scientific namespaces are:
+
+YGG-A28-*.
+
+PRIMARY STATUS AT MANIFEST BIND
+
+Real DYN regime transitions observed:
+
+0.
+
+Real H1 outcomes observed:
+
+0.
+
+Real NO_HYST outcomes observed:
+
+0.
+
+Real NO_HET outcomes observed:
+
+0.
+
+The next permitted operation is:
+
+two complete deterministic A28 primary sweeps
+over this exact manifest.
+
+NO TRAJECTORY REDRAW.
+NO TRANSITION CHANGE.
+NO HYSTERESIS CHANGE.
+NO HETEROGENEITY CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
