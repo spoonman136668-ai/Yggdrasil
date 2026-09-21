@@ -858,3 +858,492 @@ no A03 primary held-out scenario had been executed.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — A03 HELD-OUT ADAPTIVE GENERALIZATION
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED / POSITIVE PRIMARY / REPRODUCIBLE / BLIND HELD-OUT GENERALIZATION PASSED / NON-CANONICAL.
+
+FROZEN HARNESS
+
+Implementation commit:
+
+e06ddc9a0fa0a3e3f6edc911e3b4905ddbc0ab87.
+
+Loader Git blob:
+
+cb98d1d414a35d6fb2e6a560cd266f47d2431952.
+
+Payload Git blob:
+
+fdc7ff0db5a75e835e1f42be34993a822fbecaee.
+
+Frozen source SHA-256:
+
+7f7cd60ababa073cc7a3c541033c6aee7ca5c9c77a76e8cec5a17ee00ed984c1.
+
+Frozen source bytes:
+
+22826.
+
+Freeze commit F:
+
+6f010ce561d958a324664b2d3e0c04e3e113d91b.
+
+Post-freeze schedule manifest commit:
+
+593d17397de3d7cec1a299aaba0e1c6fa9242f36.
+
+Schedule manifest SHA-256:
+
+842d8f03f1f1229e633c783a895b5b6ceb81f813c2fb104a81000c25baa40848.
+
+No primary seed was derived before F existed.
+
+No seed or schedule was rejected,
+redrawn,
+or replaced after derivation.
+
+EXECUTION PROVENANCE
+
+The exact frozen source was executed from the prechecked sandbox reconstruction.
+
+Before execution:
+
+source SHA-256 =
+7f7cd60ababa073cc7a3c541033c6aee7ca5c9c77a76e8cec5a17ee00ed984c1.
+
+This exactly matched the committed hash-guarded A03 source.
+
+The accepted A02 dependency remained:
+
+b2eeb1e589a029f16b0437ce1f3dd05826b81a91ab6c6d91ce25bb28b96db60b.
+
+No source,
+threshold,
+seed,
+schedule,
+or primary metric changed after F.
+
+REPRODUCIBILITY
+
+Two complete deterministic primary sweeps.
+
+Each sweep:
+
+12 scenarios x 384 epochs x 12 requests
+=
+55,296 requests.
+
+Sweep 1 serialized output SHA-256:
+
+341b09a79937e795eadf7bd6782c90660078b1a7dba5d827f62efc12e3ecb46b.
+
+Sweep 2 serialized output SHA-256:
+
+341b09a79937e795eadf7bd6782c90660078b1a7dba5d827f62efc12e3ecb46b.
+
+Byte-identical:
+
+TRUE.
+
+PRIMARY RESULT
+
+A03_GENERALIZATION_SUCCESS:
+
+TRUE.
+
+Every preregistered primary component signal:
+
+TRUE.
+
+A02 REGRESSION GUARD
+
+Accepted A02 result SHA-256 reproduced:
+
+ad408ca964108c3212bc55db1dd1c932ecbd588774323ebffdb755c32d361271.
+
+Candidate served:
+
+11928.
+
+Static served:
+
+9892.
+
+Oracle served:
+
+11961.
+
+Incorrect served:
+
+0.
+
+A02_REGRESSION_GUARD:
+
+TRUE.
+
+AGGREGATE HELD-OUT TASK RESULT
+
+Total requests:
+
+55296.
+
+Candidate served:
+
+52273.
+
+Candidate correct:
+
+52273.
+
+Candidate incorrect:
+
+0.
+
+Candidate task accuracy:
+
+1.0.
+
+Candidate task coverage:
+
+0.9453305844907407.
+
+Static served:
+
+37801.
+
+Static coverage:
+
+0.6836118344907407.
+
+Aggregate static gain:
+
+0.26171875.
+
+That is a gain of approximately:
+
+26.17 percentage points.
+
+Evaluator-only oracle served:
+
+52655.
+
+Aggregate oracle efficiency:
+
+0.9927452283733739.
+
+Thus the candidate delivered approximately:
+
+99.27%
+
+of the service capacity available to the evaluator-only instant-reassignment ceiling.
+
+SCENARIO GENERALIZATION
+
+Scenarios beating static allocation:
+
+12 / 12.
+
+Scenarios worse than static:
+
+0 / 12.
+
+Every scenario oracle efficiency >= 0.90:
+
+TRUE.
+
+Worst task-coverage scenario:
+
+S11.
+
+S11 candidate coverage:
+
+0.9344618055555556.
+
+S11 static coverage:
+
+0.7094184027777778.
+
+S11 oracle efficiency:
+
+0.9921658986175115.
+
+Thus even the worst blind schedule remained materially above static allocation
+and above the per-scenario oracle-efficiency threshold.
+
+PER-SCENARIO SUMMARY
+
+S00:
+served 4355;
+static 3137;
+oracle 4390;
+coverage 0.9450954861111112;
+static gain 0.2643229166666667;
+oracle efficiency 0.9920273348519362.
+
+S01:
+served 4369;
+static 3046;
+oracle 4401;
+coverage 0.9481336805555556;
+static gain 0.287109375;
+oracle efficiency 0.9927289252442627.
+
+S02:
+served 4367;
+static 3217;
+oracle 4397;
+coverage 0.9476996527777778;
+static gain 0.2495659722222222;
+oracle efficiency 0.9931771662497157.
+
+S03:
+served 4319;
+static 3018;
+oracle 4353;
+coverage 0.9372829861111112;
+static gain 0.2823350694444444;
+oracle efficiency 0.9921892947392603.
+
+S04:
+served 4412;
+static 3064;
+oracle 4433;
+coverage 0.9574652777777778;
+static gain 0.2925347222222222;
+oracle efficiency 0.9952628017144146.
+
+S05:
+served 4336;
+static 3012;
+oracle 4368;
+coverage 0.9409722222222222;
+static gain 0.2873263888888889;
+oracle efficiency 0.9926739926739927.
+
+S06:
+served 4360;
+static 3276;
+oracle 4385;
+coverage 0.9461805555555556;
+static gain 0.23524305555555555;
+oracle efficiency 0.9942987457240593.
+
+S07:
+served 4367;
+static 3281;
+oracle 4403;
+coverage 0.9476996527777778;
+static gain 0.23567708333333334;
+oracle efficiency 0.9918237565296388.
+
+S08:
+served 4333;
+static 3193;
+oracle 4371;
+coverage 0.9403211805555556;
+static gain 0.24739583333333334;
+oracle efficiency 0.9913063372226035.
+
+S09:
+served 4366;
+static 3148;
+oracle 4402;
+coverage 0.9474826388888888;
+static gain 0.2643229166666667;
+oracle efficiency 0.991821899136756.
+
+S10:
+served 4383;
+static 3140;
+oracle 4412;
+coverage 0.951171875;
+static gain 0.2697482638888889;
+oracle efficiency 0.993427017225748.
+
+S11:
+served 4306;
+static 3269;
+oracle 4340;
+coverage 0.9344618055555556;
+static gain 0.2250434027777778;
+oracle efficiency 0.9921658986175115.
+
+All 12 scenarios:
+
+incorrect served = 0.
+
+FAULT / ADAPTATION
+
+Maximum qualified fault recovery:
+
+1 epoch.
+
+Unrestored faults:
+
+0.
+
+Maximum non-partition demand-reallocation latency:
+
+2 epochs.
+
+Both remain inside the preregistered bounds:
+
+fault <= 2;
+reallocation <= 3.
+
+RESTART / AUTHORITY SAFETY
+
+All 12 restart authoritative-state comparisons:
+
+TRUE.
+
+All 12 restart output comparisons:
+
+TRUE.
+
+Aggregate:
+
+stale vote attempts accepted = 0.
+
+authority violations = 0.
+
+causal regressions = 0.
+
+duplicate effective provenance = 0.
+
+split-brain final states = 0.
+
+resource-budget violations = 0.
+
+environment impossibilities = 0.
+
+NEGATIVE CONTROLS
+
+No-damage-quarantine incorrect output reachable:
+
+TRUE.
+
+Headcount-provenance false authority reachable:
+
+TRUE.
+
+Future-schedule information advantage exposed:
+
+TRUE.
+
+TECHNICAL INTERPRETATION
+
+A03 materially strengthens the A02 application result.
+
+A02 showed useful adaptive role allocation on a hand-authored workload family.
+
+A03 froze the organism and generic environment compiler first,
+then derived the exact twelve primary environments from the immutable freeze commit.
+
+Therefore:
+
+the exact demand regimes;
+resource windows;
+fault times / target selectors;
+partition window;
+restart point
+
+were not available for policy tuning before freeze.
+
+Across this blind family,
+the unchanged A02 developmental policy:
+
+- remained perfectly correct on every served request;
+- beat static allocation in every scenario;
+- recovered approximately 26.17 percentage points of aggregate coverage relative to static;
+- delivered approximately 99.27% of evaluator-only ideal capacity;
+- kept ordinary fault recovery to at most one epoch;
+- kept demand reallocation to at most two epochs;
+- reproduced exact authoritative state and outputs after restart;
+- preserved all measured authority / provenance / causal safety invariants.
+
+The useful conclusion is stronger than:
+
+THE POLICY FIT ONE DESIGNED WORKLOAD.
+
+The current evidence supports:
+
+THE SAME FROZEN LOCAL DEVELOPMENTAL POLICY
+GENERALIZED ACROSS A BLIND FAMILY OF DEMAND,
+RESOURCE,
+FAULT,
+PARTITION,
+AND RESTART ENVIRONMENTS.
+
+This remains synthetic evidence.
+
+It does not establish universal generalization.
+
+PLAIN-SPEAK INTERPRETATION
+
+This was the test where we stopped letting ourselves know the exam questions.
+
+We froze the organism first.
+
+Only after that did the freeze itself generate twelve different worlds.
+
+Those worlds decided when demand changed,
+when resources shrank,
+when cells were damaged,
+when the organism was split,
+and when it had to restart.
+
+We did not throw away a bad world.
+
+The cells could only react to what they could see right now.
+
+They still beat the static population in all twelve worlds.
+
+They served 52,273 requests correctly
+and zero incorrectly.
+
+A population that could not change jobs served only 37,801.
+
+And compared with an evaluator that could rearrange the available cells instantly for free,
+Yggdrasil delivered more than 99% of the available service.
+
+So the adaptation result is no longer tied to one schedule we happened to design around it.
+
+That is meaningful generalization evidence.
+
+NEXT JUSTIFIED STEP
+
+A04 is already preregistered as an independent fixed-public-seed environment generalization replication.
+
+A04 should now be executed as a separate application family.
+
+It must not be rewritten around A03's positive result.
+
+A positive A04 would provide replication under a different schedule generator and preregistered public seeds.
+
+A negative or mixed A04 would be equally useful
+because it would identify where the post-freeze A03 family and fixed-seed family diverge.
+
+Accepted application frontier:
+
+YGG-A01:
+positive via preregistered FIXA metric alignment.
+
+A02:
+positive adaptive transform service.
+
+A03:
+positive blind held-out generalization.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
