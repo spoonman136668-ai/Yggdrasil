@@ -1046,3 +1046,445 @@ A09 primary service requests served = 0.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — A09 DISTRIBUTED CELLULAR TRAINING MEMORY
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / POSITIVE PRIMARY / REPRODUCIBLE /
+DISTRIBUTED CELLULAR TRAINING MEMORY PASSED / NON-CANONICAL.
+
+FROZEN HARNESS
+
+Implementation commit:
+
+2782d1c44173faf5a7e92ea1915e3eca19f0b87f.
+
+Freeze commit F09:
+
+db770987c53e623bb86ad229cac3252388f50cc2.
+
+Decompressed source SHA-256:
+
+9b508deb63c8c923b9ec300831446dcf68b2d9de6c9a76506449a277c7f72162.
+
+Decompressed source bytes:
+
+35570.
+
+A08 parent source SHA-256:
+
+0dc330887718767812b2143877b751dc1ad580e0cefe834afac88486ad5707e0.
+
+A08 training / noise manifest:
+
+1324fa1fd16e0250520f380f1872006627a5777207b2b537a6297dc26605274a.
+
+POST-FREEZE MEMORY-STRESS MANIFEST
+
+Recorded before first A09 primary memory event.
+
+Manifest SHA-256:
+
+8600dd8ff89d7190cf5f4c2c825442dc95e6c7f7803a759d8f8054e37510c6e7.
+
+Manifest-only recomputation from the exact frozen source reproduced:
+
+8600dd8ff89d7190cf5f4c2c825442dc95e6c7f7803a759d8f8054e37510c6e7.
+
+No stress event was rejected,
+redrawn,
+or replaced.
+
+REPRODUCIBILITY
+
+Two complete deterministic A09 primary sweeps.
+
+Sweep 1 serialized output SHA-256:
+
+1fa4b91eb629cc7a3757d3e6317b425981d5d709703369864029f8c772d0ec2b.
+
+Sweep 2 serialized output SHA-256:
+
+1fa4b91eb629cc7a3757d3e6317b425981d5d709703369864029f8c772d0ec2b.
+
+Byte-identical:
+
+TRUE.
+
+PRIMARY RESULT
+
+A09_DISTRIBUTED_CELLULAR_TRAINING_MEMORY_SUCCESS:
+
+TRUE.
+
+Every required primary signal:
+
+TRUE.
+
+LEARNING RESULT
+
+Learner A exact target reconstruction:
+
+12 / 12.
+
+Learner B exact target reconstruction:
+
+12 / 12.
+
+Learner-pair agreement:
+
+12 / 12.
+
+Held-out learner predictions correct:
+
+120 / 120.
+
+Hereditary program commits:
+
+12 / 12.
+
+MIGRATION / PROGRAM CONTINUITY
+
+Natural migration program inheritances:
+
+245.
+
+Stale-program served requests:
+
+0.
+
+Restart mismatches:
+
+0.
+
+DISTRIBUTED MEMORY RESULT
+
+Unique causal observation shards per scenario:
+
+66 / 66 retained.
+
+Final valid unique observations per scenario:
+
+66.
+
+Final physical copies per scenario:
+
+132.
+
+Final minimum surviving copy count per unique shard:
+
+2.
+
+Invalid replicas:
+
+0.
+
+Irrecoverable memory loss:
+
+0.
+
+Across the 12 primary scenarios:
+
+replication repairs:
+
+124.
+
+Copies lost:
+
+124.
+
+Copies restored:
+
+124.
+
+Copy deletions:
+
+12.
+
+Cell replacements:
+
+12.
+
+Holder damage events:
+
+24.
+
+Holder hibernations:
+
+12.
+
+All required turnover / stress event classes executed in every scenario.
+
+Physical replication never increased effective evidence count.
+
+SERVICE RESULT
+
+Total service requests:
+
+55296.
+
+Candidate served:
+
+51933.
+
+Candidate correct:
+
+51933.
+
+Candidate incorrect:
+
+0.
+
+Task accuracy:
+
+1.0.
+
+Task-output stream SHA-256:
+
+4d39bdae4a8422aed046d545382916bfb134db7a71d85e92a94740563c574c77.
+
+The lower served count relative to A08 reflects the added cell-memory stress and temporary holder unavailability.
+
+It did not produce wrong service.
+
+EXISTING CONSTITUTIONAL SAFETY
+
+stale votes accepted = 0.
+
+authority violations = 0.
+
+causal regressions = 0.
+
+duplicate effective provenance = 0.
+
+split-brain final states = 0.
+
+resource-budget violations = 0.
+
+Partition / causal re-merge complete:
+
+TRUE.
+
+DEDICATED DISTRIBUTED-MEMORY PROBES
+
+M1 — copy fanout:
+
+PASS.
+
+Replicating one shard broadly did not create additional effective evidence.
+
+M2 — holder loss:
+
+PASS.
+
+A surviving physical copy preserved the observation and normal replication restored redundancy.
+
+M3 — full copy loss:
+
+PASS.
+
+When every physical copy of a not-yet-admitted observation was removed,
+the learner abstained rather than reconstructing evidence from a hidden source.
+
+M4 — hibernation temporary loss:
+
+PASS.
+
+Dormant holders made evidence temporarily unavailable;
+legitimate wake restored the same shard identity without creating a new vote.
+
+M5 — replacement without memory inheritance:
+
+PASS.
+
+A clean replacement cell began with no copied training memory.
+Memory returned only through normal replication from surviving holders.
+
+M6 — restart mid-training:
+
+PASS.
+
+Cell-local shard placement,
+admitted equations,
+and final candidate matched the uninterrupted shadow.
+
+M7 — distributed conflict reconstruction:
+
+PASS.
+
+Conflicting labels from one provenance root stored on different cells were reconstructed as one conflicted root.
+
+M8 — partitioned memory availability:
+
+PASS.
+
+Evidence did not teleport across the communication partition.
+After causal re-merge,
+the distributed memory view reconciled without duplicated authority.
+
+UNSAFE CONTROLS / BOUNDARIES
+
+N1 — count physical copies as independent evidence:
+
+false authority reachable.
+
+N2 — treat storage-holder IDs as provenance identities:
+
+false source independence reachable.
+
+N3 — hidden central-ledger restore after full copy loss:
+
+would mask real memory loss and violates the distributed-memory requirement.
+
+N4 — complete loss of enough unique not-yet-admitted evidence:
+
+BOUNDARY PRESERVED.
+
+The system must abstain rather than invent lost experience.
+
+N5 — four genuinely corrupted experience roots:
+
+A08 trust boundary preserved.
+
+N6 — forged experience-root identity:
+
+A08 trust boundary preserved.
+
+TECHNICAL INTERPRETATION
+
+A08 made training evidence provenance-aware.
+
+A09 removes the remaining logical central notebook from training memory.
+
+Experience now persists as replicated,
+cell-local,
+content-identified shards.
+
+Replication provides durability,
+not extra authority.
+
+Damage,
+hibernation,
+copy deletion,
+cell replacement,
+restart,
+and communication partition all acted on the memory substrate.
+
+Despite those disruptions,
+the organism reconstructed all 12 target programs exactly,
+retained perfect held-out generalization,
+and never used a hidden evaluator or central ledger to restore lost evidence.
+
+The important architectural distinction is now:
+
+EVIDENCE IDENTITY
+
+is defined by the causal observation,
+
+while
+
+STORAGE REDUNDANCY
+
+is defined by physical shard copies.
+
+That prevents replication from becoming false independent truth.
+
+The successful chain now includes:
+
+NOISY EXPERIENCE
+->
+PROVENANCE-QUALIFIED OBSERVATION
+->
+DISTRIBUTED CELLULAR MEMORY
+->
+LOCAL LEARNING
+->
+UNSEEN-CASE GENERALIZATION
+->
+CONSTITUTIONAL COMMIT
+->
+HEREDITARY PROGRAM STATE.
+
+PLAIN-SPEAK INTERPRETATION
+
+A08 could learn from bad teachers,
+but its memories still behaved like one logical notebook.
+
+A09 took that notebook away.
+
+The training memories were stored on the cells themselves.
+
+We then damaged memory holders,
+put some to sleep,
+deleted copies,
+replaced cells,
+restarted the organism,
+and split communication.
+
+The population still finished learning all twelve programs correctly.
+
+When one memory was copied to several cells,
+those copies did not become several votes.
+
+They were backup copies of the same experience.
+
+When a copy disappeared,
+other cells rebuilt the redundancy.
+
+Across the primary runs,
+124 lost copies were repaired.
+
+No unique training memory was irrecoverably lost.
+
+Most importantly,
+when every copy of a test memory was deliberately removed,
+Yggdrasil did not pretend it still remembered it.
+
+It abstained.
+
+So training memory is now genuinely part of the distributed cellular substrate,
+not a central database wearing a cellular interface.
+
+NEXT JUSTIFIED GATE
+
+A10 / TRAINING T3 —
+
+EXPERIENCE-DEPENDENT DEVELOPMENTAL POLICY PLASTICITY.
+
+The next question should no longer change only a role's task program.
+
+It should ask whether experience can modify a bounded developmental parameter
+that changes how future cells specialize,
+repair,
+or allocate themselves.
+
+The existing A07-A09 training / provenance / memory / authority stack should remain the only path by which such a developmental change becomes persistent.
+
+The first T3 gate should be deliberately narrow and reversible.
+
+It should not attempt open-ended self-modification.
+
+ACCEPTED TRAINING FRONTIER
+
+A07 / Training T1:
+
+positive experience-dependent hereditary program learning.
+
+A08 / Training T2:
+
+positive provenance-aware noisy hereditary learning.
+
+A09 / Training T2B:
+
+positive distributed cellular training memory.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
