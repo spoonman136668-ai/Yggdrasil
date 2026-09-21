@@ -764,3 +764,143 @@ No A14 primary observation has been consumed.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A14 STRICT BOUNDED NOVEL-CONTEXT CREATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY PRIMARY A14 C PRIOR,
+PROVENANCE-ROOT PAIR,
+LEARNER ORDER,
+C SERVICE SEQUENCE,
+OR REPLACEMENT PLAN.
+
+IMPLEMENTATION COMMIT
+
+54aebc9e550eabc6d0026c7c407c362908c156f7.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a14_t6_strict_novel_context_v1.py
+
+Loader Git blob:
+
+4a1659ecc02d7d3bbaa4982a3901d50e8238a76f.
+
+Payload:
+
+research/applications/track-a/a14_t6_strict_novel_context_v1.py.gz
+
+Payload Git blob:
+
+6614f091da3215fd19b3966c2af36f4dd68e6f7a.
+
+Compressed payload SHA-256:
+
+0b96cc478dc5d77a04aa892fed5c850851ac1333b7778754841223443da73f3d.
+
+Compressed payload bytes:
+
+6327.
+
+Decompressed exact source SHA-256:
+
+d2187358170045ddd9869be1a53d6938c4ade6547c0b8d83415e16cc6dc40045.
+
+Decompressed source bytes:
+
+18358.
+
+FROZEN PARENT
+
+A12 source SHA-256:
+
+628c23f8319aa0e429a5c0e4dd8b0007e1346a799428c1678d33189dda10bdfd.
+
+A12 freeze F12:
+
+3308697f2594212be565639bc57c0179e83e831a.
+
+A12 latent-context manifest:
+
+502009818ea9d6e57089a91424e7cf399e7c5e95024a9623816e733c58c3f63a.
+
+A12 accepted result:
+
+8e1ec460942bd5a486bc4420c8e5e24334599d08a97bc10e385e92b938df0fda.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Mechanical manifest SHA-256:
+
+d6fadb570c90aa84d5fbfcba96784156c3690e18e0f22df60760a65610190a12.
+
+Full non-primary strict T6 smoke used only:
+
+MECHANICAL-NONPRIMARY-FREEZE.
+
+Mechanical smoke serialized output SHA-256:
+
+359692bfe648bac2b110d0d2b966e7b57fefd4fd05f6b4d479bd0577a84d88e9.
+
+Mechanical smoke summary:
+
+24 / 24 known A/B selections correct;
+12 / 12 initial C two-probe attempts abstain;
+12 / 12 Learner A exact C;
+12 / 12 Learner B exact C;
+12 / 12 C slots created;
+12 / 12 final slot count = 3;
+0 duplicate C slots;
+0 fourth-slot creations;
+12 / 12 C returns reused without retraining;
+candidate first-four service = 1994;
+unknown-fallback first-four service = 1920;
+evaluator oracle = 1994;
+candidate >= fallback in 22 / 24 evaluations;
+49 migrations avoided;
+all restart checks equivalent;
+all P1..P8 probes PASS;
+all unsafe controls exposed;
+existing constitutional safety totals = 0.
+
+These outcomes use only a fake mechanical freeze label.
+
+They are implementation validation,
+not A14 scientific evidence.
+
+PRIMARY STATUS AT THIS FREEZE
+
+NOT DERIVED.
+
+Let the resulting commit SHA of this freeze update be F14.
+
+Only after F14 exists may the harness derive:
+
+- 12 latent C developmental priors;
+- known-context pre/interlude choices;
+- 64 C training observations per scenario;
+- two-root observation attestations;
+- learner A / B orders;
+- C1 / C2 evaluation sequences;
+- replacement targets.
+
+No primary A14 novelty observation has been consumed.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
