@@ -1174,3 +1174,489 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A30 / T8N SPATIAL LOCAL CROSS-INHIBITION
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE MIXED-POSITIVE MECHANISM RESULT /
+LOCAL NONLINEAR CROSS-INHIBITION REDUCED BROAD-OPPOSITION RETREAT LATENCY
+WHILE PRESERVING SMALL-MINORITY ROBUSTNESS,
+BUT NO PRIMARY ARM MET THE FROZEN OSCILLATION CEILING /
+NO ARM QUALIFIED /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+e969503bacfb520efe4f9ba2df7a7ccebfe88e76.
+
+F30:
+
+9516d67c71915d2bdf572142b59f662f614922ab.
+
+Source SHA-256:
+
+7f560e87e54210f1d24826403ff040cab69dda9422d9d4920009df1e3388d7d4.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+de8e7f008bc84c763f0be6d1843046c5c16a8a9c.
+
+Challenge-manifest SHA-256:
+
+c2897d96fe41998afcbe70f48b9018595d3bd36f3b33c79e342a65b67fb01681.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete F30-derived primary sweeps were byte-identical.
+
+Serialized semantic output SHA-256:
+
+06bb2a6da5dc77d2111106d4e13575862289283f1dd30dcd788cb1c377ba4a26.
+
+All P1-P20 integrity probes:
+
+PASS.
+
+PRIMARY RESULT
+
+A30_ANY_LOCAL_INHIBITION_QUALIFIED:
+
+FALSE.
+
+A30_LOCAL_INFORMATION_GAIN:
+
+TRUE.
+
+Five primary local arms met the descriptive information-gain condition:
+
+R3N3;
+R3N5;
+R6N5;
+R12N3;
+R12N5.
+
+They:
+
+beat CENTRAL broad-opposition erosion latency;
+
+preserved one-emitter robustness;
+
+and oscillated less than the oversharp R3N12 control.
+
+CENTRAL REFERENCE
+
+Broad-opposition median erosion latency:
+
+1 epoch.
+
+Broad trials never eroding below 50%:
+
+0 / 48.
+
+One-emitter sustained robustness:
+
+100%.
+
+Strategic one/two-emitter collapse rate:
+
+0%.
+
+Oscillatory fraction:
+
+0%.
+
+Critical contiguous cluster size:
+
+16 cells.
+
+NO_INHIB REFERENCE
+
+Broad opposition never drove commitment below 50%.
+
+This confirms that the observed erosion
+comes from inhibition rather than recruitment alone.
+
+LOCAL LATENCY
+
+Several moderate nonlinear local arms
+crossed below 50% commitment in the same epoch
+that broad opposition appeared:
+
+R3N5:
+median latency 0.
+
+R6N5:
+median latency 0.
+
+R12N3:
+median latency 0.
+
+R12N5:
+median latency 0.
+
+R3N3:
+
+median latency 0.5 epochs.
+
+Thus local parallel erosion
+removed approximately one epoch
+of central-pool waiting
+in this dedicated mechanism harness.
+
+This does not numerically reproduce
+A29's 23% contradictory-committed fraction.
+
+It demonstrates the proposed mechanism
+for eliminating central waiting latency.
+
+SMALL-OPPOSITION ROBUSTNESS
+
+Every primary arm preserved:
+
+100%
+
+of one-emitter sustained trials
+above the frozen robustness floor.
+
+Every primary arm also had:
+
+0%
+
+collapse rate
+for the preregistered strategic
+one- and two-emitter minority subset.
+
+Thus A30 did not expose
+a catastrophic strategic-minority vulnerability
+at the tested 48-cell scale.
+
+CRITICAL CLUSTER SIZE
+
+Observed critical contiguous cluster sizes included:
+
+R1N1:
+24.
+
+R3N1:
+20.
+
+R3N3:
+24.
+
+R3N5:
+24.
+
+R6N1:
+16.
+
+R6N3:
+20.
+
+R6N5:
+24.
+
+R12N1:
+12.
+
+R12N3:
+16.
+
+R12N5:
+20.
+
+Thus locality materially changed
+the spatial wound-propagation boundary.
+
+Large sensing radius plus low Hill steepness
+allowed smaller opposing clusters
+to produce population collapse.
+
+EROSION PROFILE
+
+The empirical defection profile was strongly local-density dependent.
+
+R3N3:
+
+low opposition bin <= 1/4:
+2.40% defection.
+
+(1/4,1/2]:
+26.34%.
+
+(1/2,3/4]:
+63.39%.
+
+(3/4,1]:
+85.76%.
+
+R3N5:
+
+low opposition bin <= 1/4:
+0.23%.
+
+(1/4,1/2]:
+17.97%.
+
+(1/2,3/4]:
+69.43%.
+
+(3/4,1]:
+95.08%.
+
+Thus n=3 to n=5 produced
+the intended ultrasensitive erosion:
+
+small local opposition has very little effect;
+
+high local opposition produces rapid defection.
+
+OVERSHARP CONTROL
+
+R3N12:
+
+low opposition:
+0%.
+
+mid-low:
+8.09%.
+
+mid-high:
+85.52%.
+
+highest opposition:
+100%.
+
+Oscillatory fraction:
+
+17.71%.
+
+This supports the preregistered concern
+that an extremely sharp local response
+behaves like a digital switch
+and produces substantially more population chatter.
+
+OSCILLATION FAILURE
+
+No primary arm satisfied
+all frozen qualification criteria.
+
+The closest arm was:
+
+R12N3.
+
+R12N3:
+
+broad median latency:
+0.
+
+one-emitter robustness:
+100%.
+
+strategic one/two-emitter collapse:
+0%.
+
+critical cluster:
+16.
+
+spatial defection-rate separation:
+0.6143.
+
+oscillatory fraction:
+5.2083%.
+
+Frozen oscillation ceiling:
+
+5%.
+
+Thus R12N3 failed qualification
+by the oscillation criterion.
+
+The 5% ceiling is NOT moved.
+
+R12N5:
+
+oscillation:
+5.73%.
+
+R6N5:
+
+6.51%.
+
+R3N3:
+
+7.81%.
+
+R3N5:
+
+8.07%.
+
+The latency improvement is therefore real,
+but immediate local erosion plus re-recruitment
+can create majority-boundary chatter.
+
+SPATIAL WOUND RESULT
+
+Local arms produced distinct
+heal / persist / propagate mixtures.
+
+Examples:
+
+R1N5:
+
+HEALS = 252;
+PERSISTS = 59;
+PROPAGATES = 73.
+
+R12N3:
+
+HEALS = 210;
+PERSISTS = 10;
+PROPAGATES = 164.
+
+CENTRAL:
+
+HEALS = 208;
+PERSISTS = 0;
+PROPAGATES = 176.
+
+This confirms that locality produces
+spatially structured wound behavior
+rather than merely approximating
+one global retreat gate.
+
+TECHNICAL INTERPRETATION
+
+A30 supports the central mechanism hypothesis:
+
+LOCAL CROSS-INHIBITION
+CAN BEGIN ERODING COMMITMENT
+BEFORE A GLOBAL OPPOSITION POOL
+FINISHES ACCUMULATING.
+
+The effect is:
+
+parallel;
+cell-local;
+spatially selective;
+and nonlinear.
+
+The experiment also supports
+the user's predicted steepness tradeoff.
+
+Linear / shallow response:
+
+is slower
+and more sensitive across moderate opposition.
+
+Moderate n=3 / n=5:
+
+suppresses low-density opposition strongly
+while rapidly eroding high-density opposition.
+
+Oversharp n=12:
+
+approaches digital local switching
+and markedly increases oscillation.
+
+The unresolved failure is now:
+
+LOCAL RETREAT IS FAST ENOUGH,
+BUT RE-RECRUITMENT IS NOT HYSTERETIC ENOUGH.
+
+After local defection,
+cells can be recruited back
+while the spatial conflict is still unresolved.
+
+That produces repeated crossings
+of the population majority boundary.
+
+This suggests a clean next mechanism:
+
+PER-CELL HYSTERESIS / REFRACTORY MEMORY.
+
+A defected cell should not immediately
+be eligible for recommitment
+under the same threshold that governs erosion.
+
+A later experiment can test
+a short local refractory state
+or asymmetric local re-entry threshold
+while leaving the successful A30
+cross-inhibition law unchanged.
+
+That would directly test
+whether local hysteresis removes chatter
+without restoring central control.
+
+PLAIN-SPEAK INTERPRETATION
+
+The basic A30 idea worked.
+
+When half the population
+started sending opposition,
+local cells reacted immediately.
+
+Several local designs
+dropped below majority commitment
+in the same epoch opposition arrived.
+
+The central controller needed another epoch.
+
+Tiny opposition was ignored.
+
+Even strategically placed
+one- and two-cell minorities
+did not collapse the population.
+
+And the response really was nonlinear.
+
+With a moderate Hill curve,
+small opposition barely caused defection,
+while dense opposition caused most nearby cells to defect.
+
+But we hit the next problem.
+
+The cells can change their minds too quickly
+in both directions.
+
+They defect locally.
+
+Then recruitment pulls some of them back.
+
+Then opposition pushes them out again.
+
+The oversharp version made this especially obvious.
+
+So A30 says:
+
+LOCAL EROSION WORKS.
+
+The missing piece is:
+
+LOCAL MEMORY AFTER EROSION.
+
+A cell that has just been forced out of commitment
+probably needs a short refractory / uncertain period,
+or a harder threshold for recommitment,
+before it can be pulled straight back in.
+
+That is a local hysteresis problem,
+not a confidence-score problem.
+
+No autonomous controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
