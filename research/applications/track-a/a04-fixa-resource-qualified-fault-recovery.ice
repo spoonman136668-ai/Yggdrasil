@@ -286,3 +286,128 @@ if the preregistered resource condition was not satisfied.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A04-FIXA RESOURCE-QUALIFIED FAULT RECOVERY
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST FIXA PRIMARY REQUEST.
+
+IMPLEMENTATION COMMIT
+
+afdb95c5b23f59a39996417f01c1b8b3e6534615.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a04_fixa_resource_qualified_v1.py
+
+Loader Git blob:
+
+77f49d896f49169cab1878f1cddf0a28c03da567.
+
+Payload:
+
+research/applications/track-a/a04_fixa_resource_qualified_v1.py.gz
+
+Payload Git blob:
+
+5393447b9e4cc00e0367424fd96104f3f7f713e5.
+
+Compressed payload SHA-256:
+
+5d440c661b34a61bea8c5a716a4c68cd933710a89e17459788c1aca4402081f3.
+
+Compressed payload bytes:
+
+8307.
+
+Decompressed source SHA-256:
+
+0b0f1a47e109ee8f218c664c568dd981c97bfb382c54ec30d035e6c8cf4e4f1a.
+
+Decompressed source bytes:
+
+29602.
+
+SEMANTIC DIFF FROM A04 R1
+
+Allowed scoring instrumentation only:
+
+- capture pre-repair active / reactivating count;
+- capture repair-due active budget;
+- compute resource_qualified before repair outcome;
+- exclude outside-partition faults from ordinary M6 only when no active resource slot exists;
+- report every raw fault and FIXA equivalence evidence.
+
+No organism action path changed.
+
+The frozen diff does NOT alter:
+
+damage;
+repair;
+role migration;
+hibernation;
+reactivation;
+partition operation;
+dynamic re-merge;
+restart;
+task output;
+static baseline;
+oracle behavior.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+A02 dependency source SHA-256:
+
+b2eeb1e589a029f16b0437ce1f3dd05826b81a91ab6c6d91ce25bb28b96db60b.
+
+A04 fixed-seed manifest:
+
+24cfb3a9fa92b1013948739b7a9f022e0457bd550c91cc591fbbb9f7fbd9df43.
+
+Environment diversity:
+
+PASS.
+
+Non-primary mechanical-seed R1 / FIXA equivalence:
+
+TRUE
+
+for candidate behavior,
+static baseline,
+oracle result,
+reallocation,
+restart,
+partition re-merge,
+resource-budget behavior,
+and task-service observations.
+
+The mechanical probe changed only fault-qualification telemetry as permitted.
+
+No A04-FIXA primary request was executed before this freeze.
+
+R1 EQUIVALENCE ANCHORS
+
+A04 R1 task-output stream SHA-256:
+
+81805844f6eb663d73774e1b6eaf689747c04207570dae089b3fded5ae9539b5.
+
+R1 aggregate observations remain the exact required FIXA targets specified above.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
