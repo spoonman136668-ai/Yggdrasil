@@ -805,3 +805,141 @@ FUTURE CELLS DEVELOP DIFFERENTLY WHEN THE ENVIRONMENT RETURNS.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A11 T4 CONTEXT-CONDITIONAL DEVELOPMENTAL MEMORY
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY PRIMARY A11 CONTEXT PRIOR,
+TRAINING SEQUENCE,
+EVALUATION SEQUENCE,
+LEARNER ORDER,
+OR REPLACEMENT PLAN.
+
+IMPLEMENTATION COMMIT
+
+9837ac62db27048930b4718978c16449e707fc2e.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a11_t4_context_memory_v1.py
+
+Loader Git blob:
+
+b827741cf0e1d31b789a188d9d3cef2203aa94b0.
+
+Payload:
+
+research/applications/track-a/a11_t4_context_memory_v1.py.gz
+
+Payload Git blob:
+
+aaaea40a579501743c583d852461a039162cba56.
+
+Compressed payload SHA-256:
+
+334f7bdb23e9026876cf5deb732fced904f5c5ae96d71cf8140177a7ee0629b2.
+
+Compressed payload bytes:
+
+5911.
+
+Decompressed exact source SHA-256:
+
+a45e4b74b0d2f2c8981da7f94bde4e9072048109226854a881162ecb47f9d235.
+
+Decompressed source bytes:
+
+17308.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Role-prior catalog size:
+
+124.
+
+Mechanical manifest SHA-256:
+
+133032dec2e99cc23ec7d48c139da0962be733df1852a8c14bb6d88cc63703aa.
+
+Mechanical A/B latent priors distinct:
+
+12 / 12.
+
+Exact zero-mean A training sequences:
+
+PASS.
+
+Exact zero-mean B training sequences:
+
+PASS.
+
+Exact zero-mean A1 / B / A2 held-out evaluation sequences:
+
+PASS.
+
+Two context-indexed policy slots:
+
+PASS.
+
+Full non-primary T4 smoke used only:
+
+MECHANICAL-NONPRIMARY-FREEZE.
+
+Mechanical smoke summary:
+
+12 / 12 prior-A exact;
+12 / 12 prior-B exact;
+12 / 12 A policy slots preserved through B learning;
+A2 candidate first-four-epoch service = 982;
+one-slot forgetting baseline = 931;
+A2 candidate >= forgetting baseline in 11 / 12 scenarios;
+A2 candidate > forgetting baseline in 11 / 12 scenarios;
+A2 evaluator-oracle service = 982;
+A2 migrations avoided versus forgetting = 35;
+B-context specialization present;
+all restart checks equivalent;
+all T4 probes PASS;
+all unsafe controls exposed;
+all existing constitutional safety totals = 0.
+
+These outcomes use a fake mechanical freeze label only.
+
+They are implementation checks.
+
+They are NOT A11 scientific evidence.
+
+PRIMARY STATUS AT THIS FREEZE
+
+NOT DERIVED.
+
+Let the resulting commit SHA of this freeze update be F11.
+
+Only after F11 exists may the harness derive:
+
+- 12 CONTEXT_A latent priors;
+- 12 CONTEXT_B latent priors;
+- A / B training sequences;
+- A1 / B / A2 held-out evaluation sequences;
+- learner A / B orders;
+- replacement target sets.
+
+No primary A11 developmental observation has been consumed.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
