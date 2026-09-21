@@ -1347,3 +1347,117 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-CLOSURE IMPLEMENTATION AUDIT ADDENDUM — DYNAMIC RE-MERGE DEFECT
+
+DATE:
+2026-09-20.
+
+STATUS:
+A03 POSITIVE TASK / ADAPTATION RESULT PRESERVED;
+PARTITION RE-MERGE VALIDITY PROVISIONAL PENDING SEPARATE FIXA.
+
+DEFECT
+
+Post-run audit while preparing A04 found that the A03 wrapper correctly replaced A02's partition membership window,
+but inherited A02's fixed re-merge trigger:
+
+epoch 152.
+
+A03 primary partition windows were derived after freeze
+and all occurred later than epoch 152.
+
+Therefore the explicit A02 _remerge() transition did not execute at each A03 schedule's actual:
+
+partition_end + 1.
+
+OBSERVED CONSEQUENCE
+
+All twelve scenarios completed with provisional transition records still present.
+
+Final provisional counts:
+
+S00 = 6.
+S01 = 5.
+S02 = 5.
+S03 = 5.
+S04 = 5.
+S05 = 4.
+S06 = 12.
+S07 = 7.
+S08 = 10.
+S09 = 8.
+S10 = 9.
+S11 = 12.
+
+Rolled-back transitions in the original run:
+
+0.
+
+Because A03's physical partition ownership is disjoint,
+no same-cell conflict was observed in this family.
+
+The provisional role changes had already been applied locally by the inherited A02 migration contract,
+so task outputs and capacity adaptation proceeded.
+
+However the explicit causal re-merge / provisional-clear transaction required by the preregistration did not occur.
+
+SCIENTIFIC STATUS
+
+The following A03 observations remain valid as executed:
+
+- blind post-freeze workload derivation;
+- exact seed / schedule provenance;
+- zero incorrect served outputs;
+- candidate / static / oracle service measurements;
+- demand adaptation latencies;
+- fault recovery observations;
+- restart reproducibility under the executed implementation.
+
+The stronger claim:
+
+"randomized partition windows executed the closed re-merge transition"
+
+is NOT established by A03 R1.
+
+Therefore A03_GENERALIZATION_SUCCESS from R1 is preserved as the frozen implemented signal,
+but the accepted application frontier must treat A03 as:
+
+PROVISIONAL POSITIVE
+PENDING A03-FIXA DYNAMIC RE-MERGE ALIGNMENT.
+
+EQUIVALENCE ANCHOR FOR FIXA
+
+Aggregate candidate task-output stream SHA-256 across S00..S11:
+
+3ee64e5ab63df92056c0b68e7b8f372d37656310476e5c4c0aef358c2e22bd2f.
+
+A03-FIXA must preserve this exact task-output stream.
+
+It must also preserve:
+
+freeze F =
+6f010ce561d958a324664b2d3e0c04e3e113d91b;
+
+schedule manifest =
+842d8f03f1f1229e633c783a895b5b6ceb81f813c2fb104a81000c25baa40848;
+
+all 12 primary seeds;
+
+all candidate / static / oracle task counts;
+
+all fault and reallocation observations.
+
+A03-FIXA may change only the re-merge trigger / bookkeeping required to execute the already-closed A02 merge transaction
+at each schedule's actual partition end + 1.
+
+No threshold,
+seed,
+schedule,
+migration rule,
+task policy,
+or success criterion may change.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
