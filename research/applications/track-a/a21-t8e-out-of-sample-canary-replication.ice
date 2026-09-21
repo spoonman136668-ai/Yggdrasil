@@ -381,3 +381,140 @@ not the one with the prettiest score.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A21 OUT-OF-SAMPLE CANARY REPLICATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL A21 TRAJECTORY.
+
+IMPLEMENTATION COMMIT
+
+ec883251552c80873697eb085eba5c90657ce3d2.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a21_t8e_out_of_sample_canary_replication_v1.py
+
+Loader Git blob:
+
+dddee328faaa1a96d625a58a9c43b205fc4dc289.
+
+Payload:
+
+research/applications/track-a/a21_t8e_out_of_sample_canary_replication_v1.py.gz
+
+Payload Git blob:
+
+520d5671ecd93a95918d34008c08809cde376b2b.
+
+Decompressed source SHA-256:
+
+7a9779ef291d828bc124eb6b8d00ee33e03bd7ea6122952ed0ae1b183b457f6d.
+
+Decompressed source bytes:
+
+15041.
+
+Deterministic gzip SHA-256:
+
+9ffae8743f395e1bc84cbb430fbe484fa51bc028edc0b5fe762171360ed54aba.
+
+Compressed payload bytes:
+
+4912.
+
+FROZEN SUBSTRATE VALIDATION
+
+Exact A17 replay:
+
+3978 candidate first-four;
+3950 stale first-four;
+37 / 48 candidate >= stale;
+38 migrations avoided.
+
+Exact 11 A17 below-stale pairs:
+
+MATCH.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake freeze seed:
+
+MECHANICAL-F21-NONPRIMARY.
+
+Two complete sweeps:
+
+BYTE-IDENTICAL.
+
+Serialized file SHA-256:
+
+3d2a5e089ee7f1052957f38f56242ba3f1ff28c752b20be8adb9cd5f0b7babde.
+
+Serialized semantic output SHA-256:
+
+14707104c8afb091d3fcf2d4de6d24b8855c6db83e3e90a8fb90791d35c0820f.
+
+All P1-P12 mechanical probes:
+
+PASS.
+
+Fake-world unconditional R1 second-half harm rate:
+
+0.140625.
+
+No C1 / C2 / C3 arm met the preregistered replication qualification.
+
+This mechanical result is NON-SCIENTIFIC.
+
+It demonstrates that:
+
+- the 5% harm ceiling is not trivially satisfied;
+- the coverage floor is active;
+- the minimum-exposure selection rule can legitimately select NONE.
+
+PRE-FREEZE REPAIR
+
+The first mechanical pass found one probe-only representation defect:
+
+P4 indexed in-memory integer replacement-epoch keys
+using JSON-style string keys.
+
+The probe was corrected before implementation freeze.
+
+No scientific rule,
+trajectory rule,
+threshold,
+canary decision,
+or result was changed.
+
+REAL A21 STATUS
+
+No real post-F21 trajectory has been derived.
+
+No real replication manifest exists.
+
+No real A21 canary outcome exists.
+
+Let the resulting commit SHA be:
+
+F21.
+
+After F21 exists:
+
+1. derive exactly 384 fresh trajectories from F21;
+2. bind the complete manifest SHA in the repository;
+3. only then run two complete primary sweeps;
+4. require byte-identical output;
+5. apply the frozen C1 -> C2 -> C3 minimum-exposure selection hierarchy.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
