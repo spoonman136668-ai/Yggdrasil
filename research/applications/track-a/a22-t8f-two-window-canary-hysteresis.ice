@@ -511,3 +511,73 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A22 TWO-WINDOW CANARY HYSTERESIS
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A22 D1 / D2 / WINDOW-3 OUTCOME.
+
+F22:
+
+89299d7480dc39a093888798ac9789d550e8e913.
+
+TRAJECTORY COUNT:
+
+384.
+
+STRUCTURE:
+
+48 fixed A17 patch contexts
+x
+8 fresh F22-derived replicas.
+
+EPOCHS PER TRAJECTORY:
+
+24.
+
+REPLACEMENT EPISODES:
+
+0;
+8;
+16.
+
+COMPLETE MANIFEST SHA-256:
+
+b413e65063149a141e54e6eb906766807b9a94c7d3a407309b3e0ce1d46756bf.
+
+Serialized manifest-wrapper SHA-256:
+
+99808975634e6677b2855ac60f73ca7de6b1723d1b28290b9a1a4203c5be8a1a.
+
+The complete manifest binds all:
+
+- scenario identities;
+- patch identities;
+- replica identities;
+- candidate priors;
+- stale priors;
+- 24 fresh demands;
+- epoch-0 replacement sets;
+- epoch-8 replacement sets;
+- epoch-16 replacement sets.
+
+Each 24-demand sequence has exact mean equal to its candidate target.
+
+No primary A22 outcome has been observed.
+
+The next permitted operation is:
+
+two complete deterministic A22 primary sweeps.
+
+NO REDRAW.
+NO THRESHOLD CHANGE.
+NO EXPOSURE CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
