@@ -1319,3 +1319,528 @@ A15 primary held-out evaluations executed = 0.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — A15 T7 VERSIONED DEVELOPMENTAL-CONTEXT REVISION
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / POSITIVE PRIMARY / REPRODUCIBLE /
+VERSIONED CONTEXT REVISION PASSED / NON-CANONICAL.
+
+FROZEN HARNESS
+
+Implementation commit:
+
+f89acaf37c70c3b57f3c0463a9be0a2133a4bef7.
+
+Freeze F15:
+
+dd9cd2cfee331d94631af17b0f0a61684e5091a4.
+
+Source SHA-256:
+
+4dfd8814c869380317bb90d8baf68f79f4c2ce9874db7bc9278546b56001c071.
+
+Source bytes:
+
+20009.
+
+Compressed payload SHA-256:
+
+ad42b1344024b66b3e5888765a1a8306d40cc379d0b3baf2094c99e04ae5a5cf.
+
+Compressed payload bytes:
+
+6668.
+
+AUTHORITATIVE PARENT
+
+A14 definitive correction commit:
+
+a03cc7f606810cbb5db4f08a56105bfa3e81261d.
+
+A14 exact frozen source:
+
+d2187358170045ddd9869be1a53d6938c4ade6547c0b8d83415e16cc6dc40045.
+
+A14 authoritative manifest:
+
+83a0ad4d67d7a3f3625e49c311f5d2a85c73fee40cde96e24937ae79e1e944ae.
+
+A14 authoritative result:
+
+378ac5e53a61df6d772fb675d7d386374e865310fb8f99fd77f5a6132331c14a.
+
+No superseded A14 wrong-source evidence was used.
+
+PRIMARY MANIFEST
+
+Versioned-drift manifest SHA-256:
+
+0e7d6c14cff50e8e8705cbf4082d5f333267b2e4646eea333559db4b4b28cef9.
+
+Derived only after F15 existed.
+
+All 12 C-v2 derivation counters:
+
+0.
+
+No C-v2 prior,
+drift observation,
+attestation pair,
+learner order,
+interlude,
+evaluation sequence,
+restart detail,
+or replacement target
+was redrawn after derivation.
+
+REPRODUCIBILITY
+
+Two complete deterministic A15 primary sweeps.
+
+Sweep 1 serialized output SHA-256:
+
+494b3096e407790a341d66ee37833546b5ce50e2a88a2308a17c1c5bfb0941d3.
+
+Sweep 2 serialized output SHA-256:
+
+494b3096e407790a341d66ee37833546b5ce50e2a88a2308a17c1c5bfb0941d3.
+
+Byte-identical:
+
+TRUE.
+
+PRIMARY RESULT
+
+A15_T7_VERSIONED_CONTEXT_REVISION_SUCCESS:
+
+TRUE.
+
+INITIAL C / DRIFT ENTRY
+
+C-v1 recognized initially:
+
+12 / 12.
+
+First two C-v2 drift observations:
+
+12 / 12 ABSTAIN.
+
+No immediate revision.
+
+No fourth context slot.
+
+Eight-observation drift floors respected:
+
+12 / 12.
+
+PROVENANCE-QUALIFIED REVISION LEARNING
+
+Every unique drift observation required:
+
+two distinct observation roots.
+
+Learner A exact C-v2:
+
+12 / 12.
+
+Learner B exact C-v2:
+
+12 / 12.
+
+C-v2 revisions authorized:
+
+12 / 12.
+
+VERSION LINEAGE
+
+C history length:
+
+2
+
+in all 12 scenarios.
+
+History:
+
+[v1,v2].
+
+C-v1 remained preserved.
+
+C-v2 committed with C-v1 parent digest.
+
+Context slot count:
+
+3
+
+in all scenarios.
+
+Duplicate context slots created:
+
+0.
+
+C-v3 creations:
+
+0.
+
+USEFULNESS
+
+Candidate C-v2 first-four-epoch service:
+
+989.
+
+Stale C-v1 baseline:
+
+937.
+
+Evaluator-only oracle:
+
+989.
+
+Oracle efficiency:
+
+1.0.
+
+Candidate >= stale baseline:
+
+12 / 12 scenarios.
+
+Migrations avoided relative to stale C-v1:
+
+37.
+
+OLD / NEW VERSION RECURRENCE
+
+Old-C recurrence selected:
+
+C version 1
+
+in:
+
+12 / 12 scenarios.
+
+No C-v1 retraining occurred.
+
+New-C recurrence selected:
+
+C version 2
+
+in:
+
+12 / 12 scenarios.
+
+No C-v2 retraining occurred.
+
+Recurrence service matched the evaluator oracle.
+
+ROLLBACK / REACTIVATION
+
+Authorized rollback:
+
+v2 -> v1
+
+PASS in all 12 scenarios.
+
+Authorized reactivation:
+
+v1 -> v2
+
+PASS in all 12 scenarios.
+
+The history remained:
+
+[v1,v2].
+
+Neither version digest was destroyed.
+
+RESTART
+
+All restart comparisons:
+
+equivalent.
+
+The restart after drift observation 32 preserved:
+
+current C lineage;
+revision nomination state;
+distributed drift memory;
+pre-commit v1 state;
+eventual v2 candidate;
+version history;
+held-out outputs;
+old/new recurrence selection.
+
+TASK / CONSTITUTIONAL SAFETY
+
+Task accuracy:
+
+1.0.
+
+Incorrect served requests:
+
+0.
+
+Stale-program served requests:
+
+0.
+
+Existing constitutional safety violations:
+
+0.
+
+DEDICATED T7 PROBES
+
+P1 — two drift observations abstain:
+
+PASS.
+
+P2 — seven-observation drift floor:
+
+PASS.
+
+P3 — eight-observation nomination only:
+
+PASS.
+
+P4 — explicit context boundary prevents C revision:
+
+PASS.
+
+The same unknown observations after a context boundary were:
+
+UNATTRIBUTED_UNKNOWN,
+
+not eligible to rewrite C.
+
+P5 — same-root fanout rejected:
+
+PASS.
+
+P6 — stale parent digest rejected:
+
+PASS.
+
+P7 — old-C recurrence selects v1:
+
+PASS.
+
+P8 — new-C recurrence selects v2:
+
+PASS.
+
+P9 — rollback / reactivation:
+
+PASS.
+
+P10 — version capacity blocks v3:
+
+PASS.
+
+NEGATIVE / LIMIT CONTROLS
+
+N1 — revision after only two drift probes:
+
+unsafe shortcut exposed.
+
+N2 — nearest-context revision:
+
+unsafe lineage corruption exposed.
+
+N3 — overwrite C-v1 in place:
+
+unsafe history loss exposed.
+
+N4 — create C-v2 as another context slot:
+
+unsafe duplicate-context growth exposed.
+
+N5 — force latest version on old-C recurrence:
+
+unsafe wrong-policy reuse exposed.
+
+N6 — forged observation-root identities:
+
+trust boundary preserved.
+
+N7 — continuous / rapid drift:
+
+stationarity boundary preserved.
+
+TECHNICAL INTERPRETATION
+
+A14 established that developmental memory can grow by creating a bounded new context.
+
+A15 establishes a materially different capability:
+
+an existing developmental context can evolve
+without consuming another context slot
+and without erasing its prior developmental state.
+
+The revision decision is not based on nearest-policy similarity.
+
+It is grounded in causal continuity:
+
+the organism had already identified C,
+the same environment continued,
+and its developmental statistics changed stably.
+
+Only after:
+
+minimum dwell;
+64 provenance-qualified observations;
+two independent learner reconstructions;
+parent-digest continuity;
+and constitutional authorization
+
+could C-v2 become part of the C lineage.
+
+The organism then retained enough history to recognize
+both the old and revised niche later.
+
+The demonstrated chain is:
+
+KNOWN C-V1
+->
+CONTINUOUS STABLE DRIFT
+->
+ABSTENTION
+->
+PROVENANCE-QUALIFIED REVISION LEARNING
+->
+C-V2 WITH C-V1 AS PARENT
+->
+PRESERVED VERSION HISTORY
+->
+OLD-NICHE REUSE OF V1
+->
+NEW-NICHE REUSE OF V2
+->
+AUTHORIZED ROLLBACK / REACTIVATION
+->
+BOUNDED VERSION GROWTH.
+
+PLAIN-SPEAK INTERPRETATION
+
+Yggdrasil can now do something more subtle than learning a new environment.
+
+It can recognize:
+
+"this is still C,
+but C has changed."
+
+It did not waste a fourth memory slot.
+
+It did not erase the old C.
+
+It waited,
+watched the changed environment,
+and learned a revised version.
+
+That became:
+
+C version 2.
+
+C version 1 stayed intact underneath it.
+
+Later we brought the old C pattern back.
+
+Yggdrasil selected version 1 again.
+
+Then we brought the revised C pattern back.
+
+It selected version 2.
+
+No retraining was needed in either case.
+
+The new version also helped:
+
+989 immediate-service requests
+
+versus
+
+937
+
+when the organism stubbornly kept using stale C-v1,
+
+while matching the evaluator-only oracle
+and avoiding 37 migrations.
+
+So developmental memory now has:
+
+contexts
+
+AND
+
+versioned history inside a context.
+
+It can grow,
+revise,
+remember ancestry,
+roll back,
+and reactivate
+without silently rewriting its past.
+
+NEXT JUSTIFIED QUESTION
+
+A15 still assumes that drift settles into one stable version
+for long enough to learn a stationary C-v2.
+
+The next materially different gate should attack:
+
+N7 — CONTINUOUS / RAPID DRIFT.
+
+The useful next question is not simply C-v3.
+
+It is whether Yggdrasil can track a bounded moving developmental niche
+using incremental,
+version-aware adaptation
+without version explosion,
+thrashing,
+or loss of historical stable anchors.
+
+That gate should distinguish:
+
+temporary fluctuation;
+gradual drift;
+stable regime change;
+and true novel context.
+
+ACCEPTED TRAINING FRONTIER
+
+A07 / T1:
+positive hereditary task-program learning.
+
+A08 / T2:
+positive provenance-aware noisy learning.
+
+A09 / T2B:
+positive distributed cellular training memory.
+
+A10 / T3:
+positive bounded developmental-policy learning via FIXA.
+
+A11 / T4:
+positive context-conditional continual developmental memory.
+
+A12 / T5:
+positive latent-context inference.
+
+A13 / T6:
+positive bounded novel-context discovery.
+
+A14 / strict T6:
+positive strict provenance-qualified novel-context replication
+on definitive exact-F14 evidence.
+
+A15 / T7:
+positive versioned developmental-context revision under stable drift.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
