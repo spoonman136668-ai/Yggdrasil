@@ -729,3 +729,184 @@ That is the first experiment in this lineage that should be called training.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A07 TRAINING T1 EXPERIENCE-DEPENDENT HEREDITARY LEARNING
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY PRIMARY A07 TARGET PROGRAM OR LEARNER ORDER.
+
+IMPLEMENTATION COMMIT
+
+ca3a1104249c7c63a2cbf84e96d1a5b61dfce3a7.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a07_t1_experience_learning_v1.py
+
+Loader Git blob:
+
+2f028e1a62fa25485f9a176b688a69f9e2aae735.
+
+Payload:
+
+research/applications/track-a/a07_t1_experience_learning_v1.py.gz
+
+Payload Git blob:
+
+e257a7e32ff9c2282f59d2aa0c6a120bf3ca4d68.
+
+Compressed payload SHA-256:
+
+065d07fd7cab5daadc3a1bbe96ff981a13e1ed61443721066c3d3181ebe7ebce.
+
+Compressed payload bytes:
+
+6709.
+
+Decompressed source SHA-256:
+
+de26ba2c1530f9086a878521f4705896c8f2ad332179ceec0fde9d5f6d71d0ad.
+
+Decompressed source bytes:
+
+22840.
+
+FROZEN PARENT
+
+A06 source SHA-256:
+
+eb7a83320983168fe63d46852ee5d84bebf4c4cf80674ab2a885502e3bfb5a73.
+
+A06 freeze:
+
+890046dba7004bdceebb8b49f2516779dc7b08ee.
+
+A06 update manifest:
+
+2146c42b61663afede16745123af96bb760a3f886793e9e2d741522c546c2404.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Quadratic target catalog size:
+
+840.
+
+Training input indices:
+
+0,1,2,3,4,5,6,8,9,10,12.
+
+Held-out input indices:
+
+7,11,13,14,15.
+
+Training feature rank over GF(2):
+
+11 / 11.
+
+Train / holdout overlap:
+
+0.
+
+Learner roots:
+
+A = 4398046511104.
+B = 8796093022208.
+
+Mechanical target manifest used only:
+
+MECHANICAL-NONPRIMARY-FREEZE.
+
+Mechanical target manifest SHA-256:
+
+6c999b5a79cd5f1840c6a32265c6012f656a6988b592a425dbce6fc783d41c53.
+
+No real primary target derived:
+
+TRUE.
+
+FULL NON-PRIMARY TRAINING SMOKE
+
+12 / 12 learner A exact reconstructions.
+
+12 / 12 learner B exact reconstructions.
+
+12 / 12 learner pairs agreed.
+
+120 / 120 held-out learner predictions correct.
+
+12 / 12 hereditary commits.
+
+Candidate served:
+
+52273.
+
+Candidate incorrect:
+
+0.
+
+Stale-program served:
+
+0.
+
+Migration inheritance:
+
+245.
+
+All dedicated plasticity / hereditary probes:
+
+PASS.
+
+All required negative controls:
+
+PASS.
+
+All restarts:
+
+equivalent.
+
+All existing safety totals:
+
+zero.
+
+Correlated identical training-label poison boundary:
+
+exposed as expected.
+
+These outcomes used the literal fake freeze label
+MECHANICAL-NONPRIMARY-FREEZE
+and are implementation validation only.
+
+They are not A07 scientific evidence.
+
+PRIMARY TARGET STATUS AT THIS FREEZE
+
+NOT DERIVED.
+
+Let the resulting commit SHA of this freeze update be F07.
+
+Only after F07 exists may the harness derive:
+
+- 12 target quadratic programs;
+- learner A training orders;
+- learner B training orders.
+
+No post-freeze target rejection is allowed except exact equality with the current version-0 role program.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
