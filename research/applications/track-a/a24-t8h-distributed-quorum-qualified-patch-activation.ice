@@ -856,3 +856,498 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A24 / T8H DISTRIBUTED QUORUM-QUALIFIED PATCH ACTIVATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE MIXED-NEGATIVE RESULT /
+QUORUM REDUCED HARM SUBSTANTIALLY
+BUT FAILED COVERAGE AND SAFETY THRESHOLDS /
+NO QUORUM GATE QUALIFIED /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+9c8ec00ccd61f534d5875c58e3b1e9715b0e5c90.
+
+F24:
+
+0e15a849e918a51c3ccbdfa912a3ba1011d9f2c8.
+
+Source SHA-256:
+
+762b7eb72ed0301b978cc2ae01d7934d55eed760eb02b13db5b98dbfd477a5b2.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+776291741d77b86932b294764cd32c453b168ccd.
+
+384-trajectory manifest SHA-256:
+
+edd2ec3055a78f2ba69236757ca88e9fe102ce0e471453769286eb14587caf18.
+
+Manifest-wrapper SHA-256:
+
+a129d4d9abd9e7b8d96d0700e51040b0f34995b49ebcaed103a1f8fd5e62cfb8.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete F24-derived primary sweeps were byte-identical.
+
+Serialized semantic output SHA-256:
+
+f8147e8875fa0c6714a638ee49acce6874d42ddf30e2476580ccec51e40e2d05.
+
+Serialized output bytes:
+
+416736.
+
+All P1-P18 integrity probes:
+
+PASS.
+
+A17 replay remained exact.
+
+FRESH R1 W2 BASELINE
+
+Unconditional all-candidate W2 harmful:
+
+54 / 384.
+
+Unconditional harm rate:
+
+0.140625.
+
+G0 — GLOBAL ONE-HIT REFERENCE
+
+Expansions:
+
+78.
+
+Actual W2 outcomes:
+
+beneficial = 27;
+neutral = 38;
+harmful = 13.
+
+Actual harm rate:
+
+0.1666666667.
+
+R1-label harm rate among G0 expansions:
+
+0.2051282051.
+
+Complete service delta versus all-stale R0:
+
++164.
+
+G0 QUALIFIED:
+
+FALSE.
+
+Q1 — 7-OF-12 POPULATION QUORUM
+
+Expansions:
+
+15.
+
+Actual W2 outcomes:
+
+beneficial = 7;
+neutral = 7;
+harmful = 1.
+
+Actual harm rate:
+
+0.0666666667.
+
+R1-label harm rate:
+
+0.0666666667.
+
+Complete service delta versus R0:
+
++41.
+
+Complete service delta versus R1:
+
+-246.
+
+Relative to G0:
+
+67 G0 expansions rejected.
+
+Of the 13 harmful G0 expansions:
+
+12 rejected.
+
+Of the 27 beneficial G0 expansions:
+
+22 rejected.
+
+Fraction of G0 beneficial expansions retained:
+
+0.1851851852.
+
+Coverage floor:
+
+15 / 48 minimum.
+
+FAIL.
+
+Harm ceiling:
+
+6.67%
+versus
+required <= 5%.
+
+FAIL.
+
+Q1 QUORUM-QUALIFIED:
+
+FALSE.
+
+Q2 — PROVENANCE-QUALIFIED QUORUM
+
+Observed decisions and outcomes were exactly identical to Q1.
+
+Expansions:
+
+15.
+
+Actual harm rate:
+
+0.0666666667.
+
+Coverage:
+
+15.
+
+Q2 QUORUM-QUALIFIED:
+
+FALSE.
+
+Reason for no discrimination:
+
+every observed 7-of-12 support quorum
+already included all three fixed provenance families.
+
+Observed:
+
+support >= 7 but provenance diversity failed:
+
+0.
+
+Q3 — PROVENANCE + NICHE QUORUM
+
+Observed decisions and outcomes were exactly identical to Q1 / Q2.
+
+Expansions:
+
+15.
+
+Actual harm rate:
+
+0.0666666667.
+
+Coverage:
+
+15.
+
+Q3 QUORUM-QUALIFIED:
+
+FALSE.
+
+Reason for no additional discrimination:
+
+every observed provenance-qualified 7-cell quorum
+also spanned at least three fixed developmental niches.
+
+Observed:
+
+provenance-qualified quorum
+but niche diversity failed:
+
+0.
+
+PRIMARY RESULT
+
+A24_ANY_QUORUM_QUALIFIED:
+
+FALSE.
+
+A24_QUORUM_INFORMATION_GAIN:
+
+FALSE
+
+under the frozen definition.
+
+The quorum did reduce harm,
+and rejected 12 / 13 harmful G0 expansions,
+but it retained only 18.5% of G0's beneficial expansions,
+below the preregistered 50% retention condition.
+
+SUPPORT-COUNT DIAGNOSTIC
+
+Prospective harm was not monotonic
+with raw supporter count.
+
+Observed hypothetical candidate W2 harm rates
+by W1 supporter count included:
+
+6 supporters:
+1 harmful / 18;
+5.56%.
+
+7 supporters:
+0 harmful / 12;
+0%.
+
+8 supporters:
+1 harmful / 1;
+100%.
+
+9 supporters:
+0 harmful / 2;
+0%.
+
+Therefore:
+
+MORE SUPPORTERS
+
+does not imply:
+
+MONOTONICALLY LOWER FUTURE RISK.
+
+The sole harmful quorum expansion was:
+
+scenario 8;
+patch 3;
+replica 1.
+
+Its W1 evidence was exceptionally strong by simple quorum criteria:
+
+global W1 delta:
++3.
+
+supporters:
+
+8 / 12.
+
+opponents:
+
+0.
+
+abstentions:
+
+4.
+
+all three provenance families represented.
+
+all four fixed developmental niches represented.
+
+per-family summed evidence:
+
+family 0 = +4;
+family 1 = +3;
+family 2 = +3.
+
+per-niche summed evidence:
+
+niche 0 = +4;
+niche 1 = +1;
+niche 2 = +4;
+niche 3 = +1.
+
+Untouched W2 actual consequence:
+
+-1.
+
+Thus even:
+
+BROAD SUPPORT
++
+ZERO OPPOSITION
++
+FULL PROVENANCE COVERAGE
++
+FULL NICHE COVERAGE
+
+did not guarantee future benefit.
+
+TECHNICAL INTERPRETATION
+
+A24 demonstrates that
+distributed local-cell evidence contains real filtering information.
+
+Compared with the global one-hit gate:
+
+actual harm fell from:
+
+16.67%
+
+to:
+
+6.67%.
+
+The quorum rejected:
+
+12 / 13
+
+harmful global expansions.
+
+That is meaningful.
+
+But the same quorum was far too conservative:
+
+15 expansions only.
+
+And the one remaining harmful expansion
+was not caused by narrow lineage concentration,
+niche concentration,
+or visible local disagreement.
+
+It was a genuinely broad local consensus
+that failed prospectively.
+
+Therefore the A24 result supports:
+
+QUORUM AS AN UNCERTAINTY SIGNAL.
+
+It does NOT support:
+
+QUORUM AS SOLE ACTIVATION AUTHORITY.
+
+The failure mode is compatible with A19-A23:
+
+the population can agree broadly
+about the evidence it has observed
+while the future remains uncertain.
+
+Quorum reduces one kind of uncertainty:
+
+IS THIS EFFECT BROADLY EXPERIENCED NOW?
+
+It does not by itself resolve:
+
+WILL THIS EFFECT PERSIST?
+
+PLAIN-SPEAK INTERPRETATION
+
+Quorum helped.
+
+A lot.
+
+The old global rule approved 78 patches
+and 13 of those later hurt.
+
+When we made the individual software cells report
+whether their own local contribution had improved,
+only 15 patches reached quorum.
+
+Only one of those 15 hurt later.
+
+So asking the population
+was much safer than asking one global score.
+
+But it became too cautious.
+
+It threw away most of the useful patches too.
+
+And the most important case
+was the one bad quorum decision.
+
+Eight of twelve cells supported the patch.
+
+Nobody opposed it.
+
+Every family line was represented.
+
+Every type of developmental cell was represented.
+
+Every family had positive evidence.
+
+And the patch still lost
+when the future changed.
+
+So the quorum was not lying.
+
+It really had broad evidence
+that the patch was helping NOW.
+
+What it could not know was:
+
+WILL THAT STILL BE TRUE NEXT?
+
+That gives quorum a very clear place
+in the architecture.
+
+Quorum can tell Yggdrasil:
+
+"this experience is broad,
+not just one local accident."
+
+It cannot tell Yggdrasil by itself:
+
+"this experience will persist."
+
+That means quorum sensing
+looks useful enough to keep.
+
+But it needs another mechanism
+beside it
+to handle temporal uncertainty.
+
+Do not tune 7-of-12 downward after seeing this result.
+
+Do not promote the 7-of-12 gate.
+
+The next clean experiment
+can now test temporal averaging / persistence detection
+while preserving quorum as a measured signal,
+not yet as authority.
+
+A17:
+mixed / negative.
+
+A18:
+diagnostic.
+
+A19:
+shadow confidence insufficient.
+
+A20:
+known-world canary discovery.
+
+A21:
+one-hit replication failed.
+
+A22:
+two-hit hysteresis safer but indecisive.
+
+A23:
+persistent sign ledger unsafe.
+
+A24:
+distributed quorum materially filters harm
+but is too conservative
+and cannot resolve future persistence.
+
+No autonomous activation controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
