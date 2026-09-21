@@ -190,3 +190,127 @@ then the original generalization result survives with the partition protocol cor
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A03-FIXA DYNAMIC RE-MERGE
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST FIXA PRIMARY REQUEST.
+
+IMPLEMENTATION COMMIT
+
+05fb530c9fe984fe0c8559c4f61a873ac7b2023d.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a03_fixa_dynamic_remerge_v1.py
+
+Loader Git blob:
+
+a0880d9e42d931980b758d385b7e873641e846da.
+
+Payload:
+
+research/applications/track-a/a03_fixa_dynamic_remerge_v1.py.gz
+
+Payload Git blob:
+
+7d3e22db6eb123374cdf1a44e508fda4e0858e5b.
+
+Compressed payload SHA-256:
+
+e0b2fa6da50a061b47ca9af1700bafef390b3fc9e777a4ef56cb73bbb65907ce.
+
+Compressed payload bytes:
+
+7400.
+
+Decompressed source SHA-256:
+
+f38fbe4823c6f8e3093a45b701cc39054c3bc814a67a97053d180bacb5087234.
+
+Decompressed source bytes:
+
+25934.
+
+SEMANTIC DIFF FROM A03 R1
+
+One organism-semantic correction only:
+
+_remerge(epoch)
+
+now triggers when:
+
+epoch == heldout_schedule.partition_end + 1.
+
+Its transaction body carries forward the inherited A02 re-merge semantics.
+
+Additional code only records:
+
+dynamic re-merge count;
+final provisional count;
+R1 output / aggregate equivalence.
+
+Those fields do not participate in organism decisions.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical-seed task outputs identical to A03 R1:
+
+TRUE.
+
+Mechanical-seed task metrics identical to A03 R1:
+
+TRUE.
+
+Mechanical-seed final provisional count:
+
+0.
+
+Mechanical-seed dynamic re-merge count:
+
+1.
+
+Mechanical-seed restarted / uninterrupted authoritative state:
+
+equivalent.
+
+Mechanical-seed restarted / uninterrupted output / metrics:
+
+equivalent.
+
+PRIMARY ENVIRONMENT REMAINS FROZEN
+
+Original A03 freeze F:
+
+6f010ce561d958a324664b2d3e0c04e3e113d91b.
+
+Original A03 schedule manifest SHA-256:
+
+842d8f03f1f1229e633c783a895b5b6ceb81f813c2fb104a81000c25baa40848.
+
+The exact same 12 recorded primary seeds are used.
+
+No primary schedule is regenerated,
+redrawn,
+or replaced.
+
+R1 task-output equivalence anchor:
+
+3ee64e5ab63df92056c0b68e7b8f372d37656310476e5c4c0aef358c2e22bd2f.
+
+No FIXA primary request has been executed before this freeze.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
