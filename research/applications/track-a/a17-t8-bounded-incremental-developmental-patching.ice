@@ -899,3 +899,154 @@ No A17 primary observation has been consumed.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A17 T8 BOUNDED INCREMENTAL PATCH TRACKING
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY PRIMARY A17 FOUR-PATCH PATH,
+PATCH OBSERVATION,
+ATTESTATION ROOT,
+LEARNER ORDER,
+HELD-OUT EVALUATION,
+OR REPLACEMENT PLAN.
+
+IMPLEMENTATION COMMIT
+
+82698cbfd07e52e7805caf1e2c60cfd541f4fe3b.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a17_t8_bounded_incremental_patching_v1.py
+
+Loader Git blob:
+
+9331097d534316e02fef0a346148d91c4627ee22.
+
+Payload:
+
+research/applications/track-a/a17_t8_bounded_incremental_patching_v1.py.gz
+
+Payload Git blob:
+
+759c0fa97af51969e022fc2e7d607e093ad8ac70.
+
+Compressed payload SHA-256:
+
+d5eb99b8823427ac9d67cd4b1308a370f20f4431df557b47fae25d931e8da907.
+
+Compressed payload bytes:
+
+6165.
+
+Decompressed source SHA-256:
+
+a1ef99dc5948328d5b8a85d87b7e62a718b4238474322c16aeec6a730244d5c5.
+
+Decompressed source bytes:
+
+17263.
+
+FROZEN PARENT
+
+A15 accepted closure:
+
+1bea52944ed3b836c6dc6612c73e5e430b69bd2d.
+
+A15 source SHA-256:
+
+4dfd8814c869380317bb90d8baf68f79f4c2ce9874db7bc9278546b56001c071.
+
+A15 freeze F15:
+
+dd9cd2cfee331d94631af17b0f0a61684e5091a4.
+
+A15 manifest SHA-256:
+
+0e7d6c14cff50e8e8705cbf4082d5f333267b2e4646eea333559db4b4b28cef9.
+
+A15 primary result SHA-256:
+
+494b3096e407790a341d66ee37833546b5ce50e2a88a2308a17c1c5bfb0941d3.
+
+The exact accepted 12 C-v2 priors are embedded as immutable base checkpoints.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax / import:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Mechanical manifest SHA-256:
+
+7fcf5e5bc3820859f4f11bc650325ebe23ad90678363df3b13ba2ddea3ac619e.
+
+Two full fake-freeze mechanical sweeps after canonical restart normalization:
+
+serialized output SHA-256:
+
+c7a5c2733560b69fbaa6ec7dab6bea058c623bd1c6beee2f710dcd7e5c079f1c
+
+for both sweeps.
+
+Mechanical T8 patch signal:
+
+TRUE.
+
+Mechanical aggregate:
+
+candidate first-four service = 3958;
+stale-previous baseline = 3928;
+oracle = 3958;
+candidate >= stale = 40 / 48;
+oracle efficiency = 1.0;
+migrations avoided = 32;
+all rollback / reactivation checks exact;
+all restart comparisons equivalent;
+all P1..P12 probes PASS;
+all N1..N5 unsafe controls exposed.
+
+One pre-freeze implementation issue was caught:
+
+JSON restart converted patch-journal tuples to lists.
+
+Canonical tuple restoration repaired representation only.
+
+No developmental,
+patch,
+service,
+or authorization behavior changed.
+
+PRIMARY STATUS AT THIS FREEZE
+
+NOT DERIVED.
+
+Let the resulting commit SHA be:
+
+F17.
+
+Only after F17 exists may the harness derive:
+
+- 12 deterministic four-patch paths;
+- 16 observations per patch;
+- two-root attestations;
+- learner A / B orders;
+- held-out patch evaluation sequences;
+- patch-3 restart evidence state;
+- replacement target sets.
+
+No A17 primary patch observation has been consumed.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
