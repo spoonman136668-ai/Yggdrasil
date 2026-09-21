@@ -533,3 +533,437 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — DG-1R-05AB ANCESTRY-LINKED HEREDITARY CAPSULE
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED / POSITIVE PRIMARY / REPRODUCIBLE / NON-CANONICAL.
+
+FROZEN HARNESS EXECUTED
+
+Path:
+
+research/experiments/dg1r/harnesses/dg1r_05ab_ancestry_linked_capsule_v1.py
+
+Frozen source commit:
+
+b9ccbc0c42ca35c9b6d8d669045d685ecb91fc57.
+
+Frozen Git blob:
+
+e2ff32afa026d3d016cd7db0f3920326dd7e2bc8.
+
+Frozen source SHA-256:
+
+cc49c97543a87b7449bb585b165c79bd620c822d973f0c41004c012a831b73db.
+
+Frozen source bytes:
+
+23290.
+
+EXECUTION PROVENANCE
+
+The exact connector-fetched GitHub source was reconstructed byte-for-byte in the execution sandbox.
+
+Reconstructed source bytes:
+
+23290.
+
+Reconstructed source SHA-256:
+
+cc49c97543a87b7449bb585b165c79bd620c822d973f0c41004c012a831b73db.
+
+Exact frozen-source match:
+
+TRUE.
+
+No source change occurred after freeze.
+
+REPRODUCIBILITY
+
+Two complete deterministic sweeps.
+
+Sweep 1 serialized output SHA-256:
+
+dc86bb88cde1c9a96e4341edf114dd5410e81f52b0bb090fb0ff5d09e7ef7362.
+
+Sweep 2 serialized output SHA-256:
+
+dc86bb88cde1c9a96e4341edf114dd5410e81f52b0bb090fb0ff5d09e7ef7362.
+
+Byte-identical:
+
+TRUE.
+
+PRIMARY RESULT
+
+ANCESTRY_LINKED_CAPSULE_SAFE:
+
+TRUE.
+
+All preregistered primary component signals:
+
+TRUE.
+
+AUDIT A — LEGITIMATE DEVELOPMENT
+
+Cases:
+
+7.
+
+Validated:
+
+7 / 7.
+
+Cases where current role differed from selected archived role
+and were still correctly validated as legitimate descendants:
+
+4.
+
+Thus full ancestry verification did not turn temporal memory into an evolutionary veto.
+
+AUDIT B — OLDER SEALED CHECKPOINT REWRITE WITHOUT REHASH
+
+Cases:
+
+3.
+
+Contested:
+
+3 / 3.
+
+AUDIT C — OLDER SEALED CHECKPOINT REWRITE WITH RECOMPUTED SUFFIX
+
+Cases:
+
+3.
+
+Contested:
+
+3 / 3.
+
+Recomputing a forged suffix did not help
+because the recomputed chain no longer matched the honest sealed causal cursor.
+
+AUDIT D — SELECTED ANCHOR INCOMING-EDGE CORRUPTION
+
+Cases:
+
+2.
+
+Contested:
+
+2 / 2.
+
+This closes the exact incoming-edge blind spot exposed by DG-1R-05Z.
+
+AUDIT E — MISSING INTERMEDIATE HISTORY
+
+Cases:
+
+5.
+
+Rejected / non-validated:
+
+5 / 5.
+
+AUDIT F — POST-ANCHOR PARENT / GENERATION BREAK
+
+Cases:
+
+4.
+
+Rejected / non-validated:
+
+4 / 4.
+
+AUDIT G — NEWEST COHORT UNAVAILABLE
+
+Cases:
+
+5.
+
+Validated from next older independently qualified cohort:
+
+5 / 5.
+
+AUDIT H — CONTRADICTORY NEWER COHORT
+
+Cases:
+
+3.
+
+Contested at the newer cohort:
+
+3 / 3.
+
+Older valid cohorts were not used to bypass a contradictory qualified newer anchor.
+
+AUDIT I — ONE SENTINEL TAMPER
+
+Cases:
+
+7.
+
+Remaining independent honest pair preserved correct validation:
+
+7 / 7.
+
+AUDIT J — SAME-ROOT SENTINEL FANOUT
+
+Cases:
+
+3.
+
+Abstained:
+
+3 / 3.
+
+Headcount did not manufacture temporal independence.
+
+AUDIT K — REACTIVATION CATCH-UP
+
+Cases:
+
+15.
+
+Pre-catch-up voting blocked:
+
+15 / 15.
+
+Post-catch-up voting restored:
+
+15 / 15.
+
+AUDIT L — FULL DORMANT CELL VS HEREDITARY CAPSULE
+
+Cases:
+
+42.
+
+Identical temporal status and selected anchor generation:
+
+42 / 42.
+
+Representative synthetic serialization:
+
+full dormant-cell state = 391 bytes.
+
+compact hereditary capsule = 90 bytes.
+
+This is a toy representation,
+not a production storage benchmark.
+
+The result establishes decision-equivalence under the frozen 05AB verifier.
+
+AUDIT M — CAPSULE FIELD FREEZE
+
+Field count:
+
+5.
+
+Exact fields:
+
+checkpoint_id;
+generation;
+role;
+fp2;
+causal_cursor.
+
+FIVE_FIELD_CAPSULE_PRESERVED:
+
+TRUE.
+
+No field was added after the 05Z negative result.
+
+CORRELATED / CONSTITUTIONAL HOLDOUTS
+
+H1 — CORRUPTION BEFORE SEAL
+
+A false but internally consistent history honestly sealed by temporal quorum
+was validated.
+
+CORRUPTION_BEFORE_SEAL_BOUNDARY:
+
+TRUE.
+
+H2 — TEMPORAL QUORUM FORGERY
+
+Two independently rooted temporal sentinels were coherently forged
+to the same false ancestry cursor.
+
+The false chain was validated.
+
+TEMPORAL_QUORUM_FORGERY_BOUNDARY:
+
+TRUE.
+
+H3 — CAUSALLY VALID FALSE GOVERNANCE DESCENDANT
+
+A later false governance decision was committed into an otherwise valid chain
+after an honest anchor.
+
+Temporal ancestry validation accepted the chain.
+
+CAUSALLY_VALID_FALSE_GOVERNANCE_BOUNDARY:
+
+TRUE.
+
+H4 — COMPLETE REAL-EVENT OMISSION
+
+A visible internally complete branch omitted a modeled real conflicting event
+from every surviving history.
+
+The visible branch was validated.
+
+COMPLETE_EVENT_OMISSION_BOUNDARY:
+
+TRUE.
+
+H5 — GENESIS / ROOT REPLACEMENT
+
+An entirely replacement history and replacement temporal capsules
+were coherently regenerated under a false genesis accepted as ROOT.
+
+The replacement lineage was validated.
+
+GENESIS_REPLACEMENT_BOUNDARY:
+
+TRUE.
+
+These are expected boundaries.
+
+05AB establishes ancestry integrity,
+not a truth oracle.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-05AB closes the two primary continuity failures from DG-1R-05Z
+without expanding the hereditary capsule.
+
+The critical repair is verifier semantics.
+
+The same causal_cursor that looked insufficient under local checkpoint validation
+became sufficient across the frozen primary family
+when treated as a commitment to a fully reconstructed ancestry chain.
+
+The successful rule is:
+
+A TEMPORAL CHECKPOINT IS AUTHORITATIVE
+ONLY AFTER THE HISTORY THAT CREATED IT
+HAS BEEN VERIFIED.
+
+That includes:
+
+- genesis continuity;
+- every generation number;
+- every parent edge;
+- every recomputed commit ID;
+- the selected capsule;
+- earlier independently qualified sealed checkpoints;
+- the terminal current state.
+
+This means the useful information unit is not:
+
+A COMPLETE OLD CELL.
+
+It is closer to:
+
+A COMPACT HEREDITARY CAPSULE
+PLUS
+A VERIFIABLE DEVELOPMENTAL LINEAGE.
+
+The full dormant-cell-only internal state remained irrelevant
+to all 42 frozen authorization-equivalence cases.
+
+That does not prove the five-field capsule is universally sufficient.
+
+It does establish that the specific 05Z failures did not require more stored cell state.
+
+They required stronger ancestry verification.
+
+The remaining failures are now outside ordinary ancestry consistency:
+
+- a bad state can be sealed honestly;
+- an independent quorum can collude or be forged;
+- a false governance event can be causally well formed;
+- a real event can disappear from all observable histories;
+- genesis can be replaced if the constitutional root itself is compromised.
+
+These should remain explicit constitutional boundaries.
+
+PLAIN-SPEAK INTERPRETATION
+
+This one worked.
+
+The small DNA-like package did not need to get bigger.
+
+The problem in the previous experiment was that we were reading the family tree from the middle.
+
+Now the checkpoint has to prove the whole chain that created it.
+
+If somebody changes an old generation and leaves the later hashes alone,
+the chain breaks.
+
+If they change the old generation and rebuild all the later hashes,
+the rebuilt chain no longer matches the sealed causal cursor
+stored by the sleeping sentinels.
+
+That closed both holes from 05Z.
+
+The organism can still evolve normally.
+
+An old sentinel does not say:
+
+"You must still look like me."
+
+It says:
+
+"Show me that you really descended from me."
+
+And the compact five-field package made exactly the same decisions
+as the larger preserved artificial cell in every tested case.
+
+So the evidence now favors:
+
+PRESERVE A SMALL HEREDITARY CAPSULE,
+NOT AN ENTIRE HISTORICAL CELL,
+WHEN THE PURPOSE IS TEMPORAL IDENTITY / ANCESTRY AUTHORIZATION.
+
+The archive still cannot tell whether every legitimate decision was wise or truthful.
+
+It protects continuity.
+
+It does not create omniscience.
+
+NEXT JUSTIFIED STEP
+
+DG-1R-05AA remains the preregistered hibernation / reactivation lifecycle audit.
+
+It should now be executed as its own frozen experiment
+without silently rewriting its preregistered question around the 05AB result.
+
+After 05AA,
+a separate integration experiment should test whether:
+
+- the positive 05AB ancestry-linked hereditary capsule;
+- the 05AA reactivation lifecycle;
+- live repair / health-memory / role migration;
+- witness replacement;
+- temporal sentinels;
+- partition / re-merge
+
+can coexist across one persistent developmental lifecycle.
+
+That integration experiment should be the stronger pre-application gate.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
