@@ -1215,3 +1215,741 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A33 / T8Q INDEPENDENT COMPETING-HAZARD RECRUITMENT
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE NEGATIVE MECHANISM RESULT /
+INDEPENDENT RECRUITMENT CLOCKS BROADENED ACTUATION IN TIME
+BUT INCREASED POPULATION OSCILLATION /
+NO PRIMARY ARM QUALIFIED /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+7772b346b44cc583e70e24db60f9650fa71db903.
+
+F33:
+
+3809ccb3af68310227607e4d8d6a63865d84564a.
+
+Source SHA-256:
+
+d483897b88d2948e8c96f375e257702425b5d2ab32ec9599894a73967e03803e.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+86e3b25449266d03baac008354eb2216227d8807.
+
+World-manifest SHA-256:
+
+0b591e2604b944f84f2f46dd27e959235cf3e39f25fff84b24c556309aa7b918.
+
+Manifest-wrapper SHA-256:
+
+d969f66df06e9656d365ef8ec033ff453a51887adfed2285b7a374b381ccc868.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete F33-derived primary sweeps were byte-identical.
+
+Serialized semantic output SHA-256:
+
+de72ca3e6abc41a9746ee0a45b76a14b57a039a1472fccd1fd9fcf49a3a5d6cb.
+
+All P1-P23 integrity probes:
+
+PASS.
+
+PRIMARY RESULT
+
+A33_ANY_POISSON_RECRUITMENT_QUALIFIED:
+
+FALSE.
+
+A33_DISTRIBUTED_ACTUATION_INFORMATION_GAIN:
+
+FALSE.
+
+SYNCHRONIZED REFERENCES
+
+SYNC_D2:
+
+aggregate service:
+214054.
+
+harmful:
+69 / 384
+=
+17.97%.
+
+false C dominance:
+15.34%.
+
+false S dominance:
+13.04%.
+
+oscillation:
+33 / 384
+=
+8.59%.
+
+recruitment width median:
+0 epochs.
+
+directional coordination:
+100%.
+
+reversal acquisition:
+86.72%.
+
+SYNC_D3:
+
+aggregate service:
+212057.
+
+harmful:
+70 / 384
+=
+18.23%.
+
+oscillation:
+33 / 384
+=
+8.59%.
+
+width:
+0.
+
+coordination:
+100%.
+
+reversal acquisition:
+86.72%.
+
+PRIMARY POISSON ARMS
+
+D2_P75L25:
+
+aggregate service:
+234990.
+
+harmful:
+65 / 384
+=
+16.93%.
+
+oscillation:
+67 / 384
+=
+17.45%.
+
+finite recruitment-width median:
+6 epochs.
+
+width NEVER fraction:
+86.68%.
+
+directional coordination median:
+70.0%.
+
+reversal acquisition:
+98.44%.
+
+D2_P50L50:
+
+aggregate service:
+238824.
+
+harmful:
+62 / 384
+=
+16.15%.
+
+oscillation:
+64 / 384
+=
+16.67%.
+
+finite width median:
+6 epochs.
+
+width NEVER:
+86.36%.
+
+directional coordination:
+76.0%.
+
+reversal acquisition:
+100%.
+
+D2_P25L75:
+
+aggregate service:
+242761.
+
+harmful:
+62 / 384
+=
+16.15%.
+
+oscillation:
+67 / 384
+=
+17.45%.
+
+finite width median:
+6 epochs.
+
+width NEVER:
+84.24%.
+
+directional coordination:
+82.76%.
+
+reversal acquisition:
+100%.
+
+D3_P75L25:
+
+aggregate service:
+226023.
+
+harmful:
+62 / 384
+=
+16.15%.
+
+oscillation:
+56 / 384
+=
+14.58%.
+
+finite width median:
+6 epochs.
+
+directional coordination:
+71.43%.
+
+reversal acquisition:
+98.44%.
+
+D3_P50L50:
+
+aggregate service:
+229342.
+
+harmful:
+62 / 384
+=
+16.15%.
+
+oscillation:
+60 / 384
+=
+15.63%.
+
+finite width median:
+6 epochs.
+
+directional coordination:
+76.92%.
+
+reversal acquisition:
+99.22%.
+
+D3_P25L75:
+
+aggregate service:
+232739.
+
+harmful:
+64 / 384
+=
+16.67%.
+
+oscillation:
+58 / 384
+=
+15.10%.
+
+finite width median:
+6 epochs.
+
+directional coordination:
+81.82%.
+
+reversal acquisition:
+100%.
+
+EXTREME CONTROLS
+
+D2_POOL_ONLY:
+
+aggregate service:
+231183.
+
+oscillation:
+16.41%.
+
+directional coordination:
+66.67%.
+
+D2_LOCAL_ONLY:
+
+aggregate service:
+247328.
+
+oscillation:
+17.97%.
+
+directional coordination:
+88.89%.
+
+POOL / LOCAL TRADEOFF
+
+The preregistered ratio sweep behaved directionally as expected in one respect.
+
+As local weight increased:
+
+directional coordination rose.
+
+For D2:
+
+70.0%
+->
+76.0%
+->
+82.76%.
+
+For D3:
+
+71.43%
+->
+76.92%
+->
+81.82%.
+
+POOL_ONLY was lowest:
+
+66.67%.
+
+LOCAL_ONLY was highest:
+
+88.89%.
+
+Thus local evidence materially improves
+which side individual cells choose.
+
+However,
+this did NOT translate into lower oscillation.
+
+RECRUITMENT WIDTH RESULT
+
+The synchronized references had:
+
+median width = 0 epochs.
+
+Primary Poisson arms had:
+
+median finite width = 6 epochs.
+
+Thus independent competing hazards
+successfully removed the all-at-once recruitment step.
+
+This directly validates the temporal-desynchronization mechanism.
+
+But:
+
+roughly 84-87% of recruitment waves
+never recruited 90% of the onset-eligible cells
+before pool bias reversed or the trial ended.
+
+Therefore the Poisson system often produced:
+
+progressive
+but incomplete
+
+recruitment waves.
+
+OSCILLATION FAILURE
+
+Every primary Poisson arm
+oscillated MORE than its synchronized reference.
+
+SYNC:
+
+8.59%.
+
+Primary Poisson range:
+
+14.58%
+to
+17.45%.
+
+The preregistered FAMILY-5 oscillatory worlds
+were not broken.
+
+Synchronized FAMILY-5 oscillatory set:
+
+31 trials.
+
+Broken by primary Poisson arms:
+
+D2_P75L25:
+0.
+
+D2_P50L50:
+0.
+
+D2_P25L75:
+0.
+
+D3_P75L25:
+2.
+
+D3_P50L50:
+0.
+
+D3_P25L75:
+1.
+
+Thus timing decorrelation alone
+did not attack the core transient / oscillatory family.
+
+FAMILY-5 CHURN DIAGNOSTIC
+
+Within FAMILY 5 only:
+
+SYNC_D2:
+
+oscillatory:
+31 / 64.
+
+median majority changes:
+1.
+
+mean majority changes:
+3.89.
+
+joins:
+7943.
+
+D2_P75L25:
+
+oscillatory:
+38 / 64.
+
+median majority changes:
+7.5.
+
+mean:
+5.39.
+
+joins:
+20163.
+
+D2_P50L50:
+
+oscillatory:
+37 / 64.
+
+median majority changes:
+7.
+
+joins:
+19591.
+
+D2_P25L75:
+
+oscillatory:
+40 / 64.
+
+median majority changes:
+9.
+
+joins:
+19081.
+
+D3 arms reduced this churn somewhat
+but remained worse than synchronization.
+
+The distributed clocks therefore did not merely
+spread one recruitment wave.
+
+They enabled many more
+continuous recruitment / defection cycles.
+
+CELL-LEVEL CHURN
+
+Across the full 384-world primary:
+
+D2_P75L25:
+
+53687 joins;
+8173 chatter events.
+
+D2_P50L50:
+
+51937 joins;
+7169 chatter events.
+
+D2_P25L75:
+
+50243 joins;
+6053 chatter events.
+
+D3_P75L25:
+
+49416 joins;
+4939 chatter events.
+
+D3_P50L50:
+
+48043 joins;
+4095 chatter events.
+
+D3_P25L75:
+
+46753 joins;
+3375 chatter events.
+
+Increasing local weighting
+and longer refractory memory
+both reduce micro-level churn.
+
+But not enough
+to outperform synchronized population dynamics.
+
+CONTRADICTION RESULT
+
+High-high contradiction no-majority fraction:
+
+SYNC references:
+100%
+
+under the A33 diagnostic threshold.
+
+Primary Poisson arms:
+
+D2:
+78.41% to 80.49%.
+
+D3:
+85.64% to 85.90%.
+
+So independent recruitment
+made majority commitment MORE likely
+during strongly contradictory pooled evidence.
+
+This is the opposite of the desired uncertainty behavior.
+
+ATTRACTOR QUALITY
+
+False dominance also worsened.
+
+SYNC_D2:
+
+false C:
+15.34%.
+
+false S:
+13.04%.
+
+Poisson primary arms:
+
+false C:
+18.75% to 19.89%.
+
+false S:
+16.43% to 17.87%.
+
+Thus the service gains
+did not correspond to cleaner final attractor classification.
+
+TECHNICAL INTERPRETATION
+
+A33 falsifies the simple hypothesis:
+
+SYNCHRONIZED ACTUATION
+IS THE ONLY CAUSE
+OF A32 POPULATION OSCILLATION.
+
+Independent timing removed the stampede.
+
+But it exposed a second actuation problem.
+
+When evidence is contradictory:
+
+lambda_C remains positive;
+
+lambda_S remains positive.
+
+Eligible cells therefore continue
+joining both sides independently.
+
+Local cross-inhibition then removes some of those cells.
+
+Refractory memory delays re-entry.
+
+When the timer expires,
+both hazards may still be active.
+
+The result is:
+
+CONTINUOUS TWO-SIDED RECRUITMENT CHURN.
+
+The synchronized rule had an accidental stabilizing feature:
+
+it required strong directional dominance
+before recruitment occurred.
+
+That acted as a recruitment deadband.
+
+A33 removed both:
+
+synchronization
+
+and
+
+the deadband.
+
+The first removal was desirable.
+
+The second was not.
+
+Therefore the next architectural requirement is:
+
+DISTRIBUTED TIMING
++
+CONTRADICTION-SENSITIVE HAZARD SUPPRESSION.
+
+The clean next mechanism is NOT
+to restore a global all-cell gate.
+
+Instead,
+each cell's recruitment hazard should collapse
+when opposing evidence is simultaneously strong.
+
+For example,
+future preregistration could test a local or mixed form such as:
+
+lambda_C
+proportional to
+candidate support
+times
+opposition suppression.
+
+And symmetrically for S.
+
+This would preserve:
+
+independent clocks;
+distributed actuation;
+local evidence;
+
+while creating a deadband
+during unresolved contradiction.
+
+That is a new experiment.
+
+No such suppression is added post hoc to A33.
+
+PLAIN-SPEAK INTERPRETATION
+
+The independent clocks did exactly one thing
+we wanted:
+
+they stopped everybody from joining at once.
+
+Recruitment stretched from:
+
+basically zero epochs
+
+to:
+
+about six epochs.
+
+But that did not calm the population.
+
+It made the population busier.
+
+Why?
+
+Because when both sides had evidence,
+both clocks kept running.
+
+Some cells joined candidate.
+
+Some joined stale.
+
+Local opposition knocked cells back out.
+
+Their short memory expired.
+
+Then both clocks were still running.
+
+So they joined again.
+
+We removed:
+
+"EVERYBODY GO NOW."
+
+But replaced it with:
+
+"EVERYBODY KEEP CONSIDERING BOTH SIDES ALL THE TIME."
+
+That is better distributed.
+
+It is not more stable.
+
+The synchronized system had one useful property
+we did not appreciate enough:
+
+when evidence was contradictory,
+it often refused to recruit anyone.
+
+That quiet zone mattered.
+
+So the next problem is now:
+
+KEEP THE INDEPENDENT CLOCKS,
+
+but teach each cell:
+
+"if both sides are shouting strongly,
+this is not a good time to join either side."
+
+That would make uncertainty suppress action
+without bringing back a central judge.
+
+A29:
+distributed sensing.
+
+A30:
+distributed retreat.
+
+A31:
+distributed memory.
+
+A33:
+distributed recruitment timing works mechanically,
+but needs distributed contradiction suppression.
+
+No autonomous controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
