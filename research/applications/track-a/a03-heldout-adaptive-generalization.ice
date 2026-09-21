@@ -634,3 +634,125 @@ rather than succeeding because we happened to design one friendly path through t
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A03 HELD-OUT ADAPTIVE GENERALIZATION
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY PRIMARY A03 SCHEDULE.
+
+IMPLEMENTATION COMMIT
+
+e06ddc9a0fa0a3e3f6edc911e3b4905ddbc0ab87.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a03_heldout_adaptive_generalization_v1.py
+
+Loader Git blob:
+
+cb98d1d414a35d6fb2e6a560cd266f47d2431952.
+
+Exact gzip payload:
+
+research/applications/track-a/a03_heldout_adaptive_generalization_v1.py.gz
+
+Payload Git blob:
+
+fdc7ff0db5a75e835e1f42be34993a822fbecaee.
+
+Compressed payload SHA-256:
+
+5b024ea4d81b9f54d290f63d8b7b0ad5bdadd8c25c46996e8490b3c889a31f64.
+
+Compressed payload bytes:
+
+6561.
+
+Decompressed exact harness SHA-256:
+
+7f7cd60ababa073cc7a3c541033c6aee7ca5c9c77a76e8cec5a17ee00ed984c1.
+
+Decompressed source bytes:
+
+22826.
+
+The loader refuses execution unless decompression reproduces that frozen source hash.
+
+FROZEN A02 DEPENDENCY
+
+Accepted A02 decompressed source SHA-256:
+
+b2eeb1e589a029f16b0437ce1f3dd05826b81a91ab6c6d91ce25bb28b96db60b.
+
+A02 accepted result regression anchor:
+
+ad408ca964108c3212bc55db1dd1c932ecbd588774323ebffdb755c32d361271.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Demand catalog size:
+
+296.
+
+Mechanical schedule only:
+
+PASS.
+
+Mechanical schedule SHA-256:
+
+8b16cb2cac0bfe3bdc9d0581a285bf65a9b71dc25f9e8bcf5ffd1b31c16fe966.
+
+Structural mechanical-seed smoke:
+
+384 epochs x 12 requests accounted for;
+six mechanical faults represented;
+no unresolved reallocation entry disappeared;
+restart authoritative state matched uninterrupted shadow;
+restart output / metric state matched uninterrupted shadow;
+environment impossibilities = 0.
+
+A02 regression guard:
+
+PASS.
+
+Accepted A02 result SHA,
+candidate served 11928,
+static served 9892,
+oracle served 11961,
+and incorrect served 0
+all reproduced.
+
+PRIMARY SCHEDULE STATUS AT THIS FREEZE
+
+NOT DERIVED.
+
+The exact 12 primary seeds and schedules do not yet exist in experimental evidence.
+
+They MUST be derived only after this freeze commit has been created.
+
+Let the resulting commit SHA of this freeze update be F.
+
+Primary seed i remains exactly:
+
+SHA-256("YGG-A03-PRIMARY|" + F + "|" + decimal(i)).
+
+No post-freeze seed rejection,
+schedule replacement,
+or harness change is allowed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
