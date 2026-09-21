@@ -555,3 +555,151 @@ but it does not get a vote in this experiment.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A25 TEMPORAL LOW-PASS PERSISTENCE CALIBRATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F25-DERIVED TRAJECTORY,
+TEMPORAL FILTER STATE,
+OR W4 OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+2e332c746259df64525978373cc582a11cab366f.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a25_t8i_temporal_lowpass_persistence_v1.py
+
+Loader Git blob:
+
+f44c5076c990715c93060520f9e96abcbb034971.
+
+Payload:
+
+research/applications/track-a/a25_t8i_temporal_lowpass_persistence_v1.py.gz
+
+Payload Git blob:
+
+b4c0e06111e14a516f11aa8d85f8108a318b7dcf.
+
+Decompressed source SHA-256:
+
+b95d723ffdfd70db388d007b99b88b5e78078fab627af71fcd2b34044f1b9e3b.
+
+Decompressed source bytes:
+
+12810.
+
+Deterministic gzip SHA-256:
+
+e64fefd2eefe676c1d821f32718e79ffc4beb909a23d5e328268833a219f6bff.
+
+Compressed payload bytes:
+
+4734.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake freeze:
+
+MECHANICAL-F25-NONPRIMARY.
+
+Two complete sweeps were byte-identical.
+
+Serialized result-file SHA-256:
+
+f775212ffae563a06d9f0da0a1aaa8939907553e5e346f0808235193e1880a13.
+
+Serialized semantic output SHA-256:
+
+cc1dfa76a787f6f3bde6a7ae7507e453c67f1972c491cd1855711d8619d1e41a.
+
+All P1-P19 integrity probes:
+
+PASS.
+
+Exact A17 replay:
+
+3978 candidate first-four;
+3950 stale first-four;
+37 / 48 candidate >= stale;
+exact 11 below-stale pairs reproduced.
+
+Mechanical unconditional R1 W4 harm rate:
+
+0.15625.
+
+Mechanical expansion / harm:
+
+L0:
+93 expansions;
+10 harmful;
+harm rate 0.1075268817.
+
+LP_FAST:
+156 expansions;
+20 harmful;
+harm rate 0.1282051282.
+
+LP_MEDIUM:
+158 expansions;
+20 harmful;
+harm rate 0.1265822785.
+
+LP_SLOW:
+157 expansions;
+20 harmful;
+harm rate 0.1273885350.
+
+PERSIST:
+91 expansions;
+10 harmful;
+harm rate 0.1098901099.
+
+No temporal arm qualified.
+
+A25_TEMPORAL_INFORMATION_GAIN:
+
+FALSE
+
+in the fake world.
+
+This is NON-SCIENTIFIC mechanical evidence only.
+
+It demonstrates that temporal filtering
+does not trivially satisfy the preregistered criteria.
+
+REAL A25 STATUS
+
+No real F25 trajectory has been derived.
+
+No real temporal filter state has been observed.
+
+No real A25 manifest exists.
+
+No real W4 outcome has been observed.
+
+Let the resulting commit SHA be:
+
+F25.
+
+After F25 exists:
+
+1. derive exactly 384 fresh 32-epoch trajectories from F25;
+2. bind the complete manifest SHA;
+3. only then execute two complete deterministic primary sweeps;
+4. require byte-identical output;
+5. report all temporal arms without post-result selection.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
