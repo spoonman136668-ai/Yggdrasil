@@ -730,3 +730,428 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A26 / T8J THRESHOLD / ULTRASENSITIVITY CALIBRATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE NEGATIVE RESULT /
+SIGNAL-MAGNITUDE THRESHOLDING DID NOT PRODUCE SAFE USEFUL AUTHORITY /
+NO THRESHOLD QUALIFIED /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+36596d24028f5e8cf816408099977227c50a8e4b.
+
+F26:
+
+1a9fb005e8fbdad1bc683ff744c1b84624b8d470.
+
+Source SHA-256:
+
+67522a26a83b457014453634db2deef3ffb539fea4fe78d2ca165883f19372c4.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+fc5f78e31170390fd7e281722401156596d4165d.
+
+384-trajectory manifest SHA-256:
+
+89864ad4a5ee97d186f14e85c7824fb05fcdfe069d2ecdca5bf621bb034f0b76.
+
+Manifest-wrapper SHA-256:
+
+5fd9144bda9e3d583c0e1dc26ab69549ca561253a170469383dedb3792ec7ed3.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete F26-derived primary sweeps were byte-identical.
+
+Serialized result-file SHA-256:
+
+6d997b71628d8ac9fae275c0395f72b0d1aa2c3f7ad46237a8f566242efde988.
+
+Serialized semantic output SHA-256:
+
+b386e5ece647cb6c3a5ff62fab67b1bdce53e076e22dd495e9862657a92ba219.
+
+All P1-P18 integrity probes:
+
+PASS.
+
+A17 replay remained exact.
+
+FRESH R1 W2 BASELINE
+
+Unconditional all-candidate W2 harmful:
+
+53 / 384.
+
+Unconditional harm rate:
+
+0.1380208333.
+
+T1 — B1 >= +1
+
+Expansions:
+
+77.
+
+Actual W2 outcomes:
+
+beneficial = 29;
+neutral = 36;
+harmful = 12.
+
+Actual harm rate:
+
+0.1558441558.
+
+R1-label harm rate:
+
+0.1428571429.
+
+Complete service delta versus R0:
+
++26.
+
+T1 QUALIFIED:
+
+FALSE.
+
+T2 — B1 >= +2
+
+Expansions:
+
+20.
+
+Actual W2 outcomes:
+
+beneficial = 7;
+neutral = 10;
+harmful = 3.
+
+Actual harm rate:
+
+0.15.
+
+R1-label harm rate:
+
+0.15.
+
+Complete service delta versus R0:
+
++4.
+
+Relative to T1:
+
+57 expansions rejected;
+9 harmful T1 expansions rejected;
+22 beneficial T1 expansions rejected;
+beneficial retention = 24.14%.
+
+T2 QUALIFIED:
+
+FALSE.
+
+T3 — B1 >= +3
+
+Expansions:
+
+9.
+
+Actual W2 outcomes:
+
+beneficial = 2;
+neutral = 6;
+harmful = 1.
+
+Actual harm rate:
+
+0.1111111111.
+
+R1-label harm rate:
+
+0.1111111111.
+
+Complete service delta versus R0:
+
+-2.
+
+Relative to T1:
+
+68 expansions rejected;
+11 harmful T1 expansions rejected;
+27 beneficial T1 expansions rejected;
+beneficial retention = 6.90%.
+
+T3 QUALIFIED:
+
+FALSE.
+
+T4 — B1 >= +4
+
+Expansions:
+
+4.
+
+Actual W2 outcomes:
+
+beneficial = 0;
+neutral = 4;
+harmful = 0.
+
+Actual harm rate:
+
+0.0.
+
+R1-label harm rate:
+
+0.0.
+
+Complete service delta versus R0:
+
+-4.
+
+Relative to T1:
+
+73 expansions rejected;
+12 harmful T1 expansions rejected;
+29 beneficial T1 expansions rejected;
+beneficial retention = 0%.
+
+T4 QUALIFIED:
+
+FALSE.
+
+PRIMARY RESULT
+
+A26_ANY_THRESHOLD_QUALIFIED:
+
+FALSE.
+
+A26_THRESHOLD_INFORMATION_GAIN:
+
+FALSE.
+
+SIGNAL-STRENGTH DIAGNOSTIC
+
+Observed actual W2 outcomes
+conditioned on exact positive B1:
+
+B1 = +1:
+
+57 trials;
+22 beneficial;
+26 neutral;
+9 harmful;
+harm rate = 15.79%.
+
+B1 = +2:
+
+11 trials;
+5 beneficial;
+4 neutral;
+2 harmful;
+harm rate = 18.18%.
+
+B1 = +3:
+
+5 trials;
+2 beneficial;
+2 neutral;
+1 harmful;
+harm rate = 20.00%.
+
+B1 = +4:
+
+2 trials;
+0 beneficial;
+2 neutral;
+0 harmful.
+
+B1 = +5:
+
+1 trial;
+0 beneficial;
+1 neutral;
+0 harmful.
+
+B1 = +6:
+
+1 trial;
+0 beneficial;
+1 neutral;
+0 harmful.
+
+Thus:
+
+STRONGER POSITIVE SIGNAL
+
+did NOT produce a monotonic reduction
+in prospective harm.
+
+In fact,
+the +2 and +3 groups
+had higher observed harm fractions
+than the +1 group.
+
+The only zero-harm high-signal cases
+were four extremely sparse +4-or-greater trials,
+and all four were neutral rather than beneficial.
+
+Therefore A26 does not support
+the simple biological analogy:
+
+"raise the response threshold above the noise floor
+and the remaining positive signals become reliably useful."
+
+Thresholding did reduce decisions.
+
+It did not create calibrated certainty.
+
+TECHNICAL INTERPRETATION
+
+A26 falsifies the hypothesis
+that simple positive effect magnitude
+is the missing confidence variable.
+
+The W1 signal B1 is useful as an observation,
+but its magnitude does not map monotonically
+to future W2 benefit.
+
+A stronger observed advantage can still be:
+
+trajectory-local;
+state-dependent;
+temporally unstable;
+or followed by a different future demand realization.
+
+Hard ultrasensitive gating therefore produces
+a familiar safety / usefulness tradeoff:
+
+higher threshold
+-> fewer actions.
+
+But the reduction in harm
+comes primarily from refusing to act,
+not from isolating a reliably beneficial signal class.
+
+At T4,
+zero harm was achieved only with:
+
+4 / 384 expansions
+
+and:
+
+0 / 4 beneficial outcomes.
+
+That is not useful confidence calibration.
+
+PLAIN-SPEAK INTERPRETATION
+
+The threshold idea was worth testing.
+
+It gave us a very clean answer.
+
+We asked:
+
+"maybe +1 is noise.
+What if Yggdrasil only acts on +2,
++3,
+or +4?"
+
+That did not solve it.
+
+A +2 signal was not reliably safer than +1.
+
+A +3 signal was not reliably safer than +2.
+
+Some stronger-looking signals
+still went bad in the untouched future.
+
+The +4 rule had no bad expansions,
+but only because almost nothing passed it.
+
+Only four cases got through.
+
+None of those four actually helped later.
+
+They were all neutral.
+
+So a high threshold can make Yggdrasil quiet.
+
+That is not the same as making Yggdrasil wise.
+
+This matters because it eliminates another tempting shortcut:
+
+MORE SIGNAL
+does not automatically mean
+MORE CERTAINTY.
+
+Across A24-A26 we now have three separate useful-but-incomplete signals:
+
+QUORUM:
+how broadly is the effect experienced now?
+
+PERSISTENCE:
+does the effect survive through time?
+
+MAGNITUDE / THRESHOLD:
+how strong is the observed effect?
+
+None by itself predicts the future well enough
+for autonomous activation authority.
+
+The next biological mechanism is therefore well motivated:
+
+NEGATIVE FEEDBACK / HOMEOSTATIC CORRECTION.
+
+Instead of trying to perfectly certify a patch
+before granting any authority,
+the organism can grant bounded authority
+while continuously comparing:
+
+expected state
+versus
+observed state.
+
+If the new authority pushes the organism
+away from its operating setpoint,
+negative feedback can reduce or withdraw authority
+before the damage compounds.
+
+That tests a different proposition:
+
+NOT:
+
+"can I know in advance that this is safe?"
+
+BUT:
+
+"can I detect that I am becoming wrong
+quickly enough to correct myself?"
+
+A24 quorum remains a useful measured signal.
+
+A25 persistence remains a useful measured signal.
+
+A26 thresholds / ultrasensitivity alone are insufficient.
+
+No autonomous activation controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
