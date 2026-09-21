@@ -651,3 +651,113 @@ The preregistered workload, thresholds, controls, and success criteria were not 
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A02 ADAPTIVE TRANSFORM SERVICE
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY A02 REQUEST.
+
+IMPLEMENTATION COMMIT
+
+1453740811a5b5c9c7b5452e7d543be4d67878d6.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a02_adaptive_transform_service_v1.py
+
+Loader Git blob:
+
+191149debfd2cb38cf4cd2e004bc93e472ea758c.
+
+Exact gzip payload:
+
+research/applications/track-a/a02_adaptive_transform_service_v1.py.gz
+
+Payload Git blob:
+
+e8ea1ea03802092ca58a7c70f7c4841fca1a8bd4.
+
+Compressed payload SHA-256:
+
+c7565855ada0a97b61963e1ea4666c414797fc4e0b3b6178cd15cf2f294b5423.
+
+Compressed payload bytes:
+
+7906.
+
+Decompressed exact harness SHA-256:
+
+b2eeb1e589a029f16b0437ce1f3dd05826b81a91ab6c6d91ce25bb28b96db60b.
+
+Decompressed source bytes:
+
+28011.
+
+The loader refuses execution if decompression does not reproduce the frozen source SHA-256.
+
+PRE-FREEZE SEMANTIC ALIGNMENT
+
+Before any primary A02 request was served,
+mechanical review corrected four implementation-contract issues:
+
+- simultaneous migration proposals now all observe the same counters and propose toward one highest-deficit role, with low target-role / low cell-ID ordering;
+- governance-holder replacement now preserves independent provenance and migration requires qualified governance plus registry provenance;
+- dormant cells no longer advance their causal generation while asleep and reactivation requires their dormant cursor to remain in the causal ancestry ledger;
+- the evaluator-only oracle ceiling now uses the candidate's actual per-epoch service-capable cell count with instant zero-cost role reassignment.
+
+These changes occurred before freeze and before any primary application output was observed.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Targeted contract probes:
+
+simultaneous proposal ordering:
+PASS.
+
+duplicate governance provenance rejection:
+PASS.
+
+dormant causal-generation freeze:
+PASS.
+
+causal-ledger restart preservation:
+PASS.
+
+Evaluator truth visible to organism decisions:
+
+FALSE.
+
+No primary A02 scenario was executed before this freeze.
+
+REPRODUCIBILITY
+
+Execute two complete deterministic primary sweeps.
+
+Each sweep contains:
+
+4 scenarios x 256 epochs x 12 requests
+=
+12,288 requests.
+
+Serialized result SHA-256 must match exactly.
+
+Restart sub-runs must match their uninterrupted counterparts.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
