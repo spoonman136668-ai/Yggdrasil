@@ -700,3 +700,606 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A20 / T8D PROVISIONAL CANARY PATCH ACTIVATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE DISCOVERY RESULT /
+POSITIVE REAL-CANARY EVIDENCE WAS ONE-SIDEDLY INFORMATIVE /
+OUT-OF-SAMPLE REPLICATION REQUIRED BEFORE SEQUENTIAL AUTHORITY /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+915b5c70b42dcf1592c50756a41084b0ed362861.
+
+F20:
+
+cc5e07815de6ecb17fc8b4ec7a472fb9f9e5840f.
+
+Source SHA-256:
+
+4e39349fba10c51116164d46a8cdda0d27bc23c0cae08742b281f3d19d6f7cb2.
+
+PRIMARY EVIDENCE
+
+Evidence commit:
+
+1f8c518ba623330702090fe512b297a708b33f29.
+
+Evidence file:
+
+research/applications/track-a/a20_t8d_provisional_canary_activation_primary_r1.json.gz.
+
+Deterministic gzip SHA-256:
+
+eca3cc1a4ecbb75948b075d9774f9f3fdfad9f530769c72536abbfdab7efc01c.
+
+Two complete F17-seeded sweeps were byte-identical.
+
+Serialized JSON SHA-256:
+
+f8599e5bd015378b9e2f92640e78a88cda8ea6564814b40c25a963e0073e1841.
+
+Serialized semantic output SHA-256:
+
+4af42d99193a3176ec8153762d6bf0af64ee861530fc01b219f2bf05ec8db971.
+
+All P1-P10 probes:
+
+PASS.
+
+Restart equivalence:
+
+PASS
+for C1 / C2 / C3.
+
+A17 replay remained exact:
+
+candidate first-four = 3978;
+stale first-four = 3950;
+candidate >= stale = 37 / 48;
+migrations avoided = 38.
+
+C1 — ONE-OF-FOUR CANARY
+
+Unproven newborn exposure:
+
+25%.
+
+Decisions:
+
+EXPAND = 3;
+HOLD = 44;
+REVOKE = 1.
+
+First-half canary service:
+
+3959.
+
+Matched stale-twin first-half service:
+
+3957.
+
+Canary evidence-phase delta:
+
++2.
+
+Second-half service after decision:
+
+3954.
+
+Matched stale-twin second-half:
+
+3949.
+
+Second-half delta:
+
++5.
+
+Complete 16-epoch service:
+
+7913.
+
+Always-stale:
+
+7906.
+
+Always-patch:
+
+7929.
+
+Delta versus always-stale:
+
++7.
+
+Delta versus always-patch:
+
+-16.
+
+EXPAND outcomes on the actual canary trajectory:
+
+beneficial = 2;
+neutral = 1;
+harmful = 0.
+
+EXPAND harm rate:
+
+0 / 3.
+
+HOLD outcomes:
+
+beneficial = 2;
+harmful = 0;
+remaining holds neutral.
+
+Full-candidate second-half truth by C1 decision:
+
+EXPAND:
+2 beneficial;
+1 neutral;
+0 harmful.
+
+HOLD:
+17 beneficial;
+21 neutral;
+6 harmful.
+
+REVOKE:
+1 beneficial;
+0 neutral;
+0 harmful.
+
+C2 — TWO-OF-FOUR CANARY
+
+Unproven newborn exposure:
+
+50%.
+
+Decisions:
+
+EXPAND = 6;
+HOLD = 36;
+REVOKE = 6.
+
+Canary evidence-phase delta:
+
+0.
+
+Second-half delta versus matched stale twin:
+
+-3.
+
+Complete service:
+
+7903.
+
+Delta versus always-stale:
+
+-3.
+
+Delta versus always-patch:
+
+-26.
+
+Actual EXPAND outcomes:
+
+beneficial = 2;
+neutral = 4;
+harmful = 0.
+
+EXPAND harm rate:
+
+0 / 6.
+
+HOLD outcomes:
+
+beneficial = 1;
+harmful = 4;
+remaining holds neutral.
+
+Full-candidate second-half truth by C2 decision:
+
+EXPAND:
+3 beneficial;
+3 neutral;
+0 harmful.
+
+HOLD:
+14 beneficial;
+17 neutral;
+5 harmful.
+
+REVOKE:
+3 beneficial;
+2 neutral;
+1 harmful.
+
+C3 — THREE-OF-FOUR CANARY
+
+Unproven newborn exposure:
+
+75%.
+
+Decisions:
+
+EXPAND = 11;
+HOLD = 24;
+REVOKE = 13.
+
+Canary evidence-phase delta:
+
+-4.
+
+Second-half delta versus matched stale twin:
+
++14.
+
+Complete service:
+
+7916.
+
+Delta versus always-stale:
+
++10.
+
+Delta versus always-patch:
+
+-13.
+
+Actual EXPAND outcomes:
+
+beneficial = 5;
+neutral = 6;
+harmful = 0.
+
+EXPAND harm rate:
+
+0 / 11.
+
+HOLD outcomes:
+
+beneficial = 4;
+harmful = 5;
+remaining holds neutral.
+
+Full-candidate second-half truth by C3 decision:
+
+EXPAND:
+6 beneficial;
+5 neutral;
+0 harmful.
+
+HOLD:
+9 beneficial;
+11 neutral;
+4 harmful.
+
+REVOKE:
+5 beneficial;
+6 neutral;
+2 harmful.
+
+PRIMARY DISCOVERY
+
+Across the three preregistered arms:
+
+20 arm-specific EXPAND decisions occurred.
+
+Observed harmful EXPAND decisions:
+
+0.
+
+This was true both for:
+
+the actual post-decision canary trajectory;
+
+and
+
+the frozen full-candidate second-half reference label.
+
+Thus in the known A17 worlds:
+
+POSITIVE REAL CANARY CONSEQUENCE
+WAS A STRONG ONE-SIDED SIGNAL.
+
+However:
+
+zero evidence was highly ambiguous;
+
+negative evidence was also ambiguous.
+
+A REVOKE decision did NOT mean
+that the learned patch was globally bad.
+
+For example,
+C3 REVOKE cases contained:
+
+5 patches whose full-candidate second half was beneficial;
+6 neutral;
+2 harmful.
+
+Therefore A20 does NOT support:
+
+positive -> good;
+negative -> bad.
+
+It supports only the narrower discovery:
+
+positive bounded real consequence
+may be sufficient evidence to EARN MORE AUTHORITY.
+
+Absence of positive consequence
+is not sufficient evidence to discard the learned patch.
+
+KNOWN A19 FALSE-CONFIDENCE CASES
+
+S00/P3
+
+A19 had allowed strict shadow confidence.
+
+A20:
+
+C1 -> HOLD;
+C2 -> HOLD;
+C3 -> REVOKE.
+
+No A20 arm expanded.
+
+C1 / C2 complete canary service:
+
+165.
+
+Always-stale:
+
+165.
+
+Always-patch:
+
+164.
+
+C3 detected a first-half deficit:
+
+-1
+
+and revoked before the second turnover.
+
+S11/P4
+
+A19 also had strict false confidence.
+
+A20:
+
+C1 -> HOLD;
+C2 -> HOLD;
+C3 -> REVOKE.
+
+No arm expanded.
+
+C1 / C2 complete service:
+
+167.
+
+Always-stale:
+
+167.
+
+Always-patch:
+
+166.
+
+C3 detected first-half deficit:
+
+-1;
+
+restored the stale twin before epoch 8;
+
+and prevented further candidate authority.
+
+This is direct evidence that bounded real consequence
+can reject cases that exhaustive pre-activation rehearsal missed.
+
+SAFETY / COVERAGE TRADEOFF
+
+C1:
+
+lowest unproven exposure;
+very few expansions;
++7 service versus stale.
+
+C2:
+
+middle exposure;
+more decisions resolved;
+but aggregate service was -3 versus stale.
+
+C3:
+
+highest allowed unproven exposure;
+most expansions;
+largest second-half recovery;
++10 service versus stale;
+but incurred -4 aggregate service during the unproven evidence phase.
+
+No arm is selected as a winner.
+
+The experiment demonstrates an exposure-information tradeoff.
+
+RESEARCH-INTEGRITY LIMITATION
+
+A20 reused the already-known A17 frozen worlds.
+
+The A20 rule was preregistered and frozen before its canary outcomes,
+but A17-A19 had already exposed properties of these worlds.
+
+Therefore A20 is treated as:
+
+DISCOVERY EVIDENCE,
+
+not a final confirmation that positive canary evidence
+is generally safe.
+
+The next scientifically justified experiment
+must derive fresh demand / replacement trajectories
+only after its own implementation freeze.
+
+TECHNICAL INTERPRETATION
+
+A19 established that:
+
+consensus over simulated evidence
+does not manufacture missing information.
+
+A20 adds a stronger result:
+
+small real exposure can generate
+qualitatively better activation evidence.
+
+The key signal is asymmetric.
+
+A positive real canary delta:
+
+appears to justify expansion
+in these frozen worlds.
+
+A zero or negative delta:
+
+does NOT justify deleting the patch
+or concluding the patch is globally harmful.
+
+That means activation confidence should be represented separately
+from learned-state confidence.
+
+A developmental patch may remain:
+
+LEARNED
+AND
+DORMANT
+
+without being:
+
+REJECTED.
+
+A20 therefore supports a richer authority state machine:
+
+LEARNED
+->
+DORMANT
+->
+CANARY
+->
+EARNED EXPANSION
+
+with:
+
+CANARY
+->
+HOLD
+
+or:
+
+CANARY
+->
+REVOKE TO DORMANT
+
+without deleting the learned patch.
+
+PLAIN-SPEAK INTERPRETATION
+
+This one worked in an important way.
+
+Instead of asking Yggdrasil to guess
+whether a new patch would be safe,
+we let a small part of the organism actually try it.
+
+Then we watched what really happened.
+
+Whenever the small real trial clearly beat
+the old-policy twin,
+giving the patch more authority
+did not hurt us in the untouched second half.
+
+That happened 20 times across the three exposure arms.
+
+There were zero harmful expansions.
+
+That is much stronger than A19,
+where even perfect rehearsal consensus
+could still be wrong.
+
+But we learned another important thing too.
+
+If the canary does not win,
+that does NOT mean the patch is bad.
+
+Sometimes the trial tied.
+Sometimes it lost locally
+even though the full patch would later have helped.
+
+So Yggdrasil should not think:
+
+FAILED CANARY = DELETE KNOWLEDGE.
+
+It should think:
+
+FAILED OR UNCLEAR CANARY =
+KEEP THE KNOWLEDGE,
+BUT DO NOT GRANT MORE AUTHORITY YET.
+
+This is starting to give us
+a real separation between:
+
+what the organism knows;
+
+what it trusts;
+
+what it is currently allowed to do.
+
+That is a substantial step toward
+self-calibrated developmental intelligence.
+
+NEXT REQUIRED STEP
+
+Do NOT immediately promote C1,
+C2,
+or C3 into a sequential autonomous controller.
+
+First replicate the positive-canary finding
+on fresh,
+post-freeze demand and replacement trajectories
+that were not visible during A17-A20 design.
+
+Only if that one-sided signal survives
+out of sample
+should a later experiment allow canary decisions
+to alter the state inherited by subsequent patches.
+
+A17 remains:
+
+CLOSED MIXED / NEGATIVE.
+
+A18 remains:
+
+EXPLANATORY.
+
+A19 remains:
+
+CALIBRATION FAILURE FOR FOUR-OBSERVATION SHADOW AUTHORITY.
+
+A20:
+
+DISCOVERY POSITIVE FOR BOUNDED REAL-CANARY EXPANSION SIGNAL.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
