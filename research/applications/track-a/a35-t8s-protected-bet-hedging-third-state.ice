@@ -667,3 +667,192 @@ ONE CLEAN DECISION?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A35 PROTECTED BET-HEDGING THIRD STATE
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F35-DERIVED WORLD,
+HEDGING EVENT,
+HEDGED-STATE OCCUPANCY,
+OR SCIENTIFIC OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+5ebc98b99f80412534846f6289f65073cde3623e.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a35_t8s_protected_bet_hedging_third_state_v1.py
+
+Loader Git blob:
+
+429b68b83fe407745627ef32d0a6eb3673e005d8.
+
+Payload:
+
+research/applications/track-a/a35_t8s_protected_bet_hedging_third_state_v1.py.gz
+
+Payload Git blob:
+
+cec77e03bdb1243797024ed767525b32a72fa924.
+
+Decompressed source SHA-256:
+
+073f60c43f16b80e47e359998e8477a2ddf112d5567790ec7729bbc9b39ec030.
+
+Decompressed source bytes:
+
+20483.
+
+Deterministic gzip SHA-256:
+
+a97e157d023b6d7a4a533731400e2758680846dd4c430b741229738040e2abfc.
+
+Compressed payload bytes:
+
+6213.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake seed:
+
+MECHANICAL-F35-NONPRIMARY.
+
+Two complete sweeps were byte-identical.
+
+Serialized output SHA-256:
+
+405b3f74cc2607e1dcccca5e97c0f443d1d1a3309dede8919ffd9e15420ad5c1.
+
+Mechanical world-manifest SHA-256:
+
+2dcbf6a5612d3e5bf331ef9a376c47c79b5015d257e4b9b5689f0d8f3e6a1438.
+
+All P1-P26 integrity probes:
+
+PASS.
+
+No primary hedge arm qualified.
+
+No primary hedge arm met
+A35_BET_HEDGE_INFORMATION_GAIN.
+
+MECHANICAL HEDGE SELECTIVITY
+
+D2_H_P75L25:
+
+2.9100x.
+
+D2_H_P50L50:
+
+2.6982x.
+
+D2_H_P25L75:
+
+2.2399x.
+
+D3_H_P75L25:
+
+2.7833x.
+
+D3_H_P50L50:
+
+2.5266x.
+
+D3_H_P25L75:
+
+2.2673x.
+
+Thus the third state is selectively recruited
+during contradiction rather than uniformly.
+
+MECHANICAL CONTRADICTION NO-MAJORITY FRACTION
+
+D2_H_P75L25:
+
+90.13%.
+
+D2_H_P50L50:
+
+86.72%.
+
+D2_H_P25L75:
+
+83.69%.
+
+D3_H_P75L25:
+
+92.33%.
+
+D3_H_P50L50:
+
+90.05%.
+
+D3_H_P25L75:
+
+88.19%.
+
+MECHANICAL OSCILLATION
+
+Hedge arms remained between:
+
+14.58%
+and
+18.23%.
+
+Thus the third phenotype is nontrivial
+but mechanically does not pre-prove
+the primary oscillation target.
+
+MECHANICAL ATTRACTOR QUALITY
+
+False-dominance rates remained materially above
+the frozen 5% limits in every hedge arm.
+
+Therefore A35 enters primary execution
+as a genuinely falsifiable mechanism.
+
+No hedge gain,
+release rule,
+A34 suppression,
+A30 local inhibition,
+A31 refractory duration,
+qualification threshold,
+or information-gain rule
+is changed in response.
+
+REAL A35 STATUS
+
+No real F35-derived world exists.
+
+No real hedge event exists.
+
+No real A35 primary outcome exists.
+
+Let the resulting commit SHA be:
+
+F35.
+
+After F35 exists:
+
+1. derive exactly 384 fresh worlds from F35;
+2. bind the complete world-manifest SHA;
+3. only then execute two complete deterministic primary sweeps;
+4. require byte-identical output;
+5. report all six hedge arms and paired A34 references without post-result tuning.
+
+NO POST-RESULT HEDGE-GAIN TUNING.
+NO POST-RESULT RELEASE-LAW TUNING.
+NO POST-RESULT SUPPRESSION TUNING.
+NO POST-RESULT REFRACTORY CHANGE.
+NO POST-RESULT LOCAL-INHIBITION CHANGE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
