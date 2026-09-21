@@ -737,3 +737,105 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A23 PERSISTENT PATCH CONFIDENCE LEDGER
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A23 LEDGER UPDATE
+OR W5 OUTCOME.
+
+F23:
+
+e73591a5d9671aba5c7edb9ebf378478c2957a79.
+
+FROZEN SOURCE SHA-256:
+
+05a9c9bf631282189160ebf7c2ad088b6212318440b561d7a4f613a2714763e0.
+
+TRAJECTORY COUNT:
+
+384.
+
+STRUCTURE:
+
+48 fixed A17 patch contexts
+x
+8 fresh F23-derived replicas.
+
+EPOCHS PER TRAJECTORY:
+
+40.
+
+PROVISIONAL WINDOWS:
+
+W1 = 0-7;
+W2 = 8-15;
+W3 = 16-23;
+W4 = 24-31.
+
+UNTOUCHED CONFIRMATION:
+
+W5 = 32-39.
+
+REPLACEMENT EPISODES:
+
+0 / 8 / 16 / 24 / 32.
+
+COMPLETE MANIFEST SHA-256:
+
+c720f03dcd6d509c13570b9f6b72936692c7733483a1761d778fd4b122e18580.
+
+Serialized manifest-wrapper SHA-256:
+
+b7bb48953dd8689a097331d69590780248973321bed301c30b9e213fa3e1293e.
+
+Serialized manifest-wrapper bytes:
+
+239571.
+
+Every 40-demand sequence has exact mean equal to its candidate target.
+
+Every replacement episode contains exactly four unique cell IDs.
+
+All trajectory namespaces are:
+
+YGG-A23-*
+
+and are distinct from A17-A22.
+
+PRIMARY STATUS AT MANIFEST BIND
+
+A23 ledger records observed:
+
+0.
+
+A23 earned expansions observed:
+
+0.
+
+A23 W5 outcomes observed:
+
+0.
+
+A23 selected arm:
+
+NONE / NOT YET EVALUATED.
+
+The next permitted operation is:
+
+two complete deterministic A23 primary sweeps
+over this exact manifest.
+
+NO TRAJECTORY REDRAW.
+NO THRESHOLD CHANGE.
+NO SCORE-MAPPING CHANGE.
+NO EXPOSURE CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
