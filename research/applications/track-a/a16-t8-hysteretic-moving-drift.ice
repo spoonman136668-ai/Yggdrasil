@@ -1745,3 +1745,140 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-CLOSURE EVIDENCE-INTEGRITY AUDIT 01 — A16 EVALUATION EPISODE ALIGNMENT
+
+DATE:
+2026-09-21.
+
+STATUS:
+APPEND-ONLY CORRECTION /
+ORIGINAL A16 LEARNING / HYSTERESIS OBSERVATION PRESERVED /
+FULL PREREGISTERED USEFULNESS ACCEPTANCE HELD PENDING FIXA.
+
+DISCOVERY
+
+After A16 closure,
+preparation of the subsequent A17 patch-journal harness audited the inherited service helper.
+
+The exact F16-frozen A16 source calls:
+
+A14.A12.A11.run_eval_phase(...)
+
+for each 8-epoch held-out moving-drift evaluation.
+
+That inherited A11 helper executes replacement episodes only when:
+
+epoch in (0,16).
+
+A16 preregistered:
+
+8 held-out service epochs
+
+with replacement episodes at:
+
+0;
+4.
+
+Therefore in the exact frozen A16 primary:
+
+the epoch-0 replacement executed;
+
+the preregistered epoch-4 replacement did NOT execute.
+
+SCIENTIFIC CONSEQUENCE
+
+This does NOT invalidate the observed A16 hysteresis mechanics:
+
+- transient one-block P1 excursion did not update;
+- transient P0 return cleared pending state;
+- every true first block abstained;
+- every true second block authorized the intended working update;
+- every path tracked P0->P1->P2->P3->P4->P3->P2->P0;
+- final working prior returned to P0;
+- durable [v1,v2] history remained unchanged;
+- parent-digest checks,
+  restart,
+  probes,
+  and constitutional safety behaved as observed.
+
+However the frozen usefulness evaluation did not execute
+the complete preregistered turnover schedule.
+
+Therefore the original A16 closure commit:
+
+a4f0a5d2263f9eeb3c5061d5acc11d153af4e62c
+
+remains historical evidence of the exact frozen implementation,
+but FULL A16 preregistered acceptance is held pending a separate corrective replication.
+
+The original result is NOT rewritten.
+
+CORRECTIVE SCOPE
+
+A16-FIXA may change only:
+
+the held-out evaluation helper
+
+so that an 8-epoch evaluation performs the already-frozen replacement episodes at:
+
+epoch 0;
+epoch 4.
+
+It must not change:
+
+F16;
+moving-drift manifest;
+P0..P4 paths;
+transient evidence;
+true-drift evidence blocks;
+attestation roots;
+learner orders;
+hysteresis;
+working-state authorization;
+parent-digest rules;
+durable history;
+replacement TARGET SETS;
+service demand sequences;
+stale-v2 baseline definition;
+oracle definition;
+thresholds;
+probes;
+controls;
+or primary signal.
+
+A16-FIXA must rerun:
+
+candidate;
+stale-v2 baseline;
+oracle
+
+with the corrected 0/4 replacement execution.
+
+It must execute two byte-identical deterministic sweeps.
+
+NO POST-RESULT TUNING.
+
+PLAIN-SPEAK INTERPRETATION
+
+The moving-drift learner itself did what the test said it should do.
+
+But one inherited test helper was built for longer evaluation windows.
+
+A16 asked it to replace cells at the beginning
+and again halfway through an 8-step evaluation.
+
+The helper replaced cells at the beginning,
+but its second built-in replacement point was epoch 16,
+which never occurred in an 8-step window.
+
+So we are not pretending the old usefulness numbers fully tested what we wrote down.
+
+We keep them in history.
+
+Then FIXA reruns the exact same frozen drift worlds
+with the missing halfway replacement actually executed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
