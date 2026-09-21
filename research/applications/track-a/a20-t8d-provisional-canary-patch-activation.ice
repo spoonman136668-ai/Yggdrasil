@@ -576,3 +576,127 @@ and earned trust.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A20 PROVISIONAL CANARY PATCH ACTIVATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE ANY REAL F17-SEEDED A20 CANARY OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+915b5c70b42dcf1592c50756a41084b0ed362861.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a20_t8d_provisional_canary_activation_v1.py
+
+Loader Git blob:
+
+40989e7e7e67154fb40a6a96a6be427d4cffa560.
+
+Payload:
+
+research/applications/track-a/a20_t8d_provisional_canary_activation_v1.py.gz
+
+Payload Git blob:
+
+0fdb9529036ac591a2d03dcdaaf227cb7b9e9932.
+
+Decompressed source SHA-256:
+
+4e39349fba10c51116164d46a8cdda0d27bc23c0cae08742b281f3d19d6f7cb2.
+
+Decompressed source bytes:
+
+15222.
+
+Deterministic gzip SHA-256:
+
+8de8dbb26b963ad4442143a366d0b99ffaa097d023bac1128bfa00aba34032f9.
+
+Compressed payload bytes:
+
+4767.
+
+FROZEN A17 REPLAY VALIDATION
+
+Before adding A20 activation logic,
+the standalone substrate reproduced exactly:
+
+candidate first-four service = 3978;
+stale first-four service = 3950;
+candidate >= stale = 37 / 48;
+migrations avoided = 38.
+
+Exact A17 below-stale pairs:
+
+S00/P1 81 < 82;
+S00/P2 85 < 86;
+S00/P3 82 < 83;
+S02/P4 83 < 84;
+S04/P1 80 < 82;
+S04/P2 84 < 85;
+S04/P3 83 < 84;
+S10/P2 82 < 83;
+S10/P4 79 < 80;
+S11/P1 80 < 83;
+S11/P4 83 < 84.
+
+Thus the A20 substrate is aligned to the authoritative A17 world.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake science seed:
+
+MECHANICAL-A20-NONPRIMARY.
+
+Two complete mechanical sweeps were byte-identical.
+
+Serialized file SHA-256:
+
+0a105254cf8996fde066a3bbf98766bcb087201c5da294913613306b5c9ee440.
+
+Serialized semantic output SHA-256:
+
+8112b00353e06d8cbee98c651f99a3a991100947015e339cc5910669a7326039.
+
+All P1-P10 probes:
+
+PASS.
+
+Restart equivalence:
+
+PASS
+for C1 / C2 / C3.
+
+Mechanical canary outcomes are NON-SCIENTIFIC
+and may not be used to tune A20 rules.
+
+The preregistered decision remains:
+
+positive first-half canary delta -> EXPAND;
+zero -> HOLD;
+negative -> REVOKE.
+
+No real F17-seeded A20 canary outcome
+has been executed before this freeze record.
+
+Let the resulting commit SHA be:
+
+F20.
+
+After F20 exists,
+the exact frozen F17 worlds may be executed once under C1 / C2 / C3,
+with two deterministic complete sweeps required.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
