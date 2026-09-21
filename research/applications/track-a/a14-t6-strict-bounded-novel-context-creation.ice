@@ -904,3 +904,126 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-FREEZE PRIMARY STRICT-T6 MANIFEST — BEFORE FIRST PRIMARY NOVELTY OBSERVATION
+
+DATE:
+2026-09-21.
+
+FREEZE COMMIT F14
+
+c0957332578557efc2975ca2da31cf11d07b45ff.
+
+STRICT NOVEL-CONTEXT MANIFEST SHA-256
+
+ebc5115a9554012b219a59fc9bcde5f4f005838f98f2898a049ecbce46f33c48.
+
+LATENT C PRIORS / KNOWN PHASE CHOICES
+
+S00:
+C (4,5,2,1);
+counter 0;
+known pre A;
+known interlude B.
+
+S01:
+C (2,5,2,3);
+counter 0;
+known pre A;
+known interlude B.
+
+S02:
+C (3,3,4,2);
+counter 0;
+known pre A;
+known interlude B.
+
+S03:
+C (6,3,2,1);
+counter 0;
+known pre B;
+known interlude A.
+
+S04:
+C (3,3,1,5);
+counter 0;
+known pre A;
+known interlude B.
+
+S05:
+C (4,4,2,2);
+counter 0;
+known pre B;
+known interlude A.
+
+S06:
+C (1,4,2,5);
+counter 0;
+known pre A;
+known interlude B.
+
+S07:
+C (6,1,3,2);
+counter 1;
+known pre A;
+known interlude B.
+
+S08:
+C (3,6,1,2);
+counter 0;
+known pre A;
+known interlude B.
+
+S09:
+C (3,1,5,3);
+counter 0;
+known pre A;
+known interlude B.
+
+S10:
+C (5,5,1,1);
+counter 0;
+known pre A;
+known interlude B.
+
+S11:
+C (1,2,3,6);
+counter 0;
+known pre B;
+known interlude A.
+
+S07 counter 1 is the preregistered equality-only rejection path.
+
+The exact:
+
+- 64 C training observations per scenario;
+- 64 two-root observation-attestation pairs per scenario;
+- learner A / B observation orders;
+- C1 / C2 held-out evaluation sequences;
+- C return probes;
+- replacement target sets;
+
+are fixed by F14
+and bound by the manifest SHA above.
+
+Every primary attestation pair contains:
+
+two distinct observation roots.
+
+No C prior,
+known-context choice,
+training observation,
+attestation root,
+learner order,
+evaluation sequence,
+or replacement target was redrawn after derivation.
+
+At the moment this manifest was recorded:
+
+A14 primary novelty observations consumed = 0.
+A14 C slots created = 0.
+A14 primary evaluation events executed = 0.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
