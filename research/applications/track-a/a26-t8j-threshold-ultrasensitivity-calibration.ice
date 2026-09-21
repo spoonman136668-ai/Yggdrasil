@@ -469,3 +469,173 @@ AS MORE THAN NOISE?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A26 THRESHOLD / ULTRASENSITIVITY CALIBRATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F26-DERIVED TRAJECTORY,
+THRESHOLD DECISION,
+OR W2 OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+36596d24028f5e8cf816408099977227c50a8e4b.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a26_t8j_threshold_ultrasensitivity_v1.py
+
+Loader Git blob:
+
+2682b710b7d0826a5ec1a570cebdb76eb084f519.
+
+Payload:
+
+research/applications/track-a/a26_t8j_threshold_ultrasensitivity_v1.py.gz
+
+Payload Git blob:
+
+eb233b40893a78468b5e56c4345abd1960d98959.
+
+Decompressed source SHA-256:
+
+67522a26a83b457014453634db2deef3ffb539fea4fe78d2ca165883f19372c4.
+
+Decompressed source bytes:
+
+11894.
+
+Deterministic gzip SHA-256:
+
+b865428eef3c79878c83e1828bf1935e807f96987f92e540bd55bb9c59742f84.
+
+Compressed payload bytes:
+
+4094.
+
+PRE-FREEZE DIAGNOSTIC REPAIR
+
+The first mechanical pass found one diagnostic-only defect.
+
+Rejected T1 cases were being classified
+using the restored stale trajectory,
+which made their counterfactual T1 consequence appear neutral.
+
+The repair changed only the descriptive:
+
+rejected_t1_harmful;
+rejected_t1_beneficial
+
+counters.
+
+It did NOT change:
+
+T1 / T2 / T3 / T4 decisions;
+threshold values;
+trajectory generation;
+service evaluation;
+restore semantics;
+qualification criteria;
+or any scientific outcome.
+
+The repair occurred before F26
+and before any real F26-derived trajectory existed.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake freeze:
+
+MECHANICAL-F26-NONPRIMARY.
+
+Two complete sweeps were byte-identical.
+
+Serialized result-file SHA-256:
+
+8b6b13aeb45488a95b702304ae51588bbc7d65cdf139828065dd2b9ed19609ab.
+
+Serialized semantic output SHA-256:
+
+428fb9ffbb8215a2ac9af4d6fa1010adc574709515a360db36bfc4d64aeee65b.
+
+All P1-P18 integrity probes:
+
+PASS.
+
+Exact A17 replay:
+
+3978 candidate first-four;
+3950 stale first-four;
+37 / 48 candidate >= stale;
+exact 11 below-stale pairs reproduced.
+
+Mechanical threshold behavior:
+
+T1:
+66 expansions;
+11 harmful;
+16.67% harm.
+
+T2:
+17 expansions;
+1 harmful;
+5.88% harm;
+10 / 11 harmful T1 expansions rejected;
+26.1% beneficial T1 expansions retained.
+
+T3:
+5 expansions;
+0 harmful;
+4.35% beneficial T1 expansions retained.
+
+T4:
+3 expansions;
+0 harmful;
+0% beneficial T1 expansions retained.
+
+No threshold qualified.
+
+A26_THRESHOLD_INFORMATION_GAIN:
+
+FALSE
+
+in the fake world.
+
+This is NON-SCIENTIFIC mechanical evidence only.
+
+It demonstrates that stronger thresholds can reduce harm
+by collapsing coverage,
+and that the preregistered criteria do not trivially pass.
+
+REAL A26 STATUS
+
+No real F26 trajectory has been derived.
+
+No real threshold decision has been observed.
+
+No real A26 manifest exists.
+
+No real W2 outcome has been observed.
+
+Let the resulting commit SHA be:
+
+F26.
+
+After F26 exists:
+
+1. derive exactly 384 fresh 16-epoch trajectories from F26;
+2. bind the complete manifest SHA;
+3. only then execute two complete deterministic primary sweeps;
+4. require byte-identical output;
+5. report all threshold arms without post-result selection.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
