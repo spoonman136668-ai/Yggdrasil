@@ -642,3 +642,226 @@ AND CORRECT ITSELF FAST ENOUGH?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A27 NEGATIVE-FEEDBACK HOMEOSTATIC AUTHORITY CORRECTION
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F27-DERIVED TRAJECTORY,
+FEEDBACK ERROR,
+AUTHORITY UPDATE,
+OR SCIENTIFIC OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+0fd99b7ad6552252eaf8d068a09b8491f4bb4838.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a27_t8k_negative_feedback_homeostatic_v1.py
+
+Loader Git blob:
+
+b556c304885945380223d5a6d6efebc113638c0e.
+
+Payload:
+
+research/applications/track-a/a27_t8k_negative_feedback_homeostatic_v1.py.gz
+
+Payload Git blob:
+
+c9aa60e3188917dd71aa5c499af3fc32450b91b9.
+
+Decompressed source SHA-256:
+
+d7f97f2acd4e4cac1e8d1990ca4111e263d5942ebec9968b9ae2e803c4c655c3.
+
+Decompressed source bytes:
+
+17362.
+
+Deterministic gzip SHA-256:
+
+2811e1af86bd40af4387eb5d9f8e5dc05ac2a85d2660f64b01890c7a296da028.
+
+Compressed payload bytes:
+
+5243.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake freeze:
+
+MECHANICAL-F27-NONPRIMARY.
+
+Two complete sweeps were byte-identical.
+
+Serialized result-file SHA-256:
+
+10369829b58a815fb2a9dc7928b9ed158032d0b60b4e294fd6f0ba1f8eb745d3.
+
+Serialized semantic output SHA-256:
+
+bd47a797b31a063740bacb98e885aebde6d4049bf125d8e5982a0f879f3ebeae.
+
+All P1-P19 integrity probes:
+
+PASS.
+
+Exact A17 replay:
+
+3978 candidate first-four;
+3950 stale first-four;
+37 / 48 candidate >= stale;
+exact 11 below-stale pairs reproduced.
+
+MECHANICAL STATIC C3
+
+Aggregate delta versus stale:
+
+-59.
+
+Harmful trajectories:
+
+159 / 384;
+41.41%.
+
+Worst cumulative drawdown:
+
+-11.
+
+MECHANICAL H1
+
+Aggregate delta versus stale:
+
++1.
+
+Delta versus static C3:
+
++60.
+
+Harmful trajectories:
+
+163 / 384;
+42.45%.
+
+Static-harmful improved:
+
+55.35%.
+
+Static-beneficial retained:
+
+85.47%.
+
+Worst cumulative drawdown:
+
+-12.
+
+MECHANICAL H2
+
+Aggregate delta versus stale:
+
++18.
+
+Delta versus static C3:
+
++77.
+
+Harmful trajectories:
+
+166 / 384;
+43.23%.
+
+Static-harmful improved:
+
+57.23%.
+
+Static-beneficial retained:
+
+84.88%.
+
+Worst cumulative drawdown:
+
+-8.
+
+MECHANICAL H3
+
+Aggregate delta versus stale:
+
+-12.
+
+Delta versus static C3:
+
++47.
+
+Harmful trajectories:
+
+169 / 384;
+44.01%.
+
+Static-harmful improved:
+
+52.83%.
+
+Static-beneficial retained:
+
+84.88%.
+
+Worst cumulative drawdown:
+
+-12.
+
+No controller qualified.
+
+A27_HOMEOSTATIC_INFORMATION_GAIN:
+
+FALSE
+
+in the fake world.
+
+This is NON-SCIENTIFIC mechanical evidence only.
+
+It demonstrates that:
+
+negative feedback can improve aggregate service
+or worst drawdown
+without necessarily reducing trajectory-level harm;
+
+the homeostatic criteria are nontrivial;
+
+and the implementation can legitimately return no qualifying controller.
+
+REAL A27 STATUS
+
+No real F27 trajectory has been derived.
+
+No real feedback error has been observed.
+
+No real authority update has been observed.
+
+No real A27 manifest exists.
+
+No real A27 outcome has been observed.
+
+Let the resulting commit SHA be:
+
+F27.
+
+After F27 exists:
+
+1. derive exactly 384 fresh 32-epoch trajectories from F27;
+2. bind the complete manifest SHA;
+3. only then execute two complete deterministic primary sweeps;
+4. require byte-identical output;
+5. report R3 / H1 / H2 / H3 without post-result controller selection.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
