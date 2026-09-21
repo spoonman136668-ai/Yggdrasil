@@ -951,3 +951,535 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A35 / T8S PROTECTED BET-HEDGING THIRD STATE
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE MIXED-NEGATIVE MECHANISM RESULT /
+THE HEDGED PHENOTYPE WAS REAL AND CONTRADICTION-SELECTIVE
+BUT DID NOT BREAK THE PERSISTENT OSCILLATORY FAMILY /
+NO PRIMARY ARM QUALIFIED /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+5ebc98b99f80412534846f6289f65073cde3623e.
+
+F35:
+
+a1fefb2cf0a507f630717be86f57e02e2899efe0.
+
+Source SHA-256:
+
+073f60c43f16b80e47e359998e8477a2ddf112d5567790ec7729bbc9b39ec030.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+101f69beae095ac086033292783183980367944c.
+
+World-manifest SHA-256:
+
+778799b6777e6214f2f19684db24237bbb95853c1a8b5025e97a3874894963fa.
+
+Manifest-wrapper SHA-256:
+
+d23c18e2cf989edf5923e503f1f239a1bab89e42de650475be34230bd7eeb320.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete F35-derived scientific sweeps
+produced identical canonical JSON.
+
+Primary result-file SHA-256:
+
+d7fe4e72cc4b89a5cad832689adad816c4f81987f9be49d62da9b9126becb2fa.
+
+Sweep 1 used the frozen serial runner.
+
+Sweep 2 used arm-isolated execution
+with identical frozen worlds and arm logic.
+
+The arm-isolated runner originally omitted
+the serial runner's final newline.
+After using a wrapper that emits the same canonical serial framing,
+the two complete result files were byte-identical.
+
+Parsed scientific objects were already exactly equal
+before that framing correction.
+
+All P1-P26 integrity probes:
+
+PASS.
+
+PRIMARY RESULT
+
+A35_ANY_BET_HEDGE_QUALIFIED:
+
+FALSE.
+
+A35_BET_HEDGE_INFORMATION_GAIN:
+
+FALSE.
+
+HEDGE SELECTIVITY
+
+Every H arm preferentially entered H
+during contradiction.
+
+D2_H_P75L25:
+
+2.8773x.
+
+D2_H_P50L50:
+
+2.7675x.
+
+D2_H_P25L75:
+
+2.3274x.
+
+D3_H_P75L25:
+
+2.7360x.
+
+D3_H_P50L50:
+
+2.7186x.
+
+D3_H_P25L75:
+
+2.1768x.
+
+Thus the third state did not behave
+as generalized indecision.
+
+It was specifically enriched
+when both support fields were simultaneously strong.
+
+HEDGED OCCUPANCY
+
+Mean H occupancy remained small:
+
+approximately:
+
+0.91
+to
+2.15 cells
+
+out of 48.
+
+Peak H occupancy ranged:
+
+10
+to
+17 cells.
+
+Mean H dwell time ranged:
+
+approximately 2.93
+to
+3.41 epochs.
+
+Median H dwell:
+
+2 epochs.
+
+During contradiction,
+H occupancy fraction reached approximately:
+
+4.53%
+to
+12.56%.
+
+Outside contradiction:
+
+approximately:
+
+0.79%
+to
+1.50%.
+
+This confirms selective protected uncertainty
+without population-wide collapse into H.
+
+CONTRADICTION NO-MAJORITY EFFECT
+
+Paired A34-style references
+versus H arms:
+
+D2_P25L75:
+
+79.21%
+->
+83.04%.
+
+D2_P50L50:
+
+80.19%
+->
+86.68%.
+
+D2_P75L25:
+
+80.54%
+->
+89.67%.
+
+D3_P25L75:
+
+84.48%
+->
+88.75%.
+
+D3_P50L50:
+
+86.24%
+->
+90.81%.
+
+D3_P75L25:
+
+87.17%
+->
+91.92%.
+
+Thus H consistently increased
+the fraction of contradictory epochs
+where no side held a population majority.
+
+Two D3 hedge arms exceeded
+the frozen 90% contradiction no-majority criterion:
+
+D3_H_P50L50:
+90.81%.
+
+D3_H_P75L25:
+91.92%.
+
+This is genuine mechanism evidence.
+
+OSCILLATION RESULT
+
+The effect on population oscillation
+was real but small.
+
+D2_P25L75:
+
+17.97%
+->
+16.67%.
+
+D2_P50L50:
+
+16.93%
+->
+16.15%.
+
+D2_P75L25:
+
+17.19%
+->
+15.10%.
+
+D3_P25L75:
+
+16.93%
+->
+15.89%.
+
+D3_P50L50:
+
+16.93%
+->
+16.15%.
+
+D3_P75L25:
+
+16.67%
+->
+15.63%.
+
+Every hedge arm remained far above
+the frozen qualification ceiling:
+
+5%.
+
+Therefore:
+
+A REAL UNCERTAINTY PHENOTYPE
+DID NOT BY ITSELF
+STABILIZE THE WHOLE POPULATION.
+
+FAMILY-5 OSCILLATOR RESULT
+
+Paired-reference FAMILY-5 oscillators broken:
+
+D2_H_P25L75:
+
+4 / 40.
+
+D2_H_P50L50:
+
+4 / 39.
+
+D2_H_P75L25:
+
+4 / 36.
+
+D3_H_P25L75:
+
+1 / 34.
+
+D3_H_P50L50:
+
+3 / 35.
+
+D3_H_P75L25:
+
+4 / 36.
+
+Maximum paired-reference break rate:
+
+11.11%.
+
+Frozen information-gain requirement:
+
+at least 25%.
+
+Frozen qualification requirement:
+
+at least 50%.
+
+Thus H did not materially dismantle
+the persistent oscillatory family.
+
+DIRECTIONAL COORDINATION
+
+All hedge arms retained strong
+C/S directional coordination.
+
+D2 range:
+
+88.57%
+to
+92.86%.
+
+D3 range:
+
+87.50%
+to
+94.44%.
+
+So the H state did not destroy
+directional organization.
+
+REVERSAL PERFORMANCE
+
+Reversal acquisition remained:
+
+96.88%
+to
+100%.
+
+Thus the protected state
+was not catastrophically sticky.
+
+SERVICE COST
+
+Aggregate service remained within roughly:
+
+97.0%
+to
+98.7%
+
+of paired A34-style references.
+
+Examples:
+
+D2_H_P25L75:
+
+244673
+versus
+247929.
+
+D2_H_P75L25:
+
+230914
+versus
+238002.
+
+D3_H_P50L50:
+
+229831
+versus
+235088.
+
+The H phenotype therefore imposed
+a modest service cost,
+not a collapse.
+
+ATTRACTOR QUALITY FAILURE
+
+False final dominance remained high.
+
+Hedge-arm false C dominance:
+
+approximately:
+
+18.97%
+to
+20.69%.
+
+Hedge-arm false S dominance:
+
+approximately:
+
+15.71%
+to
+17.14%.
+
+Frozen limits:
+
+<= 5%.
+
+Therefore H improved uncertainty handling
+without solving final attractor correctness.
+
+TECHNICAL INTERPRETATION
+
+A35 falsifies the strong hypothesis:
+
+A THIRD PROTECTED UNCERTAINTY STATE
+IS SUFFICIENT
+TO RESOLVE THE A34 OSCILLATORY FAMILY.
+
+But it supports a narrower architectural claim:
+
+A DISTRIBUTED POPULATION CAN REPRESENT
+GENUINE CONTRADICTION
+AS A REAL PROTECTED PHENOTYPE
+WITHOUT A CENTRAL CONFIDENCE SCORE.
+
+The phenotype is:
+
+selective;
+bounded;
+short-lived;
+information-preserving;
+and compatible with reversal.
+
+Its weakness is not that H activates incorrectly.
+
+Its weakness is:
+
+H IS TOO LOCAL AND TOO TEMPORARY
+TO CHANGE THE MACROSCOPIC OSCILLATORY ATTRACTOR.
+
+The remaining FAMILY-5 oscillators
+largely persist even though individual cells
+periodically enter protected uncertainty.
+
+This suggests the next question
+should not be:
+
+"make H stronger."
+
+That would be post-hoc gain tuning.
+
+The more principled next question is:
+
+DOES BET-HEDGING NEED
+SPATIALLY OR LINEAGE-PERSISTENT SUBPOPULATIONS
+RATHER THAN INDEPENDENT TEMPORARY H CELLS?
+
+A35 currently lets each cell hedge independently.
+
+The protected cells do not form:
+
+stable neighborhoods;
+lineage-preserved hedged niches;
+or coordinated uncertainty domains.
+
+A future experiment should test
+whether uncertainty needs spatial / lineage structure
+so that a protected subpopulation can persist
+through oscillatory forcing
+without forcing the whole organism to choose.
+
+PLAIN-SPEAK INTERPRETATION
+
+The third state worked.
+
+Just not enough.
+
+Cells really did learn a new response:
+
+"CANDIDATE."
+
+"STALE."
+
+or:
+
+"I AM STAYING OUT OF THIS FOR NOW."
+
+And they did not choose that third option randomly.
+
+They used it about two to three times more often
+when the evidence was genuinely contradictory.
+
+That made the population
+less likely to pretend it had a majority
+while both sides were shouting.
+
+It did not ruin reversal.
+
+It did not destroy coordination.
+
+It only cost a few percent of service.
+
+So bet-hedging is not a dead end.
+
+But individual cells briefly stepping aside
+does not stop the whole population
+from falling back into the same oscillatory pattern.
+
+The big clue is:
+
+THE HEDGED CELLS ARE ISOLATED AND TEMPORARY.
+
+They do not yet form
+a protected subpopulation
+that can survive as a stable alternative
+while the rest of the organism fluctuates.
+
+So the next clean question is:
+
+DOES UNCERTAINTY NEED ITS OWN
+PERSISTENT LOCAL NICHE OR LINEAGE?
+
+Not a bigger confidence number.
+
+Not a stronger global threshold.
+
+A real subpopulation
+whose job is to remain unresolved
+until the environment becomes coherent enough
+to justify leaving that state.
+
+No autonomous controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
