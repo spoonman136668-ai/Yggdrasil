@@ -1579,3 +1579,93 @@ A fresh post-repair reproduction is required and must match the accepted primary
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-REPAIR REPRODUCTION ADDENDUM — A09 ARTIFACT ACCEPTANCE
+
+DATE:
+2026-09-21.
+
+STATUS:
+TRANSPORT REPAIR VERIFIED / SCIENTIFIC RESULT REPRODUCED / A09 ACCEPTANCE PRESERVED.
+
+REPAIRED REPOSITORY TRANSPORT
+
+Git blob:
+
+c2289c4bacfd41374ef68f38421d9b2adde7e367.
+
+Bytes:
+
+9977.
+
+Normalized base64 characters:
+
+13304.
+
+Normalized base64 text SHA-256:
+
+ce44584a93cdf88620f3a71968289e4bbdcfdf5ceffd32f70bae27f4d48069cf.
+
+Binary gzip SHA-256:
+
+f9c0891d785b4cd6c663a679e39c710db691bd61d3f4e5fcd4d26669548c41b3.
+
+The repaired transport decompresses through the unchanged hash-guarded loader to:
+
+35570 source bytes.
+
+Source SHA-256:
+
+9b508deb63c8c923b9ec300831446dcf68b2d9de6c9a76506449a277c7f72162.
+
+POST-REPAIR REPRODUCTION
+
+Two fresh complete deterministic A09 sweeps were executed through the repaired hash-guarded loader / gzip path.
+
+F09 remained:
+
+db770987c53e623bb86ad229cac3252388f50cc2.
+
+Stress manifest remained:
+
+8600dd8ff89d7190cf5f4c2c825442dc95e6c7f7803a759d8f8054e37510c6e7.
+
+Post-repair sweep 1 SHA-256:
+
+1fa4b91eb629cc7a3757d3e6317b425981d5d709703369864029f8c772d0ec2b.
+
+Post-repair sweep 2 SHA-256:
+
+1fa4b91eb629cc7a3757d3e6317b425981d5d709703369864029f8c772d0ec2b.
+
+Previously accepted A09 primary SHA-256:
+
+1fa4b91eb629cc7a3757d3e6317b425981d5d709703369864029f8c772d0ec2b.
+
+All three:
+
+EXACT MATCH.
+
+Therefore:
+
+the malformed historical gzip was a packaging / transport defect only.
+
+It did not change:
+
+- frozen source;
+- F09;
+- memory-stress manifest;
+- learning result;
+- service result;
+- distributed-memory result;
+- probes;
+- boundaries;
+- primary acceptance.
+
+A09 remains:
+
+CLOSED / POSITIVE / REPRODUCIBLE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
