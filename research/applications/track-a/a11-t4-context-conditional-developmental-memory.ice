@@ -1051,3 +1051,380 @@ A11 primary evaluation events executed = 0.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — A11 T4 CONTEXT-CONDITIONAL DEVELOPMENTAL MEMORY
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / POSITIVE PRIMARY / REPRODUCIBLE /
+CONTEXT-CONDITIONAL DEVELOPMENTAL MEMORY PASSED / NON-CANONICAL.
+
+FROZEN HARNESS
+
+Implementation commit:
+
+9837ac62db27048930b4718978c16449e707fc2e.
+
+Freeze commit F11:
+
+77874019c9f8cc8716873161f920e249a07ec4fa.
+
+Source SHA-256:
+
+a45e4b74b0d2f2c8981da7f94bde4e9072048109226854a881162ecb47f9d235.
+
+Source bytes:
+
+17308.
+
+Compressed payload SHA-256:
+
+334f7bdb23e9026876cf5deb732fced904f5c5ae96d71cf8140177a7ee0629b2.
+
+Compressed payload bytes:
+
+5911.
+
+PRIMARY MANIFEST
+
+Derived only after F11 existed.
+
+Context-development manifest SHA-256:
+
+b0e00f29d36637a1365ab2407678aacf232ac4f4cf05d387f68af975a5b4bedd.
+
+A/B prior pairs:
+
+12 / 12 distinct.
+
+All prior derivation counters:
+
+0.
+
+No latent prior,
+training sequence,
+held-out evaluation sequence,
+learner order,
+or replacement target was rejected,
+redrawn,
+or replaced.
+
+REPRODUCIBILITY
+
+Two complete deterministic A11 T4 primary sweeps.
+
+Sweep 1 serialized output SHA-256:
+
+21e3ae20cad080cd65c138722d96079f27c6d2d4479fd3506f2dd40c06f32c05.
+
+Sweep 2 serialized output SHA-256:
+
+21e3ae20cad080cd65c138722d96079f27c6d2d4479fd3506f2dd40c06f32c05.
+
+Byte-identical:
+
+TRUE.
+
+PRIMARY RESULT
+
+A11_T4_CONTEXT_CONDITIONAL_DEVELOPMENTAL_MEMORY_SUCCESS:
+
+TRUE.
+
+A11_RETENTION_SUCCESS:
+
+TRUE.
+
+DEVELOPMENTAL LEARNING
+
+CONTEXT_A prior reconstructed exactly:
+
+12 / 12 by Learner A.
+
+12 / 12 by Learner B.
+
+CONTEXT_B prior reconstructed exactly:
+
+12 / 12 by Learner A.
+
+12 / 12 by Learner B.
+
+A policy slots preserved byte-identically through B learning:
+
+12 / 12.
+
+Return-to-A selected the stored A context policy:
+
+12 / 12.
+
+No A retraining occurred before A2 evaluation.
+
+RETURN-TO-A / CATASTROPHIC-FORGETTING RESULT
+
+Candidate A2 first-four-epoch service:
+
+982.
+
+Single-last-learned forgetting baseline:
+
+934.
+
+Evaluator-only oracle:
+
+982.
+
+A2 oracle efficiency:
+
+1.0.
+
+Candidate A2 >= forgetting baseline:
+
+12 / 12 scenarios.
+
+Candidate A2 > forgetting baseline:
+
+10 / 12 scenarios.
+
+Aggregate migrations avoided on A2 versus the forgetting baseline:
+
+30.
+
+The two equal-performance scenarios remained non-inferior.
+
+No scenario was worse than the one-slot forgetting baseline.
+
+CONTEXT SPECIALIZATION
+
+A-context and B-context replacement assignments differed:
+
+TRUE.
+
+B-context specialization avoided migration relative to the frozen static comparison:
+
+TRUE.
+
+Proxy B-context migrations avoided:
+
+12 aggregate.
+
+TASK / SAFETY
+
+Task accuracy:
+
+1.0.
+
+Incorrect served requests:
+
+0.
+
+Stale-program served requests:
+
+0.
+
+All restart comparisons:
+
+equivalent.
+
+Existing constitutional safety totals:
+
+zero.
+
+T4 PROBES
+
+P1 — slot isolation:
+
+PASS in all 12 scenarios.
+
+P2 — context switch without forced rewrite of existing cells:
+
+PASS.
+
+P3 — return to A without retraining:
+
+PASS.
+
+P4 — unknown context fail-closed:
+
+PASS.
+
+P5 — duplicate distributed memory does not bias learned prior:
+
+PASS.
+
+P6 — incomplete context memory abstains:
+
+PASS.
+
+P7 — cross-context evidence mixing exposed as unsafe:
+
+PASS.
+
+P8 — restarted context memory preserves both slots and selector:
+
+PASS.
+
+NEGATIVE / LIMIT CONTROLS
+
+N1 — one global developmental slot:
+
+catastrophic forgetting reachable.
+
+N2 — force existing-cell respecialization on context switch:
+
+unnecessary churn reachable.
+
+N3 — direct context-prior injection:
+
+invalid as training evidence.
+
+N5 — wrong / ambiguous context identity:
+
+boundary preserved.
+
+TECHNICAL INTERPRETATION
+
+A10 showed that experience can modify one developmental prior.
+
+A11 shows that developmental learning does not have to be destructive.
+
+The organism can retain two independently learned developmental policies,
+indexed by explicit environmental context.
+
+Learning CONTEXT_B did not overwrite CONTEXT_A.
+
+When CONTEXT_A returned,
+the population reused its existing A policy immediately,
+without consuming new A training experience.
+
+That stored policy changed how newly created cells specialized
+and materially improved immediate post-turnover service
+relative to a single-slot learner that had forgotten A.
+
+The demonstrated developmental chain now includes:
+
+EXPERIENCE IN CONTEXT A
+->
+LEARNED DEVELOPMENTAL POLICY A
+->
+EXPERIENCE IN CONTEXT B
+->
+LEARNED DEVELOPMENTAL POLICY B
+WITHOUT DESTROYING A
+->
+RETURN TO CONTEXT A
+->
+IMMEDIATE REUSE OF A
+->
+FUTURE CELLS DEVELOP ACCORDING TO A AGAIN.
+
+This is bounded continual developmental learning.
+
+It is not open-ended context discovery.
+
+The context identity remains externally visible and trusted.
+
+PLAIN-SPEAK INTERPRETATION
+
+A10 taught Yggdrasil one developmental habit.
+
+A11 taught it two,
+then checked whether learning the second erased the first.
+
+It did not.
+
+The organism learned how future cells should develop in environment A.
+
+Then it learned a different developmental pattern for environment B.
+
+When A came back,
+we did not retrain it.
+
+Yggdrasil pulled the old A developmental memory back into use immediately.
+
+That mattered.
+
+On the return-to-A test,
+the retained-context organism served:
+
+982
+
+requests in the immediate post-replacement windows.
+
+The one-slot organism that had overwritten A with B served:
+
+934.
+
+The retained policy avoided:
+
+30
+
+migrations.
+
+It matched the evaluator-only developmental oracle on this frozen metric.
+
+So the developmental learner now has a basic form of memory across recurring environments.
+
+It can learn:
+
+A,
+then B,
+then return to A
+
+without forgetting how A should shape future cells.
+
+SCIENTIFIC BOUNDARY
+
+A11 still receives an explicit context identity.
+
+It does not discover that the environment has entered A or B by itself.
+
+Therefore the next justified question is not a third stored context.
+
+It is:
+
+CAN THE ORGANISM INFER THE CURRENT DEVELOPMENTAL CONTEXT
+FROM EXPERIENCE
+AND SELECT / CREATE THE CORRECT DEVELOPMENTAL MEMORY
+WITHOUT BEING HANDED THE CONTEXT LABEL?
+
+NEXT JUSTIFIED GATE
+
+A12 / TRAINING T5 —
+
+LATENT CONTEXT INFERENCE AND DEVELOPMENTAL MEMORY SELECTION.
+
+The first T5 gate should preserve the two-context A11 world
+but hide CONTEXT_A / CONTEXT_B labels from the developmental selector.
+
+The organism should infer context from recent distributed observations,
+abstain while ambiguous,
+then activate the corresponding already learned developmental policy.
+
+No constitutional self-modification should be added.
+
+ACCEPTED TRAINING FRONTIER
+
+A07 / T1:
+positive hereditary task-program learning.
+
+A08 / T2:
+positive provenance-aware noisy learning.
+
+A09 / T2B:
+positive distributed cellular training memory.
+
+A10 / T3:
+positive bounded developmental-policy learning via FIXA.
+
+A11 / T4:
+positive context-conditional continual developmental memory.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
