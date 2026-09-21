@@ -948,3 +948,77 @@ or primary signal.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-IMPLEMENTATION PARENT-ANCHOR CORRECTION 01 — A15 T7
+
+DATE:
+2026-09-21.
+
+STATUS:
+CORRECTED BEFORE ANY A15 HARNESS COMMIT,
+FREEZE,
+PRIMARY MANIFEST,
+OR PRIMARY EXECUTION.
+
+ISSUE
+
+The original A15 preregistration referenced the superseded wrong-source A14 closure values:
+
+closure commit:
+faa1bd8fa6f4538fea62f99eeef1890378baf494;
+
+manifest:
+ebc5115a9554012b219a59fc9bcde5f4f005838f98f2898a049ecbce46f33c48;
+
+primary result:
+5a8f277dc591acda355ec0b8e901474b5576c09e28c7474bd208aa05f81e351e.
+
+Those values are explicitly non-authoritative after the append-only A14 evidence-integrity correction.
+
+CORRECT DEFINITIVE A14 PARENT
+
+A14 definitive correction commit:
+
+a03cc7f606810cbb5db4f08a56105bfa3e81261d.
+
+A14 frozen source SHA-256:
+
+d2187358170045ddd9869be1a53d6938c4ade6547c0b8d83415e16cc6dc40045.
+
+A14 freeze F14:
+
+c0957332578557efc2975ca2da31cf11d07b45ff.
+
+A14 authoritative strict manifest:
+
+83a0ad4d67d7a3f3625e49c311f5d2a85c73fee40cde96e24937ae79e1e944ae.
+
+A14 authoritative primary result SHA-256:
+
+378ac5e53a61df6d772fb675d7d386374e865310fb8f99fd77f5a6132331c14a.
+
+A14 definitive candidate / fallback / oracle first-four service:
+
+1982 / 1920 / 1982.
+
+A14 definitive migrations avoided:
+
+63.
+
+All A14 primary signals:
+
+TRUE.
+
+A15 MUST use only this definitive A14 lineage.
+
+This correction changes no A15 scientific question,
+threshold,
+drift rule,
+version rule,
+probe,
+control,
+or primary signal.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
