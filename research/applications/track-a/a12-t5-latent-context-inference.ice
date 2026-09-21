@@ -921,3 +921,372 @@ A12 primary service evaluation events executed = 0.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — A12 T5 LATENT CONTEXT INFERENCE
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / POSITIVE PRIMARY / REPRODUCIBLE /
+LATENT CONTEXT INFERENCE PASSED / NON-CANONICAL.
+
+FROZEN HARNESS
+
+Implementation commit:
+
+c1d281dbacfeafd6ed2f859e2845b67ae5894672.
+
+Freeze commit F12:
+
+3308697f2594212be565639bc57c0179e83e831a.
+
+Source SHA-256:
+
+628c23f8319aa0e429a5c0e4dd8b0007e1346a799428c1678d33189dda10bdfd.
+
+Source bytes:
+
+12683.
+
+Compressed payload SHA-256:
+
+1897e52ea301bb980480a9970e1ac3385d7c8eb8ca62bd1eab9afcca7cf55e9d.
+
+Compressed payload bytes:
+
+4539.
+
+PRIMARY MANIFEST
+
+Derived only after F12 existed.
+
+Latent-context manifest SHA-256:
+
+502009818ea9d6e57089a91424e7cf399e7c5e95024a9623816e733c58c3f63a.
+
+Hidden phases:
+
+72.
+
+Every scenario contained:
+
+both A and B;
+at least 3 switches.
+
+No accepted phase,
+probe,
+service sequence,
+restart phase,
+or replacement target was replaced after derivation.
+
+REPRODUCIBILITY
+
+Two complete deterministic A12 T5 primary sweeps.
+
+Sweep 1 serialized output SHA-256:
+
+8e1ec460942bd5a486bc4420c8e5e24334599d08a97bc10e385e92b938df0fda.
+
+Sweep 2 serialized output SHA-256:
+
+8e1ec460942bd5a486bc4420c8e5e24334599d08a97bc10e385e92b938df0fda.
+
+Byte-identical:
+
+TRUE.
+
+PRIMARY RESULT
+
+A12_T5_LATENT_CONTEXT_INFERENCE_SUCCESS:
+
+TRUE.
+
+CONTEXT INFERENCE
+
+Correct hidden-context selections:
+
+72 / 72.
+
+Incorrect context selections:
+
+0.
+
+Primary inference latency:
+
+2 unique probe observations
+in all 72 phases.
+
+Replacements before successful inference:
+
+0.
+
+Thus the developmental selector was never handed:
+
+A;
+B;
+phase index;
+F12;
+hidden sequence.
+
+It selected the stored developmental memory from observed demand alone.
+
+USEFULNESS
+
+Candidate first-four-epoch post-replacement service:
+
+2939.
+
+Sticky-last-context baseline:
+
+2864.
+
+Evaluator-only oracle:
+
+2939.
+
+Oracle efficiency:
+
+1.0.
+
+Candidate >= sticky baseline:
+
+68 / 72 phases.
+
+Candidate > sticky baseline:
+
+37 / 72 phases.
+
+Migrations avoided relative to sticky baseline:
+
+88.
+
+TASK / SAFETY
+
+Task accuracy:
+
+1.0.
+
+Incorrect served requests:
+
+0.
+
+Stale-program served requests:
+
+0.
+
+All restart-mid-inference checks:
+
+equivalent.
+
+Existing constitutional safety totals:
+
+zero.
+
+T5 PROBES
+
+P1 — one probe only:
+
+PASS.
+
+The selector abstained.
+
+P2 — exact two-probe identification:
+
+PASS.
+
+P3 — duplicate first probe:
+
+PASS.
+
+Copies did not become a second observation.
+
+P4 — unknown niche:
+
+PASS.
+
+The selector abstained when the exact mean matched neither stored prior.
+
+P5 — ambiguous stored memories:
+
+PASS.
+
+The selector abstained when both slots were made identical in the evaluator control.
+
+P6 — context switch resets inference buffer:
+
+PASS.
+
+P7 — restart after probe 0:
+
+PASS.
+
+The one-probe state survived restart,
+remained abstaining,
+and probe 1 produced the same context as uninterrupted execution.
+
+P8 — no forced existing-cell rewrite:
+
+PASS.
+
+Only future clean replacements used the newly selected developmental memory.
+
+NEGATIVE / LIMIT CONTROLS
+
+N1 — sticky last context:
+
+performance loss observed.
+
+N2 — force guess after one probe:
+
+false selection reachable.
+
+N3 — nearest-prior guess for unknown niche:
+
+false reuse of a known developmental memory reachable.
+
+N4 — forged context probe:
+
+observation-truth boundary preserved.
+
+N5 — new third context:
+
+selector abstains.
+
+TECHNICAL INTERPRETATION
+
+A11 stored multiple developmental memories.
+
+A12 removes the explicit context label from selection.
+
+The organism now performs:
+
+RECENT EXPERIENCE
+->
+EXACT CONTEXT EVIDENCE
+->
+ABSTENTION WHILE INCOMPLETE
+->
+STORED DEVELOPMENTAL-MEMORY SELECTION
+->
+FUTURE CELL SPECIALIZATION.
+
+This is distinct from A11.
+
+The developmental selector is now evidence-driven.
+
+It can switch A -> B -> A,
+or B -> A -> B,
+without being told which slot applies.
+
+The primary used a deliberately conservative exact-match rule.
+
+That conservatism is scientifically useful:
+
+one observation is insufficient;
+unknown niches do not get forced into the closest known memory;
+ambiguous memories do not trigger arbitrary choice.
+
+PLAIN-SPEAK INTERPRETATION
+
+A11 could remember two different developmental habits.
+
+But it still needed somebody to tell it:
+
+"use A"
+
+or
+
+"use B."
+
+A12 removed that instruction.
+
+At the start of each new environment,
+Yggdrasil watched what was happening.
+
+After one observation,
+it refused to guess.
+
+After two complementary observations,
+it could recognize which old developmental memory matched the environment.
+
+It then used that memory when new cells were born.
+
+Across 72 hidden environment phases,
+it identified every one correctly.
+
+It never picked the wrong developmental memory.
+
+And compared with simply assuming the previous environment was still active,
+that recognition improved immediate service and avoided 88 migrations.
+
+So Yggdrasil can now:
+
+remember developmental contexts
+AND
+recognize when one of them has returned.
+
+SCIENTIFIC BOUNDARY
+
+If the current environment matches NONE of the stored developmental memories,
+A12 abstains.
+
+That is correct behavior for T5.
+
+It does not yet know how to decide:
+
+"this is a genuinely new developmental niche"
+
+and create a new bounded memory for it.
+
+NEXT JUSTIFIED GATE
+
+A13 / TRAINING T6 —
+
+BOUNDED NOVEL-CONTEXT DISCOVERY AND DEVELOPMENTAL MEMORY CREATION.
+
+Primary question:
+
+Can repeated unresolved experience justify creating exactly one new developmental context slot,
+learn its bounded developmental prior,
+and later recognize / reuse that new slot,
+without proliferating duplicate or spurious contexts?
+
+Required safeguards should include:
+
+- minimum unresolved-evidence dwell;
+- distributed provenance-qualified observations;
+- explicit novelty test against existing slots;
+- governance authorization before slot creation;
+- duplicate-context coalescence;
+- hard context-slot capacity;
+- rollback / retirement path;
+- no constitutional self-modification.
+
+ACCEPTED TRAINING FRONTIER
+
+A07 / T1:
+positive hereditary task-program learning.
+
+A08 / T2:
+positive provenance-aware noisy learning.
+
+A09 / T2B:
+positive distributed cellular training memory.
+
+A10 / T3:
+positive bounded developmental-policy learning via FIXA.
+
+A11 / T4:
+positive context-conditional continual developmental memory.
+
+A12 / T5:
+positive latent-context inference and developmental-memory selection.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
