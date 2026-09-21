@@ -1,0 +1,33 @@
+name: A08 Frozen Manifest Only
+
+on:
+  push:
+    branches:
+      - dg1a-ar
+    paths:
+      - .github/workflows/a08-manifest-only.yml
+
+jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact triggering commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Verify frozen A08 payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          P="research/applications/track-a/a08_t2_provenance_noisy_training_v1.py.gz"
+          test "$(sha256sum "$P" | awk '{print $1}')" = "ef3e87bd5a9a7484a3f640805e9451287f134632e08c2d0a56beb0552a4d1ae4"
+
+      - name: Derive manifest only
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research/applications/track-a
+          python3 a08_t2_provenance_noisy_training_v1.py \
+            --freeze-commit de08cc900d6e306411ae879114b3b648f0a94708 \
+            --manifest-only
