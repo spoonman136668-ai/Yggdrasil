@@ -505,3 +505,220 @@ DG-1R-05 canonical frozen primary remains UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A17-FIXA AUTHORIZATION / PROVENANCE / CAPACITY REPAIR
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F17-SEEDED A17 PRIMARY MANIFEST
+AND BEFORE ANY REAL A17 PRIMARY EXECUTION.
+
+IMPLEMENTATION COMMIT
+
+402348d2c0b8fd0bee887cee12f0c726f04233a6.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a17_fixa_authorization_provenance_capacity_v1.py
+
+Loader Git blob:
+
+3ed95cc1ec51accfcf413f98b6d0d1c8693b81a7.
+
+Payload:
+
+research/applications/track-a/a17_fixa_authorization_provenance_capacity_v1.py.gz
+
+Payload Git blob:
+
+ab46ff83bc5fed2406d58086cd85ccd0364a9262.
+
+Decompressed source SHA-256:
+
+066e66e36e601effa777052e54f7470d96ddee21d5b1153e767b0ebe6aa43c9f.
+
+Decompressed source bytes:
+
+31597.
+
+Deterministic gzip SHA-256:
+
+a5e7952896cfcecf49b26bbea7c50ac6a871ca9b75b6be0b982a16166dbb74cf.
+
+Compressed payload bytes:
+
+7630.
+
+PRESERVED SCIENTIFIC FREEZE
+
+Original A17 science seed F17 remains:
+
+3ec24f8242285688a537f5e7dd6e9a231a645597.
+
+Original F17 source SHA-256 remains:
+
+a1ef99dc5948328d5b8a85d87b7e62a718b4238474322c16aeec6a730244d5c5.
+
+No F17 target path,
+primary observation,
+attestation root,
+learner order,
+evaluation sequence,
+restart detail,
+or replacement plan
+has been derived or consumed as primary evidence before this freeze.
+
+INDEPENDENT LINEAGE RECONSTRUCTION QUALIFICATION
+
+Because GitHub-hosted Actions for this private repository failed before runner steps or logs were created,
+qualification was executed through an independent local reconstruction of the exact frozen lineage rules.
+
+The reconstruction exactly reproduced:
+
+A11 manifest SHA-256:
+b0e00f29d36637a1365ab2407678aacf232ac4f4cf05d387f68af975a5b4bedd.
+
+A12 manifest SHA-256:
+502009818ea9d6e57089a91424e7cf399e7c5e95024a9623816e733c58c3f63a.
+
+A14 exact-F14 manifest SHA-256:
+83a0ad4d67d7a3f3625e49c311f5d2a85c73fee40cde96e24937ae79e1e944ae.
+
+Frozen A17 original mechanical manifest SHA-256:
+7fcf5e5bc3820859f4f11bc650325ebe23ad90678363df3b13ba2ddea3ac619e.
+
+Frozen A17 original mechanical serialized output SHA-256:
+c7a5c2733560b69fbaa6ec7dab6bea058c623bd1c6beee2f710dcd7e5c079f1c.
+
+Frozen A17 original mechanical aggregate reproduced exactly:
+
+candidate first-four = 3958;
+stale-previous = 3928;
+oracle = 3958;
+candidate >= stale = 40 / 48;
+oracle efficiency = 1.0;
+migrations avoided = 32.
+
+Thus the independent execution substrate is byte-semantically aligned with the accepted lineage.
+
+FIXA VALIDATE
+
+Mechanical non-primary manifest SHA-256:
+
+b0356e5c0046cbc3b1e39a5bd3a37ca550f07dd35b96f9cfe023d5ae1bf913d4.
+
+All 12 scenarios / 48 patches structurally valid.
+
+Operational P1-P12 probes:
+
+PASS.
+
+Operational N1-N5 counterfactual controls:
+
+PASS.
+
+Exact C-v2 digest anchoring:
+
+PASS.
+
+Provenance-root binding:
+
+PASS.
+
+Learner-root independence:
+
+PASS.
+
+Context-boundary rejection:
+
+PASS.
+
+Four-patch capacity enforcement:
+
+PASS.
+
+Inherited governance / registry read-only qualification:
+
+PASS.
+
+Replacement episodes remain exactly:
+
+0 and 8.
+
+DETERMINISM
+
+Two complete FIXA fake-freeze sweeps using:
+
+MECHANICAL-F17A-NONPRIMARY
+
+were byte-identical.
+
+Serialized output SHA-256:
+
+52189d4ab2d56936870b6cec247431aee4df11b229c2518456a9c43922de5e1c.
+
+Serialized file SHA-256:
+
+972988c6ea5eaf0dce5328ebb25257d99599668ed90e47a02ff44867c3c26160.
+
+That fake seed produced:
+
+candidate first-four = 3958;
+stale-previous = 3938;
+oracle = 3958;
+candidate >= stale = 37 / 48;
+oracle efficiency = 1.0;
+migrations avoided = 31.
+
+This is NON-PRIMARY mechanical data only.
+It is preserved exactly and was not tuned around.
+The scientific usefulness threshold is evaluated only on the real F17-seeded primary world.
+
+INVARIANCE CHECK
+
+Running the repaired harness on the original F17 mechanical seed:
+
+MECHANICAL-NONPRIMARY-FREEZE
+
+reproduced the original service aggregate exactly:
+
+3958 / 3928 / 3958;
+40 / 48;
+oracle efficiency 1.0;
+32 migrations avoided.
+
+All repaired authorization / provenance / capacity signals also passed.
+
+Repaired-harness serialized output SHA-256 on that unchanged mechanical world:
+
+9240a42aeeccc5790b112b3684c495f8946e20d2f1169f5df2a914cbbb47691a.
+
+Serialized file SHA-256:
+
+8c1a682f812a084b852b091da20bf7290720d69ce08f8ffd1eb39a4418f601e8.
+
+PRIMARY STATUS
+
+NOT DERIVED.
+NOT EXECUTED.
+
+Let the resulting commit SHA of this append-only freeze record be:
+
+F17A.
+
+After F17A exists:
+
+1. derive the exact primary manifest using F17 as the scientific derivation seed;
+2. record that manifest before any primary observation;
+3. execute two complete deterministic corrected primary sweeps;
+4. preserve the result unchanged.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
