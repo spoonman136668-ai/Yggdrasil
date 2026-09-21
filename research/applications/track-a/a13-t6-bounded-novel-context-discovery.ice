@@ -746,3 +746,147 @@ NO DUPLICATE OR UNBOUNDED CONTEXT GROWTH.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A13 T6 BOUNDED NOVEL-CONTEXT DISCOVERY
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY PRIMARY A13 C PRIOR,
+NOVELTY-DWELL STREAM,
+SERVICE SEQUENCE,
+OR REPLACEMENT PLAN.
+
+IMPLEMENTATION COMMIT
+
+c25ca70bb8013f4b6671372b9c22c262baaa50bd.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a13_t6_novel_context_v1.py
+
+Loader Git blob:
+
+6b2f1cffc049a603dbcb5f4b7581d43e5a683e05.
+
+Payload:
+
+research/applications/track-a/a13_t6_novel_context_v1.py.gz
+
+Payload Git blob:
+
+a92d1a9944bd1f5c82e024b84143fe6c4ec4b40f.
+
+Compressed payload SHA-256:
+
+bd50f3068d0751647d4e1caa3ab8b295f8c72f0836ed93edb1e3be6c3041250d.
+
+Compressed payload bytes:
+
+4994.
+
+Decompressed exact source SHA-256:
+
+f373a8f8a60eff9c26ffe0793da844a946d8bb9916f79eb66ab9d5971cf5a561.
+
+Decompressed source bytes:
+
+13510.
+
+FROZEN PARENT
+
+A12 source SHA-256:
+
+628c23f8319aa0e429a5c0e4dd8b0007e1346a799428c1678d33189dda10bdfd.
+
+A12 freeze F12:
+
+3308697f2594212be565639bc57c0179e83e831a.
+
+A12 latent-context manifest:
+
+502009818ea9d6e57089a91424e7cf399e7c5e95024a9623816e733c58c3f63a.
+
+A12 accepted result:
+
+8e1ec460942bd5a486bc4420c8e5e24334599d08a97bc10e385e92b938df0fda.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+A/B parent priors reproduced:
+
+PASS.
+
+Mechanical C priors distinct from A/B:
+
+12 / 12.
+
+Mechanical first-half 8-observation C means exact:
+
+12 / 12.
+
+Mechanical second-half 8-observation C means exact:
+
+12 / 12.
+
+Full non-primary T6 smoke used only:
+
+MECHANICAL-NONPRIMARY-FREEZE.
+
+Mechanical smoke summary:
+
+12 / 12 first-C two-probe encounters abstained;
+12 / 12 C priors learned exactly;
+12 / 12 final slot counts = 3;
+0 duplicate C slots;
+24 / 24 C returns recognized without retraining;
+candidate C first-four service = 1436;
+permanent-unknown baseline = 1416;
+evaluator oracle = 1436;
+candidate >= baseline in 30 / 36 C service phases;
+37 migrations avoided;
+all restart checks equivalent;
+all T6 probes PASS;
+all unsafe controls exposed;
+existing constitutional safety totals = 0.
+
+Two pre-freeze implementation defects were caught and repaired before this freeze:
+
+undefined local scenario references in the restart / C-commit path.
+
+Those repairs changed only local variable references.
+
+No primary result had been observed.
+
+PRIMARY STATUS AT THIS FREEZE
+
+NOT DERIVED.
+
+Let the resulting commit SHA of this freeze update be F13.
+
+Only after F13 exists may the harness derive:
+
+- 12 latent C developmental priors;
+- known-context phase choices;
+- 16 C novelty-dwell observations per scenario;
+- C service sequences;
+- replacement targets.
+
+No primary A13 novelty observation has been consumed.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
