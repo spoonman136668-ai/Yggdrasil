@@ -1,0 +1,40 @@
+name: DG-1R-05AA Frozen Scientific Sweep
+
+on:
+  push:
+    branches:
+      - dg1a-ar
+    paths:
+      - .github/workflows/dg1r05aa-frozen.yml
+
+jobs:
+  frozen-sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact triggering commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Verify frozen harness bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          HARNESS="research/experiments/dg1r/harnesses/dg1r_05aa_hibernation_reactivation_v1.py"
+          test "$(wc -c < "$HARNESS" | tr -d ' ')" = "27031"
+          test "$(sha256sum "$HARNESS" | awk '{print $1}')" = "3e254c15ffb526833caa635e8e8a7ef14f26fd2c0098b16d243c9be7f4308fde"
+          python3 -m py_compile "$HARNESS"
+          python3 "$HARNESS" --mechanical-only
+
+      - name: Run frozen sweep twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          HARNESS="research/experiments/dg1r/harnesses/dg1r_05aa_hibernation_reactivation_v1.py"
+          python3 "$HARNESS" --out /tmp/dg1r05aa_run1.json
+          python3 "$HARNESS" --out /tmp/dg1r05aa_run2.json
+          cmp /tmp/dg1r05aa_run1.json /tmp/dg1r05aa_run2.json
+          echo "=== OUTPUT SHA256 ==="
+          sha256sum /tmp/dg1r05aa_run1.json /tmp/dg1r05aa_run2.json
+          echo "=== FROZEN RESULT ==="
+          cat /tmp/dg1r05aa_run1.json
