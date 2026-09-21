@@ -973,3 +973,162 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-FREEZE PRIMARY DEVELOPMENTAL MANIFEST — BEFORE FIRST PRIMARY TRAINING OBSERVATION
+
+DATE:
+2026-09-21.
+
+FREEZE COMMIT F10
+
+cf1a9f459861177cb1e9a0e22c6c68684a543514.
+
+DEVELOPMENTAL MANIFEST SHA-256
+
+917d82b907a01b7bba4fff972b3f9aca691df7a7f368d0bd34fe9baf7c243cc2.
+
+LATENT DEVELOPMENTAL PRIORS
+
+S00:
+(5,4,2,1).
+
+S01:
+(2,3,6,1).
+
+S02:
+(3,2,6,1).
+
+S03:
+(4,3,4,1).
+
+S04:
+(1,2,3,6).
+
+S05:
+(5,4,1,2).
+
+S06:
+(2,4,2,4).
+
+S07:
+(2,2,3,5).
+
+S08:
+(2,2,6,2).
+
+S09:
+(5,3,2,2).
+
+S10:
+(3,5,1,3).
+
+S11:
+(5,3,1,3).
+
+All prior derivation counters:
+
+0.
+
+REPLACEMENT TARGETS
+
+S00:
+E00 [4,1,6,8];
+E16 [7,3,1,9];
+E32 [5,2,4,9];
+E48 [3,5,9,6].
+
+S01:
+E00 [3,10,0,4];
+E16 [1,11,6,5];
+E32 [11,8,6,2];
+E48 [11,8,9,6].
+
+S02:
+E00 [9,1,0,8];
+E16 [6,9,0,1];
+E32 [2,5,7,1];
+E48 [9,10,5,0].
+
+S03:
+E00 [5,11,8,6];
+E16 [6,4,7,10];
+E32 [8,3,9,4];
+E48 [9,4,5,0].
+
+S04:
+E00 [11,5,4,7];
+E16 [4,3,6,5];
+E32 [8,11,5,7];
+E48 [2,8,5,10].
+
+S05:
+E00 [8,7,10,2];
+E16 [5,4,3,0];
+E32 [1,11,10,4];
+E48 [2,4,8,10].
+
+S06:
+E00 [10,7,11,5];
+E16 [7,11,5,1];
+E32 [10,8,0,2];
+E48 [7,8,0,5].
+
+S07:
+E00 [10,5,8,3];
+E16 [2,3,1,10];
+E32 [4,2,3,10];
+E48 [9,4,5,1].
+
+S08:
+E00 [2,11,10,6];
+E16 [10,1,5,8];
+E32 [6,1,7,11];
+E48 [4,10,3,9].
+
+S09:
+E00 [2,11,4,3];
+E16 [1,10,11,9];
+E32 [1,9,7,6];
+E48 [1,7,11,2].
+
+S10:
+E00 [9,8,5,0];
+E16 [0,10,4,5];
+E32 [6,4,7,5];
+E48 [9,7,6,0].
+
+S11:
+E00 [7,6,9,5];
+E16 [1,11,5,8];
+E32 [10,11,8,3];
+E48 [7,0,3,10].
+
+The exact:
+
+64 training vectors per scenario;
+64 held-out evaluation vectors per scenario;
+learner A orders;
+learner B orders;
+
+are fixed by the frozen harness and F10
+and are bound by the manifest SHA above.
+
+No latent prior,
+training pair,
+evaluation pair,
+learner order,
+or replacement set was rejected,
+redrawn,
+or replaced.
+
+At the moment this manifest was recorded:
+
+A10 primary developmental training observations consumed = 0.
+
+A10 primary replacement events executed = 0.
+
+A10 primary service requests served = 0.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
