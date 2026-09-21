@@ -1022,3 +1022,152 @@ or primary signal.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A15 T7 VERSIONED CONTEXT REVISION
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY PRIMARY A15 C-V2 PRIOR,
+DRIFT STREAM,
+ATTESTATION ROOT,
+LEARNER ORDER,
+RECURRENCE SEQUENCE,
+OR REPLACEMENT PLAN.
+
+IMPLEMENTATION COMMIT
+
+f89acaf37c70c3b57f3c0463a9be0a2133a4bef7.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a15_t7_versioned_context_revision_v1.py
+
+Loader Git blob:
+
+a8473b59e0f6b4ff248883dfb2641f55bf3f755d.
+
+Payload:
+
+research/applications/track-a/a15_t7_versioned_context_revision_v1.py.gz
+
+Payload Git blob:
+
+01405983e47217e409ec6f0355453955a5037f59.
+
+Compressed payload SHA-256:
+
+ad42b1344024b66b3e5888765a1a8306d40cc379d0b3baf2094c99e04ae5a5cf.
+
+Compressed payload bytes:
+
+6668.
+
+Decompressed exact source SHA-256:
+
+4dfd8814c869380317bb90d8baf68f79f4c2ce9874db7bc9278546b56001c071.
+
+Decompressed source bytes:
+
+20009.
+
+FROZEN PARENT
+
+A14 definitive correction commit:
+
+a03cc7f606810cbb5db4f08a56105bfa3e81261d.
+
+A14 frozen source SHA-256:
+
+d2187358170045ddd9869be1a53d6938c4ade6547c0b8d83415e16cc6dc40045.
+
+A14 freeze F14:
+
+c0957332578557efc2975ca2da31cf11d07b45ff.
+
+A14 authoritative manifest:
+
+83a0ad4d67d7a3f3625e49c311f5d2a85c73fee40cde96e24937ae79e1e944ae.
+
+A14 authoritative primary result:
+
+378ac5e53a61df6d772fb675d7d386374e865310fb8f99fd77f5a6132331c14a.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax / import:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Mechanical manifest SHA-256:
+
+6dc1baaf39687b9ccdc6014b4ddf3492d65f7926dc3007a490ea79daa9608eff.
+
+Full fake-freeze T7 smoke:
+
+A15_T7_VERSIONED_CONTEXT_REVISION_SUCCESS = TRUE.
+
+Mechanical aggregate:
+
+initial C-v1 recognition = 12 / 12;
+two-probe drift abstention = 12 / 12;
+eight-observation drift floors = 12 / 12;
+Learner A exact C-v2 = 12 / 12;
+Learner B exact C-v2 = 12 / 12;
+C-v2 revisions = 12 / 12;
+history length two = 12 / 12;
+candidate v2 first-four service = 989;
+stale C-v1 baseline = 944;
+evaluator oracle = 989;
+candidate >= stale baseline = 12 / 12;
+migrations avoided = 43;
+old-C recurrence selects v1 = 12 / 12;
+new-C recurrence selects v2 = 12 / 12;
+rollback / reactivation = 12 / 12;
+C-v3 creations = 0;
+all restart comparisons equivalent;
+all P1..P10 probes PASS;
+all N1..N5 unsafe controls exposed;
+existing constitutional safety totals = 0.
+
+These results use only:
+
+MECHANICAL-NONPRIMARY-FREEZE.
+
+They are implementation checks,
+not A15 scientific evidence.
+
+PRIMARY STATUS AT THIS FREEZE
+
+NOT DERIVED.
+
+Let the resulting commit SHA of this freeze update be:
+
+F15.
+
+Only after F15 exists may the harness derive:
+
+- 12 latent C-v2 priors;
+- 64 drift observations per scenario;
+- two-root drift attestations;
+- learner A / B orders;
+- C-v2 held-out evaluation sequences;
+- old-C recurrence sequences;
+- new-C recurrence sequences;
+- interlude contexts;
+- replacement targets.
+
+No A15 primary drift observation has been consumed.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
