@@ -1632,3 +1632,597 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A32 / T8P INTEGRATED SIGNAL-POOL + LOCAL-INHIBITION + REFRACTORY MEMORY
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE NEGATIVE INTEGRATION RESULT /
+A31 REFRACTORY MEMORY TRANSFERRED AT THE CELL LEVEL
+BUT DID NOT IMPROVE POPULATION-LEVEL ATTRACTOR DYNAMICS
+UNDER A29-STYLE SYNCHRONOUS POOL RECRUITMENT /
+NO ARM QUALIFIED /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+ad9096361d51a66addbaebe713e8618502c06858.
+
+F32:
+
+04c32ff5195fa295872a729e4203eab0bd69fba5.
+
+Source Git blob:
+
+d03d623af8c9c78c4360e6d8198e831574fb715d.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+314726b7f8654bb0bc24d79b8d9a260ba5a19801.
+
+World-manifest SHA-256:
+
+ac1c775d35efbe9471dfb9786f81ee646d368e3c75d022d401866ff3baaf92c6.
+
+Manifest-wrapper SHA-256:
+
+46c2485e0d6f9c2c5594629f016b6d5d1aa74742868eb725c70dff62621ec97d.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete F32-derived primary sweeps were byte-identical.
+
+Serialized semantic output SHA-256:
+
+29d06b4fc2724e9c35e9fe33fbe5624ba8a97380a438baddc95cf6e42cff5f79.
+
+All P1-P21 integrity probes:
+
+PASS.
+
+GLOBAL A29-LIKE REFERENCE
+
+Aggregate service:
+
++154267.
+
+Trajectory outcomes:
+
+beneficial = 282;
+harmful = 102;
+neutral = 0.
+
+Harmful-trajectory rate:
+
+26.5625%.
+
+False candidate dominance:
+
+25.
+
+False stale dominance:
+
+24.
+
+Total false dominance:
+
+49.
+
+Contradictory epochs without a population majority:
+
+56.7308%.
+
+Oscillatory trajectories:
+
+0 / 384.
+
+Temporal reversal:
+
+old-majority loss median = 1 epoch;
+new-majority acquisition = 105 / 128 = 82.03%;
+new-majority acquisition median = 11 epochs.
+
+Worst cumulative drawdown:
+
+-224.
+
+LOCAL_D0 — LOCAL CROSS-INHIBITION / NO REFRACTORY MEMORY
+
+Aggregate service:
+
++221912.
+
+Trajectory outcomes:
+
+beneficial = 303;
+harmful = 75;
+neutral = 6.
+
+Harmful rate:
+
+19.53125%.
+
+False candidate dominance:
+
+28.
+
+False stale dominance:
+
+28.
+
+Total false dominance:
+
+56.
+
+Contradictory epochs without majority:
+
+56.0594%.
+
+Oscillatory trajectories:
+
+28 / 384
+=
+7.2917%.
+
+Cell-level chatter:
+
+736 events.
+
+Trials with chatter:
+
+187 / 384
+=
+48.70%.
+
+Temporal reversal:
+
+old-majority loss median = 0 epochs;
+new-majority acquisition = 112 / 128 = 87.5%;
+new-majority acquisition median = 9 epochs.
+
+Worst cumulative drawdown:
+
+-10.
+
+LOCAL_D2 — TWO-EPOCH REFRACTORY MEMORY
+
+Aggregate service:
+
++215725.
+
+Trajectory outcomes:
+
+beneficial = 306;
+harmful = 74;
+neutral = 4.
+
+Harmful rate:
+
+19.2708%.
+
+False candidate dominance:
+
+28.
+
+False stale dominance:
+
+28.
+
+Total false dominance:
+
+56.
+
+Contradictory epochs without majority:
+
+56.7202%.
+
+Oscillatory trajectories:
+
+30 / 384
+=
+7.8125%.
+
+Cell-level chatter:
+
+291 events.
+
+Trials with chatter:
+
+120 / 384
+=
+31.25%.
+
+Relative to LOCAL_D0:
+
+chatter-event reduction:
+
+60.46%.
+
+chatter-trial reduction:
+
+35.83%.
+
+Temporal reversal:
+
+old-majority loss median = 0 epochs;
+new-majority acquisition = 112 / 128 = 87.5%;
+new-majority acquisition median = 9 epochs.
+
+LOCAL_D2 INTEGRATION-QUALIFIED:
+
+FALSE.
+
+LOCAL_D3 — THREE-EPOCH REFRACTORY MEMORY
+
+Aggregate service:
+
++212837.
+
+Trajectory outcomes:
+
+beneficial = 305;
+harmful = 72;
+neutral = 7.
+
+Harmful rate:
+
+18.75%.
+
+False candidate dominance:
+
+28.
+
+False stale dominance:
+
+28.
+
+Total false dominance:
+
+56.
+
+Contradictory epochs without majority:
+
+56.8942%.
+
+Oscillatory trajectories:
+
+29 / 384
+=
+7.5521%.
+
+Cell-level chatter:
+
+195 events.
+
+Trials with chatter:
+
+89 / 384
+=
+23.18%.
+
+Relative to LOCAL_D0:
+
+chatter-event reduction:
+
+73.51%.
+
+chatter-trial reduction:
+
+52.41%.
+
+Temporal reversal:
+
+old-majority loss median = 0 epochs;
+new-majority acquisition = 112 / 128 = 87.5%;
+new-majority acquisition median = 9 epochs.
+
+LOCAL_D3 INTEGRATION-QUALIFIED:
+
+FALSE.
+
+PRIMARY RESULT
+
+A32_ANY_INTEGRATION_QUALIFIED:
+
+FALSE.
+
+A32_INTEGRATION_INFORMATION_GAIN:
+
+FALSE.
+
+WHY THE A31 GAIN DID NOT COMPOSE
+
+A31 demonstrated that D2 / D3
+can suppress local recommit-defect chatter
+inside the dedicated local-inhibition harness.
+
+A32 reproduced that effect strongly.
+
+D2 reduced cell chatter events by:
+
+60.46%.
+
+D3 reduced them by:
+
+73.51%.
+
+Therefore A31's cell-local mechanism did transfer.
+
+But population-level oscillation did not improve:
+
+D0:
+7.29%.
+
+D2:
+7.81%.
+
+D3:
+7.55%.
+
+And final false-dominance outcomes were identical:
+
+56
+
+for every local arm.
+
+The structural reason is the frozen A32 recruitment rule.
+
+When one signal pool satisfies the recruitment condition:
+
+ALL currently eligible U cells
+join that side in the same epoch.
+
+Refractory memory temporarily removes some recently contradicted cells
+from that recruitment event.
+
+But every other U cell is still synchronized by the common pool.
+
+Thus the architecture contains two different time scales:
+
+LOCAL RETREAT:
+
+parallel and cell-specific.
+
+GLOBAL RE-ENTRY:
+
+synchronized and population-wide.
+
+The global re-entry event can reconstruct
+a population majority in one step
+even though individual cells have local memory.
+
+That is why:
+
+CELL CHATTER
+falls strongly,
+
+while:
+
+POPULATION CHATTER
+does not.
+
+ATTRACTOR QUALITY
+
+Local cross-inhibition itself improved
+harmful-trajectory rate substantially relative to GLOBAL:
+
+GLOBAL:
+
+26.56%.
+
+LOCAL_D0:
+
+19.53%.
+
+LOCAL_D2:
+
+19.27%.
+
+LOCAL_D3:
+
+18.75%.
+
+However,
+false final dominance was worse than GLOBAL:
+
+GLOBAL:
+
+49 total false dominance outcomes.
+
+Every local arm:
+
+56.
+
+Therefore the local mechanism
+improves trajectory service
+without improving which global attractor ultimately dominates.
+
+Refractory duration does not change that selection.
+
+This is expected from its causal role:
+
+D2 / D3 alter eligibility timing.
+
+They do not alter:
+
+pool evidence;
+recruitment direction;
+or recruitment breadth.
+
+CONTRADICTION
+
+A32 also failed the preregistered contradiction target.
+
+Required:
+
+>= 90%
+
+of high-C/high-S epochs
+with no population majority.
+
+Observed:
+
+GLOBAL:
+56.73%.
+
+D0:
+56.06%.
+
+D2:
+56.72%.
+
+D3:
+56.89%.
+
+Local refractory memory therefore does not solve
+A29's contradictory-evidence problem
+when recruitment remains a global synchronized event.
+
+TECHNICAL INTERPRETATION
+
+A32 rejects the naive composition:
+
+GLOBAL SIGNAL POOL RECRUITMENT
++
+LOCAL CROSS-INHIBITION
++
+LOCAL REFRACTORY MEMORY.
+
+The component mechanisms remain valid
+within the domains they previously earned:
+
+A29:
+distributed pulse pools carry useful collective evidence.
+
+A30:
+local nonlinear opposition can erode commitment quickly.
+
+A31:
+short refractory memory suppresses local chatter.
+
+But the integration exposes a scale mismatch.
+
+A distributed organism cannot use:
+
+local individualized retreat
+
+while retaining:
+
+all-at-once global recruitment
+
+and expect local hysteresis
+to control population dynamics.
+
+The next architectural seam is therefore:
+
+RECRUITMENT ITSELF.
+
+The next justified experiment should test:
+
+LOCAL / PROGRESSIVE RECRUITMENT.
+
+Instead of:
+
+pool crosses condition
+->
+all U cells join one side,
+
+the shared pool should become
+a permissive / biasing field,
+
+while each unresolved cell decides locally
+whether and when to join.
+
+That can preserve:
+
+global distributed evidence
+
+without turning it into:
+
+a central mass-switch.
+
+No new confidence scalar is required.
+
+PLAIN-SPEAK INTERPRETATION
+
+The pieces did not simply snap together.
+
+A31's short memory still worked.
+
+Individual cells changed their minds
+far less often.
+
+But the population could still swing.
+
+Why?
+
+Because the shared pool still says:
+
+"candidate side is ready"
+
+and then every available uncertain cell
+joins candidate at once.
+
+Or it says the same thing for stale.
+
+So we built:
+
+a local brake
+
+attached to:
+
+a population-wide accelerator.
+
+The brake works on individual cells.
+
+The accelerator still moves the crowd together.
+
+That is why the organism can stop individual chatter
+without stopping whole-population oscillation.
+
+This negative result is useful.
+
+It tells us the next part
+that must become genuinely distributed:
+
+RECRUITMENT.
+
+The pool should not command:
+
+"everybody switch."
+
+It should change the local conditions
+under which each unresolved cell
+becomes willing to switch.
+
+That is the next clean problem.
+
+A29:
+distributed sensing works.
+
+A30:
+distributed retreat works.
+
+A31:
+distributed memory works.
+
+A32:
+those mechanisms do not fully compose
+while recruitment remains synchronized.
+
+No autonomous production controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
