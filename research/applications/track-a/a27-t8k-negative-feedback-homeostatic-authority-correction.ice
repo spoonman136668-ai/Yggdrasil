@@ -962,3 +962,555 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A27 / T8K NEGATIVE-FEEDBACK HOMEOSTATIC AUTHORITY CORRECTION
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE MIXED-NEGATIVE RESULT /
+NEGATIVE FEEDBACK IMPROVED AGGREGATE SERVICE
+AND RESCUED MANY STATIC-HARMFUL TRAJECTORIES,
+BUT FALSE CORRECTION CREATED NEW HARM /
+NO CONTROLLER QUALIFIED /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+0fd99b7ad6552252eaf8d068a09b8491f4bb4838.
+
+F27:
+
+091508defe3a0162fdd6aeb8c9c980feef4e3c9c.
+
+Source SHA-256:
+
+d7f97f2acd4e4cac1e8d1990ca4111e263d5942ebec9968b9ae2e803c4c655c3.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+963f1a9422be55a8dbab3f36f0387ae36499385e.
+
+384-trajectory manifest SHA-256:
+
+423cda3dbc6668efbc20c5465ec2790e642180278923321284996f48447bd997.
+
+Manifest-wrapper SHA-256:
+
+af1dc7e9f6f113e1e0a5a7960378a0712412c39b5d99a0860af6d447b4f4cd3e.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete F27-derived primary sweeps were byte-identical.
+
+Serialized result-file SHA-256:
+
+ca4212701f6e08b3e475c879c858aac21f9355c2f30cd96df4fb1edb42538ed9.
+
+Serialized semantic output SHA-256:
+
+868d8e556c30cc3df7f22f665a4b80b04d2e316d7b817062a6d094911b8e2991.
+
+All P1-P19 integrity probes:
+
+PASS.
+
+A17 replay remained exact.
+
+STATIC C3 REFERENCE — R3
+
+Aggregate delta versus stale R0:
+
+-65.
+
+Trajectory outcomes versus stale:
+
+beneficial = 160;
+neutral = 63;
+harmful = 161.
+
+Harmful-trajectory rate:
+
+41.93%.
+
+Worst cumulative drawdown:
+
+-11.
+
+H1 — ONE-STEP DOWN / HOLD
+
+Aggregate delta versus stale:
+
++57.
+
+Delta versus static C3:
+
++122.
+
+Trajectory outcomes:
+
+beneficial = 172;
+neutral = 52;
+harmful = 160.
+
+Harmful-trajectory rate:
+
+41.67%.
+
+Static-harmful trajectories:
+
+161.
+
+Improved relative to R3:
+
+88 / 161;
+54.66%.
+
+Fully rescued to neutral-or-better:
+
+28 / 161.
+
+Static-beneficial trajectories:
+
+160.
+
+Retained beneficial:
+
+142 / 160;
+88.75%.
+
+Worst cumulative drawdown:
+
+-11.
+
+Authority changes:
+
+484.
+
+H1 HOMEOSTATIC-QUALIFIED:
+
+FALSE.
+
+H2 — PROPORTIONAL DOWN / HOLD
+
+Aggregate delta versus stale:
+
++56.
+
+Delta versus static C3:
+
++121.
+
+Trajectory outcomes:
+
+beneficial = 163;
+neutral = 57;
+harmful = 164.
+
+Harmful-trajectory rate:
+
+42.71%.
+
+Static-harmful improved:
+
+90 / 161;
+55.90%.
+
+Fully rescued:
+
+28 / 161.
+
+Static-beneficial retained:
+
+135 / 160;
+84.38%.
+
+Worst cumulative drawdown:
+
+-9.
+
+Authority changes:
+
+444.
+
+H2 HOMEOSTATIC-QUALIFIED:
+
+FALSE.
+
+H3 — REVERSIBLE ONE-STEP HOMEOSTASIS
+
+Aggregate delta versus stale:
+
++24.
+
+Delta versus static C3:
+
++89.
+
+Trajectory outcomes:
+
+beneficial = 166;
+neutral = 52;
+harmful = 166.
+
+Harmful-trajectory rate:
+
+43.23%.
+
+Static-harmful improved:
+
+85 / 161;
+52.80%.
+
+Fully rescued:
+
+25 / 161.
+
+Static-beneficial retained:
+
+141 / 160;
+88.13%.
+
+Worst cumulative drawdown:
+
+-11.
+
+Authority changes:
+
+672.
+
+Re-escalations:
+
+162.
+
+Successful recoveries:
+
+124.
+
+Failed recoveries:
+
+38.
+
+Observed recovery success fraction:
+
+76.54%.
+
+H3 HOMEOSTATIC-QUALIFIED:
+
+FALSE.
+
+PRIMARY RESULT
+
+A27_ANY_HOMEOSTATIC_QUALIFIED:
+
+FALSE.
+
+A27_HOMEOSTATIC_INFORMATION_GAIN:
+
+TRUE
+
+under the frozen descriptive definition.
+
+Reason:
+
+H1 reduced harmful-trajectory rate slightly relative to R3,
+improved more than half of R3-harmful trajectories,
+and retained more than half of R3-beneficial trajectories.
+
+But the absolute harmful rate remained vastly above
+the 5% qualification ceiling.
+
+FALSE-CORRECTION DIAGNOSTIC
+
+H1 transition matrix
+from static-C3 trajectory class
+to homeostatic trajectory class:
+
+R3 beneficial -> H1 beneficial:
+
+142.
+
+R3 beneficial -> H1 neutral:
+
+8.
+
+R3 beneficial -> H1 harmful:
+
+10.
+
+R3 neutral -> H1 beneficial:
+
+13.
+
+R3 neutral -> H1 neutral:
+
+33.
+
+R3 neutral -> H1 harmful:
+
+17.
+
+R3 harmful -> H1 beneficial:
+
+17.
+
+R3 harmful -> H1 neutral:
+
+11.
+
+R3 harmful -> H1 harmful:
+
+133.
+
+Thus H1 fully rescued:
+
+28
+
+static-harmful trajectories,
+
+but created:
+
+27
+
+new harmful trajectories
+
+from previously beneficial or neutral static-C3 cases:
+
+10 from beneficial;
+17 from neutral.
+
+This almost exactly cancelled
+the trajectory-level safety gain.
+
+H2 created:
+
+31
+
+new harmful trajectories
+from previously beneficial or neutral cases:
+
+14 from beneficial;
+17 from neutral.
+
+H3 created:
+
+30
+
+new harmful trajectories:
+
+12 from beneficial;
+18 from neutral.
+
+Therefore the main A27 failure is not:
+
+"negative feedback cannot correct bad trajectories."
+
+It can.
+
+The main failure is:
+
+SHORT-HORIZON SERVICE ERROR
+IS ITSELF NOISY ENOUGH
+TO TRIGGER FALSE CORRECTION.
+
+AUTHORITY OCCUPANCY
+
+Across all 384 trials x 8 blocks:
+
+H1 block occupancy:
+
+A=0:
+85.
+
+A=1:
+417.
+
+A=2:
+957.
+
+A=3:
+1613.
+
+H2:
+
+A=0:
+354.
+
+A=1:
+397.
+
+A=2:
+708.
+
+A=3:
+1613.
+
+H3:
+
+A=0:
+56.
+
+A=1:
+303.
+
+A=2:
+811.
+
+A=3:
+1902.
+
+H2 spent much more time at zero authority,
+which improved worst drawdown
+but sacrificed more beneficial trajectories.
+
+H3 restored authority often,
+but 38 / 162 re-escalations
+were followed by another negative block.
+
+TECHNICAL INTERPRETATION
+
+A27 establishes that closed-loop correction
+is materially different from pre-activation confidence gating.
+
+Negative feedback improved aggregate service strongly.
+
+The best aggregate controllers turned:
+
+R3 aggregate delta:
+
+-65
+
+into:
+
+H1 +57;
+H2 +56.
+
+They also repaired more than half
+of the trajectories where static C3 was harmful.
+
+That is real homeostatic value.
+
+But block-level negative error
+is not a sufficiently reliable control variable.
+
+A transient adverse block
+can trigger authority reduction
+on a trajectory where continued candidate exposure
+would have been beneficial.
+
+This creates a control problem:
+
+TOO LITTLE FEEDBACK:
+damage persists.
+
+TOO REACTIVE FEEDBACK:
+normal variation is mistaken for drift.
+
+A27 therefore does not reject negative feedback.
+
+It identifies what negative feedback requires:
+
+A BETTER ERROR SIGNAL
+OR
+A MORE STABLE CONTROL STATE.
+
+This connects directly to A25.
+
+Temporal persistence was insufficient as sole authority,
+but A27 shows a different possible use:
+
+not to decide whether a patch is true,
+
+but to prevent the feedback loop
+from reacting to one noisy negative block.
+
+That combination is NOT authorized by A27.
+
+It requires a new preregistered experiment.
+
+PLAIN-SPEAK INTERPRETATION
+
+This one taught us something important.
+
+Negative feedback really can repair damage.
+
+The static 75% canary policy
+lost 65 service units overall.
+
+The simple one-step feedback controller
+ended 57 units above the old-policy baseline.
+
+That is a 122-unit improvement.
+
+It also improved 88 of the 161 cases
+where the static policy was bad.
+
+So the correction mechanism is doing real work.
+
+But it has a new problem.
+
+Sometimes a patch has one bad four-step stretch
+even though it would have been useful overall.
+
+The controller sees that short bad stretch
+and turns the patch down.
+
+That correction itself can become the mistake.
+
+H1 rescued 28 bad trajectories,
+but created 27 new bad trajectories
+that were previously neutral or good.
+
+So Yggdrasil has learned another distinction:
+
+SEEING AN ERROR
+
+is not the same as:
+
+KNOWING THE SYSTEM IS DRIFTING.
+
+The feedback loop needs some resistance to noise.
+
+That is exactly where the earlier persistence work
+may become useful in a new role.
+
+Not as:
+
+"should I activate this patch?"
+
+but as:
+
+"has this error persisted long enough
+that I should correct the patch?"
+
+That is a much cleaner architectural use
+for temporal averaging.
+
+A24 quorum:
+useful measure of breadth.
+
+A25 persistence:
+useful measure of temporal durability.
+
+A26 threshold magnitude:
+insufficient alone.
+
+A27 negative feedback:
+real corrective value,
+but too reactive to noisy local error.
+
+No autonomous activation controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
