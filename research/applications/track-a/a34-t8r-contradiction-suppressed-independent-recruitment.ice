@@ -671,3 +671,86 @@ NO POST-RESULT LOCAL-INHIBITION CHANGE.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A34 CONTRADICTION-SUPPRESSED INDEPENDENT RECRUITMENT
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A34 ARM EXECUTION
+OR SCIENTIFIC OUTCOME.
+
+F34:
+
+41efa57ccd12c3b6e7a375feecf9741a863a79bd.
+
+FROZEN SOURCE SHA-256:
+
+b8095a5839b5bef2567e28fe6c8d2d9aeaf85b697d46f9bf2507078088c53d88.
+
+TRIAL COUNT:
+
+384.
+
+STRUCTURE:
+
+48 frozen environmental contexts
+x
+8 F34-derived replicas.
+
+CELLS:
+
+48.
+
+EPOCHS:
+
+48.
+
+COMPLETE WORLD-MANIFEST SHA-256:
+
+016bfb2365bc6c44d65d37b88706bf7fe83f2a376246333e1f8b5fe5e289f43d.
+
+Serialized manifest-wrapper SHA-256:
+
+74d5fc5afe060a5c1c0a30c80a03dc9c9932cfa2ec53d4975403b1f6d66e53ff.
+
+Serialized manifest-wrapper bytes:
+
+39954.
+
+PRIMARY STATUS AT MANIFEST BIND
+
+Real suppressed-hazard outcomes observed:
+
+0.
+
+Real paired-reference outcomes observed:
+
+0.
+
+Real contradiction-deadband outcomes observed:
+
+0.
+
+Real A34 qualification outcomes observed:
+
+0.
+
+The next permitted operation is:
+
+two complete deterministic A34 primary sweeps
+using F34 as seed.
+
+NO WORLD REDRAW.
+NO SUPPRESSION CHANGE.
+NO ETA CHANGE.
+NO WEIGHT CHANGE.
+NO REFRACTORY CHANGE.
+NO LOCAL-INHIBITION CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
