@@ -552,3 +552,40 @@ than a simple win-twice switch.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-IMPLEMENTATION CLARIFICATION 01 — W5 NO-EXPANSION STATE
+
+DATE:
+2026-09-21.
+
+STATUS:
+LOCKED BEFORE A23 IMPLEMENTATION FREEZE
+AND BEFORE ANY REAL F23-DERIVED TRAJECTORY.
+
+At the epoch-32 boundary:
+
+EARNED_EXPANSION:
+
+continue the provisional canary trajectory;
+apply 4 / 4 candidate-controlled newborn births.
+
+NO_EXPANSION:
+
+discard the provisional canary trajectory at the W5 boundary;
+restore the exact matched stale-twin state;
+apply 4 / 4 stale-controlled newborn births.
+
+Reason:
+
+NO_EXPANSION must mean no residual unearned candidate authority
+enters the untouched confirmation window.
+
+This clarification changes no ledger threshold,
+no window,
+no exposure arm,
+no demand generation,
+and no qualification criterion.
+
+No A23 outcome has been observed.
+
