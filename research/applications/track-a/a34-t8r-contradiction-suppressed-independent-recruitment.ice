@@ -508,3 +508,166 @@ WHEN THE EVIDENCE ITSELF IS CONTRADICTORY?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A34 CONTRADICTION-SUPPRESSED INDEPENDENT RECRUITMENT
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F34-DERIVED WORLD,
+SUPPRESSED HAZARD,
+RECRUITMENT EVENT,
+OR SCIENTIFIC OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+d1723f67b18041c8a5704f7cdd558428eacbf0ff.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a34_t8r_contradiction_suppressed_independent_recruitment_v1.py
+
+Loader Git blob:
+
+0accbb2809bb2e14820465d534096ec46ff07238.
+
+Payload:
+
+research/applications/track-a/a34_t8r_contradiction_suppressed_independent_recruitment_v1.py.gz
+
+Payload Git blob:
+
+87d0e8e653898d6d9b4190fe77e052621dfdedf3.
+
+Decompressed source SHA-256:
+
+b8095a5839b5bef2567e28fe6c8d2d9aeaf85b697d46f9bf2507078088c53d88.
+
+Decompressed source bytes:
+
+25824.
+
+Deterministic gzip SHA-256:
+
+0ba3f748703a890c7f7de6fe867d39f7a672d914f438f05ad9cd4b298228f19c.
+
+Compressed payload bytes:
+
+6707.
+
+EXECUTION NOTE
+
+The 13-arm matrix is executed arm-isolated
+and combined deterministically.
+
+This is an execution optimization only.
+
+All arms consume identical frozen worlds.
+
+No scientific rule differs from the preregistration.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake seed:
+
+MECHANICAL-F34-NONPRIMARY.
+
+Two complete arm-isolated sweeps were byte-identical.
+
+Serialized combined output SHA-256:
+
+a3ed946755744eefbfff7403bb88b9ee2bf9e7f04a8526e893da8d2da57b69a9.
+
+All P1-P24 integrity probes:
+
+PASS.
+
+No primary suppressed arm qualified.
+
+No primary suppressed arm met
+A34_CONTRADICTION_SUPPRESSION_INFORMATION_GAIN.
+
+Mechanical contradictory-join reduction
+relative to paired unsuppressed references:
+
+D2_S_P75L25:
+26.41%.
+
+D2_S_P50L50:
+19.26%.
+
+D2_S_P25L75:
+10.03%.
+
+D3_S_P75L25:
+23.30%.
+
+D3_S_P50L50:
+16.50%.
+
+D3_S_P25L75:
+9.53%.
+
+Thus the preregistered moderate suppressor
+did reduce recruitment during contradiction,
+but well below the frozen 50% information-gain target.
+
+Mechanical contradiction zero-recruitment fractions
+remained only approximately:
+
+6% to 10%.
+
+Mechanical suppressed-arm oscillation remained:
+
+14.32% to 19.27%.
+
+The linear D3_P50L50 control produced:
+
+15.63% oscillation.
+
+This mechanical evidence does NOT support
+post-hoc tuning of:
+
+K_SUPP;
+N_SUPP;
+ETA;
+pool/local weights;
+refractory duration.
+
+The full preregistered design remains unchanged.
+
+REAL A34 STATUS
+
+No real F34-derived world exists.
+
+No real suppressed hazard has been observed.
+
+No real A34 primary outcome has been observed.
+
+Let the resulting commit SHA be:
+
+F34.
+
+After F34 exists:
+
+1. derive exactly 384 fresh worlds from F34;
+2. bind the complete world-manifest SHA;
+3. only then execute two complete deterministic primary sweeps;
+4. require byte-identical combined output;
+5. report all six suppressed arms,
+   all six paired unsuppressed references,
+   and the linear control.
+
+NO POST-RESULT SUPPRESSION TUNING.
+NO POST-RESULT WEIGHT TUNING.
+NO POST-RESULT ETA TUNING.
+NO POST-RESULT REFRACTORY CHANGE.
+NO POST-RESULT LOCAL-INHIBITION CHANGE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
