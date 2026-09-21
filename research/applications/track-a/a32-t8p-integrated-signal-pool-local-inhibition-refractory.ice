@@ -1241,3 +1241,302 @@ or scientific outcome.
 
 No F32 exists yet.
 No scientific A32 world has been derived.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A32 INTEGRATED SIGNAL-POOL / LOCAL-INHIBITION / REFRACTORY SYSTEM
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F32-DERIVED WORLD,
+PULSE,
+POOL STATE,
+LOCAL DEFECTION,
+REFRACTORY TRANSITION,
+OR SCIENTIFIC OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+ad9096361d51a66addbaebe713e8618502c06858.
+
+SOURCE
+
+research/applications/track-a/a32_t8p_integrated_signal_pool_local_inhibition_refractory_v1.py
+
+Git blob:
+
+d03d623af8c9c78c4360e6d8198e831574fb715d.
+
+Source SHA-256:
+
+ca346e8bd0866481c10fc3c0e6c92dcb9b685468e2f88244d98f634907028aa0.
+
+Source bytes:
+
+15967.
+
+EXECUTION CONSTANTS
+
+population:
+
+48.
+
+epochs:
+
+48.
+
+pool decay:
+
+3 / 4.
+
+COMMIT:
+
+80.
+
+OPPOSITION_CEILING:
+
+32.
+
+POP_GATE:
+
+24.
+
+dominance:
+
+2x.
+
+GLOBAL retreat K:
+
+48.
+
+GLOBAL opposing-emitter minimum:
+
+16.
+
+LOCAL inhibition:
+
+R = 12;
+n = 3;
+K = 1/2.
+
+Refractory durations:
+
+D0 = 0;
+D2 = 2;
+D3 = 3.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake seed:
+
+MECHANICAL-F32-NONPRIMARY.
+
+Two complete sweeps were byte-identical.
+
+Serialized output SHA-256:
+
+f75955a097ba914c44f9f51bfe5fdbea1e0e4c12268e066dbf832ec64f1b5f20.
+
+Serialized output bytes:
+
+3451.
+
+Mechanical manifest SHA-256:
+
+64ba0c322cc08177d953f801e6c153c615e945ad6181744fe286345b1ceb18d2.
+
+All P1-P21 integrity probes:
+
+PASS.
+
+MECHANICAL GLOBAL
+
+aggregate service:
+
+154555.
+
+harmful trajectories:
+
+103 / 384
+=
+26.82%.
+
+false C dominance:
+
+14.88%.
+
+false S dominance:
+
+10.38%.
+
+contradiction no-majority fraction:
+
+56.29%.
+
+oscillation:
+
+0.78%.
+
+reversal acquisition:
+
+79.69%.
+
+MECHANICAL LOCAL_D0
+
+aggregate service:
+
+220712.
+
+harmful:
+
+68 / 384
+=
+17.71%.
+
+chatter trials:
+
+184 / 384
+=
+47.92%.
+
+oscillation:
+
+30 / 384
+=
+7.81%.
+
+contradiction no-majority fraction:
+
+55.52%.
+
+reversal acquisition:
+
+87.50%.
+
+MECHANICAL LOCAL_D2
+
+aggregate service:
+
+214083.
+
+harmful:
+
+65 / 384
+=
+16.93%.
+
+chatter trials:
+
+123 / 384
+=
+32.03%.
+
+oscillation:
+
+31 / 384
+=
+8.07%.
+
+contradiction no-majority fraction:
+
+55.89%.
+
+reversal acquisition:
+
+87.50%.
+
+MECHANICAL LOCAL_D3
+
+aggregate service:
+
+212301.
+
+harmful:
+
+64 / 384
+=
+16.67%.
+
+chatter trials:
+
+84 / 384
+=
+21.88%.
+
+oscillation:
+
+30 / 384
+=
+7.81%.
+
+contradiction no-majority fraction:
+
+56.05%.
+
+reversal acquisition:
+
+87.50%.
+
+No integrated arm qualified.
+
+A32_INTEGRATION_INFORMATION_GAIN:
+
+FALSE
+
+in the fake world.
+
+MECHANICAL INTERPRETATION
+
+The dedicated A31 refractory mechanism
+still reduces per-cell recommit / defect chatter
+after integration.
+
+However:
+
+GLOBAL POOL RECRUITMENT SYNCHRONIZES
+ALL ELIGIBLE UNRESOLVED CELLS
+ONTO THE SAME SIDE AT ONCE.
+
+That synchronized re-entry can preserve
+population-level majority oscillation
+even while individual-cell chatter falls.
+
+This is an important possible composability failure.
+
+It is NOT repaired before the real test.
+
+No recruitment probability,
+pool threshold,
+local inhibition rule,
+or refractory duration
+is changed in response.
+
+This mechanical result is NON-SCIENTIFIC.
+
+REAL A32 STATUS
+
+No real F32-derived world exists.
+
+No real integrated outcome has been observed.
+
+Let the resulting commit SHA be:
+
+F32.
+
+After F32 exists:
+
+1. derive exactly 384 fresh worlds from F32;
+2. bind the complete world-manifest SHA;
+3. only then execute two complete deterministic primary sweeps;
+4. require byte-identical output;
+5. report GLOBAL / LOCAL_D0 / LOCAL_D2 / LOCAL_D3 without post-result selection.
+
+NO POST-RESULT RECRUITMENT CHANGE.
+NO POST-RESULT DURATION CHANGE.
+NO POST-RESULT POOL CHANGE.
+NO POST-RESULT LOCAL-INHIBITION CHANGE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
