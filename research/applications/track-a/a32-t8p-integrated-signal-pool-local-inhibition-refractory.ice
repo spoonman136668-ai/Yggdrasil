@@ -1540,3 +1540,95 @@ NO POST-RESULT LOCAL-INHIBITION CHANGE.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A32 INTEGRATED SIGNAL ECOLOGY
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A32 ARM EXECUTION
+OR SCIENTIFIC OUTCOME.
+
+F32:
+
+acf6050b5677efd715fb14abde70c93237c3d334.
+
+FROZEN SOURCE SHA-256:
+
+ca346e8bd0866481c10fc3c0e6c92dcb9b685468e2f88244d98f634907028aa0.
+
+TRIAL COUNT:
+
+384.
+
+STRUCTURE:
+
+48 frozen environmental contexts
+x
+8 F32-derived replicas.
+
+CELLS:
+
+48.
+
+EPOCHS:
+
+48.
+
+COMPLETE WORLD-MANIFEST SHA-256:
+
+2d51a59cff8dd43808ae9bb7d7f9d5281c5fe12540b91f367240190202b23300.
+
+Serialized manifest-wrapper SHA-256:
+
+14d7450a8d2d6a819cd3eb25abaed69c183031e8d7c36b25aa52ea806261c992.
+
+Serialized manifest-wrapper bytes:
+
+40016.
+
+The bound world identity includes:
+
+context;
+replica;
+family;
+reversal location where applicable;
+spatial region where applicable;
+full 48 x 48 true local consequence field;
+full 48 x 48 sensed field.
+
+PRIMARY STATUS AT MANIFEST BIND
+
+Real GLOBAL outcome observed:
+
+0.
+
+Real LOCAL_D0 outcome observed:
+
+0.
+
+Real LOCAL_D2 outcome observed:
+
+0.
+
+Real LOCAL_D3 outcome observed:
+
+0.
+
+The next permitted operation is:
+
+two complete deterministic A32 primary sweeps
+using F32 as seed.
+
+NO WORLD REDRAW.
+NO RECRUITMENT CHANGE.
+NO POOL CHANGE.
+NO LOCAL-INHIBITION CHANGE.
+NO REFRACTORY CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
