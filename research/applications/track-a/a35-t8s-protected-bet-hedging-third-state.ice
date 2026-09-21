@@ -1483,3 +1483,71 @@ UNSPENT.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-CLOSURE PACKAGING FIXA 01 — RESTORE EXACT FROZEN A35 PAYLOAD
+
+DATE:
+2026-09-21.
+
+STATUS:
+PACKAGING-ONLY REPAIR / SCIENTIFIC RESULT UNCHANGED.
+
+After A35 primary closure,
+the repository copy of:
+
+research/applications/track-a/a35_t8s_protected_bet_hedging_third_state_v1.py.gz
+
+was found truncated on the repository surface.
+
+The frozen local payload used for the preregistered mechanical and primary executions remained intact.
+
+Restored exact deterministic gzip identity:
+
+bytes:
+6213.
+
+SHA-256:
+a97e157d023b6d7a4a533731400e2758680846dd4c430b741229738040e2abfc.
+
+Git blob:
+8d09369fdd78677bdde7b97ef1ef518fcdea23b4.
+
+Decompressed source identity remains:
+
+bytes:
+20483.
+
+SHA-256:
+073f60c43f16b80e47e359998e8477a2ddf112d5567790ec7729bbc9b39ec030.
+
+The two real primary sweeps were independently rerun from that exact frozen source after the defect was noticed.
+
+They were byte-identical.
+
+Serialized primary SHA-256:
+
+7f8b0468e91dd5028f9d17a6738a7abd83e916fca03fbae7df72cdce6dbc33a2.
+
+Bound real-world manifest remained exactly:
+
+778799b6777e6214f2f19684db24237bbb95853c1a8b5025e97a3874894963fa.
+
+All P1-P26 integrity probes remained PASS.
+
+No world,
+mechanism,
+hedge law,
+release law,
+suppression law,
+refractory duration,
+metric,
+qualification threshold,
+interpretation,
+or closure result changed.
+
+This repair restores repository executability only.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
