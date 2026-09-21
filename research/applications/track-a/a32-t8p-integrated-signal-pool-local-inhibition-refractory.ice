@@ -690,3 +690,58 @@ WHEN THEY HAVE TO LIVE TOGETHER?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-IMPLEMENTATION CLARIFICATION 01 — RECRUITMENT AND LOCAL PULSE DENSITY
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE IMPLEMENTATION FREEZE
+AND BEFORE ANY REAL F32-DERIVED WORLD EXISTS.
+
+LOCAL POOL RECRUITMENT
+
+When the frozen C recruitment condition is satisfied
+in a local arm:
+
+every currently eligible U cell becomes C
+at that epoch.
+
+When the frozen S recruitment condition is satisfied:
+
+every currently eligible U cell becomes S.
+
+FC and FS cells remain ineligible
+until their exact refractory timer expires.
+
+There is no additional recruitment probability.
+
+This keeps the A29-style shared pool
+as the recruitment trigger
+while local cross-inhibition controls retreat.
+
+LOCAL OPPOSING PULSE DENSITY
+
+For local cross-inhibition,
+a neighbor counts as an opposing emitter
+if it emitted at least one pulse
+for the opposing side in the current epoch.
+
+A cell emitting both a base pulse
+and a same-side positive-feedback pulse
+still counts as one local emitter.
+
+Thus local opposition density remains bounded:
+
+0 <= L_op <= 1.
+
+Pulse multiplicity continues to affect
+the global decaying signal pools,
+but not the A30-derived local Hill density.
+
+No other A32 rule changes.
+
+No F32 exists yet.
+No scientific A32 world has been derived.
