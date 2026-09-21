@@ -1282,3 +1282,163 @@ It is not A08 primary scientific execution.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-MANIFEST STATIC AUDIT — NON-EVIDENCE / PRIMARY UNSPENT
+
+DATE:
+2026-09-21.
+
+STATUS:
+STATIC MANIFEST VALIDATION ONLY.
+
+No primary experience event was consumed.
+No primary service request was executed.
+No A08 primary result is claimed.
+
+STATIC AUDIT RESULT
+
+All 12 scenarios:
+
+PASS.
+
+For every scenario:
+
+- target coefficient mask / truth table belongs to the frozen 840-program quadratic class;
+- target differs from the current version-0 target-role program;
+- training_start = commit_epoch - 22;
+- first-round three-root evidence cannot meet the frozen four-root qualification threshold;
+- after all six roots report,
+  exactly four distinct roots carry the correct label
+  and exactly two distinct roots carry the corrupted label.
+
+RAW VS EFFECTIVE EXPERIENCE
+
+Across one learner over all 12 primary scenarios:
+
+raw experience copies:
+
+1934.
+
+Distinct effective root observations:
+
+792.
+
+Same-root duplicate observations that must collapse:
+
+1142.
+
+Therefore duplicate fanout is substantial in the real frozen primary manifest
+and cannot accidentally equal effective evidence count.
+
+Per-scenario raw / effective / collapsed counts:
+
+S00:
+160 / 66 / 94.
+
+S01:
+163 / 66 / 97.
+
+S02:
+173 / 66 / 107.
+
+S03:
+174 / 66 / 108.
+
+S04:
+172 / 66 / 106.
+
+S05:
+159 / 66 / 93.
+
+S06:
+147 / 66 / 81.
+
+S07:
+150 / 66 / 84.
+
+S08:
+159 / 66 / 93.
+
+S09:
+156 / 66 / 90.
+
+S10:
+164 / 66 / 98.
+
+S11:
+157 / 66 / 91.
+
+EXECUTION INFRASTRUCTURE NOTE
+
+A repository-native GitHub Actions primary workflow was attempted only after:
+
+- F08 freeze;
+- primary noisy-training manifest recording.
+
+Workflow commit:
+
+43b47a35362ac0ad81613c9cb5abc6da12835f8d.
+
+GitHub Actions run:
+
+35576880327.
+
+Result:
+
+FAILURE BEFORE RUNNER ALLOCATION.
+
+Job:
+
+primary.
+
+No runner id / no workflow steps.
+
+Therefore:
+
+no frozen byte verification step executed;
+no manifest execution step executed;
+no primary sweep executed.
+
+This is infrastructure-only non-evidence.
+
+LOCAL RUNTIME NOTE
+
+The current sandbox retains exact frozen A08,
+A07,
+A06,
+and A05 source bytes,
+but the accepted A02 / A03 runtime modules are no longer present locally.
+
+The binary GitHub connector path does not provide a trustworthy byte-preserving materialization route for those missing gzip parents,
+and the sandbox has no direct GitHub network transport.
+
+No compatibility runtime,
+hand-reconstructed organism,
+or altered dependency chain will be substituted for primary evidence.
+
+A08 primary therefore remains:
+
+UNSPENT.
+
+NEXT EXECUTION REQUIREMENT
+
+Resume A08 primary only when one of the following exact-byte paths exists:
+
+1. the accepted A02 / A03 runtime source bundles are restored into the sandbox
+   with their recorded source SHA-256 values;
+
+or
+
+2. a repository-native runner successfully checks out the frozen Git objects
+   and executes the exact A08 loader.
+
+Until then:
+
+do not alter the frozen A08 harness;
+do not alter F08;
+do not alter the recorded primary manifest;
+do not consume partial primary experience.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
