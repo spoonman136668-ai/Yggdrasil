@@ -518,3 +518,89 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A21 OUT-OF-SAMPLE REPLICATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A21 CANARY OUTCOME.
+
+F21:
+
+f0467a9aaf92aab4b57e1b299c99ffa688164d99.
+
+FROZEN SOURCE SHA-256:
+
+7a9779ef291d828bc124eb6b8d00ee33e03bd7ea6122952ed0ae1b183b457f6d.
+
+TRAJECTORY COUNT:
+
+384.
+
+STRUCTURE:
+
+48 fixed A17 patch contexts
+x
+8 fresh F21-derived replicas per context.
+
+COMPLETE MANIFEST SHA-256:
+
+9f0dddac51009f46ea5ded21a86d77ea8487ab6af149da1209d1c6a6fa2bf070.
+
+Serialized manifest-wrapper JSON SHA-256:
+
+719f4feca1db36245b1a74fa3820b541b83a6eae2c58a9182a9b1515e2afeb55.
+
+The complete manifest deterministically binds,
+for all 384 trials:
+
+- scenario;
+- patch;
+- replica;
+- candidate target prior;
+- stale prior;
+- all 16 fresh evaluation demands;
+- epoch-0 replacement target set;
+- epoch-8 replacement target set;
+- unique trajectory identity.
+
+Every 16-demand sequence has exact mean equal to its frozen candidate target.
+
+Every replacement set contains exactly four unique cell IDs.
+
+All trajectory namespaces are:
+
+YGG-A21-*
+
+and are distinct from the original A17 evaluation / replacement namespaces.
+
+PRIMARY STATUS AT MANIFEST BIND
+
+A21 canary outcomes observed:
+
+0.
+
+A21 EXPAND / HOLD / REVOKE decisions observed:
+
+0.
+
+A21 selected arm:
+
+NONE / NOT YET EVALUATED.
+
+The next permitted operation is:
+
+two complete deterministic A21 primary sweeps
+over this exact manifest.
+
+NO TRAJECTORY REDRAW.
+NO THRESHOLD CHANGE.
+NO ARM REORDERING.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
