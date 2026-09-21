@@ -765,3 +765,450 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — DG-1R-05AC PERSISTENT DEVELOPMENTAL LIFECYCLE
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED / POSITIVE PRIMARY / REPRODUCIBLE / PRE-APPLICATION RESEARCH GATE PASSED / NON-CANONICAL.
+
+FROZEN HARNESS EXECUTED
+
+Path:
+
+research/experiments/dg1r/harnesses/dg1r_05ac_persistent_lifecycle_v1.py
+
+Frozen source commit:
+
+6bb27812e48d63823ad1db0f1953daf3d5ea04bc.
+
+Frozen Git blob:
+
+9b5738d804c0339f1916c81cdfedaec557dbb599.
+
+Frozen source SHA-256:
+
+2e77c12dda399a484f0d92698938be1dd01a04f7fa98a6be00f5632d1d34f8e2.
+
+Frozen source bytes:
+
+28140.
+
+EXECUTION PROVENANCE
+
+The exact connector-fetched frozen source was reconstructed byte-for-byte in two fresh sandbox namespaces.
+
+Before execution:
+
+source bytes = 28140.
+
+source SHA-256 =
+2e77c12dda399a484f0d92698938be1dd01a04f7fa98a6be00f5632d1d34f8e2.
+
+This exactly matched the preregistered freeze.
+
+No source change was made after the first primary 05AC case began.
+
+REPRODUCIBILITY
+
+Two complete deterministic sweeps.
+
+Sweep 1 serialized output SHA-256:
+
+bbe9bf4642dc77a78087cb9ecb35c10fa3a4e074202300310d5346f304ecff90.
+
+Sweep 2 serialized output SHA-256:
+
+bbe9bf4642dc77a78087cb9ecb35c10fa3a4e074202300310d5346f304ecff90.
+
+Byte-identical:
+
+TRUE.
+
+PRIMARY RESULT
+
+PERSISTENT_DEVELOPMENTAL_LIFECYCLE_SAFE:
+
+TRUE.
+
+All preregistered primary component signals:
+
+TRUE.
+
+AUDIT A — CLEAN 16-EPOCH LIFECYCLE
+
+Cases:
+
+12.
+
+Complete:
+
+12 / 12.
+
+AUDIT B — DAMAGE -> REPAIR -> HEALTH ORDER
+
+Cases:
+
+36.
+
+Safe ordering:
+
+36 / 36.
+
+AUDIT C — CHECK-ONLY / AMBIGUOUS DAMAGE
+
+Cases:
+
+12.
+
+No unauthorized logical mutation / higher-layer commit:
+
+12 / 12.
+
+AUDIT D — WITHIN-ROLE ADAPTATION
+
+Cases:
+
+12.
+
+Phenotype / role preserved:
+
+12 / 12.
+
+AUDIT E — ROLE MIGRATION ATOMICITY
+
+Cases:
+
+36.
+
+Atomic:
+
+36 / 36.
+
+AUDIT F — HIBERNATION ACROSS LIVE ROLE CHANGE
+
+Cases:
+
+36.
+
+Newer legitimate role accepted after catch-up:
+
+36 / 36.
+
+AUDIT G — WITNESS HIBERNATION / REPLACEMENT
+
+Cases:
+
+48.
+
+Safe replacement without authority duplication:
+
+48 / 48.
+
+AUDIT H — TEMPORAL SENTINEL CONTINUITY
+
+Clean lifecycle capsule cases:
+
+12 / 12 valid.
+
+Earlier-checkpoint rewrite challenges:
+
+12 / 12 contested.
+
+AUDIT I — PARTITION / DISJOINT TARGET CHANGES
+
+Cases:
+
+36.
+
+Both changes merged safely and order-independently:
+
+36 / 36.
+
+AUDIT J — PARTITION SAME-TARGET CONFLICT
+
+Cases:
+
+72.
+
+Conflict rolled back to last common committed target state:
+
+72 / 72.
+
+AUDIT K — STALE DORMANT SNAPSHOT PLUS DAMAGE
+
+Cases:
+
+12.
+
+Unsafe normalization prevented and repair reconciled to current authority:
+
+12 / 12.
+
+AUDIT L — SAME-LINEAGE FANOUT
+
+Cases:
+
+15.
+
+Copied holder count failed to manufacture independent governance,
+registry,
+or temporal authority:
+
+15 / 15.
+
+AUDIT M — INCOMPLETE CAUSAL HISTORY
+
+Cases:
+
+36.
+
+Authority blocked:
+
+36 / 36.
+
+AUDIT N — PARTIAL FINAL WRITES
+
+Cases:
+
+18.
+
+Incomplete transactional writes left last complete authority intact:
+
+18 / 18.
+
+AUDIT O — REPEATED DEVELOPMENTAL LIFECYCLES
+
+Persistent cell-lifecycles:
+
+48.
+
+Monotonic role / health / causal progression:
+
+48 / 48.
+
+Stale votes:
+
+0.
+
+Authority duplication:
+
+0.
+
+Single authoritative head:
+
+48 / 48.
+
+AUDIT P — LOCAL-ONLY ORDERING NEGATIVE CONTROL
+
+Cross-layer authority leak exposed when ordering constraints were removed:
+
+TRUE.
+
+CROSS_LAYER_ORDERING_NECESSARY:
+
+TRUE.
+
+CORRELATED / CONSTITUTIONAL HOLDOUTS
+
+H1 — FULL INDEPENDENT GOVERNANCE COLLUSION
+
+Boundary exposed:
+
+TRUE.
+
+H2 — THREE INDEPENDENT REGISTRY ROOTS COLLUSION
+
+Boundary exposed:
+
+TRUE.
+
+H3 — CORRUPTION BEFORE TEMPORAL SEAL
+
+Boundary exposed:
+
+TRUE.
+
+H4 — COMPLETE EVENT OMISSION
+
+Boundary exposed:
+
+TRUE.
+
+H5 — GENESIS / ROOT REPLACEMENT
+
+Boundary exposed:
+
+TRUE.
+
+H6 — CROSS-LAYER CORRELATED FORGERY
+
+Boundary exposed:
+
+TRUE.
+
+These remain explicit constitutional limits.
+
+05AC does not establish a truth oracle.
+
+TECHNICAL INTERPRETATION
+
+DG-1R-05AC closes the current isolated-mechanism research phase with positive composition evidence.
+
+The central result is not that each component remained locally correct.
+
+The central result is that authority transfer between components remained controlled across one persistent developmental loop.
+
+The frozen lifecycle successfully composed:
+
+- damage detection;
+- bounded repair;
+- health-memory update;
+- phenotype-preserving adaptation;
+- role migration;
+- hereditary capsule sealing;
+- hibernation;
+- witness replacement;
+- live role advancement while a target slept;
+- causal catch-up;
+- authority re-earning;
+- communication partition;
+- provisional local action;
+- deterministic re-merge;
+- repeated persistent developmental rounds.
+
+The negative control showed why this composition discipline matters.
+
+Removing only cross-layer ordering allowed authority leakage
+even though the local component rules were otherwise unchanged.
+
+Therefore the current Yggdrasil governance result is stronger than:
+
+"many safe mechanisms exist."
+
+It is:
+
+THE CLOSED MECHANISMS CAN SHARE ONE PERSISTENT AUTHORITY LIFECYCLE
+WHEN AUTHORITY MOVES ONLY THROUGH
+HEALTH-QUALIFIED,
+PROVENANCE-QUALIFIED,
+CAUSALLY ORDERED,
+ATOMIC STATE TRANSITIONS.
+
+Combined with DG-1R-05AB and DG-1R-05AA,
+the evidence now supports the following architecture:
+
+HEREDITARY MEMORY:
+small ancestry-linked capsule.
+
+LIVE IDENTITY:
+current phenotype / role state.
+
+CURRENT AUTHORITY:
+expires on dormancy,
+repair uncertainty,
+causal gaps,
+or lost provenance,
+and must be re-earned.
+
+HISTORICAL CONTINUITY:
+validated through full ancestry,
+not exact old-state equality.
+
+ORGANISM GOVERNANCE:
+healthy independently qualified cells,
+not permanent central operational control.
+
+PLAIN-SPEAK INTERPRETATION
+
+This is the experiment where the pieces had to live together.
+
+They did.
+
+The same artificial organism could:
+
+get damaged;
+repair itself;
+decide when the repair was healthy;
+adapt without forgetting its job;
+change jobs;
+store a compact hereditary checkpoint;
+put a cell to sleep;
+replace that cell's voting role;
+change the sleeping cell's job legitimately;
+wake it back up;
+make it catch up before voting;
+split into two disconnected populations;
+do bounded work on both sides;
+merge again;
+and repeat the lifecycle.
+
+The handoffs did not create stale authority.
+
+Old sleeping cells did not take their old jobs back automatically.
+
+Copied witnesses did not turn into extra votes.
+
+Missing history stopped authority.
+
+Conflicting partition changes did not get decided by headcount.
+
+Partial transactions did not leak half-finished authority.
+
+Across the repeated persistent runs:
+
+no stale votes;
+no duplicated authority;
+no backward generations;
+one authoritative head.
+
+The remaining failures are the deep trust boundaries we already know about:
+
+if all independent witnesses deliberately lie together;
+if the registry roots all lie together;
+if a bad state is honestly sealed;
+if every record of a real event disappears;
+or if the organism's constitutional genesis itself is replaced,
+the architecture cannot manufacture truth from missing information.
+
+That is not a reason to add another ordinary quorum.
+
+RESEARCH-TO-APPLICATION DECISION
+
+The preregistered pre-application research gate is satisfied.
+
+The next justified step is NOT another isolated DG-1R mechanism experiment.
+
+Create a separate application track:
+
+YGGDRASIL APPLICATION TRACK A — FIRST PERSISTENT SYNTHETIC ORGANISM.
+
+The first prototype should be disposable,
+non-production,
+and externally useful enough to create real pressure on the architecture.
+
+It should require a persistent population to:
+
+- maintain a changing functional objective;
+- specialize roles;
+- operate under bounded resources;
+- survive injected faults;
+- hibernate and reactivate cells;
+- rotate authority;
+- preserve hereditary lineage;
+- reorganize after role shortages;
+- recover from communication partition;
+- continue useful task performance after repair / adaptation.
+
+The application prototype must preserve the established constitutional boundaries
+rather than silently replacing them with a central scheduler.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
