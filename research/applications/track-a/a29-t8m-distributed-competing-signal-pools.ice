@@ -996,3 +996,95 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A29 DISTRIBUTED COMPETING SIGNAL POOLS
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A29 LOCAL PULSE,
+POOL UPDATE,
+REGIME TRANSITION,
+OR SCIENTIFIC OUTCOME.
+
+F29:
+
+d3647d6860626113ba6b3e5b042b47091925d7e1.
+
+FROZEN SOURCE SHA-256:
+
+4736c3b525be005db46dba17122a6e772da0297919fae95bb28546149c3fe94c.
+
+TRIAL COUNT:
+
+384.
+
+STRUCTURE:
+
+48 fixed synthetic developmental contexts
+x
+8 F29-derived replicas.
+
+EPOCHS PER TRAJECTORY:
+
+40.
+
+CELL IDENTITIES:
+
+12.
+
+COMPLETE TRIAL-MANIFEST SHA-256:
+
+9c04f4611117978bbffb8089c6a5edadef462e2b6d331212507f3506b7bb4f16.
+
+Serialized manifest-wrapper bytes:
+
+40338.
+
+Each trial identity is:
+
+SHA256(
+YGG-A29
+|
+F29
+|
+context
+|
+replica
+).
+
+PRIMARY STATUS AT MANIFEST BIND
+
+Real local pulses observed:
+
+0.
+
+Real C_pool / S_pool states observed:
+
+0.
+
+Real POOL_FULL transitions observed:
+
+0.
+
+Real comparator outcomes observed:
+
+0.
+
+The next permitted operation is:
+
+two complete deterministic A29 primary sweeps
+using F29 as the experimental seed.
+
+NO TRIAL REDRAW.
+NO POOL-RULE CHANGE.
+NO COMMIT-THRESHOLD CHANGE.
+NO RETREAT-RULE CHANGE.
+NO ABLATION CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
