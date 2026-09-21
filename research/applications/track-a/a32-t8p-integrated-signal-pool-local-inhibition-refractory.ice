@@ -1202,3 +1202,42 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-FREEZE AMENDMENT 03 — INTEGRITY PROBE SCALE CONSISTENCY
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE F32
+AND BEFORE ANY REAL F32-DERIVED WORLD EXISTS.
+
+The original preregistration text for integrity probe P8
+still names the source A29 12-cell constants:
+
+20 / 8 / 6.
+
+PRE-IMPLEMENTATION AMENDMENT 02
+already normalized those execution constants
+for A32's 48-cell population.
+
+Therefore P8 is superseded for A32 execution and reads:
+
+P8:
+pool recruitment thresholds exactly:
+
+COMMIT = 80;
+OPPOSITION_CEILING = 32;
+POP_GATE = 24 emitters;
+
+with the dimensionless 2x dominance condition unchanged.
+
+This amendment changes no mechanism,
+world generation,
+metric,
+qualification rule,
+or scientific outcome.
+
+No F32 exists yet.
+No scientific A32 world has been derived.
