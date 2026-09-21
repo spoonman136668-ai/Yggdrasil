@@ -366,3 +366,309 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — A16-FIXA EVALUATION REPLACEMENT ALIGNMENT
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / POSITIVE CORRECTIVE PRIMARY / REPRODUCIBLE /
+A16 FULL PREREGISTERED ACCEPTANCE RESTORED VIA FIXA / NON-CANONICAL.
+
+FROZEN FIXA
+
+Implementation commit:
+
+5baae9f8146661844500a3a3ac13e5da6afb5f6b.
+
+Freeze commit:
+
+0428232691de48226523faa1229a42d44dce6e4c.
+
+Source SHA-256:
+
+a3760a2857c06dd12e3bbaf293c600147b98c45384bde24e69b3edaddf4476f3.
+
+Source bytes:
+
+5537.
+
+Compressed payload SHA-256:
+
+7226ecf6fc34562fd68899cf28f64c246dafcc173c6b47bc33388cc56d065646.
+
+Compressed payload bytes:
+
+2451.
+
+FROZEN A16 WORLD
+
+F16:
+
+90279bc5b90682e2538721ef152aa3accdedbddf.
+
+A16 source SHA-256:
+
+cd89dbc46174c97e0bea0bc0a1db4b65eea9b5732521ca30f00ed30f06b792fa.
+
+A16 moving-drift manifest:
+
+5feef8c8bde1e8a6380d68fb7ab55f57ab7f29c93879b766fc4f48b30041313e.
+
+Historical exact-F16 result:
+
+c4ecb7c90742fd737d370e2f378f398ccddd948bf5154c46d917fd3250fb339f.
+
+That historical result remains preserved.
+
+Its usefulness evaluation omitted the preregistered epoch-4 replacement episode.
+
+REPRODUCIBILITY
+
+Two complete deterministic FIXA sweeps.
+
+Sweep 1 serialized output SHA-256:
+
+11247f545cc8fa398e10ff0cde8fa9578b0a17deece942fff6483c923312a3f3.
+
+Sweep 2 serialized output SHA-256:
+
+11247f545cc8fa398e10ff0cde8fa9578b0a17deece942fff6483c923312a3f3.
+
+Byte-identical:
+
+TRUE.
+
+CORRECTIVE SIGNALS
+
+A16_FIXA_EVALUATION_ALIGNMENT_VALID:
+
+TRUE.
+
+A16_T8_HYSTERETIC_MOVING_DRIFT_ACCEPTED:
+
+TRUE.
+
+EVALUATION EPISODE EXECUTION
+
+Held-out evaluations per sweep:
+
+84.
+
+Candidate replacement episodes executed:
+
+168.
+
+Stale-v2 baseline replacement episodes executed:
+
+168.
+
+Oracle replacement episodes executed:
+
+168.
+
+Every held-out evaluation executed:
+
+epoch 0 replacement;
+epoch 4 replacement.
+
+Thus the corrective run exactly matches
+the originally preregistered A16 turnover schedule.
+
+LEARNING / HYSTERESIS EQUIVALENCE
+
+Transient one-block P1 no-update:
+
+12 / 12.
+
+Transient P0 clear:
+
+12 / 12.
+
+All true first blocks abstain:
+
+TRUE.
+
+All true second blocks authorize update:
+
+TRUE.
+
+All working trajectories:
+
+P0 -> P1 -> P2 -> P3 -> P4 -> P3 -> P2 -> P0.
+
+Final working prior:
+
+P0
+in 12 / 12.
+
+Final working generation:
+
+7
+in 12 / 12.
+
+Durable history:
+
+[v1,v2]
+unchanged in 12 / 12.
+
+Parent-digest chains:
+
+exact.
+
+Restart comparisons:
+
+equivalent.
+
+All P1..P10 probes:
+
+PASS.
+
+All N1..N5 unsafe controls:
+
+exposed as preregistered.
+
+CORRECTED USEFULNESS
+
+Non-P0 moving-drift evaluations:
+
+72.
+
+Candidate first-four service:
+
+5984.
+
+Stale-v2 baseline:
+
+5870.
+
+Evaluator-only oracle:
+
+5984.
+
+Oracle efficiency:
+
+1.0.
+
+Candidate >= stale-v2:
+
+66 / 72 evaluations.
+
+Migrations avoided relative to stale-v2:
+
+70.
+
+Final P0 return service:
+
+matched P0 oracle exactly.
+
+TASK / CONSTITUTIONAL SAFETY
+
+Task accuracy:
+
+1.0.
+
+Incorrect served:
+
+0.
+
+Stale-program served:
+
+0.
+
+Existing constitutional safety violations:
+
+0.
+
+TECHNICAL INTERPRETATION
+
+The original A16 learning result was real,
+but its service evaluation executed only half of the preregistered turnover episodes.
+
+A16-FIXA corrects only that evaluation mismatch.
+
+The same frozen F16:
+
+- moving paths;
+- evidence;
+- hysteresis;
+- learner results;
+- working-state digest chains;
+- durable developmental history;
+- restart state;
+- probes;
+- controls
+
+were reused unchanged.
+
+When the complete replacement schedule was actually executed,
+the working developmental overlay still improved service,
+still matched the oracle,
+and avoided more migrations than the stale durable C-v2 baseline.
+
+Therefore the full preregistered A16 T8 claim is now accepted via FIXA.
+
+PLAIN-SPEAK INTERPRETATION
+
+We found a test-harness mistake after A16.
+
+The learner was doing the right thing,
+but the service test was supposed to replace cells twice in each short evaluation
+and only replaced them once.
+
+We did not hide that.
+
+We marked the old usefulness result incomplete
+and reran the exact same frozen worlds
+with both replacements actually happening.
+
+The result still passes.
+
+With the full turnover stress:
+
+Yggdrasil served:
+
+5984
+
+immediate post-replacement requests
+
+versus:
+
+5870
+
+for staying stuck on the old durable policy.
+
+It matched the oracle
+and avoided:
+
+70
+
+migrations.
+
+The moving developmental state still ignored temporary noise,
+followed sustained drift,
+reversed correctly,
+and returned exactly to its durable anchor.
+
+So A16 is now fully accepted,
+with the missing test condition explicitly repaired rather than hand-waved away.
+
+ACCEPTED FRONTIER
+
+A16 / T8:
+
+positive hysteretic moving-drift working-state plasticity
+via A16-FIXA evaluation alignment.
+
+A17:
+
+preregistered / unexecuted bounded incremental patch-journal tracking.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
