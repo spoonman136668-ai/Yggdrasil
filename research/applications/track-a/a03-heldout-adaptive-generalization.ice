@@ -756,3 +756,105 @@ or harness change is allowed.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-FREEZE PRIMARY SCHEDULE MANIFEST — BEFORE FIRST PRIMARY REQUEST
+
+DATE:
+2026-09-20.
+
+FREEZE COMMIT F
+
+6f010ce561d958a324664b2d3e0c04e3e113d91b.
+
+F remains the immutable A03 freeze commit even though this manifest-recording commit occurs afterward.
+
+PRIMARY SEEDS
+
+S00:
+f39388866dbd9397aad226418ef638cc4dd2e43398b8d48d8af947c131d3e1a4.
+
+S01:
+4af79f1b1ab2afa1c6efc3767a98ad448a6a4d25b2adbdad9182ea400368fee0.
+
+S02:
+c9c97aff9075a2784f6b1a90a6ba0cb3318d6c3d0a056c846302c9413e2ea4bf.
+
+S03:
+54b76f1f9d50b70c2133a6600a9ace98975f9e2043b26f00b377f9fb2f4d0630.
+
+S04:
+dcd3abb92e27fb2056ae2454281e11974fc22d79949fa6ecdbc3af0d3b16976a.
+
+S05:
+b33251e50bc38e78358dd50b48ee3708c69e8f14a08da662a6d71748295d218d.
+
+S06:
+225d5d6d9eddc55f7e681e16974f560af516a3505f0ba384dde02aea26322b79.
+
+S07:
+17d6aed796992c9e3b71bd7003e0f753ab16462001debfd1e9072302d2056f1e.
+
+S08:
+7e4fde385a6c57501ed6fbffdfdf2b39b161b167fc97b741b218cd1d155ab951.
+
+S09:
+ecf41cc6da7fb1caf4677ec3e64b5e1494e7b63c06217f0e85c8618acb464a04.
+
+S10:
+c99c7fadb8aaa042ef7f243c2cf74625f17a30b2d999d55c84fb0d5529f14064.
+
+S11:
+d7e8b368dedd521b124af226abd90a15f24ba1b1f9b8aefeeda5143dae9bb079.
+
+SCHEDULE MANIFEST SHA-256
+
+842d8f03f1f1229e633c783a895b5b6ceb81f813c2fb104a81000c25baa40848.
+
+PER-SCENARIO SCHEDULE SHA-256
+
+S00:
+b3007a2bb082bce2347940517441b4a866ca5fc7f39e145c36de830cdeac3dd1.
+
+S01:
+c6b24cac114031b9de9093b2d4f880e22f443673b9c101d06842e657a021898c.
+
+S02:
+cbdacb269a8afbaaac30fae273ae4dc39ea8f7511e2fb6296c6ba33cc4011c96.
+
+S03:
+201f9f02c38ec837fca80e2adfc0823a70cc145634bd8a5cf568c27f1faecb48.
+
+S04:
+836ec23db74602f33f51653c639ed82785f3de897268deec3729a8362abf16c3.
+
+S05:
+177fbb2b228b6e43ef032afdbc9f4262c1d8588a14ccb83319d1a6bdfd142607.
+
+S06:
+6bcfc6f9add24074eeca66eb662fec760a8be8959857234277d0b1d5d5fd0ffa.
+
+S07:
+b779dadcbe37fac5c45c32e47bf43bc8af14754851ef9cda70c441a2ef868037.
+
+S08:
+301df67941f6f37d9614bd01296a9bd8bf6f08f4373b00935be2f3b233e4259e.
+
+S09:
+a54a6dacbc5b76ed279dd1b4a5e526cf4138977103516129d67730cc5466e877.
+
+S10:
+ab12f592bb3831731cb0ad707a0ba2159709ad5b3cff3c4184571f5c849e16c9.
+
+S11:
+ad41bb4d6ead075f77af280c974543174f9df7bef5d14872443b9138ab81e823.
+
+No schedule was rejected,
+redrawn,
+or replaced.
+
+At the moment this manifest was derived and recorded,
+no A03 primary held-out scenario had been executed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
