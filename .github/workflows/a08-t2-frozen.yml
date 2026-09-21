@@ -1,0 +1,68 @@
+name: A08 T2 Frozen Primary
+
+on:
+  push:
+    branches:
+      - dg1a-ar
+    paths:
+      - .github/workflows/a08-t2-frozen.yml
+
+jobs:
+  primary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact triggering commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Verify frozen A08 bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research/applications/track-a
+          python3 - <<'PY'
+          import gzip,hashlib
+          from pathlib import Path
+          p=Path("a08_t2_provenance_noisy_training_v1.py.gz")
+          raw=p.read_bytes()
+          src=gzip.decompress(raw)
+          assert len(raw)==8414, len(raw)
+          assert hashlib.sha256(raw).hexdigest()=="ef3e87bd5a9a7484a3f640805e9451287f134632e08c2d0a56beb0552a4d1ae4"
+          assert len(src)==29943, len(src)
+          assert hashlib.sha256(src).hexdigest()=="0dc330887718767812b2143877b751dc1ad580e0cefe834afac88486ad5707e0"
+          print("A08_FROZEN_BYTES_OK")
+          PY
+
+      - name: Verify recorded post-freeze manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research/applications/track-a
+          python3 a08_t2_provenance_noisy_training_v1.py \
+            --freeze-commit de08cc900d6e306411ae879114b3b648f0a94708 \
+            --manifest-only | tee /tmp/a08_manifest.json
+          grep -q '1324fa1fd16e0250520f380f1872006627a5777207b2b537a6297dc26605274a' /tmp/a08_manifest.json
+
+      - name: Run frozen primary twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research/applications/track-a
+          python3 a08_t2_provenance_noisy_training_v1.py \
+            --freeze-commit de08cc900d6e306411ae879114b3b648f0a94708 \
+            --out /tmp/a08_run1.json | tee /tmp/a08_summary1.txt
+          python3 a08_t2_provenance_noisy_training_v1.py \
+            --freeze-commit de08cc900d6e306411ae879114b3b648f0a94708 \
+            --out /tmp/a08_run2.json | tee /tmp/a08_summary2.txt
+          cmp /tmp/a08_run1.json /tmp/a08_run2.json
+          echo "=== PRIMARY OUTPUT SHA256 ==="
+          sha256sum /tmp/a08_run1.json /tmp/a08_run2.json
+          echo "=== SUMMARY ==="
+          cat /tmp/a08_summary1.txt
+
+      - name: Upload exact result
+        uses: actions/upload-artifact@v4
+        with:
+          name: a08-t2-frozen-primary
+          path: /tmp/a08_run1.json
