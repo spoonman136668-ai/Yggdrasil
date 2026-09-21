@@ -250,3 +250,83 @@ No post-result tuning.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — YGG-A01-FIXA
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST FIXA PRIMARY FRAME.
+
+HARNESS
+
+research/applications/track-a/ygga01_telemetry_organism_fixa.py
+
+Implementation commit:
+
+b3d11a6a789989676c553f28a87fae1f2e708cf9.
+
+Git blob SHA:
+
+7db60f02e9d7eb50e75800c082585a511af44e4f.
+
+Source SHA-256:
+
+0bdd414b57c708abb41786a35296bc907b99234bf8430a273acb7c1617548cbb.
+
+Source bytes:
+
+28411.
+
+PRE-FREEZE EQUIVALENCE AUDIT
+
+Compared line-for-line against frozen V1.
+
+Only three scoring-line changes exist.
+
+Removed:
+- initialization of fault_ok before iterating every recovery event;
+- failure assignment for a missing arbitrary recovery event;
+- latency >2 failure assignment for every recovery event.
+
+Added:
+- m4_keys = ("96","480");
+- fault_ok = all(F96 and F480 are present and <=2).
+
+No organism behavior code changed.
+
+No task code changed.
+
+No schedules changed.
+
+No authority code changed.
+
+No partition code changed.
+
+No restart code changed.
+
+No controls changed.
+
+EQUIVALENCE GUARDS
+
+FIXA must preserve:
+
+records SHA-256 =
+a41a6bf75d1632b5d27b9b1a6d1fb67feb41f1f411c749ecd986d57a9b2c6b4e.
+
+final-state SHA-256 =
+f304152651384c8176860b988045424ced9283549a962e4d798d12798efe735e.
+
+raw fault latencies =
+F96 0,
+F204 20,
+F480 1.
+
+Two complete deterministic FIXA trials must be byte-identical.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
