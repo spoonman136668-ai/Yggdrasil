@@ -639,3 +639,238 @@ BEFORE IT IS ALLOWED TO COMMIT AGAIN?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A31 PER-CELL REFRACTORY HYSTERESIS
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F31-DERIVED SPATIAL WORLD,
+REFRACTORY TRANSITION,
+OR SCIENTIFIC OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+094eaab7f8d717781cd4568915a61941114914bb.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a31_t8o_per_cell_refractory_hysteresis_v1.py
+
+Loader Git blob:
+
+e37781bf4120bddba2ac39da2d75484c13ef9e11.
+
+Payload:
+
+research/applications/track-a/a31_t8o_per_cell_refractory_hysteresis_v1.py.gz
+
+Payload Git blob:
+
+49f4f4d14eac80d8c76d622cda69b8823d0a62d2.
+
+Decompressed source SHA-256:
+
+dfb3290ee3d2c2efc059546930349ce18b3c3dc17a12367755c0006f03643192.
+
+Decompressed source bytes:
+
+13316.
+
+Deterministic gzip SHA-256:
+
+ad3ef270afc219e519ee8c9bb0975bacb90e4ba65549f704e2b9ec554226c771.
+
+Compressed payload bytes:
+
+4420.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake seed:
+
+MECHANICAL-F31-NONPRIMARY.
+
+Two complete sweeps were byte-identical.
+
+Serialized semantic output SHA-256:
+
+37ec7e3edee2ea3b4327988c09f39bd285bd0ef99eab9cd5d3070a2658601b50.
+
+All P1-P20 integrity probes:
+
+PASS.
+
+D0:
+
+oscillatory:
+39 / 384
+=
+10.156%.
+
+chatter-trial fraction:
+
+64.84%.
+
+broad median erosion latency:
+
+0.
+
+one-emitter robustness:
+
+100%.
+
+D1:
+
+oscillatory:
+
+4.95%.
+
+chatter reduction vs D0:
+
+15.66%.
+
+recovery within D0 +4:
+
+85.41%.
+
+D1 did NOT qualify
+because chatter reduction was below 25%.
+
+D2:
+
+oscillatory:
+
+2.083%.
+
+chatter reduction:
+
+31.73%.
+
+broad median erosion latency:
+
+0.
+
+one-emitter robustness:
+
+100%.
+
+strategic one/two-emitter collapse:
+
+0%.
+
+recovery within D0 +4:
+
+83.26%.
+
+D2 mechanically met every preregistered qualification criterion.
+
+D3:
+
+oscillatory:
+
+2.083%.
+
+chatter reduction:
+
+57.03%.
+
+recovery within D0 +4:
+
+77.68%.
+
+D3 failed the 80% recovery criterion.
+
+D4:
+
+oscillatory:
+
+1.302%.
+
+chatter reduction:
+
+79.52%.
+
+recovery within D0 +4:
+
+78.97%.
+
+D4 failed the 80% recovery criterion.
+
+D6:
+
+oscillatory:
+
+0.260%.
+
+chatter:
+
+0.
+
+recovery within D0 +4:
+
+67.81%.
+
+D6 failed recovery.
+
+D8 negative control:
+
+oscillatory:
+
+0%.
+
+chatter:
+
+0.
+
+recovery within D0 +4:
+
+62.66%.
+
+This demonstrates the expected tradeoff:
+
+more refractory memory
+suppresses chatter
+
+but eventually makes recovery too sticky.
+
+No duration,
+qualification threshold,
+inhibition law,
+or recruitment law
+is changed in response.
+
+This is NON-SCIENTIFIC mechanical evidence only.
+
+REAL A31 STATUS
+
+No real F31-derived trial exists.
+
+No real refractory outcome exists.
+
+No real A31 manifest exists.
+
+Let the resulting commit SHA be:
+
+F31.
+
+After F31 exists:
+
+1. derive exactly 384 fresh challenge identities from F31;
+2. bind the complete challenge manifest SHA;
+3. only then execute two complete deterministic primary sweeps;
+4. require byte-identical output;
+5. report every duration without post-result selection.
+
+NO POST-RESULT DURATION TUNING.
+NO INHIBITION CHANGE.
+NO RECRUITMENT CHANGE.
+NO QUALIFICATION CHANGE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
