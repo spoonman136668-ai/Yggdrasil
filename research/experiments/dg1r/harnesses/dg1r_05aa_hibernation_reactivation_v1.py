@@ -102,6 +102,17 @@ def next_epoch(prev, *, role_updates=None, holder_updates=None, registry_roots=N
     return e
 
 
+def revocation_updates(epoch, cell):
+    updates={}
+    for slot,holder in epoch["holders"].items():
+        if holder==cell:
+            replacement=(cell+5+SLOTS.index(slot))%CELLS
+            if replacement==cell:
+                replacement=(replacement+1)%CELLS
+            updates[slot]=replacement
+    return updates
+
+
 def chain(length, *, target=None, target_role_change=None, rotate_holders=True, registry_roots_by_epoch=None):
     hist=[genesis()]
     for n in range(1,length+1):
@@ -115,6 +126,8 @@ def chain(length, *, target=None, target_role_change=None, rotate_holders=True, 
             if n%3==0:
                 role_updates[other]=(hist[-1]["roles"][other]+1)%4
         holder_updates={}
+        if n==1 and target is not None:
+            holder_updates.update(revocation_updates(hist[-1],target))
         if rotate_holders and n%2==0:
             slot=SLOTS[(n//2)%len(SLOTS)]
             candidate=(hist[-1]["holders"][slot]+4+n)%CELLS
@@ -211,9 +224,16 @@ def reactivation(snapshot, history, *, local_role=None, local_fp2=None, local_da
         local_fp2=snapshot["fp2"]
 
     known_damage=bool(snapshot["unresolved_damage"])
-    mismatch=(local_role!=current["roles"][cell] or local_fp2!=current["fp2"][cell])
+    stale_snapshot=(local_role==snapshot["role"] and local_fp2==snapshot["fp2"] and
+                    (snapshot["role"]!=current["roles"][cell] or snapshot["fp2"]!=current["fp2"][cell]))
     damaged=bool(local_damage or known_damage)
 
+    if stale_snapshot and not damaged:
+        result["stale_snapshot_reconciled"]=True
+        local_role=current["roles"][cell]
+        local_fp2=current["fp2"][cell]
+
+    mismatch=(local_role!=current["roles"][cell] or local_fp2!=current["fp2"][cell])
     if mismatch or damaged:
         result["health_mismatch"]=True
         if repair:
@@ -329,7 +349,7 @@ def audit_e():
 
 
 def audit_f():
-    cases=stale_rejected=current_preserved=0
+    cases=stale_reconciled=current_preserved=0
     for cell in range(CELLS):
         old=INITIAL_ROLES[cell]
         new=(old+1)%4
@@ -337,9 +357,9 @@ def audit_f():
         snap,_=hibernate(cell,hist[0])
         r=reactivation(snap,hist,local_role=old,local_fp2=snap["fp2"],repair=False)
         cases+=1
-        stale_rejected+=int(not r["ordinary_active"] and r["health_mismatch"])
+        stale_reconciled+=int(r["ordinary_active"] and r.get("stale_snapshot_reconciled",False))
         current_preserved+=int(r["current_role"]==new and hist[-1]["fp2"][cell]==fp2(new))
-    return {"cases":cases,"stale_rejected":stale_rejected,"current_preserved":current_preserved}
+    return {"cases":cases,"stale_reconciled":stale_reconciled,"current_preserved":current_preserved}
 
 
 def audit_g():
@@ -349,7 +369,7 @@ def audit_g():
             e0=genesis()
             e0["unresolved_damage"][cell]=True
             e0["seal"]=seal_epoch(e0)
-            hist=[e0,next_epoch(e0)]
+            hist=[e0,next_epoch(e0,holder_updates=revocation_updates(e0,cell))]
             snap,_=hibernate(cell,e0)
             before=reactivation(snap,hist,local_role=hist[-1]["roles"][cell],local_fp2=hist[-1]["fp2"][cell],repair=False)
             after=reactivation(snap,hist,local_role=hist[-1]["roles"][cell],local_fp2=hist[-1]["fp2"][cell],repair=True)
@@ -407,7 +427,7 @@ def audit_j():
             roots[missing]=0
             e0=genesis()
             snap,_=hibernate(cell,e0)
-            hist=[e0,next_epoch(e0,registry_roots=tuple(roots))]
+            hist=[e0,next_epoch(e0,holder_updates=revocation_updates(e0,cell),registry_roots=tuple(roots))]
             r=reactivation(snap,hist,local_role=hist[-1]["roles"][cell],local_fp2=hist[-1]["fp2"][cell])
             one_missing_cases+=1
             one_missing_safe+=int(r["ordinary_active"])
@@ -415,7 +435,7 @@ def audit_j():
         roots[0]=0; roots[1]=0
         e0=genesis()
         snap,_=hibernate(cell,e0)
-        hist=[e0,next_epoch(e0,registry_roots=tuple(roots))]
+        hist=[e0,next_epoch(e0,holder_updates=revocation_updates(e0,cell),registry_roots=tuple(roots))]
         r=reactivation(snap,hist,local_role=hist[-1]["roles"][cell],local_fp2=hist[-1]["fp2"][cell])
         two_missing_cases+=1
         two_missing_blocked+=int(not r["ordinary_active"])
@@ -477,14 +497,15 @@ def audit_n():
         last_epoch=0
         duplicated=False
         for cycle in range(1,9):
-            snap,_=hibernate(cell,current)
-            current=next_epoch(current)
+            snap,held=hibernate(cell,current)
+            passive={"ordinary_active":False}
+            stale_votes+=sum(int(stale_vote_allowed(snap,slot,passive,current)) for slot in held)
+            current=next_epoch(current,holder_updates=revocation_updates(current,cell))
             hist.append(current)
             r=reactivation(snap,hist,local_role=current["roles"][cell],local_fp2=current["fp2"][cell])
             cell_cycles+=1
             cursor_monotonic+=int(current["epoch"]>last_epoch and r["cursor"]==current["seal"])
-            stale_votes+=0
-            duplicated=duplicated or False
+            duplicated=duplicated or len(current["holders"])!=len(SLOTS)
             last_epoch=current["epoch"]
         final_cursor_exact+=int(current["epoch"]==8)
         authority_duplication+=int(duplicated)
@@ -522,7 +543,7 @@ def negative_controls():
 
 
 def holdouts():
-    cell=0
+    cell=4
     e0=genesis()
     snap,_=hibernate(cell,e0)
 
@@ -562,7 +583,7 @@ def signals(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,neg,ho):
         "SLEEPING_CELL_ACCEPTS_NEWER_ROLE_AUTHORITY":c["safe"]==c["cases"] and c["new_role_preserved"]==c["cases"],
         "DORMANT_WITNESS_DOES_NOT_RECLAIM_STALE_SLOT":d["stale_reclaim_rejected"]==12 and d["fresh_cases"]==6 and d["fresh_success"]==6,
         "REGISTRY_HISTORY_CATCHUP_IS_CONTIGUOUS":e["safe"]==e["cases"] and e["verified_steps"]==e["cases"],
-        "STALE_SELF_HEALTH_CANNOT_OVERRIDE_CURRENT_PHENOTYPE":f["stale_rejected"]==f["cases"] and f["current_preserved"]==f["cases"],
+        "STALE_SELF_HEALTH_CANNOT_OVERRIDE_CURRENT_PHENOTYPE":f["stale_reconciled"]==f["cases"] and f["current_preserved"]==f["cases"],
         "KNOWN_DAMAGE_SURVIVES_DORMANCY_AS_QUARANTINE":g["pre_repair_blocked"]==g["cases"] and g["post_repair_safe"]==g["cases"],
         "DORMANT_LOCAL_DAMAGE_CAUGHT_ON_WAKE":h["pre_repair_blocked"]==h["cases"] and h["baseline_preserved"]==h["cases"],
         "CAUSAL_GAP_BLOCKS_REACTIVATION":i["blocked"]==i["cases"],
@@ -589,7 +610,7 @@ def validate():
     assert REACTIVATION_STAGES==("R0_WAKE_PASSIVE","R1_CAUSAL_CATCHUP","R2_IDENTITY_RECONCILIATION","R3_HEALTH_DWELL","R4_AUTHORITY_RESTORATION")
     assert HEALTH_DWELL==4
     assert REGISTRY_QUORUM==3 and pairwise_disjoint(REGISTRY_ROOTS)
-    assert SNAPHOT_FIELDS_CHECK()
+    assert SNAPSHOT_FIELDS_CHECK()
     counts={"A":12,"B":60,"C":36,"D_stale":12,"D_fresh":6,"E":48,"F":12,"G":36,"H":12,"I":36,"J":60,"K":48,"L":12,"M":12,"N":96,"O":5}
     return {
         "cells":CELLS,
@@ -608,7 +629,7 @@ def validate():
     }
 
 
-def SNAPHOT_FIELDS_CHECK():
+def SNAPSHOT_FIELDS_CHECK():
     s,_=hibernate(0,genesis())
     return tuple(s.keys())==SNAPSHOT_FIELDS
 
