@@ -839,3 +839,466 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A23 / T8G PERSISTENT PATCH CONFIDENCE LEDGER
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE NEGATIVE RESULT /
+PERSISTENT SIGN-LEDGER RECOVERS SOME COVERAGE
+BUT FAILS SAFETY /
+NO ARM QUALIFIED /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+266cd2111713b271c084172d7b666fa38aecdb3d.
+
+F23:
+
+e73591a5d9671aba5c7edb9ebf378478c2957a79.
+
+Source SHA-256:
+
+05a9c9bf631282189160ebf7c2ad088b6212318440b561d7a4f613a2714763e0.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+1919e140cfc6717dcb51640ffb3c88024197c7d0.
+
+384-trajectory manifest SHA-256:
+
+c720f03dcd6d509c13570b9f6b72936692c7733483a1761d778fd4b122e18580.
+
+Manifest-wrapper SHA-256:
+
+b7bb48953dd8689a097331d69590780248973321bed301c30b9e213fa3e1293e.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete primary sweeps were byte-identical.
+
+Serialized result-file SHA-256:
+
+6bddfb7adf60b66e76c0e4e8bb7a1225c6cc30c895cf0ed34b9591682d256706.
+
+Serialized semantic output SHA-256:
+
+75dcaa50c6e704fb546b74c852b095102eef747378301f9386adb10b5a782416.
+
+All P1-P15 probes:
+
+PASS.
+
+A17 replay remained exact.
+
+FRESH R1 W5 BASELINE
+
+Unconditional all-candidate W5 harmful trajectories:
+
+64 / 384.
+
+Unconditional harm rate:
+
+0.1666666667.
+
+C1 — 25% PROVISIONAL EXPOSURE
+
+Earned expansions:
+
+12.
+
+Actual W5 outcomes:
+
+beneficial = 3;
+neutral = 5;
+harmful = 4.
+
+Actual harm rate:
+
+0.3333333333.
+
+R1 W5 labels among earned expansions:
+
+beneficial = 1;
+neutral = 9;
+harmful = 2.
+
+R1-label harm rate:
+
+0.1666666667.
+
+Provisional W1-W4 aggregate delta versus stale twins:
+
++23.
+
+W5 aggregate delta:
+
+0.
+
+Complete service delta versus R0:
+
++23.
+
+Complete service delta versus R1:
+
+-784.
+
+Coverage floor:
+
+FAIL.
+
+Harm ceiling:
+
+FAIL.
+
+C1 LEDGER-QUALIFIED:
+
+FALSE.
+
+C2 — 50% PROVISIONAL EXPOSURE
+
+Earned expansions:
+
+23.
+
+Actual W5 outcomes:
+
+beneficial = 7;
+neutral = 9;
+harmful = 7.
+
+Actual harm rate:
+
+0.3043478261.
+
+R1 labels:
+
+beneficial = 6;
+neutral = 10;
+harmful = 7.
+
+R1-label harm rate:
+
+0.3043478261.
+
+Provisional aggregate delta:
+
+-39.
+
+W5 aggregate delta:
+
++2.
+
+Complete delta versus R0:
+
+-37.
+
+Complete delta versus R1:
+
+-844.
+
+Coverage floor:
+
+FAIL.
+
+Harm ceiling:
+
+FAIL.
+
+C2 LEDGER-QUALIFIED:
+
+FALSE.
+
+C3 — 75% PROVISIONAL EXPOSURE
+
+Earned expansions:
+
+45.
+
+Actual W5 outcomes:
+
+beneficial = 12;
+neutral = 22;
+harmful = 11.
+
+Actual harm rate:
+
+0.2444444444.
+
+R1 labels:
+
+beneficial = 11;
+neutral = 24;
+harmful = 10.
+
+R1-label harm rate:
+
+0.2222222222.
+
+Provisional aggregate delta:
+
+-12.
+
+W5 aggregate delta:
+
++2.
+
+Complete delta versus R0:
+
+-10.
+
+Complete delta versus R1:
+
+-817.
+
+Coverage:
+
+45 / 48 minimum.
+
+FAIL.
+
+Harm ceiling:
+
+FAIL.
+
+C3 LEDGER-QUALIFIED:
+
+FALSE.
+
+PRIMARY RESULT
+
+Selected arm:
+
+NONE.
+
+A23_PERSISTENT_PATCH_CONFIDENCE_LEDGER_SUCCESS:
+
+FALSE.
+
+COMPARISON WITH A22
+
+A22 C3:
+
+earned expansions = 16;
+actual harm rate = 0.0625.
+
+A23 C3:
+
+earned expansions = 45;
+actual harm rate = 0.2444444444.
+
+Thus persistent nonconsecutive sign accumulation
+recovered substantial coverage
+but reintroduced a large false-positive activation rate.
+
+The A22 coverage problem
+was therefore not merely caused by forgetting old positive evidence.
+
+EVIDENCE-PATTERN DIAGNOSTIC
+
+No simple sign-pattern repair is supported.
+
+Observed harmful earned expansions included patterns such as:
+
+++++;
+++00;
+00++;
++00+;
+0+0+;
++++0;
++-++.
+
+For C3:
+
+last window positive:
+28 earned;
+7 harmful;
+harm rate 0.25.
+
+last window neutral:
+15 earned;
+3 harmful;
+harm rate 0.20.
+
+last window negative:
+2 earned;
+1 harmful;
+harm rate 0.50.
+
+C3 with no negative provisional window:
+
+38 earned;
+9 harmful;
+harm rate 0.2368421053.
+
+Therefore:
+
+recent positivity;
+absence of negative windows;
+or multiple positive windows
+
+does not by itself establish safe W5 authority.
+
+Even:
+
+++++
+
+contained a harmful W5 outcome.
+
+TECHNICAL INTERPRETATION
+
+A23 falsifies the hypothesis:
+
+A22 WAS TOO INDECISIVE
+BECAUSE IT FORGOT NONCONSECUTIVE POSITIVE EVIDENCE.
+
+Keeping all signed evidence
+does increase authority coverage.
+
+But equal-weight sign accumulation
+treats evidence as more interchangeable than it really is.
+
+A positive window carries no explicit representation of:
+
+effect magnitude uncertainty;
+within-window variability;
+state dependence;
+trajectory dependence;
+or how surprising the observed advantage was
+under a no-benefit baseline.
+
+A21 had already shown that raw positive margin
+was not enough.
+
+A23 now shows that repeated positive signs
+are also not enough.
+
+The missing object is therefore not merely:
+
+MEMORY OF EVIDENCE.
+
+It is:
+
+CALIBRATED UNCERTAINTY ABOUT EVIDENCE.
+
+A confidence ledger should not store only:
+
+WIN / TIE / LOSS.
+
+It must represent
+how much statistical / causal support
+each observation contributes
+and how uncertain that support remains.
+
+PLAIN-SPEAK INTERPRETATION
+
+A23 gave every patch a notebook.
+
+Good trial:
++1.
+
+Tie:
+0.
+
+Bad trial:
+-1.
+
+The notebook remembered everything.
+
+That solved one A22 problem:
+
+more patches eventually accumulated enough evidence
+to be considered for full authority.
+
+But it made the organism too trusting again.
+
+For the largest canary arm,
+A22 approved only 16 cases
+and was much safer.
+
+A23 approved 45.
+
+But 11 of those 45 expansions hurt in the untouched fifth window.
+
+So simply remembering old wins
+is not enough.
+
+The biggest lesson is:
+
+A WIN IS NOT A STANDARD UNIT OF EVIDENCE.
+
+One positive window may be strong evidence.
+
+Another positive window may be mostly noise.
+
+Counting them both as +1
+throws away the exact thing Yggdrasil now needs to understand:
+
+HOW CERTAIN AM I
+THAT THIS OBSERVED IMPROVEMENT IS REAL AND PERSISTENT?
+
+That points to the next experiment.
+
+Do not invent another pattern rule.
+
+Do not just raise +2 to +3.
+
+Do not only require the most recent window to be positive.
+
+Instead,
+give the ledger an uncertainty-aware evidence quantity.
+
+The next experiment should accumulate
+paired canary-versus-stale evidence
+with an explicit lower confidence bound
+or anytime-valid evidence process.
+
+Authority should be earned only when
+the evidence says not merely:
+
+"we have seen more wins than losses,"
+
+but:
+
+"the accumulated evidence is strong enough
+that a non-beneficial patch is becoming implausible."
+
+A17:
+mixed / negative.
+
+A18:
+diagnostic.
+
+A19:
+shadow confidence insufficient.
+
+A20:
+known-world real-canary discovery.
+
+A21:
+one-hit out-of-sample replication failed.
+
+A22:
+two-hit hysteresis safer but too indecisive.
+
+A23:
+persistent sign ledger increases coverage
+but fails safety.
+
+No sequential autonomous activation controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
