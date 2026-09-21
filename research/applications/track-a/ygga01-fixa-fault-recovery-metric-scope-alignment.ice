@@ -330,3 +330,300 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — YGG-A01-FIXA
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED / POSITIVE CORRECTIVE PRIMARY / REPRODUCIBLE / METRIC ALIGNMENT VALID.
+
+FROZEN HARNESS EXECUTED
+
+research/applications/track-a/ygga01_telemetry_organism_fixa.py
+
+Frozen Git blob:
+
+7db60f02e9d7eb50e75800c082585a511af44e4f.
+
+Frozen source SHA-256:
+
+0bdd414b57c708abb41786a35296bc907b99234bf8430a273acb7c1617548cbb.
+
+Source bytes:
+
+28411.
+
+REPRODUCIBILITY
+
+Two complete deterministic 512-frame trials.
+
+Sweep 1 serialized output SHA-256:
+
+3765ed15d66e066f9f31ad9b3953aa8fa29debb594a7daa2aa36823f02b7e598.
+
+Sweep 2 serialized output SHA-256:
+
+3765ed15d66e066f9f31ad9b3953aa8fa29debb594a7daa2aa36823f02b7e598.
+
+Byte-identical:
+
+TRUE.
+
+EQUIVALENCE GUARDS
+
+Records SHA-256:
+
+a41a6bf75d1632b5d27b9b1a6d1fb67feb41f1f411c749ecd986d57a9b2c6b4e.
+
+Matches frozen R1:
+
+TRUE.
+
+Final-state SHA-256:
+
+f304152651384c8176860b988045424ced9283549a962e4d798d12798efe735e.
+
+Matches frozen R1:
+
+TRUE.
+
+Therefore the organism behavior,
+frame decisions,
+and final authoritative state
+did not change.
+
+RAW RECOVERY TELEMETRY
+
+F96:
+
+0 frames.
+
+F204:
+
+20 frames.
+
+F480:
+
+1 frame.
+
+Raw telemetry unchanged from R1:
+
+TRUE.
+
+CORRECTED PREREGISTERED M4
+
+M4 event set:
+
+F96.
+F480.
+
+Both <=2:
+
+TRUE.
+
+fault_recovery_within_2:
+
+TRUE.
+
+PRIMARY APPLICATION SIGNAL
+
+FIRST_PERSISTENT_ORGANISM_USEFUL:
+
+TRUE.
+
+APPLICATION METRICS
+
+Authoritative false outputs:
+
+0.
+
+Connected availability:
+
+0.9978448275862069.
+
+Budget-8 steady availability:
+
+1.0.
+
+Budget-8 steady accuracy:
+
+1.0.
+
+Role-shortage recovery latency:
+
+0 frames.
+
+Partition false promotions:
+
+0.
+
+Dormant votes:
+
+0.
+
+Stale witness reclaims:
+
+0.
+
+Hereditary rewrite contested:
+
+TRUE.
+
+Hereditary evolution preserved:
+
+TRUE.
+
+All capsules valid:
+
+TRUE.
+
+Provenance multiplication:
+
+0.
+
+Restart suffix identical:
+
+TRUE.
+
+Restart final state identical:
+
+TRUE.
+
+Observed organism actions:
+
+role migrations = 1.
+hibernations = 12.
+reactivations = 8.
+repairs = 3.
+same-target conflict rollbacks = 1.
+
+NEGATIVE CONTROLS
+
+Headcount quorum failure exposed:
+
+TRUE.
+
+Auto-wake stale-authority failure exposed:
+
+TRUE.
+
+Partition-majority unsafe selection exposed:
+
+TRUE.
+
+Archived-role veto failure exposed:
+
+TRUE.
+
+TECHNICAL INTERPRETATION
+
+YGG-A01 now has one preserved invalid frozen measurement run
+and one preregistered corrective rerun.
+
+The corrective rerun did not improve organism behavior.
+
+It changed only the implementation of the already-written M4 event scope.
+
+The equivalence guards prove:
+
+- identical frame record stream;
+- identical final authoritative state;
+- identical raw recovery observations.
+
+Therefore the corrected positive primary is attributable to metric alignment,
+not post-result task tuning.
+
+Under the preregistered application criteria,
+the first persistent telemetry-integrity organism:
+
+- produced zero false authoritative outputs;
+- maintained >99.7% connected availability;
+- maintained 100% steady availability and accuracy at the eight-cell budget;
+- recovered the two preregistered ordinary faults within two frames;
+- recovered role shortage immediately;
+- preserved partition safety;
+- preserved hibernation authority expiry;
+- preserved hereditary continuity;
+- preserved provenance non-multiplication;
+- restarted deterministically.
+
+PLAIN-SPEAK INTERPRETATION
+
+This is the first actual Yggdrasil application pass.
+
+The artificial population had a job:
+
+keep producing the right telemetry integrity byte.
+
+We then made its life difficult.
+
+We cut it from twelve active cells to eight.
+
+We damaged cells.
+
+We created a missing-role problem.
+
+We split the organism in half.
+
+We put voting cells to sleep.
+
+We woke them back up.
+
+We challenged its historical memory.
+
+And we restarted it from a saved state.
+
+It never produced a wrong authoritative answer.
+
+When it had enough healthy evidence,
+it kept working.
+
+When the rules said it should not trust the situation,
+it did not manufacture authority.
+
+The original failed score is still preserved.
+
+The correction did not make the organism behave better.
+
+It made the scoreboard count the two fault-recovery tests that the experiment said it would count.
+
+So the useful milestone is now justified:
+
+YGGDRASIL HAS MOVED FROM
+A COLLECTION OF WORKING MECHANISMS
+
+TO
+
+A PERSISTENT SYNTHETIC ORGANISM
+THAT USED THOSE MECHANISMS
+TO KEEP A REAL COMPUTATIONAL SERVICE RUNNING UNDER PRESSURE.
+
+This is not production readiness.
+
+It is the first application proof.
+
+NEXT JUSTIFIED STEP
+
+Application Track A already contains the separately preregistered:
+
+A02 — Adaptive Transform Service Organism.
+
+A02 should raise task complexity above the checksum service
+while preserving the same constitutional boundaries.
+
+It should test whether the organism can maintain a changing transform objective
+rather than a fixed deterministic integrity function.
+
+YGG-A01 accepted application frontier:
+
+POSITIVE via preregistered FIXA metric alignment.
+
+Original frozen R1:
+
+preserved as measurement-semantic defect.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
