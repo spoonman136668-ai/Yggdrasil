@@ -671,3 +671,161 @@ expanding the organism's role vocabulary.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A06 ONLINE HEREDITARY PROGRAM INHERITANCE
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY PRIMARY A06 UPDATE PROGRAM.
+
+IMPLEMENTATION COMMIT
+
+f1dd0c3fec863e5f2e27b8f735511527290183a1.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a06_online_program_inheritance_v1.py
+
+Loader Git blob:
+
+22101de688643249318698be95ef628e51c99208.
+
+Exact gzip payload:
+
+research/applications/track-a/a06_online_program_inheritance_v1.py.gz
+
+Payload Git blob:
+
+a0191548c477e131a21169140edf2a06bf4ae3f6.
+
+Compressed payload SHA-256:
+
+e89436630aaecc6eb7fb455252613e952cb63138cdd49b4abad1cf8a187a68dc.
+
+Compressed payload bytes:
+
+7989.
+
+Decompressed exact source SHA-256:
+
+eb7a83320983168fe63d46852ee5d84bebf4c4cf80674ab2a885502e3bfb5a73.
+
+Decompressed source bytes:
+
+31344.
+
+FROZEN PARENT DEPENDENCIES
+
+A05 source SHA-256:
+
+9efc8e31c08b60b6decff06c7ffc5b5a1ad10df7bb4440d4b2ab4d1fb5876fce.
+
+A05 task-program manifest:
+
+3fbc3a77eef9068dba92f4206c8c5c7a180efafec2a0105aa52e978dea0fc7f6.
+
+A03 environment manifest:
+
+842d8f03f1f1229e633c783a895b5b6ceb81f813c2fb104a81000c25baa40848.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Program catalog size:
+
+12840.
+
+Program-source roots:
+
+2 independent pairwise-disjoint roots.
+
+Mechanical update manifest used only:
+
+MECHANICAL-NONPRIMARY-FREEZE.
+
+Mechanical update manifest SHA-256:
+
+fe0c8624b65897268fce493ce85fa0d7b3044da2f21c3726258615468873cea6.
+
+No real primary update program derived:
+
+TRUE.
+
+Full non-primary structural smoke:
+
+12 / 12 mechanical updates committed;
+candidate served 52273;
+candidate incorrect 0;
+stale-program served 0;
+stale-program attempts accepted 0;
+migration inheritance exercised;
+all dedicated hereditary probes PASS;
+all source / authority negative controls FAIL CLOSED;
+all restarts equivalent;
+all existing safety totals zero;
+partition / re-merge complete.
+
+These mechanical outcomes are implementation checks only.
+They are not A06 scientific evidence.
+
+SEMANTIC FREEZE
+
+The harness freezes:
+
+- cell-local program role / version / truth table / digest;
+- authoritative per-role program record;
+- parent-digest version chain;
+- two independent program-source provenance roots;
+- source quorum distinct from organism governance;
+- source agreement plus existing governance / registry requirement for commit;
+- active healthy target-role adoption at commit;
+- dormant stale-memory preservation;
+- wake catch-up before service;
+- repair catch-up before service;
+- target-role program inheritance through migration;
+- program authority / local program persistence through restart;
+- stale-program service exclusion;
+- dedicated hereditary probes H1 / H2 / H3;
+- source / authority controls S1..S7.
+
+PRIMARY UPDATE STATUS AT THIS FREEZE
+
+NOT DERIVED.
+
+Let the resulting commit SHA of this freeze update be F06.
+
+For scenario s,
+the primary version-1 program remains exactly:
+
+SHA-256(
+"YGG-A06-UPDATE|"
++ F06
++ "|"
++ decimal(s)
++ "|"
++ decimal(counter)
+)
+
+mapped into the frozen 12,840-entry balanced nonlinear catalog,
+rejecting only equality with that scenario's current target-role program.
+
+No post-freeze update replacement,
+difficulty shaping,
+or source change is allowed.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
