@@ -886,3 +886,197 @@ No other A30 rule is changed.
 No scientific A30 trajectory has been derived.
 
 No F30 exists yet.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A30 SPATIAL LOCAL CROSS-INHIBITION
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F30-DERIVED SPATIAL WORLD,
+LOCAL OPPOSITION EXPOSURE,
+CELL DEFECTION,
+OR SCIENTIFIC OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+e969503bacfb520efe4f9ba2df7a7ccebfe88e76.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a30_t8n_spatial_local_cross_inhibition_v1.py
+
+Loader Git blob:
+
+219eecd273b9ce27f4599569d1cc4809c0fe5de8.
+
+Payload:
+
+research/applications/track-a/a30_t8n_spatial_local_cross_inhibition_v1.py.gz
+
+Payload Git blob:
+
+f7d3d5febacdde18879d1376cea2ed9e427cd303.
+
+Decompressed source SHA-256:
+
+7f560e87e54210f1d24826403ff040cab69dda9422d9d4920009df1e3388d7d4.
+
+Decompressed source bytes:
+
+11081.
+
+Deterministic gzip SHA-256:
+
+7f6ffa717a2a1647ceb7fe50c55239654af38f42c76a7b64d07da3ec67ccb9e0.
+
+Compressed payload bytes:
+
+3994.
+
+IMPLEMENTATION NOTE
+
+The first developer-only mechanical attempt used exact Fraction arithmetic
+and a cryptographic hash for every cell-level random decision.
+
+It exceeded the local execution window.
+
+Before freeze,
+the implementation was replaced with algebraically equivalent
+integer probability thresholds
+and a frozen xorshift64* deterministic PRNG
+seeded from cryptographic trial / arm identity.
+
+No scientific rule changed.
+
+No real F30-derived world existed.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake seed:
+
+MECHANICAL-F30-NONPRIMARY.
+
+Two complete sweeps were byte-identical.
+
+Serialized semantic output SHA-256:
+
+ef796873e2d5904e6cb7f9ab5c98469084521568e3da378279a5f0f2402fed7e.
+
+All P1-P20 integrity probes:
+
+PASS.
+
+CENTRAL mechanical reference:
+
+broad-opposition median erosion latency:
+
+1 epoch.
+
+one-emitter sustained robustness:
+
+100%.
+
+strategic one/two-emitter collapse rate:
+
+0%.
+
+oscillatory fraction:
+
+0%.
+
+critical contiguous cluster size:
+
+16 cells.
+
+R3N12 oversharp control:
+
+broad median erosion latency:
+
+0 epochs.
+
+oscillatory fraction:
+
+17.45%.
+
+critical cluster size:
+
+24.
+
+This establishes that very sharp local switching
+can create substantially more chatter.
+
+Exactly one primary arm met
+all preregistered criteria
+in the developer-only fake world:
+
+R12N3.
+
+R12N3 mechanical behavior:
+
+broad median erosion latency:
+
+0 epochs.
+
+one-emitter robustness:
+
+100%.
+
+strategic one/two-emitter collapse:
+
+0%.
+
+oscillatory fraction:
+
+4.95%.
+
+critical cluster size:
+
+20.
+
+spatial defection-rate separation:
+
+0.621.
+
+No threshold,
+radius,
+Hill coefficient,
+recruitment rule,
+or qualification rule
+is changed in response.
+
+The full 12-arm matrix remains frozen.
+
+This mechanical result is NON-SCIENTIFIC.
+
+REAL A30 STATUS
+
+No real F30-derived trial exists.
+
+No real local inhibition outcome exists.
+
+No real A30 manifest exists.
+
+Let the resulting commit SHA be:
+
+F30.
+
+After F30 exists:
+
+1. derive exactly 384 fresh trial identities from F30;
+2. bind the complete challenge manifest SHA;
+3. only then execute two complete deterministic primary sweeps;
+4. require byte-identical output;
+5. report all 12 primary arms plus R3N12, CENTRAL, and NO_INHIB.
+
+NO POST-RESULT RADIUS TUNING.
+NO POST-RESULT HILL-N TUNING.
+NO POST-RESULT K TUNING.
+NO POST-RESULT RECRUITMENT CHANGE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
