@@ -1083,3 +1083,202 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-FREEZE PRIMARY NOISY-TRAINING MANIFEST — BEFORE FIRST PRIMARY EXPERIENCE EVENT
+
+DATE:
+2026-09-21.
+
+FREEZE COMMIT F08
+
+de08cc900d6e306411ae879114b3b648f0a94708.
+
+TRAINING / NOISE MANIFEST SHA-256
+
+1324fa1fd16e0250520f380f1872006627a5777207b2b537a6297dc26605274a.
+
+This SHA binds:
+
+- 12 target quadratic programs;
+- 12 corrupted-root pairs;
+- all per-input six-root arrival orders;
+- all per-root duplicate fanout counts;
+- frozen learner roots;
+- train / holdout split;
+- qualification threshold.
+
+LEARNER EVENT-ORDER MANIFEST SHA-256
+
+ebcbc5dae8a06128f43753ad5350c12adc365241729de1a66d53a253f44fa062.
+
+This second SHA binds the deterministic learner-A and learner-B
+raw-event processing order for every primary training epoch.
+
+PRIMARY SCENARIOS
+
+S00:
+target role 0;
+training epochs 82..103;
+commit epoch 104;
+coefficient mask 188;
+target 0xe1b4;
+corrupted roots E1,E2;
+raw experience copies per learner 160;
+experience schedule SHA-256 0f91cc468377f10d2c1f5c1ed90775f3d596e3de05e44095737865412fa97851.
+
+S01:
+target role 2;
+training epochs 158..179;
+commit epoch 180;
+coefficient mask 348;
+target 0xa35c;
+corrupted roots E0,E4;
+raw experience copies per learner 163;
+experience schedule SHA-256 1dbfccbd90f905ddea846c5d23c96e13045711d65687fb023e31ea22c11c8925.
+
+S02:
+target role 2;
+training epochs 81..102;
+commit epoch 103;
+coefficient mask 970;
+target 0x5c3a;
+corrupted roots E1,E4;
+raw experience copies per learner 173;
+experience schedule SHA-256 7de6ccca37759265142e90d7b92b2248e822cc0dd9d910d0426f77e38ec08113.
+
+S03:
+target role 0;
+training epochs 101..122;
+commit epoch 123;
+coefficient mask 1667;
+target 0xc355;
+corrupted roots E0,E3;
+raw experience copies per learner 174;
+experience schedule SHA-256 872b5b3ed049b3bbc62f8e9604a1868f2523ba8c189437c6b8d3ef8f4fa9eafc.
+
+S04:
+target role 3;
+training epochs 186..207;
+commit epoch 208;
+coefficient mask 1802;
+target 0xa69a;
+corrupted roots E3,E5;
+raw experience copies per learner 172;
+experience schedule SHA-256 d6c9471c06f9144a2560e08b787ef73f88e20db9a793cb0a326e86667056ae83.
+
+S05:
+target role 1;
+training epochs 97..118;
+commit epoch 119;
+coefficient mask 1092;
+target 0x9c6c;
+corrupted roots E3,E5;
+raw experience copies per learner 159;
+experience schedule SHA-256 cb02352dbddb3f1656e8f4d322018377510846d6b832433062f903c986c2d538.
+
+S06:
+target role 3;
+training epochs 132..153;
+commit epoch 154;
+coefficient mask 1970;
+target 0x8be2;
+corrupted roots E4,E5;
+raw experience copies per learner 147;
+experience schedule SHA-256 fed934399e1bf2b4000b92a18bf703a025f5da7623fc315bb8c17a4777506ac5.
+
+S07:
+target role 0;
+training epochs 133..154;
+commit epoch 155;
+coefficient mask 270;
+target 0x5656;
+corrupted roots E2,E5;
+raw experience copies per learner 150;
+experience schedule SHA-256 f55b7954dec310ee8dc4ba6efa670fa3a4c328ab790099da40706987b167d7eb.
+
+S08:
+target role 0;
+training epochs 138..159;
+commit epoch 160;
+coefficient mask 1899;
+target 0x714d;
+corrupted roots E1,E5;
+raw experience copies per learner 159;
+experience schedule SHA-256 8643d021609da13ce8c10a256625d9ee3049e17843b6491d8a527f52d9f413b3.
+
+S09:
+target role 0;
+training epochs 97..118;
+commit epoch 119;
+coefficient mask 1167;
+target 0x3369;
+corrupted roots E0,E5;
+raw experience copies per learner 156;
+experience schedule SHA-256 44efcdb6de08763025fb55744117981b4a321f6361831824e75fde03280943f7.
+
+S10:
+target role 3;
+training epochs 118..139;
+commit epoch 140;
+coefficient mask 644;
+target 0xaacc;
+corrupted roots E0,E1;
+raw experience copies per learner 164;
+experience schedule SHA-256 504de1eef27c19ab1ddcc15a30257009a234eeb42506b279a64cd6ba9422aeff.
+
+S11:
+target role 3;
+training epochs 86..107;
+commit epoch 108;
+coefficient mask 971;
+target 0xa3c5;
+corrupted roots E1,E2;
+raw experience copies per learner 157;
+experience schedule SHA-256 dcc7749589dc3e2d0660b68c09c0fef2495b60d7a5f0181edb7ec9f912de7b8e.
+
+All target derivation counters:
+
+0.
+
+Total raw experience copies across one learner over all 12 primary scenarios:
+
+1934.
+
+The second learner receives the same raw event multiset
+in independently derived event order.
+
+No target,
+corrupted-root pair,
+root arrival,
+duplicate fanout,
+learner event order,
+training example,
+or held-out label was replaced after derivation.
+
+At the moment this manifest was recorded:
+
+A08 primary experience events consumed = 0.
+A08 primary service requests served = 0.
+
+MANIFEST RECONSTRUCTION VALIDATION
+
+Because the sandbox no longer retained the accepted A02 / A03 runtime modules,
+manifest derivation was independently reconstructed from the frozen deterministic rules.
+
+Before accepting that reconstruction,
+the same path reproduced exactly:
+
+accepted A05 task-program manifest SHA-256:
+3fbc3a77eef9068dba92f4206c8c5c7a180efafec2a0105aa52e978dea0fc7f6.
+
+accepted A07 training manifest SHA-256:
+6abcdd47683edf0b5b4c814518b19709d205f69f25e5db49b3057526f3818139.
+
+Therefore the A08 manifest derivation path is evidence-bound to two previously accepted manifest anchors.
+
+This note records manifest derivation only.
+It is not A08 primary scientific execution.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
