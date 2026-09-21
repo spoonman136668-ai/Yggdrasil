@@ -411,3 +411,300 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — A04-FIXA RESOURCE-QUALIFIED FAULT RECOVERY
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED / POSITIVE CORRECTIVE PRIMARY / REPRODUCIBLE /
+A04 FIXED-SEED GENERALIZATION ACCEPTED / NON-CANONICAL.
+
+FROZEN HARNESS
+
+Implementation commit:
+
+afdb95c5b23f59a39996417f01c1b8b3e6534615.
+
+Freeze commit:
+
+09241932cab93f5183b994816cbcf0e7927df1b4.
+
+Decompressed source SHA-256:
+
+0b0f1a47e109ee8f218c664c568dd981c97bfb382c54ec30d035e6c8cf4e4f1a.
+
+Source bytes:
+
+29602.
+
+Compressed payload SHA-256:
+
+5d440c661b34a61bea8c5a716a4c68cd933710a89e17459788c1aca4402081f3.
+
+Compressed payload bytes:
+
+8307.
+
+A04 fixed-seed schedule manifest:
+
+24cfb3a9fa92b1013948739b7a9f022e0457bd550c91cc591fbbb9f7fbd9df43.
+
+REPRODUCIBILITY
+
+Two complete deterministic 12-seed FIXA sweeps.
+
+Sweep 1 serialized output SHA-256:
+
+5d16f3399ba44ae08c197988368442547db6728f31b7115f33fbe85ea30a5731.
+
+Sweep 2 serialized output SHA-256:
+
+5d16f3399ba44ae08c197988368442547db6728f31b7115f33fbe85ea30a5731.
+
+Byte-identical:
+
+TRUE.
+
+PRIMARY CORRECTIVE SIGNAL
+
+A04_FIXA_RESOURCE_QUALIFICATION_VALID:
+
+TRUE.
+
+CORRECTED APPLICATION SIGNAL
+
+A04_FIXED_SEED_GENERALIZATION_ACCEPTED:
+
+TRUE.
+
+A04_FIXED_SEED_GENERALIZATION_SUCCESS:
+
+TRUE.
+
+R1 BEHAVIOR EQUIVALENCE
+
+Expected R1 task-output SHA-256:
+
+81805844f6eb663d73774e1b6eaf689747c04207570dae089b3fded5ae9539b5.
+
+FIXA task-output SHA-256:
+
+81805844f6eb663d73774e1b6eaf689747c04207570dae089b3fded5ae9539b5.
+
+Exact match:
+
+TRUE.
+
+R1 aggregate observations unchanged:
+
+TRUE.
+
+Total requests:
+
+55296.
+
+Candidate served / correct:
+
+51537 / 51537.
+
+Candidate incorrect:
+
+0.
+
+Static served:
+
+38682.
+
+Oracle served:
+
+51981.
+
+Task coverage:
+
+0.9320203993055556.
+
+Static coverage:
+
+0.6995442708333334.
+
+Static gain:
+
+0.2324761284722222.
+
+Oracle efficiency:
+
+0.9914584174987014.
+
+Maximum non-partition reallocation latency:
+
+3 epochs.
+
+Median non-partition reallocation latency:
+
+1.0 epoch.
+
+Scenarios beating static:
+
+12 / 12.
+
+FAULT QUALIFICATION
+
+Raw fault count:
+
+72.
+
+Every raw fault remains reported.
+
+Resource-unqualified outside-partition cases:
+
+2.
+
+S08 / fault 334 / target 8:
+
+repair due = 335;
+pre-repair active + reactivating = 10;
+active budget = 10;
+resource_qualified = FALSE;
+final healthy = TRUE;
+final state = DORMANT.
+
+S10 / fault 40 / target 11:
+
+repair due = 41;
+pre-repair active + reactivating = 11;
+active budget = 10;
+resource_qualified = FALSE;
+final healthy = TRUE;
+final state = DORMANT.
+
+These classifications were made before repair outcome
+and therefore did not depend on whether the target later became active or dormant.
+
+All remaining M6-qualified outside-partition faults:
+
+restored within <= 1 epoch.
+
+Maximum qualified fault recovery:
+
+1 epoch.
+
+Unrestored qualified faults:
+
+0.
+
+SAFETY / RESTART / PARTITION
+
+All restart authoritative-state comparisons:
+
+TRUE.
+
+All restart output / metric comparisons:
+
+TRUE.
+
+Partition contract complete:
+
+TRUE.
+
+Dynamic re-merge count:
+
+2 per scenario.
+
+Final provisional transition count:
+
+0 in every scenario.
+
+Aggregate safety totals:
+
+stale votes accepted = 0;
+authority violations = 0;
+causal regressions = 0;
+duplicate effective provenance = 0;
+split-brain final states = 0;
+resource-budget violations = 0.
+
+TECHNICAL INTERPRETATION
+
+A04 R1 did not expose an organism repair failure.
+
+It exposed an incomplete implementation of the preregistered phrase:
+
+"when sufficient recoverable resources exist."
+
+FIXA implemented that clause mechanically at the causal point before repair:
+
+pre-repair ACTIVE + REACTIVATING population
+must be strictly below the current active-cell budget.
+
+The correction did not change organism behavior.
+
+The exact task-output stream,
+service counts,
+static / oracle comparisons,
+reallocation observations,
+restart behavior,
+partition behavior,
+and safety observations
+all remained unchanged.
+
+The two previously "unrestored" targets were repaired to healthy state
+but remained dormant because activating them would have violated the environment's active-cell cap.
+
+Therefore the corrected evidence supports:
+
+A04 FIXED-SEED GENERALIZATION PASSED.
+
+PLAIN-SPEAK INTERPRETATION
+
+The cells were not failing to heal.
+
+Two repaired cells simply had no legal chair to sit in.
+
+The organism had already filled every active slot the environment allowed.
+
+The original scoreboard treated:
+
+"healthy but forced to remain asleep because the room is full"
+
+as though it meant:
+
+"failed to recover."
+
+FIXA asks the fairer question we wrote in advance:
+
+was there actually room for the repaired cell to return?
+
+For the two disputed cases,
+the answer was no.
+
+We did not remove those faults.
+
+All 72 are still in the record.
+
+We only stopped calling those two ordinary fast-recovery tests.
+
+Everything the organism actually did stayed identical.
+
+ACCEPTED APPLICATION FRONTIER
+
+YGG-A01:
+positive via FIXA.
+
+A02:
+positive adaptive transform service.
+
+A03:
+positive blind post-freeze held-out generalization via dynamic re-merge FIXA.
+
+A04:
+positive fixed-public-seed replication via resource-qualified fault-recovery FIXA.
+
+DG-1R-05 canonical frozen primary remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
