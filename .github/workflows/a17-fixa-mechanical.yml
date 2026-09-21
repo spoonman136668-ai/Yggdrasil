@@ -1,0 +1,70 @@
+name: A17 FIXA Mechanical Qualification
+
+on:
+  push:
+    branches: [dg1a-ar]
+    paths:
+      - .github/workflows/a17-fixa-mechanical.yml
+
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Materialize exact lineage sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="research/applications/track-a"
+          RUN="$RUNNER_TEMP/a17fixa"
+          mkdir -p "$RUN"
+          python3 - "$SRC" "$RUN" <<'PY'
+          import gzip, hashlib, pathlib, sys
+          src=pathlib.Path(sys.argv[1]); out=pathlib.Path(sys.argv[2])
+          files={
+            "a11_t4_context_memory_v1.py.gz":("a11_t4_context_memory_v1.py","a45e4b74b0d2f2c8981da7f94bde4e9072048109226854a881162ecb47f9d235"),
+            "a12_t5_latent_context_inference_v1.py.gz":("a12_t5_latent_context_inference_v1.py","628c23f8319aa0e429a5c0e4dd8b0007e1346a799428c1678d33189dda10bdfd"),
+            "a14_t6_strict_novel_context_v1.py.gz":("a14_f14_exact.py","d2187358170045ddd9869be1a53d6938c4ade6547c0b8d83415e16cc6dc40045"),
+            "a17_t8_bounded_incremental_patching_v1.py.gz":("a17_t8_bounded_incremental_patching_v1.py","a1ef99dc5948328d5b8a85d87b7e62a718b4238474322c16aeec6a730244d5c5"),
+            "a17_fixa_authorization_provenance_capacity_v1.py.gz":("a17_fixa_authorization_provenance_capacity_v1.py","066e66e36e601effa777052e54f7470d96ddee21d5b1153e767b0ebe6aa43c9f"),
+          }
+          for gzname,(pyname,want) in files.items():
+              data=gzip.decompress((src/gzname).read_bytes())
+              got=hashlib.sha256(data).hexdigest()
+              assert got==want,(gzname,got,want)
+              (out/pyname).write_bytes(data)
+              print(pyname, len(data), got)
+          PY
+
+      - name: Validate repaired gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          RUN="$RUNNER_TEMP/a17fixa"
+          cd "$RUN"
+          python3 a17_fixa_authorization_provenance_capacity_v1.py --validate | tee validate.json
+
+      - name: Two fake-freeze deterministic sweeps
+        shell: bash
+        run: |
+          set -euo pipefail
+          RUN="$RUNNER_TEMP/a17fixa"
+          cd "$RUN"
+          python3 a17_fixa_authorization_provenance_capacity_v1.py --science-freeze MECHANICAL-F17A-NONPRIMARY --out sweep1.json >/dev/null
+          python3 a17_fixa_authorization_provenance_capacity_v1.py --science-freeze MECHANICAL-F17A-NONPRIMARY --out sweep2.json >/dev/null
+          cmp sweep1.json sweep2.json
+          python3 - <<'PY'
+          import hashlib,json
+          b=open("sweep1.json","rb").read()
+          r=json.loads(b)
+          print("BYTE_IDENTICAL=TRUE")
+          print("FILE_SHA256="+hashlib.sha256(b).hexdigest())
+          print("SERIALIZED_OUTPUT_SHA256="+r["serialized_output_sha256"])
+          print("MECHANICAL_SUCCESS="+str(r["A17_T8_BOUNDED_INCREMENTAL_PATCH_TRACKING_SUCCESS"]).upper())
+          print("AGGREGATE="+json.dumps(r["aggregate"],sort_keys=True,separators=(",",":")))
+          print("ALL_PROBES="+str(all(all(x.values()) for x in r["probe_results"])).upper())
+          print("N1_N5="+str(all(r["controls"][k] for k in list(r["controls"])[:5])).upper())
+          PY
