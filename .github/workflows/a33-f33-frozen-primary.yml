@@ -1,0 +1,38 @@
+name: A33 F33 Frozen Primary
+
+on:
+  push:
+    branches: [dg1a-ar]
+    paths:
+      - .github/workflows/a33-f33-frozen-primary.yml
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - name: Verify frozen A33 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research/applications/track-a
+          python3 - <<'PY'
+          import gzip,hashlib,re
+          from pathlib import Path
+          p=Path("a33_t8q_independent_competing_hazard_recruitment_v1.py.gz")
+          src=gzip.decompress(p.read_bytes())
+          got=hashlib.sha256(src).hexdigest()
+          assert len(src)==22282, len(src)
+          assert got=="d483897b88d2948e8c96f375e257702425b5d2ab32ec9599894a73967e03803e", got
+          print("A33_FROZEN_SOURCE_OK", len(src), got)
+          txt=src.decode("utf-8")
+          print("=== ARGPARSE CONTRACT ===")
+          for line in txt.splitlines():
+              if "add_argument" in line or "ArgumentParser" in line:
+                  print(line)
+          print("=== MAIN TAIL ===")
+          for line in txt.splitlines()[-80:]:
+              print(line)
+          PY
