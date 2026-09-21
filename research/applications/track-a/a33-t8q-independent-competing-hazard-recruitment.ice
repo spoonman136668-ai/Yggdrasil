@@ -1122,3 +1122,96 @@ NO POST-RESULT LOCAL-INHIBITION CHANGE.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A33 INDEPENDENT COMPETING-HAZARD RECRUITMENT
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A33 ARM EXECUTION
+OR SCIENTIFIC OUTCOME.
+
+F33:
+
+3809ccb3af68310227607e4d8d6a63865d84564a.
+
+FROZEN SOURCE SHA-256:
+
+d483897b88d2948e8c96f375e257702425b5d2ab32ec9599894a73967e03803e.
+
+TRIAL COUNT:
+
+384.
+
+STRUCTURE:
+
+48 frozen environmental contexts
+x
+8 F33-derived replicas.
+
+CELLS:
+
+48.
+
+EPOCHS:
+
+48.
+
+COMPLETE WORLD-MANIFEST SHA-256:
+
+0b591e2604b944f84f2f46dd27e959235cf3e39f25fff84b24c556309aa7b918.
+
+Serialized manifest-wrapper SHA-256:
+
+d969f66df06e9656d365ef8ec033ff453a51887adfed2285b7a374b381ccc868.
+
+Serialized manifest-wrapper bytes:
+
+40002.
+
+The bound identity includes:
+
+context;
+replica;
+family;
+reversal location where applicable;
+spatial region where applicable;
+full true local-consequence field hash;
+full sensed field hash.
+
+PRIMARY STATUS AT MANIFEST BIND
+
+Real synchronized-reference outcomes observed:
+
+0.
+
+Real Poisson-hazard outcomes observed:
+
+0.
+
+Real recruitment-width outcomes observed:
+
+0.
+
+Real oscillation outcomes observed:
+
+0.
+
+The next permitted operation is:
+
+two complete deterministic A33 primary sweeps
+using F33 as seed.
+
+NO WORLD REDRAW.
+NO HAZARD CHANGE.
+NO ETA CHANGE.
+NO WEIGHT CHANGE.
+NO REFRACTORY CHANGE.
+NO LOCAL-INHIBITION CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
