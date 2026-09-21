@@ -708,3 +708,424 @@ NO POST-RESULT TUNING.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+POST-RUN CLOSURE — A04 FIXED-SEED GENERALIZATION R1
+
+DATE:
+2026-09-20.
+
+STATUS:
+CLOSED / REPRODUCIBLE / MIXED-NEGATIVE IMPLEMENTED PRIMARY /
+RESOURCE-QUALIFICATION SCORING DISCREPANCY IDENTIFIED / NON-CANONICAL.
+
+FROZEN HARNESS
+
+Implementation commit:
+
+cd431a6ac3411e716fb929df246acb38c1ce5291.
+
+Freeze commit:
+
+634df5f4d36a5c81a9641e6c1e2e17a987926b8a.
+
+Decompressed source SHA-256:
+
+d40fd3ac9b9b792df62e5e40b1b83627a24eac3ee906d8a1519ae74c8cf07122.
+
+Source bytes:
+
+24236.
+
+Fixed-seed schedule manifest SHA-256:
+
+24cfb3a9fa92b1013948739b7a9f022e0457bd550c91cc591fbbb9f7fbd9df43.
+
+REPRODUCIBILITY
+
+Two complete deterministic 12-seed primary sweeps.
+
+Each sweep:
+
+12 scenarios x 384 epochs x 12 requests
+=
+55,296 requests.
+
+Sweep 1 serialized output SHA-256:
+
+4eba15119bad474d097a8c0a9fcc67aa4ff783533918bcfd1c7cb6c307646cf8.
+
+Sweep 2 serialized output SHA-256:
+
+4eba15119bad474d097a8c0a9fcc67aa4ff783533918bcfd1c7cb6c307646cf8.
+
+Byte-identical:
+
+TRUE.
+
+IMPLEMENTED PRIMARY RESULT
+
+A04_FIXED_SEED_GENERALIZATION_SUCCESS:
+
+FALSE.
+
+All preregistered primary component signals were TRUE except:
+
+MAX_QUALIFIED_NONPARTITION_FAULT_RECOVERY_LE_2:
+
+FALSE.
+
+AGGREGATE TASK RESULT
+
+Total requests:
+
+55296.
+
+Candidate served:
+
+51537.
+
+Candidate correct:
+
+51537.
+
+Candidate incorrect:
+
+0.
+
+Task accuracy:
+
+1.0.
+
+Candidate coverage:
+
+0.9320203993055556.
+
+Static served:
+
+38682.
+
+Static coverage:
+
+0.6995442708333334.
+
+Static gain:
+
+0.2324761284722222.
+
+Evaluator-only oracle served:
+
+51981.
+
+Oracle efficiency:
+
+0.9914584174987014.
+
+Scenarios beating static:
+
+12 / 12.
+
+Maximum non-partition reallocation latency:
+
+3 epochs.
+
+Median non-partition reallocation latency:
+
+1.0 epoch.
+
+Maximum observed restored fault latency:
+
+1 epoch.
+
+Raw scorer unrestored qualified faults:
+
+2.
+
+SAFETY / RESTART / PARTITION
+
+Incorrect served:
+
+0.
+
+Stale votes accepted:
+
+0.
+
+Authority violations:
+
+0.
+
+Causal regressions:
+
+0.
+
+Duplicate effective provenance:
+
+0.
+
+Split-brain final states:
+
+0.
+
+Resource-budget violations:
+
+0.
+
+All restart authoritative-state comparisons:
+
+TRUE.
+
+All restart output / metric comparisons:
+
+TRUE.
+
+Partition contract complete:
+
+TRUE.
+
+Dynamic re-merge executions:
+
+2 per scenario.
+
+Final provisional transition count:
+
+0 in every scenario.
+
+SCENARIO-LEVEL RESULT
+
+S00:
+candidate 4317;
+static 3179;
+oracle 4364;
+coverage 0.9368489583333333;
+static gain 0.24696180555555556;
+oracle efficiency 0.98923006416132;
+fault max 1;
+unrestored scorer faults 0;
+reallocation max 2.
+
+S01:
+candidate 4378;
+static 3360;
+oracle 4405;
+coverage 0.9500868055555556;
+static gain 0.22092013888888888;
+oracle efficiency 0.9938706015891033;
+unrestored scorer faults 0.
+
+S02:
+candidate 4345;
+static 3272;
+oracle 4373;
+coverage 0.9429253472222222;
+static gain 0.2328559027777778;
+oracle efficiency 0.9935970729487777;
+unrestored scorer faults 0.
+
+S03:
+candidate 4296;
+static 3213;
+oracle 4350;
+coverage 0.9322916666666666;
+static gain 0.23502604166666663;
+oracle efficiency 0.9875862068965517;
+unrestored scorer faults 0.
+
+S04:
+candidate 4328;
+static 3162;
+oracle 4357;
+coverage 0.9392361111111112;
+static gain 0.2530381944444444;
+oracle efficiency 0.9933440440670186;
+unrestored scorer faults 0.
+
+S05:
+candidate 4327;
+static 3319;
+oracle 4367;
+coverage 0.9390190972222222;
+static gain 0.21875;
+oracle efficiency 0.990840393863064;
+unrestored scorer faults 0.
+
+S06:
+candidate 4290;
+static 3200;
+oracle 4332;
+coverage 0.9309895833333334;
+static gain 0.23654513888888884;
+oracle efficiency 0.9903047091412742;
+unrestored scorer faults 0.
+
+S07:
+candidate 4308;
+static 3210;
+oracle 4350;
+coverage 0.9348958333333334;
+static gain 0.23828125;
+oracle efficiency 0.9903448275862069;
+unrestored scorer faults 0;
+reallocation max 3.
+
+S08:
+candidate 4284;
+static 3363;
+oracle 4322;
+coverage 0.9296875;
+static gain 0.19986979166666663;
+oracle efficiency 0.991207774178621;
+unrestored scorer faults 1.
+
+S09:
+candidate 4326;
+static 3256;
+oracle 4359;
+coverage 0.9388020833333334;
+static gain 0.23220486111111116;
+oracle efficiency 0.992429456297316;
+unrestored scorer faults 0.
+
+S10:
+candidate 4035;
+static 3036;
+oracle 4066;
+coverage 0.8756510416666666;
+static gain 0.216796875;
+oracle efficiency 0.9923757993113625;
+unrestored scorer faults 1.
+
+S11:
+candidate 4303;
+static 3112;
+oracle 4336;
+coverage 0.9338107638888888;
+static gain 0.25846354166666663;
+oracle efficiency 0.9923892988929889;
+unrestored scorer faults 0.
+
+POST-RUN DIAGNOSIS OF THE TWO UNRESTORED SCORER EVENTS
+
+Both events occurred outside a communication partition
+but at a repair-due epoch where the active resource budget had no spare slot.
+
+S08:
+
+fault epoch 334;
+target cell 8.
+
+At epoch 334:
+
+budget drops / remains at 10 under the generated cap;
+target is quarantined.
+
+At repair-due epoch 335:
+
+pre-repair active / reactivating count = 10;
+active budget = 10.
+
+The repair contract heals the target,
+but the target remains DORMANT because no active resource slot exists.
+
+The target is healthy,
+but intentionally not service-capable under the current resource cap.
+
+S10:
+
+fault epoch 40;
+target cell 11.
+
+At fault epoch 40:
+
+target is quarantined.
+
+At repair-due epoch 41:
+
+active / reactivating count before target restoration = 11;
+active budget = 10.
+
+The repair contract heals the target into DORMANT state
+because service-active restoration would exceed the imposed budget.
+
+Again:
+
+healthy target;
+no available active slot.
+
+R1 SCORING-SCOPE DISCREPANCY
+
+The preregistered M6 rule states:
+
+"For faults occurring outside an active communication partition
+when sufficient recoverable resources exist,
+maximum qualified recovery <= 2 epochs."
+
+The R1 implementation classified every outside-partition fault as qualified.
+
+It did not separately test whether sufficient active resource capacity existed
+at the repair-due epoch.
+
+That made the two resource-constrained healthy-dormant outcomes appear as:
+
+UNRESTORED QUALIFIED FAULTS.
+
+The observed repair behavior itself was not shown to fail.
+
+SCIENTIFIC STATUS
+
+The R1 FALSE result is preserved exactly as executed.
+
+It is not rewritten as positive.
+
+A separate preregistered corrective replication is required.
+
+The correction may alter only the deterministic eligibility rule used by M6.
+
+The organism must behave identically.
+
+R1 TASK-OUTPUT EQUIVALENCE ANCHOR
+
+Aggregate candidate task-output stream SHA-256:
+
+81805844f6eb663d73774e1b6eaf689747c04207570dae089b3fded5ae9539b5.
+
+The corrective replication must preserve this exactly.
+
+It must also preserve all candidate,
+static,
+oracle,
+partition,
+restart,
+fault raw telemetry,
+reallocation,
+and safety observations.
+
+PLAIN-SPEAK INTERPRETATION
+
+A04 did not produce wrong answers
+and did not show a cell taking too long to repair when it had somewhere to come back to.
+
+The two failures happened because a repaired cell was healthy
+but the organism was already at its active-cell resource limit.
+
+The scorer asked:
+
+"Did this cell become active again?"
+
+But the experiment actually said to ask:
+
+"Did it recover quickly when enough resources existed for it to become active again?"
+
+In both failed cases,
+there was no empty active slot.
+
+So we keep the failed R1 result.
+
+Then we run a separate correction
+where the scoreboard first checks whether an active slot actually existed.
+
+If the organism's behavior changes,
+the correction is invalid.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
