@@ -679,3 +679,89 @@ UNSPENT.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — DG-1R-05AC PERSISTENT DEVELOPMENTAL LIFECYCLE
+
+DATE:
+2026-09-20.
+
+STATUS:
+FROZEN BEFORE FIRST PRIMARY 05AC CASE.
+
+HARNESS
+
+research/experiments/dg1r/harnesses/dg1r_05ac_persistent_lifecycle_v1.py
+
+Harness source commit:
+
+6bb27812e48d63823ad1db0f1953daf3d5ea04bc.
+
+Git blob SHA:
+
+9b5738d804c0339f1916c81cdfedaec557dbb599.
+
+Source SHA-256:
+
+2e77c12dda399a484f0d92698938be1dd01a04f7fa98a6be00f5632d1d34f8e2.
+
+Source bytes:
+
+28140.
+
+PRE-FREEZE CORRECTION
+
+Before the harness was committed or frozen,
+the repeated-lifecycle audit was corrected so that Audit O carries the same organism state forward across all four rounds
+instead of resetting the organism between rounds.
+
+No primary 05AC result was observed before this correction or before this freeze.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Exact committed bytes reconstructed from the connector:
+
+PASS.
+
+Python syntax:
+
+PASS.
+
+Mechanical validate():
+
+PASS.
+
+Frozen counts:
+
+A 12.
+B 36.
+C 12.
+D 12.
+E 36.
+F 36.
+G 48.
+H 24.
+I 36.
+J 72.
+K 12.
+L 15.
+M 36.
+N 18.
+O 48 cell-lifecycles.
+
+No component threshold retuned.
+
+No canonical DG-1R-05 execution.
+
+No STAB-18-R1 execution.
+
+REPRODUCIBILITY
+
+Execute two complete deterministic sweeps from this exact frozen source.
+
+Serialized output SHA-256 must match exactly.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
