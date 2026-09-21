@@ -703,3 +703,98 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A25 TEMPORAL LOW-PASS PERSISTENCE CALIBRATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A25 TEMPORAL FILTER DECISION
+OR W4 OUTCOME.
+
+F25:
+
+f71b2b6bfec7cb9e0c0c265993ebb33f2f2d9187.
+
+FROZEN SOURCE SHA-256:
+
+b95d723ffdfd70db388d007b99b88b5e78078fab627af71fcd2b34044f1b9e3b.
+
+TRAJECTORY COUNT:
+
+384.
+
+STRUCTURE:
+
+48 fixed A17 patch contexts
+x
+8 fresh F25-derived replicas.
+
+EPOCHS PER TRAJECTORY:
+
+32.
+
+EVIDENCE WINDOWS:
+
+W1 = 0-7;
+W2 = 8-15;
+W3 = 16-23.
+
+UNTOUCHED CONFIRMATION:
+
+W4 = 24-31.
+
+REPLACEMENT EPISODES:
+
+0 / 8 / 16 / 24.
+
+COMPLETE MANIFEST SHA-256:
+
+1cd2a35733746d54d3c700d092128a42492b55d42ec36a0ea4b0f18c38449baf.
+
+Serialized manifest-wrapper SHA-256:
+
+f05be1f717ac6bea198514e12e8c06c176b2d24dd9a7f05dda64b46553468cf8.
+
+Serialized manifest-wrapper bytes:
+
+202918.
+
+Every 32-demand sequence has exact mean equal to its candidate target.
+
+Every replacement set contains exactly four unique cell IDs.
+
+All trajectory namespaces are:
+
+YGG-A25-*.
+
+PRIMARY STATUS AT MANIFEST BIND
+
+Real filter states observed:
+
+0.
+
+Real L0 / LP_FAST / LP_MEDIUM / LP_SLOW / PERSIST decisions observed:
+
+0.
+
+Real W4 outcomes observed:
+
+0.
+
+The next permitted operation is:
+
+two complete deterministic A25 primary sweeps
+over this exact manifest.
+
+NO TRAJECTORY REDRAW.
+NO ALPHA CHANGE.
+NO THRESHOLD CHANGE.
+NO PERSISTENCE-RULE CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
