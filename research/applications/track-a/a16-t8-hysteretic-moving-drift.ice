@@ -852,3 +852,54 @@ or historical erasure.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-IMPLEMENTATION PARENT-ANCHOR NORMALIZATION 01
+
+DATE:
+2026-09-21.
+
+STATUS:
+RECORDED BEFORE ANY A16 HARNESS COMMIT,
+FREEZE,
+PRIMARY MANIFEST,
+OR PRIMARY EXECUTION.
+
+The original preregistration references the first valid A15 closure commit:
+
+e4b47d26825fcb23c37126d49ec9d363e2c7e73a.
+
+A second append-only A15 closure was subsequently recorded at:
+
+1bea52944ed3b836c6dc6612c73e5e430b69bd2d.
+
+Both record the same accepted frozen A15 scientific result:
+
+A15 source SHA-256:
+4dfd8814c869380317bb90d8baf68f79f4c2ce9874db7bc9278546b56001c071;
+
+F15:
+dd9cd2cfee331d94631af17b0f0a61684e5091a4;
+
+manifest:
+0e7d6c14cff50e8e8705cbf4082d5f333267b2e4646eea333559db4b4b28cef9;
+
+primary result:
+494b3096e407790a341d66ee37833546b5ce50e2a88a2308a17c1c5bfb0941d3.
+
+For sequence provenance,
+A16 uses the latest accepted closure commit:
+
+1bea52944ed3b836c6dc6612c73e5e430b69bd2d.
+
+This normalization changes no T8 scientific question,
+moving-drift path,
+threshold,
+probe,
+control,
+or primary signal.
+
+No A16 scientific result has been observed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
