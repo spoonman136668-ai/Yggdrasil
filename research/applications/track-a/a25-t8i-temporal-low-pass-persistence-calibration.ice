@@ -798,3 +798,521 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A25 / T8I TEMPORAL LOW-PASS PERSISTENCE CALIBRATION
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE MIXED-NEGATIVE RESULT /
+LOW-PASS AVERAGING ALONE DID NOT SOLVE ACTIVATION SAFETY /
+COHERENT PERSISTENCE DETECTOR SHOWED LIMITED REAL INFORMATION GAIN /
+NO TEMPORAL ARM QUALIFIED /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+2e332c746259df64525978373cc582a11cab366f.
+
+F25:
+
+f71b2b6bfec7cb9e0c0c265993ebb33f2f2d9187.
+
+Source SHA-256:
+
+b95d723ffdfd70db388d007b99b88b5e78078fab627af71fcd2b34044f1b9e3b.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+6ee88b9380795c79c2fb42284762fad3eb458cf9.
+
+384-trajectory manifest SHA-256:
+
+1cd2a35733746d54d3c700d092128a42492b55d42ec36a0ea4b0f18c38449baf.
+
+Manifest-wrapper SHA-256:
+
+f05be1f717ac6bea198514e12e8c06c176b2d24dd9a7f05dda64b46553468cf8.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete F25-derived primary sweeps were byte-identical.
+
+Serialized result-file SHA-256:
+
+11ea0b665aeb5a876f6188d94b5b1538b04d382bc8c454e5f93fafccfff8ec16.
+
+Serialized semantic output SHA-256:
+
+d7c9005962350993cd8d7cf8c8de6d86151c7ade674e77a96a00b5084fb166ef.
+
+All P1-P19 integrity probes:
+
+PASS.
+
+A17 replay remained exact.
+
+FRESH R1 W4 BASELINE
+
+Unconditional all-candidate W4 harmful:
+
+61 / 384.
+
+Unconditional harm rate:
+
+0.1588541667.
+
+L0 — LATEST-WINDOW SNAPSHOT
+
+Expansions:
+
+88.
+
+Actual W4 outcomes:
+
+beneficial = 28;
+neutral = 44;
+harmful = 16.
+
+Actual harm rate:
+
+0.1818181818.
+
+R1-label harm rate:
+
+0.1477272727.
+
+Complete service delta versus R0:
+
+-29.
+
+L0 QUALIFIED:
+
+FALSE.
+
+LP_FAST — alpha 1/2
+
+Expansions:
+
+153.
+
+Actual W4 outcomes:
+
+beneficial = 62;
+neutral = 66;
+harmful = 25.
+
+Actual harm rate:
+
+0.1633986928.
+
+R1-label harm rate:
+
+0.1568627451.
+
+Complete service delta versus R0:
+
++13.
+
+LP_FAST QUALIFIED:
+
+FALSE.
+
+LP_MEDIUM — alpha 1/4
+
+Expansions:
+
+156.
+
+Actual W4 outcomes:
+
+beneficial = 63;
+neutral = 67;
+harmful = 26.
+
+Actual harm rate:
+
+0.1666666667.
+
+R1-label harm rate:
+
+0.1602564103.
+
+Complete service delta versus R0:
+
++12.
+
+LP_MEDIUM QUALIFIED:
+
+FALSE.
+
+LP_SLOW — alpha 1/8
+
+Expansions:
+
+157.
+
+Actual W4 outcomes:
+
+beneficial = 62;
+neutral = 69;
+harmful = 26.
+
+Actual harm rate:
+
+0.1656050955.
+
+R1-label harm rate:
+
+0.1592356688.
+
+Complete service delta versus R0:
+
++9.
+
+LP_SLOW QUALIFIED:
+
+FALSE.
+
+PERSIST — DIRECT + DELAYED PERSISTENCE DETECTOR
+
+Rule:
+
+latest W3 sum > 0
+
+AND
+
+LP_SLOW final state > 0.
+
+Expansions:
+
+86.
+
+Actual W4 outcomes:
+
+beneficial = 28;
+neutral = 44;
+harmful = 14.
+
+Actual harm rate:
+
+0.1627906977.
+
+R1-label harm rate:
+
+0.1395348837.
+
+Complete service delta versus R0:
+
+-26.
+
+PERSIST QUALIFIED:
+
+FALSE.
+
+A25_TEMPORAL_INFORMATION_GAIN:
+
+TRUE
+
+under the frozen descriptive definition.
+
+Reason:
+
+relative to L0,
+PERSIST:
+
+reduced harmful expansions from 16 to 14;
+
+retained all 28 beneficial L0 expansions;
+
+rejected at least one harmful L0 expansion.
+
+But:
+
+absolute harm remained far above
+the 5% safety ceiling.
+
+Therefore this is information gain,
+not activation authority.
+
+PERSISTENCE-DETECTOR DIAGNOSTIC
+
+Exactly two L0-positive trials were rejected
+because LP_SLOW remained nonpositive.
+
+Both were harmful in W4.
+
+Case 1:
+
+scenario 6;
+patch 1;
+replica 4.
+
+Window deltas:
+
+W1 = -5;
+W2 = -2;
+W3 = +1.
+
+Latest-window rule:
+
+EXPAND.
+
+Slow temporal state:
+
+NONPOSITIVE.
+
+Untouched W4 consequence:
+
+-2.
+
+Case 2:
+
+scenario 9;
+patch 2;
+replica 1.
+
+Window deltas:
+
+W1 = +1;
+W2 = -4;
+W3 = +1.
+
+Latest-window rule:
+
+EXPAND.
+
+Slow temporal state:
+
+NONPOSITIVE.
+
+Untouched W4 consequence:
+
+-1.
+
+Thus the persistence detector correctly rejected
+two late positive pulses
+that contradicted the longer evidence history.
+
+This is the exact behavior
+the biological persistence analogy predicts.
+
+However:
+
+86 PERSIST expansions remained;
+
+14 were harmful.
+
+So temporal persistence alone
+did not provide sufficient uncertainty resolution.
+
+LOW-PASS INTERPRETATION
+
+The plain low-pass filters
+were more permissive than the latest-window snapshot.
+
+They expanded:
+
+153;
+156;
+157
+
+times.
+
+Their harm rates remained:
+
+16.34%;
+16.67%;
+16.56%.
+
+Thus low-pass averaging by itself
+did NOT produce a safer activation gate.
+
+The slower memory
+kept historical positive evidence alive
+and therefore often preserved candidate support
+even when the latest block was not positive.
+
+Observed:
+
+LP_SLOW positive
+while latest W3 was nonpositive:
+
+71 trials.
+
+Latest W3 positive
+while LP_SLOW was nonpositive:
+
+2 trials.
+
+Therefore:
+
+TEMPORAL MEMORY
+
+is not automatically:
+
+TEMPORAL SAFETY.
+
+Memory can suppress transient late positives,
+but it can also preserve stale positives.
+
+QUORUM SECONDARY DIAGNOSTIC
+
+Quorum was measured only.
+
+It did not control any A25 decision.
+
+Across 384 fresh trajectories:
+
+0 of 3 windows reached 7-of-12 quorum:
+341 trajectories.
+
+1 of 3:
+40 trajectories.
+
+2 of 3:
+3 trajectories.
+
+3 of 3:
+0 trajectories.
+
+This confirms that strong A24-style quorum
+remains rare under the fixed C3 provisional exposure.
+
+No conclusion about combining quorum and persistence
+is authorized by A25.
+
+TECHNICAL INTERPRETATION
+
+A25 answers the isolated temporal question.
+
+Temporal filtering does carry information.
+
+The coherent direct-plus-delayed persistence detector
+successfully rejected two transient late-positive cases
+that the snapshot rule would have expanded
+and that later proved harmful.
+
+But simple low-pass state
+is not a calibrated uncertainty estimate.
+
+It cannot distinguish:
+
+persistent true benefit
+
+from:
+
+historical positive residue.
+
+Therefore:
+
+LOW-PASS FILTERING ALONE
+
+is insufficient.
+
+The feed-forward persistence motif
+is more promising than unconstrained averaging,
+but still far from safe autonomous authority.
+
+The next biological mechanism is now cleanly motivated:
+
+THRESHOLD / ULTRASENSITIVITY.
+
+A25 deliberately used:
+
+decision threshold = 0.
+
+The next experiment can ask whether
+a fixed evidence threshold above the observed noise floor
+separates weak / ambiguous signals
+from genuinely strong ones.
+
+That threshold must be preregistered
+before fresh trajectories are derived.
+
+PLAIN-SPEAK INTERPRETATION
+
+Temporal averaging helped us understand the problem,
+but it did not solve it.
+
+Simply remembering the past longer
+was not enough.
+
+In fact,
+the low-pass filters often became more willing to activate,
+because old good evidence stayed alive.
+
+That is an important negative result.
+
+Memory is not the same thing as confidence.
+
+The persistence detector did something better.
+
+It asked:
+
+"does the latest good stretch agree
+with the slower history?"
+
+Twice,
+the answer was no.
+
+Both times,
+the latest window looked slightly good:
+
++1.
+
+But the longer history was bad.
+
+The persistence detector refused to expand.
+
+Both refusals were correct.
+
+So the biological persistence idea is real.
+
+It can recognize some short-lived positive pulses.
+
+But it still approved too many bad patches overall.
+
+The missing piece is becoming sharper.
+
+Yggdrasil needs to distinguish:
+
+SIGNAL
+
+from:
+
+NOISE.
+
+Right now:
+
+any value above zero
+can eventually count as evidence.
+
+The next experiment should introduce
+a frozen threshold above the noise floor.
+
+That tests the next mechanism you proposed:
+
+THRESHOLDS / ULTRASENSITIVITY.
+
+A24 quorum remains useful as a measured signal.
+
+A25 persistence detection remains useful as a measured temporal signal.
+
+Neither is authorized as sole control authority.
+
+No autonomous activation controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
