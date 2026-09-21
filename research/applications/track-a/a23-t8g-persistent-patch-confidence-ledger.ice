@@ -589,3 +589,151 @@ and no qualification criterion.
 
 No A23 outcome has been observed.
 
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A23 PERSISTENT PATCH CONFIDENCE LEDGER
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F23-DERIVED TRAJECTORY
+OR REAL A23 LEDGER OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+266cd2111713b271c084172d7b666fa38aecdb3d.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a23_t8g_persistent_patch_confidence_ledger_v1.py
+
+Loader Git blob:
+
+918654e8ad050addac1e25e185459a5406042488.
+
+Payload:
+
+research/applications/track-a/a23_t8g_persistent_patch_confidence_ledger_v1.py.gz
+
+Payload Git blob:
+
+567da43bb219803d1ecf6774da1ac47151857bdb.
+
+Decompressed source SHA-256:
+
+05a9c9bf631282189160ebf7c2ad088b6212318440b561d7a4f613a2714763e0.
+
+Decompressed source bytes:
+
+13290.
+
+Deterministic gzip SHA-256:
+
+26a81c5c527ea21b836bc6f3d4ba9e33c7f68e50bc4f4b1c8c87aa5c5f2366b5.
+
+Compressed payload bytes:
+
+4574.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake freeze:
+
+MECHANICAL-F23-NONPRIMARY.
+
+Two complete sweeps were byte-identical.
+
+Serialized result-file SHA-256:
+
+4abbc2e61c74c965bf1355e3e3f4cd34bc9703dffbf6cdba1c8b07b31ac7f204.
+
+Serialized semantic output SHA-256:
+
+462bd5413b6144d2741f0bbb8ee82495bd2775d0156159fcf770c63d4f462fce.
+
+All P1-P15 integrity probes:
+
+PASS.
+
+Exact A17 replay:
+
+3978 candidate first-four;
+3950 stale first-four;
+37 / 48 candidate >= stale;
+exact 11 below-stale pairs reproduced.
+
+384 unique fake trajectories:
+
+PASS.
+
+40-epoch exact target means:
+
+PASS.
+
+Replacement episodes:
+
+0 / 8 / 16 / 24 / 32.
+
+Digest-chained confidence ledger:
+
+PASS.
+
+Restart equivalence:
+
+PASS.
+
+No W5 leakage:
+
+PASS.
+
+Mechanical science result:
+
+no arm qualified.
+
+C1:
+earned expansions = 13;
+actual harm rate = 0.4615384615.
+
+C2:
+earned expansions = 29;
+actual harm rate = 0.2758620690.
+
+C3:
+earned expansions = 50;
+actual harm rate = 0.22.
+
+These values are NON-SCIENTIFIC.
+They demonstrate that the +2 ledger rule does not trivially satisfy
+the preregistered safety / coverage criteria.
+
+REAL A23 STATUS
+
+No real F23 trajectory has been derived.
+
+No real A23 manifest exists.
+
+No real ledger score,
+earned expansion,
+or W5 outcome
+has been observed.
+
+Let the resulting commit SHA be:
+
+F23.
+
+After F23 exists:
+
+1. derive exactly 384 fresh 40-epoch trajectories from F23;
+2. bind the complete manifest SHA;
+3. only then execute two complete deterministic primary sweeps;
+4. require byte-identical output;
+5. apply the frozen C1 -> C2 -> C3 minimum-exposure selection hierarchy.
+
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
