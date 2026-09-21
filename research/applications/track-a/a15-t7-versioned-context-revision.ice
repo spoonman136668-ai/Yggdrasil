@@ -868,3 +868,83 @@ BOUNDED VERSION GROWTH.
 
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
+
+
+PRE-IMPLEMENTATION PARENT-PROVENANCE CORRECTION 01 — AUTHORITATIVE EXACT-F14 ANCHORS
+
+DATE:
+2026-09-21.
+
+STATUS:
+CORRECTED BEFORE ANY A15 HARNESS COMMIT,
+FREEZE,
+PRIMARY MANIFEST,
+OR SCIENTIFIC EXECUTION.
+
+ISSUE
+
+The original A15 preregistration inherited the first A14 closure anchors:
+
+closure commit:
+faa1bd8fa6f4538fea62f99eeef1890378baf494;
+
+manifest:
+ebc5115a9554012b219a59fc9bcde5f4f005838f98f2898a049ecbce46f33c48;
+
+primary result:
+5a8f277dc591acda355ec0b8e901474b5576c09e28c7474bd208aa05f81e351e.
+
+A later byte-level audit proved those manifest/result values came from
+post-freeze mutated A14 source
+and are non-authoritative as scientific evidence.
+
+AUTHORITATIVE A14 PARENT
+
+Exact-F14 scientific correction commit:
+
+a03cc7f606810cbb5db4f08a56105bfa3e81261d.
+
+A14 freeze F14:
+
+c0957332578557efc2975ca2da31cf11d07b45ff.
+
+Exact A14 frozen source SHA-256:
+
+d2187358170045ddd9869be1a53d6938c4ade6547c0b8d83415e16cc6dc40045.
+
+Authoritative exact-F14 manifest SHA-256:
+
+83a0ad4d67d7a3f3625e49c311f5d2a85c73fee40cde96e24937ae79e1e944ae.
+
+Authoritative exact-F14 primary result SHA-256:
+
+378ac5e53a61df6d772fb675d7d386374e865310fb8f99fd77f5a6132331c14a.
+
+Authoritative A14 usefulness anchors:
+
+candidate C1+C2 first-four service = 1982;
+unknown fallback = 1920;
+oracle = 1982;
+candidate >= fallback = 24 / 24;
+candidate > fallback = 21 / 24;
+migrations avoided = 63.
+
+A15 MUST inherit A/B/C-v1 state only from this corrected exact-F14 lineage.
+
+The superseded faa1bd8f / ebc5115a / 5a8f277d evidence remains historical only
+and MUST NOT be used by A15 implementation,
+freeze,
+manifest derivation,
+or result interpretation.
+
+No A15 scientific result has been observed.
+
+This correction changes no A15 hypothesis,
+drift rules,
+thresholds,
+probes,
+controls,
+or primary signal.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
