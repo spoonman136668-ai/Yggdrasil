@@ -1060,3 +1060,102 @@ NO POST-RESULT H / RECRUITMENT CHANGE.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A38 HETEROGENEOUS TEMPORAL RESPONSE TIMESCALES
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A38 ARM EXECUTION,
+TEMPORAL TRACE,
+OR SCIENTIFIC OUTCOME.
+
+F38:
+
+5f40cf6667f831978f7b4065baac22804c8414b2.
+
+FROZEN SOURCE SHA-256:
+
+b4c778977af69ba40b9c9a3d6264aa6a93a9c7d6d52c16b45bdf41efae36b409.
+
+TRIAL COUNT:
+
+384.
+
+STRUCTURE:
+
+48 frozen environmental contexts
+x
+8 F38-derived replicas.
+
+CELLS:
+
+48.
+
+EPOCHS:
+
+48.
+
+COMPLETE WORLD-MANIFEST SHA-256:
+
+95c2c9dff7288f2b81c44b69321b3858d8a5f2a3f6d7905fd1f0506f55b4109c.
+
+Serialized manifest-wrapper SHA-256:
+
+a05edd495b93bf58e42dd6a8ff478d3a1c13175743ff2f537a163196d429854a.
+
+Serialized manifest-wrapper bytes:
+
+40018.
+
+The bound world identity includes:
+
+context;
+replica;
+family;
+reversal location where applicable;
+spatial region where applicable;
+full base-sequence identity;
+full true local-consequence field hash;
+full sensed field hash.
+
+PRIMARY STATUS AT MANIFEST BIND
+
+Real FAST outcomes observed:
+
+0.
+
+Real MEDIUM outcomes observed:
+
+0.
+
+Real SLOW outcomes observed:
+
+0.
+
+Real MIXED outcomes observed:
+
+0.
+
+Real A38 qualification outcomes observed:
+
+0.
+
+The next permitted operation is:
+
+two complete deterministic A38 primary sweeps
+using F38 as seed.
+
+NO WORLD REDRAW.
+NO RHO CHANGE.
+NO CLASS-RATIO CHANGE.
+NO CLASS-PLACEMENT CHANGE.
+NO REFRACTORY CHANGE.
+NO H / RECRUITMENT CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
