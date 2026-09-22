@@ -1160,3 +1160,45 @@ before execution.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-F46 PRIMARY MANIFEST BINDING
+
+DATE:
+2026-09-22.
+
+F46:
+80c1673f5fccfe55e98e85a2dad8453b6ad3291e
+
+SOURCE SHA256:
+efee5637a1ba709b5299199489f02988517abc49392788b72ea25b295119fcec
+
+PRIMARY SEED:
+A46-F46-80c1673f5fccfe55e98e85a2dad8453b6ad3291e-PRIMARY
+
+WORLD COUNT:
+384.
+
+WORLD SHAPE:
+48 contexts x 8 replicas.
+
+PRIMARY WORLD MANIFEST SHA256:
+8f87ed0b890d299456ef693d66ee04a791e7885c5daf262c78c83c76b4b4657c
+
+STATUS:
+BOUND AFTER F46
+AND BEFORE ANY PRIMARY ARM EXECUTION.
+
+No A46 arm outcome,
+population metric,
+qualification result,
+or scientific comparison
+was observed before this binding.
+
+P31 remains pending
+until two complete primary sweeps
+are byte-identical.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
