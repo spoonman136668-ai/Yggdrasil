@@ -650,3 +650,289 @@ FAST ENOUGH TO CLOSE THE OSCILLATION CYCLE?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F41 AMENDMENT 01 — OCCUPANCY VS MARGIN ATTRIBUTION AND SPATIAL FAILURE DIAGNOSTICS
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F41
+AND BEFORE ANY REAL A41 WORLD EXISTS.
+
+PRIMARY CAUSAL DISTINCTION
+
+OCCUPANCY_EXCLUSION asks:
+
+does the mere spatial presence
+of surviving committed neighbors
+suppress opposing recruitment?
+
+Every surviving committed neighbor contributes
+equally through committed occupancy.
+
+MARGIN_EXCLUSION asks:
+
+does the accumulated evidence depth
+of surviving committed neighbors
+modulate that suppression?
+
+A surviving veteran with larger aligned M_pre
+contributes more to the exclusion field
+than a newer or weakly supported commitment.
+
+Because A41 signed B is bounded,
+M_pre remains in [0,1].
+Examples using larger arbitrary numbers
+are conceptual only.
+
+If MARGIN_EXCLUSION outperforms
+OCCUPANCY_EXCLUSION on the frozen criteria:
+
+evidence depth has a second causal use
+beyond committed-state persistence.
+
+It also acts as a local signal
+that shapes recruitment topology.
+
+If OCCUPANCY_EXCLUSION matches
+MARGIN_EXCLUSION:
+
+spatial incumbent presence is sufficient
+at the recruitment boundary,
+and margin weighting adds no demonstrated value there.
+
+This does not erase A39/A40's persistence result.
+It means evidence depth is not additionally useful
+for this topology mechanism.
+
+RISK 1 — MOAT / EXCESSIVE SPATIAL PROTECTION
+
+The frozen reversal-acquisition boundary remains:
+
+>= 80%.
+
+A41 does not add distance decay,
+Gaussian falloff,
+inverse-square falloff,
+or any new field-shape parameter.
+
+If exclusion reduces reversal acquisition below 80%
+or pushes old-majority loss above 4 epochs,
+A41 records that as excessive spatial protection.
+
+A distance-decay field may be justified
+for a later preregistered experiment,
+but it is not introduced post-result into A41.
+
+RISK 2 — CORE / PERIPHERY DEADLOCK
+
+A41 explicitly measures
+whether exclusion creates a persistent spatial split
+instead of healthy resolution.
+
+For every epoch report:
+
+C fraction;
+S fraction;
+U fraction.
+
+For the final 8 epochs report:
+
+mean min(C_fraction,S_fraction);
+mean U fraction;
+number of majority-label changes;
+largest contiguous C domain;
+largest contiguous S domain;
+C/S interface count on the 48-cell ring.
+
+Also retain the ordered 48-cell state snapshot
+at the midpoint of every biased-periodic adverse burst.
+
+These measurements are diagnostic only.
+No new qualification threshold is inferred from them after results.
+
+A persistent high min(C_fraction,S_fraction)
+together with large opposed spatial domains
+and low majority turnover
+is the preregistered signature
+of core/periphery deadlock.
+
+RISK 3 — TIMESCALE DEPENDENCE
+
+A41 intentionally contains no MEDIUM arm.
+
+All six arms use the A40 SUBTRACTIVE_SLOW
+committed-state law with rho = 3/4.
+
+A40 already showed that MEDIUM
+did not materially break the target oscillator.
+
+Therefore A41 tests the recruitment-topology hypothesis
+inside the slow-response regime only.
+
+A41 cannot establish
+that the mechanism generalizes to MEDIUM.
+
+If A41 succeeds,
+timescale generalization must be tested separately
+rather than inferred.
+
+ADDITIONAL COUNTER-PULSE TRAJECTORY MEASUREMENT
+
+For biased-periodic contexts 44-47,
+record C/S/U fractions at every epoch.
+
+For each adverse burst report:
+
+favored-side committed fraction at pulse onset;
+minimum favored-side committed fraction during burst;
+favored-side committed fraction at burst end;
+recovery latency to the pre-pulse favored-side committed fraction,
+or NEVER.
+
+This separates:
+
+core survives while periphery temporarily becomes U;
+
+from:
+
+the core itself continues eroding.
+
+SPATIAL MIDPOINT SNAPSHOT
+
+At the midpoint adverse epoch of every biased-periodic burst,
+record the ordered 48-cell ring state:
+
+C;
+S;
+U;
+H.
+
+Also record the corresponding
+survivor-core membership mask.
+
+This allows direct inspection
+for a U moat between favored core
+and opposing periphery
+without changing the dynamics.
+
+INSIDE / OUTSIDE RECRUITMENT MEASUREMENT
+
+For every eligible U recruitment opportunity
+during a biased-periodic adverse burst,
+classify the cell as:
+
+INSIDE:
+within ring distance <= 3
+of at least one favored-side survivor-core cell;
+
+OUTSIDE:
+not within ring distance <= 3
+of any favored-side survivor-core cell.
+
+Report separately:
+
+opportunities;
+adverse-side recruitments;
+adverse-side recruitment rate;
+mean base adverse lambda;
+mean gated adverse lambda.
+
+For BASE,
+the same geometric classification is computed
+without applying an exclusion multiplier.
+
+This directly measures
+whether exclusion suppresses opposing recruitment
+where the mechanism claims it should.
+
+OCCUPANCY VS MARGIN OSCILLATOR BREAK COUNT
+
+For each D value report:
+
+paired BASE biased-periodic oscillators;
+number broken by OCCUPANCY_EXCLUSION;
+number broken by MARGIN_EXCLUSION;
+oscillators broken by both;
+oscillators broken only by OCCUPANCY;
+oscillators broken only by MARGIN.
+
+This comparison is descriptive
+in addition to the already frozen
+MARGIN qualification requirement
+that MARGIN biased-periodic oscillation
+be lower than paired OCCUPANCY_EXCLUSION.
+
+No post-result tie breaker is permitted.
+
+PLAIN-SPEAK UPDATE
+
+A41 is now asking two questions at once,
+but in a way that keeps them separable.
+
+First:
+
+is it enough for an uncertain cell
+to see that committed veterans are nearby?
+
+That is OCCUPANCY.
+
+Second:
+
+should a deeply supported veteran
+count more than a fresh commitment?
+
+That is MARGIN.
+
+If MARGIN wins,
+the memory built in A39 and A40
+has found a second job.
+
+It is not only armor
+that makes the veteran harder to knock over.
+
+It becomes a signal
+that tells the surrounding neighborhood:
+
+this commitment has earned more local trust,
+so do not rebuild the opposite side beside it
+because of one short pulse.
+
+But A41 also watches for the obvious danger.
+
+A protective neighborhood can become a moat.
+
+If the old core becomes so protected
+that a real environmental reversal
+cannot rebuild around it,
+the organism has not become stable.
+It has become rigid.
+
+A41 also watches for a new failure mode:
+
+the core stays one way,
+the outer population becomes the other,
+and the organism gets stuck split in two.
+
+So success is not simply
+fewer flips.
+
+Success means:
+
+the veteran core survives a short disturbance;
+
+nearby opposing recruitment is selectively reduced;
+
+the whole population stops rebuilding
+the opposite army every few epochs;
+
+balanced evidence does not manufacture a false winner;
+
+and a real reversal can still replace
+the old organization promptly.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
