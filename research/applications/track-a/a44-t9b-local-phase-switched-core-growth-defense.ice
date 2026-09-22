@@ -1493,3 +1493,140 @@ The canonical DG-1R-05 primary is not consumed.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F44 AMENDMENT 04 — MINIMAL PAYLOAD-PATCH FREEZE FORM
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F44
+AND BEFORE ANY A44 SCIENTIFIC OUTCOME.
+
+RATIONALE
+
+A44's already-published six-part payload
+is a valid gzip/base64 archive.
+
+Its only identified scientific defect
+is the control RNG namespace line
+described in Amendment 03.
+
+Rather than replace
+the complete payload
+with a larger reconstructed implementation,
+F44 will use the existing payload
+plus one exact deterministic source patch.
+
+This minimizes the freeze delta
+and preserves all already-reviewed
+A44 diagnostics and equations.
+
+PUBLISHED PAYLOAD IDENTITY
+
+Concatenated base64 characters:
+
+20792.
+
+Concatenated base64 SHA256:
+
+d7cf3ab1fdcbf2e835e6a284be6be3ea64ba5dcc129520039021cede1dabe681
+
+Decoded gzip bytes:
+
+15592.
+
+Decoded gzip SHA256:
+
+ca134a87e8b66ed9ee55d5fa1b701c2c0c1c6906e740ea10a0157af1e07a949b
+
+Unpatched A44 source bytes:
+
+62778.
+
+Unpatched A44 source SHA256:
+
+39b4080d6fc44b2229d7f6e61c042101741d02892777d3b824eb336d211e1039
+
+EXACT SOURCE PATCH
+
+Replace exactly one occurrence of:
+
+    arm_base=h64('YGG-A44-ARM-SEED',seed,ctx,rep,arm)
+
+with:
+
+    if kind in ('BASE','MARGIN_REINFORCE'):
+        arm_base=h64('YGG-A43-ARM-SEED',seed,ctx,rep,arm)
+    elif kind=='ACTIVE_MARGIN_RECRUIT':
+        arm_base=h64('YGG-A42-ARM-SEED',seed,ctx,rep,arm)
+    else:
+        arm_base=h64('YGG-A44-ARM-SEED',seed,ctx,rep,arm)
+
+The loader must fail closed
+unless the unpatched source contains
+exactly one target occurrence.
+
+CORRECTED F44 SOURCE IDENTITY
+
+Corrected source bytes:
+
+62992.
+
+Corrected source SHA256:
+
+83ea9d5adc4f3fccb8147f646035a7c98caa8a2887bfb17bc21af691ca6caa0b
+
+This supersedes the 22e54a...
+candidate-source hash named
+in Amendment 03.
+
+The 22e54a... source was a
+scientifically equivalent reconstruction
+used during parity diagnosis,
+not the minimal F44 freeze candidate.
+
+CONTROL PARITY
+
+Focused pre-F44 checks show:
+
+A43 BASE controls match
+the scientific-equivalent A43 parent;
+
+A43 MARGIN_REINFORCE controls match
+the scientific-equivalent A43 parent;
+
+A42 ACTIVE_MARGIN_RECRUIT controls match
+the accepted A42 parent;
+
+for biased-periodic,
+balanced-periodic,
+and nonperiodic fake worlds.
+
+The new A44 ALWAYS_COMBINED
+and PHASE_SWITCH dynamics
+also match the larger diagnostic reconstruction
+on focused population-state checks.
+
+MECHANICAL RESET
+
+Because F44 will freeze
+the minimal-patch source,
+the 22e54a... duplicate mechanical run
+is diagnostic-only.
+
+Two new complete mechanical sweeps
+from source SHA256
+83ea9d5adc4f3fccb8147f646035a7c98caa8a2887bfb17bc21af691ca6caa0b
+
+must pass byte-identically
+before F44.
+
+No scientific outcome
+from any mechanical seed
+may be used for A44 conclusions.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
