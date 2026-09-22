@@ -1723,3 +1723,256 @@ is evidence-aligned.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+A46 PRIMARY CLOSURE
+
+DATE:
+2026-09-22.
+
+F46:
+80c1673f5fccfe55e98e85a2dad8453b6ad3291e
+
+MANIFEST-BINDING COMMIT:
+58bed4d9c2e75956c62b19ff81f026cd1d9a38d7
+
+SOURCE SHA256:
+efee5637a1ba709b5299199489f02988517abc49392788b72ea25b295119fcec
+
+PRIMARY SEED:
+A46-F46-80c1673f5fccfe55e98e85a2dad8453b6ad3291e-PRIMARY
+
+PRIMARY WORLD MANIFEST SHA256:
+8f87ed0b890d299456ef693d66ee04a791e7885c5daf262c78c83c76b4b4657c
+
+PRIMARY OUTPUT SHA256:
+53ff44daf08eae604d2801f23527b441e56280012dc8984e580864a19deddf5b
+
+PRIMARY RUNS:
+2.
+
+PRIMARY OUTPUT BYTES:
+44435.
+
+BYTE IDENTICAL:
+true.
+
+P31:
+PASS.
+
+All executable integrity probes:
+PASS.
+
+A46_RECOVERY_INFORMATION_GAIN:
+FALSE.
+
+QUALIFICATION
+
+D2_G5_REENTRY:
+NOT QUALIFIED.
+
+D3_G5_REENTRY:
+NOT QUALIFIED.
+
+TECHNICAL EVIDENCE
+
+D2 ECHO_PHASE parent:
+
+overall oscillation 5.99%;
+biased-periodic oscillation 50.00%;
+5:3 oscillation 100.00%;
+6:2 oscillation 0.00%;
+balanced false-majority 3.12%;
+reversal acquisition 89.06%;
+aggregate service 237801;
+5:3 epoch-3 core persistence 33.76%;
+mean unresolved episode duration 3.616 epochs;
+mean favored-majority recovery latency 4.580 epochs;
+mean refractory fraction across recovery steps 1-3 33.29%;
+favored-to-unresolved transitions 71;
+adverse-majority entries 0.
+
+D2 G5_REENTRY:
+
+overall oscillation 10.68%;
+biased-periodic oscillation 93.75%;
+5:3 oscillation 100.00%;
+6:2 oscillation 87.50%;
+balanced false-majority 0.00%;
+reversal acquisition 92.97%;
+aggregate service 237525;
+5:3 epoch-3 core persistence 10.16%;
+mean unresolved episode duration 5.863 epochs;
+mean favored-majority recovery latency 6.253 epochs;
+mean refractory fraction across recovery steps 1-3 28.27%;
+favored-to-unresolved transitions 64;
+adverse-majority entries 0.
+
+D3 ECHO_PHASE parent:
+
+overall oscillation 7.03%;
+biased-periodic oscillation 50.00%;
+5:3 oscillation 100.00%;
+6:2 oscillation 0.00%;
+balanced false-majority 0.00%;
+reversal acquisition 87.50%;
+aggregate service 234093;
+5:3 epoch-3 core persistence 31.73%;
+mean unresolved episode duration 4.795 epochs;
+mean favored-majority recovery latency 6.000 epochs;
+mean refractory fraction across recovery steps 1-3 46.14%;
+favored-to-unresolved transitions 67;
+adverse-majority entries 0.
+
+D3 G5_REENTRY:
+
+overall oscillation 10.42%;
+biased-periodic oscillation 100.00%;
+5:3 oscillation 100.00%;
+6:2 oscillation 100.00%;
+balanced false-majority 0.00%;
+reversal acquisition 88.28%;
+aggregate service 233596;
+5:3 epoch-3 core persistence 9.44%;
+mean unresolved episode duration 6.986 epochs;
+mean favored-majority recovery latency 7.941 epochs;
+mean refractory fraction across recovery steps 1-3 38.90%;
+favored-to-unresolved transitions 55;
+adverse-majority entries 0.
+
+G5 MECHANISM ACTIVITY
+
+D2 G5_REENTRY:
+
+locked refractory observations 50528;
+G5 fires / early re-entries 3772;
+overall fire rate 7.47%;
+5:3 recovery fire rate 13.31%;
+balanced-periodic fire rate 2.56%;
+same-epoch recruitment after release 40.38%;
+eventual former-side recruitment 26.01%;
+eventual opposite-side recruitment 2.84%;
+H recruitment 11.53%.
+
+D3 G5_REENTRY:
+
+locked refractory observations 70525;
+G5 fires / early re-entries 5168;
+overall fire rate 7.33%;
+5:3 recovery fire rate 20.28%;
+balanced-periodic fire rate 5.35%;
+same-epoch recruitment after release 39.03%;
+eventual former-side recruitment 24.94%;
+eventual opposite-side recruitment 3.04%;
+H recruitment 11.05%.
+
+TRUE-REVERSAL / WRONG-SIDE SAFETY
+
+For both D2 and D3:
+
+old-side G5 fires
+during the first four post-reversal epochs:
+
+0.
+
+In 5:3 worlds:
+
+direct favored-to-adverse majority flips:
+
+0.
+
+adverse-majority entries:
+
+0.
+
+adverse-majority epochs:
+
+0.
+
+Therefore A46 does not fail
+by creating wrong-side capture
+or by blocking genuine reversal.
+
+PRIMARY INTERPRETATION
+
+The frozen independent-stream primary
+does not satisfy the preregistered
+recovery-information-gain criteria.
+
+Refractory occupancy is lower,
+but unresolved episodes
+and favored-majority recovery
+are longer rather than shorter.
+
+The G5 arms also lose
+the parent 6:2 stability
+in this primary realization.
+
+Because the treatment arms use
+their preregistered independent A46 RNG namespace,
+those large population differences
+cannot by themselves be attributed
+solely to G5.
+
+The primary result is therefore:
+
+A46 is NOT QUALIFIED
+and provides no preregistered information gain.
+
+A post-closure common-random diagnostic
+is required before interpreting
+whether G5 itself is harmful,
+neutral,
+or modestly beneficial.
+
+PLAIN-SPEAK INTERPRETATION
+
+A46 did not pass.
+
+The new rule definitely activates
+and it remains safe
+against the two failures
+we were most worried about:
+
+it does not push the organism
+onto the wrong side,
+and it does not resurrect
+the old side after a real reversal.
+
+But the frozen primary
+does not recover faster.
+
+It recovers more slowly
+and loses some stability
+that A45 already had.
+
+There is one important caution.
+
+The A46 treatment used
+a fresh random stream,
+as preregistered.
+
+So we cannot look at
+the large difference
+and automatically say:
+
+"the release rule caused all of that."
+
+Before choosing the next mechanism,
+we need the same worlds
+with the same random draws
+and only the release rule changed.
+
+That post-closure check
+does not change A46's verdict.
+
+A46 remains a negative
+under its frozen rules.
+
+It only tells us
+how to interpret the negative
+and what to test next.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
