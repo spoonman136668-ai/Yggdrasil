@@ -2271,3 +2271,168 @@ the validated A46 reference.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F47 AMENDMENT 05 — IDENTIFIABLE SWEEP MECHANICAL GATE / SOURCE IDENTITY
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F47
+AND BEFORE ANY A47 SCIENTIFIC OUTCOME.
+
+AUTHORIZED SOURCE
+
+Bytes:
+88752.
+
+SHA256:
+645b1d8b8417702fce62a6268b9ba97dd41aba21e8cb9f48ccf683f32fc6d468.
+
+ARMS
+
+D2:
+BASE_ECHO_PHASE;
+MPOST_T1;
+MPOST_FULL;
+G5_FULL;
+G5_FULL_STAGGER.
+
+D3:
+BASE_ECHO_PHASE;
+MPOST_T1;
+MPOST_T2;
+MPOST_FULL;
+G5_FULL;
+G5_FULL_STAGGER.
+
+Focused parent parity:
+
+A45 ECHO_PHASE comparisons:
+72 representative cases.
+
+Behavioral mismatches:
+0.
+
+Focused dose-separation evidence:
+
+D2 MPOST_T1 realized release advance:
+exactly 1 epoch.
+
+D3 MPOST_T1:
+exactly 1 epoch.
+
+D3 MPOST_T2:
+exactly 2 epochs.
+
+D2 MPOST_FULL:
+exactly 2 epochs
+from first-locked immediate release.
+
+D3 MPOST_FULL:
+exactly 3 epochs
+from first-locked immediate release.
+
+G5_FULL and G5_FULL_STAGGER
+retain variable realized advance
+because G5 may become true
+on later locked epochs.
+
+This is intentional.
+
+TRUE-REVERSAL SAFETY
+
+Old-side actions
+during the first four
+post-reversal epochs:
+
+0
+
+for every active A47 arm
+in the complete mechanical sweeps.
+
+MECHANICAL VALIDATION
+
+Mechanical seed:
+MECHANICAL-A47-SWEEP-CANDIDATE.
+
+Complete sweeps:
+2.
+
+Worlds per sweep:
+384.
+
+Arms:
+11.
+
+Output bytes per sweep:
+146627.
+
+Output SHA256:
+e9d21216114a1621b39528a7973937ec58b64ca1062598fabe8d43fa629d3293.
+
+BYTE IDENTICAL:
+true.
+
+stderr:
+empty for both sweeps.
+
+All executable pre-primary integrity probes:
+PASS.
+
+No mechanical-world population outcome
+is used as scientific evidence.
+
+SOURCE-BUNDLE FORMAT
+
+F47 will publish
+the exact authorized source
+as deterministic gzip/base64
+split into seven neutral text source parts.
+
+Source SHA256:
+645b1d8b8417702fce62a6268b9ba97dd41aba21e8cb9f48ccf683f32fc6d468.
+
+Gzip bytes:
+20855.
+
+Gzip SHA256:
+f92f632cc5f4ab9a04cefacb69a8d8b982d67e7bfb704bdd1c5e3dd0c33aee3b.
+
+Concatenated base64 characters:
+27808.
+
+Base64 SHA256:
+0adcbe11709f1c2ef733766ddfda96d77b865fe9430186123b7d5b7cdb631edc.
+
+Source part count:
+7.
+
+The F47 loader must verify:
+
+part count;
+base64 identity;
+gzip identity;
+source identity;
+
+before execution.
+
+Any mismatch fails closed.
+
+SUPERSEDED PRE-F47 CANDIDATES
+
+All earlier A47
+one-tick-only
+and G5-only sweep candidates
+are diagnostic-only.
+
+Only source SHA256:
+
+645b1d8b8417702fce62a6268b9ba97dd41aba21e8cb9f48ccf683f32fc6d468
+
+is eligible for F47.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
