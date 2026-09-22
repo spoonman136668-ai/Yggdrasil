@@ -1119,3 +1119,222 @@ THE REPEATING PRESSURE?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F52 AMENDMENT 01 — IMPLEMENTATION / PARITY / MECHANICAL GATE
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F52
+AND BEFORE ANY A52 SCIENTIFIC OUTCOME.
+
+AUTHORIZED SOURCE
+
+Bytes:
+92868.
+
+SHA256:
+f1c2cfbd707621b18db101ea9a41f2264841acee10abcc5b80e4239c50ae60e1
+
+ARMS
+
+Exactly twenty arms.
+
+For D2 and D3:
+
+P0_TAU0..4;
+
+P1_TAU0..4.
+
+PARENT PARITY
+
+Representative donor comparisons:
+
+80.
+
+Behavioral mismatches:
+
+0.
+
+TAU0 P0
+reproduces exact
+A45 ECHO_PHASE behavior
+through the accepted A49 BASE donor.
+
+TAU0 P1
+reproduces exact
+A49 CH_PUSH_PULL behavior.
+
+FORCED-DELAY REDUCTION
+
+For validation only,
+disable delayed-pressure reads.
+
+Then every tau > 0 arm
+must reduce exactly
+to its paired TAU0 donor.
+
+Representative comparisons:
+
+224.
+
+Mismatches:
+
+0.
+
+This spans:
+
+true reversal;
+
+balanced periodic;
+
+6:2 biased periodic;
+
+5:3 biased periodic;
+
+and nonperiodic families.
+
+PRESSURE-HISTORY BOUNDARY
+
+The implementation:
+
+computes current A45 pressure
+every epoch;
+
+delays only the pressure value
+consumed by p_stay;
+
+stores current pressure,
+never delayed pressure;
+
+retains history only
+through uninterrupted
+same-side commitment;
+
+uses current pressure
+during warm-up;
+
+resets history
+on every loss
+or change of commitment state;
+
+reads no future value;
+
+and preserves
+the inherited stateless action draw
+at the current epoch.
+
+MECHANICAL VALIDATION
+
+Mechanical seed:
+
+MECHANICAL-A52-F52-CANDIDATE
+
+Complete sweeps:
+
+2.
+
+Worlds per sweep:
+
+384.
+
+Arms:
+
+20.
+
+Output bytes per sweep:
+
+301314.
+
+Output SHA256:
+
+50d9be5e85f1b157c2d26a2fad676dd67a5c2f52f07e9a07f8f0a4c381d53e0a
+
+BYTE IDENTICAL:
+
+true.
+
+stderr:
+
+empty for both sweeps.
+
+All executable pre-primary
+integrity probes:
+
+PASS.
+
+No mechanical-world
+phase displacement,
+oscillation,
+burst-end,
+reversal,
+qualification,
+synergy,
+or population outcome
+is used as scientific evidence.
+
+LOCAL HARNESS NOTE
+
+An unrelated duplicate local launcher
+briefly reused an intermediate
+mechanical filename.
+
+That duplicate run was terminated
+before evidence use.
+
+The authoritative two passes
+were preserved
+under collision-safe immutable filenames
+and are the byte-identical pair
+reported above.
+
+This is an execution-harness event,
+not an experiment result.
+
+SOURCE-BUNDLE FORMAT
+
+The exact source above
+will be published
+as deterministic gzip/base64
+split into seven neutral text source parts.
+
+Source SHA256:
+
+f1c2cfbd707621b18db101ea9a41f2264841acee10abcc5b80e4239c50ae60e1
+
+Gzip bytes:
+
+21350.
+
+Gzip SHA256:
+
+cbb20b48b21e6a6f7d2b47c5347ce4431d65c3202df0a8daa230472b805f2699
+
+Concatenated base64 characters:
+
+28468.
+
+Base64 SHA256:
+
+49dba6fdeed19093684c97a78e6690fdec2276229bcdd649f76e0554c16f2892
+
+Source part count:
+
+7.
+
+The F52 loader must verify:
+
+part count;
+base64 identity;
+gzip identity;
+source identity;
+
+before execution.
+
+Any mismatch fails closed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
