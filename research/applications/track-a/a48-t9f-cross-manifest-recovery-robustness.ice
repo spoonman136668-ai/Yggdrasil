@@ -586,3 +586,106 @@ without a central judge.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F48 MECHANICAL GATE / REPLICATION-DRIVER IDENTITY
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F48
+AND BEFORE ANY A48 PRIMARY WORLD EXISTS.
+
+A48 DRIVER SOURCE
+
+Bytes:
+7554.
+
+SHA256:
+fba47337867b8b90a69324a45c3d70edeb6e790d62fb25bb4c29224449023444
+
+The driver introduces
+replication bookkeeping only.
+
+It imports
+the exact F47 loader
+and reuses these four frozen arms:
+
+D2_BASE_ECHO_PHASE;
+D2_G5_FULL;
+D3_BASE_ECHO_PHASE;
+D3_G5_FULL.
+
+No cell-state dynamics
+are implemented in the A48 driver.
+
+F47 SOURCE IDENTITY
+
+Required parent source SHA256:
+
+645b1d8b8417702fce62a6268b9ba97dd41aba21e8cb9f48ccf683f32fc6d468
+
+The F47 loader remains fail-closed
+on its own source-bundle identities.
+
+MECHANICAL VALIDATION
+
+Mechanical seed:
+
+MECHANICAL-A48-F48-CANDIDATE
+
+Complete sweeps:
+
+2.
+
+Worlds per sweep:
+
+384.
+
+Arms per sweep:
+
+4.
+
+Output bytes per sweep:
+
+2662.
+
+Output SHA256:
+
+f753407c39d99bca40ef1edd8fbc9ab340121a3e7f3caa7ac30aac2a107fc4ec
+
+BYTE IDENTICAL:
+
+true.
+
+stderr:
+
+empty for both sweeps.
+
+All executable pre-primary
+driver integrity probes:
+
+PASS.
+
+No mechanical-world population outcome
+is used as scientific evidence.
+
+F48 FREEZE FORM
+
+F48 will freeze
+the exact A48 driver source above.
+
+No new F47 source copy
+is created.
+
+The driver must import
+the existing F47 loader
+from the same repository directory.
+
+Any F47 identity failure
+therefore fails A48 closed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
