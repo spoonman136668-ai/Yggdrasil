@@ -1030,3 +1030,186 @@ is useful work.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F53 AMENDMENT 01 — IMPLEMENTATION / PARITY / MECHANICAL GATE
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F53
+AND BEFORE ANY A53 SCIENTIFIC OUTCOME.
+
+AUTHORIZED SOURCE
+
+Bytes:
+92419.
+
+SHA256:
+dd19ce7c9b5745087e28b7be965da83f45a876c732e8e1991d123dcf21604656
+
+ARMS
+
+Exactly twelve arms.
+
+D2 and D3,
+under P0 and P1:
+
+TAU0;
+
+TAU3_FIXED;
+
+TAU3_VETO.
+
+PARENT PARITY
+
+Focused comparisons:
+
+168.
+
+Mismatches:
+
+0.
+
+This includes:
+
+A53 TAU0
+equals A52 TAU0;
+
+A53 TAU3_FIXED
+equals A52 TAU3;
+
+forced veto always-valid
+reduces TAU3_VETO
+exactly to TAU3_FIXED;
+
+forced veto always-invalid
+reduces TAU3_VETO
+to current-pressure selection.
+
+VETO BOUNDARY
+
+The implementation reads
+only current post-update
+aligned signed margin.
+
+Threshold:
+
+M_post_current > 0.
+
+No magnitude tuning.
+
+The veto changes only
+pressure-source selection.
+
+It does not change:
+
+PRESSURE_now;
+
+p_stay;
+
+B update;
+
+cooperative echo;
+
+recruitment;
+
+push-pull;
+
+random draws;
+
+or pressure-history storage.
+
+MECHANICAL VALIDATION
+
+Mechanical seed:
+
+MECHANICAL-A53-F53-CANDIDATE
+
+Complete sweeps:
+
+2.
+
+Worlds per sweep:
+
+384.
+
+Arms:
+
+12.
+
+Output bytes per sweep:
+
+165612.
+
+Output SHA256:
+
+ced4fc437125add31aef41dc14bef99b47ab86e7aa6a7a713c1b81acd8ae34b7
+
+BYTE IDENTICAL:
+
+true.
+
+stderr:
+
+empty for both sweeps.
+
+All executable pre-primary
+integrity probes:
+
+PASS.
+
+No mechanical-world
+veto result,
+phase result,
+macro result,
+qualification result,
+or population outcome
+is used as scientific evidence.
+
+SOURCE-BUNDLE FORMAT
+
+The exact source above
+will be published
+as deterministic gzip/base64
+split into seven neutral text source parts.
+
+Source SHA256:
+
+dd19ce7c9b5745087e28b7be965da83f45a876c732e8e1991d123dcf21604656
+
+Gzip bytes:
+
+21140.
+
+Gzip SHA256:
+
+a2a50019e3fce2394ddcd92a1e9ce794f1164ac8ed5cc7543e3d04e91ed07c6e
+
+Concatenated base64 characters:
+
+28188.
+
+Base64 SHA256:
+
+00995e97bc233f0e7ebea549a9308cb3a1a9f5bc19877e49e15638a0f068fa37
+
+Source part count:
+
+7.
+
+The F53 loader must verify:
+
+part count;
+base64 identity;
+gzip identity;
+source identity;
+
+before execution.
+
+Any mismatch fails closed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
