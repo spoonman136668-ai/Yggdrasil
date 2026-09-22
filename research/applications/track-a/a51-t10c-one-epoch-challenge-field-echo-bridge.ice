@@ -2103,3 +2103,60 @@ and cannot establish F51.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-F51 PRIMARY MANIFEST BINDING
+
+DATE:
+2026-09-22.
+
+F51:
+6c50bc7be90731a60ce2c2f16a668eeb4e99881b
+
+AUTHORITATIVE SOURCE SHA256:
+8284fc44fbe2dd965c477ba845f92d44aefa85b802adfe1d672cf144fb45baee
+
+PRIMARY SEED:
+A51-F51-6c50bc7be90731a60ce2c2f16a668eeb4e99881b-PRIMARY
+
+WORLD COUNT:
+384.
+
+WORLD SHAPE:
+48 contexts x 8 replicas.
+
+PRIMARY WORLD MANIFEST SHA256:
+f7a7d92cca0c636374d1b4e371992c271d68e901b69a7e3042a60b0a366a7cea
+
+STATUS:
+BOUND AFTER F51
+AND BEFORE ANY A51 PRIMARY ARM EXECUTION.
+
+AUTHORITATIVE DESIGN:
+measured handoff-lag TTL sweep.
+
+TTLs:
+0;
+1;
+2;
+3.
+
+ARMS:
+20.
+
+No A51 TTL exposure result,
+recruitment result,
+macro result,
+minimum effective TTL,
+timing-synergy result,
+qualification result,
+or scientific comparison
+was observed before this binding.
+
+Two complete primary sweeps
+must be byte-identical
+before scientific analysis.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
