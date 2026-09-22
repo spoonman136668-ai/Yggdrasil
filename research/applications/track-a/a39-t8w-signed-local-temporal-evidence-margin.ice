@@ -1286,3 +1286,112 @@ No real A39 world has been derived.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-IMPLEMENTATION CLARIFICATION 03 — MEASUREMENT TIMING AND CENSORING
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE F39
+AND BEFORE ANY REAL F39-DERIVED WORLD EXISTS.
+
+PRE-PULSE SNAPSHOT
+
+For biased-periodic erosion diagnostics,
+pre-pulse B, aligned M, and commitment age
+are captured immediately before
+the first adverse epoch updates B.
+
+Current L_op is measured
+from that arriving adverse epoch.
+
+A counter-pulse onset requires
+an actual favored-to-opposing transition.
+
+An opposing phase already active at epoch 0
+is not treated as a pre-pulse transition.
+
+TRUE-REVERSAL SNAPSHOT
+
+The frozen old-side cohort
+is captured at the start of the reversal epoch
+before that epoch updates B
+and before defection decisions.
+
+The onset old-side margin
+therefore measures support credit
+earned before the environmental reversal.
+
+EROSION CENSORING
+
+Raw erosion records retain:
+
+first defection epoch within burst;
+
+or NEVER.
+
+For Spearman ranking only,
+NEVER is assigned a censored rank latency
+equal to:
+
+burst length + 1.
+
+This preserves the ordering meaning
+that a never-defecting cell persisted
+longer than every observed defection
+without inventing an in-burst defection time.
+
+MARGIN QUARTILES
+
+Pulse-onset cells are ordered by:
+
+pre-pulse M;
+
+then stable cell index
+only as a deterministic tie-break.
+
+Bottom and top rank quartiles
+are used for the frozen quartile diagnostics.
+
+Margin variance, IQR,
+and threshold fractions remain separately reported
+so tied or degenerate M distributions
+cannot be mistaken for meaningful heterogeneity.
+
+REVERSAL ZERO-CROSS AGGREGATION
+
+For each true-reversal trial,
+compute the median zero-cross latency
+among members of the frozen old-side cohort
+that cross before trial end.
+
+The reported experiment-level value
+is the median of those per-trial medians.
+
+The same aggregation is used
+for old-side M reaching zero.
+
+NONDEGENERATE RECRUITMENT
+
+For qualification criterion 11,
+nondegenerate recruitment means
+at least one scored directional recruitment episode
+exists for the candidate arm.
+
+This clarification changes
+no mechanism,
+rho,
+K,
+gain,
+qualification threshold,
+world family,
+or parent architecture.
+
+No F39 exists yet.
+No real A39 world has been derived.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
