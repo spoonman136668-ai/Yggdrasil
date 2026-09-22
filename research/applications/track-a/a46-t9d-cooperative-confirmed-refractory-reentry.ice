@@ -1202,3 +1202,524 @@ are byte-identical.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+A46 PRIMARY CLOSURE
+
+DATE:
+2026-09-22.
+
+F46:
+80c1673f5fccfe55e98e85a2dad8453b6ad3291e
+
+MANIFEST-BINDING COMMIT:
+58bed4d9c2e75956c62b19ff81f026cd1d9a38d7
+
+SOURCE SHA256:
+efee5637a1ba709b5299199489f02988517abc49392788b72ea25b295119fcec
+
+PRIMARY SEED:
+A46-F46-80c1673f5fccfe55e98e85a2dad8453b6ad3291e-PRIMARY
+
+PRIMARY WORLD MANIFEST SHA256:
+8f87ed0b890d299456ef693d66ee04a791e7885c5daf262c78c83c76b4b4657c
+
+PRIMARY OUTPUT SHA256:
+53ff44daf08eae604d2801f23527b441e56280012dc8984e580864a19deddf5b
+
+PRIMARY RUNS:
+2.
+
+PRIMARY OUTPUT BYTES:
+44435.
+
+BYTE IDENTICAL:
+true.
+
+P31:
+PASS.
+
+All executable integrity probes:
+PASS.
+
+A46_RECOVERY_INFORMATION_GAIN:
+FALSE.
+
+QUALIFICATION
+
+D2_G5_REENTRY:
+NOT QUALIFIED.
+
+D3_G5_REENTRY:
+NOT QUALIFIED.
+
+TECHNICAL EVIDENCE
+
+D2 ECHO_PHASE parent:
+
+aggregate service 237801;
+harm rate 15.36%;
+overall inherited oscillation 5.99%;
+biased-periodic oscillation 50.00%;
+5:3 oscillation 100.00%;
+6:2 oscillation 0.00%;
+balanced false-majority 3.12%;
+reversal acquisition 89.06%;
+median old-majority loss 3 epochs.
+
+5:3 recovery:
+
+favored-to-unresolved transitions 71;
+unresolved-to-favored transitions 78;
+mean unresolved episode 3.616 epochs;
+median unresolved episode 3 epochs;
+mean favored-majority recovery latency 4.580 epochs;
+median recovery latency 3.5 epochs;
+recovery-never count 8.
+
+Mean refractory fraction
+across recovery steps 1-3:
+
+33.29%.
+
+D2 G5_REENTRY:
+
+aggregate service 237525;
+harm rate 16.67%;
+overall inherited oscillation 10.68%;
+biased-periodic oscillation 93.75%;
+5:3 oscillation 100.00%;
+6:2 oscillation 87.50%;
+balanced false-majority 0.00%;
+reversal acquisition 92.97%;
+median old-majority loss 2 epochs.
+
+5:3 recovery:
+
+favored-to-unresolved transitions 64;
+unresolved-to-favored transitions 71;
+mean unresolved episode 5.863 epochs;
+median unresolved episode 5 epochs;
+mean favored-majority recovery latency 6.253 epochs;
+median recovery latency 4 epochs;
+recovery-never count 9.
+
+Mean refractory fraction
+across recovery steps 1-3:
+
+28.27%.
+
+Thus G5 reduces
+short-term refractory occupancy
+but makes unresolved episodes
+approximately 62% longer
+
+and mean favored-majority recovery
+approximately 37% slower.
+
+D2 G5 mechanism:
+
+early re-entries 3772;
+same-epoch recruitments 1523;
+same-epoch former-side commitments 981;
+same-epoch opposite-side commitments 107;
+same-epoch H entries 435.
+
+Approximately:
+
+40.38% of early re-entries
+are recruited in the same epoch;
+
+26.01% of all early re-entries
+immediately recommit to the former side;
+
+2.84% immediately commit
+to the opposite side.
+
+Same-side short-cycle chatter:
+
+parent 632;
+G5 932.
+
+Mean commitment dwell:
+
+parent 9.217 epochs;
+G5 8.301 epochs.
+
+D2 biased context detail:
+
+parent:
+44 = 0/8 oscillatory;
+45 = 0/8;
+46 = 8/8;
+47 = 8/8.
+
+G5:
+44 = 8/8;
+45 = 6/8;
+46 = 8/8;
+47 = 8/8.
+
+Thus G5 destabilizes
+the previously controlled 6:2 contexts.
+
+D3 ECHO_PHASE parent:
+
+aggregate service 234093;
+harm rate 14.84%;
+overall inherited oscillation 7.03%;
+biased-periodic oscillation 50.00%;
+5:3 oscillation 100.00%;
+6:2 oscillation 0.00%;
+balanced false-majority 0.00%;
+reversal acquisition 87.50%;
+median old-majority loss 3 epochs.
+
+5:3 recovery:
+
+favored-to-unresolved 67;
+unresolved-to-favored 75;
+mean unresolved episode 4.795 epochs;
+median unresolved episode 4 epochs;
+mean favored-majority recovery latency 6.000 epochs;
+median recovery latency 4 epochs;
+recovery-never count 8.
+
+Mean refractory fraction
+across recovery steps 1-3:
+
+46.14%.
+
+D3 G5_REENTRY:
+
+aggregate service 233596;
+harm rate 15.36%;
+overall inherited oscillation 10.42%;
+biased-periodic oscillation 100.00%;
+5:3 oscillation 100.00%;
+6:2 oscillation 100.00%;
+balanced false-majority 0.00%;
+reversal acquisition 88.28%;
+median old-majority loss 2 epochs.
+
+5:3 recovery:
+
+favored-to-unresolved 55;
+unresolved-to-favored 62;
+mean unresolved episode 6.986 epochs;
+median unresolved episode 5 epochs;
+mean favored-majority recovery latency 7.941 epochs;
+median recovery latency 5 epochs;
+recovery-never count 11.
+
+Mean refractory fraction
+across recovery steps 1-3:
+
+38.90%.
+
+Thus G5 reduces
+short-term refractory occupancy
+but makes unresolved episodes
+approximately 46% longer
+
+and mean favored-majority recovery
+approximately 32% slower.
+
+D3 G5 mechanism:
+
+early re-entries 5168;
+same-epoch recruitments 2017;
+same-epoch former-side commitments 1289;
+same-epoch opposite-side commitments 157;
+same-epoch H entries 571.
+
+Approximately:
+
+39.03% of early re-entries
+are recruited in the same epoch;
+
+24.94% immediately recommit
+to the former side;
+
+3.04% immediately commit
+to the opposite side.
+
+Same-side short-cycle chatter:
+
+parent 0;
+G5 334.
+
+Mean commitment dwell:
+
+parent 9.290 epochs;
+G5 8.362 epochs.
+
+D3 biased context detail:
+
+parent:
+44 = 0/8;
+45 = 0/8;
+46 = 8/8;
+47 = 8/8.
+
+G5:
+44 = 8/8;
+45 = 8/8;
+46 = 8/8;
+47 = 8/8.
+
+WRONG-SIDE SAFETY
+
+In both D2 and D3 G5:
+
+5:3 direct favored-to-adverse majority flips = 0;
+
+5:3 adverse-majority entries = 0;
+
+5:3 adverse-majority epochs = 0.
+
+Therefore G5 does not fail
+by restoring wrong-side pulse chasing.
+
+TRUE REVERSAL SAFETY
+
+Old-side G5 fires
+during the first four true-reversal epochs:
+
+0.
+
+Reversal acquisition remains:
+
+92.97% D2;
+88.28% D3.
+
+Thus G5 also does not fail
+by preserving the obsolete side.
+
+BALANCED SAFETY
+
+Balanced false-majority:
+
+0.00% in both G5 arms.
+
+Therefore the main failure
+is not balanced majority capture.
+
+CAUSAL INTERPRETATION
+
+The A45 diagnosis was correct
+that fixed refractory debt
+contributes to temporary unresolved occupancy.
+
+But A46 shows that
+refractory debt is not simply removable latency.
+
+The refractory interval
+also provides temporal separation
+between:
+
+defection;
+
+plasticity;
+
+and recommitment.
+
+G5 removes part of that separation.
+
+The cell becomes U earlier,
+and roughly 39-40%
+of early re-entries
+are recruited again immediately.
+
+Approximately one quarter
+of all early-released cells
+recommit to their former side
+in that same epoch.
+
+The system therefore converts
+some refractory debt
+into faster commitment cycling.
+
+The strongest evidence is:
+
+short-term refractory occupancy falls;
+
+yet unresolved episode duration rises;
+
+commitment dwell shortens;
+
+same-side short-cycle chatter rises;
+
+and previously stable 6:2 contexts
+become oscillatory.
+
+This is not a wrong-side instability.
+
+It is a plasticity-timing instability.
+
+The refractory state was not merely
+keeping useful cells on the bench.
+
+It was also preventing
+recently unstable cells
+from re-entering the commitment process
+before their local dynamics had settled.
+
+NEXT JUSTIFIED DIAGNOSTIC
+
+Do not strengthen G5.
+
+Do not add a looser gate.
+
+Do not shorten the timer globally.
+
+Measure the trajectory
+of every G5 early re-entry:
+
+time of release relative
+to environmental pulse phase;
+
+same-epoch destination;
+
+time to next commitment;
+
+side of next commitment;
+
+time to next defection;
+
+whether refractory debt
+is restarted;
+
+and contribution
+to favored -> unresolved -> favored cycling.
+
+Compare:
+
+G5 cells that remain U/H
+for at least one full epoch
+
+against:
+
+G5 cells recruited
+in the same epoch.
+
+The immediate question is:
+
+is SAME-EPOCH RECRUITMENT
+the causal source
+of the new chatter and 6:2 instability?
+
+If yes,
+a successor may test
+evidence-confirmed early re-entry
+with one epoch of plastic U
+before recruitment eligibility.
+
+That would separate:
+
+ending refractory lock
+
+from:
+
+immediate recommitment.
+
+No such mechanism is authorized
+until the trajectory diagnostic confirms it.
+
+PLAIN-SPEAK INTERPRETATION
+
+A46 found that
+the waiting period was doing
+two jobs, not one.
+
+We thought it was mostly
+keeping useful cells sidelined
+after the disturbance was over.
+
+So we let well-supported cells
+get off the bench early.
+
+They did get off the bench.
+
+But many of them
+jumped straight back into play
+in the same turn.
+
+That created a new problem.
+
+Some recommitted quickly,
+became unstable again,
+and ended up cycling
+through commitment and recovery
+more often.
+
+So there were fewer cells
+sitting in refractory state
+at any one moment,
+
+but the organism actually took
+longer to settle.
+
+Even the easier 6:2 disturbances,
+which A45 handled cleanly,
+started oscillating again.
+
+The important safety result is:
+
+the cells did not
+start choosing the wrong side,
+
+and they did not
+fight a true reversal.
+
+The problem is timing.
+
+A cell may be ready
+to stop being locked,
+
+without being ready
+to make another commitment
+in that same instant.
+
+The next thing to measure is whether
+that immediate re-recruitment
+is what causes the new instability.
+
+If it is,
+the next design should separate:
+
+YOU MAY BECOME PLASTIC AGAIN
+
+from:
+
+YOU MAY IMMEDIATELY COMMIT AGAIN.
+
+NORTH-STAR IMPLICATION
+
+A46 identifies refractory state
+as an active temporal coordination mechanism,
+not just dead time.
+
+Developmental plasticity therefore
+appears to require
+controlled staging:
+
+commitment;
+
+destabilization;
+
+refractory reset;
+
+plastic uncertainty;
+
+then recommitment.
+
+Compressing those stages
+too aggressively
+can increase global instability
+even when every local decision
+is evidence-aligned.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
