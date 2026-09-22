@@ -1929,3 +1929,177 @@ relative to that measured seam.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F51 AMENDMENT 03 — AUTHORITATIVE TTL IMPLEMENTATION / MECHANICAL GATE
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F51
+AND BEFORE ANY A51 SCIENTIFIC OUTCOME.
+
+AUTHORITATIVE SOURCE
+
+Bytes:
+92671.
+
+SHA256:
+8284fc44fbe2dd965c477ba845f92d44aefa85b802adfe1d672cf144fb45baee
+
+This source implements the
+measured handoff-lag TTL sweep:
+
+TTL0;
+TTL1;
+TTL2;
+TTL3.
+
+ARMS
+
+Exactly twenty arms.
+
+Ten per D family:
+
+BASE;
+G5;
+
+PUSH_TTL0;
+G5_PUSH_TTL0;
+
+PUSH_TTL1;
+G5_PUSH_TTL1;
+
+PUSH_TTL2;
+G5_PUSH_TTL2;
+
+PUSH_TTL3;
+G5_PUSH_TTL3.
+
+PARENT PARITY
+
+Representative current-control comparisons:
+
+96.
+
+Behavioral mismatches:
+
+0.
+
+FORCED-TRACE REDUCTION
+
+With TTL trace contribution
+forced to the current-only field,
+TTL arms reduce exactly
+to their TTL0 donors.
+
+Representative comparisons:
+
+72.
+
+Mismatches:
+
+0.
+
+INTEGRITY
+
+All executable pre-primary
+integrity probes:
+
+PASS.
+
+MECHANICAL VALIDATION
+
+Mechanical seed:
+
+MECHANICAL-A51-TTL-F51-CANDIDATE
+
+Complete sweeps:
+
+2.
+
+Worlds per sweep:
+
+384.
+
+Arms:
+
+20.
+
+Output bytes per sweep:
+
+271988.
+
+Output SHA256:
+
+be3ee9d3367633750075b72f73393f52b371494cfc0d3977529bcce8ef188eb6
+
+BYTE IDENTICAL:
+
+true.
+
+stderr:
+
+empty for both sweeps.
+
+No mechanical-world
+handoff coverage,
+recruitment result,
+macro result,
+timing interaction,
+minimum TTL,
+qualification result,
+or population outcome
+is used as scientific evidence.
+
+SOURCE-BUNDLE FORMAT
+
+The exact source above
+will be published
+as deterministic gzip/base64
+split into seven neutral text source parts.
+
+Source SHA256:
+
+8284fc44fbe2dd965c477ba845f92d44aefa85b802adfe1d672cf144fb45baee
+
+Gzip bytes:
+
+21204.
+
+Gzip SHA256:
+
+afff3bb623f846181a37e5936c383b1991b37aa39d756a9b774b1fb52da10bb8
+
+Concatenated base64 characters:
+
+28272.
+
+Base64 SHA256:
+
+2ccaa35afbbf97a127b8ce2789c9a589adcb08746cfb409a946db4bdc06ee08b
+
+Source part count:
+
+7.
+
+The F51 loader must verify:
+
+part count;
+base64 identity;
+gzip identity;
+source identity;
+
+before execution.
+
+Any mismatch fails closed.
+
+The superseded one-epoch-only
+source and mechanical gate
+remain provenance only
+and cannot establish F51.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
