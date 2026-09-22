@@ -738,3 +738,52 @@ HAS BEEN WINNING OVER TIME?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-IMPLEMENTATION CLARIFICATION 01 — REVERSAL MARGIN CROSSING
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE IMPLEMENTATION FREEZE
+AND BEFORE ANY REAL F39-DERIVED WORLD EXISTS.
+
+REVERSAL COHORT
+
+On a FAMILY 3 / 4 true reversal,
+capture the identities of cells
+that are committed to the OLD environmental side
+at the start of the reversal epoch,
+before that epoch's defection decisions.
+
+For each captured cell in a SIGNED arm,
+record the first epoch at which
+its signed margin crosses to the new side:
+
+old C:
+B <= 0.
+
+old S:
+B >= 0.
+
+Per-trial signed-margin zero-crossing latency
+is the median latency
+among captured cells that cross.
+
+If none cross before trial end:
+
+NEVER.
+
+This diagnostic is external measurement only.
+
+Newly recruited cells after reversal
+cannot enter the crossing cohort.
+
+No controller rule,
+rho,
+pressure transform,
+qualification threshold,
+or information-gain criterion changes.
+
+No F39 exists yet.
