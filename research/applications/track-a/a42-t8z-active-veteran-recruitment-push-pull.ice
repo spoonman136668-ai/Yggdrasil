@@ -883,3 +883,42 @@ while bringing reinforcements.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-F42 PRIMARY MANIFEST BINDING
+
+DATE:
+2026-09-22.
+
+F42:
+24582ea6b6b8ec5f4e3f21a5b8b5c1a0ef94f05a
+
+PRIMARY SEED:
+A42-F42-24582ea6b6b8ec5f4e3f21a5b8b5c1a0ef94f05a-PRIMARY
+
+WORLD COUNT:
+384.
+
+WORLD SHAPE:
+48 contexts x 8 replicas.
+
+PRIMARY WORLD MANIFEST SHA256:
+fb9e97ac025cdbe605d381807e6756050c072dd047ee60d179e5921744346dce
+
+STATUS:
+BOUND BEFORE ANY PRIMARY ARM EXECUTION.
+
+The manifest was derived from the frozen F42 source
+after F42 existed.
+
+No arm outcome,
+population metric,
+qualification result,
+or scientific comparison
+was observed before this binding.
+
+The canonical DG-1R-05 primary is not consumed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
