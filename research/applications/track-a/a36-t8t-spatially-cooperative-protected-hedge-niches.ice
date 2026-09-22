@@ -1095,3 +1095,738 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A36 / T8T SPATIALLY COOPERATIVE PROTECTED HEDGE NICHES
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE NEGATIVE TARGET RESULT WITH REAL SPATIAL-COHERENCE EFFECT /
+H NICHES FORMED AND PERSISTED,
+BUT THE TARGET FAMILY-5 OSCILLATORY ATTRACTOR REMAINED /
+NO NICHE ARM QUALIFIED /
+NO ARM MET A36_SPATIAL_HEDGE_INFORMATION_GAIN /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+e3be3d20e1acb09cdff3b11538f513d650227b78.
+
+F36:
+
+f8f83007bc9bf5ff64a338ebe3540195086dd593.
+
+Source SHA-256:
+
+5ff16100fc817a650a74e74d574ee9361de824418c38323c03192493359cd1d3.
+
+Deterministic gzip SHA-256:
+
+216a54bb8e5ed18ae9436d0e07f4e29252d8563f5950ffb75ce478faec34f049.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+97aea4878019927a8385a5812f1f37c832aa32cd.
+
+World-manifest SHA-256:
+
+041eba03561ce1b4640f5d9a61ddee7eb86b252efd40d14d79316098d337d4ba.
+
+Manifest-wrapper SHA-256:
+
+05285019e972c0af952d3ca652f1bdc8cf443de59d6b56c03a39a76e2a0ef271.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete F36-derived primary sweeps
+were byte-identical.
+
+Serialized primary SHA-256:
+
+65fbcc0b69e32d812bffa0ff98c791a0cb239d1730ec94479cb2509b0b5ce96b.
+
+All P1-P30 integrity probes:
+
+PASS.
+
+PRIMARY RESULT
+
+A36_ANY_SPATIAL_HEDGE_QUALIFIED:
+
+FALSE.
+
+A36_SPATIAL_HEDGE_INFORMATION_GAIN:
+
+FALSE.
+
+D2 ISO REFERENCE
+
+Aggregate service:
+
+232062.
+
+Harmful:
+
+61 / 384
+=
+15.89%.
+
+Oscillation:
+
+58 / 384
+=
+15.10%.
+
+Contradiction no-majority:
+
+91.79%.
+
+Contradiction epochs with H cluster >= 3:
+
+13.52%.
+
+Mean contradiction largest H cluster:
+
+0.926 cells.
+
+Mean niche lifetime:
+
+1.866 epochs.
+
+FAMILY-5 oscillators:
+
+34.
+
+D2 ENTRY REINFORCEMENT
+
+Aggregate service:
+
+231401.
+
+Harmful:
+
+61 / 384
+=
+15.89%.
+
+Oscillation:
+
+53 / 384
+=
+13.80%.
+
+Contradiction no-majority:
+
+90.48%.
+
+Contradiction cluster >= 3:
+
+17.87%.
+
+Mean contradiction largest H cluster:
+
+0.986.
+
+Mean niche lifetime:
+
+1.845 epochs.
+
+FAMILY-5 oscillators broken:
+
+2 / 34.
+
+New FAMILY-5 oscillators:
+
+0.
+
+Service retained:
+
+99.72%.
+
+Interpretation:
+
+entry reinforcement modestly reduced total oscillation,
+but did not create long-lived niches
+and barely touched the target oscillator family.
+
+D2 RELEASE PROTECTION
+
+Aggregate service:
+
+230005.
+
+Harmful:
+
+62 / 384
+=
+16.15%.
+
+Oscillation:
+
+55 / 384
+=
+14.32%.
+
+Contradiction no-majority:
+
+91.73%.
+
+Contradiction cluster >= 3:
+
+28.74%.
+
+Mean contradiction largest H cluster:
+
+1.086.
+
+Mean niche lifetime:
+
+3.319 epochs.
+
+FAMILY-5 oscillators broken:
+
+2 / 34.
+
+New FAMILY-5 oscillators:
+
+1.
+
+Service retained:
+
+99.11%.
+
+Interpretation:
+
+release protection strongly increased niche persistence,
+but still only weakly affected the target oscillator family.
+
+D2 FULL NICHE
+
+Aggregate service:
+
+229550.
+
+Harmful:
+
+61 / 384
+=
+15.89%.
+
+Oscillation:
+
+52 / 384
+=
+13.54%.
+
+Contradiction no-majority:
+
+92.53%.
+
+Contradiction cluster >= 3:
+
+38.34%.
+
+Contradiction cluster >= 6:
+
+6.88%.
+
+Mean contradiction largest H cluster:
+
+1.285.
+
+Mean niche lifetime:
+
+3.774 epochs.
+
+Maximum niche lifetime:
+
+30 epochs.
+
+Niches surviving >= 4 epochs:
+
+265.
+
+Niches surviving >= 8 epochs:
+
+86.
+
+FAMILY-5 oscillators broken:
+
+2 / 34.
+
+New FAMILY-5 oscillators:
+
+0.
+
+Service retained:
+
+98.92%.
+
+D2_NICHE qualified:
+
+FALSE.
+
+Reason:
+
+oscillation remained:
+
+13.54%
+
+versus required:
+
+<= 5%.
+
+It also broke only:
+
+5.88%
+
+of paired FAMILY-5 oscillators
+
+versus required:
+
+>= 50%.
+
+D3 ISO REFERENCE
+
+Aggregate service:
+
+225325.
+
+Harmful:
+
+62 / 384
+=
+16.15%.
+
+Oscillation:
+
+57 / 384
+=
+14.84%.
+
+Contradiction no-majority:
+
+92.60%.
+
+Contradiction cluster >= 3:
+
+9.86%.
+
+Mean contradiction largest H cluster:
+
+0.812.
+
+Mean niche lifetime:
+
+1.831 epochs.
+
+FAMILY-5 oscillators:
+
+30.
+
+D3 ENTRY REINFORCEMENT
+
+Aggregate service:
+
+225028.
+
+Harmful:
+
+64 / 384
+=
+16.67%.
+
+Oscillation:
+
+59 / 384
+=
+15.36%.
+
+Contradiction no-majority:
+
+92.98%.
+
+Contradiction cluster >= 3:
+
+13.77%.
+
+Mean niche lifetime:
+
+1.875 epochs.
+
+FAMILY-5 oscillators broken:
+
+0 / 30.
+
+New FAMILY-5 oscillators:
+
+2.
+
+D3 RELEASE PROTECTION
+
+Aggregate service:
+
+223784.
+
+Harmful:
+
+61 / 384
+=
+15.89%.
+
+Oscillation:
+
+57 / 384
+=
+14.84%.
+
+Contradiction no-majority:
+
+93.63%.
+
+Contradiction cluster >= 3:
+
+23.30%.
+
+Mean contradiction largest H cluster:
+
+0.918.
+
+Mean niche lifetime:
+
+3.366 epochs.
+
+FAMILY-5 oscillators broken:
+
+0 / 30.
+
+New FAMILY-5 oscillators:
+
+1.
+
+D3 FULL NICHE
+
+Aggregate service:
+
+223963.
+
+Harmful:
+
+58 / 384
+=
+15.10%.
+
+Oscillation:
+
+51 / 384
+=
+13.28%.
+
+Contradiction no-majority:
+
+93.88%.
+
+Contradiction cluster >= 3:
+
+30.13%.
+
+Contradiction cluster >= 6:
+
+5.34%.
+
+Mean contradiction largest H cluster:
+
+1.060.
+
+Mean niche lifetime:
+
+3.781 epochs.
+
+Maximum niche lifetime:
+
+26 epochs.
+
+Niches surviving >= 4 epochs:
+
+195.
+
+Niches surviving >= 8 epochs:
+
+69.
+
+FAMILY-5 oscillators broken:
+
+0 / 30.
+
+New FAMILY-5 oscillators:
+
+2.
+
+Service retained:
+
+99.40%.
+
+D3_NICHE qualified:
+
+FALSE.
+
+Reason:
+
+oscillation remained:
+
+13.28%
+
+versus required:
+
+<= 5%.
+
+It broke:
+
+0%
+
+of paired FAMILY-5 oscillators.
+
+MECHANISM ATTRIBUTION
+
+A36 successfully changed
+the spatial organization of uncertainty.
+
+Compared with isolated H,
+full NICHE arms produced:
+
+more contradiction-time H clusters;
+
+larger contradiction-time H clusters;
+
+roughly twice the mean niche lifetime;
+
+many more niches surviving 4 and 8 epochs.
+
+Therefore the spatial modifier is biologically / dynamically nontrivial.
+
+However:
+
+the target persistent oscillatory family
+was essentially invariant.
+
+D2:
+
+34 ISO FAMILY-5 oscillators.
+
+ENTRY / RETAIN / NICHE each broke only:
+
+2.
+
+D3:
+
+30 ISO FAMILY-5 oscillators.
+
+ENTRY / RETAIN / NICHE broke:
+
+0.
+
+The reduction in total oscillation
+under D2_NICHE and D3_NICHE
+came from other environmental families,
+not the persistent FAMILY-5 attractor
+that motivated A36.
+
+This is the central negative result.
+
+SPATIAL COHERENCE IS REAL.
+
+SPATIAL COHERENCE IS NOT SUFFICIENT.
+
+The system can form
+longer-lived local uncertainty neighborhoods
+without altering
+the temporal attractor created by oscillatory forcing.
+
+ATTRACTOR QUALITY LIMIT
+
+False final dominance remained far above
+the frozen 5% limits.
+
+Representative values:
+
+D2_NICHE false C:
+
+19.39%.
+
+D2_NICHE false S:
+
+15.53%.
+
+D3_NICHE false C:
+
+20.0%.
+
+D3_NICHE false S:
+
+15.98%.
+
+Thus stronger spatial uncertainty structure
+did not solve final attractor correctness.
+
+REVERSAL COST
+
+Spatial niche formation did NOT destroy reversal.
+
+Reversal acquisition remained:
+
+D2_NICHE:
+
+94.53%.
+
+D3_NICHE:
+
+96.09%.
+
+Service also remained within approximately:
+
+99%
+
+of paired ISO.
+
+So the failure is not:
+
+"niches are too sticky."
+
+The failure is:
+
+"niches do not survive the right developmental dimension."
+
+TECHNICAL INTERPRETATION
+
+A36 falsifies the hypothesis:
+
+LOCAL SPATIAL COOPERATION ALONE
+IS ENOUGH
+TO TURN PROTECTED HEDGING
+INTO A STABLE ALTERNATIVE ATTRACTOR
+UNDER OSCILLATORY FORCING.
+
+A36 gives H:
+
+local nucleation support;
+
+local persistence support;
+
+and genuine multi-epoch clusters.
+
+But those clusters are still:
+
+state-coherent
+without being
+developmentally inherited.
+
+When a niche dissolves,
+its prior uncertainty has no lineage-level claim
+on future cells.
+
+A future cell occupying the same region
+does not inherit:
+
+"this region has repeatedly remained unresolved."
+
+Thus the protected state can persist
+for several epochs
+without persisting
+through developmental turnover / lineage.
+
+The next justified question is:
+
+DOES UNCERTAINTY NEED
+LINEAGE MEMORY?
+
+Not:
+
+more entry gain.
+
+Not:
+
+larger H radius.
+
+Not:
+
+longer universal H lifetime.
+
+Instead:
+
+when an H cell is replaced / gives rise to a successor,
+should some bounded local uncertainty state
+be inherited by that lineage?
+
+That would test whether
+the unresolved phenotype must survive
+through developmental succession,
+not merely spatial adjacency.
+
+PLAIN-SPEAK INTERPRETATION
+
+The uncertain cells learned
+how to form neighborhoods.
+
+That part worked.
+
+Under full niche behavior,
+uncertain groups became:
+
+bigger;
+
+more common during contradiction;
+
+and about twice as long-lived.
+
+Some lasted dozens of epochs.
+
+But the stubborn oscillating worlds
+barely cared.
+
+For D2,
+only 2 of 34 target oscillators were broken.
+
+For D3:
+
+zero of 30.
+
+So the problem is probably not:
+
+"the uncertain cells need more friends nearby."
+
+The clue is that the neighborhood
+still has no memory across generations.
+
+If an uncertain cell disappears,
+its successor starts fresh.
+
+The location may have been uncertain
+again and again,
+but that history is not inherited.
+
+So the next question becomes:
+
+CAN AN UNCERTAIN LINEAGE
+PASS A SMALL AMOUNT OF ITS STATE
+TO ITS SUCCESSOR?
+
+That would make uncertainty
+not just spatially persistent,
+
+but developmentally persistent.
+
+No autonomous controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
