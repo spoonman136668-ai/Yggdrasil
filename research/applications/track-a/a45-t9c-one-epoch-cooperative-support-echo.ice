@@ -1008,3 +1008,167 @@ INTO PERMANENT STUBBORNNESS?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F45 AMENDMENT 01 — STREAMING DIAGNOSTICS AND MECHANICAL GATE
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F45
+AND BEFORE ANY A45 SCIENTIFIC OUTCOME.
+
+IMPLEMENTATION STORAGE CORRECTION
+
+The first A45 mechanical attempt
+retained a full per-cell diagnostic object
+for every committed-cell epoch.
+
+Two simultaneous full sweeps
+exceeded the multiprocessing
+result-pipe / memory budget
+before producing any experiment output.
+
+This was an evidence-storage defect,
+not a model-dynamics failure.
+
+No scientific result was produced
+or consumed from that failed attempt.
+
+CORRECTION
+
+The exact same per-cell quantities
+are accumulated online
+into streaming counters and sums.
+
+The preregistered 5:3 hit records
+and true-reversal records
+remain explicitly retained
+because they are required
+for quartile and latency diagnostics.
+
+This changes:
+
+memory use;
+serialization size.
+
+It does not change:
+
+worlds;
+RNG;
+state transitions;
+trace equations;
+pressure equations;
+recruitment;
+arms;
+qualification;
+or reported metrics.
+
+CONTROL PARITY
+
+Focused pre-F45 checks
+across:
+
+nonperiodic;
+true reversal;
+balanced periodic;
+6:2 biased periodic;
+5:3 biased periodic
+
+show zero population-behavior mismatches
+between inherited controls
+and their frozen parents.
+
+A43-derived controls:
+
+BASE;
+MARGIN_REINFORCE.
+
+A44-derived control:
+
+PHASE_SWITCH.
+
+TRACE FRESHNESS
+
+All focused ECHO arms pass:
+
+noncommitted trace zero;
+new commitment echo zero;
+no side-cross echo;
+trace stores raw Q only.
+
+MECHANICAL VALIDATION
+
+Candidate source SHA256:
+
+fa444b98128857dcd7790d83e328b242c6069de980aa14828c21b8e45af6e240
+
+Mechanical seed:
+
+MECHANICAL-A45-F45-CANDIDATE-V2
+
+Complete sweeps:
+
+2.
+
+Output bytes per sweep:
+
+90192.
+
+Output SHA256:
+
+b657b5b5b6b2ee85cf2e01e2122e9510c66fa9cc7200cae5273b0fd3c6b33633
+
+BYTE IDENTICAL:
+
+true.
+
+All executable pre-primary integrity probes:
+
+PASS.
+
+Trace freshness in every ECHO arm:
+
+PASS.
+
+No mechanical-world population outcome
+is used as scientific evidence.
+
+PUBLICATION FORMAT
+
+F45 will publish the exact candidate source
+as a deterministic gzip/base64 payload
+split into six text chunks.
+
+Source bytes:
+
+70096.
+
+Source SHA256:
+
+fa444b98128857dcd7790d83e328b242c6069de980aa14828c21b8e45af6e240
+
+Gzip bytes:
+
+17120.
+
+Gzip SHA256:
+
+09486353c0ac9fecae8d5572f764e5c3f8b3fd07cff5bb314fa5d325d5991cf6
+
+Concatenated base64 characters:
+
+22828.
+
+Base64 SHA256:
+
+ac8705be7cf1c1aac580a6474c97d6732ca1e627d5915616cc7d71ec1f840975
+
+The F45 loader must verify
+all three identities
+before execution.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
