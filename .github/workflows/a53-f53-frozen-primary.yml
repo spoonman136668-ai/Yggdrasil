@@ -1,0 +1,45 @@
+name: A53 F53 Frozen Primary
+
+on:
+  push:
+    branches: [dg1a-ar]
+    paths:
+      - .github/workflows/a53-f53-frozen-primary.yml
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Verify and inspect frozen A53 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research/applications/track-a
+          python3 - <<'PY'
+          import base64,gzip,hashlib
+          from pathlib import Path
+
+          stem="a53_t10e_current_evidence_vetoed_phase_memory_v1"
+          parts=sorted(Path(".").glob(stem+".source.part*.b64"))
+          assert len(parts)==7, len(parts)
+          enc="".join("".join(p.read_text().split()) for p in parts)
+          assert hashlib.sha256(enc.encode()).hexdigest()=="00995e97bc233f0e7ebea549a9308cb3a1a9f5bc19877e49e15638a0f068fa37"
+          raw=base64.b64decode(enc,validate=True)
+          assert hashlib.sha256(raw).hexdigest()=="a2a50019e3fce2394ddcd92a1e9ce794f1164ac8ed5cc7543e3d04e91ed07c6e"
+          src=gzip.decompress(raw)
+          assert hashlib.sha256(src).hexdigest()=="dd19ce7c9b5745087e28b7be965da83f45a876c732e8e1991d123dcf21604656"
+          print("A53_F53_SOURCE_OK",len(src),hashlib.sha256(src).hexdigest())
+          txt=src.decode("utf-8")
+          print("=== ARGPARSE / CLI CONTRACT ===")
+          for line in txt.splitlines():
+              if "ArgumentParser" in line or "add_argument" in line or "sys.argv" in line:
+                  print(line)
+          print("=== MAIN TAIL ===")
+          for line in txt.splitlines()[-120:]:
+              print(line)
+          PY
