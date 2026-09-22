@@ -1,0 +1,31 @@
+name: A41 exact source extraction
+on:
+  push:
+    branches:
+      - tmp/a41-source-extract-20260922
+permissions:
+  contents: read
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Decode exact A40 source
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64,gzip,hashlib
+          from pathlib import Path
+          p=Path('research/applications/track-a/a40_t8x_subtractive_support_credit_v1.py.gz.b64')
+          src=gzip.decompress(base64.b64decode(p.read_text().strip()))
+          got=hashlib.sha256(src).hexdigest()
+          expected='10202cd1f770651d9dbf958c7433ac55c1d377612e6c6e7b9f226944b3a51cf7'
+          if got != expected:
+              raise SystemExit(f'hash mismatch {got}')
+          Path('a40_exact.py').write_bytes(src)
+          print(got)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: a40-exact-source
+          path: a40_exact.py
