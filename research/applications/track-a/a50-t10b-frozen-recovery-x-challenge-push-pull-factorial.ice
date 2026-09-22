@@ -1354,3 +1354,701 @@ before scientific analysis.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+A50 PRIMARY CLOSURE
+
+DATE:
+2026-09-22.
+
+F50:
+e60966d2a366c8d1eefbce7e6456c39056bac8d8
+
+MANIFEST-BINDING COMMIT:
+62d0fd7a64f92ae7476130eed536145e45bd9ec7
+
+SOURCE SHA256:
+9dcaacc649b24ecbd971589f769f27ab69ebbffa17607c07a8627e4726eaf720
+
+PRIMARY SEED:
+A50-F50-e60966d2a366c8d1eefbce7e6456c39056bac8d8-PRIMARY
+
+PRIMARY WORLD MANIFEST SHA256:
+12fc55438fcebf068fb2ab344150719abc229113a627c9ac1d9b3eba79d1f86c
+
+PRIMARY RUNS:
+2.
+
+PRIMARY OUTPUT BYTES:
+107440.
+
+PRIMARY OUTPUT SHA256:
+f535a154e3a85f5200538e8fd9e4d4f4352bb19b5a802e7ef033db616e7c025d
+
+BYTE IDENTICAL:
+true.
+
+stderr:
+empty for both runs.
+
+All executable integrity probes:
+PASS.
+
+SCIENTIFIC STATUS
+
+A50_COMPOSITION_INFORMATION_GAIN:
+FALSE.
+
+A50_LAYER_SYNERGY:
+FALSE.
+
+D2_R1_P1_COMBINED:
+NOT QUALIFIED.
+
+D3_R1_P1_COMBINED:
+NOT QUALIFIED.
+
+TECHNICAL EVIDENCE — D2
+
+BASE:
+
+burst-end favored fraction:
+26.99%.
+
+favored-majority burst-end frequency:
+3.41%.
+
+favored-to-unresolved transitions:
+69.
+
+mean unresolved duration:
+3.588 epochs.
+
+mean favored-majority recovery latency:
+3.525 epochs.
+
+recovery-never count:
+8.
+
+median challenge-onset beta_F:
++0.02411 per cycle.
+
+aggregate service:
+237773.
+
+G5 ONLY:
+
+burst-end favored fraction:
+27.60%.
+
+favored-majority frequency:
+4.55%.
+
+favored-to-unresolved:
+68.
+
+mean unresolved duration:
+3.369 epochs.
+
+mean recovery latency:
+3.238 epochs.
+
+median beta_F:
++0.03869.
+
+aggregate service:
+238387.
+
+PUSH_PULL ONLY:
+
+burst-end favored fraction:
+29.43%.
+
+favored-majority frequency:
+9.09%.
+
+favored-to-unresolved:
+66.
+
+mean unresolved duration:
+3.506 epochs.
+
+mean recovery latency:
+3.288 epochs.
+
+median beta_F:
++0.03914.
+
+aggregate service:
+236402.
+
+COMBINED:
+
+burst-end favored fraction:
+29.69%.
+
+favored-majority frequency:
+12.50%.
+
+favored-to-unresolved:
+63.
+
+mean unresolved duration:
+3.359 epochs.
+
+mean recovery latency:
+2.951 epochs.
+
+recovery-never:
+7.
+
+median beta_F:
++0.05045.
+
+aggregate service:
+237033.
+
+D2 FACTORIAL INTERACTION
+
+Higher-is-better interaction:
+
+burst-end favored fraction:
+-0.355 percentage point.
+
+favored-majority frequency:
++2.273 percentage points.
+
+aggregate service:
++17.
+
+Lower-is-better benefit interaction:
+
+favored-to-unresolved transitions:
++2.
+
+mean recovery latency:
++0.049 epoch.
+
+mean unresolved duration:
+-0.072 epoch.
+
+recovery-never:
++1.
+
+Thus D2 contains
+small mixed interactions,
+not a coherent super-additive effect.
+
+D2 paired burst endpoints:
+
+BASE lost-majority endpoints:
+77.
+
+rescued by G5 only:
+1.
+
+rescued by PUSH_PULL only:
+5.
+
+rescued by COMBINED:
+8.
+
+COMBINED-only rescues:
+3.
+
+The combined-only rescues are real,
+but the frozen macro-information
+threshold is not reached.
+
+TECHNICAL EVIDENCE — D3
+
+BASE:
+
+burst-end favored fraction:
+21.85%.
+
+favored-majority burst-end frequency:
+0%.
+
+favored-to-unresolved transitions:
+65.
+
+mean unresolved duration:
+4.988 epochs.
+
+mean favored-majority recovery latency:
+5.275 epochs.
+
+recovery-never:
+8.
+
+median challenge-onset beta_F:
++0.04613.
+
+aggregate service:
+233535.
+
+G5 ONLY:
+
+burst-end favored fraction:
+22.54%.
+
+favored-majority frequency:
+0%.
+
+favored-to-unresolved:
+68.
+
+mean unresolved duration:
+4.131 epochs.
+
+mean recovery latency:
+4.325 epochs.
+
+median beta_F:
++0.03750.
+
+aggregate service:
+235111.
+
+PUSH_PULL ONLY:
+
+burst-end favored fraction:
+25.88%.
+
+favored-majority frequency:
+0%.
+
+favored-to-unresolved:
+69.
+
+mean unresolved duration:
+4.388 epochs.
+
+mean recovery latency:
+4.575 epochs.
+
+median beta_F:
++0.06057.
+
+aggregate service:
+231693.
+
+COMBINED:
+
+burst-end favored fraction:
+26.35%.
+
+favored-majority frequency:
+1.14%.
+
+favored-to-unresolved:
+67.
+
+mean unresolved duration:
+3.687 epochs.
+
+mean recovery latency:
+3.741 epochs.
+
+recovery-never:
+7.
+
+median beta_F:
++0.06012.
+
+aggregate service:
+233354.
+
+D3 FACTORIAL INTERACTION
+
+Higher-is-better interaction:
+
+burst-end favored fraction:
+-0.213 percentage point.
+
+favored-majority frequency:
++1.136 percentage points.
+
+aggregate service:
++85.
+
+Lower-is-better benefit interaction:
+
+favored-to-unresolved transitions:
++5.
+
+mean recovery latency:
+-0.116 epoch.
+
+mean unresolved duration:
+-0.155 epoch.
+
+recovery-never:
++1.
+
+Again,
+the interaction signs are mixed.
+
+There is no consistent
+super-additive macro signature.
+
+D3 paired burst endpoints:
+
+BASE lost-majority endpoints:
+69.
+
+rescued by G5 only:
+0.
+
+rescued by PUSH_PULL only:
+0.
+
+rescued by COMBINED:
+1.
+
+COMBINED-only rescues:
+1.
+
+This is insufficient
+for the frozen synergy criterion.
+
+DIRECT CROSS-LAYER AVAILABILITY
+
+The preregistered
+cross-layer handoff prediction
+does not occur at meaningful scale.
+
+D2 G5 ONLY:
+
+G5 actions:
+3028.
+
+same-epoch recruitment rate:
+38.94%.
+
+former-side recruitment rate:
+23.68%.
+
+fraction of G5-released cells
+with nonzero same-side
+challenge occupancy field:
+3.17%.
+
+D2 COMBINED:
+
+G5 actions:
+3238.
+
+same-epoch recruitment rate:
+39.81%.
+
+former-side recruitment rate:
+24.03%.
+
+fraction with nonzero same-side
+challenge field:
+3.09%.
+
+Thus combined push-pull
+raises former-side recruitment
+by only:
+
++0.35 percentage point
+
+among all G5-released cells.
+
+D3 G5 ONLY:
+
+G5 actions:
+4326.
+
+same-epoch recruitment rate:
+39.48%.
+
+former-side recruitment rate:
+25.10%.
+
+fraction with nonzero same-side
+challenge occupancy field:
+2.17%.
+
+D3 COMBINED:
+
+G5 actions:
+4787.
+
+same-epoch recruitment rate:
+38.69%.
+
+former-side recruitment rate:
+24.38%.
+
+fraction with nonzero same-side
+challenge field:
+2.28%.
+
+Thus D3 combined push-pull
+does not improve
+former-side recruitment
+among the G5-released population.
+
+The direct composition pathway
+is therefore almost absent.
+
+TEMPORAL INTERPRETATION
+
+This low overlap is not surprising
+once the two frozen factors
+are viewed together.
+
+G5 releases refractory cells
+only when the former side
+is locally SUPPORT.
+
+A49 CH_PUSH_PULL
+is generated by surviving veterans
+whose local mode
+is CHALLENGE.
+
+Therefore the two mechanisms
+are phase-selective
+in opposite directions.
+
+A50 allows same-epoch composition,
+but the local states
+required to activate the two layers
+rarely coexist
+for the same released-cell neighborhood.
+
+A50 therefore does not show
+that recovery and periphery control
+are biologically or computationally incompatible.
+
+It shows that their
+current temporal windows
+do not overlap enough
+for the intended handoff.
+
+CREEP / METASTABILITY
+
+A50 remains non-eroding
+at the challenge-onset scale.
+
+D2 median beta_F:
+
+BASE:
++0.02411.
+
+G5:
++0.03869.
+
+PUSH_PULL:
++0.03914.
+
+COMBINED:
++0.05045.
+
+D3:
+
+BASE:
++0.04613.
+
+G5:
++0.03750.
+
+PUSH_PULL:
++0.06057.
+
+COMBINED:
++0.06012.
+
+Thus the combined arms
+do not hide
+a slow challenge-cycle collapse.
+
+SAFETY / NON-REGRESSION
+
+Across A50:
+
+direct favored-to-adverse flips:
+0.
+
+6:2 oscillator:
+0%
+for every arm.
+
+Reversal acquisition:
+
+D2:
+89.06%.
+
+D3:
+87.50%.
+
+Median old-majority loss:
+3 epochs.
+
+Balanced false-majority
+remains within
+the frozen safety boundary.
+
+Service remains above
+95% of paired BASE.
+
+Therefore A50 fails
+on composition magnitude / overlap,
+not on safety,
+reversal,
+service,
+or creep.
+
+CAUSAL INTERPRETATION
+
+A48 and A49 remain independently valid.
+
+A50 confirms that:
+
+recovery can reduce refractory debt;
+
+push-pull can strongly alter
+challenge-local U recruitment;
+
+and combining them
+can improve several macro outcomes.
+
+But the specific intended
+state-flow handoff:
+
+G5 releases cell
+->
+same-epoch challenge field
+->
+favored recruitment
+
+is too rare.
+
+The principal measured reason
+is temporal phase mismatch
+between:
+
+SUPPORT-gated recovery
+
+and
+
+CHALLENGE-gated periphery control.
+
+The next justified mechanism class
+is therefore temporal alignment.
+
+This does NOT justify:
+
+stronger G5;
+
+stronger push-pull;
+
+new recovery thresholds;
+
+new recruitment gains;
+
+or new spatial radii.
+
+Those mechanism amplitudes
+are already active.
+
+The next question is whether
+the organism's local responses
+occur at compatible phases
+relative to one another
+and to the forcing cycle.
+
+PLAIN-SPEAK INTERPRETATION
+
+The two tools work.
+
+But they are mostly
+showing up for different shifts.
+
+Recovery says:
+
+"things support my old side again,
+so this cell can come off the bench."
+
+Push-pull says:
+
+"the core is under attack,
+so organize the nearby undecided cells."
+
+Those moments
+almost never happen
+in the same neighborhood
+at the same time.
+
+Only about
+two to three percent
+of the cells released by G5
+actually see the challenge field
+we hoped would organize them.
+
+So the combined system
+gets some improvement,
+
+but it does not get
+the direct layered handoff
+we designed A50 to test.
+
+This is useful.
+
+We do not need
+a stronger recovery rule.
+
+We do not need
+a louder recruitment signal.
+
+We need to test
+whether the timing
+of those responses
+is misaligned.
+
+In plain terms:
+
+the right workers
+and the right organizers
+are both present,
+
+but they are arriving
+on different shifts.
+
+NORTH-STAR IMPLICATION
+
+A50 further narrows
+the realization problem.
+
+Yggdrasil now has
+multiple independently validated
+local mechanisms,
+
+but useful composition
+requires temporal coordination
+between those mechanisms.
+
+The remaining problem
+is no longer simply:
+
+can cells persist,
+recover,
+or organize neighbors?
+
+The new question is:
+
+can those local capabilities
+be aligned in time
+without introducing
+a central scheduler?
+
+That is directly relevant
+to developmental realization.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
