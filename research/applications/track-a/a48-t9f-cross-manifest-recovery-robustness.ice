@@ -773,3 +773,514 @@ before scientific analysis.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+A48 PRIMARY CLOSURE
+
+DATE:
+2026-09-22.
+
+F48:
+430f4ec780d822829cfb058e8c1fa32608134d73
+
+FIVE-MANIFEST BINDING COMMIT:
+c5de182a7fb22b919037a081d4a54de907b62799
+
+F47 PARENT SOURCE SHA256:
+645b1d8b8417702fce62a6268b9ba97dd41aba21e8cb9f48ccf683f32fc6d468
+
+A48 DRIVER SHA256:
+fba47337867b8b90a69324a45c3d70edeb6e790d62fb25bb4c29224449023444
+
+PRIMARY SWEEPS:
+2.
+
+REPLICATES PER SWEEP:
+5.
+
+WORLDS PER REPLICATE:
+384.
+
+TOTAL WORLDS PER ARM:
+1920.
+
+PRIMARY OUTPUT BYTES:
+26946.
+
+PRIMARY OUTPUT SHA256:
+bcc24d80abcf183c4aa91025161b4bce22284c2f1ff67078f4acabdcb72ecf11
+
+BYTE IDENTICAL:
+true.
+
+stderr:
+empty for both sweeps.
+
+All executable integrity probes:
+PASS.
+
+SCIENTIFIC STATUS
+
+D2:
+
+A48_RECOVERY_ROBUST = TRUE.
+
+A48_RECOVERY_STRONG = FALSE.
+
+D3:
+
+A48_RECOVERY_ROBUST = TRUE.
+
+A48_RECOVERY_STRONG = FALSE.
+
+Therefore the recovery mechanism
+is directionally reproducible
+but does not satisfy
+the frozen strong-recovery standard.
+
+D3 PRIMARY RESULT
+
+Directional-positive replicates:
+
+5 of 5.
+
+Strong replicates:
+
+0 of 5.
+
+Per-replicate unresolved-duration reduction:
+
+16.43%;
+20.85%;
+21.22%;
+19.55%;
+17.22%.
+
+Median:
+
+19.55%.
+
+Range:
+
+16.43% to 21.22%.
+
+Per-replicate mean recovery-latency improvement:
+
+1.018 epochs;
+0.796;
+0.688;
+0.950;
+1.110.
+
+Median:
+
+0.950 epoch.
+
+Range:
+
+0.688 to 1.110 epochs.
+
+POOLED D3
+
+BASE mean unresolved episode:
+
+5.0150 epochs.
+
+G5_FULL:
+
+4.0579 epochs.
+
+Pooled reduction:
+
+19.08%.
+
+BASE mean favored-majority recovery latency:
+
+4.1966 epochs.
+
+G5_FULL:
+
+3.2869 epochs.
+
+Pooled improvement:
+
+0.910 epoch.
+
+BASE refractory fraction
+across recovery steps 1-3:
+
+45.515%.
+
+G5_FULL:
+
+28.392%.
+
+Reduction:
+
+37.62%.
+
+Aggregate service:
+
+BASE 1,168,596.
+
+G5_FULL 1,174,913.
+
+Delta:
+
++6,317.
+
+Pooled G5 short same-side chatter rate:
+
+1.085%.
+
+Frozen D3 chatter ceiling:
+
+1.50%.
+
+PASS.
+
+5:3 direct favored-to-adverse flips:
+
+0.
+
+5:3 adverse-majority entries:
+
+0.
+
+6:2 oscillator:
+
+0%
+in BASE and G5
+across every replicate.
+
+Balanced false-majority:
+
+0%
+pooled.
+
+Reversal acquisition:
+
+87.656%.
+
+Old-side G5 actions
+during first four
+true-reversal epochs:
+
+0.
+
+Therefore D3 is
+ROBUST,
+SAFE,
+SERVICE-PRESERVING,
+and CHATTER-BOUNDED.
+
+But it is not STRONG
+under the frozen bar:
+
+pooled unresolved reduction
+is below 25%;
+
+pooled latency improvement
+is below 1.0 epoch;
+
+and 0 of 5 replicates
+satisfy both strong criteria.
+
+D2 PRIMARY RESULT
+
+Directional-positive replicates:
+
+5 of 5.
+
+Strong replicates:
+
+0 of 5.
+
+Per-replicate unresolved-duration reduction:
+
+8.47%;
+11.91%;
+8.28%;
+7.91%;
+9.91%.
+
+Median:
+
+8.47%.
+
+Pooled BASE mean unresolved episode:
+
+3.7415 epochs.
+
+Pooled G5_FULL:
+
+3.3942 epochs.
+
+Pooled reduction:
+
+9.28%.
+
+Pooled BASE mean recovery latency:
+
+3.4005 epochs.
+
+Pooled G5_FULL:
+
+3.0130 epochs.
+
+Pooled improvement:
+
+0.388 epoch.
+
+Pooled refractory fraction
+steps 1-3:
+
+32.737%
+->
+25.200%.
+
+Reduction:
+
+23.02%.
+
+Aggregate service delta:
+
++3,696.
+
+Pooled G5 chatter rate:
+
+2.719%.
+
+Frozen D2 chatter ceiling:
+
+3.00%.
+
+PASS.
+
+Wrong-side entries:
+
+0.
+
+6:2 regression:
+
+0.
+
+Old-side true-reversal G5 actions:
+
+0.
+
+Thus D2 also shows
+a reproducible but smaller
+recovery benefit.
+
+ROBUSTNESS INTERPRETATION
+
+A48 resolves the
+A46-FIXA versus A47 magnitude discrepancy.
+
+The effect is not
+a lucky one-off.
+
+Across five fresh manifests,
+D3 G5_FULL improves
+both unresolved duration
+and recovery latency
+every single time.
+
+However the typical magnitude
+is closer to:
+
+approximately 19-20%
+unresolved-duration reduction;
+
+and approximately
+0.9-1.0 epoch
+faster recovery,
+
+not the larger
+26.5% / 1.47-epoch
+A46-FIXA realization.
+
+Therefore:
+
+the recovery mechanism is real;
+
+the direction is robust;
+
+the larger A46-FIXA effect
+was an upper-end realization;
+
+and the mechanism
+does not justify further
+refractory complexity
+to chase the original 25% line.
+
+RECOVERY-LAYER DECISION
+
+Per the preregistered A48 exit rule:
+
+D3 A48_RECOVERY_ROBUST = TRUE;
+
+D3 A48_RECOVERY_STRONG = FALSE.
+
+Therefore:
+
+record G5_FULL
+as a reproducible MODERATE
+recovery aid;
+
+do not add more
+refractory-timing complexity;
+
+park the recovery layer;
+
+return to the macro
+population-organization / oscillation track.
+
+A48 does not authorize
+another recovery threshold,
+dose,
+probability,
+timer,
+or gate experiment.
+
+RECOVERY CANDIDATE STATUS
+
+G5_FULL is retained
+as a validated optional
+recovery-layer mechanism.
+
+It is not promoted
+as a mandatory universal default.
+
+The macro track may compare:
+
+A45 ECHO_PHASE substrate;
+
+and
+
+A45 ECHO_PHASE + frozen G5_FULL recovery substrate
+
+only when such comparison
+is explicitly preregistered.
+
+No recovery retuning
+may occur inside
+a macro oscillation experiment.
+
+OSCILLATOR NOTE
+
+The inherited 5:3 oscillator metric
+remains high
+and was out of scope
+for A48 qualification.
+
+The recovery layer
+has now been separated cleanly
+from the remaining
+population-organization problem.
+
+This satisfies
+the strategic requirement
+to stop judging recovery
+by the wrong macro axis.
+
+PLAIN-SPEAK INTERPRETATION
+
+We now know
+the recovery effect is real.
+
+It helped in
+all five fresh world sets.
+
+The cells came back
+from uncertainty faster.
+
+Less of the population
+remained stuck on the bench.
+
+The easier 6:2 cases
+stayed solved.
+
+The organism
+did not jump to the wrong side.
+
+It still accepted
+a real reversal.
+
+And the extra chatter
+stayed inside
+the limit we set beforehand.
+
+But the effect
+is not as large
+as the best earlier run made it look.
+
+Most of the time,
+the improvement is moderate.
+
+That is enough
+to keep the mechanism
+as a useful tool.
+
+It is not enough
+to justify spending
+another research cycle
+trying to squeeze
+a few more percentage points
+out of the refractory timer.
+
+So the recovery layer
+is parked.
+
+We know what it can do.
+
+We know what it costs.
+
+Now we go back
+to the bigger problem:
+
+the surviving core
+and the surrounding population
+still need a better way
+to organize one another
+across repeated pulses.
+
+NORTH-STAR IMPLICATION
+
+Yggdrasil now has
+a reproducible local mechanism
+for evidence-sensitive
+developmental plasticity recovery.
+
+It operates without:
+
+a central controller;
+
+a global phase oracle;
+
+wrong-side capture;
+
+or reversal lock-in.
+
+Its effect is moderate,
+not transformative.
+
+That distinction is important.
+
+The recovery problem
+is no longer confused
+with the macro organization problem.
+
+The next research phase
+can now ask
+how a recovered core
+controls recruitment and exclusion
+around itself
+
+without retuning
+the recovery machinery underneath it.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
