@@ -1652,3 +1652,204 @@ after the world truly changes?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F51 AMENDMENT 01 — IMPLEMENTATION / PARITY / MECHANICAL GATE
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F51
+AND BEFORE ANY A51 SCIENTIFIC OUTCOME.
+
+AUTHORIZED SOURCE
+
+Bytes:
+91080.
+
+SHA256:
+5d649564b50889b9a2241088b0c6b983b1dbf6c86731b66ad5cb7f3436b99867
+
+ARMS
+
+Exactly twelve arms.
+
+D2:
+
+D2_BASE;
+D2_G5;
+D2_PUSH_PULL_NOW;
+D2_G5_PUSH_PULL_NOW;
+D2_PUSH_PULL_ECHO1;
+D2_G5_PUSH_PULL_ECHO1.
+
+D3:
+
+D3_BASE;
+D3_G5;
+D3_PUSH_PULL_NOW;
+D3_G5_PUSH_PULL_NOW;
+D3_PUSH_PULL_ECHO1;
+D3_G5_PUSH_PULL_ECHO1.
+
+PARENT PARITY
+
+A51 current-field controls
+reproduce A50 behavior exactly.
+
+Representative comparisons:
+
+96.
+
+Behavioral mismatches:
+
+0.
+
+A51 appends
+now-field / echo-field
+observational diagnostics
+to G5 action records.
+
+Those diagnostic-only fields
+are excluded from
+the behavioral parity comparator.
+
+FORCED-ECHO REDUCTION
+
+For validation only,
+force the A51 echo field
+to equal the current A49 field.
+
+Then:
+
+PUSH_PULL_ECHO1
+must reduce exactly to
+PUSH_PULL_NOW;
+
+G5_PUSH_PULL_ECHO1
+must reduce exactly to
+G5_PUSH_PULL_NOW.
+
+Representative comparisons:
+
+48.
+
+Mismatches:
+
+0.
+
+TRACE FRESHNESS
+
+All A51 challenge-trace
+freshness probes:
+
+PASS.
+
+The trace:
+
+contributes only
+from same-side committed survivors;
+
+cannot cross side;
+
+does not refresh itself;
+
+is set only by
+current CHALLENGE mode;
+
+and clears
+under non-challenge commitment.
+
+MECHANICAL VALIDATION
+
+Mechanical seed:
+
+MECHANICAL-A51-F51-CANDIDATE
+
+Complete sweeps:
+
+2.
+
+Worlds per sweep:
+
+384.
+
+Arms:
+
+12.
+
+Output bytes per sweep:
+
+162017.
+
+Output SHA256:
+
+946a14b0da72343080607ad48e53488270ad4c45cc4e614cca80465ced6ea484
+
+BYTE IDENTICAL:
+
+true.
+
+stderr:
+
+empty for both sweeps.
+
+All executable pre-primary
+integrity probes:
+
+PASS.
+
+No mechanical-world
+temporal-overlap result,
+macro result,
+timing-synergy result,
+qualification result,
+or population outcome
+is used as scientific evidence.
+
+SOURCE-BUNDLE FORMAT
+
+The exact source above
+will be published
+as deterministic gzip/base64
+split into seven neutral text source parts.
+
+Source SHA256:
+
+5d649564b50889b9a2241088b0c6b983b1dbf6c86731b66ad5cb7f3436b99867
+
+Gzip bytes:
+
+20888.
+
+Gzip SHA256:
+
+99ea5997fea4a43370c54ab66e8d2aab12bae0d7655ce7c3cabb093f37a927ce
+
+Concatenated base64 characters:
+
+27852.
+
+Base64 SHA256:
+
+ccf713951107bb62b6b00f887ffd93ebf5d30f4f10fe60c5bfc47b4344d2a93b
+
+Source part count:
+
+7.
+
+The F51 loader must verify:
+
+part count;
+base64 identity;
+gzip identity;
+source identity;
+
+before execution.
+
+Any mismatch fails closed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
