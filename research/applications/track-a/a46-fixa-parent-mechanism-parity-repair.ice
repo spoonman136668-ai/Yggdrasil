@@ -283,3 +283,110 @@ gets repaired.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F46A MECHANICAL GATE / EXACT REPAIR IDENTITY
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F46A
+AND BEFORE ANY A46-FIXA SCIENTIFIC OUTCOME.
+
+REPAIRED SOURCE
+
+Bytes:
+75238.
+
+SHA256:
+53d643ca7c1b17b9368abd60cae1666de7698dd3530795845250d2481767c885
+
+The repaired source differs from F46
+only in the four authorized dispatch classes:
+
+CHALLENGE Q_eff dispatch;
+
+echo-specific reporting dispatch;
+
+two support-field gated expressions;
+
+active support-recruitment dispatch.
+
+PARENT PARITY
+
+With explicit G5 action disabled
+and G5_REENTRY assigned
+the paired A45 ECHO_PHASE action-random identity:
+
+representative comparisons:
+60.
+
+Behavioral mismatches:
+0.
+
+MECHANICAL VALIDATION
+
+Mechanical seed:
+MECHANICAL-A46-FIXA-CANDIDATE.
+
+Complete sweeps:
+2.
+
+Worlds per sweep:
+384.
+
+Arms:
+4.
+
+Output bytes per sweep:
+44154.
+
+Output SHA256:
+aeb98a67922ee305ce23dd27e8135a537440f6df65c920dee543b7cb198fa0f9
+
+BYTE IDENTICAL:
+true.
+
+stderr:
+empty for both sweeps.
+
+All executable pre-primary integrity probes:
+PASS.
+
+No mechanical-world population outcome
+is used as scientific evidence.
+
+F46A SOURCE FORM
+
+F46A will reuse
+the existing verified F46 source bundle:
+
+base64 SHA256:
+b6edfab88e74753d5d32c113ccee30941ce3421f9a15dc38664d25e214479a5b
+
+gzip SHA256:
+4e0d2b5ded1f71f55cf3e94652d52224c3bae10bfe9e308a6e101de44f4037f3
+
+F46 source SHA256:
+efee5637a1ba709b5299199489f02988517abc49392788b72ea25b295119fcec
+
+The F46A loader must:
+
+verify those three original identities;
+
+verify exact authorized replacement counts;
+
+apply only the four preregistered dispatch repairs;
+
+verify repaired source SHA256:
+
+53d643ca7c1b17b9368abd60cae1666de7698dd3530795845250d2481767c885;
+
+then execute.
+
+Any mismatch fails closed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
