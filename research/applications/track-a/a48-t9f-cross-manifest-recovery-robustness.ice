@@ -689,3 +689,87 @@ therefore fails A48 closed.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-F48 FIVE-MANIFEST PRIMARY BINDING
+
+DATE:
+2026-09-22.
+
+F48:
+430f4ec780d822829cfb058e8c1fa32608134d73
+
+F47 PARENT SOURCE SHA256:
+645b1d8b8417702fce62a6268b9ba97dd41aba21e8cb9f48ccf683f32fc6d468
+
+A48 DRIVER SHA256:
+fba47337867b8b90a69324a45c3d70edeb6e790d62fb25bb4c29224449023444
+
+REPLICATE COUNT:
+5.
+
+WORLD COUNT PER REPLICATE:
+384.
+
+TOTAL WORLD COUNT PER ARM:
+1920.
+
+REPLICATE 1
+
+SEED:
+A48-F48-430f4ec780d822829cfb058e8c1fa32608134d73-R1
+
+MANIFEST SHA256:
+82eed03d3a4473f95d51c703c5f0bc7f7c54af27bfca470aaffb11b0ea63d845
+
+REPLICATE 2
+
+SEED:
+A48-F48-430f4ec780d822829cfb058e8c1fa32608134d73-R2
+
+MANIFEST SHA256:
+e74cff17b55fe6aab9297fad02f1f71503fc6583f70acd301e77921dc9e8c480
+
+REPLICATE 3
+
+SEED:
+A48-F48-430f4ec780d822829cfb058e8c1fa32608134d73-R3
+
+MANIFEST SHA256:
+31c44cb6c8478f6a2226cdf2f0cfc52d817fcfb90a0db3a6fbf97aeafb1ccd54
+
+REPLICATE 4
+
+SEED:
+A48-F48-430f4ec780d822829cfb058e8c1fa32608134d73-R4
+
+MANIFEST SHA256:
+5b7b1984034a3647369f70f045d0d4e9d73fe1e28c7f0d9fef7a24c0669c8980
+
+REPLICATE 5
+
+SEED:
+A48-F48-430f4ec780d822829cfb058e8c1fa32608134d73-R5
+
+MANIFEST SHA256:
+7e9bbadcc3313c29033c2cc291fcd34b58fe736d77eb5b128f230bceeafd8577
+
+STATUS:
+BOUND AFTER F48
+AND BEFORE ANY A48 PRIMARY ARM EXECUTION.
+
+No A48 replicate population outcome,
+effect-size estimate,
+robustness result,
+pooled result,
+or recovery-layer decision
+was observed before this binding.
+
+Two complete
+five-replicate primary sweeps
+must be byte-identical
+before scientific analysis.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
