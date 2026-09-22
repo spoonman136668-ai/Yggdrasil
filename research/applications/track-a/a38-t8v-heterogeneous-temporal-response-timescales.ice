@@ -727,3 +727,336 @@ LIVE ON THE SAME CLOCK?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A38 HETEROGENEOUS TEMPORAL RESPONSE TIMESCALES
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F38-DERIVED WORLD,
+TEMPORAL TRACE,
+DEFECTION,
+OR SCIENTIFIC OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+ee0bbdf7756f737a62370d230738705dc2f305d7.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a38_t8v_temporal_response_diversity_v1.py
+
+Loader Git blob:
+
+5417ce2206a48e61c1f881d8ddc0b3f0d08d832a.
+
+Encoded payload:
+
+research/applications/track-a/a38_t8v_temporal_response_diversity_v1.py.gz.b64
+
+Encoded payload Git blob:
+
+a24d94224599a82cf9813efca85e3dda5042f2a4.
+
+Decompressed source SHA-256:
+
+b4c778977af69ba40b9c9a3d6264aa6a93a9c7d6d52c16b45bdf41efae36b409.
+
+Decompressed source bytes:
+
+25356.
+
+Deterministic gzip SHA-256:
+
+1bd6f4cab0c97d0ff383379ef41a83882b3ac5dd4f4a4359aee4af5902d0a314.
+
+Compressed payload bytes:
+
+7353.
+
+Base64 payload characters:
+
+9804.
+
+PACKAGING NOTE
+
+A38 uses the text-safe verified-payload pattern introduced after
+the earlier binary truncation defects.
+
+The loader:
+
+base64-decodes;
+gzip-decompresses;
+verifies the frozen source SHA-256;
+then executes that exact source.
+
+This is packaging only.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake seed:
+
+MECHANICAL-F38-NONPRIMARY.
+
+The full eight-arm sweep was executed arm-isolated in parallel
+and combined deterministically.
+
+This changes execution scheduling only.
+Every arm consumed identical fake worlds
+and the exact frozen run_arm / summarize logic.
+
+Two complete mechanical sweeps were byte-identical.
+
+Serialized output SHA-256:
+
+9d466de2ae2ec2f08b81d7ebb7b7b47b3cf32b388a95206ae7fc7e1ad3e2c80e.
+
+Mechanical world-manifest SHA-256:
+
+99ba8c9f235cff5981a565e50e7e246b18bd66f9a621bd0fd8d5a9ab422a4354.
+
+All P1-P32 integrity probes:
+
+PASS.
+
+No MIXED arm mechanically qualified.
+
+No MIXED arm met:
+
+A38_TEMPORAL_DIVERSITY_INFORMATION_GAIN.
+
+MECHANICAL D2
+
+FAST:
+
+overall oscillation:
+14.32%.
+
+biased-periodic oscillation:
+96.88%.
+
+reversal acquisition:
+92.97%.
+
+median old-majority loss:
+0 epochs.
+
+aggregate service:
+229243.
+
+MEDIUM:
+
+overall:
+13.54%.
+
+biased-periodic:
+100%.
+
+reversal:
+93.75%.
+
+old-majority loss:
+1 epoch.
+
+service:
+223105.
+
+SLOW:
+
+overall:
+12.24%.
+
+biased-periodic:
+93.75%.
+
+reversal:
+88.28%.
+
+old-majority loss:
+2 epochs.
+
+service:
+214273.
+
+MIXED:
+
+overall:
+13.54%.
+
+biased-periodic:
+93.75%.
+
+reversal:
+90.63%.
+
+old-majority loss:
+1 epoch.
+
+service:
+221572.
+
+MIXED broke only:
+
+2 / 31
+
+FAST biased-periodic oscillators.
+
+MECHANICAL D3
+
+FAST:
+
+overall oscillation:
+14.06%.
+
+biased-periodic:
+93.75%.
+
+reversal:
+91.41%.
+
+old-majority loss:
+0 epochs.
+
+service:
+223824.
+
+MEDIUM:
+
+overall:
+12.76%.
+
+biased-periodic:
+90.63%.
+
+reversal:
+90.63%.
+
+old-majority loss:
+1 epoch.
+
+service:
+218259.
+
+SLOW:
+
+overall:
+11.98%.
+
+biased-periodic:
+81.25%.
+
+reversal:
+88.28%.
+
+old-majority loss:
+2 epochs.
+
+service:
+209762.
+
+MIXED:
+
+overall:
+13.54%.
+
+biased-periodic:
+87.50%.
+
+reversal:
+88.28%.
+
+old-majority loss:
+1 epoch.
+
+service:
+217516.
+
+MIXED broke only:
+
+3 / 30
+
+FAST biased-periodic oscillators.
+
+BALANCED PERIODIC CONTROL
+
+Every arm had:
+
+0%
+
+balanced-periodic false-majority rate.
+
+Thus the temporal traces did not mechanically
+force a false resolution
+of genuinely balanced periodic worlds.
+
+MECHANICAL INTERPRETATION
+
+Slower homogeneous response
+modestly reduced total oscillation.
+
+The strongest fake-world result was:
+
+D3 SLOW.
+
+But even D3 SLOW left:
+
+81.25%
+
+of the biased-periodic target worlds oscillatory.
+
+MIXED did NOT outperform SLOW.
+
+Therefore the mechanical result does not support
+the hypothesis that simple FAST/MEDIUM/SLOW diversity
+solves the temporal resonance.
+
+It does show a coherent tradeoff:
+
+slower response
+reduces some oscillation
+
+but delays true reversal
+and lowers aggregate service.
+
+No rho value,
+class ratio,
+class placement,
+refractory duration,
+qualification threshold,
+or information-gain rule
+is changed in response.
+
+This is NON-SCIENTIFIC mechanical evidence only.
+
+REAL A38 STATUS
+
+No real F38-derived world exists.
+
+No real temporal-trace outcome exists.
+
+No real A38 primary result exists.
+
+Let the resulting commit SHA be:
+
+F38.
+
+After F38 exists:
+
+1. derive exactly 384 fresh worlds from F38;
+2. bind the complete world-manifest SHA;
+3. only then execute two complete deterministic primary sweeps;
+4. require byte-identical output;
+5. report FAST / MEDIUM / SLOW / MIXED for D2 and D3 without post-result selection.
+
+NO POST-RESULT RHO TUNING.
+NO POST-RESULT CLASS-RATIO TUNING.
+NO POST-RESULT CLASS-PLACEMENT TUNING.
+NO POST-RESULT H / RECRUITMENT CHANGE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
