@@ -1442,3 +1442,42 @@ are compared byte-for-byte.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-F39 PRIMARY MANIFEST BINDING
+
+DATE:
+2026-09-21.
+
+F39:
+df5f10311f51b0076b143b1e00fcd1a391699ec2
+
+PRIMARY SEED:
+A39-F39-df5f10311f51b0076b143b1e00fcd1a391699ec2-PRIMARY
+
+WORLD COUNT:
+384.
+
+WORLD SHAPE:
+48 contexts x 8 replicas.
+
+PRIMARY WORLD MANIFEST SHA256:
+55eff9c115d214b99387f8a57bc25fd29237005e5250cff42d48e9f3a37f9015
+
+STATUS:
+BOUND BEFORE ANY PRIMARY ARM EXECUTION.
+
+The manifest was derived from the frozen F39 source
+after F39 existed.
+
+No arm outcome,
+population metric,
+qualification result,
+or scientific comparison
+was observed before this binding.
+
+The canonical DG-1R-05 primary is not consumed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
