@@ -975,3 +975,463 @@ The canonical DG-1R-05 primary is not consumed.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+A41 PRIMARY CLOSURE
+
+DATE:
+2026-09-22.
+
+F41:
+533b99503712bc37547969cf63100bd83336e69a
+
+MANIFEST-BINDING COMMIT:
+6e9fdd3cf1434737aea26fdb566957e4511e0847
+
+PRIMARY SEED:
+A41-F41-533b99503712bc37547969cf63100bd83336e69a-PRIMARY
+
+PRIMARY WORLD MANIFEST SHA256:
+a902a20ee2222f6aebc451659d8910238a1c9ee1c74f37ee4eee69a018f761c1
+
+PRIMARY OUTPUT SHA256:
+2ece0620dc75f451ceec767ab612805265f3bd64ec030ae053461a2c3969ecf2
+
+PRIMARY RUNS:
+2.
+
+PRIMARY OUTPUT BYTES:
+33457.
+
+BYTE IDENTICAL:
+true.
+
+P38:
+PASS.
+
+All other executable integrity probes:
+PASS.
+
+A41_INFORMATION_GAIN:
+FALSE.
+
+QUALIFICATION
+
+D2_MARGIN_EXCLUSION:
+NOT QUALIFIED.
+
+D3_MARGIN_EXCLUSION:
+NOT QUALIFIED.
+
+TECHNICAL EVIDENCE
+
+D2 BASE SUBTRACTIVE SLOW:
+aggregate service 235762;
+harm rate 15.36%;
+overall oscillation 11.20%;
+biased-periodic oscillation 100.00%;
+balanced false-majority 0.00%;
+reversal acquisition 89.84%;
+median old-majority loss 2 epochs;
+core-adjacent adverse rebuild 20.31%.
+
+D2 OCCUPANCY EXCLUSION:
+aggregate service 236385;
+harm rate 15.62%;
+overall oscillation 10.68%;
+biased-periodic oscillation 96.88%;
+balanced false-majority 0.00%;
+reversal acquisition 92.19%;
+median old-majority loss 2 epochs;
+core-adjacent adverse rebuild 16.32%.
+
+D2 MARGIN EXCLUSION:
+aggregate service 235790;
+harm rate 15.62%;
+overall oscillation 11.98%;
+biased-periodic oscillation 100.00%;
+balanced false-majority 0.00%;
+reversal acquisition 91.41%;
+median old-majority loss 2 epochs;
+core-adjacent adverse rebuild 21.44%.
+
+D3 BASE SUBTRACTIVE SLOW:
+aggregate service 232314;
+harm rate 16.15%;
+overall oscillation 10.68%;
+biased-periodic oscillation 96.88%;
+balanced false-majority 0.00%;
+reversal acquisition 87.50%;
+median old-majority loss 2 epochs;
+core-adjacent adverse rebuild 24.84%.
+
+D3 OCCUPANCY EXCLUSION:
+aggregate service 231943;
+harm rate 14.84%;
+overall oscillation 10.16%;
+biased-periodic oscillation 96.88%;
+balanced false-majority 0.00%;
+reversal acquisition 88.28%;
+median old-majority loss 2 epochs;
+core-adjacent adverse rebuild 17.09%.
+
+D3 MARGIN EXCLUSION:
+aggregate service 231540;
+harm rate 14.84%;
+overall oscillation 9.64%;
+biased-periodic oscillation 93.75%;
+balanced false-majority 0.00%;
+reversal acquisition 89.84%;
+median old-majority loss 2 epochs;
+core-adjacent adverse rebuild 20.69%.
+
+BIASED-PERIODIC CONTEXT DETAIL
+
+D2 BASE:
+44 = 8/8 oscillatory;
+45 = 8/8;
+46 = 8/8;
+47 = 8/8.
+
+D2 OCCUPANCY:
+44 = 8/8;
+45 = 7/8;
+46 = 8/8;
+47 = 8/8.
+
+D2 MARGIN:
+44 = 8/8;
+45 = 8/8;
+46 = 8/8;
+47 = 8/8.
+
+D3 BASE:
+44 = 7/8;
+45 = 8/8;
+46 = 8/8;
+47 = 8/8.
+
+D3 OCCUPANCY:
+44 = 8/8;
+45 = 8/8;
+46 = 8/8;
+47 = 7/8.
+
+D3 MARGIN:
+44 = 8/8;
+45 = 7/8;
+46 = 8/8;
+47 = 7/8.
+
+PAIRED OSCILLATOR BREAKS
+
+D2:
+BASE biased oscillators = 32;
+broken by OCCUPANCY = 1;
+broken by MARGIN = 0;
+broken by both = 0;
+OCCUPANCY-only = 1;
+MARGIN-only = 0.
+
+D3:
+BASE biased oscillators = 31;
+broken by OCCUPANCY = 1;
+broken by MARGIN = 2;
+broken by both = 0;
+OCCUPANCY-only = 1;
+MARGIN-only = 2.
+
+These counts are far below
+the frozen information-gain
+and qualification thresholds.
+
+LOCAL RECRUITMENT MECHANISM
+
+D2 OCCUPANCY:
+mean applied favored Q 0.27333;
+all adverse-side recruitment 10.21%;
+inside-core-radius adverse recruitment 6.17%;
+outside-core-radius adverse recruitment 19.05%;
+inside mean lambda suppression 31.62%;
+high-Q adverse recruitment 2.42%;
+low-Q adverse recruitment 18.33%.
+
+D2 MARGIN:
+mean applied favored Q 0.10927;
+all adverse-side recruitment 11.75%;
+inside-core-radius adverse recruitment 8.63%;
+outside-core-radius adverse recruitment 18.80%;
+inside mean lambda suppression 10.13%;
+high-Q adverse recruitment 4.62%;
+low-Q adverse recruitment 18.68%.
+
+D3 OCCUPANCY:
+mean applied favored Q 0.26195;
+all adverse-side recruitment 9.80%;
+inside-core-radius adverse recruitment 5.56%;
+outside-core-radius adverse recruitment 18.80%;
+inside mean lambda suppression 30.52%;
+high-Q adverse recruitment 2.17%;
+low-Q adverse recruitment 18.75%.
+
+D3 MARGIN:
+mean applied favored Q 0.10710;
+all adverse-side recruitment 12.12%;
+inside-core-radius adverse recruitment 8.15%;
+outside-core-radius adverse recruitment 20.95%;
+inside mean lambda suppression 10.50%;
+high-Q adverse recruitment 3.15%;
+low-Q adverse recruitment 20.61%.
+
+Therefore both exclusion mechanisms
+are locally active.
+
+MARGIN_EXCLUSION shows the intended graded relation:
+high-Q neighborhoods recruit to the adverse side
+far less often than low-Q neighborhoods.
+
+However OCCUPANCY applies a stronger field
+under the frozen normalization
+because each committed neighbor contributes 1
+whereas MARGIN contributions are bounded below or equal to 1.
+
+Therefore A41 does not justify the stronger claim
+that evidence-depth information is intrinsically redundant
+at the topology level.
+
+It supports the narrower result:
+
+under the frozen A41 equations,
+plain occupancy produces stronger average exclusion,
+while margin weighting produces selective graded exclusion
+without a macro oscillator solution.
+
+COUNTER-PULSE TRAJECTORY
+
+D2 BASE:
+mean favored committed fraction
+0.7121 at pulse onset
+to 0.2631 at burst end.
+
+D2 OCCUPANCY:
+0.7128
+to 0.2591.
+
+D2 MARGIN:
+0.7177
+to 0.2545.
+
+D3 BASE:
+0.6694
+to 0.2474.
+
+D3 OCCUPANCY:
+0.6664
+to 0.2473.
+
+D3 MARGIN:
+0.6555
+to 0.2493.
+
+The minimum committed fraction
+is effectively the burst-end fraction
+for all arms.
+
+Thus exclusion reduces
+who occupies nearby uncertain territory,
+but it does not preserve
+the favored committed population fraction
+through the adverse burst.
+
+This is the strongest mechanistic reason
+A41 fails at the macro level.
+
+SPATIAL / DEADLOCK DIAGNOSTICS
+
+Biased-world final-eight-epoch diagnostics
+show no persistent approximately 50/50
+core/periphery deadlock signature.
+
+Mean min(C_fraction,S_fraction):
+
+D2 BASE 1.36%;
+D2 OCCUPANCY 0.94%;
+D2 MARGIN 1.30%;
+D3 BASE 1.42%;
+D3 OCCUPANCY 1.25%;
+D3 MARGIN 1.29%.
+
+Mean C/S interface count:
+
+D2 BASE 0.410;
+D2 OCCUPANCY 0.176;
+D2 MARGIN 0.262;
+D3 BASE 0.465;
+D3 OCCUPANCY 0.219;
+D3 MARGIN 0.359.
+
+OCCUPANCY therefore reduces
+opposed local interfaces,
+but no stable two-domain deadlock emerges.
+
+At adverse-burst midpoint,
+roughly 71-73% of the frozen onset core
+remains committed across arms.
+
+Mean U occupancy at those midpoints
+is about 12-16%,
+with another roughly 9-10% in H.
+
+This is not a clean impermeable moat.
+It is a partially unresolved periphery
+around a still-substantial surviving core.
+
+MOAT / RIGIDITY CHECK
+
+All arms retain reversal acquisition above 80%.
+
+All arms retain median old-majority loss
+at 2 epochs.
+
+Balanced-periodic false-majority is 0%
+for every arm.
+
+Therefore A41 does not trade oscillation
+for pathological rigidity.
+
+RESEARCH-INSTRUMENTATION NOTE
+
+The preregistered auxiliary metric:
+
+time from true-reversal onset
+until new-side recruitment near the old core
+returns to the BASE same-context median rate
+
+was not validly captured
+at recruitment-opportunity resolution
+by the frozen F41 output.
+
+F41 records actual near-core recruitment events,
+but not every eligible near-core opportunity
+for the true-reversal families.
+
+Therefore this one auxiliary diagnostic
+is NOT VALIDLY MEASURED
+and is not reconstructed post hoc.
+
+No qualification or information-gain conclusion
+depends on that metric.
+
+This is treated as an instrumentation defect,
+not as scientific evidence.
+
+CAUSAL INTERPRETATION
+
+A41 confirms the periphery-rebuild mechanism
+at the local level.
+
+A surviving core can suppress
+nearby adverse recruitment.
+
+The effect is large under OCCUPANCY:
+inside-core-radius adverse recruitment
+falls from 8.72% to 6.17% in D2
+and from 10.26% to 5.56% in D3.
+
+But local suppression is not sufficient
+to stop the population oscillator.
+
+The favored committed fraction
+still collapses to roughly one quarter
+of the population by adverse-burst end.
+
+The exclusion field prevents some
+opposing occupation of nearby U cells,
+but it does not actively refill those cells
+with the favored commitment.
+
+Therefore A41 produces a fence,
+not a regenerative core.
+
+That directly justifies the next causal test:
+
+positive active recruitment from the surviving core.
+
+A42 should keep the core/periphery distinction,
+but test whether veterans can act as a local magnet
+for same-side recruitment.
+
+A clean A42 lineage should distinguish:
+
+active recruitment alone;
+
+A41 exclusion alone;
+
+and simultaneous push-pull
+active recruitment plus exclusion.
+
+If push-pull succeeds
+where both individual mechanisms fail,
+the missing behavior is synergistic population turnover control,
+not another committed-state persistence transform.
+
+PLAIN-SPEAK INTERPRETATION
+
+A41 taught the core how to hold territory.
+
+That part worked.
+
+Near a surviving core,
+fewer uncertain cells joined the attacking side.
+The simple OCCUPANCY fence
+was especially effective locally.
+
+But the fence did not stop the organism
+from flipping back and forth.
+
+Why?
+
+Because during a bad pulse,
+the old side still shrank
+from roughly two thirds or more of the population
+to only about one quarter.
+
+The fence kept some enemies out,
+but it did not refill the empty ground
+with allies.
+
+There was no major moat failure.
+The organism could still change its mind
+when the world really changed.
+
+There was also no stable 50/50 civil war
+between core and periphery.
+
+The failure is simpler:
+
+defense without recruitment
+is not enough.
+
+So the next question is now unusually clean.
+
+A42 should ask whether
+the surviving core can actively recruit
+nearby uncertain cells back onto its side.
+
+A41:
+hold the line.
+
+A42:
+bring reinforcements.
+
+Then compare both together.
+
+If the fence and the magnet
+work only when combined,
+we have identified a genuinely distributed
+push-pull stabilization mechanism
+rather than another stronger memory rule.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
