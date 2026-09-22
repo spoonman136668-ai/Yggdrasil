@@ -1935,3 +1935,339 @@ controls the surrounding population.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F47 AMENDMENT 04 — DOSE-LADDER IDENTIFIABILITY REPAIR
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F47
+AND BEFORE ANY A47 SCIENTIFIC OUTCOME.
+
+MECHANICAL IDENTIFIABILITY FINDING
+
+A focused non-primary smoke audit
+of Amendment 03's fixed-G5 dose ladder
+showed that G5 commonly becomes true
+only after most of the parent refractory timer
+has already expired.
+
+Consequently:
+
+T1 often produced
+zero actual release advance;
+
+D3 T1 and T2
+often produced the same realized release time.
+
+That means a G5-only
+T1/T2 ladder
+does not reliably create
+distinct intervention doses.
+
+This is a design-identifiability defect,
+not a scientific result.
+
+No F47 exists.
+No primary world exists.
+No mechanical-world population outcome
+is used as evidence.
+
+CORRECTION
+
+Separate two questions.
+
+1. DOSE RESPONSE
+
+Use the earlier evidence-aligned gate
+already justified by
+the A45 refractory audit:
+
+MPOST_GATE(i)
+=
+local mode SUPPORT
+
+AND
+
+M_post(i,former_side) > 0.
+
+This signal is commonly available
+on the first locked recovery epoch.
+
+Use MPOST_GATE
+for the T1/T2/FULL dose ladder.
+
+2. A46 REGRESSION / STAGGER TEST
+
+Retain repaired A46 G5:
+
+SUPPORT
+AND
+M_post > 0
+AND
+Q_raw > 0.
+
+Use G5 only for:
+
+G5_FULL;
+
+G5_FULL_STAGGER.
+
+Thus the A46 upper bound
+and the synchronized-release hypothesis
+remain directly represented.
+
+REVISED ARMS
+
+Exactly eleven arms.
+
+D2:
+
+D2_BASE_ECHO_PHASE;
+D2_MPOST_T1;
+D2_MPOST_FULL;
+D2_G5_FULL;
+D2_G5_FULL_STAGGER.
+
+D3:
+
+D3_BASE_ECHO_PHASE;
+D3_MPOST_T1;
+D3_MPOST_T2;
+D3_MPOST_FULL;
+D3_G5_FULL;
+D3_G5_FULL_STAGGER.
+
+No D2 T2/T3.
+
+No D3 T3.
+
+DOSE-LADDER ACTION
+
+MPOST_T1:
+
+on the first locked refractory epoch only,
+if MPOST_GATE is true:
+
+perform the ordinary parent timer decrement;
+
+then remove one additional future tick;
+
+remain refractory
+for the current epoch.
+
+MPOST_T2:
+
+D3 only.
+
+On the first locked refractory epoch only,
+if MPOST_GATE is true:
+
+perform the ordinary parent decrement;
+
+then remove two additional future ticks;
+
+remain refractory
+for the current epoch.
+
+MPOST_FULL:
+
+on the first locked refractory epoch only,
+if MPOST_GATE is true:
+
+release to U immediately
+in the current epoch.
+
+This arm is intentionally aggressive.
+
+Its purpose is to complete
+the same-gate dose curve
+and expose any balanced/chatter cost
+of using MPOST without Q confirmation.
+
+A46 REGRESSION
+
+G5_FULL:
+
+exact repaired A46
+immediate-release action
+under the repaired G5 eligibility signal.
+
+It may fire on any locked epoch
+where G5 becomes true.
+
+G5_FULL is not part
+of the MPOST dose ranking.
+
+It is the repaired-A46
+upper-bound regression control.
+
+STAGGER TEST
+
+G5_FULL_STAGGER:
+
+same repaired G5 eligibility
+as G5_FULL.
+
+Each eligible locked epoch,
+while no stagger action
+has yet occurred in the episode:
+
+draw fixed Bernoulli p = 1/2.
+
+On success:
+
+release immediately to U.
+
+On failure:
+
+use parent refractory behavior.
+
+The cell may be tested again
+on a later locked epoch
+if G5 remains true.
+
+This isolates timing synchrony
+without altering the readiness signal.
+
+MINIMUM EFFECTIVE DOSE
+
+Dose ranking is now
+within the MPOST ladder only.
+
+D2:
+
+MPOST_T1
+<
+MPOST_FULL.
+
+D3:
+
+MPOST_T1
+<
+MPOST_T2
+<
+MPOST_FULL.
+
+A minimum-dose candidate
+must satisfy the recovery
+and safety criteria
+from Amendment 03.
+
+For chatter cost,
+compare each sub-FULL MPOST dose
+against MPOST_FULL,
+not G5_FULL.
+
+This keeps the chatter-cost comparison
+inside one fixed eligibility signal.
+
+A46 G5_FULL
+is reported separately.
+
+STAGGER INFORMATION GAIN
+
+Compare:
+
+G5_FULL_STAGGER
+
+against:
+
+G5_FULL.
+
+The retained-recovery-benefit
+and chatter-reduction rules
+from Amendment 03
+remain unchanged,
+but their reference FULL arm
+is specifically G5_FULL.
+
+COMMON RANDOMS
+
+All inherited stochastic events
+remain common across all eleven arms.
+
+MPOST dose actions
+are deterministic
+once the first-locked gate is evaluated.
+
+G5_FULL is deterministic
+once G5 is true.
+
+G5_FULL_STAGGER adds only
+the dedicated A47 stagger Bernoulli.
+
+SUPERSEDED MECHANICAL WORK
+
+All mechanical work
+performed under:
+
+the original six-arm A47;
+
+Amendment 03's nine-arm G5-only sweep
+
+is diagnostic-only.
+
+A fresh eleven-arm implementation
+must pass:
+
+focused A45 parent parity;
+
+dose-separation checks;
+
+repaired-A46 G5 regression checks;
+
+two complete byte-identical
+mechanical sweeps
+
+before F47.
+
+PLAIN-SPEAK CORRECTION
+
+The first sweep design
+waited for too much proof
+before trying to shave time
+off the refractory sentence.
+
+By the time
+the full G5 signal appeared,
+many cells were almost done
+waiting anyway.
+
+That makes
+one-tick and two-tick doses
+look artificially identical.
+
+So A47 now uses
+the earlier signal
+for the dose curve:
+
+the neighborhood supports
+the old side,
+
+and the cell's own updated evidence
+has already turned back toward it.
+
+That lets us genuinely compare:
+
+shave one turn;
+
+shave two turns;
+
+or unlock immediately.
+
+Separately,
+we keep A46's stricter G5 signal
+for the full-release regression
+and the stagger test.
+
+That gives us
+a real dose-response experiment
+without losing
+the validated A46 reference.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
