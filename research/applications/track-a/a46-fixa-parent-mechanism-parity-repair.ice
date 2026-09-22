@@ -440,3 +440,439 @@ before scientific analysis.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+A46-FIXA PRIMARY CLOSURE
+
+DATE:
+2026-09-22.
+
+F46A:
+6a52b0ed4372371727649e4f14f5967d28345551
+
+MANIFEST-BINDING COMMIT:
+3992f3efd382de09a913ff38160647903e7b6103
+
+REPAIRED SOURCE SHA256:
+53d643ca7c1b17b9368abd60cae1666de7698dd3530795845250d2481767c885
+
+PRIMARY SEED:
+A46-FIXA-F46A-6a52b0ed4372371727649e4f14f5967d28345551-PRIMARY
+
+PRIMARY WORLD MANIFEST SHA256:
+faba5e274d757b6712467b725f4353003966773e6a4eef5a0412837ee570ca90
+
+PRIMARY OUTPUT SHA256:
+d66b8475be964cab80da82af3c868fec98c9015d66d9fd374d609e02e670de12
+
+PRIMARY RUNS:
+2.
+
+PRIMARY OUTPUT BYTES:
+44338.
+
+BYTE IDENTICAL:
+true.
+
+stderr:
+empty for both runs.
+
+All executable integrity probes:
+PASS.
+
+SCIENTIFIC STATUS
+
+D2_G5_REENTRY:
+A46_RECOVERY_INFORMATION_GAIN = FALSE.
+NOT QUALIFIED.
+
+D3_G5_REENTRY:
+A46_RECOVERY_INFORMATION_GAIN = TRUE.
+NOT QUALIFIED.
+
+Therefore the repaired intended A46 question
+has positive information gain in D3
+but does not reach full qualification.
+
+D2 TECHNICAL EVIDENCE
+
+D2 ECHO_PHASE parent:
+
+aggregate service 236606;
+harm rate 15.36%;
+overall oscillation 7.29%;
+biased-periodic oscillation 50.00%;
+5:3 oscillation 100.00%;
+6:2 oscillation 0.00%;
+balanced false-majority 0.00%;
+reversal acquisition 88.28%;
+median old-majority loss 3 epochs;
+5:3 epoch-3 core persistence 31.23%;
+mean unresolved episode duration 4.148 epochs;
+mean favored-majority recovery latency 5.148 epochs;
+median recovery latency 4 epochs;
+mean refractory fraction
+across recovery steps 1-3 32.58%;
+favored-to-unresolved transitions 66;
+recovery-never count 8;
+same-side short-cycle chatter 644.
+
+D2 repaired G5_REENTRY:
+
+aggregate service 237710;
+harm rate 15.62%;
+overall oscillation 7.55%;
+biased-periodic oscillation 50.00%;
+5:3 oscillation 100.00%;
+6:2 oscillation 0.00%;
+balanced false-majority 0.00%;
+reversal acquisition 88.28%;
+median old-majority loss 3 epochs;
+5:3 epoch-3 core persistence 35.32%;
+mean unresolved episode duration 3.402 epochs;
+mean favored-majority recovery latency 4.250 epochs;
+median recovery latency 3 epochs;
+mean refractory fraction
+across recovery steps 1-3 24.31%;
+favored-to-unresolved transitions 68;
+recovery-never count 8;
+same-side short-cycle chatter 779.
+
+D2 causal deltas:
+
+mean unresolved episode:
+-17.98%;
+
+mean recovery latency:
+-0.898 epoch;
+
+mean refractory fraction steps 1-3:
+-25.41%;
+
+aggregate service:
++1104
+(+0.47%);
+
+5:3 epoch-3 core persistence:
++4.10 percentage points;
+
+6:2 oscillator delta:
+0.
+
+D2 misses
+the original A46 information-gain thresholds
+of:
+
+at least 25%
+unresolved-duration reduction;
+
+and at least 1 epoch
+mean recovery-latency reduction.
+
+D3 TECHNICAL EVIDENCE
+
+D3 ECHO_PHASE parent:
+
+aggregate service 232105;
+harm rate 15.62%;
+overall oscillation 6.77%;
+biased-periodic oscillation 46.88%;
+5:3 oscillation 93.75%;
+6:2 oscillation 0.00%;
+balanced false-majority 0.00%;
+reversal acquisition 87.50%;
+median old-majority loss 3 epochs;
+5:3 epoch-3 core persistence 29.24%;
+mean unresolved episode duration 5.408 epochs;
+mean favored-majority recovery latency 6.506 epochs;
+median recovery latency 5 epochs;
+mean refractory fraction
+across recovery steps 1-3 45.71%;
+favored-to-unresolved transitions 61;
+recovery-never count 9;
+same-side short-cycle chatter 0.
+
+D3 repaired G5_REENTRY:
+
+aggregate service 234550;
+harm rate 16.15%;
+overall oscillation 7.29%;
+biased-periodic oscillation 50.00%;
+5:3 oscillation 100.00%;
+6:2 oscillation 0.00%;
+balanced false-majority 0.00%;
+reversal acquisition 87.50%;
+median old-majority loss 3 epochs;
+5:3 epoch-3 core persistence 32.45%;
+mean unresolved episode duration 3.975 epochs;
+mean favored-majority recovery latency 5.034 epochs;
+median recovery latency 4 epochs;
+mean refractory fraction
+across recovery steps 1-3 28.62%;
+favored-to-unresolved transitions 64;
+recovery-never count 8;
+same-side short-cycle chatter 298.
+
+D3 causal deltas:
+
+mean unresolved episode:
+-26.50%;
+
+mean recovery latency:
+-1.472 epochs;
+
+mean refractory fraction steps 1-3:
+-37.39%;
+
+aggregate service:
++2445
+(+1.05%);
+
+5:3 epoch-3 core persistence:
++3.21 percentage points;
+
+recovery-never:
+9 -> 8;
+
+6:2 oscillator delta:
+0.
+
+D3 therefore satisfies
+the original A46 recovery-information-gain rule.
+
+G5 ACTIVITY / SAFETY
+
+Repaired G5 remains active.
+
+D2 G5:
+
+5:3 recovery gate rate
+approximately 30.24%;
+
+balanced gate exposure
+approximately 3.39%.
+
+D3 G5:
+
+5:3 recovery gate rate
+approximately 34.51%;
+
+balanced gate exposure
+approximately 6.65%.
+
+For both D2 and D3:
+
+direct favored-to-adverse
+majority flips in 5:3:
+
+0.
+
+Adverse-majority entries:
+
+0.
+
+Adverse-majority epochs:
+
+0.
+
+Old-side G5 fires
+during the first four epochs
+after true reversal:
+
+0.
+
+Thus repaired G5
+does not gain recovery
+by creating wrong-side capture
+or by reactivating
+the obsolete side after genuine reversal.
+
+WHY NO ARM QUALIFIES
+
+The repair confirms
+that refractory debt
+is a real recovery bottleneck.
+
+But G5 does not solve
+the inherited hard macro phenotype.
+
+D2 5:3 oscillation remains:
+
+100.00%.
+
+D3 5:3 oscillation moves
+from 93.75%
+to 100.00%
+in the independent treatment stream.
+
+Neither arm approaches
+the frozen A46 qualification ceiling
+of 25% 5:3 oscillation.
+
+Favored-to-unresolved transition counts
+are not reduced by 50%.
+
+Unresolved duration
+is not reduced by 50%.
+
+Median favored-majority recovery
+remains above 2 epochs.
+
+Therefore:
+
+D2_G5_REENTRY NOT QUALIFIED.
+
+D3_G5_REENTRY NOT QUALIFIED.
+
+CHATTER COST
+
+Recovery acceleration is not free.
+
+D2 same-side short-cycle chatter:
+
+644 -> 779
+(+20.96%).
+
+D3:
+
+0 -> 298.
+
+This reinforces the repaired
+common-random diagnosis:
+
+the G5 evidence signal is useful,
+
+but immediate re-entry to U
+is a stronger plasticity action
+than necessary.
+
+CAUSAL INTERPRETATION
+
+The A46 parent-mechanism defect
+materially invalidated
+the original frozen G5 treatment comparison.
+
+A46-FIXA repairs that defect
+and answers the intended question.
+
+The repaired result is:
+
+refractory availability
+really is part
+of the post-disturbance recovery bottleneck.
+
+In D3,
+the preregistered information-gain threshold
+is crossed.
+
+The organism releases refractory debt faster,
+recovers favored majority sooner,
+preserves the already-solved 6:2 regime,
+does not enter the wrong side,
+and remains reversible.
+
+However immediate re-entry
+does not solve the full 5:3 phenotype
+and increases local short-cycle behavior.
+
+Therefore the next justified experiment
+is not a stronger release gate.
+
+It is a smaller action:
+
+one-tick refractory acceleration
+on the first locked epoch,
+
+with the cell remaining refractory
+for that current epoch.
+
+The previously proposed comparison remains justified:
+
+SUPPORT-only acceleration
+as the causal control;
+
+SUPPORT + M_post > 0
+as the evidence-aligned treatment.
+
+A47 must use common stateless
+action-random draws
+to isolate this smaller timer action.
+
+PLAIN-SPEAK INTERPRETATION
+
+The wiring repair changed the conclusion.
+
+When A46 is actually given
+the full A45 organism
+it was supposed to inherit,
+early re-entry really does help recovery.
+
+With D3,
+it clears the frozen
+information-gain bar.
+
+The system gets out
+of its unresolved state
+about one and a half epochs sooner,
+and much less of the population
+is stuck serving refractory time.
+
+It still does not
+jump onto the wrong side.
+
+It still accepts
+a real environmental reversal.
+
+And the easier 6:2 problem
+stays solved.
+
+But opening the bench gate completely
+also makes more cells
+cycle through short commitments.
+
+And the hardest 5:3 worlds
+still lose majority into uncertainty
+often enough to fail qualification.
+
+So the direction is now much firmer:
+
+the waiting rule
+really is slowing recovery.
+
+But we do not need
+to abolish the waiting rule.
+
+The next test should make it
+one beat more flexible.
+
+A cell still sits out
+the current turn.
+
+Good local evidence
+can only remove one future turn
+from its remaining wait.
+
+That is A47.
+
+NORTH-STAR IMPLICATION
+
+A46-FIXA provides
+the first repaired evidence
+that developmental plasticity timing
+can be locally evidence-sensitive
+without requiring:
+
+a central controller;
+
+a global phase signal;
+
+or wrong-side recommitment.
+
+The remaining task
+is to find the smallest local adjustment
+that captures the recovery benefit
+without paying unnecessary chatter cost.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
