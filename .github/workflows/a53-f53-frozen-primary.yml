@@ -1,4 +1,4 @@
-name: A53 F53 Recovery Inspect
+name: A53 F53 Authoritative Primary
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
       - .github/workflows/a53-f53-frozen-primary.yml
 
 jobs:
-  inspect-parent:
+  primary:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,36 +15,145 @@ jobs:
           ref: ${{ github.sha }}
           fetch-depth: 0
 
-      - name: Reconstruct and verify F52 parent
+      - name: Verify frozen source and bound manifest
         shell: bash
         run: |
           set -euo pipefail
           cd research/applications/track-a
           python3 - <<'PY'
-          import base64,gzip,hashlib
+          import hashlib, json, runpy
           from pathlib import Path
 
-          stem="a52_t10d_committed_response_phase_offset_v1"
-          parts=sorted(Path(".").glob(stem+".source.part*.b64"))
-          assert len(parts)==7, len(parts)
-          enc="".join("".join(p.read_text().split()) for p in parts)
-          assert len(enc)==28468, len(enc)
-          assert hashlib.sha256(enc.encode()).hexdigest()=="49dba6fdeed19093684c97a78e6690fdec2276229bcdd649f76e0554c16f2892"
-          raw=base64.b64decode(enc,validate=True)
-          assert len(raw)==21350, len(raw)
-          assert hashlib.sha256(raw).hexdigest()=="cbb20b48b21e6a6f7d2b47c5347ce4431d65c3202df0a8daa230472b805f2699"
-          src=gzip.decompress(raw)
-          assert len(src)==92868, len(src)
-          assert hashlib.sha256(src).hexdigest()=="f1c2cfbd707621b18db101ea9a41f2264841acee10abcc5b80e4239c50ae60e1"
-          Path("/tmp/a52.py").write_bytes(src)
-          print("F52_PARENT_OK",len(src),hashlib.sha256(src).hexdigest())
+          seed = "A53-F53-29648c11507024973a0d855dc02f334bea195a8f-PRIMARY"
+          source = Path("a53_t10e_current_evidence_vetoed_phase_memory_v1.source.py")
+          src = source.read_bytes()
+          assert len(src) == 92419, len(src)
+          assert hashlib.sha256(src).hexdigest() == "dd19ce7c9b5745087e28b7be965da83f45a876c732e8e1991d123dcf21604656"
+
+          ns = runpy.run_path(str(source), run_name="a53_manifest_check")
+          m = ns["manifest"](seed)
+          assert m["count"] == 384, m["count"]
+          assert m["sha256"] == "7a3c0835f49bf2fca4cff13b6b4eb28b4b74a6416354d4f4914471abca275df5", m["sha256"]
+          print("A53_PREPRIMARY_GATE_OK")
+          print("SOURCE_BYTES", len(src))
+          print("SOURCE_SHA256", hashlib.sha256(src).hexdigest())
+          print("MANIFEST_COUNT", m["count"])
+          print("MANIFEST_SHA256", m["sha256"])
           PY
 
-          echo "=== KEY LINE NUMBERS ==="
-          grep -nE 'ARM|TAU|tau|pressure_decision|decision_pressure|pressure_history|PRESSURE|p_stay|def run_|def simulate|def summarize|def main|__main__|integrity|diagnostic' /tmp/a52.py | tail -n 220
+      - name: Run duplicate authoritative primaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research/applications/track-a
 
-          echo "=== SOURCE HEAD 1-220 ==="
-          sed -n '1,220p' /tmp/a52.py
+          SEED='A53-F53-29648c11507024973a0d855dc02f334bea195a8f-PRIMARY'
+          LOADER='a53_t10e_current_evidence_vetoed_phase_memory_v1.py'
 
-          echo "=== SOURCE TAIL ==="
-          tail -n 260 /tmp/a52.py
+          python3 "$LOADER" "$SEED" > a53_primary_1.json 2> a53_primary_1.stderr
+          python3 "$LOADER" "$SEED" > a53_primary_2.json 2> a53_primary_2.stderr
+
+          test ! -s a53_primary_1.stderr
+          test ! -s a53_primary_2.stderr
+
+          B1=$(wc -c < a53_primary_1.json | tr -d ' ')
+          B2=$(wc -c < a53_primary_2.json | tr -d ' ')
+          H1=$(sha256sum a53_primary_1.json | awk '{print $1}')
+          H2=$(sha256sum a53_primary_2.json | awk '{print $1}')
+
+          test "$B1" = "$B2"
+          test "$H1" = "$H2"
+          cmp -s a53_primary_1.json a53_primary_2.json
+
+          echo "A53_DUPLICATE_PRIMARY_GATE_OK"
+          echo "PRIMARY_BYTES=$B1"
+          echo "PRIMARY_SHA256=$H1"
+          echo "STDERR_EMPTY=TRUE"
+          echo "BYTE_IDENTICAL=TRUE"
+
+      - name: Open result only after duplicate gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research/applications/track-a
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          r = json.loads(Path("a53_primary_1.json").read_text())
+
+          def get(d, *path):
+              for k in path:
+                  if not isinstance(d, dict) or k not in d:
+                      return None
+                  d = d[k]
+              return d
+
+          arms = {}
+          for arm in (
+              "D2_P0_TAU0","D2_P0_TAU3_FIXED","D2_P0_TAU3_VETO",
+              "D2_P1_TAU0","D2_P1_TAU3_FIXED","D2_P1_TAU3_VETO",
+              "D3_P0_TAU0","D3_P0_TAU3_FIXED","D3_P0_TAU3_VETO",
+              "D3_P1_TAU0","D3_P1_TAU3_FIXED","D3_P1_TAU3_VETO",
+          ):
+              s = r["summaries"][arm]
+              arms[arm] = {
+                  "oscillatory_fraction": get(s, "oscillatory_fraction"),
+                  "biased_53_oscillatory_fraction": get(s, "biased_53_oscillatory_fraction"),
+                  "biased_62_oscillatory_fraction": get(s, "biased_62_oscillatory_fraction"),
+                  "burst_end_mean_favored_fraction": get(s, "a49_burst_end", "mean_favored_fraction"),
+                  "burst_end_favored_majority_frequency": get(s, "a49_burst_end", "favored_majority_frequency"),
+                  "favored_to_unresolved": get(s, "a49_majority_continuity", "favored_to_unresolved"),
+                  "mean_unresolved_episode_duration": get(s, "a49_majority_continuity", "mean_unresolved_episode_duration"),
+                  "direct_favored_to_adverse": get(s, "a49_majority_continuity", "direct_favored_to_adverse"),
+                  "adverse_majority_entries": get(s, "a49_majority_continuity", "adverse_majority_entries"),
+                  "balanced_false_majority_rate": get(s, "balanced_periodic_false_majority_rate"),
+                  "reversal_acquire_fraction": get(s, "reversal_acquire_fraction"),
+                  "old_majority_loss_median": get(s, "old_majority_loss_median"),
+                  "aggregate_service": get(s, "aggregate_service"),
+                  "median_beta_f": get(s, "a49_creep", "median_beta_f"),
+              }
+
+          veto = {}
+          for arm in ("D2_P0_TAU3_VETO","D2_P1_TAU3_VETO","D3_P0_TAU3_VETO","D3_P1_TAU3_VETO"):
+              p = r["phase_diagnostics"][arm]
+              veto[arm] = {
+                  "decision_count": p.get("decision_count"),
+                  "delayed_fraction": p.get("delayed_fraction"),
+                  "history_available": p.get("history_available"),
+                  "veto_fired": p.get("veto_fired"),
+                  "veto_fraction_of_history": p.get("veto_fraction_of_history"),
+                  "fixed_would_protect": p.get("fixed_would_protect"),
+                  "vetoed_fixed_protection": p.get("vetoed_fixed_protection"),
+                  "reversal_epoch_2": get(p, "reversal_old_side", "2"),
+                  "hit_3": get(p, "hit_by_hit_53", "3"),
+              }
+
+          summary = {
+              "seed": r["seed"],
+              "manifest": r["manifest"],
+              "A53_ANY_QUALIFIED": r["A53_ANY_QUALIFIED"],
+              "qualification": r["qualification"],
+              "safe_phase": r["safe_phase"],
+              "phase_macro_information_gain": r["phase_macro_information_gain"],
+              "phase_push_interaction": r["phase_push_interaction"],
+              "integrity": r["integrity"],
+              "arms": arms,
+              "veto": veto,
+          }
+          Path("a53_primary_summary.json").write_text(json.dumps(summary, sort_keys=True, indent=2) + "\n")
+          print(json.dumps(summary, sort_keys=True, indent=2))
+          PY
+
+      - name: Upload gated primary evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: a53-f53-authoritative-primary
+          path: |
+            research/applications/track-a/a53_primary_1.json
+            research/applications/track-a/a53_primary_2.json
+            research/applications/track-a/a53_primary_1.stderr
+            research/applications/track-a/a53_primary_2.stderr
+            research/applications/track-a/a53_primary_summary.json
+          if-no-files-found: error
+          retention-days: 30
