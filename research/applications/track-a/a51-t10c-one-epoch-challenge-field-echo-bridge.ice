@@ -730,3 +730,925 @@ ON THE SAME SHIFT?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F51 AMENDMENT 01 — MEASURED HANDOFF-LAG TTL SWEEP
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F51
+AND BEFORE ANY A51 SCIENTIFIC OUTCOME.
+
+SUPERSESSION
+
+The original one-epoch-only A51 design
+was preregistered before
+the post-A50 handoff-lag diagnostic
+was completed.
+
+That diagnostic is now bound at:
+
+ca5ef4c465289e8f5272c4d1848f855bfa0b0338.
+
+No F51 exists.
+
+No A51 scientific outcome
+has been observed.
+
+Therefore the one-epoch-only design
+is superseded before freeze
+by this measured TTL sweep.
+
+MEASURED LAG
+
+In exact frozen A50 5:3 worlds:
+
+D2 G5_PUSH_PULL releases:
+
+n = 1029.
+
+Current same-side challenge field nonzero:
+
+0.00%.
+
+Current same-side committed-core occupancy nonzero:
+
+100.00%.
+
+Last nonzero same-side challenge field:
+
+lag 1:
+0.00%.
+
+lag 2:
+97.18%.
+
+lag 3:
+2.82%.
+
+within 3:
+100.00%.
+
+D3 favored-former-side releases:
+
+n = 1576.
+
+Current same-side challenge field nonzero:
+
+0.00%.
+
+Current same-side committed-core occupancy nonzero:
+
+99.87%.
+
+Last nonzero same-side challenge field:
+
+lag 1:
+0.00%.
+
+lag 2:
+70.88%.
+
+lag 3:
+21.64%.
+
+lag >=4:
+7.36%.
+
+NEVER:
+0.13%.
+
+within 3:
+92.51%.
+
+Thus a one-epoch bridge
+is predicted to miss
+almost the entire measured target seam.
+
+The spatial core remains present.
+
+The missing quantity
+is recent CHALLENGE-mode field state.
+
+A51 QUESTION
+
+What is the minimum
+strictly local,
+non-recursive
+challenge-field memory duration
+
+that restores temporal overlap
+between:
+
+recovered G5-released cells
+
+and
+
+the same-side challenge organization
+that existed shortly before release,
+
+without creating stale-side bias,
+balanced capture,
+or reversal rigidity?
+
+TTL ARMS
+
+Freeze four field-memory durations:
+
+TTL0 = current A50 behavior.
+
+TTL1 = one subsequent epoch.
+
+TTL2 = two subsequent epochs.
+
+TTL3 = three subsequent epochs.
+
+TTL is measured
+from the most recent epoch
+in which the veteran
+was currently CHALLENGE
+for its committed side.
+
+No duration beyond 3
+is permitted in A51.
+
+No continuous decay.
+
+No fitted duration.
+
+No context-specific duration.
+
+TRACE STATE
+
+Each cell j carries:
+
+CH_trace_side(j)
+
+in:
+
+NONE;
+C;
+S.
+
+and:
+
+CH_trace_age(j)
+
+as a nonnegative integer
+or NONE.
+
+Initial state:
+
+CH_trace_side = NONE.
+
+CH_trace_age = NONE.
+
+CURRENT CHALLENGE
+
+At the frozen A49
+post-defection challenge-field snapshot:
+
+if a surviving committed C cell
+has current C-relative mode CHALLENGE:
+
+CH_trace_side_next = C;
+
+CH_trace_age_next = 0.
+
+Analogously for S.
+
+NON-CHALLENGE SURVIVAL
+
+If a cell remains committed
+to the same side
+but is not currently CHALLENGE:
+
+an existing same-side trace
+may age by one epoch.
+
+The trace does not refresh.
+
+The stored trace side
+remains unchanged.
+
+If age exceeds
+the arm's TTL,
+it becomes inactive.
+
+RESET
+
+Trace resets immediately on:
+
+defection;
+
+refractory state;
+
+U;
+
+H;
+
+side change;
+
+loss of commitment.
+
+A trace cannot cross sides.
+
+FIELD CONTRIBUTION
+
+For TTLk arm,
+a surviving committed cell
+contributes to the challenge field iff:
+
+it is currently CHALLENGE
+
+OR
+
+it has a same-side trace
+with:
+
+1 <= age <= k.
+
+A neighbor contributes
+at most one occupancy unit.
+
+Current challenge
+and remembered challenge
+are UNIONED,
+not added.
+
+Therefore:
+
+no amplitude accumulation;
+
+no recursive strengthening;
+
+no gain;
+
+no decay coefficient.
+
+TTL0 reproduces
+the exact A50 NOW field.
+
+PUSH-PULL EQUATIONS
+
+Preserve exact A49/A50
+challenge occupancy push-pull.
+
+For eligible U target i:
+
+Q_C_ch_TTLk
+
+=
+radius-3 mean
+of surviving committed C neighbors
+that satisfy
+the TTLk field-contribution rule.
+
+Q_S analogously.
+
+Then:
+
+lambda_C'
+=
+(
+lambda_C_parent
++
+ETA * Q_C_ch_TTLk
+)
+*
+(
+1 - Q_S_ch_TTLk
+).
+
+lambda_S'
+=
+(
+lambda_S_parent
++
+ETA * Q_S_ch_TTLk
+)
+*
+(
+1 - Q_C_ch_TTLk
+).
+
+ETA = 1/2.
+
+lambda_H unchanged.
+
+No new gain.
+
+No new radius.
+
+No field threshold.
+
+FROZEN G5
+
+Preserve exact repaired
+F47/A48/A50 G5_FULL.
+
+No G5 gate,
+timing,
+or action changes.
+
+ARMS
+
+Exactly twenty arms.
+
+D2:
+
+D2_BASE;
+D2_G5;
+
+D2_PUSH_TTL0;
+D2_G5_PUSH_TTL0;
+
+D2_PUSH_TTL1;
+D2_G5_PUSH_TTL1;
+
+D2_PUSH_TTL2;
+D2_G5_PUSH_TTL2;
+
+D2_PUSH_TTL3;
+D2_G5_PUSH_TTL3.
+
+D3:
+
+D3_BASE;
+D3_G5;
+
+D3_PUSH_TTL0;
+D3_G5_PUSH_TTL0;
+
+D3_PUSH_TTL1;
+D3_G5_PUSH_TTL1;
+
+D3_PUSH_TTL2;
+D3_G5_PUSH_TTL2;
+
+D3_PUSH_TTL3;
+D3_G5_PUSH_TTL3.
+
+TTL0 controls reproduce A50.
+
+The PUSH-only TTL arms
+measure field persistence
+without recovery composition.
+
+The G5+PUSH TTL arms
+measure the cross-layer handoff.
+
+COMMON-RANDOM DESIGN
+
+Within each D family,
+all ten arms use
+the exact inherited
+A45 ECHO_PHASE
+stateless action-random identity
+for all inherited stochastic events.
+
+G5 deterministic.
+
+TTL field deterministic.
+
+No sequential RNG cursor.
+
+PRIMARY TARGET
+
+5:3 contexts:
+
+46 and 47.
+
+Secondary:
+
+6:2 contexts 44 and 45.
+
+Balanced:
+
+40 through 43.
+
+True reversal:
+
+all inherited reversal families.
+
+PRIMARY HANDOFF METRIC
+
+For every G5 release
+in 5:3 worlds report:
+
+TTL arm;
+
+release epoch;
+
+former side;
+
+current same-side challenge field;
+
+remembered same-side challenge field;
+
+effective same-side TTL field;
+
+trace age distribution;
+
+whether exposure is:
+
+CURRENT;
+
+TTL1-only;
+
+TTL2-only;
+
+TTL3-only;
+
+or NONE;
+
+same-epoch recruitment;
+
+joined side.
+
+For each G5+PUSH TTL arm report:
+
+fraction of G5 releases
+with nonzero same-side
+effective challenge field;
+
+same-epoch favored recruitment;
+
+same-epoch adverse recruitment;
+
+H recruitment;
+
+remaining U.
+
+MEASURED-COVERAGE EXPECTATION
+
+This is descriptive,
+not a qualification threshold.
+
+The pre-A51 lag diagnostic predicts:
+
+TTL1:
+little target coverage.
+
+TTL2:
+approximately 97% potential D2 coverage
+and approximately 71% potential D3 coverage
+if relevant veterans remain committed.
+
+TTL3:
+up to 100% D2
+and approximately 92.5% D3
+potential coverage.
+
+Actual A51 exposure
+may be lower
+because veteran survival,
+side continuity,
+and radius geometry
+remain enforced.
+
+TEMPORAL BRIDGE INFORMATION GAIN
+
+For TTL k > 0
+within each D family,
+TEMPORAL_BRIDGE_INFORMATION_GAIN(k)
+is TRUE iff G5_PUSH_TTLk satisfies all:
+
+1. nonzero same-side
+   field exposure among G5 releases
+   is at least 20 percentage points
+   higher than G5_PUSH_TTL0;
+
+2. same-epoch favored recruitment rate
+   among G5 releases
+   is at least 3 percentage points
+   higher than G5_PUSH_TTL0;
+
+3. adverse recruitment rate
+   among G5 releases
+   does not increase
+   versus G5_PUSH_TTL0;
+
+4. direct favored-to-adverse flips = 0;
+
+5. adverse-majority entries
+   do not exceed BASE;
+
+6. 6:2 oscillator
+   does not exceed BASE;
+
+7. balanced false-majority <=10%
+   and does not exceed BASE;
+
+8. reversal acquisition >=80%;
+
+9. aggregate service >=95% of BASE;
+
+10. all trace freshness
+    and integrity probes pass.
+
+MACRO INFORMATION GAIN
+
+For TTL k > 0,
+A51_MACRO_INFORMATION_GAIN(k)
+is TRUE iff:
+
+1. TEMPORAL_BRIDGE_INFORMATION_GAIN(k) = TRUE;
+
+2. mean 5:3 burst-end
+   favored committed fraction
+   exceeds G5_PUSH_TTL0
+   by at least 2 percentage points;
+
+3. favored-to-unresolved transitions
+   are at least 10% lower
+   than G5_PUSH_TTL0
+
+   OR
+
+   mean unresolved duration
+   is at least 10% lower
+   than G5_PUSH_TTL0;
+
+4. median challenge-onset beta_F >=0;
+
+5. all safety/non-regression
+   criteria pass.
+
+LAYER-TIMING SPECIFICITY
+
+For each TTL k > 0,
+compute the macro improvement:
+
+Delta_combined(k)
+=
+G5_PUSH_TTLk
+-
+G5_PUSH_TTL0.
+
+Compute field-only improvement:
+
+Delta_push(k)
+=
+PUSH_TTLk
+-
+PUSH_TTL0.
+
+For higher-is-better metrics,
+timing interaction is positive iff:
+
+Delta_combined(k)
+>
+Delta_push(k).
+
+For lower-is-better metrics,
+timing interaction is positive iff
+the combined reduction
+exceeds the PUSH-only reduction.
+
+A51_LAYER_TIMING_SYNERGY(k) = TRUE iff:
+
+TEMPORAL_BRIDGE_INFORMATION_GAIN(k) = TRUE;
+
+at least one preregistered
+macro timing interaction is positive;
+
+and
+
+at least one G5-released cell
+is recruited favored
+under TTL-only field exposure
+where its TTL0 field was zero.
+
+MINIMUM EFFECTIVE TTL
+
+The minimum effective TTL
+is the lowest k in:
+
+1;
+2;
+3
+
+that satisfies:
+
+TEMPORAL_BRIDGE_INFORMATION_GAIN(k);
+
+A51_MACRO_INFORMATION_GAIN(k);
+
+A51_LAYER_TIMING_SYNERGY(k);
+
+and all safety/non-regression criteria.
+
+If no k qualifies:
+
+A51_MINIMUM_EFFECTIVE_TTL_FOUND = FALSE.
+
+Do not extend TTL beyond 3
+post-result.
+
+QUALIFICATION
+
+A G5_PUSH_TTLk arm
+is A51-QUALIFIED iff:
+
+1. k is the minimum effective TTL;
+
+2. mean 5:3 burst-end
+   favored fraction >=35%;
+
+3. favored-majority
+   burst-end frequency
+   is at least 20 percentage points
+   above BASE;
+
+4. direct favored-to-adverse flips = 0;
+
+5. adverse-majority entries = 0;
+
+6. 6:2 oscillator = 0%;
+
+7. balanced false-majority <=10%;
+
+8. reversal acquisition >=80%;
+
+9. median old-majority loss <=4 epochs;
+
+10. aggregate service >=95% of BASE;
+
+11. median challenge-onset beta_F >=0;
+
+12. old-side remembered-field
+    recruitment after true reversal
+    passes the safety boundary below;
+
+13. all trace freshness
+    and integrity probes pass.
+
+TRUE-REVERSAL MEMORY SAFETY
+
+For the first four epochs
+after true reversal,
+relative to the OLD side,
+report:
+
+U opportunities
+with old-side TTL field >0;
+
+old-side recruitment events
+whose transformed probability
+was increased by TTL memory;
+
+old-side adverse-majority entries;
+
+old-majority loss latency.
+
+For A51 safety:
+
+TTL memory must not create
+any old-side majority entry
+that is absent in TTL0.
+
+And median old-majority loss
+must remain <=4 epochs.
+
+BALANCED MEMORY SAFETY
+
+For contexts 40-43 report:
+
+fraction of U opportunities
+with TTL-only field;
+
+C-majority epochs;
+
+S-majority epochs;
+
+false-majority;
+
+majority residence;
+
+chatter.
+
+No TTL arm may exceed
+10% balanced false-majority.
+
+TRACE FRESHNESS PROBES
+
+Verify:
+
+current challenge sets age 0;
+
+age increments only
+for uninterrupted same-side commitment;
+
+remembered field
+does not refresh itself;
+
+defection resets trace;
+
+refractory resets trace;
+
+U resets trace;
+
+H resets trace;
+
+side change resets trace;
+
+age never decreases
+except reset/current challenge;
+
+TTL0 exactly reproduces A50 current field;
+
+TTL1 contribution requires age 1;
+
+TTL2 requires age <=2;
+
+TTL3 requires age <=3;
+
+no contribution after arm TTL;
+
+no trace enters
+G5 eligibility;
+
+no trace enters
+committed-state persistence.
+
+FAILURE ATTRIBUTION
+
+If TTL1 has little exposure
+and TTL2 sharply increases exposure:
+
+the measured two-epoch handoff lag
+is causally confirmed.
+
+If TTL2 covers D2 strongly
+but D3 requires TTL3:
+
+the fixed refractory duration
+creates a real D-specific
+handoff timescale.
+
+If exposure rises
+but favored recruitment does not:
+
+the expired challenge field
+was not the effective missing signal.
+
+If favored recruitment rises
+but macro continuity does not:
+
+the handoff exists,
+but recruitable turnover
+still cannot explain
+the macro phenotype.
+
+If PUSH-only TTL
+improves as much as
+G5+PUSH TTL:
+
+the mechanism is
+challenge-field persistence,
+not cross-layer recovery synergy.
+
+If G5+PUSH improves
+more than PUSH-only:
+
+recovery and periphery control
+have a genuine temporal handoff.
+
+If TTL3 is required
+but creates reversal/balanced cost:
+
+the local bridge window
+is too long for safe static memory.
+
+Do not extend it further.
+
+If TTL2/TTL3
+restore high cross-layer overlap
+and local favored recruitment
+but macro continuity remains weak:
+
+the next justified class
+is broader response-phase /
+forcing alignment.
+
+No stronger recovery,
+push-pull gain,
+or radius change
+is justified by that outcome.
+
+CREEP GUARD
+
+Preserve A49/A50
+challenge-onset beta_F.
+
+No TTL arm qualifies
+with median beta_F < 0.
+
+RESEARCH DISCIPLINE
+
+Before F51:
+
+BASE must equal
+A50 BASE / A45 ECHO_PHASE.
+
+G5 must equal
+A50 G5.
+
+PUSH_TTL0 must equal
+A50 PUSH_PULL.
+
+G5_PUSH_TTL0 must equal
+A50 COMBINED.
+
+When all trace state
+is forced empty,
+every TTL arm
+must reduce to its TTL0 donor.
+
+Run two complete
+mechanical sweeps
+byte-identically.
+
+F51 must exist
+before fresh primary worlds.
+
+Bind post-F51 manifest
+before primary arm execution.
+
+Run two complete primaries
+byte-identically.
+
+No post-result:
+
+TTL extension;
+
+gain;
+
+decay;
+
+radius;
+
+G5 retuning;
+
+field-strength tuning;
+
+arm addition;
+
+or qualification change.
+
+PLAIN-SPEAK UPDATE
+
+A51 was originally going to give
+the challenge signal
+one extra beat of memory.
+
+The measurement says
+that would almost certainly
+be too short.
+
+The recovered cells
+usually come back
+two or three beats
+after the challenge signal.
+
+So we will not guess.
+
+We test:
+
+no memory;
+
+one beat;
+
+two beats;
+
+three beats.
+
+The message never gets louder.
+
+It never copies itself.
+
+It simply remains locally available
+for a bounded number of turns
+while the same veteran
+is still committed.
+
+Then we ask:
+
+what is the shortest memory
+that actually lets
+the returning cells
+hear the organizers' recent message?
+
+And does that temporal handoff
+change the whole population
+
+without making the organism
+cling to an obsolete side
+after the world truly changes?
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
