@@ -1003,3 +1003,94 @@ defend when challenged.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F44 AMENDMENT 01 — ACTIVE-RECRUITMENT NORMALIZATION PARITY
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F44
+AND BEFORE ANY A44 SCIENTIFIC OUTCOME.
+
+ISSUE FOUND DURING IMPLEMENTATION AUDIT
+
+The A44 preregistration wrote
+support-gated Q_support with denominator 6,
+while the exact frozen A42 ACTIVE_MARGIN_RECRUIT control
+uses the existing radius-3 core_field normalization:
+
+sum across offsets -3..+3
+divided by 7.
+
+For an eligible U target,
+the center position contributes zero,
+but it remains part of the frozen A42 denominator.
+
+Leaving PHASE_SWITCH at /6
+would give it a larger active-recruitment amplitude
+than ACTIVE_MARGIN_RECRUIT and ALWAYS_COMBINED,
+confounding phase timing with gain.
+
+CORRECTION
+
+For PHASE_SWITCH only,
+replace the preregistered /6 support-field denominator
+with the exact A42 active-margin normalization:
+
+Q_C_support(i)
+=
+(1/7)
+*
+sum over offsets d=-3..+3
+of
+1[state_j=C]
+*
+1[j is SUPPORT]
+*
+max(0,B_pre_j).
+
+Q_S_support(i)
+=
+(1/7)
+*
+sum over offsets d=-3..+3
+of
+1[state_j=S]
+*
+1[j is SUPPORT]
+*
+max(0,-B_pre_j).
+
+Because target i is eligible U,
+its own center contribution is necessarily zero.
+
+No radius changes.
+No gain changes.
+ETA remains 1/2.
+No new state exists.
+
+RATIONALE
+
+This amendment makes:
+
+ACTIVE_MARGIN_RECRUIT;
+ALWAYS_COMBINED;
+PHASE_SWITCH
+
+use the same active-recruitment amplitude.
+
+Therefore the PHASE_SWITCH versus ALWAYS_COMBINED comparison
+tests local phase gating,
+not an accidental normalization difference.
+
+All other A44 preregistered equations,
+arms,
+thresholds,
+qualification rules,
+and integrity probes remain unchanged.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
