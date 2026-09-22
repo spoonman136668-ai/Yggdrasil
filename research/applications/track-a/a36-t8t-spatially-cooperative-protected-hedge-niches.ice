@@ -695,3 +695,302 @@ INSTEAD OF APPEARING AS SCATTERED TEMPORARY CELLS?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-FREEZE CLARIFICATION 01 — TEMPORAL NICHE CAUSALITY AND TRACKING
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE F36
+AND BEFORE ANY REAL F36-DERIVED WORLD EXISTS.
+
+SAME-EPOCH H CAUSALITY
+
+All A36 H-neighborhood modifiers are computed from
+the H population present at the start of the cell-transition phase
+for that epoch.
+
+A U -> H transition occurring during epoch t
+does NOT alter another cell's H_local value
+until epoch t+1.
+
+Likewise,
+an H release during epoch t
+does not retroactively alter another H cell's
+release modifier during the same transition phase.
+
+This prevents order-dependent same-epoch H cascades.
+
+NICHE IDENTITY TRACKING
+
+A measured niche is a contiguous periodic-ring H cluster
+of size >= 3.
+
+Across adjacent epochs,
+a prior niche and current niche
+are treated as the same tracked niche
+when their cell sets overlap by at least one identity.
+
+When multiple possible matches exist,
+matching is deterministic:
+
+largest overlap first;
+
+then stable prior-cluster order;
+
+then stable current-cluster order.
+
+Each cluster may be matched at most once per epoch.
+
+This niche tracking is external measurement only.
+It cannot affect cell transitions.
+
+No scientific rule,
+qualification threshold,
+or controller behavior changes.
+
+No real A36 world exists.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A36 SPATIALLY COOPERATIVE PROTECTED HEDGE NICHES
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F36-DERIVED WORLD,
+NICHE EVENT,
+H CLUSTER,
+OR SCIENTIFIC OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+e3be3d20e1acb09cdff3b11538f513d650227b78.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a36_t8t_spatial_hedge_niches_v1.py
+
+Loader Git blob:
+
+f537b5060fa5f1947cfb4e19cf03d2e9adff5ef6.
+
+Payload:
+
+research/applications/track-a/a36_t8t_spatial_hedge_niches_v1.py.gz
+
+Payload Git blob:
+
+851867455ec978ef679489280bfc8697bade5e55.
+
+Decompressed source SHA-256:
+
+5ff16100fc817a650a74e74d574ee9361de824418c38323c03192493359cd1d3.
+
+Decompressed source bytes:
+
+25158.
+
+Deterministic gzip SHA-256:
+
+216a54bb8e5ed18ae9436d0e07f4e29252d8563f5950ffb75ce478faec34f049.
+
+Compressed payload bytes:
+
+7382.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake seed:
+
+MECHANICAL-F36-NONPRIMARY.
+
+Two complete sweeps were byte-identical.
+
+Serialized output SHA-256:
+
+45d9a43c5da10523f53612836f96786b17e671f824766f205c3bc296047bdf52.
+
+Mechanical world-manifest SHA-256:
+
+a96fd99a2b1eefb9bcd948e51f1c21ab846478546dbc8ece740f25ef9a33953e.
+
+All P1-P30 integrity probes:
+
+PASS.
+
+No NICHE arm mechanically qualified.
+
+A36_SPATIAL_HEDGE_INFORMATION_GAIN:
+
+FALSE
+
+in the developer-only fake world.
+
+MECHANICAL D2 ISO
+
+oscillation:
+
+13.80%.
+
+contradiction no-majority:
+
+89.98%.
+
+contradiction cluster>=3 fraction:
+
+14.1%.
+
+mean niche lifetime:
+
+1.789 epochs.
+
+MECHANICAL D2 NICHE
+
+oscillation:
+
+14.32%.
+
+contradiction no-majority:
+
+92.52%.
+
+contradiction cluster>=3 fraction:
+
+38.0%.
+
+mean niche lifetime:
+
+3.715 epochs.
+
+Thus combined local entry reinforcement
+and release protection materially increased
+spatial H coherence and persistence
+without mechanically breaking the oscillator family.
+
+MECHANICAL D3 ISO
+
+oscillation:
+
+14.58%.
+
+contradiction no-majority:
+
+92.20%.
+
+contradiction cluster>=3 fraction:
+
+9.5%.
+
+mean niche lifetime:
+
+1.817 epochs.
+
+MECHANICAL D3 RETAIN
+
+oscillation:
+
+13.54%.
+
+contradiction no-majority:
+
+93.79%.
+
+contradiction cluster>=3 fraction:
+
+22.8%.
+
+mean niche lifetime:
+
+3.343 epochs.
+
+paired ISO FAMILY-5 oscillators broken:
+
+5 / 33.
+
+This was the strongest mechanical hint,
+but remained below the frozen 25% information-gain requirement.
+
+MECHANICAL D3 NICHE
+
+oscillation:
+
+14.84%.
+
+contradiction no-majority:
+
+94.86%.
+
+contradiction cluster>=3 fraction:
+
+32.3%.
+
+mean niche lifetime:
+
+3.688 epochs.
+
+paired ISO FAMILY-5 oscillators broken:
+
+2 / 33.
+
+MECHANICAL INTERPRETATION
+
+Spatial H cooperation is nontrivial.
+
+It creates:
+
+larger H clusters;
+longer-lived H niches;
+and more no-majority contradiction epochs.
+
+But the mechanical sweep does not pre-prove
+that spatial coherence alters
+the persistent oscillatory attractor.
+
+Release protection alone,
+especially under D3,
+is the strongest mechanistic hint.
+
+No H radius,
+entry multiplier,
+release multiplier,
+refractory duration,
+qualification rule,
+or information-gain rule
+is changed in response.
+
+This is NON-SCIENTIFIC mechanical evidence only.
+
+REAL A36 STATUS
+
+No real F36-derived world exists.
+
+No real H niche outcome exists.
+
+No real A36 primary result exists.
+
+Let the resulting commit SHA be:
+
+F36.
+
+After F36 exists:
+
+1. derive exactly 384 fresh worlds from F36;
+2. bind the complete world-manifest SHA;
+3. only then execute two complete deterministic primary sweeps;
+4. require byte-identical output;
+5. report ISO / ENTRY / RETAIN / NICHE
+   for both D2 and D3 without post-result selection.
+
+NO POST-RESULT H-RADIUS TUNING.
+NO POST-RESULT ENTRY-GAIN TUNING.
+NO POST-RESULT RELEASE-LAW TUNING.
+NO POST-RESULT REFRACTORY CHANGE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
