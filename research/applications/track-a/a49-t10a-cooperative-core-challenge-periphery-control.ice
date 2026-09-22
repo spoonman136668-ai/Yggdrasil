@@ -988,3 +988,348 @@ WHILE IT IS UNDER CHALLENGE?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F49 AMENDMENT 01 — CHALLENGE-ONSET CORE CREEP / METASTABILITY DIAGNOSTIC
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F49
+AND BEFORE ANY A49 SCIENTIFIC OUTCOME.
+
+RATIONALE
+
+A49 already measures
+favored-core size
+at adverse-burst onset
+and persistence through each burst.
+
+That is not sufficient
+to distinguish:
+
+true cycle-to-cycle stability
+
+from
+
+metastable survival
+with slow core erosion.
+
+A treatment may prevent
+an immediate majority flip
+while still losing
+favored committed mass
+from one challenge cycle
+to the next.
+
+The inherited oscillator label
+can miss this creep failure.
+
+CHALLENGE-CYCLE INDEX
+
+For every 5:3 world,
+number adverse challenge bursts
+in chronological order:
+
+k = 1,2,...,K.
+
+Immediately before the first adverse epoch
+of each burst k,
+record:
+
+favored committed fraction F_k;
+
+adverse committed fraction;
+
+U fraction;
+
+H fraction;
+
+FC fraction;
+
+FS fraction;
+
+total refractory fraction;
+
+favored majority label;
+
+largest favored committed domain;
+
+favored challenged-core occupancy field coverage.
+
+CYCLE-TO-CYCLE CORE RETENTION
+
+For every adjacent challenge pair:
+
+Delta_F_k
+=
+F_(k+1) - F_k.
+
+Retention ratio:
+
+R_k
+=
+F_(k+1) / F_k
+
+when F_k > 0.
+
+Report per world:
+
+mean Delta_F;
+
+median Delta_F;
+
+minimum Delta_F;
+
+mean R;
+
+number of negative-Delta cycles;
+
+fraction of adjacent cycles
+with Delta_F < 0;
+
+first challenge cycle
+at which F_k
+falls below 50%,
+40%,
+and 33%,
+or NEVER.
+
+TREND ESTIMATE
+
+For each world with at least
+three challenge-cycle observations,
+fit the descriptive least-squares slope:
+
+beta_F
+=
+slope of F_k versus cycle index k.
+
+This is diagnostic only.
+
+No fitted slope
+enters cell dynamics.
+
+Report per arm:
+
+mean beta_F;
+
+median beta_F;
+
+fraction of worlds beta_F < 0;
+
+fraction beta_F <= -0.01
+favored-fraction per challenge cycle;
+
+fraction beta_F >= 0.
+
+STABILITY CLASSIFICATION
+
+For descriptive reporting only:
+
+STABLE / NON-ERODING:
+
+beta_F >= 0.
+
+SLOW EROSION:
+
+-0.01 < beta_F < 0.
+
+MATERIAL CREEP:
+
+beta_F <= -0.01
+favored-fraction per challenge cycle.
+
+These labels do not alter
+the frozen A49 information-gain thresholds.
+
+They are a metastability guard.
+
+A49 CREEP NON-REGRESSION
+
+A49 MACRO INFORMATION GAIN
+may not be interpreted as
+a durable macro stabilization result
+if the qualifying arm simultaneously shows:
+
+median beta_F < 0
+
+AND
+
+more than 50%
+of 5:3 worlds
+have beta_F < 0.
+
+If that occurs,
+the result must be classified:
+
+MACRO IMPROVEMENT WITH METASTABLE CREEP.
+
+A49 QUALIFICATION ADDITION
+
+For CH_PUSH_PULL to be
+A49-QUALIFIED,
+add one requirement:
+
+14. median 5:3 challenge-onset
+    beta_F >= 0.
+
+This does not require
+positive growth.
+
+It requires only
+no median cycle-to-cycle
+favored-core erosion.
+
+RATIONALE:
+
+qualification should distinguish
+a core that has stabilized
+from a core that merely
+takes longer to fail.
+
+PUSH-PULL SYNERGY INTERPRETATION
+
+If exclusion alone
+and active recruitment alone
+both fail to preserve majority,
+but CH_PUSH_PULL succeeds,
+report separately:
+
+push-pull-only rescued endpoints;
+
+cycle-to-cycle beta_F
+for those same worlds;
+
+whether the rescue
+is stable across later cycles
+or only delays loss.
+
+A combined-only rescue
+with nonnegative beta_F
+is evidence for genuine
+net periphery-flow synergy.
+
+A combined-only rescue
+with negative beta_F
+is evidence for delayed failure,
+not a solved attractor.
+
+FUTURE PARAMETER-SWEEP BOUNDARY
+
+A49 does NOT
+perform a 2-D exclusion-strength
+x recruitment-strength sweep.
+
+If CH_PUSH_PULL demonstrates
+macro information gain
+and genuine combined-only rescue,
+a later preregistered experiment
+may map the minimum effective
+push/pull combination.
+
+No such gain sweep
+is authorized inside A49.
+
+RECOVERY-LAYER SYNERGY BOUNDARY
+
+A49 remains isolated
+from G5 recovery.
+
+If A49 alone
+shows macro information gain
+but remains below qualification,
+a later experiment may test
+the frozen A48-classified
+G5_FULL recovery aid
+as an orthogonal substrate factor.
+
+That later experiment must
+freeze both layers independently
+and may not retune either.
+
+PHASE-OFFSET FUTURE HYPOTHESIS
+
+If A49 shows little
+local or macro periphery-control effect,
+or if strong local periphery control
+still leaves a persistent
+forcing-locked phenotype,
+a future experiment may test
+phase-offset / response-delay mechanisms.
+
+This is not yet
+an A49 causal conclusion.
+
+A fixed response delay
+requires explicit buffered
+past evidence / decision state.
+
+It is therefore NOT
+treated as a one-line,
+no-state modification.
+
+Any future phase-offset experiment
+must preregister:
+
+the exact delayed variable;
+
+buffer semantics;
+
+delay values;
+
+initial-buffer behavior;
+
+true-reversal cost;
+
+and anti-oracle checks.
+
+No delay sweet spot
+is assumed from analogy.
+
+The hypothesis to test would be
+whether relative response phase,
+rather than response amplitude,
+is the remaining bottleneck.
+
+PLAIN-SPEAK ADDITION
+
+A49 should not get credit
+just because the core
+survives one attack.
+
+We also need to know
+whether it is quietly shrinking
+every time the next attack arrives.
+
+If the core starts challenge cycles at:
+
+60%,
+then 58%,
+then 55%,
+then 52%,
+
+the organism is not truly stable.
+
+It is losing slowly.
+
+So A49 will now measure
+the size of the committed core
+at the start of every challenge cycle
+and calculate whether that baseline
+is flat,
+growing,
+or eroding.
+
+That tells us the difference between:
+
+"I stopped the oscillation"
+
+and
+
+"I only delayed the collapse."
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
