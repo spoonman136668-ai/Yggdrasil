@@ -1620,3 +1620,761 @@ before scientific analysis.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+A49 PRIMARY CLOSURE
+
+DATE:
+2026-09-22.
+
+F49:
+e3b34a4d24cc42aa2d0b8ad3c76aad2369696ba0
+
+MANIFEST-BINDING COMMIT:
+272aeca074488b2f223e311443591a104ccc5052
+
+SOURCE SHA256:
+2f605a412bdedf9a66607cf7c544be8c26e10d751f4e85557e17a9afd3b9f569
+
+PRIMARY SEED:
+A49-F49-e3b34a4d24cc42aa2d0b8ad3c76aad2369696ba0-PRIMARY
+
+PRIMARY WORLD MANIFEST SHA256:
+b93911cb6d31d277879f2e565d2f01506171e5d3a38be35d21ea97abb876eaf8
+
+PRIMARY OUTPUT SHA256:
+987b0c64694b500dc0dff5edaee09c4ab4e8386547d4ce1f1832e9722f6932cc
+
+PRIMARY RUNS:
+2.
+
+PRIMARY OUTPUT BYTES:
+90759.
+
+BYTE IDENTICAL:
+true.
+
+stderr:
+empty for both runs.
+
+All executable integrity probes:
+PASS.
+
+SCIENTIFIC STATUS
+
+A49_MACRO_INFORMATION_GAIN:
+FALSE.
+
+A49_PUSH_PULL_SYNERGY:
+FALSE.
+
+D2_CH_PUSH_PULL:
+NOT QUALIFIED.
+
+D3_CH_PUSH_PULL:
+NOT QUALIFIED.
+
+LOCAL MECHANISM ACTIVITY
+
+The A49 challenge fields
+are strongly active
+and causally alter U-cell recruitment.
+
+D2 BASE,
+inside radius 3
+of challenged favored veterans:
+
+favored recruitment rate:
+12.16%.
+
+adverse recruitment rate:
+9.37%.
+
+D2 CH_OCC_EXCLUSION:
+
+favored:
+12.59%.
+
+adverse:
+6.49%.
+
+mean opposing-lambda suppression:
+0.04230.
+
+D2 CH_ACTIVE_OCCUPANCY:
+
+favored:
+25.84%.
+
+adverse:
+9.91%.
+
+mean same-side lambda increment:
+0.21706.
+
+D2 CH_PUSH_PULL:
+
+favored:
+27.40%.
+
+adverse:
+5.85%.
+
+mean same-side lambda increment:
+0.21967.
+
+mean opposing-lambda suppression:
+0.04203.
+
+D3 BASE,
+inside challenged favored-core radius:
+
+favored recruitment:
+9.87%.
+
+adverse recruitment:
+10.74%.
+
+D3 CH_OCC_EXCLUSION:
+
+favored:
+10.06%.
+
+adverse:
+6.88%.
+
+mean opposing-lambda suppression:
+0.04234.
+
+D3 CH_ACTIVE_OCCUPANCY:
+
+favored:
+26.83%.
+
+adverse:
+8.32%.
+
+mean same-side lambda increment:
+0.22295.
+
+D3 CH_PUSH_PULL:
+
+favored:
+27.01%.
+
+adverse:
+5.85%.
+
+mean same-side lambda increment:
+0.22377.
+
+mean opposing-lambda suppression:
+0.04228.
+
+Therefore:
+
+exclusion works locally;
+
+active recruitment works locally;
+
+push-pull simultaneously
+suppresses adverse recruitment
+and increases favored recruitment.
+
+The failure is not
+field inactivity.
+
+MACRO BURST-END RESULT — D2
+
+BASE:
+
+mean 5:3 burst-end
+favored committed fraction:
+26.28%.
+
+favored-majority endpoint frequency:
+5.68%.
+
+unresolved endpoint frequency:
+94.32%.
+
+CH_OCC_EXCLUSION:
+
+favored fraction:
+27.41%.
+
+delta:
++1.14 percentage points.
+
+favored-majority frequency:
+5.68%.
+
+CH_ACTIVE_OCCUPANCY:
+
+favored fraction:
+28.81%.
+
+delta:
++2.53 points.
+
+favored-majority frequency:
+5.68%.
+
+CH_PUSH_PULL:
+
+favored fraction:
+29.31%.
+
+delta:
++3.03 points.
+
+favored-majority frequency:
+5.68%.
+
+The frozen +5-point
+macro information-gain threshold
+is not reached.
+
+Favored-to-unresolved transitions:
+
+BASE:
+67.
+
+EXCLUSION:
+68.
+
+ACTIVE:
+66.
+
+PUSH_PULL:
+68.
+
+No arm reduces
+favored-to-unresolved transitions
+by the frozen 25% requirement.
+
+D2 BASE lost-majority endpoints:
+72.
+
+Rescued by exclusion:
+0.
+
+Rescued by active recruitment:
+0.
+
+Rescued by push-pull:
+0.
+
+Push-pull-only rescues:
+0.
+
+MACRO BURST-END RESULT — D3
+
+BASE:
+
+mean favored fraction:
+23.46%.
+
+favored-majority endpoint frequency:
+2.27%.
+
+unresolved endpoint frequency:
+97.73%.
+
+CH_OCC_EXCLUSION:
+
+favored fraction:
+23.46%.
+
+delta:
+0.00 points.
+
+favored-majority frequency:
+2.27%.
+
+CH_ACTIVE_OCCUPANCY:
+
+favored fraction:
+25.43%.
+
+delta:
++1.96 points.
+
+favored-majority frequency:
+5.68%.
+
+delta:
++3.41 points.
+
+CH_PUSH_PULL:
+
+favored fraction:
+25.80%.
+
+delta:
++2.34 points.
+
+favored-majority frequency:
+5.68%.
+
+delta:
++3.41 points.
+
+The frozen +5-point
+favored-fraction threshold
+and +20-point
+majority-frequency threshold
+are not reached.
+
+Favored-to-unresolved transitions:
+
+BASE:
+63.
+
+EXCLUSION:
+64.
+
+ACTIVE:
+66.
+
+PUSH_PULL:
+65.
+
+D3 BASE lost-majority endpoints:
+69.
+
+Rescued by exclusion:
+0.
+
+Rescued by active recruitment:
+3.
+
+Rescued by push-pull:
+3.
+
+Push-pull-only rescues:
+0.
+
+Therefore the D3 rescues
+are attributable to active recruitment,
+not a uniquely combined push-pull effect.
+
+PUSH-PULL SYNERGY
+
+No D family shows
+a push-pull-only rescue.
+
+D2:
+0.
+
+D3:
+0.
+
+Push-pull raises
+burst-end favored fraction
+slightly above each single mechanism,
+
+but it does not create
+the preregistered nonlinear
+majority-rescue signature.
+
+A49_PUSH_PULL_SYNERGY = FALSE.
+
+CORE PERSISTENCE
+
+A49 periphery mechanisms
+do not directly alter
+committed-cell defection.
+
+Consistent with that boundary,
+third-adverse-epoch
+5:3 core persistence
+changes only modestly.
+
+D2:
+
+BASE:
+32.88%.
+
+EXCLUSION:
+33.90%.
+
+ACTIVE:
+34.31%.
+
+PUSH_PULL:
+34.35%.
+
+D3:
+
+BASE:
+31.74%.
+
+EXCLUSION:
+31.63%.
+
+ACTIVE:
+32.39%.
+
+PUSH_PULL:
+32.54%.
+
+The stronger local recruitment flow
+does not materially convert
+the surviving core
+into a majority-preserving population.
+
+CREEP / METASTABILITY RESULT
+
+The newly added
+challenge-onset creep diagnostic
+does NOT show slow cycle-to-cycle erosion.
+
+D2 PUSH_PULL:
+
+median beta_F:
++0.05655 favored-fraction
+per challenge cycle.
+
+mean beta_F:
++0.06250.
+
+fraction beta_F < 0:
+43.75%.
+
+fraction beta_F >= 0:
+56.25%.
+
+D3 PUSH_PULL:
+
+median beta_F:
++0.04792.
+
+mean beta_F:
++0.04741.
+
+fraction beta_F < 0:
+43.75%.
+
+fraction beta_F >= 0:
+56.25%.
+
+BASE medians are also positive:
+
+D2 BASE:
++0.02262.
+
+D3 BASE:
++0.02693.
+
+Therefore A49 does not fail
+because the core is quietly shrinking
+from cycle to cycle.
+
+The hard phenotype is not
+a hidden metastable creep failure.
+
+It is a repeated
+within-cycle majority-loss problem.
+
+SAFETY / NON-REGRESSION
+
+Across every A49 arm:
+
+5:3 direct favored-to-adverse
+majority flips:
+0.
+
+5:3 adverse-majority entries:
+0.
+
+5:3 adverse-majority epochs:
+0.
+
+6:2 oscillator:
+0%.
+
+Balanced false-majority:
+0%.
+
+D2 reversal acquisition:
+89.84%.
+
+D3 reversal acquisition:
+87.50%.
+
+Median old-majority loss:
+3 epochs.
+
+Aggregate service
+remains above
+the frozen 95% floor.
+
+Thus A49 fails
+because macro continuity
+does not improve enough,
+
+not because
+of wrong-side capture,
+balanced instability,
+reversal rigidity,
+service collapse,
+or 6:2 regression.
+
+OSCILLATOR AXIS
+
+The inherited 5:3 oscillator metric
+remains:
+
+100%
+
+for all A49 arms.
+
+This is consistent
+with the macro-continuity result.
+
+The periphery flow
+is measurably changed,
+
+but not enough
+to move the population
+out of the favored->unresolved->favored
+forcing-locked phenotype.
+
+CAUSAL INTERPRETATION
+
+A49 answers
+an important question cleanly.
+
+The stronger A45 cooperative core
+is sufficiently present
+to generate meaningful
+challenge-phase spatial fields.
+
+Those fields work.
+
+Exclusion reduces
+near-core adverse recruitment.
+
+Active recruitment approximately doubles
+favored recruitment
+near challenged veterans.
+
+Push-pull does both simultaneously.
+
+Yet the organism
+still loses favored majority
+at almost every 5:3 burst endpoint.
+
+Therefore the remaining bottleneck
+is not simply:
+
+"the periphery cannot hear the core."
+
+It can.
+
+Nor is it:
+
+"the core slowly erodes between cycles."
+
+It does not.
+
+The unresolved population
+is being generated
+faster / through more channels
+than U-only periphery control
+can repair at the relevant phase.
+
+A49's own preregistered
+failure attribution
+therefore points to
+the composition of the unresolved reservoir:
+
+how much is recruitable U,
+
+versus:
+
+FC / FS refractory cells
+
+and H cells
+
+that A49's recruitment transform
+cannot immediately control.
+
+That distinction must be measured
+before choosing the next macro mechanism.
+
+NEXT JUSTIFIED STEP
+
+Run a post-closure,
+observation-only
+5:3 burst-end reservoir diagnosis
+on the frozen A49 primary worlds.
+
+For BASE,
+ACTIVE,
+and PUSH_PULL report:
+
+U fraction;
+
+H fraction;
+
+FC fraction;
+
+FS fraction;
+
+total refractory fraction;
+
+favored committed fraction;
+
+adverse committed fraction
+
+at each adverse-burst end
+and early recovery epochs.
+
+Also report
+what fraction of unresolved mass
+is currently recruitable U.
+
+If unresolved mass
+is dominated by refractory cells:
+
+the frozen A48 G5 recovery aid
+becomes a justified
+orthogonal composition test
+with A49.
+
+If substantial recruitable U remains
+despite strong local push-pull activity:
+
+recovery debt is not
+the dominant missing channel,
+
+and the phase-offset / response-timing
+hypothesis becomes better justified.
+
+No A50 mechanism
+is frozen until this reservoir
+is measured.
+
+PLAIN-SPEAK INTERPRETATION
+
+The core can talk
+to the cells around it.
+
+That is now proven.
+
+The fence works.
+
+The recruiting signal works.
+
+And together
+they make nearby uncertain cells
+much more likely
+to join the core
+and much less likely
+to join the opposition.
+
+But the whole population
+still falls out of majority
+during the hard three-hit attack.
+
+So the problem is not:
+
+"the core has no influence."
+
+It has influence.
+
+The problem is that
+the influence is acting
+on only one part
+of the population:
+
+the cells that are currently U
+and available to recruit.
+
+A large part
+of the missing population
+may instead be:
+
+benched refractory cells
+
+or
+
+H cells.
+
+If that is true,
+push-pull is trying
+to win a battle
+with too few available recruits.
+
+The creep check
+also gave us good news.
+
+The core is not
+quietly getting smaller
+every cycle.
+
+We are not merely
+delaying an inevitable collapse.
+
+The failure happens
+inside each challenge cycle.
+
+So the next question is very concrete:
+
+WHEN MAJORITY IS LOST,
+WHERE DID THE CELLS GO?
+
+If most are sitting on the bench,
+combine the already-validated
+moderate recovery aid
+with macro periphery control.
+
+If plenty are still recruitable
+and push-pull still cannot hold majority,
+
+then the next suspect
+is timing:
+
+the population may be responding
+at the wrong phase
+relative to the forcing.
+
+NORTH-STAR IMPLICATION
+
+A49 is a useful negative result.
+
+Yggdrasil now has evidence
+for all of the following
+as distinct local mechanisms:
+
+evidence-ordered persistence;
+
+cooperative continuity;
+
+evidence-sensitive recovery;
+
+challenge-local exclusion;
+
+challenge-local active recruitment.
+
+The remaining macro failure
+cannot be explained
+by absence of any one
+of those local capabilities.
+
+The research is now moving
+from mechanism existence
+to mechanism composition
+and temporal organization.
+
+That is a narrower
+and more realizable problem
+than the original broad question
+of whether decentralized
+software cells can organize at all.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
