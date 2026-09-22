@@ -23,23 +23,53 @@ jobs:
           fetch-depth: 0
 
       - name: Apply deterministic research request
+        id: apply
         shell: bash
         run: |
-          set -euo pipefail
+          set +e
+          mkdir -p research/cache research/evidence
           python3 research/harness/ydr_harness.py apply-request \
             --request research/control/request.json \
-            --state research/status/current-experiment.json
+            --state research/status/current-experiment.json \
+            > /tmp/ydr-controller.log 2>&1
+          rc=$?
+          cat /tmp/ydr-controller.log
+          printf '%s\n' "$rc" > /tmp/ydr-controller.rc
+          echo "rc=$rc" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload controller evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ydr-controller-${{ github.run_id }}
+          if-no-files-found: warn
+          path: |
+            /tmp/ydr-controller.log
+            /tmp/ydr-controller.rc
+            research/status/current-experiment.json
+            research/cache/**
+            research/evidence/**
 
       - name: Record generated evidence/state
+        if: steps.apply.outputs.rc == '0'
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
-          if git diff --quiet -- research/status research/cache research/evidence; then
+          if git status --porcelain -- research/status research/cache research/evidence | grep -q .; then
+            git config user.name "yggdrasil-research-bot"
+            git config user.email "actions@users.noreply.github.com"
+            git add research/status research/cache research/evidence
+            git commit -m "YDR controller apply research request"
+            git push origin HEAD:dg1a-ar
+          else
             echo "No generated changes"
-            exit 0
           fi
-          git config user.name "yggdrasil-research-bot"
-          git config user.email "actions@users.noreply.github.com"
-          git add research/status research/cache research/evidence
-          git commit -m "YDR controller apply research request"
-          git push origin HEAD:dg1a-ar
+
+      - name: Fail on controller command error
+        if: steps.apply.outputs.rc != '0'
+        shell: bash
+        run: |
+          echo "Controller command failed; see uploaded artifact."
+          exit 1
