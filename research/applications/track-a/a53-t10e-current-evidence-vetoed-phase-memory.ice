@@ -1256,3 +1256,189 @@ before scientific analysis.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-F53 / PRE-PRIMARY PACKAGING REPAIR
+
+DATE:
+2026-09-22.
+
+STATUS:
+INFRASTRUCTURE REPAIR ONLY.
+
+NO A53 PRIMARY SCIENTIFIC OUTCOME
+WAS OBSERVED BEFORE THIS REPAIR.
+
+F53 REMAINS:
+
+29648c11507024973a0d855dc02f334bea195a8f
+
+POST-F53 MANIFEST BINDING REMAINS:
+
+932c883f3fe910b58b3e24b15f0c4a06cc27f2df
+
+AUTHORITATIVE SCIENTIFIC SOURCE IDENTITY REMAINS:
+
+Bytes:
+92419.
+
+SHA256:
+dd19ce7c9b5745087e28b7be965da83f45a876c732e8e1991d123dcf21604656
+
+DEFECT
+
+The seven-part text transport
+published before F53
+contained a packaging defect.
+
+The committed concatenated text
+had:
+
+28189
+
+base64 characters,
+
+while the pre-F53 frozen bundle
+required:
+
+28188.
+
+The F53 loader therefore
+failed closed before execution.
+
+No primary world ran
+through that defective loader.
+
+The defect was in
+source transport / publication,
+
+not in the mechanically validated
+A53 scientific implementation.
+
+FORENSIC RECOVERY
+
+The exact F52 parent
+was independently reconstructed
+from its valid frozen bundle
+and verified as:
+
+Bytes:
+92868.
+
+SHA256:
+f1c2cfbd707621b18db101ea9a41f2264841acee10abcc5b80e4239c50ae60e1
+
+An alignment search
+over the oversized A53 part 03
+identified one stray character.
+
+Removing part-03 local character 3550
+restored exactly:
+
+base64 characters:
+28188;
+
+gzip bytes:
+21140;
+
+decompressed source bytes:
+92419.
+
+The aligned source was then
+line-diffed against
+the independently verified
+F52 parent.
+
+Every difference
+matched the preregistered A53 patch surface
+except two F52-identical regions:
+
+1. challenge_occupancy_field
+   had been text-corrupted as
+   challenge_occrpancy_field;
+
+2. within_radius_of(i, ids, ...)
+   had a damaged parameter/body token.
+
+Restoring only those
+parent-identical lines
+produced source SHA256:
+
+dd19ce7c9b5745087e28b7be965da83f45a876c732e8e1991d123dcf21604656
+
+exactly equal to
+the pre-F53 frozen source identity.
+
+No scientific equation,
+arm,
+threshold,
+veto condition,
+random draw,
+history rule,
+qualification gate,
+or diagnostic definition
+was changed.
+
+CANONICAL READABLE SOURCE REPAIR
+
+The exact frozen source
+was republished readably at:
+
+research/applications/track-a/a53_t10e_current_evidence_vetoed_phase_memory_v1.source.py
+
+Commit:
+
+6c47161895c3ca47fe1b75739ff075bc402a09ed
+
+The loader was changed
+only to read that file
+and verify:
+
+byte count = 92419;
+
+SHA256 =
+dd19ce7c9b5745087e28b7be965da83f45a876c732e8e1991d123dcf21604656
+
+before execution.
+
+Loader repair commit:
+
+2ae8ed3a941b20d25583d6009d1fdcf9fc7cedfe
+
+The defective seven-part files
+remain as historical provenance.
+
+They are no longer
+an execution dependency.
+
+PRIMARY AUTHORITY
+
+The already-bound primary seed remains:
+
+A53-F53-29648c11507024973a0d855dc02f334bea195a8f-PRIMARY
+
+The already-bound primary manifest remains:
+
+count:
+384.
+
+SHA256:
+7a3c0835f49bf2fca4cff13b6b4eb28b4b74a6416354d4f4914471abca275df5
+
+Because the recovered readable source
+is byte-for-byte identical
+to the source identity frozen
+before F53,
+
+this repair does not create
+a new scientific implementation
+and does not require
+a new scientific freeze.
+
+Two complete primaries
+must still be byte-identical
+before any A53 outcome is interpreted.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
