@@ -2831,3 +2831,58 @@ to lower the inherited
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-F47 PRIMARY MANIFEST BINDING
+
+DATE:
+2026-09-22.
+
+F47:
+284515acf6ef5d414cd91bdb352214d309f23f13
+
+AUTHORITATIVE SOURCE SHA256:
+645b1d8b8417702fce62a6268b9ba97dd41aba21e8cb9f48ccf683f32fc6d468
+
+PRIMARY SEED:
+A47-F47-284515acf6ef5d414cd91bdb352214d309f23f13-PRIMARY
+
+WORLD COUNT:
+384.
+
+WORLD SHAPE:
+48 contexts x 8 replicas.
+
+PRIMARY WORLD MANIFEST SHA256:
+769f377c7010dcb327c09d9d14748f8b8673c3bb5f3ec16b4ee189ad0694714a
+
+STATUS:
+BOUND AFTER F47
+AND BEFORE ANY A47 PRIMARY ARM EXECUTION.
+
+AUTHORITATIVE ARMS:
+11.
+
+The primary uses
+the common stateless
+A45 ECHO_PHASE inherited random identity
+across paired dose arms.
+
+G5_FULL_STAGGER adds only
+its dedicated stateless
+one-half stagger draw.
+
+No A47 arm outcome,
+recovery metric,
+qualification result,
+minimum-dose selection,
+or stagger conclusion
+was observed before this binding.
+
+Two complete primary sweeps
+must be byte-identical
+before scientific analysis.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
