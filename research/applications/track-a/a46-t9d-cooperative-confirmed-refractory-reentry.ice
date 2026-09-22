@@ -872,3 +872,73 @@ the refractory state was created to prevent.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F46 AMENDMENT 01 — G5 COOPERATIVE-FIELD TIMING PARITY
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F46
+AND BEFORE ANY A46 SCIENTIFIC OUTCOME.
+
+AUDIT TIMING
+
+The A45 refractory release signal audit
+computed G5 cooperative support as:
+
+Q_raw(i,s)
+=
+the existing A43 raw
+margin-weighted cooperative field
+
+using:
+
+the current committed-neighbor state snapshot
+
+and
+
+the pre-current-evidence signed margins B_pre.
+
+The same audit computed:
+
+M_post(i,s)
+
+from the already-updated
+current signed state B_post.
+
+A46 must preserve this asymmetry exactly.
+
+Therefore G5 reads:
+
+mode:
+current local evidence;
+
+M_post:
+post-update current cell signed margin;
+
+Q_raw:
+current committed-neighbor topology
+weighted by B_pre margins.
+
+RATIONALE
+
+Using B_post inside Q_raw
+would allow the current evidence sample
+to strengthen both:
+
+the cell's own M_post;
+
+and its neighbors' cooperative field
+
+inside the same re-entry decision.
+
+That was not the audited signal
+and would introduce same-epoch double counting.
+
+No other A46 rule changes.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
