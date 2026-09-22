@@ -1,0 +1,45 @@
+name: YDR Experiment Controller
+
+on:
+  push:
+    branches: [dg1a-ar]
+    paths:
+      - research/control/request.json
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ydr-experiment-controller-dg1a-ar
+  cancel-in-progress: false
+
+jobs:
+  controller:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Apply deterministic research request
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 research/harness/ydr_harness.py apply-request \
+            --request research/control/request.json \
+            --state research/status/current-experiment.json
+
+      - name: Record generated evidence/state
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- research/status research/cache research/evidence; then
+            echo "No generated changes"
+            exit 0
+          fi
+          git config user.name "yggdrasil-research-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add research/status research/cache research/evidence
+          git commit -m "YDR controller apply research request"
+          git push origin HEAD:dg1a-ar
