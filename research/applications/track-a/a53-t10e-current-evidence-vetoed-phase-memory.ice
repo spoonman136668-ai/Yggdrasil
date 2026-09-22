@@ -1442,3 +1442,525 @@ before any A53 outcome is interpreted.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+A53 PRIMARY CLOSURE
+
+DATE:
+2026-09-22.
+
+F53:
+29648c11507024973a0d855dc02f334bea195a8f.
+
+AUTHORITATIVE FROZEN SOURCE:
+
+bytes:
+92419.
+
+SHA256:
+dd19ce7c9b5745087e28b7be965da83f45a876c732e8e1991d123dcf21604656.
+
+PRIMARY SEED:
+
+A53-F53-29648c11507024973a0d855dc02f334bea195a8f-PRIMARY.
+
+PRIMARY WORLD MANIFEST:
+
+count:
+384.
+
+SHA256:
+7a3c0835f49bf2fca4cff13b6b4eb28b4b74a6416354d4f4914471abca275df5.
+
+DUPLICATE PRIMARY EVIDENCE
+
+Runs:
+2.
+
+Output bytes:
+164998 each.
+
+Output SHA256:
+b8f6beafd06b8f84bb397d302c54e04178d55fbe18b352304bdc8a67a9f50e15.
+
+Byte identical:
+true.
+
+stderr:
+empty for both runs.
+
+All reported integrity probes:
+PASS.
+
+F53 PUBLICATION RECOVERY
+
+The exact source was recovered
+to the frozen source identity.
+
+The original seven-part publication
+was then reconstructed deterministically
+from the exact source using:
+
+gzip level 9;
+mtime 0;
+base64 encoding.
+
+Recovered bundle identities:
+
+base64 chars:
+28188.
+
+base64 SHA256:
+00995e97bc233f0e7ebea549a9308cb3a1a9f5bc19877e49e15638a0f068fa37.
+
+gzip bytes:
+21140.
+
+gzip SHA256:
+a2a50019e3fce2394ddcd92a1e9ce794f1164ac8ed5cc7543e3d04e91ed07c6e.
+
+Only source parts 01 and 03
+required correction.
+
+After repair,
+all seven part blob identities
+match the deterministic frozen bundle.
+
+The loader was restored
+to the original F53 loader blob:
+
+a9a771b85caa58118dfb541efedc4d800bf82873.
+
+Therefore the executable publication
+again reconstructs
+the exact F53 source
+rather than depending
+on the temporary plaintext recovery path.
+
+SCIENTIFIC STATUS
+
+A53_ANY_QUALIFIED:
+FALSE.
+
+A53_SAFE_PHASE_INFORMATION_GAIN:
+FALSE
+for D2 P0;
+D2 P1;
+D3 P0;
+D3 P1.
+
+A53_PHASE_MACRO_INFORMATION_GAIN:
+FALSE
+for every D/P family.
+
+A53_PHASE_PUSH_INTERACTION:
+FALSE
+for D2 and D3.
+
+A53_VETO_MECHANISM_ACTIVE:
+TRUE
+for every D/P family.
+
+Therefore A53 is
+a mechanically active
+negative scientific result.
+
+CENTRAL RESULT
+
+The current-evidence veto
+solves the true-reversal stale-memory problem
+
+but destroys
+the transient-challenge benefit
+that made fixed TAU3 interesting.
+
+The same instantaneous
+signed-evidence crossing
+occurs in both situations.
+
+TRUE-REVERSAL RESTORATION
+
+TAU0 old-majority loss:
+3 epochs.
+
+TAU3_FIXED old-majority loss:
+6 epochs.
+
+TAU3_VETO old-majority loss:
+3 epochs
+in all four D/P families.
+
+Reversal acquisition under TAU3_VETO:
+87.5%
+in all four D/P families.
+
+At true-reversal epoch 2,
+approximately 99.4-99.6%
+of fixed pre-reversal pressure
+is vetoed.
+
+Only approximately 0.42%
+of old-side decisions
+still use pre-reversal pressure.
+
+Thus the veto
+does exactly what A53 intended
+on genuine reversal.
+
+It restores present-world responsiveness.
+
+TRANSIENT-CHALLENGE FAILURE
+
+The same veto
+fires during the 5:3 attack.
+
+At 5:3 hit 1:
+
+the veto is effectively inactive;
+delayed pressure is retained.
+
+At hit 2:
+
+the veto partially cancels
+TAU3 delay.
+
+At hit 3:
+
+mean current aligned margin
+is exactly 0.0
+in all four veto families.
+
+Whenever TAU3 history is available,
+the veto therefore cancels it.
+
+Hit-3 delayed-pressure use:
+0%.
+
+Hit-3 veto fraction
+among committed decisions:
+
+D2 P0:
+81.24%.
+
+D2 P1:
+80.53%.
+
+D3 P0:
+75.40%.
+
+D3 P1:
+75.99%.
+
+At precisely the attack depth
+where fixed TAU3
+was providing useful persistence,
+
+current signed evidence
+has already crossed
+against the old commitment.
+
+Therefore a zero-threshold
+current-evidence validity rule
+cannot distinguish:
+
+temporary deep challenge
+
+from
+
+genuine environmental reversal.
+
+BURST-END RETENTION
+
+D2 P0:
+
+TAU0:
+27.79%.
+
+TAU3_FIXED:
+45.15%.
+
+TAU3_VETO:
+21.16%.
+
+D2 P1:
+
+TAU0:
+30.66%.
+
+TAU3_FIXED:
+49.50%.
+
+TAU3_VETO:
+24.50%.
+
+D3 P0:
+
+TAU0:
+25.07%.
+
+TAU3_FIXED:
+38.64%.
+
+TAU3_VETO:
+17.66%.
+
+D3 P1:
+
+TAU0:
+28.65%.
+
+TAU3_FIXED:
+43.39%.
+
+TAU3_VETO:
+21.80%.
+
+Thus veto burst gain
+relative to TAU0
+is negative
+in every D/P family.
+
+Retained fractions
+of fixed-TAU3 improvement are:
+
+D2 P0:
+-38.20%.
+
+D2 P1:
+-32.66%.
+
+D3 P0:
+-54.62%.
+
+D3 P1:
+-46.39%.
+
+The preregistered 60%
+retention requirement
+therefore fails decisively.
+
+MACRO RESULT
+
+D2 P0 TAU3_VETO:
+
+5:3 oscillator:
+100%.
+
+D2 P1 TAU3_VETO:
+
+5:3 oscillator:
+100%.
+
+D3 P0 TAU3_VETO:
+
+5:3 oscillator:
+68.75%.
+
+D3 P1 TAU3_VETO:
+
+5:3 oscillator:
+100%.
+
+The D3 P0 oscillator reduction
+does not qualify as useful phase control.
+
+Its burst-end favored fraction
+falls below TAU0,
+
+favored-majority burst endpoints
+fall to 0%,
+
+and mean unresolved duration
+rises to approximately
+10.20 epochs
+versus 4.55 under TAU0.
+
+It is therefore
+not evidence for
+a safe retained phase primitive.
+
+SAFETY / SERVICE
+
+TAU3_VETO preserves:
+
+zero direct favored-to-adverse flips;
+
+zero adverse-majority entries;
+
+0% 6:2 oscillator
+in every veto arm;
+
+0% balanced false-majority rate
+in every veto arm.
+
+Aggregate service
+remains approximately
+99.2-99.4%
+of TAU0.
+
+The negative result
+is therefore not caused
+by broad system collapse.
+
+It is specific
+to the intended phase benefit.
+
+CAUSAL INTERPRETATION
+
+A52 was correct
+that phase is a real causal axis.
+
+A53 shows why
+the simple local validity test fails.
+
+Fixed delay helps
+because it intentionally lets
+a committed cell ignore
+new adverse evidence
+for long enough
+to ride through a deep transient pulse.
+
+But by the third 5:3 hit,
+
+the exact current signed evidence
+used by the proposed veto
+already says
+the old commitment is unsupported.
+
+That signal is indistinguishable,
+under the frozen local contract,
+from the corresponding signal
+during a genuine reversal.
+
+Therefore:
+
+useful fixed phase inertia
+requires persistence
+beyond instantaneous
+current-evidence validity.
+
+And:
+
+instantaneous current evidence alone
+is insufficient
+to decide whether stale phase memory
+should remain authoritative.
+
+Per preregistration:
+
+do not weaken the veto;
+
+do not add a margin threshold;
+
+do not add another tau;
+
+do not add recovery tuning;
+
+do not add TTL;
+
+do not add gain/radius tuning;
+
+do not add another phase heuristic.
+
+A53 closes
+the abstract periodic-stability program.
+
+PLAIN-SPEAK INTERPRETATION
+
+We found the exact catch.
+
+The veto is very good
+at recognizing a real reversal.
+
+By the second turn
+after the world truly changes,
+
+it throws away almost every
+old protective pressure value,
+
+and the organism recovers
+its original three-turn reversal speed.
+
+But the same thing happens
+during a hard temporary attack.
+
+By the third hit,
+
+the cell's current evidence
+has already crossed far enough
+that the veto says:
+
+"the old commitment is no longer valid."
+
+So it throws away
+the delayed protection
+at exactly the moment
+that delayed protection
+was helping the core survive.
+
+That means
+current evidence by itself
+cannot answer:
+
+"is this a temporary attack
+I should ride through?"
+
+versus:
+
+"did the world really change?"
+
+The fixed delay knew
+how to persist
+
+but did not know
+when to stop.
+
+The veto knew
+when current evidence changed
+
+but could not tell
+whether that change was temporary.
+
+Combining those two simple rules
+does not solve the distinction.
+
+That is the answer
+we needed from the pulse benchmark.
+
+We should not keep
+inventing more knobs
+for this artificial world.
+
+SUBSTRATE-FREEZE DECISION
+
+A53 does not retain
+TAU3_FIXED
+as a validated developmental primitive.
+
+A53 does not retain
+TAU3_VETO
+as a validated developmental primitive.
+
+Phase sensitivity remains
+an established empirical property
+of the organism,
+
+but phase-memory control
+remains optional / unvalidated
+and is excluded
+from the initial Task 1 substrate.
+
+Proceed now to:
+
+DEVELOPMENTAL SUBSTRATE V0.
+
+Then begin
+the first task-bearing experiment
+using the hand-designed substrate.
+
+No A54 periodic-benchmark tuning
+is authorized.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
