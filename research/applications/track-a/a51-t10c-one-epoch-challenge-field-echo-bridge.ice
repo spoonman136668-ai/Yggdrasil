@@ -1853,3 +1853,79 @@ Any mismatch fails closed.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F51 AMENDMENT 02 — SUPERSEDE ONE-EPOCH MECHANICAL GATE
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F51
+AND BEFORE ANY A51 SCIENTIFIC OUTCOME.
+
+The mechanical gate recorded
+in the immediately preceding
+implementation amendment:
+
+source SHA256
+5d649564b50889b9a2241088b0c6b983b1dbf6c86731b66ad5cb7f3436b99867;
+
+mechanical output SHA256
+946a14b0da72343080607ad48e53488270ad4c45cc4e614cca80465ced6ea484;
+
+is valid only for
+the superseded one-epoch-only
+A51 design.
+
+It is NOT eligible
+to establish F51.
+
+AUTHORITATIVE DESIGN
+
+The authoritative A51 design
+is Amendment 01:
+
+MEASURED HANDOFF-LAG TTL SWEEP.
+
+Required TTLs:
+
+0;
+1;
+2;
+3.
+
+Required arms:
+
+20.
+
+A new candidate source
+must implement that exact sweep.
+
+A fresh pair
+of complete mechanical sweeps
+must pass byte-identically.
+
+The F51 source identity
+must be different from
+the superseded one-epoch source.
+
+No A51 scientific outcome
+has been observed.
+
+No post-result tuning occurred.
+
+Reason for supersession:
+
+the post-A50 observational diagnostic
+was completed before F51
+and directly measured
+the challenge-to-recovery handoff lag.
+
+A one-epoch bridge
+is causally under-dosed
+relative to that measured seam.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
