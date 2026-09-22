@@ -2886,3 +2886,647 @@ before scientific analysis.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+A47 PRIMARY CLOSURE
+
+DATE:
+2026-09-22.
+
+F47:
+284515acf6ef5d414cd91bdb352214d309f23f13
+
+MANIFEST-BINDING COMMIT:
+f5956c8afc0eb5cc6556aaf06f82cac3a1aa57bb
+
+AUTHORITATIVE SOURCE SHA256:
+645b1d8b8417702fce62a6268b9ba97dd41aba21e8cb9f48ccf683f32fc6d468
+
+PRIMARY SEED:
+A47-F47-284515acf6ef5d414cd91bdb352214d309f23f13-PRIMARY
+
+PRIMARY WORLD MANIFEST SHA256:
+769f377c7010dcb327c09d9d14748f8b8673c3bb5f3ec16b4ee189ad0694714a
+
+PRIMARY OUTPUT SHA256:
+26299c88d2c0584e3e16f22387d7a39d5b253f2707b6e919ae5b47f281af3f57
+
+PRIMARY RUNS:
+2.
+
+PRIMARY OUTPUT BYTES:
+147070.
+
+BYTE IDENTICAL:
+true.
+
+stderr:
+empty for both runs.
+
+All executable integrity probes:
+PASS.
+
+SCIENTIFIC STATUS
+
+A47_RECOVERY_INFORMATION_GAIN:
+FALSE.
+
+A47_MINIMUM_EFFECTIVE_DOSE_FOUND:
+FALSE.
+
+A47_FULL_STAGGER_INFORMATION_GAIN:
+FALSE.
+
+No arm is A47-RECOVERY-QUALIFIED
+under the frozen recovery-effect threshold.
+
+No minimum effective sub-FULL dose
+is identified.
+
+TECHNICAL EVIDENCE — D2
+
+BASE ECHO_PHASE:
+
+aggregate service 237062;
+harm rate 15.625%;
+overall inherited oscillator 7.031%;
+biased-periodic oscillator 50.000%;
+5:3 inherited oscillator 100.000%;
+6:2 oscillator 0.000%;
+balanced false-majority 0.000%;
+reversal acquisition 89.063%;
+median old-majority loss 3 epochs;
+mean unresolved episode 3.8953 epochs;
+mean favored-majority recovery latency 3.7013 epochs;
+median recovery latency 4 epochs;
+recovery-never count 19;
+mean refractory fraction across recovery steps 1-3 32.544%;
+short-cycle chatter rate 2.1567%.
+
+MPOST_T1:
+
+mean unresolved episode 3.5294;
+reduction versus BASE 9.39%;
+
+mean recovery latency 3.3077;
+improvement 0.394 epoch;
+
+mean refractory fraction steps 1-3 25.063%;
+reduction 22.99%;
+
+short-cycle chatter rate 2.7206%;
+
+aggregate service 237647;
+
+6:2 oscillator 0%;
+
+wrong-side majority entries 0;
+
+old-side true-reversal actions 0.
+
+MPOST_FULL:
+
+mean unresolved episode 3.3750;
+reduction 13.36%;
+
+mean recovery latency 2.9620;
+improvement 0.739 epoch;
+
+mean refractory fraction steps 1-3 17.795%;
+reduction 45.32%;
+
+short-cycle chatter rate 3.7422%;
+
+aggregate service 238181;
+
+6:2 oscillator 0%;
+
+wrong-side majority entries 0;
+
+old-side true-reversal actions 0.
+
+G5_FULL:
+
+mean unresolved episode 3.6000;
+reduction 7.58%;
+
+mean recovery latency 3.3377;
+improvement 0.364 epoch;
+
+mean refractory fraction steps 1-3 25.647%;
+reduction 21.19%;
+
+short-cycle chatter rate 2.7056%;
+
+aggregate service 237598;
+
+6:2 oscillator 0%;
+
+wrong-side majority entries 0;
+
+old-side true-reversal actions 0.
+
+G5_FULL_STAGGER:
+
+mean unresolved episode 3.7907;
+reduction 2.69%;
+
+mean recovery latency 3.6154;
+improvement 0.086 epoch;
+
+mean refractory fraction steps 1-3 29.277%;
+reduction 10.04%;
+
+short-cycle chatter rate 2.4541%.
+
+Relative to G5_FULL,
+staggering reduces excess chatter
+by 45.81%
+
+but retains only:
+
+35.43%
+of the unresolved-duration benefit;
+
+23.63%
+of the recovery-latency benefit.
+
+Therefore the frozen 75%
+benefit-retention requirement fails.
+
+TECHNICAL EVIDENCE — D3
+
+BASE ECHO_PHASE:
+
+aggregate service 232412;
+harm rate 16.406%;
+overall inherited oscillator 5.729%;
+biased-periodic oscillator 50.000%;
+5:3 inherited oscillator 100.000%;
+6:2 oscillator 0.000%;
+balanced false-majority 0.000%;
+reversal acquisition 87.500%;
+median old-majority loss 3 epochs;
+mean unresolved episode 4.6071 epochs;
+mean favored-majority recovery latency 4.2987 epochs;
+median recovery latency 4 epochs;
+recovery-never count 19;
+mean refractory fraction across recovery steps 1-3 45.778%;
+short-cycle chatter rate 0.000%.
+
+MPOST_T1:
+
+mean unresolved episode 4.1412;
+reduction 10.11%;
+
+mean recovery latency 3.8987;
+improvement 0.400 epoch;
+
+mean refractory fraction steps 1-3 38.960%;
+reduction 14.89%;
+
+short-cycle chatter rate 0.8148%;
+
+aggregate service 233009;
+
+6:2 oscillator 0%;
+
+wrong-side majority entries 0;
+
+old-side true-reversal actions 0.
+
+MPOST_T2:
+
+mean unresolved episode 4.0241;
+reduction 12.66%;
+
+mean recovery latency 3.6234;
+improvement 0.675 epoch;
+
+mean refractory fraction steps 1-3 32.181%;
+reduction 29.70%;
+
+short-cycle chatter rate 1.3299%;
+
+aggregate service 233442;
+
+6:2 oscillator 0%;
+
+wrong-side majority entries 0;
+
+old-side true-reversal actions 0.
+
+MPOST_FULL:
+
+mean unresolved episode 3.8049;
+reduction 17.41%;
+
+mean recovery latency 3.3974;
+improvement 0.901 epoch;
+
+mean refractory fraction steps 1-3 25.608%;
+reduction 44.06%;
+
+short-cycle chatter rate 2.4677%;
+
+aggregate service 233972;
+
+6:2 oscillator 0%;
+
+wrong-side majority entries 0;
+
+old-side true-reversal actions 0.
+
+G5_FULL:
+
+mean unresolved episode 3.7619;
+reduction 18.35%;
+
+mean recovery latency 3.4416;
+improvement 0.857 epoch;
+
+mean refractory fraction steps 1-3 28.819%;
+reduction 37.05%;
+
+short-cycle chatter rate 0.9180%;
+
+aggregate service 233648;
+
+6:2 oscillator 0%;
+
+wrong-side majority entries 0;
+
+old-side true-reversal actions 0.
+
+G5_FULL_STAGGER:
+
+mean unresolved episode 4.1059;
+reduction 10.88%;
+
+mean recovery latency 3.8718;
+improvement 0.427 epoch;
+
+mean refractory fraction steps 1-3 36.048%;
+reduction 21.25%;
+
+short-cycle chatter rate 0.5078%.
+
+Relative to G5_FULL,
+staggering reduces excess chatter
+by 44.69%
+
+but retains only:
+
+59.30%
+of unresolved-duration benefit;
+
+49.81%
+of recovery-latency benefit.
+
+Therefore the frozen 75%
+benefit-retention requirement fails.
+
+DOSE RESPONSE
+
+A47 shows a monotonic recovery response
+to increasing MPOST action intensity.
+
+D3 unresolved duration:
+
+BASE 4.6071;
+
+T1 4.1412;
+
+T2 4.0241;
+
+FULL 3.8049.
+
+D3 recovery latency:
+
+BASE 4.2987;
+
+T1 3.8987;
+
+T2 3.6234;
+
+FULL 3.3974.
+
+D2 shows the same direction:
+
+BASE unresolved 3.8953;
+
+T1 3.5294;
+
+FULL 3.3750.
+
+Thus recovery responds to dose.
+
+But no tested arm reaches
+the frozen RECOVERY_EFFECTIVE boundary:
+
+at least 25%
+unresolved-duration reduction
+
+and
+
+at least 1.0 epoch
+mean recovery-latency reduction.
+
+Therefore no minimum effective dose
+can be selected under A47.
+
+CHATTER / SYNCHRONY RESULT
+
+The stagger hypothesis is partly supported
+but fails its full information-gain gate.
+
+In both D2 and D3,
+one-half stochastic staggering
+cuts a substantial fraction
+of FULL excess chatter:
+
+D2:
+45.81%.
+
+D3:
+44.69%.
+
+Therefore synchronized re-entry
+is a real contributor
+to short-cycle chatter.
+
+However staggering also removes
+too much recovery benefit.
+
+Benefit retention is well below
+the frozen 75% floor.
+
+Therefore:
+
+synchrony contributes to chatter,
+
+but immediate availability
+also contributes materially
+to the recovery benefit.
+
+The chatter cannot be treated
+as a pure timing artifact.
+
+SAFETY
+
+Across every A47 arm:
+
+5:3 direct favored-to-adverse majority flips:
+0.
+
+5:3 adverse-majority entries:
+0.
+
+5:3 adverse-majority epochs:
+0.
+
+6:2 oscillator:
+0%.
+
+Old-side recovery actions
+during the first four
+true-reversal epochs:
+0.
+
+Reversal acquisition remains:
+
+D2:
+89.063%.
+
+D3:
+87.500%.
+
+Balanced false-majority remains:
+0%
+for all arms.
+
+Aggregate service
+is preserved or slightly improved.
+
+Therefore A47 fails
+because recovery effect size
+does not cross the frozen bar,
+
+not because of wrong-side instability,
+true-reversal rigidity,
+balanced capture,
+service collapse,
+or 6:2 regression.
+
+OSCILLATOR AXIS
+
+The inherited 5:3 oscillator metric
+remains 100%
+throughout the A47 primary.
+
+Per the frozen A47 design,
+this is reported
+but does not determine
+recovery-layer qualification.
+
+A47 therefore does not
+mislabel the recovery experiment
+as a failure merely because
+the separate macro phenotype persists.
+
+CROSS-EXPERIMENT ROBUSTNESS SIGNAL
+
+A46-FIXA D3 G5_FULL,
+under its independent post-F46A manifest,
+showed:
+
+26.50%
+unresolved-duration reduction;
+
+1.472-epoch
+mean recovery-latency improvement.
+
+The repaired common-random
+A46 diagnostic showed:
+
+22.61%
+unresolved-duration reduction;
+
+approximately 1.125-epoch
+recovery-latency improvement.
+
+A47 D3 G5_FULL,
+under the fresh F47 manifest
+and common-random design,
+shows:
+
+18.35%
+unresolved-duration reduction;
+
+0.857-epoch
+recovery-latency improvement.
+
+The direction is stable.
+
+The magnitude is not.
+
+All three estimates indicate
+a useful recovery effect,
+
+but the effect sits near
+the preregistered A46/A47
+information-gain boundary
+and varies materially
+across fresh world manifests.
+
+SCIENTIFIC INTERPRETATION
+
+A47 rules out
+a simple hidden sweet spot
+inside the tested refractory-action ladder.
+
+Smaller actions
+reduce chatter cost,
+but also reduce recovery benefit.
+
+Larger actions
+improve recovery more,
+but increase local cycling.
+
+The dose-response is graded
+rather than threshold-like.
+
+The one-half stagger probe shows
+that synchronization explains
+part,
+but not all,
+of the chatter.
+
+Most importantly,
+the discrepancy between:
+
+A46-FIXA;
+
+the repaired A46 common-random diagnostic;
+
+and A47
+
+shows that recovery-effect magnitude
+is manifest-sensitive.
+
+Therefore the next justified step
+is NOT:
+
+another timer dose;
+
+another arbitrary probability;
+
+a lowered success threshold;
+
+or a stronger refractory intervention.
+
+The next justified step
+is a replication / robustness study
+with the recovery mechanisms frozen.
+
+Estimate the effect distribution
+across multiple independent
+fresh world manifests
+using common-random pairing.
+
+Only after that should the program decide
+whether the recovery layer is:
+
+robust enough to freeze;
+
+too weak to justify complexity;
+
+or heterogeneous enough
+to require a context-sensitive mechanism.
+
+PLAIN-SPEAK INTERPRETATION
+
+A47 gave us the dose curve.
+
+Shaving one turn helps a little.
+
+Shaving more helps more.
+
+Opening the gate completely
+helps the most.
+
+But every step toward faster recovery
+also buys more local cycling.
+
+Spreading the releases out
+does cut almost half
+of the extra chatter.
+
+But it also throws away
+roughly half or more
+of the recovery benefit.
+
+So the chatter is partly
+a stampede problem,
+
+but not only a stampede problem.
+
+The deeper result is this:
+
+the recovery mechanism
+keeps helping
+in every serious test,
+
+but the amount it helps
+moves around from one fresh world set
+to another.
+
+One experiment says
+the improvement is just over
+our success line.
+
+Another says
+it is just under it.
+
+That means the next smart question
+is not:
+
+what new knob should we turn?
+
+It is:
+
+HOW RELIABLE IS THIS EFFECT
+ACROSS INDEPENDENT WORLDS?
+
+Before we declare
+the recovery layer solved
+or abandon it,
+
+we should measure
+that variability directly.
+
+NORTH-STAR IMPLICATION
+
+The recovery architecture
+remains promising:
+
+local evidence can modulate
+developmental plasticity timing
+without a central controller,
+wrong-side capture,
+or reversal lock-in.
+
+But Yggdrasil needs mechanisms
+that are robust across environments,
+not mechanisms that pass
+only on a favorable world draw.
+
+A47 therefore advances
+the program from
+mechanism discovery
+to robustness estimation
+for the recovery layer.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
