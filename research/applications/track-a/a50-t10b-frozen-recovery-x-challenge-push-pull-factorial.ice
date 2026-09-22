@@ -1196,3 +1196,117 @@ is still required before F50.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F50 AMENDMENT 02 — FULL MECHANICAL GATE / SOURCE IDENTITY
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F50
+AND BEFORE ANY A50 SCIENTIFIC OUTCOME.
+
+AUTHORIZED SOURCE
+
+Bytes:
+88044.
+
+SHA256:
+9dcaacc649b24ecbd971589f769f27ab69ebbffa17607c07a8627e4726eaf720
+
+MECHANICAL VALIDATION
+
+Mechanical seed:
+
+MECHANICAL-A50-F50-CANDIDATE
+
+Complete sweeps:
+
+2.
+
+Worlds per sweep:
+
+384.
+
+Arms:
+
+8.
+
+Output bytes per sweep:
+
+107434.
+
+Output SHA256:
+
+0a895b126ad95e0953f1738604616574e9da048c1da6190cb6c95b1aca742f01
+
+BYTE IDENTICAL:
+
+true.
+
+stderr:
+
+empty for both sweeps.
+
+All executable integrity probes:
+
+PASS.
+
+Focused donor parity and
+factor-reduction parity
+remain green.
+
+No mechanical-world
+population outcome,
+factorial interaction,
+qualification result,
+creep result,
+or composition conclusion
+is used as scientific evidence.
+
+SOURCE-BUNDLE FORMAT
+
+The exact source above
+will be published
+as deterministic gzip/base64
+split into seven neutral text source parts.
+
+Source SHA256:
+
+9dcaacc649b24ecbd971589f769f27ab69ebbffa17607c07a8627e4726eaf720
+
+Gzip bytes:
+
+20362.
+
+Gzip SHA256:
+
+219c92fd38ef3d23ad5dc37a6888b24aeb285a6c67236facbd30378122f02774
+
+Concatenated base64 characters:
+
+27152.
+
+Base64 SHA256:
+
+0a1abef095bce7a0e68bafbfb5053579d6380b82ceaca6d07f73806f7ee1b413
+
+Source part count:
+
+7.
+
+The F50 loader must verify:
+
+part count;
+base64 identity;
+gzip identity;
+source identity;
+
+before execution.
+
+Any mismatch fails closed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
