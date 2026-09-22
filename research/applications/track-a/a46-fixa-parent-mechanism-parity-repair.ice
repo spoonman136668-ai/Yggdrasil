@@ -390,3 +390,53 @@ Any mismatch fails closed.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-F46A PRIMARY MANIFEST BINDING
+
+DATE:
+2026-09-22.
+
+F46A:
+6a52b0ed4372371727649e4f14f5967d28345551
+
+REPAIRED SOURCE SHA256:
+53d643ca7c1b17b9368abd60cae1666de7698dd3530795845250d2481767c885
+
+PRIMARY SEED:
+A46-FIXA-F46A-6a52b0ed4372371727649e4f14f5967d28345551-PRIMARY
+
+WORLD COUNT:
+384.
+
+WORLD SHAPE:
+48 contexts x 8 replicas.
+
+PRIMARY WORLD MANIFEST SHA256:
+faba5e274d757b6712467b725f4353003966773e6a4eef5a0412837ee570ca90
+
+STATUS:
+BOUND AFTER F46A
+AND BEFORE ANY A46-FIXA PRIMARY ARM EXECUTION.
+
+The formal repaired primary retains
+the original A46 RNG discipline:
+
+ECHO_PHASE controls:
+YGG-A45-ARM-SEED.
+
+G5_REENTRY treatments:
+YGG-A46-ARM-SEED.
+
+No repaired-arm scientific outcome,
+qualification result,
+or population comparison
+was observed before this binding.
+
+Two complete repaired primary sweeps
+must be byte-identical
+before scientific analysis.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
