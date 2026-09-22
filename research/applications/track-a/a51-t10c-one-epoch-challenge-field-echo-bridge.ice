@@ -2887,3 +2887,726 @@ of the whole distributed response.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+A51 PRIMARY CLOSURE
+
+DATE:
+2026-09-22.
+
+F51:
+6c50bc7be90731a60ce2c2f16a668eeb4e99881b
+
+MANIFEST-BINDING COMMIT:
+fda3ebc9fc7819d50269a894e8a31aeb738ec99f
+
+AUTHORITATIVE SOURCE SHA256:
+8284fc44fbe2dd965c477ba845f92d44aefa85b802adfe1d672cf144fb45baee
+
+PRIMARY SEED:
+A51-F51-6c50bc7be90731a60ce2c2f16a668eeb4e99881b-PRIMARY
+
+PRIMARY WORLD MANIFEST SHA256:
+f7a7d92cca0c636374d1b4e371992c271d68e901b69a7e3042a60b0a366a7cea
+
+PRIMARY RUNS:
+2.
+
+PRIMARY OUTPUT BYTES:
+271793.
+
+PRIMARY OUTPUT SHA256:
+5b8c6d2acc1242246b0504ca15e793fe660bf13dced1f0ed503c357af4cdefe5
+
+BYTE IDENTICAL:
+true.
+
+stderr:
+empty for both runs.
+
+All executable integrity probes:
+PASS.
+
+SCIENTIFIC STATUS
+
+A51_MINIMUM_EFFECTIVE_TTL_FOUND:
+FALSE.
+
+A51 QUALIFICATION:
+no TTL qualifies.
+
+TEMPORAL BRIDGE INFORMATION GAIN
+
+D2 TTL1:
+FALSE.
+
+D2 TTL2:
+TRUE.
+
+D2 TTL3:
+TRUE.
+
+D3 TTL1:
+FALSE.
+
+D3 TTL2:
+TRUE.
+
+D3 TTL3:
+TRUE.
+
+MACRO INFORMATION GAIN
+
+D2 TTL1:
+FALSE.
+
+D2 TTL2:
+FALSE.
+
+D2 TTL3:
+FALSE.
+
+D3 TTL1:
+FALSE.
+
+D3 TTL2:
+FALSE.
+
+D3 TTL3:
+FALSE.
+
+LAYER-TIMING SYNERGY
+
+D2 TTL1:
+FALSE.
+
+D2 TTL2:
+TRUE.
+
+D2 TTL3:
+FALSE.
+
+D3 TTL1:
+FALSE.
+
+D3 TTL2:
+TRUE.
+
+D3 TTL3:
+TRUE.
+
+Thus:
+
+the measured temporal handoff seam is real;
+
+TTL2 is the first duration
+that restores substantial overlap;
+
+but no TTL crosses
+the frozen macro-information threshold.
+
+D2 HANDOFF
+
+G5_PUSH_TTL0:
+
+same-side field exposure
+among G5-released cells:
+3.31%.
+
+former-side recruitment:
+24.16%.
+
+same-epoch recruitment:
+40.27%.
+
+G5_PUSH_TTL1:
+
+field exposure:
+13.65%.
+
+former-side recruitment:
+25.38%.
+
+same-epoch recruitment:
+41.07%.
+
+G5_PUSH_TTL2:
+
+field exposure:
+61.11%.
+
+former-side recruitment:
+29.67%.
+
+same-epoch recruitment:
+44.27%.
+
+G5_PUSH_TTL3:
+
+field exposure:
+64.36%.
+
+former-side recruitment:
+29.54%.
+
+same-epoch recruitment:
+44.21%.
+
+Therefore TTL2 produces
+the main D2 temporal-bridge jump.
+
+TTL3 adds little further
+released-cell coverage or recruitment.
+
+D2 MACRO RESULT
+
+G5_PUSH_TTL0:
+
+mean 5:3 burst-end favored fraction:
+28.125%.
+
+favored-majority burst-end frequency:
+10.23%.
+
+favored-to-unresolved transitions:
+67.
+
+mean unresolved duration:
+3.590 epochs.
+
+mean majority-recovery latency:
+3.288 epochs.
+
+median challenge-onset beta_F:
++0.04494 per cycle.
+
+G5_PUSH_TTL2:
+
+burst-end favored:
+28.812%.
+
+favored-majority:
+9.09%.
+
+favored-to-unresolved:
+68.
+
+unresolved duration:
+3.367 epochs.
+
+recovery latency:
+3.087 epochs.
+
+median beta_F:
++0.04435.
+
+G5_PUSH_TTL3:
+
+burst-end favored:
+29.285%.
+
+favored-majority:
+11.36%.
+
+favored-to-unresolved:
+65.
+
+unresolved duration:
+3.395 epochs.
+
+recovery latency:
+3.000 epochs.
+
+median beta_F:
++0.04926.
+
+Relative to TTL0,
+TTL3 raises burst-end favored mass
+by only 1.16 percentage points.
+
+That is below
+the frozen +2 point macro threshold.
+
+Unresolved-duration improvement
+also remains below 10%.
+
+D3 HANDOFF
+
+G5_PUSH_TTL0:
+
+same-side field exposure:
+2.19%.
+
+former-side recruitment:
+24.47%.
+
+same-epoch recruitment:
+39.37%.
+
+G5_PUSH_TTL1:
+
+field exposure:
+10.85%.
+
+former-side recruitment:
+25.34%.
+
+same-epoch recruitment:
+39.97%.
+
+G5_PUSH_TTL2:
+
+field exposure:
+50.82%.
+
+former-side recruitment:
+28.35%.
+
+same-epoch recruitment:
+42.71%.
+
+G5_PUSH_TTL3:
+
+field exposure:
+61.80%.
+
+former-side recruitment:
+29.16%.
+
+same-epoch recruitment:
+43.38%.
+
+TTL2 again produces
+the first major bridge.
+
+TTL3 adds additional D3 coverage
+consistent with the measured
+2-3 epoch handoff lag.
+
+D3 MACRO RESULT
+
+G5_PUSH_TTL0:
+
+mean 5:3 burst-end favored fraction:
+28.788%.
+
+favored-majority burst-end frequency:
+5.68%.
+
+favored-to-unresolved transitions:
+64.
+
+mean unresolved duration:
+3.600 epochs.
+
+mean majority-recovery latency:
+3.476 epochs.
+
+median challenge-onset beta_F:
++0.07560.
+
+G5_PUSH_TTL2:
+
+burst-end favored:
+29.261%.
+
+favored-majority:
+9.09%.
+
+favored-to-unresolved:
+61.
+
+unresolved duration:
+3.506 epochs.
+
+recovery latency:
+3.256 epochs.
+
+median beta_F:
++0.07783.
+
+G5_PUSH_TTL3:
+
+burst-end favored:
+30.208%.
+
+favored-majority:
+9.09%.
+
+favored-to-unresolved:
+61.
+
+unresolved duration:
+3.312 epochs.
+
+recovery latency:
+3.110 epochs.
+
+median beta_F:
++0.08140.
+
+Relative to TTL0,
+TTL3 raises burst-end favored mass
+by 1.42 percentage points.
+
+Again this is below
+the frozen +2 point macro threshold.
+
+Unresolved duration improves
+by approximately 8.0%,
+also below the frozen 10% threshold.
+
+FIELD-ONLY VERSUS COMBINED
+
+D2 PUSH-only:
+
+TTL0 burst-end favored:
+27.509%.
+
+TTL2:
+28.078%.
+
+TTL3:
+28.906%.
+
+D2 combined:
+
+TTL0:
+28.125%.
+
+TTL2:
+28.812%.
+
+TTL3:
+29.285%.
+
+TTL2 shows
+a positive timing interaction
+and satisfies the frozen
+layer-timing-synergy criterion.
+
+D3 PUSH-only:
+
+TTL0:
+26.705%.
+
+TTL2:
+26.752%.
+
+TTL3:
+27.060%.
+
+D3 combined:
+
+TTL0:
+28.788%.
+
+TTL2:
+29.261%.
+
+TTL3:
+30.208%.
+
+Both TTL2 and TTL3
+show positive layer-timing synergy.
+
+Therefore A51 confirms
+that recovery and periphery control
+do have a genuine temporal interaction.
+
+The interaction is simply
+too small at the population scale
+to satisfy A51 macro information gain.
+
+TTL-ONLY FAVORED RECRUITMENT
+
+The primary contains
+hundreds of former-side recruitments
+that occur under TTL-only field exposure.
+
+D2:
+
+TTL2 combined:
+688 TTL-only former-side recruitments.
+
+TTL3 combined:
+691.
+
+D3:
+
+TTL2 combined:
+932.
+
+TTL3 combined:
+982.
+
+Thus the bridge is
+mechanically and behaviorally active.
+
+It is not a null mechanism.
+
+SAFETY / NON-REGRESSION
+
+For all G5+TTL arms:
+
+direct favored-to-adverse flips:
+0.
+
+adverse-majority entries:
+0.
+
+6:2 oscillator:
+0%.
+
+balanced false-majority:
+0%.
+
+D2 reversal acquisition:
+89.84%.
+
+D3 reversal acquisition:
+87.50%.
+
+Median old-majority loss:
+3 epochs.
+
+Aggregate service
+remains above
+95% of paired BASE.
+
+Median challenge-onset beta_F
+remains positive
+for all TTL arms.
+
+No metastable core erosion
+is hidden by the TTL bridge.
+
+POST-PRIMARY TRUE-REVERSAL MEMORY SAFETY DIAGNOSTIC
+
+Because the primary summary
+did not separately emit
+the preregistered count
+of remembered old-side
+challenge-field recruitment
+during the first four
+post-reversal epochs,
+an observational replay
+was run against
+the exact F51 primary seed
+for all true-reversal contexts.
+
+The replay changes
+no dynamics.
+
+Diagnostic runs:
+2.
+
+Diagnostic SHA256:
+8a0f4e053ff5358aed64ebd747148585673d8188b772c0868970abe56f54041b
+
+BYTE IDENTICAL:
+true.
+
+Across:
+
+D2 TTL1;
+D2 TTL2;
+D2 TTL3;
+D3 TTL1;
+D3 TTL2;
+D3 TTL3:
+
+old-side remembered-field opportunities
+during the first four
+post-reversal epochs:
+
+0.
+
+old-side memory-induced
+lambda-boost opportunities:
+
+0.
+
+old-side memory-boosted recruitments:
+
+0.
+
+Median old-majority loss:
+
+3 epochs.
+
+Reversal acquisition remains:
+
+D2:
+89.84%.
+
+D3:
+87.50%.
+
+Thus the bounded TTL bridge
+does not create
+an observed old-side
+post-reversal recruitment hazard
+in the tested worlds.
+
+CAUSAL INTERPRETATION
+
+A50 correctly diagnosed
+a temporal handoff problem.
+
+A51 confirms it causally.
+
+The one-epoch bridge
+is under-dosed.
+
+TTL2 is the first duration
+that restores large-scale
+released-cell exposure
+to the recently active
+challenge organization field.
+
+TTL3 extends D3 coverage
+further.
+
+Released cells then recruit
+toward their former/favored side
+more often.
+
+Therefore:
+
+expired challenge-field timing
+was a real missing signal.
+
+However:
+
+fixing that handoff
+does not substantially change
+the macro attractor.
+
+The organism becomes
+locally better coordinated
+without crossing
+the population-scale continuity threshold.
+
+This rules out
+simple bounded challenge-field persistence
+as the final missing macro mechanism.
+
+It also makes
+stronger field amplitude,
+larger radius,
+stronger G5,
+or TTL >3
+poorly justified next moves.
+
+The preregistered failure branch
+is therefore reached:
+
+temporal overlap rises strongly;
+
+favored recruitment rises;
+
+safety remains clean;
+
+but macro continuity remains weak.
+
+The next justified class is:
+
+broader local response-phase /
+forcing alignment.
+
+PLAIN-SPEAK INTERPRETATION
+
+We fixed the shift-change problem.
+
+At two turns of memory,
+the returning cells
+finally hear the message
+the challenged veterans
+were sending.
+
+At three turns,
+even more of them hear it.
+
+And they respond.
+
+They join the favored side
+more often.
+
+So A50's timing diagnosis
+was correct.
+
+But the whole organism
+still does not change enough.
+
+That is important.
+
+The problem is no longer:
+
+the message vanished too early.
+
+We restored the message
+and the cells used it.
+
+Yet the population still follows
+essentially the same large cycle.
+
+So simply letting
+the old challenge message linger longer
+is not the answer.
+
+The remaining issue
+looks one level deeper:
+
+the timing of the organism's
+actual response
+relative to the repeating disturbance.
+
+We have now earned
+the right to test that directly.
+
+Not by making the signal louder.
+
+Not by increasing its radius.
+
+Not by making memory longer.
+
+By changing
+WHEN a local response
+takes effect.
+
+NORTH-STAR IMPLICATION
+
+A51 is a strong mechanistic result
+despite failing qualification.
+
+The architecture can now demonstrate:
+
+local state persistence;
+
+cooperative continuity;
+
+adaptive recovery;
+
+spatial periphery control;
+
+and bounded temporal handoff
+between independent local mechanisms.
+
+Those layers compose
+without a central scheduler.
+
+The remaining macro failure
+survives even after
+the measured handoff seam
+is repaired.
+
+That substantially narrows
+the realization problem
+to temporal organization
+of local responses
+under repeated forcing.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
