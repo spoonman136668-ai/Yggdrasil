@@ -1339,3 +1339,113 @@ A44 source SHA256 after this correction:
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+F44 FREEZE AND PRE-PRIMARY MECHANICAL GATE
+
+DATE:
+2026-09-22.
+
+F44:
+758acef963d19261103521cf0ace0f27286f34e5
+
+FROZEN SOURCE SHA256:
+39b4080d6fc44b2229d7f6e61c042101741d02892777d3b824eb336d211e1039
+
+FROZEN SOURCE BYTES:
+62778.
+
+TRANSPORT FORMAT:
+six immutable base64/gzip payload chunks
+plus a hash-checking Python loader.
+
+RATIONALE:
+The A43 single-payload archive was corrupted during publication.
+A44 therefore uses chunked publication
+with immediate Git blob identity verification.
+
+VERIFIED PAYLOAD BLOBS:
+
+part00:
+f5f739376f55b8458156bd916365813e517c023e
+
+part01:
+dec3039bab8a5ff19def6f0b76590deb2119a86e
+
+part02:
+db96cf11fed945b6e36203c11be014d1599dba14
+
+part03:
+975c20eee7e5d1b01b7a13f5417e98efcead49b4
+
+part04:
+93df233906d4cd41acfb0b1fb6b8f234e4652270
+
+part05:
+755f9f4ecfbe586dfb127e58d6a5dfe7cd2b9d89
+
+LOADER BLOB:
+9718e23cf10fb1e9f6577a16f00391b053f78953
+
+All seven repository blobs
+match their locally precomputed Git blob identities.
+
+The loader concatenates exactly six payload parts,
+decompresses them,
+and fails closed unless the resulting source SHA256 is
+39b4080d6fc44b2229d7f6e61c042101741d02892777d3b824eb336d211e1039.
+
+MECHANICAL SEED:
+MECHANICAL-A44-NONPRIMARY.
+
+MECHANICAL WORLD MANIFEST SHA256:
+6e1512b37f3faee8e107d1d6b443697a347124feddaac03e30b3137ec57a4c54
+
+MECHANICAL RUNS:
+2 complete sweeps.
+
+MECHANICAL SHAPE:
+384 worlds x 10 arms.
+
+MECHANICAL OUTPUT SHA256:
+b0eed3d6ee5b128acda7622c2fc24322f237e526cd72e09a310ad6d3d3fbb599
+
+MECHANICAL OUTPUT BYTES:
+69598.
+
+BYTE IDENTICAL:
+true.
+
+PRE-PRIMARY INTEGRITY:
+P1 through P38 PASS.
+
+STATIC / MECHANICAL CAUSAL AUDIT:
+
+exactly ten preregistered arms;
+no OCCUPANCY arm;
+no MEDIUM arm;
+rho = 3/4 in every arm;
+support-recruitment normalization = /7 as amended pre-F44;
+PHASE_SWITCH cooperative reinforcement only in CHALLENGE;
+PHASE_SWITCH active recruitment only from SUPPORT emitters;
+NEUTRAL adds neither A44 behavior;
+ETA = 1/2;
+field radius = 3;
+no distance kernel;
+local mode reads no context/family/global-phase oracle;
+support-mode PHASE_SWITCH pressure reduction = exactly 0;
+old-side cells during the first four true-reversal epochs
+are classified CHALLENGE in the mechanical gate.
+
+No fake-world arm outcome
+is interpreted as scientific evidence.
+
+STATUS:
+F44 frozen.
+Mechanical gate passed.
+Primary world manifest not yet bound.
+No real A44 arm execution has occurred.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
