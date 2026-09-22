@@ -1094,3 +1094,138 @@ and integrity probes remain unchanged.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F44 AMENDMENT 02 — A43 PARENT ARCHIVE RECOVERY BOUNDARY
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F44
+AND BEFORE ANY A44 SCIENTIFIC OUTCOME.
+
+FAULT
+
+The F43 repository payload:
+
+research/applications/track-a/a43_t9a_cooperative_veteran_core_reinforcement_v1.py.gz.b64
+
+is byte-stable in GitHub
+but is not a valid gzip stream.
+
+Its gzip footer advertises:
+uncompressed bytes = 55100.
+
+Standard gzip / zlib decompression fails
+with invalid-distance corruption.
+
+Therefore the new research harness correctly refuses
+to mark the A43 parent as cryptographically materialized.
+
+This is an archival transport defect.
+It does not alter the already-closed A43 primary evidence.
+
+SCIENTIFIC RECOVERY SOURCE
+
+A source reconstruction derived from
+the accepted A42 parent plus the frozen A43 cooperative mechanism
+has SHA256:
+
+78625f12ccb099cd679626cbcd8f228181d88769b7a733e06ab26a00155bb77b
+
+The corrupted F43 payload decompresses correctly
+through its first 3398 source bytes before failure.
+
+Those first 3398 bytes are byte-identical
+to the recovery source.
+
+More importantly,
+the recovery source reproduces the accepted A43
+scientific primary metrics under the exact accepted A43 seed and manifest.
+
+Accepted A43 seed:
+
+A43-F43-6453348499ec860b587fb92af3471526175e4894-PRIMARY
+
+Accepted A43 manifest:
+
+3c534bcdee0e8e927735926f5260cfe959dc2d44274e7286c471340249f4a1c5
+
+Recovered source manifest:
+
+3c534bcdee0e8e927735926f5260cfe959dc2d44274e7286c471340249f4a1c5
+
+Key exact metric parity:
+
+D2 BASE:
+aggregate service 236006;
+overall oscillation 10.9375%;
+biased-periodic oscillation 96.875%;
+reversal acquisition 90.625%;
+burst-end favored fraction 25.153882575757575%.
+
+D2 MARGIN_REINFORCE:
+aggregate service 234929;
+overall oscillation 7.8125%;
+biased-periodic oscillation 53.125%;
+reversal acquisition 89.84375%;
+burst-end favored fraction 44.62594696969697%.
+
+D3 BASE:
+aggregate service 230646;
+overall oscillation 10.416666666666668%;
+biased-periodic oscillation 93.75%;
+reversal acquisition 89.0625%;
+burst-end favored fraction 25.01183712121212%.
+
+D3 MARGIN_REINFORCE:
+aggregate service 231204;
+overall oscillation 6.770833333333333%;
+biased-periodic oscillation 46.875%;
+reversal acquisition 87.5%;
+burst-end favored fraction 42.34138257575758%.
+
+The recovered source also reproduces
+the accepted OCCUPANCY_REINFORCE upper-bound behavior:
+near-elimination of the biased oscillator
+with zero true reversal
+and pathological balanced false-majority.
+
+BOUNDARY
+
+A44 may use this recovered A43 source
+as a SCIENTIFIC-EQUIVALENT PARENT
+for implementation and control construction.
+
+This does not rewrite F43.
+It does not claim the recovered file has
+the original F43 source SHA256.
+
+The original expected F43 source SHA remains:
+
+97b837b5d65b73508fca8aff732391bbbce85a5be9624fab2aa4deb6150de5c2
+
+and is retained as unrecovered archival identity.
+
+A44 controls must reproduce
+the accepted A43 mechanism behavior,
+not the broken gzip artifact.
+
+No A44 threshold,
+arm,
+gain,
+radius,
+mode rule,
+qualification,
+or world-family rule
+is changed by this recovery boundary.
+
+From A44 onward,
+source publication must be transport-verified
+after repository write
+before a freeze commit is accepted.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
