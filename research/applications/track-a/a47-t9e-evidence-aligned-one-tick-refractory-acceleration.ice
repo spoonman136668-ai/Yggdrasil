@@ -1107,3 +1107,132 @@ all executable integrity conditions.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F47 AMENDMENT 02 — POST-FIXA MECHANICAL GATE / SOURCE IDENTITY
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F47
+AND BEFORE ANY A47 SCIENTIFIC OUTCOME.
+
+AUTHORIZED CANDIDATE SOURCE
+
+Bytes:
+83463.
+
+SHA256:
+11ec74adb551e493077c4a931773e11e0d3ece4c59bc05f741a7d2b154fe3b73
+
+Focused A45 ECHO_PHASE parent parity:
+
+72 representative comparisons.
+
+Behavioral mismatches:
+
+0.
+
+POST-FIXA MECHANICAL VALIDATION
+
+Mechanical seed:
+
+MECHANICAL-A47-F47-POSTFIXA-V2
+
+Complete sweeps:
+
+2.
+
+Worlds per sweep:
+
+384.
+
+Arms:
+
+6.
+
+Output bytes per sweep:
+
+76911.
+
+Output SHA256:
+
+efd46fd3eec0d42877ca2250e7fecb9dee673070e57d304d9ec4840fd2824365
+
+BYTE IDENTICAL:
+
+true.
+
+stderr:
+
+empty for both sweeps.
+
+All executable pre-primary integrity probes:
+
+PASS.
+
+All acceleration arms observed:
+
+release advance minimum = 1 epoch;
+
+release advance maximum = 1 epoch.
+
+Old-side accelerations
+during the first four true-reversal epochs:
+
+0
+for every SUPPORT_ACCEL
+and MPOST_ACCEL arm.
+
+No mechanical-world population outcome
+is used as scientific evidence.
+
+SOURCE-BUNDLE FORMAT
+
+F47 will publish
+the exact authorized source
+as deterministic gzip/base64
+split into seven neutral text source parts.
+
+Source SHA256:
+
+11ec74adb551e493077c4a931773e11e0d3ece4c59bc05f741a7d2b154fe3b73
+
+Gzip bytes:
+
+19745.
+
+Gzip SHA256:
+
+07e65da46ec82102b5604581590284a67f63c88ca20a4245584923fa41d7af25
+
+Concatenated base64 characters:
+
+26328.
+
+Base64 SHA256:
+
+58790fce63d95b5f840dfcecd1582c857f0b02989aff651d98fec1d3f470c48f
+
+Source part count:
+
+7.
+
+The F47 loader must verify:
+
+part count;
+
+base64 identity;
+
+gzip identity;
+
+source identity;
+
+before execution.
+
+Any mismatch fails closed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
