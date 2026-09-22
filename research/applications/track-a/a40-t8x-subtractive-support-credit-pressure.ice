@@ -711,3 +711,134 @@ when the world truly changes.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F40 CLARIFICATION 01 — CURRENT-PULSE ACCOUNTING
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE F40
+AND BEFORE ANY REAL A40 WORLD EXISTS.
+
+MECHANICAL VALIDATION FOUND
+A TEMPORAL ACCOUNTING MISMATCH
+IN THE FIRST IMPLEMENTATION DRAFT.
+
+The intended SUBTRACTIVE mechanism is:
+
+accumulated support credit
+absorbs part of the CURRENT opposing pulse.
+
+Therefore the support credit used
+for the current defection decision
+must be the credit that existed
+at the beginning of that epoch,
+before the current evidence
+has already been incorporated into B.
+
+Freeze the decision timing as follows.
+
+At the beginning of epoch t:
+
+B_pre(i,t)
+=
+the carried signed state
+after epoch t-1.
+
+Define aligned pre-credit:
+
+for C:
+M_pre = max(0,B_pre).
+
+for S:
+M_pre = max(0,-B_pre).
+
+Read current:
+
+L_op(t).
+
+Then:
+
+SUBTRACTIVE_PRESSURE(t)
+=
+max(0, L_op(t) - M_pre).
+
+The current committed-state defection decision
+uses that pressure
+through the unchanged Hill law.
+
+Separately,
+the current signed evidence updates:
+
+B(i,t)
+=
+rho * B_pre(i,t)
++
+(1-rho) * E(i,t).
+
+That updated B
+is carried into the next epoch.
+
+Thus the current adverse pulse
+is not counted twice
+against the same support credit.
+
+MEASUREMENT
+
+At pulse onset report both:
+
+M_pre;
+
+and
+
+M_post
+
+after the current B update.
+
+The frozen erosion-ordering variable remains:
+
+pre-pulse M_pre.
+
+For true reversals,
+the old-side cohort and onset M
+remain captured before the reversal epoch.
+
+The current-pulse pressure latency
+uses M_pre.
+
+CONTROL TIMING
+
+A39 control implementations
+remain unchanged.
+
+This clarification changes
+only the new SUBTRACTIVE read timing.
+
+No rho changes.
+
+No K changes.
+
+No gain exists.
+
+No threshold changes.
+
+No arm changes.
+
+No qualification changes.
+
+The first mechanical draft
+does not constitute scientific evidence.
+
+It is discarded.
+
+A fresh two-run mechanical verification
+is required before F40.
+
+No F40 exists yet.
+No real A40 world has been derived.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
