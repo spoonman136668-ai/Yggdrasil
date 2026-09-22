@@ -942,3 +942,119 @@ No other A46 rule changes.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F46 IMPLEMENTATION / MECHANICAL BINDING
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F46
+AND BEFORE ANY A46 SCIENTIFIC OUTCOME.
+
+IMPLEMENTATION
+
+Candidate source bytes:
+78919.
+
+Candidate source SHA256:
+60ed341643ea8934d1ce360a841ebf5e5b272371aa686e0342b57b0071353493
+
+Focused parent-parity audit:
+
+D2_ECHO_PHASE:
+zero mismatches.
+
+D3_ECHO_PHASE:
+zero mismatches.
+
+Audited world classes included:
+constant;
+spatial;
+true reversal;
+balanced periodic;
+6:2 biased periodic;
+5:3 biased periodic.
+
+G5 focused causal smoke:
+
+early re-entry is active
+in intended recovery worlds;
+
+old-side true-reversal
+early re-entry count = 0;
+
+A45 trace-freshness probes all pass.
+
+MECHANICAL VALIDATION
+
+Mechanical seed:
+MECHANICAL-A46-F46-CANDIDATE
+
+Complete sweeps:
+2.
+
+Worlds per sweep:
+384.
+
+Arms:
+4.
+
+Output bytes per sweep:
+49396.
+
+Output SHA256:
+07cb52b178972724d11182e3d244bd9e989aa990b0ae7b5f3974c2f6465a13dc
+
+BYTE IDENTICAL:
+true.
+
+All executable integrity probes:
+PASS.
+
+D2_G5_REENTRY
+old-side true-reversal early re-entry:
+0.
+
+D3_G5_REENTRY
+old-side true-reversal early re-entry:
+0.
+
+No mechanical-world population outcome
+is used as scientific evidence.
+
+PUBLICATION PACKAGE
+
+Exact source will be published
+as deterministic gzip/base64
+split into seven text chunks.
+
+Source bytes:
+78919.
+
+Source SHA256:
+60ed341643ea8934d1ce360a841ebf5e5b272371aa686e0342b57b0071353493
+
+Gzip bytes:
+18953.
+
+Gzip SHA256:
+db32e84ca763847ccb2a9475a5ecc500738f9f9a6767b4c80fa0b4dfe7521f51
+
+Concatenated base64 characters:
+25272.
+
+Base64 SHA256:
+59ea70f8142cee5489b0fc8ac973a036816cc2ed14595af442c794ecd7e83d12
+
+Chunk count:
+7.
+
+The F46 loader must verify
+all three identities
+before execution.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
