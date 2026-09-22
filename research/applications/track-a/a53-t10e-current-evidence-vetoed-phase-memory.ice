@@ -1213,3 +1213,46 @@ Any mismatch fails closed.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-F53 PRIMARY MANIFEST BINDING
+
+DATE:
+2026-09-22.
+
+F53:
+29648c11507024973a0d855dc02f334bea195a8f
+
+AUTHORITATIVE SOURCE SHA256:
+dd19ce7c9b5745087e28b7be965da83f45a876c732e8e1991d123dcf21604656
+
+PRIMARY SEED:
+A53-F53-29648c11507024973a0d855dc02f334bea195a8f-PRIMARY
+
+WORLD COUNT:
+384.
+
+WORLD SHAPE:
+48 contexts x 8 replicas.
+
+PRIMARY WORLD MANIFEST SHA256:
+7a3c0835f49bf2fca4cff13b6b4eb28b4b74a6416354d4f4914471abca275df5
+
+STATUS:
+BOUND AFTER F53
+AND BEFORE ANY A53 PRIMARY ARM EXECUTION.
+
+No A53 veto activity result,
+phase result,
+macro result,
+qualification result,
+or scientific comparison
+was observed before this binding.
+
+Two complete primary sweeps
+must be byte-identical
+before scientific analysis.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
