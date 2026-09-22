@@ -1069,3 +1069,130 @@ THROUGH THE HARD CHALLENGE?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F50 AMENDMENT 01 — AUTHORITATIVE PREREGISTRATION / DONOR PARITY
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F50
+AND BEFORE ANY A50 SCIENTIFIC OUTCOME.
+
+AUTHORITATIVE SPECIFICATION
+
+This file is the authoritative
+A50 / T10B preregistration.
+
+Commit:
+
+deb5e46c152717244efad0c74a83832c7f52bb9f
+
+supersedes the near-simultaneous earlier file:
+
+research/applications/track-a/a50-t10b-recovery-x-challenge-push-pull-factorial.ice
+
+for implementation authority.
+
+The earlier file is retained
+as provenance only.
+
+No scientific A50 outcome
+was observed before this precedence
+was bound.
+
+IMPLEMENTATION CANDIDATE
+
+Candidate source bytes:
+
+88044.
+
+Candidate source SHA256:
+
+9dcaacc649b24ecbd971589f769f27ab69ebbffa17607c07a8627e4726eaf720
+
+Focused donor parity:
+
+D2 BASE:
+22 comparisons, 0 mismatches.
+
+D2 G5:
+22 comparisons, 0 mismatches.
+
+D2 PUSH_PULL:
+22 comparisons, 0 mismatches.
+
+D3 BASE:
+22 comparisons, 0 mismatches.
+
+D3 G5:
+22 comparisons, 0 mismatches.
+
+D3 PUSH_PULL:
+22 comparisons, 0 mismatches.
+
+Total donor comparisons:
+
+132.
+
+Total mismatches:
+
+0.
+
+FACTOR REDUCTION PARITY
+
+With G5 disabled
+inside COMBINED:
+
+COMBINED must reduce
+exactly to PUSH_PULL.
+
+Observed:
+
+D2:
+16 of 16 exact.
+
+D3:
+16 of 16 exact.
+
+With challenge push-pull disabled
+inside COMBINED:
+
+COMBINED must reduce
+exactly to G5-only.
+
+Observed:
+
+D2:
+16 of 16 exact.
+
+D3:
+16 of 16 exact.
+
+Focused combined checks:
+
+donor comparisons:
+18;
+mismatches:
+0.
+
+factor-reduction comparisons:
+12;
+mismatches:
+0.
+
+All executable integrity probes:
+
+PASS.
+
+No mechanical or primary
+scientific outcome
+has been consumed.
+
+A fresh duplicate mechanical pair
+is still required before F50.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
