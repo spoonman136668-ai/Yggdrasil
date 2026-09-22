@@ -1159,3 +1159,655 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A38 / T8V HETEROGENEOUS TEMPORAL RESPONSE TIMESCALES
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE NEGATIVE DIVERSITY RESULT WITH REAL TEMPORAL-INTEGRATION EFFECT /
+HOMOGENEOUS SLOW RESPONSE REDUCED OSCILLATION,
+BUT MIXED TIMESCALES DID NOT OUTPERFORM SLOW
+AND THE BIASED PERIODIC TARGET REMAINED HIGHLY OSCILLATORY /
+NO MIXED ARM QUALIFIED /
+NO ARM MET A38_TEMPORAL_DIVERSITY_INFORMATION_GAIN /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+ee0bbdf7756f737a62370d230738705dc2f305d7.
+
+F38:
+
+5f40cf6667f831978f7b4065baac22804c8414b2.
+
+Source SHA-256:
+
+b4c778977af69ba40b9c9a3d6264aa6a93a9c7d6d52c16b45bdf41efae36b409.
+
+Deterministic gzip SHA-256:
+
+1bd6f4cab0c97d0ff383379ef41a83882b3ac5dd4f4a4359aee4af5902d0a314.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+e35ac03ede960724c0d0a63c0f7033c08b954303.
+
+World-manifest SHA-256:
+
+95c2c9dff7288f2b81c44b69321b3858d8a5f2a3f6d7905fd1f0506f55b4109c.
+
+Manifest-wrapper SHA-256:
+
+a05edd495b93bf58e42dd6a8ff478d3a1c13175743ff2f537a163196d429854a.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete F38-derived arm-isolated primary sweeps
+were byte-identical.
+
+Serialized primary SHA-256:
+
+e3be9091e3b6858b937b966314c8b6313b5d20744d6f5427eb9000bbd1612028.
+
+All P1-P32 integrity probes:
+
+PASS.
+
+PRIMARY RESULT
+
+A38_ANY_TEMPORAL_DIVERSITY_QUALIFIED:
+
+FALSE.
+
+A38_TEMPORAL_DIVERSITY_INFORMATION_GAIN:
+
+FALSE.
+
+D2 FAST
+
+overall oscillation:
+
+62 / 384
+=
+16.15%.
+
+biased-periodic oscillation:
+
+32 / 32
+=
+100%.
+
+balanced-periodic false-majority:
+
+0%.
+
+reversal acquisition:
+
+93.75%.
+
+median old-majority loss:
+
+0 epochs.
+
+aggregate service:
+
+230394.
+
+D2 MEDIUM
+
+overall oscillation:
+
+50 / 384
+=
+13.02%.
+
+biased-periodic:
+
+30 / 32
+=
+93.75%.
+
+reversal:
+
+93.75%.
+
+old-majority loss:
+
+1 epoch.
+
+service:
+
+223972.
+
+D2 SLOW
+
+overall oscillation:
+
+50 / 384
+=
+13.02%.
+
+biased-periodic:
+
+30 / 32
+=
+93.75%.
+
+reversal:
+
+89.06%.
+
+old-majority loss:
+
+2 epochs.
+
+service:
+
+214252.
+
+D2 MIXED
+
+overall oscillation:
+
+52 / 384
+=
+13.54%.
+
+biased-periodic:
+
+32 / 32
+=
+100%.
+
+FAST biased-periodic oscillators broken:
+
+0 / 32.
+
+balanced false-majority:
+
+0%.
+
+reversal:
+
+90.63%.
+
+old-majority loss:
+
+1 epoch.
+
+service:
+
+222825.
+
+D2_MIXED qualified:
+
+FALSE.
+
+D2_MIXED information gain:
+
+FALSE.
+
+D3 FAST
+
+overall oscillation:
+
+55 / 384
+=
+14.32%.
+
+biased-periodic:
+
+30 / 32
+=
+93.75%.
+
+balanced false-majority:
+
+0%.
+
+reversal:
+
+94.53%.
+
+old-majority loss:
+
+0 epochs.
+
+service:
+
+224701.
+
+D3 MEDIUM
+
+overall oscillation:
+
+49 / 384
+=
+12.76%.
+
+biased-periodic:
+
+28 / 32
+=
+87.50%.
+
+reversal:
+
+89.84%.
+
+old-majority loss:
+
+1 epoch.
+
+service:
+
+218994.
+
+D3 SLOW
+
+overall oscillation:
+
+42 / 384
+=
+10.94%.
+
+biased-periodic:
+
+25 / 32
+=
+78.13%.
+
+reversal:
+
+87.50%.
+
+old-majority loss:
+
+2 epochs.
+
+service:
+
+209810.
+
+This is the strongest A38 arm.
+
+It demonstrates that
+slower temporal integration
+has a real stabilizing effect.
+
+However:
+
+25 of 32 target biased-periodic worlds
+still oscillate.
+
+D3 MIXED
+
+overall oscillation:
+
+46 / 384
+=
+11.98%.
+
+biased-periodic:
+
+29 / 32
+=
+90.63%.
+
+FAST biased-periodic oscillators broken:
+
+2 / 30.
+
+balanced false-majority:
+
+0%.
+
+reversal:
+
+89.84%.
+
+old-majority loss:
+
+1 epoch.
+
+service:
+
+217376.
+
+D3_MIXED qualified:
+
+FALSE.
+
+D3_MIXED information gain:
+
+FALSE.
+
+MIXED-VERSUS-SLOW RESULT
+
+For both refractory durations:
+
+MIXED failed to outperform
+the homogeneous SLOW population.
+
+D2:
+
+SLOW biased-periodic oscillation:
+
+93.75%.
+
+MIXED:
+
+100%.
+
+D3:
+
+SLOW:
+
+78.13%.
+
+MIXED:
+
+90.63%.
+
+Therefore the preregistered claim:
+
+TEMPORAL HETEROGENEITY ITSELF
+EARNS AN ARCHITECTURAL ROLE
+
+is NOT supported.
+
+The useful component is:
+
+SLOWER LOCAL TEMPORAL INTEGRATION.
+
+BIASED-CONTEXT BREAKDOWN
+
+D3 SLOW target oscillators:
+
+context 44:
+8 / 8.
+
+context 45:
+8 / 8.
+
+context 46:
+6 / 8.
+
+context 47:
+3 / 8.
+
+Thus the strongest response
+still completely fails
+on the strongest 6/2 and inverted-2/6
+biased periodic contexts.
+
+It makes partial progress
+only on the weaker 5/3 and inverted-3/5 cases.
+
+DEFECTION-PHASE RESULT
+
+The temporal traces behaved exactly as intended.
+
+D3 FAST defection during adverse bursts:
+
+after first adverse epoch:
+76.82%.
+
+after second:
+74.19%.
+
+after third:
+76.68%.
+
+D3 MEDIUM:
+
+first:
+32.40%.
+
+second:
+58.84%.
+
+third:
+69.53%.
+
+D3 SLOW:
+
+first:
+14.39%.
+
+second:
+32.21%.
+
+third:
+46.01%.
+
+Thus SLOW strongly suppresses
+reaction to the FIRST counter-pulse.
+
+But the repeated two- and three-epoch bursts
+still accumulate enough opposition trace
+to make substantial fractions of committed cells defect.
+
+This matches the exact structure
+of the remaining target worlds.
+
+CORE TECHNICAL FINDING
+
+A38 reveals a limitation in the state variable itself.
+
+The temporal trace remembers:
+
+RECENT OPPOSITION.
+
+It does NOT remember:
+
+THE SUPPORT MARGIN
+THAT PRECEDED THE OPPOSITION.
+
+After a long candidate-supporting period,
+the opposition trace decays toward zero.
+
+Then a short stale-favoring pulse starts.
+
+The trace rises from zero
+as though the cell had no accumulated evidence
+for its current commitment.
+
+A slower rho merely delays that rise.
+
+It does not encode:
+
+"this commitment has been supported
+for six epochs,
+so two contrary epochs
+should not erase that margin."
+
+That is why:
+
+slower helps;
+
+but even SLOW still chases
+repeated 2-3 epoch counter-pulses.
+
+TRUE REVERSAL TRADEOFF
+
+As temporal response slows:
+
+old-majority loss latency rises:
+
+FAST:
+0 epochs.
+
+MEDIUM:
+1 epoch.
+
+SLOW:
+2 epochs.
+
+Reversal acquisition also falls modestly:
+
+D3 FAST:
+94.53%.
+
+D3 SLOW:
+87.50%.
+
+Therefore simply making rho larger
+is not a principled next move.
+
+It trades pulse robustness
+for real-change responsiveness.
+
+ATTRACTOR QUALITY LIMIT
+
+False final dominance remained far above
+the frozen 5% limits.
+
+D3 SLOW:
+
+false C dominance:
+16.07%.
+
+false S dominance:
+12.56%.
+
+Thus temporal smoothing alone
+does not solve final attractor correctness.
+
+TECHNICAL INTERPRETATION
+
+A38 falsifies the hypothesis:
+
+FAST / MEDIUM / SLOW SUBPOPULATIONS
+ARE SUFFICIENT
+TO BREAK THE TEMPORAL RESONANCE.
+
+They are not.
+
+A38 does support a narrower hypothesis:
+
+THE CURRENT ORGANISM
+IS TOO RESPONSIVE
+TO SHORT COUNTER-PULSES.
+
+But the correct missing state
+is probably not:
+
+more opposition memory.
+
+The missing quantity is closer to:
+
+SIGNED TEMPORAL EVIDENCE MARGIN.
+
+A cell should remember both:
+
+support for its current state;
+
+and opposition to it.
+
+A long period of coherent support
+should create a margin.
+
+A short counter-pulse
+should consume that margin
+without immediately reversing the cell.
+
+A sustained true reversal
+should eventually drive the signed margin
+through zero
+and permit retreat.
+
+This would create temporal hysteresis
+from accumulated evidence balance
+rather than from a fixed global threshold
+or one-sided opposition trace.
+
+A future experiment should therefore test:
+
+SIGNED LOCAL SUPPORT-OPPOSITION INTEGRATION.
+
+Do not simply increase rho.
+
+Do not retune the 2/3-epoch target.
+
+Do not add another confidence number.
+
+PLAIN-SPEAK INTERPRETATION
+
+We found something useful.
+
+Making cells slower
+does help.
+
+A slow cell is much less likely
+to panic on the first bad epoch.
+
+But after two or three bad epochs,
+too many still abandon the state.
+
+Why?
+
+Because the cell only remembers:
+
+"how much opposition have I seen recently?"
+
+It does NOT remember:
+
+"how much evidence supported me
+before this opposition started?"
+
+So imagine the world tells a cell:
+
+CANDIDATE
+CANDIDATE
+CANDIDATE
+CANDIDATE
+CANDIDATE
+CANDIDATE
+
+and then briefly says:
+
+STALE
+STALE.
+
+Our current slow cell
+does not carry six units of candidate support
+into that event.
+
+Its opposition meter simply starts filling.
+
+Slowing the meter helps,
+but does not solve the basic problem.
+
+The next clean idea is:
+
+LET SUPPORT BUILD CREDIT.
+
+Contrary evidence spends that credit.
+
+Only when the contrary evidence
+actually overwhelms the accumulated support
+should the cell change its mind.
+
+That is not a confidence score.
+
+It is local temporal state
+that records which side
+has actually been winning over time.
+
+No autonomous controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
