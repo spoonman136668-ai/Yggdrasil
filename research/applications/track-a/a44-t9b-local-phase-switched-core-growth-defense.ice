@@ -1229,3 +1229,113 @@ before a freeze commit is accepted.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F44 AMENDMENT 03 — CONTROL RNG NAMESPACE PARITY
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F44
+AND BEFORE ANY A44 SCIENTIFIC OUTCOME.
+
+ISSUE FOUND BY PRE-FREEZE CONTROL PARITY AUDIT
+
+An intermediate A44 build assigned:
+
+YGG-A44-ARM-SEED
+
+to every A44 arm.
+
+That would have changed the stochastic realization
+of inherited controls even where their equations were unchanged.
+
+This is not permitted.
+
+CORRECTION
+
+A44 inherited controls retain
+their exact parent RNG namespaces.
+
+For:
+
+D2_BASE_SUBTRACTIVE_SLOW;
+D3_BASE_SUBTRACTIVE_SLOW;
+D2_MARGIN_REINFORCE;
+D3_MARGIN_REINFORCE;
+
+use:
+
+YGG-A43-ARM-SEED.
+
+For:
+
+D2_ACTIVE_MARGIN_RECRUIT;
+D3_ACTIVE_MARGIN_RECRUIT;
+
+use:
+
+YGG-A42-ARM-SEED.
+
+Only genuinely new A44 compositions use:
+
+YGG-A44-ARM-SEED.
+
+Those are:
+
+D2_ALWAYS_COMBINED;
+D3_ALWAYS_COMBINED;
+D2_PHASE_SWITCH;
+D3_PHASE_SWITCH.
+
+PARITY EVIDENCE
+
+Before F44,
+focused fake-world checks across:
+
+biased-periodic;
+balanced-periodic;
+and nonperiodic contexts
+
+showed exact inherited-control parity
+for core population behavior including:
+
+service;
+harm;
+benefit;
+neutral service;
+oscillation classification;
+true reversal;
+final majority;
+majority changes;
+worst drawdown;
+state transitions;
+H occupancy;
+H peak;
+and chatter events.
+
+A43 BASE / MARGIN controls
+match the recovered scientific-equivalent A43 parent.
+
+A42 ACTIVE_MARGIN_RECRUIT controls
+match the accepted A42 parent.
+
+The previously completed mechanical sweep
+from the all-A44 RNG intermediate build
+is invalidated and cannot support F44.
+
+Two new complete mechanical sweeps
+must be run from the corrected source
+and must be byte-identical before F44.
+
+No scientific outcome was consumed
+from the invalidated mechanical build.
+
+A44 source SHA256 after this correction:
+
+22e54a216db452bb67af92f62d394dcaad436b049c6d90e9d05fd77c0ead6135
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
