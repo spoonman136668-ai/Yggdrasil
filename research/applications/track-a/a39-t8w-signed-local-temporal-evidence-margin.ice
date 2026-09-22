@@ -1395,3 +1395,50 @@ No real A39 world has been derived.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+IMPLEMENTATION FREEZE — F39
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN AFTER TWO BYTE-IDENTICAL MECHANICAL FAKE-SEED VERIFICATIONS.
+NO REAL A39 PRIMARY HAS RUN AT THIS POINT.
+
+F39 SOURCE SHA256:
+5b3cf9f9817410f76b607602e9149ed0e9b9f15b63f835db0fa09720683f2a87
+
+MECHANICAL OUTPUT SHA256:
+53f4b7ca21e647dd28b749ba4ac74b1e742692890936eb7ec804bccdcd418f19
+
+MECHANICAL WORLD MANIFEST SHA256:
+c79f5fd7971ef792e44494749859f6eaf302f92c1e3f6dda5c90b8fb7d80b911
+
+MECHANICAL RUNS:
+2.
+
+BYTE IDENTICAL:
+true.
+
+IMPLEMENTATION PACKAGE:
+research/applications/track-a/a39_t8w_signed_local_temporal_margin_v1.py
+research/applications/track-a/a39_t8w_signed_local_temporal_margin_v1.py.gz.b64
+
+The loader verifies the frozen source SHA
+before execution.
+
+Exactly ten arms are frozen.
+
+No rho tuning.
+No K tuning.
+No margin gain.
+No post-result mechanism change.
+
+P33 and P43 remain pending
+until the two complete post-F39 primary sweeps
+are compared byte-for-byte.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
