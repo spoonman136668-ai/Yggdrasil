@@ -1341,3 +1341,556 @@ NO POST-RESULT TUNING.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-RUN CLOSURE — A37 / T8U LINEAGE-PERSISTENT UNCERTAINTY MEMORY
+
+DATE:
+2026-09-21.
+
+STATUS:
+CLOSED / REPRODUCIBLE MIXED-NEGATIVE RESULT /
+LINEAGE PRIMING IS REAL AND BOUNDED
+BUT DOES NOT BREAK THE PERSISTENT FAMILY-5 OSCILLATORY ATTRACTOR /
+NO PRIME ARM QUALIFIED /
+NO ARM MET A37_LINEAGE_MEMORY_INFORMATION_GAIN /
+NON-CANONICAL.
+
+FROZEN IMPLEMENTATION
+
+Implementation commit:
+
+77206606a0fc48d107b190a2e71eeca3935b080c.
+
+F37:
+
+d7f0ef718c83962dcb2e7fb2c0e57feba4e97bd3.
+
+Source SHA-256:
+
+3e69f508489181c989c79d1d7c72f83a751fe457e726c520785b126e0a095de6.
+
+Deterministic gzip SHA-256:
+
+b44c96bd5f4f80f481a323dd5b1162bd8d066c68da9a8b2beae6610f0b202d3a.
+
+BOUND PRIMARY MANIFEST
+
+Manifest-bound commit:
+
+8018ef44d59b9841fa711cb7e43291ad4c68ee33.
+
+World-manifest SHA-256:
+
+ad15162fd61dcbde7ec76245423985b7281830a9448f6aa68b56329705384e61.
+
+Manifest-wrapper SHA-256:
+
+80edd5f8f2dfefced90b4a5977f88e33fb72d3bab333ab54a5f717e25d259c1c.
+
+PRIMARY REPRODUCIBILITY
+
+Two complete F37-derived primary sweeps
+were byte-identical.
+
+Serialized primary SHA-256:
+
+53b1eb601ed308027c556859388a2d1989048f957fee538ef9cb78d438a576ec.
+
+All P1-P34 integrity probes:
+
+PASS.
+
+PRIMARY RESULT
+
+A37_ANY_LINEAGE_MEMORY_QUALIFIED:
+
+FALSE.
+
+A37_LINEAGE_MEMORY_INFORMATION_GAIN:
+
+FALSE.
+
+D2 STATIC
+
+oscillation:
+
+53 / 384
+=
+13.80%.
+
+FAMILY-5 oscillators:
+
+31.
+
+harm:
+
+15.10%.
+
+aggregate service:
+
+229826.
+
+D2 RESET
+
+oscillation:
+
+56 / 384
+=
+14.58%.
+
+FAMILY-5 oscillators:
+
+33.
+
+harm:
+
+17.45%.
+
+aggregate service:
+
+230874.
+
+H parent replacements:
+
+1563.
+
+H-history bequest replacements:
+
+5162.
+
+Without inheritance,
+only:
+
+39.40%
+
+of bequest-successor generations
+reconstituted H before the next turnover / trial end.
+
+Median spontaneous reconstitution latency:
+
+5 epochs.
+
+D2 DIRECT
+
+oscillation:
+
+54 / 384
+=
+14.06%.
+
+FAMILY-5 oscillators:
+
+32.
+
+Direct H successors:
+
+1634.
+
+Direct phenotype continuity therefore recovered
+some of the turnover damage,
+but did not materially alter the target attractor.
+
+D2 PRIME
+
+oscillation:
+
+54 / 384
+=
+14.06%.
+
+FAMILY-5 oscillators:
+
+31.
+
+RESET FAMILY-5 oscillators broken:
+
+2 / 33
+=
+6.06%.
+
+new FAMILY-5 oscillators versus RESET:
+
+0.
+
+aggregate service:
+
+229145.
+
+service retained versus RESET:
+
+99.25%.
+
+contradiction no-majority:
+
+92.15%.
+
+reversal acquisition:
+
+92.19%.
+
+primed successors:
+
+5275.
+
+primed H-entry rate per eligible opportunity:
+
+21.14%.
+
+unprimed H-entry rate:
+
+7.60%.
+
+prime effect ratio:
+
+2.7814x.
+
+primed successor generations actually re-entering H:
+
+52.06%.
+
+median reconstitution latency:
+
+3 epochs.
+
+Thus the inherited mark strongly changes
+successor H propensity.
+
+It is not decorative.
+
+But the population oscillator barely changes.
+
+D3 STATIC
+
+oscillation:
+
+57 / 384
+=
+14.84%.
+
+FAMILY-5 oscillators:
+
+30.
+
+aggregate service:
+
+223992.
+
+D3 RESET
+
+oscillation:
+
+59 / 384
+=
+15.36%.
+
+FAMILY-5 oscillators:
+
+31.
+
+aggregate service:
+
+224530.
+
+D3 DIRECT
+
+oscillation:
+
+57 / 384
+=
+14.84%.
+
+FAMILY-5 oscillators:
+
+32.
+
+Direct H successors:
+
+1378.
+
+D3 PRIME
+
+oscillation:
+
+54 / 384
+=
+14.06%.
+
+FAMILY-5 oscillators:
+
+29.
+
+RESET FAMILY-5 oscillators broken:
+
+3 / 31
+=
+9.68%.
+
+new FAMILY-5 oscillators versus RESET:
+
+1.
+
+DIRECT FAMILY-5 oscillators:
+
+32.
+
+PRIME broke:
+
+3
+
+of DIRECT's oscillators
+with no new DIRECT-relative FAMILY-5 oscillator.
+
+aggregate service:
+
+223492.
+
+service retained versus RESET:
+
+99.54%.
+
+contradiction no-majority:
+
+93.73%.
+
+reversal acquisition:
+
+96.88%.
+
+primed successors:
+
+4799.
+
+primed H-entry rate:
+
+21.09%.
+
+unprimed H-entry rate:
+
+7.32%.
+
+prime effect ratio:
+
+2.8796x.
+
+primed successor generations re-entering H:
+
+50.51%.
+
+median reconstitution latency:
+
+3 epochs.
+
+LINEAGE EFFECT
+
+A37 proves a narrow but real property:
+
+A BOUNDED INHERITED UNCERTAINTY MARK
+CAN ALTER SUCCESSOR BEHAVIOR.
+
+The effect is strong at the local lineage level.
+
+Marked successors are approximately:
+
+2.8x
+
+more likely to re-enter H
+per eligible opportunity.
+
+Approximately half
+actually use that inherited bias.
+
+The mark is not permanent.
+
+It must be refreshed
+by the successor's own H experience
+to continue into another generation.
+
+Thus the mechanism behaves as preregistered:
+
+bounded;
+inherited;
+self-refreshing only through renewed evidence.
+
+However:
+
+that local lineage memory
+does not materially change
+the persistent oscillator family.
+
+TARGET FAILURE
+
+D2 PRIME breaks:
+
+2 / 33
+
+RESET FAMILY-5 oscillators.
+
+D3 PRIME breaks:
+
+3 / 31.
+
+Frozen information-gain target:
+
+at least 25%.
+
+Frozen qualification target:
+
+at least 50%.
+
+Neither is close.
+
+The persistent oscillatory attractor therefore survives:
+
+isolated H;
+
+spatial H niches;
+
+and one-generation lineage priming.
+
+ATTRACTOR QUALITY LIMIT
+
+False dominance remains far above
+the frozen 5% limits.
+
+D2 PRIME:
+
+false C dominance:
+18.50%.
+
+false S:
+13.81%.
+
+D3 PRIME:
+
+false C:
+20.23%.
+
+false S:
+15.24%.
+
+Thus lineage priming
+does not solve final attractor correctness.
+
+TECHNICAL INTERPRETATION
+
+A37 falsifies the hypothesis:
+
+ONE-GENERATION H-LINEAGE PRIMING
+IS THE MISSING TEMPORAL PERSISTENCE DIMENSION.
+
+The history is successfully transmitted.
+
+The successor responds to it.
+
+But the target oscillatory environments
+still cause the macroscopic population
+to repeatedly reorganize.
+
+This means the remaining problem
+is unlikely to be simply:
+
+insufficient memory duration.
+
+A36 already created multi-epoch spatial persistence.
+
+A37 now adds cross-generation historical persistence.
+
+Both remain subordinate
+to the temporal forcing pattern.
+
+The FAMILY-5 attractor appears to be
+a timescale / phase-organization problem.
+
+The next justified analysis is therefore:
+
+WHICH TEMPORAL MODES
+REMAIN OSCILLATORY,
+AND WHAT RESPONSE TIMESCALE
+DO THEY FORCE?
+
+A future mechanism should not blindly
+add more H memory.
+
+It should test whether
+different subpopulations need
+different intrinsic response timescales
+so the organism does not place
+all cells on the same temporal resonance.
+
+PLAIN-SPEAK INTERPRETATION
+
+The inheritance mechanism worked.
+
+A cell could leave one small message
+for its successor:
+
+"our lineage recently had to stay uncertain."
+
+The successor was not forced
+to copy the parent.
+
+But it became almost three times
+more likely to hedge again
+when it encountered the same kind of conflict.
+
+About half of marked successors
+actually used that inherited memory.
+
+So Yggdrasil can now pass
+a bounded uncertainty tendency
+from one generation to the next.
+
+That is useful.
+
+But the stubborn oscillating worlds
+mostly did not care.
+
+Only:
+
+2 of 33
+
+were broken under D2,
+
+and:
+
+3 of 31
+
+under D3.
+
+So we have now tried:
+
+individual uncertainty;
+
+spatially cooperative uncertainty;
+
+and inherited uncertainty.
+
+The same temporal family keeps oscillating.
+
+That points somewhere new.
+
+The problem may be
+that too many cells operate
+on the same response timescale.
+
+If the environment alternates
+near that timescale,
+the whole population can resonate with it.
+
+The next question should be:
+
+DOES YGGDRASIL NEED
+FAST, MEDIUM, AND SLOW RESPONDER SUBPOPULATIONS
+SO TEMPORAL NOISE CANNOT DRAG
+THE ENTIRE ORGANISM BACK AND FORTH TOGETHER?
+
+No autonomous controller is authorized.
+
+DG-1R-05 remains:
+
+UNSPENT.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
