@@ -1672,3 +1672,545 @@ are byte-identical.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+A44 PRIMARY CLOSURE
+
+DATE:
+2026-09-22.
+
+F44:
+d0d8831eca454cac22155f2be5022c3fc8f2d6b5
+
+MANIFEST-BINDING COMMIT:
+5717d6ee0a4bed9a30d9616c014897c8ab825d34
+
+CORRECTED SOURCE SHA256:
+83ea9d5adc4f3fccb8147f646035a7c98caa8a2887bfb17bc21af691ca6caa0b
+
+PRIMARY SEED:
+A44-F44-d0d8831eca454cac22155f2be5022c3fc8f2d6b5-PRIMARY
+
+PRIMARY WORLD MANIFEST SHA256:
+8c396c51ed9ad0f79ef8419ad863e06e7a304228e0e48d782c5de3538ecd9467
+
+PRIMARY OUTPUT SHA256:
+b1af83c0ef97af586ade389667ec82376d40072c143854f59c173a2009b52a77
+
+PRIMARY RUNS:
+2.
+
+PRIMARY OUTPUT BYTES:
+69599.
+
+BYTE IDENTICAL:
+true.
+
+P39:
+PASS.
+
+All other executable integrity probes:
+PASS.
+
+A44_PHASE_INFORMATION_GAIN:
+FALSE.
+
+A44_PHASE_SPECIFIC_INFORMATION_GAIN:
+FALSE.
+
+QUALIFICATION
+
+D2_PHASE_SWITCH:
+NOT QUALIFIED.
+
+D3_PHASE_SWITCH:
+NOT QUALIFIED.
+
+TECHNICAL EVIDENCE
+
+D2_BASE_SUBTRACTIVE_SLOW:
+aggregate service 235567;
+harm rate 15.89%;
+overall oscillation 10.42%;
+biased-periodic oscillation 96.88%;
+5:3 biased oscillation 93.75%;
+6:2 biased oscillation 100.00%;
+balanced false-majority 0.00%;
+false C dominance 17.86%;
+false S dominance 13.21%;
+reversal acquisition 89.84%;
+median old-majority loss 2 epochs;
+5:3 pre-challenge favored fraction 59.66%;
+5:3 epoch-3 core persistence 9.92%.
+
+D2_MARGIN_REINFORCE:
+aggregate service 236897;
+harm rate 16.41%;
+overall oscillation 6.51%;
+biased-periodic oscillation 53.12%;
+5:3 biased oscillation 100.00%;
+6:2 biased oscillation 6.25%;
+balanced false-majority 0.00%;
+false C dominance 16.67%;
+false S dominance 13.21%;
+reversal acquisition 88.28%;
+median old-majority loss 2 epochs;
+5:3 pre-challenge favored fraction 61.46%;
+5:3 epoch-3 core persistence 14.91%.
+
+D2_ACTIVE_MARGIN_RECRUIT:
+aggregate service 240347;
+harm rate 16.41%;
+overall oscillation 10.94%;
+biased-periodic oscillation 96.88%;
+5:3 biased oscillation 100.00%;
+6:2 biased oscillation 93.75%;
+balanced false-majority 0.00%;
+reversal acquisition 96.09%;
+median old-majority loss 2 epochs;
+5:3 pre-challenge favored fraction 65.01%;
+5:3 epoch-3 core persistence 9.60%.
+
+D2_ALWAYS_COMBINED:
+aggregate service 240888;
+harm rate 16.15%;
+overall oscillation 7.81%;
+biased-periodic oscillation 50.00%;
+5:3 biased oscillation 100.00%;
+6:2 biased oscillation 0.00%;
+balanced false-majority 0.00%;
+reversal acquisition 91.41%;
+median old-majority loss 2 epochs;
+5:3 pre-challenge favored fraction 65.70%;
+5:3 epoch-3 core persistence 16.98%.
+
+D2_PHASE_SWITCH:
+aggregate service 239410;
+harm rate 15.10%;
+overall oscillation 7.81%;
+biased-periodic oscillation 53.12%;
+5:3 biased oscillation 100.00%;
+6:2 biased oscillation 6.25%;
+balanced false-majority 0.00%;
+false C dominance 18.45%;
+false S dominance 13.68%;
+reversal acquisition 91.41%;
+median old-majority loss 2 epochs;
+5:3 pre-challenge favored fraction 64.32%;
+5:3 epoch-3 core persistence 16.74%.
+
+D2 PHASE-SWITCH MECHANISM:
+support intervals mean favored fraction
+40.68% -> 78.68%;
+mean net growth 38.00 percentage points;
+favored U recruitments 3504;
+mean Q_support 0.15159;
+mean active recruitment increment 0.07579.
+
+Committed-cell mode fractions:
+SUPPORT 90.60%;
+CHALLENGE 9.11%;
+NEUTRAL 0.29%.
+
+Mean pressure reduction:
+SUPPORT 0.00000;
+CHALLENGE 0.09989;
+NEUTRAL 0.00000.
+
+During the first four post-reversal epochs,
+old-side committed-cell mode was:
+CHALLENGE 100.00%;
+SUPPORT 0.00%;
+NEUTRAL 0.00%.
+
+D2 biased-periodic context detail:
+
+MARGIN_REINFORCE:
+44 = 0/8 oscillatory;
+45 = 1/8;
+46 = 8/8;
+47 = 8/8.
+
+ALWAYS_COMBINED:
+44 = 0/8;
+45 = 0/8;
+46 = 8/8;
+47 = 8/8.
+
+PHASE_SWITCH:
+44 = 0/8;
+45 = 1/8;
+46 = 8/8;
+47 = 8/8.
+
+D2 paired comparison:
+BASE biased oscillators = 31;
+PHASE_SWITCH breaks versus BASE = 15;
+MARGIN_REINFORCE 5:3 oscillators = 16;
+PHASE_SWITCH breaks versus MARGIN 5:3 = 0.
+
+D3_BASE_SUBTRACTIVE_SLOW:
+aggregate service 231329;
+harm rate 16.67%;
+overall oscillation 9.11%;
+biased-periodic oscillation 93.75%;
+5:3 biased oscillation 93.75%;
+6:2 biased oscillation 93.75%;
+balanced false-majority 0.00%;
+false C dominance 17.26%;
+false S dominance 12.74%;
+reversal acquisition 88.28%;
+median old-majority loss 2 epochs;
+5:3 pre-challenge favored fraction 54.12%;
+5:3 epoch-3 core persistence 10.12%.
+
+D3_MARGIN_REINFORCE:
+aggregate service 232126;
+harm rate 15.62%;
+overall oscillation 5.99%;
+biased-periodic oscillation 53.12%;
+5:3 biased oscillation 100.00%;
+6:2 biased oscillation 6.25%;
+balanced false-majority 0.00%;
+false C dominance 16.67%;
+false S dominance 12.74%;
+reversal acquisition 87.50%;
+median old-majority loss 2 epochs;
+5:3 pre-challenge favored fraction 55.37%;
+5:3 epoch-3 core persistence 16.04%.
+
+D3_ACTIVE_MARGIN_RECRUIT:
+aggregate service 235981;
+harm rate 15.62%;
+overall oscillation 11.72%;
+biased-periodic oscillation 100.00%;
+5:3 biased oscillation 100.00%;
+6:2 biased oscillation 100.00%;
+balanced false-majority 0.00%;
+reversal acquisition 89.06%;
+median old-majority loss 2 epochs;
+5:3 pre-challenge favored fraction 57.27%;
+5:3 epoch-3 core persistence 8.96%.
+
+D3_ALWAYS_COMBINED:
+aggregate service 236832;
+harm rate 16.93%;
+overall oscillation 6.51%;
+biased-periodic oscillation 50.00%;
+5:3 biased oscillation 93.75%;
+6:2 biased oscillation 6.25%;
+balanced false-majority 0.00%;
+reversal acquisition 89.06%;
+median old-majority loss 2 epochs;
+5:3 pre-challenge favored fraction 58.97%;
+5:3 epoch-3 core persistence 16.33%.
+
+D3_PHASE_SWITCH:
+aggregate service 234835;
+harm rate 16.15%;
+overall oscillation 5.99%;
+biased-periodic oscillation 46.88%;
+5:3 biased oscillation 93.75%;
+6:2 biased oscillation 0.00%;
+balanced false-majority 0.00%;
+false C dominance 16.67%;
+false S dominance 12.74%;
+reversal acquisition 87.50%;
+median old-majority loss 2 epochs;
+5:3 pre-challenge favored fraction 58.14%;
+5:3 epoch-3 core persistence 15.70%.
+
+D3 PHASE-SWITCH MECHANISM:
+support intervals mean favored fraction
+38.08% -> 73.65%;
+mean net growth 35.58 percentage points;
+favored U recruitments 3279;
+mean Q_support 0.16104;
+mean active recruitment increment 0.08052.
+
+Committed-cell mode fractions:
+SUPPORT 90.82%;
+CHALLENGE 8.91%;
+NEUTRAL 0.27%.
+
+Mean pressure reduction:
+SUPPORT 0.00000;
+CHALLENGE 0.09808;
+NEUTRAL 0.00000.
+
+During the first four post-reversal epochs,
+old-side committed-cell mode was:
+CHALLENGE 100.00%;
+SUPPORT 0.00%;
+NEUTRAL 0.00%.
+
+D3 biased-periodic context detail:
+
+MARGIN_REINFORCE:
+44 = 0/8 oscillatory;
+45 = 1/8;
+46 = 8/8;
+47 = 8/8.
+
+ALWAYS_COMBINED:
+44 = 0/8;
+45 = 1/8;
+46 = 8/8;
+47 = 7/8.
+
+PHASE_SWITCH:
+44 = 0/8;
+45 = 0/8;
+46 = 8/8;
+47 = 7/8.
+
+D3 paired comparison:
+BASE biased oscillators = 30;
+PHASE_SWITCH breaks versus BASE = 16;
+MARGIN_REINFORCE 5:3 oscillators = 16;
+PHASE_SWITCH breaks versus MARGIN 5:3 = 1.
+
+QUALIFICATION / INFORMATION GAIN
+
+D2 PHASE_SWITCH improves
+the 5:3 pre-challenge favored fraction
+from 61.46% under MARGIN_REINFORCE
+to 64.32%,
+and raises epoch-3 core persistence
+from 14.91% to 16.74%.
+
+But its 5:3 oscillation remains 100.00%,
+and it breaks 0 of 16
+paired MARGIN_REINFORCE 5:3 oscillators.
+
+D3 PHASE_SWITCH improves
+the 5:3 pre-challenge favored fraction
+from 55.37% to 58.14%.
+
+But epoch-3 persistence
+does not improve:
+16.04% under MARGIN_REINFORCE
+versus 15.70% under PHASE_SWITCH.
+
+Its 5:3 oscillation remains 93.75%,
+breaking only 1 of 16
+paired MARGIN_REINFORCE 5:3 oscillators.
+
+Therefore the frozen
+25% paired 5:3 break requirement
+is not met for either D arm.
+
+A44_PHASE_INFORMATION_GAIN = FALSE.
+
+PHASE-SPECIFIC ATTRIBUTION
+
+D2:
+ALWAYS_COMBINED 5:3 oscillation = 100.00%;
+PHASE_SWITCH = 100.00%.
+
+D3:
+ALWAYS_COMBINED = 93.75%;
+PHASE_SWITCH = 93.75%.
+
+Therefore local phase gating
+does not demonstrate a macro advantage
+over simple simultaneous composition
+on the residual 5:3 target.
+
+A44_PHASE_SPECIFIC_INFORMATION_GAIN = FALSE.
+
+REVERSIBILITY / UNCERTAINTY
+
+A44 does not fail by becoming rigid.
+
+PHASE_SWITCH retains:
+
+D2 reversal acquisition 91.41%;
+D3 reversal acquisition 87.50%;
+median old-majority loss 2 epochs;
+balanced false-majority 0.00%.
+
+The anti-oracle diagnostic is also clean:
+during the first four epochs
+after a true environmental reversal,
+old-side committed cells are classified
+CHALLENGE 100% of the time
+in both D2 and D3.
+
+CAUSAL INTERPRETATION
+
+A44 demonstrates that
+local phase-dependent behavior is real
+and correctly gated.
+
+During locally supportive conditions,
+PHASE_SWITCH actively grows
+the favored committed population.
+
+During locally challenging conditions,
+it activates cooperative margin reinforcement
+and applies exactly zero A44 reinforcement
+during SUPPORT.
+
+The local switch therefore works.
+
+The residual failure is not
+that cells cannot infer
+support versus challenge locally.
+
+It is also not
+insufficient pre-challenge growth alone.
+
+PHASE_SWITCH enters 5:3 challenge
+with a measurably larger favored core
+than A43 MARGIN_REINFORCE.
+
+Yet the third adverse epoch
+still closes the oscillation cycle.
+
+ALWAYS_COMBINED reaches essentially
+the same 5:3 boundary,
+so the problem is not
+that phase gating withholds
+too much signal time.
+
+The remaining bottleneck is
+challenge endurance.
+
+A43/A44 cooperative support
+is recomputed from the currently surviving
+same-side neighborhood.
+
+As neighbors defect across repeated challenge,
+the cooperative field itself can collapse,
+removing support from the remaining veterans
+exactly when they need it most.
+
+That creates a plausible
+second-to-third-hit cascade.
+
+A44 does not prove that cascade mechanism
+because the frozen output does not yet
+directly report the per-epoch Q-margin decay
+of the onset core.
+
+The next justified step is therefore
+a post-closure diagnostic
+of the frozen A44 primary worlds:
+
+measure Q_margin and same-side neighbor loss
+for the 5:3 onset core
+across adverse epochs 1, 2, and 3;
+
+measure defection hazard
+conditioned on prior cooperative Q
+and neighbor loss;
+
+and test whether epoch-3 collapse
+is preceded by a sharp epoch-2
+cooperative-field degradation.
+
+No new mechanism should be frozen
+until that residual cascade
+is measured directly.
+
+PLAIN-SPEAK INTERPRETATION
+
+A44 taught the core
+when to grow
+and when to defend.
+
+That part worked.
+
+During good conditions,
+the core got bigger.
+
+When conditions turned against it,
+the cells switched into defense
+without needing a central signal
+or knowing what experiment they were in.
+
+And when the world truly reversed,
+the old side correctly recognized
+that it was under challenge.
+
+So the switching idea itself is sound.
+
+But the three-hit worlds
+still beat the core.
+
+A44 starts those attacks
+with more veterans than A43 did.
+
+That extra preparation
+still does not carry the population
+through the third hit.
+
+The likely reason is now narrower:
+
+the veterans protect one another,
+but that protection depends
+on which veterans are still standing
+right now.
+
+The second hit knocks some neighbors out.
+
+That weakens the support received
+by everyone who remains.
+
+Then the third hit arrives
+against a core whose own cooperative shield
+has already partially collapsed.
+
+In simple terms:
+
+A44 built a larger shield wall
+before the attack.
+
+But when a few soldiers fell,
+the wall itself got weaker,
+and the third charge still broke it.
+
+The next experiment should not
+simply make the shield stronger.
+
+First measure whether
+the second hit really causes
+that chain-reaction loss of mutual support.
+
+If it does,
+the next causal mechanism should give
+the cooperative field a short-lived local memory
+of recently supporting neighbors,
+so one defection does not instantly erase
+all of that neighbor's stabilizing contribution.
+
+That memory must decay quickly
+under sustained genuine reversal
+so the organism does not become rigid.
+
+NORTH-STAR IMPLICATION
+
+A44 is a useful negative result.
+
+The lineage now contains
+local evidence memory,
+graded commitment persistence,
+spatial recruitment control,
+active recruitment,
+cooperative reinforcement,
+and local support/challenge mode switching.
+
+The remaining oscillator has survived
+all of those mechanisms
+specifically at the repeated-challenge boundary.
+
+That concentrates the next question
+on temporal continuity
+of distributed cooperation,
+not on adding a central authority
+or globally stronger commitment.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
