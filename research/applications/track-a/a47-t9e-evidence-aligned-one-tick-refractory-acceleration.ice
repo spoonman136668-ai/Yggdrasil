@@ -2624,3 +2624,210 @@ Any mismatch fails closed.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F47 AMENDMENT 06 — FINAL AUTHORITY / CONCURRENT-WRITE RECONCILIATION
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F47
+AND BEFORE ANY A47 SCIENTIFIC OUTCOME.
+
+CONCURRENT-WRITE ISSUE
+
+A concurrent repository write
+appended a mechanically valid
+older nine-arm G5-only candidate note
+
+after
+
+the newer eleven-arm
+dose-ladder identifiability repair
+and its complete mechanical gate.
+
+This created an ordering ambiguity
+inside the ICE file.
+
+The ambiguity is resolved here
+before F47.
+
+FINAL A47 SCIENTIFIC AUTHORITY
+
+The authoritative A47 design is:
+
+Amendment 04
+DOSE-LADDER IDENTIFIABILITY REPAIR
+
+as committed at:
+
+064b383dc352093f344fb4213a0986cc13fe80f1
+
+together with:
+
+Amendment 05
+IDENTIFIABLE SWEEP MECHANICAL GATE
+
+as committed at:
+
+d2f24780012ee6077f006ced917323ce1a177985.
+
+AUTHORITATIVE ARMS
+
+Exactly eleven arms.
+
+D2:
+
+D2_BASE_ECHO_PHASE;
+D2_MPOST_T1;
+D2_MPOST_FULL;
+D2_G5_FULL;
+D2_G5_FULL_STAGGER.
+
+D3:
+
+D3_BASE_ECHO_PHASE;
+D3_MPOST_T1;
+D3_MPOST_T2;
+D3_MPOST_FULL;
+D3_G5_FULL;
+D3_G5_FULL_STAGGER.
+
+AUTHORITATIVE SOURCE
+
+Bytes:
+88752.
+
+SHA256:
+645b1d8b8417702fce62a6268b9ba97dd41aba21e8cb9f48ccf683f32fc6d468.
+
+AUTHORITATIVE MECHANICAL GATE
+
+Mechanical seed:
+MECHANICAL-A47-SWEEP-CANDIDATE.
+
+Complete sweeps:
+2.
+
+Output bytes:
+146627.
+
+Output SHA256:
+e9d21216114a1621b39528a7973937ec58b64ca1062598fabe8d43fa629d3293.
+
+BYTE IDENTICAL:
+true.
+
+All executable integrity probes:
+PASS.
+
+Focused A45 parent parity:
+72 comparisons;
+0 mismatches.
+
+Dose separation:
+
+D2 MPOST_T1:
+1 epoch.
+
+D3 MPOST_T1:
+1 epoch.
+
+D3 MPOST_T2:
+2 epochs.
+
+D2 MPOST_FULL:
+2 epochs.
+
+D3 MPOST_FULL:
+3 epochs.
+
+Old-side true-reversal actions:
+0
+for every active arm.
+
+SUPERSEDED CONCURRENT CANDIDATE
+
+The later-appended note
+describing:
+
+9 arms;
+
+source SHA256:
+
+f425cef597b41fa0fa928c55957c4137de44b180c0e6b5a62a6a8051eec8e988;
+
+mechanical output SHA256:
+
+b6b36ae9496bb1f0c326f0dfecb5e9960b3473d1d7ea0bec71e237d0602c2d55
+
+is mechanically valid
+for its own older design
+
+but is scientifically SUPERSEDED
+and is NOT eligible for F47.
+
+No F47 loader
+may accept that source identity.
+
+PACKAGING AUTHORITY
+
+The freeze artifact may use:
+
+one neutral source-bundle file;
+
+or neutral split source parts;
+
+provided the loader verifies
+the authoritative canonical source SHA256:
+
+645b1d8b8417702fce62a6268b9ba97dd41aba21e8cb9f48ccf683f32fc6d468.
+
+Packaging form
+does not alter A47 science.
+
+No file or loader
+may use the term
+that previously appeared to trigger
+workflow scanning issues.
+
+RECOVERY / OSCILLATION AXIS
+
+The final A47 qualification axis
+remains:
+
+recovery effectiveness;
+recovery latency;
+refractory debt;
+service;
+wrong-side safety;
+true-reversal safety;
+balanced safety;
+6:2 non-regression;
+chatter cost.
+
+The inherited 5:3 oscillator metric
+remains mandatory reporting
+but is not a recovery-layer
+qualification criterion.
+
+STRATEGIC EXIT
+
+If A47 identifies
+a safe minimum effective recovery dose:
+
+freeze that recovery behavior.
+
+Then return
+to the separate macro
+population-organization track.
+
+No further refractory strengthening
+is justified solely
+to lower the inherited
+5:3 oscillator label.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
