@@ -1310,3 +1310,47 @@ Any mismatch fails closed.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-F50 PRIMARY MANIFEST BINDING
+
+DATE:
+2026-09-22.
+
+F50:
+e60966d2a366c8d1eefbce7e6456c39056bac8d8
+
+SOURCE SHA256:
+9dcaacc649b24ecbd971589f769f27ab69ebbffa17607c07a8627e4726eaf720
+
+PRIMARY SEED:
+A50-F50-e60966d2a366c8d1eefbce7e6456c39056bac8d8-PRIMARY
+
+WORLD COUNT:
+384.
+
+WORLD SHAPE:
+48 contexts x 8 replicas.
+
+PRIMARY WORLD MANIFEST SHA256:
+12fc55438fcebf068fb2ab344150719abc229113a627c9ac1d9b3eba79d1f86c
+
+STATUS:
+BOUND AFTER F50
+AND BEFORE ANY A50 PRIMARY ARM EXECUTION.
+
+No A50 arm outcome,
+factorial interaction,
+combined-only rescue,
+macro-information result,
+qualification result,
+or creep result
+was observed before this binding.
+
+Two complete primary sweeps
+must be byte-identical
+before scientific analysis.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
