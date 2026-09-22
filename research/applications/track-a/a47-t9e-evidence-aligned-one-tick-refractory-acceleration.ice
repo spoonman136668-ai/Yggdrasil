@@ -1236,3 +1236,702 @@ Any mismatch fails closed.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F47 AMENDMENT 03 — RECOVERY DOSE RESPONSE / STAGGERED RE-ENTRY / AXIS DECOUPLING
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F47
+AND BEFORE ANY A47 SCIENTIFIC OUTCOME.
+
+SUPERSESSION
+
+This amendment supersedes
+the original six-arm
+one-tick-only A47 design
+and supersedes the post-FIXA
+mechanical gate bound in Amendment 02.
+
+No F47 exists.
+
+Therefore no A47 scientific outcome
+has been observed,
+and the design may still be corrected
+without post-result tuning.
+
+A fresh implementation,
+focused parity gate,
+and two complete mechanical sweeps
+are required before F47.
+
+RECOVERY BASELINE
+
+A47 BASE is:
+
+A45 ECHO_PHASE.
+
+It is not A40.
+
+A40 remains a historical control lineage,
+but A47 is specifically testing
+refractory recovery
+on top of the accepted A45 organism.
+
+FIXED ELIGIBILITY GATE
+
+All A47 dose arms
+use the same repaired A46 G5 eligibility signal.
+
+For a currently refractory FC/FS cell
+relative to its former side s:
+
+G5(i)
+=
+local mode SUPPORT
+
+AND
+
+M_post(i,s) > 0
+
+AND
+
+Q_raw(i,s) > 0.
+
+Q_raw timing
+remains exactly the repaired A46 timing:
+
+current committed-neighbor topology
+weighted by B_pre margins.
+
+The gate is checked
+on every locked refractory epoch.
+
+Dose arms differ only
+in what happens
+the first time G5 becomes true
+within a refractory episode.
+
+Each episode may receive
+at most one dose action.
+
+No gate threshold magnitude.
+No new radius.
+No gain.
+
+DOSE DEFINITION
+
+At an eligible locked epoch,
+the ordinary parent timer behavior
+would decrement the refractory timer by one
+and keep the cell refractory
+for the current epoch.
+
+T1:
+
+perform the parent decrement,
+then remove one additional future refractory tick.
+
+The cell remains refractory
+for the current epoch.
+
+T2:
+
+perform the parent decrement,
+then remove two additional future refractory ticks.
+
+The cell remains refractory
+for the current epoch.
+
+FULL:
+
+A46 upper-bound action.
+
+If G5 is true,
+release the cell to U immediately
+in the current epoch.
+
+The cell may then enter
+ordinary same-epoch U recruitment,
+exactly as repaired A46.
+
+No direct recommitment.
+
+No former-side recruitment bonus.
+
+WHY THERE IS NO T3 ARM
+
+Parent refractory durations are:
+
+D2 = 2;
+
+D3 = 3.
+
+After the current parent decrement,
+the maximum number
+of remaining future locked epochs is:
+
+D2:
+1.
+
+D3:
+2.
+
+Therefore:
+
+D2 T2 and T3
+would be dynamically identical to T1
+if the cell must remain refractory
+for the current epoch.
+
+D3 T3
+would be dynamically identical to T2.
+
+Duplicating those arms
+would create fake dose resolution.
+
+Accordingly the legitimate
+deferred-action dose ladder is:
+
+D2:
+T1 only.
+
+D3:
+T1 and T2.
+
+FULL remains distinct
+because it also removes
+the current-epoch refractory lock.
+
+ARMS
+
+Exactly nine arms.
+
+D2:
+
+D2_BASE_ECHO_PHASE;
+D2_G5_T1;
+D2_G5_FULL;
+D2_G5_FULL_STAGGER.
+
+D3:
+
+D3_BASE_ECHO_PHASE;
+D3_G5_T1;
+D3_G5_T2;
+D3_G5_FULL;
+D3_G5_FULL_STAGGER.
+
+No redundant D2 T2/T3.
+No redundant D3 T3.
+
+No SUPPORT-only arm
+in the dose-response primary.
+
+The earlier SUPPORT-only evidence
+remains useful observational context,
+but it is not needed
+to identify dose
+once G5 is fixed.
+
+STAGGERED FULL ARM
+
+The stagger arm tests
+whether A46 short-cycle chatter
+is partly a synchronized-release artifact.
+
+Eligibility remains G5.
+
+While a cell is still refractory
+and has not previously taken
+a stagger action in the episode:
+
+if G5 is false:
+
+use parent refractory behavior.
+
+If G5 is true:
+
+draw one stateless Bernoulli
+with fixed probability:
+
+p = 1/2.
+
+This is a preregistered timing probe,
+not a fitted parameter.
+
+Use a dedicated A47
+stagger event salt.
+
+If the draw succeeds:
+
+apply FULL immediate re-entry to U.
+
+If the draw fails:
+
+use parent refractory behavior
+for the current epoch.
+
+A still-locked cell
+may be tested again
+on a later locked epoch
+if G5 remains true.
+
+No sequential RNG cursor exists.
+
+The stagger draw
+does not alter any other action draw.
+
+RATIONALE FOR FIXED p = 1/2
+
+Do not introduce
+an undefined evidence-strength function g.
+
+That would mix:
+
+signal calibration;
+
+dose;
+
+and timing.
+
+A fixed one-half probability
+isolates only
+population-level synchronization.
+
+No probability sweep is allowed in A47.
+
+COMMON-RANDOM DISCIPLINE
+
+All nine arms share
+the A45 ECHO_PHASE
+stateless action-random identity
+for every inherited stochastic event.
+
+Dose actions T1/T2/FULL
+are deterministic once G5 is true.
+
+FULL_STAGGER adds only
+the dedicated stagger Bernoulli.
+
+Worlds,
+sensor noise,
+heterogeneity,
+and all inherited event salts
+remain paired.
+
+This makes treatment/control differences
+causally attributable
+to recovery action.
+
+RECOVERY AXIS
+
+A47 is a recovery-layer experiment.
+
+Primary scientific axis:
+
+how quickly the organism
+returns from disturbance-induced uncertainty
+to stable favored participation.
+
+The inherited oscillator metric
+must still be reported
+for lineage comparability.
+
+But 5:3 inherited oscillator percentage
+is NOT an A47 qualification criterion.
+
+Reason:
+
+A45 post-closure diagnosis showed
+that the residual 5:3 detector
+primarily counts:
+
+favored
+-> unresolved
+-> favored
+
+cycles,
+
+with zero adverse-majority entries
+in the audited phenotype.
+
+A47 must not be labeled a recovery failure
+because a broader macro-state metric
+that includes temporary uncertainty
+remains high.
+
+NON-REGRESSION AXES
+
+Although not a recovery target,
+the already-solved 6:2 regime
+remains a required non-regression check.
+
+Also preserve:
+
+wrong-side safety;
+
+true-reversal safety;
+
+balanced uncertainty;
+
+service;
+
+and chatter.
+
+PRIMARY RECOVERY METRICS
+
+For contexts 46/47 report:
+
+mean unresolved-episode duration;
+
+median unresolved-episode duration;
+
+maximum unresolved-episode duration;
+
+mean favored-majority recovery latency;
+
+median favored-majority recovery latency;
+
+recovery-never count;
+
+mean refractory fraction
+across support-recovery steps 1-3;
+
+favored-to-unresolved transitions;
+
+unresolved-to-favored transitions;
+
+burst-end favored fraction;
+
+support-recovery composition steps 1-5.
+
+DOSE EFFECTIVENESS
+
+For each non-BASE dose arm,
+define RECOVERY_EFFECTIVE iff all are true:
+
+1. mean 5:3 unresolved-episode duration
+   is at least 25% lower
+   than paired BASE;
+
+2. mean 5:3 favored-majority recovery latency
+   is at least 1.0 epoch lower
+   than paired BASE;
+
+3. mean refractory fraction
+   across support-recovery steps 1-3
+   is lower than paired BASE;
+
+4. direct favored-to-adverse flips = 0;
+
+5. adverse-majority entries = 0;
+
+6. 6:2 oscillation
+   does not exceed paired BASE;
+
+7. reversal acquisition >= 80%;
+
+8. balanced false-majority
+   does not exceed paired BASE
+   and remains <= 10%;
+
+9. aggregate service >= 95%
+   of paired BASE;
+
+10. old-side G5 actions
+    during the first four
+    true-reversal epochs = 0;
+
+11. all integrity probes pass.
+
+CHATTER COST
+
+Normalize short-cycle chatter by commitments:
+
+R_chatter
+=
+same-side short-cycle events
+/
+max(1,total commitments).
+
+For each D family,
+define FULL excess chatter:
+
+E_FULL
+=
+max(
+0,
+R_chatter(FULL)
+-
+R_chatter(BASE)
+).
+
+A sub-FULL dose has
+ACCEPTABLE_CHATTER_COST iff:
+
+its excess chatter rate
+
+<=
+
+75% of E_FULL.
+
+Thus the accepted sub-FULL dose
+must remove at least 25%
+of the immediate-release excess chatter.
+
+If E_FULL = 0:
+
+all arms with no increase
+over BASE pass the chatter constraint.
+
+MINIMUM EFFECTIVE DOSE
+
+Within each D family,
+the minimum effective dose is
+the lowest action intensity
+that is:
+
+RECOVERY_EFFECTIVE;
+
+ACCEPTABLE_CHATTER_COST;
+
+and safety-clean.
+
+Dose order:
+
+D2:
+T1 < FULL.
+
+D3:
+T1 < T2 < FULL.
+
+FULL is retained
+as the repaired-A46 upper bound
+even if its chatter cost
+prevents selection
+as the preferred recovery dose.
+
+A47_RECOVERY_INFORMATION_GAIN
+
+TRUE iff at least one
+non-BASE dose arm
+is RECOVERY_EFFECTIVE.
+
+A47_MINIMUM_EFFECTIVE_DOSE_FOUND
+
+TRUE iff at least one
+sub-FULL dose arm
+is both:
+
+RECOVERY_EFFECTIVE;
+
+and
+
+ACCEPTABLE_CHATTER_COST.
+
+STAGGER HYPOTHESIS
+
+FULL_STAGGER tests
+whether synchronized immediate re-entry
+is a material source
+of A46 chatter.
+
+For each D family,
+define FULL_STAGGER_INFORMATION_GAIN TRUE iff:
+
+1. FULL_STAGGER retains at least 75%
+   of FULL's reduction
+   in mean recovery latency
+   versus BASE;
+
+2. FULL_STAGGER retains at least 75%
+   of FULL's reduction
+   in mean unresolved duration
+   versus BASE;
+
+3. FULL_STAGGER excess chatter rate
+   is at least 25% lower
+   than FULL excess chatter rate;
+
+4. wrong-side entries remain zero;
+
+5. 6:2 non-regression passes;
+
+6. reversal acquisition >= 80%;
+
+7. balanced false-majority
+   does not exceed BASE
+   and remains <=10%;
+
+8. service >=95% of BASE;
+
+9. all integrity probes pass.
+
+If true:
+
+a meaningful fraction
+of immediate-release chatter
+is attributable
+to synchronized timing.
+
+If false because recovery benefit collapses:
+
+the immediate action,
+not merely synchrony,
+is carrying the recovery effect.
+
+If false because chatter does not fall:
+
+the chatter is not primarily
+a synchronized-release artifact.
+
+QUALIFICATION
+
+A47 recovery-layer qualification
+does NOT require
+a 5:3 inherited oscillator ceiling.
+
+An arm is A47-RECOVERY-QUALIFIED iff:
+
+RECOVERY_EFFECTIVE;
+
+wrong-side safe;
+
+true-reversal safe;
+
+balanced safe;
+
+6:2 non-regressing;
+
+service-preserving;
+
+and all integrity probes pass.
+
+A sub-FULL arm
+may additionally be designated:
+
+MINIMUM-DOSE CANDIDATE
+
+only if
+ACCEPTABLE_CHATTER_COST also passes.
+
+The inherited:
+
+overall oscillator rate;
+
+biased-periodic oscillator rate;
+
+5:3 oscillator rate
+
+remain mandatory reported metrics
+but are explicitly OUT OF SCOPE
+for recovery-layer qualification.
+
+STRATEGIC EXIT RULE
+
+If A47 identifies
+a minimum effective sub-FULL dose
+
+and the recovery layer
+passes its safety constraints:
+
+freeze that recovery behavior
+as the recovery-layer candidate.
+
+Do not continue
+strengthening refractory modulation
+merely to lower
+the inherited 5:3 oscillator score.
+
+Return the research program
+to the separate
+population-organization / oscillation track.
+
+The next macro experiment
+must use the accepted recovery layer
+as a frozen substrate,
+not retune it.
+
+A41 exclusion
+and A42 active recruitment
+remain relevant donor mechanisms
+for that separate push-pull question,
+
+but any successor composition
+must be preregistered
+against the actual closed A41/A42 results
+before implementation.
+
+PLAIN-SPEAK UPDATE
+
+A46 proved
+that some cells are sitting out
+longer than necessary.
+
+But opening the gate completely
+makes more local chatter.
+
+A47 will no longer ask only:
+
+does shaving one turn help?
+
+It asks:
+
+HOW MUCH OF THE WAIT
+DO WE REALLY NEED TO REMOVE?
+
+For D3
+we can legitimately test:
+
+one future turn;
+
+two future turns;
+
+or immediate release.
+
+For D2
+there is only one future turn
+available to shave,
+so pretending there are
+T2 and T3 doses
+would just duplicate the same behavior.
+
+We also test
+whether the chatter comes from
+too many cells standing up
+at exactly the same time.
+
+The stagger arm
+uses the same readiness signal
+but spreads immediate release
+across cells probabilistically.
+
+And most importantly:
+
+A47 will be judged
+on the problem it is actually solving.
+
+Recovery.
+
+Not whether it single-handedly
+solves every remaining
+macro population cycle.
+
+If we find
+the smallest recovery dose
+that works safely
+and with less chatter,
+
+we lock that layer.
+
+Then we return
+to the separate question
+of how a recovered core
+controls the surrounding population.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
