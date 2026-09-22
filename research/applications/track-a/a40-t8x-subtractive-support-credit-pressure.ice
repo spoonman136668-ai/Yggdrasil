@@ -842,3 +842,42 @@ No real A40 world has been derived.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-F40 PRIMARY MANIFEST BINDING
+
+DATE:
+2026-09-22.
+
+F40:
+c94e0be8d05706cdeb1c4678214e50a736ef3678
+
+PRIMARY SEED:
+A40-F40-c94e0be8d05706cdeb1c4678214e50a736ef3678-PRIMARY
+
+WORLD COUNT:
+384.
+
+WORLD SHAPE:
+48 contexts x 8 replicas.
+
+PRIMARY WORLD MANIFEST SHA256:
+485de002a55927b33b610abfed68ccd5dd9f7d63c5a44e0f09438f8522037307
+
+STATUS:
+BOUND BEFORE ANY PRIMARY ARM EXECUTION.
+
+The manifest was derived from the frozen F40 source
+after F40 existed.
+
+No arm outcome,
+population metric,
+qualification result,
+or scientific comparison
+was observed before this binding.
+
+The canonical DG-1R-05 primary is not consumed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
