@@ -936,3 +936,42 @@ the old organization promptly.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-F41 PRIMARY MANIFEST BINDING
+
+DATE:
+2026-09-22.
+
+F41:
+533b99503712bc37547969cf63100bd83336e69a
+
+PRIMARY SEED:
+A41-F41-533b99503712bc37547969cf63100bd83336e69a-PRIMARY
+
+WORLD COUNT:
+384.
+
+WORLD SHAPE:
+48 contexts x 8 replicas.
+
+PRIMARY WORLD MANIFEST SHA256:
+a902a20ee2222f6aebc451659d8910238a1c9ee1c74f37ee4eee69a018f761c1
+
+STATUS:
+BOUND BEFORE ANY PRIMARY ARM EXECUTION.
+
+The manifest was derived from the frozen F41 source
+after F41 existed.
+
+No arm outcome,
+population metric,
+qualification result,
+or scientific comparison
+was observed before this binding.
+
+The canonical DG-1R-05 primary is not consumed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
