@@ -787,3 +787,502 @@ qualification threshold,
 or information-gain criterion changes.
 
 No F39 exists yet.
+
+
+PRE-IMPLEMENTATION AMENDMENT 02 — GRADED SUPPORT-CREDIT / HILL-THRESHOLD ARM
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE F39
+AND BEFORE ANY REAL F39-DERIVED WORLD EXISTS.
+
+MOTIVATION
+
+The original A39 SIGNED formulation
+uses a zero-cross mechanism:
+
+support and opposition build a signed margin B,
+but committed-cell erosion pressure remains zero
+until B crosses to the opposing side.
+
+That tests:
+
+TEMPORAL HYSTERESIS BY SIGN REVERSAL.
+
+A distinct hypothesis remains untested:
+
+the DEPTH of accumulated support
+may need to continuously modulate
+how much current local opposition
+is required to erode a commitment.
+
+This amendment adds that mechanism
+before implementation freeze.
+
+It does not remove
+the original zero-cross arms.
+
+The two mechanisms are compared directly.
+
+TERMINOLOGY
+
+The original:
+
+SIGNED_MEDIUM;
+SIGNED_SLOW
+
+arms are now described in analysis as:
+
+ZERO_CROSS_MEDIUM;
+ZERO_CROSS_SLOW.
+
+Their equations are unchanged.
+
+The implementation may preserve
+the original serialized arm names
+for backward clarity.
+
+NEW GRADED MARGIN
+
+Use the same local signed evidence:
+
+E(i,t)
+=
+L_C(i,t)
+-
+L_S(i,t).
+
+Use the same signed temporal state:
+
+B(i,t)
+=
+rho * B(i,t-1)
++
+(1-rho) * E(i,t).
+
+Initial:
+
+B(i,-1)=0.
+
+For a C-committed cell,
+define state-aligned support credit:
+
+M_C
+=
+max(0, B).
+
+For an S-committed cell:
+
+M_S
+=
+max(0, -B).
+
+Thus credit is:
+
+local;
+signed;
+bounded;
+and aligned to the cell's current commitment.
+
+If accumulated evidence favors the opposite side,
+support credit falls to zero.
+
+It never makes the base erosion threshold negative.
+
+GRADED HILL DEFECTION LAW
+
+For C:
+
+L_op
+=
+L_S.
+
+K_eff
+=
+K
++
+M_C.
+
+For S:
+
+L_op
+=
+L_C.
+
+K_eff
+=
+K
++
+M_S.
+
+Then:
+
+p_stay
+=
+1
+/
+(
+1
++
+(L_op / K_eff)^3
+).
+
+Frozen base:
+
+K = 1/2.
+
+No additional gain parameter exists.
+
+Therefore:
+
+thin support margin
+->
+K_eff near 1/2
+->
+A30-like sensitivity.
+
+thick support margin
+->
+larger K_eff
+->
+greater resistance to the same local opposition.
+
+Opposing evidence simultaneously:
+
+raises current L_op;
+
+and reduces future B / M.
+
+Thus a counter-pulse both:
+
+pushes on the current commitment;
+
+and spends accumulated support credit.
+
+This is the exact architectural distinction
+from ZERO_CROSS.
+
+NEW ARMS
+
+For both D2 and D3 add:
+
+MARGIN_MEDIUM:
+
+rho = 1/2.
+
+MARGIN_SLOW:
+
+rho = 3/4.
+
+The full A39 arm set becomes:
+
+D2_OPP_SLOW;
+D2_ZERO_CROSS_MEDIUM;
+D2_ZERO_CROSS_SLOW;
+D2_MARGIN_MEDIUM;
+D2_MARGIN_SLOW;
+
+D3_OPP_SLOW;
+D3_ZERO_CROSS_MEDIUM;
+D3_ZERO_CROSS_SLOW;
+D3_MARGIN_MEDIUM;
+D3_MARGIN_SLOW.
+
+Exactly ten arms.
+
+No post-result arm addition is permitted.
+
+PRIMARY MECHANISM CANDIDATES
+
+The two graded candidates are:
+
+D2_MARGIN_SLOW;
+D3_MARGIN_SLOW.
+
+MARGIN_MEDIUM is a preregistered decay control.
+
+ZERO_CROSS arms remain mechanism controls.
+
+MARGIN DISTRIBUTION METRICS
+
+For every biased-periodic counter-pulse onset
+and every cell committed to the long-run favored side,
+record:
+
+B;
+state-aligned M;
+commitment age;
+current local opposition L_op.
+
+Report:
+
+mean M;
+median M;
+standard deviation of M;
+interquartile range;
+fraction M = 0;
+fraction M >= 0.25;
+fraction M >= 0.50;
+fraction M >= 0.75.
+
+This tests whether evidence-history heterogeneity
+actually exists.
+
+If M is nearly identical across committed cells,
+MARGIN_HILL has degenerated toward
+a uniform K shift.
+
+EROSION ORDERING METRIC
+
+For every biased-periodic adverse burst,
+capture committed cells at pulse onset.
+
+For each captured cell report:
+
+pre-pulse M;
+
+first defection epoch within the burst,
+or NEVER.
+
+Primary erosion-order statistic:
+
+Spearman rank correlation between:
+
+pre-pulse M
+
+and
+
+defection latency.
+
+The expected direction is:
+
+positive.
+
+Higher support credit should produce
+later defection.
+
+Also report defection rate by pre-pulse M quartile.
+
+A39 does not require
+a specific correlation for qualification,
+but it is required for mechanism attribution.
+
+CORE-PERSISTENCE METRIC
+
+For biased-periodic bursts report:
+
+fraction of pulse-onset committed cells
+remaining committed after adverse epoch:
+
+1;
+2;
+3.
+
+Also report the same fractions
+for the top M quartile
+and bottom M quartile.
+
+A graded-margin mechanism is behaving as intended iff:
+
+top-margin cells persist more strongly
+than bottom-margin cells
+under the same burst.
+
+FALSE-COMMITMENT / STALE-RETREAT CHECK
+
+Report the same final false C / false S dominance
+already preregistered.
+
+Additionally report:
+
+for true reversal trials,
+median old-side M at reversal onset;
+
+median epochs until old-side M reaches zero;
+
+median epochs until old majority is lost.
+
+This distinguishes:
+
+support-credit decay
+
+from:
+
+actual population retreat.
+
+MARGIN_HILL QUALIFICATION
+
+D2_MARGIN_SLOW or D3_MARGIN_SLOW
+is MARGIN-HILL-QUALIFIED iff all are true:
+
+1. overall oscillatory fraction <= 0.05;
+
+2. biased-periodic oscillatory fraction <= 0.10;
+
+3. biased-periodic oscillation
+   < paired OPP_SLOW;
+
+4. at least 50%
+   of paired OPP_SLOW biased-periodic oscillators
+   are broken;
+
+5. balanced-periodic false-majority <= 0.10;
+
+6. false C dominance <= 0.05
+   among S-favoring worlds;
+
+7. false S dominance <= 0.05
+   among C-favoring worlds;
+
+8. reversal acquisition >= 0.80;
+
+9. median old-majority loss latency
+   on true reversals <= 4 epochs;
+
+10. aggregate service
+    >= 90%
+    of paired OPP_SLOW;
+
+11. median recruitment / commitment behavior
+    remains nondegenerate;
+
+12. all integrity probes pass.
+
+A39_GRADED_MARGIN_INFORMATION_GAIN
+
+TRUE iff at least one MARGIN arm:
+
+reduces overall oscillation
+versus paired OPP_SLOW;
+
+breaks at least 25%
+of paired OPP_SLOW biased-periodic oscillators;
+
+has positive pre-pulse-M / defection-latency correlation;
+
+shows higher post-burst persistence
+in the top M quartile
+than the bottom M quartile;
+
+retains reversal acquisition >= 0.80;
+
+and retains >= 90%
+paired-reference service.
+
+MECHANISM COMPARISON
+
+If ZERO_CROSS helps
+but MARGIN does not:
+
+the useful state is sign hysteresis,
+not graded evidence depth.
+
+If MARGIN helps
+but ZERO_CROSS becomes sticky:
+
+continuous erosion ordering
+is superior to a hard sign boundary.
+
+If both help:
+
+signed support credit is useful,
+and A40 may isolate
+which pressure transform generalizes.
+
+If MARGIN creates strong erosion ordering
+but does not reduce population oscillation:
+
+committed-cell erosion is not
+the remaining macro-oscillation bottleneck.
+
+If MARGIN becomes inertial on true reversals:
+
+the support-credit decay is too slow
+as formulated.
+
+ADDITIONAL INTEGRITY PROBES
+
+P34:
+MARGIN_MEDIUM rho exactly 1/2.
+
+P35:
+MARGIN_SLOW rho exactly 3/4.
+
+P36:
+C credit exactly max(0,B).
+
+P37:
+S credit exactly max(0,-B).
+
+P38:
+K_eff exactly 1/2 + aligned credit.
+
+P39:
+MARGIN p_stay uses current local opposing density
+and K_eff only.
+
+P40:
+no extra margin gain exists.
+
+P41:
+margin changes committed-state defection only.
+
+P42:
+same B update is used
+for ZERO_CROSS and MARGIN
+at matched rho.
+
+P43:
+two complete primary sweeps remain byte-identical.
+
+SCIENTIFIC INTERPRETATION
+
+This amendment distinguishes two forms
+of evidence memory.
+
+ZERO_CROSS asks:
+
+"has the accumulated balance actually reversed?"
+
+MARGIN_HILL asks:
+
+"how much accumulated evidence
+must current opposition overcome?"
+
+The second produces
+an explicit veteran / newcomer continuum
+without assigning cell classes.
+
+That heterogeneity arises from
+the cell's own evidence history.
+
+PLAIN-SPEAK INTERPRETATION
+
+There are now two ways
+a cell can remember support.
+
+The first says:
+
+"I will not react
+until the balance actually flips."
+
+The second says:
+
+"I can react at any time,
+but the more evidence built my commitment,
+the harder I am to knock out of it."
+
+A veteran commitment
+and a fresh commitment
+no longer have to behave identically.
+
+That is the new A39 test.
+
+No F39 exists yet.
+No real A39 world has been derived.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
