@@ -1333,3 +1333,240 @@ and
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F49 AMENDMENT 02 — IMPLEMENTATION / PARENT PARITY / MECHANICAL GATE
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F49
+AND BEFORE ANY A49 SCIENTIFIC OUTCOME.
+
+AUTHORIZED SOURCE
+
+Bytes:
+83095.
+
+SHA256:
+2f605a412bdedf9a66607cf7c544be8c26e10d751f4e85557e17a9afd3b9f569
+
+ARMS
+
+Exactly eight arms.
+
+D2:
+
+D2_BASE_ECHO_PHASE;
+D2_CH_OCC_EXCLUSION;
+D2_CH_ACTIVE_OCCUPANCY;
+D2_CH_PUSH_PULL.
+
+D3:
+
+D3_BASE_ECHO_PHASE;
+D3_CH_OCC_EXCLUSION;
+D3_CH_ACTIVE_OCCUPANCY;
+D3_CH_PUSH_PULL.
+
+PARENT PARITY
+
+Focused comparisons span:
+
+constant;
+spatial;
+true reversal;
+balanced periodic;
+6:2 biased periodic;
+5:3 biased periodic.
+
+A49 BASE
+versus accepted A45 ECHO_PHASE:
+
+40 behavioral comparisons.
+
+Mismatches:
+0.
+
+Compared inherited behavior includes:
+
+service;
+harm / benefit;
+majority behavior;
+oscillation classification;
+reversal;
+H dynamics;
+transition counts;
+recruitment episodes;
+chatter;
+deadlock;
+balanced behavior.
+
+A49 adds diagnostic fields
+but does not alter
+the inherited BASE dynamics.
+
+ZERO-FIELD REDUCTION
+
+For parity testing only,
+force the A49
+challenge occupancy field to zero.
+
+Then:
+
+CH_OCC_EXCLUSION;
+CH_ACTIVE_OCCUPANCY;
+CH_PUSH_PULL
+
+must reduce exactly to BASE.
+
+Representative comparisons:
+
+120.
+
+Behavioral mismatches:
+0.
+
+This confirms
+the treatment delta exists only
+through the preregistered
+challenge-core periphery field.
+
+COMMON-RANDOM DISCIPLINE
+
+All arms within each D family
+use the exact paired
+A45 ECHO_PHASE
+stateless action-random identity.
+
+No treatment-specific
+inherited RNG namespace exists.
+
+A49 field transformations
+are deterministic.
+
+MECHANICAL VALIDATION
+
+Mechanical seed:
+
+MECHANICAL-A49-F49-CANDIDATE
+
+Complete sweeps:
+
+2.
+
+Worlds per sweep:
+
+384.
+
+Arms:
+
+8.
+
+Output bytes per sweep:
+
+90727.
+
+Output SHA256:
+
+c6fb8d5cae85d9f4479fb1e22be95d6eec272c70ffbd620d2091fbdfe411bf94
+
+BYTE IDENTICAL:
+
+true.
+
+stderr:
+
+empty for both sweeps.
+
+All executable pre-primary
+integrity probes:
+
+PASS.
+
+No mechanical-world
+population outcome,
+macro-information result,
+push-pull synergy result,
+creep trend,
+or qualification result
+is used as scientific evidence.
+
+CREEP INSTRUMENTATION
+
+The implementation includes
+the pre-F49 challenge-onset
+core-creep amendment.
+
+For every 5:3 challenge cycle
+it records:
+
+favored committed fraction;
+adverse committed fraction;
+U;
+H;
+FC;
+FS;
+refractory fraction;
+majority;
+largest favored domain;
+challenge-field coverage.
+
+It derives:
+
+cycle-to-cycle favored-fraction delta;
+retention ratio;
+per-world least-squares beta_F;
+negative-trend frequency;
+material-creep frequency;
+first crossing below 50%, 40%, and 33%.
+
+The creep metrics
+do not enter dynamics.
+
+SOURCE-BUNDLE FORMAT
+
+The exact source above
+will be published
+as deterministic gzip/base64
+split into seven neutral text source parts.
+
+Source SHA256:
+
+2f605a412bdedf9a66607cf7c544be8c26e10d751f4e85557e17a9afd3b9f569
+
+Gzip bytes:
+
+19262.
+
+Gzip SHA256:
+
+76b428f85e1bb54887c4d27eff2e21e56ae409d534da724b28cedeb8d6fd2844
+
+Concatenated base64 characters:
+
+25684.
+
+Base64 SHA256:
+
+b2b006c1307788435d023d291c455f4b0c2c634e4f0332ac828c8c06d02fa702
+
+Source part count:
+
+7.
+
+The F49 loader must verify:
+
+part count;
+base64 identity;
+gzip identity;
+source identity;
+
+before execution.
+
+Any mismatch fails closed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
