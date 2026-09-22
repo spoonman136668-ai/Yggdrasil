@@ -1058,3 +1058,105 @@ before execution.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F46 AMENDMENT 02 — MECHANICAL GATE AND SOURCE-BUNDLE IDENTITY
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F46
+AND BEFORE ANY A46 SCIENTIFIC OUTCOME.
+
+FOCUSED PARENT PARITY
+
+A45 ECHO_PHASE parent behavior
+was compared against A46 inherited controls
+across 36 representative cases spanning:
+
+constant environments;
+spatial environments;
+true reversal;
+balanced periodic;
+6:2 biased periodic;
+5:3 biased periodic.
+
+Behavioral mismatches:
+
+0.
+
+MECHANICAL VALIDATION
+
+Candidate source SHA256:
+
+efee5637a1ba709b5299199489f02988517abc49392788b72ea25b295119fcec
+
+Mechanical seed:
+
+MECHANICAL-A46-F46-CANDIDATE
+
+Complete sweeps:
+
+2.
+
+Output bytes per sweep:
+
+44606.
+
+Output SHA256:
+
+1ad8f436649825fae8a644c1260127fbe23d05e6ebf545578b4b07dec962c905
+
+BYTE IDENTICAL:
+
+true.
+
+stderr:
+
+empty for both sweeps.
+
+All executable pre-primary integrity probes:
+
+PASS.
+
+No mechanical-world population outcome
+is used as scientific evidence.
+
+SOURCE-BUNDLE FORMAT
+
+F46 will publish the exact candidate source
+as a deterministic gzip/base64 source bundle
+split into six text source parts.
+
+Source bytes:
+
+75169.
+
+Source SHA256:
+
+efee5637a1ba709b5299199489f02988517abc49392788b72ea25b295119fcec
+
+Gzip bytes:
+
+18136.
+
+Gzip SHA256:
+
+4e0d2b5ded1f71f55cf3e94652d52224c3bae10bfe9e308a6e101de44f4037f3
+
+Concatenated base64 characters:
+
+24184.
+
+Base64 SHA256:
+
+b6edfab88e74753d5d32c113ccee30941ce3421f9a15dc38664d25e214479a5b
+
+The F46 loader must verify
+all three identities
+before execution.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
