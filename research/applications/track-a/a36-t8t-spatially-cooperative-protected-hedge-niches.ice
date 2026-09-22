@@ -994,3 +994,104 @@ NO POST-RESULT REFRACTORY CHANGE.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A36 SPATIALLY COOPERATIVE PROTECTED HEDGE NICHES
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A36 ARM EXECUTION,
+H NICHE EVENT,
+OR SCIENTIFIC OUTCOME.
+
+F36:
+
+f8f83007bc9bf5ff64a338ebe3540195086dd593.
+
+FROZEN SOURCE SHA-256:
+
+5ff16100fc817a650a74e74d574ee9361de824418c38323c03192493359cd1d3.
+
+FROZEN GZIP SHA-256:
+
+216a54bb8e5ed18ae9436d0e07f4e29252d8563f5950ffb75ce478faec34f049.
+
+TRIAL COUNT:
+
+384.
+
+STRUCTURE:
+
+48 frozen environmental contexts
+x
+8 F36-derived replicas.
+
+CELLS:
+
+48.
+
+EPOCHS:
+
+48.
+
+COMPLETE WORLD-MANIFEST SHA-256:
+
+041eba03561ce1b4640f5d9a61ddee7eb86b252efd40d14d79316098d337d4ba.
+
+Serialized manifest-wrapper SHA-256:
+
+05285019e972c0af952d3ca652f1bdc8cf443de59d6b56c03a39a76e2a0ef271.
+
+Serialized manifest-wrapper bytes:
+
+40016.
+
+The bound world identity includes:
+
+context;
+replica;
+family;
+reversal location where applicable;
+spatial region where applicable;
+full true local-consequence field hash;
+full sensed field hash.
+
+PRIMARY STATUS AT MANIFEST BIND
+
+Real ISO outcomes observed:
+
+0.
+
+Real ENTRY outcomes observed:
+
+0.
+
+Real RETAIN outcomes observed:
+
+0.
+
+Real NICHE outcomes observed:
+
+0.
+
+Real A36 qualification outcomes observed:
+
+0.
+
+The next permitted operation is:
+
+two complete deterministic A36 primary sweeps
+using F36 as seed.
+
+NO WORLD REDRAW.
+NO H-RADIUS CHANGE.
+NO ENTRY-REINFORCEMENT CHANGE.
+NO RELEASE-PROTECTION CHANGE.
+NO REFRACTORY CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
