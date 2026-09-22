@@ -1449,3 +1449,47 @@ No real A44 arm execution has occurred.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-F44 PRIMARY MANIFEST BINDING
+
+DATE:
+2026-09-22.
+
+F44:
+758acef963d19261103521cf0ace0f27286f34e5
+
+PRIMARY SEED:
+A44-F44-758acef963d19261103521cf0ace0f27286f34e5-PRIMARY
+
+WORLD COUNT:
+384.
+
+WORLD SHAPE:
+48 contexts x 8 replicas.
+
+PRIMARY WORLD MANIFEST SHA256:
+78ea82856c1fc7ecc24565f6bac52af98b4a7cc0588b299070b002caa9d09572
+
+SERIALIZED MANIFEST FILE SHA256:
+4a18caf8164d18c2ae4d3a3d6de5dec3b2662c8f1936478556cad5ff127a81da
+
+STATUS:
+BOUND AFTER F44
+AND BEFORE ANY PRIMARY ARM EXECUTION.
+
+The manifest was generated
+from the exact frozen A44 source
+using only world generation.
+
+No arm outcome,
+population metric,
+qualification result,
+or scientific comparison
+was observed before this binding.
+
+The canonical DG-1R-05 primary is not consumed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
