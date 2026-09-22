@@ -855,3 +855,94 @@ FROM PARENT TO SUCCESSOR?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-IMPLEMENTATION CLARIFICATION 01 — TURNOVER ORDER AND GENERATION IDENTITY
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE IMPLEMENTATION FREEZE
+AND BEFORE ANY REAL F37-DERIVED WORLD EXISTS.
+
+TURNOVER ORDER
+
+At turnover epoch t:
+
+replacement occurs first.
+
+The parent state,
+parent refractory timer,
+parent H_BEQUEST,
+and parent lineage generation
+are read from the end of epoch t-1.
+
+The successor is created.
+
+Only then does epoch t perform:
+
+sensing;
+pulse emission;
+pool update;
+H release;
+local cross-inhibition;
+recruitment;
+service accounting.
+
+Thus:
+
+epoch 8 turnover
+inherits history accumulated through epochs 0-7.
+
+DIRECT H DWELL
+
+If DIRECT replaces a parent currently in H:
+
+the parent H dwell closes at turnover.
+
+The successor begins a new H dwell
+at epoch t.
+
+That successor does not automatically set H_BEQUEST.
+
+H_BEQUEST is set only
+when the current generation actually enters H
+through its own U -> H transition.
+
+PRIME ORDER
+
+If PRIME receives M_H = 1:
+
+the successor begins in U
+unless ordinary state continuity applies
+to a non-H parent.
+
+The mark can affect
+that successor's H hazard
+starting in the same turnover epoch's
+recruitment phase.
+
+GENERATION-LOCAL STOCHASTIC IDENTITY
+
+Every replacement increments
+the position's generation number.
+
+All post-turnover stochastic decisions
+include that generation number.
+
+Matched arms use
+the exact same turnover schedule
+and generation numbers.
+
+Therefore changing H lineage handling
+does not silently reuse
+the parent's stochastic stream.
+
+No scientific threshold,
+turnover frequency,
+turnover size,
+lineage multiplier,
+or qualification rule changes.
+
+No F37 exists yet.
