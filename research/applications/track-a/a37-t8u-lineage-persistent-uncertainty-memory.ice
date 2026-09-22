@@ -1235,3 +1235,109 @@ NO POST-RESULT A36-NICHE CHANGE.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-FREEZE PRIMARY MANIFEST — A37 LINEAGE-PERSISTENT UNCERTAINTY MEMORY
+
+DATE:
+2026-09-21.
+
+STATUS:
+BOUND BEFORE FIRST REAL A37 ARM EXECUTION,
+TURNOVER,
+LINEAGE MARK,
+OR SCIENTIFIC OUTCOME.
+
+F37:
+
+d7f0ef718c83962dcb2e7fb2c0e57feba4e97bd3.
+
+FROZEN SOURCE SHA-256:
+
+3e69f508489181c989c79d1d7c72f83a751fe457e726c520785b126e0a095de6.
+
+TRIAL COUNT:
+
+384.
+
+STRUCTURE:
+
+48 frozen environmental contexts
+x
+8 F37-derived replicas.
+
+CELLS:
+
+48.
+
+EPOCHS:
+
+48.
+
+TURNOVER EPOCHS:
+
+8 / 12 / 16 / 20 / 24 / 28 / 32 / 36 / 40 / 44.
+
+REPLACEMENTS PER TURNOVER:
+
+6.
+
+COMPLETE WORLD-MANIFEST SHA-256:
+
+ad15162fd61dcbde7ec76245423985b7281830a9448f6aa68b56329705384e61.
+
+Serialized manifest-wrapper SHA-256:
+
+80edd5f8f2dfefced90b4a5977f88e33fb72d3bab333ab54a5f717e25d259c1c.
+
+Serialized manifest-wrapper bytes:
+
+40016.
+
+Each bound trial identity includes:
+
+context;
+replica;
+family;
+reversal location where applicable;
+spatial region where applicable;
+the full F37-derived turnover permutation;
+full true local-consequence field hash;
+full sensed field hash.
+
+PRIMARY STATUS AT MANIFEST BIND
+
+Real STATIC outcome observed:
+
+0.
+
+Real RESET outcome observed:
+
+0.
+
+Real DIRECT outcome observed:
+
+0.
+
+Real PRIME outcome observed:
+
+0.
+
+Real lineage-chain outcome observed:
+
+0.
+
+The next permitted operation is:
+
+two complete deterministic A37 primary sweeps
+using F37 as seed.
+
+NO WORLD REDRAW.
+NO TURNOVER CHANGE.
+NO PRIME-MULTIPLIER CHANGE.
+NO A36-NICHE CHANGE.
+NO POST-RESULT TUNING.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
