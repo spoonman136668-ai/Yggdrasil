@@ -1338,3 +1338,48 @@ Any mismatch fails closed.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-F52 PRIMARY MANIFEST BINDING
+
+DATE:
+2026-09-22.
+
+F52:
+e98f00e3feec76a7b8f08fd42cc60ce2d8bfe88d
+
+AUTHORITATIVE SOURCE SHA256:
+f1c2cfbd707621b18db101ea9a41f2264841acee10abcc5b80e4239c50ae60e1
+
+PRIMARY SEED:
+A52-F52-e98f00e3feec76a7b8f08fd42cc60ce2d8bfe88d-PRIMARY
+
+WORLD COUNT:
+384.
+
+WORLD SHAPE:
+48 contexts x 8 replicas.
+
+PRIMARY WORLD MANIFEST SHA256:
+1d2db1f6c74babaf25fd728d15a56e5a4fcac3427e416e70b6e111bb584021fd
+
+STATUS:
+BOUND AFTER F52
+AND BEFORE ANY A52 PRIMARY ARM EXECUTION.
+
+No A52 phase-displacement result,
+oscillation result,
+burst-end result,
+phase-push interaction,
+anti-phase result,
+qualification result,
+or scientific comparison
+was observed before this binding.
+
+Two complete primary sweeps
+must be byte-identical
+before scientific analysis.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
