@@ -881,3 +881,527 @@ The canonical DG-1R-05 primary is not consumed.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+A40 PRIMARY CLOSURE
+
+DATE:
+2026-09-22.
+
+F40:
+c94e0be8d05706cdeb1c4678214e50a736ef3678
+
+MANIFEST-BINDING COMMIT:
+f3daad24a6ee173648ed4592bba7706446ec6e23
+
+PRIMARY SEED:
+A40-F40-c94e0be8d05706cdeb1c4678214e50a736ef3678-PRIMARY
+
+PRIMARY WORLD MANIFEST SHA256:
+485de002a55927b33b610abfed68ccd5dd9f7d63c5a44e0f09438f8522037307
+
+PRIMARY OUTPUT SHA256:
+7439739a1ce5a120cf505e2ac851347ff9f80ce23f4ae092984955ee6c9360a3
+
+PRIMARY RUNS:
+2.
+
+PRIMARY OUTPUT BYTES:
+37681.
+
+BYTE IDENTICAL:
+true.
+
+P42:
+PASS.
+
+All other executable integrity probes:
+PASS.
+
+TECHNICAL EVIDENCE
+
+D2_OPP_SLOW:
+aggregate service 214213;
+harm rate 18.75%;
+overall oscillation 13.54%;
+biased-periodic oscillation 96.88%;
+balanced false-majority 0.00%;
+false C dominance 15.88%;
+false S dominance 13.15%;
+contradiction no-majority 84.12%;
+reversal acquisition 89.06%;
+median old-majority loss 2 epochs;
+directional coordination median 0.88889;
+H mean occupancy 2.82205;
+niche prevalence 31.52%;
+niche mean lifetime 4.04814;
+recruitment episodes 1355.
+
+D2_MARGIN_SLOW:
+aggregate service 235435;
+harm rate 15.62%;
+overall oscillation 12.76%;
+biased-periodic oscillation 100.00%;
+balanced false-majority 0.00%;
+false C dominance 17.06%;
+false S dominance 14.55%;
+contradiction no-majority 85.10%;
+reversal acquisition 92.97%;
+median old-majority loss 1 epoch;
+directional coordination median 0.87500;
+H mean occupancy 2.89779;
+niche prevalence 38.75%;
+niche mean lifetime 4.00551;
+recruitment episodes 1381.
+
+D2_ZERO_CROSS_MEDIUM:
+aggregate service 229428;
+harm rate 17.45%;
+overall oscillation 6.77%;
+biased-periodic oscillation 53.12%;
+balanced false-majority 3.12%;
+false C dominance 18.24%;
+false S dominance 13.15%;
+contradiction no-majority 53.73%;
+reversal acquisition 90.62%;
+median old-majority loss 2 epochs;
+directional coordination median 0.91667;
+H mean occupancy 1.65717;
+niche prevalence 6.86%;
+niche mean lifetime 2.78689;
+recruitment episodes 1042.
+
+D2_ZERO_CROSS_SLOW:
+aggregate service 214966;
+harm rate 25.26%;
+overall oscillation 4.43%;
+biased-periodic oscillation 0.00%;
+balanced false-majority 50.00%;
+false C dominance 17.06%;
+false S dominance 13.15%;
+contradiction no-majority 30.92%;
+reversal acquisition 86.72%;
+median old-majority loss 5 epochs;
+directional coordination median 0.95833;
+H mean occupancy 1.08523;
+niche prevalence 2.26%;
+niche mean lifetime 3.06000;
+recruitment episodes 693.
+
+D2_SUBTRACTIVE_MEDIUM:
+aggregate service 234897;
+harm rate 15.10%;
+overall oscillation 11.20%;
+biased-periodic oscillation 100.00%;
+balanced false-majority 0.00%;
+false C dominance 17.65%;
+false S dominance 13.15%;
+contradiction no-majority 78.80%;
+reversal acquisition 91.41%;
+median old-majority loss 1 epoch;
+directional coordination median 0.88889;
+H mean occupancy 2.54080;
+niche prevalence 32.42%;
+niche mean lifetime 4.01579;
+recruitment episodes 1309.
+
+D2_SUBTRACTIVE_SLOW:
+aggregate service 235605;
+harm rate 16.15%;
+overall oscillation 10.42%;
+biased-periodic oscillation 93.75%;
+balanced false-majority 0.00%;
+false C dominance 17.06%;
+false S dominance 13.15%;
+contradiction no-majority 75.75%;
+reversal acquisition 90.62%;
+median old-majority loss 2 epochs;
+directional coordination median 0.87500;
+H mean occupancy 2.50732;
+niche prevalence 33.14%;
+niche mean lifetime 4.07534;
+recruitment episodes 1307.
+
+D3_OPP_SLOW:
+aggregate service 209237;
+harm rate 19.27%;
+overall oscillation 13.02%;
+biased-periodic oscillation 84.38%;
+balanced false-majority 0.00%;
+false C dominance 15.29%;
+false S dominance 12.68%;
+contradiction no-majority 87.96%;
+reversal acquisition 87.50%;
+median old-majority loss 2 epochs;
+directional coordination median 0.90909;
+H mean occupancy 2.43202;
+niche prevalence 27.56%;
+niche mean lifetime 4.00789;
+recruitment episodes 1359.
+
+D3_MARGIN_SLOW:
+aggregate service 230750;
+harm rate 15.89%;
+overall oscillation 11.98%;
+biased-periodic oscillation 90.62%;
+balanced false-majority 0.00%;
+false C dominance 15.88%;
+false S dominance 13.62%;
+contradiction no-majority 85.95%;
+reversal acquisition 89.84%;
+median old-majority loss 1 epoch;
+directional coordination median 0.87500;
+H mean occupancy 2.48204;
+niche prevalence 29.76%;
+niche mean lifetime 4.07558;
+recruitment episodes 1412.
+
+D3_ZERO_CROSS_MEDIUM:
+aggregate service 225182;
+harm rate 18.23%;
+overall oscillation 7.29%;
+biased-periodic oscillation 56.25%;
+balanced false-majority 0.00%;
+false C dominance 15.29%;
+false S dominance 12.68%;
+contradiction no-majority 56.61%;
+reversal acquisition 87.50%;
+median old-majority loss 2 epochs;
+directional coordination median 0.91667;
+H mean occupancy 1.56494;
+niche prevalence 8.86%;
+niche mean lifetime 3.14286;
+recruitment episodes 1054.
+
+D3_ZERO_CROSS_SLOW:
+aggregate service 211402;
+harm rate 24.48%;
+overall oscillation 5.21%;
+biased-periodic oscillation 0.00%;
+balanced false-majority 37.50%;
+false C dominance 17.06%;
+false S dominance 9.86%;
+contradiction no-majority 33.84%;
+reversal acquisition 78.91%;
+median old-majority loss 5 epochs;
+directional coordination median 0.95833;
+H mean occupancy 1.03521;
+niche prevalence 3.27%;
+niche mean lifetime 3.75000;
+recruitment episodes 678.
+
+D3_SUBTRACTIVE_MEDIUM:
+aggregate service 229901;
+harm rate 16.67%;
+overall oscillation 11.20%;
+biased-periodic oscillation 93.75%;
+balanced false-majority 0.00%;
+false C dominance 16.47%;
+false S dominance 13.62%;
+contradiction no-majority 80.23%;
+reversal acquisition 90.62%;
+median old-majority loss 1 epoch;
+directional coordination median 0.89474;
+H mean occupancy 2.23041;
+niche prevalence 24.43%;
+niche mean lifetime 3.56352;
+recruitment episodes 1334.
+
+D3_SUBTRACTIVE_SLOW:
+aggregate service 230908;
+harm rate 14.84%;
+overall oscillation 10.42%;
+biased-periodic oscillation 100.00%;
+balanced false-majority 0.00%;
+false C dominance 15.88%;
+false S dominance 13.15%;
+contradiction no-majority 77.48%;
+reversal acquisition 89.06%;
+median old-majority loss 2 epochs;
+directional coordination median 0.90000;
+H mean occupancy 2.25597;
+niche prevalence 28.70%;
+niche mean lifetime 3.86061;
+recruitment episodes 1351.
+
+BIASED-PERIODIC CONTEXT DETAIL — SUBTRACTIVE ARMS
+
+D2_SUBTRACTIVE_MEDIUM:
+44 = 8/8 oscillatory;
+45 = 8/8;
+46 = 8/8;
+47 = 8/8.
+
+D2_SUBTRACTIVE_SLOW:
+44 = 6/8 oscillatory;
+45 = 8/8;
+46 = 8/8;
+47 = 8/8.
+
+D3_SUBTRACTIVE_MEDIUM:
+44 = 8/8 oscillatory;
+45 = 8/8;
+46 = 8/8;
+47 = 6/8.
+
+D3_SUBTRACTIVE_SLOW:
+44 = 8/8 oscillatory;
+45 = 8/8;
+46 = 8/8;
+47 = 8/8.
+
+BALANCED-PERIODIC CONTROL — SUBTRACTIVE ARMS
+
+D2_SUBTRACTIVE_MEDIUM:
+final majority U = 32/32;
+false-majority 0.00%;
+no-majority occupancy 96.88%.
+
+D2_SUBTRACTIVE_SLOW:
+final majority U = 32/32;
+false-majority 0.00%;
+no-majority occupancy 97.98%.
+
+D3_SUBTRACTIVE_MEDIUM:
+final majority U = 32/32;
+false-majority 0.00%;
+no-majority occupancy 97.72%.
+
+D3_SUBTRACTIVE_SLOW:
+final majority U = 32/32;
+false-majority 0.00%;
+no-majority occupancy 98.24%.
+
+SUBTRACTIVE MECHANISM EVIDENCE
+
+D2_SUBTRACTIVE_MEDIUM:
+pulse-onset mean M 0.65529;
+median M 0.65962;
+standard deviation 0.06913;
+IQR 0.09093;
+M = 0 0.00%;
+M >= .25 100.00%;
+M >= .50 97.61%;
+M >= .75 6.96%;
+post-update mean M 0.02282;
+PRESSURE = 0 22.86%;
+mean positive PRESSURE 0.12613;
+median positive PRESSURE 0.11396;
+median commitment age 4;
+pre-pulse M / defection-latency Spearman +0.09036;
+low-M quartile defection 87.04%;
+high-M quartile defection 76.77%;
+epoch-1 core all/high/low 97.45% / 98.96% / 95.47%;
+epoch-2 core all/high/low 26.20% / 27.71% / 24.51%;
+epoch-3 core all/high/low 6.61% / 5.65% / 6.40%.
+
+D2_SUBTRACTIVE_SLOW:
+pulse-onset mean M 0.52405;
+median M 0.52789;
+standard deviation 0.06368;
+IQR 0.09354;
+M = 0 0.00%;
+M >= .25 100.00%;
+M >= .50 65.21%;
+M >= .75 0.00%;
+post-update mean M 0.22391;
+PRESSURE = 0 2.40%;
+mean positive PRESSURE 0.21942;
+median positive PRESSURE 0.21592;
+median commitment age 4;
+pre-pulse M / defection-latency Spearman +0.20776;
+low-M quartile defection 89.36%;
+high-M quartile defection 41.06%;
+epoch-1 core all/high/low 88.63% / 92.10% / 83.48%;
+epoch-2 core all/high/low 44.53% / 50.22% / 38.20%;
+epoch-3 core all/high/low 10.04% / 11.56% / 8.71%.
+
+D3_SUBTRACTIVE_MEDIUM:
+pulse-onset mean M 0.65549;
+median M 0.65946;
+standard deviation 0.06857;
+IQR 0.09067;
+M = 0 0.00%;
+M >= .25 100.00%;
+M >= .50 97.76%;
+M >= .75 6.97%;
+post-update mean M 0.02268;
+PRESSURE = 0 22.76%;
+mean positive PRESSURE 0.12636;
+median positive PRESSURE 0.11572;
+median commitment age 3;
+pre-pulse M / defection-latency Spearman +0.10058;
+low-M quartile defection 86.29%;
+high-M quartile defection 75.31%;
+epoch-1 core all/high/low 97.68% / 99.00% / 96.06%;
+epoch-2 core all/high/low 25.16% / 27.35% / 23.16%;
+epoch-3 core all/high/low 6.33% / 5.66% / 8.68%.
+
+D3_SUBTRACTIVE_SLOW:
+pulse-onset mean M 0.52483;
+median M 0.52927;
+standard deviation 0.06389;
+IQR 0.09312;
+M = 0 0.00%;
+M >= .25 100.00%;
+M >= .50 65.67%;
+M >= .75 0.00%;
+post-update mean M 0.22434;
+PRESSURE = 0 2.35%;
+mean positive PRESSURE 0.21916;
+median positive PRESSURE 0.21602;
+median commitment age 3;
+pre-pulse M / defection-latency Spearman +0.19518;
+low-M quartile defection 88.98%;
+high-M quartile defection 41.75%;
+epoch-1 core all/high/low 88.20% / 90.66% / 85.45%;
+epoch-2 core all/high/low 43.66% / 48.35% / 38.49%;
+epoch-3 core all/high/low 9.88% / 10.60% / 11.43%.
+
+TRUE REVERSAL COST — SUBTRACTIVE ARMS
+
+D2_SUBTRACTIVE_MEDIUM:
+reversal acquisition 91.41%;
+median old-majority loss 1 epoch;
+median old-side M at reversal onset 0.67471;
+median old-side M-to-zero latency 0.25 epochs;
+median signed-B zero-cross latency 0.25 epochs;
+median first positive SUBTRACTIVE pressure latency 0 epochs.
+
+D2_SUBTRACTIVE_SLOW:
+reversal acquisition 90.62%;
+median old-majority loss 2 epochs;
+median old-side M at reversal onset 0.67583;
+median old-side M-to-zero latency 2 epochs;
+median signed-B zero-cross latency 2 epochs;
+median first positive SUBTRACTIVE pressure latency 0 epochs.
+
+D3_SUBTRACTIVE_MEDIUM:
+reversal acquisition 90.62%;
+median old-majority loss 1 epoch;
+median old-side M at reversal onset 0.67481;
+median old-side M-to-zero latency 0.25 epochs;
+median signed-B zero-cross latency 0.25 epochs;
+median first positive SUBTRACTIVE pressure latency 0 epochs.
+
+D3_SUBTRACTIVE_SLOW:
+reversal acquisition 89.06%;
+median old-majority loss 2 epochs;
+median old-side M at reversal onset 0.67583;
+median old-side M-to-zero latency 2 epochs;
+median signed-B zero-cross latency 2 epochs;
+median first positive SUBTRACTIVE pressure latency 0 epochs.
+
+QUALIFICATION
+
+D2_SUBTRACTIVE_MEDIUM:
+NOT QUALIFIED;
+paired OPP_SLOW biased oscillators broken 0/31;
+information gain false.
+
+D2_SUBTRACTIVE_SLOW:
+NOT QUALIFIED;
+paired OPP_SLOW biased oscillators broken 2/31;
+information gain false.
+
+D3_SUBTRACTIVE_MEDIUM:
+NOT QUALIFIED;
+paired OPP_SLOW biased oscillators broken 0/27;
+information gain false.
+
+D3_SUBTRACTIVE_SLOW:
+NOT QUALIFIED;
+paired OPP_SLOW biased oscillators broken 0/27;
+information gain false.
+
+A40_INFORMATION_GAIN:
+FALSE.
+
+CAUSAL INTERPRETATION
+
+The SUBTRACTIVE transform produced the intended local mechanism.
+
+All four SUBTRACTIVE arms showed positive pre-pulse-M / defection-latency correlation.
+The SLOW arms showed especially strong quartile separation at epoch 2:
+D2 high 50.22% versus low 38.20%;
+D3 high 48.35% versus low 38.49%.
+
+The transform also avoided the main ZERO_CROSS_SLOW pathology.
+All SUBTRACTIVE arms had 0.00% balanced false-majority,
+and true reversal remained 89.06% to 91.41%
+with median old-majority loss of 1 to 2 epochs.
+
+But the population oscillator remained.
+D2_SUBTRACTIVE_SLOW reduced biased-periodic oscillation
+only from 96.88% in paired OPP_SLOW to 93.75%,
+breaking 2 of 31 paired target oscillators.
+D3_SUBTRACTIVE_SLOW remained at 100.00%
+and broke 0 of 27 paired OPP_SLOW oscillators.
+MEDIUM broke none.
+
+This is not a failure of evidence-history state itself.
+The local erosion hierarchy is measurable,
+and the SLOW subtractive arms preserve
+a larger high-margin core than low-margin core
+through the second adverse epoch.
+
+The failure is macro-level:
+pressure shaping confined to committed-state defection
+does not prevent enough population-level reorganization
+to stop the periodic attractor.
+
+A40 therefore closes the simple committed-cell
+pressure-transform interval opened by A39.
+MARGIN_HILL was too permissive.
+ZERO_CROSS_SLOW stopped the oscillator but was too sticky.
+SUBTRACTIVE sits between them locally,
+but it does not occupy the desired macro-behavioral middle:
+it preserves reversibility and balanced uncertainty,
+yet still pulse-chases.
+
+The next justified experiment should move one causal level outward
+rather than invent another scalar transform.
+It should test whether commitment support credit
+can be expressed spatially through local recruitment / replacement topology
+or protected-core boundary behavior,
+while leaving the committed-cell defection law fixed.
+
+That directly tests whether the remaining oscillator
+is being regenerated by population turnover around the surviving core
+rather than by erosion of the core itself.
+
+PLAIN-SPEAK INTERPRETATION
+
+A40 found a real middle behavior inside individual cells,
+but it still did not fix the whole organism.
+
+The stronger-history cells lasted longer,
+especially with slow memory.
+And unlike the stubborn ZERO_CROSS design,
+these cells still changed their minds properly
+when the world truly changed.
+So the new rule was not useless or broken.
+
+The problem is that saving some strong cells is not enough.
+The population around them still reorganizes with each pulse,
+and that is enough to keep the overall system flipping back and forth.
+
+That changes our diagnosis.
+We have now tried multiple ways of deciding
+how hard an already-committed cell should be to knock over.
+The remaining oscillator probably is not controlled mainly
+by that single decision anymore.
+
+The next experiment should ask
+whether the stable veterans can influence
+how nearby uncertain cells join, leave, or rebuild around them.
+
+In simple terms:
+instead of making the old cells even harder to move,
+test whether a surviving core can stop
+the surrounding population from rebuilding
+the opposite army every few epochs.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
