@@ -1214,3 +1214,531 @@ are byte-identical.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+A45 PRIMARY CLOSURE
+
+DATE:
+2026-09-22.
+
+F45:
+c9207c0fd0034160ea546db5e367cda84f5bc1c0
+
+MANIFEST-BINDING COMMIT:
+ef487a4aa87f18b6a93b0b529cf39bddcd73665d
+
+SOURCE SHA256:
+fa444b98128857dcd7790d83e328b242c6069de980aa14828c21b8e45af6e240
+
+PRIMARY SEED:
+A45-F45-c9207c0fd0034160ea546db5e367cda84f5bc1c0-PRIMARY
+
+PRIMARY WORLD MANIFEST SHA256:
+3ecf4de8a562cdc338a53b1bfe962e8e135b294e60b5363394bce8040262ef67
+
+PRIMARY OUTPUT SHA256:
+61131254a846b84d6a2c7cfa8eabb6f111eb78da32ae9415211366fd78348865
+
+PRIMARY RUNS:
+2.
+
+PRIMARY OUTPUT BYTES:
+90054.
+
+BYTE IDENTICAL:
+true.
+
+P40:
+PASS.
+
+All executable integrity probes:
+PASS.
+
+Trace freshness probes:
+PASS.
+
+A45_ECHO_INFORMATION_GAIN:
+FALSE.
+
+A45_ECHO_PHASE_SYNERGY:
+FALSE.
+
+QUALIFICATION
+
+D2_ECHO_PHASE:
+NOT QUALIFIED.
+
+D3_ECHO_PHASE:
+NOT QUALIFIED.
+
+TECHNICAL EVIDENCE
+
+D2 MARGIN_REINFORCE:
+aggregate service 235684;
+overall oscillation 7.29%;
+biased-periodic oscillation 50.00%;
+5:3 oscillation 100.00%;
+balanced false-majority 0.00%;
+reversal acquisition 90.62%;
+median old-majority loss 2 epochs;
+5:3 epoch-3 core persistence 15.88%.
+
+D2 ECHO_MARGIN:
+aggregate service 234644;
+overall oscillation 5.73%;
+biased-periodic oscillation 50.00%;
+5:3 oscillation 100.00%;
+balanced false-majority 0.00%;
+reversal acquisition 87.50%;
+median old-majority loss 3 epochs;
+5:3 epoch-3 core persistence 33.30%.
+
+D2 PHASE_SWITCH:
+aggregate service 238856;
+overall oscillation 6.77%;
+biased-periodic oscillation 50.00%;
+5:3 oscillation 100.00%;
+balanced false-majority 0.00%;
+reversal acquisition 89.84%;
+median old-majority loss 2 epochs;
+5:3 epoch-3 core persistence 17.31%.
+
+D2 ECHO_PHASE:
+aggregate service 237166;
+overall oscillation 7.03%;
+biased-periodic oscillation 50.00%;
+5:3 oscillation 100.00%;
+balanced false-majority 0.00%;
+reversal acquisition 88.28%;
+median old-majority loss 3 epochs;
+5:3 epoch-3 core persistence 33.79%.
+
+D3 MARGIN_REINFORCE:
+aggregate service 231127;
+overall oscillation 6.77%;
+biased-periodic oscillation 46.88%;
+5:3 oscillation 93.75%;
+balanced false-majority 0.00%;
+reversal acquisition 87.50%;
+median old-majority loss 2 epochs;
+5:3 epoch-3 core persistence 15.67%.
+
+D3 ECHO_MARGIN:
+aggregate service 230644;
+overall oscillation 5.73%;
+biased-periodic oscillation 46.88%;
+5:3 oscillation 93.75%;
+balanced false-majority 0.00%;
+reversal acquisition 87.50%;
+median old-majority loss 3 epochs;
+5:3 epoch-3 core persistence 31.11%.
+
+D3 PHASE_SWITCH:
+aggregate service 233798;
+overall oscillation 6.51%;
+biased-periodic oscillation 46.88%;
+5:3 oscillation 93.75%;
+balanced false-majority 0.00%;
+reversal acquisition 87.50%;
+median old-majority loss 2 epochs;
+5:3 epoch-3 core persistence 15.16%.
+
+D3 ECHO_PHASE:
+aggregate service 232434;
+overall oscillation 6.25%;
+biased-periodic oscillation 46.88%;
+5:3 oscillation 93.75%;
+balanced false-majority 3.12%;
+reversal acquisition 87.50%;
+median old-majority loss 3 epochs;
+5:3 epoch-3 core persistence 33.22%.
+
+5:3 CONTEXT DETAIL
+
+D2 MARGIN:
+46 = 8/8 oscillatory;
+47 = 8/8.
+
+D2 ECHO_MARGIN:
+46 = 8/8;
+47 = 8/8.
+
+D2 PHASE:
+46 = 8/8;
+47 = 8/8.
+
+D2 ECHO_PHASE:
+46 = 8/8;
+47 = 8/8.
+
+D3 MARGIN:
+46 = 8/8;
+47 = 7/8.
+
+D3 ECHO_MARGIN:
+46 = 8/8;
+47 = 7/8.
+
+D3 PHASE:
+46 = 8/8;
+47 = 7/8.
+
+D3 ECHO_PHASE:
+46 = 8/8;
+47 = 7/8.
+
+PAIRED 5:3 BREAKS
+
+D2 ECHO_MARGIN versus MARGIN:
+0 of 16.
+
+D2 ECHO_PHASE versus PHASE:
+0 of 16.
+
+D3 ECHO_MARGIN versus MARGIN:
+1 of 15.
+
+D3 ECHO_PHASE versus PHASE:
+1 of 15.
+
+The frozen 25% paired-parent break threshold
+is not met.
+
+Therefore:
+
+A45_ECHO_INFORMATION_GAIN = FALSE.
+
+ECHO-PHASE SYNERGY
+
+D2:
+
+ECHO_MARGIN 5:3 = 100.00%;
+ECHO_PHASE 5:3 = 100.00%;
+PHASE_SWITCH 5:3 = 100.00%.
+
+D3:
+
+ECHO_MARGIN 5:3 = 93.75%;
+ECHO_PHASE 5:3 = 93.75%;
+PHASE_SWITCH 5:3 = 93.75%.
+
+Therefore:
+
+A45_ECHO_PHASE_SYNERGY = FALSE.
+
+MECHANISM EVIDENCE
+
+The one-epoch echo is strongly active
+at exactly the diagnosed A44 failure boundary.
+
+D2 ECHO_MARGIN:
+
+hit 1:
+Q_raw 0.3308;
+Q_eff 0.3309;
+defection 1.34%.
+
+hit 2:
+Q_raw 0.1370;
+Q_echo 0.3337;
+Q_eff 0.3338;
+echo active 99.23%;
+defection 12.38%.
+
+hit 3:
+Q_raw 0.0072;
+Q_echo 0.1431;
+Q_eff 0.1431;
+echo active 99.75%;
+defection 58.93%.
+
+D2 parent MARGIN defection:
+
+hit 2 = 35.23%;
+hit 3 = 73.88%.
+
+D2 ECHO_PHASE:
+
+hit 2 defection 11.62%;
+hit 3 defection 59.56%.
+
+D3 ECHO_MARGIN:
+
+hit 2:
+Q_raw 0.1262;
+Q_echo 0.3013;
+Q_eff 0.3014;
+defection 15.46%.
+
+hit 3:
+Q_raw 0.0071;
+Q_echo 0.1342;
+Q_eff 0.1342;
+defection 59.59%.
+
+D3 parent MARGIN defection:
+
+hit 2 = 36.54%;
+hit 3 = 73.13%.
+
+D3 ECHO_PHASE:
+
+hit 2 defection 12.59%;
+hit 3 defection 59.08%.
+
+Thus the trace does bridge
+the measured A44 cooperative-field collapse.
+
+The failure is not
+that the echo is inactive
+or mistimed.
+
+CORE-SURVIVAL EFFECT
+
+D2:
+
+MARGIN epoch-3 persistence 15.88%;
+ECHO_MARGIN 33.30%.
+
+PHASE epoch-3 persistence 17.31%;
+ECHO_PHASE 33.79%.
+
+D3:
+
+MARGIN 15.67%;
+ECHO_MARGIN 31.11%.
+
+PHASE 15.16%;
+ECHO_PHASE 33.22%.
+
+The echo approximately doubles
+the favored onset core surviving
+through the third adverse epoch.
+
+COUNTER-PULSE TRAJECTORY
+
+D2 MARGIN:
+mean favored burst-end fraction 44.21%;
+median recovery latency 5 epochs;
+41 bursts never recovered.
+
+D2 ECHO_MARGIN:
+burst-end fraction 59.48%;
+median recovery latency 0;
+21 never recovered.
+
+D2 PHASE:
+burst-end fraction 45.93%;
+median recovery latency 5;
+39 never recovered.
+
+D2 ECHO_PHASE:
+burst-end fraction 60.44%;
+median recovery latency 1;
+27 never recovered.
+
+D3 MARGIN:
+burst-end fraction 42.90%;
+median recovery latency 5;
+46 never recovered.
+
+D3 ECHO_MARGIN:
+burst-end fraction 56.81%;
+median recovery latency 1;
+25 never recovered.
+
+D3 PHASE:
+burst-end fraction 43.89%;
+median recovery latency 5;
+47 never recovered.
+
+D3 ECHO_PHASE:
+burst-end fraction 58.12%;
+median recovery latency 0;
+25 never recovered.
+
+Thus A45 produces
+a much stronger surviving population
+and substantially faster local recovery.
+
+Yet the macro 5:3 oscillator persists.
+
+REVERSIBILITY
+
+The echo does not create
+A43 OCCUPANCY-style rigidity.
+
+ECHO reversal acquisition remains:
+
+87.50% to 88.28%.
+
+Median old-majority loss:
+
+3 epochs.
+
+Balanced false-majority remains:
+
+0.00% in D2 ECHO arms;
+0.00% in D3 ECHO_MARGIN;
+3.12% in D3 ECHO_PHASE.
+
+All remain within
+the preregistered 10% boundary.
+
+The old-side reversal cohort
+also visibly loses echo support
+under sustained contradictory evidence.
+
+TRACE FRESHNESS
+
+All ECHO arms pass:
+
+new commitments begin echo-free;
+
+noncommitted cells carry zero trace;
+
+echo cannot cross commitment side;
+
+stored trace is Q_raw only;
+
+Q_eff is never recursively stored.
+
+CAUSAL INTERPRETATION
+
+A44's cooperative-field extinction
+was a real causal weakness.
+
+A45 fixes that weakness substantially.
+
+The core retains
+roughly twice as many veterans
+through the third adverse hit,
+and burst-end favored population
+rises by approximately 14-16 percentage points.
+
+But that does not change
+which 5:3 worlds are classified oscillatory.
+
+Therefore the remaining macro oscillator
+is no longer explained primarily by:
+
+individual margin erosion;
+
+instantaneous cooperative-field collapse;
+
+or simple lack of surviving favored cells.
+
+The surviving favored population
+is now frequently above 55-60%
+at burst end
+and recovers rapidly,
+yet the cycle still closes later.
+
+That moves the causal frontier
+from CHALLENGE SURVIVAL
+to POST-CHALLENGE CONTROL.
+
+The next justified diagnostic
+must determine what happens
+after the strengthened core survives:
+
+does the opposing side
+rebuild during the subsequent transition;
+
+does the favored core fragment spatially
+despite its larger count;
+
+does the U/H population
+mediate a delayed side swap;
+
+or does the oscillator detector
+capture a later majority reversal
+after apparent short-term recovery?
+
+No stronger echo,
+longer trace,
+extra gain,
+or additional persistence mechanism
+is justified before that is measured.
+
+PLAIN-SPEAK INTERPRETATION
+
+A45 worked at the job
+we gave it.
+
+The veterans remembered
+one beat of yesterday's support.
+
+That cut the damage
+from the second hit dramatically.
+
+And by the end
+of the third hit,
+about twice as much
+of the original core
+was still standing.
+
+The system was not frozen either.
+
+When the world truly changed,
+the old side still gave way
+within a reasonable time.
+
+But the organism
+still entered the same
+long-term 5:3 oscillation.
+
+That is a very useful correction.
+
+We were looking at
+the core breaking under attack
+as though that break
+was the whole cause.
+
+It was not.
+
+Now the core often survives
+the attack in much better shape,
+and the cycle still comes back.
+
+So the next question is:
+
+WHAT HAPPENS AFTER
+THE CORE SURVIVES?
+
+Some later part
+of the population dynamics
+is rebuilding the oscillation.
+
+The next work should watch
+that recovery interval closely
+instead of making the core
+even harder to kill.
+
+NORTH-STAR IMPLICATION
+
+Yggdrasil now has evidence
+that a distributed local organization
+can preserve recent cooperative structure
+across a transient disturbance
+without becoming permanently rigid.
+
+That is a useful capability
+even though A45 does not solve
+the macro oscillator.
+
+The remaining problem
+has been pushed outward again:
+
+from cell memory;
+
+to cooperative memory;
+
+and now to how
+a surviving local organization
+controls the population
+after disturbance.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
