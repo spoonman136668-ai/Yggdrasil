@@ -1,4 +1,4 @@
-name: A53 F53 Frozen Primary
+name: A53 F53 Recovery Inspect
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
       - .github/workflows/a53-f53-frozen-primary.yml
 
 jobs:
-  inspect:
+  inspect-parent:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,7 +15,7 @@ jobs:
           ref: ${{ github.sha }}
           fetch-depth: 0
 
-      - name: Verify and inspect frozen A53 source
+      - name: Reconstruct and verify F52 parent
         shell: bash
         run: |
           set -euo pipefail
@@ -24,22 +24,27 @@ jobs:
           import base64,gzip,hashlib
           from pathlib import Path
 
-          stem="a53_t10e_current_evidence_vetoed_phase_memory_v1"
+          stem="a52_t10d_committed_response_phase_offset_v1"
           parts=sorted(Path(".").glob(stem+".source.part*.b64"))
           assert len(parts)==7, len(parts)
           enc="".join("".join(p.read_text().split()) for p in parts)
-          assert hashlib.sha256(enc.encode()).hexdigest()=="00995e97bc233f0e7ebea549a9308cb3a1a9f5bc19877e49e15638a0f068fa37"
+          assert len(enc)==28468, len(enc)
+          assert hashlib.sha256(enc.encode()).hexdigest()=="49dba6fdeed19093684c97a78e6690fdec2276229bcdd649f76e0554c16f2892"
           raw=base64.b64decode(enc,validate=True)
-          assert hashlib.sha256(raw).hexdigest()=="a2a50019e3fce2394ddcd92a1e9ce794f1164ac8ed5cc7543e3d04e91ed07c6e"
+          assert len(raw)==21350, len(raw)
+          assert hashlib.sha256(raw).hexdigest()=="cbb20b48b21e6a6f7d2b47c5347ce4431d65c3202df0a8daa230472b805f2699"
           src=gzip.decompress(raw)
-          assert hashlib.sha256(src).hexdigest()=="dd19ce7c9b5745087e28b7be965da83f45a876c732e8e1991d123dcf21604656"
-          print("A53_F53_SOURCE_OK",len(src),hashlib.sha256(src).hexdigest())
-          txt=src.decode("utf-8")
-          print("=== ARGPARSE / CLI CONTRACT ===")
-          for line in txt.splitlines():
-              if "ArgumentParser" in line or "add_argument" in line or "sys.argv" in line:
-                  print(line)
-          print("=== MAIN TAIL ===")
-          for line in txt.splitlines()[-120:]:
-              print(line)
+          assert len(src)==92868, len(src)
+          assert hashlib.sha256(src).hexdigest()=="f1c2cfbd707621b18db101ea9a41f2264841acee10abcc5b80e4239c50ae60e1"
+          Path("/tmp/a52.py").write_bytes(src)
+          print("F52_PARENT_OK",len(src),hashlib.sha256(src).hexdigest())
           PY
+
+          echo "=== KEY LINE NUMBERS ==="
+          grep -nE 'ARM|TAU|tau|pressure_decision|decision_pressure|pressure_history|PRESSURE|p_stay|def run_|def simulate|def summarize|def main|__main__|integrity|diagnostic' /tmp/a52.py | tail -n 220
+
+          echo "=== SOURCE HEAD 1-220 ==="
+          sed -n '1,220p' /tmp/a52.py
+
+          echo "=== SOURCE TAIL ==="
+          tail -n 260 /tmp/a52.py
