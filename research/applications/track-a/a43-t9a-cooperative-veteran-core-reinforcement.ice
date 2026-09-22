@@ -931,3 +931,42 @@ keep the core together.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-F43 PRIMARY MANIFEST BINDING
+
+DATE:
+2026-09-22.
+
+F43:
+6453348499ec860b587fb92af3471526175e4894
+
+PRIMARY SEED:
+A43-F43-6453348499ec860b587fb92af3471526175e4894-PRIMARY
+
+WORLD COUNT:
+384.
+
+WORLD SHAPE:
+48 contexts x 8 replicas.
+
+PRIMARY WORLD MANIFEST SHA256:
+3c534bcdee0e8e927735926f5260cfe959dc2d44274e7286c471340249f4a1c5
+
+STATUS:
+BOUND BEFORE ANY PRIMARY ARM EXECUTION.
+
+The manifest was derived from the frozen F43 source
+after F43 existed.
+
+No arm outcome,
+population metric,
+qualification result,
+or scientific comparison
+was observed before this binding.
+
+The canonical DG-1R-05 primary is not consumed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
