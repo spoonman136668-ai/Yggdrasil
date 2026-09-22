@@ -1383,3 +1383,758 @@ before scientific analysis.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+A52 PRIMARY CLOSURE
+
+DATE:
+2026-09-22.
+
+F52:
+e98f00e3feec76a7b8f08fd42cc60ce2d8bfe88d
+
+MANIFEST-BINDING COMMIT:
+e7d443c14f4b5ad752ce10cb0dacef4819d8f8a4
+
+AUTHORITATIVE SOURCE SHA256:
+f1c2cfbd707621b18db101ea9a41f2264841acee10abcc5b80e4239c50ae60e1
+
+PRIMARY SEED:
+A52-F52-e98f00e3feec76a7b8f08fd42cc60ce2d8bfe88d-PRIMARY
+
+PRIMARY WORLD MANIFEST SHA256:
+1d2db1f6c74babaf25fd728d15a56e5a4fcac3427e416e70b6e111bb584021fd
+
+PRIMARY RUNS:
+2.
+
+PRIMARY OUTPUT BYTES:
+301307.
+
+PRIMARY OUTPUT SHA256:
+08d49d7055f04f39bed34fb0b5ec3158b6a69af4199dfbc4bad0504ad511fb5b
+
+BYTE IDENTICAL:
+true.
+
+stderr:
+empty for both runs.
+
+All executable integrity probes:
+PASS.
+
+SCIENTIFIC STATUS
+
+A52_MINIMUM_EFFECTIVE_PHASE_FOUND:
+FALSE.
+
+A52 QUALIFICATION:
+no arm qualifies.
+
+A52_PHASE_INFORMATION_GAIN:
+FALSE for every tau > 0
+under both P0 and P1.
+
+A52_PHASE_PUSH_SYNERGY:
+FALSE for every tau.
+
+However:
+
+the phase intervention is
+strongly behaviorally active.
+
+A52 is therefore
+not a null phase result.
+
+D2 P1 CURRENT-PHASE CONTROL
+
+TAU0:
+
+5:3 oscillator:
+100.00%.
+
+overall oscillator:
+7.29%.
+
+mean 5:3 burst-end
+favored committed fraction:
+30.00%.
+
+favored-majority burst-end frequency:
+9.09%.
+
+favored-to-unresolved transitions:
+63.
+
+mean unresolved duration:
+3.667 epochs.
+
+mean majority-recovery latency:
+3.500 epochs.
+
+reversal acquisition:
+88.28%.
+
+median old-majority loss:
+3 epochs.
+
+median challenge-onset beta_F:
++0.05045 per cycle.
+
+aggregate service:
+236695.
+
+D2 P1 TAU1
+
+5:3 oscillator:
+100.00%.
+
+overall oscillator:
+7.55%.
+
+burst-end favored fraction:
+62.22%.
+
+favored-majority burst-end frequency:
+78.41%.
+
+favored-to-unresolved:
+56.
+
+mean unresolved duration:
+4.028 epochs.
+
+mean recovery latency:
+1.568 epochs.
+
+reversal acquisition:
+87.50%.
+
+median old-majority loss:
+4 epochs.
+
+median beta_F:
++0.063.
+
+aggregate service:
+227289.
+
+Thus TAU1
+more than doubles
+burst-end favored mass
+
+and greatly increases
+burst-end favored-majority residence,
+
+yet does not reduce
+the inherited 5:3 oscillator label.
+
+D2 P1 TAU2
+
+5:3 oscillator:
+100.00%.
+
+burst-end favored:
+59.38%.
+
+favored-majority frequency:
+76.14%.
+
+median old-majority loss:
+5 epochs.
+
+median beta_F:
++0.032.
+
+TAU2 remains
+strongly phase-displacing
+but exceeds the frozen
+true-reversal latency boundary.
+
+D2 P1 TAU3
+
+5:3 oscillator:
+100.00%.
+
+burst-end favored:
+47.82%.
+
+favored-majority:
+44.32%.
+
+median old-majority loss:
+6 epochs.
+
+D2 P1 TAU4
+
+5:3 oscillator:
+93.75%.
+
+burst-end favored:
+41.67%.
+
+median old-majority loss:
+7 epochs.
+
+reversal acquisition:
+81.25%.
+
+TAU4 therefore
+does not provide
+a safe anti-phase solution.
+
+D3 P1 CURRENT-PHASE CONTROL
+
+TAU0:
+
+5:3 oscillator:
+100.00%.
+
+overall oscillator:
+6.51%.
+
+mean 5:3 burst-end
+favored fraction:
+28.12%.
+
+favored-majority burst-end frequency:
+5.68%.
+
+favored-to-unresolved:
+65.
+
+mean unresolved duration:
+4.425 epochs.
+
+mean recovery latency:
+4.300 epochs.
+
+reversal acquisition:
+87.50%.
+
+median old-majority loss:
+3 epochs.
+
+median beta_F:
++0.053.
+
+aggregate service:
+231801.
+
+D3 P1 TAU1
+
+5:3 oscillator:
+100.00%.
+
+burst-end favored fraction:
+55.80%.
+
+favored-majority frequency:
+70.45%.
+
+favored-to-unresolved:
+60.
+
+mean unresolved duration:
+4.824 epochs.
+
+mean recovery latency:
+1.614 epochs.
+
+reversal acquisition:
+87.50%.
+
+median old-majority loss:
+4 epochs.
+
+median beta_F:
++0.049.
+
+Again:
+
+one epoch of committed-response delay
+substantially changes
+the macro population state
+
+without resolving
+the inherited 5:3 oscillator label.
+
+D3 P1 TAU2
+
+5:3 oscillator:
+93.75%.
+
+burst-end favored:
+51.42%.
+
+favored-majority frequency:
+54.55%.
+
+median old-majority loss:
+5 epochs.
+
+median beta_F:
++0.015.
+
+D3 P1 TAU3
+
+5:3 oscillator:
+81.25%.
+
+overall oscillator:
+5.73%.
+
+burst-end favored:
+44.41%.
+
+favored-majority frequency:
+36.36%.
+
+favored-to-unresolved:
+55.
+
+mean unresolved duration:
+7.190 epochs.
+
+mean recovery latency:
+4.934 epochs.
+
+reversal acquisition:
+81.25%.
+
+median old-majority loss:
+6 epochs.
+
+median beta_F:
++0.001.
+
+D3 P1 TAU4
+
+5:3 oscillator:
+93.75%.
+
+burst-end favored:
+39.87%.
+
+median old-majority loss:
+7 epochs.
+
+reversal acquisition:
+75.00%.
+
+TAU4 fails
+the reversal-acquisition boundary.
+
+PUSH-FREE PHASE DISCRIMINATOR
+
+The strongest oscillator suppression
+appears without A49 push-pull.
+
+D3 P0 TAU0:
+
+5:3 oscillator:
+100.00%.
+
+overall oscillator:
+5.99%.
+
+burst-end favored:
+23.67%.
+
+median old-majority loss:
+3 epochs.
+
+D3 P0 TAU2:
+
+5:3 oscillator:
+75.00%.
+
+burst-end favored:
+45.83%.
+
+median old-majority loss:
+5 epochs.
+
+median beta_F:
+-0.010.
+
+D3 P0 TAU3:
+
+5:3 oscillator:
+50.00%.
+
+overall oscillator:
+4.69%.
+
+burst-end favored:
+39.30%.
+
+favored-to-unresolved transitions:
+42.
+
+median old-majority loss:
+6 epochs.
+
+reversal acquisition:
+81.25%.
+
+median beta_F:
+-0.012.
+
+Thus a three-epoch
+committed-pressure delay
+cuts the hard 5:3 oscillator
+by 50 percentage points
+
+and drives overall oscillator
+below the frozen 5% target,
+
+but does so while:
+
+slowing true reversal;
+
+lengthening unresolved episodes;
+
+and introducing negative
+cycle-to-cycle core creep.
+
+This is a dynamically effective
+but unsafe / metastable
+phase manipulation.
+
+PHASE-DISPLACEMENT VERIFICATION
+
+The delay mechanism
+was strongly active.
+
+For tau > 0,
+approximately 83-95%
+of committed decisions
+read delayed pressure.
+
+Mean delayed source age
+matches the requested tau.
+
+At the third 5:3 adverse hit,
+for example:
+
+D3 P1 TAU0:
+
+mean current pressure:
+0.564.
+
+mean decision pressure:
+0.564.
+
+defection fraction:
+57.2%.
+
+D3 P1 TAU1:
+
+mean current pressure:
+0.581.
+
+mean decision pressure:
+0.245.
+
+defection fraction:
+15.2%.
+
+D3 P1 TAU2:
+
+mean current pressure:
+0.595.
+
+mean decision pressure:
+0.061.
+
+defection fraction:
+1.9%.
+
+D3 P1 TAU3:
+
+mean current pressure:
+0.607.
+
+mean decision pressure:
+0.078.
+
+defection fraction:
+8.4%.
+
+Therefore the delay
+materially changes
+committed-cell response phase.
+
+The negative qualification result
+cannot be attributed
+to an inactive intervention.
+
+TRUE-REVERSAL COST
+
+The principal safety cost
+is deterministic stale-pressure carryover
+after a genuine reversal.
+
+For tau = 1:
+
+nearly 100%
+of old-side decisions
+at post-reversal epoch 0
+use pressure computed
+before the reversal.
+
+For tau = 2:
+
+the first two
+post-reversal decision epochs
+are almost entirely driven
+by pre-reversal pressure.
+
+For tau = 3:
+
+the first three
+post-reversal decision epochs
+are almost entirely driven
+by pre-reversal pressure.
+
+For tau = 4:
+
+the first four
+post-reversal decision epochs
+are almost entirely driven
+by pre-reversal pressure.
+
+Median old-majority loss
+therefore rises nearly linearly:
+
+TAU0:
+3 epochs.
+
+TAU1:
+4 epochs.
+
+TAU2:
+5 epochs.
+
+TAU3:
+6 epochs.
+
+TAU4:
+7 epochs.
+
+This is the dominant reason
+larger fixed delays
+fail the preregistered safety boundary.
+
+ANTI-PHASE RESULT
+
+TAU4 does not reveal
+a hidden half-cycle solution.
+
+It reduces reversal acquisition
+to:
+
+D2:
+81.25%.
+
+D3:
+75.00%.
+
+and pushes old-majority loss
+to 7 epochs.
+
+TAU4 therefore acts
+as the intended anti-phase
+failure stress test.
+
+CAUSAL INTERPRETATION
+
+A52 confirms
+that committed-response phase
+is a real causal axis.
+
+The organism is not
+insensitive to phase.
+
+Changing only
+the age of the pressure value
+consumed by p_stay
+
+can:
+
+double burst-end favored mass;
+
+greatly alter majority residence;
+
+cut hard 5:3 oscillation
+in some arms;
+
+and move overall oscillator
+below 5%.
+
+Therefore the periodic benchmark
+is not merely immune
+to temporal reorganization.
+
+But a fixed unconditional delay
+is the wrong controller.
+
+The same mechanism
+that protects the core
+from transient challenge
+
+also forces cells
+to keep using stale
+pre-reversal pressure
+after the environment
+has genuinely changed.
+
+The resulting tradeoff is:
+
+more transient-challenge persistence
+
+versus
+
+slower genuine reversal
+and eventual metastable creep.
+
+A52 therefore does NOT justify:
+
+larger tau;
+
+tau > 4;
+
+stronger push-pull;
+
+stronger recovery;
+
+larger spatial radius;
+
+or post-result threshold relaxation.
+
+It DOES justify
+one final local phase-control question:
+
+can delayed pressure
+be used only while
+the cell's CURRENT signed evidence
+still supports its existing commitment,
+
+and be discarded immediately
+once current evidence
+has crossed against that side?
+
+That hypothesis targets
+the measured safety failure:
+
+stale phase information
+surviving beyond
+current evidence validity.
+
+A post-closure observational diagnostic
+should verify this seam
+before any A53 implementation.
+
+PLAIN-SPEAK INTERPRETATION
+
+Phase matters.
+
+A lot.
+
+When we make a committed cell
+react to pressure
+from one or two turns ago,
+
+the core can enter an attack
+with roughly twice
+as much favored population left standing.
+
+At three turns of delay,
+one D3 control even cuts
+the hard oscillator in half.
+
+So the organism really is
+responding at a timing-sensitive point.
+
+But fixed delay has a serious flaw.
+
+When the world truly changes,
+the cell keeps listening
+to yesterday's pressure.
+
+One turn of delay
+costs roughly one extra turn
+of old-side persistence.
+
+Two turns cost two.
+
+Three cost three.
+
+Four cost four.
+
+So we found
+a real timing lever,
+
+but the simple version
+is too dumb.
+
+It cannot tell the difference between:
+
+"a temporary attack
+I should ride through"
+
+and
+
+"the world genuinely changed
+and I should let go."
+
+That is now
+the exact remaining stability question.
+
+If current signed evidence
+can act as the local veto
+that cancels stale phase memory
+when the commitment is no longer justified,
+
+we may keep
+the transient-challenge benefit
+without paying
+the true-reversal penalty.
+
+If that final local veto
+does not work,
+we should stop refining
+this periodic benchmark
+and freeze the developmental substrate
+for Task 1.
+
+NORTH-STAR IMPLICATION
+
+A52 strengthens
+the realization case
+despite failing qualification.
+
+The architecture now demonstrates
+that organism-level behavior
+is controllable
+through local response timing.
+
+The remaining abstract-stability uncertainty
+has narrowed to whether
+phase memory can be locally invalidated
+when current evidence
+contradicts the old commitment.
+
+This is a finite,
+testable boundary.
+
+A53 should be treated
+as the last targeted
+periodic-benchmark stabilization experiment
+before developmental-substrate freeze
+and Task 1.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
