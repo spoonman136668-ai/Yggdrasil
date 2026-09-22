@@ -1630,3 +1630,45 @@ may be used for A44 conclusions.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+POST-F44 PRIMARY MANIFEST BINDING
+
+DATE:
+2026-09-22.
+
+F44:
+d0d8831eca454cac22155f2be5022c3fc8f2d6b5
+
+CORRECTED SOURCE SHA256:
+83ea9d5adc4f3fccb8147f646035a7c98caa8a2887bfb17bc21af691ca6caa0b
+
+PRIMARY SEED:
+A44-F44-d0d8831eca454cac22155f2be5022c3fc8f2d6b5-PRIMARY
+
+WORLD COUNT:
+384.
+
+WORLD SHAPE:
+48 contexts x 8 replicas.
+
+PRIMARY WORLD MANIFEST SHA256:
+8c396c51ed9ad0f79ef8419ad863e06e7a304228e0e48d782c5de3538ecd9467
+
+STATUS:
+BOUND AFTER F44
+AND BEFORE ANY PRIMARY ARM EXECUTION.
+
+No A44 arm outcome,
+population metric,
+qualification result,
+or scientific comparison
+was observed before this binding.
+
+P39 remains pending
+until two complete primary sweeps
+are byte-identical.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
