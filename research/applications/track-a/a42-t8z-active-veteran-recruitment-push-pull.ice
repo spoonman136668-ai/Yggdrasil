@@ -922,3 +922,537 @@ The canonical DG-1R-05 primary is not consumed.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+A42 PRIMARY CLOSURE
+
+DATE:
+2026-09-22.
+
+F42:
+24582ea6b6b8ec5f4e3f21a5b8b5c1a0ef94f05a
+
+MANIFEST-BINDING COMMIT:
+6fba8f2c1dabcd34bdf26c11f272a2a2dcb73146
+
+PRIMARY SEED:
+A42-F42-24582ea6b6b8ec5f4e3f21a5b8b5c1a0ef94f05a-PRIMARY
+
+PRIMARY WORLD MANIFEST SHA256:
+fb9e97ac025cdbe605d381807e6756050c072dd047ee60d179e5921744346dce
+
+PRIMARY OUTPUT SHA256:
+8ac5b6bc5508db1b0b7bbf34814db77f3d0da715661bb6db8cce9c48c610cbfb
+
+PRIMARY RUNS:
+2.
+
+PRIMARY OUTPUT BYTES:
+58813.
+
+BYTE IDENTICAL:
+true.
+
+P39:
+PASS.
+
+All other executable integrity probes:
+PASS.
+
+A42_ACTIVE_MARGIN_INFORMATION_GAIN:
+FALSE.
+
+A42_PUSH_PULL_INFORMATION_GAIN:
+FALSE.
+
+QUALIFICATION
+
+D2_PUSH_PULL:
+NOT QUALIFIED.
+
+D3_PUSH_PULL:
+NOT QUALIFIED.
+
+TECHNICAL EVIDENCE
+
+D2 BASE SUBTRACTIVE SLOW:
+aggregate service 235632;
+harm rate 16.15%;
+overall oscillation 9.64%;
+biased-periodic oscillation 90.62%;
+balanced false-majority 3.12%;
+reversal acquisition 91.41%;
+median old-majority loss 2 epochs;
+false C dominance 17.75%;
+false S dominance 14.08%;
+mean favored committed fraction
+72.04% at adverse-pulse onset
+to 26.99% at burst end;
+core-adjacent favored recruitment 12.19%;
+core-adjacent adverse recruitment 9.77%.
+
+D2 OCCUPANCY EXCLUSION:
+aggregate service 236004;
+harm rate 15.36%;
+overall oscillation 10.68%;
+biased-periodic oscillation 100.00%;
+balanced false-majority 0.00%;
+reversal acquisition 92.19%;
+median old-majority loss 2 epochs;
+burst end favored fraction 26.07%;
+core-adjacent favored recruitment 11.98%;
+core-adjacent adverse recruitment 6.89%.
+
+D2 ACTIVE OCCUPANCY RECRUIT:
+aggregate service 247496;
+harm rate 15.36%;
+overall oscillation 11.46%;
+biased-periodic oscillation 87.50%;
+balanced false-majority 0.00%;
+reversal acquisition 99.22%;
+median old-majority loss 2 epochs;
+burst end favored fraction 29.12%;
+core-adjacent favored recruitment 24.24%;
+core-adjacent adverse recruitment 8.49%.
+
+D2 ACTIVE MARGIN RECRUIT:
+aggregate service 239327;
+harm rate 15.89%;
+overall oscillation 12.50%;
+biased-periodic oscillation 100.00%;
+balanced false-majority 0.00%;
+reversal acquisition 96.09%;
+median old-majority loss 2 epochs;
+burst end favored fraction 27.49%;
+core-adjacent favored recruitment 17.42%;
+core-adjacent adverse recruitment 8.88%.
+
+D2 PUSH_PULL:
+aggregate service 240544;
+harm rate 15.89%;
+overall oscillation 9.11%;
+biased-periodic oscillation 87.50%;
+balanced false-majority 0.00%;
+reversal acquisition 96.88%;
+median old-majority loss 2 epochs;
+false C dominance 20.12%;
+false S dominance 15.49%;
+burst end favored fraction 28.67%;
+core-adjacent favored recruitment 17.44%;
+core-adjacent adverse recruitment 6.45%.
+
+D3 BASE SUBTRACTIVE SLOW:
+aggregate service 230816;
+harm rate 16.67%;
+overall oscillation 10.42%;
+biased-periodic oscillation 93.75%;
+balanced false-majority 0.00%;
+reversal acquisition 88.28%;
+median old-majority loss 2 epochs;
+false C dominance 17.16%;
+false S dominance 12.68%;
+mean favored committed fraction
+65.91% at pulse onset
+to 25.50% at burst end;
+core-adjacent favored recruitment 12.10%;
+core-adjacent adverse recruitment 10.00%.
+
+D3 OCCUPANCY EXCLUSION:
+aggregate service 230782;
+harm rate 14.84%;
+overall oscillation 9.38%;
+biased-periodic oscillation 93.75%;
+balanced false-majority 0.00%;
+reversal acquisition 88.28%;
+median old-majority loss 2 epochs;
+burst end favored fraction 26.02%;
+core-adjacent favored recruitment 11.01%;
+core-adjacent adverse recruitment 7.93%.
+
+D3 ACTIVE OCCUPANCY RECRUIT:
+aggregate service 241300;
+harm rate 16.67%;
+overall oscillation 11.20%;
+biased-periodic oscillation 93.75%;
+balanced false-majority 0.00%;
+reversal acquisition 93.75%;
+median old-majority loss 2 epochs;
+burst end favored fraction 29.08%;
+core-adjacent favored recruitment 23.68%;
+core-adjacent adverse recruitment 9.90%.
+
+D3 ACTIVE MARGIN RECRUIT:
+aggregate service 235252;
+harm rate 15.89%;
+overall oscillation 10.42%;
+biased-periodic oscillation 90.62%;
+balanced false-majority 0.00%;
+reversal acquisition 91.41%;
+median old-majority loss 2 epochs;
+burst end favored fraction 27.45%;
+core-adjacent favored recruitment 16.47%;
+core-adjacent adverse recruitment 9.15%.
+
+D3 PUSH_PULL:
+aggregate service 235495;
+harm rate 16.67%;
+overall oscillation 9.64%;
+biased-periodic oscillation 100.00%;
+balanced false-majority 0.00%;
+reversal acquisition 91.41%;
+median old-majority loss 2 epochs;
+false C dominance 18.34%;
+false S dominance 13.62%;
+burst end favored fraction 27.34%;
+core-adjacent favored recruitment 17.09%;
+core-adjacent adverse recruitment 7.69%.
+
+BIASED-PERIODIC CONTEXT DETAIL
+
+D2 ACTIVE OCCUPANCY:
+44 = 6/8 oscillatory;
+45 = 6/8;
+46 = 8/8;
+47 = 8/8.
+
+D2 ACTIVE MARGIN:
+44 = 8/8;
+45 = 8/8;
+46 = 8/8;
+47 = 8/8.
+
+D2 PUSH_PULL:
+44 = 7/8;
+45 = 5/8;
+46 = 8/8;
+47 = 8/8.
+
+D3 ACTIVE OCCUPANCY:
+44 = 6/8;
+45 = 8/8;
+46 = 8/8;
+47 = 8/8.
+
+D3 ACTIVE MARGIN:
+44 = 7/8;
+45 = 7/8;
+46 = 8/8;
+47 = 7/8.
+
+D3 PUSH_PULL:
+44 = 8/8;
+45 = 8/8;
+46 = 8/8;
+47 = 8/8.
+
+PAIRED OSCILLATOR BREAKS
+
+D2:
+paired BASE biased oscillators = 29;
+broken by OCCUPANCY_EXCLUSION = 0;
+broken by ACTIVE_MARGIN_RECRUIT = 0;
+broken by PUSH_PULL = 2;
+PUSH_PULL-only breaks = 2.
+
+D3:
+paired BASE biased oscillators = 30;
+broken by OCCUPANCY_EXCLUSION = 1;
+broken by ACTIVE_MARGIN_RECRUIT = 2;
+broken by PUSH_PULL = 0;
+PUSH_PULL-only breaks = 0.
+
+The D2 PUSH_PULL-only breaks satisfy
+the preregistered existence test for synergy cases,
+but 2/29 is far below
+the required 25% information-gain
+and 50% qualification break rates.
+
+ACTIVE-RECRUITMENT MECHANISM
+
+The positive recruitment mechanism is strongly active.
+
+D2 ACTIVE MARGIN:
+high-Q favored recruitment 28.69%;
+low-Q favored recruitment 3.28%.
+
+D3 ACTIVE MARGIN:
+high-Q favored recruitment 27.37%;
+low-Q favored recruitment 3.53%.
+
+D2 ACTIVE OCCUPANCY:
+high-Q favored recruitment 36.21%;
+low-Q favored recruitment 4.16%.
+
+D3 ACTIVE OCCUPANCY:
+high-Q favored recruitment 36.25%;
+low-Q favored recruitment 4.56%.
+
+Thus survivor-core topology
+strongly changes which side
+nearby U cells join.
+
+As preregistered,
+OCCUPANCY is the higher-amplitude field
+because Q_occ >= Q_margin pointwise.
+
+Its stronger recruitment effect
+therefore does not establish
+that margin information is redundant.
+
+COUNTER-PULSE REGENERATION
+
+Active recruitment improves
+favored-side refill.
+
+D2:
+BASE burst end 26.99%;
+ACTIVE MARGIN 27.49%;
+ACTIVE OCCUPANCY 29.12%;
+PUSH_PULL 28.67%.
+
+D3:
+BASE 25.50%;
+ACTIVE MARGIN 27.45%;
+ACTIVE OCCUPANCY 29.08%;
+PUSH_PULL 27.34%.
+
+Therefore the magnet is real.
+
+But even the strongest refill arm
+leaves only about 29%
+of the population
+committed to the favored side
+at adverse-burst end.
+
+The regeneration gain is too small
+to prevent cycle closure.
+
+PUSH-PULL ATTRIBUTION
+
+PUSH_PULL does not show
+consistent macro synergy.
+
+In D2,
+PUSH_PULL and ACTIVE_OCCUPANCY
+both reach 87.50%
+biased-periodic oscillation,
+with two PUSH_PULL-only matched-world breaks.
+
+In D3,
+PUSH_PULL worsens to 100.00%
+while ACTIVE_MARGIN reaches 90.62%.
+
+PUSH_PULL does improve
+the local turnover ratio:
+
+D2 PUSH_PULL
+favored 17.44% / adverse 6.45%;
+
+D3 PUSH_PULL
+favored 17.09% / adverse 7.69%.
+
+But the multiplicative exclusion term
+also attenuates the complete recruitment intensity
+toward a side
+where opposing committed occupancy is present.
+
+The net local improvement
+does not translate into
+stable population-level cycle breaking.
+
+TRUE REVERSAL
+
+All active and PUSH_PULL arms
+retain reversal acquisition well above 80%.
+
+D2:
+ACTIVE MARGIN 96.09%;
+ACTIVE OCCUPANCY 99.22%;
+PUSH_PULL 96.88%.
+
+D3:
+ACTIVE MARGIN 91.41%;
+ACTIVE OCCUPANCY 93.75%;
+PUSH_PULL 91.41%.
+
+Median old-majority loss remains
+2 epochs in every arm.
+
+The repaired opportunity-resolved diagnostic
+reports median latency
+until new-side recruitment near the frozen old core
+exceeds old-side recruitment:
+
+D2 active / push-pull arms:
+4 epochs.
+
+D3 active / push-pull arms:
+5 epochs.
+
+Thus A42 does not fail
+because active recruitment makes
+the organism unable to reverse.
+
+QUALIFICATION FAILURE
+
+No A42 arm approaches
+the frozen oscillation thresholds.
+
+No PUSH_PULL arm
+breaks at least 25%
+of paired BASE biased oscillators.
+
+D2 and D3 PUSH_PULL
+also increase false C / false S dominance
+relative to paired BASE,
+violating the no-worse false-dominance guard.
+
+Therefore:
+
+A42_ACTIVE_MARGIN_INFORMATION_GAIN = FALSE.
+
+A42_PUSH_PULL_INFORMATION_GAIN = FALSE.
+
+D2_PUSH_PULL = NOT QUALIFIED.
+
+D3_PUSH_PULL = NOT QUALIFIED.
+
+CAUSAL INTERPRETATION
+
+A42 separates three facts.
+
+First:
+
+positive core recruitment is real.
+
+A surviving committed neighborhood
+can act as a local magnet,
+and nearby uncertain cells
+join that side at much higher rates.
+
+Second:
+
+positive recruitment provides
+real population refill,
+but not enough.
+
+The strongest active recruitment arms
+raise adverse-burst end commitment
+by only a few percentage points,
+from roughly 25-27%
+to roughly 29%.
+
+Third:
+
+combining barrier plus magnet
+does not produce a robust nonlinear rescue
+under the frozen composition.
+
+A42 therefore closes
+the simple periphery-turnover interval:
+
+exclusion alone is insufficient;
+
+active recruitment alone is insufficient;
+
+their direct push-pull composition
+is insufficient.
+
+The remaining bottleneck
+is increasingly concentrated
+inside the surviving committed core itself.
+
+At pulse onset,
+the favored population can be large.
+
+By pulse end,
+even with active local refill,
+most of that commitment has disappeared.
+
+The next justified experiment
+should therefore test
+whether committed veterans
+can reinforce one another
+so that the core's own persistence
+depends on local same-side core density.
+
+That is a distinct causal mechanism
+from:
+
+individual evidence-depth persistence;
+
+periphery exclusion;
+
+and active recruitment.
+
+PLAIN-SPEAK INTERPRETATION
+
+A42 gave the core a recruiting voice.
+
+It worked.
+
+When strong committed cells were nearby,
+uncertain cells were much more likely
+to join them.
+
+The strongest recruitment arm
+roughly doubled
+same-side recruitment near the core.
+
+But the organism still kept flipping.
+
+The reason is now clearer.
+
+The fence from A41
+can keep some attackers out.
+
+The magnet from A42
+can bring some allies back.
+
+Using both at once
+improves the local neighborhood.
+
+But while all of that is happening,
+too much of the original committed population
+is still disappearing during the bad pulse.
+
+By the end of the pulse,
+the favored side is still down
+around only one quarter to three tenths
+of the population.
+
+So we have learned that
+the problem is not simply:
+
+keep enemies out;
+
+or:
+
+recruit allies faster.
+
+The core itself
+needs to behave more like a core.
+
+The next clean question is:
+
+can veteran cells reinforce one another
+so a sufficiently dense cluster
+survives as a unit
+instead of each cell
+fighting the pulse mostly on its own?
+
+A41:
+hold the line.
+
+A42:
+bring reinforcements.
+
+Neither is enough.
+
+A43 should test:
+
+keep the core together.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
