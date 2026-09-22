@@ -2378,3 +2378,559 @@ software cells can organize at all.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+A49 PRIMARY CLOSURE
+
+DATE:
+2026-09-22.
+
+F49:
+e3b34a4d24cc42aa2d0b8ad3c76aad2369696ba0
+
+MANIFEST-BINDING COMMIT:
+272aeca074488b2f223e311443591a104ccc5052
+
+SOURCE SHA256:
+2f605a412bdedf9a66607cf7c544be8c26e10d751f4e85557e17a9afd3b9f569
+
+PRIMARY SEED:
+A49-F49-e3b34a4d24cc42aa2d0b8ad3c76aad2369696ba0-PRIMARY
+
+PRIMARY WORLD MANIFEST SHA256:
+b93911cb6d31d277879f2e565d2f01506171e5d3a38be35d21ea97abb876eaf8
+
+PRIMARY RUNS:
+2.
+
+PRIMARY OUTPUT BYTES:
+90759.
+
+PRIMARY OUTPUT SHA256:
+987b0c64694b500dc0dff5edaee09c4ab4e8386547d4ce1f1832e9722f6932cc
+
+BYTE IDENTICAL:
+true.
+
+stderr:
+empty for both runs.
+
+All executable integrity probes:
+PASS.
+
+SCIENTIFIC STATUS
+
+A49_MACRO_INFORMATION_GAIN:
+FALSE.
+
+A49_PUSH_PULL_SYNERGY:
+FALSE.
+
+D2_CH_PUSH_PULL:
+NOT QUALIFIED.
+
+D3_CH_PUSH_PULL:
+NOT QUALIFIED.
+
+LOCAL MECHANISM RESULT
+
+The A49 challenge fields are strongly active locally.
+
+D2 inside favored challenge radius:
+
+BASE adverse recruitment:
+9.37%.
+
+CH_OCC_EXCLUSION:
+6.49%.
+
+CH_PUSH_PULL:
+5.85%.
+
+BASE favored recruitment:
+12.16%.
+
+CH_ACTIVE_OCCUPANCY:
+25.84%.
+
+CH_PUSH_PULL:
+27.40%.
+
+D3 inside favored challenge radius:
+
+BASE adverse recruitment:
+10.74%.
+
+CH_OCC_EXCLUSION:
+6.88%.
+
+CH_PUSH_PULL:
+5.85%.
+
+BASE favored recruitment:
+9.87%.
+
+CH_ACTIVE_OCCUPANCY:
+26.83%.
+
+CH_PUSH_PULL:
+27.01%.
+
+Thus:
+
+challenge exclusion materially suppresses
+near-core adverse recruitment;
+
+challenge active recruitment materially increases
+near-core favored recruitment;
+
+and push-pull combines both local effects.
+
+The local mechanism is real.
+
+D2 MACRO RESULT
+
+BASE burst-end favored fraction:
+26.28%.
+
+CH_OCC_EXCLUSION:
+27.41%
+(+1.14 percentage points).
+
+CH_ACTIVE_OCCUPANCY:
+28.81%
+(+2.53 points).
+
+CH_PUSH_PULL:
+29.31%
+(+3.03 points).
+
+Burst-end favored-majority frequency:
+
+BASE:
+5.68%.
+
+All three treatments:
+5.68%.
+
+BASE favored-to-unresolved transitions:
+67.
+
+EXCLUSION:
+68.
+
+ACTIVE:
+66.
+
+PUSH_PULL:
+68.
+
+BASE mean unresolved duration:
+3.975 epochs.
+
+PUSH_PULL:
+3.716 epochs.
+
+BASE mean majority-recovery latency:
+3.800 epochs.
+
+PUSH_PULL:
+3.563 epochs.
+
+No treatment reaches
+the frozen A49 macro-information threshold.
+
+D3 MACRO RESULT
+
+BASE burst-end favored fraction:
+23.46%.
+
+CH_OCC_EXCLUSION:
+23.46%
+(+0.00 points).
+
+CH_ACTIVE_OCCUPANCY:
+25.43%
+(+1.96 points).
+
+CH_PUSH_PULL:
+25.80%
+(+2.34 points).
+
+Burst-end favored-majority frequency:
+
+BASE:
+2.27%.
+
+ACTIVE:
+5.68%.
+
+PUSH_PULL:
+5.68%.
+
+Absolute increase:
+3.41 percentage points.
+
+BASE favored-to-unresolved transitions:
+63.
+
+EXCLUSION:
+64.
+
+ACTIVE:
+66.
+
+PUSH_PULL:
+65.
+
+BASE mean unresolved duration:
+5.013 epochs.
+
+ACTIVE:
+4.593 epochs.
+
+PUSH_PULL:
+4.570 epochs.
+
+BASE mean majority-recovery latency:
+5.013 epochs.
+
+ACTIVE:
+4.430 epochs.
+
+PUSH_PULL:
+4.418 epochs.
+
+Again,
+local improvement is visible
+but the frozen macro-information threshold
+is not reached.
+
+PUSH-PULL RESCUE TEST
+
+D2:
+
+BASE lost-majority endpoints:
+72.
+
+Rescued by exclusion:
+0.
+
+Rescued by active recruitment:
+0.
+
+Rescued by push-pull:
+0.
+
+Push-pull-only rescues:
+0.
+
+D3:
+
+BASE lost-majority endpoints:
+69.
+
+Rescued by exclusion:
+0.
+
+Rescued by active recruitment:
+3.
+
+Rescued by push-pull:
+3.
+
+Push-pull-only rescues:
+0.
+
+Therefore there is
+no combined-only synergy signature.
+
+Push-pull improves the local flow,
+but its macro gain
+is largely explained by
+the active-recruitment component.
+
+CREEP / METASTABILITY RESULT
+
+The new challenge-onset
+core-creep diagnostic is clean.
+
+D2 median beta_F:
+
+BASE:
++0.02262 favored fraction / cycle.
+
+EXCLUSION:
++0.02634.
+
+ACTIVE:
++0.04554.
+
+PUSH_PULL:
++0.05655.
+
+D3 median beta_F:
+
+BASE:
++0.02693.
+
+EXCLUSION:
++0.03690.
+
+ACTIVE:
++0.04821.
+
+PUSH_PULL:
++0.04792.
+
+Thus the median challenge-onset core
+is not slowly eroding.
+
+A49 does NOT show
+a metastable creep failure.
+
+The treatments actually tend
+to improve the next-cycle
+challenge-onset core baseline.
+
+This is important:
+
+A49 fails because
+the periphery intervention
+does not create enough
+same-cycle macro continuity,
+
+not because it merely hides
+a slow cycle-to-cycle collapse.
+
+SAFETY / NON-REGRESSION
+
+Across A49 treatments:
+
+direct favored-to-adverse flips:
+0.
+
+Adverse-majority entries:
+0.
+
+6:2 oscillator:
+0%.
+
+Balanced false-majority:
+0%.
+
+D2 reversal acquisition:
+89.84%.
+
+D3 reversal acquisition:
+87.50%.
+
+Median old-majority loss:
+3 epochs.
+
+Service remains above
+95% of paired BASE
+for all treatments.
+
+Therefore A49's failure
+is not caused by
+safety regression,
+reversal rigidity,
+balanced capture,
+or service collapse.
+
+CAUSAL INTERPRETATION
+
+A49 answers
+an important macro question.
+
+A surviving A45 cooperative core
+can locally control
+the recruitable U periphery
+while under challenge.
+
+It can:
+
+reduce adverse recruitment;
+
+increase favored recruitment;
+
+and combine those effects.
+
+But controlling
+the currently recruitable U reservoir
+is not sufficient
+to preserve favored majority
+through the hard 5:3 burst.
+
+The macro bottleneck therefore lies
+outside simple challenge-phase U turnover alone.
+
+The strongest clue is compositional.
+
+A48 independently established
+that G5_FULL:
+
+reduces refractory debt;
+
+accelerates post-disturbance recovery;
+
+is directionally robust across
+five fresh manifests;
+
+preserves 6:2 stability;
+
+and remains wrong-side / reversal safe.
+
+A49 independently establishes
+that challenge push-pull:
+
+improves local periphery flow;
+
+raises burst-end favored mass;
+
+and raises the next-cycle
+challenge-onset core baseline,
+
+without changing refractory timing.
+
+Therefore the next justified experiment
+is an orthogonal composition test:
+
+frozen recovery layer
+
+x
+
+frozen macro periphery layer.
+
+The question is not
+whether to retune either mechanism.
+
+The question is whether
+the moderate recovery gain
+increases available core / recruitable mass
+enough for the A49 periphery field
+to cross a macro threshold.
+
+This composition was explicitly
+left out of A49
+to preserve causal isolation.
+
+A49 now provides
+the evidence needed to test it.
+
+PHASE-OFFSET STATUS
+
+A phase-offset / delayed-response experiment
+remains a valid later hypothesis.
+
+However A49 has not exhausted
+the independently validated
+recovery x periphery composition.
+
+Because both layers
+show measurable effects
+on different bottlenecks,
+that orthogonal composition
+should be tested first.
+
+If the composition
+still leaves a forcing-locked phenotype
+despite active local fields
+and improved recovery,
+then response phase
+becomes the cleaner next target.
+
+PLAIN-SPEAK INTERPRETATION
+
+The core can influence
+the population around it.
+
+That is now proven
+inside this experiment.
+
+When challenged veterans are nearby,
+fewer uncertain cells
+join the opposition.
+
+And many more uncertain cells
+join the veterans' side.
+
+Push and pull both work.
+
+But there still are not
+enough usable cells
+in the right place
+at the right time
+to keep the population
+in a favored majority
+through the hard three-hit attack.
+
+The good news is
+the core is not quietly dying
+from cycle to cycle.
+
+It actually tends
+to begin later attacks
+slightly larger.
+
+So we did not merely
+delay a collapse.
+
+We found that
+spatial control is useful
+but insufficient by itself.
+
+The next test is therefore
+the clean composition
+we deliberately postponed:
+
+give the organism
+the already-validated
+moderate recovery help,
+
+and separately give it
+the already-validated
+challenge push-pull field.
+
+Do not make either stronger.
+
+Then ask whether:
+
+faster recovery
+
+plus
+
+better periphery control
+
+crosses the macro threshold
+that neither layer crosses alone.
+
+NORTH-STAR IMPLICATION
+
+A49 strengthens
+the realization case.
+
+Yggdrasil now has
+separately validated evidence that:
+
+cells can preserve commitment;
+
+cooperative cores can survive
+and retain short local memory;
+
+refractory plasticity can recover
+in an evidence-sensitive way;
+
+and surviving cores can influence
+nearby population turnover
+without a central controller.
+
+The unresolved question
+is now increasingly about
+composition of distributed mechanisms,
+not absence of useful local mechanisms.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
