@@ -1481,3 +1481,404 @@ The canonical DG-1R-05 primary is not consumed.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+A39 PRIMARY CLOSURE
+
+DATE:
+2026-09-21.
+
+F39:
+df5f10311f51b0076b143b1e00fcd1a391699ec2
+
+MANIFEST-BINDING COMMIT:
+6e93ff1d05d29f95938c5b98d0ab897c33ed6085
+
+PRIMARY SEED:
+A39-F39-df5f10311f51b0076b143b1e00fcd1a391699ec2-PRIMARY
+
+PRIMARY WORLD MANIFEST SHA256:
+55eff9c115d214b99387f8a57bc25fd29237005e5250cff42d48e9f3a37f9015
+
+PRIMARY OUTPUT SHA256:
+62c0c661a07ba29a46f88f32d9e0872dd11384f328177d7d6b1849382bee3999
+
+PRIMARY RUNS:
+2.
+
+PRIMARY OUTPUT BYTES:
+28402.
+
+BYTE IDENTICAL:
+true.
+
+P33:
+PASS.
+
+P43:
+PASS.
+
+All other executable integrity probes:
+PASS.
+
+TECHNICAL EVIDENCE
+
+D2 OPP_SLOW:
+overall oscillation 13.02%;
+biased-periodic oscillation 90.62%;
+balanced false-majority 0.00%;
+service 213621;
+reversal acquisition 88.28%;
+median old-majority loss 2 epochs.
+
+D2 ZERO_CROSS_MEDIUM:
+overall oscillation 6.77%;
+biased-periodic oscillation 56.25%;
+balanced false-majority 6.25%;
+service 228706;
+reversal acquisition 89.06%;
+median old-majority loss 2 epochs.
+
+D2 ZERO_CROSS_SLOW:
+overall oscillation 4.69%;
+biased-periodic oscillation 0.00%;
+balanced false-majority 37.50%;
+service 214893;
+reversal acquisition 85.94%;
+median old-majority loss 5 epochs.
+
+D2 MARGIN_MEDIUM:
+overall oscillation 11.46%;
+biased-periodic oscillation 100.00%;
+balanced false-majority 0.00%;
+service 238215;
+reversal acquisition 91.41%;
+median old-majority loss 0 epochs.
+
+D2 MARGIN_SLOW:
+overall oscillation 13.02%;
+biased-periodic oscillation 100.00%;
+balanced false-majority 0.00%;
+service 235798;
+reversal acquisition 92.19%;
+median old-majority loss 1 epoch.
+
+D3 OPP_SLOW:
+overall oscillation 11.72%;
+biased-periodic oscillation 71.88%;
+balanced false-majority 0.00%;
+service 208922;
+reversal acquisition 86.72%;
+median old-majority loss 2 epochs.
+
+D3 ZERO_CROSS_MEDIUM:
+overall oscillation 5.99%;
+biased-periodic oscillation 53.12%;
+balanced false-majority 0.00%;
+service 225001;
+reversal acquisition 88.28%;
+median old-majority loss 2 epochs.
+
+D3 ZERO_CROSS_SLOW:
+overall oscillation 4.17%;
+biased-periodic oscillation 0.00%;
+balanced false-majority 34.38%;
+service 210927;
+reversal acquisition 82.81%;
+median old-majority loss 5 epochs.
+
+D3 MARGIN_MEDIUM:
+overall oscillation 12.24%;
+biased-periodic oscillation 93.75%;
+balanced false-majority 0.00%;
+service 233755;
+reversal acquisition 93.75%;
+median old-majority loss 0 epochs.
+
+D3 MARGIN_SLOW:
+overall oscillation 12.24%;
+biased-periodic oscillation 96.88%;
+balanced false-majority 0.00%;
+service 230792;
+reversal acquisition 93.75%;
+median old-majority loss 1 epoch.
+
+BIASED-PERIODIC CONTEXT DETAIL
+
+D2_MARGIN_SLOW:
+44 = 8/8 oscillatory;
+45 = 8/8;
+46 = 8/8;
+47 = 8/8.
+
+D3_MARGIN_SLOW:
+44 = 8/8;
+45 = 8/8;
+46 = 8/8;
+47 = 7/8.
+
+D2_ZERO_CROSS_SLOW:
+44 = 0/8;
+45 = 0/8;
+46 = 0/8;
+47 = 0/8.
+
+D3_ZERO_CROSS_SLOW:
+44 = 0/8;
+45 = 0/8;
+46 = 0/8;
+47 = 0/8.
+
+GRADED-MARGIN MECHANISM EVIDENCE
+
+D2_MARGIN_SLOW pulse-onset M:
+mean 0.51838;
+median 0.52042;
+standard deviation 0.06143;
+IQR 0.08721;
+M >= 0.50 fraction 61.43%.
+
+D3_MARGIN_SLOW pulse-onset M:
+mean 0.52022;
+median 0.52206;
+standard deviation 0.06018;
+IQR 0.08650;
+M >= 0.50 fraction 62.65%.
+
+Therefore M did not collapse
+to one uniform value.
+
+Evidence-history heterogeneity was real.
+
+PRE-PULSE M / DEFECTION-LATENCY SPEARMAN
+
+D2_MARGIN_MEDIUM:
++0.07410.
+
+D2_MARGIN_SLOW:
++0.13056.
+
+D3_MARGIN_MEDIUM:
++0.04930.
+
+D3_MARGIN_SLOW:
++0.12336.
+
+All four MARGIN arms therefore showed
+the preregistered positive erosion-order direction.
+
+QUARTILE DEFECTION RATE
+
+D2_MARGIN_SLOW:
+high-M quartile 83.34%;
+low-M quartile 96.57%.
+
+D3_MARGIN_SLOW:
+high-M quartile 83.68%;
+low-M quartile 96.92%.
+
+Thus high-margin cells did defect less often
+within adverse bursts.
+
+CORE PERSISTENCE
+
+D2_MARGIN_SLOW:
+after adverse epoch 1:
+all 47.79%;
+top quartile 48.18%;
+bottom quartile 46.26%.
+
+after adverse epoch 2:
+all 12.89%;
+top 14.33%;
+bottom 11.23%.
+
+after adverse epoch 3:
+all 2.34%;
+top 2.08%;
+bottom 2.45%.
+
+D3_MARGIN_SLOW:
+after adverse epoch 1:
+all 48.30%;
+top 51.74%;
+bottom 46.62%.
+
+after adverse epoch 2:
+all 12.77%;
+top 14.22%;
+bottom 11.24%.
+
+after adverse epoch 3:
+all 2.38%;
+top 2.62%;
+bottom 2.99%.
+
+The graded core exists early,
+but almost the entire committed population
+is eroded by the third adverse epoch.
+The high-margin advantage is not sustained
+through the deepest pulse.
+
+TRUE REVERSAL COST
+
+D2_MARGIN_SLOW:
+median old-side M at reversal onset 0.67693;
+median old-side M-to-zero latency 2 epochs;
+median signed B zero-cross latency 2 epochs;
+reversal acquisition 92.19%;
+old-majority loss 1 epoch.
+
+D3_MARGIN_SLOW:
+median old-side M at reversal onset 0.67535;
+median old-side M-to-zero latency 2 epochs;
+median signed B zero-cross latency 2 epochs;
+reversal acquisition 93.75%;
+old-majority loss 1 epoch.
+
+Therefore MARGIN_SLOW is not failing
+because it became pathologically inertial.
+It changes its mind readily
+under genuine reversal.
+
+QUALIFICATION
+
+D2_MARGIN_SLOW:
+NOT QUALIFIED.
+
+D3_MARGIN_SLOW:
+NOT QUALIFIED.
+
+A39_GRADED_MARGIN_INFORMATION_GAIN:
+FALSE.
+
+The main qualification failures are structural:
+
+biased-periodic oscillation remains far above 10%;
+
+paired OPP_SLOW target oscillators are not broken
+at the required rate;
+
+and the third adverse epoch
+largely destroys the graded persistence hierarchy.
+
+CAUSAL INTERPRETATION
+
+A39 separates two facts.
+
+First:
+
+evidence-history heterogeneity is real
+and causally visible at the single-cell level.
+
+Higher accumulated aligned margin
+predicts later / less frequent defection.
+
+Therefore the MARGIN_HILL state
+is not inert,
+not degenerate,
+and not merely a uniform K shift.
+
+Second:
+
+that local ordering does not solve
+the population oscillator.
+
+The smooth K_eff = 1/2 + M transform
+still permits too much coordinated erosion
+over two- and three-epoch adverse bursts.
+
+By the third adverse epoch,
+only about 2-3% of the pulse-onset committed cohort
+remains committed in MARGIN_SLOW.
+
+Therefore committed-cell evidence depth
+is useful local state,
+but this pressure transform
+does not preserve a sufficiently large stable core.
+
+ZERO_CROSS supplies the complementary result.
+
+ZERO_CROSS_SLOW breaks every biased-periodic target oscillator
+in both D2 and D3.
+
+But it does so by becoming too sticky:
+
+balanced false-majority rises to 37.50% in D2
+and 34.38% in D3;
+
+median true-reversal old-majority loss rises to 5 epochs.
+
+ZERO_CROSS_MEDIUM reduces the pathology
+and preserves reversal,
+but leaves 56.25% / 53.12%
+biased-periodic oscillation.
+
+Therefore the A39 data identify
+a useful mechanism interval:
+
+MARGIN_HILL is too permissive;
+
+SLOW ZERO_CROSS is too restrictive;
+
+MEDIUM ZERO_CROSS is directionally useful
+but insufficient.
+
+The next mechanism should not add another rho,
+another cell class,
+more H protection,
+or another margin gain.
+
+The justified next question is whether
+the SAME signed evidence state
+can drive a pressure transform
+between continuous MARGIN_HILL
+and hard ZERO_CROSS,
+while preserving the causal separation
+already established by A39.
+
+PLAIN-SPEAK INTERPRETATION
+
+A39 taught us something important.
+
+The cells really did remember
+how much evidence had built their commitment.
+
+Veteran commitments were harder to knock over
+than weaker ones.
+
+So that idea worked.
+
+The problem was that the protection
+was still too soft.
+
+During a three-step bad burst,
+the strongest cells lasted a little longer,
+but almost everybody was gone by the end.
+That was enough for the population
+to keep flipping back and forth.
+
+The opposite design,
+ZERO_CROSS_SLOW,
+proved that the oscillator can be stopped.
+
+But it held on too hard.
+When the evidence was genuinely balanced,
+it invented stable majorities too often,
+and when the world truly reversed,
+it took too long to let go.
+
+So A39 has bracketed the missing behavior.
+
+One side changes too easily.
+
+The other side refuses to change easily enough.
+
+The next experiment should test
+a middle-shaped response
+using the same local signed evidence,
+not more memory or more cell types.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
