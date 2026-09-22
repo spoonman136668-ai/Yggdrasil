@@ -2436,3 +2436,191 @@ is eligible for F47.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F47 AMENDMENT 04 — REVISED SWEEP MECHANICAL GATE / SOURCE IDENTITY
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F47
+AND BEFORE ANY A47 SCIENTIFIC OUTCOME.
+
+SUPERSESSION
+
+This mechanical gate supersedes
+all earlier A47 mechanical gates.
+
+It validates the exact
+nine-arm dose-response / stagger design
+bound by Amendment 03.
+
+AUTHORIZED SOURCE
+
+Source bytes:
+
+87911.
+
+Source SHA256:
+
+f425cef597b41fa0fa928c55957c4137de44b180c0e6b5a62a6a8051eec8e988
+
+FOCUSED PARENT PARITY
+
+A45 ECHO_PHASE parent behavior
+was compared against
+A47 BASE_ECHO_PHASE
+across 72 representative cases spanning:
+
+constant;
+spatial;
+true reversal;
+balanced periodic;
+6:2 biased periodic;
+5:3 biased periodic.
+
+Behavioral mismatches:
+
+0.
+
+MECHANICAL VALIDATION
+
+Mechanical seed:
+
+MECHANICAL-A47-SWEEP-PREF47
+
+Complete sweeps:
+
+2.
+
+Worlds per sweep:
+
+384.
+
+Arms:
+
+9.
+
+Output bytes per sweep:
+
+119100.
+
+Output SHA256:
+
+b6b36ae9496bb1f0c326f0dfecb5e9960b3473d1d7ea0bec71e237d0602c2d55
+
+BYTE IDENTICAL:
+
+true.
+
+stderr:
+
+empty for both sweeps.
+
+All executable pre-primary integrity probes:
+
+PASS.
+
+TRUE-REVERSAL SAFETY
+
+Old-side recovery actions
+during the first four
+true-reversal epochs:
+
+0
+
+for every
+T1,
+T2,
+FULL,
+and FULL_STAGGER arm.
+
+DEFERRED-DOSE TIMING
+
+T1 maximum observed
+release advance:
+
+1 epoch.
+
+T2 maximum observed
+release advance:
+
+2 epochs.
+
+A deferred-dose action
+may produce zero realized advance
+if G5 first becomes true
+on the final locked epoch
+and no future locked epoch remains.
+
+This is a legitimate no-op
+at the boundary,
+not same-epoch release.
+
+FULL / STAGGER TIMING
+
+FULL immediate re-entry
+remains the repaired A46 upper bound.
+
+FULL_STAGGER uses:
+
+p = 1/2
+
+with a dedicated stateless
+stagger event salt.
+
+No inherited random draw
+is altered by the stagger probe.
+
+No mechanical-world population outcome
+is used as scientific evidence.
+
+SOURCE-BUNDLE FORMAT
+
+F47 will publish
+the exact authorized source
+as deterministic gzip/base64
+split into seven neutral text source parts.
+
+Source SHA256:
+
+f425cef597b41fa0fa928c55957c4137de44b180c0e6b5a62a6a8051eec8e988
+
+Gzip bytes:
+
+20742.
+
+Gzip SHA256:
+
+b881ab18da6646f9303490aa2b11d9bd0f68788b42c8f52e2479cd8f854b78d9
+
+Concatenated base64 characters:
+
+27656.
+
+Base64 SHA256:
+
+2a15030cabe2e8e3d4a207d414f92a2fb8679ca20a7a9999b0b11f44c4b17681
+
+Source part count:
+
+7.
+
+The F47 loader must verify:
+
+part count;
+
+base64 identity;
+
+gzip identity;
+
+source identity;
+
+before execution.
+
+Any mismatch fails closed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
