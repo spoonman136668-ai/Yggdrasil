@@ -953,3 +953,157 @@ OR TRUE-REVERSAL STUBBORNNESS?
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-F47 AMENDMENT 01 — POST-A46-FIXA AUTHORIZATION
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE F47
+AND BEFORE ANY A47 SCIENTIFIC OUTCOME.
+
+PREDECESSOR REPAIR
+
+After the initial A47 preregistration,
+a material parent-mechanism defect
+was discovered in the original A46
+G5 treatment implementation.
+
+A46-FIXA repaired that conformance defect
+without changing the A46 scientific design.
+
+A46-FIXA closure:
+
+ad2e61b09dcfed79b33523a470ffa57f320593e9.
+
+F46A:
+
+6a52b0ed4372371727649e4f14f5967d28345551.
+
+Repaired primary SHA256:
+
+d66b8475be964cab80da82af3c868fec98c9015d66d9fd374d609e02e670de12.
+
+REPAIRED PREDECESSOR RESULT
+
+D3 repaired G5_REENTRY
+satisfies the original A46
+recovery-information-gain rule.
+
+Relative to D3 ECHO_PHASE:
+
+mean unresolved episode:
+
+5.408 -> 3.975 epochs
+(-26.50%);
+
+mean favored-majority recovery latency:
+
+6.506 -> 5.034 epochs
+(-1.472 epochs);
+
+mean refractory fraction
+across recovery steps 1-3:
+
+45.71% -> 28.62%
+(-37.39%);
+
+aggregate service:
+
++1.05%;
+
+5:3 epoch-3 core persistence:
+
++3.21 percentage points.
+
+6:2 oscillation remains:
+
+0%.
+
+5:3 wrong-side majority entries:
+
+0.
+
+Old-side G5 fires
+during the first four true-reversal epochs:
+
+0.
+
+D3 G5 remains NOT QUALIFIED
+because the hard 5:3 inherited oscillator phenotype
+is not removed
+and the stronger qualification thresholds
+are not met.
+
+D2 improves
+but does not cross
+the original A46 information-gain threshold.
+
+A47 AUTHORIZATION
+
+The repaired predecessor therefore confirms
+the causal premise behind A47:
+
+refractory timing
+is a real post-disturbance recovery bottleneck;
+
+immediate re-entry provides useful recovery benefit;
+
+but the full immediate-release action
+is stronger than necessary
+and carries extra local cycling cost.
+
+The A47 mechanism,
+arms,
+gates,
+criteria,
+and common-random design
+remain exactly as originally preregistered.
+
+No scientific rule changes.
+
+No threshold changes.
+
+No timer changes.
+
+No arm changes.
+
+No RNG-pairing changes.
+
+PREVIOUS A47 MECHANICAL WORK
+
+Any A47 mechanical sweep
+performed before A46-FIXA closure
+is diagnostic-only.
+
+It cannot qualify F47.
+
+A fresh pair of complete
+post-FIXA mechanical sweeps
+must pass byte-identically
+before F47.
+
+CURRENT A47 CANDIDATE SOURCE
+
+SHA256:
+
+11ec74adb551e493077c4a931773e11e0d3ece4c59bc05f741a7d2b154fe3b73
+
+Focused A45 parent parity
+already observed:
+
+72 representative ECHO_PHASE comparisons;
+
+behavioral mismatches:
+
+0.
+
+The fresh formal mechanical gate
+must re-confirm
+all executable integrity conditions.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
