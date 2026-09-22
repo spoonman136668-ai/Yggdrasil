@@ -946,3 +946,292 @@ lineage multiplier,
 or qualification rule changes.
 
 No F37 exists yet.
+
+
+PRE-RUN IMPLEMENTATION FREEZE 01 — A37 LINEAGE-PERSISTENT UNCERTAINTY MEMORY
+
+DATE:
+2026-09-21.
+
+STATUS:
+FROZEN BEFORE DERIVATION OF ANY REAL F37-DERIVED WORLD,
+TURNOVER,
+LINEAGE INHERITANCE EVENT,
+OR SCIENTIFIC OUTCOME.
+
+IMPLEMENTATION COMMIT
+
+77206606a0fc48d107b190a2e71eeca3935b080c.
+
+SOURCE BUNDLE
+
+Loader:
+
+research/applications/track-a/a37_t8u_lineage_uncertainty_memory_v1.py
+
+Loader Git blob:
+
+6c3dd5cffdeaabaa7a3e946f29dcc8d8e1d9590a.
+
+Encoded payload:
+
+research/applications/track-a/a37_t8u_lineage_uncertainty_memory_v1.py.gz.b64
+
+Encoded payload Git blob:
+
+0e6de0300506e43ccdaff818dde0ed9ba597d8f3.
+
+Decompressed source SHA-256:
+
+3e69f508489181c989c79d1d7c72f83a751fe457e726c520785b126e0a095de6.
+
+Decompressed source bytes:
+
+28732.
+
+Deterministic gzip SHA-256:
+
+b44c96bd5f4f80f481a323dd5b1162bd8d066c68da9a8b2beae6610f0b202d3a.
+
+Compressed payload bytes:
+
+8082.
+
+Base64 payload characters:
+
+10776.
+
+PACKAGING NOTE
+
+A37 stores the deterministic gzip
+as base64 UTF-8 text.
+
+The loader:
+
+base64-decodes;
+gzip-decompresses;
+SHA-256 verifies;
+then executes the exact frozen source.
+
+This avoids the binary truncation defect
+previously observed in repository gzip handling.
+
+It changes no scientific behavior.
+
+MECHANICAL PRECHECK — NON-EVIDENCE
+
+Fake seed:
+
+MECHANICAL-F37-NONPRIMARY.
+
+Two complete sweeps were byte-identical.
+
+Serialized output SHA-256:
+
+5249753143b313ed2116c4fafd5282288479573a4fd2ef59786a88b584622454.
+
+Mechanical world-manifest SHA-256:
+
+a2ff290196d74ac0c1247799add68009501bf805f8639725d63763c2905131ee.
+
+All P1-P34 integrity probes:
+
+PASS.
+
+No PRIME arm mechanically qualified.
+
+No PRIME arm met:
+
+A37_LINEAGE_MEMORY_INFORMATION_GAIN.
+
+MECHANICAL D2 RESET
+
+oscillation:
+
+13.28%.
+
+FAMILY-5 oscillators:
+
+32.
+
+aggregate service:
+
+230582.
+
+reversal acquisition:
+
+95.31%.
+
+MECHANICAL D2 PRIME
+
+oscillation:
+
+13.02%.
+
+FAMILY-5 oscillators:
+
+30.
+
+RESET FAMILY-5 oscillators broken:
+
+2 / 32.
+
+prime effect ratio:
+
+2.8275x.
+
+primed successors:
+
+5291.
+
+primed successor generations re-entering H:
+
+51.79%.
+
+median reconstitution latency:
+
+3 epochs.
+
+contradiction no-majority:
+
+92.17%.
+
+reversal acquisition:
+
+96.88%.
+
+aggregate service:
+
+228890.
+
+Thus inherited lineage memory is:
+
+functional;
+bounded;
+and behaviorally consequential.
+
+But it mechanically breaks only:
+
+6.25%
+
+of RESET FAMILY-5 oscillators.
+
+MECHANICAL D3 RESET
+
+oscillation:
+
+14.58%.
+
+FAMILY-5 oscillators:
+
+31.
+
+aggregate service:
+
+224557.
+
+MECHANICAL D3 PRIME
+
+oscillation:
+
+13.54%.
+
+FAMILY-5 oscillators:
+
+30.
+
+RESET FAMILY-5 oscillators broken:
+
+2 / 31.
+
+prime effect ratio:
+
+2.9219x.
+
+primed successors:
+
+4737.
+
+primed successor generations re-entering H:
+
+49.31%.
+
+median reconstitution latency:
+
+3 epochs.
+
+contradiction no-majority:
+
+94.81%.
+
+reversal acquisition:
+
+92.97%.
+
+aggregate service:
+
+224117.
+
+DIRECT PHENOTYPE CONTROL
+
+Direct H inheritance
+did not mechanically outperform PRIME.
+
+D2 DIRECT oscillation:
+
+15.36%.
+
+D3 DIRECT:
+
+14.06%.
+
+This suggests that
+copying the current H phenotype
+is not obviously the missing mechanism.
+
+The historical lineage mark
+has a distinct measurable effect.
+
+However:
+
+no mechanical arm approached
+the frozen 5% oscillation ceiling.
+
+No turnover frequency,
+turnover size,
+prime multiplier,
+H mechanism,
+qualification threshold,
+or information-gain rule
+is changed in response.
+
+This is NON-SCIENTIFIC mechanical evidence only.
+
+REAL A37 STATUS
+
+No real F37-derived world exists.
+
+No real lineage inheritance outcome exists.
+
+No real A37 primary result exists.
+
+Let the resulting commit SHA be:
+
+F37.
+
+After F37 exists:
+
+1. derive exactly 384 fresh worlds from F37;
+2. bind the complete world-manifest SHA;
+3. only then execute two complete deterministic primary sweeps;
+4. require byte-identical output;
+5. report STATIC / RESET / DIRECT / PRIME
+   for both D2 and D3 without post-result selection.
+
+NO POST-RESULT PRIME-MULTIPLIER TUNING.
+NO POST-RESULT TURNOVER TUNING.
+NO POST-RESULT A36-NICHE CHANGE.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
