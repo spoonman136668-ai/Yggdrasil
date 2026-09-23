@@ -18,6 +18,7 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -94,6 +95,24 @@ def render_args(args: list[str], mapping: dict[str, str]) -> list[str]:
         validate_text(value, "rendered argument")
         rendered.append(value)
     return rendered
+
+
+def prepare_legacy_import_bridge(root: Path):
+    """Expose frozen legacy Task-1 loaders at their historical /mnt/data path.
+
+    The bridge exists only inside the ephemeral experiment environment and
+    points back into this Yggdrasil checkout. It does not copy or execute
+    anything outside the repository.
+    """
+    source = under(root, root / "research" / "applications" / "track-a")
+    target = Path("/mnt/data/task1_loader_test")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    if target.is_symlink() or target.is_file():
+        target.unlink()
+    elif target.exists():
+        shutil.rmtree(target)
+    target.symlink_to(source, target_is_directory=True)
+    return {"target": str(target), "source": str(source)}
 
 
 def run_one(
@@ -189,6 +208,8 @@ def execute(req: dict, root: Path, out_dir: Path):
     source, timeout = validate_request(req, root)
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    legacy_bridge = prepare_legacy_import_bridge(root)
+
     meta = {
         "schema": SCHEMA,
         "request_id": req["request_id"],
@@ -196,6 +217,7 @@ def execute(req: dict, root: Path, out_dir: Path):
         "github_sha": os.environ.get("GITHUB_SHA"),
         "source": str(source.relative_to(root)),
         "source_file_sha256": sha256_bytes(source.read_bytes()),
+        "legacy_import_bridge": legacy_bridge,
         "verified_files": [],
         "duplicate": None,
         "open": None,
