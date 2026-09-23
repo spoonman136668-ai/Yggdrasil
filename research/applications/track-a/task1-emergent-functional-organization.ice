@@ -2997,3 +2997,179 @@ no post-result tuning.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-T1F1 MECHANICAL GATE CLOSURE
+
+DATE:
+2026-09-22.
+
+STATUS:
+PASS / T1F1 FREEZE AUTHORIZED.
+
+FINAL CANDIDATE SOURCE
+
+Bytes:
+37394.
+
+SHA256:
+567c37e3e2171bc3cfc15b996c447e87b7ac5cdafb7bc299ba104284ae826e12.
+
+MECHANICAL SEED
+
+TASK1-MECHANICAL-V1.
+
+MECHANICAL MANIFEST SHA256
+
+ab97f72d8a5c50ed0941233db67d2a8b9cc3912be951400364b2142c5c208a80.
+
+Mechanical programs:
+
+27030;
+38505;
+42405;
+23205.
+
+Scheduled mechanical corruptions:
+21.
+
+COMPLETE MECHANICAL SWEEPS
+
+2.
+
+Canonical per-sweep output bytes:
+40908.
+
+Canonical per-sweep output SHA256:
+3f5dbbe0ce4febc3daa67a8ebd59fa1701c05bb7b49e2f8a77f18e9d0e2bd897.
+
+BYTE IDENTICAL:
+true.
+
+All final mechanical / integrity probes:
+PASS.
+
+No failed probe exists.
+
+FINAL PRE-FREEZE DUPLICATE-GATE REPAIR
+
+The candidate source was then tightened
+so a raw PRIMARY execution
+cannot self-certify
+the external duplicate-primary gate.
+
+Raw primary output now carries:
+
+P38_PRIMARY_DUPLICATE_EXTERNAL = false.
+
+Raw primary output contains
+no qualification verdict.
+
+A separate:
+
+open <primary1> <primary2>
+
+operation:
+
+reads both raw files;
+
+requires exact byte equality;
+
+records bytes and SHA256;
+
+sets P38 true only after equality;
+
+and only then computes
+TASK1 scientific qualification.
+
+This source-only gate correction
+does not alter mechanical dynamics.
+
+After the correction:
+
+candidate source bytes:
+37394.
+
+candidate source SHA256:
+567c37e3e2171bc3cfc15b996c447e87b7ac5cdafb7bc299ba104284ae826e12.
+
+The complete mechanical output remains
+byte-for-byte identical
+to the prior final mechanical gate.
+
+MECHANICAL VIABILITY OBSERVATION
+
+For the mechanical fixture only:
+
+EMERGENT_V0 Phase-0 completion:
+100%.
+
+EMERGENT_NO_REPAIR Phase-0 completion:
+96.875%.
+
+FIXED_ROLE Phase-0 completion:
+76.5625%.
+
+These values are used only
+to establish that the nominal pipeline
+is mechanically serviceable.
+
+They are NOT Task-1 scientific evidence.
+
+Later mechanical-phase outcome magnitude
+must not be used
+to tune V0,
+task thresholds,
+or Task-1 mechanics.
+
+FREEZE AUTHORIZATION
+
+The final candidate has now satisfied:
+
+locality;
+
+capacity;
+
+request lifecycle;
+
+route semantics;
+
+distributed lesion semantics;
+
+fixed-role counts and uniqueness;
+
+stream-common task manifestations;
+
+stateless task randomness;
+
+one operation per cell per epoch;
+
+one operation per request per epoch;
+
+local deferred matching;
+
+V0 parent identity;
+
+D2 selection;
+
+G5_FULL OFF;
+
+mechanical Phase-0 viability;
+
+and duplicate mechanical determinism.
+
+Therefore:
+
+T1F1 may now freeze
+the exact candidate source identity above.
+
+No Task-1 primary program,
+primary arrival manifest,
+primary corruption schedule,
+primary lesion offset,
+or primary scientific metric
+has yet been derived or observed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
