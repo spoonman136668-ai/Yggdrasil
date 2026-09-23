@@ -1,0 +1,99 @@
+TITLE: LU-2C LU2CF1 TEN-MANIFEST BINDING
+DATE: 2026-09-23
+STATUS: BOUND / NO DIAGNOSTIC ARM EXECUTED
+TRACK: DG-1 / LEARNED-UPDATER TRANSITION
+
+PREREGISTRATION:
+44b2cf29148f3d2f3ef19815ef23d8c1ed61bb34
+
+MECHANICAL GATE:
+c54b8431fa0922ee58381869c3188f77a05f166d
+
+LU2CF1:
+3bb2eaf473212b13a2703dda048cf98341bfbb5f
+
+PARENT LU2AF1-R1:
+ba771ec410b5a35498e0b146e71781ac4df4285c
+
+STATUS BEFORE THIS RECORD
+
+TEACHER_TRAJECTORY_U diagnostic arms executed:
+0
+
+HYBRID_TRAJECTORY_U diagnostic arms executed:
+0
+
+Only deterministic world materialization occurred.
+
+BOUND MANIFEST SHA256
+
+1:
+1444b2ca95caf3c6e0c7727911de80c65927871aef1bd7c043d96d8f9ff7109f
+
+2:
+c03c0dcfab70e3dad8e8a00e1329e6c7fa3c2ce8ef4bf7e5c417378bbf02cefc
+
+3:
+6fae7e4936628f7de0c65c26a29b97d5b628a8387e662b46282ce15df0116cbc
+
+4:
+36ac05df2dc42b69b75ccb235191b5ecbd73f086af820da7454018dce65d5af2
+
+5:
+e93a74c7f79f6a74e50194070a6ea16ad2434ff2d7ab6eccd09989d413781d59
+
+6:
+428caf1bb2270b54e28b260dbee81dac59136ab857ff3e95adf3ca1708f3ebb3
+
+7:
+5131ddb7cb4fb4f5cf46e8b546bf09005e7fd8b9447d0c3e437c5d4557d2abda
+
+8:
+ab3e5b1c1373dfbf0a06c742ae82ad4ea67b7f30adaae3ac971114197adae43d
+
+9:
+c7bdd04a661fc3f86cf395b5b07547707258d32063b569620891879acc299222
+
+10:
+2814e952e5c68c259728d75362c741d566b038e3b3d90909f79e7828e1bf2628
+
+TEN-MANIFEST CANONICAL BUNDLE
+
+bytes:
+223628
+
+SHA256:
+a1e07e11fcaf558dd0964928c4635d0c1ef486d94a4cd9c637782ca3e3f5e641
+
+NAMESPACE
+
+LU2C-U-SHIFT|LU2AF1-R1|replicate
+
+replicate:
+1..10
+
+No LU-2A or LU-2B world reused.
+
+No result-dependent selection.
+
+No rejection sampling.
+
+No replacement world.
+
+EXECUTION AUTHORIZATION
+
+The exact 10 bound worlds above
+may now be used for the observation-only LU-2C audit.
+
+KTRADE:
+NOT USED.
+
+ckb-plane:
+NOT USED.
+
+Windows self-hosted runner:
+NOT USED.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
