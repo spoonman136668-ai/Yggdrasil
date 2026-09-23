@@ -1,0 +1,36 @@
+name: Task1G Mechanical Candidate
+
+on:
+  push:
+    branches: [dg1a-ar]
+    paths:
+      - .github/workflows/task1g-mechanical-candidate.yml
+
+permissions:
+  contents: read
+
+jobs:
+  mechanical:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - name: Run Task1G mechanical gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research/applications/track-a
+          python3 task1g_local_deadline_repair_v1.candidate.py > /tmp/task1g-mech.json
+          python3 - <<'PY'
+          import json
+          p='/tmp/task1g-mech.json'
+          x=json.load(open(p))
+          print(json.dumps({
+            'probes':x['probes'],
+            'output_bytes':x['output_bytes'],
+            'output_sha256':x['output_sha256']
+          },sort_keys=True))
+          if not all(x['probes'].values()):
+              raise SystemExit('TASK1G_MECHANICAL_GATE_FAILED')
+          PY
