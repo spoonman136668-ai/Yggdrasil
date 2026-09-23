@@ -1,0 +1,52 @@
+name: YDR Isolated Experiment Runner
+
+on:
+  push:
+    branches: [dg1a-ar]
+    paths:
+      - research/control/isolated-run.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ydr-isolated-experiment-runner-dg1a-ar
+  cancel-in-progress: false
+
+jobs:
+  isolated-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Assert isolation boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REPOSITORY}" = "spoonman136668-ai/Yggdrasil"
+          test -f research/control/isolated-run.json
+          if grep -Eiq 'ckb-plane|ktrade|self-hosted|actions\.runner\.|C:\\actions-runner' research/control/isolated-run.json; then
+            echo "Forbidden production-coupled token in isolated request"
+            exit 2
+          fi
+
+      - name: Run deterministic isolated experiment
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/ydr-isolated
+          mkdir -p /tmp/ydr-isolated
+          python3 research/harness/ydr_experiment_runner.py             --request research/control/isolated-run.json             --out-dir /tmp/ydr-isolated
+
+      - name: Upload isolated evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ydr-isolated-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: error
+          retention-days: 14
+          path: /tmp/ydr-isolated/**
