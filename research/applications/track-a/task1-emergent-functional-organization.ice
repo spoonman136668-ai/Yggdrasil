@@ -1948,3 +1948,298 @@ has been observed.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-T1F1 AMENDMENT 02 — LOCAL CONTENTION AND FIXED-ROUTE SERVICE REPAIR
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE T1F1
+AND BEFORE ANY TASK-1 SCIENTIFIC OUTCOME.
+
+MECHANICAL FINDING
+
+The first mechanical-only implementation attempt
+was deterministic
+and passed identity / lifecycle assertions,
+
+but it was not freeze-worthy.
+
+No Task-1 scientific manifest existed.
+No T1F1 existed.
+No primary execution occurred.
+
+Two service-layer defects were observed.
+
+DEFECT 1 — DUPLICATE LOCAL CLAIM STARVATION
+
+Under the literal
+"every cell chooses the oldest local request"
+implementation,
+
+several nearby eligible cells
+selected the same oldest request.
+
+Only one cell could execute it.
+
+The other cells then idled
+for that epoch
+instead of servicing
+other local requests.
+
+This produced artificial queue starvation
+from deterministic claim collision.
+
+That is a scheduler artifact,
+not developmental organization.
+
+REPAIRED LOCAL CONTENTION RULE
+
+Freeze a request-first,
+local deterministic claim rule.
+
+For each unfinished request r:
+
+1. determine its one currently required operation
+   from its lifecycle stage;
+
+2. enumerate only cells
+   that are locally eligible
+   for that request and operation
+   under R_TASK,
+   current C/S commitment,
+   lesion state,
+   and fixed-role restriction
+   when applicable;
+
+3. sort those eligible cell positions;
+
+4. select exactly one claimant cell by:
+
+   h64(
+     TASK1-REQUEST-CLAIM,
+     task_seed,
+     epoch,
+     request_id,
+     operation_id
+   )
+   mod
+   eligible_cell_count.
+
+A request therefore proposes itself
+to one local eligible cell,
+not to every local eligible cell.
+
+If several requests claim the same cell,
+that cell executes:
+
+the oldest request first;
+
+then lowest request id;
+
+then the existing stateless tie hash.
+
+The losing requests wait.
+
+No second operation is granted
+to the cell in that epoch.
+
+This preserves:
+
+one operation per cell per epoch;
+
+local information;
+
+stateless arbitration;
+
+oldest-request priority;
+
+no global queue length;
+
+no central scheduler.
+
+The implementation may compute
+the deterministic claims in batch
+for simulation efficiency,
+
+but the admissible information
+for each claim is only
+the request and its local eligible cells.
+
+DEFECT 2 — STREAM-SPECIFIC ROUTE GAPS
+
+The Amendment-01
+22 C / 22 S ROUTE split
+created positions where
+a packet had no same-stream
+ROUTE-role cell within R_TASK,
+
+even though generic ROUTE capacity
+was physically nearby.
+
+This turns a fixed-operation baseline
+into an unintended
+fixed-stream wiring baseline.
+
+That is stricter
+than the intended comparator.
+
+FIXED_ROLE ROUTE REPAIR
+
+Keep exactly:
+
+44 ROUTE cells.
+
+ROUTE is now stream-generic.
+
+Any FIXED_ROLE ROUTE cell
+may route either C or S
+when:
+
+the packet is within R_TASK;
+
+the cell's current V0 commitment
+matches the packet stream;
+
+and the cell is not lesioned.
+
+The cell still has
+only the permanent ROUTE operation role.
+
+It does not gain
+SENSE, PROCESS, VERIFY, or REPAIR ability.
+
+Therefore the fixed comparator remains
+operation-specialized,
+while avoiding an accidental
+hard-wired stream partition.
+
+Remove the Amendment-01 requirement:
+
+22 C ROUTE;
+22 S ROUTE.
+
+Replace it with:
+
+44 stream-generic ROUTE cells.
+
+FIXED ROLE POSITION ALGORITHM
+
+Freeze the following
+relative placement algorithm
+before T1F1.
+
+For each stream anchor pair,
+using stream direction d
+(+1 for C, -1 for S):
+
+SENSE offsets from ingress:
+-2, 0, +2
+multiplied by d.
+
+PROCESS offsets from ingress:
+-4, -1, +4
+multiplied by d.
+
+VERIFY offsets from egress:
+-2, 0, +2
+multiplied by d.
+
+REPAIR offset from egress:
++1
+multiplied by d.
+
+All positions are modulo 64.
+
+The two stream layouts
+must be collision-free
+under the implementation-frozen
+anchor geometry.
+
+Every other cell is ROUTE.
+
+Required counts remain:
+
+6 SENSE;
+6 PROCESS;
+44 ROUTE;
+6 VERIFY;
+2 REPAIR.
+
+All 64 role positions
+must be unique.
+
+Fixed roles are operation roles only.
+They are not permanent C/S labels.
+
+C/S task eligibility
+continues to come from
+the cell's current frozen V0 commitment.
+
+MECHANICAL ACCEPTANCE ADDITIONS
+
+Before T1F1 prove:
+
+M16:
+every request has at most
+one claimant cell per epoch.
+
+M17:
+every cell executes at most
+one request per epoch.
+
+M18:
+claim choice depends only on
+task seed,
+epoch,
+request id,
+operation id,
+and locally eligible cell positions.
+
+M19:
+44 FIXED_ROLE ROUTE cells
+are stream-generic.
+
+M20:
+no fixed task role
+is also a hidden C/S role.
+
+M21:
+the fixed-role relative placement algorithm
+produces exactly
+6 / 6 / 44 / 6 / 2
+unique role positions
+for the frozen anchor geometry.
+
+M22:
+a processed packet
+on every position of each
+initial nominal route
+has at least one
+stream-matching committed-cell opportunity
+in the mechanical capability fixture
+when commitment is held constant.
+
+M22 is a mechanical reachability check,
+not a scientific population outcome.
+
+SUPERSESSION
+
+Where Amendment 01 states:
+
+ROUTE:
+22 C,
+22 S,
+
+Amendment 02 supersedes it.
+
+All other Amendment-01 rules remain.
+
+No scientific result
+has been observed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
