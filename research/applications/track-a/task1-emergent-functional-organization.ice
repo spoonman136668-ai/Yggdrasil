@@ -2464,3 +2464,536 @@ has been observed.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-T1F1 AMENDMENT 04 — FINAL TASK-LOAD AND LOCAL-MATCHING CONTRACT
+
+DATE:
+2026-09-22.
+
+STATUS:
+FINAL PRE-T1F1 TASK-MECHANICS BINDING.
+
+No T1F1 exists at the time of this amendment.
+No primary manifest exists.
+No Task-1 scientific execution has occurred.
+
+PURPOSE
+
+Close the remaining
+mechanical feasibility defects
+without tuning V0
+or using scientific outcomes.
+
+The prior mechanical fixtures
+were used only to test:
+
+hard operation capacity;
+
+local service reachability;
+
+contention semantics;
+
+and control viability.
+
+They are not Task-1 evidence.
+
+ARRIVAL LOAD — FINAL
+
+Replace the original
+six-request-per-epoch load.
+
+TASK-1 now injects exactly:
+
+2 requests per epoch.
+
+Total over 160 epochs:
+
+320 requests.
+
+Balanced phases
+0, 3, and 4:
+
+1 C;
+1 S.
+
+C-heavy Phase 1:
+
+even epochs:
+2 C;
+0 S.
+
+odd epochs:
+1 C;
+1 S.
+
+Across every two-epoch pair:
+
+C:S = 3:1.
+
+S-heavy Phase 2
+is the exact directional mirror:
+
+even epochs:
+0 C;
+2 S.
+
+odd epochs:
+1 C;
+1 S.
+
+Across every two-epoch pair:
+
+C:S = 1:3.
+
+Total arrival count
+remains constant
+at two per epoch.
+
+No load tuning
+after T1F1.
+
+TASK EVIDENCE NORMALIZATION — FINAL
+
+Because balanced
+per-stream arrival load
+is now one request per epoch,
+
+supersede Amendment-01
+n/3 normalization.
+
+For stream X:
+
+d_X(j)
+=
+min(1.0, n_X(j)).
+
+All other Amendment-01
+task-to-V0 evidence equations
+remain unchanged.
+
+Thus demand is still:
+
+local;
+
+bounded [0,1];
+
+stream separated;
+
+fed through the frozen
+radius-12 and radius-3
+V0 evidence interfaces.
+
+ANCHOR GEOMETRY — FINAL
+
+Supersede the Amendment-03
+eight-edge route.
+
+Let seed-derived rotation:
+
+r in [0,7].
+
+Initial anchors are:
+
+C ingress:
+r.
+
+C egress:
+r + 6 mod 64.
+
+S ingress:
+r + 40 mod 64.
+
+S egress:
+r + 34 mod 64.
+
+Therefore both
+initial nominal routes
+are exactly:
+
+6 edges.
+
+C remains clockwise.
+
+S remains counterclockwise.
+
+Phase-4 rotation remains:
+
++16.
+
+MINIMUM PIPELINE COST
+
+A non-corrupted request requires:
+
+1 SENSE;
+
+1 PROCESS;
+
+6 ROUTE;
+
+1 VERIFY.
+
+Total:
+
+9 task operations.
+
+At two arrivals per epoch:
+
+18 task operations/epoch
+is the ideal minimum load.
+
+The 64-cell organism
+therefore has meaningful
+spatial / perturbation slack
+without making throughput
+mathematically trivial.
+
+The task remains constrained by:
+
+locality;
+
+C/S commitment in emergent arms;
+
+operation specialization
+in FIXED_ROLE;
+
+lesion;
+
+corruption;
+
+and anchor movement.
+
+LOCAL CONTENTION — FINAL
+
+Supersede Amendment-02
+one-shot request-first claims.
+
+Use deterministic
+local deferred-acceptance matching.
+
+At each epoch:
+
+1. each nonlesioned cell
+   enumerates only
+   locally eligible requests;
+
+2. the cell ranks them by:
+
+   oldest creation epoch;
+
+   lowest request id;
+
+   stateless tie hash;
+
+3. every free cell proposes
+   to its highest-ranked
+   not-yet-rejected local request;
+
+4. each request retains
+   at most one proposing cell,
+   chosen by stateless preference:
+
+   h64(
+     TASK1-REQUEST-CELL-PREF,
+     task_seed,
+     epoch,
+     request_id,
+     operation_id,
+     cell_position
+   );
+
+5. rejected cells may propose
+   to their next local request;
+
+6. iteration ends when
+   no free cell has another
+   eligible local request.
+
+Final matching properties:
+
+one request
+<= one operation that epoch;
+
+one cell
+<= one operation that epoch.
+
+All admissible edges
+are local under R_TASK.
+
+No global queue length,
+throughput,
+future phase,
+or correctness label
+enters a preference.
+
+Batch implementation
+of this local matching
+is permitted for simulation efficiency.
+
+FIXED_ROLE COUNTS — FINAL
+
+Return to the originally intended
+operation-specialized count:
+
+4 SENSE;
+
+4 PROCESS;
+
+48 ROUTE;
+
+4 VERIFY;
+
+4 REPAIR.
+
+Total:
+
+64.
+
+ROUTE remains
+stream-generic
+as established by Amendment 02.
+
+FIXED_ROLE POSITION ALGORITHM — FINAL
+
+For each stream,
+with direction d:
+
+SENSE offsets from ingress:
+
+-2,
++2.
+
+PROCESS offsets from ingress:
+
+-4,
++4.
+
+VERIFY offsets from egress:
+
+-1,
++2.
+
+REPAIR positions:
+
+egress itself;
+
+egress + d.
+
+All arithmetic modulo 64.
+
+The C and S layouts
+must be collision-free
+under the six-edge
+anchor geometry.
+
+Every remaining cell
+is ROUTE.
+
+All roles are exclusive.
+
+FIXED_ROLE CONTROL SEMANTICS — FINAL
+
+FIXED_ROLE is the conventional
+assigned-operation comparator.
+
+Its V0 internal state
+continues to evolve
+under the same task evidence.
+
+However mutable V0
+C/S commitment does NOT
+gate whether a FIXED_ROLE cell
+may execute its permanently
+assigned task operation.
+
+This prevents the fixed control
+from ceasing to be
+a fixed-operation controller
+merely because its developmental
+state changes.
+
+FIXED_ROLE eligibility requires only:
+
+correct permanent operation role;
+
+request within R_TASK;
+
+cell not lesioned;
+
+request lifecycle stage valid.
+
+No fixed cell gains
+another operation role.
+
+No fixed role moves
+after primary execution begins.
+
+EMERGENT STREAM ELIGIBILITY
+
+EMERGENT_V0
+and
+EMERGENT_NO_REPAIR
+
+continue to require:
+
+C commitment
+for C-stream task operations;
+
+S commitment
+for S-stream task operations.
+
+U / H / FC / FS
+remain task-inactive.
+
+This difference is intentional:
+
+the emergent arms
+must organize task capacity
+through V0 state;
+
+the fixed comparator
+receives its task operation
+assignment externally.
+
+MECHANICAL FREEZE GATE — FINAL ADDITIONS
+
+Before T1F1 prove:
+
+M29:
+exactly two arrivals per epoch.
+
+M30:
+exactly 320 arrivals
+over 160 epochs.
+
+M31:
+Phase-1 two-epoch aggregate
+is exactly 3 C : 1 S.
+
+M32:
+Phase-2 is the exact mirror.
+
+M33:
+d_X(j) is exactly
+min(1, n_X(j)).
+
+M34:
+both initial nominal routes
+are exactly six edges.
+
+M35:
+minimum non-corrupt
+pipeline cost is exactly
+nine operations.
+
+M36:
+FIXED_ROLE counts are exactly
+4 / 4 / 48 / 4 / 4.
+
+M37:
+all 64 fixed-role positions
+are unique.
+
+M38:
+FIXED_ROLE task execution
+does not read mutable
+C/S commitment.
+
+M39:
+emergent task execution
+does require matching
+C/S commitment.
+
+M40:
+local deferred matching
+never assigns one cell
+to two requests
+in one epoch.
+
+M41:
+local deferred matching
+never assigns one request
+to two cells
+in one epoch.
+
+M42:
+every matching edge
+satisfies R_TASK locality.
+
+M43:
+two complete
+mechanical sweeps
+are byte-identical.
+
+MECHANICAL VIABILITY RULE
+
+Before T1F1,
+the mechanical fixture
+must demonstrate that
+EMERGENT_V0 can complete
+the full balanced Phase-0
+pipeline without
+an architectural deadlock.
+
+This is not a scientific threshold.
+
+It exists only to prevent
+freezing a task interface
+that cannot carry
+a request through
+SENSE -> PROCESS -> ROUTE -> VERIFY
+under nominal balanced demand.
+
+Do not use
+Phase-1 through Phase-4
+mechanical outcome magnitude
+to tune V0
+or qualification thresholds.
+
+SUPERSESSION SUMMARY
+
+Amendment 04 supersedes
+all earlier statements concerning:
+
+six requests per epoch;
+
+n/3 or n/2 task-demand normalization;
+
+eight-edge or sixteen-edge
+initial route geometry;
+
+6 / 6 / 44 / 6 / 2
+fixed-role counts;
+
+one-shot request claims;
+
+and FIXED_ROLE dependence
+on mutable C/S commitment.
+
+The following remain unchanged:
+
+V0 dynamics;
+
+D2;
+
+G5_FULL OFF;
+
+R_TASK = 2;
+
+distributed eight-cell lesion;
+
+5% corruption;
+
+32-epoch expiry;
+
+five 32-epoch phases;
+
+Phase-4 +16 rotation;
+
+qualification thresholds;
+
+no post-result tuning.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
