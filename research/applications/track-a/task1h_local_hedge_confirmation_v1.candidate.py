@@ -363,6 +363,9 @@ def write_json(path,obj):
 
 
 def main():
+    if len(sys.argv)>=2 and sys.argv[1]=='mechanical':
+        write_json(sys.argv[2],mechanical_gate())
+        return
     if len(sys.argv)>=2 and sys.argv[1]=='manifests':
         obj=primary_manifests(sys.argv[2])
         if len(sys.argv)>=4:
