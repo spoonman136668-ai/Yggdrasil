@@ -1451,3 +1451,500 @@ That is TASK-1.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-T1F1 AMENDMENT 01 — MECHANICAL CAPACITY, LOCALITY, AND LESION REPAIR
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE T1F1
+AND BEFORE ANY TASK-1 SCIENTIFIC OUTCOME.
+
+WHY THIS AMENDMENT EXISTS
+
+A pre-implementation capacity audit
+found two mechanical contradictions
+in the original Task-1 text.
+
+First:
+
+six requests arrive per epoch,
+but one literal ingress cell per stream
+under the one-operation-per-cell rule
+could SENSE at most two requests total.
+
+That would make the declared
+>=90% functional completion target
+impossible before developmental organization
+was ever tested.
+
+Second:
+
+an eight-cell contiguous lesion
+on a one-dimensional ring,
+combined with one-way one-edge routing
+and a ban on packet carriage by lesioned cells,
+would physically sever the route.
+
+That would test
+topological disconnection,
+not local functional replacement.
+
+No Task-1 harness had been implemented.
+No mechanical sweep had run.
+No T1F1 existed.
+No primary manifest existed.
+No scientific outcome existed.
+
+Therefore these are
+pre-freeze specification repairs,
+not post-result tuning.
+
+TASK OPERATION LOCALITY
+
+Freeze a separate
+TASK SERVICE RADIUS:
+
+R_TASK = 2.
+
+R_TASK is part of the task interface only.
+
+It does not alter
+the V0 evidence radius 12,
+cooperative radius 3,
+H radius,
+Hill law,
+B update,
+or ECHO_PHASE.
+
+A task-capable cell may operate
+on an eligible request
+whose current packet position
+is within ring distance <=2.
+
+Each cell still performs
+at most one task operation per epoch.
+
+Each task operation still acts
+on exactly one request.
+
+ROUTE still moves
+the selected packet
+exactly one ring edge.
+
+No teleportation is introduced.
+
+INGRESS / EGRESS SEMANTICS
+
+Each stream retains
+one ingress anchor
+and one egress anchor.
+
+RAW requests queue
+at the stream ingress anchor.
+
+Any eligible same-stream committed cell
+within R_TASK of that ingress anchor
+may SENSE one RAW request.
+
+After SENSE,
+the packet position becomes
+the sensing cell position.
+
+PROCESS may be performed
+by an eligible same-stream committed cell
+within R_TASK of the packet.
+
+ROUTE may be performed
+by an eligible same-stream committed cell
+within R_TASK of the packet.
+
+VERIFY and REPAIR
+may be performed
+within R_TASK of the packet
+when the packet is at egress.
+
+This makes stage handoff local
+without assigning permanent emergent roles.
+
+STREAM COMMITMENT ELIGIBILITY
+
+C-stream task operations
+require a C-committed cell.
+
+S-stream task operations
+require an S-committed cell.
+
+U, H, FC, and FS cells
+do not execute task operations.
+
+This rule applies identically
+to EMERGENT_V0
+and EMERGENT_NO_REPAIR.
+
+FIXED_ROLE uses its frozen role map
+plus the same stream-direction eligibility.
+
+TASK-TO-V0 EVIDENCE ADAPTER
+
+The original preregistration required
+unserved C demand
+to enter only the C evidence channel
+and unserved S demand
+to enter only the S evidence channel.
+
+Freeze the exact mapping now.
+
+For each cell j and stream X in {C,S},
+let:
+
+n_X(j)
+
+be the number of unfinished X requests
+whose current packet position
+is within R_TASK of j.
+
+Define the bounded raw local demand signal:
+
+d_X(j) = min(1.0, n_X(j) / 3.0).
+
+The denominator 3
+is the preregistered balanced
+per-stream arrival load.
+
+It is fixed before T1F1.
+
+For each cell i,
+the V0 local evidence values are:
+
+L_C12(i)
+=
+mean d_C(j)
+over ring radius 12;
+
+L_S12(i)
+=
+mean d_S(j)
+over ring radius 12.
+
+The cooperative / recruitment
+radius-3 evidence values are:
+
+L_C3(i)
+=
+mean d_C(j)
+over ring radius 3;
+
+L_S3(i)
+=
+mean d_S(j)
+over ring radius 3.
+
+These values replace only
+the external world evidence field.
+
+They enter the existing
+V0 equations in the same places
+as inherited local C/S evidence.
+
+The V0 signed update remains exactly:
+
+B_i(t+1)
+=
+(3/4) B_i(t)
++
+(1/4) [L_C12(i) - L_S12(i)].
+
+No task metric,
+global queue length,
+future phase,
+or global throughput
+enters this adapter.
+
+POOL INPUT ADAPTER
+
+The inherited V0 pool update
+is retained with
+continuous task evidence mass.
+
+At each epoch:
+
+base_C_mass = sum_j d_C(j);
+
+base_S_mass = sum_j d_S(j).
+
+Committed-side feedback is:
+
+fb_C =
+count of C-committed cells i
+with d_C(i) >= d_S(i);
+
+fb_S =
+count of S-committed cells i
+with d_S(i) >= d_C(i).
+
+Then preserve the inherited pool law:
+
+C_pool
+=
+0.75 * prior_C_pool
++
+base_C_mass
++
+fb_C;
+
+S_pool
+=
+0.75 * prior_S_pool
++
+base_S_mass
++
+fb_S.
+
+POOL_NORM remains 160.
+
+This freezes the task adapter
+without changing
+the V0 state-transition equations.
+
+FIXED-ROLE CAPACITY REPAIR
+
+The original
+4 / 4 / 48 / 4 / 4 role count
+was not capacity matched
+to six mandatory
+SENSE -> PROCESS -> VERIFY operations
+per balanced epoch.
+
+Replace it before T1F1 with:
+
+6 SENSE cells;
+
+6 PROCESS cells;
+
+44 ROUTE cells;
+
+6 VERIFY cells;
+
+2 REPAIR cells.
+
+Total:
+64 cells.
+
+Direction split:
+
+SENSE:
+3 C,
+3 S.
+
+PROCESS:
+3 C,
+3 S.
+
+VERIFY:
+3 C,
+3 S.
+
+REPAIR:
+1 C,
+1 S.
+
+ROUTE:
+22 C,
+22 S.
+
+The exact position map
+is generated deterministically
+from the post-T1F1 bound anchors
+using an implementation-frozen algorithm.
+
+The algorithm,
+not a hand-picked result,
+must be frozen before T1F1.
+
+Role sets are exclusive.
+
+The resulting role map
+must contain exactly 64 unique cells
+and the counts above.
+
+FIXED_ROLE cells
+may service packets within R_TASK
+under the same task-locality rule.
+
+The fixed map never moves
+after primary execution begins.
+
+ANCHOR ROTATION
+
+Phase-4 anchor rotation
+remains exactly +16 ring positions.
+
+The fixed-role map
+does not rotate.
+
+The emergent arms
+retain no permanent role map.
+
+DISTRIBUTED FUNCTIONAL LESION
+
+Replace the mechanically severing
+eight-cell contiguous lesion
+with an eight-cell
+distributed functional lesion.
+
+Post-T1F1,
+derive one offset k in [0,7]
+from the bound task seed.
+
+The lesioned set is exactly:
+
+{k + 8*m mod 64
+ for m = 0..7}.
+
+Thus exactly eight cells
+are disabled
+and no two lesioned cells
+are adjacent.
+
+Epoch interval remains:
+
+96 through 107 inclusive.
+
+At epoch 108,
+task execution capacity returns.
+
+Lesioned cells:
+
+continue V0 internal state updates;
+
+cannot execute task operations.
+
+Task packets remain
+environmental task state
+and are not deleted
+when located at a lesioned position.
+
+Because task operations
+may be executed by
+nonlesioned cells within R_TASK,
+the lesion tests
+local functional substitution
+without changing ring topology
+or creating an impossible cut.
+
+The same lesion set
+is used in every arm.
+
+ROUTING SEMANTICS AFTER LESION REPAIR
+
+C packets still move clockwise.
+
+S packets still move counterclockwise.
+
+No direction reversal.
+
+No dynamic path planner.
+
+No alternate topology.
+
+The lesion repair works
+only because an active nearby cell
+may perform the one-edge ROUTE operation
+on a local packet.
+
+This is functional replacement,
+not structural rerouting.
+
+Terminology in the original
+Phase-3 purpose
+should therefore be read as:
+
+local task-operation replacement
+and post-lesion recovery,
+
+not graph-route discovery.
+
+MECHANICAL ACCEPTANCE ADDITIONS
+
+Before T1F1,
+the mechanical gate must additionally prove:
+
+M1:
+balanced arrivals
+have at least six theoretical
+SENSE operations per epoch
+in both emergent and fixed designs.
+
+M2:
+FIXED_ROLE counts are exactly
+6 / 6 / 44 / 6 / 2.
+
+M3:
+all 64 fixed-role positions
+are unique.
+
+M4:
+R_TASK = 2
+is used only by the task interface.
+
+M5:
+d_C and d_S
+are bounded to [0,1].
+
+M6:
+C demand never enters
+the S evidence channel.
+
+M7:
+S demand never enters
+the C evidence channel.
+
+M8:
+no global queue total
+is read by cell operation selection
+or V0 transition logic.
+
+M9:
+the lesion set has exactly
+eight unique cells.
+
+M10:
+pairwise lesion spacing
+is exactly eight positions
+around the ring.
+
+M11:
+lesioned cells cannot
+execute task operations.
+
+M12:
+lesioned cells continue
+V0 internal state updates.
+
+M13:
+a packet at a lesioned position
+can still be advanced
+only by a qualifying
+nonlesioned local cell
+within R_TASK,
+one edge per ROUTE operation.
+
+M14:
+no packet changes stream direction.
+
+M15:
+two complete mechanical sweeps
+remain byte-identical.
+
+All original Task-1
+scientific thresholds remain unchanged.
+
+No scientific result
+has been observed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
