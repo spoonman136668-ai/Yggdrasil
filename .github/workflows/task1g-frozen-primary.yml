@@ -1,0 +1,101 @@
+name: Task1G Frozen Primary
+
+on:
+  push:
+    branches: [dg1a-ar]
+    paths:
+      - .github/workflows/task1g-frozen-primary.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  primary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Verify frozen source and bound manifests
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research/applications/track-a
+
+          T1GF1='ec41d76f5e80005e6b65db651753b04ec3f9d8cf'
+          python3 task1g_local_deadline_repair_v1.py manifests "$T1GF1" > /tmp/task1g-manifests.json
+
+          python3 - <<'PY'
+          import hashlib, json
+          p='/tmp/task1g-manifests.json'
+          b=open(p,'rb').read()
+          expected_file='17577c5dca1802f23533876fd5f3dcaa4878ebaafd8caef10878e313c6afadbf'
+          got=hashlib.sha256(b).hexdigest()
+          if got != expected_file:
+              raise SystemExit(f'TASK1G_MANIFEST_FILE_SHA_MISMATCH expected={expected_file} actual={got}')
+          ms=json.loads(b)
+          expected=[
+              '1cb66e836c4311eb840cc6d7574aefb876d0e7c37869b65157a83ef784099d09',
+              '3ab5adc367fe24c112d1055393077f540d070104ba8f5e67558f60d7f893acfc',
+              '493bf2a47cebe50ac9ebd54d9cfbcde2fcd24c0037da1d3548f570ccb9002d0f',
+              'b72e767d556220339b71ff256aabc00745d315864f33bcf52edde9dd9733cba7',
+              'd17af6ff367c2626420bec0e1ff3ce363d2fa50d160e795e62c736dfcf8f1a8a',
+          ]
+          actual=[m['manifest_sha256'] for m in ms]
+          if actual != expected:
+              raise SystemExit(f'TASK1G_MANIFEST_IDENTITIES_MISMATCH actual={actual}')
+          print('TASK1G_MANIFEST_BINDING_PASS')
+          print('manifest_file_bytes',len(b))
+          print('manifest_file_sha256',got)
+          PY
+
+      - name: Run duplicate five-replicate primary sweeps
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research/applications/track-a
+
+          python3 task1g_local_deadline_repair_v1.py sweep /tmp/task1g-manifests.json > /tmp/task1g-primary-1.json
+          python3 task1g_local_deadline_repair_v1.py sweep /tmp/task1g-manifests.json > /tmp/task1g-primary-2.json
+
+          cmp -s /tmp/task1g-primary-1.json /tmp/task1g-primary-2.json
+
+          python3 - <<'PY'
+          import hashlib
+          for p in ('/tmp/task1g-primary-1.json','/tmp/task1g-primary-2.json'):
+              b=open(p,'rb').read()
+              print(p, 'bytes', len(b), 'sha256', hashlib.sha256(b).hexdigest())
+          PY
+
+      - name: Open frozen duplicate gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research/applications/track-a
+          python3 task1g_local_deadline_repair_v1.py open /tmp/task1g-primary-1.json /tmp/task1g-primary-2.json > /tmp/task1g-open.json
+
+          python3 - <<'PY'
+          import hashlib, json
+          p='/tmp/task1g-open.json'
+          b=open(p,'rb').read()
+          x=json.loads(b)
+          d=x['duplicate_sweep']
+          if not d['byte_identical']:
+              raise SystemExit('TASK1G_DUPLICATE_GATE_FALSE')
+          print('TASK1G_DUPLICATE_GATE_PASS')
+          print('open_bytes',len(b))
+          print('open_sha256',hashlib.sha256(b).hexdigest())
+          print(json.dumps(x['qualification'],sort_keys=True))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: task1g-frozen-primary
+          path: |
+            /tmp/task1g-manifests.json
+            /tmp/task1g-primary-1.json
+            /tmp/task1g-primary-2.json
+            /tmp/task1g-open.json
+          if-no-files-found: error
