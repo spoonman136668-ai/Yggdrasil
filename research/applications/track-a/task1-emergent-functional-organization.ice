@@ -2243,3 +2243,224 @@ has been observed.
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+
+PRE-T1F1 AMENDMENT 03 — HARD OPERATION-BUDGET REPAIR
+
+DATE:
+2026-09-22.
+
+STATUS:
+BOUND BEFORE T1F1
+AND BEFORE ANY TASK-1 SCIENTIFIC OUTCOME.
+
+MECHANICAL CAPACITY RESULT
+
+The repaired local scheduler
+executed deterministically,
+
+but a hard capacity calculation
+showed the original route geometry
+was still impossible.
+
+With a 16-edge nominal route,
+every correctly completed
+non-corrupted request requires at minimum:
+
+1 SENSE;
+
+1 PROCESS;
+
+16 ROUTE;
+
+1 VERIFY.
+
+Total:
+
+19 cell-operations per request.
+
+At six arrivals per epoch:
+
+6 * 19
+=
+114 required cell-operations per epoch.
+
+The organism has only:
+
+64 cells
+
+and each cell may execute
+at most one task operation per epoch.
+
+Therefore the original geometry
+cannot possibly sustain
+the preregistered 90%
+full-run completion target.
+
+This is a hard arithmetic contradiction,
+not a scientific result.
+
+No T1F1 exists.
+No primary manifest exists.
+No primary execution occurred.
+
+ANCHOR-GEOMETRY REPAIR
+
+Keep:
+
+64 cells;
+
+six arrivals per epoch;
+
+one-edge ROUTE operations;
+
+one operation per cell per epoch;
+
+32-epoch phases;
+
+Phase-4 +16 anchor rotation.
+
+Change only the
+initial ingress-to-egress
+nominal route distance.
+
+Freeze the post-T1F1
+anchor geometry as a
+seed-derived global rotation r
+with r in [0,7]:
+
+C ingress:
+r.
+
+C egress:
+r + 8 mod 64.
+
+S ingress:
+r + 40 mod 64.
+
+S egress:
+r + 32 mod 64.
+
+C still routes clockwise.
+
+S still routes counterclockwise.
+
+Therefore both nominal
+initial route lengths are exactly:
+
+8 edges.
+
+At Phase 4,
+all four anchors still rotate
+by exactly +16.
+
+MINIMUM OPERATION BUDGET
+
+A non-corrupted request now needs:
+
+1 SENSE;
+
+1 PROCESS;
+
+8 ROUTE;
+
+1 VERIFY.
+
+Total:
+
+11 operations.
+
+Six arrivals per epoch require:
+
+66 operations/epoch
+for 100% instantaneous steady-state service.
+
+The preregistered
+90% full-run threshold
+requires approximately:
+
+59.4 operations/epoch
+
+before the small corruption-repair overhead.
+
+That is below
+the 64-operation hard ceiling.
+
+The task is therefore
+capacity-constrained
+but no longer mathematically impossible.
+
+The 5% corruption rate
+remains unchanged.
+
+The lesion still reduces
+available task-operation capacity
+for 12 epochs,
+so backlog and recovery
+remain meaningful.
+
+EXPIRY
+
+Request expiry remains:
+
+32 epochs.
+
+An eight-edge route
+leaves sufficient
+pre-expiry slack
+for local queueing,
+verification,
+and occasional repair.
+
+No expiry tuning is introduced.
+
+FIXED-ROLE GEOMETRY
+
+Use Amendment-02 relative
+role placement around
+the repaired anchors.
+
+Mechanical validation must prove
+the special-role sets
+remain collision-free.
+
+MECHANICAL ACCEPTANCE ADDITIONS
+
+M23:
+initial C nominal route length
+is exactly 8.
+
+M24:
+initial S nominal route length
+is exactly 8.
+
+M25:
+minimum non-corrupt
+pipeline cost is exactly
+11 task operations.
+
+M26:
+0.90 * 6 * 11
+is less than or equal to
+64 operations per epoch.
+
+M27:
+the repaired anchor geometry
+produces no fixed-role collisions.
+
+M28:
+Phase-4 rotation
+remains exactly +16.
+
+SUPERSESSION
+
+Any prior implied
+16-edge initial Task-1 route
+is superseded by this amendment.
+
+No Task-1 scientific result
+has been observed.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
