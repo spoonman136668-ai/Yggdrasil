@@ -1,0 +1,109 @@
+TITLE: LU-2I LU2IF1 THIRTY-MANIFEST LOAD-CALIBRATION BINDING
+DATE: 2026-09-24
+STATUS: BOUND / NO CALIBRATION WORLD EXECUTED
+TRACK: DG-1 / LEARNED-UPDATER TRANSITION
+
+PREREGISTRATION:
+41cbbac5e7a4d58888c25cd562b9e92ef5cdb44c
+
+MECHANICAL GATE:
+46b2bbb474e42a52fb598fef1ae829d072734f43
+
+LU2IF1:
+326f89f940818a6abb0fcbc999595b844936dc53
+
+DERIVATION RUN:
+36050042024
+
+DERIVATION HEAD:
+af67e4c975aaa466aeb7d843ed859f62d8b151f3
+
+CALIBRATION STATUS BEFORE BINDING
+
+L1 worlds executed:
+0
+
+L2 worlds executed:
+0
+
+L3 worlds executed:
+0
+
+Only deterministic manifest materialization occurred.
+
+THIRTY-MANIFEST BUNDLE
+
+manifests:
+30
+
+10 paired replicates x loads 1,2,3.
+
+canonical JSON bytes:
+930733
+
+SHA256:
+3598c372a046530caaf8956b58e0b2654c212fed00149cf9f350d0035344995f
+
+duplicate derivations byte-identical:
+TRUE
+
+BOUND MANIFEST SHA256
+
+R1 L1 cfd94ee555b3cd506d872c80e1d92077e6f806eba65404a46581530e974d3f5c
+R1 L2 7d84ea9a0b38605f79cd0968eddf2208e2ce4d1b70a8336749a49c51a7291779
+R1 L3 eb864d533c8568cda35f4b53c8c99859ec398bedb00b1fd9ea1e0d3bf78165c2
+R2 L1 b8af92fb24917d3d54f6c755c12eef5ff298efe51959552e523e1e9b4f487d2c
+R2 L2 1faccac3a4d44b4538dac24288c15b11d4525cf15db324c795812e815ad1eb37
+R2 L3 84ec1c56194b5c29c3afae7a8088cef06f04560bee2ddcb60b35ecff424fa49d
+R3 L1 90e0f8178575fa738df623e9d032fa19c9fe3c41b393c0e27f9544034d88af71
+R3 L2 1bcb5518a1dd5cc4283495bd75ed7024307d6a7a2c25a2e4707e1ab83ea19cda
+R3 L3 cdc34d02143905b7462957df45041e1848078a93371d615366e05a2d263fb857
+R4 L1 22f7e08aa826bbebfa3d9a9de481b04a5a2eede2d0acc762e1ae79ee41bc7646
+R4 L2 f3e3475494c85d2ccf24455d8559e88baa3ea55cf956f56a5ced6cb76e66d94d
+R4 L3 f1360a96ae9236bed178162743e75805e7fd14a493ff37aa60d3012d33877f7e
+R5 L1 34d561254887ec351dc7efc9d8b450ca66bac8b4e0633ca96e17d348f73257e7
+R5 L2 5aa9ae62f83f51def5c80d14cc97a1f1f445e3a7fce5bbde644244106fa3c41f
+R5 L3 f08d07ffbc8693bc47fb78c7ce0ab867a9e9e617d6428a4ed8770d88f381c6e3
+R6 L1 72b7cb34c1dc8e80cfb9fa91d7ff952c52fac5d2da5515eea0d206a77334fcc4
+R6 L2 afb928a69670796df254ce71425f04ad536bc347d049d0686bedb73f1f226713
+R6 L3 24761fe6488ed7ba9c0d99d3bfd7120c3ce43425cc774e3d6af54a962fc3e7f4
+R7 L1 80783227f2c1d44cd188fd6361a233044e74259a5035d01984139ce7c6403382
+R7 L2 ef96f2505f6106422034ec14c218dad368bd88d02213a0d0ae557a36aa379992
+R7 L3 73addce542fae7f464df3ac47f91c0dd84a77d90e1df6138880840ad4f85d20d
+R8 L1 a1726bb3bfeb78f403fb039a97bd14f96d24823ea794fb5a2442d8f7569cde8c
+R8 L2 1a4c198cdf6516c41fbe45d8812c0f415e2e889267e3871301d830acc026bda3
+R8 L3 f7c0c924e9922f606f39576e823ca405a74852ff0bdc9beffa1ac43e31e5b812
+R9 L1 fb6f92e8e92f406573d80a1e8319f53c8adc80061cc77abc71b0777020656569
+R9 L2 8de085cc37875a85abd8eb9c1cb8aa6460ad261bcc55123c36d51a6f4b851235
+R9 L3 81cb7f1f8f73a7ce4e00e65085c8ed531866b9dd8bd283e4058ecc5d96598091
+R10 L1 377dabf8e8386df0ca93cc05b3bf9ac8f76078b13646c438f569f353b8dc9696
+R10 L2 31bb8a0896be45070fb5fd346d96e6613d8bb9f7dae49d63de79b6b988222b66
+R10 L3 ae5d6787680d1be9600529d7ddb7ec04b55a433c48a06102683685ec8004a116
+
+PAIRING
+
+Within each replicate:
+
+L1 request identities are a strict subset of L2.
+
+L2 request identities are a strict subset of L3.
+
+Programs, request content for shared identities, corruption decisions for
+shared identities, lesion, anchors, and developmental seed are paired.
+
+No calibration manifest may be reused as a future learned-U transfer world.
+
+EXECUTION AUTHORIZATION
+
+The exact 30 bound manifests may now execute U_A0 only.
+
+The runner must regenerate them from LU2IF1 and fail closed unless the
+canonical bundle SHA256 is exactly:
+
+3598c372a046530caaf8956b58e0b2654c212fed00149cf9f350d0035344995f
+
+Two complete calibration sweeps must be byte-identical before interpretation.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
