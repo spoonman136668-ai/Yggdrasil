@@ -133,8 +133,8 @@ def validate_manifest(m):
     if m["lesion"]!=contiguous_lesion(m["seed"]): raise AssertionError("contiguous lesion")
     if len(m["inherited_lesion"])!=8 or len(m["lesion"])!=16: raise AssertionError("lesion size")
     if not is_contiguous_ring(m["lesion"]): raise AssertionError("lesion contiguity")
-    if set(m["lesion"])==set(m.strong_lesion(m["seed"])): raise AssertionError("geometry not changed")
-    if min(m["lesion"])!=min(m["inherited_lesion"]): raise AssertionError("base offset family")
+    if set(m["lesion"])==set(parent_m.strong_lesion(m["seed"])): raise AssertionError("geometry not changed")
+    if min(m["lesion"])!=(p.h64("TASK1-LESION-OFFSET",m["seed"])%8): raise AssertionError("base offset family")
     if len(m["arrivals"])!=160: raise AssertionError("arrivals")
     counts=Counter(r["t"] for r in m["arrivals"])
     if any(counts[t]!=1 for t in range(160)): raise AssertionError("one per epoch")
@@ -257,7 +257,7 @@ def mechanical_gate():
     global _PRIMARY_MANIFEST_CALLS
     before=_PRIMARY_MANIFEST_CALLS
     m=mechanical_manifest(); validate_manifest(m)
-    inherited=set(m["inherited_lesion"]); contiguous=set(m["lesion"]); distributed=set(m.strong_lesion(m["seed"]))
+    inherited=set(m["inherited_lesion"]); contiguous=set(m["lesion"]); distributed=set(parent_m.strong_lesion(m["seed"]))
     # Warm the frozen learned path before measuring RNG consumption.
     # Model construction initializes temporary parameters before loading the
     # canonical state dict; that one-time construction is not inference RNG.
@@ -271,7 +271,7 @@ def mechanical_gate():
     fixture=_with_validation(g.stage_repair_fixture)
     csfix=_with_validation(g.cs_fcfs_echo_teacher_parity_fixture,m)
     probes={
-        "exact_lu2m_lu2l_alpha":m.ALPHA==x.ALPHA==ALPHA==0.25,
+        "exact_lu2m_lu2l_alpha":parent_m.ALPHA==x.ALPHA==ALPHA==0.25,
         "exact_canonical_weight_sha":weight_sha==WEIGHT_SHA,
         "u_a0_teacher_one_step":_with_validation(g.one_step_parity,m),
         "u_a25_convex_blend":_with_validation(g.blend_fixture,m),
@@ -320,7 +320,7 @@ def main():
         write(sys.argv[3],run_sweep(json.load(open(sys.argv[2],encoding="utf-8")))); return
     if len(sys.argv)>=2 and sys.argv[1]=="open":
         write(sys.argv[4],open_duplicate(sys.argv[2],sys.argv[3])); return
-    raise SystemExit("usage: mechanical OUT | manifests LU2MF1 OUT | sweep MANIFESTS OUT | open SWEEP1 SWEEP2 OUT")
+    raise SystemExit("usage: mechanical OUT | manifests LU2NF1 OUT | sweep MANIFESTS OUT | open SWEEP1 SWEEP2 OUT")
 
 if __name__=="__main__":
     main()
