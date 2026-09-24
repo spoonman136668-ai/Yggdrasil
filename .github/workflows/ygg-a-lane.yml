@@ -1,0 +1,129 @@
+name: YGG-A Developmental Lane
+
+on:
+  push:
+    branches:
+      - research/ygg-a-developmental
+    paths:
+      - research/control/ygg-a-run.json
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ygg-a-research-lane
+  cancel-in-progress: false
+
+jobs:
+  lane-bootstrap:
+    runs-on: [self-hosted, Windows, X64, yggdrasil, ygg-a, research-only]
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout exact lane commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+          clean: true
+
+      - name: Assert lane isolation
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          if ($env:GITHUB_REPOSITORY -cne 'spoonman136668-ai/Yggdrasil') {
+              throw "REPOSITORY_MISMATCH actual=$env:GITHUB_REPOSITORY"
+          }
+
+          if ($env:GITHUB_REF_NAME -cne 'research/ygg-a-developmental') {
+              throw "BRANCH_MISMATCH expected=research/ygg-a-developmental actual=$env:GITHUB_REF_NAME"
+          }
+
+          $ControlPath = 'research/control/ygg-a-run.json'
+          if (-not (Test-Path -LiteralPath $ControlPath)) {
+              throw "CONTROL_MISSING path=$ControlPath"
+          }
+
+          $Raw = Get-Content -LiteralPath $ControlPath -Raw
+          $Control = $Raw | ConvertFrom-Json
+
+          if ($Control.schema -ne 1) {
+              throw "CONTROL_SCHEMA_MISMATCH"
+          }
+          if ($Control.lane -cne 'YGG-A') {
+              throw "CONTROL_LANE_MISMATCH expected=YGG-A actual=$($Control.lane)"
+          }
+          if ($Control.mode -cne 'bootstrap') {
+              throw "BOOTSTRAP_ONLY expected=bootstrap actual=$($Control.mode)"
+          }
+
+          if ($Raw -match '(?i)ckb-plane|ktrade|wingless|coinbase|broker|ygg-b|ygg-c') {
+              throw 'LANE_ISOLATION_TOKEN_VIOLATION'
+          }
+
+      - name: Probe runner environment
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          $OutDir = Join-Path $env:RUNNER_TEMP 'ygg-a-bootstrap'
+          if (Test-Path -LiteralPath $OutDir) {
+              Remove-Item -LiteralPath $OutDir -Recurse -Force
+          }
+          New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
+
+          $Python = Get-Command python -ErrorAction SilentlyContinue
+          $Py = if ($Python) {
+              (& python --version 2>&1 | Out-String).Trim()
+          } else {
+              $null
+          }
+
+          $Nvidia = Get-Command nvidia-smi -ErrorAction SilentlyContinue
+          $Gpu = if ($Nvidia) {
+              @(& nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader 2>&1)
+          } else {
+              @()
+          }
+
+          $Torch = $null
+          if ($Python) {
+              $Torch = (& python -c "import json; import importlib.util; s=importlib.util.find_spec('torch'); print('none' if s is None else 'present')" 2>&1 | Out-String).Trim()
+          }
+
+          $Identity = [Security.Principal.WindowsIdentity]::GetCurrent().Name
+          $Probe = [ordered]@{
+              schema          = 1
+              lane            = 'YGG-A'
+              github_sha      = $env:GITHUB_SHA
+              github_ref_name = $env:GITHUB_REF_NAME
+              runner_name     = $env:RUNNER_NAME
+              runner_os       = $env:RUNNER_OS
+              runner_arch     = $env:RUNNER_ARCH
+              identity        = $Identity
+              workspace       = $env:GITHUB_WORKSPACE
+              runner_temp     = $env:RUNNER_TEMP
+              powershell      = $PSVersionTable.PSVersion.ToString()
+              python          = $Py
+              torch           = $Torch
+              gpu             = $Gpu
+              git             = (& git --version | Out-String).Trim()
+              repo_write_test = 'NOT_ATTEMPTED'
+              isolation       = 'Yggdrasil lane only'
+          }
+
+          $Probe | ConvertTo-Json -Depth 5 |
+              Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
+
+          Get-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json')
+
+      - name: Upload lane bootstrap evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ygg-a-bootstrap-${{ github.run_id }}
+          path: ${{ runner.temp }}\ygg-a-bootstrap\**
+          if-no-files-found: error
+          retention-days: 14
