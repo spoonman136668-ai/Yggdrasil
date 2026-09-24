@@ -26,6 +26,18 @@ def expected(r):
     d=p.truth(r.program_d,(a,b,c,r.bits[3]))
     return a,b,c,d
 
+def expected_pair(r):
+    a,_,_,d=expected(r)
+    return a,d
+
+def maturity_summary(m,registry,detected):
+    old=t.expected_quad
+    t.expected_quad=expected
+    try:
+        return t.maturity_summary(m,registry,detected)
+    finally:
+        t.expected_quad=old
+
 def task_op(r):
     if r.stage=="RAW": return "SENSE"
     if r.stage in ("SENSED","PROCESSED_A","PROCESSED_B_ONLY","PROCESSED_C_ONLY","PROCESSED_BC"): return "PROCESS"
@@ -107,7 +119,7 @@ def run_world(m):
         do_op(seed,tick,cell,name,r,trace)
         if name=="VERIFY" and pre=="AT_EGRESS" and r.stage=="REPAIR_PENDING":
             detected.setdefault(r.rid,tick)
-    g.Task2Request=factory; g.task2_op=task_op; g.do_operation=op; g.expected_pair=t.expected_pair_compat
+    g.Task2Request=factory; g.task2_op=task_op; g.do_operation=op; g.expected_pair=expected_pair
     g.validate_manifest=t.validate_manifest; g.REQUESTS_PER_EPOCH=1
     try:
         result,history,_=g.run_world(m,"U_A0")
@@ -149,8 +161,8 @@ def mechanical():
     a=run_world(m)
     rng1=torch.random.get_rng_state().clone()
     b=run_world(m)
-    rowa={"result":g.compact(a[0]),"maturity":t.maturity_summary(m,a[2],a[3])}
-    rowb={"result":g.compact(b[0]),"maturity":t.maturity_summary(m,b[2],b[3])}
+    rowa={"result":g.compact(a[0]),"maturity":maturity_summary(m,a[2],a[3])}
+    rowb={"result":g.compact(b[0]),"maturity":maturity_summary(m,b[2],b[3])}
     ba=canonical(rowa); bb=canonical(rowb)
     probes={
       "prereg_bound":PREREG=="44e5db473c0a0aa4c6065b77aa2d83cedecfc1eb",
