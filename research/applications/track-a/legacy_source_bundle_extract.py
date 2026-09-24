@@ -10,6 +10,7 @@ LOADERS=[
     "task1f_local_hedge_ambiguity_r1_v1.py",
     "lu0c_density_preserving_local_pool_v1.py",
     "lu0d_no_pool_confirmation_v1.py",
+    "lu0e_v02_staged_local_identifiability_v1.py",
     "lu1a_first_learned_staged_cell_v1.py",
     "lu1b_focal_side_canonical_stay_v1.py",
     "lu1e_state_conditioned_equivariant_relational_updater_v1.py",
