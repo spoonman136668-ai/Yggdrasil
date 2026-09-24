@@ -30,7 +30,7 @@ jobs:
           clean: true
 
       - name: Assert lane isolation
-        shell: powershell
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
 
@@ -65,7 +65,7 @@ jobs:
           }
 
       - name: Probe runner environment
-        shell: powershell
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
 
