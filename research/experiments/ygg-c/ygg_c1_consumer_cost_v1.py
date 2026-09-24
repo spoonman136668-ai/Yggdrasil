@@ -25,7 +25,14 @@ def peak_rss_bytes():
             ("PagefileUsage",ctypes.c_size_t),("PeakPagefileUsage",ctypes.c_size_t)
         ]
     pmc=PMC(); pmc.cb=ctypes.sizeof(PMC)
-    ok=ctypes.windll.psapi.GetProcessMemoryInfo(ctypes.windll.kernel32.GetCurrentProcess(),ctypes.byref(pmc),pmc.cb)
+    kernel32=ctypes.WinDLL("kernel32",use_last_error=True)
+    psapi=ctypes.WinDLL("psapi",use_last_error=True)
+    kernel32.GetCurrentProcess.argtypes=[]
+    kernel32.GetCurrentProcess.restype=wintypes.HANDLE
+    psapi.GetProcessMemoryInfo.argtypes=[wintypes.HANDLE,ctypes.POINTER(PMC),wintypes.DWORD]
+    psapi.GetProcessMemoryInfo.restype=wintypes.BOOL
+    handle=kernel32.GetCurrentProcess()
+    ok=psapi.GetProcessMemoryInfo(handle,ctypes.byref(pmc),pmc.cb)
     return int(pmc.PeakWorkingSetSize) if ok else None
 
 def gpu_state(reset=False):
