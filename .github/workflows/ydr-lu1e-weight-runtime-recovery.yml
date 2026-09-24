@@ -1,0 +1,72 @@
+name: YDR LU1E Weight Runtime Recovery
+
+on:
+  push:
+    branches: [dg1a-ar]
+    paths:
+      - research/control/lu1e-weight-runtime-recovery.json
+
+permissions:
+  contents: read
+
+jobs:
+  recover:
+    name: recover-${{ matrix.cap }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        cap: [default, avx2, avx512]
+    env:
+      ATEN_CPU_CAPABILITY: ${{ matrix.cap }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Assert isolation boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REPOSITORY}" = "spoonman136668-ai/Yggdrasil"
+          test -f research/control/lu1e-weight-runtime-recovery.json
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Prepare pinned scientific runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --no-input numpy==2.3.5
+          python -m pip install --disable-pip-version-check --no-input --index-url https://download.pytorch.org/whl/cpu torch==2.10.0
+          python - <<'PY'
+          import numpy, torch, sys
+          assert numpy.__version__ == "2.3.5"
+          assert torch.__version__.startswith("2.10.0")
+          print(sys.version)
+          print("numpy", numpy.__version__)
+          print("torch", torch.__version__)
+          print("cpu", torch.backends.cpu.get_cpu_capability())
+          PY
+
+      - name: Reproduce frozen LU1E weights
+        shell: bash
+        run: |
+          set -euo pipefail
+          out="/tmp/lu1e-runtime-recovery/${{ matrix.cap }}"
+          rm -rf "$out"
+          mkdir -p "$out"
+          python research/applications/track-a/lu1e_weight_runtime_recovery_matrix.py "$out"
+
+      - name: Upload recovery evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lu1e-runtime-recovery-${{ matrix.cap }}-${{ github.run_id }}
+          if-no-files-found: error
+          retention-days: 14
+          path: /tmp/lu1e-runtime-recovery/${{ matrix.cap }}/**
