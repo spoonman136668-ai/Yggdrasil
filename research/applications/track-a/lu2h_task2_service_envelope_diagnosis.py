@@ -126,6 +126,7 @@ def observe_world(m):
             "sense":sense,"process_a":pa,"process_b":pb,
             "first_route":routes[0] if routes else None,
             "last_route":routes[-1] if routes else None,
+            "routes":routes,
             "route_count":len(routes),
             "first_verify":fv,"failed_first_verify":failed,
             "repair":repair,"post_repair_verify":post_verify,
@@ -211,6 +212,8 @@ for w in worlds:
                 vals.append(max(0,r["process_b"]-r["process_a"]-1))
             elif name=="process_b_to_first_route_extra" and r["process_b"] is not None and r["first_route"] is not None:
                 vals.append(max(0,r["first_route"]-r["process_b"]-1))
+            elif name=="between_route_hops_extra" and r["routes"]:
+                vals.extend(max(0,b-a-1) for a,b in zip(r["routes"],r["routes"][1:]))
             elif name=="last_route_to_first_verify_extra" and r["last_route"] is not None and r["first_verify"] is not None:
                 vals.append(max(0,r["first_verify"]-r["last_route"]-1))
         all_waits[name].extend(vals)
@@ -229,8 +232,9 @@ recovery_events=[x for w in worlds for x in w["recovery"].values()]
 recovery_unreached=sum(not x["target_reached"] for x in recovery_events)
 
 largest_wait=max(
-    (k,v["mean"]) for k,v in aggregate_waits.items() if v["mean"] is not None
-)[0] if aggregate_waits else None
+    ((v["mean"],k) for k,v in aggregate_waits.items() if v["mean"] is not None),
+    default=(None,None)
+)[1]
 
 flags=[]
 if largest_wait=="pre_sense":
