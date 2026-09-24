@@ -1,3 +1,8 @@
+STATUS_NOTE: SUPERSEDED BEFORE RESULT
+AUTHORITATIVE_PREREG: 4713b8d26aa9328ee6a6cebaf0a9fa07169d4d49
+AUTHORITATIVE_FILE: research/experiments/ygg-b/ygg-b2-content-binding-preregistration.ice
+REASON: The concurrent B2 preregistration above was committed earlier and is the one bound by the executable. This later file is unbound and retained only as an audit record.
+
 TITLE: YGG-B2 Content-Addressed Binding Preregistration
 DATE: 2026-09-24
 STATUS: PREREGISTERED
