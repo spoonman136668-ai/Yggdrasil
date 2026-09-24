@@ -220,10 +220,88 @@ def mechanical():
             "duplicate":{"bytes":len(ba),"sha256":hashlib.sha256(ba).hexdigest()},
             "world":rowa}
 
+def scored_world(m):
+    t.validate_manifest(m)
+    result,history,registry,detected=run_world(m)
+    return {
+        "manifest":m,
+        "result":g.compact(result),
+        "maturity":maturity_summary(m,registry,detected),
+        "integrity":{
+            "duplicate_cell":result["matching_duplicate_cell"]==0,
+            "duplicate_request":result["matching_duplicate_request"]==0,
+            "incorrect_done_zero":result["incorrect_done"]==0,
+        },
+    }
+
+def primary():
+    manifests=t.primary_manifests(PREREG)
+    first=[scored_world(m) for m in manifests]
+    second=[scored_world(m) for m in manifests]
+    b1=canonical(first); b2=canonical(second)
+
+    feasible=[row for row in first if t.baseline_feasible(row)]
+    all_zero=all(row["result"]["incorrect_done"]==0 for row in first)
+    all_matching=all(row["integrity"]["duplicate_cell"] and row["integrity"]["duplicate_request"] for row in first)
+    all_repair=all(row["result"]["repair"]["repair_integrity"] for row in first)
+    all_maturity=all(row["maturity"]["pass"] for row in first)
+    f_bc=fixture("BC"); f_cb=fixture("CB")
+    ordering=(f_bc["sibling1"]=="PROCESSED_B_ONLY" and f_cb["sibling1"]=="PROCESSED_C_ONLY")
+    join=(f_bc["d_blocked_until_join"] and f_cb["d_blocked_until_join"] and
+          f_bc["d_after_join"] and f_cb["d_after_join"])
+    dependency=(f_bc["dependencies_exact"] and f_cb["dependencies_exact"])
+    repair_fixture=(f_bc["detected"] and f_bc["repaired"] and f_bc["reverified"] and
+                    f_cb["detected"] and f_cb["repaired"] and f_cb["reverified"])
+    duplicate=(b1==b2)
+    q={
+        "baseline_feasible_count":len(feasible),
+        "evidence_coverage_pass":len(feasible)>=8,
+        "all_zero_incorrect_done":all_zero,
+        "all_matching_integrity":all_matching,
+        "both_sibling_orders_exercised":ordering,
+        "d_never_before_join":join,
+        "fork_dependencies_exact":dependency,
+        "all_repair_integrity":all_repair,
+        "all_maturity_pass":all_maturity,
+        "repair_reverify_fixture":repair_fixture,
+        "duplicate_byte_identical":duplicate,
+    }
+    q["YGG_A1_FORK_JOIN_EXACT_PARENT_FEASIBLE"]=all([
+        q["evidence_coverage_pass"],q["all_zero_incorrect_done"],q["all_matching_integrity"],
+        q["both_sibling_orders_exercised"],q["d_never_before_join"],q["fork_dependencies_exact"],
+        q["all_repair_integrity"],q["all_maturity_pass"],q["repair_reverify_fixture"],
+        q["duplicate_byte_identical"],
+    ])
+    q["feasible_replicates"]=[row["manifest"]["replicate"] for row in feasible]
+    q["per_world"]=[{
+        "replicate":row["manifest"]["replicate"],
+        "baseline_feasible":t.baseline_feasible(row),
+        "correct_done":row["result"]["correct_done"],
+        "incorrect_done":row["result"]["incorrect_done"],
+        "expired":row["result"]["expired"],
+        "backlog":row["result"]["backlog"],
+        "ops_per_correct":row["result"]["operations_per_correct_completion"],
+        "demand_recovery":row["result"]["events"]["demand_reversal_recovery_latency"],
+        "lesion_recovery":row["result"]["events"]["lesion_recovery_latency"],
+        "anchor_recovery":row["result"]["events"]["anchor_rotation_recovery_latency"],
+        "maturity_pass":row["maturity"]["pass"],
+        "repair_integrity":row["result"]["repair"]["repair_integrity"],
+    } for row in first]
+    return {
+        "schema":1,
+        "experiment":"YGG-A1",
+        "stage":"primary",
+        "prereg":PREREG,
+        "duplicate":{"byte_identical":duplicate,"bytes":len(b1),"sha256":hashlib.sha256(b1).hexdigest()},
+        "qualification":q,
+        "sweep":first,
+    }
+
 def main():
-    if len(sys.argv)!=3 or sys.argv[1]!="mechanical":
-        raise SystemExit("usage: mechanical OUT")
-    Path(sys.argv[2]).write_bytes(canonical(mechanical()))
+    if len(sys.argv)!=3 or sys.argv[1] not in ("mechanical","primary"):
+        raise SystemExit("usage: mechanical OUT | primary OUT")
+    out=mechanical() if sys.argv[1]=="mechanical" else primary()
+    Path(sys.argv[2]).write_bytes(canonical(out))
 
 if __name__=="__main__":
     main()
