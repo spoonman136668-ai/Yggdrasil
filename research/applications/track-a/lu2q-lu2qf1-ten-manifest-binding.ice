@@ -1,0 +1,64 @@
+TITLE: LU-2Q LU2QF1 TEN-MANIFEST BINDING
+DATE: 2026-09-24
+STATUS: BOUND / NO LU-2Q PRIMARY WORLD EXECUTED
+TRACK: DG-1 / TASK-DISTANCE EXPANSION
+
+PREREGISTRATION:
+2084aa80e1fec3e95194fd6ecf642c53a68e9385
+
+MECHANICAL GATE:
+0745002f3a15e2e21e38ede50869e8c9d2e91425
+
+LU2QF1:
+c2907a97aeff03f6fb7bebacf448fc9027859e19
+
+DERIVATION RUN:
+36059763766
+
+DERIVATION HEAD:
+0282030c9a6761bb1d1c49a31841214368aec640
+
+DERIVATION ARTIFACT:
+10834510116
+
+DUPLICATE DERIVATION
+
+bytes each:
+173361
+
+SHA256 both:
+a7e202de864c885c5f50d0a5cff7f449040d0d0ffd7bc9a73c665f57d2cf917a
+
+byte-identical:
+TRUE
+
+BOUND MANIFESTS
+
+1 82e65f1191039bac382e4a34a59fcad768eb6e47fddc4e5b51ceee70b44231db
+2 1d23081b8b13696db9f0ecb4e73de5076a00ab44bd2c407640f6b76188305a59
+3 71a77f1b31317179bace20644f3e37dde706591462609f4a275692029784f538
+4 c9b9bef87ff47dd08c9f37503ee3cbb3c924d32e08cb52e61c0fa1e30868f5d3
+5 1ed1d9fcdec21d64169861005a4b7f155e8780d79257f49a83ce7bd178e24846
+6 732c7e40a47ee3d79f55e4eadd1d643ee4be59bf2a3f9a9005bbd8ba638f1f07
+7 f5fe24dea01091326873d6750a21c03692068db746e8ba9740af2ad195f893d6
+8 0134ac2543ea77a2216c2b4407daf70e6b46a0b0c90774fc67cafa3c9dcbf993
+9 6fef6c4143825e7b5112d7e11ef75a29e2c05834f02de3baee6837cbdf6c126f
+10 09afb14f8f542a05dfea602c0a13d4bef6b87ff5f972c8b4e0bc52ba593346ab
+
+STRUCTURAL STATUS
+
+10 fresh Task-3 worlds.
+one request per epoch.
+three dependent PROCESS stages.
+8-cell inherited distributed lesion.
+160 epochs.
+no learned scientific arm.
+no world replacement.
+no rejection sampling.
+no primary world executed before binding.
+
+The exact ten manifests above are authorized for duplicate U_A0 primary execution.
+
+canonical_scientific_execution = false.
+stab18_r1_touched = false.
+DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
