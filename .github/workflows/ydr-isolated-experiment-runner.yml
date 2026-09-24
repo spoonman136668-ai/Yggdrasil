@@ -34,13 +34,23 @@ jobs:
             exit 2
           fi
 
+      - name: Prepare frozen legacy import path
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo mkdir -p /mnt/data
+          sudo chown "$(id -u):$(id -g)" /mnt/data
+          test -w /mnt/data
+
       - name: Run deterministic isolated experiment
         shell: bash
         run: |
           set -euo pipefail
           rm -rf /tmp/ydr-isolated
           mkdir -p /tmp/ydr-isolated
-          python3 research/harness/ydr_experiment_runner.py             --request research/control/isolated-run.json             --out-dir /tmp/ydr-isolated
+          python3 research/harness/ydr_experiment_runner.py \
+            --request research/control/isolated-run.json \
+            --out-dir /tmp/ydr-isolated
 
       - name: Upload isolated evidence
         if: always()
