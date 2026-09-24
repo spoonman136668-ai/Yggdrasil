@@ -16,9 +16,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  lane-bootstrap:
+  lane-run:
     runs-on: [self-hosted, Windows, X64, yggdrasil, ygg-c, research-only]
-    timeout-minutes: 20
+    timeout-minutes: 45
 
     steps:
       - name: Checkout exact lane commit
@@ -29,101 +29,88 @@ jobs:
           persist-credentials: false
           clean: true
 
-      - name: Assert lane isolation
+      - name: Assert lane isolation and read mode
+        id: ctl
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
-
-          if ($env:GITHUB_REPOSITORY -cne 'spoonman136668-ai/Yggdrasil') {
-              throw "REPOSITORY_MISMATCH actual=$env:GITHUB_REPOSITORY"
-          }
-
-          if ($env:GITHUB_REF_NAME -cne 'research/ygg-c-scaling') {
-              throw "BRANCH_MISMATCH expected=research/ygg-c-scaling actual=$env:GITHUB_REF_NAME"
-          }
-
-          $ControlPath = 'research/control/ygg-c-run.json'
-          if (-not (Test-Path -LiteralPath $ControlPath)) {
-              throw "CONTROL_MISSING path=$ControlPath"
-          }
-
-          $Raw = Get-Content -LiteralPath $ControlPath -Raw
+          if ($env:GITHUB_REPOSITORY -cne 'spoonman136668-ai/Yggdrasil') { throw "REPOSITORY_MISMATCH actual=$env:GITHUB_REPOSITORY" }
+          if ($env:GITHUB_REF_NAME -cne 'research/ygg-c-scaling') { throw "BRANCH_MISMATCH actual=$env:GITHUB_REF_NAME" }
+          $Raw = Get-Content -LiteralPath 'research/control/ygg-c-run.json' -Raw
           $Control = $Raw | ConvertFrom-Json
-
-          if ($Control.schema -ne 1) {
-              throw "CONTROL_SCHEMA_MISMATCH"
-          }
-          if ($Control.lane -cne 'YGG-C') {
-              throw "CONTROL_LANE_MISMATCH expected=YGG-C actual=$($Control.lane)"
-          }
-          if ($Control.mode -cne 'bootstrap') {
-              throw "BOOTSTRAP_ONLY expected=bootstrap actual=$($Control.mode)"
-          }
-
-          if ($Raw -match '(?i)ckb-plane|ktrade|wingless|coinbase|broker|ygg-a|ygg-b') {
-              throw 'LANE_ISOLATION_TOKEN_VIOLATION'
-          }
+          if ($Control.schema -ne 1) { throw 'CONTROL_SCHEMA_MISMATCH' }
+          if ($Control.lane -cne 'YGG-C') { throw "CONTROL_LANE_MISMATCH actual=$($Control.lane)" }
+          if ($Control.mode -notin @('bootstrap','c1_benchmark')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
+          if ($Raw -match '(?i)ckb-plane|ktrade|wingless|coinbase|broker|ygg-a|ygg-b') { throw 'LANE_ISOLATION_TOKEN_VIOLATION' }
+          "mode=$($Control.mode)" >> $env:GITHUB_OUTPUT
 
       - name: Probe runner environment
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
-
           $OutDir = Join-Path $env:RUNNER_TEMP 'ygg-c-bootstrap'
-          if (Test-Path -LiteralPath $OutDir) {
-              Remove-Item -LiteralPath $OutDir -Recurse -Force
-          }
+          if (Test-Path -LiteralPath $OutDir) { Remove-Item -LiteralPath $OutDir -Recurse -Force }
           New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
-
-          $Python = Get-Command python -ErrorAction SilentlyContinue
-          $Py = if ($Python) {
-              (& python --version 2>&1 | Out-String).Trim()
-          } else {
-              $null
-          }
-
           $Nvidia = Get-Command nvidia-smi -ErrorAction SilentlyContinue
-          $Gpu = if ($Nvidia) {
-              @(& nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader 2>&1)
-          } else {
-              @()
+          [ordered]@{
+            schema=1
+            lane='YGG-C'
+            mode='${{ steps.ctl.outputs.mode }}'
+            github_sha=$env:GITHUB_SHA
+            runner_name=$env:RUNNER_NAME
+            identity=[Security.Principal.WindowsIdentity]::GetCurrent().Name
+            powershell=$PSVersionTable.PSVersion.ToString()
+            gpu=if ($Nvidia) { @(& nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader 2>&1) } else { @() }
+            git=(& git --version | Out-String).Trim()
+            isolation='Yggdrasil YGG-C lane only'
+          } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
+
+      - name: Provision Python runtime
+        if: steps.ctl.outputs.mode == 'c1_benchmark'
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PyRoot = Join-Path $env:RUNNER_TEMP 'python312-ygg-c'
+          $PyExe = Join-Path $PyRoot 'python.exe'
+          if (-not (Test-Path -LiteralPath $PyExe)) {
+              $Installer = Join-Path $env:RUNNER_TEMP 'python-3.12.10-amd64.exe'
+              Invoke-WebRequest -UseBasicParsing -Uri 'https://www.python.org/ftp/python/3.12.10/python-3.12.10-amd64.exe' -OutFile $Installer
+              $Args = @('/quiet','InstallAllUsers=0','Include_pip=1','Include_test=0','Include_launcher=0','Shortcuts=0',"TargetDir=$PyRoot")
+              $P = Start-Process -FilePath $Installer -ArgumentList $Args -Wait -PassThru
+              if ($P.ExitCode -ne 0) { throw "PYTHON_INSTALL_FAILED exit=$($P.ExitCode)" }
           }
+          if (-not (Test-Path -LiteralPath $PyExe)) { throw "PYTHON_MISSING path=$PyExe" }
+          $PyRoot >> $env:GITHUB_PATH
+          (Join-Path $PyRoot 'Scripts') >> $env:GITHUB_PATH
+          & $PyExe --version
 
-          $Torch = $null
-          if ($Python) {
-              $Torch = (& python -c "import json; import importlib.util; s=importlib.util.find_spec('torch'); print('none' if s is None else 'present')" 2>&1 | Out-String).Trim()
-          }
+      - name: Install frozen C1 runtime
+        if: steps.ctl.outputs.mode == 'c1_benchmark'
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -m pip install --disable-pip-version-check --no-input numpy==2.3.5
+          python -m pip install --disable-pip-version-check --no-input --index-url https://download.pytorch.org/whl/cpu torch==2.10.0
+          python -c "import numpy,torch; print('numpy',numpy.__version__); print('torch',torch.__version__)"
 
-          $Identity = [Security.Principal.WindowsIdentity]::GetCurrent().Name
-          $Probe = [ordered]@{
-              schema          = 1
-              lane            = 'YGG-C'
-              github_sha      = $env:GITHUB_SHA
-              github_ref_name = $env:GITHUB_REF_NAME
-              runner_name     = $env:RUNNER_NAME
-              runner_os       = $env:RUNNER_OS
-              runner_arch     = $env:RUNNER_ARCH
-              identity        = $Identity
-              workspace       = $env:GITHUB_WORKSPACE
-              runner_temp     = $env:RUNNER_TEMP
-              powershell      = $PSVersionTable.PSVersion.ToString()
-              python          = $Py
-              torch           = $Torch
-              gpu             = $Gpu
-              git             = (& git --version | Out-String).Trim()
-              repo_write_test = 'NOT_ATTEMPTED'
-              isolation       = 'Yggdrasil lane only'
-          }
+      - name: Run YGG-C1 benchmark
+        if: steps.ctl.outputs.mode == 'c1_benchmark'
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $OutDir = Join-Path $env:RUNNER_TEMP 'ygg-c1'
+          if (Test-Path -LiteralPath $OutDir) { Remove-Item -LiteralPath $OutDir -Recurse -Force }
+          New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
+          python research/experiments/ygg-c/ygg_c1_consumer_cost_v1.py (Join-Path $OutDir 'c1-benchmark.json')
+          Get-Content -LiteralPath (Join-Path $OutDir 'c1-benchmark.json')
 
-          $Probe | ConvertTo-Json -Depth 5 |
-              Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
-
-          Get-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json')
-
-      - name: Upload lane bootstrap evidence
+      - name: Upload lane evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ygg-c-bootstrap-${{ github.run_id }}
-          path: ${{ runner.temp }}\ygg-c-bootstrap\**
-          if-no-files-found: error
+          name: ygg-c-${{ steps.ctl.outputs.mode }}-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}\ygg-c-bootstrap\**
+            ${{ runner.temp }}\ygg-c1\**
+          if-no-files-found: warn
           retention-days: 14
