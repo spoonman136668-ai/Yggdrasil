@@ -38,6 +38,44 @@ def maturity_summary(m,registry,detected):
     finally:
         t.expected_quad=old
 
+def expected_pair_fork(r):
+    a,_,_,d=expected(r)
+    return a,d
+
+def terminal_rule_fork(r,det):
+    if det is None:
+        return False,"UNDETECTED"
+    if r.expired_epoch is not None:
+        return False,"EXPIRED"
+    a,b,c,d=expected(r)
+    values_ok=(r.y_a==a and r.y_b==b and r.y_c==c and r.output==d)
+    if det<=t.MATURE_MAX_DETECTION:
+        return bool(r.repaired and r.verified_after_repair and r.done_epoch is not None and r.done_epoch<=159 and r.stage=="DONE" and values_ok),"MATURE"
+    if det==157:
+        return bool(r.repaired and r.repair_epoch is not None and r.repair_epoch<=158 and r.verified_after_repair and r.verified_epoch is not None and r.verified_epoch<=159 and r.done_epoch is None and r.stage=="VERIFIED" and values_ok),"TERMINAL_157"
+    if det==158:
+        return bool(r.repaired and r.repair_epoch is not None and r.repair_epoch<=159 and not r.verified_after_repair and r.done_epoch is None and r.stage=="AT_EGRESS" and values_ok),"TERMINAL_158"
+    if det==159:
+        return bool((not r.repaired) and r.repair_epoch is None and r.done_epoch is None and r.stage=="REPAIR_PENDING"),"TERMINAL_159"
+    return False,"OUT_OF_RANGE"
+
+def maturity_summary_fork(m,registry,detected):
+    rows=[]; ok=True
+    for rid in m["corrupt_ids"]:
+        r=registry[rid]
+        if not r.reached_egress_after_corrupt:
+            continue
+        det=detected.get(rid)
+        passed,kind=terminal_rule_fork(r,det)
+        ok=ok and passed
+        rows.append({"rid":rid,"detection_epoch":det,"repair_epoch":r.repair_epoch,
+                     "verified_epoch":r.verified_epoch if r.verified_after_repair else None,
+                     "done_epoch":r.done_epoch,"terminal_state":r.stage,"kind":kind,"pass":passed})
+    return {"pass":bool(ok),"rows":rows,
+            "reached_egress":len(rows),
+            "mature_detected":sum(1 for x in rows if x["detection_epoch"] is not None and x["detection_epoch"]<=156),
+            "terminal_inflight_detected":sum(1 for x in rows if x["detection_epoch"] is not None and x["detection_epoch"]>=157)}
+
 def task_op(r):
     if r.stage=="RAW": return "SENSE"
     if r.stage in ("SENSED","PROCESSED_A","PROCESSED_B_ONLY","PROCESSED_C_ONLY","PROCESSED_BC"): return "PROCESS"
