@@ -49,11 +49,14 @@ jobs:
           rm -rf /tmp/ydr-venv
           python3 -m venv /tmp/ydr-venv
           /tmp/ydr-venv/bin/python -m pip install --disable-pip-version-check --no-input numpy==2.3.5
+          /tmp/ydr-venv/bin/python -m pip install --disable-pip-version-check --no-input --index-url https://download.pytorch.org/whl/cpu torch==2.10.0
           /tmp/ydr-venv/bin/python - <<'PY'
-          import numpy as np, sys
+          import numpy as np, torch, sys
           assert np.__version__ == "2.3.5", np.__version__
+          assert torch.__version__.startswith("2.10.0"), torch.__version__
           print(sys.version)
           print("numpy", np.__version__)
+          print("torch", torch.__version__)
           PY
 
       - name: Run deterministic isolated experiment
