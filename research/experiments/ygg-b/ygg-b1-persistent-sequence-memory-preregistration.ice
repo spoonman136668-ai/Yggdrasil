@@ -1,3 +1,8 @@
+STATUS_NOTE: SUPERSEDED BEFORE EXECUTION
+AUTHORITATIVE_PREREG: d210b0ea6f5d65fb7c8cca2551bcd7658de37899
+AUTHORITATIVE_FILE: research/experiments/ygg-b/ygg-b1-preregistration.ice
+REASON: This alternate preregistration was added after the original YGG-B1 sequence-memory preregistration had already been frozen and before any B1 result existed. No executable experiment binds to this file. Retained as an audit record only.
+
 TITLE: YGG-B1 Causal Persistent Sequence Memory Preregistration
 DATE: 2026-09-24
 STATUS: PREREGISTERED
