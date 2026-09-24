@@ -42,13 +42,27 @@ jobs:
           sudo chown "$(id -u):$(id -g)" /mnt/data
           test -w /mnt/data
 
+      - name: Prepare isolated Python environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/ydr-venv
+          python3 -m venv /tmp/ydr-venv
+          /tmp/ydr-venv/bin/python -m pip install --disable-pip-version-check --no-input numpy==2.3.5
+          /tmp/ydr-venv/bin/python - <<'PY'
+          import numpy as np, sys
+          assert np.__version__ == "2.3.5", np.__version__
+          print(sys.version)
+          print("numpy", np.__version__)
+          PY
+
       - name: Run deterministic isolated experiment
         shell: bash
         run: |
           set -euo pipefail
           rm -rf /tmp/ydr-isolated
           mkdir -p /tmp/ydr-isolated
-          python3 research/harness/ydr_experiment_runner.py \
+          /tmp/ydr-venv/bin/python research/harness/ydr_experiment_runner.py \
             --request research/control/isolated-run.json \
             --out-dir /tmp/ydr-isolated
 
