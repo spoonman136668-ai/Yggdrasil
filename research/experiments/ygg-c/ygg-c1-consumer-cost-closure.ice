@@ -1,6 +1,6 @@
 TITLE: YGG-C1 Consumer Hardware Cost Audit Closure
 DATE: 2026-09-24
-STATUS: CLOSED / CPU BASELINE ESTABLISHED
+STATUS: CLOSED / CPU TIME AND HOST-MEMORY BASELINE ESTABLISHED
 LANE: YGG-C
 SHARED_BASELINE: 878464cf84833d06a1ac7e45988bfb79608547dc
 
@@ -58,3 +58,20 @@ Measure the exact same LU2V mechanism with a CUDA-capable torch runtime and a fa
 Do not alter LU2V dynamics, authority, alpha, seeds, or qualification logic for that follow-up.
 
 No shared-baseline promotion is authorized by this lane-local closure.
+
+
+R4 VALIDATION AMENDMENT
+VALID_MEMORY_RUN: 36073866704
+VALID_MEMORY_HEAD: e53abef8d77df8122e119c0277aecf03d017c2b4
+VALID_MEMORY_ARTIFACT: 10839670495
+VALID_MEMORY_ARTIFACT_SHA256: 153cc80b8b3eef112b73a6e7b6940b57b444bb2ef1b56a30d199f3a88bf44202
+VALID_MEMORY_EVIDENCE_SHA256: a0ab6b245b885ef5442458cb15150d4a3fea73e06869164448342af7db545035
+
+The earlier null-RSS limitation is superseded by R4.
+R4 peak working-set observations ranged from 212582400 to 213147648 bytes across the scored sequence.
+R4 timing remained approximately linear:
+pass 1 seconds/world at 1,2,4,8,10 worlds = 1.4234131999546662, 1.670074250025209, 1.6635662499757018, 1.6820650000008754, 1.70114379998995
+pass 2 seconds/world at 1,2,4,8,10 worlds = 1.8196998999919742, 1.7772823999985121, 1.7269129749911372, 1.7330865374970017, 1.6959979400038718
+
+The scientific evidence SHA256 at each scale remained identical across both scored passes.
+CUDA remains unavailable to the frozen CPU torch runtime, so accelerator allocation/reservation remains unmeasured and unused.
