@@ -1,3 +1,8 @@
+STATUS_NOTE: SUPPLEMENTAL DUPLICATE CLOSURE
+CANONICAL_CLOSURE: b33daf3538c987a10df6826a826c057f08ba9476
+CANONICAL_FILE: research/experiments/ygg-b/ygg-b1-primary-closure.ice
+REASON: This matching closure was committed three seconds after the canonical concurrent closure. Retained only as an audit record; it does not define a second result lineage.
+
 TITLE: YGG-B1 Sequence Memory Result Closure
 DATE: 2026-09-24
 STATUS: SEALED POSITIVE
