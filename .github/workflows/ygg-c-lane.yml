@@ -65,7 +65,7 @@ jobs:
             isolation='Yggdrasil YGG-C lane only'
           } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
 
-      - name: Provision Python runtime
+      - name: Provision portable Python runtime
         if: steps.ctl.outputs.mode == 'c1_benchmark'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
@@ -73,16 +73,24 @@ jobs:
           $PyRoot = Join-Path $env:RUNNER_TEMP 'python312-ygg-c'
           $PyExe = Join-Path $PyRoot 'python.exe'
           if (-not (Test-Path -LiteralPath $PyExe)) {
-              $Installer = Join-Path $env:RUNNER_TEMP 'python-3.12.10-amd64.exe'
-              Invoke-WebRequest -UseBasicParsing -Uri 'https://www.python.org/ftp/python/3.12.10/python-3.12.10-amd64.exe' -OutFile $Installer
-              $Args = @('/quiet','InstallAllUsers=0','Include_pip=1','Include_test=0','Include_launcher=0','Shortcuts=0',"TargetDir=$PyRoot")
-              $P = Start-Process -FilePath $Installer -ArgumentList $Args -Wait -PassThru
-              if ($P.ExitCode -ne 0) { throw "PYTHON_INSTALL_FAILED exit=$($P.ExitCode)" }
+              if (Test-Path -LiteralPath $PyRoot) { Remove-Item -LiteralPath $PyRoot -Recurse -Force }
+              New-Item -ItemType Directory -Path $PyRoot -Force | Out-Null
+              $Zip = Join-Path $env:RUNNER_TEMP 'python-3.12.10-embed-amd64.zip'
+              Invoke-WebRequest -UseBasicParsing -Uri 'https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip' -OutFile $Zip
+              Expand-Archive -LiteralPath $Zip -DestinationPath $PyRoot -Force
+              $Pth = Join-Path $PyRoot 'python312._pth'
+              @('python312.zip','.','Lib\\site-packages','import site') | Set-Content -LiteralPath $Pth -Encoding ASCII
+              New-Item -ItemType Directory -Path (Join-Path $PyRoot 'Lib\\site-packages') -Force | Out-Null
+              $GetPip = Join-Path $env:RUNNER_TEMP 'get-pip.py'
+              Invoke-WebRequest -UseBasicParsing -Uri 'https://bootstrap.pypa.io/get-pip.py' -OutFile $GetPip
+              & $PyExe $GetPip --disable-pip-version-check --no-warn-script-location
+              if ($LASTEXITCODE -ne 0) { throw "GET_PIP_FAILED exit=$LASTEXITCODE" }
           }
           if (-not (Test-Path -LiteralPath $PyExe)) { throw "PYTHON_MISSING path=$PyExe" }
           $PyRoot >> $env:GITHUB_PATH
           (Join-Path $PyRoot 'Scripts') >> $env:GITHUB_PATH
           & $PyExe --version
+          & $PyExe -m pip --version
 
       - name: Install frozen C1 runtime
         if: steps.ctl.outputs.mode == 'c1_benchmark'
