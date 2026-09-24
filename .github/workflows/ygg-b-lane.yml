@@ -42,7 +42,7 @@ jobs:
           $Control = $Raw | ConvertFrom-Json
           if ($Control.schema -ne 1) { throw 'CONTROL_SCHEMA_MISMATCH' }
           if ($Control.lane -cne 'YGG-B') { throw "CONTROL_LANE_MISMATCH actual=$($Control.lane)" }
-          if ($Control.mode -notin @('bootstrap','b1_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
+          if ($Control.mode -notin @('bootstrap','b1_probe','b2_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
           if ($Raw -match '(?i)ckb-plane|ktrade|wingless|coinbase|broker|ygg-a|ygg-c') { throw 'LANE_ISOLATION_TOKEN_VIOLATION' }
           "mode=$($Control.mode)" >> $env:GITHUB_OUTPUT
 
@@ -71,7 +71,7 @@ jobs:
           $Probe | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
 
       - name: Provision portable Python runtime
-        if: steps.ctl.outputs.mode == 'b1_probe'
+        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -97,8 +97,8 @@ jobs:
           & $PyExe --version
           & $PyExe -m pip --version
 
-      - name: Install frozen B1 runtime
-        if: steps.ctl.outputs.mode == 'b1_probe'
+      - name: Install frozen B runtime
+        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -106,7 +106,7 @@ jobs:
           python -c "import torch; print('torch',torch.__version__)"
 
       - name: Run YGG-B1 frozen sequence-memory probe
-        if: steps.ctl.outputs.mode == 'b1_probe'
+        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -119,6 +119,20 @@ jobs:
           if (-not $R.primary.qualification.YGG_B1_PERSISTENT_SEQUENCE_MEMORY) { throw 'YGG_B1_SCIENTIFIC_NEGATIVE' }
           Get-Content -LiteralPath (Join-Path $OutDir 'b1-result.json')
 
+      - name: Run YGG-B2 frozen content-binding probe
+        if: steps.ctl.outputs.mode == 'b2_probe'
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $OutDir = Join-Path $env:RUNNER_TEMP 'ygg-b2'
+          if (Test-Path -LiteralPath $OutDir) { Remove-Item -LiteralPath $OutDir -Recurse -Force }
+          New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
+          python research/experiments/ygg-b/ygg_b2_content_binding_v1.py (Join-Path $OutDir 'b2-result.json')
+          $R = Get-Content -LiteralPath (Join-Path $OutDir 'b2-result.json') -Raw | ConvertFrom-Json
+          if (-not $R.duplicate_byte_identical) { throw 'YGG_B2_DUPLICATE_MISMATCH' }
+          if (-not $R.primary.qualification.YGG_B2_CONTENT_ADDRESSED_BINDING) { throw 'YGG_B2_SCIENTIFIC_NEGATIVE' }
+          Get-Content -LiteralPath (Join-Path $OutDir 'b2-result.json')
+
       - name: Upload lane evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -127,5 +141,6 @@ jobs:
           path: |
             ${{ runner.temp }}\ygg-b-bootstrap\**
             ${{ runner.temp }}\ygg-b1\**
+            ${{ runner.temp }}\ygg-b2\**
           if-no-files-found: warn
           retention-days: 14
