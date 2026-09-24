@@ -4,7 +4,7 @@ from pathlib import Path
 
 HERE=Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE))
-m=importlib.import_module("lu2a_partial_learned_hu_closed_loop_v1")
+m=importlib.import_module("lu2a_partial_learned_hu_closed_loop_v1_r1")
 
 out={}
 for name in sorted(dir(m)):
