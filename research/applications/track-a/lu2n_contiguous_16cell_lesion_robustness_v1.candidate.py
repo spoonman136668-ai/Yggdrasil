@@ -6,12 +6,12 @@ from pathlib import Path
 import numpy as np
 import torch
 
-import lu2m_doubled_distributed_lesion_robustness_v1 as m
+import lu2m_doubled_distributed_lesion_robustness_v1 as parent_m
 
-x=m.x
-g=m.g
-p=m.p
-base=m.base
+x=parent_m.x
+g=parent_m.g
+p=parent_m.p
+base=parent_m.base
 
 PREREG_LU2N="f35e9330ba703fecdcdcfc6b9134b89e07df0dc3"
 PARENT_LU2M_CLOSURE="240e4cd49056a9ec2f80fe66e6e5decca1799be2"
@@ -42,7 +42,7 @@ def contiguous_lesion(seed):
         raise AssertionError(("inherited lesion geometry",len(inherited)))
     k=min(inherited)
     contiguous={(k+j)%p.N for j in range(16)}
-    distributed=set(m.strong_lesion(seed))
+    distributed=set(parent_m.strong_lesion(seed))
     if len(contiguous)!=16 or contiguous==distributed:
         raise AssertionError(("contiguous lesion geometry",len(contiguous)))
     return sorted(contiguous)
@@ -133,7 +133,7 @@ def validate_manifest(m):
     if m["lesion"]!=contiguous_lesion(m["seed"]): raise AssertionError("contiguous lesion")
     if len(m["inherited_lesion"])!=8 or len(m["lesion"])!=16: raise AssertionError("lesion size")
     if not is_contiguous_ring(m["lesion"]): raise AssertionError("lesion contiguity")
-    if set(m["lesion"])==set(parent_m.strong_lesion(m["seed"])): raise AssertionError("geometry not changed")
+    if set(m["lesion"])==set(parent_parent_m.strong_lesion(m["seed"])): raise AssertionError("geometry not changed")
     if min(m["lesion"])!=(p.h64("TASK1-LESION-OFFSET",m["seed"])%8): raise AssertionError("base offset family")
     if len(m["arrivals"])!=160: raise AssertionError("arrivals")
     counts=Counter(r["t"] for r in m["arrivals"])
@@ -257,7 +257,7 @@ def mechanical_gate():
     global _PRIMARY_MANIFEST_CALLS
     before=_PRIMARY_MANIFEST_CALLS
     m=mechanical_manifest(); validate_manifest(m)
-    inherited=set(m["inherited_lesion"]); contiguous=set(m["lesion"]); distributed=set(parent_m.strong_lesion(m["seed"]))
+    inherited=set(m["inherited_lesion"]); contiguous=set(m["lesion"]); distributed=set(parent_parent_m.strong_lesion(m["seed"]))
     # Warm the frozen learned path before measuring RNG consumption.
     # Model construction initializes temporary parameters before loading the
     # canonical state dict; that one-time construction is not inference RNG.
@@ -271,7 +271,7 @@ def mechanical_gate():
     fixture=_with_validation(g.stage_repair_fixture)
     csfix=_with_validation(g.cs_fcfs_echo_teacher_parity_fixture,m)
     probes={
-        "exact_lu2m_lu2l_alpha":parent_m.ALPHA==x.ALPHA==ALPHA==0.25,
+        "exact_lu2m_lu2l_alpha":parent_parent_m.ALPHA==x.ALPHA==ALPHA==0.25,
         "exact_canonical_weight_sha":weight_sha==WEIGHT_SHA,
         "u_a0_teacher_one_step":_with_validation(g.one_step_parity,m),
         "u_a25_convex_blend":_with_validation(g.blend_fixture,m),
