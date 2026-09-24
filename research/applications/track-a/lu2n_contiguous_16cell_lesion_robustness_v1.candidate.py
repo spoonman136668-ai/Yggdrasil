@@ -42,7 +42,7 @@ def contiguous_lesion(seed):
         raise AssertionError(("inherited lesion geometry",len(inherited)))
     k=min(inherited)
     contiguous={(k+j)%p.N for j in range(16)}
-    distributed=set(m.contiguous_lesion(seed))
+    distributed=set(m.strong_lesion(seed))
     if len(contiguous)!=16 or contiguous==distributed:
         raise AssertionError(("contiguous lesion geometry",len(contiguous)))
     return sorted(contiguous)
