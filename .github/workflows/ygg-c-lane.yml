@@ -29,6 +29,19 @@ jobs:
           persist-credentials: false
           clean: true
 
+      - name: Restore bound LU2G loader bytes
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $Bound = 'research/applications/track-a/lu2g_second_task_compositional_service_transfer_v1.candidate.py'
+          $Expected = '21d19cfe4aece4a067264c2ae80c4325ec77e964684ab3663fa285f0545880c8'
+          git config core.autocrlf false
+          if (Test-Path -LiteralPath $Bound) { Remove-Item -LiteralPath $Bound -Force }
+          git checkout -- $Bound
+          if ($LASTEXITCODE -ne 0) { throw 'BOUND_LOADER_RESTORE_FAILED' }
+          $Actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $Bound).Hash.ToLowerInvariant()
+          if ($Actual -cne $Expected) { throw "BOUND_LOADER_HASH_MISMATCH expected=$Expected actual=$Actual" }
+
       - name: Assert lane isolation and read mode
         id: ctl
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
