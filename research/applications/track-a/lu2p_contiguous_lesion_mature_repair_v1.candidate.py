@@ -252,6 +252,8 @@ def run_pair(m):
             "a25_duplicate_request":a25["matching_duplicate_request"]==0,
             "a0_incorrect_done_zero":a0["incorrect_done"]==0,
             "a25_incorrect_done_zero":a25["incorrect_done"]==0,
+            "a0_repair_integrity":a0["repair"]["repair_integrity"],
+            "a25_repair_integrity":a25["repair"]["repair_integrity"],
         }
     }
 
