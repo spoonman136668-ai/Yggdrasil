@@ -1,0 +1,66 @@
+name: YDR LU2G Bound Artifact Open
+
+on:
+  push:
+    branches: [dg1a-ar]
+    paths:
+      - research/control/lu2g-bound-open.json
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  open-bound-primary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Assert isolation boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REPOSITORY}" = "spoonman136668-ai/Yggdrasil"
+          test -f research/control/lu2g-bound-open.json
+
+      - name: Prepare Python
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m venv /tmp/ydr-venv
+          /tmp/ydr-venv/bin/python -m pip install --disable-pip-version-check --no-input numpy==2.3.5
+          /tmp/ydr-venv/bin/python -m pip install --disable-pip-version-check --no-input --index-url https://download.pytorch.org/whl/cpu torch==2.10.0
+
+      - name: Download accepted duplicate artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ydr-isolated-36047999178-1
+          path: /tmp/lu2g-accepted
+          github-token: ${{ github.token }}
+          run-id: 36047999178
+
+      - name: Open exact accepted duplicate
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/lu2g-open
+          sudo mkdir -p /mnt/data
+          sudo chown "$(id -u):$(id -g)" /mnt/data
+          ln -sfn "${GITHUB_WORKSPACE}/research/applications/track-a" /mnt/data/task1_loader_test
+          /tmp/ydr-venv/bin/python research/applications/track-a/lu2g_open_bound_artifact.py \
+            /tmp/lu2g-accepted/primary1.bin \
+            /tmp/lu2g-accepted/primary2.bin \
+            /tmp/lu2g-open/qualification.json
+          cat /tmp/lu2g-open/qualification.json
+
+      - name: Upload qualification evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: lu2g-bound-open-${{ github.run_id }}
+          path: /tmp/lu2g-open/**
+          if-no-files-found: error
+          retention-days: 14
