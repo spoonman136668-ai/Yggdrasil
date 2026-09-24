@@ -36,11 +36,13 @@ jobs:
           $ErrorActionPreference = 'Stop'
           if ($env:GITHUB_REPOSITORY -cne 'spoonman136668-ai/Yggdrasil') { throw "REPOSITORY_MISMATCH actual=$env:GITHUB_REPOSITORY" }
           if ($env:GITHUB_REF_NAME -cne 'research/ygg-b-language') { throw "BRANCH_MISMATCH actual=$env:GITHUB_REF_NAME" }
-          $Raw = Get-Content -LiteralPath 'research/control/ygg-b-run.json' -Raw
+
+          $ControlPath = 'research/control/ygg-b-run.json'
+          $Raw = Get-Content -LiteralPath $ControlPath -Raw
           $Control = $Raw | ConvertFrom-Json
           if ($Control.schema -ne 1) { throw 'CONTROL_SCHEMA_MISMATCH' }
           if ($Control.lane -cne 'YGG-B') { throw "CONTROL_LANE_MISMATCH actual=$($Control.lane)" }
-          if ($Control.mode -notin @('bootstrap','b1_primary')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
+          if ($Control.mode -notin @('bootstrap','b1_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
           if ($Raw -match '(?i)ckb-plane|ktrade|wingless|coinbase|broker|ygg-a|ygg-c') { throw 'LANE_ISOLATION_TOKEN_VIOLATION' }
           "mode=$($Control.mode)" >> $env:GITHUB_OUTPUT
 
@@ -51,22 +53,25 @@ jobs:
           $OutDir = Join-Path $env:RUNNER_TEMP 'ygg-b-bootstrap'
           if (Test-Path -LiteralPath $OutDir) { Remove-Item -LiteralPath $OutDir -Recurse -Force }
           New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
+          $Python = Get-Command python -ErrorAction SilentlyContinue
           $Nvidia = Get-Command nvidia-smi -ErrorAction SilentlyContinue
-          [ordered]@{
-            schema=1
-            lane='YGG-B'
-            mode='${{ steps.ctl.outputs.mode }}'
-            github_sha=$env:GITHUB_SHA
-            runner_name=$env:RUNNER_NAME
-            identity=[Security.Principal.WindowsIdentity]::GetCurrent().Name
-            powershell=$PSVersionTable.PSVersion.ToString()
-            gpu=if ($Nvidia) { @(& nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader 2>&1) } else { @() }
-            git=(& git --version | Out-String).Trim()
-            isolation='Yggdrasil YGG-B lane only'
-          } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
+          $Probe = [ordered]@{
+              schema=1
+              lane='YGG-B'
+              mode='${{ steps.ctl.outputs.mode }}'
+              github_sha=$env:GITHUB_SHA
+              runner_name=$env:RUNNER_NAME
+              identity=[Security.Principal.WindowsIdentity]::GetCurrent().Name
+              powershell=$PSVersionTable.PSVersion.ToString()
+              python=if ($Python) { (& python --version 2>&1 | Out-String).Trim() } else { $null }
+              gpu=if ($Nvidia) { @(& nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader 2>&1) } else { @() }
+              git=(& git --version | Out-String).Trim()
+              isolation='Yggdrasil YGG-B lane only'
+          }
+          $Probe | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
 
       - name: Provision portable Python runtime
-        if: steps.ctl.outputs.mode == 'b1_primary'
+        if: steps.ctl.outputs.mode == 'b1_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -79,8 +84,8 @@ jobs:
               Invoke-WebRequest -UseBasicParsing -Uri 'https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip' -OutFile $Zip
               Expand-Archive -LiteralPath $Zip -DestinationPath $PyRoot -Force
               $Pth = Join-Path $PyRoot 'python312._pth'
-              @('python312.zip','.','Lib\site-packages','import site') | Set-Content -LiteralPath $Pth -Encoding ASCII
-              New-Item -ItemType Directory -Path (Join-Path $PyRoot 'Lib\site-packages') -Force | Out-Null
+              @('python312.zip','.','Lib\\site-packages','import site') | Set-Content -LiteralPath $Pth -Encoding ASCII
+              New-Item -ItemType Directory -Path (Join-Path $PyRoot 'Lib\\site-packages') -Force | Out-Null
               $GetPip = Join-Path $env:RUNNER_TEMP 'get-pip.py'
               Invoke-WebRequest -UseBasicParsing -Uri 'https://bootstrap.pypa.io/get-pip.py' -OutFile $GetPip
               & $PyExe $GetPip --disable-pip-version-check --no-warn-script-location
@@ -93,23 +98,26 @@ jobs:
           & $PyExe -m pip --version
 
       - name: Install frozen B1 runtime
-        if: steps.ctl.outputs.mode == 'b1_primary'
+        if: steps.ctl.outputs.mode == 'b1_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
           python -m pip install --disable-pip-version-check --no-input --index-url https://download.pytorch.org/whl/cpu torch==2.10.0
           python -c "import torch; print('torch',torch.__version__)"
 
-      - name: Run YGG-B1 primary
-        if: steps.ctl.outputs.mode == 'b1_primary'
+      - name: Run YGG-B1 frozen sequence-memory probe
+        if: steps.ctl.outputs.mode == 'b1_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
           $OutDir = Join-Path $env:RUNNER_TEMP 'ygg-b1'
           if (Test-Path -LiteralPath $OutDir) { Remove-Item -LiteralPath $OutDir -Recurse -Force }
           New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
-          python research/experiments/ygg-b/ygg_b1_sequence_memory_v1.py (Join-Path $OutDir 'b1-primary.json')
-          Get-Content -LiteralPath (Join-Path $OutDir 'b1-primary.json')
+          python research/experiments/ygg-b/ygg_b1_sequence_memory_v1.py (Join-Path $OutDir 'b1-result.json')
+          $R = Get-Content -LiteralPath (Join-Path $OutDir 'b1-result.json') -Raw | ConvertFrom-Json
+          if (-not $R.duplicate_byte_identical) { throw 'YGG_B1_DUPLICATE_MISMATCH' }
+          if (-not $R.primary.qualification.YGG_B1_PERSISTENT_SEQUENCE_MEMORY) { throw 'YGG_B1_SCIENTIFIC_NEGATIVE' }
+          Get-Content -LiteralPath (Join-Path $OutDir 'b1-result.json')
 
       - name: Upload lane evidence
         if: always()
