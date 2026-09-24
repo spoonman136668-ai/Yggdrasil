@@ -240,15 +240,18 @@ def mechanical_gate():
     before=_PRIMARY_MANIFEST_CALLS
     m=mechanical_manifest(); validate_manifest(m)
     inherited=set(m["inherited_lesion"]); strong=set(m["lesion"])
+    # Warm the frozen learned path before measuring RNG consumption.
+    # Model construction initializes temporary parameters before loading the
+    # canonical state dict; that one-time construction is not inference RNG.
+    calls=_with_validation(g.learned_call_scope_fixture,m)
+    weight_sha=hashlib.sha256(base._weights_bytes()).hexdigest()
     rng0=torch.random.get_rng_state().clone()
     pair1=run_pair(m)
     rng1=torch.random.get_rng_state().clone()
     pair2=run_pair(m)
     b1=canonical(pair1); b2=canonical(pair2)
-    weight_sha=hashlib.sha256(base._weights_bytes()).hexdigest()
     fixture=_with_validation(g.stage_repair_fixture)
     csfix=_with_validation(g.cs_fcfs_echo_teacher_parity_fixture,m)
-    calls=_with_validation(g.learned_call_scope_fixture,m)
     probes={
         "exact_lu2l_alpha":x.ALPHA==ALPHA==0.25,
         "exact_canonical_weight_sha":weight_sha==WEIGHT_SHA,
