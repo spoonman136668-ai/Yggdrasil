@@ -38,10 +38,10 @@ jobs:
       - name: Download accepted LU2R duplicate
         uses: actions/download-artifact@v4
         with:
-          name: ydr-isolated-36061019693-1
+          name: ydr-isolated-36061030400-1
           path: /tmp/lu2r-accepted
           github-token: ${{ github.token }}
-          run-id: 36061019693
+          run-id: 36061030400
 
       - name: Open exact accepted duplicate
         shell: bash
@@ -51,8 +51,8 @@ jobs:
           sudo mkdir -p /mnt/data
           sudo chown "$(id -u):$(id -g)" /mnt/data
           ln -sfn "${GITHUB_WORKSPACE}/research/applications/track-a" /mnt/data/task1_loader_test
-          test "$(wc -c < /tmp/lu2r-accepted/primary1.bin)" -eq 248392
-          test "$(sha256sum /tmp/lu2r-accepted/primary1.bin | awk '{print $1}')" = "dc655dadb58fd441d9c25eae4cae29e5845cdd5f0f37a85a7457b2293b306288"
+          test "$(wc -c < /tmp/lu2r-accepted/primary1.bin)" -eq 248393
+          test "$(sha256sum /tmp/lu2r-accepted/primary1.bin | awk '{print $1}')" = "e90b8e25ece1609c91ecb4feee185cea6e16c34ce388ccdb414c98a8f4a1b157"
           cmp /tmp/lu2r-accepted/primary1.bin /tmp/lu2r-accepted/primary2.bin
           /tmp/ydr-venv/bin/python research/applications/track-a/lu2r_task3_learned_u_transfer_v1.py \
             open /tmp/lu2r-accepted/primary1.bin /tmp/lu2r-accepted/primary2.bin /tmp/lu2r-open/qualification.json
