@@ -71,13 +71,13 @@ Pending address register: 8 scalars.
 Total persistent_state_scalars=16 exactly.
 
 TOKEN HANDLING
-- KEY stores the key id as pending discrete routing metadata only until ROLE arrives.
-- ROLE converts pending key plus current role to the fixed joint address and stores that 8-scalar address in the pending register.
+- KEY writes an 8-dimensional one-hot key code into the existing pending register.
+- ROLE recovers the key by argmax of that one-hot register, resolves the fixed joint (key,role) address, and replaces the same pending register in place with that address.
 - VALUE writes outer(value_embedding[value], pending_address) to M and clears pending.
-- QUERY_KEY stores the query key id as pending discrete routing metadata only until QUERY_ROLE arrives.
-- QUERY_ROLE resolves the same fixed joint address, reads M, and applies the frozen scalar readout.
+- QUERY_KEY writes the same 8-dimensional one-hot key code into the existing pending register.
+- QUERY_ROLE resolves the same fixed joint address from that register, reads M, and applies the frozen scalar readout.
 
-The discrete key id used between KEY and ROLE is not persistent learned state and must not coexist with an address-valued pending register. For accounting, the scientific persistent state remains the exact 8-scalar memory plus 8-scalar address register used by the inherited B6-B9 model family.
+No additional key-id variable is carried as model state between tokens. The scientific persistent state is exactly the inherited 8-scalar memory plus one 8-scalar pending register: 16 scalars total.
 
 RATIONALE
 B9 made cross-role cosine exactly zero but same-role learned addresses collapsed to approximately 0.998-0.9998 absolute cosine.
