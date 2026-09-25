@@ -53,7 +53,7 @@ jobs:
           $Control = $Raw | ConvertFrom-Json
           if ($Control.schema -ne 1) { throw 'CONTROL_SCHEMA_MISMATCH' }
           if ($Control.lane -cne 'YGG-C') { throw "CONTROL_LANE_MISMATCH actual=$($Control.lane)" }
-          if ($Control.mode -notin @('bootstrap','c1_benchmark','c2_parallel','c3_pressure','c4_topology','c5_transition','c6_factorial')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
+          if ($Control.mode -notin @('bootstrap','c1_benchmark','c2_parallel','c3_pressure','c4_topology','c5_transition','c6_factorial','c7_paired_arm')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
           if ($Raw -match '(?i)ckb-plane|ktrade|wingless|coinbase|broker|ygg-a|ygg-b') { throw 'LANE_ISOLATION_TOKEN_VIOLATION' }
           "mode=$($Control.mode)" >> $env:GITHUB_OUTPUT
 
@@ -79,7 +79,7 @@ jobs:
           } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
 
       - name: Provision portable Python runtime
-        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial'
+        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial' || steps.ctl.outputs.mode == 'c7_paired_arm' || steps.ctl.outputs.mode == 'c7_paired_arm'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -195,6 +195,20 @@ jobs:
           Get-Content -LiteralPath (Join-Path $OutDir 'c6-result.json')
           if (-not $R.valid) { throw 'YGG_C6_EVIDENCE_INVALID' }
 
+      - name: Run YGG-C7 frozen paired-arm interaction origin
+        if: steps.ctl.outputs.mode == 'c7_paired_arm'
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $OutDir = Join-Path $env:RUNNER_TEMP 'ygg-c7'
+          if (Test-Path -LiteralPath $OutDir) { Remove-Item -LiteralPath $OutDir -Recurse -Force }
+          New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
+          python research/experiments/ygg-c/ygg_c7_paired_arm_interaction_origin_v1.py (Join-Path $OutDir 'c7-result.json')
+          $R = Get-Content -LiteralPath (Join-Path $OutDir 'c7-result.json') -Raw | ConvertFrom-Json
+          Get-Content -LiteralPath (Join-Path $OutDir 'c7-result.json')
+          if (-not $R.valid) { throw 'YGG_C7_EVIDENCE_INVALID' }
+          if (-not $R.qualification.YGG_C7_PAIRED_ARM_INTERACTION_ORIGIN) { throw 'YGG_C7_QUALIFICATION_FAILED' }
+
       - name: Upload lane evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -208,5 +222,6 @@ jobs:
             ${{ runner.temp }}\ygg-c4\**
             ${{ runner.temp }}\ygg-c5\**
             ${{ runner.temp }}\ygg-c6\**
+            ${{ runner.temp }}\ygg-c7\**
           if-no-files-found: warn
           retention-days: 14
