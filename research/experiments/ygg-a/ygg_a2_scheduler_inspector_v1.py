@@ -153,3 +153,15 @@ if str(control.get("request_id","")).startswith("YGG-A7-LEARNED-ARM-INTEGRITY-CO
     if not result["primary"]["qualification"]["YGG_A7_LEARNED_ARM_INTEGRITY_COMPATIBILITY"]:
         raise SystemExit("YGG_A7_SCIENTIFIC_NEGATIVE")
     print("YGG_A7_PRIMARY_PASS=true")
+
+if str(control.get("request_id","")).startswith("YGG-A8-BRANCH-LOCAL-REPAIR"):
+    a8=Path(__file__).with_name("ygg_a8_branch_local_repair_v1.py")
+    a8_out=OUT/"a8-branch-local-repair.json"
+    subprocess.check_call([sys.executable,str(a8),str(a8_out)])
+    result=json.loads(a8_out.read_text(encoding="utf-8"))
+    print("===YGG_A8_BRANCH_LOCAL_REPAIR===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["primary"]["qualification"]["YGG_A8_BRANCH_LOCAL_REPAIR"]:
+        raise SystemExit("YGG_A8_SCIENTIFIC_NEGATIVE")
+    print("YGG_A8_PRIMARY_PASS=true")
+
