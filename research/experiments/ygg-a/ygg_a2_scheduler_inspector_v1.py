@@ -97,6 +97,17 @@ if str(control.get("request_id","")).startswith("YGG-A3-TERMINAL-OBSERVABILITY-D
     print(diag_out.read_text(encoding="utf-8"))
     print("YGG_A3_DIAGNOSTIC_PASS=true")
 
+if str(control.get("request_id","")).startswith("YGG-A4-ATOMIC-EGRESS-HANDOFF"):
+    a4=Path(__file__).with_name("ygg_a4_atomic_egress_integrity_v1.py")
+    a4_out=OUT/"a4-result.json"
+    subprocess.check_call([sys.executable,str(a4),str(a4_out)])
+    result=json.loads(a4_out.read_text(encoding="utf-8"))
+    print("===YGG_A4_ATOMIC_EGRESS_HANDOFF===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["primary"]["qualification"]["YGG_A4_ATOMIC_EGRESS_INTEGRITY_HANDOFF"]:
+        raise SystemExit("YGG_A4_PRIMARY_SCIENTIFIC_NEGATIVE")
+    print("YGG_A4_PRIMARY_PASS=true")
+
 # YGG-A3 read-only continuation: execute the bounded replicate-10
 # terminal-observability diagnostic after the frozen scheduler inspection.
 import ygg_a3_terminal_observability_diagnostic_v1 as a3diag
