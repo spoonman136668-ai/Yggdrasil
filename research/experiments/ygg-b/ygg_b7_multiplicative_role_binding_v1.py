@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import hashlib,json,sys
 from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parent))
 import torch
 from torch import nn
 from torch.nn import functional as F
