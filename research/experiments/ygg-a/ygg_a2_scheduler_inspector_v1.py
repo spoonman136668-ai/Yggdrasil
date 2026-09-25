@@ -165,3 +165,14 @@ if str(control.get("request_id","")).startswith("YGG-A8-BRANCH-LOCAL-REPAIR"):
         raise SystemExit("YGG_A8_SCIENTIFIC_NEGATIVE")
     print("YGG_A8_PRIMARY_PASS=true")
 
+if str(control.get("request_id","")).startswith("YGG-A9-DOUBLED-BRANCH-REPAIR-LOAD"):
+    a9=Path(__file__).with_name("ygg_a9_doubled_branch_repair_load_v1.py")
+    a9_out=OUT/"a9-doubled-branch-repair-load.json"
+    subprocess.check_call([sys.executable,str(a9),str(a9_out)])
+    result=json.loads(a9_out.read_text(encoding="utf-8"))
+    print("===YGG_A9_DOUBLED_BRANCH_REPAIR_LOAD===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["primary"]["qualification"]["YGG_A9_DOUBLED_BRANCH_REPAIR_LOAD"]:
+        raise SystemExit("YGG_A9_SCIENTIFIC_NEGATIVE")
+    print("YGG_A9_PRIMARY_PASS=true")
+
