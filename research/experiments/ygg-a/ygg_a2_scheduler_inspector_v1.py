@@ -311,3 +311,16 @@ if str(control.get("request_id","")).startswith("YGG-A20-INTEGRATED-FINE-RECOVER
         raise SystemExit("YGG_A20_QUALIFICATION_FAILED")
     print("YGG_A20_PRIMARY_PASS=true")
 
+if str(control.get("request_id","")).startswith("YGG-A21-L16-ALPHA-BY-REPAIR-ATTRIBUTION"):
+    a21=Path(__file__).with_name("ygg_a21_l16_alpha_by_repair_attribution_v1.py")
+    a21_out=OUT/"a21-l16-alpha-by-repair-attribution.json"
+    subprocess.check_call([sys.executable,str(a21),str(a21_out)])
+    result=json.loads(a21_out.read_text(encoding="utf-8"))
+    print("===YGG_A21_L16_ALPHA_BY_REPAIR_ATTRIBUTION===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["valid"]:
+        raise SystemExit("YGG_A21_EVIDENCE_INVALID")
+    if not result["qualification"]["YGG_A21_L16_ALPHA_BY_REPAIR_ATTRIBUTION"]:
+        raise SystemExit("YGG_A21_QUALIFICATION_FAILED")
+    print("YGG_A21_PRIMARY_PASS=true")
+
