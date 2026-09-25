@@ -4,8 +4,10 @@ from pathlib import Path
 
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import ygg_c8_learned_blend_interaction_dose_v1 as c8
+import lu2d_u_authority_dose_response_v1 as dose
 
 c6=c8.c6
+EXTENDED_DOSE_ALPHAS=(0.0,0.0625,0.125,0.1875,0.25,0.5,1.0)
 PREREG="2e9d62453b77e62bcd02f482980be7e33962c5e5"
 PARENT_CLOSURE="a104e7a23107c56262572b0a2dcf89c07da8a263"
 ALPHAS=(0.0625,0.125,0.1875,0.25)
@@ -23,6 +25,10 @@ def run_alpha(alpha):
     parent=c6.c3.lu2v.parent
     old_parent=float(parent.ALPHA)
     old_runtime=float(parent.g.ALPHA)
+    old_dose_alphas=tuple(dose.ALPHAS)
+    if old_dose_alphas!=(0.0,0.25,0.5,1.0):
+        raise AssertionError("unexpected frozen dose allowlist")
+    dose.ALPHAS=EXTENDED_DOSE_ALPHAS
     parent.ALPHA=float(alpha)
     parent.g.ALPHA=float(alpha)
     try:
@@ -33,6 +39,7 @@ def run_alpha(alpha):
     finally:
         parent.ALPHA=old_parent
         parent.g.ALPHA=old_runtime
+        dose.ALPHAS=old_dose_alphas
 
     summaries={
         g["condition"]:{
@@ -50,6 +57,7 @@ def run_alpha(alpha):
         "nonlesion_manifest_fields_frozen":bool(checks["nonlesion_manifest_fields_frozen"]),
         "all_matching_integrity":bool(checks["all_matching_integrity"]),
         "runtime_alpha_restored":float(parent.ALPHA)==old_parent and float(parent.g.ALPHA)==old_runtime,
+        "dose_allowlist_restored":tuple(dose.ALPHAS)==old_dose_alphas,
     }
     return {
         "alpha":alpha,
@@ -100,6 +108,7 @@ def main():
     manifests_same=len({r["base_manifest_sha256"] for r in rows})==1
     weights_exact=weight_hash==c6.c3.lu2v.WEIGHT_SHA
     runtime_final=float(parent.g.ALPHA)==runtime_before and float(parent.ALPHA)==parent_before
+    dose_allowlist_final=tuple(dose.ALPHAS)==(0.0,0.25,0.5,1.0)
     all_valid=all(r["valid"] for r in rows)
     anchor_map=anchor["retained_by_condition"]==ACCEPTED_A25
     anchor_context=tuple(anchor["context_dependent_slots"])==EXPECTED_CONTEXT
@@ -112,6 +121,7 @@ def main():
         "learned_weight_identity_exact":weights_exact,
         "factorial_and_matching_valid_each_alpha":all_valid,
         "runtime_alpha_restored_final":runtime_final,
+        "dose_allowlist_restored_final":dose_allowlist_final,
         "alpha025_accepted_c7_map_exact":anchor_map,
         "alpha025_context_slots_exact_A_C":anchor_context,
         "alpha025_interaction_classification_exact":anchor_class,
