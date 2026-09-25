@@ -105,6 +105,8 @@ def mechanical():
     corrupt,ks,ktrace,ke=route_fixture(True,False)
     non,ns,ntrace,ne=route_fixture(False,True)
 
+    corrupt_stage_after_route=corrupt.stage
+    corrupt_detected_after_route=corrupt.detected
     before_repair=corrupt.operations
     atomic_do_op(ks,"YGG-A4-HANDOFF-FIXTURE",160,0,"REPAIR",corrupt,ktrace)
     after_repair=(corrupt.stage=="AT_EGRESS" and corrupt.repaired and corrupt.operations==before_repair+1)
@@ -125,7 +127,7 @@ def mechanical():
     probes={
         "prereg_bound":PREREG=="6c7d11b0a2acf1b97b39f5510d2c02f83cc31acd",
         "correct_handoff_verified_same_route":correct.stage=="VERIFIED" and correct.verified_epoch==159 and cs["atomic_correct_verifications"]==1,
-        "corrupt_handoff_detected_same_route":ks["atomic_corruption_detections"]==1 and ks["atomic_detections_epoch_159"]==1,
+        "corrupt_handoff_detected_same_route":corrupt_stage_after_route=="REPAIR_PENDING" and corrupt_detected_after_route and ks["atomic_corruption_detections"]==1 and ks["atomic_detections_epoch_159"]==1,
         "single_operation_for_atomic_handoff":correct.operations==1 and before_repair==1,
         "non_egress_route_unchanged":non.stage=="ROUTING" and non.operations==1 and ns["atomic_egress_checks"]==0,
         "repair_separate_operation":after_repair,
@@ -148,7 +150,7 @@ def mechanical():
         "all_pass":all(probes.values()),
         "probes":probes,
         "correct_fixture":{"stage":correct.stage,"verified_epoch":correct.verified_epoch,"operations":correct.operations,"atomic":cs},
-        "corrupt_fixture":{"stage":corrupt.stage,"operations":corrupt.operations,"atomic":ks},
+        "corrupt_fixture":{"stage_after_route":corrupt_stage_after_route,"detected_after_route":corrupt_detected_after_route,"final_stage":corrupt.stage,"operations":corrupt.operations,"atomic":ks},
         "non_egress_fixture":{"stage":non.stage,"operations":non.operations,"atomic":ns},
         "world":rowa,
         "duplicate":{"bytes":len(ba),"sha256":hashlib.sha256(ba).hexdigest()},
