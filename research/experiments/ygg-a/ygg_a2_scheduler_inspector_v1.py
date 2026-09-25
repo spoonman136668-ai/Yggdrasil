@@ -324,3 +324,16 @@ if str(control.get("request_id","")).startswith("YGG-A21-L16-ALPHA-BY-REPAIR-ATT
         raise SystemExit("YGG_A21_QUALIFICATION_FAILED")
     print("YGG_A21_PRIMARY_PASS=true")
 
+if str(control.get("request_id","")).startswith("YGG-A22-L16-CONTROLLER-FAMILY-ATTRIBUTION"):
+    a22=Path(__file__).with_name("ygg_a22_l16_controller_family_attribution_v1.py")
+    a22_out=OUT/"a22-l16-controller-family-attribution.json"
+    subprocess.check_call([sys.executable,str(a22),str(a22_out)])
+    result=json.loads(a22_out.read_text(encoding="utf-8"))
+    print("===YGG_A22_L16_CONTROLLER_FAMILY_ATTRIBUTION===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["valid"]:
+        raise SystemExit("YGG_A22_EVIDENCE_INVALID")
+    if not result["qualification"]["YGG_A22_L16_CONTROLLER_FAMILY_ATTRIBUTION"]:
+        raise SystemExit("YGG_A22_QUALIFICATION_FAILED")
+    print("YGG_A22_PRIMARY_PASS=true")
+
