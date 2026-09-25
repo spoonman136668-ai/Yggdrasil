@@ -62,7 +62,10 @@ def classify_arm(run,arm):
     retained={}
     summaries={}
     for g in run["groups"]:
-        s=summarize_arm(g["rows"],run["parent"],arm)
+        regenerated_manifests,rows=c6.run_condition(run["base_manifests"],g["condition"])
+        if canonical(regenerated_manifests)!=canonical(g["manifests"]):
+            raise AssertionError("C7 regenerated C6 manifests differ from frozen group")
+        s=summarize_arm(rows,run["parent"],arm)
         summaries[g["condition"]]=s
         retained[g["condition"]]=bool(s["retained"])
     path=bool(
