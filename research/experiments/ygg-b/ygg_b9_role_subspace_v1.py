@@ -49,11 +49,12 @@ def one_pass():
     try: out=b6.one_pass()
     finally: b6.RoleBinding=old
     for row in out["rows"]:
-        torch.manual_seed(row["seed"])
-        m=RoleBinding()
-        # Geometry after training is already summarized by B6. The frozen
-        # qualification does not depend on this additional descriptive split.
+        # MASK has disjoint support, so every cross-role normalized dot
+        # product is exactly zero. B6's reported maximum off-diagonal address
+        # cosine therefore equals the same-role maximum for this model.
         row["role_subspaces_exactly_orthogonal_by_construction"]=True
+        row["max_cross_role_abs_address_cosine"]=0.0
+        row["max_same_role_offdiag_cosine"]=row["max_abs_offdiag_address_cosine"]
     q=out["qualification"]
     q.pop("YGG_B6_ROLE_CONDITIONED_HOLDOUT",None)
     q.pop("parameter_count_exactly_104",None)
