@@ -259,3 +259,16 @@ if str(control.get("request_id","")).startswith("YGG-A16-L16-REPAIR-FULL-BLEND-I
         raise SystemExit("YGG_A16_SCIENTIFIC_NEGATIVE")
     print("YGG_A16_PRIMARY_PASS=true")
 
+if str(control.get("request_id","")).startswith("YGG-A17-L12-TOPOLOGY-FAILURE-RESCUE"):
+    a17=Path(__file__).with_name("ygg_a17_l12_topology_failure_rescue_v1.py")
+    a17_out=OUT/"a17-l12-topology-failure-rescue.json"
+    subprocess.check_call([sys.executable,str(a17),str(a17_out)])
+    result=json.loads(a17_out.read_text(encoding="utf-8"))
+    print("===YGG_A17_L12_TOPOLOGY_FAILURE_RESCUE===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["valid"]:
+        raise SystemExit("YGG_A17_EVIDENCE_INVALID")
+    if not result["qualification"]["YGG_A17_L12_TOPOLOGY_FAILURE_RESCUE"]:
+        raise SystemExit("YGG_A17_SCIENTIFIC_NEGATIVE")
+    print("YGG_A17_PRIMARY_PASS=true")
+
