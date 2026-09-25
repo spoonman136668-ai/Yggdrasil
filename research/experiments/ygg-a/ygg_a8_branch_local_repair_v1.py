@@ -11,7 +11,7 @@ g=a1.g
 p=a1.p
 t=a1.t
 
-PREREG="b33bbf51a2aa7ba2b1715b0a64886a81694ef999"
+PREREG="a702fe94e110d7752e4cd54f3dbecca39c6d4710"
 PARENT_CLOSURE="422fddf4c7f6b0d463b7dd0688a8e26cef731380"
 A1_PREREG=a1.PREREG
 DAMAGE_PER_WORLD=8
@@ -21,7 +21,7 @@ def canonical(x):
 
 def damage_schedule(m):
     excluded=set(m["corrupt_ids"])
-    candidates=[rid for rid in range(160) if rid not in excluded]
+    candidates=[rid for rid in range(64) if rid not in excluded]
     ranked=sorted(
         candidates,
         key=lambda rid:(p.h64("YGG-A8-BRANCH-DAMAGE",m["seed"],rid),rid),
