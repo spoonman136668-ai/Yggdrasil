@@ -107,7 +107,8 @@ jobs:
           if (-not (Test-Path -LiteralPath $PyExe)) { throw "PYTHON_MISSING path=$PyExe" }
           $TrackA = Join-Path $env:GITHUB_WORKSPACE 'research\applications\track-a'
           $Pth = Join-Path $PyRoot 'python312._pth'
-          @('python312.zip','.','Lib\site-packages',$TrackA,'import site') | Set-Content -LiteralPath $Pth -Encoding ASCII
+          $YggA = Join-Path $env:GITHUB_WORKSPACE 'research\experiments\ygg-a'
+          @('python312.zip','.','Lib\site-packages',$TrackA,$YggA,'import site') | Set-Content -LiteralPath $Pth -Encoding ASCII
           $PyRoot >> $env:GITHUB_PATH
           (Join-Path $PyRoot 'Scripts') >> $env:GITHUB_PATH
           & $PyExe --version
