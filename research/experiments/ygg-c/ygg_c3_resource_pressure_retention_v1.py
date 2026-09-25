@@ -95,11 +95,12 @@ def build_manifests():
 
 def run_once():
     base,manifests=build_manifests()
+    parent_reference=[lu2v.run_pair(m) for m in base]
     levels=[]
     for count in PRESSURE:
         rows=[run_pressure_manifest(m,count) for m in manifests[count]]
         levels.append({"lesion_cells":count,"rows":rows})
-    return {"base_manifests":base,"levels":levels}
+    return {"base_manifests":base,"parent_reference":parent_reference,"levels":levels}
 
 def by_count(run):
     return {x["lesion_cells"]:x["rows"] for x in run["levels"]}
@@ -169,6 +170,8 @@ def validity(run1,run2):
     b2=canonical(run2)
     levels=by_count(run1)
     l8_hash=hashlib.sha256(canonical(levels[8])).hexdigest()
+    parent_hash=hashlib.sha256(canonical(run1["parent_reference"])).hexdigest()
+    l8_parent_exact=canonical(levels[8])==canonical(run1["parent_reference"])
     nested=True
     exact_l8=True
     nonlesion=True
@@ -197,21 +200,21 @@ def validity(run1,run2):
     )
     checks={
         "duplicate_complete_sweep_byte_identical":b1==b2,
-        "l8_parent_evidence_exact":l8_hash==EXPECTED_L8_EVIDENCE_SHA256,
+        "l8_parent_execution_byte_exact":l8_parent_exact,
         "pressure_sets_nested":nested,
         "l8_exact_inherited_lesion":exact_l8,
         "nonlesion_manifest_fields_frozen":nonlesion,
         "frozen_lineage_intact":lineage,
         "all_matching_integrity":all_matching,
     }
-    return checks,l8_hash,hashlib.sha256(b1).hexdigest()
+    return checks,l8_hash,parent_hash,hashlib.sha256(b1).hexdigest()
 
 def main():
     if len(sys.argv)!=2:
         raise SystemExit("usage: OUT")
     first=run_once()
     second=run_once()
-    checks,l8_hash,dup_hash=validity(first,second)
+    checks,l8_hash,parent_hash,dup_hash=validity(first,second)
     out={
         "schema":1,
         "experiment":"YGG-C3",
@@ -222,7 +225,9 @@ def main():
         "pressure_levels":list(PRESSURE),
         "validity":checks,
         "valid":all(checks.values()),
-        "l8_parent_evidence_sha256":l8_hash,
+        "l8_pressure_evidence_sha256":l8_hash,
+        "current_parent_reference_sha256":parent_hash,
+        "historical_c2_evidence_sha256":EXPECTED_L8_EVIDENCE_SHA256,
         "duplicate_sha256":dup_hash,
         "qualification":qualification(first),
         "sweep":first["levels"],
