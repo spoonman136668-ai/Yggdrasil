@@ -298,3 +298,16 @@ if str(control.get("request_id","")).startswith("YGG-A19-L12-TO-L13-SINGLE-CELL-
         raise SystemExit("YGG_A19_SCIENTIFIC_NEGATIVE")
     print("YGG_A19_PRIMARY_PASS=true")
 
+if str(control.get("request_id","")).startswith("YGG-A20-INTEGRATED-FINE-RECOVERY-MAP"):
+    a20=Path(__file__).with_name("ygg_a20_integrated_fine_recovery_map_v1.py")
+    a20_out=OUT/"a20-integrated-fine-recovery-map.json"
+    subprocess.check_call([sys.executable,str(a20),str(a20_out)])
+    result=json.loads(a20_out.read_text(encoding="utf-8"))
+    print("===YGG_A20_INTEGRATED_FINE_RECOVERY_MAP===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["valid"]:
+        raise SystemExit("YGG_A20_EVIDENCE_INVALID")
+    if not result["qualification"]["YGG_A20_INTEGRATED_FINE_RECOVERY_MAP"]:
+        raise SystemExit("YGG_A20_QUALIFICATION_FAILED")
+    print("YGG_A20_PRIMARY_PASS=true")
+
