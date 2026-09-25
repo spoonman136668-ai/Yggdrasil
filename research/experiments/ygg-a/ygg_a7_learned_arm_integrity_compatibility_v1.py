@@ -66,6 +66,11 @@ def scored(m,mode):
         "result":g.compact(result),
         "maturity":a1.maturity_summary(m,registry,detected),
         "atomic":stats,
+        "integrity":{
+            "duplicate_cell":result["matching_duplicate_cell"]==0,
+            "duplicate_request":result["matching_duplicate_request"]==0,
+            "incorrect_done_zero":result["incorrect_done"]==0,
+        },
         "target_141":{
             "present":141 in registry,
             "stage":registry[141].stage if 141 in registry else None,
