@@ -246,3 +246,16 @@ if str(control.get("request_id","")).startswith("YGG-A15-FULL-BLEND-MAX-REPAIR-I
         raise SystemExit("YGG_A15_SCIENTIFIC_NEGATIVE")
     print("YGG_A15_PRIMARY_PASS=true")
 
+if str(control.get("request_id","")).startswith("YGG-A16-L16-REPAIR-FULL-BLEND-INTEGRATION"):
+    a16=Path(__file__).with_name("ygg_a16_l16_repair_full_blend_integration_v1.py")
+    a16_out=OUT/"a16-l16-repair-full-blend-integration.json"
+    subprocess.check_call([sys.executable,str(a16),str(a16_out)])
+    result=json.loads(a16_out.read_text(encoding="utf-8"))
+    print("===YGG_A16_L16_REPAIR_FULL_BLEND_INTEGRATION===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["valid"]:
+        raise SystemExit("YGG_A16_EVIDENCE_INVALID")
+    if not result["qualification"]["YGG_A16_L16_REPAIR_FULL_BLEND_INTEGRATION"]:
+        raise SystemExit("YGG_A16_SCIENTIFIC_NEGATIVE")
+    print("YGG_A16_PRIMARY_PASS=true")
+
