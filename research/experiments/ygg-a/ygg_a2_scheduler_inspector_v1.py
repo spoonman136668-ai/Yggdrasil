@@ -81,3 +81,14 @@ for name in related:
     print(f"===GLOBAL_AST_SOURCE {name}===")
     print(segment(candidate_src,defs[name]))
 print("YGG_A2_INSPECTOR_PASS=true")
+
+# YGG-A3 read-only continuation: execute the bounded replicate-10
+# terminal-observability diagnostic after the frozen scheduler inspection.
+import ygg_a3_terminal_observability_diagnostic_v1 as a3diag
+_saved_argv=sys.argv
+try:
+    sys.argv=[str(Path(a3diag.__file__)),str(OUT/"a3-terminal-observability.json")]
+    a3diag.main()
+finally:
+    sys.argv=_saved_argv
+print("YGG_A3_TERMINAL_OBSERVABILITY_DIAGNOSTIC_PASS=true")
