@@ -198,3 +198,14 @@ if str(control.get("request_id","")).startswith("YGG-A11-HIGH-LOAD-BRANCH-REPAIR
         raise SystemExit("YGG_A11_SCIENTIFIC_NEGATIVE")
     print("YGG_A11_PRIMARY_PASS=true")
 
+if str(control.get("request_id","")).startswith("YGG-A12-NEAR-SATURATION-BRANCH-REPAIR"):
+    a12=Path(__file__).with_name("ygg_a12_near_saturation_branch_repair_v1.py")
+    a12_out=OUT/"a12-near-saturation-branch-repair.json"
+    subprocess.check_call([sys.executable,str(a12),str(a12_out)])
+    result=json.loads(a12_out.read_text(encoding="utf-8"))
+    print("===YGG_A12_NEAR_SATURATION_BRANCH_REPAIR===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["primary"]["qualification"]["YGG_A12_NEAR_SATURATION_BRANCH_REPAIR"]:
+        raise SystemExit("YGG_A12_SCIENTIFIC_NEGATIVE")
+    print("YGG_A12_PRIMARY_PASS=true")
+
