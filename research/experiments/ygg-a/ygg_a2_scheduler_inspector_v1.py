@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Read-only YGG-A2 inspector for dynamically reconstructed frozen LU2G source."""
 from __future__ import annotations
-import ast, base64, gzip, hashlib, json, sys
+import ast, base64, gzip, hashlib, json, subprocess, sys
 from pathlib import Path
 
 TRACK=Path(__file__).resolve().parents[2]/"applications"/"track-a"
@@ -81,6 +81,21 @@ for name in related:
     print(f"===GLOBAL_AST_SOURCE {name}===")
     print(segment(candidate_src,defs[name]))
 print("YGG_A2_INSPECTOR_PASS=true")
+
+# Optional read-only continuation diagnostic. Reuse the already-authorized
+# a2_dev inspector lane rather than adding a competing execution path.
+control_path=Path(__file__).resolve().parents[2]/"control"/"ygg-a-run.json"
+try:
+    control=json.loads(control_path.read_text(encoding="utf-8"))
+except Exception:
+    control={}
+if str(control.get("request_id","")).startswith("YGG-A3-TERMINAL-OBSERVABILITY-DIAG"):
+    diag=Path(__file__).with_name("ygg_a3_terminal_observability_diagnostic_v1.py")
+    diag_out=OUT/"a3-diagnostic.json"
+    subprocess.check_call([sys.executable,str(diag),str(diag_out)])
+    print("===YGG_A3_TERMINAL_OBSERVABILITY===")
+    print(diag_out.read_text(encoding="utf-8"))
+    print("YGG_A3_DIAGNOSTIC_PASS=true")
 
 # YGG-A3 read-only continuation: execute the bounded replicate-10
 # terminal-observability diagnostic after the frozen scheduler inspection.
