@@ -187,3 +187,14 @@ if str(control.get("request_id","")).startswith("YGG-A10-QUADRUPLED-BRANCH-REPAI
         raise SystemExit("YGG_A10_SCIENTIFIC_NEGATIVE")
     print("YGG_A10_PRIMARY_PASS=true")
 
+if str(control.get("request_id","")).startswith("YGG-A11-HIGH-LOAD-BRANCH-REPAIR"):
+    a11=Path(__file__).with_name("ygg_a11_high_load_branch_repair_v1.py")
+    a11_out=OUT/"a11-high-load-branch-repair.json"
+    subprocess.check_call([sys.executable,str(a11),str(a11_out)])
+    result=json.loads(a11_out.read_text(encoding="utf-8"))
+    print("===YGG_A11_HIGH_LOAD_BRANCH_REPAIR===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["primary"]["qualification"]["YGG_A11_HIGH_LOAD_BRANCH_REPAIR"]:
+        raise SystemExit("YGG_A11_SCIENTIFIC_NEGATIVE")
+    print("YGG_A11_PRIMARY_PASS=true")
+
