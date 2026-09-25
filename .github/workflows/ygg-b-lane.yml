@@ -42,7 +42,7 @@ jobs:
           $Control = $Raw | ConvertFrom-Json
           if ($Control.schema -ne 1) { throw 'CONTROL_SCHEMA_MISMATCH' }
           if ($Control.lane -cne 'YGG-B') { throw "CONTROL_LANE_MISMATCH actual=$($Control.lane)" }
-          if ($Control.mode -notin @('bootstrap','b1_probe','b2_probe','b3_probe','b4_probe','b5_probe','b6_probe','b7_probe','b8_probe','b9_probe','b10_probe','b11_probe','b12_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
+          if ($Control.mode -notin @('bootstrap','b1_probe','b2_probe','b3_probe','b4_probe','b5_probe','b6_probe','b7_probe','b8_probe','b9_probe','b10_probe','b11_probe','b12_probe','b13_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
           if ($Raw -match '(?i)ckb-plane|ktrade|wingless|coinbase|broker|ygg-a|ygg-c') { throw 'LANE_ISOLATION_TOKEN_VIOLATION' }
           "mode=$($Control.mode)" >> $env:GITHUB_OUTPUT
 
@@ -71,7 +71,7 @@ jobs:
           $Probe | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
 
       - name: Provision portable Python runtime
-        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe' || steps.ctl.outputs.mode == 'b7_probe' || steps.ctl.outputs.mode == 'b8_probe' || steps.ctl.outputs.mode == 'b9_probe' || steps.ctl.outputs.mode == 'b10_probe' || steps.ctl.outputs.mode == 'b11_probe' || steps.ctl.outputs.mode == 'b12_probe'
+        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe' || steps.ctl.outputs.mode == 'b7_probe' || steps.ctl.outputs.mode == 'b8_probe' || steps.ctl.outputs.mode == 'b9_probe' || steps.ctl.outputs.mode == 'b10_probe' || steps.ctl.outputs.mode == 'b11_probe' || steps.ctl.outputs.mode == 'b12_probe' || steps.ctl.outputs.mode == 'b13_probe' || steps.ctl.outputs.mode == 'b13_probe' || steps.ctl.outputs.mode == 'b13_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -273,6 +273,20 @@ jobs:
           if (-not $R.duplicate_byte_identical) { throw 'YGG_B12_DUPLICATE_MISMATCH' }
           if (-not $R.primary.qualification.YGG_B12_MULTIPLICATIVE_ROLE_VALUE2D) { throw 'YGG_B12_SCIENTIFIC_NEGATIVE' }
 
+      - name: Run YGG-B13 frozen two-factor structural-binding probe
+        if: steps.ctl.outputs.mode == 'b13_probe'
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $OutDir = Join-Path $env:RUNNER_TEMP 'ygg-b13'
+          if (Test-Path -LiteralPath $OutDir) { Remove-Item -LiteralPath $OutDir -Recurse -Force }
+          New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
+          python research/experiments/ygg-b/ygg_b13_two_factor_structural_binding_v1.py (Join-Path $OutDir 'b13-result.json')
+          $R = Get-Content -LiteralPath (Join-Path $OutDir 'b13-result.json') -Raw | ConvertFrom-Json
+          Get-Content -LiteralPath (Join-Path $OutDir 'b13-result.json')
+          if (-not $R.duplicate_byte_identical) { throw 'YGG_B13_DUPLICATE_MISMATCH' }
+          if (-not $R.primary.qualification.YGG_B13_TWO_FACTOR_STRUCTURAL_BINDING) { throw 'YGG_B13_SCIENTIFIC_NEGATIVE' }
+
       - name: Upload lane evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -292,5 +306,6 @@ jobs:
             ${{ runner.temp }}\ygg-b10\**
             ${{ runner.temp }}\ygg-b11\**
             ${{ runner.temp }}\ygg-b12\**
+            ${{ runner.temp }}\ygg-b13\**
           if-no-files-found: warn
           retention-days: 14
