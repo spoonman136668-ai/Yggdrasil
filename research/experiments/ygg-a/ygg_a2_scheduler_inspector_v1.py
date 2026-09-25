@@ -141,3 +141,15 @@ if str(control.get("request_id","")).startswith("YGG-A6-HORIZON-AWARE-ATOMIC-CON
     if not result["primary"]["qualification"]["YGG_A6_HORIZON_AWARE_ATOMIC_EGRESS_CONFIRMATION"]:
         raise SystemExit("YGG_A6_SCIENTIFIC_NEGATIVE")
     print("YGG_A6_PRIMARY_PASS=true")
+
+
+if str(control.get("request_id","")).startswith("YGG-A7-LEARNED-ARM-INTEGRITY-COMPATIBILITY"):
+    a7=Path(__file__).with_name("ygg_a7_learned_arm_integrity_compatibility_v1.py")
+    a7_out=OUT/"a7-learned-arm-integrity.json"
+    subprocess.check_call([sys.executable,str(a7),str(a7_out)])
+    result=json.loads(a7_out.read_text(encoding="utf-8"))
+    print("===YGG_A7_LEARNED_ARM_INTEGRITY_COMPATIBILITY===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["primary"]["qualification"]["YGG_A7_LEARNED_ARM_INTEGRITY_COMPATIBILITY"]:
+        raise SystemExit("YGG_A7_SCIENTIFIC_NEGATIVE")
+    print("YGG_A7_PRIMARY_PASS=true")
