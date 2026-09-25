@@ -84,7 +84,7 @@ jobs:
           $Probe | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
 
       - name: Provision portable Python runtime
-        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary'
+        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -115,7 +115,7 @@ jobs:
           & $PyExe -m pip --version
 
       - name: Install frozen A1 runtime
-        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary'
+        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -124,7 +124,7 @@ jobs:
           python -c "import numpy,torch; print('numpy',numpy.__version__); print('torch',torch.__version__)"
 
       - name: Run YGG-A1 mechanical gate
-        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary'
+        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
