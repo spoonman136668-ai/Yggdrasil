@@ -8,7 +8,7 @@ import ygg_c9_learned_blend_onset_localization_v1 as c9
 PREREG="2eba8d016e229dc19a868d30cd7c16e10647bd96"
 PARENT_CLOSURE="2cbd1a453bcbd81d52c74ea9b6373bd309ab0757"
 ALPHAS=(0.125,0.140625,0.15625)
-EXTENDED=(0.0,0.0625,0.125,0.140625,0.15625,0.15625,0.25,0.5,1.0)
+EXTENDED=(0.0,0.0625,0.125,0.140625,0.15625,0.1875,0.25,0.5,1.0)
 ANCHOR_0125="9f6a7bf9f64ee726a1f705a17cce22c99a9996d2dfa883c0740c3d2fc8bbfc26"
 ANCHOR_015625="8d45e4d0eec68f45b7816dea68a7d74e02b5db7e698cb6c6f1d524c15b840c89"
 
@@ -21,9 +21,9 @@ def main():
 
     old_alphas=tuple(c9.ALPHAS)
     old_extended=tuple(c9.EXTENDED_DOSE_ALPHAS)
-    if old_alphas!=(0.0625,0.125,0.15625,0.25):
+    if old_alphas!=(0.0625,0.125,0.1875,0.25):
         raise SystemExit("YGG_C11_UNEXPECTED_C9_ALPHA_SET")
-    if old_extended!=(0.0,0.0625,0.125,0.15625,0.25,0.5,1.0):
+    if old_extended!=(0.0,0.0625,0.125,0.1875,0.25,0.5,1.0):
         raise SystemExit("YGG_C11_UNEXPECTED_C9_EXTENDED_SET")
 
     c9.ALPHAS=ALPHAS
