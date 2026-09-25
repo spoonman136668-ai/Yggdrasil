@@ -71,7 +71,7 @@ jobs:
           $Probe | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
 
       - name: Provision portable Python runtime
-        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe' || steps.ctl.outputs.mode == 'b6_probe' || steps.ctl.outputs.mode == 'b6_probe'
+        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -98,7 +98,7 @@ jobs:
           & $PyExe -m pip --version
 
       - name: Install frozen B runtime
-        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe'
+        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -106,7 +106,7 @@ jobs:
           python -c "import torch; print('torch',torch.__version__)"
 
       - name: Run YGG-B1 frozen sequence-memory probe
-        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe'
+        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
