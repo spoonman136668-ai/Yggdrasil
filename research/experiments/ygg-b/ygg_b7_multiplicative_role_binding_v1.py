@@ -4,6 +4,8 @@ from pathlib import Path
 import torch
 from torch import nn
 from torch.nn import functional as F
+
+sys.path.insert(0,str(Path(__file__).resolve().parent))
 import ygg_b6_role_conditioned_holdout_v1 as b6
 
 PREREG="246cdc87bdced07e910b7072e1ac7a5a42c794a3"
