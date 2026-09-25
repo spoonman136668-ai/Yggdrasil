@@ -159,7 +159,8 @@ def one_pass():
         "median_persistent_ge_095":statistics.median(persistent)>=0.95,
         "state_exactly_16":all(r["persistent_state_scalars"]==16 for r in rows),
     }
-    q["parameter_count_exactly_88"]=all(r["parameter_count"]==88 for r in rows)\n    q["YGG_B4_ADDRESS_DIMENSION_REALLOCATION"]=all(q.values())
+    q["parameter_count_exactly_88"]=all(r["parameter_count"]==88 for r in rows)
+    q["YGG_B4_ADDRESS_DIMENSION_REALLOCATION"]=all(q.values())
     return {"rows":rows,"qualification":q}
 
 def main():
