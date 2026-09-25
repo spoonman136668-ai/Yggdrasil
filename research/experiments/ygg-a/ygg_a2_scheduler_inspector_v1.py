@@ -129,3 +129,15 @@ if str(control.get("request_id","")).startswith("YGG-A5-TERMINAL-CONTRACT-AUDIT"
     if not result["qualification"]["YGG_A5_TERMINAL_CONTRACT_DIVERGENCE"]:
         raise SystemExit("YGG_A5_CONTRACT_DIVERGENCE_NOT_SUPPORTED")
     print("YGG_A5_CONTRACT_DIVERGENCE_PASS=true")
+
+
+if str(control.get("request_id","")).startswith("YGG-A6-HORIZON-AWARE-ATOMIC-CONFIRMATION"):
+    a6=Path(__file__).with_name("ygg_a6_horizon_aware_atomic_egress_confirmation_v1.py")
+    a6_out=OUT/"a6-horizon-aware-confirmation.json"
+    subprocess.check_call([sys.executable,str(a6),str(a6_out)])
+    result=json.loads(a6_out.read_text(encoding="utf-8"))
+    print("===YGG_A6_HORIZON_AWARE_ATOMIC_CONFIRMATION===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["primary"]["qualification"]["YGG_A6_HORIZON_AWARE_ATOMIC_EGRESS_CONFIRMATION"]:
+        raise SystemExit("YGG_A6_SCIENTIFIC_NEGATIVE")
+    print("YGG_A6_PRIMARY_PASS=true")
