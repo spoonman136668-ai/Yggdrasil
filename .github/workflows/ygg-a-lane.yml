@@ -154,7 +154,11 @@ jobs:
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
-          python -c "import inspect,lu2t_task4_exact_parent_feasibility_v1 as t; g=t.g; print('===RUN_WORLD==='); print(inspect.getsource(g.run_world)); print('===RUN_WORLD_GLOBALS==='); print(sorted(set(g.run_world.__code__.co_names))); [print('===GLOBAL',n,'===\n'+inspect.getsource(getattr(g,n))) for n in g.run_world.__code__.co_names if hasattr(g,n) and inspect.isfunction(getattr(g,n)) and getattr(g,n).__module__==g.__name__]"
+          $OutDir = Join-Path $env:RUNNER_TEMP 'ygg-a2-inspector'
+          if (Test-Path -LiteralPath $OutDir) { Remove-Item -LiteralPath $OutDir -Recurse -Force }
+          New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
+          python research/experiments/ygg-a/ygg_a2_scheduler_inspector_v1.py $OutDir
+          if ($LASTEXITCODE -ne 0) { throw "YGG_A2_INSPECTOR_FAILED exit=$LASTEXITCODE" }
 
       - name: Upload lane evidence
         if: always()
@@ -164,5 +168,6 @@ jobs:
           path: |
             ${{ runner.temp }}\ygg-a-bootstrap\**
             ${{ runner.temp }}\ygg-a1\**
+            ${{ runner.temp }}\ygg-a2-inspector\**
           if-no-files-found: warn
           retention-days: 14
