@@ -79,7 +79,7 @@ jobs:
           } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
 
       - name: Provision portable Python runtime
-        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial' || steps.ctl.outputs.mode == 'c7_paired_arm' || steps.ctl.outputs.mode == 'c7_paired_arm'
+        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial' || steps.ctl.outputs.mode == 'c7_paired_arm'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -109,7 +109,7 @@ jobs:
           & $PyExe -m pip --version
 
       - name: Install frozen C1 runtime
-        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial'
+        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial' || steps.ctl.outputs.mode == 'c7_paired_arm'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
