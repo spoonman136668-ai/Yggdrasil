@@ -32,6 +32,9 @@ def classify(below,above):
 def one_pass():
     old_alphas=tuple(c16.ALPHAS)
     old_extended=tuple(c16.EXTENDED_DOSE_ALPHAS)
+    old_c9_alphas=tuple(c15.c9.ALPHAS)
+    old_c9_extended=tuple(c15.c9.EXTENDED_DOSE_ALPHAS)
+
     c16.ALPHAS=ALPHAS
     c16.EXTENDED_DOSE_ALPHAS=EXTENDED
     try:
@@ -40,7 +43,14 @@ def one_pass():
         c16.ALPHAS=old_alphas
         c16.EXTENDED_DOSE_ALPHAS=old_extended
 
-    anchors=[c15.run_alpha(a) for a in ALPHAS]
+    c15.c9.ALPHAS=ALPHAS
+    c15.c9.EXTENDED_DOSE_ALPHAS=c15.EXTENDED
+    try:
+        anchors=[c15.c9.run_alpha(a) for a in ALPHAS]
+    finally:
+        c15.c9.ALPHAS=old_c9_alphas
+        c15.c9.EXTENDED_DOSE_ALPHAS=old_c9_extended
+
     return {"pressure":pressure,"anchors":anchors}
 
 def main():
@@ -49,6 +59,8 @@ def main():
 
     old_alphas=tuple(c16.ALPHAS)
     old_extended=tuple(c16.EXTENDED_DOSE_ALPHAS)
+    old_c9_alphas=tuple(c15.c9.ALPHAS)
+    old_c9_extended=tuple(c15.c9.EXTENDED_DOSE_ALPHAS)
 
     first=one_pass()
     second=one_pass()
@@ -75,6 +87,8 @@ def main():
         "learned_weight_identity_exact":below["weight_sha256"]==above["weight_sha256"]==c16.lu2v.WEIGHT_SHA,
         "c16_alpha_globals_restored":tuple(c16.ALPHAS)==old_alphas,
         "c16_extended_globals_restored":tuple(c16.EXTENDED_DOSE_ALPHAS)==old_extended,
+        "c15_c9_alpha_globals_restored":tuple(c15.c9.ALPHAS)==old_c9_alphas,
+        "c15_c9_extended_globals_restored":tuple(c15.c9.EXTENDED_DOSE_ALPHAS)==old_c9_extended,
     }
 
     allowed={"BELOW_MATCHES_ABOVE","BELOW_WEAKER","BELOW_STRONGER","CROSSING_PATTERNS"}
