@@ -337,3 +337,16 @@ if str(control.get("request_id","")).startswith("YGG-A22-L16-CONTROLLER-FAMILY-A
         raise SystemExit("YGG_A22_QUALIFICATION_FAILED")
     print("YGG_A22_PRIMARY_PASS=true")
 
+if str(control.get("request_id","")).startswith("YGG-A23-A-CONTEXT-FINE-PRESSURE-MAP"):
+    a23=Path(__file__).with_name("ygg_a23_a_context_fine_pressure_map_v1.py")
+    a23_out=OUT/"a23-a-context-fine-pressure-map.json"
+    subprocess.check_call([sys.executable,str(a23),str(a23_out)])
+    result=json.loads(a23_out.read_text(encoding="utf-8"))
+    print("===YGG_A23_A_CONTEXT_FINE_PRESSURE_MAP===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["valid"]:
+        raise SystemExit("YGG_A23_EVIDENCE_INVALID")
+    if not result["qualification"]["YGG_A23_A_CONTEXT_FINE_PRESSURE_MAP"]:
+        raise SystemExit("YGG_A23_QUALIFICATION_FAILED")
+    print("YGG_A23_PRIMARY_PASS=true")
+
