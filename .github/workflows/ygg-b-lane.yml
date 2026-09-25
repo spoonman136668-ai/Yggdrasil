@@ -42,7 +42,7 @@ jobs:
           $Control = $Raw | ConvertFrom-Json
           if ($Control.schema -ne 1) { throw 'CONTROL_SCHEMA_MISMATCH' }
           if ($Control.lane -cne 'YGG-B') { throw "CONTROL_LANE_MISMATCH actual=$($Control.lane)" }
-          if ($Control.mode -notin @('bootstrap','b1_probe','b2_probe','b3_probe','b4_probe','b5_probe','b6_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
+          if ($Control.mode -notin @('bootstrap','b1_probe','b2_probe','b3_probe','b4_probe','b5_probe','b6_probe','b7_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
           if ($Raw -match '(?i)ckb-plane|ktrade|wingless|coinbase|broker|ygg-a|ygg-c') { throw 'LANE_ISOLATION_TOKEN_VIOLATION' }
           "mode=$($Control.mode)" >> $env:GITHUB_OUTPUT
 
@@ -71,7 +71,7 @@ jobs:
           $Probe | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
 
       - name: Provision portable Python runtime
-        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe'
+        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe' || steps.ctl.outputs.mode == 'b7_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -98,7 +98,7 @@ jobs:
           & $PyExe -m pip --version
 
       - name: Install frozen B runtime
-        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe'
+        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe' || steps.ctl.outputs.mode == 'b7_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -106,7 +106,7 @@ jobs:
           python -c "import torch; print('torch',torch.__version__)"
 
       - name: Run YGG-B1 frozen sequence-memory probe
-        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe'
+        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe' || steps.ctl.outputs.mode == 'b7_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -189,6 +189,20 @@ jobs:
           if (-not $R.duplicate_byte_identical) { throw 'YGG_B6_DUPLICATE_MISMATCH' }
           if (-not $R.primary.qualification.YGG_B6_ROLE_CONDITIONED_HOLDOUT) { throw 'YGG_B6_SCIENTIFIC_NEGATIVE' }
 
+      - name: Run YGG-B7 frozen multiplicative-role probe
+        if: steps.ctl.outputs.mode == 'b7_probe'
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $OutDir = Join-Path $env:RUNNER_TEMP 'ygg-b7'
+          if (Test-Path -LiteralPath $OutDir) { Remove-Item -LiteralPath $OutDir -Recurse -Force }
+          New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
+          python research/experiments/ygg-b/ygg_b7_multiplicative_role_binding_v1.py (Join-Path $OutDir 'b7-result.json')
+          $R = Get-Content -LiteralPath (Join-Path $OutDir 'b7-result.json') -Raw | ConvertFrom-Json
+          Get-Content -LiteralPath (Join-Path $OutDir 'b7-result.json')
+          if (-not $R.duplicate_byte_identical) { throw 'YGG_B7_DUPLICATE_MISMATCH' }
+          if (-not $R.primary.qualification.YGG_B7_MULTIPLICATIVE_ROLE_BINDING) { throw 'YGG_B7_SCIENTIFIC_NEGATIVE' }
+
       - name: Upload lane evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -202,5 +216,6 @@ jobs:
             ${{ runner.temp }}\ygg-b4\**
             ${{ runner.temp }}\ygg-b5\**
             ${{ runner.temp }}\ygg-b6\**
+            ${{ runner.temp }}\ygg-b7\**
           if-no-files-found: warn
           retention-days: 14
