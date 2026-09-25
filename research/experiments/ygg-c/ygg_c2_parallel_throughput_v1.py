@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import concurrent.futures as cf
-import hashlib, json, multiprocessing as mp, sys, time
+import hashlib, importlib, json, multiprocessing as mp, shutil, sys, tempfile, time
 from pathlib import Path
 
 import torch
@@ -13,12 +13,41 @@ WORKERS=(1,2,4,8)
 def canonical(x):
     return json.dumps(x,sort_keys=True,separators=(",",":")).encode()
 
+_worker_lu2v=None
+
 def worker_init():
+    global _worker_lu2v
     torch.set_num_threads(1)
     torch.use_deterministic_algorithms(True)
 
+    # Mechanical harness isolation only: the frozen LU-1A loader uses a
+    # source-adjacent temporary weight path. Give every spawned worker its
+    # own byte-identical Track-A tree so concurrent accepted worlds cannot
+    # collide on that temporary file.
+    source=(Path(__file__).resolve().parents[2] / "applications" / "track-a").resolve()
+    isolated=Path(tempfile.mkdtemp(prefix="ygg-c2-worker-")) / "track-a"
+    shutil.copytree(source,isolated)
+
+    # Spawn imports the original Track-A modules before this initializer.
+    # Remove only modules loaded from that tree, then import the same frozen
+    # LU-2V bytes from the worker-local copy.
+    for name,module in list(sys.modules.items()):
+        module_file=getattr(module,"__file__",None)
+        if not module_file:
+            continue
+        try:
+            if Path(module_file).resolve().is_relative_to(source):
+                del sys.modules[name]
+        except (OSError,RuntimeError,ValueError):
+            pass
+    sys.path.insert(0,str(isolated))
+    importlib.invalidate_caches()
+    _worker_lu2v=importlib.import_module("lu2v_task4_independent_confirmation_v1")
+
 def worker_run(m):
-    return lu2v.run_pair(m)
+    if _worker_lu2v is None:
+        raise RuntimeError("worker-local LU2V not initialized")
+    return _worker_lu2v.run_pair(m)
 
 def integrity(rows):
     for row in rows:
