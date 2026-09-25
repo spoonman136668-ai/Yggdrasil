@@ -4,6 +4,9 @@ from pathlib import Path
 
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import ygg_c5_fine_pressure_transition_v1 as c5
+import lu2d_u_authority_dose_response_v1 as dose
+
+EXTENDED_DOSE_ALPHAS=(0.0,0.1357421875,0.25,0.5,1.0)
 
 PREREG="c32e13303c54cb2fac2f2342d4cdf5d052871d56"
 PARENT_CLOSURE="1c19f852ff1472abf167246ac70eef2c11aa5106"
@@ -23,8 +26,12 @@ def run_alpha(alpha):
     old_parent=float(parent.ALPHA)
     old_runtime=float(parent.g.ALPHA)
     old_fine=c3.pressure_lesion
+    old_dose_alphas=tuple(dose.ALPHAS)
+    if old_dose_alphas!=(0.0,0.25,0.5,1.0):
+        raise AssertionError("unexpected frozen dose allowlist")
     weight_before=hashlib.sha256(parent.base._weights_bytes()).hexdigest()
 
+    dose.ALPHAS=EXTENDED_DOSE_ALPHAS
     parent.ALPHA=float(alpha)
     parent.g.ALPHA=float(alpha)
     c3.pressure_lesion=c5.fine_pressure
@@ -35,6 +42,7 @@ def run_alpha(alpha):
         c3.pressure_lesion=old_fine
         parent.ALPHA=old_parent
         parent.g.ALPHA=old_runtime
+        dose.ALPHAS=old_dose_alphas
 
     groups={g["lesion_cells"]:g for g in first["groups"]}
     duplicate=canonical(first)==canonical(second)
@@ -70,6 +78,7 @@ def run_alpha(alpha):
             weight_before==lu2v.WEIGHT_SHA and weight_after==lu2v.WEIGHT_SHA
         ),
         "runtime_alpha_restored":float(parent.ALPHA)==old_parent and float(parent.g.ALPHA)==old_runtime,
+        "dose_allowlist_restored":tuple(dose.ALPHAS)==old_dose_alphas,
         "pressure_lesion_function_restored":c3.pressure_lesion is old_fine,
     }
     summaries={}
@@ -125,6 +134,7 @@ def main():
         raise SystemExit("usage: OUT")
     before_parent=float(parent.ALPHA)
     before_runtime=float(parent.g.ALPHA)
+    before_dose=tuple(dose.ALPHAS)
     rows=[run_alpha(a) for a in ALPHAS]
     by={float(r["alpha"]):r for r in rows}
     category=classify(by[0.1357421875],by[0.25])
@@ -138,6 +148,7 @@ def main():
         "alpha_levels_exact":[r["alpha"] for r in rows]==list(ALPHAS),
         "all_alpha_sweeps_valid":all(r["valid"] for r in rows),
         "runtime_alpha_restored_final":float(parent.ALPHA)==before_parent and float(parent.g.ALPHA)==before_runtime,
+        "dose_allowlist_restored_final":tuple(dose.ALPHAS)==before_dose,
         "learned_weight_identity_same_across_alpha":len({r["weight_sha256"] for r in rows})==1,
     }
     qualification={
