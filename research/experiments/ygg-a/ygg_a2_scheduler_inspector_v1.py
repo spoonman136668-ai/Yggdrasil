@@ -350,3 +350,17 @@ if str(control.get("request_id","")).startswith("YGG-A23-A-CONTEXT-FINE-PRESSURE
         raise SystemExit("YGG_A23_QUALIFICATION_FAILED")
     print("YGG_A23_PRIMARY_PASS=true")
 
+
+
+if str(control.get("request_id","")).startswith("YGG-A24-L12-MARGINAL-CELL-ATTRIBUTION"):
+    a24=Path(__file__).with_name("ygg_a24_l12_marginal_cell_attribution_v1.py")
+    a24_out=OUT/"a24-l12-marginal-cell-attribution.json"
+    subprocess.check_call([sys.executable,str(a24),str(a24_out)])
+    result=json.loads(a24_out.read_text(encoding="utf-8"))
+    print("===YGG_A24_L12_MARGINAL_CELL_ATTRIBUTION===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["valid"]:
+        raise SystemExit("YGG_A24_EVIDENCE_INVALID")
+    if not result["qualification"]["YGG_A24_L12_MARGINAL_CELL_ATTRIBUTION"]:
+        raise SystemExit("YGG_A24_QUALIFICATION_FAILED")
+    print("YGG_A24_PRIMARY_PASS=true")
