@@ -272,3 +272,16 @@ if str(control.get("request_id","")).startswith("YGG-A17-L12-TOPOLOGY-FAILURE-RE
         raise SystemExit("YGG_A17_SCIENTIFIC_NEGATIVE")
     print("YGG_A17_PRIMARY_PASS=true")
 
+if str(control.get("request_id","")).startswith("YGG-A18-L12-STREAM-FAILURE-ATTRIBUTION"):
+    a18=Path(__file__).with_name("ygg_a18_l12_stream_failure_attribution_v1.py")
+    a18_out=OUT/"a18-l12-stream-failure-attribution.json"
+    subprocess.check_call([sys.executable,str(a18),str(a18_out)])
+    result=json.loads(a18_out.read_text(encoding="utf-8"))
+    print("===YGG_A18_L12_STREAM_FAILURE_ATTRIBUTION===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["valid"]:
+        raise SystemExit("YGG_A18_EVIDENCE_INVALID")
+    if not result["qualification"]["YGG_A18_L12_STREAM_FAILURE_ATTRIBUTION"]:
+        raise SystemExit("YGG_A18_QUALIFICATION_FAILED")
+    print("YGG_A18_PRIMARY_PASS=true")
+
