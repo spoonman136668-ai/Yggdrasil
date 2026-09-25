@@ -285,3 +285,16 @@ if str(control.get("request_id","")).startswith("YGG-A18-L12-STREAM-FAILURE-ATTR
         raise SystemExit("YGG_A18_QUALIFICATION_FAILED")
     print("YGG_A18_PRIMARY_PASS=true")
 
+if str(control.get("request_id","")).startswith("YGG-A19-L12-TO-L13-SINGLE-CELL-RECOVERY"):
+    a19=Path(__file__).with_name("ygg_a19_l12_to_l13_single_cell_recovery_v1.py")
+    a19_out=OUT/"a19-l12-to-l13-single-cell-recovery.json"
+    subprocess.check_call([sys.executable,str(a19),str(a19_out)])
+    result=json.loads(a19_out.read_text(encoding="utf-8"))
+    print("===YGG_A19_L12_TO_L13_SINGLE_CELL_RECOVERY===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["valid"]:
+        raise SystemExit("YGG_A19_EVIDENCE_INVALID")
+    if not result["qualification"]["YGG_A19_L12_TO_L13_SINGLE_CELL_RECOVERY"]:
+        raise SystemExit("YGG_A19_SCIENTIFIC_NEGATIVE")
+    print("YGG_A19_PRIMARY_PASS=true")
+
