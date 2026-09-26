@@ -42,7 +42,7 @@ jobs:
           $Control = $Raw | ConvertFrom-Json
           if ($Control.schema -ne 1) { throw 'CONTROL_SCHEMA_MISMATCH' }
           if ($Control.lane -cne 'YGG-B') { throw "CONTROL_LANE_MISMATCH actual=$($Control.lane)" }
-          if ($Control.mode -notin @('bootstrap','b1_probe','b2_probe','b3_probe','b4_probe','b5_probe','b6_probe','b7_probe','b8_probe','b9_probe','b10_probe','b11_probe','b12_probe','b13_probe','b14_probe','b15_probe','b16_probe','b17_probe','b18_probe','b19_probe','b20_probe','b21_probe','b22_probe','b23_probe','b24_probe','b25_probe','b26_probe','b27_probe','b28_probe','b29_probe','b30_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
+          if ($Control.mode -notin @('bootstrap','b1_probe','b2_probe','b3_probe','b4_probe','b5_probe','b6_probe','b7_probe','b8_probe','b9_probe','b10_probe','b11_probe','b12_probe','b13_probe','b14_probe','b15_probe','b16_probe','b17_probe','b18_probe','b19_probe','b20_probe','b21_probe','b22_probe','b23_probe','b24_probe','b25_probe','b26_probe','b27_probe','b28_probe','b29_probe','b30_probe','b31_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
           if ($Raw -match '(?i)ckb-plane|ktrade|wingless|coinbase|broker|ygg-a|ygg-c') { throw 'LANE_ISOLATION_TOKEN_VIOLATION' }
           "mode=$($Control.mode)" >> $env:GITHUB_OUTPUT
 
@@ -525,6 +525,21 @@ jobs:
           if (-not $R.valid) { throw 'YGG_B30_EVIDENCE_INVALID' }
           if (-not $R.qualification.YGG_B30_READ1_WRITE_POSITION_ATTRIBUTION) { throw 'YGG_B30_QUALIFICATION_FAILED' }
 
+
+      - name: Run YGG-B31 frozen READ1 age-vs-write-identity probe
+        if: steps.ctl.outputs.mode == 'b31_probe'
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $OutDir = Join-Path $env:RUNNER_TEMP 'ygg-b31'
+          if (Test-Path -LiteralPath $OutDir) { Remove-Item -LiteralPath $OutDir -Recurse -Force }
+          New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
+          python research/experiments/ygg-b/ygg_b31_read1_age_vs_write_identity_v1.py (Join-Path $OutDir 'b31-result.json')
+          $R = Get-Content -LiteralPath (Join-Path $OutDir 'b31-result.json') -Raw | ConvertFrom-Json
+          Get-Content -LiteralPath (Join-Path $OutDir 'b31-result.json')
+          if (-not $R.valid) { throw 'YGG_B31_EVIDENCE_INVALID' }
+          if (-not $R.qualification.YGG_B31_READ1_AGE_VS_WRITE_IDENTITY) { throw 'YGG_B31_QUALIFICATION_FAILED' }
+
       - name: Upload lane evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -562,5 +577,6 @@ jobs:
             ${{ runner.temp }}\ygg-b28\**
             ${{ runner.temp }}\ygg-b29\**
             ${{ runner.temp }}\ygg-b30\**
+            ${{ runner.temp }}\ygg-b31\**
           if-no-files-found: warn
           retention-days: 14
