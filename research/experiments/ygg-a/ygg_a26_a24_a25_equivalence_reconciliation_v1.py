@@ -168,7 +168,15 @@ def main():
     }
     validity={
         "replicate_exact":first["replicate"]==6,
-        "target_cell_59_present":59 in first["a24_lesion"] and 59 in first["a25_lesion"],
+        "a24_rank12_lesion_exact":first["a24_lesion"]==sorted(a24.candidate_lesion(first["seed"],RANK)),
+        "a25_target59_lesion_exact":first["a25_lesion"]==sorted(a25.test_lesion(first["seed"])) and 59 in first["a25_lesion"],
+        "input_divergence_field_accounted":(
+            first["classification"]!="INPUT_DIVERGENCE"
+            or (
+                first["first_manifest_difference"] is not None
+                and first["first_manifest_difference"]["field"]=="lesion"
+            )
+        ),
         "duplicate_complete_reconciliation_byte_identical":same,
         "a22_levels_restored":tuple(a22.LEVELS)==old_levels,
         "a22_lesion_function_restored":a22.lesion_for is old_lfn,
