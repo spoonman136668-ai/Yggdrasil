@@ -42,7 +42,7 @@ jobs:
           $Control = $Raw | ConvertFrom-Json
           if ($Control.schema -ne 1) { throw 'CONTROL_SCHEMA_MISMATCH' }
           if ($Control.lane -cne 'YGG-B') { throw "CONTROL_LANE_MISMATCH actual=$($Control.lane)" }
-          if ($Control.mode -notin @('bootstrap','b1_probe','b2_probe','b3_probe','b4_probe','b5_probe','b6_probe','b7_probe','b8_probe','b9_probe','b10_probe','b11_probe','b12_probe','b13_probe','b14_probe','b15_probe','b16_probe','b17_probe','b18_probe','b19_probe','b20_probe','b21_probe','b22_probe','b23_probe','b24_probe','b25_probe','b26_probe','b27_probe','b28_probe','b29_probe','b30_probe','b31_probe','b32_probe','b33_probe','b34_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
+          if ($Control.mode -notin @('bootstrap','b1_probe','b2_probe','b3_probe','b4_probe','b5_probe','b6_probe','b7_probe','b8_probe','b9_probe','b10_probe','b11_probe','b12_probe','b13_probe','b14_probe','b15_probe','b16_probe','b17_probe','b18_probe','b19_probe','b20_probe','b21_probe','b22_probe','b23_probe','b24_probe','b25_probe','b26_probe','b27_probe','b28_probe','b29_probe','b30_probe','b31_probe','b32_probe','b33_probe','b34_probe','b35_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
           if ($Raw -match '(?i)ckb-plane|ktrade|wingless|coinbase|broker|ygg-a|ygg-c') { throw 'LANE_ISOLATION_TOKEN_VIOLATION' }
           "mode=$($Control.mode)" >> $env:GITHUB_OUTPUT
 
@@ -71,7 +71,7 @@ jobs:
           $Probe | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
 
       - name: Provision portable Python runtime
-        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe' || steps.ctl.outputs.mode == 'b7_probe' || steps.ctl.outputs.mode == 'b8_probe' || steps.ctl.outputs.mode == 'b9_probe' || steps.ctl.outputs.mode == 'b10_probe' || steps.ctl.outputs.mode == 'b11_probe' || steps.ctl.outputs.mode == 'b12_probe' || steps.ctl.outputs.mode == 'b13_probe' || steps.ctl.outputs.mode == 'b14_probe' || steps.ctl.outputs.mode == 'b15_probe' || steps.ctl.outputs.mode == 'b16_probe' || steps.ctl.outputs.mode == 'b17_probe' || steps.ctl.outputs.mode == 'b18_probe' || steps.ctl.outputs.mode == 'b19_probe' || steps.ctl.outputs.mode == 'b20_probe' || steps.ctl.outputs.mode == 'b21_probe' || steps.ctl.outputs.mode == 'b22_probe' || steps.ctl.outputs.mode == 'b23_probe' || steps.ctl.outputs.mode == 'b24_probe' || steps.ctl.outputs.mode == 'b25_probe' || steps.ctl.outputs.mode == 'b26_probe' || steps.ctl.outputs.mode == 'b27_probe' || steps.ctl.outputs.mode == 'b28_probe' || steps.ctl.outputs.mode == 'b29_probe' || steps.ctl.outputs.mode == 'b30_probe' || steps.ctl.outputs.mode == 'b31_probe' || steps.ctl.outputs.mode == 'b32_probe' || steps.ctl.outputs.mode == 'b33_probe' || steps.ctl.outputs.mode == 'b34_probe'
+        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe' || steps.ctl.outputs.mode == 'b7_probe' || steps.ctl.outputs.mode == 'b8_probe' || steps.ctl.outputs.mode == 'b9_probe' || steps.ctl.outputs.mode == 'b10_probe' || steps.ctl.outputs.mode == 'b11_probe' || steps.ctl.outputs.mode == 'b12_probe' || steps.ctl.outputs.mode == 'b13_probe' || steps.ctl.outputs.mode == 'b14_probe' || steps.ctl.outputs.mode == 'b15_probe' || steps.ctl.outputs.mode == 'b16_probe' || steps.ctl.outputs.mode == 'b17_probe' || steps.ctl.outputs.mode == 'b18_probe' || steps.ctl.outputs.mode == 'b19_probe' || steps.ctl.outputs.mode == 'b20_probe' || steps.ctl.outputs.mode == 'b21_probe' || steps.ctl.outputs.mode == 'b22_probe' || steps.ctl.outputs.mode == 'b23_probe' || steps.ctl.outputs.mode == 'b24_probe' || steps.ctl.outputs.mode == 'b25_probe' || steps.ctl.outputs.mode == 'b26_probe' || steps.ctl.outputs.mode == 'b27_probe' || steps.ctl.outputs.mode == 'b28_probe' || steps.ctl.outputs.mode == 'b29_probe' || steps.ctl.outputs.mode == 'b30_probe' || steps.ctl.outputs.mode == 'b31_probe' || steps.ctl.outputs.mode == 'b32_probe' || steps.ctl.outputs.mode == 'b33_probe' || steps.ctl.outputs.mode == 'b34_probe' || steps.ctl.outputs.mode == 'b35_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -98,7 +98,7 @@ jobs:
           & $PyExe -m pip --version
 
       - name: Install frozen B runtime
-        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe' || steps.ctl.outputs.mode == 'b7_probe' || steps.ctl.outputs.mode == 'b8_probe' || steps.ctl.outputs.mode == 'b9_probe' || steps.ctl.outputs.mode == 'b10_probe' || steps.ctl.outputs.mode == 'b11_probe' || steps.ctl.outputs.mode == 'b12_probe' || steps.ctl.outputs.mode == 'b13_probe' || steps.ctl.outputs.mode == 'b14_probe' || steps.ctl.outputs.mode == 'b15_probe' || steps.ctl.outputs.mode == 'b16_probe' || steps.ctl.outputs.mode == 'b17_probe' || steps.ctl.outputs.mode == 'b18_probe' || steps.ctl.outputs.mode == 'b19_probe' || steps.ctl.outputs.mode == 'b20_probe' || steps.ctl.outputs.mode == 'b21_probe' || steps.ctl.outputs.mode == 'b22_probe' || steps.ctl.outputs.mode == 'b23_probe' || steps.ctl.outputs.mode == 'b24_probe' || steps.ctl.outputs.mode == 'b25_probe' || steps.ctl.outputs.mode == 'b26_probe' || steps.ctl.outputs.mode == 'b27_probe' || steps.ctl.outputs.mode == 'b28_probe' || steps.ctl.outputs.mode == 'b29_probe' || steps.ctl.outputs.mode == 'b30_probe' || steps.ctl.outputs.mode == 'b31_probe' || steps.ctl.outputs.mode == 'b32_probe' || steps.ctl.outputs.mode == 'b33_probe' || steps.ctl.outputs.mode == 'b34_probe'
+        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe' || steps.ctl.outputs.mode == 'b7_probe' || steps.ctl.outputs.mode == 'b8_probe' || steps.ctl.outputs.mode == 'b9_probe' || steps.ctl.outputs.mode == 'b10_probe' || steps.ctl.outputs.mode == 'b11_probe' || steps.ctl.outputs.mode == 'b12_probe' || steps.ctl.outputs.mode == 'b13_probe' || steps.ctl.outputs.mode == 'b14_probe' || steps.ctl.outputs.mode == 'b15_probe' || steps.ctl.outputs.mode == 'b16_probe' || steps.ctl.outputs.mode == 'b17_probe' || steps.ctl.outputs.mode == 'b18_probe' || steps.ctl.outputs.mode == 'b19_probe' || steps.ctl.outputs.mode == 'b20_probe' || steps.ctl.outputs.mode == 'b21_probe' || steps.ctl.outputs.mode == 'b22_probe' || steps.ctl.outputs.mode == 'b23_probe' || steps.ctl.outputs.mode == 'b24_probe' || steps.ctl.outputs.mode == 'b25_probe' || steps.ctl.outputs.mode == 'b26_probe' || steps.ctl.outputs.mode == 'b27_probe' || steps.ctl.outputs.mode == 'b28_probe' || steps.ctl.outputs.mode == 'b29_probe' || steps.ctl.outputs.mode == 'b30_probe' || steps.ctl.outputs.mode == 'b31_probe' || steps.ctl.outputs.mode == 'b32_probe' || steps.ctl.outputs.mode == 'b33_probe' || steps.ctl.outputs.mode == 'b34_probe' || steps.ctl.outputs.mode == 'b35_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -106,7 +106,7 @@ jobs:
           python -c "import torch; print('torch',torch.__version__)"
 
       - name: Run YGG-B1 frozen sequence-memory probe
-        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe' || steps.ctl.outputs.mode == 'b7_probe' || steps.ctl.outputs.mode == 'b8_probe' || steps.ctl.outputs.mode == 'b9_probe' || steps.ctl.outputs.mode == 'b10_probe' || steps.ctl.outputs.mode == 'b11_probe' || steps.ctl.outputs.mode == 'b12_probe' || steps.ctl.outputs.mode == 'b13_probe' || steps.ctl.outputs.mode == 'b14_probe' || steps.ctl.outputs.mode == 'b15_probe' || steps.ctl.outputs.mode == 'b16_probe' || steps.ctl.outputs.mode == 'b17_probe' || steps.ctl.outputs.mode == 'b18_probe' || steps.ctl.outputs.mode == 'b19_probe' || steps.ctl.outputs.mode == 'b20_probe' || steps.ctl.outputs.mode == 'b21_probe' || steps.ctl.outputs.mode == 'b22_probe' || steps.ctl.outputs.mode == 'b23_probe' || steps.ctl.outputs.mode == 'b24_probe' || steps.ctl.outputs.mode == 'b25_probe' || steps.ctl.outputs.mode == 'b26_probe' || steps.ctl.outputs.mode == 'b27_probe' || steps.ctl.outputs.mode == 'b28_probe' || steps.ctl.outputs.mode == 'b29_probe' || steps.ctl.outputs.mode == 'b30_probe' || steps.ctl.outputs.mode == 'b31_probe' || steps.ctl.outputs.mode == 'b32_probe' || steps.ctl.outputs.mode == 'b33_probe' || steps.ctl.outputs.mode == 'b34_probe'
+        if: steps.ctl.outputs.mode == 'b1_probe' || steps.ctl.outputs.mode == 'b2_probe' || steps.ctl.outputs.mode == 'b3_probe' || steps.ctl.outputs.mode == 'b4_probe' || steps.ctl.outputs.mode == 'b5_probe' || steps.ctl.outputs.mode == 'b6_probe' || steps.ctl.outputs.mode == 'b7_probe' || steps.ctl.outputs.mode == 'b8_probe' || steps.ctl.outputs.mode == 'b9_probe' || steps.ctl.outputs.mode == 'b10_probe' || steps.ctl.outputs.mode == 'b11_probe' || steps.ctl.outputs.mode == 'b12_probe' || steps.ctl.outputs.mode == 'b13_probe' || steps.ctl.outputs.mode == 'b14_probe' || steps.ctl.outputs.mode == 'b15_probe' || steps.ctl.outputs.mode == 'b16_probe' || steps.ctl.outputs.mode == 'b17_probe' || steps.ctl.outputs.mode == 'b18_probe' || steps.ctl.outputs.mode == 'b19_probe' || steps.ctl.outputs.mode == 'b20_probe' || steps.ctl.outputs.mode == 'b21_probe' || steps.ctl.outputs.mode == 'b22_probe' || steps.ctl.outputs.mode == 'b23_probe' || steps.ctl.outputs.mode == 'b24_probe' || steps.ctl.outputs.mode == 'b25_probe' || steps.ctl.outputs.mode == 'b26_probe' || steps.ctl.outputs.mode == 'b27_probe' || steps.ctl.outputs.mode == 'b28_probe' || steps.ctl.outputs.mode == 'b29_probe' || steps.ctl.outputs.mode == 'b30_probe' || steps.ctl.outputs.mode == 'b31_probe' || steps.ctl.outputs.mode == 'b32_probe' || steps.ctl.outputs.mode == 'b33_probe' || steps.ctl.outputs.mode == 'b34_probe' || steps.ctl.outputs.mode == 'b35_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -512,7 +512,7 @@ jobs:
           if (-not $R.qualification.YGG_B29_READ1_INTERFERENCE_ATTRIBUTION) { throw 'YGG_B29_QUALIFICATION_FAILED' }
 
       - name: Run YGG-B30 frozen READ1 write-position attribution
-        if: steps.ctl.outputs.mode == 'b30_probe' || steps.ctl.outputs.mode == 'b31_probe' || steps.ctl.outputs.mode == 'b32_probe' || steps.ctl.outputs.mode == 'b33_probe' || steps.ctl.outputs.mode == 'b34_probe'
+        if: steps.ctl.outputs.mode == 'b30_probe' || steps.ctl.outputs.mode == 'b31_probe' || steps.ctl.outputs.mode == 'b32_probe' || steps.ctl.outputs.mode == 'b33_probe' || steps.ctl.outputs.mode == 'b34_probe' || steps.ctl.outputs.mode == 'b35_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -527,7 +527,7 @@ jobs:
 
 
       - name: Run YGG-B31 frozen READ1 age-vs-write-identity probe
-        if: steps.ctl.outputs.mode == 'b31_probe' || steps.ctl.outputs.mode == 'b32_probe' || steps.ctl.outputs.mode == 'b33_probe' || steps.ctl.outputs.mode == 'b34_probe'
+        if: steps.ctl.outputs.mode == 'b31_probe' || steps.ctl.outputs.mode == 'b32_probe' || steps.ctl.outputs.mode == 'b33_probe' || steps.ctl.outputs.mode == 'b34_probe' || steps.ctl.outputs.mode == 'b35_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -584,6 +584,20 @@ jobs:
           if (-not $R.valid) { throw 'YGG_B34_ORDER_EFFECT_PORTABILITY_EVIDENCE_INVALID' }
           if (-not $R.qualification.YGG_B34_ORDER_EFFECT_PORTABILITY) { throw 'YGG_B34_ORDER_EFFECT_PORTABILITY_QUALIFICATION_FAILED' }
 
+      - name: Run YGG-B35 frozen position5 destination specificity
+        if: steps.ctl.outputs.mode == 'b35_probe'
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $OutDir = Join-Path $env:RUNNER_TEMP 'ygg-b35'
+          if (Test-Path -LiteralPath $OutDir) { Remove-Item -LiteralPath $OutDir -Recurse -Force }
+          New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
+          python research/experiments/ygg-b/ygg_b35_position5_destination_specificity_v1.py (Join-Path $OutDir 'b35-result.json')
+          $R = Get-Content -LiteralPath (Join-Path $OutDir 'b35-result.json') -Raw | ConvertFrom-Json
+          Get-Content -LiteralPath (Join-Path $OutDir 'b35-result.json')
+          if (-not $R.valid) { throw 'YGG_B35_POSITION5_DESTINATION_SPECIFICITY_EVIDENCE_INVALID' }
+          if (-not $R.qualification.YGG_B35_POSITION5_DESTINATION_SPECIFICITY) { throw 'YGG_B35_POSITION5_DESTINATION_SPECIFICITY_QUALIFICATION_FAILED' }
+
       - name: Upload lane evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -622,5 +636,6 @@ jobs:
             ${{ runner.temp }}\ygg-b29\**
             ${{ runner.temp }}\ygg-b30\**
             ${{ runner.temp }}\ygg-b31\**
+            ${{ runner.temp }}\ygg-b35\**
           if-no-files-found: warn
           retention-days: 14
