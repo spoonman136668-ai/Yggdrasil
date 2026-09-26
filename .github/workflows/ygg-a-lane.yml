@@ -55,7 +55,7 @@ jobs:
           $Control = $Raw | ConvertFrom-Json
           if ($Control.schema -ne 1) { throw 'CONTROL_SCHEMA_MISMATCH' }
           if ($Control.lane -cne 'YGG-A') { throw "CONTROL_LANE_MISMATCH actual=$($Control.lane)" }
-          if ($Control.mode -notin @('bootstrap','a1_mechanical','a1_primary','a2_dev','a2_mechanical','a2_primary','a3_mechanical','a3_primary','a29_probe','a30_probe','a31_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
+          if ($Control.mode -notin @('bootstrap','a1_mechanical','a1_primary','a2_dev','a2_mechanical','a2_primary','a3_mechanical','a3_primary','a29_probe','a30_probe','a31_probe','a32_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
           if ($Raw -match '(?i)ckb-plane|ktrade|wingless|coinbase|broker|ygg-b|ygg-c') { throw 'LANE_ISOLATION_TOKEN_VIOLATION' }
           "mode=$($Control.mode)" >> $env:GITHUB_OUTPUT
 
@@ -84,7 +84,7 @@ jobs:
           $Probe | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
 
       - name: Provision portable Python runtime
-        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary' || steps.ctl.outputs.mode == 'a29_probe' || steps.ctl.outputs.mode == 'a30_probe' || steps.ctl.outputs.mode == 'a31_probe'
+        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary' || steps.ctl.outputs.mode == 'a29_probe' || steps.ctl.outputs.mode == 'a30_probe' || steps.ctl.outputs.mode == 'a31_probe' || steps.ctl.outputs.mode == 'a32_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -115,7 +115,7 @@ jobs:
           & $PyExe -m pip --version
 
       - name: Install frozen A1 runtime
-        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary' || steps.ctl.outputs.mode == 'a29_probe' || steps.ctl.outputs.mode == 'a30_probe' || steps.ctl.outputs.mode == 'a31_probe'
+        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary' || steps.ctl.outputs.mode == 'a29_probe' || steps.ctl.outputs.mode == 'a30_probe' || steps.ctl.outputs.mode == 'a31_probe' || steps.ctl.outputs.mode == 'a32_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -124,7 +124,7 @@ jobs:
           python -c "import numpy,torch; print('numpy',numpy.__version__); print('torch',torch.__version__)"
 
       - name: Run YGG-A1 mechanical gate
-        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary' || steps.ctl.outputs.mode == 'a29_probe' || steps.ctl.outputs.mode == 'a30_probe' || steps.ctl.outputs.mode == 'a31_probe'
+        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary' || steps.ctl.outputs.mode == 'a29_probe' || steps.ctl.outputs.mode == 'a30_probe' || steps.ctl.outputs.mode == 'a31_probe' || steps.ctl.outputs.mode == 'a32_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -253,6 +253,20 @@ jobs:
           if (-not $R.valid) { throw 'YGG_A31_REPLICATE6_CELL2_FOUR_REMOVAL_EVIDENCE_INVALID' }
           if (-not $R.qualification.YGG_A31_REPLICATE6_CELL2_FOUR_REMOVAL) { throw 'YGG_A31_REPLICATE6_CELL2_FOUR_REMOVAL_QUALIFICATION_FAILED' }
 
+      - name: Run YGG-A32 frozen replicate6 cell2 five-removal necessity
+        if: steps.ctl.outputs.mode == 'a32_probe'
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $OutDir = Join-Path $env:RUNNER_TEMP 'ygg-a32'
+          if (Test-Path -LiteralPath $OutDir) { Remove-Item -LiteralPath $OutDir -Recurse -Force }
+          New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
+          python research/experiments/ygg-a/ygg_a32_replicate6_cell2_five_removal_v1.py (Join-Path $OutDir 'a32-result.json')
+          $R = Get-Content -LiteralPath (Join-Path $OutDir 'a32-result.json') -Raw | ConvertFrom-Json
+          Get-Content -LiteralPath (Join-Path $OutDir 'a32-result.json')
+          if (-not $R.valid) { throw 'YGG_A32_REPLICATE6_CELL2_FIVE_REMOVAL_EVIDENCE_INVALID' }
+          if (-not $R.qualification.YGG_A32_REPLICATE6_CELL2_FIVE_REMOVAL) { throw 'YGG_A32_REPLICATE6_CELL2_FIVE_REMOVAL_QUALIFICATION_FAILED' }
+
       - name: Upload lane evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -264,5 +278,6 @@ jobs:
             ${{ runner.temp }}\ygg-a2-inspector\**
             ${{ runner.temp }}\ygg-a2\**
             ${{ runner.temp }}\ygg-a3\**
+            ${{ runner.temp }}\ygg-a32\**
           if-no-files-found: warn
           retention-days: 14
