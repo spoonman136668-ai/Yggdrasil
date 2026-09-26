@@ -406,3 +406,17 @@ if str(control.get("request_id","")).startswith("YGG-A27-CELL2-PORTABILITY-ATTRI
     if not result["qualification"]["YGG_A27_CELL2_PORTABILITY_ATTRIBUTION"]:
         raise SystemExit("YGG_A27_QUALIFICATION_FAILED")
     print("YGG_A27_PRIMARY_PASS=true")
+
+
+if str(control.get("request_id","")).startswith("YGG-A28-REPLICATE6-CELL2-INTERACTION-DECOMPOSITION"):
+    a28=Path(__file__).with_name("ygg_a28_replicate6_cell2_interaction_decomposition_v1.py")
+    a28_out=OUT/"a28-replicate6-cell2-interaction-decomposition.json"
+    subprocess.check_call([sys.executable,str(a28),str(a28_out)])
+    result=json.loads(a28_out.read_text(encoding="utf-8"))
+    print("===YGG_A28_REPLICATE6_CELL2_INTERACTION_DECOMPOSITION===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["valid"]:
+        raise SystemExit("YGG_A28_EVIDENCE_INVALID")
+    if not result["qualification"]["YGG_A28_REPLICATE6_CELL2_INTERACTION_DECOMPOSITION"]:
+        raise SystemExit("YGG_A28_QUALIFICATION_FAILED")
+    print("YGG_A28_PRIMARY_PASS=true")
