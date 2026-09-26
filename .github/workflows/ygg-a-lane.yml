@@ -186,7 +186,7 @@ jobs:
           if (-not $A2.qualification.YGG_A2_TERMINAL_INTEGRITY_PRIORITY) { throw 'YGG_A2_PRIMARY_SCIENTIFIC_NEGATIVE' }
 
       - name: Run YGG-A3 mechanical gate
-        if: steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary' || steps.ctl.outputs.mode == 'a29_probe'
+        if: steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -199,7 +199,7 @@ jobs:
           if (-not $R.all_pass) { throw 'YGG_A3_MECHANICAL_GATE_FAILED' }
 
       - name: Run YGG-A3 primary sweep
-        if: steps.ctl.outputs.mode == 'a3_primary' || steps.ctl.outputs.mode == 'a29_probe'
+        if: steps.ctl.outputs.mode == 'a3_primary'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
