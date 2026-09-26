@@ -9,7 +9,7 @@ PREREG="a1ddc3cfbfc1f8fc24d3ae25cfa79e7b6b4611db"
 PARENT_CLOSURE="2a5fe763cf2d20f369eaadd622650bdc7ff84c6a"
 ALPHA=0.25
 TARGET_CELL=2
-MODES=("U_A0","U_A27")
+MODES=("U_A0","U_A25")
 
 a23=a24.a23
 a22=a24.a22
@@ -130,7 +130,7 @@ def run_mode(mode):
 def classify(rows):
     by={r["mode"]:r for r in rows}
     a0=by["U_A0"]["failing_replicates"]
-    a25=by["U_A27"]["failing_replicates"]
+    a25=by["U_A25"]["failing_replicates"]
     if a0!=a25:
         return "CROSS_MODE_DIFFERENCE"
     if not a0:
@@ -157,7 +157,7 @@ def main():
     allowed={"GLOBAL_CELL2_SENSITIVITY","REPLICATE6_CONTEXT_SPECIFIC","CROSS_MODE_DIFFERENCE","NO_REPRODUCED_CELL2_EFFECT","OTHER_CONTEXT_PATTERN"}
     validity={
         "alpha_exact":ALPHA==0.25,
-        "target_cell_exact":TARGET_CELL==59,
+        "target_cell_exact":TARGET_CELL==2,
         "all_mode_results_valid":all(r["valid"] for r in first["rows"]),
         "actual_replicate_ids_verified":all(r["actual_replicate_ids_verified"] for r in first["rows"]),
         "replicate6_eligible":all(6 in r["eligible_replicates"] for r in first["rows"]),
