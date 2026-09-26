@@ -1,0 +1,8 @@
+YGG-C20 PREREGISTRATION — REPLICATE-8 CONTEXT EXCHANGE
+Parent: YGG-C19 run 36236452372, valid SINGLE_STABLE_REPLICATE. Replicate 8 alone fails maturity at every below-onset pressure level 8..16; no replicate fails maturity above onset.
+Question: is below-onset maturity failure attached to replicate-8 identity, or to its frozen lesion/context assignment?
+Frozen: exact C19 below alpha 0.134765625; levels 8..16; exact manifests, learned weights, task/scheduler, retention/maturity predicates; deterministic execution; no retraining, online adaptation, threshold redefinition, topology change, or baseline mutation.
+Design: reproduce C19 below-onset arm. At each level, identify the exact replicate-8 manifest and deterministically exchange only its lesion assignment with each other replicate manifest one at a time, preserving all non-lesion manifest fields and recomputing manifest identity exactly as inherited mechanics require. Evaluate both sides of each exchange. Exchange partners are all non-8 replicates, fixed before outcomes.
+Classification: IDENTITY_BOUND if replicate 8 continues to be the sole maturity failure across all valid exchanges; LESION_CONTEXT_BOUND if failure follows the exchanged replicate-8 lesion/context to partner identities and leaves replicate 8; MIXED_IDENTITY_CONTEXT if pattern depends on both; NO_REPRODUCED_FAILURE if parent failure does not reproduce; OTHER_VALID_PATTERN otherwise.
+Validity: C19 below aggregate reproduced before exchanges; exact alpha/levels; all available non-8 exchange partners tested; non-lesion bytes preserved within each identity; duplicate analysis byte-identical.
+Scientific negatives are valid. No post-result tuning.
