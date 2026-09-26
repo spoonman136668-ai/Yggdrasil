@@ -1,0 +1,6 @@
+YGG-C20 R3 IMPLEMENTATION/EVIDENCE CORRECTION PREREGISTRATION
+Original scientific preregistration remains YGG-C20 replicate8 context exchange. No scientific arm, partner, level, threshold, model, manifest identity, lesion assignment rule, or classification is changed.
+Defect discovered from failed C21 run 36264386938: C20's parent reproduction used exact below-onset alpha 0.134765625, but the exchange execution block did not explicitly freeze runtime parent.ALPHA and parent.g.ALPHA. The inherited runtime default is 0.25. Therefore C20 run 36255033844 cannot support its mechanism classification even though its parent alpha check passed.
+Repair before rerun: execute every C20 exchange arm with parent.ALPHA==0.134765625 and parent.g.ALPHA==0.134765625, matching C19/C16 below-onset mechanics; preserve the required extended alpha allowlist during execution; restore all globals afterward. Add explicit validity proving runtime alpha was exact for exchange execution and restored afterward.
+All original C20 exchange partners, levels8..16, non-lesion preservation checks, duplicate execution, and classifications remain frozen.
+Prior C20 mechanism closure is superseded as evidence-invalid, not scientifically negative. C21 run 36264386938 is also evidence-invalid because its original-failure anchor was executed without the same alpha freeze.
