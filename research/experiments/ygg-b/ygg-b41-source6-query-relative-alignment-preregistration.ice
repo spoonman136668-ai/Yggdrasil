@@ -1,0 +1,8 @@
+YGG-B41 PREREGISTRATION — SOURCE-6 QUERY-RELATIVE ALIGNMENT
+Parent B40 run 36270587677 valid DESTINATION4_ONLY under query-position4. B39/B40 establish 6<->4 accuracy 1.0 across all five seeds.
+Question: is source6 rescue specific to absolute destination4, or does rescue follow the first-read queried event position?
+Freeze exact B40 model/training/evaluation, threshold .90, 120 params, 32 state scalars, deterministic Torch, seeds [111,222,333,444,555], seven active bindings, exact held-out evaluation set. No retraining/adaptation/capacity/architecture/threshold/baseline changes.
+Design: for each seed and each first-read query-position stratum q in [0,1,2,3,4,5], evaluate (a) original accuracy on rows with q1_event==q and (b) reciprocal composition-preserving swap 6<->q on those same rows. Position6 is excluded because 6<->6 is a no-op. Query-position4 swapped endpoints must reproduce the B40 6<->4 accuracy 1.0 in all seeds. Preserve exact seven-binding multiset every row.
+Classify QUERY_RELATIVE_PORTABLE if swapped capability is >=.90 in every seed at every tested query stratum; ABSOLUTE4_SPECIFIC if query4 is portable in all seeds and no other tested query stratum is portable in all seeds; PARTIAL_QUERY_RELATIVE if query4 is portable and at least one but not all other strata are portable; ANCHOR_NOT_REPRODUCED if q4 endpoints fail; OTHER_VALID_PATTERN otherwise.
+Validity: exact seeds/threshold/state/params/query strata; nonempty each frozen query stratum; exact B40 q4 swapped endpoints; multiset preserved; duplicate byte-identical.
+Scientific negatives are valid. No post-result tuning.
