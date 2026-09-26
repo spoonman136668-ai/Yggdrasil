@@ -392,3 +392,17 @@ if str(control.get("request_id","")).startswith("YGG-A26-A24-A25-EQUIVALENCE-REC
     if not result["qualification"]["YGG_A26_A24_A25_EQUIVALENCE_RECONCILIATION"]:
         raise SystemExit("YGG_A26_QUALIFICATION_FAILED")
     print("YGG_A26_PRIMARY_PASS=true")
+
+
+if str(control.get("request_id","")).startswith("YGG-A27-CELL2-PORTABILITY-ATTRIBUTION"):
+    a27=Path(__file__).with_name("ygg_a27_cell2_portability_v1.py")
+    a27_out=OUT/"a27-cell2-portability.json"
+    subprocess.check_call([sys.executable,str(a27),str(a27_out)])
+    result=json.loads(a27_out.read_text(encoding="utf-8"))
+    print("===YGG_A27_CELL2_PORTABILITY_ATTRIBUTION===")
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    if not result["valid"]:
+        raise SystemExit("YGG_A27_EVIDENCE_INVALID")
+    if not result["qualification"]["YGG_A27_CELL2_PORTABILITY_ATTRIBUTION"]:
+        raise SystemExit("YGG_A27_QUALIFICATION_FAILED")
+    print("YGG_A27_PRIMARY_PASS=true")
