@@ -55,7 +55,7 @@ jobs:
           $Control = $Raw | ConvertFrom-Json
           if ($Control.schema -ne 1) { throw 'CONTROL_SCHEMA_MISMATCH' }
           if ($Control.lane -cne 'YGG-A') { throw "CONTROL_LANE_MISMATCH actual=$($Control.lane)" }
-          if ($Control.mode -notin @('bootstrap','a1_mechanical','a1_primary','a2_dev','a2_mechanical','a2_primary','a3_mechanical','a3_primary')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
+          if ($Control.mode -notin @('bootstrap','a1_mechanical','a1_primary','a2_dev','a2_mechanical','a2_primary','a3_mechanical','a3_primary','a29_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
           if ($Raw -match '(?i)ckb-plane|ktrade|wingless|coinbase|broker|ygg-b|ygg-c') { throw 'LANE_ISOLATION_TOKEN_VIOLATION' }
           "mode=$($Control.mode)" >> $env:GITHUB_OUTPUT
 
@@ -84,7 +84,7 @@ jobs:
           $Probe | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
 
       - name: Provision portable Python runtime
-        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary'
+        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary' || steps.ctl.outputs.mode == 'a29_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -115,7 +115,7 @@ jobs:
           & $PyExe -m pip --version
 
       - name: Install frozen A1 runtime
-        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary'
+        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary' || steps.ctl.outputs.mode == 'a29_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -124,7 +124,7 @@ jobs:
           python -c "import numpy,torch; print('numpy',numpy.__version__); print('torch',torch.__version__)"
 
       - name: Run YGG-A1 mechanical gate
-        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary'
+        if: steps.ctl.outputs.mode == 'a1_mechanical' || steps.ctl.outputs.mode == 'a1_primary' || steps.ctl.outputs.mode == 'a2_dev' || steps.ctl.outputs.mode == 'a2_mechanical' || steps.ctl.outputs.mode == 'a2_primary' || steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary' || steps.ctl.outputs.mode == 'a29_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -186,7 +186,7 @@ jobs:
           if (-not $A2.qualification.YGG_A2_TERMINAL_INTEGRITY_PRIORITY) { throw 'YGG_A2_PRIMARY_SCIENTIFIC_NEGATIVE' }
 
       - name: Run YGG-A3 mechanical gate
-        if: steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary'
+        if: steps.ctl.outputs.mode == 'a3_mechanical' || steps.ctl.outputs.mode == 'a3_primary' || steps.ctl.outputs.mode == 'a29_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -199,7 +199,7 @@ jobs:
           if (-not $R.all_pass) { throw 'YGG_A3_MECHANICAL_GATE_FAILED' }
 
       - name: Run YGG-A3 primary sweep
-        if: steps.ctl.outputs.mode == 'a3_primary'
+        if: steps.ctl.outputs.mode == 'a3_primary' || steps.ctl.outputs.mode == 'a29_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -208,6 +208,21 @@ jobs:
           $R = Get-Content -LiteralPath (Join-Path $OutDir 'a3-primary.json') -Raw | ConvertFrom-Json
           Get-Content -LiteralPath (Join-Path $OutDir 'a3-primary.json')
           if (-not $R.qualification.YGG_A3_TERMINAL_TRANSIT_PRIORITY) { throw 'YGG_A3_PRIMARY_SCIENTIFIC_NEGATIVE' }
+
+
+      - name: Run YGG-A29 frozen replicate6 cell2 pair-removal probe
+        if: steps.ctl.outputs.mode == 'a29_probe'
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $OutDir = Join-Path $env:RUNNER_TEMP 'ygg-a29'
+          if (Test-Path -LiteralPath $OutDir) { Remove-Item -LiteralPath $OutDir -Recurse -Force }
+          New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
+          python research/experiments/ygg-a/ygg_a29_replicate6_cell2_pair_removal_v1.py (Join-Path $OutDir 'a29-result.json')
+          $R = Get-Content -LiteralPath (Join-Path $OutDir 'a29-result.json') -Raw | ConvertFrom-Json
+          Get-Content -LiteralPath (Join-Path $OutDir 'a29-result.json')
+          if (-not $R.valid) { throw 'YGG_A29_EVIDENCE_INVALID' }
+          if (-not $R.qualification.YGG_A29_REPLICATE6_CELL2_PAIR_REMOVAL) { throw 'YGG_A29_QUALIFICATION_FAILED' }
 
       - name: Upload lane evidence
         if: always()
