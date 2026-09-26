@@ -13,7 +13,7 @@ def acc(model,x,y,q):
  with torch.no_grad(): pred=b31.b29.immediate_read1_logits(model,x).argmax(dim=1)
  m=q==POS; return float((pred[m]==y[m]).float().mean()),int(m.sum())
 def block_multiset(x,row):
- return sorted(bytes(x[row,4*p:4*p+4].detach().cpu().numpy().tobytes()) for p in range(7))
+ return sorted(tuple(float(v) for v in x[row,4*p:4*p+4].detach().cpu().tolist()) for p in range(7))
 def one_pass():
  data=list(b31.b27.evaluation_data(SEED,b31.b27.EVAL_N)); x,y,_,q,*_=data; full=b31.permuted_data(SEED)[0]; model=b31.b29.train_model(SEED,True)
  oa,n=acc(model,x,y,q); fa,_=acc(model,full,y,q); arms=[]
