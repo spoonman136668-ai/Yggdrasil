@@ -1,0 +1,8 @@
+YGG-B32 PREREGISTRATION — SEED-222 POSITION-4 IDENTITY LOCALIZATION
+Parent: YGG-B31 run 36236451117, valid IDENTITY_SENSITIVE. Exact capability change: seed 222, queried write position 4 only, original READ1=0.8322368264198303 and preregistered permuted READ1=0.90625 at inherited threshold 0.90.
+Question: is the threshold crossing caused by one intervening binding-position replacement or only by the combined B31 permutation context?
+Frozen: exact B31 model/training/evaluation generator; seed 222; queried position 4; 120 parameters; 32 persistent state scalars; threshold 0.90; deterministic Torch; no retraining beyond inherited frozen training procedure, no online adaptation, capacity/architecture/threshold change.
+Design: reproduce original and full B31-permuted arms. For each non-query destination position 0,1,2,3,5,6, create one single-change arm by replacing only that destination binding block with the block assigned to that destination by the frozen B31 permutation, leaving all other blocks original. The six arms are fixed before outcomes.
+Classification: SINGLE_POSITION_SUFFICIENT if exactly one single-change arm crosses >=0.90; MULTIPLE_POSITIONS_SUFFICIENT if >1 crosses; COMBINED_CONTEXT_REQUIRED if none crosses while full permutation does; FULL_EFFECT_NOT_REPRODUCED if full permutation does not cross; OTHER_VALID_PATTERN otherwise.
+Validity: mechanical gate; exact seed/query/threshold/state/parameter counts; original and full-permutation B31 endpoints reproduced; six fixed single-change arms; duplicate complete execution byte-identical.
+Scientific negatives are valid. No post-result tuning.
