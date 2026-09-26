@@ -33,7 +33,7 @@ def context_frozen(m):
 def build(context,programs,lesion):
     m=copy.deepcopy(context)
     m["programs"]=copy.deepcopy(programs)
-    m["arrivals"]=lu.t.make_arrivals(m["seed"],m["programs"])
+    m["arrivals"]=lu.make_arrivals(m["seed"],m["programs"])
     m["corrupt_ids"]=[x["rid"] for x in m["arrivals"] if p.u01("LU2U-TASK4-CORRUPT",m["seed"],x["rid"])<0.05]
     m["anchors0"]=p.anchors_for(m["seed"],0)
     m["anchors4"]=p.anchors_for(m["seed"],128)
@@ -50,7 +50,7 @@ def exact_validator(candidate):
         raise AssertionError("A41 manifest drift")
     if candidate["manifest_sha256"]!=lu.manifest_identity(candidate):
         raise AssertionError("A41 manifest hash")
-    if candidate["arrivals"]!=lu.t.make_arrivals(candidate["seed"],candidate["programs"]):
+    if candidate["arrivals"]!=lu.make_arrivals(candidate["seed"],candidate["programs"]):
         raise AssertionError("A41 arrivals")
     exp=[x["rid"] for x in candidate["arrivals"] if p.u01("LU2U-TASK4-CORRUPT",candidate["seed"],x["rid"])<0.05]
     if candidate["corrupt_ids"]!=exp:
@@ -97,8 +97,8 @@ def pair(context,programs,mode):
         "zero_integrity":bool(integrity(z)),"singleton_integrity":bool(integrity(s)),
         "zero_lesion":list(mz["lesion"]),"singleton_lesion":list(ms["lesion"]),
         "deterministic_relationships_exact":(
-            mz["arrivals"]==lu.t.make_arrivals(mz["seed"],mz["programs"]) and
-            ms["arrivals"]==lu.t.make_arrivals(ms["seed"],ms["programs"]) and
+            mz["arrivals"]==lu.make_arrivals(mz["seed"],mz["programs"]) and
+            ms["arrivals"]==lu.make_arrivals(ms["seed"],ms["programs"]) and
             mz["anchors0"]==p.anchors_for(mz["seed"],0) and
             ms["anchors4"]==p.anchors_for(ms["seed"],128)
         ),
