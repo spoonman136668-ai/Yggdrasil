@@ -53,7 +53,7 @@ jobs:
           $Control = $Raw | ConvertFrom-Json
           if ($Control.schema -ne 1) { throw 'CONTROL_SCHEMA_MISMATCH' }
           if ($Control.lane -cne 'YGG-C') { throw "CONTROL_LANE_MISMATCH actual=$($Control.lane)" }
-          if ($Control.mode -notin @('bootstrap','c1_benchmark','c2_parallel','c3_pressure','c4_topology','c5_transition','c6_factorial','c7_paired_arm','c8_blend','c9_onset','c10_bisect','c11_bisect','c12_bisect','c13_bisect','c14_bisect','c15_bisect','c16_pressure','c17_pressure','c18_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
+          if ($Control.mode -notin @('bootstrap','c1_benchmark','c2_parallel','c3_pressure','c4_topology','c5_transition','c6_factorial','c7_paired_arm','c8_blend','c9_onset','c10_bisect','c11_bisect','c12_bisect','c13_bisect','c14_bisect','c15_bisect','c16_pressure','c17_pressure','c18_probe','c19_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
           if ($Raw -match '(?i)ckb-plane|ktrade|wingless|coinbase|broker|ygg-a|ygg-b') { throw 'LANE_ISOLATION_TOKEN_VIOLATION' }
           "mode=$($Control.mode)" >> $env:GITHUB_OUTPUT
 
@@ -362,6 +362,21 @@ jobs:
           Get-Content -LiteralPath (Join-Path $OutDir 'c18-result.json')
           if (-not $R.valid) { throw 'YGG_C18_EVIDENCE_INVALID' }
           if (-not $R.qualification.YGG_C18_RETENTION_PREDICATE_DECOMPOSITION) { throw 'YGG_C18_QUALIFICATION_FAILED' }
+
+
+      - name: Run YGG-C19 frozen maturity-failure localization
+        if: steps.ctl.outputs.mode == 'c19_probe'
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $OutDir = Join-Path $env:RUNNER_TEMP 'ygg-c19'
+          if (Test-Path -LiteralPath $OutDir) { Remove-Item -LiteralPath $OutDir -Recurse -Force }
+          New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
+          python research/experiments/ygg-c/ygg_c19_maturity_failure_localization_v1.py (Join-Path $OutDir 'c19-result.json')
+          $R = Get-Content -LiteralPath (Join-Path $OutDir 'c19-result.json') -Raw | ConvertFrom-Json
+          Get-Content -LiteralPath (Join-Path $OutDir 'c19-result.json')
+          if (-not $R.valid) { throw 'YGG_C19_EVIDENCE_INVALID' }
+          if (-not $R.qualification.YGG_C19_MATURITY_FAILURE_LOCALIZATION) { throw 'YGG_C19_QUALIFICATION_FAILED' }
 
       - name: Upload lane evidence
         if: always()
