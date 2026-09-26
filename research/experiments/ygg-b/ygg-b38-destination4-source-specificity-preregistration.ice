@@ -1,0 +1,8 @@
+YGG-B38 PREREGISTRATION — DESTINATION-4 SOURCE SPECIFICITY
+Parent B37 run 36266367735 valid SOURCE5_SPECIFIC. B35 established source5->destination4 portable rescue in all five frozen seeds.
+Question: is portable reciprocal rescue at destination4 also specific to source position5 content, or does destination4 admit portable rescue from other source positions?
+Freeze exact B37/B36/B35 model/training/evaluation, threshold .90, 120 params, 32 state scalars, query position4, deterministic Torch, seeds [111,222,333,444,555]. No retraining/adaptation/capacity/architecture/threshold/baseline changes.
+Design: for each fixed seed evaluate original plus exactly five reciprocal composition-preserving swaps into destination4 from sources [0,1,2,5,6]. Source3 is excluded because it lies inside the already-established portable destination window and would exchange the two rescue-window slots rather than test external source specificity. The 5<->4 arm is the frozen B35 positive anchor. Preserve the exact seven-binding multiset in every arm. No sources may be added or removed after outcomes.
+Classify SOURCE5_WINDOW_SPECIFIC if source5 is portable across all five seeds and no other tested source is portable across all five; MULTISOURCE_DESTINATION4 if source5 and at least one other tested source are portable across all five; SOURCE5_NOT_REPRODUCED if the 5<->4 anchor fails; OTHER_VALID_PATTERN otherwise.
+Validity: exact seeds/query/threshold/state/params; exact B35 5<->4 per-seed endpoints reproduced; exact sources [0,1,2,5,6]; exact binding multiset preserved every arm; duplicate byte-identical.
+Scientific negatives are valid. No post-result tuning.
