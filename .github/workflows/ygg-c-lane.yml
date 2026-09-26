@@ -18,7 +18,7 @@ concurrency:
 jobs:
   lane-run:
     runs-on: [self-hosted, Windows, X64, yggdrasil, ygg-c, research-only]
-    timeout-minutes: 90
+    timeout-minutes: 180
 
     steps:
       - name: Checkout exact lane commit
@@ -53,7 +53,7 @@ jobs:
           $Control = $Raw | ConvertFrom-Json
           if ($Control.schema -ne 1) { throw 'CONTROL_SCHEMA_MISMATCH' }
           if ($Control.lane -cne 'YGG-C') { throw "CONTROL_LANE_MISMATCH actual=$($Control.lane)" }
-          if ($Control.mode -notin @('bootstrap','c1_benchmark','c2_parallel','c3_pressure','c4_topology','c5_transition','c6_factorial','c7_paired_arm','c8_blend','c9_onset','c10_bisect','c11_bisect','c12_bisect','c13_bisect','c14_bisect','c15_bisect','c16_pressure','c17_pressure','c18_probe','c19_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
+          if ($Control.mode -notin @('bootstrap','c1_benchmark','c2_parallel','c3_pressure','c4_topology','c5_transition','c6_factorial','c7_paired_arm','c8_blend','c9_onset','c10_bisect','c11_bisect','c12_bisect','c13_bisect','c14_bisect','c15_bisect','c16_pressure','c17_pressure','c18_probe','c19_probe','c20_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
           if ($Raw -match '(?i)ckb-plane|ktrade|wingless|coinbase|broker|ygg-a|ygg-b') { throw 'LANE_ISOLATION_TOKEN_VIOLATION' }
           "mode=$($Control.mode)" >> $env:GITHUB_OUTPUT
 
@@ -79,7 +79,7 @@ jobs:
           } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
 
       - name: Provision portable Python runtime
-        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial' || steps.ctl.outputs.mode == 'c7_paired_arm' || steps.ctl.outputs.mode == 'c8_blend' || steps.ctl.outputs.mode == 'c9_onset' || steps.ctl.outputs.mode == 'c10_bisect' || steps.ctl.outputs.mode == 'c11_bisect' || steps.ctl.outputs.mode == 'c12_bisect' || steps.ctl.outputs.mode == 'c13_bisect' || steps.ctl.outputs.mode == 'c14_bisect' || steps.ctl.outputs.mode == 'c15_bisect' || steps.ctl.outputs.mode == 'c16_pressure' || steps.ctl.outputs.mode == 'c17_pressure' || steps.ctl.outputs.mode == 'c18_probe' || steps.ctl.outputs.mode == 'c19_probe'
+        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial' || steps.ctl.outputs.mode == 'c7_paired_arm' || steps.ctl.outputs.mode == 'c8_blend' || steps.ctl.outputs.mode == 'c9_onset' || steps.ctl.outputs.mode == 'c10_bisect' || steps.ctl.outputs.mode == 'c11_bisect' || steps.ctl.outputs.mode == 'c12_bisect' || steps.ctl.outputs.mode == 'c13_bisect' || steps.ctl.outputs.mode == 'c14_bisect' || steps.ctl.outputs.mode == 'c15_bisect' || steps.ctl.outputs.mode == 'c16_pressure' || steps.ctl.outputs.mode == 'c17_pressure' || steps.ctl.outputs.mode == 'c18_probe' || steps.ctl.outputs.mode == 'c19_probe' || steps.ctl.outputs.mode == 'c20_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -109,7 +109,7 @@ jobs:
           & $PyExe -m pip --version
 
       - name: Install frozen C1 runtime
-        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial' || steps.ctl.outputs.mode == 'c7_paired_arm' || steps.ctl.outputs.mode == 'c8_blend' || steps.ctl.outputs.mode == 'c9_onset' || steps.ctl.outputs.mode == 'c10_bisect' || steps.ctl.outputs.mode == 'c11_bisect' || steps.ctl.outputs.mode == 'c12_bisect' || steps.ctl.outputs.mode == 'c13_bisect' || steps.ctl.outputs.mode == 'c14_bisect' || steps.ctl.outputs.mode == 'c15_bisect' || steps.ctl.outputs.mode == 'c16_pressure' || steps.ctl.outputs.mode == 'c17_pressure' || steps.ctl.outputs.mode == 'c18_probe' || steps.ctl.outputs.mode == 'c19_probe'
+        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial' || steps.ctl.outputs.mode == 'c7_paired_arm' || steps.ctl.outputs.mode == 'c8_blend' || steps.ctl.outputs.mode == 'c9_onset' || steps.ctl.outputs.mode == 'c10_bisect' || steps.ctl.outputs.mode == 'c11_bisect' || steps.ctl.outputs.mode == 'c12_bisect' || steps.ctl.outputs.mode == 'c13_bisect' || steps.ctl.outputs.mode == 'c14_bisect' || steps.ctl.outputs.mode == 'c15_bisect' || steps.ctl.outputs.mode == 'c16_pressure' || steps.ctl.outputs.mode == 'c17_pressure' || steps.ctl.outputs.mode == 'c18_probe' || steps.ctl.outputs.mode == 'c19_probe' || steps.ctl.outputs.mode == 'c20_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -350,7 +350,7 @@ jobs:
           if (-not $R.qualification.YGG_C17_INTERACTION_ONSET_FUNCTIONAL_PRESSURE_TEST) { throw 'YGG_C17_QUALIFICATION_FAILED' }
 
       - name: Run YGG-C18 frozen retention predicate decomposition
-        if: steps.ctl.outputs.mode == 'c18_probe' || steps.ctl.outputs.mode == 'c19_probe'
+        if: steps.ctl.outputs.mode == 'c18_probe' || steps.ctl.outputs.mode == 'c19_probe' || steps.ctl.outputs.mode == 'c20_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -365,7 +365,7 @@ jobs:
 
 
       - name: Run YGG-C19 frozen maturity-failure localization
-        if: steps.ctl.outputs.mode == 'c19_probe'
+        if: steps.ctl.outputs.mode == 'c19_probe' || steps.ctl.outputs.mode == 'c20_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -377,6 +377,21 @@ jobs:
           Get-Content -LiteralPath (Join-Path $OutDir 'c19-result.json')
           if (-not $R.valid) { throw 'YGG_C19_EVIDENCE_INVALID' }
           if (-not $R.qualification.YGG_C19_MATURITY_FAILURE_LOCALIZATION) { throw 'YGG_C19_QUALIFICATION_FAILED' }
+
+
+      - name: Run YGG-C20 frozen replicate8 context exchange
+        if: steps.ctl.outputs.mode == 'c20_probe'
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $OutDir = Join-Path $env:RUNNER_TEMP 'ygg-c20'
+          if (Test-Path -LiteralPath $OutDir) { Remove-Item -LiteralPath $OutDir -Recurse -Force }
+          New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
+          python research/experiments/ygg-c/ygg_c20_replicate8_context_exchange_v1.py (Join-Path $OutDir 'c20-result.json')
+          $R = Get-Content -LiteralPath (Join-Path $OutDir 'c20-result.json') -Raw | ConvertFrom-Json
+          Get-Content -LiteralPath (Join-Path $OutDir 'c20-result.json')
+          if (-not $R.valid) { throw 'YGG_C20_EVIDENCE_INVALID' }
+          if (-not $R.qualification.YGG_C20_REPLICATE8_CONTEXT_EXCHANGE) { throw 'YGG_C20_QUALIFICATION_FAILED' }
 
       - name: Upload lane evidence
         if: always()
