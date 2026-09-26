@@ -26,7 +26,7 @@ def one_pass():
     try:
      r8=c19.c17.c16.c3.run_pressure_manifest(x8,level); rp=c19.c17.c16.c3.run_pressure_manifest(xp,level)
     finally: c19.c17.c16.c3.pressure_lesion=c19.c17.c16.c5.fine_pressure
-    arms.append({"partner":partner,"replicate8_maturity_pass":maturity(r8),"partner_maturity_pass":maturity(rp)})
+    arms.append({"partner":partner,"replicate8_maturity_pass":maturity(r8),"partner_maturity_pass":maturity(rp),"replicate8_nonlesion_preserved":c19.c17.c16.c3.non_lesion_bytes(m8)==c19.c17.c16.c3.non_lesion_bytes(x8),"partner_nonlesion_preserved":c19.c17.c16.c3.non_lesion_bytes(mp)==c19.c17.c16.c3.non_lesion_bytes(xp)})
    groups.append({"level":level,"arms":arms})
  finally: c19.c17.c16.c3.pressure_lesion=old
  parent_ok=all(x["failing_replicates"]==[8] for x in parent["levels"])
@@ -41,7 +41,7 @@ def main():
  if len(sys.argv)!=2: raise SystemExit("usage: OUT")
  first=one_pass(); second=one_pass(); b1=canonical(first); b2=canonical(second)
  partners=[len(g["arms"]) for g in first["groups"]]
- validity={"duplicate_analysis_byte_identical":b1==b2,"parent_failure_reproduced":all(x["failing_replicates"]==[8] for x in first["parent"]["levels"]),"alpha_exact":first["parent"]["alpha"]==0.134765625,"levels_exact":[g["level"] for g in first["groups"]]==list(range(8,17)),"all_non8_partners_tested":len(set(partners))==1 and partners[0]>0}
+ validity={"duplicate_analysis_byte_identical":b1==b2,"parent_failure_reproduced":all(x["failing_replicates"]==[8] for x in first["parent"]["levels"]),"alpha_exact":first["parent"]["alpha"]==0.134765625,"levels_exact":[g["level"] for g in first["groups"]]==list(range(8,17)),"all_non8_partners_tested":len(set(partners))==1 and partners[0]>0,"nonlesion_bytes_preserved":all(a["replicate8_nonlesion_preserved"] and a["partner_nonlesion_preserved"] for g in first["groups"] for a in g["arms"])}
  cat=first["classification"]; allowed={"IDENTITY_BOUND","LESION_CONTEXT_BOUND","MIXED_IDENTITY_CONTEXT","NO_REPRODUCED_FAILURE","OTHER_VALID_PATTERN"}
  out={"schema":1,"experiment":"YGG-C20","prereg":PREREG,"parent_run":PARENT_RUN,"duplicate_sha256":hashlib.sha256(b1).hexdigest(),"validity":validity,"valid":all(validity.values()),"qualification":{"YGG_C20_REPLICATE8_CONTEXT_EXCHANGE":all(validity.values()) and cat in allowed,"classification":cat},"analysis":first}
  Path(sys.argv[1]).write_bytes(canonical(out))
