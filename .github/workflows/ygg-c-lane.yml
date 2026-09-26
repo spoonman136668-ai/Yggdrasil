@@ -79,7 +79,7 @@ jobs:
           } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
 
       - name: Provision portable Python runtime
-        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial' || steps.ctl.outputs.mode == 'c7_paired_arm' || steps.ctl.outputs.mode == 'c8_blend' || steps.ctl.outputs.mode == 'c9_onset' || steps.ctl.outputs.mode == 'c10_bisect' || steps.ctl.outputs.mode == 'c11_bisect' || steps.ctl.outputs.mode == 'c12_bisect' || steps.ctl.outputs.mode == 'c13_bisect' || steps.ctl.outputs.mode == 'c14_bisect' || steps.ctl.outputs.mode == 'c15_bisect' || steps.ctl.outputs.mode == 'c16_pressure' || steps.ctl.outputs.mode == 'c17_pressure' || steps.ctl.outputs.mode == 'c18_probe'
+        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial' || steps.ctl.outputs.mode == 'c7_paired_arm' || steps.ctl.outputs.mode == 'c8_blend' || steps.ctl.outputs.mode == 'c9_onset' || steps.ctl.outputs.mode == 'c10_bisect' || steps.ctl.outputs.mode == 'c11_bisect' || steps.ctl.outputs.mode == 'c12_bisect' || steps.ctl.outputs.mode == 'c13_bisect' || steps.ctl.outputs.mode == 'c14_bisect' || steps.ctl.outputs.mode == 'c15_bisect' || steps.ctl.outputs.mode == 'c16_pressure' || steps.ctl.outputs.mode == 'c17_pressure' || steps.ctl.outputs.mode == 'c18_probe' || steps.ctl.outputs.mode == 'c19_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -109,7 +109,7 @@ jobs:
           & $PyExe -m pip --version
 
       - name: Install frozen C1 runtime
-        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial' || steps.ctl.outputs.mode == 'c7_paired_arm' || steps.ctl.outputs.mode == 'c8_blend' || steps.ctl.outputs.mode == 'c9_onset' || steps.ctl.outputs.mode == 'c10_bisect' || steps.ctl.outputs.mode == 'c11_bisect' || steps.ctl.outputs.mode == 'c12_bisect' || steps.ctl.outputs.mode == 'c13_bisect' || steps.ctl.outputs.mode == 'c14_bisect' || steps.ctl.outputs.mode == 'c15_bisect' || steps.ctl.outputs.mode == 'c16_pressure' || steps.ctl.outputs.mode == 'c17_pressure' || steps.ctl.outputs.mode == 'c18_probe'
+        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial' || steps.ctl.outputs.mode == 'c7_paired_arm' || steps.ctl.outputs.mode == 'c8_blend' || steps.ctl.outputs.mode == 'c9_onset' || steps.ctl.outputs.mode == 'c10_bisect' || steps.ctl.outputs.mode == 'c11_bisect' || steps.ctl.outputs.mode == 'c12_bisect' || steps.ctl.outputs.mode == 'c13_bisect' || steps.ctl.outputs.mode == 'c14_bisect' || steps.ctl.outputs.mode == 'c15_bisect' || steps.ctl.outputs.mode == 'c16_pressure' || steps.ctl.outputs.mode == 'c17_pressure' || steps.ctl.outputs.mode == 'c18_probe' || steps.ctl.outputs.mode == 'c19_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -350,7 +350,7 @@ jobs:
           if (-not $R.qualification.YGG_C17_INTERACTION_ONSET_FUNCTIONAL_PRESSURE_TEST) { throw 'YGG_C17_QUALIFICATION_FAILED' }
 
       - name: Run YGG-C18 frozen retention predicate decomposition
-        if: steps.ctl.outputs.mode == 'c18_probe'
+        if: steps.ctl.outputs.mode == 'c18_probe' || steps.ctl.outputs.mode == 'c19_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
