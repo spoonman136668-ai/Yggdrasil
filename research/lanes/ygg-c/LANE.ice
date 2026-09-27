@@ -1,6 +1,6 @@
 TITLE: YGG-C — Efficiency and Scaling
 DATE: 2026-09-24
-STATUS: ACTIVE LANE / BOOTSTRAP ONLY / NO LANE SCIENCE CONSUMED
+STATUS: ACTIVE SCIENTIFIC LANE / ISOLATED / GOVERNANCE-RECONCILED
 
 SHARED ACCEPTED BASELINE:
 878464cf84833d06a1ac7e45988bfb79608547dc
@@ -14,7 +14,7 @@ Measure whether the developmental architecture can remain practical on consumer 
 
 IMMEDIATE FRONTIER
 
-First scientific frontier after bootstrap: observation-only profiling of accepted frozen workloads and hardware capability; no scientific dynamics change until a scaling bottleneck is demonstrated.
+Continue the preregistered near-onset resource-pressure / repair-basin lineage from C32 under explicit alpha governance. New scientific successors must remain bounded, preserve frozen lineage mechanics, and advance only from validated evidence.
 
 GOVERNANCE
 
@@ -33,7 +33,10 @@ GOVERNANCE
 
 AUTHORITY BOUNDARY
 
-- alpha remains 0.25 unless a future explicit governance decision changes it;
+- alpha=0.25 remains the shared accepted baseline/reference regime;
+- descendants of the established C16-C32 near-onset lineage may use exactly alpha=0.134765625 only when explicitly preregistered, under decision research/decisions/ygg-c-near-onset-alpha-authority-20260927.ice;
+- runtime parent.ALPHA and parent.g.ALPHA must be explicitly frozen to the preregistered value for near-onset scientific arms and restored afterward;
+- no other standing alpha regime is authorized without a new governance decision;
 - H/C/S/FC/FS remain protected as in the accepted baseline;
 - no learned C/S authority;
 - no online adaptation;
@@ -58,3 +61,10 @@ research-only
 canonical_scientific_execution = false.
 stab18_r1_touched = false.
 DG1R05_CANONICAL_PRIMARY_CONSUMED = false.
+
+GOVERNANCE RECONCILIATION
+
+- 2026-09-27 review identified that later near-onset C science had outpaced the original bootstrap-era alpha authority text.
+- explicit prospective reconciliation decision: research/decisions/ygg-c-near-onset-alpha-authority-20260927.ice.
+- prior C16-C32 evidence is preserved exactly as observed; the reconciliation does not rewrite prior governance history or alter scientific outcomes.
+- cross-lane promotion and shared-baseline changes remain separately gated.
