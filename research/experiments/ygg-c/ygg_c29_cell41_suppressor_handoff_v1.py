@@ -30,20 +30,27 @@ def one_pass():
             def run(lesion): return c22.run_manifest_with_lesion(m8,level,sorted(lesion))
             original=run(l8); base_row=run(base38)
             add41=set(base38)|{41}
-            rows={
-                "ADD41":run(add41),
-                "ADD41_REMOVE42":run(add41-{42}),
-                "ADD41_REMOVE46":run(add41-{46}),
-                "ADD41_REMOVE42_REMOVE46":run(add41-{42,46}),
-                "ADD41_REMOVE6_REMOVE14":run(add41-{6,14}),
-                "BASE_REMOVE42_REMOVE46":run(set(base38)-{42,46}),
-                "BASE_REMOVE6_REMOVE14":run(set(base38)-{6,14}),
+            lesions={
+                "ADD41":sorted(add41),
+                "ADD41_REMOVE42":sorted(add41-{42}),
+                "ADD41_REMOVE46":sorted(add41-{46}),
+                "ADD41_REMOVE42_REMOVE46":sorted(add41-{42,46}),
+                "ADD41_REMOVE6_REMOVE14":sorted(add41-{6,14}),
+                "BASE_REMOVE42_REMOVE46":sorted(set(base38)-{42,46}),
+                "BASE_REMOVE6_REMOVE14":sorted(set(base38)-{6,14}),
             }
+            rows={k:run(v) for k,v in lesions.items()}
             groups.append({
                 "level":level,
                 "original_failure":not maturity(original),
                 "base_rescue":maturity(base_row),
-                "arms":{k:{"maturity_pass":maturity(v)} for k,v in rows.items()},
+                "base_lesion":base38,
+                "arms":{k:{
+                    "maturity_pass":maturity(rows[k]),
+                    "lesion":lesions[k],
+                    "cardinality":len(lesions[k]),
+                    "symmetric_difference":sorted(set(base38)^set(lesions[k])),
+                } for k in rows},
                 "base_cardinality":len(base38),
             })
     finally:
@@ -86,6 +93,24 @@ def main():
                 "ADD41","ADD41_REMOVE42","ADD41_REMOVE46","ADD41_REMOVE42_REMOVE46",
                 "ADD41_REMOVE6_REMOVE14","BASE_REMOVE42_REMOVE46","BASE_REMOVE6_REMOVE14"
             } for g in a["groups"]),
+        "registered_cell_changes_exact":all(
+            g["arms"]["ADD41"]["symmetric_difference"]==[41] and
+            g["arms"]["ADD41_REMOVE42"]["symmetric_difference"]==[41,42] and
+            g["arms"]["ADD41_REMOVE46"]["symmetric_difference"]==[41,46] and
+            g["arms"]["ADD41_REMOVE42_REMOVE46"]["symmetric_difference"]==[41,42,46] and
+            g["arms"]["ADD41_REMOVE6_REMOVE14"]["symmetric_difference"]==[6,14,41] and
+            g["arms"]["BASE_REMOVE42_REMOVE46"]["symmetric_difference"]==[42,46] and
+            g["arms"]["BASE_REMOVE6_REMOVE14"]["symmetric_difference"]==[6,14]
+            for g in a["groups"]),
+        "registered_cardinalities_exact":all(
+            g["arms"]["ADD41"]["cardinality"]==g["base_cardinality"]+1 and
+            g["arms"]["ADD41_REMOVE42"]["cardinality"]==g["base_cardinality"] and
+            g["arms"]["ADD41_REMOVE46"]["cardinality"]==g["base_cardinality"] and
+            g["arms"]["ADD41_REMOVE42_REMOVE46"]["cardinality"]==g["base_cardinality"]-1 and
+            g["arms"]["ADD41_REMOVE6_REMOVE14"]["cardinality"]==g["base_cardinality"]-1 and
+            g["arms"]["BASE_REMOVE42_REMOVE46"]["cardinality"]==g["base_cardinality"]-2 and
+            g["arms"]["BASE_REMOVE6_REMOVE14"]["cardinality"]==g["base_cardinality"]-2
+            for g in a["groups"]),
         "runtime_alpha_restored":a["runtime_alpha_restored"],
         "dose_allowlist_restored":a["dose_allowlist_restored"],
         "pressure_lesion_restored":a["pressure_lesion_restored"],
