@@ -105,3 +105,29 @@ If a required fact exists only in Mind-Palace or local/private evidence, Nemotro
 
 MIND-PALACE ROLE
 Mind-Palace remains in the research architecture as durable historical context. It does not get replaced by Nemotron. It may support context selection and post-result durable ingestion. Nemotron remains an advisory reasoner over bounded public evidence only.
+
+
+REDUCED CONTEXT INTEGRATION
+The Mind-Palace mailbox and generation-bound context retrieval path were reverified healthy on 2026-09-28.
+
+For the free Nemotron route:
+- Mind-Palace selects relevant durable history.
+- Private Mind-Palace prose is not transmitted.
+- Selected durable IDs are resolved to public experiment identifiers.
+- The reasoner packet is reconstructed only from public Wingless/Yggdrasil evidence.
+- At most 8 canonical experiment digests are admitted into one bounded context pack.
+- Context packs are content-addressed and fail closed rather than truncating scientific claims.
+
+Shared Wingless implementation:
+- reasoner/contextpack.go
+- reasoner/mindpalace.go
+
+Mind-Palace private sidecar staging:
+- repository: spoonman136668-ai/Mind-Palace
+- branch: research/nemotron-public-context-r1
+- tool: tools/public-evidence-hints.ps1
+- behavior: emit experiment IDs/public source hints only; no durable statements or private model context
+
+ACTIVATION HOLD UPDATE
+Mailbox recovery is no longer the hold.
+Remaining hold: authoritative Windows qualification of the Mind-Palace public-evidence sidecar, qualified ckb-plane exposure, then an end-to-end dry run and final integration regression.
