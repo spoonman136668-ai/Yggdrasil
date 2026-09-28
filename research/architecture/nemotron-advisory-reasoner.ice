@@ -1,8 +1,8 @@
 TITLE: Nemotron Advisory Experiment Reasoning Interface
 DATE: 2026-09-28
-STATUS: STAGED_NOT_ACTIVATED
+STATUS: QUALIFIED_NOT_ACTIVATED
 TRACK: DG-1
-CONFIDENCE: UNQUALIFIED
+CONFIDENCE: QUALIFIED
 
 PURPOSE
 Allow Yggdrasil experiments to use the shared Wingless Nemotron/OpenRouter reasoning adapter for bounded scientific planning, critique, and interpretation without creating a second scheduler, executor, or acceptance authority.
@@ -63,13 +63,30 @@ Default and staged-only route: nvidia/nemotron-3-ultra-550b-a55b:free
 ACTIVATION GATE
 This interface is not active merely because the branch exists.
 
-Before activation:
-- qualify the adapter unit tests;
-- add historical blind replay fixtures;
-- measure scientific constraint violations and redundant experiment proposals;
-- compare proposed experiments against held-out future evidence;
-- perform required final Wingless integration/full regression;
-- explicitly integrate through the existing ckb-plane research boundary.
+QUALIFICATION RESULT
+GitHub Actions run 36483722629 qualified the pinned free route at Wingless source head 212ca3031977da808a1416065599f65992f3f17f.
+
+Deterministic qualification: PASS.
+Full Wingless regression: PASS.
+Historical blind replay: PASS.
+Fixtures: 7 total, spanning Wingless and Yggdrasil.
+Repetitions: 2.
+Decisions: 14/14 matched the frozen historical continuation.
+Scientific-boundary violations: 0.
+Returned model: nvidia/nemotron-3-ultra-550b-a55b:free.
+Returned provider: Nvidia.
+Evidence artifact: 10998885130.
+Artifact SHA-256: 19f5943efde3c2169a0b3d3fa1dc8def581dce41afa9e3266f2e335887471073.
+
+ACTIVATION GATE
+Qualification does not itself activate the reasoner.
+Still required:
+- explicitly integrate through the existing ckb-plane research boundary;
+- keep Nemotron advisory-only;
+- keep the free route public-repository-only;
+- preserve the dedicated research credential;
+- do not interrupt active KTRADE work;
+- resume Mind-Palace context selection only after its mailbox path is healthy.
 
 KTRADE PRIORITY GUARD
 Current KTRADE work must not be paused, restarted, reordered, or have its queue altered to qualify or activate this reasoner. Setup and qualification must remain isolated until research execution authority can be exercised without production interference.
