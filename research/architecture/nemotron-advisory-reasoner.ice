@@ -55,11 +55,10 @@ Reasoning evidence is reusable only when semantically relevant identity matches,
 Identity drift invalidates cached reasoning evidence for qualification purposes.
 
 PRIVACY
-Actual Yggdrasil frontier packets may contain unpublished research. The default route is the paid Nemotron 3 Ultra model with provider data collection denied and zero-data-retention requested. The free route may be used only with explicitly sanitized/non-confidential packets.
+The Yggdrasil GitHub repository is public. The staged reasoner therefore uses the free Nemotron endpoint only for packets reconstructed exclusively from public Yggdrasil or Wingless repository content. The free endpoint may log prompts and completions for NVIDIA security/product-improvement purposes. Do not transmit Mind-Palace records, local-only evidence, credentials, personal data, or any future private/unpublished material through this route.
 
 MODEL
-Default: nvidia/nemotron-3-ultra-550b-a55b
-Optional sanitized fixture route: nvidia/nemotron-3-ultra-550b-a55b:free
+Default and staged-only route: nvidia/nemotron-3-ultra-550b-a55b:free
 
 ACTIVATION GATE
 This interface is not active merely because the branch exists.
@@ -80,3 +79,12 @@ Adopt one shared bounded reasoner contract across Wingless and Yggdrasil. Do not
 
 CREDENTIAL ISOLATION
 The shared research reasoner must use a credential dedicated to research reasoning, exposed only as WINGLESS_REASONER_OPENROUTER_API_KEY on the research runner. It must not reuse any OpenRouter credential used by CKB repair, orchestration, or other plane functions.
+
+
+FREE-ROUTE PUBLIC-SOURCE GATE
+Every Nemotron request must be classified public-repository.
+Public repository source hashes and qualification identity remain part of provenance.
+If a required fact exists only in Mind-Palace or local/private evidence, Nemotron must not receive that fact through the free route. Mind-Palace may identify a relevant historical decision, but the reasoner packet must be rebuilt from public GitHub evidence before transmission.
+
+MIND-PALACE ROLE
+Mind-Palace remains in the research architecture as durable historical context. It does not get replaced by Nemotron. It may support context selection and post-result durable ingestion. Nemotron remains an advisory reasoner over bounded public evidence only.
