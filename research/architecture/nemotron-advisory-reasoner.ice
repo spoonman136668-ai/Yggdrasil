@@ -77,3 +77,6 @@ Current KTRADE work must not be paused, restarted, reordered, or have its queue 
 
 DECISION
 Adopt one shared bounded reasoner contract across Wingless and Yggdrasil. Do not create a Yggdrasil-local autonomous agent or competing orchestration path.
+
+CREDENTIAL ISOLATION
+The shared research reasoner must use a credential dedicated to research reasoning, exposed only as WINGLESS_REASONER_OPENROUTER_API_KEY on the research runner. It must not reuse any OpenRouter credential used by CKB repair, orchestration, or other plane functions.
