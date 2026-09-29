@@ -1,0 +1,194 @@
+name: Yggdrasil plane isolated research
+
+run-name: Yggdrasil research ${{ inputs.research_ref }} [${{ inputs.dispatch_id }}]
+
+on:
+  workflow_dispatch:
+    inputs:
+      research_ref:
+        description: Exact plane-owned research branch
+        required: true
+        type: string
+      dispatch_id:
+        description: Exact CKB-plane dispatch identity
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: yggdrasil-plane-research-${{ inputs.research_ref }}
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+
+    steps:
+      - name: Validate dispatch inputs
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ('${{ github.ref_name }}' -cne 'main') { throw "WORKFLOW_REF_MISMATCH actual=${{ github.ref_name }}" }
+          $Ref = '${{ inputs.research_ref }}'
+          $Dispatch = '${{ inputs.dispatch_id }}'
+          if ($Ref -notmatch '^research/yggdrasil-[a-z0-9][a-z0-9._-]{0,95}$') { throw "RESEARCH_REF_INVALID ref=$Ref" }
+          if ($Dispatch -notmatch '^[0-9a-f]{64}$') { throw "DISPATCH_ID_INVALID id=$Dispatch" }
+
+      - name: Checkout exact research branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.research_ref }}
+          fetch-depth: 1
+          persist-credentials: false
+          clean: true
+
+      - name: Validate sealed requests
+        id: req
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $QPath = '.yggdrasil/qualification-request.json'
+          $RPath = '.yggdrasil/isolated-run.json'
+          foreach ($Path in @($QPath,$RPath)) {
+              if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { throw "REQUEST_MISSING path=$Path" }
+          }
+
+          $Q = Get-Content -LiteralPath $QPath -Raw | ConvertFrom-Json
+          $R = Get-Content -LiteralPath $RPath -Raw | ConvertFrom-Json
+
+          if ([string]$Q.schema -cne 'yggdrasil.research-qualification-request.v1') { throw 'QUALIFICATION_SCHEMA_INVALID' }
+          if ([string]$Q.branch -cne '${{ inputs.research_ref }}') { throw 'QUALIFICATION_BRANCH_MISMATCH' }
+          if ([string]$Q.baseline_sha -notmatch '^[0-9a-f]{40}$') { throw 'QUALIFICATION_BASELINE_INVALID' }
+          if ([string]$Q.experiment -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$') { throw 'QUALIFICATION_EXPERIMENT_INVALID' }
+          if ([string]$Q.source -notmatch '^research/applications/plane/[A-Za-z0-9._/-]+\.py$') { throw 'QUALIFICATION_SOURCE_INVALID' }
+          if ([string]$Q.isolated_run_path -cne $RPath) { throw 'QUALIFICATION_RUN_PATH_INVALID' }
+
+          if ([int]$R.schema -ne 1) { throw 'ISOLATED_RUN_SCHEMA_INVALID' }
+          if ([string]$R.request_id -cne [string]$Q.experiment) { throw 'ISOLATED_RUN_REQUEST_ID_MISMATCH' }
+          if ([string]$R.source -cne [string]$Q.source) { throw 'ISOLATED_RUN_SOURCE_MISMATCH' }
+          if ([int]$R.timeout_seconds -lt 1 -or [int]$R.timeout_seconds -gt 1800) { throw 'ISOLATED_RUN_TIMEOUT_INVALID' }
+
+          $Args = @($R.run_args)
+          if (($Args | Where-Object { [string]$_ -eq '{out}' }).Count -ne 1) { throw 'ISOLATED_RUN_OUT_ARG_REQUIRED' }
+          if (@($R.open_args).Count -ne 0) { throw 'ISOLATED_RUN_OPEN_ARGS_FORBIDDEN' }
+
+          $Source = [string]$Q.source
+          if (-not (Test-Path -LiteralPath $Source -PathType Leaf)) { throw "SOURCE_MISSING path=$Source" }
+          $Text = Get-Content -LiteralPath $Source -Raw
+          if ($Text -notmatch [regex]::Escape('yggdrasil.research-scientific-result.v1')) { throw 'SOURCE_RESULT_SCHEMA_TOKEN_MISSING' }
+
+          "experiment=$($Q.experiment)" >> $env:GITHUB_OUTPUT
+          "source=$Source" >> $env:GITHUB_OUTPUT
+          "timeout=$([int]$R.timeout_seconds)" >> $env:GITHUB_OUTPUT
+
+      - name: Provision frozen Python runtime
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PyRoot = Join-Path $env:RUNNER_TEMP 'python312-ygg-plane'
+          $PyExe = Join-Path $PyRoot 'python.exe'
+          if (-not (Test-Path -LiteralPath $PyExe)) {
+              if (Test-Path -LiteralPath $PyRoot) { Remove-Item -LiteralPath $PyRoot -Recurse -Force }
+              New-Item -ItemType Directory -Path $PyRoot -Force | Out-Null
+              $Zip = Join-Path $env:RUNNER_TEMP 'python-3.12.10-embed-amd64.zip'
+              Invoke-WebRequest -UseBasicParsing -Uri 'https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip' -OutFile $Zip
+              Expand-Archive -LiteralPath $Zip -DestinationPath $PyRoot -Force
+              $Pth = Join-Path $PyRoot 'python312._pth'
+              @('python312.zip','.','Lib\site-packages','import site') | Set-Content -LiteralPath $Pth -Encoding ASCII
+              New-Item -ItemType Directory -Path (Join-Path $PyRoot 'Lib\site-packages') -Force | Out-Null
+              $GetPip = Join-Path $env:RUNNER_TEMP 'get-pip.py'
+              Invoke-WebRequest -UseBasicParsing -Uri 'https://bootstrap.pypa.io/get-pip.py' -OutFile $GetPip
+              & $PyExe $GetPip --disable-pip-version-check --no-warn-script-location
+              if ($LASTEXITCODE -ne 0) { throw "GET_PIP_FAILED exit=$LASTEXITCODE" }
+              & $PyExe -m pip install --disable-pip-version-check --no-input numpy==2.3.5
+              if ($LASTEXITCODE -ne 0) { throw 'NUMPY_INSTALL_FAILED' }
+              & $PyExe -m pip install --disable-pip-version-check --no-input --index-url https://download.pytorch.org/whl/cpu torch==2.10.0
+              if ($LASTEXITCODE -ne 0) { throw 'TORCH_INSTALL_FAILED' }
+          }
+          $Pth = Join-Path $PyRoot 'python312._pth'
+          @('python312.zip','.','Lib\site-packages',(Resolve-Path '.').Path,'import site') | Set-Content -LiteralPath $Pth -Encoding ASCII
+          "YGG_PYTHON=$PyExe" >> $env:GITHUB_ENV
+          & $PyExe --version
+
+      - name: Run sealed experiment twice
+        id: science
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $Q = Get-Content -LiteralPath '.yggdrasil/qualification-request.json' -Raw | ConvertFrom-Json
+          $R = Get-Content -LiteralPath '.yggdrasil/isolated-run.json' -Raw | ConvertFrom-Json
+          $Root = Join-Path $env:RUNNER_TEMP 'ygg-plane-result'
+          if (Test-Path -LiteralPath $Root) { Remove-Item -LiteralPath $Root -Recurse -Force }
+          New-Item -ItemType Directory -Path $Root -Force | Out-Null
+
+          function Invoke-One([string]$OutPath) {
+              $Args = @()
+              foreach ($A in @($R.run_args)) {
+                  if ([string]$A -ceq '{out}') { $Args += $OutPath } else { $Args += [string]$A }
+              }
+              & $env:YGG_PYTHON ([string]$Q.source) @Args
+              if ($LASTEXITCODE -ne 0) { throw "SCIENTIFIC_RUN_FAILED exit=$LASTEXITCODE" }
+              if (-not (Test-Path -LiteralPath $OutPath -PathType Leaf)) { throw 'SCIENTIFIC_RESULT_MISSING' }
+          }
+
+          $Out1 = Join-Path $Root 'result-1.json'
+          $Out2 = Join-Path $Root 'result-2.json'
+          Invoke-One $Out1
+          Invoke-One $Out2
+
+          $B1 = [IO.File]::ReadAllBytes($Out1)
+          $B2 = [IO.File]::ReadAllBytes($Out2)
+          if ($B1.Length -ne $B2.Length) { throw 'SCIENTIFIC_RESULT_NONDETERMINISTIC_LENGTH' }
+          for ($i=0; $i -lt $B1.Length; $i++) {
+              if ($B1[$i] -ne $B2[$i]) { throw 'SCIENTIFIC_RESULT_NONDETERMINISTIC_BYTES' }
+          }
+
+          $S = Get-Content -LiteralPath $Out1 -Raw | ConvertFrom-Json
+          if ([string]$S.schema -cne 'yggdrasil.research-scientific-result.v1') { throw 'SCIENTIFIC_RESULT_SCHEMA_INVALID' }
+          if ([string]$S.experiment -cne [string]$Q.experiment) { throw 'SCIENTIFIC_RESULT_EXPERIMENT_MISMATCH' }
+          if ($null -eq $S.metrics) { throw 'SCIENTIFIC_RESULT_METRICS_MISSING' }
+
+          $SHA = (Get-FileHash -LiteralPath $Out1 -Algorithm SHA256).Hash.ToLowerInvariant()
+          "result_path=$Out1" >> $env:GITHUB_OUTPUT
+          "result_sha256=$SHA" >> $env:GITHUB_OUTPUT
+          Write-Host "scientific_result_sha256=$SHA"
+          Write-Host 'YGGDRASIL_PLANE_ISOLATED_SCIENCE=PASS'
+
+      - name: Deliver canonical result to local plane
+        if: success()
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $Q = Get-Content -LiteralPath '.yggdrasil/qualification-request.json' -Raw | ConvertFrom-Json
+          $Result = Get-Content -LiteralPath '${{ steps.science.outputs.result_path }}' -Raw | ConvertFrom-Json
+          $Head = (git rev-parse HEAD).Trim()
+          if ($LASTEXITCODE -ne 0 -or $Head -notmatch '^[0-9a-f]{40}$') { throw 'SOURCE_HEAD_INVALID' }
+
+          $Body = [ordered]@{
+              schema = 'ckb-plane.yggdrasil-qualification-result.v1'
+              dispatch_id = '${{ inputs.dispatch_id }}'
+              experiment = [string]$Q.experiment
+              branch = '${{ inputs.research_ref }}'
+              baseline_sha = [string]$Q.baseline_sha
+              source_head = $Head
+              duplicate_byte_identical = $true
+              result_sha256 = '${{ steps.science.outputs.result_sha256 }}'
+              scientific_result = $Result
+          } | ConvertTo-Json -Depth 30 -Compress
+
+          $Uri = 'http://127.0.0.1:8791/v1/research/yggdrasil/results/${{ inputs.dispatch_id }}'
+          $Response = Invoke-RestMethod -Uri $Uri -Method Post -ContentType 'application/json' -Body $Body -TimeoutSec 30
+          if ([string]$Response.status -cne 'accepted') { throw "PLANE_CALLBACK_NOT_ACCEPTED status=$($Response.status)" }
+          Write-Host "successor_cycle_id=$($Response.successor_cycle_id)"
+          Write-Host 'YGGDRASIL_PLANE_CALLBACK=PASS'
+
+      - name: Upload scientific evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yggdrasil-plane-${{ inputs.dispatch_id }}
+          path: |
+            ${{ runner.temp }}\ygg-plane-result\**
+          if-no-files-found: warn
+          retention-days: 30
