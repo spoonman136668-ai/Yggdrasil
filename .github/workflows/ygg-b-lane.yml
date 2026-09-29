@@ -1033,7 +1033,7 @@ jobs:
           if (-not $R.qualification.YGG_B65_PREVENTION_COLLATERAL_LEDGER) { throw 'YGG_B65_PREVENTION_COLLATERAL_LEDGER_QUALIFICATION_FAILED' }
 
       - name: Run YGG-B66 frozen matched intervention cohort decomposition
-        if: steps.ctl.outputs.mode == 'b66_probe' || steps.ctl.outputs.mode == 'b67_probe'
+        if: steps.ctl.outputs.mode == 'b66_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
