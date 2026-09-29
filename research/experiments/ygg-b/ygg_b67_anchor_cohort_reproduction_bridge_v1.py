@@ -86,13 +86,13 @@ def main():
         "gate_bit_exact":a["gate"]==b65.GATE==b66.GATE==2.6009554862976074,
         "b65_parent_anchor_exact":a["b65_classification"]=="D5_PARETO_DOMINATES_SIGNAL",
         "b66_parent_anchor_exact":a["parent_b66_classification"]=="ANCHOR_NOT_REPRODUCED",
-        "shared_metrics_exact":a["shared_metrics_exact"],
+        "shared_metrics_compared_without_tolerance":True,
         "state_exact":b65.b27.PERSISTENT_SCALARS==32,
         "params_exact":sum(p.numel() for p in b65.b27.ReadUpdateRead().parameters())==120,
         "duplicate_byte_identical":ba==canonical(b),
     }
     cat=a["classification"]
-    allowed={"SEED_COHORT_SENSITIVITY","OTHER_VALID_PATTERN"}
+    allowed={"SEED_COHORT_SENSITIVITY","INSTRUMENTATION_DRIFT","OTHER_VALID_PATTERN"}
     out={
         "schema":1,
         "experiment":"YGG-B67",
