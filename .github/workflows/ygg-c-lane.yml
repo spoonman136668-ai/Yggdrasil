@@ -53,7 +53,7 @@ jobs:
           $Control = $Raw | ConvertFrom-Json
           if ($Control.schema -ne 1) { throw 'CONTROL_SCHEMA_MISMATCH' }
           if ($Control.lane -cne 'YGG-C') { throw "CONTROL_LANE_MISMATCH actual=$($Control.lane)" }
-          if ($Control.mode -notin @('bootstrap','c1_benchmark','c2_parallel','c3_pressure','c4_topology','c5_transition','c6_factorial','c7_paired_arm','c8_blend','c9_onset','c10_bisect','c11_bisect','c12_bisect','c13_bisect','c14_bisect','c15_bisect','c16_pressure','c17_pressure','c18_probe','c19_probe','c20_probe','c21_probe','c22_probe','c23_probe','c24_probe','c25_probe','c26_probe','c27_probe','c28_probe','c29_probe','c30_probe','c31_probe','c32_probe','c33_probe','c34_probe','c35_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
+          if ($Control.mode -notin @('bootstrap','c1_benchmark','c2_parallel','c3_pressure','c4_topology','c5_transition','c6_factorial','c7_paired_arm','c8_blend','c9_onset','c10_bisect','c11_bisect','c12_bisect','c13_bisect','c14_bisect','c15_bisect','c16_pressure','c17_pressure','c18_probe','c19_probe','c20_probe','c21_probe','c22_probe','c23_probe','c24_probe','c25_probe','c26_probe','c27_probe','c28_probe','c29_probe','c30_probe','c31_probe','c32_probe','c33_probe','c34_probe','c35_probe','c36_probe')) { throw "CONTROL_MODE_UNSUPPORTED actual=$($Control.mode)" }
           if ($Raw -match '(?i)ckb-plane|ktrade|wingless|coinbase|broker|ygg-a|ygg-b') { throw 'LANE_ISOLATION_TOKEN_VIOLATION' }
           "mode=$($Control.mode)" >> $env:GITHUB_OUTPUT
 
@@ -79,7 +79,7 @@ jobs:
           } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutDir 'bootstrap.json') -Encoding UTF8
 
       - name: Provision portable Python runtime
-        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial' || steps.ctl.outputs.mode == 'c7_paired_arm' || steps.ctl.outputs.mode == 'c8_blend' || steps.ctl.outputs.mode == 'c9_onset' || steps.ctl.outputs.mode == 'c10_bisect' || steps.ctl.outputs.mode == 'c11_bisect' || steps.ctl.outputs.mode == 'c12_bisect' || steps.ctl.outputs.mode == 'c13_bisect' || steps.ctl.outputs.mode == 'c14_bisect' || steps.ctl.outputs.mode == 'c15_bisect' || steps.ctl.outputs.mode == 'c16_pressure' || steps.ctl.outputs.mode == 'c17_pressure' || steps.ctl.outputs.mode == 'c18_probe' || steps.ctl.outputs.mode == 'c19_probe' || steps.ctl.outputs.mode == 'c20_probe' || steps.ctl.outputs.mode == 'c21_probe' || steps.ctl.outputs.mode == 'c22_probe' || steps.ctl.outputs.mode == 'c23_probe' || steps.ctl.outputs.mode == 'c24_probe' || steps.ctl.outputs.mode == 'c25_probe' || steps.ctl.outputs.mode == 'c26_probe' || steps.ctl.outputs.mode == 'c27_probe' || steps.ctl.outputs.mode == 'c28_probe' || steps.ctl.outputs.mode == 'c29_probe' || steps.ctl.outputs.mode == 'c30_probe' || steps.ctl.outputs.mode == 'c31_probe' || steps.ctl.outputs.mode == 'c32_probe' || steps.ctl.outputs.mode == 'c33_probe' || steps.ctl.outputs.mode == 'c34_probe' || steps.ctl.outputs.mode == 'c35_probe'
+        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial' || steps.ctl.outputs.mode == 'c7_paired_arm' || steps.ctl.outputs.mode == 'c8_blend' || steps.ctl.outputs.mode == 'c9_onset' || steps.ctl.outputs.mode == 'c10_bisect' || steps.ctl.outputs.mode == 'c11_bisect' || steps.ctl.outputs.mode == 'c12_bisect' || steps.ctl.outputs.mode == 'c13_bisect' || steps.ctl.outputs.mode == 'c14_bisect' || steps.ctl.outputs.mode == 'c15_bisect' || steps.ctl.outputs.mode == 'c16_pressure' || steps.ctl.outputs.mode == 'c17_pressure' || steps.ctl.outputs.mode == 'c18_probe' || steps.ctl.outputs.mode == 'c19_probe' || steps.ctl.outputs.mode == 'c20_probe' || steps.ctl.outputs.mode == 'c21_probe' || steps.ctl.outputs.mode == 'c22_probe' || steps.ctl.outputs.mode == 'c23_probe' || steps.ctl.outputs.mode == 'c24_probe' || steps.ctl.outputs.mode == 'c25_probe' || steps.ctl.outputs.mode == 'c26_probe' || steps.ctl.outputs.mode == 'c27_probe' || steps.ctl.outputs.mode == 'c28_probe' || steps.ctl.outputs.mode == 'c29_probe' || steps.ctl.outputs.mode == 'c30_probe' || steps.ctl.outputs.mode == 'c31_probe' || steps.ctl.outputs.mode == 'c32_probe' || steps.ctl.outputs.mode == 'c33_probe' || steps.ctl.outputs.mode == 'c34_probe' || steps.ctl.outputs.mode == 'c35_probe' || steps.ctl.outputs.mode == 'c36_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -109,7 +109,7 @@ jobs:
           & $PyExe -m pip --version
 
       - name: Install frozen C1 runtime
-        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial' || steps.ctl.outputs.mode == 'c7_paired_arm' || steps.ctl.outputs.mode == 'c8_blend' || steps.ctl.outputs.mode == 'c9_onset' || steps.ctl.outputs.mode == 'c10_bisect' || steps.ctl.outputs.mode == 'c11_bisect' || steps.ctl.outputs.mode == 'c12_bisect' || steps.ctl.outputs.mode == 'c13_bisect' || steps.ctl.outputs.mode == 'c14_bisect' || steps.ctl.outputs.mode == 'c15_bisect' || steps.ctl.outputs.mode == 'c16_pressure' || steps.ctl.outputs.mode == 'c17_pressure' || steps.ctl.outputs.mode == 'c18_probe' || steps.ctl.outputs.mode == 'c19_probe' || steps.ctl.outputs.mode == 'c20_probe' || steps.ctl.outputs.mode == 'c21_probe' || steps.ctl.outputs.mode == 'c22_probe' || steps.ctl.outputs.mode == 'c23_probe' || steps.ctl.outputs.mode == 'c24_probe' || steps.ctl.outputs.mode == 'c25_probe' || steps.ctl.outputs.mode == 'c26_probe' || steps.ctl.outputs.mode == 'c27_probe' || steps.ctl.outputs.mode == 'c28_probe' || steps.ctl.outputs.mode == 'c29_probe' || steps.ctl.outputs.mode == 'c30_probe' || steps.ctl.outputs.mode == 'c31_probe' || steps.ctl.outputs.mode == 'c32_probe' || steps.ctl.outputs.mode == 'c33_probe' || steps.ctl.outputs.mode == 'c34_probe' || steps.ctl.outputs.mode == 'c35_probe'
+        if: steps.ctl.outputs.mode == 'c1_benchmark' || steps.ctl.outputs.mode == 'c2_parallel' || steps.ctl.outputs.mode == 'c3_pressure' || steps.ctl.outputs.mode == 'c4_topology' || steps.ctl.outputs.mode == 'c5_transition' || steps.ctl.outputs.mode == 'c6_factorial' || steps.ctl.outputs.mode == 'c7_paired_arm' || steps.ctl.outputs.mode == 'c8_blend' || steps.ctl.outputs.mode == 'c9_onset' || steps.ctl.outputs.mode == 'c10_bisect' || steps.ctl.outputs.mode == 'c11_bisect' || steps.ctl.outputs.mode == 'c12_bisect' || steps.ctl.outputs.mode == 'c13_bisect' || steps.ctl.outputs.mode == 'c14_bisect' || steps.ctl.outputs.mode == 'c15_bisect' || steps.ctl.outputs.mode == 'c16_pressure' || steps.ctl.outputs.mode == 'c17_pressure' || steps.ctl.outputs.mode == 'c18_probe' || steps.ctl.outputs.mode == 'c19_probe' || steps.ctl.outputs.mode == 'c20_probe' || steps.ctl.outputs.mode == 'c21_probe' || steps.ctl.outputs.mode == 'c22_probe' || steps.ctl.outputs.mode == 'c23_probe' || steps.ctl.outputs.mode == 'c24_probe' || steps.ctl.outputs.mode == 'c25_probe' || steps.ctl.outputs.mode == 'c26_probe' || steps.ctl.outputs.mode == 'c27_probe' || steps.ctl.outputs.mode == 'c28_probe' || steps.ctl.outputs.mode == 'c29_probe' || steps.ctl.outputs.mode == 'c30_probe' || steps.ctl.outputs.mode == 'c31_probe' || steps.ctl.outputs.mode == 'c32_probe' || steps.ctl.outputs.mode == 'c33_probe' || steps.ctl.outputs.mode == 'c34_probe' || steps.ctl.outputs.mode == 'c35_probe' || steps.ctl.outputs.mode == 'c36_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -350,7 +350,7 @@ jobs:
           if (-not $R.qualification.YGG_C17_INTERACTION_ONSET_FUNCTIONAL_PRESSURE_TEST) { throw 'YGG_C17_QUALIFICATION_FAILED' }
 
       - name: Run YGG-C18 frozen retention predicate decomposition
-        if: steps.ctl.outputs.mode == 'c18_probe' || steps.ctl.outputs.mode == 'c19_probe' || steps.ctl.outputs.mode == 'c20_probe' || steps.ctl.outputs.mode == 'c21_probe' || steps.ctl.outputs.mode == 'c22_probe' || steps.ctl.outputs.mode == 'c23_probe' || steps.ctl.outputs.mode == 'c24_probe' || steps.ctl.outputs.mode == 'c25_probe' || steps.ctl.outputs.mode == 'c26_probe' || steps.ctl.outputs.mode == 'c27_probe' || steps.ctl.outputs.mode == 'c28_probe' || steps.ctl.outputs.mode == 'c29_probe' || steps.ctl.outputs.mode == 'c30_probe' || steps.ctl.outputs.mode == 'c31_probe' || steps.ctl.outputs.mode == 'c32_probe' || steps.ctl.outputs.mode == 'c33_probe' || steps.ctl.outputs.mode == 'c34_probe' || steps.ctl.outputs.mode == 'c35_probe'
+        if: steps.ctl.outputs.mode == 'c18_probe' || steps.ctl.outputs.mode == 'c19_probe' || steps.ctl.outputs.mode == 'c20_probe' || steps.ctl.outputs.mode == 'c21_probe' || steps.ctl.outputs.mode == 'c22_probe' || steps.ctl.outputs.mode == 'c23_probe' || steps.ctl.outputs.mode == 'c24_probe' || steps.ctl.outputs.mode == 'c25_probe' || steps.ctl.outputs.mode == 'c26_probe' || steps.ctl.outputs.mode == 'c27_probe' || steps.ctl.outputs.mode == 'c28_probe' || steps.ctl.outputs.mode == 'c29_probe' || steps.ctl.outputs.mode == 'c30_probe' || steps.ctl.outputs.mode == 'c31_probe' || steps.ctl.outputs.mode == 'c32_probe' || steps.ctl.outputs.mode == 'c33_probe' || steps.ctl.outputs.mode == 'c34_probe' || steps.ctl.outputs.mode == 'c35_probe' || steps.ctl.outputs.mode == 'c36_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -576,7 +576,7 @@ jobs:
           if (-not $R.qualification.YGG_C33_COMPLEMENTARY_RESCUER_COMPOSITION) { throw 'YGG_C33_COMPLEMENTARY_RESCUER_COMPOSITION_QUALIFICATION_FAILED' }
 
       - name: Run YGG-C34 frozen pairwise rescuer map
-        if: steps.ctl.outputs.mode == 'c34_probe' || steps.ctl.outputs.mode == 'c35_probe'
+        if: steps.ctl.outputs.mode == 'c34_probe' || steps.ctl.outputs.mode == 'c35_probe' || steps.ctl.outputs.mode == 'c36_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -590,7 +590,7 @@ jobs:
           if (-not $R.qualification.YGG_C34_PAIRWISE_RESCUER_MAP) { throw 'YGG_C34_PAIRWISE_RESCUER_MAP_QUALIFICATION_FAILED' }
 
       - name: Run YGG-C35 frozen universal-pair third-addition robustness
-        if: steps.ctl.outputs.mode == 'c35_probe'
+        if: steps.ctl.outputs.mode == 'c35_probe' || steps.ctl.outputs.mode == 'c36_probe'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference = 'Stop'
@@ -602,6 +602,20 @@ jobs:
           Get-Content -LiteralPath (Join-Path $OutDir 'c35-result.json')
           if (-not $R.valid) { throw 'YGG_C35_UNIVERSAL_PAIR_THIRD_ADDITION_ROBUSTNESS_EVIDENCE_INVALID' }
           if (-not $R.qualification.YGG_C35_UNIVERSAL_PAIR_THIRD_ADDITION_ROBUSTNESS) { throw 'YGG_C35_UNIVERSAL_PAIR_THIRD_ADDITION_ROBUSTNESS_QUALIFICATION_FAILED' }
+
+      - name: Run YGG-C36 frozen universal-pair fourth-addition closure
+        if: steps.ctl.outputs.mode == 'c36_probe'
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $OutDir = Join-Path $env:RUNNER_TEMP 'ygg-c36'
+          if (Test-Path -LiteralPath $OutDir) { Remove-Item -LiteralPath $OutDir -Recurse -Force }
+          New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
+          python research/experiments/ygg-c/ygg_c36_universal_pair_fourth_addition_closure_v1.py (Join-Path $OutDir 'c36-result.json')
+          $R = Get-Content -LiteralPath (Join-Path $OutDir 'c36-result.json') -Raw | ConvertFrom-Json
+          Get-Content -LiteralPath (Join-Path $OutDir 'c36-result.json')
+          if (-not $R.valid) { throw 'YGG_C36_UNIVERSAL_PAIR_FOURTH_ADDITION_CLOSURE_EVIDENCE_INVALID' }
+          if (-not $R.qualification.YGG_C36_UNIVERSAL_PAIR_FOURTH_ADDITION_CLOSURE) { throw 'YGG_C36_UNIVERSAL_PAIR_FOURTH_ADDITION_CLOSURE_QUALIFICATION_FAILED' }
 
       - name: Upload lane evidence
         if: always()
@@ -643,5 +657,6 @@ jobs:
             ${{ runner.temp }}\ygg-c33\**
             ${{ runner.temp }}\ygg-c34\**
             ${{ runner.temp }}\ygg-c35\**
+            ${{ runner.temp }}\ygg-c36\**
           if-no-files-found: warn
           retention-days: 14
