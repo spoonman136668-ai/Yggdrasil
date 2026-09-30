@@ -164,24 +164,7 @@ jobs:
           $ResultRaw = Get-Content -LiteralPath '${{ steps.science.outputs.result_path }}' -Raw
           [void]($ResultRaw | ConvertFrom-Json)
           $Head = (git rev-parse HEAD).Trim()
-          if ($LASTEXITCODE -ne 0 -or $Head -notmatch '^[0-9a-f]{40}
-
-          $Uri = 'http://127.0.0.1:8791/v1/research/yggdrasil/results/${{ inputs.dispatch_id }}'
-          $Response = Invoke-RestMethod -Uri $Uri -Method Post -ContentType 'application/json' -Body $Body -TimeoutSec 30
-          if ([string]$Response.status -cne 'accepted') { throw "PLANE_CALLBACK_NOT_ACCEPTED status=$($Response.status)" }
-          Write-Host "successor_cycle_id=$($Response.successor_cycle_id)"
-          Write-Host 'YGGDRASIL_PLANE_CALLBACK=PASS'
-
-      - name: Upload scientific evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: yggdrasil-plane-${{ inputs.dispatch_id }}
-          path: |
-            ${{ runner.temp }}\ygg-plane-result\**
-          if-no-files-found: warn
-          retention-days: 30
-) { throw 'SOURCE_HEAD_INVALID' }
+          if ($LASTEXITCODE -ne 0 -or $Head -notmatch '^[0-9a-f]{40}$') { throw 'SOURCE_HEAD_INVALID' }
 
           $Body = [ordered]@{
               schema = 'ckb-plane.yggdrasil-qualification-result.v1'
