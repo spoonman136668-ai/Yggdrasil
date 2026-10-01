@@ -43,7 +43,7 @@ jobs:
           if($C.authority -cne 'research-only'){throw 'CONFIG_AUTHORITY_FAILED'}
           if($C.ckb_plane_role -cne 'governance-only'){throw 'CONFIG_CKB_ROLE_FAILED'}
           if($C.active_branch -cne 'research/autonomy-yggdrasil-active'){throw 'CONFIG_ACTIVE_BRANCH_FAILED'}
-          if($C.north_star_sha256 -cne '74cb5c012130eec79de2b61fd7c33a923930b39d6836ea367537b7b3e15446f9'){throw 'CONFIG_NORTH_STAR_IDENTITY_FAILED'}
+          if($C.north_star_sha256 -cne '3cd3b3d2fdbbb5b3541d433a527231b38fc441699cd0353fa86f0c3be6f0a905'){throw 'CONFIG_NORTH_STAR_IDENTITY_FAILED'}
           $Text=Get-Content -Raw $Path
           foreach($Needle in @(
             'CKB-plane is governance-only',
@@ -99,8 +99,12 @@ jobs:
           try{
             $North=Join-Path $Temp 'research\architecture\yggdrasil-north-star.ice'
             if(-not(Test-Path -LiteralPath $North -PathType Leaf)){throw 'NORTH_STAR_MISSING'}
-            $Hash=(Get-FileHash -LiteralPath $North -Algorithm SHA256).Hash.ToLowerInvariant()
-            if($Hash -cne '74cb5c012130eec79de2b61fd7c33a923930b39d6836ea367537b7b3e15446f9'){throw "NORTH_STAR_HASH_FAILED actual=$Hash"}
+            $Text=[IO.File]::ReadAllText($North)
+            $Normalized=$Text.Replace("`r`n","`n").Replace("`r","`n")
+            $Bytes=(New-Object Text.UTF8Encoding($false)).GetBytes($Normalized)
+            $Sha=[Security.Cryptography.SHA256]::Create()
+            try{$Hash=([BitConverter]::ToString($Sha.ComputeHash($Bytes))).Replace('-','').ToLowerInvariant()}finally{$Sha.Dispose()}
+            if($Hash -cne '3cd3b3d2fdbbb5b3541d433a527231b38fc441699cd0353fa86f0c3be6f0a905'){throw "NORTH_STAR_HASH_FAILED actual=$Hash"}
           }finally{
             git worktree remove --force $Temp 2>$null
           }
