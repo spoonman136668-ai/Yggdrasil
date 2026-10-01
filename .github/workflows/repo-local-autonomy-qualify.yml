@@ -43,7 +43,7 @@ jobs:
           if($C.authority -cne 'research-only'){throw 'CONFIG_AUTHORITY_FAILED'}
           if($C.ckb_plane_role -cne 'governance-only'){throw 'CONFIG_CKB_ROLE_FAILED'}
           if($C.active_branch -cne 'research/autonomy-yggdrasil-active'){throw 'CONFIG_ACTIVE_BRANCH_FAILED'}
-          if($C.north_star_sha256 -cne '3cd3b3d2fdbbb5b3541d433a527231b38fc441699cd0353fa86f0c3be6f0a905'){throw 'CONFIG_NORTH_STAR_IDENTITY_FAILED'}
+          if($C.north_star_sha256 -cne '74cb5c012130eec79de2b61fd7c33a923930b39d6836ea367537b7b3e15446f9'){throw 'CONFIG_NORTH_STAR_IDENTITY_FAILED'}
           $Text=Get-Content -Raw $Path
           foreach($Needle in @(
             'CKB-plane is governance-only',
@@ -66,15 +66,42 @@ jobs:
           foreach($P in @($Codex,$Python)){if(-not(Test-Path -LiteralPath $P -PathType Leaf)){throw "RUNTIME_MISSING path=$P"}}
           & $Codex --version
           if($LASTEXITCODE-ne0){throw 'CODEX_VERSION_FAILED'}
+          $Help=(& $Codex exec --help 2>&1)-join "`n"
+          if($LASTEXITCODE-ne0){throw 'CODEX_EXEC_HELP_FAILED'}
+          foreach($Needle in @('--sandbox','workspace-write','--approve-for-me','--output-last-message')){if(-not$Help.Contains($Needle)){throw "CODEX_EXEC_INTERFACE_MISSING $Needle"}}
           & $Python --version
           if($LASTEXITCODE-ne0){throw 'PYTHON_VERSION_FAILED'}
           & $Python -c "import numpy, torch; print('numpy='+numpy.__version__); print('torch='+torch.__version__)"
           if($LASTEXITCODE-ne0){throw 'PYTHON_DEPENDENCY_CHECK_FAILED'}
           Write-Host 'YGGDRASIL_REPO_LOCAL_RUNTIME_PASS'
 
+      - name: Verify Codex exec CLI contract
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'
+          $P='C:\ProgramData\CKBR\research-sidecar-yggdrasil\codex\bin\codex.exe'
+          $Help=((& $P exec --help 2>&1)|ForEach-Object{[string]$_}) -join [Environment]::NewLine
+          if($LASTEXITCODE-ne0){throw "CODEX_EXEC_HELP_FAILED exit=$LASTEXITCODE"}
+          Write-Host $Help
+          Write-Host 'YGGDRASIL_REPO_LOCAL_CODEX_EXEC_HELP_PASS'
+
       - name: Validate current research tree
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference='Stop'
-          if(-not(Test-Path -LiteralPath 'research\architecture\yggdrasil-north-star.ice')){throw 'NORTH_STAR_MISSING'}
+          $Active='research/autonomy-yggdrasil-active'
+          $Temp=Join-Path $env:RUNNER_TEMP 'ygg-active-north-star-qual'
+          if(Test-Path -LiteralPath $Temp){Remove-Item -LiteralPath $Temp -Recurse -Force}
+          git fetch origin $Active --depth=1
+          if($LASTEXITCODE-ne0){throw 'ACTIVE_BRANCH_FETCH_FAILED'}
+          git worktree add --detach $Temp FETCH_HEAD
+          if($LASTEXITCODE-ne0){throw 'ACTIVE_WORKTREE_ADD_FAILED'}
+          try{
+            $North=Join-Path $Temp 'research\architecture\yggdrasil-north-star.ice'
+            if(-not(Test-Path -LiteralPath $North -PathType Leaf)){throw 'NORTH_STAR_MISSING'}
+            $Hash=(Get-FileHash -LiteralPath $North -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($Hash -cne '74cb5c012130eec79de2b61fd7c33a923930b39d6836ea367537b7b3e15446f9'){throw "NORTH_STAR_HASH_FAILED actual=$Hash"}
+          }finally{
+            git worktree remove --force $Temp 2>$null
+          }
           Write-Host 'YGGDRASIL_REPO_LOCAL_TREE_PASS'
