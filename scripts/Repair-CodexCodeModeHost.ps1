@@ -34,7 +34,7 @@ if(Test-Path -LiteralPath $Smoke){Remove-Item -LiteralPath $Smoke -Recurse -Forc
 New-Item -ItemType Directory -Force -Path $Smoke|Out-Null
 [IO.File]::WriteAllText((Join-Path $Smoke 'smoke.txt'),'CODEX_HOST_SMOKE_OK',(New-Object Text.UTF8Encoding($false)))
 $Codex='C:\ProgramData\CKBR\research-sidecar-yggdrasil\codex\bin\codex.exe'
-$Home='C:\ProgramData\CKBR\research-sidecar-yggdrasil\codex\home'
+$CodexHome='C:\ProgramData\CKBR\research-sidecar-yggdrasil\codex\home'
 $OldCodeHome=$env:CODEX_HOME;$OldHome=$env:HOME;$OldProfile=$env:USERPROFILE
 try{
   if(Test-Path -LiteralPath $CodexHome -PathType Container){$env:CODEX_HOME=$CodexHome;$env:HOME=$CodexHome;$env:USERPROFILE=$CodexHome}
