@@ -75,6 +75,8 @@ function Resolve-Python {
 
 function Get-OptionalMindContext([int]$MaxChars=12000){
     $Candidates=New-Object Collections.Generic.List[string]
+    $RepoContext=Join-Path $RepoPath '.research-autonomy\mind-palace-context.txt'
+    $Candidates.Add($RepoContext)
     if(-not[string]::IsNullOrWhiteSpace($env:MIND_PALACE_CONTEXT_PATH)){$Candidates.Add($env:MIND_PALACE_CONTEXT_PATH)}
     foreach($P in @(
         'C:\ProgramData\CKBR\mind-palace\contexts\Yggdrasil.txt',
