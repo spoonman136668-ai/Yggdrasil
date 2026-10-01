@@ -37,7 +37,7 @@ $Codex='C:\ProgramData\CKBR\research-sidecar-yggdrasil\codex\bin\codex.exe'
 $Home='C:\ProgramData\CKBR\research-sidecar-yggdrasil\codex\home'
 $OldCodeHome=$env:CODEX_HOME;$OldHome=$env:HOME;$OldProfile=$env:USERPROFILE
 try{
-  if(Test-Path -LiteralPath $Home -PathType Container){$env:CODEX_HOME=$Home;$env:HOME=$Home;$env:USERPROFILE=$Home}
+  if(Test-Path -LiteralPath $CodexHome -PathType Container){$env:CODEX_HOME=$CodexHome;$env:HOME=$CodexHome;$env:USERPROFILE=$CodexHome}
   $Prompt=Join-Path $Smoke 'prompt.txt';$Out=Join-Path $Smoke 'out.txt'
   [IO.File]::WriteAllText($Prompt,'Read smoke.txt using your repository/file tools. Reply with exactly CODEX_HOST_SMOKE_OK and make no changes.',(New-Object Text.UTF8Encoding($false)))
   $Proc=Start-Process -FilePath $Codex -ArgumentList @('exec','--approve-for-me','--model','gpt-5.6-luna','--output-last-message',$Out,'-') -WorkingDirectory $Smoke -RedirectStandardInput $Prompt -NoNewWindow -Wait -PassThru
