@@ -89,8 +89,19 @@ jobs:
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference='Stop'
-          $North='research\architecture\yggdrasil-north-star.ice'
-          if(-not(Test-Path -LiteralPath $North -PathType Leaf)){throw 'NORTH_STAR_MISSING'}
-          $Hash=(Get-FileHash -LiteralPath $North -Algorithm SHA256).Hash.ToLowerInvariant()
-          if($Hash -cne '74cb5c012130eec79de2b61fd7c33a923930b39d6836ea367537b7b3e15446f9'){throw "NORTH_STAR_HASH_FAILED actual=$Hash"}
+          $Active='research/autonomy-yggdrasil-active'
+          $Temp=Join-Path $env:RUNNER_TEMP 'ygg-active-north-star-qual'
+          if(Test-Path -LiteralPath $Temp){Remove-Item -LiteralPath $Temp -Recurse -Force}
+          git fetch origin $Active --depth=1
+          if($LASTEXITCODE-ne0){throw 'ACTIVE_BRANCH_FETCH_FAILED'}
+          git worktree add --detach $Temp FETCH_HEAD
+          if($LASTEXITCODE-ne0){throw 'ACTIVE_WORKTREE_ADD_FAILED'}
+          try{
+            $North=Join-Path $Temp 'research\architecture\yggdrasil-north-star.ice'
+            if(-not(Test-Path -LiteralPath $North -PathType Leaf)){throw 'NORTH_STAR_MISSING'}
+            $Hash=(Get-FileHash -LiteralPath $North -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($Hash -cne '74cb5c012130eec79de2b61fd7c33a923930b39d6836ea367537b7b3e15446f9'){throw "NORTH_STAR_HASH_FAILED actual=$Hash"}
+          }finally{
+            git worktree remove --force $Temp 2>$null
+          }
           Write-Host 'YGGDRASIL_REPO_LOCAL_TREE_PASS'
