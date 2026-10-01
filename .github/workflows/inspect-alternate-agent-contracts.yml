@@ -1,0 +1,52 @@
+name: Inspect alternate agent contracts
+
+on:
+  push:
+    branches:
+      - cutover/repo-local-autonomy-r1
+    paths:
+      - '.github/workflows/inspect-alternate-agent-contracts.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: [self-hosted, Windows, X64, yggdrasil, ygg-c, research-only]
+    timeout-minutes: 10
+    steps:
+      - name: Inspect safe runtime/decryption contracts
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          Set-StrictMode -Version Latest
+          $ErrorActionPreference='Stop'
+          $Lifecycle='C:\ProgramData\CKBR\research-sidecar-yggdrasil\ops\Lifecycle.ps1'
+          $Runtime='C:\ProgramData\CKBR\research-sidecar-yggdrasil\config\research-runtime.yaml'
+          $Sidecar='C:\ProgramData\CKBR\research-sidecar-yggdrasil\config\research-sidecar.yaml'
+
+          foreach($P in @($Lifecycle,$Runtime,$Sidecar)){
+            if(-not(Test-Path -LiteralPath $P -PathType Leaf)){continue}
+            Write-Host "FILE=$P"
+            $N=0
+            foreach($Line in Get-Content -LiteralPath $P){
+              $N++
+              if($Line -match '(?i)(^\s*\$Root\s*=|^\s*\$Secret\s*=|ProtectedData|Unprotect|SecureString|BSTR|PtrToString|FromBase64String|openrouter|nemotron|planner_model|implementation|model:|provider|endpoint|api/v1/chat|Invoke-RestMethod|Invoke-WebRequest)'){
+                $Safe=$Line -replace '(?i)(Bearer\s+)\S+','$1<REDACTED>'
+                $Safe=$Safe -replace '(?i)(sk-or-v1-[A-Za-z0-9_-]+)','<REDACTED>'
+                Write-Host ("LINE {0}: {1}" -f $N,$Safe.Trim())
+              }
+            }
+          }
+
+          Write-Host '=== LOCAL MODEL COMMANDS ==='
+          foreach($Name in @('ollama','qwen','llama-server','llama-cli','lmstudio','python')){
+            $Cmd=Get-Command $Name -ErrorAction SilentlyContinue
+            if($Cmd){Write-Host ("COMMAND name={0} source={1}" -f $Name,$Cmd.Source)}
+          }
+          foreach($Root in @('C:\ProgramData\CKBR','C:\Program Files','C:\Users\camar\AppData\Local\Programs')){
+            if(-not(Test-Path -LiteralPath $Root -PathType Container)){continue}
+            foreach($F in @(Get-ChildItem -LiteralPath $Root -File -Recurse -Depth 5 -ErrorAction SilentlyContinue | Where-Object {$_.Name -match '(?i)qwen|ollama|llama.*\.exe'} | Select-Object -First 50)){
+              Write-Host ("MODEL_BINARY path={0}" -f $F.FullName)
+            }
+          }
+          Write-Host 'ALTERNATE_AGENT_CONTRACT_INSPECTION=PASS'
