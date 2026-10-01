@@ -297,7 +297,7 @@ $MindContext
     if([string]$R.source-cne[string]$Q.source){throw 'ISOLATED_RUN_SOURCE_MISMATCH'}
     if([int]$R.timeout_seconds-lt1 -or [int]$R.timeout_seconds-gt1800){throw 'ISOLATED_RUN_TIMEOUT_INVALID'}
     $RunArgs=@($R.run_args)
-    if(($RunArgs|Where-Object{[string]$_-ceq'{out}'}).Count-ne1){throw 'ISOLATED_RUN_OUT_ARG_REQUIRED'}
+    if(@($RunArgs|Where-Object{[string]$_-ceq'{out}'}).Count-ne1){throw 'ISOLATED_RUN_OUT_ARG_REQUIRED'}
     if(@($R.open_args).Count-ne0){throw 'ISOLATED_RUN_OPEN_ARGS_FORBIDDEN'}
 
     $SourceFull=Join-Path $RepoPath ([string]$Q.source)
