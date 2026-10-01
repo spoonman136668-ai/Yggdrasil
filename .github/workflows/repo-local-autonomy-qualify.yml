@@ -1,0 +1,80 @@
+name: Qualify Yggdrasil repo-local autonomy
+
+on:
+  push:
+    branches:
+      - autonomy/repo-local-research-r1
+    paths:
+      - '.research-autonomy/**'
+      - 'scripts/Invoke-RepoLocalResearchCycle.ps1'
+      - 'scripts/Invoke-RepoLocalCutover.ps1'
+      - '.github/workflows/research-continuation-controller.yml'
+      - '.github/workflows/repo-local-autonomy-qualify.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Parse controller and validate contract
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'
+          $Path=(Resolve-Path 'scripts\Invoke-RepoLocalResearchCycle.ps1').Path
+          $Tokens=$null
+          $Errors=$null
+          [void][System.Management.Automation.Language.Parser]::ParseFile($Path,[ref]$Tokens,[ref]$Errors)
+          if(@($Errors).Count -gt 0){
+            @($Errors)|ForEach-Object{Write-Host "PARSE_ERROR line=$($_.Extent.StartLineNumber) message=$($_.Message)"}
+            throw "CONTROLLER_PARSE_FAILED count=$(@($Errors).Count)"
+          }
+          $C=Get-Content -Raw '.research-autonomy\config.json'|ConvertFrom-Json
+          if($C.schema -cne 'research.autonomy.v2'){throw 'CONFIG_SCHEMA_FAILED'}
+          if([bool]$C.enabled){throw 'CONFIG_MUST_REMAIN_DISABLED_DURING_QUALIFICATION'}
+          if($C.mode -cne 'repo-local-self-chain'){throw 'CONFIG_MODE_FAILED'}
+          if($C.authority -cne 'research-only'){throw 'CONFIG_AUTHORITY_FAILED'}
+          if($C.ckb_plane_role -cne 'governance-only'){throw 'CONFIG_CKB_ROLE_FAILED'}
+          if($C.active_branch -cne 'research/autonomy-yggdrasil-active'){throw 'CONFIG_ACTIVE_BRANCH_FAILED'}
+          if($C.north_star_sha256 -cne '3cd3b3d2fdbbb5b3541d433a527231b38fc441699cd0353fa86f0c3be6f0a905'){throw 'CONFIG_NORTH_STAR_IDENTITY_FAILED'}
+          $Text=Get-Content -Raw $Path
+          foreach($Needle in @(
+            'CKB-plane is governance-only',
+            'PREREG_NOT_FIRST_AND_ALONE',
+            'QUALIFICATION_BASELINE_MISMATCH',
+            'SCIENTIFIC_RESULT_NONDETERMINISTIC_BYTES',
+            'MIND_PALACE_CONTEXT_UNAVAILABLE_FALLBACK',
+            'RESEARCH_AGENT_ATTEMPT'
+          )){
+            if(-not$Text.Contains($Needle)){throw "CONTROLLER_INVARIANT_MISSING $Needle"}
+          }
+          Write-Host 'YGGDRASIL_REPO_LOCAL_CONTROLLER_STATIC_PASS'
+
+      - name: Verify local runtimes
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'
+          $Codex='C:\ProgramData\CKBR\research-sidecar-yggdrasil\codex\bin\codex.exe'
+          $Python='C:\ProgramData\CKBR\research-sidecar-yggdrasil\python312\python.exe'
+          foreach($P in @($Codex,$Python)){if(-not(Test-Path -LiteralPath $P -PathType Leaf)){throw "RUNTIME_MISSING path=$P"}}
+          & $Codex --version
+          if($LASTEXITCODE-ne0){throw 'CODEX_VERSION_FAILED'}
+          & $Python --version
+          if($LASTEXITCODE-ne0){throw 'PYTHON_VERSION_FAILED'}
+          & $Python -c "import numpy, torch; print('numpy='+numpy.__version__); print('torch='+torch.__version__)"
+          if($LASTEXITCODE-ne0){throw 'PYTHON_DEPENDENCY_CHECK_FAILED'}
+          Write-Host 'YGGDRASIL_REPO_LOCAL_RUNTIME_PASS'
+
+      - name: Validate current research tree
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not(Test-Path -LiteralPath 'research\architecture\yggdrasil-north-star.ice')){throw 'NORTH_STAR_MISSING'}
+          Write-Host 'YGGDRASIL_REPO_LOCAL_TREE_PASS'
