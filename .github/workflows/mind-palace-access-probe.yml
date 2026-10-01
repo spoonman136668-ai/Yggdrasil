@@ -1,0 +1,33 @@
+name: Mind-Palace checkout access probe
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/mind-palace-access-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: [self-hosted, Windows, X64, yggdrasil, ygg-a, research-only]
+    steps:
+      - name: Probe checkout visibility
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -File {0}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $Root = 'C:\Users\camar\GolandProjects\Mind-Palace'
+          Write-Host "runner=$env:RUNNER_NAME"
+          try {
+            $Exists = Test-Path -LiteralPath $Root -PathType Container
+            Write-Host "mind_palace_visible=$Exists"
+            if ($Exists) {
+              $Head = (& git -C $Root rev-parse HEAD).Trim()
+              Write-Host "mind_palace_head=$Head"
+            }
+          } catch {
+            Write-Host "mind_palace_error=$($_.Exception.GetType().FullName): $($_.Exception.Message)"
+            throw
+          }
