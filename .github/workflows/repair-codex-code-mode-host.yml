@@ -1,0 +1,26 @@
+name: Repair Codex code mode host Yggdrasil runner
+
+on:
+  push:
+    branches:
+      - cutover/repo-local-autonomy-r1
+    paths:
+      - 'scripts/Repair-CodexCodeModeHost.ps1'
+      - '.github/workflows/repair-codex-code-mode-host.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  repair:
+    runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Repair verified Codex code-mode host
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -File {0}
+        run: |
+          ./scripts/Repair-CodexCodeModeHost.ps1
