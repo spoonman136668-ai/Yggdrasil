@@ -1,12 +1,12 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
 $Codex='C:\ProgramData\CKBR\research-sidecar-yggdrasil\codex\bin\codex.exe'
-$Host='C:\ProgramData\CKBR\research-sidecar-yggdrasil\codex\bin\codex-code-mode-host.exe'
+$HostExe='C:\ProgramData\CKBR\research-sidecar-yggdrasil\codex\bin\codex-code-mode-host.exe'
 $Expected='7b4987007702973dfeb49ec9a0c11f737488890e208ccb04f7a147769c4bb1f1'
-foreach($P in @($Codex,$Host)){if(-not(Test-Path -LiteralPath $P -PathType Leaf)){throw "MISSING path=$P"}}
-$Hash=(Get-FileHash -LiteralPath $Host -Algorithm SHA256).Hash.ToLowerInvariant()
+foreach($P in @($Codex,$HostExe)){if(-not(Test-Path -LiteralPath $P -PathType Leaf)){throw "MISSING path=$P"}}
+$Hash=(Get-FileHash -LiteralPath $HostExe -Algorithm SHA256).Hash.ToLowerInvariant()
 if($Hash-cne$Expected){throw "HOST_HASH_MISMATCH expected=$Expected actual=$Hash"}
-$Sig=Get-AuthenticodeSignature -LiteralPath $Host
+$Sig=Get-AuthenticodeSignature -LiteralPath $HostExe
 if([string]$Sig.Status-cne'Valid'){throw "HOST_SIGNATURE_INVALID status=$($Sig.Status)"}
 Write-Host "HOST_VERIFIED sha256=$Hash signer=$($Sig.SignerCertificate.Subject)"
 $Root=Join-Path $env:RUNNER_TEMP 'codex-host-smoke-b'
