@@ -1,0 +1,26 @@
+name: Smoke Codex host on YGG-B
+
+on:
+  push:
+    branches:
+      - cutover/repo-local-autonomy-r1
+    paths:
+      - 'scripts/Smoke-CodexCodeModeHost.ps1'
+      - '.github/workflows/smoke-codex-host-ygg-b.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: [self-hosted, Windows, X64, yggdrasil, ygg-b, research-only]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Verify repaired Codex host
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -File {0}
+        run: |
+          ./scripts/Smoke-CodexCodeModeHost.ps1
