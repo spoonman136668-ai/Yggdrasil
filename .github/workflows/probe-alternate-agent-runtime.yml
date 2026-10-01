@@ -1,0 +1,63 @@
+name: Probe repo-local alternate agent runtime
+
+on:
+  push:
+    branches:
+      - cutover/repo-local-autonomy-r1
+    paths:
+      - '.github/workflows/probe-alternate-agent-runtime.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: [self-hosted, Windows, X64, yggdrasil, ygg-c, research-only]
+    timeout-minutes: 10
+    steps:
+      - name: Inspect alternate-agent configuration without exposing secrets
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          Set-StrictMode -Version Latest
+          $ErrorActionPreference='Stop'
+
+          Write-Host '=== ENVIRONMENT VARIABLE NAMES ==='
+          Get-ChildItem Env: |
+            Where-Object { $_.Name -match '(?i)OPENROUTER|NEMOTRON' } |
+            ForEach-Object { Write-Host ("ENV_PRESENT name={0} nonempty={1}" -f $_.Name,(-not[string]::IsNullOrWhiteSpace($_.Value))) }
+
+          Write-Host '=== CANDIDATE CONFIG FILES ==='
+          $Roots=@('C:\ProgramData\CKBR')
+          $Files=New-Object Collections.Generic.List[object]
+          foreach($Root in $Roots){
+            if(-not(Test-Path -LiteralPath $Root -PathType Container)){continue}
+            foreach($F in @(Get-ChildItem -LiteralPath $Root -File -Recurse -ErrorAction SilentlyContinue | Where-Object {
+              $_.Length -le 2097152 -and $_.Extension -match '^\.(json|ya?ml|toml|txt|ps1|cmd|bat|config)$'
+            })){
+              $Files.Add($F)
+            }
+          }
+          foreach($F in $Files){
+            try{
+              $Matches=Select-String -LiteralPath $F.FullName -Pattern '(?i)openrouter|nemotron' -ErrorAction Stop
+              if(-not$Matches){continue}
+              Write-Host ("FILE path={0}" -f $F.FullName)
+              foreach($M in $Matches){
+                $Line=[string]$M.Line
+                if($Line -match '(?i)(api.?key|token|secret|password|authorization|bearer)'){
+                  $Safe=$Line -replace '(?i)(api.?key|token|secret|password|authorization)\s*[:=].*','$1=<REDACTED>'
+                  $Safe=$Safe -replace '(?i)Bearer\s+\S+','Bearer <REDACTED>'
+                  Write-Host ("MATCH line={0} text={1}" -f $M.LineNumber,$Safe.Trim())
+                } else {
+                  Write-Host ("MATCH line={0} text={1}" -f $M.LineNumber,$Line.Trim())
+                }
+              }
+            }catch{}
+          }
+
+          Write-Host '=== SCHEDULED TASKS ==='
+          Get-ScheduledTask -ErrorAction SilentlyContinue |
+            Where-Object { $_.TaskName -match '(?i)nemotron|openrouter|research|codex' } |
+            ForEach-Object { Write-Host ("TASK name={0} state={1}" -f $_.TaskName,$_.State) }
+
+          Write-Host 'ALTERNATE_AGENT_RUNTIME_PROBE=PASS'
