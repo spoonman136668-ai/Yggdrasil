@@ -16,7 +16,7 @@ New-Item -ItemType Directory -Force -Path $Root|Out-Null
 $PromptPath=Join-Path $Root 'prompt.txt'
 $Out=Join-Path $Root 'out.txt'
 [IO.File]::WriteAllText($PromptPath,'Use your repository/file tools to read smoke.txt. Reply with exactly CODEX_HOST_SMOKE_OK and make no changes.',(New-Object Text.UTF8Encoding($false)))
-$Proc=Start-Process -FilePath $Codex -ArgumentList @('exec','--approve-for-me','--model','gpt-5.6-luna','--output-last-message',$Out,'-') -WorkingDirectory $Root -RedirectStandardInput $PromptPath -NoNewWindow -Wait -PassThru
+$Proc=Start-Process -FilePath $Codex -ArgumentList @('exec','--skip-git-repo-check','--approve-for-me','--model','gpt-5.6-luna','--output-last-message',$Out,'-') -WorkingDirectory $Root -RedirectStandardInput $PromptPath -NoNewWindow -Wait -PassThru
 if($Proc.ExitCode-ne0){throw "CODEX_SMOKE_FAILED exit=$($Proc.ExitCode)"}
 if(-not(Test-Path -LiteralPath $Out -PathType Leaf)){throw 'CODEX_SMOKE_OUTPUT_MISSING'}
 $Text=[IO.File]::ReadAllText($Out).Trim()
