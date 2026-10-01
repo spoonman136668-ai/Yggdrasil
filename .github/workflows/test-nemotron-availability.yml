@@ -1,0 +1,81 @@
+name: Test repo-local Nemotron availability
+
+on:
+  push:
+    branches:
+      - cutover/repo-local-autonomy-r1
+    paths:
+      - '.github/workflows/test-nemotron-availability.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: [self-hosted, Windows, X64, yggdrasil, ygg-c, research-only]
+    timeout-minutes: 10
+    steps:
+      - name: Test existing OpenRouter Nemotron configuration
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          Set-StrictMode -Version Latest
+          $ErrorActionPreference='Stop'
+          $Lifecycle='C:\ProgramData\CKBR\research-sidecar-yggdrasil\ops\Lifecycle.ps1'
+          $Runtime='C:\ProgramData\CKBR\research-sidecar-yggdrasil\config\research-runtime.yaml'
+          foreach($P in @($Lifecycle,$Runtime)){if(-not(Test-Path -LiteralPath $P -PathType Leaf)){throw "MISSING path=$P"}}
+
+          $Text=[IO.File]::ReadAllText($Lifecycle)
+          Write-Host '=== SAFE CONFIG LOGIC ==='
+          foreach($Line in ($Text -split "\r?\n")){
+            if($Line -match '(?i)(openrouter|nemotron|Invoke-RestMethod|Invoke-WebRequest|Authorization|Secret|api\.openrouter)'){
+              $Safe=$Line -replace '(?i)(Bearer\s+)\S+','$1<REDACTED>'
+              $Safe=$Safe -replace '(?i)(api[_-]?key\s*[:=]\s*)\S+','$1<REDACTED>'
+              Write-Host $Safe.Trim()
+            }
+          }
+
+          $ModelLine=Get-Content -LiteralPath $Runtime | Where-Object {$_ -match '^\s*model:\s*'} | Select-Object -First 1
+          if($null-eq$ModelLine){throw 'MODEL_LINE_MISSING'}
+          $Model=($ModelLine -replace '^\s*model:\s*','').Trim().Trim("'").Trim('"')
+          Write-Host "MODEL=$Model"
+
+          $SecretMatch=[regex]::Match($Text,'(?m)^\s*\$Secret\s*=\s*[''"]([^''"]+)[''"]\s*$')
+          if(-not$SecretMatch.Success){
+            $JoinMatch=[regex]::Match($Text,'(?m)^\s*\$Secret\s*=\s*Join-Path\s+[''"]([^''"]+)[''"]\s+[''"]([^''"]+)[''"]\s*$')
+            if($JoinMatch.Success){$SecretPath=Join-Path $JoinMatch.Groups[1].Value $JoinMatch.Groups[2].Value}
+          } else {$SecretPath=$SecretMatch.Groups[1].Value}
+          if([string]::IsNullOrWhiteSpace($SecretPath)){throw 'OPENROUTER_SECRET_PATH_UNRESOLVED'}
+          Write-Host "SECRET_PATH_PRESENT=$([bool](Test-Path -LiteralPath $SecretPath -PathType Leaf))"
+          if(-not(Test-Path -LiteralPath $SecretPath -PathType Leaf)){throw 'OPENROUTER_SECRET_MISSING'}
+          $Key=[IO.File]::ReadAllText($SecretPath).Trim()
+          if([string]::IsNullOrWhiteSpace($Key)){throw 'OPENROUTER_SECRET_EMPTY'}
+
+          $Headers=@{
+            Authorization="Bearer $Key"
+            'Content-Type'='application/json'
+            'HTTP-Referer'='https://github.com/spoonman136668-ai/Yggdrasil'
+            'X-Title'='Yggdrasil repo-local autonomy probe'
+          }
+          $Body=@{
+            model=$Model
+            messages=@(@{role='user';content='Reply with exactly NEMOTRON_READY.'})
+            temperature=0
+            max_tokens=32
+          }|ConvertTo-Json -Depth 10
+          try{
+            $Resp=Invoke-RestMethod -Method Post -Uri 'https://openrouter.ai/api/v1/chat/completions' -Headers $Headers -Body $Body -ContentType 'application/json' -TimeoutSec 60
+            $Reply=[string]$Resp.choices[0].message.content
+            Write-Host "OPENROUTER_STATUS=200"
+            Write-Host "RESPONSE_MODEL=$($Resp.model)"
+            Write-Host "READY_MATCH=$([bool]($Reply.Trim() -ceq 'NEMOTRON_READY.'))"
+            if($Reply.Trim() -cne 'NEMOTRON_READY.'){throw 'NEMOTRON_PROBE_RESPONSE_MISMATCH'}
+            Write-Host 'NEMOTRON_AVAILABILITY=PASS'
+          }catch{
+            $Status=''
+            try{$Status=[int]$_.Exception.Response.StatusCode}catch{}
+            Write-Host "OPENROUTER_STATUS=$Status"
+            Write-Host "NEMOTRON_AVAILABILITY=FAIL"
+            throw
+          } finally {
+            $Key=$null
+          }
