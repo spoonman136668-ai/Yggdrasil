@@ -1,0 +1,166 @@
+name: Recover YGG-017 sealed repo-local cycle
+
+on:
+  push:
+    branches:
+      - cutover/repo-local-autonomy-r1
+    paths:
+      - '.github/workflows/recover-ygg017-local-cycle.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  recover:
+    runs-on: [self-hosted, Windows, X64, yggdrasil, ygg-b, research-only]
+    timeout-minutes: 30
+    steps:
+      - name: Recover exact local YGG-017 cycle
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          Set-StrictMode -Version Latest
+          $ErrorActionPreference='Stop'
+
+          $Repo='C:\actions-runner-ygg-b\_work\Yggdrasil\Yggdrasil\research'
+          $Remote='https://github.com/spoonman136668-ai/Yggdrasil.git'
+          $Branch='research/autonomy-yggdrasil-active'
+          $ExpectedHead='140f53af73b0c1b380eb5182fcca696bb98de9bc'
+          $ExpectedPrereg='dbbd39b107c7858e0b59aab023c87e25e977df3b'
+          $ExpectedBase='95fbbb8ed5a9d935031c1c1e372d828eccae8a17'
+          $ExpectedExperiment='EXP-DG1B-REPEATED-REGENERATION-DURABILITY-017'
+          $ExpectedResultSha='52326e8bb0b3b6b91f97ff4d4bfea211abb2a14435036bd41f5eed0065fe0055'
+
+          if(-not(Test-Path -LiteralPath $Repo -PathType Container)){throw "LOCAL_REPO_MISSING path=$Repo"}
+          $Head=(& git -C $Repo rev-parse HEAD).Trim()
+          $Prereg=(& git -C $Repo rev-parse 'HEAD^').Trim()
+          $Base=(& git -C $Repo rev-parse 'HEAD^^').Trim()
+          if($Head-cne$ExpectedHead){throw "LOCAL_HEAD_DRIFT expected=$ExpectedHead actual=$Head"}
+          if($Prereg-cne$ExpectedPrereg){throw "LOCAL_PREREG_DRIFT expected=$ExpectedPrereg actual=$Prereg"}
+          if($Base-cne$ExpectedBase){throw "LOCAL_BASE_DRIFT expected=$ExpectedBase actual=$Base"}
+          if(((& git -C $Repo status --porcelain)-join'').Trim()){throw 'LOCAL_WORKTREE_DIRTY'}
+
+          $First=@(& git -C $Repo diff-tree --no-commit-id --name-only -r $ExpectedPrereg)
+          if($First.Count-ne1 -or $First[0]-cne'research/experiments/exp-dg1b-repeated-regeneration-durability-017.ice'){
+            throw "PREREG_COMMIT_SCOPE_INVALID files=$($First -join ',')"
+          }
+          $Last=@(& git -C $Repo diff-tree --no-commit-id --name-only -r $ExpectedHead)
+          foreach($Required in @('.yggdrasil/qualification-request.json','.yggdrasil/isolated-run.json','research/applications/plane/exp-dg1b-repeated-regeneration-durability-017.py')){
+            if($Last-notcontains$Required){throw "IMPLEMENTATION_COMMIT_MISSING path=$Required"}
+          }
+
+          $Q=Get-Content -Raw -LiteralPath (Join-Path $Repo '.yggdrasil\qualification-request.json')|ConvertFrom-Json
+          $R=Get-Content -Raw -LiteralPath (Join-Path $Repo '.yggdrasil\isolated-run.json')|ConvertFrom-Json
+          if([string]$Q.schema-cne'yggdrasil.research-qualification-request.v1'){throw 'QUALIFICATION_SCHEMA_INVALID'}
+          if([string]$Q.branch-cne$Branch){throw "QUALIFICATION_BRANCH_INVALID actual=$($Q.branch)"}
+          if([string]$Q.baseline_sha-cne$ExpectedBase){throw "QUALIFICATION_BASELINE_INVALID actual=$($Q.baseline_sha)"}
+          if([string]$Q.experiment-cne$ExpectedExperiment){throw "QUALIFICATION_EXPERIMENT_INVALID actual=$($Q.experiment)"}
+          if([int]$R.schema-ne1){throw 'ISOLATED_RUN_SCHEMA_INVALID'}
+          if([string]$R.request_id-cne$ExpectedExperiment){throw 'ISOLATED_RUN_REQUEST_INVALID'}
+          if([string]$R.source-cne[string]$Q.source){throw 'ISOLATED_RUN_SOURCE_MISMATCH'}
+          if([int]$R.timeout_seconds-lt1 -or [int]$R.timeout_seconds-gt1800){throw 'ISOLATED_RUN_TIMEOUT_INVALID'}
+          $RunArgs=@($R.run_args)
+          if(@($RunArgs|Where-Object{[string]$_-ceq'{out}'}).Count-ne1){throw 'ISOLATED_RUN_OUT_ARG_REQUIRED'}
+          if(@($R.PSObject.Properties.Name)-contains'open_args'){
+            if(@($R.open_args).Count-ne0){throw 'ISOLATED_RUN_OPEN_ARGS_FORBIDDEN'}
+          }
+
+          $Source=Join-Path $Repo ([string]$Q.source)
+          if(-not(Test-Path -LiteralPath $Source -PathType Leaf)){throw "SOURCE_MISSING path=$($Q.source)"}
+          $Py='C:\ckb-ci-tools\python\3.14.7\python.exe'
+          if(-not(Test-Path -LiteralPath $Py -PathType Leaf)){
+            $Py='C:\ProgramData\CKBR\research-sidecar-yggdrasil\python312\python.exe'
+          }
+          if(-not(Test-Path -LiteralPath $Py -PathType Leaf)){throw 'PYTHON_RUNTIME_MISSING'}
+
+          $RunRoot=Join-Path $env:RUNNER_TEMP 'ygg017-recovery'
+          if(Test-Path -LiteralPath $RunRoot){Remove-Item -LiteralPath $RunRoot -Recurse -Force}
+          New-Item -ItemType Directory -Force -Path $RunRoot|Out-Null
+          $Out1=Join-Path $RunRoot 'result-1.json'
+          $Out2=Join-Path $RunRoot 'result-2.json'
+
+          function Invoke-Frozen([string]$Out){
+            $Args=New-Object Collections.Generic.List[string]
+            foreach($A in @($R.run_args)){
+              if([string]$A-ceq'{out}'){$Args.Add($Out)}else{$Args.Add([string]$A)}
+            }
+            & $Py $Source @($Args)
+            if($LASTEXITCODE-ne0){throw "SCIENTIFIC_RUN_FAILED exit=$LASTEXITCODE"}
+            if(-not(Test-Path -LiteralPath $Out -PathType Leaf)){throw 'SCIENTIFIC_RESULT_MISSING'}
+          }
+
+          Invoke-Frozen $Out1
+          Invoke-Frozen $Out2
+          $H1=(Get-FileHash -LiteralPath $Out1 -Algorithm SHA256).Hash.ToLowerInvariant()
+          $H2=(Get-FileHash -LiteralPath $Out2 -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($H1-cne$H2){throw "DUPLICATE_RESULT_MISMATCH first=$H1 second=$H2"}
+          if($H1-cne$ExpectedResultSha){throw "RESULT_SHA_DRIFT expected=$ExpectedResultSha actual=$H1"}
+          $Science=Get-Content -Raw -LiteralPath $Out1|ConvertFrom-Json
+          if([string]$Science.schema-cne'yggdrasil.research-scientific-result.v1'){throw 'RESULT_SCHEMA_INVALID'}
+          if([string]$Science.experiment-cne$ExpectedExperiment){throw 'RESULT_EXPERIMENT_INVALID'}
+          if($null-eq$Science.metrics){throw 'RESULT_METRICS_MISSING'}
+
+          $Pair="x-access-token:$env:GITHUB_TOKEN"
+          $Basic=[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($Pair))
+          $Header="AUTHORIZATION: basic $Basic"
+          $RemoteRows=@(& git -c "http.https://github.com/.extraheader=$Header" ls-remote --heads $Remote ("refs/heads/"+$Branch))
+          if($LASTEXITCODE-ne0 -or $RemoteRows.Count-ne1){throw 'REMOTE_HEAD_READ_FAILED'}
+          $RemoteHead=(([string]$RemoteRows[0])-split'\s+')[0]
+          if($RemoteHead-cne$ExpectedBase){throw "REMOTE_HEAD_DRIFT expected=$ExpectedBase actual=$RemoteHead"}
+
+          $EvidenceDir=Join-Path $Repo '.research-autonomy\evidence\EXP-DG1B-REPEATED-REGENERATION-DURABILITY-017-recovery'
+          New-Item -ItemType Directory -Force -Path $EvidenceDir|Out-Null
+          Copy-Item -LiteralPath $Out1 -Destination (Join-Path $EvidenceDir 'result.json') -Force
+          $Summary=[ordered]@{
+            schema='yggdrasil.repo-local-qualification-summary.v1'
+            experiment=$ExpectedExperiment
+            branch=$Branch
+            baseline_sha=$ExpectedBase
+            preregistration_commit=$ExpectedPrereg
+            qualified_head_sha=$ExpectedHead
+            source=[string]$Q.source
+            duplicate_byte_identical=$true
+            result_sha256=$H1
+            scientific_outcome='supported'
+            recovery_reason='controller strict-mode scalar Count bug after successful unchanged scientific execution'
+            source_workflow_run_id='36940856829'
+            authority='research-only'
+            ckb_plane_role='governance-only'
+            generated_at_utc=[DateTime]::UtcNow.ToString('o')
+          }
+          $Summary|ConvertTo-Json -Depth 20|Set-Content -LiteralPath (Join-Path $EvidenceDir 'summary.json') -Encoding UTF8
+          $State=[ordered]@{
+            schema='research.repo-local-state.v1'
+            program='Yggdrasil'
+            active_branch=$Branch
+            north_star_path='research/architecture/yggdrasil-north-star.ice'
+            north_star_sha256='3cd3b3d2fdbbb5b3541d433a527231b38fc441699cd0353fa86f0c3be6f0a905'
+            parent_sha=$ExpectedBase
+            preregistration_commit=$ExpectedPrereg
+            qualified_head_sha=$ExpectedHead
+            experiment=$ExpectedExperiment
+            result_sha256=$H1
+            scientific_outcome='supported'
+            last_completed_utc=[DateTime]::UtcNow.ToString('o')
+            source_workflow_run_id='36940856829'
+            authority='research-only'
+            ckb_plane_role='governance-only'
+          }
+          $State|ConvertTo-Json -Depth 30|Set-Content -LiteralPath (Join-Path $Repo '.research-autonomy\state.json') -Encoding UTF8
+
+          & git -C $Repo config user.name 'repo-local-research-autonomy'
+          & git -C $Repo config user.email 'repo-local-research-autonomy@users.noreply.github.com'
+          & git -C $Repo add '.research-autonomy'
+          if($LASTEXITCODE-ne0){throw 'EVIDENCE_ADD_FAILED'}
+          & git -C $Repo commit -m 'research: recover qualified evidence for EXP-DG1B-REPEATED-REGENERATION-DURABILITY-017'
+          if($LASTEXITCODE-ne0){throw 'EVIDENCE_COMMIT_FAILED'}
+          $EvidenceHead=(& git -C $Repo rev-parse HEAD).Trim()
+          & git -c "http.https://github.com/.extraheader=$Header" -C $Repo push $Remote ("HEAD:refs/heads/"+$Branch)
+          if($LASTEXITCODE-ne0){throw 'RECOVERY_PUSH_FAILED'}
+
+          Write-Host 'YGG017_RECOVERY=PASS'
+          Write-Host "preregistration_commit=$ExpectedPrereg"
+          Write-Host "qualified_head=$ExpectedHead"
+          Write-Host "evidence_head=$EvidenceHead"
+          Write-Host "result_sha256=$H1"
