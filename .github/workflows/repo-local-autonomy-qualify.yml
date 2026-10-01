@@ -80,7 +80,7 @@ jobs:
         run: |
           $ErrorActionPreference='Stop'
           $P='C:\ProgramData\CKBR\research-sidecar-yggdrasil\codex\bin\codex.exe'
-          $Help=((& $P exec --help 2>&1)|ForEach-Object{[string]$_}) -join [Environment]::NewLine
+          $Help=((& $P exec --approve-for-me --help 2>&1)|ForEach-Object{[string]$_}) -join [Environment]::NewLine
           if($LASTEXITCODE-ne0){throw "CODEX_EXEC_HELP_FAILED exit=$LASTEXITCODE"}
           Write-Host $Help
           Write-Host 'YGGDRASIL_REPO_LOCAL_CODEX_EXEC_HELP_PASS'
