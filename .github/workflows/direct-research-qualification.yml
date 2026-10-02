@@ -3,7 +3,7 @@ name: Direct Yggdrasil research qualification
 on:
   push:
     branches:
-      - research/autonomy-yggdrasil-active
+      - research/direct-ygg-032-state-floor64
     paths:
       - 'research/applications/plane/**'
       - '.yggdrasil/**'
@@ -23,7 +23,7 @@ jobs:
       - name: Checkout exact active branch
         uses: actions/checkout@v4
         with:
-          ref: research/autonomy-yggdrasil-active
+          ref: research/direct-ygg-032-state-floor64
           fetch-depth: 0
           persist-credentials: true
           clean: true
@@ -33,7 +33,7 @@ jobs:
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference='Stop'
-          $Branch='research/autonomy-yggdrasil-active'
+          $Branch='research/direct-ygg-032-state-floor64'
           $QPath='.yggdrasil/qualification-request.json'
           $RPath='.yggdrasil/isolated-run.json'
           foreach($P in @($QPath,$RPath)){if(-not(Test-Path -LiteralPath $P -PathType Leaf)){throw "REQUEST_MISSING path=$P"}}
@@ -57,16 +57,19 @@ jobs:
           git merge-base --is-ancestor $Baseline $Head
           if($LASTEXITCODE-ne0){throw "BASELINE_ANCESTRY_FAILED baseline=$Baseline head=$Head"}
           $Commits=@(git rev-list --reverse "$Baseline..$Head"|Where-Object{$_ -and $_.Trim()})
-          if($Commits.Count-ne2){throw "DIRECT_COMMIT_COUNT_INVALID count=$($Commits.Count)"}
+          if($Commits.Count-ne3){throw "DIRECT_COMMIT_COUNT_INVALID count=$($Commits.Count)"}
           $FirstFiles=@(git diff-tree --no-commit-id --name-only -r $Commits[0]|Where-Object{$_ -and $_.Trim()})
           if($FirstFiles.Count-ne1 -or -not$FirstFiles[0].StartsWith('research/experiments/')){throw "PREREG_NOT_FIRST_AND_ALONE files=$($FirstFiles -join ',')"}
           $PreregPath=[string]$FirstFiles[0]
+          $WorkflowPath='.github/workflows/direct-research-qualification.yml'
+          $SecondFiles=@(git diff-tree --no-commit-id --name-only -r $Commits[1]|Where-Object{$_ -and $_.Trim()})
+          if($SecondFiles.Count-ne1 -or [string]$SecondFiles[0]-cne$WorkflowPath){throw "INFRA_NOT_SEPARATE files=$($SecondFiles -join ',')"}
           $Prereg=Get-Content -Raw -LiteralPath $PreregPath|ConvertFrom-Json
           if([string]$Prereg.experiment_id-cne[string]$Q.experiment){throw 'PREREG_EXPERIMENT_MISMATCH'}
           if([string]$Prereg.exact_parent_sha-cne$Baseline){throw 'PREREG_PARENT_MISMATCH'}
           if([string]$Prereg.north_star_sha256-cne'3cd3b3d2fdbbb5b3541d433a527231b38fc441699cd0353fa86f0c3be6f0a905'){throw 'PREREG_NORTH_STAR_IDENTITY_MISMATCH'}
 
-          $Allowed=@($PreregPath,[string]$Q.source,$QPath,$RPath)
+          $Allowed=@($PreregPath,$WorkflowPath,[string]$Q.source,$QPath,$RPath)
           $AllFiles=@()
           foreach($C in $Commits){$AllFiles+=@(git diff-tree --no-commit-id --name-only -r $C|Where-Object{$_ -and $_.Trim()})}
           foreach($F in $AllFiles){if($Allowed-notcontains[string]$F){throw "CHANGE_OUTSIDE_FROZEN_PACKAGE path=$F"}}
@@ -139,7 +142,7 @@ jobs:
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference='Stop'
-          $Branch='research/autonomy-yggdrasil-active'
+          $Branch='research/direct-ygg-032-state-floor64'
           $Head='${{ steps.frozen.outputs.head }}'
           git fetch origin $Branch
           if($LASTEXITCODE-ne0){throw 'REMOTE_REFRESH_FAILED'}
