@@ -1,0 +1,46 @@
+name: Yggdrasil hosted portability V1
+
+on:
+  push:
+    branches:
+      - ops/hosted-portability-v1
+    paths:
+      - '.github/workflows/hosted-portability-v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Reproduce sealed minimax-matched result twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          python research/applications/plane/exp-dgr-real-utf8-minimax-matched-consolidation-016.py --out /tmp/result1.json
+          python research/applications/plane/exp-dgr-real-utf8-minimax-matched-consolidation-016.py --out /tmp/result2.json
+          cmp /tmp/result1.json /tmp/result2.json
+          sealed="$(find .research-autonomy/evidence -type f -path '*EXP-DGR-REAL-UTF8-MINIMAX-MATCHED-CONSOLIDATION-016-*/result.json' | sort | tail -n 1)"
+          test -n "$sealed"
+          python - "$sealed" /tmp/result1.json <<'PY'
+          import json,sys
+          with open(sys.argv[1],encoding='utf-8') as f:
+              a=json.load(f)
+          with open(sys.argv[2],encoding='utf-8') as f:
+              b=json.load(f)
+          if a != b:
+              raise SystemExit('HOSTED_RESULT_MISMATCH')
+          print('HOSTED_RESULT_MATCH=PASS')
+          PY
