@@ -114,59 +114,7 @@ jobs:
           if([string]::IsNullOrWhiteSpace($env:NVIDIA_API_KEY)){throw 'NVIDIA_API_KEY_SECRET_MISSING'}
           $Root=(Resolve-Path '.').Path
           $Head=(git rev-parse HEAD).Trim()
-          if($Head -notmatch '^[0-9a-f]{40}
-        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
-        run: |
-          $ErrorActionPreference='Stop'
-          $Codex='C:\ProgramData\CKBR\research-sidecar-yggdrasil\codex\bin\codex.exe'
-          $Python='C:\ProgramData\CKBR\research-sidecar-yggdrasil\python312\python.exe'
-          foreach($P in @($Codex,$Python)){if(-not(Test-Path -LiteralPath $P -PathType Leaf)){throw "RUNTIME_MISSING path=$P"}}
-          & $Codex --version
-          if($LASTEXITCODE-ne0){throw 'CODEX_VERSION_FAILED'}
-          $Help=(& $Codex exec --help 2>&1)-join "`n"
-          if($LASTEXITCODE-ne0){throw 'CODEX_EXEC_HELP_FAILED'}
-          foreach($Needle in @('--sandbox','workspace-write','--approve-for-me','--output-last-message')){if(-not$Help.Contains($Needle)){throw "CODEX_EXEC_INTERFACE_MISSING $Needle"}}
-          & $Python --version
-          if($LASTEXITCODE-ne0){throw 'PYTHON_VERSION_FAILED'}
-          & $Python -c "import numpy, torch; print('numpy='+numpy.__version__); print('torch='+torch.__version__)"
-          if($LASTEXITCODE-ne0){throw 'PYTHON_DEPENDENCY_CHECK_FAILED'}
-          Write-Host 'YGGDRASIL_REPO_LOCAL_RUNTIME_PASS'
-
-      - name: Verify Codex exec CLI contract
-        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
-        run: |
-          $ErrorActionPreference='Stop'
-          $P='C:\ProgramData\CKBR\research-sidecar-yggdrasil\codex\bin\codex.exe'
-          $Help=((& $P exec --approve-for-me --help 2>&1)|ForEach-Object{[string]$_}) -join [Environment]::NewLine
-          if($LASTEXITCODE-ne0){throw "CODEX_EXEC_HELP_FAILED exit=$LASTEXITCODE"}
-          Write-Host $Help
-          Write-Host 'YGGDRASIL_REPO_LOCAL_CODEX_EXEC_HELP_PASS'
-
-      - name: Validate current research tree
-        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
-        run: |
-          $ErrorActionPreference='Stop'
-          $Active='research/autonomy-yggdrasil-active'
-          $Temp=Join-Path $env:RUNNER_TEMP 'ygg-active-north-star-qual'
-          if(Test-Path -LiteralPath $Temp){Remove-Item -LiteralPath $Temp -Recurse -Force}
-          git fetch origin $Active --depth=1
-          if($LASTEXITCODE-ne0){throw 'ACTIVE_BRANCH_FETCH_FAILED'}
-          git worktree add --detach $Temp FETCH_HEAD
-          if($LASTEXITCODE-ne0){throw 'ACTIVE_WORKTREE_ADD_FAILED'}
-          try{
-            $North=Join-Path $Temp 'research\architecture\yggdrasil-north-star.ice'
-            if(-not(Test-Path -LiteralPath $North -PathType Leaf)){throw 'NORTH_STAR_MISSING'}
-            $Text=[IO.File]::ReadAllText($North)
-            $Normalized=$Text.Replace("`r`n","`n").Replace("`r","`n")
-            $Bytes=(New-Object Text.UTF8Encoding($false)).GetBytes($Normalized)
-            $Sha=[Security.Cryptography.SHA256]::Create()
-            try{$Hash=([BitConverter]::ToString($Sha.ComputeHash($Bytes))).Replace('-','').ToLowerInvariant()}finally{$Sha.Dispose()}
-            if($Hash -cne '3cd3b3d2fdbbb5b3541d433a527231b38fc441699cd0353fa86f0c3be6f0a905'){throw "NORTH_STAR_HASH_FAILED actual=$Hash"}
-          }finally{
-            git worktree remove --force $Temp 2>$null
-          }
-          Write-Host 'YGGDRASIL_REPO_LOCAL_TREE_PASS'
-){throw 'PROVIDER_PROBE_HEAD_INVALID'}
+          if($Head -notmatch '^[0-9a-f]{40}$'){throw 'PROVIDER_PROBE_HEAD_INVALID'}
           $Worktree=Join-Path $env:RUNNER_TEMP ('glm-provider-probe-'+$env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
           $ProbeBranch='qual/glm-provider-probe-'+$env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT
           $Prompt=Join-Path $env:RUNNER_TEMP ('glm-provider-prompt-'+$env:GITHUB_RUN_ID+'.txt')
