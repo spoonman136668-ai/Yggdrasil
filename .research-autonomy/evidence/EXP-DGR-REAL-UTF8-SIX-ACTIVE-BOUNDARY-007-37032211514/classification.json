@@ -1,0 +1,43 @@
+{
+  "schema": "yggdrasil.research-classification.v1",
+  "experiment": "EXP-DGR-REAL-UTF8-SIX-ACTIVE-BOUNDARY-007",
+  "qualified_head_sha": "244b24696711c2261200fe45475e3d441bfc78e1",
+  "qualification_run_id": "37032211514",
+  "classification": "mixed",
+  "thresholds_frozen_before_execution": true,
+  "metrics": {
+    "training_file_identity_mismatch_count": 0,
+    "evaluation_file_identity_mismatch_count": 0,
+    "train_eval_blob_overlap_count": 0,
+    "valid_evaluation_file_count": 3,
+    "minimum_full_incremental_correct_count": 5,
+    "minimum_primary_active_structure_count": 6,
+    "maximum_primary_active_structure_count": 6,
+    "minimum_primary_retained_structure_count": 10,
+    "maximum_primary_retained_structure_count": 10,
+    "minimum_primary_retained_incremental_correct_fraction": 0.6,
+    "minimum_primary_minus_static_retained_fraction": 0,
+    "minimum_eval_covered_accuracy_gain": 0.23076923076923078,
+    "retained_record_integrity_mismatch_count": 0,
+    "state_partition_mismatch_count": 0,
+    "future_half_selection_access_count": 0,
+    "learned_state_mutation_count": 0,
+    "capacity_growth_event_count": 0,
+    "tokenizer_use_count": 0,
+    "invalid_evaluation_rows": 0
+  },
+  "passed_boundaries": [
+    "all three demand files completed",
+    "exact six-active/ten-retained partition preserved",
+    "primary was never worse than six-motif static control",
+    "covered-position accuracy gain remained positive",
+    "zero future-half access, state mutation, tokenizer use, or capacity growth"
+  ],
+  "failed_frozen_gates": [
+    "minimum_primary_retained_incremental_correct_fraction >= 0.70"
+  ],
+  "scientific_claim": "Under the frozen six-active real-byte boundary test, error-guided selection preserved exact fixed-capacity state and positive held-out prediction gain across all three demand files, but the weakest file retained only 60% of the full sixteen-motif incremental benefit. Six active motifs therefore fall below the preregistered 70% benefit-retention floor even though the state remains useful and no worse than the six-motif static control.",
+  "next_question": "Test the seven-active boundary using the identical three demand files and first-half error-guided selection to determine whether the 70% benefit-retention floor lies at seven or eight active motifs.",
+  "scope": "within-lineage real-byte active-capacity boundary; not fresh-corpus generalization",
+  "authority": "research-only"
+}
