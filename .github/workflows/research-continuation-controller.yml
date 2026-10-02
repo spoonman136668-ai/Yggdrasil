@@ -30,6 +30,14 @@ jobs:
     timeout-minutes: 240
 
     steps:
+      - name: Configure byte-stable Git checkout
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+          Write-Host 'YGGDRASIL_BYTE_STABLE_GIT=PASS'
+
       - name: Checkout controller
         uses: actions/checkout@v4
         with:
