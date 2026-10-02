@@ -1,0 +1,190 @@
+name: NVIDIA Yggdrasil implementation qualification
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'research/applications/plane/nvidia_qualification_fixture.py'
+      - 'scripts/Invoke-NemotronRepoAgent.ps1'
+      - '.github/workflows/nvidia-implementation-qualification.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: yggdrasil-nvidia-implementation-qualification
+  cancel-in-progress: false
+
+jobs:
+  implementation:
+    runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
+    timeout-minutes: 120
+    env:
+      NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+
+    steps:
+      - name: Checkout frozen qualification candidate
+        uses: actions/checkout@v4
+        with:
+          ref: research/nvidia-provider-qualification-r1
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify credential and frozen fixture
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'
+          if([string]::IsNullOrWhiteSpace($env:NVIDIA_API_KEY)){throw 'NVIDIA_API_KEY_SECRET_MISSING'}
+          if(-not(Test-Path -LiteralPath 'research/applications/plane/nvidia_qualification_fixture.py' -PathType Leaf)){throw 'YGGDRASIL_NVIDIA_FIXTURE_MISSING'}
+          Write-Host 'YGGDRASIL_NVIDIA_IMPL_PRECHECK=PASS'
+
+      - name: Run blind first-attempt implementation gate
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'
+          $Root=(Resolve-Path '.').Path
+          $Base=(git rev-parse HEAD).Trim()
+          if($Base -notmatch '^[0-9a-f]{40}$'){throw 'BASE_SHA_INVALID'}
+          $Py='C:\ProgramData\CKBR\research-sidecar-yggdrasil\python312\python.exe'
+          if(-not(Test-Path -LiteralPath $Py -PathType Leaf)){throw "PYTHON_RUNTIME_MISSING path=$Py"}
+
+          $Models=@(
+            'moonshotai/kimi-k3',
+            'z-ai/glm-5.3',
+            'poolside/laguna-xs-2.1'
+          )
+
+          foreach($Model in $Models){
+            $Safe=$Model-replace'[^A-Za-z0-9._-]','_'
+            $Worktree=Join-Path $env:RUNNER_TEMP ("yggdrasil-nvidia-impl-"+$Safe)
+            $LocalBranch="qual/nvidia-yggdrasil-$env:GITHUB_RUN_ID-$Safe"
+            $Prompt=Join-Path $env:RUNNER_TEMP ("yggdrasil-nvidia-impl-prompt-"+$Safe+".txt")
+            $Last=Join-Path $env:RUNNER_TEMP ("yggdrasil-nvidia-impl-last-"+$Safe+".txt")
+            $Started=[DateTime]::UtcNow
+
+            if(Test-Path -LiteralPath $Worktree){Remove-Item -LiteralPath $Worktree -Recurse -Force}
+            git branch -D $LocalBranch 2>$null | Out-Null
+            git worktree add -b $LocalBranch $Worktree $Base
+            if($LASTEXITCODE-ne0){throw "WORKTREE_CREATE_FAILED model=$Model"}
+
+            try{
+              @(
+                'This is a frozen blind implementation qualification.'
+                'Modify exactly one file: research/applications/plane/nvidia_qualification_fixture.py.'
+                'Implement choose_experiment according to all requirements below.'
+                'Do not add or modify tests, workflows, documentation, or any other file.'
+                'Requirements:'
+                '- candidates is a list of mappings with id, cost, information_gain, north_star_alignment, blocked, and dependencies.'
+                '- Reject an empty/non-string id, duplicate ids, non-positive/non-numeric cost, or non-numeric information_gain/north_star_alignment with ValueError.'
+                '- completed is treated as a set of experiment IDs; do not mutate it.'
+                '- Exclude candidates already completed, blocked candidates, candidates over budget, and candidates whose dependencies are not all completed.'
+                '- Among eligible candidates maximize information_gain/cost.'
+                '- Break ratio ties by higher north_star_alignment, then lower cost, then lexicographically smaller id.'
+                '- Return a shallow copy of the selected candidate mapping; return None when nothing is eligible.'
+                '- Do not mutate candidates, nested dependency lists, or completed.'
+                'Use repository tools as needed. Commit exactly the implementation file.'
+                'When complete, call finish with status complete and summary exactly IMPLEMENTATION_QUAL_PASS.'
+              ) | Set-Content -LiteralPath $Prompt -Encoding UTF8
+
+              & "$Root\scripts\Invoke-NemotronRepoAgent.ps1" `
+                -RepoPath $Worktree `
+                -Program 'Yggdrasil' `
+                -ActiveBranch $LocalBranch `
+                -StartSha $Base `
+                -PromptPath $Prompt `
+                -LastMessagePath $Last `
+                -Provider nvidia `
+                -Model $Model `
+                -MaxRounds 24
+
+              if(-not(Test-Path -LiteralPath $Last -PathType Leaf)){throw "IMPLEMENTATION_SUMMARY_MISSING model=$Model"}
+              $Summary=[IO.File]::ReadAllText($Last).Trim()
+              if($Summary -cne 'IMPLEMENTATION_QUAL_PASS'){throw "IMPLEMENTATION_SUMMARY_INVALID model=$Model summary=$Summary"}
+
+              $Head=(git -C $Worktree rev-parse HEAD).Trim()
+              $Count=[int](git -C $Worktree rev-list --count "$Base..$Head")
+              if($Count-ne1){throw "IMPLEMENTATION_COMMIT_COUNT_INVALID model=$Model count=$Count"}
+              $Changed=@(git -C $Worktree diff --name-only "$Base..$Head" | Where-Object{$_ -and $_.Trim()})
+              if($Changed.Count-ne1 -or [string]$Changed[0]-cne'research/applications/plane/nvidia_qualification_fixture.py'){
+                throw "IMPLEMENTATION_SCOPE_INVALID model=$Model files=$($Changed -join ',')"
+              }
+
+              $Hidden=Join-Path $env:RUNNER_TEMP ("yggdrasil-hidden-"+$Safe+".py")
+              @'
+import copy
+import importlib.util
+import math
+import pathlib
+import sys
+
+module_path = pathlib.Path(sys.argv[1])
+spec = importlib.util.spec_from_file_location("nvidia_qualification_fixture", module_path)
+mod = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(mod)
+
+candidates = [
+    {"id":"a","cost":2,"information_gain":6,"north_star_alignment":0.5,"blocked":False,"dependencies":[]},
+    {"id":"b","cost":1,"information_gain":3,"north_star_alignment":0.8,"blocked":False,"dependencies":["seed"]},
+    {"id":"c","cost":1,"information_gain":3,"north_star_alignment":0.8,"blocked":False,"dependencies":["seed"]},
+    {"id":"d","cost":0.5,"information_gain":1.5,"north_star_alignment":0.9,"blocked":True,"dependencies":[]},
+    {"id":"e","cost":4,"information_gain":40,"north_star_alignment":1.0,"blocked":False,"dependencies":[]},
+]
+before = copy.deepcopy(candidates)
+completed = {"seed"}
+completed_before = set(completed)
+picked = mod.choose_experiment(candidates, completed, 2)
+assert picked["id"] == "b", picked
+assert picked is not candidates[1]
+assert candidates == before
+assert completed == completed_before
+
+picked2 = mod.choose_experiment(candidates, completed, 0.75)
+assert picked2 is None
+
+picked3 = mod.choose_experiment([
+    {"id":"x","cost":2,"information_gain":4,"north_star_alignment":0.5,"blocked":False,"dependencies":[]},
+    {"id":"y","cost":1,"information_gain":2,"north_star_alignment":0.5,"blocked":False,"dependencies":[]},
+], set(), 5)
+assert picked3["id"] == "y", picked3
+
+assert mod.choose_experiment([
+    {"id":"x","cost":1,"information_gain":10,"north_star_alignment":1.0,"blocked":False,"dependencies":["missing"]},
+], set(), 5) is None
+
+bad_cases = [
+    ([{"id":"","cost":1,"information_gain":1,"north_star_alignment":1,"blocked":False,"dependencies":[]}], set(), 2),
+    ([{"id":"x","cost":1,"information_gain":1,"north_star_alignment":1,"blocked":False,"dependencies":[]},
+      {"id":"x","cost":2,"information_gain":2,"north_star_alignment":1,"blocked":False,"dependencies":[]}], set(), 2),
+    ([{"id":"x","cost":0,"information_gain":1,"north_star_alignment":1,"blocked":False,"dependencies":[]}], set(), 2),
+    ([{"id":"x","cost":"1","information_gain":1,"north_star_alignment":1,"blocked":False,"dependencies":[]}], set(), 2),
+    ([{"id":"x","cost":1,"information_gain":"bad","north_star_alignment":1,"blocked":False,"dependencies":[]}], set(), 2),
+]
+for args in bad_cases:
+    try:
+        mod.choose_experiment(*args)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError(f"expected ValueError for {args!r}")
+
+print("YGGDRASIL_HIDDEN_IMPLEMENTATION_TEST=PASS")
+'@ | Set-Content -LiteralPath $Hidden -Encoding UTF8
+
+              & $Py $Hidden (Join-Path $Worktree 'research\applications\plane\nvidia_qualification_fixture.py')
+              if($LASTEXITCODE-ne0){throw "IMPLEMENTATION_HIDDEN_TEST_FAILED model=$Model"}
+              if((git -C $Worktree status --porcelain)-join''){throw "IMPLEMENTATION_WORKTREE_DIRTY model=$Model"}
+
+              $Seconds=[Math]::Round(([DateTime]::UtcNow-$Started).TotalSeconds,1)
+              Write-Host "NVIDIA_IMPLEMENTATION_QUALIFIED program=Yggdrasil model=$Model seconds=$Seconds head=$Head"
+            }
+            finally{
+              if(Test-Path -LiteralPath $Worktree){
+                git worktree remove --force $Worktree 2>$null | Out-Null
+              }
+              git branch -D $LocalBranch 2>$null | Out-Null
+            }
+          }
+
+          Write-Host 'NVIDIA_YGGDRASIL_IMPLEMENTATION_QUALIFICATION=PASS'
