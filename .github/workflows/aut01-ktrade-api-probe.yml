@@ -1,4 +1,4 @@
-name: AUT01 operator route source
+name: AUT01 plane action source
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - ops/aut01-ktrade-api-probe-20261002
     paths:
       - .github/workflows/aut01-ktrade-api-probe.yml
-      - .github/aut01/AUT01-OPERATOR-ROUTE-SOURCE.ps1
+      - .github/aut01/AUT01-ACTION-SOURCE.ps1
 
 permissions:
   contents: read
@@ -24,6 +24,6 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 1
-      - name: Inspect controller operator routes
+      - name: Inspect plane Action implementation
         shell: cmd
-        run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%GITHUB_WORKSPACE%\.github\aut01\AUT01-OPERATOR-ROUTE-SOURCE.ps1"
+        run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%GITHUB_WORKSPACE%\.github\aut01\AUT01-ACTION-SOURCE.ps1"
