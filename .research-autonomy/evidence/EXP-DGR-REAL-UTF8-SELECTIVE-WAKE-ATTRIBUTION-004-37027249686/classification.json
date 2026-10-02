@@ -1,0 +1,31 @@
+{
+  "schema": "yggdrasil.research-classification.v1",
+  "experiment": "EXP-DGR-REAL-UTF8-SELECTIVE-WAKE-ATTRIBUTION-004",
+  "qualified_head_sha": "1c9120fcc08190ad2ac65b173236c4a31ebe0a7b",
+  "qualification_run_id": "37027249686",
+  "result_sha256": "cec83728b4482539b5bcc3aed4c0ca32f24afb357855b0c0591aed0b0a6b701c",
+  "classification": "supported-attribution-cue-mismatch",
+  "thresholds_frozen_before_execution": true,
+  "duplicate_byte_identical": true,
+  "metrics": {
+    "training_file_identity_mismatch_count": 0,
+    "evaluation_file_identity_mismatch_count": 0,
+    "train_eval_blob_overlap_count": 0,
+    "valid_evaluation_file_count": 2,
+    "minimum_full_incremental_correct_count": 17,
+    "minimum_optimal_active_structure_count": 8,
+    "maximum_optimal_active_structure_count": 8,
+    "minimum_optimal_retained_incremental_correct_fraction": 1,
+    "minimum_optimal_minus_cue_retained_fraction": 0.2075471698113207,
+    "minimum_optimal_minus_static_retained_fraction": 0.3207547169811321,
+    "maximum_cue_optimal_jaccard": 0.45454545454545453,
+    "capacity_growth_event_count": 0,
+    "tokenizer_use_count": 0,
+    "invalid_attribution_rows": 0
+  },
+  "scientific_claim": "The selective-wake 003 negative is attributable primarily to cue ranking, not the eight-active capacity ceiling. On both held-out files an evaluator-only optimal eight-motif subset retained 100% of the full 16-motif incremental correct predictions, exceeded the frozen occurrence-cue subset by at least 0.2075 retained-benefit fraction and the static pressure subset by at least 0.3208, while cue/optimal set overlap was at most 0.4545 Jaccard.",
+  "implication": "Eight active structures are sufficient for the tested files if the active set is chosen using a cue correlated with future predictive utility. Raw occurrence frequency alone is not adequate.",
+  "next_question": "On fresh immutable held-out files, can a non-oracle error-guided cue based only on observed first-half prediction outcomes choose the eight active motifs well enough to recover >=70% of full-model benefit without future-half access or capacity growth?",
+  "scope": "diagnostic attribution only; evaluator-optimal selection is not a deployable policy",
+  "authority": "research-only"
+}
