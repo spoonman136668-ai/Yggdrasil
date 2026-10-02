@@ -1,0 +1,29 @@
+name: AUT01 targeted controller API discovery
+
+on:
+  push:
+    branches:
+      - ops/aut01-ktrade-api-probe-20261002
+    paths:
+      - .github/workflows/aut01-ktrade-api-probe.yml
+      - .github/aut01/AUT01-CONTROLLER-TARGETED-API-DISCOVERY.ps1
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aut01-ygg-ktrade-api-probe
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    timeout-minutes: 5
+    runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Inspect targeted controller API
+        shell: cmd
+        run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%GITHUB_WORKSPACE%\.github\aut01\AUT01-CONTROLLER-TARGETED-API-DISCOVERY.ps1"
