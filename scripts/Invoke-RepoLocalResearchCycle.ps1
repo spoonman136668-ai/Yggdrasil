@@ -277,7 +277,7 @@ $MindContext
     if($Commits.Count-eq1){
         if(-not(Test-Path -LiteralPath $LastMessagePath -PathType Leaf)){throw 'PREREG_BLOCKED_AGENT_SUMMARY_MISSING'}
         $AgentSummary=[IO.File]::ReadAllText($LastMessagePath)
-        if($AgentSummary -notmatch '(?m)^RESEARCH_TERMINAL=PREREG_BLOCKED\s*$'){throw 'PREREG_ONLY_WITHOUT_BLOCKED_MARKER'}
+        if($AgentSummary -notmatch '(?m)^RESEARCH_TERMINAL=PREREG_BLOCKED(?:[ \t]+[^\r\n]+)?[ \t]*$'){throw 'PREREG_ONLY_WITHOUT_BLOCKED_MARKER'}
         $PreregCommit=[string]$Commits[0]
         $PreregPath=[string]$FirstFiles[0]
         $Experiment=([IO.Path]::GetFileNameWithoutExtension($PreregPath)).ToUpperInvariant()
