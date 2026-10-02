@@ -1,0 +1,49 @@
+{
+  "schema": "yggdrasil.research-classification.v1",
+  "experiment": "EXP-DGR-REAL-UTF8-SELECTIVE-WAKE-003",
+  "qualified_head_sha": "8ccf1592697e73f9e1c5f48195b2ef57ed0620de",
+  "qualification_run_id": "37026853852",
+  "result_sha256": "0d6ed8297b03302d93aab6ddcc1d2aa08b10a66fd40c26a9d6447fe2bc39f2a3",
+  "classification": "negative",
+  "thresholds_frozen_before_execution": true,
+  "duplicate_byte_identical": true,
+  "metrics": {
+    "training_file_identity_mismatch_count": 0,
+    "evaluation_file_identity_mismatch_count": 0,
+    "train_eval_blob_overlap_count": 0,
+    "valid_evaluation_file_count": 2,
+    "minimum_woken_hibernated_motif_count_per_file": 1,
+    "maximum_woken_hibernated_motif_count_per_file": 2,
+    "minimum_post_wake_active_structure_count": 8,
+    "maximum_post_wake_active_structure_count": 8,
+    "minimum_post_wake_retained_structure_count": 8,
+    "maximum_post_wake_retained_structure_count": 8,
+    "minimum_retained_incremental_correct_fraction": 0.35294117647058826,
+    "minimum_improvement_over_static_fraction": 0,
+    "minimum_eval_covered_position_fraction": 0.010640930462756744,
+    "minimum_eval_covered_accuracy_gain": 0.13953488372093023,
+    "minimum_effective_event_reduction_fraction": 0.0255863539445629,
+    "retained_record_integrity_mismatch_count": 0,
+    "cue_target_byte_access_count": 0,
+    "capacity_growth_event_count": 0,
+    "tokenizer_use_count": 0,
+    "invalid_wake_rows": 0
+  },
+  "passed_boundaries": [
+    "both immutable held-out files completed",
+    "1-2 hibernated motifs were selectively woken per file",
+    "exact eight-active/eight-retained structure ceiling preserved",
+    "retained-record integrity exact",
+    "event reduction remained above 2%",
+    "zero cue target-byte access, tokenizer use, or capacity growth"
+  ],
+  "failed_frozen_gates": [
+    "minimum_retained_incremental_correct_fraction >= 0.70",
+    "minimum_improvement_over_static_fraction >= 0.05",
+    "minimum_eval_covered_accuracy_gain >= 0.15"
+  ],
+  "scientific_claim": "Under the frozen real-byte selective-wake policy, first-half raw motif occurrence counts were sufficient to trigger bounded state reconfiguration but were not predictive enough of second-half utility to improve the supported static eight-active pressure state. The cue-adapted state preserved capacity and integrity but retained only 35.3% of full-model incremental correct predictions on the weaker file and provided zero minimum improvement over static pressure.",
+  "next_question": "Attribute the negative by comparing cue-selected, static-pressure, and counterfactual evaluation-optimal eight-motif sets on the exact same held-out halves; determine whether failure is primarily cue-to-future distribution mismatch or an eight-active capacity ceiling.",
+  "scope": "immutable repo-owned real UTF-8 project prose; cue-only selective wake under eight-active ceiling",
+  "authority": "research-only"
+}
