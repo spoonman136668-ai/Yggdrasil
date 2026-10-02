@@ -168,10 +168,18 @@ jobs:
               'print("YGGDRASIL_HIDDEN_IMPLEMENTATION_TEST=PASS")'
               ''
           ) | Set-Content -LiteralPath $Hidden -Encoding UTF8
-          & $Py $Hidden (Join-Path $Worktree 'research\applications\plane\nvidia_qualification_fixture.py')
-          if($LASTEXITCODE-ne0){throw "IMPLEMENTATION_HIDDEN_TEST_FAILED model=$Model"}
+          $PriorBytecode=$env:PYTHONDONTWRITEBYTECODE
+          try{
+            $env:PYTHONDONTWRITEBYTECODE='1'
+            & $Py $Hidden (Join-Path $Worktree 'research\applications\plane\nvidia_qualification_fixture.py')
+            if($LASTEXITCODE-ne0){throw "IMPLEMENTATION_HIDDEN_TEST_FAILED model=$Model"}
+          }
+          finally{
+            $env:PYTHONDONTWRITEBYTECODE=$PriorBytecode
+          }
 
-            if((git -C $Worktree status --porcelain)-join''){throw "IMPLEMENTATION_WORKTREE_DIRTY model=$Model"}
+            $Dirty=@(git -C $Worktree status --porcelain | Where-Object{$_ -and $_.Trim()})
+            if($Dirty.Count-gt0){throw "IMPLEMENTATION_WORKTREE_DIRTY model=$Model status=$($Dirty -join ';')"}
 
             $Seconds=[Math]::Round(([DateTime]::UtcNow-$Started).TotalSeconds,1)
             Write-Host "NVIDIA_IMPLEMENTATION_QUALIFIED program=Yggdrasil model=$Model seconds=$Seconds head=$Head"
