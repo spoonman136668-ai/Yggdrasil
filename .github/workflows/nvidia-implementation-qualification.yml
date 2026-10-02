@@ -47,6 +47,7 @@ jobs:
           $Root=(Resolve-Path '.').Path
           $Base=(git rev-parse HEAD).Trim()
           if($Base -notmatch '^[0-9a-f]{40}$'){throw 'BASE_SHA_INVALID'}
+
           $Py='C:\ProgramData\CKBR\research-sidecar-yggdrasil\python312\python.exe'
           if(-not(Test-Path -LiteralPath $Py -PathType Leaf)){throw "PYTHON_RUNTIME_MISSING path=$Py"}
 
@@ -112,68 +113,68 @@ jobs:
               }
 
               $Hidden=Join-Path $env:RUNNER_TEMP ("yggdrasil-hidden-"+$Safe+".py")
-              @'
-import copy
-import importlib.util
-import math
-import pathlib
-import sys
-
-module_path = pathlib.Path(sys.argv[1])
-spec = importlib.util.spec_from_file_location("nvidia_qualification_fixture", module_path)
-mod = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(mod)
-
-candidates = [
-    {"id":"a","cost":2,"information_gain":6,"north_star_alignment":0.5,"blocked":False,"dependencies":[]},
-    {"id":"b","cost":1,"information_gain":3,"north_star_alignment":0.8,"blocked":False,"dependencies":["seed"]},
-    {"id":"c","cost":1,"information_gain":3,"north_star_alignment":0.8,"blocked":False,"dependencies":["seed"]},
-    {"id":"d","cost":0.5,"information_gain":1.5,"north_star_alignment":0.9,"blocked":True,"dependencies":[]},
-    {"id":"e","cost":4,"information_gain":40,"north_star_alignment":1.0,"blocked":False,"dependencies":[]},
-]
-before = copy.deepcopy(candidates)
-completed = {"seed"}
-completed_before = set(completed)
-picked = mod.choose_experiment(candidates, completed, 2)
-assert picked["id"] == "b", picked
-assert picked is not candidates[1]
-assert candidates == before
-assert completed == completed_before
-
-picked2 = mod.choose_experiment(candidates, completed, 0.75)
-assert picked2 is None
-
-picked3 = mod.choose_experiment([
-    {"id":"x","cost":2,"information_gain":4,"north_star_alignment":0.5,"blocked":False,"dependencies":[]},
-    {"id":"y","cost":1,"information_gain":2,"north_star_alignment":0.5,"blocked":False,"dependencies":[]},
-], set(), 5)
-assert picked3["id"] == "y", picked3
-
-assert mod.choose_experiment([
-    {"id":"x","cost":1,"information_gain":10,"north_star_alignment":1.0,"blocked":False,"dependencies":["missing"]},
-], set(), 5) is None
-
-bad_cases = [
-    ([{"id":"","cost":1,"information_gain":1,"north_star_alignment":1,"blocked":False,"dependencies":[]}], set(), 2),
-    ([{"id":"x","cost":1,"information_gain":1,"north_star_alignment":1,"blocked":False,"dependencies":[]},
-      {"id":"x","cost":2,"information_gain":2,"north_star_alignment":1,"blocked":False,"dependencies":[]}], set(), 2),
-    ([{"id":"x","cost":0,"information_gain":1,"north_star_alignment":1,"blocked":False,"dependencies":[]}], set(), 2),
-    ([{"id":"x","cost":"1","information_gain":1,"north_star_alignment":1,"blocked":False,"dependencies":[]}], set(), 2),
-    ([{"id":"x","cost":1,"information_gain":"bad","north_star_alignment":1,"blocked":False,"dependencies":[]}], set(), 2),
-]
-for args in bad_cases:
-    try:
-        mod.choose_experiment(*args)
-    except ValueError:
-        pass
-    else:
-        raise AssertionError(f"expected ValueError for {args!r}")
-
-print("YGGDRASIL_HIDDEN_IMPLEMENTATION_TEST=PASS")
-'@ | Set-Content -LiteralPath $Hidden -Encoding UTF8
-
+              @(
+                'import copy'
+                'import importlib.util'
+                'import pathlib'
+                'import sys'
+                ''
+                'module_path = pathlib.Path(sys.argv[1])'
+                'spec = importlib.util.spec_from_file_location("nvidia_qualification_fixture", module_path)'
+                'mod = importlib.util.module_from_spec(spec)'
+                'spec.loader.exec_module(mod)'
+                ''
+                'candidates = ['
+                '    {"id":"a","cost":2,"information_gain":6,"north_star_alignment":0.5,"blocked":False,"dependencies":[]},'
+                '    {"id":"b","cost":1,"information_gain":3,"north_star_alignment":0.8,"blocked":False,"dependencies":["seed"]},'
+                '    {"id":"c","cost":1,"information_gain":3,"north_star_alignment":0.8,"blocked":False,"dependencies":["seed"]},'
+                '    {"id":"d","cost":0.5,"information_gain":1.5,"north_star_alignment":0.9,"blocked":True,"dependencies":[]},'
+                '    {"id":"e","cost":4,"information_gain":40,"north_star_alignment":1.0,"blocked":False,"dependencies":[]},'
+                ']'
+                'before = copy.deepcopy(candidates)'
+                'completed = {"seed"}'
+                'completed_before = set(completed)'
+                'picked = mod.choose_experiment(candidates, completed, 2)'
+                'assert picked["id"] == "b", picked'
+                'assert picked is not candidates[1]'
+                'assert candidates == before'
+                'assert completed == completed_before'
+                ''
+                'picked2 = mod.choose_experiment(candidates, completed, 0.75)'
+                'assert picked2 is None'
+                ''
+                'picked3 = mod.choose_experiment(['
+                '    {"id":"x","cost":2,"information_gain":4,"north_star_alignment":0.5,"blocked":False,"dependencies":[]},'
+                '    {"id":"y","cost":1,"information_gain":2,"north_star_alignment":0.5,"blocked":False,"dependencies":[]},'
+                '], set(), 5)'
+                'assert picked3["id"] == "y", picked3'
+                ''
+                'assert mod.choose_experiment(['
+                '    {"id":"x","cost":1,"information_gain":10,"north_star_alignment":1.0,"blocked":False,"dependencies":["missing"]},'
+                '], set(), 5) is None'
+                ''
+                'bad_cases = ['
+                '    ([{"id":"","cost":1,"information_gain":1,"north_star_alignment":1,"blocked":False,"dependencies":[]}], set(), 2),'
+                '    ([{"id":"x","cost":1,"information_gain":1,"north_star_alignment":1,"blocked":False,"dependencies":[]},'
+                '      {"id":"x","cost":2,"information_gain":2,"north_star_alignment":1,"blocked":False,"dependencies":[]}], set(), 2),'
+                '    ([{"id":"x","cost":0,"information_gain":1,"north_star_alignment":1,"blocked":False,"dependencies":[]}], set(), 2),'
+                '    ([{"id":"x","cost":"1","information_gain":1,"north_star_alignment":1,"blocked":False,"dependencies":[]}], set(), 2),'
+                '    ([{"id":"x","cost":1,"information_gain":"bad","north_star_alignment":1,"blocked":False,"dependencies":[]}], set(), 2),'
+                ']'
+                'for args in bad_cases:'
+                '    try:'
+                '        mod.choose_experiment(*args)'
+                '    except ValueError:'
+                '        pass'
+                '    else:'
+                '        raise AssertionError(f"expected ValueError for {args!r}")'
+                ''
+                'print("YGGDRASIL_HIDDEN_IMPLEMENTATION_TEST=PASS")'
+                ''
+              ) | Set-Content -LiteralPath $Hidden -Encoding UTF8
               & $Py $Hidden (Join-Path $Worktree 'research\applications\plane\nvidia_qualification_fixture.py')
               if($LASTEXITCODE-ne0){throw "IMPLEMENTATION_HIDDEN_TEST_FAILED model=$Model"}
+
               if((git -C $Worktree status --porcelain)-join''){throw "IMPLEMENTATION_WORKTREE_DIRTY model=$Model"}
 
               $Seconds=[Math]::Round(([DateTime]::UtcNow-$Started).TotalSeconds,1)
