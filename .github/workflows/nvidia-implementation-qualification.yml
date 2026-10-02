@@ -21,8 +21,6 @@ jobs:
       max-parallel: 1
       matrix:
         include:
-          - model: moonshotai/kimi-k3
-            slug: kimi-k3
           - model: z-ai/glm-5.3
             slug: glm-5-3
           - model: poolside/laguna-xs-2.1
@@ -172,6 +170,11 @@ jobs:
           ) | Set-Content -LiteralPath $Hidden -Encoding UTF8
           & $Py $Hidden (Join-Path $Worktree 'research\applications\plane\nvidia_qualification_fixture.py')
           if($LASTEXITCODE-ne0){throw "IMPLEMENTATION_HIDDEN_TEST_FAILED model=$Model"}
+
+            Get-ChildItem -LiteralPath $Worktree -Directory -Filter '__pycache__' -Recurse -Force -ErrorAction SilentlyContinue |
+              Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+            Get-ChildItem -LiteralPath $Worktree -File -Filter '*.pyc' -Recurse -Force -ErrorAction SilentlyContinue |
+              Remove-Item -Force -ErrorAction SilentlyContinue
 
             if((git -C $Worktree status --porcelain)-join''){throw "IMPLEMENTATION_WORKTREE_DIRTY model=$Model"}
 
