@@ -20,6 +20,14 @@ jobs:
     runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
     timeout-minutes: 90
     steps:
+      - name: Configure byte-stable Git checkout
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+          Write-Host 'YGGDRASIL_BYTE_STABLE_GIT=PASS'
+
       - name: Checkout exact active branch
         uses: actions/checkout@v4
         with:
