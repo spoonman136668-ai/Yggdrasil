@@ -64,7 +64,7 @@ jobs:
           $Prereg=Get-Content -Raw -LiteralPath $PreregPath|ConvertFrom-Json
           if([string]$Prereg.experiment_id-cne[string]$Q.experiment){throw 'PREREG_EXPERIMENT_MISMATCH'}
           if([string]$Prereg.exact_parent_sha-cne$Baseline){throw 'PREREG_PARENT_MISMATCH'}
-          if([string]$Prereg.north_star_sha256-cne'3cd3b3d2fdbbb5b3541d433a527231b38fc441699cd0353fa86f0c3be6f0a905'){throw 'PREREG_NORTH_STAR_IDENTITY_MISMATCH'}
+          if([string]$Prereg.north_star_sha256-cne'57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c'){throw 'PREREG_NORTH_STAR_IDENTITY_MISMATCH'}
 
           $Allowed=@($PreregPath,[string]$Q.source,$QPath,$RPath)
           $AllFiles=@()
@@ -172,7 +172,7 @@ jobs:
             program='Yggdrasil'
             active_branch=$Branch
             north_star_path='research/architecture/yggdrasil-north-star.ice'
-            north_star_sha256='3cd3b3d2fdbbb5b3541d433a527231b38fc441699cd0353fa86f0c3be6f0a905'
+            north_star_sha256='57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c'
             parent_sha='${{ steps.frozen.outputs.baseline }}'
             qualified_head_sha=$Head
             experiment=$Experiment
