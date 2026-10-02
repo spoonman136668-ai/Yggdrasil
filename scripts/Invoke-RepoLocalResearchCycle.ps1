@@ -355,8 +355,14 @@ $MindContext
         foreach($A in @($R.run_args)){
             if([string]$A-ceq'{out}'){$Args.Add($OutPath)}else{$Args.Add([string]$A)}
         }
-        & $Py $SourceFull @($Args)
-        if($LASTEXITCODE-ne0){throw "SCIENTIFIC_RUN_FAILED exit=$LASTEXITCODE"}
+        $PriorDontWriteBytecode=$env:PYTHONDONTWRITEBYTECODE
+        try{
+            $env:PYTHONDONTWRITEBYTECODE='1'
+            & $Py $SourceFull @($Args)
+            if($LASTEXITCODE-ne0){throw "SCIENTIFIC_RUN_FAILED exit=$LASTEXITCODE"}
+        }finally{
+            $env:PYTHONDONTWRITEBYTECODE=$PriorDontWriteBytecode
+        }
         if(-not(Test-Path -LiteralPath $OutPath -PathType Leaf)){throw 'SCIENTIFIC_RESULT_MISSING'}
     }
 
