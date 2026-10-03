@@ -34,7 +34,7 @@ def run(root):
     m={
       "source_identity_mismatch_count":0.0,"source_count":0.0,"total_source_bytes":0.0,
       "base_training_identity_mismatch_count":0.0,"affected_schedule_count":4.0,"packet_budget_per_schedule":12.0,
-      "history_byte_budget_mismatch_count":0.0,"candidate_selection_heldout_use_count":0.0,
+      "history_byte_budget_mismatch_count":0.0,"candidate_selection_heldout_use_count":0.0,"candidate_k":7.0,
       "baseline_mean_first_success_packet":0.0,"candidate_mean_first_success_packet":0.0,
       "candidate_mean_packet_reduction":0.0,"candidate_positive_reduction_schedule_count":0.0,
       "candidate_positive_prose_collateral_schedule_count":0.0,"candidate_partner_collateral_failure_count":0.0,
@@ -139,8 +139,7 @@ def run(root):
         prose_eval=ae if an==PROSE else be
         partner_eval=be if an==PROSE else ae
         pr,_=rank(hrows,hmap,prose_hist)
-        partner_name=bn if an==PROSE else an
-        coalition_k=5 if partner_name=="A" else 7
+        coalition_k=7
         if len(pr)<coalition_k:m["invalid_evaluation_rows"]+=1.0;continue
         prose_guard=tuple(r["key"] for r in pr[:coalition_k])
 
