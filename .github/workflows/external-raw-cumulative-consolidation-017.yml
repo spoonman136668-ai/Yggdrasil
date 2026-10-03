@@ -1,0 +1,155 @@
+name: Yggdrasil external cumulative consolidation 017
+
+on:
+  push:
+    branches:
+      - research/external-hosted-yggdrasil-r1
+    paths:
+      - 'research/applications/plane/exp-dgr-external-raw-cumulative-consolidation-017.py'
+      - '.github/workflows/external-raw-cumulative-consolidation-017.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate frozen authority and preregistration
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "055ff2b61e51c10f858961b8008e33e99cfb19c3"
+          git cat-file -e HEAD^:research/experiments/exp-dgr-external-raw-cumulative-consolidation-017.ice
+          echo "ckb_ready_research_run_id=37081177972"
+          echo "ckb_ready_research_receipt_sha256=f0a601e52317e6d9b8c35646006858366f723db54bef27ec5a89d7d848c18d51"
+          echo "ckb_plane_main_sha=36d99a0257120ede57bb96638660d35014dd529e"
+
+      - name: Fetch exact external sources into ephemeral scratch
+        shell: bash
+        run: |
+          set -euo pipefail
+          export EXTERNAL_ROOT="$RUNNER_TEMP/ygg-external-017"
+          mkdir -p "$EXTERNAL_ROOT"
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib,urllib.parse,urllib.request
+          prereg=json.loads(pathlib.Path("research/experiments/exp-dgr-external-raw-cumulative-consolidation-017.ice").read_text(encoding="utf-8"))
+          if prereg["external_authority"]["manifest_sha256"]!="75cdb3b97dbb7017299f573d506f07095ed89c06264b29724b78f29c909d4da4":
+              raise SystemExit("MANIFEST_IDENTITY_DRIFT")
+          root=pathlib.Path(os.environ["EXTERNAL_ROOT"])
+          total=0
+          for src in prereg["sources"]:
+              u=urllib.parse.urlparse(src["uri"])
+              if u.scheme!="https" or u.hostname!="raw.githubusercontent.com":
+                  raise SystemExit("SOURCE_HOST_NOT_ALLOWED")
+              req=urllib.request.Request(src["uri"],headers={"User-Agent":"yggdrasil-external-017"})
+              with urllib.request.urlopen(req,timeout=30) as response:
+                  data=response.read(int(src["bytes"])+1)
+              if len(data)!=int(src["bytes"]):
+                  raise SystemExit("SOURCE_BYTE_COUNT_MISMATCH")
+              actual=hashlib.sha256(data).hexdigest()
+              if actual.lower()!=src["sha256"].lower():
+                  raise SystemExit("SOURCE_SHA256_MISMATCH")
+              (root/(src["domain"]+".bin")).write_bytes(data)
+              total+=len(data)
+          if total!=57272:
+              raise SystemExit("TOTAL_SOURCE_BYTES_MISMATCH")
+          print("EXTERNAL_SOURCE_VERIFICATION=PASS total_bytes=57272")
+          PY
+          echo "EXTERNAL_ROOT=$EXTERNAL_ROOT" >> "$GITHUB_ENV"
+
+      - name: Run frozen external experiment twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          python research/applications/plane/exp-dgr-external-raw-cumulative-consolidation-017.py --root "$EXTERNAL_ROOT" --out /tmp/result1.json
+          python research/applications/plane/exp-dgr-external-raw-cumulative-consolidation-017.py --root "$EXTERNAL_ROOT" --out /tmp/result2.json
+          cmp /tmp/result1.json /tmp/result2.json
+          cat /tmp/result1.json
+
+      - name: Classify only from frozen preregistration
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,pathlib
+          result=json.loads(pathlib.Path("/tmp/result1.json").read_text(encoding="utf-8"))
+          m=result["metrics"]
+          validity=(
+              m["source_identity_mismatch_count"]==0 and
+              m["source_count"]==3 and
+              m["total_source_bytes"]==57272 and
+              m["base_training_identity_mismatch_count"]==0 and
+              m["valid_stage_count"]==6 and
+              m["valid_seen_domain_evaluation_count"]==12 and
+              m["matched_assignment_failure_count"]==0 and
+              m["minimum_selected_motif_count"]==16 and
+              m["maximum_selected_motif_count"]==16 and
+              m["minimum_primary_active_structure_count"]==7 and
+              m["maximum_primary_active_structure_count"]==7 and
+              m["minimum_primary_retained_structure_count"]==9 and
+              m["maximum_primary_retained_structure_count"]==9 and
+              m["retained_record_integrity_mismatch_count"]==0 and
+              m["state_partition_mismatch_count"]==0 and
+              m["capacity_growth_event_count"]==0 and
+              m["tokenizer_use_count"]==0 and
+              m["external_model_call_count"]==0 and
+              m["invalid_evaluation_rows"]==0
+          )
+          performance=(
+              m["minimum_cumulative_incremental_correct_count"]>0 and
+              m["minimum_cumulative_to_independent_incremental_correct_fraction"]>=0.50 and
+              m["minimum_prior_domain_incremental_correct_count"]>0 and
+              m["minimum_prior_domain_to_first_encounter_fraction"]>=0.50 and
+              m["minimum_active_retained_incremental_correct_fraction"]>=0.50
+          )
+          all_positive=(
+              m["minimum_cumulative_incremental_correct_count"]>0 and
+              m["minimum_prior_domain_incremental_correct_count"]>0
+          )
+          if not validity:
+              cls="invalid"
+          elif performance:
+              cls="supported"
+          elif all_positive:
+              cls="mixed"
+          else:
+              cls="negative"
+          out={
+              "schema":"yggdrasil.research-classification.v1",
+              "experiment":"EXP-DGR-EXTERNAL-RAW-CUMULATIVE-CONSOLIDATION-017",
+              "classification":cls,
+              "validity_pass":validity,
+              "performance_thresholds_pass":performance,
+              "ckb_ready_research_receipt_sha256":"f0a601e52317e6d9b8c35646006858366f723db54bef27ec5a89d7d848c18d51"
+          }
+          pathlib.Path("/tmp/classification.json").write_text(json.dumps(out,separators=(",",":")),encoding="utf-8")
+          print(json.dumps(out,separators=(",",":")))
+          PY
+
+      - name: Delete external bytes
+        if: always()
+        shell: bash
+        run: |
+          rm -rf "$RUNNER_TEMP/ygg-external-017"
+          test ! -e "$RUNNER_TEMP/ygg-external-017"
+
+      - name: Upload scientific evidence only
+        uses: actions/upload-artifact@v4
+        with:
+          name: yggdrasil-external-raw-cumulative-consolidation-017
+          path: |
+            /tmp/result1.json
+            /tmp/result2.json
+            /tmp/classification.json
+          if-no-files-found: error
