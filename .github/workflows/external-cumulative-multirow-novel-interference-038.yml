@@ -54,6 +54,25 @@ jobs:
           assert r["research_decision"]=={"schema":"ckb-plane.external-exposure-research.v1","disposition":"READY_RESEARCH","scope":"research-consume-once","reasons":None}
           pathlib.Path("/tmp/authority.json").write_text(raw)
           PY
+      - name: Materialize exact sealed-037 shared-row semantics
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,pathlib
+          p=pathlib.Path("research/applications/plane/exp-dgr-external-cumulative-multirow-novel-interference-038.py")
+          s=p.read_text()
+          a='   prot={}\n'
+          b='    prot[cand[0]["key"]]=cand[0]\n'
+          c='   if len(prot)!=2:m["invalid_evaluation_rows"]+=1;continue\n'
+          assert s.count(a)==1 and s.count(b)==1 and s.count(c)==1
+          s=s.replace(a,'   prot={};protected_for_target={}\n',1)
+          s=s.replace(b,'    protected_for_target[target]=cand[0];prot[cand[0]["key"]]=cand[0]\n',1)
+          s=s.replace(c,'   if len(protected_for_target)!=2:m["invalid_evaluation_rows"]+=1;continue\n',1)
+          p.write_text(s)
+          digest=hashlib.sha256(s.encode()).hexdigest()
+          pathlib.Path("/tmp/effective-source.sha256").write_text(digest+"  "+str(p)+"\n")
+          print("EFFECTIVE_SOURCE_SHA256",digest)
+          PY
       - name: Fetch exact external sources
         shell: bash
         run: |
@@ -127,4 +146,5 @@ jobs:
             /tmp/result1.json
             /tmp/result2.json
             /tmp/classification.json
+            /tmp/effective-source.sha256
           if-no-files-found: error
