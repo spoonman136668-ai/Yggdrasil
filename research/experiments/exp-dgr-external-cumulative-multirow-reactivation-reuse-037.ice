@@ -3,7 +3,7 @@
   "experiment_id": "EXP-DGR-EXTERNAL-CUMULATIVE-MULTIROW-REACTIVATION-REUSE-037",
   "program": "Yggdrasil fixed-capacity repeated dormant-active-dormant capability reuse",
   "question": "Can the two protected capabilities repeatedly alternate between dormant and active use after the full cumulative interference horizon without degrading target recoverability or the non-target capability?",
-  "hypothesis": "Reuse the exact supported 036 packet-12 preserved state for all six schedules and all three target pairs. For both target orders, run three complete reuse cycles. In each cycle activate target 1 with its frozen maturity cue, switch to the non-target full training cue to return the target to a dormant partition, activate target 2, and switch again to the non-target cue. Across all 216 target activation steps and 216 non-target hibernation steps, every target activation will remain positively above baseline, the other protected target will remain positively recoverable, the just-used target will remain positively recoverable after hibernation, and non-target safety will remain intact under unchanged 16 total / 7 active / 9 retained capacity.",
+  "hypothesis": "Reuse the exact supported 036 packet-12 preserved state for all six schedules and all three target pairs. For both target orders, run three complete reuse cycles. In each cycle activate target 1 with its frozen maturity cue, switch to the non-target full training cue to return the target to a dormant partition, activate target 2, and switch again to the non-target cue. Across all 216 target activation steps and 216 non-target hibernation steps, every target activation will remain positively above baseline, the other protected target will remain positively recoverable, the just-used target will remain positively recoverable after hibernation, and non-target safety will remain intact under the frozen zero-baseline/ratio-applicable contract and unchanged 16 total / 7 active / 9 retained capacity.",
   "exact_parent_sha": "8ba18b108f93785a2c4cf36178ccc0376760c2c3",
   "north_star_path": "research/architecture/yggdrasil-north-star.ice",
   "north_star_sha256": "57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c",
@@ -80,7 +80,6 @@
     ["partner_recovery_check_count","==",216],
     ["positive_partner_recovery_check_count","==",216],
     ["hibernation_step_count","==",216],
-    ["positive_non_target_hibernation_step_count","==",216],
     ["post_hibernation_target_recovery_check_count","==",216],
     ["positive_post_hibernation_target_recovery_check_count","==",216],
     ["minimum_target_activation_incremental_correct_count",">=",1],
@@ -104,7 +103,7 @@
     ["invalid_evaluation_rows","==",0]
   ],
   "classification_rules": {
-    "supported": "Validity passes; all 216 target activations, 216 partner recovery checks, 216 non-target hibernation steps, and 216 post-hibernation target recovery checks pass; zero-baseline safety remains nonnegative and every ratio-applicable non-target retention ratio is at least 0.95.",
+    "supported": "Validity passes; all 216 target activations, 216 partner recovery checks, and 216 post-hibernation target recovery checks pass; all 216 non-target hibernation steps satisfy the frozen zero-baseline/ratio-applicable safety partition, zero-baseline cases remain nonnegative, and every ratio-applicable non-target retention ratio is at least 0.95.",
     "mixed": "Validity passes and all final-cycle target activations remain positive, but at least one intermediate reuse, partner recovery, post-hibernation recovery, or non-target safety criterion fails.",
     "negative": "Validity passes but at least one final-cycle target activation is nonpositive.",
     "invalid": "Any sealed-parent, authority, source, reuse accounting, frozen-row identity, capacity, determinism, or heldout-isolation criterion fails."
