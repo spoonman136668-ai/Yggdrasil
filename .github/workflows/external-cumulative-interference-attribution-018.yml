@@ -1,0 +1,203 @@
+name: Yggdrasil external cumulative interference attribution 018
+
+on:
+  push:
+    branches:
+      - research/external-hosted-yggdrasil-attribution-r1
+    paths:
+      - 'research/applications/plane/exp-dgr-external-cumulative-interference-attribution-018.py'
+      - '.github/workflows/external-cumulative-interference-attribution-018.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 3
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate frozen two-commit diagnostic package
+        shell: bash
+        run: |
+          set -euo pipefail
+          prereg='8503cd623ecb35527be6b2f7934daf7bbfe71101'
+          baseline='7c87c9e810265eb7b991220141b2cf4b08ebb468'
+          test "$(git rev-parse HEAD^)" = "$prereg"
+          test "$(git rev-parse HEAD^^)" = "$baseline"
+          mapfile -t first_files < <(git diff-tree --no-commit-id --name-only -r "$prereg")
+          test "${#first_files[@]}" -eq 1
+          test "${first_files[0]}" = 'research/experiments/exp-dgr-external-cumulative-interference-attribution-018.ice'
+          mapfile -t final_files < <(git diff-tree --no-commit-id --name-only -r HEAD)
+          test "${#final_files[@]}" -eq 2
+          printf '%s\n' "${final_files[@]}" | grep -Fx 'research/applications/plane/exp-dgr-external-cumulative-interference-attribution-018.py'
+          printf '%s\n' "${final_files[@]}" | grep -Fx '.github/workflows/external-cumulative-interference-attribution-018.yml'
+          python3 - <<'PY'
+          import json
+          p=json.load(open('research/experiments/exp-dgr-external-cumulative-interference-attribution-018.ice',encoding='utf-8'))
+          assert p['schema']=='yggdrasil.direct-preregistration.v1'
+          assert p['experiment_id']=='EXP-DGR-EXTERNAL-CUMULATIVE-INTERFERENCE-ATTRIBUTION-018'
+          assert p['exact_parent_sha']=='7c87c9e810265eb7b991220141b2cf4b08ebb468'
+          assert p['north_star_sha256']=='57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c'
+          PY
+          echo 'YGGDRASIL_018_FROZEN_PACKAGE=PASS'
+
+      - name: Verify exact CKB-plane READY_RESEARCH receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          raw=r'''{"schema":"ckb-plane.external-exposure-ready-research-receipt.v1","project":"Yggdrasil","experiment":"EXP-DGR-EXTERNAL-CUMULATIVE-INTERFERENCE-ATTRIBUTION-018","preregistration_sha":"8503cd623ecb35527be6b2f7934daf7bbfe71101","research_host":"runnervm8df0l","runner_id":"GitHub Actions 1000001349","manifest_sha256":"75cdb3b97dbb7017299f573d506f07095ed89c06264b29724b78f29c909d4da4","plan_decision":{"schema":"ckb-plane.external-exposure.v1","disposition":"READY_PLAN","scope":"plan-only","reasons":null},"fetch_decision":{"schema":"ckb-plane.external-exposure-fetch.v1","disposition":"READY_FETCH","scope":"fetch-verify-only","reasons":null},"research_decision":{"schema":"ckb-plane.external-exposure-research.v1","disposition":"READY_RESEARCH","scope":"research-consume-once","reasons":null},"ckb_plane_main_sha":"36d99a0257120ede57bb96638660d35014dd529e"}'''
+          assert hashlib.sha256(raw.encode()).hexdigest()=='fdfd81accf779826ebb5c2f6d097be238ee292ebd2eb0590a325baf0c4edc674'
+          r=json.loads(raw)
+          assert r['project']=='Yggdrasil'
+          assert r['experiment']=='EXP-DGR-EXTERNAL-CUMULATIVE-INTERFERENCE-ATTRIBUTION-018'
+          assert r['preregistration_sha']=='8503cd623ecb35527be6b2f7934daf7bbfe71101'
+          assert r['manifest_sha256']=='75cdb3b97dbb7017299f573d506f07095ed89c06264b29724b78f29c909d4da4'
+          assert r['plan_decision']['disposition']=='READY_PLAN'
+          assert r['fetch_decision']['disposition']=='READY_FETCH'
+          assert r['research_decision']['disposition']=='READY_RESEARCH'
+          assert r['research_decision']['scope']=='research-consume-once'
+          pathlib.Path('/tmp/yggdrasil-018-authority.json').write_text(raw,encoding='utf-8')
+          PY
+          echo 'CKB_READY_RESEARCH=PASS'
+
+      - name: Fetch exact external sources into ephemeral scratch
+        shell: bash
+        run: |
+          set -euo pipefail
+          export EXTERNAL_ROOT="$RUNNER_TEMP/ygg-external-018"
+          mkdir -p "$EXTERNAL_ROOT"
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib,urllib.parse,urllib.request
+          p=json.load(open('research/experiments/exp-dgr-external-raw-cumulative-consolidation-017.ice',encoding='utf-8'))
+          assert p['external_authority']['manifest_sha256']=='75cdb3b97dbb7017299f573d506f07095ed89c06264b29724b78f29c909d4da4'
+          root=pathlib.Path(os.environ['EXTERNAL_ROOT'])
+          rows=[]
+          for src in p['sources']:
+              u=urllib.parse.urlparse(src['uri'])
+              assert u.scheme=='https' and u.hostname=='raw.githubusercontent.com'
+              req=urllib.request.Request(src['uri'],headers={'User-Agent':'yggdrasil-external-018'})
+              with urllib.request.urlopen(req,timeout=30) as response:
+                  data=response.read(int(src['bytes'])+1)
+              assert len(data)==int(src['bytes'])
+              actual=hashlib.sha256(data).hexdigest()
+              assert actual==src['sha256']
+              (root/(src['domain']+'.bin')).write_bytes(data)
+              rows.append({'domain':src['domain'],'bytes':len(data),'sha256':actual})
+          assert sum(x['bytes'] for x in rows)==57272
+          pathlib.Path('/tmp/yggdrasil-018-sources.json').write_text(json.dumps(rows,separators=(',',':')),encoding='utf-8')
+          print(json.dumps(rows,separators=(',',':')))
+          PY
+          echo "EXTERNAL_ROOT=$EXTERNAL_ROOT" >> "$GITHUB_ENV"
+
+      - name: Run frozen diagnostic twice
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python research/applications/plane/exp-dgr-external-cumulative-interference-attribution-018.py --root "$EXTERNAL_ROOT" --out /tmp/result1.json
+          python research/applications/plane/exp-dgr-external-cumulative-interference-attribution-018.py --root "$EXTERNAL_ROOT" --out /tmp/result2.json
+          cmp /tmp/result1.json /tmp/result2.json
+          echo 'YGGDRASIL_018_DUPLICATE_BYTE_IDENTICAL=PASS'
+          cat /tmp/result1.json
+
+      - name: Classify only from frozen preregistration
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,pathlib
+          result=json.loads(pathlib.Path('/tmp/result1.json').read_text(encoding='utf-8'))
+          m=result['metrics']
+          validity=(
+              m['source_identity_mismatch_count']==0 and
+              m['source_count']==3 and
+              m['total_source_bytes']==57272 and
+              m['base_training_identity_mismatch_count']==0 and
+              m['valid_stage_count']==6 and
+              m['valid_seen_domain_evaluation_count']==12 and
+              m['diagnostic_arm_count']==12 and
+              m['matched_assignment_failure_count']==0 and
+              m['minimum_selected_motif_count']==16 and
+              m['maximum_selected_motif_count']==16 and
+              m['minimum_primary_active_structure_count']==7 and
+              m['maximum_primary_active_structure_count']==7 and
+              m['minimum_primary_retained_structure_count']==9 and
+              m['maximum_primary_retained_structure_count']==9 and
+              m['retained_record_integrity_mismatch_count']==0 and
+              m['state_partition_mismatch_count']==0 and
+              m['capacity_growth_event_count']==0 and
+              m['tokenizer_use_count']==0 and
+              m['external_model_call_count']==0 and
+              m['invalid_evaluation_rows']==0 and
+              m['replayed_minimum_cumulative_incremental_correct_count']==-1 and
+              m['replayed_minimum_cumulative_to_independent_incremental_correct_fraction']==-1 and
+              m['replayed_minimum_prior_domain_incremental_correct_count']==-1 and
+              m['replayed_minimum_prior_domain_to_first_encounter_fraction']==-1 and
+              m['replayed_minimum_active_retained_incremental_correct_fraction']==0
+          )
+          interference=m['cumulative_interference_arm_count']>=1
+          independent_clean=m['independently_nonpositive_arm_count']==0
+          partition_clean=m['active_partition_loss_arm_count']==0
+          if not validity:
+              cls='invalid'
+          elif interference and independent_clean and partition_clean:
+              cls='supported'
+          elif interference:
+              cls='mixed'
+          else:
+              cls='negative'
+          out={
+              'schema':'yggdrasil.research-classification.v1',
+              'experiment':'EXP-DGR-EXTERNAL-CUMULATIVE-INTERFERENCE-ATTRIBUTION-018',
+              'classification':cls,
+              'validity_pass':validity,
+              'cumulative_interference_observed':interference,
+              'independent_learnability_clean':independent_clean,
+              'active_partition_clean':partition_clean,
+              'authority_receipt_sha256':'fdfd81accf779826ebb5c2f6d097be238ee292ebd2eb0590a325baf0c4edc674',
+              'metrics':{
+                  'independently_nonpositive_arm_count':m['independently_nonpositive_arm_count'],
+                  'cumulative_nonpositive_arm_count':m['cumulative_nonpositive_arm_count'],
+                  'cumulative_interference_arm_count':m['cumulative_interference_arm_count'],
+                  'prior_domain_degradation_event_count':m['prior_domain_degradation_event_count'],
+                  'prior_domain_flip_to_nonpositive_count':m['prior_domain_flip_to_nonpositive_count'],
+                  'active_partition_loss_arm_count':m['active_partition_loss_arm_count']
+              }
+          }
+          pathlib.Path('/tmp/classification.json').write_text(json.dumps(out,separators=(',',':')),encoding='utf-8')
+          print(json.dumps(out,separators=(',',':')))
+          if not validity:
+              raise SystemExit('FROZEN_DIAGNOSTIC_VALIDITY_FAILED')
+          PY
+
+      - name: Delete external bytes
+        if: always()
+        shell: bash
+        run: |
+          rm -rf "$RUNNER_TEMP/ygg-external-018"
+          test ! -e "$RUNNER_TEMP/ygg-external-018"
+
+      - name: Upload evidence only
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yggdrasil-external-cumulative-interference-attribution-018
+          path: |
+            /tmp/yggdrasil-018-authority.json
+            /tmp/yggdrasil-018-sources.json
+            /tmp/result1.json
+            /tmp/result2.json
+            /tmp/classification.json
+          if-no-files-found: error
