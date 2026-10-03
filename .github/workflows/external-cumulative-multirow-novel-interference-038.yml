@@ -27,11 +27,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "f9e9c8734f464f64f31eafbac5a29a38512a9c28"
-          test "$(git rev-parse HEAD^^)" = "a6678e6f7ee0ae2036d49bf8a6fce5f9cd80f1f3"
-          test "$(git rev-parse HEAD^^^)" = "fb7e7fa43a877c0fcfb2eaf9e4e92ea714c03e95"
-          test "$(git diff-tree --no-commit-id --name-only -r HEAD^^)" = "research/experiments/exp-dgr-external-cumulative-multirow-novel-interference-038.ice"
-          changed="$(git diff --name-only HEAD^^^..HEAD | sort)"
+          test "$(git rev-parse HEAD^^)" = "f9e9c8734f464f64f31eafbac5a29a38512a9c28"
+          test "$(git rev-parse HEAD^^^)" = "a6678e6f7ee0ae2036d49bf8a6fce5f9cd80f1f3"
+          test "$(git rev-parse HEAD^^^^)" = "fb7e7fa43a877c0fcfb2eaf9e4e92ea714c03e95"
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD^^^)" = "research/experiments/exp-dgr-external-cumulative-multirow-novel-interference-038.ice"
+          changed="$(git diff --name-only HEAD^^^^..HEAD | sort)"
           expected="$(printf '%s\n' '.github/workflows/external-cumulative-multirow-novel-interference-038.yml' 'research/applications/plane/exp-dgr-external-cumulative-multirow-novel-interference-038.py' 'research/experiments/exp-dgr-external-cumulative-multirow-novel-interference-038.ice' | sort)"
           test "$changed" = "$expected"
       - name: Verify READY_RESEARCH receipt
@@ -56,7 +56,7 @@ jobs:
           sources=[
             ("code","https://raw.githubusercontent.com/python/cpython/ebf955df7a89ed0c7968f79faec1de49f61ed7cb/Lib/fractions.py","7a95f1c506c9ac4b2277df5f2bdd9d61cc67b520c45021a5a961939770221ef6",41453),
             ("structured","https://raw.githubusercontent.com/json-schema-org/JSON-Schema-Test-Suite/5b0ee1613e45fcc2bddac00e07c19cd49b00d8a8/tests/draft2020-12/type.json","4c5cbe6cbcd28af73761091367b20e07d0403847e236c06c31fc27061bd81192",14365),
-            ("technical_prose","https://raw.githubusercontent.com/golang/go/6f5c275ebdc454197fff5f1496521c8f81e20eef/README.md","8247b7c5de1e74854aac1a08aa5894444d1d33b4045c70d5cc3367ad0e25c3f3",1454),
+            ("technical-prose","https://raw.githubusercontent.com/golang/go/6f5c275ebdc454197fff5f1496521c8f81e20eef/README.md","8247b7c5de1e74854aac1a08aa5894444d1d33b4045c70d5cc3367ad0e25c3f3",1454),
           ]
           root=pathlib.Path(os.environ["EXTERNAL_ROOT"])
           for d,u,h,n in sources:
