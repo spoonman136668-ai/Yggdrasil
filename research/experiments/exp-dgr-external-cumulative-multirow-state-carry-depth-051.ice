@@ -2,8 +2,8 @@
   "schema": "yggdrasil.direct-preregistration.v1",
   "experiment_id": "EXP-DGR-EXTERNAL-CUMULATIVE-MULTIROW-STATE-CARRY-DEPTH-051",
   "program": "Yggdrasil fixed-capacity six-row inter-cycle state carry",
-  "question": "Does the supported six-cycle four-row carry regime remain safe when carried state width increases from four rows to six rows without changing total capacity?",
-  "hypothesis": "Replay the exact 36 frozen 049 cases with identical six-cycle horizon, two steps per cycle, orientation-complete guard, rows, cues, selectors, and 0.95 safety floor. Beginning with cycle 1, carry exactly six distinct keys from the immediately preceding cycle's final active partition, ranked by contribution to that final novel cue with utility then key tie-breaks. Reserve all six on the next cycle's first step, fill the remaining one active slot with unchanged 050 ranking, and leave second-step selection byte-identical 050. Exactly 180 first-step episodes receive six-row carry. All 432 safety checks remain at or above 0.95 and all 432 target and 432 partner recoveries remain positive under fixed 16 total / 7 active / 9 retained capacity.",
+  "question": "Does the supported six-cycle five-row carry regime remain safe when carried state width increases from five rows to six rows without changing total capacity?",
+  "hypothesis": "Replay the exact 36 frozen 050 cases with identical six-cycle horizon, two steps per cycle, orientation-complete guard, rows, cues, selectors, and 0.95 safety floor. Beginning with cycle 1, carry exactly six distinct keys from the immediately preceding cycle's final active partition, ranked by contribution to that final novel cue with utility then key tie-breaks. Reserve all six on the next cycle's first step, fill the remaining one active slot with unchanged 050 ranking, and leave second-step selection byte-identical 050. Exactly 180 first-step episodes receive six-row carry. All 432 safety checks remain at or above 0.95 and all 432 target and 432 partner recoveries remain positive under fixed 16 total / 7 active / 9 retained capacity.",
   "exact_parent_sha": "34e45ffc2784a7689f005bd86519b5310f934fc1",
   "qualification_branch": "research/external-hosted-yggdrasil-cumulative-multirow-state-carry-depth-r5",
   "north_star_path": "research/architecture/yggdrasil-north-star.ice",
@@ -45,8 +45,8 @@
     "carry_start_cycle": 1,
     "carry_application_count": 180,
     "carry_source": "immediately preceding cycle second-step active partition",
-    "carry_key_rule": "top five distinct active keys by contribution to preceding second-step novel cue; tie-break higher utility then key",
-    "next_first_step_rule": "reserve all five carried keys then fill remaining active slots using unchanged 050 ranking without duplicates",
+    "carry_key_rule": "top six distinct active keys by contribution to preceding second-step novel cue; tie-break higher utility then key",
+    "next_first_step_rule": "reserve all six carried keys then fill remaining active slots using unchanged 050 ranking without duplicates",
     "second_step_rule": "byte-identical 050 selection",
     "carried_state_width": 6,
     "learned_state": false
@@ -59,16 +59,21 @@
   },
   "no_post_result_tuning_rule": "Do not alter sources, six-cycle horizon, six-row carry width, carry source/ranking/reservation rule, episode order, novel cue, guard rule/applicability, 0.95 floor, capacity, metrics, classification, or authority after primary output.",
   "successor_if_supported": {
-    "experiment_family": "EXP-DGR-EXTERNAL-CUMULATIVE-MULTIROW-STATE-CARRY-DEPTH-051",
-    "intent": "increase bounded carried state from six rows to six rows while keeping total capacity frozen"
+    "experiment_family": "EXP-DGR-EXTERNAL-CUMULATIVE-MULTIROW-STATE-CARRY-DEPTH-052",
+    "intent": "increase bounded carried state from six rows to seven rows while keeping total capacity frozen"
   },
   "successor_if_mixed_or_negative": {
-    "experiment_family": "EXP-DGR-EXTERNAL-CUMULATIVE-MULTIROW-STATE-CARRY-ATTRIBUTION-051",
+    "experiment_family": "EXP-DGR-EXTERNAL-CUMULATIVE-MULTIROW-STATE-CARRY-ATTRIBUTION-052",
     "intent": "attribute the first six-row carry-induced safety or recovery failure before changing carry width or guard"
   },
   "changed_paths": [
     "research/experiments/exp-dgr-external-cumulative-multirow-state-carry-depth-051.ice",
     "research/applications/plane/exp-dgr-external-cumulative-multirow-state-carry-depth-051.py",
     ".github/workflows/external-cumulative-multirow-state-carry-depth-051.yml"
-  ]
+  ],
+  "portfolio_context": {
+    "branch": "research/portfolio-rsi-v1",
+    "commit": "0643cb23ac8830c8f130c14cc8385b390d877cdc",
+    "role": "advisory-only; transfer-efficient learning objective applies after honoring this frozen carry-depth successor"
+  }
 }
