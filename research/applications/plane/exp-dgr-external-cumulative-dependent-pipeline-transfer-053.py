@@ -188,13 +188,15 @@ def run(root):
             if key not in selected_keys:
                 selected.append(row)
                 selected_keys.add(key)
+        if len(selected) > ACTIVE_CEILING:
+            m["invalid_evaluation_rows"] += 1.0
         for row in ranked:
+            if len(selected) >= ACTIVE_CEILING:
+                break
             if row["key"] in selected_keys:
                 continue
             selected.append(row)
             selected_keys.add(row["key"])
-            if len(selected) == ACTIVE_CEILING:
-                break
         if len(selected) != ACTIVE_CEILING:
             m["invalid_evaluation_rows"] += 1.0
         record_partition(rows, selected)
