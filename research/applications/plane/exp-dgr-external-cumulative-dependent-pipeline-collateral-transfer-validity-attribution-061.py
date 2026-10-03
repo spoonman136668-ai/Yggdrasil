@@ -94,7 +94,7 @@ def run(root):
         cells,nsel,_,_=p16.build_matched_minimax_cells(learner,eg,base,st,pooled,ind,names,cur,p15)
         if nsel!=16:m["matched_assignment_failure_count"]+=1.0
         fm=learner.specialized_map(cells);rows=wake.known_rows(pressure,learner,cells,st)
-        if len(fm)!=16 or len(rows)!=16:m["invalid_evaluation_rows"]+=1.0
+        if len(fm)!=16 or len(rows)!=16:invalid("state_shape",1)
         return rows,fm
 
     def rank(rows,fm,cue):
