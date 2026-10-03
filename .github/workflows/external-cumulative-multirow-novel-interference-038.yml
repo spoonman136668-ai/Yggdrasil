@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-          fetch-depth: 4
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -27,12 +27,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^^)" = "f9e9c8734f464f64f31eafbac5a29a38512a9c28"
-          test "$(git rev-parse HEAD^^^)" = "a6678e6f7ee0ae2036d49bf8a6fce5f9cd80f1f3"
-          test "$(git rev-parse HEAD^^^^)" = "fb7e7fa43a877c0fcfb2eaf9e4e92ea714c03e95"
-          test "$(git diff-tree --no-commit-id --name-only -r HEAD^^^)" = "research/experiments/exp-dgr-external-cumulative-multirow-novel-interference-038.ice"
-          changed="$(git diff --name-only HEAD^^^^..HEAD | sort)"
-          expected="$(printf '%s\n' '.github/workflows/external-cumulative-multirow-novel-interference-038.yml' 'research/applications/plane/exp-dgr-external-cumulative-multirow-novel-interference-038.py' 'research/experiments/exp-dgr-external-cumulative-multirow-novel-interference-038.ice' | sort)"
+          git merge-base --is-ancestor "a6678e6f7ee0ae2036d49bf8a6fce5f9cd80f1f3" HEAD
+          test "$(git rev-parse a6678e6f7ee0ae2036d49bf8a6fce5f9cd80f1f3^)" = "fb7e7fa43a877c0fcfb2eaf9e4e92ea714c03e95"
+          test "$(git diff-tree --no-commit-id --name-only -r a6678e6f7ee0ae2036d49bf8a6fce5f9cd80f1f3)" = "research/experiments/exp-dgr-external-cumulative-multirow-novel-interference-038.ice"
+          changed="$(git diff --name-only fb7e7fa43a877c0fcfb2eaf9e4e92ea714c03e95..HEAD | sort)"
+          expected="$(printf '%s\\n' '.github/workflows/external-cumulative-multirow-novel-interference-038.yml' 'research/applications/plane/exp-dgr-external-cumulative-multirow-novel-interference-038.py' 'research/experiments/exp-dgr-external-cumulative-multirow-novel-interference-038.ice' | sort)"
           test "$changed" = "$expected"
       - name: Verify READY_RESEARCH receipt
         shell: bash
