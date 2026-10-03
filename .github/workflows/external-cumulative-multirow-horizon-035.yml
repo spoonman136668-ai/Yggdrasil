@@ -1,0 +1,131 @@
+name: Yggdrasil cumulative multirow horizon 035
+
+on:
+  push:
+    branches:
+      - research/external-hosted-yggdrasil-cumulative-multirow-horizon-r1
+    paths:
+      - 'research/applications/plane/exp-dgr-external-cumulative-multirow-horizon-035.py'
+      - '.github/workflows/external-cumulative-multirow-horizon-035.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate frozen package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "630caa0efece9d63be0036dedff182b90424cd61"
+          test "$(git rev-parse HEAD^^)" = "6fdce5420ffe461e08f356be737c50d81772d1c2"
+      - name: Verify READY_RESEARCH receipt
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          raw=r'''{"schema":"ckb-plane.external-exposure-ready-research-receipt.v1","project":"Yggdrasil","experiment":"EXP-DGR-EXTERNAL-CUMULATIVE-MULTIROW-HORIZON-035","preregistration_sha":"630caa0efece9d63be0036dedff182b90424cd61","research_host":"runnervm8df0l","runner_id":"GitHub Actions 1000001602","manifest_sha256":"75cdb3b97dbb7017299f573d506f07095ed89c06264b29724b78f29c909d4da4","plan_decision":{"schema":"ckb-plane.external-exposure.v1","disposition":"READY_PLAN","scope":"plan-only","reasons":null},"fetch_decision":{"schema":"ckb-plane.external-exposure-fetch.v1","disposition":"READY_FETCH","scope":"fetch-verify-only","reasons":null},"research_decision":{"schema":"ckb-plane.external-exposure-research.v1","disposition":"READY_RESEARCH","scope":"research-consume-once","reasons":null},"ckb_plane_main_sha":"36d99a0257120ede57bb96638660d35014dd529e"}'''
+          assert hashlib.sha256(raw.encode()).hexdigest()=="3d52f55e7aa1c486ea7ade22c3a97e0fbea9b6feb752756edce618d6b64d20af"
+          assert json.loads(raw)["research_decision"]["disposition"]=="READY_RESEARCH"
+          pathlib.Path("/tmp/authority.json").write_text(raw)
+          PY
+      - name: Fetch exact external sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          export EXTERNAL_ROOT="$RUNNER_TEMP/ygg-035"; mkdir -p "$EXTERNAL_ROOT"
+          python3 - <<'PY'
+          import hashlib,os,pathlib,urllib.request
+          sources=[
+            ("code","https://raw.githubusercontent.com/python/cpython/ebf955df7a89ed0c7968f79faec1de49f61ed7cb/Lib/fractions.py","7a95f1c506c9ac4b2277df5f2bdd9d61cc67b520c45021a5a961939770221ef6",41453),
+            ("structured","https://raw.githubusercontent.com/json-schema-org/JSON-Schema-Test-Suite/5b0ee1613e45fcc2bddac00e07c19cd49b00d8a8/tests/draft2020-12/type.json","4c5cbe6cbcd28af73761091367b20e07d0403847e236c06c31fc27061bd81192",14365),
+            ("technical-prose","https://raw.githubusercontent.com/golang/go/6f5c275ebdc454197fff5f1496521c8f81e20eef/README.md","8247b7c5de1e74854aac1a08aa5894444d1d33b4045c70d5cc3367ad0e25c3f3",1454),
+          ]
+          root=pathlib.Path(os.environ["EXTERNAL_ROOT"])
+          for d,u,h,n in sources:
+              b=urllib.request.urlopen(urllib.request.Request(u,headers={"User-Agent":"ygg-035"}),timeout=30).read(n+1)
+              assert len(b)==n and hashlib.sha256(b).hexdigest()==h
+              (root/(d+".bin")).write_bytes(b)
+          PY
+          echo "EXTERNAL_ROOT=$EXTERNAL_ROOT" >> "$GITHUB_ENV"
+      - name: Run frozen cumulative multirow horizon probe twice
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python research/applications/plane/exp-dgr-external-cumulative-multirow-horizon-035.py --root "$EXTERNAL_ROOT" --out /tmp/result1.json
+          python research/applications/plane/exp-dgr-external-cumulative-multirow-horizon-035.py --root "$EXTERNAL_ROOT" --out /tmp/result2.json
+          cmp /tmp/result1.json /tmp/result2.json
+          cat /tmp/result1.json
+      - name: Classify
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,math,pathlib
+          r=json.loads(pathlib.Path("/tmp/result1.json").read_text());m=r["metrics"]
+          valid=(
+            m["source_identity_mismatch_count"]==0 and
+            m["source_count"]==3 and
+            m["total_source_bytes"]==57272 and
+            m["base_training_identity_mismatch_count"]==0 and
+            m["schedule_count"]==6 and
+            m["target_pair_count"]==3 and
+            m["epoch_count"]==12 and
+            m["competition_epoch_case_count"]==216 and
+            m["target_reactivation_evaluation_count"]==432 and
+            m["zero_baseline_non_target_case_count"]>0 and
+            m["ratio_applicable_non_target_case_count"]>0 and
+            m["zero_baseline_non_target_case_count"]+m["ratio_applicable_non_target_case_count"]==216 and
+            m["preserved_state_structure_count_min"]==16 and
+            m["preserved_state_structure_count_max"]==16 and
+            m["active_structure_count_min"]==7 and
+            m["active_structure_count_max"]==7 and
+            m["retained_structure_count_min"]==9 and
+            m["retained_structure_count_max"]==9 and
+            m["target_interference_leakage_count"]==0 and
+            m["heldout_selection_use_count"]==0 and
+            m["matched_assignment_failure_count"]==0 and
+            m["maturity_criterion_violation_count"]==0 and
+            m["capacity_growth_event_count"]==0 and
+            m["tokenizer_use_count"]==0 and
+            m["external_model_call_count"]==0 and
+            m["invalid_evaluation_rows"]==0 and
+            all(math.isfinite(float(v)) for v in m.values())
+          )
+          all_targets=(m["positive_target_reactivation_evaluation_count"]==432 and m["minimum_target_preserved_incremental_correct_count"]>=1)
+          final_targets=m["final_epoch_positive_target_evaluation_count"]==36
+          zero_safe=m["zero_baseline_preserved_negative_count"]==0
+          cost=m["minimum_applicable_non_target_preserved_to_unprotected_fraction"]>=0.95
+          if not valid: cls="invalid"
+          elif not final_targets: cls="negative"
+          elif all_targets and zero_safe and cost: cls="supported"
+          else: cls="mixed"
+          out={"schema":"yggdrasil.research-classification.v1","experiment":"EXP-DGR-EXTERNAL-CUMULATIVE-MULTIROW-HORIZON-035","classification":cls,"validity_pass":valid,"authority_receipt_sha256":"3d52f55e7aa1c486ea7ade22c3a97e0fbea9b6feb752756edce618d6b64d20af","metrics":m}
+          pathlib.Path("/tmp/classification.json").write_text(json.dumps(out,separators=(",",":")));print(json.dumps(out,separators=(",",":")))
+          if not valid: raise SystemExit(2)
+          PY
+      - name: Delete external bytes
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/ygg-035"
+      - name: Upload evidence
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yggdrasil-external-cumulative-multirow-horizon-035
+          path: |
+            /tmp/authority.json
+            /tmp/result1.json
+            /tmp/result2.json
+            /tmp/classification.json
+          if-no-files-found: error
