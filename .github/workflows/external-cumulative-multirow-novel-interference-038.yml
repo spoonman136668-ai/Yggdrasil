@@ -28,11 +28,20 @@ jobs:
         run: |
           set -euo pipefail
           git merge-base --is-ancestor "a6678e6f7ee0ae2036d49bf8a6fce5f9cd80f1f3" HEAD
-          test "$(git rev-parse a6678e6f7ee0ae2036d49bf8a6fce5f9cd80f1f3^)" = "fb7e7fa43a877c0fcfb2eaf9e4e92ea714c03e95"
-          test "$(git diff-tree --no-commit-id --name-only -r a6678e6f7ee0ae2036d49bf8a6fce5f9cd80f1f3)" = "research/experiments/exp-dgr-external-cumulative-multirow-novel-interference-038.ice"
-          changed="$(git diff --name-only fb7e7fa43a877c0fcfb2eaf9e4e92ea714c03e95..HEAD | sort)"
-          expected="$(printf '%s\\n' '.github/workflows/external-cumulative-multirow-novel-interference-038.yml' 'research/applications/plane/exp-dgr-external-cumulative-multirow-novel-interference-038.py' 'research/experiments/exp-dgr-external-cumulative-multirow-novel-interference-038.ice' | sort)"
-          test "$changed" = "$expected"
+          python3 - <<'PY'
+          import subprocess
+          prereg="a6678e6f7ee0ae2036d49bf8a6fce5f9cd80f1f3"
+          parent="fb7e7fa43a877c0fcfb2eaf9e4e92ea714c03e95"
+          prereg_path="research/experiments/exp-dgr-external-cumulative-multirow-novel-interference-038.ice"
+          actual_parent=subprocess.check_output(["git","rev-parse",prereg+"^"],text=True).strip()
+          assert actual_parent==parent,(actual_parent,parent)
+          prereg_files=set(subprocess.check_output(["git","diff-tree","--no-commit-id","--name-only","-r",prereg],text=True).splitlines())
+          assert prereg_files=={prereg_path},prereg_files
+          changed=set(subprocess.check_output(["git","diff","--name-only",parent+"..HEAD"],text=True).splitlines())
+          expected=set([".github/workflows/external-cumulative-multirow-novel-interference-038.yml","research/applications/plane/exp-dgr-external-cumulative-multirow-novel-interference-038.py","research/experiments/exp-dgr-external-cumulative-multirow-novel-interference-038.ice"])
+          assert changed==expected,(sorted(changed),sorted(expected))
+          print("FROZEN_PACKAGE_OK",sorted(changed))
+          PY
       - name: Verify READY_RESEARCH receipt
         shell: bash
         run: |
