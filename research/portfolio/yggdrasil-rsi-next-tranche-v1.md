@@ -1,4 +1,4 @@
-# Yggdrasil RSI / Safety Research Portfolio — Next Tranche v1
+# Yggdrasil Learning-Efficiency / Safety Research Portfolio — Next Tranche v1
 
 **Status:** ACTIVE ADVISORY PORTFOLIO  
 **Effective boundary:** applies only to successors after closure of EXP-DGR-EXTERNAL-CUMULATIVE-MULTIROW-STATE-CARRY-DEPTH-049.  
@@ -6,13 +6,13 @@
 
 ## Governing objective
 
-Capability improvement under invariant external control, with deterministic evidence, complete causal traceability, bounded reversible modification, and reproducible qualification.
+Increasingly efficient learning of unseen future datasets under fixed data, compute, capacity, and authority budgets, with invariant external control, deterministic evidence, complete causal traceability, bounded reversible modification, and reproducible qualification.
 
 Shared North Star:
 
 raw input -> representation -> prediction -> reasoning/generation -> persistent accumulated cognition -> trainable general language/reasoning system.
 
-RSI is an explicit scientific objective, not an assumed capability.
+Self-modification and RSI are not optimization targets. They remain bounded scientific hypotheses/mechanisms that may be tested only when they plausibly improve transfer-efficient learning under the unchanged external envelope.
 
 ## Current closure evidence
 
@@ -25,7 +25,7 @@ Honor 049's frozen successor pointer before portfolio rebalancing. If supported,
 Use a rolling 20-successor planning window. Existing frozen successor commitments always take precedence.
 
 - 45% / 9 of 20 — cumulative memory / dependent information pipeline.
-- 30% / 6 of 20 — RSI / self-maintenance.
+- 30% / 6 of 20 — transfer-efficient consolidation / adaptation / self-maintenance under fixed budgets; bounded self-modification is only one candidate mechanism.
 - 15% / 3 of 20 — Wingless-compatible persistent cognitive state.
 - 10% / 2 of 20 — substrate falsification.
 
@@ -39,15 +39,34 @@ receive A -> retain/consolidate A -> receive B -> derive state requiring A+B -> 
 
 Later stages must not be independently solvable without earlier retained information. Maintain fixed capacity unless capacity itself is explicitly preregistered as the independent variable.
 
-## RSI evidence ladder
+## Transfer-efficient learning objective
 
-Use **self-improvement precursor** until individual pieces are supported.
+The primary optimization target is **increasingly efficient learning and reuse of unseen future datasets under fixed data, compute, capacity, and authority budgets**.
 
-Do not use **autonomous self-improvement** until Yggdrasil independently demonstrates, across multiple unseen degradation/interference cases:
+Do not directly optimize for self-modification. Bounded reorganization, repair, consolidation-policy change, or other self-modification may be tested only as candidate mechanisms for improving later learning/reuse efficiency.
 
-detect degradation -> diagnose -> select an allowed bounded repair/consolidation/reorganization -> instantiate candidate state -> preserve unrelated capability -> external held-out validation -> retain/revert.
+A candidate change may not be retained merely because it improves the interference case, dataset, or memory sequence that produced it. Retention requires a preregistered advantage on disjoint future datasets or future dependent-information sequences that were unavailable during selection.
 
-Do not use **recursive self-improvement** until an accepted adaptation measurably improves later self-maintenance effectiveness or efficiency under the same external control envelope.
+Required comparison discipline:
+- exact predecessor/no-modification baseline under the same per-dataset data budget;
+- same adaptation/development compute and runtime budget;
+- same fixed active/retained/capacity envelope unless capacity is explicitly the independent variable;
+- same authority/tool envelope;
+- same collateral-preservation requirements;
+- preregistered disjoint future dataset/sequence for transfer validation;
+- no post-result choice of transfer sequence.
+
+Preferred transfer metrics include data-to-threshold, compute-to-threshold, retained useful state per byte, later-task learning speed, reuse efficiency, preservation of unrelated prior capabilities, reactivation cost, and equal-budget performance on later unseen dependent pipelines.
+
+If a candidate helps the originating sequence but fails to improve later unseen learning/reuse, revert it. Preserve the result as mechanism evidence.
+
+## Learning-efficiency and self-maintenance evidence ladder
+
+Use **self-improvement precursor** only for bounded mechanisms that have been demonstrated but have not yet shown transferable advantage on later unseen datasets.
+
+Do not use **autonomous self-improvement** unless a bounded closed-loop process is demonstrated across multiple unseen cases **and** retained modifications improve learning on preregistered disjoint future datasets under the same budgets.
+
+Do not use **recursive self-improvement** unless an accepted transferable improvement measurably improves later learning/adaptation or later improvement cycles under the same unchanged external envelope.
 
 ## Candidate-only self-maintenance boundary
 
@@ -147,4 +166,4 @@ Neither project promotes itself or gains authority from successful performance.
 
 Every experiment closes with experiment identity, scientific classification, infrastructure classification if applicable, technical/raw evidence, plain-speak interpretation, deterministic/probabilistic qualification status, causal trace, hypothesis strengthened/eliminated, exact predecessor/resulting-state identity, exact successor question, and preregistered successor where scientifically safe and obvious.
 
-Automatic continuation is allowed only when the successor follows from frozen evidence, no safety tripwire fired, no architectural premise changed, provenance is complete, qualification is valid, and authority/resource envelope is unchanged.
+Automatic continuation is allowed only when the successor follows from frozen evidence, no safety tripwire fired, no architectural premise changed, provenance is complete, qualification is valid, fixed data/compute/capacity/authority budgets remain explicit, and the authority/resource envelope is unchanged.
