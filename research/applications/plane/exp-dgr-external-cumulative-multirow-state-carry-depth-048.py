@@ -224,7 +224,7 @@ def run(root):
             original_keys = {r["key"] for r in ranked[:7]}
             if guard["key"] in original_keys:
                 m["guard_noop_episode_count"] += 1.0
-        if carry_keys is None or len(carry_keys) != 3 or len(set(carry_keys)) != 2:
+        if carry_keys is None or len(carry_keys) != 3 or len(set(carry_keys)) != 3:
             m["state_carry_accounting_error_count"] += 1.0
             carry_keys = () if carry_keys is None else tuple(carry_keys)
         for carry_key in carry_keys:
