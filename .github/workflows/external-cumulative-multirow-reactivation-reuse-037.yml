@@ -27,8 +27,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "71e283a1ae6d727abb9fd84f7a3c990d005cd96c"
-          test "$(git rev-parse HEAD^^)" = "8ba18b108f93785a2c4cf36178ccc0376760c2c3"
+          test "$(git rev-parse HEAD^)" = "24a7d629ab47a48081cd006f964e0053ee1b0e79"
+          test "$(git rev-parse HEAD^^)" = "71e283a1ae6d727abb9fd84f7a3c990d005cd96c"
+          test "$(git rev-parse HEAD^^^)" = "55e5eb91759bcbe1b2467a2f6cbdb8fc793c2326"
+          test "$(git rev-parse HEAD^^^^)" = "8ba18b108f93785a2c4cf36178ccc0376760c2c3"
       - name: Verify READY_RESEARCH receipt
         shell: bash
         run: |
