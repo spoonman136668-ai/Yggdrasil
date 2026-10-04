@@ -109,8 +109,9 @@ def run(root):
       "local_row_synthesis_count":0.0,"heldout_local_row_selection_count":0.0,
       "active_local_use_schedule_count":0.0,"original_positive_prose_collateral_schedule_count":0.0,
       "passive_positive_prose_collateral_schedule_count":0.0,"active_positive_prose_collateral_schedule_count":0.0,
-      "active_partner_collateral_failure_count":0.0,"capacity_growth_event_count":0.0,
-      "invalid_evaluation_rows":0.0,
+      "original_partner_collateral_failure_count":0.0,"passive_partner_collateral_failure_count":0.0,"active_partner_collateral_failure_count":0.0,
+      "original_mean_first_success_packet":0.0,"passive_mean_first_success_packet":0.0,"active_mean_first_success_packet":0.0,
+      "capacity_growth_event_count":0.0,"invalid_evaluation_rows":0.0,
     }
     rows,fm,prose_train=canonical_donor(root,m)
     state=select_local(rows,fm,prose_train,m)
@@ -124,7 +125,12 @@ def run(root):
     m["original_positive_prose_collateral_schedule_count"]=float(cm["original_positive_prose_collateral_schedule_count"])
     m["passive_positive_prose_collateral_schedule_count"]=float(cm["passive_positive_prose_collateral_schedule_count"])
     m["active_positive_prose_collateral_schedule_count"]=float(cm["active_positive_prose_collateral_schedule_count"])
+    m["original_partner_collateral_failure_count"]=float(cm["original_partner_collateral_failure_count"])
+    m["passive_partner_collateral_failure_count"]=float(cm["passive_partner_collateral_failure_count"])
     m["active_partner_collateral_failure_count"]=float(cm["active_partner_collateral_failure_count"])
+    m["original_mean_first_success_packet"]=float(cm["original_mean_first_success_packet"])
+    m["passive_mean_first_success_packet"]=float(cm["passive_mean_first_success_packet"])
+    m["active_mean_first_success_packet"]=float(cm["active_mean_first_success_packet"])
     m["capacity_growth_event_count"]=float(cm["capacity_growth_event_count"])
     m["invalid_evaluation_rows"]+=float(cm["invalid_evaluation_rows"])
     if cm["transported_state_identity_mismatch_count"]!=0:m["invalid_evaluation_rows"]+=float(cm["transported_state_identity_mismatch_count"])
