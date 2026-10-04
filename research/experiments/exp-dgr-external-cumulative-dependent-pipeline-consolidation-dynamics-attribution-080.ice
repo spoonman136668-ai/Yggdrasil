@@ -31,8 +31,8 @@
     "observed_failure": "Y079 preserved all 17 eligible historical rows but both frozen target keys still retrieved transfer and neither arm rescued.",
     "residual_cause_under_test": "MISSING_CUMULATIVE_EVIDENCE_INTEGRATION",
     "exact_bounded_delta": "replace only the historical representation in two new shadow arms: deterministic evidence accumulation by exact key or byte-class key; reproduce Y079 full-pool control unchanged",
-    "exact_key_accumulation": "for each exact four-byte key appearing in >=2 historical contexts, sum total and successor counts across contexts; winner is highest summed successor count with lowest-byte tie-break; consistency=winner_count/total; utility uses the unchanged donor utility formula from aggregated counts; no fifth-context data",
-    "class_key_accumulation": "same aggregation after mapping every key byte through the unchanged Y075 byte_class; retain the lexicographically smallest exact member key as deterministic representative anchor; payload winner derives only from aggregated historical successor counts",
+    "exact_key_accumulation": "for each exact four-byte key appearing in >=2 historical contexts, sum total across member rows and accumulate each row's exposed best_count under that row's best successor byte; winner is the byte with highest summed best_count with lowest-byte tie-break; consistency=winner_best_count/summed_total; utility=winner_best_count*consistency, matching the donor utility form; no unavailable non-best successor histogram is reconstructed and no fifth-context data is used",
+    "class_key_accumulation": "same exposed-best-count aggregation after mapping every key byte through the unchanged Y075 byte_class; retain the lexicographically smallest exact member key as deterministic representative anchor; payload winner derives only from summed historical best_count evidence",
     "target_retrieval": "for each frozen fifth-context key, choose nearest aggregate by raw four-byte Hamming for EXACT_KEY_ACCUMULATION and class-Hamming for CLASS_KEY_ACCUMULATION; deterministic lexical tie-break",
     "nonredundancy": "Y067-Y079 transported, projected, compressed, expanded, and retrieved static rows. None accumulated repeated historical evidence into a consolidated state before target retrieval.",
     "retain_revert": "Y080 is shadow attribution only; support authorizes a separately preregistered consolidation update rule, not accepted-state mutation."
@@ -120,7 +120,7 @@
   },
   "rsi_success": false,
   "rsi_success_note": "Y080 remains shadow attribution on studied contexts; a supported accumulation mechanism still requires separately frozen prospective disjoint-context validation.",
-  "no_post_result_tuning_rule": "Do not alter manifests, historical pool, key/class grouping, aggregation formulas, target keys, retrieval, six cells, schedules, split, packet count, activation/scoring, 16/7/9 capacity, classification or authority after primary output.",
+  "no_post_result_tuning_rule": "Do not alter manifests, historical pool, key/class grouping, exposed-best-count aggregation formulas, target keys, retrieval, six cells, schedules, split, packet count, activation/scoring, 16/7/9 capacity, classification or authority after primary output.",
   "successors": {
     "supported": {
       "contract_id": "yggdrasil-081-cumulative-evidence-consolidation-correction",
