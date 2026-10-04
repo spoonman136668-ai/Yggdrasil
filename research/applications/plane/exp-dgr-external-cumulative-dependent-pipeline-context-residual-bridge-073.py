@@ -87,7 +87,8 @@ def behavior_changed(child):
     return False
 
 def run(root):
-    m={"source_identity_mismatch_count":0.0,"base_training_identity_mismatch_count":0.0,
+    m={"source_identity_mismatch_count":0.0,"induction_source_count":0.0,"induction_source_bytes":0.0,
+       "base_training_identity_mismatch_count":0.0,"history_byte_budget_mismatch_count":0.0,
        "source_role_override_verified":0.0,"source_baseline_prediction":0.0,"source_best":32.0,
        "candidate_count":0.0,"eligible_candidate_count":0.0,"heldout_selection_count":0.0,
        "selected_trigger_rank":0.0,"selected_compatibility_score":0.0,"selected_alt_best":0.0,
