@@ -1,0 +1,117 @@
+name: Yggdrasil retained-state materialization 067
+on:
+  push:
+    branches:
+      - research/external-hosted-yggdrasil-dependent-pipeline-context-indexed-collateral-retained-state-materialization-r1
+    paths:
+      - 'research/experiments/exp-dgr-external-cumulative-dependent-pipeline-context-indexed-collateral-retained-state-materialization-067.ice'
+      - 'research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-context-indexed-collateral-retained-state-materialization-067.py'
+      - '.github/workflows/external-cumulative-dependent-pipeline-context-indexed-collateral-retained-state-materialization-067.yml'
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate frozen package
+        shell: bash
+        run: |
+          set -euo pipefail
+          prereg="e052ae04a9ac5b3f07501e20e7cdde8bfba33308"
+          parent="e5b3d88ba4b1a5a27341109681e59ff6d7054e6e"
+          pp="research/experiments/exp-dgr-external-cumulative-dependent-pipeline-context-indexed-collateral-retained-state-materialization-067.ice"
+          test "$(git rev-parse "$prereg^")" = "$parent"
+          git merge-base --is-ancestor "$prereg" HEAD
+          changed="$(git diff --name-only "$parent..HEAD" | sort)"
+          expected="$(printf '%s\n'             '.github/workflows/external-cumulative-dependent-pipeline-context-indexed-collateral-retained-state-materialization-067.yml'             'research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-context-indexed-collateral-retained-state-materialization-067.py'             "$pp" | sort)"
+          test "$changed" = "$expected"
+      - name: Verify READY_RESEARCH receipt
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          raw=r'''{"schema":"ckb-plane.external-exposure-ready-research-receipt.v1","project":"Yggdrasil","experiment":"EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-CONTEXT-INDEXED-COLLATERAL-RETAINED-STATE-MATERIALIZATION-067","preregistration_sha":"e052ae04a9ac5b3f07501e20e7cdde8bfba33308","research_host":"runnervm8df0l","runner_id":"GitHub Actions 1000001860","manifest_sha256":"c79f09eb3841309b38827ceffee6a14eb87973c8aa2cf817908ed05f10e5c250","plan_decision":{"schema":"ckb-plane.external-exposure.v1","disposition":"READY_PLAN","scope":"plan-only","reasons":null},"fetch_decision":{"schema":"ckb-plane.external-exposure-fetch.v1","disposition":"READY_FETCH","scope":"fetch-verify-only","reasons":null},"research_decision":{"schema":"ckb-plane.external-exposure-research.v1","disposition":"READY_RESEARCH","scope":"research-consume-once","reasons":null},"ckb_plane_main_sha":"2518306c74ff426278f31b1199f8ad9891299d14"}'''
+          assert hashlib.sha256(raw.encode()).hexdigest()=="37ae688f192ed5cbb48084d98420e0ccb285db5bd87d993c9a5a8259a8ff25e4"
+          r=json.loads(raw)
+          assert r["preregistration_sha"]=="e052ae04a9ac5b3f07501e20e7cdde8bfba33308"
+          assert r["manifest_sha256"]=="c79f09eb3841309b38827ceffee6a14eb87973c8aa2cf817908ed05f10e5c250"
+          assert r["ckb_plane_main_sha"]=="2518306c74ff426278f31b1199f8ad9891299d14"
+          assert r["research_decision"]["disposition"]=="READY_RESEARCH"
+          pathlib.Path("/tmp/authority.json").write_text(raw)
+          PY
+      - name: Fetch exact original transfer sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          export EXTERNAL_ROOT="$RUNNER_TEMP/ygg-067"; mkdir -p "$EXTERNAL_ROOT"
+          python3 - <<'PY'
+          import hashlib,os,pathlib,urllib.request
+          sources=[
+            ("code","https://raw.githubusercontent.com/python/cpython/ebf955df7a89ed0c7968f79faec1de49f61ed7cb/Lib/statistics.py","3023ec949802c2e880a000775bfd1a6b70c21b5423881118141e3ec69d8e3336",61896,41453,"66bb25b24a0316b4965c64798494de93a1d7332672b15b5f430ab6a2fb4b9d45"),
+            ("structured","https://raw.githubusercontent.com/json-schema-org/JSON-Schema-Test-Suite/5b0ee1613e45fcc2bddac00e07c19cd49b00d8a8/tests/draft2020-12/uniqueItems.json","ed84ef6ddc827659e257ba64cbe9679f06932b6320bea5c07622bf3d2cc4daa5",14490,14365,"95ddbd0eaef29aad5ecfc74f9da21b795481f58b2c59380324a445fcd4d08932"),
+            ("technical-prose","https://raw.githubusercontent.com/golang/go/6f5c275ebdc454197fff5f1496521c8f81e20eef/doc/README.md","c1bf000e7a873b3afed329c5b9f9c07f7692b1d7fb2bfca2d7600cec8b1d1407",3124,1454,"48c3d95b8b03864a4af41d892710675956cde85afd0d5d6c331594de9f17881b"),
+          ]
+          root=pathlib.Path(os.environ["EXTERNAL_ROOT"])
+          for d,u,full_h,full_n,prefix_n,prefix_h in sources:
+              b=urllib.request.urlopen(urllib.request.Request(u,headers={"User-Agent":"ygg-067"}),timeout=30).read(full_n+1)
+              assert len(b)==full_n and hashlib.sha256(b).hexdigest()==full_h
+              p=b[:prefix_n]
+              assert len(p)==prefix_n and hashlib.sha256(p).hexdigest()==prefix_h
+              (root/(d+".bin")).write_bytes(p)
+          PY
+          echo "EXTERNAL_ROOT=$EXTERNAL_ROOT" >> "$GITHUB_ENV"
+      - name: Run frozen materialization twice
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-context-indexed-collateral-retained-state-materialization-067.py --root "$EXTERNAL_ROOT" --out /tmp/result1.json
+          python research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-context-indexed-collateral-retained-state-materialization-067.py --root "$EXTERNAL_ROOT" --out /tmp/result2.json
+          cmp /tmp/result1.json /tmp/result2.json
+          cat /tmp/result1.json
+      - name: Classify and freeze retained state
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,math,pathlib
+          r=json.loads(pathlib.Path("/tmp/result1.json").read_text());m=r["metrics"];s=r["retained_state"]
+          valid=(m["source_identity_mismatch_count"]==0 and m["loaded_source_count"]==2 and
+            m["loaded_source_bytes"]==15819 and m["base_training_identity_mismatch_count"]==0 and
+            m["history_byte_budget_mismatch_count"]==0 and m["donor_row_count"]==16 and
+            m["evaluation_use_count"]==0 and m["policy_selection_count"]==0 and
+            m["capacity_growth_event_count"]==0 and m["persistent_state_write_count"]==0 and
+            m["production_authority_count"]==0 and m["invalid_rows"]==0 and
+            all(math.isfinite(float(v)) for v in m.values()))
+          supported=(valid and m["retained_key_row_count"]==1 and m["retained_key_map_count"]==1 and
+            m["serialized_field_count"]==8 and s is not None and s["key"]==[10,32,32,32] and s["best"]==s["map_best"])
+          cls="supported" if supported else ("negative" if valid else "invalid")
+          out={"schema":"yggdrasil.research-classification.v1","experiment":"EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-CONTEXT-INDEXED-COLLATERAL-RETAINED-STATE-MATERIALIZATION-067","classification":cls,"validity_pass":valid,"authority_receipt_sha256":"37ae688f192ed5cbb48084d98420e0ccb285db5bd87d993c9a5a8259a8ff25e4","metrics":m,"retained_state":s}
+          pathlib.Path("/tmp/classification.json").write_text(json.dumps(out,separators=(",",":"),sort_keys=True))
+          pathlib.Path("/tmp/retained-state.json").write_text(json.dumps(s,separators=(",",":"),sort_keys=True) if s is not None else "null")
+          print(json.dumps(out,separators=(",",":"),sort_keys=True))
+          if not valid: raise SystemExit(2)
+          PY
+      - name: Delete external bytes
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/ygg-067"
+      - name: Upload evidence
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yggdrasil-retained-state-materialization-067
+          path: |
+            /tmp/authority.json
+            /tmp/result1.json
+            /tmp/result2.json
+            /tmp/classification.json
+            /tmp/retained-state.json
+          if-no-files-found: error
