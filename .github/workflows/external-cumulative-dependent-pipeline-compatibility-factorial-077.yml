@@ -1,0 +1,175 @@
+name: Yggdrasil compatibility factorial 077
+on:
+  push:
+    branches:
+      - research/external-hosted-yggdrasil-dependent-pipeline-compatibility-factorial-r1
+    paths:
+      - 'research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-compatibility-factorial-077.py'
+      - '.github/workflows/external-cumulative-dependent-pipeline-compatibility-factorial-077.yml'
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify preregistration and bounded implementation delta
+        shell: bash
+        run: |
+          set -euo pipefail
+          prereg='4e681969451f3149e978cfe498a9f282b59d356b'
+          parent='33d54e8ea9f96b73fb4c71d961e665be227e77f7'
+          git merge-base --is-ancestor "$parent" "$prereg"
+          git merge-base --is-ancestor "$prereg" HEAD
+          changed="$(git diff --name-only "$prereg..HEAD" | sort)"
+          expected="$(printf '%s\n' \
+            '.github/workflows/external-cumulative-dependent-pipeline-compatibility-factorial-077.yml' \
+            'research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-compatibility-factorial-077.py' | sort)"
+          test "$changed" = "$expected"
+          printf '%s  %s\n' \
+            '7077d2b72d8954afc24f36b2971393acc11e3b345f7c3521102c20347b9c6171' \
+            'research/experiments/external-future-data-fifth-context-manifest-076.json' | sha256sum -c -
+          test "$(git rev-parse "$prereg:research/experiments/exp-dgr-external-cumulative-dependent-pipeline-compatibility-factorial-077.ice")" = '2d6437e4862d062a70922776a070c69eb5591dad'
+          python -m py_compile research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-compatibility-factorial-077.py
+      - name: Verify exact READY_RESEARCH receipt
+        shell: bash
+        env:
+          AUTHORITY_RECEIPT_SHA256: '95705e33b08c1f888b59b6b6f2298551f67841f01356e0633433d89aab0743d3'
+          AUTHORITY_RECEIPT_B64: 'eyJja2JfcGxhbmVfbWFpbl9zaGEiOiJhYTY3MjE5M2Y0NDcwOWZlYTI1M2E0NjRkOTc4Zjc4M2Y4NmUxMTY0IiwiZXhwZXJpbWVudCI6IkVYUC1ER1ItRVhURVJOQUwtQ1VNVUxBVElWRS1ERVBFTkRFTlQtUElQRUxJTkUtQ09NUEFUSUJJTElUWS1GQUNUT1JJQUwtMDc3IiwiZmV0Y2hfZGVjaXNpb24iOnsic2NoZW1hIjoiY2tiLXBsYW5lLmV4dGVybmFsLWV4cG9zdXJlLWZldGNoLnYxIiwiZGlzcG9zaXRpb24iOiJSRUFEWV9GRVRDSCIsInNjb3BlIjoiZmV0Y2gtdmVyaWZ5LW9ubHkiLCJyZWFzb25zIjpudWxsfSwibWFuaWZlc3Rfc2hhMjU2IjoiNzA3N2QyYjcyZDg5NTRhZmMyNGYzNmIyOTcxMzkzYWNjMTFlM2IzNDVmN2MzNTIxMTAyYzIwMzQ3YjljNjE3MSIsInBsYW5fZGVjaXNpb24iOnsic2NoZW1hIjoiY2tiLXBsYW5lLmV4dGVybmFsLWV4cG9zdXJlLnYxIiwiZGlzcG9zaXRpb24iOiJSRUFEWV9QTEFOIiwic2NvcGUiOiJwbGFuLW9ubHkiLCJyZWFzb25zIjpudWxsfSwicHJlcmVnaXN0cmF0aW9uX3NoYSI6IjRlNjgxOTY5NDUxZjMxNDllOTc4Y2ZlNDk4YTlmMjgyYjU5ZDM1NmIiLCJwcm9qZWN0IjoiWWdnZHJhc2lsIiwicmVxdWVzdF9pZCI6ImFiNTY4MzA0ODc2NzM0NDk0ZWM1ZTRjODBmYjdiMTliIiwicmVzZWFyY2hfZGVjaXNpb24iOnsic2NoZW1hIjoiY2tiLXBsYW5lLmV4dGVybmFsLWV4cG9zdXJlLXJlc2VhcmNoLnYxIiwiZGlzcG9zaXRpb24iOiJSRUFEWV9SRVNFQVJDSCIsInNjb3BlIjoicmVzZWFyY2gtY29uc3VtZS1vbmNlIiwicmVhc29ucyI6bnVsbH0sInJlc2VhcmNoX2hvc3QiOiJHaXRIdWIgQWN0aW9ucyAxMDAwMDAyMDk1IiwicnVubmVyX2lkIjoiR2l0SHViIEFjdGlvbnMgMTAwMDAwMjA5NSIsInNjaGVtYSI6ImNrYi1wbGFuZS5leHRlcm5hbC1leHBvc3VyZS1yZWFkeS1yZXNlYXJjaC1yZWNlaXB0LnYxIn0='
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64,hashlib,json,os,pathlib
+          raw=base64.b64decode(os.environ["AUTHORITY_RECEIPT_B64"],validate=True)
+          assert hashlib.sha256(raw).hexdigest()==os.environ["AUTHORITY_RECEIPT_SHA256"]
+          r=json.loads(raw)
+          assert r["schema"]=="ckb-plane.external-exposure-ready-research-receipt.v1"
+          assert r["project"]=="Yggdrasil"
+          assert r["experiment"]=="EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-COMPATIBILITY-FACTORIAL-077"
+          assert r["preregistration_sha"]=="4e681969451f3149e978cfe498a9f282b59d356b"
+          assert r["manifest_sha256"]=="7077d2b72d8954afc24f36b2971393acc11e3b345f7c3521102c20347b9c6171"
+          assert r["ckb_plane_main_sha"]=="aa672193f44709fea253a464d978f783f86e1164"
+          assert r["plan_decision"]["disposition"]=="READY_PLAN"
+          assert r["fetch_decision"]["disposition"]=="READY_FETCH"
+          assert r["research_decision"]["disposition"]=="READY_RESEARCH"
+          pathlib.Path("/tmp/authority.json").write_bytes(raw)
+          PY
+      - name: Fetch exact fifth-context sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          export EXTERNAL_ROOT="$RUNNER_TEMP/yggdrasil-077"
+          mkdir -p "$EXTERNAL_ROOT"
+          python - <<'PY'
+          import hashlib,os,pathlib,urllib.request
+          sources=[
+            ("code","https://raw.githubusercontent.com/pytorch/pytorch/496340f06ef7bda2800522429ba3f4e3473a92fa/torch/_inductor/scheduler.py",539420,"b13a89d0fd77430e2a637dae41980086909c4ad4a855b8418dc17286c39953b8",41453,"504b68653b5478b88216f6342a74bacc5982549657005fb486dd00d753b4ea9a"),
+            ("structured","https://raw.githubusercontent.com/microsoft/vscode/6fad7188e7dbf7db564e5e4a85960eb2bf69bdf4/package-lock.json",784171,"73224989048e176e7eeafa8aa729df7e4d510f4bd453018902d95345db0fe886",14365,"5c0f3a215ba35b7fbcaae212d27a33ba5109e16d89809987d16fa89072534281"),
+            ("technical-prose","https://raw.githubusercontent.com/numpy/numpy/2f1eca306857b641fb0fef0ab854a2d4137e1581/doc/source/user/absolute_beginners.rst",52653,"945a0a598d080ee7526c9bd5459ce615a5b49fe0331adfdf8bbd8812e908e7e3",1454,"527e21110a7f84a1939ccf6063fdfeb77905d9ec180e5fde18488d21b90c4f49"),
+          ]
+          root=pathlib.Path(os.environ["EXTERNAL_ROOT"])
+          for name,url,full_n,full_h,prefix_n,prefix_h in sources:
+              req=urllib.request.Request(url,headers={"User-Agent":"yggdrasil-077"})
+              with urllib.request.urlopen(req,timeout=60) as response:
+                  data=response.read(full_n+1)
+              assert len(data)==full_n
+              assert hashlib.sha256(data).hexdigest()==full_h
+              prefix=data[:prefix_n]
+              assert len(prefix)==prefix_n
+              assert hashlib.sha256(prefix).hexdigest()==prefix_h
+              (root/(name+".bin")).write_bytes(prefix)
+          PY
+          echo "EXTERNAL_ROOT=$EXTERNAL_ROOT" >> "$GITHUB_ENV"
+      - name: Run frozen compatibility factorial twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          script='research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-compatibility-factorial-077.py'
+          python "$script" --root "$EXTERNAL_ROOT" --out /tmp/result1.json
+          python "$script" --root "$EXTERNAL_ROOT" --out /tmp/result2.json
+          cmp /tmp/result1.json /tmp/result2.json
+          cat /tmp/result1.json
+      - name: Classify frozen result
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,math,pathlib
+          r=json.loads(pathlib.Path("/tmp/result1.json").read_text())
+          m=r["metrics"]
+          valid=(
+              m["target_source_count"]==3 and
+              m["target_total_source_bytes"]==57272 and
+              m["target_source_identity_mismatch_count"]==0 and
+              m["base_training_identity_mismatch_count"]==0 and
+              m["history_byte_budget_mismatch_count"]==0 and
+              m["donor_row_count"]==16 and
+              m["eligible_candidate_count"]==6 and
+              m["source_state_identity_mismatch_count"]==0 and
+              m["source_state_mutation_count"]==0 and
+              m["selectors_same_row_count"]==0 and
+              m["variant_count"]==4 and
+              m["source_payload_projection_count"]==2 and
+              m["heldout_factor_choice_count"]==0 and
+              m["post_result_factor_change_count"]==0 and
+              m["all_child_source_identity_mismatch_count"]==0 and
+              m["all_child_transport_identity_mismatch_count"]==0 and
+              m["capacity_growth_event_count"]==0 and
+              m["persistent_state_write_count"]==0 and
+              m["invalid_evaluation_rows"]==0 and
+              all(math.isfinite(float(v)) for v in m.values())
+          )
+          effects=int(m["key_main_effect"])+int(m["payload_main_effect"])+int(m["interaction_effect"])
+          rescues=int(m["clean_rescue_count"])
+          if not valid:
+              cls="invalid"
+          elif rescues==0:
+              cls="negative"
+          elif rescues==4:
+              cls="mixed"
+          elif effects==1:
+              cls="supported"
+          else:
+              cls="invalid"
+          out={
+              "schema":"yggdrasil.research-classification.v1",
+              "experiment":"EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-COMPATIBILITY-FACTORIAL-077",
+              "classification":cls,
+              "validity_pass":valid,
+              "identified_effect":{
+                  "key_main_effect":bool(m["key_main_effect"]),
+                  "payload_main_effect":bool(m["payload_main_effect"]),
+                  "interaction_effect":bool(m["interaction_effect"]),
+              },
+              "authority_receipt_sha256":"95705e33b08c1f888b59b6b6f2298551f67841f01356e0633433d89aab0743d3",
+              "rsi_success":False,
+              "rsi_success_reason":"Y077 is shadow factorial attribution on an already studied context; prospective disjoint-context validation remains required.",
+              "metrics":m,
+          }
+          pathlib.Path("/tmp/classification.json").write_text(json.dumps(out,separators=(",",":")),encoding="utf-8")
+          print(json.dumps(out,separators=(",",":")))
+          if cls=="invalid":
+              raise SystemExit(2)
+          PY
+      - name: Delete external bytes
+        if: always()
+        shell: bash
+        run: rm -rf "$RUNNER_TEMP/yggdrasil-077"
+      - name: Upload evidence
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yggdrasil-compatibility-factorial-077
+          path: |
+            /tmp/authority.json
+            /tmp/result1.json
+            /tmp/result2.json
+            /tmp/classification.json
+          if-no-files-found: error
