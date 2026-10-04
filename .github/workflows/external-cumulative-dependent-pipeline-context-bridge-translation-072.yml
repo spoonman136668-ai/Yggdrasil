@@ -1,0 +1,140 @@
+name: Yggdrasil context bridge translation 072
+on:
+  push:
+    branches:
+      - research/external-hosted-yggdrasil-dependent-pipeline-context-bridge-translation-r1
+    paths:
+      - 'research/experiments/yggdrasil-rsi-corrective-tranche-2026-10-04.ice'
+      - 'research/experiments/exp-dgr-external-cumulative-dependent-pipeline-context-bridge-translation-072.ice'
+      - 'research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-context-bridge-translation-072.py'
+      - '.github/workflows/external-cumulative-dependent-pipeline-context-bridge-translation-072.yml'
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate frozen corrective package
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor '2b1ed36c4858d837b395bb97bd2d0b770eaabb31' HEAD
+          git merge-base --is-ancestor '513cbc0a726ddb11f5bc8d67130a279e57a20ce0' HEAD
+          changed="$(git diff --name-only '2b1ed36c4858d837b395bb97bd2d0b770eaabb31..HEAD' | sort)"
+          expected="$(printf '%s\n'             '.github/workflows/external-cumulative-dependent-pipeline-context-bridge-translation-072.yml'             'research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-context-bridge-translation-072.py'             'research/experiments/exp-dgr-external-cumulative-dependent-pipeline-context-bridge-translation-072.ice'             'research/experiments/yggdrasil-rsi-corrective-tranche-2026-10-04.ice' | sort)"
+          test "$changed" = "$expected"
+          python -m py_compile research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-context-bridge-translation-072.py
+      - name: Verify READY_RESEARCH receipt
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib
+          raw=r'''{"schema":"ckb-plane.external-exposure-ready-research-receipt.v1","project":"Yggdrasil","experiment":"EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-CONTEXT-BRIDGE-TRANSLATION-072","preregistration_sha":"513cbc0a726ddb11f5bc8d67130a279e57a20ce0","research_host":"runnervm8df0l","runner_id":"GitHub Actions 1000001897","manifest_sha256":"e46907e74ce92564bab657afc8d28b1a39b269bac88fb9b21092716c7ff53cb7","plan_decision":{"schema":"ckb-plane.external-exposure.v1","disposition":"READY_PLAN","scope":"plan-only","reasons":null},"fetch_decision":{"schema":"ckb-plane.external-exposure-fetch.v1","disposition":"READY_FETCH","scope":"fetch-verify-only","reasons":null},"research_decision":{"schema":"ckb-plane.external-exposure-research.v1","disposition":"READY_RESEARCH","scope":"research-consume-once","reasons":null},"ckb_plane_main_sha":"c499c28c2c62c675350c56c7301f62c89a0bc1e5"}'''
+          assert hashlib.sha256(raw.encode()).hexdigest()=="42d74da97df53eae29c7e4a884b20f04311a02c110561d12e49b75bd9537d653"
+          r=json.loads(raw)
+          assert r["preregistration_sha"]=="513cbc0a726ddb11f5bc8d67130a279e57a20ce0"
+          assert r["manifest_sha256"]=="e46907e74ce92564bab657afc8d28b1a39b269bac88fb9b21092716c7ff53cb7"
+          assert r["ckb_plane_main_sha"]=="c499c28c2c62c675350c56c7301f62c89a0bc1e5"
+          assert r["research_decision"]["disposition"]=="READY_RESEARCH"
+          pathlib.Path("/tmp/authority.json").write_text(raw)
+          PY
+      - name: Fetch exact third-manifest sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          export EXTERNAL_ROOT="$RUNNER_TEMP/yggdrasil-072"; mkdir -p "$EXTERNAL_ROOT"
+          python - <<'PY'
+          import hashlib,os,pathlib,urllib.request
+          sources=[
+            ("code","https://raw.githubusercontent.com/torvalds/linux/a74306e2e676f9775457366fc047a660fbf02f26/kernel/sched/core.c",303863,"9297982652b9810b3508993c06d3c6e097ebca5cbe1ef3a6246bccfa0c1128b1",41453,"50744a9e70d67d62c97f3f434f4f05788b6b8514c6bce46cf7dafbaf49e2abff"),
+            ("structured","https://raw.githubusercontent.com/SchemaStore/schemastore/de76181a2ab215431d3e9314bc14f83cc3b01ad2/src/schemas/json/github-workflow.json",118601,"d10c9f4656e1bd5bc6727e9b35080e017dc167154726fca93da33c7a6bd1c4f3",14365,"2a97ba02bc5e479b1738f6f0c3e09318bb5a255350c84de014ddbcebea46af56"),
+            ("technical-prose","https://raw.githubusercontent.com/rust-lang/book/1500248d8f230566e4ec9f27fcbb8fe9e2898ab1/src/ch01-03-hello-cargo.md",11025,"61369f359b84b646fc3773eb569a26bc18ba6edb4cf2be06a84472c7054c0e39",1454,"23c002a1984ed065abfdbafa82100ed54d6bf6276a947676e710a30c75d96017"),
+          ]
+          root=pathlib.Path(os.environ["EXTERNAL_ROOT"])
+          for name,url,full_n,full_h,prefix_n,prefix_h in sources:
+              b=urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":"yggdrasil-072"}),timeout=60).read(full_n+1)
+              assert len(b)==full_n and hashlib.sha256(b).hexdigest()==full_h
+              p=b[:prefix_n]
+              assert len(p)==prefix_n and hashlib.sha256(p).hexdigest()==prefix_h
+              (root/(name+".bin")).write_bytes(p)
+          PY
+          echo "EXTERNAL_ROOT=$EXTERNAL_ROOT" >> "$GITHUB_ENV"
+      - name: Run frozen bridge twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          script='research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-context-bridge-translation-072.py'
+          python "$script" --root "$EXTERNAL_ROOT" --out /tmp/result1.json
+          python "$script" --root "$EXTERNAL_ROOT" --out /tmp/result2.json
+          cmp /tmp/result1.json /tmp/result2.json
+          cat /tmp/result1.json
+      - name: Classify
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,math,pathlib
+          r=json.loads(pathlib.Path("/tmp/result1.json").read_text());m=r["metrics"];decision=r["decision"]
+          valid=(
+            decision=="BRIDGE" and
+            m["candidate_count"]==2 and m["compatible_candidate_count"]==2 and
+            m["candidate_identity_mismatch_count"]==0 and
+            m["heldout_compatibility_use_count"]==0 and
+            m["selected_trigger_rank"]==1 and m["alternate_trigger_rank"]==2 and
+            m["source_payload_identity_mismatch_count"]==0 and
+            m["bridge_payload_mutation_count"]==0 and m["bridge_translated_field_count"]==1 and
+            m["bridge_row_synthesis_count"]==2 and m["persistent_state_write_count"]==0 and
+            m["source_identity_mismatch_count"]==0 and
+            m["all_child_source_identity_mismatch_count"]==0 and
+            m["all_child_manifest_identity_mismatch_count"]==0 and
+            m["base_training_identity_mismatch_count"]==0 and
+            m["history_byte_budget_mismatch_count"]==0 and
+            m["capacity_growth_event_count"]==0 and m["invalid_evaluation_rows"]==0 and
+            all(math.isfinite(float(v)) for v in m.values())
+          )
+          selected_rescue=(
+            m["selected_positive_prose_collateral_schedule_count"]>m["original_positive_prose_collateral_schedule_count"] and
+            m["selected_partner_collateral_failure_count"]==0
+          )
+          alternate_rescue=(
+            m["alternate_positive_prose_collateral_schedule_count"]>m["original_positive_prose_collateral_schedule_count"] and
+            m["alternate_partner_collateral_failure_count"]==0
+          )
+          if not valid: cls="invalid"
+          elif selected_rescue: cls="supported"
+          elif alternate_rescue or m["selected_bridge_behavior_change_count"]>0: cls="mixed"
+          else: cls="negative"
+          out={
+            "schema":"yggdrasil.research-classification.v1",
+            "experiment":"EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-CONTEXT-BRIDGE-TRANSLATION-072",
+            "classification":cls,"validity_pass":valid,"decision":decision,
+            "selected":r.get("selected"),"alternate":r.get("alternate"),
+            "authority_receipt_sha256":"42d74da97df53eae29c7e4a884b20f04311a02c110561d12e49b75bd9537d653",
+            "rsi_success":False,
+            "rsi_success_reason":"context bridge requires retain/revert plus disjoint-context replication before RSI transfer success" if cls=="supported" else "useful context-compatible transfer not yet established",
+            "metrics":m
+          }
+          pathlib.Path("/tmp/classification.json").write_text(json.dumps(out,separators=(",",":")));print(json.dumps(out,separators=(",",":")))
+          if not valid: raise SystemExit(2)
+          PY
+      - name: Delete external bytes
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/yggdrasil-072"
+      - name: Upload evidence
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yggdrasil-context-bridge-translation-072
+          path: |
+            /tmp/authority.json
+            /tmp/result1.json
+            /tmp/result2.json
+            /tmp/classification.json
+          if-no-files-found: error
