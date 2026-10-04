@@ -87,7 +87,12 @@
   ],
   "outcome_definition": {
     "clean_rescue": "active_positive_prose_collateral_schedule_count > original_positive_prose_collateral_schedule_count AND active_partner_collateral_failure_count == 0",
-    "behavior_change": "any active-vs-original packet or summary difference"
+    "behavior_change": "any active-vs-original packet or summary difference",
+    "effect_identification": {
+      "key_main_effect": "1 iff both payload origins agree within each key and source-key outcome differs from local-key outcome; else 0",
+      "payload_main_effect": "1 iff both key selectors agree within each payload origin and source-payload outcome differs from local-payload outcome; else 0",
+      "interaction_effect": "1 iff 1-3 of the four cells are clean rescues and neither pure key nor pure payload main-effect pattern holds; else 0"
+    }
   },
   "metrics": [
     "variant_count",
@@ -110,14 +115,14 @@
     "invalid_evaluation_rows"
   ],
   "classification_rules": {
-    "supported": "valid AND clean_rescue_count>=1 AND exactly one of key_main_effect, payload_main_effect, interaction_effect is nonzero",
-    "mixed": "valid AND clean_rescue_count>=1 but effects are non-identifiable or multiple",
+    "supported": "valid AND clean_rescue_count>=1 AND exactly one of key_main_effect, payload_main_effect, interaction_effect equals 1",
+    "mixed": "valid AND clean_rescue_count==4; rescue exists but the factorial does not discriminate key or payload compatibility",
     "negative": "valid AND clean_rescue_count==0",
     "invalid": "any parent, fifth-manifest identity, source-state identity, selector identity, factorial-cell identity, heldout ordering, deterministic replay, capacity, provenance, persistence or accounting requirement fails"
   },
   "rsi_success": false,
   "rsi_success_note": "Y077 is a shadow factorial attribution on an already studied target context; useful retained-state transfer still requires a separately preregistered prospective disjoint-context validation.",
-  "no_post_result_tuning_rule": "Do not alter target data, source state, selectors, four factorial cells, source-payload projection, activation position, schedules, 16/7/9 capacity, outcome definition, classification, or authority after primary output.",
+  "no_post_result_tuning_rule": "Do not alter target data, source state, selectors, four factorial cells, source-payload projection, effect-identification logic, activation position, schedules, 16/7/9 capacity, outcome definition, classification, or authority after primary output.",
   "successors": {
     "supported": {
       "contract_id": "yggdrasil-078-factorial-supported-correction",
