@@ -34,11 +34,44 @@ def bridge_state(trigger):
       "map_best":SOURCE_STATE["map_best"],
     }
 
+FORCE_NEEDLE='''        missing=[k for k in required if k not in keys]
+        if not missing:return out,om
+'''
+FORCE_REPL='''        force=[k for k in required if k==RETAINED_KEY and k in dby]
+        for k in force:
+            if k in keys:
+                out=[r for r in out if r["key"]!=k];om.pop(k,None);keys.discard(k)
+            r=dby.get(k)
+            if r is None or k not in donor_map:
+                m["retained_memory_donor_missing_count"]+=1.0;m["invalid_evaluation_rows"]+=1.0
+            else:
+                out.append(r);om[k]=donor_map[k];keys.add(k)
+        missing=[k for k in required if k not in keys]
+        if not missing:
+            if len(out)!=16 or len({r["key"] for r in out})!=16 or len(om)!=16:
+                m["candidate_state_capacity_failure_count"]+=1.0;m["invalid_evaluation_rows"]+=1.0
+            return out,om
+'''
+COMBINED_NEEDLE='''        combined_by={r["key"]:r for r in hrows};combined_map=dict(hmap)
+        if RETAINED_KEY not in combined_by:
+            combined_by[RETAINED_KEY]=transported_row;combined_map[RETAINED_KEY]=transported_map[RETAINED_KEY]
+        combined_rows=list(combined_by.values())
+'''
+COMBINED_REPL='''        combined_by={r["key"]:r for r in hrows};combined_map=dict(hmap)
+        combined_by[RETAINED_KEY]=transported_row;combined_map[RETAINED_KEY]=transported_map[RETAINED_KEY]
+        combined_rows=list(combined_by.values())
+'''
+
 def run_bridge(root,trigger):
-    p68=load_mod("p068_bridge_"+str(trigger["rank"]),P068)
-    p68.RETAINED_KEY=tuple(trigger["key"])
-    p68.RETAINED_STATE=bridge_state(trigger)
-    return p68.run(root)
+    source=P068.read_text(encoding="utf-8")
+    if source.count(FORCE_NEEDLE)!=1 or source.count(COMBINED_NEEDLE)!=1:
+        raise RuntimeError("P068_BRIDGE_PATCH_TARGET_NOT_EXACT")
+    source=source.replace(FORCE_NEEDLE,FORCE_REPL,1).replace(COMBINED_NEEDLE,COMBINED_REPL,1)
+    ns={"__name__":"p068_bridge_"+str(trigger["rank"]),"__file__":str(P068)}
+    exec(compile(source,str(P068),"exec"),ns)
+    ns["RETAINED_KEY"]=tuple(trigger["key"])
+    ns["RETAINED_STATE"]=bridge_state(trigger)
+    return ns["run"](root)
 
 def changed(child):
     m=child["metrics"]
@@ -64,6 +97,7 @@ def run(root):
       "selected_positive_prose_collateral_schedule_count":0.0,"alternate_positive_prose_collateral_schedule_count":0.0,
       "selected_partner_collateral_failure_count":0.0,"alternate_partner_collateral_failure_count":0.0,
       "selected_mean_first_success_packet":0.0,"alternate_mean_first_success_packet":0.0,
+      "all_child_source_identity_mismatch_count":0.0,"all_child_manifest_identity_mismatch_count":0.0,
       "capacity_growth_event_count":0.0,"invalid_evaluation_rows":0.0,
     }
     p71=load_mod("p071_bridge",P071)
@@ -102,6 +136,8 @@ def run(root):
     m["selected_mean_first_success_packet"]=float(sm["active_mean_first_success_packet"])
     if changed(sel):m["selected_bridge_behavior_change_count"]=1.0
     m["capacity_growth_event_count"]+=float(sm["capacity_growth_event_count"])
+    m["all_child_source_identity_mismatch_count"]+=float(sm["source_identity_mismatch_count"])
+    m["all_child_manifest_identity_mismatch_count"]+=float(sm["transfer_manifest_identity_mismatch_count"])
     m["invalid_evaluation_rows"]+=float(sm["invalid_evaluation_rows"]+sm["transported_state_identity_mismatch_count"])
     alt=None
     if alternate is not None:
@@ -114,8 +150,12 @@ def run(root):
         m["alternate_mean_first_success_packet"]=float(am["active_mean_first_success_packet"])
         if changed(alt):m["alternate_bridge_behavior_change_count"]=1.0
         m["capacity_growth_event_count"]+=float(am["capacity_growth_event_count"])
+        m["all_child_source_identity_mismatch_count"]+=float(am["source_identity_mismatch_count"])
+        m["all_child_manifest_identity_mismatch_count"]+=float(am["transfer_manifest_identity_mismatch_count"])
         m["invalid_evaluation_rows"]+=float(am["invalid_evaluation_rows"]+am["transported_state_identity_mismatch_count"])
     if m["candidate_identity_mismatch_count"]!=0 or m["source_payload_identity_mismatch_count"]!=0 or m["bridge_payload_mutation_count"]!=0:
+        m["invalid_evaluation_rows"]+=1.0
+    if m["all_child_source_identity_mismatch_count"]!=0 or m["all_child_manifest_identity_mismatch_count"]!=0:
         m["invalid_evaluation_rows"]+=1.0
     if m["bridge_row_synthesis_count"]!=float(len(compatible)):m["invalid_evaluation_rows"]+=1.0
     if m["capacity_growth_event_count"]!=0 or m["persistent_state_write_count"]!=0:m["invalid_evaluation_rows"]+=1.0
