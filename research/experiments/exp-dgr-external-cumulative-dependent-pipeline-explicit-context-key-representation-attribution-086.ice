@@ -3,7 +3,7 @@
   "experiment_id": "EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-EXPLICIT-CONTEXT-KEY-REPRESENTATION-ATTRIBUTION-086",
   "program": "Yggdrasil RSI corrective tranche: explicit observable-context key attribution",
   "question": "After Y085 showed that a target-time ambiguity gate can reject one relational match without improving transfer, is the retained-state key missing an explicit observable description of the context in which that state was learned?",
-  "hypothesis": "Y085 weakened another activation-gate explanation: one primary-minimax tie was rejected, but the rejection was not useful, while the approved SOURCE_CONDITIONED activation still changed behavior without improving positive-prose collateral. Freeze a representation attribution that changes no payload, capacity, schedules, or outcomes. EXACT_KEY_ONLY retrieves from the byte-identical Y079 17-row historical full pool by exact 4-byte key Hamming with the same fixed context-order/lexical tie-break. EXPLICIT_CONTEXT_KEY augments every historical row's 4-byte state key with a 3-component observable context signature computed before target evaluation from that context's 60% training cues: for code, structured, and technical-prose separately, map every byte through the unchanged Y075 byte_class function and record the most frequent class (exact ties choose the lowest class 0<1<2<3). Compute the fifth target's same 3-component signature from its own 60% training cues. Retrieve by minimum total Hamming over the concatenated 7-component (state key + context signature), then minimum 4-byte state-key Hamming, then fixed context order transfer→third→fourth, then lexical exact key. This tests whether applicability needs an explicit generalizable context descriptor in the key rather than another target-time gate.",
+  "hypothesis": "Y085 weakened another activation-gate explanation: one primary-minimax tie was rejected, but the rejection was not useful, while the approved SOURCE_CONDITIONED activation still changed behavior without improving positive-prose collateral. Freeze a representation attribution that changes no payload, capacity, schedules, or outcomes. EXACT_KEY_ONLY retrieves from the byte-identical Y079 17-row historical full pool by exact 4-byte key Hamming with the byte-identical Y079 tie-break: fixed context order transfer→third→fourth, then Y075 local_rank, then lexical exact key. EXPLICIT_CONTEXT_KEY augments every historical row's 4-byte state key with a 3-component observable context signature computed before target evaluation from that context's 60% training cues: for code, structured, and technical-prose separately, map every byte through the unchanged Y075 byte_class function and record the most frequent class (exact ties choose the lowest class 0<1<2<3). Compute the fifth target's same 3-component signature from its own 60% training cues. Retrieve by minimum total Hamming over the concatenated 7-component (state key + context signature), then minimum 4-byte state-key Hamming, then fixed context order transfer→third→fourth, then Y075 local_rank, then lexical exact key. This tests whether applicability needs an explicit generalizable context descriptor in the key rather than another target-time gate.",
   "exact_parent_sha": "ff1ff289d875af9154e4a7a9fcac22691c687a16",
   "qualification_branch": "research/external-hosted-yggdrasil-dependent-pipeline-explicit-context-key-representation-attribution-r1",
   "predecessor": {
@@ -34,9 +34,9 @@
     "observed_failure": "Y085 rejected one ambiguous relational match but the rejection was not useful; the uniquely approved SOURCE_CONDITIONED match still changed behavior without improving the outcome.",
     "residual_cause_under_test": "STATE_KEY_OMITS_OBSERVABLE_CONTEXT_DESCRIPTOR",
     "exact_bounded_delta": "change only retrieval representation from exact 4-byte state key to a fixed concatenated 4-byte state key + 3-component cue-derived context signature; historical rows, payloads, target selectors, activation, schedules, scoring, and 16/7/9 capacity remain unchanged",
-    "control_rule": "EXACT_KEY_ONLY is byte-identical Y079 full-pool retrieval by minimum exact 4-byte Hamming, then context order transfer→third→fourth, then lexical key",
+    "control_rule": "EXACT_KEY_ONLY is byte-identical Y079 full-pool retrieval by minimum exact 4-byte Hamming, then context order transfer→third→fourth, then Y075 local_rank, then lexical exact key",
     "context_signature_rule": "for each context and each of its code/structured/technical-prose 60% training cues, classify every byte with Y075 byte_class and record the modal class; exact class-count ties choose the numerically lowest class; concatenate the three modal classes in code, structured, technical_prose order",
-    "treatment_rule": "EXPLICIT_CONTEXT_KEY scores each historical row by total Hamming across target exact key vs historical exact key (4 components) plus target context signature vs historical context signature (3 components); tie-break by lower 4-byte key Hamming, then context order transfer→third→fourth, then lexical exact key",
+    "treatment_rule": "EXPLICIT_CONTEXT_KEY scores each historical row by total Hamming across target exact key vs historical exact key (4 components) plus target context signature vs historical context signature (3 components); tie-break by lower 4-byte key Hamming, then context order transfer→third→fourth, then Y075 local_rank, then lexical exact key",
     "no_threshold_rule": "no fitted embedding, learned weight, distance threshold, ratio, held-out tuning, label use, or post-result representation choice",
     "retain_revert": "Y086 is shadow attribution only; support authorizes only separately preregistered prospective validation/correction, not accepted-state mutation."
   },
@@ -71,7 +71,7 @@
     ],
     "context_signature_split": "60% training cue only",
     "context_signature_tie_break": "lowest class id",
-    "treatment_distance": "unweighted 7-component Hamming; tie by 4-byte state-key Hamming, fixed historical context order, lexical exact key",
+    "treatment_distance": "unweighted 7-component Hamming; tie by 4-byte state-key Hamming, fixed historical context order, Y075 local_rank, lexical exact key",
     "historical_context_order": [
       "transfer",
       "third",
@@ -128,11 +128,11 @@
     "supported": "valid AND context_key_support is true AND lost_control_clean_rescue_count==0 AND explicit_context_partner_collateral_failure_count==0",
     "mixed": "valid AND supported is false AND mixed_signal is true AND lost_control_clean_rescue_count==0",
     "negative": "valid AND supported is false AND mixed_signal is false",
-    "invalid": "any parent, manifest identity, 17-row full-pool identity, context-origin identity, Y075 byte_class identity, 60% cue split, three-component modal signature/tie-break, exact-key control retrieval, 7-component Hamming/tie-break, target-key identity, heldout ordering, deterministic replay, 16/7/9 capacity, provenance, persistence or accounting requirement fails"
+    "invalid": "any parent, manifest identity, 17-row full-pool identity, context-origin identity, Y075 byte_class identity, 60% cue split, three-component modal signature/tie-break, byte-identical Y079 exact-key control retrieval including local_rank tie-break, 7-component Hamming/tie-break, target-key identity, heldout ordering, deterministic replay, 16/7/9 capacity, provenance, persistence or accounting requirement fails"
   },
   "rsi_success": false,
   "rsi_success_note": "Y086 is independent Yggdrasil context-key representation attribution on studied contexts. Support still requires disjoint prospective validation before any RSI claim.",
-  "no_post_result_tuning_rule": "Do not alter manifests, pool, context origins, byte_class, cue split, context-signature rule, seven-component distance, tie-breaks, target keys, four cells, schedules, packet count, activation/scoring, capacity, classification or authority after primary output.",
+  "no_post_result_tuning_rule": "Do not alter manifests, pool, context origins, byte_class, cue split, context-signature rule, seven-component distance, context order/local_rank/lexical tie-breaks, target keys, four cells, schedules, packet count, activation/scoring, capacity, classification or authority after primary output.",
   "successors": {
     "supported": {
       "contract_id": "yggdrasil-087-explicit-context-key-prospective-validation",
