@@ -45,7 +45,9 @@ def run(root):
       "original_mean_first_success_packet":0.0,"passive_mean_first_success_packet":0.0,"active_mean_first_success_packet":0.0,
       "behavior_change_flag":0.0,"row_synthesis_count":0.0,"heldout_candidate_selection_count":0.0,
       "heldout_position_selection_count":0.0,"capacity_growth_event_count":0.0,
-      "transported_state_identity_mismatch_count":0.0,"transfer_source_identity_mismatch_count":0.0,\n      "candidate_required_union_over_capacity_count":0.0,"candidate_reserved_key_missing_count":0.0,\n      "candidate_state_capacity_failure_count":0.0,"row_mutation_event_count":0.0,"tokenizer_use_count":0.0,"external_model_call_count":0.0,
+      "transported_state_identity_mismatch_count":0.0,"transfer_source_identity_mismatch_count":0.0,
+      "candidate_required_union_over_capacity_count":0.0,"candidate_reserved_key_missing_count":0.0,
+      "candidate_state_capacity_failure_count":0.0,"row_mutation_event_count":0.0,"tokenizer_use_count":0.0,"external_model_call_count":0.0,
     }
     y71=load_mod("y71_y72",P071)
     states=y71.candidate_states(root,m)
@@ -95,7 +97,14 @@ def run(root):
     m["passive_mean_first_success_packet"]=float(cm["passive_mean_first_success_packet"])
     m["active_mean_first_success_packet"]=float(cm["active_mean_first_success_packet"])
     m["capacity_growth_event_count"]=float(cm["capacity_growth_event_count"])
-    m["transported_state_identity_mismatch_count"]=float(cm["transported_state_identity_mismatch_count"])\n    m["transfer_source_identity_mismatch_count"]=float(cm["source_identity_mismatch_count"]+cm["transfer_manifest_identity_mismatch_count"])\n    m["candidate_required_union_over_capacity_count"]=float(cm["candidate_required_union_over_capacity_count"])\n    m["candidate_reserved_key_missing_count"]=float(cm["candidate_reserved_key_missing_count"])\n    m["candidate_state_capacity_failure_count"]=float(cm["candidate_state_capacity_failure_count"])\n    m["row_mutation_event_count"]=float(cm["row_mutation_event_count"])\n    m["tokenizer_use_count"]=float(cm["tokenizer_use_count"])\n    m["external_model_call_count"]=float(cm["external_model_call_count"])
+    m["transported_state_identity_mismatch_count"]=float(cm["transported_state_identity_mismatch_count"])
+    m["transfer_source_identity_mismatch_count"]=float(cm["source_identity_mismatch_count"]+cm["transfer_manifest_identity_mismatch_count"])
+    m["candidate_required_union_over_capacity_count"]=float(cm["candidate_required_union_over_capacity_count"])
+    m["candidate_reserved_key_missing_count"]=float(cm["candidate_reserved_key_missing_count"])
+    m["candidate_state_capacity_failure_count"]=float(cm["candidate_state_capacity_failure_count"])
+    m["row_mutation_event_count"]=float(cm["row_mutation_event_count"])
+    m["tokenizer_use_count"]=float(cm["tokenizer_use_count"])
+    m["external_model_call_count"]=float(cm["external_model_call_count"])
     m["invalid_evaluation_rows"]+=float(cm["invalid_evaluation_rows"])
     if cm["candidate_selection_heldout_use_count"]!=0:m["invalid_evaluation_rows"]+=float(cm["candidate_selection_heldout_use_count"])
     changed=(m["active_positive_prose_collateral_schedule_count"]!=m["original_positive_prose_collateral_schedule_count"] or
