@@ -1,0 +1,171 @@
+name: Yggdrasil compatibility diagnostic attribution 076
+on:
+  push:
+    branches:
+      - research/external-hosted-yggdrasil-dependent-pipeline-compatibility-diagnostic-attribution-r1
+    paths:
+      - 'research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-compatibility-diagnostic-attribution-076.py'
+      - '.github/workflows/external-cumulative-dependent-pipeline-compatibility-diagnostic-attribution-076.yml'
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify preregistration and bounded implementation delta
+        shell: bash
+        run: |
+          set -euo pipefail
+          prereg='4d8e7570bf2cacd6f744e1f9a7de2c4c9bc71418'
+          parent='a1e582e2b4c8855ba5cd7564fd114bdf78939077'
+          git merge-base --is-ancestor "$parent" "$prereg"
+          git merge-base --is-ancestor "$prereg" HEAD
+          changed="$(git diff --name-only "$prereg..HEAD" | sort)"
+          expected="$(printf '%s\n' \
+            '.github/workflows/external-cumulative-dependent-pipeline-compatibility-diagnostic-attribution-076.yml' \
+            'research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-compatibility-diagnostic-attribution-076.py' | sort)"
+          test "$changed" = "$expected"
+          printf '%s  %s\n' \
+            '7077d2b72d8954afc24f36b2971393acc11e3b345f7c3521102c20347b9c6171' \
+            'research/experiments/external-future-data-fifth-context-manifest-076.json' | sha256sum -c -
+          test "$(git rev-parse "$prereg:research/experiments/exp-dgr-external-cumulative-dependent-pipeline-compatibility-diagnostic-attribution-076.ice")" = 'dccfc69eff75417f827ebbfcdf56c06e728b3ccd'
+          python -m py_compile research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-compatibility-diagnostic-attribution-076.py
+      - name: Verify exact READY_RESEARCH receipt
+        shell: bash
+        env:
+          AUTHORITY_RECEIPT_SHA256: 'bf7198a92d3ffe7141d2d14551bd66f81146996c6c2a555338e503c0948edab7'
+          AUTHORITY_RECEIPT_B64: 'eyJja2JfcGxhbmVfbWFpbl9zaGEiOiJjMjBhMWJmMWM3MGI4MjMyZGFlNTM3ZmEyODRhZTM3N2Q5Yjc1Mzc2IiwiZXhwZXJpbWVudCI6IkVYUC1ER1ItRVhURVJOQUwtQ1VNVUxBVElWRS1ERVBFTkRFTlQtUElQRUxJTkUtQ09NUEFUSUJJTElUWS1ESUFHTk9TVElDLUFUVFJJQlVUSU9OLTA3NiIsImZldGNoX2RlY2lzaW9uIjp7InNjaGVtYSI6ImNrYi1wbGFuZS5leHRlcm5hbC1leHBvc3VyZS1mZXRjaC52MSIsImRpc3Bvc2l0aW9uIjoiUkVBRFlfRkVUQ0giLCJzY29wZSI6ImZldGNoLXZlcmlmeS1vbmx5IiwicmVhc29ucyI6bnVsbH0sIm1hbmlmZXN0X3NoYTI1NiI6IjcwNzdkMmI3MmQ4OTU0YWZjMjRmMzZiMjk3MTM5M2FjYzExZTNiMzQ1ZjdjMzUyMTEwMmMyMDM0N2I5YzYxNzEiLCJwbGFuX2RlY2lzaW9uIjp7InNjaGVtYSI6ImNrYi1wbGFuZS5leHRlcm5hbC1leHBvc3VyZS52MSIsImRpc3Bvc2l0aW9uIjoiUkVBRFlfUExBTiIsInNjb3BlIjoicGxhbi1vbmx5IiwicmVhc29ucyI6bnVsbH0sInByZXJlZ2lzdHJhdGlvbl9zaGEiOiI0ZDhlNzU3MGJmMmNhY2Q2Zjc0NGUxZjlhN2RlMmM0YzliYzcxNDE4IiwicHJvamVjdCI6IllnZ2RyYXNpbCIsInJlcXVlc3RfaWQiOiJiODU5NWJmNjA5ZGQ4YmE3NGFjMjAwYTg5ZTcyYTMzOCIsInJlc2VhcmNoX2RlY2lzaW9uIjp7InNjaGVtYSI6ImNrYi1wbGFuZS5leHRlcm5hbC1leHBvc3VyZS1yZXNlYXJjaC52MSIsImRpc3Bvc2l0aW9uIjoiUkVBRFlfUkVTRUFSQ0giLCJzY29wZSI6InJlc2VhcmNoLWNvbnN1bWUtb25jZSIsInJlYXNvbnMiOm51bGx9LCJyZXNlYXJjaF9ob3N0IjoiR2l0SHViIEFjdGlvbnMgMTAwMDAwMjA4MCIsInJ1bm5lcl9pZCI6IkdpdEh1YiBBY3Rpb25zIDEwMDAwMDIwODAiLCJzY2hlbWEiOiJja2ItcGxhbmUuZXh0ZXJuYWwtZXhwb3N1cmUtcmVhZHktcmVzZWFyY2gtcmVjZWlwdC52MSJ9'
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64,hashlib,json,os,pathlib
+          raw=base64.b64decode(os.environ["AUTHORITY_RECEIPT_B64"],validate=True)
+          assert hashlib.sha256(raw).hexdigest()==os.environ["AUTHORITY_RECEIPT_SHA256"]
+          r=json.loads(raw)
+          assert r["schema"]=="ckb-plane.external-exposure-ready-research-receipt.v1"
+          assert r["project"]=="Yggdrasil"
+          assert r["experiment"]=="EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-COMPATIBILITY-DIAGNOSTIC-ATTRIBUTION-076"
+          assert r["preregistration_sha"]=="4d8e7570bf2cacd6f744e1f9a7de2c4c9bc71418"
+          assert r["manifest_sha256"]=="7077d2b72d8954afc24f36b2971393acc11e3b345f7c3521102c20347b9c6171"
+          assert r["ckb_plane_main_sha"]=="c20a1bf1c70b8232dae537fa284ae377d9b75376"
+          assert r["plan_decision"]["disposition"]=="READY_PLAN"
+          assert r["fetch_decision"]["disposition"]=="READY_FETCH"
+          assert r["research_decision"]["disposition"]=="READY_RESEARCH"
+          pathlib.Path("/tmp/authority.json").write_bytes(raw)
+          PY
+      - name: Fetch exact fifth-context sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          export EXTERNAL_ROOT="$RUNNER_TEMP/yggdrasil-076"
+          mkdir -p "$EXTERNAL_ROOT"
+          python - <<'PY'
+          import hashlib,os,pathlib,urllib.request
+          sources=[
+            ("code","https://raw.githubusercontent.com/pytorch/pytorch/496340f06ef7bda2800522429ba3f4e3473a92fa/torch/_inductor/scheduler.py",539420,"b13a89d0fd77430e2a637dae41980086909c4ad4a855b8418dc17286c39953b8",41453,"504b68653b5478b88216f6342a74bacc5982549657005fb486dd00d753b4ea9a"),
+            ("structured","https://raw.githubusercontent.com/microsoft/vscode/6fad7188e7dbf7db564e5e4a85960eb2bf69bdf4/package-lock.json",784171,"73224989048e176e7eeafa8aa729df7e4d510f4bd453018902d95345db0fe886",14365,"5c0f3a215ba35b7fbcaae212d27a33ba5109e16d89809987d16fa89072534281"),
+            ("technical-prose","https://raw.githubusercontent.com/numpy/numpy/2f1eca306857b641fb0fef0ab854a2d4137e1581/doc/source/user/absolute_beginners.rst",52653,"945a0a598d080ee7526c9bd5459ce615a5b49fe0331adfdf8bbd8812e908e7e3",1454,"527e21110a7f84a1939ccf6063fdfeb77905d9ec180e5fde18488d21b90c4f49"),
+          ]
+          root=pathlib.Path(os.environ["EXTERNAL_ROOT"])
+          for name,url,full_n,full_h,prefix_n,prefix_h in sources:
+              req=urllib.request.Request(url,headers={"User-Agent":"yggdrasil-076"})
+              with urllib.request.urlopen(req,timeout=60) as response:
+                  data=response.read(full_n+1)
+              assert len(data)==full_n
+              assert hashlib.sha256(data).hexdigest()==full_h
+              prefix=data[:prefix_n]
+              assert len(prefix)==prefix_n
+              assert hashlib.sha256(prefix).hexdigest()==prefix_h
+              (root/(name+".bin")).write_bytes(prefix)
+          PY
+          echo "EXTERNAL_ROOT=$EXTERNAL_ROOT" >> "$GITHUB_ENV"
+      - name: Run frozen diagnostic attribution twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          script='research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-compatibility-diagnostic-attribution-076.py'
+          python "$script" --root "$EXTERNAL_ROOT" --out /tmp/result1.json
+          python "$script" --root "$EXTERNAL_ROOT" --out /tmp/result2.json
+          cmp /tmp/result1.json /tmp/result2.json
+          cat /tmp/result1.json
+      - name: Classify frozen result
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,math,pathlib
+          r=json.loads(pathlib.Path("/tmp/result1.json").read_text())
+          m=r["metrics"]
+          names=["low_target_support","successor_mismatch","low_target_precision"]
+          valid=(
+              m["target_source_count"]==3 and
+              m["target_total_source_bytes"]==57272 and
+              m["target_source_identity_mismatch_count"]==0 and
+              m["base_training_identity_mismatch_count"]==0 and
+              m["history_byte_budget_mismatch_count"]==0 and
+              m["donor_row_count"]==16 and
+              m["eligible_candidate_count"]>=1 and
+              m["source_state_identity_mismatch_count"]==0 and
+              m["source_state_mutation_count"]==0 and
+              m["heldout_diagnostic_input_count"]==0 and
+              m["post_result_diagnostic_change_count"]==0 and
+              m["all_child_source_identity_mismatch_count"]==0 and
+              m["all_child_transport_identity_mismatch_count"]==0 and
+              m["capacity_growth_event_count"]==0 and
+              m["persistent_state_write_count"]==0 and
+              m["invalid_evaluation_rows"]==0 and
+              m["clean_rescue_count"]+m["non_rescue_count"]==m["eligible_candidate_count"] and
+              all(math.isfinite(float(v)) for v in m.values())
+          )
+          supported=[]
+          mixed=[]
+          for n in names:
+              fc=m[n+"_flagged_count"]; uc=m[n+"_unflagged_count"]
+              cov=m[n+"_coverage"]; fr=m[n+"_flagged_non_rescue_rate"]; ur=m[n+"_unflagged_non_rescue_rate"]
+              if fc>=2 and uc>=2 and 0.20<=cov<=0.80 and fr>=ur+0.30:
+                  supported.append(n)
+              elif fc>=1 and uc>=1 and fr>ur:
+                  mixed.append(n)
+          if not valid: cls="invalid"
+          elif supported: cls="supported"
+          elif mixed: cls="mixed"
+          else: cls="negative"
+          out={
+              "schema":"yggdrasil.research-classification.v1",
+              "experiment":"EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-COMPATIBILITY-DIAGNOSTIC-ATTRIBUTION-076",
+              "classification":cls,
+              "validity_pass":valid,
+              "supported_diagnostics":supported,
+              "mixed_diagnostics":mixed,
+              "authority_receipt_sha256":"bf7198a92d3ffe7141d2d14551bd66f81146996c6c2a555338e503c0948edab7",
+              "rsi_success":False,
+              "rsi_success_reason":"Y076 is attribution only; supported diagnostics still require a preregistered prospective gate validation on a disjoint context.",
+              "metrics":m,
+          }
+          pathlib.Path("/tmp/classification.json").write_text(json.dumps(out,separators=(",",":")),encoding="utf-8")
+          print(json.dumps(out,separators=(",",":")))
+          if not valid: raise SystemExit(2)
+          PY
+      - name: Delete external bytes
+        if: always()
+        shell: bash
+        run: rm -rf "$RUNNER_TEMP/yggdrasil-076"
+      - name: Upload evidence
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yggdrasil-compatibility-diagnostic-attribution-076
+          path: |
+            /tmp/authority.json
+            /tmp/result1.json
+            /tmp/result2.json
+            /tmp/classification.json
+          if-no-files-found: error
