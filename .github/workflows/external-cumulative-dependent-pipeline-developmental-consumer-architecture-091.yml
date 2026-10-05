@@ -1,0 +1,178 @@
+name: Yggdrasil developmental consumer architecture 091
+on:
+  push:
+    branches:
+      - research/external-hosted-yggdrasil-developmental-consumer-architecture-091
+    paths:
+      - 'research/experiments/exp-dgr-external-cumulative-dependent-pipeline-developmental-consumer-architecture-091.ice'
+      - 'research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-developmental-consumer-architecture-091.py'
+      - '.github/workflows/external-cumulative-dependent-pipeline-developmental-consumer-architecture-091.yml'
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Validate frozen package
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 'ede8318d8915ebfa0972a3b14cced943d5fed39a' HEAD
+          git merge-base --is-ancestor '051835701961bcd8abedc75fb7afcc454f9ad10b' HEAD
+          changed="$(git diff --name-only 'ede8318d8915ebfa0972a3b14cced943d5fed39a..HEAD' | sort)"
+          expected="$(printf '%s\n' \
+            '.github/workflows/external-cumulative-dependent-pipeline-developmental-consumer-architecture-091.yml' \
+            'research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-developmental-consumer-architecture-091.py' \
+            'research/experiments/exp-dgr-external-cumulative-dependent-pipeline-developmental-consumer-architecture-091.ice' | sort)"
+          test "$changed" = "$expected"
+          test "$(git rev-parse '051835701961bcd8abedc75fb7afcc454f9ad10b:research/experiments/exp-dgr-external-cumulative-dependent-pipeline-developmental-consumer-architecture-091.ice')" = '83470e6ab740900f8ca92df54002741ad158c95f'
+      - name: Verify exact READY_RESEARCH receipt
+        shell: bash
+        env:
+          AUTHORITY_RECEIPT_SHA256: '57b77e39d565d3f369841c1473f2d3561dab06f678b86c91bce524b02fd16d28'
+          AUTHORITY_RECEIPT_B64: 'eyJhdXRob3JpdHlfd29ya2Zsb3dfcmVmIjoicmVzZWFyY2gvZGV0ZXJtaW5pc3RpYy1yZXNlYXJjaC1sb29wLWNvbnRyb2xsZXItcjc5IiwiYXV0aG9yaXR5X3dvcmtmbG93X3JlZl9zaGEiOiI3YjAyNDc4ZTQzZjhkNDc2ZjE2M2ZlNTFmN2M3NTdjMTJkNjk2ZDU0IiwiY2tiX3BsYW5lX21haW5fc2hhIjoiYmYyMTUwMjdjNDg2ZWU1ZjYxMzI1NDY5NzA5ZjA2ZDBjY2ZjZDJlMCIsImV4cGVyaW1lbnQiOiJFWFAtREdSLUVYVEVSTkFMLUNVTVVMQVRJVkUtREVQRU5ERU5ULVBJUEVMSU5FLURFVkVMT1BNRU5UQUwtQ09OU1VNRVItQVJDSElURUNUVVJFLTA5MSIsImZldGNoX2RlY2lzaW9uIjp7InNjaGVtYSI6ImNrYi1wbGFuZS5leHRlcm5hbC1leHBvc3VyZS1mZXRjaC52MSIsImRpc3Bvc2l0aW9uIjoiUkVBRFlfRkVUQ0giLCJzY29wZSI6ImZldGNoLXZlcmlmeS1vbmx5IiwicmVhc29ucyI6bnVsbH0sIm1hbmlmZXN0X3NoYTI1NiI6IjYxMjQwY2Y2Y2Y1N2Y4ZTU3YWFiNDBhNDYwOGZkZDA1N2FjZGU2YWVhN2Y3ZWMxNmNiNWJmZDU3ZjQwMTFjNTIiLCJwbGFuX2RlY2lzaW9uIjp7InNjaGVtYSI6ImNrYi1wbGFuZS5leHRlcm5hbC1leHBvc3VyZS52MSIsImRpc3Bvc2l0aW9uIjoiUkVBRFlfUExBTiIsInNjb3BlIjoicGxhbi1vbmx5IiwicmVhc29ucyI6bnVsbH0sInByZXJlZ2lzdHJhdGlvbl9zaGEiOiIwNTE4MzU3MDE5NjFiY2Q4YWJlZGM3NWZiN2FmY2M0NTRmOWFkMTBiIiwicHJvamVjdCI6IllnZ2RyYXNpbCIsInJlcXVlc3RfaWQiOiJkZDc3NDg5ODZlZjc0MmI3YTQxYzZlOTk3NWVkYmI0MCIsInJlc2VhcmNoX2RlY2lzaW9uIjp7InNjaGVtYSI6ImNrYi1wbGFuZS5leHRlcm5hbC1leHBvc3VyZS1yZXNlYXJjaC52MSIsImRpc3Bvc2l0aW9uIjoiUkVBRFlfUkVTRUFSQ0giLCJzY29wZSI6InJlc2VhcmNoLWNvbnN1bWUtb25jZSIsInJlYXNvbnMiOm51bGx9LCJyZXNlYXJjaF9ob3N0IjoiR2l0SHViIEFjdGlvbnMgMTAwMDAwMjU1OSIsInJ1bm5lcl9pZCI6IkdpdEh1YiBBY3Rpb25zIDEwMDAwMDI1NTkiLCJzY2hlbWEiOiJja2ItcGxhbmUuZXh0ZXJuYWwtZXhwb3N1cmUtcmVhZHktcmVzZWFyY2gtcmVjZWlwdC52MSJ9'
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64,hashlib,json,os,pathlib
+          raw=base64.b64decode(os.environ["AUTHORITY_RECEIPT_B64"],validate=True)
+          assert hashlib.sha256(raw).hexdigest()==os.environ["AUTHORITY_RECEIPT_SHA256"]
+          r=json.loads(raw)
+          assert r["schema"]=="ckb-plane.external-exposure-ready-research-receipt.v1"
+          assert r["project"]=="Yggdrasil"
+          assert r["experiment"]=="EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-DEVELOPMENTAL-CONSUMER-ARCHITECTURE-091"
+          assert r["preregistration_sha"]=="051835701961bcd8abedc75fb7afcc454f9ad10b"
+          assert r["manifest_sha256"]=="61240cf6cf57f8e57aab40a4608fdd057acde6aea7f7ec16cb5bfd57f4011c52"
+          assert r["ckb_plane_main_sha"]=="bf215027c486ee5f61325469709f06d0ccfcd2e0"
+          assert r["plan_decision"]["disposition"]=="READY_PLAN"
+          assert r["fetch_decision"]["disposition"]=="READY_FETCH"
+          assert r["research_decision"]["disposition"]=="READY_RESEARCH"
+          pathlib.Path("/tmp/authority.json").write_bytes(raw)
+          PY
+      - name: Fetch historical and unseen sealed contexts
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in transfer third fourth tenth eleventh; do mkdir -p "$RUNNER_TEMP/y091-$n"; done
+          python3 - <<'PY'
+          import hashlib,pathlib,urllib.request,urllib.parse,os
+          roots={n:pathlib.Path(os.environ["RUNNER_TEMP"])/("y091-"+n) for n in ("transfer","third","fourth","tenth","eleventh")}
+          historical={
+            "transfer":[
+              ("code","https://raw.githubusercontent.com/python/cpython/ebf955df7a89ed0c7968f79faec1de49f61ed7cb/Lib/statistics.py",61896,"3023ec949802c2e880a000775bfd1a6b70c21b5423881118141e3ec69d8e3336",41453,"66bb25b24a0316b4965c64798494de93a1d7332672b15b5f430ab6a2fb4b9d45"),
+              ("structured","https://raw.githubusercontent.com/json-schema-org/JSON-Schema-Test-Suite/5b0ee1613e45fcc2bddac00e07c19cd49b00d8a8/tests/draft2020-12/uniqueItems.json",14490,"ed84ef6ddc827659e257ba64cbe9679f06932b6320bea5c07622bf3d2cc4daa5",14365,"95ddbd0eaef29aad5ecfc74f9da21b795481f58b2c59380324a445fcd4d08932"),
+              ("technical-prose","https://raw.githubusercontent.com/golang/go/6f5c275ebdc454197fff5f1496521c8f81e20eef/doc/README.md",3124,"c1bf000e7a873b3afed329c5b9f9c07f7692b1d7fb2bfca2d7600cec8b1d1407",1454,"48c3d95b8b03864a4af41d892710675956cde85afd0d5d6c331594de9f17881b")],
+            "third":[
+              ("code","https://raw.githubusercontent.com/torvalds/linux/a74306e2e676f9775457366fc047a660fbf02f26/kernel/sched/core.c",303863,"9297982652b9810b3508993c06d3c6e097ebca5cbe1ef3a6246bccfa0c1128b1",41453,"50744a9e70d67d62c97f3f434f4f05788b6b8514c6bce46cf7dafbaf49e2abff"),
+              ("structured","https://raw.githubusercontent.com/SchemaStore/schemastore/de76181a2ab215431d3e9314bc14f83cc3b01ad2/src/schemas/json/github-workflow.json",118601,"d10c9f4656e1bd5bc6727e9b35080e017dc167154726fca93da33c7a6bd1c4f3",14365,"2a97ba02bc5e479b1738f6f0c3e09318bb5a255350c84de014ddbcebea46af56"),
+              ("technical-prose","https://raw.githubusercontent.com/rust-lang/book/1500248d8f230566e4ec9f27fcbb8fe9e2898ab1/src/ch01-03-hello-cargo.md",11025,"61369f359b84b646fc3773eb569a26bc18ba6edb4cf2be06a84472c7054c0e39",1454,"23c002a1984ed065abfdbafa82100ed54d6bf6276a947676e710a30c75d96017")],
+            "fourth":[
+              ("code","https://raw.githubusercontent.com/kubernetes/kubernetes/e7967bb9b76d43a6388abb7a4e90d2f899ef97ff/pkg/kubelet/kubelet.go",156626,"e0f247ef45cb281166b58ba1a013dc6925023388193bd74c1f126c695b770d34",41453,"283073d9f6c0dd868c39a913364bce6744ff1e29c038f6920197c0d33e0c2ac1"),
+              ("structured","https://raw.githubusercontent.com/microsoft/TypeScript/50d70a3f5f453a79a4323b263165da51f656a4e3/package-lock.json",143844,"52b6c9bd0a26ef1b0fc27dfbfaa00df6a047cdddd587d07c4f6c1c3345faf5cf",14365,"a46fcfb7d862b03b750b61a5f667d4ac25a064df9ccb746e395db7e864068933"),
+              ("technical-prose","https://raw.githubusercontent.com/django/django/a461af8ce48762d7ec602260aaff81014ddccbcb/docs/intro/tutorial01.txt",10844,"1cf1817e6211b7c0fa9e8044ee808fde1e8f16ca5f9d5ab5358510a5c9591b96",1454,"5d0c2efd139bd6094098bc893ed746020f03e0860a25f278348f43f47c236222")]}
+          for group,sources in historical.items():
+            for name,url,full_n,full_h,prefix_n,prefix_h in sources:
+              data=urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":"yggdrasil-y091-fixa"}),timeout=90).read(full_n+1)
+              assert len(data)==full_n and hashlib.sha256(data).hexdigest()==full_h
+              p=data[:prefix_n];assert hashlib.sha256(p).hexdigest()==prefix_h
+              (roots[group]/(name+".bin")).write_bytes(p)
+          unseen={
+            "tenth":[
+              ("code","apache/flink","953f843d578572cc74343c1f1a1ddb64d5c5d3e5","flink-runtime/src/main/java/org/apache/flink/runtime/jobmaster/JobMaster.java","39a29191b9761bf70fdeec265605e404d47d3e6d",41453,"f689ce4c905a87dd3b30cc61f6aa923592cb20bb07c60091b40f9aae864e369e"),
+              ("structured","tauri-apps/tauri","79d3537620ddd136b81896b2048207e7c15e08b9","Cargo.lock","a68f439de5de3c3c1ac0bb64892f275cfb4faf49",14365,"6f88d8f078e1ce9122e2e16bb36c2dc6c426aad6d5af569c1d4fd887ac5f7b72"),
+              ("technical-prose","scikit-learn/scikit-learn","c1f21786a8dc523c56ebb24f53b09dc14a57ea4d","README.rst","cf30a4b3289a096a273ca490e1a846cf4c088795",1454,"f210b576a393107041b9ed51c76ab133c7cb51082ae1e3d119fe8abd09331561")],
+            "eleventh":[
+              ("code","godotengine/godot","c016f22009aa773f0b2e6fce72baec168746491f","scene/main/node.cpp","0dfe2995e5c78480e528f0b841ffff88d82d40bc",41453,"22dd9cb64887332ef50d73195745448e32cb0ece1bb62cc6918e196618f58991"),
+              ("structured","vitejs/vite","10033218d239c927cdc375970b5741cce408e81b","pnpm-lock.yaml","1429512d32326cad970a993ab6832080e5579292",14365,"740787049be5cd656d5ef3a570eccaa3ab590daa5300a85ae0185a25f93deb03"),
+              ("technical-prose","tensorflow/tensorflow","1d968a6e886854cd650b7c378baee96effdef3dc","README.md","2ada91b134b2bc6daa60ca6265f1290f38a748c1",1454,"c47c609d3766e4eb0e95cec4aa3978271d00cbd9677aa44bdc0f165d1ab09c21")]}
+          seen=set()
+          for group,sources in unseen.items():
+            for name,repo,commit,path,blob,prefix_n,prefix_h in sources:
+              ident=(repo,commit,path,blob,prefix_n)
+              assert ident not in seen,(group,name,"duplicate-source-identity")
+              seen.add(ident)
+              url=f"https://raw.githubusercontent.com/{repo}/{commit}/{urllib.parse.quote(path)}"
+              data=urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":"yggdrasil-y091-fixa"}),timeout=90).read()
+              got=hashlib.sha1((f"blob {len(data)}\0").encode()+data).hexdigest()
+              assert got==blob and len(data)>=prefix_n,(group,name,got,blob,len(data))
+              p=data[:prefix_n]
+              assert hashlib.sha256(p).hexdigest()==prefix_h,(group,name,"prefix-sha256")
+              (roots[group]/(name+".bin")).write_bytes(p)
+          assert len(seen)==6
+          PY
+          for n in transfer third fourth tenth eleventh; do
+            key="$(echo "$n" | tr '[:lower:]' '[:upper:]')_ROOT"
+            echo "$key=$RUNNER_TEMP/y091-$n" >> "$GITHUB_ENV"
+          done
+      - name: Compile frozen harness
+        run: python -m py_compile research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-developmental-consumer-architecture-091.py
+      - name: Run frozen Y091 developmental consumer twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          script='research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-developmental-consumer-architecture-091.py'
+          args=(--transfer-root "$TRANSFER_ROOT" --third-root "$THIRD_ROOT" --fourth-root "$FOURTH_ROOT" --tenth-root "$TENTH_ROOT" --eleventh-root "$ELEVENTH_ROOT")
+          python "$script" "${args[@]}" --out /tmp/result1.json
+          python "$script" "${args[@]}" --out /tmp/result2.json
+          cmp /tmp/result1.json /tmp/result2.json
+          cat /tmp/result1.json
+      - name: Classify frozen result
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,math,pathlib
+          r=json.loads(pathlib.Path("/tmp/result1.json").read_text());m=r["metrics"]
+          valid=(m["historical_context_count"]==3 and m["historical_full_pool_row_count"]==17 and m["historical_identity_mismatch_count"]==0 and
+                 m["unseen_context_count"]==2 and m["variant_count"]==4 and
+                 m["target_source_identity_mismatch_count"]==0 and m["target_source_count"]==6 and m["target_total_source_bytes"]==114544 and
+                 m["target_base_training_identity_mismatch_count"]==0 and m["target_history_byte_budget_mismatch_count"]==0 and
+                 m["target_donor_row_count"]==32 and m["target_selector_key_mismatch_count"]==0 and
+                 m["heldout_outcome_use_before_consumer_freeze"]==0 and
+                 m["target_context_mapping_disclosure_count"]==0 and m["target_answer_disclosure_count"]==0 and
+                 m["post_result_consumer_change_count"]==0 and m["post_result_memory_addressing_change_count"]==0 and
+                 m["persistent_state_write_count"]==0 and
+                 m["all_child_source_identity_mismatch_count"]==0 and m["all_child_transport_identity_mismatch_count"]==0 and
+                 m["capacity_growth_event_count"]==0 and m["invalid_evaluation_rows"]==0 and
+                 all(math.isfinite(float(v)) for v in m.values()))
+          supported=(valid and m["treatment_only_clean_rescue_count"]==2 and m["lost_control_clean_rescue_count"]==0 and
+                     m["treatment_partner_collateral_failure_count"]==0 and m["treatment_behavior_change_count"]==2)
+          mixed=(valid and not supported and m["treatment_improvement_case_count"]==2 and
+                 m["lost_control_clean_rescue_count"]==0 and m["treatment_partner_collateral_failure_count"]==0)
+          cls="invalid" if not valid else "supported" if supported else "mixed" if mixed else "negative"
+          failure_class=None;failing_step=None;error_signature=None
+          if cls=="invalid":
+              failure_class="FROZEN_VALIDITY_FAILURE";failing_step="frozen-validity"
+              error_signature=hashlib.sha256(json.dumps(m,sort_keys=True,separators=(",",":")).encode()).hexdigest()
+          out={"schema":"yggdrasil.research-classification.v1",
+               "experiment":"EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-DEVELOPMENTAL-CONSUMER-ARCHITECTURE-091",
+               "classification":cls,"validity_pass":valid,"developmental_consumer_support":supported,"mixed_signal":mixed,
+               "failure_class":failure_class,"failing_step":failing_step,"error_signature":error_signature,
+               "authority_receipt_sha256":"57b77e39d565d3f369841c1473f2d3561dab06f678b86c91bce524b02fd16d28","rsi_success":False,
+               "rsi_success_reason":"Y091 tests one frozen developmental residual consumer under unchanged 16/7/9 capacity; it does not authorize memory-addressing changes or capacity growth.","metrics":m}
+          pathlib.Path("/tmp/classification.json").write_text(json.dumps(out,separators=(",",":")),encoding="utf-8")
+          print(json.dumps(out,separators=(",",":")))
+          PY
+      - name: Delete external bytes
+        if: always()
+        shell: bash
+        run: rm -rf "$RUNNER_TEMP"/y091-*
+      - name: Upload evidence
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yggdrasil-developmental-consumer-architecture-091
+          path: |
+            /tmp/authority.json
+            /tmp/result1.json
+            /tmp/result2.json
+            /tmp/classification.json
+          if-no-files-found: error
