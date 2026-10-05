@@ -207,7 +207,7 @@ def main():
     out = {
         "schema": "yggdrasil.y089-fixa-selector-screen.v1",
         "screening_basis": "outcome-blind selector separation only; original four followed by deterministic finite cross-product of the same twelve frozen source identities; first two eligible admitted",
-        "repair_scope": "packaging-only; no new source identities and no child outcomes",
+        "repair_scope": "packaging-only; no new source identities and no evaluation results",
         "candidate_count": len(rows),
         "eligible_count": len(eligible),
         "selected": [r["name"] for r in selected],
