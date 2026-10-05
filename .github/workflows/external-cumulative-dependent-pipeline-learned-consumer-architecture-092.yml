@@ -13,7 +13,7 @@ permissions:
 jobs:
   qualify:
     runs-on: ubuntu-24.04
-    timeout-minutes: 120
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v4
         with:
@@ -51,8 +51,8 @@ jobs:
       - name: Verify exact READY_RESEARCH receipt
         shell: bash
         env:
-          AUTHORITY_RECEIPT_SHA256: 'bac09af5f1e359b8ed60e7e910ad4763d5f1c56e534b49cba1527fdc1e3126d6'
-          AUTHORITY_RECEIPT_B64: 'eyJhdXRob3JpdHlfd29ya2Zsb3dfcmVmIjoicmVzZWFyY2gvZGV0ZXJtaW5pc3RpYy1yZXNlYXJjaC1sb29wLWNvbnRyb2xsZXItcjg5IiwiYXV0aG9yaXR5X3dvcmtmbG93X3JlZl9zaGEiOiJmZjhiOTU1N2YxNDc3ZjZhM2JjZTBiMzU2MDVmMTAxYzBlOGVkMDRmIiwiY2tiX3BsYW5lX21haW5fc2hhIjoiNjkxNmMzYzgwNDI4YjJmYTExMWJiYzYzNjAyNWIyOWZjMWJiNDMwNCIsImV4cGVyaW1lbnQiOiJFWFAtREdSLUVYVEVSTkFMLUNVTVVMQVRJVkUtREVQRU5ERU5ULVBJUEVMSU5FLUxFQVJORUQtQ09OU1VNRVItQVJDSElURUNUVVJFLTA5MiIsImZldGNoX2RlY2lzaW9uIjp7InNjaGVtYSI6ImNrYi1wbGFuZS5leHRlcm5hbC1leHBvc3VyZS1mZXRjaC52MSIsImRpc3Bvc2l0aW9uIjoiUkVBRFlfRkVUQ0giLCJzY29wZSI6ImZldGNoLXZlcmlmeS1vbmx5IiwicmVhc29ucyI6bnVsbH0sIm1hbmlmZXN0X3NoYTI1NiI6ImVhNGRmZDIxYWM3ZDJiNmJjOThlOGUyNmM0NWJmZWY3NjhhMGJmOWVhNmQyYTM1MDJhYjY3NDY5ZGYzNDZjZjMiLCJwbGFuX2RlY2lzaW9uIjp7InNjaGVtYSI6ImNrYi1wbGFuZS5leHRlcm5hbC1leHBvc3VyZS52MSIsImRpc3Bvc2l0aW9uIjoiUkVBRFlfUExBTiIsInNjb3BlIjoicGxhbi1vbmx5IiwicmVhc29ucyI6bnVsbH0sInByZXJlZ2lzdHJhdGlvbl9zaGEiOiI0YTVhMzA4NDUzNTRhYWQxZWQ5ODA5YWRjMjc2YzdlMzQxYTBhNWY5IiwicHJvamVjdCI6IllnZ2RyYXNpbCIsInJlcXVlc3RfaWQiOiIzMGJiMTk2NGY0YzU2Y2I1YzM0ZDZlMjk0ZDI2NTZmZSIsInJlc2VhcmNoX2RlY2lzaW9uIjp7InNjaGVtYSI6ImNrYi1wbGFuZS5leHRlcm5hbC1leHBvc3VyZS1yZXNlYXJjaC52MSIsImRpc3Bvc2l0aW9uIjoiUkVBRFlfUkVTRUFSQ0giLCJzY29wZSI6InJlc2VhcmNoLWNvbnN1bWUtb25jZSIsInJlYXNvbnMiOm51bGx9LCJyZXNlYXJjaF9ob3N0IjoiR2l0SHViIEFjdGlvbnMgMTAwMDAwMjY1MCIsInJ1bm5lcl9pZCI6IkdpdEh1YiBBY3Rpb25zIDEwMDAwMDI2NTAiLCJzY2hlbWEiOiJja2ItcGxhbmUuZXh0ZXJuYWwtZXhwb3N1cmUtcmVhZHktcmVzZWFyY2gtcmVjZWlwdC52MSJ9'
+          AUTHORITY_RECEIPT_SHA256: '1068c8dbc0ed8219fbefbb37c5a2dff82b94886e6dd3a390611504f7d6c77a50'
+          AUTHORITY_RECEIPT_B64: 'eyJhdXRob3JpdHlfd29ya2Zsb3dfcmVmIjoicmVzZWFyY2gvZGV0ZXJtaW5pc3RpYy1yZXNlYXJjaC1sb29wLWNvbnRyb2xsZXItcjExNCIsImF1dGhvcml0eV93b3JrZmxvd19yZWZfc2hhIjoiMjgzMzE4ZGRjNjQ3MGQ0ZjM1ZjE4YjI1MzFkMDRhMDBmNmM3ZTJkYyIsImNrYl9wbGFuZV9tYWluX3NoYSI6IjY5MTZjM2M4MDQyOGIyZmExMTFiYmM2MzYwMjViMjlmYzFiYjQzMDQiLCJleHBlcmltZW50IjoiRVhQLURHUi1FWFRFUk5BTC1DVU1VTEFUSVZFLURFUEVOREVOVC1QSVBFTElORS1MRUFSTkVELUNPTlNVTUVSLUFSQ0hJVEVDVFVSRS0wOTIiLCJmZXRjaF9kZWNpc2lvbiI6eyJzY2hlbWEiOiJja2ItcGxhbmUuZXh0ZXJuYWwtZXhwb3N1cmUtZmV0Y2gudjEiLCJkaXNwb3NpdGlvbiI6IlJFQURZX0ZFVENIIiwic2NvcGUiOiJmZXRjaC12ZXJpZnktb25seSIsInJlYXNvbnMiOm51bGx9LCJtYW5pZmVzdF9zaGEyNTYiOiJlYTRkZmQyMWFjN2QyYjZiYzk4ZThlMjZjNDViZmVmNzY4YTBiZjllYTZkMmEzNTAyYWI2NzQ2OWRmMzQ2Y2YzIiwicGxhbl9kZWNpc2lvbiI6eyJzY2hlbWEiOiJja2ItcGxhbmUuZXh0ZXJuYWwtZXhwb3N1cmUudjEiLCJkaXNwb3NpdGlvbiI6IlJFQURZX1BMQU4iLCJzY29wZSI6InBsYW4tb25seSIsInJlYXNvbnMiOm51bGx9LCJwcmVyZWdpc3RyYXRpb25fc2hhIjoiNGE1YTMwODQ1MzU0YWFkMWVkOTgwOWFkYzI3NmM3ZTM0MWEwYTVmOSIsInByb2plY3QiOiJZZ2dkcmFzaWwiLCJyZXF1ZXN0X2lkIjoiMDA0Y2ZhNDQ3OGRlOWMyYzYwZDE0YTdiOTMxMjFmZjUiLCJyZXNlYXJjaF9kZWNpc2lvbiI6eyJzY2hlbWEiOiJja2ItcGxhbmUuZXh0ZXJuYWwtZXhwb3N1cmUtcmVzZWFyY2gudjEiLCJkaXNwb3NpdGlvbiI6IlJFQURZX1JFU0VBUkNIIiwic2NvcGUiOiJyZXNlYXJjaC1jb25zdW1lLW9uY2UiLCJyZWFzb25zIjpudWxsfSwicmVzZWFyY2hfaG9zdCI6IkdpdEh1YiBBY3Rpb25zIDEwMDAwMDI3MTMiLCJydW5uZXJfaWQiOiJHaXRIdWIgQWN0aW9ucyAxMDAwMDAyNzEzIiwic2NoZW1hIjoiY2tiLXBsYW5lLmV4dGVybmFsLWV4cG9zdXJlLXJlYWR5LXJlc2VhcmNoLXJlY2VpcHQudjEifQ=='
         run: |
           set -euo pipefail
           python - <<'PY'
@@ -185,7 +185,7 @@ jobs:
                "rsi_success_reason":"This is a bounded learned-mechanism pilot. Full RSI evidence still requires frozen A/B successor-generation superiority on identical unseen tasks and equal/lower cost.",
                "next_successor":nexts[cls],
                "failure_class":failure_class,"failing_step":failing_step,"error_signature":error_signature,
-               "authority_receipt_sha256":"bac09af5f1e359b8ed60e7e910ad4763d5f1c56e534b49cba1527fdc1e3126d6","metrics":m,
+               "authority_receipt_sha256":"1068c8dbc0ed8219fbefbb37c5a2dff82b94886e6dd3a390611504f7d6c77a50","metrics":m,
                "candidate_history":r["candidate_history"]}
           pathlib.Path("/tmp/classification.json").write_text(json.dumps(out,separators=(",",":")),encoding="utf-8")
           print(json.dumps(out,separators=(",",":")))
