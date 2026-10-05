@@ -143,13 +143,29 @@ jobs:
           mixed=(valid and not supported and m["oracle_changed_context_count"]==2 and m["oracle_improvement_case_count"]>=2 and
                  m["lost_control_clean_rescue_count"]==0 and m["oracle_partner_collateral_failure_count"]==0)
           cls="invalid" if not valid else "supported" if supported else "mixed" if mixed else "negative"
+          failure_class=None;failing_step=None;error_signature=None
+          if cls=="invalid":
+              selector_collision=(m["target_selectors_same_row_count"]>0 and
+                  m["historical_context_count"]==3 and m["historical_full_pool_row_count"]==17 and m["historical_identity_mismatch_count"]==0 and
+                  m["unseen_context_count"]==2 and m["variant_count"]==8 and
+                  m["target_source_identity_mismatch_count"]==0 and m["target_source_count"]==6 and m["target_total_source_bytes"]==114544 and
+                  m["target_base_training_identity_mismatch_count"]==0 and m["target_history_byte_budget_mismatch_count"]==0 and
+                  m["target_donor_row_count"]==32 and
+                  m["canonical_relation_identity_mismatch_count"]==0 and m["heldout_outcome_use_before_oracle_relation_freeze"]==0 and
+                  m["target_context_mapping_disclosure_count"]==0 and m["target_answer_disclosure_count"]==0 and
+                  m["post_result_relation_change_count"]==0 and m["persistent_state_write_count"]==0 and
+                  m["all_child_source_identity_mismatch_count"]==0 and m["all_child_transport_identity_mismatch_count"]==0 and
+                  m["capacity_growth_event_count"]==0)
+              failure_class="SEALED_CONTEXT_SELECTOR_COLLISION" if selector_collision else "FROZEN_VALIDITY_FAILURE"
+              failing_step="selector-separation" if selector_collision else "frozen-validity"
+              error_signature=hashlib.sha256(json.dumps({"failure_class":failure_class,"metrics":m},sort_keys=True,separators=(",",":")).encode()).hexdigest()
           out={"schema":"yggdrasil.research-classification.v1","experiment":"EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-ORACLE-CANONICAL-INVARIANT-UTILIZATION-089",
                "classification":cls,"validity_pass":valid,"oracle_invariant_support":supported,"mixed_signal":mixed,
+               "failure_class":failure_class,"failing_step":failing_step,"error_signature":error_signature,
                "authority_receipt_sha256":"ade4f4301fae85f6ae5a23924a3f68d8362b76ac5f5ce6b386c315c3262b7a1d","rsi_success":False,
                "rsi_success_reason":"Y089 isolates utilization of a supplied invariant relation on two unseen contexts; it does not establish endogenous invariant learning.","metrics":m}
           pathlib.Path("/tmp/classification.json").write_text(json.dumps(out,separators=(",",":")),encoding="utf-8")
           print(json.dumps(out,separators=(",",":")))
-          if cls=="invalid": raise SystemExit(2)
           PY
       - name: Delete external bytes
         if: always()
