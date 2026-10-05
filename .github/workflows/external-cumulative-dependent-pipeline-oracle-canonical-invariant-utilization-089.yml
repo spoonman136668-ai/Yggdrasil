@@ -125,7 +125,7 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json,math,pathlib
+          import hashlib,json,math,pathlib
           r=json.loads(pathlib.Path("/tmp/result1.json").read_text());m=r["metrics"]
           valid=(m["historical_context_count"]==3 and m["historical_full_pool_row_count"]==17 and m["historical_identity_mismatch_count"]==0 and
                  m["unseen_context_count"]==2 and m["variant_count"]==8 and
