@@ -201,16 +201,34 @@ def screen(y075, candidate):
 
 def main():
     y075 = load_y075()
-    rows = [screen(y075, c) for c in CANDIDATES]
-    eligible = [r for r in rows if r["accounting_ok"] and r["selector_separated"]]
-    selected = eligible[:2]
+    rows = []
+    eligible = []
+    selected = []
+    used_source_ids = set()
+    for candidate in CANDIDATES:
+        row = screen(y075, candidate)
+        rows.append(row)
+        if not (row["accounting_ok"] and row["selector_separated"]):
+            continue
+        eligible.append(row)
+        ids = {
+            (src["repo"], src["commit"], src["path"], src["git_blob"], src["prefix_bytes"])
+            for src in row["sources"]
+        }
+        if used_source_ids.isdisjoint(ids):
+            selected.append(row)
+            used_source_ids.update(ids)
+            if len(selected) == 2:
+                break
     out = {
         "schema": "yggdrasil.y089-fixa-selector-screen.v1",
-        "screening_basis": "outcome-blind selector separation only; original four followed by deterministic finite cross-product of the same twelve frozen source identities; first two eligible admitted",
-        "repair_scope": "packaging-only; no new source identities and no evaluation results",
-        "candidate_count": len(rows),
-        "eligible_count": len(eligible),
+        "screening_basis": "outcome-blind selector separation only; deterministic frozen candidate order; first two pairwise source-disjoint eligible contexts admitted",
+        "repair_scope": "packaging-only; no target evaluation results",
+        "candidate_universe_count": len(CANDIDATES),
+        "screened_count": len(rows),
+        "eligible_screened_count": len(eligible),
         "selected": [r["name"] for r in selected],
+        "selected_source_disjoint": len(selected) == 2,
         "rows": rows,
         "child_outcome_use_count": 0,
         "target_answer_disclosure_count": 0,
