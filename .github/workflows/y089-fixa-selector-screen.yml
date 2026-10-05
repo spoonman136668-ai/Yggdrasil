@@ -1,0 +1,41 @@
+name: Yggdrasil Y089 FIXA selector screen
+
+on:
+  push:
+    branches:
+      - research/external-hosted-yggdrasil-dependent-pipeline-oracle-canonical-invariant-utilization-089-fixa-screen
+    paths:
+      - 'research/packaging/y089_fixa_selector_screen.py'
+      - '.github/workflows/y089-fixa-selector-screen.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify packaging-only boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f research/packaging/y089_fixa_selector_screen.py
+          ! grep -q 'RunY089\|oracle_only_clean_rescue\|child outcome' research/packaging/y089_fixa_selector_screen.py
+      - name: Screen frozen candidates
+        shell: bash
+        run: |
+          set -euo pipefail
+          python research/packaging/y089_fixa_selector_screen.py
+      - name: Upload selector-screen evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: y089-fixa-selector-screen
+          path: y089-fixa-selector-screen.json
+          if-no-files-found: error
