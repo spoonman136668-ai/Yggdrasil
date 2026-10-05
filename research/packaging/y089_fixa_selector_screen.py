@@ -48,6 +48,38 @@ CANDIDATES = [
             {"domain":"technical-prose","repo":"qemu/qemu","commit":"d7a65d1793d691d356a56833620f7d1e6f5d653b","path":"docs/system/introduction.rst","git_blob":"8d9ef61d262b276250aa2bc102c6834adcd96be2"},
         ],
     },
+    {
+        "name": "fixa-candidate-e",
+        "sources": [
+            {"domain":"code","repo":"elastic/elasticsearch","commit":"5e99e9bcc8ad459565a47eacafc27ea082e3166a","path":"server/src/main/java/org/elasticsearch/action/search/TransportSearchAction.java","git_blob":"82f6fe0903bfd6d56007ba2aa18db6b6851e37ee"},
+            {"domain":"structured","repo":"npm/cli","commit":"b317f16c80df02ea3628cfa77170d5ae9b59720c","path":"package-lock.json","git_blob":"ec6ec30dd06549a6df33600b41ec1e2babf459af"},
+            {"domain":"technical-prose","repo":"rust-lang/book","commit":"1500248d8f230566e4ec9f27fcbb8fe9e2898ab1","path":"src/ch04-01-what-is-ownership.md","git_blob":"aa8fc61b00c415da53ce62396ee2ff49c4cb2bb6"},
+        ],
+    },
+    {
+        "name": "fixa-candidate-f",
+        "sources": [
+            {"domain":"code","repo":"qemu/qemu","commit":"d7a65d1793d691d356a56833620f7d1e6f5d653b","path":"system/vl.c","git_blob":"468a9fc247ac5d985db3db1e2391ffd7dcb679e6"},
+            {"domain":"structured","repo":"microsoft/vscode","commit":"2dca67a07aba894351849f39d337a921758722e8","path":"package-lock.json","git_blob":"916b20611d05b5062207803517bbd7912698d01c"},
+            {"domain":"technical-prose","repo":"dotnet/runtime","commit":"cd6580ff499dd9ae37656edcf2239bbab2362251","path":"README.md","git_blob":"286ef22a1813b5e4aa368e3f504ee5cf09942b13"},
+        ],
+    },
+    {
+        "name": "fixa-candidate-g",
+        "sources": [
+            {"domain":"code","repo":"postgres/postgres","commit":"d6393fc40a59830a88a79bdf08e962122fa9c631","path":"src/backend/executor/nodeAgg.c","git_blob":"29037cf3122e56ddb0a3a14ab9df70285539a4a7"},
+            {"domain":"structured","repo":"apache/cassandra","commit":"b15526b4816518e415aa1046d7eb98232a0c1151","path":"build.xml","git_blob":"f528fb4aebed40c698cad2499d3002524b70ca69"},
+            {"domain":"technical-prose","repo":"nodejs/node","commit":"c56cb0947f9e67fe4bfd07f69bba82f6109d4416","path":"doc/api/stream.md","git_blob":"1e8a2bd1ef930fc7277cdda5bade3e624e94edfd"},
+        ],
+    },
+    {
+        "name": "fixa-candidate-h",
+        "sources": [
+            {"domain":"code","repo":"golang/go","commit":"a90c4a7a586c70f0de61f5507d5c347702432e39","path":"src/net/http/server.go","git_blob":"409a267abaf0eb81e011f1ea90c0f8a78dd5d062"},
+            {"domain":"structured","repo":"grafana/grafana","commit":"26f3b3bf5136ccbb2359b2ab62a06396a8b88f06","path":"go.sum","git_blob":"f02129429d6ad82a01dcd42eebdff40cff715fd9"},
+            {"domain":"technical-prose","repo":"kubernetes/website","commit":"9a4fff6bd5075e8189ec5fd9ece46b99dc2b5792","path":"content/en/docs/concepts/overview/working-with-objects/namespaces.md","git_blob":"1fcca7257dca08dcd026f00e0aa15de9ef32f675"},
+        ],
+    },
 ]
 
 def load_y075():
