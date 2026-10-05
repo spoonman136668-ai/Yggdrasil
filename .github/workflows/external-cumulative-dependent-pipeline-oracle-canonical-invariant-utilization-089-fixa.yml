@@ -1,0 +1,212 @@
+name: Yggdrasil oracle canonical invariant utilization 089 FIXA
+on:
+  push:
+    branches:
+      - research/external-hosted-yggdrasil-dependent-pipeline-oracle-canonical-invariant-utilization-089-fixa
+    paths:
+      - 'research/experiments/exp-dgr-external-cumulative-dependent-pipeline-oracle-canonical-invariant-utilization-089-fixa.ice'
+      - 'research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-oracle-canonical-invariant-utilization-089-fixa.py'
+      - '.github/workflows/external-cumulative-dependent-pipeline-oracle-canonical-invariant-utilization-089-fixa.yml'
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Validate frozen package
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor '402033d22217e3d48f8eb200661a9fef0da21cce' HEAD
+          git merge-base --is-ancestor '88db605f03db627350ca238f5da0fb3d445363dc' HEAD
+          changed="$(git diff --name-only '402033d22217e3d48f8eb200661a9fef0da21cce..HEAD' | sort)"
+          expected="$(printf '%s\n' \
+            '.github/workflows/external-cumulative-dependent-pipeline-oracle-canonical-invariant-utilization-089-fixa.yml' \
+            'research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-oracle-canonical-invariant-utilization-089-fixa.py' \
+            'research/experiments/exp-dgr-external-cumulative-dependent-pipeline-oracle-canonical-invariant-utilization-089-fixa.ice' | sort)"
+          test "$changed" = "$expected"
+          test "$(git rev-parse '88db605f03db627350ca238f5da0fb3d445363dc:research/experiments/exp-dgr-external-cumulative-dependent-pipeline-oracle-canonical-invariant-utilization-089-fixa.ice')" = '289cb6db3fd4e5f68e734e5cd980e9fb7407847b'
+          test "$(git rev-parse '88db605f03db627350ca238f5da0fb3d445363dc:research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-oracle-canonical-invariant-utilization-089-fixa.py')" = '029fcaf170ead930bdd827f837f4b7b1ba1b2cd8'
+      - name: Verify exact READY_RESEARCH receipt
+        shell: bash
+        env:
+          AUTHORITY_RECEIPT_SHA256: 'e794fd8f5f722abc880a855cfce92bcbab4bcaf46d375e70c0e24f9ed263d04b'
+          AUTHORITY_RECEIPT_B64: 'eyJhdXRob3JpdHlfd29ya2Zsb3dfcmVmIjoicmVzZWFyY2gvcmVzZWFyY2gtYXV0aG9yaXR5LW1hbmlmZXN0LXJlZ2lzdHJ5LXIzIiwiYXV0aG9yaXR5X3dvcmtmbG93X3JlZl9zaGEiOiI3ODM3NmY4OWRiZjgwYzkxMzQyMTQ5Y2Q1MmMwNDFmZTFkYmRlNzI5IiwiY2tiX3BsYW5lX21haW5fc2hhIjoiNzgzNzZmODlkYmY4MGM5MTM0MjE0OWNkNTJjMDQxZmUxZGJkZTcyOSIsImV4cGVyaW1lbnQiOiJFWFAtREdSLUVYVEVSTkFMLUNVTVVMQVRJVkUtREVQRU5ERU5ULVBJUEVMSU5FLU9SQUNMRS1DQU5PTklDQUwtSU5WQVJJQU5ULVVUSUxJWkFUSU9OLTA4OS1GSVhBIiwiZmV0Y2hfZGVjaXNpb24iOnsic2NoZW1hIjoiY2tiLXBsYW5lLmV4dGVybmFsLWV4cG9zdXJlLWZldGNoLnYxIiwiZGlzcG9zaXRpb24iOiJSRUFEWV9GRVRDSCIsInNjb3BlIjoiZmV0Y2gtdmVyaWZ5LW9ubHkiLCJyZWFzb25zIjpudWxsfSwibWFuaWZlc3Rfc2hhMjU2IjoiZGUyMTc3ZjM5OThkYzk4M2JkZmExNDI3YTMyZWVjNWVlYmFhMWMzMGI1YTU4ODRlMzgyYTY0Y2U0YzgyOGFmZiIsInBsYW5fZGVjaXNpb24iOnsic2NoZW1hIjoiY2tiLXBsYW5lLmV4dGVybmFsLWV4cG9zdXJlLnYxIiwiZGlzcG9zaXRpb24iOiJSRUFEWV9QTEFOIiwic2NvcGUiOiJwbGFuLW9ubHkiLCJyZWFzb25zIjpudWxsfSwicHJlcmVnaXN0cmF0aW9uX3NoYSI6Ijg4ZGI2MDVmMDNkYjYyNzM1MGNhMjM4ZjVkYTBmYjNkNDQ1MzYzZGMiLCJwcm9qZWN0IjoiWWdnZHJhc2lsIiwicmVxdWVzdF9pZCI6ImI1MTMzM2ExNGMzZTAwMzU3ZjBhZTVmNjQ3NDdhOTgxIiwicmVzZWFyY2hfZGVjaXNpb24iOnsic2NoZW1hIjoiY2tiLXBsYW5lLmV4dGVybmFsLWV4cG9zdXJlLXJlc2VhcmNoLnYxIiwiZGlzcG9zaXRpb24iOiJSRUFEWV9SRVNFQVJDSCIsInNjb3BlIjoicmVzZWFyY2gtY29uc3VtZS1vbmNlIiwicmVhc29ucyI6bnVsbH0sInJlc2VhcmNoX2hvc3QiOiJHaXRIdWIgQWN0aW9ucyAxMDAwMDAyNTM0IiwicnVubmVyX2lkIjoiR2l0SHViIEFjdGlvbnMgMTAwMDAwMjUzNCIsInNjaGVtYSI6ImNrYi1wbGFuZS5leHRlcm5hbC1leHBvc3VyZS1yZWFkeS1yZXNlYXJjaC1yZWNlaXB0LnYxIn0='
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64,hashlib,json,os,pathlib
+          raw=base64.b64decode(os.environ["AUTHORITY_RECEIPT_B64"],validate=True)
+          assert hashlib.sha256(raw).hexdigest()==os.environ["AUTHORITY_RECEIPT_SHA256"]
+          r=json.loads(raw)
+          assert r["schema"]=="ckb-plane.external-exposure-ready-research-receipt.v1"
+          assert r["project"]=="Yggdrasil"
+          assert r["experiment"]=="EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-ORACLE-CANONICAL-INVARIANT-UTILIZATION-089-FIXA"
+          assert r["preregistration_sha"]=="88db605f03db627350ca238f5da0fb3d445363dc"
+          assert r["manifest_sha256"]=="de2177f3998dc983bdfa1427a32eec5eebaa1c30b5a5884e382a64ce4c828aff"
+          assert r["ckb_plane_main_sha"]=="78376f89dbf80c91342149cd52c041fe1dbde729"
+          assert r["plan_decision"]["disposition"]=="READY_PLAN"
+          assert r["fetch_decision"]["disposition"]=="READY_FETCH"
+          assert r["research_decision"]["disposition"]=="READY_RESEARCH"
+          pathlib.Path("/tmp/authority.json").write_bytes(raw)
+          PY
+      - name: Fetch historical and unseen sealed contexts
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in transfer third fourth sixth seventh; do mkdir -p "$RUNNER_TEMP/y089-$n"; done
+          python3 - <<'PY'
+          import hashlib,pathlib,urllib.request,urllib.parse,os
+          roots={n:pathlib.Path(os.environ["RUNNER_TEMP"])/("y089-"+n) for n in ("transfer","third","fourth","sixth","seventh")}
+          historical={
+            "transfer":[
+              ("code","https://raw.githubusercontent.com/python/cpython/ebf955df7a89ed0c7968f79faec1de49f61ed7cb/Lib/statistics.py",61896,"3023ec949802c2e880a000775bfd1a6b70c21b5423881118141e3ec69d8e3336",41453,"66bb25b24a0316b4965c64798494de93a1d7332672b15b5f430ab6a2fb4b9d45"),
+              ("structured","https://raw.githubusercontent.com/json-schema-org/JSON-Schema-Test-Suite/5b0ee1613e45fcc2bddac00e07c19cd49b00d8a8/tests/draft2020-12/uniqueItems.json",14490,"ed84ef6ddc827659e257ba64cbe9679f06932b6320bea5c07622bf3d2cc4daa5",14365,"95ddbd0eaef29aad5ecfc74f9da21b795481f58b2c59380324a445fcd4d08932"),
+              ("technical-prose","https://raw.githubusercontent.com/golang/go/6f5c275ebdc454197fff5f1496521c8f81e20eef/doc/README.md",3124,"c1bf000e7a873b3afed329c5b9f9c07f7692b1d7fb2bfca2d7600cec8b1d1407",1454,"48c3d95b8b03864a4af41d892710675956cde85afd0d5d6c331594de9f17881b")],
+            "third":[
+              ("code","https://raw.githubusercontent.com/torvalds/linux/a74306e2e676f9775457366fc047a660fbf02f26/kernel/sched/core.c",303863,"9297982652b9810b3508993c06d3c6e097ebca5cbe1ef3a6246bccfa0c1128b1",41453,"50744a9e70d67d62c97f3f434f4f05788b6b8514c6bce46cf7dafbaf49e2abff"),
+              ("structured","https://raw.githubusercontent.com/SchemaStore/schemastore/de76181a2ab215431d3e9314bc14f83cc3b01ad2/src/schemas/json/github-workflow.json",118601,"d10c9f4656e1bd5bc6727e9b35080e017dc167154726fca93da33c7a6bd1c4f3",14365,"2a97ba02bc5e479b1738f6f0c3e09318bb5a255350c84de014ddbcebea46af56"),
+              ("technical-prose","https://raw.githubusercontent.com/rust-lang/book/1500248d8f230566e4ec9f27fcbb8fe9e2898ab1/src/ch01-03-hello-cargo.md",11025,"61369f359b84b646fc3773eb569a26bc18ba6edb4cf2be06a84472c7054c0e39",1454,"23c002a1984ed065abfdbafa82100ed54d6bf6276a947676e710a30c75d96017")],
+            "fourth":[
+              ("code","https://raw.githubusercontent.com/kubernetes/kubernetes/e7967bb9b76d43a6388abb7a4e90d2f899ef97ff/pkg/kubelet/kubelet.go",156626,"e0f247ef45cb281166b58ba1a013dc6925023388193bd74c1f126c695b770d34",41453,"283073d9f6c0dd868c39a913364bce6744ff1e29c038f6920197c0d33e0c2ac1"),
+              ("structured","https://raw.githubusercontent.com/microsoft/TypeScript/50d70a3f5f453a79a4323b263165da51f656a4e3/package-lock.json",143844,"52b6c9bd0a26ef1b0fc27dfbfaa00df6a047cdddd587d07c4f6c1c3345faf5cf",14365,"a46fcfb7d862b03b750b61a5f667d4ac25a064df9ccb746e395db7e864068933"),
+              ("technical-prose","https://raw.githubusercontent.com/django/django/a461af8ce48762d7ec602260aaff81014ddccbcb/docs/intro/tutorial01.txt",10844,"1cf1817e6211b7c0fa9e8044ee808fde1e8f16ca5f9d5ab5358510a5c9591b96",1454,"5d0c2efd139bd6094098bc893ed746020f03e0860a25f278348f43f47c236222")]}
+          for group,sources in historical.items():
+            for name,url,full_n,full_h,prefix_n,prefix_h in sources:
+              data=urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":"yggdrasil-y089-fixa"}),timeout=90).read(full_n+1)
+              assert len(data)==full_n and hashlib.sha256(data).hexdigest()==full_h
+              p=data[:prefix_n];assert hashlib.sha256(p).hexdigest()==prefix_h
+              (roots[group]/(name+".bin")).write_bytes(p)
+          unseen={
+            "sixth":[
+              ("code","apache/spark","2f4102c8117a087aba1324d52b268f7966670136","core/src/main/scala/org/apache/spark/SparkContext.scala","f1cc057ef920e7349eb6b2ce9859fca1db854589",41453,"25f004f46823b2232d5c168ec9ac7b16d3446edc9f492085bf89be7f6e4f4ed3"),
+              ("structured","hashicorp/terraform","d8e7252bce0f6b363c3c5ef26eb6d343395b5f5f","go.sum","be62f6851c7544d66cc825f2ebcbb3097f816d01",14365,"9715c9e8a2c315695773e346e8287ce05faa9d590e2827cbb2ac95d704e4e0ee"),
+              ("technical-prose","curl/curl","efcbd5607896d509c6fd77a740b8f8eb9f7586b6","docs/libcurl/curl_easy_setopt.md","23eda35203339b36d08956d1c17d8ea8924ae65d",1454,"1c3fda81f31065246048856028c27a319edcc6b039d9776f765abfef52370c85")],
+            "seventh":[
+              ("code","apache/cassandra","b15526b4816518e415aa1046d7eb98232a0c1151","src/java/org/apache/cassandra/db/ColumnFamilyStore.java","d69cf7354513d3444777b4c425d0147826c24953",41453,"d3046eb79b0cb75bd5552dfac4d43ea7a979e51c4a62a449af76dcb545389cd5"),
+              ("structured","npm/cli","b317f16c80df02ea3628cfa77170d5ae9b59720c","package-lock.json","ec6ec30dd06549a6df33600b41ec1e2babf459af",14365,"667d1b6953fb1fc6b452a312bbb2fa7658dff68dab7bc41d60769771b1768252"),
+              ("technical-prose","qemu/qemu","d7a65d1793d691d356a56833620f7d1e6f5d653b","docs/system/introduction.rst","8d9ef61d262b276250aa2bc102c6834adcd96be2",1454,"5fe7c45b5bc52ac5bb55ed81cae9438f7ce157eb2325c5032f72d14ed89b18e2")]}
+          seen=set()
+          for group,sources in unseen.items():
+            for name,repo,commit,path,blob,prefix_n,prefix_h in sources:
+              ident=(repo,commit,path,blob,prefix_n)
+              assert ident not in seen,(group,name,"duplicate-source-identity")
+              seen.add(ident)
+              url=f"https://raw.githubusercontent.com/{repo}/{commit}/{urllib.parse.quote(path)}"
+              data=urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":"yggdrasil-y089-fixa"}),timeout=90).read()
+              got=hashlib.sha1((f"blob {len(data)}\0").encode()+data).hexdigest()
+              assert got==blob and len(data)>=prefix_n,(group,name,got,blob,len(data))
+              p=data[:prefix_n]
+              assert hashlib.sha256(p).hexdigest()==prefix_h,(group,name,"prefix-sha256")
+              (roots[group]/(name+".bin")).write_bytes(p)
+          assert len(seen)==6
+          PY
+          for n in transfer third fourth sixth seventh; do
+            key="$(echo "$n" | tr '[:lower:]' '[:upper:]')_ROOT"
+            echo "$key=$RUNNER_TEMP/y089-$n" >> "$GITHUB_ENV"
+          done
+      - name: Verify preregistered selector separation before outcomes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import importlib.util,os,pathlib
+          path=pathlib.Path("research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-oracle-canonical-invariant-utilization-089-fixa.py")
+          spec=importlib.util.spec_from_file_location("y089_fixa_preflight",path)
+          mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
+          y079=mod.load_y079();y075=y079.load_y075()
+          expected={
+            "sixth":([32,116,104,101],[99,116,105,111]),
+            "seventh":([44,10,32,32],[32,97,110,100]),
+          }
+          for name,root in (("sixth",os.environ["SIXTH_ROOT"]),("seventh",os.environ["SEVENTH_ROOT"])):
+            m={k:0.0 for k in ("target_source_identity_mismatch_count","target_source_count","target_total_source_bytes","target_base_training_identity_mismatch_count","target_history_byte_budget_mismatch_count","target_donor_row_count","target_eligible_candidate_count","invalid_evaluation_rows")}
+            pool,rep,src,loc=mod.target_pool(y075,y079,root,m)
+            assert pool and rep is not None and src is not None and loc is not None
+            assert list(src["key"])==expected[name][0],(name,"source",src["key"])
+            assert list(loc["key"])==expected[name][1],(name,"local",loc["key"])
+            assert tuple(src["key"])!=tuple(loc["key"])
+            assert m["target_source_identity_mismatch_count"]==0 and m["invalid_evaluation_rows"]==0
+          PY
+      - name: Compile frozen harness
+        run: python -m py_compile research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-oracle-canonical-invariant-utilization-089-fixa.py
+      - name: Run frozen Y089 FIXA oracle-canonical invariant utilization twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          script='research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-oracle-canonical-invariant-utilization-089-fixa.py'
+          args=(--transfer-root "$TRANSFER_ROOT" --third-root "$THIRD_ROOT" --fourth-root "$FOURTH_ROOT" --sixth-root "$SIXTH_ROOT" --seventh-root "$SEVENTH_ROOT")
+          python "$script" "${args[@]}" --out /tmp/result1.json
+          python "$script" "${args[@]}" --out /tmp/result2.json
+          cmp /tmp/result1.json /tmp/result2.json
+          cat /tmp/result1.json
+      - name: Classify frozen result
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,math,pathlib
+          r=json.loads(pathlib.Path("/tmp/result1.json").read_text());m=r["metrics"]
+          valid=(m["historical_context_count"]==3 and m["historical_full_pool_row_count"]==17 and m["historical_identity_mismatch_count"]==0 and
+                 m["unseen_context_count"]==2 and m["variant_count"]==8 and
+                 m["target_source_identity_mismatch_count"]==0 and m["target_source_count"]==6 and m["target_total_source_bytes"]==114544 and
+                 m["target_base_training_identity_mismatch_count"]==0 and m["target_history_byte_budget_mismatch_count"]==0 and
+                 m["target_donor_row_count"]==32 and m["target_selectors_same_row_count"]==0 and
+                 m["canonical_relation_identity_mismatch_count"]==0 and m["heldout_outcome_use_before_oracle_relation_freeze"]==0 and
+                 m["target_context_mapping_disclosure_count"]==0 and m["target_answer_disclosure_count"]==0 and
+                 m["post_result_relation_change_count"]==0 and m["persistent_state_write_count"]==0 and
+                 m["all_child_source_identity_mismatch_count"]==0 and m["all_child_transport_identity_mismatch_count"]==0 and
+                 m["capacity_growth_event_count"]==0 and m["invalid_evaluation_rows"]==0 and all(math.isfinite(float(v)) for v in m.values()))
+          spans=(m.get("sixth_oracle_only_clean_rescue_count",0)>0 and m.get("seventh_oracle_only_clean_rescue_count",0)>0)
+          supported=(valid and m["oracle_changed_context_count"]==2 and m["oracle_only_clean_rescue_count"]>=2 and spans and
+                     m["lost_control_clean_rescue_count"]==0 and m["oracle_partner_collateral_failure_count"]==0)
+          mixed=(valid and not supported and m["oracle_changed_context_count"]==2 and m["oracle_improvement_case_count"]>=2 and
+                 m["lost_control_clean_rescue_count"]==0 and m["oracle_partner_collateral_failure_count"]==0)
+          cls="invalid" if not valid else "supported" if supported else "mixed" if mixed else "negative"
+          failure_class=None;failing_step=None;error_signature=None
+          if cls=="invalid":
+              selector_collision=(m["target_selectors_same_row_count"]>0 and
+                  m["historical_context_count"]==3 and m["historical_full_pool_row_count"]==17 and m["historical_identity_mismatch_count"]==0 and
+                  m["unseen_context_count"]==2 and m["variant_count"]==8 and
+                  m["target_source_identity_mismatch_count"]==0 and m["target_source_count"]==6 and m["target_total_source_bytes"]==114544 and
+                  m["target_base_training_identity_mismatch_count"]==0 and m["target_history_byte_budget_mismatch_count"]==0 and
+                  m["target_donor_row_count"]==32 and
+                  m["canonical_relation_identity_mismatch_count"]==0 and m["heldout_outcome_use_before_oracle_relation_freeze"]==0 and
+                  m["target_context_mapping_disclosure_count"]==0 and m["target_answer_disclosure_count"]==0 and
+                  m["post_result_relation_change_count"]==0 and m["persistent_state_write_count"]==0 and
+                  m["all_child_source_identity_mismatch_count"]==0 and m["all_child_transport_identity_mismatch_count"]==0 and
+                  m["capacity_growth_event_count"]==0)
+              failure_class="SEALED_CONTEXT_SELECTOR_COLLISION" if selector_collision else "FROZEN_VALIDITY_FAILURE"
+              failing_step="selector-separation" if selector_collision else "frozen-validity"
+              error_signature=hashlib.sha256(json.dumps({"failure_class":failure_class,"metrics":m},sort_keys=True,separators=(",",":")).encode()).hexdigest()
+          out={"schema":"yggdrasil.research-classification.v1","experiment":"EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-ORACLE-CANONICAL-INVARIANT-UTILIZATION-089-FIXA",
+               "classification":cls,"validity_pass":valid,"oracle_invariant_support":supported,"mixed_signal":mixed,
+               "failure_class":failure_class,"failing_step":failing_step,"error_signature":error_signature,
+               "authority_receipt_sha256":"e794fd8f5f722abc880a855cfce92bcbab4bcaf46d375e70c0e24f9ed263d04b","rsi_success":False,
+               "rsi_success_reason":"Y089-FIXA re-tests the unchanged supplied invariant relation on two preregistered selector-separated unseen contexts; it does not establish endogenous invariant learning.","metrics":m}
+          pathlib.Path("/tmp/classification.json").write_text(json.dumps(out,separators=(",",":")),encoding="utf-8")
+          print(json.dumps(out,separators=(",",":")))
+          PY
+      - name: Delete external bytes
+        if: always()
+        shell: bash
+        run: rm -rf "$RUNNER_TEMP"/y089-*
+      - name: Upload evidence
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yggdrasil-oracle-canonical-invariant-utilization-089-fixa
+          path: |
+            /tmp/authority.json
+            /tmp/result1.json
+            /tmp/result2.json
+            /tmp/classification.json
+          if-no-files-found: error
