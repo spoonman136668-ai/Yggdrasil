@@ -2,7 +2,7 @@
 
 This script may inspect only exact source identity and the pre-outcome
 SOURCE_CONDITIONED/LOCAL_ONLY selector keys. It must not execute Y089 outcome
-evaluation or inspect any child outcome.
+evaluation or inspect any target result.
 """
 import hashlib
 import importlib.util
