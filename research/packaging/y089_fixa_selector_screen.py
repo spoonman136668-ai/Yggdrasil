@@ -135,7 +135,16 @@ def screen(y075, candidate):
         m = metrics()
         pool = list(y075.build_pool(root, m))
         if not pool:
-            raise RuntimeError("EMPTY_SELECTOR_POOL:"+candidate["name"])
+            return {
+                "name": candidate["name"],
+                "sources": frozen_sources,
+                "selector_separated": False,
+                "source_conditioned_key": None,
+                "local_only_key": None,
+                "eligible_candidate_count": int(m["eligible_candidate_count"]),
+                "accounting_ok": False,
+                "rejection_reason": "EMPTY_SELECTOR_POOL",
+            }
         source = sorted(pool, key=y075.source_rank)[0]
         local = sorted(pool, key=y075.local_rank)[0]
         accounting_ok = (
