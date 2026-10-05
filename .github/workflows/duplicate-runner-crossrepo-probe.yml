@@ -1,0 +1,30 @@
+name: Cross-repo duplicate runner probe
+on:
+  push:
+    branches:
+      - ops/runner-pool-crossrepo-probe-20261005
+permissions:
+  contents: read
+jobs:
+  probe_up_b:
+    runs-on: [self-hosted, Windows, X64, wingless-up-b]
+    timeout-minutes: 5
+    steps:
+      - name: Identity only
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          Write-Host "runner=$env:RUNNER_NAME"
+          Write-Host "repo=$env:GITHUB_REPOSITORY"
+          Write-Host "sha=$env:GITHUB_SHA"
+  probe_up_c:
+    runs-on: [self-hosted, Windows, X64, wingless-up-c]
+    timeout-minutes: 5
+    steps:
+      - name: Identity only
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          Write-Host "runner=$env:RUNNER_NAME"
+          Write-Host "repo=$env:GITHUB_REPOSITORY"
+          Write-Host "sha=$env:GITHUB_SHA"
