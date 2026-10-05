@@ -82,6 +82,34 @@ CANDIDATES = [
     },
 ]
 
+# FIXB packaging repair: exhaust the finite cross-product of the same twelve
+# source identities already frozen above. No new source identity, target outcome,
+# target answer, or target-context mapping is introduced. Original four candidates
+# remain first; additional candidates are ordered lexicographically by source slot.
+_original = list(CANDIDATES)
+_by_domain = {
+    domain: [next(src for src in c["sources"] if src["domain"] == domain) for c in _original]
+    for domain in ("code", "structured", "technical-prose")
+}
+_seen = {
+    tuple((src["repo"], src["commit"], src["path"]) for src in c["sources"])
+    for c in _original
+}
+for ci, code in enumerate(_by_domain["code"]):
+    for si, structured in enumerate(_by_domain["structured"]):
+        for pi, prose in enumerate(_by_domain["technical-prose"]):
+            sources = [dict(code), dict(structured), dict(prose)]
+            ident = tuple((src["repo"], src["commit"], src["path"]) for src in sources)
+            if ident in _seen:
+                continue
+            _seen.add(ident)
+            CANDIDATES.append({
+                "name": f"fixb-cross-{ci}{si}{pi}",
+                "sources": sources,
+            })
+
+_FETCH_CACHE = {}
+
 def load_y075():
     spec = importlib.util.spec_from_file_location("y075_fixa_screen", Y075_PATH)
     if spec is None or spec.loader is None:
@@ -104,6 +132,9 @@ def metrics():
     }
 
 def fetch_exact(src):
+    key = (src["repo"], src["commit"], src["path"], src["git_blob"], src["domain"])
+    if key in _FETCH_CACHE:
+        return _FETCH_CACHE[key]
     url = f"https://raw.githubusercontent.com/{src['repo']}/{src['commit']}/{urllib.parse.quote(src['path'])}"
     req = urllib.request.Request(url, headers={"User-Agent":"yggdrasil-y089-fixa-packaging"})
     data = urllib.request.urlopen(req, timeout=90).read()
@@ -113,7 +144,9 @@ def fetch_exact(src):
     n = PREFIX[src["domain"]]
     if len(data) < n:
         raise RuntimeError(f"SOURCE_TOO_SHORT:{src['repo']}:{src['path']}:{len(data)}:{n}")
-    return data[:n]
+    out = data[:n]
+    _FETCH_CACHE[key] = out
+    return out
 
 def screen(y075, candidate):
     with tempfile.TemporaryDirectory(prefix="y089-fixa-screen-") as td:
@@ -173,7 +206,8 @@ def main():
     selected = eligible[:2]
     out = {
         "schema": "yggdrasil.y089-fixa-selector-screen.v1",
-        "screening_basis": "outcome-blind selector separation only; candidate order frozen before screen",
+        "screening_basis": "outcome-blind selector separation only; original four followed by deterministic finite cross-product of the same twelve frozen source identities; first two eligible admitted",
+        "repair_scope": "packaging-only; no new source identities and no child outcomes",
         "candidate_count": len(rows),
         "eligible_count": len(eligible),
         "selected": [r["name"] for r in selected],
