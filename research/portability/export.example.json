@@ -1,0 +1,65 @@
+{
+  "schema": "research.portable-checkpoint-export.v1",
+  "project": "Yggdrasil",
+  "mechanism_id": "EXAMPLE-NOT-ACCEPTED",
+  "source_commit_sha": "e86662f1a98abddb545d7776111451bf8ad46448",
+  "source_tree_sha": "0000000000000000000000000000000000000000",
+  "source_schema_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "qualification_contract_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "toolchain_id": "replace-with-qualified-toolchain-id",
+  "lineage": {
+    "experiment_id": "replace-with-frozen-experiment-id",
+    "parent_checkpoint_sha256": null
+  },
+  "resource_envelope": {
+    "comparison": "equal-or-lower-than-baseline",
+    "baseline_id": "replace-with-preregistered-baseline",
+    "max_parameters": 0,
+    "max_context_bytes": 0,
+    "max_model_calls": 0
+  },
+  "interface": {
+    "signature": "cognition_consumer(retained_state, local_state) -> decision_state",
+    "total_slots": 16,
+    "active_slots": 7,
+    "retained_slots": 9,
+    "hidden_persistent_memory_growth": false,
+    "addressing_change": false,
+    "capacity_growth": false
+  },
+  "files": [
+    {
+      "path": "model/weights.bin",
+      "role": "learned_parameters"
+    },
+    {
+      "path": "state/resume.json",
+      "role": "resumable_state"
+    },
+    {
+      "path": "replay/input.json",
+      "role": "replay_input"
+    },
+    {
+      "path": "replay/output.json",
+      "role": "replay_output"
+    }
+  ],
+  "replay": {
+    "vectors": [
+      {
+        "id": "replay-1",
+        "input_path": "replay/input.json",
+        "output_path": "replay/output.json"
+      }
+    ]
+  },
+  "authority": {
+    "accepted_state_mutation": false,
+    "execution_authority": false,
+    "promotion_authority": false,
+    "production_authority": false,
+    "successor_authority": false,
+    "retraining_required": false
+  }
+}
