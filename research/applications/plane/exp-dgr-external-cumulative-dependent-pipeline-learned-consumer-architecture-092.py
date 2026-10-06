@@ -41,7 +41,7 @@ def target_pool(y075,y079,root,m,prefix):
         ("donor_row_count","donor_row_count"),
         ("eligible_candidate_count","eligible_candidate_count"),
         ("invalid_evaluation_rows","invalid_evaluation_rows")):
-        m[prefix+dst]+=float(tm[key])
+        metric_key="invalid_evaluation_rows" if dst=="invalid_evaluation_rows" else prefix+dst\n        m[metric_key]+=float(tm[key])
     if not pool:return [],None
     return pool,dict(sorted(pool,key=y075.local_rank)[0])
 
