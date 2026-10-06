@@ -1,0 +1,108 @@
+name: Yggdrasil Y092 auxiliary Python surface probe
+on:
+  push:
+    branches:
+      - 'research/external-hosted-yggdrasil-y092-aux-python-surface-probe-r1'
+    paths:
+      - '.github/workflows/external-cumulative-dependent-pipeline-learned-consumer-architecture-092-aux-python-surface-probe-r1.yml'
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: [self-hosted, Windows, X64, 'research-only']
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Probe advertised Python surface without installation
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'
+          Set-StrictMode -Version 3.0
+          $paths=New-Object 'System.Collections.Generic.List[string]'
+          foreach($n in @('python.exe','python3.exe')){
+            foreach($cmd in @(Get-Command $n -All -ErrorAction SilentlyContinue)){
+              if($cmd -and $cmd.Source -and !$paths.Contains([string]$cmd.Source)){[void]$paths.Add([string]$cmd.Source)}
+            }
+          }
+          $launcher=Get-Command py.exe -ErrorAction SilentlyContinue
+          $launcherFound=if($launcher){1}else{0}
+          if($launcher){
+            $raw=@(& $launcher.Source -0p 2>$null)
+            foreach($line in $raw){
+              if([string]$line -match '(?<p>[A-Za-z]:\\[^\r\n]*python(?:3)?\.exe)'){
+                $p=[string]$Matches['p']
+                if((Test-Path -LiteralPath $p) -and !$paths.Contains($p)){[void]$paths.Add($p)}
+              }
+            }
+          }
+          $rows=New-Object 'System.Collections.Generic.List[object]'
+          foreach($p in $paths){
+            $meta=$null
+            try{
+              $raw=& $p -c "import json,sys; print(json.dumps({'executable':sys.executable,'major':sys.version_info.major,'minor':sys.version_info.minor,'micro':sys.version_info.micro}))" 2>$null
+              if($LASTEXITCODE -eq 0 -and $raw){$meta=($raw|Select-Object -Last 1|ConvertFrom-Json)}
+            }catch{}
+            if($null -eq $meta){continue}
+            $pipReady=$false
+            try{& $p -m pip --version *> $null;$pipReady=($LASTEXITCODE -eq 0)}catch{$pipReady=$false}
+            $venvReady=$false
+            $vr=Join-Path $env:RUNNER_TEMP ("ygg-aux-venv-"+[guid]::NewGuid().ToString("N"))
+            try{
+              & $p -m venv $vr *> $null
+              $venvReady=($LASTEXITCODE -eq 0 -and (Test-Path -LiteralPath $vr))
+            }catch{$venvReady=$false}
+            finally{Remove-Item -LiteralPath $vr -Recurse -Force -ErrorAction SilentlyContinue}
+            [void]$rows.Add([pscustomobject]@{
+              path=[string]$p
+              executable=[string]$meta.executable
+              major=[int]$meta.major
+              minor=[int]$meta.minor
+              micro=[int]$meta.micro
+              compatible=([int]$meta.major -gt 3 -or ([int]$meta.major -eq 3 -and [int]$meta.minor -ge 11))
+              pip_ready=$pipReady
+              venv_ready=$venvReady
+            })
+          }
+          $usable=@($rows|Where-Object{$_.compatible -and $_.pip_ready -and $_.venv_ready})
+          $classification=if($usable.Count -gt 0){'supported'}else{'negative'}
+          $Out=[ordered]@{
+            schema='yggdrasil.auxiliary-runner-portability-classification.v1'
+            experiment='EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-LEARNED-CONSUMER-ARCHITECTURE-092'
+            classification=$classification
+            validity_pass=$true
+            evidence_only=$true
+            primary_successor_authority=$false
+            primary_state_mutation=$false
+            scientific_outcome_access_count=0
+            sealed_y092_evaluation_execution_count=0
+            software_install_count=0
+            runner_identity=(& whoami.exe).Trim()
+            metrics=[ordered]@{
+              advertised_python_candidate_count=$rows.Count
+              compatible_python_count=@($rows|Where-Object{$_.compatible}).Count
+              pip_ready_count=@($rows|Where-Object{$_.pip_ready}).Count
+              venv_ready_count=@($rows|Where-Object{$_.venv_ready}).Count
+              fully_usable_python_count=$usable.Count
+              python_launcher_found=$launcherFound
+              scientific_outcome_access_count=0
+              primary_state_mutation_count=0
+              successor_authority_count=0
+              software_install_count=0
+            }
+            candidates=@($rows)
+          }
+          $Path=Join-Path $env:RUNNER_TEMP 'classification.json'
+          [IO.File]::WriteAllText($Path,(($Out|ConvertTo-Json -Depth 8 -Compress)+[Environment]::NewLine),(New-Object Text.UTF8Encoding($false)))
+          Get-Content -LiteralPath $Path -Raw
+      - name: Upload portability evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: yggdrasil-y092-aux-python-surface-probe-r1
+          path: ${{ runner.temp }}\classification.json
+          if-no-files-found: error
+# experiment: EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-LEARNED-CONSUMER-ARCHITECTURE-092
+# manifest: ea4dfd21ac7d2b6bc98e8e26c45bfef768a0bf9ea6d2a3502ab67469df346cf3
+# preregistration: 4a5a30845354aad1ed9809adc276c7e341a0a5f9
