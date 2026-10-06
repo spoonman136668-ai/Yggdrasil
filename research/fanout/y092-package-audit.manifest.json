@@ -1,0 +1,62 @@
+{
+  "schema": "research.free-fanout.v1",
+  "program": "Yggdrasil",
+  "package_sha": "BOUND_AT_DISPATCH",
+  "authority": "external-evidence-only",
+  "data_class": "historical-replay",
+  "sealed_inputs": false,
+  "accepted_state_mutation": false,
+  "successor_dispatch": false,
+  "queue_write": false,
+  "production_access": false,
+  "promotion_authority": false,
+  "candidate_timeout_seconds": 300,
+  "entrypoint": "research/fanout/y092_package_audit.py",
+  "candidate_interface": {
+    "signature": "cognition_consumer(retained_state, local_state) -> decision_state",
+    "training_data_class": "historical-replay",
+    "sealed_outcome_exposure": false,
+    "post_result_tuning": false,
+    "hidden_persistent_memory_growth": false,
+    "addressing_change": false,
+    "capacity_growth": false,
+    "total_slots": 16,
+    "active_slots": 7,
+    "retained_slots": 9
+  },
+  "resource_envelope": {
+    "comparison": "equal-or-lower-than-baseline",
+    "baseline_id": "y092-static-package-integrity",
+    "max_parameters": 0,
+    "max_context_bytes": 0,
+    "max_model_calls": 0,
+    "max_peak_rss_kib": 524288,
+    "max_elapsed_seconds": 300
+  },
+  "candidates": [
+    {
+      "id": "identity",
+      "config": {
+        "mode": "identity"
+      }
+    },
+    {
+      "id": "workflow-static",
+      "config": {
+        "mode": "workflow-static"
+      }
+    },
+    {
+      "id": "source-tree",
+      "config": {
+        "mode": "source-tree"
+      }
+    },
+    {
+      "id": "package-diff",
+      "config": {
+        "mode": "package-diff"
+      }
+    }
+  ]
+}
