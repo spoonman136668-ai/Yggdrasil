@@ -1,0 +1,100 @@
+name: Yggdrasil Y092 auxiliary frozen-package replay R2
+on:
+  push:
+    branches:
+      - 'research/external-hosted-yggdrasil-y092-aux-replay-r2'
+    paths:
+      - 'research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-architecture-092.py'
+      - '.github/workflows/external-cumulative-dependent-pipeline-learned-consumer-architecture-092-aux-replay-r2.yml'
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: [self-hosted, Windows, X64, 'research-only']
+    timeout-minutes: 60
+    env:
+      PSExecutionPolicyPreference: Bypass
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Verify frozen Y092 package identity
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        env:
+          AUTHORITY_RECEIPT_SHA256: '89743de25424784328e2bd3824366f2817a1ae445cb79683b1e6acdbc42f4d20'
+          AUTHORITY_RECEIPT_B64: 'eyJhdXRob3JpdHlfd29ya2Zsb3dfcmVmIjoicmVzZWFyY2gvZGV0ZXJtaW5pc3RpYy1yZXNlYXJjaC1sb29wLWNvbnRyb2xsZXItcjEwOSIsImF1dGhvcml0eV93b3JrZmxvd19yZWZfc2hhIjoiMjRjNzgxNDY4Y2FhM2MyNDIzZWY4YjA0MDkxYjM3MzI3Mjk2MzM4MyIsImNrYl9wbGFuZV9tYWluX3NoYSI6IjY5MTZjM2M4MDQyOGIyZmExMTFiYmM2MzYwMjViMjlmYzFiYjQzMDQiLCJleHBlcmltZW50IjoiRVhQLURHUi1FWFRFUk5BTC1DVU1VTEFUSVZFLURFUEVOREVOVC1QSVBFTElORS1MRUFSTkVELUNPTlNVTUVSLUFSQ0hJVEVDVFVSRS0wOTIiLCJmZXRjaF9kZWNpc2lvbiI6eyJzY2hlbWEiOiJja2ItcGxhbmUuZXh0ZXJuYWwtZXhwb3N1cmUtZmV0Y2gudjEiLCJkaXNwb3NpdGlvbiI6IlJFQURZX0ZFVENIIiwic2NvcGUiOiJmZXRjaC12ZXJpZnktb25seSIsInJlYXNvbnMiOm51bGx9LCJtYW5pZmVzdF9zaGEyNTYiOiJlYTRkZmQyMWFjN2QyYjZiYzk4ZThlMjZjNDViZmVmNzY4YTBiZjllYTZkMmEzNTAyYWI2NzQ2OWRmMzQ2Y2YzIiwicGxhbl9kZWNpc2lvbiI6eyJzY2hlbWEiOiJja2ItcGxhbmUuZXh0ZXJuYWwtZXhwb3N1cmUudjEiLCJkaXNwb3NpdGlvbiI6IlJFQURZX1BMQU4iLCJzY29wZSI6InBsYW4tb25seSIsInJlYXNvbnMiOm51bGx9LCJwcmVyZWdpc3RyYXRpb25fc2hhIjoiNGE1YTMwODQ1MzU0YWFkMWVkOTgwOWFkYzI3NmM3ZTM0MWEwYTVmOSIsInByb2plY3QiOiJZZ2dkcmFzaWwiLCJyZXF1ZXN0X2lkIjoiMDU0NTY5YmVhYjliZTdkMGE0OGZhZjJhNDQwMzI4ZjkiLCJyZXNlYXJjaF9kZWNpc2lvbiI6eyJzY2hlbWEiOiJja2ItcGxhbmUuZXh0ZXJuYWwtZXhwb3N1cmUtcmVzZWFyY2gudjEiLCJkaXNwb3NpdGlvbiI6IlJFQURZX1JFU0VBUkNIIiwic2NvcGUiOiJyZXNlYXJjaC1jb25zdW1lLW9uY2UiLCJyZWFzb25zIjpudWxsfSwicmVzZWFyY2hfaG9zdCI6IkdpdEh1YiBBY3Rpb25zIDEwMDAwMDI3MTAiLCJydW5uZXJfaWQiOiJHaXRIdWIgQWN0aW9ucyAxMDAwMDAyNzEwIiwic2NoZW1hIjoiY2tiLXBsYW5lLmV4dGVybmFsLWV4cG9zdXJlLXJlYWR5LXJlc2VhcmNoLXJlY2VpcHQudjEifQ=='
+        run: |
+          $ErrorActionPreference='Stop'
+          $Experiment='EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-LEARNED-CONSUMER-ARCHITECTURE-092'
+          $Manifest='ea4dfd21ac7d2b6bc98e8e26c45bfef768a0bf9ea6d2a3502ab67469df346cf3'
+          $Prereg='4a5a30845354aad1ed9809adc276c7e341a0a5f9'
+          git merge-base --is-ancestor $Prereg HEAD
+          if($LASTEXITCODE-ne0){throw 'AUX_PREREG_ANCESTRY_FAILED'}
+          $Expected=@{
+            'research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-architecture-092.ice'='d091140ebede7d41ad25436855d15f49975f3051'
+            'research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-architecture-092-manifest.json'='42dd1066845825b8337209efec7c5cdb0cba8bc9'
+            'research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-architecture-092.py'='487b5af960d2c289fb39f9a22c1c6fcfc7ffffc8'
+          }
+          foreach($Path in $Expected.Keys){
+            $Got=(git rev-parse ("HEAD:"+$Path)).Trim()
+            if($LASTEXITCODE-ne0 -or $Got-cne $Expected[$Path]){throw "AUX_FROZEN_BLOB_MISMATCH $Path got=$Got"}
+          }
+          $Raw=[Convert]::FromBase64String($env:AUTHORITY_RECEIPT_B64)
+          $H=[Security.Cryptography.SHA256]::Create()
+          try{$GotSha=([BitConverter]::ToString($H.ComputeHash($Raw))).Replace('-','').ToLowerInvariant()}finally{$H.Dispose()}
+          if($GotSha-cne$env:AUTHORITY_RECEIPT_SHA256){throw 'AUX_AUTHORITY_RECEIPT_HASH_MISMATCH'}
+          $R=[Text.Encoding]::UTF8.GetString($Raw)|ConvertFrom-Json
+          if($R.project-cne'Yggdrasil' -or $R.experiment-cne$Experiment -or $R.manifest_sha256-cne$Manifest -or $R.preregistration_sha-cne$Prereg){throw 'AUX_AUTHORITY_RECEIPT_BINDING_MISMATCH'}
+          if($R.research_decision.disposition-cne'READY_RESEARCH'){throw 'AUX_AUTHORITY_NOT_READY_RESEARCH'}
+      - name: Focused frozen package compile
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'
+          python -m py_compile research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-architecture-092.py
+          if($LASTEXITCODE-ne0){throw 'AUX_Y092_COMPILE_FAILED'}
+      - name: Install native test surface
+        run: python -m pip install --disable-pip-version-check -e ".[test]"
+      - name: Full Yggdrasil regression
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'
+          python -m pytest -q
+          if($LASTEXITCODE-ne0){throw 'AUX_YGGDRASIL_REGRESSION_FAILED'}
+      - name: Classify evidence-only replay
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'
+          $Out=[ordered]@{
+            schema='yggdrasil.auxiliary-evidence-classification.v1'
+            experiment='EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-LEARNED-CONSUMER-ARCHITECTURE-092'
+            classification='supported'
+            validity_pass=$true
+            evidence_only=$true
+            primary_successor_authority=$false
+            primary_state_mutation=$false
+            scientific_outcome_access_count=0
+            metrics=[ordered]@{
+              frozen_blob_mismatch_count=0
+              focused_compile_pass=1
+              full_regression_pass=1
+              scientific_outcome_access_count=0
+              primary_state_mutation_count=0
+              successor_authority_count=0
+            }
+          }
+          $Path=Join-Path $env:RUNNER_TEMP 'classification.json'
+          [IO.File]::WriteAllText($Path,(($Out|ConvertTo-Json -Depth 8 -Compress)+[Environment]::NewLine),(New-Object Text.UTF8Encoding($false)))
+          Get-Content -LiteralPath $Path -Raw
+      - name: Upload auxiliary evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: yggdrasil-y092-auxiliary-frozen-package-replay-r2
+          path: ${{ runner.temp }}\classification.json
+          if-no-files-found: error
+# experiment: EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-LEARNED-CONSUMER-ARCHITECTURE-092
+# manifest: ea4dfd21ac7d2b6bc98e8e26c45bfef768a0bf9ea6d2a3502ab67469df346cf3
+# preregistration: 4a5a30845354aad1ed9809adc276c7e341a0a5f9
