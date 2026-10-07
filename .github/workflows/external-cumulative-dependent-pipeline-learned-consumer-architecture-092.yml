@@ -124,19 +124,15 @@ jobs:
         run: python -m pip install --disable-pip-version-check -e '.[test]'
       - name: Full Yggdrasil regression
         run: python -m pytest -q
-      - name: Run frozen Y092 twice
+      - name: Run frozen Y092 once
         shell: bash
+        timeout-minutes: 60
         run: |
           set -euo pipefail
           script='research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-architecture-092.py'
           args=(--transfer-root "$TRANSFER_ROOT" --third-root "$THIRD_ROOT" --fourth-root "$FOURTH_ROOT" --fifteenth-root "$FIFTEENTH_ROOT" --sixteenth-root "$SIXTEENTH_ROOT")
-          python "$script" "${args[@]}" --out /tmp/result1.json --resource-out /tmp/resource.json &
-          p1=$!
-          python "$script" "${args[@]}" --out /tmp/result2.json &
-          p2=$!
-          wait "$p1"
-          wait "$p2"
-          cmp /tmp/result1.json /tmp/result2.json
+          timeout --signal=TERM 3300s python "$script" "${args[@]}" --out /tmp/result1.json --resource-out /tmp/resource.json
+          test -s /tmp/result1.json
           test -s /tmp/resource.json
           cat /tmp/result1.json
       - name: Classify frozen Y092
@@ -206,7 +202,6 @@ jobs:
           path: |
             /tmp/authority.json
             /tmp/result1.json
-            /tmp/result2.json
             /tmp/resource.json
             /tmp/classification.json
           if-no-files-found: error

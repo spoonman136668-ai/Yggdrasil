@@ -107,7 +107,7 @@ def donor_history(by,target_name):
         for state in by[name]:out.append({"context":name,"state":dict(state)})
     return out
 
-def historical_score(y075,y079,roots,by,spec,params):
+def historical_score(y075,y079,roots,by,spec,params,cache):
     score=0.0
     for target_name in ORDER:
         pool=by[target_name]
@@ -117,24 +117,34 @@ def historical_score(y075,y079,roots,by,spec,params):
         _,distance,retained=y079.retrieve_full(y075,tuple(target["key"]),donors)
         state=cognition_consumer(target,retained,distance,spec,params)
         y075.TARGET_SOURCES=dynamic_sources(roots[target_name])
-        s=summary(y079,y075.run_variant(roots[target_name],state))
+        # P068 transports the full row for identity/accounting, but the active
+        # inference surface consumes retained key -> best. Y092 freezes best and
+        # map_best to the target before this point; candidate learning changes
+        # only total/best_count/consistency/utility. Cache on the exact
+        # simulator-relevant retained identity so equivalent deterministic
+        # replays are not recomputed.
+        cache_key=(target_name,tuple(state["key"]),int(state["best"]),int(state["map_best"]))
+        s=cache.get(cache_key)
+        if s is None:
+            s=summary(y079,y075.run_variant(roots[target_name],state))
+            cache[cache_key]=dict(s)
         score+=100.0*float(s["clean"])+5.0*float(s["changed"])
         score+=0.1*s["active_prose"]-100.0*s["partner_fail"]-0.001*s["first"]
     score-=0.01*float(spec["scalars"]-1)
     return score
 
-def fit_candidate(y075,y079,roots,by,spec):
+def fit_candidate(y075,y079,roots,by,spec,cache):
     params=[0.5]*spec["scalars"]
     for _ in range(2):
         for g in range(spec["scalars"]):
             best=None
             for a in GRID:
                 trial=list(params);trial[g]=a
-                sc=historical_score(y075,y079,roots,by,spec,trial)
+                sc=historical_score(y075,y079,roots,by,spec,trial,cache)
                 key=(sc,-a)
                 if best is None or key>best[0]:best=(key,trial,sc)
             params=best[1]
-    score=historical_score(y075,y079,roots,by,spec,params)
+    score=historical_score(y075,y079,roots,by,spec,params,cache)
     return {"id":spec["id"],"learned_scalars":spec["scalars"],"params":params,
             "historical_replay_score":score,"resource_eligible":spec["scalars"]<=1}
 
@@ -163,7 +173,8 @@ def run(transfer_root,third_root,fourth_root,fifteenth_root,sixteenth_root):
 
     roots={"transfer":transfer_root,"third":third_root,"fourth":fourth_root}
     by=prepare_historical(y075,y079,roots,m)
-    history=[fit_candidate(y075,y079,roots,by,spec) for spec in CANDIDATES]
+    historical_cache={}
+    history=[fit_candidate(y075,y079,roots,by,spec,historical_cache) for spec in CANDIDATES]
     history.sort(key=lambda x:x["id"])
     selected=max(history,key=lambda x:(x["historical_replay_score"],-x["learned_scalars"],tuple(-v for v in x["params"]),x["id"]))
     spec=next(s for s in CANDIDATES if s["id"]==selected["id"])
@@ -225,12 +236,57 @@ def run(transfer_root,third_root,fourth_root,fifteenth_root,sixteenth_root):
             "selected_candidate":selected["id"],"selected_params":selected["params"],
             "candidate_history":history,"metrics":m,"cells":cells}
 
+def historical_runtime_probe(transfer_root,third_root,fourth_root):
+    started=time.perf_counter_ns()
+    y079=load_y079();y075=y079.load_y075()
+    m={"historical_identity_mismatch_count":0.0,"historical_full_pool_row_count":0.0,"invalid_evaluation_rows":0.0}
+    roots={"transfer":transfer_root,"third":third_root,"fourth":fourth_root}
+    by=prepare_historical(y075,y079,roots,m)
+
+    # Empirically prove, on historical data only, that the fields varied by the
+    # learned consumer do not alter the downstream P068 summary when the
+    # simulator-relevant retained identity (key,best,map_best) is fixed.
+    target_name="transfer"
+    target=dict(sorted(by[target_name],key=y075.local_rank)[0])
+    donors=donor_history(by,target_name)
+    _,distance,retained=y079.retrieve_full(y075,tuple(target["key"]),donors)
+    low=cognition_consumer(target,retained,distance,{"id":"shared-alpha","scalars":1},[0.0])
+    high=cognition_consumer(target,retained,distance,{"id":"shared-alpha","scalars":1},[1.0])
+    assert (tuple(low["key"]),int(low["best"]),int(low["map_best"]))==(tuple(high["key"]),int(high["best"]),int(high["map_best"]))
+    assert any(low[k]!=high[k] for k in FIELDS)
+    y075.TARGET_SOURCES=dynamic_sources(roots[target_name])
+    low_summary=summary(y079,y075.run_variant(roots[target_name],low))
+    y075.TARGET_SOURCES=dynamic_sources(roots[target_name])
+    high_summary=summary(y079,y075.run_variant(roots[target_name],high))
+    assert low_summary==high_summary
+
+    cache={(target_name,tuple(low["key"]),int(low["best"]),int(low["map_best"])):dict(low_summary)}
+    history=[fit_candidate(y075,y079,roots,by,spec,cache) for spec in CANDIDATES]
+    history.sort(key=lambda x:x["id"])
+    selected=max(history,key=lambda x:(x["historical_replay_score"],-x["learned_scalars"],tuple(-v for v in x["params"]),x["id"]))
+    return {"schema":"yggdrasil.y092-historical-runtime-probe.v1","experiment":EXPERIMENT,
+            "selected_candidate":selected["id"],"selected_params":selected["params"],
+            "candidate_history":history,"historical_cache_entries":len(cache),
+            "equivalence_probe_context":target_name,"equivalence_probe_pass":True,
+            "historical_context_count":3,"historical_full_pool_row_count":m["historical_full_pool_row_count"],
+            "historical_identity_mismatch_count":m["historical_identity_mismatch_count"],
+            "invalid_evaluation_rows":m["invalid_evaluation_rows"],
+            "elapsed_ns":time.perf_counter_ns()-started}
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--transfer-root",required=True);p.add_argument("--third-root",required=True);p.add_argument("--fourth-root",required=True)
     p.add_argument("--fifteenth-root",required=True);p.add_argument("--sixteenth-root",required=True)
-    p.add_argument("--out",required=True);p.add_argument("--resource-out")
+    p.add_argument("--out");p.add_argument("--resource-out");p.add_argument("--historical-probe-out")
     a=p.parse_args()
+    if a.historical_probe_out:
+        probe=historical_runtime_probe(a.transfer_root,a.third_root,a.fourth_root)
+        with open(a.historical_probe_out,"w",encoding="utf-8",newline="\n") as f:
+            json.dump(probe,f,allow_nan=False,separators=(",",":"),sort_keys=True)
+        print(json.dumps(probe,separators=(",",":"),sort_keys=True))
+        return
+    if not a.out:
+        p.error("--out is required unless --historical-probe-out is used")
     started=time.perf_counter_ns()
     before=resource.getrusage(resource.RUSAGE_SELF)
     result=run(a.transfer_root,a.third_root,a.fourth_root,a.fifteenth_root,a.sixteenth_root)
