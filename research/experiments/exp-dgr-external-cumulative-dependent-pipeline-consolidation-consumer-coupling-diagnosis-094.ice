@@ -85,5 +85,15 @@
     "supported": "fresh disjoint coupling replication required before any promotion",
     "mixed": "bounded coupling interaction attribution required",
     "negative": "return to consolidation representation/retrieval diagnosis while preserving 16/7/9"
+  },
+  "infrastructure_repair": {
+    "schema": "yggdrasil.research-infrastructure-repair-note.v1",
+    "reason": "runner compatibility repair: predeclare metric keys required by inherited Y092 accounting before execution",
+    "scientific_hypothesis_unchanged": true,
+    "frozen_evaluation_unchanged": true,
+    "data_identity_unchanged": true,
+    "resource_envelope_unchanged": true,
+    "failed_package_sha": "4bc4f709f6951655ac5163abdcbfa81da2eb4529",
+    "failed_run_id": 37682027068
   }
 }
