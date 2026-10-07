@@ -1,0 +1,35 @@
+name: Qualify CKB research write proxy fanout R3
+on:
+  push:
+    branches: [repair/ckb-research-write-proxy-fanout-r3-prepared]
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false, fetch-depth: 0}
+      - name: Verify bounded delta
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop';Set-StrictMode -Version 3.0
+          $base='0e4078778d8a397d4e4ff9f6bbaedb2c4791ae93'
+          & git.exe merge-base --is-ancestor $base HEAD;if($LASTEXITCODE-ne0){throw 'PROXY_R3_BASE_DRIFT'}
+          $changed=@(& git.exe diff --name-only "$base...HEAD")
+          $allowed=@('research/transport/Invoke-CKBResearchWriteProxy.ps1','.github/workflows/prepare-ckb-research-write-proxy-fanout-r3.yml','.github/workflows/qualify-ckb-research-write-proxy-fanout-r3.yml')
+          $bad=@($changed|Where-Object{$_ -notin $allowed});if($bad.Count){throw ('PROXY_R3_SCOPE:'+($bad-join','))}
+      - name: Proxy focused qualification
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop';Set-StrictMode -Version 3.0
+          $p='research/transport/Invoke-CKBResearchWriteProxy.ps1';$raw=Get-Content $p -Raw
+          foreach($n in @('PROXY_FANOUT_RUN_DISCOVERY_TIMEOUT','fanout_status=[string]$run.status','operation -ne "fanout_dispatch"')){if(!$raw.Contains($n)){throw ('PROXY_R3_MARKER:'+ $n)}}
+          $t=$null;$e=$null;[void][Management.Automation.Language.Parser]::ParseFile((Resolve-Path $p),[ref]$t,[ref]$e);if(@($e).Count){throw 'PROXY_R3_PARSE'}
+          & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $p -Lane Yggdrasil -Repository spoonman136668-ai/Yggdrasil -RepositoryPath 'C:\ProgramData\CKBR\research\repos\Yggdrasil' -SelfTest
+          if($LASTEXITCODE-ne0){throw 'PROXY_R3_SELFTEST'}
+          $probe=@(& gh.exe run list --repo spoonman136668-ai/Yggdrasil --workflow free-fanout-sidecar.yml --event workflow_dispatch --limit 10 --json databaseId,displayTitle,status,conclusion,createdAt)
+          if($LASTEXITCODE-ne0){throw 'PROXY_R3_RUN_LIST_PROBE'}
