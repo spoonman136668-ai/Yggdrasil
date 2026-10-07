@@ -1,0 +1,49 @@
+name: Qualify Y093 component attribution R2
+on:
+  push:
+    branches:
+      - repair/y093-component-attribution-r2-validation
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Validate frozen Y093 package
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='02f027a9342cc99c0e68e701e359156932d7997b'
+          git merge-base --is-ancestor "$base" HEAD
+          changed="$(git diff --name-only "$base..HEAD" | sort)"
+          expected="$(printf '%s\n'             '.github/workflows/validate-y093-component-attribution-r2.yml'             'research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093.py' | sort)"
+          test "$changed" = "$expected"
+          python - <<'PY'
+          import hashlib,json,pathlib
+          m=json.load(open("research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093-manifest.json"))
+          declared=m.pop("manifest_sha256")
+          raw=json.dumps(m,separators=(",",":"),ensure_ascii=True).encode()
+          actual=hashlib.sha256(raw).hexdigest()
+          print("manifest_sha256="+actual)
+          assert actual==declared=="bcf09c5df7ad2e8a457b38f7d8cb40ab03f41b856ca1a57de8d009bbce9da607"
+          p=json.load(open("research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093.ice"))
+          assert p["manifest_sha256"]==declared
+          assert p["fixed_interface"]["capacity"]=="16 total / 7 active / 9 retained"
+          assert p["resource_envelope"]["learned_scalars"]==0
+          assert p["governance"]["positive_attribution_requires_fresh_replication_before_promotion"] is True
+          src=pathlib.Path("research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093.py").read_text()
+          assert 'ARMS=(' in src
+          for arm in ('"y092-selected"','"retain-best"','"retain-map-best"','"retain-both"'): assert arm in src
+          PY
+          python -m py_compile research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093.py
+          python -m pip install --disable-pip-version-check -e '.[test]'
+          python -m pytest -q
+          echo Y093_QUALIFICATION=PASS
