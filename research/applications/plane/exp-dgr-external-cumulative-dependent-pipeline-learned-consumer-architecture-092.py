@@ -117,9 +117,13 @@ def historical_score(y075,y079,roots,by,spec,params,cache):
         _,distance,retained=y079.retrieve_full(y075,tuple(target["key"]),donors)
         state=cognition_consumer(target,retained,distance,spec,params)
         y075.TARGET_SOURCES=dynamic_sources(roots[target_name])
-        cache_key=(target_name,tuple(state["key"]),int(state["best"]),int(state["total"]),
-                   int(state["best_count"]),float(state["consistency"]),float(state["utility"]),
-                   int(state["cell_index"]),int(state["map_best"]))
+        # P068 transports the full row for identity/accounting, but the active
+        # inference surface consumes retained key -> best. Y092 freezes best and
+        # map_best to the target before this point; candidate learning changes
+        # only total/best_count/consistency/utility. Cache on the exact
+        # simulator-relevant retained identity so equivalent deterministic
+        # replays are not recomputed.
+        cache_key=(target_name,tuple(state["key"]),int(state["best"]),int(state["map_best"]))
         s=cache.get(cache_key)
         if s is None:
             s=summary(y079,y075.run_variant(roots[target_name],state))
