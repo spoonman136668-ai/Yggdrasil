@@ -3,7 +3,7 @@ set -euo pipefail
 export E="$RUNNER_TEMP/ckb-research-evidence"; rm -rf "$E"; mkdir -p "$E"
 test "$(git rev-parse HEAD)" = "$PACKAGE_SHA"
 git merge-base --is-ancestor '3bd913bd4057f3780367e3687e1fa83adfc9f46a' HEAD
-git merge-base --is-ancestor '' HEAD
+git merge-base --is-ancestor '22b8c0cdfe7833af2f818ebcc6b756ad7ae6b55e' HEAD
 python - <<'PY'
 import base64,hashlib,json,os,pathlib
 raw=base64.b64decode("eyJhdXRob3JpdHlfd29ya2Zsb3dfcmVmIjoibWFpbiIsImF1dGhvcml0eV93b3JrZmxvd19yZWZfc2hhIjoiYWFkZWE3NjVmZmU5ODk4NmMxNTgwZWFhZDU4NDM2MjYwZDJhMmNhZCIsImNrYl9wbGFuZV9tYWluX3NoYSI6ImU1MzI0MDU5MmViMjA5MWIwYjhmMDQ1ZDc1OGMzNDE3NzQ4NDYzZTIiLCJleHBlcmltZW50IjoiRVhQLURHUi1FWFRFUk5BTC1DVU1VTEFUSVZFLURFUEVOREVOVC1QSVBFTElORS1DT05TT0xJREFUSU9OLUNPTlNVTUVSLUNPVVBMSU5HLURJQUdOT1NJUy0wOTQiLCJmZXRjaF9kZWNpc2lvbiI6eyJzY2hlbWEiOiJja2ItcGxhbmUuZXh0ZXJuYWwtZXhwb3N1cmUtZmV0Y2gudjEiLCJkaXNwb3NpdGlvbiI6IlJFQURZX0ZFVENIIiwic2NvcGUiOiJmZXRjaC12ZXJpZnktb25seSIsInJlYXNvbnMiOm51bGx9LCJtYW5pZmVzdF9zaGEyNTYiOiJjMmE4ZmE0ZTU1MjkwZGM4ZjM4NmI1MTY4ZTE3MWIwOWE4ZGI5YmRhODlhNzQ4Y2ZhNjUzMmVlODZmYjM4NDIxIiwicGxhbl9kZWNpc2lvbiI6eyJzY2hlbWEiOiJja2ItcGxhbmUuZXh0ZXJuYWwtZXhwb3N1cmUudjEiLCJkaXNwb3NpdGlvbiI6IlJFQURZX1BMQU4iLCJzY29wZSI6InBsYW4tb25seSIsInJlYXNvbnMiOm51bGx9LCJwcmVyZWdpc3RyYXRpb25fc2hhIjoiMjJiOGMwY2RmZTc4MzNhZjJmODE4ZWJjYzZiNzU2YWQ3YWU2YjU1ZSIsInByb2plY3QiOiJZZ2dkcmFzaWwiLCJyZXF1ZXN0X2lkIjoiYTZkMGQyNWU2OTdhNTVkZmNiMjc1ZDI2MjcyNmUyMmEiLCJyZXNlYXJjaF9kZWNpc2lvbiI6eyJzY2hlbWEiOiJja2ItcGxhbmUuZXh0ZXJuYWwtZXhwb3N1cmUtcmVzZWFyY2gudjEiLCJkaXNwb3NpdGlvbiI6IlJFQURZX1JFU0VBUkNIIiwic2NvcGUiOiJyZXNlYXJjaC1jb25zdW1lLW9uY2UiLCJyZWFzb25zIjpudWxsfSwicmVzZWFyY2hfaG9zdCI6IkNLQi1QTEFORS1SRU1PVEUiLCJydW5uZXJfaWQiOiJDS0ItUExBTkUtUkVNT1RFIiwic2NoZW1hIjoiY2tiLXBsYW5lLmV4dGVybmFsLWV4cG9zdXJlLXJlYWR5LXJlc2VhcmNoLXJlY2VpcHQudjEifQ==",validate=True)
@@ -12,7 +12,7 @@ r=json.loads(raw)
 assert r["schema"]=="ckb-plane.external-exposure-ready-research-receipt.v1"
 assert r["project"]=="Yggdrasil"
 assert r["experiment"]=="EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-CONSOLIDATION-CONSUMER-COUPLING-DIAGNOSIS-094"
-assert r["preregistration_sha"]==""
+assert r["preregistration_sha"]=="22b8c0cdfe7833af2f818ebcc6b756ad7ae6b55e"
 assert r["manifest_sha256"]=="c2a8fa4e55290dc8f386b5168e171b09a8db9bda89a748cfa6532ee86fb38421"
 assert r["ckb_plane_main_sha"]=="e53240592eb2091b0b8f045d758c3417748463e2"
 assert r["research_decision"]["disposition"]=="READY_RESEARCH"
