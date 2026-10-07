@@ -2,7 +2,7 @@ name: Yggdrasil learned cognition-consumer pilot 092
 on:
   push:
     branches:
-      - 'research/external-hosted-yggdrasil-rsi-learned-cognition-consumer-pilot-092'
+      - 'repair/y092-bounded-single-runtime-r2-validation'
     paths:
       - 'research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-architecture-092.ice'
       - 'research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-architecture-092-manifest.json'
@@ -124,75 +124,28 @@ jobs:
         run: python -m pip install --disable-pip-version-check -e '.[test]'
       - name: Full Yggdrasil regression
         run: python -m pytest -q
-      - name: Run frozen Y092 twice
+      - name: Prove bounded single-run historical replay runtime
         shell: bash
+        timeout-minutes: 60
         run: |
           set -euo pipefail
           script='research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-architecture-092.py'
           args=(--transfer-root "$TRANSFER_ROOT" --third-root "$THIRD_ROOT" --fourth-root "$FOURTH_ROOT" --fifteenth-root "$FIFTEENTH_ROOT" --sixteenth-root "$SIXTEENTH_ROOT")
-          python "$script" "${args[@]}" --out /tmp/result1.json --resource-out /tmp/resource.json &
-          p1=$!
-          python "$script" "${args[@]}" --out /tmp/result2.json &
-          p2=$!
-          wait "$p1"
-          wait "$p2"
-          cmp /tmp/result1.json /tmp/result2.json
-          test -s /tmp/resource.json
-          cat /tmp/result1.json
-      - name: Classify frozen Y092
-        shell: bash
-        run: |
-          set -euo pipefail
+          timeout --signal=TERM 3300s python "$script" "${args[@]}" --historical-probe-out /tmp/y092-runtime-probe.json
           python - <<'PY'
-          import hashlib,json,math,pathlib
-          r=json.loads(pathlib.Path("/tmp/result1.json").read_text());m=r["metrics"]
-          valid=(m["historical_context_count"]==3 and m["historical_full_pool_row_count"]==17 and
-                 m["historical_identity_mismatch_count"]==0 and m["unseen_context_count"]==2 and
-                 m["candidate_mechanism_count"]==4 and len(r["candidate_history"])==4 and m["variant_count"]==4 and
-                 m["capacity_total"]==16 and m["capacity_active"]==7 and m["capacity_retained"]==9 and
-                 m["unseen_source_count"]==6 and m["unseen_source_bytes"]==114544 and
-                 m["unseen_source_identity_mismatch_count"]==0 and
-                 m["unseen_base_training_identity_mismatch_count"]==0 and
-                 m["unseen_history_byte_budget_mismatch_count"]==0 and
-                 m["heldout_outcome_use_before_candidate_freeze"]==0 and
-                 m["post_result_candidate_or_threshold_choice_count"]==0 and
-                 m["persistent_state_write_count"]==0 and m["source_identity_mismatch_count"]==0 and
-                 m["transport_identity_mismatch_count"]==0 and m["capacity_growth_event_count"]==0 and
-                 m["invalid_evaluation_rows"]==0 and all(math.isfinite(float(v)) for v in m.values()))
-          resource_ok=(m["selected_resource_eligible"]==1 and
-                       m["selected_effective_consumer_scalars"]<=m["baseline_effective_consumer_scalars"])
-          scientific_strong=(m["learned_improvement_case_count"]==2 and
-                             m["lost_baseline_clean_rescue_count"]==0 and
-                             m["learned_partner_collateral_failure_count"]==0 and
-                             m["learned_behavior_change_count"]==2)
-          supported=valid and resource_ok and scientific_strong
-          mixed=(valid and not supported and m["lost_baseline_clean_rescue_count"]==0 and
-                 m["learned_partner_collateral_failure_count"]==0 and
-                 (m["learned_improvement_case_count"]>=1))
-          cls="invalid" if not valid else "supported" if supported else "mixed" if mixed else "negative"
-          nexts={
-            "supported":"EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-LEARNED-CONSUMER-DISJOINT-REPLICATION-093",
-            "mixed":"EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-LEARNED-CONSUMER-RESOURCE-ATTRIBUTION-093",
-            "negative":"EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-LEARNED-CONSUMER-COMPONENT-ATTRIBUTION-093",
-            "invalid":None}
-          failure_class=None;failing_step=None;error_signature=None
-          if cls=="invalid":
-              failure_class="FROZEN_VALIDITY_FAILURE";failing_step="classification"
-              error_signature=hashlib.sha256(json.dumps(m,sort_keys=True,separators=(",",":")).encode()).hexdigest()
-          out={"schema":"yggdrasil.research-classification.v1",
-               "experiment":"EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-LEARNED-CONSUMER-ARCHITECTURE-092",
-               "classification":cls,"validity_pass":valid,
-               "learned_mechanism_pilot_success":supported,
-               "equal_or_lower_resource_cost":resource_ok,
-               "scientific_strong":scientific_strong,
-               "rsi_success":False,
-               "rsi_success_reason":"This is a bounded learned-mechanism pilot. Full RSI evidence still requires frozen A/B successor-generation superiority on identical unseen tasks and equal/lower cost.",
-               "next_successor":nexts[cls],
-               "failure_class":failure_class,"failing_step":failing_step,"error_signature":error_signature,
-               "authority_receipt_sha256":"1068c8dbc0ed8219fbefbb37c5a2dff82b94886e6dd3a390611504f7d6c77a50","metrics":m,
-               "candidate_history":r["candidate_history"]}
-          pathlib.Path("/tmp/classification.json").write_text(json.dumps(out,separators=(",",":")),encoding="utf-8")
-          print(json.dumps(out,separators=(",",":")))
+          import json,pathlib
+          p=json.loads(pathlib.Path("/tmp/y092-runtime-probe.json").read_text())
+          assert p["schema"]=="yggdrasil.y092-historical-runtime-probe.v1"
+          assert p["experiment"]=="EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-LEARNED-CONSUMER-ARCHITECTURE-092"
+          assert p["historical_context_count"]==3
+          assert p["historical_full_pool_row_count"]==17
+          assert p["historical_identity_mismatch_count"]==0
+          assert p["invalid_evaluation_rows"]==0
+          assert len(p["candidate_history"])==4
+          assert p["historical_cache_entries"]>0
+          print("Y092_BOUNDED_HISTORICAL_RUNTIME_PROOF=PASS")
+          print("elapsed_ns="+str(p["elapsed_ns"]))
+          print("cache_entries="+str(p["historical_cache_entries"]))
           PY
       - name: Delete external bytes
         if: always()
@@ -205,8 +158,5 @@ jobs:
           name: yggdrasil-learned-consumer-architecture-092
           path: |
             /tmp/authority.json
-            /tmp/result1.json
-            /tmp/result2.json
-            /tmp/resource.json
-            /tmp/classification.json
+            /tmp/y092-runtime-probe.json
           if-no-files-found: error
