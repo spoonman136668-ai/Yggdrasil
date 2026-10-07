@@ -1,0 +1,49 @@
+name: Qualify Y092 parallel deterministic replay R1
+on:
+  push:
+    branches:
+      - repair/y092-parallel-determinism-r1-validation
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 0e335a92c0b416e318d166285f74020b2092674e
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Verify exact workflow-only delta
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = '0e335a92c0b416e318d166285f74020b2092674e'
+          git merge-base --is-ancestor '8b06604ee9fb8bcd81a53cf01076d7953800dde9' HEAD
+          changed="$(git diff --name-only '8b06604ee9fb8bcd81a53cf01076d7953800dde9...HEAD')"
+          test "$changed" = '.github/workflows/external-cumulative-dependent-pipeline-learned-consumer-architecture-092.yml'
+          test "$(git rev-parse '8b06604ee9fb8bcd81a53cf01076d7953800dde9:research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-architecture-092.py')" = "$(git rev-parse 'HEAD:research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-architecture-092.py')"
+          test "$(git rev-parse '8b06604ee9fb8bcd81a53cf01076d7953800dde9:research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-architecture-092.ice')" = "$(git rev-parse 'HEAD:research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-architecture-092.ice')"
+          test "$(git rev-parse '8b06604ee9fb8bcd81a53cf01076d7953800dde9:research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-architecture-092-manifest.json')" = "$(git rev-parse 'HEAD:research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-architecture-092-manifest.json')"
+      - name: Verify bounded parallel replay semantics
+        shell: bash
+        run: |
+          set -euo pipefail
+          p='.github/workflows/external-cumulative-dependent-pipeline-learned-consumer-architecture-092.yml'
+          grep -Fq 'timeout-minutes: 240' "$p"
+          test "$(grep -F 'python "$script" "${args[@]}" --out /tmp/result1.json --resource-out /tmp/resource.json &' "$p" | wc -l)" -eq 1
+          test "$(grep -F 'python "$script" "${args[@]}" --out /tmp/result2.json &' "$p" | wc -l)" -eq 1
+          grep -Fq 'wait "$p1"' "$p"
+          grep -Fq 'wait "$p2"' "$p"
+          grep -Fq 'cmp /tmp/result1.json /tmp/result2.json' "$p"
+          if grep -Fq 'timeout-minutes: 360' "$p"; then exit 1; fi
+          python -m py_compile research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-architecture-092.py
+          echo Y092_PARALLEL_REPLAY_SEMANTICS=PASS
+      - name: Full Yggdrasil regression
+        run: |
+          python -m pip install --disable-pip-version-check -e '.[test]'
+          python -m pytest -q
