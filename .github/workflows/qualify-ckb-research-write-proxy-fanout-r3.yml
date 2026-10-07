@@ -18,7 +18,14 @@ jobs:
           $base='0e4078778d8a397d4e4ff9f6bbaedb2c4791ae93'
           & git.exe merge-base --is-ancestor $base HEAD;if($LASTEXITCODE-ne0){throw 'PROXY_R3_BASE_DRIFT'}
           $changed=@(& git.exe diff --name-only "$base...HEAD")
-          $allowed=@('research/transport/Invoke-CKBResearchWriteProxy.ps1','.github/workflows/prepare-ckb-research-write-proxy-fanout-r3.yml','.github/workflows/qualify-ckb-research-write-proxy-fanout-r3.yml')
+          $allowed=@(
+            'research/transport/Invoke-CKBResearchWriteProxy.ps1',
+            'research/transport/Prepare-ProxyFanoutR3.ps1',
+            '.github/workflows/prepare-ckb-research-write-proxy-fanout-r3.yml',
+            '.github/workflows/qualify-ckb-research-write-proxy-fanout-r3.yml',
+            '.github/workflows/prepare-ckb-research-write-proxy-fanout-r3b.yml',
+            '.github/workflows/qualify-ckb-research-write-proxy-fanout-r3b.yml'
+          )
           $bad=@($changed|Where-Object{$_ -notin $allowed});if($bad.Count){throw ('PROXY_R3_SCOPE:'+($bad-join','))}
       - name: Proxy focused qualification
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
