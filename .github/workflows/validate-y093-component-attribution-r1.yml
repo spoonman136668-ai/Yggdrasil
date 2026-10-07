@@ -31,15 +31,25 @@ jobs:
           m=json.load(open("research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093-manifest.json"))
           declared=m.pop("manifest_sha256")
           raw=json.dumps(m,separators=(",",":"),ensure_ascii=True).encode()
-          assert hashlib.sha256(raw).hexdigest()==declared=="a9d3cb36d94aa38188a18c96ff16d03116b8db99abceb2c48fe060e5ee90c2be"
+          actual=hashlib.sha256(raw).hexdigest()
+          print("declared_manifest_sha256="+declared)
+          print("actual_manifest_sha256="+actual)
+          assert actual==declared=="a9d3cb36d94aa38188a18c96ff16d03116b8db99abceb2c48fe060e5ee90c2be", "manifest_digest"
+          print("manifest_digest=PASS")
           p=json.load(open("research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093.ice"))
-          assert p["manifest_sha256"]==declared
-          assert p["fixed_interface"]["capacity"]=="16 total / 7 active / 9 retained"
-          assert p["resource_envelope"]["learned_scalars"]==0
-          assert p["governance"]["positive_attribution_requires_fresh_replication_before_promotion"] is True
+          assert p["manifest_sha256"]==declared, "prereg_manifest_binding"
+          print("prereg_manifest_binding=PASS")
+          assert p["fixed_interface"]["capacity"]=="16 total / 7 active / 9 retained", "capacity"
+          print("capacity=PASS")
+          assert p["resource_envelope"]["learned_scalars"]==0, "learned_scalars"
+          print("learned_scalars=PASS")
+          assert p["governance"]["positive_attribution_requires_fresh_replication_before_promotion"] is True, "replication_guard"
+          print("replication_guard=PASS")
           src=pathlib.Path("research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093.py").read_text()
-          assert 'ARMS=(' in src
-          assert '"y092-selected"' in src and '"retain-best"' in src and '"retain-map-best"' in src and '"retain-both"' in src
+          assert 'ARMS=(' in src, "arms_marker"
+          print("arms_marker=PASS")
+          assert '"y092-selected"' in src and '"retain-best"' in src and '"retain-map-best"' in src and '"retain-both"' in src, "arm_ids"
+          print("arm_ids=PASS")
           PY
           python -m py_compile research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093.py
           python -m pip install --disable-pip-version-check -e '.[test]'
