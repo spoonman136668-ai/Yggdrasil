@@ -130,8 +130,12 @@ jobs:
           set -euo pipefail
           script='research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-architecture-092.py'
           args=(--transfer-root "$TRANSFER_ROOT" --third-root "$THIRD_ROOT" --fourth-root "$FOURTH_ROOT" --fifteenth-root "$FIFTEENTH_ROOT" --sixteenth-root "$SIXTEENTH_ROOT")
-          python "$script" "${args[@]}" --out /tmp/result1.json --resource-out /tmp/resource.json
-          python "$script" "${args[@]}" --out /tmp/result2.json
+          python "$script" "${args[@]}" --out /tmp/result1.json --resource-out /tmp/resource.json &
+          p1=$!
+          python "$script" "${args[@]}" --out /tmp/result2.json &
+          p2=$!
+          wait "$p1"
+          wait "$p2"
           cmp /tmp/result1.json /tmp/result2.json
           test -s /tmp/resource.json
           cat /tmp/result1.json
