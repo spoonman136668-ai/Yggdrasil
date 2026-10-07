@@ -1,0 +1,47 @@
+name: Prepare CKB research write proxy fanout R3B
+on:
+  push:
+    branches:
+      - repair/ckb-research-write-proxy-fanout-r3
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+      - name: Apply exact R3 patch
+        run: |
+          $ErrorActionPreference='Stop'
+          & .\research\transport\Prepare-ProxyFanoutR3.ps1
+      - name: Focused transport checks
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop';Set-StrictMode -Version 3.0
+          $p='research/transport/Invoke-CKBResearchWriteProxy.ps1';$raw=Get-Content $p -Raw
+          foreach($n in @('PROXY_FANOUT_RUN_DISCOVERY_TIMEOUT','fanout_status=[string]$run.status','operation -ne "fanout_dispatch"')){if(!$raw.Contains($n)){throw ('PROXY_R3_MARKER:'+ $n)}}
+          $t=$null;$e=$null;[void][Management.Automation.Language.Parser]::ParseFile((Resolve-Path $p),[ref]$t,[ref]$e);if(@($e).Count){throw 'PROXY_R3_PARSE'}
+          & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $p -Lane Yggdrasil -Repository spoonman136668-ai/Yggdrasil -RepositoryPath 'C:\ProgramData\CKBR\research\repos\Yggdrasil' -SelfTest
+          if($LASTEXITCODE-ne0){throw 'PROXY_R3_SELFTEST'}
+          & gh.exe run list --repo spoonman136668-ai/Yggdrasil --workflow free-fanout-sidecar.yml --event workflow_dispatch --limit 10 --json databaseId,displayTitle,status,conclusion,createdAt | Out-Null
+          if($LASTEXITCODE-ne0){throw 'PROXY_R3_RUN_LIST_PROBE'}
+      - name: Commit prepared transport
+        run: |
+          $ErrorActionPreference='Stop';Set-StrictMode -Version 3.0
+          & git.exe config user.name 'CKB Research Proxy'
+          & git.exe config user.email 'ckb-research-proxy@local.invalid'
+          & git.exe add -- research/transport/Invoke-CKBResearchWriteProxy.ps1
+          $staged=@(& git.exe diff --cached --name-only)
+          if($staged.Count-ne1 -or $staged[0]-ne'research/transport/Invoke-CKBResearchWriteProxy.ps1'){throw ('PROXY_R3_SCOPE:'+($staged-join','))}
+          & git.exe commit -m 'repair: return exact fanout run identity'
+          if($LASTEXITCODE-ne0){throw 'PROXY_R3_COMMIT'}
+          & git.exe push origin HEAD:refs/heads/repair/ckb-research-write-proxy-fanout-r3-prepared
+          if($LASTEXITCODE-ne0){throw 'PROXY_R3_PUSH'}
