@@ -91,7 +91,7 @@
     "negative": "valid and neither supported nor mixed",
     "invalid": "identity/capacity/16-7-9/addressing/arm-set/heldout/provenance/determinism/persistence/resource-accounting failure"
   },
-  "manifest_sha256": "bcf09c5df7ad2e8a457b38f7d8cb40ab03f41b856ca1a57de8d009bbce9da607",
+  "manifest_sha256": "a9d3cb36d94aa38188a18c96ff16d03116b8db99abceb2c48fe060e5ee90c2be",
   "governance": {
     "no_post_result_tuning": true,
     "no_hidden_memory_or_capacity_growth": true,
