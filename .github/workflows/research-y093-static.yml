@@ -1,0 +1,218 @@
+name: CKB static Yggdrasil Y093 research
+run-name: CKB research Y093 ${{ inputs.request_id }} ${{ inputs.package_sha }}
+on:
+  workflow_dispatch:
+    inputs:
+      package_sha:
+        description: Exact CKB-authorized research package SHA
+        required: true
+        type: string
+      request_id:
+        description: Exact CKB dispatch request identity
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.package_sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify dispatched package identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${{ inputs.package_sha }}" =~ ^[0-9a-f]{40}$ ]]
+          [[ "${{ inputs.request_id }}" =~ ^[0-9a-f]{32}$ ]]
+          test "$(git rev-parse HEAD)" = "${{ inputs.package_sha }}"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Validate frozen package
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 'dded982e3fc9d3bb147af3b7577915e1fd72db3d' HEAD
+          git merge-base --is-ancestor '02f027a9342cc99c0e68e701e359156932d7997b' HEAD
+          changed="$(git diff --name-only 'dded982e3fc9d3bb147af3b7577915e1fd72db3d..HEAD' | sort)"
+          expected="$(printf '%s\n' \
+            'research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093.py' \
+            'research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093-manifest.json' \
+            'research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093.ice' | sort)"
+          test "$changed" = "$expected"
+          test "$(git rev-parse '02f027a9342cc99c0e68e701e359156932d7997b:research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093.ice')" = '7484f2e087a490e65f00a31878fa010a7aea99e5'
+          test "$(git rev-parse '02f027a9342cc99c0e68e701e359156932d7997b:research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093-manifest.json')" = 'd3004629decd27c3a633b10d49e9ebf17d2e1595'
+          python - <<'PY'
+          import hashlib,json
+          p=json.load(open("research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093.ice"))
+          m=json.load(open("research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093-manifest.json"))
+          assert p["experiment"]=="EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-LEARNED-CONSUMER-COMPONENT-ATTRIBUTION-093"
+          assert p["parent_sha"]=="dded982e3fc9d3bb147af3b7577915e1fd72db3d"
+          assert p["attribution_arms"]["count"]==4
+          assert p["fixed_interface"]["capacity"]=="16 total / 7 active / 9 retained"
+          assert p["fixed_interface"]["key_addressing"].startswith("unchanged")
+          assert p["resource_envelope"]["learned_scalars"]==0
+          assert p["governance"]["broad_continual_training"] is False
+          assert p["governance"]["positive_attribution_requires_fresh_replication_before_promotion"] is True
+          assert m["experiment"]==p["experiment"]
+          assert m["manifest_sha256"]=="bcf09c5df7ad2e8a457b38f7d8cb40ab03f41b856ca1a57de8d009bbce9da607"
+          assert m["source_count"]==6 and m["total_prefix_bytes"]==114544
+          unsigned={k:v for k,v in m.items() if k!="manifest_sha256"}
+          raw=json.dumps(unsigned,separators=(",",":"),ensure_ascii=True).encode()
+          assert hashlib.sha256(raw).hexdigest()==m["manifest_sha256"]
+          PY
+      - name: Verify exact READY_RESEARCH receipt
+        shell: bash
+        env:
+          AUTHORITY_RECEIPT_SHA256: '87da96c995c4181e95b1aab6e152e9615658f2962689a4c196010541a12bd741'
+          AUTHORITY_RECEIPT_B64: 'eyJhdXRob3JpdHlfd29ya2Zsb3dfcmVmIjoibWFpbiIsImF1dGhvcml0eV93b3JrZmxvd19yZWZfc2hhIjoiZDdmYTIwNzZhNDVhNDg5ZDZlNWUzNWY5NzMwYmM1ZmFiNWI1ZTdiMSIsImNrYl9wbGFuZV9tYWluX3NoYSI6ImJkNmM0NzM0ODhkNTE4ZjRlYmQ4ZTllMWIwNDFmZWUzZmNmZWJhYjMiLCJleHBlcmltZW50IjoiRVhQLURHUi1FWFRFUk5BTC1DVU1VTEFUSVZFLURFUEVOREVOVC1QSVBFTElORS1MRUFSTkVELUNPTlNVTUVSLUNPTVBPTkVOVC1BVFRSSUJVVElPTi0wOTMiLCJmZXRjaF9kZWNpc2lvbiI6eyJzY2hlbWEiOiJja2ItcGxhbmUuZXh0ZXJuYWwtZXhwb3N1cmUtZmV0Y2gudjEiLCJkaXNwb3NpdGlvbiI6IlJFQURZX0ZFVENIIiwic2NvcGUiOiJmZXRjaC12ZXJpZnktb25seSIsInJlYXNvbnMiOm51bGx9LCJtYW5pZmVzdF9zaGEyNTYiOiJiY2YwOWM1ZGY3YWQyZThhNDU3YjM4ZjdkOGNiNDBhYjAzZjQxYjg1NmNhMWE1N2RlOGQwMDliYmNlOWRhNjA3IiwicGxhbl9kZWNpc2lvbiI6eyJzY2hlbWEiOiJja2ItcGxhbmUuZXh0ZXJuYWwtZXhwb3N1cmUudjEiLCJkaXNwb3NpdGlvbiI6IlJFQURZX1BMQU4iLCJzY29wZSI6InBsYW4tb25seSIsInJlYXNvbnMiOm51bGx9LCJwcmVyZWdpc3RyYXRpb25fc2hhIjoiMDJmMDI3YTkzNDJjYzk5YzBlNjhlNzAxZTM1OTE1NjkzMmQ3OTk3YiIsInByb2plY3QiOiJZZ2dkcmFzaWwiLCJyZXF1ZXN0X2lkIjoiMzZiYzE2MDJhMjRiMDc3Zjc3MDhmNjE1N2ZlMTBhZTEiLCJyZXNlYXJjaF9kZWNpc2lvbiI6eyJzY2hlbWEiOiJja2ItcGxhbmUuZXh0ZXJuYWwtZXhwb3N1cmUtcmVzZWFyY2gudjEiLCJkaXNwb3NpdGlvbiI6IlJFQURZX1JFU0VBUkNIIiwic2NvcGUiOiJyZXNlYXJjaC1jb25zdW1lLW9uY2UiLCJyZWFzb25zIjpudWxsfSwicmVzZWFyY2hfaG9zdCI6IkNLQi1QTEFORV9SRU1PVEUiLCJydW5uZXJfaWQiOiJDS0ItUExBTkUtUkVNT1RFIiwic2NoZW1hIjoiY2tiLXBsYW5lLmV4dGVybmFsLWV4cG9zdXJlLXJlYWR5LXJlc2VhcmNoLXJlY2VpcHQudjEifQ=='
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64,hashlib,json,os,pathlib
+          raw=base64.b64decode(os.environ["AUTHORITY_RECEIPT_B64"],validate=True)
+          assert hashlib.sha256(raw).hexdigest()==os.environ["AUTHORITY_RECEIPT_SHA256"]
+          r=json.loads(raw)
+          assert r["schema"]=="ckb-plane.external-exposure-ready-research-receipt.v1"
+          assert r["project"]=="Yggdrasil"
+          assert r["experiment"]=="EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-LEARNED-CONSUMER-COMPONENT-ATTRIBUTION-093"
+          assert r["preregistration_sha"]=="02f027a9342cc99c0e68e701e359156932d7997b"
+          assert r["manifest_sha256"]=="bcf09c5df7ad2e8a457b38f7d8cb40ab03f41b856ca1a57de8d009bbce9da607"
+          assert r["ckb_plane_main_sha"]=="bd6c473488d518f4ebd8e9e1b041fee3fcfebab3"
+          assert r["plan_decision"]["disposition"]=="READY_PLAN"
+          assert r["fetch_decision"]["disposition"]=="READY_FETCH"
+          assert r["research_decision"]["disposition"]=="READY_RESEARCH"
+          pathlib.Path("/tmp/authority.json").write_bytes(raw)
+          PY
+      - name: Fetch frozen historical and sealed unseen contexts
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in transfer third fourth fifteenth sixteenth; do mkdir -p "$RUNNER_TEMP/y093-$n"; done
+          python - <<'PY'
+          import hashlib,json,os,pathlib,urllib.parse,urllib.request
+          root=pathlib.Path(os.environ["RUNNER_TEMP"])
+          roots={n:root/("y093-"+n) for n in ("transfer","third","fourth","fifteenth","sixteenth")}
+          historical={
+            "transfer":[
+              ("code","https://raw.githubusercontent.com/python/cpython/ebf955df7a89ed0c7968f79faec1de49f61ed7cb/Lib/statistics.py",61896,"3023ec949802c2e880a000775bfd1a6b70c21b5423881118141e3ec69d8e3336",41453,"66bb25b24a0316b4965c64798494de93a1d7332672b15b5f430ab6a2fb4b9d45"),
+              ("structured","https://raw.githubusercontent.com/json-schema-org/JSON-Schema-Test-Suite/5b0ee1613e45fcc2bddac00e07c19cd49b00d8a8/tests/draft2020-12/uniqueItems.json",14490,"ed84ef6ddc827659e257ba64cbe9679f06932b6320bea5c07622bf3d2cc4daa5",14365,"95ddbd0eaef29aad5ecfc74f9da21b795481f58b2c59380324a445fcd4d08932"),
+              ("technical_prose","https://raw.githubusercontent.com/golang/go/6f5c275ebdc454197fff5f1496521c8f81e20eef/doc/README.md",3124,"c1bf000e7a873b3afed329c5b9f9c07f7692b1d7fb2bfca2d7600cec8b1d1407",1454,"48c3d95b8b03864a4af41d892710675956cde85afd0d5d6c331594de9f17881b")],
+            "third":[
+              ("code","https://raw.githubusercontent.com/torvalds/linux/a74306e2e676f9775457366fc047a660fbf02f26/kernel/sched/core.c",303863,"9297982652b9810b3508993c06d3c6e097ebca5cbe1ef3a6246bccfa0c1128b1",41453,"50744a9e70d67d62c97f3f434f4f05788b6b8514c6bce46cf7dafbaf49e2abff"),
+              ("structured","https://raw.githubusercontent.com/SchemaStore/schemastore/de76181a2ab215431d3e9314bc14f83cc3b01ad2/src/schemas/json/github-workflow.json",118601,"d10c9f4656e1bd5bc6727e9b35080e017dc167154726fca93da33c7a6bd1c4f3",14365,"2a97ba02bc5e479b1738f6f0c3e09318bb5a255350c84de014ddbcebea46af56"),
+              ("technical_prose","https://raw.githubusercontent.com/rust-lang/book/1500248d8f230566e4ec9f27fcbb8fe9e2898ab1/src/ch01-03-hello-cargo.md",11025,"61369f359b84b646fc3773eb569a26bc18ba6edb4cf2be06a84472c7054c0e39",1454,"23c002a1984ed065abfdbafa82100ed54d6bf6276a947676e710a30c75d96017")],
+            "fourth":[
+              ("code","https://raw.githubusercontent.com/kubernetes/kubernetes/e7967bb9b76d43a6388abb7a4e90d2f899ef97ff/pkg/kubelet/kubelet.go",156626,"e0f247ef45cb281166b58ba1a013dc6925023388193bd74c1f126c695b770d34",41453,"283073d9f6c0dd868c39a913364bce6744ff1e29c038f6920197c0d33e0c2ac1"),
+              ("structured","https://raw.githubusercontent.com/microsoft/TypeScript/50d70a3f5f453a79a4323b263165da51f656a4e3/package-lock.json",143844,"52b6c9bd0a26ef1b0fc27dfbfaa00df6a047cdddd587d07c4f6c1c3345faf5cf",14365,"a46fcfb7d862b03b750b61a5f667d4ac25a064df9ccb746e395db7e864068933"),
+              ("technical_prose","https://raw.githubusercontent.com/django/django/a461af8ce48762d7ec602260aaff81014ddccbcb/docs/intro/tutorial01.txt",10844,"1cf1817e6211b7c0fa9e8044ee808fde1e8f16ca5f9d5ab5358510a5c9591b96",1454,"5d0c2efd139bd6094098bc893ed746020f03e0860a25f278348f43f47c236222")]}
+          for group,sources in historical.items():
+            for domain,url,full_n,full_h,prefix_n,prefix_h in sources:
+              data=urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":"yggdrasil-y093"}),timeout=90).read(full_n+1)
+              assert len(data)==full_n and hashlib.sha256(data).hexdigest()==full_h
+              p=data[:prefix_n];assert hashlib.sha256(p).hexdigest()==prefix_h
+              filename={"code":"code.bin","structured":"structured.bin","technical_prose":"technical-prose.bin"}[domain]
+              (roots[group]/filename).write_bytes(p)
+          manifest=json.load(open("research/experiments/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093-manifest.json"))
+          assert manifest["manifest_sha256"]=="bcf09c5df7ad2e8a457b38f7d8cb40ab03f41b856ca1a57de8d009bbce9da607"
+          for group in manifest["unseen"]:
+            name=group["name"]
+            for src in group["sources"]:
+              url=f"https://raw.githubusercontent.com/{src['repo']}/{src['commit']}/{urllib.parse.quote(src['path'])}"
+              data=urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":"yggdrasil-y093"}),timeout=90).read()
+              got=hashlib.sha1((f"blob {len(data)}\0").encode()+data).hexdigest()
+              assert got==src["git_blob"] and len(data)>=src["prefix_bytes"]
+              p=data[:src["prefix_bytes"]]
+              assert hashlib.sha256(p).hexdigest()==src["prefix_sha256"]
+              filename={"code":"code.bin","structured":"structured.bin","technical_prose":"technical-prose.bin"}[src["domain"]]
+              (roots[name]/filename).write_bytes(p)
+          PY
+          for n in transfer third fourth fifteenth sixteenth; do
+            key="$(echo "$n" | tr '[:lower:]' '[:upper:]')_ROOT"
+            echo "$key=$RUNNER_TEMP/y093-$n" >> "$GITHUB_ENV"
+          done
+      - name: Focused harness qualification
+        run: python -m py_compile research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093.py
+      - name: Install native test surface
+        run: python -m pip install --disable-pip-version-check -e '.[test]'
+      - name: Full Yggdrasil regression
+        run: python -m pytest -q
+      - name: Run frozen Y093 twice
+        shell: bash
+        timeout-minutes: 45
+        run: |
+          set -euo pipefail
+          script='research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-learned-consumer-component-attribution-093.py'
+          args=(--transfer-root "$TRANSFER_ROOT" --third-root "$THIRD_ROOT" --fourth-root "$FOURTH_ROOT" --fifteenth-root "$FIFTEENTH_ROOT" --sixteenth-root "$SIXTEENTH_ROOT")
+          timeout --signal=TERM 1200s python "$script" "${args[@]}" --out /tmp/result1.json --resource-out /tmp/resource.json
+          timeout --signal=TERM 1200s python "$script" "${args[@]}" --out /tmp/result2.json
+          cmp /tmp/result1.json /tmp/result2.json
+          test -s /tmp/resource.json
+          cat /tmp/result1.json
+      - name: Classify frozen Y093
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,math,pathlib
+          r=json.loads(pathlib.Path("/tmp/result1.json").read_text());m=r["metrics"]
+          arms={a["id"]:a for a in r["arms"]}
+          required={"y092-selected","retain-best","retain-map-best","retain-both"}
+          valid=(set(arms)==required and m["historical_context_count"]==3 and m["historical_full_pool_row_count"]==17 and
+                 m["historical_identity_mismatch_count"]==0 and m["unseen_context_count"]==2 and
+                 m["attribution_arm_count"]==4 and m["variant_count"]==10 and
+                 m["capacity_total"]==16 and m["capacity_active"]==7 and m["capacity_retained"]==9 and
+                 m["unseen_source_count"]==6 and m["unseen_source_bytes"]==114544 and
+                 m["unseen_source_identity_mismatch_count"]==0 and m["unseen_base_training_identity_mismatch_count"]==0 and
+                 m["unseen_history_byte_budget_mismatch_count"]==0 and m["heldout_outcome_use_before_arm_freeze"]==0 and
+                 m["post_result_arm_or_threshold_choice_count"]==0 and m["persistent_state_write_count"]==0 and
+                 m["source_identity_mismatch_count"]==0 and m["transport_identity_mismatch_count"]==0 and
+                 m["capacity_growth_event_count"]==0 and m["addressing_change_count"]==0 and
+                 m["continuous_field_change_count"]==0 and m["external_model_call_count"]==0 and
+                 m["invalid_evaluation_rows"]==0 and all(math.isfinite(float(v)) for v in m.values()))
+          candidates=[arms[k] for k in ("retain-best","retain-map-best","retain-both")]
+          ordered=sorted(candidates,key=lambda a:(a["improved_context_count"],a["id"]),reverse=True)
+          best=ordered[0]
+          strong=[a for a in candidates if a["improved_context_count"]==2 and a["lost_y091_clean_rescue_count"]==0 and a["partner_collateral_failure_count"]==0]
+          support=(valid and len(strong)==1 and best["id"]==strong[0]["id"] and
+                   best["improved_context_count"]==2 and ordered[0]["improved_context_count"]>ordered[1]["improved_context_count"])
+          mixed=(valid and not support and
+                 ((best["improved_context_count"]==1 and best["lost_y091_clean_rescue_count"]==0 and best["partner_collateral_failure_count"]==0) or
+                  len(strong)>=2))
+          cls="invalid" if not valid else "supported" if support else "mixed" if mixed else "negative"
+          failure_class=None;failing_step=None;error_signature=None
+          if cls=="invalid":
+              failure_class="FROZEN_VALIDITY_FAILURE";failing_step="classification"
+              error_signature=hashlib.sha256(json.dumps(m,sort_keys=True,separators=(",",":")).encode()).hexdigest()
+          out={"schema":"yggdrasil.research-classification.v1",
+               "experiment":"EXP-DGR-EXTERNAL-CUMULATIVE-DEPENDENT-PIPELINE-LEARNED-CONSUMER-COMPONENT-ATTRIBUTION-093",
+               "classification":cls,"validity_pass":valid,"best_component_ablation":best["id"],
+               "attribution_only":True,"fresh_replication_required_before_promotion":True,
+               "rsi_success":False,"rsi_success_reason":"Y093 is bounded component attribution on reused sealed Y092 contexts and cannot promote a mechanism without fresh disjoint replication.",
+               "next_successor":None,
+               "failure_class":failure_class,"failing_step":failing_step,"error_signature":error_signature,
+               "authority_receipt_sha256":"87da96c995c4181e95b1aab6e152e9615658f2962689a4c196010541a12bd741","metrics":m,"arms":r["arms"]}
+          pathlib.Path("/tmp/classification.json").write_text(json.dumps(out,separators=(",",":")),encoding="utf-8")
+          print(json.dumps(out,separators=(",",":")))
+          PY
+      - name: Delete external bytes
+        if: always()
+        shell: bash
+        run: rm -rf "$RUNNER_TEMP"/y093-*
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yggdrasil-learned-consumer-component-attribution-093
+          path: |
+            /tmp/authority.json
+            /tmp/result1.json
+            /tmp/result2.json
+            /tmp/resource.json
+            /tmp/classification.json
+          if-no-files-found: error
