@@ -142,7 +142,10 @@ jobs:
           assert p["historical_identity_mismatch_count"]==0
           assert p["invalid_evaluation_rows"]==0
           assert len(p["candidate_history"])==4
-          assert p["historical_cache_entries"]>0
+          assert p["equivalence_probe_context"]=="transfer"
+          assert p["equivalence_probe_pass"] is True
+          assert p["historical_cache_entries"]==3
+          print("Y092_LEARNED_FIELD_EQUIVALENCE_PROOF=PASS")
           print("Y092_BOUNDED_HISTORICAL_RUNTIME_PROOF=PASS")
           print("elapsed_ns="+str(p["elapsed_ns"]))
           print("cache_entries="+str(p["historical_cache_entries"]))
