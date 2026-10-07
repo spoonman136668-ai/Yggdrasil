@@ -242,13 +242,32 @@ def historical_runtime_probe(transfer_root,third_root,fourth_root):
     m={"historical_identity_mismatch_count":0.0,"historical_full_pool_row_count":0.0,"invalid_evaluation_rows":0.0}
     roots={"transfer":transfer_root,"third":third_root,"fourth":fourth_root}
     by=prepare_historical(y075,y079,roots,m)
-    cache={}
+
+    # Empirically prove, on historical data only, that the fields varied by the
+    # learned consumer do not alter the downstream P068 summary when the
+    # simulator-relevant retained identity (key,best,map_best) is fixed.
+    target_name="transfer"
+    target=dict(sorted(by[target_name],key=y075.local_rank)[0])
+    donors=donor_history(by,target_name)
+    _,distance,retained=y079.retrieve_full(y075,tuple(target["key"]),donors)
+    low=cognition_consumer(target,retained,distance,{"id":"shared-alpha","scalars":1},[0.0])
+    high=cognition_consumer(target,retained,distance,{"id":"shared-alpha","scalars":1},[1.0])
+    assert (tuple(low["key"]),int(low["best"]),int(low["map_best"]))==(tuple(high["key"]),int(high["best"]),int(high["map_best"]))
+    assert any(low[k]!=high[k] for k in FIELDS)
+    y075.TARGET_SOURCES=dynamic_sources(roots[target_name])
+    low_summary=summary(y079,y075.run_variant(roots[target_name],low))
+    y075.TARGET_SOURCES=dynamic_sources(roots[target_name])
+    high_summary=summary(y079,y075.run_variant(roots[target_name],high))
+    assert low_summary==high_summary
+
+    cache={(target_name,tuple(low["key"]),int(low["best"]),int(low["map_best"])):dict(low_summary)}
     history=[fit_candidate(y075,y079,roots,by,spec,cache) for spec in CANDIDATES]
     history.sort(key=lambda x:x["id"])
     selected=max(history,key=lambda x:(x["historical_replay_score"],-x["learned_scalars"],tuple(-v for v in x["params"]),x["id"]))
     return {"schema":"yggdrasil.y092-historical-runtime-probe.v1","experiment":EXPERIMENT,
             "selected_candidate":selected["id"],"selected_params":selected["params"],
             "candidate_history":history,"historical_cache_entries":len(cache),
+            "equivalence_probe_context":target_name,"equivalence_probe_pass":True,
             "historical_context_count":3,"historical_full_pool_row_count":m["historical_full_pool_row_count"],
             "historical_identity_mismatch_count":m["historical_identity_mismatch_count"],
             "invalid_evaluation_rows":m["invalid_evaluation_rows"],
