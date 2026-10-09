@@ -35,7 +35,7 @@ jobs:
           test "${#FILES[@]}" -eq 4
           for file in "${FILES[@]}"; do
             case "$file" in
-              research/contrib/ckb-synthetic/y-syn02/prereg.json|research/contrib/ckb-synthetic/y-syn02/synthetic_replication.py|research/contrib/ckb-synthetic/y-syn02/test_synthetic_replication.py|research/contrib/ckb-synthetic/y-syn02/README.md) ;;
+              research/contrib/ckb-synthetic/y-syn02/prereg.json|research/contrib/ckb-synthetic/y-syn02/synthetic_replication.py|research/contrib/ckb-synthetic/y-syn02/test_replication_mechanics.py|research/contrib/ckb-synthetic/y-syn02/README.md) ;;
               *) echo "SYN_Y02_UNEXPECTED_SCOPE:$file"; exit 1 ;;
             esac
           done
@@ -58,7 +58,7 @@ jobs:
         run: |
           set -euo pipefail
           python -m py_compile research/contrib/ckb-synthetic/y-syn02/synthetic_replication.py
-          python -m unittest discover -s research/contrib/ckb-synthetic/y-syn02 -p test_synthetic_replication.py -v
+          python -m unittest discover -s research/contrib/ckb-synthetic/y-syn02 -p test_replication_mechanics.py -v
           HISTORIC=d5e3715c7124e1fd0fc91da5efbef850ec1d9254
           HISTORIC_PATH=research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-consolidation-consumer-coupling-diagnosis-094.py
           HISTORIC_BLOB=cd471813ba6e50e7db1cf658ebf3dd1bd8fdd540
