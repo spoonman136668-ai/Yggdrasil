@@ -1,11 +1,12 @@
 """Focused pre-freeze Y095 mechanism tests: no science-data access or evaluation."""
 import importlib.util
+import os
 from pathlib import Path
 import unittest
 
 BASE = Path(__file__).resolve().parent
 R095 = BASE / "exp-dgr-external-cumulative-dependent-pipeline-retained-majority-decision-gate-095.py"
-R094 = BASE / "exp-dgr-external-cumulative-dependent-pipeline-consolidation-consumer-coupling-diagnosis-094.py"
+R094 = Path(os.environ.get("Y095_R094_SOURCE", str(BASE / "exp-dgr-external-cumulative-dependent-pipeline-consolidation-consumer-coupling-diagnosis-094.py")))
 
 
 def module(path: Path, name: str):
