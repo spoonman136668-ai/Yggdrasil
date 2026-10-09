@@ -38,6 +38,17 @@ jobs:
           grep -q 'CAPACITY = (16, 7, 9)' research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-retained-majority-decision-gate-095.py
           grep -q 'LEARNED_SCALARS = 0' research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-retained-majority-decision-gate-095.py
           echo Y095_PREFREEZE_SOURCE_SCOPE=PASS
+      - name: Authenticate pinned Y094 parent source without evaluating legacy experiments
+        shell: bash
+        run: |
+          set -euo pipefail
+          HISTORIC=d5e3715c7124e1fd0fc91da5efbef850ec1d9254
+          BLOB=cd471813ba6e50e7db1cf658ebf3dd540
+          FILE=research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-consolidation-consumer-coupling-diagnosis-094.py
+          curl --fail --silent --show-error --location --retry 2 --output "$RUNNER_TEMP/y094-pinned.py" "https://raw.githubusercontent.com/spoonman136668-ai/Yggdrasil/$HISTORIC/$FILE"
+          test "$(git hash-object "$RUNNER_TEMP/y094-pinned.py")" = "$BLOB"
+          echo "Y095_R094_SOURCE=$RUNNER_TEMP/y094-pinned.py" >> "$GITHUB_ENV"
+          echo Y095_HISTORIC_PARENT_BLOB_IDENTITY=PASS
       - name: Syntax compilation and twelve focused negative/positive controls
         shell: bash
         run: |
