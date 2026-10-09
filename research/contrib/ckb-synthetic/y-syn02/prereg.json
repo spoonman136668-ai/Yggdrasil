@@ -1,0 +1,168 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "Y-SYN02-INDEPENDENT-SEED-COHERENT-CORRUPTION-REPLICATION",
+  "contributor": "ckb-plane-proposed-synthetic-track",
+  "contribution_class": "falsification",
+  "evidence_class": "SYNTHETIC_ONLY_NOT_EXTERNAL_VALIDATION",
+  "status": "FROZEN_BEFORE_REPLICATION_PRIMARY",
+  "question": "Does the coherent-but-false retained-memory gate failure in Y-SYN01 replicate on four new independent synthetic seeds with unchanged 16/7/9, mechanisms and thresholds?",
+  "hypothesis": "On new seeds, A2-A0 coherent-reliable delta >= +0.10 and coherent-adversarial delta <= -0.20, as originally preregistered, without changing any generator probability, capacity, or classifier.",
+  "exact_parent_sha": "b40f399c581fd4afe5e94e1a3b4291319af7c832",
+  "predecessor_evidence": [
+    "Y-SYN01 was frozen before first primary and executed at GitHub Actions run 37942093421, original source b40f399c581fd4afe5e94e1a3b4291319af7c832.",
+    "Original Y-SYN01 synthetic SUPPORTED result raw JSON SHA256 36bf868a11fe7602860773a9f61110953460ee64bf73711fe0ec705409f13811; original heldout seeds 101/103/107/109 sealed and excluded from this independent replication."
+  ],
+  "changed_paths": [
+    "research/contrib/ckb-synthetic/y-syn02/prereg.json",
+    "research/contrib/ckb-synthetic/y-syn02/synthetic_replication.py",
+    "research/contrib/ckb-synthetic/y-syn02/test_replication_mechanics.py",
+    "research/contrib/ckb-synthetic/y-syn02/README.md"
+  ],
+  "inputs": [
+    {
+      "name": "Y-SYN02 new synthetic cohort seeds",
+      "source": "Original three frozen generator regimes and 16/7/9 gate unchanged; new independently frozen heldout seeds [401,409,419,421] disjoint from Y-SYN01.",
+      "sha256": null,
+      "sha_state": "Pin exact new synthetic replication source and qualifier after this standalone freeze, BEFORE invoking primary."
+    }
+  ],
+  "frozen_design": {
+    "arms": [
+      "A0",
+      "A1",
+      "A2"
+    ],
+    "capacity": {
+      "total": 16,
+      "active": 7,
+      "retained": 9
+    },
+    "model_calls": 0,
+    "learned_scalars": 0,
+    "train_cases": 0,
+    "heldout_seeds": [
+      401,
+      409,
+      419,
+      421
+    ],
+    "per_seed_per_regime": 256,
+    "total_heldout_cases": 3072,
+    "total_arm_projections": 9216,
+    "regimes": [
+      {
+        "id": "coherent-reliable",
+        "retained_correct_probability": [
+          4,
+          5
+        ],
+        "target_correct_probability": [
+          11,
+          20
+        ],
+        "coherent_probability": [
+          9,
+          10
+        ],
+        "strict_majority_probability": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "coherent-adversarial",
+        "retained_correct_probability": [
+          1,
+          5
+        ],
+        "target_correct_probability": [
+          7,
+          10
+        ],
+        "coherent_probability": [
+          9,
+          10
+        ],
+        "strict_majority_probability": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "incoherent",
+        "retained_correct_probability": [
+          1,
+          2
+        ],
+        "target_correct_probability": [
+          13,
+          20
+        ],
+        "coherent_probability": [
+          1,
+          5
+        ],
+        "strict_majority_probability": [
+          1,
+          2
+        ]
+      }
+    ],
+    "generator": "32-bit unsigned xorshift32 exactly x ^= x << 13; x ^= x >>> 17; x ^= x << 5 with modulo 2^32. Initialize x=(seed xor 0x9E3779B9 xor (regime_index+1)*0x85EBCA6B) modulo 2^32, replace zero with 1. For each case consume five independent u32 and divide each by 2^32: truth bit = draw0 < 0.5, retained.best = truth if draw1 < frozen retained correctness else 1-truth, target.best = truth if draw2 < frozen target correctness else 1-truth; retained.map_best = retained.best if draw3 < frozen coherence else 1-retained.best; retained.best_count=7 if draw4 < frozen strict majority else 3. Retained and target both have total=9, target.best_count=5, target.map_best=target.best, consistency=0.0, utility=0.0, key=(case_index+1,), with all required fields. No access to future cases or labels at evaluation time.",
+    "controls": [
+      "A0 exact target-discrete parent control",
+      "A1 unconditionally retained-discrete control",
+      "A2 frozen strict-majority AND coherence gate"
+    ],
+    "evaluator": "Decision accuracy versus generated truth bit, separately for each regime and seed, deterministic arm order A0,A1,A2; no post-outcome policy selection",
+    "compute_budget": "Exactly 3 regimes x4 seeds x256 cases x3 arm projections; <= 1000000 scalar arithmetic/boolean operations, no reruns to tune thresholds",
+    "frozen_criteria": "Compare cohort-pooled accuracy differences A2-A0 in coherent-reliable and coherent-adversarial, preserving seed stratification; no threshold fitted",
+    "deterministic_expected": true,
+    "reference_mechanism": "Frozen Y-SYN01 source includes original qualified Y095 project_consumer untouched; S02 imports it directly.",
+    "evaluator_access": "All outcomes for new heldout seeds 401/409/419/421 denied before independent frozen prereg + exact code qualification + CKB admission. Old Y-SYN01 outcomes historical only."
+  },
+  "metrics": [
+    "accuracy for each arm per cohort and seed",
+    "A2_minus_A0 reliable accuracy",
+    "A2_minus_A0 adversarial accuracy",
+    "number of retained choices when coherent and majority",
+    "identity/frozen-capacity violations"
+  ],
+  "classification_rules": {
+    "supported": "On 3072 exactly fixed cases, pooled A2-A0 accuracy on coherent-reliable >=+0.10 AND pooled A2-A0 accuracy on coherent-adversarial <=-0.20; report this as evidence of synthetic coherent-corruption weakness, NOT external capability",
+    "mixed": "No invalid condition and exactly one of the two supported directional thresholds holds",
+    "negative": "No invalid condition, neither supported nor mixed; preserve all outcomes without retuning",
+    "invalid": "Changed case counts/seeds/cohorts/arms, generator/code identity drift, invalid field shape, any capacity/budget/external-data leakage, hidden learner, or evaluation before CKB freeze"
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/model calls",
+    "heldout/evaluator leakage",
+    "external-data claims",
+    "accepted-ref mutation",
+    "reclassification of scientific negatives"
+  ],
+  "authority": {
+    "research_only": true,
+    "synthetic_only": true,
+    "external_validation": false,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "ckb_science_admission_required": true,
+    "official_main_lineage_acceptance": false
+  },
+  "prerequisites": [
+    "This prereg committed alone before implementation or any outcome evaluation",
+    "Later code commit must implement this exact algorithm and import frozen Y095 mechanism, without modifying it",
+    "CKB authority pins SHA/tree and green focused + affected-interface/full regression",
+    "Only one CKB-authorized primary run; retain all outcomes and separate synthetic-only classification",
+    "External-source Y095 stays blocked and cannot consume this corpus"
+  ],
+  "preregistration_note": "Only independent-seed synthetic replication of previously supported S01; it may fail with a valid negative or mixed result. Frozen threshold unchanged, no tuning, no external-data equivalence or accepted-ref authority."
+}
