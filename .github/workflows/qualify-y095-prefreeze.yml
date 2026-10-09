@@ -48,7 +48,11 @@ jobs:
           git fetch --no-tags origin "$HISTORIC"
           git cat-file -e "$HISTORIC:$FILE"
           git show "$HISTORIC:$FILE" > "$RUNNER_TEMP/y094-pinned.py"
-          test "$(git hash-object "$RUNNER_TEMP/y094-pinned.py")" = "$BLOB"
+          OBJECT=$(git rev-parse "$HISTORIC:$FILE")
+          BYTES=$(git hash-object --no-filters "$RUNNER_TEMP/y094-pinned.py")
+          echo "Y095_HISTORIC_SOURCE_SHA=$OBJECT raw=$BYTES expected=$BLOB"
+          test "$OBJECT" = "$BLOB"
+          test "$BYTES" = "$BLOB"
           echo "Y095_R094_SOURCE=$RUNNER_TEMP/y094-pinned.py" >> "$GITHUB_ENV"
           echo Y095_HISTORIC_PARENT_BLOB_IDENTITY=PASS
       - name: Syntax compilation and twelve focused negative/positive controls
