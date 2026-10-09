@@ -1,0 +1,72 @@
+name: Y-SYN02 frozen mechanical qualification (no primary)
+on:
+  push:
+    branches: [qualification/y-syn02-r1]
+permissions:
+  contents: read
+concurrency:
+  group: yggdrasil-syn02-mechanical
+  cancel-in-progress: true
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: aff3f505455ef950c4f650af5b9876fce6cf7526
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Exact freeze/code identity and no primary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = aff3f505455ef950c4f650af5b9876fce6cf7526
+          BASE=b40f399c581fd4afe5e94e1a3b4291319af7c832
+          PRE=73d261a333530007e1d6e7d66527ee69be1b9a59
+          git merge-base --is-ancestor "$BASE" HEAD
+          test "$(git rev-parse "$PRE^")" = "$BASE"
+          test "$(git diff-tree --no-commit-id --name-only -r "$PRE")" = research/contrib/ckb-synthetic/y-syn02/prereg.json
+          test "$(git rev-parse "$PRE":research/contrib/ckb-synthetic/y-syn02/prereg.json)" = "$(git rev-parse HEAD:research/contrib/ckb-synthetic/y-syn02/prereg.json)"
+          mapfile -t FILES < <(git diff --name-only "$BASE" HEAD)
+          test "${#FILES[@]}" -eq 4
+          for file in "${FILES[@]}"; do
+            case "$file" in
+              research/contrib/ckb-synthetic/y-syn02/prereg.json|research/contrib/ckb-synthetic/y-syn02/synthetic_replication.py|research/contrib/ckb-synthetic/y-syn02/test_synthetic_replication.py|research/contrib/ckb-synthetic/y-syn02/README.md) ;;
+              *) echo "SYN_Y02_UNEXPECTED_SCOPE:$file"; exit 1 ;;
+            esac
+          done
+          python3 - <<'PY'
+          import json
+          d=json.load(open('research/contrib/ckb-synthetic/y-syn02/prereg.json',encoding='utf8'))
+          assert d['evidence_class']=='SYNTHETIC_ONLY_NOT_EXTERNAL_VALIDATION'
+          assert d['exact_parent_sha']=='b40f399c581fd4afe5e94e1a3b4291319af7c832'
+          assert d['frozen_design']['total_arm_projections']==9216
+          assert d['frozen_design']['total_heldout_cases']==3072
+          assert d['frozen_design']['capacity']=={'total':16,'active':7,'retained':9}
+          assert d['frozen_design']['heldout_seeds']==[401,409,419,421]
+          assert not d['authority']['scheduler_or_queue_authority']
+          assert d['authority']['ckb_science_admission_required']
+          PY
+          test -z "${CKB_SYN_Y02_QUALIFIED_RUN:-}"
+          echo Y_SYN02_SOURCE_PREREG_PIN=PASS
+      - name: Synthetic pilot mechanical tests only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/contrib/ckb-synthetic/y-syn02/synthetic_replication.py
+          python -m unittest discover -s research/contrib/ckb-synthetic/y-syn02 -p test_synthetic_replication.py -v
+          HISTORIC=d5e3715c7124e1fd0fc91da5efbef850ec1d9254
+          HISTORIC_PATH=research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-consolidation-consumer-coupling-diagnosis-094.py
+          HISTORIC_BLOB=cd471813ba6e50e7db1cf658ebf3dd1bd8fdd540
+          git fetch --no-tags origin "$HISTORIC"
+          test "$(git rev-parse "$HISTORIC:$HISTORIC_PATH")" = "$HISTORIC_BLOB"
+          git show "$HISTORIC:$HISTORIC_PATH" > "$RUNNER_TEMP/y094-frozen.py"
+          test "$(git hash-object --no-filters "$RUNNER_TEMP/y094-frozen.py")" = "$HISTORIC_BLOB"
+          export Y095_R094_SOURCE="$RUNNER_TEMP/y094-frozen.py"
+          python -m unittest discover -s research/applications/plane -p test_retained_majority_decision_gate_095.py -v
+          test -z "${CKB_SYN_Y02_QUALIFIED_RUN:-}"
+          echo Y_SYN02_MECHANISM_AND_MECHANICS=PASS PRIMARY_NOT_RUN
