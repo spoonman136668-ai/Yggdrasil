@@ -1,0 +1,169 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "Y-SYN03-FRESH-COHORT-CORRUPTION-REPLICATION",
+  "contributor": "ckb-plane-proposed-synthetic-track",
+  "contribution_class": "falsification",
+  "evidence_class": "SYNTHETIC_ONLY_NOT_EXTERNAL_VALIDATION",
+  "status": "PREREG_FROZEN_BEFORE_S03_IMPLEMENTATION_OR_OUTCOME",
+  "question": "Does the coherence gate's susceptibility to confident wrong memory persist under a third disjoint synthetic seed cohort with unchanged source and 16/7/9 capacity?",
+  "hypothesis": "A2-A0 coherent-reliable >=+0.10 and coherent-adversarial <=-0.20 on disjoint S03 seeds, or preserve mixed/negative; unchanged source-defined mechanisms.",
+  "exact_parent_sha": "aff3f505455ef950c4f650af5b9876fce6cf7526",
+  "predecessor_evidence": [
+    "R205 S01 synthetic-only SUPPORTED primary: run 37942093421, frozen original two-lane research, no R53/Y095 external-source admission.",
+    "R206 S02 primary run 37956299235 reached Wingless primary test execution, but the JSON SeedPair versus seed_pair validation failed; no S02 raw outcome was archived; Yggdrasil primary skipped.",
+    "Treat ALL S02 W heldout seeds [307,311,313,317] as CONSUMED_INDETERMINATE. Do NOT replay S02. Preserve failure/evidence lineage without calling it scientific negative or success."
+  ],
+  "changed_paths": [
+    "research/contrib/ckb-synthetic/y-syn03/prereg.json",
+    "research/contrib/ckb-synthetic/y-syn03/synthetic_replication.py",
+    "research/contrib/ckb-synthetic/y-syn03/test_replication_mechanics.py",
+    "research/contrib/ckb-synthetic/y-syn03/README.md"
+  ],
+  "inputs": [
+    {
+      "name": "Y-SYN03 disjoint synthetic cohort",
+      "source": "Only 809/811/821/823; disjoint from S01 and unrun S02 Y seeds (401/409/419/421), all previous study seeds excluded.",
+      "sha256": null,
+      "sha_state": "Pin exact new synthetic replication source and qualifier after this standalone freeze, BEFORE invoking primary."
+    }
+  ],
+  "frozen_design": {
+    "arms": [
+      "A0",
+      "A1",
+      "A2"
+    ],
+    "capacity": {
+      "total": 16,
+      "active": 7,
+      "retained": 9
+    },
+    "model_calls": 0,
+    "learned_scalars": 0,
+    "train_cases": 0,
+    "heldout_seeds": [
+      809,
+      811,
+      821,
+      823
+    ],
+    "per_seed_per_regime": 256,
+    "total_heldout_cases": 3072,
+    "total_arm_projections": 9216,
+    "regimes": [
+      {
+        "id": "coherent-reliable",
+        "retained_correct_probability": [
+          4,
+          5
+        ],
+        "target_correct_probability": [
+          11,
+          20
+        ],
+        "coherent_probability": [
+          9,
+          10
+        ],
+        "strict_majority_probability": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "coherent-adversarial",
+        "retained_correct_probability": [
+          1,
+          5
+        ],
+        "target_correct_probability": [
+          7,
+          10
+        ],
+        "coherent_probability": [
+          9,
+          10
+        ],
+        "strict_majority_probability": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "incoherent",
+        "retained_correct_probability": [
+          1,
+          2
+        ],
+        "target_correct_probability": [
+          13,
+          20
+        ],
+        "coherent_probability": [
+          1,
+          5
+        ],
+        "strict_majority_probability": [
+          1,
+          2
+        ]
+      }
+    ],
+    "generator": "32-bit unsigned xorshift32 exactly x ^= x << 13; x ^= x >>> 17; x ^= x << 5 with modulo 2^32. Initialize x=(seed xor 0x9E3779B9 xor (regime_index+1)*0x85EBCA6B) modulo 2^32, replace zero with 1. For each case consume five independent u32 and divide each by 2^32: truth bit = draw0 < 0.5, retained.best = truth if draw1 < frozen retained correctness else 1-truth, target.best = truth if draw2 < frozen target correctness else 1-truth; retained.map_best = retained.best if draw3 < frozen coherence else 1-retained.best; retained.best_count=7 if draw4 < frozen strict majority else 3. Retained and target both have total=9, target.best_count=5, target.map_best=target.best, consistency=0.0, utility=0.0, key=(case_index+1,), with all required fields. No access to future cases or labels at evaluation time.",
+    "controls": [
+      "A0 exact target-discrete parent control",
+      "A1 unconditionally retained-discrete control",
+      "A2 frozen strict-majority AND coherence gate"
+    ],
+    "evaluator": "Decision accuracy versus generated truth bit, separately for each regime and seed, deterministic arm order A0,A1,A2; no post-outcome policy selection",
+    "compute_budget": "Exactly 3 regimes x4 seeds x256 cases x3 arm projections; <= 1000000 scalar arithmetic/boolean operations, no reruns to tune thresholds",
+    "frozen_criteria": "Compare cohort-pooled accuracy differences A2-A0 in coherent-reliable and coherent-adversarial, preserving seed stratification; no threshold fitted",
+    "deterministic_expected": true,
+    "reference_mechanism": "Use exact Y-SYN02 mechanism and unchanged Y095 parent project_consumer; no changes to probabilities, controls, thresholds, capacity or budget.",
+    "evaluator_access": "New sealed Y-SYN03 outcomes on 809/811/821/823 only, disjoint from S01 101/103/107/109 and S02 401/409/419/421. No outcome access until frozen prereg and independently green source qualification."
+  },
+  "metrics": [
+    "accuracy for each arm per cohort and seed",
+    "A2_minus_A0 reliable accuracy",
+    "A2_minus_A0 adversarial accuracy",
+    "number of retained choices when coherent and majority",
+    "identity/frozen-capacity violations"
+  ],
+  "classification_rules": {
+    "supported": "On 3072 exactly fixed cases, pooled A2-A0 accuracy on coherent-reliable >=+0.10 AND pooled A2-A0 accuracy on coherent-adversarial <=-0.20; report this as evidence of synthetic coherent-corruption weakness, NOT external capability",
+    "mixed": "No invalid condition and exactly one of the two supported directional thresholds holds",
+    "negative": "No invalid condition, neither supported nor mixed; preserve all outcomes without retuning",
+    "invalid": "Changed case counts/seeds/cohorts/arms, generator/code identity drift, invalid field shape, any capacity/budget/external-data leakage, hidden learner, or evaluation before CKB freeze"
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/model calls",
+    "heldout/evaluator leakage",
+    "external-data claims",
+    "accepted-ref mutation",
+    "reclassification of scientific negatives"
+  ],
+  "authority": {
+    "research_only": true,
+    "synthetic_only": true,
+    "external_validation": false,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "ckb_science_admission_required": true,
+    "official_main_lineage_acceptance": false
+  },
+  "prerequisites": [
+    "This prereg committed alone before implementation or any outcome evaluation",
+    "Later code commit must implement this exact algorithm and import frozen Y095 mechanism, without modifying it",
+    "CKB authority pins SHA/tree and green focused + affected-interface/full regression",
+    "Only one CKB-authorized primary run; retain all outcomes and separate synthetic-only classification",
+    "External-source Y095 stays blocked and cannot consume this corpus"
+  ],
+  "preregistration_note": "S03 is a NEW disjoint independently frozen synthetic replication of unchanged W/Y S01 scientific mechanism, NOT a retry or relabel of S02. S02 W seeds consumed indeterminate and excluded. No S03 outcomes evaluated before freeze. Exactly same S02 capacity, generator, probability laws, arm definitions and thresholds; all negatives/mixed retained. Mechanical qualification must not run primary. A trustworthy one-shot CKB-controlled run must persist raw output before protocol parsing."
+}
