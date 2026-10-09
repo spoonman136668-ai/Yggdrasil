@@ -1,0 +1,63 @@
+name: Y-SYN01 frozen mechanical qualification (no primary)
+on:
+  push:
+    branches: [qualification/y-syn01-r1]
+permissions:
+  contents: read
+concurrency:
+  group: yggdrasil-syn01-mechanical
+  cancel-in-progress: true
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: b40f399c581fd4afe5e94e1a3b4291319af7c832
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Exact freeze/code identity and no primary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = b40f399c581fd4afe5e94e1a3b4291319af7c832
+          BASE=f0bd57e7ae5f592b2e387a9d3fc1dcba828fb0c7
+          PRE=3ca661a94b6226e24cf3b36e77e9c4f1104266dc
+          git merge-base --is-ancestor "$BASE" HEAD
+          test "$(git rev-list --reverse "$BASE"..HEAD | head -n 1)" = "$PRE"
+          test "$(git diff-tree --no-commit-id --name-only -r "$PRE")" = research/contrib/ckb-synthetic/y-syn01/prereg.json
+          test "$(git rev-parse "$PRE":research/contrib/ckb-synthetic/y-syn01/prereg.json)" = "$(git rev-parse HEAD:research/contrib/ckb-synthetic/y-syn01/prereg.json)"
+          mapfile -t FILES < <(git diff --name-only "$BASE" HEAD)
+          test "${#FILES[@]}" -eq 4
+          for file in "${FILES[@]}"; do
+            case "$file" in
+              research/contrib/ckb-synthetic/y-syn01/prereg.json|research/contrib/ckb-synthetic/y-syn01/synthetic_pilot.py|research/contrib/ckb-synthetic/y-syn01/test_synthetic_pilot.py|research/contrib/ckb-synthetic/y-syn01/README.md) ;;
+              *) echo "SYN_Y01_UNEXPECTED_SCOPE:$file"; exit 1 ;;
+            esac
+          done
+          python3 - <<'PY'
+          import json
+          d=json.load(open('research/contrib/ckb-synthetic/y-syn01/prereg.json',encoding='utf8'))
+          assert d['evidence_class']=='SYNTHETIC_ONLY_NOT_EXTERNAL_VALIDATION'
+          assert d['exact_parent_sha']=='f0bd57e7ae5f592b2e387a9d3fc1dcba828fb0c7'
+          assert d['frozen_design']['total_arm_projections']==9216
+          assert d['frozen_design']['total_heldout_cases']==3072
+          assert d['frozen_design']['capacity']=={'total':16,'active':7,'retained':9}
+          assert not d['authority']['scheduler_or_queue_authority']
+          assert d['authority']['ckb_science_admission_required']
+          PY
+          test -z "${CKB_SYN_Y01_QUALIFIED_RUN:-}"
+          echo Y_SYN01_SOURCE_PREREG_PIN=PASS
+      - name: Synthetic pilot mechanical tests only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/contrib/ckb-synthetic/y-syn01/synthetic_pilot.py
+          python -m unittest discover -s research/contrib/ckb-synthetic/y-syn01 -p test_synthetic_pilot.py -v
+          python -m unittest discover -s research/applications/plane -p test_retained_majority_decision_gate_095.py -v
+          test -z "${CKB_SYN_Y01_QUALIFIED_RUN:-}"
+          echo Y_SYN01_MECHANISM_AND_MECHANICS=PASS PRIMARY_NOT_RUN
