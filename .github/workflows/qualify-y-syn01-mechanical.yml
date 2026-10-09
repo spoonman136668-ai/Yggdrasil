@@ -58,6 +58,14 @@ jobs:
           set -euo pipefail
           python -m py_compile research/contrib/ckb-synthetic/y-syn01/synthetic_pilot.py
           python -m unittest discover -s research/contrib/ckb-synthetic/y-syn01 -p test_synthetic_pilot.py -v
+          HISTORIC=d5e3715c7124e1fd0fc91da5efbef850ec1d9254
+          HISTORIC_PATH=research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-consolidation-consumer-coupling-diagnosis-094.py
+          HISTORIC_BLOB=cd471813ba6e50e7db1cf658ebf3dd1bd8fdd540
+          git fetch --no-tags origin "$HISTORIC"
+          test "$(git rev-parse "$HISTORIC:$HISTORIC_PATH")" = "$HISTORIC_BLOB"
+          git show "$HISTORIC:$HISTORIC_PATH" > "$RUNNER_TEMP/y094-frozen.py"
+          test "$(git hash-object --no-filters "$RUNNER_TEMP/y094-frozen.py")" = "$HISTORIC_BLOB"
+          export Y095_R094_SOURCE="$RUNNER_TEMP/y094-frozen.py"
           python -m unittest discover -s research/applications/plane -p test_retained_majority_decision_gate_095.py -v
           test -z "${CKB_SYN_Y01_QUALIFIED_RUN:-}"
           echo Y_SYN01_MECHANISM_AND_MECHANICS=PASS PRIMARY_NOT_RUN
