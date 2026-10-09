@@ -1,0 +1,54 @@
+name: Y095 pre-freeze consumer mechanism qualification
+on:
+  push:
+    branches:
+      - research/y095-majority-consumer-prefreeze
+    paths:
+      - 'research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-retained-majority-decision-gate-095.py'
+      - 'research/applications/plane/test_retained_majority_decision_gate_095.py'
+      - '.github/workflows/qualify-y095-prefreeze.yml'
+permissions:
+  contents: read
+concurrency:
+  group: y095-prefreeze-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Exact parent and non-executing three-file scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=dc703508f422655a7b5b9df6fc088822bfab3876
+          git merge-base --is-ancestor "$BASE" HEAD
+          mapfile -t FILES < <(git diff --name-only "$BASE" HEAD)
+          test "${#FILES[@]}" -eq 3
+          for file in "${FILES[@]}"; do
+            case "$file" in
+              research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-retained-majority-decision-gate-095.py|research/applications/plane/test_retained_majority_decision_gate_095.py|.github/workflows/qualify-y095-prefreeze.yml) ;;
+              *) echo "Y095_UNEXPECTED_SOURCE: $file"; exit 1 ;;
+            esac
+          done
+          grep -q 'CAPACITY = (16, 7, 9)' research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-retained-majority-decision-gate-095.py
+          grep -q 'LEARNED_SCALARS = 0' research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-retained-majority-decision-gate-095.py
+          echo Y095_PREFREEZE_SOURCE_SCOPE=PASS
+      - name: Syntax compilation and twelve focused negative/positive controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-retained-majority-decision-gate-095.py
+          python3 -m unittest discover -s research/applications/plane -p test_retained_majority_decision_gate_095.py -v
+          echo Y095_PREFREEZE_CAUSAL_MECHANISM_TESTS=PASS
+      - name: Source-only no-authority check
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -E '^ *def (main|run)\(' research/applications/plane/exp-dgr-external-cumulative-dependent-pipeline-retained-majority-decision-gate-095.py
+          ! grep -Eq '^ *schedule:|^ *workflow_dispatch:|^ *[a-z_]+: write$' .github/workflows/qualify-y095-prefreeze.yml
+          echo Y095_NO_EXPERIMENT_DISPATCH_OR_ACCEPTED_REF_AUTHORITY=PASS
