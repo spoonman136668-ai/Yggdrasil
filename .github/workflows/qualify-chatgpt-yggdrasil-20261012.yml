@@ -1,0 +1,33 @@
+name: Read-only Yggdrasil external mechanistic qualification 20261012
+on:
+  push:
+    branches:
+      - 'contrib/chatgpt-20261012-y017-matching-causality'
+    paths:
+      - 'research/contrib/chatgpt/20261012-y017-matching-causality/**'
+      - '.github/workflows/qualify-chatgpt-yggdrasil-20261012.yml'
+permissions:
+  contents: read
+concurrency:
+  group: read-only-20261012-yggdrasil-external
+  cancel-in-progress: false
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: false
+      - name: Focused mechanical tests (not primary science)
+        run: python -m unittest discover -s 'research/contrib/chatgpt/20261012-y017-matching-causality' -p 'test_probe.py' -v
+      - name: Install frozen-project test dependencies
+        run: python -m pip install -e ".[test]"
+      - name: Complete Yggdrasil pytest regression
+        run: python -m pytest -q tests
+      - name: No primary experiment launch
+        run: echo 'MECHANICAL_AND_REGRESSION_ONLY; no science outcome accepted'
