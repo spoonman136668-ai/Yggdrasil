@@ -141,6 +141,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--paired-ablation-output", required=True)
     args = parser.parse_args()
-    with open(args.paired_ablation_output, "x", encoding="utf-8", newline="\\n") as out:
+    with open(args.paired_ablation_output, "x", encoding="utf-8") as out:
         json.dump(execute_native_paired_ablation(), out, allow_nan=False,
                   separators=(",", ":"))
