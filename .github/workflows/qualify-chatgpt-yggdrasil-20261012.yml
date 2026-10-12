@@ -28,5 +28,21 @@ jobs:
         run: python -m pip install -e ".[test]"
       - name: Complete Yggdrasil pytest regression
         run: python -m pytest -q tests
-      - name: No primary experiment launch
-        run: echo 'MECHANICAL_AND_REGRESSION_ONLY; no science outcome accepted'
+      - name: Execute sealed R016-baseline paired Y017 reused-data ablation
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          OMP_NUM_THREADS: '1'
+        run: |
+          set -euo pipefail
+          python research/contrib/chatgpt/20261012-y017-matching-causality/probe.py --paired-ablation-output "$RUNNER_TEMP/y017-paired-result.json"
+          python -m json.tool "$RUNNER_TEMP/y017-paired-result.json"
+      - name: Archive unaccepted independent Y017 experiment evidence
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: y017-paired-ablation-${{ github.run_id }}
+          path: ${{ runner.temp }}/y017-paired-result.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Preserve governance boundary
+        run: echo 'REUSED_DATA_ABLATION_ONLY; NO_CKB_FIRST_USE; NO_ACCEPTED_REF_MUTATION; NO_PRODUCTION_AUTHORITY'
