@@ -1,0 +1,18 @@
+name: Yggdrasil hosted fanout witness
+on:
+  workflow_run:
+    workflows: [Yggdrasil automatic free fanout sidecar]
+    types: [completed]
+permissions:
+  contents: read
+jobs:
+  witness:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_repository.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify source run identity
+        env:
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          [[ "$SHA" =~ ^[0-9a-f]{40}$ ]]
+          echo 'YGGDRASIL_FANOUT_WITNESS=PASS'
