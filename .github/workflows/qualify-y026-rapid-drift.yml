@@ -1,0 +1,37 @@
+name: Yggdrasil Y026 fresh-cohort rapid-drift cache stress
+on:
+  push:
+    branches: [research/y026-stale-cache-drift-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Check immutable scientific identities before first use
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 0337b84bd23233faba7203c2897f1b8b7ccb60f9 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261012-y025-matched-memory/execute.py)" = 2df847ee41aad6e9b257fa7c5c29a9b7039fd2ff
+          test "$(git hash-object research/contrib/chatgpt/20261012-y026-rapid-drift/prereg.json)" = 453d96c7a15f38ec33563a8e950cf582b5cbdfa7
+          test "$(git hash-object research/contrib/chatgpt/20261012-y026-rapid-drift/execute.py)" = 4c528a0af0573dba82a43ef8ab000cd293e6db99
+          python3 -m json.tool research/contrib/chatgpt/20261012-y026-rapid-drift/prereg.json > /dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261012-y026-rapid-drift/execute.py
+      - name: Original frozen scientific evaluation
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261012-y026-rapid-drift/execute.py > /tmp/Y026-original.json
+          python3 -m json.tool /tmp/Y026-original.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y026-original-rapid-drift
+          path: /tmp/Y026-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: One full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
