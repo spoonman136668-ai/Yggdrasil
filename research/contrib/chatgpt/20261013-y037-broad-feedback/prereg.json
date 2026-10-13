@@ -1,0 +1,34 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y037_BROADER_OBSERVED_CUE_EVIDENCE_FOR_DORMANT_REPAIR",
+  "parent_commit": "38bd18325c83f380f15258216ace790cf44cdb52",
+  "predecessor": "Y036",
+  "question": "Can dormant cache readout of already observed cue associations provide enough additional supervised evidence at switch time to distinguish a uniform global target shift from a sparse single-motif shift, without more memory?",
+  "hypothesis": "A feedback-gated repair that consults all currently observed active cues for which an earlier association exists (previously-live OR dormant memory) can distinguish paired worlds that have identical one-live-overlap evidence, then correct dormant estimates only under uniform change.",
+  "freeze": "Use new SHA256-keyed seeds108..115 and exact original Y036 paired UNIFORM/SPARSE construction with one overlap cue (episode5->6). Fix all gates, arms, feedback timing, computation counts and thresholds before first use; no tuning from heldout.",
+  "cohorts": {
+    "development": [
+      108,
+      109,
+      110,
+      111
+    ],
+    "heldout": [
+      112,
+      113,
+      114,
+      115
+    ]
+  },
+  "population": "16 motifs and 4-valued targets from evaluator-only SHA256('Y033/'+seed+'/'+key) first byte modulo4, seven currently active and up to nine dormant observed key/value estimates. 12 episodes with hidden change at episode6. UNIFORM shift+2 for all motifs; SPARSE shift+2 for only the one previously-live overlapping cue, all others unchanged.",
+  "arms": [
+    "UNMODIFIED: current-live plus cached-dormant predictive recall and observed feedback, no correction",
+    "LOCAL_ONLY: after feedback infer nonzero common label delta exclusively from previously live overlapping cues and apply to dormant cache, as in Y036",
+    "BROAD_OBSERVED: after feedback compare true current labels against *available old estimates* from BOTH previous-live and dormant cached sources for current active cues; if >=2 such comparisons and ALL deltas equal the same nonzero modular value, update all still-dormant estimates with that delta. No current or future unseen inactive cue labels."
+  ],
+  "ordering": "At start of episode gather prior available associations and predict seven; only after predictions reveal labels for those seven; compare them to prior live/cache estimates, then perform same writes/evictions for all arms; apply any inferred correction to still-dormant values. Evaluator-only computes other hidden targets for later scoring, never for policy decisions.",
+  "metrics": "By world and heldout seed count post-change episodes7..11 correct predictions and dormant-return accuracy, extra comparison reads, repair events and update writes, equality of cache insertions/occupancy, one-live-overlap validity, SHA256 cohort uniqueness.",
+  "criterion": "BROAD_FEEDBACK_DISCRIMINATION if BROAD_OBSERVED improves over UNMODIFIED post-switch in UNIFORM world, is no worse than UNMODIFIED in SPARSE world, applies >=1 correction in UNIFORM and zero in SPARSE. Otherwise HARM if SPARSE worsened, MIXED otherwise.",
+  "constraints": "No more than 7+9 stored associations/16 motifs, identical new observations and feedback across arms, no oracle, future peek, or extra labeled dataset; 8 seeds, 12 episodes x2 conditions x3 arms, 0 model calls, no first-use retry; original archive and full regression.",
+  "claim_limit": "Synthetic feedback evidence fusion for known global/sparse switch patterns, not unconstrained developmental repair or real-world cognition."
+}
