@@ -1,0 +1,31 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y048-SYMMETRIC_AUDIT_PLACEMENT_TRADEOFF",
+  "parent_commit": "bc8529c54399c69e074c831bbc4204a8f1517f67",
+  "date": "2026-10-13",
+  "question": "When only one independent audit measurement can be afforded, can a fixed audit location protect two different source groups under unknown source-local corruption, or must it trade protection between groups?",
+  "world": "New seeds184..191, Y040 SHA256-ordered 16 cues and initial target values. Seven CORE cues active e0/1 and e10/11, seven DISTRACTORS active e2..9, two never active. Only CORE truths invisibly +2 mod4 from e6. Define publicly observable group A as first four currently ordered CORE cue IDs, group B as remaining three, not hardcoded parity. At e10 primary sensor reports FIRST TWO A cues and FIRST B cue (three distinct early labels). In CLEAN reports are true; GROUP_A_CORRUPT both A primary reports are truth+1 mod4; GROUP_B_CORRUPT B primary report truth+1. An independent audit observes TRUE target on previously sampled first A or first B cue (if selected), before other forecasts.",
+  "cohorts": {
+    "development": [
+      184,
+      185,
+      186,
+      187
+    ],
+    "heldout": [
+      188,
+      189,
+      190,
+      191
+    ]
+  },
+  "arms": [
+    "PRIMARY_THREE: exactly three primary early reports, extrapolate delta separately by two observable groups; if A two deltas disagree abstain A else apply; score the four unsampled CORE cues (two A/two B)",
+    "AUDIT_A_FOUR: same primary three, one independent truthful reading of first A already sampled (four early reports, three unique cues), if audit disagrees with corresponding primary report abstain on remaining A, predict remaining B from its reported shift; score same four unsampled cues",
+    "AUDIT_B_FOUR: same primary three, one independent truthful reading of first B already sampled, if reports differ abstain remaining B, predict remaining A; score same four unsampled cues"
+  ],
+  "metrics": "Heldout 4 seeds by condition/arm: report labels3/4, same three distinct sampled keys and four prediction opportunities, correct/wrong/abstained, audit conflict, pre-e10 feedback equivalence, exact cache7-live <=9-dormant occupancy and write parity, stable after-feedback e11 recover7/7.",
+  "classification": "SYMMETRIC_AUDIT_TRADEOFF if input/source history valid, both audit arms CLEAN correct16/16 with no abstain, GROUP_A_CORRUPT AUDIT_A wrong0 abstain8 while AUDIT_B wrong8, GROUP_B_CORRUPT AUDIT_B wrong0 abstain8 while AUDIT_A wrong8, e11 each 7/7. MIXED otherwise; NONUNIQUE_FINGERPRINT or INVALID_HIDDEN_HISTORY if guards fail.",
+  "constraints": "Frozen before first original; full source/parent/prereg Git blob pins in one CI run and pytest; classify and retain all negatives. Audit is an explicit extra true-label observation, not gratis confidence. No oracle unsampled labels before predictions, no stored capacity growth, no accepted-ref changes or activation.",
+  "claim_limit": "Finite predeclared two cue groups and restricted group-specific corruption; not general causal identification or open-world safety."
+}
