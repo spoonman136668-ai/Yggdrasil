@@ -1,0 +1,48 @@
+name: Yggdrasil Y065 frozen dual-sentinel real matching
+on:
+  push:
+    branches: [research/y065-dual-sentinel-matching-recovery-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Validate immutable original scientific identities
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor d7584fc44e120d55e5dcbe147decc603c8bd8230 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y064-dual-sentinel/execute.py)" = 7b48658de43ff3906e46b20ffc0734b2c523b10d
+          test "$(git hash-object research/contrib/chatgpt/20261013-y065-dual-matching/prereg.json)" = 1d010e3128818d5ea1e3ed402b8363205bd15082
+          test "$(git hash-object research/contrib/chatgpt/20261013-y065-dual-matching/execute.py)" = 821804827b3c9c5b5a056b44122d7b204dc73cd1
+          python3 -m py_compile research/contrib/chatgpt/20261013-y065-dual-matching/execute.py
+      - name: Original first-use seven-active nine-retained dual matching
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y065-dual-matching/execute.py >/tmp/Y065-original.json
+          python3 - <<'PY'
+          import json
+          x=json.load(open('/tmp/Y065-original.json'))
+          assert x['development_seeds']==list(range(5600,5608))
+          assert x['sealed_heldout_seeds']==list(range(5632,5648))
+          assert len(x['heldout_records'])==2*4*4*16*3
+          assert x['per_trial_public_scalar_reads']==10
+          assert len(x['comparisons'])==6
+          print('CLASSIFICATION',x['classification'])
+          print('STEADY_ZERO',x['steady_zero_mismatches'])
+          print('BLIND_IMPROVEMENT',x['blind_case_improvement'])
+          print('MATCHING_COMPARISONS',x['comparisons'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y065-original-dual-sentinel-matching
+          path: /tmp/Y065-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: One full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
