@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y054-SCHEDULE-DIVERSITY-NEW-FAMILY-REPLICATION",
+  "parent_head": "cbc386856b12c06055e7baf4cdf460bbb77e7271",
+  "hypothesis": "Y053 showed a 47.1% reduction in worst-onset aggregate mismatch loss from 50/50 fixed-schedule diversification at almost unchanged pooled loss. Replicate without tuning on new disjoint affine families and seeds; preserve failure if the reduction disappears. This is population-level exogenous risk diversity, not a learned adaptive probe policy.",
+  "freeze": "Freeze novel odd affine families, dev2080..2087, untouched heldout2088..2103, exact Y053 schedule A/B choices and even/odd balanced allocation, 5 onset conditions, three matching policies, 10 landmark scalar observations/trial, and the exact prereg 25%-worst/10%-pooled thresholds before first use. No postresult threshold revision, no selection from Y053 heldout outcomes.",
+  "splits": {
+    "development": [
+      2080,
+      2081,
+      2082,
+      2083,
+      2084,
+      2085,
+      2086,
+      2087
+    ],
+    "sealed_heldout": [
+      2088,
+      2089,
+      2090,
+      2091,
+      2092,
+      2093,
+      2094,
+      2095,
+      2096,
+      2097,
+      2098,
+      2099,
+      2100,
+      2101,
+      2102,
+      2103
+    ]
+  },
+  "families": [
+    [
+      3,
+      13,
+      1
+    ],
+    [
+      5,
+      15,
+      7
+    ],
+    [
+      7,
+      5,
+      13
+    ],
+    [
+      13,
+      3,
+      9
+    ]
+  ],
+  "arms": [
+    "fixed_A",
+    "fixed_B",
+    "hedged_50_50 (exogenous even seed A / odd seed B, 8 each on fresh heldout)"
+  ],
+  "sources": "Reuse exact frozen Y053 evaluator, Y052 matched-control implementation, Y051 fixed schedules, but override only pinned fresh seed and affine family cohorts and then restore originals. No new network or runtime calls.",
+  "criteria": "INDEPENDENT_COHORT_REPLICATION iff hedge worst-onset <=0.75*min(fixed_A_worst,fixed_B_worst), hedge pooled <=1.10*min(fixed_A_pooled,fixed_B_pooled), steady has zero mismatches and each arm uses ten landmark scalar observations per trial. PARTIAL_REPLICATION iff worst-onset <=0.90*min and pooled <=1.20*min; NOT_REPLICATED otherwise. Record every per-seed/family/matching policy and all adverse values.",
+  "controls": [
+    "Hedge randomization seed is an explicit one-bit external schedule lottery, not encoded shock knowledge or individual agent learning",
+    "Physical active/cache (7/9/16), periodic public sensor costs, matched canonical comparator, recurrence and coverage remain exactly those of pinned Y053",
+    "Portfolio worst-case aggregate is across many independent runs, not worst individual run or unseen real-world environment",
+    "One original first-use artifact then full pytest suite, no first-use replays or accepted-ref / execution-authority mutation"
+  ],
+  "bounds": {
+    "regimes": 5,
+    "arms": 3,
+    "development": 8,
+    "heldout": 16,
+    "families": 4,
+    "policies": 3,
+    "landmark_reads_per_trial": 10,
+    "active": 7,
+    "cache": 9,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "New synthetic seed/family replication of exogenous 50/50 fixed-schedule portfolio robustness; no predictive capacity, dynamic repairs, autonomous cognition or source-birth proof."
+}
