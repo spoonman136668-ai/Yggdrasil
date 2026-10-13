@@ -1,0 +1,30 @@
+name: Yggdrasil Y022 disjoint heldout science
+on:
+  push:
+    branches: [research/y022-heldout-geometry-transfer-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Exact frozen predecessor
+        run: git merge-base --is-ancestor 195c9a0312eb6bce1e5f96ef0f2b0353f2062d13 HEAD
+      - name: Original finite frozen transfer experiment
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261012-y022-heldout-transfer/execute.py > "$RUNNER_TEMP/Y022.json"
+          python3 -m json.tool "$RUNNER_TEMP/Y022.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y022-original-disjoint-heldout
+          path: ${{ runner.temp }}/Y022.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
