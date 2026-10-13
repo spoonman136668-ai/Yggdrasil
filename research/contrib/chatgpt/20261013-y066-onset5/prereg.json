@@ -1,0 +1,60 @@
+{
+  "id": "Y066-DUAL-SENTINEL-SHOCK-ONSET5-TIMING",
+  "parent_head": "343621953c382f450e5603abaac7bf51b92ae09e",
+  "hypothesis": "Y065 dual-sentinel recovery improved some but not all original onset4/6/7 matching cases. A previously untested ONSET5 shock may expose whether sensing time, rather than decoder correctness alone, explains failures.",
+  "dev_seeds": [
+    5896,
+    5904
+  ],
+  "sealed_seeds": [
+    5920,
+    5936
+  ],
+  "families": [
+    [
+      3,
+      7,
+      5
+    ],
+    [
+      5,
+      15,
+      9
+    ],
+    [
+      7,
+      1,
+      13
+    ],
+    [
+      11,
+      5,
+      3
+    ]
+  ],
+  "regimes": [
+    "steady",
+    "onset4",
+    "onset5",
+    "onset6",
+    "onset7"
+  ],
+  "source_swaps": [
+    [
+      2,
+      3
+    ],
+    [
+      4,
+      5
+    ]
+  ],
+  "arms": [
+    "original_rotating_detect_only",
+    "dual_sentinel_detect_only",
+    "dual_sentinel_decoder_corrected"
+  ],
+  "classification": "TIMING_ROBUST_RECOVERY if dual corrected has >=50% fewer post-public-detection mismatched episodes than dual detect-only on BOTH novel onset5 source-swap cases, zero steady mismatches, all actual physical matching legal, all ten public scalar reads, and improves original rotating comparison; PARTIAL_TIMING_GAIN if at least one onset5 case improves >=20% under safety; NO_GAIN otherwise.",
+  "controls": "One new heldout reused across precommitted cases; original Y065 candidate matching and decoder unchanged, only seeds/families and regimes overridden before experiment and restored. No hidden shock/onset to candidates. First-use archive plus full pytest. No FORGE source or accepted authority mutation.",
+  "claim_limit": "Synthetic 7-active/9-retained matching under additional public sensing shock time, not independent production recovery."
+}
