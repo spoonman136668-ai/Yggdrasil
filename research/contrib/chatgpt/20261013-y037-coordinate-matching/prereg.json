@@ -1,0 +1,72 @@
+{
+  "schema": "yggdrasil.science.preregistered.v1",
+  "id": "Y037-CELL-RELABELLING-ORDER-CONFOUND",
+  "parent_sha": "1b89e7039cb750a85ba0a2c384d7b0982e38012e",
+  "hypothesis": "Y036 found quorum2 harmful after a fixed bijective relabeling of exactly the same circular matching graph. Investigate whether arbitrary numeric cell ordering in the deterministic augmenting matcher causes this apparent topology dependence. A sorter canonicalized through the inverse cell permutation should exactly reproduce original reference assignments.",
+  "freeze": "Fix the bijection, inverse, matcher sort order, active cohort, policies, controls and effect classification before original execution; do not tune after results.",
+  "split": {
+    "development_seeds": [
+      216,
+      217,
+      218,
+      219,
+      220,
+      221,
+      222,
+      223
+    ],
+    "sealed_heldout_seeds": [
+      224,
+      225,
+      226,
+      227,
+      228,
+      229,
+      230,
+      231,
+      232,
+      233,
+      234,
+      235,
+      236,
+      237,
+      238,
+      239
+    ]
+  },
+  "graph": "Exact same ring_reference 7 active / 16 motifs/cells / 9 inactive retained / 8 episodes and radius-two matching. Scramble cells via bijection observed_cell=(5*canonical_cell+3*seed) mod16; inverse canonical_cell=(13*(observed_cell-3*seed)) mod16.",
+  "models": [
+    "reference_numeric: original ring graph sorted by native numeric cell label",
+    "scrambled_numeric: bijectively relabeled ring graph with native observed numeric sort (the Y036 treatment)",
+    "scrambled_canonical: same relabeled graph but matcher sorts candidates by recovered canonical cell id, preserving the same preference-first rule"
+  ],
+  "policies": [
+    "matched_sham",
+    "full",
+    "quorum2"
+  ],
+  "metrics": "Per mode/policy/seed/episode complete canonicalized seven-key allocation identity, returning-key churn, search call count, legal cache preference count, cache-write/occupancy parity, exhaustive Hall cardinality. Compare reference vs both scrambled modes at exact paired seed/episode/policy.",
+  "classification": "COORDINATE_SORT_CONFOUND if scrambled_canonical has zero assignment mismatches to reference across all heldout episodes/policies AND scrambled_numeric has at least one assignment mismatch with a nonzero heldout churn difference for at least one policy. PARTIAL if canonical mismatches fewer than native scrambled but not zero. NO_CONFIRMED_CONFOUND otherwise. All outcome categories preserved.",
+  "controls": [
+    "No future information/oracle/extra computational action budget; both matching modes use same augmenting matcher and cap9 cache",
+    "Canonicalization uses known bijection from harness; no hidden label access",
+    "No earlier heldout reuse; original first-use artifact then one full pytest regression",
+    "All keys and cache writes/occupancy parity within each policy/paired mode",
+    "No accepted-ref mutation or production activation"
+  ],
+  "bounds": {
+    "modes": 3,
+    "policies": 3,
+    "development": 8,
+    "heldout": 16,
+    "episodes": 8,
+    "active": 7,
+    "max_retained": 9,
+    "total_cells": 16,
+    "total_keys": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic label-equivariance of deterministic matching/tie-break, not semantic memory or intelligence."
+}
