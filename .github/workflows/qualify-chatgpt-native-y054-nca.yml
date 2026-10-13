@@ -1,0 +1,40 @@
+name: Y054 independent native NCA causal locality first use
+on:
+  push:
+    branches: [research/chatgpt-native-y054-nca-locality-no-numpy-20261013]
+permissions:
+  contents: read
+jobs:
+  original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Pin immutable native substrate and frozen new identity
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 878464cf84833d06a1ac7e45988bfb79608547dc HEAD
+          test "$(git hash-object src/yggdrasil/nca.py)" = 7b15017b7f5c6f9b507bcf43f4545a3c972f40d1
+          test "$(git hash-object src/yggdrasil/resources.py)" = ad590ba32bb6011c8391fa3a654905b890478216
+          test "$(git hash-object research/contrib/chatgpt/20261013-native-y054-nca-locality/prereg.json)" = 7c221ba04fb679f88168bbdb7004492b33a7d60a
+          test "$(git hash-object research/contrib/chatgpt/20261013-native-y054-nca-locality/execute.py)" = f3462f1a996e91617ee95546fe00a0fd186947d4
+          python3 -m json.tool research/contrib/chatgpt/20261013-native-y054-nca-locality/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-native-y054-nca-locality/execute.py
+      - name: Prepare true native DG1A Torch dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Execute frozen prospective Y054 on actual NCA
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-native-y054-nca-locality/execute.py > /tmp/Y054-original.json
+          python3 -m json.tool /tmp/Y054-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y054-original-native-NCA
+          path: /tmp/Y054-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full native DG1A regression
+        run: python3 -m pytest -q tests

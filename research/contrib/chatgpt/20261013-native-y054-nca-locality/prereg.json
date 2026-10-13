@@ -1,0 +1,15 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "experiment_id": "Y054-NATIVE_NCA_CAUSAL_CONE_NO_NUMPY",
+  "date": "2026-10-13",
+  "source_parent": "878464cf84833d06a1ac7e45988bfb79608547dc",
+  "invalid_predecessor": "Y053 Actions38379400576 first use failed at NumPy-dependent native weight SHA fingerprint before producing any scientific output; preserved INVALID_EVIDENCE_DEPENDENCY, never replayed. This is a separate prospective experiment with disjoint seeds.",
+  "question": "Does actual DG-1A NeuralCellularAutomaton obey a spatial causal cone when a single hidden cell-state value is locally perturbed, with resource capacity unchanged?",
+  "matrix": "NEW frozen seeds308..315 for CPU torch initialized weights, 13x13 grid, six state channels, twelve hidden channels, alive_channel3, fire_rate1, all grid cells alive alpha1, channel0=.5, channel4=.25. In an otherwise identical cloned state perturb only hidden channel4 at (6,6) by +.5. Evaluate paired actual native NCA step sequences for 1,2,3,4 steps; no gradients, no training.",
+  "nonlearned_genome": "Model is instantiated at torch.manual_seed(seed) then final zero-initialized native update network final Conv2d weights changed to seeded normal std=.03 before outcomes, nonlearned random weights; final-layer perturbation was included in Y053 preregistration and preserved. Other original neural cell implementation unchanged.",
+  "provenance_repair": "Replace deprecated NumPy-dependent `.numpy().tobytes()` source fingerprint with native Torch raw uint8 Tensor view `.contiguous().view(torch.uint8).flatten().tolist()` into `bytes(...)`. This is a source/evidence serialization change, NOT a change to neural dynamics, frozen thresholds, grid or manipulation; NumPy is not installed or required.",
+  "metrics": "Eight unique source genome SHA256 computed from native Torch bytes, compare per seed xstep (32 pairings) changed cell count inside/outside Chebyshev radius equal to number of steps, max absolute outside difference, all-live occupancy, same resident state bytes and model parameter count, finite outputs, first-step signal within radius with threshold1e-7. Report Torch version and exact true resource snapshots.",
+  "classification": "NATIVE_CAUSAL_LOCALITY_ONLY iff all source signatures distinct, zero outside-step-radius changed cells in every pairing, all eight first steps have an inside response, occupancy all169 cells alive and native parameter/state byte counts identical for paired arms; NO_SIGNAL if at least one seed lacks a first-step response; STRUCTURAL_NEGATIVE otherwise, preserving failure.",
+  "claim_limit": "Only structural finite-speed influence property of actual untrained randomly initialized NCA, NOT trained regeneration, storage, general cognition, language or AI.",
+  "safety": "Exact frozen parent NCA+resource Git blobs, prereg+evaluator Git blobs, one original first-use GitHub run with full pytest; archive result+hash, no original replay, no production/accepted-ref mutation, no model calls or hidden evidence source."
+}
