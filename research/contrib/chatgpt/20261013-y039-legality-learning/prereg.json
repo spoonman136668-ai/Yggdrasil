@@ -1,0 +1,30 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y039-LEGALITY-VALIDATED-REENTRY-LEARNING",
+  "parent_sha": "439a84addf877ecf0d67b0656b1480147d5cc0aa",
+  "prior_source_blob": "fb3a3fca2fcc88cecdba9229bb03c9b336ca0ba8",
+  "question": "Y038 LFU frequency advantage was adverse at slow home drift1. Does updating cached motif priority only when a previously stored placement is actually legal at reentry reduce the value of stale frequency counts while maintaining four-slot capacity?",
+  "hypothesis": "When legal placement persistence is imperfect, legal-hit frequency may retain truly reusable motifs better than any-hit LFU; it may also forget frequently returning motifs in temporary displacement.",
+  "world": "Exact frozen Y038 keyed 16-motif hot/cold schedule and paired-collision geometry with drift D=1 only, fixed before run. Seven active, four inactive cached slots, 16 episodes; new development seeds120..123, heldout124..127. The source already pins the parameter family; new trial does NOT rerun consumed Y038 results.",
+  "arms": [
+    "LRU four-slot baseline with identical two-bit counter metadata",
+    "any-hit LFU updates capped counter on every observed cached-key reentry",
+    "LEGAL-HIT LFU increments its capped two-bit reentry count only when cached cell is currently within legal radius2 neighborhood; illegal reentry resets count to1. Eviction otherwise selects lowest count, ties oldest/key"
+  ],
+  "controls": "Same four inactive cache slots plus seven active assignments and counter bits in every arm. No future schedule, hot-key status, experiment labels or oracle calls exposed to policy. Independent exhaustive Hall oracle is evaluator-only. Real cache evictions required in every arm and heldout seed.",
+  "primary": "Per-seed returning hot-motif churn, total returning churn, legal cached preferences, actual evictions, writes/search calls and unique geometry SHA signatures. LEGAL_HIT_LEARNING_BENEFIT if legal-hit LFU hot churn lower aggregate than any-hit LFU and all churn no worse and hot churn not worse in >=3/4 seeds, with 7 matching and genuine evictions. MIXED if hot better but all worse; NEGATIVE otherwise; INVALID for Hall/capacity/signature; CAUSAL_TEST_UNEXERCISED if eviction absent.",
+  "budget": {
+    "development": 4,
+    "heldout": 4,
+    "episodes": 16,
+    "active": 7,
+    "cached": 4,
+    "total_keys": 16,
+    "cells": 16,
+    "counter_bits": 2,
+    "arms": 3,
+    "model_calls": 0,
+    "first_use_retries": 0
+  },
+  "claim_limit": "Finite synthetic online legality-gated frequency memory, not natural intelligence or biological consolidation."
+}
