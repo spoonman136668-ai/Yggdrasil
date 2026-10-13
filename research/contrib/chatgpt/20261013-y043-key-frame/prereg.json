@@ -55,12 +55,12 @@
     "affine observed=(5*key+3*seed+3*episode) mod16"
   ],
   "inverse": "additive key=(observed-3*seed-5*episode) mod16; affine key=13*(observed-3*seed-3*episode) mod16. The codec is deterministic, from currently provided seed/episode; no learned semantic oracle. Identity-aware mode explicitly decodes to canonical frame for matching+cache, then re-encodes outputs. Raw mode retains numeric observed aliases.",
-  "primary": "For each regime/policy/frame report heldout total physical returning-key placement churn and physical assignment mismatches per episode relative to canonical reference; cache writes/key-count parity, matching cardinality7, legal preference count and search calls. Per-seed original results retained.",
+  "primary": "For each regime/policy/frame report heldout total physical returning-key placement churn and physical assignment mismatches per episode relative to canonical reference; cache writes/key-count parity, matching cardinality7, legal preference count and search calls. Per-seed original results retained. Raw alias cache write-count and occupancy differences are separately recorded; only reference-versus-aware writes and occupancy are required to match identically. Do not infer that key aliases alone, rather than associated bookkeeping drift, explain any raw outcome.",
   "classification": "KEY_FRAME_CONFOUND if BOTH identity-aware transforms have zero physical assignment mismatches on all heldout comparisons AND at least one raw moving transform produces mismatches and altered physical churn. PARTIAL if identity-aware has fewer mismatches than raw but not zero; NO_CONFIRMED_CONFOUND otherwise. If inverse bijections, frame-consistency or Hall checks fail, INVALID and stop.",
   "controls": [
     "Independent exact invertibility asserts for all 16 identities each episode",
     "Physical motif labels known only as reference for evaluator, but inverse transform is public algorithmic configuration for aware policy; no extra observations",
-    "Same at most9 cached assignments, same 7 active and 16 physical cells in all modes; no actual capacity increase",
+    "Same at most9 cached assignments, same 7 active and 16 physical cells in all modes; reference and aware frame cache writes and occupancy MUST match exactly; raw aliases may alter apparent departed-key sets and writes, which are recorded as a possible mechanism rather than silently treated as equivalent",
     "No future state, evaluator cumulative physical placement history or heldout labels passed to policy",
     "Exact source/prereg blobs, original evidence archive prior to single full Python repository regression"
   ],
