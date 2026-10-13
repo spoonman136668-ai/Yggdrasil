@@ -1,0 +1,37 @@
+name: Y049 frozen original research and full qualification
+on:
+  push:
+    branches: [research/chatgpt-y049-audit-budget-adversary-20261013]
+permissions:
+  contents: read
+jobs:
+  original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify immutable original source and preflight only
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 2ab5044017e91e4f49da01f5a8e163c48b303f00 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y040-hibernation/execute.py)" = 6c6ba3ebf39456056fca0e60a8210d941cf69e43
+          test "$(git hash-object research/contrib/chatgpt/20261013-y049-audit-coverage/prereg.json)" = c1c6942160f02571786a948e69f3f8d1bf294779
+          test "$(git hash-object research/contrib/chatgpt/20261013-y049-audit-coverage/execute.py)" = ff9347632910e3e80263e563d71dd71a7afc9a9d
+          python3 -m json.tool research/contrib/chatgpt/20261013-y049-audit-coverage/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y049-audit-coverage/execute.py
+      - name: Run single prospective Y049 original
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y049-audit-coverage/execute.py > /tmp/Y049-original.json
+          python3 -m json.tool /tmp/Y049-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y049-original-frozen-first-use
+          path: /tmp/Y049-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests

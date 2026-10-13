@@ -1,0 +1,25 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y049-AUDIT_BUDGET_TARGETED_CORRUPTION_R1",
+  "date": "2026-10-13",
+  "parent_commit": "2ab5044017e91e4f49da01f5a8e163c48b303f00",
+  "question": "Can one static or deterministic-rotating independent verification report protect both independent cue groups against an audit-aware corruption source, or are two group-specific audit labels necessary for the tested finite threat model?",
+  "world": "Fresh independent seeds216..223 (development216..219; heldout220..223), Y040 SHA256 synthetic16-cue order and initial labels. CORE7 active episodes0,1,10,11, DISTRACTOR7 active2..9, last2 unused. Only dormant CORE targets invisibly +2 mod4 from episode6, distractors stable. Define group A as first4 currently ordered CORE cues, group B as last3. At e10 exactly three PRIMARY reports (first2 A + first1 B) shown before predictions; if a group's PRIMARY channel is corrupt, every sampled report in that group is +1 mod4 of truth. An AUDIT measurement returns truth for the first previously sampled cue of a selected group, before predicting four unsampled cues. AUDIT_A and AUDIT_B fixed; ROTATE picks A if SHA256('Y049-audit/'+seed) byte0 even, B otherwise; DUAL audits both groups, one extra explicit truth label.",
+  "conditions": [
+    "CLEAN",
+    "A_CORRUPT",
+    "B_CORRUPT",
+    "ROTATE_TARGETED: corruption targets the group NOT audited by ROTATE, chosen by evaluator with knowledge of public deterministic audit-selection policy but NOT future private labels"
+  ],
+  "arms": [
+    "PRIMARY_ONLY: three primary reports; predicts remaining four using delta per group, no audit",
+    "AUDIT_A: primary3 + one independent true-label audit of A; extrapolate only if group reports agree with audit, otherwise abstain on unsampled affected group",
+    "AUDIT_B: analogous single audit on B",
+    "AUDIT_ROTATE: selects its audit group using only seed/public declared hash; same report count and scoring as AUDIT_A/B; under ROTATE_TARGETED adversary chooses other group by public rotation strategy",
+    "AUDIT_BOTH: primary3 plus independent audits on A and B, two more truth reports, same four unsampled cue opportunities and same7live+<=9dormant cache."
+  ],
+  "metrics": "8 source fingerprints distinct, exactly equal feedback histories through e9 across conditions and matched cache traces across all five arms. Heldout condition x arm exact reports3/4/5, scored opportunities4/seed, correct/wrong/abstained/audit conflict, e11 recovery7/7 after true full e10 feedback. Every reported truth available only if that cue was explicitly sampled; no unsampled truth before prediction.",
+  "classification": "AUDIT_COVERAGE_BOUNDARY iff validity checks pass, AUDIT_BOTH has zero wrong predictions under all four conditions including ROTATE_TARGETED; AUDIT_ROTATE has at least one wrong under ROTATE_TARGETED; and CLEAN AUDIT_BOTH predicts all remaining16 heldout cues correctly. NO_GAIN otherwise, INVALID_HIDDEN_HISTORY or NONUNIQUE_FINGERPRINT for failed guards.",
+  "safeguards": "No change to 7 active+max9 dormant persistent state; double audit uses one additional early truth report relative to single audit, explicitly non-equal feedback budget. Threat model reveals deterministic audit location to source adversary, not an oracle available to learner. Prereg frozen before first use, exact prior Y040 source and parent/prereg/evaluator SHA pins, first-use original evidence and full pytest. No replay, post-result tuning, hidden oracle or production/accepted-ref mutation.",
+  "claim_limit": "Controlled two-group synthetic audit placement with a predeclared targeted corruption mechanism; no statistical or game-theoretic universal guarantee."
+}
