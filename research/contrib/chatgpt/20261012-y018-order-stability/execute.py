@@ -6,7 +6,7 @@ import subprocess
 from pathlib import Path
 import sys
 
-ROOT=Path(__file__).resolve().parents[3]
+ROOT=Path(__file__).resolve().parents[4]
 Y017=ROOT/"research/contrib/chatgpt/20261012-y017-matching-causality/probe.py"
 R016=ROOT/"research/applications/plane/exp-dgr-real-utf8-minimax-matched-consolidation-016.py"
 PIN="c4247f69295b25105a91cc402b123493ae63aa68"
