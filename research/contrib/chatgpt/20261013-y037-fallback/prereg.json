@@ -1,0 +1,74 @@
+{
+  "schema": "yggdrasil.science.frozen-prereg.v1",
+  "experiment": "Y037-SINGLE-LEGAL-PREFERENCE-FALLBACK",
+  "parent_head": "1c9c8ae47af93b3d9819247ddb8ea2b822cd28ed",
+  "hypothesis": "Y036 ranked legal preference reduction impaired continuity; the critical difference between full and quorum2 is when exactly one currently legal cached assignment exists. Test predeclared local-neighborhood-degree bounds for permitting that one assignment while preserving quorum2 for two or more.",
+  "freeze": "Fix degree<=6 and degree<=5 single-entry fallback rules, populations, four drift schedules, thresholds and all outcomes before original first-use. No selection after sealed outcomes.",
+  "source": "Same Y036 matching engine with exact seven active, max nine inactive cached observed assignments, sixteen motif keys/cells, eight episodes per seed and four-way neighborhood collision; no future geometry.",
+  "split": {
+    "development_seeds": [
+      224,
+      225,
+      226,
+      227,
+      228,
+      229,
+      230,
+      231
+    ],
+    "sealed_heldout_seeds": [
+      232,
+      233,
+      234,
+      235,
+      236,
+      237,
+      238,
+      239,
+      240,
+      241,
+      242,
+      243,
+      244,
+      245,
+      246,
+      247
+    ]
+  },
+  "regimes": [
+    "drift1",
+    "drift2",
+    "drift4",
+    "late_shock"
+  ],
+  "policies": [
+    "matched_sham cache bookkeeping but no read",
+    "full legal cached assignments regardless of count",
+    "quorum2 only use legal cache when two or more",
+    "fallback6: use all legal when count>=2, or lone legal entry when its current neighborhood degree<=6",
+    "fallback5: same, but lone degree<=5"
+  ],
+  "classification": "FALLBACK_GAIN if fallback6 churn<=quorum2 in BOTH drift4 and late_shock, strictly lower in at least one, AND retains >=70% of full's slow-drift sham-relative saved churn. PARTIAL if either fallback improves against quorum2 in at least one difficult regime but strict fails. NO_GAIN otherwise; preserve no-use cases.",
+  "controls": [
+    "Current legal neighbor graph, cached observed prior assignment only; never use evaluator history to choose preferences",
+    "Identical bounded cache writes and key trajectories between five arms",
+    "Exhaustive independent Hall cardinality=7 each episode",
+    "Exact SHA freeze before original artifact and final full pytest regression",
+    "No memory/cell/model capacity increases, runtime activation, first-use reruns or accepted-ref changes"
+  ],
+  "bounds": {
+    "policies": 5,
+    "regimes": 4,
+    "development": 8,
+    "heldout": 16,
+    "episodes": 8,
+    "active": 7,
+    "max_cached": 9,
+    "total_motifs": 16,
+    "total_cells": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic finite observed-cache policy study, not learned semantic reasoning."
+}
