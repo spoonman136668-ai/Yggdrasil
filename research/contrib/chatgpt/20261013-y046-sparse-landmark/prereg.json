@@ -1,0 +1,97 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y046-SPARSE-LANDMARK-RETIMING-FRAGILITY",
+  "parent_head": "54eece368ec286bc42b17073ec9336aed324be89",
+  "hypothesis": "Y045's two external stable landmarks per episode reconstruct an unknown mod16 affine frame. If the affine multiplier remains constant and additive phase advances linearly, two anchor pairs observed only in the first two episodes should suffice to extrapolate the frame in later episodes; an unannounced offset shock at episode4 should break this assumption, while full present-frame anchors remain equivalent to the physical reference.",
+  "freeze": "Four new immutable odd affine families with seed+episode shifts; two frozen environmental regimes steady and +5 additive shock from episode4; no dynamic retuning or new sensors after first two episodes for sparse condition. Eight episodes, 7 active/9 cached, matching policies, cohorts and classification fixed before first-use.",
+  "split": {
+    "development_seeds": [
+      1312,
+      1313,
+      1314,
+      1315,
+      1316,
+      1317,
+      1318,
+      1319
+    ],
+    "sealed_heldout_seeds": [
+      1320,
+      1321,
+      1322,
+      1323,
+      1324,
+      1325,
+      1326,
+      1327,
+      1328,
+      1329,
+      1330,
+      1331,
+      1332,
+      1333,
+      1334,
+      1335
+    ],
+    "previous_y045_heldout": "1168..1183 historical, never reused for selection"
+  },
+  "coordinate_families": [
+    [
+      3,
+      3,
+      1
+    ],
+    [
+      5,
+      1,
+      7
+    ],
+    [
+      7,
+      9,
+      5
+    ],
+    [
+      11,
+      11,
+      3
+    ]
+  ],
+  "regimes": [
+    "steady constant a and b(seed,episode) linear",
+    "late_shock add +5 to current offset for episode>=4, no advance disclosure to sparse client"
+  ],
+  "arms": [
+    "reference: canonical physical cell graph and canonical cache, zero anchors",
+    "raw: moving observed coordinate cell IDs, zero anchors",
+    "sparse_first2: two observed landmark positions (canonical cells0/1) in episodes0 and1 only, then predict a=a1 and b=b1+(episode-1)*(b1-b0) modulo16; four total landmark observations and three scalar retained metadata values",
+    "full_two_each_episode: two current known canonical landmark observations each episode, 16 total landmark readings"
+  ],
+  "policies": [
+    "matched_sham",
+    "full",
+    "quorum2"
+  ],
+  "primary": "SPARSE_CALIBRATION_FRAGILE iff sparse_first2 has zero heldout physical assignment mismatches vs canonical reference in steady regime, nonzero mismatches after concealed late-shock, and full_two_each_episode has zero mismatches across both, with identical cache writes/occupancy/Hall7 and fixed sensory budgets. NO_STEADY_TRANSFER otherwise. Preserve per-family/seed/policy/churn/search/early/late mismatches.",
+  "controls": [
+    "Landmarks reveal current public coordinate labels but no assignments, future coordinates or results",
+    "Sparse extrapolator's three retained scalar metadata variables and four total observations are an explicit additional resource, separate from nine cached placements",
+    "An undetectable shock must not be disguised as robust autonomous adaptation; do not tune after seeing it",
+    "All arms share the same 16 physical cells, 7 active keys, maximum 9 cached records and eight episodes; frozen first use archived before full pytest, no accepted-ref mutation"
+  ],
+  "bounds": {
+    "families": 4,
+    "regimes": 2,
+    "arms": 4,
+    "policies": 3,
+    "development": 8,
+    "heldout": 16,
+    "episodes": 8,
+    "active": 7,
+    "cache": 9,
+    "first_use_retries": 0,
+    "model_calls": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Deterministic synthetic affine-frame extrapolation with limited external landmark observations; not adaptive intelligence or predictive resilience to unseen shocks."
+}
