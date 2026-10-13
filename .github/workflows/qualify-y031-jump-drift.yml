@@ -1,0 +1,37 @@
+name: Yggdrasil Y031 first-use frozen experiment
+on:
+  push:
+    branches: [research/y031-jump-drift-net-cost-r1]
+permissions:
+  contents: read
+jobs:
+  first-use-science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify preregistration, predecessor and immutable evaluator identities
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 72b64a2b9a5344ad3064978c9a4a823c26cac4c4 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261012-y030-new-family/execute.py)" = c6396dd8fb125044618c5e4cfa99a89243a0c481
+          test "$(git hash-object research/contrib/chatgpt/20261013-y031-jump-drift/prereg.json)" = ebdeaa3cd2b89455e4e8df53bd0146f1cda2e1b8
+          test "$(git hash-object research/contrib/chatgpt/20261013-y031-jump-drift/execute.py)" = 32ae533e0b16ac1d1543efa739af739e1191c3b0
+          python3 -m json.tool research/contrib/chatgpt/20261013-y031-jump-drift/prereg.json > /dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y031-jump-drift/execute.py
+      - name: Run original scientific evaluation exactly once
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y031-jump-drift/execute.py > /tmp/Y031-original.json
+          python3 -m json.tool /tmp/Y031-original.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y031-original-frozen
+          path: /tmp/Y031-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: One complete repository regression and build
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
