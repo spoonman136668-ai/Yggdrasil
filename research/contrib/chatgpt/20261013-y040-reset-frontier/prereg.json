@@ -1,0 +1,94 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "experiment": "Y040-BOUNDED-CACHE-RESET-SEVERITY-FRONTIER",
+  "parent_head": "286dfaec783ff017fd6921e0575e7bbf7e70c020",
+  "north_star": "Quantify retained capability and memory reacquisition through repeated interruptions under bounded observed-only memory.",
+  "hypothesis": "Y039 interrupted nine-slot retention saved modest churn in four nonaliased schedules; smaller cache budgets and additional resets will erode or sometimes negate benefits. Test the full frozen capacity × reset severity frontier without post-result selection.",
+  "freeze": "All three cache capacities (3/6/9), four reset schedules, four drift regimes, matched sham/full policies, seed splits and classification criteria frozen before first use; no policies tuned based on Y039 heldout.",
+  "environment": "Same Y039/Y037 SHA256-keyed independent 7-active of16 motif schedule, 16 cells, circular radius2 and four-way collision; 8 episodes per seed; fixed nonaliased environment fingerprints.",
+  "split": {
+    "development_seeds": [
+      392,
+      393,
+      394,
+      395,
+      396,
+      397,
+      398,
+      399
+    ],
+    "sealed_heldout_seeds": [
+      400,
+      401,
+      402,
+      403,
+      404,
+      405,
+      406,
+      407,
+      408,
+      409,
+      410,
+      411,
+      412,
+      413,
+      414,
+      415
+    ]
+  },
+  "capacities": [
+    3,
+    6,
+    9
+  ],
+  "reset_schedules": {
+    "none": [],
+    "single": [
+      3
+    ],
+    "double": [
+      3,
+      6
+    ],
+    "triple": [
+      2,
+      4,
+      6
+    ]
+  },
+  "regimes": [
+    "drift1",
+    "drift2",
+    "drift4",
+    "late_shock"
+  ],
+  "arms": [
+    "matched-sham cache writes, no reads",
+    "full legal observed cache reads with same write schedule and identical reset event timing"
+  ],
+  "metrics": "All 48 capacity/reset/regime cells: heldout returning-key assignment churn sham/full, per-seed and per-episode difference, search calls, legal observed preferences, cache write/key parity and independent exhaustive Hall matching.",
+  "classification": "BOUNDED_RECOVERY if cap9 double-reset memory saves churn in >=3 of4 drift regimes AND saves >=25% of cap9 no-reset memory savings in >=3 such regimes; PARTIAL if cap9 double reset saves churn in at least2 regimes but strict fails; NO_RECOVERY otherwise. Retain all negative/no-effect cells and report reset/capacity interaction.",
+  "controls": [
+    "All memory cleared at reset starts before matching; evaluator-only history remains for score, never policy inputs",
+    "No future events or future labels and no oracle beyond final evaluator Hall matching",
+    "Same <=9 inactive memory bound, seven active, sixteen motif/cells unchanged",
+    "Exact parent/prereg/source identity, one first-use artifact then complete Python pytest regression"
+  ],
+  "bounds": {
+    "capacity_levels": 3,
+    "reset_schedules": 4,
+    "regimes": 4,
+    "policies": 2,
+    "development": 8,
+    "heldout": 16,
+    "episodes": 8,
+    "active": 7,
+    "max_cached": 9,
+    "total_motifs": 16,
+    "total_cells": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Finite synthetic memory reconstitution under interruption, not biological repair or learned semantic cognition."
+}
