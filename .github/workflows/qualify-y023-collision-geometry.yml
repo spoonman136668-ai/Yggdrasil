@@ -1,0 +1,36 @@
+name: Yggdrasil Y023 frozen collision-geometry science
+on:
+  push:
+    branches: [research/y023-collision-hall-deficiency-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Freeze exact parent, preregistration and science source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 740ad8cf6e77f6b67e63a1d7ed2d51bd00d51dad HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261012-y022-heldout-transfer/execute.py)" = 855c11187a6cc24269ee5c5b6d8772b3be0ea18e
+          test "$(git hash-object research/contrib/chatgpt/20261012-y023-collision-geometry/prereg.json)" = d71c5a2ac001bc2d1d7a507f79a1d3ea927ce41e
+          test "$(git hash-object research/contrib/chatgpt/20261012-y023-collision-geometry/execute.py)" = f19c27950e174b714f6004f766615869c0974170
+          python3 -m json.tool research/contrib/chatgpt/20261012-y023-collision-geometry/prereg.json > /dev/null
+      - name: Original frozen scientific execution with independent Hall verification
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261012-y023-collision-geometry/execute.py > /tmp/Y023-original.json
+          python3 -m json.tool /tmp/Y023-original.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y023-original-frozen-Hall-ablation
+          path: /tmp/Y023-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Full repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
