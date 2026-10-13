@@ -1,0 +1,43 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y037-LEGAL-PERSISTENCE-LFU-TRANSFER",
+  "parent_sha": "30c3385ac5761ab02d38012c0d1b62ce3e2842bc",
+  "prior_source_blob": "d583f168de51910712ebce91633db274fef0a849",
+  "question": "Y036 proved eviction is genuinely exercised but LFU had no hot-motif benefit under quickly moving geometry. Does observed reentry frequency improve four-slot cache eviction when motif-cell neighborhoods remain stable and previous assignments are reusable, with collision pressure held?",
+  "hypothesis": "Legal persistence is necessary for frequency-based eviction to matter; LFU may improve hot motif churn in a new fixed-home collision family. Conversely deterministic matching may already stabilize all assignments so LFU has no incremental benefit.",
+  "world": "16 circular cells and motifs, seven active per episode and four cached inactive slots over sixteen episodes. Use exact frozen Y035 SHA256 hot/cold active sequence on fresh seed96..103, but NEW constant-in-episode home map: for each motif key, fixed home=((7*(key//2)+SHA256salt(seed))%16), where adjacent motif pairs share a home and all neighbors are radius2. This differs from Y035/Y036's episode-drifting four-way homes. Full independent seven-key Hall max matching each episode and unique geometry-sequence SHA256 signatures.",
+  "split": {
+    "development": [
+      96,
+      97,
+      98,
+      99
+    ],
+    "heldout": [
+      100,
+      101,
+      102,
+      103
+    ]
+  },
+  "arms": [
+    "LRU four-slot cache, capped observed two-bit reentry-count metadata",
+    "LFU four-slot cache, identical metadata, evict lowest observed count, tie-break oldest then key"
+  ],
+  "policy": "Both arms use same matching algorithm, only legal observed cached preferences, max four inactive cached entries and <=7 active identity records, counts capped3 from observed reentries alone; no hot-key oracle labels or future episode access. Hot set for EVALUATOR only.",
+  "primary": "Must have at least one eviction per heldout seed in both arms or classify CAUSAL_TEST_UNEXERCISED. Report hot-key returning-assignment churn, all returning-churn, legal cache hits, eviction counts, search calls, cache writes. FREQ_STABLE_GEOMETRY_BENEFIT if LFU hot churn strictly less aggregate, all churn not higher and LFU hot no worse in >=3/4 seeds; MIXED if LFU hot better but overall worse; NEGATIVE otherwise. INVALID for Hall/signature or memory-capacity violations; GEOMETRY_DEFICIENCY if underfull matches.",
+  "bounds": {
+    "seeds": 8,
+    "heldout": 4,
+    "episodes": 16,
+    "keys": 16,
+    "cells": 16,
+    "active": 7,
+    "cached": 4,
+    "cache_counter_bits": 2,
+    "arms": 2,
+    "model_calls": 0,
+    "first_use_retries": 0
+  },
+  "claim_limit": "Synthetic hot/cold placement reuse under stable collided homes; no semantic or biological memory generalization."
+}
