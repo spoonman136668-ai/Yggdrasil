@@ -1,0 +1,51 @@
+name: Yggdrasil Y059 equal-budget rotating sentinel detection
+on:
+  push:
+    branches: [research/y059-equal-budget-rotating-landmarks-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Immutable parent and science identities
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c0c4c1b734053d983cf36a198c15d2c4ff210226 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y058-anchor-blind/execute.py)" = 7b125f7df582eb965cf017ec3552bdf91c587954
+          test "$(git hash-object research/contrib/chatgpt/20261013-y059-rotating-probes/prereg.json)" = 7799169e6a0f06bdad59ca1e99aa1bdf6ec4e458
+          test "$(git hash-object research/contrib/chatgpt/20261013-y059-rotating-probes/execute.py)" = 1a0d8a42a95c59a19fb9770f0dc45a129d4abf61
+          python3 -m json.tool research/contrib/chatgpt/20261013-y059-rotating-probes/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y059-rotating-probes/execute.py
+      - name: Original frozen first-use public landmark detectability experiment
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y059-rotating-probes/execute.py > /tmp/Y059-original.json
+          python3 -m json.tool /tmp/Y059-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          x=json.load(open('/tmp/Y059-original.json'))
+          assert x['development_seeds']==list(range(2944,2952))
+          assert x['sealed_heldout_seeds']==list(range(2952,2968))
+          assert len(x['all_heldout_sensor_records'])==2*3*4*16
+          assert x['observations_per_trial']==10
+          print('CLASSIFICATION',x['classification'])
+          print('FULLY_DETECTED_CASES',x['fully_detected_expected_cases'])
+          print('BLIND_PAIR_ONSET6',x['expected_unseen_onset6_swap2_3_confirmed'])
+          print('STEADY_ZERO',x['steady_false_alarms_zero'])
+          for name,row in x['results_by_swap_onset'].items():
+              print('CASE',name,{arm:v['detected'] for arm,v in row['matched_detector_outcomes'].items()})
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y059-original-rotating-sentinel-detection
+          path: /tmp/Y059-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: One full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
