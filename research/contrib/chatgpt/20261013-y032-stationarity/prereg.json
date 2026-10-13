@@ -1,0 +1,68 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y032-SMOOTH-VERSUS-JUMP-CACHE-UTILITY",
+  "parent_commit": "606a2d3cb9d67d0400a558744cab13d4b996227e",
+  "predecessor": "Y031",
+  "hypothesis": "Y031 showed net harm from retained cache under abrupt displacement. Test whether the same cache architecture has improved or even positive net utility under smooth rather than jump displacement on identical fresh keyed geometries, with neither capacity nor computational accounting changed.",
+  "freeze": "Both displacement schedules, exact seeds, matched policies, cost weights, output measures and categories frozen before first original experiment. No post-hoc environment, seed or weight selection.",
+  "source": "Reuse exact Y030 SHA256-keyed eight nonuniform pattern generator and exact Y031 search/cardinality/cache accounting, 16 cells and motifs, seven active, 9 inactive cache slots, 8 episodes per seed.",
+  "split": {
+    "development": [
+      56,
+      57,
+      58,
+      59
+    ],
+    "heldout": [
+      60,
+      61,
+      62,
+      63
+    ]
+  },
+  "frozen_displacements": {
+    "smooth": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "jump": [
+      0,
+      1,
+      2,
+      9,
+      10,
+      11,
+      4,
+      5
+    ]
+  },
+  "arms": [
+    "sham writes same cache but cannot read",
+    "retained reads cached current-key assignments, uses only currently legal preferences"
+  ],
+  "frozen_costs": "Cost per policy for weights w=1,3,10 = search_recursive_calls + cache_writes + cache_read_attempts + w*assignment_churn. Primary w=3; other weights predeclared sensitivity controls.",
+  "primary": "Report per-condition and per-seed churn, recursive calls, writes, read attempts, legal preferences, net sham-minus-retained modeled cost, per-seed smooth-minus-jump net-gain difference, and all weight sensitivities.",
+  "classification": "ENVIRONMENT_MODERATES_UTILITY only if smooth net advantage exceeds jump net advantage for every heldout seed at w=3 AND smooth aggregate net advantage is positive. HARM_BOTH if aggregate net advantage negative for both at w=3; otherwise MIXED_OR_UNSUPPORTED. INVALID if Hall/sig/capacity/writes equality fail.",
+  "validation": "Eight unique seed geometry signatures for each condition, exact Y030+Y031 blob pinning, no future/oracle/evaluator history leak to policies, full project regression, archive first-use including negatives.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "conditions": 2,
+    "arms": 2,
+    "episodes": 8,
+    "keys": 16,
+    "cells": 16,
+    "active": 7,
+    "retained": 9,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Synthetic cost sensitivity under two fixed displacements, not a general proof of developmental intelligence or real resource efficiency; no accepted-ref mutation."
+}

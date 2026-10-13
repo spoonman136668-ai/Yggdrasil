@@ -1,0 +1,37 @@
+name: Yggdrasil Y032 frozen original qualification
+on:
+  push:
+    branches: [research/y032-stationarity-utility-r1]
+permissions:
+  contents: read
+jobs:
+  first-use:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify frozen provenance and execution bytes
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 606a2d3cb9d67d0400a558744cab13d4b996227e HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y031-jump-drift/execute.py)" = 32ae533e0b16ac1d1543efa739af739e1191c3b0
+          test "$(git hash-object research/contrib/chatgpt/20261013-y032-stationarity/prereg.json)" = dc30009b4bc7eccf8f1f6658f41e399db42204ab
+          test "$(git hash-object research/contrib/chatgpt/20261013-y032-stationarity/execute.py)" = 7ffd41c75748c6a0796a491635efa31549992da0
+          python3 -m json.tool research/contrib/chatgpt/20261013-y032-stationarity/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y032-stationarity/execute.py
+      - name: Run original scientific evaluation once
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y032-stationarity/execute.py > /tmp/Y032-original.json
+          python3 -m json.tool /tmp/Y032-original.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y032-first-use-frozen
+          path: /tmp/Y032-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: One full regression at original frozen source
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
