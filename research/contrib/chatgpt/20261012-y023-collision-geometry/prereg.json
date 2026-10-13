@@ -1,0 +1,48 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y023-FROZEN-COLLISION-GEOMETRY",
+  "parent_commit": "740ad8cf6e77f6b67e63a1d7ed2d51bd00d51dad",
+  "predecessor": "Y022-HELDOUT-GEOMETRY-TRANSFER",
+  "hypothesis": "Y022's zero radius benefit arose from bijective homes, not evidence that radius-two geometry is universally ineffective. Under frozen non-bijective home collisions at unchanged capacity, larger neighborhoods may rescue Hall-deficient matching.",
+  "freeze": "Commit preregistration before first experiment workflow creation and execution; never retune collision indices, capacities, thresholds, arms or heldout seeds after observation.",
+  "population": "Exactly 16 motif keys and 16 circular cells, base home(k)=(7*k+seed) mod16, no added cells/keys. Collision index sequence [(3*seed+5*j) mod16 for j=0..3].",
+  "split": {
+    "development_seeds": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "heldout_seeds": [
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  "arms": [
+    "bijective control: original homes",
+    "four_collision: all four indexed keys share first selected key's home",
+    "two_pairs: selected index 1 shares selected 0's home, selected 3 shares selected 2's home"
+  ],
+  "radii": [
+    1,
+    2
+  ],
+  "metric": "Maximum bipartite matching cardinality and deficiency 16-cardinality; signed radius-two minus radius-one effect by seed and arm.",
+  "primary_interpretation": "Classify RADIUS_TWO_RESCUE if at least one non-bijective heldout arm has a positive radius-two margin, NO_RESCUE if all margins zero, MIXED when improvements coexist with persistent deficiency. All negative outcomes preserved.",
+  "invalid": "Any oracle mismatch, nonmonotonicity, mismatched capacity, source drift, or determinism violation.",
+  "validation": "Exact frozen predecessor and parent, first-use result artifact, independent augmenting-path and residual-flow matching solvers, one full project regression.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "keys": 16,
+    "cells": 16,
+    "arms": 3,
+    "radii": 2,
+    "model_calls": 0,
+    "capacity_increase": 0,
+    "first_use_retries": 0
+  },
+  "claim_limit": "Synthetic collision geometry only; not Y021 R016 original data, learned memory, or autonomous developmental repair."
+}
