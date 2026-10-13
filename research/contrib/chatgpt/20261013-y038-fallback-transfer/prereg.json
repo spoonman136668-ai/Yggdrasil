@@ -1,0 +1,74 @@
+{
+  "schema": "yggdrasil.science.frozen-prereg.v1",
+  "experiment": "Y038-SINGLETON-FALLBACK-UNSEEN-DRIFT-TRANSFER",
+  "parent_head": "78306244bb4f7b71bca9a0da987673f9f0710e8c",
+  "hypothesis": "Y037's single legal cached assignment with neighbor degree<=6 improved fast drift and late shock at no extra cache capacity. Test this unmodified policy on unseen no-drift, medium-drift, very-fast-drift, and alternating schedules, retaining drift1 reference.",
+  "freeze": "Lock degree5/6 bounds, policy algorithms, five regimens, exact disjoint seed cohorts and criteria before first-use. Do not tune based on prior heldout scores.",
+  "population": "Same seven active of sixteen keys/cells, nine max inactive observed-placement cache, eight episodes per seed, radius2 circular matching and four-key collision.",
+  "split": {
+    "development_seeds": [
+      248,
+      249,
+      250,
+      251,
+      252,
+      253,
+      254,
+      255
+    ],
+    "sealed_heldout_seeds": [
+      256,
+      257,
+      258,
+      259,
+      260,
+      261,
+      262,
+      263,
+      264,
+      265,
+      266,
+      267,
+      268,
+      269,
+      270,
+      271
+    ]
+  },
+  "regimes": [
+    "drift1_reference: offset episode",
+    "drift0_new: offset0",
+    "drift3_new: offset3*episode",
+    "drift5_new: offset5*episode",
+    "alternating_new: offset[0,1,6,7,12,13,18,19][episode]"
+  ],
+  "policies": [
+    "matched_sham",
+    "full",
+    "quorum2",
+    "fallback6",
+    "fallback5"
+  ],
+  "primary": "For every regime, report all policies' returning-key churn, cache writes, key trajectories, legal singleton preference counts and search calls on disjoint 16 heldout seeds; separate exhaustive Hall7 oracle on each episode.",
+  "classification": "FALLBACK_GENERALIZES iff fallback6 churn<=quorum2 under ALL four new regimes and strictly lower in >=1, while saving >=70% as much churn as full-cache against sham under drift1. MIXED if fallback6 or fallback5 improves quorum2 in at least one new regime but the strict criterion fails. NO_TRANSFER otherwise; no result-driven policy choice.",
+  "controls": [
+    "Graph and observed assignments only; no evaluator history/future-state to any policy",
+    "Identical nine-entry maximum, same matched cache write/key trajectories, exact seven legal assignments",
+    "Immutable parent/prereg/executor content-addressed identities, single archived first-use original then one complete pytest regression"
+  ],
+  "bounds": {
+    "policies": 5,
+    "regimes": 5,
+    "heldout": 16,
+    "development": 8,
+    "episodes": 8,
+    "active": 7,
+    "max_cached": 9,
+    "total_keys": 16,
+    "total_cells": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Finite synthetic cache drift generalization only, not semantic developmental cognition."
+}
