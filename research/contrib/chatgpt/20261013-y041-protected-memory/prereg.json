@@ -1,0 +1,64 @@
+{
+  "schema": "yggdrasil.science.frozen.v1",
+  "id": "Y041-BOUNDED-PROTECTED-SUBSET-INTERRUPTION",
+  "parent_head": "b332db0668f6d93854bf972f2a7b594d52ad31e7",
+  "hypothesis": "Y040 showed triple resets erase all cache benefit. Test whether protecting 3 or 6 of at most 9 existing inactive cached assignments through each reset partially preserves placement capability without increasing simultaneous memory.",
+  "split": {
+    "development_seeds": [
+      416,
+      417,
+      418,
+      419,
+      420,
+      421,
+      422,
+      423
+    ],
+    "sealed_heldout_seeds": [
+      424,
+      425,
+      426,
+      427,
+      428,
+      429,
+      430,
+      431,
+      432,
+      433,
+      434,
+      435,
+      436,
+      437,
+      438,
+      439
+    ]
+  },
+  "environment": "Exact Y037 nonaliased 7-active/16-motif, 16-cell circular-radius2 graph, four-way collision, eight episodes per seed; four drift regimes drift1/drift2/drift4/late_shock.",
+  "interruption": "At starts of episodes 2,4,6 clear previous-active and previous-allocation runtime state. Keep last N cached inactive assignments, with N frozen to 0,3,6,9; no parallel snapshot or second cache; total bounded cache remains <=9.",
+  "policies": [
+    "matched sham with exact same storage and reset actions but no cache reads",
+    "legal retained-cache preferences with same cap9 and same reset events"
+  ],
+  "metrics": "Per preserve-level×regime (16 cells), every heldout-seed returning-key churn, legal cache preferences, search calls, writes and occupancy. Independent Hall=7 for every episode, equality of cache key/write trajectory across policies.",
+  "classification": "PROTECTED_MEMORY_BENEFIT if preserve3 saves churn versus preserve0 in at least3/4 regimes and preserve6 improves over preserve3 in at least2/4; PARTIAL if either preserve3 or preserve6 improves over preserve0 in any regime but strict not met; NO_BENEFIT otherwise. Also report baseline preserve9 and adverse outcomes.",
+  "controls": [
+    "Preserve only actually observed pre-interruption cached entries; no future labels or oracle to decision",
+    "All arm memory<=9 plus seven active, 16 motifs and cells unchanged; reset scheduling frozen",
+    "Exact SHA source/prereg, first-use archived artifact, one complete pytest regression, no retries or accepted-ref changes"
+  ],
+  "bounds": {
+    "memory_levels": 4,
+    "regimes": 4,
+    "policies": 2,
+    "episodes": 8,
+    "development": 8,
+    "heldout": 16,
+    "active": 7,
+    "max_cached": 9,
+    "total_cells": 16,
+    "total_motifs": 16,
+    "model_calls": 0,
+    "first_use_retries": 0
+  },
+  "claim_limit": "Synthetic protected assignment cache after interruptions, not biological or learned semantic repair."
+}
