@@ -1,0 +1,14 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "experiment_id": "Y053-NATIVE_NCA_CAUSAL_CONE_AUDIT",
+  "date": "2026-10-13",
+  "source_parent": "878464cf84833d06a1ac7e45988bfb79608547dc",
+  "substrate": "ACTUAL Yggdrasil dg1a-ar src/yggdrasil/nca.py NeuralCellularAutomaton, not synthetic symbolic caching; no changes to accepted neural architecture",
+  "question": "Does the real native shared local-update NCA respond to a single local state perturbation without influencing cells outside a predictable Chebyshev radius at 1..4 propagation steps, under controlled untrained nonzero weights?",
+  "matrix": "Eight disjoint deterministic Torch CPU weight seeds 300..307; 13x13 phenotype; channels=6, hidden_channels=12, fire_rate=1.0, alive_channel=3, alive_threshold=0.1, max_steps=8; all cells alive with alpha=1 and visible channel0=0.5 and hidden channel4=0.25. Perturb ONLY hidden channel4 at center (6,6) by +0.5. Run paired unperturbed and perturbed trajectories with same frozen weights and no gradient for 1,2,3,4 steps.",
+  "parameter_init": "NeuralCellularAutomaton's final Conv2d layer is initialized to all zeros by default; replace only the final layer weights in this experimental in-memory model with torch.nn.init.normal_(std=0.03) seeded by torch.manual_seed(exact cohort seed) BEFORE any outcomes. This is NOT learned/trained parameterization. Leave all preceding shared local weights unchanged. Clone the fixed initialized instance for paired states; do not change model weights between arms.",
+  "metrics": "For each seed/step count count cells whose six-channel state L-infinity absolute difference exceeds 1e-7; count cells inside and outside Chebyshev radius equal to steps from perturbation; max abs difference outside; nonzero near center at step1; count same number of live cells; fixed parameters and resident bytes from native snapshot_resources before and after; verify no NaN/Inf.",
+  "classification": "NATIVE_CAUSAL_LOCALITY_ONLY if all32 step/seed comparisons have zero differing cells outside step radius, all8 first steps have at least1 inside differing cell, occupancy and resource sizes match. STRUCTURAL_NEGATIVE if any locality or liveness/resource invariant fails, NO_SIGNAL if native model does not propagate any first-step difference in one or more seeds. No favorable result is evidence of learned capability, regeneration or cognition.",
+  "limits": "Only nonlearned random final-layer native NCA, deterministic CPU simulation; not trained regeneration, hidden capabilities, natural language or general model intelligence. Mechanistic locality tests are substrate architecture checks, not learned skill.",
+  "safeguards": "Prereg freeze before source and first-use, exact native NCA/resource source SHA pins, original Actions evidence+full Yggdrasil regression on dg1a-ar branch (including required dependencies), SHA256 original artifact, no first-use retries/tuning, no accepted-ref/production mutation or model calls."
+}
