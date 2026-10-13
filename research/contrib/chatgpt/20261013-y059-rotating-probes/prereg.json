@@ -1,0 +1,89 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y059-ROTATING-EQUAL-COST-LANDMARK-DETECTION",
+  "parent_head": "c0c4c1b734053d983cf36a198c15d2c4ff210226",
+  "hypothesis": "Y058 established that post-onset swaps of two non-anchor physical coordinates cannot be observed by the existing anchor0/1-only probe schedule. A fixed, non-oracle rotation that REPLACES, not adds, a landmark read with sentinel cell2 at episode5 and cell4 at episode7 may reveal these swaps under the SAME ten scalar readings budget, subject to a precommitted timing blind spot.",
+  "freeze": "Fresh dev2944..2951 and sealed heldout2952..2967, four new odd-affine baseline frames, two swap kinds physical2↔3 and physical4↔5, steady/onset4/onset6, probes0/1/3/5/7. Fixed control always senses cells0 and1; rotating sensor senses 0/1 at probes0/1/3, cells0/2 at episode5, cells0/4 at episode7, exactly two readings at each probe for both arms. Predicted coordinate for selected cell computed solely from observed affine cell0/1 e0, cell0 e1, and public episode index; no hidden swap/onset data or future readings reach detector.",
+  "development_seeds": [
+    2944,
+    2945,
+    2946,
+    2947,
+    2948,
+    2949,
+    2950,
+    2951
+  ],
+  "sealed_heldout_seeds": [
+    2952,
+    2953,
+    2954,
+    2955,
+    2956,
+    2957,
+    2958,
+    2959,
+    2960,
+    2961,
+    2962,
+    2963,
+    2964,
+    2965,
+    2966,
+    2967
+  ],
+  "families": [
+    [
+      3,
+      13,
+      7
+    ],
+    [
+      5,
+      7,
+      11
+    ],
+    [
+      7,
+      3,
+      5
+    ],
+    [
+      11,
+      5,
+      9
+    ]
+  ],
+  "arms": [
+    "fixed_two_anchors_0_1",
+    "fixed_rotating_0_1_then_0_2_at5_0_4_at7"
+  ],
+  "cases": [
+    "steady with both predeclared swap types",
+    "swap2_3 onset4: rotating should detect at e5",
+    "swap2_3 onset6: rotating expected miss (cell2 read before shock; cell4 read after but unaffected)",
+    "swap4_5 onset4: rotating should detect at e7",
+    "swap4_5 onset6: rotating should detect at e7"
+  ],
+  "primary": "SENSOR_REALLOCATION_GAIN iff rotated probe reports correct post-shock nonzero residual for >=3 of four nonsteady swap/onset combinations across EVERY heldout seed/family, fixed anchors return zero on all, steady both zero, and both exactly ten scalar readings/trial. PARTIAL_GAIN iff rotated correctly detects at least one complete case under zero false positives; NO_GAIN otherwise. The preregistered unavoidable swap2_3/onset6 miss must remain recorded; no post-result relocation.",
+  "controls": [
+    "Detector function receives ONLY immutable precommitted observation schedule and current sampled label-coordinate values, not simulator swap identity, onset or hidden future frame.",
+    "The physical cells to observe are public addressable landmark IDs; changing identity of the sampled cell may change required sensor capability despite unchanged numerical observation count. Disclose this resource/availability caveat explicitly.",
+    "Full bijective nonaffine coordinate swap and inverse from pinned Y058 environment; no modified matching controller and NO CLAIM OF REPAIR, ONLY detectability.",
+    "Identical affine baseline under steady case, fixed probes use ten readings. All fresh first-use sample records/failures preserved before full pytest, no accepted ref or runtime authority mutation."
+  ],
+  "bounds": {
+    "sensor_arms": 2,
+    "swap_types": 2,
+    "onset_types": 2,
+    "probes": 5,
+    "scalars_per_run": 10,
+    "dev": 8,
+    "heldout": 16,
+    "families": 4,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic fixed-sentinel anomaly detectability at unchanged count but changed physical sampled landmark IDs; not dynamic sensor choice, autonomous cognitive repair, or physical-world source transfer."
+}
