@@ -1,0 +1,30 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y050-CORRELATED_OBSERVATIONAL_EQUIVALENCE",
+  "date": "2026-10-13",
+  "parent_commit": "33b29c90302fcc9f7302415039b998940d0c25a9",
+  "question": "Can agreement among primary and independently named audit reports certify hidden-memory correctness when all reports can share the same unrecognized systematic error?",
+  "cohorts": {
+    "development": [
+      224,
+      225,
+      226,
+      227
+    ],
+    "heldout": [
+      228,
+      229,
+      230,
+      231
+    ]
+  },
+  "world": "Y040 keyed 16-cue synthetic memory, CORE first7 cues and DISTRACTOR next7. CORE active e0/e1,e10/e11 and dormant e2..e9. Define publicly visible group A as first4 currently ordered CORE keys, B as last3; memory 7 live and <=9 dormant. All DISTRACTORS remain stable. Conditions PAIRED_BIASED_A: at e6 hidden CORE group A shifts +2 mod4, B shifts +2; at e10 ALL sampled A primary and audit reports are corrupted +1 relative to A true label (return base+3), B reports true. PAIRED_GENUINE_A_PLUS3: hidden A shifts +3 while B shifts +2, sampled primary and audit reports all truthful (also A base+3). Therefore pre-return observed history and every early report are exactly identical in paired worlds while two unsampled A targets differ by1. Both conditions use the same frozen seed and schedule.",
+  "arms": [
+    "AUDIT_BOTH: at e10 obtain primary labels for first2 A+first B and additional first A +first B audit reports (five reports across three unique cues); infer group deltas from report/cache and predict the other two A and two B cues, abstain if primary vs corresponding audit reports disagree",
+    "CONSERVATIVE_A_ABSTENTION: identical five sampled reports and memory policy, but prospectively abstain on both unsampled A cues regardless of report agreement; predict B with report/cache delta. Both reveal full authoritative e10 truth only after predictions frozen and use that feedback for e11 recovery."
+  ],
+  "metrics": "Fresh input signatures SHA256 independent of seed ID, paired same pre-e10 feedback SHA and same primary+audit early report SHA; all AUDIT_BOTH predictions exactly identical between paired worlds before truth scoring; heldout 4 seeds x 4 remaining cues=16 opportunities per world and policy, correct/wrong/abstain/coverage, paired A target differences, audit disagreements, e11 recovery, exact cache writes and capacity parity.",
+  "classification": "CORRELATED_EVIDENCE_AMBIGUITY if source guards all pass and paired histories/reports/predictions match exactly, heldout AUDIT_BOTH scores16/16 in PAIRED_GENUINE_A_PLUS3 but 8/16 in PAIRED_BIASED_A (8 wrong), while CONSERVATIVE_A_ABSTENTION has zero wrong and exactly8 abstentions of16 opportunities in both conditions, and e11 all recover. INVALID_PAIRED_HISTORY if pair symmetry fails; MIXED otherwise; NONUNIQUE_FINGERPRINT if input duplicates.",
+  "safeguards": "No access to unobserved truth or corruption flag within policy. Each arm spends SAME five early reports, same 7-live+<=9 dormant resource limit and scores identical opportunity set. Preregister and Git blob source SHA pinned; first use original CI artifact and full pytest, preserve invalid/negative outcomes; no original replay, accepted-reference mutation or live activation.",
+  "claim_limit": "Specific two-world observational indistinguishability demonstration, not general impossibility of sensor reliability estimation or open-world epistemic uncertainty."
+}
