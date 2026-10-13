@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "experiment": "Y034-UNSEEN-DRIFT-QUORUM-TRANSFER",
+  "parent_head": "779a617a61428360ac3614e7a241ccc4176fd42f",
+  "hypothesis": "Y033 quorum2 reduced churn in the frozen four known drift regimes. Test zero-retuning transfer to new drift rates and late-shock episodes using identical memory capacity and current-graph-only rules.",
+  "freeze": "All new drift regimes, exact displacement schedule, policy arms, split, thresholds and sampling are preregistered before scientific first use. Quorum threshold 2 remains fixed and may not be tuned based on Y034 heldout.",
+  "population": "Inherited Y033 seven active, sixteen motif identities/cells, at most nine inactive cached assignments, four-way collision and radius-two neighborhood, eight episodes per seed.",
+  "split": {
+    "development_seeds": [
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159
+    ],
+    "sealed_heldout_seeds": [
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174,
+      175
+    ]
+  },
+  "regimes": [
+    "drift1 reference: shift=t",
+    "drift2 new: shift=2*t",
+    "drift4 new: shift=4*t",
+    "late_shock new: shift by episode=[0,1,2,3,8,13,14,15]"
+  ],
+  "policies": [
+    "matched_sham no cache read, matched writes",
+    "full read any previously observed legal cached assignment",
+    "quorum2 use legal prior assignments only with >=2 distinct eligible keys",
+    "quorum3 use only when >=3 distinct eligible keys"
+  ],
+  "primary": "All four regimes x policies x 16 heldout seeds, actual returning-key assignment churn, legal preference counts, cache write and key parity, search calls, full per-seed outcomes.",
+  "classification": "QUORUM_ROBUST iff quorum2 heldout churn<=full heldout churn in ALL three new regimes, is strictly lower in >=1 new regime, and under old drift1 retains >=70% of full's sham-relative saving. MIXED if a new-regime strict improvement occurs but robust rule fails. NO_TRANSFER otherwise. Preserve adverse and no-effect outcomes.",
+  "controls": [
+    "No future-state, no evaluator-only history to policy, no labels/oracle to action",
+    "Independent exhaustive Hall=7 cardinality",
+    "Same bounded cache writes/key trajectories across all arms",
+    "Freeze parent+source blobs, archive first-use original evidence, final full pytest regression"
+  ],
+  "bounds": {
+    "policies": 4,
+    "regimes": 4,
+    "heldout": 16,
+    "development": 8,
+    "episodes": 8,
+    "active": 7,
+    "max_cached": 9,
+    "total_motifs": 16,
+    "total_cells": 16,
+    "first_use_retries": 0,
+    "model_calls": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic matching cache quorum under unseen geometry; no semantics or autonomous cognition."
+}
