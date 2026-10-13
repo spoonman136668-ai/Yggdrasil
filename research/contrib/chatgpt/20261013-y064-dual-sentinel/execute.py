@@ -102,7 +102,7 @@ def run():
         y49.restore_environment()
     assert len(records)==2*4*4*16
     assert dev_structural==2*4*4*8
-    assert checks==2*4*4*(8+16)*2*3
+    assert checks==2*4*4*(8+16)*2*3*2
     all_steady_zero=all(groups[f"{p[0]}_{p[1]}:steady"][arm]["detections"]==0
                         for p in SWAPS for arm in ARMS)
     expect=["2_3:onset4","2_3:onset6","2_3:onset7",
