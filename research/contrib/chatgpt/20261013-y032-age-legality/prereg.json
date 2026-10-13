@@ -1,0 +1,32 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y032-AGE-AND-MARGIN-INTERACTION",
+  "parent_sha": "5d0301092b0f6626001509196d6d063c4f0ca0c0",
+  "prior_source_blob": "fb747a835dc346887d7c61cf7ac8384c70ec8c9b",
+  "hypothesis": "Y031's hard age<=2 gate increased churn; a weaker condition that accepts old assignments only in the inner radius-one neighborhood may retain low-risk useful memory and avoid stale edge preferences, or it may worsen both churn and compute.",
+  "generator": "EXACT Y030 SHA256-keyed geometry, same 12 irregular observation episodes [0,1,4,6,9,10,13,15,18,20,23,25] as Y031, new genuinely keyed seeds 56..63 with development56..59 and heldout60..63; 16 total cells and motif IDs, 7 active, max9 inactive retained, full radius2 matcher.",
+  "arms": [
+    "sham with same metadata and writes but no cache reads",
+    "unrestricted cached legal radius2 preferences",
+    "age<=2 observed episodes for cached legal radius2 preferences",
+    "hybrid: any young (<=2) legal radius2 cached preference; old (>2) only if inner radius1 of current frozen home; matching remains radius2"
+  ],
+  "primary": "Per-seed heldout returning-key churn, matching calls, cache writes/occupancy and eligible preference counts. HYBRID_BENEFIT only if every heldout seed hybrid churn <= unrestricted and sum strictly less, all match size7, all arms identical occupancy/writes. MIXED if some hybrid improvement and some harm; otherwise NO_GAIN. INVALID if cross-arm bookkeeping differs, signatures duplicate or Hall mismatch. Preserve negatives.",
+  "independent_validation": "Fresh exact Git identities, Y030 geometry generated from keyed salt and center formula; independent exhaustive Hall cardinality per episode, unique SHA geometry signatures, no future state access, no read of evaluator-history, no extra cache entries or capacities, one full regression.",
+  "bounds": {
+    "seeds": 8,
+    "heldout": 4,
+    "episodes": 12,
+    "keys": 16,
+    "cells": 16,
+    "active": 7,
+    "retained": 9,
+    "arms": 4,
+    "age_threshold": 2,
+    "inner_radius": 1,
+    "matching_radius": 2,
+    "model_calls": 0,
+    "first_use_retries": 0
+  },
+  "claim_limit": "Synthetic finite assignment cache quality; not semantic memory or developmental intelligence in the wild."
+}
