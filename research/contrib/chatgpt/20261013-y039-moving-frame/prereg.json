@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.science.prereg.v1",
+  "id": "Y039-MOVING-CELL-COORDINATE-FRAME-MEMORY",
+  "parent_head": "d0118d27e7204e3ade96d9db194eb44237782e78",
+  "hypothesis": "Y036's episode-varying cell relabel changes both matching decisions and the interpretation of cached placements. When a deterministic coordinate frame changes every episode, storing persistent canonical cell IDs and using inverse-canonical matching should exactly recover reference allocation histories.",
+  "freeze": "Freeze coordinate transform, all policies/modes, key/seed cohorts, cache representations, metrics and classification before first-use. No post-result changes.",
+  "split": {
+    "development": [
+      264,
+      265,
+      266,
+      267,
+      268,
+      269,
+      270,
+      271
+    ],
+    "sealed_heldout": [
+      272,
+      273,
+      274,
+      275,
+      276,
+      277,
+      278,
+      279,
+      280,
+      281,
+      282,
+      283,
+      284,
+      285,
+      286,
+      287
+    ]
+  },
+  "topology": "Same seven active keys / 16 total motifs/cells / maximum nine cached inactive assignments, eight episodes, four-way collision and circular radius-two original Yggdrasil ring graph.",
+  "coordinate_map": "Episode-specific bijection observed_cell=(5*canonical_cell+3*seed+3*episode) mod16; inverse canonical=(13*(observed_cell-3*seed-3*episode)) mod16. The mapping is known current coordinate metadata and does not encode outcomes or future states.",
+  "modes": [
+    "reference_numeric: canonical cells, standard matcher sorted by cell ID, cache records canonical IDs",
+    "moving_raw_numeric: episode-specific observed cell IDs, standard numeric matcher, cache stores last observed coordinate values verbatim",
+    "moving_coordinate_aware: episode-specific observed cell IDs, matcher compares options in canonical order and persistent cache stores canonical IDs, mapping a remembered cell into current observed coordinates at read time"
+  ],
+  "policies": [
+    "matched_sham",
+    "full",
+    "quorum2"
+  ],
+  "metrics": "For every heldout seed/episode/policy, compare normalized allocation key→persistent canonical cell ID with original reference; compute canonical physical churn, matching search calls, Hall cardinality, cache write parity and legal preference count.",
+  "classification": "MOVING_FRAME_CONFOUND iff moving_coordinate_aware allocations exactly reproduce reference for every heldout seed/episode/policy while moving_raw_numeric differs on at least one and has changed aggregate canonical churn for at least one policy. PARTIAL iff coordinate-aware has fewer mismatches than moving-raw but nonzero. NO_CONFIRMED_CONFOUND otherwise.",
+  "controls": [
+    "Independent Hall maximum matching=7 every episode",
+    "No extra cell/motif/cache/action capacity and equal cache write counts/keys under paired modes",
+    "Current coordinate mapping metadata only, no future-state oracle",
+    "Frozen original science artifact first-use then full pytest regression",
+    "No post-result gate changes, replay or accepted-ref mutation"
+  ],
+  "bounds": {
+    "modes": 3,
+    "policies": 3,
+    "dev": 8,
+    "heldout": 16,
+    "episodes": 8,
+    "active": 7,
+    "max_cache": 9,
+    "cells": 16,
+    "motifs": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Deterministic synthetic memory invariance under changing coordinate system, not semantic intelligence or learning."
+}
