@@ -1,0 +1,35 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y043-CORE_ONLY_SENTINEL_REACTIVATION",
+  "date": "2026-10-13",
+  "parent_commit": "2dcb700cb9a531a98fa8fcfeba072f2ff6ea034a",
+  "prior_invalid": "Y042 original run38365192714 kept INVALID_GENERATOR_SPEC_MISMATCH (unintended active distractor intervention); this is a new preregistration, fresh first-use identity and untouched seed cohort, not a replay of that outcome.",
+  "question": "When only dormant CORE cue values change invisibly during hibernation, can 1 observed reactivation sentinel correct the other six forecasts under uniform shift, and can two parity-specific sentinels correct the remaining five under heterogeneous change?",
+  "hypothesis": "One observed current core target identifies an otherwise-hidden +2 global core shift; it restores the remaining six predictions with perfect accuracy while a single global correction cannot necessarily generalize across hidden parity-specific target shifts. One sentinel of each parity identifies the two respective deltas.",
+  "world": "Y040 SHA256 16-key order and initial targets. Seven CORE keys = first seven ordered, seven distractor keys next, two never active. Episode 0,1 CORE; e2..9 distractors; e10,11 CORE. STABLE unchanged. UNIFORM_SHIFT applies +2 modulo4 from e6 ONLY IF key in seven CORE keys. PARITY_SHIFT applies +2 for even CORE, +1 for odd CORE after e6; distractor targets NEVER change. Thus full observed feedback history through e9 must be identical across all three conditions for any seed.",
+  "cohorts": {
+    "development": [
+      144,
+      145,
+      146,
+      147
+    ],
+    "heldout": [
+      148,
+      149,
+      150,
+      151
+    ]
+  },
+  "arms": {
+    "NO_SENTINEL": "At e10 predict all 7 unlabelled CORE cues using nine-slot dormant cache, then reveal all 7.",
+    "ONE_SENTINEL": "Observe label for first CORE cue before guessing remaining 6; derive modular correction from its cached value; score ONLY other 6.",
+    "TWO_PARITY_SENTINELS": "Observe first even and first odd CORE cue before guessing remaining 5; derive correction per parity; score ONLY other 5."
+  },
+  "resource_policy": "Each policy 7 last-live + <=9 dormant cache entries. Same write/eviction schedule, no other labels or future access. Sentinel observations are explicit feedback with noncomparable budgets 0/1/2 at e10 and scored forecasts 7/6/5 per seed. e11 recovery follows full e10 feedback.",
+  "hard_validity": "Across all eight seeds require 8 unique fingerprints, both core parities present, all paired observed feedback SHA256 traces through e9 identical across STABLE/UNIFORM_SHIFT/PARITY_SHIFT (otherwise classify INVALID_WORLD_EQUIVALENCE), identical policy cache writes and occupancies. Never silently accept pretrace differences. Code first reveals ONLY designated early sentinel labels, freezes other guesses, then reveals their outcomes.",
+  "metrics": "Per condition/arm/seed correct/wrong scored e10, sampled count, e11 correct, early and final cache occupancy/write parity, prereg source fingerprints and observed-history SHA256.",
+  "classification": "SENTINEL_CORE_ONLY_TRANSFER if all hard-validity checks pass and heldout ONE_SENTINEL UNIFORM_SHIFT correct24/24 with four early samples, TWO_PARITY_SENTINELS PARITY_SHIFT correct20/20 with eight early samples, and ONE_SENTINEL PARITY_SHIFT wrong>=1. PARTIAL if valid but at least one of those fails, INVALID_WORLD_EQUIVALENCE if histories differ, INSUFFICIENT_PARITY_SUPPORT or NONUNIQUE_FINGERPRINT for source defects.",
+  "execution": "Freeze prereg JSON Git SHA before evaluator source, pin parent/Y040/prereg/evaluator SHA in original GitHub Actions first-use CI; original artifact ZIP SHA256 independently verified; full Yggdrasil pytest; zero first-use retries, no hidden oracle, no model calls or capacity growth, no accepted-ref mutation or production activation.",
+  "claim_limit": "Finite synthetic observed label correction with explicitly sampled cue feedback; does not prove open-ended semantic learning or self-organizing intelligence."
+}
