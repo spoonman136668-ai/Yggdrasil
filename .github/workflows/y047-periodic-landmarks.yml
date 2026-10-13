@@ -1,0 +1,48 @@
+name: Yggdrasil Y047 frozen scheduled landmark probes
+on:
+  push:
+    branches: [research/y047-periodic-landmark-probing-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Immutable first-use source and preregistration gate
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 93270cc764290e63a83272c35a1ac9dfcb01615a HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y046-sparse-landmark/execute.py)" = 3cf0be33b9b14faa548e518a1fd2949a2b4c18e2
+          test "$(git hash-object research/contrib/chatgpt/20261013-y047-periodic-probes/prereg.json)" = 626e65ab56d992354688224b66aaeaec067d36ea
+          test "$(git hash-object research/contrib/chatgpt/20261013-y047-periodic-probes/execute.py)" = ae402e946c2d4ea71696c89089d088d6846b74cc
+          python3 -m json.tool research/contrib/chatgpt/20261013-y047-periodic-probes/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y047-periodic-probes/execute.py
+      - name: Original frozen first-use periodic landmark science
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y047-periodic-probes/execute.py > /tmp/Y047-original.json
+          python3 -m json.tool /tmp/Y047-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          x=json.load(open('/tmp/Y047-original.json'))
+          assert x["development_seeds"]==list(range(1376,1384))
+          assert x["sealed_heldout_seeds"]==list(range(1384,1400))
+          assert len(x["by_family"])==4
+          print('CLASSIFICATION',x['classification'])
+          print('EARLY_MISMATCHES',x['mismatches_episodes0to4'])
+          print('POST5_MISMATCHES',x['mismatches_episodes5to7'])
+          print('OBSERVATION_COST',x['anchor_readings_per_8_episodes'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y047-original-periodic-landmarks
+          path: /tmp/Y047-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Complete Yggdrasil repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
