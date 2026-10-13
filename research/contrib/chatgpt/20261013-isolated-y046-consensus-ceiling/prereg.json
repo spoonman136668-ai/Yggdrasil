@@ -1,0 +1,38 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y046-UNANIMOUS_CORRELATED_FAILURE_BOUNDARY",
+  "date": "2026-10-13",
+  "parent_commit": "bcda00a10d98e7bd71a7d2af7ac508c2d156673f",
+  "prior": "Y045 caught two correlated false majority reports with a third truthful witness; here preregister testing three jointly wrong majority reports and a fourth independent witness.",
+  "question": "When three same-group cue reports are corrupted identically, does a three-out-of-three unanimity rule make false confident predictions, and does one extra truthful same-group witness expose the contamination?",
+  "hypothesis": "All three correlated bad majority witnesses will agree on a false delta, so a four-report total policy will overgeneralize. Sampling all four majority-group witnesses plus one minority witness creates a within-group disagreement for any majority group >=4, allowing abstention on unsampled majority keys but at additional explicit feedback cost.",
+  "world": "Fresh seeds168..175, Y040 SHA256 16-cue ordering and initial values; 7 CORE keys active0/1 and10/11, 7 distractors2..9; hidden +2 shift from6 ONLY to inactive CORE, distractors stable. Group by key parity (majority >=4, minority>=1); e10 reports from first3 majority keys all equal (true+1) in CORRELATED_THREE_FALSE, other reports true. Truth is revealed AFTER unsampled predictions.",
+  "cohorts": {
+    "development": [
+      168,
+      169,
+      170,
+      171
+    ],
+    "heldout": [
+      172,
+      173,
+      174,
+      175
+    ]
+  },
+  "conditions": [
+    "CLEAN",
+    "CORRELATED_THREE_FALSE"
+  ],
+  "arms": [
+    "FOUR_REPORT: three majority, one minority reports early, predict other three cues using unanimously inferred per-group deltas or abstain on conflict",
+    "FIVE_REPORT: four majority, one minority early reports, predict other two with unanimity per group or abstain if majority witnesses disagree",
+    "NO_REPORT: no sampled labels, predict all seven from unmodified dormant memory"
+  ],
+  "metrics": "Per heldout seed condition and policy e10 sampling budgets0/4/5 labels, scored predictions7/3/2, correct/wrong/abstentions, majority discordance signals even if all majority keys sampled, source fingerprint and pre-e10 trace equivalence, matched 7-live <=9 dormant occupancy/writes and e11 full-feedback recovery.",
+  "classification": "COMMON_MODE_CEILING if valid input/prior histories, clean FOUR and FIVE report policies each predict all remaining correctly, CORRELATED_THREE_FALSE FOUR_REPORT makes >=1 wrong forecast, FIVE_REPORT detects disagreement for all four heldout seeds and makes zero wrong forecasts, and all e11 policies recover7/7 per seed; NO_GAIN if otherwise valid, INVALID_HIDDEN_HISTORY or INSUFFICIENT_MAJOR_GROUP if source validity fails.",
+  "caveats": "If four majority cues are sampled and none remain, a conflict can still be detected but no majority forecast can be abstained from. This is extra source verification, not free accuracy. Report all denominators, capacity and label costs without claiming equivalent budgets. Input shape and fault position fixed before original first use.",
+  "constraints": "Separate new original first-use from Y045 with source pinned by SHA; complete pytest; original artifact SHA; invalid and negatives retained. No post-result tuning/replay, no oracle to learner except sampled reports, no extra memory or model calls, no accepted-ref changes, no live activation.",
+  "claim_limit": "Fixed synthetic cue parity and correlated corruption; not proof of robust consensus under unbounded Byzantine faults."
+}

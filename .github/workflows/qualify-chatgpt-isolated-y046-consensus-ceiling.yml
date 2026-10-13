@@ -1,0 +1,37 @@
+name: Y046 original first use multi-family full qualification
+on:
+  push:
+    branches: [research/chatgpt-isolated-y046-consensus-common-mode-20261013]
+permissions:
+  contents: read
+jobs:
+  original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Validate identity without consuming science
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor bcda00a10d98e7bd71a7d2af7ac508c2d156673f HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-isolated-y045-correlated-witness/execute.py)" = feda84b0ff6b9e66af02d3c528187d10803a00e6
+          test "$(git hash-object research/contrib/chatgpt/20261013-isolated-y046-consensus-ceiling/prereg.json)" = c87ec225a2221f4949e847c7a5244b63cceca399
+          test "$(git hash-object research/contrib/chatgpt/20261013-isolated-y046-consensus-ceiling/execute.py)" = f44f7d370cc2a0b259b351a4d20bed10cfe3e1db
+          python3 -m json.tool research/contrib/chatgpt/20261013-isolated-y046-consensus-ceiling/prereg.json > /dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-isolated-y046-consensus-ceiling/execute.py
+      - name: Original frozen Y046 science
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-isolated-y046-consensus-ceiling/execute.py > /tmp/Y046-original.json
+          python3 -m json.tool /tmp/Y046-original.json > /dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y046-frozen-original-first-use
+          path: /tmp/Y046-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
