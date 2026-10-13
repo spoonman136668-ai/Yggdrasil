@@ -34,6 +34,10 @@ def public_decoder(observed,episode):
         if probed_episode>episode:
             break
         address=2 if probed_episode==5 else 4
+        if str(address) not in observed[probed_episode]:
+            # The matched anchor-only control has no sentinel capability.
+            # This branch is determined by public sensor identity, not truth.
+            continue
         now=observed[probed_episode][str(address)]
         inferred_physical=(inverse*(now-(b0+probed_episode*d)))%16
         if inferred_physical != address:
