@@ -1,0 +1,75 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y035-INTERRUPTED-REACTIVATION-MEMORY",
+  "parent_commit": "bde98bd5406fd9b4ff3b37df039f501f71019f7b",
+  "predecessor": "Y034",
+  "hypothesis": "Y034 showed full nine-slot assignment retention helps under repeated exposure. Test whether that advantage survives hibernation without observations, and whether retained previous assignments are useful upon reactivation after disjoint gaps.",
+  "freeze": "Commit gap durations, skipped episode indices, cohorts, retention/erasure strategies, accounting, success categories and validity gates prior to first-use original run. No source/seed/threshold repair after results.",
+  "source": "Exact Y030 SHA256-keyed collision/matching family, 16 motif identities/cells and seven active per observed episode. Max nine inactive cached assignments plus up to seven currently active placements. Two passive hiatus lengths with no matching or observations during gap.",
+  "split": {
+    "development_seeds": [
+      80,
+      81,
+      82,
+      83
+    ],
+    "heldout_seeds": [
+      84,
+      85,
+      86,
+      87
+    ]
+  },
+  "gap_conditions": {
+    "short": {
+      "observed_episodes": [
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7
+      ],
+      "skipped": [
+        3
+      ]
+    },
+    "long": {
+      "observed_episodes": [
+        0,
+        1,
+        2,
+        6,
+        7
+      ],
+      "skipped": [
+        3,
+        4,
+        5
+      ]
+    }
+  },
+  "arms": [
+    "retain: freeze previous active and up-to-nine inactive assignment cache during hiatus and allow legal cached preferences after reactivation",
+    "erase: at hiatus boundary erase all stored inactive and previous-active assignments but keep evaluator-only history independent of policy"
+  ],
+  "fairness": "Both arms have identical pre-hibernation observations and fixed 16/7/9 resource capacities, no model calls and no intervention access to skipped/future geometries. All erasures charged as explicit modeled clearing operations. All returns evaluated against each arm's own evaluator history; neither reads evaluator history.",
+  "metrics": "Per-heldout seed, gap, arm: seven legal matches per observed episode, post-reactivation matching cardinality and churn, aggregate returning-key churn, matching recursive calls, cache write/read/erase counts, cache occupancy and Hall oracle. Cost at w=3 and w=10 = recursive calls + writes + reads + erasures + w*churn; report all individual and negative outcomes.",
+  "classification": "RETENTION_SURVIVES_INTERRUPTION if retained churn lower than erase on all four heldout seeds for both gap lengths AND retained net model cost lower at w3 in both gaps; MIXED if one gap has aggregate churn savings>0 while another gap <=0; otherwise NO_UNIVERSAL_RETENTION_GAIN. INVALID if cardinality/Hall, unique signature, capacity, prereg or source identity checks fail.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "gaps": 2,
+    "strategies": 2,
+    "total_motifs": 16,
+    "cells": 16,
+    "active": 7,
+    "inactive_memory_max": 9,
+    "observed_episode_limit": 7,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "A finite synthetic interruption/reactivation and assignment-cache experiment, not proof of biological hibernation or learned cognitive regeneration. No accepted-ref changes."
+}
