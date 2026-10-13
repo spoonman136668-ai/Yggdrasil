@@ -1,0 +1,47 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y029-SELECTIVE-RETAINED-ASSIGNMENT-TRUST",
+  "parent_commit": "553870f7491390ff8884a824832691a60969f985",
+  "predecessor": "Y028",
+  "hypothesis": "Y028's heterogeneous alternating-drift cache effects may arise from giving too much preference to barely legal radius-two cached cells. A more conservative radius-one preference filter, with unchanged matching radius-two and memory resources, may reduce adverse churn.",
+  "freeze": "Before first original execution, freeze matched eight-episode alternating positions, inner radius one condition, heldout seeds, metrics and outcome labels. No after-the-fact policy choice.",
+  "split": {
+    "development": [
+      32,
+      33,
+      34,
+      35
+    ],
+    "heldout": [
+      36,
+      37,
+      38,
+      39
+    ]
+  },
+  "population": "Seven active of 16 total motif identities/cells, maximum nine inactive retained assignments, eight episodes, alternating offsets [0,1,6,7,12,13,18,19], full legal matching radius two.",
+  "arms": [
+    "A0 use cached placement whenever legal at radius<=2; identical original Y028 preference strategy",
+    "A1 use cached placement only if within radius<=1 of current home; still permit matcher to use full radius-two adjacency"
+  ],
+  "primary": "Per-heldout-seed churn differences A0-A1, aggregate churn, legal cached preferred counts, matching search-call totals and cache-write parity. INNER_TRUST_BENEFIT iff every heldout seed savings >=0 and total>0; MIXED if some positive and negative; NO_GAIN otherwise.",
+  "validity": "Independent exhaustive Hall matching cardinality, exact predecessor source identity, no policy read of evaluator-only history or future episode displacements, same nine-slot write protocol and occupancy, deterministic first-use artifact and full regression.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "episodes": 8,
+    "total_motifs": 16,
+    "cells": 16,
+    "active": 7,
+    "retained": 9,
+    "matching_radius": 2,
+    "preference_radii": [
+      1,
+      2
+    ],
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Synthetic selective assignment retention, not semantic learning or autonomous acceptance."
+}
