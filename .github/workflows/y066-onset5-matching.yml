@@ -1,0 +1,46 @@
+name: Yggdrasil Y066 frozen additional onset-five matching test
+on:
+  push:
+    branches: [research/y066-dual-sentinel-action-timing-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Pin scientific source and preregistration before first use
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 343621953c382f450e5603abaac7bf51b92ae09e HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y065-dual-matching/execute.py)" = 821804827b3c9c5b5a056b44122d7b204dc73cd1
+          test "$(git hash-object research/contrib/chatgpt/20261013-y066-onset5/prereg.json)" = cb71f1d4180cd235c229c821eb8658f22371fb9a
+          test "$(git hash-object research/contrib/chatgpt/20261013-y066-onset5/execute.py)" = d42fc398dce9442473b13451c4ab9e10e0d81fae
+          python3 -m py_compile research/contrib/chatgpt/20261013-y066-onset5/execute.py
+      - name: Original first-use five-regime matching experiment
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y066-onset5/execute.py > /tmp/Y066-original.json
+          python3 - <<'PY'
+          import json
+          x=json.load(open('/tmp/Y066-original.json'))
+          assert x['sealed_heldout_seeds']==list(range(5920,5936))
+          assert len(x['new_onset5_comparisons'])==2
+          assert len(x['new_onset5_records'])==2*4*16*3
+          assert len(x['original_complete_data']['heldout_records'])==2*4*4*16*3
+          print('CLASSIFICATION',x['classification'])
+          print('NEW_ONSET5',x['new_onset5_comparisons'])
+          print('MATCHING_SAFE',x['matching_and_sensing_safe'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y066-original-onset5-matching
+          path: /tmp/Y066-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: One full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
