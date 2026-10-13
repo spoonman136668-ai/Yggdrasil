@@ -1,0 +1,44 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y036-ACTUAL-LRU-VS-LFU-CACHE-PRESSURE",
+  "parent_sha": "6ee81d14358338216bf4a57a2607de6f6fc984e0",
+  "prior_source_blob": "859cb95a9a6daa3c1d62fa33a94c4ab20616c69c",
+  "reason": "Y035 original frozen memory experiment recorded no eviction at all, due structural maximum inactive identities9 matching9 available cache slots. This is a NEW scientific trial with a reduced four-slot cache and disjoint fresh heldout, never a replay or repair of Y035.",
+  "hypothesis": "On a frozen hot/cold motif recurrence sequence that provably requires eviction with 4 rather than 9 inactive cache slots, observed 2-bit frequency eviction may reduce returning hot-motif placement churn relative to recency LRU; or it may protect irrelevant stale states and harm general churn.",
+  "world": "EXACT Y035 SHA256('Y035/'+seed) hot/cold activity and eight-template radius2 circle geometry, 16 cells/keys, 7 active each episode, 16 episodes per seed, but <=4 inactive cache slots for BOTH policies. Counts 2-bit capped3 per cached entry; seven active identities may carry their last count alongside assignments. Number of identities in memory <=11, strictly lower than Y035. No future, oracle outcomes or hot-label access by either policy.",
+  "split": {
+    "development": [
+      88,
+      89,
+      90,
+      91
+    ],
+    "heldout": [
+      92,
+      93,
+      94,
+      95
+    ]
+  },
+  "arms": [
+    "four-slot LRU evicts oldest cache entry",
+    "four-slot LFU evicts lowest observed capped count, ties oldest then key"
+  ],
+  "must_exercise": "Record eviction count per seed and arm. CAUSAL_TEST_UNEXERCISED if ANY heldout seed has no evictions in either arm; do not declare negative or positive learning conclusion in that case.",
+  "primary": "Per-seed returning hot-key churn, all-key churn, legal cache preferences, actual evictions and cache write counts, search calls, independent exhaustive Hall cardinality. FREQ_EVICTION_BENEFIT if hot-key aggregate LFU churn lower and overall churn no higher and >=3/4 heldout seeds hot non-worse. MIXED if hot better but overall worse. NEGATIVE if genuine evictions and no benefit. INVALID for duplicated geometry signatures, oracle/cardinality errors or exceeding four slots.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "episodes": 16,
+    "active": 7,
+    "cached": 4,
+    "total_stored_motif_slots": 11,
+    "keys": 16,
+    "cells": 16,
+    "counter_bits": 2,
+    "arms": 2,
+    "model_calls": 0,
+    "first_use_retries": 0
+  },
+  "claim_limit": "Finite synthetic memory eviction and tiny observed-frequency adaptation, not semantic or biological consolidation."
+}
