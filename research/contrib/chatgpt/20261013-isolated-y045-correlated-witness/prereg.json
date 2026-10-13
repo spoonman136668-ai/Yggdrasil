@@ -1,0 +1,38 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y045-CORRELATED_SENSOR_FAULT_QUORUM_LIMIT",
+  "parent_commit": "55dc60e166034f1110d6d2ac152ab2acc1ae49d3",
+  "date": "2026-10-13",
+  "predecessor": "Y044 single corrupted majority report was contained by 2 within-group witness discrepancy; test two correlated false reports without changing previous outcomes.",
+  "question": "Does two-out-of-two witness consistency fail under common-mode double corrupted feedback, and can a third independent within-group witness detect the disagreement without increasing dormant memory capacity?",
+  "hypothesis": "When both sampled majority cues report true target+1 while latent core shift is +2, a two-majority witness policy incorrectly extrapolates a false common delta. Adding one uncorrupted majority witness (third) detects internal inconsistency; unanimity-gated policy explicitly abstains on unobserved majority cues and remains accurate on minority cues.",
+  "world": "SHA256 Y040 16-cue keyed order and initial 4-valued cue labels with independent fresh seed160..167. Seven CORE cues active episodes0/1 and10/11; seven DISTRACTOR cues active2..9; two never active. From e6 apply hidden +2 ONLY to CORE. Active DISTRACTOR labels remain unchanged. All agents maintain 7 live and <=9 dormant. At e10 only selected early sensor reports visible; truth for all other keys revealed only after forecasts frozen.",
+  "cohorts": {
+    "development": [
+      160,
+      161,
+      162,
+      163
+    ],
+    "heldout": [
+      164,
+      165,
+      166,
+      167
+    ]
+  },
+  "report_conditions": [
+    "CLEAN: all selected reports are true shifted cue label",
+    "TWO_CORRELATED_FALSE: first TWO selected parity-majority cue reports both corrupted +1 modulo4; all other early reports truthful"
+  ],
+  "arms": [
+    "NO_EARLY_REPORT: 0 sampled reports; score 7 returning cue predictions per seed",
+    "THREE_REPORT_UNANIMITY: first TWO parity-majority and first parity-minority cue sampled (3 early labels); if majority observed modular deltas equal, use that delta for unobserved majority; otherwise abstain; minority delta applied by single truthful minority report; score remaining4",
+    "FOUR_REPORT_UNANIMITY: first THREE parity-majority and first parity-minority cue sampled (4 early labels); if all majority observed modular deltas equal, extrapolate; otherwise abstain on unobserved majority; minority learned from truthful first minority; score remaining3"
+  ],
+  "metrics": "Per seed/condition/arm at e10 early reports0/3/4, scored opportunities7/4/3, correct, wrong, abstentions, observed majority-delta conflict, total input fingerprints, pre-e10 feedback hashes across paired conditions, exact cache writes and occupancy per episode, e11 full truthful feedback recovery. Different feedback budgets and denominators explicitly not comparable as equal-cost arms.",
+  "classification": "COMMON_MODE_LIMIT_AND_DETECTION if all input / pretrace / resource gates pass, CLEAN THREE and FOUR arms each 100% correct with no abstention, TWO_CORRELATED_FALSE THREE_REPORT_UNANIMITY wrong>=1 (overconfidence) and FOUR_REPORT_UNANIMITY zero wrong with at least one abstention, and every arm e11 correct7/7. NO_GAIN otherwise, INVALID_HIDDEN_HISTORY, INSUFFICIENT_MAJOR_GROUP, or NONUNIQUE_FINGERPRINT if corresponding guard fails.",
+  "budget": "Eight new seeds, four heldout; conditions2, arms3, episodes12; reports max4 at e10; at least4 parity-majority and>=1 parity-minority cues among7; one original run and one full pytest. No unobserved truth to policy, no extra cache capacity or post-result changes.",
+  "safeguards": "First-use immutable prereg and source SHA pins including Y040 and Y044 prior, syntax only before first-use, deterministic double-run, original result artifact and independent digest/score verification, never retry invalid or negative; no model calls, oracle, accepted-ref mutations or live activation.",
+  "claim_limit": "Synthetic parity-specific cue sensor correlated failure with explicit extra ground truth labels; a conflict detector, not statistical proof of safety against arbitrary adversaries."
+}
