@@ -1,0 +1,37 @@
+name: Yggdrasil Y036 frozen long-hibernation original
+on:
+  push:
+    branches: [research/y036-long-hiatus-r1]
+permissions:
+  contents: read
+jobs:
+  scientific-first-use:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Check immutable parent prereg and evaluator bytes
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 589549f49564bea860865893d697fb4de55f4540 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y035-hibernation/execute.py)" = e52098ccdfdd4185fbe1dea7ed24ddc3ce4092c9
+          test "$(git hash-object research/contrib/chatgpt/20261013-y036-long-hiatus/prereg.json)" = ecf1ef7c7bafb72584406b5871277521043c3051
+          test "$(git hash-object research/contrib/chatgpt/20261013-y036-long-hiatus/execute.py)" = bef3d872d8e9b7d32b8299300d3f46e6a467f869
+          python3 -m json.tool research/contrib/chatgpt/20261013-y036-long-hiatus/prereg.json > /dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y036-long-hiatus/execute.py
+      - name: Execute original scientific run once
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y036-long-hiatus/execute.py > /tmp/Y036-original.json
+          python3 -m json.tool /tmp/Y036-original.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y036-original-frozen
+          path: /tmp/Y036-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
