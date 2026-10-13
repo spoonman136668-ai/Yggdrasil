@@ -1,0 +1,46 @@
+name: Yggdrasil Y034 frozen unseen geometry quorum
+on:
+  push:
+    branches: [research/y034-quorum-regime-transfer-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Fail-closed identity and preregistration
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 779a617a61428360ac3614e7a241ccc4176fd42f HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y033-quorum/execute.py)" = 12d4ef37160b4d0c9bc152b6776864a12822f135
+          test "$(git hash-object research/contrib/chatgpt/20261013-y034-quorum-transfer/prereg.json)" = cc5e29a1b8a71f8c2b966c9eda38d75aac4e017c
+          test "$(git hash-object research/contrib/chatgpt/20261013-y034-quorum-transfer/execute.py)" = afebb515e33803f071fbcbdfdd7b19be77ae9abe
+          python3 -m json.tool research/contrib/chatgpt/20261013-y034-quorum-transfer/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y034-quorum-transfer/execute.py
+      - name: Frozen first-use unseen regime science
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y034-quorum-transfer/execute.py > /tmp/Y034-original.json
+          python3 -m json.tool /tmp/Y034-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          x=json.load(open('/tmp/Y034-original.json'))
+          assert len(x['regimes'])==4
+          assert x['sealed_heldout_seeds']==list(range(160,176))
+          print('CLASSIFICATION',x['classification'])
+          for a in x['regimes']:
+              print('REGIME',a['regime'],a['heldout_churn'],a['sham_relative_savings'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y034-original-unseen-quorum
+          path: /tmp/Y034-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: One full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
