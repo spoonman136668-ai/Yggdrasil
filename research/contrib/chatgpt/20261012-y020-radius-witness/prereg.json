@@ -1,0 +1,29 @@
+{
+  "id": "Y020-RADIUS-FEASIBILITY-WITNESS",
+  "parent": "8a0da57f993615687e2c6131424362ec131cbcc5",
+  "question": "At fixed 16-cell occupancy, does enlarging local neighborhood from radius one to two restore a perfect matching in each of six previously consumed R016 stages?",
+  "arms": [
+    "A0 radius one exact Y019 replay",
+    "A1 radius two exact Y019 control"
+  ],
+  "controls": [
+    "R016 pinned byte-identical prior result",
+    "selected-key identities unchanged",
+    "six stages and 16 cells per stage",
+    "Y019 radius-one matched 0/6 and radius-two matched 6/6",
+    "no adaptive search or altered thresholds"
+  ],
+  "metric": "for each stage, record maximum bipartite matching cardinality at radius one and two; no additional capacity",
+  "budget": {
+    "stages": 6,
+    "radii": 2,
+    "model_calls": 0,
+    "network_calls": 0
+  },
+  "classification": {
+    "supported": "all six frozen stages show matching cardinality below 16 at radius one and 16 at radius two",
+    "negative": "at least one stage fails that comparison while all controls pass",
+    "invalid": "identity, controls or deterministic replication fails"
+  },
+  "scope": "research-only, consumed synthetic inputs, no admission or accepted-ref change"
+}
