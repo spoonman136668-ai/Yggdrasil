@@ -1,0 +1,31 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y031-DELAYED-REENTRY-AGE-GATED-CACHE",
+  "parent_sha": "72b64a2b9a5344ad3064978c9a4a823c26cac4c4",
+  "prior_source_blob": "c6396dd8fb125044618c5e4cfa99a89243a0c481",
+  "scientific_question": "Does cache-age gating improve or harm bounded retained assignment memory when motifs return after nonuniformly spaced observations on the newly keyed geometry family?",
+  "hypothesis": "An age<=2 observations filter might prevent stale preferences; it may also remove useful persistent information and raise churn. Mixed and negative outcomes count.",
+  "generator": "Reuse exact Y030 SHA256-keyed heterogeneous geometry, 16 identities and cells, 7 active and up to 9 inactive cached, full radius2; evaluate 12 episodes using frozen logical episode sequence [0,1,4,6,9,10,13,15,18,20,23,25]. Use distinct fresh seed values 48..55, development 48..51, heldout52..55. Check full geometry SHA256 signatures distinct across all eight, plus independent Hall maximum cardinality each episode.",
+  "arms": [
+    "write-matched sham, no cache reads",
+    "unrestricted prior-assignment preference if legal",
+    "same stored cache entries and writes; prefer only legal cached assignment observed <=2 previous evaluated episodes ago"
+  ],
+  "policy": "All three arms store (previously observed cell,last-seen episode) metadata in the same <=9 cache, write only observed inactive mappings, never query future or evaluator history. Matcher may use full legal radius2 adjacency for every arm. No extra cache slots or action budget. Metadata same in all arms.",
+  "primary": "Per-seed/episode matched-cardinality, legal preferred hits, churn versus policy-specific last observed placements, search calls, cache writes. INVALID if signatures duplicate or arms differ in cache write count/occupancy or Hall oracle disagrees. GEOMETRY_DEFICIENCY if any episode matches <7. AGE_GATING_BENEFIT iff all heldout per-seed unrestricted-age savings >=0 with aggregate>0; AGE_GATING_HARM if aggregate negative, MIXED otherwise. Sham is independent mechanistic control.",
+  "safeguards": "Prereg/threshold freeze before first use; both positive and negative outcomes archived; no hidden memory capacity increase, retries, oracle leak, accepted-ref mutation; one complete regression after science.",
+  "budget": {
+    "development_seeds": 4,
+    "heldout_seeds": 4,
+    "episodes": 12,
+    "active": 7,
+    "retained": 9,
+    "cells": 16,
+    "identities": 16,
+    "arms": 3,
+    "age_limit": 2,
+    "model_calls": 0,
+    "first_use_retries": 0
+  },
+  "claim_limit": "Synthetic assignment caching under nonuniform observation, not actual semantic consolidation or real-world cognitive generalization."
+}
