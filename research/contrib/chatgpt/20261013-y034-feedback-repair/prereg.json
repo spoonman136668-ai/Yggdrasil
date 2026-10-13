@@ -1,0 +1,46 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y034-OBSERVED_FEEDBACK_DORMANT_MEMORY_REPAIR",
+  "parent_commit": "719cf42fd7df385483bb17a6a3c0002bdcc99942",
+  "predecessor": "Y033",
+  "question": "Can a nine-slot dormant associative memory repair stale representations after a hidden global cue-target reassignment using only observed live-key prediction feedback?",
+  "hypothesis": "Once active cues supply consistent evidence of a +2 change, a uniform observed-feedback correction to dormant values may reduce post-switch stale recall without harming stable-memory accuracy, while preserving the same storage capacity.",
+  "freeze": "Identical 12-episode active schedule and switch rule of Y033 on new distinct SHA256-keyed seeds72..79, bounded intervention rule, no heldout-tuned thresholds or hidden oracle calls. No retuning/first-use reruns.",
+  "cohort": {
+    "development": [
+      72,
+      73,
+      74,
+      75
+    ],
+    "heldout": [
+      76,
+      77,
+      78,
+      79
+    ]
+  },
+  "world": "16 motifs, four-valued associations via frozen evaluator-only SHA256('Y033/'+seed+'/'+motif) first byte modulo4; seven active per episode, max nine dormant. STABLE means no change; SWITCH globally adds 2 modulo4 at episode6 only.",
+  "arms": [
+    "unmodified_cache: read dormant 9-slot memories; learn feedback for 7 current cues at every episode; do not adjust unseen dormant values",
+    "feedback_repair: same capacity/write schedule, same dormant reads; if multiple or any live-overlap cues observed in consecutive episodes all provide the exact same nonzero modular label delta, after current feedback adjust all still-dormant values by that delta modulo4; no future labels or dormant-value oracle"
+  ],
+  "time_order": "Predict current seven keys first using last active knowledge, else dormant cache, else guess0; then observe only current seven targets. Evaluate consistency of label delta exclusively on keys live in both current and previous episode; update active associations and nine dormant cache. Apply correction AFTER feedback and AFTER inserting newly inactive previous observed keys. A correction is a separate maintenance mutation and its cost is recorded; no additional cache slots.",
+  "measures": "Per heldout seed and condition total correct predictions, post-switch episodes7-11 correct, post-switch dormant-return predictions, detected correction events, number of dormant values rewritten, active overlap size, cache write parity and capacity.",
+  "classification": "OBSERVED_REPAIR_BENEFIT if feedback_repair has strictly more post-switch correct predictions on SWITCH than unmodified_cache without lowering STABLE correct count, and any correction events are exclusively evidence-triggered; HARM if worse post-switch, otherwise NEUTRAL_MIXED.",
+  "safeguards": "Evaluator computes targets only after predictions; policy only sees observed live feedback and never target function or future cue labels. SHA256 input cohort uniqueness, deterministic double-run, original archive and one full regression. No state storage beyond seven live+nine dormant; count extra maintenance operations as compute cost.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "conditions": 2,
+    "arms": 2,
+    "episodes": 12,
+    "active": 7,
+    "dormant": 9,
+    "total_keys": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Synthetic uniform value-shift repair under predeclared hypothesis and observed feedback; not general developmental learning or neural consolidation."
+}
