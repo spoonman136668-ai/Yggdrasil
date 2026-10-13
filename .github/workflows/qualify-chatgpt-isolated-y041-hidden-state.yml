@@ -1,0 +1,37 @@
+name: Y041 isolated frozen first-use experiment
+on:
+  push:
+    branches: [research/chatgpt-isolated-y041-hidden-state-boundary-20261013]
+permissions:
+  contents: read
+jobs:
+  original-science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Pin origin and prereg/source blob identities
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 9e98d2d2867a196085aeb0e159b56b9b29d20f75 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-isolated-y041-hidden-state/prereg.json)" = 758056f92d26ccec56cf3c5c57617c15808770dd
+          test "$(git hash-object research/contrib/chatgpt/20261013-isolated-y041-hidden-state/execute.py)" = b5b1bf60d028fe343f2d3c7c40d972c82ba4fa79
+          test "$(git hash-object research/contrib/chatgpt/20261013-y040-hibernation/execute.py)" = 6c6ba3ebf39456056fca0e60a8210d941cf69e43
+          python3 -m json.tool research/contrib/chatgpt/20261013-isolated-y041-hidden-state/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-isolated-y041-hidden-state/execute.py
+      - name: Original frozen Y041 science
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-isolated-y041-hidden-state/execute.py > /tmp/Y041-original.json
+          python3 -m json.tool /tmp/Y041-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y041-isolated-original-first-use
+          path: /tmp/Y041-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Complete repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
