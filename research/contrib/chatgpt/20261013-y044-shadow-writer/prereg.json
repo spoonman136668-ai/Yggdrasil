@@ -1,0 +1,81 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y044-CACHE-READER-IDENTITY-MATCHED-WRITER-ABLATION",
+  "parent_head": "0f9e6151e2b6e4d9727a343557748ab4039d7d2d",
+  "hypothesis": "Y043 raw moving-key caching changed both reader identity binding and cache write/occupancy trajectories. Eliminate the latter confound with a capacity-matched canonical shadow writer, then compare raw numeric reader versus frame-aware reader under unchanged source/geometry. Raw-reader defects that persist with matched writes identify reader-binding effects, not storage policy drift.",
+  "freeze": "Exact physical departure schedule, shadow writer protocol, moving key bijections, three policies, three drift regimes, heldout seeds, outcomes and thresholds frozen before first use. No tuning on Y043 sealed cohort.",
+  "population": "Same Y043 16 physical motifs and cells, exactly 7 active per episode, at most 9 previous observed placement records, circular radius2, four-way collision, eight episodes.",
+  "splits": {
+    "development_seeds": [
+      1016,
+      1017,
+      1018,
+      1019,
+      1020,
+      1021,
+      1022,
+      1023
+    ],
+    "heldout_seeds": [
+      1024,
+      1025,
+      1026,
+      1027,
+      1028,
+      1029,
+      1030,
+      1031,
+      1032,
+      1033,
+      1034,
+      1035,
+      1036,
+      1037,
+      1038,
+      1039
+    ]
+  },
+  "regimes": [
+    "drift1",
+    "drift3",
+    "alternating"
+  ],
+  "policies": [
+    "matched_sham",
+    "full",
+    "quorum2"
+  ],
+  "frames": [
+    "reference",
+    "moving_additive_raw",
+    "moving_additive_identity_aware",
+    "moving_affine_raw",
+    "moving_affine_identity_aware"
+  ],
+  "matched_writer": "A preregistered SHADOW controller records physical motif departure and readmission using the canonical current active set; at each episode after action, evict all records for currently active physical identities, then append one record for each previously active physical identity that has departed. Record stores observed alias at previous episode, previous assigned physical cell, and birth episode; cap 9 FIFO. The writer uses physical ground truth equally in every frame (explicit experimental control, NOT a deployable raw-ID policy), so identical write count/occupancy across every arm; source values can differ because assignments differ.",
+  "reader_scope": "Raw reader sees only current observed numeric motif aliases, current neighbor graph, and cached alias+cell+birth time, not the physical key identity used by shadow writer. Aware reader decodes each cached alias using the known public deterministic coordinate law and record birth episode. Canonical reference reads physical key. All policies use same matching algorithm, cache cap, legal neighborhood checks and quorum2 threshold.",
+  "classification": "READER_BINDING_CAUSAL iff both identity-aware frames have zero physical assignment mismatches vs canonical reference on all heldout seed/episode/policy/regime comparisons, all frames have exact matched writer count+occupancy trajectories, and at least one raw frame has >0 mismatches with changed physical churn. BOOKKEEPING_DOMINANT iff aware equivalence holds, all writes/occupancy match and both raw frames have zero physical mismatches. PARTIAL otherwise; INVALID on Hall/inverse/identity/parity errors.",
+  "primary": "For all 3 regimes x 3 policies x 5 frames on 16 heldout seeds, report physical assignment mismatches and churn, per-episode cache writes, occupancy, policy preferences and matching search calls. Include per-seed original records and all null/adverse outcomes.",
+  "controls": [
+    "Physical-motif identity is deliberately available to matched SHADOW writer; this experimental intervention adds provenance information and must not be described as an autonomous raw-ID solution or equal-information deployable policy",
+    "Neither reader gets future allocations or evaluator cumulative placement history; only aware reader uses public inverse mapping",
+    "Every frame must retain exact same cache write/occupancy schedule under shadow protocol and exactly seven legal assignments; separate exhaustive Hall bound",
+    "Immutable parent/prereg/executor blobs, one original archive then one full Python repository regression, no first-use retry"
+  ],
+  "bounds": {
+    "regimes": 3,
+    "policies": 3,
+    "frames": 5,
+    "heldout": 16,
+    "development": 8,
+    "episodes": 8,
+    "active": 7,
+    "max_cached_records": 9,
+    "total_keys": 16,
+    "total_cells": 16,
+    "first_use_retries": 0,
+    "model_calls": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic matched-writer reader-binding causal ablation conditioned on privileged shadow bookkeeping; no cognitive/semantic memory or production authority."
+}
