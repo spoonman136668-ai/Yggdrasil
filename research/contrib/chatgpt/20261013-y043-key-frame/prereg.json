@@ -1,0 +1,83 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y043-TIME-VARYING-MOTIF-IDENTITY-RELABELLING",
+  "parent_head": "b368758c9f772046f2e67eed628dc3d5e4c6ae4d",
+  "hypothesis": "Y039 showed that relocating cell coordinates without consistent decoding disrupts persistent placement. Test the independent key-identity side: daily remapping of observed motif IDs may corrupt cache association unless matching, storage and evaluation consistently use physical motif identity.",
+  "freeze": "Exact bijections, inverse functions, regimes, policies, split and classification criteria fixed before first-use. All alternative outcomes archived. No threshold tuning or accepted-ref edits.",
+  "base": "Exact Y039/Y036 circular radius-two placement graph, seven active of sixteen motif identities and cells, max nine inactive cached assignments, eight episodes per seed, collision as inherited. No new memory or cell capacity.",
+  "heldout_seeds": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010,
+    1011,
+    1012,
+    1013,
+    1014,
+    1015
+  ],
+  "development_seeds": [
+    984,
+    985,
+    986,
+    987,
+    988,
+    989,
+    990,
+    991
+  ],
+  "drift_regimes": [
+    "drift1",
+    "drift3",
+    "alternating"
+  ],
+  "policies": [
+    "matched_sham",
+    "full",
+    "quorum2"
+  ],
+  "frames": [
+    "reference canonical IDs",
+    "moving_additive_raw",
+    "moving_additive_identity_aware",
+    "moving_affine_raw",
+    "moving_affine_identity_aware"
+  ],
+  "forward_key_bijections": [
+    "additive observed=(key+3*seed+5*episode) mod16",
+    "affine observed=(5*key+3*seed+3*episode) mod16"
+  ],
+  "inverse": "additive key=(observed-3*seed-5*episode) mod16; affine key=13*(observed-3*seed-3*episode) mod16. The codec is deterministic, from currently provided seed/episode; no learned semantic oracle. Identity-aware mode explicitly decodes to canonical frame for matching+cache, then re-encodes outputs. Raw mode retains numeric observed aliases.",
+  "primary": "For each regime/policy/frame report heldout total physical returning-key placement churn and physical assignment mismatches per episode relative to canonical reference; cache writes/key-count parity, matching cardinality7, legal preference count and search calls. Per-seed original results retained.",
+  "classification": "KEY_FRAME_CONFOUND if BOTH identity-aware transforms have zero physical assignment mismatches on all heldout comparisons AND at least one raw moving transform produces mismatches and altered physical churn. PARTIAL if identity-aware has fewer mismatches than raw but not zero; NO_CONFIRMED_CONFOUND otherwise. If inverse bijections, frame-consistency or Hall checks fail, INVALID and stop.",
+  "controls": [
+    "Independent exact invertibility asserts for all 16 identities each episode",
+    "Physical motif labels known only as reference for evaluator, but inverse transform is public algorithmic configuration for aware policy; no extra observations",
+    "Same at most9 cached assignments, same 7 active and 16 physical cells in all modes; no actual capacity increase",
+    "No future state, evaluator cumulative physical placement history or heldout labels passed to policy",
+    "Exact source/prereg blobs, original evidence archive prior to single full Python repository regression"
+  ],
+  "bounds": {
+    "policy_arms": 3,
+    "coordinate_frames": 5,
+    "drift_regimes": 3,
+    "episodes": 8,
+    "heldout_seeds": 16,
+    "development_seeds": 8,
+    "active": 7,
+    "max_cache": 9,
+    "total_keys": 16,
+    "total_cells": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Finite synthetic identity-coordinate equivariance; not evidence of learned semantic identity, general memory or real-world intelligence."
+}
