@@ -1,0 +1,82 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "experiment": "Y038-NONALIASED-RETENTION-CAPACITY-FRONTIER",
+  "parent_head": "14398ce9fcf1104d04557ffa8cfc232161133072",
+  "hypothesis": "Y037 showed unrestricted retained assignment memory had lower churn than quorum2 in new nonaliased environments. Determine whether bounded memory capacity 3/6/9 predicts stable improvement per memory entry under independent diverse episode schedules.",
+  "freeze": "Cap3/6/9, four existing displacement regimes, cache and cohort, equal-write controls, classifications and Hall oracle are frozen before original first use. No tuning after seeing Y038 heldout.",
+  "source": "Reuse Y037 SHA256 keyed full-seed active schedule, constructive radius2 four-way collision with guaranteed independent Hall7 matching and hashed complete environment fingerprint per seed; no earlier seed+16 alias.",
+  "split": {
+    "development_seeds": [
+      344,
+      345,
+      346,
+      347,
+      348,
+      349,
+      350,
+      351
+    ],
+    "sealed_heldout_seeds": [
+      352,
+      353,
+      354,
+      355,
+      356,
+      357,
+      358,
+      359,
+      360,
+      361,
+      362,
+      363,
+      364,
+      365,
+      366,
+      367
+    ]
+  },
+  "capacity_caps": [
+    3,
+    6,
+    9
+  ],
+  "regimes": [
+    "drift1",
+    "drift2",
+    "drift4",
+    "late_shock"
+  ],
+  "arms": [
+    "equal-write sham, no reads",
+    "full legal cache",
+    "quorum2 legal cache if >=2 distinct active keys"
+  ],
+  "primary": "12 factorial cap x regime cells across 24 unique episode histories/condition; each cell per-seed heldout churn, cache writes, search calls and legal preference counts. MONOTONIC_RETENTION if positive sham-minus-full savings on slow drift increase strictly with cap3<6<9 AND full-cache savings at cap9 are positive in all 4 regimes; MIXED if >=6 cells show positive full-cache gain but monotonic criterion fails; NEGATIVE otherwise. Preserve every adverse and zero cell.",
+  "controls": [
+    "Environment history fingerprints all distinct across 24 seeds per regime and SHA identities frozen",
+    "Exact 7 legal matches independently verified via exhaustive Hall oracle each episode",
+    "No oracle future/evaluator history to matching, no changes to 7 active/16 total motif and cell capacity",
+    "Sham/full/quorum2 share identical bounded cache writes and keys per seed/cap/regime",
+    "Original first-use artifact archived, complete pytest regression exactly once"
+  ],
+  "bounds": {
+    "development": 8,
+    "heldout": 16,
+    "episodes": 8,
+    "regimes": 4,
+    "cache_caps": [
+      3,
+      6,
+      9
+    ],
+    "max_cache": 9,
+    "active": 7,
+    "total_motifs": 16,
+    "total_cells": 16,
+    "policy_arms": 3,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic episodic matching capacity, no semantic cognition or biological generalization."
+}

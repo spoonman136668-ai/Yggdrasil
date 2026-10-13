@@ -1,0 +1,46 @@
+name: Yggdrasil Y038 nonaliased retained-memory capacity
+on:
+  push:
+    branches: [research/y038-nonaliased-retention-capacity-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Fail-closed immutable predecessor prereg and execution source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 14398ce9fcf1104d04557ffa8cfc232161133072 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y037-diversity/execute.py)" = ded965c0b3e854b9444f5fac4d174dc61cb6f374
+          test "$(git hash-object research/contrib/chatgpt/20261013-y038-retention-capacity/prereg.json)" = e6ee97bef29ce53bfe30f20ddccac3e61fc910af
+          test "$(git hash-object research/contrib/chatgpt/20261013-y038-retention-capacity/execute.py)" = 491d29bad77a07281e06e985b0703ff846c2f190
+          python3 -m json.tool research/contrib/chatgpt/20261013-y038-retention-capacity/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y038-retention-capacity/execute.py
+      - name: Original first-use twelve-cell nonaliased study
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y038-retention-capacity/execute.py > /tmp/Y038-original.json
+          python3 -m json.tool /tmp/Y038-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          r=json.load(open('/tmp/Y038-original.json'))
+          assert len(r['cells'])==12 and r['heldout_seeds']==list(range(352,368))
+          assert all(c['unique_environment_count']==24 for c in r['cells'])
+          print('CLASSIFICATION',r['classification'])
+          for c in r['cells']:
+              print('CELL',c['capacity'],c['regime'],c['heldout_churn'],c['savings'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y038-original-diverse-capacity
+          path: /tmp/Y038-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Final full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
