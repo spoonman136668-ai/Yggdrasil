@@ -1,0 +1,46 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y036_LOCAL_CUE_EVIDENCE_UNDER_GLOBAL_VS_SPARSE_SWITCH",
+  "parent_commit": "d7031e055c8566f0b90b0681dc8e9e2bdacf0e87",
+  "qualified_parent": "Y035 original first-use run38358624593 succeeded at pinned commit; moving original branch head excluded.",
+  "question": "When only one motif remains live between episodes, can a locally inferred +2 shift justify rewriting all dormant associations, or does it induce harmful overgeneralization under a hidden sparse switch?",
+  "hypothesis": "The exact single-live-overlap evidence at transition episode5->6 is compatible with both uniform +2 shift and a sparse +2 shift to that one overlapping motif. A global dormant correction should help in the uniform world but can harm in the sparse world.",
+  "freeze": "This is a prospective distinct experiment on fresh seeds88..95. Freeze the paired-world construction, overlap motif, policies and outcomes before first-use; do not tune after observing heldout results.",
+  "cohort": {
+    "development": [
+      88,
+      89,
+      90,
+      91
+    ],
+    "heldout": [
+      92,
+      93,
+      94,
+      95
+    ]
+  },
+  "generator": "Base static 4-valued association is SHA256('Y033/'+seed+'/'+motif) first byte %4; 16 motifs, exactly seven current active from Y030 keyed schedule, 12 episodes. Define k*(seed) as unique motif shared between episode5 and episode6 (assert exactly1). UNIFORM: from episode6 all targets=(base+2)%4; SPARSE: from episode6 only k* target=(base+2)%4 and all other targets remain unchanged. k* is known only to evaluator/generator, NOT the policies.",
+  "arms": [
+    "UNMODIFIED: read previous active and up to nine dormant observed key-values, update from current feedback only",
+    "LOCAL_GLOBAL_CORRECTION: same sources and cache capacity, but after observed active feedback infer a nonzero common delta using ONLY motifs live across consecutive episodes (one overlap). If consistent, adjust all dormant value estimates by that delta; count all maintenance updates."
+  ],
+  "sequence": "At every episode predict seven target labels before feedback; reveal exactly those seven and update active/dormant caches (7 live+max9 dormant), then optionally repair dormant by delta; never expose future/hidden cue labels to inference policy.",
+  "validity": "Preflight assert one live overlap at switch for every seed, eight unique SHA256 keyed source signatures, write and occupancy equality between arms, deterministic run twice, prereg/source parent blob check and one full regression.",
+  "metrics": "Heldout correct predictions for episodes7..11, dormant-return correct, maintenance updates and evidence events under both paired worlds; per-seed regret for correction vs baseline. Report policy evidence at e6, but only evaluator knows counterfactual target labels.",
+  "primary": "LOCAL_EVIDENCE_AMBIGUITY if globally-corrected policy improves total post-switch correct in UNIFORM condition and worsens it in SPARSE condition, while evidence at episode6 is identical for both conditions (one +2 overlap); MIXED otherwise. Any invalid overlap signature must be classified INVALID_GEOMETRY rather than retuned.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "episodes": 12,
+    "conditions": 2,
+    "arms": 2,
+    "active": 7,
+    "dormant": 9,
+    "total_motifs": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Indistinguishability only for a policy restricted to previously-live overlapping-cue evidence, NOT for an unrestricted observer with all current supervised feedback."
+}
