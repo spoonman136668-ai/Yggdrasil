@@ -1,0 +1,48 @@
+name: Yggdrasil Y044 matched-writer key-binding science
+on:
+  push:
+    branches: [research/y044-matched-writer-key-frames-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Immutable parent and frozen first-use verification
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 0f9e6151e2b6e4d9727a343557748ab4039d7d2d HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y043-key-frame/execute.py)" = 0ad179dbef1fd4bc91c127fb5a17395c7ee1f678
+          test "$(git hash-object research/contrib/chatgpt/20261013-y044-shadow-writer/prereg.json)" = 4d9367c1ba5c83ab7320fc5be800712bbf68120f
+          test "$(git hash-object research/contrib/chatgpt/20261013-y044-shadow-writer/execute.py)" = 5938d6059e21b2ed8fc6545dcb57e3fb15bf2a39
+          python3 -m json.tool research/contrib/chatgpt/20261013-y044-shadow-writer/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y044-shadow-writer/execute.py
+      - name: Original first-use frozen shadow-writer causal ablation
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y044-shadow-writer/execute.py > /tmp/Y044-original.json
+          python3 -m json.tool /tmp/Y044-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y044-original.json"))
+          assert a["sealed_heldout_seeds"]==list(range(1024,1040))
+          assert len(a["by_regime"])==3 and a["shadow_writer_privileged"] is True
+          print("CLASSIFICATION",a["classification"])
+          print("RAW_MISMATCH",a["raw_assignment_mismatch_count"])
+          print("AWARE_MISMATCH",a["aware_assignment_mismatch_count"])
+          for regime,policies in a["heldout_churn"].items():
+              print("REGIME",regime,policies)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y044-original-matched-writer-key-binding
+          path: /tmp/Y044-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Single full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
