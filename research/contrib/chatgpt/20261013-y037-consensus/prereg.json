@@ -1,0 +1,45 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y037-MIXED_FEEDBACK_CONSENSUS_GATING",
+  "parent_commit": "09079bfed6628dc06f70018bf40453d97c20c24a",
+  "question": "Will a global dormant-memory correction policy abstain appropriately when multiple simultaneously observed live overlaps provide conflicting evidence of the target shift?",
+  "hypothesis": "A unanimity gate should decline all ambiguous heterogeneous correction signals, unlike a plurality/tie-break strategy that may update dormant associations despite no universally supported delta.",
+  "cohort": {
+    "development": [
+      96,
+      97,
+      98,
+      99
+    ],
+    "heldout": [
+      100,
+      101,
+      102,
+      103
+    ]
+  },
+  "new_schedule": "For seed s and episode e, seven consecutive active motif IDs [(s+3*e+j)%16 for j0..6], so consecutive episodes overlap exactly four motifs, always two even and two odd. This geometry change is frozen and disjoint from earlier keyed-seven patterns. Maximum dormant storage remains nine of sixteen keys.",
+  "targets": "Initial target SHA256('Y033/'+seed+'/'+key) first byte modulo4. STABLE unchanged; MIXED_SWITCH at episode6 uses +1 for even-key motifs and +2 for odd-key motifs. Predictor sees only observed current labels after making all seven predictions.",
+  "arms": [
+    "baseline: regular observed live/dormant cache with no correction",
+    "consensus: if live-overlap cues all show the same nonzero modular target delta, update every currently dormant value by that delta; otherwise abstain",
+    "plurality: among nonzero observed live-overlap deltas choose the most frequent, breaking ties toward smaller delta, and apply it globally to dormant memory (report any resulting unsupported updates)"
+  ],
+  "primary": "Record overlap count, per-episode observed delta histogram, 12-episode correct and post-switch episode7..11 correct, stale dormant-return predictions, correction events, maintenance value writes, capacity/write parity, and disagreement/abstention events.",
+  "classification": "CONSENSUS_ABSTAINS if each heldout seed at switch has both +1/+2 feedback, consensus makes zero heterogeneous correction updates while plurality makes >0; HARMFUL_PLURALITY if plurality post-switch score < consensus; OTHER outcome otherwise. Both science- and efficiency-related claims must report exact scores, not just policy status.",
+  "controls": "Same seven current + <=nine dormant entries, same input feedback, exact cache eviction sequence. Label function evaluator-only after predictions. Verify four-overlap with two-even/two-odd at every transition, eight unique seed/event signatures, no future labels/hidden oracle.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "episodes": 12,
+    "active": 7,
+    "dormant": 9,
+    "total_motifs": 16,
+    "conditions": 2,
+    "arms": 3,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Tiny synthetic consensus abstention policy, not independent evidence of general scientific decision-making or semantic learning."
+}
