@@ -1,0 +1,44 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y038-THREE_WRITE_MAINTENANCE_BUDGET",
+  "parent_commit": "d38b5b04b2caf5151ad320e760a65d95e89b8850",
+  "question": "Can bounded, recency-selected dormant memory correction capture some of the predictive benefit of a plurality-based global update with at most three corrective writes per detected event rather than all nine?",
+  "hypothesis": "Updating the three newest dormant items may recover a nontrivial fraction of the immediate post-shift benefit of full plurality updates, with smaller compute and fewer unsupported changes.",
+  "domain": "Same 16 cue identities, seven consecutive active cues episode(e)=(seed+3*episode+j)%16 for j0..6, 12 episodes, four target values and nine dormant slots from Y037. STABLE no change, MIXED_SWITCH from episode6 even cues +1 and odd cues +2 modulo4. Four overlapping live cues provide 2/2 contradictory deltas.",
+  "cohort": {
+    "development_seeds": [
+      104,
+      105,
+      106,
+      107
+    ],
+    "sealed_heldout_seeds": [
+      108,
+      109,
+      110,
+      111
+    ]
+  },
+  "arms": [
+    "baseline: regular observed-only dormant memory, no post-feedback correction",
+    "full_plurality: choose most frequent nonzero observed live-key delta with ties toward smaller value; apply to all dormant values",
+    "capped_three: identical plurality evidence and tie-break, but apply chosen delta only to the last three most recently inserted dormant entries according to the pre-existing OrderedDict LRU order"
+  ],
+  "primary": "Report heldout post-change correct, returning-dormant accuracy, per-seed comparison, total correction maintenance writes, unsupported evidence events, cache writes and occupancy. CAPPED_EFFICIENCY if capped post-change improvement over baseline is >= half of full plurality's improvement and total capped maintenance writes <=one third of full plurality's. HARM if capped worse than baseline; otherwise MIXED. Retain all outcomes and full budget cost.",
+  "safeguards": "No true label formula available before each episode feedback; policy sees only observed current seven labels and previously cached data. No additional memory slots or target lookahead, exact frozen 7+9 cap and matched cache eviction/write trajectories, SHA256 distinct seeds, original artifact and full project regression, no post-result tuning or retry.",
+  "budget": {
+    "seeds": 8,
+    "heldout_seeds": 4,
+    "episodes": 12,
+    "active": 7,
+    "dormant": 9,
+    "total_motifs": 16,
+    "conditions": 2,
+    "arms": 3,
+    "maintenance_cap_per_event": 3,
+    "first_use_retries": 0,
+    "model_calls": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Synthetic recency-capped maintenance policy, not resource-efficient generalized cognition."
+}
