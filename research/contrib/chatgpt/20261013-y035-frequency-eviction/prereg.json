@@ -1,0 +1,42 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y035-LEARNED-REENTRY-FREQUENCY-EVICTION",
+  "parent_sha": "70e14ff87ac10ec5f64b0159ee1e7ba805627b55",
+  "prior_source_blob": "a5c567f76bc019350989bf89d85099dc4c9624f5",
+  "question": "Can a tiny frequency-memory mechanism learned from *observed reentries alone*, not experiment labels or future schedule, improve bounded motif placement stability under a frozen hot/cold recurrence population relative to standard recency eviction?",
+  "hypothesis": "Within equal nine-slot cache limits, LFU based on capped observed reentry counts may retain repeatedly returning motif assignments more effectively than LRU. It may fail because stale cached placements become illegal or LFU preserves irrelevant entries.",
+  "world": "16 circular cells and motif identities; 7 active per episode for 16 episodes, max 9 inactive cached. Keyed deterministic salt=SHA256('Y035/'+seed) first 16 bits modulo16; 3 hot keys with offsets (0,5,10) are active only on even episodes; select remaining active from other 13 via deterministic rotated offsets, no duplicate keys. Four active share frozen center=(7*salt+3*episode+11*(seed-80))%16; remaining three use one of eight Y030 frozen nonuniform home offset templates. Radius2 matching. All sequences frozen before first-use, no future knowledge passed to policies.",
+  "split": {
+    "development": [
+      80,
+      81,
+      82,
+      83
+    ],
+    "heldout": [
+      84,
+      85,
+      86,
+      87
+    ]
+  },
+  "arms": [
+    "LRU recency evicts oldest cached inactive assignment",
+    "LFU frequency evicts cached identity with lowest capped reentry count, breaking ties deterministically by oldest insert order and then key"
+  ],
+  "learning": "Both arms store exactly the same (observed placement,2-bit capped observed reentry count) metadata for up to 9 inactive motifs; each active motif's last count is carried alongside its currently observed assignment within seven existing active-identity slots, totaling <=16 motif identities in memory at every episode. Reentry count increments on actual cache hit and is capped at3. No oracle hot-key labels, upcoming episode knowledge, extra persistent cache identities, future labels, or external model calls.",
+  "primary": "Compare hot-key returning placement churn, all returning-key churn, legal cached preferences, Hall matching cardinality, cache writes/evictions, read cost, frequency distribution. FREQ_EVICTION_BENEFIT if LFU total hot churn lower and total overall churn no worse and LFU hot churn no worse in >=3/4 heldout seeds. MIXED if aggregate hot churn lower but total churn worse. NEGATIVE otherwise; INVALID for duplicate geometry signatures, oracle mismatch or any state-budget violation; GEOMETRY_DEFICIENCY for cardinality <7.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "episodes": 16,
+    "active": 7,
+    "cached": 9,
+    "total_motif_slots": 16,
+    "cache_counter_bits": 2,
+    "arms": 2,
+    "model_calls": 0,
+    "first_use_retries": 0
+  },
+  "claim_limit": "Bounded synthetic reentry-frequency adaptation, not a learned semantic theory or independent evidence of developmental cognition."
+}
