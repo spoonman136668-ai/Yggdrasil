@@ -1,0 +1,46 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y026-RAPID-DRIFT-RETAINED-PLACEMENT",
+  "parent_commit": "0337b84bd23233faba7203c2897f1b8b7ccb60f9",
+  "predecessor": "Y025",
+  "scientific_question": "Is nine-slot retained assignment cache still beneficial under faster circular geometry drift, or does staleness erase its prior advantage?",
+  "hypothesis": "A legality-filtered, history-only cache may lose churn benefit when cell-home changes by five cells per episode rather than one. Both benefit and harm are valid outcomes.",
+  "freeze": "Commit this exact configuration before adding/activating workflow or original execution; no post-result retuning of drift, cache, seeds, episodes, learning or criteria.",
+  "population": "Exactly sixteen motif identities/cells, seven active, up to nine cached inactive assignments, eight episodes/seed, radius-two circular neighbors, same active generator and four-key home collision pattern inherited from Y025.",
+  "changed_delta": "Only base home uses (7*key+seed+5*episode) mod16 instead of (7*key+seed+episode) mod16; cache/matcher and policies unchanged with exact Y025 source identity.",
+  "split": {
+    "development_seeds": [
+      8,
+      9,
+      10,
+      11
+    ],
+    "sealed_heldout_seeds": [
+      12,
+      13,
+      14,
+      15
+    ]
+  },
+  "arms": [
+    "matched-cache sham writes nine-slot cache but cannot read for matching",
+    "cache-read arm writes identical cache and uses only legal previously observed placements"
+  ],
+  "primary": "Heldout per-seed churn difference sham-cache, along with cardinality, search calls, matched write counts, legal cache-read hits; REPEATED_DRIFT_BENEFIT if all four seeds save churn; STALENESS_HARM if aggregate savings negative; MIXED otherwise (includes no gain).",
+  "independent_validation": "Independent exhaustive Hall bound for seven active keys; cache write and occupancy equality between arms; deterministic repeated output; exact parent/prereg/science blobs; one full repo regression.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "episodes": 8,
+    "active": 7,
+    "retained": 9,
+    "total_motifs": 16,
+    "cells": 16,
+    "radius": 2,
+    "arms": 2,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Synthetic episodic assignment retention under geometry drift, not learning, real-world developmental adaptation, or accepted-reference mutation."
+}
