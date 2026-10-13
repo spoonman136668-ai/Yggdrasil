@@ -1,0 +1,46 @@
+name: Y042 frozen observed-memory selection ablation
+on:
+  push:
+    branches: [research/y042-protected-selection-ablation-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Exact immutable source preregistration
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 53622a4c8a4e553ffde1f798881540397c7c622b HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y041-protected-memory/execute.py)" = 186614eb312aad3b6b0fd9f2b05fdbc22c7dcd48
+          test "$(git hash-object research/contrib/chatgpt/20261013-y042-selection/prereg.json)" = a7d0fe080636e87bb2c1ebeb0efafcb4ef5f744c
+          test "$(git hash-object research/contrib/chatgpt/20261013-y042-selection/execute.py)" = 8427d8439db50efb6b4bc19a65df6b7116059706
+          python3 -m json.tool research/contrib/chatgpt/20261013-y042-selection/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y042-selection/execute.py
+      - name: Original unexposed retention selection experiment
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y042-selection/execute.py > /tmp/Y042-original.json
+          python3 -m json.tool /tmp/Y042-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          x=json.load(open('/tmp/Y042-original.json'))
+          assert len(x['cells'])==16
+          assert x['sealed_heldout_seeds']==list(range(448,464))
+          print('CLASSIFICATION',x['classification'])
+          for c in x['cells']:
+              print(c['policy'],c['regime'],c['saved_churn'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y042-original-retention-selection
+          path: /tmp/Y042-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Complete Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
