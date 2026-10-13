@@ -1,0 +1,71 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "experiment": "Y036-CACHE-QUORUM-X-CAPACITY-FACTORIAL",
+  "parent_head": "35eace118e16ab8195a6810f2bc6ec569dfd0106",
+  "hypothesis": "Y033 quorum2 sometimes improves memory action, and Y035 conflict filtering removed slow-drift benefit. Test whether quorum2's safe-use benefit depends on retained entry budget under four preregistered geometry schedules, without adding capacity.",
+  "freeze": "Three already allowable capacities 3/6/9, four drift schedules, three independent cache policies and sealed fresh cohort frozen before original first use. No budget or threshold tuned post-evaluation.",
+  "environment": "Exactly 7 active motifs, 16 total motif identities/cells, eight episodes, circular radius2 neighbors, 4-way collision, same Y034 drift1/drift2/drift4/late_shock schedule. No new action or sensor access.",
+  "cohorts": {
+    "development_seeds": [
+      200,
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207
+    ],
+    "sealed_heldout_seeds": [
+      208,
+      209,
+      210,
+      211,
+      212,
+      213,
+      214,
+      215,
+      216,
+      217,
+      218,
+      219,
+      220,
+      221,
+      222,
+      223
+    ]
+  },
+  "capacity_levels": [
+    3,
+    6,
+    9
+  ],
+  "policies": [
+    "write-matched sham with unread bounded cache",
+    "full legal cached assignment read",
+    "quorum2 only if at least two distinct currently legal observed prior assignments"
+  ],
+  "primary": "All 12 factorial cells: paired heldout returning-key churn, matching calls, legal applied preference counts, per-seed results and equality of cache write counts and key trajectories. Each policy executes the same augmenting matching with independent exhaustive Hall7 verification.",
+  "classification": "CAPACITY_ROBUST if quorum2 churn <= full churn in ALL 12 heldout capacity/regime cells and strictly improves >=3 cells; MIXED_CAPACITY_EFFECT if some cells strictly improve and some strictly worsen relative full; otherwise NO_CAPACITY_ROBUSTNESS. Report all cells regardless of overall class.",
+  "bounds": {
+    "capacities": 3,
+    "regimes": 4,
+    "policy_arms": 3,
+    "development": 8,
+    "heldout": 16,
+    "episodes": 8,
+    "active": 7,
+    "max_retained": 9,
+    "total_keys": 16,
+    "total_cells": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "safeguards": [
+    "Current graph, active motifs, and previously observed cache only; no evaluator-history lookahead",
+    "Same capped storage and write scheduling between all policies; no hidden capacities",
+    "One original first-use artifact plus full Yggdrasil pytest regression; negative outcome retained"
+  ],
+  "claim_limit": "Synthetic episodic matching continuity only, not learned semantic memory."
+}
