@@ -1,0 +1,92 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y060-SENTINEL-CONDITIONED-DECODER-RECOVERY",
+  "parent_head": "05f367ddfa06dca232ec66282e18889968e18a9e",
+  "hypothesis": "Y059's deterministic public rotating sentinel detects 3/4 future nonaffine coordinate-swap regimes at equal scalar reading cost. Test a bounded causal decoder correction that infers swap partner from only current sentinel residual and the historical affine public anchor model. It should correct the mapping AFTER detecting a physical 2↔3 or 4↔5 transposition without oracle swap/onset input. The known 2↔3 onset6 timing miss must remain uncorrectable, and no pre-detection improvements are credited.",
+  "freeze": "Freeze disjoint development seeds3136..3143, sealed heldout3144..3159 (16), 4 new odd affine background families, two fixed nonaffine transpositions 2↔3 and 4↔5, regimes steady/onset4/onset6, 8-episode horizon. Fixed 10 public scalar reads via same Y059 schedule (0/1 at e0,e1,e3; 0/2 e5; 0/4 e7). At first nonzero residual, infer the paired cell by applying affine baseline inverse to the OBSERVED sentinel label, remember one transposition (two cell IDs), and apply inverse transposition to the *decoded physical IDs* of any subsequently presented encoded coordinate. No further sensing, no hindsight. Compare fixed anchor-only decoder and rotating-sentinel no-correction versus rotating-sentinel with causal correction on the exact same source-coded 16-cell permutations at each of eight episodes, retaining all per-episode/per-cell errors. The all-16 oracle source is supplied to EVALUATOR ONLY to score decoded IDs, never to the model's adaptation function.",
+  "development_seeds": [
+    3136,
+    3137,
+    3138,
+    3139,
+    3140,
+    3141,
+    3142,
+    3143
+  ],
+  "sealed_heldout_seeds": [
+    3144,
+    3145,
+    3146,
+    3147,
+    3148,
+    3149,
+    3150,
+    3151,
+    3152,
+    3153,
+    3154,
+    3155,
+    3156,
+    3157,
+    3158,
+    3159
+  ],
+  "families": [
+    [
+      3,
+      3,
+      7
+    ],
+    [
+      5,
+      9,
+      13
+    ],
+    [
+      7,
+      11,
+      1
+    ],
+    [
+      11,
+      15,
+      5
+    ]
+  ],
+  "cases": [
+    "2_3:steady",
+    "2_3:onset4",
+    "2_3:onset6",
+    "4_5:steady",
+    "4_5:onset4",
+    "4_5:onset6"
+  ],
+  "arms": [
+    "anchor_only_decode",
+    "rotating_detect_only",
+    "rotating_causal_decoder_correction"
+  ],
+  "classification": "CAUSAL_DECODER_RECOVERY iff both detectable post-onset cases 2_3:onset4 and4_5:onset4 and 4_5:onset6 have >=90% decrease in post-detection decoder errors relative to detect_only, steady all arms zero, missed 2_3:onset6 remains missed, and 10 readings per trial held. PARTIAL_DECODER_RECOVERY iff >=1 detectable case achieves >=50% post-detection error reduction under steady zero; NO_GAIN otherwise. Preserve all blind, pre-detection and adverse outcomes.",
+  "controls": [
+    "Only current precommitted sentinel measurements and earlier observed public anchor0/1 linear calibration feed learner. No source-truth cell pair, onset or future data available to inference function; simulator gives source labels ONLY to evaluator for scoring.",
+    "A corrected *decoder* is not matching controller recovery, cache repair, 7/9 capacity reuse or general autonomous biological cognition. Matching actuator and source-level worker remain unchanged.",
+    "No extra readings; physically addressable sentinel cells 2 and4 are a new sensing-capability requirement despite same count. Detection/localization uses known affine baseline and assumes true disturbance is a single transposition.",
+    "Prereg and frozen code SHA before first use, original archive, one full pytest regression, no accepted-ref or authority mutation."
+  ],
+  "bounds": {
+    "development_seeds": 8,
+    "heldout_seeds": 16,
+    "families": 4,
+    "pairs": 2,
+    "onset_cases": 3,
+    "arms": 3,
+    "landmark_scalars": 10,
+    "decoder_cells": 16,
+    "episodes": 8,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Deterministic single-swap synthetic decoder-side correction after public detection; does not establish actual retained-state repair or general self-maintenance."
+}
