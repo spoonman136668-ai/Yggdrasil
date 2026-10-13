@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "experiment": "Y031-CURRENT-GRAPH-CONFLICT-GATED-MEMORY",
+  "parent_head": "9a0a22279933d110969e9ab68d65f4b58ccffd35",
+  "hypothesis": "Y029/Y030 suggest recency is insufficient to avoid memory-induced churn in fast drift. Current graph conflict degree may distinguish cheap-to-honor cached assignments from cached assignments that force rematching of neighboring motifs.",
+  "freeze": "Predefine four memory policies, fixed conflict limits 1/2, four geometric schedules, fresh seeds and success criteria before first use; no postresult parameter selection.",
+  "population": "Same Y029 exact 16 motif identities/cells, seven simultaneously active, maximum nine inactive cache entries, circular radius-two matching, eight episodes, four-way collision.",
+  "split": {
+    "development_seeds": [
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87
+    ],
+    "heldout_seeds": [
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103
+    ]
+  },
+  "policies": [
+    "matched_sham: same cache writes but no read",
+    "full: all legal prior observed assignments",
+    "conflict1: cached cell is legal and belongs to <=1 current active key neighborhood",
+    "conflict2: cached cell is legal and belongs to <=2 current active key neighborhoods"
+  ],
+  "regimes": [
+    "drift1",
+    "drift3",
+    "drift5",
+    "alternating"
+  ],
+  "metric": "Per-regime/policy heldout returning-key churn, current-graph allowed preference counts, search calls, write parity, matching cardinality. Compare conflict2 relative to full and sham.",
+  "classification": "CONFLICT_FILTERED_GAIN if conflict2 strictly reduces churn relative full in BOTH drift5 and alternating and preserves at least 70% of full-cache saving under drift1; TRADEOFF if conflict2 strictly reduces churn in at least one of drift5/alternating but strict condition fails; NO_CONFLICT_GATE_GAIN otherwise. Publish all negative arms.",
+  "controls": [
+    "Only present neighbor graph and previously observed stored cells accessible; no future or evaluator cumulative history",
+    "Same exact bounded cache capacity, keys/writes/occupancy",
+    "Exhaustive Hall maximum matching 7/7 each episode",
+    "Freeze source Git blobs, original first-use artifact and one full regression"
+  ],
+  "budget": {
+    "policy_arms": 4,
+    "regimes": 4,
+    "development": 8,
+    "heldout": 16,
+    "episodes": 8,
+    "active": 7,
+    "retained": 9,
+    "total_cells": 16,
+    "total_motifs": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Finite synthetic assignment preference gating; no learned semantics or production authority."
+}
