@@ -19,7 +19,7 @@ jobs:
           git merge-base --is-ancestor 05f367ddfa06dca232ec66282e18889968e18a9e HEAD
           test "$(git hash-object research/contrib/chatgpt/20261013-y059-rotating-probes/execute.py)" = 1a0d8a42a95c59a19fb9770f0dc45a129d4abf61
           test "$(git hash-object research/contrib/chatgpt/20261013-y060-decoder-recovery/prereg.json)" = 76c56783d299884f4bb04f1187993866056516ce
-          test "$(git hash-object research/contrib/chatgpt/20261013-y060-decoder-recovery/execute.py)" = 66bb8d1c4a3cc3422f53fa18a54a38708e43a35d
+          test "$(git hash-object research/contrib/chatgpt/20261013-y060-decoder-recovery/execute.py)" = 80014bea14b9b2adf1d38f7197b809895bb3c575
           python3 -m json.tool research/contrib/chatgpt/20261013-y060-decoder-recovery/prereg.json >/dev/null
           python3 -m py_compile research/contrib/chatgpt/20261013-y060-decoder-recovery/execute.py
       - name: First-use frozen causal coordinate-decoder science
