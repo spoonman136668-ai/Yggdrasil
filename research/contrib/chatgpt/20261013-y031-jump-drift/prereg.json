@@ -1,0 +1,55 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y031-ABRUPT-DRIFT-MEMORY-UTILITY",
+  "parent_commit": "72b64a2b9a5344ad3064978c9a4a823c26cac4c4",
+  "predecessor": "Y030",
+  "scientific_question": "Y030 reduced churn on a newly keyed geometry. Under abrupt pre-registered displacement changes, is previous assignment memory still legal and does it justify search, read, and write costs?",
+  "preregistration": "Freeze displacement schedule, utility weights, source-family, two policies, numerical cohort, all negative outcomes before first experiment. Never tune cost weight or geometry from results.",
+  "population": "Reuse exact frozen Y030 keyed 16-cell/16-key/7-active/9-inactive-cache generator, with new seeds 48-55 and independent keyed signatures. Eight episodes per seed. Add current-episode circular home displacement to all neighborhood locations, modulo16.",
+  "split": {
+    "development_seeds": [
+      48,
+      49,
+      50,
+      51
+    ],
+    "heldout_seeds": [
+      52,
+      53,
+      54,
+      55
+    ]
+  },
+  "frozen_displacements": [
+    0,
+    1,
+    2,
+    9,
+    10,
+    11,
+    4,
+    5
+  ],
+  "arms": [
+    "sham: writes identical max-nine slot cache but never reads",
+    "retained: writes identical cache and reads current active-key stored assignments, uses only legal under current geometry"
+  ],
+  "budget": {
+    "keys": 16,
+    "cells": 16,
+    "active": 7,
+    "retained_max": 9,
+    "episodes": 8,
+    "arm_count": 2,
+    "dev": 4,
+    "heldout": 4,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "utility": "Each policy total cost = search_recursive_calls*1 + memory_writes*1 + attempted_cache_reads*1 + assignment_churn*w; preregister w=1,3,10 simultaneously and publish all, not cherry-pick. Sham attempts=0; retained counts every lookup of active keys currently present in cache even if now illegal.",
+  "primary": "Per-seed and total churn, legal preference counts, matching cardinalities, memory occupancy/writes parity, recursive matching calls, and net cost at all 3 frozen churn weights.",
+  "classification": "If cardinality deviates from independent exhaustive Hall oracle or no eight unique full geometry signatures, INVALID. Else CONSISTENT_NET_GAIN only if net cost advantage positive on all four heldout seeds for all weights; NET_HARM if all three aggregate differences negative; otherwise TRADEOFF_OR_MIXED. All outcomes legitimate.",
+  "controls": "No evaluator history passed to policies, no oracle or future displacements in matching decisions, exact prior Y030 source hash pinned, bounded retained memory and identical write/occupancy, no retries, one full regression.",
+  "claim_limit": "Synthetic episodic cache-value study; utility weights illustrative, no cognitive-regeneration or real-world learning claims; no accepted-ref mutation."
+}
