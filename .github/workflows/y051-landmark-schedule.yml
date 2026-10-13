@@ -1,0 +1,46 @@
+name: Yggdrasil Y051 frozen equal-budget landmark schedule
+on:
+  push:
+    branches: [research/y051-equal-budget-probe-timing-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Immutable predecessor and frozen study identity
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor ce6bbc9e2e13aac9e3a7d33e57aff6fb63b931a0 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y050-residual-quarantine/execute.py)" = 87b686362fabddd8f0454bc56f38bdd3d89a7563
+          test "$(git hash-object research/contrib/chatgpt/20261013-y051-probe-timing/prereg.json)" = c986fca08424aed8dbb46a2a4b0c7cd33f26dc46
+          test "$(git hash-object research/contrib/chatgpt/20261013-y051-probe-timing/execute.py)" = 17b6cf91d7d4c1f55a379059c7bf429647b205be
+          python3 -m json.tool research/contrib/chatgpt/20261013-y051-probe-timing/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y051-probe-timing/execute.py
+      - name: First-use original sealed landmark schedule science
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y051-probe-timing/execute.py >/tmp/Y051-original.json
+          python3 -m json.tool /tmp/Y051-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          a=json.load(open('/tmp/Y051-original.json'))
+          assert a["development_seeds"]==list(range(1800,1808))
+          assert a["sealed_heldout_seeds"]==list(range(1808,1824))
+          assert len(a["records"])==5*4*24*3
+          print("CLASSIFICATION",a["classification"])
+          print("SCHEDULE_RESULTS",a["aggregate_by_onset_schedule_intervention"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y051-original-frozen-probe-timing
+          path: /tmp/Y051-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Required full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
