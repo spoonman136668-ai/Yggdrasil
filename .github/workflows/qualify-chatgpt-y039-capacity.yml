@@ -1,0 +1,36 @@
+name: Yggdrasil Y039 frozen 0-3-6-9 memory frontier
+on:
+  push:
+    branches: [research/chatgpt-y039-memory-pressure-20261013]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify frozen origin, prereg and original evaluator
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 3ff04209bda00bf55fdc7d43a3ad19c221d05dda HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y039-capacity-sweep/prereg.json)" = 3ec3ccd598687fb9efb7039c5d6e09f46184201d
+          test "$(git hash-object research/contrib/chatgpt/20261013-y039-capacity-sweep/execute.py)" = 36a2f91aa9432a41e06dd91a0c553a58605fb550
+          python3 -m json.tool research/contrib/chatgpt/20261013-y039-capacity-sweep/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y039-capacity-sweep/execute.py
+      - name: First-use original Y039 memory frontier science
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y039-capacity-sweep/execute.py > /tmp/Y039-original.json
+          python3 -m json.tool /tmp/Y039-original.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y039-original-memory-capacity-frontier
+          path: /tmp/Y039-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
