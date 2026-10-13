@@ -1,0 +1,40 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y044-SENTINEL_CORRUPTION_CONSISTENCY_GATE",
+  "parent_commit": "cff687e5ad517df553a3e57787bf8a02dabd9628",
+  "predecessor": "Y043",
+  "date": "2026-10-13",
+  "question": "Under a hidden CORE-only uniform shift, does a single corrupted early sentinel observation cause confident misrepair, and can a second corroborating sentinel in that cue group prevent false predictions without extra dormant storage?",
+  "hypothesis": "A two-group-sentinel policy will propagate a +1 corrupted report from the majority group to untouched majority cues and produce wrong predictions. A three-sentinel policy sampling two majority and one minority group cue will detect contradictory deltas, abstain on unsampled majority cues, and preserve exact minority-group predictions. Both policies recover cleanly without corruption.",
+  "world": "New seeds152..159 with Y040 SHA256-keyed 16 motifs, seven CORE and seven distractor cues. CORE active e0/e1, dormant e2..e9, active e10/e11. At e6 only CORE truths invisibly shift +2 mod4; distractor labels remain unchanged. At e10 one early reported sentinel value may be corrupted +1 mod4, while all true labels remain shifted +2; after remaining predictions are frozen authoritative complete feedback is supplied.",
+  "cohorts": {
+    "development": [
+      152,
+      153,
+      154,
+      155
+    ],
+    "heldout": [
+      156,
+      157,
+      158,
+      159
+    ]
+  },
+  "conditions": [
+    "CLEAN_REPORT: all early observed sentinel reports are true labels",
+    "ONE_BAD_MAJOR_REPORT: only the first sampled cue from the parity-majority group reports true+1 mod4 at e10; no other observed label corruption"
+  ],
+  "group_selection": "From the seven observed CORE key IDs determine majority parity group (even versus odd, cardinality>=4 due seven keys). First and second majority keys are defined by current core order; first minority key is defined by current core order. If minority parity group absent for any of eight seeds, classify INSUFFICIENT_MINOR_GROUP, no seed changes/retries.",
+  "arms": [
+    "NO_SENTINEL: report zero early truths, predict seven returning cues from nine-slot dormant memory",
+    "TWO_GROUP_SENTINELS: receive first majority and first minority cue reports before predicting remaining five; separately extrapolate inferred shifts from those reports",
+    "THREE_CONSISTENCY: receive first two majority and first minority reports before predicting remaining four; if majority reports imply inconsistent modular shifts, abstain on unsampled majority cues, and use the minority shift for unsampled minority cues; otherwise predict all remaining cues"
+  ],
+  "feedback_access": "At e10 evaluator reveals ONLY the designated 0/2/3 early reported cues before unsampled predictions; corrupted report differs from hidden true label only for the first majority sentinel in condition ONE_BAD_MAJOR_REPORT. True remaining labels and authoritative corrected labels for all sampled cues are revealed only after forecasts are frozen; e11 uses full truth observed at end e10. Labels sampled early are excluded from scoring, so denominators per heldout across four seeds are28/20/16. Absent and abstained predictions are not counted correct; wrong counts exclude abstentions, with coverage reported.",
+  "metrics": "Per heldout seed/condition/arm: number early reports, remaining scored opportunities, correct predictions, wrong predictions, abstentions, coverage, cache-write/occupancy parity across arms, feedback trace SHA256 through e9 equal across conditions, e11 recovery, report-consistency violations. Model/noise truth separated in evaluator, never a model oracle.",
+  "primary": "CORRUPTION_CONTAINMENT if all inputs distinct/support and pre-reactivation trace equivalence holds, CLEAN THREE_CONSISTENCY scores all 16/16 without abstention, BAD TWO_GROUP_SENTINELS has >=1 wrong prediction, BAD THREE_CONSISTENCY has 0 wrong predictions and >=1 explicit abstention, e11 all recover28/28. NO_GAIN if otherwise valid but conditions fail. INVALID_HIDDEN_HISTORY or INSUFFICIENT_MINOR_GROUP if validity fails. Never tune thresholds from results.",
+  "budget": "All arms seven live + <=nine dormant, no added hidden state beyond current early observed report set (max3 tuples) and two finite parity delta counters; 8 seeds (4 heldout), 12 episodes, 2 conditions, 3 arms, one original run and full regression. Unequal early-label/scored budgets explicitly acknowledged.",
+  "safeguards": "Frozen prereg before source and execution, SHA256 identity-checked Y040/Y043 sources and prereg/evaluator in CI, deterministic double execution, original first-use artifact plus one full pytest. Preserve invalid/negative outcomes. No model calls, oracle to policy, code rerun after result, production or accepted-ref mutations.",
+  "claim_limit": "Bounded synthetic parity-group sensor corroboration and abstention; not open-ended anomaly detection, epistemic calibration or general cognitive learning."
+}
