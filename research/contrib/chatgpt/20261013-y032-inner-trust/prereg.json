@@ -1,0 +1,45 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y032-KEYED_ALTERNATING_INNER_TRUST",
+  "parent_commit": "244604db6992e598b1c9057083d279d5a8869de4",
+  "predecessor": "Y031",
+  "question": "Can conservative current-neighborhood legality filtering avoid the adverse-seed retention effect seen in Y031 while retaining the nine-slot resource bound?",
+  "hypothesis": "Preference for a cached placement only when it lies in the inner three of a legal five-cell radius-two neighborhood may reduce churn under drift, though it may increase augmenting-path matching cost.",
+  "freeze": "Fix source, fresh SHA256-keyed cohort and exact inner radius1 preference before first use; do not select after seeing heldout outcomes.",
+  "cohort": {
+    "development": [
+      56,
+      57,
+      58,
+      59
+    ],
+    "heldout": [
+      60,
+      61,
+      62,
+      63
+    ]
+  },
+  "geometry": "Exact frozen Y031 geometry: Y030 SHA256-keyed 4-collision templates and 8 episode circular displacements [0,1,6,7,12,13,18,19], seven active motifs of sixteen and circular radius2 matching.",
+  "arms": [
+    "full_neighborhood: when cached cell is currently legal in radius2 neighbor set, prefer it during assignment",
+    "inner_preference: when cached cell is currently legal AND in radius1-centered subset of 5 radius2 cells, prefer it; matcher still has radius2 available for all assignments"
+  ],
+  "matching": "Same independently verified augmenting path matching, fixed tie ordering, cache writes, occupancy <=9 and evaluator-only returning-key history for both arms. Infer each center uniquely from current 5-cell neighborhood set; no peek at future episodes.",
+  "outcomes": "Record matching cardinality, per-seed/episode churn, preference reads, calls, writes, per-seed input SHA256 geometry fingerprints. All Hall deficiencies or fingerprint duplicates are explicit scientific outcomes and do not trigger a retry.",
+  "primary": "INNER_TRUST_TRANSFER if all 4 heldout seed savings full_churn-minus-inner_churn >=0 and total>0; MIXED if signs include both positive and negative; FULL_PREFERENCE_WINS if aggregate savings<0; NO_GAIN otherwise.",
+  "validation": "Same 9 memory slots and 16 total identities/cells and separate exhaustive Hall oracle; no future history in policy; exact prereg/code/parent SHA, original archive with all outcomes and final full regression.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "episodes": 8,
+    "active": 7,
+    "retained": 9,
+    "total": 16,
+    "arms": 2,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Synthetic memory placement preference tradeoff; no semantic consolidation or real-world scientific acceptance."
+}
