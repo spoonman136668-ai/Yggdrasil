@@ -1,0 +1,35 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y038-LEGAL-PERSISTENCE-LFU-DRIFT-ABLATION",
+  "parent_sha": "0e744c6417e73223f42294fe3b3c4b2133633403",
+  "prior_source_blob": "0ee069c039f7628c43ad57e15b911d3326de9d83",
+  "question": "Does Y037 frequency-eviction benefit depend causally on placement legality persistence, as predicted? Perform a frozen three-dose drift ablation without selecting favorable conditions after seeing results.",
+  "hypothesis": "The benefit of frequency over recency eviction declines as home geometry shifts over observed episodes (D=0 stable, D=1 slow, D=3 fast). Negative/contradictory results count fully.",
+  "world": "Exact Y037 hot/cold active recurrence from frozen Y035 keyed generator and four-slot two-bit LRU/LFU policies, 16 motifs/cells, 7 active and 16 episodes, fresh seeds development104..107 and heldout108..111. Only change is neighborhood home = (7*(key//2)+salt(seed)+D*episode)%16 with preregistered D in [0,1,3], maintaining paired collisions and radius2 matching.",
+  "frozen_drift_levels": [
+    0,
+    1,
+    3
+  ],
+  "arms": [
+    "four-slot LRU recent eviction (same counter metadata)",
+    "four-slot LFU learned observed reentry count eviction (same four slots and 2-bit capped counter)"
+  ],
+  "metrics": "Per dose and heldout seed hot-returning assignment churn difference LRU-LFU, total churn difference, actual evictions per arm, legal cache reuse counts, matching calls, independent exhaustive Hall full cardinality, unique SHA256 geometry signatures per dose. Do not select any dose post-result.",
+  "classification": "MONOTONE_LFU_DECAY if total hot-key LFU advantage at D0 > D1 > D3 strictly, all doses have actual evictions on all heldout seeds and all valid full matching. Otherwise NONMONOTONE. INVALID if Hall/signature/capacity fails; GEOMETRY_DEFICIENCY if any under-seven matching; CAUSAL_TEST_UNEXERCISED if any dose/seed arm lacks evictions. Report dose-specific positive/neutral/adverse classifications separately from monotone outcome.",
+  "budget": {
+    "development_seeds": 4,
+    "heldout_seeds": 4,
+    "episodes_per_dose": 16,
+    "doses": 3,
+    "active": 7,
+    "cached": 4,
+    "keys": 16,
+    "cells": 16,
+    "counter_bits": 2,
+    "arms": 2,
+    "model_calls": 0,
+    "first_use_retries": 0
+  },
+  "claim_limit": "Synthetic mechanism falsification of frequency memory under controlled cell-home drift, not real-world intelligence."
+}
