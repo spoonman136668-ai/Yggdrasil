@@ -1,0 +1,51 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y025-MATCHED-CACHE-READ-ABLATION",
+  "parent_commit": "71cc6c66c2623577090e4a71fb4ebb52669e06ab",
+  "predecessor": "Y024",
+  "hypothesis": "Y024's retained-placement churn benefit is causally attributable to using previously observed assignments, not merely the presence of nine-slot memory bookkeeping. With identical observed-only cache writes, turning off cache reads should increase churn.",
+  "preregistration_before_first_use": true,
+  "source": "Exact Y024 active-key, four-way collision and radius-two neighborhood generators, with eight episodes per seed and seven active motif keys of 16 total keys/cells.",
+  "split": {
+    "development": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "heldout": [
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  "arms": [
+    "A0 matched-cache sham: allocate up to nine inactive entries and perform identical cache-update algorithm, but NEVER read cached assignment when deciding",
+    "A1 active cache use: same up-to-nine inactive entries and identical update algorithm, use only currently legal cached assignment as matching preference"
+  ],
+  "frozen_policy": "Both arms run the same deterministic augmenting-path matcher and same sort order when no legal preference. Cache writes are derived only from previous observed episodes; evaluator-only cumulative history cannot feed either policy.",
+  "primary": "Returning-key assignment churn (assignment changes vs previous observed assignment for each key) on four disjoint heldout seeds. Record per-seed savings, episode cardinality, search-call totals, cache writes, cache-entry counts, and preference hits.",
+  "classification": "CAUSAL_CACHE_READ_BENEFIT if A1 churn strictly lower than sham on every heldout seed, both maintain exact seven-key matching, and cache writes per-seed agree; MIXED if improvements and deteriorations occur; otherwise NO_CACHE_READ_BENEFIT. INVALID for differing cache-write counts, Hall-oracle mismatch, bounds violation, identity/determinism failure.",
+  "independent_checks": [
+    "Exact predecessor and source Git identity before first use",
+    "Exhaustive Hall-deficiency oracle for seven-key matching per episode",
+    "No lookahead or evaluator-history access from either policy",
+    "deterministic repeated output and final full repository regression"
+  ],
+  "bounds": {
+    "seeds": 8,
+    "heldout_seeds": 4,
+    "episodes_per_seed": 8,
+    "active_keys": 7,
+    "retained_slots": 9,
+    "total_keys": 16,
+    "total_cells": 16,
+    "matching_radius": 2,
+    "arms": 2,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Synthetic episodic placement only; does not establish learned semantic memory, cognition, original-data validation, or independent acceptance."
+}
