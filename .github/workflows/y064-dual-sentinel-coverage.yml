@@ -1,0 +1,53 @@
+name: Yggdrasil Y064 frozen dual-sentinel source-onset coverage
+on:
+  push:
+    branches: [research/y064-dual-sentinel-coverage-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Fail closed on original source and preregistration
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7ceb113e90e7dfb6f9fb0bef8afb842fc0316156 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y063-cache-components/execute.py)" = 793824e76adf2635ad2882d87c18222150b85a9d
+          test "$(git hash-object research/contrib/chatgpt/20261013-y064-dual-sentinel/prereg.json)" = cc1eecd1f2812c35a93c9cbe8ab19c24e9ee6218
+          test "$(git hash-object research/contrib/chatgpt/20261013-y064-dual-sentinel/execute.py)" = 7b48658de43ff3906e46b20ffc0734b2c523b10d
+          python3 -m json.tool research/contrib/chatgpt/20261013-y064-dual-sentinel/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y064-dual-sentinel/execute.py
+      - name: Original first-use sealed dual-sentinel detection
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y064-dual-sentinel/execute.py > /tmp/Y064-original.json
+          python3 -m json.tool /tmp/Y064-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          x=json.load(open('/tmp/Y064-original.json'))
+          assert x['development_seeds']==list(range(5000,5008))
+          assert x['sealed_heldout_seeds']==list(range(5016,5032))
+          assert len(x['heldout_records'])==2*4*4*16
+          assert x['per_trial_public_scalar_reads']==10
+          assert len(x['aggregate_by_case'])==8
+          print('CLASSIFICATION',x['classification'])
+          print('FULLY_COVERED_GROUPS',x['dual_detected_all_64_by_group'])
+          print('ORIGINAL_BLIND',x['original_blind_cases_still_blind'])
+          print('STEADY_ZERO',x['steady_false_positive_free'])
+          for name,row in x['aggregate_by_case'].items():
+              print('CASE',name,{arm:(v['detections'],v['trials'],v['detection_episode_counts'])
+                                 for arm,v in row.items()})
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y064-original-dual-sentinel-coverage
+          path: /tmp/Y064-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: One required complete Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
