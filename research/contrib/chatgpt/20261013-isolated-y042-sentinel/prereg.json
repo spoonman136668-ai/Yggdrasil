@@ -1,0 +1,40 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y042-CUE_SENTINEL_FEEDBACK_HIBERNATION_REPAIR",
+  "parent_commit": "2dcb700cb9a531a98fa8fcfeba072f2ff6ea034a",
+  "date": "2026-10-13",
+  "predecessor": "Y041",
+  "question": "Can one or two explicitly observed reactivation cues resolve the hidden-change ambiguity from Y041 for predictions on the remaining cues, and when does one uniform-shift witness overgeneralize?",
+  "hypothesis": "One supervised core cue sampled at reactivation identifies a uniform latent +2 shift and repairs predictions for six unobserved remaining cues; if target change differs by cue parity, a single global correction may fail, while one observed sentinel of each parity may repair the five others.",
+  "world": "Y040 synthetic hibernation structure on novel SHA256 seeds136..143; core=first 7 motifs sorted by Y040 seed-key order, distractor=next7; core at e0,e1,e10,e11, distractors e2..e9. Baseline targets SHA256('Y040value/'+seed+'/'+motif) first byte mod4, evaluator only.",
+  "cohorts": {
+    "development": [
+      136,
+      137,
+      138,
+      139
+    ],
+    "heldout": [
+      140,
+      141,
+      142,
+      143
+    ]
+  },
+  "conditions": [
+    "STABLE: unchanged target values",
+    "UNIFORM_SHIFT: from e6 all dormant core targets shifted +2 modulo4",
+    "PARITY_SHIFT: from e6 dormant core even-key targets shifted +2, odd-key targets shifted +1 modulo4"
+  ],
+  "arms": [
+    "NO_SENTINEL: zero early cue labels; predict all seven core cues at e10 from dormant nine-slot memory, reveal full seven labels after all predictions",
+    "ONE_SENTINEL: at e10 explicitly observe true target of first current core cue before predicting the OTHER SIX; infer (observed - cached) mod4 and add offset to dormant predictions of all six, then reveal six labels; no direct scoring of sampled sentinel",
+    "TWO_PARITY_SENTINELS: at e10 observe true target for first even and first odd core cue, before predicting the OTHER FIVE; infer respective parity-group modular deltas only from these two labels and cached values, apply matching group delta for remaining five, then reveal remaining labels; no direct scoring of either sampled cue"
+  ],
+  "budget": "All arms 7 last live + at most9 dormant and same 12-episode observation schedule. ONE_SENTINEL uses 1 extra early feedback label at e10 and scores6 remaining per seed; TWO uses2 early labels and scores5; NO uses0 and scores7. These are explicitly unequal early-feedback and evaluation budgets. Hidden targets do not enter selector except explicitly sampled cues.",
+  "validity": "If core seven lacks both parity groups in ANY seed, classify INSUFFICIENT_PARITY_SUPPORT without changing cohort/selection and do not run outcome comparisons. Verify unique source signatures across eight seeds. Feedback trace through e9 must be identical across three worlds for same seed. Code must not access any unsampled e10 target until ALL predictions for remaining cues are frozen. Full truth is revealed afterward.",
+  "metrics": "For each heldout seed and condition: number of sampled sentinel labels, scored remaining correct/wrong count, conditional accuracy, source hashes, latency observation count, total memory write counts and occupancy, e11 recovery after full e10 feedback. Compare one-sentinel global repair on UNIFORM_SHIFT and PARITY_SHIFT, and two-parity correction. Report any harm rather than silently suppress.",
+  "primary": "SENTINEL_DISAMBIGUATION_WITH_HETEROGENEITY_LIMIT if pre-history equivalence holds, ONE_SENTINEL UNIFORM_SHIFT has 24/24 correct after 4 sampled labels, TWO_PARITY_SENTINELS PARITY_SHIFT has20/20 correct after8 sampled labels, and ONE_SENTINEL PARITY_SHIFT makes at least one wrong prediction; PARTIAL if one of first two claims fails but feedback improves at least one condition; NEGATIVE otherwise; INSUFFICIENT_PARITY_SUPPORT if invalid cohort.",
+  "constraints": "First-use source-only prereg with code/Git SHA pinned before original CI; Python syntax preflight, deterministic original twice, complete pytest suite, immutable original artifact. No replay, no secret labels, no capacity increase, no accepted-ref mutation, no live runtime activation.",
+  "claim_limit": "Synthetic observed cue-to-cue shared shift rules and parity-group repair, not autonomous inference of arbitrary hidden changes or neurobiological memory."
+}
