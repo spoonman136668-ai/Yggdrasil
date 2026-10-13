@@ -1,0 +1,71 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "experiment": "Y030-AGE-GATED-MEMORY-HARM-ABLATION",
+  "parent_head": "0fa63655436e4f6da528fcd5a82a23383b5ee66f",
+  "hypothesis": "Y029 found bounded retained assignments may worsen churn when drift is fast. Preregister a finite age-gated memory-use ablation to test whether discarding stale read preferences mitigates harm while preserving slow-drift gain.",
+  "freeze": "Freeze age limits 2 and 4 and sham/full control, all four prior drift regimes, cohort, metrics, and classification criteria before first-use. No picking beneficial thresholds after result.",
+  "source": "Use Y029 16 identity/cell, seven active key graph, four-way collision, radius-two matching, 8 episodes/seed. Retain exactly nine inactive entries (or fewer).",
+  "split": {
+    "development_seeds": [
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63
+    ],
+    "heldout_seeds": [
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79
+    ]
+  },
+  "regimes": [
+    "drift1",
+    "drift3",
+    "drift5",
+    "alternating"
+  ],
+  "policies": [
+    "matched-sham (writes the same nine-slot cache+timestamps but never reads)",
+    "full-cache (all legal observed previous assignments)",
+    "age2-cache (only legal preferences from at most 2 episodes ago)",
+    "age4-cache (only legal preferences from at most 4 episodes ago)"
+  ],
+  "metadata": "Each stored observed assignment includes its last-observed episode index, additional bounded timestamp metadata available equally in all arms; action capacity 7, memory entry cap9 and total identities/cells16 unchanged.",
+  "primary": "Per regime, per policy heldout churn, legal preference uses, search calls and matched cache writes. For every regime report full and age2/age4 sham-relative gains. GATING_BENEFIT iff age2 churn < full churn in BOTH drift5 and alternating, and its drift1 sham-relative saving remains >=75% of full-cache saving; TRADEOFF iff age2 reduces churn in either harmful regime only; otherwise NO_GATING_BENEFIT. No hidden switch to best arm.",
+  "controls": [
+    "Independent exhaustive 7-node Hall bound each episode",
+    "Equal cache writes, keys, timestamps and occupancy across all four policies; no peek at future state",
+    "All samples (positive/mixed/negative) retained; one immutable artifact, one full regression"
+  ],
+  "bounds": {
+    "max_cached_assignments": 9,
+    "total_motifs": 16,
+    "cells": 16,
+    "active": 7,
+    "episodes": 8,
+    "regimes": 4,
+    "policies": 4,
+    "heldout_seeds": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "production_authority": false
+  },
+  "claim_limit": "Finite history-only assignment memory age gating with timestamp metadata, not learned semantic consolidation, cognitive regeneration, or accepted-ref mutation."
+}
