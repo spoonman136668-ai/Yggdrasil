@@ -1,0 +1,61 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "experiment": "Y035-CACHE-QUORUM-CONFLICT-INTERACTION",
+  "parent_head": "bd5fafd596f2227a42376d55ff6be8ee3a8ea6e3",
+  "hypothesis": "Y034 quorum2 loses some full-cache benefits in drift4 and late shocks; combining a fixed legal-preference quorum2 with a current-graph degree-at-most-four filter may reduce collateral assignment movement under those conditions while preserving useful continuity.",
+  "freeze": "One composite policy with the exact degree4 cap and quorum2 threshold, fixed four regimes and new cohorts preregistered before first-use. No post-result policy or threshold selection.",
+  "cohorts": {
+    "development_seeds": [
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183
+    ],
+    "sealed_heldout_seeds": [
+      184,
+      185,
+      186,
+      187,
+      188,
+      189,
+      190,
+      191,
+      192,
+      193,
+      194,
+      195,
+      196,
+      197,
+      198,
+      199
+    ]
+  },
+  "source": "Exact Y034 seven active /16 total motif-cell generator, nine cached inactive assignments max, four-way collision, radius-two neighborhoods, eight episodes and frozen drift1,drift2,drift4,late_shock schedules.",
+  "policies": [
+    "matched_sham: identical cache writes, no cache preference read",
+    "full: legal remembered assignments used every time",
+    "quorum2: legal cache preferences if >=2 distinct active eligible keys",
+    "quorum2_conflict4: consider only legal cached preference cells whose current graph neighborhood degree<=4, then apply if >=2 eligible keys"
+  ],
+  "evaluation": "Same independent exhaustive Hall7 check; cache keys, writes and occupancy must agree across arms; policy accesses only present active graph and observed prior cached placements.",
+  "outcome": "COMPOSITE_GAIN iff composite churn is strictly below quorum2 under both drift4 and late_shock and retains >=70% of full-cache sham-relative saving under drift1. PARTIAL if composite improves in either drift4 or late_shock but strict threshold fails. NO_GAIN otherwise. Preserve adverse/no-effect results and comparison against no-cache.",
+  "bounds": {
+    "policies": 4,
+    "regimes": 4,
+    "development": 8,
+    "heldout": 16,
+    "episodes": 8,
+    "active": 7,
+    "max_cache": 9,
+    "total_keys": 16,
+    "total_cells": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic current-graph memory selection without semantic cognition or production authority."
+}
