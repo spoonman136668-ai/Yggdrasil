@@ -1,0 +1,78 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "experiment": "Y039-NONALIASED-MEMORY-INTERRUPTION-RECOVERY",
+  "parent_head": "e99b3609b36fffd528bfa3e9c74aab7f3f8c168f",
+  "north_star": "Test preservation and recovery of bounded observed assignment memory through explicit interruptions in independently varied synthetic developmental episode histories.",
+  "hypothesis": "Full nine-slot observed placement retention can reacquire useful assignments after two deterministic full-cache resets, possibly reducing post-interruption movement compared with write-matched sham on fresh nonaliased environments.",
+  "freeze": "Freeze interruptions at starts of episodes3 and6, four drift schedules and identical cache resets/sham controls before first scientific evaluation. No selection or additional retries after results.",
+  "split": {
+    "development_seeds": [
+      368,
+      369,
+      370,
+      371,
+      372,
+      373,
+      374,
+      375
+    ],
+    "sealed_heldout_seeds": [
+      376,
+      377,
+      378,
+      379,
+      380,
+      381,
+      382,
+      383,
+      384,
+      385,
+      386,
+      387,
+      388,
+      389,
+      390,
+      391
+    ]
+  },
+  "environment": "Reuse Y037 SHA256-keyed full-seed and episode seven-active/16-motif schedule, guaranteed Hall7 matching and 24 distinct full environment fingerprints per drift regime; 16 cells, four-way collision and radius2 unchanged.",
+  "regimes": [
+    "drift1",
+    "drift2",
+    "drift4",
+    "late_shock"
+  ],
+  "arms": [
+    "uninterrupted matched-sham cache writes and no reads",
+    "uninterrupted full-cache with legal preference reads",
+    "interrupted matched-sham: delete cache only at episode starts3 and6",
+    "interrupted full-cache: same reset and legal preference reads from any subsequently observed assignments"
+  ],
+  "primary": "Per regime/seed total churn, post-reset episodes3..7 returning-key churn, cache writes and search calls, matched key/occupancy trajectories within each uninterrupted or interrupted arm pair; per-episode legal preference counts. RECOVERY_BENEFIT if interrupted full cache saves total returning-key churn vs interrupted sham on at least 3 of 4 regimes AND at least one post-reset later episode (4,5,7) has positive heldout churn saving in each such regime; PARTIAL if total savings in at least 2 regimes but fails strict; NO_RECOVERY otherwise.",
+  "controls": [
+    "Exact reset event before episode3 and6; no hidden memory except evaluator-only prior placement history for outcome accounting",
+    "Each arm's action uses only present graph and cached previous observed assignments",
+    "Matched cache writes/key trajectory between full/sham within same interruption policy",
+    "24 unique histories per regime, Hall oracle cardinality7 per episode",
+    "All orig first-use evidence archived before a full pytest regression"
+  ],
+  "bounds": {
+    "active": 7,
+    "max_retained": 9,
+    "total_keys": 16,
+    "total_cells": 16,
+    "episodes": 8,
+    "reset_events": [
+      3,
+      6
+    ],
+    "policies": 4,
+    "regimes": 4,
+    "heldout": 16,
+    "development": 8,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic episodic assignment reconstruction after cache clear, not semantic consolidation, developmental regeneration or biological evidence."
+}
