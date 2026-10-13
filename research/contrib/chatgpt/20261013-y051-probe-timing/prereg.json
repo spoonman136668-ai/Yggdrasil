@@ -1,0 +1,120 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y051-EQUAL-BUDGET-PUBLIC-LANDMARK-SCHEDULE-TRANSFER",
+  "parent_head": "ce6bbc9e2e13aac9e3a7d33e57aff6fb63b931a0",
+  "hypothesis": "Y050 public-landmark residual detection repaired sampled onset4 but could not prevent onset6 errors before its next probe. With identical five two-landmark public observations per eight-episode trial, fixed probe placement rather than extra sensing determines which unseen shock onsets admit immediate correction. Compare two prospectively frozen schedules under new onset5 and onset7 as well as onset4/6 controls, without oracle-conditioned scheduling.",
+  "freeze": "Two precommitted schedules: A probes0,1,3,5,7 and may conditionally quarantine at5/7; B probes0,1,3,4,6 and may conditionally quarantine at4/6. Freeze all source laws, five shock regimes, 4 new odd affine families, 8 dev and 16 sealed seeds, policies and classification before first use. No rescheduling after observing a shock or result.",
+  "split": {
+    "development": [
+      1800,
+      1801,
+      1802,
+      1803,
+      1804,
+      1805,
+      1806,
+      1807
+    ],
+    "sealed_heldout": [
+      1808,
+      1809,
+      1810,
+      1811,
+      1812,
+      1813,
+      1814,
+      1815,
+      1816,
+      1817,
+      1818,
+      1819,
+      1820,
+      1821,
+      1822,
+      1823
+    ]
+  },
+  "families": [
+    [
+      3,
+      7,
+      1
+    ],
+    [
+      5,
+      11,
+      3
+    ],
+    [
+      7,
+      9,
+      5
+    ],
+    [
+      11,
+      5,
+      7
+    ]
+  ],
+  "regimes": [
+    "steady",
+    "onset4",
+    "onset5",
+    "onset6",
+    "onset7"
+  ],
+  "schedules": {
+    "A": {
+      "probes": [
+        0,
+        1,
+        3,
+        5,
+        7
+      ],
+      "conditional_quarantine": [
+        5,
+        7
+      ]
+    },
+    "B": {
+      "probes": [
+        0,
+        1,
+        3,
+        4,
+        6
+      ],
+      "conditional_quarantine": [
+        4,
+        6
+      ]
+    }
+  },
+  "controls": [
+    "For each schedule compare canonical and periodic candidates with the same frozen public residual-triggered intervention policy, plus the corresponding no-quarantine matching controls",
+    "Every arm has exactly five pairs of public cell0/cell1 landmark observations (10 scalar readings), plus identical four-scalar temporal calibration metadata, at most 9 cached inactive records, 7 active, 16 cells total",
+    "Residual trigger depends only on current scheduled observed anchor0 versus extrapolated offset from prior public anchors, NEVER simulator onset or future physical assignment",
+    "Original Y050 evaluator and Y049 affine environment reused by exact pinned blob identity with only trial-scoped schedule constants substituted, then restored; no new inference engine",
+    "No first-use retry or post-result threshold tuning, no hidden power budget, production, accepted-ref mutation or authoritative promotion"
+  ],
+  "primary": "SCHEDULE_TRADEOFF iff triggered B has fewer physical allocation mismatches than triggered A for onset6 and triggered A has fewer than triggered B for onset7, and both schedules have zero mismatches and zero triggered quarantine in steady controls. PARTIAL_TIMING_GAIN iff one prespecified onset advantage holds. NO_TIMING_GAIN otherwise. Report per-policy, per-seed, per-episode outcomes, public read cost, false triggers, physical churn, cache writes and adverse families. Treat new onsets5,7 separately rather than claim unbounded transfer.",
+  "bounds": {
+    "schedules": 2,
+    "interventions": 2,
+    "comparison_modes": 2,
+    "onsets": 5,
+    "families": 4,
+    "policies": 3,
+    "episodes": 8,
+    "development": 8,
+    "heldout": 16,
+    "landmark_scalars": 10,
+    "active": 7,
+    "max_cached": 9,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic fixed landmark schedule tradeoff at constant sensor budget, not general adaptive scheduling, semantic intelligence or unseen physical source-birth validation."
+}
