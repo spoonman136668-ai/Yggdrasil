@@ -1,0 +1,37 @@
+name: Y050 original frozen science
+on:
+  push:
+    branches: [research/chatgpt-y050-correlated-evidence-equivalence-20261013]
+permissions:
+  contents: read
+jobs:
+  original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify parent and exact frozen original identities
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 33b29c90302fcc9f7302415039b998940d0c25a9 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y040-hibernation/execute.py)" = 6c6ba3ebf39456056fca0e60a8210d941cf69e43
+          test "$(git hash-object research/contrib/chatgpt/20261013-y050-observational-equivalence/prereg.json)" = c726ee17163c8f7816f523bb71f2d195b9057554
+          test "$(git hash-object research/contrib/chatgpt/20261013-y050-observational-equivalence/execute.py)" = ef722694d641f453aa7cdb3032c82499a2b737cb
+          python3 -m json.tool research/contrib/chatgpt/20261013-y050-observational-equivalence/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y050-observational-equivalence/execute.py
+      - name: Single original Y050 first use
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y050-observational-equivalence/execute.py > /tmp/Y050-original.json
+          python3 -m json.tool /tmp/Y050-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y050-original-first-use
+          path: /tmp/Y050-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
