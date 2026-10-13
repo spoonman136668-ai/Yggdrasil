@@ -1,0 +1,36 @@
+name: Yggdrasil Y036 pinned local-evidence ambiguity science
+on:
+  push:
+    branches: [research/chatgpt-isolated-y036-local-evidence-r1]
+permissions:
+  contents: read
+jobs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify pinned isolated parent and frozen original
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor d7031e055c8566f0b90b0681dc8e9e2bdacf0e87 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y034-feedback-repair/execute.py)" = 4d682dc3835ad88fbf71593295d7461c3745559b
+          test "$(git hash-object research/contrib/chatgpt/20261013-y036-sparse-switch/prereg.json)" = 15f5c8e4d36c3362507a3aaada8bee0a0299d7b7
+          test "$(git hash-object research/contrib/chatgpt/20261013-y036-sparse-switch/execute.py)" = 8a88e4064941dae3e113802ccacc6bbcb8df21e0
+          python3 -m json.tool research/contrib/chatgpt/20261013-y036-sparse-switch/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y036-sparse-switch/execute.py
+      - name: First-use original local-evidence paired worlds
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y036-sparse-switch/execute.py > /tmp/Y036-original.json
+          python3 -m json.tool /tmp/Y036-original.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y036-original-sparse-global-switch
+          path: /tmp/Y036-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Complete Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
