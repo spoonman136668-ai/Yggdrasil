@@ -1,0 +1,37 @@
+name: Yggdrasil Y038 three-dose eviction persistence
+on:
+  push:
+    branches: [research/y038-eviction-drift-ablation-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Check immutable head ancestry, prereg and science code
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 0e744c6417e73223f42294fe3b3c4b2133633403 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y037-stable-eviction/execute.py)" = 0ee069c039f7628c43ad57e15b911d3326de9d83
+          test "$(git hash-object research/contrib/chatgpt/20261013-y038-eviction-drift/prereg.json)" = 9d94ce2ee05389f3604bd21d3db5d0b29ad9e053
+          test "$(git hash-object research/contrib/chatgpt/20261013-y038-eviction-drift/execute.py)" = fb3a3fca2fcc88cecdba9229bb03c9b336ca0ba8
+          python3 -m json.tool research/contrib/chatgpt/20261013-y038-eviction-drift/prereg.json > /dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y038-eviction-drift/execute.py
+      - name: One original frozen scientific experiment
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y038-eviction-drift/execute.py > /tmp/y038-original.json
+          python3 -m json.tool /tmp/y038-original.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y038-original
+          path: /tmp/y038-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Full final project regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
