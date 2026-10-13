@@ -1,0 +1,37 @@
+name: Y042 isolated frozen sentinel-repair science
+on:
+  push:
+    branches: [research/chatgpt-isolated-y042-sentinel-reactivation-20261013]
+permissions:
+  contents: read
+jobs:
+  first-use:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify origin preregistration and exact first-use source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 2dcb700cb9a531a98fa8fcfeba072f2ff6ea034a HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y040-hibernation/execute.py)" = 6c6ba3ebf39456056fca0e60a8210d941cf69e43
+          test "$(git hash-object research/contrib/chatgpt/20261013-isolated-y042-sentinel/prereg.json)" = 313f446adb34d6ad7a1f78478f6e17e8fbb55ed3
+          test "$(git hash-object research/contrib/chatgpt/20261013-isolated-y042-sentinel/execute.py)" = 6a915ef9a4ab901c070c5bf4f06a0575d1d14f76
+          python3 -m json.tool research/contrib/chatgpt/20261013-isolated-y042-sentinel/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-isolated-y042-sentinel/execute.py
+      - name: Original frozen Y042 research
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-isolated-y042-sentinel/execute.py > /tmp/Y042-original.json
+          python3 -m json.tool /tmp/Y042-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y042-isolated-original-sentinel-repair
+          path: /tmp/Y042-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Complete repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
