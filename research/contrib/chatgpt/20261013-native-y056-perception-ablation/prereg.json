@@ -1,0 +1,19 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "experiment_id": "Y056-NATIVE_SPATIAL_PERCEPTION_CAUSAL_ABLATION",
+  "date": "2026-10-13",
+  "source_parent": "878464cf84833d06a1ac7e45988bfb79608547dc",
+  "question": "Does the native NCA's local Sobel spatial perception improve acquired disk-morphology function over a capacity-matched NCA that retains only identity perception, after the same gradient-training budget?",
+  "native_substrate": "Original unmodified `yggdrasil.nca.NeuralCellularAutomaton` from pinned DG1A branch, including original shared update network, alive mask, local convolution and native TrainingConfig/train/evaluate_growth_and_recovery; use actual Torch autodiff, no symbolic model.",
+  "cohort": "Independent seeds340,341 development and342,343 prospective heldout by initialization (each still trained on SAME 9x9 disk task). No seed or threshold adaptation after first use.",
+  "setup": "Every trial model NCAConfig 6 state channels,12 hidden channels,fire_rate1,alive_channel3,threshold.1,max_steps12. Fixed grid9x9, single living center seed, native TargetSpec disk radius2 rgba(.15,.75,.30,1). Paired models begin from identical initial weight SHA256 using torch.manual_seed(seed).",
+  "arms": [
+    "FULL_NATIVE_PERCEPTION retains native identity+Sobel-x+Sobel-y kernels unmodified.",
+    "IDENTITY_ONLY_PERCEPTION sets the second and third registered perception_kernels of SAME initialized NCA in-memory to ZERO before training, leaves first identity kernel and all trained parameters unchanged in count/initialization; no additional trainable parameters, same native topology and update rule."
+  ],
+  "training": "Both arms use original native train() with TrainingConfig variant=growth_only, iterations=32, learning_rate=.001, steps_min4,steps_max6,batch_size2,pool_size8, damage_probability0.5 (not used in growth_only),damage_height/width .35,min_active4,clip1,L2=1e-5,loss_mode=global_mse,visible_channels4,record_every8,seed fixed. Equal 32 optimizer iterations and all metadata.",
+  "evaluation": "Use original evaluate_growth_and_recovery after training for each arm with growth_steps8,recovery_steps8,seed+1000,center lesion fractions0.4 each; report native pre_error/post_damage_error/final_recovery_error/recovery fraction/normalized recovery AUC, active cells, parameter and state sizes. Primary formation metric is `pre_error` BEFORE lesion; do not require positive damage effect for formation comparison; recoverability remains secondary, never switch primary based on results.",
+  "classification": "SPATIAL_PERCEPTION_BENEFIT if BOTH heldout seeds FULL_NATIVE_PERCEPTION pre_error strictly smaller than IDENTITY_ONLY_PERCEPTION pre_error by at least 0.002; NO_BENEFIT otherwise. STRUCTURAL_INVALID if paired initial genome SHA/count differs, native resource size varies, outputs are non-finite or if ablation modifies more than registered Sobel perception kernels. All outcomes preserved.",
+  "claims": "This is one synthetic morphology target with 4 independent training seeds and 32 iteration budget, NOT evidence of language or general intelligence; the identity-only kernel ablation probes native spatial information, not an otherwise equivalent optimized rival architecture.",
+  "safety": "Frozen prereg source then original run; pin native NCA,training,target,damage SHA plus prereg/evaluator Git SHA, original archive, full pytest and no retry, no accepted-ref mutation or live activation."
+}
