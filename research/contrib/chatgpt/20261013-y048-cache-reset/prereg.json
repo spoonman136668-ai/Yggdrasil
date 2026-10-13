@@ -1,0 +1,91 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y048-MATCHED-CACHE-RESET-POSTSHOCK-CARRYOVER",
+  "parent_head": "c835fbfc7608dba59d68993228a4a567c0844645",
+  "hypothesis": "Y047 periodic current-frame calibration at episode5 left post-shock allocation mismatches. An episode5 cache intervention, with matching canonical controls and identical episode5 handling, can determine whether lingering invalid cached preferences or episode4 departure writes contribute to later mismatch.",
+  "freeze": "Precommit an episode5-only reset, two variants (flush-only; flush plus suppress that episode's stale departure writes) versus unchanged continuation. No intervention contingent on test outcomes or shock detection. Freeze cohort, exact source laws, policies, metrics and thresholds before first-use.",
+  "split": {
+    "development": [
+      1520,
+      1521,
+      1522,
+      1523,
+      1524,
+      1525,
+      1526,
+      1527
+    ],
+    "sealed_heldout": [
+      1528,
+      1529,
+      1530,
+      1531,
+      1532,
+      1533,
+      1534,
+      1535,
+      1536,
+      1537,
+      1538,
+      1539,
+      1540,
+      1541,
+      1542,
+      1543
+    ],
+    "prior_y047_heldout": "1384..1399 context only; no tuning"
+  },
+  "families": [
+    [
+      3,
+      5,
+      1
+    ],
+    [
+      5,
+      3,
+      7
+    ],
+    [
+      7,
+      11,
+      5
+    ],
+    [
+      13,
+      9,
+      3
+    ]
+  ],
+  "regimes": [
+    "steady",
+    "late_shock with offset +5 from episode4"
+  ],
+  "controls_and_arms": [
+    "canonical_continue vs periodic_continue with no cache intervention",
+    "canonical_flush vs periodic_flush: both clear caches once immediately before episode5 matching, then normal departure writes",
+    "canonical_quarantine vs periodic_quarantine: both clear caches before episode5 matching and skip episode5 departure writes only; resume writes in episode6"
+  ],
+  "capacity": "Eight episodes; exactly seven active / at most nine cached assignments / 16 total; matched ring topology/Hall7. Periodic reads two known canonical landmark positions at fixed episodes0,1,3,5 (8 readings total); canonical uses no landmark readings. All six arms share the same preregistered intervention schedule and existing cache limits.",
+  "primary": "Compare periodic physical allocation vs matched canonical for each intervention, per heldout seed, policy, family, regime and episode. BOUNDED_RESET_RESCUE iff late-shock periodic_continue post5 mismatches >0 and periodic_quarantine post5 mismatches ==0; PARTIAL_RESET_RESCUE iff paired post5 mismatch count decreases for flush or quarantine vs continue but not to 0; NO_RESET_BENEFIT otherwise. Report matched control churn, cache writes, occupancy, explicit suppressed departures, and whether results also hold under no shock.",
+  "controls": [
+    "Time-based reset independent of sensed labels, true hidden frame, future outcomes or actual shock; cache intervention is explicitly acknowledged rather than latent added learning",
+    "Compare each periodic intervention exclusively against its same-intervention reference; do not claim parity across fundamentally different reset policies",
+    "No new memory capacity/sensors, retuned thresholds, new training, first-use reruns or accepted-reference mutation",
+    "Scientific classifications confined to synthetic paired cache interventions, not general failure repair"
+  ],
+  "bounds": {
+    "families": 4,
+    "regimes": 2,
+    "policies": 3,
+    "arms": 6,
+    "episodes": 8,
+    "dev": 8,
+    "heldout": 16,
+    "active": 7,
+    "max_cache": 9,
+    "first_use_retries": 0,
+    "model_calls": 0,
+    "accepted_ref_mutation": false
+  }
+}
