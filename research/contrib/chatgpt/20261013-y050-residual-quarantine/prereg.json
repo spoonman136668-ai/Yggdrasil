@@ -1,0 +1,103 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y050-OBSERVED-FRAME-RESIDUAL-TRIGGERED-QUARANTINE",
+  "parent_head": "a148fb90b4527ac5b0d60dd6e9aca4f32adf8833",
+  "hypothesis": "Y049 showed unconditional cache departure quarantine at episode5 is shock-window dependent. The publicly observed affine-cell landmark phase residual at predetermined probes 5 and 7 can trigger the SAME bounded episode-local cache-clear-and-skip-departure intervention without privileged shock timing. Compare trigger and unconditional intervention under matched canonical controls and identical scheduled landmark budgets.",
+  "freeze": "All landmark probe episodes0,1,3,5,7; shock onsets none/3/4/6; fixed additive +5; four new odd-coordinate families; untouched heldout seeds; triggers only at episodes5 or7 if observed landmark0 differs from extrapolated prior-offset prediction; no new information, tuning or hidden shock-state access to controller. Freeze metric and classifications before first use.",
+  "splits": {
+    "development": [
+      1728,
+      1729,
+      1730,
+      1731,
+      1732,
+      1733,
+      1734,
+      1735
+    ],
+    "sealed_heldout": [
+      1736,
+      1737,
+      1738,
+      1739,
+      1740,
+      1741,
+      1742,
+      1743,
+      1744,
+      1745,
+      1746,
+      1747,
+      1748,
+      1749,
+      1750,
+      1751
+    ]
+  },
+  "families": [
+    [
+      3,
+      1,
+      5
+    ],
+    [
+      5,
+      7,
+      3
+    ],
+    [
+      7,
+      11,
+      1
+    ],
+    [
+      13,
+      9,
+      7
+    ]
+  ],
+  "modes": [
+    "canonical matched control",
+    "periodic calibrated candidate"
+  ],
+  "interventions": [
+    "continue no reset",
+    "fixed at episodes5 and7 regardless of observed data",
+    "residual-triggered at episodes5 and7 only when current public anchor0 disagrees with extrapolated anchor0"
+  ],
+  "environment": [
+    "steady no shock",
+    "onset3",
+    "onset4",
+    "onset6"
+  ],
+  "policies": [
+    "matched_sham",
+    "full",
+    "quorum2"
+  ],
+  "resource_cost": "Every arm is given public cell0 and cell1 coordinates at episodes0,1,3,5,7 (10 scalar landmark observations across 8 episodes); full 16 physical cells, 7 active motifs and maximum 9 cached retained assignments unchanged; four scalar temporal calibration state variables, capacity disclosed. No extra model calls.",
+  "primary": "RESIDUAL_TRIGGERED_GAIN iff triggered reduces post-episode5 mismatches relative to continue for onset4, reduces episode7 mismatches relative to continue for onset6, and never fires or degrades matching in steady cohort. PARTIAL iff either improvement occurs and all same-arm canonical controls are matched, otherwise NO_GAIN. Report negative families, false triggers, cache writes, prior departures, physical churn, per-episode allocation, immutable first-use and full regression.",
+  "controls": [
+    "Trigger formed only after the scheduled current-episode public landmark observations, never future coordinates/outcomes or the simulator's true onset",
+    "Same fixed probe and information budget in controls, conditional intervention solely from public residual, no change to matching threshold",
+    "Canonical comparator receives exact same intervention for a given condition and seed, with equal cache write/occupancy policy; do not compare against different intervention canonical",
+    "No accepted-ref mutation, production activation, artificial retry, source-birth claim or unseen cohort reuse"
+  ],
+  "bounds": {
+    "families": 4,
+    "environment_regimes": 4,
+    "interventions": 3,
+    "modes": 2,
+    "policies": 3,
+    "episodes": 8,
+    "dev": 8,
+    "heldout": 16,
+    "active": 7,
+    "max_cache": 9,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic public-landmark residual-gated cache quarantine; only measured scheduled probes and additive affine shocks, not generalized self-detection or biological regeneration."
+}
