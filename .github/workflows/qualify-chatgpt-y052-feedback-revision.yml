@@ -1,0 +1,37 @@
+name: Y052 original frozen science and repository regression
+on:
+  push:
+    branches: [research/chatgpt-y052-updated-sensor-beliefs-20261013]
+permissions:
+  contents: read
+jobs:
+  first-use:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Check exact immutable original identity
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 9e903211b791ef427e6fde9c7598cfeb22ffb0ae HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y040-hibernation/execute.py)" = 6c6ba3ebf39456056fca0e60a8210d941cf69e43
+          test "$(git hash-object research/contrib/chatgpt/20261013-y052-feedback-revision/prereg.json)" = 601f1811ce895394e3c43c661592c4d9410a6dd4
+          test "$(git hash-object research/contrib/chatgpt/20261013-y052-feedback-revision/execute.py)" = e7e1cbd68ceb856031901687e23e11fe48c62265
+          python3 -m json.tool research/contrib/chatgpt/20261013-y052-feedback-revision/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y052-feedback-revision/execute.py
+      - name: Original prospective first use Y052
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y052-feedback-revision/execute.py > /tmp/Y052-original.json
+          python3 -m json.tool /tmp/Y052-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y052-original-first-use
+          path: /tmp/Y052-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Complete repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
