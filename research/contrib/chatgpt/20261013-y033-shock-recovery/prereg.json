@@ -1,0 +1,30 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y033-TRANSIENT-GEOMETRY-SHOCK-RECOVERY",
+  "parent_sha": "d821f293fec9b229aa485771128f77e3304b9494",
+  "prior_source_blob": "ca68e04aea27aa067ca214f395bada2ca322b588",
+  "question": "Can bounded observed-state assignment retention preserve placement identity when a familiar motif population briefly experiences an external geometric shock, and does any recovery advantage survive novel keyed heldout geometry?",
+  "hypothesis": "Previously observed legal cached assignments might reduce recovery-stage reassignment and baseline identity drift after transient shock, but may also become stale and increase either metric.",
+  "source": "Use exact Y030 SHA256-keyed eight-template generator on new development seeds64..67 and heldout68..71. 16 total cells/identities, 7 active, max9 cached inactive motifs, legal radius2 matcher and independent 7-motif Hall oracle. Fixed twelve observation program [(logical0,shift0),(1,0),(2,0),(3,0),(4,+5),(5,+5),(0,0),(1,0),(2,0),(3,0),(4,0),(5,0)]. Shock translates current neighborhoods +5 circular cells in observations4-5 only; recovery restores original keyed geometry without giving either policy future information.",
+  "arms": [
+    "same-write sham caches inactive observed assignments but never reads",
+    "same-write retention uses only legal previously observed assignments as matching preferences"
+  ],
+  "metrics": "Per heldout seed returning-identity churn by phase baseline/shock/recovery; evaluator-only baseline identity drift when motifs seen in obs0..3 reappear during obs6..11; cache writes, occupancy, legal prefs, matching search calls and full episode Hall cardinality. Evaluator baseline maps are never read by policy.",
+  "classification": "RECOVERY_BENEFIT if retained recovery-phase churn and evaluator-only baseline identity drift both strictly lower than sham in aggregate, with no per-seed increase in recovery churn. RECOVERY_HARM if retained recovery churn greater in aggregate. MIXED otherwise. INVALID for any differing write/occupancy, duplicate signature, Hall mismatch; GEOMETRY_DEFICIENCY if matched<7.",
+  "bounds": {
+    "seeds": 8,
+    "heldout": 4,
+    "episodes": 12,
+    "cells": 16,
+    "identities": 16,
+    "active": 7,
+    "retained": 9,
+    "shock_offset": 5,
+    "arms": 2,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Synthetic episodic placement recovery only; not semantic consolidation or real-world developmental intelligence."
+}
