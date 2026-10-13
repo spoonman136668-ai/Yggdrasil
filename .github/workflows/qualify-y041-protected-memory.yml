@@ -1,0 +1,46 @@
+name: Y041 frozen protected bounded memory recovery
+on:
+  push:
+    branches: [research/y041-protected-hibernation-memory-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify exact preregistered identities
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor b332db0668f6d93854bf972f2a7b594d52ad31e7 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y040-reset-frontier/execute.py)" = d0b9dd4ca6ad47a1c4a8114cc8553288e6a53c45
+          test "$(git hash-object research/contrib/chatgpt/20261013-y041-protected-memory/prereg.json)" = 3fe8f8df5ca6853808acb0d53007ac56e07386b5
+          test "$(git hash-object research/contrib/chatgpt/20261013-y041-protected-memory/execute.py)" = 186614eb312aad3b6b0fd9f2b05fdbc22c7dcd48
+          python3 -m json.tool research/contrib/chatgpt/20261013-y041-protected-memory/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y041-protected-memory/execute.py
+      - name: Original frozen protected-subset scientific experiment
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y041-protected-memory/execute.py > /tmp/Y041-original.json
+          python3 -m json.tool /tmp/Y041-original.json > /dev/null
+          python3 - <<'PY'
+          import json
+          x=json.load(open('/tmp/Y041-original.json'))
+          assert len(x['cells'])==16
+          assert x['sealed_heldout_seeds']==list(range(424,440))
+          print('CLASSIFICATION',x['classification'])
+          for c in x['cells']:
+              print(c['retained_across_reset'],c['regime'],c['saved_churn'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y041-original-protected-memory
+          path: /tmp/Y041-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Complete Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
