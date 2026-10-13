@@ -1,0 +1,36 @@
+name: Yggdrasil Y035 heterogeneous dormant repair
+on:
+  push:
+    branches: [research/y035-heterogeneous-repair-falsification-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Pin immutable preregistration, parent and source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 08ab3be3bd28516b094084cc5722bf16876af7de HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y035-heterogeneous/prereg.json)" = ff7e60378e5e6ae7ed937cee541d813a5973c9b7
+          test "$(git hash-object research/contrib/chatgpt/20261013-y035-heterogeneous/execute.py)" = 6c9f58d44876854b0a059f2d32e3d6beb9f40054
+          python3 -m json.tool research/contrib/chatgpt/20261013-y035-heterogeneous/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y035-heterogeneous/execute.py
+      - name: Frozen original heterogeneous repair science
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y035-heterogeneous/execute.py > /tmp/Y035-original.json
+          python3 -m json.tool /tmp/Y035-original.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y035-original-parity-repair
+          path: /tmp/Y035-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests

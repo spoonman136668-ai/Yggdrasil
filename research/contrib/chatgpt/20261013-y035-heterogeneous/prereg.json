@@ -1,0 +1,33 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y035-HETEROGENEOUS_TARGET_CHANGE_REPAIR_ABLATION",
+  "parent_commit": "08ab3be3bd28516b094084cc5722bf16876af7de",
+  "predecessor": "Y034",
+  "question": "Does Y034's shared-delta repair overgeneralize when cue targets change by different amounts, and can predeclared cue-parity grouping restrict the harm without adding memory slots?",
+  "hypothesis": "A globally applied update inferred from only one live-overlap cue may corrupt some stale dormant targets under heterogeneous drift. Parity-constrained correction should avoid updates to the opposite group but may have lower recall benefit.",
+  "cohort": {
+    "development_seeds": [
+      80,
+      81,
+      82,
+      83
+    ],
+    "sealed_heldout_seeds": [
+      84,
+      85,
+      86,
+      87
+    ]
+  },
+  "generator": "Frozen Y033 keyed active motifs seven per 12-episode run; target SHA256('Y033/'+seed+'/'+key) first byte mod4. STABLE unchanged; MIXED_SWITCH from episode6 even-key targets become initial+1 modulo4 and odd-key targets initial+2 modulo4. After predictions, reveal only current active seven labels.",
+  "arms": [
+    "baseline: unmodified 7-live / 9-inactive observed memory",
+    "global_correction: Y034 rule, if overlapping live keys share identical nonzero delta, after feedback add that delta to every currently dormant stored value",
+    "grouped_correction: same evidence but apply observed delta only to dormant keys of the same parity group as every agreeing overlapping live cue, no cross-group writes"
+  ],
+  "memory": "Each arm holds at most seven current/live key/value pairs plus nine inactive dormant values; group parity is deterministic key arithmetic with no trainable weights, prediction prior to feedback. Correction costs counted separately from cache writes. All three arms use same eviction schedule, same feedback, and same 16-cell identity resources.",
+  "primary": "Per heldout seed/condition total correct and post-change episode7..11 correct, dormant-return correctness, event counts and correction-value update counts. GROUPED_MORE_ROBUST if grouped post-switch score exceeds global and baseline, and stable accuracy is unchanged; HETEROGENEOUS_HARM if global worse than baseline; otherwise MIXED_OR_NEGATIVE. Preserve all outcomes and cost tradeoffs.",
+  "validity": "The target oracle is evaluator-only and never queried before predictions. Evidence for correction uses overlapping live observed label change only, no future label or dormant oracle. Check 8 distinct SHA256 input signatures, cache-write and occupancy parity, 7+9 capacity ceiling, deterministic run() twice.",
+  "safety": "Freeze source and prereg before first use, original single GitHub-hosted run with artifact and complete pytest, no threshold tuning, no first-use retries or accepted-ref changes.",
+  "claim_limit": "Finite synthetic parity-conditioned associative repair with built-in cue grouping; not developmental intelligence or general semantic memory."
+}

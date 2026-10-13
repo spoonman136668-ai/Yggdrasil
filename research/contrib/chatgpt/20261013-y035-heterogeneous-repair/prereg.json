@@ -1,0 +1,29 @@
+{
+  "id": "Y035-HETEROGENEOUS_SWITCH_REPAIR_NEGATIVE_CONTROL",
+  "base": "08ab3be3bd28516b094084cc5722bf16876af7de",
+  "cohort": [
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87
+  ],
+  "episodes": 12,
+  "active": 7,
+  "dormant": 9,
+  "conditions": [
+    "STABLE unchanged",
+    "UNIFORM_SWITCH +2 at ep6",
+    "HETEROGENEOUS_SWITCH +2 on even cue keys and +1 on odd cue keys at ep6"
+  ],
+  "arms": [
+    "unmodified read-cache",
+    "feedback consensus delta dormant repair based only on consecutive live overlap"
+  ],
+  "metrics": "heldout total and post episode6 correctness per condition, repair events, update counts, cache write parity, 16 total slots, SHA256 input signatures",
+  "preregistered_classification": "SELECTIVE_REPAIR if uniform switch improves over baseline and heterogeneous condition has zero false consensus repair events; FALSE_GENERALIZATION if heterogeneous corrections occur yet worsen accuracy; MIXED otherwise",
+  "constraint": "No access to unobserved key labels or future truth; identical sources, fixed new cohort, archive negatives, no reruns or post hoc thresholds, full pytest."
+}

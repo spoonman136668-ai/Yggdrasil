@@ -1,0 +1,49 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y035_REPAIR_SELECTIVITY_HETEROGENEOUS_TARGETS",
+  "parent_commit": "08ab3be3bd28516b094084cc5722bf16876af7de",
+  "predecessor": "Y034",
+  "question": "Does a conservatively gated observed-feedback dormant-memory repair remain useful for uniform value change and avoid falsely correcting dormant cues when different keys change by different amounts?",
+  "hypothesis": "A global shift inferred from multiple overlapping active cues should help under a uniform +2 change, but under per-key heterogeneous change the safest outcome is withholding correction rather than imposing an unsupported global transformation.",
+  "freeze": "New cohort, conditions, inner gates, thresholds and capacity budgets preregistered before first-use; no policy selection, post-result threshold adjustment or rerun.",
+  "split": {
+    "development": [
+      80,
+      81,
+      82,
+      83
+    ],
+    "heldout": [
+      84,
+      85,
+      86,
+      87
+    ]
+  },
+  "generator": "Exact frozen Y033 SHA256('Y033/'+seed+'/'+key) first byte modulo4 static association source, 16 motifs, 7 active per episode from Y030 keyed source, <=9 dormant, 12 episodes per seed. Evaluator reveals labels only AFTER predictions.",
+  "conditions": [
+    "UNIFORM: targets all change +2 modulo4 from episode6",
+    "HETEROGENEOUS: targets of even key shift+1, odd key shift+2 modulo4 from episode6; stable target before switch"
+  ],
+  "arms": [
+    "unmodified_cache: read observed dormant key-values and learn live feedback; no dormant correction",
+    "conservative_feedback_repair: after observing current feedback, detect nonzero delta only if at least two keys persist from prior active episode and ALL observed deltas agree. Adjust cached dormant values by delta, record number of extra maintenance mutations."
+  ],
+  "primary": "Per heldout condition post-switch episodes7..11 total correct/dormant-return accuracy, correction event count, false-global-correction events in heterogeneous case, maintenance operations, cache-write/occupancy parity and input signatures.",
+  "classification": "GATED_REPAIR_SELECTIVITY if uniform post-switch repaired correctness>unmodified and heterogeneous repaired correctness>=unmodified and no false global correction; HARM if heterogeneous repaired<unmodified; MIXED otherwise.",
+  "safeguards": "Policy cannot read key parity target rule or hidden labels: drift is inferred only from prior live observations and current feedback. False corrections are identified only by evaluator after predictions, not as policy input; 7+9 bound, 16 fixed keys, exact source pins, first-use archive and full regression.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "episodes": 12,
+    "conditions": 2,
+    "arms": 2,
+    "active": 7,
+    "dormant": 9,
+    "total": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Predeclared synthetic feedback-gating and transfer; not general open-world semantic learning, autonomy or accepted-ref promotion."
+}
