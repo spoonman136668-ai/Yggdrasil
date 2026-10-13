@@ -1,0 +1,43 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y036-UNOBSERVED_GROUP_BIAS_FALSIFICATION",
+  "parent_commit": "6afdac319b0b1f2dfddcea2baa84c2ca7472234c",
+  "question": "Does Y035's parity-restricted repair advantage survive when true stable subgroups are key-specific latent SHA256 classes unrelated to parity?",
+  "hypothesis": "A prewired parity-correction mechanism may not generalize when target drift groups are determined by a different hidden assignment, despite equal memory and feedback budget.",
+  "cohort": {
+    "development": [
+      88,
+      89,
+      90,
+      91
+    ],
+    "heldout": [
+      92,
+      93,
+      94,
+      95
+    ]
+  },
+  "domain": "7 live/9 dormant observed key/value associations among 16 motifs, 12 episodes, SHA256-keyed Y033/Y030 active-key schedule. STABLE unchanged. HIDDEN_SWITCH at episode6 each key target changes by +1 if SHA256('Y036/'+seed+'/'+key) first-byte parity is0, otherwise +2 modulo4. The hidden subgroup hash is evaluator-only; policies never see its membership or formula.",
+  "arms": [
+    "baseline: observed live association updates plus nine-slot dormant memory, no correction",
+    "global: detect a shared nonzero delta from live overlaps and correct every dormant value by the delta",
+    "prewired_parity: identical feedback, but apply detected shared delta only to dormant keys whose visible numeric parity matches all current agreeing live overlap cues"
+  ],
+  "primary": "Per heldout STABLE and HIDDEN_SWITCH post episode7..11 correct, dormant recall, total cache writes, extra correction mutations, per-seed true hidden-vs-parity misalignment. PARITY_GENERALIZES iff parity arm beats BOTH baseline and global after switch without stable degradation. FALSE_GROUP_PRIOR iff global or parity worse than baseline under switch. OTHERWISE_MIXED otherwise. No post-result thresholds.",
+  "safeguards": "Three arms share exactly same 7+9 storage and observed-only label feedback after prediction, all active sets/evictions fixed, no target lookup before prediction, no additional oracle or capacity. Eight unique SHA256 signatures, deterministic repeat, immutable first-use artifact and full test regression. Negative results retained and no accepted-ref mutations.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "episodes": 12,
+    "active": 7,
+    "dormant": 9,
+    "target_values": 4,
+    "conditions": 2,
+    "arms": 3,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Synthetic hidden-group memory repair falsification; not causal claims about neurons or general embodied intelligence."
+}
