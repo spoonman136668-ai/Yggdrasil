@@ -1,0 +1,31 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y034-STICKY-RETENTION-AND-BASELINE-RESTORATION",
+  "parent_sha": "4051a585bd41ff9d88aceee57f548ff5fce5dcd6",
+  "prior_source_blob": "ed0b2da9a83310348a4ccd3f9580a3536ecd42d8",
+  "question": "Can a 9-slot sticky assignment-cache policy better preserve original baseline identity after a transient geometry shock than the recency-overwriting policy, without increasing the number of memory slots?",
+  "hypothesis": "Avoiding overwrites of previously observed still-legal cached assignments may reduce evaluator-only baseline restoration drift but also increase churn and suppress new assignments due to stale occupancy; assess both.",
+  "population": "Same 12-observation fixed Y033 program: logical0..3 baseline, logical4..5 shock+5 cells, logical0..5 recovery, SHA256-keyed heterogenous 16 motif/cell universe, 7 active and <=9 cached slots, radius2 full matching. New development seeds72..75 and heldout76..79.",
+  "arms": [
+    "sham recent-cache writes but never reads",
+    "recent observed-state cache that pops active entries and overwrites departing entries with the last observed assignment (Y033)",
+    "sticky 9-slot assignment-cache, never overwrite a stored assignment on departure if already present; retain cached active entry if its placement remains legal, otherwise discard; when an active motif is not in cache, store its observed assignment only on subsequent departure, subject to 9-slot LRU eviction. No extra per-key counters, age fields, or memory cells."
+  ],
+  "metrics": "Recovery-stage returning-key churn and evaluator-only baseline identity drift, per heldout seed and phase, search calls, exact cache writes and occupancy (NOT assumed equal because this policy deliberately changes writes), legal preference hits; all arms must stay <=9 cached identities and 7 active with 16 cells.",
+  "classification": "STICKY_RESTORES_BASELINE if sticky aggregate baseline drift strictly lower than recent and no heldout seed increases drift, while sticky recovery churn does not increase in aggregate. STICKY_TRADEOFF if drift decreases but churn increases. STICKY_HARM if baseline drift increases. Otherwise NO_BENEFIT. INVALID for Hall-oracle disagreement or duplicate geometry signatures; GEOMETRY_DEFICIENCY if fewer than seven matches.",
+  "validity": "All geometry signature SHA256 unique within new cohort, independent exhaustive Hall matching, policy never queries baseline evaluator or future shock, immutable prereg/science code, no extra slots or first-use retries; one full regression. Archive all outcomes and write differences.",
+  "budget": {
+    "development": 4,
+    "heldout": 4,
+    "episodes": 12,
+    "active": 7,
+    "retained": 9,
+    "total_keys": 16,
+    "total_cells": 16,
+    "arms": 3,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Finite synthetic placement identity, no general intelligence or accepted-ref mutation."
+}
