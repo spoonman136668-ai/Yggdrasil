@@ -1,0 +1,42 @@
+name: Y055 native learned phenotype repair pilot
+on:
+  push:
+    branches: [research/chatgpt-native-y055-learned-repair-20261013]
+permissions:
+  contents: read
+jobs:
+  original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify immutable first-use native science source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 878464cf84833d06a1ac7e45988bfb79608547dc HEAD
+          test "$(git hash-object src/yggdrasil/nca.py)" = 7b15017b7f5c6f9b507bcf43f4545a3c972f40d1
+          test "$(git hash-object src/yggdrasil/training.py)" = af610c4334d2dd16415b39dd344ae2ed82ddd931
+          test "$(git hash-object src/yggdrasil/target.py)" = 47eafb7cf37a65f86358b92507c548118fa661af
+          test "$(git hash-object src/yggdrasil/damage.py)" = 79dc0aa64deeac6597da259444387a6e488b7d1a
+          test "$(git hash-object research/contrib/chatgpt/20261013-native-y055-learned-repair/prereg.json)" = 4f3f0282660c311cece700704335663e3e30a466
+          test "$(git hash-object research/contrib/chatgpt/20261013-native-y055-learned-repair/execute.py)" = 3bd1fd3518d7fe995f14c9d634570bb12e6e2b29
+          python3 -m json.tool research/contrib/chatgpt/20261013-native-y055-learned-repair/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-native-y055-learned-repair/execute.py
+      - name: Install native DG1A training runtime
+        run: python3 -m pip install -e '.[test]'
+      - name: Run original training and lesion comparison
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-native-y055-learned-repair/execute.py > /tmp/Y055-original.json
+          python3 -m json.tool /tmp/Y055-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y055-original-native-trained-regeneration
+          path: /tmp/Y055-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Complete native DG1A regression
+        run: python3 -m pytest -q tests
