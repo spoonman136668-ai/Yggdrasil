@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y036-LONG-HIBERNATION-RETENTION-HORIZON",
+  "parent_commit": "589549f49564bea860865893d697fb4de55f4540",
+  "predecessor": "Y035",
+  "hypothesis": "Y035 showed diminishing aggregate benefit of retained observed assignments as passive hibernation length increased. A new preregistered 12-episode horizon can falsify that monotonic relationship at gaps of five versus seven skipped episodes.",
+  "freeze": "Both gap lengths, new seeds, frozen 12-episode outer horizon, all model-cost and classification criteria frozen before first-use. No retry, threshold, regime or positive-outcome cherry-pick.",
+  "source": "Exact Y030 keyed structured-matching geometry with 16 cells/16 keys, 7 active, max9 inactive stored assignments; same policy logic as frozen Y035 retained versus state erasure; both arms observe same set of episodes and no geometry data during hiatus.",
+  "split": {
+    "development_seeds": [
+      88,
+      89,
+      90,
+      91
+    ],
+    "heldout_seeds": [
+      92,
+      93,
+      94,
+      95
+    ]
+  },
+  "time_budget": "Both conditions have horizon episodes0..11 (12 possible time ticks, explicitly increased from Y035's eight); no additional keys/cells/memory/model calls. Matching evaluations only at observed episodes, max7 per arm in five-gap and max5 per arm in seven-gap.",
+  "conditions": {
+    "five_skipped": {
+      "observed": [
+        0,
+        1,
+        2,
+        8,
+        9,
+        10,
+        11
+      ],
+      "skipped": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "resume": 8
+    },
+    "seven_skipped": {
+      "observed": [
+        0,
+        1,
+        2,
+        10,
+        11
+      ],
+      "skipped": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "resume": 10
+    }
+  },
+  "arms": [
+    "keep max-nine inactive plus previous seven active assignment memory frozen during hiatus",
+    "erase cache and previous-active placement assignments only at hiatus boundary, charge erasure operations"
+  ],
+  "accounting": "Record per seed matching cardinality, returning-key churn, first-reactivation churn, total post-gap churn, cache legality, read attempts and writes, recursion calls and erase work. Preregister cost penalty weights w3, w10; cost=w*churn+searchcalls+writes+reads+erasure_count.",
+  "classification": "SHORT_ONLY_RETENTION if aggregate five-gap churn benefit>0 and seven-gap benefit<=0; LONG_HORIZON_DECAY if both benefits positive and five-gap aggregate>seven-gap aggregate; NO_DECAY_OR_NEGATIVE otherwise. INVALID if eight unique keyed geometry signatures/independent Hall/cardinality/capacity fail. Publish all perseed negatives.",
+  "budget": {
+    "seeds": 8,
+    "dev": 4,
+    "heldout": 4,
+    "horizon_ticks": 12,
+    "max_observed_epochs": 7,
+    "conditions": 2,
+    "arms": 2,
+    "active": 7,
+    "stored_inactive_max": 9,
+    "total_cells": 16,
+    "total_keys": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Synthetic hibernation-like cached assignment survival only; no biological or learned general intelligence claims, no accepted-ref change."
+}
