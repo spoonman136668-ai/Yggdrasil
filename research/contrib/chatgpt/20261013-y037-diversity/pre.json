@@ -1,0 +1,67 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "experiment": "Y037-NONALIASED-ENVIRONMENT-TRANSFER-QUALIFICATION",
+  "parent_head": "22e8c99ccca694d46c3cce07d9f11574eef43ee1",
+  "reason": "Prior Y025-Y036 environment generator had exact seed+16 aliasing, so prior fresh cohort claims cannot establish independent environment generalization. Preserve predecessor results but requalify fixed quorum2 under new, explicitly nonaliased generative family.",
+  "freeze": "Freeze active-key schedule keyed by SHA-256 over full seed+episode+motif, base-home seed SHA-256, all collision/neighbor structures and fixed policies prior to scientific first use. Fail closed if any pair of seeds produces the same entire environment history. Do not replay any prior cohort.",
+  "split": {
+    "development_seeds": [
+      320,
+      321,
+      322,
+      323,
+      324,
+      325,
+      326,
+      327
+    ],
+    "sealed_heldout_seeds": [
+      328,
+      329,
+      330,
+      331,
+      332,
+      333,
+      334,
+      335,
+      336,
+      337,
+      338,
+      339,
+      340,
+      341,
+      342,
+      343
+    ]
+  },
+  "environment": "At each episode independently rank 16 motif keys by SHA256('active|seed|episode|key') and take top seven; the first four actives share a home H = SHA256('home|seed')%16 + regime shift mod16, and the remaining three have homes H+5,H+8,H+11 mod16. Each key has radius2 neighbors. Four-way collision and 16 keys/cells preserved. Deterministic perfect 7-match construction: first four use H-2,H-1,H,H+1; remaining keys choose H+5,H+8,H+11.",
+  "uniqueness": "Hash complete 8-episode active-key and per-active-key sorted neighborhoods into a SHA256 environment fingerprint for each of 24 seeds; require 24 unique fingerprints across development and heldout or abort as INVALID, no rerun.",
+  "regimes": [
+    "drift1: Hshift=episode",
+    "drift2: Hshift=2*episode",
+    "drift4: Hshift=4*episode",
+    "late_shock: shifts [0,1,2,3,8,13,14,15]"
+  ],
+  "policies": [
+    "write matched sham no cached preference",
+    "full cached legal preference",
+    "quorum2 only if >=2 legal prior cached keys",
+    "quorum3 only if >=3 legal prior cached keys"
+  ],
+  "assessment": "Cumulative returning-key placement churn, legal cached preferences, search calls, equal cache writes+keys, exhaustive Hall7 oracle, per-seed/regime arms, unique environment fingerprints. QUORUM_REQUALIFIED if quorum2 no worse than full in ALL novel drift2/drift4/late_shock and strictly better in >=1 and preserves >=70% of full's sham-relative saving in drift1. MIXED if at least one strict improvement but fails strict threshold; NO_TRANSFER otherwise. Strictly no new model capacity or hidden agent budget.",
+  "bounds": {
+    "active": 7,
+    "max_retained": 9,
+    "total_motifs": 16,
+    "total_cells": 16,
+    "episodes": 8,
+    "development": 8,
+    "heldout": 16,
+    "policy_arms": 4,
+    "regimes": 4,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "New synthetic nonaliased environment validation, not general biological or semantic intelligence."
+}
