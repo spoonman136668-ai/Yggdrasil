@@ -1,0 +1,47 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y040-HIBERNATION_MEMORY_AND_STALE_REACTIVATION",
+  "parent_commit": "63a0c708d63ba52556a2096cbf95cda247f42980",
+  "question": "Can dormant cue memory preserve a learned capability after an extended period of inactivity, and does the same persistence become harmful when the dormant task secretly changes before reactivation?",
+  "hypothesis": "At fixed 7-live / ≤9-dormant capacity, a high-capacity cache will retain old cue-value associations across 8 intervening distractor episodes, improving stable recall at reactivation but exposing a stale-memory penalty after an unobserved target shift.",
+  "cohort": {
+    "development_seeds": [
+      120,
+      121,
+      122,
+      123
+    ],
+    "heldout_seeds": [
+      124,
+      125,
+      126,
+      127
+    ]
+  },
+  "synthetic_world": "Per seed, SHA256('Y040order/'+seed+'/'+motif) assigns deterministic permutation of 16 motif IDs; first seven are CORE, next seven DISTRACTORS, remaining two never active. Twelve episodes per seed: e0/e1 CORE, e2..e9 DISTRACTORS (8 consecutive hibernation episodes), e10/e11 CORE return. Exactly 7 active motifs each episode; no oracle until after per-episode predictions.",
+  "targets": "Initial cue target SHA256('Y040value/'+seed+'/'+key) first byte modulo4. STABLE condition never changes. HIDDEN_SHIFT condition adds +2 modulo4 to the targets of only CORE motifs from episode6 onward, while they are inactive; no policy observes the shift before reactivation e10.",
+  "policies": "Four fixed dormant capacities k=0,3,6,9. Each maintains the same seven last active observed cue/value pairs plus at most k dormant observations in oldest-evicted cache. Predict current cue from last live, otherwise dormant, otherwise class0; only afterward observe seven current target labels and update memory. Never add hidden slots or future labels.",
+  "metrics": "For each heldout seed/condition/k: initial core learning, stable and changed reactivation e10 correct out of7, dormant cache hits and wrong stale predictions, e11 recovery after observed reactivation feedback, total cache entries/writes/evictions, 7+k memory assertion.",
+  "classification": "HIBERNATION_RECALL_AND_STALE_COST if aggregate STABLE reactivation correctness at k9>k0, HIDDEN_SHIFT reactivation correctness k9<k0, and k9 e11 recovery correctness=28/28; otherwise PARTIAL if some cache recall benefit, NEGATIVE otherwise. Report all four capacities and negative cases.",
+  "validity": "SHA256 ordered motif+target fingerprints unique across all 8 seeds. Policy never sees dormant hidden target shift before e10, input schedule fixed; frozen prereg and exact evaluator SHA checked before first-use, original archived, full pytest, no post-outcome retuning or accepted-ref change.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "episodes": 12,
+    "core_keys": 7,
+    "distractor_keys": 7,
+    "never_active_keys": 2,
+    "active": 7,
+    "dormant_caps": [
+      0,
+      3,
+      6,
+      9
+    ],
+    "conditions": 2,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase_over_nine": 0
+  },
+  "claim_limit": "Finite synthetic reactivation/forgetting experiment, not true organismal development or generalized memory."
+}
