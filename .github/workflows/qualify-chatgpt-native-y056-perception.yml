@@ -1,0 +1,41 @@
+name: Y056 native trained spatial-perception ablation
+on:
+  push:
+    branches: [research/chatgpt-native-y056-perception-ablation-20261013]
+permissions:
+  contents: read
+jobs:
+  original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify immutable training and native neural-source identity
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 878464cf84833d06a1ac7e45988bfb79608547dc HEAD
+          test "$(git hash-object src/yggdrasil/nca.py)" = 7b15017b7f5c6f9b507bcf43f4545a3c972f40d1
+          test "$(git hash-object src/yggdrasil/training.py)" = af610c4334d2dd16415b39dd344ae2ed82ddd931
+          test "$(git hash-object src/yggdrasil/target.py)" = 47eafb7cf37a65f86358b92507c548118fa661af
+          test "$(git hash-object research/contrib/chatgpt/20261013-native-y056-perception-ablation/prereg.json)" = cc3ef04453da0c96ad11ae709bdb9314caebd9ad
+          test "$(git hash-object research/contrib/chatgpt/20261013-native-y056-perception-ablation/execute.py)" = 97c1cece9fc92f01d13308b5fa28f498c9492334
+          python3 -m json.tool research/contrib/chatgpt/20261013-native-y056-perception-ablation/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-native-y056-perception-ablation/execute.py
+      - name: Install native DG1A dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Original frozen native Y056 research
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-native-y056-perception-ablation/execute.py > /tmp/Y056-original.json
+          python3 -m json.tool /tmp/Y056-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y056-original-native-perception-ablation
+          path: /tmp/Y056-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full native developmental regression
+        run: python3 -m pytest -q tests
