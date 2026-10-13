@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.science.preregistered.v1",
+  "id": "Y036-UNSEEN-NEIGHBOR-TOPOLOGY-QUORUM",
+  "parent_sha": "35eace118e16ab8195a6810f2bc6ec569dfd0106",
+  "hypothesis": "Y033's quorum2 cache benefit was shown only on the circular radius-two neighborhood family. Test without retuning on new bipartite topologies and perturbed cell permutations, using the same seven action slots and nine retained memory assignments.",
+  "freeze": "All topology generators, graph degree, policies, model budgets, seed cohorts and labels fixed before original first-use; no post-result threshold selection.",
+  "splits": {
+    "development": [
+      200,
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207
+    ],
+    "heldout": [
+      208,
+      209,
+      210,
+      211,
+      212,
+      213,
+      214,
+      215,
+      216,
+      217,
+      218,
+      219,
+      220,
+      221,
+      222,
+      223
+    ]
+  },
+  "setting": "Exactly seven active keys per episode of sixteen total motif identities, sixteen cells, eight episodes, nine retained assignments maximum; deterministic active-key generator inherited from Y033.",
+  "topologies": [
+    "ring_reference: Y033 radius-two, drift1",
+    "fixed_scrambled_ring: ring_reference neighbor cells passed through fixed bijective cell relabeling (cell map (5*cell + 3*seed) mod16) each episode",
+    "episodic_scrambled_ring: ring_reference neighbor cells passed through per-episode bijective map (5*cell + 3*seed+3*episode) mod16",
+    "five_neighbor_anchored: for active key at index j, legal neighborhood five cells {(2*j + seed+episode + d) mod16 for d in range(5)}, guaranteeing a unique legal matching by using cells at d=0 for j=0..6"
+  ],
+  "policies": [
+    "matched_sham: observed cache writes but no preferred assignment reads",
+    "full: use every currently legal remembered cell",
+    "quorum2: use remembered legal assignments only if >=2 distinct currently active keys have legal cached placements",
+    "quorum3: same, threshold>=3"
+  ],
+  "success": "TOPOLOGY_TRANSFER if quorum2 has churn <= full in ALL three new topology families and strictly improves in at least two, and preserves >=70% of full-cache churn savings vs sham in ring_reference. MIXED if quorum2 improves in >=1 new topology without full criterion. NEGATIVE otherwise. Report all per-seed churn/search/writes and legal preference use.",
+  "controls": [
+    "Exhaustive Hall matching oracle per episode; require cardinality seven for all",
+    "Identical cache-write counts and key occupancy trajectory between paired policies",
+    "Zero future knowledge, zero evaluator-only history inputs to policies",
+    "No extra cell, key, memory capacity, new policy activation, or accepted-ref mutation",
+    "Exact Git parent/prereg/source identity before first use; original scientific archive and one full pytest regression"
+  ],
+  "bounds": {
+    "topologies": 4,
+    "policies": 4,
+    "development": 8,
+    "heldout": 16,
+    "episodes": 8,
+    "active": 7,
+    "max_retained": 9,
+    "total_motifs": 16,
+    "total_cells": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Finite synthetic bipartite assignment caching, not semantic memory or developmental intelligence."
+}
