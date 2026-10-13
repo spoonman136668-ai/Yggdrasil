@@ -1,0 +1,37 @@
+name: Yggdrasil Y024 frozen bounded retained-placement science
+on:
+  push:
+    branches: [research/y024-bounded-retention-memory-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify frozen identity and preregistration before first use
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor cea2086833ea27081b4619d61ce9ecb0d8c95a8a HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261012-y023-collision-geometry/execute.py)" = f19c27950e174b714f6004f766615869c0974170
+          test "$(git hash-object research/contrib/chatgpt/20261012-y024-retained-placement/prereg.json)" = 45406cd72a36acd833d98b61810412ee2beda58e
+          test "$(git hash-object research/contrib/chatgpt/20261012-y024-retained-placement/execute.py)" = ac285c0a2fa193eb45ea46ec38b767f4a6a74dc3
+          python3 -m json.tool research/contrib/chatgpt/20261012-y024-retained-placement/prereg.json > /dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261012-y024-retained-placement/execute.py
+      - name: Original frozen cumulative placement science
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261012-y024-retained-placement/execute.py > /tmp/Y024-original.json
+          python3 -m json.tool /tmp/Y024-original.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y024-original-retained-placement
+          path: /tmp/Y024-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Full repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
