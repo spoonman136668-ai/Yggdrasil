@@ -1,0 +1,51 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y033-DORMANT_ASSOCIATIVE_RECALL_AND_VALUE_SWITCH",
+  "parent_commit": "f119338d8cd9376a103742dc894e211d71066954",
+  "predecessor": "Y032",
+  "question": "Can a 9-slot dormant key-value memory preserve synthetic cue-to-response capability across inactivity, and does memory become harmful when the same cue's target changes?",
+  "hypothesis": "Read-enabled nine-slot dormant memory should improve recall of previously observed returning motifs under stable targets relative to a cache-write-matched sham, but storing past targets may impose a plasticity cost after abrupt target reassignment.",
+  "freeze": "Fix exact target SHA256 generator, conditions, switch episode, cohort, capacities, feedback sequence, outcome criteria and budget before first-use; retain all outcomes including negative/harm.",
+  "new_domain": "16 synthetic motifs with 4-valued observed targets; this is associative recall, not the old graph assignment churn objective. Active sets of 7 from frozen Y030 SHA256 keyed motif generator. Each episode observes only seven labels AFTER predicting.",
+  "cohort": {
+    "development_seeds": [
+      64,
+      65,
+      66,
+      67
+    ],
+    "heldout_seeds": [
+      68,
+      69,
+      70,
+      71
+    ]
+  },
+  "conditions": [
+    "STABLE: target for each seed/key=first SHA256('Y033/'+seed+'/'+key) byte mod4 throughout 12 episodes",
+    "SWITCH: same initial targets, but from episode6 onward target=(initial+2)%4 for every key, unknown to both policies until observed"
+  ],
+  "arms": [
+    "write_matched_sham: 7 previous-active key/value observations remain immediately available, nine inactive cache entries still written and evicted but may not be read",
+    "dormant_memory_read: exact same seven previous-active observations and nine inactive writes, plus may read cached values of returning dormant motifs"
+  ],
+  "prediction_feedback": "On each of 12 episodes, predict target for each of 7 current active keys using only previous observed current/dormant memory, default guess0 when unknown. Then reveal exactly those 7 episode labels as feedback and update memory. No labels for inactive keys, future episodes or policy selection.",
+  "storage": "At most seven previous-active key/value pairs and nine dormant key/value pairs, never more than 16 total. Distinguish active/live associations from dormant memory; each episode cache updates apply symmetrically and cache writes counted equally.",
+  "primary": "For heldout STABLE compute correct predictions, returning-dormant accuracy and sham-read difference. For SWITCH record same metrics split pre/post episode6, particularly first stale dormant recalls; STABLE_DORMANT_RECALL if stable read beats sham total and there are more correct dormant read predictions; STABILITY_PLASTICITY_TRADEOFF if stable read beats sham and switched post-change dormant read correctness falls below stable counterpart; OTHERWISE_MIXED if no criterion. Outcome categories not mutually exclusive: record both boolean findings.",
+  "independent_checks": "Targets derived by evaluator only when feedback occurs, no target formula in predictor. 8 distinct SHA256 keyed input fingerprints, cache occupancy/writes parity, deterministic double run, exact pinned blobs and one full regression.",
+  "budget": {
+    "conditions": 2,
+    "arms": 2,
+    "seeds": 8,
+    "heldout_seeds": 4,
+    "episodes_per_seed": 12,
+    "active_motifs": 7,
+    "dormant_slots": 9,
+    "total_motifs": 16,
+    "target_cardinality": 4,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Procedural finite symbolic associative recall with observed feedback; no semantic or natural-language consolidation, no clinical/neuroscience claims, no accepted ref mutation."
+}
