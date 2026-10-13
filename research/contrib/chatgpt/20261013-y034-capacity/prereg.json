@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y034-MEMORY-CAPACITY-UTILITY-DOSE",
+  "parent_commit": "92fdc63bd3bc95ec284dfb47a6c1c6d446d9dfb4",
+  "predecessor": "Y033",
+  "hypothesis": "For episodic observed-assignment cache, increasing retained inactive-slot capacity from 0 to 4 to 9 can improve churn but may have diminishing or negative cost-effectiveness. At a fixed primary churn penalty, an intermediate capacity may outperform the full 9 slots.",
+  "freeze": "All capacity levels, schedules, seeds, output metrics, cost weights and classification committed before first original science; no capacity increase beyond accepted prior upper bound and no post hoc threshold selection.",
+  "source": "Exact Y030 keyed nonuniform 16-key/cell geometry and exact Y033 finite recurrence/constant additional shifts; seven active identities per episode, eight episodes per seed, radius-two matching; no future states or evaluator-only history available to policy.",
+  "split": {
+    "development_seeds": [
+      72,
+      73,
+      74,
+      75
+    ],
+    "heldout_seeds": [
+      76,
+      77,
+      78,
+      79
+    ]
+  },
+  "schedules": {
+    "recurrent": [
+      0,
+      1,
+      2,
+      1,
+      0,
+      1,
+      2,
+      1
+    ],
+    "constant": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "capacities": [
+    0,
+    4,
+    9
+  ],
+  "arms_per_capacity": [
+    "sham cache-write-matched without reading",
+    "retained uses legal cached preferences"
+  ],
+  "costs": "Fixed modeled cost per policy = matching recursive calls + cache writes + cache lookup attempts + churn*w with w=1,3,10; w=3 is preregistered primary. Track actual writes on eviction; zero-slot policy makes no writes.",
+  "metrics": "For each cap and schedule: heldout per-seed churn, exact match count, cache occupancy/write/read parity, recursive calls, legal cached preferences, sham-minus-retained net modeled cost all weights, and cache maximum observed occupancy.",
+  "classification": "For constant schedule at primary w3, INTERMEDIATE_OPTIMUM if cap4 aggregate savings>0 and exceeds cap9; FULL_CAP_OPTIMUM if cap9>cap4 and cap9 aggregate savings>0; otherwise NO_CAPACITY_GAIN. INVALID if independent Hall maxima, unique geometry signatures, unchanged source/seed or per-capacity parity checks fail. Publish recurrent secondary in full regardless.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "conditions": 2,
+    "capacities": 3,
+    "arms_per_cap": 2,
+    "episodes_per_seed": 8,
+    "active": 7,
+    "cells": 16,
+    "motif_keys": 16,
+    "max_retained": 9,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Synthetic fixed-assignment cache resource tradeoff only; no direct evidence for learned developmental intelligence or broader transfer; no accepted-ref mutation."
+}
