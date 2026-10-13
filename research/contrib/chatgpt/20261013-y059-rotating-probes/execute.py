@@ -30,8 +30,15 @@ def sample(seed,family,arm):
             cells=(0,1)
         # Instrument samples only the precommitted public physical landmark
         # addresses; no generator-shock metadata passes to detector.
-        out[episode]={str(cell):y46.coordinate(cell,seed,episode,family,"late_shock")
-                      for cell in cells}
+        sampled={}
+        for cell in cells:
+            value=y46.coordinate(cell,seed,episode,family,"late_shock")
+            if cell in (0,1):
+                # Source-integrity witness only; native coordinate is NOT
+                # supplied to the candidate's independent detector.
+                assert value==y58.ORIGINAL[0](cell,seed,episode,family,"steady")
+            sampled[str(cell)]=value
+        out[episode]=sampled
     assert sum(len(x) for x in out.values())==10
     return out
 
