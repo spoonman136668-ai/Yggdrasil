@@ -1,0 +1,24 @@
+{
+  "id": "Y021-HALL-DEFICIENCY",
+  "parent": "04055c51f3438da78ac3e110b1dd43a221d2d39c",
+  "question": "For the six exact consumed R016 placement stages, can a concrete Hall-deficient subset certify the radius-one failure independently of the matching implementation?",
+  "arms": [
+    "A0 exact radius-one selected-key and cell neighborhoods",
+    "A1 original radius-two control"
+  ],
+  "frozen": {
+    "stages": 6,
+    "cells": 16,
+    "keys_per_stage": 16,
+    "max_witnesses": 6,
+    "model_calls": 0,
+    "extra_capacity": 0
+  },
+  "method": "Run original native R016 control; construct maximum matching on radius-one neighbor graph; start from unmatched keys, traverse alternating unmatched edges key-to-cell and matched cell-to-key; report the reachable key subset S and its full neighboring cell set N(S); verify |N(S)|<|S| and maximum_cardinality=16-(|S|-|N(S)|); compare to original radius-two perfect matching.",
+  "classification": {
+    "supported": "All six stages produce valid deficient witnesses and original radius-two perfect matching",
+    "negative": "All provenance controls pass but at least one deficient witness does not exist",
+    "invalid": "Any source identity, stage count, control, deterministic or graph invariant mismatch"
+  },
+  "scope": "Reused synthetic inputs, non-authoritative native mechanistic ablation; no accepted-ref mutation or first-use"
+}
