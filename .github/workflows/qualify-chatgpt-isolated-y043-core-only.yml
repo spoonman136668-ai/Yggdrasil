@@ -1,0 +1,37 @@
+name: Y043 frozen core-only sentinel repair
+on:
+  push:
+    branches: [research/chatgpt-isolated-y043-core-only-reactivation-20261013]
+permissions:
+  contents: read
+jobs:
+  original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify immutable preregistration and source provenance
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 2dcb700cb9a531a98fa8fcfeba072f2ff6ea034a HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y040-hibernation/execute.py)" = 6c6ba3ebf39456056fca0e60a8210d941cf69e43
+          test "$(git hash-object research/contrib/chatgpt/20261013-isolated-y043-core-only/prereg.json)" = f89a1e3f0f8464d9527de124c88f5ecbe56481bf
+          test "$(git hash-object research/contrib/chatgpt/20261013-isolated-y043-core-only/execute.py)" = 6b0750e30e0eff9aaa4f2e1ade267ebb83b04daf
+          python3 -m json.tool research/contrib/chatgpt/20261013-isolated-y043-core-only/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-isolated-y043-core-only/execute.py
+      - name: Original first-use Y043 core-only sentinel experiment
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-isolated-y043-core-only/execute.py > /tmp/Y043-original.json
+          python3 -m json.tool /tmp/Y043-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y043-original-core-only-sentinel
+          path: /tmp/Y043-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
