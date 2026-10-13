@@ -1,0 +1,38 @@
+name: Y044 frozen contaminated sentinel corroboration
+on:
+  push:
+    branches: [research/chatgpt-isolated-y044-sentinel-consistency-20261013]
+permissions:
+  contents: read
+jobs:
+  original-first-use:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify immutable prior source and frozen scientific inputs
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor cff687e5ad517df553a3e57787bf8a02dabd9628 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y040-hibernation/execute.py)" = 6c6ba3ebf39456056fca0e60a8210d941cf69e43
+          test "$(git hash-object research/contrib/chatgpt/20261013-isolated-y043-core-only/execute.py)" = 6b0750e30e0eff9aaa4f2e1ade267ebb83b04daf
+          test "$(git hash-object research/contrib/chatgpt/20261013-isolated-y044-corrupt-sentinel/prereg.json)" = 365dee01c50be753b3372f4ce99fecba500a1713
+          test "$(git hash-object research/contrib/chatgpt/20261013-isolated-y044-corrupt-sentinel/execute.py)" = d730712d6d3f4f0217b31a707a94370f193cb050
+          python3 -m json.tool research/contrib/chatgpt/20261013-isolated-y044-corrupt-sentinel/prereg.json > /dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-isolated-y044-corrupt-sentinel/execute.py
+      - name: Original frozen Y044 scientific execution
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-isolated-y044-corrupt-sentinel/execute.py > /tmp/Y044-original.json
+          python3 -m json.tool /tmp/Y044-original.json > /dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y044-original-sentinel-corroboration
+          path: /tmp/Y044-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full repository qualification
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
