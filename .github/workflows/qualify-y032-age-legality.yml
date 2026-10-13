@@ -1,0 +1,37 @@
+name: Yggdrasil Y032 preregistered age-legality cache study
+on:
+  push:
+    branches: [research/y032-age-legality-interaction-r1]
+permissions:
+  contents: read
+jobs:
+  original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify immutable lineage and original scientific identities
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 5d0301092b0f6626001509196d6d063c4f0ca0c0 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y031-aged-retention/execute.py)" = fb747a835dc346887d7c61cf7ac8384c70ec8c9b
+          test "$(git hash-object research/contrib/chatgpt/20261013-y032-age-legality/prereg.json)" = 2219fb067dbbceab249d2c0b4ea40461e58dd9af
+          test "$(git hash-object research/contrib/chatgpt/20261013-y032-age-legality/execute.py)" = ca68e04aea27aa067ca214f395bada2ca322b588
+          python3 -m json.tool research/contrib/chatgpt/20261013-y032-age-legality/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y032-age-legality/execute.py
+      - name: First and only original scientific execution
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y032-age-legality/execute.py > /tmp/y032-first-use.json
+          python3 -m json.tool /tmp/y032-first-use.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y032-first-use
+          path: /tmp/y032-first-use.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: One full repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
