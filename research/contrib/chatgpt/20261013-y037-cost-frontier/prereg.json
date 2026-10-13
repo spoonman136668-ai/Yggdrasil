@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.science.frozen_prereg.v1",
+  "id": "Y037-RETENTION-CHURN-COMPUTE-PARETO",
+  "parent_head": "0f18249168254a83ca05c987abb01c55d86c0db7",
+  "hypothesis": "Cached assignment policies reduce returning-motif churn under some regimes but may increase matching search work. Compare both churn and augmenting-path search calls under newly disjoint cohorts to determine if quorum2 is a multiobjective Pareto improvement.",
+  "freeze": "All comparison arms, four geometry families, budgets and strict Pareto classification frozen before the original first use; no model/policy retraining.",
+  "population": "Exactly seven active of sixteen motif identities/cells, maximum nine inactive cached assignments, 8 episodes and radius2 matching, same Y036 deterministic neighborhood/home generator and exhaustive Hall oracle.",
+  "cohorts": {
+    "development_seeds": [
+      224,
+      225,
+      226,
+      227,
+      228,
+      229,
+      230,
+      231
+    ],
+    "sealed_heldout_seeds": [
+      232,
+      233,
+      234,
+      235,
+      236,
+      237,
+      238,
+      239,
+      240,
+      241,
+      242,
+      243,
+      244,
+      245,
+      246,
+      247
+    ]
+  },
+  "regimes": [
+    "reference_drift1",
+    "zigzag",
+    "shock_recover",
+    "xorshift_global"
+  ],
+  "policies": [
+    "matched_sham",
+    "full",
+    "quorum2",
+    "quorum3"
+  ],
+  "metrics": "For all heldout seeds and four regimes, total matching recursion calls (only within the core matcher; no fabricated wall time), returning-key placement churn, legal preferences, cache writes, cache occupancy and max-matching cardinality. Assess both aggregate and worst-regime cost.",
+  "primary": "PARETO_QUORUM2 if across ALL four regimes quorum2 has churn<=full AND recursive_calls<=full, with at least one strict improvement, while slow-drift quorum2 preserves >=70% of full saving vs sham. TRADEOFF if any regime improves BOTH churn and calls but strong condition fails; NOT_PARETO otherwise. Preserve per-regime regressions and negative outcomes.",
+  "controls": [
+    "All policies see only observed assignments and present graph",
+    "Identical cache writes/keys and seven exact legal matches per episode verified with independent Hall",
+    "Call counter must be the existing matcher return, not an additional search budget",
+    "One source-frozen original artifact plus full pytest; no retries, accepted-ref or production mutations"
+  ],
+  "bounds": {
+    "policies": 4,
+    "regimes": 4,
+    "heldout": 16,
+    "development": 8,
+    "episodes": 8,
+    "max_cache": 9,
+    "active": 7,
+    "total_keys": 16,
+    "total_cells": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic multiobjective matcher cost and retention analysis, not model-call compute or learned semantics."
+}
