@@ -1,0 +1,50 @@
+name: Yggdrasil Y060 frozen sentinel-triggered causal decoder
+on:
+  push:
+    branches: [research/y060-sentinel-triggered-decoder-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Frozen parent, prereg and source-birth identity gate
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 05f367ddfa06dca232ec66282e18889968e18a9e HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y059-rotating-probes/execute.py)" = 1a0d8a42a95c59a19fb9770f0dc45a129d4abf61
+          test "$(git hash-object research/contrib/chatgpt/20261013-y060-decoder-recovery/prereg.json)" = 76c56783d299884f4bb04f1187993866056516ce
+          test "$(git hash-object research/contrib/chatgpt/20261013-y060-decoder-recovery/execute.py)" = 80014bea14b9b2adf1d38f7197b809895bb3c575
+          python3 -m json.tool research/contrib/chatgpt/20261013-y060-decoder-recovery/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y060-decoder-recovery/execute.py
+      - name: First-use frozen causal coordinate-decoder science
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y060-decoder-recovery/execute.py > /tmp/Y060-original.json
+          python3 -m json.tool /tmp/Y060-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          a=json.load(open('/tmp/Y060-original.json'))
+          assert a['development_seeds']==list(range(3136,3144))
+          assert a['sealed_heldout_seeds']==list(range(3144,3160))
+          assert len(a['heldout_records'])==2*3*4*16
+          assert a['per_trial_public_scalar_reads']==10
+          print('CLASSIFICATION',a['classification'])
+          print('DETECTION_RECOVERY',a['detectable_recovery_gates'])
+          print('TIMING_BLINDSPOT_PRESERVED',a['known_timing_blindspot_preserved'])
+          for key,cell in a['results_by_condition'].items():
+              print('CASE',key,cell['detected'],cell['errors'],cell['post_detection_errors'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y060-original-decoder-recovery
+          path: /tmp/Y060-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Final complete Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
