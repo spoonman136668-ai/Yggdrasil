@@ -1,0 +1,74 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "experiment": "Y036-LOW-CONFLICT-PREFERENCE-RANKING",
+  "parent_head": "35eace118e16ab8195a6810f2bc6ec569dfd0106",
+  "hypothesis": "Y035 dropped all useful memory when filtering at degree4. Rank current legal remembered placements by ascending neighborhood competition and use the best two or three instead of discarding all high-degree cells, without changing cache size or matching capacity.",
+  "freeze": "Fix two/three top-ranked legal preferences, policy definitions, four drift schedules, exact fresh cohorts and criteria before first-use. No favorable rank threshold selected after outcome.",
+  "population": "Identical Y034/Y035 seven active, sixteen keys/cells, nine inactive cached prior assignments, radius-two matching, four-way collision and eight episodes per seed.",
+  "cohorts": {
+    "development_seeds": [
+      200,
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207
+    ],
+    "sealed_heldout_seeds": [
+      208,
+      209,
+      210,
+      211,
+      212,
+      213,
+      214,
+      215,
+      216,
+      217,
+      218,
+      219,
+      220,
+      221,
+      222,
+      223
+    ]
+  },
+  "regimes": [
+    "drift1",
+    "drift2",
+    "drift4",
+    "late_shock"
+  ],
+  "policies": [
+    "matched_sham same write-only nine-key cache",
+    "full all currently legal cached preferences",
+    "quorum2 all legal preferences when at least two eligible",
+    "rank_low_conflict2 when >=2 legal cached keys, use two assignments with lowest present-graph neighbor-degree then key",
+    "rank_low_conflict3 when >=3 legal cached keys, use three lowest-degree assignments then key"
+  ],
+  "primary": "Per regime, paired heldout-seed churn, matching search calls, legal candidate count, used preference count, cache writes, stored key identities and independent exhaustive Hall7 matching.",
+  "classification": "RANKED_GAIN iff rank_low_conflict2 churn<=quorum2 in both drift4 and late_shock, strictly lower in at least one, and preserves >=70% of full's drift1 sham-relative saving. PARTIAL if rank2 or rank3 improves over quorum2 in either difficult regime but strict fails. NO_GAIN otherwise. Retain every negative/harmful arm and no-data result.",
+  "controls": [
+    "Only current neighbor graph + previously observed cached assignments, no oracle or evaluator history for policy",
+    "Identical nine-cache writes and stored keys between arms, frozen capacity and total cells",
+    "Independent exhaustive Hall match check on each episode",
+    "Frozen Git blob identities, original first-use archive then final full pytest regression"
+  ],
+  "bounds": {
+    "policies": 5,
+    "regimes": 4,
+    "development": 8,
+    "heldout": 16,
+    "episodes": 8,
+    "active": 7,
+    "max_cached": 9,
+    "total_keys": 16,
+    "total_cells": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic matched assignment policy ranking, not learned semantic cognition or validated deployment."
+}
