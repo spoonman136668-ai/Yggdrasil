@@ -1,0 +1,33 @@
+name: Yggdrasil Y019 locality-pressure experiment
+on:
+  push:
+    branches: [research/y019-locality-pressure-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify exact Y018 predecessor
+        run: git merge-base --is-ancestor 89df917bb5177e39a039f5b2da0cfb67f64209ab HEAD
+      - name: Install dependencies
+        run: python -m pip install -e ".[test]"
+      - name: Execute frozen Y019 experiment once
+        run: |
+          python -B research/contrib/chatgpt/20261012-y019-locality-pressure/execute.py --output "$RUNNER_TEMP/y019.json"
+          python -m json.tool "$RUNNER_TEMP/y019.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: y019-native-original-output
+          path: ${{ runner.temp }}/y019.json
+          retention-days: 90
+      - name: Full regression
+        run: python -m pytest -q tests
