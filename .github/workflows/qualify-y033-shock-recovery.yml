@@ -1,0 +1,37 @@
+name: Yggdrasil Y033 frozen shock and recovery
+on:
+  push:
+    branches: [research/y033-shock-recovery-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify immutable predecessor, preregistration and source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor d821f293fec9b229aa485771128f77e3304b9494 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y032-age-legality/execute.py)" = ca68e04aea27aa067ca214f395bada2ca322b588
+          test "$(git hash-object research/contrib/chatgpt/20261013-y033-shock-recovery/prereg.json)" = bc478dec968a717b1fcfdc5fd59d7216a47336af
+          test "$(git hash-object research/contrib/chatgpt/20261013-y033-shock-recovery/execute.py)" = ed0b2da9a83310348a4ccd3f9580a3536ecd42d8
+          python3 -m json.tool research/contrib/chatgpt/20261013-y033-shock-recovery/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y033-shock-recovery/execute.py
+      - name: First-use original scientific experiment
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y033-shock-recovery/execute.py > /tmp/y033-original.json
+          python3 -m json.tool /tmp/y033-original.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y033-first-use
+          path: /tmp/y033-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: One final full repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
