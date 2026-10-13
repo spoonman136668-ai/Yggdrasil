@@ -1,0 +1,45 @@
+name: Yggdrasil Y036 frozen ranked cache preferences
+on:
+  push:
+    branches: [research/y036-bounded-conflict-ranking-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify exact frozen identities prior to first use
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 35eace118e16ab8195a6810f2bc6ec569dfd0106 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y035-interaction/execute.py)" = 692e92cf931a2d63b39a618c0044af390984f099
+          test "$(git hash-object research/contrib/chatgpt/20261013-y036-rank/prereg.json)" = 7ad7a87a69fb5b70139fcf68cf7ae575d206bedb
+          test "$(git hash-object research/contrib/chatgpt/20261013-y036-rank/execute.py)" = 7b28ead3ea638b6b2c695a03a908e6c4d7ea0bbd
+          python3 -m json.tool research/contrib/chatgpt/20261013-y036-rank/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y036-rank/execute.py
+      - name: Original frozen ranking science
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y036-rank/execute.py > /tmp/Y036-original.json
+          python3 -m json.tool /tmp/Y036-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          j=json.load(open('/tmp/Y036-original.json'))
+          assert len(j['regimes'])==4 and j['sealed_heldout_seeds']==list(range(208,224))
+          print("CLASSIFICATION",j["classification"])
+          for r in j["regimes"]:
+              print("REGIME",r["regime"],r["heldout_churn"],r["sham_relative_savings"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y036-original-ranked-cache
+          path: /tmp/Y036-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: One full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
