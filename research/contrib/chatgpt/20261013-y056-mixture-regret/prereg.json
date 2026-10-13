@@ -1,0 +1,112 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y056-EXOGENOUS-SHOCK-MIXTURE-REGRET",
+  "parent_head": "e1f3a596a1ffc7b2f8f929475e4f81b1f7d6b31e",
+  "hypothesis": "Y053–Y055 confirmed that balanced schedule diversification reduces worst-onset aggregate loss across prespecified uniform scenarios. Under skewed future shock-onset frequencies that are unknown to the controller, hedging may reduce worst-case regret relative to selecting a fixed schedule, at a mean-loss cost. Test four fixed onset-mixture shifts prospectively, without event-informed scheduling.",
+  "freeze": "Freeze fresh dev2256..2263, sealed heldout2264..2279, four new affine families, same frozen A/B schedules, 50/50 external parity assignment, shock regimes steady/onset4/5/6/7 and exact public sensor budget. Four fixed distributions each assign 70% to one onset among4/5/6/7 and 10% to each other onset. Use matched underlying world outcomes only once per cohort and compute predeclared weighted population risk ex post.",
+  "development": [
+    2256,
+    2257,
+    2258,
+    2259,
+    2260,
+    2261,
+    2262,
+    2263
+  ],
+  "sealed_heldout": [
+    2264,
+    2265,
+    2266,
+    2267,
+    2268,
+    2269,
+    2270,
+    2271,
+    2272,
+    2273,
+    2274,
+    2275,
+    2276,
+    2277,
+    2278,
+    2279
+  ],
+  "families": [
+    [
+      3,
+      5,
+      15
+    ],
+    [
+      5,
+      1,
+      11
+    ],
+    [
+      7,
+      13,
+      9
+    ],
+    [
+      11,
+      7,
+      3
+    ]
+  ],
+  "arms": [
+    "fixed_A",
+    "fixed_B",
+    "balanced_50_50_even_seed"
+  ],
+  "mixtures": {
+    "dominant4": [
+      0.7,
+      0.1,
+      0.1,
+      0.1
+    ],
+    "dominant5": [
+      0.1,
+      0.7,
+      0.1,
+      0.1
+    ],
+    "dominant6": [
+      0.1,
+      0.1,
+      0.7,
+      0.1
+    ],
+    "dominant7": [
+      0.1,
+      0.1,
+      0.1,
+      0.7
+    ]
+  },
+  "measure": "Compute each arm's expected aggregate mismatch loss under each frozen shock-onset probability mixture from the same heldout trial outcomes. Oracle benchmark is best of fixed A/B per known mixture, diagnostic only; each arm's regret=weighted loss - minimum fixed-arm weighted loss. Worst regret = max across four distributions; additionally report uniform-mixture pooled loss and raw risk by onset. Preserve all adverse scenarios.",
+  "criterion": "MIXTURE_MINIMAX_REGRET_GAIN iff hedge worst mixture regret <=0.65*min(fixed_A_worst_regret,fixed_B_worst_regret), uniform hedge expected loss <=1.10*best fixed uniform loss, and every arm has zero steady mismatches with exactly ten landmark scalar reads per run; PARTIAL_REGRET_GAIN iff regret <=0.85 and uniform loss <=1.2; NO_GAIN otherwise.",
+  "controls": [
+    "Mixture weights are an evaluator-only future-frequency assumption; they are NEVER given to the scheduler in an individual run. Best-for-mixture fixed policy is non-deployable hindsight comparator only",
+    "Across independent trials schedule allocation precommitted by parity and evenly split 8/8, one-bit external allocation metadata, no within-run adaptation or event oracle",
+    "Pinned Y053/Y054/Y055 matched canonical evaluator, original seven active/nine cached/sixteen total and ten scalar landmark readings per trial",
+    "One immutable first-use evidence artifact, complete pytest, preserve negative and mixed outcomes, no sealed replay, promotion or authority mutation"
+  ],
+  "bounds": {
+    "mixtures": 4,
+    "shock_onsets": 4,
+    "families": 4,
+    "development_seeds": 8,
+    "heldout_seeds": 16,
+    "policies": 3,
+    "arms": 3,
+    "landmark_reads_per_trial": 10,
+    "active": 7,
+    "cache": 9,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic exogenous population shock-frequency minimax regret analysis, NOT event forecasting or independently sourced physical transfer."
+}
