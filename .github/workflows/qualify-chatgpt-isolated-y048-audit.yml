@@ -1,0 +1,37 @@
+name: Y048 frozen original scientific qualification
+on:
+  push:
+    branches: [research/chatgpt-isolated-y048-audit-routing-20261013]
+permissions:
+  contents: read
+jobs:
+  original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Freeze original parent and evaluator inputs
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor bc8529c54399c69e074c831bbc4204a8f1517f67 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y040-hibernation/execute.py)" = 6c6ba3ebf39456056fca0e60a8210d941cf69e43
+          test "$(git hash-object research/contrib/chatgpt/20261013-isolated-y048-audit-routing/prereg.json)" = 210e0721fc61fe63bffabb47be014212e6f0731b
+          test "$(git hash-object research/contrib/chatgpt/20261013-isolated-y048-audit-routing/execute.py)" = 7ef715c5c41fe2b352bb4d98fde47046355aea4f
+          python3 -m json.tool research/contrib/chatgpt/20261013-isolated-y048-audit-routing/prereg.json > /dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-isolated-y048-audit-routing/execute.py
+      - name: Original first-use Y048 experiment
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-isolated-y048-audit-routing/execute.py > /tmp/Y048-original.json
+          python3 -m json.tool /tmp/Y048-original.json > /dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y048-original-first-use
+          path: /tmp/Y048-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
