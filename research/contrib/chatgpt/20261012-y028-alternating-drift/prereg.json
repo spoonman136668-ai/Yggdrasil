@@ -1,0 +1,45 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y028-ALTERNATING-DRIFT-RETENTION",
+  "parent_commit": "953cdd64cfac1dc84ac782653f2d49a54101e90a",
+  "predecessor": "Y027",
+  "hypothesis": "Y027 showed steadily weaker cache gains as stationary geometric drift increased. With preregistered alternating slow/fast drift but identical memory capacity, determine whether legal observed-state reuse and churn reduction survive intermittent shifts.",
+  "freeze": "Freeze entire 8-episode displacement schedule, seeds, matching and storage policies, metrics and outcome criteria before first execution; no adjustment after result.",
+  "population": "Same inherited seven active and up-to-nine retained, 16 total keys/cells, four-key collision, radius-two circular graph, eight episodes per seed.",
+  "displacement_schedule": "episode positions are cumulative shifts from increments [1,5,1,5,1,5,1], giving positions [0,1,6,7,12,13,18,19] mod16. No future shifts passed to either policy.",
+  "split": {
+    "development_seeds": [
+      24,
+      25,
+      26,
+      27
+    ],
+    "heldout_seeds": [
+      28,
+      29,
+      30,
+      31
+    ]
+  },
+  "arms": [
+    "same nine-slot cache-write sham that never reads prior assignment",
+    "same cache-write protocol with prior assignment read only if legal under current episode geometry"
+  ],
+  "metric": "Heldout cumulative returning-key assignment churn, per-episode churn, per-episode legal preference reuse, search calls and write counts; full per-seed outcomes.",
+  "classification": "ALTERNATING_DRIFT_BENEFIT if heldout total churn saved>0 and all match cardinalities valid; HARM if saved<0; NEUTRAL if zero. No hidden threshold or selecting episodes after observation.",
+  "validation": "Exact predecessor and frozen source, separate exhaustive Hall cardinality for 7 active nodes, equal cache capacity and write counts, deterministic repeat, original artifact, one full repo regression.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "episodes": 8,
+    "active": 7,
+    "retained": 9,
+    "total_keys": 16,
+    "cells": 16,
+    "arms": 2,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Synthetic nonstationary assignment retention only; no learned policy, real developmental cognition, or acceptance authority."
+}
