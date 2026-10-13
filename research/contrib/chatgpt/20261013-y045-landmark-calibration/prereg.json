@@ -1,0 +1,110 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y045-OBSERVABLE-LANDMARK-COORDINATE-CALIBRATION",
+  "parent_head": "2db6dfe3e464531f60531dc1c75416ea3d276e75",
+  "hypothesis": "Y040 exact physical-equivalence required the complete current affine coordinate law. In a new family of time-varying affine frames mod16, observing known canonical cell0 and cell1 positions yields enough information to recover a,b and hence reference physical allocation without the full law; one landmark is insufficient to identify odd multiplier a. The two-anchor advantage costs two external metadata readings each episode.",
+  "freeze": "Freeze four new odd affine families with distinct seed/episode offsets, current-episode anchor observation availability, no access to hidden allocations/future outcomes, fixed policies, untouched seeds and criteria before first use. No retuning on sealed first use.",
+  "split": {
+    "development": [
+      1160,
+      1161,
+      1162,
+      1163,
+      1164,
+      1165,
+      1166,
+      1167
+    ],
+    "sealed_heldout": [
+      1168,
+      1169,
+      1170,
+      1171,
+      1172,
+      1173,
+      1174,
+      1175,
+      1176,
+      1177,
+      1178,
+      1179,
+      1180,
+      1181,
+      1182,
+      1183
+    ],
+    "previous_y040_heldout": [
+      640,
+      641,
+      642,
+      643,
+      644,
+      645,
+      646,
+      647,
+      648,
+      649,
+      650,
+      651,
+      652,
+      653,
+      654,
+      655
+    ]
+  },
+  "topology": "Exact original Y039 source ring: 16 cells and motifs, 7 physical active keys, <=9 inactive persistent cache records, 8 episodes, independent Hall=7, identical read/write policy and FIFO eviction. All arms preserve exactly nine maximum cache entries and store one scalar coordinate per entry.",
+  "coordinate_families": [
+    [
+      3,
+      1,
+      5
+    ],
+    [
+      5,
+      5,
+      3
+    ],
+    [
+      7,
+      7,
+      11
+    ],
+    [
+      9,
+      9,
+      13
+    ]
+  ],
+  "arms": [
+    "reference_numeric: canonical graph/matching and canonical cache; 0 anchor observations",
+    "moving_raw_numeric: only observed cell IDs, cache stores alias verbatim; 0 anchor observations",
+    "one_landmark: read observed position of known canonical cell0 each episode, assume fixed a=1, transform and cache; 1 anchor observation/episode",
+    "two_landmark: read observed positions of known canonical cell0 and cell1 each episode, derive b=anchor0 and odd a=(anchor1-anchor0) mod16, invert current frame and cache canonical coordinates; 2 anchor observations/episode"
+  ],
+  "policies": [
+    "matched_sham",
+    "full",
+    "quorum2"
+  ],
+  "outcome": "TWO_LANDMARK_IDENTIFIABILITY iff two_landmark matches reference physical assignment on every heldout seed/episode/family/policy, one_landmark and moving_raw_numeric each have nonzero mismatch, independent Hall7 and write/occupancy parity hold, and no candidate arm uses any true physical assignment for routing. PARTIAL iff two_landmark improves over both one/raw but not exact; NO_TRANSFER otherwise. Preserve churn and every per-seed outcome.",
+  "controls": [
+    "Landmarks are disclosed additional current-coordinate observations, not a learned sensor or free oracle; cost is explicitly tracked as 0/1/2 per episode",
+    "No future state, labels, privileged physics, evaluator canonical readout or full coordinate law enters candidate matching",
+    "Same seven active/nine cached state and matching calls recorded; all comparisons use frozen topology and policies",
+    "One original first-use evidence artifact followed by full pytest; no production rights, first-use retries or accepted-ref mutation"
+  ],
+  "bounds": {
+    "families": 4,
+    "arms": 4,
+    "policies": 3,
+    "development": 8,
+    "heldout": 16,
+    "episodes": 8,
+    "active": 7,
+    "max_cache": 9,
+    "cells": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  }
+}
