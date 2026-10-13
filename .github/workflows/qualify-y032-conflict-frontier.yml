@@ -1,0 +1,46 @@
+name: Yggdrasil Y032 frozen conflict-degree frontier
+on:
+  push:
+    branches: [research/y032-conflict-degree-frontier-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Frozen parent and source identity
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor f9d6f4f042256822968be07f45de3dda56670271 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y031-conflict-gate/execute.py)" = bac0eb0e6b2c51c317a2edd3f9969c95f12a3e87
+          test "$(git hash-object research/contrib/chatgpt/20261013-y032-conflict-frontier/prereg.json)" = 025df1a39804bde906f3638162a1f05b60be75e3
+          test "$(git hash-object research/contrib/chatgpt/20261013-y032-conflict-frontier/execute.py)" = 811dd33bbc8ad3048ada974889ebbeff0a46cb50
+          python3 -m json.tool research/contrib/chatgpt/20261013-y032-conflict-frontier/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y032-conflict-frontier/execute.py
+      - name: Original frozen current-graph scientific evaluation
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y032-conflict-frontier/execute.py > /tmp/Y032-original.json
+          python3 -m json.tool /tmp/Y032-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          a=json.load(open('/tmp/Y032-original.json'))
+          assert len(a['regimes'])==4
+          assert a['heldout_seeds']==list(range(112,128))
+          print('CLASSIFICATION',a['classification'])
+          for x in a['regimes']:
+              print(x['regime'],x['heldout_churn'],x['sham_relative_saving'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y032-original-conflict-frontier
+          path: /tmp/Y032-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
