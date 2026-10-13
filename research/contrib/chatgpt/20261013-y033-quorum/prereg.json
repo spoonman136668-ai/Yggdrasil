@@ -1,0 +1,74 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "experiment": "Y033-CURRENT-GRAPH-CACHE-QUORUM",
+  "parent_head": "b018e50abf546553fe2790a553afcdd967b6f327",
+  "hypothesis": "Y029-Y032 showed a useful nine-slot cache may cause churn when only scattered remembered assignments remain legal. Test whether allowing preferred assignments only when at least 2 or 3 currently cached keys have legal cells mitigates fast-drift harm while preserving slow-drift benefit.",
+  "freeze": "Four regimes, four policies, fixed quorum2 and quorum3, per-cohort seed splits, all negative and mixed classifications preregistered prior to first-use. No threshold selection after seeing any result.",
+  "population": "Exactly 16 motif keys and cells, seven active per episode, up to nine cached inactive assignments, eight episodes per seed, circular radius-two neighborhoods, same deterministic four-way collision/active-key pattern as Y029.",
+  "splits": {
+    "development_seeds": [
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135
+    ],
+    "sealed_heldout_seeds": [
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151
+    ]
+  },
+  "regimes": [
+    "drift1",
+    "drift3",
+    "drift5",
+    "alternating"
+  ],
+  "policies": [
+    "matched_sham writes same cache no preferred reads",
+    "full legal cache read",
+    "quorum2 cache read only if at least two distinct active keys with legal cached placements",
+    "quorum3 same but at least three distinct legal cached keys"
+  ],
+  "data_boundary": "Before each matching, policy may use only current active keys, present legal neighbor graph, inactive cached assignments previously observed. No lookahead, evaluator-only past allocation history, or unsealed outcome signals.",
+  "primary": "Heldout 16 seeds x four regimes x four arms, returning-key churn relative to evaluator recorded last placement, legal preferences, cache write counts, cache key trajectories and matching search calls. All per-seed and per-regime outcomes retained.",
+  "classification": "QUORUM_GAIN if quorum2 saves at least 70% of full's drift1 sham-relative churn advantage AND quorum2 churn is strictly lower than full in BOTH drift5 and alternating. TRADEOFF if quorum2 or quorum3 lowers churn vs full in either drift5 or alternating but strict criterion fails. NO_QUORUM_GAIN otherwise. Do not promote on partial gain.",
+  "controls": [
+    "All policies compute same single augmenting matcher; no additional compute calls",
+    "Cache writes/keys/occupancy identical across each seed/regime arm, with values allowed to differ because actions differ",
+    "Independent exhaustive Hall cardinality bound of 7 for every episode",
+    "Source-prereg SHA freeze, first-use original archive then final full Python regression"
+  ],
+  "bounds": {
+    "regimes": 4,
+    "policies": 4,
+    "development": 8,
+    "heldout": 16,
+    "episodes": 8,
+    "active": 7,
+    "max_retained": 9,
+    "total_keys": 16,
+    "total_cells": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic assignment cache gating, not learned semantic memory or biological cognition."
+}

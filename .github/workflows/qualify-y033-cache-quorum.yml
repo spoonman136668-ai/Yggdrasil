@@ -1,0 +1,46 @@
+name: Yggdrasil Y033 frozen legal-cache quorum
+on:
+  push:
+    branches: [research/y033-cache-quorum-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Exact predecessor and first-use frozen identities
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor b018e50abf546553fe2790a553afcdd967b6f327 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y032-conflict-frontier/execute.py)" = 811dd33bbc8ad3048ada974889ebbeff0a46cb50
+          test "$(git hash-object research/contrib/chatgpt/20261013-y033-quorum/prereg.json)" = f1382b2f66c0744984817f92b243cc003cd49bf8
+          test "$(git hash-object research/contrib/chatgpt/20261013-y033-quorum/execute.py)" = 12d4ef37160b4d0c9bc152b6776864a12822f135
+          python3 -m json.tool research/contrib/chatgpt/20261013-y033-quorum/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y033-quorum/execute.py
+      - name: Original first-use 16-cell cache quorum science
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y033-quorum/execute.py > /tmp/Y033-original.json
+          python3 -m json.tool /tmp/Y033-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          x=json.load(open('/tmp/Y033-original.json'))
+          assert len(x['regimes'])==4
+          assert x['sealed_heldout_seeds']==list(range(136,152))
+          print("CLASSIFICATION",x['classification'])
+          for a in x['regimes']:
+              print("REGIME",a['regime'],a['heldout_churn'],a['sham_relative_savings'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y033-original-cache-quorum
+          path: /tmp/Y033-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: One full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
