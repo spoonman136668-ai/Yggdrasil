@@ -1,0 +1,74 @@
+{
+  "schema": "yggdrasil.science.frozen_prereg.v1",
+  "id": "Y038-EXTENDED-RECURRENCE-CACHE-POLICY",
+  "parent_head": "481a7ec6ce46100bf7c75d9d1c6fd63f99a2e7fe",
+  "hypothesis": "Y037 exposed quorum2's increased matching search cost; examine whether the cache-read advantages or harms persist when recurring motifs and geometry are evaluated for sixteen episodes rather than eight without increasing any per-episode state capacity.",
+  "freeze": "Two-times longer observation horizon is explicitly budgeted, preregistered before first-use, without changing thresholds or per-episode memory/action capacity. Use disjoint new cohorts.",
+  "source": "Exact Y036 active-key formula, four-way collision, seven active of16 keys/cells, nine inactive cached max, radius2, same augmenting matcher and global shift regimes.",
+  "cohorts": {
+    "development_seeds": [
+      248,
+      249,
+      250,
+      251,
+      252,
+      253,
+      254,
+      255
+    ],
+    "heldout_seeds": [
+      256,
+      257,
+      258,
+      259,
+      260,
+      261,
+      262,
+      263,
+      264,
+      265,
+      266,
+      267,
+      268,
+      269,
+      270,
+      271
+    ]
+  },
+  "episodes": 16,
+  "regimes": [
+    "reference_drift1 shift=episode",
+    "zigzag repeat [0,3,1,4,2,5,3,6] at indices episode%8",
+    "shock_recover repeat [0,1,7,8,9,3,4,5] at indices episode%8",
+    "xorshift_global existing Y036 xorshift seed/episode formula for episodes0..15"
+  ],
+  "policies": [
+    "matched_sham",
+    "full",
+    "quorum2",
+    "quorum3"
+  ],
+  "primary": "For each heldout regime report first 8 vs last 8 episode returning-key assignment churn, legal preference count and matcher recursion calls, plus total cache writes. Every episode has exactly seven legal matches and same cache write/occupancy across arms.",
+  "classification": "LONG_HORIZON_QUORUM if quorum2 churn is no higher than full in EACH half of EACH of four regimes and strict lower in >=2 half/regime cells, while first-half reference-drift1 retains >=70% of full's sham-relative savings. PARTIAL if quorum2 beats full in at least two half/regime cells but strict rule fails; NO_LONG_HORIZON_GAIN otherwise. Report harm and calls even when nominal churn improves.",
+  "controls": [
+    "No future episode knowledge accessed by policy",
+    "Independent exhaustive Hall7 matching each episode",
+    "Same 9-slot cached identities/cells as previous, exactly same 7 active; only number of evaluator episodes doubled",
+    "Exact pinned source and prereg blobs, one original artifact and full final pytest"
+  ],
+  "bounds": {
+    "regimes": 4,
+    "policies": 4,
+    "episodes": 16,
+    "develop_seeds": 8,
+    "heldout_seeds": 16,
+    "active": 7,
+    "max_cached": 9,
+    "total_keys": 16,
+    "total_cells": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Finite 16-episode synthetic recurrent assignment process, not semantic learning."
+}
