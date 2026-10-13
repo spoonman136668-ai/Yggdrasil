@@ -1,0 +1,92 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y053-EQUAL-BUDGET-SCHEDULE-DIVERSIFICATION",
+  "parent_head": "7338fee28e11ee2d2a5c3487ad9f21ccd94b3d21",
+  "hypothesis": "Y051 established complementary fixed-schedule risks, while Y052 failed to learn future shock timing from identical preshock observations. A preregistered balanced 50/50 allocation across the two existing schedules can reduce the worst-case aggregate shock-onset loss across independent runs without predicting any future event or consuming extra landmark reads per run. It may increase pooled mean error relative to the best single fixed arm.",
+  "freeze": "Freeze two exact Y051 schedules A0/1/3/5/7 and B0/1/3/4/6, deterministic exogenous balanced schedule allocation A for even seed and B for odd seed (8 of each in the 16-seed heldout cohort per affine family/policy/onset), 4 new affine families, five original onset classes, all controls and criteria prior to first use.",
+  "split": {
+    "development": [
+      1984,
+      1985,
+      1986,
+      1987,
+      1988,
+      1989,
+      1990,
+      1991
+    ],
+    "sealed_heldout": [
+      1992,
+      1993,
+      1994,
+      1995,
+      1996,
+      1997,
+      1998,
+      1999,
+      2000,
+      2001,
+      2002,
+      2003,
+      2004,
+      2005,
+      2006,
+      2007
+    ]
+  },
+  "families": [
+    [
+      3,
+      9,
+      1
+    ],
+    [
+      5,
+      3,
+      11
+    ],
+    [
+      7,
+      1,
+      7
+    ],
+    [
+      11,
+      5,
+      9
+    ]
+  ],
+  "regimes": [
+    "steady",
+    "onset4",
+    "onset5",
+    "onset6",
+    "onset7"
+  ],
+  "arms": [
+    "fixed_A: every trial uses schedule A, ten public landmark readings",
+    "fixed_B: every trial uses schedule B, same ten readings",
+    "hedged_50_50: choose fixed A for even seed and B for odd seed BEFORE any episode; allocation is external one-bit schedule randomization keyed by fresh synthetic trial seed, not a learned or reactive controller"
+  ],
+  "primary": "Measure total assignment mismatches by shock onset and each arm relative to same-arm matched canonical controls. Define worst-case shock-onset aggregate loss=max errors across onset4..7 and pooled loss=sum onset4..7. PORTFOLIO_WORST_CASE_GAIN iff hedge max<=0.75*min(max(A),max(B)), pooled hedge<=1.10*min(pooled(A),pooled(B)), every steady arm=0, each arm exactly ten public landmark scalars per 8 episodes. PARETO_PARTIAL if hedge max<=0.90*min and pooled<=1.20*min with steady zero. NO_GAIN otherwise. Preserve per-seed winners/losers, policy regimes, churn and reads.",
+  "controls": [
+    "Interleaving or schedule diversification is across independent trial instances, NOT a within-instance adaptive probe policy; random bit/synthetic trial ID is an allocation mechanism and counts as extra one-bit control metadata",
+    "Matched fixed schedules A/B evaluated on exact same seeds, families, regimes and policies. Each trial sees exactly five pairs of publicly observable landmarks, 7 active/9 cached/16 total unchanged",
+    "No privileged shock onset is passed into chosen schedule. Candidate is irrevocably selected before episode0 and no hidden future events or per-world oracle are used",
+    "Exact pinned Y051/Y050 evaluator; original first-use evidence and final full pytest, no first-use rerun, post-outcome threshold change, science acceptance, accepted-ref mutation or production authority"
+  ],
+  "bounds": {
+    "families": 4,
+    "regimes": 5,
+    "policies": 3,
+    "development": 8,
+    "heldout": 16,
+    "arms": 3,
+    "per_trial_landmark_scalars": 10,
+    "selector_bits": 1,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic trial-population schedule diversification at equal landmark-sensing cost, not within-run adaptation, event prediction, or biological regenerative intelligence."
+}
