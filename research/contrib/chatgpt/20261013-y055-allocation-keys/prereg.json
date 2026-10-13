@@ -1,0 +1,88 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y055-ALLOCATION-KEY-ROBUSTNESS",
+  "parent_head": "c0dedfee971097e609342983b087d78de845cbff",
+  "hypothesis": "Y053–Y054 hedged schedule risk gains may rely on even/odd seed-to-schedule assignment correlated with generator mechanics. Replicate the population-level worst-onset gain under three prospectively distinct, exactly-balanced eight-and-eight assignment keys across fresh synthetic seeds/families, without changing sensor budget or schedules.",
+  "freeze": "Predeclare new development seeds2160..2167, sealed heldout2168..2183, four odd affine families and the same five onset regimes, three policies, fixed A/B schedule source and exactly ten scalar public landmark observations per trial. Three distinct balanced keys: even_parity, reversed_parity, permuted_rank (sort 16 seeds by SHA256 of fixed domain tag + decimal seed, assign smallest eight A). Freeze success rubric before first use.",
+  "development": [
+    2160,
+    2161,
+    2162,
+    2163,
+    2164,
+    2165,
+    2166,
+    2167
+  ],
+  "sealed_heldout": [
+    2168,
+    2169,
+    2170,
+    2171,
+    2172,
+    2173,
+    2174,
+    2175,
+    2176,
+    2177,
+    2178,
+    2179,
+    2180,
+    2181,
+    2182,
+    2183
+  ],
+  "families": [
+    [
+      3,
+      1,
+      13
+    ],
+    [
+      5,
+      13,
+      7
+    ],
+    [
+      7,
+      9,
+      3
+    ],
+    [
+      11,
+      15,
+      5
+    ]
+  ],
+  "arms": [
+    "fixed_A every heldout trial",
+    "fixed_B every heldout trial",
+    "hedged_even (even seed A)",
+    "hedged_reversed (odd seed A)",
+    "hedged_sha_rank (sha256 fixed public tag+seed sorted 8/8)"
+  ],
+  "metric": "Each arm's maximum onset4..7 aggregate mismatches, pooled onset4..7 total, steady mismatches, sensor budget, churn and all per-trial A/B counterfactuals. Worst-case is across aggregate independent trials, not a single run.",
+  "classification": "ASSIGNMENT_KEY_ROBUST iff ALL THREE balanced allocations reduce worst-onset aggregate error >=25% versus best of fixed A/B and pooled aggregate increases <=10%, steady zero and each arm same ten public landmark reads/trial; PARTIAL_KEY_TRANSFER iff at least two of three meet both gates; OTHERWISE_NEGATIVE. Do not change thresholds after first-use.",
+  "controls": [
+    "Keyed assignment is fully pre-run and receives no shock timing, outcome, future frame, or learned feedback; SHA rank is fixed across regimes/policies/families for a seed, with one-bit assignment control cost disclosed",
+    "Matched Y054/Y053 exact frozen simulator and matched same-schedule canonical controls; new source seeds/families only; no branch promotion",
+    "Do not cherry-pick winning allocation after first use; archive failures and all individual outcomes under every key",
+    "First-use artifact, full pytest regression, no accepted reference, authority or runtime changes"
+  ],
+  "bounds": {
+    "keys": 3,
+    "fixed_arms": 2,
+    "development_seeds": 8,
+    "heldout_seeds": 16,
+    "families": 4,
+    "regimes": 5,
+    "matching_policies": 3,
+    "landmark_reads_per_trial": 10,
+    "active": 7,
+    "cache": 9,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic across-trial exogenous schedule allocation sensitivity under equal landmark sensing. No within-run event awareness, independent physical-source replication or autonomous RSI."
+}
