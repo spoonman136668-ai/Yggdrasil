@@ -1,0 +1,119 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y052-FOUR-PARAMETER-CAUSAL-PROBE-SELECTION",
+  "parent_head": "157905e34bf50af3528c4a0b39cbd2d6715a54bf",
+  "hypothesis": "Y051 established complementary equal-sensor-budget probe schedules. A four-parameter development-trained perceptron observing ONLY public affine anchors through episode3 may or may not predict which fixed remaining schedule reduces unseen later errors; since onset4..7 is causally absent from episode3 history, unearned future-event prediction should not be attributed to the learned selector.",
+  "freeze": "Freeze Y051 schedules A(0,1,3,5,7) and B(0,1,3,4,6), 4 trainable policy coefficients (including bias), 16 epochs, LR0.1, development seeds1888..1895, untouched sealed heldout1896..1911, 4 novel affine families and regimes steady/onset4/5/6/7. All labels for training arise only from development paired canonical mismatch outcomes; no sealed labels or oracle onset reach selector.",
+  "split": {
+    "development": [
+      1888,
+      1889,
+      1890,
+      1891,
+      1892,
+      1893,
+      1894,
+      1895
+    ],
+    "sealed_heldout": [
+      1896,
+      1897,
+      1898,
+      1899,
+      1900,
+      1901,
+      1902,
+      1903,
+      1904,
+      1905,
+      1906,
+      1907,
+      1908,
+      1909,
+      1910,
+      1911
+    ]
+  },
+  "families": [
+    [
+      3,
+      3,
+      7
+    ],
+    [
+      5,
+      9,
+      1
+    ],
+    [
+      7,
+      5,
+      11
+    ],
+    [
+      13,
+      1,
+      5
+    ]
+  ],
+  "schedules": {
+    "A": {
+      "probes": [
+        0,
+        1,
+        3,
+        5,
+        7
+      ],
+      "reset": [
+        5,
+        7
+      ]
+    },
+    "B": {
+      "probes": [
+        0,
+        1,
+        3,
+        4,
+        6
+      ],
+      "reset": [
+        4,
+        6
+      ]
+    }
+  },
+  "arms": [
+    "fixed_A",
+    "fixed_B",
+    "learned_AB_4param_perceptron_16epochs"
+  ],
+  "policy_information": "Four components [1, centered current a, centered phase advance d from episodes0..1, centered observed phase b3], inferred only from publicly observed canonical cell0/cell1 at episodes0,1,3. Inputs are identical for paired worlds with onset after episode3; explicitly assert this pre-shock equivalence.",
+  "training": "Exactly 8 development seeds x4 families x5 shock onset regimes x3 matching policies =480 paired A/B labels; label +1 if B total mismatches < A total mismatches, otherwise -1 chooses A (predeclared tie rule). Sequential 16 perceptron epochs, learning rate0.1, four weights; no development/heldout leakage.",
+  "evaluation": "For each of 16 heldout seeds x4 new families x5 shock worlds x3 cache policies, execute both fixed arms with matched canonical control and choose learned arm using only frozen pre-episode4 observable anchor state. Compare matched full eight-episode mismatches, worst regime, exact 10 landmark readings per trial, causal feature equivalence, false reset and churn. Preserve per-seed negative and null results.",
+  "classification": "LEARNED_SELECTION_GAIN iff learned pooled mismatches < 0.95*min(fixed_A,fixed_B) and zero steady errors or false resets. PARTIAL_SELECTION_GAIN iff learned pooled mismatches <0.99*min(fixed_A,fixed_B) and zero steady errors or false resets; NO_GAIN otherwise. Report paired-world same-feature conflicting training labels, model weights and exact provenance. Best-per-world oracle only as non-deployable diagnostic, never acceptable comparator.",
+  "controls": [
+    "Candidate selection is irrevocably made at episode3 and cannot observe hidden future onset, scientific labels or episode4+ landmarks before choosing",
+    "Equal ten scalar public landmark readings per eight-episode run, four scalar selector weights explicitly charged on top of the four existing calibration metadata scalars; learned arm does NOT have resource parity to zero-weight fixed arms, so accuracy-only gain must be qualified by extra memory",
+    "Reuse exact pinned Y051/Y050 source/evaluator and matched canonical control; no changing recurrence thresholds or episodes in response to scientific results",
+    "Original first-use artifact before one full Python pytest regression, no repeated sealed use, no accepted-ref/production/authority mutation"
+  ],
+  "bounds": {
+    "arms": 3,
+    "regimes": 5,
+    "development": 8,
+    "heldout": 16,
+    "families": 4,
+    "policies": 3,
+    "epochs": 16,
+    "selector_weights": 4,
+    "landmark_observations": 10,
+    "active": 7,
+    "cache": 9,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic development-trained schedule policy; pre-shock observations cannot identify as-yet-unobserved independently assigned shock timing, not autonomous causal forecasting."
+}
