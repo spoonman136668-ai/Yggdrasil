@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y049-PRECOMMITTED-RESET-TIMING-TRANSFER",
+  "parent_head": "c7f2fb3162e65ca90fb03f8fca80b9d9df5611d0",
+  "hypothesis": "Y048's cache-departure quarantine at fixed episode5 restored allocation after an episode4 affine-frame shock. Test that fixed time-only intervention under independently shifted shock onsets3/4/6, without revealing onset to policy, so evidence distinguishes an appropriately timed causal repair from a general shock-robust controller.",
+  "freeze": "Freeze three shock onset regimes at episodes3/4/6, a never-shock control, a +5 affine offset, a single scheduled episode5 cache-clear-plus-departure-quarantine intervention and unchanged continuation, four new odd affine families, fixed heldout seeds, matching policies, metrics and criteria before first use.",
+  "seeds": {
+    "development": [
+      1584,
+      1585,
+      1586,
+      1587,
+      1588,
+      1589,
+      1590,
+      1591
+    ],
+    "sealed_heldout": [
+      1592,
+      1593,
+      1594,
+      1595,
+      1596,
+      1597,
+      1598,
+      1599,
+      1600,
+      1601,
+      1602,
+      1603,
+      1604,
+      1605,
+      1606,
+      1607
+    ]
+  },
+  "families": [
+    [
+      3,
+      1,
+      7
+    ],
+    [
+      5,
+      3,
+      1
+    ],
+    [
+      7,
+      5,
+      9
+    ],
+    [
+      13,
+      7,
+      11
+    ]
+  ],
+  "environment": "The environment's true affine frame adds +5 modulo16 at onset3, onset4 or onset6, or no shock; observable anchors follow precommitted periodic episode0/1/3/5 only. The policy is not told shock timing.",
+  "arms": [
+    "canonical_continue and periodic_continue with no cache intervention",
+    "canonical_fixed5 and periodic_fixed5: time-only cache flush and skip prior departing writes at episode5, then normal writes"
+  ],
+  "capacity": "Same exact Y048 7 active/9 cached/16 total; eight episodes, Hall7; 8 external landmark readings for periodic arms; no additional sensors or learned weights.",
+  "primary": "Compute per-shock-regime per-seed/policy/family matched physical allocation mismatches in epochs0..4 and5..7, comparing periodic only to canonical with same intervention. RESET_WINDOW_DEPENDENT iff fixed5 post5 errors=0 for onset4 but >0 for onset6, and continuation onset4 post5>0; PARTIAL if fixed5 improves onset4 but not to zero; NO_CONFIRMED_WINDOW otherwise. Preserve all onset3 and no-shock results without tuning.",
+  "controls": [
+    "Never authorize intervention from hidden true shock onset; episode5 intervention on every regime is identical regardless of results",
+    "The external shock schedule is only the synthetic environment simulator; policy receives only published periodic current coordinates",
+    "Exactly pinned Y048 evaluator/cache policy under a preregistered bounded coordinate-environment patch; restore patched environment after each regime",
+    "One original first-use result archive, one final complete pytest regression; no accepted-reference mutation"
+  ],
+  "bounds": {
+    "onsets": 4,
+    "families": 4,
+    "policies": 3,
+    "arms": 4,
+    "episodes": 8,
+    "active": 7,
+    "max_cache": 9,
+    "dev": 8,
+    "heldout": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic phase sensitivity of scheduled cache quarantine, not automatic detection or generalized regenerative cognition."
+}
