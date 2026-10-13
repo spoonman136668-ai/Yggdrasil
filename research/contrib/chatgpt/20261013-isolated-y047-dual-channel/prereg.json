@@ -1,0 +1,32 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y047-INDEPENDENT_AUDIT_CHANNEL_UNDER_COMMON_MODE",
+  "parent_commit": "c1492958622f4420b9e8c21704dd8cff9b6d770f",
+  "date": "2026-10-13",
+  "prior": "Y046 demonstrated three correlated incorrect majority-parity reports fool unanimity. Test one additional independent audit measurement, and separately test correlated compromise of both channels.",
+  "question": "Can a second independently observed sensor reading for one already-sampled cue expose common-mode corruption of three agreeing majority-group reports, and when does cross-channel corruption defeat that defense?",
+  "world": "New seeds176..183, Y040 deterministic 16-motif permutation+SHA256 initial values. 7 CORE cues active episodes0,1 and10,11; 7 DISTRACTOR cues active2..9; others inactive. CORE targets alone invisibly +2 mod4 from episode6; DISTRACTORS always stable. First 3 majority-by-key-parity CORE cues and first minority CORE cue report early at episode10. PRIMARY channel reports truth in CLEAN, truth+1 mod4 for all 3 sampled majority cues in PRIMARY_CORRUPT and BOTH_CORRUPT. AUDIT channel independently reports first majority cue truth in CLEAN/PRIMARY_CORRUPT, but truth+1 in BOTH_CORRUPT. These reports are only observed when sampled, not inferred from future unsampled labels.",
+  "cohorts": {
+    "development": [
+      176,
+      177,
+      178,
+      179
+    ],
+    "heldout": [
+      180,
+      181,
+      182,
+      183
+    ]
+  },
+  "arms": [
+    "PRIMARY_FOUR: use 4 early primary reports (3 majority+1 minority), infer majority delta only when 3 majority reports agree; otherwise abstain majority; minority extrapolation from its report. Score remaining3 CORE cues.",
+    "DUAL_CHANNEL_FIVE: use same4 primary plus one independent second channel report on first majority cue, total5 reports, same 4 distinct sampled CORE cues and 3 remaining forecast opportunities; if the two reports for same cue disagree, abstain on unsampled majority cues; otherwise behave as PRIMARY_FOUR, including group-consistency check. Minority forecasts use unmodified truthful minority reported delta."
+  ],
+  "metrics": "8 distinct source fingerprint SHA excluding ID, parity majority size>=4 and minority>=1, pre-e10 observed feedback paired hashes identical, exact 7-live<=9 dormant cache occupancy & writes across arms, heldout per condition/arm episode10 early total reports4 or5, distinct sampled cues4, opportunities3, correct/wrong/abstained and conflict indicators, episode11 full feedback recovery.",
+  "classification": "DUAL_CHANNEL_BOUNDARY if all validity checks pass, CLEAN DUAL has all12/12 correct, PRIMARY_CORRUPT PRIMARY makes >=1 wrong forecast, PRIMARY_CORRUPT DUAL has zero wrong and >=1 abstention, BOTH_CORRUPT DUAL has >=1 wrong forecast; NO_GAIN otherwise, INVALID_HISTORY if observational feedback differs, INSUFFICIENT_GROUP_SUPPORT if parity cue selection fails, NONUNIQUE_FINGERPRINT if source collision.",
+  "budgets": "Identical cue coverage and seven live <=nine dormant cache; DUAL receives one ADDITIONAL explicitly sampled early report and therefore is NOT equal observation budget. Corrupted audit in BOTH case is declared independent sensor failure; policy sees only reports and never true labels of unsampled cues until predictions frozen. All episodes sequentially feedback after predictions.",
+  "controls": "Preregister before source, original first-use artifact SHA, pin Y040 predecessor source and prior full tree, complete Yggdrasil pytest; freeze thresholds/splits/hypotheses, no capacity increase, no hidden oracle, no first-use retry or post-result changes, no production/accepted ref mutation.",
+  "claim_limit": "Fixed synthetic parity-rule and two defined reporting channels; independent channel acts as an explicitly extra oracle-quality observation in one condition, not a universal Byzantine guarantee."
+}

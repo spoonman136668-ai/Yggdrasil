@@ -1,0 +1,37 @@
+name: Y047 original frozen scientific first use
+on:
+  push:
+    branches: [research/chatgpt-isolated-y047-cross-channel-witness-20261013]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Freeze and verify immutable source identity
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c1492958622f4420b9e8c21704dd8cff9b6d770f HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y040-hibernation/execute.py)" = 6c6ba3ebf39456056fca0e60a8210d941cf69e43
+          test "$(git hash-object research/contrib/chatgpt/20261013-isolated-y047-dual-channel/prereg.json)" = 7bb0ccd83d5f30f008989c80ae5abc6537315a77
+          test "$(git hash-object research/contrib/chatgpt/20261013-isolated-y047-dual-channel/execute.py)" = 37d44ff889e8e0f4fe80de8423ff422cc734f6b7
+          python3 -m json.tool research/contrib/chatgpt/20261013-isolated-y047-dual-channel/prereg.json > /dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-isolated-y047-dual-channel/execute.py
+      - name: Original Y047 frozen experiment
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-isolated-y047-dual-channel/execute.py > /tmp/Y047-original.json
+          python3 -m json.tool /tmp/Y047-original.json > /dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y047-original-first-use
+          path: /tmp/Y047-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
