@@ -1,0 +1,32 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y052-ONLINE_RELIABILITY_UPDATING_VS_SECOND_SHIFT",
+  "parent_commit": "9e903211b791ef427e6fde9c7598cfeb22ffb0ae",
+  "date": "2026-10-13",
+  "question": "Can a one-step-updated sensor reliability policy recover after a shifted corruption group when complete feedback is later supplied, and does it remain vulnerable to another shift at the next evaluation?",
+  "world": "New SHA256 Y040 cue/value seeds248..255. Seven CORE active0/1,10/11, seven DISTRACTOR active2..9. CORE targets +2 mod4 from episode6 onward; DISTRACTOR targets stable. Group A=first four CORE, B=last three. In e0/e1 same source group biased primary reports +1 to first two sampled A or first one sampled B (A for even seed, B for odd), and complete TRUE feedback is observed afterward. At e10 and11 exactly three primary reports (first2 A, first B) and one or two independent true audit reports are observed BEFORE predicting four unsampled CORE keys. After each episode's forecasts, full true feedback is supplied. Three paired e10/e11 bias schedules share exactly the same e0..9 history per seed: PERSISTENT (e10,e11 historic group); FLIPPED_AT_RETURN (e10 and e11 opposite historic group); SECOND_SHIFT (e10 historic group, e11 opposite historic group). Never expose condition flags to policy.",
+  "split": {
+    "development": [
+      248,
+      249,
+      250,
+      251
+    ],
+    "heldout": [
+      252,
+      253,
+      254,
+      255
+    ]
+  },
+  "arms": [
+    "FROZEN_HISTORY: at both e10/e11 choose one independent audit group based only on e0/e1 historically mismatched primary reports, tie A; discard later feedback for audit selection though shared full feedback still updates memory.",
+    "LATEST_FEEDBACK: at e10 same choice as FROZEN_HISTORY; after e10 complete authoritative feedback, update group selection to the group with more mismatched e10 PRIMARY reports at e11, tie A; no e11 future label exposure.",
+    "DUAL_AUDIT: at both return episodes spend independent audit truth reports on first sampled A and first sampled B; same remaining four prediction opportunities, two rather than one audit truth labels."
+  ],
+  "scoring": "At both e10/e11 all policies use three primary reports and one or two sampled audit true reports before forecasting four remaining cues; if audit disagrees with corresponding primary report then explicitly abstain on unsampled cues in that group. Else use inferred group modular delta applied to current live/dormant remembered value. At e10, CORE values are dormant from e0/1; e11 values are live due to episode10 complete true feedback. True labels for unsampled cues shown only after forecasts, and not to the audit chooser for that episode.",
+  "metrics": "For all eight seeds: 8 distinct SHA source fingerprints excluding seed IDs; paired pre-e10 sensor and true history SHA equality, e10 group routing identical across three worlds, unchanged 7-live<=9-dormant cache occupancy/writes; e10 and e11 heldout 4 seeds x4 unsampled cues each 16 opportunities per condition/arm, correct/wrong/abstained, early observations count 4/5 per episode, e10 feedback mismatch group, e11 audit group; preserve zero/wrong and coverage.",
+  "classification": "FEEDBACK_RECOVERY_WITH_RENEWED_DRIFT_LIMIT if all source/paired-history guards valid; FLIPPED_AT_RETURN LATEST_FEEDBACK makes fewer wrong e11 forecasts than FROZEN_HISTORY and zero wrong; under SECOND_SHIFT LATEST_FEEDBACK makes >=1 wrong e11 forecast; all DUAL_AUDIT arms zero wrong in both shifted conditions with abstentions and higher observed-label budget; PERSISTENT LATEST_FEEDBACK zero wrong; MIXED otherwise, INVALID_PAIRED_HISTORY if source/authority guard fails, NONUNIQUE_FINGERPRINT if duplicate source.",
+  "safety": "Frozen cohort and all thresholds ahead of first use; source and Y040 SHA pins, original once-only GitHub Actions JSON and full pytest. No source true label oracle for policy except explicitly sampled reports or chronological complete prior-episode feedback. No increase in durable7+9 memory or live authority, promotion/accepted refs mutation or retry after consumption.",
+  "claim_limit": "A finite 2-group synthetic sensor feedback update, which works when failures persist and can fail again if they relocate; not generic self-learning sensor discovery."
+}
