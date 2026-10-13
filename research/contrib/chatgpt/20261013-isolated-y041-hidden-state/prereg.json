@@ -1,0 +1,34 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y041-HIBERNATION_OBSERVATIONAL_EQUIVALENCE",
+  "parent_commit": "9e98d2d2867a196085aeb0e159b56b9b29d20f75",
+  "source_predecessor": "Y040",
+  "date": "2026-10-13",
+  "question": "Can dormant-memory predictions distinguish an unchanged world from an otherwise observationally identical secretly changed world, or is abstention necessary to avoid ungrounded certainty?",
+  "hypothesis": "Since STABLE and HIDDEN_SHIFT agree exactly through episode9 for each seed and live policy receives no signal, deterministic prediction at first reactivation must be identical in both worlds. A cached prediction cannot be correct on both when target is shifted +2 modulo4. Explicit abstention avoids unjustified reactivation predictions but sacrifices coverage.",
+  "world": "Independent seeds128..135 with Y040 SHA256 permutation of 16 cue IDs; core seven first, distractors next seven. Episode0,1 core; episodes2..9 distractors; episode10 and11 core. Stable targets SHA256('Y040value/'+seed+'/'+key) first byte%4; hidden-shift adds2 modulo4 to only core from episode6 onward, but none observed until e10.",
+  "split": {
+    "development": [
+      128,
+      129,
+      130,
+      131
+    ],
+    "heldout": [
+      132,
+      133,
+      134,
+      135
+    ]
+  },
+  "arms": [
+    "trust: fixed 7-live plus <=9 dormant cache, always predict previous live/dormant value or fallback 0; feedback after all episode guesses.",
+    "abstain_on_dormant: same cache maintenance and exact same 7-live history; when current cue can only be served from dormant storage, emit ABSTAIN rather than a class, without reading future labels; non-dormant guesses same as trust.",
+    "zero_memory: no dormant cache, same 7-live state and fallback 0; calibration/control."
+  ],
+  "pair_control": "Run STABLE/HIDDEN_SHIFT as counterfactual paired worlds sharing exact observations and source fingerprints through episode9. Archive SHA256 observed pre-reactivation feedback trace per condition and seed; require equality. The only world change is e6 dormant-core targets which are never observed until e10.",
+  "metrics": "Heldout e10 correct, incorrect, abstentions, coverage, conditional accuracy and e11 recovery; paired correct sum for same deterministic always-predict trust policy <=7 per seed; equal cache occupancy and writes for trust and abstain; no more than nine dormant cue values or seven live.",
+  "primary": "UNOBSERVABLE_HIDDEN_CHANGE_BOUNDARY if all eight seed pre-reactivation paired feedback trace hashes match, trust first-return forecasts identical in paired worlds, targets different for all seven core keys, heldout stable trust 28/28 correct, shifted trust0/28 correct, abstain-on-dormant 28/28 abstentions in each condition with zero false predictions, and e11 trust recovers28/28 both worlds; PARTIAL_BOUNDARY if hashes match and forecasts cannot distinguish worlds but other constraints fail; NEGATIVE otherwise.",
+  "constraints": "Fix paired cohort, hidden intervention, capacity, abstention metric and thresholds before use. No oracles to policy or labels before feedback; evaluator may compare counterfactual worlds only after both runs. Preserve all original outcomes including negative, original ZIP and full pytest; no replay, promotion, live activation or capacity expansion.",
+  "claim_limit": "Causal indistinguishability of two predesigned synthetic worlds, not proof of universal impossibility or general uncertainty calibration."
+}
