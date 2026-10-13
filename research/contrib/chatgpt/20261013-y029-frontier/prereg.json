@@ -1,0 +1,81 @@
+{
+  "schema": "yggdrasil.science.frozen-prereg.v1",
+  "experiment": "Y029-MASS-RETENTION-FRONTIER",
+  "parent_head": "553870f7491390ff8884a824832691a60969f985",
+  "objective": "Frozen retention-capacity-by-drift factorial stress battery with paired cache-write-matched controls on fresh disjoint synthetic cohorts.",
+  "frozen_generator": "Y025 16 motif identities, 16 cells, 7 active per episode, up to 9 inactive retained assignments, 8 episode sequence, four-way collision, circular radius 2. Sixteen fresh heldout seeds; separate development seeds.",
+  "splits": {
+    "development_seeds": [
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39
+    ],
+    "sealed_heldout_seeds": [
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55
+    ]
+  },
+  "memory_capacities": [
+    3,
+    6,
+    9
+  ],
+  "note": "Subcapacity comparison within previously frozen max-nine-slot cap; 16 total motifs/cells and action/matching graph never increased.",
+  "drift_regimes": [
+    "drift1: home=(7*key+seed+episode) mod16",
+    "drift3: home=(7*key+seed+3*episode) mod16",
+    "drift5: home=(7*key+seed+5*episode) mod16",
+    "alternating: home=(7*key+seed+[0,1,6,7,12,13,18,19][episode]) mod16"
+  ],
+  "arms": [
+    "write-matched no-read sham",
+    "same write protocol with legal cached-previous-assignment preferences"
+  ],
+  "factorial_cells": 12,
+  "evaluations_per_seed": 24,
+  "primary": "For all 12 budget/regime combinations report per-seed sham minus read returning-key churn, per-episode matched cardinality, legality of cached preferences, search calls and cache writes; no selection of favorable regime. Each policy writes only previously observed assignments.",
+  "frozen_classification": "COVERAGE_LIMITED if fewer than 6 of 12 heldout cells have strictly positive total churn savings; ROBUST_RETENTION if at least 10 cells positive with none negative; otherwise MIXED_FRONTIER. Preserve per-cell benefit/neutral/harm regardless of portfolio classification.",
+  "controls": [
+    "Independent exhaustive Hall maximum-cardinality oracle each episode",
+    "Exact seven legal active matches per arm and no reused cells",
+    "Equal write counts and occupancy trajectory between sham and read within each seed, capacity, drift",
+    "No lookahead, evaluator previous-history never used by either policy",
+    "Use disjoint 8 development seeds and 16 heldout seeds; no postresult filtering",
+    "Exact parent/source blob, artifact evidence prior to one full regression"
+  ],
+  "bounds": {
+    "max_retained": 9,
+    "active": 7,
+    "total_keys": 16,
+    "total_cells": 16,
+    "episodes": 8,
+    "seeds": 24,
+    "heldout": 16,
+    "drift_regimes": 4,
+    "retention_capacities": 3,
+    "arms": 2,
+    "first_use_retries": 0,
+    "model_calls": 0,
+    "production_authority": false
+  },
+  "claim_limit": "Finite synthetic assignment memory only; no learned semantics, biological conclusions, general intelligence, or accepted ref mutation."
+}
