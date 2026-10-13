@@ -1,0 +1,72 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "experiment": "Y032-CURRENT-GRAPH-CONFLICT-DEGREE-FRONTIER",
+  "parent_head": "f9d6f4f042256822968be07f45de3dda56670271",
+  "hypothesis": "Y031 conflict-degree<=2 removed harmful stale placements but discarded every slow-drift benefit. Frozen intermediate degree thresholds 3/4 may trade off churn under fast drift and preserve low-drift retention.",
+  "freeze": "Preselect degrees 3 and 4 without examining new sealed cohort, alongside identical write-matched sham and full cache. All drift schedules and classifications frozen before original first-use.",
+  "population": "Inherited seven active motifs, nine cached inactive assignments, 16 keys/cells, circular radius2 graph, four-way collision, eight episodes/seed, no additional state or capacity.",
+  "split": {
+    "development_seeds": [
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111
+    ],
+    "heldout_seeds": [
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127
+    ]
+  },
+  "regimes": [
+    "drift1",
+    "drift3",
+    "drift5",
+    "alternating"
+  ],
+  "arms": [
+    "matched_sham",
+    "full",
+    "conflict_degree_at_most_3",
+    "conflict_degree_at_most_4"
+  ],
+  "primary": "Per regime, per arm heldout returning-key churn, search calls, legal used preferences, matched cache writes and independent Hall cardinalities.",
+  "classification": "CONFLICT_FRONTIER_GAIN if degree3 reduces churn relative full under BOTH fast drift and alternating drift while preserving >=70% of full slow-drift savings; TRADEOFF if degree3 or degree4 reduces churn under either drift5 or alternating but strict test fails; otherwise NO_GAIN. No choosing arm by post-hoc results.",
+  "safeguards": [
+    "No future neighborhood or labels and no direct evaluator history use",
+    "Identical cached key entries, writes and nine-slot capacity across all arms",
+    "Exact parent + frozen Git blob, only original first use and final full regression"
+  ],
+  "budget": {
+    "policies": 4,
+    "regimes": 4,
+    "development": 8,
+    "heldout": 16,
+    "episodes": 8,
+    "active": 7,
+    "retained": 9,
+    "total_motifs": 16,
+    "total_cells": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Finite synthetic matching policy experiment; no semantic cognition/production activation."
+}
