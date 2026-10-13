@@ -1,0 +1,50 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y039-BUDGETED_DORMANT_MEMORY_CAPACITY_FRONTIER",
+  "parent_commit": "3ff04209bda00bf55fdc7d43a3ad19c221d05dda",
+  "question": "What is the resource-pressure relationship between finite dormant associative storage and preservation of previously learned cue-response capability under stable and abruptly changed tasks?",
+  "hypothesis": "Under stable targets more dormant memory generally helps returning-motif accuracy; under a target switch it may retain stale responses and harm adaptation. The capacity gradient should be reported without selecting an advantageous budget after results.",
+  "cohort": {
+    "development_seeds": [
+      112,
+      113,
+      114,
+      115
+    ],
+    "heldout_seeds": [
+      116,
+      117,
+      118,
+      119
+    ]
+  },
+  "generator": "Exactly original Y033 SHA256-keyed motif schedule on 16 motif identities, 7 active each episode and 12 episodes per seed. Targets SHA256('Y033/'+seed+'/'+motif) first byte modulo4; STABLE unchanged and SWITCH globally adds2 modulo4 from episode6. Only the seven current observed labels become available after policy predicts them.",
+  "capacities": [
+    0,
+    3,
+    6,
+    9
+  ],
+  "policy": "For cap k, retain seven previous-active observed cue/value pairs as live and at most k inactive observed cue/value pairs in an ordered oldest-evicted cache. Predict from live, then dormant, else fallback class0. Update stored cue values only after observing feedback. Both capacity reduction and cache writes/evictions must be charged explicitly; never exceed 7+k <=16 storage.",
+  "primary": "For heldout seeds across caps k∈{0,3,6,9}, report stable total correct out of 4x12x7=336, stable returning-dormant correct, switch pre/post-change correct, post-switch stale-memory errors, total cache insertions, evictions and occupancy. CAPACITY_RECALL_GRADIENT if stable accuracy is nondecreasing with k and k9>k0; NONMONOTONE otherwise. No preferred k selection based on observed values.",
+  "validation": "All eight seed/target SHA256 signatures unique, exact 7 live /<=k dormant assertions, no oracle/future labels available to policy, deterministic run() twice, first-use original result, one full pytest regression and original Git prereg/source SHA pins.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "episodes": 12,
+    "active": 7,
+    "dormant_caps": [
+      0,
+      3,
+      6,
+      9
+    ],
+    "total_motifs": 16,
+    "conditions": 2,
+    "arms": 4,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase_above_previous_max": 0
+  },
+  "claim_limit": "Finite synthetic associative memory capacity-vs-adaptation tradeoff; not evidence of biological intelligence, real-world semantic memory or adaptive substrate growth."
+}
