@@ -1,0 +1,45 @@
+name: Yggdrasil Y031 current-graph conflict-gated retention
+on:
+  push:
+    branches: [research/y031-conflict-gated-memory-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Fail-closed first-use identity
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 9a0a22279933d110969e9ab68d65f4b58ccffd35 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y029-frontier/execute.py)" = 9e099688869c8557f46c8b7120aaa35ee7407785
+          test "$(git hash-object research/contrib/chatgpt/20261013-y031-conflict-gate/prereg.json)" = a1ec96f82dc4471d4a85926de30243c79dd5bcd8
+          test "$(git hash-object research/contrib/chatgpt/20261013-y031-conflict-gate/execute.py)" = bac0eb0e6b2c51c317a2edd3f9969c95f12a3e87
+          python3 -m json.tool research/contrib/chatgpt/20261013-y031-conflict-gate/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y031-conflict-gate/execute.py
+      - name: First original sealed scientific evaluation
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y031-conflict-gate/execute.py > /tmp/Y031-original.json
+          python3 -m json.tool /tmp/Y031-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          a=json.load(open('/tmp/Y031-original.json'))
+          assert len(a['regimes'])==4
+          print('CLASSIFICATION',a['classification'])
+          for r in a['regimes']:
+              print(r['regime'],r['heldout_churn'],r['sham_relative_saving'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y031-original-conflict-gate
+          path: /tmp/Y031-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full Yggdrasil integration regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
