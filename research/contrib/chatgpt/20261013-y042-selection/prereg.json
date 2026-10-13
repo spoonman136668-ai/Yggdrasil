@@ -1,0 +1,70 @@
+{
+  "schema": "yggdrasil.science.frozen.v1",
+  "experiment": "Y042-PROTECTED-SUBSET-SELECTION-ABLATION",
+  "parent_head": "53622a4c8a4e553ffde1f798881540397c7c622b",
+  "hypothesis": "Y041 found preserving three bounded observed entries helped across all drift regimes. Determine whether the choice of three assignments (newest, oldest or temporally spread) changes post-interruption survival using identical storage capacity and reset schedule.",
+  "frozen_cohorts": {
+    "development": [
+      440,
+      441,
+      442,
+      443,
+      444,
+      445,
+      446,
+      447
+    ],
+    "sealed_heldout": [
+      448,
+      449,
+      450,
+      451,
+      452,
+      453,
+      454,
+      455,
+      456,
+      457,
+      458,
+      459,
+      460,
+      461,
+      462,
+      463
+    ]
+  },
+  "environment": "Exact SHA256-keyed nonaliased Y037 graph: seven active motif identities, sixteen motif/cell slots, four drift regimes drift1/drift2/drift4/late_shock, eight episodes, circular radius2 and four-way collision.",
+  "resets": [
+    2,
+    4,
+    6
+  ],
+  "selection_arms": [
+    "preserve0 control: clear inactive cache at each reset",
+    "newest3: retain last 3 insertion-ordered previously observed inactive assignments",
+    "oldest3: retain first 3 insertion-ordered previously observed inactive assignments",
+    "spread3: retain first/middle/last currently cached inactive assignment without duplicate"
+  ],
+  "policy": "Each selection compared in paired write-matched sham vs full legal preference read. At reset clear active/previous-assignment runtime state in all arms; evaluator-only history retained solely for churn accounting. No extra cache, auxiliary time counters, or future geometry used.",
+  "primary": "Across 4 regimes x4 preservation arms report heldout sham-minus-retained churn, per-seed and episode savings, legal preference reads, identical cache writes/keys across each sham/full pair and independent Hall7 matching.",
+  "classification": "RECENCY_PRIORITY if newest3 savings exceed oldest3 in at least 3 regimes and its total exceeds oldest3 by>=8; POSITIONAL_DIVERSITY if spread3 exceeds newest3 in at least 3 regimes and aggregate by>=8; MIXED otherwise. Preserve all harmful cases.",
+  "controls": [
+    "Exact Y041 source/prereg provenance, no post-result selection, unseen dev/heldout cohorts",
+    "No oracle, 7 active and <=9 retained within 16 original slots, unchanged full matching budget",
+    "First-use original archive before a full pytest regression"
+  ],
+  "limits": {
+    "selection_policies": 4,
+    "arms_per_policy": 2,
+    "drift_regimes": 4,
+    "episodes": 8,
+    "heldout_seeds": 16,
+    "active": 7,
+    "max_retained": 9,
+    "total_motifs": 16,
+    "total_cells": 16,
+    "model_calls": 0,
+    "first_use_retries": 0
+  },
+  "claim_limit": "Synthetic memory-preservation choice, no learned semantic consolidation or biological regeneration."
+}
