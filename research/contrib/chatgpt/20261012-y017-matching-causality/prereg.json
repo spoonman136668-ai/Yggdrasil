@@ -1,0 +1,175 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "Y017-MATCHING-CAUSAL-ABLATION-20261012",
+  "contributor": "ChatGPT external research contribution",
+  "contribution_class": "ablation",
+  "question": "On exactly the already-consumed DGR-016 synthetic/repo-owned bytes, is deterministic local augmenting-path matching rather than unchanged minimax ranking responsible for valid 16-cell assignment, when directly contrasted against original greedy first-free placement?",
+  "hypothesis": "Holding R016 candidate pool, minimax score/rank, capacity, radius, encounter orders, data and evaluation fixed, matched placement retains six valid stages while legacy greedy placement fails to place sixteen motifs in at least one stage; a greedy failure is an observed outcome and must not be silently classified as infrastructure invalid.",
+  "exact_parent_sha": "650cafdfae07dfc5ce3f3d23c59810b80b6eb8aa",
+  "predecessor_evidence": [
+    {
+      "experiment": "EXP-DGR-REAL-UTF8-MINIMAX-CONSOLIDATION-015",
+      "classification": "invalid-by-frozen-rules",
+      "result_sha256": "7ba16816469fe87b8632faf562f8d5f665ecf4b3fbb7c4cc2f3ece8b58c78d3b",
+      "observed_note": "Two greedy local assignment failures; this is historical, not fresh unseen evidence."
+    },
+    {
+      "experiment": "EXP-DGR-REAL-UTF8-MINIMAX-MATCHED-CONSOLIDATION-016",
+      "qualified_head_sha": "86619eeb44cd4aee8dd166224d2ace3674f5aa84",
+      "result_sha256": "138d21335abc10e0eb7bddbbe5dd2a4e4b2ba5ea902d2319dc80eff637df2b29",
+      "classification": "validity metrics and frozen 016 thresholds satisfied; no new scientific result claimed here"
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/20261012-y017-matching-causality/prereg.json",
+    "research/contrib/chatgpt/20261012-y017-matching-causality/README.md",
+    "research/contrib/chatgpt/20261012-y017-matching-causality/probe.py",
+    "research/contrib/chatgpt/20261012-y017-matching-causality/test_probe.py",
+    "research/contrib/chatgpt/20261012-y017-matching-causality/result.json",
+    "research/contrib/chatgpt/20261012-y017-matching-causality/provenance.json",
+    ".github/workflows/qualify-chatgpt-yggdrasil-20261012.yml"
+  ],
+  "source_identities": [
+    {
+      "path": "research/applications/plane/exp-dgr-real-utf8-minimax-consolidation-015.py",
+      "blob_sha": "3e27bcea0195c180022ef2282f0598077da92a47"
+    },
+    {
+      "path": "research/applications/plane/exp-dgr-real-utf8-minimax-matched-consolidation-016.py",
+      "blob_sha": "c4247f69295b25105a91cc402b123493ae63aa68"
+    },
+    {
+      "path": "research/architecture/yggdrasil-north-star.ice",
+      "sha256": "57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c"
+    }
+  ],
+  "inputs": [
+    {
+      "name": "R016 immutable repo-owned base and A/B/C byte splits, matched 015-016",
+      "source": "Yggdrasil branch pinned by exact_parent_sha, prior consumed source only",
+      "external_dataset": false,
+      "unseen_claim": false
+    }
+  ],
+  "frozen_design": {
+    "arms": {
+      "A0": "Run exact R016 matched placement (immutable original control) and require byte-identical frozen R016 result identity before interpreting A1",
+      "A1": "Use R016's exact ranked candidate stream and per-stage chosen candidate identities, but place them by R015 first-free local order without augmenting-path reassignment, feasibility skip, radius extension, candidate-substitution or extra capacity"
+    },
+    "seeds": [],
+    "split": "Exactly reused 016 committed source/splits: no prospective unseen-data claim and no hidden source reads",
+    "ordering": [
+      "A-B-C",
+      "C-B-A"
+    ],
+    "stages_per_order": 3,
+    "data_budget": {
+      "orders": 2,
+      "total_stages_per_arm": 6,
+      "seen_domain_evaluation_rows_per_fully_valid_arm": 12
+    },
+    "compute_budget": {
+      "max_primary_replays_per_arm": 2,
+      "timeout_seconds_per_arm": 1800,
+      "network_access": false,
+      "model_calls": 0
+    },
+    "capacity": {
+      "total_cells": 16,
+      "active": 7,
+      "retained": 9,
+      "local_radius": 2,
+      "growth_events": 0
+    },
+    "evaluator": "Record placement success/failure before performance; compare only stages where both A0/A1 are structurally valid; do not impute invalid-stage accuracy",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "A0 must reproduce exact frozen 016 result identity and six structurally valid 16-cell stages before inspecting A1 outcomes.",
+    "A0 fixed 16/7/9, same 16-ring home hash and radius 2, frozen minimax ranks and candidate set; no threshold or budget changes.",
+    "A1 changes only assignment algorithm (greedy first-free in frozen local-cell order). Candidate ordering, source splits, first-half contribution scores, motif scoring and selection must match A0 before placement.",
+    "A1 unplaced motifs are recorded as a causal placement failure, not silently dropped, reclassified as infrastructure, padded or given extra capacity.",
+    "No future-stage information, second-half adaptation information, future outputs, external model, or evaluator label influences either placement."
+  ],
+  "metrics": [
+    [
+      "A0_valid_stage_count",
+      "==",
+      6
+    ],
+    [
+      "A0_matched_failure_count",
+      "==",
+      0
+    ],
+    [
+      "A0_minimum_selected_motifs",
+      "==",
+      16
+    ],
+    [
+      "A0_active_count",
+      "==",
+      7
+    ],
+    [
+      "A0_retained_count",
+      "==",
+      9
+    ],
+    [
+      "A1_greedy_assignment_failure_stage_count",
+      ">=",
+      1
+    ],
+    [
+      "candidate_rank_drift_count",
+      "==",
+      0
+    ],
+    [
+      "source_identity_mismatch_count",
+      "==",
+      0
+    ],
+    [
+      "capacity_growth_events",
+      "==",
+      0
+    ],
+    [
+      "external_model_calls",
+      "==",
+      0
+    ]
+  ],
+  "classification_rules": {
+    "supported": "A0 exact 016 controls valid and no rank/input drift; A1 greedy fails structural assignment in at least one of six stages, attributing a placement-validity advantage to augmenting-path matching on reused source.",
+    "mixed": "A0 exact controls pass; greedy and matched both valid in all stages, but one or more structurally valid stage placements differ and matched accuracy is better on at least one common-valid stage; report complete paired metrics.",
+    "negative": "A0 exact controls pass and all greedy placements succeed with no consistent matched validity or performance advantage.",
+    "invalid": "A0 exact 016 identity differs, frozen rank or source drifts, either arm uses different capacity/geometry, evaluator leakage occurs, unsupported failure is masked, or duplicate deterministic replay disagrees."
+  },
+  "interpretation_limits": "This is a causal placement ablation on already-used evidence, NOT a new blind evaluation or proof of broad language competence. Prior 015/016 outcomes inform the hypothesis; only the independently preregistered paired ablation may be classified under these rules.",
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "source changes",
+    "candidate-ranking changes",
+    "placement fallback after output",
+    "capacity or radius increases",
+    "new data/seeds/compute",
+    "post-result policy selection",
+    "accepted-ref or controller mutation"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "official_science_launch": false
+  },
+  "preregistration_note": "Revision ahead of any primary scientific run; adds read-only hosted CI qualification workflow only; previously committed mechanical code remains unchanged. Primary execution remains unauthorized.",
+  "preregistration_revision": "r3-qualification-scope",
+  "supersedes_prereg_commit": "423353a57bb5cc7d99943a909df2d7eea246236e"
+}
