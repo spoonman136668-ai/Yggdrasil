@@ -1,0 +1,74 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "experiment": "Y036-CURRENT-GRAPH-DEGREE-5-6-WITH-QUORUM-2",
+  "parent_head": "35eace118e16ab8195a6810f2bc6ec569dfd0106",
+  "hypothesis": "Y035 quorum2+degree4 rejected all previously useful retained assignments. Test preregistered degrees<=5 and<=6 only, without adjusting quorum threshold 2, to estimate whether there is a nontrivial current-graph conflict envelope preserving helpful assignments.",
+  "freeze": "Both thresholds 5 and 6, same four displacement regimes, all seed splits, classification logic, policies, and matching capacity frozen before first use; no post-result threshold choice or capacity increase.",
+  "population": "Exactly seven active, max nine inactive cached past assignments, sixteen motif keys/cells, eight episodes/seed, circular radius2 and four-way collision, same Y035 source.",
+  "split": {
+    "development_seeds": [
+      200,
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207
+    ],
+    "sealed_heldout_seeds": [
+      208,
+      209,
+      210,
+      211,
+      212,
+      213,
+      214,
+      215,
+      216,
+      217,
+      218,
+      219,
+      220,
+      221,
+      222,
+      223
+    ]
+  },
+  "regimes": [
+    "drift1",
+    "drift2",
+    "drift4",
+    "late_shock"
+  ],
+  "policies": [
+    "matched_sham write-matched no reads",
+    "full legal cache",
+    "quorum2 legal cache only if>=2 active legal remembered cells",
+    "quorum2_degree5 filter current cell neighborhood degree<=5 then quorum2",
+    "quorum2_degree6 filter current cell neighborhood degree<=6 then quorum2"
+  ],
+  "outcomes": "For each policy/regime show 16-heldout-seed cumulative returning-key assignment churn, search calls, legal preference count and prefilter degree histogram. DEGREED_QUORUM_GAIN if degree5 strictly improves over quorum2 in BOTH drift4 and late_shock and preserves >=70% of full's slow-drift savings; TRADEOFF if either degree5 or degree6 improves in one of drift4/late_shock without strict gain; NO_GAIN otherwise. All negative outcomes retained.",
+  "controls": [
+    "Exact Y035 predecessor identity and unchanged observed-only cache/writes",
+    "Independent exhaustive Hall cardinality bound of 7",
+    "Current legal neighbor graph and prior observed cache only; no future lookahead",
+    "Identical cache key/occupancy and write count across all policy arms",
+    "Original first-use archived before full pytest regression"
+  ],
+  "bounds": {
+    "policies": 5,
+    "regimes": 4,
+    "development": 8,
+    "heldout": 16,
+    "episodes": 8,
+    "active": 7,
+    "maximum_cached_entries": 9,
+    "total_motifs": 16,
+    "total_cells": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic finite current-graph assignment policy exploration, not semantic memory or cognition."
+}
