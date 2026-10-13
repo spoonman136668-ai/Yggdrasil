@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y030-KEYED-PATTERN-GEOMETRY-TRANSFER",
+  "parent_commit": "3d169808b5996ee1d9ca7304574843d2152018a9",
+  "predecessor": "Y029",
+  "reason": "Audit found previous modulo-16 seeds recur in old circular geometry. This new generator changes key selection and collision geometry using independently keyed seeds and preregistered nonuniform offset templates. It is NOT a replay of prior results.",
+  "hypothesis": "Bounded observed-state reuse may or may not reduce matching churn on a new structured collision-geometry population, with no periodic seed aliasing to legacy cohorts. Preserve any negative/deficient geometry finding.",
+  "freeze": "Frozen eight geometry templates, SHA256 seed-derived key salt, eight episodes and split before first original execution. Do not select or revise patterns/thresholds after heldout data.",
+  "cohort": {
+    "development": [
+      40,
+      41,
+      42,
+      43
+    ],
+    "heldout": [
+      44,
+      45,
+      46,
+      47
+    ]
+  },
+  "world": "16 circular cells and 16 motif identities, 7 active at a time, max 9 inactive cached, radius2. Active keys indexed by (salt(seed)+2*episode+5*j)%16 for j=0..6; SHA256 salt is 16-bit prefix of UTF8 'Y030/'+decimal seed modulo16. Four active keys share frozen center=(7*salt+3*episode+11*(seed-40))%16; remaining three have independent homes at offsets chosen from 8 frozen templates rotated by template_idx=(seed-40+episode)%8.",
+  "frozen_three_home_offset_templates": [
+    [
+      6,
+      10,
+      14
+    ],
+    [
+      5,
+      9,
+      13
+    ],
+    [
+      7,
+      10,
+      13
+    ],
+    [
+      6,
+      11,
+      14
+    ],
+    [
+      7,
+      11,
+      15
+    ],
+    [
+      5,
+      10,
+      14
+    ],
+    [
+      6,
+      9,
+      15
+    ],
+    [
+      7,
+      12,
+      15
+    ]
+  ],
+  "arms": [
+    "write-matched 9-slot sham ignoring cached assignment",
+    "cache-read using only legal previous assignments"
+  ],
+  "outcomes": "Independent Hall maximum-cardinality oracle must evaluate every episode. If any episode cardinality<7 classify GEOMETRY_DEFICIENCY (still a valid scientific negative). If whole-seed geometry signatures duplicate classify NONINDEPENDENT_INPUT. Otherwise OUT_OF_FAMILY_BENEFIT if heldout aggregate churn savings>0, OUT_OF_FAMILY_NO_BENEFIT if <=0.",
+  "metrics": "Per-seed/episode matching cardinality, legal preference hits, cache writes/occupancy parity, search calls and returning-key churn; SHA256 geometry signatures.",
+  "scientific_controls": "No future episode information available to policy, no additional identities/cells/capacity, no extra oracle/labels or first-use attempts; exact source identity and one full regression.",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "episodes": 8,
+    "active": 7,
+    "retained": 9,
+    "keys": 16,
+    "cells": 16,
+    "arms": 2,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "capacity_increase": 0
+  },
+  "claim_limit": "Fresh generated synthetic geometry source, not proof of real-world developmental intelligence; no accepted-ref promotion."
+}
