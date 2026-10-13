@@ -1,0 +1,40 @@
+name: Y053 native developmental substrate causal locality first use
+on:
+  push:
+    branches: [research/chatgpt-native-y053-nca-locality-20261013]
+permissions:
+  contents: read
+jobs:
+  original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify original frozen identity and syntax
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 878464cf84833d06a1ac7e45988bfb79608547dc HEAD
+          test "$(git hash-object src/yggdrasil/nca.py)" = 7b15017b7f5c6f9b507bcf43f4545a3c972f40d1
+          test "$(git hash-object src/yggdrasil/resources.py)" = ad590ba32bb6011c8391fa3a654905b890478216
+          test "$(git hash-object research/contrib/chatgpt/20261013-native-y053-nca-locality/prereg.json)" = f22aa8535fa8e98364e66b577bc4ff154df031a4
+          test "$(git hash-object research/contrib/chatgpt/20261013-native-y053-nca-locality/execute.py)" = 86d726527e37e32dbf1ef3d6ec84b874e2d46a66
+          python3 -m json.tool research/contrib/chatgpt/20261013-native-y053-nca-locality/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-native-y053-nca-locality/execute.py
+      - name: Install native DG1A scientific runtime
+        run: python3 -m pip install -e '.[test]'
+      - name: Execute original Y053 real NCA experiment
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-native-y053-nca-locality/execute.py > /tmp/Y053-original.json
+          python3 -m json.tool /tmp/Y053-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y053-original-native-NCA-locality
+          path: /tmp/Y053-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full native Yggdrasil regression
+        run: python3 -m pytest -q tests
