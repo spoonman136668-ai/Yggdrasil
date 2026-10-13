@@ -1,0 +1,47 @@
+name: Yggdrasil Y054 frozen portfolio risk transfer replication
+on:
+  push:
+    branches: [research/y054-portfolio-transfer-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Exact source identity and freeze before first use
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor cbc386856b12c06055e7baf4cdf460bbb77e7271 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y053-schedule-hedge/execute.py)" = b0f6559626c88aaa1e8f7e2298ee27b12ccafe22
+          test "$(git hash-object research/contrib/chatgpt/20261013-y054-portfolio-replication/prereg.json)" = a63568e679b1eaaa534374abe3ea3db1a8857edc
+          test "$(git hash-object research/contrib/chatgpt/20261013-y054-portfolio-replication/execute.py)" = bd91fd8e82d590ea734f2af605db805900c83984
+          python3 -m json.tool research/contrib/chatgpt/20261013-y054-portfolio-replication/prereg.json > /dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y054-portfolio-replication/execute.py
+      - name: One original frozen sealed independent family transfer experiment
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y054-portfolio-replication/execute.py > /tmp/Y054-original.json
+          python3 -m json.tool /tmp/Y054-original.json > /dev/null
+          python3 - <<'PY'
+          import json
+          a=json.load(open('/tmp/Y054-original.json'))
+          assert a['development_seeds']==list(range(2080,2088))
+          assert a['sealed_heldout_seeds']==list(range(2088,2104))
+          assert len(a['heldout_records'])==5*4*16*3
+          print('CLASSIFICATION',a['classification'])
+          print('RISK',a['risk_by_arm'])
+          print('BY_ONSET',a['aggregate_by_regime'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y054-original-portfolio-transfer
+          path: /tmp/Y054-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: One full required Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
