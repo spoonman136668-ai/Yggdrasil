@@ -1,0 +1,72 @@
+{
+  "schema": "yggdrasil.science.frozen_prereg.v1",
+  "id": "Y036-NEW-GEOMETRY-GLOBAL-DISPLACEMENT-TRANSFER",
+  "parent_head": "35eace118e16ab8195a6810f2bc6ec569dfd0106",
+  "hypothesis": "Y033 quorum2 benefited under existing geometries but Y034/Y035 revealed non-universality. Test the UNCHANGED quorum2 decision on novel environmental shift families, with fresh cohorts, without increasing cache or actuator capacity.",
+  "freeze": "Lock all geometric displacement schedules and control policies before original first use. No threshold changes or cohort reuse after outcome.",
+  "population": "Exactly 16 existing identities/cells, seven active, nine inactive cached assignments maximum, radius2 circular neighbors, 4-way collision, eight episodes. Same deterministic Y034 augmenting-path matching and exhaustive Hall 7 bound.",
+  "cohorts": {
+    "development_seeds": [
+      200,
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207
+    ],
+    "heldout_seeds": [
+      208,
+      209,
+      210,
+      211,
+      212,
+      213,
+      214,
+      215,
+      216,
+      217,
+      218,
+      219,
+      220,
+      221,
+      222,
+      223
+    ]
+  },
+  "regimes": [
+    "reference_drift1: global displacement t",
+    "zigzag_new: global displacements [0,3,1,4,2,5,3,6]",
+    "shock_recover_new: global displacements [0,1,7,8,9,3,4,5]",
+    "xorshift_new: independent per-seed per-episode xorshift32 global displacement (state=((seed+1)*0x9e3779b1 ^ ((episode+1)*0x85ebca77))&0xffffffff; sequential xorshift13/17/5; displacement=state%16)"
+  ],
+  "arms": [
+    "matched_sham: cache writes, no reads",
+    "full: every legal cached observed placement",
+    "quorum2: legal cache preferences only if at least two active keys have legal cache entries",
+    "quorum3: same but at least three"
+  ],
+  "primary": "Per regime/policy total and per-seed returning motif assignment churn, preference counts and call counts, identical cache writes/keys, independent Hall-cardinality=7 every episode. QUORUM_NOVEL_ROBUST if quorum2 retains >=70% of full's reference drift1 reduction relative sham AND quorum2 <= full churn across every novel regime, strictly less in at least one. MIXED if improvement in a novel regime but strict condition fails. NO_GAIN otherwise. Preserve ALL outcomes.",
+  "controls": [
+    "Source-birth identity: parent + prereg + executor blobs checked before original first use",
+    "No oracle, evaluator-only last placement, labels or future displacement accessible by policy",
+    "Cache policy observes only prior assigned placements and current neighborhood graph; memory 9, no capacity increases",
+    "No post-result replay or acceptance promotions; single first-use evidence archive then final full pytest"
+  ],
+  "bounds": {
+    "regimes": 4,
+    "policies": 4,
+    "development_seeds": 8,
+    "heldout_seeds": 16,
+    "episodes": 8,
+    "active": 7,
+    "max_retained": 9,
+    "total_motifs": 16,
+    "total_cells": 16,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Bounded synthetic current-state cache policy under nonstationary global geometry, not semantic developmental memory."
+}
