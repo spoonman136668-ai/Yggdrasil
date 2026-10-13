@@ -1,0 +1,37 @@
+name: Y051 immutable first-use scientific qualification
+on:
+  push:
+    branches: [research/chatgpt-y051-history-routed-audits-20261013]
+permissions:
+  contents: read
+jobs:
+  original-science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Validate immutable parent, preregister and source (nonexecuting)
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor eaa86ff9a69b750bc6fe59e93b53eb04e301fb61 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y040-hibernation/execute.py)" = 6c6ba3ebf39456056fca0e60a8210d941cf69e43
+          test "$(git hash-object research/contrib/chatgpt/20261013-y051-history-routing/prereg.json)" = d46b465c3972dfb2f0eacbd2cbd1726d20fbe669
+          test "$(git hash-object research/contrib/chatgpt/20261013-y051-history-routing/execute.py)" = 72662230f68fa0c50356c0d9d24089cd9f12776b
+          python3 -m json.tool research/contrib/chatgpt/20261013-y051-history-routing/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y051-history-routing/execute.py
+      - name: Original Y051 scientific first-use
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y051-history-routing/execute.py > /tmp/Y051-original.json
+          python3 -m json.tool /tmp/Y051-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y051-frozen-original
+          path: /tmp/Y051-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full independent repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests

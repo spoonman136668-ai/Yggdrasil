@@ -1,0 +1,32 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y051-HISTORICAL_SENSOR_ROUTING_DRIFT",
+  "parent_commit": "eaa86ff9a69b750bc6fe59e93b53eb04e301fb61",
+  "date": "2026-10-13",
+  "question": "Can a learner choose which cue group to verify based only on previously observed sensor errors, and does this historical policy fail when corruption shifts to the other group?",
+  "generator": "Fresh seeds240..247, first4 development240..243, last4 heldout244..247. Y040 SHA256 16-key permutation and initial values. Seven CORE cues active e0,e1,e10,e11; 7 DISTRACTOR active e2..9; two dormant/unused. Public cue groups A first4 core, B final3 core. At e0/e1 the controller receives primary sensor reports for first2 A and first B core cues, with primary reports corrupted +1 mod4 only in group A when seed even or only in B when seed odd; full true labels arrive AFTER predictions, allowing historical error counts. e2..9 all policies receive identical authentic distractor feedback. At e10 all CORE true labels shift +2 mod4 relative to original e0/e1 values. In condition PERSISTENT the primary sensor group fault continues in same group as history, FLIPPED fault moves to other group, CLEAN no fault. Conditions share exact feedback through e9 for the same seed. Source group condition never visible to policy, except actual primary reports and explicitly sampled independent audit labels.",
+  "split": {
+    "development": [
+      240,
+      241,
+      242,
+      243
+    ],
+    "heldout": [
+      244,
+      245,
+      246,
+      247
+    ]
+  },
+  "arms": [
+    "FIXED_A: first2 A + first B primary reports at e10; one audit true label of first A sampled cue; if audit disagrees with its primary, abstain on two unsampled A cues; otherwise propagate A modular delta. Propagate B delta from first B primary. Score the other4.",
+    "FIXED_B: same primary3, one audit truth for first B; if disagree abstain on unsampled two B cues; otherwise propagate B delta. Propagate A inferred from its first two reports.",
+    "HISTORY_ROUTED: choose A or B at e10 ONLY from absolute group-specific primary-vs-true errors observed during e0/e1 AFTER feedback (count mismatch reports across both episodes); break ties A. Same four early reports and four predictions, same footprint, no access to the e10 fault flag or unsampled target.",
+    "DUAL_AUDIT: same three primary reports, independent truth audit on first sampled cue of BOTH groups (5 reports total), abstain on group if its first primary mismatches its audit. Same4 unsampled prediction opportunities."
+  ],
+  "metrics": "Input eight unique Y040 source fingerprint SHA, paired e0..9 observed history and historical error counters independent of e10 condition, match 7 live <=9 dormant cache occupancy/writes across arms, exactly3 distinct early cues at e10 and 4 scored other cues per seed, early sampled labels4 for single or5 for dual, conditional correct/wrong/abstain and audit conflict counts on heldout, e11 recovery7/7.",
+  "classification": "HISTORY_DRIFT_BOUNDARY if every validity gate passes, under PERSISTENT HISTORY_ROUTED has zero wrong, under FLIPPED HISTORY_ROUTED has at least one wrong, DUAL_AUDIT has zero wrong under both and reports higher cost, CLEAN every audited arm scores16/16 correct; MIXED otherwise. INVALID_PAIRED_HISTORY or NONUNIQUE_FINGERPRINT for invalid source conditions.",
+  "controls": "Observe past true labels only after original prediction/calibration episode, not an oracle for future change; fixed sensor corruption schedule including clean environment. Explicit separate independent audit truth, no unobserved cue labels before e10 forecasts. No capacity growth, replay, or posthoc tuning. Frozen source/prereg blobs pin Y040 source in one original CI with full pytest; no accepted-ref or live authority mutation.",
+  "claim_limit": "One-round transfer of two-group synthetic sensor error history; drift counterexample under declared group-specific corruption, not generalized autonomous sensor trust estimation."
+}
