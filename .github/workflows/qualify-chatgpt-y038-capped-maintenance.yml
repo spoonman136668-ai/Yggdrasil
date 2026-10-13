@@ -1,0 +1,36 @@
+name: Yggdrasil Y038 frozen capped maintenance experiment
+on:
+  push:
+    branches: [research/chatgpt-y038-bounded-maintenance-20261013]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Check frozen original identity and source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor d38b5b04b2caf5151ad320e760a65d95e89b8850 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y038-bounded-maintenance/prereg.json)" = 5b385bef9e4d8594cb520a1a49579bc348e041a4
+          test "$(git hash-object research/contrib/chatgpt/20261013-y038-bounded-maintenance/execute.py)" = 9d5e3301d664f7a7011f9ac03b40f4135f9f30d2
+          python3 -m json.tool research/contrib/chatgpt/20261013-y038-bounded-maintenance/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y038-bounded-maintenance/execute.py
+      - name: Original frozen Y038 science
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y038-bounded-maintenance/execute.py > /tmp/Y038-original.json
+          python3 -m json.tool /tmp/Y038-original.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y038-original-three-write-maintenance
+          path: /tmp/Y038-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
