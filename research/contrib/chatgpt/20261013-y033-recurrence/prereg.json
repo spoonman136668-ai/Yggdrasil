@@ -1,0 +1,67 @@
+{
+  "schema": "yggdrasil.frozen-prereg.v1",
+  "id": "Y033-RECURRENCE-CACHE-BREAK-EVEN",
+  "parent_commit": "128d005f98e99b14ebdc35a5eac6f7cb197cf073",
+  "predecessor": "Y032",
+  "hypothesis": "Under an additionally recurrent displacement schedule, 9-slot observed-state memory may cross from cost-negative to cost-positive only when reassignment penalties are high; record the cost boundary without tuning it after outcomes.",
+  "freeze": "Exact schedules, cost weights, cohorts, source identities, cardinality test, all candidate arms and classification frozen before original first use. Negative results cannot be rerun or post-selected.",
+  "source": "Inherited exact Y030 keyed eight-template geometry and bounded seven-active of sixteen, 9 inactive cached, 8 episodes/seed, radius2 full matching. Each episode's frozen extra displacement is applied to current geometry; no future policy oracle.",
+  "split": {
+    "development": [
+      64,
+      65,
+      66,
+      67
+    ],
+    "heldout": [
+      68,
+      69,
+      70,
+      71
+    ]
+  },
+  "frozen_additional_displacements": {
+    "recurrent": [
+      0,
+      1,
+      2,
+      1,
+      0,
+      1,
+      2,
+      1
+    ],
+    "constant": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "arms": [
+    "write-matched sham, cannot read cache",
+    "retained, uses only currently legal cached preferences"
+  ],
+  "budget": {
+    "dev": 4,
+    "heldout": 4,
+    "conditions": 2,
+    "arms": 2,
+    "episodes": 8,
+    "active": 7,
+    "retained": 9,
+    "total_keys": 16,
+    "cells": 16,
+    "model_calls": 0,
+    "capacity_increase": 0,
+    "first_use_retries": 0
+  },
+  "frozen_cost_model": "Each policy modeled cost = matching recursive calls + cache writes + cache read attempts + w * returning-key assignment churn; churn weights w=1,3,10,30 were chosen prior to observing outcomes.",
+  "primary": "Record all per-seed net sham-minus-retained costs and raw churn at all four weights, legal preference counts, 8 unique SHA256 geometry signatures and exact Hall maxima. Compute illustrative aggregate break-even churn weight from extra overhead/churn savings if positive.",
+  "classification": "RECURSIVE_RETENTION_NET_GAIN if recurrent w3 net cost savings >0 for every heldout seed; COST_DEPENDENT if recurrent w30 aggregate savings>0 while w3 aggregate<=0; otherwise NO_NET_GAIN. Invalid if Hall/capacity/writes/signature checks fail.",
+  "cautions": "Cost units are arbitrary explicit synthetic units. No claims of real biological cost, unrestricted agent cognition, or unqualified development; no accepted-ref mutation."
+}
