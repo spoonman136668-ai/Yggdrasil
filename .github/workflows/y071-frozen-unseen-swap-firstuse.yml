@@ -1,0 +1,47 @@
+name: Yggdrasil Y071 frozen early-shock unseen-topology transfer
+on:
+  push:
+    branches: [research/y071-early-unseen-swap-transfer-20261013-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify immutable parent and prospective scientific identities
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 5797a257a75fe139313e8486cd1a1ae79c44b148 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y070-onset1/execute.py)" = 1a73edd9b29f082ad557d04d2bf3e03d2ccfcc0e
+          test "$(git hash-object research/contrib/chatgpt/20261013-y071-unseen-swap/prereg.json)" = e2e45822ff62af3f1207be3b37d2d30ebac0ca52
+          test "$(git hash-object research/contrib/chatgpt/20261013-y071-unseen-swap/execute.py)" = fe9a3719d8616212f24caadd1c718138887ea959
+          python3 -m json.tool research/contrib/chatgpt/20261013-y071-unseen-swap/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y071-unseen-swap/execute.py
+      - name: Original one-time sealed unseen-shock-topology science
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y071-unseen-swap/execute.py > /tmp/Y071-original.json
+          python3 -m json.tool /tmp/Y071-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          a=json.load(open('/tmp/Y071-original.json'))
+          assert a['sealed_heldout_seeds']==list(range(8576,8592))
+          assert a['new_swap_pairs']==[[6,7],[8,9]]
+          assert len(a['original_y070_unmodified_results']['complete_heldout_records'])==768
+          print('CLASSIFICATION',a['classification'])
+          for x in a['strict_comparisons']:
+              print('UNSEEN_SWAP_COMPARISON',x)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y071-original-unseen-early-shock
+          path: /tmp/Y071-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Single full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
