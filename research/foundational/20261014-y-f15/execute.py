@@ -6,7 +6,7 @@ this is reproducibility, not new training or validation-driven selection.
 No future recurrent trajectory is computed before a stop. Development only.
 """
 from __future__ import annotations
-import importlib.util,hashlib,json,time
+import importlib.util,hashlib,json,time,struct
 from collections import Counter
 from pathlib import Path
 import torch
@@ -30,7 +30,7 @@ def recovered():
  oldrows=f14.records(old,core)
  check=f14.metrics(oldrows,f14.simulate(oldrows,"risk",head,limit))
  assert check["correct"]==576 and check["actual_recurrence_steps"]==2458,check
- raw=b"".join(v.detach().contiguous().numpy().tobytes() for k,v in sorted(head.state_dict().items()))
+ raw=b"".join(struct.pack("<f",float(x)) for _,v in sorted(head.state_dict().items()) for x in v.detach().flatten().tolist())
  return core,head,hashlib.sha256(raw).hexdigest()
 
 def graph(seed,fam,k,shift):
