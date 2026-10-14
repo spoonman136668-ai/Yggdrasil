@@ -1,0 +1,33 @@
+{
+  "schema": "yggdrasil.nci03.prereg.v1",
+  "id": "Y-NCI03-FOUNDATIONAL-GRAPH-MOTIF-JOIN-FALSIFICATION",
+  "parent": "da3163f28596a956fb98ebb76e74ba5995edeb58",
+  "prior": "Y-NCI02 original first-use and full 266-test regression PASS, with all 24 task rows correct but only one graph construction motif. Learned binary Torch edge-join predicate generalization remains underdetermined because names changed but structural graph class did not.",
+  "hypothesis": "Does the original six-parameter native learned join and four-parameter text admission retain positive/negative two- and three-hop reasoning, interruption recovery, retention and appended four-hop query accuracy across four new graph motifs without retraining or adapting the candidate?",
+  "freeze": "Exactly same Y-NCI02 training on 768 ordered pair examples, 200 Adam optimizer steps and learned six-parameter join; four-parameter learned text admission; native StatePool 16x3x3, seven active/<=9 retained; graph relation enumeration. Change only frozen task generator's two distractor links into four variants: detached merge to main chain node1, disconnected two-cycle, merge to node2 and merge to node3/start. Backbone remains three edges and one additional post-interrupt edge; five original edges; fresh sealed 23104..23127 (24 distinct start names and 6 cases/motif). Source identities distinct from Y-NCI02 22336..22359. No results-driven tuning.",
+  "sealed_seeds": [
+    23104,
+    23128
+  ],
+  "graph_motifs": [
+    "merge_node1",
+    "detached_2_cycle",
+    "merge_node2",
+    "merge_node3_and_start"
+  ],
+  "cases_per_motif": 6,
+  "primary": "NATIVE_JOIN_MOTIF_TRANSFER_BOUNDED iff each motif yields at least 5/6 correct on every 2hop+,3hop+,2hop-negative,3hop-negative, post-checkpoint 2hop, and post-new-fact 4hop. Otherwise NATIVE_JOIN_MOTIF_TRANSFER_FALSIFIED. Preserve all 24 case-level records and per-motif group metrics; full NCI acceptance stays false because equality features, symbolic StatePool edge storage, source parsing and join enumeration are developer-designed.",
+  "controls": [
+    "No additional model calls, no adaptive training based on new first-use cases",
+    "Same native StatePool 576 bytes and under 7 active <=9 retained, max6 edges",
+    "Direct-only and exact symbolic oracle baselines with measured candidate pair count; not equal inference-FLOP",
+    "Original artifact custody before frozen rubric check, full repository pytest and independent read-only evidence verification",
+    "No FORGE/CKB/KTRADE, accepted refs, controller, production or merge"
+  ],
+  "portfolio_target": {
+    "native_integration": 45,
+    "foundational_science": 45,
+    "optimization": 10
+  },
+  "claim_limit": "Four hand-designed distractor structures and native trained equality-based join predicate; narrow controlled falsification, not human language reasoning, AGI or RSI."
+}

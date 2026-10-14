@@ -1,0 +1,73 @@
+name: Y-NCI03 native StatePool learned join four-motif falsification
+on:
+  push:
+    branches: [research/y-nci03-graph-motif-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  scientific-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install native Torch and test runtime
+        run: python3 -m pip install -e '.[test]'
+      - name: Pinned native source and preregistration identity
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor da3163f28596a956fb98ebb76e74ba5995edeb58 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci02-learned-join/execute.py)" = 358227bfc7b331e00fe6fe39c9d76346754ef678
+          test "$(git hash-object src/yggdrasil/pool.py)" = 0580da8f1a111c8c0b7b4ebfa51c2128865e7a8a
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci03-motif/execute.py)" = 79e39e58b7ef5280b735aff1f13d0964478a6fdc
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci03-motif/prereg.json)" = 2a8289d3fc443b71a3f1c5a8730e9077e2bdc661
+          python3 -m py_compile research/contrib/chatgpt/20261014-y-nci03-motif/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y-nci03-motif/prereg.json >/dev/null
+      - name: Development-only learned Torch predicate qualification
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci03-motif/execute.py --phase development > /tmp/Y-NCI03-dev.json
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y-NCI03-dev.json"))
+          assert a["phase"]=="development" and a["sealed_heldout_seeds"]==list(range(23104,23128))
+          assert a["join_train_distinct_pairs"]==768 and a["join_gradient_updates"]==200
+          assert not a["nci01_full_acceptance"]
+          print("NATIVE_JOIN_DEV",a["join_dev_accuracy"])
+          PY
+      - name: One frozen new graph motif first-use
+        run: |
+          set -euo pipefail
+          start=$(date +%s%N)
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci03-motif/execute.py --phase sealed > /tmp/Y-NCI03-original.json
+          finish=$(date +%s%N)
+          printf '{"elapsed_wall_ms":%s,"runner":"ubuntu-latest","cost_usd":"unverified"}\n' "$(((finish-start)/1000000))" > /tmp/Y-NCI03-resources.json
+          python3 -m json.tool /tmp/Y-NCI03-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-NCI03-original-sealed-motifs
+          path: |
+            /tmp/Y-NCI03-original.json
+            /tmp/Y-NCI03-resources.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Verify original source archive before classification
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          a=json.load(open("/tmp/Y-NCI03-original.json"))
+          assert a["sealed_heldout_seeds"]==list(range(23104,23128))
+          assert len(a["records"])==24
+          assert collections.Counter(x["topology_class"] for x in a["records"])=={0:6,1:6,2:6,3:6}
+          assert len(a["motif_metric"])==4
+          assert a["verdict"] in ("NATIVE_JOIN_MOTIF_TRANSFER_BOUNDED","NATIVE_JOIN_MOTIF_TRANSFER_FALSIFIED")
+          assert not a["nci01_full_acceptance"] and a["external_llm_calls"]==0
+          assert not a["accepted_ref_mutation"]
+          print("SCIENTIFIC_VERDICT",a["verdict"])
+          print("NEW_GRAPH_METRICS",a["motif_metric"])
+          PY
+      - name: Final full Yggdrasil regression
+        run: python3 -m pytest -q tests
