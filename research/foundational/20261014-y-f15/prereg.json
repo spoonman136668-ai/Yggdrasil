@@ -1,0 +1,64 @@
+{
+  "study": "Y-F15-frozen-online-development",
+  "source_F14_sha": "2204e66e0e2866f8e712b74d91ee160fe216f136",
+  "original_F14_result_sha256": "f2e2599d81cbe77a12d917287c1acd1e07e7bd49a5980d216251cd48bd273ad6",
+  "hypothesis": "Frozen risk policy retains >=95% accuracy on structurally novel graphs and saves >=15% recurrent steps plus >=5% measured online time after paying for risk-feature and neural-decision costs.",
+  "provenance": "F14 archive lacked policy weights; replay its old TRAIN-only deterministic code, verify historical 576/576 correct and 2458 steps; freeze recovered head/threshold .7 before generating new cohort. Identity verification against old consumed validation is not new science.",
+  "validation": {
+    "dev_only": true,
+    "families": [
+      76,
+      77,
+      78,
+      79
+    ],
+    "seeds": [
+      65100,
+      65106
+    ],
+    "depths": [
+      7,
+      8
+    ],
+    "role_shifts": [
+      0,
+      1
+    ],
+    "graphs": 96,
+    "questions": 576,
+    "positives": 192,
+    "negatives": 384,
+    "variants": [
+      "positive main path",
+      "late role change",
+      "early role change",
+      "wrong role order",
+      "wrong depth",
+      "positive benign edge change"
+    ]
+  },
+  "controls": [
+    "online full identical core",
+    "coded first-hop necessary-role shortcut",
+    "typed exact oracle fixture"
+  ],
+  "requirements": {
+    "accuracy_min": 0.95,
+    "FNR_max": 0.05,
+    "FPR_max": 0.05,
+    "worst_family_FNR_max": 0.05,
+    "worst_family_FPR_max": 0.05,
+    "max_deficit_to_full": 0.03,
+    "recurrence_savings_min": 0.15,
+    "measured_wall_savings_min": 0.05
+  },
+  "timing": "single machine-local pass, alternate arm order, warm each arm, include input encode and policy features/NN and inference, exclude fixture build and one-time model restoration",
+  "scientific_limits": {
+    "not_F3_source": true,
+    "no_first_use": true,
+    "no_accepted_ref": true,
+    "no_controller": true,
+    "no_KTRADE": true,
+    "no_FORGE": true
+  }
+}
