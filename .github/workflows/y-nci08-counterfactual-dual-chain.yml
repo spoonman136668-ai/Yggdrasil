@@ -1,0 +1,77 @@
+name: Y-NCI08 frozen counterfactual two-chain bounded-memory stress
+on:
+  push:
+    branches: [research/y-nci08-paired-counterfactual-memory-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install native research runtime
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify unchanged NCI07 source and prospective NCI08 identity
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7ac948630fe899a9f0551d774352703400cfb272 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci07/execute.py)" = 69391c53ef58ffce0127b3b3eb147b1cac42fea9
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci08/execute.py)" = be0c9ef4f8b1c778360dc9b4e1f6f8a03b468345
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci08/prereg.json)" = 8c9080c160c9379e3441000675088f5d62048a63
+          python3 -m py_compile research/contrib/chatgpt/20261014-y-nci08/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y-nci08/prereg.json >/dev/null
+      - name: Dev-only qualification of pinned learned retention without sealed use
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci08/execute.py --phase development > /tmp/Y-NCI08-development.json
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y-NCI08-development.json"))
+          assert a["phase"]=="development" and a["sealed_seed_range"]==[29248,29272]
+          assert a["frozen_graph_parameters"]==4 and a["frozen_previous_parameters"]==3
+          assert a["edge_cap"]==7 and a["paired_theoretical_physical_ceiling"]==0.5
+          assert a["new_model_training"] is False and a["external_llm_calls"]==0
+          print("FROZEN_DEV",a["graph_validation_accuracy"],a["previous_validation_accuracy"])
+          PY
+      - name: Exactly one original sealed prospective dual-chain study
+        run: |
+          set -euo pipefail
+          start=$(date +%s%N)
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci08/execute.py --phase sealed > /tmp/Y-NCI08-original.json
+          end=$(date +%s%N)
+          printf '{"science_wall_ms":%s,"runner":"ubuntu-latest","cost_usd":"unverified"}\n' "$(((end-start)/1000000))" > /tmp/Y-NCI08-resource.json
+          python3 -m json.tool /tmp/Y-NCI08-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-NCI08-original-immutable-evidence
+          path: |
+            /tmp/Y-NCI08-original.json
+            /tmp/Y-NCI08-resource.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Read frozen scientific outcome after original artifact custody
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          a=json.load(open("/tmp/Y-NCI08-original.json"))
+          assert a["phase"]=="sealed" and a["sealed_seed_range"]==[29248,29272]
+          assert len(a["records"])==96
+          assert collections.Counter(r["family"] for r in a["records"])=={f:24 for f in a["four_order_families"]}
+          assert all(r["graph_edges"]==7 for r in a["records"])
+          assert a["verdict"] in ("CAPACITY_SYMMETRY_LIMIT_CONFIRMED",
+                "LEARNED_JOIN_FALSE_POSITIVE_INVALIDATES_PHYSICAL_CAPACITY",
+                "COUNTERFACTUAL_ORACLE_OR_TASK_INVALID",
+                "DUAL_CHAIN_INFORMATION_BOUND_NOT_QUALIFIED")
+          assert a["external_llm_calls"]==0 and not a["accepted_ref_mutation"]
+          print("FROZEN_SCIENCE",a["verdict"])
+          print("PAIRED_ACCURACIES",a["paired_accuracy"])
+          print("FAMILY_ACCURACIES",a["per_family_accuracy"])
+          print("JOIN_COSTS",a["join_candidate_evaluations"])
+          PY
+      - name: One final full Yggdrasil pytest regression
+        run: python3 -m pytest -q tests
