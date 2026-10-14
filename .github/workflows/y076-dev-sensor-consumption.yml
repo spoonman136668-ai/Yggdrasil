@@ -1,0 +1,19 @@
+name: Y076 development-only sensor-consumption audit
+on:
+  push:
+    branches: [qa/y076-development-sensor-consumption-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify unchanged original executor and diagnose development-only sensor consumption
+        run: |
+          set -euo pipefail
+          test "$(git hash-object research/contrib/chatgpt/20261014-y076-sentinel-coverage/execute.py)" = 5213602513cd27fc3f011a6d0085a3098876a2db
+          python3 -B research/contrib/chatgpt/20261014-y076-sentinel-coverage/dev_only_sensor_audit.py
