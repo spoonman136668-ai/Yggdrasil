@@ -1,0 +1,45 @@
+{
+  "schema": "yggdrasil.f9.typed-role-variable-binding-prereg.v1",
+  "id": "Y-F9-SWAPPED-RELATION-TYPE-IDENTIFIABILITY",
+  "source_F8_sha": "4fe4dda43a9e8ccad82df2fb56c9677b9fc62bb8",
+  "hypothesis": "A frozen recurrent model that receives only unlabeled from/to entity IDs and query endpoints cannot distinguish two worlds with identical graph topology and questions but different edge-relation roles. A typed four-role oracle must flip while frozen-model state and output remain invariant.",
+  "new_development_cohort": {
+    "seeds": [
+      51400,
+      51448
+    ],
+    "graph_family_ids": [
+      40,
+      41,
+      42,
+      43
+    ],
+    "pairs": 192,
+    "paired_questions": 384,
+    "roles": 4,
+    "exact_relation_depth": 4,
+    "causal_mutation": "Replace the third necessary path relation type with a different type, leaving every entity ID, edge endpoint, graph order and query unchanged.",
+    "controls": [
+      "four-role typed reachability oracle must get 192/192 pairs",
+      "untyped exact reachability upper to show role-blindness",
+      "no-graph always-yes shortcut"
+    ],
+    "model": "Frozen 22-param Y-F6 recurrent model, 576-byte unlabeled state, no training, no new state features or adapter",
+    "positive_limited_evidence": "Information-theoretic role-channel gap, NOT native typed reasoning performance",
+    "verdict_if_valid": "TYPED_RELATION_AND_VARIABLE_BINDING_INPUT_MISSING",
+    "invalid_conditions": [
+      "typed oracle not 192/192",
+      "role-blind frozen output changes for identical inputs"
+    ],
+    "future_science": "Prospectively add role-conditioned native state and learned role-composition with explicit entity/role permutation controls on new development cohorts; keep F3 frozen."
+  },
+  "authority": {
+    "independent_source_birth": false,
+    "sealed_first_use": false,
+    "accepted_ref_mutation": false,
+    "controller": false,
+    "queue": false,
+    "FORGE": false,
+    "KTRADE": false
+  }
+}

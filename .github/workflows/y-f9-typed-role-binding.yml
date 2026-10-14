@@ -1,0 +1,59 @@
+name: Y-F9 novel typed relation and variable binding identifiability DEV
+on:
+  push:
+    branches: [research/y-f9-typed-role-variable-binding-dev-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install Torch and project tests
+        run: python3 -m pip install -e '.[test]'
+      - name: Freeze scientific F8 lineage and new prereg
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 4fe4dda43a9e8ccad82df2fb56c9677b9fc62bb8 HEAD
+          test "$(git hash-object research/foundational/20261014-y-f7/execute.py)" = "$(git rev-parse 4fe4dda43a9e8ccad82df2fb56c9677b9fc62bb8:research/foundational/20261014-y-f7/execute.py)"
+          python3 -m py_compile research/foundational/20261014-y-f9/execute.py
+          python3 -m json.tool research/foundational/20261014-y-f9/prereg.json >/dev/null
+      - name: Run new author-created role-swap audit without training
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261014-y-f9/execute.py > /tmp/y-f9-original-development.json
+          python3 -m json.tool /tmp/y-f9-original-development.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F9-original-typed-role-identifiability-dev
+          path: /tmp/y-f9-original-development.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independently recalculate type binding results after archival
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          r=json.load(open("/tmp/y-f9-original-development.json"))
+          assert r["stage"]=="DEVELOPMENT_ONLY" and r["graph_pairs"]==192
+          assert r["question_count"]==384 and r["negative_questions"]==192
+          assert r["native_state_bytes"]==576 and r["trainable_model_parameters"]==22
+          assert not r["candidate_state_contains_role_codes"] and not r["model_retrained"]
+          assert not r["sealed_first_use"] and not r["accepted_ref_mutation"]
+          assert collections.Counter(x["family"] for x in r["rows"])=={40:48,41:48,42:48,43:48}
+          for name,metrics in r["scores"].items():
+            pairs=sum(int(z["predictions"][name]==z["truth"]) for z in r["rows"])
+            correct=sum(int(a==b) for z in r["rows"] for a,b in zip(z["predictions"][name],z["truth"]))
+            assert pairs==metrics["paired_correct"] and correct==metrics["correct"]
+          assert r["scores"]["typed_role_aware_oracle"]["paired_correct"]==192, "INVALID_TYPED_REFERENCE"
+          assert r["scores"]["frozen_learned_role_blind"]["paired_correct"]==0, "INVALID_INVARIANCE"
+          assert r["registered_verdict"]=="TYPED_RELATION_AND_VARIABLE_BINDING_INPUT_MISSING"
+          print("Y_F9_BOUNDARY",r["registered_verdict"])
+          print("Y_F9_SCORES",r["scores"])
+          PY
+      - name: One final full Yggdrasil regression
+        run: python3 -m pytest -q tests
