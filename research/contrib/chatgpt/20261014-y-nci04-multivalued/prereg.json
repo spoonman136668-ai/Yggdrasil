@@ -1,0 +1,31 @@
+{
+  "schema": "yggdrasil.nci04.prereg.v1",
+  "id": "Y-NCI04-MULTIVALUED-RELATION-MEMORY-FALSIFICATION",
+  "parent_head": "7b79e5ee6ae42be534c5f8b0da9349abe5627526",
+  "prior": "Y-NCI03 passed four bounded novel graph motifs with native StatePool memory, but all target edges had unique source keys. Multivalued relations and overwrite-induced forgetting remain untested.",
+  "hypothesis": "Does unchanged native learned admission and join retain simultaneous true relations from a shared source, and old two- and three-hop knowledge after interruption and adding a new edge, or does source-indexed exact StatePool storage overwrite branches?",
+  "frozen_method": "Exact original Y-NCI02 4-parameter learned language admission and 6-parameter learned join, unchanged native StatePool write, 7 active/9 retained, distinct graph motifs root-fork, internal-fork and no-fork-control with same five pre-update edges and one additional relation after checkpoint. Exact multigraph oracle scores both branches without leakage to learned candidate. 24 unused seeds23936..23959 per motif. No retuning.",
+  "outcome_criteria": "FUNCTIONAL_MAP_FORK_RETENTION_FAILURE iff no-fork-control two-hop >=85% but both root and internal forks <50%; MULTIVALUED_TRANSFER_DEMONSTRATED iff all three >=85%; otherwise MULTIVALUED_MEMORY_LIMITATION_NOT_ISOLATED. Report all task groups, errors, exact oracle, memory and compute, no claim full NCI01 regardless.",
+  "resources": {
+    "torch_join_weights": 6,
+    "torch_admit_weights": 4,
+    "resident_state_bytes": 576,
+    "active": 7,
+    "retained": 9,
+    "heldout_cases": 72,
+    "external_llm_calls": 0
+  },
+  "controls": [
+    "Single original sealed first use, source identity and frozen rubric",
+    "No reuse Y-NCI03 sealed cohort 23104..23127",
+    "Oracle uses at most 6 edges under same storage count budget but is separately hard coded",
+    "Archive original result before acceptance checks, full pytest, independent numerical reaggregation",
+    "No accepted refs, FORGE R32/R33, controllers/CKB/KTRADE or production"
+  ],
+  "portfolio": {
+    "integration_target_pct": 45,
+    "foundational_target_pct": 45,
+    "optimization_target_pct": 10,
+    "measured_compute_allocation": false
+  }
+}

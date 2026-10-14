@@ -1,0 +1,63 @@
+name: Yggdrasil NCI04 frozen multivalued memory science
+on:
+  push:
+    branches: [research/y-nci04-multivalued-memory-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install original dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify frozen source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7b79e5ee6ae42be534c5f8b0da9349abe5627526 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci04-multivalued/execute.py)" = 6070cd186d1f9e9b425f68b4da8863d9026f85f1
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci04-multivalued/prereg.json)" = ea8c1d2fbb56537fc2ae3add1dcc892fad3f711c
+          python3 -m py_compile research/contrib/chatgpt/20261014-y-nci04-multivalued/execute.py
+      - name: Development-only native qualification
+        run: |
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci04-multivalued/execute.py --phase development > /tmp/nci04-development.json
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/nci04-development.json"))
+          assert a["phase"]=="development" and a["native_join_parameters"]==6
+          assert a["sealed_heldout_seeds"]==list(range(23936,23960))
+          print("DEV_QUALIFIED")
+          PY
+      - name: Original first-use
+        run: |
+          set -euo pipefail
+          start=$(date +%s%N)
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci04-multivalued/execute.py --phase sealed > /tmp/nci04-original.json
+          end=$(date +%s%N)
+          printf '{"elapsed_wall_ms":%s,"cost_usd":"unverified"}\n' "$(((end-start)/1000000))" > /tmp/nci04-resources.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-NCI04-original-evidence
+          path: |
+            /tmp/nci04-original.json
+            /tmp/nci04-resources.json
+          if-no-files-found: error
+      - name: Check original result after archive
+        run: |
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/nci04-original.json"))
+          assert len(a["records"])==72 and a["checkpoint_restores"]==72
+          assert a["peak_entries"]<=7 and a["nci01_full_acceptance"] is False
+          assert a["verdict"] in ("FUNCTIONAL_MAP_FORK_RETENTION_FAILURE","MULTIVALUED_TRANSFER_DEMONSTRATED","MULTIVALUED_MEMORY_LIMITATION_NOT_ISOLATED")
+          assert a["external_llm_calls"]==0 and not a["accepted_ref_mutation"]
+          print("SCIENTIFIC_VERDICT",a["verdict"])
+          print("MOTIF_ACCURACY",a["accuracy_by_motif"])
+          PY
+      - name: Full repository regression
+        run: python3 -m pytest -q tests
