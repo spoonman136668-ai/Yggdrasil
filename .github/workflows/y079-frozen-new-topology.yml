@@ -1,0 +1,61 @@
+name: Yggdrasil Y079 frozen public-decoder unseen topology transfer
+on:
+  push:
+    branches: [research/y079-prospective-new-topology-decoder-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify exact parent source and frozen unseen topology
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7f1d0206d3036e78aa2e6d755a25b45a2c4f4f00 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y078-disjoint-decoder-replication/execute.py)" = 6a5cfd689d5dd2156f3577c291a29ae90ef8498d
+          test "$(git hash-object research/contrib/chatgpt/20261014-y079-new-topology-decoder/execute.py)" = 21c4367b95afb27c1bda4121629bba469103ba41
+          test "$(git hash-object research/contrib/chatgpt/20261014-y079-new-topology-decoder/prereg.json)" = 47306ae2f4b472f6ec00f1c48f20f6af1df66263
+          python3 -m json.tool research/contrib/chatgpt/20261014-y079-new-topology-decoder/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261014-y079-new-topology-decoder/execute.py
+          python3 - <<'PY'
+          import json
+          p=json.load(open("research/contrib/chatgpt/20261014-y079-new-topology-decoder/prereg.json"))
+          a=set(range(*p["sealed_heldout_seeds"])); d=set(range(*p["development_seeds"]))
+          assert len(a)==16 and len(d)==8 and not (a&d)
+          assert p["pairs"]==[[4,10],[5,14]] and p["reference_pairs"]==[[4,11],[5,12]]
+          for lo,hi in ((9104,9120),(9248,9264),(9392,9408),(9472,9488),(9568,9584),(9920,9936),(11264,11280)):
+              assert a.isdisjoint(range(lo,hi)) and d.isdisjoint(range(lo,hi))
+          print("KNOWN_COHORT_NONOVERLAP_AND_NEW_TOPOLOGY=PASS")
+          PY
+      - name: Execute one first-use frozen topology transfer
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261014-y079-new-topology-decoder/execute.py > /tmp/Y079-original.json
+          python3 -m json.tool /tmp/Y079-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y079-original.json"))
+          assert a["sealed_heldout_seeds"]==list(range(12192,12208))
+          assert a["pairs"]==[[4,10],[5,14]]
+          assert len(a["complete_heldout_records"])==1152 and len(a["comparisons"])==4
+          assert a["fixed_public_reads_per_trial"]==10
+          assert a["model_calls"]==0 and a["accepted_ref_mutation"] is False
+          assert a["classification"] in ("STEADY_SAFETY_FAILURE","DUAL_PAIR_SAFE_TRANSFER",
+                 "PARTIAL_TRANSFER_WITH_CONTROL_COST","DETECTION_ONLY_OR_UNSAFE",
+                 "TARGET_NEW_PAIR_UNDETECTED")
+          print("CLASSIFICATION",a["classification"])
+          print("TOPOLOGY_COMPARISONS",a["comparisons"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y079-original-new-topology
+          path: /tmp/Y079-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Full repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
