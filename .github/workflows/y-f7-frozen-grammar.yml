@@ -1,0 +1,58 @@
+name: Y-F7 frozen learned recurrence novel grammar development
+on:
+  push:
+    branches: [research/y-f7-frozen-intermediate-reasoning-transfer-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install Torch and project native tests
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify frozen F6 identity and F7 prereg
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor aa502051b009f20c592c577e80b7614e5be6e205 HEAD
+          test "$(git hash-object research/foundational/20261014-y-f6/execute.py)" = "$(git rev-parse aa502051b009f20c592c577e80b7614e5be6e205:research/foundational/20261014-y-f6/execute.py)"
+          python3 -m py_compile research/foundational/20261014-y-f7/execute.py
+          python3 -m json.tool research/foundational/20261014-y-f7/prereg.json >/dev/null
+      - name: One no-retraining frozen development transfer study
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261014-y-f7/execute.py > /tmp/y-f7-original-development.json
+          python3 -m json.tool /tmp/y-f7-original-development.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F7-original-frozen-grammar-transfer-development
+          path: /tmp/y-f7-original-development.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independent row audit and fail closed on invalid coded upper
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          r=json.load(open("/tmp/y-f7-original-development.json"))
+          assert r["stage"]=="DEVELOPMENT_ONLY" and r["graph_states"]==192
+          assert r["questions"]==384 and r["negative_questions"]==192
+          assert r["model_parameters"]==22 and r["resident_state_bytes"]==576
+          assert not r["candidate_retrained"] and not r["independently_witnessed_source_birth"]
+          assert not r["sealed_first_use"] and not r["accepted_ref_mutation"]
+          assert collections.Counter(z["family"] for z in r["rows"])=={28:48,29:48,30:48,31:48}
+          for name,s in r["scores"].items():
+            correct=sum(int(t==p) for z in r["rows"] for t,p in zip(z["truth"],z["predictions"][name]))
+            fp=sum(int(p) for z in r["rows"] for t,p in zip(z["truth"],z["predictions"][name]) if not t)
+            assert correct==s["correct"] and fp==s["false_positives"]
+          assert r["scores"]["fixed_coded_exact_equality_upper"]["correct"]==384,"INVALID_CODED_REFERENCE_CONTROL"
+          assert r["registered_verdict"] in ("DEVELOPMENT_FROZEN_PATH_TRAINED_GRAMMAR_TRANSFER","DEVELOPMENT_NO_FROZEN_PATH_TRAINED_GRAMMAR_TRANSFER")
+          print("Y_F7_VERDICT",r["registered_verdict"])
+          print("Y_F7_SCORES",r["scores"])
+          PY
+      - name: One full repository regression
+        run: python3 -m pytest -q tests

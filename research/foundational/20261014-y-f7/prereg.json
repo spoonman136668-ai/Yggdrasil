@@ -1,0 +1,50 @@
+{
+  "schema": "yggdrasil.f7.prereg.v1",
+  "source_F6_sha": "aa502051b009f20c592c577e80b7614e5be6e205",
+  "source_F6_artifact_id": 11930934002,
+  "F6_artifact_json_sha256": "46e3512f6b1b719dddb1e133fe85949ee07ff4dc39b7e69a5c168248441fe2ef",
+  "hypothesis": "Frozen Y-F6 task+train-only-path-supervised recurrent model transfers to still-new fourth-order graph motifs not used to train or validate F6, without any further training or threshold adjustments.",
+  "evaluation": {
+    "frozen_weights": "F6 raw artifact 22 parameter torch float32 state as literal in execute.py",
+    "new_families": [
+      28,
+      29,
+      30,
+      31
+    ],
+    "seed_bounds": [
+      49500,
+      49524
+    ],
+    "edge_order_permutations": 2,
+    "graph_states": 192,
+    "questions": 384,
+    "negative_questions": 192,
+    "tests": [
+      "never-trained motifs",
+      "independent ID affine relabeling variant2",
+      "edge permutation invariant readout",
+      "structurally present unreachable negative endpoints"
+    ],
+    "controls": [
+      "frozen F2 learned bit matcher with coded OR propagation",
+      "fully coded exact equality upper control"
+    ],
+    "invalid_if": "coded exact reference less than 384/384",
+    "positive_if": {
+      "candidate_accuracy_at_least": 0.85,
+      "negative_false_positive_rate_at_most": 0.15,
+      "accuracy_deficit_vs_coded_upper_at_most": 0.15
+    },
+    "positive_verdict": "DEVELOPMENT_FROZEN_PATH_TRAINED_GRAMMAR_TRANSFER",
+    "negative_verdict": "DEVELOPMENT_NO_FROZEN_PATH_TRAINED_GRAMMAR_TRANSFER"
+  },
+  "limits": "Source designs are author-generated development fixtures, not independent external first-use. No frozen F3 changes or sealed cohort opening. Engineered 16-bit input and exactly 3 recurrent rounds remain; new behavior is not unrestricted AGI/RSI.",
+  "authority": {
+    "no_accepted_ref_mutation": true,
+    "no_controllers": true,
+    "no_queue": true,
+    "no_forge_R32R33": true,
+    "no_ktrade": true
+  }
+}
