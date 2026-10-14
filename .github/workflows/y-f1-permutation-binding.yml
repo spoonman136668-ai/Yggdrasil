@@ -1,7 +1,7 @@
 name: Y-F1 structural binding and renaming development-only
 on:
   push:
-    branches: [research/y-f1-permutation-binding-development-20261014-r1]
+    branches: [research/y-f1-permutation-binding-development-20261014-r2]
 permissions:
   contents: read
 jobs:
@@ -21,7 +21,7 @@ jobs:
           git merge-base --is-ancestor 2e54fa1842df59e3fc8c8a540af5eec9e7525c5f HEAD
           test "$(git hash-object research/portfolio/2026-10-14-foundation-60-integration-30-optimization-10.md)" = eb3c84799e5f4c3581b551ca184fe28460d09b77
           test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11-latent/execute.py)" = 4e65f15e03ef56ffbc8d73d6cd3a4ca3d8e6c09f
-          test "$(git hash-object research/foundational/20261014-y-f1-binding/execute.py)" = 9e36720b350f6205ad93240da504139cb0e583a2
+          test "$(git hash-object research/foundational/20261014-y-f1-binding/execute.py)" = 00831191b4d736cb8c8ce05b2bedda188656fc62
           test "$(git hash-object research/foundational/20261014-y-f1-binding/prereg.json)" = 7dffca52e5919e50040f574728ac76f072c59378
           python3 -m py_compile research/foundational/20261014-y-f1-binding/execute.py
           python3 -m json.tool research/foundational/20261014-y-f1-binding/prereg.json >/dev/null
