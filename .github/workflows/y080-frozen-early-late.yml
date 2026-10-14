@@ -1,0 +1,62 @@
+name: Yggdrasil Y080 frozen unseen early and late shock timing
+on:
+  push:
+    branches: [research/y080-unseen-early-late-onset-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify original source and sealed input timing identity
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor def701724108b6fed19f42936d5748d5c96e97f7 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y079-new-topology-decoder/execute.py)" = 21c4367b95afb27c1bda4121629bba469103ba41
+          test "$(git hash-object research/contrib/chatgpt/20261014-y080-early-late-onset/execute.py)" = bb5555bb014423875cd56405b118a3989db6ab13
+          test "$(git hash-object research/contrib/chatgpt/20261014-y080-early-late-onset/prereg.json)" = b926d415dd7eba050d8e5397f2819c7118c72de7
+          python3 -m py_compile research/contrib/chatgpt/20261014-y080-early-late-onset/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y080-early-late-onset/prereg.json >/dev/null
+          python3 - <<'PY'
+          import json
+          p=json.load(open("research/contrib/chatgpt/20261014-y080-early-late-onset/prereg.json"))
+          hold=set(range(*p["sealed_heldout_seeds"]))
+          dev=set(range(*p["development_seeds"]))
+          assert len(hold)==16 and len(dev)==8 and hold.isdisjoint(dev)
+          assert p["regimes"]==["steady","onset2","onset6"]
+          for old in p["previous_cohorts"]:
+              assert hold.isdisjoint(range(*old)) and dev.isdisjoint(range(*old))
+          print("Y080_FROZEN_NEW_TIMES_AND_KNOWN_SEED_NONOVERLAP=PASS")
+          PY
+      - name: Original once-only fixed-decoder causal timing first-use
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261014-y080-early-late-onset/execute.py > /tmp/Y080-original.json
+          python3 -m json.tool /tmp/Y080-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y080-original.json"))
+          assert a["sealed_heldout_seeds"]==list(range(13600,13616))
+          assert a["regimes"]==[["steady",None],["onset2",2],["onset6",6]]
+          assert len(a["complete_heldout_records"])==1152 and len(a["comparisons"])==4
+          assert a["fixed_public_reads_per_trial"]==10
+          assert a["model_calls"]==0 and a["accepted_ref_mutation"] is False
+          assert a["classification"] in ("STEADY_SAFETY_FAILURE",
+            "EARLY_LATE_ONSET_SAFE_TRANSFER","ONSET_TRANSFER_WITH_CONTROL_COST",
+            "ONSET_DETECTED_BUT_UNSAFE","LATE_OR_EARLY_ONSET_UNDETECTED")
+          print("CLASSIFICATION",a["classification"])
+          print("PAIRED_TIMING_COMPARISONS",a["comparisons"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y080-original-early-late-onset
+          path: /tmp/Y080-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Full Yggdrasil repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
