@@ -1,0 +1,135 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y076-CAUSAL-PUBLIC-SENSOR-ADDRESS-REALLOCATION-PROSPECTIVE",
+  "parent_head": "5e20c3ef2d0eded5435599a2a826664e08d4b9e9",
+  "prior": "Y075 first-use artifact 11879582128 independently archive-audited PERSISTENT_SENSOR_BLIND_SPOT: pair5_12 had no detection at onset1 or onset4, while pair4_11 control detected in all 192 trials at each onset. Y064 samples late public coords (2,4), omitting (5,12).",
+  "hypothesis": "Will changing only two late sampled public coordinates from (2,4) to (4,5), at constant ten-scalar-read budget, reveal the pair(5,12) transposition and support safe correction without regressing pair(4,11)?",
+  "freeze": "Frozen Y070 decoder and 7-active/9-retained constraints; retain Y074 four affine families, the two Y075 transposition pairs, onset1/steady; same matched_sham/full/quorum2 policies and five paired arms. Replace public sensor addresses only at episodes 5 and 7 (2,4)->(4,5) in preregistered arms; schedule independent of hidden pair, seed, outcome or evaluator truth. Freeze before original first-use.",
+  "development_seeds": [
+    9536,
+    9544
+  ],
+  "sealed_heldout_seeds": [
+    9568,
+    9584
+  ],
+  "pairs": [
+    [
+      4,
+      11
+    ],
+    [
+      5,
+      12
+    ]
+  ],
+  "new_affine_families": [
+    [
+      3,
+      5,
+      9
+    ],
+    [
+      7,
+      13,
+      3
+    ],
+    [
+      11,
+      7,
+      5
+    ],
+    [
+      15,
+      11,
+      13
+    ]
+  ],
+  "regimes": [
+    "steady",
+    "onset1"
+  ],
+  "policies": [
+    "matched_sham",
+    "full",
+    "quorum2"
+  ],
+  "arms": [
+    "original_rotating_detect_only",
+    "dual_sentinel_detect_only",
+    "dual_sentinel_decoder_corrected",
+    "new_sentinel_detect_only",
+    "new_sentinel_decoder_corrected"
+  ],
+  "original_public_schedule": {
+    "0": [
+      0,
+      1
+    ],
+    "1": [
+      0,
+      1
+    ],
+    "3": [
+      0,
+      1
+    ],
+    "5": [
+      2,
+      4
+    ],
+    "7": [
+      2,
+      4
+    ]
+  },
+  "alternative_public_schedule": {
+    "0": [
+      0,
+      1
+    ],
+    "1": [
+      0,
+      1
+    ],
+    "3": [
+      0,
+      1
+    ],
+    "5": [
+      4,
+      5
+    ],
+    "7": [
+      4,
+      5
+    ]
+  },
+  "primary": "Use all 768 paired heldout trials (2 pairs × 2 regimes × 4 fixed affine families × 16 newly sealed seeds × 3 fixed policies). BLINDSPOT_DETECTED_AND_CORRECTED_WITHOUT_REGRESSION iff (5,12) original sensor 0/192 detections and alternative sensor 192/192, new corrected >=20% fewer post-detection errors vs new detect-only with corrected total less than original, and new corrected pair(4,11) total <= original dual-corrected total. BLINDSPOT_CORRECTED_WITH_PAIR411_TRADEOFF iff gain but pair(4,11) worsens. DETECTION_RESTORED_BUT_CORRECTION_UNPROVEN if all new detections but no safe gain; PARTIAL_DETECTION_GAIN if some additional detections, else NO_SENSOR_COVERAGE_GAIN. Report all arm-level and per-trial outcomes and steady controls including negative.",
+  "controls": [
+    "Pair-independent schedule; no hidden pair/evaluator truth to decoder",
+    "Same 10 public scalar readings per trial across all arms",
+    "Frozen sensor and decoder interfaces, no weight training, no capacity expansion",
+    "All five arms measured on one fresh sealed cohort within a single first-use experiment",
+    "Disjoint seeds from Y075 9392..9407, Y074 9248..9263, Y073 9104..9119",
+    "Preserve absence of false alarms in steady nulls and zero illegal assignments",
+    "One full pytest regression before any scientific acceptance, independent read-only evidence reaggregation",
+    "No production activation, accepted ref changes, FORGE R32/R33, CKB queue, or merge"
+  ],
+  "bounds": {
+    "pairs": 2,
+    "regimes": 2,
+    "families": 4,
+    "heldout_seeds": 16,
+    "development_seeds": 8,
+    "policies": 3,
+    "arms": 5,
+    "active": 7,
+    "retained": 9,
+    "public_scalar_reads_per_trial": 10,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Frozen synthetic schedule-level sensor intervention and causal matching test; not general intelligence or RSI."
+}

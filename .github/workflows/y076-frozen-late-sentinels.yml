@@ -1,0 +1,52 @@
+name: Yggdrasil Y076 frozen ten-read sensor reallocation
+on:
+  push:
+    branches: [research/y076-budget-neutral-late-sentinels-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify prospective source before any heldout execution
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 5e20c3ef2d0eded5435599a2a826664e08d4b9e9 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y075-blind-geometry-timing/execute.py)" = 3a0292998e7d6f4fbd0ea35805bc90ca0e3a0a10
+          test "$(git hash-object 'research/contrib/chatgpt/20261014-y076-budget-neutral-late-sentinels/execute.py')" = 6e00b27a99a80a5068d2853fed01e66c129c88e2
+          test "$(git hash-object 'research/contrib/chatgpt/20261014-y076-budget-neutral-late-sentinels/prereg.json')" = 026a58941fdfba62fb1d3fcf25634659536bce71
+          python3 -m json.tool 'research/contrib/chatgpt/20261014-y076-budget-neutral-late-sentinels/prereg.json' >/dev/null
+          python3 -m py_compile 'research/contrib/chatgpt/20261014-y076-budget-neutral-late-sentinels/execute.py'
+      - name: Execute one frozen paired-arm original science first-use
+        run: |
+          set -euo pipefail
+          python3 -B 'research/contrib/chatgpt/20261014-y076-budget-neutral-late-sentinels/execute.py' > /tmp/Y076-original.json
+          python3 -m json.tool /tmp/Y076-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y076-original.json"))
+          assert a["sealed_heldout_seeds"]==list(range(9568,9584))
+          assert a["pairs"]==[[4,11],[5,12]]
+          assert len(a["complete_heldout_records"])==768 and len(a["comparisons"])==2
+          assert a["per_trial_public_scalar_reads"]==10
+          assert a["model_calls"]==0 and a["accepted_ref_mutation"] is False
+          assert a["classification"] in ("BLINDSPOT_DETECTED_AND_CORRECTED_WITHOUT_REGRESSION",
+              "BLINDSPOT_CORRECTED_WITH_PAIR411_TRADEOFF",
+              "DETECTION_RESTORED_BUT_CORRECTION_UNPROVEN",
+              "PARTIAL_DETECTION_GAIN","NO_SENSOR_COVERAGE_GAIN")
+          print("CLASSIFICATION",a["classification"])
+          print("PAIRED_COMPARISONS",a["comparisons"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y076-original-fixed-late-sentinel
+          path: /tmp/Y076-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
