@@ -14,7 +14,7 @@ from yggdrasil.pool import StatePool
 
 torch.set_num_threads(1)
 HERE=Path(__file__).resolve().parent
-p=HERE.parent/"20261014-y-nci11-latent"/"execute.py"
+p=HERE.parents[1]/"contrib"/"chatgpt"/"20261014-y-nci11-latent"/"execute.py"
 spec=importlib.util.spec_from_file_location("y11_origin",p)
 assert spec and spec.loader
 old=importlib.util.module_from_spec(spec);spec.loader.exec_module(old)
