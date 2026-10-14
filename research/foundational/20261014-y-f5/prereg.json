@@ -1,0 +1,57 @@
+{
+  "schema": "yggdrasil.f5.prereg.v1",
+  "name": "Y-F5-competitive-normalized-multi-hop-recurrent-test",
+  "origin_sha": "55dfadce4ac75eb1be06797e7a688621ff0e7fdc",
+  "mechanistic_hypothesis": "F4 unnormalized multi-edge activation causes excess false positives in learned recurrent composition; trainable competitive source-attention normalizes each message aggregation and suppresses spurious paths without programmed equality or OR traversal.",
+  "design": {
+    "train_seeds": [
+      44900,
+      44924
+    ],
+    "valid_seeds": [
+      45200,
+      45212
+    ],
+    "train_families": [
+      0,
+      1,
+      2
+    ],
+    "validation_families": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "development_only": true,
+    "train_graph_states": 288,
+    "validation_graph_states": 192,
+    "questions": 384,
+    "negative_questions": 192,
+    "model_architecture": "Y-F4 22-parameter RecurrentComposer + 1 trainable source-attention temperature, identical 576-byte native resident state",
+    "training": "150 Adam lr .055 full-batch steps, clipped grad norm 10; same optimizer budget for matched F4 unnormalized",
+    "controls": [
+      "initialized 23-parameter normalized model",
+      "matched unnormalized 22-parameter F4 trained from scratch on same training graph states",
+      "fully coded exact upper control"
+    ],
+    "thresholds": {
+      "min_accuracy": 0.85,
+      "max_negative_fp": 0.15,
+      "min_gain_vs_initialized": 0.15,
+      "min_gain_vs_matched_F4_unnormalized": 0.15,
+      "max_deficit_vs_coded_exact": 0.15
+    },
+    "positive": "DEVELOPMENT_COMPETITIVE_COMPOSITION_GAIN",
+    "negative": "DEVELOPMENT_NO_COMPETITIVE_COMPOSITION_GAIN"
+  },
+  "disclosure": "Input 16-bit public entity features and 3 message rounds are engineered; candidate lacks explicit coded equality and OR-traversal. Scientific F3 external source first-use still blocked. Negative outcome is valid and will not be tuned to pass.",
+  "authority": {
+    "new_controller": false,
+    "new_queue": false,
+    "scientifically_accepted": false,
+    "accepted_ref_mutation": false,
+    "production": false,
+    "F3_cohorts_untouched": true
+  }
+}

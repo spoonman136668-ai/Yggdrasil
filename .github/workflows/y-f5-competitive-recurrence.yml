@@ -1,0 +1,58 @@
+name: Y-F5 competitive normalized learned multi-hop development
+on:
+  push:
+    branches: [research/y-f5-normalized-recurrence-development-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install Torch and native repo tests
+        run: python3 -m pip install -e '.[test]'
+      - name: Pin F4 source and prospective F5 developmental design
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 55dfadce4ac75eb1be06797e7a688621ff0e7fdc HEAD
+          test "$(git hash-object research/foundational/20261014-y-f4/execute.py)" = "$(git rev-parse 55dfadce4ac75eb1be06797e7a688621ff0e7fdc:research/foundational/20261014-y-f4/execute.py)"
+          python3 -m py_compile research/foundational/20261014-y-f5/execute.py
+          python3 -m json.tool research/foundational/20261014-y-f5/prereg.json >/dev/null
+      - name: Original F5 development-only normalized recurrence experiment
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261014-y-f5/execute.py > /tmp/y-f5-original-development.json
+          python3 -m json.tool /tmp/y-f5-original-development.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F5-original-competitive-recurrence-development
+          path: /tmp/y-f5-original-development.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independent outcome reaggregation after archived original
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          r=json.load(open("/tmp/y-f5-original-development.json"))
+          assert r["stage"]=="DEVELOPMENT_ONLY" and r["train_states"]==288
+          assert r["validation_states"]==192 and r["questions"]==384
+          assert r["negative_questions"]==192 and r["native_state_bytes"]==576
+          assert r["normalized_model_parameters"]==23 and r["matched_unnormalized_parameters"]==22
+          assert not r["candidate_direct_coded_equality"] and not r["candidate_fixed_or_traversal"]
+          assert not r["sealed_first_use"] and not r["accepted_ref_mutation"]
+          assert collections.Counter(z["family"] for z in r["rows"])=={4:48,5:48,6:48,7:48}
+          for name,s in r["scores"].items():
+            correct=sum(int(t==p) for row in r["rows"] for t,p in zip(row["truth"],row["predictions"][name]))
+            fp=sum(int(p) for row in r["rows"] for t,p in zip(row["truth"],row["predictions"][name]) if not t)
+            assert correct==s["correct"] and fp==s["false_positives"]
+          assert r["verdict"] in ("DEVELOPMENT_COMPETITIVE_COMPOSITION_GAIN","DEVELOPMENT_NO_COMPETITIVE_COMPOSITION_GAIN")
+          print("Y_F5_VERDICT",r["verdict"])
+          print("Y_F5_SCORES",r["scores"])
+          PY
+      - name: One complete repository regression
+        run: python3 -m pytest -q tests
