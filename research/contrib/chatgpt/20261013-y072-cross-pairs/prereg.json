@@ -1,0 +1,79 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y072-EARLY-CROSS-PAIR-SWAP-CAUSAL-TRANSFER",
+  "parent_head": "c53d1d3000ec69846f4e06706e899e5b0a5a9514",
+  "prior": "Y071 independent archive result NO_TOPOLOGY_TRANSFER with zero post-detection errors for (6,7),(8,9)",
+  "hypothesis": "Y071's lack of post-detection errors may be specific to local adjacent swap sites. Test two cross-gap cell transpositions (2,6) and (3,9), preserving physical public anchors0,1, in the same four Y071 affine families with unchanged Y070 causal sensor/decoder readouts. Distinguish detection opportunity from recovery success.",
+  "development_seeds": [
+    8880,
+    8888
+  ],
+  "sealed_heldout_seeds": [
+    8928,
+    8944
+  ],
+  "new_swap_pairs": [
+    [
+      2,
+      6
+    ],
+    [
+      3,
+      9
+    ]
+  ],
+  "affine_families": [
+    [
+      3,
+      3,
+      11
+    ],
+    [
+      5,
+      9,
+      13
+    ],
+    [
+      9,
+      5,
+      7
+    ],
+    [
+      13,
+      11,
+      3
+    ]
+  ],
+  "onset_episode": 1,
+  "null_regime": "steady",
+  "policies": [
+    "matched_sham",
+    "full",
+    "quorum2"
+  ],
+  "arms": [
+    "original_rotating_detect_only",
+    "dual_sentinel_detect_only",
+    "dual_sentinel_decoder_corrected"
+  ],
+  "primary": "Frozen Y070 fixed matching algorithm and 3 arms on original null and onset1, 2 transposition pairs, 4 families and 16 new seeds. CROSS_PAIR_RECOVERY if Y070 strict (>=50% correction of positive uncorrected posterror plus corrected total < original) for both pairs; PARTIAL_CROSS_PAIR_RECOVERY if any >=20% correction with safety; POST_DETECTION_ZERO_ERROR if neither pair has positive uncorrected post-detection errors; CROSS_PAIR_NO_GAIN otherwise. Report complete pre/post physical mismatch, detection, legality, cache writes and public read records.",
+  "controls": [
+    "No source-tuned sensors/reader added; prior Y070/Y071 thresholds unchanged",
+    "Same 10 public scalars per trial, 7 active and <=9 retained cells, future physical truth only in evaluation",
+    "Fresh 8928..8943 not seen by Y070/Y071, never retune on sealed results",
+    "Single archived original first-use, full pytest once, independent read-only archival witness, do not modify/dispatch FORGE R32/R33"
+  ],
+  "bounds": {
+    "source_pairs": 2,
+    "source_families": 4,
+    "heldout_seeds": 16,
+    "dev_seeds": 8,
+    "active": 7,
+    "retained": 9,
+    "public_reads": 10,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Synthetic causal sensor/matching performance under changed cell topology; no general memory or autonomous RSI."
+}
