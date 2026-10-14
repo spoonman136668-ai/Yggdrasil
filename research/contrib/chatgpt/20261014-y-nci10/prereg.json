@@ -1,0 +1,36 @@
+{
+  "schema": "yggdrasil.nci10.prereg.v1",
+  "id": "Y-NCI10-LEARNED-MERGE-GATE-STRUCTURAL-SHIFT",
+  "parent_head": "033d3618aa006ee7b9502dc2ff522744d74affe2",
+  "hypothesis": "A development-trained native 5-parameter Torch merge gate over public adjacency-pair exposures/time and competition can outperform the unchanged deterministic first-adjacent merge policy under new graph-fork distractor structures, even when exposure evidence reverses.",
+  "mechanism": "Learn only WHEN to merge an already-verified adjacent span-one pair. Four hand-coded public features, Torch nn.Linear(4,1) + bias, trained on development seeds30720..30767 using supervision for whether both adjacent edges belong to true target chains, validated 30816..30831 selecting threshold among {.35,.45,.5,.55,.65,.75}. The physical span2 representation, adjacency detection, original Torch learned graph-retention weights, memory eviction, native 6-parameter learned join and span-aware search remain frozen and hand-coded. Future targets never supplied to memory at test.",
+  "novel_heldout": "24 seeds 31616..31639 ×4 graph families: development-like fork distractors, reversed public exposure relevance, uniform exposure, alternating high-exposure decoys. All have two disjoint length4 true chains and four branch/incoming decoys, twelve admitted facts and two future queries per case.",
+  "competitors": "Frozen NCI09 coded first-adjacent path compressor, frozen NCI07 7-edge graph-local learned retention and original full-12-edge exact oracle. Same 576 native StatePool bytes, seven active slots and Torch backend per compressed arms. Different memory encodings vs uncompressed comparator and differing per-step compute; track all operations. Learned vs coded compressed arms use the same state representation and query method.",
+  "sealed_seed_range": [
+    31616,
+    31640
+  ],
+  "development_seed_ranges": [
+    [
+      30720,
+      30768
+    ],
+    [
+      30816,
+      30832
+    ]
+  ],
+  "acceptance": "LEARNED_MERGE_GATE_TRANSFER only if exact oracle 192/192, new learned >=70% paired accuracy, gain >=10 points over coded NCI09 and every novel shifted family no worse than coded by >10 points; PARTIAL_LEARNED_MERGE_GAIN if +5 points overall; otherwise NO_LEARNED_MERGE_TRANSFER; invalid oracle overrides. Preserve original row-level record and every negative.",
+  "limits": "Train a selection gate not compression representation, learned symbolic graph search, general language semantics, RSI or full NCI01. Same StatePool bytes but programmed structures and runtime work vary.",
+  "safety": [
+    "Frozen source before 1st-use, original single sealed execution, upload artifact before rubric, full pytest and independent read-only reaggregation",
+    "No paid APIs or external LLM processing cognitive tasks",
+    "No accepted refs, FORGE R32/R33, CKB/KTRADE/controller/merge/production"
+  ],
+  "portfolio": {
+    "integration_target_pct": 45,
+    "foundational_target_pct": 45,
+    "optimization_target_pct": 10,
+    "measured_compute_mix": false
+  }
+}
