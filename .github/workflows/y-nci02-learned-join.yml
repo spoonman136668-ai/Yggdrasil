@@ -1,0 +1,73 @@
+name: Yggdrasil Y-NCI02 native learned relation join
+on:
+  push:
+    branches: [research/y-nci02-learned-join-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install original native research runtime
+        run: python3 -m pip install -e '.[test]'
+      - name: Exact inherited source and frozen NCI02 identity
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 23b583db057074c4929b4d93d72f7b7406c479a3 HEAD
+          test "$(git hash-object src/yggdrasil/pool.py)" = 0580da8f1a111c8c0b7b4ebfa51c2128865e7a8a
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci01-r2/execute.py)" = 7ee3388105863df21573c97ae6a4c726872ae76c
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci02-learned-join/execute.py)" = 358227bfc7b331e00fe6fe39c9d76346754ef678
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci02-learned-join/prereg.json)" = 78f67b901cb7766dac2a086b82db46d3937dfb4e
+          python3 -m py_compile research/contrib/chatgpt/20261014-y-nci02-learned-join/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y-nci02-learned-join/prereg.json >/dev/null
+      - name: Development-only Torch join learner qualification
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci02-learned-join/execute.py --phase development > /tmp/Y-NCI02-development.json
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y-NCI02-development.json"))
+          assert a["phase"]=="development" and a["join_train_distinct_pairs"]==768
+          assert a["join_gradient_updates"]==200 and a["join_learned_parameters"]==6
+          assert a["nci01_full_acceptance"] is False
+          print("DEV_JOIN_SCORE",a["join_dev_accuracy"])
+          PY
+      - name: Execute exactly one novel heldout native StatePool integration
+        run: |
+          set -euo pipefail
+          start=$(date +%s%N)
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci02-learned-join/execute.py --phase sealed > /tmp/Y-NCI02-original.json
+          finish=$(date +%s%N)
+          printf '{"elapsed_wall_ms":%s,"runner":"ubuntu-latest","cost_usd":"unverified"}\n' "$(((finish-start)/1000000))" > /tmp/Y-NCI02-resources.json
+          python3 -m json.tool /tmp/Y-NCI02-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-NCI02-original-source-evidence
+          path: |
+            /tmp/Y-NCI02-original.json
+            /tmp/Y-NCI02-resources.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Verify sealed result after evidence custody
+        run: |
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y-NCI02-original.json"))
+          assert a["phase"]=="sealed" and a["sealed_heldout_seeds"]==list(range(22336,22360))
+          assert len(a["records"])==24 and len(set(x["distinct_start"] for x in a["records"]))==24
+          assert a["verdict"] in ("LEARNED_PREDICATE_ONLY_NOT_NATIVE_RELATIONAL_STATE",
+                                 "LEARNED_JOIN_INTEGRATION_BELOW_GATE")
+          assert a["nci01_full_acceptance"] is False
+          assert a["external_llm_calls"]==0 and a["accepted_ref_mutation"] is False
+          print("FROZEN_SCIENTIFIC_VERDICT",a["verdict"])
+          print("SCORING",a["metric"])
+          print("JOIN_CANDIDATE_OPS",a["join_candidate_evaluations"])
+          PY
+      - name: Final full Yggdrasil repository regression
+        run: python3 -m pytest -q tests
