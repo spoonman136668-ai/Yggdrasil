@@ -1,0 +1,49 @@
+name: Yggdrasil Y070 frozen earliest-onset first-use
+on:
+  push:
+    branches: [research/y070-onset1-sensor-delay-20261013-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify pinned lineage and frozen prereg/executor
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c9b32aa0e0fb54277666661f8299ee33d61691d1 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y069-onset2/execute.py)" = 0c0799294300127c77de85435d629ed1c1248e24
+          test "$(git hash-object research/contrib/chatgpt/20261013-y070-onset1/prereg.json)" = cd96c08fb9228971117a3cadca721cb99d463ece
+          test "$(git hash-object research/contrib/chatgpt/20261013-y070-onset1/execute.py)" = 1a73edd9b29f082ad557d04d2bf3e03d2ccfcc0e
+          python3 -m json.tool research/contrib/chatgpt/20261013-y070-onset1/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y070-onset1/execute.py
+      - name: Frozen original sealed onset-one scientific evaluation
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y070-onset1/execute.py > /tmp/Y070-original.json
+          python3 -m json.tool /tmp/Y070-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          a=json.load(open('/tmp/Y070-original.json'))
+          assert a['sealed_heldout_seeds']==list(range(8256,8272))
+          assert len(a['comparisons'])==2
+          assert len(a['complete_heldout_records'])==768
+          assert a['development_checks']==384
+          assert a['per_trial_public_scalar_reads']==10
+          print('CLASSIFICATION',a['classification'])
+          print('EARLY_TIMING',a['comparisons'])
+          print('STEADY_ZERO_MISMATCHES',a['steady_zero_mismatches'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y070-original-earliest-onset
+          path: /tmp/Y070-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
