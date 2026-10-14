@@ -1,0 +1,97 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y076-FIXED-READ-SENTINEL-COVERAGE",
+  "parent_head": "5e20c3ef2d0eded5435599a2a826664e08d4b9e9",
+  "prior": "Y075 PERSISTENT_SENSOR_BLIND_SPOT: 0/192 detections for (5,12) at onset1 and onset4, while (4,11) detected192/192; original public probe schedule sampled (2,4) late, never coordinate5 or12.",
+  "hypothesis": "Can fixed 10-public-read sensor shift late observation pair from (2,4) to (4,5) to observe (5,12) while retaining (4,11) visibility and lowering physical-label mismatch errors without increased sensing, cache capacity or evaluator oracle?",
+  "freeze": "Preserve original Y070 and Y075 three incumbent arms, decoder, 7 active/<=9 retained, four affine families, onsets1/4, 10 public scalar reads. Add two arms differing ONLY by late publicly sampled addresses (4,5) at episodes5/7 instead of old (2,4). Maintain early anchor (0,1) at episodes0/1/3, single original finite science run, untouched prior first-use seeds.",
+  "development_seeds": [
+    9440,
+    9448
+  ],
+  "sealed_heldout_seeds": [
+    9472,
+    9488
+  ],
+  "pairs": [
+    [
+      4,
+      11
+    ],
+    [
+      5,
+      12
+    ]
+  ],
+  "affine_families": [
+    [
+      3,
+      5,
+      9
+    ],
+    [
+      7,
+      13,
+      3
+    ],
+    [
+      11,
+      7,
+      5
+    ],
+    [
+      15,
+      11,
+      13
+    ]
+  ],
+  "regimes": [
+    "steady",
+    "onset1",
+    "onset4"
+  ],
+  "old_sensor": {
+    "early": [
+      0,
+      1
+    ],
+    "late": [
+      2,
+      4
+    ]
+  },
+  "new_sensor": {
+    "early": [
+      0,
+      1
+    ],
+    "late": [
+      4,
+      5
+    ]
+  },
+  "primary": "1,152 fresh heldout trials, five preselected arms, identical read budget. For each pair/onset report detection, corrected/noncorrected post-detection mismatch episodes, total mismatches, safety and legality. New targeted safe recovery iff 192/192 detection on (5,12), >=20% reduction in its own detectable post-episodes and fewer total mismatches than old corrected arm, for both onsets. DUAL_PAIR_SAFE_RECOVERY iff both target onsets meet this and (4,11) detection stays192 and total mismatch does not regress. TARGET_RECOVERY_WITH_CONTROL_COST if only target success. DETECTION_WITHOUT_BOTH_ONSET_RECOVERY if target detected but not both safe recoveries. TARGET_STILL_BLIND if never target detected. STEADY_SAFETY_FAILURE if any steady false-alarm/mismatch.",
+  "controls": [
+    "Untouched heldout seeds 9472..9487",
+    "Original three controls and new detect-only/corrected arms on paired exact trials",
+    "Steady-null and original geometry preserved",
+    "Total public scalar reads=10, active=7, retained<=9",
+    "No future truth consumed by candidate; truth evaluator-side only",
+    "Maintain distinct FORGE and scientific source authority; one original run and final full pytest"
+  ],
+  "bounds": {
+    "pairs": 2,
+    "regimes": 3,
+    "families": 4,
+    "heldout": 16,
+    "policies": 3,
+    "arms": 5,
+    "active": 7,
+    "retained": 9,
+    "public_reads_per_trial": 10,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Targeted synthetic sensor schedule engineering, not broad/general cognition, not proven transfer to other swap locations, not RSI."
+}
