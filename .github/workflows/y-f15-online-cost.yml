@@ -1,0 +1,57 @@
+name: Y-F15 genuine online policy and measured wall time DEV
+on:
+  push:
+    branches: [research/y-f15-frozen-online-cost-new-grammar-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, persist-credentials: false}
+      - name: Install scientific dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify F14 original and frozen F15 prereg
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 2204e66e0e2866f8e712b74d91ee160fe216f136 HEAD
+          test "$(git hash-object research/foundational/20261014-y-f14/execute.py)" = "$(git rev-parse 2204e66e0e2866f8e712b74d91ee160fe216f136:research/foundational/20261014-y-f14/execute.py)"
+          python3 -m py_compile research/foundational/20261014-y-f15/execute.py
+          python3 -m json.tool research/foundational/20261014-y-f15/prereg.json >/dev/null
+      - name: Recover old training-only weights and run new online original
+        run: |
+          PYTHONPATH=src python3 -B research/foundational/20261014-y-f15/execute.py > /tmp/y-f15-original.json
+          python3 -m json.tool /tmp/y-f15-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F15-original-online-frozen-cost
+          path: /tmp/y-f15-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independent original row audit and time accounting
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          d=json.load(open("/tmp/y-f15-original.json"))
+          assert d["stage"]=="DEVELOPMENT_ONLY" and d["graphs"]==96
+          assert d["questions"]==576 and d["positives"]==192 and d["negatives"]==384
+          assert d["resident_state_bytes"]==576 and d["training_only_weight_replay"]
+          assert d["recovered_F14_history_correct"]==576 and d["recovered_F14_history_steps"]==2458
+          assert d["frozen_threshold"]==.7 and d["genuine_online_stop"]
+          assert not d["scientific_f3_sealed_first_use"] and not d["independent_source_birth"]
+          assert not d["accepted_ref_mutation"] and d["no_future_rollout_oracle_in_policy"]
+          assert collections.Counter(r["family"] for r in d["rows"])=={76:144,77:144,78:144,79:144}
+          for name,score in d["scores"].items():
+            correct=sum(int(r["arms"][name]["answer"]==r["truth"]) for r in d["rows"])
+            steps=sum(r["arms"][name]["steps"] for r in d["rows"])
+            ns=sum(r["ns"][name] for r in d["rows"])
+            assert correct==score["correct"] and steps==score["actual_steps"] and ns==score["online_wall_ns"]
+          assert d["scores"]["full"]["actual_steps"]==sum(r["depth"] for r in d["rows"])
+          print("Y_F15_VERDICT",d["verdict"])
+          print("Y_F15_SCORES",d["scores"])
+          PY
+      - name: One full repository regression
+        run: python3 -m pytest -q tests
