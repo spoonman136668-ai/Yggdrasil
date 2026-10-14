@@ -1,0 +1,41 @@
+{
+  "schema": "yggdrasil.f8.prereg.v1",
+  "source_frozen_F7_sha": "20d8b2dac16893456d8e409db3bf851e04ee367a",
+  "original_F6_sha256": "46e3512f6b1b719dddb1e133fe85949ee07ff4dc39b7e69a5c168248441fe2ef",
+  "hypothesis": "Frozen learned Y-F6 recurrent path model changes its answer from reachable to unreachable when a necessary bridge edge is removed while the same query and entity IDs are held constant, under new graph motifs.",
+  "cohort": {
+    "new_families": [
+      36,
+      37,
+      38,
+      39
+    ],
+    "seed_bounds": [
+      50500,
+      50548
+    ],
+    "paired_cases": 192,
+    "question_instances": 384,
+    "positive": 192,
+    "negative": 192,
+    "causal_edit": "replace exactly one path bridge edge 2->3 with 2->15, holding question and all other edges fixed",
+    "distinct_from_previous_families": true,
+    "author_created_development_only": true,
+    "third_party_source_birth": false
+  },
+  "controls": [
+    "fully coded exact equality oracle must achieve 192 of 192 paired sensitivity or INVALID",
+    "constant always-true no-graph control must fail stress"
+  ],
+  "success_thresholds": {
+    "causal_pairs_at_least": 0.95,
+    "total_accuracy_at_least": 0.95,
+    "max_false_positive_after_bridge_cut": 10
+  },
+  "verdicts": {
+    "positive": "DEVELOPMENT_FROZEN_NATIVE_CAUSAL_BRIDGE_SENSITIVITY",
+    "negative": "DEVELOPMENT_NO_FROZEN_NATIVE_CAUSAL_BRIDGE_SENSITIVITY",
+    "invalid": "INVALID_CODED_CAUSAL_CONTROL"
+  },
+  "limits": "Native model uses programmed 16-bit ID features and fixed three message rounds, no direct coded equality/OR in inference; not AGI or sealed source transfer. F3 remains frozen and not admitted."
+}
