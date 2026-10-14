@@ -1,7 +1,7 @@
 name: Y-NCI11-R2 prospective model-locked novel graphs first use
 on:
   push:
-    branches: [research/y-nci11r2-prospective-novel-graphs-20261014-r1]
+    branches: [research/y-nci11r2-prospective-novel-graphs-20261014-r2]
 permissions:
   contents: read
 jobs:
@@ -21,7 +21,7 @@ jobs:
           git merge-base --is-ancestor ae6b5b851ac126ab6fe72142381a904c2e84dcc4 HEAD
           test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11r2/execute.py)" = 7fd2ab27f54a54764503a1c2fd9c03b4020abe1f
           test "$(git hash-object src/yggdrasil/pool.py)" = 0580da8f1a111c8c0b7b4ebfa51c2128865e7a8a
-          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11r2-prospective/execute.py)" = 8dd9c02ee5d89201b9fb8cc6d1e9a4d34979b466
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11r2-prospective/execute.py)" = 64c1a58ba5227bdb38eb0bddd0956cb08803b3a6
           test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11r2-prospective/prereg.json)" = cdd082f21db6ece3574d5389ca83caac86ead6dc
           python3 -m py_compile research/contrib/chatgpt/20261014-y-nci11r2-prospective/execute.py
           python3 -m json.tool research/contrib/chatgpt/20261014-y-nci11r2-prospective/prereg.json >/dev/null
