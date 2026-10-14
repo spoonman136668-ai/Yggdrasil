@@ -1,0 +1,74 @@
+name: Y-NCI01 frozen integration pilot and 45-45-10 portfolio
+on:
+  push:
+    branches: [research/y-nci01-native-integration-portfolio45-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  integration-science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install native dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Freeze native source identities and allocation policy
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 2e9637f5eacd3f760668c17af89f65b1df9f4fdd HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci01/execute.py)" = 1b6708fda0b000f9fc69aa4de9d1c60c846c0c57
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci01/prereg.json)" = 601b3a32a0196ce327f57e592c41d18dda91a682
+          test "$(git hash-object docs/research/PORTFOLIO_NCI01_20261014.md)" = cff673ac696a76c252834e85eca755bd908e2cd7
+          test "$(git hash-object src/yggdrasil/pool.py)" = 0580da8f1a111c8c0b7b4ebfa51c2128865e7a8a
+          python3 -m py_compile research/contrib/chatgpt/20261014-y-nci01/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y-nci01/prereg.json >/dev/null
+      - name: Development only model fitting and source-check before first use
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci01/execute.py --mode development > /tmp/Y-NCI01-development.json
+          python3 -m json.tool /tmp/Y-NCI01-development.json >/dev/null
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y-NCI01-development.json"))
+          assert a["mode"]=="development"
+          assert a["verdict"]=="DEV_ONLY"
+          assert a["nci01_full_acceptance"] is False
+          print("DEVELOPMENT_ONLY_NATIVE_LEARNING_QUALIFIED=PASS")
+          PY
+      - name: One original native integration first-use on sealed language tasks
+        run: |
+          set -euo pipefail
+          start=$(date +%s)
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci01/execute.py --mode sealed > /tmp/Y-NCI01-original.json
+          finish=$(date +%s)
+          printf '{"original_wall_seconds":%s,"runner":"ubuntu-latest","mode":"first-use","billable_cost_usd":"not verified"}\n' "$((finish-start))" > /tmp/Y-NCI01-resource.json
+          python3 -m json.tool /tmp/Y-NCI01-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-NCI01-original-frozen-first-use
+          path: |
+            /tmp/Y-NCI01-original.json
+            /tmp/Y-NCI01-resource.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Verify first-use evidence after durable archival
+        run: |
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y-NCI01-original.json"))
+          assert a["mode"]=="sealed"
+          assert len(a["records"])==24 and a["sealed_seeds"]==list(range(21312,21336))
+          assert a["verdict"] in ("COMPONENT_INTEGRATION_NOT_LEARNED_COMPOSITION","NCI01_COMPONENT_INTEGRATION_BELOW_FEASIBILITY_GATE")
+          assert a["nci01_full_acceptance"] is False
+          assert a["composition_rule_learned"] is False
+          print("VERDICT",a["verdict"])
+          print("ACCURACY",a["metric"])
+          assert a["external_llm_calls"]==0
+          assert a["accepted_ref_mutation"] is False
+          PY
+      - name: Complete full native repository regression
+        run: python3 -m pytest -q tests
