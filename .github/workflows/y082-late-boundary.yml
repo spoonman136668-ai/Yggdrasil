@@ -1,0 +1,50 @@
+name: Y082 prospectively frozen source experiment
+on:
+  push:
+    branches: [research/y082-late-observation-boundary-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify exact parent and frozen source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7efa9f014fde5e374f4280ab306fb0e5df8c6c77 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y081-joint-transfer/execute.py)" = 02c9d8646bfed4d361bc84f626322683dd2c4bd6
+          test "$(git hash-object research/contrib/chatgpt/20261014-y082-late-window/execute.py)" = bc8d9197737c78777f097301297b6c1ac96c1e38
+          test "$(git hash-object research/contrib/chatgpt/20261014-y082-late-window/prereg.json)" = c482b5ccdbab0221770b2997552a92606663ae72
+          python3 -m py_compile research/contrib/chatgpt/20261014-y082-late-window/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y082-late-window/prereg.json >/dev/null
+      - name: Execute frozen original experiment once
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261014-y082-late-window/execute.py > /tmp/Y082-original.json
+          python3 -m json.tool /tmp/Y082-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y082-original-evidence
+          path: /tmp/Y082-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Verify source result after artifact custody
+        run: |
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y082-original.json"))
+          assert a["sealed_heldout_seeds"]==list(range(15488,15504))
+          assert len(a["complete_heldout_records"])==1152
+          assert a["classification"] in ("LATE_OBSERVATION_SAFE_TRANSFER","LATE_OBSERVATION_CONTROL_COST","LATE_OBSERVATION_DETECTION_UNSAFE","LATE_OBSERVATION_UNDETECTED","STEADY_SAFETY_FAILURE")
+          assert a["model_calls"]==0 and a["accepted_ref_mutation"] is False
+          print("CLASSIFICATION",a["classification"])
+          print("RESULT",a["comparisons"])
+          PY
+      - name: Final full repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
