@@ -1,0 +1,62 @@
+name: Y-F11 frozen ordered typed-role reasoning vs bag shortcuts
+on:
+  push:
+    branches: [research/y-f11-frozen-ordered-role-permutation-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install Torch and repository tests
+        run: python3 -m pip install -e '.[test]'
+      - name: Freeze F10 original and preregister F11
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7c488e0ddcab1dd4ad20d5d7b90285756c945b9c HEAD
+          test "$(git hash-object research/foundational/20261014-y-f10/execute.py)" = "$(git rev-parse 7c488e0ddcab1dd4ad20d5d7b90285756c945b9c:research/foundational/20261014-y-f10/execute.py)"
+          python3 -m py_compile research/foundational/20261014-y-f11/execute.py
+          python3 -m json.tool research/foundational/20261014-y-f11/prereg.json >/dev/null
+      - name: Run one frozen ordered-role original DEVELOPMENT study
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261014-y-f11/execute.py >/tmp/y-f11-original-development.json
+          python3 -m json.tool /tmp/y-f11-original-development.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F11-original-ordered-role-transfer-dev
+          path: /tmp/y-f11-original-development.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independently audit raw paired predictions and bag shortcut
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          r=json.load(open("/tmp/y-f11-original-development.json"))
+          assert r["stage"]=="DEVELOPMENT_ONLY" and r["paired_graphs"]==192
+          assert r["questions"]==384 and r["negative_questions"]==192
+          assert r["native_state_bytes"]==576 and r["side_query_role_bytes"]==4
+          assert r["frozen_role_binding_parameters"]==16 and r["no_retraining"]
+          assert not r["sealed_first_use"] and not r["source_birth_independent"]
+          assert not r["accepted_ref_mutation"]
+          assert collections.Counter(z["family"] for z in r["rows"])=={52:48,53:48,54:48,55:48}
+          for name,s in r["scores"].items():
+            paired=sum(int(z["predictions"][name]==z["truth"]) for z in r["rows"])
+            correct=sum(int(p==y) for z in r["rows"] for p,y in zip(z["predictions"][name],z["truth"]))
+            fp=sum(int(z["predictions"][name][1]) for z in r["rows"])
+            assert paired==s["paired_correct"] and correct==s["correct"]
+            assert fp==s["false_positives"]
+          assert r["scores"]["coded_typed_exact_order_reference"]["paired_correct"]==192, "INVALID_TYPED_ORACLE"
+          assert r["scores"]["role_bag_order_insensitive_shortcut"]["paired_correct"]==0, "INVALID_SHORTCUT"
+          assert r["registered_verdict"] in ("DEVELOPMENT_FROZEN_ORDERED_ROLE_TRANSFER","DEVELOPMENT_NO_FROZEN_ORDERED_ROLE_TRANSFER")
+          print("Y_F11_VERDICT",r["registered_verdict"])
+          print("Y_F11_SCORES",r["scores"])
+          PY
+      - name: One full repository regression
+        run: python3 -m pytest -q tests
