@@ -1,0 +1,59 @@
+name: Y-F12 frozen typed variable depth with hard role order negatives
+on:
+  push:
+    branches: [research/y-f12-frozen-typed-variable-depth-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install Torch and project test suite
+        run: python3 -m pip install -e '.[test]'
+      - name: Freeze F11 original and prereg
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 9b7de66aef38d3ee3ea47f1d088417e8065f88d3 HEAD
+          test "$(git hash-object research/foundational/20261014-y-f11/execute.py)" = "$(git rev-parse 9b7de66aef38d3ee3ea47f1d088417e8065f88d3:research/foundational/20261014-y-f11/execute.py)"
+          python3 -m py_compile research/foundational/20261014-y-f12/execute.py
+          python3 -m json.tool research/foundational/20261014-y-f12/prereg.json >/dev/null
+      - name: Execute original F12 only, never F3
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261014-y-f12/execute.py > /tmp/y-f12-original-development.json
+          python3 -m json.tool /tmp/y-f12-original-development.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F12-original-typed-long-chain-development
+          path: /tmp/y-f12-original-development.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independent row evidence classification after archive
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          d=json.load(open("/tmp/y-f12-original-development.json"))
+          assert d["stage"]=="DEVELOPMENT_ONLY" and d["paired_graphs"]==192
+          assert d["questions"]==576 and d["negative_questions"]==384
+          assert d["resident_state_bytes"]==576 and not d["model_retrained"]
+          assert not d["independently_witnessed_source_birth"] and not d["sealed_first_use"]
+          assert not d["accepted_ref_mutation"] and not d["learned_halting"]
+          assert collections.Counter(z["family"] for z in d["rows"])=={56:48,57:48,58:48,59:48}
+          for name,s in d["scores"].items():
+            correct=sum(int(p==y) for z in d["rows"] for p,y in zip(z["predictions"][name],z["truth"]))
+            triple=sum(int(z["predictions"][name]==z["truth"]) for z in d["rows"])
+            fp=sum(int(z["predictions"][name][i]) for z in d["rows"] for i in (1,2))
+            assert correct==s["correct"] and triple==s["paired_triples"] and fp==s["false_positives"]
+          assert d["scores"]["exact_typed_oracle"]["paired_triples"]==192, "INVALID_TYPED_REFERENCE"
+          assert d["scores"]["bag_of_roles_shortcut"]["paired_triples"]==0,"INVALID_BAG_NEGATIVE_CONTROL"
+          assert d["registered_verdict"] in ("DEVELOPMENT_FROZEN_TYPED_VARIABLE_DEPTH_TRANSFER","DEVELOPMENT_NO_FROZEN_TYPED_VARIABLE_DEPTH_TRANSFER")
+          print("Y_F12_RESULT",d["registered_verdict"],d["scores"])
+          PY
+      - name: One complete repository regression
+        run: python3 -m pytest -q tests

@@ -1,0 +1,58 @@
+{
+  "schema": "yggdrasil.f12.prereg.v1",
+  "id": "Y-F12-FROZEN-6_TO_8_TYPED-ROLE-ORDER-TRANSFER",
+  "parent": "9b7de66aef38d3ee3ea47f1d088417e8065f88d3",
+  "stage": "DEVELOPMENT_ONLY",
+  "hypothesis": "Freezing Y-F10's learned 16-parameter role comparison and 22-parameter recurrent core, then repeating its shared learned transition according to an explicit 6–8-symbol role query, transfers to long ordered typed relations without retraining despite forks, loops, and misleading role-order permutations.",
+  "method": {
+    "new_families": [
+      56,
+      57,
+      58,
+      59
+    ],
+    "new_seeds": [
+      55700,
+      55708
+    ],
+    "depths": [
+      6,
+      7,
+      8
+    ],
+    "role_shifts": [
+      0,
+      1
+    ],
+    "cases": 192,
+    "query_count": 576,
+    "negatives": 384,
+    "triple": "same endpoint/edge graph; true ordered role query, negative single role swap on a necessary edge, negative query with same multiset but different role order",
+    "controls": [
+      "exact typed reachability oracle required 192/192 triples",
+      "order-insensitive bag shortcut required 0/192",
+      "frozen four-step role blind predecessor",
+      "untyped reachability"
+    ],
+    "frozen_model": true,
+    "native_state_bytes": 576,
+    "query_side_bytes": "1 symbol byte per requested role (6–8) plus 4 endpoint bytes; query loop is explicitly programmed",
+    "thresholds": {
+      "minimum_triple_correct": 0.85,
+      "minimum_accuracy": 0.9,
+      "maximum_negative_FPR": 0.1
+    },
+    "positive": "DEVELOPMENT_FROZEN_TYPED_VARIABLE_DEPTH_TRANSFER",
+    "negative": "DEVELOPMENT_NO_FROZEN_TYPED_VARIABLE_DEPTH_TRANSFER",
+    "invalid": "INVALID_TYPED_REFERENCE_OR_BAG_SHORTCUT"
+  },
+  "restrictions": {
+    "learned_halting": false,
+    "author_created_not_independently_witnessed": true,
+    "F3_unchanged": true,
+    "first_use": false,
+    "no_accepted_refs": true,
+    "no_authority_changes": true,
+    "no_paid_api": true
+  }
+}
