@@ -1,0 +1,47 @@
+name: Yggdrasil Y072 frozen cross-gap topology
+on:
+  push:
+    branches: [research/y072-cross-shock-pair-transfer-20261013-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify frozen source lineage prereg and exact executor blobs
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c53d1d3000ec69846f4e06706e899e5b0a5a9514 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y071-unseen-swap/execute.py)" = fe9a3719d8616212f24caadd1c718138887ea959
+          test "$(git hash-object research/contrib/chatgpt/20261013-y072-cross-pairs/prereg.json)" = 9fe3b160d8e18abbf6df16e93a17602fce30350a
+          test "$(git hash-object research/contrib/chatgpt/20261013-y072-cross-pairs/execute.py)" = 02f7f634e5eeff5aa484fe0dea5a8caf750e11cb
+          python3 -m json.tool research/contrib/chatgpt/20261013-y072-cross-pairs/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261013-y072-cross-pairs/execute.py
+      - name: Original first-use new cross-gap early topology cohort
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261013-y072-cross-pairs/execute.py > /tmp/Y072-original.json
+          python3 -m json.tool /tmp/Y072-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          a=json.load(open('/tmp/Y072-original.json'))
+          assert a['sealed_heldout_seeds']==list(range(8928,8944))
+          assert a['cross_gap_swap_pairs']==[[2,6],[3,9]]
+          assert len(a['original_y070_unchanged_trial_evidence']['complete_heldout_records'])==768
+          print('CLASSIFICATION',a['classification'])
+          for x in a['early_post_detection_comparisons']:
+              print('CROSS_PAIR',x)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y072-original-cross-pair-early-shock
+          path: /tmp/Y072-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
