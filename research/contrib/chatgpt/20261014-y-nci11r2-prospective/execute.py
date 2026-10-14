@@ -6,7 +6,7 @@ are locked BEFORE cohort generation. Exact programmed compressor is only a
 frozen control, never part of learned memory.
 """
 from __future__ import annotations
-import argparse, copy, hashlib, importlib.util, json, time
+import argparse, copy, hashlib, importlib.util, json, struct, time
 from pathlib import Path
 import torch
 import torch.nn.functional as F
@@ -48,7 +48,8 @@ def train_frozen():
         hasher.update(name.encode()+b"\0")
         hasher.update(str(t.dtype).encode()+b"\0")
         hasher.update(repr(tuple(t.shape)).encode()+b"\0")
-        hasher.update(t.numpy().tobytes())
+        for value in t.reshape(-1).tolist():
+            hasher.update(struct.pack("<f",float(value)))
     return model,{"frozen_weight_sha256":hasher.hexdigest(),
         "development_validation_accuracy":val,"development_zero_memory":zero,
         "trained_parameter_count":sum(p.numel() for p in model.parameters()),
