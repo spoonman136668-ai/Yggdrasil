@@ -1,0 +1,61 @@
+{
+  "schema": "yggdrasil.f4.prereg.v1",
+  "id": "Y-F4-NATIVE-RECURRENT-COMPOSITION-WITHOUT-HARD_EQUALITY_OR_ORPATH",
+  "parent_f3": "bf86d1405001cefba0ff70d99e407cd924cce249",
+  "hypothesis": "Train 22 learned parameters to infer query anchors, link transitions, and three-step recurrent edge-message composition from graph question outcomes without coded Boolean entity identity or coded fixed OR reachability. This is constrained learned composition on engineered 16-bit inputs; does not establish general language reasoning.",
+  "scientific_design": {
+    "data_status": "NEW DEVELOPMENT_ONLY; DOES NOT CONSUME OR UNSEAL Y-F3",
+    "train_seeds": [
+      42200,
+      42224
+    ],
+    "validation_seeds": [
+      42500,
+      42512
+    ],
+    "train_families": [
+      0,
+      1,
+      2
+    ],
+    "validation_families": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "cases_each": "four cut conditions, two balanced questions; 288 train states, 192 validation states, 384 validation questions",
+    "adversarial_aliases": "existing frozen Y-F1B public alias construction",
+    "model_params": 22,
+    "resident_state_bytes": 576,
+    "optimizer": "Adam lr .055, 150 full-batch task-BCE steps, global norm clip 10, deterministic torch seed 642",
+    "candidate_no_coded_identity": true,
+    "candidate_no_coded_or_reachability": true,
+    "candidate_remaining_engineered_features": "16-bit numeric identifiers and exactly 3 recurrent message-passing rounds",
+    "controls": [
+      "same architecture before training",
+      "frozen Y-F2 comparator with coded fixed four-hop readout",
+      "fully coded exact-equality control"
+    ],
+    "thresholds": {
+      "min_accuracy": 0.85,
+      "max_negative_fp": 0.15,
+      "min_gain_vs_same_arch_initialized": 0.15,
+      "max_gap_below_frozen_F2_control": 0.15
+    },
+    "verdict_positive": "DEVELOPMENT_LEARNED_RECURRENCE_TRANSFER_OBSERVED",
+    "verdict_negative": "DEVELOPMENT_NO_RECURRENT_COMPOSITION_TRANSFER"
+  },
+  "first_use": {
+    "sealed": false,
+    "scientific_acceptance": false,
+    "admission": "BLOCKED_UNTIL_F3_INDEPENDENT_SOURCE_BIRTH"
+  },
+  "scope": {
+    "no_authority_changes": true,
+    "no_acceptance_mutation": true,
+    "no_ktrade": true,
+    "no_broker": true,
+    "no_forge_r32_r33": true
+  }
+}
