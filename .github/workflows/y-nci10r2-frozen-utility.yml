@@ -1,0 +1,77 @@
+name: Y-NCI10-R2 frozen development utility fit and prospective first-use
+on:
+  push:
+    branches: [research/y-nci10r2-utility-selected-memory-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Native Yggdrasil runtime install
+        run: python3 -m pip install -e '.[test]'
+      - name: Freeze source lineage and prereg
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor ad76ca35ce37531d879cc4371c8c06235f3637dc HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci10/execute.py)" = e5126d76d9158008d51db7ab17cdc7b9fe1c16f8
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci10r2/execute.py)" = d808596db701583bfb90960ddbcde1b7178e9624
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci10r2/prereg.json)" = c27a674504c438f2496a25eff603f14640624503
+          python3 -m py_compile research/contrib/chatgpt/20261014-y-nci10r2/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y-nci10r2/prereg.json >/dev/null
+      - name: Fit future query utility on development cohorts only
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci10r2/execute.py --phase development > /tmp/y10r2-dev.json
+          python3 - <<'PY'
+          import json
+          d=json.load(open("/tmp/y10r2-dev.json"))
+          assert d["phase"]=="development" and d["sealed_seed_range"]==[32512,32536]
+          assert d["utility_candidate_count"]==18 and d["utility_finalist_count"]==4
+          assert d["development_accuracy"]>=0 and d["training_examples"]>0
+          assert d["native_state_bytes"]==576 and d["active_slots"]==7
+          assert d["future_query_visible_during_inference"] is False
+          assert not d["nci01_full_acceptance"] and d["external_llm_calls"]==0
+          print("DEV_UTILITY_FIT",d["development_accuracy"],d["merge_threshold"])
+          PY
+      - name: Execute exactly one frozen prospective original sealed cohort
+        run: |
+          set -euo pipefail
+          start=$(date +%s%N)
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci10r2/execute.py --phase sealed > /tmp/y10r2-original.json
+          end=$(date +%s%N)
+          printf '{"science_wall_ms":%s,"runtime":"ubuntu-latest","billing_usd":"unverified"}\n' "$(((end-start)/1000000))" > /tmp/y10r2-resources.json
+          python3 -m json.tool /tmp/y10r2-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-NCI10R2-original-prospective
+          path: |
+            /tmp/y10r2-original.json
+            /tmp/y10r2-resources.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Check original evidence after artifact custody
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          a=json.load(open("/tmp/y10r2-original.json"))
+          assert len(a["records"])==96 and a["sealed_seed_range"]==[32512,32536]
+          assert collections.Counter(x["family"] for x in a["records"])=={n:24 for n in a["family_names"]}
+          assert a["verdict"] in ("R2_LEARNED_UTILITY_POLICY_TRANSFER","R2_PARTIAL_UTILITY_POLICY_GAIN",
+            "R2_NO_LEARNED_UTILITY_POLICY_TRANSFER","R2_NOVEL_ORACLE_INVALID")
+          assert all(r["learned_chunks"]<=7 for r in a["records"])
+          assert not a["new_representation_learned"] and not a["nci01_full_acceptance"]
+          assert a["external_llm_calls"]==0 and not a["accepted_ref_mutation"]
+          print("FROZEN_CLASSIFICATION",a["verdict"])
+          print("PAIRED_QUERY_SCORES",a["paired_accuracy"])
+          print("GROUP_SCORES",a["family_accuracy"])
+          print("MODEL_COST",a["gate_inference_evaluations"])
+          PY
+      - name: Complete repository regression
+        run: python3 -m pytest -q tests
