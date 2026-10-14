@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y077-ADDRESS-AWARE-CAUSAL-DECODER",
+  "parent_head": "44c1f6f81066b219ff209fbd8aed318d795915ed",
+  "qualified_development_only_run": 38536323443,
+  "prior": "Y076 all old/new trial summaries identical because original Y060 decoder only checked hard-coded address2 at episode5, ignoring new address5. Development-only run 38536052850 proved public sample address5 was produced but ignored downstream; development-only fix run 38536323443 proved public address-aware decoder detects the target pair at episode5 without sealed replay.",
+  "hypothesis": "At exactly ten public reads and unchanged seven-active/nine-retained matching, does matching the decoder's actual public observed addresses to the new (4,5) sentinel schedule yield safe correction of previously blind pair(5,12), without harming already detectable pair(4,11)?",
+  "freeze": "Retain original Y076 complete paired five-arm trial harness, y076.run; override ONLY the decoder inside the new publicly sampled detect-only/corrected arms; iterate publicly observed nonanchor labels at fixed episodes5/7 and enforce one-swap bound. Freeze Y076 original three arms, read budget, source, affine families, decoder correction, and all thresholds. Developer QA run 38536323443 passed on development-only source 9440. No prior sealed replay.",
+  "development_seeds": [
+    9520,
+    9528
+  ],
+  "sealed_heldout_seeds": [
+    9568,
+    9584
+  ],
+  "pairs": [
+    [
+      4,
+      11
+    ],
+    [
+      5,
+      12
+    ]
+  ],
+  "regimes": [
+    "steady",
+    "onset1",
+    "onset4"
+  ],
+  "affine_families": [
+    [
+      3,
+      5,
+      9
+    ],
+    [
+      7,
+      13,
+      3
+    ],
+    [
+      11,
+      7,
+      5
+    ],
+    [
+      15,
+      11,
+      13
+    ]
+  ],
+  "arm_comparisons": [
+    "original_detect_only",
+    "old_dual_detect_only",
+    "old_dual_corrected",
+    "new_dual_detect_only",
+    "new_dual_corrected"
+  ],
+  "primary": "1,152 paired sealed trial records, five arms, original 10 reads. DUAL_TOPOLOGY_SAFE_RECOVERY iff both target onset1/onset4 cases have 192 detections, >=20% paired new detect-only to corrected post-detection mismatch reduction and fewer total mismatches than old corrected arm, and pair4_11 keeps 192 detections with no total regression. TARGET_RECOVERY_WITH_CONTROL_COST iff target criteria but positive control worsens; TARGET_DETECTED_PARTIAL_OR_UNSAFE if target detected but fails both-onset strict safety; TARGET_UNDETECTED if never detected. STEADY_SAFETY_FAILURE if any steady null error/detection. Preserve all outcomes.",
+  "controls": [
+    "Public address keys only, no evaluator true labels in candidate",
+    "One original first-use with fresh sealed cohort 9568..9583",
+    "Frozen original Y076 source SHA 5213602513cd27fc3f011a6d0085a3098876a2db",
+    "Five arms and fixed 10 public reads, active7 retained<=9",
+    "Dev-only independent mechanical positive run 38536323443",
+    "Full pytest and independent archive numerical reaggregation, no rerun",
+    "No FORGE R32/R33, accepted-ref, controller, production mutation"
+  ],
+  "bounds": {
+    "pairs": 2,
+    "regimes": 3,
+    "families": 4,
+    "heldout": 16,
+    "dev": 8,
+    "policies": 3,
+    "arms": 5,
+    "reads": 10,
+    "active": 7,
+    "retained": 9,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Narrow synthetic bounded sensor+decoder repair, not a general cognitive/RSI proof."
+}
