@@ -1,0 +1,54 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y085-PUBLIC-STATE-CONDITIONAL-RETENTION-DIVERSITY",
+  "parent_head": "3e882b75b803ea1265057c11294377b9240be6d2",
+  "prior": "Y084 exact archived first-use and full regression passed, but selected affine a%4 bucket had only one public key ('3') and mapped all cases to matched_sham. Mismatch improvement of 30.14% was matched by increased churn 18.45% and matching calls 32.19%, without conditional adaptation.",
+  "hypothesis": "When conditioning on distinct observed public affine multipliers a%16 and public drift d%8 rather than collapsing all a values modulo4, can a bounded <=8-key learned preference table actually select >=2 different retention policies and safely reduce mismatch episodes on fresh sealed inputs?",
+  "freeze": "Y084 fixed public source, decoder, candidate match, 7 active/<=9 retained, ten scalar reads, matched_sham/full/quorum2 choices, frozen four affine families, transposition pairs and onset challenge unchanged. Candidate modes static, affine16, drift8 and a deterministic hashed joint of affine quarter and drift parity (max 8 entries). Train each with identical original objective 100*mismatch+churn+.01*calls on dev seeds17792..17799; choose on untouched dev-validation17824..17831. Freeze learned table before fresh sealed17856..17871. Enforce heterogeneous policy selections for a full/partial adaptive success; collapse to one policy is a separate negative classification regardless of static aggregate improvement.",
+  "dev_seeds": [
+    17792,
+    17800
+  ],
+  "validation_seeds": [
+    17824,
+    17832
+  ],
+  "sealed_heldout_seeds": [
+    17856,
+    17872
+  ],
+  "public_context_dimensions": [
+    "a_mod16",
+    "d_mod8"
+  ],
+  "candidate_modes": [
+    "static",
+    "affine_bucket",
+    "drift_bucket",
+    "joint_bucket"
+  ],
+  "cap_per_table": 8,
+  "primary": "PUBLIC_STATE_POLICY_COLLAPSED if the chosen table selects <2 distinct policies on all heldout cases (after steady safety check). DEVELOPMENT_LEARNED_PUBLIC_MEMORY_POLICY_GAIN iff selection diverse, >=10% fewer errors than quorum2, <=5% churn increase and <=10% call increase, no individual group mismatch regression and steady null safe. PARTIAL_CONDITIONAL_MEMORY_GAIN_OR_COST iff diverse and >=5% error reduction but other gates fail. NO_CONDITIONAL_MEMORY_POLICY_GAIN otherwise; STEADY_SAFETY_FAILURE overrides all. Preserve 384 trial cases and all three arm outcomes.",
+  "controls": [
+    "Only public episode 0 and 1 values used for conditional decision; no hidden source/true topology/onset in predictor",
+    "Candidate <=8 lookup entries, unchanged seven-active/nine-retained runtime memory and ten public reads",
+    "Known cohort nonintersection with 16160..16175 and 17408..17423",
+    "One frozen first-use only and original artifact before interpretive assertions, full repository pytest, independent archive-only witness",
+    "No accepted refs, FORGE R32/R33, controller, production or merge"
+  ],
+  "bounds": {
+    "selected_policy_table_entries_max": 8,
+    "development_seeds": 8,
+    "validation_seeds": 8,
+    "heldout_seeds": 16,
+    "heldout_cases": 384,
+    "candidate_policies": 3,
+    "public_reads": 10,
+    "active": 7,
+    "retained": 9,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Fixed bounded public-context policy selector; not learned latent state formation, long-term cognition or RSI."
+}
