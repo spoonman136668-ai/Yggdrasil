@@ -1,0 +1,59 @@
+name: Y-F4 native learned recurrent composition development
+on:
+  push:
+    branches: [research/y-f4-learned-composition-development-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install Torch and repository test suite
+        run: python3 -m pip install -e '.[test]'
+      - name: Lock F3 lineage and F4 prereg
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor bf86d1405001cefba0ff70d99e407cd924cce249 HEAD
+          test "$(git hash-object research/foundational/20261014-y-f2/execute.py)" = 84d635d8e098e2d0dec38bd64320961f383e5304
+          python3 -m py_compile research/foundational/20261014-y-f4/execute.py
+          python3 -m json.tool research/foundational/20261014-y-f4/prereg.json >/dev/null
+      - name: Once-only bounded F4 development experiment (NOT F3)
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261014-y-f4/execute.py > /tmp/y-f4-original-dev.json
+          python3 -m json.tool /tmp/y-f4-original-dev.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F4-original-native-composition-development
+          path: /tmp/y-f4-original-dev.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independently recompute development outcomes from archived rows
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          r=json.load(open("/tmp/y-f4-original-dev.json"))
+          assert r["stage"]=="DEVELOPMENT_ONLY" and r["train_states"]==288
+          assert r["validation_states"]==192 and r["questions"]==384
+          assert r["negative_questions"]==192 and r["resident_state_bytes"]==576
+          assert r["candidate_parameter_count"]==22
+          assert not r["coded_equality_in_candidate"] and not r["coded_or_traversal_in_candidate"]
+          assert not r["sealed_first_use"] and not r["accepted_ref_mutation"]
+          assert collections.Counter(x["family"] for x in r["raw_rows"])=={4:48,5:48,6:48,7:48}
+          for k,summary in r["scores"].items():
+            rows=r["raw_rows"]
+            correct=sum(int(t==p) for row in rows for t,p in zip(row["truth"],row["predictions"][k]))
+            fp=sum(int(p) for row in rows for t,p in zip(row["truth"],row["predictions"][k]) if not t)
+            assert correct==summary["correct"] and fp==summary["false_positives"]
+          assert r["verdict"] in ("DEVELOPMENT_LEARNED_RECURRENCE_TRANSFER_OBSERVED","DEVELOPMENT_NO_RECURRENT_COMPOSITION_TRANSFER")
+          print("Y_F4_VERDICT",r["verdict"])
+          print("Y_F4_SCORES",r["scores"])
+          PY
+      - name: One full repository regression
+        run: python3 -m pytest -q tests
