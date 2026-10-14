@@ -1,0 +1,59 @@
+{
+  "schema": "yggdrasil.f6.prereg.v1",
+  "id": "Y-F6-TRAIN_ONLY_INTERMEDIATE_PATH_WITNESSES",
+  "source_parent": "94dcd297302144dbef8132dc15fe44899da9f249",
+  "hypothesis": "A native recurrent message passing model that learns training-only intermediate edge reachability targets plus final task labels transfers more robustly to unseen structural motif families than equal-budget task-only training; no equality or coded OR traversal at inference.",
+  "experiments": {
+    "train_seed_bounds": [
+      47900,
+      47924
+    ],
+    "training_motif_families": [
+      20,
+      21,
+      22,
+      23
+    ],
+    "training_edge_order_permutations": 3,
+    "training_states": 288,
+    "validation_seed_bounds": [
+      48200,
+      48212
+    ],
+    "validation_motif_families": [
+      24,
+      25,
+      26,
+      27
+    ],
+    "validation_edge_order_permutations": 4,
+    "validation_states": 192,
+    "questions": 384,
+    "negative_questions": 192,
+    "independence": "Different authored topology definitions and role/permutation IDs for training and validation. All development-only; not independently witnessed source birth.",
+    "candidate": "Y-F4 RecurrentComposer 22 parameters, graph task BCE + 0.6 * training-only four-level edge trace weighted BCE, positives weighted 3",
+    "controls": [
+      "same initialized architecture",
+      "same 22-parameter model trained same 160 optimizer steps on task BCE only",
+      "fully coded equality oracle"
+    ],
+    "compute": "Adam lr .055, gradient max norm 10, 160 full-batch steps, torch seed 729, 576-byte native state, no model APIs",
+    "predeclared_margins": {
+      "minimum_accuracy": 0.85,
+      "maximum_negative_fp": 0.15,
+      "gain_vs_task_only_at_least": 0.1,
+      "gain_vs_init_at_least": 0.15,
+      "max_gap_to_coded_upper": 0.15
+    },
+    "positive": "DEVELOPMENT_TRAIN_ONLY_PATH_WITNESSES_IMPROVE_TRANSFER",
+    "negative": "DEVELOPMENT_NO_TRAIN_ONLY_PATH_WITNESS_TRANSFER"
+  },
+  "restrictions": "Intermediate reachability labels are calculated ONLY for the TRAIN split. The validation split oracle is used solely for evaluation, never inference or gradient. Graph motifs, IDs, seeds, all margins frozen before outcome. No F3 source intake, sealed first-use or scientific acceptance. Input binary bits and 3 rounds remain engineered.",
+  "authority": {
+    "no_controller": true,
+    "no_work_queue": true,
+    "no_accepted_ref_mutation": true,
+    "no_ktrade": true,
+    "no_forge_mutations": true
+  }
+}

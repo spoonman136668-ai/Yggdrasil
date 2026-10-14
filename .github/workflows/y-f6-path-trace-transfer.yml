@@ -1,0 +1,59 @@
+name: Y-F6 train-only path witnesses on novel grammar structures DEV
+on:
+  push:
+    branches: [research/y-f6-trainonly-path-witness-grammar-transfer-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install Torch and repository native tests
+        run: python3 -m pip install -e '.[test]'
+      - name: Lock F5 source lineage and experiment specification
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 94dcd297302144dbef8132dc15fe44899da9f249 HEAD
+          test "$(git hash-object research/foundational/20261014-y-f5/execute.py)" = "$(git rev-parse 94dcd297302144dbef8132dc15fe44899da9f249:research/foundational/20261014-y-f5/execute.py)"
+          python3 -m py_compile research/foundational/20261014-y-f6/execute.py
+          python3 -m json.tool research/foundational/20261014-y-f6/prereg.json >/dev/null
+      - name: One development experiment across disjoint train and validation motifs
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261014-y-f6/execute.py > /tmp/y-f6-original-development.json
+          python3 -m json.tool /tmp/y-f6-original-development.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F6-original-training-traces-structural-transfer-development
+          path: /tmp/y-f6-original-development.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independently reaggregate archived predictions
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          r=json.load(open("/tmp/y-f6-original-development.json"))
+          assert r["stage"]=="DEVELOPMENT_ONLY" and r["training_states"]==288
+          assert r["validation_states"]==192 and r["question_count"]==384
+          assert r["negative_questions"]==192 and r["native_state_bytes"]==576
+          assert r["model_parameters_each"]==22 and r["training_steps_each"]==160
+          assert r["training_only_intermediate_oracle_labels"] and not r["validation_oracle_trace_opened"]
+          assert not r["sealed_first_use"] and not r["source_birth_independently_witnessed"]
+          assert not r["accepted_ref_mutation"] and not r["coded_or_at_inference"]
+          assert collections.Counter(row["family"] for row in r["rows"])=={24:48,25:48,26:48,27:48}
+          for name,s in r["scores"].items():
+            correct=sum(int(t==p) for row in r["rows"] for t,p in zip(row["truth"],row["predictions"][name]))
+            fp=sum(int(p) for row in r["rows"] for t,p in zip(row["truth"],row["predictions"][name]) if not t)
+            assert correct==s["correct"] and fp==s["false_positives"]
+          assert r["registered_verdict"] in ("DEVELOPMENT_TRAIN_ONLY_PATH_WITNESSES_IMPROVE_TRANSFER","DEVELOPMENT_NO_TRAIN_ONLY_PATH_WITNESS_TRANSFER")
+          print("Y_F6_VERDICT",r["registered_verdict"])
+          print("Y_F6_SCORES",r["scores"])
+          PY
+      - name: One final full repository regression
+        run: python3 -m pytest -q tests
