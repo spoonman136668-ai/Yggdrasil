@@ -1,0 +1,76 @@
+name: Y-NCI09 native bounded two-link path compression
+on:
+  push:
+    branches: [research/y-nci09-native-two-link-chunk-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install existing native Yggdrasil runtime
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify frozen source, original NCI08 and preregistration
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor f1ca8e60a11ce2e9568287f8d6d3cd5d8ea2d3c3 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci07/execute.py)" = 69391c53ef58ffce0127b3b3eb147b1cac42fea9
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci09/execute.py)" = 5349234a6acafa4f0b2611867d4c2d8345bb25a9
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci09/prereg.json)" = 5f335508ede061fb74789aab73560edcc142f327
+          python3 -m py_compile research/contrib/chatgpt/20261014-y-nci09/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y-nci09/prereg.json >/dev/null
+      - name: Development-only pinned learner and synthetic two-link compression qualification
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci09/execute.py --phase development > /tmp/Y-NCI09-development.json
+          python3 - <<'PY'
+          import json
+          j=json.load(open("/tmp/Y-NCI09-development.json"))
+          assert j["phase"]=="development" and j["sealed_seed_range"]==[30208,30232]
+          assert j["retention_parameters"]==4 and j["learned_join_parameters"]==6
+          assert j["native_state_bytes"]==576 and j["active_cap"]==7
+          assert j["compression_rule_hand_coded"] and not j["compressed_spans_learned"]
+          assert not j["nci01_full_acceptance"] and j["external_llm_calls"]==0
+          print("Y09_DEV_QUALIFIED",j["dev_accuracy"])
+          PY
+      - name: Exactly one prospective frozen sealed native composition first use
+        run: |
+          set -euo pipefail
+          start=$(date +%s%N)
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci09/execute.py --phase sealed > /tmp/Y-NCI09-original.json
+          finish=$(date +%s%N)
+          printf '{"science_wall_ms":%s,"runner":"ubuntu-latest","billing_usd":"unverified"}\n' "$(((finish-start)/1000000))" > /tmp/Y-NCI09-resource.json
+          python3 -m json.tool /tmp/Y-NCI09-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-NCI09-original-native-chunk-evidence
+          path: |
+            /tmp/Y-NCI09-original.json
+            /tmp/Y-NCI09-resource.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Check frozen result only after immutable original archive custody
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          j=json.load(open("/tmp/Y-NCI09-original.json"))
+          assert j["phase"]=="sealed" and j["sealed_seed_range"]==[30208,30232]
+          assert len(j["records"])==96
+          assert collections.Counter(r["family"] for r in j["records"])=={f:24 for f in j["families"]}
+          assert all(r["native_edges"]<=7 and r["compressed_coverage"]<=14 for r in j["records"])
+          assert j["verdict"] in ("CODED_TWO_LINK_COMPRESSION_RESTORES_BOUNDED_RECALL",
+               "PARTIAL_TWO_LINK_CHUNK_RECALL_GAIN","NO_TWO_LINK_CHUNK_COMPOSITION_GAIN")
+          assert not j["nci01_full_acceptance"] and j["external_llm_calls"]==0 and not j["accepted_ref_mutation"]
+          print("ORIGINAL_FROZEN_VERDICT",j["verdict"])
+          print("PAIRED_ACCURACY",j["paired_accuracy"])
+          print("PER_FAMILY",j["per_family"])
+          print("JOIN_WORK",j["join_candidate_evaluations"])
+          PY
+      - name: One full final original Yggdrasil pytest regression
+        run: python3 -m pytest -q tests
