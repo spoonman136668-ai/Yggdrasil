@@ -103,7 +103,7 @@ def scalar_online(core,params,lut,edges,types,q,seq):
 def evaluate():
     start=time.perf_counter()
     core,head,frozen_sha=f15.recovered()
-    assert frozen_sha=="415020f5dfa310b63c15b579045a53811062a72e467789f7af69a42ae575ac39"
+    assert frozen_sha=="415020f5dfa310b63c15b579045a53811062a72e467789f7af69a42ae575ac39", ("FROZEN_HEAD_IDENTITY_DRIFT",frozen_sha)
     params,lut=frozen_scalar_params(core,head)
     rows=[]
     for seed in SEEDS:
