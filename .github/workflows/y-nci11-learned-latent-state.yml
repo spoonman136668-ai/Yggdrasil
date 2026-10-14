@@ -1,0 +1,89 @@
+name: Y-NCI11 development-gated learned latent StatePool first-use
+on:
+  push:
+    branches: [research/y-nci11-latent-state-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install native Yggdrasil tests and Torch runtime
+        run: python3 -m pip install -e '.[test]'
+      - name: Frozen source identity and scientific custody checks
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 8498472bc050279fc0f203939ee45dcdaa58ddf3 HEAD
+          test "$(git hash-object src/yggdrasil/pool.py)" = 0580da8f1a111c8c0b7b4ebfa51c2128865e7a8a
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11-latent/execute.py)" = 4e65f15e03ef56ffbc8d73d6cd3a4ca3d8e6c09f
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11-latent/prereg.json)" = 3834a96dcb2de6d3523dd20d4acdef18bf708e87
+          python3 -m py_compile research/contrib/chatgpt/20261014-y-nci11-latent/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y-nci11-latent/prereg.json >/dev/null
+      - name: Train and qualify genuine development-only learned latent state
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci11-latent/execute.py --phase development > /tmp/y-nci11-development.json
+          python3 -m json.tool /tmp/y-nci11-development.json >/dev/null
+      - name: Preserve development evidence even for negative gate
+        uses: actions/upload-artifact@v4
+        with:
+          name: Y-NCI11-development-source-qualified
+          path: /tmp/y-nci11-development.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Fail closed on development non-transfer BEFORE sealed first use
+        run: |
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/y-nci11-development.json"))
+          assert a["mode"]=="development" and a["sealed_heldout_seeds"]==list(range(33840,33864))
+          assert a["native_state_bytes"]==576 and a["trained_parameter_count"]==578
+          assert a["training_families"]==[0,1] and a["validation_families"]==[2,3]
+          assert a["selected_model"] in ("additive_associative","leaky_associative")
+          assert a["state_encoding_learned"] and a["query_projections_learned"]
+          assert not a["nci01_full_acceptance"] and a["external_llm_calls"]==0
+          print("DEVELOPMENT_VALIDATION",a["validation_accuracy"])
+          print("DEV_ZERO_MEMORY",a["validation_zero_memory"])
+          assert a["validation_accuracy"]>=.70,"NCI11_DEV_NO_GENERALIZATION_NO_SEALED_ACCESS"
+          assert a["validation_accuracy"]-a["validation_zero_memory"]>=.10,"NCI11_DEV_NO_MEMORY_CONTRIBUTION"
+          PY
+      - name: Exactly one original sealed native StatePool evaluation
+        run: |
+          set -euo pipefail
+          start=$(date +%s%N)
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci11-latent/execute.py --phase sealed > /tmp/y-nci11-original.json
+          end=$(date +%s%N)
+          printf '{"sealed_science_wall_ms":%s,"runner":"ubuntu-latest","billing_usd":"unverified"}\n' "$(((end-start)/1000000))" > /tmp/y-nci11-resources.json
+          python3 -m json.tool /tmp/y-nci11-original.json >/dev/null
+      - name: Original heldout custody before interpretation
+        uses: actions/upload-artifact@v4
+        with:
+          name: Y-NCI11-original-sealed-latent
+          path: |
+            /tmp/y-nci11-original.json
+            /tmp/y-nci11-resources.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Check original prospective result only after archive
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          a=json.load(open("/tmp/y-nci11-original.json"))
+          assert a["mode"]=="sealed" and a["sealed_heldout_seeds"]==list(range(33840,33864))
+          assert len(a["original_records"])==384 and a["sealed_question_count"]==768
+          assert collections.Counter(r["family"] for r in a["original_records"])=={f:96 for f in (4,5,6,7)}
+          assert all(r["memory_bytes"]==576 for r in a["original_records"])
+          assert a["checkpoint_restores"]==384
+          assert a["verdict"] in ("NCI11_BOUNDED_LEARNED_LATENT_TRANSFER","NCI11_NO_ROBUST_LATENT_TRANSFER","NCI11_INVALID_ORACLE")
+          assert not a["nci01_full_acceptance"] and a["external_llm_calls"]==0 and not a["accepted_ref_mutation"]
+          print("ORIGINAL_SCIENCE_VERDICT",a["verdict"])
+          print("SEALED_SCORES",a["sealed_accuracy"],a["zero_memory_accuracy"],a["oracle_accuracy"])
+          print("STRUCTURAL_SCORES",a["accuracy_by_structure"])
+          PY
+      - name: One final full native Yggdrasil pytest regression
+        run: python3 -m pytest -q tests
