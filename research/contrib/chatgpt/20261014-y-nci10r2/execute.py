@@ -90,6 +90,7 @@ def run(phase="development"):
     p.train=fit_future_query
     result=p.run(phase)
     result["schema"]="yggdrasil.nci10r2.future-question-utility-learned-policy.v1"
+    result["sealed_seed_range"]=[32512,32536]
     result["scientific_parent"]="ad76ca35ce37531d879cc4371c8c06235f3637dc"
     result["development_training_seeds"]=list(TRAIN)
     result["development_validation_seeds"]=list(VALID)
