@@ -1,0 +1,57 @@
+name: Y-F1C frozen transition-identity scaffold ablation
+on:
+  push:
+    branches: [research/y-f1c-transition-identity-ablation-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install native Torch runtime and project tests
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify immutable F1B source and F1C preregistration
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 5399db8cba82e4e322b44e0646e056cffd1da864 HEAD
+          test "$(git hash-object research/foundational/20261014-y-f1b/execute.py)" = cf0919c6325461555c55320052921570f0ec5f52
+          python3 -m py_compile research/foundational/20261014-y-f1c/execute.py
+          python3 -m json.tool research/foundational/20261014-y-f1c/prereg.json >/dev/null
+      - name: Run one NEW development-only identity-scaffold ablation
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261014-y-f1c/execute.py > /tmp/y-f1c-original-development.json
+          python3 -m json.tool /tmp/y-f1c-original-development.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F1C-original-transition-identity-development
+          path: /tmp/y-f1c-original-development.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independently reaggregate archived rows after upload
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          r=json.load(open("/tmp/y-f1c-original-development.json"))
+          assert r["stage"]=="DEVELOPMENT_ONLY" and r["new_dev_seed_bounds"]==[39720,39744]
+          assert len(r["rows"])==384 and r["questions"]==768 and r["negative_questions"]==384
+          assert collections.Counter(z["family"] for z in r["rows"])=={4:96,5:96,6:96,7:96}
+          assert r["resident_state_bytes"]==576 and not r["learned_identity"] and not r["model_retrained"]
+          assert not r["sealed_first_use"] and not r["accepted_ref_mutation"]
+          for name,s in r["candidate_scores"].items():
+            accuracy=sum(int(t==p) for z in r["rows"] for t,p in zip(z["truth"],z["models"][name]["stress"]))/768
+            fp=sum(int(p) for z in r["rows"] for t,p in zip(z["truth"],z["models"][name]["stress"]) if not t)/384
+            assert abs(accuracy-s["stress_accuracy"])<1e-12
+            assert abs(fp-s["stress_false_positive_rate"])<1e-12
+          assert r["registered_verdict"] in ("CODED_TRANSITION_IDENTITY_REQUIRED_IN_THIS_HYBRID","TRANSITION_IDENTITY_DEPENDENCE_UNRESOLVED")
+          print("Y_F1C_VERDICT",r["registered_verdict"])
+          print("Y_F1C_SCORES",r["candidate_scores"])
+          PY
+      - name: One full Yggdrasil regression
+        run: python3 -m pytest -q tests

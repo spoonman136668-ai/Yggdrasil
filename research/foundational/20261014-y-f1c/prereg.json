@@ -1,0 +1,16 @@
+{
+  "schema": "yggdrasil.f1c.prereg.v1",
+  "id": "Y-F1C-FROZEN-TRANSITION-IDENTITY-ABLATION",
+  "parent_commit": "5399db8cba82e4e322b44e0646e056cffd1da864",
+  "prior_artifact": {
+    "run_id": 38631193344,
+    "artifact_id": 11925094585,
+    "content_sha256": "adf1f703956239c3bbee0b4b10a1416c77a9b6f4de4d7b2197aeacc18adb060b"
+  },
+  "hypothesis": "Yggdrasil F1B's robust hybrid succeeds because pre-coded edge-to-edge identity equality is available; removing or misaligning only this transition-equality scaffold will reduce accuracy despite frozen learned scalar weights and intact 576-byte native state.",
+  "arms": "Five frozen arms: exact-binding, hybrid, identity-similarity, hybrid with transition-equality signal zeroed, and hybrid with transition-equality rolled to wrong next-hop index. No retraining/model selection/threshold tuning.",
+  "cohort": "NEW development-only seeds [39720,39744), graph families 4-7, four counterfactual cut conditions and two questions per graph: 384 graph states, 768 balanced questions, 384 new adversarial aliases. Original F1 and F1B are not rerun.",
+  "rubric": "CODED_TRANSITION_IDENTITY_REQUIRED_IN_THIS_HYBRID iff frozen hybrid stress accuracy >=0.95, ablated hybrid stress accuracy <=0.75, and frozen minus ablated stress accuracy >=0.20. Otherwise TRANSITION_IDENTITY_DEPENDENCE_UNRESOLVED.",
+  "limits": "This study removes only programmed edge-to-edge transition identity. Public identifier encoding, query start/end matching, and four-hop traversal remain CODED. Therefore even a clear dependence result is not evidence of learned binding, AGI, RSI or production maturity.",
+  "governance": "Source F1B pinned, new disjoint development samples, original artifact before verdict, one full pytest regression. No sealed first use, accepted-ref mutation, queue/authority alteration, FORGE R32/R33, CKB/KTRADE/controller/broker/production."
+}
