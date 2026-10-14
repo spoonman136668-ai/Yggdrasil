@@ -1,0 +1,67 @@
+name: Y086 prospective frozen scientific first-use
+on:
+  push:
+    branches: [research/y086-constrained-public-policy-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify pinned origin and immutable scientific source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 72c95e1e43ffa690071fef3f6cae053f7e7baac8 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y085-public-affine-drift/execute.py)" = 9d049e922e24876a9d1880828fe43c28b6bbdff6
+          test "$(git hash-object research/contrib/chatgpt/20261014-y086-constrained-policy/execute.py)" = fc5158232cd795f8fe48574570a66f65c6b33269
+          test "$(git hash-object research/contrib/chatgpt/20261014-y086-constrained-policy/prereg.json)" = 74b60fc005450d4ef3294aeef2b52512faa8dd1a
+          python3 -m py_compile research/contrib/chatgpt/20261014-y086-constrained-policy/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y086-constrained-policy/prereg.json >/dev/null
+      - name: Development-only fitting and frozen selection
+        run: |
+          set -euo pipefail
+          python3 -B - <<'PY'
+          import importlib.util
+          sp=importlib.util.spec_from_file_location("y86_dev","research/contrib/chatgpt/20261014-y086-constrained-policy/execute.py")
+          assert sp and sp.loader
+          m=importlib.util.module_from_spec(sp);sp.loader.exec_module(m)
+          table,eligible,considered,best=m.learn()
+          assert len(table)==4 and all(v in m.POLICIES for v in table.values())
+          assert eligible>=1 and 1<=considered<=9
+          print("FROZEN_DEV_CONSTRAINED_TABLE",table,eligible,considered,best)
+          PY
+      - name: Exactly one original first-use evaluation
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261014-y086-constrained-policy/execute.py > /tmp/Y086-original.json
+          python3 -m json.tool /tmp/Y086-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y086-original-first-use
+          path: /tmp/Y086-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Verify original evidence after durable artifact custody
+        run: |
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y086-original.json"))
+          assert a["sealed_heldout_seeds"]==list(range(18880,18896))
+          assert len(a["heldout_records"])==384 and len(a["frozen_mapping"])==4
+          assert a["classification"] in ("SAFE_CONDITIONAL_RETENTION_GAIN",
+               "CONSTRAINED_RETENTION_POLICY_COLLAPSED",
+               "PARTIAL_CONDITIONAL_RETENTION_COST","NO_CONSTRAINED_RETENTION_GAIN",
+               "CONSTRAINED_RETENTION_STEADY_FAILURE")
+          print("CLASSIFICATION",a["classification"])
+          print("POLICY_COUNTS",a["selected_policy_counts"])
+          print("GAIN",a["improvement_vs_quorum2"])
+          assert a["model_calls"]==0 and a["accepted_ref_mutation"] is False
+          PY
+      - name: Final full repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
