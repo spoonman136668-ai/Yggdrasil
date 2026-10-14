@@ -1,0 +1,76 @@
+name: Y-NCI10 frozen learned merge gate structural-shift falsification
+on:
+  push:
+    branches: [research/y-nci10-learned-merge-shift-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install original Yggdrasil runtime
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify pinned source and frozen preregistration
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 033d3618aa006ee7b9502dc2ff522744d74affe2 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci09/execute.py)" = 5349234a6acafa4f0b2611867d4c2d8345bb25a9
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci10/execute.py)" = e5126d76d9158008d51db7ab17cdc7b9fe1c16f8
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci10/prereg.json)" = a259df2cd18ddbd97287a2f6faf772395d64c2bd
+          python3 -m py_compile research/contrib/chatgpt/20261014-y-nci10/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y-nci10/prereg.json >/dev/null
+      - name: Fit learned merge gate on development only
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci10/execute.py --phase development > /tmp/Y-NCI10-development.json
+          python3 - <<'PY'
+          import json
+          j=json.load(open("/tmp/Y-NCI10-development.json"))
+          assert j["phase"]=="development" and j["sealed_seed_range"]==[31616,31640]
+          assert j["merge_gate_parameters"]==5 and j["native_memory_byte_matched"] is True
+          assert j["native_state_bytes"]==576 and j["active_slots"]==7
+          assert j["training_examples"]>0 and j["validation_examples"]>0
+          assert not j["nci01_full_acceptance"] and j["external_llm_calls"]==0
+          print("DEV_GATE_QUALIFIED",j["development_accuracy"],j["merge_threshold"])
+          PY
+      - name: Execute one original prospective sealed structure-shift experiment
+        run: |
+          set -euo pipefail
+          start=$(date +%s%N)
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci10/execute.py --phase sealed > /tmp/Y-NCI10-original.json
+          finish=$(date +%s%N)
+          printf '{"science_wall_ms":%s,"runner":"ubuntu-latest","billing_usd":"unverified"}\n' "$(((finish-start)/1000000))" > /tmp/Y-NCI10-resources.json
+          python3 -m json.tool /tmp/Y-NCI10-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-NCI10-original-frozen-merge-gate
+          path: |
+            /tmp/Y-NCI10-original.json
+            /tmp/Y-NCI10-resources.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Check archived original science against the frozen rubric
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          j=json.load(open("/tmp/Y-NCI10-original.json"))
+          assert j["phase"]=="sealed" and j["sealed_seed_range"]==[31616,31640]
+          assert len(j["records"])==96
+          assert collections.Counter(r["family"] for r in j["records"])=={f:24 for f in j["family_names"]}
+          assert all(r["learned_chunks"]<=7 and r["coded_chunks"]<=7 for r in j["records"])
+          assert j["verdict"] in ("LEARNED_MERGE_GATE_TRANSFER","PARTIAL_LEARNED_MERGE_GAIN",
+              "NO_LEARNED_MERGE_TRANSFER","NOVEL_GRAPH_ORACLE_INVALID")
+          assert not j["nci01_full_acceptance"] and j["external_llm_calls"]==0 and not j["accepted_ref_mutation"]
+          print("SCIENTIFIC_VERDICT",j["verdict"])
+          print("PAIRED_ACCURACIES",j["paired_accuracy"])
+          print("PER_FAMILY_ACCURACY",j["family_accuracy"])
+          print("GATE_WORK",j["gate_inference_evaluations"])
+          PY
+      - name: Final full repository regression
+        run: python3 -m pytest -q tests
