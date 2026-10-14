@@ -1,0 +1,60 @@
+name: Y081 frozen joint new-topology early-late stress
+on:
+  push:
+    branches: [research/y081-joint-topology-onset-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify exact original identity and prospective source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor ace52db062449b9cd664158a43b655b8e8351de2 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y080-early-late-onset/execute.py)" = bb5555bb014423875cd56405b118a3989db6ab13
+          test "$(git hash-object research/contrib/chatgpt/20261014-y081-joint-transfer/execute.py)" = 02c9d8646bfed4d361bc84f626322683dd2c4bd6
+          test "$(git hash-object research/contrib/chatgpt/20261014-y081-joint-transfer/prereg.json)" = 132c7d41e9d64ad8b8f8b1c68acf53ca04081251
+          python3 -m py_compile research/contrib/chatgpt/20261014-y081-joint-transfer/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y081-joint-transfer/prereg.json >/dev/null
+          python3 - <<'PY'
+          import json
+          p=json.load(open("research/contrib/chatgpt/20261014-y081-joint-transfer/prereg.json"))
+          seeds=set(range(*p["sealed_heldout_seeds"]))
+          assert p["pairs"]==[[4,12],[5,10]] and len(seeds)==16
+          for a,b in ((9472,9488),(9568,9584),(9680,9696),(11264,11280),(12192,12208),(13600,13616)):
+              assert seeds.isdisjoint(range(a,b))
+          print("FROZEN_IDENTITY_NONOVERLAP=PASS")
+          PY
+      - name: One original frozen heldout first-use
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261014-y081-joint-transfer/execute.py > /tmp/Y081-original.json
+          python3 -m json.tool /tmp/Y081-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y081-first-use-evidence
+          path: /tmp/Y081-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Verify first-use result after custody
+        run: |
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y081-original.json"))
+          assert a["sealed_heldout_seeds"]==list(range(14848,14864))
+          assert a["pairs"]==[[4,12],[5,10]]
+          assert len(a["complete_heldout_records"])==1152 and len(a["comparisons"])==4
+          assert a["classification"] in ("JOINT_TOPOLOGY_ONSET_SAFE_TRANSFER","JOINT_TRANSFER_CONTROL_COST","JOINT_TRANSFER_DETECTION_UNSAFE","JOINT_TRANSFER_UNDETECTED","STEADY_SAFETY_FAILURE")
+          assert a["model_calls"]==0 and a["accepted_ref_mutation"] is False
+          print("CLASSIFICATION",a["classification"])
+          print("COMPARISONS",a["comparisons"])
+          PY
+      - name: One final full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
