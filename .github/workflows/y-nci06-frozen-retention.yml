@@ -1,0 +1,80 @@
+name: Yggdrasil NCI06 native Torch retention and StatePool overload
+on:
+  push:
+    branches: [research/y-nci06-torch-learned-retention-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install native Yggdrasil Torch and test environment
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify frozen ancestry, source and preregistration
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor adee6983ab3a2d091da50bdf4b02c68b96df6edf HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci05/execute.py)" = 204e71635907f0f9cc589a53fe8f075c1d92765a
+          test "$(git hash-object src/yggdrasil/pool.py)" = 0580da8f1a111c8c0b7b4ebfa51c2128865e7a8a
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci06/execute.py)" = 02796ae8722705bc54b5a5064262c9bfd36bb1f6
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci06/prereg.json)" = a77b4a89c829e9c6f2d0bf1e9042735eadee682b
+          python3 -m py_compile research/contrib/chatgpt/20261014-y-nci06/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y-nci06/prereg.json >/dev/null
+      - name: Development-only native Torch model qualification
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci06/execute.py --phase development > /tmp/Y-NCI06-development.json
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y-NCI06-development.json"))
+          assert a["phase"]=="development" and a["development_examples"]==7680
+          assert len(a["retention_weights"])==2 and a["learned_retention_parameters"]==3
+          assert a["sealed_seed_range"]==[26432,26456]
+          assert a["native_memory_bytes"]==576 and a["memory_cap"]==7
+          assert not a["nci01_full_acceptance"] and not a["accepted_ref_mutation"]
+          print("Y06_DEV_VALIDATION_ACCURACY",a["development_validation_accuracy"])
+          PY
+      - name: Exactly one original sealed native StatePool learning experiment
+        run: |
+          set -euo pipefail
+          start=$(date +%s%N)
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci06/execute.py --phase sealed > /tmp/Y-NCI06-original.json
+          finish=$(date +%s%N)
+          printf '{"elapsed_wall_ms":%s,"runner":"ubuntu-latest","cost_usd":"unverified"}\n' "$(((finish-start)/1000000))" > /tmp/Y-NCI06-resources.json
+          python3 -m json.tool /tmp/Y-NCI06-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-NCI06-original-first-use
+          path: |
+            /tmp/Y-NCI06-original.json
+            /tmp/Y-NCI06-resources.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Verify original archived result and frozen rubric
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          a=json.load(open("/tmp/Y-NCI06-original.json"))
+          assert a["phase"]=="sealed" and a["sealed_seed_range"]==[26432,26456]
+          assert len(a["records"])==96
+          assert collections.Counter(x["family"] for x in a["records"])=={i:24 for i in range(4)}
+          assert a["checkpoint_restores"]==96
+          assert all(x["learned_edges"]==7 and x["fifo_edges"]==7 and x["lru_edges"]==7 for x in a["records"])
+          assert a["verdict"] in ("LEARNED_BOUNDED_RETENTION_TRANSFER",
+            "PARTIAL_RETENTION_GAIN_WITH_GENERALIZATION_COST",
+            "NO_TRANSFERABLE_LEARNED_RETENTION_GAIN")
+          assert not a["nci01_full_acceptance"] and a["external_llm_calls"]==0
+          assert not a["accepted_ref_mutation"]
+          print("Y06_VERDICT",a["verdict"])
+          print("Y06_ACCURACY",a["accuracy"])
+          print("Y06_BY_FAMILY",a["by_family"])
+          print("Y06_COSTS",a["join_candidate_evaluations"])
+          PY
+      - name: Full Yggdrasil native repository regression
+        run: python3 -m pytest -q tests
