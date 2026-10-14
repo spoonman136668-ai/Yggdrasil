@@ -1,0 +1,47 @@
+{
+  "schema": "yggdrasil.nci07.prereg.v1",
+  "id": "Y-NCI07-NATIVE-GRAPH-LOCAL-RETENTION",
+  "parent": "a0c890e74317870c7d310da533d989a532fc3089",
+  "prior": "Y-NCI06 completed with frozen PARTIAL_RETENTION_GAIN_WITH_GENERALIZATION_COST: 24/96 four-hop successes only on high-rehearsal family0; no generalization to interleaved/contradictory late graph memory despite 576-byte native memory and learned policy.",
+  "hypothesis": "Will Torch-learning local public edge connectivity from at most seven native retained StatePool edges plus current incoming relation improve withheld four-hop memory relevance across varied graph structure beyond the frozen three-param age/exposure retention model?",
+  "architecture": "Native Torch nn.Linear(3,1) learns four parameters incl bias from development-only future edge usefulness labels. Features: public edge exposure count, insertion time, local degree adjacency within candidate eight public edge observations. At capacity, score 8 competing edges including new input; can reject new if least useful. Same original 576-byte StatePool, unchanged Y-NCI02 learned lexical admission and learned join. Baselines frozen Y-NCI06 3-param model plus FIFO and LRU all receive identical admitted observation stream.",
+  "development": [
+    27344,
+    27504
+  ],
+  "validation": [
+    27504,
+    27536
+  ],
+  "sealed": [
+    27680,
+    27704
+  ],
+  "heldout_records": 96,
+  "rubric": "GRAPH_LOCAL_LEARNED_RETENTION_TRANSFER iff graph-aware 4-hop >=.60 and +.15 vs frozen Y-NCI06 learned and +.10 vs LRU with no family >.20 worse than original learned. PARTIAL_GRAPH_LOCAL_RETENTION_GAIN iff +.10 vs prior learned but full guards fail. Otherwise NO_GRAPH_LOCAL_RETENTION_TRANSFER. Report four individual families and original negative outcomes.",
+  "budget": {
+    "StatePool_bytes": 576,
+    "active": 7,
+    "retained": 9,
+    "trained_retention_params": 4,
+    "trained_join_params": 6,
+    "trained_admission_params": 4,
+    "max_visible_edge_candidates": 8,
+    "training_examples": 25600,
+    "heldout_trials": 96,
+    "external_LLM_calls": 0
+  },
+  "controls": [
+    "No query targets or truth at runtime; relevance labels development-only",
+    "New sealed source disjoint Y06 and NCI05",
+    "Artifact before rubric, full pytest, independent read-only trial witness",
+    "Compare candidate 8-way rejection capability vs always-accept original, report this different policy action space",
+    "No accepted refs, FORGE/CKB/KTRADE controller, broker, production, merge"
+  ],
+  "allocation": {
+    "integration": 45,
+    "foundational": 45,
+    "optimization": 10,
+    "measured_compute": false
+  }
+}
