@@ -1,0 +1,65 @@
+name: Y-F1 structural binding and renaming development-only
+on:
+  push:
+    branches: [research/y-f1-permutation-binding-development-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  foundational:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install existing Yggdrasil native test runtime
+        run: python3 -m pip install -e '.[test]'
+      - name: Qualify unchanged NCI original and frozen foundational source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 2e54fa1842df59e3fc8c8a540af5eec9e7525c5f HEAD
+          test "$(git hash-object research/portfolio/2026-10-14-foundation-60-integration-30-optimization-10.md)" = eb3c84799e5f4c3581b551ca184fe28460d09b77
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11-latent/execute.py)" = 4e65f15e03ef56ffbc8d73d6cd3a4ca3d8e6c09f
+          test "$(git hash-object research/foundational/20261014-y-f1-binding/execute.py)" = 9e36720b350f6205ad93240da504139cb0e583a2
+          test "$(git hash-object research/foundational/20261014-y-f1-binding/prereg.json)" = 7dffca52e5919e50040f574728ac76f072c59378
+          python3 -m py_compile research/foundational/20261014-y-f1-binding/execute.py
+          python3 -m json.tool research/foundational/20261014-y-f1-binding/prereg.json >/dev/null
+      - name: Original F1 equal-byte foundation diagnostics, DEVELOPMENT ONLY
+        run: |
+          set -euo pipefail
+          START=$(date +%s%N)
+          PYTHONPATH=src python3 -B research/foundational/20261014-y-f1-binding/execute.py > /tmp/y-f1-original-development.json
+          END=$(date +%s%N)
+          printf '{"development_wall_ms":%s,"runner":"ubuntu-latest","billing_usd":"unverified"}\n' "$(((END-START)/1000000))" > /tmp/y-f1-resources.json
+          python3 -m json.tool /tmp/y-f1-original-development.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F1-original-development-only
+          path: |
+            /tmp/y-f1-original-development.json
+            /tmp/y-f1-resources.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Check frozen F1 science after original artifact custody
+        run: |
+          python3 - <<'PY'
+          import json
+          x=json.load(open("/tmp/y-f1-original-development.json"))
+          assert x["status"]=="DEVELOPMENT_ONLY"
+          assert x["train_bounds"]==[38000,38024] and x["validation_bounds"]==[38112,38124]
+          assert len(x["candidate_results"])==3 and x["physical_memory_bytes"]==576
+          assert all(y["resident_state_bytes"]==576 and y["checkpoint_pass"] for y in x["candidate_results"])
+          assert all(y["model_parameter_count"]==3 for y in x["candidate_results"])
+          assert x["verdict"] in ("CODED_EQUALITY_SCAFFOLD_EXPLAINS_TRANSFER","EQUALITY_SCAFFOLD_TRANSFER_NOT_CONFIRMED")
+          assert x["coded_node_equality"] and x["coded_four_hop_traversal"]
+          assert x["model_cannot_learn_variable_identity_matching"] and not x["sealed_cohort_reserved"]
+          assert x["first_use_sealed"] is False and x["external_llm_calls"]==0
+          assert not x["accepted_ref_mutation"] and not x["full_nci01_acceptance"]
+          print("Y_F1_VERDICT",x["verdict"])
+          print("Y_F1_CANDIDATES",x["candidate_results"])
+          print("Y_F1_CODED_ORACLE",x["strong_fixed_exact_binding_accuracy"])
+          PY
+      - name: One complete native repository regression
+        run: python3 -m pytest -q tests
