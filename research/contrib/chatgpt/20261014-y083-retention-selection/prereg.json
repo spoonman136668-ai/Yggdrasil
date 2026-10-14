@@ -1,0 +1,48 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y083-LEARNED-RETENTION-PREFERENCE-BOUNDARY",
+  "parent_head": "d17a95d2e7f16dc3ca8daa60e8f652267475b134",
+  "prior": "Y079-Y082 demonstrated bounded successful synthetic matching and observation timing, but no evidence of an improvement to retained-state decision-making. Test smallest zero-extra-capacity development-trained fixed preference policy first.",
+  "hypothesis": "Can development-only selection among frozen sham, full and quorum2 retained-preference policies improve heldout physical matching mistakes over fixed quorum2 without added 7-active/9-retained memory, public reads, or collateral churn?",
+  "freeze": "Use exact Y082 public sensor/decoder, two swap pairs, steady/onset3/onset7, four affine families, seven active and <=9 retained, 10 public reads. Train on never-heldout development seeds 16128..16135, all policies using evaluator truth only during development for a frozen objective: 100*mismatches+physical_churn+0.01*search_calls, deterministic tie-break. Freeze one policy for prospective heldout 16160..16175; compare all three policies there without using heldout truth to select/alter policy.",
+  "dev_seeds": [
+    16128,
+    16136
+  ],
+  "sealed_heldout_seeds": [
+    16160,
+    16176
+  ],
+  "candidate_policies": [
+    "matched_sham",
+    "full",
+    "quorum2"
+  ],
+  "primary": "DEV_SELECTED_RETENTION_POLICY_GENERALIZED iff selected !=quorum2, >=5% fewer total mismatch episodes than quorum2, no per-case (pair/regime) group regression, total churn <=105% quorum2, steady null 0. PARTIAL_RETENTION_POLICY_GAIN_OR_COST iff lower overall mismatch without all controls. NO_RETENTION_POLICY_GAIN otherwise. RETENTION_NULL_SAFETY_FAILURE dominates. Archive 384 matched records each with 3 policy arms and independent count sums.",
+  "controls": [
+    "Only development data selects policy, no first-use tuning, no evaluator truth to candidate",
+    "Existing fixed retention/matching algorithm unchanged, no trained weights, no hidden extra active/retained cells",
+    "7 active/9 retained, 10 public reads, zero illegal assignments, steady null",
+    "Source 16160..16175 disjoint Y081/Y082 and previously quarantined cohorts",
+    "Original evidence custody before scoring assertions, final full pytest and separate archive numerical review",
+    "No paid API, FORGE R32/R33, accepted refs, controller/queue, live production or merges"
+  ],
+  "bounds": {
+    "candidate_policies": 3,
+    "development_seeds": 8,
+    "heldout_seeds": 16,
+    "pairs": 2,
+    "regimes": 3,
+    "families": 4,
+    "arms": 3,
+    "heldout_cases": 384,
+    "arm_observations": 1152,
+    "scalar_read_budget": 10,
+    "active": 7,
+    "retained_limit": 9,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Small development-selected policy test, not a learned cognitive consumer or proof of durable autonomous consolidation."
+}
