@@ -1,0 +1,52 @@
+{
+  "id": "Y069-EARLY-ONSET2-DETECTION-DELAY",
+  "parent": "b7ff26ffb487405a831a005b85a0ff18423de6f1",
+  "hypothesis": "Y068 reported partial recovery from onset3. Test onset2, before any nonanchor sentinel observation, on fresh source seeds to expose the pre-detection error floor; keep matching policies, physical legality, sensor readings and scoring unchanged.",
+  "development_seeds": [
+    7024,
+    7032
+  ],
+  "sealed_heldout": [
+    7056,
+    7072
+  ],
+  "families": [
+    [
+      3,
+      1,
+      9
+    ],
+    [
+      5,
+      13,
+      7
+    ],
+    [
+      7,
+      11,
+      5
+    ],
+    [
+      11,
+      3,
+      15
+    ]
+  ],
+  "source_swaps": [
+    [
+      2,
+      3
+    ],
+    [
+      4,
+      5
+    ]
+  ],
+  "arms": [
+    "original_rotating_detect_only",
+    "dual_sentinel_detect_only",
+    "dual_sentinel_decoder_corrected"
+  ],
+  "criteria": "EARLY_RECOVERY if both newly tested onset2 cases yield at least 50% fewer post-detection mismatched episodes than dual detect-only, overall corrected mismatch below original rotating, steady zero and legal 7-active/9-retained bounded matching with exactly ten public reads. PARTIAL if one case improves at least 20% and all safety gates hold; otherwise NO_GAIN. Report pre-detection mismatches separately, never count post-detection benefit as fixing earlier errors.",
+  "controls": "Use exact pinned Y068 implementation with only preregistered onset2 and entirely fresh dev and sealed cohorts. Simulator true physical labels remain evaluator-only. Preserve original first-use evidence and full pytest. No FORGE reserved seeds, controller authority or accepted reference mutation."
+}
