@@ -1,0 +1,48 @@
+name: Yggdrasil Y077 frozen address-aware decoder
+on:
+  push:
+    branches: [research/y077-address-aware-public-decoder-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify exact immutable parent and sources
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 44c1f6f81066b219ff209fbd8aed318d795915ed HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y076-sentinel-coverage/execute.py)" = 5213602513cd27fc3f011a6d0085a3098876a2db
+          test "$(git hash-object research/contrib/chatgpt/20261014-y077-address-aware-decoder/execute.py)" = 57371b1dfd49045ea0ef258d841a98115738c297
+          test "$(git hash-object research/contrib/chatgpt/20261014-y077-address-aware-decoder/prereg.json)" = 430926a8c6c6f8c65f19b9c73101791cbac94421
+          python3 -m json.tool research/contrib/chatgpt/20261014-y077-address-aware-decoder/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261014-y077-address-aware-decoder/execute.py
+      - name: One frozen sealed first-use
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261014-y077-address-aware-decoder/execute.py > /tmp/Y077-original.json
+          python3 -m json.tool /tmp/Y077-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y077-original.json"))
+          assert a["sealed_heldout_seeds"]==list(range(9568,9584))
+          assert len(a["paired_trials"])==1152 and len(a["comparisons"])==4
+          assert a["new_decoder_invocations"]["new_arms"]==3456
+          assert a["model_calls"]==0 and a["accepted_ref_mutation"] is False
+          assert a["classification"] in ("STEADY_SAFETY_FAILURE","DUAL_TOPOLOGY_SAFE_RECOVERY","TARGET_RECOVERY_WITH_CONTROL_COST","TARGET_DETECTED_PARTIAL_OR_UNSAFE","TARGET_UNDETECTED")
+          print("CLASSIFICATION",a["classification"])
+          print("COMPARISONS",a["comparisons"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y077-original-public-decoder
+          path: /tmp/Y077-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
