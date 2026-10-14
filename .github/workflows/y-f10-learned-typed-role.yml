@@ -1,0 +1,65 @@
+name: Y-F10 learned typed role-binding novel grammar development
+on:
+  push:
+    branches: [research/y-f10-native-typed-role-binding-transfer-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install Torch and project test suite
+        run: python3 -m pip install -e '.[test]'
+      - name: Freeze source parent and F10 prereg
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 714e10f9df0d036f66e4baea229470ed4fe86f04 HEAD
+          test "$(git hash-object research/foundational/20261014-y-f7/execute.py)" = "$(git rev-parse 714e10f9df0d036f66e4baea229470ed4fe86f04:research/foundational/20261014-y-f7/execute.py)"
+          python3 -m py_compile research/foundational/20261014-y-f10/execute.py
+          python3 -m json.tool research/foundational/20261014-y-f10/prereg.json >/dev/null
+      - name: One Y-F10 DEVELOPMENT original role-binding study
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261014-y-f10/execute.py > /tmp/y-f10-original-development.json
+          python3 -m json.tool /tmp/y-f10-original-development.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F10-original-typed-role-native-development
+          path: /tmp/y-f10-original-development.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independently reaggregate raw validation and reject broken typed oracle
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          r=json.load(open("/tmp/y-f10-original-development.json"))
+          assert r["stage"]=="DEVELOPMENT_ONLY" and r["validation_paired_graphs"]==96
+          assert r["validation_questions"]==192 and r["negative_questions"]==96
+          assert r["native_state_bytes"]==576 and r["resident_roles_float32_bytes"]==48
+          assert r["new_trainable_role_params"]==16 and r["frozen_untyped_core_params"]==22
+          assert r["query_role_side_input_bytes"]==4
+          assert not r["role_equality_programmed_in_candidate"]
+          assert r["programmed_four_step_schedule"] and not r["learned_halting"]
+          assert not r["independent_source_birth"] and not r["sealed_first_use"]
+          assert not r["accepted_ref_mutation"]
+          assert collections.Counter(z["family"] for z in r["rows"])=={48:24,49:24,50:24,51:24}
+          for name,s in r["scores"].items():
+            correct=sum(int(p==t) for z in r["rows"] for p,t in zip(z["predictions"][name],z["truth"]))
+            pair=sum(int(z["predictions"][name]==z["truth"]) for z in r["rows"])
+            fp=sum(int(z["predictions"][name][1]) for z in r["rows"])
+            assert s["correct"]==correct and s["paired_correct"]==pair
+            assert s["false_positives"]==fp
+          assert r["scores"]["coded_typed_exact_reference"]["paired_correct"]==96,"INVALID_TYPED_REFERENCE"
+          assert r["scores"]["frozen_F9_untyped_role_blind"]["paired_correct"]==0
+          assert r["registered_verdict"] in ("DEVELOPMENT_LEARNED_ROLE_BINDING_TRANSFER","DEVELOPMENT_NO_ROLE_BINDING_TRANSFER")
+          print("Y_F10_VERDICT",r["registered_verdict"])
+          print("Y_F10_SCORES",r["scores"])
+          PY
+      - name: One full repository regression
+        run: python3 -m pytest -q tests
