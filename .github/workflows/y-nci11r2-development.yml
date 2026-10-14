@@ -1,0 +1,63 @@
+name: Y-NCI11-R2 frozen learned recurrent state development gate
+on:
+  push:
+    branches: [research/y-nci11r2-gated-native-development-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install native project dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify frozen original source and development preregistration
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor a3d6cc4ae68aee4621fc8f93f400277458b36e65 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11-latent/execute.py)" = 4e65f15e03ef56ffbc8d73d6cd3a4ca3d8e6c09f
+          test "$(git hash-object src/yggdrasil/pool.py)" = 0580da8f1a111c8c0b7b4ebfa51c2128865e7a8a
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11r2/execute.py)" = 7fd2ab27f54a54764503a1c2fd9c03b4020abe1f
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11r2/prereg.json)" = bd169fb7dd69264337cc665119cd45b37d7f58cb
+          python3 -m py_compile research/contrib/chatgpt/20261014-y-nci11r2/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y-nci11r2/prereg.json >/dev/null
+      - name: Execute bounded native recurrent development-only research
+        run: |
+          set -euo pipefail
+          start=$(date +%s%N)
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci11r2/execute.py > /tmp/y-nci11r2-development.json
+          finish=$(date +%s%N)
+          printf '{"development_wall_ms":%s,"runner":"ubuntu-latest","billing_usd":"unverified"}\n' "$(((finish-start)/1000000))" > /tmp/y-nci11r2-cost.json
+          python3 -m json.tool /tmp/y-nci11r2-development.json >/dev/null
+      - name: Preserve development original before interpretation
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-NCI11R2-original-development-only
+          path: |
+            /tmp/y-nci11r2-development.json
+            /tmp/y-nci11r2-cost.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Frozen science gate, no sealed first use
+        run: |
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/y-nci11r2-development.json"))
+          assert a["mode"]=="DEVELOPMENT_ONLY"
+          assert a["train_seed_bounds"]==[35104,35128] and a["valid_seed_bounds"]==[35168,35180]
+          assert len(a["candidate_results"])==2 and a["native_state_bytes"]==576
+          assert a["sealed_first_use_executed"] is False
+          assert a["selected_architecture"] in ("recurrent_write_gate","predictive_forget_gate")
+          assert a["verdict"] in ("NCI11R2_DEV_NATIVE_LEARNING_QUALIFIED","NCI11R2_DEV_NO_RELIABLE_LEARNED_MEMORY_GAIN")
+          assert a["external_llm_calls"]==0 and not a["accepted_ref_mutation"]
+          assert not a["full_nci01_acceptance"]
+          print("DEVELOPMENT_VERDICT",a["verdict"])
+          print("CANDIDATES",a["candidate_results"])
+          PY
+      - name: Full native repository pytest regression
+        run: python3 -m pytest -q tests

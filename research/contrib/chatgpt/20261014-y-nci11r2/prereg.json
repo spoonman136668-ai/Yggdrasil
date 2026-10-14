@@ -1,0 +1,15 @@
+{
+  "schema": "yggdrasil.nci11r2.dev-prereg.v1",
+  "id": "Y-NCI11R2-NATIVE-RECURRENT-GATED-STATE-DEVELOPMENT",
+  "parent": "a3d6cc4ae68aee4621fc8f93f400277458b36e65",
+  "motivation": "Original Y-NCI11 first use: 483/768 learned versus384/768 zero-state, but failed >=70% and did not independently distinguish training from same-architecture initialization. Avoid revisiting additive outer-product learning and consuming more sealed data without actual dev gain.",
+  "hypotheses": [
+    "Differentiable public-graph trained write gate and source/destination projections yield a useful 576-byte recurrent state beyond identical initialized weights",
+    "Separately learned retention/forget gate may generalize over graph-dependent counterfactuals better than fixed .91 decay"
+  ],
+  "scope": "DEVELOPMENT ONLY. Train native Torch model on 24 NEW dev seeds35104..35127 ×families0/1 ×four balanced counterfactual variants; validate on disjoint 12 seeds35168..35179 ×families2/3. Exactly 100 Adam epochs/model, fixed learning rate .018, full-batch BCE, gradient clipping3. Two hypotheses frozen before experiment. Query targets withheld from memory.update, labels only in development loss. No unseen sealed cohort reserved or accessed by this gate.",
+  "physical_budget": "Actual output state 144 float32 values =576 bytes stored in native Yggdrasil-compatible (16,3,3) StatePool. Learned model weights and scratch separately measured. Neither equal training FLOPs nor full model-byte equality is implied by resident-state match. Same physical resident state for identical untrained and trained arms; query projections and loss identical.",
+  "ablation": "For each mode independently record SAME randomly initialized architecture's validation accuracy, trained same readout with entire memory zeroed and trained with memory. Balanced future yes/no questions thwart unconditional always-positive shortcuts. Include original dev-only observation topology; future sealed must use new grammar, vocabularies and contradictions.",
+  "gate": "Development qualified only if chosen candidate >=70% val, >=10pp over same-architecture initialization AND >=10pp over zero-memory readout. Otherwise archive negative and DO NOT dispatch, reserve, or read sealed cohort. Requires independent artifact raw verification and full repository pytest. No NCI12 until qualified generalization.",
+  "governance": "Research-only draft source and GitHub hosted development runner. No paid model, FORGE R32/R33, CKB/KTRADE/controller, accepted refs, merge, production; 45/45/10 effort target, actual compute use recorded per arm (wall time, 100 epochs and param bytes)."
+}
