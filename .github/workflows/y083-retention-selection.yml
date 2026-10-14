@@ -1,0 +1,65 @@
+name: Y083 frozen bounded independent scientific experiment
+on:
+  push:
+    branches: [research/y083-dev-selected-retention-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify frozen source and parent before any original first-use
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor d17a95d2e7f16dc3ca8daa60e8f652267475b134 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y082-late-window/execute.py)" = bc8d9197737c78777f097301297b6c1ac96c1e38
+          test "$(git hash-object research/contrib/chatgpt/20261014-y083-retention-selection/execute.py)" = 2563546ca44a7e3c8985e0e36e626784a8e93f0f
+          test "$(git hash-object research/contrib/chatgpt/20261014-y083-retention-selection/prereg.json)" = 51aa2922912e774240277ec4058c69fe8728bfbd
+          python3 -m py_compile research/contrib/chatgpt/20261014-y083-retention-selection/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y083-retention-selection/prereg.json >/dev/null
+      - name: Bounded development-only learning and import prequalification
+        run: |
+          set -euo pipefail
+          python3 -B - <<'PY'
+          import importlib.util
+          s=importlib.util.spec_from_file_location("y083_preflight","research/contrib/chatgpt/20261014-y083-retention-selection/execute.py")
+          assert s and s.loader
+          m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+          selected,dev=m.train_selection()
+          assert selected in m.POLICIES and all(v["trials"]==192 for v in dev.values())
+          print("FROZEN_DEV_PREFERENCE",selected,dev)
+
+          PY
+      - name: Execute exactly one frozen prospective original first-use
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261014-y083-retention-selection/execute.py > /tmp/Y083-original.json
+          python3 -m json.tool /tmp/Y083-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y083-original-source-evidence
+          path: /tmp/Y083-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Validate frozen outcome after original archive upload
+        run: |
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y083-original.json"))
+          assert a["sealed_heldout_seeds"]==list(range(16160,16176))
+          assert len(a["sealed_trial_records"])==384
+          assert a["selected_policy"] in ("matched_sham","full","quorum2")
+          assert a["classification"] in ("DEV_SELECTED_RETENTION_POLICY_GENERALIZED","PARTIAL_RETENTION_POLICY_GAIN_OR_COST","NO_RETENTION_POLICY_GAIN","RETENTION_NULL_SAFETY_FAILURE")
+          print("CLASSIFICATION",a["classification"])
+          print("RETENTION_CHOICE",a["selected_policy"],a["selected_vs_quorum2_gain"])
+
+          assert a["model_calls"]==0 and a["accepted_ref_mutation"] is False
+          PY
+      - name: Final full repository regression and build
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
