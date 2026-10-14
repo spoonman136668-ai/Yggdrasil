@@ -1,0 +1,64 @@
+name: Yggdrasil Y078 disjoint heldout public decoder replication
+on:
+  push:
+    branches: [research/y078-first-use-disjoint-decoder-replication-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify exact frozen source and cohort nonintersection
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 1069457f6a5b301686ec0e0edf674d7970818e7c HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y077-address-aware-decoder/execute.py)" = 57371b1dfd49045ea0ef258d841a98115738c297
+          test "$(git hash-object research/contrib/chatgpt/20261014-y078-disjoint-decoder-replication/execute.py)" = 6a5cfd689d5dd2156f3577c291a29ae90ef8498d
+          test "$(git hash-object research/contrib/chatgpt/20261014-y078-disjoint-decoder-replication/prereg.json)" = d7bea63e5e40d8ea4a335cdbe334ef92bf0a691d
+          python3 -m json.tool research/contrib/chatgpt/20261014-y078-disjoint-decoder-replication/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261014-y078-disjoint-decoder-replication/execute.py
+          python3 - <<'PY'
+          import json
+          p=json.load(open("research/contrib/chatgpt/20261014-y078-disjoint-decoder-replication/prereg.json"))
+          held=set(range(*p["sealed_heldout_seeds"]))
+          dev=set(range(*p["development_seeds"]))
+          assert not (held & dev)
+          assert len(held)==16 and len(dev)==8
+          for old in p["previously_consumed_or_used_cohorts"]:
+              assert held.isdisjoint(range(*old)) and dev.isdisjoint(range(*old))
+          assert set(range(9568,9584)).isdisjoint(held)
+          print("KNOWN_COHORT_IDENTITY_NONOVERLAP=PASS")
+          PY
+      - name: Execute exactly one newly admitted prospective cohort
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261014-y078-disjoint-decoder-replication/execute.py > /tmp/Y078-original.json
+          python3 -m json.tool /tmp/Y078-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y078-original.json"))
+          assert a["sealed_heldout_seeds"]==list(range(11264,11280))
+          assert len(a["paired_trials"])==1152 and len(a["comparisons"])==4
+          assert a["fixed_public_reads_per_trial"]==10
+          assert a["model_calls"]==0 and not a["accepted_ref_mutation"]
+          assert a["classification"] in ("STEADY_SAFETY_FAILURE","DUAL_TOPOLOGY_SAFE_RECOVERY",
+                   "TARGET_RECOVERY_WITH_CONTROL_COST","TARGET_DETECTED_PARTIAL_OR_UNSAFE",
+                   "TARGET_UNDETECTED")
+          print("CLASSIFICATION",a["classification"])
+          print("COMPARISONS",a["comparisons"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y078-original-disjoint-public-decoder
+          path: /tmp/Y078-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Full Yggdrasil regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
