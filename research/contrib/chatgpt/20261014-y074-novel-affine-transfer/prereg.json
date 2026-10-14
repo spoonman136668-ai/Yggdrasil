@@ -1,0 +1,79 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y074-NEW-AFFINE-BACKGROUND-TRANSFER-PROSPECTIVE",
+  "parent_head": "073f44b4a8f2ae61fd73c8f13f04ea280fde6121",
+  "prior": "Y073 independently archive-verified PARTIAL_TOPOLOGY_TRANSFER. Pair (4,11) improved post-detection mismatch by 52.38% (168 to 80); pair (5,12) had no public detection/post-detection opportunity.",
+  "hypothesis": "Is the Y073 correction specific to the original four affine backgrounds, or does its fixed 10-public-read sensor and decoder preserve causal recovery on unseen affine families?",
+  "freeze": "Unchanged Y070 3 arms, matching decoder/sensor policies, 7 active and <=9 retained, 10 reads per trial, steady and onset1. Hold the Y073 cross-gap pairs (4,11)/(5,12) fixed and switch only four prospectively frozen affine family triples; unused development 9184..9191 and sealed 9248..9263.",
+  "development_seeds": [
+    9184,
+    9192
+  ],
+  "sealed_heldout_seeds": [
+    9248,
+    9264
+  ],
+  "pairs": [
+    [
+      4,
+      11
+    ],
+    [
+      5,
+      12
+    ]
+  ],
+  "new_affine_families": [
+    [
+      3,
+      5,
+      9
+    ],
+    [
+      7,
+      13,
+      3
+    ],
+    [
+      11,
+      7,
+      5
+    ],
+    [
+      15,
+      11,
+      13
+    ]
+  ],
+  "regimes": [
+    "steady",
+    "onset1"
+  ],
+  "policies": [
+    "matched_sham",
+    "full",
+    "quorum2"
+  ],
+  "primary": "All 768 heldout trials and per-arm pre/post detection mismatches. BOTH_PAIRS_NEW_FAMILY_RECOVERY iff both pairs satisfy frozen Y070 >=20% post-detection reduction criterion. PAIR411_RECOVERY_PAIR512_NO_OPPORTUNITY iff (4,11) satisfies criterion and (5,12) has zero baseline post-detection errors. PAIR411_ONLY_NEW_FAMILY_RECOVERY iff only (4,11) satisfies criterion; PAIR512_ONLY_NEW_FAMILY_RECOVERY iff only (5,12) satisfies criterion. BOTH_NO_POSTDETECTION_OPPORTUNITY if neither has opportunity; otherwise NO_DEMONSTRATED_NEW_FAMILY_RECOVERY. Respect frozen Y070 strict/partial and total-error safety; do not infer gain from a zero denominator.",
+  "controls": [
+    "New family triples not used in Y073, no future truth in sensor",
+    "Same two pairs so isolate background family transfer",
+    "Sealed 9248..9263 disjoint from Y073 and Y072",
+    "Full per-trial evidence and null steady integrity",
+    "No future adaptation or post-result tuning",
+    "One original first-use and full pytest regression; archive-only independent verification; no FORGE R32/R33 or accepted ref mutation"
+  ],
+  "bounds": {
+    "pairs": 2,
+    "affine_families": 4,
+    "heldout_seeds": 16,
+    "development_seeds": 8,
+    "active": 7,
+    "retained": 9,
+    "public_reads_per_trial": 10,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Bounded synthetic background-family transfer, not autonomous general intelligence or RSI."
+}
