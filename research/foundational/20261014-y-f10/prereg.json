@@ -1,0 +1,78 @@
+{
+  "schema": "yggdrasil.f10.prereg.v1",
+  "source_F9": "714e10f9df0d036f66e4baea229470ed4fe86f04",
+  "hypothesis": "A model that encodes role types in its 576-byte native state and learns 16 role compatibility weights can distinguish same-graph/same-query necessary-role swaps and generalize to new motif families and role-alphabet permutations, unlike frozen F9's role-blind system.",
+  "design": {
+    "stage": "DEVELOPMENT_ONLY",
+    "train_seed_bounds": [
+      52700,
+      52724
+    ],
+    "train_families": [
+      44,
+      45,
+      46,
+      47
+    ],
+    "training_pairs": 96,
+    "validation_seed_bounds": [
+      53100,
+      53112
+    ],
+    "validation_families": [
+      48,
+      49,
+      50,
+      51
+    ],
+    "role_renaming_permutations": [
+      0,
+      1
+    ],
+    "validation_pairs": 96,
+    "validation_questions": 192,
+    "balanced_labels": [
+      96,
+      96
+    ],
+    "typed_roles": 4,
+    "edges_per_graph": 12,
+    "positive_negative_pair": "same graph and query, exactly one necessary role type changes, distractor four-step route retained",
+    "resident_state_format": "144 float32 (576B): 12 packed source-target words, 12 role words (48B), 120 reserved floats; transition scores recomputed by frozen learned entity similarity",
+    "query_metadata": "4 role IDs (4B) plus 2 graph endpoint IDs (4B), explicitly outside resident state",
+    "candidate": "Y-F6 frozen 22-param learned comparator/composer plus 16 trainable role compatibility logits; no coded relation equality or OR reachability in candidate inference",
+    "optimization": "170 Adam steps learning ONLY 16 role logits from paired end-to-end task BCE, initial logits all zero, lr .1, torch seed 1048",
+    "controls": [
+      "identical model with all role logits untrained",
+      "frozen Y-F9 role-blind model",
+      "typed-coded exact reachability oracle must 192/192",
+      "identical-graph paired label flip and global role renaming"
+    ],
+    "predeclared_positive": {
+      "minimum_pair_accuracy": 0.85,
+      "minimum_individual_accuracy": 0.9,
+      "maximum_negative_false_positive_rate": 0.1,
+      "minimum_pair_gain_over_untrained": 0.15
+    },
+    "classifications": {
+      "positive": "DEVELOPMENT_LEARNED_ROLE_BINDING_TRANSFER",
+      "negative": "DEVELOPMENT_NO_ROLE_BINDING_TRANSFER",
+      "invalid": "INVALID_TYPED_REFERENCE"
+    }
+  },
+  "limitations": {
+    "programmed_four_step_schedule": true,
+    "learned_halting": false,
+    "engineered_entity_id_bits": true,
+    "role_encoded_as_raw_float_ID": true,
+    "not_external_source": true,
+    "F3_source_not_admitted": true
+  },
+  "authority": {
+    "new_controller": false,
+    "queue": false,
+    "accepted_ref_mutation": false,
+    "forge_mutation": false,
+    "production": false
+  }
+}
