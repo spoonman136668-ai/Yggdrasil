@@ -1,0 +1,92 @@
+name: Y-NCI11-R2 prospective model-locked novel graphs first use
+on:
+  push:
+    branches: [research/y-nci11r2-prospective-novel-graphs-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install native Yggdrasil Torch
+        run: python3 -m pip install -e '.[test]'
+      - name: Exact scientific source, parent, original model algorithm and prereg
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor ae6b5b851ac126ab6fe72142381a904c2e84dcc4 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11r2/execute.py)" = 7fd2ab27f54a54764503a1c2fd9c03b4020abe1f
+          test "$(git hash-object src/yggdrasil/pool.py)" = 0580da8f1a111c8c0b7b4ebfa51c2128865e7a8a
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11r2-prospective/execute.py)" = 8dd9c02ee5d89201b9fb8cc6d1e9a4d34979b466
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11r2-prospective/prereg.json)" = cdd082f21db6ece3574d5389ca83caac86ead6dc
+          python3 -m py_compile research/contrib/chatgpt/20261014-y-nci11r2-prospective/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y-nci11r2-prospective/prereg.json >/dev/null
+      - name: Freeze fitted development model SHA BEFORE sealed first use
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci11r2-prospective/execute.py --phase development > /tmp/y-nci11r2-prospective-model.json
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/y-nci11r2-prospective-model.json"))
+          assert a["phase"]=="development"
+          assert a["sealed_seed_bounds"]==[36544,36568]
+          assert a["trained_parameter_count"]==588 and a["native_state_bytes"]==576
+          assert a["selected_architecture"]=="recurrent_write_gate"
+          assert abs(a["development_validation_accuracy"]-.7552083134651184)<1e-6
+          assert a["development_validation_accuracy"]-a["development_zero_memory"]>=.1
+          assert len(a["frozen_weight_sha256"])==64
+          assert not a["sealed_first_use_consumed"]
+          print("DEVELOPMENT_MODEL_IDENTITY_SHA256",a["frozen_weight_sha256"])
+          PY
+      - name: Preserve model identity before first-use data access
+        uses: actions/upload-artifact@v4
+        with:
+          name: Y-NCI11R2-prospective-dev-model-identity
+          path: /tmp/y-nci11r2-prospective-model.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: One exact prospective sealed use after model SHA reconciliation
+        run: |
+          set -euo pipefail
+          WITNESS=$(python3 -c 'import json;print(json.load(open("/tmp/y-nci11r2-prospective-model.json"))["frozen_weight_sha256"])')
+          start=$(date +%s%N)
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci11r2-prospective/execute.py --phase sealed --expected-weight-sha "$WITNESS" > /tmp/y-nci11r2-prospective-original.json
+          finish=$(date +%s%N)
+          printf '{"original_wall_ms":%s,"runner":"ubuntu-latest","billing_usd":"unverified"}\n' "$(((finish-start)/1000000))" > /tmp/y-nci11r2-prospective-cost.json
+          python3 -m json.tool /tmp/y-nci11r2-prospective-original.json >/dev/null
+      - name: Original sealed evidence archive BEFORE classification
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-NCI11R2-prospective-original-first-use
+          path: |
+            /tmp/y-nci11r2-prospective-original.json
+            /tmp/y-nci11r2-prospective-cost.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Verify original scientific rubric after immutable artifact upload
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          a=json.load(open("/tmp/y-nci11r2-prospective-original.json"))
+          d=json.load(open("/tmp/y-nci11r2-prospective-model.json"))
+          assert a["phase"]=="sealed" and a["sealed_seed_bounds"]==[36544,36568]
+          assert a["frozen_weight_sha256"]==d["frozen_weight_sha256"]
+          assert len(a["records"])==384 and a["question_count"]==768
+          assert collections.Counter(r["family"] for r in a["records"])=={i:96 for i in (8,9,10,11)}
+          assert a["native_checkpoint_restores"]==384
+          assert all(r["memory_bytes"]==576 for r in a["records"])
+          assert a["verdict"] in ("NCI11R2_PROSPECTIVE_NATIVE_LATENT_TRANSFER",
+            "NCI11R2_PROSPECTIVE_NO_ROBUST_LATENT_TRANSFER","NCI11R2_ORIGINAL_ORACLE_INVALID")
+          assert not a["nci01_full_acceptance"] and a["external_llm_calls"]==0 and not a["accepted_ref_mutation"]
+          print("FROZEN_SCIENTIFIC_CLASSIFICATION",a["verdict"])
+          print("ORIGINAL_PROSPECTIVE_METRICS",a["accuracy"])
+          print("NATIVE_STRUCTURAL_SCORES",a["family_accuracy"])
+          print("COST",a["coded_join_candidate_evaluations"],a["evaluation_wall_ms"])
+          PY
+      - name: Final full Yggdrasil regression
+        run: python3 -m pytest -q tests
