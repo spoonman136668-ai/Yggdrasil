@@ -1,0 +1,105 @@
+name: Y071 independent archived original evidence witness
+on:
+  push:
+    branches: [audit/y071-archived-original-witness-20261013]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  witness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify immutable original source and sealed identities
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c53d1d3000ec69846f4e06706e899e5b0a5a9514 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261013-y071-unseen-swap/prereg.json)" = e2e45822ff62af3f1207be3b37d2d30ebac0ca52
+          test "$(git hash-object research/contrib/chatgpt/20261013-y071-unseen-swap/execute.py)" = fe9a3719d8616212f24caadd1c718138887ea959
+      - name: Download archived original only; never run experiment again
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 38497635468
+          name: Y071-original-unseen-early-shock
+          github-token: ${{ github.token }}
+          path: archive
+      - name: Independently recompute sealed case totals and scientific verdict
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,hashlib,math,pathlib,collections
+          p=pathlib.Path("archive/Y071-original.json")
+          raw=p.read_bytes(); z=json.loads(raw)
+          assert z["schema"]=="yggdrasil.y071-unseen-early-transposition.v1"
+          assert z["parent_head"]=="5797a257a75fe139313e8486cd1a1ae79c44b148"
+          assert z["sealed_heldout_seeds"]==list(range(8576,8592))
+          assert z["new_swap_pairs"]==[[6,7],[8,9]]
+          assert z["new_affine_source_families"]==[[3,3,11],[5,9,13],[9,5,7],[13,11,3]]
+          v=z["original_y070_unmodified_results"]
+          assert len(v["complete_heldout_records"])==768
+          assert v["development_checks"]==384 and v["per_trial_public_scalar_reads"]==10
+          arms={"original_rotating_detect_only","dual_sentinel_detect_only","dual_sentinel_decoder_corrected"}
+          counts=collections.Counter(); sums={}; detects={}
+          for rec in v["complete_heldout_records"]:
+              key=f"{rec['pair'][0]}_{rec['pair'][1]}:{rec['regime']}"
+              assert key in v["groups"]
+              assert rec["seed"] in range(8576,8592)
+              assert tuple(rec["family"]) in ((3,3,11),(5,9,13),(9,5,7),(13,11,3))
+              assert rec["policy"] in ("matched_sham","full","quorum2")
+              assert set(rec["arms"])==arms
+              counts[key]+=1
+              for arm,item in rec["arms"].items():
+                  k=(key,arm)
+                  if k not in sums:
+                      sums[k]=collections.Counter()
+                      detects[k]=0
+                  assert item["illegal_physical_assignments"]==0
+                  assert item["mismatch_episodes"]==item["pre_detection_mismatch_episodes"]+item["post_detection_mismatch_episodes"]
+                  detects[k]+=int(item["first_detection"] is not None)
+                  for field in ("mismatch_episodes","pre_detection_mismatch_episodes","post_detection_mismatch_episodes",
+                                "wrong_assignments","matching_search_calls","candidate_retained_writes",
+                                "illegal_physical_assignments"):
+                      sums[k][field]+=item[field]
+                  sums[k]["public_reads"]+=10
+          assert len(counts)==4 and all(n==192 for n in counts.values())
+          for key,group in v["groups"].items():
+              for arm in arms:
+                  assert dict(sums[key,arm])==group["totals"][arm]
+                  assert detects[key,arm]==group["detections"][arm]
+                  assert sums[key,arm]["public_reads"]==1920
+          steady=all(v["groups"][f"{a}_{b}:steady"]["totals"][arm]["mismatch_episodes"]==0
+                     for a,b in ((6,7),(8,9)) for arm in arms)
+          assert steady==v["steady_zero_mismatches"]==True
+          strict=[]; partial=[]
+          for a,b in ((6,7),(8,9)):
+              row=v["groups"][f"{a}_{b}:onset1"]["totals"]
+              before=row["dual_sentinel_detect_only"]["post_detection_mismatch_episodes"]
+              after=row["dual_sentinel_decoder_corrected"]["post_detection_mismatch_episodes"]
+              original=row["original_rotating_detect_only"]["mismatch_episodes"]
+              corrected=row["dual_sentinel_decoder_corrected"]["mismatch_episodes"]
+              strict.append(before>0 and after<=.5*before and corrected<original)
+              partial.append(before>0 and after<=.8*before)
+          decision="SHOCK_TOPOLOGY_TRANSFER" if all(strict) else (
+              "PARTIAL_TOPOLOGY_TRANSFER" if any(partial) else "NO_TOPOLOGY_TRANSFER")
+          assert decision==z["classification"]=="NO_TOPOLOGY_TRANSFER"
+          assert [x["strict"] for x in z["strict_comparisons"]]==strict
+          assert [x["partial"] for x in z["strict_comparisons"]]==partial
+          witness={"schema":"research.archived-evidence-witness.v1",
+                   "experiment":"Y071","source_run":38497635468,"source_artifact_id":11863853756,
+                   "original_json_sha256":hashlib.sha256(raw).hexdigest(),
+                   "independent_recomputed_trial_records":768,
+                   "classification":decision,"sealed_execution_replayed":False,
+                   "scope":"Read-only independent aggregate validation; not external FSA authority"}
+          pathlib.Path("Y071-witness.json").write_text(json.dumps(witness,sort_keys=True,indent=2)+"\n")
+          print("WITNESS_PASS",json.dumps(witness,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y071-independent-archived-witness
+          path: Y071-witness.json
+          if-no-files-found: error
+          retention-days: 90
