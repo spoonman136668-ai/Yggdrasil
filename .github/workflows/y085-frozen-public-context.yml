@@ -1,0 +1,68 @@
+name: Y085 frozen prospective independent research
+on:
+  push:
+    branches: [research/y085-public-affine-drift-retention-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify pinned source and preregistered cohort
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 3e882b75b803ea1265057c11294377b9240be6d2 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y084-public-retention-policy/execute.py)" = b95a3d65f5435dd9b9b08e93fa31f2ef67a6d6f1
+          test "$(git hash-object research/contrib/chatgpt/20261014-y085-public-affine-drift/execute.py)" = 9d049e922e24876a9d1880828fe43c28b6bbdff6
+          test "$(git hash-object research/contrib/chatgpt/20261014-y085-public-affine-drift/prereg.json)" = 4adee8005ce807b65703f0767ff60351cc1f48de
+          python3 -m py_compile research/contrib/chatgpt/20261014-y085-public-affine-drift/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y085-public-affine-drift/prereg.json >/dev/null
+      - name: Qualify development-only model fitting without consuming heldout
+        run: |
+          set -euo pipefail
+          python3 -B - <<'PY'
+          import importlib.util
+          s=importlib.util.spec_from_file_location("y85_dev","research/contrib/chatgpt/20261014-y085-public-affine-drift/execute.py")
+          assert s and s.loader
+          m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+          mode,tables,score=m.train_and_select()
+          assert mode in m.MODES and all(len(table)<=8 for table in tables.values())
+          assert len(tables["affine_bucket"])>=2
+          print("DEV_SELECTED_MODE",mode,tables[mode],score)
+          PY
+      - name: Execute exactly one original prospective scientific evaluation
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261014-y085-public-affine-drift/execute.py > /tmp/Y085-original.json
+          python3 -m json.tool /tmp/Y085-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y085-original-frozen-science
+          path: /tmp/Y085-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Verify archived original science against registered rubric
+        run: |
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y085-original.json"))
+          assert a["sealed_heldout_seeds"]==list(range(17856,17872))
+          assert len(a["sealed_records"])==384
+          assert a["classification"] in ("PUBLIC_STATE_POLICY_COLLAPSED",
+              "DEVELOPMENT_LEARNED_PUBLIC_MEMORY_POLICY_GAIN",
+              "PARTIAL_CONDITIONAL_MEMORY_GAIN_OR_COST","NO_CONDITIONAL_MEMORY_POLICY_GAIN",
+              "CONDITIONAL_POLICY_STEADY_FAILURE")
+          assert a["policy_table_entries"]<=8 and a["public_read_budget"]==10
+          print("CLASSIFICATION",a["classification"])
+          print("POLICY_COUNTS",a["selected_policy_counts"])
+          print("ERROR_GAIN",a["improvement_vs_quorum2"])
+          assert a["model_calls"]==0 and a["accepted_ref_mutation"] is False
+          PY
+      - name: Final full repository regression and build
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
