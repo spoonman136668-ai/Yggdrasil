@@ -7,6 +7,7 @@ Input-controlled recurrence count is not learned halting. No F3 source used.
 """
 from __future__ import annotations
 import importlib.util, json, time
+from collections import Counter
 from pathlib import Path
 import torch
 HERE=Path(__file__).resolve().parent
@@ -112,12 +113,20 @@ def evaluate():
    predicted=(predict_variable(model,fact,roles,query,req)>=.5).tolist()
    # Invalid interface: legacy exactly four-step computation is incompatible
    # with novel six-to-eight symbol role queries. Baseline is role-blind.
-   control=f11.f7.f6.model_forward(f11.f7.f7.frozen_model(),fact,
+   control=f11.f7.f6.model_forward(f11.f7.frozen_model(),fact,
                   query.unsqueeze(1).repeat(1,2,1))[0][:,0]>=.5
    graphblind=[bool(q) for q in control]
    typed=[f10.typed_exact(case["edges"],r,*case["query"],p)
           for r,p in zip(roles.tolist(),patterns)]
-   bag=[True,False,True]  # ignores order and recognizes changed role counts
+   # Coded order-INSENSITIVE comparator on original 0..k chain roles.
+   chain_ids=[(f10.f1.relabel(i,case["seed"],2),f10.f1.relabel(i+1,case["seed"],2))
+              for i in range(k)]
+   chain_ix=[case["edges"].index(edge) for edge in chain_ids]
+   actual_roles=[case["roles"][ix] for ix in chain_ix]
+   changed_roles=[case["altered_roles"][ix] for ix in chain_ix]
+   bag=[Counter(actual_roles)==Counter(case["required"]),
+        Counter(changed_roles)==Counter(case["required"]),
+        Counter(actual_roles)==Counter(case["permuted_required"])]
    choices={
       "frozen_variable_typed_composition":predicted,
       "fixed_four_round_typed_control":graphblind,
