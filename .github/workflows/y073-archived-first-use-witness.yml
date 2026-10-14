@@ -1,0 +1,41 @@
+name: Y073 independent archived original evidence witness
+on:
+  push:
+    branches: [audit/y073-frozen-archive-witness-20261014]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  witness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Pin witness and first-use frozen sources
+        run: |
+          set -euo pipefail
+          test "$(git hash-object research/contrib/chatgpt/20261014-y073-novel-topology/prereg.json)" = 376c94f2f4cd8350b1b5c2c35e377e5fcd70bf77
+          test "$(git hash-object research/contrib/chatgpt/20261014-y073-novel-topology/execute.py)" = 99c25979ab2b741271570dda210821b93bf03a79
+          test "$(git hash-object research/contrib/chatgpt/20261014-y073-novel-topology/archive_witness.py)" = be86f1a1b4c48cd3a978740cdcb7fbdde3abe5ce
+          python3 -m py_compile research/contrib/chatgpt/20261014-y073-novel-topology/archive_witness.py
+      - name: Fetch original artifact only, never replay evaluator
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/spoonman136668-ai/Yggdrasil/actions/artifacts/11877910560 --jq '.digest')" = 'sha256:ae7b602e20d0c0222155c489871fdfb1ebf436a9b5314227e736e790dca2c854'
+          mkdir -p evidence
+          gh run download 38530057504 -R spoonman136668-ai/Yggdrasil --name Y073-original-new-shock-topologies --dir evidence
+          test -s evidence/Y073-original.json
+      - name: Independent trial aggregates and final classification
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261014-y073-novel-topology/archive_witness.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y073-independent-archived-witness
+          path: Y073-witness.json
+          if-no-files-found: error
+          retention-days: 90
