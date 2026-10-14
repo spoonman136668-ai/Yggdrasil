@@ -1,0 +1,83 @@
+{
+  "schema": "yggdrasil.f16.prereg.v1",
+  "source_F15": "ada4c0a3d5a8f674beb693f12d5640e6dad951c6",
+  "objective": "Reduce the end-to-end runtime overhead of Yggdrasil's frozen learned stopping controller, WITHOUT changing its trained parameters, threshold, core, or decisions. Compare to full computation AND cheaper programmed first-hop control.",
+  "method": {
+    "no_retraining": true,
+    "frozen_risk_head_sha256": "415020f5dfa310b63c15b579045a53811062a72e467789f7af69a42ae575ac39",
+    "threshold": 0.7,
+    "scalar_cache": "Compute exact old 8→12→1 tanh policy scalar parameters and static role compatibility table once at model load. Run same core. Fail closed if any future original PyTorch policy prediction OR stop step differs.",
+    "development_cohort": {
+      "families": [
+        80,
+        81,
+        82,
+        83
+      ],
+      "generator_derivation": "Declared F15 families 76–79 with NEW non-path post-target branch and disjoint new seeds",
+      "seed_bounds": [
+        70400,
+        70406
+      ],
+      "depths": [
+        7,
+        8
+      ],
+      "role_shifts": [
+        0,
+        1
+      ],
+      "graphs": 96,
+      "questions": 576,
+      "positive": 192,
+      "negative": 384,
+      "variants": [
+        "valid typed path",
+        "late necessary edge role mutation",
+        "early necessary edge role mutation",
+        "wrong order",
+        "wrong depth",
+        "benign distractor mutation"
+      ]
+    },
+    "controls": [
+      "identical frozen original Torch risk NN",
+      "matched frozen full core",
+      "cheap programmed first-hop necessity control",
+      "typed exact oracle for each graph fixture"
+    ],
+    "timing": {
+      "repeats": 3,
+      "alternating_order": true,
+      "initial_warmup": true,
+      "inference_measured_includes_state_encoding": true,
+      "inference_measured_includes_feature_cost": true,
+      "model_init_amortized": true,
+      "fixture_generation_excluded": true,
+      "run_local_not_portable": true
+    },
+    "acceptance": {
+      "min_accuracy": 0.95,
+      "max_worst_family_FNR": 0.05,
+      "max_worst_family_FPR": 0.05,
+      "max_accuracy_deficit_to_full": 0.03,
+      "min_recurrent_steps_saved": 0.15,
+      "min_median_wall_gain_over_full": 0.05,
+      "min_median_wall_gain_over_original_NN": 0.05,
+      "min_gain_over_cheap_static_percentage_points": 0.05
+    },
+    "verdicts": [
+      "DEVELOPMENT_FROZEN_SCALAR_OUTPERFORMS_CHEAP_STATIC",
+      "DEVELOPMENT_FROZEN_SCALAR_ROBUST_NO_NET_GAIN",
+      "DEVELOPMENT_FROZEN_SCALAR_POLICY_NOT_ROBUST",
+      "INVALID_TYPED_FULL_CONTROL"
+    ]
+  },
+  "safety": {
+    "F3_independent_sealed_source": false,
+    "original_once_only_not_consumed": true,
+    "accepted_refs_unchanged": true,
+    "no_KTRADE_or_FORGE": true,
+    "no_paid_API": true
+  }
+}
