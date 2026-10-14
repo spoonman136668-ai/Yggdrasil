@@ -1,0 +1,52 @@
+{
+  "schema": "yggdrasil.nci06.prereg.v1",
+  "id": "Y-NCI06-NATIVE-TORCH-LEARNED-RETENTION",
+  "parent": "adee6983ab3a2d091da50bdf4b02c68b96df6edf",
+  "hypothesis": "Can a tiny native 3-param Torch-trained future-relevance scorer govern eviction in the original 576-byte, 7-active/9-retained StatePool, preserving unfamiliar four-hop relational knowledge under 12-edge overload better than FIFO and LRU?",
+  "architecture": "Unchanged Y-NCI02 native Torch admission (4 weights), native learned join (6 weights), and NCI05 multiedge StatePool. New Torch nn.Linear(2,1) admission to retention, learned from development-only public exposure/time features and labels of future relevance. No future labels given at sealed inference. Sequential StatePool evictions and checkpoint restoration use original state_dict.",
+  "development": [
+    25952,
+    26112
+  ],
+  "validation": [
+    26112,
+    26144
+  ],
+  "sealed": [
+    26432,
+    26456
+  ],
+  "families": [
+    "early_target_high_exposure",
+    "interleaved_target_rehearsal",
+    "misleading_distractor_exposure",
+    "late_target_mixed_signal"
+  ],
+  "task": "96 sealed cases, 24 seeds × 4 motifs, 12 observed relationships in original random-free structural streams. Seven active edges max per arm; public rehearsal at observation 6 only; answer two-hop, four-hop and after checkpoint, versus original native learned join and full graph oracle. Three policies same stream but distinct capacity-limited states.",
+  "registered_verdict": "LEARNED_BOUNDED_RETENTION_TRANSFER iff learned four-hop >=60%, >=+15pp vs FIFO and +10pp vs LRU with no family worse than LRU by >20pp. PARTIAL_RETENTION_GAIN_WITH_GENERALIZATION_COST if >=+10pp vs FIFO only; otherwise NO_TRANSFERABLE_LEARNED_RETENTION_GAIN. No learned graph search, learned relational storage, general-purpose language or RSI claim.",
+  "budget": {
+    "state_bytes_per_arm": 576,
+    "active_edges": 7,
+    "retained": 9,
+    "learned_retention_params": 3,
+    "trained_join_params": 6,
+    "trained_admission_params": 4,
+    "development_examples": 7680,
+    "sealed_trials": 96,
+    "external_llm_calls": 0
+  },
+  "guardrails": [
+    "Frozen first-use identity and disjoint from Y-NCI05 sealed seeds",
+    "Only training source uses future relevance labels",
+    "Same retained-edge count for FIFO, LRU and learned",
+    "Original artifact uploaded before analysis, final full pytest and separate independent no-replay audit",
+    "Report accuracy for all families, negative and retention costs, score multiplies, join evaluator work",
+    "No FORGE R32/R33, accepted refs, CKB/KTRADE, controller, production, merge or live brokerage"
+  ],
+  "portfolio_targets": {
+    "integration": 45,
+    "foundational": 45,
+    "optimization": 10,
+    "measured_compute": false
+  }
+}
