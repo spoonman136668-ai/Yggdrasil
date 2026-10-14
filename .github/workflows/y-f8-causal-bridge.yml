@@ -1,0 +1,59 @@
+name: Y-F8 frozen learned reasoning causal bridge deletion DEV
+on:
+  push:
+    branches: [research/y-f8-frozen-recurrent-causal-cut-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install Torch and project test suite
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify exact F7 source identity and F8 preregistration
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 20d8b2dac16893456d8e409db3bf851e04ee367a HEAD
+          test "$(git hash-object research/foundational/20261014-y-f7/execute.py)" = "$(git rev-parse 20d8b2dac16893456d8e409db3bf851e04ee367a:research/foundational/20261014-y-f7/execute.py)"
+          python3 -m py_compile research/foundational/20261014-y-f8/execute.py
+          python3 -m json.tool research/foundational/20261014-y-f8/prereg.json >/dev/null
+      - name: One no-retraining causal edge-cut development original
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261014-y-f8/execute.py > /tmp/y-f8-original-development.json
+          python3 -m json.tool /tmp/y-f8-original-development.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F8-original-frozen-causal-bridge-development
+          path: /tmp/y-f8-original-development.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independently reaggregate and reject invalid coded oracle
+        run: |
+          python3 - <<'PY'
+          import collections,json
+          r=json.load(open("/tmp/y-f8-original-development.json"))
+          assert r["stage"]=="DEVELOPMENT_ONLY" and r["paired_states"]==192
+          assert r["question_count"]==384 and r["negative_questions"]==192
+          assert r["candidate_parameter_count"]==22 and r["native_state_bytes"]==576
+          assert not r["candidate_retrained"] and not r["sealed_first_use"]
+          assert not r["source_birth_witnessed"] and not r["accepted_ref_mutation"]
+          assert collections.Counter(row["family"] for row in r["rows"])=={36:48,37:48,38:48,39:48}
+          for name,s in r["scores"].items():
+            pos=sum(int(row["predictions"][name][0]) for row in r["rows"])
+            tn=sum(int(not row["predictions"][name][1]) for row in r["rows"])
+            both=sum(int(row["predictions"][name]==[True,False]) for row in r["rows"])
+            assert s["correct"]==pos+tn and s["causal_pair_correct"]==both
+          assert r["scores"]["fixed_exact_coded_causal_upper"]["causal_pair_correct"]==192,"INVALID_CODED_CAUSAL_CONTROL"
+          assert r["registered_verdict"] in ("DEVELOPMENT_FROZEN_NATIVE_CAUSAL_BRIDGE_SENSITIVITY","DEVELOPMENT_NO_FROZEN_NATIVE_CAUSAL_BRIDGE_SENSITIVITY")
+          print("Y_F8_VERDICT",r["registered_verdict"])
+          print("Y_F8_SCORES",r["scores"])
+          PY
+      - name: One full Yggdrasil regression
+        run: python3 -m pytest -q tests
