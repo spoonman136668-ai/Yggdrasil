@@ -1,0 +1,62 @@
+name: Y-F13 learned expected benefit of another reasoning step DEV
+on:
+  push:
+    branches: [research/y-f13-learned-expected-benefit-halting-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install Torch and project tests
+        run: python3 -m pip install -e '.[test]'
+      - name: Pin frozen Y-F12 and F13 prereg
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor fbe0269a4b32c42c497aa22b856720d39733c521 HEAD
+          test "$(git hash-object research/foundational/20261014-y-f12/execute.py)" = "$(git rev-parse fbe0269a4b32c42c497aa22b856720d39733c521:research/foundational/20261014-y-f12/execute.py)"
+          python3 -m py_compile research/foundational/20261014-y-f13/execute.py
+          python3 -m json.tool research/foundational/20261014-y-f13/prereg.json >/dev/null
+      - name: Original F13 learned continuation policy DEVELOPMENT experiment
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261014-y-f13/execute.py > /tmp/y-f13-original-development.json
+          python3 -m json.tool /tmp/y-f13-original-development.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F13-original-learned-compute-control-dev
+          path: /tmp/y-f13-original-development.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independent row-score audit and fail-closed source separation
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          r=json.load(open("/tmp/y-f13-original-development.json"))
+          assert r["stage"]=="DEVELOPMENT_ONLY"
+          assert r["train_graph_triplets"]==288 and r["val_graph_triplets"]==192
+          assert r["train_question_count"]==864 and r["val_question_count"]==576
+          assert r["policy_parameters"]==73 and r["native_state_bytes"]==576
+          assert r["training_labels_use_train_oracle_future"]
+          assert not r["policy_inference_sees_future"] and not r["first_use_sealed"]
+          assert not r["independent_source_birth"] and not r["accepted_ref_mutation"]
+          assert collections.Counter(z["family"] for z in r["rows"])=={64:144,65:144,66:144,67:144}
+          for name,s in r["scores"].items():
+            correct=sum(int(z["choices"][name]["answer"]==z["truth"]) for z in r["rows"])
+            steps=sum(z["choices"][name]["steps"] for z in r["rows"])
+            assert correct==s["correct"] and steps==s["actual_steps"]
+            assert all(1<=z["choices"][name]["steps"]<=z["depth"] for z in r["rows"])
+          assert r["scores"]["hindsight_oracle_upper"]["accuracy"]>=r["scores"]["fixed_complete_reasoning"]["accuracy"]
+          assert r["verdict"] in ("DEVELOPMENT_LEARNED_COMPUTATION_CONTROL_TRANSFER",
+                                 "DEVELOPMENT_NO_LEARNED_COMPUTATION_CONTROL_TRANSFER")
+          print("Y_F13_VERDICT",r["verdict"])
+          print("Y_F13_SCORES",r["scores"])
+          PY
+      - name: One full Yggdrasil repository regression
+        run: python3 -m pytest -q tests
