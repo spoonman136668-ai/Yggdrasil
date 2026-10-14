@@ -1,0 +1,51 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y084-BOUNDED-LEARNED-PUBLIC-RETENTION-CONSUMER",
+  "parent_head": "2fd733b3c543324c6d42cc07c8b286ed5d9ec8d3",
+  "prior": "Y083 dev-selected static matched_sham retention preference reduced heldout mismatches 30.14% vs quorum2 but increased churn 18.45% and match calls 32.19%, failing strict safety/cost. Test whether an early-public-context bounded decision table can choose retention preference selectively under the same 7-active/9-retained memory budget.",
+  "hypothesis": "Can a development-learned public early-context conditional policy select among matched_sham/full/quorum2 to lower heldout physical mismatch episodes >=10% against quorum2, without >5% churn or >10% matching search cost, and no group-specific mismatch regressions?",
+  "freeze": "Four fixed <=8-rule classifiers: static, early affine a%4, early drift d%4, joint a%4:d%4. Train policy mapping by 100*error+churn+0.01*search_calls on seeds17344..17351 and select one model on disjoint development validation17376..17383. Only raw PUBLIC probe 0/1 values used at runtime; a/d model recovered without future sensor observations, pair/onset/truth labels. Freeze map before first use of new heldout17408..17423. Run same Y083 decoder, four affine families, pairs, onset regimes, matching, memory and public read budgets. Cache one precomputed ten-read public observation per trial across arms to avoid duplicate reads.",
+  "development_seeds": [
+    17344,
+    17352
+  ],
+  "validation_seeds": [
+    17376,
+    17384
+  ],
+  "sealed_heldout_seeds": [
+    17408,
+    17424
+  ],
+  "candidate_models": [
+    "static",
+    "affine_bucket",
+    "drift_bucket",
+    "joint_bucket"
+  ],
+  "primary": "DEVELOPMENT_LEARNED_PUBLIC_MEMORY_POLICY_GAIN iff selected policy has >=10% lower total mismatch episodes vs quorum2, <=+5% churn, <=+10% matching calls, no per-group mismatch regression and steady null zero; PARTIAL_CONDITIONAL_MEMORY_GAIN_OR_COST iff >=5% error gain but other criteria fail; NO_CONDITIONAL_MEMORY_POLICY_GAIN otherwise; steady safety failure overrides.",
+  "controls": [
+    "No trial truth, hidden pair/onset, post-episode1 public future reads or sealed feedback in policy table selection",
+    "Max 8 learned policy table entries (extra bounded static controller memory disclosed), and unchanged Yggdrasil 7 active/<=9 retained",
+    "One public source acquisition per arm/trial, ten scalar public reads, zero illegal assignments",
+    "Unique sealed17408..17423 disjoint from prior Y08316160..16175 and earlier cohorts",
+    "One science first-use after development-only fit, archive original JSON first, full pytest, independent reaggregation",
+    "No accepted refs, FORGE R32/R33, CKB controller/queue, production or merge"
+  ],
+  "bounds": {
+    "candidate_modes": 4,
+    "table_entries_max": 8,
+    "development_seeds": 8,
+    "validation_seeds": 8,
+    "heldout_seeds": 16,
+    "heldout_cases": 384,
+    "heldout_arm_evaluations": 1152,
+    "public_reads": 10,
+    "active": 7,
+    "retained": 9,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Small bounded policy-table selection, not generalized cognitive plasticity or RSI."
+}

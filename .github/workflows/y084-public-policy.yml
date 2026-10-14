@@ -1,0 +1,63 @@
+name: Y084 frozen bounded developmental state-learning first-use
+on:
+  push:
+    branches: [research/y084-public-state-learned-preference-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify pinned source and preregistration
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 2fd733b3c543324c6d42cc07c8b286ed5d9ec8d3 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y083-retention-selection/execute.py)" = 2563546ca44a7e3c8985e0e36e626784a8e93f0f
+          test "$(git hash-object research/contrib/chatgpt/20261014-y084-public-retention-policy/execute.py)" = b95a3d65f5435dd9b9b08e93fa31f2ef67a6d6f1
+          test "$(git hash-object research/contrib/chatgpt/20261014-y084-public-retention-policy/prereg.json)" = fa2d5002dd0f893c9df967c55e7ae8dde6e572c1
+          python3 -m py_compile research/contrib/chatgpt/20261014-y084-public-retention-policy/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y084-public-retention-policy/prereg.json >/dev/null
+      - name: Development-only training qualification before sealed first-use
+        run: |
+          set -euo pipefail
+          python3 -B - <<'PY'
+          import importlib.util
+          s=importlib.util.spec_from_file_location("y084_dev","research/contrib/chatgpt/20261014-y084-public-retention-policy/execute.py")
+          assert s and s.loader
+          m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+          mode,tables,valid=m.train_and_select()
+          assert mode in m.MODES and len(tables)==4 and len(tables[mode])<=8
+          print("DEV_ONLY_FROZEN_POLICY",mode,tables[mode])
+          PY
+      - name: Execute one original sealed science and write original evidence
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261014-y084-public-retention-policy/execute.py > /tmp/Y084-original.json
+          python3 -m json.tool /tmp/Y084-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y084-frozen-first-use-evidence
+          path: /tmp/Y084-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Check frozen science after archive custody
+        run: |
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y084-original.json"))
+          assert len(a["sealed_records"])==384
+          assert a["sealed_heldout_seeds"]==list(range(17408,17424))
+          assert a["classification"] in ("DEVELOPMENT_LEARNED_PUBLIC_MEMORY_POLICY_GAIN","PARTIAL_CONDITIONAL_MEMORY_GAIN_OR_COST","NO_CONDITIONAL_MEMORY_POLICY_GAIN","CONDITIONAL_POLICY_STEADY_FAILURE")
+          assert a["policy_table_entries"]<=8 and a["public_read_budget"]==10
+          print("CLASSIFICATION",a["classification"])
+          print("SELECTED_MODE",a["chosen_mode"],a["improvement_vs_quorum2"])
+          assert a["model_calls"]==0 and a["accepted_ref_mutation"] is False
+          PY
+      - name: Final full repository regression and build
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
