@@ -1,0 +1,85 @@
+{
+  "schema": "yggdrasil.f13.prereg.v1",
+  "parent_F12": "fbe0269a4b32c42c497aa22b856720d39733c521",
+  "study": "Y-F13-PREFIX-STATE-VALUE_OF_COMPUTATION",
+  "hypothesis": "A new policy learned from training-only prefix trajectory and future-task correctness can identify when further recurrent computation has insufficient expected benefit, saving at least 15% steps at >=95% novel-grammar question accuracy and outperforming a train-selected simple confidence threshold.",
+  "training": {
+    "dev_only": true,
+    "structural_families": [
+      60,
+      61,
+      62,
+      63
+    ],
+    "seeds": [
+      58300,
+      58312
+    ],
+    "depths": [
+      4,
+      5,
+      6
+    ],
+    "role_renames": [
+      0,
+      1
+    ],
+    "triples": 288,
+    "questions": 864,
+    "freeze_existing": "F10 22-parameter frozen core+16 role weights; no scientific F3 touch",
+    "train_stop_targets": "training-only hindsight safe-stop if current prediction matches final truth and all future prefix predictions; never given to candidate inference",
+    "policy": "7 prefix-only features, 7->8 tanh->1 logistic controller (73 params), 160 Adam lr .035, train-only BCE",
+    "candidate_input_only": "current prefix probability, delta, active max/mean/std, normalized step and remaining budget; no oracle/future hidden state/labels or graph family",
+    "controls": [
+      "fixed complete query budget",
+      "grid threshold selected by train utility only (values frozen before heldout)",
+      "hindsight oracle upper using future ground truth only after original predictions"
+    ],
+    "training_utility": "accuracy -0.15*(used/full)"
+  },
+  "evaluation": {
+    "dev_only": true,
+    "new_families": [
+      64,
+      65,
+      66,
+      67
+    ],
+    "seeds": [
+      58800,
+      58812
+    ],
+    "depths": [
+      7,
+      8
+    ],
+    "role_renames": [
+      0,
+      1
+    ],
+    "triples": 192,
+    "questions": 576,
+    "three_conditions": "valid ordered typed path, one edge-role mutation, invalid same-bag order",
+    "regret": "accuracy-0.15*normalized compute",
+    "gate": {
+      "accuracy_at_least": 0.95,
+      "false_positive_rate_at_most": 0.05,
+      "compute_saved_fraction_at_least": 0.15,
+      "accuracy_loss_to_full_at_most": 0.03,
+      "utility_advantage_vs_train_selected_threshold_at_least": 0.01
+    },
+    "positive": "DEVELOPMENT_LEARNED_COMPUTATION_CONTROL_TRANSFER",
+    "negative": "DEVELOPMENT_NO_LEARNED_COMPUTATION_CONTROL_TRANSFER"
+  },
+  "limitations": {
+    "prefix_programmed_recurrent_core": true,
+    "hard_max_iteration_query_length": true,
+    "learned_early_halt_not_learned_max_budget": true,
+    "state_bytes": 576,
+    "independent_source_birth": false,
+    "sealed_first_use": false,
+    "accepted_refs": false,
+    "FORGE": false,
+    "KTRADE": false
+  }
+}
