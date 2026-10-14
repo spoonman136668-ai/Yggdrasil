@@ -1,0 +1,79 @@
+{
+  "schema": "yggdrasil.frozen-science-prereg.v1",
+  "id": "Y075-TOPOLOGY-SENSOR-BLINDNESS-VS-ONSET",
+  "parent_head": "92ff8efb2489cf2e986562d6f51155387dac957e",
+  "prior": "Y073 and Y074 independently archived PARTIAL pair4_11 recovery, but pair5_12 had zero detection and no post-detection error opportunity across distinct affine backgrounds and sealed cohorts.",
+  "hypothesis": "Does fixed 10-read public dual-sentinel sensor remain unable to detect the 5_12 transposition if the shock occurs at episode4 instead of episode1, while 4_11 remains a detectability positive control?",
+  "freeze": "Keep Y070 original sensor and decoder, three unchanged arms, three matching policies, 7 active and <=9 retained, Y074 four affine families, two distinct swap pairs. Re-evaluate only fresh development and sealed seeds with steady null/onset1/onset4, without tuning a sensor, adding public reads, changing code path, or accessing future evaluator truth in the candidate.",
+  "development_seeds": [
+    9320,
+    9328
+  ],
+  "sealed_heldout_seeds": [
+    9392,
+    9408
+  ],
+  "pairs": [
+    [
+      4,
+      11
+    ],
+    [
+      5,
+      12
+    ]
+  ],
+  "families": [
+    [
+      3,
+      5,
+      9
+    ],
+    [
+      7,
+      13,
+      3
+    ],
+    [
+      11,
+      7,
+      5
+    ],
+    [
+      15,
+      11,
+      13
+    ]
+  ],
+  "regimes": [
+    "steady",
+    "onset1",
+    "onset4"
+  ],
+  "primary": "Record 1,152 disjoint heldout trial rows (2 pairs x 3 regimes x 4 affine families x 16 seeds x 3 matching policies), three arms each; detections and pre/post mismatches per trial. POSITIVE_CONTROL_FAILED if pair4_11 onset1 detected=0. PERSISTENT_SENSOR_BLIND_SPOT if positive control visible and pair5_12 onset1 and onset4 detections both=0. DELAYED_ONSET_SAFE_RECOVERY iff pair5_12 onset4 detected and post-detection errors reduce >=20% with no total-error regression. DETECTION_WITHOUT_SAFE_RECOVERY iff onset4 detected but reduction/safety not met. Else MIXED_SENSOR_VISIBILITY. Do not count zero baseline-post mismatches as correction.",
+  "controls": [
+    "Distinct sealed seeds 9392..9407 and development 9320..9327 never used by Y074",
+    "No future physical label oracle to sensor; evaluator only",
+    "Steady null zero-mismatch control",
+    "4_11 positive geometry control, 5_12 potential blind source",
+    "Identical 10 public scalar reads and <=9 retained cache across three arms",
+    "Frozen first-use followed by one full pytest regression and independent archive-only witness",
+    "No FORGE R32/R33/accepted-ref mutation"
+  ],
+  "bounds": {
+    "pairs": 2,
+    "regimes": 3,
+    "families": 4,
+    "heldout_seeds": 16,
+    "development_seeds": 8,
+    "policies": 3,
+    "arms": 3,
+    "active": 7,
+    "retained": 9,
+    "public_reads_per_trial": 10,
+    "model_calls": 0,
+    "first_use_retries": 0,
+    "accepted_ref_mutation": false
+  },
+  "claim_limit": "Bounded synthetic onset visibility in fixed sensor, no demonstrated transferable intelligence or RSI."
+}
