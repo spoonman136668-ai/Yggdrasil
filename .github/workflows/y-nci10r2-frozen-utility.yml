@@ -1,7 +1,7 @@
 name: Y-NCI10-R2 frozen development utility fit and prospective first-use
 on:
   push:
-    branches: [research/y-nci10r2-utility-selected-memory-20261014-r1]
+    branches: [research/y-nci10r2-utility-selected-memory-20261014-r2]
 permissions:
   contents: read
 jobs:
@@ -20,7 +20,7 @@ jobs:
           set -euo pipefail
           git merge-base --is-ancestor ad76ca35ce37531d879cc4371c8c06235f3637dc HEAD
           test "$(git hash-object research/contrib/chatgpt/20261014-y-nci10/execute.py)" = e5126d76d9158008d51db7ab17cdc7b9fe1c16f8
-          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci10r2/execute.py)" = d808596db701583bfb90960ddbcde1b7178e9624
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci10r2/execute.py)" = 7605344ae2bc384f6556adb7bf6fd0f92ae3b225
           test "$(git hash-object research/contrib/chatgpt/20261014-y-nci10r2/prereg.json)" = c27a674504c438f2496a25eff603f14640624503
           python3 -m py_compile research/contrib/chatgpt/20261014-y-nci10r2/execute.py
           python3 -m json.tool research/contrib/chatgpt/20261014-y-nci10r2/prereg.json >/dev/null
