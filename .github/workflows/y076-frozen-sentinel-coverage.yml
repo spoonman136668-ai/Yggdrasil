@@ -1,0 +1,47 @@
+name: Yggdrasil Y076 frozen sentinel coverage
+on:
+  push:
+    branches: [research/y076-frozen-sentinel-coverage-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify exact parent and immutable scientific source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 5e20c3ef2d0eded5435599a2a826664e08d4b9e9 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y075-blind-geometry-timing/execute.py)" = 3a0292998e7d6f4fbd0ea35805bc90ca0e3a0a10
+          test "$(git hash-object research/contrib/chatgpt/20261014-y076-sentinel-coverage/prereg.json)" = ac96d3133439e8e977fd2350bc6adfff9e3e1260
+          test "$(git hash-object research/contrib/chatgpt/20261014-y076-sentinel-coverage/execute.py)" = 5213602513cd27fc3f011a6d0085a3098876a2db
+          python3 -m json.tool research/contrib/chatgpt/20261014-y076-sentinel-coverage/prereg.json >/dev/null
+          python3 -m py_compile research/contrib/chatgpt/20261014-y076-sentinel-coverage/execute.py
+      - name: Single sealed scientific first-use
+        run: |
+          set -euo pipefail
+          python3 -B research/contrib/chatgpt/20261014-y076-sentinel-coverage/execute.py > /tmp/Y076-original.json
+          python3 -m json.tool /tmp/Y076-original.json >/dev/null
+          python3 - <<'PY'
+          import json
+          a=json.load(open("/tmp/Y076-original.json"))
+          assert a["model_calls"]==0 and a["accepted_ref_mutation"] is False
+          assert a["sealed_heldout_seeds"]==list(range(9472,9488))
+          assert len(a["complete_heldout_records"])==1152
+          assert len(a["comparisons"])==4
+          assert a["classification"] in ("STEADY_SAFETY_FAILURE","DUAL_PAIR_SAFE_RECOVERY","TARGET_RECOVERY_WITH_CONTROL_COST","DETECTION_WITHOUT_BOTH_ONSET_RECOVERY","TARGET_STILL_BLIND")
+          print("CLASSIFICATION",a["classification"]);print("COMPARISONS",a["comparisons"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y076-original-sensor-coverage
+          path: /tmp/Y076-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Full repository regression
+        run: python -m pip install -e '.[test]' && python -m pytest -q tests
