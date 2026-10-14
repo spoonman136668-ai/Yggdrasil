@@ -1,0 +1,64 @@
+name: Y-NCI11 R3 native predictive-state developmental falsification
+on:
+  push:
+    branches: [research/y-nci11r3-native-predictive-dev-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install native Yggdrasil runtime
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify frozen original R3 source and no scientific ref mutation
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 931144b5b5a984ea4523bad036ce5b92210d7a21 HEAD
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11-latent/execute.py)" = 4e65f15e03ef56ffbc8d73d6cd3a4ca3d8e6c09f
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11r2-prospective/execute.py)" = 64c1a58ba5227bdb38eb0bddd0956cb08803b3a6
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11r3/execute.py)" = dcc337b115d18db63f1b53d3f60e15fa7474f851
+          test "$(git hash-object research/contrib/chatgpt/20261014-y-nci11r3/prereg.json)" = d64ebf551005fccf61c3b502e484910be4ce3d08
+          python3 -m py_compile research/contrib/chatgpt/20261014-y-nci11r3/execute.py
+          python3 -m json.tool research/contrib/chatgpt/20261014-y-nci11r3/prereg.json >/dev/null
+      - name: Run two frozen development-only native learned state hypotheses
+        run: |
+          set -euo pipefail
+          start=$(date +%s%N)
+          PYTHONPATH=src python3 -B research/contrib/chatgpt/20261014-y-nci11r3/execute.py > /tmp/y-nci11r3-original-dev.json
+          end=$(date +%s%N)
+          printf '{"runner":"ubuntu-latest","development_wall_ms":%s,"billing_usd":"unverified"}\n' "$(((end-start)/1000000))" > /tmp/y-nci11r3-cost.json
+          python3 -m json.tool /tmp/y-nci11r3-original-dev.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-NCI11R3-original-development-only
+          path: |
+            /tmp/y-nci11r3-original-dev.json
+            /tmp/y-nci11r3-cost.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Frozen scientific development verdict after artifact
+        run: |
+          python3 - <<'PY'
+          import json
+          r=json.load(open("/tmp/y-nci11r3-original-dev.json"))
+          assert r["stage"]=="DEVELOPMENT_ONLY"
+          assert r["training_seed_bounds"]==[37024,37048]
+          assert r["validation_seed_bounds"]==[37104,37116]
+          assert r["native_memory_bytes"]==576
+          assert len(r["candidates"])==2
+          assert all(a["resident_state_bytes"]==576 and a["native_checkpoint_pass"] for a in r["candidates"])
+          assert r["verdict"] in ("NCI11R3_DEVELOPMENT_TRANSFER_QUALIFIED",
+                "NCI11R3_DEVELOPMENT_NO_GENERALIZABLE_TRAINED_STATE")
+          assert r["first_use_sealed"] is False and r["sealed_cohort_reserved"] is False
+          assert r["external_llm_calls"]==0 and not r["accepted_ref_mutation"]
+          print("R3_DEVELOPMENT_VERDICT",r["verdict"])
+          print("R3_DEVELOPMENT_RESULTS",r["candidates"])
+          PY
+      - name: Full native Yggdrasil regression
+        run: python3 -m pytest -q tests

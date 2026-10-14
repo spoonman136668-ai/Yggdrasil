@@ -1,0 +1,15 @@
+{
+  "schema": "yggdrasil.nci11r3.development-prereg.v1",
+  "id": "Y-NCI11R3-NEURAL-RECURRENT-STATE-ALTERNATIVES",
+  "parent": "931144b5b5a984ea4523bad036ce5b92210d7a21",
+  "rationale": "Previously learned gated outer-product StatePool trained +8.07pp over SAME initialized architecture on novel motifs but failed prospective >=70 and +10pp. A genuinely different state update (GRUCell 144d) and learned bilinear recurrent writer are considered instead of exposure heuristics. This test is DEVELOPMENT ONLY and not a revisit of a sealed cohort.",
+  "frozen_hypotheses": [
+    "GRUCell with 144 float32 recurrent state and joint future-question-trained endpoint-conditioned MLP readout",
+    "Bilinear gated recurrent writer with 144 float32 associative state, trained write intensity and learned readout"
+  ],
+  "development": "Train seeds 37024..37047, existing families0/1/2 each with four counterfactual truth variants and two delayed questions, shuffled consistent entity symbols in 100+ space. Validation seeds 37104..37115 families4/5/6/7, disjoint symbol IDs in 1400+ space. No query or label available to memory encoder until readout. Two precommitted candidates, each 75 Adam steps lr0.007, gradient clipped3. No tuning on validation. Public features fixed sinusoidal input and 12-edge stream; weight updates learned via future-question BCE.",
+  "controls": "For each candidate compare SAME architecture at initialization and trained decoder with all 144 state values zero; checkpoint 576-byte native StatePool. Record training/validation examples, wall time, parameter and model bytes separate from resident 576 bytes. This dev branch does not execute coded compression control on same cases: later qualification must do so before sealed hypothesis.",
+  "dev_gate": "Qualify ONLY if >=70% validation on shifted grammar+vocabulary and both >=10pp above identical initialized model and zero-memory, native checkpoint exact, and material trained weight change. Otherwise preserve scientific negative and forbid first-use promotion. No new sealed cohort created or reserved.",
+  "scientific_limits": "The neural architecture trains memory representations and readout, but uses programmed fixed symbol hashing and a learned MLP as query decoder; no proof of learned symbolic multihop traversal. Large GRU weights may dwarf 576-byte state, report separately; learned model not comparable in FLOPs to coded baseline here.",
+  "custody": "Freeze source/prereg Git blob before development execution; produce complete machine-readable original development artifact, qualified full pytest, independent archive-only numerical audit. No reuse of historical sealed data. Do not touch FORGE R32/R33, CKB, KTRADE, production or accepted scientific refs. Portfolio effort 45/45/10 target, actual compute unmeasured."
+}
