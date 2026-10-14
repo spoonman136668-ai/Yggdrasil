@@ -1,0 +1,61 @@
+name: Y-F14 asymmetric risk-aware selective negative stopping development
+on:
+  push:
+    branches: [research/y-f14-asymmetric-risk-aware-continuation-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install frozen repo test dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify F13 source identity and F14 preregistration
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 58b60c5f5e1293ad0485b1e3abe5b5662287cf67 HEAD
+          test "$(git hash-object research/foundational/20261014-y-f13/execute.py)" = "$(git rev-parse 58b60c5f5e1293ad0485b1e3abe5b5662287cf67:research/foundational/20261014-y-f13/execute.py)"
+          python3 -m py_compile research/foundational/20261014-y-f14/execute.py
+          python3 -m json.tool research/foundational/20261014-y-f14/prereg.json >/dev/null
+      - name: Execute original bounded Y-F14 risk-aware development only
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261014-y-f14/execute.py > /tmp/y-f14-original-development.json
+          python3 -m json.tool /tmp/y-f14-original-development.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F14-original-risk-constrained-continuation-dev
+          path: /tmp/y-f14-original-development.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Independently reaggregate and classify raw evidence
+        run: |
+          python3 - <<'PY'
+          import collections,json
+          r=json.load(open("/tmp/y-f14-original-development.json"))
+          assert r["stage"]=="DEVELOPMENT_ONLY"
+          assert r["train_questions"]==864 and r["validation_questions"]==576
+          assert r["train_graph_triplets"]==288 and r["validation_graph_triplets"]==192
+          assert r["native_state_bytes"]==576 and r["policy_input_features"]==8
+          assert not r["policy_inference_sees_future_oracle"] and r["calibration_only_training"]
+          assert not r["sealed_first_use"] and not r["independent_source_birth"]
+          assert not r["accepted_ref_mutation"]
+          assert r["computation_savings_only_recurrent_step_proxy"] and r["feature_collection_cost_excluded_from_saving"]
+          assert collections.Counter(row["family"] for row in r["rows"])=={72:144,73:144,74:144,75:144}
+          for name,score in r["scores"].items():
+            correct=sum(a["decisions"][name]["answer"]==a["truth"] for a in r["rows"])
+            steps=sum(a["decisions"][name]["steps"] for a in r["rows"])
+            assert correct==score["correct"] and steps==score["actual_recurrence_steps"]
+            assert all(1<=a["decisions"][name]["steps"]<=a["depth"] for a in r["rows"])
+          assert r["scores"]["hindsight_oracle_upper"]["accuracy"]>=r["scores"]["fixed_full"]["accuracy"]
+          assert r["verdict"] in ("DEVELOPMENT_RISK_AWARE_STOPPING_TRANSFER","DEVELOPMENT_NO_RISK_AWARE_STOPPING_TRANSFER")
+          print("Y_F14_VERDICT",r["verdict"]);print("Y_F14_SCORES",r["scores"])
+          PY
+      - name: One full Yggdrasil test regression
+        run: python3 -m pytest -q tests

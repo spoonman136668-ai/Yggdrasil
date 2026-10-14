@@ -1,0 +1,94 @@
+{
+  "schema": "yggdrasil.f14.prereg.v1",
+  "parent": "58b60c5f5e1293ad0485b1e3abe5b5662287cf67",
+  "hypothesis": "Risk-weighted selective-negative stop learning using richer but prefix-local evidence will avoid the F13 premature-positive false negatives and retain at least 15% recurrent-step savings on new longer typed chains, with >=95% accuracy and significant utility advantage over a train-calibrated confidence rule.",
+  "training": {
+    "author_generated_development_only": true,
+    "families": [
+      68,
+      69,
+      70,
+      71
+    ],
+    "seed_range": [
+      60100,
+      60112
+    ],
+    "depths": [
+      4,
+      5,
+      6
+    ],
+    "role_shifts": [
+      0,
+      1
+    ],
+    "train_graph_triplets": 288,
+    "questions": 864,
+    "policy": "8->12 tanh->1 trained negative-stop safety classifier, 180 Adam epochs lr .025; 25x false-safe penalty, training-only hindsight target",
+    "features": "Seven Y-F13 prefix scores/activations/budget features plus max NEXT requested role compatibility against current observed static edge-role tags; no future rollout or graph family",
+    "threshold_grid": [
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      0.95,
+      0.98,
+      0.99,
+      0.995,
+      0.999
+    ],
+    "select": "train-only >=99.5% accuracy and <=0.5% false-negative then maximize recurrent-step savings; default never-stop if no candidate qualifies",
+    "confidence_control": "train-only calibration of prefix score to same 99.5%/0.5% constraints"
+  },
+  "evaluation": {
+    "new_graph_families": [
+      72,
+      73,
+      74,
+      75
+    ],
+    "seeds": [
+      60600,
+      60612
+    ],
+    "depths": [
+      7,
+      8
+    ],
+    "triplets": 192,
+    "questions": 576,
+    "controls": [
+      "frozen F13 aggressive early-negative policy",
+      "full prefix compute",
+      "train-calibrated safe simple confidence",
+      "hindsight oracle bound"
+    ],
+    "gate": {
+      "min_accuracy": 0.95,
+      "max_FNR": 0.05,
+      "max_FPR": 0.05,
+      "min_recurrent_step_saving": 0.15,
+      "max_accuracy_deficit_to_full": 0.03,
+      "min_proxy_utility_advantage": 0.01
+    },
+    "positive": "DEVELOPMENT_RISK_AWARE_STOPPING_TRANSFER",
+    "negative": "DEVELOPMENT_NO_RISK_AWARE_STOPPING_TRANSFER"
+  },
+  "accounting": {
+    "reported_savings": "recurrent steps only, does not include O(12) per-step feature computation; do not claim wall-time speedup",
+    "resident_state_bytes": 576,
+    "query_max_depth_programmed": true,
+    "learned_unbounded_halting": false
+  },
+  "authority": {
+    "F3_frozen": true,
+    "sealed_first_use": false,
+    "independent_source_birth": false,
+    "accepted_ref_mutation": false,
+    "controller": false,
+    "FORGE": false,
+    "KTRADE": false
+  }
+}
