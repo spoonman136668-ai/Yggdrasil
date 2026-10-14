@@ -1,0 +1,64 @@
+name: Y-F1B frozen alias-collision falsification of F1 models
+on:
+  push:
+    branches: [research/y-f1b-frozen-alias-collision-development-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install native Torch runtime and project test suite
+        run: python3 -m pip install -e '.[test]'
+      - name: Exact source, original F1 trained model and prereg identity
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor e3ec4c056c787fcc921baebeea1440ae7034ae77 HEAD
+          test "$(git hash-object research/foundational/20261014-y-f1-binding/execute.py)" = 00831191b4d736cb8c8ce05b2bedda188656fc62
+          test "$(git hash-object research/foundational/20261014-y-f1b/execute.py)" = cf0919c6325461555c55320052921570f0ec5f52
+          test "$(git hash-object research/foundational/20261014-y-f1b/prereg.json)" = d34594a1f49e77ee034dcc325f370f1c07a55229
+          python3 -m py_compile research/foundational/20261014-y-f1b/execute.py
+          python3 -m json.tool research/foundational/20261014-y-f1b/prereg.json >/dev/null
+      - name: Evaluate three FROZEN native models on new adversarial development
+        run: |
+          set -euo pipefail
+          START=$(date +%s%N)
+          PYTHONPATH=src python3 -B research/foundational/20261014-y-f1b/execute.py > /tmp/y-f1b-original-development.json
+          END=$(date +%s%N)
+          printf '{"development_wall_ms":%s,"runner":"ubuntu-latest","billing_usd":"unverified"}\n' "$(((END-START)/1000000))" > /tmp/y-f1b-cost.json
+          python3 -m json.tool /tmp/y-f1b-original-development.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F1B-original-development-adversarial
+          path: |
+            /tmp/y-f1b-original-development.json
+            /tmp/y-f1b-cost.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: After artifact custody audit row shape and FROZEN science verdict
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          r=json.load(open("/tmp/y-f1b-original-development.json"))
+          assert r["stage"]=="DEVELOPMENT_ONLY" and r["seed_bounds"]==[39024,39048]
+          assert len(r["records"])==384 and r["raw_question_count"]==768
+          assert collections.Counter(q["family"] for q in r["records"])=={i:96 for i in (4,5,6,7)}
+          assert all(len(q["models"])==3 for q in r["records"])
+          assert r["reference_exact_oracle_correct"]==768 and r["native_state_bytes"]==576
+          assert r["verdict"] in ("CODED_EQUALITY_RESISTS_ADVERSARIAL_ID_COLLISIONS",
+                                 "NEAR_COLLISION_DIAGNOSTIC_INCONCLUSIVE")
+          assert r["fixed_coded_exact_equality"] and not r["learned_entity_binding"]
+          assert not r["sealed_first_use"] and not r["sealed_cohort_reserved"]
+          assert r["external_llm_calls"]==0 and not r["accepted_ref_mutation"]
+          print("FROZEN_ADVERSARIAL_VERDICT",r["verdict"])
+          print("ROW_REAGGREGATABLE_MODEL_SCORES",r["candidate_scores"])
+          print("ALIAS_SIMILARITY",r["mean_near_collision_similarity"])
+          PY
+      - name: One full Yggdrasil Python regression
+        run: python3 -m pytest -q tests
