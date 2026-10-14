@@ -1,0 +1,66 @@
+{
+  "schema": "yggdrasil.f11.prereg.v1",
+  "id": "Y-F11-FROZEN_ROLE_SEQUENCE_ORDER_FALSIFICATION",
+  "parent": "7c488e0ddcab1dd4ad20d5d7b90285756c945b9c",
+  "frozen_F10_original_sha256": "b3391985417eaa72832610ee9ec69826941a21b06ce94dd0f78ca98f322f22db",
+  "hypothesis": "A frozen learned typed-role composer truly respects the order of relation types along a path, not merely an order-insensitive bag of role IDs, and transfers to two parallel distractor paths with different valid role orders.",
+  "cohort": {
+    "stage": "DEVELOPMENT_ONLY",
+    "families": [
+      52,
+      53,
+      54,
+      55
+    ],
+    "seed_bounds": [
+      54600,
+      54624
+    ],
+    "role_renamings": [
+      0,
+      1
+    ],
+    "pairs": 192,
+    "questions": 384,
+    "negative_questions": 192,
+    "positive": "Query ordered four roles A on path 0→1→2→3→4",
+    "negative": "Query C uses exactly same four role symbols in a different order; graph/endpoints unchanged. A second parallel 4-hop path supports different order B.",
+    "oracle_must_get_pairs": 192,
+    "bag_of_roles_negative_control_must_get_pairs": 0
+  },
+  "frozen_candidate": {
+    "frozen_22_parameter_recurrent_core": true,
+    "frozen_16_parameter_role_table": true,
+    "resident_state_bytes": 576,
+    "query_role_side_bytes": 4,
+    "no_training": true,
+    "programmed_four_steps": true,
+    "role_equality_direct_coded": false
+  },
+  "controls": [
+    "same architecture untrained role table",
+    "frozen Y-F9 role blind",
+    "fully coded exact ordered role reference",
+    "bag of roles ignoring order shortcut"
+  ],
+  "preregistered_thresholds": {
+    "min_pair_accuracy": 0.85,
+    "min_accuracy": 0.9,
+    "max_false_positives": 19,
+    "min_pair_gain_over_untrained": 0.15
+  },
+  "verdicts": {
+    "positive": "DEVELOPMENT_FROZEN_ORDERED_ROLE_TRANSFER",
+    "negative": "DEVELOPMENT_NO_FROZEN_ORDERED_ROLE_TRANSFER",
+    "invalid": "INVALID_TYPED_ORDER_REFERENCE_OR_BAG_CONTROL"
+  },
+  "scientific_boundary": {
+    "independent_source_birth": false,
+    "sealed_first_use": false,
+    "F3_unchanged": true,
+    "accepted_refs": false,
+    "FORGE": false,
+    "CKB_queue": false,
+    "production": false
+  }
+}
