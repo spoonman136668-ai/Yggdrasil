@@ -1,0 +1,59 @@
+name: Y-F2 learned bit-transition task-supervised development
+on:
+  push:
+    branches: [research/y-f2-task-learned-bit-binding-dev-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install native Torch and project test suite
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify exact source and preregistration
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor f65cb1c41a6fee7074d4ade89ecadd3b0e482da7 HEAD
+          test "$(git hash-object research/foundational/20261014-y-f1b/execute.py)" = cf0919c6325461555c55320052921570f0ec5f52
+          python3 -m py_compile research/foundational/20261014-y-f2/execute.py
+          python3 -m json.tool research/foundational/20261014-y-f2/prereg.json >/dev/null
+      - name: One new development-only native learned transition comparator
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261014-y-f2/execute.py > /tmp/y-f2-original-development.json
+          python3 -m json.tool /tmp/y-f2-original-development.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F2-original-learned-bit-binding-development
+          path: /tmp/y-f2-original-development.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independently recompute archived validation
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          r=json.load(open("/tmp/y-f2-original-development.json"))
+          assert r["stage"]=="DEVELOPMENT_ONLY" and r["train_states"]==288
+          assert r["validation_states"]==192 and r["validation_questions"]==384
+          assert r["negative_questions"]==192 and r["native_state_bytes"]==576
+          assert r["model_parameter_count"]==17 and r["model_parameter_bytes_fp32"]==68
+          assert not r["first_use_sealed"] and not r["accepted_ref_mutation"]
+          assert r["no_direct_coded_transition_equality_in_learned_comparator"]
+          assert r["public_binary_id_bits_programmed"] and r["four_hop_traversal_coded"]
+          assert collections.Counter(z["family"] for z in r["records"])=={4:48,5:48,6:48,7:48}
+          for name,s in r["candidate_scores"].items():
+            acc=sum(int(p==t) for z in r["records"] for t,p in zip(z["truth"],z["predictions"][name]))/384
+            fp=sum(int(p) for z in r["records"] for t,p in zip(z["truth"],z["predictions"][name]) if not t)/192
+            assert abs(acc-s["accuracy"])<1e-12 and abs(fp-s["false_positive_rate"])<1e-12
+          assert r["registered_verdict"] in ("DEVELOPMENT_TASK_LEARNED_BIT_COMPARATOR_OBSERVED","DEVELOPMENT_NO_NEW_BIT_COMPARATOR_GENERALIZATION")
+          print("Y_F2_VERDICT",r["registered_verdict"])
+          print("Y_F2_SCORES",r["candidate_scores"])
+          PY
+      - name: One full Yggdrasil regression
+        run: python3 -m pytest -q tests
