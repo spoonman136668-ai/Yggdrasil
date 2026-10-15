@@ -29,7 +29,7 @@ def rawrecord(e,i):
  return (u,((role,1),),v,(i,),i,float(tag))
 def inverted(record):
  u,steps,v,indices,idx,tag=record
- return (v,tuple((r,-d) for r,d in reversed(steps)),u,indices,idx,tag)
+ return (v,tuple((r,-d) for r,d in reversed(steps)),u,tuple(reversed(indices)),idx,tag)
 def expand(left,right,max_len):
  if left[2]!=right[0] or set(left[3])&set(right[3]):return None
  steps=left[1]+right[1]
