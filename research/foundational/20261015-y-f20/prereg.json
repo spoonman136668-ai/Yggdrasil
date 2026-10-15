@@ -1,0 +1,120 @@
+{
+  "schema": "yggdrasil.f20.prereg.v1",
+  "parent_F19": "8750943012d7555f34da6dfd3db4819963d1b8f0",
+  "hypothesis": "Can a train-only learned 15-parameter decoder infer semantic relationship descriptors from independently generated noisy contextual observations, then support compositional reasoning on four entirely unseen primitive roles?",
+  "model": {
+    "original_F19_metric_weights": [
+      -4.680594444274902,
+      -4.680594444274902,
+      -4.680594444274902
+    ],
+    "original_F19_metric_bias": 3.816532850265503,
+    "frozen_pretrained_core_weights": 22,
+    "old_metric_retrained": false,
+    "new_decoder_weights": 15,
+    "decoder": "three independent per-bit logistic models each observing four contextual sensors; 12 weights +3 biases",
+    "decoder_fit": "training-only 1600 observations from four even-parity role descriptions",
+    "train_primitive_descriptors": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        1
+      ],
+      [
+        1,
+        0,
+        1
+      ],
+      [
+        1,
+        1,
+        0
+      ]
+    ],
+    "new_validation_descriptors": [
+      [
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1
+      ]
+    ],
+    "train_context_seed_range": [
+      82700,
+      82900
+    ],
+    "new_validation_graph_seed_range": [
+      81600,
+      81612
+    ]
+  },
+  "source": {
+    "stage": "DEVELOPMENT_ONLY",
+    "sensors": "four independent contextual witnesses of each role attribute; two inverted channels; controlled dropout and noisy repeated measurement; semantic bits not supplied to the candidate",
+    "generator": "known 3-bit descriptor used by source generator to simulate observation data; candidate receives only resulting sensor values; source grammar and noise rules fixed",
+    "latent_bits_encoded_into_candidate": false,
+    "graph_family_ids_reused": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "graph_triples": 192,
+    "questions": 576,
+    "triplet_labels": [
+      true,
+      false,
+      false
+    ],
+    "native_state_bytes": 576,
+    "query_role_observation_distinct_from_edge_observation": true
+  },
+  "controls": [
+    "F19 oracle directly supplied descriptors, candidate never sees them",
+    "identical untrained context decoder",
+    "cheap first-context-sensor-only decoder",
+    "cheap two-sensor unweighted polarity-aware decoder",
+    "typed exact reference for source truth"
+  ],
+  "gate": {
+    "oracle_complete_triples": 192,
+    "min_accuracy": 0.9,
+    "min_complete_triples_fraction": 0.85,
+    "max_false_positive_rate": 0.1,
+    "min_complete_triples_gain_vs_untrained": 0.15,
+    "min_worst_family_complete": 0.8,
+    "record_cheap_baselines_even_if_they_win": true
+  },
+  "verdicts": [
+    "INVALID_CONTEXT_EXACT_DESCRIPTOR_UPPER",
+    "DEVELOPMENT_CONTEXT_INFERRED_UNSEEN_RELATION_TRANSFER",
+    "DEVELOPMENT_NO_CONTEXT_INFERRED_RELATION_TRANSFER"
+  ],
+  "safety": {
+    "F3_unchanged": true,
+    "no_sealed_first_use": true,
+    "no_new_controller": true,
+    "no_FORGE_cloudflare_work": true,
+    "no_KTRADE": true,
+    "no_accepted_scientific_refs": true
+  }
+}

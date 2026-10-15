@@ -1,0 +1,61 @@
+name: Y-F20 train-only contextual ontology inference on unseen primitives
+on:
+  push:
+    branches: [research/y-f20-context-inferred-primitive-descriptors-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, persist-credentials: false}
+      - name: Install scientific testing dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify frozen source and newly preregistered context experiment
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 8750943012d7555f34da6dfd3db4819963d1b8f0 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f19/execute.py)" = "$(git rev-parse 8750943012d7555f34da6dfd3db4819963d1b8f0:research/foundational/20261015-y-f19/execute.py)"
+          python3 -m py_compile research/foundational/20261015-y-f20/execute.py
+          python3 -m json.tool research/foundational/20261015-y-f20/prereg.json >/dev/null
+      - name: Run one original Y-F20 developmental context inference test
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261015-y-f20/execute.py > /tmp/y-f20-original.json
+          python3 -m json.tool /tmp/y-f20-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F20-original-context-learned-novel-relations
+          path: /tmp/y-f20-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independently audit exact raw rows and frozen models
+        run: |
+          python3 - <<'PY'
+          import collections,json
+          d=json.load(open('/tmp/y-f20-original.json'))
+          assert d["stage"]=="DEVELOPMENT_ONLY"
+          assert d["questions"]==576 and d["graphs"]==192 and d["resident_state_bytes"]==576
+          assert d["learned_context_decoder_params"]==15
+          assert not d["old_metric_retrained"] and not d["old_core_retrained"]
+          assert d["heldout_descriptors_never_supplied_to_candidate"]
+          assert d["comparators_include_cheap_context_decoders"]
+          assert not d["independent_source_birth"] and not d["sealed_first_use"] and not d["accepted_ref_mutation"]
+          assert collections.Counter(x["family"] for x in d["rows"])=={100:48,101:48,102:48,103:48}
+          assert d["scores"]["oracle"]["complete_triples"]==192
+          for mode in ("learned","untrained","sensor0","two_sensor","oracle"):
+            s=d["scores"][mode]
+            assert s["correct"]==sum(sum(a==b for a,b in zip(x["guesses"][mode],x["truth"])) for x in d["rows"])
+            assert s["complete_triples"]==sum(x["guesses"][mode]==x["truth"] for x in d["rows"])
+            assert s["false_positives"]==sum(int(x["guesses"][mode][i]) for x in d["rows"] for i in (1,2))
+          assert d["registered_verdict"] in ("INVALID_CONTEXT_EXACT_DESCRIPTOR_UPPER",
+            "DEVELOPMENT_CONTEXT_INFERRED_UNSEEN_RELATION_TRANSFER",
+            "DEVELOPMENT_NO_CONTEXT_INFERRED_RELATION_TRANSFER")
+          print("Y_F20_VERDICT",d["registered_verdict"])
+          print("Y_F20_SCORES",d["scores"])
+          PY
+      - name: One full repository pytest regression
+        run: python3 -m pytest -q tests
