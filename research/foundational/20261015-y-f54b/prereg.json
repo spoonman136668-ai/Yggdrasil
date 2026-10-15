@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.f54b.query-blind-chunk-composition.prereg.v1",
+  "stage": "SECOND_PRECODE_FROZEN_NEW_SOURCE",
+  "parent_f53_source": "74ff3fa0917e23623d479b2a3311fc4aed5401d0",
+  "parent_f53_run": 38816998979,
+  "reason": "F53 path-cohesion 8/64 failed equal-memory public component 10/64; test explicit chain composition instead of edge scoring",
+  "hypothesis": "A FIT-trained query-blind public adjacency/role-priority selector can compose 2-link records under a hard 12-record cap and recover hidden future 4-link answers better than equal-memory raw edges and deterministic two-link chunk rules on fresh graph structures.",
+  "fit_seeds": [
+    621000,
+    621008
+  ],
+  "fit_families": [
+    1240,
+    1241,
+    1242,
+    1243
+  ],
+  "diagnostic_seeds": [
+    621100,
+    621116
+  ],
+  "diagnostic_families": [
+    1244,
+    1245,
+    1246,
+    1247
+  ],
+  "proposed_originals_NOT_RESERVED": [
+    622000,
+    622016
+  ],
+  "cases": 64,
+  "events_per_stream": 64,
+  "hard_record_capacity": 12,
+  "encoded_roles_and_directions_per_record_max": 3,
+  "question_hidden_during_ingestion": true,
+  "controls": [
+    "fit_public_two_link_composition",
+    "fixed_public_two_link_composition",
+    "fixed_public_three_link_composition",
+    "public_connected_component_raw",
+    "public_degree_raw",
+    "FIFO_raw",
+    "public_hash_raw",
+    "private_future_question_oracle_UNFAIR"
+  ],
+  "fair_controls": [
+    "fixed_public_two_link_composition",
+    "fixed_public_three_link_composition",
+    "public_connected_component_raw",
+    "public_degree_raw",
+    "FIFO_raw",
+    "public_hash_raw"
+  ],
+  "threshold_gain_pp": 5,
+  "no_family_regression": true,
+  "source_implementation_present": false,
+  "primary_original_executed": false,
+  "F3_accepted": false,
+  "accepted_refs_mutated": false,
+  "paid_API_calls": 0,
+  "candidate_max_chain_length": 2,
+  "fixed_three_control_max_chain_length": 3,
+  "serialized_payload_bytes_per_record": 12,
+  "serialized_payload_budget_bytes": 144,
+  "caveat": "12-byte payload models two 32-bit endpoints plus at most 3 packed 3-bit roles, 3 directions, length and reserved bits; excludes Python runtime/metadata, never represents native <=576B memory qualification",
+  "original_f54_run_failed": 38819249753,
+  "observed_other_same_branch_failure": 38819267489,
+  "source_parent": "b6e3fd8b6c93cb45e45010138d87985351e02b0a",
+  "reason_for_new_source": "Original F54 trained diagnostic executed then independent decoder witness ordering audit failed. A second workflow also failed on the shared branch. Do not replay either. New branch and disjoint FIT/DIAG required.",
+  "retained_record_witness_index_order_always_tracks_inversion": true,
+  "preflight_must_verify_fit_only_receipts_before_DIAG": true
+}
