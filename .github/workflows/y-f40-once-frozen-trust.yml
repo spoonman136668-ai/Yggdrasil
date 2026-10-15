@@ -1,0 +1,100 @@
+name: Y-F40 frozen once-only decision-conditional credibility (NO primary original)
+on:
+  push:
+    branches:
+      - science/y-f40-frozen-conditional-trust-trainonly-20261015-r1
+permissions:
+  contents: read
+jobs:
+  prospect:
+    if: "${{ github.event.head_commit.message == 'science(y-f40): one frozen contextual-trust TRAIN-only cohort' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify exact previously qualified source and preregistration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7333533cbfe79070b7e00516dc44fa0cc949707e HEAD
+          git merge-base --is-ancestor 0b8d176fd41f866aed22f6c123bc51776a3e205c HEAD
+          test "$(git hash-object research/foundational/20261015-y-f40/train_only.py)" = 0be9ef7e422b56525035a73a00d7cd6ece149fe3
+          test "$(git hash-object research/foundational/20261015-y-f40/prereg-frozen.json)" = "$(git rev-parse 0b8d176fd41f866aed22f6c123bc51776a3e205c:research/foundational/20261015-y-f40/prereg-frozen.json)"
+          python3 -m unittest discover -s research/foundational/20261015-y-f40 -p test_preflight.py -v
+      - name: Exactly one new TRAIN-only variance-matched trust cohort
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f40/train_only.py > /tmp/y-f40-train-only.json
+          python3 -m json.tool /tmp/y-f40-train-only.json >/dev/null
+          sha256sum /tmp/y-f40-train-only.json > /tmp/y-f40-train-only.sha256
+          git rev-parse HEAD > /tmp/y-f40-source-identity.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F40-frozen-once-learned-TRAIN-only
+          path: |
+            /tmp/y-f40-train-only.json
+            /tmp/y-f40-train-only.sha256
+            /tmp/y-f40-source-identity.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Independent per-row task and two-sensor audit
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,math
+          d=json.load(open('/tmp/y-f40-train-only.json'))
+          p=json.load(open('research/foundational/20261015-y-f40/prereg-frozen.json'))
+          assert d['schema']=='yggdrasil.f40.decision-conditioned-trust.trainonly.v1'
+          assert d['phase']=='FRESH_TRAIN_ONLY_EVALUATION_NOT_PRIMARY_ORIGINAL'
+          assert d['train_seeds']==p['train']['seeds'] and d['train_families']==p['train']['families']
+          assert d['eval_seeds']==p['heldout']['seeds'] and d['eval_families']==p['heldout']['families']
+          assert d['reserved_original_seeds']==p['reserved_primary']['seeds']
+          assert d['reserved_original_families']==p['reserved_primary']['families']
+          assert d['questions']==p['heldout']['expected_queries']==256
+          assert d['learned_weights_bytes']==64 and len(d['learned_weights'])==8
+          assert d['physical_reads_per_role']==2 and d['public_calibration_bytes_per_case']==960
+          assert d['original_not_executed'] and not d['source_independent_F3']
+          assert d['hidden_source_condition_or_mode_not_given_to_policy'] and not d['accepted_ref_mutation']
+          assert len(d['rows'])==256
+          assert len({(r['seed'],r['family'],r['mechanism'],r['condition']) for r in d['rows']})==256
+          assert all(302800<=r['seed']<302816 and r['family'] in (334,335,336,337)
+               and r['public_anchors']==24 and 0<=r['reference_first_variance']<=.25 for r in d['rows'])
+          for row in d['rows']:
+            for arm,receipt in row['receipts'].items():
+              assert len(receipt)==3
+              assert all(len(pair)==2 and pair[0]==0 and pair[1] in (1,2,3) for pair in receipt)
+          for arm,s in d['scores'].items():
+            good=sum(r['answers'][arm]==r['truth'] for r in d['rows'])
+            fp=sum(bool(r['answers'][arm]) and not r['truth'] for r in d['rows'])
+            fn=sum(not bool(r['answers'][arm]) and r['truth'] for r in d['rows'])
+            assert (s['correct'],s['fp'],s['fn'],s['total'])==(good,fp,fn,256)
+            assert math.isclose(s['accuracy'],good/256,abs_tol=1e-12)
+          assert d['scores']['privileged_oracle_unfair']['correct']==256
+          for mech,arms in d['by_mechanism'].items():
+            group=[r for r in d['rows'] if r['mechanism']==mech]
+            assert len(group)==128
+            for arm,v in arms.items():
+              assert v['correct']==sum(r['answers'][arm]==r['truth'] for r in group)
+          for cond,arms in d['by_condition'].items():
+            group=[r for r in d['rows'] if r['condition']==cond]
+            assert len(group)==128
+            for arm,v in arms.items():
+              assert v['correct']==sum(r['answers'][arm]==r['truth'] for r in group)
+          fair=('conditional_empirical_Brier','fitted_Gaussian_Bayesian','fixed_public_crosscovariance','fixed_variance','static','first_masked')
+          gain=d['scores']['learned_contextual_credibility']['accuracy']-max(d['scores'][a]['accuracy'] for a in fair)
+          robust=all(arms['learned_contextual_credibility']['accuracy']>=max(arms[a]['accuracy'] for a in fair) for arms in d['by_mechanism'].values())
+          qualify=gain>=.02 and robust and d['first_read_action_switch_rate']>0 and d['scores']['learned_contextual_credibility']['correct']>d['scores']['first_masked']['correct']
+          expected='TRAIN_ONLY_DECISION_TRUST_GAIN' if qualify else 'TRAIN_ONLY_DECISION_TRUST_NO_QUALIFIED_GAIN'
+          assert d['verdict']==expected
+          print('Y_F40_RESULT',expected,{a:v['correct'] for a,v in d['scores'].items()},
+                'training_preference_examples',d['training_preference_examples'],
+                'first_read_switch',d['first_read_action_switch_rate'])
+          PY
+      - name: Explicit scientific authority limit
+        run: |
+          echo "Fresh TRAIN-only development result; no independent F3 scientific original or accepted ref"
