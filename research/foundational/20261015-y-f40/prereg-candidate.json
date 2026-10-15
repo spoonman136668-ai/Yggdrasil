@@ -1,0 +1,92 @@
+{
+  "schema": "yggdrasil.f40.preregistered-train-only-decision-trust.v1",
+  "parent_negative_run": 38772186479,
+  "design_issue": "https://github.com/spoonman136668-ai/Yggdrasil/issues/229",
+  "phase": "FRESH_TRAIN_ONLY_ENGINEERING_NO_PRIMARY_ORIGINAL",
+  "hypothesis": "A learned public calibration-and-first-value credibility policy will transfer across newly shifted instrument families whose first-sensor variance is matched, outperforming equal-calibration Bayesian and conditional Brier policies on final typed task accuracy.",
+  "meta_train": {
+    "seeds": [
+      301800,
+      301824
+    ],
+    "families": [
+      330,
+      331,
+      332
+    ],
+    "mechanisms": [
+      0,
+      1
+    ],
+    "conditions": [
+      "mode_coupled",
+      "mode_decoupled"
+    ],
+    "anchors": 24
+  },
+  "heldout_train_only": {
+    "seeds": [
+      302800,
+      302816
+    ],
+    "families": [
+      334,
+      335,
+      336,
+      337
+    ],
+    "mechanisms": [
+      0,
+      1
+    ],
+    "conditions": [
+      "mode_coupled",
+      "mode_decoupled"
+    ],
+    "expected_questions": 256
+  },
+  "reserved_primary_original": {
+    "seeds": [
+      303800,
+      303816
+    ],
+    "families": [
+      340,
+      341,
+      342,
+      343
+    ]
+  },
+  "mechanism": "Fixed marginal public first-read variance across regimes, varying conditional usefulness. Learn eight-weight downstream-action trust via labeled train-only counterfactual bit losses; no source condition, latent mode, private truth or unpurchased observation in live policy input.",
+  "matched_controls": [
+    "learned_contextual_credibility",
+    "conditional_empirical_Brier",
+    "equal_training_fitted_Gaussian_Bayesian",
+    "fixed_public_crosscovariance",
+    "fixed_variance",
+    "static",
+    "first_masked",
+    "privileged_oracle_unfair"
+  ],
+  "acceptance": {
+    "min_gain_vs_strongest_fair_absolute": 0.02,
+    "per_mechanism_nondegrading": true,
+    "positive_first_read_use_and_ablation": true,
+    "all_two_read_receipts": true,
+    "no_hidden_source_condition_at_inference": true
+  },
+  "resources": {
+    "max_native_core_bytes": 576,
+    "model_weights_bytes": 64,
+    "external_calibration_history_bytes_metered": true,
+    "physical_Python_heap_not_native_qualified": true
+  },
+  "authority": {
+    "new_science_original": false,
+    "independent_F3_custody": false,
+    "no_promotion": true,
+    "no_accepted_ref_mutations": true,
+    "no_paid_API_or_codex": true,
+    "no_FORGE_CKB_KTRADE_Cloudflare_changes": true
+  }
+}
