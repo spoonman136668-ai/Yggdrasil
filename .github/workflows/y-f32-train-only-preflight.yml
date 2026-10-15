@@ -1,0 +1,47 @@
+name: Y-F32 new TRAIN-only observable-polarity feasibility
+on:
+  push:
+    branches:
+      - research/y-f32-observable-polarity-headroom-20261015-r1
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, persist-credentials: false}
+      - name: Install tests
+        run: python3 -m pip install -e '.[test]'
+      - name: Immutable Y-F31 negative and disjoint new prereg
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7426dc977c49ea33deff809e43fef3310ff6f0fc HEAD
+          git merge-base --is-ancestor e2a107ac60a11e70f990fae29972f6d4e143424f HEAD
+          python3 -m json.tool research/foundational/20261015-y-f32/prereg-candidate.json > /dev/null
+          python3 -m py_compile research/foundational/20261015-y-f32/pilot.py
+      - name: Focused observation and first-read custody tests
+        run: python3 -m unittest discover -s research/foundational/20261015-y-f32 -p test_preflight.py -v
+      - name: TRAIN-only feasibility diagnostic (NO reserved original)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f32/pilot.py > /tmp/y-f32-train-only.json
+          python3 - <<'PY'
+          import json,collections
+          d=json.load(open('/tmp/y-f32-train-only.json'))
+          assert d['stage']=='TRAIN_SOURCE_ONLY_NO_RESERVED_ORIGINAL'
+          assert d['questions']==1152 and d['reserved_primary_not_executed']
+          assert d['target_reads_per_role']==2 and d['native_core_max_bytes']==576
+          assert len(d['rows'])==1152 and all(183100<=r['seed']<183124 for r in d['rows'])
+          for arm,v in d['scores'].items():
+            assert v['correct']==sum(r['answers'][arm]==r['truth'] for r in d['rows'])
+          assert d['verdict'] in ('TRAIN_HEADROOM_ELIGIBLE_TO_PREPARE_NEW_ORIGINAL','TRAIN_HEADROOM_NOT_QUALIFIED_NO_ORIGINAL')
+          print('Y_F32_TRAIN_ONLY',d['verdict'],d['pooled_mode_marker_mi_bits'],d['conditional_mode_marker_mi_bits'],d['scores'])
+          PY
+      - name: One complete repository regression
+        run: python3 -m pytest -q tests
+      - name: Preserve first use
+        run: echo "Y-F32 train-only pilot; reserved original untouched"
