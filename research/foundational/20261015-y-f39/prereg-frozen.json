@@ -1,0 +1,86 @@
+{
+  "schema": "yggdrasil.f39.frozen-observation-trust-trainonly.v1",
+  "stage": "ONE_PROSPECTIVE_LEARNED_TRUST_TRAIN_ONLY_NOT_PRIMARY_ORIGINAL",
+  "design_issue": "https://github.com/spoonman136668-ai/Yggdrasil/issues/227",
+  "engineering_pr": "https://github.com/spoonman136668-ai/Yggdrasil/pull/228",
+  "precode_prereg_commit": "670504313b2a257b0236c4cf09a531b3ee62b659",
+  "qualified_source_commit": "5a67e4d4ff18c80d5fb55a94aa9dca9aa65b83ea",
+  "qualified_tree_sha": "6e186993b7cd39c4a4ee225f64e07959bed17fce",
+  "frozen_source_blob": "1dc010663823af5c39604e5246da275dcc0e2c90",
+  "engineering_run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38771337551",
+  "train": {
+    "seeds": [
+      291800,
+      291816
+    ],
+    "families": [
+      280,
+      281,
+      282
+    ],
+    "expected_training_examples": 576
+  },
+  "train_only": {
+    "seeds": [
+      291816,
+      291832
+    ],
+    "families": [
+      284,
+      285,
+      286,
+      287
+    ],
+    "conditions": [
+      "informative",
+      "noninformative"
+    ],
+    "mechanisms": [
+      "conditional_source",
+      "anticorrelated_source"
+    ],
+    "expected_cases": 256
+  },
+  "reserved_primary_original": {
+    "seeds": [
+      292800,
+      292816
+    ],
+    "families": [
+      288,
+      289,
+      290,
+      291
+    ],
+    "must_not_be_generated": true
+  },
+  "arms": [
+    "learned_trust_gate",
+    "conditional_empirical_Brier",
+    "public_polarity",
+    "variance_threshold_gate",
+    "static_reference",
+    "first_masked_ablation",
+    "privileged_truth_oracle"
+  ],
+  "registered_threshold": {
+    "accuracy_gain_over_best_fair": 0.02,
+    "nondegrading_each_condition": true,
+    "first_read_action_switch_positive": true,
+    "masked_first_accuracy_worse": true,
+    "oracle_correct_all": 256
+  },
+  "limits": {
+    "six_float_coefficients_bytes": 48,
+    "native_core_576_byte_real_heap_not_measured": true,
+    "external_calibration_bytes_per_case": 960,
+    "paid_target_reads_per_role": 2,
+    "source_condition_and_mode_never_in_inference_features": true,
+    "same_repo_synthetic_source_not_independent_F3": true,
+    "no_primary_original": true,
+    "no_scientific_promotion": true,
+    "no_accepted_refs": true,
+    "no_paid_API": true,
+    "no_controller_FORGE_Cloudflare_KTRADE_changes": true
+  }
+}
