@@ -1,0 +1,70 @@
+{
+  "schema": "yggdrasil.f31.train-only-headroom.v1",
+  "status": "PRE_ORIGINAL_HEADROOM_GATE",
+  "experiment_id": "Y-F31",
+  "parent_head": "2c238adb25af3f80743d6e73de66f8b549645f70",
+  "parent_original": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38724304931",
+  "hypothesis": "Unknown sensor regimes with low-coverage reference calibration leave measurable future-task information gain not captured by a strong conditional empirical adaptive control.",
+  "pilot": {
+    "seeds_begin": 181000,
+    "seeds_end_exclusive": 181032,
+    "regimes": [
+      "new-noisy-marker",
+      "new-inverted-marker"
+    ],
+    "family_ids": [
+      150,
+      151,
+      152,
+      153
+    ],
+    "role_bits_per_query": 3,
+    "conditions": [
+      "missingness",
+      "correlated-anchors",
+      "low-coverage",
+      "noninformative-first"
+    ],
+    "calibration_anchor_budget": 8,
+    "physical_target_reads_per_role": 2
+  },
+  "reserved_future_test": {
+    "seeds_begin": 182000,
+    "seeds_end_exclusive": 182012,
+    "family_ids": [
+      154,
+      155,
+      156,
+      157
+    ],
+    "no_generation_during_pilot": true
+  },
+  "comparators": [
+    "empirical conditional Brier risk from same eight anchors",
+    "strong conditional Bayesian adaptive",
+    "static two-read",
+    "privileged source reference ONLY as headroom diagnostic"
+  ],
+  "preoriginal_advance": {
+    "minimum_measured_headroom_vs_strongest_fair": 0.04,
+    "minimum_first_read_mutual_information_bits": 0.015,
+    "min_conditional_action_switch_rate": 0.05,
+    "max_fair_control_accuracy": 0.94,
+    "require_disjoint_train_only_pilot": true
+  },
+  "failure_rule": "If pilot does not demonstrate headroom, archive negative feasibility finding, DO NOT run Y-F31 original or alter gate thresholds to force admission.",
+  "resources": {
+    "native_state_limit_bytes": 576,
+    "external_calibration_memory_reported": true,
+    "physical_reads_exactly_2": true
+  },
+  "source": {
+    "same_repo_generated_development_only": true,
+    "independent_F3_custody_unqualified": true
+  },
+  "isolation": {
+    "no_FORGE_CKB_controller_cloudflare_KTRADE_changes": true,
+    "no_accepted_ref_mutation": true,
+    "no_paid_api": true
+  }
+}

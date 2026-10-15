@@ -1,0 +1,32 @@
+name: Y-F31 train-only source and headroom preflight
+on:
+  push:
+    branches:
+      - research/y-f31-conditional-headroom-20261015-r1
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install scientific dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Validate parent and immutable prereg before feasibility study
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 2c238adb25af3f80743d6e73de66f8b549645f70 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f31/prereg-candidate.json)" = "$(git rev-parse 1a996161bc37a2f5231a667edea02f0d84b11748:research/foundational/20261015-y-f31/prereg-candidate.json)"
+          python3 -m json.tool research/foundational/20261015-y-f31/prereg-candidate.json > /dev/null
+          python3 -m py_compile research/foundational/20261015-y-f31/pilot.py
+      - name: Focused train-only source and physical-read tests
+        run: python3 -m unittest discover -s research/foundational/20261015-y-f31 -p test_preflight.py -v
+      - name: One full pytest regression
+        run: python3 -m pytest -q tests
+      - name: Original not dispatched
+        run: echo "Y-F31 source preflight only. Train-only headroom pilot and reserved test are not run."
