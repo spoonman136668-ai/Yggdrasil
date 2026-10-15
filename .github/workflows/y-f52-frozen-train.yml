@@ -2,12 +2,12 @@ name: Yggdrasil F52 once-only mechanistic synthetic TRAIN qualification
 on:
   push:
     branches:
-      - research/y-f52-learned-relational-chunking-20261015-r1
+      - fix/y-f52-unambiguous-core-role-train-20261015-r1
 permissions:
   contents: read
 jobs:
   one-frozen-source:
-    if: "${{ github.event.head_commit.message == 'science(y-f52): execute once new relation-chunking TRAIN-only cohort' && github.run_attempt == 1 }}"
+    if: "${{ github.event.head_commit.message == 'science(y-f52): one corrected unambiguous TRAIN-only source' && github.run_attempt == 1 }}"
     runs-on: ubuntu-latest
     timeout-minutes: 110
     steps:
@@ -22,9 +22,9 @@ jobs:
           git merge-base --is-ancestor 353d5ed842ce550197ab750c92e5bbc0b9430522 HEAD
           git merge-base --is-ancestor ea02b330497e86be6fa14ce3dda9d95211f03563 HEAD
           test "$(git hash-object research/foundational/20261015-y-f52/prereg-candidate.json)" = cf47531bb8ec1ccf8c2af00f35ca12b38a6b71c1
-          test "$(git hash-object research/foundational/20261015-y-f52/source_pilot.py)" = 51b3dea3c054e2cd1789a453a973aa3cd32ff1a4
+          test "$(git hash-object research/foundational/20261015-y-f52/source_pilot.py)" = ef06d80c127ca6dab1e496fb855eb36f0dce6d17
           test "$(git hash-object research/foundational/20261015-y-f52/audit_result.py)" = 40f16294b8d1e960f91f6578ed657a83063f4f6a
-          test "$(git hash-object research/foundational/20261015-y-f52/test_preflight.py)" = feaf6c49198b2ffa97e02fe069ffdb84aa8924a4
+          test "$(git hash-object research/foundational/20261015-y-f52/test_preflight.py)" = 31b0d23a42595cbfc8d4f166d8deb8db704623ea
           python3 -m json.tool research/foundational/20261015-y-f52/prereg-candidate.json >/dev/null
           python3 -B -m unittest discover -s research/foundational/20261015-y-f52 -p test_preflight.py -v
       - name: Exactly one complete existing repository regression
