@@ -1,0 +1,32 @@
+name: Y-F35 learned posterior engineering (NO original)
+on:
+  push:
+    branches:
+      - research/y-f35-learned-source-posterior-preflight-20261015-r1
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install existing test environment
+        run: python3 -m pip install -e '.[test]'
+      - name: Check ancestors and precode preregistration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor d62dd0714e79da2d6c642e2585407d041b25dc5d HEAD
+          git merge-base --is-ancestor 4a838cc4ed7761fbd7fa5155ba5df9ed4fdae470 HEAD
+          python3 -m json.tool research/foundational/20261015-y-f35/prereg-candidate.json > /dev/null
+          python3 -m py_compile research/foundational/20261015-y-f35/train_only.py
+      - name: Focused no-test-consumption source checks
+        run: python3 -m unittest discover -s research/foundational/20261015-y-f35 -p test_preflight.py -v
+      - name: One full pytest regression
+        run: python3 -m pytest -q tests
+      - name: Engineering-only
+        run: echo "Y-F35 learned policy engineering; NO cohort executed and NO original/F3 claims"
