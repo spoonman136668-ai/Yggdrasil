@@ -1,0 +1,60 @@
+name: Yggdrasil F55 FIT-only public-feasibility and full-regression gate
+on:
+  push:
+    branches:
+      - research/y-f55-public-feasible-online-memory-20261015-r1
+permissions:
+  contents: read
+jobs:
+  fit-only-evidence:
+    if: "${{ github.event.head_commit.message == 'science(y-f55): one frozen FIT-only public memory feasibility gate' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 115
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Source and prereg hash exact-head identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 9fb99e9c23d5eddad411e31078c8ea40d3c873af HEAD
+          git merge-base --is-ancestor 062c0bc39af49e77747f76d081e87f51e64b7846 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f55/prereg-candidate.json)" = eb815347e331ec34dc8247ff28d99bbcd13e621a
+          test "$(git hash-object research/foundational/20261015-y-f55/source_feasibility.py)" = 9b1ec7a6088e49d7310c9a8f856a1508f9586d0a
+          test "$(git hash-object research/foundational/20261015-y-f55/test_fit_preflight.py)" = a02d3dbbf0d8cbff0e84615eaa65e0d7e8398781
+          python3 -B -m py_compile research/foundational/20261015-y-f55/source_feasibility.py
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f55 -p test_fit_preflight.py -v
+      - name: One full existing repository regression and build
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+      - name: Exactly one FIT-only source feasibility witness, with no diagnostic use
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f55"
+          python3 -B research/foundational/20261015-y-f55/source_feasibility.py --fit-only > "$RUNNER_TEMP/y-f55/fit-only-result.json"
+          python3 -B - "$RUNNER_TEMP/y-f55/fit-only-result.json" <<'PY'
+          import json,sys
+          doc=json.load(open(sys.argv[1]))
+          assert doc['public_reference_accuracy'] >= 0.25
+          assert doc['fit_streams']==64
+          assert doc['disjoint_DIAG_unused'] is True
+          assert doc['originals_unused'] is True
+          print('F55_FIT_ONLY_SOURCE_FEASIBILITY=PASS',doc['public_reference_accuracy'])
+          PY
+          git rev-parse HEAD > "$RUNNER_TEMP/y-f55/SOURCE_SHA"
+          (cd "$RUNNER_TEMP/y-f55" && sha256sum fit-only-result.json > manifest.sha256)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Yggdrasil-F55-FIT-only-public-source-feasibility
+          path: ${{ runner.temp }}/y-f55/
+          retention-days: 90
+          if-no-files-found: error
+      - name: Scientific original and diagnostic exclusion
+        run: echo "FIT_ONLY=TRUE DIAGNOSTIC=UNCONSUMED PROTECTED_ORIGINAL=UNTOUCHED F3=UNQUALIFIED"
