@@ -1,0 +1,35 @@
+name: Y-F54 repair proof of oriented public event witnesses FIT only
+on:
+  push:
+    branches: [repair/y-f54-oriented-witness-fitonly-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  no-diagnostic-witness-repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 85
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify exact repair plus frozen original first-use source ancestry
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor b6e3fd8b6c93cb45e45010138d87985351e02b0a HEAD
+          test "$(git hash-object research/foundational/20261015-y-f54/prereg.json)" = 82bfa15c74973aa55e81acbf78ef07880e0d261c
+          test "$(git hash-object research/foundational/20261015-y-f54/source_pilot.py)" = f2243a376d5b9436010d989829e09504c19494cb
+          python3 -B -m py_compile research/foundational/20261015-y-f54/source_pilot.py
+          python3 -B -m py_compile research/foundational/20261015-y-f54/audit_result.py
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f54 -p test_witness_repair.py -v
+          echo 'F54_ORIENTED_WITNESS_FIT_ONLY=PASS'
+      - name: Full existing Yggdrasil pytest regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+      - name: Explicit no replay or acceptance
+        run: echo 'F54_ORIGINAL_DIAGNOSTICS_CONSUMED_AND_FAILED=TRUE; NEW_FIT_ONLY_SOURCE_REPAIR=TRUE; NO_DIAG_OR_ORIGINAL_REEXECUTION=TRUE'
