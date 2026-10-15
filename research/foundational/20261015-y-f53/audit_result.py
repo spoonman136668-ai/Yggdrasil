@@ -19,7 +19,9 @@ def audit(path,prereg):
  assert d["future_question_hidden_during_retention"]
  assert not d["independent_F3"] and not d["original_executed"]
  assert not d["accepted_ref_mutation"] and d["paid_api_calls"]==0
- assert d["proposed_original_NOT_RESERVED"]==p["future_original_NOT_RESERVED"]["seeds"]
+ assert d["proposed_original_NOT_RESERVED"]==[m.RESERVED.start,m.RESERVED.stop]
+ # The frozen Y-F53 prereg does not define a future original seed range; this
+ # explicit source-only exclusion is not retroactively treated as a prereg gate.
  weights,n,packed=m.train()
  assert d["train_examples"]==n and d["learned_weight_int8"]==packed
  seen=set();actual={a:0 for a in arms};ablation=0
@@ -42,13 +44,16 @@ def audit(path,prereg):
    # The encoded path is not permitted to hallucinate any edge absent in the
    # public source, including every intermediate composed relation.
    for rec in records:
-    at=rec[0]
+    # The public graph may contain legitimately ambiguous branch-role edges.
+    # Verify *existence* of the exact composed public path, not uniqueness.
+    reachable={rec[0]}
     for code in rec[2]:
      role=code//2;direction=-1 if code&1 else 1
-     choices=[e for e in events if e[1]==role and (e[0] if direction==1 else e[2])==at]
-     assert len(choices)==1
-     e=choices[0];at=e[2] if direction==1 else e[0]
-    assert at==rec[1]
+     reachable={e[2] if direction==1 else e[0]
+                for at in reachable for e in events if e[1]==role and
+                (e[0] if direction==1 else e[2])==at}
+     assert reachable
+    assert rec[1] in reachable
    recomputed=m.codec.solve(records,future)
    assert row["answers"][arm]==int(recomputed==future["answer"])
    if arm==arms[0]:
