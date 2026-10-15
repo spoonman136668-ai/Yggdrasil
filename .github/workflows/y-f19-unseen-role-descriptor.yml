@@ -1,0 +1,57 @@
+name: Y-F19 unseen primitive role descriptor research
+on:
+  push:
+    branches: [research/y-f19-unseen-primitive-role-descriptors-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, persist-credentials: false}
+      - name: Install scientific deps
+        run: python3 -m pip install -e '.[test]'
+      - name: Freeze previous original and current prereg
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 8d6ada97f227785599f4d338ec9c00c85414cf72 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f18/execute.py)" = "$(git rev-parse 8d6ada97f227785599f4d338ec9c00c85414cf72:research/foundational/20261015-y-f18/execute.py)"
+          python3 -m py_compile research/foundational/20261015-y-f19/execute.py
+          python3 -m json.tool research/foundational/20261015-y-f19/prereg.json >/dev/null
+      - name: Execute one new Y-F19 development original
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261015-y-f19/execute.py > /tmp/y-f19-original.json
+          python3 -m json.tool /tmp/y-f19-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F19-original-unseen-primitive-attributes
+          path: /tmp/y-f19-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independent raw row audit
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          d=json.load(open('/tmp/y-f19-original.json'))
+          assert d["stage"]=="DEVELOPMENT_ONLY" and d["questions"]==576
+          assert d["graph_triples"]==192 and d["native_state_bytes"]==576
+          assert d["metric_parameter_count"]==4 and d["core_frozen_params"]==22
+          assert d["no_fitting_on_unseen_roles"] and d["attributes_given_not_discovered"]
+          assert not d["independent_source_birth"] and not d["sealed_first_use"]
+          assert not d["accepted_ref_mutation"]
+          assert collections.Counter(r["family"] for r in d["rows"])=={100:48,101:48,102:48,103:48}
+          assert d["scores"]["exact_oracle"]["complete_triples"]==192
+          assert d["scores"]["role_bag_shortcut"]["complete_triples"]==0
+          for name in ("learned","untrained"):
+            score=d["scores"][name]
+            assert score["correct"]==sum(sum(x==y for x,y in zip(r[name],r["truth"])) for r in d["rows"])
+            assert score["complete_triples"]==sum(r[name]==r["truth"] for r in d["rows"])
+          assert d["registered_verdict"] in ("DEVELOPMENT_UNSEEN_ROLE_DESCRIPTOR_BINDING_TRANSFER","DEVELOPMENT_NO_UNSEEN_ROLE_DESCRIPTOR_BINDING_TRANSFER")
+          print("Y_F19_VERDICT",d["registered_verdict"],d["scores"])
+          PY
+      - name: Full repository regression
+        run: python3 -m pytest -q tests
