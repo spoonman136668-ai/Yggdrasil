@@ -19,6 +19,7 @@ def gate(p):
             assert not set(a["families"])&set(b["families"])
             assert a["seed_range"][1]<=b["seed_range"][0]
     assert len(p["controls"])==len(set(p["controls"]))
+    assert p["controls"]==["learned_incremental_component_state","frozen_F56_constructive_online","fixed_public_component_aggregation","fixed_public_pair_compression","fixed_public_triple_compression","raw_degree_FIFO","public_hash","full_public_offline_extra_work_noncompetitive","private_future_question_oracle_unfair"]
     assert p["FIT_gate_before_diagnostic"]["public_exact_accuracy_min"]==.75 if False else True
     assert p["FIT_gate_before_diagnostic"]["full_public_offline_accuracy_min"]==.85 if True else True
     for name in ("diagnostic_unconsumed","originals_unconsumed") if True else ("diagnostic_unconsumed","first_use_original_unconsumed"):
