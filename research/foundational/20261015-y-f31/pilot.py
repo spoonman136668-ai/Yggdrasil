@@ -5,8 +5,13 @@ ranges. Strong empirical-Brier and Bayesian proxy arms share identical
 calibration, physical two-read budget and no evaluation labels at selection.
 """
 from __future__ import annotations
-import json,math,random
+import json,math,random,importlib.util,sys
 from collections import Counter
+from pathlib import Path
+SPEC=importlib.util.spec_from_file_location('y_f31_custody',Path(__file__).resolve().parent.parent/'20261015-y-f28'/'sensor_custody.py')
+custody=importlib.util.module_from_spec(SPEC)
+sys.modules[SPEC.name]=custody
+SPEC.loader.exec_module(custody)
 
 PILOT_SEEDS=range(181000,181032)
 PILOT_FAMILIES=(150,151,152,153)
@@ -115,13 +120,20 @@ def run():
                     answers={"privileged_oracle":truth};receipt={}
                     for arm in ARMS[:-1]:
                         outputs=[];trace=[]
+                        public=custody.PublicSensorInfo(
+                            tuple(sum((2*v[j]-1)*(2*label-1) for label,_,v in calibrators)/ANCHORS for j in range(4)),
+                            tuple(sum(v[j]==.5 for _,_,v in calibrators)/ANCHORS for j in range(4)))
                         for o in observations:
-                            j=decision(o[0],calibrators,arm)
-                            # The only target-channel observations passed to decoder
-                            # are first and purchased second; never other two readings.
-                            p=decode(o[0],o[j],j,calibrators)
+                            acquired=custody.evaluate_policy(
+                                o,public,lambda _:0,
+                                lambda _pub,first,m=arm:decision(first.value,calibrators,m),
+                                576,ANCHORS*5*8)
+                            assert acquired.physical_reads==2
+                            first,second=acquired.trace
+                            assert first.sensor==0 and second.sensor in (1,2,3)
+                            p=decode(first.value,second.value,second.sensor,calibrators)
                             outputs.append(p>=.5)
-                            trace.append((0,j))
+                            trace.append((first.sensor,second.sensor))
                         answers[arm]=compose(outputs,family)
                         receipt[arm]=trace
                     rows.append(dict(seed=seed,family=family,regime=regime,
