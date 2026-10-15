@@ -1,0 +1,31 @@
+name: Y-F29 unknown shifts engineering preflight
+on:
+  push:
+    branches:
+      - research/y-f29-unknown-sensor-shift-20261015-r1
+permissions:
+  contents: read
+jobs:
+  qualification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install scientific test dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify immutable parent and syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 2d1a339782d56b403c3afb1cc1a11035f9d5c57b HEAD
+          python3 -m json.tool research/foundational/20261015-y-f29/prereg-candidate.json > /dev/null
+          python3 -m py_compile research/foundational/20261015-y-f29/execute.py
+      - name: Train-only source interface checks
+        run: python3 -m unittest discover -s research/foundational/20261015-y-f29 -p test_preflight.py -v
+      - name: One full repository pytest regression
+        run: python3 -m pytest -q tests
+      - name: Engineering-only attestation
+        run: echo "Y-F29 pre-original engineering checks only; no test cohort or original executed"
