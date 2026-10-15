@@ -1,0 +1,32 @@
+name: Y-F34 distinct sensor source engineering only
+on:
+  push:
+    branches:
+      - research/y-f34-conditional-calibration-source-20261015-r1
+permissions:
+  contents: read
+jobs:
+  qualification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install science tests
+        run: python3 -m pip install -e '.[test]'
+      - name: Frozen Y-F33 predecessor and preregistered source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor f80af6ae79576d5e14a2a5bbd0c735e17d79cb7d HEAD
+          git merge-base --is-ancestor 8b0ccbf79fab8267723985b88466c9556a0c1258 HEAD
+          python3 -m json.tool research/foundational/20261015-y-f34/source-prereg-candidate.json > /dev/null
+          python3 -m py_compile research/foundational/20261015-y-f34/source_pilot.py
+      - name: Source-only custody and independent evaluator tests
+        run: python3 -m unittest discover -s research/foundational/20261015-y-f34 -p test_preflight.py -v
+      - name: One complete pytest regression
+        run: python3 -m pytest -q tests
+      - name: Authority
+        run: echo "Train-only source engineering. No Y-F34 original dispatched, no F3 claim."
