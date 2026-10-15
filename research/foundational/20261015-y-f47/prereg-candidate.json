@@ -1,0 +1,84 @@
+{
+  "schema": "yggdrasil.f47.group-robust-task-calibration-prereg.v1",
+  "stage": "PRECODE_FROZEN",
+  "parent_f46_head": "88963d04511a49e935c0873bf14af15f771274d0",
+  "f46_scientific_audit_run": 38804569526,
+  "design_issue": 244,
+  "hypothesis": "A genuinely trained group-distributionally robust terminal-task-risk selector under disjoint source identities and unseen mechanism topologies improves task accuracy >=2pp over the strongest equal-data fair ERM and Gaussian controls, without regression on either unseen mechanism.",
+  "train_only": {
+    "fit_seeds": [
+      431000,
+      431008
+    ],
+    "diagnostic_seeds": [
+      431100,
+      431108
+    ],
+    "fit_families": [
+      580,
+      581,
+      582,
+      583
+    ],
+    "diagnostic_families": [
+      584,
+      585,
+      586,
+      587
+    ],
+    "fit_mechanisms": [
+      "alternating_noise",
+      "role_phase_shift"
+    ],
+    "heldout_mechanisms": [
+      "sparse_channel_dropout",
+      "delayed_sign_flip"
+    ],
+    "conditions": [
+      "coupled",
+      "decoupled"
+    ],
+    "public_labeled_anchors": 24,
+    "physical_paid_reads_per_role": 2,
+    "expected_diagnostic_cases": 128,
+    "supervised_fit_episodes_per_source": 10
+  },
+  "future_original_proposal_NOT_RESERVED": {
+    "seeds": [
+      432000,
+      432016
+    ],
+    "families": [
+      588,
+      589,
+      590,
+      591
+    ]
+  },
+  "controls": [
+    "groupDRO_task_selector",
+    "equal_data_ERM_task_selector",
+    "fitted_Gaussian_risk",
+    "empirical_conditional_Brier",
+    "public_static",
+    "variance_control",
+    "first_read_masked_groupDRO",
+    "private_oracle_unfair"
+  ],
+  "acceptance": {
+    "gain_vs_strongest_fair_min": 0.02,
+    "per_heldout_mechanism_nondegradation": true,
+    "positive_first_read_ablation": true,
+    "independently_reconstruct_all_rows_receipts_FP_FN_Brier_logloss": true
+  },
+  "limits": {
+    "equal_training_labels_and_features_for_DRO_and_ERM": true,
+    "no_source_mechanism_family_or_condition_id_to_selector": true,
+    "diagnostic_labels_not_in_fit": true,
+    "source_independent_F3_custody": false,
+    "original_first_use_executed": false,
+    "native_576_bytes_residency_qualified": false,
+    "controller_or_accepted_ref_mutation": false,
+    "paid_api_calls": 0
+  }
+}
