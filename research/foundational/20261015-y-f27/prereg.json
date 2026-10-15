@@ -1,0 +1,80 @@
+{
+  "schema": "yggdrasil.f27.prereg.v1",
+  "parent": "7315d9c87f028d7ff33b7d53e0b799caf727cf2c",
+  "question": "Does learned truly sequential choice of the second sensor after reading the first improve downstream typed relationship reasoning at exactly two acquired channels per role-bit, versus calibrated static and conditional cheap controls?",
+  "learning": {
+    "train_shifts": [
+      "identity",
+      "flip0",
+      "swap01",
+      "invert12",
+      "mask2"
+    ],
+    "train_seeds": [
+      136000,
+      136035
+    ],
+    "train_bits": 2100,
+    "trainable_params": 9,
+    "epochs": 180,
+    "learning_rate": 0.06,
+    "training_only_source_truth": "Four known primitive role descriptions; train-time differentiable relaxation may access all four TRAIN channels",
+    "test_model_frozen": true
+  },
+  "candidate": {
+    "first_sensor": "Preprogrammed calibrated argmax absolute known-anchor correlation minus .1 missingness, identical for all candidates",
+    "second_sensor": "Nine learned weights see first target reading and known-anchor correlation and missingness; choose among remaining 3 prior to accessing second target value",
+    "decoder": "Read only actual first and chosen second target channel. Never access other two channels in candidate inference.",
+    "target_truth_unavailable_for_decision": true,
+    "first_sensor_preprogrammed_not_learned": true
+  },
+  "validation": {
+    "new_graph_seeds": [
+      130200,
+      130206
+    ],
+    "motifs_reused": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "new_sensor_shifts": [
+      "unseen_invert02",
+      "unseen_swap03",
+      "unseen_drop12"
+    ],
+    "graph_states": 96,
+    "groups": 288,
+    "questions": 864,
+    "matched_observation_budget_per_role_bit": 2,
+    "total_sources": 4,
+    "native_state_bytes": 576
+  },
+  "controls": [
+    "learned sequential second choice",
+    "cheap conditional greedy second choice",
+    "cheap static calibrated second choice",
+    "fixed channel3 unless first was channel3 then channel0",
+    "privileged coded actual descriptor oracle (not equal-budget comparator)"
+  ],
+  "acceptance": {
+    "coded_oracle_accurate": 864,
+    "min_learned_accuracy": 0.93,
+    "min_absolute_gain_over_best_equal_budget_cheap": 0.02,
+    "min_each_test_shift_accuracy": 0.88
+  },
+  "outcomes": [
+    "INVALID_YF27_SOURCE_REFERENCE",
+    "DEVELOPMENT_LEARNED_SEQUENTIAL_OBSERVATION_GAIN",
+    "DEVELOPMENT_SEQUENTIAL_OBSERVATION_NO_QUALIFIED_GAIN"
+  ],
+  "limitations": {
+    "known_primitive_supervised_anchors": true,
+    "source_generated_context": true,
+    "no_true_independently_born_F3_source": true,
+    "no_active_learning_of_first_sensor": true,
+    "no_cost_latency_qualification": true,
+    "no_FORGE_cloudflare_KTRADE_controller_mutation": true
+  }
+}
