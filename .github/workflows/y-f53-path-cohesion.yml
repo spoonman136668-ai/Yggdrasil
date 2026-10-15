@@ -1,0 +1,57 @@
+name: Y-F53 cross-role path evidence under bounded online retention
+on:
+  push:
+    branches: [research/y-f53-path-cohesion-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Confirm new precode source freeze and focused protected negatives
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 11a424908c4c2a5823e46c69be4df9d64d85ef88 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f53/prereg.json)" = 68e57ae716add28f40028d28da733b78611b5bbb
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f53 -p test_preflight.py -v
+          python3 -m py_compile research/foundational/20261015-y-f53/audit_result.py
+      - name: Run one full project pytest regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+  diagnostic:
+    if: "${{ github.event.head_commit.message == 'science(y-f53): first and only fresh disjoint cross-role diagnostic' && github.run_attempt == 1 }}"
+    needs: source
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Once-only new TRAIN memory cohort and source-free independent audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/yf53";mkdir -p "$root"
+          python3 -B research/foundational/20261015-y-f53/source_pilot.py > "$root/result.json"
+          python3 -B research/foundational/20261015-y-f53/audit_result.py \
+            "$root/result.json" research/foundational/20261015-y-f53/prereg.json > "$root/audit.txt"
+          (cd "$root";sha256sum result.json audit.txt > manifest.sha256)
+          echo "$GITHUB_SHA" > "$root/SOURCE_SHA"
+          cat "$root/audit.txt"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: Y-F53-cross-role-retained-path-TRAIN-NOT-ORIGINAL
+          path: ${{ runner.temp }}/yf53/
+          retention-days: 30
+          if-no-files-found: error
