@@ -1,0 +1,66 @@
+name: Y-F17 separately qualified training-source reconstructed cheap risk runtime
+on:
+  push:
+    branches: [research/y-f17-reconstructed-source-cheap-stopping-20261014-r1]
+permissions:
+  contents: read
+jobs:
+  original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install scientific repository dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Source and prereg qualification before any new-cohort execution
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor cef1f621a9b96b7ca51140d346a12da01f80de35 HEAD
+          test "$(git hash-object research/foundational/20261014-y-f16/execute.py)" = "$(git rev-parse cef1f621a9b96b7ca51140d346a12da01f80de35:research/foundational/20261014-y-f16/execute.py)"
+          python3 -m py_compile research/foundational/20261014-y-f17/execute.py
+          python3 -m json.tool research/foundational/20261014-y-f17/prereg.json >/dev/null
+      - name: Run one Y-F17 fresh policy-source reconstruction and NEW development original
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261014-y-f17/execute.py > /tmp/y-f17-original-development.json
+          python3 -m json.tool /tmp/y-f17-original-development.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F17-original-source-reconstructed-scalar-risk
+          path: /tmp/y-f17-original-development.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independent source identity and evidence validation
+        run: |
+          python3 - <<'PY'
+          import collections,json
+          d=json.load(open("/tmp/y-f17-original-development.json"))
+          assert d["stage"]=="DEVELOPMENT_ONLY"
+          assert d["graphs"]==96 and d["questions"]==576
+          assert d["positives"]==192 and d["negatives"]==384 and d["repeats"]==3
+          assert d["new_seed_bounds"]==[70800,70806]
+          assert d["state_bytes"]==576
+          assert not d["exact_F15_checkpoint_recovered"]
+          assert d["reconstructed_from_historical_training_only"]
+          assert d["model_retrained_on_historical_training_source"] and not d["retrained_on_new_development_cohort"]
+          assert d["archived_new_policy_parameters"]
+          assert not d["source_born_independently"] and not d["sealed_first_use"]
+          assert not d["accepted_ref_mutation"]
+          assert d["family_derivation_disclosed"] and d["same_answer_and_halt_step"]
+          assert collections.Counter(r["family"] for r in d["rows"])=={80:144,81:144,82:144,83:144}
+          assert all(r["answers"]["scalar"]==r["answers"]["old_nn"] for r in d["rows"])
+          for name,s in d["scores"].items():
+            assert s["correct"]==sum(r["answers"][name]["answer"]==r["truth"] for r in d["rows"])
+            assert s["steps"]==sum(r["answers"][name]["steps"] for r in d["rows"])
+            assert s["wall_ns_by_repeat"]==[sum(r["timing_ns"][name][i] for r in d["rows"]) for i in range(3)]
+          assert d["registered_verdict"].startswith("DEVELOPMENT_RECONSTRUCTED_SOURCE_")
+          print("Y_F17_VERDICT",d["registered_verdict"])
+          print("Y_F17_NEW_WEIGHT_SHA",d["frozen_head_sha256"])
+          print("Y_F17_SCORES",d["scores"])
+          PY
+      - name: One complete project regression
+        run: python3 -m pytest -q tests
