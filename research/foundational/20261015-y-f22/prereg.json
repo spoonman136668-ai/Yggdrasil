@@ -1,0 +1,84 @@
+{
+  "schema": "yggdrasil.f22.prereg.v1",
+  "parent_Y21": "31d1f2afa4bc073464fa1d02208d57cc7362c596",
+  "hypothesis": "A bounded five-parameter sensor calibration mapping trained only on known-description anchors and earlier shift families can recover meaningful contextual role descriptions under unseen channel transformations.",
+  "training": {
+    "anchors": "4 known even-parity primitive role descriptions with actual labels; 4 observations each (48 known bits) at new calibration seed per condition",
+    "anchor_correlation_formula": "mean((2*observed-1)*(2*known_bit-1)) per sensor; formula programmed, reliability gain weights + bias learned",
+    "known_shifts": [
+      "identity",
+      "flip0",
+      "swap01",
+      "flip12",
+      "swap03"
+    ],
+    "unseen_shifts": [
+      "flip03",
+      "flipall",
+      "rotateflip",
+      "swap02",
+      "mask0"
+    ],
+    "training_only_seed_range": [
+      92400,
+      92450
+    ],
+    "gain_count": 4,
+    "bias_count": 1,
+    "Adam_lr": 0.09,
+    "epochs": 180,
+    "supervised_known_anchor_bits": true
+  },
+  "test": {
+    "stage": "DEVELOPMENT_ONLY",
+    "fresh_graph_seeds": [
+      91700,
+      91706
+    ],
+    "graph_motifs_reused": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "reuse_disclosed": true,
+    "base_graphs": 96,
+    "shift_groups": 480,
+    "questions": 1440,
+    "three_variants_each": [
+      "exact typed positive",
+      "broken necessary edge role negative",
+      "wrong ordered role query negative"
+    ],
+    "context_role_descriptors_of_heldout_odd_roles_not_supplied": true,
+    "intervention_name_not_supplied_to_model": true,
+    "anchor_known_bits_are_supplied": true,
+    "native_state_bytes": 576
+  },
+  "controls": [
+    "same frozen Y-F20 descriptor contextual decoder without adaptation",
+    "programmed anchor-correlation plus fixed gain heuristic",
+    "given exact heldout role descriptors oracle upper"
+  ],
+  "preregistered_positive": {
+    "correct_oracle": 1440,
+    "min_adaptive_accuracy": 0.95,
+    "min_gain_over_best_cheap_and_frozen": 0.03,
+    "minimum_accuracy_each_shift": 0.9,
+    "max_each_shift_FPR": 0.05,
+    "max_each_shift_FNR": 0.1
+  },
+  "verdicts": [
+    "INVALID_ANCHOR_ORACLE",
+    "DEVELOPMENT_LEARNED_ANCHOR_RELIABILITY_TRANSFER",
+    "DEVELOPMENT_ANCHOR_RELIABILITY_NO_QUALIFIED_GAIN"
+  ],
+  "scientific_boundaries": {
+    "semi_supervised_anchor_labels": true,
+    "anchor_reliability_feature_programmed": true,
+    "not_unsupervised_self_calibration": true,
+    "train_only_frozen_before_new_test": true,
+    "F3_unadmitted": true,
+    "no_FORGE_cloudflare_KTRADE_controller": true
+  }
+}
