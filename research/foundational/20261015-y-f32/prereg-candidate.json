@@ -1,0 +1,67 @@
+{
+  "schema": "yggdrasil.f32.prereg-candidate.v1",
+  "status": "DESIGN_FROZEN_BEFORE_IMPLEMENTATION",
+  "experiment": "Y-F32",
+  "parent_pilot": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38727472093",
+  "parent_source_sha": "7426dc977c49ea33deff809e43fef3310ff6f0fc",
+  "hypothesis": "The first paid observation retains downstream information about sensor mode conditional on public calibration, even when pooling opposite-polarity environments hides it.",
+  "pilot_only": true,
+  "train": {
+    "seeds": [
+      191800,
+      191832
+    ],
+    "source_families": [
+      170,
+      171,
+      172,
+      173
+    ],
+    "public_reliability_calibration_count": 8,
+    "condition_groups": [
+      "marker_normal",
+      "marker_reversed",
+      "marker_corrupted",
+      "marker_noninformative"
+    ],
+    "query_count": 512
+  },
+  "reserved_original": {
+    "seeds": [
+      192800,
+      192812
+    ],
+    "families": [
+      174,
+      175,
+      176,
+      177
+    ],
+    "not_generated_during_pilot": true
+  },
+  "controls": [
+    "strong empirical conditional Brier",
+    "Bayesian source-posterior",
+    "static",
+    "fixed",
+    "privileged source truth"
+  ],
+  "qualification": {
+    "min_conditioned_information_bits": 0.02,
+    "min_cross_validated_conditional_log_loss_gain": 0.01,
+    "min_headroom_absolute_vs_strongest_fair": 0.04,
+    "min_causal_second_action_switch": 0.05,
+    "all_required_before_primary_original": true
+  },
+  "budget": {
+    "target_reads_per_role": 2,
+    "core_scientific_bytes_max": 576,
+    "external_calibration_bytes_metered": true
+  },
+  "sources": {
+    "generated_in_repo": true,
+    "independent_F3_source_custody": false,
+    "no_accepted_refs": true,
+    "no_paid_api": true
+  }
+}
