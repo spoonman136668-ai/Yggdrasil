@@ -1,0 +1,34 @@
+name: Y-F45 paired-intervention reliability source preflight (NO diagnostic)
+on:
+  push:
+    branches:
+      - research/y-f45-intervention-invariants-20261015-r1
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install existing test environment
+        run: python3 -m pip install -e '.[test]'
+      - name: Pin precode prereg and source blob identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 2308b6d270c86e6335b8e8dcb61836a67021ea97 HEAD
+          git merge-base --is-ancestor 21bdb327e13beda4467f80fabf6416760acc4b4d HEAD
+          test "$(git hash-object research/foundational/20261015-y-f45/prereg-candidate.json)" = c13b504bf5e5b7dea4ff227fc2bc7da642cb4ef3
+          test "$(git hash-object research/foundational/20261015-y-f45/source_pilot.py)" = 5c5db5ccc700064b477a9fe492e74fd34691d98b
+          python3 -m json.tool research/foundational/20261015-y-f45/prereg-candidate.json >/dev/null
+          python3 -m py_compile research/foundational/20261015-y-f45/source_pilot.py
+      - name: Focused unseen-mechanism, public paired-anchor, budget tests
+        run: python3 -m unittest discover -s research/foundational/20261015-y-f45 -p test_preflight.py -v
+      - name: One full pytest regression
+        run: python3 -m pytest -q tests
+      - name: Explicit no-experiment authority boundary
+        run: echo "Source engineering only. No F45 cohort, primary original, F3, native 576B claim, controller or accepted-ref mutation."
