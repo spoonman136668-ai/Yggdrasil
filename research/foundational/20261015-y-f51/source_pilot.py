@@ -112,7 +112,9 @@ def retained(events,method,weights):
         elif method=="public_frequency_priority":
             score=2*f[2]+2*f[3]+.0001*f[4]
         elif method=="public_tag_only":score=f[1]+.0001*f[4]
-        elif method=="public_role_endpoint_priority":\n            score=f[2]+f[3]+.5*f[1]+.001*f[5]\n        elif method=="FIFO_last12":score=index
+        elif method=="public_role_endpoint_priority":
+            score=f[2]+f[3]+.5*f[1]+.001*f[5]
+        elif method=="FIFO_last12":score=index
         else:score=hash_score(e,index)
         held.append((score,index,e))
         held.sort(key=lambda pair:(-pair[0],-pair[1]))
