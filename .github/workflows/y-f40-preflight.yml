@@ -1,0 +1,33 @@
+name: Y-F40 task-trust pre-original engineering
+on:
+  push:
+    branches:
+      - research/y-f40-conditional-trust-transfer-20261015-r1
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install test environment
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify negative predecessor and preregistered science
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 1755d5442f7763e50827d80fd518d990d9f01c8c HEAD
+          git merge-base --is-ancestor bc217ba7b28a0d8449c90565e2a0ca58277a8f7d HEAD
+          python3 -m json.tool research/foundational/20261015-y-f40/prereg-candidate.json >/dev/null
+          python3 -m py_compile research/foundational/20261015-y-f40/train_only.py
+      - name: Disjoint regime and physical acquisition preflight
+        run: python3 -m unittest discover -s research/foundational/20261015-y-f40 -p test_preflight.py -v
+      - name: One full existing repository pytest
+        run: python3 -m pytest -q tests
+      - name: Authority
+        run: |
+          echo "Engineering only. No fresh train-only cohort, original, F3 custody or accepted refs."
