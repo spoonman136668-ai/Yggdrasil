@@ -1,0 +1,69 @@
+{
+  "schema": "yggdrasil.f33.frozen-train-only-evaluator-source.v1",
+  "stage": "PRE_ORIGINAL_SOURCE_HEADROOM_PILOT",
+  "design_issues": [
+    "https://github.com/spoonman136668-ai/Yggdrasil/issues/215",
+    "https://github.com/spoonman136668-ai/Yggdrasil/issues/216"
+  ],
+  "engineering_pr": "https://github.com/spoonman136668-ai/Yggdrasil/pull/217",
+  "precode_prereg_commit": "05bf66e0b7c2b9e1765eea5b3d41f3ebed70e26a",
+  "qualification_run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38730802443",
+  "source_commit": "f80af6ae79576d5e14a2a5bbd0c735e17d79cb7d",
+  "source_tree": "e1f19c98579107d1d5097b3dec8c7bb61d7b9f6d",
+  "source_blob": "39519e04e5371747fa3c02b7b2eba62979996372",
+  "evaluator_only_blob": "04485bc24d0ab730853bffdbc93103ec205f542e",
+  "train": {
+    "seeds": [
+      201800,
+      201824
+    ],
+    "families": [
+      180,
+      181,
+      182
+    ],
+    "conditions": [
+      "calibrated_polarity",
+      "reversed_public_polarity",
+      "weak_marker",
+      "noninformative_marker"
+    ],
+    "mechanisms": [
+      "mode-conditioned",
+      "anti-correlated-auxiliary"
+    ],
+    "expected_queries": 576
+  },
+  "reserved_primary_original": {
+    "seeds": [
+      202800,
+      202816
+    ],
+    "families": [
+      184,
+      185,
+      186,
+      187
+    ],
+    "never_generated": true
+  },
+  "audit": {
+    "min_conditional_mutual_information_bits": 0.02,
+    "min_heldout_predictive_logloss_gain_nats": 0.01,
+    "min_action_switch_rate": 0.05,
+    "min_headroom_fraction": 0.04,
+    "source_private_modes_only_in_evaluator": true,
+    "two_independent_computations_agree": true
+  },
+  "limits": {
+    "exact_paid_reads_per_role": 2,
+    "maximum_native_state_bytes_576_is_claimed_not_physically_measured": true,
+    "external_calibration_cost_reported": true,
+    "not_independently_held_F3_custody": true,
+    "no_primary_original": true,
+    "no_learned_YF33_scientific_gain_claim": true,
+    "no_accepted_ref_mutation": true,
+    "no_paid_API": true,
+    "no_FORGE_controller_Cloudflare_KTRADE_edits": true
+  }
+}
