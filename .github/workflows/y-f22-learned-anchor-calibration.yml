@@ -1,0 +1,60 @@
+name: Y-F22 learned anchor-conditioned sensor calibration
+on:
+  push:
+    branches: [research/y-f22-learned-anchor-reliability-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, persist-credentials: false}
+      - name: Install scientific test dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify frozen previous result and new prereg
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 31d1f2afa4bc073464fa1d02208d57cc7362c596 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f21/execute.py)" = "$(git rev-parse 31d1f2afa4bc073464fa1d02208d57cc7362c596:research/foundational/20261015-y-f21/execute.py)"
+          python3 -m py_compile research/foundational/20261015-y-f22/execute.py
+          python3 -m json.tool research/foundational/20261015-y-f22/prereg.json >/dev/null
+      - name: Run one fresh Y-F22 original
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261015-y-f22/execute.py > /tmp/y-f22-original.json
+          python3 -m json.tool /tmp/y-f22-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F22-original-trained-anchor-sensor-calibration
+          path: /tmp/y-f22-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independently audit source and per-condition predictions
+        run: |
+          python3 - <<'PY'
+          import collections,json
+          d=json.load(open("/tmp/y-f22-original.json"))
+          assert d["stage"]=="DEVELOPMENT_ONLY"
+          assert d["parameter_count"]==5 and d["native_state_bytes"]==576
+          assert d["graph_count"]==96 and d["condition_groups"]==480 and d["questions"]==1440
+          assert d["anchor_true_labels_known"] and d["anchor_correlation_programmed"]
+          assert not d["test_task_truth_given_to_model"] and not d["test_intervention_label_given_to_model"]
+          assert not d["test_role_descriptors_given_to_model"] and d["prior_reasoning_weights_frozen"]
+          assert not d["source_independently_born"] and not d["sealed_first_use"] and not d["accepted_ref_mutation"]
+          assert collections.Counter(r["sensor_condition"] for r in d["rows"])==dict.fromkeys(d["unseen_test_shifts"],96)
+          assert d["scores"]["descriptor_oracle"]["correct"]==1440
+          for key in ("adaptive","anchor_heuristic","frozen_f20","descriptor_oracle"):
+            s=d["scores"][key]
+            assert s["correct"]==sum(sum(x==y for x,y in zip(r["answers"][key],r["truth"])) for r in d["rows"])
+            assert s["false_positive"]==sum(r["answers"][key][i] for r in d["rows"] for i in (1,2))
+            assert s["false_negative"]==sum(not r["answers"][key][0] for r in d["rows"])
+          assert d["registered_verdict"] in ("INVALID_ANCHOR_ORACLE",
+            "DEVELOPMENT_LEARNED_ANCHOR_RELIABILITY_TRANSFER",
+            "DEVELOPMENT_ANCHOR_RELIABILITY_NO_QUALIFIED_GAIN")
+          print("Y_F22_VERDICT",d["registered_verdict"],d["scores"])
+          PY
+      - name: One full project regression
+        run: python3 -m pytest -q tests
