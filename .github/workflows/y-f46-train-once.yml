@@ -1,0 +1,63 @@
+name: Y-F46 frozen causal pairing TRAIN-only experiment
+on:
+  push:
+    branches: [research/y-f46-paired-shuffle-precode-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install existing test environment
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify F46 prereg ancestry and focused negatives
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 90fc554622e6cb51fbd47551faa8b8d69ac62d64 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f46/prereg-candidate.json)" = 33de367980978df489b84b5e93e9206f0e293cce
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f46 -p test_preflight.py -v
+      - name: One full pytest regression
+        run: python3 -m pytest -q tests
+  diagnostic:
+    needs: qualify
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Execute one new disjoint TRAIN-only intervention ablation cohort
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/yf46"
+          python3 -B research/foundational/20261015-y-f46/source_pilot.py > "$RUNNER_TEMP/yf46/result.json"
+          python3 - "$RUNNER_TEMP/yf46/result.json" <<'PY'
+          import json,sys
+          d=json.load(open(sys.argv[1]))
+          assert d["schema"]=="yggdrasil.f46.paired-vs-shuffled-anchor.trainonly.v1"
+          assert d["questions"]==128 and d["diagnostic_seeds"]==[401100,401108]
+          assert d["primary_original_not_executed"] and not d["accepted_ref_mutation"]
+          assert not d["independent_F3_custody"] and d["paid_api_calls"]==0
+          assert len(d["rows"])==128
+          assert d["verdict"] in ("TRAIN_ONLY_CAUSAL_INTERVENTION_SUPPORTED_NOT_F3",
+                                 "TRAIN_ONLY_CAUSAL_INTERVENTION_NEGATIVE")
+          print("Y_F46_CAUSAL_SHUFFLE_FRESH_TRAIN_COMPLETED")
+          PY
+          (cd "$RUNNER_TEMP/yf46" && sha256sum result.json > result.sha256)
+          printf '%s\n' "$GITHUB_SHA" > "$RUNNER_TEMP/yf46/SOURCE_SHA"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: Y-F46-TRAIN-only-causal-pair-shuffle
+          path: ${{ runner.temp }}/yf46/
+          retention-days: 30
+          if-no-files-found: error
