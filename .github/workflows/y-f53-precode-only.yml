@@ -1,0 +1,38 @@
+name: Yggdrasil F53 frozen prereg and original safety qualification
+on:
+  push:
+    branches: [research/y-f53-path-cohesion-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  scientific-precode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Pin frozen preregistration and verify all negative gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git hash-object research/foundational/20261015-y-f53/prereg.json)" = 68e57ae716add28f40028d28da733b78611b5bbb
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f53 -p test_prereg.py -v
+          if test -f research/foundational/20261015-y-f53/source_pilot.py; then
+            python3 -B -m py_compile research/foundational/20261015-y-f53/source_pilot.py
+          fi
+          if test -f research/foundational/20261015-y-f53/audit_result.py; then
+            python3 -B -m py_compile research/foundational/20261015-y-f53/audit_result.py
+          fi
+          echo F53_PRECODE_INTEGRITY_AND_NO_PREMATURE_ORIGINAL=PASS
+      - name: Install existing Yggdrasil test dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: One complete existing Yggdrasil regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pytest -q tests
+          echo F53_ONE_FULL_PYTEST_REGRESSION=PASS
+      - name: Explicit no-science execution boundary
+        run: echo "NO_F53_TRAIN_OR_PRIMARY_ORIGINAL_EXECUTED=TRUE"
