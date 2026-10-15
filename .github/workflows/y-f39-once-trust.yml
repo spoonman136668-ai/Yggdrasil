@@ -1,0 +1,98 @@
+name: Y-F39 once-only learned evidence-trust TRAIN-only evaluation
+on:
+  push:
+    branches:
+      - science/y-f39-frozen-trust-trainonly-20261015-r1
+permissions:
+  contents: read
+jobs:
+  science:
+    if: "${{ github.event.head_commit.message == 'science(y-f39): one frozen observation-trust TRAIN-only cohort' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Enforce frozen learner and preregistered cohort
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 5a67e4d4ff18c80d5fb55a94aa9dca9aa65b83ea HEAD
+          git merge-base --is-ancestor 6e464e185e1cd3521ae04f72cd69827f1cdcb38f HEAD
+          test "$(git hash-object research/foundational/20261015-y-f39/train_only.py)" = 1dc010663823af5c39604e5246da275dcc0e2c90
+          test "$(git hash-object research/foundational/20261015-y-f39/prereg-frozen.json)" = "$(git rev-parse 6e464e185e1cd3521ae04f72cd69827f1cdcb38f:research/foundational/20261015-y-f39/prereg-frozen.json)"
+          python3 -m unittest discover -s research/foundational/20261015-y-f39 -p test_preflight.py -v
+      - name: Execute one frozen learned trust study on fresh TRAIN-only cohort
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f39/train_only.py > /tmp/y-f39-trust.json
+          python3 -m json.tool /tmp/y-f39-trust.json >/dev/null
+          sha256sum /tmp/y-f39-trust.json > /tmp/y-f39-trust.sha256
+          git rev-parse HEAD > /tmp/y-f39-source-head.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F39-frozen-once-learned-trust
+          path: |
+            /tmp/y-f39-trust.json
+            /tmp/y-f39-trust.sha256
+            /tmp/y-f39-source-head.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Independent all-row classification and acquisition auditor
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,math
+          d=json.load(open('/tmp/y-f39-trust.json'))
+          p=json.load(open('research/foundational/20261015-y-f39/prereg-frozen.json'))
+          assert d['schema']=='yggdrasil.f39.observation-trust.trainonly.v1'
+          assert d['stage']=='NEW_TRAIN_ONLY_LEARNED_TRUST_NO_PRIMARY_ORIGINAL'
+          assert d['train_seeds']==p['train']['seeds'] and d['train_families']==p['train']['families']
+          assert d['eval_seeds']==p['train_only']['seeds'] and d['eval_families']==p['train_only']['families']
+          assert d['reserved_original_seeds']==p['reserved_primary_original']['seeds']
+          assert d['reserved_original_families']==p['reserved_primary_original']['families']
+          assert d['train_examples']==p['train']['expected_training_examples']==576
+          assert d['questions']==len(d['rows'])==p['train_only']['expected_cases']==256
+          assert len({(r['seed'],r['family'],r['mechanism'],r['condition']) for r in d['rows']})==256
+          assert len(d['learned_trust_weights'])==6 and d['learned_coefficient_bytes']==48
+          assert d['native_core_limit_bytes']==576 and d['external_reference_bytes_per_case']==960
+          assert d['purchased_target_reads_per_role']==2 and d['source_private_truth_and_mode_hidden_at_inference']
+          assert d['trusted_condition_label_hidden_at_inference'] and d['primary_original_not_executed']
+          assert d['same_repo_synthetic_source_not_F3'] and not d['accepted_ref_mutation']
+          assert all(291816<=r['seed']<291832 and r['family'] in (284,285,286,287)
+                     and r['public_reference_anchors']==24 for r in d['rows'])
+          for row in d['rows']:
+            for arm,pairs in row['purchases'].items():
+              assert len(pairs)==3
+              assert all(len(pair)==2 and pair[0]==0 and pair[1] in (1,2,3) for pair in pairs)
+          for arm,s in d['scores'].items():
+            cor=sum(r['predictions'][arm]==r['truth'] for r in d['rows'])
+            fp=sum(bool(r['predictions'][arm]) and not r['truth'] for r in d['rows'])
+            fn=sum(not bool(r['predictions'][arm]) and r['truth'] for r in d['rows'])
+            assert (s['correct'],s['fp'],s['fn'],s['total'])==(cor,fp,fn,256)
+            assert math.isclose(s['accuracy'],cor/256,abs_tol=1e-12)
+          assert d['scores']['privileged_truth_oracle']['correct']==256
+          for cond,arms in d['by_condition'].items():
+            cohort=[r for r in d['rows'] if r['condition']==cond]
+            assert len(cohort)==128
+            for a,s in arms.items():
+              assert s['correct']==sum(r['predictions'][a]==r['truth'] for r in cohort)
+          assert 0<=d['trust_classification_accuracy']<=1
+          assert 0<=d['first_read_intervention_action_switch_rate']<=1
+          fair=('conditional_empirical_Brier','public_polarity','variance_threshold_gate','static_reference','first_masked_ablation')
+          gain=d['scores']['learned_trust_gate']['accuracy']-max(d['scores'][a]['accuracy'] for a in fair)
+          robust=all(arms['learned_trust_gate']['accuracy']>=max(arms[a]['accuracy'] for a in fair) for arms in d['by_condition'].values())
+          passed=gain>=.02 and robust and d['first_read_intervention_action_switch_rate']>0 and d['scores']['learned_trust_gate']['correct']>d['scores']['first_masked_ablation']['correct']
+          expected='TRAIN_ONLY_TRUST_GATE_LEARNED_GAIN' if passed else 'TRAIN_ONLY_TRUST_GATE_NO_QUALIFIED_GAIN'
+          assert d['verdict']==expected
+          print('Y_F39_TRAIN_ONLY_RESULT',expected,{a:s['correct'] for a,s in d['scores'].items()},
+                'trust_classifier',d['trust_classification_accuracy'],
+                'first_read_action_switch',d['first_read_intervention_action_switch_rate'])
+          PY
+      - name: Authority boundary
+        run: |
+          echo "Y-F39 TRAIN-only synthetic development; NOT F3 first-use or accepted scientific authority"
