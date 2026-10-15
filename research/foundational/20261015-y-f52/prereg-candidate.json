@@ -1,0 +1,91 @@
+{
+  "schema": "yggdrasil.f52.future-task-chunk-compression.prereg.v1",
+  "stage": "PRECODE_ONLY_NO_SCIENCE_CONSUMED",
+  "parent_F51_head": "353d5ed842ce550197ab750c92e5bbc0b9430522",
+  "tracking_issue": 256,
+  "hypothesis": "Learn to compress and retrieve relational chains online, without knowing the future question, preserving more unseen 4- and 6-link answers than strong fixed symbolic compression and raw-edge controls under matched serialized byte limits.",
+  "train": {
+    "seeds": [
+      551000,
+      551016
+    ],
+    "families": [
+      960,
+      961,
+      962,
+      963
+    ],
+    "expected_train_streams": 64,
+    "motifs": [
+      "pair",
+      "triple"
+    ]
+  },
+  "diagnostic": {
+    "seeds": [
+      551100,
+      551116
+    ],
+    "families": [
+      964,
+      965,
+      966,
+      967
+    ],
+    "expected_streams": 64,
+    "motifs": [
+      "cyclic",
+      "cross_role"
+    ]
+  },
+  "future_original_NOT_RESERVED": {
+    "seeds": [
+      552000,
+      552016
+    ],
+    "families": [
+      968,
+      969,
+      970,
+      971
+    ]
+  },
+  "stream": {
+    "events_per_stream": 72,
+    "stored_record_bytes": 12,
+    "memory_payload_budget_bytes": 144,
+    "max_records": 12,
+    "compact_role_direction_code_bits_max": 18,
+    "decoder_metadata_and_index_bytes_counted": true,
+    "query_lengths": [
+      4,
+      6
+    ],
+    "future_question_unknown_until_memory_frozen": true,
+    "public_tags_equal_rates": true
+  },
+  "controls": [
+    "learned_relation_chunking",
+    "fixed_public_greedy_pair_chunks",
+    "fixed_public_greedy_triple_chunks",
+    "raw_degree_priority",
+    "raw_connected_component",
+    "raw_FIFO",
+    "public_hash",
+    "private_future_question_oracle_unfair"
+  ],
+  "thresholds": {
+    "gain_over_strongest_equal_byte_fair_min": 0.05,
+    "per_heldout_family_nondegradation": true,
+    "decoder_exactness": true,
+    "independent_serialized_byte_and_question_audit": true
+  },
+  "limits": {
+    "training_labels_fit_only": true,
+    "original_first_use_unexecuted": true,
+    "independent_F3": false,
+    "native_total_576B_unverified": true,
+    "accepted_ref_mutation": false,
+    "paid_API_calls": 0
+  }
+}

@@ -1,0 +1,37 @@
+name: Yggdrasil F52 source-only control and budget preflight
+on:
+  push:
+    branches: [research/y-f52-learned-relational-chunking-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  source-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install existing test dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Qualify frozen prereg and negative source tests, NO SCIENTIFIC EXECUTION
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git hash-object research/foundational/20261015-y-f52/prereg-candidate.json)" = cf47531bb8ec1ccf8c2af00f35ca12b38a6b71c1
+          python3 -m json.tool research/foundational/20261015-y-f52/prereg-candidate.json >/dev/null
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f52 -p test_prereg.py -v
+          # Allow later owner source to exist without executing it in this precode job.
+          if test -f research/foundational/20261015-y-f52/source_pilot.py; then
+            python3 -B -m py_compile research/foundational/20261015-y-f52/source_pilot.py
+            python3 -B -m py_compile research/foundational/20261015-y-f52/audit_result.py
+          fi
+          echo F52_PRECODE_ONLY_QUALIFICATION=PASS
+      - name: One existing full repository regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pytest -q tests
+      - name: Record non-execution boundary
+        run: echo 'F52_NO_NEW_TRAIN_OR_PRIMARY_ORIGINAL=TRUE; F51_FAILED_RESULT_PRESERVED=TRUE'
