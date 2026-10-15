@@ -32,7 +32,7 @@
   "cases": 64,
   "events_per_stream": 64,
   "hard_record_capacity": 12,
-  "encoded_roles_and_directions_per_record_max": 2,
+  "encoded_roles_and_directions_per_record_max": 3,
   "question_hidden_during_ingestion": true,
   "controls": [
     "fit_public_two_link_composition",
@@ -58,5 +58,10 @@
   "primary_original_executed": false,
   "F3_accepted": false,
   "accepted_refs_mutated": false,
-  "paid_API_calls": 0
+  "paid_API_calls": 0,
+  "candidate_max_chain_length": 2,
+  "fixed_three_control_max_chain_length": 3,
+  "serialized_payload_bytes_per_record": 12,
+  "serialized_payload_budget_bytes": 144,
+  "caveat": "12-byte payload models two 32-bit endpoints plus at most 3 packed 3-bit roles, 3 directions, length and reserved bits; excludes Python runtime/metadata, never represents native <=576B memory qualification"
 }
