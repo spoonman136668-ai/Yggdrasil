@@ -1,0 +1,113 @@
+{
+  "schema": "yggdrasil.f51.online-memory-complete-controls.prereg.v1",
+  "stage": "PRECODE_FROZEN_CANDIDATE_NOT_OWNER_ADMITTED",
+  "lane": "Yggdrasil",
+  "parent_f50_source_sha": "ab83bd0cb2df4409f73ca9a9337e803467020477",
+  "parent_f50_actions_run": 38809714837,
+  "parent_f50_artifact_id": 12007393564,
+  "independent_f50_review": {
+    "forge_pr": 296,
+    "source_sha": "7a2bb2b564d9238427e1c380c92a1d39bd6fa204",
+    "run_id": 38810692492,
+    "observed_learned_correct": 26,
+    "observed_strongest_reported_control_correct": 10,
+    "n": 64,
+    "conclusion": "UNQUALIFIED_FAILURE_UNREGISTERED_PUBLIC_TAG_ONLY_CONTROL"
+  },
+  "hypothesis": "A bounded trainable online relation-memory retention policy improves future unseen relationship reconstruction over all preregistered public heuristic controls on disjoint stream topologies, with future query hidden throughout retention.",
+  "fresh_fit": {
+    "seeds_start_inclusive": 531000,
+    "seeds_end_exclusive": 531016,
+    "families": [
+      860,
+      861,
+      862,
+      863
+    ]
+  },
+  "fresh_diagnostic": {
+    "seeds_start_inclusive": 531100,
+    "seeds_end_exclusive": 531116,
+    "families": [
+      864,
+      865,
+      866,
+      867
+    ]
+  },
+  "proposed_original_NOT_RESERVED": {
+    "seeds_start_inclusive": 532000,
+    "seeds_end_exclusive": 532016,
+    "families": [
+      868,
+      869,
+      870,
+      871
+    ]
+  },
+  "excluded_prior_originals": [
+    [
+      382000,
+      382016
+    ],
+    [
+      402000,
+      402016
+    ],
+    [
+      422000,
+      422016
+    ],
+    [
+      442000,
+      442016
+    ],
+    [
+      512000,
+      512016
+    ]
+  ],
+  "memory": {
+    "events_per_stream": 64,
+    "capacity_edges": 12,
+    "question_hidden_until_after_all_retention_decisions": true,
+    "training_future_task_outcomes_fit_only": true,
+    "heldout_stream_structures": true
+  },
+  "controls": [
+    "learned_retention",
+    "public_frequency_priority",
+    "public_tag_only",
+    "FIFO_last12",
+    "public_hash_reservoir",
+    "public_degree_priority",
+    "public_role_coverage",
+    "private_future_query_oracle_unfair"
+  ],
+  "evaluator_only_controls": [
+    "private_future_query_oracle_unfair"
+  ],
+  "strong_control_requirements": {
+    "every_control_declared_before_source_implementation": true,
+    "exact_control_set_required_at_runtime": true,
+    "equal_12_edge_memory_budget": true,
+    "no_future_query_as_retention_feature": true,
+    "identical_public_stream_per_control": true
+  },
+  "thresholds": {
+    "minimum_gain_vs_strongest_fair": 0.05,
+    "no_family_regression": true,
+    "independent_row_and_retention_receipt_reconstruction": true,
+    "require_all_preregistered_controls": true
+  },
+  "negative_disposition": "A failure of original scientific acceptance remains failed; F51 uses fresh preregistered cohorts and cannot retroactively approve the F50 experiment.",
+  "source_code_implemented": false,
+  "train_or_diagnostic_executed": false,
+  "owner_admitted": false,
+  "primary_original_executed": false,
+  "independent_F3": false,
+  "accepted_ref_mutation": false,
+  "dreamrsi_gain_proven": false,
+  "thetaevolve_training_authorized": false,
+  "paid_api_calls": 0
+}
