@@ -22,7 +22,11 @@ jobs:
           test "$(git hash-object research/foundational/20261015-y-f52/prereg-candidate.json)" = cf47531bb8ec1ccf8c2af00f35ca12b38a6b71c1
           python3 -m json.tool research/foundational/20261015-y-f52/prereg-candidate.json >/dev/null
           python3 -B -m unittest discover -s research/foundational/20261015-y-f52 -p test_prereg.py -v
-          test ! -f research/foundational/20261015-y-f52/source_pilot.py
+          # Allow later owner source to exist without executing it in this precode job.
+          if test -f research/foundational/20261015-y-f52/source_pilot.py; then
+            python3 -B -m py_compile research/foundational/20261015-y-f52/source_pilot.py
+            python3 -B -m py_compile research/foundational/20261015-y-f52/audit_result.py
+          fi
           echo F52_PRECODE_ONLY_QUALIFICATION=PASS
       - name: One existing full repository regression
         shell: bash
