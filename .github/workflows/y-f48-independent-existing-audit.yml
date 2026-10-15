@@ -1,0 +1,65 @@
+name: Y-F48 independent existing TRAIN-only evidence audit (NO new science)
+on:
+  push:
+    branches:
+      - science/y-f48-frozen-train-20261015-r1
+permissions:
+  contents: read
+  actions: read
+jobs:
+  existing-only:
+    if: "${{ github.event.head_commit.message == 'audit(y-f48): verify frozen existing TRAIN artifact exactly once' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Bind to original source and frozen prereg identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor b2407c469086c6a0ea99e9f3986c4336ef832e79 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f48/prereg-candidate.json)" = 52b56c769cc7303f3e3e795a63c9efde2f51a23c
+          test "$(git hash-object research/foundational/20261015-y-f48/source_pilot.py)" = 85e6a2117253f338e793afce7ff2dca3121b64b8
+          python3 -m py_compile research/foundational/20261015-y-f48/audit_existing.py
+      - name: Verify original source run and artifact identity through GitHub GET only
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          run=$(curl -fSs --retry 2 --max-time 20 -H "Accept: application/vnd.github+json"             -H "Authorization: Bearer $GH_TOKEN"             "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/runs/38805887306")
+          echo "$run" | jq -e --arg head "b2407c469086c6a0ea99e9f3986c4336ef832e79"             '.head_sha==$head and .status=="completed" and .conclusion=="success" and .run_attempt==1'
+          art=$(curl -fSs --retry 2 --max-time 20 -H "Accept: application/vnd.github+json"             -H "Authorization: Bearer $GH_TOKEN"             "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/runs/38805887306/artifacts")
+          echo "$art" | jq -e --arg h "b2407c469086c6a0ea99e9f3986c4336ef832e79" --arg name "Y-F48-shifted-pair-identifiability-train-NO-ORIGINAL"             --arg dig "sha256:429e2243666ca9bb0e9f5785439282a3183ce36910b05b88393edae70db2b374"             '[.artifacts[]|select(.id==12006805585 and .name==$name and .digest==$dig and (.expired|not) and .workflow_run.id==38805887306 and .workflow_run.head_sha==$h)]|length==1'
+      - uses: actions/download-artifact@v4
+        with:
+          name: Y-F48-shifted-pair-identifiability-train-NO-ORIGINAL
+          run-id: 38805887306
+          github-token: ${{ github.token }}
+          repository: spoonman136668-ai/Yggdrasil
+          path: ${{ runner.temp }}/evidence
+      - name: Reconstruct and audit existing result only
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(cat "$RUNNER_TEMP/evidence/SOURCE_SHA")" = "b2407c469086c6a0ea99e9f3986c4336ef832e79"
+          (cd "$RUNNER_TEMP/evidence" && sha256sum -c result.sha256)
+          python3 -B research/foundational/20261015-y-f48/audit_existing.py             "$RUNNER_TEMP/evidence/result.json" > "$RUNNER_TEMP/y-f48-audit.json"
+          cat "$RUNNER_TEMP/y-f48-audit.json"
+          sha256sum "$RUNNER_TEMP/y-f48-audit.json"             > "$RUNNER_TEMP/y-f48-audit.sha256"
+          git rev-parse HEAD > "$RUNNER_TEMP/y-f48-audit-head.txt"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: Y-F48-existing-TRAIN-only-independent-audit
+          path: |
+            ${{ runner.temp }}/y-f48-audit.json
+            ${{ runner.temp }}/y-f48-audit.sha256
+            ${{ runner.temp }}/y-f48-audit-head.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Scientific authority boundary
+        run: echo "EXISTING_TRAIN_ARTIFACT_AUDIT_ONLY=TRUE; NEW_ORIGINALS=0; F3_UNQUALIFIED=TRUE"
