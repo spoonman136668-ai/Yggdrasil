@@ -1,0 +1,60 @@
+{
+  "schema": "yggdrasil.f51.learned-retention-full-controls.train-only-prereg.v1",
+  "stage": "PRECODE_FROZEN_NO_EXECUTION",
+  "parent_f50_source": "ab83bd0cb2df4409f73ca9a9337e803467020477",
+  "f50_failed_run": 38809714837,
+  "forensic_f50_review": 296,
+  "hypothesis": "Learned online retention of 12 of 64 streamed relation edges improves hidden-future 3-role question answering over fully preregistered strong public tag, graph-endpoint, recency, frequency and hash controls on new disjoint sources.",
+  "train_seeds": [
+    531000,
+    531016
+  ],
+  "train_families": [
+    920,
+    921,
+    922,
+    923
+  ],
+  "diagnostic_seeds": [
+    531100,
+    531116
+  ],
+  "diagnostic_families": [
+    924,
+    925,
+    926,
+    927
+  ],
+  "proposed_primary_original_seeds_NOT_RESERVED": [
+    532000,
+    532016
+  ],
+  "proposed_primary_original_families_NOT_RESERVED": [
+    928,
+    929,
+    930,
+    931
+  ],
+  "memory_capacity_edges": 12,
+  "events_per_stream": 64,
+  "future_question_hidden_during_retention": true,
+  "controls": [
+    "learned_retention",
+    "public_frequency_priority",
+    "public_tag_only",
+    "public_role_endpoint_priority",
+    "FIFO_last12",
+    "public_hash_reservoir",
+    "private_future_query_oracle_UNFAIR"
+  ],
+  "minimum_accuracy_gain_over_strongest_fair": 0.05,
+  "require_no_family_regression": true,
+  "independent_all_row_retention_receipt_audit": true,
+  "train_diagnostic_disjoint": true,
+  "old_f50_run_never_replayed": true,
+  "implementation_present": false,
+  "primary_original_executed": false,
+  "independent_F3": false,
+  "accepted_ref_mutated": false,
+  "paid_API_calls": 0
+}

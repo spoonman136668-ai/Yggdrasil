@@ -1,0 +1,48 @@
+name: Y-F51 frozen complete public memory control TRAIN-only original
+on:
+  push:
+    branches: [research/y-f51-registered-memory-controls-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  source-and-train:
+    if: "${{ github.event.head_commit.message == 'science(y-f51): fresh preregistered memory training and bounded diagnostic' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Frozen precode witness and every preregistered control
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor ab72c07892241b3d9d30a098bd6027452150807d HEAD
+          test "$(git hash-object research/foundational/20261015-y-f51/prereg.json)" = e595ce9dd1f0d323e8f6b22cf5b66bc33f683aa1
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f51 -p test_preflight.py -v
+      - name: One complete existing pytest regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+      - name: One fresh non-replay FIT and TRAIN diagnostic with exact registered controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/y-f51";mkdir -p "$root"
+          python3 -B research/foundational/20261015-y-f51/source_pilot.py > "$root/result.json"
+          python3 -B research/foundational/20261015-y-f51/audit_result.py \
+            "$root/result.json" research/foundational/20261015-y-f51/prereg.json
+          (cd "$root";sha256sum result.json > result.sha256)
+          printf '%s\n' "$GITHUB_SHA" > "$root/SOURCE_SHA"
+          echo 'Y_F51_FRESH_REGISTERED_CONTROL_TRAIN_DIAGNOSTIC_COMPLETE'
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: Y-F51-new-source-full-control-TRAIN-NOT-ORIGINAL
+          path: ${{ runner.temp }}/y-f51/
+          retention-days: 30
+          if-no-files-found: error

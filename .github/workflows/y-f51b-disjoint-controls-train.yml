@@ -1,0 +1,48 @@
+name: Y-F51B new disjoint registered-memory TRAIN cohort with exact control audit
+on:
+  push:
+    branches: [research/y-f51-registered-memory-controls-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  original-train-only:
+    if: "${{ github.event.head_commit.message == 'science(y-f51b): new frozen full-control memory experiment' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 105
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Freeze second precode and negative safeguards
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 31d1f7ef3ea95d78277ec6996b0aa3148f9e9cc5 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f51/prereg-disjoint-replacement.json)" = c4c267196677eef45efcf318c4281aa32ab3e717
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f51 -p test_preflight.py -v
+      - name: One complete existing pytest regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+      - name: Run exactly one new registered FIT and diagnostic, independently recount
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/y-f51b";mkdir -p "$root"
+          python3 -B research/foundational/20261015-y-f51/source_pilot.py > "$root/result.json"
+          python3 -B research/foundational/20261015-y-f51/audit_result.py \
+            "$root/result.json" research/foundational/20261015-y-f51/prereg-disjoint-replacement.json
+          (cd "$root";sha256sum result.json > result.sha256)
+          printf '%s\n' "$GITHUB_SHA" > "$root/SOURCE_SHA"
+          echo 'Y_F51B_NEW_DISJOINT_MEMORY_COHORT_PASS'
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: Y-F51B-new-registered-memory-TRAIN-NO-ORIGINAL
+          path: ${{ runner.temp }}/y-f51b/
+          retention-days: 30
+          if-no-files-found: error

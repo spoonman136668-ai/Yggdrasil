@@ -1,0 +1,68 @@
+{
+  "schema": "yggdrasil.f51b.disjoint-registered-controls.train-only-prereg.v1",
+  "status": "SECOND_PRECODE_FROZEN_NO_REPLAY",
+  "first_f51_source": "49a604b410982391f8f48f1a1c56906eee7d322b",
+  "first_f51_run_failed_after_train": 38812939418,
+  "reason": "source data for the first Y-F51 diagnostic were consumed before an audit code syntax error; never replay it; previous Y-F50 qualification still failed due unregistered public-tag control",
+  "train": {
+    "seeds": [
+      551000,
+      551016
+    ],
+    "families": [
+      980,
+      981,
+      982,
+      983
+    ],
+    "expected_fit_streams": 64
+  },
+  "diagnostic": {
+    "seeds": [
+      551100,
+      551116
+    ],
+    "families": [
+      984,
+      985,
+      986,
+      987
+    ],
+    "expected_streams": 64
+  },
+  "prospective_original_NOT_RESERVED": {
+    "seeds": [
+      552000,
+      552016
+    ],
+    "families": [
+      988,
+      989,
+      990,
+      991
+    ]
+  },
+  "memory": {
+    "events_per_stream": 64,
+    "stored_edges_max": 12
+  },
+  "controls": [
+    "learned_retention",
+    "public_frequency_priority",
+    "public_tag_only",
+    "public_role_endpoint_priority",
+    "FIFO_last12",
+    "public_hash_reservoir",
+    "private_future_query_oracle_unfair"
+  ],
+  "thresholds": {
+    "gain_over_strongest_fair": 0.05,
+    "per_family_nondegradation": true
+  },
+  "future_query_hidden_during_retention": true,
+  "full_control_bank_pre_registered": true,
+  "independent_F3": false,
+  "original_executed": false,
+  "accepted_ref_mutation": false,
+  "paid_api_calls": 0
+}
