@@ -1,0 +1,98 @@
+{
+  "schema": "yggdrasil.f57.learned-causal-component-within-fit.protocol.v1",
+  "stage": "PRECODE_FROZEN_FIT_TRAIN_VALIDATION",
+  "parent_f57_source_head": "0269f25f0ae4e9590f5087de7a4909c97bd64edb",
+  "parent_f57_frozen_prereg_blob": "2c0255ae79fc8a302f5c4d085b919c3dd7514ca5",
+  "qualified_parent_run": 38825648335,
+  "hypothesis": "Bounded trainable causal component-merge/eviction policy learns to retain query-agnostic graph chains better than strongest fixed online policies under 144 bytes, without having access to future question, private component membership or source tags.",
+  "fit_training": {
+    "seeds": [
+      651000,
+      651008
+    ],
+    "families": [
+      1200,
+      1201,
+      1202,
+      1203
+    ],
+    "expected_streams": 32
+  },
+  "fit_validation": {
+    "seeds": [
+      651008,
+      651016
+    ],
+    "families": [
+      1200,
+      1201,
+      1202,
+      1203
+    ],
+    "expected_streams": 32
+  },
+  "frozen_DIAG_unconsumed": {
+    "seeds": [
+      651100,
+      651116
+    ],
+    "families": [
+      1204,
+      1205,
+      1206,
+      1207
+    ]
+  },
+  "protected_original_not_reserved": {
+    "seeds": [
+      652000,
+      652016
+    ],
+    "families": [
+      1208,
+      1209,
+      1210,
+      1211
+    ]
+  },
+  "policy": {
+    "trainable_integer_parameter_count": 6,
+    "training_algorithm": "deterministic_bounded_evolutionary_reward_search_training_only",
+    "max_fit_only_candidates": 64,
+    "random_seed": 57057,
+    "online_features": "retained_lossless_graph_records_and_current_public_edge_only",
+    "query_time_revelation": "after_online_retention",
+    "no_oracle_or_public_tag_features": true,
+    "max_merged_role_ops": 4,
+    "persistent_records_max": 12,
+    "serialized_bytes_per_record": 12,
+    "serialization_memory_bytes_max": 144,
+    "parameter_bytes_separate_from_record_budget": true
+  },
+  "controls": [
+    "learned_train_FIT_only",
+    "frozen_F57_causal_online",
+    "fixed_pair_chunk",
+    "fixed_triple_chunk",
+    "public_component_priority",
+    "public_FIFO",
+    "public_hash",
+    "public_offline_full_graph_noncompetitive",
+    "future_query_oracle_unfair"
+  ],
+  "acceptance": {
+    "gain_over_strongest_same_144B_online_min_absolute": 0.05,
+    "per_validation_family_nondegradation": true,
+    "positive_composition_retrieval_ablation": true,
+    "decoder_and_public_graph_receipts_independently_audited": true
+  },
+  "limits": {
+    "synthetic_TRAIN_only": true,
+    "native_total_576B_unverified": true,
+    "independent_F3": false,
+    "primary_original_executed": false,
+    "live_optimizer_policy_promotion": false,
+    "accepted_ref_mutation": false,
+    "Codex_or_paid_API_use": false
+  }
+}
