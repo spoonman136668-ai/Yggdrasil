@@ -7,11 +7,11 @@ retention. Independent synthetic TRAIN-only study, no F3/native residency.
 """
 from __future__ import annotations
 import json,math,random
-FIT=range(531000,531016)
-DIAG=range(531100,531116)
-FIT_FAM=(920,921,922,923)
-DIAG_FAM=(924,925,926,927)
-RESERVED=range(532000,532016)
+FIT=range(551000,551016)
+DIAG=range(551100,551116)
+FIT_FAM=(980,981,982,983)
+DIAG_FAM=(984,985,986,987)
+RESERVED=range(552000,552016)
 MEMORY=12
 EVENTS=64
 FEATURES=6
@@ -40,7 +40,7 @@ def source(seed,family):
             if v not in used:used.add(v);return v
     events=[];paths=[]
     for group in range(4):
-        seq=PATTERNS[(family-920+group)%8]
+        seq=PATTERNS[(family-980+group)%8]
         cur=node();start=cur;truth_edges=[]
         for role,direction in seq:
             end=node()

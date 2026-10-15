@@ -1,4 +1,4 @@
-"""Y-F51 independent row-level audit of bounded prospective TRAIN-only evidence."""
+"""Y-F51B independent row-level audit of bounded prospective TRAIN-only evidence."""
 import json,math,sys
 def audit(path,prereg):
  d=json.load(open(path));p=json.load(open(prereg))
@@ -22,10 +22,10 @@ def audit(path,prereg):
  for r in d['rows']:
   key=r['seed'],r['family']
   assert key not in seen;seen.add(key)
-  assert 531100<=r['seed']<531116 and r['family'] in v['families']
+  assert 551100<=r['seed']<551116 and r['family'] in v['families']
   assert len(r['public_events'])==64
   assert len(r['future_query']['chain'])==3
-  assert set(d['scores'])==set(arms)\n  assert set(r['results'])==set(arms)
+  assert set(r['results'])==set(arms)
   assert set(r['retained_event_indices'])==set(arms)-{'private_future_query_oracle_unfair'}
   for a,indices in r['retained_event_indices'].items():
    assert len(indices)==12 and len(set(indices))==12

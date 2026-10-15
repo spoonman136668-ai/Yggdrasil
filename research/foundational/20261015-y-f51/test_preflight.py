@@ -8,13 +8,13 @@ class Focused(unittest.TestCase):
   self.assertFalse(set(m.FIT)&set(m.DIAG))
   self.assertFalse(set(m.DIAG)&set(m.RESERVED))
   self.assertFalse(set(m.FIT_FAM)&set(m.DIAG_FAM))
-  for seed,fam in ((512000,928),(511100,924),(532000,928),(531100,920)):
+  for seed,fam in ((512000,928),(511100,924),(552000,988),(551100,980)):
    with self.assertRaises(ValueError):m.source(seed,fam)
  def test_all_fair_controls_really_implemented(self):
   self.assertEqual(m.ARMS,("learned_retention","public_frequency_priority",
    "public_tag_only","public_role_endpoint_priority","FIFO_last12",
    "public_hash_reservoir","private_future_query_oracle_unfair"))
-  events,query,paths=m.source(531000,920)
+  events,query,paths=m.source(551000,980)
   self.assertEqual(len(events),64)
   for arm in m.ARMS[:-1]:
    held=m.retained(events,arm,[0.]*m.FEATURES)
