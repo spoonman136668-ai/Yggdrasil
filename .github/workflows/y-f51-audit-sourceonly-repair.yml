@@ -1,0 +1,39 @@
+name: Y-F51 read-only audit parser repair and control identity blocker
+on:
+  push:
+    branches: [repair/y-f51-audit-syntax-sourceonly-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  no-experiment-parser-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify repaired syntax and preserve original registered-control failure
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python3 -B - <<'PY'
+          import ast, pathlib, json
+          root=pathlib.Path("research/foundational/20261015-y-f51")
+          src=(root/"audit_result.py").read_text()
+          compile(src,str(root/"audit_result.py"),"exec")
+          assert "assert set(d['scores'])==set(arms)\\n" not in src
+          module=ast.parse((root/"source_pilot.py").read_text())
+          assignment=next(n for n in module.body if isinstance(n,ast.Assign)
+                          and any(isinstance(t,ast.Name) and t.id=="ARMS" for t in n.targets))
+          actual=set(ast.literal_eval(assignment.value))
+          registered=set(json.loads((root/"prereg.json").read_text())["controls"])
+          assert "private_future_query_oracle_UNFAIR" in registered
+          assert "private_future_query_oracle_unfair" in actual
+          assert actual != registered
+          print("Y_F51_AUDIT_SYNTAX_REPAIRED_SOURCE_ONLY=PASS")
+          print("Y_F51_FROZEN_CONTROL_IDENTITY_MISMATCH=BLOCKED")
+          print("Y_F51_CONSUMED_DIAGNOSTIC_NOT_REPLAYED=PASS")
+          PY
+      - name: No protected original or TRAIN replay
+        run: echo 'SCIENCE_QUALIFICATION_FAILED=TRUE; NO_TRAIN_EXECUTION=TRUE; NO_PRIMARY_ORIGINAL=TRUE'
