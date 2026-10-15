@@ -1,0 +1,29 @@
+name: Yggdrasil F54 frozen source FIT-only preflight
+on:
+  push:
+    branches:
+      - research/y-f54-identifiable-memory-state-20261015-r1
+permissions:
+  contents: read
+jobs:
+  registered-fit-only:
+    if: "${{ github.event.head_commit.message == 'test(y-f54): FIT-only global memory and public-reference preflight' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify frozen source and precode prereg; reject identity drift
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 74e96e063a5916d0e7b34220de81c0a375918c0c HEAD
+          git merge-base --is-ancestor c4e31fb4232190402e98ae4e1afebeadb261d396 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f54/prereg-candidate.json)" = 1ffdb9c7286b61e60752e025ae03e3364779f1ae
+          test "$(git hash-object research/foundational/20261015-y-f54/source_pilot.py)" = 616ce046805f655ec9ace518f9ce46990ce6d33a
+          test "$(git hash-object research/foundational/20261015-y-f54/test_preflight.py)" = 022f81ab4b1e44f6d19148587cbed4fadafbe21a
+          python3 -B -m py_compile research/foundational/20261015-y-f54/source_pilot.py
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f54 -p test_preflight.py -v
+      - name: Source-use authority
+        run: echo "DIAGNOSTIC_SOURCE_RUNS=ZERO; INDEPENDENT_F3=UNQUALIFIED; ORIGINAL_FIRST_USES=UNTOUCHED"

@@ -1,0 +1,41 @@
+name: Yggdrasil F54 query-blind memory first-use PRECODE only
+on:
+  push:
+    branches: [research/y-f54-identifiable-memory-state-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  frozen-precode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Frozen prereg and exact controls before source implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor c4e31fb4232190402e98ae4e1afebeadb261d396 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f54/prereg-candidate.json)" = 1ffdb9c7286b61e60752e025ae03e3364779f1ae
+          python3 -B -m json.tool research/foundational/20261015-y-f54/prereg-candidate.json >/dev/null
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f54 -p test_prereg.py -v
+          if test -f research/foundational/20261015-y-f54/source_pilot.py; then
+            python3 -B -m py_compile research/foundational/20261015-y-f54/source_pilot.py
+          fi
+          if test -f research/foundational/20261015-y-f54/audit_result.py; then
+            python3 -B -m py_compile research/foundational/20261015-y-f54/audit_result.py
+          fi
+          echo Y_F54_FROZEN_PRECODE_AND_NO_ORIGINAL=PASS
+      - name: Install existing test environment
+        run: python3 -m pip install -e '.[test]'
+      - name: One full Yggdrasil regression without experiments
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pytest -q tests
+          echo Y_F54_PRECODE_ONLY_FULL_TESTS=PASS
+      - name: No science dispatch or first-use consumed
+        run: echo 'NO_NEW_Y_F54_FIT_OR_DIAGNOSTIC=TRUE; NO_F3_OR_PRIMARY_ORIGINAL=TRUE'

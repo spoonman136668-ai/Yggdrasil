@@ -1,0 +1,59 @@
+name: Y-F54 one frozen global query-blind memory TRAIN-only science
+on:
+  push:
+    branches:
+      - research/y-f54-identifiable-memory-state-20261015-r1
+permissions:
+  contents: read
+jobs:
+  once-only-train:
+    if: "${{ github.event.head_commit.message == 'science(y-f54): one frozen synthetic TRAIN diagnostic with independent audit' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Source, precode prereg, and exact public control identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 74e96e063a5916d0e7b34220de81c0a375918c0c HEAD
+          git merge-base --is-ancestor c4e31fb4232190402e98ae4e1afebeadb261d396 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f54/prereg-candidate.json)" = 1ffdb9c7286b61e60752e025ae03e3364779f1ae
+          test "$(git hash-object research/foundational/20261015-y-f54/source_pilot.py)" = 616ce046805f655ec9ace518f9ce46990ce6d33a
+          test "$(git hash-object research/foundational/20261015-y-f54/audit_result.py)" = 7d3e2ffcef77a48c152fb83e65353b49397512e1
+          test "$(git hash-object research/foundational/20261015-y-f54/test_preflight.py)" = 022f81ab4b1e44f6d19148587cbed4fadafbe21a
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f54 -p test_preflight.py -v
+      - name: One complete existing repository pytest regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+      - name: Exactly one fresh FIT plus disjoint synthetic diagnostic and source-free audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f54"
+          git rev-parse HEAD > "$RUNNER_TEMP/y-f54/SOURCE_SHA"
+          python3 -B research/foundational/20261015-y-f54/source_pilot.py > "$RUNNER_TEMP/y-f54/result.json"
+          python3 -m json.tool "$RUNNER_TEMP/y-f54/result.json" >/dev/null
+          python3 -B research/foundational/20261015-y-f54/audit_result.py             "$RUNNER_TEMP/y-f54/result.json"             research/foundational/20261015-y-f54/prereg-candidate.json             > "$RUNNER_TEMP/y-f54/independent-audit.json"
+          (cd "$RUNNER_TEMP/y-f54" && sha256sum result.json independent-audit.json > manifest.sha256)
+          cat "$RUNNER_TEMP/y-f54/independent-audit.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F54-one-TRAIN-only-global-memory-and-evidence
+          path: ${{ runner.temp }}/y-f54/
+          retention-days: 90
+          if-no-files-found: error
+      - name: Explicit authority boundaries
+        run: |
+          echo "FROZEN_SYNTHETIC_TRAIN_ONLY=TRUE"
+          echo "PRIMARY_ORIGINAL_RUNS=ZERO"
+          echo "SOURCE_INDEPENDENT_F3=UNQUALIFIED"
+          echo "TOTAL_NATIVE_576_BYTE_RESIDENCY=UNVERIFIED"
+          echo "ACCEPTED_REFS_OR_LIVE_CONTROLLER_MUTATED=FALSE"
