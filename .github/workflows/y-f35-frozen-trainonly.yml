@@ -1,0 +1,96 @@
+name: Y-F35 one frozen learned posterior TRAIN-only evaluation (NO original)
+on:
+  push:
+    branches:
+      - science/y-f35-frozen-learned-trainonly-20261015-r1
+permissions:
+  contents: read
+jobs:
+  feasibility:
+    if: "${{ github.event.head_commit.message == 'science(y-f35): one frozen learned-posterior TRAIN-only cohort' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Exact source and preregistration identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7ced5bac06fa16f4ddba40db2a3896cb6afb7ae2 HEAD
+          git merge-base --is-ancestor 654bd3cd1595a050bd04cbd3ed9bee7de8bfc5cc HEAD
+          test "$(git hash-object research/foundational/20261015-y-f35/train_only.py)" = bcdc0ccc3fbed4df2ece576d03046a97daa5f002
+          test "$(git hash-object research/foundational/20261015-y-f35/prereg-frozen.json)" = "$(git rev-parse 654bd3cd1595a050bd04cbd3ed9bee7de8bfc5cc:research/foundational/20261015-y-f35/prereg-frozen.json)"
+          python3 -m unittest discover -s research/foundational/20261015-y-f35 -p test_preflight.py -v
+      - name: Exactly one prospective learned-posterior TRAIN-only cohort
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f35/train_only.py > /tmp/y-f35-learned-train-only.json
+          python3 -m json.tool /tmp/y-f35-learned-train-only.json > /dev/null
+          sha256sum /tmp/y-f35-learned-train-only.json > /tmp/y-f35-learned-train-only.sha256
+          git rev-parse HEAD > /tmp/y-f35-source-commit.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F35-one-frozen-TRAIN-only-evidence
+          path: |
+            /tmp/y-f35-learned-train-only.json
+            /tmp/y-f35-learned-train-only.sha256
+            /tmp/y-f35-source-commit.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Independently audit every prediction and physical acquisition
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,math
+          d=json.load(open('/tmp/y-f35-learned-train-only.json'))
+          p=json.load(open('research/foundational/20261015-y-f35/prereg-frozen.json'))
+          assert d['schema']=='yggdrasil.f35.learned-conditional-posterior.trainonly.v1'
+          assert d['stage']=='FRESH_TRAIN_ONLY_EVALUATION_NOT_PRIMARY_ORIGINAL'
+          assert d['train_seed_range']==p['train']['seeds']
+          assert d['train_families']==p['train']['families']
+          assert d['eval_seed_range']==p['train_only_eval']['seeds']
+          assert d['eval_families']==p['train_only_eval']['families']
+          assert d['reserved_original_seeds']==p['reserved_primary_original']['seeds']
+          assert d['reserved_original_families']==p['reserved_primary_original']['families']
+          assert d['questions']==p['train_only_eval']['expected_queries']==512
+          assert len(d['rows'])==512
+          assert len({(r['seed'],r['family'],r['condition'],r['mechanism']) for r in d['rows']})==512
+          assert d['trainable_coefficients']==24 and d['native_policy_weights_bytes']==192
+          assert d['physical_target_reads_per_role']==2
+          assert not d['independent_F3_source_custody'] and d['primary_original_not_executed']
+          assert d['source_hidden_modes_unavailable_to_policy'] and not d['accepted_ref_mutation']
+          assert all(222800<=r['seed']<222816 and r['family'] in (214,215,216,217)
+                     and r['public_anchor_count']==16 for r in d['rows'])
+          for row in d['rows']:
+            for arm,receipts in row['receipts'].items():
+              assert len(receipts)==3
+              assert all(len(pair)==2 and pair[0]==0 and pair[1] in (1,2,3) for pair in receipts)
+          for arm,s in d['scores'].items():
+            good=sum(r['answers'][arm]==r['truth'] for r in d['rows'])
+            fp=sum(r['answers'][arm] and not r['truth'] for r in d['rows'])
+            fn=sum(not r['answers'][arm] and r['truth'] for r in d['rows'])
+            assert (s['correct'],s['fp'],s['fn'],s['total'])==(good,fp,fn,512)
+            assert math.isclose(s['accuracy'],good/512,abs_tol=1e-12)
+          assert d['scores']['privileged_oracle']['correct']==512
+          for mech,arms in d['by_mechanism'].items():
+            subset=[r for r in d['rows'] if r['mechanism']==mech]
+            assert len(subset)==256
+            for arm,s in arms.items():
+              assert s['correct']==sum(r['answers'][arm]==r['truth'] for r in subset)
+          assert 0<=d['conditional_switch_rate']<=1
+          controls=('polarity_bayes','empirical_brier','calibrated_static','fixed')
+          gain=d['scores']['learned']['accuracy']-max(d['scores'][a]['accuracy'] for a in controls)
+          nondegrade=all(d['by_mechanism'][m]['learned']['accuracy']>=max(d['by_mechanism'][m][a]['accuracy'] for a in controls) for m in d['by_mechanism'])
+          advance=gain>=.02 and nondegrade and d['conditional_switch_rate']>0 and d['scores']['learned']['accuracy']>d['scores']['masked_first']['accuracy']
+          expected='TRAIN_ONLY_LEARNED_POSTERIOR_QUALIFIED' if advance else 'TRAIN_ONLY_LEARNED_POSTERIOR_NO_GAIN'
+          assert d['verdict']==expected
+          print('Y_F35_TRAIN_ONLY_RESULT',expected,{a:s['correct'] for a,s in d['scores'].items()},
+            'switch',d['conditional_switch_rate'],'examples',d['train_examples'])
+          PY
+      - name: No acceptance
+        run: echo "Prospective TRAIN-only result; no reserved primary original, independent F3 custody or accepted-ref mutation"
