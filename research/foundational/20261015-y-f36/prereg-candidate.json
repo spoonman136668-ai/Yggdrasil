@@ -1,0 +1,107 @@
+{
+  "schema": "yggdrasil.f36.latent-reliability-prereg.v1",
+  "status": "PRE_CODE_DESIGN_NOT_FIRST_USE",
+  "negative_predecessor_run": 38742845718,
+  "source_parent_commit": "7ced5bac06fa16f4ddba40db2a3896cb6afb7ae2",
+  "hypothesis": "A gradient-trained probabilistic posterior over latent source reliability, explicitly updated after first paid observation, can improve future typed-decision accuracy and predictive logloss over a strong public-polarity Bayesian and empirical conditional Brier baseline under unfamiliar sensor mechanisms.",
+  "source": "Distinct synthetic development calibration mechanism: two latent mode-dependent reliabilities, observable source polarity, novel noise and skew, private mode and truth held evaluator-only. Fair models share public labeled anchor calibration; two actual target purchases per descriptor.",
+  "meta_train": {
+    "seeds": [
+      251800,
+      251824
+    ],
+    "families": [
+      220,
+      221,
+      222
+    ],
+    "mechanisms": [
+      0,
+      1
+    ],
+    "conditions": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "anchors": 16
+  },
+  "train_only_eval": {
+    "seeds": [
+      252800,
+      252816
+    ],
+    "families": [
+      224,
+      225,
+      226,
+      227
+    ],
+    "mechanisms": [
+      0,
+      1
+    ],
+    "conditions": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "expected_questions": 512
+  },
+  "reserved_development_original": {
+    "seeds": [
+      253800,
+      253816
+    ],
+    "families": [
+      230,
+      231,
+      232,
+      233
+    ],
+    "not_accessed": true
+  },
+  "blocked_past_seeds": {
+    "yf35": [
+      222800,
+      222816
+    ],
+    "yf34_original": [
+      212800,
+      212816
+    ]
+  },
+  "model": "Train-only gradient logistic latent-mode posterior with calibration conditioning, source trustworthiness inferred from public reference. Action selects second purchased channel using posterior expected predictive quality. No hardcoded access to hidden mode.",
+  "controls": [
+    "public_polarity_Bayesian",
+    "equal_calibration_empirical_conditional_Brier",
+    "static",
+    "fixed",
+    "first_reading_masked_posterior",
+    "oracle_unfair"
+  ],
+  "criteria": {
+    "min_absolute_accuracy_gain_over_fair": 0.02,
+    "nondegrade_each_mechanism": true,
+    "positive_first_read_ablation": true,
+    "positive_causal_action_switch": true,
+    "heldout_posterior_logloss_reported": true
+  },
+  "cost": {
+    "physical_reads_per_descriptor": 2,
+    "native_core_limit_bytes": 576,
+    "learned_coefficients_accounted": true,
+    "training_heap_external": true,
+    "calibration_external": true
+  },
+  "authority": {
+    "train_only_pilot_first": true,
+    "primary_original_not_authorized": true,
+    "F3_independent_custody": false,
+    "no_controller_FORGE_Cloudflare_KTRADE_edits": true,
+    "no_paid_API": true,
+    "no_accepted_ref_mutation": true
+  }
+}
