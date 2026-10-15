@@ -1,0 +1,58 @@
+name: Y-F52 bridge-aware topology-shift TRAIN-only research
+on:
+  push:
+    branches: [research/y-f52-bridge-retention-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  qualification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 95
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Immutable first-alone prereg, controls, public negatives
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 96cc6f8decd315482ed4d41eebd0f93c8e4b201c HEAD
+          test "$(git hash-object research/foundational/20261015-y-f52/prereg.json)" = 96f9b50770d836c70f0adedacfa721af6d130edf
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f52 -p test_preflight.py -v
+          python3 -m py_compile research/foundational/20261015-y-f52/audit_result.py
+      - name: One complete repository pytest regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+  diagnostic:
+    if: ${{ github.event.head_commit.message == 'science(y-f52): dispatch first fresh TRAIN-only star-bridge evaluation' && github.run_attempt == 1 }}
+    needs: qualification
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Exactly one novel star-shifted TRAIN cohort, independently reconstructed
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/y-f52";mkdir -p "$root"
+          python3 -B research/foundational/20261015-y-f52/source_pilot.py > "$root/result.json"
+          python3 -B research/foundational/20261015-y-f52/audit_result.py \
+            "$root/result.json" research/foundational/20261015-y-f52/prereg.json \
+            > "$root/independent-audit.txt"
+          (cd "$root";sha256sum result.json independent-audit.txt > sha256-manifest.txt)
+          printf '%s\n' "$GITHUB_SHA" > "$root/SOURCE_SHA"
+          cat "$root/independent-audit.txt"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: Y-F52-star-bridge-fresh-TRAIN-NO-ORIGINAL
+          path: ${{ runner.temp }}/y-f52/
+          retention-days: 30
+          if-no-files-found: error
