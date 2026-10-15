@@ -1,0 +1,72 @@
+name: Yggdrasil F53 one frozen synthetic TRAIN-only novel mechanism
+on:
+  push:
+    branches:
+      - research/y-f53-future-value-chain-state-20261015-r1
+permissions:
+  contents: read
+  actions: read
+jobs:
+  frozen-source:
+    if: "${{ github.event.head_commit.message == 'science(y-f53): execute frozen prospective chain-value TRAIN only' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Exact prereg, original source isolation and model/audit blob identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 53fbad130ecb696d78871c85e3f570c51751f4fa HEAD
+          git merge-base --is-ancestor 16f8710a63d02f9619105a2a153abcff8ad39b95 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f53/prereg-candidate.json)" = 6406dcc9f6056b402313a4289ee8a659c925ab83
+          test "$(git hash-object research/foundational/20261015-y-f53/source_pilot.py)" = c22eb4f0bc82149665c4bb10d5f89ea88f0bb6ca
+          test "$(git hash-object research/foundational/20261015-y-f53/audit_result.py)" = b36d811a07a2d795e986b5279fa143590858f6e6
+          test "$(git hash-object research/foundational/20261015-y-f53/test_preflight.py)" = e42c5f3861d304d599ed49c429dafd90eb2a819f
+          python3 -m json.tool research/foundational/20261015-y-f53/prereg-candidate.json >/dev/null
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f53 -p test_preflight.py -v
+      - name: Verify first-use FIT-only preflight passed on exact frozen source
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          data=$(curl --fail --silent --show-error --retry 2 --max-time 20             -H "Accept: application/vnd.github+json"             -H "Authorization: Bearer $GH_TOKEN"             "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/runs/38816691148")
+          echo "$data" | jq -e '.status=="completed" and .conclusion=="success" and .run_attempt==1'
+      - name: Exactly one repository-wide regression before scientific source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+      - name: Exactly one fresh FIT plus disjoint synthetic TRAIN diagnostic with independent audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rev-parse HEAD > /tmp/y-f53-head.txt
+          python3 -B research/foundational/20261015-y-f53/source_pilot.py > /tmp/y-f53-result.json
+          python3 -m json.tool /tmp/y-f53-result.json >/dev/null
+          (cd /tmp && sha256sum y-f53-result.json > y-f53-result.sha256)
+          python3 -B research/foundational/20261015-y-f53/audit_result.py             /tmp/y-f53-result.json             research/foundational/20261015-y-f53/prereg-candidate.json             > /tmp/y-f53-independent-audit.txt
+          cat /tmp/y-f53-independent-audit.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Yggdrasil-F53-one-frozen-TRAIN-and-evidence
+          path: |
+            /tmp/y-f53-head.txt
+            /tmp/y-f53-result.json
+            /tmp/y-f53-result.sha256
+            /tmp/y-f53-independent-audit.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Explicit scientific authority limits
+        run: |
+          echo "NEW_SYNTHETIC_TRAIN_EXECUTIONS=ONE"
+          echo "PROTECTED_ORIGINALS_EXECUTED=ZERO"
+          echo "INDEPENDENT_F3_CUSTODY=UNQUALIFIED"
+          echo "TOTAL_NATIVE_576B_RESIDENCY=UNVERIFIED"
+          echo "ACCEPTED_SCIENCE_OR_LIVE_OPTIMIZER_REFS_CHANGED=FALSE"

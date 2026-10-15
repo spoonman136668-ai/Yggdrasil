@@ -1,0 +1,83 @@
+{
+  "schema": "yggdrasil.f53.trainable-chain-value-consolidation.prereg.v1",
+  "stage": "PRECODE_FROZEN_NO_SOURCE_CONSUMED",
+  "source_parent_head": "53fbad130ecb696d78871c85e3f570c51751f4fa",
+  "F52_run": 38815248787,
+  "tracking_issue": 260,
+  "hypothesis": "Learn task-distribution-aware graph chain consolidation and question-agnostic retrieval under a hard 144-serialized-byte persistent budget, beating strong equal-byte fixed symbolic topology compression on unseen multi-hop relationship structures.",
+  "fit": {
+    "seeds": [
+      571000,
+      571016
+    ],
+    "families": [
+      1000,
+      1001,
+      1002,
+      1003
+    ],
+    "expected_training_streams": 64,
+    "stream_motifs": [
+      "branched_pairs",
+      "typed_dag"
+    ]
+  },
+  "diagnostic": {
+    "seeds": [
+      571100,
+      571116
+    ],
+    "families": [
+      1004,
+      1005,
+      1006,
+      1007
+    ],
+    "expected_streams": 64,
+    "stream_motifs": [
+      "cross_role_loops",
+      "novel_variable_bindings"
+    ]
+  },
+  "stream": {
+    "public_events": 72,
+    "record_bytes": 12,
+    "memory_payload_bytes_max": 144,
+    "records_max": 12,
+    "query_hops": [
+      4,
+      6,
+      8
+    ],
+    "future_question_hidden_during_all_ingestion": true,
+    "decoder_role_direction_path_bits_max": 18,
+    "metadata_and_index_accounted": true
+  },
+  "controls": [
+    "learned_future_value_consolidation",
+    "public_greedy_triple_chunks",
+    "public_greedy_pair_chunks",
+    "public_connected_component_chunks",
+    "public_dag_path_compression",
+    "raw_degree",
+    "raw_FIFO",
+    "public_hash",
+    "private_future_query_oracle_unfair"
+  ],
+  "analysis_only_public_information_bound": "Compute a bounded public-observation-only exhaustive covering baseline using no hidden future-query or source membership; account computational cost separately, never claim it is same-cost fair.",
+  "thresholds": {
+    "gain_vs_strongest_equal_byte_fair_min": 0.05,
+    "per_heldout_family_nondegradation": true,
+    "positive_retrieval_ablation": true,
+    "independent_decoder_bytes_and_future_query_audit": true
+  },
+  "limits": {
+    "train_future_questions_only_used_on_FIT": true,
+    "diagnostic_future_query_never_in_retention_input": true,
+    "source_independent_F3": false,
+    "original_run": false,
+    "native_total_576B_unverified": true,
+    "accepted_ref_mutation": false,
+    "paid_api_calls": 0
+  }
+}

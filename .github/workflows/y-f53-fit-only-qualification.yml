@@ -1,0 +1,30 @@
+name: Yggdrasil F53 FIT-only preregulated source preflight
+on:
+  push:
+    branches:
+      - research/y-f53-future-value-chain-state-20261015-r1
+permissions:
+  contents: read
+jobs:
+  source-preflight:
+    if: "${{ github.event.head_commit.message == 'test(y-f53): independently qualify FIT-only chain value preflight' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Freeze precode preregistration and registered FIT model identity
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 53fbad130ecb696d78871c85e3f570c51751f4fa HEAD
+          git merge-base --is-ancestor 16f8710a63d02f9619105a2a153abcff8ad39b95 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f53/prereg-candidate.json)" = 6406dcc9f6056b402313a4289ee8a659c925ab83
+          test "$(git hash-object research/foundational/20261015-y-f53/source_pilot.py)" = c22eb4f0bc82149665c4bb10d5f89ea88f0bb6ca
+          test "$(git hash-object research/foundational/20261015-y-f53/test_preflight.py)" = e42c5f3861d304d599ed49c429dafd90eb2a819f
+          python3 -m json.tool research/foundational/20261015-y-f53/prereg-candidate.json >/dev/null
+          python3 -B -m py_compile research/foundational/20261015-y-f53/source_pilot.py
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f53 -p test_preflight.py -v
+      - name: No prospective cohort consumed
+        run: echo "TRAIN_FIT_ONLY_TESTS=TRUE; NEW_DIAGNOSTIC=FALSE; PRIMARY_ORIGINAL=FALSE; ACCEPTED_REFS_UNCHANGED=TRUE"
