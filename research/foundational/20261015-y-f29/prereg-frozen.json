@@ -1,0 +1,93 @@
+{
+  "schema": "yggdrasil.f29.prereg-frozen.v1",
+  "status": "LOCKED_BEFORE_DEVELOPMENT_ORIGINAL",
+  "experiment_id": "Y-F29",
+  "predecessor_negative": {
+    "original_run": 38716263569,
+    "source_commit": "2d1a339782d56b403c3afb1cc1a11035f9d5c57b"
+  },
+  "proposal_commit": "d308dbe1f00d3759e554f3ade3c69765a60ef35c",
+  "qualified_implementation_commit": "ad218e853cc814e7bc57d3c24e343d886ff4d971",
+  "qualified_implementation_tree": "eda64f6131121891d55763752dbc392c0d7200bc",
+  "source_path": "research/foundational/20261015-y-f29/execute.py",
+  "source_blob_sha": "02806ff8dbf75bdb48bbe85b010338aa3502e7d7",
+  "qualification_run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38718168012",
+  "train": {
+    "seeds": [
+      151000,
+      151079
+    ],
+    "mechanisms": [
+      0,
+      1,
+      2
+    ],
+    "conditions": [
+      "missing",
+      "noise",
+      "anchor-corruption"
+    ],
+    "expected_examples": 2133,
+    "epochs": 120,
+    "weights": 8,
+    "biases": 4
+  },
+  "test": {
+    "seeds": [
+      152800,
+      152816
+    ],
+    "novel_regimes": [
+      3,
+      4
+    ],
+    "families": [
+      108,
+      109,
+      110,
+      111
+    ],
+    "conditions": [
+      "missing",
+      "noise",
+      "anchor-corruption"
+    ],
+    "expected_queries": 384,
+    "calibration_anchors": 48
+  },
+  "methods": [
+    "learned",
+    "empirical_adaptive",
+    "conditional_greedy",
+    "static",
+    "fixed",
+    "masked_first",
+    "privileged_oracle"
+  ],
+  "acceptance": {
+    "source_oracle_correct": 384,
+    "minimum_absolute_gain_vs_best_equal_budget": 0.02,
+    "per_condition_and_mechanism_non_degrading": true,
+    "conditional_first_read_action_switch_positive": true,
+    "invalid_if_unpurchased_target_leak_or_budget_drift": true
+  },
+  "resources": {
+    "native_core_bytes": 576,
+    "purchased_reads_per_role": 2,
+    "calibration_history_bytes_external": 1920,
+    "training_uses_all_train_only_channels": true
+  },
+  "disclosures": {
+    "same_repo_synthetic_generator": true,
+    "independent_F3_source_custody": false,
+    "first_sensor_programmed": true,
+    "known_typed_decoder": true,
+    "stage": "DEVELOPMENT_ONLY"
+  },
+  "execution": {
+    "exactly_one_original": true,
+    "full_regression_passed_before_freeze": true,
+    "no_accepted_ref_mutation": true,
+    "no_controller_or_FORGE_cloudflare_KTRADE_edits": true
+  }
+}

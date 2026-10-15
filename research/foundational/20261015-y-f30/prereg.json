@@ -1,0 +1,82 @@
+{
+  "schema": "yggdrasil.f30.prereg.v1",
+  "parent": "21ebe0696474638048123f15f7799cd76d11be3c",
+  "scientific_question": "Does sequential sensing have measurable downstream advantage when the first observation identifies an otherwise latent reliable-expert mode, under a two-read budget and no generator regime labels at inference?",
+  "synthetic_causal_source": {
+    "first_read_source0": "Noisy mode probe, independent from the hidden binary target; value low in source mode0, high in source mode1",
+    "second_source_candidates": [
+      1,
+      2
+    ],
+    "mechanism": "Sensor1 informative for mode0, sensor2 informative for mode1, both share overlapping pooled reliability; third source is weak truth signal",
+    "test_regime4": "Reverses first mode cue polarity without telling the learned candidate or cheap controls",
+    "test_regime3": "New reliability strengths/noise with training cue polarity",
+    "source_mode_never_given_to_candidate": true,
+    "source_generator_programmed": true
+  },
+  "training": {
+    "only_train_seeds": [
+      174000,
+      174120
+    ],
+    "only_train_regimes": [
+      0,
+      1,
+      2
+    ],
+    "train_examples": 1080,
+    "learned_params": 2,
+    "training_epoch_count": 260,
+    "source0_first_before_choose_second": true,
+    "train_time_gradient_uses_all_train_sources": true,
+    "no_test_labels_or_measurements_in_fit": true
+  },
+  "test": {
+    "seeds": [
+      175500,
+      175524
+    ],
+    "families": [
+      108,
+      109,
+      110,
+      111
+    ],
+    "regimes": [
+      3,
+      4
+    ],
+    "questions": 192,
+    "relation_composer": "Parity for even families, 2/3 majority for odd families",
+    "public_labeled_calibration_anchors": 40,
+    "calibration_external_bytes": 1600,
+    "actual_purchased_reads_per_bit": 2,
+    "native_state_bytes": 576
+  },
+  "controls": [
+    "two-weight learned mode-sensitive second-source choice",
+    "strong public-anchors conditional empirical MSE nearest neighbors",
+    "simple static threshold on first mode probe",
+    "static calibrated most-accurate source",
+    "always choose source1",
+    "privileged true-bit oracle"
+  ],
+  "preregistered_success": {
+    "min_learned_accuracy": 0.9,
+    "min_gain_over_best_cheap": 0.02,
+    "min_worst_test_regime_accuracy": 0.85,
+    "minimum_first_read_counterfactual_switches": 24,
+    "oracle_correct": 192
+  },
+  "outcomes": [
+    "DEVELOPMENT_CONDITIONAL_VOI_LEARNED_GAIN",
+    "DEVELOPMENT_CONDITIONAL_VOI_NO_QUALIFIED_GAIN"
+  ],
+  "limits": {
+    "mode_probe_mechanism_author_defined": true,
+    "first_sensor_preprogrammed": true,
+    "not_autonomous_discovery_of_reliability_model": true,
+    "sealed_F3_first_use": false,
+    "no_FORGE_cloudflare_KTRADE_controller_changes": true
+  }
+}

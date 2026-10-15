@@ -1,0 +1,66 @@
+name: Y-F30 causal conditional second-source information value
+on:
+  push:
+    branches: [research/y-f30-mode-conditioned-sequential-voi-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false, fetch-depth: 0}
+      - name: Install scientific project dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify frozen Y-F29 original and prospectively frozen source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 21ebe0696474638048123f15f7799cd76d11be3c HEAD
+          test "$(git hash-object research/foundational/20261015-y-f29/execute.py)" = "$(git rev-parse 21ebe0696474638048123f15f7799cd76d11be3c:research/foundational/20261015-y-f29/execute.py)"
+          python3 -m py_compile research/foundational/20261015-y-f30/execute.py
+          python3 -m json.tool research/foundational/20261015-y-f30/prereg.json >/dev/null
+      - name: Execute exactly one original conditional-mode sensing study
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261015-y-f30/execute.py > /tmp/y-f30-original.json
+          python3 -m json.tool /tmp/y-f30-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F30-original-conditional-mode-information-probe
+          path: /tmp/y-f30-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independent source, custody and scientific-outcome audit
+        run: |
+          python3 - <<'PY'
+          import collections,json
+          r=json.load(open('/tmp/y-f30-original.json'))
+          assert r['stage']=='DEVELOPMENT_ONLY' and r['questions']==192
+          assert r['training_seed_range']==[174000,174120]
+          assert r['test_seed_range']==[175500,175524]
+          assert r['first_source_is_mode_probe_not_truth_sensor']
+          assert r['first_probe_mode_cue_polarity_reverses_in_test_regime4']
+          assert r['actual_two_purchased_readings_per_role']
+          assert r['native_state_bytes']==576 and r['calibration_external_bytes']==1600
+          assert r['source_mode_not_given_to_learned_policy']
+          assert not r['source_born_independently'] and not r['sealed_first_use'] and not r['accepted_ref_mutation']
+          assert r['train_only_examples']==1080
+          assert collections.Counter(row['regime'] for row in r['rows'])=={3:96,4:96}
+          for name in ('learned','conditional_empirical','simple_marker','static_calibrated','fixed_expert1','privileged_oracle'):
+            x=r['scores'][name]
+            assert x['correct']==sum(row['predictions'][name]==row['truth'] for row in r['rows'])
+            assert x['false_positives']==sum(row['predictions'][name] and not row['truth'] for row in r['rows'])
+            assert x['false_negatives']==sum(not row['predictions'][name] and row['truth'] for row in r['rows'])
+          assert r['scores']['privileged_oracle']['correct']==192
+          for row in r['rows']:
+            for name,trace in row['receipts'].items():
+              assert len(trace)==3
+              assert all(len(t)==2 and t[0][0]==0 and t[1][0] in (1,2) for t in trace)
+          assert r['verdict'] in ('DEVELOPMENT_CONDITIONAL_VOI_LEARNED_GAIN',
+             'DEVELOPMENT_CONDITIONAL_VOI_NO_QUALIFIED_GAIN')
+          print('Y_F30_VERDICT',r['verdict'],r['scores'])
+          PY
+      - name: Complete Yggdrasil pytest regression
+        run: python3 -m pytest -q tests

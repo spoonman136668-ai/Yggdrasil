@@ -1,0 +1,88 @@
+name: Y-F29 frozen one-shot developmental science
+on:
+  push:
+    branches:
+      - science/y-f29-frozen-original-20261015-r1
+permissions:
+  contents: read
+jobs:
+  original:
+    if: "${{ github.event.head_commit.message == 'science(y-f29): frozen development original' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install scientific dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Frozen source and preregistration verification
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor ad218e853cc814e7bc57d3c24e343d886ff4d971 HEAD
+          git merge-base --is-ancestor 2e32b1dd19c0a1e63eee5e6933e5868f04dd11cd HEAD
+          test "$(git hash-object research/foundational/20261015-y-f29/execute.py)" = 02806ff8dbf75bdb48bbe85b010338aa3502e7d7
+          test "$(git hash-object research/foundational/20261015-y-f29/prereg-frozen.json)" = "$(git rev-parse 2e32b1dd19c0a1e63eee5e6933e5868f04dd11cd:research/foundational/20261015-y-f29/prereg-frozen.json)"
+          python3 -m json.tool research/foundational/20261015-y-f29/prereg-frozen.json > /dev/null
+          python3 -m unittest discover -s research/foundational/20261015-y-f29 -p test_preflight.py -q
+      - name: Single prospective Y-F29 developmental original
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261015-y-f29/execute.py > /tmp/y-f29-original.json
+          python3 -m json.tool /tmp/y-f29-original.json > /dev/null
+          sha256sum /tmp/y-f29-original.json > /tmp/y-f29-original.sha256
+          git rev-parse HEAD > /tmp/y-f29-original-commit.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F29-once-development-original
+          path: |
+            /tmp/y-f29-original.json
+            /tmp/y-f29-original.sha256
+            /tmp/y-f29-original-commit.txt
+          retention-days: 90
+          if-no-files-found: warn
+      - name: Independent original and acquisition audit
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,math,collections
+          d=json.load(open('/tmp/y-f29-original.json'))
+          p=json.load(open('research/foundational/20261015-y-f29/prereg-frozen.json'))
+          assert d['schema']=='yggdrasil.f29.unknown-shift-development.v1'
+          assert d['stage']=='DEVELOPMENT_ONLY' and not d['sealed_first_use']
+          assert not d['independently_born_F3_source'] and not d['accepted_ref_mutation']
+          assert d['questions']==p['test']['expected_queries']==384
+          assert d['train_examples']==p['train']['expected_examples']==2133
+          assert len(d['trained_policy_weights'])==8 and len(d['trained_policy_bias'])==4
+          assert d['native_state_bytes']==576 and d['read_budget']==2
+          assert d['public_calibration_anchors']==48 and d['source_mode_unavailable_at_inference']
+          assert set(d['test_regimes'])==set(p['test']['novel_regimes'])
+          assert set(d['test_families'])==set(p['test']['families'])
+          assert set(d['conditions'])==set(p['test']['conditions'])
+          assert len(d['rows'])==384
+          assert len({(r['seed'],r['family'],r['regime'],r['condition']) for r in d['rows']})==384
+          assert collections.Counter(r['regime'] for r in d['rows'])=={3:192,4:192}
+          assert all(152800<=r['seed']<152816 and r['calibration_anchor_count']==48 for r in d['rows'])
+          for row in d['rows']:
+            for arm,traces in row['receipts'].items():
+              assert len(traces)==3
+              for pair in traces:
+                assert len(pair)==2 and pair[0][0]!=pair[1][0]
+                assert all(0<=s<4 and 0<=v<=1 for s,v in pair)
+          for arm,s in d['scores'].items():
+            correct=sum(r['predictions'][arm]==r['truth'] for r in d['rows'])
+            fp=sum(bool(r['predictions'][arm]) and not r['truth'] for r in d['rows'])
+            fn=sum(not bool(r['predictions'][arm]) and r['truth'] for r in d['rows'])
+            assert (s['correct'],s['false_positives'],s['false_negatives'])==(correct,fp,fn)
+            assert math.isclose(s['accuracy'],correct/384,abs_tol=1e-12)
+          assert d['scores']['privileged_oracle']['correct']==384
+          assert 0<=d['learned_first_value_switch_rate']<=1
+          assert d['verdict'] in ('DEVELOPMENT_UNKNOWN_SHIFT_LEARNED_GAIN','DEVELOPMENT_UNKNOWN_SHIFT_NO_QUALIFIED_GAIN')
+          print('Y_F29_REGISTERED',d['verdict'],{a:d['scores'][a]['correct'] for a in d['scores']})
+          PY
+      - name: Development evidence only
+        run: echo "Y-F29 completed developmental original; no F3 claim, accepted refs or controller changes"
