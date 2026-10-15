@@ -1,0 +1,81 @@
+{
+  "schema": "yggdrasil.f44.unseen-mechanism-transfer-prereg.v1",
+  "stage": "PRECODE_PREREG_NO_SCIENCE_EXECUTED",
+  "parent_y_f43_preflight_sha": "476f12dfc9737308f26bd624ecf1b4982d9c495a",
+  "prior_negative_run": 38796818545,
+  "design_issue": 239,
+  "hypothesis": "A trainable public-anchor latent reliability representation using local channel-error structure transfers to entirely unseen mechanism classes, improves downstream typed-task prediction by >=2pp over the strongest fair matched-data control, and never degrades either heldout mechanism.",
+  "train_only": {
+    "fit_seeds": [
+      361000,
+      361008
+    ],
+    "diagnostic_seeds": [
+      361100,
+      361108
+    ],
+    "families": [
+      440,
+      441,
+      442,
+      443
+    ],
+    "training_mechanisms": [
+      "lagged_hint",
+      "periodic_inversion"
+    ],
+    "heldout_mechanisms": [
+      "threshold_context",
+      "cross_channel_swap"
+    ],
+    "conditions": [
+      "coupled",
+      "decoupled"
+    ],
+    "public_reference_anchors": 24,
+    "source_roles": 3,
+    "paid_reads_per_role": 2,
+    "fit_labels_available_only_to_training_not_actions": true,
+    "expected_diagnostic_cases": 128
+  },
+  "reserved_original": {
+    "seeds": [
+      362000,
+      362016
+    ],
+    "families": [
+      444,
+      445,
+      446,
+      447
+    ]
+  },
+  "controls": [
+    "learned_anchor_latent",
+    "empirical_conditional_Brier",
+    "Gaussian_kernel",
+    "fitted_Gaussian_latent",
+    "global_static",
+    "source_variance",
+    "learned_first_masked",
+    "private_oracle_unfair"
+  ],
+  "thresholds": {
+    "accuracy_gain_over_strongest_fair_min": 0.02,
+    "positive_first_read_ablation": true,
+    "no_heldout_mechanism_regression": true,
+    "report_FP_FN_Brier_log_loss": true,
+    "independent_row_and_purchase_receipt_audit": true
+  },
+  "constraints": {
+    "no_mechanism_or_family_label_as_action_feature": true,
+    "match_public_calibration_for_every_arm": true,
+    "train_only_same_repository_synthetic": true,
+    "source_independent_F3_custody": false,
+    "native_576_byte_residency_qualified": false,
+    "packed_parameters_cannot_establish_native_total_RAM": true,
+    "primary_original_executed": false,
+    "no_paid_API_or_Codex": true,
+    "no_CKB_FORGE_KTRADE_controller_or_accepted_ref_mutation": true
+  }
+}
