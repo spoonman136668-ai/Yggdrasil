@@ -1,0 +1,33 @@
+name: Y-F39 observation credibility pre-original engineering only
+on:
+  push:
+    branches:
+      - research/y-f39-evidence-trust-preflight-20261015-r1
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install existing test environment
+        run: python3 -m pip install -e '.[test]'
+      - name: Precode preregistration and negative ancestor
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 5f2cee677aa626bb8afec74d60e8274e0b736b9f HEAD
+          git merge-base --is-ancestor 670504313b2a257b0236c4cf09a531b3ee62b659 HEAD
+          python3 -m json.tool research/foundational/20261015-y-f39/prereg-candidate.json > /dev/null
+          python3 -m py_compile research/foundational/20261015-y-f39/train_only.py
+      - name: Public-reference trust and two paid-read tests
+        run: python3 -m unittest discover -s research/foundational/20261015-y-f39 -p test_preflight.py -v
+      - name: One full pytest regression
+        run: python3 -m pytest -q tests
+      - name: Explicit boundary
+        run: |
+          echo "Engineering only. Prospective TRAIN-only cohort and primary original NOT executed."
