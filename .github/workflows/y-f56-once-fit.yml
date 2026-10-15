@@ -1,0 +1,54 @@
+name: Yggdrasil F56 frozen public-source FIT-only feasibility
+on:
+  push:
+    branches:
+      - research/y-f56-arrival-aware-memory-20261015-r1
+permissions:
+  contents: read
+jobs:
+  fit-source:
+    if: "${{ github.event.head_commit.message == 'science(y-f56): one FIT-only causal online memory feasibility and full regression' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Assert precode prereg and exact FIT-only model/test/audit blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7644bc3c1d5a8d951847a182903e34e4f1b000e0 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f56/prereg-candidate.json)" = ae0ce87044591afe59124867f665638b70a60941
+          test "$(git hash-object research/foundational/20261015-y-f56/source_feasibility.py)" = c53ca4a41635fa5413243c976e846cbb94dbca80
+          test "$(git hash-object research/foundational/20261015-y-f56/test_fit_preflight.py)" = ca66945c4fb2cab81af8772f9e81e7c934d33fce
+          test "$(git hash-object research/foundational/20261015-y-f56/audit_fit.py)" = fee48ff6fe74051d87ee5682e47d913c27f6cbbc
+          python3 -m json.tool research/foundational/20261015-y-f56/prereg-candidate.json >/dev/null
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f56 -p test_fit_preflight.py -v
+      - name: One complete existing repository regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+      - name: Consume FIT-only source, independently audit and preserve negative if any
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y56"
+          git rev-parse HEAD > "$RUNNER_TEMP/y56/source-head.txt"
+          python3 -B research/foundational/20261015-y-f56/source_feasibility.py --fit-only > "$RUNNER_TEMP/y56/fit-result.json"
+          python3 -m json.tool "$RUNNER_TEMP/y56/fit-result.json" >/dev/null
+          python3 -B research/foundational/20261015-y-f56/audit_fit.py             "$RUNNER_TEMP/y56/fit-result.json"             research/foundational/20261015-y-f56/prereg-candidate.json             > "$RUNNER_TEMP/y56/fit-independent-audit.txt"
+          cat "$RUNNER_TEMP/y56/fit-independent-audit.txt"
+          (cd "$RUNNER_TEMP/y56" && sha256sum fit-result.json fit-independent-audit.txt > manifest.sha256)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Yggdrasil-F56-FIT-only-source-and-independent-audit
+          path: ${{ runner.temp }}/y56/
+          retention-days: 90
+          if-no-files-found: error
+      - name: Source authority guard
+        run: echo "FIT_ONLY=true DIAGNOSTIC_ORIGINAL_CONSUMED=false F3_CUSTODY=false NATIVE_TOTAL_576B=false ACCEPTED_REF_MUTATION=false"
