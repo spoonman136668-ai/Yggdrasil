@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.f48.train-only-prereg.v1",
+  "lane": "Yggdrasil",
+  "status": "PRECODE_PREREG_ONLY_NO_EXECUTION",
+  "parent_f46_exact_sha": "88963d04511a49e935c0873bf14af15f771274d0",
+  "parent_f46_run": 38803873408,
+  "parent_f46_artifact": 12005990427,
+  "forge_f47_pr": 290,
+  "forge_f47_head": "54652b259272a5d2be74838ab77e81fca395fe07",
+  "parent_f46_findings": {
+    "candidate_correct": 119,
+    "unpaired_correct": 120,
+    "shuffled_correct": 119,
+    "n": 128,
+    "disposition": "TRAIN_ONLY_NEGATIVE"
+  },
+  "hypothesis": "On disjoint public-calibration mechanism shifts, true intervention pairing has independently measurable incremental causal value beyond equal-anchor unpaired/shuffled models; require >=2pp and positive paired-versus-unpaired and paired-versus-shuffled gains without mechanism regression.",
+  "training_seeds_exclusive": [
+    421000,
+    421008
+  ],
+  "diagnostic_seeds_exclusive": [
+    421100,
+    421108
+  ],
+  "training_families": [
+    620,
+    621,
+    622,
+    623
+  ],
+  "reserved_original_seeds_exclusive": [
+    422000,
+    422016
+  ],
+  "reserved_original_families": [
+    624,
+    625,
+    626,
+    627
+  ],
+  "old_original_seeds_exclusive": [
+    402000,
+    402016
+  ],
+  "train_mechanisms": [
+    "alternating_context",
+    "role_phase"
+  ],
+  "heldout_mechanisms": [
+    "nonlinear_hysteresis_shifted",
+    "cross_channel_flip_asymmetric"
+  ],
+  "public_anchor_pairs": 12,
+  "max_paid_target_channels": 2,
+  "controls": [
+    "fitted_Gaussian_latent",
+    "empirical_conditional_Brier",
+    "Gaussian_kernel",
+    "learned_unpaired_ablation",
+    "count_matched_shuffled_intervention_pairs",
+    "first_masked"
+  ],
+  "require_positive_pairing_ablation": true,
+  "threshold_accuracy_gain_pp": 2,
+  "require_no_heldout_mechanism_regression": true,
+  "truth_private_at_selection": true,
+  "original_authorized": false,
+  "independent_f3": false,
+  "accepted_ref_mutated": false,
+  "training_executed": false,
+  "paid_api_calls": 0
+}
