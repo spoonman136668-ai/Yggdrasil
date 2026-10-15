@@ -1,0 +1,91 @@
+{
+  "schema": "yggdrasil.f49.public-pair-conditional-identifiability.prereg.v1",
+  "stage": "PRECODE_PREREG_CANDIDATE_NO_SCIENTIFIC_ADMISSION",
+  "lane": "Yggdrasil",
+  "parent_f48_commit": "b2407c469086c6a0ea99e9f3986c4336ef832e79",
+  "parent_f48_run": 38805887306,
+  "parent_f48_artifact": 12006805585,
+  "forge_f48_review_commit": "9d566f984184c91f641205cd90ed667d8a8cb369",
+  "parent_negative": {
+    "paired_correct": 105,
+    "strongest_fair_correct": 111,
+    "unpaired_correct": 107,
+    "shuffled_correct": 103,
+    "n": 128,
+    "decision": "TRAIN_ONLY_NEGATIVE"
+  },
+  "hypothesis": "Paired public interventions offer positive incremental task benefit in genuinely coupled conditions beyond same-count shuffled and unpaired calibration controls, but not under matched decoupled causal-null conditions on previously unseen sensing mechanisms.",
+  "fit_seed_range_exclusive": [
+    441000,
+    441008
+  ],
+  "diagnostic_seed_range_exclusive": [
+    441100,
+    441108
+  ],
+  "train_families": [
+    660,
+    661,
+    662,
+    663
+  ],
+  "heldout_mechanisms": [
+    "nonlinear_hysteresis_shifted",
+    "cross_channel_flip_asymmetric"
+  ],
+  "condition_classes": [
+    "coupled_identifiable",
+    "decoupled_null"
+  ],
+  "proposed_future_original_seed_range_exclusive_NOT_OWNER_RESERVED": [
+    442000,
+    442016
+  ],
+  "proposed_future_original_families_NOT_OWNER_RESERVED": [
+    664,
+    665,
+    666,
+    667
+  ],
+  "prior_originals_excluded": [
+    [
+      382000,
+      382016
+    ],
+    [
+      402000,
+      402016
+    ],
+    [
+      422000,
+      422016
+    ]
+  ],
+  "controls": [
+    "fitted_Gaussian_latent",
+    "empirical_conditional_Brier",
+    "Gaussian_kernel",
+    "public_global_static",
+    "source_variance",
+    "learned_unpaired_ablation",
+    "count_matched_shuffled_intervention_pairs"
+  ],
+  "oracle_evaluator_only": true,
+  "public_reference_pair_count": 12,
+  "paid_target_channels_per_role": 2,
+  "predefined_frozen_endpoints": {
+    "minimum_coupled_gain_over_strongest_fair": 0.02,
+    "strict_positive_coupled_paired_vs_unpaired": true,
+    "strict_positive_coupled_paired_vs_shuffled": true,
+    "maximum_absolute_decoupled_paired_vs_shuffled_gain": 0.01,
+    "minimum_coupled_minus_decoupled_ablation_difference": 0.02,
+    "no_heldout_mechanism_degradation": true
+  },
+  "science_result_negative_if_any_threshold_fails": true,
+  "original_not_executed": true,
+  "accepted_ref_mutation": false,
+  "owner_admitted": false,
+  "independent_F3_custody": false,
+  "dream_rsi_policy_promotion": false,
+  "paid_api_calls": 0
+}
