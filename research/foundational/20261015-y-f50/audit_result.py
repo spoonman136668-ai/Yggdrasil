@@ -2,7 +2,14 @@
 import json,math,sys
 def audit(path,prereg):
  d=json.load(open(path));p=json.load(open(prereg))
- t=p['train'];v=p['diagnostic'];mem=p['memory'];arms=p['controls']
+ t=p['train'];v=p['diagnostic'];mem=p['memory']
+ # Frozen prereg controls plus ONE stronger public-tag-only control added
+ # in source before the original run. Auditing its presence is stricter,
+ # never an authorization to remove or weaken registered controls.
+ declared=p['controls']
+ arms=declared[:-1]+['public_tag_only']+[declared[-1]]
+ assert len(arms)==len(set(arms))
+ assert set(d['scores'])==set(arms)
  assert d['schema']=='yggdrasil.f50.learned-online-retention.trainonly.v1'
  assert d['stage']=='DISJOINT_TRAIN_ONLY_MEMORY_NO_PRIMARY_ORIGINAL'
  assert d['fit_seeds']==t['seeds'] and d['fit_families']==t['families']
