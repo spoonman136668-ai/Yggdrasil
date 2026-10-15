@@ -1,0 +1,32 @@
+name: Y-F32 conditioned information preoriginal engineering
+on:
+  push:
+    branches:
+      - research/y-f32-calibrated-conditional-info-20261015-r1
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Scientific test dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Fail closed on parent and prereg drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7426dc977c49ea33deff809e43fef3310ff6f0fc HEAD
+          test "$(git hash-object research/foundational/20261015-y-f32/prereg-candidate.json)" = "$(git rev-parse a2e980bd0c23e7462cc22e6c9020c6de6db5511e:research/foundational/20261015-y-f32/prereg-candidate.json)"
+          python3 -m json.tool research/foundational/20261015-y-f32/prereg-candidate.json > /dev/null
+          python3 -m py_compile research/foundational/20261015-y-f32/pilot.py
+      - name: Focused observable-calibration and purchased-evidence tests
+        run: python3 -m unittest discover -s research/foundational/20261015-y-f32 -p test_preflight.py -q
+      - name: One full repository pytest regression
+        run: python3 -m pytest -q tests
+      - name: This is engineering only
+        run: echo "Y-F32 train-only feasibility and reserved original not executed"
