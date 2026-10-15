@@ -1,0 +1,86 @@
+{
+  "schema": "yggdrasil.f40.frozen-train-only-decision-trust.v1",
+  "phase": "ONE_FRESH_TRAIN_ONLY_NEW_SCIENCE_FEASIBILITY_NOT_PRIMARY_ORIGINAL",
+  "design_issue": "https://github.com/spoonman136668-ai/Yggdrasil/issues/229",
+  "engineering_pr": "https://github.com/spoonman136668-ai/Yggdrasil/pull/230",
+  "precode_prereg_commit": "bc217ba7b28a0d8449c90565e2a0ca58277a8f7d",
+  "qualified_source_commit": "7333533cbfe79070b7e00516dc44fa0cc949707e",
+  "source_tree": "211019faec76dd86dc50808f44dc28c479a970d9",
+  "source_blob": "0be9ef7e422b56525035a73a00d7cd6ece149fe3",
+  "engineering_run": 38775180720,
+  "train": {
+    "seeds": [
+      301800,
+      301824
+    ],
+    "families": [
+      330,
+      331,
+      332
+    ]
+  },
+  "heldout": {
+    "seeds": [
+      302800,
+      302816
+    ],
+    "families": [
+      334,
+      335,
+      336,
+      337
+    ],
+    "conditions": [
+      "mode_coupled",
+      "mode_decoupled"
+    ],
+    "mechanisms": [
+      "normal",
+      "anticorrelated_channel"
+    ],
+    "expected_queries": 256
+  },
+  "reserved_primary": {
+    "seeds": [
+      303800,
+      303816
+    ],
+    "families": [
+      340,
+      341,
+      342,
+      343
+    ],
+    "untouched": true
+  },
+  "methods": [
+    "learned_contextual_credibility",
+    "conditional_empirical_Brier",
+    "fitted_Gaussian_Bayesian",
+    "fixed_public_crosscovariance",
+    "fixed_variance",
+    "static",
+    "first_masked",
+    "privileged_oracle_unfair"
+  ],
+  "threshold": {
+    "absolute_improvement_vs_strongest_fair": 0.02,
+    "nondegrading_each_new_mechanism": true,
+    "first_read_action_switch_positive": true,
+    "masked_first_accuracy_lower": true,
+    "oracle_all_256": true,
+    "two_paid_sensor_reads_per_role": true
+  },
+  "resources": {
+    "weights_bytes": 64,
+    "public_calibration_bytes_per_case": 960,
+    "physical_memory_576_byte_cap_not_independently_measured": true
+  },
+  "authority": {
+    "not_independent_F3": true,
+    "no_primary_original": true,
+    "no_accepted_ref_mutation": true,
+    "no_paid_API": true,
+    "no_controller_FORGE_KTRADE_Cloudflare_changes": true
+  }
+}
