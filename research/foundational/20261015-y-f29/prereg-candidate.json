@@ -1,0 +1,66 @@
+{
+  "schema": "yggdrasil.f29.prereg-candidate.v1",
+  "stage": "DESIGN_LOCK_PRE_ORIGINAL",
+  "parent": "2d1a339782d56b403c3afb1cc1a11035f9d5c57b",
+  "prior_original": "38716263569",
+  "hypothesis": "Learn a conditional second-source policy using measured public reliability calibration instead of fixed known mechanism, and beat fair empirical Bayesian adaptive information-value control under novel sensor shifts.",
+  "train": {
+    "seeds": [
+      151000,
+      151079
+    ],
+    "mechanisms": [
+      "shifted-target",
+      "heteroskedastic-noise",
+      "correlated-anchor"
+    ]
+  },
+  "test": {
+    "seeds": [
+      152800,
+      152816
+    ],
+    "mechanisms": [
+      "sensor-swap",
+      "anticorrelated-tail"
+    ],
+    "families": [
+      108,
+      109,
+      110,
+      111
+    ],
+    "conditions": [
+      "missing",
+      "noise",
+      "anchor-corruption"
+    ]
+  },
+  "controls": [
+    "empirical Bayesian adaptive",
+    "calibrated conditional greedy",
+    "static calibrated",
+    "fixed pair",
+    "masked first reading",
+    "privileged oracle"
+  ],
+  "acceptance": {
+    "minimum_absolute_gain": 0.02,
+    "per_mechanism_non_degrading": true,
+    "causal_action_switch_required": true,
+    "oracle_correct": true
+  },
+  "custody": {
+    "native_core_limit_bytes": 576,
+    "exact_target_reads_per_descriptor": 2,
+    "public_calibration_metered": true,
+    "read_unpurchased_target_forbidden": true,
+    "disjoint_identities": true,
+    "independent_F3_source": false,
+    "sealed_first_use": false,
+    "development_only": true,
+    "one_original": true,
+    "accepted_ref_mutation": false,
+    "no_paid_api": true
+  }
+}
