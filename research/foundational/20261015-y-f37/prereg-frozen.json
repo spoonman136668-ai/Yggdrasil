@@ -1,0 +1,88 @@
+{
+  "schema": "yggdrasil.f37.frozen-decision-loss-pilot.v1",
+  "stage": "ONE_PROSPECTIVE_TRAIN_ONLY_SOURCE_STUDY_NOT_PRIMARY_ORIGINAL",
+  "design_issue": "https://github.com/spoonman136668-ai/Yggdrasil/issues/223",
+  "engineering_pr": "https://github.com/spoonman136668-ai/Yggdrasil/pull/224",
+  "precode_prereg_commit": "1726f2aedb69a777bd60e3db77c2737f750da336",
+  "frozen_source_commit": "447b61c23c002386317be59a5cb533c260a1d641",
+  "frozen_tree": "5a93535165e6a1759851e86c9a1c3ec2d4382305",
+  "frozen_source_blob": "7dcd696f22536d40f64c62daceb59df762471c9c",
+  "engineering_run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38751832928",
+  "meta_train": {
+    "seeds": [
+      271800,
+      271840
+    ],
+    "families": [
+      250,
+      251,
+      252
+    ]
+  },
+  "train_only": {
+    "seeds": [
+      272800,
+      272816
+    ],
+    "families": [
+      254,
+      255,
+      256,
+      257
+    ],
+    "conditions": [
+      "normal",
+      "reversed_polarity",
+      "weak_hint",
+      "uninformative_hint"
+    ],
+    "mechanisms": [
+      "mode_shift",
+      "anti_correlated_aux"
+    ],
+    "expected_questions": 512
+  },
+  "reserved_primary_original": {
+    "seeds": [
+      273800,
+      273816
+    ],
+    "families": [
+      260,
+      261,
+      262,
+      263
+    ],
+    "not_accessed": true
+  },
+  "comparators": [
+    "learned_decision",
+    "gaussian_Bayesian",
+    "public_polarity_Bayesian",
+    "conditional_empirical_Brier",
+    "calibrated_static",
+    "masked_first",
+    "privileged_oracle"
+  ],
+  "threshold": {
+    "accuracy_gain_over_best_fair": 0.02,
+    "per_mechanism_nondegradation": true,
+    "first_read_masked_ablation_effect": true,
+    "causal_switch_positive": true,
+    "oracle_all_512": true
+  },
+  "resources": {
+    "physical_two_reads_per_role": true,
+    "coefficients_128_bytes": true,
+    "core_limit_576_bytes": true,
+    "Python_heap_not_certified": true,
+    "calibration_external": true
+  },
+  "authority": {
+    "synthetic_source_not_F3": true,
+    "no_primary_original": true,
+    "no_acceptance": true,
+    "no_accepted_ref_mutation": true,
+    "no_paid_API": true
+  }
+}
