@@ -103,10 +103,8 @@ def test():
  baseline=frozen_y22()
  frozen=f20.frozen_metric()
  core=f20.f12.f11.model().core
- old_decoder=prior.prior.model()[0] if hasattr(prior,"prior") else prior.f20.ContextDecoder()
- # The earlier Y-F20 exact saved decoder is available as prior's import,
- # via the older Y-F21 module from Y-F22.
- old_decoder=prior.f21.model()[0] if hasattr(prior,"f21") else prior.f20.ContextDecoder()
+ # Exact Y-F20 old decoder, resolved through Y-F22 -> Y-F21.
+ old_decoder=prior.prior.model()[0]
  rows=[]
  for seed in SEEDS:
   for family in FAMS:
