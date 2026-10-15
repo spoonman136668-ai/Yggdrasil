@@ -125,9 +125,9 @@ def train_quality():
   loss.backward()
   nn.utils.clip_grad_norm_([weights],5.)
   opt.step()
- return weights.detach().tolist(),float(loss.detach()),len(rows),
-        {"training_correct_groups":int(sum(labels)),
-         "training_incorrect_groups":int(len(labels)-sum(labels))}
+ return (weights.detach().tolist(),float(loss.detach()),len(rows),
+         {"training_correct_groups":int(sum(labels)),
+          "training_incorrect_groups":int(len(labels)-sum(labels))})
 def frozen_predictor():
  m=prev.LearnedRobust(False)
  with torch.no_grad():
