@@ -1,0 +1,34 @@
+name: Yggdrasil F51 preregistration identity and protected source tests (NO EXPERIMENT)
+on:
+  push:
+    branches: [research/y-f51-memory-complete-controls-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  precode-source-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install existing scientific test dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify prereg preceded all new source and has unchanged control identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor d6127f738a597caee80dfb3682ee620c9173112d HEAD
+          test "$(git hash-object research/foundational/20261015-y-f51/prereg-candidate.json)" = f7a5e3739ac08a4de3d7aad14d4006187e003bc1
+          python3 -B -m json.tool research/foundational/20261015-y-f51/prereg-candidate.json >/dev/null
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f51 -p test_prereg.py -v
+          echo 'F51_PROSPECTIVE_PRECODE_SOURCE_ONLY=PASS'
+      - name: One full existing repository regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pytest -q tests
+      - name: Explicit no experiment or original authority
+        run: echo 'F51_NO_DIAGNOSTIC_DISPATCH=TRUE; F51_NO_PRIMARY_ORIGINAL=TRUE; F50_SCIENCE_RESULT_UNCHANGED=TRUE'
