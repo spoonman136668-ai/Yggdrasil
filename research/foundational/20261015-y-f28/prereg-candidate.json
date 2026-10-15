@@ -1,0 +1,99 @@
+{
+  "schema": "yggdrasil.f28.prereg-candidate.v1",
+  "status": "DESIGN_LOCK_CANDIDATE_PRE_ORIGINAL",
+  "experiment_id": "Y-F28",
+  "parent_source_sha": "352ec6cb606020f97e6369dcc54d761c1d8dd77e",
+  "parent_issue": "https://github.com/spoonman136668-ai/Yggdrasil/issues/204",
+  "parent_original_run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38710128706",
+  "hypothesis": "Learning downstream query-conditioned expected information value of the second observation can improve typed reasoning when first readings reveal source modes; gains must exceed a correctly adaptive equal-budget information-value control.",
+  "candidate_mechanism": {
+    "first_choice": "policy based only on training-calibrated public channel reliability",
+    "second_choice": "conditional expected downstream query-value given actual purchased first reading; candidate cannot inspect second values before choosing",
+    "reward": "future task correctness, with separate training and test identities",
+    "native_state_bytes": 576,
+    "target_channel_budget_per_role_bit": 2,
+    "source_channels": 4,
+    "channel_storage": "state bytes explicitly measured; calibrated public anchor/training statistics accounted separately",
+    "fixed_source_cost_per_read": true
+  },
+  "training": {
+    "seeds": [
+      141000,
+      141099
+    ],
+    "identities": "distinct from evaluation entities",
+    "oracle_train_labels": "training only, explicitly tracked and never reachable via inference API"
+  },
+  "evaluation": {
+    "seeds": [
+      142300,
+      142312
+    ],
+    "families": [
+      104,
+      105,
+      106,
+      107
+    ],
+    "conditions": [
+      "sensor-missingness",
+      "sensor-anticorrelation",
+      "corrupted-anchor",
+      "new-reliability-mode"
+    ],
+    "at_least_two_sensor_mechanisms": true,
+    "novel_structural_roles": true,
+    "paired_first_reading_counterfactual_tests": true,
+    "freeze_generator_hash_before_original": true
+  },
+  "baselines": [
+    "learned-conditional-information-value",
+    "Bayesian-adaptive-information-value-equal-budget",
+    "calibrated-conditional-greedy",
+    "calibrated-static",
+    "fixed-two-channels",
+    "masked-first-reading-ablation",
+    "privileged-descriptor-oracle-excluded-from-fair-comparison"
+  ],
+  "audit": [
+    "ordered first and second acquisitions",
+    "no unpurchased target channel reads",
+    "per-case predictions/truth",
+    "conditional action switching under controlled first-reading interventions",
+    "sensor/read counts and cost",
+    "native resident bytes",
+    "out-of-core calibrator storage",
+    "per-mechanism and per-role transfer",
+    "FP/FN",
+    "training/inference time",
+    "independent oracle consistency"
+  ],
+  "advance_rule": {
+    "accuracy_gain_absolute_vs_strongest_equal_budget": 0.02,
+    "per_mechanism": "nondegrading",
+    "two_target_channels_per_role_bit": "exact",
+    "conditional_first_reading_use": "positive causal action-switch evidence, not just potential",
+    "invalid_if_any": "pre-choice unpurchased target read; oracle inconsistency; budget drift; hidden sensor lookahead; postresult threshold change; source provenance drift"
+  },
+  "launch": {
+    "status": "BLOCKED_PENDING_IMPLEMENTATION_AND_QUALIFICATION",
+    "one_original_only": true,
+    "F3_custody_clearance": false,
+    "sealed_first_use": false,
+    "accepted_ref_mutation": false,
+    "controller_FORGE_cloudflare_mutation": false
+  },
+  "provenance": {
+    "prereg_commit_precedes_original": true,
+    "expected_source_artifacts": [
+      "code-commit-SHA",
+      "tree-SHA",
+      "source-generator-hashes",
+      "independent-reliability-mechanisms",
+      "cost-audit",
+      "one-full-pytest-regression",
+      "original-run-and-archive"
+    ],
+    "no_paid_API": true
+  }
+}
