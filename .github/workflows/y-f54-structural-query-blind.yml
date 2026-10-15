@@ -1,0 +1,57 @@
+name: Y-F54 query-blind multi-hop composition under equal payload budget
+on:
+  push:
+    branches: [research/y-f54-query-blind-chunk-composition-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Independent precode witness and source negatives
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 43a69229c0cc8175c79666b584521a959c7393b2 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f54/prereg.json)" = 82bfa15c74973aa55e81acbf78ef07880e0d261c
+          test "$(git hash-object research/foundational/20261015-y-f53/source_pilot.py)" = d7d754495b5bac4ba4f6305b1cf19dde132108d8
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f54 -p test_preflight.py -v
+      - name: One complete existing project pytest regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+  diagnostic:
+    if: "${{ github.event.head_commit.message == 'science(y-f54): once-only fresh bounded composition TRAIN' && github.run_attempt == 1 }}"
+    needs: source
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: One new FIT and TRAIN diagnostic, publicly reconstruct compressed answers
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/yf54";mkdir -p "$root"
+          python3 -B research/foundational/20261015-y-f54/source_pilot.py > "$root/result.json"
+          python3 -B research/foundational/20261015-y-f54/audit_result.py \
+            "$root/result.json" research/foundational/20261015-y-f54/prereg.json > "$root/audit.txt"
+          (cd "$root";sha256sum result.json audit.txt > manifest.sha256)
+          printf '%s\n' "$GITHUB_SHA" > "$root/SOURCE_SHA"
+          cat "$root/audit.txt"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: Y-F54-query-blind-twohop-new-TRAIN-not-F3-original
+          path: ${{ runner.temp }}/yf54/
+          retention-days: 30
+          if-no-files-found: error
