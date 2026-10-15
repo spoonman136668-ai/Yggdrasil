@@ -1,0 +1,33 @@
+name: Y-F42 matched marginal source preflight (NO original)
+on:
+  push:
+    branches:
+      - research/y-f42-observational-equivalence-20261015-r1
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 95
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up existing test environment
+        run: python3 -m pip install -e '.[test]'
+      - name: Ensure negative predecessor and pre-code science preregistration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor ae6a45e6405a7dd95edb9a6f482b57aaa797cc8d HEAD
+          git merge-base --is-ancestor a0c9969c4cc7e7817d87a70c1857dceb0e8976ef HEAD
+          python3 -m json.tool research/foundational/20261015-y-f42/prereg-candidate.json >/dev/null
+          python3 -m py_compile research/foundational/20261015-y-f42/source_pilot.py
+      - name: Focused identity/matched-source/two-read tests
+        run: python3 -m unittest discover -s research/foundational/20261015-y-f42 -p test_preflight.py -v
+      - name: One full repository pytest
+        run: python3 -m pytest -q tests
+      - name: Non-execution boundary
+        run: |
+          echo "F42 engineering only, no prospective source cohort or primary original executed"
