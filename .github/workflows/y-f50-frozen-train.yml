@@ -1,0 +1,47 @@
+name: Y-F50 frozen memory retention TRAIN-only qualification
+on:
+  push:
+    branches: [research/y-f50-learned-retained-memory-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  once:
+    if: "${{ github.event.head_commit.message == 'science(y-f50): one frozen TRAIN-only memory source' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Freeze exact prereg and source identities before use
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 21ae9ebd343dfbd04bfa81979765b98ee8caa3d3 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f50/prereg-candidate.json)" = a90210d5c238f8127ad30e07b2bb06ed5b495d72
+          test "$(git hash-object research/foundational/20261015-y-f50/source_pilot.py)" = a2bf71f6cc5b6696641b268c82b831f40ebf6f79
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f50 -p test_preflight.py -v
+      - name: One full regression
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+      - name: Consume only one synthetic TRAIN cohort, never original
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f50/source_pilot.py > /tmp/y-f50-result.json
+          python3 -B research/foundational/20261015-y-f50/audit_result.py             /tmp/y-f50-result.json             research/foundational/20261015-y-f50/prereg-candidate.json
+          sha256sum /tmp/y-f50-result.json > /tmp/y-f50-result.sha256
+          git rev-parse HEAD > /tmp/y-f50-source-head.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F50-once-only-trained-memory-TRAIN
+          path: |
+            /tmp/y-f50-result.json
+            /tmp/y-f50-result.sha256
+            /tmp/y-f50-source-head.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Authority exclusion
+        run: echo "TRAIN_ONLY=TRUE ORIGINALS=ZERO ACCEPTED_REFS=UNCHANGED"
