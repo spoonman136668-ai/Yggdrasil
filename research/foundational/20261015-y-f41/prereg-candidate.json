@@ -1,0 +1,86 @@
+{
+  "schema": "yggdrasil.f41.causal-observation-source-regret.v1",
+  "stage": "PRE_CODE_TRAIN_ONLY_SOURCE_ENGINEERING",
+  "design_issue": "https://github.com/spoonman136668-ai/Yggdrasil/issues/232",
+  "prior_negative": 38775658496,
+  "hypothesis": "The first paid observation has positive practical conditional decision value only when public calibration identifies its relation to sensor reliability. Finite public reference statistics may not identify useful versus misleading source regimes, limiting causal benefit above empirical Brier.",
+  "train_only": {
+    "seeds": [
+      311800,
+      311816
+    ],
+    "families": [
+      360,
+      361,
+      362
+    ],
+    "mechanisms": [
+      0,
+      1
+    ],
+    "conditions": [
+      "coupled",
+      "decoupled"
+    ],
+    "public_anchors": 24
+  },
+  "heldout_source": {
+    "seeds": [
+      312800,
+      312816
+    ],
+    "families": [
+      364,
+      365,
+      366,
+      367
+    ],
+    "mechanisms": [
+      0,
+      1
+    ],
+    "conditions": [
+      "coupled",
+      "decoupled"
+    ],
+    "expected_queries": 256
+  },
+  "reserved_original": {
+    "seeds": [
+      313800,
+      313816
+    ],
+    "families": [
+      368,
+      369,
+      370,
+      371
+    ]
+  },
+  "arms": [
+    "conditional_empirical_Brier",
+    "public_conditional_expected_bit_error",
+    "best_static",
+    "first_value_masked",
+    "private_hindsight_oracle_unfair"
+  ],
+  "acceptance": {
+    "one_train_only_source_pilot": true,
+    "all_2_target_purchases_per_role": true,
+    "independent_outcome_audit": true,
+    "crosscondition_observational_identifiability_test": true,
+    "minimum_achievable_gain_over_strongest_fair": 0.02
+  },
+  "resource_limits": {
+    "max_native_resident_bytes": 576,
+    "external_calibration_and_training_costs_explicit": true,
+    "full_python_heap_unqualified": true
+  },
+  "authority": {
+    "source_evaluator_project_born_not_independent_F3": true,
+    "no_primary_original": true,
+    "no_accepted_refs": true,
+    "no_paid_API_or_codex": true,
+    "no_FORGE_controller_CKB_KTRADE_Cloudflare_mutation": true
+  }
+}
