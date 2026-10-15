@@ -1,0 +1,90 @@
+name: Y-F31 one frozen train-only headroom pilot
+on:
+  push:
+    branches:
+      - science/y-f31-train-only-headroom-20261015-r1
+permissions:
+  contents: read
+jobs:
+  feasibility:
+    if: "${{ github.event.head_commit.message == 'science(y-f31): one frozen train-only pilot' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify frozen identity and reserved-test exclusions
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 186984ee19b35e63f3933ad0469681090dc37665 HEAD
+          git merge-base --is-ancestor f6965e9a79c989d04d85cb62c6bbe62c59658f54 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f31/pilot.py)" = 36a7a3d901f57744a4f3458790bbe35bde506394
+          test "$(git hash-object research/foundational/20261015-y-f31/headroom-frozen.json)" = "$(git rev-parse f6965e9a79c989d04d85cb62c6bbe62c59658f54:research/foundational/20261015-y-f31/headroom-frozen.json)"
+          python3 -m json.tool research/foundational/20261015-y-f31/headroom-frozen.json > /dev/null
+          python3 -m unittest discover -s research/foundational/20261015-y-f31 -p test_preflight.py -q
+      - name: Run only the frozen train-source feasibility cohort
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f31/pilot.py > /tmp/y-f31-train-only-pilot.json
+          python3 -m json.tool /tmp/y-f31-train-only-pilot.json > /dev/null
+          sha256sum /tmp/y-f31-train-only-pilot.json > /tmp/y-f31-train-only-pilot.sha256
+          git rev-parse HEAD > /tmp/y-f31-pilot-commit.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F31-train-only-feasibility-not-primary-original
+          path: |
+            /tmp/y-f31-train-only-pilot.json
+            /tmp/y-f31-train-only-pilot.sha256
+            /tmp/y-f31-pilot-commit.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Independently audit feasibility and absence of reserved test
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import collections,json,math
+          d=json.load(open('/tmp/y-f31-train-only-pilot.json'))
+          p=json.load(open('research/foundational/20261015-y-f31/headroom-frozen.json'))
+          assert d['schema']=='yggdrasil.f31.train-only-headroom-pilot.v1'
+          assert d['status']=='PRE_ORIGINAL_ONLY' and d['questions']==p['pilot']['expected_queries']==1024
+          assert d['policy_train_not_started'] and d['reserved_original_not_executed']
+          assert not d['sealed_first_use'] and not d['accepted_ref_mutation'] and not d['independent_F3_custody']
+          assert list(d['train_only_seeds'])==[181000,181032]
+          assert list(d['reserved_test_seeds'])==[182000,182012]
+          assert set(d['pilot_families'])==set(p['pilot']['families'])
+          assert not set(d['pilot_families']) & set(d['reserved_test_families'])
+          assert len(d['rows'])==1024
+          assert len({(r['seed'],r['family'],r['regime'],r['condition']) for r in d['rows']})==1024
+          assert all(181000<=r['seed']<181032 and r['reads_per_role']==2 for r in d['rows'])
+          assert all(r['external_calibration_bytes']==320 for r in d['rows'])
+          assert collections.Counter(r['condition'] for r in d['rows'])==dict.fromkeys(p['pilot']['conditions'],256)
+          for r in d['rows']:
+            for arm,trace in r['trace'].items():
+              assert len(trace)==3
+              assert all(len(pair)==2 and pair[0]==0 and pair[1] in (1,2,3) for pair in trace)
+          for arm,s in d['scores'].items():
+            good=sum(r['answers'][arm]==r['truth'] for r in d['rows'])
+            fp=sum(bool(r['answers'][arm]) and not r['truth'] for r in d['rows'])
+            fn=sum(not bool(r['answers'][arm]) and r['truth'] for r in d['rows'])
+            assert (s['correct'],s['fp'],s['fn'])==(good,fp,fn)
+            assert math.isclose(s['accuracy'],good/1024,abs_tol=1e-12)
+          assert d['scores']['privileged_oracle']['correct']==1024
+          assert math.isfinite(d['first_observation_mutual_information_bits'])
+          assert 0<=d['empirical_action_switch_rate']<=1
+          best=max(d['scores'][arm]['accuracy'] for arm in ('conditional_empirical','bayesian_proxy','static','fixed'))
+          eligible=(1-best>=p['threshold']['minimum_headroom_vs_strongest_fair'] and
+                    best<=p['threshold']['maximum_best_fair_accuracy'] and
+                    d['first_observation_mutual_information_bits']>=p['threshold']['minimum_mode_first_read_mi_bits'] and
+                    d['empirical_action_switch_rate']>=p['threshold']['minimum_empirical_switch_rate'])
+          expected='PILOT_HEADROOM_ELIGIBLE_FOR_NEW_SEPARATE_SOURCE_QUALIFICATION' if eligible else 'PILOT_HEADROOM_NOT_QUALIFIED_NO_ORIGINAL'
+          assert d['verdict']==expected
+          print('Y_F31_HEADROOM_VERDICT',d['verdict'],{k:v['correct'] for k,v in d['scores'].items()})
+          print('Y_F31_INFO_BITS',d['first_observation_mutual_information_bits'],'SWITCH_RATE',d['empirical_action_switch_rate'])
+          PY
+      - name: Preserve reserved future original
+        run: echo "Y-F31 performed TRAIN-only feasibility. No future holdout or scientific original dispatched."
