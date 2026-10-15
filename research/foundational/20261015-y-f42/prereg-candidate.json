@@ -1,0 +1,66 @@
+{
+  "schema": "yggdrasil.f42.observational-equivalence-source-prereg.v1",
+  "stage": "FRESH_TRAIN_ONLY_IDENTIFIABILITY_BEFORE_LEARNER",
+  "parent_run": 38777584995,
+  "design_issue": 234,
+  "source_parent_sha": "ae6a45e6405a7dd95edb9a6f482b57aaa797cc8d",
+  "hypothesis": "Matched first-reading mean and variance across coupling regimes still permits observable condition-dependent sensor utility in public labeled calibration and first bought reading; verify headroom versus conditional empirical Brier before fitting a new learner.",
+  "train_only": {
+    "seeds": [
+      322800,
+      322816
+    ],
+    "families": [
+      380,
+      381,
+      382,
+      383
+    ],
+    "conditions": [
+      "coupled",
+      "decoupled"
+    ],
+    "mechanisms": [
+      "normal",
+      "anticorrelated"
+    ],
+    "public_reference_anchors": 24,
+    "expected_cases": 256,
+    "physical_reads_per_role": 2
+  },
+  "reserved_original": {
+    "seeds": [
+      323800,
+      323816
+    ],
+    "families": [
+      384,
+      385,
+      386,
+      387
+    ]
+  },
+  "controls": [
+    "conditional_empirical_Brier",
+    "public_Gaussian_mode_posterior",
+    "static_reference",
+    "first_masked",
+    "private_condition_oracle_unfair"
+  ],
+  "gates": {
+    "max_paired_first_mean_gap": 0.000001,
+    "max_paired_first_variance_gap": 0.000001,
+    "conditional_decision_headroom_over_best_fair_min": 0.02,
+    "independent_all_row_audit": true
+  },
+  "limits": {
+    "first_channel_matched_from_same_paired_source_draws": true,
+    "hidden_condition_and_truth_evaluator_only": true,
+    "public_refs_labeled_equal_count": true,
+    "Python_heap_576_byte_not_qualified": true,
+    "no_primary_original": true,
+    "no_F3_claim": true,
+    "no_paid_API_or_Codex": true,
+    "no_FORGE_KTRADE_controller_changes": true
+  }
+}
