@@ -1,0 +1,63 @@
+name: Yggdrasil F52 once-only mechanistic synthetic TRAIN qualification
+on:
+  push:
+    branches:
+      - research/y-f52-learned-relational-chunking-20261015-r1
+permissions:
+  contents: read
+jobs:
+  one-frozen-source:
+    if: "${{ github.event.head_commit.message == 'science(y-f52): execute once new relation-chunking TRAIN-only cohort' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify exact prereg ancestor, original isolation and source blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 353d5ed842ce550197ab750c92e5bbc0b9430522 HEAD
+          git merge-base --is-ancestor ea02b330497e86be6fa14ce3dda9d95211f03563 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f52/prereg-candidate.json)" = cf47531bb8ec1ccf8c2af00f35ca12b38a6b71c1
+          test "$(git hash-object research/foundational/20261015-y-f52/source_pilot.py)" = 51b3dea3c054e2cd1789a453a973aa3cd32ff1a4
+          test "$(git hash-object research/foundational/20261015-y-f52/audit_result.py)" = 40f16294b8d1e960f91f6578ed657a83063f4f6a
+          test "$(git hash-object research/foundational/20261015-y-f52/test_preflight.py)" = feaf6c49198b2ffa97e02fe069ffdb84aa8924a4
+          python3 -m json.tool research/foundational/20261015-y-f52/prereg-candidate.json >/dev/null
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f52 -p test_preflight.py -v
+      - name: Exactly one complete existing repository regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+      - name: One new FIT then independent heldout synthetic TRAIN cohort and strict audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f52/source_pilot.py > /tmp/y-f52-result.json
+          python3 -m json.tool /tmp/y-f52-result.json >/dev/null
+          sha256sum /tmp/y-f52-result.json > /tmp/y-f52-result.sha256
+          git rev-parse HEAD > /tmp/y-f52-head.txt
+          python3 -B research/foundational/20261015-y-f52/audit_result.py              /tmp/y-f52-result.json              research/foundational/20261015-y-f52/prereg-candidate.json              > /tmp/y-f52-independent-audit.txt
+          cat /tmp/y-f52-independent-audit.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Yggdrasil-F52-one-frozen-TRAIN-and-independent-audit
+          path: |
+            /tmp/y-f52-result.json
+            /tmp/y-f52-result.sha256
+            /tmp/y-f52-head.txt
+            /tmp/y-f52-independent-audit.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Scientific authority and source-use exclusions
+        run: |
+          echo "EXPERIMENT_CLASS=FRESH_SYNTHETIC_TRAIN_ONLY"
+          echo "PRIMARY_ORIGINAL_RUNS=0"
+          echo "INDEPENDENT_F3_CUSTODY=FALSE"
+          echo "NATIVE_576B_TOTAL_MEMORY=UNVERIFIED"
+          echo "ACCEPTED_REFS_OR_CONTROLLERS_MUTATED=FALSE"
