@@ -1,0 +1,132 @@
+{
+  "schema": "yggdrasil.f22.prereg.v1",
+  "parent": "31d1f2afa4bc073464fa1d02208d57cc7362c596",
+  "scientific_question": "Can a newly trained 15-param contextual role decoder learn sensor reliability across known sensor perturbations and transfer to never-trained COMBINED reliability perturbations, while preserving an exact frozen learned semantic metric/core?",
+  "training": {
+    "only_known_roles": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        1
+      ],
+      [
+        1,
+        0,
+        1
+      ],
+      [
+        1,
+        1,
+        0
+      ]
+    ],
+    "seeds": [
+      92400,
+      92520
+    ],
+    "training_conditions": [
+      "nominal_new_seeds",
+      "invert_high_reliability_sensor0",
+      "swap_positive_negative_channels",
+      "suppress_calibrated_positive_channels"
+    ],
+    "architectural_params": 15,
+    "epochs": 240,
+    "Adam_lr": 0.1,
+    "no_validation_retune": true
+  },
+  "test": {
+    "author_generated_development": true,
+    "new_seeds": [
+      90600,
+      90606
+    ],
+    "role_descriptors_odd_parity": [
+      [
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1
+      ]
+    ],
+    "graph_families_REUSED": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "base_graphs": 96,
+    "regimes": [
+      "nominal_new_seeds",
+      "invert_plus_suppress",
+      "swap_plus_invert",
+      "rotate_plus_suppress",
+      "invert_plus_rotate"
+    ],
+    "true_unseen_combination_count": 4,
+    "groups": 480,
+    "questions": 1440,
+    "relation_triplet_truth": [
+      true,
+      false,
+      false
+    ],
+    "regime_names_not_given_to_model": true,
+    "source_generative_corruption_programmed": true
+  },
+  "frozen": {
+    "F19_four_param_role_metric": true,
+    "F6_twenty_two_param_task_core": true,
+    "F20_archived_original_decoder_control": true,
+    "native_state_bytes": 576
+  },
+  "comparators": [
+    "new 15-param mixed-regime-trained decoder",
+    "exact frozen original Y-F20 decoder",
+    "cheap single-sensor comparator",
+    "cheap two-sensor comparator",
+    "same-arch untrained decoder",
+    "coded oracle with true role descriptors"
+  ],
+  "prospective_pass": {
+    "exact_reference_questions": 1440,
+    "min_overall_accuracy": 0.95,
+    "min_complete_triples_fraction": 0.85,
+    "min_gain_over_prior_F20": 0.05,
+    "min_per_condition_accuracy": 0.9,
+    "max_per_condition_FPR": 0.05,
+    "max_per_condition_FNR": 0.1
+  },
+  "registered_outcomes": [
+    "INVALID_YF22_TYPED_REFERENCE",
+    "DEVELOPMENT_LEARNED_SENSOR_RELIABILITY_COMPOSITION_TRANSFER",
+    "DEVELOPMENT_NO_LEARNED_SENSOR_RELIABILITY_COMPOSITION_TRANSFER"
+  ],
+  "limitations": {
+    "only_generated_sensor_data": true,
+    "does_not_learn_natural_language_meaning": true,
+    "only_new_combinations_not_independent_source": true,
+    "F3_NOT_ADMITTED": true,
+    "no_FORGE_cloudflare_work": true,
+    "no_KTRADE_controller_mutation": true
+  }
+}
