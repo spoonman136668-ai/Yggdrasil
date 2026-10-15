@@ -1,0 +1,72 @@
+{
+  "schema": "yggdrasil.f34.frozen-distinct-source-train-only.v1",
+  "stage": "TRAIN_ONLY_SOURCE_FEASIBILITY_NO_PRIMARY_ORIGINAL",
+  "previous_source_negative_run": 38731320689,
+  "source_precode_prereg": "8b0ccbf79fab8267723985b88466c9556a0c1258",
+  "qualified_source_commit": "d62dd0714e79da2d6c642e2585407d041b25dc5d",
+  "qualified_tree_sha": "b47d83b0d45007a0d54c74f569fe8a9395fd37e1",
+  "source_path": "research/foundational/20261015-y-f34/source_pilot.py",
+  "source_blob_sha": "3de60578c376873b213f5e49e5403fa3a70f793f",
+  "qualification_run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38740043967",
+  "pilot": {
+    "seeds": [
+      211800,
+      211824
+    ],
+    "families": [
+      190,
+      191,
+      192
+    ],
+    "conditions": [
+      "ordinary",
+      "polarity_reversal",
+      "weak_marker",
+      "uninformative_marker"
+    ],
+    "mechanisms": [
+      "mode_switch",
+      "anti_correlated_noisy"
+    ],
+    "reference_anchors": 16,
+    "expected_queries": 576
+  },
+  "reserved_primary_original": {
+    "seeds": [
+      212800,
+      212816
+    ],
+    "families": [
+      194,
+      195,
+      196,
+      197
+    ],
+    "must_not_be_generated": true
+  },
+  "controls": [
+    "empirical_brier",
+    "polarity_bayesian",
+    "calibrated_static",
+    "fixed",
+    "privileged_oracle"
+  ],
+  "gates": {
+    "conditional_MI_min_bits": 0.02,
+    "predictive_heldout_logloss_gain_min_nats": 0.01,
+    "empirical_action_switch_min": 0.05,
+    "headroom_min_fraction": 0.04,
+    "oracle_all_correct": true
+  },
+  "constraints": {
+    "physical_target_reads_exactly_two_per_role": true,
+    "native_model_576_byte_cap_not_Python_heap_measured": true,
+    "external_anchor_history_bytes_tracked": true,
+    "source_and_evaluator_same_repo_not_independent_F3": true,
+    "no_learned_policy_original": true,
+    "no_primary_original": true,
+    "no_accepted_refs": true,
+    "no_controller_FORGE_KTRADE_cloudflare_changes": true,
+    "no_paid_API": true
+  }
+}
