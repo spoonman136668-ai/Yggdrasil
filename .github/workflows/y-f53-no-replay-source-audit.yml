@@ -1,0 +1,70 @@
+name: Y-F53 read-only independent audit of one consumed TRAIN artifact
+on:
+  push:
+    branches:
+      - audit/y-f53-existing-train-20261015-r1
+permissions:
+  contents: read
+  actions: read
+jobs:
+  archive-audit-only:
+    if: "${{ github.event.head_commit.message == 'audit(y-f53): verify the existing F53 result without another science dispatch' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Bind to immutable original source and frozen preregistration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 5dc72f852366ab17a5e34b60060ca94569a8f508 HEAD
+          git merge-base --is-ancestor 16f8710a63d02f9619105a2a153abcff8ad39b95 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f53/prereg-candidate.json)" = 6406dcc9f6056b402313a4289ee8a659c925ab83
+          test "$(git hash-object research/foundational/20261015-y-f53/source_pilot.py)" = c22eb4f0bc82149665c4bb10d5f89ea88f0bb6ca
+          test "$(git hash-object research/foundational/20261015-y-f53/audit_result.py)" = 3dd312e1c58f87ebd9135c97c40b99533359db24
+          python3 -m py_compile research/foundational/20261015-y-f53/audit_result.py
+      - name: Verify consumed run failed only after source and artifact digest (GET only)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          run=$(curl --fail --silent --show-error --retry 2 --max-time 20             -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GH_TOKEN"             "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/runs/38816902386")
+          echo "$run" | jq -e --arg sha 5dc72f852366ab17a5e34b60060ca94569a8f508             '.head_sha==$sha and .status=="completed" and .conclusion=="failure" and .run_attempt==1'
+          arts=$(curl --fail --silent --show-error --retry 2 --max-time 20             -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GH_TOKEN"             "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/runs/38816902386/artifacts")
+          echo "$arts" | jq -e --arg sha 5dc72f852366ab17a5e34b60060ca94569a8f508             '[.artifacts[]|select(.id==12010853572 and
+              .name=="Yggdrasil-F53-one-frozen-TRAIN-and-evidence" and
+              .digest=="sha256:7c54a31064a2ed0872a435d0565c9803dd782b1d95018db8ab23347e4f2419d8" and
+              (.expired|not) and .workflow_run.id==38816902386 and .workflow_run.head_sha==$sha)]|length==1'
+      - uses: actions/download-artifact@v4
+        with:
+          name: Yggdrasil-F53-one-frozen-TRAIN-and-evidence
+          run-id: 38816902386
+          github-token: ${{ github.token }}
+          repository: spoonman136668-ai/Yggdrasil
+          path: ${{ runner.temp }}/evidence
+      - name: Recount all 64 archived rows and byte-exact public graph receipt paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/evidence"
+          test "$(cat "$root/y-f53-head.txt")" = 5dc72f852366ab17a5e34b60060ca94569a8f508
+          (cd "$root" && sha256sum -c y-f53-result.sha256)
+          python3 -B research/foundational/20261015-y-f53/audit_result.py             "$root/y-f53-result.json" research/foundational/20261015-y-f53/prereg-candidate.json             > "$RUNNER_TEMP/y-f53-verified.txt"
+          cat "$RUNNER_TEMP/y-f53-verified.txt"
+          sha256sum "$RUNNER_TEMP/y-f53-verified.txt" > "$RUNNER_TEMP/y-f53-verified.sha256"
+          git rev-parse HEAD > "$RUNNER_TEMP/y-f53-audit-head.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y-F53-independent-existing-TRAIN-artifact-audit
+          path: |
+            ${{ runner.temp }}/y-f53-verified.txt
+            ${{ runner.temp }}/y-f53-verified.sha256
+            ${{ runner.temp }}/y-f53-audit-head.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: No new original or source execution
+        run: echo "SCIENTIFIC_EXPERIMENT_RERUNS=0; ORIGINALS=0; CONTROLLED_SOURCE_REF_UNCHANGED=TRUE"
