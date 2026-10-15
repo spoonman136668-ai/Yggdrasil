@@ -1,0 +1,75 @@
+{
+  "schema": "yggdrasil.f43.learned-typed-reliability-prereg.v1",
+  "stage": "PREREG_BEFORE_SOURCE_CODE",
+  "parent_f42_commit": "4d557dcfd792d955c4abdf5157a748b90557d855",
+  "negative_f42_run": 38794713584,
+  "design_issue": 237,
+  "hypothesis": "A bounded interaction-based learned representation of sensor reliability trained only on public labeled calibration from disjoint sources and the same calibration available to strong controls can improve downstream typed-task accuracy by 2pp or more on novel source mechanisms, beyond a matched empirical conditional Brier and fitted Gaussian latent Bayesian baseline.",
+  "train_only": {
+    "fit_seeds": [
+      342000,
+      342008
+    ],
+    "diagnostic_seeds": [
+      342100,
+      342108
+    ],
+    "families": [
+      400,
+      401,
+      402,
+      403
+    ],
+    "mechanisms": [
+      "phase_reversal",
+      "context_delay"
+    ],
+    "conditions": [
+      "coupled",
+      "decoupled"
+    ],
+    "anchors_per_source": 24,
+    "roles_per_question": 3,
+    "physical_paid_reads_per_role": 2,
+    "split_identity_disjoint": true
+  },
+  "reserved_original": {
+    "seed_start": 343000,
+    "seed_stop_exclusive": 343016,
+    "families": [
+      404,
+      405,
+      406,
+      407
+    ]
+  },
+  "comparators": [
+    "learned_interaction_reliability",
+    "conditional_empirical_Brier",
+    "public_Gaussian_kernel",
+    "fitted_Gaussian_latent_Bayes",
+    "static_reference",
+    "source_variance_control",
+    "first_read_masked",
+    "private_truth_oracle_unfair"
+  ],
+  "acceptance": {
+    "accuracy_gain_over_strongest_fair_min": 0.02,
+    "first_read_unmasked_positive_ablation": true,
+    "per_unseen_mechanism_nondegrade": true,
+    "independent_full_row_FP_FN_Brier_logloss_and_receipt_audit": true,
+    "source_family_identity_not_selector_feature": true,
+    "train_labels_disjoint_from_diagnostic_queries": true,
+    "matched_calibration_and_fit_data_all_fair_controls": true
+  },
+  "qualified_limitations": {
+    "synthetic_same_repo_train_only": true,
+    "not_F3_custody": true,
+    "not_a_primary_original": true,
+    "native_576_byte_resident_physically_qualified": false,
+    "python_heap_cannot_claim_native_budget": true,
+    "no_paid_API_or_Codex": true,
+    "no_controller_FORGE_KTRADE_CKB_changes": true,
+    "no_accepted_ref_mutation": true
+  }
+}
