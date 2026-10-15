@@ -1,0 +1,80 @@
+{
+  "schema": "yggdrasil.f45.intervention-invariant-reliability-prereg.v1",
+  "stage": "PRECODE_FROZEN",
+  "predecessor_pr": 240,
+  "negative_run": 38798859740,
+  "design_issue": 241,
+  "hypothesis": "A trainable regularized invariant-risk representation using public paired first-channel interventions and downstream typed-task error on separate training mechanisms improves transfer to two entirely unseen mechanism classes beyond a matched fitted-Gaussian control.",
+  "train_only": {
+    "fit_seeds": [
+      381000,
+      381008
+    ],
+    "diagnostic_seeds": [
+      381100,
+      381108
+    ],
+    "families": [
+      480,
+      481,
+      482,
+      483
+    ],
+    "fit_mechanisms": [
+      "alternating_context",
+      "role_phase"
+    ],
+    "heldout_mechanisms": [
+      "nonlinear_hysteresis",
+      "cross_channel_flip"
+    ],
+    "conditions": [
+      "coupled",
+      "decoupled"
+    ],
+    "public_reference_pairs": 12,
+    "public_reference_readings": 24,
+    "physical_reads_per_role": 2,
+    "expected_diagnostic_cases": 128
+  },
+  "reserved_primary_original": {
+    "seeds": [
+      382000,
+      382016
+    ],
+    "families": [
+      484,
+      485,
+      486,
+      487
+    ]
+  },
+  "controls": [
+    "learned_intervention_invariant",
+    "fitted_Gaussian_latent",
+    "empirical_conditional_Brier",
+    "Gaussian_kernel",
+    "public_global_static",
+    "learned_unpaired_ablation",
+    "source_variance",
+    "evaluator_oracle_unfair"
+  ],
+  "thresholds": {
+    "gain_vs_strongest_fair_min": 0.02,
+    "positive_intervention_ablation": true,
+    "no_heldout_mechanism_regression": true,
+    "independent_rows_receipts_FP_FN_Brier_logloss_audit": true,
+    "fully_disjoint_train_diagnostic_and_heldout_mechanisms": true
+  },
+  "limits": {
+    "fit_labels_never_input_to_policy": true,
+    "family_and_mechanism_labels_not_policy_features": true,
+    "same_public_anchors_and_training_budget_for_comparators": true,
+    "packed_coefficients_not_native_residency": true,
+    "native_576B_not_qualified": true,
+    "synthetic_not_F3": true,
+    "no_primary_original": true,
+    "no_controller_or_accepted_ref_mutation": true,
+    "no_paid_api_or_codex": true
+  }
+}
