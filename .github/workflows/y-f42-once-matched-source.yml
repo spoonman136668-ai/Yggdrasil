@@ -1,0 +1,99 @@
+name: Y-F42 once-only matched-first-observation source (NO original)
+on:
+  push:
+    branches:
+      - science/y-f42-frozen-matched-source-20261015-r1
+permissions:
+  contents: read
+jobs:
+  source_diagnostic:
+    if: "${{ github.event.head_commit.message == 'science(y-f42): one frozen TRAIN-only matched source cohort' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Exact source, prereg and no original identity drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 1d61b0ae9ce76f23e58af1e1d93e6353b7050ad7 HEAD
+          git merge-base --is-ancestor e09ff7c9241b397d3bbb51c197a0f5d5f051aecf HEAD
+          test "$(git hash-object research/foundational/20261015-y-f42/source_pilot.py)" = 0c22e79f5d3a8098851e771abe1d3801dc75f7bf
+          test "$(git hash-object research/foundational/20261015-y-f42/prereg-frozen.json)" = "$(git rev-parse e09ff7c9241b397d3bbb51c197a0f5d5f051aecf:research/foundational/20261015-y-f42/prereg-frozen.json)"
+          python3 -m unittest discover -s research/foundational/20261015-y-f42 -p test_preflight.py -v
+      - name: One new TRAIN-only source equivalence and conditional value study
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f42/source_pilot.py > /tmp/y-f42-source.json
+          python3 -m json.tool /tmp/y-f42-source.json >/dev/null
+          sha256sum /tmp/y-f42-source.json > /tmp/y-f42-source.sha256
+          git rev-parse HEAD > /tmp/y-f42-source-head.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F42-frozen-TRAIN-only-source-equivalence
+          path: |
+            /tmp/y-f42-source.json
+            /tmp/y-f42-source.sha256
+            /tmp/y-f42-source-head.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Independently recalculate marginal, row and receipt evidence
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,math
+          d=json.load(open('/tmp/y-f42-source.json'))
+          p=json.load(open('research/foundational/20261015-y-f42/prereg-frozen.json'))
+          assert d['schema']=='yggdrasil.f42.matched-marginal-observation.trainonly.v1'
+          assert d['stage']=='FRESH_TRAIN_ONLY_SOURCE_DIAGNOSTIC_NO_LEARNED_ORIGINAL'
+          assert d['questions']==p['cohort']['expected_questions']==256
+          assert d['seeds']==p['cohort']['seeds'] and d['families']==p['cohort']['families']
+          assert d['reserved_original_seeds']==p['reserved_primary_original']['seeds']
+          assert d['reserved_original_families']==p['reserved_primary_original']['families']
+          assert len(d['rows'])==256
+          assert len({(r['seed'],r['family'],r['mechanism'],r['condition']) for r in d['rows']})==256
+          assert d['paired_first_marginals_identical'] and d['paired_public_reference_first_marginals_identical']
+          for field in ('observed_first_marginal_stats','reference_first_marginal_stats'):
+            a=d[field]['coupled'];b=d[field]['decoupled']
+            assert a==b
+            assert 0<=a['variance']<=.25 and 0<=a['mean']<=1
+          assert d['physical_paid_reads_per_role']==2 and d['public_reference_anchors']==24
+          assert d['external_calibration_bytes_per_query']==960
+          assert not d['independent_F3_custody'] and d['primary_original_not_executed']
+          assert not d['accepted_ref_mutation'] and d['evaluator_private_modes_and_conditions_not_given_to_policy']
+          assert all(322800<=r['seed']<322816 and r['family'] in (380,381,382,383) and r['reference_anchors']==24 for r in d['rows'])
+          for r in d['rows']:
+            for arm,receipts in r['receipts'].items():
+              assert len(receipts)==3
+              assert all(len(pair)==2 and pair[0]==0 and pair[1] in (1,2,3) for pair in receipts)
+          for a,s in d['scores'].items():
+            correct=sum(r['predictions'][a]==r['truth'] for r in d['rows'])
+            fp=sum(bool(r['predictions'][a]) and not r['truth'] for r in d['rows'])
+            fn=sum(not bool(r['predictions'][a]) and r['truth'] for r in d['rows'])
+            assert (s['correct'],s['fp'],s['fn'],s['total'])==(correct,fp,fn,256)
+            assert math.isclose(s['accuracy'],correct/256,abs_tol=1e-12)
+          assert d['scores']['private_condition_oracle_unfair']['correct']==256
+          for name,arms in d['by_condition'].items():
+            group=[r for r in d['rows'] if r['condition']==name]
+            assert len(group)==128
+            for a,v in arms.items():
+              assert v['correct']==sum(r['predictions'][a]==r['truth'] for r in group)
+          for name,arms in d['by_mechanism'].items():
+            group=[r for r in d['rows'] if r['mechanism']==name]
+            assert len(group)==128
+            for a,v in arms.items():
+              assert v['correct']==sum(r['predictions'][a]==r['truth'] for r in group)
+          best=max(d['scores'][a]['accuracy'] for a in ('conditional_empirical_Brier','public_Gaussian_mode_posterior'))
+          gain=best-d['scores']['static_reference']['accuracy']
+          expected='TRAIN_ONLY_CONDITIONAL_SOURCE_FEASIBLE' if gain>=.02 else 'TRAIN_ONLY_CONDITIONAL_SOURCE_NOT_FEASIBLE'
+          assert d['verdict']==expected
+          print('Y_F42_SOURCE_RESULT',expected,{a:v['correct'] for a,v in d['scores'].items()},d['observed_first_marginal_stats'])
+          PY
+      - name: Scientific custody
+        run: |
+          echo "Matched sensor SOURCE diagnostic only, never an accepted F3 or new learned original"
