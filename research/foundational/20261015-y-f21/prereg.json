@@ -1,0 +1,61 @@
+{
+  "schema": "yggdrasil.f21.prereg.v1",
+  "parent_F20": "6aaea5b51389f29f12ac9680c7720197bcedec8d",
+  "test": "Freeze exact Y-F20 15 learned context decoder parameters from raw original artifact 11938929841 + F19 role comparison and 22-param recurrent core. Distinct new seed cohort and 5 predeclared sensor interventions test whether contextual role meaning survives evidence-source changes WITHOUT access to intervention label.",
+  "cohort": {
+    "new_seeds": [
+      85900,
+      85906
+    ],
+    "family_motifs_reused": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "base_graphs": 96,
+    "intervention_count": 5,
+    "triples": 480,
+    "questions": 1440,
+    "variants": [
+      "valid typed chain",
+      "necessary edge role changed",
+      "wrong role order"
+    ],
+    "heldout_odd_parity_role_descriptors": true,
+    "synthetic_sensor_cues": true
+  },
+  "interventions": [
+    "nominal_new_seeds",
+    "swap_positive_negative_channels",
+    "invert_high_reliability_sensor0",
+    "suppress_calibrated_positive_channels",
+    "rotate_all_sensor_positions"
+  ],
+  "controls": [
+    "frozen Y-F20 trained decoder",
+    "cheap single sensor",
+    "cheap polarity-aware two-sensor",
+    "programmed intervention-aware calibration comparator (has secret shift identity, NOT fair unassisted baseline)",
+    "exact descriptor oracle"
+  ],
+  "success": {
+    "nominal_accuracy_min": 0.95,
+    "all_scenario_accuracy_min": 0.9,
+    "all_scenario_FPR_max": 0.05,
+    "all_scenario_FNR_max": 0.1,
+    "oracle_correct": 1440
+  },
+  "verdicts": [
+    "INVALID_SHIFT_ORACLE",
+    "DEVELOPMENT_FROZEN_CONTEXT_SENSOR_SHIFT_ROBUST",
+    "DEVELOPMENT_FROZEN_CONTEXT_SENSOR_SHIFT_LIMITATION"
+  ],
+  "constraints": {
+    "no_retraining": true,
+    "threshold_frozen": 0.5,
+    "source_independent_birth": false,
+    "F3_seal_not_admitted": true,
+    "FORGE_cloudflare_KTRADE_unmodified": true
+  }
+}

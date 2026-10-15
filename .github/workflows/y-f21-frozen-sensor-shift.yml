@@ -1,0 +1,58 @@
+name: Y-F21 frozen contextual ontology under shifted sensor reliability
+on:
+  push:
+    branches: [research/y-f21-frozen-context-sensor-shift-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, persist-credentials: false}
+      - name: Install scientific regression dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Pin Y-F20 scientific source and prereg
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 6aaea5b51389f29f12ac9680c7720197bcedec8d HEAD
+          test "$(git hash-object research/foundational/20261015-y-f20/execute.py)" = "$(git rev-parse 6aaea5b51389f29f12ac9680c7720197bcedec8d:research/foundational/20261015-y-f20/execute.py)"
+          python3 -m py_compile research/foundational/20261015-y-f21/execute.py
+          python3 -m json.tool research/foundational/20261015-y-f21/prereg.json >/dev/null
+      - name: Run single NEW source frozen context reliability original
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261015-y-f21/execute.py > /tmp/y-f21-original.json
+          python3 -m json.tool /tmp/y-f21-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F21-original-frozen-sensor-reliability-shift
+          path: /tmp/y-f21-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independent row and per-intervention outcome audit
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          d=json.load(open('/tmp/y-f21-original.json'))
+          assert d["stage"]=="DEVELOPMENT_ONLY" and d["base_graphs"]==96
+          assert d["intervention_groups"]==480 and d["questions"]==1440
+          assert d["state_bytes"]==576 and not d["train_or_threshold_retune"]
+          assert not d["input_truth_to_frozen_candidate"] and not d["intervention_label_to_frozen_candidate"]
+          assert not d["source_born_independently"] and not d["sealed_first_use"] and not d["accepted_ref_mutation"]
+          assert collections.Counter(x["condition"] for x in d["rows"])==dict.fromkeys(d["predeclared_interventions"],96)
+          assert d["scores"]["descriptor_oracle"]["correct"]==1440
+          for mode in ("frozen","first_sensor","two_sensor","known_intervention","descriptor_oracle"):
+            s=d["scores"][mode]
+            assert s["correct"]==sum(sum(a==b for a,b in zip(r["answers"][mode],r["truth"])) for r in d["rows"])
+            assert s["false_positives"]==sum(r["answers"][mode][i] for r in d["rows"] for i in (1,2))
+            assert s["false_negatives"]==sum(not r["answers"][mode][0] for r in d["rows"])
+          assert d["registered_verdict"] in ("INVALID_SHIFT_ORACLE",
+            "DEVELOPMENT_FROZEN_CONTEXT_SENSOR_SHIFT_ROBUST",
+            "DEVELOPMENT_FROZEN_CONTEXT_SENSOR_SHIFT_LIMITATION")
+          print("Y_F21_VERDICT",d["registered_verdict"],d["by_intervention"])
+          PY
+      - name: Full Yggdrasil pytest regression
+        run: python3 -m pytest -q tests
