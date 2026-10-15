@@ -25,6 +25,12 @@ class Test(unittest.TestCase):
    self.assertEqual(len(records),12)
    self.assertLessEqual(sum(len(m.pack(*r)) for r in records),144)
   self.assertEqual(m.solve([m.edge_record(e) for e in m.question_edges(ev,q)],q),q["answer"])
+ def test_all_fit_queries_unambiguous_before_science(self):
+  for seed in m.FIT:
+   for family in m.FIT_FAM:
+    events,question,paths=m.source(seed,family)
+    self.assertEqual(len(m.question_edges(events,question)),len(question["ops"]))
+    self.assertEqual(m.solve([m.edge_record(e) for e in m.question_edges(events,question)],question),question["answer"])
  def test_fit_only(self):
   w,n=m.train()
   self.assertEqual(n,16*4*72)
