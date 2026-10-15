@@ -18,7 +18,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test "$(git hash-object research/foundational/20261015-y-f57/prereg.json)" = 35cd435b2c2cdbe9c9c760a5650b8ca807000b46
-          test "$(git hash-object research/foundational/20261015-y-f57/source_fit.py)" = 5ff494aa42645ac1cbef6281195b5529d299b958
+          test "$(git hash-object research/foundational/20261015-y-f57/source_fit.py)" = 40069f5f5e1961d239f1ab83d71e87663d9ea565
           test "$(git hash-object research/foundational/20261015-y-f57/test_source_fit.py)" = 8426dc2d6ddeb7f64b449f3977027cab638a4666
           python3 -B -m py_compile research/foundational/20261015-y-f57/source_fit.py
           python3 -B -m unittest discover -s research/foundational/20261015-y-f57 -p test_precode.py -v
