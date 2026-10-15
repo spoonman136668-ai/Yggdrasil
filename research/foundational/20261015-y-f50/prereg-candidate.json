@@ -1,0 +1,74 @@
+{
+  "schema": "yggdrasil.f50.online-learned-retention.trainonly-prereg.v1",
+  "status": "PRECODE_FROZEN",
+  "prior_causal_source_sha": "e36b45174c89115030066b67e8dece382577e6d7",
+  "issue": 249,
+  "hypothesis": "A trainable bounded online memory retention score fit solely from historical future-question outcomes preserves more unseen relation-chain answers than FIFO, frequency, and public hash controls, without seeing diagnostic future questions while admitting or evicting memory.",
+  "train": {
+    "seeds": [
+      511000,
+      511016
+    ],
+    "families": [
+      820,
+      821,
+      822,
+      823
+    ],
+    "expected_fit_streams": 64
+  },
+  "diagnostic": {
+    "seeds": [
+      511100,
+      511116
+    ],
+    "families": [
+      824,
+      825,
+      826,
+      827
+    ],
+    "expected_streams": 64
+  },
+  "prospective_original_NOT_RESERVED": {
+    "seeds": [
+      512000,
+      512016
+    ],
+    "families": [
+      828,
+      829,
+      830,
+      831
+    ]
+  },
+  "memory": {
+    "events_per_stream": 64,
+    "stored_edges_max": 12,
+    "distinct_core_chains_per_stream": 4,
+    "query_chain_length": 3,
+    "query_revealed_only_after_stream": true,
+    "source_labels_available_during_fit_only": true
+  },
+  "controls": [
+    "learned_retention",
+    "public_frequency_priority",
+    "FIFO_last12",
+    "public_hash_reservoir",
+    "private_future_query_oracle_unfair"
+  ],
+  "thresholds": {
+    "gain_over_strongest_fair": 0.05,
+    "per_family_nondegradation": true,
+    "all_memory_receipts_and_future_query_boundary_audit": true
+  },
+  "safety": {
+    "heldout_families_are_new_stream_topologies": true,
+    "train_labels_only_for_FIT": true,
+    "independent_F3": false,
+    "original_executed": false,
+    "native_576B_total_not_measured": true,
+    "accepted_ref_mutation": false,
+    "paid_api_calls": 0
+  }
+}
