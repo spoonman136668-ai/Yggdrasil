@@ -1,0 +1,32 @@
+name: Y-F37 decision calibrated posterior pre-original engineering
+on:
+  push:
+    branches:
+      - research/y-f37-decision-calibrated-posterior-20261015-r1
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install existing scientific tests
+        run: python3 -m pip install -e '.[test]'
+      - name: Confirm ancestry, preregistration and syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 501ae463c83edfc9c1aa817abb958d7ac3911af6 HEAD
+          git merge-base --is-ancestor 1726f2aedb69a777bd60e3db77c2737f750da336 HEAD
+          python3 -m json.tool research/foundational/20261015-y-f37/prereg-candidate.json >/dev/null
+          python3 -m py_compile research/foundational/20261015-y-f37/train_only.py
+      - name: Target acquisition privacy and train-only preflight
+        run: python3 -m unittest discover -s research/foundational/20261015-y-f37 -p test_preflight.py -v
+      - name: One full repository pytest
+        run: python3 -m pytest -q tests
+      - name: Not scientific first-use
+        run: echo "ENGINEERING SOURCE ONLY: no train-only cohort or original executed"
