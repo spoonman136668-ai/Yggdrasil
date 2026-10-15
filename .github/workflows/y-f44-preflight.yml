@@ -1,0 +1,34 @@
+name: Y-F44 learned unseen-mechanism source preflight (NO diagnostic or original)
+on:
+  push:
+    branches:
+      - research/y-f44-mechanism-transfer-20261015-r1
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Existing Python environment
+        run: python3 -m pip install -e '.[test]'
+      - name: Pin prerequisite source and precode F44 preregistration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 476f12dfc9737308f26bd624ecf1b4982d9c495a HEAD
+          git merge-base --is-ancestor 03a1b93ba02587493ccfc9538be857c650ba90e8 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f44/prereg-candidate.json)" = 5809deb9db8647ab3efe0c148b0ca41b4c5f35b2
+          test "$(git hash-object research/foundational/20261015-y-f44/source_pilot.py)" = d4fc61ebac035a826272bc8e4c7763ee3faabffa
+          python3 -m json.tool research/foundational/20261015-y-f44/prereg-candidate.json >/dev/null
+          python3 -m py_compile research/foundational/20261015-y-f44/source_pilot.py
+      - name: Focused mechanism split, learned transfer, calibration and purchase tests
+        run: python3 -m unittest discover -s research/foundational/20261015-y-f44 -p test_preflight.py -v
+      - name: One full repository pytest regression
+        run: python3 -m pytest -q tests
+      - name: Source-only boundary
+        run: echo "F44 engineering preflight only, no future TRAIN cohort, originals, F3, native 576B acceptance or accepted ref mutation."
