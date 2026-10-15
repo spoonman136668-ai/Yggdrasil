@@ -1,0 +1,64 @@
+{
+  "schema": "yggdrasil.f32.frozen-train-only-conditional-pilot.v1",
+  "status": "PREREG_LOCKED_BEFORE_PILOT",
+  "id": "Y-F32",
+  "prereg_sha": "a2e980bd0c23e7462cc22e6c9020c6de6db5511e",
+  "qualified_source_sha": "88b1f9b8e383d748d35f51ad61668a7837bbdd4a",
+  "qualified_tree_sha": "4e5a2e17abdfc65c556126a17dcc60b5d4a919b8",
+  "source_path": "research/foundational/20261015-y-f32/pilot.py",
+  "source_blob_sha": "3f6511e966440c1912d1a3900c512d94b722c4a9",
+  "qual_run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38728730174",
+  "pilot": {
+    "seeds": [
+      191800,
+      191832
+    ],
+    "families": [
+      170,
+      171,
+      172,
+      173
+    ],
+    "conditions": [
+      "marker_normal",
+      "marker_reversed",
+      "marker_corrupted",
+      "marker_noninformative"
+    ],
+    "expected_queries": 512,
+    "reference_anchors": 8,
+    "roles_per_query": 3
+  },
+  "reserved": {
+    "seeds": [
+      192800,
+      192812
+    ],
+    "families": [
+      174,
+      175,
+      176,
+      177
+    ],
+    "no_access": true
+  },
+  "metrics": {
+    "min_conditional_mi_bits": 0.02,
+    "min_heldout_logloss_gain_nats": 0.01,
+    "min_headroom_vs_best_fair": 0.04,
+    "min_empirical_switch_rate": 0.05,
+    "all_must_pass": true
+  },
+  "budget": {
+    "target_reads_exactly_2_per_role": true,
+    "native_scientific_state_max_576_bytes": true,
+    "external_calibrator_bytes_per_query": 320,
+    "actual_python_heap_unmeasured": true
+  },
+  "provenance": {
+    "source_synthetic_in_repo": true,
+    "F3_independent_custody": false,
+    "no_primary_original": true,
+    "no_accepted_ref_mutation": true
+  }
+}
