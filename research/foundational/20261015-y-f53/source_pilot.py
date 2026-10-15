@@ -15,7 +15,7 @@ RESERVED=range(592000,592016)
 EVENTS=64
 CAPACITY=12
 F_DIM=9
-ARMS=("fit_role_path_cohesion_retention","learned_bridge_retention","learned_topology_retention","public_connected_component",
+ARMS=("fit_role_path_cohesion_retention","learned_bridge_retention","learned_topology_retention","public_role_path_greedy","public_connected_component",
       "public_degree_adjacency","public_tag_only","FIFO_last12",
       "public_frequency","public_hash","private_future_question_oracle_unfair")
 ROLES=(
