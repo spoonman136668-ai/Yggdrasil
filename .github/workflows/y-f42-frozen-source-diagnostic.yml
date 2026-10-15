@@ -1,0 +1,103 @@
+name: Y-F42 one frozen matched-marginal TRAIN-only diagnostic (NO original)
+on:
+  push:
+    branches:
+      - science/y-f42-frozen-marginal-sensing-20261015-r1
+permissions:
+  contents: read
+jobs:
+  train_only:
+    if: "${{ github.event.head_commit.message == 'science(y-f42): one exact-frozen train-only marginal diagnostic' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Prove frozen F42 source identity, prereg, and excluded originals
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 4d557dcfd792d955c4abdf5157a748b90557d855 HEAD
+          git merge-base --is-ancestor a0c9969c4cc7e7817d87a70c1857dceb0e8976ef HEAD
+          test "$(git hash-object research/foundational/20261015-y-f42/source_pilot.py)" = 154c8ca781a522409e27d89de0075816355040cc
+          test "$(git hash-object research/foundational/20261015-y-f42/prereg-candidate.json)" = d51bd0d5a126e42595354f819dd76277b31f54cf
+          python3 -m json.tool research/foundational/20261015-y-f42/prereg-candidate.json >/dev/null
+          python3 -m unittest discover -s research/foundational/20261015-y-f42 -p test_preflight.py -v
+      - name: Exactly one source-frozen TRAIN-only F42 diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f42/source_pilot.py > /tmp/y-f42-source.json
+          python3 -m json.tool /tmp/y-f42-source.json >/dev/null
+          sha256sum /tmp/y-f42-source.json > /tmp/y-f42-source.sha256
+          git rev-parse HEAD > /tmp/y-f42-head.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F42-one-frozen-train-only-marginal-diagnostic
+          path: |
+            /tmp/y-f42-source.json
+            /tmp/y-f42-source.sha256
+            /tmp/y-f42-head.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Independent all-row, matched-source, two-read and threshold audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,math
+          d=json.load(open('/tmp/y-f42-source.json'))
+          p=json.load(open('research/foundational/20261015-y-f42/prereg-candidate.json'))
+          assert (d['schema'],d['stage'])==('yggdrasil.f42.matched-marginal-observation.trainonly.v1','FRESH_TRAIN_ONLY_SOURCE_DIAGNOSTIC_NO_LEARNED_ORIGINAL')
+          assert d['seeds']==p['train_only']['seeds'] and d['families']==p['train_only']['families']
+          assert d['reserved_original_seeds']==p['reserved_original']['seeds']
+          assert d['reserved_original_families']==p['reserved_original']['families']
+          assert d['questions']==p['train_only']['expected_cases']==256 and len(d['rows'])==256
+          assert d['physical_paid_reads_per_role']==p['train_only']['physical_reads_per_role']==2
+          assert d['public_reference_anchors']==p['train_only']['public_reference_anchors']==24
+          assert d['external_calibration_bytes_per_query']==24*5*8
+          assert d['evaluator_private_modes_and_conditions_not_given_to_policy']
+          assert d['native_576_byte_resident_not_physically_verified'] and not d['independent_F3_custody']
+          assert d['primary_original_not_executed'] and not d['accepted_ref_mutation'] and d['paid_api_calls']==0
+          assert d['paired_first_marginals_identical'] and d['paired_public_reference_first_marginals_identical']
+          for marg in (d['observed_first_marginal_stats'],d['reference_first_marginal_stats']):
+              for k in ('mean','variance'):
+                  assert abs(marg['coupled'][k]-marg['decoupled'][k])<=p['gates']['max_paired_first_mean_gap' if k=='mean' else 'max_paired_first_variance_gap']
+          rows=d['rows'];arms=p['controls']
+          assert len({(r['seed'],r['family'],r['mechanism'],r['condition']) for r in rows})==256
+          for row in rows:
+              assert 322800<=row['seed']<322816 and row['family'] in (380,381,382,383)
+              assert row['condition'] in ('coupled','decoupled') and row['mechanism'] in ('normal','anticorrelated')
+              assert row['reference_anchors']==24 and set(row['predictions'])==set(arms)
+              assert set(row['receipts'])==set(arms)-{'private_condition_oracle_unfair'}
+              for arm,receipts in row['receipts'].items():
+                  assert len(receipts)==3
+                  assert all(len(t)==2 and t[0]==0 and t[1] in (1,2,3) for t in receipts)
+          def recount(subset,arm):
+              n=len(subset);c=sum(r['predictions'][arm]==r['truth'] for r in subset)
+              fp=sum(bool(r['predictions'][arm]) and not r['truth'] for r in subset)
+              fn=sum(not bool(r['predictions'][arm]) and r['truth'] for r in subset)
+              return dict(total=n,correct=c,accuracy=c/n,fp=fp,fn=fn)
+          for arm in arms:
+              assert d['scores'][arm]==recount(rows,arm)
+          assert d['scores']['private_condition_oracle_unfair']['correct']==256
+          for field,key,values in (('by_condition','condition',('coupled','decoupled')),('by_mechanism','mechanism',('normal','anticorrelated'))):
+              for value in values:
+                  subset=[r for r in rows if r[key]==value]
+                  assert len(subset)==128
+                  for arm in arms:
+                      assert d[field][value][arm]==recount(subset,arm)
+          controls=('conditional_empirical_Brier','static_reference','first_masked')
+          baseline=max(d['scores'][a]['accuracy'] for a in controls)
+          gain=d['scores']['public_Gaussian_mode_posterior']['accuracy']-baseline
+          assert math.isclose(d['strongest_matched_fair_control_accuracy'],baseline,abs_tol=1e-12)
+          assert math.isclose(d['candidate_over_strongest_matched_fair_gain'],gain,abs_tol=1e-12)
+          expected='TRAIN_ONLY_CONDITIONAL_SOURCE_FEASIBLE' if gain>=p['gates']['conditional_decision_headroom_over_best_fair_min'] else 'TRAIN_ONLY_CONDITIONAL_SOURCE_NOT_FEASIBLE'
+          assert d['verdict']==expected
+          print('Y_F42',expected,'accuracy',{a:d['scores'][a]['correct'] for a in arms},'conditional_source_headroom',d['conditional_source_headroom'],'candidate_gain',gain)
+          PY
+      - name: Authority boundary
+        run: echo "TRAIN-only synthetic diagnostic. No reserved original, independent F3, scientific acceptance, learner claim or CKB-plane/accepted-ref mutation."
