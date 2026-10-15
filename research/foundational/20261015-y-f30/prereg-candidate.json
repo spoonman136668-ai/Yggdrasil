@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.f30.prereg-candidate.v1",
+  "status": "PRE_ORIGINAL_DESIGN_ONLY",
+  "id": "Y-F30",
+  "parent_source": "21ebe0696474638048123f15f7799cd76d11be3c",
+  "parent_negative_run": "38718713452",
+  "hypothesis": "Learning the posterior expected downstream value of alternative second observations using only public calibration and an actually purchased first reading can beat the strongest equal-budget adaptive control on unfamiliar sensor regimes.",
+  "train": {
+    "seeds": [
+      161200,
+      161248
+    ],
+    "regimes": [
+      "marker-positive",
+      "marker-reversed",
+      "marker-noisy"
+    ],
+    "conditions": [
+      "ordinary",
+      "missingness",
+      "anticorrelated-source"
+    ],
+    "training_rows": 1728,
+    "epochs": 140,
+    "trainable_weights": 10
+  },
+  "test": {
+    "seeds": [
+      162700,
+      162716
+    ],
+    "families": [
+      112,
+      113,
+      114,
+      115
+    ],
+    "mechanisms": [
+      "unseen-inverted-marker",
+      "unseen-weak-marker"
+    ],
+    "conditions": [
+      "ordinary",
+      "missingness",
+      "anticorrelated-source"
+    ],
+    "expected_queries": 384
+  },
+  "methods": [
+    "learned-conditional-posterior",
+    "adaptive-local-calibration-Brier",
+    "calibrated-static",
+    "conditional-greedy",
+    "fixed",
+    "masked-first",
+    "privileged-oracle"
+  ],
+  "limits": {
+    "native_state_bytes": 576,
+    "target_reads_per_descriptor": 2,
+    "purchased_first_channel": 0,
+    "public_reference_calibration_anchors": 64,
+    "external_memory_bytes_tracked": true,
+    "no_test_labels_at_action": true
+  },
+  "gate": {
+    "min_absolute_accuracy_gain_over_best_fair": 0.02,
+    "nondegrading_each_heldout_mechanism": true,
+    "actual_causal_action_switch_rate_positive": true,
+    "masked_first_ablation_negative": true,
+    "source_oracle_all_correct": true
+  },
+  "classification": [
+    "INVALID_SOURCE_OR_CUSTODY",
+    "DEVELOPMENT_POSTERIOR_LEARNED_GAIN",
+    "DEVELOPMENT_POSTERIOR_NO_QUALIFIED_GAIN"
+  ],
+  "provenance": {
+    "preoriginal_separate_prereg_commit": true,
+    "source_hash_locked_before_original": true,
+    "no_original_yet": true,
+    "independently_born_F3_source": false,
+    "no_accepted_ref_mutation": true,
+    "no_FORGE_CKB_cloudflare_KTRADE_changes": true,
+    "no_paid_api": true
+  }
+}
