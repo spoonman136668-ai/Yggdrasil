@@ -1,0 +1,33 @@
+name: Y-F41 observation-value source engineering only
+on:
+  push:
+    branches:
+      - research/y-f41-observation-regret-preflight-20261015-r1
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install existing science test dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Check predecessor and precode source prereg
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7333533cbfe79070b7e00516dc44fa0cc949707e HEAD
+          git merge-base --is-ancestor 51a38b0e2b8884dde55d306823288540f5bd69b2 HEAD
+          python3 -m json.tool research/foundational/20261015-y-f41/prereg-candidate.json >/dev/null
+          python3 -m py_compile research/foundational/20261015-y-f41/source_pilot.py
+      - name: Two-read and evaluator-only source checks
+        run: python3 -m unittest discover -s research/foundational/20261015-y-f41 -p test_preflight.py -v
+      - name: One full pytest regression
+        run: python3 -m pytest -q tests
+      - name: Authority
+        run: |
+          echo "Engineering only; no F41 train-only cohort or primary original executed"
