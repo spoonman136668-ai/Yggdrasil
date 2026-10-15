@@ -1,0 +1,88 @@
+name: Y-F32 one public-calibration conditional information pilot
+on:
+  push:
+    branches:
+      - science/y-f32-frozen-conditional-pilot-20261015-r1
+permissions:
+  contents: read
+jobs:
+  pilot:
+    if: "${{ github.event.head_commit.message == 'science(y-f32): one frozen train-only conditional pilot' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify exact source and prereg before first pilot
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 88b1f9b8e383d748d35f51ad61668a7837bbdd4a HEAD
+          git merge-base --is-ancestor a915335b388dc7272e2594653131eedda2a736b6 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f32/pilot.py)" = 3f6511e966440c1912d1a3900c512d94b722c4a9
+          test "$(git hash-object research/foundational/20261015-y-f32/pilot-frozen.json)" = "$(git rev-parse a915335b388dc7272e2594653131eedda2a736b6:research/foundational/20261015-y-f32/pilot-frozen.json)"
+          python3 -m unittest discover -s research/foundational/20261015-y-f32 -p test_preflight.py -q
+      - name: Execute only train-source conditional-information feasibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f32/pilot.py > /tmp/y-f32-pilot.json
+          python3 -m json.tool /tmp/y-f32-pilot.json > /dev/null
+          sha256sum /tmp/y-f32-pilot.json > /tmp/y-f32-pilot.sha256
+          git rev-parse HEAD > /tmp/y-f32-source-commit.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F32-train-only-calibration-feasibility-no-original
+          path: |
+            /tmp/y-f32-pilot.json
+            /tmp/y-f32-pilot.sha256
+            /tmp/y-f32-source-commit.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Independent row and conditional-information audit
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,math,collections
+          d=json.load(open('/tmp/y-f32-pilot.json'))
+          p=json.load(open('research/foundational/20261015-y-f32/pilot-frozen.json'))
+          assert d['schema']=='yggdrasil.f32.calibrated-conditional-info-pilot.v1'
+          assert d['status']=='PRE_ORIGINAL_TRAIN_ONLY'
+          assert d['questions']==p['pilot']['expected_queries']==512
+          assert len(d['rows'])==512
+          assert d['primary_original_not_executed'] and not d['independently_born_F3_source'] and not d['accepted_ref_mutation']
+          assert d['policy_cannot_view_hidden_mode_or_unpurchased_target_channels']
+          assert list(d['pilot_seeds'])==[191800,191832] and list(d['reserved_test_seeds'])==[192800,192812]
+          assert set(d['families'])==set(p['pilot']['families'])
+          assert len(set((r['seed'],r['family'],r['condition']) for r in d['rows']))==512
+          assert all(191800<=r['seed']<191832 and r['external_calibration_bytes']==320 for r in d['rows'])
+          assert collections.Counter(r['condition'] for r in d['rows'])==dict.fromkeys(p['pilot']['conditions'],128)
+          for row in d['rows']:
+            for arm,trace in row['read_receipts'].items():
+              assert len(trace)==3
+              assert all(len(pair)==2 and pair[0]==0 and pair[1] in (1,2,3) for pair in trace)
+          for arm,score in d['scores'].items():
+            good=sum(row['answers'][arm]==row['truth'] for row in d['rows'])
+            assert score['correct']==good and math.isclose(score['accuracy'],good/512,abs_tol=1e-12)
+          assert d['scores']['privileged_oracle']['correct']==512
+          for key in ('first_mode_information_pooled_bits','first_mode_information_conditioned_on_public_polarity_bits',
+                      'heldout_conditional_predictive_logloss_gain_nats','empirical_action_switch_rate','headroom_vs_best_fair'):
+            assert math.isfinite(d[key])
+          eligible=(d['first_mode_information_conditioned_on_public_polarity_bits']>=p['metrics']['min_conditional_mi_bits'] and
+                    d['heldout_conditional_predictive_logloss_gain_nats']>=p['metrics']['min_heldout_logloss_gain_nats'] and
+                    d['headroom_vs_best_fair']>=p['metrics']['min_headroom_vs_best_fair'] and
+                    d['empirical_action_switch_rate']>=p['metrics']['min_empirical_switch_rate'])
+          expected=('PILOT_CONDITIONAL_INFORMATION_HEADROOM_ELIGIBLE_FOR_NEXT_SCIENTIFIC_GATE' if eligible else
+                   'PILOT_CONDITIONAL_INFORMATION_NOT_QUALIFIED_NO_ORIGINAL')
+          assert d['verdict']==expected
+          print('Y_F32_PILOT_VERDICT',d['verdict'],{k:v['correct'] for k,v in d['scores'].items()})
+          print('Y_F32_INFO',d['first_mode_information_pooled_bits'],
+                d['first_mode_information_conditioned_on_public_polarity_bits'],
+                'CV_GAIN',d['heldout_conditional_predictive_logloss_gain_nats'],
+                'SWITCH',d['empirical_action_switch_rate'])
+          PY
+      - name: Reserved original remains untouched
+        run: echo "Y-F32 training pilot only; no F3 custody or scientific first use"
