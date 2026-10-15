@@ -1,0 +1,93 @@
+name: Y-F37 frozen one-shot decision calibrated TRAIN-only evidence
+on:
+  push:
+    branches:
+      - science/y-f37-frozen-decision-trainonly-20261015-r1
+permissions:
+  contents: read
+jobs:
+  science:
+    if: "${{ github.event.head_commit.message == 'science(y-f37): one frozen decision-calibrated TRAIN-only cohort' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 85
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify source and frozen manifest identities before one-shot cohort
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 447b61c23c002386317be59a5cb533c260a1d641 HEAD
+          git merge-base --is-ancestor 117212fbd44b6ba2c50b4efd8e61c6d8269cd8d4 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f37/train_only.py)" = 7dcd696f22536d40f64c62daceb59df762471c9c
+          test "$(git hash-object research/foundational/20261015-y-f37/prereg-frozen.json)" = "$(git rev-parse 117212fbd44b6ba2c50b4efd8e61c6d8269cd8d4:research/foundational/20261015-y-f37/prereg-frozen.json)"
+          python3 -m unittest discover -s research/foundational/20261015-y-f37 -p test_preflight.py -v
+      - name: Execute exactly one frozen TRAIN-only decision calibrated cohort
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f37/train_only.py > /tmp/y-f37-trainonly.json
+          python3 -m json.tool /tmp/y-f37-trainonly.json >/dev/null
+          sha256sum /tmp/y-f37-trainonly.json > /tmp/y-f37-trainonly.sha256
+          git rev-parse HEAD > /tmp/y-f37-head-identity.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F37-once-frozen-TRAIN-only
+          path: |
+            /tmp/y-f37-trainonly.json
+            /tmp/y-f37-trainonly.sha256
+            /tmp/y-f37-head-identity.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Independently verify every purchased source and registered verdict
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,math
+          d=json.load(open('/tmp/y-f37-trainonly.json'))
+          p=json.load(open('research/foundational/20261015-y-f37/prereg-frozen.json'))
+          assert d['schema']=='yggdrasil.f37.decision-calibrated.trainonly.v1'
+          assert d['stage']=='DEVELOPMENT_TRAIN_ONLY_NO_PRIMARY_ORIGINAL'
+          assert d['train_seeds']==p['meta_train']['seeds'] and d['train_families']==p['meta_train']['families']
+          assert d['eval_seeds']==p['train_only']['seeds'] and d['eval_families']==p['train_only']['families']
+          assert d['reserved_original_seeds']==p['reserved_primary_original']['seeds']
+          assert d['reserved_original_families']==p['reserved_primary_original']['families']
+          assert d['questions']==p['train_only']['expected_questions']==512 and len(d['rows'])==512
+          assert len({(r['seed'],r['family'],r['condition'],r['mechanism']) for r in d['rows']})==512
+          assert d['native_coefficients_bytes']==128 and d['native_core_budget']==576
+          assert d['calibration_external_bytes_per_case']==640 and d['physical_paid_reads_per_role']==2
+          assert len(d['learned_weights'])==6 and d['primary_original_not_executed']
+          assert not d['source_independently_born_F3'] and not d['accepted_ref_mutation']
+          assert all(272800<=r['seed']<272816 and r['family'] in (254,255,256,257)
+                     and r['public_anchors']==16 for r in d['rows'])
+          for row in d['rows']:
+            for arm,trace in row['purchased_sensors'].items():
+              assert len(trace)==3
+              assert all(len(pair)==2 and pair[0]==0 and pair[1] in (1,2,3) for pair in trace)
+          for arm,score in d['scores'].items():
+            correct=sum(r['answers'][arm]==r['truth'] for r in d['rows'])
+            fp=sum(bool(r['answers'][arm]) and not r['truth'] for r in d['rows'])
+            fn=sum(not bool(r['answers'][arm]) and r['truth'] for r in d['rows'])
+            assert (score['correct'],score['fp'],score['fn'],score['total'])==(correct,fp,fn,512)
+            assert math.isclose(score['accuracy'],correct/512,abs_tol=1e-12)
+          assert d['scores']['privileged_oracle']['correct']==512
+          for mechanism,arms in d['by_mechanism'].items():
+            cohort=[r for r in d['rows'] if r['mechanism']==mechanism]
+            assert len(cohort)==256
+            for arm,s in arms.items():
+              assert s['correct']==sum(r['answers'][arm]==r['truth'] for r in cohort)
+          fair=('gaussian_Bayesian','public_polarity_Bayesian','conditional_empirical_Brier','calibrated_static')
+          gain=d['scores']['learned_decision']['accuracy']-max(d['scores'][arm]['accuracy'] for arm in fair)
+          robust=all(arms['learned_decision']['accuracy']>=max(arms[arm]['accuracy'] for arm in fair) for arms in d['by_mechanism'].values())
+          eligible=gain>=.02 and robust and d['first_read_causal_action_switch_rate']>0 and d['scores']['learned_decision']['correct']>d['scores']['masked_first']['correct']
+          expected='TRAIN_ONLY_DECISION_CALIBRATED_LEARNED_GAIN' if eligible else 'TRAIN_ONLY_DECISION_CALIBRATED_NO_QUALIFIED_GAIN'
+          assert d['verdict']==expected
+          print('Y_F37_TRAIN_ONLY_RESULT',expected,{arm:s['correct'] for arm,s in d['scores'].items()},
+                'switch',d['first_read_causal_action_switch_rate'],'mode_logloss',d['latent_mode_heldout_logloss'])
+          PY
+      - name: Preserve authority boundary
+        run: |
+          echo "Prospective train-only; not independent F3 custody, primary original or promotion"
