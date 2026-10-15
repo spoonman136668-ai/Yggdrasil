@@ -76,7 +76,7 @@ def decide(public,reading,arm):
         # Source 1 reliable for latent mode=0. Marker sign maps to mode
         # using TRAIN-only public calibration, never hidden regime name.
         first_positive=(reading.value>=.5)
-        return 2 if (first_positive if sign>0 else not first_positive) else 1
+        return 2 if (first_positive if sign<0 else not first_positive) else 1
     if arm=="fixed":return 3
     raise ValueError("unknown source-selection arm")
 
