@@ -1,0 +1,25 @@
+name: Y-F28 preflight
+on:
+  push:
+    branches: [research/y-f28-conditional-information-preflight-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Dependency setup
+        run: python3 -m pip install -e '.[test]'
+      - name: Validate frozen scope
+        run: |
+          git merge-base --is-ancestor 352ec6cb606020f97e6369dcc54d761c1d8dd77e HEAD
+          python3 -m json.tool research/foundational/20261015-y-f28/prereg-candidate.json > /dev/null
+      - name: Focused tests
+        run: python3 -m pytest -q research/foundational/20261015-y-f28/test_sensor_custody.py
+      - name: Repository regression
+        run: python3 -m pytest -q tests
