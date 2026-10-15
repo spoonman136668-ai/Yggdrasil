@@ -1,0 +1,96 @@
+name: Y-F36 one frozen learned latent reliability TRAIN-only cohort
+on:
+  push:
+    branches:
+      - science/y-f36-frozen-latent-posterior-20261015-r1
+permissions:
+  contents: read
+jobs:
+  one_train_only:
+    if: "${{ github.event.head_commit.message == 'science(y-f36): one frozen latent reliability TRAIN-only cohort' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Enforce exact source, prereg and isolated cohort
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 501ae463c83edfc9c1aa817abb958d7ac3911af6 HEAD
+          git merge-base --is-ancestor 704986192755ca7062386e07242d640ab073e7be HEAD
+          test "$(git hash-object research/foundational/20261015-y-f36/train_only.py)" = b21a9904b71219ac2dfa212b8b445f3932133ef0
+          test "$(git hash-object research/foundational/20261015-y-f36/prereg-frozen.json)" = "$(git rev-parse 704986192755ca7062386e07242d640ab073e7be:research/foundational/20261015-y-f36/prereg-frozen.json)"
+          python3 -m unittest discover -s research/foundational/20261015-y-f36 -p test_preflight.py -v
+      - name: Exactly one Y-F36 train-only latent posterior evaluation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f36/train_only.py > /tmp/y-f36-train-only.json
+          python3 -m json.tool /tmp/y-f36-train-only.json >/dev/null
+          sha256sum /tmp/y-f36-train-only.json > /tmp/y-f36-train-only.sha256
+          git rev-parse HEAD > /tmp/y-f36-frozen-head.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F36-frozen-one-TRAIN-only-evidence
+          path: |
+            /tmp/y-f36-train-only.json
+            /tmp/y-f36-train-only.sha256
+            /tmp/y-f36-frozen-head.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Independently audit latent posterior, acquisitions and controls
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,math
+          d=json.load(open('/tmp/y-f36-train-only.json'))
+          p=json.load(open('research/foundational/20261015-y-f36/prereg-frozen.json'))
+          assert d['schema']=='yggdrasil.f36.latent-mode-posterior.trainonly.v1'
+          assert d['stage']=='NEW_TRAIN_ONLY_NOT_PRIMARY_ORIGINAL'
+          assert d['train_seeds']==p['train']['seeds']
+          assert d['train_families']==p['train']['families']
+          assert d['eval_seeds']==p['train_only']['seeds']
+          assert d['eval_families']==p['train_only']['families']
+          assert d['reserved_primary_seeds']==p['reserved_primary']['seeds']
+          assert d['reserved_primary_families']==p['reserved_primary']['families']
+          assert d['questions']==p['train_only']['expected_questions']==512
+          assert len(d['rows'])==512
+          assert len({(r['seed'],r['family'],r['condition'],r['mechanism']) for r in d['rows']})==512
+          assert d['native_coefficient_bytes']==128 and d['native_core_limit_bytes']==576
+          assert d['physical_target_reads_per_role']==2 and d['Python_runtime_heap_not_bounded']
+          assert d['hidden_mode_not_exposed_to_action'] and not d['source_independently_born_F3']
+          assert not d['primary_original_not_executed'] is False and not d['accepted_ref_mutation']
+          assert all(252800<=r['seed']<252816 and r['family'] in (224,225,226,227) and
+                     r['public_anchor_count']==16 for r in d['rows'])
+          for r in d['rows']:
+            for arm,purchases in r['purchased_sensor_receipts'].items():
+              assert len(purchases)==3
+              assert all(len(p)==2 and p[0]==0 and p[1] in (1,2,3) for p in purchases)
+          for arm,s in d['scores'].items():
+            correct=sum(r['answers'][arm]==r['truth'] for r in d['rows'])
+            fp=sum(r['answers'][arm] and not r['truth'] for r in d['rows'])
+            fn=sum(not r['answers'][arm] and r['truth'] for r in d['rows'])
+            assert (s['correct'],s['fp'],s['fn'],s['total'])==(correct,fp,fn,512)
+            assert math.isclose(s['accuracy'],correct/512,abs_tol=1e-12)
+          assert d['scores']['privileged_oracle']['correct']==512
+          for mechanism,arms in d['mechanism_scores'].items():
+            cohort=[r for r in d['rows'] if r['mechanism']==mechanism]
+            assert len(cohort)==256
+            for arm,s in arms.items():
+              assert s['correct']==sum(r['answers'][arm]==r['truth'] for r in cohort)
+          assert all(math.isfinite(v) for v in d['source_mode_predictive_logloss'].values())
+          assert 0<=d['first_read_counterfactual_action_switch_rate']<=1
+          fair=('gaussian_Bayesian','polarity_Bayesian','conditional_empirical_Brier','calibrated_static','fixed')
+          gain=d['scores']['learned_posterior']['accuracy']-max(d['scores'][a]['accuracy'] for a in fair)
+          nondegrade=all(d['mechanism_scores'][m]['learned_posterior']['accuracy']>=max(d['mechanism_scores'][m][a]['accuracy'] for a in fair) for m in d['mechanism_scores'])
+          eligible=gain>=p['decision']['min_absolute_gain_vs_best_equal_data'] and nondegrade and d['first_read_counterfactual_action_switch_rate']>0 and d['scores']['learned_posterior']['correct']>d['scores']['masked_first']['correct']
+          expected='TRAIN_ONLY_LATENT_RELIABILITY_QUALIFIED' if eligible else 'TRAIN_ONLY_LATENT_RELIABILITY_NO_GAIN'
+          assert d['verdict']==expected
+          print('Y_F36_TRAIN_ONLY_VERDICT',expected,{a:s['correct'] for a,s in d['scores'].items()},'switch',d['first_read_counterfactual_action_switch_rate'],'posterior_logloss',d['source_mode_predictive_logloss'])
+          PY
+      - name: Preserve authority boundary
+        run: echo "Y-F36 TRAIN-only development, not F3 independent custody or primary original"
