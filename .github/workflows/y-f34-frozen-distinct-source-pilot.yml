@@ -1,0 +1,83 @@
+name: Y-F34 one frozen distinct-sensor TRAIN-only source pilot (NO original)
+on:
+  push:
+    branches:
+      - science/y-f34-frozen-distinct-source-pilot-20261015-r1
+permissions:
+  contents: read
+jobs:
+  source_pilot:
+    if: "${{ github.event.head_commit.message == 'science(y-f34): one frozen distinct-source TRAIN-only pilot' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify source identity and frozen prereg before science
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor d62dd0714e79da2d6c642e2585407d041b25dc5d HEAD
+          git merge-base --is-ancestor 9f3a6449b368b6800aaf4f93f025608ec9bc1232 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f34/source_pilot.py)" = 3de60578c376873b213f5e49e5403fa3a70f793f
+          test "$(git hash-object research/foundational/20261015-y-f34/source-prereg-frozen.json)" = "$(git rev-parse 9f3a6449b368b6800aaf4f93f025608ec9bc1232:research/foundational/20261015-y-f34/source-prereg-frozen.json)"
+          python3 -m unittest discover -s research/foundational/20261015-y-f34 -p test_preflight.py -v
+      - name: Run one new TRAIN-only source feasibility study
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f34/source_pilot.py > /tmp/y-f34-source-train-only.json
+          python3 -m json.tool /tmp/y-f34-source-train-only.json > /dev/null
+          sha256sum /tmp/y-f34-source-train-only.json > /tmp/y-f34-source-train-only.sha256
+          git rev-parse HEAD > /tmp/y-f34-original-identity.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F34-frozen-TRAIN-only-source-evidence
+          path: |
+            /tmp/y-f34-source-train-only.json
+            /tmp/y-f34-source-train-only.sha256
+            /tmp/y-f34-original-identity.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Independently verify all case and physical receipts
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,math
+          d=json.load(open('/tmp/y-f34-source-train-only.json'))
+          p=json.load(open('research/foundational/20261015-y-f34/source-prereg-frozen.json'))
+          assert d['schema']=='yggdrasil.f34.distinct-sensor-train-only.v1'
+          assert d['stage']=='PRE_ORIGINAL_TRAIN_ONLY'
+          assert d['questions']==p['pilot']['expected_queries']==576
+          assert d['source_seeds']==p['pilot']['seeds'] and d['source_families']==p['pilot']['families']
+          assert d['reserved_primary_seeds']==p['reserved_primary_original']['seeds']
+          assert d['reserved_primary_families']==p['reserved_primary_original']['families']
+          assert not d['evaluator_source_independently_controlled_F3'] and d['primary_original_not_executed']
+          assert d['exact_two_reads_per_role'] and d['evaluator_independent_implementation_agreement']
+          assert len(d['rows'])==576
+          assert len({(r['seed'],r['family'],r['condition'],r['mechanism']) for r in d['rows']})==576
+          assert all(211800<=r['seed']<211824 and r['public_reference_anchors']==16 for r in d['rows'])
+          for r in d['rows']:
+            for arm,trace in r['physical_receipts'].items():
+              assert len(trace)==3
+              assert all(len(pair)==2 and pair[0]==0 and pair[1] in (1,2,3) for pair in trace)
+          for arm,v in d['scores'].items():
+            n=sum(r['predictions'][arm]==r['truth'] for r in d['rows'])
+            assert v['correct']==n and v['total']==576
+            assert math.isclose(v['accuracy'],n/576,abs_tol=1e-12)
+          assert d['scores']['privileged_oracle']['correct']==576
+          assert 0<=d['empirical_action_switch_rate']<=1 and 0<=d['headroom_fraction']<=1
+          eligible=(d['conditional_mi_bits']>=p['gates']['conditional_MI_min_bits'] and
+                    d['heldout_conditional_logloss_gain_nats']>=p['gates']['predictive_heldout_logloss_gain_min_nats'] and
+                    d['empirical_action_switch_rate']>=p['gates']['empirical_action_switch_min'] and
+                    d['headroom_fraction']>=p['gates']['headroom_min_fraction'])
+          expected='TRAIN_ONLY_DISTINCT_CONDITIONAL_SOURCE_ELIGIBLE' if eligible else 'TRAIN_ONLY_DISTINCT_CONDITIONAL_SOURCE_BLOCKED'
+          assert d['verdict']==expected
+          print("Y_F34_TRAIN_ONLY_SOURCE",expected,{k:v['correct'] for k,v in d['scores'].items()},
+                'MI',d['conditional_mi_bits'],'predictive_gain',d['heldout_conditional_logloss_gain_nats'])
+          PY
+      - name: Authority limit
+        run: echo "TRAIN-only source qualification, not learned-policy original or independent F3 custody"
