@@ -1,0 +1,57 @@
+name: Y-F54B corrected witness and genuinely new bounded TRAIN cohort
+on:
+  push:
+    branches: [research/y-f54b-independent-new-cohort-witness-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 95
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate second frozen precode, historical no-replay, FIT-only witness receipts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 8b611127744749ff635b24b5e7d5507e4a760206 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f54b/prereg.json)" = 5d7d372e2bfae31620e63dfcc9fa7b5d9d8f07a4
+          test "$(git hash-object research/foundational/20261015-y-f53/source_pilot.py)" = d7d754495b5bac4ba4f6305b1cf19dde132108d8
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f54b -p test_preflight.py -v
+      - name: One complete existing pytest regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+  diagnostic:
+    if: "${{ github.event.head_commit.message == 'science(y-f54b): execute new disjoint witness-qualified TRAIN exactly once' && github.run_attempt == 1 }}"
+    needs: source
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: One new never-before-used FIT and TRAIN original diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/yf54b";mkdir -p "$root"
+          python3 -B research/foundational/20261015-y-f54b/source_pilot.py > "$root/result.json"
+          python3 -B research/foundational/20261015-y-f54b/audit_result.py \
+            "$root/result.json" research/foundational/20261015-y-f54b/prereg.json > "$root/audit.txt"
+          (cd "$root";sha256sum result.json audit.txt > manifest.sha256)
+          printf '%s\n' "$GITHUB_SHA" > "$root/SOURCE_SHA"
+          cat "$root/audit.txt"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: Y-F54B-new-cohort-corrected-witness-TRAIN-not-F3
+          path: ${{ runner.temp }}/yf54b/
+          retention-days: 30
+          if-no-files-found: error
