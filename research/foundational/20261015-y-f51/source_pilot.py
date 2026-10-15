@@ -16,7 +16,8 @@ MEMORY=12
 EVENTS=64
 FEATURES=6
 ARMS=("learned_retention","public_frequency_priority","public_tag_only",
-      "FIFO_last12","public_hash_reservoir","private_future_query_oracle_unfair")
+      "public_role_endpoint_priority","FIFO_last12","public_hash_reservoir",
+      "private_future_query_oracle_unfair")
 PATTERNS=(
  ((0,1),(1,1),(2,-1)),
  ((1,-1),(3,1),(0,1)),
