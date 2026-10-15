@@ -75,35 +75,36 @@ def prediction(first_value,second_value,cfirst,csecond):
  return torch.sigmoid(torch.as_tensor(5*votes/(abs(cfirst)+abs(csecond)+.02)))
 def train():
  m=LearnSecond()
- data=[]
- for shift in TRAIN_SHIFTS:
+ features=[];source_ids=[];alternative_probs=[];labels=[]
+ # Build training-only candidate actions once; optimize only the tiny policy
+ # head with tensorized cross-entropy (no validation observations here).
+ for sh in TRAIN_SHIFTS:
   for seed in range(136000,136035):
-   corr,missing=anchors(seed+10000,shift)
+   corr,missing=anchors(seed+10000,sh)
    for role in f20.TRAIN:
-    obs=[shifted(bit,shift) for bit in f20.cues(role,seed*23+1000,seed%11+100)]
+    ctx=[shifted(bit,sh) for bit in f20.cues(role,seed*23+1000,seed%11+100)]
     for bit in range(3):
      first=first_choice(corr,missing,bit)
      options=[j for j in range(4) if j!=first]
-     data.append((corr,missing,bit,first,obs[bit][first],
-                  [obs[bit][j] for j in options],options,role[bit]))
+     f=[m.features(corr,missing,ctx[bit][first],corr[bit][first],bit,j)
+        for j in options]
+     probs=[float(prediction(ctx[bit][first],ctx[bit][j],
+           corr[bit][first],corr[bit][j])) for j in options]
+     features.append(f);source_ids.append(options)
+     alternative_probs.append(probs);labels.append(float(role[bit]))
+ x=torch.tensor(features,dtype=torch.float32)
+ sources=torch.tensor(source_ids,dtype=torch.long)
+ probs=torch.tensor(alternative_probs,dtype=torch.float32)
+ target=torch.tensor(labels,dtype=torch.float32)
  opt=torch.optim.Adam(m.parameters(),lr=.06)
  for epoch in range(180):
   opt.zero_grad()
-  losses=[]
-  for corr,missing,bit,first,firstval,secondvals,options,truth in data:
-   candidate_logits=m.scores(corr,missing,bit,first,firstval)
-   logits=torch.stack([candidate_logits[j] for j in options])
-   mix=torch.softmax(logits,dim=0)
-   probabilities=torch.stack([prediction(firstval,secondvals[i],
-       corr[bit][first],corr[bit][j]) for i,j in enumerate(options)])
-   prob=(mix*probabilities).sum().clamp(1e-6,1-1e-6)
-   target=torch.tensor(float(truth))
-   losses.append(nn.functional.binary_cross_entropy(prob,target))
-  loss=torch.stack(losses).mean()
-  loss.backward()
-  nn.utils.clip_grad_norm_(m.parameters(),5.)
-  opt.step()
- return m,float(loss.detach()),len(data)
+  logits=(x*m.weights).sum(-1)+m.source_bias[sources]
+  choice=torch.softmax(logits,dim=-1)
+  guess=(choice*probs).sum(-1).clamp(1e-6,1-1e-6)
+  loss=nn.functional.binary_cross_entropy(guess,target)
+  loss.backward();nn.utils.clip_grad_norm_(m.parameters(),5.);opt.step()
+ return m,float(loss.detach()),len(labels)
 class SequentialDecoder(nn.Module):
  def __init__(self,corr,missing,policy,mode):
   super().__init__()
@@ -167,8 +168,6 @@ def evaluate():
      if truth!=[True,False,False]:raise AssertionError("INVALID_NEW_SOURCE")
      for sensor in TEST_SHIFTS:
       corr,missing=anchors(seed+50000,sensor)
-      e=[[shifted(bit,sensor) for role in rs
-          for bit in f20.cues(f20.UNSEEN[role],seed*19+shift,rs.index(role))] for rs,req in ()]
       edges=[[ [shifted(bit,sensor) for bit in f20.cues(f20.UNSEEN[v],seed*19+shift,i)]
         for i,v in enumerate(rs)] for rs,rq in variants]
       queries=[[ [shifted(bit,sensor) for bit in f20.cues(f20.UNSEEN[v],
