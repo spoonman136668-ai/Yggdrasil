@@ -1,0 +1,129 @@
+name: Y-F45 once-only paired-intervention TRAIN diagnostic (NO original)
+on:
+  push:
+    branches:
+      - science/y-f45-one-frozen-intervention-transfer-20261015-r1
+permissions:
+  contents: read
+jobs:
+  diagnostic:
+    if: "${{ github.event.head_commit.message == 'science(y-f45): one frozen intervention-invariance train diagnostic' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify exact precode prereg and qualified source before train-only consumption
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 1589e7bead761ecb4017c9975e02e526b5294928 HEAD
+          git merge-base --is-ancestor 21bdb327e13beda4467f80fabf6416760acc4b4d HEAD
+          test "$(git hash-object research/foundational/20261015-y-f45/source_pilot.py)" = 5c5db5ccc700064b477a9fe492e74fd34691d98b
+          test "$(git hash-object research/foundational/20261015-y-f45/prereg-candidate.json)" = c13b504bf5e5b7dea4ff227fc2bc7da642cb4ef3
+          python3 -m unittest discover -s research/foundational/20261015-y-f45 -p test_preflight.py -v
+      - name: Exactly one disjoint TRAIN fit and heldout-mechanism diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f45/source_pilot.py > /tmp/y-f45-train.json
+          python3 -m json.tool /tmp/y-f45-train.json >/dev/null
+          sha256sum /tmp/y-f45-train.json > /tmp/y-f45-train.sha256
+          git rev-parse HEAD > /tmp/y-f45-head.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F45-once-only-paired-intervention-train
+          path: |
+            /tmp/y-f45-train.json
+            /tmp/y-f45-train.sha256
+            /tmp/y-f45-head.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Independent all-row, public-pair, FP FN Brier logloss, receipt and scientific audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,math
+          d=json.load(open('/tmp/y-f45-train.json'))
+          p=json.load(open('research/foundational/20261015-y-f45/prereg-candidate.json'))
+          t=p['train_only'];r=p['reserved_primary_original'];g=p['thresholds'];arms=p['controls']
+          assert d['schema']=='yggdrasil.f45.paired-intervention-invariance.trainonly.v1'
+          assert d['stage']=='FRESH_TRAIN_ONLY_UNSEEN_MECHANISMS_NOT_ORIGINAL'
+          assert d['fit_seeds']==t['fit_seeds'] and d['diagnostic_seeds']==t['diagnostic_seeds']
+          assert d['reserved_seeds']==r['seeds']
+          assert d['families']==t['families'] and d['reserved_families']==r['families']
+          assert d['train_mechanisms']==t['fit_mechanisms']
+          assert d['heldout_mechanisms']==t['heldout_mechanisms']
+          assert set(d['train_mechanisms']).isdisjoint(d['heldout_mechanisms'])
+          assert d['questions']==t['expected_diagnostic_cases']==128 and len(d['rows'])==128
+          assert d['public_reference_pairs']==t['public_reference_pairs']==12
+          assert d['train_examples']==8*4*2*2*12*3*3
+          assert d['packed_parameter_bytes']==11*3*4 and d['packed_bytes_not_native_residency']
+          assert d['fit_bandwidth'] in (.12,.17,.25) and d['elapsed_seconds']>0
+          assert d['diagnostic_labels_not_used_in_fit'] and d['private_modes_never_in_action_inputs']
+          assert not d['independent_F3_custody'] and d['primary_original_not_executed']
+          assert not d['native_576_byte_resident_qualified']
+          assert not d['accepted_ref_mutation'] and d['paid_api_calls']==0
+          rows=d['rows']
+          assert len({(row['seed'],row['family'],row['mechanism'],row['condition']) for row in rows})==128
+          for row in rows:
+              assert 381100<=row['seed']<381108
+              assert row['family'] in t['families']
+              assert row['mechanism'] in t['heldout_mechanisms']
+              assert row['condition'] in t['conditions']
+              assert row['public_pairs']==12 and row['public_flat_anchors']==t['public_reference_readings']==24
+              assert set(row['predictions'])==set(arms)
+              assert set(row['probabilities'])==set(arms)
+              assert set(row['receipts'])==set(arms)-{'evaluator_oracle_unfair'}
+              for arm,traces in row['receipts'].items():
+                  assert len(traces)==3
+                  assert all(len(q)==2 and q[0]==0 and q[1] in (1,2,3) for q in traces)
+              assert all(0<prob<1 for prob in row['probabilities'].values())
+          def recalc(sub,arm):
+              n=len(sub)
+              correct=sum(row['predictions'][arm]==row['truth'] for row in sub)
+              fp=sum(bool(row['predictions'][arm]) and not row['truth'] for row in sub)
+              fn=sum(not bool(row['predictions'][arm]) and row['truth'] for row in sub)
+              brier=sum((row['probabilities'][arm]-float(row['truth']))**2 for row in sub)/n
+              loss=-sum(math.log(row['probabilities'][arm] if row['truth'] else 1-row['probabilities'][arm]) for row in sub)/n
+              return dict(total=n,correct=correct,accuracy=correct/n,fp=fp,fn=fn,Brier=brier,logloss=loss)
+          def match(a,b):
+              assert a.keys()==b.keys()
+              for k,v in b.items():
+                  if isinstance(v,float):assert math.isclose(a[k],v,abs_tol=1e-11,rel_tol=1e-11)
+                  else:assert a[k]==v
+          for arm in arms:
+              match(d['scores'][arm],recalc(rows,arm))
+          assert d['scores']['evaluator_oracle_unfair']['correct']==128
+          for key,field,values in (('mechanism','by_mechanism',t['heldout_mechanisms']),
+                                    ('condition','by_condition',t['conditions'])):
+              for value in values:
+                  subset=[row for row in rows if row[key]==value]
+                  assert len(subset)==64
+                  for arm in arms:
+                      match(d[field][value][arm],recalc(subset,arm))
+          fair=('fitted_Gaussian_latent','empirical_conditional_Brier','Gaussian_kernel',
+                'public_global_static','source_variance')
+          strongest=max(fair,key=lambda a:d['scores'][a]['accuracy'])
+          gain=d['scores']['learned_intervention_invariant']['accuracy']-d['scores'][strongest]['accuracy']
+          ablate=d['scores']['learned_intervention_invariant']['accuracy']-d['scores']['learned_unpaired_ablation']['accuracy']
+          no_regress=all(d['by_mechanism'][m]['learned_intervention_invariant']['correct']>=max(
+             d['by_mechanism'][m][a]['correct'] for a in fair) for m in t['heldout_mechanisms'])
+          assert d['strongest_fair_control']==strongest
+          assert math.isclose(d['gain_over_strongest_fair'],gain,abs_tol=1e-11)
+          assert math.isclose(d['paired_intervention_ablation_gain'],ablate,abs_tol=1e-11)
+          assert d['heldout_mechanism_nondegradation']==no_regress
+          qualified=gain>=g['gain_vs_strongest_fair_min'] and ablate>0 and no_regress
+          expected='TRAIN_ONLY_INTERVENTION_INVARIANCE_QUALIFIED' if qualified else 'TRAIN_ONLY_INTERVENTION_INVARIANCE_NOT_QUALIFIED'
+          assert d['verdict']==expected
+          print('Y_F45',expected,'correct',{a:d['scores'][a]['correct'] for a in arms},
+                'Brier',{a:round(d['scores'][a]['Brier'],5) for a in arms},
+                'gain',gain,'intervention_ablation_gain',ablate,
+                'mechanism_no_regress',no_regress,'time_s',d['elapsed_seconds'])
+          PY
+      - name: Explicit scientific authority boundary
+        run: echo "Synthetic TRAIN-only data; no F3, original, native 576B total or controller/accepted-ref mutation."
