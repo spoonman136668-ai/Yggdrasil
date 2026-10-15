@@ -1,0 +1,78 @@
+{
+  "schema": "yggdrasil.f38.sensor-information-prereg.v1",
+  "stage": "PRE_CODE_TRAIN_ONLY_DIAGNOSTIC",
+  "parent_negative_run": 38752418772,
+  "issue_url": "https://github.com/spoonman136668-ai/Yggdrasil/issues/225",
+  "hypothesis": "A source-specific first paid observation provides held-out predictive information about which second source is reliable in informative regimes, and demonstrably not in noninformative regimes. Apparent hindsight headroom alone is insufficient.",
+  "diagnostic_cohort": {
+    "seeds": [
+      281800,
+      281816
+    ],
+    "families": [
+      270,
+      271,
+      272,
+      273
+    ],
+    "mechanisms": [
+      "mode_dependent_reliability",
+      "anticorrelated_auxiliary"
+    ],
+    "conditions": [
+      "informative_first",
+      "uninformative_first"
+    ],
+    "expected_questions": 256,
+    "roles_per_question": 3,
+    "reference_anchors": 24
+  },
+  "source_baselines": [
+    "empirical_Brier_two_paid_reads",
+    "public_polarity_two_paid_reads",
+    "static_reference_two_paid_reads",
+    "privileged_full_hindsight_noncausal_upper",
+    "privileged_truth_oracle"
+  ],
+  "diagnostic_gate": {
+    "minimum_informative_heldout_mode_logloss_gain_nats": 0.04,
+    "minimum_informative_mode_information_bits": 0.1,
+    "minimum_hindsight_accuracy_headroom": 0.04,
+    "first_read_causal_switch_in_informative_fraction_min": 0.1,
+    "zero_f3_custody_claim": true
+  },
+  "reservation": {
+    "original_seeds": [
+      282800,
+      282816
+    ],
+    "original_families": [
+      274,
+      275,
+      276,
+      277
+    ],
+    "never_generate": true
+  },
+  "separation": {
+    "training_split_seeds": [
+      281800,
+      281808
+    ],
+    "validation_split_seeds": [
+      281808,
+      281816
+    ],
+    "private_modes_not_in_action": true,
+    "full_target_channels_only_evaluator_not_action": true,
+    "two_physical_purchases_for_all_fair_policies": true
+  },
+  "authority": {
+    "no_learned_original": true,
+    "train_only_diagnostic": true,
+    "same_repo_synthetic_not_independent_F3": true,
+    "no_paid_api": true,
+    "no_accepted_ref_mutation": true,
+    "no_FORGE_CKB_KTRADE_Cloudflare_changes": true
+  }
+}
