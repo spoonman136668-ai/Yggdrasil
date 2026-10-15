@@ -1,0 +1,66 @@
+{
+  "schema": "yggdrasil.f33.source-qualification-prereg.v1",
+  "phase": "TRAIN_ONLY_EVALUATOR_CUSTODY_PRE_ORIGINAL",
+  "parent_pr": 213,
+  "parent_pilot_run": 38729162856,
+  "design_issue": "https://github.com/spoonman136668-ai/Yggdrasil/issues/216",
+  "question": "Can an independently implemented evaluator recompute conditional first-sensor information and demonstrate genuine value/headroom without exposing latent sensor mode or reserved test identities to learner?",
+  "train_pilot": {
+    "seeds": [
+      201800,
+      201824
+    ],
+    "families": [
+      180,
+      181,
+      182
+    ],
+    "conditions": [
+      "calibrated-polarity",
+      "reversed-public-polarity",
+      "weak-marker",
+      "noninformative-marker"
+    ],
+    "mechanisms": [
+      "mode-conditioned-sensors",
+      "anti-correlated-sensor"
+    ],
+    "anchor_count": 12,
+    "roles_per_case": 3,
+    "expected_queries": 576
+  },
+  "reserved_original": {
+    "seeds": [
+      202800,
+      202816
+    ],
+    "families": [
+      184,
+      185,
+      186,
+      187
+    ],
+    "never_generate_in_pilot": true
+  },
+  "controls": [
+    "empirical_conditional_Brier",
+    "public_polarity_Bayesian",
+    "static_matched",
+    "privileged_oracle_excluded"
+  ],
+  "qualification": {
+    "minimum_train_only_conditional_MI_bits": 0.02,
+    "minimum_conditional_predictive_logloss_gain_nats": 0.01,
+    "minimum_budget_compatible_action_switch_fraction": 0.05,
+    "minimum_headroom_vs_strongest_fair": 0.04,
+    "independent_evaluator_only_crosscheck": true
+  },
+  "safety": {
+    "native_model_max_576_bytes_requires_separate_real_measurement": true,
+    "synthetic_not_independent_F3": true,
+    "no_new_original": true,
+    "no_accepted_ref_mutation": true,
+    "no_paid_API": true,
+    "no_FORGE_controller_KTRADE_Cloudflare_changes": true
+  }
+}
