@@ -70,6 +70,13 @@ def choose(method,first,ref,corr,polarity):
             risks.append(weighted/max(total,1e-12))
         return (1,2,3)[min(range(3),key=lambda k:(risks[k],k))]
     raise ValueError(method)
+def fair_incremental_gain(scored):
+    # Conditional empirical Brier is a matched fair control, not candidate credit.
+    baseline=max(scored[a]["accuracy"] for a in
+        ("conditional_empirical_Brier","static_reference","first_masked"))
+    candidate=scored["public_Gaussian_mode_posterior"]["accuracy"]
+    return candidate-baseline,baseline
+
 def run():
     assert set(SEEDS).isdisjoint(RESERVED)
     assert set(FAMILIES).isdisjoint(RESERVED_FAMILIES)
@@ -120,7 +127,8 @@ def run():
       for r in rows if r["mechanism"]==mechanism],arm) for arm in ARMS} for mechanism in MECHANISMS}
     fair=("conditional_empirical_Brier","public_Gaussian_mode_posterior","static_reference","first_masked")
     best=max(scored[a]["accuracy"] for a in fair[:2])
-    gain=best-scored["static_reference"]["accuracy"]
+    conditional_source_headroom=best-max(scored[a]["accuracy"] for a in fair[2:])
+    gain,strongest_matched_fair_control=fair_incremental_gain(scored)
     # This is *source feasibility*, not a learned advancement.
     verdict=("TRAIN_ONLY_CONDITIONAL_SOURCE_FEASIBLE" if gain>=.02 and
       scored["private_condition_oracle_unfair"]["correct"]==len(rows)
@@ -134,6 +142,9 @@ def run():
       observed_first_marginal_stats=marginal,reference_first_marginal_stats=reference_marginal,
       external_calibration_bytes_per_query=ANCHORS*5*8,scores=scored,by_condition=by_condition,
       by_mechanism=by_mechanism,rows=rows,verdict=verdict,
+      conditional_source_headroom=conditional_source_headroom,
+      candidate_over_strongest_matched_fair_gain=gain,
+      strongest_matched_fair_control_accuracy=strongest_matched_fair_control,
       evaluator_private_modes_and_conditions_not_given_to_policy=True,
       native_576_byte_resident_not_physically_verified=True,independent_F3_custody=False,
       primary_original_not_executed=True,accepted_ref_mutation=False,paid_api_calls=0)
