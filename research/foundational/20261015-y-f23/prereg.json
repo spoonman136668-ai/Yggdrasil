@@ -1,0 +1,104 @@
+{
+  "schema": "yggdrasil.f23.prereg.v1",
+  "parent_F22": "13a7bb1c0491ee2a8124cd2dee162670515dd11e",
+  "hypothesis": "A 9-parameter learned robust correlation aggregator can outperform frozen learned Y-F22 calibration and a fixed robust estimator under sparse, partly corrupted labeled anchors on previously unseen sensor transformations.",
+  "training": {
+    "known_primitive_descriptors": [
+      "000",
+      "011",
+      "101",
+      "110"
+    ],
+    "role_source": "training-only even-parity known-role attributes",
+    "conditions": [
+      "identity",
+      "flip0",
+      "swap01",
+      "flip12",
+      "swap03"
+    ],
+    "train_context_seed_range": [
+      96800,
+      96820
+    ],
+    "anchor_counts": [
+      2,
+      6,
+      12
+    ],
+    "anchor_label_flip_rates": [
+      0,
+      0.25
+    ],
+    "train_examples_expected": 2400,
+    "mean_correlation_programmed": true,
+    "median_correlation_programmed": true,
+    "learner": "4 weights for mean, 4 for median, 1 bias; train-only Adam lr=.055 180 epochs",
+    "train_separated_from_test": true
+  },
+  "test": {
+    "new_source_seed_range": [
+      95700,
+      95703
+    ],
+    "reused_motifs": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "new_shift_families": [
+      "novel_swap13",
+      "novel_rotate_flip2"
+    ],
+    "train_test_transforms_disjoint": true,
+    "anchor_counts": [
+      2,
+      6,
+      12
+    ],
+    "label_corruption_rates": [
+      0,
+      0.25
+    ],
+    "base_graphs": 48,
+    "condition_groups": 576,
+    "questions": 1728,
+    "each_group_labels": [
+      true,
+      false,
+      false
+    ],
+    "role_descriptors_of_heldout_odd_parity_not_supplied": true,
+    "shift_identity_not_supplied": true,
+    "anchor_known_answers_supplied": true,
+    "native_state_bytes": 576
+  },
+  "controls": [
+    "learned mean-median reliability aggregator",
+    "fixed gain mean+median heuristic with same supervised anchors",
+    "frozen original Y-F22 calibrated gains using sparse mean correlations",
+    "coded exact heldout descriptors upper"
+  ],
+  "positive": {
+    "correct_coded_oracle": 1728,
+    "min_learned_accuracy": 0.95,
+    "min_gain_over_best_control": 0.03,
+    "min_each_count_x_corruption_accuracy": 0.9,
+    "max_each_false_positive_rate": 0.05,
+    "max_each_false_negative_rate": 0.1
+  },
+  "registered_outcomes": [
+    "INVALID_SPARSE_ANCHOR_REFERENCE",
+    "DEVELOPMENT_LEARNED_SPARSE_POISONED_ANCHOR_TRANSFER",
+    "DEVELOPMENT_SPARSE_POISONED_ANCHOR_ROBUSTNESS_NEGATIVE"
+  ],
+  "limits": {
+    "source_generated_contexts_and_sensor_semantics": true,
+    "correlation_features_programmed": true,
+    "not_unsupervised": true,
+    "not_external_custody": true,
+    "F3_frozen": true,
+    "FORGE_KTRADE_controllers_unmodified": true
+  }
+}
