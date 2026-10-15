@@ -1,0 +1,57 @@
+name: Yggdrasil F51 frozen new mechanistic TRAIN-only science
+on:
+  push:
+    branches:
+      - research/y-f51-topology-robust-retention-20261015-r1
+permissions:
+  contents: read
+jobs:
+  research:
+    if: "${{ github.event.head_commit.message == 'science(y-f51): once-only frozen TRAIN source and independent memory audit' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify original parent, pre-code prereg and unchanged model source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor ab83bd0cb2df4409f73ca9a9337e803467020477 HEAD
+          git merge-base --is-ancestor 70ee0edb28a8495e923583e73ac61f4d111be6e2 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f51/prereg-candidate.json)" = 6587d5001cbaf2902d7153c687dc8b4e192e0016
+          test "$(git hash-object research/foundational/20261015-y-f51/source_pilot.py)" = bc32ba428e26c157b330abf23815ce88c397a203
+          test "$(git hash-object research/foundational/20261015-y-f51/audit_result.py)" = 60f41d528ac375d8b828018f01336c1e357b8352
+          python3 -m json.tool research/foundational/20261015-y-f51/prereg-candidate.json >/dev/null
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f51 -p test_preflight.py -v
+      - name: One full existing pytest regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+      - name: Exactly one fresh disjoint synthetic TRAIN source and independent audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f51/source_pilot.py > /tmp/y-f51-source.json
+          python3 -m json.tool /tmp/y-f51-source.json >/dev/null
+          sha256sum /tmp/y-f51-source.json > /tmp/y-f51-source.sha256
+          git rev-parse HEAD > /tmp/y-f51-source-head.txt
+          python3 -B research/foundational/20261015-y-f51/audit_result.py              /tmp/y-f51-source.json              research/foundational/20261015-y-f51/prereg-candidate.json              > /tmp/y-f51-independent-audit.txt
+          cat /tmp/y-f51-independent-audit.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Yggdrasil-F51-frozen-once-only-TRAIN-and-audit
+          path: |
+            /tmp/y-f51-source.json
+            /tmp/y-f51-source.sha256
+            /tmp/y-f51-source-head.txt
+            /tmp/y-f51-independent-audit.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: No scientific promotion or cross-project mutations
+        run: echo "ORIGINALS_EXECUTED=0 F3_INDEPENDENT=FALSE NATIVE_576B_RESIDENCY=UNQUALIFIED ACCEPTED_REFS_MUTATED=FALSE"
