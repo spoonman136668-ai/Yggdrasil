@@ -1,0 +1,62 @@
+name: Yggdrasil Y-F24 selective abstention under corrupted evidence
+on:
+  push:
+    branches: [research/y-f24-learned-uncertainty-selective-abstention-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, persist-credentials: false}
+      - name: Install scientific project dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Source identity and prereg check BEFORE new original
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor eca14e0efb08a3f10848fac6a5d4ee0e0094c3f9 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f23/execute.py)" = "$(git rev-parse eca14e0efb08a3f10848fac6a5d4ee0e0094c3f9:research/foundational/20261015-y-f23/execute.py)"
+          python3 -m py_compile research/foundational/20261015-y-f24/execute.py
+          python3 -m json.tool research/foundational/20261015-y-f24/prereg.json > /dev/null
+      - name: One NEW source Y-F24 original with frozen predecessor
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261015-y-f24/execute.py > /tmp/y-f24-original.json
+          python3 -m json.tool /tmp/y-f24-original.json > /dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F24-original-selective-abstention-confidence
+          path: /tmp/y-f24-original.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Independently verify equal-coverage selective performance
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          d=json.load(open('/tmp/y-f24-original.json'))
+          assert d["stage"]=="DEVELOPMENT_ONLY" and d["resident_state_bytes"]==576
+          assert d["new_trainable_parameters"]==6 and d["new_quality_training_examples"]==1800
+          assert d["quality_training_labels_only_known_anchor_cleanliness"]
+          assert not d["test_task_truth_given_to_learner"] and not d["test_shift_or_poison_labels_given_to_learner"]
+          assert d["abstention_is_separate_from_correctness"]
+          assert not d["source_independently_born"] and not d["sealed_first_use"] and not d["accepted_ref_mutation"]
+          assert d["base_graphs"]==32 and d["groups"]==576 and d["questions"]==1728
+          assert d["actual_accepted_group_count"]==403
+          assert collections.Counter(r["sensor"] for r in d["rows"])==dict.fromkeys(d["new_test_shifts"],288)
+          assert collections.Counter(r["count"] for r in d["rows"])=={2:192,6:192,12:192}
+          assert collections.Counter(r["poison"] for r in d["rows"])=={0:192,.25:192,.5:192}
+          assert d["original_model_overall_correct"]==sum(sum(a==b for a,b in zip(r["prediction"],r["truth"])) for r in d["rows"])
+          for key in ("learned_uncertainty","model_margin","count_only","anchor_strength"):
+            s=d["scores"][key]
+            assert s["coverage_groups"]==403 and s["abstained_groups"]==173
+            assert s["correct_accepted"]+s["false_positives"]+s["false_negatives"]==1209
+            assert s["errors_rejected"]>=0
+          assert d["registered_verdict"] in ("DEVELOPMENT_LEARNED_UNCERTAINTY_SELECTIVE_GAIN","DEVELOPMENT_UNCERTAINTY_ABSTENTION_NO_QUALIFIED_GAIN")
+          print("Y_F24_VERDICT",d["registered_verdict"])
+          print("Y_F24_SCORES",d["scores"])
+          PY
+      - name: One complete Yggdrasil regression
+        run: python3 -m pytest -q tests

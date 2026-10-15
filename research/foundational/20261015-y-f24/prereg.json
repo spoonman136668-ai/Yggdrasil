@@ -1,0 +1,128 @@
+{
+  "schema": "yggdrasil.f24.prereg.v1",
+  "parent_yf23": "eca14e0efb08a3f10848fac6a5d4ee0e0094c3f9",
+  "question": "Can a bounded learned anchor-quality classifier reduce errors at the SAME 70% accepted-query-group coverage vs strong cheap certainty and count-only abstention baselines, particularly with scarce poisoned anchors?",
+  "frozen": {
+    "prior_YF23_weights_exact_from_original_artifact": "957d2c67333e54d2045919b5372c9e4e4c0655a0039580b5343032b9b3db49c7",
+    "prior_calibration_mean": [
+      4.15974235534668,
+      3.957638740539551,
+      4.368898868560791,
+      4.269840717315674
+    ],
+    "prior_calibration_median": [
+      3.0031614303588867,
+      3.0273211002349854,
+      3.224064826965332,
+      2.9524457454681396
+    ],
+    "prior_bias": 0.493929386138916,
+    "no_retraining_existing_reasoner": true
+  },
+  "new_train_only_quality": {
+    "source_shift_families": [
+      "identity",
+      "flip0",
+      "swap01",
+      "flip12",
+      "swap03"
+    ],
+    "training_seed_range": [
+      105000,
+      105040
+    ],
+    "anchor_counts": [
+      2,
+      6,
+      12
+    ],
+    "source_known_anchor_poison_rates": [
+      0,
+      0.25,
+      0.5
+    ],
+    "train_examples": 1800,
+    "weight_count": 6,
+    "features": [
+      "bias",
+      "absolute mean channel correlation",
+      "absolute median channel correlation",
+      "mean-vs-median disagreement",
+      "anchor count normalized",
+      "share of high-correlation channels"
+    ],
+    "known_training_labels": "clean and sufficiently numerous supervision examples: poison=0 and count>=6; no graph task outcomes in quality learner",
+    "train_epochs": 220,
+    "train_Adam_lr": 0.045,
+    "final_ranking": "sigmoid(learned quality)*(0.35+0.65*least of three prediction margins)",
+    "threshold_selection": "FIXED 70% highest confidence groups, not chosen from test labels"
+  },
+  "test": {
+    "author_generated_development": true,
+    "new_seeds": [
+      101100,
+      101102
+    ],
+    "reused_structural_graph_motifs": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "new_sensor_shifts": [
+      "new_flip01",
+      "new_mask13"
+    ],
+    "anchor_counts": [
+      2,
+      6,
+      12
+    ],
+    "corrupted_anchor_rates": [
+      0,
+      0.25,
+      0.5
+    ],
+    "base_graphs": 32,
+    "source_groups": 576,
+    "questions": 1728,
+    "label_triplet": [
+      true,
+      false,
+      false
+    ],
+    "state_bytes": 576,
+    "holdout_role_descriptors_unseen": true
+  },
+  "comparators": [
+    "learned quality x model margin",
+    "frozen predictor probability margin only",
+    "known anchor count only",
+    "absolute anchor mean strength only",
+    "full original Y23 predictor with NO abstention, errors counted"
+  ],
+  "selection_audit": {
+    "coverage_target": 0.7,
+    "selected_groups_expected": 403,
+    "comparison_at_exactly_matched_coverage": true,
+    "abstentions_not_counted_correct": true,
+    "errors_in_rejected_set_must_be_reported": true,
+    "no_test_labels_in_ranking": true
+  },
+  "success": {
+    "min_coverage": 0.69,
+    "min_accepted_accuracy": 0.98,
+    "min_absolute_advantage_vs_best_cheap": 0.01,
+    "max_false_positive_rate_accepted_negatives": 0.01
+  },
+  "outcomes": [
+    "DEVELOPMENT_LEARNED_UNCERTAINTY_SELECTIVE_GAIN",
+    "DEVELOPMENT_UNCERTAINTY_ABSTENTION_NO_QUALIFIED_GAIN"
+  ],
+  "boundaries": {
+    "synthetic_labelled_training_anchors": true,
+    "not_unsupervised": true,
+    "F3_not_admitted": true,
+    "no_FORGE_KTRADE_cloudflare_controller": true
+  }
+}
