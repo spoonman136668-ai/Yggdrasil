@@ -1,0 +1,65 @@
+name: Y-F50 existing synthetic TRAIN artifact independent audit (NO replay)
+on:
+  push:
+    branches:
+      - audit/y-f50-existing-memory-20261015-r1
+permissions:
+  contents: read
+  actions: read
+jobs:
+  audit-existing:
+    if: "${{ github.event.head_commit.message == 'audit(y-f50): one existing artifact, no science rerun' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Bind original immutable source and precode preregistration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor ab83bd0cb2df4409f73ca9a9337e803467020477 HEAD
+          git merge-base --is-ancestor 21ae9ebd343dfbd04bfa81979765b98ee8caa3d3 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f50/prereg-candidate.json)" = a90210d5c238f8127ad30e07b2bb06ed5b495d72
+          test "$(git hash-object research/foundational/20261015-y-f50/source_pilot.py)" = a2bf71f6cc5b6696641b268c82b831f40ebf6f79
+          python3 -m py_compile research/foundational/20261015-y-f50/audit_result.py
+      - name: Verify original failed-audit run and preserved artifact provenance
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          run=$(curl -fSs --retry 2 --max-time 25 -H "Accept: application/vnd.github+json"             -H "Authorization: Bearer $GH_TOKEN"             "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/runs/38809714837")
+          echo "$run" | jq -e --arg src "ab83bd0cb2df4409f73ca9a9337e803467020477"             '.head_sha==$src and .run_attempt==1 and .status=="completed" and .conclusion=="failure"'
+          arts=$(curl -fSs --retry 2 --max-time 25 -H "Accept: application/vnd.github+json"             -H "Authorization: Bearer $GH_TOKEN"             "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/runs/38809714837/artifacts")
+          echo "$arts" | jq -e --arg digest "sha256:b7fc9da4c322876650ce09bfa08684ede8a615b074705f6e4cf7a89a81447502"             '[.artifacts[]|select(.id==12007393564 and .digest==$digest and (.expired|not) and
+               .name=="Y-F50-once-only-trained-memory-TRAIN" and .workflow_run.id==38809714837)]|length==1'
+      - uses: actions/download-artifact@v4
+        with:
+          name: Y-F50-once-only-trained-memory-TRAIN
+          run-id: 38809714837
+          github-token: ${{ github.token }}
+          repository: spoonman136668-ai/Yggdrasil
+          path: ${{ runner.temp }}/source
+      - name: Audit all 64 archived rows against unchanged frozen thresholds
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f "$RUNNER_TEMP/source/y-f50-result.json"
+          python3 -B research/foundational/20261015-y-f50/audit_result.py             "$RUNNER_TEMP/source/y-f50-result.json"             research/foundational/20261015-y-f50/prereg-candidate.json             > "$RUNNER_TEMP/y-f50-verified.json.log"
+          cat "$RUNNER_TEMP/y-f50-verified.json.log"
+          sha256sum "$RUNNER_TEMP/source/y-f50-result.json" > "$RUNNER_TEMP/y-f50-evidence.sha256"
+          git rev-parse HEAD > "$RUNNER_TEMP/y-f50-audit-head.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y-F50-independent-no-replay-memory-audit
+          path: |
+            ${{ runner.temp }}/y-f50-verified.json.log
+            ${{ runner.temp }}/y-f50-evidence.sha256
+            ${{ runner.temp }}/y-f50-audit-head.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Authority and rerun exclusion
+        run: echo "NEW_SOURCE_EXECUTIONS=0 FROZEN_ORIGINALS=UNCHANGED SOURCE_STUDY_CONCLUSION=FAILED_AUDIT"
