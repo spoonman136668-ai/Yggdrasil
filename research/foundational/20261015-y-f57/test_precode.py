@@ -20,9 +20,12 @@ def gate(p):
             assert a["seed_range"][1]<=b["seed_range"][0]
     assert len(p["controls"])==len(set(p["controls"]))
     assert p["controls"]==["learned_incremental_component_state","frozen_F56_constructive_online","fixed_public_component_aggregation","fixed_public_pair_compression","fixed_public_triple_compression","raw_degree_FIFO","public_hash","full_public_offline_extra_work_noncompetitive","private_future_question_oracle_unfair"]
-    assert p["FIT_gate_before_diagnostic"]["public_exact_accuracy_min"]==.75 if False else True
-    assert p["FIT_gate_before_diagnostic"]["full_public_offline_accuracy_min"]==.85 if True else True
-    for name in ("diagnostic_unconsumed","originals_unconsumed") if True else ("diagnostic_unconsumed","first_use_original_unconsumed"):
+    assert p["FIT_gate_before_diagnostic"]["full_public_offline_accuracy_min"]==.85
+    assert p["FIT_gate_before_diagnostic"]["online_constructive_accuracy_min"]==.25
+    assert p["FIT_gate_before_diagnostic"]["public_source_identifiability_verified_independently"] is True
+    assert p["heldout_gates"]["gain_over_strongest_equal_byte_online_fair_min_pp"]==5
+    assert p["heldout_gates"]["no_regression_any_heldout_family"] is True
+    for name in ("diagnostic_unconsumed","originals_unconsumed"):
         assert p["restrictions"][name] is True
     for name in ("independent_F3","accepted_ref_mutation","live_optimizer_policy_promotion"):
         assert p["restrictions"][name] is False
@@ -41,6 +44,12 @@ class PrecodeFrozen(unittest.TestCase):
         with self.assertRaises(AssertionError):gate(p)
     def test_wrong_parent_rejected(self):
         p=copy.deepcopy(self.p);p["parent_f56_failed_first_gate"]=False
+        with self.assertRaises(AssertionError):gate(p)
+    def test_weak_public_reference_rejected(self):
+        p=copy.deepcopy(self.p);p["FIT_gate_before_diagnostic"]["full_public_offline_accuracy_min"]=.5
+        with self.assertRaises(AssertionError):gate(p)
+    def test_future_query_leak_rejected(self):
+        p=copy.deepcopy(self.p);p["resource"]["future_question_hidden_until_memory_frozen"]=False
         with self.assertRaises(AssertionError):gate(p)
     def test_missing_control_rejected(self):
         p=copy.deepcopy(self.p);p["controls"].pop()
