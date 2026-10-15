@@ -1,0 +1,129 @@
+name: Y-F44 one frozen unseen-mechanism TRAIN-only diagnostic (NO original)
+on:
+  push:
+    branches:
+      - science/y-f44-one-frozen-mechanism-transfer-20261015-r1
+permissions:
+  contents: read
+jobs:
+  once:
+    if: "${{ github.event.head_commit.message == 'science(y-f44): one exact-frozen unseen-mechanism train-only diagnostic' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify precode and source identity against qualified preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 2308b6d270c86e6335b8e8dcb61836a67021ea97 HEAD
+          git merge-base --is-ancestor 03a1b93ba02587493ccfc9538be857c650ba90e8 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f44/prereg-candidate.json)" = 5809deb9db8647ab3efe0c148b0ca41b4c5f35b2
+          test "$(git hash-object research/foundational/20261015-y-f44/source_pilot.py)" = d4fc61ebac035a826272bc8e4c7763ee3faabffa
+          python3 -m unittest discover -s research/foundational/20261015-y-f44 -p test_preflight.py -v
+      - name: Once-only disjoint fit and unseen-mechanism TRAIN-only source diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f44/source_pilot.py > /tmp/y-f44-train.json
+          python3 -m json.tool /tmp/y-f44-train.json >/dev/null
+          sha256sum /tmp/y-f44-train.json > /tmp/y-f44-train.sha256
+          git rev-parse HEAD > /tmp/y-f44-head.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F44-one-frozen-unseen-mechanism-train-only
+          path: |
+            /tmp/y-f44-train.json
+            /tmp/y-f44-train.sha256
+            /tmp/y-f44-head.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Independently audit row accuracy FP FN Brier logloss purchases ablation and frozen gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,math
+          d=json.load(open('/tmp/y-f44-train.json'))
+          p=json.load(open('research/foundational/20261015-y-f44/prereg-candidate.json'))
+          assert d['schema']=='yggdrasil.f44.public-anchor-transfer.trainonly.v1'
+          assert d['stage']=='FRESH_TRAIN_ONLY_HELDOUT_MECHANISMS_NOT_PRIMARY_ORIGINAL'
+          t=p['train_only']; reserved=p['reserved_original']
+          assert d['fit_seeds']==t['fit_seeds'] and d['diagnostic_seeds']==t['diagnostic_seeds']
+          assert d['reserved_seeds']==reserved['seeds']
+          assert d['families']==t['families'] and d['reserved_families']==reserved['families']
+          assert d['train_mechanisms']==t['training_mechanisms']
+          assert d['heldout_mechanisms']==t['heldout_mechanisms']
+          assert set(d['train_mechanisms']).isdisjoint(d['heldout_mechanisms'])
+          assert d['questions']==t['expected_diagnostic_cases']==128 and len(d['rows'])==128
+          assert d['train_examples']==8*4*2*2*8*3*3
+          assert 0<d['packed_coefficient_bytes']<=576
+          assert d['packed_bytes_do_not_measure_native_heap']
+          assert d['fit_bandwidth'] in (.12,.17,.25) and d['elapsed_seconds']>0
+          assert d['diagnostic_labels_never_used_for_fit']
+          assert d['latent_condition_not_passed_to_action']
+          assert not d['independent_F3_custody'] and d['primary_original_not_executed']
+          assert not d['native_576_byte_residency_qualified']
+          assert not d['accepted_ref_mutation'] and d['paid_api_calls']==0
+          rows=d['rows']; arms=p['controls']
+          assert len({(r['seed'],r['family'],r['mechanism'],r['condition']) for r in rows})==128
+          for r in rows:
+              assert 361100<=r['seed']<361108
+              assert r['family'] in t['families']
+              assert r['mechanism'] in t['heldout_mechanisms']
+              assert r['condition'] in t['conditions']
+              assert r['public_calibration_anchor_count']==t['public_reference_anchors']==24
+              assert set(r['predictions'])==set(arms)
+              assert set(r['task_probabilities'])==set(arms)
+              assert set(r['receipts'])==set(arms)-{'private_oracle_unfair'}
+              for a,per_role in r['receipts'].items():
+                  assert len(per_role)==3
+                  assert all(q==[0,q[1]] and q[1] in (1,2,3) for q in per_role)
+              for a,prob in r['task_probabilities'].items():
+                  assert isinstance(prob,(int,float)) and 0<prob<1
+          def audit(subset,arm):
+              n=len(subset)
+              c=sum(r['predictions'][arm]==r['truth'] for r in subset)
+              fp=sum(bool(r['predictions'][arm]) and not r['truth'] for r in subset)
+              fn=sum(not bool(r['predictions'][arm]) and r['truth'] for r in subset)
+              brier=sum((r['task_probabilities'][arm]-float(r['truth']))**2 for r in subset)/n
+              loss=-sum(math.log(r['task_probabilities'][arm] if r['truth'] else
+                                  1-r['task_probabilities'][arm]) for r in subset)/n
+              return dict(total=n,correct=c,accuracy=c/n,fp=fp,fn=fn,Brier=brier,logloss=loss)
+          def matching(actual,expected):
+              assert actual.keys()==expected.keys()
+              for k,v in expected.items():
+                  if isinstance(v,float):assert math.isclose(actual[k],v,abs_tol=1e-11,rel_tol=1e-11)
+                  else:assert actual[k]==v
+          for a in arms:
+              matching(d['scores'][a],audit(rows,a))
+          assert d['scores']['private_oracle_unfair']['correct']==128
+          for field,key,values in (('by_mechanism','mechanism',t['heldout_mechanisms']),
+                                   ('by_condition','condition',t['conditions'])):
+              for v in values:
+                  cohort=[r for r in rows if r[key]==v]
+                  assert len(cohort)==64
+                  for a in arms:matching(d[field][v][a],audit(cohort,a))
+          fair=arms[1:6]
+          best=max(d['scores'][a]['accuracy'] for a in fair)
+          gain=d['scores']['learned_anchor_latent']['accuracy']-best
+          ablation=d['scores']['learned_anchor_latent']['accuracy']-d['scores']['learned_first_masked']['accuracy']
+          no_reg=all(d['by_mechanism'][m]['learned_anchor_latent']['correct']>=max(
+             d['by_mechanism'][m][a]['correct'] for a in fair) for m in t['heldout_mechanisms'])
+          assert math.isclose(d['gain_over_strongest_fair'],gain,abs_tol=1e-11)
+          assert math.isclose(d['masked_first_gain'],ablation,abs_tol=1e-11)
+          assert d['no_heldout_mechanism_regression']==no_reg
+          qualified=gain>=p['thresholds']['accuracy_gain_over_strongest_fair_min'] and ablation>0 and no_reg
+          expected='TRAIN_ONLY_HELDOUT_TRANSFER_QUALIFIED' if qualified else 'TRAIN_ONLY_HELDOUT_TRANSFER_NOT_QUALIFIED'
+          assert d['verdict']==expected
+          print('Y_F44',expected,'correct',{a:d['scores'][a]['correct'] for a in arms},
+                'Brier',{a:round(d['scores'][a]['Brier'],5) for a in arms},
+                'gain',gain,'masked_first_gain',ablation,'mechanism_no_regress',no_reg,
+                'runtime_s',d['elapsed_seconds'])
+          PY
+      - name: Authority boundary
+        run: echo "Synthetic TRAIN-only heldout mechanism diagnostic, not F3, genuine original, native 576B qualification or accepted-ref/controller mutation."
