@@ -1,0 +1,100 @@
+{
+  "schema": "yggdrasil.f26.prereg.v1",
+  "source_parent_yf25": "3313ebfadc6a3e442e93db36565e93d5af150fe1",
+  "science": "Does a learned observation-source preference policy improve downstream unseen-role graph reasoning when each needed relation bit can acquire only TWO of FOUR possible context sensor readings?",
+  "train": {
+    "only_known_role_codes": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        1
+      ],
+      [
+        1,
+        0,
+        1
+      ],
+      [
+        1,
+        1,
+        0
+      ]
+    ],
+    "shifts": [
+      "identity",
+      "flip0",
+      "swap01",
+      "invert12",
+      "mask2"
+    ],
+    "source_seeds": [
+      128000,
+      128040
+    ],
+    "training_sensor_bit_records": 2400,
+    "learned_parameters": 7,
+    "training_epochs": 260,
+    "Adam_lr": 0.055,
+    "train_time_soft_all_sources_only": true,
+    "selection_frozen_before_test": true,
+    "features": "known-anchor estimated per-bit sensor correlation/missingness; no unseen task answers",
+    "calibration_known_label_reliance": true
+  },
+  "test": {
+    "new_seeds": [
+      124000,
+      124006
+    ],
+    "reused_graph_families": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "new_unseen_sensor_shifts": [
+      "new_flip03",
+      "new_swap12",
+      "new_mask01"
+    ],
+    "graph_states": 96,
+    "condition_triplets": 288,
+    "questions": 864,
+    "positive": 288,
+    "negative": 576,
+    "actual_source_acquisition_limit_per_hidden_relation_bit": 2,
+    "total_available_sensors": 4,
+    "choice_before_target_signal_revealed": true,
+    "not_sequential_conditioning_on_first_reading": true,
+    "native_state_bytes": 576
+  },
+  "controls": [
+    "learned source-choice with top two acquisition",
+    "calibrated top-two absolute reliability heuristic",
+    "fixed channels [0,3]",
+    "fixed channels [0,1]",
+    "full true descriptor source oracle (privileged upper bound, cannot qualify as fair 2-source control)"
+  ],
+  "gate": {
+    "coded_upper_correct": 864,
+    "min_learned_accuracy": 0.93,
+    "min_advantage_vs_best_equal_budget_control": 0.02,
+    "min_each_shift_accuracy": 0.88
+  },
+  "outcomes": [
+    "INVALID_YF26_TYPED_SOURCE",
+    "DEVELOPMENT_LEARNED_ACTIVE_OBSERVATION_GAIN",
+    "DEVELOPMENT_ACTIVE_OBSERVATION_NO_QUALIFIED_GAIN"
+  ],
+  "limits": {
+    "no_true_online_second_step_value_of_information": true,
+    "source_cues_author_generated": true,
+    "known_anchor_calibration_supervised": true,
+    "no_sealed_F3": true,
+    "no_FORGE_cloudflare_KTRADE_controller_changes": true
+  }
+}

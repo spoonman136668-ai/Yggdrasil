@@ -1,0 +1,64 @@
+name: Yggdrasil Y-F26 learned budgeted active sensor acquisition
+on:
+  push:
+    branches: [research/y-f26-budgeted-active-observation-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, persist-credentials: false}
+      - name: Install reproducible scientific dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Freeze prior native model and new protocol before original
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 3313ebfadc6a3e442e93db36565e93d5af150fe1 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f25/execute.py)" = "$(git rev-parse 3313ebfadc6a3e442e93db36565e93d5af150fe1:research/foundational/20261015-y-f25/execute.py)"
+          python3 -m py_compile research/foundational/20261015-y-f26/execute.py
+          python3 -m json.tool research/foundational/20261015-y-f26/prereg.json >/dev/null
+      - name: One original learned two-sensor acquisition research
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261015-y-f26/execute.py > /tmp/y-f26-original.json
+          python3 -m json.tool /tmp/y-f26-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F26-original-budgeted-active-sensor-choice
+          path: /tmp/y-f26-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Audit sensor action budget and all source predictions
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          d=json.load(open('/tmp/y-f26-original.json'))
+          assert d['stage']=='DEVELOPMENT_ONLY'
+          assert d['graph_states']==96 and d['sensor_condition_triples']==288
+          assert d['questions']==864 and d['native_state_bytes']==576
+          assert d['train_only_observed_bits']==2400 and d['trained_policy_parameters']==7
+          assert d['chosen_sensors_per_role_bit']==2 and d['available_sensors_per_role_bit']==4
+          assert d['sensor_choice_before_hidden_observation']
+          assert d['trained_selector_sees_only_anchor_statistics']
+          assert d['provider_full_bundle_not_read_by_decoder']
+          assert not d['source_independently_born'] and not d['sealed_first_use'] and not d['accepted_ref_mutation']
+          assert collections.Counter(r['shift'] for r in d['rows'])==dict.fromkeys(d['new_test_sensor_conditions'],96)
+          for r in d['rows']:
+            for arm,choice in r['chosen_source_indices'].items():
+              assert arm in ('learned','calibrated_greedy','fixed_03','fixed_01')
+              assert len(choice)==3 and all(len(v)==2 and len(set(v))==2 for v in choice)
+          for arm in ('learned','calibrated_greedy','fixed_03','fixed_01','full_information_upper'):
+            x=d['scores'][arm]
+            assert x['correct']==sum(sum(a==b for a,b in zip(r['predictions'][arm],r['truth'])) for r in d['rows'])
+            assert x['false_positive']==sum(bool(r['predictions'][arm][i]) for r in d['rows'] for i in (1,2))
+            assert x['false_negative']==sum(not r['predictions'][arm][0] for r in d['rows'])
+          assert d['scores']['full_information_upper']['correct']==864
+          assert d['registered_verdict'] in ('INVALID_YF26_TYPED_SOURCE','DEVELOPMENT_LEARNED_ACTIVE_OBSERVATION_GAIN','DEVELOPMENT_ACTIVE_OBSERVATION_NO_QUALIFIED_GAIN')
+          print('Y_F26_VERDICT',d['registered_verdict'],d['scores'])
+          PY
+      - name: Full pytest repository regression
+        run: python3 -m pytest -q tests
