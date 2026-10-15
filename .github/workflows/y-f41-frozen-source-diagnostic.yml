@@ -1,0 +1,97 @@
+name: Y-F41 once-only first-observation causal value diagnostic (NO primary original)
+on:
+  push:
+    branches:
+      - science/y-f41-frozen-observation-regret-20261015-r1
+permissions:
+  contents: read
+jobs:
+  diagnostic:
+    if: "${{ github.event.head_commit.message == 'science(y-f41): one frozen observation-value source diagnostic' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Exact frozen source and precode prereg identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor ae6a45e6405a7dd95edb9a6f482b57aaa797cc8d HEAD
+          git merge-base --is-ancestor 9ea15ff7d262fa5016afeec6770ad8f4180a2d49 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f41/source_pilot.py)" = f111887efd0e9bfb6306d35e30bce7a3dcd38039
+          test "$(git hash-object research/foundational/20261015-y-f41/prereg-frozen.json)" = "$(git rev-parse 9ea15ff7d262fa5016afeec6770ad8f4180a2d49:research/foundational/20261015-y-f41/prereg-frozen.json)"
+          python3 -m unittest discover -s research/foundational/20261015-y-f41 -p test_preflight.py -v
+      - name: Exactly one fresh TRAIN-only causal sensor information diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f41/source_pilot.py > /tmp/y-f41-source.json
+          python3 -m json.tool /tmp/y-f41-source.json >/dev/null
+          sha256sum /tmp/y-f41-source.json > /tmp/y-f41-source.sha256
+          git rev-parse HEAD > /tmp/y-f41-head.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F41-one-frozen-source-value
+          path: |
+            /tmp/y-f41-source.json
+            /tmp/y-f41-source.sha256
+            /tmp/y-f41-head.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Independent row/receipt/causal value audit
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,math
+          d=json.load(open('/tmp/y-f41-source.json'))
+          p=json.load(open('research/foundational/20261015-y-f41/prereg-frozen.json'))
+          assert d['schema']=='yggdrasil.f41.causal-observation-regret.trainonly.v1'
+          assert d['stage']=='FRESH_SOURCE_DIAGNOSTIC_NOT_LEARNED_ORIGINAL'
+          assert d['seeds']==p['train_only']['seeds'] and d['families']==p['train_only']['families']
+          assert d['reserved_original_seeds']==p['reserved_primary_original']['seeds']
+          assert d['reserved_original_families']==p['reserved_primary_original']['families']
+          assert d['questions']==p['train_only']['expected_questions']==256
+          assert len(d['rows'])==256
+          assert len({(r['seed'],r['family'],r['mechanism'],r['condition']) for r in d['rows']})==256
+          assert d['physical_paid_reads_per_role']==2 and d['reference_anchors']==24
+          assert d['external_reference_bytes_per_case']==24*5*8
+          assert d['evaluator_private_source_modes_and_truth_not_passed_to_policy']
+          assert d['same_repository_source_not_F3'] and d['primary_original_not_executed']
+          assert not d['accepted_ref_mutation'] and not d['paid_api_calls']
+          for row in d['rows']:
+            assert row['family'] in (364,365,366,367) and 312800<=row['seed']<312816
+            assert row['public_anchor_count']==24
+            for arm,traces in row['receipts'].items():
+              assert len(traces)==3
+              assert all(len(pair)==2 and pair[0]==0 and pair[1] in (1,2,3) for pair in traces)
+          for arm,s in d['scores'].items():
+            correct=sum(r['predictions'][arm]==r['truth'] for r in d['rows'])
+            fp=sum(bool(r['predictions'][arm]) and not r['truth'] for r in d['rows'])
+            fn=sum(not bool(r['predictions'][arm]) and r['truth'] for r in d['rows'])
+            assert (s['correct'],s['fp'],s['fn'],s['total'])==(correct,fp,fn,256)
+            assert math.isclose(s['accuracy'],correct/256,abs_tol=1e-12)
+          assert d['scores']['private_hindsight_oracle_unfair']['correct']==256
+          for condition,arms in d['by_condition'].items():
+            cohort=[r for r in d['rows'] if r['condition']==condition]
+            assert len(cohort)==128
+            for arm,s in arms.items():assert s['correct']==sum(r['predictions'][arm]==r['truth'] for r in cohort)
+          for mechanism,arms in d['by_mechanism'].items():
+            cohort=[r for r in d['rows'] if r['mechanism']==mechanism]
+            assert len(cohort)==128
+            for arm,s in arms.items():assert s['correct']==sum(r['predictions'][arm]==r['truth'] for r in cohort)
+          assert 0<=d['first_observation_action_switch_rate']<=1
+          best=max(d['scores'][a]['accuracy'] for a in ('conditional_empirical_Brier','public_conditional_expected_bit_error'))
+          gain=best-d['scores']['best_static']['accuracy']
+          expected='TRAIN_ONLY_ACTIONABLE_OBSERVATION_HEADROOM' if gain>=.02 else 'TRAIN_ONLY_NO_ACTIONABLE_OBSERVATION_HEADROOM'
+          assert d['verdict']==expected
+          print('Y_F41_SOURCE_DIAGNOSTIC',expected,{a:s['correct'] for a,s in d['scores'].items()},
+                'first_value_switch',d['first_observation_action_switch_rate'],
+                'matched_marginals',d['observed_first_channel_marginal_stats'])
+          PY
+      - name: Explicit scientific authority limit
+        run: |
+          echo "TRAIN-only source diagnostic, no learned original, independent F3 or accepted science"
