@@ -14,8 +14,10 @@ class SourceFreeReceipt(unittest.TestCase):
         public=[[100,0,200,0],[200,1,300,1]]
         self.assertTrue(a.witnessed((100,300,(0,2)),public))
         self.assertTrue(a.witnessed((300,100,(3,1)),public))
-        self.assertFalse(a.witnessed((100,300,(0,4)),public))
-        self.assertFalse(a.witnessed((100,300,(1,2)),public))
+        with self.assertRaises(AssertionError):
+            a.witnessed((100,300,(0,4)),public)
+        with self.assertRaises(AssertionError):
+            a.witnessed((100,300,(1,2)),public)
     def test_decoding_rejects_malformed_len(self):
         with self.assertRaises(AssertionError):a.decode("00"*11+"05")
     def test_answers_use_only_retained_codes(self):
