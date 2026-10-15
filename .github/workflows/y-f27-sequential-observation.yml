@@ -1,0 +1,66 @@
+name: Y-F27 sequential second observation decision
+on:
+  push:
+    branches: [research/y-f27-sequential-second-observation-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false, fetch-depth: 0}
+      - name: Install scientific dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Freeze parent and source preflight before science
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7315d9c87f028d7ff33b7d53e0b799caf727cf2c HEAD
+          test "$(git hash-object research/foundational/20261015-y-f26/execute.py)" = "$(git rev-parse 7315d9c87f028d7ff33b7d53e0b799caf727cf2c:research/foundational/20261015-y-f26/execute.py)"
+          python3 -m py_compile research/foundational/20261015-y-f27/execute.py
+          python3 -m json.tool research/foundational/20261015-y-f27/prereg.json >/dev/null
+      - name: Exactly one valid Y-F27 original new development cohort
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261015-y-f27/execute.py > /tmp/y-f27-original.json
+          python3 -m json.tool /tmp/y-f27-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F27-original-sequential-second-sensor
+          path: /tmp/y-f27-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independently verify ordered actions, source and all rows
+        run: |
+          python3 - <<'PY'
+          import collections,json
+          d=json.load(open('/tmp/y-f27-original.json'))
+          assert d['stage']=='DEVELOPMENT_ONLY' and d['graph_states']==96
+          assert d['groups']==288 and d['questions']==864 and d['native_state_bytes']==576
+          assert d['train_only_target_bits']==2100 and d['learned_policy_params']==9
+          assert d['actual_first_observation_before_second_decision']
+          assert d['policy_second_action_uses_first_target_reading']
+          assert d['unobserved_channels_not_read_in_action_decision']
+          assert d['first_source_selected_by_programmed_calibration']
+          assert d['two_sensors_per_target_bit'] and d['source_sensor_count']==4
+          assert not d['independent_source_birth'] and not d['sealed_first_use'] and not d['accepted_ref_mutation']
+          assert collections.Counter(r['sensor_shift'] for r in d['rows'])==dict.fromkeys(d['new_shifts'],96)
+          for row in d['rows']:
+            assert row['two_sensors_per_descriptor_bit']
+            for mode,trace in row['action_samples'].items():
+              assert mode in ('learned','conditional_greedy','static_greedy','fixed_03')
+              assert all(len(t)==4 and 0<=t[1]<4 and 0<=t[2]<4 and t[1]!=t[2] for t in trace)
+          for arm in ('learned','conditional_greedy','static_greedy','fixed_03','descriptor_oracle'):
+            x=d['scores'][arm]
+            assert x['correct']==sum(sum(p==t for p,t in zip(r['answers'][arm],r['truth'])) for r in d['rows'])
+            assert x['false_positives']==sum(r['answers'][arm][i] for r in d['rows'] for i in (1,2))
+            assert x['false_negatives']==sum(not r['answers'][arm][0] for r in d['rows'])
+          assert d['scores']['descriptor_oracle']['correct']==864
+          assert d['registered_verdict'] in ('INVALID_YF27_SOURCE_REFERENCE',
+            'DEVELOPMENT_LEARNED_SEQUENTIAL_OBSERVATION_GAIN','DEVELOPMENT_SEQUENTIAL_OBSERVATION_NO_QUALIFIED_GAIN')
+          print('Y_F27_VERDICT',d['registered_verdict'],d['scores'])
+          PY
+      - name: One full pytest regression
+        run: python3 -m pytest -q tests
