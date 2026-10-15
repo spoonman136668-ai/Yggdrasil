@@ -1,0 +1,68 @@
+{
+  "schema": "yggdrasil.f34.preregistered-source-candidate.v1",
+  "stage": "PRE_ORIGINAL_DISTINCT_TRAIN_ONLY_SOURCE_ENGINEERING",
+  "previous_negative": {
+    "source_run": 38731320689,
+    "reason": "conditional_first_sensor evidence worsened heldout predictive loss by 0.0723 nats despite 16.32 pp headroom"
+  },
+  "hypothesis": "A distinct mixture-of-instruments with public polarity and unpredictable latent mode supports out-of-sample first-reading information that improves downstream sensor choice, without telling the selector hidden mode or true bit.",
+  "train_only_source": {
+    "seeds": [
+      211800,
+      211824
+    ],
+    "families": [
+      190,
+      191,
+      192
+    ],
+    "conditions": [
+      "ordinary",
+      "polarity-reversal",
+      "weak-first-reading",
+      "noninformative-first-reading"
+    ],
+    "mechanisms": [
+      "mode-switching-reliability",
+      "heteroskedastic-anticorrelated-source"
+    ],
+    "reference_anchors": 16,
+    "expected_questions": 576
+  },
+  "reserved_primary_original": {
+    "seeds": [
+      212800,
+      212816
+    ],
+    "families": [
+      194,
+      195,
+      196,
+      197
+    ],
+    "do_not_generate": true
+  },
+  "constraints": {
+    "two_purchased_target_channels_per_role": true,
+    "native_model_budget_bytes": 576,
+    "external_calibration_and_search_bytes_metered": true,
+    "policy_knows_only_public_polarity_calibration_and_purchased_first_value": true,
+    "hidden_mode_evaluator_only": true,
+    "source_generators_programmed_within_repo_not_F3": true
+  },
+  "pilot_acceptance": {
+    "conditional_MI_bits_min": 0.02,
+    "predictive_heldout_conditional_logloss_gain_min": 0.01,
+    "headroom_min": 0.04,
+    "first_read_switch_rate_min": 0.05,
+    "per_mechanism_report": true,
+    "no_rerun_or_retune_after_result": true
+  },
+  "remaining_science_gate": "Only after qualified distinct source, build and independently evaluate compact learned posterior against strong equal-calibration predictive Bayesian control on new untouched test identities; not in this preflight.",
+  "authority": {
+    "no_primary_original_now": true,
+    "no_accepted_ref_mutation": true,
+    "no_controller_FORGE_KTRADE_Cloudflare_changes": true,
+    "no_paid_API": true
+  }
+}
