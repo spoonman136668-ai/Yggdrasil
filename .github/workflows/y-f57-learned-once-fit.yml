@@ -1,0 +1,67 @@
+name: Y-F57 frozen learned causal component FIT-split qualification
+on:
+  push:
+    branches:
+      - research/y-f57-trained-stream-components-20261015-r1
+permissions:
+  contents: read
+jobs:
+  train-freeze-validate:
+    if: "${{ github.event.head_commit.message == 'science(y-f57): once-only learned causal component FIT validation' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 115
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Bind prereg ancestor, approved F57 source, learned source and independent audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 0269f25f0ae4e9590f5087de7a4909c97bd64edb HEAD
+          git merge-base --is-ancestor 9018c9722ec67d83a4fdc034f50d5dfcde57fde2 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f57/prereg-candidate.json)" = 2c0255ae79fc8a302f5c4d085b919c3dd7514ca5
+          test "$(git hash-object research/foundational/20261015-y-f57/source_feasibility.py)" = 93435388ad05cc4e011ccc7aa345366a3a662c4a
+          test "$(git hash-object research/foundational/20261015-y-f57/learned-policy-prereg.json)" = 8d10c03be07eb00eb7625c80d8ec11e8e23a8284
+          test "$(git hash-object research/foundational/20261015-y-f57/learned_streaming_policy.py)" = a4ca0a891ec3a194885931e5951e241d959ef0b5
+          test "$(git hash-object research/foundational/20261015-y-f57/test_learned_preflight.py)" = 63bc435f8ba10364c0cea73c911c75bab58adfa4
+          test "$(git hash-object research/foundational/20261015-y-f57/audit_learned.py)" = 996448c1ebea7c28f7467c3c0a6f7791926b609d
+          python3 -m json.tool research/foundational/20261015-y-f57/learned-policy-prereg.json >/dev/null
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f57 -p test_learned_preflight.py -v
+      - name: Exactly one full existing repository regression before heldout FIT validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+      - name: Exactly one FIT training and disjoint FIT validation; archive first
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f57-learned"
+          git rev-parse HEAD > "$RUNNER_TEMP/y-f57-learned/SOURCE_SHA"
+          python3 -B research/foundational/20261015-y-f57/learned_streaming_policy.py --fit-validation             > "$RUNNER_TEMP/y-f57-learned/result.json"
+          python3 -m json.tool "$RUNNER_TEMP/y-f57-learned/result.json" >/dev/null
+          (cd "$RUNNER_TEMP/y-f57-learned" && sha256sum result.json > source-manifest.sha256)
+      - name: Independent source-free all-row graph, memory, frozen threshold audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f57/audit_learned.py             "$RUNNER_TEMP/y-f57-learned/result.json"             research/foundational/20261015-y-f57/learned-policy-prereg.json             > "$RUNNER_TEMP/y-f57-learned/independent-audit.txt"
+          cat "$RUNNER_TEMP/y-f57-learned/independent-audit.txt"
+          (cd "$RUNNER_TEMP/y-f57-learned" && sha256sum result.json independent-audit.txt > manifest.sha256)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F57-one-frozen-learned-causal-component-FIT-and-audit
+          path: ${{ runner.temp }}/y-f57-learned/
+          retention-days: 90
+          if-no-files-found: error
+      - name: Accepted science / primary original exclusion
+        run: |
+          echo "FIT_ONLY=TRUE"
+          echo "F57_DIAGNOSTIC_ORIGINAL=UNCONSUMED"
+          echo "NATIVE_576B_TOTAL=UNVERIFIED"
+          echo "INDEPENDENT_F3=UNQUALIFIED"
+          echo "ACCEPTED_REFS_AND_FORGE_CONTROLLER_UNCHANGED=TRUE"
