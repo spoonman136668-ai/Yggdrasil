@@ -1,0 +1,86 @@
+{
+  "schema": "yggdrasil.f35.frozen-learned-posterior-trainonly.v1",
+  "stage": "ONE_FRESH_TRAIN_ONLY_POLICY_EVALUATION_NOT_PRIMARY_ORIGINAL",
+  "precode_prereg_commit": "4a838cc4ed7761fbd7fa5155ba5df9ed4fdae470",
+  "qualified_source_commit": "7ced5bac06fa16f4ddba40db2a3896cb6afb7ae2",
+  "qualified_tree_sha": "8690270fba681be026bca62e59840b204e0ca5a6",
+  "source_path": "research/foundational/20261015-y-f35/train_only.py",
+  "source_blob_sha": "bcdc0ccc3fbed4df2ece576d03046a97daa5f002",
+  "engineering_run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38742225699",
+  "train": {
+    "seeds": [
+      221800,
+      221840
+    ],
+    "families": [
+      210,
+      211,
+      212
+    ]
+  },
+  "train_only_eval": {
+    "seeds": [
+      222800,
+      222816
+    ],
+    "families": [
+      214,
+      215,
+      216,
+      217
+    ],
+    "conditions": [
+      "ordinary",
+      "polarity_reversal",
+      "weak_marker",
+      "uninformative_marker"
+    ],
+    "mechanisms": [
+      "mode_switch",
+      "anti_correlated_noisy"
+    ],
+    "expected_queries": 512
+  },
+  "reserved_primary_original": {
+    "seeds": [
+      212800,
+      212816
+    ],
+    "families": [
+      194,
+      195,
+      196,
+      197
+    ],
+    "not_generated": true
+  },
+  "methods": [
+    "learned",
+    "polarity_bayes",
+    "empirical_brier",
+    "calibrated_static",
+    "fixed",
+    "masked_first",
+    "privileged_oracle"
+  ],
+  "criteria": {
+    "min_absolute_gain_over_strongest_equal_budget": 0.02,
+    "per_mechanism_nondegrading": true,
+    "causal_first_read_action_switch_required": true,
+    "masked_first_accuracy_lower_than_learned": true,
+    "oracle_correct_all": true
+  },
+  "limits": {
+    "trainable_coefficients": 24,
+    "coefficient_bytes": 192,
+    "native_core_max_bytes": 576,
+    "physical_target_reads_per_role": 2,
+    "public_calibration_bytes_external": true,
+    "Python_heap_not_qualified": true,
+    "development_synthetic_source_not_independently_born_F3": true,
+    "one_train_only_run": true,
+    "no_primary_original": true,
+    "no_paid_API": true,
+    "no_accepted_ref_mutation": true
+  }
+}
