@@ -25,7 +25,8 @@ def audit(path,prereg):
   assert 531100<=r['seed']<531116 and r['family'] in v['families']
   assert len(r['public_events'])==64
   assert len(r['future_query']['chain'])==3
-  assert set(d['scores'])==set(arms)\n  assert set(r['results'])==set(arms)
+  assert set(d['scores'])==set(arms)
+  assert set(r['results'])==set(arms)
   assert set(r['retained_event_indices'])==set(arms)-{'private_future_query_oracle_unfair'}
   for a,indices in r['retained_event_indices'].items():
    assert len(indices)==12 and len(set(indices))==12
@@ -61,7 +62,7 @@ def audit(path,prereg):
  assert d['per_family_nondegradation']==nonreg and d['frozen_criterion_met']==passed
  assert d['verdict']==('TRAIN_ONLY_LEARNED_MEMORY_SUPPORTED' if passed else
                        'TRAIN_ONLY_LEARNED_MEMORY_NEGATIVE')
- print('Y_F50',d['verdict'],'correct',counted,'gain',gain,'family_guard',nonreg)
+ print('Y_F51',d['verdict'],'correct',counted,'gain',gain,'family_guard',nonreg)
 if __name__=='__main__':
  assert len(sys.argv)==3
  audit(sys.argv[1],sys.argv[2])
