@@ -1,0 +1,91 @@
+{
+  "schema": "yggdrasil.f36.frozen-latent-posterior-trainonly.v1",
+  "status": "SOURCE_FROZEN_BEFORE_ONE_TRAIN_ONLY_EXECUTION",
+  "precode_prereg_commit": "200d07bf0036425d2c11aee095129b4cec73170c",
+  "qualified_engineering_commit": "501ae463c83edfc9c1aa817abb958d7ac3911af6",
+  "qualified_source_tree": "64e55ef045e3c9dc40fc83b1082108d40707c40d",
+  "source_path": "research/foundational/20261015-y-f36/train_only.py",
+  "source_blob": "b21a9904b71219ac2dfa212b8b445f3932133ef0",
+  "engineering_full_regression": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38747809879",
+  "train": {
+    "seeds": [
+      251800,
+      251824
+    ],
+    "families": [
+      220,
+      221,
+      222
+    ]
+  },
+  "train_only": {
+    "seeds": [
+      252800,
+      252816
+    ],
+    "families": [
+      224,
+      225,
+      226,
+      227
+    ],
+    "conditions": [
+      "normal",
+      "reversed_polarity",
+      "weak_hint",
+      "uninformative_hint"
+    ],
+    "mechanisms": [
+      "mode_switched",
+      "anticorrelated_auxiliary"
+    ],
+    "expected_questions": 512
+  },
+  "reserved_primary": {
+    "seeds": [
+      253800,
+      253816
+    ],
+    "families": [
+      230,
+      231,
+      232,
+      233
+    ],
+    "never_generate": true
+  },
+  "methods": [
+    "learned_posterior",
+    "gaussian_Bayesian",
+    "polarity_Bayesian",
+    "conditional_empirical_Brier",
+    "calibrated_static",
+    "fixed",
+    "masked_first",
+    "privileged_oracle"
+  ],
+  "decision": {
+    "min_absolute_gain_vs_best_equal_data": 0.02,
+    "per_mechanism_nondegrading": true,
+    "first_read_action_switch_positive": true,
+    "first_masked_ablation_worse": true,
+    "privileged_oracle_correct": 512,
+    "posterior_predictive_mode_logloss_reported": true
+  },
+  "cost": {
+    "native_model_coefficients_count": 16,
+    "native_coefficients_bytes": 128,
+    "native_core_max_bytes": 576,
+    "physical_target_reads_per_role": 2,
+    "external_calibration_bytes_separate": true,
+    "Python_runtime_resident_memory_not_qualified": true
+  },
+  "authority": {
+    "development_synthetic_only": true,
+    "independently_born_F3": false,
+    "no_primary_original": true,
+    "exactly_one_train_only_run": true,
+    "no_accepted_ref_mutation": true,
+    "no_FORGE_controller_Cloudflare_KTRADE_mutation": true
+  }
+}
