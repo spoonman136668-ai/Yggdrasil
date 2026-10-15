@@ -97,8 +97,8 @@ def witness(public):
     for nodes,indices in components:
         degree={n:len(adjacent[n]) for n in nodes}
         leaf=sorted(n for n,d in degree.items() if d==1)
-        if len(nodes)==9 and len(indices)==8 and len(leaf)==2 and
-           all(d in (1,2) for d in degree.values()):
+        if (len(nodes)==9 and len(indices)==8 and len(leaf)==2
+                and all(d in (1,2) for d in degree.values())):
             start=leaf[0];cur=start;prev=None
             ordered=[]
             while len(ordered)<8:
