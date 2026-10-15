@@ -1,0 +1,107 @@
+name: Y-F38 one frozen sensor information TRAIN-only diagnostic
+on:
+  push:
+    branches:
+      - science/y-f38-frozen-sensor-value-trainonly-20261015-r1
+permissions:
+  contents: read
+jobs:
+  diagnostic:
+    if: "${{ github.event.head_commit.message == 'science(y-f38): one frozen TRAIN-only sensor information diagnostic' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify exact frozen source and pre-original registration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 5f2cee677aa626bb8afec74d60e8274e0b736b9f HEAD
+          git merge-base --is-ancestor 5d725b67192cb5fb4972b8beb65d7487849b895e HEAD
+          test "$(git hash-object research/foundational/20261015-y-f38/source_pilot.py)" = 0a667c1cd00f720f67047c8b58a8833d55869c81
+          test "$(git hash-object research/foundational/20261015-y-f38/prereg-frozen.json)" = "$(git rev-parse 5d725b67192cb5fb4972b8beb65d7487849b895e:research/foundational/20261015-y-f38/prereg-frozen.json)"
+          python3 -m unittest discover -s research/foundational/20261015-y-f38 -p test_preflight.py -v
+      - name: Exactly one prospective TRAIN-only sensor-value diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f38/source_pilot.py > /tmp/y-f38-source-diagnostic.json
+          python3 -m json.tool /tmp/y-f38-source-diagnostic.json >/dev/null
+          sha256sum /tmp/y-f38-source-diagnostic.json > /tmp/y-f38-source-diagnostic.sha256
+          git rev-parse HEAD > /tmp/y-f38-head.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F38-frozen-once-source-evidence
+          path: |
+            /tmp/y-f38-source-diagnostic.json
+            /tmp/y-f38-source-diagnostic.sha256
+            /tmp/y-f38-head.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Independently check all two-purchase receipts and heldout source findings
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,math
+          d=json.load(open('/tmp/y-f38-source-diagnostic.json'))
+          p=json.load(open('research/foundational/20261015-y-f38/prereg-frozen.json'))
+          assert d['schema']=='yggdrasil.f38.sensor-information-source.trainonly.v1'
+          assert d['stage']=='SOURCE_DIAGNOSTIC_NOT_LEARNED_ORIGINAL'
+          assert d['seeds']==p['cohort']['seeds']
+          assert d['training_seeds']==p['cohort']['training_seeds']
+          assert d['validation_seeds']==p['cohort']['validation_seeds']
+          assert d['families']==p['cohort']['families']
+          assert d['conditions']==p['cohort']['conditions']
+          assert d['mechanisms']==p['cohort']['mechanisms']
+          assert d['questions']==p['cohort']['expected_questions']==256
+          assert d['reserved_original_seeds']==p['reserved_primary_original']['seeds']
+          assert d['reserved_original_families']==p['reserved_primary_original']['families']
+          assert d['fair_policy_paid_reads_per_role']==2
+          assert d['evaluator_only_privileged_hindsight_not_reachable_by_policy']
+          assert d['source_independently_born_F3'] is False
+          assert d['primary_original_not_executed'] and not d['accepted_ref_mutation']
+          assert len(d['rows'])==256
+          assert len({(r['seed'],r['family'],r['mechanism'],r['condition']) for r in d['rows']})==256
+          assert d['validation_private_records']==384
+          assert all(281800<=r['seed']<281816 and r['family'] in (270,271,272,273)
+                     and r['public_reference_anchors']==24 for r in d['rows'])
+          for r in d['rows']:
+            assert 'evaluator_hindsight_unfair' not in r['fair_two_paid_read_receipts']
+            for arm,trace in r['fair_two_paid_read_receipts'].items():
+              assert len(trace)==3
+              assert all(len(pair)==2 and pair[0]==0 and pair[1] in (1,2,3) for pair in trace)
+          for a,s in d['scores'].items():
+            correct=sum(r['answers'][a]==r['truth'] for r in d['rows'])
+            assert s['correct']==correct and s['total']==256
+            assert math.isclose(s['accuracy'],correct/256,abs_tol=1e-12)
+          assert d['scores']['privileged_truth_oracle']['correct']==256
+          for condition,by_arm in d['by_condition'].items():
+            subset=[r for r in d['rows'] if r['condition']==condition]
+            assert len(subset)==128
+            for arm,s in by_arm.items():
+              assert s['correct']==sum(r['answers'][arm]==r['truth'] for r in subset)
+          info=d['validation_mode_conditional_MI_bits']
+          losses=d['heldout_mode_logloss']
+          assert all(losses[c]['rows']==192 for c in ('informative_first','uninformative_first'))
+          assert all(math.isfinite(losses[c]['gain']) and math.isfinite(info[c])
+                     for c in ('informative_first','uninformative_first'))
+          threshold=p['preregistered_gate']
+          ok=(losses['informative_first']['gain']>=threshold['informative_heldout_mode_logloss_gain_min_nats']
+              and info['informative_first']>=threshold['informative_mode_information_min_bits']
+              and d['hindsight_upper_bound_headroom']>=threshold['hindsight_upper_accuracy_headroom_min']
+              and d['causal_polarity_switch_rate']>=threshold['informative_causal_reading_switch_min'])
+          expected='TRAIN_ONLY_SENSOR_INFORMATION_FEASIBLE' if ok else 'TRAIN_ONLY_SENSOR_INFORMATION_NOT_QUALIFIED'
+          assert d['verdict']==expected
+          print('Y_F38_SENSOR_SOURCE',expected,
+                {a:s['correct'] for a,s in d['scores'].items()},
+                'conditional_mode_information',info,
+                'heldout_logloss_gain',losses,
+                'HINDSIGHT_UNATTAINABLE_HEADROOM',d['hindsight_upper_bound_headroom'])
+          PY
+      - name: Separate upper bound and original authority
+        run: |
+          echo "Hindsight peeks at unpurchased channels and is NOT actionable. No new learner or independent F3 original."
