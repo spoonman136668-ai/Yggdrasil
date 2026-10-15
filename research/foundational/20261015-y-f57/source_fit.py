@@ -233,6 +233,12 @@ def fit_preview():
             memory["full_public_offline_extra_work"]=full_public_reference(public)
             scored={arm:solve(m,question) for arm,m in memory.items()}
             rows.append({"seed":seed,"family":family,"regime":regime,
+                "public_events":[list(e) for e in public],
+                "question":{"start":question["start"],
+                            "ops":[list(x) for x in question["ops"]],
+                            "answer":question["answer"]},
+                "retained_records":{arm:[pack(z).hex() for z in m]
+                                    for arm,m in memory.items()},
                 "scores":scored,
                 "serialized_bytes":{arm:sum(len(pack(z)) for z in m)
                                     for arm,m in memory.items()}})
