@@ -71,7 +71,7 @@ def source(seed:int,family:int):
     for idx,edge in enumerate(fragments):
         stream.append(edge)
         if idx<32 and (idx+1)%4==0:
-            stream.extend(distractors[idx:idx+4])
+            stream.extend(distractors[((idx+1)//4-1)*4:((idx+1)//4)*4])
     stream.extend(distractors[32:])
     assert len(stream)==EVENTS and len(set(stream))==EVENTS
     core={e for _,_,es in paths for e in es}
