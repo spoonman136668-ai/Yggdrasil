@@ -38,7 +38,7 @@ def source(seed,fam):
     for k in range(4):
         start=cur=node();ops=[];members=[]
         for j in range(6):
-            nxt=node();r=rng.randrange(4);d=1 if rng.random()<.5 else -1
+            nxt=node();r=rng.choice([x for x in range(4) if not ops or x!=ops[-1][0]]);d=1 if rng.random()<.5 else -1
             raw=(cur,r,nxt) if d==1 else (nxt,r,cur)
             ev.append(raw);ops.append((r,d));members.append(raw);cur=nxt
         paths.append(dict(start=start,answer=cur,ops=tuple(ops),edges=tuple(members)))
