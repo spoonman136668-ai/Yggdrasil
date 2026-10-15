@@ -1,0 +1,81 @@
+{
+  "schema": "yggdrasil.f51.tag-neutral-structural-memory.prereg.v1",
+  "stage": "PRECODE_FROZEN",
+  "parent_F50_head": "ab83bd0cb2df4409f73ca9a9337e803467020477",
+  "issue": 251,
+  "hypothesis": "Learned online topology-retention improves future four-link path completion by >=5pp over the strongest public connected-component, degree/adjacency, public-tag-only, frequency, FIFO and public-hash baselines with a 12-edge memory cap, with tag-identity independent of relevance and unfamiliar diagnostic distractor motifs.",
+  "fit": {
+    "seeds": [
+      531000,
+      531016
+    ],
+    "families": [
+      920,
+      921,
+      922,
+      923
+    ],
+    "expected_streams": 64,
+    "distractors": "isolated_and_pairs"
+  },
+  "diagnostic": {
+    "seeds": [
+      531100,
+      531116
+    ],
+    "families": [
+      924,
+      925,
+      926,
+      927
+    ],
+    "expected_streams": 64,
+    "distractors": "triangles_and_pairs"
+  },
+  "stream": {
+    "events": 64,
+    "memory_edges_max": 12,
+    "core_paths": 4,
+    "core_path_length": 4,
+    "tag_probability_core": 0.5,
+    "tag_probability_distractor": 0.5,
+    "question_revealed_only_after_all_retention": true
+  },
+  "future_original_NOT_RESERVED": {
+    "seeds": [
+      532000,
+      532016
+    ],
+    "families": [
+      928,
+      929,
+      930,
+      931
+    ]
+  },
+  "controls": [
+    "learned_topology_retention",
+    "public_connected_component",
+    "public_degree_adjacency",
+    "public_tag_only",
+    "FIFO_last12",
+    "public_frequency",
+    "public_hash",
+    "private_future_question_oracle_unfair"
+  ],
+  "thresholds": {
+    "gain_vs_strongest_fair_min": 0.05,
+    "per_family_nondegradation": true,
+    "tag_leakage_quantification_required": true,
+    "independent_full_receipt_and_path_audit": true
+  },
+  "limits": {
+    "train_only_labels_for_fit": true,
+    "diagnostic_future_query_never_ingestion_input": true,
+    "source_independent_F3": false,
+    "primary_original_executed": false,
+    "native_576B_total_measured": false,
+    "accepted_ref_mutation": false,
+    "paid_API": 0
+  }
+}
