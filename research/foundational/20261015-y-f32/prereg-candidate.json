@@ -1,0 +1,71 @@
+{
+  "schema": "yggdrasil.f32.prereg-candidate.v1",
+  "id": "Y-F32",
+  "status": "TRAIN_ONLY_SOURCE_HEADROOM_GATE",
+  "parent_consumed_pilot": {
+    "run": 38727472093,
+    "sha": "20e43f20fa2a90b0db29a89a847d5abefcae13aa",
+    "verdict": "PILOT_HEADROOM_NOT_QUALIFIED_NO_ORIGINAL",
+    "observed_marginal_mode_first_MI_bits": 1.2855777770131487e-7
+  },
+  "hypothesis": "Reversed first-sensor polarity across regimes can cancel marginal mutual information while each regime is informative; an observable public-anchor-conditioned polarity estimate may restore decision-relevant information without passing hidden regime ID.",
+  "causal_issue": "The previous pilot pooled first-sensor readings across flipped regimes when computing a binary mutual-information diagnostic. This can conceal regime-specific information; the previous negative remains frozen and is not reinterpreted.",
+  "train": {
+    "seeds": [
+      183100,
+      183124
+    ],
+    "regimes": [
+      "polarity-positive",
+      "polarity-reversed",
+      "weak-first"
+    ],
+    "conditions": [
+      "ordinary",
+      "missing",
+      "anchor-corruption",
+      "low-coverage"
+    ],
+    "anchors_per_setting": 12
+  },
+  "reserved_primary_original": {
+    "seeds": [
+      184000,
+      184012
+    ],
+    "families": [
+      174,
+      175,
+      176,
+      177
+    ],
+    "must_not_generate": true
+  },
+  "controls": [
+    "marginal marker MI",
+    "regime-conditional marker MI diagnostic privileged not for policy",
+    "anchor-observable polarity-conditioned marker MI",
+    "first-reading masked",
+    "public-calibration-conditional empirical Brier",
+    "static"
+  ],
+  "headroom": {
+    "minimum_observable_MI_bits": 0.015,
+    "min_conditional_decision_switch_rate": 0.05,
+    "strongest_fair_accuracy_max": 0.94,
+    "min_possible_absolute_gain": 0.04
+  },
+  "resources": {
+    "exact_two_purchased_target_channels": true,
+    "native_core_limit_bytes": 576,
+    "public_anchor_bytes_external": true
+  },
+  "authority": {
+    "train_only_no_scientific_original": true,
+    "independent_F3_source": false,
+    "source_generated_development": true,
+    "accepted_ref_mutation": false,
+    "no_controller_FORGE_cloudflare_KTRADE_changes": true,
+    "no_paid_api": true
+  }
+}
