@@ -1,0 +1,60 @@
+name: Y-F18 frozen full S4 role ontology permutation transfer
+on:
+  push:
+    branches: [research/y-f18-full-role-alphabet-equivariance-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  independent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install science dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Assert frozen predecessor and prereg
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor a1ebf0ba4ef20cf93758cbb3cb25005f2d7c4e2b HEAD
+          test "$(git hash-object research/foundational/20261014-y-f12/execute.py)" = "$(git rev-parse fbe0269a4b32c42c497aa22b856720d39733c521:research/foundational/20261014-y-f12/execute.py)"
+          python3 -m py_compile research/foundational/20261015-y-f18/execute.py
+          python3 -m json.tool research/foundational/20261015-y-f18/prereg.json >/dev/null
+      - name: Original Y-F18 frozen relation permutation DEVELOPMENT
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261015-y-f18/execute.py > /tmp/y-f18-original-development.json
+          python3 -m json.tool /tmp/y-f18-original-development.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F18-original-frozen-S4-ontology-development
+          path: /tmp/y-f18-original-development.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independent exact row auditing after archive
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          d=json.load(open("/tmp/y-f18-original-development.json"))
+          assert d["stage"]=="DEVELOPMENT_ONLY"
+          assert d["triples"]==576 and d["questions"]==1728
+          assert d["role_bijections"]==24 and d["base_graphs"]==24
+          assert d["typed_native_state_bytes"]==576 and not d["model_retrained"]
+          assert not d["independent_source_birth"] and not d["sealed_first_use"]
+          assert not d["accepted_ref_mutation"] and not d["learned_automatic_halting"]
+          assert collections.Counter(r["family"] for r in d["rows"])=={100:144,101:144,102:144,103:144}
+          assert collections.Counter(r["permutation_index"] for r in d["rows"])==dict.fromkeys(range(24),24)
+          assert all(r["truth"]==[True,False,False] for r in d["rows"])
+          assert d["scores"]["frozen_correct"]==sum(sum(a==b for a,b in zip(r["frozen_prediction"],r["truth"])) for r in d["rows"])
+          assert d["scores"]["frozen_complete_triples"]==sum(r["frozen_prediction"]==r["truth"] for r in d["rows"])
+          assert d["scores"]["frozen_false_positives"]==sum(int(r["frozen_prediction"][i]) for r in d["rows"] for i in (1,2))
+          assert d["scores"]["exact_oracle_complete_triples"]==576
+          assert d["scores"]["bag_control_complete_triples"]==0
+          assert d["registered_verdict"] in ("DEVELOPMENT_FROZEN_S4_ROLE_EQUIVARIANCE_TRANSFER","DEVELOPMENT_NO_FROZEN_S4_ROLE_EQUIVARIANCE_TRANSFER")
+          print("Y_F18_VERDICT",d["registered_verdict"],d["scores"])
+          PY
+      - name: One full repository regression
+        run: python3 -m pytest -q tests
