@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.f39.trust-gate-prereg.v1",
+  "phase": "NEW_TRAIN_ONLY_TRUST_GATE_NOT_PRIMARY_ORIGINAL",
+  "parent_f38_run": 38768851272,
+  "parent_source_commit": "5f2cee677aa626bb8afec74d60e8274e0b736b9f",
+  "design_issue": "https://github.com/spoonman136668-ai/Yggdrasil/issues/227",
+  "hypothesis": "A bounded trained credibility gate using only distributional features of publicly labeled reference first-channel readings can suppress misleading updates and improve typed-task decisions over equal-reference conditional empirical Brier on held-out informative and noninformative sensor regimes.",
+  "train": {
+    "seeds": [
+      291800,
+      291816
+    ],
+    "families": [
+      280,
+      281,
+      282
+    ],
+    "conditions": [
+      "informative",
+      "noninformative"
+    ],
+    "mechanisms": [
+      "conditional-source",
+      "anticorrelated-source"
+    ],
+    "reference_anchors": 24
+  },
+  "train_only_eval": {
+    "seeds": [
+      291816,
+      291832
+    ],
+    "families": [
+      284,
+      285,
+      286,
+      287
+    ],
+    "conditions": [
+      "informative",
+      "noninformative"
+    ],
+    "mechanisms": [
+      "conditional-source",
+      "anticorrelated-source"
+    ],
+    "expected_cases": 256
+  },
+  "reserved_primary_original": {
+    "seeds": [
+      292800,
+      292816
+    ],
+    "families": [
+      288,
+      289,
+      290,
+      291
+    ]
+  },
+  "arms": [
+    "learned_trust_gate",
+    "conditional_empirical_Brier",
+    "public_polarity",
+    "variance_threshold_gate",
+    "static_reference",
+    "first_masked_ablation",
+    "privileged_truth_oracle"
+  ],
+  "decision": {
+    "minimum_accuracy_gain_over_strongest_equal_budget": 0.02,
+    "per_condition_nondegrading": true,
+    "positive_first_read_intervention_and_masked_ablation": true,
+    "source_oracle_correct_all": true,
+    "two_paid_read_receipts_all_cases": true
+  },
+  "limits": {
+    "native_core_max_bytes": 576,
+    "trainable_coefficients_at_most": 16,
+    "external_reference_and_optimizer_memory_separate": true,
+    "latent_mode_condition_truth_not_delivered_to_policy": true,
+    "same_repo_synthetic_source_not_F3": true,
+    "no_primary_original": true,
+    "no_accepted_ref_mutation": true,
+    "no_codex_paid_API_OR_controller_FORGE_KTRADE_Cloudflare_edits": true
+  }
+}
