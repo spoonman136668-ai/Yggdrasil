@@ -216,9 +216,9 @@ def full_public_reference(public):
     if len(long)!=4:raise AssertionError("public source not identifiable")
     records=[]
     for nodes,codes in long:
-        for a,b in ((0,4),(4,8)):
+        for a,b in ((0,4),(4,6),(6,8)):
             records.append((nodes[a],nodes[b],tuple(codes[a:b])))
-    assert len(records)==8 and all(unpack(pack(r))==r for r in records)
+    assert len(records)==12 and all(unpack(pack(r))==r for r in records)
     return tuple(records)
 
 def fit_preview():
