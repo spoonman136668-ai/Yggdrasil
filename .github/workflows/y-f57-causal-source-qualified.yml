@@ -1,0 +1,35 @@
+name: Yggdrasil F57 new causal component source qualification (FIT samples only)
+on:
+  push:
+    branches: [research/y-f57-component-merge-method-fitonly-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  independent-source-qualification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Source identities and blocked protected folds
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git hash-object research/foundational/20261015-y-f57/prereg.json)" = 35cd435b2c2cdbe9c9c760a5650b8ca807000b46
+          test "$(git hash-object research/foundational/20261015-y-f57/source_fit.py)" = 5ff494aa42645ac1cbef6281195b5529d299b958
+          test "$(git hash-object research/foundational/20261015-y-f57/test_source_fit.py)" = 8426dc2d6ddeb7f64b449f3977027cab638a4666
+          python3 -B -m py_compile research/foundational/20261015-y-f57/source_fit.py
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f57 -p test_precode.py -v
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f57 -p test_source_fit.py -v
+          echo F57_NEW_PUBLIC_COMPONENT_CAUSAL_SOURCE_ONLY=PASS
+      - name: One complete existing project regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+          echo F57_ONE_FULL_REGRESSION_PASS=TRUE
+      - name: Do not dispatch scientific experiment on source proof
+        run: echo "NO_FULL_FIT_OR_DIAGNOSTIC_OR_ORIGINAL; NO_F3_OR_POLICY_PROMOTION"
