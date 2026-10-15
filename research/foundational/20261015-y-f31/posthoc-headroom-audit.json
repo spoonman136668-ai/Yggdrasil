@@ -1,0 +1,60 @@
+{
+  "schema": "yggdrasil.f31.posthoc-train-only-pilot-audit.v1",
+  "pilot": {
+    "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38727472093",
+    "source_sha": "20e43f20fa2a90b0db29a89a847d5abefcae13aa",
+    "artifact_id": 11968334299,
+    "artifact_zip_sha256": "66e599c3bf09e241b97c97edb0e987d382cc24aff7bcaaac9d00b78e4fe4b8f3",
+    "original_json_sha256": "8660dc263122a211816b95319caada74bdaf6c7245ea1d535198dd83b505caac"
+  },
+  "independent_archive_audit": "PASS_FROM_DOWNLOADED_TRAIN_ONLY_PILOT_ARTIFACT",
+  "rows": 1024,
+  "verdict": "PILOT_HEADROOM_NOT_QUALIFIED_NO_ORIGINAL",
+  "scores": {
+    "fixed": {
+      "correct": 724,
+      "accuracy": 0.70703125
+    },
+    "bayesian_proxy": {
+      "correct": 706,
+      "accuracy": 0.689453125
+    },
+    "conditional_empirical": {
+      "correct": 696,
+      "accuracy": 0.6796875
+    },
+    "static": {
+      "correct": 678,
+      "accuracy": 0.662109375
+    },
+    "privileged_oracle": {
+      "correct": 1024,
+      "accuracy": 1
+    }
+  },
+  "predeclared_criteria": {
+    "min_headroom": 0.04,
+    "max_fair_accuracy": 0.94,
+    "min_pooled_mode_first_read_MI_bits": 0.015,
+    "min_switch_rate": 0.05
+  },
+  "measured": {
+    "headroom_vs_best_fair": 0.29296875,
+    "pooled_mode_first_read_mi_bits": 1.2855777770131487e-7,
+    "action_switch_rate": 0.59375
+  },
+  "gate_failure": "Measured pooled MI 0.0000001286 bits is less than the frozen 0.015 bits; headroom and switching separately pass but all criteria required.",
+  "interpretation": "Opposite marker-polarity regimes were pooled; pooled MI may cancel regime-conditional information. This limitation cannot be repaired by changing the frozen criterion postresult. New source and new prereg needed to assess public-calibration-conditioned information. No Y-F31 primary original was run.",
+  "limitations": [
+    "The pilot uses author-generated synthetic source and cannot qualify F3 independent custody",
+    "External calibration bytes are nominal serialized numbers, not actual allocated Python heap use",
+    "Artifact has 90-day retention; durable external custody not established"
+  ],
+  "governance": {
+    "primary_scientific_original_consumed": false,
+    "reserved_test_access": false,
+    "F3_first_use": false,
+    "accepted_ref_mutation": false,
+    "no_pilot_rerun": true
+  }
+}
