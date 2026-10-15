@@ -1,0 +1,33 @@
+name: Y-F38 sensor information source preflight
+on:
+  push:
+    branches:
+      - research/y-f38-sensor-value-source-20261015-r1
+permissions:
+  contents: read
+jobs:
+  engineering:
+    runs-on: ubuntu-latest
+    timeout-minutes: 85
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install scientific environment
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify ancestry, pre-code preregistration and syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 447b61c23c002386317be59a5cb533c260a1d641 HEAD
+          git merge-base --is-ancestor f0457d59f193edf136d07d72bd2b40917bc9854d HEAD
+          python3 -m json.tool research/foundational/20261015-y-f38/prereg-candidate.json >/dev/null
+          python3 -m py_compile research/foundational/20261015-y-f38/source_pilot.py
+      - name: Physical acquisition and source-only tests
+        run: python3 -m unittest discover -s research/foundational/20261015-y-f38 -p test_preflight.py -v
+      - name: One full repository pytest regression
+        run: python3 -m pytest -q tests
+      - name: Record no scientific first-use
+        run: |
+          echo "ENGINEERING-ONLY source preflight; no source cohort or primary original"
