@@ -1,0 +1,69 @@
+name: Y-F49 source-locked paired causal-null experiment
+on:
+  push:
+    branches: [research/y-f49-pair-negative-identifiability-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 95
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install existing Yggdrasil test environment
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify prereg source witness and focused fail-closed tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 04f0c26087abbe760648817b98b0f2170efa260e HEAD
+          test "$(git hash-object research/foundational/20261015-y-f49/prereg-candidate.json)" = 8a68d0dc5ee35b8337eacdd21851bad1e15f8fbe
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f49 -p test_preflight.py -v
+      - name: One full existing repository regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pytest -q tests
+  fresh-train:
+    needs: source
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 95
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: One bounded real TRAIN-only experiment; original never eligible
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/f49"
+          mkdir -p "$root"
+          python3 -B research/foundational/20261015-y-f49/source_pilot.py > "$root/result.json"
+          python3 - "$root/result.json" <<'PY'
+          import json,sys
+          d=json.load(open(sys.argv[1]))
+          assert d["schema"]=="yggdrasil.f49.conditional-pair-causal-null.trainonly.v1"
+          assert d["questions"]==128 and d["diagnostic_seeds"]==[441100,441108]
+          assert d["fit_seeds"]==[441000,441008]
+          assert d["proposed_originals_not_consumed"]==[442000,442016]
+          assert d["primary_original_not_executed"] and not d["accepted_ref_mutation"]
+          assert d["paid_api_calls"]==0 and not d["independent_F3_custody"]
+          assert len(d["rows"])==128
+          assert len(d["condition_correct"])==2
+          assert d["verdict"] in ("TRAIN_ONLY_SUPPORTED_NOT_F3","TRAIN_ONLY_NEGATIVE")
+          print("F49_NEW_TRAIN_MECHANISM_COMPLETED_NO_ORIGINAL=PASS")
+          PY
+          (cd "$root" && sha256sum result.json > result.sha256)
+          printf '%s\n' "$GITHUB_SHA" > "$root/SOURCE_SHA"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: Y-F49-coupled-vs-null-train-NO-ORIGINAL
+          path: ${{ runner.temp }}/f49/
+          retention-days: 30
+          if-no-files-found: error
