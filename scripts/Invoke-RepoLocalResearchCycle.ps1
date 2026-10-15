@@ -345,6 +345,15 @@ $MindContext
 
     $Out1=Join-Path $ResultDir 'result-1.json'
     $Out2=Join-Path $ResultDir 'result-2.json'
+    # Genuine owner-side timing point: before the FIRST scientific worker call.
+    # This is SOURCE-ONLY evidence; not randomized selection or external CAS.
+    & (Join-Path $PSScriptRoot 'Write-ResearchPreexecutionObservation.ps1') `
+      -Lane 'Yggdrasil' -RepoPath $RepoPath -ParentSha $StartSha `
+      -PreregistrationCommit ([string]$Commits[0]) -QualifiedHead $QualifiedHead `
+      -Experiment ([string]$Q.experiment) -Stage 'PRE_SCIENTIFIC_RUN' `
+      -RunId ([long]$env:GITHUB_RUN_ID) -RunAttempt ([int]$env:GITHUB_RUN_ATTEMPT) `
+      -OutputPath (Join-Path $RunRoot 'preexecution-observation.json')
+    if(-not $?) {throw 'R31_OWNER_PREEXECUTION_OBSERVATION_FAILED'}
     Invoke-ScientificRun $Out1
     Invoke-ScientificRun $Out2
     $B1=[IO.File]::ReadAllBytes($Out1)
