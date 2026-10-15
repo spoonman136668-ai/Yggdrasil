@@ -1,0 +1,55 @@
+name: Y-F25 independent learned provenance risk
+on:
+  push:
+    branches: [research/y-f25-provenance-trained-error-risk-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false, fetch-depth: 0}
+      - run: python3 -m pip install -e '.[test]'
+      - name: Frozen Y-F24 preflight
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 2a7fb6491196a599906be6445c1893785a407227 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f24/execute.py)" = "$(git rev-parse 2a7fb6491196a599906be6445c1893785a407227:research/foundational/20261015-y-f24/execute.py)"
+          python3 -m py_compile research/foundational/20261015-y-f25/execute.py
+          python3 -m json.tool research/foundational/20261015-y-f25/prereg.json >/dev/null
+      - name: Run one new original
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261015-y-f25/execute.py > /tmp/y-f25-original.json
+          python3 -m json.tool /tmp/y-f25-original.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F25-original-provenance-error-risk
+          path: /tmp/y-f25-original.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Audit original matched-coverage rows
+        run: |
+          python3 - <<'PY'
+          import json,collections
+          d=json.load(open('/tmp/y-f25-original.json'))
+          assert d['stage']=='DEVELOPMENT_ONLY' and d['groups']==576 and d['questions']==1728
+          assert d['new_trainable_parameters']==8 and d['new_quality_training_examples']==864
+          assert sum(d['train_only_quality_error_evidence'].values())==864
+          assert d['quality_training_labels_train_only_reasoning_correctness']
+          assert d['provenance_disagreement_from_second_anchor_source']
+          assert d['resident_state_bytes']==576 and d['actual_accepted_group_count']==403
+          assert not d['source_independently_born'] and not d['sealed_first_use'] and not d['accepted_ref_mutation']
+          assert collections.Counter(r['sensor'] for r in d['rows'])==dict.fromkeys(d['new_test_shifts'],288)
+          for k in ('learned_provenance_risk','model_margin','count_only','anchor_strength','provenance_consistency'):
+            s=d['scores'][k]
+            assert s['coverage_groups']==403 and s['abstained_groups']==173
+            assert s['accepted_questions']==1209
+            assert s['correct_accepted']+s['false_positives']+s['false_negatives']==1209
+          assert d['registered_verdict'] in ('DEVELOPMENT_LEARNED_PROVENANCE_RISK_SELECTIVE_GAIN','DEVELOPMENT_PROVENANCE_RISK_NO_QUALIFIED_GAIN')
+          print(d['registered_verdict'],d['scores'])
+          PY
+      - run: python3 -m pytest -q tests
