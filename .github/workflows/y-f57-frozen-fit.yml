@@ -1,0 +1,52 @@
+name: Yggdrasil F57 frozen FIT-only science feasibility
+on:
+  push:
+    branches:
+      - research/y-f57-boundary-complete-online-20261015-r1
+permissions:
+  contents: read
+jobs:
+  frozen-fit:
+    if: "${{ github.event.head_commit.message == 'science(y-f57): once-only FIT boundary-complete online feasibility' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 115
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify frozen source and prereg identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 718a0927556bbc46679241c639c8710c43b9a36e HEAD
+          test "$(git hash-object research/foundational/20261015-y-f57/prereg-candidate.json)" = 2c0255ae79fc8a302f5c4d085b919c3dd7514ca5
+          test "$(git hash-object research/foundational/20261015-y-f57/source_feasibility.py)" = 93435388ad05cc4e011ccc7aa345366a3a662c4a
+          test "$(git hash-object research/foundational/20261015-y-f57/test_fit_preflight.py)" = f4bc8fd0ef23bec79b57f56c38a60675a174283d
+          test "$(git hash-object research/foundational/20261015-y-f57/audit_fit.py)" = 79fd4b4bf001dc627834120e0905c88feb01c215
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f57 -p test_fit_preflight.py -v
+      - name: One full repository regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+      - name: One new FIT-only source and independent threshold audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y57"
+          git rev-parse HEAD > "$RUNNER_TEMP/y57/SOURCE_SHA"
+          python3 -B research/foundational/20261015-y-f57/source_feasibility.py --fit-only > "$RUNNER_TEMP/y57/result.json"
+          python3 -B research/foundational/20261015-y-f57/audit_fit.py             "$RUNNER_TEMP/y57/result.json"             research/foundational/20261015-y-f57/prereg-candidate.json             > "$RUNNER_TEMP/y57/audit.txt"
+          cat "$RUNNER_TEMP/y57/audit.txt"
+          (cd "$RUNNER_TEMP/y57" && sha256sum result.json audit.txt > manifest.sha256)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Yggdrasil-F57-frozen-FIT-source-evidence
+          path: ${{ runner.temp }}/y57/
+          retention-days: 90
+          if-no-files-found: error
+      - name: Exclude original research authority
+        run: echo "FIT_ONLY=TRUE DIAG_AND_ORIGINAL_UNCONSUMED=TRUE F3=UNQUALIFIED NATIVE_TOTAL_576B=UNVERIFIED"
