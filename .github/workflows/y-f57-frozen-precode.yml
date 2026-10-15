@@ -1,0 +1,33 @@
+name: Yggdrasil F57 frozen first-use precode qualification
+on:
+  push:
+    branches: [research/y-f57-incremental-component-state-precode-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  source-identity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Frozen precode, future folds and blocked promotion
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git hash-object research/foundational/20261015-y-f57/prereg.json)" = 35cd435b2c2cdbe9c9c760a5650b8ca807000b46
+          test ! -f research/foundational/20261015-y-f57/source_pilot.py
+          python3 -B -m json.tool research/foundational/20261015-y-f57/prereg.json >/dev/null
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f57 -p test_precode.py -v
+          echo F57_FROZEN_PRECODE_NO_ORIGINAL=PASS
+      - name: One complete existing project regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+          echo F57_ONE_COMPLETE_PROJECT_REGRESSION=PASS
+      - name: Preserve science first use
+        run: echo "FIT_NOT_EXECUTED=TRUE DIAGNOSTIC_NOT_EXECUTED=TRUE PRIMARY_ORIGINAL_NOT_EXECUTED=TRUE"
