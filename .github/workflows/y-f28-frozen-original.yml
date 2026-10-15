@@ -1,0 +1,87 @@
+name: Y-F28 one frozen development original
+on:
+  push:
+    branches: [research/y-f28-conditional-information-preflight-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  original:
+    if: ${{ github.event.head_commit.message == 'science(y-f28): one frozen development original' && github.run_attempt == 1 }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install scientific dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify immutable source, preregistration and once-only boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor fa30fac2549146e7fb45dbbb9bf08284f6660461 HEAD
+          git merge-base --is-ancestor 8ed3258b0a82ba9659ffbad5aa34fa7de42f84a5 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f28/original.py)" = fa68769d2049af8f365be8bcb385f97b211d9064
+          test "$(git hash-object research/foundational/20261015-y-f28/prereg-frozen.json)" = "$(git rev-parse 8ed3258b0a82ba9659ffbad5aa34fa7de42f84a5:research/foundational/20261015-y-f28/prereg-frozen.json)"
+          test "$(git hash-object research/foundational/20261015-y-f27/execute.py)" = "$(git rev-parse 352ec6cb606020f97e6369dcc54d761c1d8dd77e:research/foundational/20261015-y-f27/execute.py)"
+          python3 -m json.tool research/foundational/20261015-y-f28/prereg-frozen.json > /dev/null
+          python3 -m py_compile research/foundational/20261015-y-f28/original.py
+          python3 -m pytest -q research/foundational/20261015-y-f28/test_sensor_custody.py
+      - name: Exactly one Y-F28 prospective development cohort
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python3 -B research/foundational/20261015-y-f28/original.py > /tmp/y-f28-original.json
+          python3 -m json.tool /tmp/y-f28-original.json > /dev/null
+          sha256sum /tmp/y-f28-original.json > /tmp/y-f28-original.sha256
+          git rev-parse HEAD > /tmp/y-f28-commit.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F28-frozen-development-original
+          path: |
+            /tmp/y-f28-original.json
+            /tmp/y-f28-original.sha256
+            /tmp/y-f28-commit.txt
+          if-no-files-found: error
+          retention-days: 90
+      - name: Independently audit Y-F28 row and acquisition receipts
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import collections,json,math
+          x=json.load(open('/tmp/y-f28-original.json'))
+          p=json.load(open('research/foundational/20261015-y-f28/prereg-frozen.json'))
+          assert x['stage']=='DEVELOPMENT_ONLY' and x['questions']==p['test']['expected_typed_queries']==384
+          assert x['training_cases']==p['train']['cases']==9504
+          assert x['weight_count']==15 and len(x['trained_weights'])==3 and all(len(r)==5 for r in x['trained_weights'])
+          assert x['native_state_bytes']==576 and x['actual_reads_per_role']==2 and x['read_cost_per_query']==6
+          assert x['scores']['descriptor_oracle']['correct']==384
+          assert not x['independent_source_birth'] and not x['sealed_first_use'] and not x['accepted_ref_mutation']
+          assert x['truth_unavailable_to_policy'] and x['train_only_all_channel_objective']
+          assert set(x['mechanisms'])==set(p['test']['two_sensor_mechanisms'])
+          assert set(x['conditions'])==set(p['test']['conditions'])
+          assert len(x['rows'])==384
+          assert collections.Counter((r['seed'],r['family'],r['mechanism'],r['condition']) for r in x['rows']).most_common(1)[0][1]==1
+          assert all(142300<=r['seed']<142312 and r['family'] in (104,105,106,107) for r in x['rows'])
+          for r in x['rows']:
+            for arm,receipt in r['receipts'].items():
+              assert receipt['purchased_per_role']==[2,2,2]
+              assert receipt['purchased_target_channels']==6
+              assert receipt['native_bytes_per_role']==576 and receipt['calibration_bytes_per_role']==64
+              assert len(receipt['traces'])==3
+              for trace in receipt['traces']:
+                assert len(trace)==2 and trace[0][0]!=trace[1][0]
+                assert all(0<=s<4 for s,v in trace)
+          for arm,s in x['scores'].items():
+            assert s['correct']==sum(r['answers'][arm]==r['truth'] for r in x['rows'])
+            assert s['fp']==sum(r['answers'][arm] for r in x['rows'] if not r['truth'])
+            assert s['fn']==sum(not r['answers'][arm] for r in x['rows'] if r['truth'])
+            assert math.isclose(s['accuracy'],s['correct']/384,abs_tol=1e-12)
+          assert 0<=x['action_switch_rate']<=1
+          assert x['registered_verdict'] in ('DEVELOPMENT_CONDITIONAL_INFORMATION_LEARNED_GAIN','DEVELOPMENT_CONDITIONAL_INFORMATION_NO_QUALIFIED_GAIN')
+          print('Y_F28_REGISTERED_VERDICT',x['registered_verdict'],{k:v['correct'] for k,v in x['scores'].items()})
+          PY
+      - name: End state
+        run: echo 'Y-F28 development original only; no F3 custody, acceptance, promotion or controller mutation'
