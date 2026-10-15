@@ -1,0 +1,83 @@
+{
+  "schema": "yggdrasil.f37.prereg-candidate.v1",
+  "stage": "FRESH_TRAIN_ONLY_PREIMPLEMENTATION",
+  "parent_negative_run": 38748526096,
+  "parent_branch_head": "501ae463c83edfc9c1aa817abb958d7ac3911af6",
+  "design_issue": "https://github.com/spoonman136668-ai/Yggdrasil/issues/223",
+  "hypothesis": "Training a latent source reliability posterior to minimize future typed-decision loss, rather than only latent mode predictive log-loss, improves task accuracy over equally-trained Gaussian Bayesian on unknown sensor shifts.",
+  "mechanism": "Train a bounded latent reliability posterior from public calibration and train-only labeled example channels, then use its uncertainty to select second paid observation and decode downstream role bits. Test first-reading-masked posterior. Hold evaluation modes and truths private. Fixed two paid target acquisitions.",
+  "train_only": {
+    "seeds": [
+      271800,
+      271840
+    ],
+    "families": [
+      250,
+      251,
+      252
+    ],
+    "conditions": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "mechanisms": [
+      0,
+      1
+    ],
+    "anchors": 16,
+    "validation_seeds": [
+      272800,
+      272816
+    ],
+    "validation_families": [
+      254,
+      255,
+      256,
+      257
+    ],
+    "expected_questions": 512
+  },
+  "reserved_original": {
+    "seeds": [
+      273800,
+      273816
+    ],
+    "families": [
+      260,
+      261,
+      262,
+      263
+    ],
+    "forbidden": true
+  },
+  "matched_controls": [
+    "learned_decision_posterior",
+    "fitted_Gaussian_Bayesian",
+    "public_polarity_Bayesian",
+    "conditional_empirical_Brier",
+    "masked_first_ablation",
+    "calibrated_static",
+    "privileged_oracle"
+  ],
+  "pass": {
+    "accuracy_gain_over_best_fair": 0.02,
+    "per_mechanism_nondegradation": true,
+    "positive_ablation": true,
+    "causal_first_read_switch_positive": true,
+    "heldout_posterior_logloss_reported": true
+  },
+  "resources": {
+    "native_model_576_byte_cap": true,
+    "training_memory_external": true,
+    "public_calibration_external": true,
+    "physical_reads_per_role": 2
+  },
+  "authority": {
+    "no_primary_original": true,
+    "independent_F3_custody": false,
+    "no_controller_FORGE_KTRADE_Cloudflare_modifications": true,
+    "no_paid_API": true
+  }
+}
