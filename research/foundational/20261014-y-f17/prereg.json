@@ -1,0 +1,55 @@
+{
+  "id": "Y-F17-HISTORIC-TRAIN-POLICY-SCALAR-RUNTIME",
+  "stage": "DEVELOPMENT_ONLY",
+  "parent_F16_preoriginal_block": "cef1f621a9b96b7ca51140d346a12da01f80de35",
+  "identity_status": "F16 never reached its development cohort: reconstructed head SHA b28a... differs from historical F15 4150... and must not be called same frozen checkpoint.",
+  "hypothesis": "A freshly reconstructed risk head trained ONLY on immutable historical F14 training data can be scalarized without changing its decision or stopping step, and can beat both expensive Torch head and cheap first-hop control in measured online cost.",
+  "new_seeds": [
+    70800,
+    70806
+  ],
+  "families": [
+    80,
+    81,
+    82,
+    83
+  ],
+  "grammar_derivation": "disclosed previous 76-79 motifs with a newly attached post-target distractor",
+  "questions": 576,
+  "balanced_labels": {
+    "positive": 192,
+    "negative": 384
+  },
+  "model": {
+    "native_bytes": 576,
+    "training": "original F14 historical training only",
+    "frozen_before_new_validation": true,
+    "not_exact_prior_F15_checkpoint": true,
+    "archive_full_new_head_weights": true,
+    "threshold": 0.7
+  },
+  "controls": [
+    "identical reconstructed policy through Torch NN; exact per-row prediction AND stopping step equality",
+    "full frozen typed-core inference",
+    "cheap coded one-hop necessity",
+    "typed exact label oracle"
+  ],
+  "timing": {
+    "repeats": 3,
+    "counterbalanced": true,
+    "includes_policy_features": true,
+    "cached_weights_at_model_load": true,
+    "excludes_fixture_generation": true
+  },
+  "acceptance": {
+    "min_accuracy": 0.95,
+    "max_worst_family_error": 0.05,
+    "min_recurrence_saved": 0.15,
+    "min_median_wall_saved_full": 0.05,
+    "min_median_saved_prior_nn": 0.05,
+    "min_advantage_over_static": 0.05
+  },
+  "no_sealed_F3": true,
+  "accepted_refs_unchanged": true,
+  "no_controller_or_forge_or_ktrade": true
+}
