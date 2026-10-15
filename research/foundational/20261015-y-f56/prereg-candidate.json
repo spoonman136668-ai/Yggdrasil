@@ -1,0 +1,100 @@
+{
+  "schema": "yggdrasil.f56.arrival-aware-graph-memory.prereg.v1",
+  "stage": "PRECODE_FROZEN",
+  "tracking_issue": 269,
+  "parent_F55_fit_witness_run": 38820559974,
+  "parent_F55_online_fit_validation_run": 38821087484,
+  "reason_to_shift": "FIT offline full-graph public witness 64/64, but new FIT online learner 1/32 and strongest fixed online 3/32.",
+  "hypothesis": "Arrival-aware, public-only graph component consolidation can form a compact reusable memory online and generalize to shuffled and segmented unseen graph distributions, outperforming strong equal-byte fixed policies.",
+  "fit": {
+    "seeds": [
+      631000,
+      631016
+    ],
+    "families": [
+      1160,
+      1161,
+      1162,
+      1163
+    ],
+    "public_arrival_regimes": [
+      "clustered",
+      "bounded_interleave"
+    ],
+    "expected_streams": 64
+  },
+  "diagnostic": {
+    "seeds": [
+      631100,
+      631116
+    ],
+    "families": [
+      1164,
+      1165,
+      1166,
+      1167
+    ],
+    "public_arrival_regimes": [
+      "shifted_partial_clusters",
+      "novel_cyclic_motifs"
+    ],
+    "expected_streams": 64
+  },
+  "protected_original_NOT_RESERVED": {
+    "seeds": [
+      632000,
+      632016
+    ],
+    "families": [
+      1168,
+      1169,
+      1170,
+      1171
+    ]
+  },
+  "stream": {
+    "events": 72,
+    "records_max": 12,
+    "record_bytes": 12,
+    "serialized_payload_budget_bytes": 144,
+    "future_query_hops": [
+      4,
+      6,
+      8
+    ],
+    "future_question_hidden_until_memory_frozen": true,
+    "public_tag_relevant_and_distractor_rates_equal": true
+  },
+  "controls": [
+    "learned_streaming_component_merge",
+    "constructive_fixed_online_component_merge",
+    "F55_frozen_global_ranker",
+    "fixed_public_triple_chunks",
+    "fixed_public_pair_chunks",
+    "public_DAG_compression",
+    "public_connected_component_chunks",
+    "FIFO_and_hash",
+    "private_future_question_oracle_unfair"
+  ],
+  "extra_work_reference": "Public-only completed-graph query-blind witness with extra offline work, never treated as equal-cost online control or information upper bound.",
+  "feasibility_first": {
+    "FIT_only_fixed_online_constructive_min_accuracy": 0.25,
+    "FIT_only_offline_public_min_accuracy": 0.85,
+    "heldout_unused_before_algorithm_freeze": true
+  },
+  "thresholds": {
+    "gain_vs_strongest_equal_byte_online_fair_min": 0.05,
+    "per_family_nondegradation": true,
+    "positive_compression_retrieval_ablation": true,
+    "independent_lossless_byte_audit": true
+  },
+  "authority": {
+    "FIT_only_labels_for_train": true,
+    "diagnostic_future_query_not_action_feature": true,
+    "source_independent_F3": false,
+    "primary_original_first_use": false,
+    "physically_measured_native_total_576B": false,
+    "accepted_ref_mutation": false,
+    "paid_API_or_Codex": false
+  }
+}
