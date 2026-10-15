@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.f28.frozen-development-prereg.v1",
+  "scientific_class": "PROSPECTIVE_DEVELOPMENT_ONLY",
+  "experiment_id": "Y-F28",
+  "prereg_candidate_sha": "9c9732f2d4a96f2d9c5990d6e6470dd8bf96fa0f",
+  "exact_implementation_source_commit": "fa30fac2549146e7fb45dbbb9bf08284f6660461",
+  "implementation_tree_sha": "a8d02bdb33f0416b7018b17f5f436f64d16458b1",
+  "generator_and_learner_path": "research/foundational/20261015-y-f28/original.py",
+  "generator_and_learner_blob_sha": "fa68769d2049af8f365be8bcb385f97b211d9064",
+  "frozen_predecessor_source_sha": "352ec6cb606020f97e6369dcc54d761c1d8dd77e",
+  "train": {
+    "seed_start": 141000,
+    "seed_end_exclusive": 141099,
+    "structural_families": [
+      100,
+      101,
+      102,
+      103
+    ],
+    "cases": 9504,
+    "epochs": 100,
+    "weights": 15
+  },
+  "test": {
+    "seed_start": 142300,
+    "seed_end_exclusive": 142312,
+    "structural_families": [
+      104,
+      105,
+      106,
+      107
+    ],
+    "two_sensor_mechanisms": [
+      "mode-hint",
+      "directional-reliability"
+    ],
+    "conditions": [
+      "ordinary",
+      "missingness",
+      "anticorrelation",
+      "corrupted-anchor"
+    ],
+    "role_bits_per_query": 3,
+    "expected_typed_queries": 384
+  },
+  "candidate": "Train-only softmax over future-bit cross-entropy learns which second source to acquire conditional on the actual first purchased channel; training relaxation may inspect all training sensor values. Shared fixed typed decoder. First source preprogrammed calibrated, not learned.",
+  "controls": [
+    "adaptive source-mechanistic Bayes information-value",
+    "conditional greedy",
+    "static calibrated",
+    "fixed two sources",
+    "masked-first-reading ablation",
+    "privileged descriptor truth oracle (unfair upper)"
+  ],
+  "resources": {
+    "native_state_max_bytes": 576,
+    "target_channel_reads_per_role_bit": 2,
+    "channels_available": 4,
+    "calibration_bytes_per_role": 64,
+    "external_costs_separate": true,
+    "no_paid_api": true
+  },
+  "outcome_rule": {
+    "expected_oracle_correct": 384,
+    "minimum_absolute_gain_over_strongest_equal_budget_control": 0.02,
+    "per_mechanism_and_condition_non_degrading": true,
+    "positive_causal_action_switch_required": true,
+    "positive": "DEVELOPMENT_CONDITIONAL_INFORMATION_LEARNED_GAIN",
+    "negative": "DEVELOPMENT_CONDITIONAL_INFORMATION_NO_QUALIFIED_GAIN",
+    "invalid": "MISSING_OR_DRIFTED_EVIDENCE"
+  },
+  "scientific_limits": {
+    "synthetic_source_generated": true,
+    "source_generation_and_evaluator_same_repository": true,
+    "independent_source_custody": false,
+    "F3_sealed_first_use": false,
+    "official_acceptance": false,
+    "known_role_composition_and_fixed_decoder": true
+  },
+  "immutable_original": {
+    "original_limit": 1,
+    "workflow_git_sha_pinned_source": true,
+    "only_branch_scoped_one_shot_trigger": true,
+    "artifacts_preserve_rows_and_metrics": true,
+    "accepted_ref_mutation": false
+  }
+}
