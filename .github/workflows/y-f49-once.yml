@@ -1,0 +1,58 @@
+name: Y-F49 fixed-capacity public anchor identifiability TRAIN-only
+on:
+  push:
+    branches: [research/y-f49-pair-information-identifiability-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install existing science test tools
+        run: python3 -m pip install -e '.[test]'
+      - name: Precode ancestry, negative tests, one full pytest regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor c376d62cfd3c452b62709b6640776e367d1e8cd9 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f49/prereg.json)" = de55b6f06106585b55563c17212b4aa8a5876788
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f49 -p test_preflight.py -v
+          python3 -m pytest -q tests
+  diagnostic:
+    needs: source
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: One disjoint public anchor diagnosis, never original
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/yf49";mkdir -p "$root"
+          python3 -B research/foundational/20261015-y-f49/source_pilot.py > "$root/result.json"
+          python3 - "$root/result.json" <<'PY'
+          import json,sys
+          x=json.load(open(sys.argv[1]))
+          assert x["schema"]=="yggdrasil.f49.public-paired-identifiability.trainonly.v1"
+          assert x["questions"]==64 and x["diagnostic_seeds"]==[471100,471104]
+          assert x["primary_original_not_executed"] and not x["accepted_ref_mutation"]
+          assert not x["independent_F3_custody"] and x["paid_api_calls"]==0
+          PY
+          (cd "$root";sha256sum result.json > result.sha256)
+          printf '%s\n' "$GITHUB_SHA" > "$root/SOURCE_SHA"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: Y-F49-public-paired-anchor-TRAIN-NO-ORIGINAL
+          path: ${{ runner.temp }}/yf49/
+          retention-days: 30
+          if-no-files-found: error
