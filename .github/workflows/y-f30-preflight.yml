@@ -1,0 +1,33 @@
+name: Y-F30 posterior sensing pre-original qualification
+on:
+  push:
+    branches:
+      - research/y-f30-learned-posterior-sensing-20261015-r1
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify original predecessor and pre-code registration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 21ebe0696474638048123f15f7799cd76d11be3c HEAD
+          git merge-base --is-ancestor c17bb68df1c902d579d0ce8c789cb464a735551a HEAD
+          test "$(git hash-object research/foundational/20261015-y-f29/execute.py)" = "$(git rev-parse 21ebe0696474638048123f15f7799cd76d11be3c:research/foundational/20261015-y-f29/execute.py)"
+          python3 -m json.tool research/foundational/20261015-y-f30/prereg-candidate.json > /dev/null
+          python3 -m py_compile research/foundational/20261015-y-f30/execute.py
+      - name: Train-only focused source and purchase tests
+        run: python3 -m unittest discover -s research/foundational/20261015-y-f30 -p test_preflight.py -v
+      - name: One complete full pytest regression
+        run: python3 -m pytest -q tests
+      - name: Record engineering-only scope
+        run: echo "Y-F30 engineering-only qualified. No new original executed by this workflow."
