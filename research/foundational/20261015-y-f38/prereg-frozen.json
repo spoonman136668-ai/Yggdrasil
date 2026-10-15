@@ -1,0 +1,75 @@
+{
+  "schema": "yggdrasil.f38.frozen-sensor-value-source.v1",
+  "stage": "ONCE_PROSPECTIVE_TRAIN_ONLY_DIAGNOSTIC_NOT_PRIMARY_ORIGINAL",
+  "precode_prereg_commit": "f0457d59f193edf136d07d72bd2b40917bc9854d",
+  "qualified_source_commit": "5f2cee677aa626bb8afec74d60e8274e0b736b9f",
+  "qualified_tree": "ee03f4777bfa0d3f88790704fa57906355eaf329",
+  "source_blob_sha": "0a667c1cd00f720f67047c8b58a8833d55869c81",
+  "source_path": "research/foundational/20261015-y-f38/source_pilot.py",
+  "engineering_run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38768284828",
+  "cohort": {
+    "seeds": [
+      281800,
+      281816
+    ],
+    "training_seeds": [
+      281800,
+      281808
+    ],
+    "validation_seeds": [
+      281808,
+      281816
+    ],
+    "families": [
+      270,
+      271,
+      272,
+      273
+    ],
+    "mechanisms": [
+      "mode_dependent_reliability",
+      "anticorrelated_auxiliary"
+    ],
+    "conditions": [
+      "informative_first",
+      "uninformative_first"
+    ],
+    "expected_questions": 256,
+    "role_target_reads": 2,
+    "public_reference_anchors": 24
+  },
+  "reserved_primary_original": {
+    "seeds": [
+      282800,
+      282816
+    ],
+    "families": [
+      274,
+      275,
+      276,
+      277
+    ],
+    "forbidden": true
+  },
+  "controls": [
+    "empirical_Brier",
+    "public_polarity",
+    "static_reference",
+    "evaluator_hindsight_unfair",
+    "privileged_truth_oracle"
+  ],
+  "preregistered_gate": {
+    "informative_heldout_mode_logloss_gain_min_nats": 0.04,
+    "informative_mode_information_min_bits": 0.1,
+    "hindsight_upper_accuracy_headroom_min": 0.04,
+    "informative_causal_reading_switch_min": 0.1
+  },
+  "disclosures": {
+    "hindsight_peeks_unbought_channels_and_is_unattainable_not_fair": true,
+    "source_generator_and_evaluator_same_repo_not_independent_F3": true,
+    "no_learned_policy_first_use": true,
+    "no_primary_original": true,
+    "no_accepted_refs": true,
+    "no_paid_API": true
+  }
+}
