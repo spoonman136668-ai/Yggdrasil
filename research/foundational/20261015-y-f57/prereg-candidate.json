@@ -1,0 +1,111 @@
+{
+  "schema": "yggdrasil.f57.boundary-compatible-arrival-aware-memory.prereg.v1",
+  "stage": "PRECODE_FROZEN_NO_SOURCE_CONSUMED",
+  "tracking_issue": 271,
+  "parent_F56_qualified_FIT_run": 38824305540,
+  "parent_F56_source_sha": "6c8f49c47f4d93fbb2283f7e994e2eca4bc164cb",
+  "prior_online_FIT_correct": 36,
+  "prior_offline_FIT_correct": 43,
+  "prior_length6_cases": 21,
+  "hypothesis": "A public graph witness with exact 4+2+2-boundary encoding can support all 4/6/8 future-query prefixes within 144 bytes, and a trainable causal online component controller can generalize across novel arrival schedules rather than relying on offline complete-graph inspection.",
+  "fit": {
+    "seeds": [
+      651000,
+      651016
+    ],
+    "families": [
+      1200,
+      1201,
+      1202,
+      1203
+    ],
+    "expected_cases": 64,
+    "arrival_regimes": [
+      "clustered",
+      "bounded_interleave"
+    ]
+  },
+  "diagnostic": {
+    "seeds": [
+      651100,
+      651116
+    ],
+    "families": [
+      1204,
+      1205,
+      1206,
+      1207
+    ],
+    "expected_cases": 64,
+    "arrival_regimes": [
+      "partial_clusters",
+      "cross_role_cycle_shift"
+    ]
+  },
+  "protected_original_NOT_RESERVED": {
+    "seeds": [
+      652000,
+      652016
+    ],
+    "families": [
+      1208,
+      1209,
+      1210,
+      1211
+    ]
+  },
+  "stream": {
+    "public_events": 72,
+    "public_core_and_distractor_tag_rates_equal": true,
+    "max_records": 12,
+    "lossless_record_bytes": 12,
+    "persistent_payload_bytes_max": 144,
+    "query_hops": [
+      4,
+      6,
+      8
+    ],
+    "query_hidden_during_all_ingestion": true
+  },
+  "public_offline_reference": {
+    "source_reads_complete_public_graph": true,
+    "four_paths_each_split": [
+      4,
+      2,
+      2
+    ],
+    "records_total": 12,
+    "serialized_bytes_total": 144,
+    "not_same_work_fair_control": true
+  },
+  "controls": [
+    "learned_causal_component_consolidation",
+    "fixed_causal_component_merging",
+    "frozen_F56_component_merging",
+    "fixed_public_triple_chunking",
+    "public_DAG_and_component",
+    "FIFO_hash",
+    "offline_public_reference_noncompetitive",
+    "private_future_question_oracle_unfair"
+  ],
+  "FIT_source_thresholds": {
+    "public_offline_accuracy_min": 0.85,
+    "causal_fixed_online_accuracy_min": 0.25,
+    "no_DIAG_first_use_before_freeze": true
+  },
+  "scientific_thresholds": {
+    "gain_vs_strongest_equal_byte_online_min": 0.05,
+    "positive_chunk_retrieval_ablation": true,
+    "per_family_nondegradation": true,
+    "independent_public_graph_and_byte_receipt_audit": true
+  },
+  "authority": {
+    "FIT_only_training_labels": true,
+    "diagnostic_question_never_policy_feature": true,
+    "independent_F3": false,
+    "primary_original_first_use": false,
+    "native_total_576B_unverified": true,
+    "accepted_ref_mutation": false,
+    "Codex_or_paid_API": false
+  }
+}
