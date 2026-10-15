@@ -147,8 +147,7 @@ def fit_report():
     for seed in FIT:
         for family in FIT_FAMILIES:
             public,q,regime=source(seed,family)
-            core_pos=sum(e[3] for e in public if e[:3] in {
-              x for x in []}) if False else sum(e[3] for e in public)
+            core_pos=sum(e[3] for e in public)
             assert core_pos==36
             online=online_fixed(public)
             offline=offline_public_witness(public)
