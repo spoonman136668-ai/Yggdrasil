@@ -70,7 +70,7 @@ def train():
   for seed in TRAIN_SEEDS:
    corr,missing=known_anchor_stats(seed+2000,key)
    for code in f20.TRAIN:
-    ctx=transform(f20.cues(code,seed*17+13000,333),key)
+    ctx=[shift(bit,key) for bit in f20.cues(code,seed*17+13000,333)]
     for bit in range(3):
      feats.append((corr[bit],missing[bit]))
      raw.append(ctx[bit])
