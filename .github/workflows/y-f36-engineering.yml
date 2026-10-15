@@ -1,0 +1,32 @@
+name: Y-F36 latent reliability engineering (NO first use)
+on:
+  push:
+    branches:
+      - research/y-f36-latent-reliability-posterior-20261015-r1
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install existing scientific dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: Verify source and preregistration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7ced5bac06fa16f4ddba40db2a3896cb6afb7ae2 HEAD
+          git merge-base --is-ancestor 200d07bf0036425d2c11aee095129b4cec73170c HEAD
+          python3 -m json.tool research/foundational/20261015-y-f36/prereg-candidate.json >/dev/null
+          python3 -m py_compile research/foundational/20261015-y-f36/train_only.py
+      - name: Focused public posterior and purchase contracts
+        run: python3 -m unittest discover -s research/foundational/20261015-y-f36 -p test_preflight.py -v
+      - name: One full pytest regression
+        run: python3 -m pytest -q tests
+      - name: Engineering only
+        run: echo "Y-F36 preflight qualified; original and train-only scientific evaluation untouched"
