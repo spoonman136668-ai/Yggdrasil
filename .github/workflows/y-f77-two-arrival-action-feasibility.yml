@@ -1,0 +1,45 @@
+name: Yggdrasil F77 two-arrival legal action feasibility
+on:
+  push:
+    branches:
+      - research/y-f77-two-regime-early-action-feasibility-20261016-r1
+permissions:
+  contents: read
+jobs:
+  frozen-synthetic-source-action-diagnostic:
+    if: "${{ github.event.head_commit.message == 'ci(y-f77): qualify two-arrival legal counterfactuals with causal audit' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pin independent prereg source actions and study script
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor e6861953ce8947e394cf53331b1da9eb2d4439b0 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f77/prereg.json)" = ba33bb2622b10ccabb6ff81bd08f9b3651377db6
+          test "$(git hash-object research/foundational/20261016-y-f77/feasibility.py)" = aff32f9ac3e3fa975b9f268f01b496c4184f367d
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+          test "$(git hash-object research/foundational/20261016-y-f71/early_scheduler.py)" = edddfedb04af27dac7332ca85cc742aef5772a4b
+          test "$(git hash-object research/foundational/20261015-y-f62/audit_public.py)" = 383fff0bdd8c8b48fde9538d4e4d768db1c1896f
+      - name: Execute registered-prereg synthetic offline oracle and source causality
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f77-source-action/"
+          python3 -B research/foundational/20261016-y-f77/feasibility.py --synthetic-only > "$RUNNER_TEMP/y-f77-source-action/diagnostic.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/y-f77-source-action/diagnostic.json" >/dev/null
+          python3 -B -c 'import os,json;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"y-f77-source-action/diagnostic.json")));print("F77_TWO_REGIME_FEASIBILITY",d["by_arrival_regime"]);print("F77_LABELS",d["candidate_labels"]);print("F77_FEATURE_ALIASES",d["beneficial_examples_with_a_harmful_identical_signature"]);assert d["cases"]==32 and d["unfair_question_aware_oracle_is_NONCOMPETITIVE"] and d["every_claimed_one_step_rescue_independently_audited"] and not d["FIT_TRAIN_used"] and not d["FIT_VALIDATE_used"]'
+          sha256sum "$RUNNER_TEMP/y-f77-source-action/diagnostic.json" > "$RUNNER_TEMP/y-f77-source-action/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f77-source-action/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f77-two-arrival-source-action-feasibility
+          path: ${{ runner.temp }}/y-f77-source-action/
+          retention-days: 90
+          if-no-files-found: warn
