@@ -24,4 +24,5 @@ jobs:
           python3 -B -c 'import json; d=json.load(open("/tmp/y-f63-trainonly-source.json")); print("F63_TRAINONLY_FEASIBILITY",d["fixed_correct"],d["witness_correct"],"NOVELTY",d["source_novelty_qualified"])'
           python3 -B research/foundational/20261016-y-f63/replacement_source.py --synthetic-only
           python3 -B -c 'import sys; sys.path.insert(0,"research/foundational/20261016-y-f63"); import replacement_source as s, audit_replacement_public as a; [a.verify(*s.source(seed,fam)[:2]) for seed,fam in ((-201,-2),(-202,-1))]; print("F63A_INDEPENDENT_GRAPH_AUDIT_PASS")'
+          python3 -B research/foundational/20261016-y-f63/control_compatibility_synthetic.py
           echo 'FIT=UNCONSUMED DIAG=UNCONSUMED ORIGINAL=UNCONSUMED'
