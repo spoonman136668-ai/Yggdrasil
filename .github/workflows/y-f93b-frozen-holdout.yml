@@ -1,0 +1,48 @@
+name: Yggdrasil F93B frozen learned grammar first-use holdout
+on:
+  push:
+    branches:
+      - research/y-f93b-learned-role-grammar-20261016-r1
+    paths:
+      - 'research/foundational/20261016-y-f93b/holdout.py'
+      - '.github/workflows/y-f93b-frozen-holdout.yml'
+permissions:
+  contents: read
+jobs:
+  holdout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Independently verify frozen F93B model and source identities
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 6e1499df051003dc0f446419fcbc5f7f4614945e HEAD
+          test "$(git hash-object research/foundational/20261016-y-f93b/prereg.json)" = a9e0c04027e6488220c068eb59e580a1295c736b
+          test "$(git hash-object research/foundational/20261016-y-f93b/role_grammar.py)" = b70af0a91ecc16d8a173b7245b007b646fed8ad6
+          test "$(git hash-object research/foundational/20261016-y-f93b/frozen-grammar.json)" = 792e2b6b8329a3b786c5c0b8bb5c53659bafd11a
+          test "$(git hash-object research/foundational/20261016-y-f92/dense_path_credit.py)" = 7fdaf5d24866c347275c2ffa3aec7dfeaed6ac5b
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+      - name: Frozen source-only F93B method tests
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f93b -p test_role_grammar.py
+      - name: Read-only frozen validation with no model selection
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f93b/holdout.py --validation > "$RUNNER_TEMP/f93b-validation.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f93b-validation.json"))); assert r["stage"]=="F93B_FROZEN_VALIDATION" and r["cases"]==16; assert r["max_persistent_bytes"]<=144 and r["frozen_grammar_bytes"]<=18 and r["source_public_prefixes_all_audited"] and r["no_holdout_refit"] and r["no_protected_source"] and not r["scientific_accepted"]; print(json.dumps({k:r[k] for k in ("classification","cases","scores","six_step_rescues","F60_correct_regressions","native_interventions","native_candidates_considered","cap_events")},sort_keys=True))'
+      - name: One disjoint guard first-use, without fitting or controller changes
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f93b/holdout.py --guard > "$RUNNER_TEMP/f93b-guard.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f93b-guard.json"))); assert r["stage"]=="F93B_NEW_DISJOINT_GUARD" and r["cases"]==32 and r["six_step_cases"]==8; assert r["max_persistent_bytes"]<=144 and r["frozen_grammar_bytes"]<=18 and r["latch_bits"]==1 and r["source_public_prefixes_all_audited"] and r["no_holdout_refit"] and r["no_protected_source"] and not r["scientific_accepted"] and not r["optimizer_promotion"]; print(json.dumps({k:r[k] for k in ("classification","cases","scores","six_step_rescues","F60_correct_regressions","native_interventions","native_candidates_considered","cap_events","by_arrival_and_kind")},sort_keys=True))'
+      - name: Confirm no source mutations
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
