@@ -1,0 +1,82 @@
+name: Y-F57 read-only audit archived learned FIT without replay
+on:
+  push:
+    branches:
+      - audit/y-f57-learned-existing-fit-20261015-r1
+permissions:
+  contents: read
+  actions: read
+jobs:
+  archive-only:
+    if: "${{ github.event.head_commit.message == 'audit(y-f57): independently verify already consumed FIT evidence without replay' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Prove prereg, model, original run and repaired auditor identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor a84fb94c6451ba60c12ebf6759e2be3f20aec53c HEAD
+          git merge-base --is-ancestor 9018c9722ec67d83a4fdc034f50d5dfcde57fde2 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f57/source_feasibility.py)" = 93435388ad05cc4e011ccc7aa345366a3a662c4a
+          test "$(git hash-object research/foundational/20261015-y-f57/learned-policy-prereg.json)" = 8d10c03be07eb00eb7625c80d8ec11e8e23a8284
+          test "$(git hash-object research/foundational/20261015-y-f57/learned_streaming_policy.py)" = a4ca0a891ec3a194885931e5951e241d959ef0b5
+          test "$(git hash-object research/foundational/20261015-y-f57/audit_learned.py)" = ec3d45f56b26826328495523f7a03995110572ac
+          python3 -B -m py_compile research/foundational/20261015-y-f57/audit_learned.py
+      - name: Verify one completed source run and immutable artifact SHA256
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          run=$(curl --fail --silent --show-error --retry 2 --max-time 20 \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/runs/38826515103")
+          echo "$run" | jq -e --arg sha a84fb94c6451ba60c12ebf6759e2be3f20aec53c \
+            '.head_sha==$sha and .run_attempt==1 and .status=="completed" and .conclusion=="failure"'
+          arts=$(curl --fail --silent --show-error --retry 2 --max-time 20 \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/runs/38826515103/artifacts")
+          echo "$arts" | jq -e --arg sha a84fb94c6451ba60c12ebf6759e2be3f20aec53c \
+            '[.artifacts[]|select(.id==12015571299 and \
+               .name=="Y-F57-one-frozen-learned-causal-component-FIT-and-audit" and \
+               .digest=="sha256:185833a5c69c4c7f2df525a66ae5d282093af6ed12372bfd1508ae562c42be9a" and \
+               (.expired|not) and .workflow_run.id==38826515103 and .workflow_run.head_sha==$sha)]|length==1'
+      - uses: actions/download-artifact@v4
+        with:
+          name: Y-F57-one-frozen-learned-causal-component-FIT-and-audit
+          run-id: 38826515103
+          github-token: ${{ github.token }}
+          repository: spoonman136668-ai/Yggdrasil
+          path: ${{ runner.temp }}/archived
+      - name: Recount already consumed FIT-only result with no source execution
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/archived"
+          test "$(cat "$root/SOURCE_SHA")" = a84fb94c6451ba60c12ebf6759e2be3f20aec53c
+          (cd "$root" && sha256sum -c source-manifest.sha256)
+          python3 -B research/foundational/20261015-y-f57/audit_learned.py \
+            "$root/result.json" \
+            research/foundational/20261015-y-f57/learned-policy-prereg.json \
+            > "$RUNNER_TEMP/y-f57-archived-verified.txt"
+          cat "$RUNNER_TEMP/y-f57-archived-verified.txt"
+          sha256sum "$RUNNER_TEMP/y-f57-archived-verified.txt" > "$RUNNER_TEMP/y-f57-archived-verified.sha256"
+          git rev-parse HEAD > "$RUNNER_TEMP/y-f57-audit-head.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y-F57-read-only-independent-existing-FIT-audit
+          path: |
+            ${{ runner.temp }}/y-f57-archived-verified.txt
+            ${{ runner.temp }}/y-f57-archived-verified.sha256
+            ${{ runner.temp }}/y-f57-audit-head.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Exclusions
+        run: echo "NEW_EXPERIMENTS=ZERO DIAG=UNTOUCHED ORIGINALS=UNTOUCHED ACCEPTED_REFS=UNCHANGED"
