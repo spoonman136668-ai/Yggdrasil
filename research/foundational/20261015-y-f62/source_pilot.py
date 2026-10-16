@@ -22,6 +22,7 @@ EVENTS=72
 F61_WEIGHTS=(39,11,-10,35,17,18,18,28,-7,-83,12,1)
 CONTROL_BLOBS={
     "f61":"68827a45543639585da82d05e5d301782fbc79a6",
+    "f52_codec":"ef06d80c127ca6dab1e496fb855eb36f0dce6d17",
     "f60":"123dd7e979485ae07664118f948cd651b0386526",
     "f59":"232cf1bca7e2d1df5236ffa85c0a20f13a98a6ae",
     "f58":"f275d28e3755e2c90ea482d076d7401d722d71b8",
@@ -40,6 +41,9 @@ def _load_source(name,path,expected_blob):
     return module
 
 def controls():
+    codec_source=HERE.parent/"20261015-y-f52"/"source_pilot.py"
+    if _git_blob(codec_source)!=CONTROL_BLOBS["f52_codec"]:
+        raise AssertionError("FROZEN_TRANSITIVE_CODEC_SOURCE_DRIFT")
     f60=_load_source("f62_hist_f60",HERE.parent/"20261015-y-f60"/"source_feasibility.py",CONTROL_BLOBS["f60"])
     f59=_load_source("f62_hist_f59",HERE.parent/"20261015-y-f59"/"source_feasibility.py",CONTROL_BLOBS["f59"])
     f58=_load_source("f62_hist_f58",HERE.parent/"20261015-y-f58"/"source_feasibility.py",CONTROL_BLOBS["f58"])
