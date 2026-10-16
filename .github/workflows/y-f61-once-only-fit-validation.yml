@@ -1,0 +1,77 @@
+name: Yggdrasil F61 independently audited once-only within-FIT validation
+on:
+  push:
+    branches: [research/y-f61-frozen-query-utility-learner-fitonly-20261015-r1]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  qualified-public-auditor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Exact frozen source and independently negative-tested receipts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor d20afb1dc0de789be5c8985c1a31ee75038da73b HEAD
+          test "$(git hash-object research/foundational/20261015-y-f61/prereg.json)" = 67de09eecedfb5285e90a634a3e55aafa3e4a369
+          test "$(git hash-object research/foundational/20261015-y-f61/source_pilot.py)" = 68827a45543639585da82d05e5d301782fbc79a6
+          test "$(git hash-object research/foundational/20261015-y-f61/fit_validation.py)" = 8a7d64587391ffc32b6b72163626f647beef0d22
+          test "$(git hash-object research/foundational/20261015-y-f61/audit_fit_validation.py)" = 4d4f905d12ca80f504dc8fefc202e5025c38a7f7
+          test "$(git hash-object research/foundational/20261015-y-f61/test_independent_audit.py)" = 093a86c7dfd9af9bd5d5b92c9eb1c166f4fb5b33
+          test "$(git hash-object research/foundational/20261015-y-f60/source_feasibility.py)" = 123dd7e979485ae07664118f948cd651b0386526
+          test "$(git hash-object research/foundational/20261015-y-f59/source_feasibility.py)" = 232cf1bca7e2d1df5236ffa85c0a20f13a98a6ae
+          test "$(git hash-object research/foundational/20261015-y-f58/source_feasibility.py)" = f275d28e3755e2c90ea482d076d7401d722d71b8
+          python3 -B -m py_compile research/foundational/20261015-y-f61/fit_validation.py
+          python3 -B -m py_compile research/foundational/20261015-y-f61/audit_fit_validation.py
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f61 -p test_independent_audit.py -v
+          echo Y_F61_FROZEN_SOURCE_AND_PUBLIC_RECORD_AUDITOR=PASS
+      - name: Authenticate earlier source-bound full regression without consuming validation
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api repos/spoonman136668-ai/Yggdrasil/actions/runs/38834431942 |
+            jq -e '.id == 38834431942
+             and .head_sha == "5d0616a7c149c1f84416c4cb6b4ab0e323ff80b9"
+             and .run_attempt == 1
+             and .status == "completed"
+             and .conclusion == "success"' >/dev/null
+          echo Y_F61_PRIOR_FULL_REGRESSION_CONTENT_ADDRESSED_REUSED=PASS
+  once-only-within-fit-validation:
+    needs: qualified-public-auditor
+    if: "${{ github.event.head_commit.message == 'science(y-f61): one authentic frozen within-FIT validation, no DIAG' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Exactly one disjoint 32-case FIT validation, public retention then independent audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/y61-first-validation"
+          mkdir -p "$root"
+          printf '%s\n' "$GITHUB_SHA" > "$root/SOURCE_SHA"
+          python3 -B research/foundational/20261015-y-f61/fit_validation.py \
+            --once-only-frozen-fit-validation > "$root/result.json"
+          python3 -B research/foundational/20261015-y-f61/audit_fit_validation.py \
+            "$root/result.json" research/foundational/20261015-y-f61/prereg.json > "$root/independent-audit.json"
+          (cd "$root" && sha256sum result.json independent-audit.json > manifest.sha256)
+          cat "$root/independent-audit.json"
+          echo 'FIT_VALIDATION_ONLY=TRUE; DIAG_ORIGINAL=UNTOUCHED; F3=UNQUALIFIED'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F61-one-real-within-FIT-32-case-validation-no-DIAG-original
+          path: ${{ runner.temp }}/y61-first-validation/
+          retention-days: 90
+          if-no-files-found: error
