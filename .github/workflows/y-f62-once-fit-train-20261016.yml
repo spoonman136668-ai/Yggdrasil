@@ -1,0 +1,42 @@
+name: Yggdrasil F62 once-only FIT TRAIN
+on:
+  push:
+    branches:
+      - science/y-f62-once-fit-train-20261016-r1
+permissions:
+  contents: read
+jobs:
+  fit-train-once:
+    if: "${{ github.event.head_commit.message == 'science(y-f62): execute frozen once-only FIT TRAIN' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify frozen source identity and prior qualified ancestry
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 002c7ae6ebd5c8d8fc6f6fcee6df3a97ff1de398 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f62/prereg.json)" = f0fffb43fc1f344261c4802d917696aaf4035ce0
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+          test "$(git hash-object research/foundational/20261015-y-f52/source_pilot.py)" = ef06d80c127ca6dab1e496fb855eb36f0dce6d17
+          mkdir -p evidence
+          echo "$GITHUB_SHA" > evidence/exact-head.txt
+      - name: Freeze fitted int8 weights using training cohort only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f62/once_fit_train.py > evidence/y-f62-fit-train.json
+          python3 -B -m json.tool evidence/y-f62-fit-train.json >/dev/null
+          sha256sum evidence/y-f62-fit-train.json | tee evidence/sha256.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f62-once-fit-training-receipts
+          path: evidence/
+          retention-days: 90
+          if-no-files-found: warn
