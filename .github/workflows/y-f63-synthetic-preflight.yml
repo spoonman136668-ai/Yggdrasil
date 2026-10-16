@@ -1,0 +1,21 @@
+name: Yggdrasil F63 synthetic-only source preflight
+on:
+  push:
+    branches: [research/y-f63-public-path-reliability-precode-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check frozen prereg and run synthetic-only causal preflight
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 742c6017dfa81acbe6ba15f9b55634ddc894ab3e HEAD
+          test "$(git hash-object research/foundational/20261016-y-f63/prereg.json)" = ecd9f177c9a47fd42c50e6e2502f938082028513
+          python3 -B research/foundational/20261016-y-f63/source_engineering.py --synthetic-only
+          echo 'FIT=UNCONSUMED DIAG=UNCONSUMED ORIGINAL=UNCONSUMED'
