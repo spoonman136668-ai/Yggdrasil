@@ -1,0 +1,106 @@
+{
+  "schema": "yggdrasil.f68.baseline-shielded-public-junction-override.prereg.v1",
+  "stage": "PRECODE_FROZEN_NO_FIT",
+  "parent": {
+    "F67A_audit_run": 38904435445,
+    "F67B_source_run": 38909856725,
+    "F67B_synthetic_method_negative_run": 38910370785,
+    "F67B_learning_0_of_8_vs_F60_6_of_8": true,
+    "reason": "Unconstrained policy overrode common F60 retention while learning few true merge choices. Preserve strong F60 branch and permit rare, source-valid public junction interventions only."
+  },
+  "hypothesis": "A trainable residual policy that exactly follows frozen F60 at all non-junction public prefixes, overriding only when both incoming edge endpoints are retained in distinct public memory components, may preserve useful cross-component compositional evidence without degrading ordinary four-step query performance.",
+  "distinct_architecture": "Frozen F60 as default operator plus query-blind, rare 8-weight junction override among exact ACTION.actions successors. The controller cannot alter memory at non-junction steps, unlike F64-F67B whole-action ranking.",
+  "frozen": {
+    "F60_source_blob": "123dd7e979485ae07664118f948cd651b0386526",
+    "actions_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "causal_auditor_blob": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f",
+    "F67A_junction_source_blob": "b370396b3c3571be2c01ab2b33effef14f248eef",
+    "public_graph_generator_blob": "c04b73306861098eecf55db77b2db486aa918819"
+  },
+  "online": {
+    "inputs": [
+      "current public edge",
+      "losslessly retained frozen F60-format records",
+      "public connectivity of those records",
+      "frozen 8 signed-int8 override weights",
+      "prefix index"
+    ],
+    "forbidden": [
+      "future questions or answers",
+      "future public edges",
+      "private tags",
+      "unbounded source-event recall"
+    ],
+    "baseline_default_mandatory": true,
+    "override_gate": "Both event endpoints are in different components of current bounded retained memory, under read-only public connectivity computation.",
+    "override_candidate_space": "ACTION.actions(memory,event,index,codec) unchanged; candidate must differ from original F60 next state",
+    "record_limit": 12,
+    "payload_bytes": 144,
+    "params": 8
+  },
+  "cohorts": {
+    "FIT_TRAIN": [
+      881000,
+      881008
+    ],
+    "FIT_VALIDATE": [
+      881008,
+      881016
+    ],
+    "FIT_FAMILIES": [
+      1700,
+      1701,
+      1702,
+      1703
+    ],
+    "DIAG_UNAUTHORIZED": {
+      "seeds": [
+        881100,
+        881116
+      ],
+      "families": [
+        1704,
+        1705,
+        1706,
+        1707
+      ]
+    },
+    "ORIGINAL_UNAUTHORIZED": {
+      "seeds": [
+        882000,
+        882016
+      ],
+      "families": [
+        1708,
+        1709,
+        1710,
+        1711
+      ]
+    },
+    "prior_cohorts_not_reused": true
+  },
+  "gates": {
+    "nonjunction_exact_F60_step_parity": true,
+    "independent_72_prefix_audit": true,
+    "synthetic_valid_rare_override_possible": true,
+    "source_F60_feasibility_min": 0.25,
+    "public_witness_min": 0.85,
+    "one_full_repo_regression_before_FIT": true,
+    "learned_override_after_synthetic_fit_required": true,
+    "positive_override_ablation": true,
+    "heldout_gain_vs_strongest_equal_byte_min": 0.05,
+    "per_family_nondegradation": true,
+    "once_only_heldout": true,
+    "freeze_fit_before_heldout": true,
+    "no_postresult_tuning": true
+  },
+  "authority": {
+    "FIT_train_consumed": false,
+    "FIT_validation_consumed": false,
+    "diagnostics_consumed": false,
+    "originals_consumed": false,
+    "F3": false,
+    "policy_promotion": false,
+    "paid_API": false
+  }
+}
