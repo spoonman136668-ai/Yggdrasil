@@ -1,0 +1,75 @@
+name: Yggdrasil F79 two-order role-aware intervention synthetic qualification
+on:
+  push:
+    branches: [research/y-f79-order-robust-role-intervention-precode-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  frozen-synthetic-training-and-guard:
+    if: "${{ github.event.head_commit.message == 'ci(y-f79): qualify frozen rare role-aware intervention on both arrival orders' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify precode frozen ancestry and original scientific controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor b1423abe873b207d4171c5579e4d1010c0baa7ee HEAD
+          test "$(git hash-object research/foundational/20261016-y-f79/prereg.json)" = 90edd72c6457e0e2763f1fac8b52a3ace6c8b2b6
+          test "$(git hash-object research/foundational/20261016-y-f79/rare_interventions.py)" = 4bba6e34d56ef96aa81515032988f9c5127fe35f
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+          test "$(git hash-object research/foundational/20261016-y-f71/early_scheduler.py)" = edddfedb04af27dac7332ca85cc742aef5772a4b
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+      - name: Independently train frozen synthetic role learner then guard two arrival regimes
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f79-synthetic/"
+          python3 -B research/foundational/20261016-y-f79/rare_interventions.py --synthetic-only > "$RUNNER_TEMP/y-f79-synthetic/result.json" || { cat "$RUNNER_TEMP/y-f79-synthetic/result.json"; exit 1; }
+          python3 -B -m json.tool "$RUNNER_TEMP/y-f79-synthetic/result.json" >/dev/null
+          python3 -B -c 'import os,json;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"y-f79-synthetic/result.json")));print("F79_TRAIN",d["frozen_train_receipt"]);print("F79_TWO_REGIME_GUARD",d["by_arrival_regime"]);print("F79_PREQUAL",d["scientific_prequalification_pass"]);assert d["scientific_prequalification_pass"] and not d["FIT_TRAIN_used"] and not d["FIT_VALIDATION_used"]'
+          sha256sum "$RUNNER_TEMP/y-f79-synthetic/result.json" > "$RUNNER_TEMP/y-f79-synthetic/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f79-synthetic/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f79-two-arrival-synthetic-method
+          path: ${{ runner.temp }}/y-f79-synthetic/
+          retention-days: 90
+          if-no-files-found: warn
+  full-regression:
+    needs: frozen-synthetic-training-and-guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install hosted free dependencies
+        shell: bash
+        run: |
+          python -m pip install pytest pyyaml
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: One exact-head full Yggdrasil regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f79-regression"
+          test "$(git hash-object research/foundational/20261016-y-f79/rare_interventions.py)" = 4bba6e34d56ef96aa81515032988f9c5127fe35f
+          python -B -m pytest -q > "$RUNNER_TEMP/y-f79-regression/result.txt" 2>&1
+          cat "$RUNNER_TEMP/y-f79-regression/result.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f79-regression/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f79-source-full-regression
+          path: ${{ runner.temp }}/y-f79-regression/
+          retention-days: 90
