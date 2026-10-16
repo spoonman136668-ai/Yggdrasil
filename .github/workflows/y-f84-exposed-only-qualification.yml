@@ -1,0 +1,44 @@
+name: Yggdrasil F84 exposed-only qualification
+on:
+  push:
+    branches:
+      - contrib/chatgpt-y-f84-reachability-precode-20261016-r1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  f84-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify immutable F83 foundation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 95596408e8dd5e9360cf27d78ff282cffb1103c6 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f83/pairwise_learner.py)" = 68138887c8bc42a17f8866df96cbede8e2594325
+          test "$(git hash-object research/foundational/20261016-y-f83/prereg.json)" = 2c47c4116bcad183ef2e3f327b9760b8ea95b3c1
+          test "$(git hash-object research/foundational/20261016-y-f83/forensic_prereg.json)" = 9d4333afe6baf45025decf19e9cfad3319981a22
+          test "$(git hash-object research/foundational/20261016-y-f84/reachability-precode-advisory.json)" = 9030779a855f241a090a2cba089c6ec979f300fa
+      - name: Focused F84 syntax and unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f84 -p 'test_forensic_reachability.py'
+      - name: Frozen exposed synthetic diagnostic only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f84/forensic_reachability.py --already-exposed-synthetic-only > "$RUNNER_TEMP/f84-exposed-diagnostic.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f84-exposed-diagnostic.json"))); assert r["status"]=="SOURCE_ONLY_READER_NOT_PROSPECTIVE_QUALIFICATION"; assert r["exposed_guard_cases"]==32 and r["six_step_cases"]==8; assert r["frozen_F60_six_step_correct"]==r["frozen_F83_six_step_correct"]==0; assert not r["no_training"] is False; assert r["causal_legal_action_reachability_established"] is False; print(json.dumps({k:r[k] for k in ("status","six_step_cases","six_step_query_aware_12_byte_encodable_cases","causal_legal_action_reachability_established")},sort_keys=True))'
+      - name: Confirm checkout stayed unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          git status --porcelain
