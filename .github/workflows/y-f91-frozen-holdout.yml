@@ -1,0 +1,54 @@
+name: Yggdrasil F91 frozen conservative-credit holdout
+on:
+  push:
+    branches:
+      - research/y-f91-conservative-credit-20261016-r1
+    paths:
+      - 'research/foundational/20261016-y-f91/holdout.py'
+      - '.github/workflows/y-f91-frozen-holdout.yml'
+permissions:
+  contents: read
+jobs:
+  frozen-holdout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Attest frozen F91 parent, prereg, model and weights
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor aacd821c0f6467d6017146d0c7429590191c1f6f HEAD
+          test "$(git hash-object research/foundational/20261016-y-f91/prereg.json)" = 7a680c47029777f5d27b924d75c750bb348c06fc
+          test "$(git hash-object research/foundational/20261016-y-f91/conservative_credit.py)" = a3e9ccdbd623d996d56355bb6b9e838fb59fc3b2
+          test "$(git hash-object research/foundational/20261016-y-f91/frozen-policy.json)" = 4382ec2c4eeda870b575ec95b000286feee53449
+          test "$(git hash-object research/foundational/20261016-y-f90/temporal_credit.py)" = 0b689d66135a246987b20e189b9724b1c0715c25
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+      - name: Offline F91 and F90 noncohort contract tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f91 -p 'test_conservative_credit.py'
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f90 -p 'test_temporal_credit.py'
+      - name: Independent frozen validation without training or model selection
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f91/holdout.py --frozen-validation-only > "$RUNNER_TEMP/f91-validation.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f91-validation.json"))); assert r["stage"]=="F91_FROZEN_VALIDATION_ONLY" and r["cases"]==16; assert r["exact_72_public_prefix_audit"] and r["max_persistent_memory_bytes"]<=144 and r["extra_model_bytes"]==24 and r["extra_latch_bits"]==1; assert r["no_validation_or_guard_training"] and r["no_retuning"] and not r["science_accepted"]; print(json.dumps({k:r[k] for k in ("classification","cases","scores","six_step_rescues","F60_correct_case_regressions","learned_native_interventions","by_regime_and_type")},sort_keys=True))'
+      - name: First-use disjoint negative synthetic guard; never tune after
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f91/holdout.py --frozen-disjoint-guard-only > "$RUNNER_TEMP/f91-new-guard.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f91-new-guard.json"))); assert r["stage"]=="F91_FIRST_USE_DISJOINT_NEGATIVE_SYNTHETIC_GUARD" and r["cases"]==32 and r["six_step_cases"]==8; assert r["exact_72_public_prefix_audit"] and r["max_persistent_memory_bytes"]<=144 and r["extra_model_bytes"]==24 and r["extra_latch_bits"]==1; assert r["question_and_future_not_available_during_online"] and r["no_retuning"] and r["no_validation_or_guard_training"]; assert r["no_protected_FIT"] and r["no_DIAG"] and r["no_original"] and r["no_F3"] and not r["science_accepted"] and not r["optimizer_promotion"] and not r["controller_mutation"]; print(json.dumps({k:r[k] for k in ("classification","cases","scores","six_step_rescues","F60_correct_case_regressions","learned_native_interventions","by_regime_and_type")},sort_keys=True))'
+      - name: Ensure research sources were not modified
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
