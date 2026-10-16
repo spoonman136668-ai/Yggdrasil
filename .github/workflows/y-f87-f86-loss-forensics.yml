@@ -1,0 +1,33 @@
+name: F87 F86 immutable loss attribution
+on:
+  push:
+    branches:
+      - research/y-f87-f86-immutable-loss-attribution-20261016-r1
+permissions:
+  contents: read
+jobs:
+  forensic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify immutable frozen F86 and forensic prereg
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 67f6556c174ca19fa143c3110dbd58e00b9e2cd1 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f86/queryblind_retention.py)" = 8738a5e6a145fbc0f3c2efb2c873c3f8ed1f428e
+          test "$(git hash-object research/foundational/20261016-y-f87/prereg-forensic.json)" = e452638551f3c3d58415e70605bb4f39ac3749cc
+      - name: Classify immutable negative failure mechanism
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f87/forensic_loss.py --consumed-f86-only > "$RUNNER_TEMP/f87-f86-loss.json"
+          python3 -B -c 'import os,json; j=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f87-f86-loss.json"))); assert j["status"]=="EXPOSED_ONLY_DESCRIPTIVE" and j["cases"]==32 and j["f60_correct_f86_lost"]==16; assert j["no_new_source_cases"] and j["no_fit"] and j["no_diag"] and j["no_original"] and j["no_policy_update"] and not j["accepted_scientific_result"]; print(json.dumps({"f60_correct":j["f60_correct"],"f86_correct":j["f86_correct"],"lost_cases":j["f60_correct_f86_lost"],"loss_signature":j["f60_only_case_summary"],"all_signature":j["all_case_summary"]},sort_keys=True))'
+      - name: Clean tree
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
