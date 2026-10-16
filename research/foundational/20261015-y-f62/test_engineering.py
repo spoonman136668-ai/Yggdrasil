@@ -24,6 +24,12 @@ class FrozenSourceTests(unittest.TestCase):
    self.assertEqual(sum(row[3] for row in tagged),36)
    self.assertEqual(len(paths),4)
    public=tuple(row[:3] for row in tagged)
+   degrees={}
+   for a,_role,b in public:
+    degrees[a]=degrees.get(a,0)+1
+    degrees[b]=degrees.get(b,0)+1
+   hubs=sum(v>=3 for v in degrees.values())
+   self.assertEqual(hubs,8 if regime=="rolling_interleaved_hubs" else 0)
    offline=m.controls()[0].offline_public_witness(public)
    self.assertEqual(packing.solve(offline,question),question["answer"])
    learned,actions=m.learned_online(public,(0,)*12,packing)
