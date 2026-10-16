@@ -1,0 +1,126 @@
+{
+  "schema": "yggdrasil.f91.conservative-learned-temporal-credit.prereg.v1",
+  "stage": "FROZEN_PRECODE_SYNTHETIC_TRAIN_THEN_INDEPENDENT_HOLDOUT",
+  "parent": {
+    "exact_F90_head": "874028567bd40a1e823658f27a26679ef8b51085",
+    "frozen_F90_method_blob": "0b689d66135a246987b20e189b9724b1c0715c25",
+    "frozen_F85_solver_blob": "e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3",
+    "frozen_F62_actions_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "frozen_F76_source_blob": "5b8928b0399ce9f869854beadeab04b29c8703a5"
+  },
+  "hypothesis": "Asymmetric learned benefit/harm prediction with a sparse late-only intervention budget can prevent F90-style short-task regressions while retaining rare six-step rescues, under native causal action and 144-byte memory limits.",
+  "mechanism": {
+    "train_labels": "On TRAIN cases only, compare each native alternative to exact F60 next-state followed by frozen F60 public-suffix rollout, evaluated by exact F85 solver against TRAIN answer. Signed advantage (-1/0/+1); later public source and answer NEVER available during online inference.",
+    "checkpoints": [
+      47,
+      59,
+      71
+    ],
+    "max_native_alternatives_per_checkpoint": 8,
+    "train_cases": 32,
+    "model": "Two independent 12-component signed int8 logistic heads: benefit and harm; feature input = [1] + eleven nonconstant source-native F62._features(after) minus exact F60 baseline features. Frozen deterministic SGD four epochs in stable cohort/candidate order, sigmoid logistic loss, step 0.08, L2 decay 0.995. Benefit-positive target weighted 4; harm-positive target weighted 6; other negatives and neutrals weight 1. Clamp real weights [-2,+2], quantize round(48*w) to [-96,+96].",
+    "online_decision": "For each observed public event after index>=48, calculate exact native F60 afterstate and permitted F62 alternatives from SAME prior memory. Reject if no previous approval budget remains, if fewer than ten exact F60 baseline records remain unchanged when memory is at capacity (minimum overlap min(10,len(F60_baseline)-1)), or if retained memory >144 bytes. Predict benefit/harm head logistic scores using ONLY public delta features. Select highest (benefit_minus_harm, benefit, native tie-break), accept only if benefit>=0.70, harm<=0.20, benefit_minus_harm>=0.55. At most ONE alternative intervention per 72-arrival stream. Otherwise use exact F60 native action. No future stream, seed, family, private labels, question or answer enters action.",
+    "persistent_state": "Twelve 12-byte native records =144 bytes, plus one-bit intervention-used latch counted separately in the controller (<=1 byte), and 24 int8 model parameters counted separately (24 bytes). No hidden future buffer. Same frozen F85 global solver for all arms.",
+    "software_controls": "Source native F62.actions, native F60 baseline parity and independent 72-prefix F62 auditor on every evaluated stream. Check SHA256 and Git blobs for prereg and method before any held-out source use.",
+    "training_only_requirements": "Training can inspect TRAIN future events/answer ONLY for retro-credit labels. No TRAIN source identity overlaps historical F83–F90 cohorts. No validation/guard first-use before frozen weights immutable Git commit.",
+    "validation_and_guard": "No model selection, threshold adjustment, fit or remediation from heldout results. Independently report 16 case validation, 32 case guard.",
+    "positive_synthetic_gate": "Guard: at least one F60-failed six-step task rescued, ZERO regressions across all F60-correct cases, both arrival regimes and both 4/6-step subtypes, and all provenance/causality bounds valid. Else NEGATIVE. Green CI is not positive science."
+  },
+  "cohorts": {
+    "train": {
+      "start": -5801,
+      "stop_exclusive": -5817,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "cases": 32
+    },
+    "validation": {
+      "start": -5821,
+      "stop_exclusive": -5829,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "cases": 16
+    },
+    "guard": {
+      "start": -5841,
+      "stop_exclusive": -5857,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "cases": 32,
+      "six_step_cases": 8
+    },
+    "source": "Frozen F76 public negative-seed source, two observed arrival regimes",
+    "retired_ranges": [
+      [
+        -5121,
+        -5137
+      ],
+      [
+        -5221,
+        -5237
+      ],
+      [
+        -5321,
+        -5337
+      ],
+      [
+        -5421,
+        -5437
+      ],
+      [
+        -5521,
+        -5537
+      ],
+      [
+        -5621,
+        -5637
+      ],
+      [
+        -5701,
+        -5717
+      ],
+      [
+        -5721,
+        -5729
+      ],
+      [
+        -5741,
+        -5757
+      ]
+    ]
+  },
+  "arms": [
+    "Exact frozen F60 native causal memory + frozen F85 global solver",
+    "Exact frozen F83 learned 24-int8 memory + same F85",
+    "Frozen F90 policy on new guard + same F85, historical negative reference",
+    "F91 conservative frozen dual-head native policy + same F85"
+  ],
+  "phases": [
+    "P0 frozen prereg and source controls",
+    "P1 engineering/unit tests; TRAIN only",
+    "P2 commit and independently attest immutable 24 int8 weights and source",
+    "P3 validation and disjoint guard one-time, no fitting",
+    "P4 preserve both technical and scientific results; draft only"
+  ],
+  "integrity": {
+    "FIT": false,
+    "DIAG": false,
+    "ORIGINAL": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "controller_mutation": false,
+    "accepted_ref_mutation": false,
+    "cloudflare_mutation": false,
+    "Codex": false,
+    "science_accepted": false
+  }
+}
