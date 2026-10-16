@@ -1,0 +1,45 @@
+name: Yggdrasil F81 public role feature alias qualification
+on:
+  push:
+    branches:
+      - research/y-f81-directed-role-transition-alias-audit-20261016-r1
+permissions:
+  contents: read
+jobs:
+  frozen-public-role-diagnostic:
+    if: "${{ github.event.head_commit.message == 'ci(y-f81): run frozen independent directed-role alias diagnostic' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Confirm first-use protections and frozen source ancestry
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor da65602594a07b50e08cd1e9954d80477b259fa5 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f81/prereg.json)" = ef96bb4bafa72bd930b1a47f2195cd16f920cf26
+          test "$(git hash-object research/foundational/20261016-y-f81/role_alias_audit.py)" = 3a2f6a8a46d7be36c8a793b732acd735485d73a5
+          test "$(git hash-object research/foundational/20261016-y-f80/feature_alias_audit.py)" = 03d7116480f30d811ca9ec97a46ca1909adfc9ae
+          test "$(git hash-object research/foundational/20261016-y-f79/rare_interventions.py)" = 4bba6e34d56ef96aa81515032988f9c5127fe35f
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+      - name: Evaluate fresh 32-case causal node-invariant 52-feature aliases
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f81-feature-evidence/"
+          python3 -B research/foundational/20261016-y-f81/role_alias_audit.py --synthetic-only > "$RUNNER_TEMP/y-f81-feature-evidence/audit.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/y-f81-feature-evidence/audit.json" >/dev/null
+          python3 -B -c 'import json,os; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"y-f81-feature-evidence/audit.json"))); print("F81_ALIASES",d["cross_order"],"PER_REGIME",d["by_regime"],"NODE_RENAME_CHECKS",d["rename_invariance_checks"]); assert not d["FIT_TRAIN_used"] and not d["FIT_VALIDATE_used"]'
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f81-feature-evidence/head.txt"
+          sha256sum "$RUNNER_TEMP/y-f81-feature-evidence/audit.json" > "$RUNNER_TEMP/y-f81-feature-evidence/hashes.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f81-preregistered-directed-role-alias-diagnostic
+          path: ${{ runner.temp }}/y-f81-feature-evidence/
+          retention-days: 90
+          if-no-files-found: warn
