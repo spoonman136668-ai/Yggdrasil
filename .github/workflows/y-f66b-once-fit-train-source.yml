@@ -1,0 +1,46 @@
+name: Yggdrasil F66B once-only FIT TRAIN source
+on:
+  push:
+    branches:
+      - science/y-f66b-once-fit-train-source-20261016-r1
+permissions:
+  contents: read
+jobs:
+  authenticated-source-first-use:
+    if: "${{ github.event.head_commit.message == 'science(y-f66b): execute one preregistered FIT TRAIN source cohort' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Enforce immutable qualified source and prospective identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor bba0389206e8c4c5d50b50e56bac121647de4384 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f66/prereg.json)" = fc3283f28ab307b6834c93d530fffce98ad7c0de
+          test "$(git hash-object research/foundational/20261016-y-f66/prereg-opportunity-cost-amendment.json)" = 3502d23f503cb0fdc798b2ac7db3f5cdb09c254d
+          test "$(git hash-object research/foundational/20261016-y-f66/once_fit_train_source.py)" = e4a495102ddd9fdf622573c46f019125bba81683
+          test "$(git hash-object research/foundational/20261016-y-f63c/source.py)" = c04b73306861098eecf55db77b2db486aa918819
+      - name: Consume only once the frozen FIT TRAIN source and archive all receipts
+        shell: bash
+        env:
+          F66B_ONCE_TRAIN_SOURCE_EVIDENCE: ${{ runner.temp }}/f66b-train-source/
+        run: |
+          set -euo pipefail
+          mkdir -p "$F66B_ONCE_TRAIN_SOURCE_EVIDENCE"
+          echo "$GITHUB_SHA" > "$F66B_ONCE_TRAIN_SOURCE_EVIDENCE/exact_head.txt"
+          python3 -B research/foundational/20261016-y-f66/once_fit_train_source.py
+          python3 -B -m json.tool "$F66B_ONCE_TRAIN_SOURCE_EVIDENCE/source_first_use.json" >/dev/null
+          sha256sum "$F66B_ONCE_TRAIN_SOURCE_EVIDENCE/fit_train_rows.jsonl" "$F66B_ONCE_TRAIN_SOURCE_EVIDENCE/source_first_use.json" | tee "$F66B_ONCE_TRAIN_SOURCE_EVIDENCE/sha256.txt"
+          echo "FIT_TRAIN_CONSUMED_ONCE=TRUE VALIDATION_UNCONSUMED=TRUE ORIGINAL_UNCONSUMED=TRUE F3=FALSE"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f66b-once-only-fit-train-source
+          path: ${{ runner.temp }}/f66b-train-source/
+          retention-days: 90
+          if-no-files-found: warn
