@@ -17,8 +17,8 @@ def load(name,path,expected):
  m=importlib.util.module_from_spec(s);sys.modules[name]=m;s.loader.exec_module(m);return m
 MODEL=load("f68_immutable_action_model",P/"action_conditioned.py",
            "c079cb2b6993429c302f4f634e2862d05056fbdb")
-PUB=load("f68_frozen_public_only_graph_teacher",P.parent/"20261016-y-f67a"/"train_structural_junction.py",
-         "edbd46327fa9368e2f02346d48ede5a01207eb65")
+PUB=load("f68_frozen_public_only_graph_teacher",P/"public_bridge_labels.py",
+         "aab85cca8d1f84b71dd4d1ed2733b80ebed087a2")
 def utility(candidate,baseline,event,true_bridge):
  exact=MODEL.PACK.edge_record(event)
  keep=int(exact in candidate)
