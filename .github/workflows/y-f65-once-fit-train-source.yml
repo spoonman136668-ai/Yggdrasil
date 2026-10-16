@@ -1,0 +1,46 @@
+name: Yggdrasil F65 once-only prospective FIT TRAIN source
+on:
+  push:
+    branches:
+      - science/y-f65-once-fit-train-source-20261016-r1
+permissions:
+  contents: read
+jobs:
+  first-use-only:
+    if: "${{ github.event.head_commit.message == 'science(y-f65): execute preregistered train source first-use once' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Enforce exact qualified source identity before first use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor fb8013361d3b41b0a73c85302a40524ea19b3683 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f65/prereg.json)" = 9bbfd50b740be2c9d4ec891b3b360cd9650b7e23
+          test "$(git hash-object research/foundational/20261016-y-f65/path_assembly.py)" = 10c2ba041c1d3e3063e1e98ba5726fa458db5f3a
+          test "$(git hash-object research/foundational/20261016-y-f65/once_train_source.py)" = a5b04c8c151d139175750c248ac62073ad256fa1
+          test "$(git hash-object research/foundational/20261016-y-f63c/source.py)" = c04b73306861098eecf55db77b2db486aa918819
+      - name: Consume training source once, audit all 32 rows, archive receipts
+        shell: bash
+        env:
+          F65_TRAIN_SOURCE_EVIDENCE: ${{ runner.temp }}/f65-fit-train-first-use/
+        run: |
+          set -euo pipefail
+          mkdir -p "$F65_TRAIN_SOURCE_EVIDENCE"
+          echo "$GITHUB_SHA" > "$F65_TRAIN_SOURCE_EVIDENCE/exact_head.txt"
+          python3 -B research/foundational/20261016-y-f65/once_train_source.py
+          python3 -B -m json.tool "$F65_TRAIN_SOURCE_EVIDENCE/source_first_use_verdict.json" >/dev/null
+          sha256sum "$F65_TRAIN_SOURCE_EVIDENCE/fit_train_rows.jsonl" "$F65_TRAIN_SOURCE_EVIDENCE/source_first_use_verdict.json" | tee "$F65_TRAIN_SOURCE_EVIDENCE/sha256.txt"
+          echo "FIT_TRAIN=CONSUMED_ONCE HELDOUT=UNCONSUMED DIAG=UNCONSUMED ORIGINAL=UNCONSUMED"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f65-frozen-first-use-train-only-source
+          path: ${{ runner.temp }}/f65-fit-train-first-use/
+          retention-days: 90
+          if-no-files-found: warn
