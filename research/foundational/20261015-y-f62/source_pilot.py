@@ -255,17 +255,19 @@ def train_action_advantage(packing):
                     baseline=_f60_step(mem,event,packing)
                     baseline_terminal=_finish_fixed(baseline,public[index+1:],packing)
                     base=int(packing.solve(baseline_terminal,q)==q["answer"])
-                    base_features=_features(baseline,index,
-                                            _public_record(event,packing),False,False)
+                    baselines=[feature for _act,_old,_drop,state,feature
+                               in candidates if state==baseline]
+                    assert len(baselines)==1, 'F60_BASELINE_NOT_IN_CAUSAL_ACTION_SPACE'
+                    base_features=baselines[0]
                     for action,old,drop,state,feat in candidates:
                         terminal=_finish_fixed(state,public[index+1:],packing)
                         reward=int(packing.solve(terminal,q)==q["answer"])
                         delta=reward-base
-                        if delta:
-                            # Preference relative to the actual fixed baseline,
-                            # not an always-positive membership label.
-                            examples.append((tuple(f-b for f,b in
-                                                   zip(feat,base_features)),delta))
+                        # Include zero-advantage alternatives, not only
+                        # observed winners/losers. Excluding zeros would
+                        # introduce conditional-selection bias into training.
+                        examples.append((tuple(f-b for f,b in
+                                               zip(feat,base_features)),delta))
                 mem=_f60_step(mem,event,packing)
     weights=[0.0]*PARAMS
     for _epoch in range(3):
