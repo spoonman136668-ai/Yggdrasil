@@ -1,0 +1,75 @@
+name: Yggdrasil F67 hierarchical memory synthetic source
+on:
+  push:
+    branches:
+      - research/y-f67-hierarchical-bridge-memory-precode-20261016-r1
+permissions:
+  contents: read
+jobs:
+  source-preflight:
+    if: "${{ github.event.head_commit.message == 'ci(y-f67): qualify bounded hierarchical public junction memory' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify prereg and source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 30903b8d4db7a3b780f7642e9f68ddf32cc0f824 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f67/prereg.json)" = 1db81bfd134da0896684abf045c1912a98d6bcf6
+          test "$(git hash-object research/foundational/20261016-y-f67/hierarchical_memory.py)" = 7ef5b0b1d21d49bad8cd764fd1a6b2ea2b8afc7e
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+      - name: Independently inspect every public-prefix memory
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f67-source/"
+          python3 -B research/foundational/20261016-y-f67/hierarchical_memory.py --synthetic-only > "$RUNNER_TEMP/f67-source/source.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f67-source/source.json" >/dev/null
+          python3 -B -c 'import json,os; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f67-source/source.json"))); print("F67_SYNTHETIC_JUNCTIONS",d["proposed_junction_actions"]); print("F67_SYNTHETIC_ORDINARY_MERGES",d["ordinary_compositional_merges"]); assert d["proposed_junction_actions"]>0 and d["ordinary_compositional_merges"]>0 and not d["registered_fit_used"]'
+          sha256sum "$RUNNER_TEMP/f67-source/source.json" > "$RUNNER_TEMP/f67-source/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f67-source/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f67-hierarchical-source-synthetic-evidence
+          path: ${{ runner.temp }}/f67-source/
+          retention-days: 90
+          if-no-files-found: warn
+  full-regression:
+    needs: source-preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 95
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install free test dependencies
+        shell: bash
+        run: |
+          python -m pip install pytest pyyaml
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: One full repository regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f67-regression/"
+          test "$(git hash-object research/foundational/20261016-y-f67/hierarchical_memory.py)" = 7ef5b0b1d21d49bad8cd764fd1a6b2ea2b8afc7e
+          python -B -m pytest -q > "$RUNNER_TEMP/f67-regression/regression.txt" 2>&1
+          cat "$RUNNER_TEMP/f67-regression/regression.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f67-regression/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f67-one-full-regression
+          path: ${{ runner.temp }}/f67-regression/
+          retention-days: 90
+          if-no-files-found: warn
