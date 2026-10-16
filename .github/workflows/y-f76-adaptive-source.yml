@@ -1,0 +1,78 @@
+name: Yggdrasil F76 adaptive two-order source qualification
+on:
+  push:
+    branches:
+      - research/y-f76-two-regime-public-order-source-20261016-r1
+permissions:
+  contents: read
+jobs:
+  synthetic-source:
+    if: "${{ github.event.head_commit.message == 'ci(y-f76): independently qualify adaptive two-order source and full regression' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check frozen adaptive source and original scientific controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 430b0b5f1ef302e4cb0e56a1c1571679b4b2e004 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f76/prereg.json)" = eac6a88209fda174509749f33d21bbf6d20fbdc7
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+          test "$(git hash-object research/foundational/20261016-y-f63c/source.py)" = c04b73306861098eecf55db77b2db486aa918819
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+          test "$(git hash-object research/foundational/20261015-y-f62/audit_public.py)" = 383fff0bdd8c8b48fde9538d4e4d768db1c1896f
+      - name: Verify fresh two-regime source public-graph feasibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f76-source"
+          python3 -B research/foundational/20261016-y-f76/source.py --synthetic-only > "$RUNNER_TEMP/y-f76-source/source.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/y-f76-source/source.json" >/dev/null
+          python3 -B -c 'import os,json;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"y-f76-source/source.json")));print("F76_TWO_REGIME_FEASIBILITY",d["by_arrival_regime"]);print("F76_SOURCE_QUALIFIED",d["frozen_source_feasibility_gate_pass"]);assert not d["registered_FIT_train_used"] and not d["registered_FIT_validate_used"] and d["independent_72_prefix_causality_pass"]'
+          sha256sum "$RUNNER_TEMP/y-f76-source/source.json" > "$RUNNER_TEMP/y-f76-source/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f76-source/exact-head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f76-adaptive-source-feasibility
+          path: ${{ runner.temp }}/y-f76-source/
+          retention-days: 90
+          if-no-files-found: warn
+  full-regression:
+    needs: synthetic-source
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install free test dependencies
+        shell: bash
+        run: |
+          python -m pip install pytest pyyaml
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: One full exact-head regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f76-regression"
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+          python -B -m pytest -q > "$RUNNER_TEMP/y-f76-regression/result.txt" 2>&1
+          cat "$RUNNER_TEMP/y-f76-regression/result.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f76-regression/exact-head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f76-one-full-regression
+          path: ${{ runner.temp }}/y-f76-regression/
+          retention-days: 90
+          if-no-files-found: warn
