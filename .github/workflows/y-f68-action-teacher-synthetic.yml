@@ -7,7 +7,7 @@ permissions:
   contents: read
 jobs:
   frozen-structural-synthetic:
-    if: "${{ github.event.head_commit.message == 'ci(y-f68): qualify genuine public action supervision before protected FIT' && github.run_attempt == 1 }}"
+    if: "${{ github.event.head_commit.message == 'ci(y-f68): qualify self-contained public action supervision before protected FIT' && github.run_attempt == 1 }}"
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -23,7 +23,8 @@ jobs:
           test "$(git hash-object research/foundational/20261016-y-f68/prereg.json)" = d6bb9395bce54562bb89bfb07dcb445a9996123a
           test "$(git hash-object research/foundational/20261016-y-f68/train_method_precode.json)" = 99d024db0ab22775f8a2790f0156eb2c56fe2101
           test "$(git hash-object research/foundational/20261016-y-f68/action_conditioned.py)" = c079cb2b6993429c302f4f634e2862d05056fbdb
-          test "$(git hash-object research/foundational/20261016-y-f68/teacher_action_distill.py)" = 49c07bc81710889a0b4ee1f02c3eee043ebf87e3
+          test "$(git hash-object research/foundational/20261016-y-f68/teacher_action_distill.py)" = 8793aa2a5edefe5d8b3a9a2434cd77a6cb6c486c
+          test "$(git hash-object research/foundational/20261016-y-f68/public_bridge_labels.py)" = aab85cca8d1f84b71dd4d1ed2733b80ebed087a2
       - name: Fit unregistered synthetic cases then audit distinct guard identities
         shell: bash
         run: |
