@@ -1,0 +1,43 @@
+name: Yggdrasil F72 public intervention feature identifiability
+on:
+  push:
+    branches: [research/y-f72-public-decision-identifiability-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  immutable-synthetic-diagnostic:
+    if: "${{ github.event.head_commit.message == 'ci(y-f72): audit public feature signatures against bounded rescue credit' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify immutable source and preregistration before research
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 6c02051ed0fbdbf21f1385ac99b2132913695b56 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f72/prereg.json)" = e2cab52f897b9a7542c20e1667f1d6a3dc6fecc9
+          test "$(git hash-object research/foundational/20261016-y-f72/feature_identifiability.py)" = 68581bb228774db825af42bfe932aa32658d1cce
+          test "$(git hash-object research/foundational/20261016-y-f71/early_scheduler.py)" = edddfedb04af27dac7332ca85cc742aef5772a4b
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+      - name: Diagnose bounded online-feature class separation on fresh synthetic graph sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f72-feature-identifiability"
+          python3 -B research/foundational/20261016-y-f72/feature_identifiability.py --synthetic-only > "$RUNNER_TEMP/y-f72-feature-identifiability/result.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/y-f72-feature-identifiability/result.json" >/dev/null
+          python3 -B -c 'import json,os;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"y-f72-feature-identifiability/result.json")));print("F72_CASES",d["cases"],"F60",d["frozen_F60_correct"]);print("F72_SIGN_COUNTS",d["label_counts"]);print("F72_ORACLE_RESCUES",d["cases_with_independently_verified_single_step_rescue"]);print("F72_COLLIDING_FEATURE_SIGNS",d["coarsened_signatures_conflicting_beneficial_vs_harmful"],d["beneficial_examples_with_harmful_signature_collision"]);assert d["unfair_oracle_noncompetitive"] and not d["protected_FIT_train_used"] and not d["learned_model_fit"]'
+          sha256sum "$RUNNER_TEMP/y-f72-feature-identifiability/result.json" > "$RUNNER_TEMP/y-f72-feature-identifiability/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f72-feature-identifiability/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f72-public-feature-identifiability-evidence
+          path: ${{ runner.temp }}/y-f72-feature-identifiability/
+          retention-days: 90
+          if-no-files-found: warn
