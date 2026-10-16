@@ -1,0 +1,30 @@
+name: Yggdrasil F62 single heldout validation
+on:
+  push:
+    branches: [science/y-f62-once-heldout-validation-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  heldout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify frozen source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor ea4aa99175a0c31c6b264c8bccbf965bf8b23bc0 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+      - name: Frozen one-time heldout
+        run: |
+          mkdir -p evidence
+          python3 -B research/foundational/20261015-y-f62/once_heldout_validate.py > evidence/result.json
+          sha256sum evidence/result.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f62-validation-evidence
+          path: evidence/
+          retention-days: 90
