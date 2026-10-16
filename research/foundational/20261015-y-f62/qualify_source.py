@@ -55,6 +55,19 @@ def main(argv=None):
     assert prereg["original_UNRESERVED"]["seeds"]==[762000,762016]
     assert prereg["authority"]["source_independent_F3"] is False
     assert prereg["thresholds"]["learned_accuracy_gain_vs_strongest_equal_byte_fair_min"]==0.05
+    # F60 provenance uses an original Git COMMIT SHA, whereas this harness
+    # pins the immutable source Git BLOB SHA. They are different identities.
+    provenance=prereg["frozen_control_provenance"]
+    assert provenance["F60_exact_source_sha"]=="d20afb1dc0de789be5c8985c1a31ee75038da73b"
+    assert provenance["F59_source_blob_sha"]==FROZEN["research/foundational/20261015-y-f59/source_feasibility.py"]
+    assert provenance["F58_source_blob_sha"]==FROZEN["research/foundational/20261015-y-f58/source_feasibility.py"]
+    assert provenance["F61_source_blob_sha"]==FROZEN["research/foundational/20261015-y-f61/source_pilot.py"]
+    assert provenance["F61_historical_trained_int8_weights"]==[39,11,-10,35,17,18,18,28,-7,-83,12,1]
+    assert provenance["exact_historical_methods_no_adaptive_refit"] is True
+    assert prereg["learned_policy"]["max_serialized_retained_memory_bytes"]==144
+    assert prereg["learned_policy"]["parameters_max"]==12
+    assert prereg["thresholds"]["positive_composition_retrieval_ablation"] is True
+    assert prereg["authority"]["protected_primary_original_executed"] is False
     execute("FROZEN_PRECODE",[
         sys.executable,"-B","-m","unittest","discover","-s",
         str(HERE),"-p","test_precode.py","-v"])
