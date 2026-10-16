@@ -1,0 +1,107 @@
+{
+  "schema": "yggdrasil.f69.learned-causal-endpoint-survival.prereg.v1",
+  "stage": "PRECODE_FROZEN_NO_FIT",
+  "parent_scientific_evidence": {
+    "F66_dense_teacher_600_positive_0_negative": true,
+    "F66B_attachment_900_positive_0_negative": true,
+    "F67B_synthetic_learned_0_8_vs_F60_6_8": true,
+    "F68_502_candidate_counterfactuals_zero_positive": true,
+    "F68_diagnostic_run": 38911413078,
+    "mechanism_inference": "Late-join overrides cannot recover fragments already discarded; prediction of early public endpoint importance is required."
+  },
+  "hypothesis": "Learning calibrated future public endpoint-revisit probabilities from earlier public observations (TRAIN only) lets a memory policy proactively protect relationship path endpoints before the later cross-component linking observations arrive, improving independent unseen role-composition questions under the same 144-byte limit.",
+  "mechanism": {
+    "predictor": "Per-retained-endpoint 8-feature logistic classifier with 8 frozen int8 parameters. Offline binary label: endpoint reappears as an endpoint of any later TRAIN public edge during the same case.",
+    "runtime_future_observations": false,
+    "runtime_future_questions": false,
+    "runtime_hidden_core": false,
+    "candidate_controller": "At each current public edge, enumerate the exact frozen lossless ACTION.actions successors and choose a causal 12-record memory using sum of calibrated survival probabilities over unique public retained endpoints, competing with frozen F60 next-state under pre-frozen margin. Unlike F66B, no manual scalar length^2/compression reward; teacher learns observed binary endpoint reappearance directly.",
+    "runtime_features": [
+      "current incident record count of endpoint",
+      "number of short paths incident on endpoint",
+      "number of composed paths incident",
+      "distinct adjacent public role codes",
+      "current new-edge endpoint indicator",
+      "memory occupancy",
+      "largest incident composed path length",
+      "prefix fraction"
+    ],
+    "train_labels": "Only future public edge incidence within frozen FIT TRAIN; no task answer labels or private tags.",
+    "fit_loss": "Binary cross-entropy, exactly 3 chronological epochs, learning rate 0.02, quantize 32*weights signed-int8; frozen before first registered cohort.",
+    "weights_max": 8,
+    "record_bytes": 12,
+    "records_max": 12
+  },
+  "source_blobs": {
+    "generator": "c04b73306861098eecf55db77b2db486aa918819",
+    "frozen_F62_candidate_engine": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "independent_causal_memory_auditor": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f",
+    "frozen_F60_baseline": "123dd7e979485ae07664118f948cd651b0386526"
+  },
+  "cohorts": {
+    "FIT_TRAIN": [
+      891000,
+      891008
+    ],
+    "FIT_VALIDATE": [
+      891008,
+      891016
+    ],
+    "FIT_FAMILIES": [
+      1720,
+      1721,
+      1722,
+      1723
+    ],
+    "DIAGNOSTICS_UNAUTHORIZED": {
+      "seeds": [
+        891100,
+        891116
+      ],
+      "families": [
+        1724,
+        1725,
+        1726,
+        1727
+      ]
+    },
+    "ORIGINAL_UNAUTHORIZED": {
+      "seeds": [
+        892000,
+        892016
+      ],
+      "families": [
+        1728,
+        1729,
+        1730,
+        1731
+      ]
+    },
+    "none_of_F61_to_F68_reused": true
+  },
+  "gates": {
+    "synthetic_train_on_negative_seeds_first": true,
+    "positive_and_negative_endpoint_reappearance_labels_required": true,
+    "independent_all_public_prefixes_audit": true,
+    "model_proposes_nonzero_prelink_proactive_actions": true,
+    "one_full_repo_regression_before_FIT": true,
+    "F60_source_feasibility_min": 0.25,
+    "public_extra_work_witness_min": 0.85,
+    "heldout_gain_vs_strongest_equal_byte_min": 0.05,
+    "per_family_nondegradation": true,
+    "positive_prediction_ablation": true,
+    "crosslink_and_within_component_report": true,
+    "once_only_heldout": true,
+    "no_postresult_tuning": true
+  },
+  "authority": {
+    "FIT_TRAIN_used": false,
+    "FIT_VALIDATE_used": false,
+    "DIAG_used": false,
+    "original_used": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "CKB_plane_mutation": false,
+    "paid_API": false
+  }
+}
