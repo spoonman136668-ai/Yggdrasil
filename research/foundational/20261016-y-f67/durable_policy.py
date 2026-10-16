@@ -108,7 +108,7 @@ def smoke():
   claim=BUDGET_AUDIT.verify(public,q,trace)
   assert claim["prefixes"]==72 and claim["max_payload_bytes"]<=144
   without,abl_trace,abl_merges=online(public,demo,True,False)
-  assert BUDGET_AUDIT.verify(public,q,abl_trace)["prefixes"]==72
+  assert AUDIT.verify(public,q,abl_trace)["prefixes"]==72
   rows.append(dict(seed=seed,kind=meta["question_type"],
      protected_merges=merges,unprotected_merges=abl_merges,
      final_stable=sum(len(r[2])>=4 for r in m),
