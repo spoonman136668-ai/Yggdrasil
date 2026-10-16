@@ -1,0 +1,50 @@
+name: Yggdrasil F95 immutable policy validation then one-time guard
+on:
+  push:
+    branches:
+      - research/y-f95-sparse-risk-lookup-20261016-r1
+    paths:
+      - 'research/foundational/20261016-y-f95/holdout.py'
+      - '.github/workflows/y-f95-frozen-holdout.yml'
+permissions:
+  contents: read
+jobs:
+  frozen-holdout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Source provenance and immutable TRAIN-derived lookup attestation
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 98a44a9a13cc0ed535c6503bd40a4294d4714401 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f95/prereg.json)" = b03be01fe77f09663f33673ff2095e99f220f16d
+          test "$(git hash-object research/foundational/20261016-y-f95/risk_lookup.py)" = b68712cab0d1774c4fc27e928b4f4b57748a1fe4
+          test "$(git hash-object research/foundational/20261016-y-f95/frozen-policy.json)" = faa67955f124ead548bd6dbcd3e4a8dc276649be
+          test "$(git hash-object research/foundational/20261016-y-f94/single_deviation_feasibility.py)" = 0284a3ed1cd5f263dc4ad7cf3f3f21969bb665ad
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+      - name: Pure F95/F94 native action unit controls before holdout
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f95 -p test_risk_lookup.py
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f94 -p test_single_deviation_feasibility.py
+      - name: Frozen validation — never train or adjust risk table
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f95/holdout.py --validation > "$RUNNER_TEMP/f95-validation.json"
+          python3 -B -c 'import json,os; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f95-validation.json"))); assert d["stage"]=="F95_VALIDATION_ONLY" and d["cases"]==16; assert d["trained_policy_frozen_before_holdout"] and d["no_holdout_model_selection"] and d["all_native_72_prefixes_audited"] and d["max_native_memory_bytes"]<=144 and d["latch_extra_bits"]==1 and not d["accepted_science"]; print(json.dumps({k:d[k] for k in ("classification","cases","scores","six_step_rescues","F60_correct_regressions","learned_native_interventions","all_f95_memory_identical_F60")},sort_keys=True))'
+      - name: One separate F95 guard source first-use — no tuning
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f95/holdout.py --guard > "$RUNNER_TEMP/f95-guard.json"
+          python3 -B -c 'import json,os; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f95-guard.json"))); assert d["stage"]=="F95_ONE_TIME_DISJOINT_GUARD" and d["cases"]==32 and d["six_step_cases"]==8; assert d["trained_policy_frozen_before_holdout"] and d["no_holdout_model_selection"] and d["all_native_72_prefixes_audited"] and d["max_native_memory_bytes"]<=144 and d["latch_extra_bits"]==1; assert d["no_registered_FIT"] and d["no_DIAG"] and d["no_original"] and d["no_F3"] and not d["accepted_science"] and not d["optimizer_promotion"] and not d["controller_mutation"]; print(json.dumps({k:d[k] for k in ("classification","cases","scores","six_step_rescues","F60_correct_regressions","learned_native_interventions","all_f95_memory_identical_F60","by_regime_and_type")},sort_keys=True))'
+      - name: Ensure immutable source checkout
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
