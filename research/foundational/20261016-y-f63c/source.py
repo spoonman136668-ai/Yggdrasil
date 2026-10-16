@@ -77,7 +77,7 @@ def _create(seed,family,attempt):
             stream.extend(paths[k][2][4:]);stream.extend(noise[8+2*rank:8+2*rank+2])
         stream.extend(noise[16:])
     assert len(stream)==72 and len(set(stream))==72
-    kind="crosslink_reach_6_steps" if (seed+family)%4==0 else "within_component_4_steps"
+    kind="crosslink_reach_6_steps" if (seed+2*family)%4==0 else "within_component_4_steps"
     if kind=="crosslink_reach_6_steps":
         which=rng.randrange(2)
         link,bridge,left,right=links[which]
