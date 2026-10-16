@@ -197,16 +197,23 @@ def _score(weights,features):
     assert len(weights)==PARAMS and all(-127<=w<=127 for w in weights)
     return sum((w/16)*x for w,x in zip(weights,features))
 
-def learned_online(public,weights,packing):
+def learned_online(public,weights,packing,trace=False):
     memory=()
     selected_actions=[]
+    prefix_receipts=[]
     for index,event in enumerate(public):
         choices=actions(memory,event,index,packing)
         # Deterministic tie break avoids source-dependent candidate iteration.
         best=max(range(len(choices)),key=lambda j:(_score(weights,choices[j][4]),-j))
         action,old,drop,memory,_=choices[best]
         selected_actions.append((action,old,drop))
+        if trace:
+            # Snapshots are taken AFTER each public edge. They are optional
+            # qualification evidence, not part of persistent online state.
+            prefix_receipts.append(tuple(packing.pack(*r).hex() for r in memory))
     _valid_memory(memory,packing)
+    if trace:
+        return memory,tuple(selected_actions),tuple(prefix_receipts)
     return memory,tuple(selected_actions)
 
 def _f60_step(memory,event,packing):
