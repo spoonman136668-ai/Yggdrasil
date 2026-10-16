@@ -1,0 +1,75 @@
+name: Yggdrasil F61 frozen learned future-query-value FIT-TRAIN source qualification
+on:
+  push:
+    branches: [research/y-f61-frozen-query-utility-learner-fitonly-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  frozen-source-fit-train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify frozen precode, F60/F59/F58 real source identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor d20afb1dc0de789be5c8985c1a31ee75038da73b HEAD
+          test "$(git hash-object research/foundational/20261015-y-f61/prereg.json)" = 67de09eecedfb5285e90a634a3e55aafa3e4a369
+          test "$(git hash-object research/foundational/20261015-y-f61/source_pilot.py)" = 68827a45543639585da82d05e5d301782fbc79a6
+          test "$(git hash-object research/foundational/20261015-y-f61/test_preflight.py)" = 8660709b0746c70c544ada937c2ca3311f09014d
+          test "$(git hash-object research/foundational/20261015-y-f60/source_feasibility.py)" = 123dd7e979485ae07664118f948cd651b0386526
+          test "$(git hash-object research/foundational/20261015-y-f59/source_feasibility.py)" = 232cf1bca7e2d1df5236ffa85c0a20f13a98a6ae
+          test "$(git hash-object research/foundational/20261015-y-f58/source_feasibility.py)" = f275d28e3755e2c90ea482d076d7401d722d71b8
+          python3 -B -m py_compile research/foundational/20261015-y-f61/source_pilot.py
+          python3 -B -m py_compile research/foundational/20261015-y-f61/test_preflight.py
+          echo Y_F61_ALL_FROZEN_SOURCE_IDENTITIES=PASS
+      - name: Independently isolate FIT-TRAIN from validation and original identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f61 -p test_preflight.py -v
+          echo Y_F61_ONLY_741000_TO_741007_TRAIN_VISITED=PASS
+      - name: One complete Yggdrasil repository regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+          echo Y_F61_FULL_PYTEST_REGRESSION=PASS
+      - name: FIT TRAIN only learned-model evidence and frozen receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/y61-train"
+          mkdir -p "$root"
+          python3 -B research/foundational/20261015-y-f61/source_pilot.py --preflight-train > "$root/train-preflight.json"
+          python3 -B - "$root/train-preflight.json" <<'PY'
+          import json,sys
+          x=json.load(open(sys.argv[1]))
+          assert x["schema"]=="yggdrasil.f61.query-value-fit-train-preflight.v1"
+          assert x["labeled_training_cases"]==32
+          assert x["training_examples"]>1000 and x["positive_labels"]>0
+          assert len(x["int8_weights"])==12
+          assert x["validation_seeds_NOT_TOUCHED"]==[741008,741016]
+          assert x["diagnostic_NOT_AUTHORIZED"]==[741100,741116]
+          assert x["original_NOT_RESERVED"]==[742000,742016]
+          assert x["source_independent_F3"] is False
+          assert x["accepted_ref_mutation"] is False
+          assert x["live_optimizer_unchanged"] is True
+          print("Y_F61_SOURCE_AND_ONLY_FIT_TRAIN=PASS")
+          PY
+          printf '%s\n' "$GITHUB_SHA" > "$root/SOURCE_SHA"
+          (cd "$root" && sha256sum train-preflight.json > manifest.sha256)
+          echo "F61_VALIDATION_CONSUMED=FALSE; DIAG=UNTOUCHED; ORIGINAL=UNTOUCHED; PROMOTION=FALSE"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: Y-F61-FIT-train-query-value-model-no-validation-or-DIAG
+          path: ${{ runner.temp }}/y61-train/
+          retention-days: 45
+          if-no-files-found: error
