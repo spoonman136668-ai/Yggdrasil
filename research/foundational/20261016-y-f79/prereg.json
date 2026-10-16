@@ -1,0 +1,106 @@
+{
+  "schema": "yggdrasil.f79.order-robust-public-role-contrastive-intervention.prereg.v1",
+  "stage": "PRECODE_FROZEN_SYNTHETIC_METHOD_ONLY",
+  "source": {
+    "F76_qualified_run": 38924985143,
+    "F76_prereg_blob": "eac6a88209fda174509749f33d21bbf6d20fbdc7",
+    "F76_source_blob": "5b8928b0399ce9f869854beadeab04b29c8703a5",
+    "frozen_F62_action_engine_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "independent_prefix_auditor_blob": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f",
+    "F74_preregistered_28_feature_definition_blob": "d7bdcde4c407e110041ec0966982ab7c95d2014f",
+    "F77_unregistered_diagnostic_run": 38928659957,
+    "F78_unregistered_capped_oracle_run": 38929166090,
+    "F77_and_F78_negative_seed_cases_EXPOSED_excluded": true
+  },
+  "hypothesis": "Directed public role-code and compositional features, trained with explicit asymmetric loss for rare task-beneficial native memory interventions, yield at least one useful early intervention without degrading the frozen F60 on independently unseen original-order and rotated-order synthetic tasks.",
+  "online_method": {
+    "default": "Exactly the original frozen F60 _f60_step",
+    "candidate_actions": "Only unique exact native ACTION.actions retained-memory alternatives different from frozen F60 next state",
+    "feature_dimension": 28,
+    "feature_definition": "Use F71's 12 source-public action differences plus 8 directed role-code counts, 4 current-event-endpoint-incident role membership counts, 4 adjacent same-role directed code pair counts; all normalized exactly as preregistered F74.",
+    "features_not_allowed": [
+      "future question",
+      "future public events",
+      "private hidden source tags",
+      "numeric node identifier",
+      "absolute public index"
+    ],
+    "model": "28 trainable signed int8 weights; intercept included as F71 feature zero; logistic probability of beneficial intervention",
+    "decision": "Choose the legal candidate with highest calibrated probability only when its probability is strictly >0.90, otherwise perform original F60. No persistent state beyond 12 retained lossless 12-byte records.",
+    "memory_budget_bytes": 144
+  },
+  "offline_training": {
+    "synthetic_only_before_protected_first_use": true,
+    "labels": "Each candidate action from a TRAIN public prefix receives beneficial only if its unchanged-F60 suffix solves the TRAIN question while the exact F60 next-state suffix does not; all harmful or neutral candidates are negative. Future public/question only offline TRAIN teacher.",
+    "loss": "Weighted logistic binary cross entropy via sequential deterministic SGD (no validation hyperparameter choice), three epochs, learning rate 0.025, beneficial sample weight 128, harmful sample weight 1, neutral sample weight 0.01.",
+    "weights_initialization": "all zeros",
+    "weight_finalization": "round each learned coefficient times 32 and clamp to signed int8 [-127,127]",
+    "order": "ascending train seed, family (-2 then -1), event index, ACTION.actions native candidate order",
+    "frozen_decision_probability_cutoff": 0.9,
+    "never_adjust_loss_or_cutoff_after_synthetic_guard": true
+  },
+  "synthetic_cohorts": {
+    "train_seeds": [
+      -4601,
+      -4617
+    ],
+    "guard_seeds": [
+      -4621,
+      -4637
+    ],
+    "families": [
+      -2,
+      -1
+    ],
+    "train_cases": 32,
+    "guard_cases": 32,
+    "source_F76_negative_seed_mode_only": true,
+    "no_overlaps_with_F77_F78_F74_F73": true
+  },
+  "protected_future_cohorts_UNAUTHORIZED": {
+    "FIT_TRAIN": [
+      921000,
+      921008
+    ],
+    "FIT_VALIDATION": [
+      921008,
+      921016
+    ],
+    "FIT_FAMILIES": [
+      1780,
+      1781,
+      1782,
+      1783
+    ],
+    "DIAG": [
+      921100,
+      921116
+    ],
+    "ORIGINAL": [
+      922000,
+      922016
+    ]
+  },
+  "synthetic_gates": {
+    "labels_beneficial_and_nonbeneficial_present_in_train": true,
+    "independent_72_prefix_audit_all_guard_cases": true,
+    "exact_F60_negative_control_parity": true,
+    "model_makes_at_least_one_legal_override": true,
+    "no_guard_accuracy_degradation_within_either_arrival_regime": true,
+    "at_least_one_beneficial_guard_case_relative_to_frozen_F60": true,
+    "model_and_original_controls_frozen_before_guard": true,
+    "one_full_repository_regression_if_method_gates_pass": true,
+    "no_use_of_registered_training_or_heldout": true,
+    "failure_must_remain_negative_no_retuning": true
+  },
+  "authority": {
+    "FIT_TRAIN_used": false,
+    "FIT_VALIDATION_used": false,
+    "DIAG_used": false,
+    "ORIGINAL_used": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "CKB_plane_mutation": false,
+    "paid_API": false
+  }
+}
