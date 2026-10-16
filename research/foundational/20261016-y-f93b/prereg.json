@@ -1,0 +1,88 @@
+{
+  "schema": "yggdrasil.f93b.learned-role-grammar.prereg.v1",
+  "stage": "FROZEN_PRECODE_NEW_NEGATIVE_SYNTHETIC_TRAIN_VALIDATION_GUARD",
+  "base": {
+    "F93A_head": "7300accd23d8f9ce627b3979cba48be34a83ac18",
+    "F92_blob": "7fdaf5d24866c347275c2ffa3aec7dfeaed6ac5b",
+    "F85_solver_blob": "e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3",
+    "F62_actions_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712"
+  },
+  "question": "Can a query-blind distribution-learned six-step role grammar guide native public memory retention to rescue cases F60 misses, without sacrificing F60's four-step competence?",
+  "method": {
+    "train": "Use only q['ops'] from disjoint F76 negative TRAIN cases with exactly six steps. Count 6-code directed role strings, retain up to top 3 by count descending then code lexicographic ascending. Do not use TRAIN answers or future observations for model fit.",
+    "online": "Only previous retained native records, current public edge, arrival index and frozen grammar; no source seed, family, query, answer or future observations. Take exact native F60 step and F62.actions from SAME prior state. After index>=36 and while one-action latch unused, choose a native alternative if it retains at least min(10,len(F60_baseline)-1) identical records and yields STRICTLY MORE distinct (grammar,start,end) exact directed six-step relational paths than baseline. Rank by added matches, baseline overlap, native enumeration order; otherwise F60.",
+    "grammar_scoring": "Compose entire legal forward and mirrored native records at exact matching endpoints with role-code concatenation. Directed role string must match one frozen learned six-code pattern exactly; no record truncation, no guessed relationships, no query or answer. Dynamic search limited to 512 nodes/prefix-state per candidate; any bound overrun means no intervention.",
+    "memory": "At most twelve native 12B records (144B) plus explicitly separate <=18 grammar bytes and one latch bit; F85 global solver unchanged.",
+    "training_is_not_prospective": "These synthetic role-distribution labels are learned only on TRAIN. Synthetic validation and guard are held out from model derivation and first used after grammar policy is frozen.",
+    "evidence": "F60, F83, F90, F91, F92 source-native controls with identical F85 reasoner; independently audit all 72 public prefixes, 144-byte memory, all question answers uniquely provable from full public graph.",
+    "positive": "At least one F60-failed six-step case rescued, and no F60-correct regressions in any regime or task type, all source/provenance and audit gates valid.",
+    "negative": "Zero six-step rescue or any F60 regression, including inactive mechanisms even if code/CI green.",
+    "freeze": "Do not reselect grammar or adjust thresholds after validation/guard; never use prior exposed negative cases as first-use."
+  },
+  "cohorts": {
+    "train": {
+      "start": -6001,
+      "end_exclusive": -6017,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "cases": 32
+    },
+    "validation": {
+      "start": -6021,
+      "end_exclusive": -6029,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "cases": 16
+    },
+    "guard": {
+      "start": -6041,
+      "end_exclusive": -6057,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "cases": 32,
+      "six_step": 8
+    },
+    "source": "Frozen F76 two-arrival negative-seed public-only generator; no registered FIT/DIAG/original/F3",
+    "excluded_prior": [
+      [
+        -5901,
+        -5917
+      ],
+      [
+        -5921,
+        -5929
+      ],
+      [
+        -5941,
+        -5957
+      ]
+    ]
+  },
+  "order": [
+    "Freeze prereg before source",
+    "Run unit tests and train only",
+    "Commit immutable trained grammar before either holdout",
+    "First validation then one new disjoint guard, without tuning",
+    "Preserve negative or positive synthetic evidence without independent scientific promotion"
+  ],
+  "authority": {
+    "scientific_accepted": false,
+    "FIT": false,
+    "DIAG": false,
+    "ORIGINAL": false,
+    "F3": false,
+    "controller_mutation": false,
+    "optimizer_promotion": false,
+    "merge": false,
+    "Codex": false
+  }
+}
