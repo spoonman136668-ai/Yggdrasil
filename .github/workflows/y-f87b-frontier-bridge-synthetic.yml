@@ -1,0 +1,40 @@
+name: F87B frozen frontier bridge synthetic qualification
+on:
+  push:
+    branches:
+      - research/y-f87-frontier-bridge-guard-20261016-r1
+permissions:
+  contents: read
+jobs:
+  f87b:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify F87B prereg and frozen prior source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 514ad664ae7eeab9569cac19a0be31c0ec4272fc HEAD
+          test "$(git hash-object research/foundational/20261016-y-f87b/prereg.json)" = 12de0e3e045c7361195732d0aec5b42e7c44f4d9
+          test "$(git hash-object research/foundational/20261016-y-f86/queryblind_retention.py)" = 8738a5e6a145fbc0f3c2efb2c873c3f8ed1f428e
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+      - name: Focused public action tests and frozen regression
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f87b -p 'test_bridge_reserve.py'
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f86 -p 'test_queryblind_retention.py'
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f85 -p 'test_global_solver.py'
+      - name: First disjoint F87B frozen synthetic guard
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f87b/bridge_reserve.py --frozen-negative-synthetic-only > "$RUNNER_TEMP/f87b-frozen.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f87b-frozen.json"))); assert r["stage"]=="DISJOINT_NEGATIVE_SYNTHETIC_GUARD"; assert r["cases"]==32 and r["six_step_cases"]==8; assert r["no_query_in_online_interface"] and r["no_training"] and r["all_online_prefixes_verified"]; assert r["max_persistent_memory_bytes"]<=144; assert r["no_registered_FIT"] and r["no_DIAG"] and r["no_original"] and not r["scientific_qualified"] and not r["optimizer_promotion"]; print(json.dumps({k:r[k] for k in ("classification","cases","scores","six_step_rescues","regressions_from_F60","bridge_trigger_events","bridge_override_events","by_regime_and_kind")},sort_keys=True))'
+      - name: Clean source tree
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
