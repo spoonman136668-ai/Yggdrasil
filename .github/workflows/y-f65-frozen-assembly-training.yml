@@ -1,0 +1,70 @@
+name: Yggdrasil F65 frozen assembly fitting
+on:
+  push:
+    branches:
+      - science/y-f65-fit-role-assembly-20261016-r1
+permissions:
+  contents: read
+  actions: read
+jobs:
+  synthetic-objective-audit:
+    if: "${{ github.event.head_commit.message == 'science(y-f65): fit frozen path assembly from archived train receipts only' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify immutable prereg and public-only frozen learner
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor fb8013361d3b41b0a73c85302a40524ea19b3683 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f65/prereg.json)" = 9bbfd50b740be2c9d4ec891b3b360cd9650b7e23
+          test "$(git hash-object research/foundational/20261016-y-f65/path_assembly.py)" = 10c2ba041c1d3e3063e1e98ba5726fa458db5f3a
+          test "$(git hash-object research/foundational/20261016-y-f65/train_path_assembly.py)" = be39568874d4491bcfaa334adf06dfb4565b44cb
+          mkdir -p "$RUNNER_TEMP/f65-synthetic-training/"
+          python3 -B research/foundational/20261016-y-f65/train_path_assembly.py --synthetic-only > "$RUNNER_TEMP/f65-synthetic-training/method.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f65-synthetic-training/method.json" >/dev/null
+          python3 -B -c 'import json,os; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f65-synthetic-training/method.json"))); print("F65_SYNTHETIC_TRAIN_SIGNAL",d["positive_target_merge_events"],d["examples"]); assert d["positive_target_merge_events"]>0 and d["heldout_executed"] is False'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f65-synthetic-supervised-assembly-qualification
+          path: ${{ runner.temp }}/f65-synthetic-training/
+          retention-days: 90
+          if-no-files-found: warn
+  fit-once-from-authenticated-train-artifact:
+    needs: synthetic-objective-audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: y-f65-frozen-first-use-train-only-source
+          run-id: 38888573914
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/f65-authentic-train-input/
+      - name: Derive fixed int8 weights from archived FIT TRAIN; no source rerun
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f65-frozen-weights/"
+          sha256sum "$RUNNER_TEMP/f65-authentic-train-input/fit_train_rows.jsonl" > "$RUNNER_TEMP/f65-frozen-weights/input_sha256.txt"
+          python3 -B research/foundational/20261016-y-f65/train_path_assembly.py --archived-fit-rows "$RUNNER_TEMP/f65-authentic-train-input/fit_train_rows.jsonl" > "$RUNNER_TEMP/f65-frozen-weights/model_fit.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f65-frozen-weights/model_fit.json" >/dev/null
+          cat "$RUNNER_TEMP/f65-frozen-weights/model_fit.json"
+          sha256sum "$RUNNER_TEMP/f65-frozen-weights/model_fit.json" > "$RUNNER_TEMP/f65-frozen-weights/model_sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f65-frozen-weights/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f65-frozen-learned-assembly-weights
+          path: ${{ runner.temp }}/f65-frozen-weights/
+          retention-days: 90
+          if-no-files-found: warn
