@@ -1,0 +1,71 @@
+name: Yggdrasil F68 source and safety shielding qualification
+on:
+  push:
+    branches: [research/y-f68-shielded-junction-override-precode-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  synthetic-source:
+    if: "${{ github.event.head_commit.message == 'ci(y-f68): qualify frozen F60 shielding and native junction overrides' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify immutable source and frozen shielding contract
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 54c2528cacdcd7513286a95725bcc529ae0a6cb3 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f68/prereg.json)" = f447f69142644e5af7832bf0d2079bc060a3a058
+          test "$(git hash-object research/foundational/20261016-y-f68/guarded_junction.py)" = f74c5acdc28ea91c0e5615483c644fcae040db93
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+          test "$(git hash-object research/foundational/20261015-y-f62/audit_public.py)" = 383fff0bdd8c8b48fde9538d4e4d768db1c1896f
+      - name: Check exact default parity and legal exceptional memory transitions
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f68-synthetic"
+          python3 -B research/foundational/20261016-y-f68/guarded_junction.py --synthetic-only > "$RUNNER_TEMP/y-f68-synthetic/result.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/y-f68-synthetic/result.json" >/dev/null
+          python3 -B -c 'import os,json;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"y-f68-synthetic/result.json")));print("F68_NONJUNCTION_PARITY",d["nonjunction_steps"],d["all_nonjunction_parity_pass"]);print("F68_SYNTHETIC_OVERRIDE",d["provisional_override_steps"]);print("F68_SCORES",d["demo_correct"],d["frozen_F60_correct"]);assert d["provisional_override_steps"]>0 and not d["registered_FIT_train_used"]'
+          sha256sum "$RUNNER_TEMP/y-f68-synthetic/result.json" > "$RUNNER_TEMP/y-f68-synthetic/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f68-synthetic/head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f68-shielded-junction-source-evidence
+          path: ${{ runner.temp }}/y-f68-synthetic/
+          retention-days: 90
+          if-no-files-found: warn
+  full-regression:
+    needs: synthetic-source
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install free dependencies
+        run: |
+          python -m pip install pytest pyyaml
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: One exact-head full regression
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f68-regression"
+          test "$(git hash-object research/foundational/20261016-y-f68/guarded_junction.py)" = f74c5acdc28ea91c0e5615483c644fcae040db93
+          python -B -m pytest -q > "$RUNNER_TEMP/y-f68-regression/result.txt" 2>&1
+          cat "$RUNNER_TEMP/y-f68-regression/result.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f68-regression/head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f68-one-full-regression
+          path: ${{ runner.temp }}/y-f68-regression/
+          retention-days: 90
+          if-no-files-found: warn
