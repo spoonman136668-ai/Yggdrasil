@@ -1,0 +1,35 @@
+{
+  "schema": "yggdrasil.f68.counterfactual-train-only-junction-credit.prereg.v1",
+  "stage": "PRECODE_METHOD_NOT_FITTED",
+  "source_architecture_blob": "f74c5acdc28ea91c0e5615483c644fcae040db93",
+  "teacher": "At an eligible retained-public-component join, compare every legal override candidate against the exactly frozen F60 next state, finishing BOTH under unchanged F60 transitions over the remaining FIT TRAIN public observations and evaluating the TRAIN question only offline.",
+  "labels": {
+    "beneficial": "1.0 if override terminal answer correct and F60 terminal answer wrong",
+    "harmful": "-1.0 if override terminal answer wrong and F60 terminal answer correct",
+    "neutral": "-0.25 if both terminal answers agree, including both wrong",
+    "no_candidate_outside_public_junction": true
+  },
+  "fixed_optimizer": {
+    "epochs": 3,
+    "learning_rate": 0.03,
+    "objective": "deterministic squared-error prediction for each alternative-versus-F60 signed credit, features computed only from current public records/edge; weights clipped signed-int8 after scaling by 32",
+    "sample_order": "ascending seeds, families, public prefix index, candidate native action order",
+    "training_source": "FIT TRAIN only after synthetic qualification and exact frozen independent source/regression",
+    "no_postresult_tuning": true
+  },
+  "qualification": {
+    "synthetic_positive_and_negative_counterfactual_examples_required": true,
+    "synthetic_model_guard_accuracy_not_below_fixed_F60": true,
+    "synthetic_independent_causal_prefix_replay": true,
+    "synthetic_nonzero_effective_override_required": true,
+    "protected_fit_only_after_all_gates": true
+  },
+  "authority": {
+    "registered_FIT_train_used": false,
+    "registered_FIT_validate_used": false,
+    "DIAG_used": false,
+    "original_used": false,
+    "F3": false,
+    "optimizer_promotion": false
+  }
+}
