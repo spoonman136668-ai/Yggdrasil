@@ -1,0 +1,59 @@
+{
+  "schema": "yggdrasil.f80.cross-arrival-causal-role-feature-identifiability.prereg.v1",
+  "stage": "PRECODE_SYNTHETIC_DIAGNOSTIC_NO_MODEL_FIT",
+  "parent": {
+    "F76_source_qualified_run": 38924985143,
+    "F77_action_feasibility_run": 38928659957,
+    "F78_capped_two_action_run": 38929166090,
+    "F79_synthetic_learned_negative_run": 38929906313,
+    "F79_frozen_model_source_blob": "4bba6e34d56ef96aa81515032988f9c5127fe35f",
+    "F79_model_negative_exposed_cohorts_excluded": true
+  },
+  "question": "Do the F79 frozen causal public 28 features still give indistinguishable signatures to useful and harmful source-native memory interventions, within and between the original and rotated arrival regimes?",
+  "source": {
+    "F76_public_source_blob": "5b8928b0399ce9f869854beadeab04b29c8703a5",
+    "F62_action_engine_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "independent_prefix_auditor_blob": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f"
+  },
+  "synthetic_cohort": {
+    "seeds": [
+      -4701,
+      -4717
+    ],
+    "families": [
+      -2,
+      -1
+    ],
+    "cases": 32,
+    "all_prior_protected_and_synthetic_ids_excluded": true
+  },
+  "method": {
+    "frozen_F60_control": "Exact native F60 for all 72 public prefixes, source-legal alternatives from ACTION.actions only",
+    "labels": "Offline teacher compares terminal answer correctness after frozen F60 suffix from original vs proposed state: beneficial/harmful/neutral. Future question NEVER supplied to features or online policy.",
+    "features": "Exactly frozen F71 12 and F79 28 current-public-only features; signature rounding 8 decimal places, prereg fixed.",
+    "source_audit": "Verify every frozen F60 72-prefix trace and at most one earliest correct single-action alternative for every source with such an alternative.",
+    "cross_arrival_collision": "A signature shared by >=1 beneficial candidate in one arrival regime and >=1 harmful candidate in the OTHER; report counts by direction and distinct signatures.",
+    "within_arrival_collision": "Per arrival regime beneficial/harmful co-signature counts, beneficial and harmful candidate counts.",
+    "task_strata": "Report full role task question kinds separately, and whether frozen F60 reached the answer under each regime.",
+    "do_not_train_or_tune": true,
+    "no_infeasibility_claim_from_absent_one_step_rescue": true
+  },
+  "gates": {
+    "exact_source_pins": true,
+    "independent_72_prefix_trace": true,
+    "node_renaming_invariant_by_source_property": true,
+    "all_32_cases_reported": true,
+    "no_model_fit": true,
+    "no_heldout_or_original_access": true,
+    "no_F3_or_optimizer_promotion": true
+  },
+  "authority": {
+    "FIT_train_used": false,
+    "FIT_validation_used": false,
+    "DIAG_used": false,
+    "ORIGINAL_used": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "paid_API": false
+  }
+}
