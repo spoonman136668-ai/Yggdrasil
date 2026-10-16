@@ -9,7 +9,7 @@ import collections,hashlib,importlib.util,json,pathlib,sys
 P=pathlib.Path(__file__).resolve().parent
 def blob(path):
  raw=path.read_bytes();return hashlib.sha1(b"blob "+str(len(raw)).encode()+b"\0"+raw).hexdigest()
-assert blob(P/"prereg.json")=="8f4179dd8116dfb8ef9e56d68b858d1484abca47"
+assert blob(P/"prereg.json")=="eac6a88209fda174509749f33d21bbf6d20fbdc7"
 def load(name,path,sha):
  assert blob(path)==sha,(name,"SCIENCE_FROZEN_SOURCE_IDENTITY_DRIFT")
  spec=importlib.util.spec_from_file_location(name,path)
@@ -53,18 +53,18 @@ def audit_frozen_F60(public,q):
  return int(PACK.solve(memory,q)==q["answer"])
 def synthetic_source_qualification():
  rows=[]
- for k in range(32):
-  seed=-4201-k;family=(-2,-1)[k%2]
-  public,q,meta=source(seed,family)
-  assert len(public)==72 and len(set(public))==72
-  assert BASE.public_witness(public,q)=={q["answer"]}
-  good=audit_frozen_F60(public,q)
-  rows.append(dict(seed=seed,family=family,
-    arrival_regime=meta["arrival_regime"],
-    question_type=meta["question_type"],
-    F60_correct=good,public_answer_unique=True,
-    independent_full_prefix_causality=True,
-    F63C_original_regime=meta["original_F63C_regime"]))
+ for seed in range(-4201,-4217,-1):
+  for family in (-2,-1):
+   public,q,meta=source(seed,family)
+   assert len(public)==72 and len(set(public))==72
+   assert BASE.public_witness(public,q)=={q["answer"]}
+   good=audit_frozen_F60(public,q)
+   rows.append(dict(seed=seed,family=family,
+     arrival_regime=meta["arrival_regime"],
+     question_type=meta["question_type"],
+     F60_correct=good,public_answer_unique=True,
+     independent_full_prefix_causality=True,
+     F63C_original_regime=meta["original_F63C_regime"]))
  summary={}
  for regime in ("original","local_rotate4"):
   sub=[r for r in rows if r["arrival_regime"]==regime]
