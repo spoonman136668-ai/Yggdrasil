@@ -1,0 +1,70 @@
+name: Yggdrasil F67B action-dependent junction source qualification
+on:
+  push:
+    branches: [research/y-f67b-action-dependent-junction-precode-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  independent-synthetic:
+    if: "${{ github.event.head_commit.message == 'ci(y-f67b): qualify action-dependent junction source and full regression' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pin preregistered amended source and unchanged parent
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 4a10eb1f51c07f6b37b861171d93b4ae51d44ceb HEAD
+          test "$(git hash-object research/foundational/20261016-y-f67b/prereg.json)" = bf6d45260a237f532287c128da60b301a4a04f2e
+          test "$(git hash-object research/foundational/20261016-y-f67b/action_junction.py)" = 7ea16c037642dedbc46d5e6e27cc1d5975bbb3f5
+          test "$(git hash-object research/foundational/20261016-y-f67a/causal_memory.py)" = b370396b3c3571be2c01ab2b33effef14f248eef
+      - name: Independent source graph and public-prefix verification
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f67b-source"
+          python3 -B research/foundational/20261016-y-f67b/action_junction.py --synthetic-only > "$RUNNER_TEMP/f67b-source/audit.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f67b-source/audit.json" >/dev/null
+          python3 -B -c 'import json,os;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f67b-source/audit.json")));print("F67B_ACTION_IDENTIFIABILITY",d["action_dependent_junction_decision_steps"]);print("F67B_SYNTHETIC_MERGES",d["provisional_demo_merges"]);assert d["action_dependent_junction_decision_steps"]>0 and d["provisional_demo_merges"]>0;assert not d["fit_train_used"] and not d["fit_validation_used"]'
+          sha256sum "$RUNNER_TEMP/f67b-source/audit.json" > "$RUNNER_TEMP/f67b-source/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f67b-source/head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f67b-action-dependent-synthetic-source
+          path: ${{ runner.temp }}/f67b-source/
+          retention-days: 90
+          if-no-files-found: warn
+  single-full-regression:
+    needs: independent-synthetic
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install no-cost test dependencies
+        run: |
+          python -m pip install pytest pyyaml
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: One exact-head full regression
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f67b-regression"
+          test "$(git hash-object research/foundational/20261016-y-f67b/action_junction.py)" = 7ea16c037642dedbc46d5e6e27cc1d5975bbb3f5
+          python -B -m pytest -q > "$RUNNER_TEMP/f67b-regression/result.txt" 2>&1
+          cat "$RUNNER_TEMP/f67b-regression/result.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f67b-regression/head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f67b-one-full-regression
+          path: ${{ runner.temp }}/f67b-regression/
+          retention-days: 90
+          if-no-files-found: warn
