@@ -1,0 +1,69 @@
+{
+  "schema": "yggdrasil.f67a.causal-hierarchical-junction-memory.prereg.v1",
+  "stage": "PRECODE_FROZEN_REPLACEMENT_SYNTHETIC_ONLY",
+  "parent_f67_prereg_blob": "1db81bfd134da0896684abf045c1912a98d6bcf6",
+  "parent_f67_source_blob": "7ef5b0b1d21d49bad8cd764fd1a6b2ea2b8afc7e",
+  "parent_failed_run": 38903973607,
+  "reason": "F67's lane-based record reordering is not a legal causal append/merge/evict transition under independent SHA-pinned auditor; no protected FIT used. Preserve failed prototype, do not relax causal checks.",
+  "design": "Keep one chronologically ordered packed record tuple. Evaluate only immutable ACTION.actions(before,event,index) successor tuples so every transition is auditor-authorized. Recompute up to two logical junction/reserve candidates from retained public record endpoint connectivity without persistent uncounted side metadata. Treat the remaining <=10 as ordinary when at full 12-record capacity.",
+  "budget": {
+    "max_total_records": 12,
+    "max_role_records_normal": 10,
+    "max_logical_junction_records": 2,
+    "record_bytes": 12,
+    "total_bytes": 144,
+    "extra_persistent_lane_tags": 0,
+    "learned_parameters_max": 16
+  },
+  "synthetic_source_only": true,
+  "frozen_source": {
+    "original_generator_blob": "c04b73306861098eecf55db77b2db486aa918819",
+    "historical_action_engine_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "independent_auditor_blob": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f"
+  },
+  "fresh_cohorts": {
+    "FIT_TRAIN": [
+      861000,
+      861008
+    ],
+    "FIT_VALIDATE": [
+      861008,
+      861016
+    ],
+    "FIT_FAMILIES": [
+      1660,
+      1661,
+      1662,
+      1663
+    ],
+    "DIAG_UNAUTHORIZED": [
+      861100,
+      861116
+    ],
+    "ORIGINAL_UNAUTHORIZED": [
+      862000,
+      862016
+    ]
+  },
+  "gates": {
+    "every_public_prefix_independently_audited": true,
+    "lossless_exact_memory_bytes": true,
+    "at_least_one_source_synthetic_composition_action": true,
+    "at_least_one_detected_public_junction": true,
+    "one_full_repository_regression": true,
+    "source_feasibility_F60_min": 0.25,
+    "public_witness_min": 0.85,
+    "heldout_gain_vs_strongest_fair_min": 0.05,
+    "positive_junction_ablation": true,
+    "per_family_nondegradation": true
+  },
+  "authority": {
+    "FIT_TRAIN_executed": false,
+    "FIT_VALIDATION_executed": false,
+    "DIAG_executed": false,
+    "ORIGINAL_executed": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "paid_API": false
+  }
+}
