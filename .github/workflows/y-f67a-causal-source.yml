@@ -1,0 +1,75 @@
+name: Yggdrasil F67A auditor-compatible hierarchical preflight
+on:
+  push:
+    branches:
+      - research/y-f67-hierarchical-bridge-memory-precode-20261016-r1
+permissions:
+  contents: read
+jobs:
+  synthetic-prefix-causal-audit:
+    if: "${{ github.event.head_commit.message == 'ci(y-f67a): qualify immutable causal hierarchical model and full regression' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pin amended prereg and source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 22f7a3d3ecb14cef49b593844369078d3a102265 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f67a/prereg.json)" = 5ecade3402c33120a1eabfd34bbc66e91200dcb8
+          test "$(git hash-object research/foundational/20261016-y-f67a/causal_memory.py)" = b370396b3c3571be2c01ab2b33effef14f248eef
+          test "$(git hash-object research/foundational/20261015-y-f62/audit_public.py)" = 383fff0bdd8c8b48fde9538d4e4d768db1c1896f
+      - name: Independent original causal auditor for all synthetic prefixes
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f67a-source"
+          python3 -B research/foundational/20261016-y-f67a/causal_memory.py --synthetic-only > "$RUNNER_TEMP/y-f67a-source/source.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/y-f67a-source/source.json" >/dev/null
+          python3 -B -c 'import json,os;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"y-f67a-source/source.json")));print("F67A_CAUSAL_MERGES",d["merges"]);print("F67A_PUBLIC_JUNCTIONS",d["public_junction_signals"]);assert d["causal_72_prefix_auditor_pass"] and d["merges"]>0 and d["public_junction_signals"]>0;assert not d["fit_train_consumed"] and not d["heldout_consumed"]'
+          sha256sum "$RUNNER_TEMP/y-f67a-source/source.json" > "$RUNNER_TEMP/y-f67a-source/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f67a-source/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f67a-auditor-compatible-source
+          path: ${{ runner.temp }}/y-f67a-source/
+          retention-days: 90
+          if-no-files-found: warn
+  one-full-regression:
+    needs: synthetic-prefix-causal-audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 95
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install hosted test dependencies
+        shell: bash
+        run: |
+          python -m pip install pytest pyyaml
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Run once at frozen source head
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f67a-regression"
+          test "$(git hash-object research/foundational/20261016-y-f67a/causal_memory.py)" = b370396b3c3571be2c01ab2b33effef14f248eef
+          python -B -m pytest -q > "$RUNNER_TEMP/y-f67a-regression/full-regression.txt" 2>&1
+          cat "$RUNNER_TEMP/y-f67a-regression/full-regression.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f67a-regression/head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f67a-one-full-regression
+          path: ${{ runner.temp }}/y-f67a-regression/
+          retention-days: 90
+          if-no-files-found: warn
