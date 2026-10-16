@@ -1,0 +1,41 @@
+name: Yggdrasil F62 frozen-weight prevalidation audit
+on:
+  push:
+    branches:
+      - research/y-f62-frozen-weight-custody-20261016-r1
+permissions:
+  contents: read
+jobs:
+  synthetic-custody-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check qualified source ancestry and independent frozen sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 002c7ae6ebd5c8d8fc6f6fcee6df3a97ff1de398 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+          test "$(git hash-object research/foundational/20261015-y-f62/frozen_train_receipt.json)" = 3ebca86bb230c9e6f4885f9c636d76f5d06e115f
+          test "$(git hash-object research/foundational/20261015-y-f62/audit_public.py)" = 383fff0bdd8c8b48fde9538d4e4d768db1c1896f
+          mkdir -p evidence
+          echo "$GITHUB_SHA" > evidence/exact_head.txt
+      - name: Independent causal audit using only unregistered synthetic cases
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f62/prevalidate_frozen.py | tee evidence/synthetic_custody_audit.json
+          python3 -B -m json.tool evidence/synthetic_custody_audit.json >/dev/null
+          sha256sum evidence/synthetic_custody_audit.json > evidence/audit_sha256.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f62-frozen-weights-prevalidation
+          path: evidence/
+          retention-days: 90
+          if-no-files-found: warn
