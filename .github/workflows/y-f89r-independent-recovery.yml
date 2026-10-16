@@ -1,0 +1,61 @@
+name: Yggdrasil F89R immutable-decision recovery and fresh guard
+on:
+  push:
+    branches:
+      - research/y-f89r-accounting-recovery-20261016-r1
+    paths:
+      - 'research/foundational/20261016-y-f89r/recovery-prereg.json'
+      - 'research/foundational/20261016-y-f89r/*.py'
+      - '.github/workflows/y-f89r-independent-recovery.yml'
+permissions:
+  contents: read
+jobs:
+  f89r:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify frozen F89R prereg, source and unchanged F89 decision AST
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor a24abab5f778c753f2e8e3f21adf077ceb1cb6b8 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f89r/recovery-prereg.json)" = f58cf3ba6e730817c41c188aace1f510667b96e9
+          test "$(git hash-object research/foundational/20261016-y-f88/frontier.py)" = 1e613ee872e545d0ec874ec81c2d4d3ba4742d8d
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+          python3 -B - <<'PY'
+          import ast, subprocess
+          from pathlib import Path
+          original=subprocess.check_output([
+              "git","show","1ee97118193a4c6a835ba1b1a3a98d7dc5200e81:research/foundational/20261016-y-f89/graded_exchange.py"
+          ], text=True)
+          repaired=Path("research/foundational/20261016-y-f89r/graded_exchange.py").read_text()
+          def method(code):
+              nodes=ast.parse(code).body
+              return next(n for n in nodes if isinstance(n,ast.FunctionDef) and n.name=="decide")
+          assert ast.dump(method(original),include_attributes=False)==ast.dump(method(repaired),include_attributes=False)
+          print("F89R_DECISION_AST_EQUIVALENT=PASS")
+          PY
+      - name: Nine isolated F89R tests including 72-step accounting and previous regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f89r -p 'test_graded_exchange.py'
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f88 -p 'test_frontier.py'
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f85 -p 'test_global_solver.py'
+      - name: New F89R first-use negative synthetic guard only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f89r/graded_exchange.py --once-disjoint-synthetic-only > "$RUNNER_TEMP/f89r-fresh-firstuse.json"
+          python3 -B -c 'import json,os; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f89r-fresh-firstuse.json"))); assert d["stage"]=="F89R_NEW_DISJOINT_NEGATIVE_SYNTHETIC_ONLY" and d["cases"]==32 and d["six_step_cases"]==8; assert d["all_72_causal_prefixes_audited"] and d["max_persistent_memory_bytes"]<=144; assert d["no_query_or_future_in_online"] and d["no_policy_fitting"]; assert d["no_protected_original"] and d["no_FIT"] and d["no_DIAG"] and d["no_F3"] and d["no_controller_or_optimizer_mutation"] and not d["science_accepted"]; print(json.dumps({k:d[k] for k in ("classification","cases","scores","six_step_rescues_from_F60","F60_correct_case_regressions","native_override_events","eligible_native_action_opportunities","resource_cap_events","total_allowed_short_tuple_losses","per_regime_and_kind")},sort_keys=True))'
+      - name: No write to scientific checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
