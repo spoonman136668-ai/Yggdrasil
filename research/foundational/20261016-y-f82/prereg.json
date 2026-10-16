@@ -1,0 +1,101 @@
+{
+  "schema": "yggdrasil.f82.compact-directed-role-intervention.synthetic-precode.v1",
+  "stage": "PRECODE_FROZEN_UNREGISTERED_TRAIN_GUARD",
+  "parent": {
+    "F81_run": 38937204779,
+    "F81_code_blob": "3a2f6a8a46d7be36c8a793b732acd735485d73a5",
+    "F81_prereg_blob": "ef96bb4bafa72bd930b1a47f2195cd16f920cf26",
+    "F79_code_blob": "4bba6e34d56ef96aa81515032988f9c5127fe35f",
+    "F80_F81_synthetic_cohorts_exposed": true
+  },
+  "hypothesis": "A compact 24-weight causal public directed-role-pair and incoming-endpoint role-incidence intervention learner improves over exact frozen F60 on independently fresh two-arrival synthetic guard examples without degradation in either arrival regime.",
+  "source": {
+    "frozen_F76_blob": "5b8928b0399ce9f869854beadeab04b29c8703a5",
+    "frozen_F62_action_engine_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "frozen_independent_auditor_blob": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f"
+  },
+  "online": {
+    "features": "Exactly F81 16 ordered-role transitions plus 8 separately oriented incoming-endpoint role incidences, all after minus F60-next-state baseline divided by 12; ignore the old 28 features",
+    "max_trainable_signed_int8_weights": 24,
+    "model_memory": "At most twelve exact source 12-byte records, 144B; no extra persistent state",
+    "candidate_actions": "Only F79.unique_alternatives from native F62.actions",
+    "default_action": "Exact frozen F60 next state",
+    "decision": "Select highest sigmoid probability only if strictly >0.90; otherwise exact F60 action",
+    "forbidden_online_inputs": [
+      "future question",
+      "future public events",
+      "private tags",
+      "absolute index",
+      "node integer ID"
+    ]
+  },
+  "training": {
+    "train_seeds": [
+      -4901,
+      -4917
+    ],
+    "families": [
+      -2,
+      -1
+    ],
+    "cases": 32,
+    "guard_seeds": [
+      -4921,
+      -4937
+    ],
+    "guard_cases": 32,
+    "labels": "F79 exact offline source-native one-action causal future suffix success; beneficial if alternative succeeds and baseline fails, harmful if opposite; others neutral",
+    "loss": "Three ordered epochs logistic SGD with learning rate 0.025, positives weight 128, harmful weight 1, neutral weight 0.01",
+    "initialization": "24 zero weights",
+    "finalize": "Round coefficients times 32, clamp [-127,127] int8",
+    "no_guard_tuning": true,
+    "source_F76_negative_seed_only": true
+  },
+  "gates": {
+    "exact_source_and_method_sha": true,
+    "nonempty_beneficial_and_harmful_train_labels": true,
+    "frozen_training_before_guard": true,
+    "independent_72_prefix_audit_each_guard": true,
+    "exact_negative_control_parity": true,
+    "at_least_one_valid_legal_intervention": true,
+    "per_arrival_regime_accuracy_nondegradation": true,
+    "at_least_one_new_guard_case_rescue": true,
+    "no_model_or_threshold_retuning_after_guard": true,
+    "failed_guard_is_scientific_prequalification_negative": true,
+    "one_full_repository_regression_if_all_method_gates_pass": true
+  },
+  "protected_future_cohorts_UNAUTHORIZED": {
+    "FIT_TRAIN": [
+      931000,
+      931008
+    ],
+    "FIT_VALIDATION": [
+      931008,
+      931016
+    ],
+    "FIT_FAMILIES": [
+      1800,
+      1801,
+      1802,
+      1803
+    ],
+    "DIAG": [
+      931100,
+      931116
+    ],
+    "ORIGINAL": [
+      932000,
+      932016
+    ]
+  },
+  "authority": {
+    "registered_FIT_train": false,
+    "registered_FIT_validation": false,
+    "DIAG": false,
+    "ORIGINAL": false,
+    "F3": false,
+    "optimizer_policy_promotion": false,
+    "CKB_plane_change": false,
+    "paid_API": false
+  }
+}
