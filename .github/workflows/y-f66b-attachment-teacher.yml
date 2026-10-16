@@ -1,0 +1,44 @@
+name: Yggdrasil F66B attachment-cost synthetic qualification
+on:
+  push:
+    branches:
+      - research/y-f66b-public-attachment-tradeoff-precode-20261016-r1
+permissions:
+  contents: read
+jobs:
+  revised-teacher-preflight:
+    if: "${{ github.event.head_commit.message == 'ci(y-f66b): independently qualify balanced offline attachment teacher' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pin unchanged online methods and prior precode
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 9cf28f8b576871585dbca1ae19a3f97fcd34399f HEAD
+          test "$(git hash-object research/foundational/20261016-y-f66b/prereg.json)" = 551644239204be97cdb5944b7108d9ecca82c709
+          test "$(git hash-object research/foundational/20261016-y-f66b/attachment_teacher.py)" = 6ec8d3352be9b12f42a821bfb3781ea1570de63a
+          test "$(git hash-object research/foundational/20261016-y-f66/two_head_continuation.py)" = fa08d72d79380a82814c86482e98b206b69b4d4a
+          test "$(git hash-object research/foundational/20261016-y-f66/dense_teacher.py)" = 4924a409a446403c0c2a5d1e146adc8171ae4791
+      - name: Independently test positive and negative teacher action evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f66b-synthetic/"
+          python3 -B research/foundational/20261016-y-f66b/attachment_teacher.py --synthetic-only > "$RUNNER_TEMP/f66b-synthetic/teacher_preflight.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f66b-synthetic/teacher_preflight.json" >/dev/null
+          python3 -B -c 'import json,os; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f66b-synthetic/teacher_preflight.json")));print("F66B_COUNTS",d["counts"]);print("F66B_LEARNED_MERGES",d["learned_merge_count"]);assert d["counts"]["positive_merges"]>0 and d["counts"]["negative_merges"]>0 and d["model_merge_gate_pass"];assert not d["registered_fit_used"] and not d["heldout_used"]'
+          sha256sum "$RUNNER_TEMP/f66b-synthetic/teacher_preflight.json" > "$RUNNER_TEMP/f66b-synthetic/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f66b-synthetic/exact-head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f66b-balanced-synthetic-teacher-evidence
+          path: ${{ runner.temp }}/f66b-synthetic/
+          retention-days: 90
+          if-no-files-found: warn
