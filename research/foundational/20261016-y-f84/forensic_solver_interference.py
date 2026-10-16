@@ -104,24 +104,31 @@ def run():
             assert reproduced==original["query_aware_offline_oracle_correct"]
             assert (independent["failure_kind"]=="none")==reproduced
             target_only = f.M.PACK.solve(tuple(rec for rec in memory if rec in targets),q)
-            assert target_only==q["answer"],"FROZEN_TARGET_ONLY_SOLVER_INVALID"
+            target_only_solved = (target_only == q["answer"])
+            target_only_trace = independent_solver_trace(
+                f.M.PACK, tuple(rec for rec in memory if rec in targets), q
+            )
+            assert (target_only_trace["failure_kind"] == "none") == target_only_solved
             assert f.M.AUDITOR.solve(memory,q)==f.M.PACK.solve(memory,q)
             rows.append(dict(seed=seed,family=family,
                 observed_D4_solved=reproduced,
-                isolated_target_path_solved=(target_only==q["answer"]),
+                isolated_target_path_solved=target_only_solved,
                 all_six_targets_present=True,
                 off_target_final_records=len(memory)-len(retained),
+                target_only_solver_analysis=target_only_trace,
                 solver_analysis=independent))
     assert len(rows)==8
     assert sum(row["observed_D4_solved"] for row in rows)==5
     assert sum(not row["observed_D4_solved"] for row in rows)==3
     summary=collections.Counter(row["solver_analysis"]["failure_kind"] for row in rows)
+    target_only_summary=collections.Counter(row["target_only_solver_analysis"]["failure_kind"] for row in rows)
     return dict(
         schema="yggdrasil.f84.d5-frozen-legal-trace-solver-forensics.v1",
         stage="POSTRESULT_EXPOSED_SYNTHETIC_READ_ONLY",
         d4_frozen_git_blob=D4_BLOB, f84_frozen_git_blob=F84_BLOB,
         cases=8, all_six_legal_raw_path_edges_present=8,
-        target_only_solver_correct=8,
+        target_only_solver_correct=sum(row["isolated_target_path_solved"] for row in rows),
+        target_only_failure_kinds=dict(target_only_summary),
         legal_action_trace_solver_correct=5,
         failed_full_state_solver_cases=3,
         failure_kinds=dict(summary),
