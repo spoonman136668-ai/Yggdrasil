@@ -1,0 +1,46 @@
+name: Yggdrasil F91 conservative learned temporal TRAIN only
+on:
+  push:
+    branches:
+      - research/y-f91-conservative-credit-20261016-r1
+    paths:
+      - 'research/foundational/20261016-y-f91/prereg.json'
+      - 'research/foundational/20261016-y-f91/conservative_credit.py'
+      - 'research/foundational/20261016-y-f91/test_conservative_credit.py'
+      - '.github/workflows/y-f91-train-only.yml'
+permissions:
+  contents: read
+jobs:
+  train-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Freeze prereg and original source identities
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 874028567bd40a1e823658f27a26679ef8b51085 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f91/prereg.json)" = 7a680c47029777f5d27b924d75c750bb348c06fc
+          test "$(git hash-object research/foundational/20261016-y-f90/temporal_credit.py)" = 0b689d66135a246987b20e189b9724b1c0715c25
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+      - name: F91 native public API / conservative policy unit tests
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f91 -p test_conservative_credit.py
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f90 -p test_temporal_credit.py
+      - name: Deterministic F91 counterfactual credit TRAIN only
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f91/conservative_credit.py --training-negative-synthetic-only > "$RUNNER_TEMP/f91-training.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f91-training.json"))); assert r["stage"]=="F91_TRAIN_ONLY_NO_VALIDATION_OR_GUARD" and r["train_cases"]==32 and r["examples"]>0; assert len(r["benefit_weights"])==len(r["harm_weights"])==12; assert not r["validation_accessed"] and not r["guard_accessed"] and not r["protected_science_used"]; print(json.dumps(r,sort_keys=True))'
+      - name: No checkout mutation
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
