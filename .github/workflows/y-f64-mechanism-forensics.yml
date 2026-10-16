@@ -1,0 +1,41 @@
+name: Yggdrasil F64 frozen mechanism synthetic forensics
+on:
+  push:
+    branches: [research/y-f64-synthetic-causal-forensics-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  frozen-causal-forensics:
+    if: "${{ github.event.head_commit.message == 'ci(y-f64): inspect zero-accuracy frozen bridge mechanism on synthetic data' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check authentic provenance and exact frozen methods
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 8ddeeaa7d3fea11c3b1a50f8fbd0da41d6ef7b00 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f64/bridge_features.py)" = 75d952228c53cf9d41d1cb557fee27e421a96972
+          test "$(git hash-object research/foundational/20261016-y-f64/frozen_model_receipt.json)" = bc4672326454bceeabc4374afa2b55fbcdae3e65
+          test "$(git hash-object research/foundational/20261016-y-f64/diagnose_bridge_features.py)" = eeb5969c6c126cb30a070a5b707e336cf2da3de0
+      - name: Forensic counterfactual feature replay without registered data
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f64-forensics/"
+          python3 -B research/foundational/20261016-y-f64/diagnose_bridge_features.py > "$RUNNER_TEMP/f64-forensics/forensic.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f64-forensics/forensic.json" >/dev/null
+          python3 -B -c 'import json,os;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f64-forensics/forensic.json")));print("F64_FEATURE_ACTIVATION",d["mechanism_counts"]);print("F64_ABLATION_DIVERGENCE",d["cases_with_differing_online_decisions"],d["divergent_prefixes"]);assert d["heldout_consumed"] is False'
+          sha256sum "$RUNNER_TEMP/f64-forensics/forensic.json" > "$RUNNER_TEMP/f64-forensics/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f64-forensics/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f64-frozen-synthetic-mechanism-forensics
+          path: ${{ runner.temp }}/f64-forensics/
+          retention-days: 90
+          if-no-files-found: warn
