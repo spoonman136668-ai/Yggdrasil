@@ -216,6 +216,38 @@ def learned_online(public,weights,packing,trace=False):
         return memory,tuple(selected_actions),tuple(prefix_receipts)
     return memory,tuple(selected_actions)
 
+def historical_controls_public(public,packing):
+    '''Unchanged F58-F61 fair controllers on the same public-only stream.
+
+    These are actual SHA-pinned historical functions, not hand-recreated
+    score adapters; output receipts retain exact fixed byte semantics.
+    '''
+    assert len(public)==EVENTS and all(len(edge)==3 for edge in public)
+    f60,f59,f58,f61=controls()
+    controls_out={
+        'F60_exact_source_fixed_online':f60.online_fixed(public),
+        'F59_exact_source_deferred':f59.fixed_deferred_component_buffer(public),
+        'F58_exact_source_frontier':f58.frontier_online(public),
+        'F61_frozen_learned_policy_no_refit':f61.learned_online(public,F61_WEIGHTS)[0],
+        'fixed_public_pair_triple_DAG':f61.fixed_online(public,'fixed_pair_triple_DAG'),
+        'fixed_public_FIFO_hash':f61.fixed_online(public,'FIFO_hash'),
+        'offline_full_public_graph_extra_work_noncompetitive':f60.offline_public_witness(public),
+    }
+    for name,records in controls_out.items():
+        _valid_memory(records,packing)
+        assert all(len(packing.pack(*r))==RECORD_BYTES for r in records),name
+    return controls_out
+
+def assert_F60_step_parity(public,packing):
+    '''Pre-FIT synthetic gate: local causal suffix evaluator == frozen F60.'''
+    f60=controls()[0]
+    memory=()
+    for i,event in enumerate(public):
+        memory=_f60_step(memory,event,packing)
+        authoritative=f60.online_fixed(public[:i+1])
+        assert memory==authoritative, ('F60_STEP_IDENTITY_DRIFT',i)
+    return True
+
 def _f60_step(memory,event,packing):
     incoming=_public_record(event,packing)
     proposals=[(at,merged) for at,merged in packing.candidates(list(memory),incoming)
