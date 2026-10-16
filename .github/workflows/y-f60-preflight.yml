@@ -1,0 +1,37 @@
+name: Yggdrasil F60 source identity preflight and full regression
+on:
+  push:
+    branches:
+      - research/y-f60-question-value-memory-20261015-r1
+permissions:
+  contents: read
+jobs:
+  exact-head-preflight:
+    if: "${{ github.event.head_commit.message == 'ci(y-f60): frozen public-corridor source preflight and full regression' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Frozen precode scientific prereg and exact source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object research/foundational/20261015-y-f60/prereg.json)" = 7138509bf12667494aab57752cf15b3901b21332
+          test "$(git hash-object research/foundational/20261015-y-f60/source_feasibility.py)" = 123dd7e979485ae07664118f948cd651b0386526
+          test "$(git hash-object research/foundational/20261015-y-f60/test_preflight.py)" = edaa80ef2f1635474f78e0dc609b244137bf4a8d
+          test "$(git hash-object research/foundational/20261015-y-f60/audit_fit.py)" = 797c32da8eddafef028c1d32d14fbeb542b75b10
+          python3 -m json.tool research/foundational/20261015-y-f60/prereg.json > /dev/null
+          python3 -B -m py_compile research/foundational/20261015-y-f60/source_feasibility.py
+          python3 -B -m py_compile research/foundational/20261015-y-f60/audit_fit.py
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f60 -p test_preflight.py -v
+      - name: One complete repository regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+      - name: Authority guard
+        run: echo "NO_F60_FIT_SOURCE_USE=TRUE DIAGNOSTIC_ORIGINALS=UNTOUCHED F3=UNQUALIFIED"
