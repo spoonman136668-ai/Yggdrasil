@@ -1,0 +1,37 @@
+name: Yggdrasil F63C frozen-model prevalidation
+on:
+  push:
+    branches:
+      - research/y-f63c-frozen-prevalidation-20261016-r1
+permissions:
+  contents: read
+jobs:
+  independent-replay:
+    if: "${{ github.event.head_commit.message == 'ci(y-f63c): qualify frozen public-only model and no-feature ablation' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Qualify exact model custody and synthetic causal audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 83e0716a7a00f1811855d95a5a02c32a19d6f63c HEAD
+          test "$(git hash-object research/foundational/20261016-y-f63c/frozen_model_receipt.json)" = a896895963b1cbfa59737ef2b35a3279483f4ebb
+          test "$(git hash-object research/foundational/20261016-y-f63c/source.py)" = c04b73306861098eecf55db77b2db486aa918819
+          mkdir -p "$RUNNER_TEMP/y-f63c-prevalidation/"
+          python3 -B research/foundational/20261016-y-f63c/prevalidate_frozen.py > "$RUNNER_TEMP/y-f63c-prevalidation/replay.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/y-f63c-prevalidation/replay.json" >/dev/null
+          python3 -B -c 'import json,os; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"y-f63c-prevalidation/replay.json"))); print("F63C_INDEPENDENT_PREVALIDATION_SCORES",d["scores"]); print("F63C_CAUSAL_PREFIX",d["independent_public_prefix_audit_pass"])'
+          sha256sum "$RUNNER_TEMP/y-f63c-prevalidation/replay.json" > "$RUNNER_TEMP/y-f63c-prevalidation/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f63c-prevalidation/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f63c-independent-frozen-prevalidation
+          path: ${{ runner.temp }}/y-f63c-prevalidation/
+          retention-days: 90
+          if-no-files-found: warn
