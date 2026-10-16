@@ -1,0 +1,63 @@
+name: Yggdrasil F63C frozen reliability training
+on:
+  push:
+    branches:
+      - science/y-f63c-frozen-reliability-fit-20261016-r1
+permissions:
+  contents: read
+  actions: read
+jobs:
+  independent-synthetic-preflight:
+    if: "${{ github.event.head_commit.message == 'science(y-f63c): fit frozen reliability weights from archived FIT TRAIN only' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check frozen methods and synthetic public-only traces
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 9c6b757f62cbc1ecbc4fc32f59bc36fa44902303 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f63c/freeze_reliability_fit.py)" = f3407b0972afe71bda3350d5760dfca4f8ef3737
+          test "$(git hash-object research/foundational/20261016-y-f63/learn_reliability.py)" = 4eef37159bb96e90cf7f89c4dc0ed91b6d9d23c5
+          test "$(git hash-object research/foundational/20261016-y-f63c/source.py)" = c04b73306861098eecf55db77b2db486aa918819
+          python3 -B research/foundational/20261016-y-f63c/freeze_reliability_fit.py --synthetic-only
+          echo "PROTECTED_VALIDATION_UNTOUCHED=TRUE"
+  train-from-immutable-artifact:
+    needs: independent-synthetic-preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Get exact previously published first-use training receipt
+        uses: actions/download-artifact@v4
+        with:
+          name: y-f63c-once-prospective-fit-train-source
+          run-id: 38884921783
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/f63c-frozen-input/
+      - name: Fit frozen public-only reliability objective with no rerun of source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f63c-trained/"
+          test "$(git hash-object research/foundational/20261016-y-f63c/freeze_reliability_fit.py)" = f3407b0972afe71bda3350d5760dfca4f8ef3737
+          sha256sum "$RUNNER_TEMP/f63c-frozen-input/first_use_rows.jsonl" | tee "$RUNNER_TEMP/f63c-trained/input_sha256.txt"
+          python3 -B research/foundational/20261016-y-f63c/freeze_reliability_fit.py --fit-evidence "$RUNNER_TEMP/f63c-frozen-input/first_use_rows.jsonl" > "$RUNNER_TEMP/f63c-trained/model_fit.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f63c-trained/model_fit.json" >/dev/null
+          cat "$RUNNER_TEMP/f63c-trained/model_fit.json"
+          sha256sum "$RUNNER_TEMP/f63c-trained/model_fit.json" > "$RUNNER_TEMP/f63c-trained/model_sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f63c-trained/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f63c-frozen-reliability-trained-weights
+          path: ${{ runner.temp }}/f63c-trained/
+          retention-days: 90
+          if-no-files-found: warn
