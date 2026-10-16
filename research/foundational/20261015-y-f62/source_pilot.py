@@ -81,7 +81,9 @@ def _construct(seed,family):
     for _ in range(8):
         ns=[node() for _ in range(4)]
         for j in range(3):
-            a,b=ns[j:j+2]
+            # Odd-family streams include actual three-leaf public hubs.
+            # These are distracting structural alternatives, not truth tags.
+            a,b=(ns[0],ns[j+1]) if family%2 else tuple(ns[j:j+2])
             if rng.random()<.5:
                 a,b=b,a
             distractors.append((a,rng.randrange(4),b))
