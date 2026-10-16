@@ -20,11 +20,12 @@ jobs:
           set -euo pipefail
           git merge-base --is-ancestor c60f6c2a83c28ab8b948efa4e657f86392907674 HEAD
           test "$(git hash-object research/foundational/20261016-y-f67/prereg.json)" = 86294dd7240aa0438f33a00168c7da14f2c8af8b
-          test "$(git hash-object research/foundational/20261016-y-f67/durable_policy.py)" = 17709927f85f16d4f4e60a56ea3d30d5fffdd16e
+          test "$(git hash-object research/foundational/20261016-y-f67/durable_policy.py)" = 329a4073f4aba4e759a0a14f88a60722bc34d08d
       - name: Qualify fresh unregistered public-prefix memory invariants
         shell: bash
         run: |
           set -euo pipefail
+          test "$(git hash-object research/foundational/20261016-y-f67/audit_budget_public.py)" = d9661ce5a9cac4212f6f816f6296225be7d32172
           mkdir -p "$RUNNER_TEMP/f67-source/"
           python3 -B research/foundational/20261016-y-f67/durable_policy.py --synthetic-only > "$RUNNER_TEMP/f67-source/synthetic.json"
           python3 -B -m json.tool "$RUNNER_TEMP/f67-source/synthetic.json" > /dev/null
