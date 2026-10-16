@@ -1,0 +1,65 @@
+{
+  "schema": "yggdrasil.f72.synthetic-counterfactual-credit-identifiability.prereg.v1",
+  "stage": "READ_ONLY_PRECODE_FROZEN_DIAGNOSTIC",
+  "scientific_question": "Before any new optimization, is the frozen F71 public-prefix feature vector able to distinguish objectively beneficial early native memory overrides from harmful and neutral alternatives, with sufficient labels to learn decisions?",
+  "ancestry": {
+    "frozen_F71_prereg_blob": "b3e0f8c32ad639079fcf6ab85fd8b17f6285acdc",
+    "frozen_F71_teacher_and_feature_source_blob": "edddfedb04af27dac7332ca85cc742aef5772a4b",
+    "F71_failed_prequalification_run": 38913645941,
+    "F71_3682_training_pairs_only_two_beneficial": true,
+    "F70B_exposed_oracle_seeds_NEVER_REUSE": true,
+    "frozen_native_F62_actions_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "independent_causal_auditor_blob": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f"
+  },
+  "cohort": {
+    "synthetic_negative_seeds": [
+      -3701,
+      -3717
+    ],
+    "families": [
+      -2,
+      -1
+    ],
+    "total_cases": 16,
+    "registered": false,
+    "all_previous_unregistered_or_protected_cases_excluded": true
+  },
+  "evaluation": {
+    "freeze_labels": "Use the exact F71.training_examples source and native F62 ACTION.actions as is; no intervention to training source",
+    "round_precision_for_aliases": 8,
+    "identical_features_conflict": "Bucket rounded candidate feature 12-vectors by exact deterministic 8-decimal quantization; if beneficial and harmful examples share a vector report contradiction count, never silently discard.",
+    "strata": [
+      "4-step within-component",
+      "6-step cross-component"
+    ],
+    "audit_fields": [
+      "raw beneficial/harmful/neutral counts",
+      "per-source-family case counts",
+      "per-task-type counts",
+      "number of cases with >=1 beneficial action",
+      "at what public indices benefits can first appear (for diagnosis only)",
+      "feature alias contradictory labels",
+      "per-feature beneficial vs harmful range overlaps",
+      "number of exact legal action alternatives"
+    ],
+    "baseline_guard": "Confirm unchanged 72-step F60 public trace with independent auditor before extracting labels",
+    "no_learning_or_training": true
+  },
+  "gates": {
+    "diagnostic_should_complete_even_if_zero_beneficial": true,
+    "exact_F71_prereg_and_source_SHA_pins": true,
+    "all_16_F60_traces_causally_valid": true,
+    "no_registered_or_heldout_reads": true,
+    "scientific_promotion_forbidden": true
+  },
+  "authority": {
+    "F71_fit_train_used": false,
+    "F71_heldout_used": false,
+    "F72_fit_train_used": false,
+    "F72_heldout_used": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "controller_mutation": false,
+    "paid_API": false
+  }
+}
