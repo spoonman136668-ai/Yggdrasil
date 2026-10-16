@@ -1,0 +1,76 @@
+{
+  "schema": "yggdrasil.f94.exposed-native-one-deviation.feasibility-observation.v1",
+  "stage": "RETROSPECTIVE_ARCHITECTURAL_FEASIBILITY_ONLY_NO_SCIENCE_ACCEPTANCE",
+  "provenance": {
+    "parent_F93B_commit": "12976ab1850f565a6d104bd76918cff435c10451",
+    "prereg_blob": "5a2d524963aa9a572ad3282c23449bd01a0926d9",
+    "source_F62_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "source_F85_global_solver_blob": "e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3",
+    "source_F93B_method_blob": "b70af0a91ecc16d8a173b7245b007b646fed8ad6",
+    "original_run_id": 38982213047,
+    "original_job_id": 117245425707,
+    "run_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38982213047",
+    "original_execution_head": "76ef350b37cdece1a5923f2bcfcd9d8888fb7b69"
+  },
+  "audit": {
+    "cases": 32,
+    "public_prefixes": 2304,
+    "all_exact_native_afterstates_enumerated": true,
+    "native_counterfactual_terminal_trajectories": 15771,
+    "historical_F60_correct": 17,
+    "four_step_cases": 24,
+    "six_step_cases": 8,
+    "f60_six_step_correct": 0,
+    "six_step_cases_with_one_legal_deviation_rescue": 3,
+    "six_step_cases_with_one_legal_deviation_rescue_and_minimum_F60_record_overlap": 3,
+    "six_step_rescue_action_count": 18,
+    "six_step_safe_overlap_rescue_action_count": 14,
+    "six_step_rescue_actions_early": 6,
+    "six_step_rescue_actions_middle": 12,
+    "six_step_rescue_actions_late": 0,
+    "f60_correct_four_step_cases": 17,
+    "f60_correct_four_step_cases_with_any_harmful_legal_alternative": 17,
+    "f60_correct_four_step_cases_with_harmful_minimum_overlap_action": 17,
+    "harmful_alternative_action_count": 673,
+    "harmful_overlap_action_count": 645,
+    "native_actions_by_period": {
+      "early": 868,
+      "middle": 5684,
+      "late": 9219
+    },
+    "six_step_native_actions_by_period": {
+      "early": 227,
+      "middle": 1426,
+      "late": 2305
+    },
+    "six_step_rescue_cases_by_arrival_regime": {
+      "original": 0,
+      "local_rotate4": 3
+    },
+    "F85_any_resource_cap": false,
+    "record_memory_max_bytes": 144,
+    "unit_tests": 6,
+    "frozen_F85_regression_tests": 7,
+    "technical_job_green": true
+  },
+  "interpretation": {
+    "architectural_feasibility": "Single legal F62 native action replacing one F60 decision, followed by exact F60 public suffix, can recover 3 of 8 six-step historical failures.",
+    "risk": "Numerous equally legal alternatives damage all 17 episodes that F60 originally answered correctly; a naive controller that increases intervention frequency is unsafe.",
+    "temporal": "Witness rescues occurred only in early and middle observation windows. A policy restricted to late actions misses all of these one-step opportunities.",
+    "representation": "At least some six-step failure under rotated arrival is a selection and timing problem rather than a strict 144-byte capacity impossibility.",
+    "nonproof": "Offline auditor deliberately knows historical future events, question and ground-truth answer. This is NOT an admissible query-blind controller, an independently tested policy, a multi-deviation action-space theorem, or accepted original science."
+  },
+  "next_gate": "F95: preregister and implement a genuinely query-blind, early/middle-capable risk-constrained native action selector using a new disjoint TRAIN/VALIDATION/GUARD. The exact mechanism and safety gate must be frozen before new synthetic first-use; do not turn hindsight witnesses into online labels from already-consumed F93B guard.",
+  "authority": {
+    "FIT": false,
+    "DIAG": false,
+    "ORIGINAL": false,
+    "F3": false,
+    "scientific_accepted": false,
+    "optimizer_promotion": false,
+    "controller_mutation": false,
+    "accepted_ref_mutation": false,
+    "merged": false,
+    "Codex": false
+  }
+}
