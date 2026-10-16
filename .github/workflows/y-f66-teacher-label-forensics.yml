@@ -1,0 +1,38 @@
+name: Yggdrasil F66 frozen teacher label forensics
+on:
+  push:
+    branches: [research/y-f66-dense-teacher-synthetic-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  label-sign-evidence:
+    if: "${{ github.event.head_commit.message == 'ci(y-f66): measure immutable synthetic teacher class balance' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pin exact teacher and offline-only source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor f80aeee9b0abcc69c6c3103e82bdf11db0766e96 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f66/dense_teacher.py)" = 4924a409a446403c0c2a5d1e146adc8171ae4791
+          test "$(git hash-object research/foundational/20261016-y-f66/diagnose_teacher_labels.py)" = 2ba8d3fb85343db47938f2ee64e2d84e49794c06
+      - name: Diagnose both exposed and unused negative-seed synthetics
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f66-label-forensics/"
+          python3 -B research/foundational/20261016-y-f66/diagnose_teacher_labels.py > "$RUNNER_TEMP/f66-label-forensics/label_distribution.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f66-label-forensics/label_distribution.json" >/dev/null
+          python3 -B -c 'import json,os;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f66-label-forensics/label_distribution.json")));print("F66_TEACHER_LABEL_COUNTS",d["counts"]);print("F66_LABEL_STATUS",d["status"]);assert not d["registered_fit_executed"]'
+          sha256sum "$RUNNER_TEMP/f66-label-forensics/label_distribution.json" > "$RUNNER_TEMP/f66-label-forensics/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f66-label-forensics/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f66-frozen-teacher-label-forensics
+          path: ${{ runner.temp }}/f66-label-forensics/
+          retention-days: 90
+          if-no-files-found: warn
