@@ -1,0 +1,78 @@
+{
+  "schema": "yggdrasil.f74.bounded-two-intervention-arrival-shift.research-prereg.v1",
+  "stage": "FROZEN_PRECODE_SYNTHETIC_DIAGNOSTIC",
+  "parent_F73": {
+    "qualified_run": 38923253763,
+    "source_audit_blob": "f7bac62e00b52273ef7fa89889d5f018f591d307",
+    "prereg_blob": "5f5f4546a2c697be9d5238b0742a67d9dc2d06fa",
+    "even_odd_F60_correct": [
+      0,
+      16
+    ],
+    "even_odd_one_intervention_rescues": [
+      0,
+      16
+    ],
+    "reverse_F60_correct": [
+      0,
+      16
+    ],
+    "reverse_one_intervention_rescues": [
+      12,
+      16
+    ]
+  },
+  "question": "Under severe fixed arrival-order shifts, is bounded two-action counterfactual memory recovery possible when a single source-legal intervention cannot rescue frozen F60 failures?",
+  "new_synthetic_cohort": {
+    "seeds": [
+      -3901,
+      -3909
+    ],
+    "families": [
+      -2,
+      -1
+    ],
+    "cases": 8,
+    "events_per_case": 72,
+    "all_unregistered": true
+  },
+  "arrival_orders": [
+    "original",
+    "reverse",
+    "even_odd"
+  ],
+  "search_frozen": {
+    "one_step": "72 prefix indices in increasing order, every unique native non-F60 ACTION.actions memory; exact frozen F60 suffix; stop at first rescue.",
+    "two_step": "Only if frozen F60 fails and one-step fails: first indices [0,8,16,24,32,40,48,56,64], second indices each first+1 to min(first+8,71). All unique native non-F60 memory states from *actual* causally generated intermediate memory. Exact F60 between and after.",
+    "cap_per_case": "2048 evaluated two-step candidate pairs, stop at first rescue or exactly at cap; if capped report status CENSORED, never claim no rescue.",
+    "audit": "Independent frozen 72-prefix lossless causal replay for baseline and every claimed rescue.",
+    "labels": "Unfair offline access to frozen complete task and public future solely for diagnostic, not a deployable learner."
+  },
+  "resource_limit": {
+    "max_2step_pairs_per_failed_case": 2048,
+    "maximum_base_cases": 8,
+    "maximum_arrival_orders": 3,
+    "source_payload_bytes": 144
+  },
+  "source_pins": {
+    "generator": "c04b73306861098eecf55db77b2db486aa918819",
+    "native_actions": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "independent_auditor": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f"
+  },
+  "scientific_controls": {
+    "no_fit_training": true,
+    "no_heldout": true,
+    "no_source_change": true,
+    "negative_or_censored_outcomes_preserved": true,
+    "no_promotion": true
+  },
+  "authority": {
+    "registered_FIT_TRAIN": false,
+    "registered_FIT_VALIDATION": false,
+    "DIAG": false,
+    "original": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "paid_API": false
+  }
+}
