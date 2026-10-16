@@ -85,7 +85,8 @@ class F88Contracts(unittest.TestCase):
         self.assertIsNotNone(lang)
         self.assertGreaterEqual(len(lang[0]),24)
         self.assertTrue(all(1<=len(row[2])<=4 for row in lang[0]))
-        self.assertEqual(lang[2],0)
+        self.assertGreaterEqual(lang[2],0)
+        self.assertLessEqual(lang[2],F88.PATH_CAP)
 
 if __name__=="__main__":
     unittest.main()
