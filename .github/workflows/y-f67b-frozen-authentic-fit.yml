@@ -1,0 +1,50 @@
+name: Yggdrasil F67B frozen positive-admission authentic fit
+on:
+  push:
+    branches: [science/y-f67b-frozen-positive-admission-fit-20261016-r1]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  fit-from-archived-trained-only:
+    if: "${{ github.event.head_commit.message == 'science(y-f67b): fit frozen durable policy from archived training evidence' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Enforce frozen method and scientific source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 51c3edb30668810d031c61277132f46fddf61528 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f67/prereg-positive-admission.json)" = e923b32001eb22236c9d55e9d6ab00abe5cc7214
+          test "$(git hash-object research/foundational/20261016-y-f67/fit_admission_synthetic.py)" = a6b4251354e8e79b744449ad6e08b7179bb9e6ab
+          test "$(git hash-object research/foundational/20261016-y-f67/f67b_fit_archived_train.py)" = 7cbd6747f01249c18a4201c27e364780478d8e67
+      - uses: actions/download-artifact@v4
+        with:
+          name: y-f67b-once-fit-train-source
+          run-id: 38894210922
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/f67b-authentic-fit-input/
+      - name: Freeze model using only archived public TRAIN rows
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f67b-model/"
+          test "$(sha256sum "$RUNNER_TEMP/f67b-authentic-fit-input/fit_train_rows.jsonl" | cut -d' ' -f1)" = 5c01043f1691842b795cde77ce008b5d1bc46750dae4f2224c4e601cab6a7bb9
+          python3 -B research/foundational/20261016-y-f67/f67b_fit_archived_train.py --fit-evidence "$RUNNER_TEMP/f67b-authentic-fit-input/fit_train_rows.jsonl" > "$RUNNER_TEMP/f67b-model/model_fit.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f67b-model/model_fit.json" >/dev/null
+          cat "$RUNNER_TEMP/f67b-model/model_fit.json"
+          sha256sum "$RUNNER_TEMP/f67b-model/model_fit.json" > "$RUNNER_TEMP/f67b-model/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f67b-model/exact_head.txt"
+          echo "VALIDATION=UNCONSUMED DIAG=UNCONSUMED ORIGINAL=UNCONSUMED F3=FALSE"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f67b-trained-frozen-durable-weights
+          path: ${{ runner.temp }}/f67b-model/
+          retention-days: 90
+          if-no-files-found: warn
