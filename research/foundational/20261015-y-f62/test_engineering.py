@@ -3,6 +3,9 @@ import importlib.util,pathlib,sys,unittest
 P=pathlib.Path(__file__).with_name("source_pilot.py")
 s=importlib.util.spec_from_file_location("y62_source_engineering",P)
 m=importlib.util.module_from_spec(s);sys.modules[s.name]=m;s.loader.exec_module(m)
+A=P.with_name("audit_public.py")
+asp=importlib.util.spec_from_file_location("y62_independent_public_auditor",A)
+audit=importlib.util.module_from_spec(asp);asp.loader.exec_module(audit)
 class FrozenSourceTests(unittest.TestCase):
  def test_cohort_denial_and_exact_contract(self):
   self.assertEqual((m.TRAIN.start,m.TRAIN.stop),(761000,761008))
@@ -32,7 +35,22 @@ class FrozenSourceTests(unittest.TestCase):
    self.assertEqual(hubs,8 if regime=="rolling_interleaved_hubs" else 0)
    offline=m.controls()[0].offline_public_witness(public)
    self.assertEqual(packing.solve(offline,question),question["answer"])
-   learned,actions=m.learned_online(public,(0,)*12,packing)
+   learned,actions,trace=m.learned_online(public,(0,)*12,packing,trace=True)
+   claim=audit.verify(public,question,trace)
+   self.assertEqual(claim["prefixes"],72)
+   self.assertEqual(claim["max_payload_bytes"],12*len(learned) if
+                    max(len(z) for z in trace)==len(learned) else
+                    12*max(len(z) for z in trace))
+   self.assertTrue(claim["publicly_grounded_question"])
+   self.assertFalse(claim["source_independent_F3"])
+   self.assertEqual(tuple(trace[-1]),tuple(packing.pack(*r).hex() for r in learned))
+   # Reject claimed one-step future memory, malformed codec, and private tags.
+   future=tuple(packing.pack(*r).hex() for r in (packing.edge_record(public[1]),))
+   forged=list(trace);forged[0]=future
+   with self.assertRaises(AssertionError):audit.verify(public,question,forged)
+   corrupted=list(trace);corrupted[0]=tuple("00"*12 for _ in corrupted[0])
+   with self.assertRaises(AssertionError):audit.verify(public,question,corrupted)
+   with self.assertRaises(AssertionError):audit.verify(tagged,question,trace)
    self.assertEqual(len(actions),72)
    m._valid_memory(learned,packing)
    self.assertLessEqual(12*len(learned),144)
