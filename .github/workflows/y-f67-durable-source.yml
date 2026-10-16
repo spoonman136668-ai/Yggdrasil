@@ -1,0 +1,72 @@
+name: Yggdrasil F67 durable path source qualification
+on:
+  push:
+    branches: [research/y-f67-durable-path-budget-precode-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  synthetic-causal-qualification:
+    if: "${{ github.event.head_commit.message == 'ci(y-f67): enforce path-reservoir invariants and source regression' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check immutable prereg and novel source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c60f6c2a83c28ab8b948efa4e657f86392907674 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f67/prereg.json)" = 86294dd7240aa0438f33a00168c7da14f2c8af8b
+          test "$(git hash-object research/foundational/20261016-y-f67/durable_policy.py)" = dc52dbe99663626b696aa6403920117713167a49
+      - name: Qualify fresh unregistered public-prefix memory invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f67-source/"
+          python3 -B research/foundational/20261016-y-f67/durable_policy.py --synthetic-only > "$RUNNER_TEMP/f67-source/synthetic.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f67-source/synthetic.json" > /dev/null
+          python3 -B -c 'import json,os;r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f67-source/synthetic.json")));print("F67_DURABLE_SOURCE",r["merges"],r["durable_records"]);assert r["merges"]>0 and r["durable_records"]>0 and not r["registered_fit_used"]'
+          sha256sum "$RUNNER_TEMP/f67-source/synthetic.json" > "$RUNNER_TEMP/f67-source/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f67-source/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f67-synthetic-path-reservoir-source
+          path: ${{ runner.temp }}/f67-source/
+          retention-days: 90
+          if-no-files-found: warn
+  single-full-regression:
+    needs: synthetic-causal-qualification
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Free hosted requirements
+        shell: bash
+        run: |
+          python -m pip install pytest pyyaml
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: One entire repository regression without scientific first use
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f67-regression/"
+          python -B -m pytest -q > "$RUNNER_TEMP/f67-regression/tests.txt" 2>&1
+          cat "$RUNNER_TEMP/f67-regression/tests.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f67-regression/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f67-exact-head-regression
+          path: ${{ runner.temp }}/f67-regression/
+          retention-days: 90
+          if-no-files-found: warn
