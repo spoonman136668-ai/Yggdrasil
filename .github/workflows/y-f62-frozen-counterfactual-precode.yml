@@ -1,0 +1,29 @@
+name: Yggdrasil F62 original PRECODE new-counterfactual-science identity
+on:
+  push:
+    branches: [research/y-f62-counterfactual-memory-action-precode-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  frozen-precode-no-science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Full source-identity genealogy and frozen F62 source-free protocol
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 0e9fd2e403579de3167aee6aeb247490493b82f7 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f62/prereg.json)" = f0fffb43fc1f344261c4802d917696aaf4035ce0
+          test "$(git hash-object research/foundational/20261015-y-f62/test_precode.py)" = 1329b26044f553f3141023001dbd744c4fb2544f
+          test "$(git hash-object research/foundational/20261015-y-f61/prereg.json)" = 67de09eecedfb5285e90a634a3e55aafa3e4a369
+          test "$(git hash-object research/foundational/20261015-y-f61/source_pilot.py)" = 68827a45543639585da82d05e5d301782fbc79a6
+          python3 -B -m json.tool research/foundational/20261015-y-f62/prereg.json >/dev/null
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f62 -p test_precode.py -v
+          echo Y_F62_PRECODE_FROZEN_AND_ALL_NEGATIVE_CONTROLS=PASS
+          echo "FIT_TRAIN=UNCONSUMED; FIT_VALIDATION=UNCONSUMED; DIAG=UNCONSUMED; F3=FALSE; POLICY_PROMOTION=FALSE"
