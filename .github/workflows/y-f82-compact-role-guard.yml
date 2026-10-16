@@ -1,0 +1,50 @@
+name: Yggdrasil F82 compact public-role synthetic qualification
+on:
+  push:
+    branches:
+      - research/y-f82-compact-role-intervention-synthetic-20261016-r1
+permissions:
+  contents: read
+jobs:
+  source-native-intervention-guard:
+    if: "${{ github.event.head_commit.message == 'ci(y-f82): run frozen compact role learner on disjoint synthetic train and guard' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check prereg ancestry and frozen feature and source identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor b9564fa5f0856694b19faefa09eed74b018e35fe HEAD
+          test "$(git hash-object research/foundational/20261016-y-f82/prereg.json)" = 1b60e145d54730998c04a28829db9ac88d5a9460
+          test "$(git hash-object research/foundational/20261016-y-f82/compact_role_learner.py)" = b5d969deeb63e99c1b235f675a0532c16863e519
+          test "$(git hash-object research/foundational/20261016-y-f81/role_alias_audit.py)" = 3a2f6a8a46d7be36c8a793b732acd735485d73a5
+          test "$(git hash-object research/foundational/20261016-y-f79/rare_interventions.py)" = 4bba6e34d56ef96aa81515032988f9c5127fe35f
+          echo 'REGISTERED_FIT_AND_ORIGINAL=UNCONSUMED'
+      - name: Frozen synthetic training and independent 32-case causal guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f82-evidence"
+          python3 -B research/foundational/20261016-y-f82/compact_role_learner.py --synthetic-only > "$RUNNER_TEMP/f82-evidence/guard.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f82-evidence/guard.json" >/dev/null
+          python3 -B -c 'import json,os; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f82-evidence/guard.json"))); print("F82_GUARD",d["by_regime"],"MODEL_QUALIFIED",d["scientific_prequalification_pass"])'
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f82-evidence/exact-head.txt"
+          sha256sum "$RUNNER_TEMP/f82-evidence/guard.json" > "$RUNNER_TEMP/f82-evidence/hashes.txt"
+      - name: Single full repository regression after scientific method passes
+        shell: bash
+        run: |
+          python3 -m pip install pytest pyyaml
+          python3 -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python3 -B -m pytest -q
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f82-compact-role-source-native-synthetic-guard
+          path: ${{ runner.temp }}/f82-evidence/
+          retention-days: 90
+          if-no-files-found: warn
