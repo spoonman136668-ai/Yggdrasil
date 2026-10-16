@@ -1,0 +1,90 @@
+{
+  "schema": "yggdrasil.f90.learned-temporal-credit.source-only-observation.v1",
+  "status": "VALID_SYNTHETIC_NEGATIVE_NOT_INDEPENDENT_SCIENCE",
+  "source_and_training": {
+    "parent_F89R_commit": "4074216f78ea5bb6bc93eb7e0d44239cdac0036f",
+    "frozen_prereg_git_blob": "9cf022d8646779cfe15d3f655b9b40154bf18b7c",
+    "frozen_F90_method_git_blob": "0b689d66135a246987b20e189b9724b1c0715c25",
+    "frozen_F90_policy_git_blob": "56d1c1c81faf432c7f2eb33e6ce45e3513a9c9ae",
+    "frozen_weights_sha256": "a96034934bc09736a513a1f7695cae6a7b67b470c12e883d0f17b5d722969ff0",
+    "weights_int8": [
+      0,
+      58,
+      96,
+      -86,
+      20,
+      0,
+      43,
+      43,
+      0,
+      14,
+      0,
+      -6
+    ],
+    "train_cases": 32,
+    "train_examples": 1038,
+    "beneficial": 4,
+    "harmful": 49,
+    "neutral": 985,
+    "frozen_train_run_id": 38970900000,
+    "frozen_train_job_id": 117208740696,
+    "frozen_train_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38970900000",
+    "training_method": "Deterministic temporal counterfactual F60 remainder rollouts on synthetic TRAIN cases only; 6 prefixes/case and at most 8 legal alternative actions/checkpoint; three frozen epochs, no model selection."
+  },
+  "evaluation": {
+    "code_commit": "9b5fbfc8540f98dee120489036745e54d0e40b9a",
+    "holdout_run_id": 38971147268,
+    "holdout_job_id": 117209547218,
+    "holdout_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38971147268",
+    "valid_seeds": "-5721..-5728, family -2/-1",
+    "valid_cases": 16,
+    "validation": {
+      "correct_out_of_16": {
+        "F60": 7,
+        "F83": 4,
+        "F90": 1
+      },
+      "six_step_rescues_F90_over_F60": 1,
+      "F60_correct_cases_regressed": 7,
+      "learned_native_interventions": 90,
+      "classification": "synthetic_negative"
+    },
+    "guard_seeds": "-5741..-5756, family -2/-1",
+    "guard_cases": 32,
+    "guard": {
+      "correct_out_of_32": {
+        "F60": 17,
+        "F83": 12,
+        "F90": 3
+      },
+      "six_step_cases": 8,
+      "six_step_rescues_F90_over_F60": 1,
+      "F60_correct_cases_regressed": 15,
+      "learned_native_interventions": 175,
+      "classification": "synthetic_negative"
+    },
+    "focus_tests": 9,
+    "frozen_solver_tests": 7,
+    "pass_source_attestation": true,
+    "every_model_native_action_and_72_prefix_audit": true,
+    "max_persistent_memory_bytes": 144,
+    "model_parameters_separately_counted_bytes": 12,
+    "same_frozen_F85_solver_for_all_arms": true,
+    "no_query_or_future_in_online": true,
+    "no_test_time_refit": true,
+    "no_protected_FIT_DIAG_ORIGINAL": true
+  },
+  "interpretation": "The learned temporal counterfactual advantage model yielded one new six-step answer on heldout synthetic negative cases, but its online action scoring caused fifteen frozen F60-correct cases to fail. This is a valid scientific negative for broad improvement, with a narrow learned-path-rescue observation. Training cohort, 16 validation and 32 guard cases are consumed and must not be retuned/reused as fresh prospective evidence.",
+  "recommended_next": "Design F91 with explicit conservative policy-improvement objective/constraint protecting short-horizon F60 competence, train on disjoint fresh source, freeze before independent guard, avoid posthoc calibration from F90 observed seeds, and qualify separately. Independent scientific original first-use remains gated.",
+  "authority": {
+    "accepted_science": false,
+    "pr_merge": false,
+    "optimizer_promotion": false,
+    "controller_or_production_mutation": false,
+    "protected_original": false,
+    "FIT": false,
+    "DIAG": false,
+    "F3": false,
+    "Codex": false
+  }
+}
