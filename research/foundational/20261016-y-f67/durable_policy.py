@@ -74,11 +74,21 @@ def online(public,weights,trace=False,protect=True):
   actions=BASE.actions(memory,event,i,PACK)
   candidates=[]
   for j,(act,_old,_drop,after,_features) in enumerate(actions):
-   if protect and not is_admissible(memory,after):continue
-   ft=features(memory,event,act,after,i)
-   score=sum(w*x for w,x in zip(weights,ft))
-   candidates.append(((score,-j),act,after))
-  assert candidates,"NO_LEGAL_CAUSAL_ACTION"
+   # The inherited action engine evicts only when 12 records are full.
+   # The 4-slot frontier may fill sooner: generate causal short-record
+   # evictions locally, without any unseen observations or extra state.
+   options=[after]
+   if protect:
+    options.extend(after[:k]+after[k+1:] for k,r in enumerate(after) if len(r[2])<4)
+   for k,proposal in enumerate(options):
+    if protect and not is_admissible(memory,proposal):continue
+    ft=features(memory,event,act,proposal,i)
+    score=sum(w*x for w,x in zip(weights,ft))
+    candidates.append(((score,-(j*32+k)),act,proposal))
+  if not candidates:
+   # Refusing the current public edge is a lossless causal state action.
+   assert protect and is_admissible(memory,memory),"INVALID_PREVIOUS_MEMORY"
+   candidates=[((-10**12,0),"reject",memory)]
   _,act,memory=max(candidates,key=lambda entry:entry[0])
   if protect:assert is_admissible(memory,memory)
   BASE._valid_memory(memory,PACK)
