@@ -1,0 +1,115 @@
+{
+  "schema": "yggdrasil.f92.dense-delayed-path-credit.final-synthetic-evidence.v1",
+  "stage": "QUALIFIED_ENGINEERING_NEGATIVE_SCIENTIFIC_INACTIVE",
+  "provenance": {
+    "draft_pr": 298,
+    "parent_F91_head": "bc0cbfb01e07293a2f6a56f3805e75e7d68109d2",
+    "precode_prereg_blob": "c56d1e1c2221ab7311ffb093921ee21b7e6f0fda",
+    "method_blob": "7fdaf5d24866c347275c2ffa3aec7dfeaed6ac5b",
+    "train_workflow_run": 38975152103,
+    "train_job_id": 117222694206,
+    "train_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38975152103",
+    "frozen_weight_blob": "6a94f730baefe008a21f7286416f3163835ed93e",
+    "frozen_weight_sha256": "6d0ce85ed78274bffce45e43aa022437f35ff5d5f4ebe1cc4cb5cce1d0b70e6d",
+    "first_attempt_holdout_run": 38975303275,
+    "first_attempt_status": "INVALID_PRE_SOURCE_LOADER_ATTRIBUTE_ERROR",
+    "first_attempt_note": "holdout.py referred to F92.module instead of source's F92.load; failed before fetching any validation case, did not affect frozen method or policy",
+    "corrected_holdout_run": 38975351614,
+    "corrected_job_id": 117223347949,
+    "holdout_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38975351614",
+    "qualified_holdout_source_commit": "a426d5fc37b1149573927d76c8d90ca866bccda3"
+  },
+  "train": {
+    "cases": 32,
+    "examples": 1048,
+    "beneficial_surrogate_rewards": 3,
+    "harmful_surrogate_rewards": 129,
+    "neutral": 916,
+    "weights_benefit": [
+      -90,
+      5,
+      13,
+      -9,
+      3,
+      0,
+      7,
+      4,
+      0,
+      5,
+      0,
+      0
+    ],
+    "weights_harm": [
+      -9,
+      0,
+      -9,
+      -4,
+      -1,
+      0,
+      -1,
+      -5,
+      0,
+      -2,
+      0,
+      1
+    ],
+    "surrogate_labels_not_equivalent_to_terminal_success": true,
+    "train_only_no_validation_or_guard": true
+  },
+  "holdout": {
+    "validation": {
+      "cases": 16,
+      "correct": {
+        "F60": 7,
+        "F83": 4,
+        "F90": 1,
+        "F91": 7,
+        "F92": 7
+      },
+      "six_step_rescues": 0,
+      "F60_correct_regressions": 0,
+      "interventions": 0,
+      "classification": "synthetic_negative_inactive"
+    },
+    "guard": {
+      "cases": 32,
+      "six_step_cases": 8,
+      "correct": {
+        "F60": 20,
+        "F83": 14,
+        "F90": 3,
+        "F91": 20,
+        "F92": 20
+      },
+      "six_step_rescues": 0,
+      "F60_correct_regressions": 0,
+      "interventions": 0,
+      "classification": "synthetic_negative_inactive"
+    },
+    "F92_unit_tests": 8,
+    "F91_regression_tests": 9,
+    "first_use_synthetic_validation_seed_range": "-5921..-5928",
+    "first_use_synthetic_guard_seed_range": "-5941..-5956",
+    "frozen_policy_unmodified": true,
+    "source_native_actions": true,
+    "all_72_public_prefixes_independently_audited": true,
+    "max_persistent_memory_bytes": 144,
+    "model_parameters_extra_bytes": 24,
+    "latch_bits": 1,
+    "no_protected_FIT_DIAG_ORIGINAL_F3": true,
+    "no_optimizer_or_controller_mutation": true
+  },
+  "interpretation": "Denser train-only delayed-prefix-reachability credit generated 3 positive surrogate examples instead of F91's zero terminal-gain examples, but the frozen dual-head online policy never selected a legal intervention on either heldout cohort, and its accuracy remained exactly F60. This is a valid inactive scientific negative; broader path-credit learning and safe autonomy not established.",
+  "next_gate": "Investigate why frozen action probabilities fail the preregistered conservative decision boundary, using read-only probability distribution diagnostics on ALREADY EXPOSED validation/guard without tuning; then design a new mechanism on a truly fresh synthetic cohort. Do not turn that retrospect into independent scientific evidence.",
+  "authority": {
+    "scientific_accepted": false,
+    "merged": false,
+    "FIT": false,
+    "DIAG": false,
+    "ORIGINAL": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "controller_changed": false,
+    "Codex_used": false
+  }
+}
