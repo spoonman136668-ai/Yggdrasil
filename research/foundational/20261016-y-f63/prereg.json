@@ -1,0 +1,112 @@
+{
+  "schema": "yggdrasil.f63.learned-public-path-reliability.prereg.v1",
+  "stage": "PRECODE_FROZEN_NO_FIT_USE",
+  "parent_F62": {
+    "validation_run": 38880269301,
+    "validation_head": "be0b0ae38d85eac305e2110a9edf74132960f74e",
+    "validation_result_sha256": "3910f853e2da9ce1b26afccdfba1b5447790ec6cebf6512641f1ed96360c057b",
+    "scientific_verdict": "NEGATIVE_FEASIBILITY",
+    "learned_correct": 11,
+    "strongest_fair_correct": 7,
+    "no_composition_ablation_correct": 0,
+    "total": 32,
+    "absolute_F60_feasibility_min": 0.25,
+    "F60_feasibility_observed": 0.21875,
+    "exposed_F62_validation_must_not_be_reused": true
+  },
+  "hypothesis": "A bounded online learned public-path reliability estimator that uses causal structural witness confidence to decide which role-compositions to retain generalizes better than frozen action-value ranking; it must first demonstrate independent public-only source feasibility rather than relying on F62's failed F60 feasibility.",
+  "substantive_change": "Replace F62 per-action counterfactual downstream reward scoring with a distinct learned public-edge/path reliability and uncertainty estimator. Score the stability of compositional witnesses using only public-prefix structural evidence and calibrated uncertainty; no future question, private tags, source labels, or heldout labels at runtime.",
+  "frozen_cohorts": {
+    "fit_train_seeds": [
+      781000,
+      781008
+    ],
+    "fit_validate_seeds": [
+      781008,
+      781016
+    ],
+    "fit_families": [
+      1500,
+      1501,
+      1502,
+      1503
+    ],
+    "diagnostic_UNAUTHORIZED": {
+      "seeds": [
+        781100,
+        781116
+      ],
+      "families": [
+        1504,
+        1505,
+        1506,
+        1507
+      ]
+    },
+    "original_UNRESERVED": {
+      "seeds": [
+        782000,
+        782016
+      ],
+      "families": [
+        1508,
+        1509,
+        1510,
+        1511
+      ]
+    },
+    "expected_train_cases": 32,
+    "expected_validation_cases": 32,
+    "disjoint_from_F62": true
+  },
+  "source_requirements": {
+    "public_events_per_case": 72,
+    "source_independent_public_question_witness": true,
+    "changed_arrival_and_relation_structure_required": true,
+    "trainonly_source_feasibility_before_validation": true,
+    "no_future_question_during_online_retention": true,
+    "independent_provenance_before_first_use": true
+  },
+  "memory_and_training": {
+    "retained_records_max": 12,
+    "lossless_bytes_per_record": 12,
+    "retained_payload_max_bytes": 144,
+    "model_weights_accounted_separately": true,
+    "learned_parameters_max": 24,
+    "quantize_and_freeze_before_heldout": true,
+    "diagnostic_and_original_protected": true
+  },
+  "fair_controls": [
+    "F60_exact_frozen_source",
+    "F59_exact_frozen_source",
+    "F58_exact_frozen_source",
+    "F61_frozen_learned_no_refit",
+    "F62_frozen_weights_no_refit",
+    "fixed_public_pair_triple_DAG",
+    "fixed_public_FIFO_hash",
+    "public_extra_work_witness_noncompetitive",
+    "future_question_oracle_unfair"
+  ],
+  "gates": {
+    "public_extra_work_witness_accuracy_min": 0.85,
+    "source_feasibility_fair_fixed_min": 0.25,
+    "feasibility_test_on_fit_train_only_before_any_fit_validate": true,
+    "learned_gain_over_strongest_equal_byte_fair_min": 0.05,
+    "per_validation_family_nondegradation": true,
+    "positive_reliability_feature_ablation": true,
+    "independent_public_causal_audit": true,
+    "once_only_validation": true,
+    "no_postresult_threshold_change": true
+  },
+  "authority": {
+    "FIT_train_executed": false,
+    "FIT_validation_executed": false,
+    "diagnostic_executed": false,
+    "original_executed": false,
+    "source_independent_F3": false,
+    "accepted_ref_mutation": false,
+    "controller_or_Cloudflare_mutation": false,
+    "policy_promotion": false,
+    "paid_API_or_Codex_reviews": false
+  }
+}
