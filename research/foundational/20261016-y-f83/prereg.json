@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.f83.pairwise-public-rare-intervention-margin.synthetic-prereg.v1",
+  "stage": "PRECODE_FROZEN_SYNTHETIC_ONLY",
+  "parent": {
+    "F82_guard_run": 38937688962,
+    "F82_negative_frozen_code_blob": "b5d969deeb63e99c1b235f675a0532c16863e519",
+    "F82_guard_weights_sha256": "2eed8b880546c87fe6cdfc411653431d4b0ab9748861e81d1a27586522aee9c9",
+    "F82_frozen_threshold": "0.90 probability; never changed or retuned",
+    "F82_readonly_margin_forensics_run": 38938111553,
+    "F81_public_feature_diagnostic_run": 38937204779
+  },
+  "hypothesis": "A causal candidate-ranking objective (margin versus source-native alternative candidates), instead of F82's rare-positive probability calibration, yields useful safe interventions with 24 compact role-only weights while retaining exact F60 fallback on two independent public arrival regimes.",
+  "source": {
+    "F76_source_blob": "5b8928b0399ce9f869854beadeab04b29c8703a5",
+    "F82_24_public_feature_definition_blob": "b5d969deeb63e99c1b235f675a0532c16863e519",
+    "F79_native_candidate_engine_blob": "4bba6e34d56ef96aa81515032988f9c5127fe35f",
+    "independent_public_prefix_auditor_blob": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f"
+  },
+  "cohorts": {
+    "synthetic_train_seeds": [
+      -5101,
+      -5117
+    ],
+    "synthetic_guard_seeds": [
+      -5121,
+      -5137
+    ],
+    "families": [
+      -2,
+      -1
+    ],
+    "train_cases": 32,
+    "guard_cases": 32,
+    "F79_F80_F81_F82_synthetic_seed_overlap": false,
+    "registered_all_forbidden": true
+  },
+  "method": {
+    "exactly_24_input_features": "F82's 16 ordered role transitions plus 8 oriented incoming event endpoint incidences, sourced solely from causal before/baseline/after memory and arriving public event",
+    "offline_teacher": "Frozen F79 suffix-intervention labels against unchanged F60 on synthetic TRAIN only; future task never enters online",
+    "optimization": "Four deterministic ordered epochs; for each beneficial action choose highest-scoring other source-native candidate at the same public prefix as hardest negative; if score gap <0.5 update learned float weights +=0.05 times feature difference. Penalize harmful score >-0.1 by update -=0.05 times its features; neutral score >0.1 by update -=0.002 times its features. No label-based hyperparameter changes.",
+    "init": "All 24 float weights zero",
+    "freeze": "Quantize round(weight*64), clamp signed int8 [-127,127] before separate guard",
+    "online": "Exactly frozen F60 next-state default. Native candidate with maximum quantized score, only if score >0 and gap over next source-native candidate score >=0.05. Deterministic native action order tie break.",
+    "memory": "Only twelve 12-byte records (144B); model 24 signed-int8 weights counted separately",
+    "training_supervision_offline_only": true,
+    "absolute_index_and_node_ids_disallowed": true
+  },
+  "gates": {
+    "nonempty_beneficial_and_harmful_synthetic_train_labels": true,
+    "freeze_model_before_guard": true,
+    "independent_public_prefix_audit_all_guard_cases": true,
+    "exact_F60_disabled_parity": true,
+    "at_least_one_native_legal_intervention": true,
+    "per_arrival_regime_no_accuracy_degradation": true,
+    "at_least_one_new_beneficial_guard_rescue": true,
+    "fail_without_retune": true,
+    "full_repository_regression_only_on_scientific_method_pass": true
+  },
+  "protected_future_cohorts_UNAUTHORIZED": {
+    "FIT_TRAIN": [
+      941000,
+      941008
+    ],
+    "FIT_VALIDATION": [
+      941008,
+      941016
+    ],
+    "DIAG": [
+      941100,
+      941116
+    ],
+    "ORIGINAL": [
+      942000,
+      942016
+    ]
+  },
+  "authority": {
+    "FIT": false,
+    "VALIDATION": false,
+    "DIAG": false,
+    "ORIGINAL": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "FORGE_CKB_or_Cloudflare_mutation": false,
+    "paid_API": false
+  }
+}
