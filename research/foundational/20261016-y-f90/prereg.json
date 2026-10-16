@@ -1,0 +1,111 @@
+{
+  "schema": "yggdrasil.f90.temporal-counterfactual-credit.prereg.v1",
+  "stage": "FROZEN_PRECODE_TRAIN_THEN_INDEPENDENT_NEGATIVE_SYNTHETIC_GUARD",
+  "parent": {
+    "F89R_head": "4074216f78ea5bb6bc93eb7e0d44239cdac0036f",
+    "F89R_method_blob": "b2684ffdb49aed9c974569c0056f48d5ebb86aa0",
+    "F85_solver_blob": "e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3",
+    "F83_frozen_blob": "68138887c8bc42a17f8866df96cbede8e2594325",
+    "F62_native_action_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "F76_source_blob": "5b8928b0399ce9f869854beadeab04b29c8703a5"
+  },
+  "north_star": "Test whether learned temporal credit assignment improves which source-native public relationships are retained, rather than hand-designing a local score.",
+  "method": {
+    "training_identity": "F90 linear source-native action advantage learner trained on separately reserved negative synthetic cases.",
+    "teacher": "For TRAIN cases only, at frozen public prefix indices 11,23,35,47,59,71, compare frozen F60 afterstate plus exact F60 remainder versus each legal F62 alternative afterstate plus the same F60 remainder. Evaluate resulting final state with frozen F85 global solver against that TRAIN case's correct answer. Difference in terminal success is temporal counterfactual advantage (-1,0,+1).",
+    "offline_training_eligibility": "Training-only teacher can read later public events and known answer. Those objects may NOT enter online inference or validation/guard action decisions.",
+    "public_action_features": "Twelve immutable, normalized, public-only F62._features on the afterstate for chosen native action minus features for exact F60 afterstate. No source seed, family, future events, task answer or question input.",
+    "bounded_training": "32 TRAIN cases, 6 fixed public checkpoints/case, first 8 distinct non-F60 native alternatives ordered by frozen F62.actions enumeration; 3 fixed epochs, signed perceptron-like update +0.15 * advantage * difference vector with L2 shrink 0.01 per update, clamp weight [-2,2]. Quantize to 12 int8 using round(weight*48), clamp [-96,96]. No random sampling, random search or after-result adjustment.",
+    "inference": "At each prefix compute exact F60 native next state and alternatives. Rank legal nonbaseline actions by dot product of frozen int8/48 weights and public-only difference features. Accept an alternative only if score >=0.25, otherwise take frozen F60. Deterministic source-native ordering for ties. Does not store extra states or privileges.",
+    "capacity": "12 retained 12-byte records 144B, fixed 12 int8 model parameters compiled into controller code/config (count model parameters separately), frozen F85 bounded query-time solver for all arms; ephemeral per-prefix candidate evaluation instrumented.",
+    "causal_contract": "Learner online accepts only public 3-field events, frozen weights, source-native F62 actions, codec. No question, answer, seed, family or future stream enters inference. Independent 72-prefix F62 audit every evaluated case.",
+    "training_control": "Trainer produces frozen weights and training receipt; commit immutable weight blob before evaluating validation or guard. No test-driven retuning; frozen weights identity pinned in the guard runner.",
+    "validation": "Optional read-only eight-seed validation after weights frozen; no checkpoint or threshold selection permitted. Guard is distinct and must have no source access before weight frozen.",
+    "scientific_positive": "At least one F60-failed six-step task rescued on untouched GUARD, no F60-correct case regressed in either source arrival regime and either question subtype, all provenance/causality checks pass. Else scientific negative.",
+    "no_posthoc_adjustment": "After TRAIN lookback/weights result and GUARD first-use, never change model, thresholds or cohort identities to claim this gate as positive. Entire observed negative remains evidence."
+  },
+  "cohorts": {
+    "train": {
+      "seed_start": -5701,
+      "seed_stop_exclusive": -5717,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "cases": 32
+    },
+    "validate": {
+      "seed_start": -5721,
+      "seed_stop_exclusive": -5729,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "cases": 16
+    },
+    "guard": {
+      "seed_start": -5741,
+      "seed_stop_exclusive": -5757,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "cases": 32,
+      "expected_six_step": 8
+    },
+    "excluded_prior_exposed_ranges": [
+      [
+        -5121,
+        -5137
+      ],
+      [
+        -5221,
+        -5237
+      ],
+      [
+        -5321,
+        -5337
+      ],
+      [
+        -5421,
+        -5437
+      ],
+      [
+        -5521,
+        -5537
+      ],
+      [
+        -5621,
+        -5637
+      ]
+    ],
+    "source": "SHA-pinned F76 public two-regime negative synthetic generator. No registered FIT, DIAG, original or F3."
+  },
+  "arms": [
+    "Frozen F60 exact native causal memory plus F85 solver",
+    "Frozen F83 fixed learned 24-int8 causal memory plus F85 solver",
+    "Frozen F86, F87B, F88, F89R prior negative mechanisms retained separately as controls where feasible",
+    "F90 12-int8 learned advantage policy native memory plus frozen F85 solver",
+    "F90 identical memory plus legacy PACK.solve as read-only attribution"
+  ],
+  "phases": {
+    "P0": "Pre-register and commit immutable source identities, training algorithm, disjoint cohort map.",
+    "P1": "Run engineering/unit tests then TRAIN only; do not access validate or guard. Emit deterministic frozen int8 weights and training receipt.",
+    "P2": "Independently verify training hashes and commit frozen weight tuple before any read of validation or guard.",
+    "P3": "One GitHub-hosted validation/guard call preserving source identity and all 72-prefix audits; record both positive and negative unchanged.",
+    "P4": "Archive evidence, source and zero leakage, keep draft unmerged until independent authority accepts."
+  },
+  "no_claims": {
+    "scientific_accepted": false,
+    "FIT": false,
+    "DIAG": false,
+    "ORIGINAL": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "controller_or_accepted_ref_mutation": false,
+    "Codex": false
+  }
+}

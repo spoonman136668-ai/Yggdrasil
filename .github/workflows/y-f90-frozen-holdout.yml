@@ -1,0 +1,55 @@
+name: Yggdrasil F90 frozen validation then one-time guard
+on:
+  push:
+    branches:
+      - research/y-f90-temporal-credit-frozen-20261016-r1
+    paths:
+      - 'research/foundational/20261016-y-f90/holdout.py'
+      - '.github/workflows/y-f90-frozen-holdout.yml'
+permissions:
+  contents: read
+jobs:
+  frozen-holdout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Independently pin F90 source, trained policy, prereg and parent
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 78b6584d5c003493e549601fc45972d75569ee42 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f90/prereg.json)" = 9cf022d8646779cfe15d3f655b9b40154bf18b7c
+          test "$(git hash-object research/foundational/20261016-y-f90/temporal_credit.py)" = 0b689d66135a246987b20e189b9724b1c0715c25
+          test "$(git hash-object research/foundational/20261016-y-f90/frozen-policy.json)" = 56d1c1c81faf432c7f2eb33e6ce45e3513a9c9ae
+          test "$(git hash-object research/foundational/20261016-y-f89r/graded_exchange.py)" = b2684ffdb49aed9c974569c0056f48d5ebb86aa0
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+          test "$(git hash-object research/foundational/20261016-y-f83/pairwise_learner.py)" = 68138887c8bc42a17f8866df96cbede8e2594325
+      - name: Independent F90/F85 unit regressions — no cohort
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f90 -p 'test_temporal_credit.py'
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f85 -p 'test_global_solver.py'
+      - name: Read-only validation on frozen policy without model selection
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f90/holdout.py --frozen-validation-only > "$RUNNER_TEMP/f90-validation.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f90-validation.json"))); assert r["stage"]=="FROZEN_SYNTHETIC_VALIDATION_ONLY" and r["cases"]==16; assert r["exact_72_causal_prefixes_verified"] and r["max_persistent_memory_bytes"]<=144 and r["extra_frozen_model_parameters_bytes"]==12; assert r["no_test_time_refit"] and r["no_guard_as_training"] and not r["independent_science_accepted"]; print(json.dumps({k:r[k] for k in ("stage","classification","cases","scores","six_step_rescues_from_F60","F60_correct_case_regressions","learned_interventions","by_arrival_regime_and_type")},sort_keys=True))'
+      - name: Independently evaluate one previously unseen synthetic guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f90/holdout.py --frozen-disjoint-guard-only > "$RUNNER_TEMP/f90-guard.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f90-guard.json"))); assert r["stage"]=="ONE_TIME_NEW_NEGATIVE_SYNTHETIC_GUARD" and r["cases"]==32 and r["six_step_cases"]==8; assert r["exact_72_causal_prefixes_verified"] and r["max_persistent_memory_bytes"]<=144 and r["extra_frozen_model_parameters_bytes"]==12; assert r["no_test_time_refit"] and r["no_guard_as_training"] and r["no_protected_train_or_original"] and r["no_DIAG"] and r["no_FIT"] and r["no_F3"] and not r["independent_science_accepted"] and not r["optimizer_promotion"] and not r["controller_mutation"]; print(json.dumps({k:r[k] for k in ("stage","classification","cases","scores","six_step_rescues_from_F60","F60_correct_case_regressions","learned_interventions","by_arrival_regime_and_type")},sort_keys=True))'
+      - name: No mutated scientific source or accepted refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"

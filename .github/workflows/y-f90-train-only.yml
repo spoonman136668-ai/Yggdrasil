@@ -1,0 +1,51 @@
+name: Yggdrasil F90 temporal credit TRAIN only
+on:
+  push:
+    branches:
+      - research/y-f90-temporal-credit-frozen-20261016-r1
+    paths:
+      - 'research/foundational/20261016-y-f90/prereg.json'
+      - 'research/foundational/20261016-y-f90/temporal_credit.py'
+      - 'research/foundational/20261016-y-f90/test_temporal_credit.py'
+      - '.github/workflows/y-f90-train-only.yml'
+permissions:
+  contents: read
+jobs:
+  frozen-train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Exact parent and unconsumed cohort plan verification
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 4074216f78ea5bb6bc93eb7e0d44239cdac0036f HEAD
+          test "$(git hash-object research/foundational/20261016-y-f90/prereg.json)" = 9cf022d8646779cfe15d3f655b9b40154bf18b7c
+          test "$(git hash-object research/foundational/20261016-y-f89r/graded_exchange.py)" = b2684ffdb49aed9c974569c0056f48d5ebb86aa0
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+          test "$(git hash-object research/foundational/20261016-y-f83/pairwise_learner.py)" = 68138887c8bc42a17f8866df96cbede8e2594325
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+      - name: Offline F90 learning and inference contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f90 -p 'test_temporal_credit.py'
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f85 -p 'test_global_solver.py'
+      - name: One deterministic synthetic TRAIN only — never touch validation or guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f90/temporal_credit.py --train-negative-synthetic-only > "$RUNNER_TEMP/f90-train.json"
+          python3 -B -c 'import json,os; j=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f90-train.json"))); assert j["stage"]=="TRAIN_ONLY_NO_VALIDATION_NO_GUARD" and j["train_cases"]==32; assert j["train_examples"]>0 and len(j["frozen_12_int8_weights"])==12; assert j["no_registered_fit"] and j["no_validate"] and j["no_guard"] and j["no_protected_original"] and j["no_diag"] and j["no_optimizer_promotion"]; print(json.dumps(j,sort_keys=True))'
+      - name: No changes to research source or accepted refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
