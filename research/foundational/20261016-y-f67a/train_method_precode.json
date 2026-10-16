@@ -1,0 +1,44 @@
+{
+  "schema": "yggdrasil.f67a.full-public-junction-supervision-method.prereg.v1",
+  "stage": "PRECODE_TRAINING_METHOD_FROZEN_BEFORE_SYNTHETIC_FEEDBACK",
+  "source_qualification_run": 38904435445,
+  "immutable_prereg_blob": "5ecade3402c33120a1eabfd34bbc66e91200dcb8",
+  "immutable_online_blob": "b370396b3c3571be2c01ab2b33effef14f248eef",
+  "hypothesis": "Full-public, question-blind graph-decomposition supervision identifies which public edges are component-joining 9-node path bridges, enabling the causal online learned memory policy to retain junction evidence under the same 144B cap.",
+  "teacher_offline_only": {
+    "identify_bridge_definition": "For each of the 72 public edges, remove it from its original 18-node/17-edge component; mark it a bridge iff the resulting two connected parts each have exactly 9 nodes.",
+    "teacher_utility_formula": "0.4*(sum(min(hops,4)^2)/16) + 2.0*(count of exact lossless bridge-edge records retained) + 0.5*(count of future public incidence on distinct retained endpoints / 24) - 0.1*(number of singleton records / 12)",
+    "model_features": "Exact 16 features of frozen F67A online source, no additional inputs.",
+    "labels": "For each candidate after-state in ACTION.actions relative to that step's exact F60 successor, feature delta and clipped utility delta in [-1,1]; no synthetic outcome-dependent class resampling or label flipping.",
+    "training": "Three deterministic chronological SGD epochs, learning rate 0.02, tanh regression, signed-int8 weights round(16*w) and clamp [-127,127], no hyperparameter selection after looking at synthetic outcomes.",
+    "fallback": "No protected model training unless independent causal synthetic validation demonstrates learned merge and bridge retention plus a positive junction ablation; otherwise block."
+  },
+  "controls": [
+    "unchanged frozen F60",
+    "F59",
+    "F58",
+    "F61",
+    "F62",
+    "F63C",
+    "F64",
+    "F65",
+    "full public teacher unfair/noncompetitive"
+  ],
+  "synthetic_gates": {
+    "two_public_true_bridge_edges_per_case": true,
+    "learned_causal_prefixes_verified": true,
+    "model_merge_actions_positive": true,
+    "model_keeps_nonzero_true_bridge_records": true,
+    "positive_junction_memory_ablation": true,
+    "strongest_fair_control_result_reported": true
+  },
+  "authority": {
+    "f67a_fit_train_UNCONSUMED": true,
+    "f67a_fit_validate_UNCONSUMED": true,
+    "DIAG_UNCONSUMED": true,
+    "ORIGINAL_UNCONSUMED": true,
+    "F3": false,
+    "no_custody_promotion": true,
+    "no_paid_API": true
+  }
+}
