@@ -8,7 +8,7 @@ permissions:
   actions: read
 jobs:
   archive-only:
-    if: "${{ github.event.head_commit.message == 'audit(y-f57): independently verify already consumed FIT evidence without replay' && github.run_attempt == 1 }}"
+    if: "${{ github.event.head_commit.message == 'audit(y-f57): recheck archived FIT with corrected jq filter' && github.run_attempt == 1 }}"
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -44,9 +44,9 @@ jobs:
             -H "Authorization: Bearer $GH_TOKEN" \
             "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/runs/38826515103/artifacts")
           echo "$arts" | jq -e --arg sha a84fb94c6451ba60c12ebf6759e2be3f20aec53c \
-            '[.artifacts[]|select(.id==12015571299 and \
-               .name=="Y-F57-one-frozen-learned-causal-component-FIT-and-audit" and \
-               .digest=="sha256:185833a5c69c4c7f2df525a66ae5d282093af6ed12372bfd1508ae562c42be9a" and \
+            '[.artifacts[]|select(.id==12015571299 and
+               .name=="Y-F57-one-frozen-learned-causal-component-FIT-and-audit" and
+               .digest=="sha256:185833a5c69c4c7f2df525a66ae5d282093af6ed12372bfd1508ae562c42be9a" and
                (.expired|not) and .workflow_run.id==38826515103 and .workflow_run.head_sha==$sha)]|length==1'
       - uses: actions/download-artifact@v4
         with:
