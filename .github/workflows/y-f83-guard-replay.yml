@@ -1,0 +1,13 @@
+name: Yggdrasil F83 Read Only Replay
+on:
+  push:
+    branches: [research/y-f83-immutable-guard-forensics-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect original synthetic guard
+        run: python3 -B research/foundational/20261016-y-f83/forensic_decisions.py
