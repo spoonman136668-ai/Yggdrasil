@@ -19,4 +19,7 @@ jobs:
           test "$(git hash-object research/foundational/20261016-y-f63/prereg.json)" = ecd9f177c9a47fd42c50e6e2502f938082028513
           python3 -B research/foundational/20261016-y-f63/source_engineering.py --synthetic-only
           python3 -B research/foundational/20261016-y-f63/learn_reliability.py --synthetic-only
+          python3 -B research/foundational/20261016-y-f63/trainonly_source_feasibility.py > /tmp/y-f63-trainonly-source.json
+          python3 -B -m json.tool /tmp/y-f63-trainonly-source.json >/dev/null
+          python3 -B -c 'import json; d=json.load(open("/tmp/y-f63-trainonly-source.json")); print("F63_TRAINONLY_FEASIBILITY",d["fixed_correct"],d["witness_correct"],"NOVELTY",d["source_novelty_qualified"])'
           echo 'FIT=UNCONSUMED DIAG=UNCONSUMED ORIGINAL=UNCONSUMED'
