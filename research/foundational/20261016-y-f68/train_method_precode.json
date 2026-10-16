@@ -1,0 +1,35 @@
+{
+  "schema": "yggdrasil.f68.full-public-structural-action-distillation.prereg.v1",
+  "stage": "PRECODE_FROZEN_METHOD_NO_SYNTHETIC_OUTCOME_SEEN",
+  "precode_parent_source_blob": "c079cb2b6993429c302f4f634e2862d05056fbdb",
+  "public_structural_teacher": "Determine the two 9+9 cross-component bridges using only the full 72-edge public graph (never private source tags or future query). This full-public teacher is offline-training only.",
+  "frozen_rank_objective": "U(after,event)= (4 if event is 9+9 public bridge else -1)*I(lossless exact event retained after) + I(after is frozen F60 causal successor) + 0.25 * sum(min(record_hops,4)^2)/16",
+  "candidate_labels": "For each source-valid causal candidate differing from F60 selected successor, use clipped U(candidate)-U(F60) in [-1,1], and use fixed 16-dim candidate feature delta from source.",
+  "training": "Three chronological epochs of tanh regression with SGD learning rate 0.02, no per-outcome model search; multiply every genuine public 9+9-bridge training example's gradient by 16 relative to ordinary examples; signed-int8 weights via clamp(round(w*16),-127,127). No synthetic reweighting after outcomes.",
+  "fair_controls": [
+    "F60 fixed",
+    "F59 deferred",
+    "F58 frontier",
+    "F61 frozen",
+    "F62 frozen",
+    "F63C frozen",
+    "F64 frozen",
+    "F65 frozen"
+  ],
+  "synthetic_gates": {
+    "real_and_negative_public_event_labels_required": true,
+    "positive_true_junction_retention_over_junction_ablation": true,
+    "actual_trained_merge_actions_positive": true,
+    "independent_prefix_audit": true,
+    "nonzero_accuracy_and_frozen_F60_comparison_report": true,
+    "no_FIT_before_synthetic_gate": true
+  },
+  "authority": {
+    "FIT_TRAIN_consumed": false,
+    "FIT_VALIDATION_consumed": false,
+    "DIAG_consumed": false,
+    "ORIGINAL_consumed": false,
+    "F3": false,
+    "optimizer_promotion": false
+  }
+}
