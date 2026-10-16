@@ -56,18 +56,6 @@ function Test-ProviderAvailabilityFailure([string]$Message){
     return [bool]($Message -match '(?i)(status=(?:408|429|500|502|503|504)\b|\b(?:408|429|500|502|503|504)\b|too many requests|rate.?limit|timed?\s*out|timeout|underlying connection was closed|unexpected error occurred on a receive|connection (?:reset|aborted)|internal server error|bad gateway|server unavailable|service unavailable|gateway timeout)')
 }
 
-function Resolve-Codex {
-    foreach($P in @(
-        'C:\ProgramData\CKBR\research-sidecar-yggdrasil\codex\bin\codex.exe',
-        'C:\ProgramData\CKBR\codex\bin\codex.exe'
-    )){
-        if(Test-Path -LiteralPath $P -PathType Leaf){return $P}
-    }
-    $Cmd=Get-Command codex -ErrorAction SilentlyContinue
-    if($Cmd){return $Cmd.Source}
-    throw 'CODEX_NOT_AVAILABLE'
-}
-
 function Resolve-Python {
     foreach($P in @(
         'C:\ProgramData\CKBR\research-sidecar-yggdrasil\python312\python.exe',
@@ -181,43 +169,15 @@ $MindContext
 "@
     [IO.File]::WriteAllText($PromptPath,$Prompt,(New-Object Text.UTF8Encoding($false)))
 
-    $Succeeded=$false
-    $PrimaryAvailabilityFailure=$false
-    $SecondaryAvailabilityFailure=$false
-    Write-Host 'RESEARCH_AGENT_POLICY=CODEX_ONLY_NO_EXTERNAL_APIS'
-    if(-not$Succeeded){
-        $Codex=Resolve-Codex
-        $OldCodeHome=$env:CODEX_HOME
-        $OldHome=$env:HOME
-        $OldProfile=$env:USERPROFILE
-        try{
-            $CodexHome='C:\ProgramData\CKBR\codex\home'
-            if(Test-Path -LiteralPath $CodexHome -PathType Container){
-                $env:CODEX_HOME=$CodexHome
-                $env:HOME=$CodexHome
-                $env:USERPROFILE=$CodexHome
-            }
-
-            $Models=@('gpt-5.6-sol','gpt-5.6-luna')
-            foreach($Model in $Models){
-                Write-Host "RESEARCH_AGENT_ATTEMPT provider=codex model=$Model"
-                $Args=@('exec','--approve-for-me','--model',$Model,'--output-last-message',$LastMessagePath,'-')
-                $Proc=Start-Process -FilePath $Codex -ArgumentList $Args -WorkingDirectory $RepoPath -RedirectStandardInput $PromptPath -NoNewWindow -Wait -PassThru
-                if($Proc.ExitCode-eq0){$Succeeded=$true;break}
-                Write-Host "RESEARCH_AGENT_RETRY provider=codex model=$Model exit=$($Proc.ExitCode)"
-                & git reset --hard $StartSha|Out-Null
-                & git clean -fd|Out-Null
-            }
-        }finally{
-            $env:CODEX_HOME=$OldCodeHome
-            $env:HOME=$OldHome
-            $env:USERPROFILE=$OldProfile
-        }
-    }
-    if(-not$Succeeded){
-        throw 'RESEARCH_AGENT_FAILED_ALL_PROVIDERS'
-    }
-
+    # Model-authored research work is handled in ChatGPT/GitHub under frozen
+    # preregistration and qualification rules. A GitHub-hosted scheduled run
+    # is not itself a ChatGPT executor and must not consume any Codex quota.
+    # Preserve an exact-source, no-mutation watchdog observation. No hidden
+    # model, provider, retry, source commit, or scientific-result promotion.
+    Write-Host 'RESEARCH_AGENT_POLICY=GPT_CHAT_GITHUB_SOURCE_ONLY_NO_CODEX_NO_EXTERNAL_APIS'
+    Write-Host 'RESEARCH_EXECUTOR_UNATTENDED=NOT_CONFIGURED_NO_MODEL_INVOCATION'
+    Write-CycleResult -Advanced $false -Reason 'gpt-authored-research-required-no-unattended-model' -Head $StartSha
+    return
     if(((& git status --porcelain)-join'').Trim()){throw 'AGENT_LEFT_UNCOMMITTED_CHANGES'}
     $BranchAfter=((& git branch --show-current 2>$null|Select-Object -First 1)|Out-String).Trim()
     if($BranchAfter-cne$ActiveBranch){throw "AGENT_BRANCH_CHANGED expected=$ActiveBranch actual=$BranchAfter"}
