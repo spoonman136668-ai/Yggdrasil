@@ -1,0 +1,65 @@
+name: Yggdrasil F55 new learned mechanism source FIT-only qualification
+on:
+  push:
+    branches: [research/y-f55-causal-online-queryblind-memory-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  exact-head-frozen-fit-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 115
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify prereg source controls and exact-hash independent audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 347c1dc2300745c49000102be91c1eae39090e07 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f55/prereg-candidate.json)" = eb815347e331ec34dc8247ff28d99bbcd13e621a
+          test "$(git hash-object research/foundational/20261015-y-f55/source_pilot.py)" = f8e6cb5b36b037b17848d6d68abab37a0d20911a
+          test "$(git hash-object research/foundational/20261015-y-f55/audit_result.py)" = 8cf20d12e400724374417a9482748115f0e7e9bf
+          test "$(git hash-object research/foundational/20261015-y-f55/test_model_fit.py)" = 30359dbde4716264d8433ff0dae5773307486e32
+          python3 -B -m py_compile research/foundational/20261015-y-f55/source_pilot.py
+          python3 -B -m py_compile research/foundational/20261015-y-f55/audit_result.py
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f55 -p test_fit_preflight.py -v
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f55 -p test_model_fit.py -v
+          echo F55_FROZEN_LEARNED_MODEL_AND_AUDITOR_FIT_ONLY=PASS
+      - name: Install original Yggdrasil test dependencies
+        run: python3 -m pip install -e '.[test]'
+      - name: One full original Yggdrasil regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pytest -q tests
+      - name: Capture one learned model FIT-only source witness; NO DIAG execution
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/yf55"
+          mkdir -p "$root"
+          python3 -B research/foundational/20261015-y-f55/source_pilot.py --fit-only > "$root/fit-only-result.json"
+          python3 -B - "$root/fit-only-result.json" <<'PY'
+          import json,sys
+          d=json.load(open(sys.argv[1]))
+          assert d["fit_labeled_records"]>1000 and d["fit_positive_records"]>0
+          assert len(d["model_weights_int8"])==8
+          assert d["diagnostic_seeds_NOT_TOUCHED"]==[611100,611116]
+          assert d["original_seeds_NOT_RESERVED"]==[612000,612016]
+          assert d["query_blind_retention"] is True
+          assert d["source_independent_F3"] is False
+          print("F55_NEW_LEARNED_MODEL_FIT_ONLY=PASS")
+          PY
+          printf '%s\n' "$GITHUB_SHA" > "$root/SOURCE_SHA"
+          (cd "$root" && sha256sum fit-only-result.json > manifest.sha256)
+          echo "F55_DIAGNOSTIC_UNCONSUMED=TRUE; ORIGINAL_UNEXECUTED=TRUE; F3_FALSE=TRUE"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: Yggdrasil-F55-new-learned-model-FIT-only-source-no-diagnostic
+          path: ${{ runner.temp }}/yf55/
+          retention-days: 45
+          if-no-files-found: error
