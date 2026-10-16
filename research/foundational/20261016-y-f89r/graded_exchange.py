@@ -92,7 +92,7 @@ def run():
     assert reg["new_guard"]=={"seed_start":-5621,"seed_stop_exclusive":-5637,
                               "step":-1,"families":[-2,-1],"cases":32,
                               "expected_six_step_cases":8}
-    assert reg["parent"]["exact_F88_head_sha"]=="a24abab5f778c753f2e8e3f21adf077ceb1cb6b8"
+    assert reg["source_base_F88_head"]=="a24abab5f778c753f2e8e3f21adf077ceb1cb6b8"
     F88=load_exact("f89r_immutable_F88",ROOT/"20261016-y-f88"/"frontier.py",F88_BLOB)
     F87=F88.load_exact("f89r_immutable_F87",ROOT/"20261016-y-f87b"/"bridge_reserve.py",F88.F87B_BLOB)
     F86=F87.load("f89r_immutable_F86",ROOT/"20261016-y-f86"/"queryblind_retention.py",F87.F86_SHA)
