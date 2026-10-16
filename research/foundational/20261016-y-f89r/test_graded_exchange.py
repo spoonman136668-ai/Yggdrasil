@@ -99,7 +99,10 @@ class F89Contracts(unittest.TestCase):
    def _valid_memory(self,after,codec):
     assert len(after)<=12
   lookup=mocklanguage({B:(frozenset({"a"}),0,0,1)})
-  state,trace,counts=M.online(public,None,Fixed(),lookup,True)
+  class ToyPack:
+   def pack(self,a,b,codes):
+    return bytes(12)
+  state,trace,counts=M.online(public,ToyPack(),Fixed(),lookup,True)
   self.assertEqual(state,B)
   self.assertEqual(len(trace),72)
   self.assertEqual(counts,dict(overrides=0,capped=0,eligible=0,
