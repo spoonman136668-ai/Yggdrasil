@@ -1,0 +1,56 @@
+name: Yggdrasil F84 exposed-only qualification
+on:
+  push:
+    branches:
+      - contrib/chatgpt-y-f84-reachability-precode-20261016-r1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  f84-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify immutable F83 foundation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 95596408e8dd5e9360cf27d78ff282cffb1103c6 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f83/pairwise_learner.py)" = 68138887c8bc42a17f8866df96cbede8e2594325
+          test "$(git hash-object research/foundational/20261016-y-f83/prereg.json)" = 2c47c4116bcad183ef2e3f327b9760b8ea95b3c1
+          test "$(git hash-object research/foundational/20261016-y-f83/forensic_prereg.json)" = 9d4333afe6baf45025decf19e9cfad3319981a22
+          test "$(git hash-object research/foundational/20261016-y-f84/reachability-precode-advisory.json)" = 9030779a855f241a090a2cba089c6ec979f300fa
+      - name: Focused F84 syntax and unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f84 -p 'test_forensic_reachability.py'
+      - name: Frozen exposed synthetic diagnostic only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f84/forensic_reachability.py --already-exposed-synthetic-only > "$RUNNER_TEMP/f84-exposed-diagnostic.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f84-exposed-diagnostic.json"))); assert r["status"]=="SOURCE_ONLY_READER_NOT_PROSPECTIVE_QUALIFICATION"; assert r["exposed_guard_cases"]==32 and r["six_step_cases"]==8; assert r["frozen_F60_six_step_correct"]==r["frozen_F83_six_step_correct"]==0; assert not r["no_training"] is False; assert r["causal_legal_action_reachability_established"] is False; print(json.dumps({k:r[k] for k in ("status","six_step_cases","six_step_query_aware_12_byte_encodable_cases","causal_legal_action_reachability_established")},sort_keys=True))'
+      - name: D4 native legal-action hindsight witness on already-exposed cases
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f84/native_legal_action_witness.py --already-exposed-synthetic-only > "$RUNNER_TEMP/f84-native-legal-actions.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f84-native-legal-actions.json"))); assert r["stage"]=="ALREADY_EXPOSED_SYNTHETIC_FORENSICS_ONLY"; assert r["exposed_six_step_cases"]==8 and len(r["rows"])==8; assert r["independently_audited_prefixes"]==576; assert r["legal_native_action_trace_checked_for_all_cases"] and r["no_FIT"] and r["no_DIAG"] and r["no_original"] and r["no_optimizer_promotion"]; assert all(z["independent_prefix_action_and_public_witness_verified"] and z["constructed_answer_record_injected"] is False and z["causal_online_learned_policy"] is False and z["query_and_future_leaked_into_action_selection"] for z in r["rows"]); print(json.dumps({"status":r["stage"],"cases":r["exposed_six_step_cases"],"legal_hindsight_reachable_cases":r["legal_hindsight_reachable_cases"],"causal_online_qualification":False,"case_diagnostics":[{"seed":z["seed"],"family":z["family"],"correct":z["query_aware_offline_oracle_correct"],"retained_path_edges":z["retained_raw_path_edges"],"dropped_target_events":z["dropped_target_events"],"native_evictions":z["native_append_eviction_count"]} for z in r["rows"]]},sort_keys=True))'
+      - name: D5 immutable D4 solver-interference forensics
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f84/forensic_solver_interference.py --frozen-exposed-d4-only > "$RUNNER_TEMP/f84-d5.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f84-d5.json"))); assert r["stage"]=="POSTRESULT_EXPOSED_SYNTHETIC_READ_ONLY"; assert r["cases"]==r["all_six_legal_raw_path_edges_present"]==8; assert 0<=r["target_only_solver_correct"]<=8; assert r["legal_action_trace_solver_correct"]==5 and r["failed_full_state_solver_cases"]==3; assert r["no_source_or_policy_mutation"] and r["no_FIT"] and r["no_DIAG"] and r["no_original"] and r["no_optimizer_promotion"]; print(json.dumps({"cases":r["cases"],"failure_kinds":r["failure_kinds"],"all_path_edges_retained":r["all_six_legal_raw_path_edges_present"],"solver_correct_with_target_only":r["target_only_solver_correct"],"solver_correct_full_memory":r["legal_action_trace_solver_correct"],"target_only_failure_kinds":r["target_only_failure_kinds"],"rows":[{"seed":z["seed"],"family":z["family"],"isolated_target_only_solved":z["isolated_target_path_solved"],"target_only_failure":z["target_only_solver_analysis"]["failure_kind"],"full_memory_failure":z["solver_analysis"]["failure_kind"]} for z in r["rows"]]},sort_keys=True))'
+      - name: Confirm checkout stayed unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          git status --porcelain
