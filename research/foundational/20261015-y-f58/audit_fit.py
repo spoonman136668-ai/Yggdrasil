@@ -27,9 +27,18 @@ def audit(result,prereg):
  assert d["DIAG_untouched"] and d["originals_untouched"]
  assert d["offline_extra_work_noncompetitive"] and d["query_hidden_during_retention"]
  assert d["native_total_576B_unverified"] and d["accepted_refs_unchanged"] and not d["source_independent_F3"]
- arms=p["methods"]
+ # The once-only source emitted four policies, but the prereg listed
+ # a fifth *unfair future-question oracle*. Do not fabricate a source record.
+ # Verify precisely the four authentic source policies, and independently
+ # derive the explicitly post-retention hindsight oracle from stored public
+ # edges and future question; mark original registered-control incomplete.
+ omitted="future_query_oracle_unfair"
+ assert p["methods"][-1]==omitted
+ arms=[arm for arm in p["methods"] if arm!=omitted]
+ assert len(arms)==4
  assert set(d["correct"])==set(arms)
  seen=set();totals={a:0 for a in arms};regimes=set()
+ offline_hindsight_correct=0
  for row in d["rows"]:
   seed,fam=row["seed"],row["family"]
   assert (seed,fam) not in seen;seen.add((seed,fam))
@@ -43,6 +52,11 @@ def audit(result,prereg):
   assert set(row["correctness"])==set(arms)
   assert set(row["retained_records"])==set(arms)
   assert set(row["serialized_bytes"])==set(arms)
+  # This is an independent *audit-derived*, not source-produced, hindsight
+  # oracle. It may view the query after retention and the complete public
+  # event list. It is therefore not a fair online method.
+  qonly=[(a,b,(2*role,)) for a,role,b in public]
+  offline_hindsight_correct+=solve(qonly,q)
   for arm in arms:
    items=row["retained_records"][arm]
    assert len(items)<=12 and row["serialized_bytes"][arm]==len(items)*12<=144
@@ -68,10 +82,16 @@ def audit(result,prereg):
    totals[arm]+=actual
  assert len(seen)==64 and len(regimes)==2
  assert totals==d["correct"]
+ assert offline_hindsight_correct==64
  gate=(totals["public_offline_full_graph_extra_work"]/64>=p["FIT_source_gates"]["public_offline_accuracy_min"] and
        totals["causal_frontier_fixed_online"]/64>=p["FIT_source_gates"]["causal_fixed_online_accuracy_min"])
  assert d["joint_source_gate_met"]==gate
- print("Y_F58_FIT_SOURCE",json.dumps(dict(correct=totals,qualified=gate,regimes=sorted(regimes)),sort_keys=True))
+ print("Y_F58_EXISTING_FIT_ARCHIVE_AUDIT",json.dumps(dict(
+  archived_correct=totals,source_feasibility_gate_met=gate,
+  regimes=sorted(regimes),audit_only_future_query_oracle_correct=offline_hindsight_correct,
+  prereg_unemitted_control=omitted,source_prereg_all_controls_complete=False,
+  source_reexecuted=False,diagnostic_or_original_executed=False,
+  science_accepted=False),sort_keys=True))
 if __name__=="__main__":
  assert len(sys.argv)==3
  audit(sys.argv[1],sys.argv[2])
