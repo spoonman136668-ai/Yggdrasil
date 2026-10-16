@@ -1,0 +1,38 @@
+{
+  "schema": "yggdrasil.f89r.accounting-repair-newcohort.prereg.v1",
+  "stage": "FROZEN_ACCOUNTING_REPAIR_NEW_NEGATIVE_GUARD",
+  "source_base_F88_head": "a24abab5f778c753f2e8e3f21adf077ceb1cb6b8",
+  "method_provenance": {
+    "original_F89_source_commit": "1ee97118193a4c6a835ba1b1a3a98d7dc5200e81",
+    "original_F89_prereg_blob": "4fd1967d6b6e225471f49a0d10b8c17534bd05ce",
+    "original_workflow_run": 38969868059,
+    "original_scientific_guard_status": "INVALID_EARLY_ABORT_NO_SCIENTIFIC_RESULT",
+    "original_partial_source_cohort": [
+      -5521,
+      -5537
+    ],
+    "root_cause": "Online accounting referenced overrides instead of decision output override before first case completed"
+  },
+  "decision_method_freeze": "AST exact identity of def decide between original F89 source and F89R mandatory; no grading rule or tie-break modification.",
+  "only_allowed_code_change": "Fix online accounting mapping; update source/guard provenance checks and outward schema labels. Never alter decide, F88.public_language, F62 action space or F85 solver.",
+  "new_guard": {
+    "seed_start": -5621,
+    "seed_stop_exclusive": -5637,
+    "step": -1,
+    "families": [
+      -2,
+      -1
+    ],
+    "cases": 32,
+    "expected_six_step_cases": 8
+  },
+  "method_and_scoring_frozen": "Identical F89 decision rule: F60 baseline; <=3 lost short public tuples; weighted long gain 2*new six-step + new five-step >=2*losses+1; deterministic native selection. Query-blind 144-byte memory.",
+  "controls": "Exact F60 F83 F86 F87B F88 on disjoint guard; independent F62 72-prefix audit; independent public witness; fixed F85 query-time solver.",
+  "eligibility": "No case regression from F60 in any arrival regime or subtype and >=1 six-step F60 failure rescued, with all integrity checks. Else valid negative; no scientific acceptance.",
+  "guardrails": [
+    "Old -5521..-5536 partially exposed cohort retired, never replayed.",
+    "Public-only unit tests before new source first use.",
+    "No retuning, protected FIT/DIAG/original, optimizer, controller, accepted ref changes or Codex.",
+    "No learning, task question/answer or family labels inside online decision."
+  ]
+}
