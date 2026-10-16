@@ -1,0 +1,43 @@
+name: Yggdrasil F93B frozen role-grammar TRAIN only
+on:
+  push:
+    branches:
+      - research/y-f93b-learned-role-grammar-20261016-r1
+    paths:
+      - 'research/foundational/20261016-y-f93b/prereg.json'
+      - 'research/foundational/20261016-y-f93b/role_grammar.py'
+      - 'research/foundational/20261016-y-f93b/test_role_grammar.py'
+      - '.github/workflows/y-f93b-train-only.yml'
+permissions:
+  contents: read
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Attest precode protocol and frozen predecessor
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7300accd23d8f9ce627b3979cba48be34a83ac18 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f93b/prereg.json)" = a9e0c04027e6488220c068eb59e580a1295c736b
+          test "$(git hash-object research/foundational/20261016-y-f92/dense_path_credit.py)" = 7fdaf5d24866c347275c2ffa3aec7dfeaed6ac5b
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+      - name: F93B noncohort native causal contract tests
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f93b -p 'test_role_grammar.py'
+      - name: Train only frozen grammar from reserved source
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f93b/role_grammar.py --train-only > "$RUNNER_TEMP/f93b-train.json"
+          python3 -B -c 'import json,os; x=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f93b-train.json"))); assert x["stage"]=="TRAIN_ONLY_SEPARATE_VALIDATION_GUARD" and x["train_cases"]==32 and 0<len(x["grammar"])<=3; assert x["grammar_extra_bytes"]<=18 and x["latch_extra_bits"]==1; assert not x["validation_accessed"] and not x["guard_accessed"] and not x["protected_sources_accessed"] and not x["scientific_acceptance"]; print(json.dumps(x,sort_keys=True))'
+      - name: Checkout read-only
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
