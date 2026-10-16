@@ -1,0 +1,97 @@
+{
+  "schema": "yggdrasil.f61.learned-future-task-value-retention.prereg.v1",
+  "stage": "PRECODE_FROZEN_NO_FIT_USE",
+  "issue": 282,
+  "parent_F60_source_run": 38831091860,
+  "parent_frozen_source_sha": "d20afb1dc0de789be5c8985c1a31ee75038da73b",
+  "hypothesis": "A small bounded online policy learns expected future-query utility of incomplete compact graph components, using current public state only, and outperforms frozen fair fixed online controls on disjoint new FIT streams under shifted public arrival schedules.",
+  "fit": {
+    "seeds": [
+      741000,
+      741016
+    ],
+    "training": [
+      741000,
+      741008
+    ],
+    "validation": [
+      741008,
+      741016
+    ],
+    "families": [
+      1420,
+      1421,
+      1422,
+      1423
+    ],
+    "expected_cases": 64
+  },
+  "diagnostic_NOT_AUTHORIZED": {
+    "seeds": [
+      741100,
+      741116
+    ],
+    "families": [
+      1424,
+      1425,
+      1426,
+      1427
+    ]
+  },
+  "original_NOT_RESERVED": {
+    "seeds": [
+      742000,
+      742016
+    ],
+    "families": [
+      1428,
+      1429,
+      1430,
+      1431
+    ]
+  },
+  "stream": {
+    "public_events": 72,
+    "max_records": 12,
+    "record_bytes": 12,
+    "max_serialized_memory_bytes": 144,
+    "policy_parameters_count_max": 12,
+    "policy_parameters_accounted_separately": true,
+    "question_hops": [
+      4,
+      6,
+      8
+    ],
+    "future_question_hidden_until_memory_frozen": true,
+    "private_core_and_public_random_tags_NOT_policy_features": true
+  },
+  "source_feasibility": {
+    "offline_public_witness_min_accuracy": 0.85,
+    "causal_fixed_online_min_accuracy": 0.25
+  },
+  "frozen_controls": [
+    "learned_query_value_retention",
+    "F60_like_fixed_online",
+    "frozen_F59_deferred",
+    "frozen_F58_frontier",
+    "fixed_pair_triple_DAG",
+    "FIFO_hash",
+    "offline_public_noncompetitive",
+    "future_query_oracle_unfair"
+  ],
+  "learning_acceptance": {
+    "gain_vs_strongest_144B_online_min": 0.05,
+    "per_family_nondegradation": true,
+    "positive_composition_retrieval_ablation": true,
+    "source_free_all_public_path_and_byte_receipts": true
+  },
+  "authorities": {
+    "independent_F3": false,
+    "primary_original_not_executed": true,
+    "physical_whole_native_576B_unverified": true,
+    "live_optimizer_unchanged": true,
+    "accepted_refs_unchanged": true,
+    "controller_unchanged": true,
+    "paid_API_Codex_unchanged": true
+  }
+}
