@@ -66,6 +66,23 @@ class FrozenSourceTests(unittest.TestCase):
    m._valid_memory(learned,packing)
    self.assertLessEqual(12*len(learned),144)
    with self.assertRaises(AssertionError):m.actions(learned,tagged[0],0,packing)
+ def test_counterfactual_label_derivation_on_unregistered_synthetic_only(self):
+  packing=m.codec()
+  for seed,family in ((-71,-2),(-72,-1)):
+   tagged,question,_paths,_regime=m._construct(seed,family)
+   public=tuple(row[:3] for row in tagged)
+   examples,count=m.counterfactual_labels(public,question,packing)
+   self.assertTrue(examples)
+   self.assertEqual(sum(count.values()),len(examples))
+   self.assertEqual(set(count),{-1,0,1})
+   self.assertTrue(all(len(features)==12 and delta in (-1,0,1)
+                       for features,delta in examples))
+   self.assertTrue(any(delta==0 for _features,delta in examples))
+  # The online entrypoint cannot receive offline future-task truth.
+  import inspect
+  self.assertEqual(tuple(inspect.signature(m.learned_online).parameters),
+                   ("public","weights","packing","trace"))
+
  def test_exact_historical_source_witnesses(self):
   f60,f59,f58,f61=m.controls()
   self.assertEqual(f60.online_fixed.__name__,"online_fixed")
