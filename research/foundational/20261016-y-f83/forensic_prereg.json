@@ -1,0 +1,78 @@
+{
+  "schema": "yggdrasil.f83.immutable-guard-decision-forensics.prereg.v1",
+  "stage": "FROZEN_READ_ONLY_NO_NEW_EXPERIMENT",
+  "parents": {
+    "F83_frozen_method_blob": "68138887c8bc42a17f8866df96cbede8e2594325",
+    "F83_prereg_blob": "2c47c4116bcad183ef2e3f327b9760b8ea95b3c1",
+    "F83_synthetic_qualification_run": 38938637981,
+    "F83_synthetic_evidence_artifact_id": 12062266492,
+    "frozen_weights": [
+      4,
+      29,
+      22,
+      26,
+      30,
+      3,
+      16,
+      14,
+      38,
+      16,
+      -1,
+      31,
+      20,
+      7,
+      31,
+      1,
+      -30,
+      -29,
+      -25,
+      -23,
+      -22,
+      -31,
+      -22,
+      -26
+    ],
+    "weights_sha256": "3f602acfc78899b1b7eded673c77fc14c7ba90e105d95ae2143f4ee995549154"
+  },
+  "existing_exposed_guard": {
+    "seeds": [
+      -5121,
+      -5137
+    ],
+    "families": [
+      -2,
+      -1
+    ],
+    "cases": 32
+  },
+  "measurement": "Replay F83 frozen online behavior exactly, with all 72-prefix independent auditable traces; at each selected legal intervention, use posthoc offline task and frozen F60 suffix to identify whether intervention has beneficial/harmful/neutral local value. Offline labels must never be supplied to runtime, and no weights updated.",
+  "grouping": [
+    "arrival_regime",
+    "question_type",
+    "first 24 vs last 48 public events"
+  ],
+  "metrics": [
+    "total selected interventions",
+    "actual selected interventions with positive score and frozen top-runner margin",
+    "selected candidate one-step beneficial/harmful/neutral as offline retrospective",
+    "F83 and F60 correct by regime and question kind",
+    "causal prefix audit",
+    "exact original F83 online trace parity"
+  ],
+  "gates": {
+    "read_only": true,
+    "no_new_cohorts": true,
+    "frozen_weights_sha256_verified": true,
+    "source_blob_unchanged": true,
+    "independent_causality_required": true,
+    "report_failure_without_retune": true
+  },
+  "authority": {
+    "FIT_TRAIN_used": false,
+    "FIT_VALIDATION_used": false,
+    "DIAG_used": false,
+    "ORIGINAL_used": false,
+    "F3": false,
+    "optimizer_promotion": false
+  }
+}
