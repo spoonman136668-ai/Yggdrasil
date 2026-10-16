@@ -1,0 +1,71 @@
+name: Yggdrasil F71 learned early-intervention synthetic qualification
+on:
+  push:
+    branches: [research/y-f71-learned-early-intervention-precode-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  independent-synthetic-train-and-guard:
+    if: "${{ github.event.head_commit.message == 'ci(y-f71): qualify early causal memory scheduler on untouched synthetic guards' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pin frozen source and preregistered learner
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 2f3a137c3f2510f06af4268ebc190ef855361d70 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f71/prereg.json)" = b3e0f8c32ad639079fcf6ab85fd8b17f6285acdc
+          test "$(git hash-object research/foundational/20261016-y-f71/early_scheduler.py)" = edddfedb04af27dac7332ca85cc742aef5772a4b
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+      - name: Test counterfactual-trained scheduler with independent memory auditor
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f71-synthetic"
+          python3 -B research/foundational/20261016-y-f71/early_scheduler.py --synthetic-only > "$RUNNER_TEMP/f71-synthetic/model.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f71-synthetic/model.json" >/dev/null
+          python3 -B -c 'import json,os;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f71-synthetic/model.json")));print("F71_TEACHER",d["teacher_labels"]);print("F71_GUARD_SCORES",d["learned_correct"],d["frozen_F60_correct"]);print("F71_EARLY_INTERVENTIONS",d["early_interventions"]);assert d["method_prequalification_pass"] and not d["registered_FIT_train_used"]'
+          sha256sum "$RUNNER_TEMP/f71-synthetic/model.json" > "$RUNNER_TEMP/f71-synthetic/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f71-synthetic/head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f71-frozen-synthetic-early-interventions
+          path: ${{ runner.temp }}/f71-synthetic/
+          retention-days: 90
+  one-full-repository-regression:
+    needs: independent-synthetic-train-and-guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install no-cost hosted dependencies
+        run: |
+          python -m pip install pytest pyyaml
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Execute one full regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f71-regression"
+          test "$(git hash-object research/foundational/20261016-y-f71/early_scheduler.py)" = edddfedb04af27dac7332ca85cc742aef5772a4b
+          python -B -m pytest -q > "$RUNNER_TEMP/f71-regression/result.txt" 2>&1
+          cat "$RUNNER_TEMP/f71-regression/result.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f71-regression/head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f71-source-one-full-regression
+          path: ${{ runner.temp }}/f71-regression/
+          retention-days: 90
