@@ -1,0 +1,53 @@
+name: Yggdrasil F64 precode bridge source qualification
+on:
+  push:
+    branches:
+      - research/y-f64-learned-bridge-preservation-precode-20261016-r1
+permissions:
+  contents: read
+jobs:
+  synthetic-source:
+    if: "${{ github.event.head_commit.message == 'ci(y-f64): independently qualify public bridge features before FIT' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Pin scientific source, prereg and public-feature code
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor f02be02d209bcf4876b328fa5d3981073cf7b34e HEAD
+          test "$(git hash-object research/foundational/20261016-y-f64/prereg.json)" = aa12b1785b92eec5eb5096d6ef0cd600e97904ad
+          test "$(git hash-object research/foundational/20261016-y-f64/bridge_features.py)" = 75d952228c53cf9d41d1cb557fee27e421a96972
+          test "$(git hash-object research/foundational/20261016-y-f63c/source.py)" = c04b73306861098eecf55db77b2db486aa918819
+          echo 'F64_PROTECTED_COHORT=UNCONSUMED'
+      - name: Independent public-only synthetic trace qualification
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f64-precode/"
+          python3 -B research/foundational/20261016-y-f64/bridge_features.py --synthetic-only > "$RUNNER_TEMP/f64-precode/synthetic-public-audit.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f64-precode/synthetic-public-audit.json" >/dev/null
+          cat "$RUNNER_TEMP/f64-precode/synthetic-public-audit.json"
+      - name: One repository regression
+        shell: bash
+        run: |
+          python -m pip install pytest pyyaml
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -B -m pytest -q > "$RUNNER_TEMP/f64-precode/full-regression.txt" 2>&1
+          cat "$RUNNER_TEMP/f64-precode/full-regression.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f64-precode/source-head.txt"
+          sha256sum "$RUNNER_TEMP/f64-precode/synthetic-public-audit.json" "$RUNNER_TEMP/f64-precode/full-regression.txt" > "$RUNNER_TEMP/f64-precode/sha256.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f64-source-only-bridge-prequalification
+          path: ${{ runner.temp }}/f64-precode/
+          retention-days: 90
+          if-no-files-found: warn
