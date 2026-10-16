@@ -74,7 +74,7 @@ def independently_prove_rescue(public,q,index,after):
 def examine(public,q,meta,seed,family,cohort):
  before,end=baseline_prefix(public,q)
  assert not f85_correct(end,q),"F93B_CROSS_LINK_ALREADY_SOLVED_BY_F60"
- m92,t92,stats=F92.online(public,benefit,harm,pack,native,True)
+ m92,t92,stats=F92.online(public,benefit,harm,pack,native,F91,True)
  assert stats["interventions"]==0 and m92==end
  assert F83.M.AUDITOR.verify(public,q,t92)["prefixes"]==72
  counts=collections.Counter()
