@@ -1,0 +1,115 @@
+{
+  "schema": "yggdrasil.f67.durable-path-budget.prereg.v1",
+  "stage": "PRECODE_FROZEN_NO_FIT_DISPATCH",
+  "prior_observation": {
+    "F66B_prevalidation_run": 38891826197,
+    "F66B_forensics_run": 38892042553,
+    "F60_four_plus_hop_records": 180,
+    "F66B_four_plus_hop_records": 29,
+    "F66B_merges_selected": 201,
+    "F66B_model_correct": 0,
+    "F66B_validation_unconsumed": true
+  },
+  "hypothesis": "A bounded long-path stable reserve plus short causal frontier may preserve durable role-coded compositions and still admit new bridge connections, overcoming the destructive evictions of F66B.",
+  "distinct_architecture": {
+    "long_stable_slots_max": 8,
+    "short_frontier_slots_max": 4,
+    "long_threshold_hops": 4,
+    "total_records_max": 12,
+    "bytes_per_record": 12,
+    "extra_persistent_state": false,
+    "protected_rule": "Do not evict long records merely to retain a shorter record; allow replacement by strictly longer causal continuation.",
+    "learning_mechanism": "Learn bounded signed-int8 credits for short-frontier replacement and promotion into protected long-path slots, instead of a flat global merge rank.",
+    "online_only": [
+      "current public edge",
+      "prior lossless retained records",
+      "frozen weights",
+      "public prefix index"
+    ],
+    "online_forbidden": [
+      "future public edge",
+      "future question",
+      "future answer",
+      "private relevance labels"
+    ]
+  },
+  "source": {
+    "unchanged_generator_blob": "c04b73306861098eecf55db77b2db486aa918819",
+    "unchanged_action_engine_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "independent_causal_auditor_blob": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f"
+  },
+  "fresh_cohorts": {
+    "fit_train": [
+      851000,
+      851008
+    ],
+    "fit_validate": [
+      851008,
+      851016
+    ],
+    "families": [
+      1640,
+      1641,
+      1642,
+      1643
+    ],
+    "diag_UNAUTHORIZED": {
+      "seeds": [
+        851100,
+        851116
+      ],
+      "families": [
+        1644,
+        1645,
+        1646,
+        1647
+      ]
+    },
+    "original_UNAUTHORIZED": {
+      "seeds": [
+        852000,
+        852016
+      ],
+      "families": [
+        1648,
+        1649,
+        1650,
+        1651
+      ]
+    }
+  },
+  "synthetic_requirements": {
+    "different_eviction_policy": true,
+    "real_merges_positive": true,
+    "durable_long_records_positive": true,
+    "independent_prefix_audit": true,
+    "synthetic_training_gate_before_FIT": true
+  },
+  "scientific_gates": {
+    "F60_source_feasibility_min": 0.25,
+    "independent_public_witness_min": 0.85,
+    "gain_vs_strongest_fair_min": 0.05,
+    "per_family_nondegradation": true,
+    "positive_stable_slot_ablation": true,
+    "report_four_and_six_step_strata": true,
+    "one_full_regression_before_first_FIT": true,
+    "once_only_heldout": true
+  },
+  "resources": {
+    "records_max": 12,
+    "bytes_per_record": 12,
+    "payload_bytes_max": 144,
+    "max_int8_params": 16
+  },
+  "authority": {
+    "FIT_train_used": false,
+    "FIT_validate_used": false,
+    "diag_used": false,
+    "original_used": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "accepted_ref_mutation": false,
+    "controller_mutation": false,
+    "paid_API": false
+  }
+}
