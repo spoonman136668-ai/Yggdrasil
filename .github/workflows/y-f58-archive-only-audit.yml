@@ -1,0 +1,69 @@
+name: Y-F58 audit existing archived FIT only, never rerun source
+on:
+  push:
+    branches: [audit/y-f58-existing-fit-run-20261015-r1]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  archived-only:
+    if: "${{ github.event.head_commit.message == 'audit(y-f58): verify consumed FIT artifact without another experiment' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check immutable original source and only read-only audit change
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 5bdcddcc62359d67f26facb29bb6c572f3e3b3de HEAD
+          git merge-base --is-ancestor dd188d9bc39f1c3a73dd033b70ef8811860ebe3a HEAD
+          test "$(git hash-object research/foundational/20261015-y-f58/prereg.json)" = 9cb54ec69a04fc1ec963b347ef802615b42f7b48
+          test "$(git hash-object research/foundational/20261015-y-f58/source_feasibility.py)" = f275d28e3755e2c90ea482d076d7401d722d71b8
+          test "$(git hash-object research/foundational/20261015-y-f58/audit_fit.py)" = 1a1f209b3bc7601058d5607e1b744be42fdd95d3
+          python3 -m py_compile research/foundational/20261015-y-f58/audit_fit.py
+      - name: Validate original failed-after-source run and immutable archive identity
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          run=$(curl -fsSL --retry 2 --max-time 25             -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GH_TOKEN"             "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/runs/38828180915")
+          echo "$run" | jq -e --arg sha 5bdcddcc62359d67f26facb29bb6c572f3e3b3de             '.head_sha==$sha and .status=="completed" and .conclusion=="failure" and .run_attempt==1'
+          arts=$(curl -fsSL --retry 2 --max-time 25             -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GH_TOKEN"             "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/runs/38828180915/artifacts")
+          echo "$arts" | jq -e --arg sha 5bdcddcc62359d67f26facb29bb6c572f3e3b3de             '[.artifacts[]|select(.id==12015877837 and
+              .name=="Yggdrasil-F58-once-FIT-feasibility-evidence" and
+              .digest=="sha256:31640dbfa2104f9a0448ef1214a6bf9818b776b807788ed71ea2f5bbea0a21af" and
+              (.expired|not) and .workflow_run.id==38828180915 and .workflow_run.head_sha==$sha)]|length==1'
+      - uses: actions/download-artifact@v4
+        with:
+          name: Yggdrasil-F58-once-FIT-feasibility-evidence
+          repository: spoonman136668-ai/Yggdrasil
+          run-id: 38828180915
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/F58-original
+      - name: Recount one existing FIT artifact with explicit missing-oracle disclaimer
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/F58-original"
+          test "$(cat "$root/SOURCE_SHA")" = 5bdcddcc62359d67f26facb29bb6c572f3e3b3de
+          python3 -m json.tool "$root/result.json" >/dev/null
+          python3 -B research/foundational/20261015-y-f58/audit_fit.py             "$root/result.json" research/foundational/20261015-y-f58/prereg.json             > "$RUNNER_TEMP/y-f58-independent-existing-audit.txt"
+          cat "$RUNNER_TEMP/y-f58-independent-existing-audit.txt"
+          sha256sum "$root/result.json" > "$RUNNER_TEMP/y-f58-original-result.sha256"
+          git rev-parse HEAD > "$RUNNER_TEMP/y-f58-audit-head.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Y-F58-archive-only-audit-no-replay-and-disclosure
+          path: |
+            ${{ runner.temp }}/y-f58-independent-existing-audit.txt
+            ${{ runner.temp }}/y-f58-original-result.sha256
+            ${{ runner.temp }}/y-f58-audit-head.txt
+          retention-days: 90
+          if-no-files-found: error
+      - name: Scientific exclusions
+        run: echo "SCIENCE_RERUNS=0 REGISTERED_ORACLE_SOURCE_MISSING=TRUE FIT_ONLY=TRUE ACCEPTED=FALSE"
