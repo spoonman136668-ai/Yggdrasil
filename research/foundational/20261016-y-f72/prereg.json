@@ -1,0 +1,90 @@
+{
+  "schema": "yggdrasil.f72.public-intervention-feature-identifiability.prereg.v1",
+  "stage": "PRECODE_UNREGISTERED_SYNTHETIC_DIAGNOSTIC_ONLY",
+  "parent": {
+    "F70B_run": 38912940050,
+    "F70B_legal_single_step_rescues": 4,
+    "F70B_F60_failures": 4,
+    "F71_prequalification_failed_run": 38913645941,
+    "F71_frozen_forensic_run": 38922598395,
+    "F71_model_selected_interventions": 0,
+    "F71_learned_6_vs_F60_6_on_8_synthetics": true,
+    "F71_source_blob": "edddfedb04af27dac7332ca85cc742aef5772a4b",
+    "F71_training_and_validation_UNCONSUMED": true
+  },
+  "scientific_question": "Can the fixed F71 query-blind current-memory candidate feature vector distinguish legal beneficial interventions from harmful and neutral alternatives on previously unexposed unregistered structural synthetics? This diagnoses representation sufficiency rather than fitting another policy.",
+  "source": {
+    "public_generator_blob": "c04b73306861098eecf55db77b2db486aa918819",
+    "frozen_action_engine_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "independent_auditor_blob": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f"
+  },
+  "synthetic_cohort": {
+    "seeds": [
+      -3801,
+      -3833
+    ],
+    "families": [
+      -2,
+      -1
+    ],
+    "cases": 32,
+    "all_unregistered": true
+  },
+  "method": {
+    "observe": "For every public event under the exact frozen F60 trajectory, enumerate every unique source-legal alternative retained state from ACTION.actions. No alternatives are injected into ongoing baseline trajectory.",
+    "offline_teacher": "Apply unchanged F60 to remaining source public events separately for original F60 next state and each alternative; use current synthetic question offline ONLY to classify +1 beneficial, -1 harmful, 0 neutral.",
+    "visible_representation": "F71's exact 12-dimensional features computed from before, frozen F60 next state, candidate next state and current public edge (no event index).",
+    "signature": "Round each of the 12 normalized public features to 4 decimal places for deterministic, explicitly coarsened candidate-signature collision audit.",
+    "time_windows": [
+      {
+        "range": [
+          0,
+          16
+        ],
+        "label": "0-15"
+      },
+      {
+        "range": [
+          16,
+          32
+        ],
+        "label": "16-31"
+      },
+      {
+        "range": [
+          32,
+          48
+        ],
+        "label": "32-47"
+      },
+      {
+        "range": [
+          48,
+          72
+        ],
+        "label": "48-71"
+      }
+    ],
+    "evidence": "Report per-query-type and per-window sign counts; conflicting coarsened signatures where at least one beneficial and at least one harmful example share identical public feature signature; certify earliest beneficial oracle intervention's 72-prefix causal trace, at most one per case.",
+    "fairness": "The offline future-question oracle is unfair and NONCOMPETITIVE; learned online mechanism never receives it, no new model trained.",
+    "selection": "No trial selection or alteration of labels, bins, signature precision, or source after observing results."
+  },
+  "gates": {
+    "source_blobs_exact": true,
+    "all_source_cases_public_unique": true,
+    "every_oracle_success_has_independent_causal_trace": true,
+    "output_includes_full_diagnostics": true,
+    "no_registered_FIT_train_or_validate": true,
+    "no_DIAG_or_original": true,
+    "no_F3_or_optimizer_promotion": true
+  },
+  "authority": {
+    "FIT_train_consumed": false,
+    "FIT_validation_consumed": false,
+    "DIAG_consumed": false,
+    "original_consumed": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "paid_API": false
+  }
+}
