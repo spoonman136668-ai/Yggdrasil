@@ -47,7 +47,7 @@ with path.open("w",encoding="utf-8") as stream:
      "F58_frontier":f58.frontier_online(public),
      "F61_frozen":f61.learned_online(public,f62.F61_WEIGHTS)[0],
      "F62_frozen":f62.learned_online(public,(0,2,1,1,1,1,1,3,0,3,0,0),codec)[0],
-     "F63C_frozen":l.m.select(public,codec,(50,93,45,100),False)[0]}
+     "F63C_frozen":l.m.select(public,codec,(50,93,45,100),True)[0]}
    scores={}
    for name,retained in historical.items():
     f62._valid_memory(retained,codec)
