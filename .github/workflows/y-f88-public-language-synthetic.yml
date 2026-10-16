@@ -1,0 +1,47 @@
+name: Yggdrasil F88 public-language frontier qualification
+on:
+  push:
+    branches:
+      - research/y-f88-public-language-frontier-20261016-r1
+permissions:
+  contents: read
+jobs:
+  f88-synthetic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Frozen prereg and exact historical source verification
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c2fcf888ad24d58a946d8d7706a0d657e7aec205 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f88/prereg.json)" = 95afaacbfa02506e3a534ea38171b04f9e5fcf36
+          test "$(git hash-object research/foundational/20261016-y-f87b/bridge_reserve.py)" = 0026a7f4a9827d960c5ed06f4ce206404e3d739a
+          test "$(git hash-object research/foundational/20261016-y-f86/queryblind_retention.py)" = 8738a5e6a145fbc0f3c2efb2c873c3f8ed1f428e
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+          test "$(git hash-object research/foundational/20261016-y-f83/pairwise_learner.py)" = 68138887c8bc42a17f8866df96cbede8e2594325
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+      - name: Focused F88 tests and prior mechanism regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f88 -p 'test_frontier.py'
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f87b -p 'test_bridge_reserve.py'
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f85 -p 'test_global_solver.py'
+      - name: First and only F88 frozen synthetic guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f88/frontier.py --frozen-negative-synthetic-guard-only > "$RUNNER_TEMP/f88-firstuse-result.json"
+          python3 -B -c 'import json,os; x=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f88-firstuse-result.json"))); assert x["stage"]=="ONE_TIME_DISJOINT_NEGATIVE_SYNTHETIC_ONLY" and x["guard_cases"]==32; assert x["six_step_cases"]==8; assert x["max_retained_memory_bytes"]<=144 and x["all_F88_prefixes_verified"] and x["no_future_queries_in_online_policy"]; assert x["policy_fit_operations"]==0 and x["new_negative_guard_first_use"]; assert x["no_protected_original"] and x["no_FIT"] and x["no_DIAG"] and not x["scientific_accepted"] and not x["optimizer_promotion"]; print(json.dumps({k:x[k] for k in ("classification","guard_cases","scores","six_step_rescues_over_F60","F60_case_regressions","F88_native_override_events","F88_legal_sixstep_eligible_events","F88_resource_cap_events","per_regime_and_kind")},sort_keys=True))'
+      - name: Immutable checkout after execution
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
