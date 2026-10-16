@@ -163,13 +163,14 @@ def _features(records,index,selected,merged,evicted):
             len({x//2 for rec in records for x in rec[2]})/4,
             connectivity/12,index/71,len(records)/12)
 
-def actions(memory,event,index,packing):
+def actions(memory,event,index,packing,allow_composition=True):
     """Enumerate only causal append/merge/evict candidates under exact budget."""
     incoming=_public_record(event,packing)
     source_candidates=[("append",-1,incoming)]
-    for old,merged in packing.candidates(list(memory),incoming):
-        if 1<len(merged[2])<=6 and merged[0]!=merged[1]:
-            source_candidates.append(("merge",old,merged))
+    if allow_composition:
+        for old,merged in packing.candidates(list(memory),incoming):
+            if 1<len(merged[2])<=6 and merged[0]!=merged[1]:
+                source_candidates.append(("merge",old,merged))
     out=[]
     seen=set()
     for action,old,record in source_candidates:
@@ -197,12 +198,12 @@ def _score(weights,features):
     assert len(weights)==PARAMS and all(-127<=w<=127 for w in weights)
     return sum((w/16)*x for w,x in zip(weights,features))
 
-def learned_online(public,weights,packing,trace=False):
+def learned_online(public,weights,packing,trace=False,allow_composition=True):
     memory=()
     selected_actions=[]
     prefix_receipts=[]
     for index,event in enumerate(public):
-        choices=actions(memory,event,index,packing)
+        choices=actions(memory,event,index,packing,allow_composition=allow_composition)
         # Deterministic tie break avoids source-dependent candidate iteration.
         best=max(range(len(choices)),key=lambda j:(_score(weights,choices[j][4]),-j))
         action,old,drop,memory,_=choices[best]
