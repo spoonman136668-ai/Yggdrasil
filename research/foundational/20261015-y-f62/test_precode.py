@@ -69,7 +69,10 @@ def verify(p):
         "controller_or_Cloudflare_mutation","paid_API_or_Codex_reviews"):
         assert authority[flag] is False
     assert authority["validation_once_only_no_reruns"] is True
-    assert not P.with_name("source_pilot.py").exists(), "F62 still PRECODE only"
+    # This child branch advances source engineering; original PRECODE remains
+    # immutable at parent SHA 77adfbb7 and is not evidence for this code.
+    assert P.with_name("source_pilot.py").is_file(), "F62 engineering source absent"
+    assert P.with_name("test_engineering.py").is_file(), "F62 source guards absent"
     return True
 class FrozenPrecode(unittest.TestCase):
     def setUp(self):self.p=json.loads(P.read_text())
