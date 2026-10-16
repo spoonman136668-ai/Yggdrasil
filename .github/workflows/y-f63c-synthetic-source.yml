@@ -1,0 +1,42 @@
+name: Yggdrasil F63C synthetic source feasibility
+on:
+  push:
+    branches:
+      - research/y-f63-public-path-reliability-precode-20261016-r1
+permissions:
+  contents: read
+jobs:
+  frozen-preflight:
+    if: "${{ github.event.head_commit.message == 'ci(y-f63c): synthetic-only source feasibility with independent graph audit' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify prereg ancestry and frozen scientific source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 8b3e3001066e69222b77f25d9bd07d149c76dd7a HEAD
+          test "$(git hash-object research/foundational/20261016-y-f63c/prereg.json)" = c0e69c1bc0a170646c8ad997efeb154b64ce9862
+          test "$(git hash-object research/foundational/20261016-y-f63c/source.py)" = c04b73306861098eecf55db77b2db486aa918819
+          test "$(git hash-object research/foundational/20261016-y-f63c/audit_graph.py)" = 24e9f6d89d346eb019e44a51c59349a252cc50e2
+      - name: Synthetic source graph and fair frozen controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f63c-evidence"
+          python3 -B research/foundational/20261016-y-f63c/source.py --synthetic-only > "$RUNNER_TEMP/f63c-evidence/source-smoke.json"
+          python3 -B research/foundational/20261016-y-f63c/qualify_synthetic.py > "$RUNNER_TEMP/f63c-evidence/frozen-feasibility.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f63c-evidence/frozen-feasibility.json" >/dev/null
+          python3 -B -c 'import json,os; f=os.path.join(os.environ["RUNNER_TEMP"],"f63c-evidence/frozen-feasibility.json"); d=json.load(open(f)); print("F63C_SYNTHETIC",d["frozen_control_correct"],"WITNESS",d["public_independent_witness_correct"],"F60_GATE",d["f60_feasibility_pass"]); assert d["fit_train_executed"] is False and d["fit_validation_executed"] is False'
+          sha256sum "$RUNNER_TEMP/f63c-evidence/"*.json > "$RUNNER_TEMP/f63c-evidence/sha256.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f63c-synthetic-source-evidence
+          path: ${{ runner.temp }}/f63c-evidence/
+          retention-days: 90
+          if-no-files-found: warn
