@@ -1,0 +1,131 @@
+{
+  "schema": "yggdrasil.f66.learned-public-future-continuation.prereg.v1",
+  "stage": "PRECODE_FROZEN_NO_FIT_USE",
+  "predecessor_evidence": {
+    "F64_prevalidation_run": 38887673556,
+    "F64_model_correct_synthetic": [
+      0,
+      24
+    ],
+    "F65_training_run": 38888892845,
+    "F65_model_prevalidation_run": 38889137885,
+    "F65_model_correct_synthetic": [
+      0,
+      24
+    ],
+    "F65_frozen_chosen_merges": 0,
+    "F65_valid_merge_action_space_nonempty": true,
+    "F65_heldout_remains_sealed": true
+  },
+  "hypothesis": "Dense self-supervised supervision of public path continuation under future observed role edges teaches a bounded online memory policy to choose and retain useful compositional merges; this differs from sparse future-question reward labels and from F64's endpoint bridge-score heuristic.",
+  "mechanism": {
+    "offline_training_label": "For each prospective training public prefix/action, score the future public-edge continuation of retained role-coded paths under a frozen teacher with access to later TRAIN observations, never to validation or original data.",
+    "runtime_inputs": [
+      "current public edge",
+      "previous retained 12 packed public role records",
+      "quantized trained weights",
+      "local prefix counters"
+    ],
+    "online_forbidden": [
+      "future public edges",
+      "future question",
+      "future answer",
+      "hidden relevance/core tags",
+      "training labels",
+      "private oracle"
+    ],
+    "architectural_distinction": "Learn both merge-vs-append decision and retention under observed-only public compositional utility, using dense per-prefix action ranking rather than the sparse task-specific partial-answer reward of F65.",
+    "teacher_status": "Offline future-observation teacher is an unfair/noncompetitive source of training labels, not a deployable learned baseline.",
+    "model_params_max": 20,
+    "retained_record_cap": 12,
+    "record_bytes": 12,
+    "payload_bytes_max": 144
+  },
+  "frozen_source": {
+    "public_generator_blob": "c04b73306861098eecf55db77b2db486aa918819",
+    "frozen_candidate_engine_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "independent_prefix_auditor_blob": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f",
+    "reuse_reason": "Unchanged topology isolates a genuinely different learning signal and fresh cohort."
+  },
+  "cohorts": {
+    "fit_train_seeds": [
+      831000,
+      831008
+    ],
+    "fit_validate_seeds": [
+      831008,
+      831016
+    ],
+    "fit_families": [
+      1600,
+      1601,
+      1602,
+      1603
+    ],
+    "diagnostics_UNAUTHORIZED": {
+      "seeds": [
+        831100,
+        831116
+      ],
+      "families": [
+        1604,
+        1605,
+        1606,
+        1607
+      ]
+    },
+    "original_UNAUTHORIZED": {
+      "seeds": [
+        832000,
+        832016
+      ],
+      "families": [
+        1608,
+        1609,
+        1610,
+        1611
+      ]
+    },
+    "all_previous_F61_through_F65_cohorts_separate": true
+  },
+  "frozen_controls": [
+    "F60_fixed",
+    "F59_deferred",
+    "F58_frontier",
+    "F61_frozen",
+    "F62_frozen",
+    "F63C_frozen",
+    "F64_frozen",
+    "F65_frozen",
+    "pair_triple_DAG",
+    "FIFO_hash",
+    "unfair_offline_teacher"
+  ],
+  "gates": {
+    "independent_synthetic_method_training_before_FIT": true,
+    "model_must_select_real_merge_actions_after_synthetic_training": true,
+    "source_F60_feasibility_min": 0.25,
+    "independent_public_graph_witness_min": 0.85,
+    "heldout_gain_vs_strongest_equal_byte_min": 0.05,
+    "per_family_nondegradation": true,
+    "positive_dense_continuation_ablation": true,
+    "role_path_crosslink_stratum_report": true,
+    "independent_all_72_public_prefix_audit": true,
+    "exact_frozen_source_test_regression_before_first_use": true,
+    "freeze_train_method_and_model_before_heldout": true,
+    "once_only_validation": true,
+    "no_postresult_tuning": true
+  },
+  "authority": {
+    "FIT_train_consumed": false,
+    "FIT_validation_consumed": false,
+    "diagnostics_consumed": false,
+    "originals_consumed": false,
+    "F3": false,
+    "accepted_ref_mutation": false,
+    "optimizer_policy_mutation": false,
+    "CKB_plane_controller_change": false,
+    "Cloudflare_change": false,
+    "paid_API": false
+  }
+}
