@@ -1,0 +1,37 @@
+{
+  "schema": "yggdrasil.f67b.public-junction-control-distillation.prereg.v1",
+  "stage": "PRECODE_UNREGISTERED_SYNTHETIC_ONLY",
+  "parent_source_blob": "7ea16c037642dedbc46d5e6e27cc1d5975bbb3f5",
+  "teacher": "Causal, public-prefix-only structured contrast: at ordinary events choose the exact F60 fixed online successor; at public junction events choose the legal successor maximizing public retained role-path coverage (sum of squared hop lengths)/36, retained distinct endpoints/24 and junction endpoint support (event endpoint present in lossless retained memory).",
+  "frozen_coefficients": {
+    "composed_hop_coverage": 0.45,
+    "distinct_retained_endpoints": 0.3,
+    "event_endpoint_support": 0.25
+  },
+  "candidate_target": "maximize 0.45*min(1,sum(len(role_codes)^2)/72) + 0.30*min(1,unique_retained_endpoints/24) + 0.25*(number of current event endpoints present after)/2 at public junction; otherwise select exactly frozen F60 successor",
+  "loss": "For each current legal candidate different from teacher-selected target, form source-feature difference target minus alternative, push pairwise signed margin 0.1 with deterministic 3 epochs at lr 0.025. No future-question, no source-private truth, no future public events.",
+  "weights_count": 16,
+  "weights_dtype": "signed-int8",
+  "quantization": "round(32*weight) clipped to [-127,127]",
+  "train_order": "ascending seed then family then index, unchanged",
+  "source_training": "synthetic negative seed only until prereg method passes before FIT TRAIN first-use",
+  "gates": {
+    "teacher_contains_append_and_merge_labels": true,
+    "source_frozen": true,
+    "trained_model_selects_merges_on_disjoint_synthetic_guards": true,
+    "independent_all_public_prefixes_audited": true,
+    "learned_junction_interaction_ablation_reported": true,
+    "synthetic_controls_run_readonly": true,
+    "full_regression_source_gate": true,
+    "protected_FIT_train_requires_separate_authority": true,
+    "one_time_heldout": true
+  },
+  "authority": {
+    "FIT_TRAIN": false,
+    "FIT_VALIDATION": false,
+    "DIAG": false,
+    "original": false,
+    "F3": false,
+    "policy_promotion": false
+  }
+}
