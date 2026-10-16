@@ -22,7 +22,7 @@ EVENTS=72
 F61_WEIGHTS=(39,11,-10,35,17,18,18,28,-7,-83,12,1)
 CONTROL_BLOBS={
     "f61":"68827a45543639585da82d05e5d301782fbc79a6",
-    "f60":"d20afb1dc0de789be5c8985c1a31ee75038da73b",
+    "f60":"123dd7e979485ae07664118f948cd651b0386526",
     "f59":"232cf1bca7e2d1df5236ffa85c0a20f13a98a6ae",
     "f58":"f275d28e3755e2c90ea482d076d7401d722d71b8",
 }
@@ -242,7 +242,7 @@ def train_action_advantage(packing):
                     baseline=_f60_step(mem,event,packing)
                     baseline_terminal=_finish_fixed(baseline,public[index+1:],packing)
                     base=int(packing.solve(baseline_terminal,q)==q["answer"])
-                    base_features=_features(baseline,index,event and
+                    base_features=_features(baseline,index,
                                             _public_record(event,packing),False,False)
                     for action,old,drop,state,feat in candidates:
                         terminal=_finish_fixed(state,public[index+1:],packing)
