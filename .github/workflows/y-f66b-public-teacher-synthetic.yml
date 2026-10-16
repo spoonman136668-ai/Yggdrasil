@@ -1,0 +1,42 @@
+name: Yggdrasil F66B public attachment teacher synthetic
+on:
+  push:
+    branches:
+      - research/y-f66b-public-attachment-tradeoff-precode-20261016-r1
+permissions:
+  contents: read
+jobs:
+  balanced-public-teacher:
+    if: "${{ github.event.head_commit.message == 'ci(y-f66b): evaluate preregistered public-attachment teacher synthetic' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify precode frozen identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor acaa65fc93d27a3ffd1a04e0112ba3b42873ad6c HEAD
+          test "$(git hash-object research/foundational/20261016-y-f66b/prereg.json)" = 551644239204be97cdb5944b7108d9ecca82c709
+          test "$(git hash-object research/foundational/20261016-y-f66b/tradeoff_teacher.py)" = e6ffeb59450be6fcc803dc83d4dc0bb52e8c2f22
+          test "$(git hash-object research/foundational/20261016-y-f66/two_head_continuation.py)" = fa08d72d79380a82814c86482e98b206b69b4d4a
+      - name: Synthetic-only teacher sign and learned merge qualification
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f66b/"
+          python3 -B research/foundational/20261016-y-f66b/tradeoff_teacher.py --synthetic-only > "$RUNNER_TEMP/f66b/synthetic_result.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f66b/synthetic_result.json" > /dev/null
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f66b/synthetic_result.json"))); print("F66B_TEACHER_LABELS",r["teacher"]); print("F66B_LEARNED_MERGES",r["learned_merges"]); print("F66B_SYNTHETIC_QUALIFIED",r["positive_trained_merge_action_test"]); assert not r["fit_train_executed"] and not r["heldout_executed"]'
+          sha256sum "$RUNNER_TEMP/f66b/synthetic_result.json" > "$RUNNER_TEMP/f66b/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f66b/exact-head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f66b-synthetic-tradeoff-evidence
+          path: ${{ runner.temp }}/f66b/
+          retention-days: 90
+          if-no-files-found: warn
