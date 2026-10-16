@@ -1,0 +1,116 @@
+{
+  "schema": "yggdrasil.f71.learned-causal-early-intervention.prereg.v1",
+  "stage": "PRECODE_FROZEN_NO_FIT_USE",
+  "parent_evidence": {
+    "F70B_run": 38912940050,
+    "F70B_source_blob": "e8362f7ae10ead5c3ba96da7a069d7d4dd11ca61",
+    "F70B_4_of_4_frozen_F60_failures_legal_one_step_rescue": true,
+    "F70B_observed_earliest_rescue_indices": [
+      2,
+      14,
+      14,
+      2
+    ],
+    "F70B_indices_and_cases_EXPOSED_DO_NOT_TRAIN_OR_HARDCODE": true
+  },
+  "hypothesis": "A query-blind online intervention scheduler can recognize early public-prefix relationship evidence that justifies a source-legal single memory exception to frozen F60, without over-intervening on ordinary within-component questions.",
+  "distinct_mechanism": "Train binary signed counterfactual improvement over frozen F60, with task answer used only in offline FIT TRAIN teacher labels. Runtime uses only endpoint/candidate role-record differences, memory pressure and local public incident evidence to predict whether an alternative state is useful. No absolute event index as a feature, no special rule for observed F70B index 2 or 14.",
+  "frozen_method": {
+    "online_baseline": "F60 exact fixed _f60_step",
+    "candidate_generation": "F62 ACTION.actions native legal alternatives only",
+    "input_memory": "12 exact lossless 12-byte records",
+    "online_private_truth": false,
+    "online_future_public": false,
+    "online_future_question": false,
+    "oracle_training": "Per TRAIN public step enumerate source-legal alternative states, run unchanged F60 suffix over TRAIN public events, compare TRAIN question correctness against F60 suffix; label beneficial +1, harmful -1, neutral -0.25. No oracle actions deployed.",
+    "prediction_features": [
+      "constant bias",
+      "candidate-minus-baseline total role hops/72",
+      "candidate-minus-baseline max role path/6",
+      "candidate-minus-baseline unique public endpoints/24",
+      "candidate-minus-baseline 2+ path count/12",
+      "candidate-minus-baseline retained incoming-edge endpoint fraction",
+      "current edge endpoints previously present fraction",
+      "causal memory occupancy",
+      "candidate is merge",
+      "candidate eviction occurred",
+      "retained endpoint branching-degree change/12",
+      "candidate minus baseline distinct role code count/8"
+    ],
+    "parameters": 12,
+    "loss": "3 deterministic epochs signed counterfactual prediction via tanh squared-error SGD, lr 0.025, class weights beneficial=4 harmful=1 neutral=0.1, then quantize round(32*w) signed int8",
+    "online_decision": "Only choose native alternative if highest predictor score > 0.05; otherwise exact F60 default; no persisted model state beyond 12 packed records.",
+    "margin": 0.05
+  },
+  "source_blobs": {
+    "public_generator": "c04b73306861098eecf55db77b2db486aa918819",
+    "actions": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "causal_auditor": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f",
+    "F60": "123dd7e979485ae07664118f948cd651b0386526"
+  },
+  "cohorts": {
+    "FIT_TRAIN": [
+      901000,
+      901008
+    ],
+    "FIT_VALIDATION": [
+      901008,
+      901016
+    ],
+    "FIT_FAMILIES": [
+      1740,
+      1741,
+      1742,
+      1743
+    ],
+    "DIAG_UNAUTHORIZED": {
+      "seeds": [
+        901100,
+        901116
+      ],
+      "families": [
+        1744,
+        1745,
+        1746,
+        1747
+      ]
+    },
+    "ORIGINAL_UNAUTHORIZED": {
+      "seeds": [
+        902000,
+        902016
+      ],
+      "families": [
+        1748,
+        1749,
+        1750,
+        1751
+      ]
+    }
+  },
+  "gates": {
+    "synthetic_train_negative_seeds_only": true,
+    "synthetic_positive_and_negative_counterfactual_labels_required": true,
+    "synthetic_guard_learned_at_least_F60_accuracy": true,
+    "synthetic_guard_effective_early_interventions_required": true,
+    "independent_causal_72_prefix_audit": true,
+    "full_regression_before_first_use": true,
+    "F60_source_feasibility_min": 0.25,
+    "public_witness_min": 0.85,
+    "heldout_gain_over_best_equal_byte_min": 0.05,
+    "per_family_nondegradation": true,
+    "positive_intervention_ablation": true,
+    "once_only_prospective_heldout": true,
+    "no_postresult_tuning": true
+  },
+  "authority": {
+    "fit_train_used": false,
+    "fit_validate_used": false,
+    "diagnostic_used": false,
+    "original_used": false,
+    "F3": false,
+    "accepted_ref_mutation": false,
+    "optimizer_promotion": false,
+    "paid_API": false
+  }
+}
