@@ -20,6 +20,8 @@ BASE=load("f67_exact_action_engine",P.parent/"20261015-y-f62"/"source_pilot.py",
 AUDIT=load("f67_independent_causal_audit",P.parent/"20261015-y-f62"/"audit_public.py",
  "383fff0bdd8c8b48fde9538d4e4d768db1c1896f")
 PACK=BASE.codec()
+BUDGET_AUDIT=load("f67_independent_budget_auditor",P/"audit_budget_public.py",
+ "d9661ce5a9cac4212f6f816f6296225be7d32172")
 MAX_STABLE=8
 MAX_FRONTIER=4
 PARAMS=16
@@ -103,10 +105,10 @@ def smoke():
   seed=-2701-i;family=(-2,-1)[i%2]
   public,q,meta=SRC.source(seed,family)
   m,trace,merges=online(public,demo,True)
-  claim=AUDIT.verify(public,q,trace)
+  claim=BUDGET_AUDIT.verify(public,q,trace)
   assert claim["prefixes"]==72 and claim["max_payload_bytes"]<=144
   without,abl_trace,abl_merges=online(public,demo,True,False)
-  assert AUDIT.verify(public,q,abl_trace)["prefixes"]==72
+  assert BUDGET_AUDIT.verify(public,q,abl_trace)["prefixes"]==72
   rows.append(dict(seed=seed,kind=meta["question_type"],
      protected_merges=merges,unprotected_merges=abl_merges,
      final_stable=sum(len(r[2])>=4 for r in m),
