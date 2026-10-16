@@ -1,0 +1,105 @@
+{
+  "schema": "yggdrasil.f66b.public-attachment-vs-compression.prereg.v1",
+  "stage": "PRECODE_FROZEN_NO_FIT_USE",
+  "prior_evidence": {
+    "source_qualification_run": 38889640752,
+    "dense_teacher_failed_run": 38889977726,
+    "independent_label_audit_run": 38890129162,
+    "synthetic_positive": 600,
+    "synthetic_negative": 0,
+    "original_f66_cohorts_untouched": true
+  },
+  "hypothesis": "A continuation teacher pricing lost future-facing public endpoints while rewarding lossless multi-hop compression and preserved branch anchors can provide positive and negative merger credits for a learned composition policy.",
+  "intervention": "Change only the offline training teacher; freeze the two-head online features and candidate engine. Teacher looks ahead at future public FIT TRAIN observations only, never future questions, answers or private labels.",
+  "teacher_frozen_terms": {
+    "compression_coeff": 0.18,
+    "compression_function": "sum(length^2)",
+    "future_attachment_coeff": 0.55,
+    "attachment_function": "sum(min(2,future_public_incidence[node])) over unique retained endpoints",
+    "endpoint_flexibility_coeff": 0.28,
+    "endpoint_function": "count unique retained endpoints",
+    "normalizer": 12,
+    "sign_labels": "clip(8*(merge_utility - append_utility),-1,1)",
+    "rank_labels": "clip(8*(max_utility - candidate_utility),-1,1)",
+    "trainer_epochs": 3,
+    "gate_lr": 0.03,
+    "rank_lr": 0.01,
+    "quantization": "round(32*weight), clamp signed-int8"
+  },
+  "pinned_method": {
+    "online_two_head_blob": "fa08d72d79380a82814c86482e98b206b69b4d4a",
+    "source_blob": "c04b73306861098eecf55db77b2db486aa918819",
+    "auditor_blob": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f",
+    "old_unbalanced_teacher_blob": "4924a409a446403c0c2a5d1e146adc8171ae4791",
+    "online_future_observation": false,
+    "hidden_tags_or_queries": false
+  },
+  "synthetic_gates": {
+    "negative_seed_cases_only": true,
+    "positive_and_negative_merge_labels_required": true,
+    "independent_synthetic_guard": true,
+    "learned_merge_count_positive": true,
+    "all_prefixes_causally_audited": true,
+    "scientific_thresholds_unmodified": true
+  },
+  "prospective_cohorts": {
+    "fit_train": [
+      841000,
+      841008
+    ],
+    "fit_validate": [
+      841008,
+      841016
+    ],
+    "families": [
+      1620,
+      1621,
+      1622,
+      1623
+    ],
+    "diag_UNAUTHORIZED": {
+      "seeds": [
+        841100,
+        841116
+      ],
+      "families": [
+        1624,
+        1625,
+        1626,
+        1627
+      ]
+    },
+    "original_UNAUTHORIZED": {
+      "seeds": [
+        842000,
+        842016
+      ],
+      "families": [
+        1628,
+        1629,
+        1630,
+        1631
+      ]
+    }
+  },
+  "scientific_gates": {
+    "F60_source_feasibility_min": 0.25,
+    "public_witness_min": 0.85,
+    "heldout_gain_min": 0.05,
+    "per_family_nondegradation": true,
+    "positive_ablation": true,
+    "stratified_4step_and_6step": true,
+    "full_regression_before_FIT": true,
+    "once_only_heldout": true
+  },
+  "authority": {
+    "FIT_train": false,
+    "FIT_validate": false,
+    "diag": false,
+    "original": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "accepted_ref_mutation": false,
+    "paid_API": false
+  }
+}
