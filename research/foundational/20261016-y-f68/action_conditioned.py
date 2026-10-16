@@ -70,7 +70,7 @@ def online(public,weights,trace=False,enable_interaction=True):
 def smoke():
  # Not scientific learned weights: only shows the registered architecture
  # has action-dependent public junction features and causal transitions.
- demo=(0,12,6,10,8,12,9,3,0,1,6,0,0,-2,0,2)
+ demo=(0,32,6,10,8,12,9,3,0,1,6,0,0,-2,0,2)
  rows=[]
  for k in range(12):
   seed=-2701-k;family=(-2,-1)[k%2]
