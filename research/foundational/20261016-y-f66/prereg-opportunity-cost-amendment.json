@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.f66b.future-public-opportunity-cost.precode-amendment.v1",
+  "stage": "PRECODE_SYNTHETIC_ONLY",
+  "base_prereg_blob": "fc3283f28ab307b6834c93d530fffce98ad7c0de",
+  "failed_teacher_blob": "4924a409a446403c0c2a5d1e146adc8171ae4791",
+  "failure_source": {
+    "run_id": 38889977726,
+    "forensic_run_id": 38890129162,
+    "positive_labels": 600,
+    "negative_labels": 0,
+    "sample_size": 600
+  },
+  "fixed_new_method": {
+    "description": "Penalize discarding future publicly connectable intermediate endpoints and recognize opportunity costs alongside path length and retained free capacity. Offline full TRAIN public stream only; no future question or hidden tags.",
+    "role_chain_reward_coefficient": 0.35,
+    "future_endpoint_support_coefficient": 1.75,
+    "capacity_slack_reward_coefficient": 0.15,
+    "public_future_incident_cap": 4,
+    "training_sgd_epochs": 3,
+    "fixed_gate_step": 0.03,
+    "fixed_retention_step": 0.01,
+    "weight_quantization_scale": 32,
+    "model_parameters": 20,
+    "no_tuning_after_synthetic_guard": true
+  },
+  "synthetic_cohorts": {
+    "method_fit_seeds": [
+      -2101,
+      -2108
+    ],
+    "method_fit_families": [
+      -2,
+      -1
+    ],
+    "fresh_guard_seeds": [
+      -2111,
+      -2118
+    ],
+    "guard_families": [
+      -2,
+      -1
+    ],
+    "previous_exposed_negative_seed_cohorts_not_used_for_selection": true
+  },
+  "required_synthetic_gates": {
+    "positive_merge_teacher_labels": true,
+    "negative_merge_teacher_labels": true,
+    "fitted_model_must_actually_choose_some_merge_actions": true,
+    "independent_72_public_prefix_audit": true,
+    "max_12_records_144_bytes": true,
+    "no_protected_fit_access": true
+  },
+  "unchanged_protected_F66": {
+    "fit_train_seeds": [
+      831000,
+      831008
+    ],
+    "fit_validate_seeds": [
+      831008,
+      831016
+    ],
+    "originals_or_diagnostics_not_authorized": true,
+    "first_use_not_eligible_until_method_acceptance": true
+  },
+  "authority": {
+    "registered_fit_executed": false,
+    "heldout_executed": false,
+    "original_executed": false,
+    "diag_executed": false,
+    "F3": false,
+    "accepted_ref_mutation": false
+  }
+}
