@@ -29,7 +29,7 @@ for seed,family in ((-201,-2),(-202,-1),(-203,-2),(-204,-1),(-205,-2),(-206,-1),
   "F60_exact_source_fixed_online":f60.online_fixed(public),
   "F59_exact_source_deferred":f59.fixed_deferred_component_buffer(public),
   "F58_exact_source_frontier":f58.frontier_online(public),
-  "F61_frozen_learned_policy_no_refit":f61.learned_online(public,f.F61_WEIGHTS,packing)[0],
+  "F61_frozen_learned_policy_no_refit":f61.learned_online(public,f.F61_WEIGHTS)[0],
  }
  scores={name:int(packing.solve(records,q)==q["answer"]) for name,records in controls.items()}
  scores["independent_public_graph_witness_extra_work"]=independent_public_witness(public,q)
