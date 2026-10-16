@@ -35,6 +35,12 @@ jobs:
           set -euo pipefail
           python3 -B research/foundational/20261016-y-f84/forensic_reachability.py --already-exposed-synthetic-only > "$RUNNER_TEMP/f84-exposed-diagnostic.json"
           python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f84-exposed-diagnostic.json"))); assert r["status"]=="SOURCE_ONLY_READER_NOT_PROSPECTIVE_QUALIFICATION"; assert r["exposed_guard_cases"]==32 and r["six_step_cases"]==8; assert r["frozen_F60_six_step_correct"]==r["frozen_F83_six_step_correct"]==0; assert not r["no_training"] is False; assert r["causal_legal_action_reachability_established"] is False; print(json.dumps({k:r[k] for k in ("status","six_step_cases","six_step_query_aware_12_byte_encodable_cases","causal_legal_action_reachability_established")},sort_keys=True))'
+      - name: D4 native legal-action hindsight witness on already-exposed cases
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f84/native_legal_action_witness.py --already-exposed-synthetic-only > "$RUNNER_TEMP/f84-native-legal-actions.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f84-native-legal-actions.json"))); assert r["stage"]=="ALREADY_EXPOSED_SYNTHETIC_FORENSICS_ONLY"; assert r["exposed_six_step_cases"]==8 and len(r["rows"])==8; assert r["independently_audited_prefixes"]==576; assert r["legal_native_action_trace_checked_for_all_cases"] and r["no_FIT"] and r["no_DIAG"] and r["no_original"] and r["no_optimizer_promotion"]; assert all(z["independent_prefix_action_and_public_witness_verified"] and z["constructed_answer_record_injected"] is False and z["causal_online_learned_policy"] is False and z["query_and_future_leaked_into_action_selection"] for z in r["rows"]); print(json.dumps({"status":r["stage"],"cases":r["exposed_six_step_cases"],"legal_hindsight_reachable_cases":r["legal_hindsight_reachable_cases"],"causal_online_qualification":False},sort_keys=True))'
       - name: Confirm checkout stayed unchanged
         shell: bash
         run: |
