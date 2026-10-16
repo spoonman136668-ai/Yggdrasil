@@ -81,7 +81,27 @@ class FrozenSourceTests(unittest.TestCase):
   # The online entrypoint cannot receive offline future-task truth.
   import inspect
   self.assertEqual(tuple(inspect.signature(m.learned_online).parameters),
-                   ("public","weights","packing","trace"))
+                   ("public","weights","packing","trace","allow_composition"))
+
+ def test_frozen_no_composition_ablation_on_synthetic_public_only(self):
+  packing=m.codec()
+  for seed,family in ((-71,-2),(-72,-1)):
+   tagged,question,_paths,_regime=m._construct(seed,family)
+   public=tuple(x[:3] for x in tagged)
+   normal,normal_choices,normal_trace=m.learned_online(
+     public,(0,)*12,packing,trace=True,allow_composition=True)
+   without,ablation_choices,ablation_trace=m.learned_online(
+     public,(0,)*12,packing,trace=True,allow_composition=False)
+   self.assertEqual(len(normal_choices),len(ablation_choices))
+   self.assertEqual(len(ablation_choices),72)
+   self.assertTrue(all(choice[0]!="merge" for choice in ablation_choices))
+   self.assertEqual(len(normal_trace),len(ablation_trace))
+   self.assertEqual(audit.verify(public,question,normal_trace)["prefixes"],72)
+   self.assertEqual(audit.verify(public,question,ablation_trace)["prefixes"],72)
+   m._valid_memory(normal,packing)
+   m._valid_memory(without,packing)
+   self.assertEqual(len(audit.proposals((),public[0])),1)
+
 
  def test_exact_historical_source_witnesses(self):
   f60,f59,f58,f61=m.controls()
