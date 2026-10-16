@@ -1,0 +1,83 @@
+name: Yggdrasil F76 two-regime source qualification
+on:
+  push:
+    branches:
+      - research/y-f76-two-regime-public-order-source-20261016-r1
+permissions:
+  contents: read
+jobs:
+  independent-synthetic-source:
+    if: "${{ github.event.head_commit.message == 'ci(y-f76): qualify adaptive two-regime source and exact-head regression' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify prospective source discipline and exact identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 2c53f9166afac2a0a081432e6e8165e3860c5776 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f76/prereg.json)" = eac6a88209fda174509749f33d21bbf6d20fbdc7
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+          test "$(git hash-object research/foundational/20261016-y-f63c/source.py)" = c04b73306861098eecf55db77b2db486aa918819
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+          test "$(git hash-object research/foundational/20261015-y-f62/audit_public.py)" = 383fff0bdd8c8b48fde9538d4e4d768db1c1896f
+      - name: Check frozen source on disjoint negative-seed synthetic cases
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f76-source/"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f76-source/exact-head.txt"
+          python3 -B research/foundational/20261016-y-f76/source.py --synthetic-only > "$RUNNER_TEMP/f76-source/result.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f76-source/result.json" >/dev/null
+          python3 -B -c 'import json,os;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f76-source/result.json")));print("F76_FROZEN_SOURCE_BY_REGIME",d["by_arrival_regime"]);print("F76_SOURCE_QUALIFICATION",d["frozen_source_feasibility_gate_pass"]);assert d["registered_FIT_train_used"] is False and d["registered_FIT_validate_used"] is False;assert d["independent_public_witness_all_cases_pass"] and d["independent_72_prefix_causality_pass"]'
+          sha256sum "$RUNNER_TEMP/f76-source/result.json" > "$RUNNER_TEMP/f76-source/result-sha256.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f76-adaptive-source-engineering-receipts
+          path: ${{ runner.temp }}/f76-source/
+          retention-days: 90
+          if-no-files-found: warn
+      - name: Fail closed if frozen source feasibility threshold fails
+        shell: bash
+        run: |
+          python3 -B -c 'import json,os;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f76-source/result.json")));assert d["frozen_source_feasibility_gate_pass"],"F76_SOURCE_FEASIBILITY_NEGATIVE"'
+  one-full-repository-regression:
+    needs: independent-synthetic-source
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install free hosted test dependencies
+        shell: bash
+        run: |
+          python -m pip install pytest pyyaml
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Run unchanged repository-wide regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f76-regression/"
+          test "$(git hash-object research/foundational/20261016-y-f76/prereg.json)" = eac6a88209fda174509749f33d21bbf6d20fbdc7
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+          python -B -m pytest -q > "$RUNNER_TEMP/f76-regression/full-result.txt" 2>&1
+          cat "$RUNNER_TEMP/f76-regression/full-result.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f76-regression/exact-head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f76-exact-head-full-regression
+          path: ${{ runner.temp }}/f76-regression/
+          retention-days: 90
+          if-no-files-found: warn
