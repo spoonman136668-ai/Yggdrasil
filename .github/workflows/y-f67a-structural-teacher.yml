@@ -1,0 +1,43 @@
+name: Yggdrasil F67A structural supervision synthetic qualification
+on:
+  push:
+    branches:
+      - research/y-f67-hierarchical-bridge-memory-precode-20261016-r1
+permissions:
+  contents: read
+jobs:
+  teacher-and-frozen-model:
+    if: "${{ github.event.head_commit.message == 'ci(y-f67a): qualify structural public junction teacher before protected FIT' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify exact method and trained-data boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 29c00b83d88d9c167d24d52c2278fd8281735797 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f67a/train_method_precode.json)" = 31a50ef4976b20e59416f00b3364f350bfa7f371
+          test "$(git hash-object research/foundational/20261016-y-f67a/causal_memory.py)" = b370396b3c3571be2c01ab2b33effef14f248eef
+          test "$(git hash-object research/foundational/20261016-y-f67a/train_structural_junction.py)" = edbd46327fa9368e2f02346d48ede5a01207eb65
+          test "$(git hash-object research/foundational/20261015-y-f62/audit_public.py)" = 383fff0bdd8c8b48fde9538d4e4d768db1c1896f
+      - name: Independently audit held-out unregistered synthetic streams
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f67a-method/"
+          python3 -B research/foundational/20261016-y-f67a/train_structural_junction.py --synthetic-only > "$RUNNER_TEMP/y-f67a-method/method.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/y-f67a-method/method.json" >/dev/null
+          python3 -B -c 'import json,os;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"y-f67a-method/method.json")));print("F67A_TEACHER_COUNTS",d["counts"]);print("F67A_MODEL_SCORES",d["observed"]);print("F67A_MODEL_SYNTHETIC_GATE",d["prefit_model_qualification_pass"]);assert not d["fit_train_executed"] and not d["validation_executed"]'
+          sha256sum "$RUNNER_TEMP/y-f67a-method/method.json" > "$RUNNER_TEMP/y-f67a-method/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f67a-method/head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f67a-structural-training-method-evidence
+          path: ${{ runner.temp }}/y-f67a-method/
+          retention-days: 90
+          if-no-files-found: warn
