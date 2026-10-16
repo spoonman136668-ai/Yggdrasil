@@ -1,0 +1,41 @@
+name: Yggdrasil F74 public directed-role feature identifiability
+on:
+  push:
+    branches: [research/y-f74-public-role-feature-disambiguation-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  independent-synthetic-representation-audit:
+    if: "${{ github.event.head_commit.message == 'ci(y-f74): compare causal role-identity representations on fresh source' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify preregistered feature source and unchanged public action engine
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 9461d213af1d2c3c8a08b9cc9e1d712d32548ec7 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f74/prereg.json)" = 81d75531ba249815af4247462244f592e4509ea9
+          test "$(git hash-object research/foundational/20261016-y-f74/role_feature_audit.py)" = d7bdcde4c407e110041ec0966982ab7c95d2014f
+          test "$(git hash-object research/foundational/20261016-y-f71/early_scheduler.py)" = edddfedb04af27dac7332ca85cc742aef5772a4b
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+      - name: Measure positive/harmful candidate identity collisions and renaming invariance
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f74-role-public"
+          python3 -B research/foundational/20261016-y-f74/role_feature_audit.py --synthetic-only > "$RUNNER_TEMP/y-f74-role-public/result.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/y-f74-role-public/result.json" >/dev/null
+          python3 -B -c 'import json,os;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"y-f74-role-public/result.json")));print("F74_SCORES",d["cases"],d["frozen_F60_correct"]);print("F74_OFFLINE_LABELS",d["offline_labels"]);print("F74_12_FEATURE_ALIAS",d["baseline_12_public_features"]);print("F74_28_FEATURE_ALIAS",d["directed_role_28_public_features"]);print("F74_PUBLIC_NODE_RENAMES",d["public_node_rename_invariance_checks"]);assert d["public_node_rename_invariance_checks"]==d["legal_alternatives_examined"] and not d["model_fitted"] and not d["registered_FIT_train_used"]'
+          sha256sum "$RUNNER_TEMP/y-f74-role-public/result.json" > "$RUNNER_TEMP/y-f74-role-public/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f74-role-public/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f74-directed-role-feature-disambiguation
+          path: ${{ runner.temp }}/y-f74-role-public/
+          retention-days: 90
