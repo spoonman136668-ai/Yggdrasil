@@ -1,0 +1,72 @@
+{
+  "schema": "yggdrasil.f81.directed-public-role-transition-and-endpoint-identifiability.prereg.v1",
+  "stage": "PRECODE_FROZEN_SYNTHETIC_DIAGNOSTIC_NO_MODEL_FIT",
+  "parent": {
+    "F80_cross_arrival_run": 38930525430,
+    "F80_head": "7a980c38f12f4f485c65659e8d5af20a3c10fce6",
+    "F80_prereg_blob": "1d3681d646ca6352366d392079f1d8ce4bf17eee",
+    "F80_method_blob": "03d7116480f30d811ca9ec97a46ca1909adfc9ae",
+    "F79_method_blob": "4bba6e34d56ef96aa81515032988f9c5127fe35f",
+    "F79_frozen_28_feature_negative_preserved": true
+  },
+  "question": "Do 24 additional causal directed role-transition and incoming-endpoint incidence features distinguish task-beneficial from task-harmful source-native memory actions across both arrival regimes?",
+  "source": {
+    "F76_public_source_blob": "5b8928b0399ce9f869854beadeab04b29c8703a5",
+    "F62_action_engine_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "F62_independent_auditor_blob": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f"
+  },
+  "synthetic_cohort": {
+    "seeds": [
+      -4801,
+      -4817
+    ],
+    "families": [
+      -2,
+      -1
+    ],
+    "cases": 32,
+    "F79_and_F80_synthetic_ids_excluded": true,
+    "all_protected_fits_diagnostics_originals_excluded": true
+  },
+  "features": {
+    "base_frozen_28": "Exactly F79 public_action_features; do not edit",
+    "additional_16": "Ordered role-pair transition histogram counts over each retained record's consecutive role codes, 4x4 bins, after-minus-baseline, divided by 12",
+    "additional_8": "Per-role incidence of retained record terminal step at incoming public-event endpoints: four counts for event.from, four for event.to, after-minus-baseline, divided by 12",
+    "dimensions": 52,
+    "signature_rounding_decimal_places": 8,
+    "node_rename_invariant": true,
+    "source_observable_public_only": true,
+    "no_question_or_future_events_as_online_features": true,
+    "no_absolute_index_or_numeric_node_ids": true
+  },
+  "method": {
+    "labels": "Unchanged F80 offline source-native one-action counterfactual terminal teacher; beneficial when alternative succeeds and exact F60 fails, harmful when opposite, else neutral",
+    "baseline": "Exact frozen F60 causal 72-event policy",
+    "candidate_actions": "Only legal native F62 actions from public prefix",
+    "audit": "Every F60 prefix, one earliest valid candidate rescue if present, node-ID translation invariance for 52-feature vector",
+    "report": "Within-regime and cross-regime useful/harmful alias counts for 28 versus 52 signatures",
+    "no_model_training": true,
+    "no_model_or_threshold_tuning_on_synthetic": true,
+    "distinct_new_synthetic_ids": true
+  },
+  "gates": {
+    "exact_blob_pins": true,
+    "all_32_independent_public_audits": true,
+    "node_rename_invariance": true,
+    "extended_52_features_contain_frozen_28_exactly": true,
+    "no_increase_in_opposite_credit_alias_collision_counts": true,
+    "no_change_to_F79_or_F80": true,
+    "no_protected_first_use": true,
+    "no_F3_or_optimizer_promotion": true
+  },
+  "authority": {
+    "FIT_train": false,
+    "FIT_validate": false,
+    "DIAG": false,
+    "ORIGINAL": false,
+    "independent_F3": false,
+    "optimizer_promotion": false,
+    "CKB_plane_mutation": false,
+    "paid_API": false
+  }
+}
