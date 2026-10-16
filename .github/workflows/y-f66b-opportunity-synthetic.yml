@@ -1,0 +1,40 @@
+name: Yggdrasil F66B synthetic opportunity-cost teacher
+on:
+  push:
+    branches: [research/y-f66b-opportunity-cost-precode-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  frozen-synthetic-opportunity-guard:
+    if: "${{ github.event.head_commit.message == 'ci(y-f66b): qualify opportunity-cost teacher without protected data' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pin original failed teacher and new preregistered amendment
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor bb9bf77a369df641bd7fdb9f6ae39d09ea62507d HEAD
+          test "$(git hash-object research/foundational/20261016-y-f66/prereg-opportunity-cost-amendment.json)" = 3502d23f503cb0fdc798b2ac7db3f5cdb09c254d
+          test "$(git hash-object research/foundational/20261016-y-f66/two_head_continuation.py)" = fa08d72d79380a82814c86482e98b206b69b4d4a
+          test "$(git hash-object research/foundational/20261016-y-f66/dense_opportunity_teacher.py)" = 7b41ebeaf51f879e6426206923e8e0ad1cb9897c
+      - name: Test frozen dense teacher on disjoint negative-seed synthetics
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f66b-opportunity/"
+          python3 -B research/foundational/20261016-y-f66/dense_opportunity_teacher.py --synthetic-only > "$RUNNER_TEMP/f66b-opportunity/synthetic_method.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f66b-opportunity/synthetic_method.json" >/dev/null
+          python3 -B -c 'import os,json; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f66b-opportunity/synthetic_method.json"))); print("F66B_TEACHER_LABELS",d["teacher_counts"]); print("F66B_LEARNED_GUARD_MERGES",d["guard_learned_merges"]); print("F66B_METHOD_ELIGIBLE",d["qualified"]); assert d["protected_fit_train_executed"] is False'
+          sha256sum "$RUNNER_TEMP/f66b-opportunity/synthetic_method.json" > "$RUNNER_TEMP/f66b-opportunity/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f66b-opportunity/exact_head.txt"
+          python3 -B -c 'import os,json; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f66b-opportunity/synthetic_method.json"))); assert d["qualified"],"BLOCKED_FROZEN_F66B_SYNTHETIC_METHOD"'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f66b-synthetic-opportunity-cost-audit
+          path: ${{ runner.temp }}/f66b-opportunity/
+          retention-days: 90
+          if-no-files-found: warn
