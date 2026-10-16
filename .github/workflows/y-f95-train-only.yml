@@ -1,0 +1,45 @@
+name: Yggdrasil F95 source-native selective risk TRAIN only
+on:
+  push:
+    branches:
+      - research/y-f95-sparse-risk-lookup-20261016-r1
+    paths:
+      - 'research/foundational/20261016-y-f95/prereg.json'
+      - 'research/foundational/20261016-y-f95/risk_lookup.py'
+      - 'research/foundational/20261016-y-f95/test_risk_lookup.py'
+      - '.github/workflows/y-f95-train-only.yml'
+permissions:
+  contents: read
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify frozen F95 preregistration and parent action identities
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor e8d9770930799557aa17ef97f435a568278613fb HEAD
+          test "$(git hash-object research/foundational/20261016-y-f95/prereg.json)" = b03be01fe77f09663f33673ff2095e99f220f16d
+          test "$(git hash-object research/foundational/20261016-y-f94/single_deviation_feasibility.py)" = 0284a3ed1cd5f263dc4ad7cf3f3f21969bb665ad
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+      - name: Focused F95 and F94 historical unit contracts
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f95 -p test_risk_lookup.py
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f94 -p test_single_deviation_feasibility.py
+      - name: Single F95 counterfactual fitting on TRAIN only
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f95/risk_lookup.py --train-negative-synthetic-only > "$RUNNER_TEMP/f95-train.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f95-train.json"))); assert r["stage"]=="TRAIN_ONLY_NO_VALIDATION_OR_GUARD" and r["train_cases"]==32 and r["exact_native_training_alternatives"]>0; assert r["eligible_buckets"]==len(r["frozen_policy"]) and r["policy_json_bytes"]>=2; assert r["no_validation_use"] and r["no_guard_use"] and r["no_protected_source"] and r["no_optimizer_promotion"]; print(json.dumps(r,sort_keys=True))'
+      - name: Read-only checkout
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
