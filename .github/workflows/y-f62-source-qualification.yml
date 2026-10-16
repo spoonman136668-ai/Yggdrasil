@@ -19,7 +19,7 @@ jobs:
           python-version: '3.11'
       - name: Install repository test dependencies
         run: |
-          python -m pip install pytest
+          python -m pip install pytest pyyaml
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
       - name: Exact-commit source qualification, no FIT
         run: python -B research/foundational/20261015-y-f62/qualify_source.py --expect-head "$GITHUB_SHA"
