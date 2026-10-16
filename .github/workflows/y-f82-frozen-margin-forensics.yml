@@ -1,0 +1,41 @@
+name: Yggdrasil F82 frozen confidence diagnostics
+on:
+  push:
+    branches:
+      - research/y-f82-frozen-margin-forensics-20261016-r1
+permissions:
+  contents: read
+jobs:
+  exploratory-readonly:
+    if: "${{ github.event.head_commit.message == 'ci(y-f82): run read-only frozen confidence margin forensics' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Lock F82 negative and source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 62bf382948df5b05c77f58c898ecb429b575e5de HEAD
+          test "$(git hash-object research/foundational/20261016-y-f82/compact_role_learner.py)" = b5d969deeb63e99c1b235f675a0532c16863e519
+          test "$(git hash-object research/foundational/20261016-y-f82/frozen_margin_forensics.py)" = 57feba1c2d9d408ba0bed32016ffea1606cfbf37
+      - name: Inspect frozen probabilities on new unregistered synthetic cases
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f82-margin/"
+          python3 -B research/foundational/20261016-y-f82/frozen_margin_forensics.py > "$RUNNER_TEMP/y-f82-margin/report.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/y-f82-margin/report.json" >/dev/null
+          python3 -B -c 'import os,json; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"y-f82-margin/report.json"))); print("F82_CONFIDENCE_MARGIN", {k:r[k] for k in ("candidate_actions","maximum_probability","p95_probability","p99_probability","candidate_actions_above_cutoff")})'
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f82-margin/head.txt"
+          sha256sum "$RUNNER_TEMP/y-f82-margin/report.json" > "$RUNNER_TEMP/y-f82-margin/hashes.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f82-read-only-frozen-confidence-margins
+          path: ${{ runner.temp }}/y-f82-margin/
+          retention-days: 90
+          if-no-files-found: warn
