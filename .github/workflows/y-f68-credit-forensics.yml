@@ -1,0 +1,37 @@
+name: Yggdrasil F68 immutable counterfactual signal forensics
+on:
+  push:
+    branches: [research/y-f68-shielded-junction-override-precode-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  synthetic-signal-forensics:
+    if: "${{ github.event.head_commit.message == 'ci(y-f68): inspect immutable counterfactual credit sign distribution' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Freeze original teacher and read-only diagnostic
+        run: |
+          set -euo pipefail
+          test "$(git hash-object research/foundational/20261016-y-f68/guarded_junction.py)" = f74c5acdc28ea91c0e5615483c644fcae040db93
+          test "$(git hash-object research/foundational/20261016-y-f68/train_override.py)" = 94d53f8d976cbfaa49cf3d48ee4db26c32778797
+          test "$(git hash-object research/foundational/20261016-y-f68/diagnose_counterfactual.py)" = fe9913a4f2832694190c5b2039904b046608a43d
+      - name: Audit extra disjoint negative-seed synthetic cohort
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f68-counterfactual-forensics"
+          python3 -B research/foundational/20261016-y-f68/diagnose_counterfactual.py > "$RUNNER_TEMP/f68-counterfactual-forensics/result.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f68-counterfactual-forensics/result.json" >/dev/null
+          python3 -B -c 'import json,os; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f68-counterfactual-forensics/result.json")));print("F68_COUNTERFACTUAL_LABEL_COUNTS",d["totals"]);print("F68_BOTH_CREDITS",d["both_credit_signs_present"]);assert d["teacher_unchanged"] and not d["registered_FIT_train_used"]'
+          sha256sum "$RUNNER_TEMP/f68-counterfactual-forensics/result.json" > "$RUNNER_TEMP/f68-counterfactual-forensics/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f68-counterfactual-forensics/head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f68-immutable-credit-label-diagnostics
+          path: ${{ runner.temp }}/f68-counterfactual-forensics/
+          retention-days: 90
