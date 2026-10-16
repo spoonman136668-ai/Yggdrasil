@@ -1,0 +1,49 @@
+name: Yggdrasil F86 frozen query-blind synthetic qualification
+
+on:
+  push:
+    branches:
+      - research/y-f86-queryblind-structural-retention-20261016-r1
+
+permissions:
+  contents: read
+
+jobs:
+  f86-synthetic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify prereg and frozen parent identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor f476fbb0c1ee9d8dd3e043fb332933c4d4279f24 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f86/prereg.json)" = a82e11df3df375cef008407d22ddf84c7101a5b2
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+          test "$(git hash-object research/foundational/20261016-y-f83/pairwise_learner.py)" = 68138887c8bc42a17f8866df96cbede8e2594325
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+      - name: Run independent no-leakage and prior frozen solver regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f86 -p 'test_queryblind_retention.py'
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f85 -p 'test_global_solver.py'
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f84 -p 'test_forensic_reachability.py'
+      - name: Single frozen synthetic guard examination
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f86/queryblind_retention.py --new-negative-synthetic-guard-only > "$RUNNER_TEMP/f86-synthetic-result.json"
+          python3 -B -c 'import os,json; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f86-synthetic-result.json"))); assert r["stage"]=="NEW_NEGATIVE_SYNTHETIC_GUARD_ONLY"; assert r["guard_cases"]==32; assert r["independent_prefix_audit_all_72"] and r["native_actions_only"] and r["no_question_in_online_signature"]; assert r["max_f86_persistent_memory_bytes"]<=144; assert r["policy_training_count"]==0 and not r["protected_original_used"] and not r["protected_FIT_used"] and not r["protected_DIAG_used"] and not r["scientific_qualified"] and not r["optimizer_promotion"]; print(json.dumps({k:r[k] for k in ("classification","guard_cases","results_by_model","six_step_cases","six_step_rescues_over_F60","regressions_from_F60","by_regime_and_kind","max_f86_persistent_memory_bytes","max_global_solver_candidate_examinations")},sort_keys=True))'
+      - name: Clean scientific source checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
