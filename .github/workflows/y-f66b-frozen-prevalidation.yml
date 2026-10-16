@@ -1,0 +1,41 @@
+name: Yggdrasil F66B frozen independent synthetic prevalidation
+on:
+  push:
+    branches: [research/y-f66b-frozen-prevalidation-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  authenticated-readonly-prevalidation:
+    if: "${{ github.event.head_commit.message == 'ci(y-f66b): independently prevalidate frozen model and ablation without FIT' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Exact source, frozen weights and parent ancestry
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 44482c4f263025331741664089c165b026864ac6 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f66/f66b_frozen_receipt.json)" = 4c89df766c4e72a71ec48b05e1dd4194ef8adb98
+          test "$(git hash-object research/foundational/20261016-y-f66/f66b_prevalidate_frozen.py)" = 13232cc5d54588b8e0973e53e532e173d8d31240
+          test "$(git hash-object research/foundational/20261016-y-f66/dense_opportunity_teacher.py)" = 7b41ebeaf51f879e6426206923e8e0ad1cb9897c
+      - name: Independent per-public-prefix frozen replay
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f66b-independent-prevalidation/"
+          python3 -B research/foundational/20261016-y-f66/f66b_prevalidate_frozen.py > "$RUNNER_TEMP/f66b-independent-prevalidation/synthetic.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f66b-independent-prevalidation/synthetic.json" > /dev/null
+          python3 -B -c 'import json,os;r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f66b-independent-prevalidation/synthetic.json")));print("F66B_FROZEN_SCORES",r["scores"]);print("F66B_FROZEN_MERGES",r["frozen_policy_merge_count"]);print("F66B_ABLATION_POSITIVE",r["ablation_positive"]);assert r["causal_independent_audit"] and not r["fit_validation_executed"]'
+          sha256sum "$RUNNER_TEMP/f66b-independent-prevalidation/synthetic.json" > "$RUNNER_TEMP/f66b-independent-prevalidation/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f66b-independent-prevalidation/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f66b-frozen-model-synthetic-prevalidation
+          path: ${{ runner.temp }}/f66b-independent-prevalidation/
+          retention-days: 90
+          if-no-files-found: warn
