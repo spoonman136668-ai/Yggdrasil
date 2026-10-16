@@ -29,13 +29,14 @@ def load_exact(name,path,expected):
     spec.loader.exec_module(mod)
     return mod
 
-def public_language(records,pack,cap=PATH_CAP):
+def public_language(records,pack,cap=None):
     """Exact retained-memory directed role-language; no future or query inputs.
 
     Full native record segments and their frozen codec inverses are available;
     no imagined truncation of long records is permitted. Compose at matching
     endpoints. Return None on resource cap, and never interpret that as proof.
     """
+    if cap is None:cap=PATH_CAP
     assert len(records)<=12
     oriented=set()
     for r in records:
