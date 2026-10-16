@@ -1,0 +1,96 @@
+{
+  "schema": "yggdrasil.f95.queryblind-selective-risk-lookup.prereg.v1",
+  "stage": "FROZEN_PRECODE_DISJOINT_TRAIN_VALIDATION_GUARD",
+  "parents": {
+    "F94_exact_head": "e8d9770930799557aa17ef97f435a568278613fb",
+    "F94_method_blob": "0284a3ed1cd5f263dc4ad7cf3f3f21969bb665ad",
+    "F62_native_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "F85_solver_blob": "e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3"
+  },
+  "hypothesis": "A risk-screened policy that learns buckets of public source-native alternative actions from terminal F60 one-deviation counterfactuals can act at early/middle arrival times with fewer four-step regressions than unconstrained learned action ranking and still rescue some six-step failures.",
+  "method": {
+    "offline_teacher": "TRAIN only. At every observation index 12..47 on the frozen F60 trajectory, evaluate EVERY native non-F60 F62.actions afterstate that preserves at least min(10,len(F60_afterstate)-1) exact F60 records. Apply frozen F60 remainder and F85 global solver on the TRAIN question. Label +1 if F60 missed and candidate correct, -1 if F60 correct and candidate missed, 0 otherwise. Retrospective answer and future strictly TRAIN-only.",
+    "bucket_features": "Immutable categorical key formed from public index early(12..23)/middle(24..47), current PUBLIC incoming role 0..3, native action merge-versus-append, candidate increases total encoded role steps versus exact F60 afterstate (boolean), contains a new length>=4 native record not in F60 afterstate (boolean), and preserves all but <=1 F60 baseline records (boolean). No source family, seed, future, query or truth in any online key.",
+    "learning": "Count total, beneficial and harmful TRAIN alternatives per exact bucket (source enumeration included). Freeze a sorted table of ONLY buckets with at least 1 beneficial TRAIN example, zero harmful TRAIN examples, and at least 12 observed TRAIN examples. Frozen binary eligibility is NOT fitted on holdout; candidates in other buckets are always rejected.",
+    "online": "For indices 12..47, from ONE native state and current public 3-tuple, get exact F60 nextstate and exact F62.actions afterstates. A candidate must satisfy the TRAIN overlap rule and a frozen eligible bucket. Rank by (TRAIN positive count, exact F60 record overlap count, native enumeration tie-break), then choose only the highest once per stream (1-bit latch). Otherwise use exact F60 action. At indices <12 or >=48 always exact F60. No train future, questions, answers, or new hidden state.",
+    "resources": "144 bytes native memory + frozen lookup entries (table stored as read-only policy parameters, counted by canonical JSON bytes) + 1 latch bit; same frozen F85 solver for all arms. No model weights trained from validation/guard.",
+    "classification": "Synthetic mechanism positive only if at least one F60-failed six-step guard case is rescued and zero F60-correct case regresses, every native action/source/budget check valid; otherwise valid negative, including inactive.",
+    "caveat": "Observed TRAIN bucket zero harms is not a safety guarantee; F94 hindsight rescues cannot be used as TRAIN labels. Repeated online interventions beyond one are prohibited; the outcome has to be measured prospectively."
+  },
+  "cohorts": {
+    "train": {
+      "start": -6101,
+      "stop_exclusive": -6117,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "cases": 32
+    },
+    "validation": {
+      "start": -6121,
+      "stop_exclusive": -6129,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "cases": 16
+    },
+    "guard": {
+      "start": -6141,
+      "stop_exclusive": -6157,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "cases": 32,
+      "six_step": 8
+    },
+    "source": "SHA-pinned F76 negative two-regime public generator; prior source identities excluded",
+    "prior_exposed_research_seeds": [
+      [
+        -5941,
+        -5957
+      ],
+      [
+        -6001,
+        -6017
+      ],
+      [
+        -6021,
+        -6029
+      ],
+      [
+        -6041,
+        -6057
+      ]
+    ]
+  },
+  "arms": [
+    "Frozen F60 native baseline with F85 solver",
+    "Frozen F83 learned controller with F85 solver",
+    "Frozen F90 temporal learned negative with F85 solver",
+    "Frozen F95 early/middle risk lookup learned on separate TRAIN with F85 solver"
+  ],
+  "procedure": [
+    "P0 prereg Git blob frozen before writing selection/training code",
+    "P1 source-only unit tests then TRAIN synthetic ONLY, export eligible buckets and count all alternatives",
+    "P2 commit frozen policy bytes and Git hash separately before validation or guard",
+    "P3 first validation and then guard, source-attested and no selection or refit",
+    "P4 write immutable qualification evidence, draft PR, no auto merge or scientific promotion"
+  ],
+  "authority": {
+    "scientific_accepted": false,
+    "FIT": false,
+    "DIAG": false,
+    "ORIGINAL": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "controller_mutation": false,
+    "accepted_ref_mutation": false,
+    "Codex": false
+  }
+}

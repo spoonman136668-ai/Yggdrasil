@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.f95.native-risk-selective-holdout.evidence.v1",
+  "stage": "TECHNICALLY_QUALIFIED_SYNTHETIC_NEGATIVE_INACTIVE",
+  "provenance": {
+    "parent_F94_head": "e8d9770930799557aa17ef97f435a568278613fb",
+    "prereg_git_blob": "b03be01fe77f09663f33673ff2095e99f220f16d",
+    "F95_method_git_blob": "b68712cab0d1774c4fc27e928b4f4b57748a1fe4",
+    "frozen_policy_git_blob": "faa67955f124ead548bd6dbcd3e4a8dc276649be",
+    "training_commit": "24ac005a4ad6cc432e53f4d05044b45fd844ed21",
+    "training_run_id": 38982686736,
+    "training_job_id": 117246943908,
+    "training_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38982686736",
+    "holdout_first_use_code_commit": "3d762aeac55d1ab7dd3be3e552429808e65d3f5f",
+    "holdout_run_id": 38982837703,
+    "holdout_job_id": 117247426466,
+    "holdout_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38982837703"
+  },
+  "training": {
+    "train_cases": 32,
+    "F60_correct_cases": 17,
+    "all_legal_native_high_overlap_training_counterfactuals": 6005,
+    "public_feature_buckets": 44,
+    "beneficial_hindsight_native_action_labels": 0,
+    "harmful_hindsight_native_action_labels": 227,
+    "learned_risk_screened_policy_buckets": 0,
+    "canonical_frozen_table": {},
+    "frozen_policy_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "frozen_parameter_bytes": 2,
+    "extra_latch_bits": 1,
+    "prospective_holdout_not_used_for_training": true
+  },
+  "qualification": {
+    "unit_tests_F95": 8,
+    "unit_tests_F94": 6,
+    "validation": {
+      "cases": 16,
+      "correct_out_of_16": {
+        "F60": 12,
+        "F83": 6,
+        "F90": 2,
+        "F95": 12
+      },
+      "six_step_rescues": 0,
+      "F60_correct_case_regressions": 0,
+      "learned_interventions": 0,
+      "F95_memory_identical_to_F60": true
+    },
+    "guard": {
+      "cases": 32,
+      "six_step_cases": 8,
+      "correct_out_of_32": {
+        "F60": 17,
+        "F83": 14,
+        "F90": 4,
+        "F95": 17
+      },
+      "six_step_rescues": 0,
+      "F60_correct_case_regressions": 0,
+      "learned_interventions": 0,
+      "F95_memory_identical_to_F60": true
+    },
+    "frozen_source_and_policy_sha_verified": true,
+    "all_72_original_public_prefixes_independently_verified": true,
+    "native_F62_actions_only": true,
+    "same_F85_global_solver_all_arms": true,
+    "max_persistent_native_memory_bytes": 144,
+    "separate_model_bytes": 2,
+    "latch_bits": 1,
+    "first_use_negative_synthetic_validation_seeds": "-6121..-6128",
+    "first_use_negative_synthetic_guard_seeds": "-6141..-6156",
+    "protected_original_FIT_DIAG_F3_used": false
+  },
+  "interpretation": "F94 retrospectively showed 3 of 8 six-step cases have at least one legal one-step F62-native rescue, but on fresh F95 TRAIN episodes the same high-overlap early/middle one-step evaluation found zero terminal beneficial alternatives among 6,005 considered and 227 harmful alternatives. The frozen risk rule admitted no public-feature buckets; hence the learned query-blind F95 policy made no interventions and exactly matched the F60 baseline on both holdouts. This does not prove the 144B native action space incapable of improvements. It limits this particular learned policy and source distribution.",
+  "next_gate": "F96 should isolate source-regime observability and difficulty balance under a genuinely new source family rather than indefinitely reweighting rare terminal positives. A new learning mechanism needs independent TRAIN/validation/GUARD identities and rigorous no-regression controls; scientific original admission remains separate.",
+  "authority": {
+    "scientific_accepted": false,
+    "production_controller_changed": false,
+    "optimizer_promotion": false,
+    "accepted_ref_mutated": false,
+    "protected_FIT": false,
+    "DIAG": false,
+    "ORIGINAL": false,
+    "F3": false,
+    "Codex": false,
+    "merged": false
+  }
+}
