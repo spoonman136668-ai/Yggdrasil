@@ -1,0 +1,44 @@
+name: Yggdrasil F57 one frozen causal-component FIT result
+on:
+  push:
+    branches: [research/y-f57-component-merge-method-fitonly-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  first-fit:
+    if: "${{ github.event.head_commit.message == 'science(y-f57): first bounded fresh component FIT-only source result' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Frozen prereg source identities and source-free auditor
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object research/foundational/20261015-y-f57/prereg.json)" = 35cd435b2c2cdbe9c9c760a5650b8ca807000b46
+          test "$(git hash-object research/foundational/20261015-y-f57/source_fit.py)" = cd93c8b260eeff0ec945c21378d885b8a7fa6c49
+          test "$(git hash-object research/foundational/20261015-y-f57/audit_fit.py)" = 62008f01281c2186f7a0804916e4eb02eae52f2b
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f57 -p test_precode.py -v
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f57 -p test_source_fit.py -v
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f57 -p test_audit_fit.py -v
+      - name: Fresh FIT-only public stream and independently decoded witness
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/f57"; mkdir -p "$root"
+          git rev-parse HEAD > "$root/SOURCE_SHA"
+          python3 -B research/foundational/20261015-y-f57/source_fit.py --fit-only > "$root/result.json"
+          python3 -B research/foundational/20261015-y-f57/audit_fit.py \
+            "$root/result.json" research/foundational/20261015-y-f57/prereg.json > "$root/audit.json"
+          (cd "$root" && sha256sum result.json audit.json > manifest.sha256)
+          cat "$root/audit.json"
+          echo Y_F57_ONLY_FIT_PUBLIC_RECORDS=PASS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F57-authentic-first-FIT-component-source-no-DIAG
+          path: ${{ runner.temp }}/f57/
+          retention-days: 60
+          if-no-files-found: warn
