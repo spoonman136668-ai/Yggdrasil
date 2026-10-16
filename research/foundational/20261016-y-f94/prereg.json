@@ -1,0 +1,51 @@
+{
+  "schema": "yggdrasil.f94.native-counterfactual-feasibility.prereg.v1",
+  "stage": "FROZEN_PRECODE_ALREADY_CONSUMED_F93B_GUARD_ONLY",
+  "frozen_parent_commit": "12976ab1850f565a6d104bd76918cff435c10451",
+  "frozen_F93B_method_blob": "b70af0a91ecc16d8a173b7245b007b646fed8ad6",
+  "frozen_F85_solver_blob": "e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3",
+  "frozen_F62_native_action_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+  "question": "Is a six-step rescue ever reachable through one exact legal native F62 action instead of frozen F60, followed by the exact frozen F60 suffix? And how often could an alternative break F60-correct four-step tasks?",
+  "data": {
+    "source": "Already consumed F93B first-use synthetic negative guard only",
+    "seed_start": -6041,
+    "seed_stop_exclusive": -6057,
+    "step": -1,
+    "families": [
+      -2,
+      -1
+    ],
+    "cases": 32,
+    "six_step_cases": 8
+  },
+  "method": {
+    "prefixes": "All 72 public observation indices per case; frozen F60 trajectory before each decision.",
+    "candidates": "Enumerate all F62.actions native afterstates except exact F60 afterstate, without truncation or posthoc selection.",
+    "completion": "For each native action, use frozen F62._finish_fixed on the already-consumed future public suffix, and immutable F85.solve_global on the historical question; compare to truth for retrospective evidence only.",
+    "metrics": [
+      "F60-correct cases",
+      "F60-missed six-step cases with any one-step hindsight rescue",
+      "F60-correct four-step cases with any harmful one-step alternative",
+      "Total native alternatives and all terminal outcome counts",
+      "Early, middle and late source-prefix rescue and risk",
+      "Retains at least min(10,len(baseline)-1) F60 records: rescue and risk",
+      "F85 computation caps, record budget and source-native legality"
+    ],
+    "safety": "Each native intermediate memory <=12*12=144 bytes. Fail closed on solver caps or source-drift. No fitted weights, labels in any deployed online function, production or accepted research mutations.",
+    "nonproof": "A query/answer/future-aware hindsight oracle is NOT a query-blind causal controller. Zero one-step witnesses does NOT rule out multi-step legal native policies."
+  },
+  "classification": {
+    "some_rescue": "retrospective_one_step_native_rescue_possible_only",
+    "zero_rescue": "no_one_step_native_rescue_on_consumed_guard_only",
+    "scientific_accepted": false,
+    "controller_qualified": false
+  },
+  "protected_authority": {
+    "FIT": false,
+    "DIAG": false,
+    "ORIGINAL": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "Codex": false
+  }
+}
