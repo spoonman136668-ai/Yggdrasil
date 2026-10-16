@@ -7,7 +7,7 @@ permissions:
   contents: read
 jobs:
   frozen-synthetic-source:
-    if: "${{ github.event.head_commit.message == 'ci(y-f68): qualify causal action-conditioned source and single full regression' && github.run_attempt == 1 }}"
+    if: "${{ github.event.head_commit.message == 'ci(y-f68): requalify action-conditioned source after untrained demo branch repair' && github.run_attempt == 1 }}"
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -20,7 +20,7 @@ jobs:
           set -euo pipefail
           git merge-base --is-ancestor 2341399bf9bcf28ef40f05172ffe2baf78e71fae HEAD
           test "$(git hash-object research/foundational/20261016-y-f68/prereg.json)" = d6bb9395bce54562bb89bfb07dcb445a9996123a
-          test "$(git hash-object research/foundational/20261016-y-f68/action_conditioned.py)" = 3ed920a1caa2ab547bf4c15dfe653987829cf862
+          test "$(git hash-object research/foundational/20261016-y-f68/action_conditioned.py)" = c079cb2b6993429c302f4f634e2862d05056fbdb
           test "$(git hash-object research/foundational/20261015-y-f62/audit_public.py)" = 383fff0bdd8c8b48fde9538d4e4d768db1c1896f
       - name: Verify causal and genuinely action-conditioned public junctions
         run: |
@@ -58,7 +58,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/f68-regression/"
-          test "$(git hash-object research/foundational/20261016-y-f68/action_conditioned.py)" = 3ed920a1caa2ab547bf4c15dfe653987829cf862
+          test "$(git hash-object research/foundational/20261016-y-f68/action_conditioned.py)" = c079cb2b6993429c302f4f634e2862d05056fbdb
           python -B -m pytest -q > "$RUNNER_TEMP/f68-regression/regression.txt" 2>&1
           cat "$RUNNER_TEMP/f68-regression/regression.txt"
           echo "$GITHUB_SHA" > "$RUNNER_TEMP/f68-regression/head.txt"
