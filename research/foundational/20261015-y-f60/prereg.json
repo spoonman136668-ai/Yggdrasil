@@ -1,0 +1,101 @@
+{
+  "schema": "yggdrasil.f60.expected-query-value-causal-memory.prereg.v1",
+  "stage": "PRECODE_FROZEN_NO_FIT_OR_DIAG",
+  "tracking_issue": 280,
+  "parent_f59_run": 38829721432,
+  "parent_f59_source_sha": "eab7ecf1fcb3df949c779b8660ae72c946259b70",
+  "scientific_reason": "F59 completed-public reference 64/64, causal fixed memory tied strongest at 12/64. Greedy frontier retention no longer sufficient; learn future task-information value from historical FIT questions.",
+  "hypothesis": "A learned causal retention policy approximating expected future query-value from public online graph state and FIT distribution improves retained compositional information under source-shifted arrivals.",
+  "fit": {
+    "seeds": [
+      731000,
+      731016
+    ],
+    "training": [
+      731000,
+      731008
+    ],
+    "fit_validation": [
+      731008,
+      731016
+    ],
+    "families": [
+      1400,
+      1401,
+      1402,
+      1403
+    ],
+    "expected_cases": 64
+  },
+  "diagnostic_NOT_AUTHORIZED": {
+    "seeds": [
+      731100,
+      731116
+    ],
+    "families": [
+      1404,
+      1405,
+      1406,
+      1407
+    ],
+    "expected_cases": 64,
+    "arrival_shifts": [
+      "novel_public_predictive_cues",
+      "delayed_attachments"
+    ]
+  },
+  "primary_original_NOT_RESERVED": {
+    "seeds": [
+      732000,
+      732016
+    ],
+    "families": [
+      1408,
+      1409,
+      1410,
+      1411
+    ]
+  },
+  "stream": {
+    "observations": 72,
+    "records_max": 12,
+    "serialized_record_bytes": 12,
+    "serialized_memory_bytes_max": 144,
+    "learned_parameter_bytes_separately_accounted": true,
+    "query_lengths": [
+      4,
+      6,
+      8
+    ],
+    "future_question_hidden_until_memory_frozen": true,
+    "private_labels_never_policy_inputs": true
+  },
+  "source_gates": {
+    "extra_work_offline_query_blind_accuracy_min": 0.85,
+    "strongest_fixed_causal_online_accuracy_min": 0.25
+  },
+  "controls": [
+    "learned_expected_query_value_controller",
+    "strong_fixed_queryblind_component_buffer",
+    "frozen_F59_deferred_buffer",
+    "frozen_F58_open_frontier",
+    "fixed_pair_triple_DAG",
+    "public_full_graph_offline_noncompetitive",
+    "private_future_query_oracle_unfair"
+  ],
+  "learning_gates": {
+    "advantage_over_strongest_equal_byte_fair_min": 0.05,
+    "per_family_nondegradation": true,
+    "positive_composition_ablation": true,
+    "public_path_and_lossless_byte_receipts": true,
+    "train_only_FIT_not_diagnostic": true
+  },
+  "authority": {
+    "independent_F3": false,
+    "primary_original_executed": false,
+    "native_total_576B_unverified": true,
+    "accepted_ref_mutation": false,
+    "FORGE_live_optimizer_mutation": false,
+    "paid_API_or_Codex": false
+  }
+}

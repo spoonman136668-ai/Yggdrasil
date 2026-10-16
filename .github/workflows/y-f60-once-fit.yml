@@ -1,0 +1,64 @@
+name: Yggdrasil F60 once-only synthetic FIT source with independent audit
+on:
+  push:
+    branches:
+      - research/y-f60-question-value-memory-20261015-r1
+permissions:
+  contents: read
+  actions: read
+jobs:
+  one-original-FIT:
+    if: "${{ github.event.head_commit.message == 'science(y-f60): one frozen FIT-only public query-value source' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Confirm full original-code regression completed and source identity frozen
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 9f8f14e0b7d7a4f2bf5dc2820b904f4bdba14864 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f60/prereg.json)" = 7138509bf12667494aab57752cf15b3901b21332
+          test "$(git hash-object research/foundational/20261015-y-f60/source_feasibility.py)" = 123dd7e979485ae07664118f948cd651b0386526
+          test "$(git hash-object research/foundational/20261015-y-f60/test_preflight.py)" = edaa80ef2f1635474f78e0dc609b244137bf4a8d
+          test "$(git hash-object research/foundational/20261015-y-f60/audit_fit.py)" = 797c32da8eddafef028c1d32d14fbeb542b75b10
+          curl --fail --silent --show-error --retry 2 --max-time 30 \
+           -H "Accept: application/vnd.github+json" \
+           -H "Authorization: Bearer $GH_TOKEN" \
+           "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/runs/38830804944" \
+           | jq -e --arg sha 9f8f14e0b7d7a4f2bf5dc2820b904f4bdba14864 \
+           '.head_sha==$sha and .run_attempt==1 and .status=="completed" and .conclusion=="success"'
+      - name: Execute exactly one FIT-only synthetic scientific source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f60"
+          git rev-parse HEAD > "$RUNNER_TEMP/y-f60/SOURCE_SHA"
+          python3 -B research/foundational/20261015-y-f60/source_feasibility.py --fit-only \
+            > "$RUNNER_TEMP/y-f60/result.json"
+          python3 -m json.tool "$RUNNER_TEMP/y-f60/result.json" >/dev/null
+          (cd "$RUNNER_TEMP/y-f60" && sha256sum result.json > source-manifest.sha256)
+      - name: Audit result independently without importing scientific source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261015-y-f60/audit_fit.py \
+            "$RUNNER_TEMP/y-f60/result.json" \
+            research/foundational/20261015-y-f60/prereg.json \
+            > "$RUNNER_TEMP/y-f60/independent-audit.txt"
+          cat "$RUNNER_TEMP/y-f60/independent-audit.txt"
+          (cd "$RUNNER_TEMP/y-f60" && sha256sum result.json independent-audit.txt > manifest.sha256)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Yggdrasil-F60-once-only-FIT-evidence-and-audit
+          path: ${{ runner.temp }}/y-f60/
+          retention-days: 90
+          if-no-files-found: error
+      - name: Authority boundary
+        run: echo "F60_FIT_ONLY=TRUE DIAG_ORIGINALS=UNCONSUMED F3=UNQUALIFIED NATIVE_TOTAL_576B=UNVERIFIED ACCEPTED_REFS_AND_FORGE_CONTROLLER=UNCHANGED"
