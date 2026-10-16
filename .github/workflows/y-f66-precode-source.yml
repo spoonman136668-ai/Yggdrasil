@@ -1,0 +1,69 @@
+name: Yggdrasil F66 two-head source qualification
+on:
+  push:
+    branches: [research/y-f66-public-graph-continuation-precode-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  causal-source-preflight:
+    if: "${{ github.event.head_commit.message == 'ci(y-f66): qualify synthetic public-continuation source and regression' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Source/prereg identity and independent synthetic prefix audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 9fd477980686db6fd52209b59ec13a8f5ee4fe7a HEAD
+          test "$(git hash-object research/foundational/20261016-y-f66/prereg.json)" = fc3283f28ab307b6834c93d530fffce98ad7c0de
+          test "$(git hash-object research/foundational/20261016-y-f66/two_head_continuation.py)" = fa08d72d79380a82814c86482e98b206b69b4d4a
+          mkdir -p "$RUNNER_TEMP/y-f66-synthetic/"
+          python3 -B research/foundational/20261016-y-f66/two_head_continuation.py --synthetic-only > "$RUNNER_TEMP/y-f66-synthetic/source_audit.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/y-f66-synthetic/source_audit.json" >/dev/null
+          python3 -B -c 'import json,os; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"y-f66-synthetic/source_audit.json")));print("F66_SOURCE_MERGE_REACHABLE",d["provisional_demo_merge_count"]);assert d["provisional_demo_merge_count"]>0 and not d["registered_fit_executed"]'
+          sha256sum "$RUNNER_TEMP/y-f66-synthetic/source_audit.json" > "$RUNNER_TEMP/y-f66-synthetic/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f66-synthetic/exact-head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f66-synthetic-two-head-source
+          path: ${{ runner.temp }}/y-f66-synthetic/
+          retention-days: 90
+          if-no-files-found: warn
+  single-full-regression:
+    needs: causal-source-preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install free hosted test dependencies
+        shell: bash
+        run: |
+          python -m pip install pytest pyyaml
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Run exactly one full regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f66-regression/"
+          test "$(git hash-object research/foundational/20261016-y-f66/two_head_continuation.py)" = fa08d72d79380a82814c86482e98b206b69b4d4a
+          python -B -m pytest -q > "$RUNNER_TEMP/y-f66-regression/full-regression.txt" 2>&1
+          cat "$RUNNER_TEMP/y-f66-regression/full-regression.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f66-regression/exact-head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f66-exact-source-regression
+          path: ${{ runner.temp }}/y-f66-regression/
+          retention-days: 90
+          if-no-files-found: warn
