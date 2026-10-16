@@ -1,0 +1,74 @@
+{
+  "schema": "yggdrasil.f73.public-event-order-oracle-robustness.prereg.v1",
+  "stage": "FROZEN_PRECODE_SYNTHETIC_ONLY",
+  "scientific_problem": "F70B rescued all four F60 failures at public indices 2/14; F72 fresh negative seed cases repeated the same 2/14 beneficial positions and found label collisions. Determine if rescue timing is an artifact of the frozen source's narrow arrival schedule, not a general learned cognition rule.",
+  "question": "With graph, question, memory codec and action space exactly frozen, do deterministic alternative public edge arrival orders materially change which F60 cases fail and which native one-step interventions rescue them?",
+  "frozen_dependencies": {
+    "generator_blob": "c04b73306861098eecf55db77b2db486aa918819",
+    "actions_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "independent_auditor_blob": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f",
+    "F70B_diagnostic_blob": "e8362f7ae10ead5c3ba96da7a069d7d4dd11ca61",
+    "F72_identifiability_blob": "8324c6d1f70ed4ee0a8ff9e1af33bf41e36fa94f"
+  },
+  "cohort": {
+    "synthetic_cases": 16,
+    "seeds": [
+      -3801,
+      -3817
+    ],
+    "families": [
+      -2,
+      -1
+    ],
+    "never_registered": true,
+    "never_reuse_prior_exposed_seeds": true
+  },
+  "frozen_arrival_transformations": [
+    {
+      "name": "original",
+      "rule": "unchanged public event tuple"
+    },
+    {
+      "name": "reverse",
+      "rule": "tuple(reversed(public))"
+    },
+    {
+      "name": "even_odd",
+      "rule": "tuple(public[::2] + public[1::2])"
+    }
+  ],
+  "evaluation": {
+    "first_use": "generate each base public graph and its task once via frozen source(seed,family), test all three arrival orders without modifying any edges or task labels",
+    "F60": "Run frozen F60 and independent 72-prefix trace auditor for each schedule",
+    "unfair_offline_oracle": "For every original F60 failure, try each of 72 prefix indices and every distinct legal non-F60 ACTION.actions successor in unchanged order. Run exact unchanged F60 on remainder. Stop at first successful rescue and verify full independent 72-prefix auditor.",
+    "metrics": [
+      "frozen F60 correct by question kind/schedule",
+      "number of failed cases",
+      "number of rescued failures",
+      "rescue-first-index histogram",
+      "which cases change F60 correctness across orders",
+      "candidate actions evaluated"
+    ],
+    "retuning_forbidden": true,
+    "exposed_F70B_rescue_indices_are_NOT_input_to_action_selection": true
+  },
+  "gates": {
+    "source_identity_pins": true,
+    "unchanged_public_multiset_exactly_preserved": true,
+    "public_answer_unique_all_orders": true,
+    "causal_72_prefix_all_schedules": true,
+    "all_registered_FIT_validation_DIAG_original_unconsumed": true,
+    "positive_or_negative_result_preserved_even_if_no_rescue": true,
+    "no_model_training": true
+  },
+  "authority": {
+    "FIT_TRAIN": false,
+    "FIT_VALIDATE": false,
+    "DIAG": false,
+    "original": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "controller_mutation": false,
+    "paid_API": false
+  }
+}
