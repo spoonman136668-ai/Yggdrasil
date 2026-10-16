@@ -1,0 +1,41 @@
+name: Yggdrasil F67B frozen independent synthetic prevalidation
+on:
+  push:
+    branches: [research/y-f67b-frozen-model-prevalidation-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  independent-frozen-replay:
+    if: "${{ github.event.head_commit.message == 'ci(y-f67b): qualify frozen retained paths versus fair controls and ablation' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Frozen source and learned weight custody
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 84159405f4e48dc00bc5b126b83120715dc85d5a HEAD
+          test "$(git hash-object research/foundational/20261016-y-f67/f67b_frozen_receipt.json)" = b6af5921b4a83201663c54893706e9db808a09dd
+          test "$(git hash-object research/foundational/20261016-y-f67/f67b_prevalidate_frozen.py)" = 884cc79cbb73605dbae6914c697b2ca5ae75503b
+          test "$(git hash-object research/foundational/20261016-y-f67/durable_policy.py)" = 21f2f3fc90a3d00d09029f39e4958e09a33908cc
+      - name: Independent public-prefix and ablation sanity gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f67b-prevalidation/"
+          python3 -B research/foundational/20261016-y-f67/f67b_prevalidate_frozen.py > "$RUNNER_TEMP/f67b-prevalidation/result.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f67b-prevalidation/result.json" > /dev/null
+          python3 -B -c 'import json,os;r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f67b-prevalidation/result.json")));print("F67B_FROZEN_SCORES",r["scores"]);print("F67B_BUDGET_ABLATION",r["positive_stable_budget_ablation"]);print("F67B_MODEL_COUNTS",r["learned_model_merges"],r["learned_final_long_records"]);print("F67B_KIND",r["per_question_strata"]);assert r["independent_prefix_audit_pass"] and not r["fit_validation_used"]'
+          sha256sum "$RUNNER_TEMP/f67b-prevalidation/result.json" > "$RUNNER_TEMP/f67b-prevalidation/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f67b-prevalidation/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f67b-independent-frozen-synthetic-evidence
+          path: ${{ runner.temp }}/f67b-prevalidation/
+          retention-days: 90
+          if-no-files-found: warn
