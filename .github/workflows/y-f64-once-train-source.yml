@@ -1,0 +1,46 @@
+name: Yggdrasil F64 once-only FIT TRAIN source gate
+on:
+  push:
+    branches:
+      - science/y-f64-once-fit-train-source-20261016-r1
+permissions:
+  contents: read
+jobs:
+  source-first-use-once:
+    if: "${{ github.event.head_commit.message == 'science(y-f64): execute frozen once-only FIT TRAIN source qualification' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify source-only acceptance and frozen generator
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 98692c30d5352256a1131dcfd6e11fc6a6bba129 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f64/prereg.json)" = aa12b1785b92eec5eb5096d6ef0cd600e97904ad
+          test "$(git hash-object research/foundational/20261016-y-f63c/source.py)" = c04b73306861098eecf55db77b2db486aa918819
+          test "$(git hash-object research/foundational/20261016-y-f63c/audit_graph.py)" = 24e9f6d89d346eb019e44a51c59349a252cc50e2
+          test "$(git hash-object research/foundational/20261016-y-f64/once_train_source.py)" = 17fc824ff8916b6e587f5fa500e3893d40c644bb
+      - name: Execute registered training source exactly once, archive incrementally
+        shell: bash
+        env:
+          F64_FIRST_USE_EVIDENCE: ${{ runner.temp }}/f64-fit-train-once/
+        run: |
+          set -euo pipefail
+          mkdir -p "$F64_FIRST_USE_EVIDENCE"
+          echo "$GITHUB_SHA" > "$F64_FIRST_USE_EVIDENCE/exact-head.txt"
+          python3 -B research/foundational/20261016-y-f64/once_train_source.py
+          python3 -B -m json.tool "$F64_FIRST_USE_EVIDENCE/train_source_verdict.json" >/dev/null
+          sha256sum "$F64_FIRST_USE_EVIDENCE/train_source_verdict.json" "$F64_FIRST_USE_EVIDENCE/fit_train_rows.jsonl" > "$F64_FIRST_USE_EVIDENCE/hashes.txt"
+          echo 'F64_TRAIN_SOURCE_CONSUMED=TRUE FIT_VALIDATION=UNCONSUMED DIAG=UNCONSUMED ORIGINAL=UNCONSUMED'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f64-once-registered-fit-train-source
+          path: ${{ runner.temp }}/f64-fit-train-once/
+          retention-days: 90
+          if-no-files-found: warn
