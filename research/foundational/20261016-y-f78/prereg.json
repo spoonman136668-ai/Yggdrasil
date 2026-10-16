@@ -1,0 +1,60 @@
+{
+  "schema": "yggdrasil.f78.two-arrival-capped-two-step-rescue.prereg.v1",
+  "stage": "PRECODE_FROZEN_NONCOMPETITIVE_SYNTHETIC",
+  "parent": {
+    "F77_diagnostic_run": 38928659957,
+    "F77_prereg_blob": "ba33bb2622b10ccabb6ff81bd08f9b3651377db6",
+    "F77_source_blob": "aff32f9ac3e3fa975b9f268f01b496c4184f367d",
+    "original_one_step_0_of_4_failures": true,
+    "local_rotate4_one_step_4_of_11_failures": true,
+    "F77_cohorts_EXPOSED_DO_NOT_REUSE": true
+  },
+  "hypothesis": "Under either F76 source arrival order, at most two native legal lossless memory interventions may rescue some cases not rescued by one action, but a bounded oracle cannot establish global impossibility when its search cap is reached.",
+  "cohort": {
+    "synthetic_negative_seed_start": -4401,
+    "synthetic_negative_seed_last_inclusive": -4408,
+    "families": [
+      -2,
+      -1
+    ],
+    "case_count": 16,
+    "prior_synthetic_and_registered_identifiers_excluded": true
+  },
+  "frozen_source": {
+    "F76_source_blob": "5b8928b0399ce9f869854beadeab04b29c8703a5",
+    "F76_prereg_blob": "eac6a88209fda174509749f33d21bbf6d20fbdc7",
+    "native_action_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "auditor_blob": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f",
+    "baseline": "F60 exactly unchanged per prefix, no refit"
+  },
+  "protocol": {
+    "one_step": "All 72 event indices ascending and all unique native legal alternative states excluding F60 baseline; independent 72-prefix causality witness of any rescue.",
+    "two_step": "For F60 failed and one-step unresolved cases only; first intervention indices 0,4,8,...,60; second intervention indices exactly i+1,i+4,i+8,i+12 when <=71, ascending; each alternative comes from ACTION.actions on actual memory; frozen F60 between and after.",
+    "max_two_action_pairs_per_case": 2048,
+    "stop_on_first_rescue": true,
+    "all_candidate_states_limit": "12 lossless records * 12 bytes = 144B",
+    "causal_confirmation": "Independent public 72-prefix auditor must verify every claimed one/two-step rescue.",
+    "report_censored_correctly": "If maximum pairs exhausted, mark CENSORED, not proven infeasible. If exhausted all prereg bounded candidates without rescue, say NOT_FOUND_IN_BOUNDED_SEARCH, not impossible.",
+    "offline_teacher_status": "Unfair future-answer oracle, NONCOMPETITIVE, not a trained or deployed policy.",
+    "no_new_optimizer_or_memory_source": true
+  },
+  "gates": {
+    "single_run_idempotent": true,
+    "prereg_source_drift_guard": true,
+    "both_arrival_regimes_reported": true,
+    "all_claimed_rescues_independent_causal": true,
+    "no_unbounded_search": true,
+    "no_infeasibility_assertion_from_censoring": true,
+    "protected_first_use_forbidden": true,
+    "F3_and_optimizer_promotion_forbidden": true
+  },
+  "authority": {
+    "FIT_TRAIN_used": false,
+    "FIT_VALIDATE_used": false,
+    "DIAG_used": false,
+    "ORIGINAL_used": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "paid_API": false
+  }
+}
