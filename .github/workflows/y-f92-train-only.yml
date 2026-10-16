@@ -1,0 +1,45 @@
+name: Yggdrasil F92 dense path credit — TRAIN only
+on:
+  push:
+    branches:
+      - research/y-f92-dense-path-credit-20261016-r1
+    paths:
+      - 'research/foundational/20261016-y-f92/prereg.json'
+      - 'research/foundational/20261016-y-f92/dense_path_credit.py'
+      - 'research/foundational/20261016-y-f92/test_dense_path_credit.py'
+      - '.github/workflows/y-f92-train-only.yml'
+permissions:
+  contents: read
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify frozen prereg and unmodified source ancestry
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor bc0cbfb01e07293a2f6a56f3805e75e7d68109d2 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f92/prereg.json)" = c56d1e1c2221ab7311ffb093921ee21b7e6f0fda
+          test "$(git hash-object research/foundational/20261016-y-f91/conservative_credit.py)" = a3e9ccdbd623d996d56355bb6b9e838fb59fc3b2
+          test "$(git hash-object research/foundational/20261016-y-f90/temporal_credit.py)" = 0b689d66135a246987b20e189b9724b1c0715c25
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+      - name: No-cohort pure F92/F91 unit and regression tests
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f92 -p test_dense_path_credit.py
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f91 -p test_conservative_credit.py
+      - name: Frozen synthetic TRAIN only (never validation or guard)
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f92/dense_path_credit.py --train-only > "$RUNNER_TEMP/f92-train.json"
+          python3 -B -c 'import json,os; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f92-train.json"))); assert d["stage"]=="TRAIN_ONLY_NO_HOLDOUT" and d["train_cases"]==32 and d["examples"]>0 and len(d["benefit"])==len(d["harm"])==12 and not d["validation_used"] and not d["guard_used"] and not d["protected_used"]; print(json.dumps(d,sort_keys=True))'
+      - name: Source tree unchanged
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
