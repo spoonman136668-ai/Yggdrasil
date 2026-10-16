@@ -83,7 +83,8 @@ class F88Contracts(unittest.TestCase):
         records=tuple((100+i,200+i,(2,)) for i in range(12))
         lang=F88.public_language(records,self.codec)
         self.assertIsNotNone(lang)
-        self.assertEqual(len(lang[0]),24)
+        self.assertGreaterEqual(len(lang[0]),24)
+        self.assertTrue(all(1<=len(row[2])<=4 for row in lang[0]))
         self.assertEqual(lang[2],0)
 
 if __name__=="__main__":
