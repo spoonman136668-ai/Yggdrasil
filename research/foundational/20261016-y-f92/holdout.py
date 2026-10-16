@@ -40,7 +40,7 @@ def evaluate(mode):
  ids=range(spec["start"],spec["stop_exclusive"],spec["step"])
  assert len(ids)*len(spec["families"])==spec["cases"]
  F92=load("f92_eval_method",P/"dense_path_credit.py",MODEL)
- F91=F92.module("f92_eval_f91",ROOT/"20261016-y-f91"/"conservative_credit.py",F92.F91_BLOB)
+ F91=F92.load("f92_eval_f91",ROOT/"20261016-y-f91"/"conservative_credit.py",F92.F91_BLOB)
  F90=F91.loader("f92_eval_f90",ROOT/"20261016-y-f90"/"temporal_credit.py",F91.F90_BLOB)
  assert blob(ROOT/"20261016-y-f91"/"frozen-policy.json")==F91POL
  assert blob(ROOT/"20261016-y-f90"/"frozen-policy.json")==F90POL
