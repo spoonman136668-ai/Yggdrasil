@@ -1,0 +1,46 @@
+name: Yggdrasil F72 frozen label identifiability
+on:
+  push:
+    branches:
+      - research/y-f72-counterfactual-label-identifiability-20261016-r1
+permissions:
+  contents: read
+jobs:
+  read-only-identifiability:
+    if: "${{ github.event.head_commit.message == 'ci(y-f72): run frozen label identifiability audit without protected data' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify unchanged native actions, prereg and frozen F71 teacher
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor f54988eed407d5212d84ac9563b7ca29cae97545 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f72/prereg.json)" = b8d4c43491e5101041d07a1b83af600b335117e6
+          test "$(git hash-object research/foundational/20261016-y-f72/audit_labels.py)" = 8324c6d1f70ed4ee0a8ff9e1af33bf41e36fa94f
+          test "$(git hash-object research/foundational/20261016-y-f71/early_scheduler.py)" = edddfedb04af27dac7332ca85cc742aef5772a4b
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+          test "$(git hash-object research/foundational/20261015-y-f62/audit_public.py)" = 383fff0bdd8c8b48fde9538d4e4d768db1c1896f
+      - name: Audit all native synthetic candidate labels without fitting model
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f72-identifiability"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f72-identifiability/exact-head.txt"
+          python3 -B research/foundational/20261016-y-f72/audit_labels.py > "$RUNNER_TEMP/y-f72-identifiability/result.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/y-f72-identifiability/result.json" >/dev/null
+          python3 -B -c 'import os,json;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"y-f72-identifiability/result.json")));print("F72_BENEFICIAL_HARMFUL_NEUTRAL",d["labels"]);print("F72_CASES_WITH_BENEFIT",d["cases_with_beneficial"]);print("F72_FEATURE_LABEL_COLLISIONS",d["feature_aliases"]);assert d["independent_72_prefix_audit"] and d["no_model_training_or_weight_fit"] and not d["registered_FIT_train_used"]'
+          sha256sum "$RUNNER_TEMP/y-f72-identifiability/result.json" > "$RUNNER_TEMP/y-f72-identifiability/sha256.txt"
+          echo 'ALL_REGISTERED_AND_ORIGINAL_SCIENTIFIC_COHORTS_UNTOUCHED=TRUE'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f72-frozen-counterfactual-label-identifiability
+          path: ${{ runner.temp }}/y-f72-identifiability/
+          retention-days: 90
+          if-no-files-found: warn
