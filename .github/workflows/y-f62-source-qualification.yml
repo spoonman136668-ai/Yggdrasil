@@ -17,9 +17,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
-          cache-dependency-path: requirements.txt
       - name: Install repository test dependencies
-        run: python -m pip install -r requirements.txt pytest
+        run: python -m pip install pytest
       - name: Exact-commit source qualification, no FIT
         run: python -B research/foundational/20261015-y-f62/qualify_source.py --expect-head "$GITHUB_SHA"
