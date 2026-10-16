@@ -1,0 +1,39 @@
+name: Yggdrasil F70B expanded native memory reachability
+on:
+  push:
+    branches: [research/y-f70b-expanded-oracle-reachability-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  noncompetitive-synthetic-oracle:
+    if: "${{ github.event.head_commit.message == 'ci(y-f70b): qualify expanded bounded causal rescue oracle on new synthetic cases' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate frozen F70 source and F70B preregistration
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7e9f1df267d633e9d5e8b36cf728ee3e51e91d88 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f70/prereg.json)" = f9ce48f01e499d83fbf714e0982101208f1cfddc
+          test "$(git hash-object research/foundational/20261016-y-f70/reachability.py)" = ab650d69d823a0d29eb27af9fd56147e65ccfd73
+          test "$(git hash-object research/foundational/20261016-y-f70b/prereg.json)" = 4ba4b10147eb8e854e8c43f5a1aa6c1184d17816
+          test "$(git hash-object research/foundational/20261016-y-f70b/expanded_oracle.py)" = e8362f7ae10ead5c3ba96da7a069d7d4dd11ca61
+      - name: Execute frozen all-prefix 1-step and flexible 2-step audit
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f70b-reachability"
+          python3 -B research/foundational/20261016-y-f70b/expanded_oracle.py --synthetic-only > "$RUNNER_TEMP/f70b-reachability/result.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f70b-reachability/result.json" >/dev/null
+          python3 -B -c 'import json,os;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f70b-reachability/result.json")));print("F70B_FAILURES",d["F60_failures"]);print("F70B_RESCUES",d["single_step_rescues"],d["two_step_rescues"]);print("F70B_CANDIDATES",d["first_step_candidates"],d["second_step_pairs"]);assert d["unfair_future_question_oracle"] and not d["protected_FIT_used"]'
+          sha256sum "$RUNNER_TEMP/f70b-reachability/result.json" > "$RUNNER_TEMP/f70b-reachability/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f70b-reachability/head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f70b-expanded-causal-oracle-evidence
+          path: ${{ runner.temp }}/f70b-reachability/
+          retention-days: 90
