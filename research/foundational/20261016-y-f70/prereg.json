@@ -1,0 +1,53 @@
+{
+  "schema": "yggdrasil.f70.bounded-oracle-action-reachability.prereg.v1",
+  "stage": "PRECODE_DIAGNOSTIC_SYNTHETIC_ONLY",
+  "motivation": "F60 solves the majority of four-step source tasks; learned global action rankers F64/F65/F67B/F69 destroy performance; late-only F68 junction overrides have zero beneficial candidates. Determine whether useful bounded causal interventions are even present in the frozen action space, and whether multi-step delayed credit is necessary.",
+  "question": "On completely unregistered public streams, can one or two source-legal alternative memory states, with F60 elsewhere, rescue an initially failed task under identical 12 records/144 bytes?",
+  "frozen_source": {
+    "generator_blob": "c04b73306861098eecf55db77b2db486aa918819",
+    "action_engine_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "independent_auditor_blob": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f"
+  },
+  "synthetic_cohort": {
+    "seeds": [
+      -3301,
+      -3317
+    ],
+    "families": [
+      -2,
+      -1
+    ],
+    "cases": 16,
+    "all_nonregistered": true
+  },
+  "oracle_protocol": {
+    "first_intervention_indices": "7,15,23,31,39,47,55,63; exact native ACTION.actions candidates excluding frozen F60 next state",
+    "second_intervention_index": "first intervention index + 8 if index <=63, after applying F60 exactly to all intervening public events",
+    "terminal_rollout": "frozen F60 _finish_fixed on remaining original public events, then offline evaluate frozen task question",
+    "strict_budgets": "every chosen and intervening memory state <=12 12-byte lossless records; read-only independent trace auditor",
+    "first_use_authority": "offline synthetic unfair oracle NONCOMPETITIVE, NEVER learned runtime policy or new scientific first-use",
+    "cost_guard": "fixed eight checkpoints and one following checkpoint per first intervention; stop nested search after first success per case"
+  },
+  "metrics": [
+    "F60 correct by 4-vs-6 step",
+    "one-step source-legal oracle rescues",
+    "two-step source-legal oracle rescues",
+    "number of candidates and seed/case identities",
+    "no false promotion"
+  ],
+  "gates": {
+    "exact_source_blob_pins": true,
+    "legal_memory_transitions_audited": true,
+    "F60_results_unchanged": true,
+    "one_synthetic_run_only": true,
+    "all_registered_cohorts_unconsumed": true
+  },
+  "authority": {
+    "registered_FIT": false,
+    "heldout": false,
+    "diagnostics": false,
+    "originals": false,
+    "F3": false,
+    "optimizer_promotion": false
+  }
+}
