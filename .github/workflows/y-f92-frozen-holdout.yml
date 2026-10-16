@@ -1,0 +1,49 @@
+name: Yggdrasil F92 frozen learned path-credit holdout
+on:
+  push:
+    branches:
+      - research/y-f92-dense-path-credit-20261016-r1
+    paths:
+      - 'research/foundational/20261016-y-f92/holdout.py'
+      - '.github/workflows/y-f92-frozen-holdout.yml'
+permissions:
+  contents: read
+jobs:
+  frozen-holdout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Independently attest frozen F92 prereg source and weight identities
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 65d7cd1eaacb097a09ced87112d5f4dc5532ee87 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f92/prereg.json)" = c56d1e1c2221ab7311ffb093921ee21b7e6f0fda
+          test "$(git hash-object research/foundational/20261016-y-f92/dense_path_credit.py)" = 7fdaf5d24866c347275c2ffa3aec7dfeaed6ac5b
+          test "$(git hash-object research/foundational/20261016-y-f92/frozen-policy.json)" = 6a94f730baefe008a21f7286416f3163835ed93e
+          test "$(git hash-object research/foundational/20261016-y-f91/conservative_credit.py)" = a3e9ccdbd623d996d56355bb6b9e838fb59fc3b2
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+      - name: Pure F92 and frozen F91 tests
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f92 -p test_dense_path_credit.py
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f91 -p test_conservative_credit.py
+      - name: Independently verify F92 validation — no refit or selection
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f92/holdout.py --frozen-validation > "$RUNNER_TEMP/f92-validation.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f92-validation.json"))); assert r["stage"]=="F92_FROZEN_VALIDATION" and r["cases"]==16; assert r["policy_frozen_before_holdout"] and r["no_train_from_holdout"] and r["native_72_prefix_causality_verified"] and r["max_memory_bytes"]<=144 and r["extra_model_bytes"]==24; print(json.dumps({k:r[k] for k in ("classification","scores","six_step_rescues","F60_correct_case_regressions","learned_interventions","by_regime_and_type")},sort_keys=True))'
+      - name: Independent first-use F92 synthetic guard
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f92/holdout.py --frozen-guard > "$RUNNER_TEMP/f92-guard.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f92-guard.json"))); assert r["stage"]=="F92_FIRST_USE_DISJOINT_GUARD" and r["cases"]==32 and r["six_step_cases"]==8; assert r["policy_frozen_before_holdout"] and r["no_train_from_holdout"] and r["native_72_prefix_causality_verified"] and r["max_memory_bytes"]<=144 and r["extra_model_bytes"]==24 and r["latch_bits"]==1; assert r["no_registered_FIT"] and r["no_DIAG"] and r["no_original"] and r["no_F3"] and not r["science_accepted"] and not r["optimizer_promotion"] and not r["controller_mutation"]; print(json.dumps({k:r[k] for k in ("classification","scores","six_step_rescues","F60_correct_case_regressions","learned_interventions","by_regime_and_type")},sort_keys=True))'
+      - name: Preserve source immutability
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
