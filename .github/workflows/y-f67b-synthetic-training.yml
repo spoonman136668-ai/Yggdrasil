@@ -1,0 +1,42 @@
+name: Yggdrasil F67B public-junction synthetic learning qualification
+on:
+  push:
+    branches: [research/y-f67b-action-dependent-junction-precode-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  synthetic-learning:
+    if: "${{ github.event.head_commit.message == 'ci(y-f67b): qualify frozen junction-distillation method on disjoint synthetic guards' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify independent source, train method and immutable preregistration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 16e07b169d8c093a4866b9aedf2651f53d53209c HEAD
+          test "$(git hash-object research/foundational/20261016-y-f67b/prereg.json)" = bf6d45260a237f532287c128da60b301a4a04f2e
+          test "$(git hash-object research/foundational/20261016-y-f67b/action_junction.py)" = 7ea16c037642dedbc46d5e6e27cc1d5975bbb3f5
+          test "$(git hash-object research/foundational/20261016-y-f67b/training_prereg.json)" = a3a8450ae8ee149f81b6a2c9e061ed5ae198d539
+          test "$(git hash-object research/foundational/20261016-y-f67b/train_junction.py)" = 7a90ac5f5e2aa4494990e407a471ee62f496ea75
+      - name: Train on unregistered synthetic public prefixes and replay separate cases
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f67b-synthetic-method"
+          python3 -B research/foundational/20261016-y-f67b/train_junction.py --synthetic-only > "$RUNNER_TEMP/f67b-synthetic-method/qualification.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f67b-synthetic-method/qualification.json" >/dev/null
+          python3 -B -c 'import json,os;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f67b-synthetic-method/qualification.json")));print("F67B_SYNTHETIC_TRAINING",d["teacher_counts"]);print("F67B_GUARD_SCORES",d["guard_learned_correct"],d["guard_F60_correct"]);print("F67B_GUARD_MERGES",d["guard_learned_merges"]);assert d["source_prequalification_pass"] and not d["FIT_train_consumed"]'
+          sha256sum "$RUNNER_TEMP/f67b-synthetic-method/qualification.json" > "$RUNNER_TEMP/f67b-synthetic-method/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f67b-synthetic-method/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f67b-frozen-synthetic-method-qualification
+          path: ${{ runner.temp }}/f67b-synthetic-method/
+          retention-days: 90
+          if-no-files-found: warn
