@@ -1,0 +1,103 @@
+{
+  "schema": "yggdrasil.f67b.action-dependent-junction-learning.prereg.v1",
+  "stage": "PRECODE_FROZEN_NO_FIT",
+  "parent": {
+    "F67_prereg": "1db81bfd134da0896684abf045c1912a98d6bcf6",
+    "F67_original_source_failed": "NONCAUSAL_MEMORY_TRANSITION",
+    "F67A_qualified_source_blob": "b370396b3c3571be2c01ab2b33effef14f248eef",
+    "F67A_pass_run": 38904435445,
+    "F67A_feature_diagnostic_run": 38909447160,
+    "F67A_constant_candidate_public_junction_features": 0,
+    "F67A_junction_decisions_checked": 450,
+    "reserve_feature_differences": 122
+  },
+  "hypothesis": "A query-blind learner with explicit action-times-public-junction interaction features can use the already qualified F67A legal memory transitions to choose useful merges and reserves without violating the 144-byte bound, overcoming the F67A candidate-constant public-junction signal.",
+  "intervention": "Change exactly features indices 5-7 in F67A using public-separation times merge indicator, public-frontier times action-relative reserve endpoint-incidence change, and public both-endpoints times candidate hop gain. Keep all other 13 feature indices, candidate engine, source, memory packing and auditor unchanged.",
+  "mechanism": {
+    "action_conditional_separation": "separate_public_components * (1 if merge else -1)",
+    "action_conditional_frontier": "public_frontier * (retained_junction_event_endpoint_indicator_after - before)",
+    "action_conditional_hop_gain": "both_event_endpoints_publicly_known * clamp((hops_after-hops_before)/6,-1,1)",
+    "constant_features_do_not_qualify": true,
+    "role_code_compositions_lossless": true,
+    "online_future_question_available": false,
+    "online_future_events_available": false,
+    "model_parameters": 16
+  },
+  "frozen_source_blobs": {
+    "F67A": "b370396b3c3571be2c01ab2b33effef14f248eef",
+    "generator": "c04b73306861098eecf55db77b2db486aa918819",
+    "actions": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "independent_causal_auditor": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f"
+  },
+  "cohorts": {
+    "FIT_TRAIN": [
+      871000,
+      871008
+    ],
+    "FIT_VALIDATE": [
+      871008,
+      871016
+    ],
+    "FIT_FAMILIES": [
+      1680,
+      1681,
+      1682,
+      1683
+    ],
+    "DIAGNOSTICS_UNAUTHORIZED": {
+      "seeds": [
+        871100,
+        871116
+      ],
+      "families": [
+        1684,
+        1685,
+        1686,
+        1687
+      ]
+    },
+    "ORIGINAL_UNAUTHORIZED": {
+      "seeds": [
+        872000,
+        872016
+      ],
+      "families": [
+        1688,
+        1689,
+        1690,
+        1691
+      ]
+    },
+    "never_reuse_prior_cohorts": true
+  },
+  "gates": {
+    "candidate_junction_features_have_nonzero_action_identifiability": true,
+    "synthetic_public_path_merge_selected": true,
+    "independent_all_prefix_causal_audit": true,
+    "one_full_repository_regression": true,
+    "source_F60_feasibility_min": 0.25,
+    "independent_public_witness_min": 0.85,
+    "train_only_first_use_after_independent_method_qualification": true,
+    "heldout_gain_over_strongest_fair_min": 0.05,
+    "positive_feature_ablation": true,
+    "per_family_nondegradation": true,
+    "once_only_heldout": true,
+    "no_postresult_tuning": true
+  },
+  "constraints": {
+    "memory_records": 12,
+    "record_bytes": 12,
+    "model_weights_max": 16,
+    "frozen_historical_controls_no_refit": true
+  },
+  "authority": {
+    "FIT_train_used": false,
+    "FIT_validate_used": false,
+    "DIAG_used": false,
+    "original_used": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "CKB_plane_mutation": false,
+    "paid_API": false
+  }
+}
