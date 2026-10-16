@@ -1,0 +1,49 @@
+"""Y-F62 source engineering checks: synthetic-only, never FIT/DIAG/original."""
+import importlib.util,pathlib,sys,unittest
+P=pathlib.Path(__file__).with_name("source_pilot.py")
+s=importlib.util.spec_from_file_location("y62_source_engineering",P)
+m=importlib.util.module_from_spec(s);sys.modules[s.name]=m;s.loader.exec_module(m)
+class FrozenSourceTests(unittest.TestCase):
+ def test_cohort_denial_and_exact_contract(self):
+  self.assertEqual((m.TRAIN.start,m.TRAIN.stop),(761000,761008))
+  self.assertEqual((m.VALIDATE.start,m.VALIDATE.stop),(761008,761016))
+  self.assertEqual(m.FAMILIES,(1460,1461,1462,1463))
+  self.assertEqual(m.CAP*m.RECORD_BYTES,144)
+  self.assertEqual(len(m.F61_WEIGHTS),12)
+  for seed,family in ((741000,1420),(741100,1424),(742000,1428),
+                      (761100,1464),(762000,1468)):
+   with self.assertRaises(ValueError):m.source(seed,family)
+ def test_public_synthetic_causality_and_exact_receipts(self):
+  packing=m.codec()
+  for seed,family,regime in ((-71,-2,"delayed_public_joins"),
+                             (-72,-1,"rolling_interleaved_hubs")):
+   tagged,question,paths,observed=m._construct(seed,family)
+   self.assertEqual(observed,regime)
+   self.assertEqual(len(tagged),72)
+   self.assertEqual(len(set(tuple(row[:3]) for row in tagged)),72)
+   self.assertEqual(sum(row[3] for row in tagged),36)
+   self.assertEqual(len(paths),4)
+   public=tuple(row[:3] for row in tagged)
+   offline=m.controls()[0].offline_public_witness(public)
+   self.assertEqual(packing.solve(offline,question),question["answer"])
+   learned,actions=m.learned_online(public,(0,)*12,packing)
+   self.assertEqual(len(actions),72)
+   m._valid_memory(learned,packing)
+   self.assertLessEqual(12*len(learned),144)
+   with self.assertRaises(AssertionError):m.actions(learned,tagged[0],0,packing)
+ def test_exact_historical_source_witnesses(self):
+  f60,f59,f58,f61=m.controls()
+  self.assertEqual(f60.online_fixed.__name__,"online_fixed")
+  self.assertEqual(f59.fixed_deferred_component_buffer.__name__,
+                   "fixed_deferred_component_buffer")
+  self.assertEqual(f58.frontier_online.__name__,"frontier_online")
+  self.assertEqual(f61.PARAMS,12)
+ def test_no_execution_authority(self):
+  d=m.source_only_manifest()
+  self.assertTrue(d["train_not_executed"])
+  self.assertTrue(d["validation_not_executed"])
+  self.assertTrue(d["diagnostic_not_executed"])
+  self.assertTrue(d["original_not_executed"])
+  self.assertFalse(d["independent_F3"])
+  self.assertFalse(d["policy_promotion"])
+if __name__=="__main__":unittest.main()
