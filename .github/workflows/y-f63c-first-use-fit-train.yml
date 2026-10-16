@@ -1,0 +1,46 @@
+name: Yggdrasil F63C once-only protected FIT TRAIN source
+on:
+  push:
+    branches:
+      - science/y-f63c-once-train-feasibility-20261016-r1
+permissions:
+  contents: read
+jobs:
+  authentic-source-first-use:
+    if: "${{ github.event.head_commit.message == 'science(y-f63c): execute only preregistered FIT TRAIN source first-use' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify exact qualified ancestry and never-mutated source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 9c6b757f62cbc1ecbc4fc32f59bc36fa44902303 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f63c/prereg.json)" = c0e69c1bc0a170646c8ad997efeb154b64ce9862
+          test "$(git hash-object research/foundational/20261016-y-f63c/source.py)" = c04b73306861098eecf55db77b2db486aa918819
+          test "$(git hash-object research/foundational/20261016-y-f63c/audit_graph.py)" = 24e9f6d89d346eb019e44a51c59349a252cc50e2
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+      - name: Consume frozen FIT TRAIN exactly once and retain each row
+        shell: bash
+        env:
+          F63C_EVIDENCE_DIR: ${{ runner.temp }}/y-f63c-first-use/
+        run: |
+          set -euo pipefail
+          mkdir -p "$F63C_EVIDENCE_DIR"
+          echo "$GITHUB_SHA" > "$F63C_EVIDENCE_DIR/exact_head.txt"
+          python3 -B research/foundational/20261016-y-f63c/once_train_source_feasibility.py
+          python3 -B -m json.tool "$F63C_EVIDENCE_DIR/source_feasibility_verdict.json" >/dev/null
+          sha256sum "$F63C_EVIDENCE_DIR"/*.json "$F63C_EVIDENCE_DIR"/*.jsonl | tee "$F63C_EVIDENCE_DIR/hashes.txt"
+          echo "VALIDATION=UNCONSUMED ORIGINAL=UNCONSUMED F3=FALSE"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f63c-once-prospective-fit-train-source
+          path: ${{ runner.temp }}/y-f63c-first-use/
+          retention-days: 90
+          if-no-files-found: warn
