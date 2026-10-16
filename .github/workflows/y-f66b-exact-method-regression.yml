@@ -1,0 +1,42 @@
+name: Yggdrasil F66B exact-head source and method regression
+on:
+  push:
+    branches: [research/y-f66b-opportunity-cost-precode-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  exact-method-regression:
+    if: "${{ github.event.head_commit.message == 'ci(y-f66b): qualify frozen opportunity-cost method and one full regression' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Free hosted dependencies
+        run: |
+          python -m pip install pytest pyyaml
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Freeze all scientific identities and execute one full regression
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 9fd477980686db6fd52209b59ec13a8f5ee4fe7a HEAD
+          test "$(git hash-object research/foundational/20261016-y-f66/prereg-opportunity-cost-amendment.json)" = 3502d23f503cb0fdc798b2ac7db3f5cdb09c254d
+          test "$(git hash-object research/foundational/20261016-y-f66/dense_opportunity_teacher.py)" = 7b41ebeaf51f879e6426206923e8e0ad1cb9897c
+          mkdir -p "$RUNNER_TEMP/y-f66b-regression/"
+          python -B -m pytest -q > "$RUNNER_TEMP/y-f66b-regression/full-regression.txt" 2>&1
+          cat "$RUNNER_TEMP/y-f66b-regression/full-regression.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f66b-regression/exact_head.txt"
+          sha256sum "$RUNNER_TEMP/y-f66b-regression/full-regression.txt" > "$RUNNER_TEMP/y-f66b-regression/sha256.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f66b-exact-head-regression
+          path: ${{ runner.temp }}/y-f66b-regression/
+          retention-days: 90
+          if-no-files-found: warn
