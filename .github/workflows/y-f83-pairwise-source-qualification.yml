@@ -1,0 +1,49 @@
+name: Yggdrasil F83 frozen pairwise source-native qualification
+on:
+  push:
+    branches:
+      - research/y-f83-pairwise-rare-intervention-synthetic-20261016-r1
+permissions:
+  contents: read
+jobs:
+  causal-margin-guard:
+    if: "${{ github.event.head_commit.message == 'ci(y-f83): run frozen pairwise learner on independent synthetic cohorts' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Frozen prereg and source-identity verification
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor f29c206512357a9afa612b1a1bc4ac797642f4f7 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f83/prereg.json)" = 2c47c4116bcad183ef2e3f327b9760b8ea95b3c1
+          test "$(git hash-object research/foundational/20261016-y-f83/pairwise_learner.py)" = 68138887c8bc42a17f8866df96cbede8e2594325
+          test "$(git hash-object research/foundational/20261016-y-f82/compact_role_learner.py)" = b5d969deeb63e99c1b235f675a0532c16863e519
+          echo 'FIT_VALIDATION_DIAG_ORIGINAL=UNCONSUMED'
+      - name: Frozen synthetic training and separate independent 32-case guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f83-evidence/"
+          python3 -B research/foundational/20261016-y-f83/pairwise_learner.py --synthetic-only > "$RUNNER_TEMP/f83-evidence/guard.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f83-evidence/guard.json" >/dev/null
+          python3 -B -c 'import os,json; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f83-evidence/guard.json"))); print("F83_PAIRWISE_GUARD",r["by_arrival_regime"],"QUALIFIED",r["prereg_synthetic_qualification"])'
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f83-evidence/head.txt"
+          sha256sum "$RUNNER_TEMP/f83-evidence/guard.json" > "$RUNNER_TEMP/f83-evidence/hashes.txt"
+      - name: Full repository regression only after prereg guard passes
+        shell: bash
+        run: |
+          python3 -m pip install pytest pyyaml
+          python3 -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python3 -B -m pytest -q
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f83-pairwise-margin-synthetic-guard-evidence
+          path: ${{ runner.temp }}/f83-evidence/
+          retention-days: 90
+          if-no-files-found: warn
