@@ -44,7 +44,21 @@ def audit(result,pre):
  assert d["future_DIAG_untouched"] and d["originals_untouched"]
  assert not d["independent_F3"] and d["native_total_576B_unverified"]
  assert not d["accepted_ref_mutation"] and d["paid_API_calls"]==0
- arms=p["controls"]
+ # Frozen protocol and archived result use different labels for three
+ # *existing* arms. This is a reporting alias, not a scientific control
+ # change: source, comparisons, gates and original receipt remain immutable.
+ canonical={
+  "learned_train_FIT_only":"learned_causal_component",
+  "frozen_F57_causal_online":"frozen_F57_online",
+  "fixed_pair_chunk":"fixed_pair_chunk",
+  "fixed_triple_chunk":"fixed_triple_chunk",
+  "public_component_priority":"public_component_priority",
+  "public_FIFO":"public_FIFO",
+  "public_hash":"public_hash",
+  "public_offline_full_graph_noncompetitive":"offline_full_public_noncompetitive",
+  "future_query_oracle_unfair":"future_query_oracle_unfair"}
+ assert set(p["controls"])==set(canonical)
+ arms=tuple(canonical[a] for a in p["controls"])
  assert set(arms)==set(d["correct"])
  assert set(d["by_family"])==set(str(f) for f in d["FIT_families"])
  totals={a:0 for a in arms};by={str(f):{a:0 for a in arms} for f in d["FIT_families"]}
