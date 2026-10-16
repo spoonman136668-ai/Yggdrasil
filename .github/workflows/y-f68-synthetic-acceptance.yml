@@ -1,0 +1,41 @@
+name: Yggdrasil F68 complete frozen synthetic eligibility
+on:
+  push:
+    branches:
+      - research/y-f68-context-action-junction-precode-20261016-r1
+permissions:
+  contents: read
+jobs:
+  independent-full-prereg-acceptance:
+    if: "${{ github.event.head_commit.message == 'ci(y-f68): enforce complete frozen prefit science gates without FIT use' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify frozen training method and checked model
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 14167f515a772697343a82ba528ec46db185e843 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f68/prereg.json)" = d6bb9395bce54562bb89bfb07dcb445a9996123a
+          test "$(git hash-object research/foundational/20261016-y-f68/action_conditioned.py)" = c079cb2b6993429c302f4f634e2862d05056fbdb
+          test "$(git hash-object research/foundational/20261016-y-f68/train_method_precode.json)" = 99d024db0ab22775f8a2790f0156eb2c56fe2101
+          test "$(git hash-object research/foundational/20261016-y-f68/synthetic_acceptance_audit.py)" = 5e26bed7a126f9669cbda236f9f8ba2a70591aab
+      - name: Compare frozen learned model against exact historical fixed controls
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f68-full-gate/"
+          python3 -B research/foundational/20261016-y-f68/synthetic_acceptance_audit.py > "$RUNNER_TEMP/y-f68-full-gate/acceptance.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/y-f68-full-gate/acceptance.json" >/dev/null
+          python3 -B -c 'import json,os;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"y-f68-full-gate/acceptance.json")));print("F68_FULL_SYNTHETIC_CONTROL_SCORES",d["totals"]);print("F68_COMPLETE_PROTECTED_FIT_ELIGIBILITY",d["eligible_for_protected_FIT"]);assert not d["registered_train_consumed"] and not d["validation_consumed"]'
+          sha256sum "$RUNNER_TEMP/y-f68-full-gate/acceptance.json" > "$RUNNER_TEMP/y-f68-full-gate/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f68-full-gate/head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f68-complete-preregistered-synthetic-eligibility
+          path: ${{ runner.temp }}/y-f68-full-gate/
+          retention-days: 90
+          if-no-files-found: warn
