@@ -1,0 +1,38 @@
+name: Yggdrasil F93A immutable F92 probability forensics
+on:
+  push:
+    branches:
+      - research/y-f93a-f92-frozen-probability-attribution-20261016-r1
+    paths:
+      - 'research/foundational/20261016-y-f93a/*.py'
+      - 'research/foundational/20261016-y-f93a/prereg.json'
+      - '.github/workflows/y-f93a-f92-attribution.yml'
+permissions:
+  contents: read
+jobs:
+  forensic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Freeze historical source and forensic prereg
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7a05bc5d5b9b08984cd36328fa28d2d911895967 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f93a/prereg.json)" = 09ccb02299d939f6337b5bbe9c1497a0a82ebf18
+          test "$(git hash-object research/foundational/20261016-y-f92/dense_path_credit.py)" = 7fdaf5d24866c347275c2ffa3aec7dfeaed6ac5b
+          test "$(git hash-object research/foundational/20261016-y-f92/frozen-policy.json)" = 6a94f730baefe008a21f7286416f3163835ed93e
+      - name: Read-only forensic decision boundary audit on consumed source ONLY
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f93a/forensic_probabilities.py --already-exposed-only > "$RUNNER_TEMP/f93a-forensic.json"
+          python3 -B -c 'import json,os; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f93a-forensic.json"))); assert d["cases"]==48 and d["validation_cases"]==16 and d["guard_cases"]==32; assert d["totals"]["all_four"]==0 and d["exact_zero_F92_interventions"]; assert d["no_train"] and d["no_protected_source"] and d["retired_cohorts_not_reusable"] and d["no_optimizer_promotion"]; print(json.dumps({k:d[k] for k in ("stage","cases","totals","by_cohort","max_benefit_overlap","min_harm_overlap","max_margin_overlap")},sort_keys=True))'
+      - name: No source mutations
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
