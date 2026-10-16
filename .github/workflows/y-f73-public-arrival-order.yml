@@ -1,0 +1,46 @@
+name: Yggdrasil F73 public-order causal oracle robustness
+on:
+  push:
+    branches:
+      - research/y-f73-public-arrival-order-robustness-20261016-r1
+permissions:
+  contents: read
+jobs:
+  frozen-order-diagnostic:
+    if: "${{ github.event.head_commit.message == 'ci(y-f73): audit frozen public-arrival order generalization without FIT' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Assert unchanged prereg and original source/action/causal auditor
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 1686e9c310ef9219430fb8d36d68bf8297c7cc8b HEAD
+          test "$(git hash-object research/foundational/20261016-y-f73/prereg.json)" = 5f5f4546a2c697be9d5238b0742a67d9dc2d06fa
+          test "$(git hash-object research/foundational/20261016-y-f73/arrival_oracle.py)" = f7bac62e00b52273ef7fa89889d5f018f591d307
+          test "$(git hash-object research/foundational/20261016-y-f63c/source.py)" = c04b73306861098eecf55db77b2db486aa918819
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+          test "$(git hash-object research/foundational/20261015-y-f62/audit_public.py)" = 383fff0bdd8c8b48fde9538d4e4d768db1c1896f
+      - name: Evaluate all three pre-frozen public arrival orders
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f73-source-order"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f73-source-order/exact-head.txt"
+          python3 -B research/foundational/20261016-y-f73/arrival_oracle.py --synthetic-only > "$RUNNER_TEMP/y-f73-source-order/result.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/y-f73-source-order/result.json" >/dev/null
+          python3 -B -c 'import os,json;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"y-f73-source-order/result.json")));print("F73_ORDER_COMPARISON",d["by_schedule"]);print("F73_CASE_OUTCOME_ORDER_DRIFT",d["F60_case_outcome_changed_by_order_count"]);assert d["independent_full_prefix_causality_pass"] and d["all_event_multisets_unchanged"] and not d["registered_FIT_train_consumed"]'
+          sha256sum "$RUNNER_TEMP/y-f73-source-order/result.json" > "$RUNNER_TEMP/y-f73-source-order/sha256.txt"
+          echo 'NO_FIT_NO_HELDOUT_NO_ORIGINAL_F3_FALSE=TRUE'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f73-public-arrival-order-causal-robustness
+          path: ${{ runner.temp }}/y-f73-source-order/
+          retention-days: 90
+          if-no-files-found: warn
