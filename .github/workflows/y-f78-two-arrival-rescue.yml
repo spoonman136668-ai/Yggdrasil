@@ -1,0 +1,44 @@
+name: Yggdrasil F78 capped two-arrival rescue qualification
+on:
+  push:
+    branches: [research/y-f78-two-arrival-two-step-feasibility-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  frozen-two-arrival-rescue:
+    if: "${{ github.event.head_commit.message == 'ci(y-f78): independently audit capped one and two-action rescues' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pin preregistered source and original scientific controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 5cb8f6a2eb73e78e745eb463983e1e5f920bc1ae HEAD
+          test "$(git hash-object research/foundational/20261016-y-f78/prereg.json)" = baa0a9e7ec5de20c8cd3714231e2c19124f11275
+          test "$(git hash-object research/foundational/20261016-y-f78/two_step_oracle.py)" = c09749d3b83db5393cfc59b7b5722cf58d743a8a
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+          test "$(git hash-object research/foundational/20261015-y-f62/audit_public.py)" = 383fff0bdd8c8b48fde9538d4e4d768db1c1896f
+      - name: Exhaust frozen capped two-arrival synthetic intervention search
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f78-two-arrival/"
+          python3 -B research/foundational/20261016-y-f78/two_step_oracle.py --synthetic-only > "$RUNNER_TEMP/y-f78-two-arrival/result.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/y-f78-two-arrival/result.json" >/dev/null
+          python3 -B -c 'import os,json;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"y-f78-two-arrival/result.json")));print("F78_BOUNDED_TWO_ARRIVAL",d["by_arrival_regime"]);print("F78_SEARCH_CAP",d["exact_per_case_two_step_pair_cap"]);assert d["synthetic_cases"]==16 and d["all_oracle_rescues_independently_audited"] and d["capped_search_not_claimed_infeasible"] and not d["learner_trained"] and not d["protected_FIT_TRAIN_used"]'
+          sha256sum "$RUNNER_TEMP/y-f78-two-arrival/result.json" > "$RUNNER_TEMP/y-f78-two-arrival/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f78-two-arrival/exact_head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f78-bounded-two-arrival-rescue-evidence
+          path: ${{ runner.temp }}/y-f78-two-arrival/
+          retention-days: 90
+          if-no-files-found: warn
