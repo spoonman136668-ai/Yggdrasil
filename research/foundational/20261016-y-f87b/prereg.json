@@ -1,0 +1,75 @@
+{
+  "schema": "yggdrasil.f87b.frontier-bridge-retention.prereg.v1",
+  "stage": "FROZEN_PRECODE_SYNTHETIC_GUARD_ONLY",
+  "parent": {
+    "F86_negative_commit": "67f6556c174ca19fa143c3110dbd58e00b9e2cd1",
+    "F86_frozen_method_blob": "8738a5e6a145fbc0f3c2efb2c873c3f8ed1f428e",
+    "F85_frozen_solver_blob": "e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3",
+    "F87A_forensic_run": 38967744597,
+    "retired_F86_guard": [
+      -5221,
+      -5237
+    ]
+  },
+  "question": "Will preserving source-native cross-frontier bridge edges only when F60 would absorb/drop the raw public edge improve six-step relationship reachability while leaving non-bridge F60 updates unchanged?",
+  "mechanism": {
+    "identity": "F87B frozen F60-anchored public bridge-reserve selector; differs from F86 global role-mass scoring",
+    "online_inputs": "Prior retained 12-byte records, current public 3-field event, current prefix index. No source seed, current/future question, expected answer, future public events, family, private truth labels.",
+    "exact_baseline": "Use F62._f60_step before every decision and assert it is among F62.actions legal transitions.",
+    "trigger": "Current incoming directed raw edge links two distinct nonidentical prior retained records: one endpoint appears in at least one retained record and the other endpoint appears in at least one different retained record; baseline does not preserve the incoming as a raw single-role record.",
+    "override": "Only then consider frozen F62.actions options which contain the exact raw incoming source edge, at most twelve records and the exact prior public-prefix audit; rank by number of records identical to frozen F60 baseline, then number of retained prior records, then frozen native enumeration order.",
+    "default": "Use bit-identical F60 _f60_step otherwise, with no learning or tuning.",
+    "resource": "12 x 12-byte retained records, no persistent state besides memory. Query-time frozen F85 bounded global DP, identical across arms.",
+    "failure_handling": "No eligible alternative -> frozen F60 baseline, never synthesize an answer-aware edge or retain a prohibited state.",
+    "one_time_decision": "Frozen before examining the new guard; no post-result score changes."
+  },
+  "cohorts": {
+    "frozen_source": "F76 negative synthetic two-regime public graph",
+    "guard": {
+      "start": -5321,
+      "stop_exclusive": -5337,
+      "step": -1
+    },
+    "families": [
+      -2,
+      -1
+    ],
+    "cases": 32,
+    "prior_consumed_not_reused": [
+      [
+        -5121,
+        -5137
+      ],
+      [
+        -5221,
+        -5237
+      ]
+    ],
+    "protected_positive_first_use": false
+  },
+  "arms": [
+    "F60 original causal 144-byte retained state + original frozen F85 solver",
+    "F83 original frozen 24-int8 causal retained state + frozen F85 solver",
+    "F86 retired negative causal retained state + frozen F85 solver",
+    "F87B F60-anchored bridge reserve retained state + frozen F85 solver",
+    "F87B same state + historic PACK.solve for reasoning attribution"
+  ],
+  "prequalification": {
+    "validity": "Frozen source hashes, exact inherited F60 and F83 controls; independent 72-prefix F62 audit for F87B and F83; all 32 questions have uniquely provable public answers; all actions legal, no private data.",
+    "scientific_positive": "No per-case regression from F60 across either arrival regime and both question families; at least one six-step task rescued relative to F60.",
+    "scientific_negative": "Any regression relative to F60 or zero six-step rescues with valid controls, regardless of green CI.",
+    "inconclusive": "Zero bridge override opportunities and zero six-step rescues: classify mechanism-inactive synthetic-negative rather than claimed improvement.",
+    "do_not_retest": "No retuning after guard; future changes require an independently preregistered distinct lineage and disjoint new synthetic cases.",
+    "scientific_acceptance": false
+  },
+  "authority": {
+    "original": false,
+    "FIT": false,
+    "DIAG": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "merge": false,
+    "controller_mutation": false,
+    "Codex": false
+  }
+}
