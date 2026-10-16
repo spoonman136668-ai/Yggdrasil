@@ -33,7 +33,18 @@ class FrozenSourceTests(unittest.TestCase):
     degrees[b]=degrees.get(b,0)+1
    hubs=sum(v>=3 for v in degrees.values())
    self.assertEqual(hubs,8 if regime=="rolling_interleaved_hubs" else 0)
+   self.assertTrue(m.assert_F60_step_parity(public,packing))
+   historical=m.historical_controls_public(public,packing)
+   self.assertEqual(set(historical),{
+    "F60_exact_source_fixed_online","F59_exact_source_deferred",
+    "F58_exact_source_frontier","F61_frozen_learned_policy_no_refit",
+    "fixed_public_pair_triple_DAG","fixed_public_FIFO_hash",
+    "offline_full_public_graph_extra_work_noncompetitive"})
+   for name,records in historical.items():
+    m._valid_memory(records,packing)
+    self.assertLessEqual(len(records)*12,144,name)
    offline=m.controls()[0].offline_public_witness(public)
+   self.assertEqual(offline,historical["offline_full_public_graph_extra_work_noncompetitive"])
    self.assertEqual(packing.solve(offline,question),question["answer"])
    learned,actions,trace=m.learned_online(public,(0,)*12,packing,trace=True)
    claim=audit.verify(public,question,trace)
