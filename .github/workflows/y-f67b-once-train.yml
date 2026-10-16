@@ -1,0 +1,45 @@
+name: Yggdrasil F67B authentic once-only FIT TRAIN source
+on:
+  push:
+    branches: [science/y-f67b-once-train-source-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  exact-frozen-source-first-use:
+    if: "${{ github.event.head_commit.message == 'science(y-f67b): execute single registered FIT TRAIN source gate' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Enforce accepted source and fresh cohort identity before first use
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 51c3edb30668810d031c61277132f46fddf61528 HEAD
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git hash-object research/foundational/20261016-y-f67/prereg-positive-admission.json)" = e923b32001eb22236c9d55e9d6ab00abe5cc7214
+          test "$(git hash-object research/foundational/20261016-y-f67/durable_policy.py)" = 21f2f3fc90a3d00d09029f39e4958e09a33908cc
+          test "$(git hash-object research/foundational/20261016-y-f67/fit_admission_synthetic.py)" = a6b4251354e8e79b744449ad6e08b7179bb9e6ab
+          test "$(git hash-object research/foundational/20261016-y-f67/once_fit_train_source.py)" = 52b24084dc79eac8bc6431a7677f02407235e08c
+      - name: Consume exactly 32 preregistered FIT TRAIN public source cases
+        shell: bash
+        env:
+          F67B_ONCE_TRAIN_SOURCE_EVIDENCE: ${{ runner.temp }}/f67b-first-use/
+        run: |
+          set -euo pipefail
+          mkdir -p "$F67B_ONCE_TRAIN_SOURCE_EVIDENCE"
+          echo "$GITHUB_SHA" > "$F67B_ONCE_TRAIN_SOURCE_EVIDENCE/exact_head.txt"
+          python3 -B research/foundational/20261016-y-f67/once_fit_train_source.py
+          python3 -B -m json.tool "$F67B_ONCE_TRAIN_SOURCE_EVIDENCE/source_first_use.json" >/dev/null
+          sha256sum "$F67B_ONCE_TRAIN_SOURCE_EVIDENCE/fit_train_rows.jsonl" "$F67B_ONCE_TRAIN_SOURCE_EVIDENCE/source_first_use.json" > "$F67B_ONCE_TRAIN_SOURCE_EVIDENCE/sha256.txt"
+          echo 'FIT_TRAIN_CONSUMED=TRUE FIT_VALIDATION=UNCONSUMED DIAG=UNCONSUMED ORIGINAL=UNCONSUMED F3=FALSE'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f67b-once-fit-train-source
+          path: ${{ runner.temp }}/f67b-first-use/
+          retention-days: 90
+          if-no-files-found: warn
