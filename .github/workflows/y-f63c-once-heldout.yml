@@ -1,0 +1,46 @@
+name: Yggdrasil F63C one-time prospective heldout
+on:
+  push:
+    branches:
+      - science/y-f63c-once-heldout-validation-20261016-r1
+permissions:
+  contents: read
+jobs:
+  protected-once:
+    if: "${{ github.event.head_commit.message == 'science(y-f63c): execute frozen once-only heldout scientific validation' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Exact source and frozen-model custody
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 00ab3f52ec64d848482e7c13ac364cd86838678c HEAD
+          test "$(git hash-object research/foundational/20261016-y-f63c/prereg.json)" = c0e69c1bc0a170646c8ad997efeb154b64ce9862
+          test "$(git hash-object research/foundational/20261016-y-f63c/source.py)" = c04b73306861098eecf55db77b2db486aa918819
+          test "$(git hash-object research/foundational/20261016-y-f63c/audit_graph.py)" = 24e9f6d89d346eb019e44a51c59349a252cc50e2
+          test "$(git hash-object research/foundational/20261016-y-f63c/frozen_model_receipt.json)" = a896895963b1cbfa59737ef2b35a3279483f4ebb
+      - name: Execute original preregistered heldout once, independent per-row audit
+        shell: bash
+        env:
+          F63C_VALIDATION_EVIDENCE_DIR: ${{ runner.temp }}/f63c-heldout-once/
+        run: |
+          set -euo pipefail
+          mkdir -p "$F63C_VALIDATION_EVIDENCE_DIR"
+          echo "$GITHUB_SHA" > "$F63C_VALIDATION_EVIDENCE_DIR/exact_head.txt"
+          python3 -B research/foundational/20261016-y-f63c/once_heldout.py
+          python3 -B -m json.tool "$F63C_VALIDATION_EVIDENCE_DIR/heldout_verdict.json" >/dev/null
+          sha256sum "$F63C_VALIDATION_EVIDENCE_DIR/heldout_verdict.json" "$F63C_VALIDATION_EVIDENCE_DIR/heldout_once_rows.jsonl" | tee "$F63C_VALIDATION_EVIDENCE_DIR/hashes.txt"
+          echo 'HELDOUT_CONSUMED=TRUE DIAG=UNCONSUMED ORIGINAL=UNCONSUMED F3=FALSE'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f63c-once-prospective-heldout-evidence
+          path: ${{ runner.temp }}/f63c-heldout-once/
+          retention-days: 90
+          if-no-files-found: warn
