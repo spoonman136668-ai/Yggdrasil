@@ -1,0 +1,62 @@
+name: Yggdrasil F55 full in-sample FIT-only causal policy screen
+on:
+  push:
+    branches: [research/y-f55-causal-online-queryblind-memory-20261015-r1]
+permissions:
+  contents: read
+jobs:
+  fit-only-sourcing-advisory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Frozen source identity from previously successful full FIT regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor da4fd978b84efc831353372c6a02877a9ebf2ce0 HEAD
+          test "$(git hash-object research/foundational/20261015-y-f55/prereg-candidate.json)" = eb815347e331ec34dc8247ff28d99bbcd13e621a
+          test "$(git hash-object research/foundational/20261015-y-f55/source_pilot.py)" = f8e6cb5b36b037b17848d6d68abab37a0d20911a
+          test "$(git hash-object research/foundational/20261015-y-f55/audit_result.py)" = 8cf20d12e400724374417a9482748115f0e7e9bf
+          test "$(git hash-object research/foundational/20261015-y-f55/fit_only_screen.py)" = d086a709cb88adc9615c7eab6c14cf21d5dc3bfc
+          python3 -B -m py_compile research/foundational/20261015-y-f55/fit_only_screen.py
+          echo "F55_FROZEN_SOURCE_AND_REPLAY_HASH=PASS"
+      - name: Full registered FIT cohort and independently replayed causal memory, NO DIAG
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/y55-fit-screen"
+          mkdir -p "$root"
+          python3 -B research/foundational/20261015-y-f55/fit_only_screen.py --fit-only > "$root/screen.json"
+          python3 -B - "$root/screen.json" <<'PY'
+          import json,sys
+          d=json.load(open(sys.argv[1]))
+          assert d["schema"]=="yggdrasil.f55.full-fit-online-causal-screen.v1"
+          assert d["fit_cases"]==64 and len(d["rows"])==64
+          assert d["diagnostic_source_UNTOUCHED"]==[611100,611116]
+          assert d["primary_original_NOT_RESERVED"]==[612000,612016]
+          assert d["source_independent_F3"] is False
+          assert d["accepted_ref_mutation"] is False
+          assert d["paid_api_calls"]==0
+          print("Y_F55_FULL_FIT_CAUSAL_REPLAY_ONLY=PASS")
+          print("Candidate FIT hits:",d["score_by_arm"]["learned_global_relational_memory"])
+          print("Best fixed/control FIT hits:",max(
+            v for k,v in d["score_by_arm"].items()
+            if k not in ("learned_global_relational_memory","private_future_query_oracle_unfair")))
+          print("Costly public offline reference FIT hits:",d["public_offline_constructive_reference_correct"])
+          print("Advisory:",d["initial_fit_go_nogo_advisory"])
+          PY
+          printf '%s\n' "$GITHUB_SHA" > "$root/SOURCE_SHA"
+          (cd "$root" && sha256sum screen.json > manifest.sha256)
+          echo Y_F55_FIT_ONLY_NO_DIAG_OR_F3=PASS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Y-F55-full-fit-public-causal-replay-NOT-diagnostic
+          path: ${{ runner.temp }}/y55-fit-screen/
+          retention-days: 45
+          if-no-files-found: error
