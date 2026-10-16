@@ -1,0 +1,41 @@
+name: Yggdrasil F59 frozen-source preflight without prospective FIT use
+on:
+  push:
+    branches:
+      - research/y-f59-deferred-component-state-20261015-r1
+permissions:
+  contents: read
+jobs:
+  frozen-source-preflight:
+    if: "${{ github.event.head_commit.message == 'ci(y-f59): frozen source preflight and one repository regression' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Assert frozen prereg and all source, test and independent audit blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 3661344ba5ca464ee1c455454f5a65a7bd4d28bf HEAD
+          test "$(git hash-object research/foundational/20261015-y-f59/prereg.json)" = ea8ef2c2ef0219c1f6d06ea40ca6380175552498
+          test "$(git hash-object research/foundational/20261015-y-f59/source_feasibility.py)" = 232cf1bca7e2d1df5236ffa85c0a20f13a98a6ae
+          test "$(git hash-object research/foundational/20261015-y-f59/test_preflight.py)" = ee934289213cabb4ff6a3df56f1f7821a7314f60
+          test "$(git hash-object research/foundational/20261015-y-f59/audit_fit.py)" = cfd7440d8c1e2a0a16cae5ac93a04d934b18253a
+          python3 -m json.tool research/foundational/20261015-y-f59/prereg.json >/dev/null
+          python3 -B -m py_compile research/foundational/20261015-y-f59/source_feasibility.py
+          python3 -B -m py_compile research/foundational/20261015-y-f59/audit_fit.py
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f59 -p test_preflight.py -v
+      - name: One complete repository regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -e '.[test]'
+          python3 -m pytest -q tests
+      - name: Publish only source identity, never prospective FIT evidence
+        run: |
+          echo "F59_PRECODE_SOURCE_PREFLIGHT=PASS"
+          echo "FIT_SOURCE_EVALUATION_NOT_EXECUTED=TRUE"
+          echo "DIAGNOSTIC_AND_PRIMARY_ORIGINAL_UNCONSUMED=TRUE"

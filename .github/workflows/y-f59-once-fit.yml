@@ -1,0 +1,63 @@
+name: Yggdrasil F59 one frozen FIT scientific source with independent audit
+on:
+  push:
+    branches:
+      - research/y-f59-deferred-component-state-20261015-r1
+permissions:
+  contents: read
+  actions: read
+jobs:
+  once-only:
+    if: "${{ github.event.head_commit.message == 'science(y-f59): one frozen FIT-only deferred-component experiment' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify frozen source, precode prereg and completed authentic regression before use
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 6ae3bfe11694647509a3c9fdfdc19e9d348a690a HEAD
+          test "$(git hash-object research/foundational/20261015-y-f59/prereg.json)" = ea8ef2c2ef0219c1f6d06ea40ca6380175552498
+          test "$(git hash-object research/foundational/20261015-y-f59/source_feasibility.py)" = 232cf1bca7e2d1df5236ffa85c0a20f13a98a6ae
+          test "$(git hash-object research/foundational/20261015-y-f59/test_preflight.py)" = ee934289213cabb4ff6a3df56f1f7821a7314f60
+          test "$(git hash-object research/foundational/20261015-y-f59/audit_fit.py)" = cfd7440d8c1e2a0a16cae5ac93a04d934b18253a
+          curl --fail --silent --show-error --retry 2 --max-time 20 \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/runs/38829485155 \
+            | jq -e --arg sha 6ae3bfe11694647509a3c9fdfdc19e9d348a690a \
+              '.head_sha==$sha and .run_attempt==1 and .status=="completed" and .conclusion=="success"'
+          python3 -B -m unittest discover -s research/foundational/20261015-y-f59 -p test_preflight.py -v
+      - name: Exactly one FIT-only source, independent source-free all-row audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f59"
+          git rev-parse HEAD > "$RUNNER_TEMP/y-f59/SOURCE_SHA"
+          python3 -B research/foundational/20261015-y-f59/source_feasibility.py --fit-only > "$RUNNER_TEMP/y-f59/result.json"
+          python3 -m json.tool "$RUNNER_TEMP/y-f59/result.json" > /dev/null
+          python3 -B research/foundational/20261015-y-f59/audit_fit.py \
+            "$RUNNER_TEMP/y-f59/result.json" \
+            research/foundational/20261015-y-f59/prereg.json > "$RUNNER_TEMP/y-f59/independent-audit.txt"
+          cat "$RUNNER_TEMP/y-f59/independent-audit.txt"
+          (cd "$RUNNER_TEMP/y-f59" && sha256sum result.json independent-audit.txt > manifest.sha256)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Yggdrasil-F59-once-only-FIT-source-and-audit
+          path: ${{ runner.temp }}/y-f59/
+          retention-days: 90
+          if-no-files-found: error
+      - name: Authority isolation
+        run: |
+          echo "SYNTHETIC_FIT_ONLY=TRUE"
+          echo "HELDOUT_DIAGNOSTIC_AND_PRIMARY_ORIGINAL=UNCONSUMED"
+          echo "NATIVE_576B_WHOLE_RUNTIME=UNVERIFIED"
+          echo "INDEPENDENT_F3=NOT_QUALIFIED"
+          echo "ACCEPTED_REFS_AND_FORGE_CONTROLLERS=UNCHANGED"
