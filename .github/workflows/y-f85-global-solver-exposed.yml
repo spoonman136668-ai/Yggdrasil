@@ -1,0 +1,47 @@
+name: Yggdrasil F85 frozen global reasoning diagnostic
+
+on:
+  push:
+    branches:
+      - research/y-f85-global-constraint-solver-exposed-20261016-r1
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  f85-exposed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify exact frozen hypothesis and immutable parents
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 90c8a7f9b399e21fdf5a3a06f488ae3de8cb72f4 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f85/prereg.json)" = 3e030beba828999c8de44abd3c324ec519807a27
+          test "$(git hash-object research/foundational/20261016-y-f84/forensic_reachability.py)" = 0465a0612640520a695a98a0d3fd7b255174142e
+          test "$(git hash-object research/foundational/20261016-y-f84/native_legal_action_witness.py)" = 72e5c58be0c3df0b7972bb77a1284753d62fbf03
+          test "$(git hash-object research/foundational/20261016-y-f83/pairwise_learner.py)" = 68138887c8bc42a17f8866df96cbede8e2594325
+      - name: Offline solver unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f85 -p 'test_global_solver.py'
+      - name: Frozen exact-memory comparative evaluation on previously exposed synthetic cases
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f85/global_solver.py --already-exposed-synthetic-only > "$RUNNER_TEMP/f85-exposed-only.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f85-exposed-only.json"))); assert r["stage"]=="EXPOSED_F83_GUARD_ONLY"; assert r["cases"]==32 and r["crosslink_cases"]==8; assert r["by_model"]["f60"]["legacy_correct"]==19 and r["by_model"]["f83"]["legacy_correct"]==10 and r["by_model"]["d4"]["legacy_correct"]==5; assert r["F60_F83_memory_bit_identical"] and r["no_future_question_or_answer_used_by_solver"]; assert r["new_source_cases_used"] is False and r["FIT_used"] is False and r["DIAG_used"] is False and r["ORIGINAL_used"] is False and r["scientific_qualified"] is False and r["optimizer_promotion"] is False; print(json.dumps({k:r[k] for k in ("status","cases","by_model","by_arrival_regime","max_record_state_pairs_examined","max_transient_dp_state_cells")},sort_keys=True))'
+      - name: Confirm no source tree mutation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
