@@ -1,0 +1,99 @@
+{
+  "schema": "yggdrasil.f92.dense-temporal-path-credit.prereg.v1",
+  "stage": "FROZEN_PRECODE_SYNTHETIC_TRAIN_WITH_SEALED_VALIDATION_GUARD",
+  "parent": {
+    "f91_draft_head": "bc0cbfb01e07293a2f6a56f3805e75e7d68109d2",
+    "f91_method_blob": "a3e9ccdbd623d996d56355bb6b9e838fb59fc3b2",
+    "f90_method_blob": "0b689d66135a246987b20e189b9724b1c0715c25",
+    "f85_solver_blob": "e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3",
+    "f62_native_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "f76_source_blob": "5b8928b0399ce9f869854beadeab04b29c8703a5"
+  },
+  "problem": "F91 learned no beneficial labels from 768 train-only terminal-action counterfactuals; its safety gate remained inactive. Need a denser scientifically bounded temporal reward that may identify useful public relationship retention before full terminal success is attained.",
+  "hypothesis": "Training on changes in task-chain role-prefix reachability after a fixed native F60 suffix, using TRAIN-only question and future event information, can produce a discriminating query-blind action advantage model with less sparse positive credit while protecting F60 on unseen four-step questions.",
+  "algorithm": {
+    "teacher": "For each training-only public case at prefix indices 11,23,35,47,59,71, take exact native F60 baseline afterstate and up to 8 F62-legal nonbaseline afterstates in source enumeration order. Complete the same future public suffix under unchanged F60 for both. Compute maximum legal role-step prefix reachability under frozen PACK codec from the TRAIN question start and ordered operators; exact complete F85 terminal accuracy additionally scores +2 for right answer. Reward = reachable_prefix_steps / question_steps + 2 * indicator(frozen F85 returns true TRAIN answer). Advantage = alternative_reward - baseline_reward; label beneficial when >0, harmful when <0, else neutral. Distinguish these surrogate-reward labels from independently correct terminal outcomes.",
+    "online": "Independent of future events, TRAIN question/answer, source regime or seed. Use source-native F62.actions, frozen F60 fallback, 12 public-only feature values: 1 intercept plus 11 F62._features(after)-features(F60 baseline) differences. Frozen dual logistic heads for beneficial and harmful labels, 4 epochs, step .08, shrink .995, benefit class 4x, harm class 6x, signed int8 clamp [-96,96]. Pick exact source-native alternate only if predicted benefit >=0.68, harm <=0.18, score margin >=0.50, index>=24, at most one intervention/72 events, and candidate retains >=min(10,len(baseline)-1) native F60 records. F85 reasoning unchanged.",
+    "persistent_budget": "144 bytes (12 native 12-byte records), plus separately counted 24 parameter bytes and 1-bit used latch. No hidden state/future or additional controller.",
+    "training": "32 cases x family -2/-1, 6 fixed prefixes, up to 8 legal alternatives each. No random fitting, threshold search, guard lookups, or selected checkpoints after experiment.",
+    "same_frozen_controls": "F60 native, F83 learned, F90 temporal, F91 conservative, all on exact same F85 query-time global solver. Exact Git blob and public-prefix auditor attestation."
+  },
+  "cohorts": {
+    "train": {
+      "start": -5901,
+      "stop_exclusive": -5917,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "cases": 32
+    },
+    "validation": {
+      "start": -5921,
+      "stop_exclusive": -5929,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "cases": 16
+    },
+    "guard": {
+      "start": -5941,
+      "stop_exclusive": -5957,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "cases": 32,
+      "six_step": 8
+    },
+    "retired": [
+      [
+        -5701,
+        -5717
+      ],
+      [
+        -5721,
+        -5729
+      ],
+      [
+        -5741,
+        -5757
+      ],
+      [
+        -5801,
+        -5817
+      ],
+      [
+        -5821,
+        -5829
+      ],
+      [
+        -5841,
+        -5857
+      ]
+    ],
+    "source": "F76 frozen negative synthetic two-arrival-regime source only; protected original/FIT/DIAG/F3 inaccessible"
+  },
+  "evidence_steps": [
+    "P0 prereg code and cohorts before training",
+    "P1 unit/regression qualification and TRAIN only. Emit deterministic 24-int8 weights plus label counts without touching validation/guard.",
+    "P2 separately commit immutable trained weights, hash and training job identity before validation/guard.",
+    "P3 one GitHub-hosted VALIDATION and one GUARD evaluation on disjoint new synthetic seeds. Never refit or change decision code after seeing them.",
+    "P4 publish verbatim result, scientifically accept only if zero F60-correct regressions and >=1 F60-failed six-step rescue on guard, otherwise negative."
+  ],
+  "authority": {
+    "FIT": false,
+    "DIAG": false,
+    "ORIGINAL": false,
+    "F3": false,
+    "independent_scientific_acceptance": false,
+    "controller_mutation": false,
+    "optimizer_promotion": false,
+    "merge": false,
+    "Codex": false
+  }
+}
