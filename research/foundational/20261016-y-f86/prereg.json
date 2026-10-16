@@ -1,0 +1,105 @@
+{
+  "schema": "yggdrasil.f86.queryblind-structural-retention.synthetic-prereg.v1",
+  "stage": "FROZEN_PRECODE_NEGATIVE_SYNTHETIC_ONLY",
+  "parent": {
+    "exact_F85_head_sha": "f476fbb0c1ee9d8dd3e043fb332933c4d4279f24",
+    "F85_method_blob": "e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3",
+    "F85_prereg_blob": "3e030beba828999c8de44abd3c324ec519807a27",
+    "F83_frozen_source_blob": "68138887c8bc42a17f8866df96cbede8e2594325",
+    "F76_source_blob": "5b8928b0399ce9f869854beadeab04b29c8703a5",
+    "F62_native_source_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712"
+  },
+  "question": "Can a causal, query-blind, graph-structural retention policy preserve useful directed role relationships under the fixed 144-byte limit such that the frozen F85 global solver improves six-step and four-step reasoning without degrading F60?",
+  "hypothesis": "A fixed native legal-action selector that lexicographically prioritizes lossless edge mass, squared chunk length, joinable endpoints and recent public-event incorporation will retain more useful compositional paths than frozen F60/F83, without future-question leakage.",
+  "method": {
+    "online_inputs": "Only prior persistent 12-byte records, current three-field public edge, current public arrival index. No future events, query start, role-sequence, answer, private labels or protected cohorts.",
+    "legal_actions": "Exactly the unmodified native F62.actions(before,event,index,PACK); choose exactly one after state without inventing raw edges or records.",
+    "fixed_objective_order": [
+      "Maximize sum of encoded role steps over retained records; no duplicates counted as unique graph proof.",
+      "Maximize sum of squared record lengths to favor source-native lossless merges.",
+      "Maximize number of unordered pairs of retained record endpoints sharing a node, as a public connectivity proxy.",
+      "Maximize count of composed records of length>=2.",
+      "Prefer a changed memory state over bit-identical rejected arrival.",
+      "Prefer later retained chunk lengths lexicographically, never numeric node values.",
+      "Tie break by original frozen native action enumeration order."
+    ],
+    "parameter_training": "None. No fitting, weight selection, population evolution, new hyperparameters or guard-driven rule changes.",
+    "persistent_budget": {
+      "max_records": 12,
+      "per_record_bytes": 12,
+      "max_bytes": 144,
+      "max_chunk_codes": 6
+    },
+    "solver": "Unchanged F85 global_solver.solve_global source, identical query-time solver for F60, F83 and F86.",
+    "causality": "Independently audit every one of 72 prefixes through frozen 20261015-y-f62/audit_public.py.",
+    "case_control_labels": "Question and answer held outside online(). Access only after 72 events, solely for independent evaluation of frozen arms."
+  },
+  "cohorts": {
+    "source": "Frozen F76 two-arrival source generator; negative synthetic seeds only, not original registered cohorts",
+    "dev_reserved_but_unused": {
+      "start": -5201,
+      "stop_exclusive": -5217,
+      "step": -1
+    },
+    "guard": {
+      "start": -5221,
+      "stop_exclusive": -5237,
+      "step": -1
+    },
+    "families": [
+      -2,
+      -1
+    ],
+    "guard_cases": 32,
+    "arrival_regimes": [
+      "original",
+      "local_rotate4"
+    ],
+    "prohibited_exposed_prior": [
+      "F83 negative synthetic guard -5121..-5136"
+    ],
+    "protected_positive_registered_forbidden": true
+  },
+  "arms": [
+    "F60 exact unchanged native 144-byte fixed online memory + F85 global",
+    "F83 frozen 24-int8 source-weighted 144-byte policy + F85 global",
+    "F86 fixed no-train query-blind structural native-action selection + F85 global",
+    "F86 identical retained state + original PACK.solve for reasoning attribution"
+  ],
+  "metrics": [
+    "guard cases by arrival regime and question type",
+    "F60/F83/F86 correct case counts",
+    "F86 rescued vs F60 and regressed from F60",
+    "F86 rescued vs F83 and regressed from F83",
+    "six-step correct and four-step correct by arm",
+    "unmodified F60 and F83 parity with exact online functions",
+    "independent public-prefix audit for all 72 prefixes of all causal arms",
+    "max persistent bytes and F85 ephemeral scratch",
+    "exact file/source identities and zero future/question/answer access inside online()"
+  ],
+  "prequalification": {
+    "source_validity": "All 32 guard questions independently unique in full public graph; identity, prefix, pack and native action validations pass. No query exposed before terminal evaluation.",
+    "frozen_controller_parity": "Frozen F60 and F83 compute matching their exact source for all 32, and previously exposed guard stays unaccessed.",
+    "mechanism_non_degradation": "F86 vs F60 accuracy must not regress on any case, independently in both arrival regimes, and separately in 4-step and 6-step groups.",
+    "minimum_useful_rescue": "At least one six-step case originally failed by F60 must be solved with F86/F85 and no regression vs frozen F60.",
+    "no_posthoc_tuning": "Any valid negative result remains negative. Changes to method after guard create a distinct preregistered next lineage, never amend F86 observations.",
+    "classification": {
+      "synthetic_mechanism_supported": "Source and action audits pass, exact F60 non-degradation all groups and >=1 six-step rescue.",
+      "synthetic_negative": "Source and action audits pass, but F86 either fails to rescue any six-step task or regresses on any F60 previously correct case.",
+      "invalid": "Any source/prereg/data leakage, controller drift, prefix audit, payload overflow, illegitimate native action, or public-answer uniqueness failure."
+    }
+  },
+  "authority": {
+    "independent_scientific_acceptance": false,
+    "FIT": false,
+    "FIT_VALIDATION": false,
+    "DIAG": false,
+    "ORIGINAL": false,
+    "independent_F3": false,
+    "optimizer_promotion": false,
+    "controller_dispatch": false,
+    "ckb_plane_mutation": false,
+    "cloudflare_mutation": false,
+    "Codex": false
+  }
+}
