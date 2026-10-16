@@ -1,0 +1,106 @@
+{
+  "schema": "yggdrasil.f91.conservative-dual-head.synthetic-observation.v1",
+  "stage": "F91_VALID_TECHNICAL_QUALIFICATION_NEGATIVE_SCIENTIFIC_MECHANISM_INACTIVE",
+  "provenance": {
+    "F90_parent_head": "874028567bd40a1e823658f27a26679ef8b51085",
+    "prereg_blob": "7a680c47029777f5d27b924d75c750bb348c06fc",
+    "frozen_controller_method_blob": "a3e9ccdbd623d996d56355bb6b9e838fb59fc3b2",
+    "frozen_weights_blob": "4382ec2c4eeda870b575ec95b000286feee53449",
+    "frozen_weight_sha256": "786d3f37c7cfcbfcb5bbe072fc41246dd55450d92e33f084873611c94847628b",
+    "train_run_id": 38973865178,
+    "train_job_id": 117218462533,
+    "train_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38973865178",
+    "holdout_workflow_source_commit": "33890685b07a800738194163fc303712787abda3",
+    "holdout_run_id": 38974062735,
+    "holdout_job_id": 117219140975,
+    "holdout_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/38974062735"
+  },
+  "training": {
+    "cases": 32,
+    "examples": 768,
+    "beneficial": 0,
+    "harmful": 36,
+    "neutral": 732,
+    "frozen_benefit_weights": [
+      -93,
+      2,
+      5,
+      -5,
+      3,
+      0,
+      8,
+      4,
+      0,
+      7,
+      0,
+      0
+    ],
+    "frozen_harm_weights": [
+      -59,
+      3,
+      8,
+      -8,
+      1,
+      0,
+      5,
+      -4,
+      0,
+      -2,
+      0,
+      0
+    ],
+    "model_extra_parameter_bytes": 24,
+    "online_single_intervention_latch_bits": 1
+  },
+  "evaluation": {
+    "validation": {
+      "cases": 16,
+      "scores": {
+        "F60": 11,
+        "F83": 8,
+        "F90": 0,
+        "F91": 11
+      },
+      "F60_correct_regressions": 0,
+      "six_step_rescues": 0,
+      "learned_interventions": 0,
+      "classification": "synthetic_negative_inactive"
+    },
+    "guard": {
+      "cases": 32,
+      "six_step_cases": 8,
+      "scores": {
+        "F60": 19,
+        "F83": 13,
+        "F90": 2,
+        "F91": 19
+      },
+      "F60_correct_regressions": 0,
+      "six_step_rescues": 0,
+      "learned_interventions": 0,
+      "classification": "synthetic_negative_inactive"
+    },
+    "F91_unit_tests": 9,
+    "F90_regression_tests": 9,
+    "model_frozen_before_validation_guard": true,
+    "all_72_causal_prefix_audits_passed": true,
+    "native_F62_actions_only": true,
+    "max_persistent_memory_bytes": 144,
+    "no_fit_or_guard_label_into_online": true,
+    "F91_memory_identical_to_F60_for_each_guard_case": true
+  },
+  "conclusion": "The conservative query-blind dual-head learner is technically valid but inactive on all 48 held-out synthetic cases, matching exact frozen F60 and protecting known four-step reasoning at the expense of no new six-step correct outcomes. F91 is not a scientific improvement, not independently accepted for protected research first-use, and not eligible for optimizer promotion.",
+  "next_direction": "New F92 hypothesis must solve sparse positive temporal-credit availability under genuine source-identity separation. Consider public-only delayed-path candidate generation and outcome-level conservative offline policy improvement using a predeclared new TRAIN+VALIDATION+GUARD, rather than lowering F91 thresholds on exposed results. Preserve 144-byte native memory and audit true causal policy, protected science still gated.",
+  "authority": {
+    "scientific_accepted": false,
+    "original_used": false,
+    "FIT_used": false,
+    "DIAG_used": false,
+    "F3_used": false,
+    "controller_mutation": false,
+    "accepted_ref_mutation": false,
+    "merge": false,
+    "optimizer_promotion": false,
+    "Codex": false
+  }
+}
