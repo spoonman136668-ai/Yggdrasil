@@ -155,6 +155,10 @@ def fit_report():
             online=online_fixed(public)
             offline=offline_public_witness(public)
             rows.append(dict(seed=seed,family=family,regime=regime,
+               public_events=[list(e[:3]) for e in public],
+               question=dict(start=q["start"],ops=[list(op) for op in q["ops"]],answer=q["answer"]),
+               online_receipts=[codec.pack(*rec).hex() for rec in online],
+               offline_receipts=[codec.pack(*rec).hex() for rec in offline],
                online_correct=int(codec.solve(online,q)==q["answer"]),
                offline_correct=int(codec.solve(offline,q)==q["answer"]),
                online_records=len(online),online_bytes=12*len(online),
