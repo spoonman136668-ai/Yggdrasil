@@ -1,0 +1,42 @@
+name: Yggdrasil F80 cross-arrival public feature scientific diagnostic
+on:
+  push:
+    branches: [research/y-f80-cross-order-role-feature-audit-20261016-r1]
+permissions:
+  contents: read
+jobs:
+  immutable-cross-arrival-source-diagnostic:
+    if: "${{ github.event.head_commit.message == 'ci(y-f80): independently audit cross-arrival public feature collisions' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pin original learner, frozen source and predeclared diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 5fc696d9f23ea13a5c6fca5006a7c13b79beb10d HEAD
+          test "$(git hash-object research/foundational/20261016-y-f80/prereg.json)" = 1d3681d646ca6352366d392079f1d8ce4bf17eee
+          test "$(git hash-object research/foundational/20261016-y-f80/feature_alias_audit.py)" = 03d7116480f30d811ca9ec97a46ca1909adfc9ae
+          test "$(git hash-object research/foundational/20261016-y-f79/rare_interventions.py)" = 4bba6e34d56ef96aa81515032988f9c5127fe35f
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+          test "$(git hash-object research/foundational/20261015-y-f62/audit_public.py)" = 383fff0bdd8c8b48fde9538d4e4d768db1c1896f
+      - name: Independently compare F71/F79 frozen feature collisions by arrival regime
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/y-f80-cross-order"
+          python3 -B research/foundational/20261016-y-f80/feature_alias_audit.py --synthetic-only > "$RUNNER_TEMP/y-f80-cross-order/diagnostic.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/y-f80-cross-order/diagnostic.json" >/dev/null
+          python3 -B -c 'import os,json;d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"y-f80-cross-order/diagnostic.json")));print("F80_PER_ARRIVAL",d["two_regimes"]);print("F80_CROSS_ORDER_ALIAS",d["cross_arrival_opposite_credit_feature_aliases"]);print("F80_NODE_ID_INVARIANCE",d["verified_public_node_relabeling_invariance_checks"]);assert d["cases"]==32 and d["every_F60_and_rescued_full_72_prefix_audit"] and not d["FIT_TRAIN_used"] and not d["model_trained"]'
+          sha256sum "$RUNNER_TEMP/y-f80-cross-order/diagnostic.json" > "$RUNNER_TEMP/y-f80-cross-order/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/y-f80-cross-order/head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f80-cross-order-public-feature-aliasing
+          path: ${{ runner.temp }}/y-f80-cross-order/
+          retention-days: 90
