@@ -267,40 +267,46 @@ def _finish_fixed(memory,public_suffix,packing):
         memory=_f60_step(memory,event,packing)
     return memory
 
-def train_action_advantage(packing):
-    """FIT-TRAIN only; offline future-question supervision, never online leakage.
+def counterfactual_labels(public,question,packing):
+    '''Offline evaluator only: sample alternate actions on ONE training case.
 
-    Counterfactual labels compare alternative actions at a fixed public prefix
-    using the exact same future public suffix under a frozen F60 continuation.
-    Only training questions label decisions. Does NOT touch heldout FIT or DIAG.
-    """
+    The future question and future public events are used only to generate
+    fitting labels. Neither may be supplied to actions()/learned_online().
+    A synthetic source can exercise this routine without spending FIT.
+    '''
+    assert len(public)==EVENTS and all(len(e)==3 for e in public)
+    mem=()
+    examples=[]
+    counts={-1:0,0:0,1:0}
+    for index,event in enumerate(public):
+        candidates=actions(mem,event,index,packing)
+        if index in (11,23,35,47,59,71):
+            baseline=_f60_step(mem,event,packing)
+            baseline_terminal=_finish_fixed(baseline,public[index+1:],packing)
+            base=int(packing.solve(baseline_terminal,question)==question['answer'])
+            baselines=[feat for _action,_old,_drop,state,feat
+                       in candidates if state==baseline]
+            assert len(baselines)==1,'F60_BASELINE_NOT_IN_CAUSAL_ACTION_SPACE'
+            baseline_features=baselines[0]
+            for _action,_old,_drop,state,feat in candidates:
+                terminal=_finish_fixed(state,public[index+1:],packing)
+                reward=int(packing.solve(terminal,question)==question['answer'])
+                delta=reward-base
+                counts[delta]+=1
+                examples.append((tuple(a-b for a,b in zip(feat,baseline_features)),delta))
+        mem=_f60_step(mem,event,packing)
+    assert sum(counts.values())==len(examples) and examples
+    return tuple(examples),counts
+
+def train_action_advantage(packing):
+    '''Frozen FIT-TRAIN only; heldout validation, DIAG and originals untouched.'''
     examples=[]
     for seed in TRAIN:
         for family in FAMILIES:
-            tagged,q,_paths,_regime=source(seed,family)
+            tagged,question,_paths,_regime=source(seed,family)
             public=tuple(event[:3] for event in tagged)
-            mem=()
-            for index,event in enumerate(public):
-                candidates=actions(mem,event,index,packing)
-                if index in (11,23,35,47,59,71):
-                    # Baseline action is the frozen F60 online step.
-                    baseline=_f60_step(mem,event,packing)
-                    baseline_terminal=_finish_fixed(baseline,public[index+1:],packing)
-                    base=int(packing.solve(baseline_terminal,q)==q["answer"])
-                    baselines=[feature for _act,_old,_drop,state,feature
-                               in candidates if state==baseline]
-                    assert len(baselines)==1, 'F60_BASELINE_NOT_IN_CAUSAL_ACTION_SPACE'
-                    base_features=baselines[0]
-                    for action,old,drop,state,feat in candidates:
-                        terminal=_finish_fixed(state,public[index+1:],packing)
-                        reward=int(packing.solve(terminal,q)==q["answer"])
-                        delta=reward-base
-                        # Include zero-advantage alternatives, not only
-                        # observed winners/losers. Excluding zeros would
-                        # introduce conditional-selection bias into training.
-                        examples.append((tuple(f-b for f,b in
-                                               zip(feat,base_features)),delta))
-                mem=_f60_step(mem,event,packing)
+            labeled,_counts=counterfactual_labels(public,question,packing)
+            examples.extend(labeled)
     weights=[0.0]*PARAMS
     for _epoch in range(3):
         for features,delta in examples:
