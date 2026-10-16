@@ -1,0 +1,39 @@
+name: Yggdrasil F66B immutable label forensics
+on:
+  push:
+    branches:
+      - research/y-f66b-public-attachment-tradeoff-precode-20261016-r1
+permissions:
+  contents: read
+jobs:
+  forensic:
+    if: "${{ github.event.head_commit.message == 'ci(y-f66b): audit immutable synthetic label distribution' && github.run_attempt == 1 }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify exact frozen parent method
+        run: |
+          set -euo pipefail
+          test "$(git hash-object research/foundational/20261016-y-f66b/prereg.json)" = 551644239204be97cdb5944b7108d9ecca82c709
+          test "$(git hash-object research/foundational/20261016-y-f66b/attachment_teacher.py)" = 6ec8d3352be9b12f42a821bfb3781ea1570de63a
+          test "$(git hash-object research/foundational/20261016-y-f66b/forensic_labels.py)" = aace74fcdca17aa5ec5c8e14dd21b92720efa967
+      - name: Report candidate label counts and preserve synthetic receipts
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f66b-forensics"
+          python3 -B research/foundational/20261016-y-f66b/forensic_labels.py > "$RUNNER_TEMP/f66b-forensics/labels.json"
+          python3 -B -m json.tool "$RUNNER_TEMP/f66b-forensics/labels.json" >/dev/null
+          python3 -B -c 'import json,os; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f66b-forensics/labels.json")));print("F66B_FROZEN_LABEL_COUNTS",d["totals"]);print("F66B_TEACHER_BALANCED",d["balanced"]);assert not d["registered_fit_consumed"] and not d["heldout_consumed"]'
+          sha256sum "$RUNNER_TEMP/f66b-forensics/labels.json" > "$RUNNER_TEMP/f66b-forensics/sha256.txt"
+          echo "$GITHUB_SHA" > "$RUNNER_TEMP/f66b-forensics/head.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: y-f66b-immutable-label-forensics
+          path: ${{ runner.temp }}/f66b-forensics/
+          retention-days: 90
+          if-no-files-found: warn
