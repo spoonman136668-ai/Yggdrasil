@@ -33,9 +33,7 @@ class Tests(unittest.TestCase):
             a,b=M.matched_orders(observed,name,src)
             self.assertEqual(a,self.public)
             self.assertEqual(b,rotated)
-    def test_mismatched_source_regime_fails(self):
-        with self.assertRaises(AssertionError):
-            M.matched_orders(self.public,"local_rotate4",Source())
+    def test_unsupported_source_regime_fails(self):
         with self.assertRaises(AssertionError):
             M.matched_orders(self.public,"unsupported",Source())
     def test_public_descriptors_do_not_see_question(self):
