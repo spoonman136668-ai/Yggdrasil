@@ -1,0 +1,62 @@
+{
+  "schema": "yggdrasil.f67.future-public-durable-teacher.prereg-addendum.v1",
+  "stage": "PRECODE_TEACHER_NOT_YET_FIT",
+  "source_qualified_run": 38892923056,
+  "source_qualified_head": "df8554b1891825bdeda0765706de99955baf77ff",
+  "fixed_learning_signal": "Offline future-public continuation reward for legally constrained durable memory states; measured using only prospective TRAIN public events (no future question or answer); online sees only past public edge memory and trained weights.",
+  "teacher_coefficients": {
+    "role_path_squared_length": 0.65,
+    "stable_long_record_count": 0.45,
+    "future_public_endpoint_incidence": 0.12,
+    "frontier_record_cost": -0.3,
+    "role_code_diversity": 0.15
+  },
+  "teacher_target": "best legal causal next memory among all short-frontier early eviction and merge/append/reject actions",
+  "training": {
+    "examples_from_teacher_trajectories_only": true,
+    "epochs": 2,
+    "SGD_step": 0.02,
+    "pairwise_features": "difference of 16 frozen causal after-state features",
+    "target": "clamp(8*(best_future_public_utility - other_future_public_utility),0,1)",
+    "model_quantization": "round(32*weight) clamped signed-int8",
+    "deterministic_teacher_tiebreak": true
+  },
+  "synthetic_train": {
+    "seeds": [
+      -2808,
+      -2801
+    ],
+    "families": [
+      -2,
+      -1
+    ],
+    "note": "unregistered negative seeds inclusive"
+  },
+  "synthetic_guard": {
+    "seeds": [
+      -2828,
+      -2821
+    ],
+    "families": [
+      -2,
+      -1
+    ],
+    "note": "fresh unregistered negative seeds inclusive"
+  },
+  "qualifications": {
+    "frozen_source_no_edit": true,
+    "model_chooses_merges_on_guard": true,
+    "model_retains_long_records_on_guard": true,
+    "all_guard_prefixes_publicly_causal": true,
+    "no_protected_fit_used": true,
+    "full_regression_already_qualified": true
+  },
+  "authority": {
+    "F67_fit_train_consumed": false,
+    "F67_validation_consumed": false,
+    "DIAG_consumed": false,
+    "original_consumed": false,
+    "F3": false,
+    "policy_promotion": false
+  }
+}
