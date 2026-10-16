@@ -1,0 +1,61 @@
+{
+  "schema": "yggdrasil.f75.mild-arrival-jitter.source-feasibility-prereg.v1",
+  "stage": "FROZEN_PRECODE_SOURCE_ONLY",
+  "scientific_question": "Can a genuinely less brittle public-order source be formed by preregistered mild local perturbations of the unchanged 72-edge public graph while preserving enough F60 source feasibility for a fair prospectively evaluated learning task?",
+  "reason": "F73/F74 extreme reverse/even_odd arrival orders reduce the exact F60 fair baseline to 0/16 or 0/8, so naive shifted curricula would violate the preexisting 25% fixed-control source-feasibility floor.",
+  "frozen_source_pins": {
+    "original_public_graph_generator_blob": "c04b73306861098eecf55db77b2db486aa918819",
+    "frozen_memory_action_engine_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "independent_causal_auditor_blob": "383fff0bdd8c8b48fde9538d4e4d768db1c1896f"
+  },
+  "synthetic_cases": {
+    "seed_range": [
+      -4001,
+      -4025
+    ],
+    "families": [
+      -2,
+      -1
+    ],
+    "family_assignment": "alternate -2 / -1 in ascending enumerated seed order",
+    "cases": 24,
+    "unregistered": true
+  },
+  "frozen_arrival_transforms": [
+    {
+      "name": "original",
+      "definition": "base 72-edge frozen source order"
+    },
+    {
+      "name": "adjacent_swap",
+      "definition": "for each consecutive pair of source event positions, swap their order; 36 swaps in total"
+    },
+    {
+      "name": "local_rotate4",
+      "definition": "for each consecutive fixed four-public-event block, rotate left by exactly one event"
+    }
+  ],
+  "controls": [
+    "original F60 fixed online (12 records x 12 bytes)",
+    "independent public path/answer uniqueness witness",
+    "72-prefix independent memory causality audit"
+  ],
+  "qualification": {
+    "unique_public_answer_each_transform_required": true,
+    "public_edge_multiset_identical": true,
+    "F60_minimum_accuracy_each_transform": 0.25,
+    "each_transform_has_at_least_one_crosslink_and_one_within_component_case": true,
+    "no_adaptive_transform_tuning_or_resampling": true,
+    "record_feasibility_failures_preserved_as_valid_synthetic_source_negatives": true
+  },
+  "authority": {
+    "registered_FIT_train_used": false,
+    "registered_FIT_validation_used": false,
+    "DIAG_used": false,
+    "original_used": false,
+    "F3": false,
+    "optimizer_promotion": false,
+    "CKB_plane_mutation": false,
+    "paid_API": false
+  }
+}
