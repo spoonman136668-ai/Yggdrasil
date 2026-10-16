@@ -1,0 +1,49 @@
+name: Yggdrasil F94 native single-deviation feasibility on consumed evidence
+on:
+  push:
+    branches:
+      - research/y-f94-native-counterfactual-feasibility-20261016-r1
+    paths:
+      - 'research/foundational/20261016-y-f94/prereg.json'
+      - 'research/foundational/20261016-y-f94/*.py'
+      - '.github/workflows/y-f94-native-feasibility.yml'
+permissions:
+  contents: read
+jobs:
+  frozen-native-feasibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Attest prereg and unchanged F62/F85/F93B identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 12976ab1850f565a6d104bd76918cff435c10451 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f94/prereg.json)" = 5a2d524963aa9a572ad3282c23449bd01a0926d9
+          test "$(git hash-object research/foundational/20261016-y-f93b/role_grammar.py)" = b70af0a91ecc16d8a173b7245b007b646fed8ad6
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+      - name: Noncohort method test and exact frozen F85 regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f94 -p 'test_single_deviation_feasibility.py'
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f85 -p 'test_global_solver.py'
+      - name: Read-only exhaustive native one-deviation retrospect on exposed F93B GUARD
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f94/single_deviation_feasibility.py --consumed-f93b-guard-only > "$RUNNER_TEMP/f94-hindsight.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f94-hindsight.json"))); assert r["stage"]=="EXPOSED_ONLY_HINDSIGHT_NOT_CAUSAL_POLICY" and r["cases"]==32 and r["public_prefixes_examined"]==2304; assert r["all_native_legal_candidates_enumerated"] and r["six_step"]["cases"]==8 and r["four_step"]["cases"]==24 and r["overall"]["total_native_counterfactuals"]>0; assert r["offline_hindsight_uses_future_question_answer"] and not r["valid_online_policy_established"] and not r["scientific_accepted"] and r["no_multi_deviation_claim"] and r["native_action_budget_bytes"]==144 and r["no_model_fitting"]; assert r["no_protected_FIT"] and r["no_DIAG"] and r["no_original"] and r["no_F3"] and not r["no_optimizer_promotion"]==False; print(json.dumps({k:r[k] for k in ("classification","cases","public_prefixes_examined","overall","six_step","four_step","by_arrival_regime")},sort_keys=True))'
+      - name: Keep source and controller unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
