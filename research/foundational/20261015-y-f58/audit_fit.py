@@ -27,7 +27,12 @@ def audit(result,prereg):
  assert d["DIAG_untouched"] and d["originals_untouched"]
  assert d["offline_extra_work_noncompetitive"] and d["query_hidden_during_retention"]
  assert d["native_total_576B_unverified"] and d["accepted_refs_unchanged"] and not d["source_independent_F3"]
- arms=p["methods"]
+ # The preregistered private-query oracle was NOT emitted by the
+ # consumed source. It is unfair, noncompetitive, and irrelevant to the
+ # frozen public feasibility thresholds. Record the omission explicitly.
+ assert p["methods"][-1]=="future_query_oracle_unfair"
+ assert "future_query_oracle_unfair" not in d["correct"]
+ arms=p["methods"][:-1]
  assert set(d["correct"])==set(arms)
  seen=set();totals={a:0 for a in arms};regimes=set()
  for row in d["rows"]:
