@@ -1,0 +1,133 @@
+name: Y-F103 frozen teacher-credit and on-policy state diagnosis
+on:
+  push:
+    branches:
+      - research/y-f103-credit-sparsity-policy-shift-20261017-r1
+    paths:
+      - '.github/workflows/y-f103-credit-support-diagnosis.yml'
+      - 'research/foundational/20261017-y-f103/**'
+permissions:
+  contents: read
+jobs:
+  source-diagnostic:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve exact Git source bytes on Windows before checkout
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.safecrlf true
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify historical F102 parent and F103 first prereg
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $parent='c412b42b5aa5d9222343696bd14e3a76656ce33e'
+          $freeze='e0a82f93b3abe2293649310f68295d631936ba64'
+          if ((git rev-parse HEAD) -cne $env:GITHUB_SHA) { throw 'F103_HEAD_IDENTITY_DRIFT' }
+          git merge-base --is-ancestor $parent HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'F103_F102_PARENT_NOT_ANCESTOR' }
+          git merge-base --is-ancestor $freeze HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'F103_PRECODE_PREREG_NOT_ANCESTOR' }
+          $expected=@(
+            '.github/workflows/y-f103-credit-support-diagnosis.yml',
+            'research/foundational/20261017-y-f103/prereg.json',
+            'research/foundational/20261017-y-f103/diagnose.py',
+            'research/foundational/20261017-y-f103/test_diagnose.py'
+          )
+          $actual=@(git diff --name-only $parent HEAD | Where-Object { $_ -ne '' })
+          if (@(Compare-Object $expected $actual).Count -ne 0) { throw 'F103_UNEXPECTED_PARENT_MUTATION' }
+          if ((git hash-object 'research/foundational/20261017-y-f103/prereg.json') -cne 'dfd19d39dbdd4efc82e73c5bf7948ea508257f72') { throw 'F103_PREREG_SOURCE_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f102/delayed_credit.py') -cne '8686390483c1e367c5cc1016a865a15c926b8376') { throw 'F103_F102_MODEL_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f102/prereg.json') -cne '4f3a8bf295a2f695a039d6b71d87d3bff3939e76') { throw 'F103_F102_PREREG_DRIFT' }
+      - name: Run adversarial original-source TRAIN credit and diagnosis tests
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          python -B -m unittest discover -s research/foundational/20261017-y-f103 -p 'test_diagnose.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'F103_DIAGNOSTIC_TESTS_FAILED' }
+      - name: Evaluate frozen new public diagnostic streams and record negatives
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $dir=Join-Path $env:RUNNER_TEMP 'y-f103-public'
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          $out=Join-Path $dir 'y-f103-credit-diagnostic.json'
+          python -B research/foundational/20261017-y-f103/diagnose.py --source-ref $env:GITHUB_SHA |
+            Out-File -LiteralPath $out -Encoding utf8
+          if ($LASTEXITCODE -ne 0) { throw 'F103_DIAG_EXECUTION_FAILED' }
+          $p=Get-Content -LiteralPath $out -Raw | ConvertFrom-Json
+          if ($p.schema -cne 'yggdrasil.f103.teacher-credit-onpolicy-diagnostic.v1' -or
+              $p.exact_head -cne $env:GITHUB_SHA -or
+              $p.train_source_count -ne 16 -or
+              $p.fresh_F103_diagnostic_episodes -ne 16 -or
+              $p.checkpoint_count -ne 96 -or
+              $p.blocks.Count -ne 2 -or
+              -not $p.F102_GUARD_not_read_for_training_or_selection -or
+              -not $p.reserved_F62_source_sets_untouched -or
+              -not $p.all_future_queries_hidden_from_online_scorer -or
+              $p.native_memory_limit_bytes -ne 144 -or
+              $p.independent_scientific_firstuse -or $p.protected_science_accepted -or
+              $p.optimizer_promoted -or $p.accepted_ref_mutations -ne 0 -or
+              $p.external_CKB_controller_access -or $p.Codex_used -or $p.MindPalace_written) {
+            throw 'F103_SOURCE_AUTHORITY_OR_MISSING_DATA'
+          }
+          if (($p.label_support.neg+$p.label_support.zero+$p.label_support.pos) -ne $p.training_examples) {
+            throw 'F103_CREDIT_LABELS_NOT_ACCOUNTED_FOR'
+          }
+          foreach ($b in $p.blocks) {
+            if ($b.episodes.Count -ne 8) { throw 'F103_MISSING_NEW_SOURCE_EPISODES' }
+            foreach ($ep in $b.episodes) {
+              if ($ep.events -ne 72 -or $ep.checkpoints.Count -ne 6) {
+                throw 'F103_MISSING_ONLINE_TRACE'
+              }
+              foreach ($c in $ep.checkpoints) {
+                if ($c.online_future_question_visible -or
+                    -not $c.offline_future_answer_exclusively_here -or
+                    $c.source_native_memory_bytes -gt 144 -or
+                    $c.native_action_rewards.Count -ne $c.learner_native_actions -or
+                    $c.checkpoint -notin @(11,23,35,47,59,71)) {
+                  throw 'F103_FABRICATED_ATTRIBUTION_OR_FUTURE_LEAK'
+                }
+              }
+            }
+          }
+          Write-Host ('F103_TRAIN_LABEL_NEG_ZERO_POS='+$p.label_support.neg+'/'+$p.label_support.zero+'/'+$p.label_support.pos)
+          Write-Host ('F103_TRAIN_CREDIT_SPARSE_OVER_90PCT='+$p.sparsity_precommitted_threshold_met)
+          Write-Host ('F103_ONPOLICY_SHIFT_PRESENT='+$p.onpolicy_shift_precommitted_threshold_met)
+          Write-Host ('F103_STATE_MISMATCHES='+$p.learned_vs_teacher_state_mismatch_count+'/96')
+          Write-Host ('F103_LOCAL_COUNTERFACTUAL_REGRET='+$p.learner_local_retro_counterfactual_regret_count+'/96')
+          Write-Host ('F103_F60_TERMINAL='+$p.F103_terminal_correct_frozen_F60+'/16')
+          Write-Host ('F103_RAW_TERMINAL='+$p.F103_terminal_correct_frozen_F102_raw+'/16')
+          Write-Host 'F103_DIAGNOSIS_SOURCE_ONLY_NOT_NEW_SCIENTIFIC_ACCEPTANCE=TRUE'
+          $sha=(Get-FileHash -LiteralPath $out -Algorithm SHA256).Hash.ToLowerInvariant()
+          [System.IO.File]::WriteAllText(
+            (Join-Path $dir 'y-f103-credit-diagnostic.sha256'),
+            ("$sha  y-f103-credit-diagnostic.json"+[Environment]::NewLine),
+            [System.Text.UTF8Encoding]::new($false))
+      - name: Verify clean source and no protected or model execution
+        shell: pwsh
+        run: |
+          if (@(git status --porcelain --untracked-files=all).Count -ne 0) { throw 'F103_SOURCE_CHANGED' }
+          Write-Host 'F103_NO_CODEX_CKB_F62_ORIGINALS_OR_EXTERNAL_CONTROLLER=TRUE'
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: y-f103-source-only-credit-diagnosis-${{ matrix.os }}
+          path: |
+            ${{ runner.temp }}/y-f103-public/y-f103-credit-diagnostic.json
+            ${{ runner.temp }}/y-f103-public/y-f103-credit-diagnostic.sha256
+          retention-days: 90
