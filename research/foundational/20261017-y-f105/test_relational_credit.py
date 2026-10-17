@@ -45,7 +45,8 @@ class Tests(unittest.TestCase):
         damaged=m.state_eight((b[0],b[2]),(10,0,20))
         self.assertGreater(full[4],damaged[4])
         self.assertGreater(full[5],damaged[5])
-        self.assertGreater(full[3],damaged[3])
+        self.assertEqual(full[3],damaged[3])  # same vertices, fewer connecting edges
+        self.assertGreater(full[0],damaged[0])
 
     def test_online_api_never_takes_question_or_future_path(self):
         self.assertEqual(tuple(inspect.signature(m.online).parameters),
