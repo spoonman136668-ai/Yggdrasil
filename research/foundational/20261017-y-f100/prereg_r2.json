@@ -1,0 +1,151 @@
+{
+  "schema": "yggdrasil.f100.presto-native-selfreplay.prereg-r2.v1",
+  "stage": "FROZEN_PRECODE_R2_SUPERSEDES_P0_HISTORY_DEPENDENCY_BEFORE_ANY_F100_IMPLEMENTATION_OR_DATA",
+  "date": "2026-10-17",
+  "parent": {
+    "qualified_f99_head": "cd9304a4184692bc837a2bd36a2903d69ea366af",
+    "f99_precode_commit": "7b8e8ec2eb37a3ddded3e12a16860fabf1dec56e",
+    "f99_prereg_blob": "9abcfbde16137d15248e8ce1229660a46b853dc1",
+    "f99_closure_blob": "5de08fe74eb74dd917a7559cc3a8755185aac823",
+    "f99_retrospect_blob": "d8cc29fc535e02dbee2f1b1f92a8d419383106df",
+    "f62_native_actions_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "f85_solver_blob": "e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3",
+    "f96_order_blob": "2cf14367527c9790661af65a84d15cbe11132bc7",
+    "f76_source_blob": "5b8928b0399ce9f869854beadeab04b29c8703a5",
+    "source_only_ci_run": 39014023936,
+    "retired_descriptive_runs": [
+      39014606349,
+      39014699041
+    ]
+  },
+  "f99_interpretation": {
+    "retired_episodes": 192,
+    "six_step_f60_failures_with_hindsight_eligible_rescue": 15,
+    "six_step_f60_failure_episodes_total": 48,
+    "hindsight_rescue_actions": 18,
+    "closure_eligible_harm_actions_in_f60_correct_four_step": 291,
+    "distinction": "Hindsight-selected rescues are NOT achieved by a query-blind online policy. Never use F99 retrospective candidate outcomes, per-case labels, timing, graph identifiers or ranking for F100 training, tuning, or source selection."
+  },
+  "scientific_question": "Can exact 1..4-hop signed-path observational equality under current action and no-history F60 replay of currently retained native singleton edges permit online six-hop rescues without four-hop regressions at identical 144B native memory?",
+  "mechanistic_hypothesis": {
+    "name": "PRESTO-R2: native-memory-derived self-replay + bounded observational equivalence",
+    "contrast": "F99 was inclusion-only. F100R2 demands equality of every signed <=4-hop endpoint path in current memory and after deterministic replay of *already retained* singleton native records; unlike initial F100 P0, it never requests a separate public event history buffer.",
+    "guarantees": "No guarantee of future suffix behavior, reasoning accuracy or F85 answer preservation; all original prospective nondegradation gates are mandatory.",
+    "not_a_learned_mechanism": "This P1 deterministic causal mechanism is not a trained model. A future learned selector requires separate prereg, independent training and admission; do not call F100 learned RSI."
+  },
+  "frozen_online_policy": {
+    "persistent_native_memory_bytes": 144,
+    "native_records_max": 12,
+    "bytes_per_record": 12,
+    "extra_persistent_policy_parameters": 0,
+    "selection_latch_bits": 1,
+    "max_native_deviations": 1,
+    "deviation_positions_inclusive": [
+      0,
+      47
+    ],
+    "source_events_per_episode": 72,
+    "past_replay_window_events": 0,
+    "causal_visible_inputs": [
+      "current_public_event",
+      "previous_native_12x12B_memory",
+      "current_index",
+      "one_bit_used_deviation_latch"
+    ],
+    "forbidden_inputs": [
+      "eventual_task_start",
+      "eventual_role_query",
+      "true_answer",
+      "future_public_event",
+      "past_public_event_history_not_in_native_memory",
+      "source_seed",
+      "family_label",
+      "arrival_order_treatment",
+      "historical_F99_outcome",
+      "cohort_split",
+      "hindsight_rescue_label"
+    ],
+    "action_set": "Exact unchanged F62.actions(memory,event,index,codec); reject any action not source native. Exact F60._f60_step baseline present once.",
+    "eligibility": {
+      "short_signature_bounds_inclusive": [
+        1,
+        4
+      ],
+      "short_signature_rule": "Current F60 and alternative native afterstates MUST have identical SETS of (start_endpoint, signed ordered role tuple, end_endpoint) for lengths 1..4. Equality, not subset. No new four-hop ambiguity or missing four-hop path in current state.",
+      "past_replay_rule": "Derive up to 11 deterministic public event triples ONLY from baseline afterstate singleton native records (endpoint u,v, one signed code c). If c even, event=(u,c//2,v); if odd, event=(v,c//2,u). Unique triples sorted lexicographically; replay sequence is [CURRENT EVENT] + first 11 sorted singleton-derived events excluding current. Replay each sequentially from baseline and candidate current afterstates using exact F60._f60_step; require equality of all <=4-hop signed endpoint-path sets after EVERY replay step. No raw past source event history retained or accessed. Every replay input is encoded by current event or native memory already counted in 144B.",
+      "long_gain": "Require candidate adds >=1 distinct 5-or-6-hop signature compared with its exact current baseline, before replay. Reject if no gain.",
+      "native_budget": "Both actual action afterstate and all counterfactual replay states validated with unchanged F62._valid_memory and native codec; <=12 x 12B; resource caps fail closed.",
+      "closure_resource_cap": 250000
+    },
+    "tie_break": "Among eligible source-native afterstates, maximize additional 5/6-hop signatures, then number of F60 records shared, then lowest native enumeration index. No model or hindsight scores.",
+    "replay_is_virtual": "One current public event plus <=11 events reconstructed from already retained native singleton records; this scratch is ephemeral and derived strictly from <=144 native memory. Persist only chosen native memory and a separately counted single latch bit, not raw prefix history, ring buffer or external cache.",
+    "self_replay_native_singleton_event_max": 12
+  },
+  "source_custody": {
+    "phase": "DESIGN_ONLY_NO_SOURCE_BIRTH_OR_FIRST_USE_AUTHORIZED",
+    "fresh_source_era": "Only sources born and independently witnessed under currently authorized CKB-plane prospective source custody AFTER this prereg, with full content-addressed origin chain; never treat seed arithmetic as proof of freshness.",
+    "separate_cohorts": [
+      "TRAIN_SOURCE_BIRTH_PENDING",
+      "VALIDATION_SOURCE_BIRTH_PENDING",
+      "GUARD_SOURCE_BIRTH_PENDING"
+    ],
+    "same_graph_rule": "Both original and rotate4 observation treatments of one source graph belong to the same split and share one identity. They cannot be counted as independent graphs.",
+    "task_diversity": "Both 4 and 6 signed role steps; disjoint graph topology and role-binding compositions, arrival-order perturbation, shortcut and duplicated-endpoint ambiguity controls. Do not select sources after evaluating outcomes.",
+    "training": "No training in frozen deterministic P1. If a learned ranking is proposed later, separately freeze training objective, weights, parameter budget, and disjoint source identity before touching VALIDATION or GUARD.",
+    "exclude": "All F93B/F94, F96, F98 F99-retired source graph identities and all prior exposed cohorts, plus protected FIT/DIAG/ORIGINAL/F3. No original protected source admission by this prereg.",
+    "first_use": "One-time independently witnessed validation then disjoint guard only after code/source/harness frozen, separately authorized under CKB-plane. No rerun/relabel or tuning on exposed guard."
+  },
+  "controls": {
+    "baseline": "Exact native 72-prefix F60 under 144B and exact frozen F85 solver",
+    "candidate": "PRESTO deterministic native online selection with one legal deviation",
+    "ablations": [
+      "Exact F99 current superset-only safety, diagnostic only (no source reuse)",
+      "Current 1..4-hop equality without replay",
+      "No-deviation F60"
+    ],
+    "metrics": [
+      "six_step_rescues_vs_f60",
+      "four_step_regressions_vs_f60",
+      "F60_correct_total_regressions",
+      "native_interventions",
+      "short_path_equivalence_current",
+      "short_path_equivalence_past_replay",
+      "source_resource_ineligible",
+      "F85_resource_caps",
+      "retained_native_bytes",
+      "latched_extra_bits",
+      "original_rotate4_paired_results",
+      "independent_public_answer_witness"
+    ],
+    "success": "On independently born disjoint GUARD only: >=1 F60-failed six-hop episode rescued by online PRESTO AND zero regression across EVERY F60-correct four-hop episode in both orders; no native/solver resource caps, all source provenance and prefix audits pass. Any harmful four-hop regression or zero six-hop rescues => NEGATIVE and STOP, not a relaxed result.",
+    "safety": "Current/past equivalence is NOT assumed sufficient; track any future downstream harm and negative result independently. An eligible native action can still be harmful after unseen suffix."
+  },
+  "phase_gates": [
+    "P0 initial prereg preserved as historical; P0R revised precode froze corrected native-only self-replay BEFORE any F100 code, tests, training or cohort read",
+    "P1 source-only implementation + pure hand-constructed counterexamples and mutation/budget/frozen-interface contract tests; GitHub CI and one full repository regression at exact head",
+    "P2 inspect independent source-birth and execution custody; prohibit new-source creation/first-use pending CKB-plane authorization and complete witness",
+    "P3 only if source + policy frozen and separately admitted, run independently witnessed prospective evaluation once, preserve all negatives",
+    "P4 no acceptance/merge/promotion except independent scientific custody verdict"
+  ],
+  "authority": {
+    "scientific_accepted": false,
+    "first_use_authorized": false,
+    "source_birth_witnessed": false,
+    "code_qualified": false,
+    "retrospective_fit_executed": false,
+    "new_cohort_accessed": false,
+    "protected_source_accessed": false,
+    "CKB_dispatch": false,
+    "controller_mutation": false,
+    "new_scheduler": false,
+    "Codex": false,
+    "accepted_ref_mutation": false,
+    "optimizer_promotion": false,
+    "merge": false
+  },
+  "replaces_initial_precode": {
+    "commit": "f9e0849dc4d77a7925bc5a9a86e7c21c38016163",
+    "blob_sha": "a09e20ea3d8c33b8b180a52c52a60c1376bfab30",
+    "reason": "P0 attempted last-12 public-event replay requiring up to 108 additional bytes of persistent history at 9 bytes per event beyond F62 144B; unsuitable for equal-byte qualification. No F100 code or cohort accessed before redesign. Preserve P0 for provenance; R2 is sole canonical F100 hypothesis."
+  }
+}
