@@ -90,7 +90,7 @@ def evaluate(mode):
      assert not cost["resource_cap_triggered"] and cost["persistent_memory_bytes"]<=144
      row[name+"_correct"]=int(prediction==q["answer"])
     rows.append(row)
- assert len(rows)==cohort["order_episodes"]
+ assert len(rows)==cohort["paired_order_episodes"]
  all_rows=aggregate(rows,lambda x:True)
  six=aggregate(rows,lambda x:x["question_type"]=="crosslink_reach_6_steps")
  four=aggregate(rows,lambda x:x["question_type"]=="within_component_4_steps")
