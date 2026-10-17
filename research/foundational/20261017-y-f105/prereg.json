@@ -1,0 +1,110 @@
+{
+  "schema": "yggdrasil.f105.frozen-online-relational-state-multistep-credit.v1",
+  "phase": "PRECODE_PREREG_ONLY_PUBLIC_SYNTHETIC_ENGINEERING",
+  "source_parent": {
+    "exact_F104_head": "25cf621aa36c34d9b40f024fb248acb3e1f8c9a2",
+    "F104_source_blob": "dd1f7bb2fd7288b5933f7a23085196c8a62e17b8",
+    "F104_prereg_blob": "60757f68e275a9af7c4179fe54a26b3406be8de7",
+    "F102_source_blob": "8686390483c1e367c5cc1016a865a15c926b8376",
+    "F103_source_blob": "a9f58b5d96e4ba15283961bc4bc2db6ed09ccf0a",
+    "F104_negative": "F60 fixed 2/24, both learned causal structural F104 policies 0/24; TRAIN F60 44 positive, F102 on-policy zero; 15 same-feature contradictory credit vectors. Already consumed F104 GUARD must never be used for F105 training or model selection."
+  },
+  "question": "Does a richer ONLINE inspectable record-composition representation paired with an 8-event bounded multi-action fixed-continuation TRAIN-only teacher improve native 144B delayed correctness on fresh public source-disjoint GUARD streams relative to F60 and exact same-new-TRAIN 12-feature objective controls?",
+  "case_splits": {
+    "TRAIN": [
+      {
+        "label": "T105-A",
+        "first_seed": -17001,
+        "family": -81,
+        "mode": "raw",
+        "namespace_start": 0,
+        "count": 8
+      },
+      {
+        "label": "T105-B",
+        "first_seed": -17101,
+        "family": -82,
+        "mode": "raw",
+        "namespace_start": 8,
+        "count": 8
+      }
+    ],
+    "GUARD": [
+      {
+        "label": "G105-A",
+        "first_seed": -18001,
+        "family": -91,
+        "mode": "raw",
+        "namespace_start": 16,
+        "count": 8
+      },
+      {
+        "label": "G105-B",
+        "first_seed": -18101,
+        "family": -92,
+        "mode": "swap_roles_and_invert",
+        "namespace_start": 24,
+        "count": 8
+      },
+      {
+        "label": "G105-C",
+        "first_seed": -18201,
+        "family": -93,
+        "mode": "reverse_order",
+        "namespace_start": 32,
+        "count": 8
+      },
+      {
+        "label": "G105-D",
+        "first_seed": -18301,
+        "family": -94,
+        "mode": "phase_and_roles",
+        "namespace_start": 40,
+        "count": 8
+      }
+    ],
+    "constraints": "F62 negative unregistered source constructor only; exactly 72 event/native episode, 12 x 12B retained memory (144B), true native candidate actions, no original FIT/DIAG/ORIGINAL or previously consumed F102–F104 guard identities. F62 graph topology grammar reused; changing symbols/order is not different latent graph family."
+  },
+  "online_representation": {
+    "base": "F62's original 12-dimensional per-candidate source-native action difference vector, compared against fixed F60 action on CURRENT memory.",
+    "added_eight": "Candidate minus local F60 baseline, all derivable from CURRENT retained memory and arrived edge, not answer or future: [number of native records, total signed role hops, multi-role record count, distinct visible endpoints, ordered two-record signed-composition joins, ordered three-record joins, incident-to-current-event endpoint count, repeated endpoint-pair records].",
+    "total": 20,
+    "interpretability": "Record per-action 8-component causal graph-state features and counterfactual action comparison; separately zero out only the eight added inputs at evaluation without retraining weights to quantify their attribution. Missing features/answers lead to fail-closed assertion.",
+    "online_budget": "No greater than twelve retained records. Extra ephemeral compute and 20 fitted parameters must be reported; this is NOT resource/parameter matched to native fixed policy. F105 only compares native persistent bytes and source access, not full compute or neural parity."
+  },
+  "supervision": {
+    "origins": "TRAIN only. On F60 teacher-owned native states at checkpoints [11,23,35,47,59,71] enumerate every real F62 legal candidate. For each, let actual frozen F60 `_finish_fixed` process NEXT up to eight arrived TRAIN public events from that candidate state. Offline reconstruct final eventual answer signed source path from fully observed TRAIN graph; score exact native retained record overlap with contiguous path segments AFTER that continuation. Target sign relative to the local F60 action under same continuation. No hidden query/sign/path ever available to online learned scorer or GUARD.",
+    "action_labels": "{-1,0,+1} signed potential difference. Count positive, negative, zero and feature label collisions. At checkpoint 71 continuation length 0. NOT objective-equivalent to actual final delayed correctness; GUARD answer scored only once after entire stream.",
+    "fit": "One 12-feature linear tanh SGD (same NEW TRAIN multi-step labels), one 20-feature 12+8 graph-state linear tanh SGD, and one 20-feature same weights with eight graph features ablated only at GUARD inference. Four sequential passes, learning rate 0.04, zero initialization, parameter clamp [-7.9375,7.9375]. No guard fitting, normalization or after-results tuning.",
+    "baselines": [
+      "F60 native fixed no training",
+      "unchanged F102 original 12 weights re-fit exclusively on F102 original TRAIN (never its guard)",
+      "F105 12-weight same NEW TRAIN multi-step labels",
+      "F105 20-weight richer ONLINE relational state",
+      "F105 same 20 weights with 8 relational features ablated",
+      "F62 zero-score native"
+    ],
+    "trace": "Record terminal question correctness per case, native memory byte cap, per-case graph source identity hash, model train vector/epoch, label counts, per-online checkpoint action trace and full graph-state feature components on a bounded subset."
+  },
+  "precommitted_gates": {
+    "structural_validity": "All labels computed TRAIN only; exactly 16 TRAIN and four x eight untouched GUARD; native action source unchanged; 20 features fully answer-blind online; 144B cap; no episode identity overlap or extra original source; empty/uninformative labels allowed as negative.",
+    "information": "Both sign labels ±1 must occur in TRAIN for credit feasibility. If not, NO_NONTRIVIAL_TRAIN_CREDIT. No resampling or label correction after outcome.",
+    "new_representation_screen": "20-feature model must beat 12-feature on each GUARD family or tie, and win by >=4/32 pooled, with nonzero heldout intervention impact when zeroing the eight added features. Else NO_REPRESENTATION_GAIN.",
+    "actual_delayed_memory_screen": "20-feature model must exceed F60 by >=4/32, never lose to F60 on any GUARD family, and beat original F102; otherwise NEGATIVE even if model wins over 12-feature.",
+    "causal_inspectability_limit": "Eight-dimensional ablation is feature intervention on a TRAIN-fitted scorer, not proof of faithful causal memory-cell attribution; F101 records are separately available. Does not establish novel architecture superiority over neural/symbolic baselines.",
+    "future": "If this fails, prefer representational identifiability studies and multi-step credit oracle upper bounds before any more fitted scoring controllers. No hindsight choice of best variants."
+  },
+  "authority": {
+    "no_codex": true,
+    "no_ckb_dependency": true,
+    "no_paid_model": true,
+    "no_new_scheduler": true,
+    "no_cloudflare_mutation": true,
+    "no_mind_palace_write": true,
+    "no_other_repo_write": true,
+    "no_protected_firstuse": true,
+    "no_independent_science_acceptance": true,
+    "no_optimizer_promotion": true,
+    "no_accepted_ref_mutation": true
+  }
+}
