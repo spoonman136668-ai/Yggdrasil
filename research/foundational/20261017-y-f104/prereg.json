@@ -1,0 +1,148 @@
+{
+  "schema": "yggdrasil.f104.causal-structural-credit-precode.v1",
+  "status": "PRECODE_FROZEN_PUBLIC_SYNTHETIC_ENGINEERING_ONLY",
+  "parent": {
+    "f103_exact_head": "bf844517215e5e8374c7a5409cc417a04943eb5b",
+    "f103_blob": "a9f58b5d96e4ba15283961bc4bc2db6ed09ccf0a",
+    "f102_blob": "8686390483c1e367c5cc1016a865a15c926b8376",
+    "f102_prereg_blob": "4f3a8bf295a2f695a039d6b71d87d3bff3939e76",
+    "f62_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "f103_negative": "Original F102 TRAIN: 12 negative / 1026 zero / zero positive local final-reward labels. F103 learner out of teacher TRAIN delta support in 83/96 checkpoints and zero one-action local salvage. Cannot reuse F102 F103 evaluation for new learner."
+  },
+  "scientific_question": "Does a dense teacher using future-path structural overlap on fresh TRAIN-only native memory cases give nonzero positive action supervision, and does training from on-policy memory states outperform frozen F60 in separate public synthetic GUARD families? Separate positive training signal from actual delayed query correctness.",
+  "boundaries": {
+    "one_native_memory_budget_bytes": 144,
+    "max_records": 12,
+    "event_count": 72,
+    "retained_signed_role_hops": 6,
+    "checkpoints": [
+      11,
+      23,
+      35,
+      47,
+      59,
+      71
+    ],
+    "native_action_space": "Frozen exact F62, not a recreated simulator",
+    "positive_teacher_is_offline_only": true,
+    "answer_hidden_from_online_policy": true,
+    "no_protected_originals": true
+  },
+  "source": {
+    "train": [
+      {
+        "name": "T104-A",
+        "seeds": [
+          -15001,
+          -15008
+        ],
+        "family": -61,
+        "mode": "raw",
+        "namespaces": [
+          0,
+          7
+        ]
+      },
+      {
+        "name": "T104-B",
+        "seeds": [
+          -15101,
+          -15108
+        ],
+        "family": -62,
+        "mode": "raw",
+        "namespaces": [
+          8,
+          15
+        ]
+      }
+    ],
+    "guard": [
+      {
+        "name": "G104-A",
+        "seeds": [
+          -16001,
+          -16008
+        ],
+        "family": -71,
+        "mode": "raw",
+        "namespaces": [
+          16,
+          23
+        ]
+      },
+      {
+        "name": "G104-B",
+        "seeds": [
+          -16101,
+          -16108
+        ],
+        "family": -72,
+        "mode": "swap_roles_and_invert",
+        "namespaces": [
+          24,
+          31
+        ]
+      },
+      {
+        "name": "G104-C",
+        "seeds": [
+          -16201,
+          -16208
+        ],
+        "family": -73,
+        "mode": "reverse_order",
+        "namespaces": [
+          32,
+          39
+        ]
+      }
+    ],
+    "separate_source_id_graphs": true,
+    "no_prior_F102_F103_seeds": true,
+    "all_negative_unregistered": true,
+    "guard_is_first_use_public_synthetic_not_independently_accepted": true
+  },
+  "teacher": {
+    "method": "At a TRAIN checkpoint, offline reconstruct lexicographically first true public answer path using the final question and fully observed public graph. For each actual source-native candidate memory, count exact fully-formed records that match contiguous directed signed-role subpaths of that path, up to six roles. Label action by sign of difference from F60 action's structural overlap. Include positive, negative and neutral examples. This is dense STRUCTURAL future-path supervision, NOT proof that a candidate improves final answer or graph-family generalization.",
+    "no_label_to_policy": true,
+    "no_guard_teacher_labels": true,
+    "teacher_sources": [
+      "F60 fixed states",
+      "one frozen F102 raw on-policy rollout states"
+    ],
+    "train_fit": "Two separate 12-feature tanh-SGD classifiers trained on teacher states alone and union of teacher + original frozen F102 raw on-policy states. Four fixed passes at step size 0.04, zero initialization, weights capped [-7.9375,7.9375]. No training on GUARD.",
+    "source_only_labels_limit": "Maximum one pass of all six checkpoints per TRAIN stream per teacher (16 episodes x 6 checkpoints), native legal candidate enumeration, no future events fed to online selector.",
+    "ready_condition": "Report action labels; positive examples must be >0 and negative >0 across TRAIN, otherwise NO_TRAIN_SIGNAL and no performance superiority claims. Do not invent positives by post hoc resampling.",
+    "stratification": "Per-block and per-checkpoint label counts, duplicate feature-label conflict count, predeclared positive availability criterion."
+  },
+  "frozen_controls": [
+    "actual F60 fixed, native packed, no new TRAIN",
+    "unchanged F102 raw 12-feature learned weights reconstituted from its F102 TRAIN only; no new fit",
+    "F104 structural teacher-state-only 12-feature model trained on NEW F104 TRAIN only",
+    "F104 mixed F60 + F102 frozen-policy-state 12-feature model trained on SAME NEW F104 TRAIN only",
+    "F62 zero-score policy under same exact native actions"
+  ],
+  "acceptance": {
+    "instrumentation": "Exact source blob lineage, all cases and true native memory 144B, complete per-case final delayed correctness, source IDs disjoint, no GUARD outcome in fitting, no postresult hyperparameter change, two OS parsed reports match.",
+    "signal": "If TRAIN has 0 positive or 0 negative structural teacher labels, state TRAIN_SIGNAL_ABSENT. Do not claim new causal credit learning.",
+    "onpolicy_value": "Mixed model may claim provisional training-data-collection benefit only if it exceeds teacher-only GUARD successes by >=3/24 and never worsens any GUARD family. Otherwise no benefit.",
+    "genuine_delayed_value": "Mixed model must exceed F60 success by >=4/24, never lose in any GUARD family, and beat unchanged F102 and zero-score controls. Otherwise retain NEGATIVE even if TRAIN structural credit is dense.",
+    "structural_transfer_limit": "F62 topology reused under renamed graph source IDs, role inversion and arrival reordering; not an unrelated task-family transfer, not independent science.",
+    "compare": "A favorable structural overlap on TRAIN is not a future-query gain. Report both separately. Model class is 12-feature linear tanh not novel general intelligence.",
+    "failure": "Do not interpret missing signal, poor GUARD, or fixed-policy advantage as numerical gradient instability without independent checks."
+  },
+  "authority": {
+    "no_Codex": true,
+    "no_CKB_dependency": true,
+    "no_paid_models": true,
+    "no_cloudflare_write": true,
+    "no_mind_palace_write": true,
+    "no_new_scheduler": true,
+    "no_cross_repo_changes": true,
+    "no_protected_FIT_DIAG_ORIGINAL": true,
+    "no_scientific_acceptance": true,
+    "no_optimizer_promotion": true,
+    "no_accepted_ref_mutation": true
+  }
+}
