@@ -36,17 +36,42 @@ jobs:
           test "$(git hash-object research/foundational/20261017-y-f100/prereg_r2.json)" = 65065cadc268d5169dd3fe9fd2bb37987db92357
           test "$(git hash-object research/foundational/20261017-y-f100/presto.py)" = 14066ad4f36e09e77134e7d5e192fcacf94b5810
           test "$(git hash-object research/foundational/20261017-y-f100/test_presto.py)" = dc7824efdbe00600e61c39c84489e91df5260c32
+          test "$(git hash-object research/foundational/20261017-y-f100/source_custody_preflight.py)" = d316e6502514f92b91639288ff4cd97568c782f4
+          test "$(git hash-object research/foundational/20261017-y-f100/test_source_custody_preflight.py)" = a4b0ca29d14d3b9284652427a39be5e28394c114
           test "$(git hash-object research/foundational/20261016-y-f99/causal_closure.py)" = 5de08fe74eb74dd917a7559cc3a8755185aac823
           test "$(git hash-object research/foundational/20261016-y-f99/prereg.json)" = 9abcfbde16137d15248e8ce1229660a46b853dc1
           test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
           test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
-          test "$(git diff --name-only cd9304a4184692bc837a2bd36a2903d69ea366af HEAD)" = "$(printf '%s\n' '.github/workflows/y-f100-native-selfreplay-source.yml' 'research/foundational/20261017-y-f100/prereg.json' 'research/foundational/20261017-y-f100/prereg_r2.json' 'research/foundational/20261017-y-f100/presto.py' 'research/foundational/20261017-y-f100/test_presto.py')"
+          test "$(git diff --name-only cd9304a4184692bc837a2bd36a2903d69ea366af HEAD)" = "$(printf '%s\n' '.github/workflows/y-f100-native-selfreplay-source.yml' 'research/foundational/20261017-y-f100/prereg.json' 'research/foundational/20261017-y-f100/prereg_r2.json' 'research/foundational/20261017-y-f100/presto.py' 'research/foundational/20261017-y-f100/source_custody_preflight.py' 'research/foundational/20261017-y-f100/test_presto.py' 'research/foundational/20261017-y-f100/test_source_custody_preflight.py')"
           test -z "$(git status --porcelain --untracked-files=all)"
       - name: F100 new policy pure contract tests (no cohort reads)
         shell: bash
         run: |
           set -euo pipefail
-          python -B -m unittest discover -s research/foundational/20261017-y-f100 -p 'test_presto.py' -v
+          python -B -m unittest discover -s research/foundational/20261017-y-f100 -p 'test_*.py' -v
+      - name: Inspect pinned CKB main source-birth policy as nonadmitting evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://raw.githubusercontent.com/spoonman136668-ai/ckb-plane/fab36e7c488f930505fcbaeb5f5bf04806e50c5b/.github/research-audit/r187-source-pool.json'
+          curl --fail --location --retry 3 --max-time 45 --silent --show-error "$url" --output "$RUNNER_TEMP/f100-ckb-r187-policy.json"
+          test "$(git hash-object "$RUNNER_TEMP/f100-ckb-r187-policy.json")" = 8a8afd6d7be7b8d5cd183519bb9e642b307ba168
+          python -B research/foundational/20261017-y-f100/source_custody_preflight.py \
+            --pinned-ckb-policy "$RUNNER_TEMP/f100-ckb-r187-policy.json" \
+            --output "$RUNNER_TEMP/f100-ckb-custody-preflight.json"
+          python - "$RUNNER_TEMP/f100-ckb-custody-preflight.json" <<'PY'
+          import json,sys
+          obj=json.load(open(sys.argv[1]))
+          assert obj['classification']=='F100_SOURCE_CUSTODY_NOT_QUALIFIED'
+          assert obj['approved_f100_guard_graphs']==0
+          assert obj['source_first_use_allowed'] is False
+          assert obj['prospective_experiment_dispatched'] is False
+          assert obj['scientifically_accepted'] is False
+          assert obj['observed_source_policy_flags']['prospective_input_independence_established'] is False
+          assert obj['observed_source_policy_flags']['global_historical_source_ledger_complete'] is False
+          print('F100_P2_SOURCE_CUSTODY=BLOCKED_AS_EXPECTED')
+          PY
+          sha256sum "$RUNNER_TEMP/f100-ckb-custody-preflight.json"
       - name: Exact frozen F99 and F85 controls
         shell: bash
         run: |
@@ -82,3 +107,11 @@ jobs:
           echo 'F100_LEARNED_SELECTOR=FALSE'
           echo 'F100_SCIENTIFIC_ACCEPTANCE=FALSE'
           echo 'NO_CKB_CONTROLLER_OR_ACCEPTED_REF_MUTATION=TRUE'
+          echo 'F100_P2_PROSPECTIVE_SOURCE_ADMISSION=FALSE'
+      - name: Archive CKB source-custody preflight (not an admission receipt)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: f100-ckb-custody-not-admitted
+          path: ${{ runner.temp }}/f100-ckb-custody-preflight.json
+          retention-days: 90
