@@ -1,0 +1,50 @@
+name: Yggdrasil F97 paired public join-risk TRAIN only
+on:
+  push:
+    branches:
+      - research/y-f97-paired-public-join-risk-20261016-r1
+    paths:
+      - 'research/foundational/20261016-y-f97/prereg.json'
+      - 'research/foundational/20261016-y-f97/paired_join_risk.py'
+      - 'research/foundational/20261016-y-f97/test_paired_join_risk.py'
+      - '.github/workflows/y-f97-train-only.yml'
+permissions:
+  contents: read
+jobs:
+  train-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Freeze F97 prereg, historical F96 and F76 F62 source identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 4f7f166ee63bbf8975a73f5f8376de2a54df4954 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f97/prereg.json)" = 8e8450b07681ba4899e18d446e45f2007682a147
+          test "$(git hash-object research/foundational/20261016-y-f96/paired_order_probe.py)" = 2cf14367527c9790661af65a84d15cbe11132bc7
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+      - name: Test pure query-blind F97 source-native policy and F96 pairing regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f97 -p test_paired_join_risk.py
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f96 -p test_paired_order_probe.py
+      - name: Freeze deterministic paired source TRAIN only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f97/paired_join_risk.py --paired-train-only > "$RUNNER_TEMP/f97-train.json"
+          python3 -B -c 'import json,os; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f97-train.json"))); assert d["stage"]=="TRAIN_ONLY_NO_VALIDATION_OR_GUARD" and d["paired_graphs"]==32 and d["paired_order_episodes"]==64; assert d["stats"]["total_examples"]>0 and d["no_holdout_used"] and d["no_protected_source"] and d["no_controller_or_optimizer_mutation"]; print(json.dumps(d,sort_keys=True))'
+      - name: Ensure no writes to original research or references
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
