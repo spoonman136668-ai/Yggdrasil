@@ -1,0 +1,56 @@
+{
+  "schema": "yggdrasil.f101.native-causal-memory-attribution-prereg.v1",
+  "stage": "FROZEN_PRECODE_SOURCE_ONLY_NO_FIRSTUSE",
+  "parent": {
+    "f100_exact_sha": "9f740598d3057c18edbab61761109d9faf8395e1",
+    "f100_native_memory_git_blob": "14066ad4f36e09e77134e7d5e192fcacf94b5810",
+    "f99_closure_git_blob": "5de08fe74eb74dd917a7559cc3a8755185aac823",
+    "f62_native_actions_git_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "f85_solver_git_blob": "e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3",
+    "historical_limit": "F99 tests validate query-blind reachability; F100 source-only PRESTO does not establish causal evidence paths or trained memory policy."
+  },
+  "question": "Can exact native retained records furnish a deterministic and verifiable path-level witness, and can single-record deletions/role interventions distinguish necessary support from redundant evidence under fixed 144-byte memory?",
+  "prereg_method": {
+    "all_input": "Only retained native memory tuples (source, target, ordered signed role codes), a requested path signature already structurally present in the retained memory, and exact frozen F99 closure. No task answer, future event, hidden cohort or source-type label.",
+    "trace": "For a source/signature/endpoint triple, select lexicographically smallest (record_index, direction) oriented arc sequence with ordered signed role concatenation exactly equal to the signature, never inventing an intermediate vertex inside an atomic multirole record. Each native record may be reused in different positions but every path is bounded by total signed role hops (<=6).",
+    "oracle_equivalence": "F101 witness is non-empty iff frozen F99 closure contains requested signature. A path witness is not proof that an eventual hidden question is answered correctly.",
+    "causal_interventions": "For each retained record index, rerun unmodified F99 closure after removing that record; mark record NECESSARY_FOR_THIS_SIGNATURE iff the signature disappears, NONNECESSARY otherwise. For each record, transform its role codes by +2 modulo 8 (preserving signed direction bit but rotating role name), rerun closure and record whether the signature survives. These are source-only structural interventions, not evidence of real-world causal reasoning.",
+    "resource": "At most 12 records (12 bytes/record => 144B retained), role length 1..6, <=250000 closure signatures, at most 12 deletions and 12 role interventions. No persistent learned parameters or new online memory. Witness enumerator maximum 150000 distinct search states; fail closed if exceeded.",
+    "record_provenance": "Include sha256 for the packed original memory in canonical order; oriented path elements include record index, source and target endpoint, signed role list and orientation. Do not report a necessity label without actually recomputing after deletion.",
+    "bounded_complexity": "All memory action/effect calculations are offline source inspection; not permissible as a free runtime online answer or an alternative to original F60/F100 budgets.",
+    "counterfactual_sanity": "No shortest-witness causality inference; where multiple distinct paths support the same signature, single deletion must say NONNECESSARY even if the deterministic exhibited witness used the deleted record."
+  },
+  "frozen_test_families": [
+    "native 4-hop chain: every element necessary, code interventions break target",
+    "native 6-hop chain: every element necessary, reverse signed witness",
+    "two disjoint witnesses for identical signature: no individual record necessary",
+    "one atomic multirole native record: no fictitious internal intermediate vertex",
+    "disconnected and wrong-direction roles do not produce witnesses",
+    "reused native record loops/branching have bounded deterministic witness ordering",
+    "ill-formed native codes/endpoints and >144B memory rejected",
+    "forced tiny search cap fails closed, never returns partial witness",
+    "pure source-only native F62 72-event smoke from explicitly unregistered synthetic negative seed: preserve source-native record budget and compare F99 closure trace with F101 witness, without touching FIT/DIAG/ORIGINAL",
+    "counterfactual roles preserve correct endpoints and signed code syntax; wrong label/identity denied"
+  ],
+  "frozen_disposition": {
+    "positive_engineering_if": "All structural witness invariants and independently rerun delete/role interventions agree exactly with frozen F99 reachability; source-only native smoke succeeds; no training or scientific cohort touched.",
+    "negative_if": "Any inconsistent path witness, forged intermediate vertex, claimed necessity contradicted by a second witness, wrong reverse sign, invalid budget or silent truncated search. Do not retune thresholds.",
+    "scientific_claim_limit": "Engineering observability of retained memory only. No learned retention improvement, structural OOD generalization, independent first-use, behavioral causal accuracy or neural baseline superiority.",
+    "next_science": "Once stable causal record provenance exists, separately preregister causally delayed memory-credit training with untouched source-disjoint OOD guards, repeated cycle stability (clip/norm/residual/depth) and matched fixed plus neural controls."
+  },
+  "authority": {
+    "no_CKB_dependency": true,
+    "no_Codex": true,
+    "no_paid_inference": true,
+    "no_Cloudflare_mutation": true,
+    "no_MindPalace_write": true,
+    "no_new_scheduler": true,
+    "no_original_first_use": true,
+    "no_FIT_DIAG_use": true,
+    "no_scientific_acceptance": true,
+    "no_optimizer_promotion": true,
+    "no_accepted_ref_mutation": true,
+    "no_science_dispatch": true,
+    "no_credential_change": true
+  }
+}
