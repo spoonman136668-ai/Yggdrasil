@@ -1,0 +1,144 @@
+name: Y-F107 frozen signed-source causal credit equivariance
+on:
+  push:
+    branches:
+      - research/y-f107-signed-role-credit-equivariance-20261017-r1
+    paths:
+      - '.github/workflows/y-f107-signed-role-credit.yml'
+      - 'research/foundational/20261017-y-f107/**'
+permissions:
+  contents: read
+jobs:
+  paired-source-diagnostic:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 75
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve exact frozen Git object bytes before checkout
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.safecrlf true
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify separate prereg precode source and immutable parents
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $parent='84523755408d2685dca525950a1cc7718e13052b'
+          $freeze='13ae9d0a1ab4323a2ebc2279c00cea71efef0b9f'
+          if ((git rev-parse HEAD) -cne $env:GITHUB_SHA) { throw 'F107_HEAD_CHANGED' }
+          git merge-base --is-ancestor $parent HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'F107_F106_PARENT_NOT_ANCESTOR' }
+          git merge-base --is-ancestor $freeze HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'F107_PRECODE_PREREG_MISSING' }
+          $expected=@(
+            '.github/workflows/y-f107-signed-role-credit.yml',
+            'research/foundational/20261017-y-f107/prereg.json',
+            'research/foundational/20261017-y-f107/signed_role_diagnosis.py',
+            'research/foundational/20261017-y-f107/test_signed_role_diagnosis.py'
+          )
+          $actual=@(git diff --name-only $parent HEAD | Where-Object { $_ -ne '' })
+          if (@(Compare-Object $expected $actual).Count -ne 0) { throw 'F107_UNEXPECTED_PRIOR_SCIENCE_MODIFICATION' }
+          if ((git hash-object 'research/foundational/20261017-y-f107/prereg.json') -cne '41526d27e90f28efeba387d5513d64d6c075726b') { throw 'F107_PREREG_MUTATED' }
+          if ((git hash-object 'research/foundational/20261017-y-f106/identifiability.py') -cne '3b49cd349413c641a900e935f92270dbd3441f34') { throw 'F107_F106_ALGORITHM_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f105/relational_credit.py') -cne 'f78cae2150b48b4c7ffb1274f80392a563bd64ce') { throw 'F107_F105_ALGORITHM_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f104/causal_credit.py') -cne 'dd1f7bb2fd7288b5933f7a23085196c8a62e17b8') { throw 'F107_F104_ALGORITHM_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f102/delayed_credit.py') -cne '8686390483c1e367c5cc1016a865a15c926b8376') { throw 'F107_F102_PARENT_DRIFT' }
+      - name: Test role inverses native memory and exact immutable source controls
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          python -B -m unittest discover -s research/foundational/20261017-y-f107 -p 'test_signed_role_diagnosis.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'F107_SOURCE_TESTS_FAILED' }
+      - name: Evaluate precommitted four-mode paired native F60 credit
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $dir=Join-Path $env:RUNNER_TEMP 'y-f107-source-only'
+          New-Item -ItemType Directory -Path $dir -Force | Out-Null
+          $out=Join-Path $dir 'f107-signed-role-credit.json'
+          python -B research/foundational/20261017-y-f107/signed_role_diagnosis.py --source-ref $env:GITHUB_SHA |
+            Out-File -LiteralPath $out -Encoding utf8
+          if ($LASTEXITCODE -ne 0) { throw 'F107_PUBLIC_SOURCE_EVALUATION_FAILED' }
+          $d=Get-Content -LiteralPath $out -Raw | ConvertFrom-Json
+          if ($d.schema -cne 'yggdrasil.f107.signed-source-equivariance-public.v1' -or
+              $d.exact_head -cne $env:GITHUB_SHA -or
+              $d.frozen_F106_source_head -cne '84523755408d2685dca525950a1cc7718e13052b' -or
+              $d.raw_base_cases -ne 16 -or $d.paired_mode_cases -ne 64 -or
+              $d.native_online_events_per_case -ne 72 -or
+              $d.native_max_retained_bytes -ne 144 -or
+              $d.blocks.Count -ne 2 -or
+              -not $d.checked_source_path_bijective_for_all_modes -or
+              -not $d.same_underlying_graph_for_each_mode -or
+              -not $d.no_F102_F106_consumed_diagnostics_reused -or
+              -not $d.no_F62_protected_FIT_DIAG_ORIGINAL -or
+              -not $d.all_future_query_and_label_access_offline_only -or
+              -not $d.no_new_online_policy_or_fitted_parameters -or
+              $d.source_information_loss -or
+              $d.scientific_acceptance -or
+              $d.accepted_ref_mutations -ne 0 -or
+              $d.Codex_used -or $d.CKB_connected -or
+              $d.MindPalace_written -or -not $d.no_optimizer_promotion) {
+            throw 'F107_INVALID_SOURCE_OR_SCIENTIFIC_BOUNDARY'
+          }
+          foreach ($b in $d.blocks) {
+            if ($b.cases -ne 8 -or $b.paired_results.Count -ne 8) {
+              throw 'F107_PAIRED_CASES_MISSING'
+            }
+            foreach ($c in $b.paired_results) {
+              foreach ($mode in @('raw','role_only','edge_direction_only','both')) {
+                $p=$c.modes.$mode
+                if (-not $p.source_answer_path_preserved -or
+                    $p.checkpoints.Count -ne 6 -or
+                    $p.native_final_memory_records -gt 12 -or
+                    $p.path_hops -notin @(4,6,8)) {
+                  throw 'F107_SOURCE_EQUIVARIANCE_OR_MEMORY_INVALID'
+                }
+                foreach ($checkpoint in $p.checkpoints) {
+                  if ($checkpoint.source_native_bytes -gt 144 -or
+                      $checkpoint.eight_event_suffix_length -gt 8 -or
+                      ($checkpoint.positive_direct+$checkpoint.negative_direct+$checkpoint.neutral_direct) -ne $checkpoint.legal_actions -or
+                      ($checkpoint.positive_eight_event+$checkpoint.negative_eight_event+$checkpoint.neutral_eight_event) -ne $checkpoint.legal_actions) {
+                    throw 'F107_TEACHER_LABELS_FABRICATED_OR_MISSING'
+                  }
+                }
+              }
+            }
+          }
+          foreach ($mode in @('raw','role_only','edge_direction_only','both')) {
+            $s=$d.summary_by_mode.$mode
+            Write-Host ('F107_MODE='+$mode+' DIRECT_NEG_ZERO_POS='+$s.direct.negative+'/'+$s.direct.neutral+'/'+$s.direct.positive+
+                ' EIGHT_NEG_ZERO_POS='+$s.eight_event.negative+'/'+$s.eight_event.neutral+'/'+$s.eight_event.positive+
+                ' NATIVE_ARC_EQUIV='+$s.exact_native_f60_arc_equivariant_cases)
+          }
+          Write-Host ('F107_TEACHER_COLLAPSE_MODES='+($d.teacher_collapse_modes -join ','))
+          Write-Host 'F107_SOURCE_ONLY_NO_LEARNER_OR_PROTECTED_FIRSTUSE=TRUE'
+          $sha=(Get-FileHash -LiteralPath $out -Algorithm SHA256).Hash.ToLowerInvariant()
+          [System.IO.File]::WriteAllText(
+            (Join-Path $dir 'f107-signed-role-credit.sha256'),
+            ("$sha  f107-signed-role-credit.json"+[Environment]::NewLine),
+            [System.Text.UTF8Encoding]::new($false))
+      - name: Clean source and no CKB Codex science authorization
+        shell: pwsh
+        run: |
+          if (@(git status --porcelain --untracked-files=all).Count -ne 0) { throw 'F107_SOURCE_DIRTY' }
+          Write-Host 'F107_NO_CODEX_CKB_MINDPALACE_WRITES_OR_FIRSTUSE=TRUE'
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: y-f107-signed-credit-${{ matrix.os }}
+          path: |
+            ${{ runner.temp }}/y-f107-source-only/f107-signed-role-credit.json
+            ${{ runner.temp }}/y-f107-source-only/f107-signed-role-credit.sha256
+          retention-days: 90
