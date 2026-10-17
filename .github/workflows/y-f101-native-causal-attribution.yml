@@ -1,0 +1,128 @@
+name: Y-F101 inspectable native causal memory source qualification
+on:
+  push:
+    branches:
+      - research/y-f101-native-causal-memory-attribution-20261017-r1
+    paths:
+      - '.github/workflows/y-f101-native-causal-attribution.yml'
+      - 'research/foundational/20261017-y-f101/**'
+permissions:
+  contents: read
+jobs:
+  immutable-native-provenance:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      # The frozen scientific source uses Git LF object bytes. Windows Git
+      # core.autocrlf would rewrite files before Python hash verification.
+      # Set it BEFORE checkout; do not normalize or modify frozen inputs.
+      - name: Preserve exact immutable Git LF source bytes on both OSes
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.safecrlf true
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify separated before-code freeze and only F101 scope
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $parent='9f740598d3057c18edbab61761109d9faf8395e1'
+          $freeze='ceda4afb6cbdd7d99f267c5af519f7758ca29d6d'
+          if ((git rev-parse HEAD) -cne $env:GITHUB_SHA) { throw 'F101_HEAD_DRIFT' }
+          git merge-base --is-ancestor $parent HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'F101_NATIVE_PARENT_NOT_ANCESTOR' }
+          git merge-base --is-ancestor $freeze HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'F101_PRECODE_FREEZE_NOT_ANCESTOR' }
+          $expected=@(
+            '.github/workflows/y-f101-native-causal-attribution.yml',
+            'research/foundational/20261017-y-f101/prereg.json',
+            'research/foundational/20261017-y-f101/causal_memory.py',
+            'research/foundational/20261017-y-f101/test_causal_memory.py'
+          )
+          $actual=@(git diff --name-only $parent HEAD | Where-Object { $_ -ne '' })
+          if (@(Compare-Object $expected $actual).Count -ne 0) { throw 'F101_SCOPE_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f101/prereg.json') -cne 'ba93493da66e7659f3b75c49875b2eb7927d6a16') { throw 'F101_PREREG_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f100/presto.py') -cne '14066ad4f36e09e77134e7d5e192fcacf94b5810') { throw 'F101_F100_DRIFT' }
+          if ((git hash-object 'research/foundational/20261016-y-f99/causal_closure.py') -cne '5de08fe74eb74dd917a7559cc3a8755185aac823') { throw 'F101_F99_DRIFT' }
+          if ((git hash-object 'research/foundational/20261015-y-f62/source_pilot.py') -cne '7ed72deca5584d7c0b6562d74456fa7d4bee6712') { throw 'F101_F62_DRIFT' }
+      - name: Run exact causal necessity/redundancy and role-reversal contracts
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          python -B -m unittest discover -s research/foundational/20261017-y-f101 -p 'test_causal_memory.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'F101_CAUSAL_MEMORY_TESTS_FAILED' }
+      - name: Audit exact real F62 native negative-seed stream without protected cohorts
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $folder=Join-Path $env:RUNNER_TEMP 'y-f101-native'
+          New-Item -ItemType Directory -Force -Path $folder | Out-Null
+          $out=Join-Path $folder 'y-f101-source-only-attribution.json'
+          python -B research/foundational/20261017-y-f101/causal_memory.py |
+            Out-File -FilePath $out -Encoding utf8
+          if ($LASTEXITCODE -ne 0) { throw 'F101_REAL_NATIVE_SOURCE_SMOKE_FAILED' }
+          $data=Get-Content -LiteralPath $out -Raw | ConvertFrom-Json
+          if ($data.schema -cne 'yggdrasil.f101.source-only-native-memory-smoke.v1' -or
+              $data.receipts.Count -ne 2 -or
+              -not $data.source_only_nonfirstuse -or
+              -not $data.no_online_policy_or_learning -or
+              -not $data.no_protected_f62_sources -or
+              $data.scientific_acceptance) {
+              throw 'F101_FALSE_AUTHORITY_OR_BAD_SOURCE_PROVENANCE'
+          }
+          foreach ($x in $data.receipts) {
+            if ($x.seed -ge 0 -or $x.events -ne 72 -or
+                $x.native_records -gt 12 -or $x.native_bytes -gt 144 -or
+                $x.witnessed_signatures.Count -lt 1) {
+              throw 'F101_PROTECTED_OR_RESOURCE_VIOLATION'
+            }
+            foreach ($proof in $x.witnessed_signatures) {
+              if (-not $proof.present_in_frozen_f99_closure -or
+                  $proof.exact_lex_first_witness.Count -eq 0 -or
+                  $proof.single_record_interventions.Count -ne $x.native_records -or
+                  $proof.result_scope -cne 'OFFLINE_NATIVE_MEMORY_STRUCTURE_NOT_BEHAVIORAL_CAUSAL_ACCURACY' -or
+                  $proof.original_sci_first_use -or $proof.independent_scientific_acceptance) {
+                throw 'F101_FABRICATED_NATIVE_ATTRIBUTION'
+              }
+            }
+          }
+          $sha=(Get-FileHash -LiteralPath $out -Algorithm SHA256).Hash.ToLowerInvariant()
+          [System.IO.File]::WriteAllText((Join-Path $folder 'y-f101-source-only-attribution.sha256'),
+            ("$sha  y-f101-source-only-attribution.json"+[Environment]::NewLine),
+            [System.Text.UTF8Encoding]::new($false))
+          Write-Host 'F101_CAUSAL_STRUCTURAL_TRACE_NATIVE_SMOKE=PASS'
+          Write-Host 'F101_PROTECTED_SOURCE_FIRSTUSE=FALSE'
+      - name: Verify frozen F99/F100 interface regression
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          python -B -m unittest discover -s research/foundational/20261016-y-f99 -p 'test_causal_closure.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'F101_F99_CONTROL_REGRESSION' }
+          python -B -m unittest discover -s research/foundational/20261017-y-f100 -p 'test_presto.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'F101_F100_CONTROL_REGRESSION' }
+      - name: Source unchanged, no worker or controller state
+        shell: pwsh
+        run: |
+          if (@(git status --porcelain --untracked-files=all).Count -ne 0) { throw 'F101_SOURCE_CHANGED' }
+          Write-Host 'F101_SOURCE_ONLY=PASS'
+          Write-Host 'F101_NO_GPT_MODEL_NO_CODEX_NO_CONTROLLER_NO_SCIENTIFIC_ACCEPTANCE=TRUE'
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: y-f101-native-causal-provenance-${{ matrix.os }}
+          path: |
+            ${{ runner.temp }}/y-f101-native/y-f101-source-only-attribution.json
+            ${{ runner.temp }}/y-f101-native/y-f101-source-only-attribution.sha256
+          retention-days: 90
