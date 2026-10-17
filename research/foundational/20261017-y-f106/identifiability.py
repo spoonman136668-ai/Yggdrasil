@@ -187,7 +187,10 @@ def witness_audit(f105,f104,parent,f102,native,pack,groups):
     cfg,f101,f99,_=f102.source_modules()
     receipts=[]
     for g in groups:
-        seed,stream,q,source_id=g[0]
+        # Use the first eligible <=6-hop diagnostic query; do not invent
+        # witnesses for the original frozen F101 depth>6 exclusion.
+        item=next((case for case in g if len(case[2]["ops"])<=6),g[0])
+        seed,stream,q,source_id=item
         mem=()
         for event in stream: mem=native._f60_step(mem,event,pack)
         if len(q["ops"])<=6:
