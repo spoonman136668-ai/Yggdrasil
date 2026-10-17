@@ -1,0 +1,163 @@
+name: Y-F108 immutable native capacity and oracle qualification
+on:
+  push:
+    branches:
+      - research/y-f108-native-memory-budget-oracle-20261017-r1
+    paths:
+      - '.github/workflows/y-f108-native-memory-oracle.yml'
+      - 'research/foundational/20261017-y-f108/**'
+permissions:
+  contents: read
+jobs:
+  source-qualified:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve exact canonical Git object bytes before checkout
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.safecrlf true
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify prereg-before-code, complete scope and exact native predecessor
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $parent='135137f7b2ee013dc0e1b2b80b18507d9f6229e6'
+          $freeze='190d7fa6ab623416c4738026588cbed7856ff781'
+          if ((git rev-parse HEAD) -cne $env:GITHUB_SHA) { throw 'F108_UNVERIFIED_EXACT_SHA' }
+          git merge-base --is-ancestor $parent HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'F108_F107_ANCESTRY_MISSING' }
+          git merge-base --is-ancestor $freeze HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'F108_BEFORE_CODE_FREEZE_MISSING' }
+          $required=@(
+            '.github/workflows/y-f108-native-memory-oracle.yml',
+            'research/foundational/20261017-y-f108/prereg.json',
+            'research/foundational/20261017-y-f108/oracle.py',
+            'research/foundational/20261017-y-f108/test_oracle.py'
+          )
+          $actual=@(git diff --name-only $parent HEAD | Where-Object { $_ -ne '' })
+          if (@(Compare-Object $required $actual).Count -ne 0) { throw 'F108_SOURCE_SCOPE_CHANGED' }
+          if ((git hash-object 'research/foundational/20261017-y-f108/prereg.json') -cne '6d1a6d922645a840e155c5b0550667ecbf3f63d2') { throw 'F108_FROZEN_PROTOCOL_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f107/signed_role_diagnosis.py') -cne '3e39984754c87e702ed48030862f2237a6bd120e') { throw 'F108_F107_NATIVE_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f104/causal_credit.py') -cne 'dd1f7bb2fd7288b5933f7a23085196c8a62e17b8') { throw 'F108_F104_TEACHER_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f102/delayed_credit.py') -cne '8686390483c1e367c5cc1016a865a15c926b8376') { throw 'F108_F102_GENERATOR_DRIFT' }
+          if ((git hash-object 'research/foundational/20261015-y-f62/source_pilot.py') -cne '7ed72deca5584d7c0b6562d74456fa7d4bee6712') { throw 'F108_NATIVE_F62_DRIFT' }
+      - name: Run exact native source, bounded oracle and integrity contracts
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          python -B -m unittest discover -s research/foundational/20261017-y-f108 -p 'test_oracle.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'F108_FROZEN_SOURCE_TESTS_FAILED' }
+      - name: Evaluate new paired graph regimes and all capacity stress checkpoints
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $folder=Join-Path $env:RUNNER_TEMP 'y-f108-native-oracle'
+          New-Item -ItemType Directory -Path $folder -Force | Out-Null
+          $out=Join-Path $folder 'f108-native-capacity-oracle.json'
+          python -B research/foundational/20261017-y-f108/oracle.py --source-ref $env:GITHUB_SHA |
+            Out-File -LiteralPath $out -Encoding utf8
+          if ($LASTEXITCODE -ne 0) { throw 'F108_NATIVE_ORACLE_EVALUATION_FAILED' }
+          $d=Get-Content -LiteralPath $out -Raw | ConvertFrom-Json
+          if ($d.schema -cne 'yggdrasil.f108.native-memory-capacity-oracle-public.v1' -or
+              $d.exact_head -cne $env:GITHUB_SHA -or
+              $d.parent_F107_head -cne '135137f7b2ee013dc0e1b2b80b18507d9f6229e6' -or
+              $d.source_base_graphs -ne 12 -or $d.source_paired_modes -ne 2 -or
+              $d.world_count -ne 72 -or
+              $d.complete_native_action_checkpoint_count -ne 432 -or
+              $d.pooled.checkpoint_count -ne 432 -or
+              $d.memory_cap_stress_levels.Count -ne 3 -or
+              $d.full_results.Count -ne 2 -or
+              -not $d.same_full_public_source_answer_for_both_arrival_orders -or
+              -not $d.no_prior_guards_or_protected_source_accessed -or
+              -not $d.fixed_policy_true_native_F60_only_at_cap12 -or
+              -not $d.reduced_capacity_uses_explicit_tail_truncation_adapter -or
+              -not $d.no_training_or_new_online_model -or
+              -not $d.future_question_and_true_answer_offline_only -or
+              $d.no_original_firstuse -ne $true -or
+              $d.independent_scientific_acceptance -or
+              $d.accepted_ref_mutations -ne 0 -or
+              $d.Codex_used -or $d.CKB_connected -or
+              $d.MindPalace_written -or $d.optimizer_promoted) {
+            throw 'F108_INVALID_SCIENTIFIC_SOURCE_OR_AUTHORITY'
+          }
+          foreach ($b in $d.full_results) {
+            if ($b.distinct_original_graphs -ne 6 -or
+                $b.evaluated_worlds -ne 36 -or $b.outcomes.Count -ne 36) {
+              throw 'F108_MISSING_REGIME_OR_WORLD'
+            }
+            foreach ($w in $b.outcomes) {
+              if ($w.capacity_records -notin @(4,8,12) -or
+                  $w.native_persistent_bytes -gt 12*$w.capacity_records -or
+                  -not $w.endpoint_answer_available_in_full_public_graph -or
+                  $w.checkpoints.Count -ne 6) {
+                throw 'F108_MISSING_CAPACITY_OR_INFORMATION_WITNESS'
+              }
+              foreach ($point in $w.checkpoints) {
+                if ($point.legal_native_action_states -lt 1 -or
+                    $point.candidate_outcomes.Count -ne $point.legal_native_action_states -or
+                    $point.source_native_memory_records -gt $w.capacity_records -or
+                    $point.t -notin @(11,23,35,47,59,71) -or
+                    -not $point.online_fixed_controller_receives_only_prefix -or
+                    -not $point.fixed_source_path_full_public_only_offline -or
+                    ($point.proxy_true_positive+$point.proxy_false_positive+
+                     $point.proxy_missed_rescue+$point.proxy_true_negative) -ne 1) {
+                  throw 'F108_UNVERIFIABLE_NATIVE_ACTION_OR_ORACLE_CHECKPOINT'
+                }
+                foreach ($a in $point.candidate_outcomes) {
+                  if ($a.true_terminal_correct -notin @(0,1) -or
+                      $a.native_after_records -gt $w.capacity_records) {
+                    throw 'F108_INVALID_CANDIDATE_OR_CAP'
+                  }
+                }
+              }
+            }
+          }
+          Write-Host ('F108_ALL_NATIVE_CHECKPOINTS='+$d.pooled.checkpoint_count)
+          Write-Host ('F108_ALL_LEGAL_ONE_ACTION_ANSWER_RESCUES='+$d.pooled.true_one_action_rescue_available)
+          Write-Host ('F108_EIGHT_EVENT_PROXY_FALSE_POSITIVE='+$d.pooled.proxy_false_positive)
+          Write-Host ('F108_EIGHT_EVENT_PROXY_MISSED_RESCUE='+$d.pooled.proxy_missed_rescue)
+          foreach ($b in $d.full_results) {
+            foreach ($mode in @('raw','reverse_arrival')) {
+              foreach ($cap in @('4','8','12')) {
+                $value=$b.summary_by_mode_capacity.$mode.$cap
+                Write-Host ('F108_REGIME='+$b.native_generator_regime+' MODE='+$mode+
+                  ' CAP='+$cap+' TERMINAL_F60_STRESS_CORRECT='+$value.fixed_terminal_correct+'/6'+
+                  ' ORACLE_RESCUE_CHECKPOINTS='+$value.true_one_action_rescue_available+'/36'+
+                  ' PROXY_FALSE_POS='+$value.proxy_false_positive+
+                  ' PROXY_MISSED_RESCUE='+$value.proxy_missed_rescue)
+              }
+            }
+          }
+          $sha=(Get-FileHash -LiteralPath $out -Algorithm SHA256).Hash.ToLowerInvariant()
+          [System.IO.File]::WriteAllText(
+            (Join-Path $folder 'f108-native-capacity-oracle.sha256'),
+            ("$sha  f108-native-capacity-oracle.json"+[Environment]::NewLine),
+            [System.Text.UTF8Encoding]::new($false))
+          Write-Host 'F108_PUBLIC_DIAGNOSTIC_NO_LEARNED_ORIGINAL_SCIENCE=TRUE'
+      - name: Verify unchanged source and no model or controller authority
+        shell: pwsh
+        run: |
+          if (@(git status --porcelain --untracked-files=all).Count -ne 0) { throw 'F108_DIRTY_SOURCE' }
+          Write-Host 'F108_NO_CODEX_CKB_OR_MIND_PALACE_MUTATION=TRUE'
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: y-f108-native-oracle-${{ matrix.os }}
+          path: |
+            ${{ runner.temp }}/y-f108-native-oracle/f108-native-capacity-oracle.json
+            ${{ runner.temp }}/y-f108-native-oracle/f108-native-capacity-oracle.sha256
+          retention-days: 90
