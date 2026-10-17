@@ -74,9 +74,10 @@ class Tests(unittest.TestCase):
         self.assertTrue(result["eligible"])
 
     def test_hard_loss_gate_rejects_novelty_with_erasure(self):
-        damaging = BASE[:2] + EXTENDED[4:]
+        damaging = BASE[:2] + tuple((30+i, 31+i, (2*(i%4),)) for i in range(6))
         result = C.eligible_closure(BASE, damaging)
         self.assertGreater(result["four_hop_signatures_lost"], 0)
+        self.assertGreater(result["novel_five_six_hop_signatures"], 0)
         self.assertFalse(result["eligible"])
 
     def test_memory_record_and_signature_caps_fail_closed(self):
