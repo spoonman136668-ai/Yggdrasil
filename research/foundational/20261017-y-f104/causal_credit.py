@@ -113,7 +113,7 @@ def structural_retained_score(mem,spans,native):
             score+=len(roles)
         # Reverse traversal describes the same structural support, counted
         # once per retained native record, never inventing another memory cell.
-        elif (v,u,tuple(native.codec().signed_reverse(roles))) in spans:
+        elif (v,u,tuple(code^1 for code in reversed(roles))) in spans:
             score+=len(roles)
     return score
 
