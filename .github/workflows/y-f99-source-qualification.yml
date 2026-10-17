@@ -1,0 +1,88 @@
+name: F99 source and frozen-interface qualification (no research cohort)
+on:
+  push:
+    branches:
+      - research/y-f99-causal-closure-feasibility-20261016-r1
+    paths:
+      - '.github/workflows/y-f99-source-qualification.yml'
+      - 'research/foundational/20261016-y-f99/**'
+permissions:
+  contents: read
+concurrency:
+  group: y-f99-source-only-qualification
+  cancel-in-progress: false
+jobs:
+  exact-source-and-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify precode prereg and exact frozen source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 7b8e8ec2eb37a3ddded3e12a16860fabf1dec56e "$GITHUB_SHA"
+          git merge-base --is-ancestor 4a16227c13f0aaf6c40fb567d98e09176de6c999 "$GITHUB_SHA"
+          changed="$(git diff --name-only 4a16227c13f0aaf6c40fb567d98e09176de6c999 "$GITHUB_SHA")"
+          expected="$(printf '%s\n' '.github/workflows/y-f99-source-qualification.yml' 'research/foundational/20261016-y-f99/retrospective.py' 'research/foundational/20261016-y-f99/test_retrospective.py')"
+          test "$changed" = "$expected"
+          test "$(git hash-object research/foundational/20261016-y-f99/prereg.json)" = 9abcfbde16137d15248e8ce1229660a46b853dc1
+          test "$(git hash-object research/foundational/20261016-y-f99/causal_closure.py)" = 5de08fe74eb74dd917a7559cc3a8755185aac823
+          test "$(git hash-object research/foundational/20261016-y-f99/test_causal_closure.py)" = 50505f4241d51e9485395b94b30180f53ce89914
+          test "$(git hash-object research/foundational/20261016-y-f99/test_f85_closure_interface.py)" = 755977952860b68c9501cf97c2783d12b0ad8715
+          test "$(git hash-object research/foundational/20261016-y-f98/microchain.py)" = 4a03573c31d24decd9a058c4930a8e9a6fbc1f3f
+          test "$(git hash-object research/foundational/20261016-y-f98/frozen-grammar.json)" = 67ae62a79cbba0d7287bc324e6df32a5277faccb
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+          test "$(git hash-object research/foundational/20261016-y-f85/test_global_solver.py)" = bd4987a23394e47626f503f64a8ff6effcfffd2a
+          test "$(git hash-object research/foundational/20261016-y-f96/paired_order_probe.py)" = 2cf14367527c9790661af65a84d15cbe11132bc7
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+          test "$(git hash-object research/foundational/20261015-y-f62/audit_public.py)" = 383fff0bdd8c8b48fde9538d4e4d768db1c1896f
+          test "$(git hash-object research/foundational/20261015-y-f62/test_precode.py)" = 3987efb6db00ad773fcc3c261499e39acd3beee5
+          test "$(git hash-object research/foundational/20261015-y-f62/test_engineering.py)" = 82b1a3ac3027f30175c893b76c9a9d7a4d9b4a39
+          test -z "$(git status --porcelain)"
+      - name: F99 closure and frozen F85 affected-interface tests (no cohorts)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -v -s research/foundational/20261016-y-f99 -p 'test_*.py'
+          python -B -m unittest discover -v -s research/foundational/20261016-y-f85 -p 'test_global_solver.py'
+      - name: F62 native-source frozen precode and engineering tests (synthetic fixtures only)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -v -s research/foundational/20261015-y-f62 -p 'test_precode.py'
+          python -B -m unittest discover -v -s research/foundational/20261015-y-f62 -p 'test_engineering.py'
+      - name: Install repository test requirements
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Do not generate editable-install metadata in the source checkout.
+          python -m pip install 'pytest>=8.3' 'PyYAML>=6.0' 'torch>=2.4'
+      - name: One complete repository pytest regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m pytest -q tests
+      - name: Verify source tree remains unchanged and deny science acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          status="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$status" ]; then printf 'F99_WORKTREE_DIRTY_AFTER_TESTS\\n%s\\n' "$status"; exit 1; fi
+          echo 'F99_SOURCE_ONLY_QUALIFICATION=PASS'
+          echo 'F99_RETROSPECTIVE_EXECUTED=FALSE'
+          echo 'F99_PROSPECTIVE_SCIENTIFIC_ACCEPTANCE=FALSE'
+          echo 'NO_PROTECTED_OR_FIRST_USE_COHORT=TRUE'
+          echo 'NO_CONTROLLER_OR_ACCEPTED_REF_MUTATION=TRUE'
