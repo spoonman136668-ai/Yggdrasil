@@ -1,0 +1,47 @@
+name: Yggdrasil F96 independent paired arrival order heldout
+on:
+  push:
+    branches:
+      - research/y-f96-matched-arrival-observability-20261016-r1
+    paths:
+      - '.github/workflows/y-f96-paired-heldout.yml'
+permissions:
+  contents: read
+jobs:
+  paired-heldout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Attest successful calibration parent and unmodified frozen method
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor d87fee4bd31ac851ca67e0c67f16aaeb1467e061 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f96/prereg.json)" = 031f7edd0d43ebe9d66d42832ea4b4057f752406
+          test "$(git hash-object research/foundational/20261016-y-f96/paired_order_probe.py)" = 2cf14367527c9790661af65a84d15cbe11132bc7
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+          test "$(git hash-object research/foundational/20261016-y-f94/single_deviation_feasibility.py)" = 0284a3ed1cd5f263dc4ad7cf3f3f21969bb665ad
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+      - name: Repeat pure contracts without opening scientific cases
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f96 -p test_paired_order_probe.py
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f94 -p test_single_deviation_feasibility.py
+      - name: One-time independent source-matched heldout native feasibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f96/paired_order_probe.py --heldout-first-use-only > "$RUNNER_TEMP/f96-frozen-paired-heldout.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f96-frozen-paired-heldout.json"))); assert r["stage"]=="HELDOUT_PAIRED_SOURCE_DIAGNOSTIC_FIRST_USE" and r["source_graphs"]==32 and r["paired_order_episodes"]==64; assert r["source_graph_and_task_exactly_matched"] and r["all_original_public_answers_independently_verified"] and r["all_native_actions_exactly_enumerated"] and r["native_memory_bytes_max"]==144; assert r["retrospective_oracle_uses_future_and_answer"] and not r["online_policy_qualified"] and not r["scientific_accepted"] and not r["fitted_policy"]; assert r["public_descriptor_state_is_offline_only"] and r["no_protected_FIT"] and r["no_DIAG"] and r["no_original"] and r["no_F3"] and r["no_controller_mutation"] and r["no_optimizer_promotion"]; print(json.dumps({k:r[k] for k in ("stage","source_graphs","paired_order_episodes","summary","by_question_type","by_original_source_family")},sort_keys=True))'
+      - name: Check source checkout remained immutable
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"

@@ -1,0 +1,51 @@
+name: Yggdrasil F96 matched arrival calibration source only
+on:
+  push:
+    branches:
+      - research/y-f96-matched-arrival-observability-20261016-r1
+    paths:
+      - 'research/foundational/20261016-y-f96/prereg.json'
+      - 'research/foundational/20261016-y-f96/paired_order_probe.py'
+      - 'research/foundational/20261016-y-f96/test_paired_order_probe.py'
+      - '.github/workflows/y-f96-paired-calibration.yml'
+permissions:
+  contents: read
+jobs:
+  paired-calibration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Freeze source generator, protocol, method and original root
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 84b043ef46f5908e4cca0a6cd2a3b2f4d0b2df96 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f96/prereg.json)" = 031f7edd0d43ebe9d66d42832ea4b4057f752406
+          test "$(git hash-object research/foundational/20261016-y-f96/paired_order_probe.py)" = 2cf14367527c9790661af65a84d15cbe11132bc7
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+          test "$(git hash-object research/foundational/20261016-y-f94/single_deviation_feasibility.py)" = 0284a3ed1cd5f263dc4ad7cf3f3f21969bb665ad
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+      - name: Unit contracts before any new synthetic source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f96 -p test_paired_order_probe.py
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f94 -p test_single_deviation_feasibility.py
+      - name: Controlled same-graph calibration only — never heldout
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f96/paired_order_probe.py --calibration-only > "$RUNNER_TEMP/f96-paired-calibration.json"
+          python3 -B -c 'import json,os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f96-paired-calibration.json"))); assert r["stage"]=="CALIBRATION_SOURCE_DIAGNOSTIC_ONLY" and r["source_graphs"]==16 and r["paired_order_episodes"]==32; assert r["source_graph_and_task_exactly_matched"] and r["all_original_public_answers_independently_verified"] and r["all_native_actions_exactly_enumerated"]; assert r["retrospective_oracle_uses_future_and_answer"] and not r["online_policy_qualified"] and not r["scientific_accepted"] and not r["fitted_policy"]; assert r["no_protected_FIT"] and r["no_DIAG"] and r["no_original"] and r["no_F3"]; print(json.dumps({k:r[k] for k in ("stage","source_graphs","paired_order_episodes","summary","by_question_type")},sort_keys=True))'
+      - name: Read-only source and no controller mutation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"

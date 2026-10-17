@@ -1,0 +1,83 @@
+{
+  "schema": "yggdrasil.f96.matched-arrival-native-feasibility.prereg.v1",
+  "stage": "FROZEN_PRECODE_MATCHED_PAIRS_SOURCE_ONLY_NO_ONLINE_POLICY",
+  "parent": {
+    "F95_exact_head": "84b043ef46f5908e4cca0a6cd2a3b2f4d0b2df96",
+    "F95_method_blob": "b68712cab0d1774c4fc27e928b4f4b57748a1fe4",
+    "F94_method_blob": "0284a3ed1cd5f263dc4ad7cf3f3f21969bb665ad",
+    "F76_frozen_source_blob": "5b8928b0399ce9f869854beadeab04b29c8703a5",
+    "F62_frozen_actions_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "F85_frozen_solver_blob": "e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3"
+  },
+  "scientific_question": "On identical public graph and eventual task, does the F76 four-event local rotation causally change F60 success, native one-step hindsight rescue feasibility, risk of damaging F60-correct tasks, and publicly observable prefix connectivity? Avoid confounding order effects with family-conditioned graph differences.",
+  "paired_source": {
+    "construction": "Fetch F76.source(seed,family). For family -2 this gives original; for family -1 invert only the frozen F76 block-of-4 rotation to recover original. Then construct both original and local_rotate4 using the EXACT frozen F76.shift, never regenerate graph or question. Independently verify identical public multisets, source public uniqueness, identical question/answer and exact 72 arrivals for each paired observation.",
+    "calibration": {
+      "seeds_start": -6201,
+      "seeds_stop_exclusive": -6209,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "distinct_graphs": 16,
+      "order_episodes": 32
+    },
+    "heldout": {
+      "seeds_start": -6241,
+      "seeds_stop_exclusive": -6257,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "distinct_graphs": 32,
+      "order_episodes": 64
+    },
+    "excluded_consumed_seed_ranges": [
+      [
+        -6041,
+        -6057
+      ],
+      [
+        -6101,
+        -6117
+      ],
+      [
+        -6121,
+        -6129
+      ],
+      [
+        -6141,
+        -6157
+      ]
+    ],
+    "no_registered_FIT_DIAG_original_F3": true
+  },
+  "protocol": {
+    "frozen_F60_and_F85": "For every order, run exact F62._f60_step causal memory and frozen F85.solve_global on the same original query, 144B native memory. All public full graph answers must be independently unique.",
+    "retrospective_witness": "For every ordered episode run existing SHA-pinned F94.evaluate_case over every 72 prefix and all exact F62.actions native alternatives, with exact F60 suffix and frozen F85 truth checking. It is an OFFLINE hindsight oracle, not an admissible online controller.",
+    "risk_and_benefit": "Report F60 success, cases with any native one-deviation rescue (including six-step), cases with any harmful deviation when F60 correct, those meeting minimum exact-record overlap, and period early/middle/late. Count native actions without truncation.",
+    "public_observability": "For prefix positions 12..47 only, count two PUBLIC causally measurable signals: whether incoming event connects to the endpoints of some currently retained F60 native record, and the number of exact legal F62 candidate afterstates. These are offline aggregate descriptors; not stored in or made available to an online 144B policy. Do not include task, family or answer in their computation.",
+    "within_pair_comparison": "Report original-vs-rotated changes on the SAME graph, distinct graphs where F60 correctness changes, six-step retrospective rescue feasibility gained/lost from rotation, and source prefix public connectivity changes. Stratify by task type and original graph family, but family labels NEVER influence native action choice.",
+    "no_training": "No model, thresholds, weighting, reward or action selector is fitted. Calibration and heldout outputs are descriptive and separately scoped. Heldout first-use may only be evaluated after this prereg and code are fixed; no model promotion.",
+    "interpretation": "A finite retrospective positive witness is limited architectural feasibility and does not prove a query-blind causal selector. A zero one-step witness cannot establish multi-step infeasibility."
+  },
+  "required_tests": {
+    "source_pair_identity": "Exactly same public event multiset and same question/answer for each original/rotation pair, unique independently sourced truth.",
+    "fixed_actions": "All F62 actions native; frozen F60 step parity, <=144B retained, all historical F85 costs uncapped.",
+    "unit_contracts": "Inverse rotation checks, public-only feature detector interface, pair accounting, and evidence labels; before any new synthetic source read.",
+    "no_posthoc_tuning": true
+  },
+  "authority": {
+    "scientific_accepted": false,
+    "controller_mutation": false,
+    "optimizer_promotion": false,
+    "merged": false,
+    "FIT": false,
+    "DIAG": false,
+    "ORIGINAL": false,
+    "F3": false,
+    "Codex": false
+  }
+}
