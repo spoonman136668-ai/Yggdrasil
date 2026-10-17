@@ -1,0 +1,86 @@
+{
+  "schema": "yggdrasil.f103.credit-sparsity-onpolicy-support-prereg.v1",
+  "phase": "SOURCE_FROZEN_BEFORE_F103_CODE_OR_FRESH_COHORT_EVALUATION",
+  "parent": {
+    "F102_exact_head": "c412b42b5aa5d9222343696bd14e3a76656ce33e",
+    "F102_code_git_blob": "8686390483c1e367c5cc1016a865a15c926b8376",
+    "F102_frozen_prereg_blob": "4f3a8bf295a2f695a039d6b71d87d3bff3939e76",
+    "F101_blob": "6333738872a64eb68c745bdf0973c9b111bac060",
+    "F62_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "reported_F102_negative": "On 32 public synthetic guard streams, F60 fixed 8 correct; F102 learned raw 1, normalized 3. Four train passes had no numerical failures, clipping never activated. Treat those original guard results as consumed, unaltered and NOT available for F103 model selection."
+  },
+  "hypotheses": {
+    "H1": "TRAIN-only action-credit label support is sparse and poorly aligned with chosen actions: measure {-1,0,+1} balance, fraction of zero feature differences with nonzero credit, duplicate contradictory labels, available oracle delta at each public checkpoint.",
+    "H2": "F102 fitted learned memory visits online states unrepresented in the frozen F60 teacher-generated training label distribution: compare source-native learner checkpoint deltas to F60 teacher action-feature pool by exact support and nearest Euclidean distance, controlling for checkpoint index and legal action count.",
+    "H3": "Even where features are similar, action-value prediction can rank actions with worse delayed causal effect under fixed teacher continuation: for F103 streams, after all online choices are fixed, offline fork each learned checkpoint candidate, replay the genuine fixed F60 suffix and compare delayed-answer correctness against local F60 native action; report opportunity/regret without feeding future answers back into the online policy."
+  },
+  "source": {
+    "TRAIN_ONLY": "Reuse exact unchanged F102 16 negative-seed TRAIN episodes and their training labels, without re-evaluating or touching any F102 GUARD episode.",
+    "NEW_F103_DIAGNOSTIC": [
+      {
+        "name": "D103-A",
+        "seeds": [
+          -14001,
+          -14008
+        ],
+        "family": -51,
+        "mode": "raw",
+        "namespaces": [
+          48,
+          55
+        ]
+      },
+      {
+        "name": "D103-B",
+        "seeds": [
+          -14101,
+          -14108
+        ],
+        "family": -52,
+        "mode": "swap_roles_and_invert",
+        "namespaces": [
+          56,
+          63
+        ]
+      }
+    ],
+    "no_use": "F102 guard seeds -13001/-13101/-13201/-13301 and all published GUARD outcomes forbidden as model/threshold inputs. F62 reserved FIT/VALIDATION/DIAG/ORIGINAL and original science strictly excluded.",
+    "fresh_only_source": "Unregistered public synthetic native F62 _construct negative seeds, remapped disjoint IDs, real F62 legal online memory actions and codec. Exactly 72 events/episode and 12x12B=144B native persistent bound.",
+    "sampled_online_checkpoints": [
+      11,
+      23,
+      35,
+      47,
+      59,
+      71
+    ],
+    "offline_reference": "For each sampled learner-owned memory state, recompute the frozen F62 legal actions and ask the frozen F60 suffix continuation to score each action using the hidden delayed question AFTER online decision. Source-only retrospective counterfactual oracle, never available to learner.",
+    "online_policies": [
+      "Frozen F60 `_f60_step`",
+      "F102 exactly reproduced TRAIN-only raw weights, four updates, native action scorer, no parameter update on F103 diagnostics"
+    ],
+    "memory_source_custody": "Pin Git blob checks F101 F102 F62 and original F102 prereg. Complete per-episode and per-checkpoint model and F60 memory pack receipts, action IDs, scores, no future-input flags, labels and OOD feature metrics.",
+    "train_credit_support": "Exactly F102 native counterfactual_labels on F102 TRAIN with zero-initialized fits. At TRAIN checkpoints record all three credit counts; conflicting labels for identical 12-feature candidate difference; separate zero-vector labels; per-checkpoint learner action preference under teacher states.",
+    "comparators": "No additional learned model or neural architecture in this diagnostic. Future model changes require wholly new pre-frozen task families; same F103 DIAGNOSTIC cannot be recycled as a pristine GUARD."
+  },
+  "predetermined_interpretation": {
+    "support_sparsity": "Credit support called sparse when >90% of F102 TRAIN teacher action labels equal zero. If threshold not met, do NOT claim sparsity established. Independently report positive/negative counts.",
+    "policy_shift": "Support shift flagged if >25% of F103 learner checkpoint chosen-action feature deltas are not exact members of TRAIN teacher action-feature differences AND mean learner distance to TRAIN support exceeds mean teacher distance on the same fresh diagnostic checkpoint distribution. Else no diagnosed shift.",
+    "objective_regret": "Report number of learner decisions where an alternate F62 native action has strictly higher delayed correctness under the same fixed F60 continuation. This is a *local* counterfactual opportunity, not proof that a different TRAIN objective would generalize. No predetermined expectation of positive rate.",
+    "negative_causal_bound": "Any trend towards zero error or smaller distance does NOT imply OOD transfer or causal credit learning; the diagnostic is synthetic, and the hidden answer is used only for offline evaluation."
+  },
+  "authority": {
+    "no_CKB_dependency": true,
+    "no_Codex": true,
+    "no_paid_inference": true,
+    "no_new_scheduler": true,
+    "no_MindPalace_write": true,
+    "no_Cloudflare_mutation": true,
+    "no_protected_firstuse": true,
+    "no_scientific_acceptance": true,
+    "no_optimizer_promotion": true,
+    "no_F62_reserved_source": true,
+    "no_accepted_ref_mutation": true,
+    "no_cross_repo_write": true
+  }
+}
