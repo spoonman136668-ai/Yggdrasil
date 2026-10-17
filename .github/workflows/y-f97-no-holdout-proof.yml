@@ -1,0 +1,36 @@
+name: Yggdrasil F97 frozen policy nonpromotion proof (no holdout)
+on:
+  push:
+    branches:
+      - research/y-f97-paired-public-join-risk-20261016-r1
+    paths:
+      - 'research/foundational/20261016-y-f97/inactive_proof.py'
+      - '.github/workflows/y-f97-no-holdout-proof.yml'
+permissions:
+  contents: read
+jobs:
+  frozen-inactive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Attest prereg and frozen TRAIN-only code/policy blobs
+        run: |
+          set -euo pipefail
+          test "$(git hash-object research/foundational/20261016-y-f97/prereg.json)" = 8e8450b07681ba4899e18d446e45f2007682a147
+          test "$(git hash-object research/foundational/20261016-y-f97/paired_join_risk.py)" = d100ee3c329e648752647872e16473e9fe281963
+          test "$(git hash-object research/foundational/20261016-y-f97/frozen-policy.json)" = 2fd22c218978ae1765da9ec4e25845b1cc9c9bbe
+      - name: Source-only exact F60 equivalence; reserve all scientific holdouts
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f97/inactive_proof.py --no-cohort-proof-only
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f97 -p test_paired_join_risk.py
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f96 -p test_paired_order_probe.py
+      - name: No accepted scientific or source mutation
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
