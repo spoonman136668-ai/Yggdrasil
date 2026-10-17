@@ -1,0 +1,139 @@
+name: Y-F109 frozen native paired-intervention information oracle
+on:
+  push:
+    branches:
+      - research/y-f109-paired-legal-intervention-oracle-20261017-r1
+    paths:
+      - '.github/workflows/y-f109-paired-legal-intervention.yml'
+      - 'research/foundational/20261017-y-f109/**'
+permissions:
+  contents: read
+jobs:
+  frozen-native-source:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 75
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve immutable raw Git bytes before Windows checkout
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.safecrlf true
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify prereg-before-code frozen parent and scope
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $parent='1831f380a0987fd70f6806a4e4581280c181a956'
+          $freeze='8c932a2638dadb10cb5b9fc4fce5e460c3a1a067'
+          if ((git rev-parse HEAD) -cne $env:GITHUB_SHA) { throw 'F109_HEAD_NOT_EXACT' }
+          git merge-base --is-ancestor $parent HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'F109_F108_PARENT_MISSING' }
+          git merge-base --is-ancestor $freeze HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'F109_PRECODE_PROTOCOL_MISSING' }
+          $expected=@(
+            '.github/workflows/y-f109-paired-legal-intervention.yml',
+            'research/foundational/20261017-y-f109/prereg.json',
+            'research/foundational/20261017-y-f109/two_action_oracle.py',
+            'research/foundational/20261017-y-f109/test_two_action_oracle.py'
+          )
+          $changed=@(git diff --name-only $parent HEAD | Where-Object { $_ -ne '' })
+          if (@(Compare-Object $changed $expected).Count -ne 0) { throw 'F109_OTHER_SCIENCE_CHANGED' }
+          if ((git hash-object 'research/foundational/20261017-y-f109/prereg.json') -cne 'dd0fe76e9a833283102ef67366f09d9cea1d84d1') { throw 'F109_PRECODE_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f108/oracle.py') -cne '07aae5b5717a7b02af1b09eb0df686fb1dc89cd5') { throw 'F109_F108_PARENT_CHANGED' }
+      - name: Test exact F60 native action and two-point causal counterfactual controls
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          python -B -m unittest discover -s research/foundational/20261017-y-f109 -p 'test_two_action_oracle.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'F109_SOURCE_TESTS_FAILED' }
+      - name: Execute original frozen native F60 paired-intervention source-only study
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $folder=Join-Path $env:RUNNER_TEMP 'y-f109-public'
+          New-Item -ItemType Directory -Path $folder -Force | Out-Null
+          $out=Join-Path $folder 'f109-native-two-action-oracle.json'
+          python -B research/foundational/20261017-y-f109/two_action_oracle.py --source-ref $env:GITHUB_SHA |
+            Out-File -LiteralPath $out -Encoding utf8
+          if ($LASTEXITCODE -ne 0) { throw 'F109_FROZEN_STUDY_EXECUTION_FAILED' }
+          $d=Get-Content -LiteralPath $out -Raw | ConvertFrom-Json
+          if ($d.schema -cne 'yggdrasil.f109.two-native-intervention-oracle-public.v1' -or
+              $d.head -cne $env:GITHUB_SHA -or
+              $d.frozen_F108_exact_sha -cne '1831f380a0987fd70f6806a4e4581280c181a956' -or
+              $d.base_graphs -ne 12 -or $d.paired_arrival_worlds -ne 24 -or
+              $d.original_native_record_limit -ne 12 -or
+              $d.native_record_bytes -ne 12 -or
+              $d.totals.windows -ne 240 -or
+              $d.blocks.Count -ne 2 -or
+              -not $d.source_public_answer_path_verified_across_arrival_modes -or
+              -not $d.source_only_undeployable_future_answer_oracle -or
+              -not $d.no_protected_original_or_prior_GUARD_DIAG_reuse -or
+              -not $d.no_new_learned_or_controller_policy -or
+              -not $d.no_independently_accepted_scientific_firstuse -or
+              $d.accepted_refs_mutated -ne 0 -or $d.optimizer_promoted -or
+              $d.CKB_connected -or $d.Codex_used -or $d.MindPalace_written) {
+            throw 'F109_INVALID_SCIENTIFIC_SCOPE_OR_DATA'
+          }
+          foreach ($b in $d.blocks) {
+            if ($b.worlds.Count -ne 12 -or $b.summary.windows -ne 120) {
+              throw 'F109_MISSING_FAMILY_OR_PAIRED_WORLDS'
+            }
+            foreach ($world in $b.worlds) {
+              if ($world.windows.Count -ne 10) { throw 'F109_MISSING_INTERVENTION_WINDOWS' }
+              foreach ($w in $world.windows) {
+                if ($w.offset -notin @(1,8) -or
+                    $w.t -notin @(11,23,35,47,59) -or
+                    $w.legal_pair_count -ne $w.exact_legal_pair_outcomes.Count -or
+                    -not $w.source_native_144B_original_F60 -or
+                    -not $w.no_answer_or_future_access_in_online_controller -or
+                    ($w.strictly_coordinated_two_action_synergy -and
+                       (-not $w.two_action_any_rescue -or $w.either_single_action_rescue))) {
+                  throw 'F109_INVALID_PAIRS_OR_SYNERGY'
+                }
+                foreach ($c in $w.exact_legal_pair_outcomes) {
+                  if ($c.final_correct -notin @(0,1) -or $c.final_native_records -gt 12) {
+                    throw 'F109_INVALID_NATIVE_ACTION_OR_BYTE_BUDGET'
+                  }
+                }
+              }
+            }
+          }
+          Write-Host ('F109_NATIVE_WINDOWS='+$d.totals.windows)
+          Write-Host ('F109_NATIVE_PAIRED_LEGAL_ACTIONS='+$d.totals.native_two_action_combinations)
+          Write-Host ('F109_FIXED_F60_CORRECT='+$d.totals.real_F60_correct+'/24')
+          Write-Host ('F109_SINGLE_INITIAL_RESCUE='+$d.totals.first_point_rescues)
+          Write-Host ('F109_SINGLE_SECOND_RESCUE='+$d.totals.second_point_rescues)
+          Write-Host ('F109_ANY_TWO_ACTION_RESCUE='+$d.totals.any_two_action_rescues)
+          Write-Host ('F109_STRICT_SYNERGY='+$d.totals.strict_two_action_synergies)
+          Write-Host ('F109_DISPOSITION='+$d.disposition)
+          $sha=(Get-FileHash -LiteralPath $out -Algorithm SHA256).Hash.ToLowerInvariant()
+          [System.IO.File]::WriteAllText(
+            (Join-Path $folder 'f109-native-two-action-oracle.sha256'),
+            ("$sha  f109-native-two-action-oracle.json"+[Environment]::NewLine),
+            [System.Text.UTF8Encoding]::new($false))
+          Write-Host 'F109_SCIENTIFIC_FIRST_USE=FALSE'
+      - name: Clean source and no new model/CKB/Codex authority
+        shell: pwsh
+        run: |
+          if (@(git status --porcelain --untracked-files=all).Count -ne 0) { throw 'F109_SOURCE_MUTATION' }
+          Write-Host 'F109_NATIVE_ONLY_NO_CODEX_CKB_OR_MINDPALACE_WRITE=TRUE'
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: y-f109-native-paired-oracle-${{ matrix.os }}
+          path: |
+            ${{ runner.temp }}/y-f109-public/f109-native-two-action-oracle.json
+            ${{ runner.temp }}/y-f109-public/f109-native-two-action-oracle.sha256
+          retention-days: 90
