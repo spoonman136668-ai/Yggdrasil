@@ -64,7 +64,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -m pip install -e '.[test]'
+          # Do not generate editable-install metadata in the source checkout.
+          python -m pip install 'pytest>=8.3' 'PyYAML>=6.0' 'torch>=2.4'
       - name: One complete repository pytest regression
         shell: bash
         run: |
@@ -76,7 +77,8 @@ jobs:
           set -euo pipefail
           git diff --exit-code
           git diff --cached --exit-code
-          test -z "$(git status --porcelain)"
+          status="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$status" ]; then printf 'F99_WORKTREE_DIRTY_AFTER_TESTS\\n%s\\n' "$status"; exit 1; fi
           echo 'F99_SOURCE_ONLY_QUALIFICATION=PASS'
           echo 'F99_RETROSPECTIVE_EXECUTED=FALSE'
           echo 'F99_PROSPECTIVE_SCIENTIFIC_ACCEPTANCE=FALSE'
