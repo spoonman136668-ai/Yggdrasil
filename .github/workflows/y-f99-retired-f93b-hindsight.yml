@@ -1,0 +1,89 @@
+name: F99 retired F93B hindsight (read-only, no scientific acceptance)
+on:
+  push:
+    branches:
+      - research/y-f99-retired-f93b-hindsight-20261017-r1
+    paths:
+      - '.github/workflows/y-f99-retired-f93b-hindsight.yml'
+permissions:
+  contents: read
+jobs:
+  retired-f93b:
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout exact source-only branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify frozen source-only science and one-file CI delta
+        shell: bash
+        run: |
+          set -euo pipefail
+          base=cd9304a4184692bc837a2bd36a2903d69ea366af
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git diff --name-only "$base" "$GITHUB_SHA")" = '.github/workflows/y-f99-retired-f93b-hindsight.yml'
+          git merge-base --is-ancestor "$base" "$GITHUB_SHA"
+          test "$(git hash-object research/foundational/20261016-y-f99/prereg.json)" = 9abcfbde16137d15248e8ce1229660a46b853dc1
+          test "$(git hash-object research/foundational/20261016-y-f99/causal_closure.py)" = 5de08fe74eb74dd917a7559cc3a8755185aac823
+          test "$(git hash-object research/foundational/20261016-y-f99/retrospective.py)" = d8cc29fc535e02dbee2f1b1f92a8d419383106df
+          test "$(git hash-object research/foundational/20261016-y-f99/test_retrospective.py)" = 2dc27defeb1baa4bbb61b7a3e508299b821d9f06
+          test "$(git hash-object research/foundational/20261016-y-f94/single_deviation_feasibility.py)" = 0284a3ed1cd5f263dc4ad7cf3f3f21969bb665ad
+          test "$(git hash-object research/foundational/20261016-y-f96/paired_order_probe.py)" = 2cf14367527c9790661af65a84d15cbe11132bc7
+          test "$(git hash-object research/foundational/20261016-y-f98/holdout.py)" = be61a466d7e1eafd635e2ebc31a4c103444aec02
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Retrospective method guard regression (no cohort read)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f99 -p 'test_retrospective.py'
+      - name: Retired F93B/F94 consumed 32 episodes only (no new first use)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f99/retrospective.py --consumed f93b_guard > "$RUNNER_TEMP/f99-retired-f93b.json"
+          python3 - "$RUNNER_TEMP/f99-retired-f93b.json" <<'PY'
+          import json,sys
+          x=json.load(open(sys.argv[1]))
+          assert x["schema"]=="yggdrasil.f99.retired-closure-feasibility.v1"
+          assert x["stage"]=="CONSUMED_SOURCE_RETROSPECTIVE_ONLY_NOT_ACCEPTED"
+          assert x["scope"]=="f93b_guard" and x["overall"]["episodes"]==32
+          assert sum(z["public_prefixes"] for z in x["rows"])==32*72
+          assert all(z["public_prefixes"]==72 for z in x["rows"])
+          assert x["exact_native_72_prefixes"] and x["native_memory_limit_bytes"]==144
+          assert x["future_question_never_used_in_online_choice"]
+          assert not x["new_first_use"] and not x["protected_FIT_DIAG_ORIGINAL_F3"]
+          assert not x["valid_online_selector"] and not x["scientific_accepted"]
+          assert not x["optimizer_promotion"] and not x["controller_mutation"]
+          assert x["classification"] in ("RETROSPECTIVE_FEASIBLE_ONLY",
+                                        "RETROSPECTIVE_NO_WITNESS",
+                                        "SOURCE_RESOURCE_INELIGIBLE")
+          keys=("classification","six_step_failed_episodes_rescuable","overall",
+                "six_step","four_step","by_order")
+          print("F99_RETRO_F93B_DIAGNOSTIC="+json.dumps({k:x[k] for k in keys},sort_keys=True))
+          print("F99_READONLY_NONACCEPTING=TRUE")
+          PY
+          sha256sum "$RUNNER_TEMP/f99-retired-f93b.json"
+      - name: Verify no repository, controller or acceptance changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo 'NO_FRESH_SOURCE=TRUE'
+          echo 'NO_CKB_MUTATION=TRUE'
+          echo 'NO_ACCEPTED_REF_MUTATION=TRUE'
+      - name: Archive retired-only diagnostic for independent reading
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: f99-retired-f93b-readonly
+          path: ${{ runner.temp }}/f99-retired-f93b.json
+          retention-days: 90
