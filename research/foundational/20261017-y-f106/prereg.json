@@ -1,0 +1,104 @@
+{
+  "schema": "yggdrasil.f106.precode-relational-credit-identifiability-public.v1",
+  "status": "FROZEN_BEFORE_F106_MECHANISM_OR_DIAGNOSTIC_DATA",
+  "parent": {
+    "exact_F105_head": "84c2060d0b9634586f19e028867f6cb7fab423be",
+    "F105_source_git_blob": "f78cae2150b48b4c7ffb1274f80392a563bd64ce",
+    "F105_prereg_git_blob": "77cc10c614f37ca03604bb16f76a944455ef5f2c",
+    "F104_source_git_blob": "dd1f7bb2fd7288b5933f7a23085196c8a62e17b8",
+    "F105_negative": "F60 8/32, TRAIN-only original 12 features 9/32, 20-feature relational 3/32, 20 relational-feature ablation zero change; 16 conflicting identical 20-feature TRAIN label groups. No superiorty qualified."
+  },
+  "question": "Do different delayed structural credit labels share *exactly the same available policy feature vector*? Quantify the training-label ceiling for 12- and 20-dimensional native scorers, distinguish representational aliasing from irresolvable absence of future information, and measure whether these collisions recur on fresh source-only diagnostics, without training or tuning another policy.",
+  "source": {
+    "frozen_prior_F105_TRAIN": [
+      [
+        -17001,
+        -17008,
+        -81,
+        0
+      ],
+      [
+        -17101,
+        -17108,
+        -82,
+        8
+      ]
+    ],
+    "new_F106_DIAGNOSTIC": [
+      {
+        "name": "D106-A",
+        "seed_start": -19001,
+        "seed_end": -19008,
+        "family": -101,
+        "mode": "raw",
+        "namespace_start": 48,
+        "episodes": 8
+      },
+      {
+        "name": "D106-B",
+        "seed_start": -19101,
+        "seed_end": -19108,
+        "family": -102,
+        "mode": "swap_roles_and_invert",
+        "namespace_start": 56,
+        "episodes": 8
+      }
+    ],
+    "event_count": 72,
+    "check_events": [
+      11,
+      23,
+      35,
+      47,
+      59,
+      71
+    ],
+    "native_memory_limit_bytes": 144,
+    "no_original_sources": true,
+    "no_use_of_F105_GUARD_or_F104_GUARD": true,
+    "note": "F105 TRAIN is consumed training context, used here only to reproduce its existing label collision; F106 fresh cohorts become consumed DIAGNOSTIC, NEVER advertised as independent heldout superiority or a new pristine model selector."
+  },
+  "label": "Use exactly F105's frozen offline TRAIN-only teacher definition, enumerating all source-native F62 legal actions at the six F60 memory checkpoints. From each action, append the next up-to-eight observed public events via unchanged F60 _finish_fixed, then quantify exact terminal source path structural record overlap. Label is sign versus local F60 action. Future target path is used ONLY offline for attribution; no policy gets it.",
+  "representations": {
+    "feature12": "Frozen original F62 native 12 action-difference features, exact float value repr keyed; zero parameters added.",
+    "feature20": "Frozen F105 original 12 plus eight current-prefix graph descriptor action-differences, exact float value repr keyed.",
+    "exact_local_visible_state": "Canonical per-case SHA256 of prefix native packed memory + current arrived public event + candidate native packed memory. SOURCE-ID memorization upper bound only: not reusable graph representation, and not a new feature proposed for model.",
+    "matched_local_state_split": "Within same full current memory and event, examine whether any native legal actions have identical 12/20 action features but different offline future-effect label.",
+    "F101_path_witness": "For selected diagnostic final native memories where terminal query role depth <=6, apply exact frozen F101 source-path explain under 144B and record deletion necessity. No F101 witness is presented to action inference."
+  },
+  "metrics": {
+    "label_count_and_sign_balance": true,
+    "conflicting_labels_per_feature_equivalence_class": "A feature group is conflicting if >1 of labels -1,0,+1 occurs for the exact vector. Report classes, all members, and empirical information ceiling: sum of per-class majority counts / total, plus unavoidable same-feature wrong-label count = total - sum maxima.",
+    "group_by_features_12_and_20": true,
+    "group_by_exact_source_hash": true,
+    "group_by_same_online_prefix_and_event": true,
+    "split_by_original_F105_TRAIN_and_fresh_D106_A_B": true,
+    "role_and_arrival_transform_reported_separately": true,
+    "explain_known_label_aliasing": "A single identical feature vector cannot deterministically output different labels for its members. The bound is only on reproducing this *particular offline structural potential teacher*, not downstream actual answer accuracy, a proof of missing causal memory information, or an impossibility bound for models with additional non-scalar inputs.",
+    "source_only_F60_vs_original_F105_control": "Evaluate unchanged source-native F60, F105 original 12 and original 20 fitted only on F105 original TRAIN; report 16 new diagnostic terminal outcomes with no model fitting on new diagnostics.",
+    "robustness": "No exact prior F105 GUARD cases regenerated; immutable old source/prereg Git objects; no paid APIs, CodeX or controller; no source mutation; synthetic source-only."
+  },
+  "prereg_decisions": {
+    "feature12_aliased_if": "There is >=1 conflicting label equivalence class in reproduced F105 TRAIN; otherwise NEGATIVE to aliasing for that data.",
+    "feature20_aliased_if": "There is >=1 conflicting label equivalence class in reproduced F105 TRAIN; otherwise NEGATIVE.",
+    "fresh_replication_if": "At least one conflicting 20-feature class in D106-A and one in D106-B; if either lacks one, mark NO_CROSS_MODE_REPLICATION; never retune or add cases.",
+    "explanation_classification": "Even proven exact-feature label aliasing does NOT isolate causation of F105 terminal failure. A full visible native state may resolve differences by source ID memorization, but that does NOT establish reusable structural learning or fix missing future question.",
+    "no_new_learned_policy": true,
+    "no_new_original_science": true,
+    "confidence": "Descriptive exact empirical support bounds only; no random population inference or invented significance."
+  },
+  "authority": {
+    "no_CKB_dependency": true,
+    "no_Codex": true,
+    "no_paid_model": true,
+    "no_Cloudflare_write": true,
+    "no_MindPalace_write": true,
+    "no_new_scheduler": true,
+    "no_accepted_ref_change": true,
+    "no_automatic_merge": true,
+    "no_optimizer_promotion": true,
+    "no_protected_first_use": true,
+    "no_independent_scientific_acceptance": true,
+    "no_Wingless_or_FORGE_write": true
+  }
+}
