@@ -173,11 +173,18 @@ def evaluate(commit):
             "EXACT_GIT_COMMIT_REQUIRED")
     cfg,f102,native=load()
     pack=native.codec()
-    train,untouched_f102_guard=f102.source_split(native)
-    # NEVER look at question/results or even episode streams from parent
-    # GUARD in this F103 diagnostic; source_split computes them only because
-    # that is the original F102 TRAIN interface. Ignore, never fit to them.
-    require(len(train)==16 and len(untouched_f102_guard)==4,
+    # Reconstruct ONLY the exact 16 frozen F102 TRAIN episodes. We do NOT
+    # call F102.source_split(), which would unnecessarily materialize the
+    # consumed F102 GUARD cases. Their identities and outcomes are untouched.
+    train=[]
+    for family_index,family in enumerate((-31,-32)):
+        for offset in range(8):
+            seed=f102.TRAIN_START-offset
+            stream,q,identity=f102.episode(native,seed,family,"raw",
+                                            family_index*8+offset)
+            train.append((seed,family,stream,q,identity))
+    train=tuple(train)
+    require(len(train)==16 and len(set(x[4] for x in train))==16,
             "PARENT_TRAIN_IDENTITY")
     examples=f102.train_examples(native,pack,train)
     training_pool=frozenset(tuple(round(v,12) for v in x) for x,y in examples)
