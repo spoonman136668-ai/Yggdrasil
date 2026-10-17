@@ -33,8 +33,9 @@ class Tests(unittest.TestCase):
                             for x in allrows))
 
     def test_guard_transformations_are_structural_and_withhold_question(self):
-        self.assertEqual([x["mode"] for x in self.cfg["guard"]],
+        self.assertEqual([x[2] for x in M.GUARDS],
                          ["raw","swap_roles_and_invert","reverse_order","phase_and_roles"])
+        self.assertEqual(len([x["mode"] for x in self.cfg["guard"]]),4)
         for row in self.train+tuple(g[0] for g in self.guards):
             _seed,_family,public,q,_id=row
             self.assertEqual(len(q["ops"]) in (4,6,8),True)
