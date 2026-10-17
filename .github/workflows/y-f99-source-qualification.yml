@@ -32,7 +32,9 @@ jobs:
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git merge-base --is-ancestor 7b8e8ec2eb37a3ddded3e12a16860fabf1dec56e "$GITHUB_SHA"
           git merge-base --is-ancestor 4a16227c13f0aaf6c40fb567d98e09176de6c999 "$GITHUB_SHA"
-          expected=
+          changed="$(git diff --name-only 4a16227c13f0aaf6c40fb567d98e09176de6c999 "$GITHUB_SHA")"
+          expected="$(printf '%s\n' '.github/workflows/y-f99-source-qualification.yml' 'research/foundational/20261016-y-f99/retrospective.py' 'research/foundational/20261016-y-f99/test_retrospective.py')"
+          test "$changed" = "$expected"
           test "$(git hash-object research/foundational/20261016-y-f99/prereg.json)" = 9abcfbde16137d15248e8ce1229660a46b853dc1
           test "$(git hash-object research/foundational/20261016-y-f99/causal_closure.py)" = 5de08fe74eb74dd917a7559cc3a8755185aac823
           test "$(git hash-object research/foundational/20261016-y-f99/test_causal_closure.py)" = 50505f4241d51e9485395b94b30180f53ce89914
