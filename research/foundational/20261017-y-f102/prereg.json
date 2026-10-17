@@ -1,0 +1,116 @@
+{
+  "schema": "yggdrasil.f102.delayed-causal-memory-credit-source-frozen.v1",
+  "stage": "FROZEN_PRECODE_PUBLIC_SYNTHETIC_ONLY",
+  "parent": {
+    "y_f101_exact": "d5f0f5f996681ad2509170ab151333f79d2fc113",
+    "f101_attribution_blob": "6333738872a64eb68c745bdf0973c9b111bac060",
+    "f62_native_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "f99_closure_blob": "5de08fe74eb74dd917a7559cc3a8755185aac823",
+    "known_negative": "F100 was source-only PRESTO; F101 native structural provenance passed source-only; no evidence yet that training adds downstream causal retention."
+  },
+  "objective": "Use actual frozen Y-F62 native 72-event 144B online memory action space and delayed downstream question correctness as TRAIN-only counterfactual credit; test whether the learned action ranking preserves future compositional answers on untouched public synthetic negative-seed guard cases.",
+  "train": {
+    "unregistered_seeds": [
+      -12001,
+      -12008
+    ],
+    "families": [
+      -31,
+      -32
+    ],
+    "cases": 16,
+    "delayed_credit_teacher": "exact frozen F62 counterfactual_labels at indices 11,23,35,47,59,71, with suffix and eventual question as OFFLINE TRAIN labels only; online feature scoring must not see question or future",
+    "train_updates": "four passes over the same frozen TRAIN-only action-credit rows, per-action gradient 0.04; score tanh(linear(feature delta)); tanh residual error against delta in {-1,0,1}",
+    "variants": {
+      "raw": "unclipped, unnormalized standard 12-feature tanh SGD, source-only reference",
+      "clip": "same fit, per-example update vector L2 norm clipped to <=0.08; no other change",
+      "normalized": "same fit, normalize each 12-feature dimension with TRAIN-only rms>=0.05 before updates and evaluation, frozen TRAIN statistics",
+      "residual": "same fit with per-update weight-state residual update scaling 0.25 (gradient unchanged)",
+      "bounded_depth": "same learned raw model but online reject native actions producing any record with >4 signed-role codes; do not modify inherited native F62 candidate generation"
+    },
+    "other_controls": [
+      "actual frozen F62/F60 native fixed merge-and-evict, no training",
+      "actual frozen F62/F61 previously fitted 12-feature quantized weights, no F102 retraining",
+      "uniform all-zero F62 native 12-feature scorer",
+      "TRAIN-only two-hidden-unit tanh MLP on same 12 relative action features: 29 trainable scalars, 4 passes, 0.04 step, no pretrained embedding; larger-capacity comparator NOT equal parameter count"
+    ],
+    "attribution": "Use exact F101 structural record/role witness on a bounded 4/6-hop subset of final actual retained memories, including single-record deletion necessity and native 144B receipt; no online access to answer from trace.",
+    "training_repeated_cycles": "Log per cycle fit loss, weight norm, nonfinite count, clipped count and TRAIN-only residual prediction quality. Never select model with guard outcomes.",
+    "prevent_leakage": "All candidate features computed via native.actions from observed memory/public edge and current time only. No future question, answer, true core label, seed/family ID, future suffix or F101 offline attribution fed to the online policy."
+  },
+  "guard": [
+    {
+      "name": "F102-A-ordinary-new-graph",
+      "seeds": [
+        -13001,
+        -13008
+      ],
+      "family": -41,
+      "mode": "untouched F62 public generator, new source identities"
+    },
+    {
+      "name": "F102-B-signed-role-remap",
+      "seeds": [
+        -13101,
+        -13108
+      ],
+      "family": -42,
+      "mode": "permute role alphabet and invert every observed edge direction plus query directions"
+    },
+    {
+      "name": "F102-C-reverse-arrival",
+      "seeds": [
+        -13201,
+        -13208
+      ],
+      "family": -43,
+      "mode": "reverse arrival ordering, no query leaks"
+    },
+    {
+      "name": "F102-D-phase-reshuffle",
+      "seeds": [
+        -13301,
+        -13308
+      ],
+      "family": -44,
+      "mode": "all even-index public edges then odd-index public edges, with independent role-alphabet permutation"
+    }
+  ],
+  "source_limits": {
+    "native_records": 12,
+    "native_record_bytes": 12,
+    "native_persistent_limit_bytes": 144,
+    "episodes_events": 72,
+    "graph_families_are_not_new_topology": true,
+    "guard_total": 32,
+    "train_total": 16,
+    "guard_never_used_for_fitting_or_hyperparameter_selection": true,
+    "use_only_negative_unregistered_seed_names": true,
+    "no_F62_FIT_VALIDATION_DIAG_ORIGINAL": true,
+    "graph_ids_disjoint_from_parent_source_sample": true,
+    "no_previous_F100_F101_case_or_synthetic_smoke_reuse": true
+  },
+  "frozen_screen": {
+    "validity": "All 16 TRAIN / 32 GUARD episodes generated and disjoint, same codec / native 12-record budget, all selected action space source-native except declared bounded-depth action filtering, all questions hidden until terminal memory, same 72 events and query per episode for every arm; no use of reserved source identities; no guard train/retune.",
+    "engineering_pass": "No nonfinite update; real source-native actions and memory constraints, 4 declared cycles, complete all-arm all-guard case-level outcomes, F101 source attribution on declared subset and Linux/Windows consistency.",
+    "scientific_positive_only_if": "Raw learned policy exceeds native F60 fixed correct count by >=4/32 overall, suffers no loss in any guard block versus native F60, and beats previously fixed F61 and zero-score F62 controls. Otherwise retain NEGATIVE even if some variants do better.",
+    "stability_claim_only_if": "Clipping or normalization variant improves minimum guard-family correct by >=2 without lowering pooled correct relative to raw and shows lower train update norm. Otherwise no demonstrated stability improvement.",
+    "mlp_limit": "Tiny 2-hidden-unit MLP is 29 params not 12: report separate counts and inference work, never call tightly parameter-matched. No GRU/Transformer/GNN baseline in F102; downstream experiment required.",
+    "structural_transfer_limit": "Guard uses new native graph identities and transformed roles / arrival ordering but reuses F62 generator topology. Do not claim transfer across unrelated graph families.",
+    "no_hindsight": "Any bug fix after GUARD evaluated must preserve entire prereg, exact recorded earlier run and source-head lineage; never redefine gate to make a negative positive. Tests can succeed while scientific comparison is negative."
+  },
+  "authority": {
+    "no_Codex": true,
+    "no_CKB_dependency": true,
+    "no_paid_model_inference": true,
+    "no_MindPalace_write": true,
+    "no_cloudflare_change": true,
+    "no_new_scheduler": true,
+    "no_protected_first_use": true,
+    "no_science_dispatch": true,
+    "no_independent_scientific_acceptance": true,
+    "no_optimizer_promotion": true,
+    "no_accepted_ref_mutation": true,
+    "no_other_repo_writes": true
+  }
+}
