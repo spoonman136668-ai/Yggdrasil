@@ -74,7 +74,7 @@ class F107Contracts(unittest.TestCase):
         for first,family,namespace in m.SOURCE:
             case,_=m.paired_world(self.f102,self.native,
                                   first,family,namespace)
-            original_nodes,original_codes=m.f104.source_path(case[0][1],case[0][2])
+            original_nodes,original_codes=self.f104.source_path(case[0][1],case[0][2])
             for mode,stream,q in case:
                 nodes,codes=m.source_path_contract(
                     self.f104,case[0][2],original_nodes,original_codes,
