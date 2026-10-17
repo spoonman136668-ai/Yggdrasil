@@ -253,8 +253,8 @@ def evaluate(head):
             memory20,trace20=online(native,parent,pack,public,richer,
                                    keep_trace=index==0)
             ablated,_=online(native,parent,pack,public,richer,ablated=True)
-            old=f102.learned_online(public,old_weights,pack)[0]
-            zero=f102.learned_online(public,(0.,)*12,pack)[0]
+            old=f102.learned_online(native,public,pack,lambda d:sum(w*x for w,x in zip(old_weights,d)))[0]
+            zero=f102.learned_online(native,public,pack,lambda d:0.)[0]
             arms=(fixed,old,memory12,memory20,ablated,zero)
             for mem in arms: native._valid_memory(mem,pack)
             result={name:int(pack.solve(mem,q)==q["answer"])
