@@ -1,0 +1,47 @@
+name: Yggdrasil F98 public microchain TRAIN only
+on:
+  push:
+    branches:
+      - research/y-f98-selfsupervised-microchain-20261016-r1
+    paths:
+      - 'research/foundational/20261016-y-f98/prereg.json'
+      - 'research/foundational/20261016-y-f98/microchain.py'
+      - 'research/foundational/20261016-y-f98/test_microchain.py'
+      - '.github/workflows/y-f98-train-only.yml'
+permissions:
+  contents: read
+jobs:
+  selfsupervised-train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Source/prereg identities unchanged
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 655d61ec5597819814e4328b8857be099ab8bbf5 HEAD
+          test "$(git hash-object research/foundational/20261016-y-f98/prereg.json)" = 7288b566b6c5d80690ef2c1bb5021d7d78d4530a
+          test "$(git hash-object research/foundational/20261016-y-f97/paired_join_risk.py)" = d100ee3c329e648752647872e16473e9fe281963
+          test "$(git hash-object research/foundational/20261016-y-f96/paired_order_probe.py)" = 2cf14367527c9790661af65a84d15cbe11132bc7
+          test "$(git hash-object research/foundational/20261016-y-f76/source.py)" = 5b8928b0399ce9f869854beadeab04b29c8703a5
+          test "$(git hash-object research/foundational/20261015-y-f62/source_pilot.py)" = 7ed72deca5584d7c0b6562d74456fa7d4bee6712
+          test "$(git hash-object research/foundational/20261016-y-f85/global_solver.py)" = e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3
+      - name: F98 pure native causal path grammar and frozen F97 contracts
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f98 -p test_microchain.py
+          python3 -B -m unittest discover -v -s research/foundational/20261016-y-f97 -p test_paired_join_risk.py
+      - name: Deterministic public-graph TRAIN ONLY
+        run: |
+          set -euo pipefail
+          python3 -B research/foundational/20261016-y-f98/microchain.py --public-train-only > "$RUNNER_TEMP/f98-train.json"
+          python3 -B -c 'import json,os; d=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"f98-train.json"))); assert d["stage"]=="TRAIN_ONLY_PUBLIC_GRAPH_UNSUPERVISED_NO_HOLDOUT" and d["paired_training_graphs"]==32 and len(d["learned_16_bigrams"])==16 and d["grammar_byte_count"]==32 and d["no_train_question_ops_or_answer_use"] and d["no_validation_or_guard_use"] and d["no_protected_source_use"]; print(json.dumps(d,sort_keys=True))'
+      - name: Do not change accepted source
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git status --porcelain)"
