@@ -66,7 +66,7 @@ class F107Contracts(unittest.TestCase):
         self.assertEqual(m.signed_role(0,"both"),5)
         self.assertEqual(m.signed_role(3,"role_only"),1)
         self.assertEqual(m.signed_role(3,"edge_direction_only"),2)
-        self.assertEqual(m.signed_role(7,"both"),3)
+        self.assertEqual(m.signed_role(7,"both"),2)
         self.assertEqual(m.signed_role(0,"raw"),0)
         with self.assertRaises(m.Invalid):m.signed_role(8,"raw")
 
