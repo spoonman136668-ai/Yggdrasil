@@ -1,0 +1,142 @@
+name: Y-F102 frozen delayed-credit learning native stability study
+on:
+  push:
+    branches:
+      - research/y-f102-delayed-memory-credit-stability-20261017-r1
+    paths:
+      - '.github/workflows/y-f102-delayed-credit-stability.yml'
+      - 'research/foundational/20261017-y-f102/**'
+permissions:
+  contents: read
+jobs:
+  protected-free-source-experiment:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 75
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve exact prereg and historical Git object bytes before Windows checkout
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.safecrlf true
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Authenticate precode freeze and native parent identities
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $parent='d5f0f5f996681ad2509170ab151333f79d2fc113'
+          $freeze='e69a3b8294fe4c92b83cac15e9eec9d60e30ca62'
+          if ((git rev-parse HEAD) -cne $env:GITHUB_SHA) { throw 'F102_HEAD_DRIFT' }
+          git merge-base --is-ancestor $parent HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'F102_PARENT_MISSING' }
+          git merge-base --is-ancestor $freeze HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'F102_PRECODE_PREREG_MISSING' }
+          $required=@(
+            '.github/workflows/y-f102-delayed-credit-stability.yml',
+            'research/foundational/20261017-y-f102/prereg.json',
+            'research/foundational/20261017-y-f102/delayed_credit.py',
+            'research/foundational/20261017-y-f102/test_delayed_credit.py'
+          )
+          $got=@(git diff --name-only $parent HEAD | Where-Object { $_ -ne '' })
+          if (@(Compare-Object $required $got).Count -ne 0) { throw 'F102_SCOPE_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f102/prereg.json') -cne '4f3a8bf295a2f695a039d6b71d87d3bff3939e76') { throw 'F102_PREREG_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f101/causal_memory.py') -cne '6333738872a64eb68c745bdf0973c9b111bac060') { throw 'F102_F101_MODEL_DRIFT' }
+          if ((git hash-object 'research/foundational/20261015-y-f62/source_pilot.py') -cne '7ed72deca5584d7c0b6562d74456fa7d4bee6712') { throw 'F102_F62_NATIVE_DRIFT' }
+          if ((git hash-object 'research/foundational/20261016-y-f99/causal_closure.py') -cne '5de08fe74eb74dd917a7559cc3a8755185aac823') { throw 'F102_F99_DRIFT' }
+      - name: Native source-only delayed credit and stability adversarial contracts
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          python -B -m unittest discover -s research/foundational/20261017-y-f102 -p 'test_delayed_credit.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'F102_NATIVE_STABILITY_TESTS_FAILED' }
+      - name: Actual untouched public GUARD episode qualification
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $folder=Join-Path $env:RUNNER_TEMP 'y-f102-source-evidence'
+          New-Item -ItemType Directory -Force -Path $folder | Out-Null
+          $out=Join-Path $folder 'f102-native-delayed-credit-report.json'
+          python -B research/foundational/20261017-y-f102/delayed_credit.py --source-ref $env:GITHUB_SHA |
+            Out-File -FilePath $out -Encoding utf8
+          if ($LASTEXITCODE -ne 0) { throw 'F102_PUBLIC_GUARD_EXECUTION_FAILED' }
+          $proof=Get-Content -LiteralPath $out -Raw | ConvertFrom-Json
+          if ($proof.schema -cne 'yggdrasil.f102.delayed-credit-stability-public.v1' -or
+              $proof.exact_head -cne $env:GITHUB_SHA -or
+              $proof.train_episode_count -ne 16 -or $proof.guard_episode_count -ne 32 -or
+              $proof.record_budget -ne 12 -or $proof.native_memory_bytes -ne 144 -or
+              $proof.training_epochs -ne 4 -or
+              -not $proof.all_guard_results_after_training -or
+              $proof.online_scorer_receives_future_question -or
+              -not $proof.protected_FIT_DIAG_ORIGINAL_untouched -or
+              -not $proof.mlp_not_parameter_matched -or
+              $proof.native_linear_parameter_count -ne 12 -or
+              $proof.mlp_parameter_count -ne 29 -or
+              $proof.blocks.Count -ne 4 -or
+              $proof.learned_memory_superiority_independently_accepted -or
+              $proof.scientific_first_use -or
+              $proof.accepted_ref_mutations -ne 0 -or
+              -not $proof.no_automatic_optimizer_promotion -or
+              $proof.CKB_integration -or $proof.Codex_used -or $proof.MindPalace_written) {
+              throw 'F102_INVALID_SOURCE_OR_FALSE_SCIENTIFIC_CLAIM'
+          }
+          foreach ($b in $proof.blocks) {
+            if ($b.episodes -ne 8 -or $b.rows.Count -ne 8) {
+              throw 'F102_MISSING_OR_REUSED_HELDOUT'
+            }
+            foreach ($row in $b.rows) {
+              if (-not $row.question_hidden_until_terminal) { throw 'F102_FUTURE_QUERY_LEAK' }
+              foreach ($name in @('F60_native_fixed','F61_original_frozen','F62_zero_score',
+                     'learned_raw','learned_clip','learned_normalized',
+                     'learned_residual','learned_depth4','neural_MLP29')) {
+                $p=$row.policy_scores.$name
+                if ($null -eq $p -or $p.retained_bytes -gt 144 -or
+                    $p.correct -notin @(0,1)) { throw 'F102_MISSING_POLICY_OR_MEMORY_OVERBUDGET' }
+              }
+            }
+          }
+          foreach ($v in @('raw','clip','normalized','residual')) {
+            if ($proof.train_cycle_diagnostics.$v.Count -ne 4) {
+              throw 'F102_STABILITY_CYCLES_MISSING'
+            }
+          }
+          # Both a positive and a negative result must pass scientific
+          # instrumentation. No hindsight threshold optimization.
+          Write-Host ('F102_RAW_LEARNED_CORRECT='+$proof.totals.learned_raw+'/32')
+          Write-Host ('F102_F60_FIXED_CORRECT='+$proof.totals.F60_native_fixed+'/32')
+          Write-Host ('F102_F61_FROZEN_CORRECT='+$proof.totals.F61_original_frozen+'/32')
+          Write-Host ('F102_NEURAL29_CORRECT='+$proof.totals.neural_MLP29+'/32')
+          Write-Host ('F102_DELAYED_CREDIT_SCIENTIFIC_SCREEN='+$proof.scientific_delayed_credit_screen_passed)
+          Write-Host ('F102_DISPOSITION='+$proof.result)
+          $sha=(Get-FileHash -LiteralPath $out -Algorithm SHA256).Hash.ToLowerInvariant()
+          [System.IO.File]::WriteAllText(
+            (Join-Path $folder 'f102-native-delayed-credit-report.sha256'),
+            ("$sha  f102-native-delayed-credit-report.json"+[Environment]::NewLine),
+            [System.Text.UTF8Encoding]::new($false))
+          Write-Host 'F102_PUBLIC_DELAYED_CAUSAL_CREDIT_EVALUATED=TRUE'
+      - name: Verify exact unchanged source and no protected execution
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          if (@(git status --porcelain --untracked-files=all).Count -ne 0) {
+            throw 'F102_SOURCE_MUTATED'
+          }
+          Write-Host 'F102_NO_ORIGINALS_CKB_CODEX_MINDPALACE_OR_EXTERNAL_CONTROLLER=TRUE'
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: y-f102-frozen-delayed-credit-${{ matrix.os }}
+          path: |
+            ${{ runner.temp }}/y-f102-source-evidence/f102-native-delayed-credit-report.json
+            ${{ runner.temp }}/y-f102-source-evidence/f102-native-delayed-credit-report.sha256
+          retention-days: 90
