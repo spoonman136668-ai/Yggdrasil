@@ -1,0 +1,100 @@
+{
+  "schema": "yggdrasil.f97.paired-causal-public-join-risk.prereg.v1",
+  "stage": "FROZEN_PRECODE_PAIRED_TRAIN_THEN_DISJOINT_HOLDOUT",
+  "parent": {
+    "f96_qualified_head": "4f7f166ee63bbf8975a73f5f8376de2a54df4954",
+    "f96_method_blob": "2cf14367527c9790661af65a84d15cbe11132bc7",
+    "f94_method_blob": "0284a3ed1cd5f263dc4ad7cf3f3f21969bb665ad",
+    "f76_source_blob": "5b8928b0399ce9f869854beadeab04b29c8703a5",
+    "f62_native_action_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "f85_global_solver_blob": "e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3"
+  },
+  "problem": "F96 demonstrates 11 matched four-step losses under local rotation and possible hindsight six-step rescues, but no query-blind learned controller. Test whether local public join/touch signals on causally identical native graph support safer action selection without exposing order label.",
+  "hypothesis": "A source-native controller trained with paired same-graph original/rotated sequences can learn public memory-to-event join contexts associated with beneficial native deviations; a class-specific harm floor prevents regressions better than unconstrained F90.",
+  "mechanism": {
+    "paired_source": "For every TRAIN seed and original source family, call exact F76.source once. Invert F76 block rotation when necessary then use frozen F76.shift to derive both arrival orders of exact same 72 public edges and question/answer. Require public multiset equality and independent unique full-graph answer.",
+    "teacher": "TRAIN-only retrospective oracle, for every prefix 0..47 inclusive along exact frozen F60 memory, at most first 8 F62-native non-F60 actions in exact native order, compare exact F60 suffix and frozen F85 final answer against source TRAIN truth. Difference labels beneficial (+1), harmful (-1), neutral (0). No teacher or question/future may enter online().",
+    "public_category": "Five discrete public/causal features: early-or-middle index bin (0..23 or 24..47), current incoming event endpoint touches any prestate F60 record endpoint (0/1), directed join with prestate record (0/1), selected native F62 action family append/merge (0/1), candidate evicts a native record (0/1). All features available from previous retained memory/current public event/native action; never use source family, pair label, question, answer or future public edges.",
+    "training_rule": "Aggregate exact category counts across BOTH TRAIN arrival orders for each matched source graph; produce canonical lexicographic table only for categories with at least 8 examples, at least 2 beneficial terminal outcomes, ZERO harmful outcomes. Freeze all permitted categories and exact counts into immutable file before any VALIDATION/GUARD first use; no hyperparameter selection or posttest filtering.",
+    "online_rule": "On public event index <=47, enumerate exact F62 native legal next states and F60 native baseline from same prior memory. For each nonbaseline action, require category in frozen permitted table and preservation of >=min(10,max(0,len(F60_baseline)-1)) full native records; choose by higher trained positive count, then higher sample count, then exact native action order. Max ONE deviation in a 72-arrival stream; otherwise use frozen F60. Native F62 auditor every prefix, no query, source family, future, question, answer, truth or labels. Stable lookup with separately counted finite policy bytes and 1-bit latch.",
+    "comparison": "Exact frozen F60 + F85, F83 + F85, F95 + F85 (if desired), and F97 + F85 on the SAME graph in BOTH observation orders. Do not add answer-conditioned branches or optimize on a cohort.",
+    "qualify": "Valid positive synthetic gate iff >=1 prior F60-failed six-step case rescued, ZERO F60-correct cases regressed in BOTH arrival orders on 32 fresh graph pairs (64 episodes), source/authenticity and 144-byte causal native budgets passed. Otherwise negative; green GitHub CI not science.",
+    "no_tuning": "Once weights/categories and source identities frozen, validation and guard can only be read once; never lower threshold, increase action budget or refit after results."
+  },
+  "cohorts": {
+    "train": {
+      "seeds_start": -6301,
+      "seeds_stop_exclusive": -6317,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "graphs": 32,
+      "order_episodes": 64
+    },
+    "validation": {
+      "seeds_start": -6321,
+      "seeds_stop_exclusive": -6329,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "graphs": 16,
+      "order_episodes": 32
+    },
+    "guard": {
+      "seeds_start": -6341,
+      "seeds_stop_exclusive": -6357,
+      "step": -1,
+      "families": [
+        -2,
+        -1
+      ],
+      "graphs": 32,
+      "order_episodes": 64
+    },
+    "excluded_consumed": [
+      [
+        -6201,
+        -6209
+      ],
+      [
+        -6241,
+        -6257
+      ],
+      [
+        -6101,
+        -6117
+      ],
+      [
+        -6121,
+        -6129
+      ],
+      [
+        -6141,
+        -6157
+      ]
+    ]
+  },
+  "steps": [
+    "P0 precode prereg commit",
+    "P1 implement source-native public/paired training with pure tests; run TRAIN only",
+    "P2 separately freeze canonical trained category table and code SHA before holdout",
+    "P3 new independent validation and guarded paired first-use with native F62 prefix evidence",
+    "P4 archive exact positive/negative and keep draft unmerged"
+  ],
+  "authority": {
+    "FIT": false,
+    "DIAG": false,
+    "ORIGINAL": false,
+    "F3": false,
+    "science_accepted": false,
+    "optimizer_promotion": false,
+    "controller_mutation": false,
+    "accepted_ref_mutation": false,
+    "Codex": false,
+    "merge": false
+  }
+}
