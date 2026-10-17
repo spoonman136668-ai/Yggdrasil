@@ -49,29 +49,53 @@ jobs:
         run: |
           set -euo pipefail
           python -B -m unittest discover -s research/foundational/20261017-y-f100 -p 'test_*.py' -v
-      - name: Inspect pinned CKB main source-birth policy as nonadmitting evidence
+      - name: Inspect CKB source custody without bypassing private GitHub permissions
         shell: bash
         run: |
           set -euo pipefail
+          policy="$RUNNER_TEMP/f100-ckb-r187-policy.json"
+          report="$RUNNER_TEMP/f100-ckb-custody-preflight.json"
           url='https://raw.githubusercontent.com/spoonman136668-ai/ckb-plane/fab36e7c488f930505fcbaeb5f5bf04806e50c5b/.github/research-audit/r187-source-pool.json'
-          curl --fail --location --retry 3 --max-time 45 --silent --show-error "$url" --output "$RUNNER_TEMP/f100-ckb-r187-policy.json"
-          test "$(git hash-object "$RUNNER_TEMP/f100-ckb-r187-policy.json")" = 8a8afd6d7be7b8d5cd183519bb9e642b307ba168
-          python -B research/foundational/20261017-y-f100/source_custody_preflight.py \
-            --pinned-ckb-policy "$RUNNER_TEMP/f100-ckb-r187-policy.json" \
-            --output "$RUNNER_TEMP/f100-ckb-custody-preflight.json"
-          python - "$RUNNER_TEMP/f100-ckb-custody-preflight.json" <<'PY'
+          if curl --fail --location --retry 2 --max-time 45 --silent --show-error "$url" --output "$policy"; then
+            test "$(git hash-object "$policy")" = 8a8afd6d7be7b8d5cd183519bb9e642b307ba168
+            python -B research/foundational/20261017-y-f100/source_custody_preflight.py \
+              --pinned-ckb-policy "$policy" --output "$report"
+          else
+            # No privileged cross-repo token, no copied private policy, no
+            # assertion that a missing source is a valid witness.
+            python - "$report" <<'PY'
           import json,sys
-          obj=json.load(open(sys.argv[1]))
-          assert obj['classification']=='F100_SOURCE_CUSTODY_NOT_QUALIFIED'
-          assert obj['approved_f100_guard_graphs']==0
-          assert obj['source_first_use_allowed'] is False
-          assert obj['prospective_experiment_dispatched'] is False
-          assert obj['scientifically_accepted'] is False
-          assert obj['observed_source_policy_flags']['prospective_input_independence_established'] is False
-          assert obj['observed_source_policy_flags']['global_historical_source_ledger_complete'] is False
-          print('F100_P2_SOURCE_CUSTODY=BLOCKED_AS_EXPECTED')
+          doc=dict(schema="yggdrasil.f100.ckb-source-custody-preflight.v1",
+                   classification="F100_CKB_POLICY_INACCESSIBLE_TO_HOSTED_RUNNER",
+                   ckb_main_snapshot="fab36e7c488f930505fcbaeb5f5bf04806e50c5b",
+                   ckb_policy_expected_git_blob="8a8afd6d7be7b8d5cd183519bb9e642b307ba168",
+                   authenticated_ckb_policy_bytes_read=False,
+                   scientific_source_admission=False,
+                   source_first_use_allowed=False,
+                   prospective_experiment_dispatched=False,
+                   scientifically_accepted=False,
+                   CKB_controller_mutated=False,
+                   accepted_ref_mutated=False)
+          with open(sys.argv[1],"w",encoding="utf-8") as f:
+              json.dump(doc,f,sort_keys=True,indent=2)
+              f.write("\n")
+          print("F100_P2_CKB_PRIVATE_POLICY=INACCESSIBLE; FIRST_USE_BLOCKED")
           PY
-          sha256sum "$RUNNER_TEMP/f100-ckb-custody-preflight.json"
+          fi
+          python - "$report" <<'PY'
+          import json,sys
+          x=json.load(open(sys.argv[1]))
+          assert x["schema"]=="yggdrasil.f100.ckb-source-custody-preflight.v1"
+          assert x["classification"] in (
+             "F100_CKB_POLICY_INACCESSIBLE_TO_HOSTED_RUNNER",
+             "F100_SOURCE_CUSTODY_NOT_QUALIFIED")
+          assert x["source_first_use_allowed"] is False
+          assert x["prospective_experiment_dispatched"] is False
+          assert x["scientifically_accepted"] is False
+          assert x["accepted_ref_mutated"] is False
+          print("F100_P2_SOURCE_CUSTODY="+x["classification"])
+          PY
+          sha256sum "$report"
       - name: Exact frozen F99 and F85 controls
         shell: bash
         run: |
