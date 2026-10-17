@@ -1,0 +1,147 @@
+name: Y-F106 inspectable native credit identifiability diagnosis
+on:
+  push:
+    branches:
+      - research/y-f106-relational-identifiability-20261017-r1
+    paths:
+      - '.github/workflows/y-f106-relational-identifiability.yml'
+      - 'research/foundational/20261017-y-f106/**'
+permissions:
+  contents: read
+jobs:
+  frozen-source-diagnostic:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 75
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Prevent Windows checkout from rewriting pinned Git source objects
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.safecrlf true
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Assert first precode freeze, unchanged F105 science and exact source scope
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $parent='84c2060d0b9634586f19e028867f6cb7fab423be'
+          $freeze='dfe267829ca8b951d125f6917afd87330ae481ff'
+          if ((git rev-parse HEAD) -cne $env:GITHUB_SHA) { throw 'F106_EXACT_HEAD_CHANGED' }
+          git merge-base --is-ancestor $parent HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'F106_PARENT_ANCESTRY_MISSING' }
+          git merge-base --is-ancestor $freeze HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'F106_PRECODE_FROZEN_SOURCE_MISSING' }
+          $expected=@(
+            '.github/workflows/y-f106-relational-identifiability.yml',
+            'research/foundational/20261017-y-f106/prereg.json',
+            'research/foundational/20261017-y-f106/identifiability.py',
+            'research/foundational/20261017-y-f106/test_identifiability.py'
+          )
+          $actual=@(git diff --name-only $parent HEAD | Where-Object { $_ -ne '' })
+          if (@(Compare-Object $expected $actual).Count -ne 0) { throw 'F106_UNEXPECTED_SCIENTIFIC_SOURCE_MUTATION' }
+          if ((git hash-object 'research/foundational/20261017-y-f106/prereg.json') -cne 'cdac6913e3999d89e1046f2d2fdb5e9c940ba547') { throw 'F106_PREREG_SOURCE_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f105/relational_credit.py') -cne 'f78cae2150b48b4c7ffb1274f80392a563bd64ce') { throw 'F106_F105_MODEL_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f105/prereg.json') -cne '77cc10c614f37ca03604bb16f76a944455ef5f2c') { throw 'F106_F105_PREREG_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f104/causal_credit.py') -cne 'dd1f7bb2fd7288b5933f7a23085196c8a62e17b8') { throw 'F106_F104_PARENT_DRIFT' }
+      - name: Exact aliasing and source-native no-authority adversarial tests
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          python -B -m unittest discover -s research/foundational/20261017-y-f106 -p 'test_identifiability.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'F106_SOURCE_DIAGNOSTIC_TESTS_FAILED' }
+      - name: Evaluate unchanged TRAIN credit and fresh consumed diagnostic sources
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $folder=Join-Path $env:RUNNER_TEMP 'y-f106-source'
+          New-Item -ItemType Directory -Path $folder -Force | Out-Null
+          $out=Join-Path $folder 'f106-native-identifiability.json'
+          python -B research/foundational/20261017-y-f106/identifiability.py --source-ref $env:GITHUB_SHA |
+            Out-File -LiteralPath $out -Encoding utf8
+          if ($LASTEXITCODE -ne 0) { throw 'F106_EVALUATION_FAILED' }
+          $d=Get-Content -LiteralPath $out -Raw | ConvertFrom-Json
+          if ($d.schema -cne 'yggdrasil.f106.native-credit-identifiability-public.v1' -or
+              $d.exact_head -cne $env:GITHUB_SHA -or
+              $d.frozen_F105_exact_parent -cne '84c2060d0b9634586f19e028867f6cb7fab423be' -or
+              $d.old_F105_TRAIN_actions -ne 1055 -or
+              $d.new_public_diagnostic_episodes -ne 16 -or
+              $d.new_D106_blocks.Count -ne 2 -or
+              -not $d.frozen_F105_TRAIN_reproduced -or
+              -not $d.F102_F103_F104_F105_GUARD_not_loaded -or
+              -not $d.no_F106_retraining_or_model_selection -or
+              -not $d.same_source_native_144byte_limit -or
+              $d.independent_science_accepted -or
+              $d.protected_firstuse -or
+              $d.accepted_ref_mutations -ne 0 -or
+              $d.Codex_calls -ne 0 -or
+              $d.CKB_connected -or $d.MindPalace_written -or
+              $d.optimizer_promotion) {
+            throw 'F106_INVALID_PROVENANCE_OR_SCIENTIFIC_AUTHORITY'
+          }
+          foreach ($kind in @('12','20','exact','prefix')) {
+            $value=$d.old_F105_TRAIN_equivalence.$kind
+            if ($value.row_count -ne 1055 -or
+                ($value.empirical_majority_correct+$value.empirical_unavoidable_label_disagreements) -ne 1055) {
+              throw 'F106_PRIOR_TRAIN_INFORMATION_BOUND_INCORRECT'
+            }
+          }
+          foreach ($block in $d.new_D106_blocks) {
+            if ($block.count -ne 8 -or
+                $block.online_controls.Count -ne 8 -or
+                $block.checkpoint_receipts.Count -ne 48 -or
+                $block.per_action_records.Count -ne $block.actions) {
+              throw 'F106_NEW_DIAGNOSTIC_INCOMPLETE'
+            }
+            foreach ($kind in @('12','20','exact','prefix')) {
+              $value=$block.equiv.$kind
+              if ($value.row_count -ne $block.actions -or
+                  ($value.empirical_majority_correct+$value.empirical_unavoidable_label_disagreements) -ne $block.actions) {
+                throw 'F106_CONFLICTING_LABEL_CLASS_INVALID'
+              }
+            }
+            foreach ($row in $block.per_action_records) {
+              if ($row.source_native_12.Count -ne 12 -or
+                  $row.online_graph_delta_8.Count -ne 8 -or
+                  $row.source_native_memory_bytes -gt 144 -or
+                  -not $row.future_path_never_online) {
+                throw 'F106_NATIVE_MEMORY_OR_ANSWER_LEAK'
+              }
+            }
+          }
+          Write-Host ('F106_F105_TRAIN_12_CONFLICTING_CLASSES='+$d.old_F105_TRAIN_equivalence.'12'.conflicting_classes)
+          Write-Host ('F106_F105_TRAIN_20_CONFLICTING_CLASSES='+$d.old_F105_TRAIN_equivalence.'20'.conflicting_classes)
+          Write-Host ('F106_F105_TRAIN_20_UNAVOIDABLE_TRAIN_LABEL_DISAGREEMENTS='+$d.old_F105_TRAIN_equivalence.'20'.empirical_unavoidable_label_disagreements)
+          foreach ($b in $d.new_D106_blocks) {
+            Write-Host ('F106_'+$b.name+'_20_FEATURE_CONFLICTING_CLASSES='+$b.equiv.'20'.conflicting_classes)
+          }
+          Write-Host ('F106_FRESH_CROSS_MODE_REPLICATION='+$d.fresh_cross_mode_20_aliasing_replicated)
+          Write-Host 'F106_DIAGNOSTIC_ONLY_NO_NEW_LEARNED_POLICY=TRUE'
+          $sha=(Get-FileHash -LiteralPath $out -Algorithm SHA256).Hash.ToLowerInvariant()
+          [System.IO.File]::WriteAllText(
+            (Join-Path $folder 'f106-native-identifiability.sha256'),
+            ("$sha  f106-native-identifiability.json"+[Environment]::NewLine),
+            [System.Text.UTF8Encoding]::new($false))
+      - name: Clean source, no Codex, no protected firstuse or native worker mutation
+        shell: pwsh
+        run: |
+          if (@(git status --porcelain --untracked-files=all).Count -ne 0) { throw 'F106_SOURCE_CHANGED' }
+          Write-Host 'F106_PUBLIC_ONLY_NO_CODEX_CKB_MIND_PALACE_MUTATION=TRUE'
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: y-f106-native-credit-identity-${{ matrix.os }}
+          path: |
+            ${{ runner.temp }}/y-f106-source/f106-native-identifiability.json
+            ${{ runner.temp }}/y-f106-source/f106-native-identifiability.sha256
+          retention-days: 90
