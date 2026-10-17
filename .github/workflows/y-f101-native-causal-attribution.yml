@@ -19,6 +19,14 @@ jobs:
     env:
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
+      # The frozen scientific source uses Git LF object bytes. Windows Git
+      # core.autocrlf would rewrite files before Python hash verification.
+      # Set it BEFORE checkout; do not normalize or modify frozen inputs.
+      - name: Preserve exact immutable Git LF source bytes on both OSes
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.safecrlf true
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
