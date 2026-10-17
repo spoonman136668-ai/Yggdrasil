@@ -132,6 +132,8 @@ def collect(f105,f104,parent,f102,native,pack,groups):
 
 def equivalences(rows,key):
     """Empirical deterministic classification bound for one fixed feature map."""
+    need(key in ("12","20","exact","prefix"),
+         "INVALID_EQUIVALENCE_TYPE")
     buckets=defaultdict(list)
     for row in rows:
         if key=="12":
