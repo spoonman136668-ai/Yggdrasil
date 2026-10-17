@@ -1,0 +1,92 @@
+{
+  "schema": "yggdrasil.f107.signed-role-credit-equivariance-prereg.v1",
+  "stage": "PRECODE_FREEZE_PUBLIC_SYNTHETIC_ONLY",
+  "parent": {
+    "exact_f106_head": "84523755408d2685dca525950a1cc7718e13052b",
+    "f106_source_blob": "3b49cd349413c641a900e935f92270dbd3441f34",
+    "f105_source_blob": "f78cae2150b48b4c7ffb1274f80392a563bd64ce",
+    "f104_source_blob": "dd1f7bb2fd7288b5933f7a23085196c8a62e17b8",
+    "f102_source_blob": "8686390483c1e367c5cc1016a865a15c926b8376",
+    "f62_source_blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "f106_negative": "D106-B inverted-mode 577/577 teacher labels neutral; D106-A 36 negative, 359 zero, 62 positive. Feature aliasing replicated only normal-mode; F105 20F learned did not beat F60. No prior GUARD/DIAGNOSTIC used for selection."
+  },
+  "question": "In genuinely paired newly constructed graphs, does role inversion destroy source answer information, structural teacher contrast, native F60 memory equivariance, or the frozen label definition itself? Compare raw, role-only, edge-direction-only and both transformations under identical node IDs, event arrival order and terminal source path.",
+  "source": {
+    "new_paired_negative_seed_cases": [
+      {
+        "name": "F107-A",
+        "family": -111,
+        "seeds": [
+          -20001,
+          -20008
+        ],
+        "namespace": [
+          0,
+          7
+        ],
+        "cases": 8
+      },
+      {
+        "name": "F107-B",
+        "family": -112,
+        "seeds": [
+          -20101,
+          -20108
+        ],
+        "namespace": [
+          8,
+          15
+        ],
+        "cases": 8
+      }
+    ],
+    "construction": "Call unchanged F102.episode(native, seed, family, 'raw', namespace) ONLY for new public negative-seed identities. From EXACT same raw graph and query, derive four purely bijective transformations: raw; role_only with role permutation (2,0,3,1) applied to all edges and query ops; edge_direction_only by reversing every public edge and flipping every query op sign; both using both changes. Preserve node IDs, source graph edge arrival ordering, query start, answer, length and source identity pairing. No stochastic rebuild for transformed pair.",
+    "frozen_role_permutation": [
+      2,
+      0,
+      3,
+      1
+    ],
+    "arms": [
+      "raw",
+      "role_only",
+      "edge_direction_only",
+      "both"
+    ],
+    "online_checkpoints": [
+      11,
+      23,
+      35,
+      47,
+      59,
+      71
+    ],
+    "native_fixed_controller": "Real F62->F60 native _f60_step, actions, _finish_fixed, codec; 12 native packed records 144 bytes; no learner fitted or tuned.",
+    "source_oracle": "F104 signed source_path on each full transformed public graph; verify role/direction bijection, exact start/terminal answer and full 4/6/8 path persists. This oracle is ONLY offline, no privileged first-use or online input.",
+    "signed_memory_semantics": "Compare normalized F60 native memory arcs under transformation, and query-blind F99 six-hop closure only where safe, to determine whether numeric signed-role transform preserves native candidate behavior. Differences do not automatically imply software bug, since F60 tie breaking might intentionally be role-dependent.",
+    "credit_teacher": "At each checkpoint and each F60-legal action compute frozen F105 eight-event continuation via F60 _finish_fixed, exact F104 source path subspans (<=6 signed roles), terminal retained overlap credit relative to the local F60 action. Independently compute zero-lookahead direct structural potential before suffix and record both sign histograms. Future query, labels, source identity absent from online F60.",
+    "cause_comparison": "Check split-role-only and direction-only separately against both and raw, and whether the direct structural labels have nonzero sign but eight-event continuation collapses them to zero. Report whether the transformed path is answer-reachable with all original public edges, whether native F60 retains at least one relevant segment and whether structural potential survives sign inversion.",
+    "no_prior_sources": "Do not regenerate or inspect F102–F106 GUARD/DIAGNOSTIC episodes or original F62 FIT/DIAG/ORIGINAL."
+  },
+  "frozen_analysis": {
+    "source_information_lost_if": "Any paired transformed source cannot reconstruct EXACT terminal answer path on full public graph, despite bijection. Treat as source transformation/provenance invalid, fail run rather than interpret signal loss.",
+    "teacher_collapse": "If any mode has zero non-neutral eight-event labels across all new paired episodes, report TEACHER_SIGNAL_COLLAPSE_MODE_<mode>. Do not claim all source information missing.",
+    "source_native_symmetry": "Report per-case exact normalized native F60 arc-set equivariance compared to raw; native F60 not invariant is not by itself proof of a direction encoding software defect or an intelligence limit.",
+    "direct_vs_continuation": "If direct native candidate structural label has non-neutral contrast and identical 8-event continuation has zero contrast, classify LOSS_IN_CONTINUATION_CONTROL (descriptive only). If both zero despite valid full source path, classify NO_LOCAL_STRUCTURAL_CREDIT; this may be due to fixed 144B online retention and action set.",
+    "true_label_scope": "F104/F105 structural potential is a proxy for downstream retention, not terminal hidden answer probability, not a causal learning generalization proof.",
+    "no_hindsight": "Do not modify transformations, teacher, source IDs, positive definition or mode lists after report; bug fixes must retain prereg, original failed history and exact changed source hashes."
+  },
+  "authority": {
+    "no_codex": true,
+    "no_ckb_dependency": true,
+    "no_paid_inference": true,
+    "no_cloudflare_write": true,
+    "no_mind_palace_write": true,
+    "no_cross_repo_mutation": true,
+    "no_new_scheduler": true,
+    "no_protected_firstuse": true,
+    "no_independent_science_acceptance": true,
+    "no_optimizer_promotion": true,
+    "no_accepted_ref_mutations": true
+  }
+}
