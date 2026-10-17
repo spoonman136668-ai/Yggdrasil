@@ -126,10 +126,14 @@ class F100SourceContracts(unittest.TestCase):
         self.assertEqual(diag["replay_pass"], 0)
 
     def test_pure_f60_safely_selected_when_no_long_gain(self):
-        rec, used, diag = self.select(BASE)
+        # A genuine distinct native memory with a duplicate reverse arc,
+        # but no new path signatures. Never duplicate the F60 action itself.
+        same_closure = BASE + ((11, 10, (1,)),)
+        rec, used, diag = self.select(same_closure)
         self.assertEqual(rec, BASE)
         self.assertFalse(used)
-        self.assertEqual(diag["native_alternatives"], 0)
+        self.assertEqual(diag["native_alternatives"], 1)
+        self.assertEqual(diag["long_gain_eligible"], 0)
 
     def test_used_latch_forbids_second_action(self):
         rec, used, diag = self.select(used=True)
