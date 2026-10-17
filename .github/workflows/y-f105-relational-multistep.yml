@@ -1,0 +1,136 @@
+name: Y-F105 relational memory features and multistep credit public study
+on:
+  push:
+    branches:
+      - research/y-f105-relational-state-multistep-20261017-r1
+    paths:
+      - '.github/workflows/y-f105-relational-multistep.yml'
+      - 'research/foundational/20261017-y-f105/**'
+permissions:
+  contents: read
+jobs:
+  frozen-native-case-study:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve canonical frozen Git object source on Windows
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.safecrlf true
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Freeze chronology and original Yggdrasil native source assertions
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $base='25cf621aa36c34d9b40f024fb248acb3e1f8c9a2'
+          $prereg='9a00bd7356c44fb37ced06fa5a04a1226bca9e32'
+          if ((git rev-parse HEAD) -cne $env:GITHUB_SHA) { throw 'F105_HEAD_CHANGED' }
+          git merge-base --is-ancestor $base HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'F105_F104_ANCESTRY_CHANGED' }
+          git merge-base --is-ancestor $prereg HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'F105_PRECODE_FREEZE_MISSING' }
+          $expected=@(
+            '.github/workflows/y-f105-relational-multistep.yml',
+            'research/foundational/20261017-y-f105/prereg.json',
+            'research/foundational/20261017-y-f105/relational_credit.py',
+            'research/foundational/20261017-y-f105/test_relational_credit.py'
+          )
+          $actual=@(git diff --name-only $base HEAD | Where-Object { $_ -ne '' })
+          if (@(Compare-Object $expected $actual).Count -ne 0) { throw 'F105_EXTRA_SOURCE_MUTATION' }
+          if ((git hash-object 'research/foundational/20261017-y-f105/prereg.json') -cne '77cc10c614f37ca03604bb16f76a944455ef5f2c') { throw 'F105_FROZEN_PREREG_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f104/causal_credit.py') -cne 'dd1f7bb2fd7288b5933f7a23085196c8a62e17b8') { throw 'F105_F104_PARENT_DRIFT' }
+          if ((git hash-object 'research/foundational/20261017-y-f104/prereg.json') -cne '60757f68e275a9af7c4179fe54a26b3406be8de7') { throw 'F105_F104_PROTOCOL_DRIFT' }
+      - name: Source-only graph feature and delayed teacher adversarial qualification
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          python -B -m unittest discover -s research/foundational/20261017-y-f105 -p 'test_relational_credit.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'F105_TESTS_FAILED' }
+      - name: Exact frozen TRAIN and disjoint GUARD scientific-development evaluation
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $folder=Join-Path $env:RUNNER_TEMP 'y-f105-native'
+          New-Item -ItemType Directory -Path $folder -Force | Out-Null
+          $file=Join-Path $folder 'f105-native-relational-credit.json'
+          python -B research/foundational/20261017-y-f105/relational_credit.py --source-ref $env:GITHUB_SHA |
+            Out-File -LiteralPath $file -Encoding utf8
+          if ($LASTEXITCODE -ne 0) { throw 'F105_EVALUATION_FAILED' }
+          $a=Get-Content -LiteralPath $file -Raw | ConvertFrom-Json
+          if ($a.schema -cne 'yggdrasil.f105.online-relational-state-eightstep-credit-public.v1' -or
+              $a.head -cne $env:GITHUB_SHA -or
+              $a.parent_F104_head -cne '25cf621aa36c34d9b40f024fb248acb3e1f8c9a2' -or
+              $a.train_episodes -ne 16 -or $a.guard_episodes -ne 32 -or
+              $a.native_memory_bytes -ne 144 -or
+              $a.training_receipts.Count -ne 96 -or
+              $a.online_feature_names.Count -ne 20 -or
+              $a.learned_12_weights.Count -ne 12 -or
+              $a.learned_20_weights.Count -ne 20 -or
+              $a.blocks.Count -ne 4 -or
+              -not $a.all_guards_tested_after_train -or
+              -not $a.F102_to_F104_consumed_GUARD_untouched -or
+              $a.protected_firstuse -or $a.independent_science_acceptance -or
+              $a.optimizer_promotion -or $a.accepted_ref_changes -ne 0 -or
+              $a.Codex_calls -ne 0 -or $a.CKB_dependency -or $a.MindPalace_written) {
+            throw 'F105_FALSE_SCIENTIFIC_EVIDENCE_OR_UNAUTHORIZED_ACTION'
+          }
+          $n=$a.training_examples
+          if (($n.positive+$n.negative+$n.zero) -ne $n.total) {
+            throw 'F105_UNACCOUNTED_TRAIN_LABELS'
+          }
+          foreach ($b in $a.blocks) {
+            if ($b.episodes -ne 8 -or $b.cases.Count -ne 8) { throw 'F105_GUARD_COUNT_CHANGED' }
+            foreach ($c in $b.cases) {
+              if ($c.events -ne 72 -or -not $c.question_hidden_during_online_inference -or
+                  $c.max_native_persistent_bytes -ne 144) {
+                throw 'F105_NATIVE_SOURCE_OR_ANSWER_LEAK'
+              }
+              foreach ($name in @('F60_fixed','F102_old_raw','F105_12_feature','F105_20_relational',
+                                    'F105_20_ablated','F62_zero')) {
+                if ($c.scores.$name -notin @(0,1) -or
+                    $c.native_final_bytes_by_arm.$name -gt 144) {
+                  throw 'F105_FALSE_CASE_OR_MEMORY_BUDGET'
+                }
+              }
+            }
+          }
+          # The scientific screen may be negative; CI enforces integrity only.
+          Write-Host ('F105_TRAIN_LABEL_POS_NEG_ZERO='+$n.positive+'/'+$n.negative+'/'+$n.zero)
+          Write-Host ('F105_F60='+$a.totals.F60_fixed+'/32')
+          Write-Host ('F105_OLD_F102='+$a.totals.F102_old_raw+'/32')
+          Write-Host ('F105_TRAIN_12='+$a.totals.F105_12_feature+'/32')
+          Write-Host ('F105_TRAIN_20='+$a.totals.F105_20_relational+'/32')
+          Write-Host ('F105_GRAPH_FEATURE_ABLATION_CHANGED='+$a.graph_feature_ablation_different_outcomes)
+          Write-Host ('F105_REPRESENTATION_SCREEN='+$a.representation_gain_screen_passed)
+          Write-Host ('F105_FINAL_CORRECTNESS_SCREEN='+$a.delayed_memory_superiority_screen_passed)
+          Write-Host ('F105_DISPOSITION='+$a.disposition)
+          $sha=(Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLowerInvariant()
+          [System.IO.File]::WriteAllText((Join-Path $folder 'f105-native-relational-credit.sha256'),
+            ("$sha  f105-native-relational-credit.json"+[Environment]::NewLine),
+            [System.Text.UTF8Encoding]::new($false))
+      - name: Assert native source unchanged, no new workers or original
+        shell: pwsh
+        run: |
+          if (@(git status --porcelain --untracked-files=all).Count -ne 0) { throw 'F105_SOURCE_DIRTY' }
+          Write-Host 'F105_NO_CODEX_CKB_MINDPALACE_WRITES_PROTECTED_FIRSTUSE=TRUE'
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: y-f105-relational-multistep-${{ matrix.os }}
+          path: |
+            ${{ runner.temp }}/y-f105-native/f105-native-relational-credit.json
+            ${{ runner.temp }}/y-f105-native/f105-native-relational-credit.sha256
+          retention-days: 90
