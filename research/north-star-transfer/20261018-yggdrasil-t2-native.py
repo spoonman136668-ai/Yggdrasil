@@ -109,8 +109,36 @@ def measure(fn):
     tracemalloc.stop()
     return result,{"CPU_ns":cpu,"Python_peak_bytes":peak}
 
+def materialize_ephemeral_canonical_native_sources(f62):
+    """Honor historical SHA checks on Windows CRLF checkouts, in runner only.
+
+    Every immutable source is reconstituted from its exact pinned Git blob
+    (not regenerated or rewritten in the repository). The native F62 source
+    SHA check then operates on Git-canonical LF bytes. No content drift is
+    allowed; changes exist only in the temporary GitHub runner workspace.
+    """
+    here=f62.HERE.parent
+    names={
+      "f52_codec":here/"20261015-y-f52"/"source_pilot.py",
+      "f60":here/"20261015-y-f60"/"source_feasibility.py",
+      "f59":here/"20261015-y-f59"/"source_feasibility.py",
+      "f58":here/"20261015-y-f58"/"source_feasibility.py",
+      "f61":here/"20261015-y-f61"/"source_pilot.py"}
+    repaired=0
+    for name,p in names.items():
+        expected=f62.CONTROL_BLOBS[name]
+        need(blob(p)==expected,"ORIGINAL_"+name+"_GIT_BLOB_DRIFT")
+        canonical=subprocess.run(["git","cat-file","blob",expected],
+                cwd=ROOT,check=True,capture_output=True).stdout
+        if p.read_bytes()!=canonical:
+            p.write_bytes(canonical);repaired+=1
+        physical=hashlib.sha1(b"blob "+str(len(canonical)).encode()+b"\\x00"+canonical).hexdigest()
+        need(physical==expected,"CANONICAL_NATIVE_"+name+"_BYTE_DRIFT")
+    return repaired
+
 def attest():
     f62,kernel,source=modules()
+    canonical_runner_files=materialize_ephemeral_canonical_native_sources(f62)
     events,evaluator=source.build_fixture(-920)
     need(len(evaluator["ops"])==8 and len(events)==72,"NEW_SOURCE_NOT_F62_REHASH")
     packing=f62.codec()
@@ -129,6 +157,7 @@ def attest():
     need(solver_cannot_handle_8,"F85_LONG_CHAIN_GATE_CHANGED_REQUALIFY")
     return {"schema":"ygg.t2.native-actions-nonconsuming-resource-probe.v1",
         "native_source_pins_verified":True,
+        "ephemeral_runner_native_LF_blobs_materialized":canonical_runner_files,
         "original_F62_legal_action_algorithm_instantiated_at_capacity_10":True,
         "original_F62_12_record_source_untouched":True,
         "native_persistent_bytes":144,
