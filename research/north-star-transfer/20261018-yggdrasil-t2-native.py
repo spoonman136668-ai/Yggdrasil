@@ -5,7 +5,7 @@ unaltered F62.actions() and F60.codec() and an exactly packed 144-byte learned
 state; the native F85 solver cannot yet answer unseen 8-op questions.
 """
 from __future__ import annotations
-import importlib.util,sys,hashlib,inspect,json,time,tracemalloc
+import importlib.util,sys,hashlib,inspect,json,time,tracemalloc,types
 from pathlib import Path
 
 HERE=Path(__file__).resolve().parent
@@ -44,15 +44,35 @@ def state_pack(records,weights,step,packing):
     need(len(state)==144 and state[-4]==len(records),"COMPLETE_STATE_INCLUDES_WEIGHTS")
     return state
 
+def cap10_native_actions(f62):
+    """Instantiates ORIGINAL F62 actions bytecode with stricter 10-record cap.
+
+    This is a new candidate variant requiring independent native acceptance;
+    neither F62 source nor its 12-record behavior changes. Complete legal
+    append/merge/evict action enumeration is shared byte-for-byte, with
+    F62's original _valid_memory bytecode rebound to the 10-record cap.
+    """
+    valid_env=dict(f62._valid_memory.__globals__,CAP=10)
+    valid=types.FunctionType(f62._valid_memory.__code__,valid_env,
+          f62._valid_memory.__name__,f62._valid_memory.__defaults__)
+    action_env=dict(f62.actions.__globals__,CAP=10,_valid_memory=valid)
+    action=types.FunctionType(f62.actions.__code__,action_env,
+          f62.actions.__name__,f62.actions.__defaults__)
+    need(action.__code__ is f62.actions.__code__
+         and valid.__code__ is f62._valid_memory.__code__,
+         "EXACT_NATIVE_F62_ACTION_BYTECODE")
+    return action
+
 def online_native_adapter(events,weights,packing,f62,kernel):
     need(type(events) in (tuple,list) and len(events)==72
          and all(type(e) is tuple and len(e)==3 for e in events),
          "ONLY_72_PUBLIC_EVENTS_NO_EVALUATOR_METADATA")
     records=()
+    cap10_actions=cap10_native_actions(f62)
     actions=[]
     states=0
     for i,event in enumerate(events):
-        possibilities=f62.actions(records,event,i,packing)
+        possibilities=cap10_actions(records,event,i,packing)
         incoming=packing.pack(*packing.edge_record(event))
         eligible=[]
         for j,(kind,old,drop,after,f62_features) in enumerate(possibilities):
@@ -71,6 +91,9 @@ def online_native_adapter(events,weights,packing,f62,kernel):
         "persistent_total_bytes":144,
         "F62_actions_called":72,
         "native_F62_source_untouched":True,
+        "native_F62_legal_action_algorithm_same_bytecode":True,
+        "new_candidate_legal_capacity_binding":10,
+        "original_F62_capacity_unchanged":12,
         "learned_public_features_only":True,
         "future_question_seen":False}
 
@@ -103,7 +126,8 @@ def attest():
     need(solver_cannot_handle_8,"F85_LONG_CHAIN_GATE_CHANGED_REQUALIFY")
     return {"schema":"ygg.t2.native-actions-nonconsuming-resource-probe.v1",
         "native_source_pins_verified":True,
-        "original_F62_legal_action_adapter_exercised":True,
+        "original_F62_legal_action_algorithm_instantiated_at_capacity_10":True,
+        "original_F62_12_record_source_untouched":True,
         "native_persistent_bytes":144,
         "F60_original_persistent_budget_bytes":144,
         "learned_weights_bytes":20,
