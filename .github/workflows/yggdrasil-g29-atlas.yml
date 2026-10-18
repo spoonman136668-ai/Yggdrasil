@@ -32,5 +32,6 @@ jobs:
           python-version: "3.12"
       - run: python scripts/build_code_atlas.py --check-if-present
       - run: python -m unittest discover -s tests -p test_code_atlas.py -v
-      - run: python scripts/build_code_atlas.py --emit-base64
+      - if: always()
+        run: python scripts/build_code_atlas.py --emit-base64 --source-commit ${{ github.event.pull_request.head.sha || github.sha }}
       - run: git diff --exit-code

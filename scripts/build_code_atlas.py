@@ -175,8 +175,10 @@ def main():
     if x.check or (x.check_if_present and found):
         require(len(found) == len(OUT), "partial atlas")
         for path, want in artifacts.items():
-            require((root / path).read_bytes() == want.encode("utf-8"),
-                    "stale/tampered " + path)
+            committed = git(root, "show", "HEAD:" + path)
+            require(committed == want.encode("utf-8"), "stale committed blob: " + path)
+            require((root / path).read_bytes().replace(b"\r\n", b"\n") ==
+                    committed.replace(b"\r\n", b"\n"), "checkout drift: " + path)
         print("YGG_G29_PINNED_ATLAS_PASS", source)
     elif x.check_if_present:
         print("YGG_G29_SNAPSHOT_PENDING")

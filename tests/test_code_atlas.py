@@ -22,7 +22,10 @@ class G29(unittest.TestCase):
         self.assertFalse(data["wingless_evidence_imported"])
         if file.exists():
             for name, value in atlas.render(data).items():
-                self.assertEqual((ROOT / name).read_bytes(), value.encode("utf-8"))
+                committed = atlas.git(ROOT, "show", "HEAD:" + name)
+                self.assertEqual(committed, value.encode("utf-8"))
+                self.assertEqual((ROOT / name).read_bytes().replace(b"\r\n", b"\n"),
+                                 committed.replace(b"\r\n", b"\n"))
 
     def test_native_python_symbols(self):
         tree = ast.parse((ROOT / "scripts/portable_checkpoint.py").read_text("utf-8"))
