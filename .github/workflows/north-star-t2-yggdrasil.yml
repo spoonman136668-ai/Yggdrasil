@@ -35,7 +35,7 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'T2_FROZEN_COMMIT_NOT_ANCESTOR'}
           if((git hash-object 'research/foundational/20261015-y-f62/source_pilot.py').Trim() -cne '7ed72deca5584d7c0b6562d74456fa7d4bee6712'){throw 'T2_PREVIOUS_CONTROL_DRIFT'}
           if((git hash-object 'research/north-star-transfer/20261018-yggdrasil-t2-source.py').Trim() -cne '96eba8edc36b67471cd5cf3a6157c401df416050'){throw 'T2_YGGDRASIL_SOURCE_CODE_DRIFT'}
-          if((git hash-object 'research/north-star-transfer/20261018-yggdrasil-t2-native.py').Trim() -cne 'a998530bf99b77cb55b5b2603c90d83f93ddfcde'){throw 'T2_YGGDRASIL_SOURCE_CODE_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261018-yggdrasil-t2-native.py').Trim() -cne '5e1e3455d489b4b20e8acc871a12470d70b71352'){throw 'T2_YGGDRASIL_SOURCE_CODE_DRIFT'}
           $py=if($IsWindows){'python'}else{'python3'}
           & $py -B 'research/north-star-transfer/20261018-yggdrasil-t2-source.py'
           if($LASTEXITCODE -ne 0){throw 'T2_YGGDRASIL_READINESS_FAIL'}
