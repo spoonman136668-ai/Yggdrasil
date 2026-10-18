@@ -1,0 +1,24 @@
+{
+  "schema": "northstar.t7.yggdrasil.preimplementation-prospective.v1",
+  "status": "FROZEN_BEFORE_NEW_SOURCE_AND_FIRST_USE",
+  "source_parent_head": "14857917e7fc009eb5bcba3a111d290619b2789a",
+  "new_source": "New causal grammar, 72 public events: four 8-step corridors with roles sequence [0,1,2,3,0,1,2,3] and forward directions on target corridor, 8 cross-corridor joins and 32 distractors. All added edges from target path states have a role != required next role, other edges do not leave target nodes using required role. Full PUBLIC graph from target start has ONE valid eight-op endpoint. Source-only evaluator truth never online. 4 x8 true path edges, 8 joins, 32 distractors; no model prediction used to choose source cases.",
+  "cohorts": {
+    "NONCONSUMING_SOURCE_FIXTURE": -16000,
+    "ORIGINAL_PROSPECTIVE_TRAIN": -16001,
+    "ORIGINAL_PROSPECTIVE_OPEN": -16002,
+    "INDEPENDENT_REPLICA_TRAIN": -16003,
+    "INDEPENDENT_REPLICA_OPEN": -16004,
+    "ORIGINAL_YNS_PROTECTED_UNUSED": true
+  },
+  "controls": "original F60+new eight-op public solver, unchanged T5 public 144B learned causal memory, zero-weight control, full 72-edge source exact unique solver; T7 source generator cannot select based on model outcomes",
+  "budget": "144-byte total records+weights+counter; actual training amortized over exactly 32 tasks; CPU and peak Python memory <= strongest valid frozen native F60 + solver; source birth/evaluator costs separately; no query until after online",
+  "admission": "full public unique answer verified at source-first-use then trained native produces exact correct answer and preserves baseline-correct cases at equal/lower resources independently replicated; otherwise negative. Original public source T6 ambiguous observations cannot be reclassified.",
+  "authority": {
+    "protected_YNS_unused": true,
+    "scientific_first_use": false,
+    "science_accepted": false,
+    "merge": false,
+    "optimizer_admitted": false
+  }
+}
