@@ -34,7 +34,7 @@ jobs:
           git merge-base --is-ancestor 'f66c957324c58aa4f65b08235f22ea0f10300044' HEAD
           if($LASTEXITCODE -ne 0){throw 'T3_FREEZE_NOT_ANCESTOR'}
           if((git hash-object 'research/foundational/20261015-y-f62/source_pilot.py').Trim() -cne '7ed72deca5584d7c0b6562d74456fa7d4bee6712'){throw 'T3_UNCHANGED_HISTORICAL_BASELINE_DRIFT'}
-          if((git hash-object 'research/north-star-transfer/20261018-yggdrasil-t3-fast-native.py').Trim() -cne '08509a8a2dc30ac97539b6d7ad7607227aa0e155'){throw 'T3_NEW_CORRECTION_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261018-yggdrasil-t3-fast-native.py').Trim() -cne 'c486e9a93b02304ce11964056b06a4115160f9f0'){throw 'T3_NEW_CORRECTION_DRIFT'}
           $py=if($IsWindows){'python'}else{'python3'}
           & $py -B 'research/north-star-transfer/20261018-yggdrasil-t3-fast-native.py'
           if($LASTEXITCODE -ne 0){throw 'T3_FROZEN_FOCUSED_NONCONSUMING_FAIL'}
