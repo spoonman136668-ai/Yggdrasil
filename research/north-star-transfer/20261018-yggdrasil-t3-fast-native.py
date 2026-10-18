@@ -108,7 +108,7 @@ def attest():
     d=json.loads(FREEZE.read_text())
     need(d["schema"]=="northstar.t3.source-bound-correction.v1"
          and d["status"]=="PREIMPLEMENTATION_FROZEN"
-         and not d["authority"]["scientific_first_use"]
+         and not d["scientific_first_use"]
          and d["parent_model_blob"]=="d569d3c57f3916a25462056fe02e7db94373ebc4",
          "EXACT_T3_FREEZE")
     t2=load(T2,"t3_y_native")
