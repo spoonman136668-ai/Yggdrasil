@@ -1,0 +1,47 @@
+name: T2 yggdrasil genuine transfer readiness (nonconsuming)
+on:
+  push:
+    branches: [research/north-star-transfer-yggdrasil-20261018]
+    paths: ['.github/workflows/north-star-t2-yggdrasil.yml']
+permissions:
+  contents: read
+concurrency:
+  group: t2-yggdrasil-nonconsuming-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  independent-source-and-native-audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 40
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify exact prereg source and run only synthetic readiness fixtures
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'T2_EXACT_BRANCH_HEAD_CHANGED'}
+          if((git hash-object 'research/north-star-transfer/20261018-yggdrasil-t2-source-freeze.json').Trim() -cne 'b14f23eccdeaf8f6511ef3ff7560ec17dffd9b10'){throw 'T2_FROZEN_BIRTH_DRIFT'}
+          if((git log -1 --format=%H -- 'research/north-star-transfer/20261018-yggdrasil-t2-source-freeze.json').Trim() -cne '02e66caa2d7d10cec79c1bb6fb8aabeab73922a4'){throw 'T2_PROTOCOL_NOT_FROZEN_BEFORE_SOURCE'}
+          git merge-base --is-ancestor '02e66caa2d7d10cec79c1bb6fb8aabeab73922a4' HEAD
+          if($LASTEXITCODE -ne 0){throw 'T2_FROZEN_COMMIT_NOT_ANCESTOR'}
+          if((git hash-object 'research/foundational/20261015-y-f62/source_pilot.py').Trim() -cne '7ed72deca5584d7c0b6562d74456fa7d4bee6712'){throw 'T2_PREVIOUS_CONTROL_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261018-yggdrasil-t2-source.py').Trim() -cne '96eba8edc36b67471cd5cf3a6157c401df416050'){throw 'T2_YGGDRASIL_SOURCE_CODE_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261018-yggdrasil-t2-native.py').Trim() -cne '1a82812c5bc191288a8d2e0672ec157497f6243f'){throw 'T2_YGGDRASIL_SOURCE_CODE_DRIFT'}
+          $py=if($IsWindows){'python'}else{'python3'}
+          & $py -B 'research/north-star-transfer/20261018-yggdrasil-t2-source.py'
+          if($LASTEXITCODE -ne 0){throw 'T2_YGGDRASIL_READINESS_FAIL'}
+          & $py -B 'research/north-star-transfer/20261018-yggdrasil-t2-native.py'
+          if($LASTEXITCODE -ne 0){throw 'T2_YGGDRASIL_READINESS_FAIL'}
+          Write-Output 'T2_YGGDRASIL_SOURCE_AND_NATIVE_READINESS=PASS'
+          Write-Output 'T2_YGGDRASIL_PROTECTED_COHORTS_CONSUMED=0'
+          Write-Output 'T2_YGGDRASIL_SCIENCE_PROTECTED_ADMISSION=false'
+          Write-Output 'T2_YGGDRASIL_FULL_RESOURCE_PARITY_NOT_ASSUMED=true'
