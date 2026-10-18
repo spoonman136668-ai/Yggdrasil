@@ -5,7 +5,7 @@ unaltered F62.actions() and F60.codec() and an exactly packed 144-byte learned
 state; the native F85 solver cannot yet answer unseen 8-op questions.
 """
 from __future__ import annotations
-import importlib.util,sys,hashlib,inspect,json,time,tracemalloc,types
+import importlib.util,sys,hashlib,inspect,json,time,tracemalloc,types,subprocess
 from pathlib import Path
 
 HERE=Path(__file__).resolve().parent
@@ -22,8 +22,11 @@ EXPECTED={"f62":"7ed72deca5584d7c0b6562d74456fa7d4bee6712",
 def need(ok,tag):
     if not ok:raise ValueError("YGG_T2_NATIVE_"+tag)
 def blob(path):
-    b=path.read_bytes()
-    return hashlib.sha1(b"blob "+str(len(b)).encode()+b"\x00"+b).hexdigest()
+    # Git's canonical content identity honors the checkout's Windows CRLF
+    # normalization rules. Do not hash worktree bytes on Windows.
+    p=subprocess.run(["git","hash-object",str(path)],cwd=ROOT,
+                     check=True,capture_output=True,text=True)
+    return p.stdout.strip()
 def load(name,path):
     spec=importlib.util.spec_from_file_location(name,path)
     m=importlib.util.module_from_spec(spec);sys.modules[name]=m
