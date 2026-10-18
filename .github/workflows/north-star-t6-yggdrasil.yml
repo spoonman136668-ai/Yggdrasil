@@ -1,0 +1,56 @@
+name: T6 yggdrasil source-frozen causal learned-mechanism qualification
+on:
+  push:
+    branches: [research/north-star-transfer-yggdrasil-20261018]
+    paths: ['.github/workflows/north-star-t6-yggdrasil.yml']
+permissions:
+  contents: read
+concurrency:
+  group: t6-yggdrasil-first-nonprotected-original
+  cancel-in-progress: false
+jobs:
+  independent-new-public-TRAIN-OPEN:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest,windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 60
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Pin preregistered T6 source and exact unchanged control
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'T6_GITHUB_HEAD_CHANGED'}
+          if((git hash-object 'research/north-star-transfer/20261018-yggdrasil-t6-freeze.json').Trim() -cne '85044a3b2af745fdd77bc4c07a760f7fc41e05e3'){throw 'T6_SOURCE_FREEZE_BLOB_CHANGED'}
+          if((git log -1 --format=%H -- 'research/north-star-transfer/20261018-yggdrasil-t6-freeze.json').Trim() -cne 'fe3d1edd944a235a1a051c3850a50bd4dc8e2a30'){throw 'T6_FREEZE_NOT_PREIMPLEMENTATION'}
+          git merge-base --is-ancestor fe3d1edd944a235a1a051c3850a50bd4dc8e2a30 HEAD
+          if($LASTEXITCODE -ne 0){throw 'T6_FREEZE_NOT_ANCESTOR'}
+          if((git hash-object 'research/north-star-transfer/20261018-yggdrasil-t6-audit.py').Trim() -cne 'bd11d8fe6076d952807e7487cc1691203a73d6df'){throw 'T6_ENGINEERING_SOURCE_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261018-yggdrasil-t5-learning.py').Trim() -cne '154973be35fb396c8dadc55fad40330357ff27e0'){throw 'T6_ORIGINAL_T5_CONTROL_DRIFT'}
+          Write-Output 'T6_YGGDRASIL_PREIMPLEMENTATION_SOURCE_IDENTITY=PASS'
+      - name: Execute once on fresh OPEN diagnostics with complete public controls
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $py=if($IsWindows){'python'}else{'python3'}
+          & $py -B 'research/north-star-transfer/20261018-yggdrasil-t6-audit.py' | Tee-Object 't6-yggdrasil-original.json'
+          if($LASTEXITCODE -ne 0){throw 'T6_YGGDRASIL_SOURCE_OR_NATIVE_INVARIANT_FAILED'}
+          $j=Get-Content 't6-yggdrasil-original.json' -Raw | ConvertFrom-Json
+          if($j.'protected_scientific_first_use' -ne $false -or $j.'causal_transfer_accepted' -ne $false){throw 'T6_SCIENTIFIC_ORIGINAL_NOT_AUTHORIZED'}
+          Write-Output 'T6_YGGDRASIL_ORIGINAL_TRAIN_OPEN_EVIDENCE=PASS'
+          Write-Output 'T6_YGGDRASIL_PROTECTED_SOURCE_FIRST_USE=false'
+          Write-Output 'T6_YGGDRASIL_SCIENCE_ACCEPTANCE=false'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: t6-yggdrasil-original-${{ matrix.os }}-${{ github.sha }}
+          path: t6-yggdrasil-original.json
+          retention-days: 90
+          if-no-files-found: error
