@@ -62,8 +62,8 @@ def public_features(records,arrived,step):
     duplicate=sum(r[:3]==arrived[:3] for r in records)
     backwards=sum(r[0]==v and r[1]==u for r in records)
     structural=[count/10,step/71,int(u==v),join_left/10,join_right/10,
-       role_hits/10,duplicate/10,backwards/10,int(role&1),int(role&2),
-       int(role&4),int(u&1),int(v&1),int(u&2),int(v&2),
+       role_hits/10,duplicate/10,backwards/10,int(bool(role&1)),int(bool(role&2)),
+       int(bool(role&4)),int(bool(u&1)),int(bool(v&1)),int(bool(u&2)),int(bool(v&2)),
        int(u==0),int(v==0),int(step>=36),int(count>=8),1.0]
     need(len(structural)==PARAMS and all(0<=x<=1 for x in structural),
          "PUBLIC_STRUCTURAL_STATE")
@@ -92,9 +92,9 @@ def choose_native_action(*_):
 
 def selftest():
     observed=bytes((1,2,3,0,0,0,0,0,0,0,0,0))
-    e=[((1.0 if i==19 else (i%5)/5.0 for i in range(20)),1)]
-    # Materialize public TRAIN-only supplied features, not native source cases.
-    e=[(tuple(e[0][0]),1),(tuple([0.0]*19+[1.0]),-1)]
+    # Supplied TRAIN-only public feature vectors, not native source cases.
+    e=[(tuple(1.0 if i==19 else (i%5)/5.0 for i in range(20)),1),
+       (tuple([0.0]*19+[1.0]),-1)]
     w,cost=fit_train_only(e)
     state=start(w)
     need(len(state)==144 and len(w)==20 and cost["training_parameter_updates"]==80,
