@@ -132,7 +132,7 @@ def materialize_ephemeral_canonical_native_sources(f62):
                 cwd=ROOT,check=True,capture_output=True).stdout
         if p.read_bytes()!=canonical:
             p.write_bytes(canonical);repaired+=1
-        physical=hashlib.sha1(b"blob "+str(len(canonical)).encode()+b"\\x00"+canonical).hexdigest()
+        physical=hashlib.sha1(b"blob "+str(len(canonical)).encode()+b"\x00"+canonical).hexdigest()
         need(physical==expected,"CANONICAL_NATIVE_"+name+"_BYTE_DRIFT")
     return repaired
 
