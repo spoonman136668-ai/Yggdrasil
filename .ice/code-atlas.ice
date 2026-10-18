@@ -1,0 +1,11 @@
+TITLE: Yggdrasil Source Atlas
+STATUS: ADVISORY NAVIGATION ONLY
+SOURCE_REPOSITORY: spoonman136668-ai/Yggdrasil
+SOURCE_COMMIT: 1da667e0a5ed55db4ed779a5cb339217bc21c474
+SCHEMA: yggdrasil.ice.source-locator.v1
+FILES: 61
+SYMBOLS: 140
+LEXICAL_IMPORTS: 47
+SOURCE_REVIEWED_LABELS: 0
+WINGLESS_PROVENANCE_IMPORTED: FALSE
+Original Yggdrasil research .ice documents are not modified.
