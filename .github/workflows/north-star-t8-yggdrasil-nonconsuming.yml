@@ -1,0 +1,57 @@
+name: T8 yggdrasil causal learning source-and-resource proof
+on:
+  push:
+    branches: [research/north-star-transfer-yggdrasil-20261018]
+    paths: ['.github/workflows/north-star-t8-yggdrasil-nonconsuming.yml']
+permissions:
+  contents: read
+concurrency:
+  group: t8-yggdrasil-nonconsuming-source-proof
+  cancel-in-progress: false
+jobs:
+  true-causal-constraint-qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest,windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Enforce frozen source before T8 code and exact unchanged historical control
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'T8_GIT_HEAD_MISMATCH'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t8-source-freeze.json').Trim() -cne '90aa9b3e4f3d1d4d11089d5c7c628eb7217a8bdd'){throw 'T8_PREREG_SOURCE_DRIFT'}
+          if((git log -1 --format=%H -- 'research/north-star-transfer/20261019-yggdrasil-t8-source-freeze.json').Trim() -cne '89d9bda7516e082f7a173e0b0e85961f40de192f'){throw 'T8_FREEZE_CHANGED_AFTER_IMPLEMENTATION'}
+          git merge-base --is-ancestor 89d9bda7516e082f7a173e0b0e85961f40de192f HEAD
+          if($LASTEXITCODE -ne 0){throw 'T8_SOURCE_BORN_BEFORE_FREEZE'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t8-unique-source.py').Trim() -cne 'b25a54dfffcd5773e59c2f70312ae6f5a950ad31'){throw 'T8_NEW_SOURCE_IDENTITY_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261018-yggdrasil-t7-independent.py').Trim() -cne 'dcb00a70d1c859d746ad023716bdc486f0870d45'){throw 'T8_HISTORICAL_CONTROL_CHANGED'}
+          Write-Output 'T8_YGGDRASIL_PREREG_AND_SOURCE_IDENTITY=PASS'
+      - name: Test one source-neutral theorem/source or public TRAIN cost
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $py=if($IsWindows){'python'}else{'python3'}
+          & $py -B 'research/north-star-transfer/20261019-yggdrasil-t8-unique-source.py' | Tee-Object 't8-yggdrasil-nonconsuming.json'
+          if($LASTEXITCODE -ne 0){throw 'T8_YGGDRASIL_SOURCE_NEUTRAL_FAILED'}
+          $j=Get-Content 't8-yggdrasil-nonconsuming.json' -Raw | ConvertFrom-Json
+          if($j.'T8_prospective_source_created' -ne $false){throw 'T8_SOURCE_FIRST_USE_FORBIDDEN'}
+          if($j.'public_truth_uniquely_identifiable' -ne $true){throw 'T8_YGG_UNIQUE_PUBLIC_SOURCE_NOT_PROVEN'}
+          Write-Output 'T8_YGGDRASIL_NONCONSUMING_ENGINEERING=PASS'
+          Write-Output 'T8_YGGDRASIL_ORIGINAL_PROTECTED_FIRST_USE=false'
+          Write-Output 'T8_YGGDRASIL_SCIENTIFIC_ACCEPTANCE=false'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: t8-yggdrasil-nonconsuming-${{ matrix.os }}-${{ github.sha }}
+          path: t8-yggdrasil-nonconsuming.json
+          retention-days: 90
+          if-no-files-found: error
