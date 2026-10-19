@@ -1,0 +1,57 @@
+name: T12 yggdrasil learned causal evidence frozen original
+on:
+  push:
+    branches: [research/north-star-transfer-yggdrasil-20261018]
+    paths: ['.github/workflows/north-star-t12-yggdrasil.yml']
+permissions:
+  contents: read
+concurrency:
+  group: northstar-t12-yggdrasil-first-new-source
+  cancel-in-progress: false
+jobs:
+  exact-science-source-qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 65
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify original science freeze before new mechanism and unchanged control
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'T12_EXACT_HEAD_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t12-freeze.json').Trim() -cne 'd08b018b7eb2ecaa9f346e9b8fb25a6303841ede'){throw 'T12_ORIGINAL_PREREG_CHANGED'}
+          if((git log -1 --format=%H -- 'research/north-star-transfer/20261019-yggdrasil-t12-freeze.json').Trim() -cne '86557379b3f37415fdd580aa826087422a32021b'){throw 'T12_FREEZE_NOT_FIRST'}
+          git merge-base --is-ancestor 86557379b3f37415fdd580aa826087422a32021b HEAD
+          if($LASTEXITCODE -ne 0){throw 'T12_SOURCE_FREEZE_NOT_ANCESTOR'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t12-mechanism.py').Trim() -cne '18a42a9b79d99c751a436d72803fd9cd6d28cd88'){throw 'T12_ORIGINAL_MECHANISM_CHANGED'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t11-mechanism.py').Trim() -cne '3fb2617c6a28245387be7af37aadc061bbe36410'){throw 'T12_STRONGEST_CONTROL_DRIFT'}
+          Write-Output 'T12_YGGDRASIL_SOURCE_AND_FREEZE=PASS'
+      - name: Measure new public causal mechanism; no accepted science promotion
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $py=if($IsWindows){'python'}else{'python3'}
+          & $py -B 'research/north-star-transfer/20261019-yggdrasil-t12-mechanism.py' | Tee-Object 't12-yggdrasil-original.json'
+          if($LASTEXITCODE -ne 0){throw 'T12_YGGDRASIL_MECHANISM_FAILED'}
+          $out=Get-Content 't12-yggdrasil-original.json' -Raw | ConvertFrom-Json
+          if($out.'science_accepted' -ne $false){throw 'T12_UNAUTHORIZED_SCIENCE_ADMISSION'}
+          if($out.'original_protected_or_consumed_T8_used' -ne $false -and $out.'original_protected_or_consumed_T8_used' -ne 0){throw 'T12_PROTECTED_OR_CONSUMED_SOURCE'}
+          Write-Output 'T12_YGGDRASIL_SOURCE_NEUTRAL_EVIDENCE=PASS'
+          Write-Output 'T12_YGGDRASIL_INDEPENDENT_SCIENTIFIC_ACCEPTANCE=false'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t12-yggdrasil-new-source-${{ matrix.os }}-${{ github.sha }}
+          path: t12-yggdrasil-original.json
+          retention-days: 90
+          if-no-files-found: warn
