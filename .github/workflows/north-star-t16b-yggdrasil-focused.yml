@@ -1,0 +1,50 @@
+name: T16B yggdrasil nonconsuming novel representation checks
+on:
+  push:
+    branches: [research/north-star-transfer-yggdrasil-20261018]
+    paths: ['.github/workflows/north-star-t16b-yggdrasil-focused.yml']
+permissions:
+  contents: read
+concurrency:
+  group: t16b-yggdrasil-sourceblind-focussed
+  cancel-in-progress: false
+jobs:
+  math-and-serialization:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact frozen prior source and novel representation identities
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'T16B_HEAD_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t16b-lossless-node-arena.py').Trim() -cne '5bc817adc89c0425187685b2fed33322344794ee'){throw 'T16B_REPRESENTATION_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t16b-lossless-node-arena_test.py').Trim() -cne '32605acf8b92ac4f33d7fc367f80e61a4c56621f'){throw 'T16B_TEST_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t16-source.py').Trim() -cne '57b489c3f6a5bb6118423a256b70523b48bbf439'){throw 'T16B_ORIGINAL_SOURCE_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t16-freeze.json').Trim() -cne 'f8c844d0819475f981df30df5b7e6afd07e434a4'){throw 'T16B_PREIMPLEMENTATION_DRIFT'}
+          Write-Output 'T16B_FROZEN_SOURCE_MODEL_AND_TEST_SHA=PASS'
+      - name: Nonconsuming cross-platform focused tests
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          python 'research/north-star-transfer/20261019-yggdrasil-t16b-lossless-node-arena_test.py'
+          if($LASTEXITCODE -ne 0){throw 'T16B_NOVEL_REPRESENTATION_FOCUSED_FAIL'}
+          Write-Output 'T16B_MATH_SERIALIZATION_FOCUSED_PASS'
+      - name: No first-use or scientific authority
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Write-Output 'T16_ORIGINAL_PROSPECTIVE_COHORTS_USED=0'
+          Write-Output 'T16_INDEPENDENT_SCIENTIFIC_ACCEPTANCES=0'
+          Write-Output 'T16_OPTIMIZER_DISPATCH=0'
