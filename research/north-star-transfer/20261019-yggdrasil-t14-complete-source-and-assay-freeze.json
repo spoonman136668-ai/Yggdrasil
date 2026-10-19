@@ -1,0 +1,35 @@
+{
+  "schema": "northstar.t14.yggdrasil.complete-source-assay-freeze.v1",
+  "state": "SOURCE_DEFINITION_FROZEN_BEFORE_LEARNER_OR_FIRST_USE",
+  "source_commit": "3cdca321f1d40d328b1078f021c38598f4435d51",
+  "source_blob": "848149ac9752c7d9fa11a4429d985905a45953a1",
+  "source_path": "research/north-star-transfer/20261019-yggdrasil-t14-source.py",
+  "preimplementation_commit": "1f2f92c7aa91daf302a1810f8a920f1b8a79c149",
+  "controls": {
+    "T12": "18a42a9b79d99c751a436d72803fd9cd6d28cd88",
+    "T13": "441057cf461a6c8a684b090cc5d495dc82aecabb"
+  },
+  "original_cohorts": {
+    "TRAIN": "-42015..-42000",
+    "OPEN": "-42107..-42100",
+    "validity": "fresh nonprotected 24-bit node identity and disjoint order-shift; no prior original identifiers"
+  },
+  "assay": "Single-pass 144-byte 24-bit-ID compact causal path fragments with 20 int8 learned score weights and 4 counters; compact fragments 7..9 bytes; learn TRAIN score from public TRAIN graph plus after-stream TRAIN questions only. No queries accessible during OPEN retention. Compare same native encoding zero-weight control, F60 original and T12 online; full graph forbidden as online baseline. Only scorer reads OPEN held answers; whole-task CPU and peak including TRAIN. Record true serialized state bound and separate interpreter heap; failure to establish actual memory parity => nonacceptance.",
+  "caps": {
+    "max_complete_persistent_state_bytes": 144,
+    "weight_bytes": 20,
+    "counter_bytes": 4,
+    "fragment_area_bytes": 120,
+    "TRAIN_tasks": 16,
+    "OPEN_tasks": 8,
+    "public_edges_per_task": 72
+  },
+  "qualification": "Exact source/control blobs, fixed generation source-before-code, assert consumed-IDs not reused, original Windows/Linux source-only runs and native resource checks, no signed acceptance.",
+  "stopping": [
+    "future OPEN queries during retention",
+    "hidden target corridor at OPEN fit",
+    "persistent state >144B",
+    "second pass/full graph buffer",
+    "candidate loses previously correct baseline"
+  ]
+}
