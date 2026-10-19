@@ -38,6 +38,9 @@ jobs:
           $py=if($IsWindows){'python'}else{'python3'}
           & $py -B 'research/north-star-transfer/20261018-yggdrasil-t7-independent.py' --mode preflight
           if($LASTEXITCODE -ne 0){throw 'T7_NONCONSUMING_GENERATOR_FAIL'}
+          if((git hash-object 'research/north-star-transfer/20261018-yggdrasil-t7-native-preflight.py').Trim() -cne 'd933df3e7c1aa447c5171f5917ff1f9987ffbc15'){throw 'T7_NATIVE_FEASIBILITY_DRIFT'}
+          & $py -B 'research/north-star-transfer/20261018-yggdrasil-t7-native-preflight.py'
+          if($LASTEXITCODE -ne 0){throw 'T7_FULL_NATIVE_SYNTHETIC_SOURCE_CHECK_FAIL'}
           Write-Output 'T7_YGGDRASIL_FROZEN_SOURCE_READINESS=PASS'
           Write-Output 'T7_YGGDRASIL_PROSPECTIVE_A_OR_B_SOURCE_BORN=0'
           Write-Output 'T7_YGGDRASIL_PROTECTED_ORIGINAL_COHORT_BORN=0'
