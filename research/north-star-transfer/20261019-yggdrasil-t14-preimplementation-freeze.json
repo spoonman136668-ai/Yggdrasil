@@ -1,0 +1,55 @@
+{
+  "schema": "northstar.t14.yggdrasil.preimplementation.v1",
+  "parent_head": "8860c7918054953ce4969f632c380d3594058909",
+  "frozen_candidate_git_blob": "441057cf461a6c8a684b090cc5d495dc82aecabb",
+  "frozen_control": "T13 F62 native 144B 10x12B path record, 20B coefficient plus 4B counters; T13 adversarial prefix requires 16 distinct native records and current encoding cannot guarantee 4/4. Preserve F60 and T12 online controls, offline 4/4 explicitly ineligible.",
+  "hypothesis": "A genuinely single-pass learned retention policy with a compact native encoding (not 12B contiguous F62-only records) can preserve a greater fraction of causally useful fragments across adversarial order and later compose them without future-query knowledge, under an unchanged complete 144B state budget.",
+  "candidate_design": {
+    "model": "fixed-size trained retain/compress/evict score, trained ONLY on independent past TRAIN streams with queries withheld until after the stream",
+    "representation": "packed relation-bearing edge fragments with deterministic source/target identifier and relation losslessness; explain bit widths and include all indices, queue, coefficient, counters and scratch in 144B maximum",
+    "streaming": "single pass, no second scan, no full graph cache and no offline precompression; bounded per-event and end-to-end CPU",
+    "eval": "late queries revealed AFTER final state; evaluate adversarial-prefix and independently source-shifted orderings"
+  },
+  "future_cohorts": "New unused nonprotected seed namespace Y-T14 (proposed -42000 block), prospective TRAIN and independent OPEN families; freeze actual source generator and train/test allocations before any birth",
+  "controls": [
+    "T13 2/4 adversarial online frontier (descriptive, not reused test)",
+    "F60 online native 0/4 on T13",
+    "same-information deterministic packed-native nonlearned retention using identical representation/budget",
+    "offline full graph diagnostic only (invalid resource control)"
+  ],
+  "primary_outcomes": [
+    "strict gain in OPEN causal-answer accuracy versus strongest eligible equal-information online control",
+    "zero baseline-positive regressions on same OPEN queries",
+    "144B complete-state bound including learned parameters, metadata, index and workspace",
+    "whole-task CPU <= strongest eligible control; independent novel-topology replication"
+  ],
+  "stop_rules": [
+    "future query or hidden corridor identity used during retention => invalid",
+    "any offline graph caching or hidden second pass => invalid",
+    "T13 native-representation impossibility must not be described as universal bound",
+    "no positive advantage vs identical-encoding untrained control => scientific negative"
+  ],
+  "status": "PREIMPLEMENTATION_PROTOCOL_ONLY_NO_SOURCE_BIRTH",
+  "created_for": "T14 learned transfer without resource regression",
+  "data_class": "NONPROTECTED_PROSPECTIVE_PENDING",
+  "historical_sources": "T7-T13 already consumed; do not replay; WNS/YNS/MNS remain sealed",
+  "evidence_order": "operator instruction > source-pinned qualified outcomes > this preregistration",
+  "execution": "No run authorized by this file; native research authority and independent first-use custody remain required",
+  "engineering_scope": "Append-only preregistration; no executable, workflow, source generator, bridge, accepted-ref or policy mutation",
+  "required_qualification": [
+    "verify immutable parent and frozen blobs plus source generator/learner/control/harness identities",
+    "qualify source-birth provenance BEFORE original cohort construction",
+    "cached exact-key focused tests only if complete semantic identity matches",
+    "one final original end-to-end regression before any build, acceptance or promotion",
+    "record independent original Windows and Linux provider results and both positive and negative observations"
+  ],
+  "safety": {
+    "protected_first_use": false,
+    "original_cohort_replay": false,
+    "accepted_ref_mutation": false,
+    "optimizer_admission": false,
+    "production": false,
+    "new_controller": false,
+    "paid_inference": false
+  }
+}
