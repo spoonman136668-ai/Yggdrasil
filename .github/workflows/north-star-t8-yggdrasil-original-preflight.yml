@@ -1,0 +1,42 @@
+name: T8 Yggdrasil new prospective source nonconsuming readiness
+on:
+  push:
+    branches: [research/north-star-transfer-yggdrasil-20261018]
+    paths: ['.github/workflows/north-star-t8-yggdrasil-original-preflight.yml']
+permissions:
+  contents: read
+concurrency:
+  group: t8-yggdrasil-new-original-source-preflight
+  cancel-in-progress: false
+jobs:
+  source-uniqueness:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest,windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Confirm T8 old proof, new original freeze and zero first-use source birth
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'T8_EXACT_NEW_SOURCE_HEAD_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t8-prospective-freeze.json').Trim() -cne '8d3713525ef60f528c36260636fe2f41c3bfa255'){throw 'T8_ORIGINAL_SOURCE_FREEZE_DRIFT'}
+          if((git log -1 --format=%H -- 'research/north-star-transfer/20261019-yggdrasil-t8-prospective-freeze.json').Trim() -cne '666f302e17c8aaa526837dd65414035181a0596d'){throw 'T8_FREEZE_BEFORE_NEW_CODE_FAIL'}
+          git merge-base --is-ancestor 666f302e17c8aaa526837dd65414035181a0596d HEAD
+          if($LASTEXITCODE -ne 0){throw 'T8_FROZEN_NOT_ANCESTOR'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t8-first-original.py').Trim() -cne '19caf9374176c12a53fa1f1c7d01389714db9ff6'){throw 'T8_NEW_GENERATOR_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t8-unique-source.py').Trim() -cne 'b25a54dfffcd5773e59c2f70312ae6f5a950ad31'){throw 'T8_PRIOR_INVARIANT_PROOF_DRIFT'}
+          $py=if($IsWindows){'python'}else{'python3'}
+          & $py -B 'research/north-star-transfer/20261019-yggdrasil-t8-first-original.py' --mode preflight
+          if($LASTEXITCODE -ne 0){throw 'T8_NEW_SOURCE_UNIQUE_INVARIANT_FAIL'}
+          Write-Output 'T8_NEW_YGG_FIRST_USE_SOURCE_READINESS=PASS'
+          Write-Output 'T8_NEW_YGG_A_AND_B_SOURCES_BORN=0'
