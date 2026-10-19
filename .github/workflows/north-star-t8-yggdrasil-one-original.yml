@@ -1,0 +1,74 @@
+name: T8 Yggdrasil uniquely answerable single original prospective
+on:
+  push:
+    branches: [research/north-star-transfer-yggdrasil-20261018]
+    paths: ['.github/workflows/north-star-t8-yggdrasil-one-original.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: t8-yggdrasil-original-unique-first-use-once
+  cancel-in-progress: false
+jobs:
+  guarded-first-original:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify independently qualified exact-head source and never-replay original custody
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git hash-object research/north-star-transfer/20261019-yggdrasil-t8-prospective-freeze.json)" = "8d3713525ef60f528c36260636fe2f41c3bfa255"
+          test "$(git log -1 --format=%H -- research/north-star-transfer/20261019-yggdrasil-t8-prospective-freeze.json)" = "666f302e17c8aaa526837dd65414035181a0596d"
+          git merge-base --is-ancestor 666f302e17c8aaa526837dd65414035181a0596d HEAD
+          test "$(git hash-object research/north-star-transfer/20261019-yggdrasil-t8-first-original.py)" = "19caf9374176c12a53fa1f1c7d01389714db9ff6"
+          test "$(git hash-object research/north-star-transfer/20261019-yggdrasil-t8-unique-source.py)" = "b25a54dfffcd5773e59c2f70312ae6f5a950ad31"
+          test "$(gh api 'repos/spoonman136668-ai/Yggdrasil/actions/runs/39180690784' --jq '[.head_sha,.conclusion,.event]|join(" ")')" = "000cae2342915c89352ebad51a73010d7a963ae8 success push"
+          test "$(gh api 'repos/spoonman136668-ai/Yggdrasil/actions/runs/39180690784/jobs?per_page=100' --jq '[.total_count,([.jobs[]|select(.conclusion=="success")]|length)]|join(" ")')" = "2 2"
+          other=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?branch=research/north-star-transfer-yggdrasil-20261018&per_page=100" --jq '[.workflow_runs[] | select(.path==".github/workflows/north-star-t8-yggdrasil-one-original.yml") | select(.id != (env.GITHUB_RUN_ID|tonumber))]|length')
+          test "$other" = "0" || { echo T8_ORIGINAL_ALREADY_ATTEMPTED_FAIL_CLOSED; exit 1; }
+          python3 -B research/north-star-transfer/20261019-yggdrasil-t8-first-original.py --mode preflight
+          echo T8_YGG_NEW_ORIGINAL_SOURCE_ADMISSION=PASS
+      - name: Consume once new A source; B only if A eligible
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/north-star-transfer/20261019-yggdrasil-t8-first-original.py --mode original > "$RUNNER_TEMP/t8-yggdrasil-first.json"
+          python3 - <<'PY'
+          import os,json,pathlib
+          file=pathlib.Path(os.environ['RUNNER_TEMP'])/'t8-yggdrasil-first.json'
+          d=json.loads(file.read_text())
+          assert d['schema']=='ygg.t8.first-original-prospective-unique-source.v1'
+          assert d['first']['public_unique_source_verified_before_scoring'] is True
+          assert d['first']['native_complete_persistent_bytes']==144
+          assert d['A_new_source_ids_born']==[-18001,-18002]
+          assert d['B_first_used']==d['first_eligible']
+          assert d['B_new_source_ids_born']==([-18003,-18004] if d['first_eligible'] else [])
+          assert d['consumed_T7_source_ids_replayed'] is False
+          assert d['original_YNS_protected_source_used']==0
+          assert d['scientific_acceptance'] is False and d['optimizer_promotion'] is False
+          print('T8_YGG_NEW_ORIGINAL_SINGLE_FIRST_USE=PASS')
+          print('T8_YGG_RESULT='+json.dumps(d,sort_keys=True))
+          PY
+          (cd "$RUNNER_TEMP" && sha256sum t8-yggdrasil-first.json > t8-yggdrasil-first.json.sha256)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t8-yggdrasil-first-source-custody-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/t8-yggdrasil-first.json
+            ${{ runner.temp }}/t8-yggdrasil-first.json.sha256
+          retention-days: 90
+          if-no-files-found: warn

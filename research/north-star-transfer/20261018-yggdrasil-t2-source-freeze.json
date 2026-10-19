@@ -1,0 +1,48 @@
+{
+  "schema": "northstar.t2.yggdrasil.unseen-topology-source.v1",
+  "status": "FROZEN_BEFORE_T2_SOURCE_AND_NATIVE_ADAPTER",
+  "baseline_source_blobs": {
+    "F60": "123dd7e979485ae07664118f948cd651b0386526",
+    "F62": "7ed72deca5584d7c0b6562d74456fa7d4bee6712",
+    "F85": "e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3"
+  },
+  "source_grammar": "72 public tuple(edge_from, role_0to3, edge_to) stream from 4 true causal paths each >=8 relation edges plus 40 distractor edges including cross-joins and inverses; no truth labels or target query to online memory policy",
+  "test_topology": "3-or-more-way cross joins between separate causal corridors; blinded source birth uses distinct topology generator, not reverse or shuffled F62 events",
+  "splits": {
+    "TRAIN": [
+      890001,
+      890024
+    ],
+    "SCREEN": [
+      891001,
+      891016
+    ],
+    "UNSEEN": [
+      892001,
+      892032
+    ],
+    "REPLICA": [
+      893001,
+      893032
+    ]
+  },
+  "source_only_synthetic_fixture_ids": [
+    -920,
+    -921
+  ],
+  "registered_cohorts_not_constructed": true,
+  "native_interface": "Adapter must reuse SHA-checked F62 actions(memory,event,index,packing) and exact F60 packing codec; no altered F62 functions; learned public score used to select one legal action, pack exactly <=10x12 byte records plus 20 weight bytes and 4 header; no hidden future, question or label",
+  "solver_constraint": "Original F85 supports only 4 or 6 ops and 12 records; 8+ public causal transfer cannot be claimed without separately source-qualified solver extension; block new unseen first use",
+  "cost_rule": "Complete training amortized over 32 unseen tasks + 72-event public online inference plus solver <= strongest original F60/F85 and eligible public exact control CPU/ops and peak memory; 144B stored state cap is necessary not sufficient.",
+  "authority": {
+    "scientific_first_use": false,
+    "protected_holdout_constructed": false,
+    "science_accepted": false,
+    "merge": false,
+    "promotion": false
+  },
+  "source_anchor_head": "19635df877372268ca66a268ea56fdd4787522f9",
+  "prior_freeze_git_blob": "14173c38978da3174ca1a1a8a35f2267ee271595",
+  "t1_kernel_blob": "f0ded7d42d74814464d6cc9b0422c9616038cd8c",
+  "date": "2026-10-18"
+}

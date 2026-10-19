@@ -1,0 +1,73 @@
+name: T7 yggdrasil ONE original prospective source first-use
+on:
+  push:
+    branches: [research/north-star-transfer-yggdrasil-20261018]
+    paths: ['.github/workflows/north-star-t7-yggdrasil-original.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: t7-yggdrasil-single-original-source-custody
+  cancel-in-progress: false
+jobs:
+  one-original-prospective-first-use:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 85
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 60
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify original source freeze, both independent preflight jobs, and no previous first-use attempt
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git hash-object research/north-star-transfer/20261018-yggdrasil-t7-preregister.json)" = "2855c3b6f61003237c09abc1a5873764ae38684e"
+          test "$(git log -1 --format=%H -- research/north-star-transfer/20261018-yggdrasil-t7-preregister.json)" = "2dcf78f7f41aa80bdbf582244aa2d89425917a57"
+          git merge-base --is-ancestor 2dcf78f7f41aa80bdbf582244aa2d89425917a57 HEAD
+          test "$(git hash-object research/north-star-transfer/20261018-yggdrasil-t7-independent.py)" = "dcb00a70d1c859d746ad023716bdc486f0870d45"
+          test "$(git hash-object research/north-star-transfer/20261018-yggdrasil-t6-audit.py)" = "bd11d8fe6076d952807e7487cc1691203a73d6df"
+          test "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/39179103438" --jq '[.head_sha,.conclusion,.event] | join(" ")')" = "04f678b474c9071ca42834b1f194dc01ceb85f07 success push"
+          test "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/39179103438/jobs?per_page=100" --jq '[.total_count,([.jobs[]|select(.conclusion=="success")]|length)]|join(" ")')" = "2 2"
+          other=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?branch=research/north-star-transfer-yggdrasil-20261018&per_page=100" --jq '[.workflow_runs[] | select(.path==".github/workflows/north-star-t7-yggdrasil-original.yml") | select(.id != (env.GITHUB_RUN_ID|tonumber))] | length')
+          test "$other" = "0" || { echo T7_ORIGINAL_SOURCE_ALREADY_ATTEMPTED; exit 1; }
+          python3 -B research/north-star-transfer/20261018-yggdrasil-t7-independent.py --mode preflight
+          echo T7_YGGDRASIL_BEFORE_FIRST_USE_ADMISSION=PASS
+      - name: Consume one frozen original source cohort, replica only if admitted
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B research/north-star-transfer/20261018-yggdrasil-t7-independent.py --mode original > "$RUNNER_TEMP/t7-yggdrasil-original.json"
+          python3 - <<'PY'
+          import json,os,pathlib
+          f=pathlib.Path(os.environ["RUNNER_TEMP"],"t7-yggdrasil-original.json")
+          d=json.loads(f.read_text())
+          assert d["schema"]=="ygg.t7.first-prospective-unique-public-causal.v1"
+          assert d["first"]["full_graph_unique"] is True
+          assert d["first"]["native_persistent_bytes"]==144
+          assert d["protected_original_YNS_used"]==0
+          assert d["replica_first_used"]==d["first_eligible"]
+          assert d["scientific_acceptance"] is False and d["optimizer_promotion"] is False
+          print("T7_YGGDRASIL_FIRST_USE_SOURCE_CUSTODY=PASS")
+          print("T7_YGGDRASIL_SCIENTIFIC_ACCEPTANCE=false")
+          print("T7_YGGDRASIL_ORIGINAL_PROTECTED_COHORTS_UNTOUCHED=true")
+          print("T7_YGGDRASIL_FIRST_USE_RESULT="+json.dumps(d,sort_keys=True))
+          PY
+          (cd "$RUNNER_TEMP" && sha256sum "t7-yggdrasil-original.json" > "t7-yggdrasil-original.json.sha256")
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t7-yggdrasil-first-original-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/t7-yggdrasil-original.json
+            ${{ runner.temp }}/t7-yggdrasil-original.json.sha256
+          retention-days: 90
+          if-no-files-found: warn

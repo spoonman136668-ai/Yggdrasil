@@ -1,0 +1,91 @@
+name: T15R Ygg sixhop source reissue after original invalid control
+on:
+  push:
+    branches: [research/north-star-transfer-yggdrasil-20261018]
+    paths: ['.github/workflows/north-star-t15r-yggdrasil-original.yml']
+permissions:
+  contents: read
+concurrency:
+  group: t15r-yggdrasil-once-new-source
+  cancel-in-progress: false
+jobs:
+  preflight:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 60
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify reissue, preregistration, frozen original learner and controls
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'T15R_HEAD_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t15r-source-reissue.py').Trim() -cne 'f65831b3cde0733ac5eb6b784675a8df924c9144'){throw 'T15R_REISSUE_SOURCE_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t15r-comparator-repair-freeze.json').Trim() -cne '7940f635bc85ec35f5f182fbf269633d47139b84'){throw 'T15R_FREEZE_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t15r-comparator-repair.py').Trim() -cne 'bd2f9b73773c563f7f2b5ae696469141d0868b01'){throw 'T15R_COMPARATOR_FIX_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t15-mechanism.py').Trim() -cne '9b9bcbb0ce5f42feaae86a52520141700e65f0a5'){throw 'T15R_ORIGINAL_LEARNER_CHANGED'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t15-source.py').Trim() -cne 'dd9616e662bcedf1d15bc2318eb7cfdae9d93ad9'){throw 'T15R_ORIGINAL_GRAMMAR_CHANGED'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t14-mechanism.py').Trim() -cne '9b22f32e0fcdef862d37878428d640dcce09c76f'){throw 'T15R_T14_CONTROL_DRIFT'}
+          if((git log -1 --format=%H -- 'research/north-star-transfer/20261019-yggdrasil-t15r-source-reissue.py').Trim() -cne '0e22151fa8989bac6a1382b96b0ec7da6aa56663'){throw 'T15R_SOURCE_NOT_FIRST'}
+          if((git log -1 --format=%H -- 'research/north-star-transfer/20261019-yggdrasil-t15r-comparator-repair-freeze.json').Trim() -cne 'ec0a5504cf285f3be6a129d5401450c4e7bdb0e2'){throw 'T15R_REISSUE_PREREG_NOT_FIRST'}
+          git merge-base --is-ancestor ec0a5504cf285f3be6a129d5401450c4e7bdb0e2 HEAD
+          if($LASTEXITCODE -ne 0){throw 'T15R_SOURCE_FROZEN_AFTER_FIX'}
+          Write-Output 'T15R_EXACT_SOURCE_AND_NARROW_FIX=PASS'
+      - name: Syntax only; no new cohort birth
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          python -m py_compile 'research/north-star-transfer/20261019-yggdrasil-t15r-source-reissue.py' 'research/north-star-transfer/20261019-yggdrasil-t15r-comparator-repair.py'
+          if($LASTEXITCODE -ne 0){throw 'T15R_SYNTAX_STOP_BEFORE_SOURCE'}
+  original:
+    needs: [preflight]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 60
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify sealed source and learner on original worker
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'T15R_HEAD_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t15r-source-reissue.py').Trim() -cne 'f65831b3cde0733ac5eb6b784675a8df924c9144'){throw 'T15R_REISSUE_SOURCE_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t15r-comparator-repair-freeze.json').Trim() -cne '7940f635bc85ec35f5f182fbf269633d47139b84'){throw 'T15R_FREEZE_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t15r-comparator-repair.py').Trim() -cne 'bd2f9b73773c563f7f2b5ae696469141d0868b01'){throw 'T15R_COMPARATOR_FIX_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t15-mechanism.py').Trim() -cne '9b9bcbb0ce5f42feaae86a52520141700e65f0a5'){throw 'T15R_ORIGINAL_LEARNER_CHANGED'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t15-source.py').Trim() -cne 'dd9616e662bcedf1d15bc2318eb7cfdae9d93ad9'){throw 'T15R_ORIGINAL_GRAMMAR_CHANGED'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t14-mechanism.py').Trim() -cne '9b22f32e0fcdef862d37878428d640dcce09c76f'){throw 'T15R_T14_CONTROL_DRIFT'}
+          if((git log -1 --format=%H -- 'research/north-star-transfer/20261019-yggdrasil-t15r-source-reissue.py').Trim() -cne '0e22151fa8989bac6a1382b96b0ec7da6aa56663'){throw 'T15R_SOURCE_NOT_FIRST'}
+          if((git log -1 --format=%H -- 'research/north-star-transfer/20261019-yggdrasil-t15r-comparator-repair-freeze.json').Trim() -cne 'ec0a5504cf285f3be6a129d5401450c4e7bdb0e2'){throw 'T15R_REISSUE_PREREG_NOT_FIRST'}
+          git merge-base --is-ancestor ec0a5504cf285f3be6a129d5401450c4e7bdb0e2 HEAD
+          if($LASTEXITCODE -ne 0){throw 'T15R_SOURCE_FROZEN_AFTER_FIX'}
+          Write-Output 'T15R_EXACT_SOURCE_AND_NARROW_FIX=PASS'
+      - name: One fresh nonprotected sixhop comparison, original IDs never reused
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          python research/north-star-transfer/20261019-yggdrasil-t15r-comparator-repair.py > t15r-yggdrasil-original.json
+          if($LASTEXITCODE -ne 0){throw 'T15R_ORIGINAL_FAILED_NEW_IDS_CONSUMED_NO_REPLAY'}
+          python -c "import json; d=json.load(open('t15r-yggdrasil-original.json',encoding='utf-8-sig')); assert d['schema']=='yggdrasil.t15r.fresh-sixhop-comparator-compatible.v1'; assert d['signed_scientific_acceptance'] is False and d['optimizer_admission'] is False and d['original_failed_source_ids_replayed'] is False; print('T15R_REISSUED_SOURCE_VERIFIED_NONADMITTED=PASS')"
+          if($LASTEXITCODE -ne 0){throw 'T15R_INVALID_RECEIPT_NEW_IDS_CONSUMED'}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t15r-yggdrasil-new-source-nonadmitted
+          path: t15r-yggdrasil-original.json
+          if-no-files-found: ignore
+          retention-days: 90

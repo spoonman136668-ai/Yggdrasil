@@ -1,0 +1,75 @@
+{
+  "schema": "research.north-star-transfer.yggdrasil.frozen-preimplementation.v1",
+  "status": "PRECODE_ONLY_NOT_EXECUTED",
+  "frozen_date": "2026-10-18",
+  "origin": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "source_head": "84c2060d0b9634586f19e028867f6cb7fab423be",
+    "PR": 312,
+    "learned_impl": "research/foundational/20261017-y-f105/relational_credit.py",
+    "learned_impl_blob": "f78cae2150b48b4c7ffb1274f80392a563bd64ce",
+    "reference_PR": 309,
+    "reference_blob": "8686390483c1e367c5cc1016a865a15c926b8376",
+    "future_feasibility_PR": 316,
+    "frozen_native_baseline": "F60 fixed 12 x 12-byte public retention + unchanged F85 compositional answer",
+    "native_F60_baseline_source": {
+      "path": "research/foundational/20261015-y-f60/source_feasibility.py",
+      "blob": "123dd7e979485ae07664118f948cd651b0386526"
+    },
+    "native_F62_action_source": {
+      "path": "research/foundational/20261015-y-f62/source_pilot.py",
+      "blob": "7ed72deca5584d7c0b6562d74456fa7d4bee6712"
+    },
+    "F85_public_solver": {
+      "path": "research/foundational/20261016-y-f85/global_solver.py",
+      "blob": "e4eb4bfbd6a01212f8c1eebc38af09b15c6d9cc3"
+    }
+  },
+  "candidate_status": "F105 learned 20-parameter structural credit is the most expressive identified native causal-memory learner, but there is no qualified gain over fixed F60; F102 and F90 earned valid negatives. Baseline F60 has 144B persistent native state, candidate must count weights too.",
+  "hypothesis": "Learn a compressed, query-blind compositional causal-memory sufficient statistic that retains long delayed signed-role chains under new graph topologies, not merely synthetic source-label provenance.",
+  "novel_mechanism": "Jointly learned 16-bit quantized latent path-continuation confidence and legal public-memory action utility, trained from TRAIN-only future credit, with a structural connectivity regularizer and explicit source-native online state transition. Unlike F105 feature additions, learn compositional records whose edge-to-edge algebra is shared across roles without leaking future question at inference.",
+  "cohort": {
+    "TRAIN": "YNS-T-890001..890024",
+    "screen": "YNS-S-891001..891016",
+    "held_unseen": "YNS-U-892001..892032",
+    "replication": "YNS-R-893001..893032",
+    "source_topology": "unseen task-graph generators with branching cross-family joins, signed edges and ≥8 relation composition; not just F62 seed/order permutation",
+    "TRAIN_only_oracle_labels": true,
+    "online_public_only": true,
+    "held_unseen_first_use": false
+  },
+  "controls": [
+    "F60 unchanged 12 x 12B memory and F85 solver",
+    "F105 unchanged 20-feature learner under original resource accounting",
+    "F102 exact frozen delayed-credit scorer",
+    "F62 zero intervention",
+    "publicly computable bounded exact-path symbolic solver",
+    "same-compute query-blind fixed retention and small nonlearning role heuristics",
+    "oracle TRAIN labeler unavailable online"
+  ],
+  "budgets": {
+    "total_persistent_bytes": 144,
+    "model_weights_and_recurrent_controller_count_toward_144": true,
+    "proposal_allocation": "at most 120B native records +20B trained weights +4B controller/counters; exact byte proof before source use",
+    "compute": "full TRAIN amortization over 32 prospective held unseen tasks plus online 72-public-event ingestion + exact F85 inference <= strongest eligible baseline, measured instruction-equivalent and matched-runner CPU",
+    "memory": "all temporary, optimizer/model buffers and native record allocations <= baseline peak bytes; persistent 144 hard cap",
+    "external_API_cost": 0
+  },
+  "admission": {
+    "primary": "on 32 new unseen topology tasks and 32 replicated independent tasks, strict gain >=4 correct/32 over F60 and cost-matched public solver where applicable",
+    "safety": "zero regression on baseline-correct short-chain cases, no topological-family losses, answer correctness evaluated from independent full public graph",
+    "resource": "total training-amortized compute and peak memory <= strongest frozen eligible baseline; otherwise scientific nonacceptance",
+    "transfer": "strict improvement on at least one previously unseen topology grammar and path length 8+, no source identifiers in online model",
+    "no_hidden_information": "at online time no future events, target answer, source family, teacher labels, true graph, held case identity",
+    "custody": "preserve all regressions and negatives; independent heldout and replica acceptance require separate authorization"
+  },
+  "authority": {
+    "science_accepted": false,
+    "runner_dispatched": false,
+    "protected_first_use": false,
+    "accepted_ref_mutation": false,
+    "promotion_allowed": false,
+    "merge_allowed": false
+  },
+  "preimplementation_revision": "Added precise frozen baseline source, native legal-action, and unchanged public-solver Git blobs before any new transfer source or first-use"
+}

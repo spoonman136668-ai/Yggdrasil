@@ -1,0 +1,57 @@
+name: T10 yggdrasil learned cognition source-neutral qualification
+on:
+  push:
+    branches: [research/north-star-transfer-yggdrasil-20261018]
+    paths: ['.github/workflows/north-star-t10-yggdrasil.yml']
+permissions:
+  contents: read
+concurrency:
+  group: t10-yggdrasil-frozen-new-nonprotected
+  cancel-in-progress: false
+jobs:
+  focused-learned-mechanism:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest,windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 60
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify frozen prior protocol and exact original controls
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'T10_SOURCE_HEAD_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t10-preregister.json').Trim() -cne '68e7997de011fa2ac979e9e1541142c9da9cede9'){throw 'T10_FROZEN_PROTOCOL_DRIFT'}
+          if((git log -1 --format=%H -- 'research/north-star-transfer/20261019-yggdrasil-t10-preregister.json').Trim() -cne 'a692f925d91b0b03bd9033f558df833334e26762'){throw 'T10_PROTOCOL_NOT_FROZEN_FIRST'}
+          git merge-base --is-ancestor a692f925d91b0b03bd9033f558df833334e26762 HEAD
+          if($LASTEXITCODE -ne 0){throw 'T10_FROZEN_COMMIT_NOT_ANCESTOR'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t10-queryblind.py').Trim() -cne '73812c53549d8cd191e64ad79467f8e01c13f3c7'){throw 'T10_ACTUAL_LEARNER_CODE_DRIFT'}
+          if((git hash-object 'research/foundational/20261015-y-f62/source_pilot.py').Trim() -cne '7ed72deca5584d7c0b6562d74456fa7d4bee6712'){throw 'T10_ORIGINAL_STRONG_CONTROL_DRIFT'}
+          Write-Output 'T10_YGGDRASIL_PREREG_AND_ORIGINAL_CONTROL=PASS'
+      - name: Execute frozen nonprotected learning and original resource comparison
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $py=if($IsWindows){'python'}else{'python3'}
+          & $py -B 'research/north-star-transfer/20261019-yggdrasil-t10-queryblind.py' | Tee-Object 't10-yggdrasil-original.json'
+          if($LASTEXITCODE -ne 0){throw 'T10_YGGDRASIL_TRAIN_EVALUATION_FAILED'}
+          $v=Get-Content 't10-yggdrasil-original.json' -Raw | ConvertFrom-Json
+          if($v.'scientific_acceptance' -ne $false){throw 'T10_SCIENCE_UNAUTHORIZED'}
+          if($v.'original_protected_or_T8_FIRST_use_replayed' -ne 0 -and $v.'original_protected_or_T8_FIRST_use_replayed' -ne $false){throw 'T10_PROTECTED_SOURCE_REPLAY'}
+          Write-Output 'T10_YGGDRASIL_FOCUSED_EVIDENCE=PASS'
+          Write-Output 'T10_YGGDRASIL_SCIENTIFIC_ADMISSION=false'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t10-yggdrasil-new-nonprotected-${{ matrix.os }}-${{ github.sha }}
+          path: t10-yggdrasil-original.json
+          retention-days: 90
+          if-no-files-found: warn

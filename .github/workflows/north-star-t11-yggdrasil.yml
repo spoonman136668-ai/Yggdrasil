@@ -1,0 +1,57 @@
+name: T11 yggdrasil source-frozen learned causal mechanism qualification
+on:
+  push:
+    branches: [research/north-star-transfer-yggdrasil-20261018]
+    paths: ['.github/workflows/north-star-t11-yggdrasil.yml']
+permissions:
+  contents: read
+concurrency:
+  group: t11-yggdrasil-new-synthetic-source-only
+  cancel-in-progress: false
+jobs:
+  focused-independent-source:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 60
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Freeze-before-code and original baseline source identity
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'T11_HEAD_CHANGED'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t11-freeze.json').Trim() -cne 'b2fb9440c8dc0143f21a3684594503908c945d1e'){throw 'T11_PREIMPLEMENTATION_BLOB_DRIFT'}
+          if((git log -1 --format=%H -- 'research/north-star-transfer/20261019-yggdrasil-t11-freeze.json').Trim() -cne 'd7ede6f8dc0773fedffa5446acc2a43750a32291'){throw 'T11_FROZEN_PROTOCOL_NOT_ORIGINAL'}
+          git merge-base --is-ancestor d7ede6f8dc0773fedffa5446acc2a43750a32291 HEAD
+          if($LASTEXITCODE -ne 0){throw 'T11_PROTOCOL_NOT_BEFORE_MODEL'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t11-mechanism.py').Trim() -cne '3fb2617c6a28245387be7af37aadc061bbe36410'){throw 'T11_LEARNER_SOURCE_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t10-queryblind.py').Trim() -cne '73812c53549d8cd191e64ad79467f8e01c13f3c7'){throw 'T11_ORIGINAL_CONTROL_MODIFIED'}
+          Write-Output 'T11_YGGDRASIL_IMMUTABLE_PROTOCOL_AND_CONTROLS=PASS'
+      - name: Execute new source-neutral causal mechanism and report negatives faithfully
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $py=if($IsWindows){'python'}else{'python3'}
+          & $py -B 'research/north-star-transfer/20261019-yggdrasil-t11-mechanism.py' | Tee-Object -FilePath 't11-yggdrasil-original.json'
+          if($LASTEXITCODE -ne 0){throw 'T11_YGGDRASIL_MECHANISM_OR_SOURCE_FAILED'}
+          $j=Get-Content 't11-yggdrasil-original.json' -Raw | ConvertFrom-Json
+          if($j.'science_accepted' -ne $false){throw 'T11_SCIENTIFIC_PROMOTION_NOT_AUTHORIZED'}
+          if($j.'original_protected_or_consumed_T8_source_used' -ne $false -and $j.'original_protected_or_consumed_T8_source_used' -ne 0){throw 'T11_PROTECTED_FIRST_USE_OR_REPLAY'}
+          Write-Output 'T11_YGGDRASIL_NONPROTECTED_SCIENTIFIC_DIAGNOSTIC=PASS'
+          Write-Output 'T11_YGGDRASIL_SIGNED_SCIENTIFIC_ACCEPTANCE=false'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t11-yggdrasil-original-${{ matrix.os }}-${{ github.sha }}
+          path: t11-yggdrasil-original.json
+          if-no-files-found: warn
+          retention-days: 90

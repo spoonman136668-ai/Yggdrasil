@@ -1,0 +1,44 @@
+name: T15 yggdrasil source-only nonconsuming cross-platform preflight
+on:
+  push:
+    branches: [research/north-star-transfer-yggdrasil-20261018]
+    paths: ['.github/workflows/north-star-t15-yggdrasil-preflight.yml']
+permissions:
+  contents: read
+jobs:
+  no-source-birth-preflight:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact model, source and control-preregistration identity
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'T15_HEAD_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t15-source.py').Trim() -cne 'dd9616e662bcedf1d15bc2318eb7cfdae9d93ad9'){throw 'T15_SOURCE_BLOB_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t15-preimplementation-freeze.json').Trim() -cne '853ae9bc7a328d78d3f1b04d167c64d67fa17155'){throw 'T15_ASSAY_BLOB_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261019-yggdrasil-t15-mechanism.py').Trim() -cne '9b9bcbb0ce5f42feaae86a52520141700e65f0a5'){throw 'T15_MODEL_BLOB_DRIFT'}
+          if((git log -1 --format=%H -- 'research/north-star-transfer/20261019-yggdrasil-t15-source.py').Trim() -cne 'd5c8d126e65af7309b11641dfa54c01e62cfe48d'){throw 'T15_SOURCE_NOT_FROZEN'}
+          if((git log -1 --format=%H -- 'research/north-star-transfer/20261019-yggdrasil-t15-preimplementation-freeze.json').Trim() -cne '055a6c6b9cbd6bac09f5be409670e5dc9adecbcd'){throw 'T15_ASSAY_NOT_FROZEN'}
+          git merge-base --is-ancestor 055a6c6b9cbd6bac09f5be409670e5dc9adecbcd HEAD
+          if($LASTEXITCODE -ne 0){throw 'T15_PREREG_NOT_ANCESTOR'}
+          Write-Output 'T15_YGGDRASIL_SOURCE_MODEL_ASSAY_FROZEN=PASS'
+      - name: Python syntax and inert module import without source birth
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          python -m py_compile 'research/north-star-transfer/20261019-yggdrasil-t15-source.py' 'research/north-star-transfer/20261019-yggdrasil-t15-mechanism.py'
+          if($LASTEXITCODE -ne 0){throw 'T15_SYNTAX_FAIL'}
+          python -c "import importlib.util; p='research/north-star-transfer/20261019-yggdrasil-t15-source.py'; s=importlib.util.spec_from_file_location('t15_inert_source',p); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); assert len(set(m.TRAIN)&set(m.OPEN))==0; assert all(i<0 for i in m.TRAIN+m.OPEN); print('T15_NO_ORIGINAL_SOURCE_BORN=PASS')"
+          if($LASTEXITCODE -ne 0){throw 'T15_INERT_SOURCE_BAD'}

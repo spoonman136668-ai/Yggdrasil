@@ -1,0 +1,40 @@
+{
+  "schema": "northstar.t15.yggdrasil.comparator-compatibility-reissue.v1",
+  "state": "REISSUE_FROZEN_BEFORE_COMPARATOR_FIX_NO_NEW_SOURCE_BORN",
+  "original_failed": {
+    "run": 39225285788,
+    "source_git_head": "8b32f79f172627a29c73f4bfc37a1b6960b5444b",
+    "original_cohorts_consumed": {
+      "TRAIN": "-52015..-52000",
+      "OPEN": "-52107..-52100"
+    },
+    "failure": "Frozen T4 control public_solver requires 8 operators, but source's independently frozen six-hop questions have 6 operators. Original execution failed AFTER TRAIN/OPEN birth. No original stdout/accepted science; original sources must not be replayed."
+  },
+  "source": {
+    "source_wrapper_commit": "0e22151fa8989bac6a1382b96b0ec7da6aa56663",
+    "source_wrapper_blob": "f65831b3cde0733ac5eb6b784675a8df924c9144",
+    "frozen_original_source_blob": "dd9616e662bcedf1d15bc2318eb7cfdae9d93ad9",
+    "replacement_TRAIN": "-55015..-55000",
+    "replacement_OPEN": "-55107..-55100",
+    "exact_grammar_unchanged": true,
+    "first_use": false
+  },
+  "scientific_candidate": {
+    "frozen_original_mechanism_blob": "9b9bcbb0ce5f42feaae86a52520141700e65f0a5",
+    "weights_unchanged": true,
+    "retention_scoring_unchanged": true,
+    "training_and_public_budget_unchanged": true,
+    "resource_rules_unchanged": true
+  },
+  "permitted_repair": "Only source-independent control answer scoring: interpret the same F62 packed 12B path records with a frozen public solver compatible with 6-op questions. Reuse unchanged learning and retention routines; do NOT tune learned weights, source family, thresholds, holds or acceptance based on prior invalid failure.",
+  "test_plan": "Exact source/control blobs and this freeze must predate repair code, source-neutral nonconsuming smoke, one new original independently qualified Windows/Linux; publish complete positive and negative results and cpu/memory, no original cohort replay.",
+  "admission": "No signed external source custody, no native full-process CPU/RSS parity, no independently replicated protected OOD. Source-only original qualification can classify diagnostic positives/negatives but cannot automatically promote science or optimizer.",
+  "safety": {
+    "protected_first_use": false,
+    "merge": false,
+    "optimizer_activation": false,
+    "accepted_refs": false,
+    "paid_inference": false,
+    "new_controller": false
+  }
+}

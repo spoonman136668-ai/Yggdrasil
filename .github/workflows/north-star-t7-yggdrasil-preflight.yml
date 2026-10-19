@@ -1,0 +1,46 @@
+name: T7 yggdrasil independent source nonconsuming preflight
+on:
+  push:
+    branches: [research/north-star-transfer-yggdrasil-20261018]
+    paths: ['.github/workflows/north-star-t7-yggdrasil-preflight.yml']
+permissions:
+  contents: read
+concurrency:
+  group: t7-yggdrasil-source-neutral-preflight
+  cancel-in-progress: false
+jobs:
+  frozen-source-preflight:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest,windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Independently check immutable source and only source-neutral fixture
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'T7_EXACT_HEAD_DRIFT'}
+          if((git hash-object 'research/north-star-transfer/20261018-yggdrasil-t7-preregister.json').Trim() -cne '2855c3b6f61003237c09abc1a5873764ae38684e'){throw 'T7_PREIMPLEMENTATION_SOURCE_DRIFT'}
+          if((git log -1 --format=%H -- 'research/north-star-transfer/20261018-yggdrasil-t7-preregister.json').Trim() -cne '2dcf78f7f41aa80bdbf582244aa2d89425917a57'){throw 'T7_FIRST_FREEZE_COMMIT_DRIFT'}
+          git merge-base --is-ancestor 2dcf78f7f41aa80bdbf582244aa2d89425917a57 HEAD
+          if($LASTEXITCODE -ne 0){throw 'T7_SOURCE_FIRST_USE_ORDER_FAIL'}
+          if((git hash-object 'research/north-star-transfer/20261018-yggdrasil-t7-independent.py').Trim() -cne 'dcb00a70d1c859d746ad023716bdc486f0870d45'){throw 'T7_GENERATOR_SOURCE_CHANGED'}
+          if((git hash-object 'research/north-star-transfer/20261018-yggdrasil-t6-audit.py').Trim() -cne 'bd11d8fe6076d952807e7487cc1691203a73d6df'){throw 'T7_T6_FROZEN_CONTROL_CHANGED'}
+          $py=if($IsWindows){'python'}else{'python3'}
+          & $py -B 'research/north-star-transfer/20261018-yggdrasil-t7-independent.py' --mode preflight
+          if($LASTEXITCODE -ne 0){throw 'T7_NONCONSUMING_GENERATOR_FAIL'}
+          if((git hash-object 'research/north-star-transfer/20261018-yggdrasil-t7-native-preflight.py').Trim() -cne 'd933df3e7c1aa447c5171f5917ff1f9987ffbc15'){throw 'T7_NATIVE_FEASIBILITY_DRIFT'}
+          & $py -B 'research/north-star-transfer/20261018-yggdrasil-t7-native-preflight.py'
+          if($LASTEXITCODE -ne 0){throw 'T7_FULL_NATIVE_SYNTHETIC_SOURCE_CHECK_FAIL'}
+          Write-Output 'T7_YGGDRASIL_FROZEN_SOURCE_READINESS=PASS'
+          Write-Output 'T7_YGGDRASIL_PROSPECTIVE_A_OR_B_SOURCE_BORN=0'
+          Write-Output 'T7_YGGDRASIL_PROTECTED_ORIGINAL_COHORT_BORN=0'
