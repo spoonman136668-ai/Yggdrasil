@@ -78,8 +78,9 @@ def score(edge,others,weights):
     features=feature(a,role,b,others)
     # Distinct edge representation; TRAIN-learned weights affect only
     # information-value retention, never fabricate a causal relation.
-    return (sum(w*f for w,f in zip(weights[0:6],features))
-            +weights[6+role]+2*sum(f[:2] for f in [features])
+    signed=tuple(v if v<128 else v-256 for v in weights)
+    return (sum(w*f for w,f in zip(signed[0:6],features))
+            +signed[6+role]+2*sum(features[:2])
             +sum(x[2]==a or x[0]==b for x in others))
 
 def observe(state,event):
