@@ -1,0 +1,68 @@
+name: NCI02 Yggdrasil source-free cellular causal memory feasibility
+on:
+  push:
+    branches: [research/nci02-cell-causal-memory-feasibility-20261020]
+    paths: ['.github/workflows/nci02-causal-memory.yml']
+permissions:
+  contents: read
+concurrency:
+  group: nci02-yggdrasil-sourcefree
+  cancel-in-progress: false
+jobs:
+  cellular-causal-retention:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate frozen developmental experiment and source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 3f1a18812f1c0285a7acc76ca980f23d965935cf "$GITHUB_SHA"
+          test "$(git hash-object nativecognition/nci02_experiment.py)" = f103caa8e53ab144c646ef3ea5f4471e41bfc38b
+          test "$(git hash-object nativecognition/test_nci02_experiment.py)" = 617ead69a09cdcc56501e8a786cca7dfe36dd35f
+          python - <<'PY'
+          import json
+          d=json.load(open("research/contrib/openai/nci02/prereg.json"))
+          assert d["schema"]=="nci02.yggdrasil.sourcefree-development.v1"
+          assert d["parent"]=="ed116b026cebeea950d02fbf5e4219a9d55bdd71"
+          assert d["constraint"]["scientific_first_use"]==0
+          assert d["cohorts"]["train"]==[6000,6031]
+          assert d["cohorts"]["stress"]==[6200,6231]
+          print("NCI02_Y_FROZEN_IDENTITY=PASS")
+          PY
+      - name: Native developmental phenotype, local trained control and deterministic unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s nativecognition -p 'test_nci02_experiment.py' -v
+          PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s nativecognition -p 'test_developmental.py' -v
+          echo 'NCI02_Y_FOCUSED=PASS'
+      - name: Run exact train-only genome fitting and disjoint development/stress evaluation
+        shell: bash
+        run: |
+          set -euo pipefail
+          NCI02_RESULT_PATH="$RUNNER_TEMP/nci02-yggdrasil.json" PYTHONDONTWRITEBYTECODE=1 python -B -m nativecognition.nci02_experiment
+          python - <<'PY'
+          import json,os,pathlib
+          r=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"nci02-yggdrasil.json").read_text())
+          assert r["schema"]=="nci02.yggdrasil.sourcefree-development-result.v1"
+          assert r["result"] in ("PASS_PROXY_ONLY","NEGATIVE")
+          assert r["scientific_original_firstuse"]==0 and not r["learned_transfer_accepted"]
+          assert not r["entity_binding_learned"] and not r["native_composition_learned"]
+          assert r["shared_genome_parameters"]==3 and r["candidate_cell_count"]==8
+          print("NCI02_Y_REAL_RESULT="+r["result"])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nci02-yggdrasil-cell-causal-memory-development
+          path: ${{ runner.temp }}/nci02-yggdrasil.json
+          if-no-files-found: warn
+          retention-days: 90
