@@ -1,0 +1,45 @@
+name: NCI01 Yggdrasil local developmental-cell component qualification
+on:
+  push:
+    branches: [research/nci01-developmental-cell-learning-20261020]
+    paths: ['.github/workflows/nci01-yggdrasil-developmental.yml']
+permissions:
+  contents: read
+jobs:
+  local-developmental-rule:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify prereg identity and bounded implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 877b1e99649dfb3bc7d79a60dd016fe46d95d3bd "$GITHUB_SHA"
+          test "$(git hash-object nativecognition/developmental.py)" = 19357cea2119975136c0511aec13a54030dc724f
+          test "$(git hash-object nativecognition/test_developmental.py)" = 2f48892196e81b9155d563b6a897ce6718a5f9e8
+          python - <<'PY'
+          import json
+          p=json.load(open("research/contrib/openai/nci01/prereg.json"))
+          assert p["schema"]=="native-cognition.nci01.yggdrasil.dev-prereg.v1"
+          assert p["scientific_first_use"] is False and p["accepted_model"] is False
+          assert p["capacity"]["cells"]==8 and p["capacity"]["genome_parameters"]==3
+          print("NCI01_Y_PREREG_AND_IDENTITY=PASS")
+          PY
+      - name: Qualify shared-rule cell updates and genome-only regrowth
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s nativecognition -p 'test_developmental.py' -v
+          python -B - <<'PY'
+          import ast
+          ast.parse(open("nativecognition/developmental.py").read())
+          print("NCI01_Y_SOURCE_SYNTAX=PASS")
+          PY
+          echo "NCI01_Y_FOCUSED=PASS"
