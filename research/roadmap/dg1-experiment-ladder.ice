@@ -133,6 +133,7 @@ Gate:
 - select at most one or two module types for DG-1G/H; do not carry every candidate forward.
 
 DG-1G — FROZEN INTELLIGENT SEED
+SCOPE: Intermediate mechanism/control experiment only. A frozen pretrained model cannot be counted as Yggdrasil's native cognition or become the deployed cognitive foundation. See non-token-north-star-addendum.ice.
 Question: can development add capability around an existing model without destabilizing the core?
 Protocol:
 - small pretrained core frozen
@@ -144,6 +145,7 @@ Success:
 - previous seed behavior remains within declared tolerance.
 
 DG-1H — DEVELOPMENTAL ADAPTER POPULATION
+SCOPE: Comparator/scaffold study, not a proposal to make adapters around a token-predictive LLM into the final architecture. Separate seed-provided from developmentally acquired capability.
 Question: does developmental structure add value beyond adapter routing?
 Required baselines:
 - fixed LoRA
