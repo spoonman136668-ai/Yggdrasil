@@ -6,6 +6,9 @@ The purpose of this lane is to increase replication, falsification, ablation, ro
 
 ## Core rule
 
+Research contributions should advance Yggdrasil as an independent developmental **non-transformer, non-token-centric cognitive architecture** with native persistent memory, continual learning, reasoning and functional regeneration. Transformer/next-token models may serve as comparison baselines or bounded tools, not as the claimed cognitive core. See [prospective North Star addendum](research/architecture/non-token-north-star-addendum.ice). This does not change any existing frozen experiment or live charter identity.
+
+
 A contribution may produce **evidence**. It does not automatically change accepted state, thresholds, datasets, promotion refs, successor selection, execution authority, or research-loop authority.
 
 Official acceptance remains a separate qualification step.
