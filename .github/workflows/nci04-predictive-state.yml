@@ -1,0 +1,57 @@
+name: NCI04 Yggdrasil native local predictive-state source-only
+on:
+  push:
+    branches: [research/nci04-local-predictive-state-20261020]
+    paths: ['.github/workflows/nci04-predictive-state.yml']
+permissions:
+  contents: read
+jobs:
+  nci04:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify precode freeze and unchanged native lineage
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c1390f08ce234fcb471eae7f040df1aa362badea "$GITHUB_SHA"
+          test "$(git hash-object nativecognition/predictive.py)" = 5c9659bbd9f99399d3ba1117fe3564822908451d
+          test "$(git hash-object nativecognition/test_predictive.py)" = cceb779ffd1778ec073583b4c916fd1394245814
+          python - <<'PY'
+          import json
+          p=json.load(open('research/contrib/openai/nci04/prereg.json'))
+          assert p['schema']=='nci04.self_organizing_predictive_state.source_only.v1'
+          assert p['constraints']['first_use']==0 and not p['constraints']['production']
+          assert p['frozen_design']['training_seeds']==[41000,41031]
+          assert p['frozen_design']['stress_seeds']==[43000,43031]
+          print('NCI04_Y_PRECODE_PROTOCOL=PASS')
+          PY
+      - name: Native local cells and source-free A-B-A development
+        shell: bash
+        run: |
+          set -euo pipefail
+          NCI04_EVIDENCE="$RUNNER_TEMP/nci04-yggdrasil.json" PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s nativecognition -p 'test_predictive.py' -v
+          PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s nativecognition -p 'test_developmental.py' -v
+          python - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ['RUNNER_TEMP'])/'nci04-yggdrasil.json').read_text())
+          assert d['result'] in ('NEGATIVE','PASS_DEVELOPMENT_SIGNAL_ONLY')
+          assert d['scientific_first_use']==0 and not d['entity_binding_proven']
+          assert not d['hidden_causal_matrix_exposed'] and not d['hardcoded_graph_traversal']
+          print('NCI04_Y_ACTUAL_RESULT='+d['result'])
+          print('NCI04_Y_FOCUSED_REGRESSION=PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nci04-yggdrasil-local-predictive-state
+          path: ${{ runner.temp }}/nci04-yggdrasil.json
+          if-no-files-found: warn
+          retention-days: 90
