@@ -1,0 +1,64 @@
+{
+  "schema": "nci02.yggdrasil.sourcefree-development.v1",
+  "gate": "NCI02-Y",
+  "parent": "ed116b026cebeea950d02fbf5e4219a9d55bdd71",
+  "question": "Can the shared trainable three-weight genome plus eight-cell local phenotype retain causal-link observations and beat an equally informed trained local recurrence and 8-state EMA on unseen 3-link proxy queries?",
+  "limitations": "Relation slots and sign composition are externally supplied; no learned graph binding, native composition or regeneration claims.",
+  "cohorts": {
+    "train": [
+      6000,
+      6031
+    ],
+    "development": [
+      6100,
+      6131
+    ],
+    "stress": [
+      6200,
+      6231
+    ]
+  },
+  "task": {
+    "relations": 4,
+    "exposures_per_relation": 3,
+    "links_development": 2,
+    "links_stress": 3,
+    "sign_noise": "one in ten deterministic xorshift draws"
+  },
+  "training": {
+    "genome_rate": 0.1,
+    "genome_steps": "all train observation episodes only",
+    "ema_rates": [
+      0.05,
+      0.1,
+      0.2
+    ],
+    "selection": "train only, first on tie"
+  },
+  "controls": [
+    "train-selected eight-slot EMA same observations",
+    "matched trained local recurrence with neighbor communication disabled",
+    "phenotype reset ablation",
+    "exact symbolic upper bound"
+  ],
+  "criteria": {
+    "gain_over_ema_stress": 0.05,
+    "minimum_stress_accuracy": 0.75,
+    "minimum_ablation_loss": 0.1,
+    "max_interference_drop": 0.1
+  },
+  "classification": [
+    "PASS_PROXY_ONLY",
+    "NEGATIVE",
+    "INVALID"
+  ],
+  "constraint": {
+    "cells": 8,
+    "degree": 2,
+    "genome_weights": 3,
+    "no_unbounded_storage": true,
+    "scientific_first_use": 0,
+    "production_mutation": false,
+    "source_only": true
+  }
+}
