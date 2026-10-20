@@ -4,9 +4,11 @@ import pathlib
 import sys
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]))
 from yggdrasil.cells import DevelopmentalCells
+from yggdrasil.local_stream import LocalStream
 
 def run(instream,outstream):
     cells=DevelopmentalCells()
+    local=LocalStream()
     budget=0
     for line in instream:
         budget+=len(line.encode("utf-8"))
@@ -24,6 +26,18 @@ def run(instream,outstream):
             cells.lesion(obj["cell"])
         elif op=="neighbor_copy_baseline" and set(obj)=={"op","cell"}:
             cells.neighbor_copy_baseline(obj["cell"])
+        elif op=="local_observe" and set(obj)<={"op","stimulus","observed_next","rate"}:
+            local.observe_local(obj["stimulus"],obj["observed_next"],obj.get("rate",0.1))
+        elif op=="local_predict" and set(obj)=={"op","stimulus"}:
+            outstream.write(json.dumps({"probabilities":local.predict_local(obj["stimulus"])})+"\n")
+        elif op=="local_lesion" and set(obj)=={"op","cell"}:
+            local.lesion_local(obj["cell"])
+        elif op=="local_rehabilitate" and set(obj)=={"op","cell"}:
+            local.rehabilitate_local(obj["cell"])
+        elif op=="local_snapshot" and set(obj)=={"op"}:
+            outstream.write(local.snapshot_local()+"\n")
+        elif op=="local_restore" and set(obj)=={"op","snapshot"}:
+            local.restore_local(json.dumps(obj["snapshot"]))
         elif op=="snapshot" and set(obj)=={"op"}:
             outstream.write(cells.snapshot()+"\n")
         elif op=="restore" and set(obj)=={"op","snapshot"}:

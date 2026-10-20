@@ -1,0 +1,48 @@
+name: NCI04 native local observation qualification
+on:
+  push:
+    branches: [development/nci04-native-local-experience-20261020]
+    paths: ['.github/workflows/nci04-native-experience.yml']
+permissions:
+  contents: read
+jobs:
+  native-local-experience:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify preregistration and exact source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 5f6158279c15ab94fa2efdff74fa6b4f98c4b343 "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/local_stream.py)" = 3ebcecc3936421bd1fde5afdcd1806184b118cf4
+          test "$(git hash-object scripts/native_cells.py)" = 6fb4832e61e80ac941f1685717845a4fc2b8d408
+          test "$(git hash-object tests/test_local_stream.py)" = 469db7c7b46ef4c14dc96e9ba090f9ec6d58253d
+          python - <<'PY'
+          import json
+          p=json.load(open("research/contrib/openai/nci04/native-experience-prereg.json"))
+          assert p["schema"]=="nci04.native-experience-mechanism.qualification.v1"
+          assert p["project"]=="Yggdrasil"
+          assert p["permissions"]["development_only"] and not p["permissions"]["scientific_first_use"]
+          print("NCI04_Y_NATIVE_SOURCE_FROZEN=PASS")
+          PY
+      - name: Focused local observation, lesion and CLI tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s tests -p 'test_local_stream.py' -v
+          PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s tests -p 'test_native_cells.py' -v
+          echo "NCI04_Y_NATIVE_FOCUSED=PASS"
+      - name: Entire available Python repository unittest inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s tests -p 'test_*.py'
+          echo "NCI04_Y_FULL_SOURCE_REGRESSION=PASS"
