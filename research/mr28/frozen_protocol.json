@@ -1,0 +1,55 @@
+{
+  "schema": "yggdrasil.mr28.development-native-predictive-bottleneck.v1",
+  "branch_base": "dd545998912e0f7149fb0cbaf44c20c9b81f594c",
+  "original_source_sha": "7f5853792ea7f04f75614661006d87fcf949f26d",
+  "original_training_seeds_existing_consumed": [
+    263,
+    269,
+    271,
+    277,
+    281,
+    283,
+    293,
+    307
+  ],
+  "new_development_eval_seeds": [
+    337,
+    347,
+    349,
+    353
+  ],
+  "original_environment_classes": [
+    "DoorKeyEnv(size=8)",
+    "EmptyEnv(size=8)"
+  ],
+  "max_original_native_steps_per_episode": 256,
+  "fixed_exploration": "reproduce MR26 BoundedPublicNoveltyExplorer exactly, policy memory separate and unmatched to low-state learner",
+  "candidate": "original 45-slot genome and original eight three-slot roles as trained weights. Exactly eight scalar episodic states. Shared genome[2] learns one-step self-supervised event code; event memory is formed from source-public feature+real previous observed local transition, with input-dependent shared sigmoid overwrite; shared genome[0] feeds output and genome[1] links compressed history to output. No arbitrary persistent extra buffers/eligibility traces. The encoder is trained on same-event public prediction error as proxy, not via exact backpropagation through time.",
+  "ablations": [
+    "state-zero with identically trained candidate",
+    "source-feature projection frozen at initialization; predictor weights trained",
+    "45-parameter conventional Recurrent45 eight state values",
+    "45-parameter original stateless Native45",
+    "public-action count unmatched memory"
+  ],
+  "train_weights_only_on_prior_source_native_training_cohorts": true,
+  "evaluation_preaction_predictions_then_original_native_step": true,
+  "original_native_evaluation_frozen_weights": true,
+  "no_hidden_world_or_private_evaluator_labels": true,
+  "no_protected_scientific_first_use": true,
+  "scientific_go_conditions": [
+    "positive learned memory vs own state ablation both original source classes",
+    "positive vs equally trained conventional recurrent both original source classes",
+    "positive vs stateless both original source classes",
+    "prospectively observed genuinely naturally reached full-current-MR15-input-alias pairs with divergent native next outputs; if absent report no identical-input witness",
+    "full isolated process CPU peak RSS communication and policy included without unknown hidden memory"
+  ],
+  "baseline_limits": [
+    "PublicCount memory unmatched",
+    "MR26 novelty actor can retain several KB FIFO and is not included in model-sidecar 32B",
+    "Camera geometry-corrected fully informed baseline not yet qualified"
+  ],
+  "known_development_negative": "MR27 conventional recurrent beat original native retained state on both original classes",
+  "must_not_tune_after_eval": true,
+  "original_g29_atlas": "BLOCKED until exact-source reviewed repin and full Windows Linux regression"
+}
