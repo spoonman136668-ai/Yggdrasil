@@ -29,8 +29,12 @@ class NativeStructuralProducerQualification(unittest.TestCase):
         self.assertEqual(evidence.sender, 7)
         self.assertEqual(evidence.neighbor, 0)
         self.assertEqual((evidence.before_neighbor_damaged, evidence.after_neighbor_damaged), (0, 1))
-        self.assertEqual(evidence.before_snapshot_sha256, hashlib.sha256(original.encode()).hexdigest())
-        self.assertEqual(evidence.after_snapshot_sha256, hashlib.sha256(after.encode()).hexdigest())
+        def expected_local_hash(damaged):
+            raw=json.dumps({"sender":7,"neighbor":0,"sender_role":original_own_role,
+                            "neighbor_damaged":damaged},sort_keys=True,separators=(",",":"))
+            return hashlib.sha256(raw.encode()).hexdigest()
+        self.assertEqual(evidence.before_local_sha256, expected_local_hash(0))
+        self.assertEqual(evidence.after_local_sha256, expected_local_hash(1))
         self.assertEqual(len(evidence.source_commit), 40)
         self.assertEqual(len(evidence.source_sha256), 3)
         self.assertEqual(runtime.damaged, {0})
