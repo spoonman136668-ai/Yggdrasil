@@ -1,0 +1,53 @@
+name: NCI04E Yggdrasil surviving local information
+on:
+  push:
+    branches: [research/nci04e-surviving-local-information-20261020]
+    paths: ['.github/workflows/nci04e-surviving-information.yml']
+permissions:
+  contents: read
+jobs:
+  sourcefree:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce preimplementation freeze and exact source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 207b95db34da879bb0423de54258189119c04cd7 "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/distributed_setpoint.py)" = 19affab124502a757bf273341e0032c6c794fdf2
+          test "$(git hash-object tests/test_distributed_setpoint.py)" = 63588179a5150e90215a7f40c94f52ea6503d260
+          python - <<'PY'
+          import json
+          p=json.load(open('research/contrib/openai/nci04e/frozen.json'))
+          assert p['schema']=='nci04e.yggdrasil.necessary_information_survival.v1'
+          assert p['constraints']['first_use']==0
+          assert p['capacity']['degree']==2
+          print('NCI04E_Y_PRECODE_SOURCE=PASS')
+          PY
+      - name: Execute one-hop recovery and impossible-information vetoes
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s tests -p 'test_distributed_setpoint.py' -v 2>&1 | tee "$RUNNER_TEMP/nci04e-yggdrasil.log"
+          echo 'NCI04E_Y_FOCUSED=PASS'
+      - name: Regression of unchanged original native cell interface
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s tests -p 'test_native_cells.py' -v
+          echo 'NCI04E_Y_NATIVE_REGRESSION=PASS'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nci04e-yggdrasil-local-necessary-conditions
+          path: ${{ runner.temp }}/nci04e-yggdrasil.log
+          if-no-files-found: warn
+          retention-days: 90
