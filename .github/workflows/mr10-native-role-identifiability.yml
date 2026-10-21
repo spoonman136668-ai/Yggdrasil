@@ -1,0 +1,34 @@
+name: MR10 Native Role Necessity Read-only Audit
+on:
+  push:
+    branches:
+      - research/mr10-role-identifiability-20261021
+  pull_request:
+    branches:
+      - research/mr9-native-functional-recovery-20261021
+permissions:
+  contents: read
+concurrency:
+  group: mr10-role-identifiability-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  native-role-identifiability:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Source exact commit, no persisted credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Exhaustive original native task identity and frozen training-only attribution
+        run: python -B -m unittest discover -s tests -p test_mr10_native_role_identifiability.py -v
+      - name: No source modifications
+        run: git diff --exit-code
