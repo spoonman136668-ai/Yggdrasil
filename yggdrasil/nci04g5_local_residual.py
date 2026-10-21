@@ -78,7 +78,7 @@ class LocalResidualAdapter:
         if type(local_source_snapshot)!=str or len(local_source_snapshot)>65536:
             raise ValueError("invalid source snapshot")
         sender,recipient,sequence,residual,observed,digest=struct.unpack(WIRE_FORMAT,message)
-        if (sender not in self.runtime.neighbors[recipient] or
+        if (recipient>=N or sender>=N or sender not in self.runtime.neighbors[recipient] or
             sender in self.runtime.damaged or recipient not in self.runtime.damaged or
             observed not in (0,1) or not -127<=residual<=127):
             raise ValueError("invalid local-message provenance")
