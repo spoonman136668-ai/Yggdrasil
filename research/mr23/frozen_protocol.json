@@ -1,0 +1,93 @@
+{
+  "schema": "yggdrasil.mr23.public-sensory-correspondence-dev.v1",
+  "parent_commit": "f5ef697ad669d210d286e327ecc0fb9c8b817b22",
+  "original_minigrid_commit": "7f5853792ea7f04f75614661006d87fcf949f26d",
+  "source_environments": [
+    "DoorKeyEnv(size=5)",
+    "EmptyEnv(size=8)"
+  ],
+  "development_train_seeds": [
+    109,
+    113
+  ],
+  "development_eval_seeds": [
+    127,
+    131
+  ],
+  "action_scripts": {
+    "train": [
+      0,
+      2,
+      1,
+      2,
+      0,
+      2,
+      1,
+      2,
+      5,
+      3,
+      2,
+      1,
+      2,
+      0,
+      2,
+      5,
+      0,
+      2,
+      1,
+      2,
+      3,
+      2,
+      1,
+      5
+    ],
+    "evaluation": [
+      1,
+      2,
+      0,
+      2,
+      1,
+      2,
+      5,
+      0,
+      2,
+      3,
+      1,
+      2,
+      5,
+      0,
+      2,
+      1,
+      2,
+      0,
+      5,
+      2,
+      1,
+      2,
+      3,
+      2
+    ]
+  },
+  "model_public_input": "existing MR15 8 camera-relative 3-byte observed tiles only",
+  "training_phase": "diagnostic sampling only, NO learned weights or private model parameters",
+  "reference_criterion": "for each next-frame public sampled triple, count 0, 1, or >=2 exact matches in the immediately prior eight public triples, without decoding their content",
+  "negative_controls": [
+    "same-slot-only exact equality",
+    "nonadjacent original public frame from another development episode, same source class"
+  ],
+  "success_criterion": "development source transition correspondence shows informative unique identifiable matches under native camera turns, distinguishable from nonadjacent-frame control; otherwise fail closed before learned identity mechanism",
+  "resource_limits": {
+    "trainable_native_coefficients": 45,
+    "original_sensor_sidecar_bytes": 32,
+    "new_learner_state_bytes": 0
+  },
+  "excluded": [
+    "protected scientific first-use",
+    "original env private grid or pose",
+    "mission labels",
+    "reward",
+    "object names or semantic IDs",
+    "world-anchored specialist assertions",
+    "post-result tuning"
+  ]
+}
