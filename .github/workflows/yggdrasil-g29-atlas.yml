@@ -20,6 +20,8 @@ jobs:
         run: python -m unittest discover -s tests -p test_nci04d2_task.py -v
       - name: NCI-04D3 native comparative task, conventional control and resource measurement
         run: python -B scripts/nci04d3_compare.py
+      - name: NCI-04E identifiability necessary-condition test
+        run: python -m unittest discover -s tests -p test_nci04e_identifiability.py -v
       - run: python scripts/build_code_atlas.py --check-if-present
       - run: python -m unittest discover -s tests -p test_code_atlas.py -v
       - run: git diff --exit-code
@@ -38,6 +40,8 @@ jobs:
         run: python -m unittest discover -s tests -p test_nci04d2_task.py -v
       - name: NCI-04D3 native comparative task, conventional control and resource measurement
         run: python -B scripts/nci04d3_compare.py
+      - name: NCI-04E identifiability necessary-condition test
+        run: python -m unittest discover -s tests -p test_nci04e_identifiability.py -v
       - run: python scripts/build_code_atlas.py --check-if-present
       - run: python -m unittest discover -s tests -p test_code_atlas.py -v
       - if: always()
