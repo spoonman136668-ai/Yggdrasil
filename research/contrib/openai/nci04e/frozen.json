@@ -1,0 +1,22 @@
+{
+  "schema": "nci04e.yggdrasil.necessary_information_survival.v1",
+  "parent_design_commit": "b94a827229754ece463fc07138ab3c9d6e45cb9a",
+  "experiment_type": "SOURCE_FREE_ENGINEERING_NECESSARY_CONDITION_ONLY",
+  "fixture": "Eight-cell ring. Cell 3's function is redundant with the independently available binary sensor at immediate neighbors 2 and 4. During 64 pre-lesion time steps, each intact neighbor locally observes its own sensor and the next-step functional output of adjacent cells (only neighbor data). Cell 3 is then destroyed and replaced blank; no pre-lesion cell-3 weights, restored state, global labels or post-lesion target outputs are available.",
+  "test": "Require one-hop neighbor messages formed from retained local predictive statistics and correct 16 novel function predictions after blank regrowth; compare blank cell/no neighbor records, neighbor-copy conventional control and equally-informed lookup control; no claims of superior efficiency.",
+  "negative": "Unrecoverable function output independent of neighbor observables. Both local response conditionals must remain uninformative, and repaired cell must abstain (zero false function claims).",
+  "mechanism": "two local conditional Bernoulli tables per cell predicting immediate neighbor output from own current binary sensor; synchronous one-edge message delivery to immediate neighbors; regeneration from received predictions only",
+  "capacity": {
+    "cells": 8,
+    "degree": 2,
+    "response_tables": "8x2x2x2",
+    "no_global_aggregation": true
+  },
+  "acceptance": "Information demonstrably retained in surviving neighbors, one-edge-per-round propagation, useful blank-cell function restoration with no new target supervision, and abstention on irrecoverable control. No general developmental specialization or faster-than-conventional recovery claim.",
+  "constraints": {
+    "first_use": 0,
+    "protected_main": false,
+    "legacy_runtime_unchanged": true,
+    "auto_merge": false
+  }
+}
