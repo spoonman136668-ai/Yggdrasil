@@ -1,0 +1,65 @@
+name: MR18 Frozen Public-Information Native Learning
+on:
+  push:
+    branches:
+      - research/mr18-public-context-fixed-budget-20261021
+  pull_request:
+    branches:
+      - research/mr17-source-native-observation-alias-20261021
+permissions:
+  contents: read
+concurrency:
+  group: mr18-public-native-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-native-model-controls:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Preserve exact Git bytes before all Windows checkouts
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --global core.autocrlf false
+      - name: Source pinned MR18 Yggdrasil candidate
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: yggdrasil
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Independently authored original Farama source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Python 3.11 original native runtime
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Verify exact external source blobs and preserve license discrepancy
+        shell: bash
+        run: python -B yggdrasil/research/mr14/verify_farama_native.py --manifest yggdrasil/research/mr14/farama_source_manifest.json --upstream external/minigrid
+      - name: Install pinned original source runtime dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==2.1.3 gymnasium==1.1.1 pygame-ce==2.5.3
+      - name: Train original native 45-coefficient learner and prospectively score frozen controls
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: |
+          cd yggdrasil
+          python -B -m research.mr18.probe_original_public ../external/minigrid
+      - name: Both original Git source trees unchanged
+        shell: bash
+        run: |
+          git -C yggdrasil diff --exit-code
+          git -C external/minigrid diff --exit-code
+          test -z "$(git -C external/minigrid status --porcelain)"
