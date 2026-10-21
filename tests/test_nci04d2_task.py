@@ -48,7 +48,7 @@ class NativeTaskContract(unittest.TestCase):
         self.assertEqual(task.steps,3)
 
     def test_reject_illegal_topology_and_lesions(self):
-        for edges in ([[[1,1]]*8,[[1,9]]*8,[[0,1]]*8,[]):
+        for edges in ([[1,1]]*8, [[1,9]]*8, [[0,1]]*8, []):
             with self.assertRaises(ValueError):
                 LocalTaskRuntime(edges)
         task=LocalTaskRuntime()
