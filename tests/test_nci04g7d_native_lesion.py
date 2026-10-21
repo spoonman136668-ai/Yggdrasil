@@ -4,6 +4,7 @@ import hashlib
 import json
 import pathlib
 import time
+from unittest import mock
 import unittest
 
 from yggdrasil.task_runtime import LocalTaskRuntime
@@ -31,7 +32,7 @@ class NativeStructuralProducerQualification(unittest.TestCase):
         self.assertEqual(evidence.before_snapshot_sha256, hashlib.sha256(original.encode()).hexdigest())
         self.assertEqual(evidence.after_snapshot_sha256, hashlib.sha256(after.encode()).hexdigest())
         self.assertEqual(len(evidence.source_commit), 40)
-        self.assertEqual(len(evidence.source_sha256), 2)
+        self.assertEqual(len(evidence.source_sha256), 3)
         self.assertEqual(runtime.damaged, {0})
         self.assertEqual(tuple(runtime.core.roles[7]), original_own_role)
         self.assertEqual(runtime.component(bit_state, 7), own_prediction_before)
@@ -79,11 +80,16 @@ class NativeStructuralProducerQualification(unittest.TestCase):
 
     def test_no_observation_without_authenticated_native_source(self):
         runtime = LocalTaskRuntime()
-        with self.subTest("no-git-source"):
-            observer = NativeNeighborLesionObserver(runtime, ROOT.parent)
-            with self.assertRaises(Exception):
+        observer = NativeNeighborLesionObserver(runtime, ROOT)
+        original_read = pathlib.Path.read_bytes
+        def changed_source(path):
+            if path.name == "task_runtime.py":
+                return b"tampered-native-runtime-source"
+            return original_read(path)
+        with mock.patch.object(pathlib.Path, "read_bytes", changed_source):
+            with self.assertRaisesRegex(ValueError, "native transition source changed"):
                 observer.intervene_and_measure(7, 0)
-            self.assertEqual(runtime.damaged, set())
+        self.assertEqual(runtime.damaged, set())
 
 
 if __name__ == "__main__":
