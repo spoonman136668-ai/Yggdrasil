@@ -32,11 +32,11 @@ GATE=["novelty","contrast"]
 
 
 class EqualCapacityPublicActor:
-    def __init__(self,seed,mode):
-        if type(seed) is not int or seed<0 or mode not in GATE:
+    def __init__(self,seed,mode,stream=0):
+        if type(seed) is not int or seed<0 or mode not in GATE or type(stream) is not int or stream<0:
             raise ValueError("MR31_BAD_ACTOR_SEED_OR_POLICY")
         self.mode=mode
-        self.rng=random.Random(1000003*seed+337)
+        self.rng=random.Random(1000003*seed+337+10007*stream)
         self.visited=OrderedDict()
         self.attempts=array("I",[0]*6)
         self.discoveries=array("I",[0]*6)
