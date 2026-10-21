@@ -142,7 +142,9 @@ def main(path):
     p=json.loads(PLAN.read_text(encoding="utf-8"))
     if (p["schema"]!="yggdrasil.mr21.original-reversible-frame-identity.v1" or
         p["original_external_source"]!=SOURCE_COMMIT or
-        p["protected_scientific_first_use"] if "protected_scientific_first_use" in p else False):
+        p["predecessor"]!="0bb2662e5109c95667e680027fab343a4db03fe1" or
+        p["learner_and_control_inputs"] !=
+          "ONLY_MR15_prior_eight_bits_and_same_preexecution_action; full_public_image_compared_offline_by_evaluator_only"):
         raise ValueError("MR21_FROZEN_PROTOCOL_DRIFT")
     root=checked_source(path)
     sys.path.insert(0,str(root))
