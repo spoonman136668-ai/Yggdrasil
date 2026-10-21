@@ -248,7 +248,7 @@ def main(upstream):
         "post_training_gate_biases":trained_bias,
         "original_model_snapshot_bytes":{
             name:len(s.encode()) for name,s in snapshots.items()},
-        "native_source_steps":{"/".join(map(str(k)):v
+        "native_source_steps":{"/".join(map(str,k)):v
                                for k,v in result["native_steps"].items()},
         "canonical_model_and_sensor_restorations":
             result["serialization_roundtrips"],
