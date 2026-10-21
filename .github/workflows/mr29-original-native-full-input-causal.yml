@@ -1,0 +1,80 @@
+name: MR29 Natural Original Full-Input Causal Contrast
+on:
+  push:
+    branches:
+      - research/mr29-natural-full-input-causal-contrast-20261021
+  pull_request:
+    branches:
+      - research/mr28-predictive-innovation-state-20261021
+permissions:
+  contents: read
+concurrency:
+  group: mr29-native-natural-contrast-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-source-full-input-causal-memory:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - name: Preserve exact source Git checkout bytes on Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --global core.autocrlf false
+      - name: Checkout exact original Yggdrasil development branch without persisted credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: yggdrasil
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Original independently authored Farama source pinned to exact Git SHA
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Python original MiniGrid source runtime
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Authenticate all eight independent upstream source blobs
+        shell: bash
+        run: python -B yggdrasil/research/mr14/verify_farama_native.py --manifest yggdrasil/research/mr14/farama_source_manifest.json --upstream external/minigrid
+      - name: Fixed original open native source runtime dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==2.1.3 gymnasium==1.1.1 pygame-ce==2.5.3 psutil==6.1.1
+      - name: Native full-current-input naturally reached alias audit with pre-outcome forecasts
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: |
+          cd yggdrasil
+          python -B - <<'PY' | tee ../mr29-native-source-receipt.log
+          import ast, pathlib, sys, traceback
+          path = pathlib.Path("research/mr29/native_causal_alias.py")
+          try:
+              ast.parse(path.read_text(encoding="utf-8"), str(path))
+              print("MR29_PYTHON_SYNTAX=PASS", flush=True)
+              from research.mr29.native_causal_alias import main
+              print("MR29_ORIGINAL_SOURCE_IMPORT=PASS", flush=True)
+              main("../external/minigrid")
+          except BaseException as error:
+              print("MR29_DIAGNOSTIC_FAILURE=" + type(error).__name__ + ": " + str(error), flush=True)
+              traceback.print_exc(file=sys.stdout)
+              sys.exit(1)
+          PY
+          grep -q '^MR29_NATURAL_ORIGINAL_FULL_INPUT_CAUSAL_CONTRAST=' ../mr29-native-source-receipt.log
+      - name: Original and third-party exact source checkouts remain clean
+        shell: bash
+        run: |
+          git -C yggdrasil diff --exit-code
+          git -C external/minigrid diff --exit-code
+          test -z "$(git -C yggdrasil status --porcelain)"
+          test -z "$(git -C external/minigrid status --porcelain)"
