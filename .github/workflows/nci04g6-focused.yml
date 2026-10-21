@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Native learning, source and equal-information controls
-        run: python -B -m unittest discover -s tests -p 'test_nci04g6_native_credit.py' -v
+        run: python -B -m unittest discover -s tests -p 'test_nci04g6*.py' -v
       - name: Verify clean exact source
         run: |
           test -z "$(git status --porcelain)"
