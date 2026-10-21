@@ -1,0 +1,52 @@
+{
+  "schema": "yggdrasil.mr21.original-reversible-frame-identity.v1",
+  "predecessor": "0bb2662e5109c95667e680027fab343a4db03fe1",
+  "original_external_source": "7f5853792ea7f04f75614661006d87fcf949f26d",
+  "question": "Can two histories ending in exactly the same original MiniGrid world state and complete public view yield different eight-bit MR15 local-delta model inputs, but identical next consequences under the same original action?",
+  "original_development_environments": [
+    "DoorKeyEnv(size=5)",
+    "EmptyEnv(size=8)"
+  ],
+  "previously_used_MR19_development_seeds": [
+    41,
+    43
+  ],
+  "frozen_turn_inverse_pairs": [
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      0
+    ]
+  ],
+  "frozen_identical_probe_actions": [
+    2,
+    5
+  ],
+  "source_world_grid_and_pose_access": "EVALUATOR_ONLY_for_exact_equal_world_state_proof",
+  "learner_and_control_inputs": "ONLY_MR15_prior_eight_bits_and_same_preexecution_action; full_public_image_compared_offline_by_evaluator_only",
+  "safety": "No new scientific first-use, no model learning, no privileges, no additional native learned parameters, no source mutation",
+  "test_conditions": [
+    "A and B world grids and original agent position/direction are byte-identical after reversible left/right turns in B",
+    "A and B original full public images are byte-identical at comparison time",
+    "A MR15 two original source no-op DROP transitions end with all-zero local bits, B original reversible-camera turns end with source-measured last-turn changes, which may be nonzero",
+    "After identical original action from matched source states, original public next-image and resulting eight MR15 tile deltas agree byte-for-byte",
+    "Document original histories where MR15 differs despite equal native state and next consequence"
+  ],
+  "interpretation": "Confirms path-dependent state feature and nuisance alias; does not prove irreducible learning impossibility, world-centric native cognition absent, or any original protected-source first-use",
+  "budgets": {
+    "existing_model_trainable_coefficients": 45,
+    "MR15_untrained_sidecar_bytes": 32,
+    "no_new_trainable_parameters": true
+  },
+  "blocked": [
+    "G29 exact source atlas source repin and full Windows/Linux qualification",
+    "complete matched process tree CPU/RSS",
+    "independent unseen causal world family",
+    "strong equal resource information controls",
+    "upstream original license discrepancy"
+  ],
+  "original_step_count_matched_control": "Each reference episode first executes exactly TWO original native DROP actions while not carrying an object (no-op), while test episode executes LEFT+RIGHT or RIGHT+LEFT, so native original step_count matches at time of comparison"
+}
