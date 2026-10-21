@@ -1,0 +1,35 @@
+{
+  "schema": "yggdrasil.mr19b.original-camera-causal-confound.v1",
+  "original_mr19_candidate_commit": "2debe6589a8e5e3d76888b0c0d6e04fd68d5f9dd",
+  "original_farama_commit": "7f5853792ea7f04f75614661006d87fcf949f26d",
+  "source_and_task_policy": "Reuse previously consumed MR19 development-only original Farama DoorKey(size=5), Empty(size=8), seeds 41,43,47,53 and their fixed training/dev action scripts; no new unknown tasks or seeds.",
+  "measurement": "Use original MiniGrid reset/step; count changes in original MR15 observer-relative 8 local image samples caused by true native camera rotation action, while evaluator checks unmodified original grid bytes and unchanged agent position.",
+  "observation_truth_scope": "Evaluator-only original native world grid/agent coordinates can prove whether camera rotation rather than local world-cell mutation generated image changes. No learner, comparator or action policy receives privileged source truth.",
+  "test_hypotheses": [
+    "Native rotation actions alter camera heading without changing the original underlying world grid or agent position.",
+    "A rotation can change multiple MR15 observer-relative sensor positions in a single native event, so those positions cannot be assumed independent world-anchored causal agents.",
+    "Co-change is descriptive, not proof that any physical/world causal module cannot be learned."
+  ],
+  "code_freeze_before_probe": true,
+  "learner_training": false,
+  "model_parameters_changed": 0,
+  "model_roles_modified": false,
+  "protected_scientific_first_use": false,
+  "reported_metrics": [
+    "Original source and Git blob custody",
+    "Native action/episode/seed counts",
+    "turn steps with grid and agent position unchanged",
+    "turn steps with >=1 and >=2 MR15 local change bits",
+    "max simultaneously changed spatial sample slots per turn",
+    "forward/misc action contrasts",
+    "strict source/damage preservation"
+  ],
+  "scientific_admission": "NO_GO",
+  "required_qualifications_before_integration": [
+    "G29 atlas source exact pin and full Windows/Linux regression",
+    "Independent novel source family prospective held-out functional necessity",
+    "all-in parent/child CPU and RSS",
+    "distribution-aware strong budget-matched trained controls",
+    "resolve upstream original license mismatch"
+  ]
+}
