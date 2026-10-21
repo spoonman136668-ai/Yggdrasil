@@ -1,0 +1,49 @@
+{
+  "schema": "nci04f.yggdrasil.authenticated_negative.v1",
+  "outcome": "NEGATIVE",
+  "scope": "SOURCE_ONLY_DISCRIMINATING_PROBE_NOT_SCIENCE",
+  "precode_prereg_commit": "98d9eec0eb96a1aca250496e25ddd6c249435f4e",
+  "tested_commit": "e69d96b0a0473c3a0f3f0503784d011666c40137",
+  "mechanism_source_blob": "19affab124502a757bf273341e0032c6c794fdf2",
+  "mechanism_source_modified": false,
+  "test_blob": "68302e5c0b04c0286df9ce2804be392db592c5a8",
+  "runner": {
+    "run_id": 39524331068,
+    "linux_job": 118975335255,
+    "conclusion": "PASS",
+    "original_native_cell_regression": "PASS",
+    "nci04e_focused_regression": "PASS",
+    "full_repository_regression": "NOT_RUN_SOURCE_ATLAS_UNREPAIRED",
+    "artifact": {
+      "id": 12311548946,
+      "zip_sha256": "77f8a1b10dcc4e55cfcae5c6a0edf800e5aa103786530384b991d21c8103cec4"
+    }
+  },
+  "results": {
+    "training_steps": 64,
+    "heldout_postlesion_trials": 16,
+    "surviving_neighbor_counts": [
+      64,
+      64
+    ],
+    "candidate_known_predictions": 0,
+    "candidate_correct_predictions": 0,
+    "fully_train_observed_left_neighbor_conventional_lookup_correct": 16,
+    "uninformative_right_neighbor_predictions": 0,
+    "postlesion_target_supervision": 0,
+    "irrecoverable_hard_false_predictions": 0
+  },
+  "interpretation": "Conventional one-neighbor lookup trained on identical prior local observations perfectly restores a recoverable function. Candidate's two-neighbor agreement refuses all predictions and thus does not generalize beyond redundant-concordant neighborhoods. Both preserve abstention on genuinely irrecoverable target. This does not imply that faster or general regeneration is impossible, only that this mechanism is insufficient.",
+  "method_limits": [
+    "Simple hand-constructed deterministic binary fixture",
+    "Original cell-3 outcome was observable to neighbor prior to damage",
+    "Conventional control local only; broader fully trained recurrent competitors not run",
+    "Full original 43+ unittest and G29 atlas not qualified at added-source branch",
+    "No CPU/RSS superiority or independently novel structures",
+    "No protected scientific first-use"
+  ],
+  "scientific_first_use": 0,
+  "accepted": false,
+  "promote": false,
+  "main_changed": false
+}
