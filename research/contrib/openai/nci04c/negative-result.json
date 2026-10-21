@@ -1,0 +1,26 @@
+{
+  "schema": "nci04c.negative-development-qualification.v1",
+  "architecture": "Yggdrasil",
+  "prereg_sha": "a528e32fefe0fcb27abf0aac012c71b532a4ad22",
+  "source_commit": "727cb9089e02e46b8cad656252b95a71df4afc2c",
+  "run": 39519811051,
+  "conclusion": "FOCUSED_PASS_FULL_REGRESSION_BLOCKED_NEGATIVE_COGNITIVE",
+  "focused_tests": "3_PASS",
+  "entire_suite": "42_PASS_1_ATLAS_SOURCE_INVENTORY_FAILURE",
+  "observations": {
+    "before_damage_mse": 0.022901,
+    "damaged_mse": 0.11,
+    "after_24_steps_candidate_mse": 0.074641,
+    "after_24_steps_local_cold_retrain_mse": 0.07376,
+    "after_24_steps_neighbor_copy_mse": 0.151173,
+    "nearest_neighbor_only": true,
+    "prelesion_parameter_copy": false
+  },
+  "mechanism_caveat": "Cold-retrain control reuses intact neighbors and relearns the damaged cell from the same experiences; not a total colony cold-start. Tested metric is local predictive function, not general cognitive regeneration.",
+  "reason": "New local neighbor-teaching method does not outperform ordinary local retraining at the frozen development budget; full source inventory fails closed at G29 because this branch added source files.",
+  "first_use": 0,
+  "accepted": false,
+  "merged": false,
+  "disposition": "NEGATIVE_NO_PROMOTION",
+  "evidence_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/39519811051"
+}
