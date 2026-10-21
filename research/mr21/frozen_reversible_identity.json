@@ -31,7 +31,7 @@
   "test_conditions": [
     "A and B world grids and original agent position/direction are byte-identical after reversible left/right turns in B",
     "A and B original full public images are byte-identical at comparison time",
-    "A MR15 just-primed delta bits all 0, B MR15 delta bits are the observed last-camera-turn changes, which may be nonzero",
+    "A MR15 two original source no-op DROP transitions end with all-zero local bits, B original reversible-camera turns end with source-measured last-turn changes, which may be nonzero",
     "After identical original action from matched source states, original public next-image and resulting eight MR15 tile deltas agree byte-for-byte",
     "Document original histories where MR15 differs despite equal native state and next consequence"
   ],
@@ -47,5 +47,6 @@
     "independent unseen causal world family",
     "strong equal resource information controls",
     "upstream original license discrepancy"
-  ]
+  ],
+  "original_step_count_matched_control": "Each reference episode first executes exactly TWO original native DROP actions while not carrying an object (no-op), while test episode executes LEFT+RIGHT or RIGHT+LEFT, so native original step_count matches at time of comparison"
 }
