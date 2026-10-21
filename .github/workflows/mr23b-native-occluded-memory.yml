@@ -1,0 +1,75 @@
+name: MR23B Native Occluded Causal Memory Necessity
+on:
+  push:
+    branches:
+      - research/mr23b-native-occluded-state-necessity-20261021
+  pull_request:
+    branches:
+      - research/mr22-public-consistency-learning-20261021
+permissions:
+  contents: read
+concurrency:
+  group: mr23b-original-hidden-door-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-native-hidden-state-contrast:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    timeout-minutes: 20
+    steps:
+      - name: Original source byte policy before any checkout
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --global core.autocrlf false
+      - name: Exact Yggdrasil source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: yggdrasil
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Independently authored original Farama environment
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Python original MiniGrid native source
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Verify original upstream source eight blobs and license mismatch
+        shell: bash
+        run: python -B yggdrasil/research/mr14/verify_farama_native.py --manifest yggdrasil/research/mr14/farama_source_manifest.json --upstream external/minigrid
+      - name: Original open source runtime dependencies frozen
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==2.1.3 gymnasium==1.1.1 pygame-ce==2.5.3
+      - name: Genuine native source intervention and camera occlusion memory witness
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: |
+          cd yggdrasil
+          python -B -m research.mr23b.hidden_door ../external/minigrid
+      - name: Retain original MR22 source native invariance and MR21 identifiability negative
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: |
+          cd yggdrasil
+          python -B -m research.mr21.reversible_native ../external/minigrid
+      - name: Original source checkout worktrees unmodified
+        shell: bash
+        run: |
+          git -C yggdrasil diff --exit-code
+          git -C external/minigrid diff --exit-code
+          test -z "$(git -C yggdrasil status --porcelain)"
+          test -z "$(git -C external/minigrid status --porcelain)"
