@@ -1,0 +1,65 @@
+name: MR20 Original Native Local-State Necessity
+on:
+  push:
+    branches:
+      - research/mr20-native-state-necessity-20261021
+  pull_request:
+    branches:
+      - research/mr19-native-local-temporal-state-20261021
+permissions:
+  contents: read
+concurrency:
+  group: mr20-native-state-necessity-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  genuine-source-development-state-ablation:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Apply exact-Git-byte policy before Windows checkouts
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --global core.autocrlf false
+      - name: Checkout exact original MR20 proposal
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: yggdrasil
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Checkout third-party original Farama native source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Python 3.11 native dependency baseline
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Verify external independently authored source blob custody
+        shell: bash
+        run: python -B yggdrasil/research/mr14/verify_farama_native.py --manifest yggdrasil/research/mr14/farama_source_manifest.json --upstream external/minigrid
+      - name: Install previously pinned original runtime dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==2.1.3 gymnasium==1.1.1 pygame-ce==2.5.3
+      - name: Original native pre-action local state necessity versus conventional controls
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: |
+          cd yggdrasil
+          python -B -m research.mr20.probe_state_necessity ../external/minigrid
+      - name: Original source checkouts not mutated
+        shell: bash
+        run: |
+          git -C yggdrasil diff --exit-code
+          git -C external/minigrid diff --exit-code
+          test -z "$(git -C external/minigrid status --porcelain)"
