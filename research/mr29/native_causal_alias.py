@@ -26,7 +26,16 @@ from research.mr15.public_view_delta import (
 )
 from research.mr18.native_public_learning import Native45,Recurrent45
 from research.mr24.natural_history import public_only_action
-from research.mr25b.natural_twin_audit import readonly_evaluator_truth
+# Keep this research stream independent of the parallel unmerged MR25B PR.
+# Evaluator-only original world truth is never supplied to the learner.
+def readonly_evaluator_truth(env,_unused):
+    pos=tuple(int(x) for x in env.agent_pos)
+    direction=int(env.agent_dir)
+    carried=env.carrying
+    cargo=None if carried is None else (
+        type(carried).__name__,getattr(carried,"color",None))
+    grid=env.grid.encode().tobytes()
+    return pos,direction,cargo,grid,None
 from research.mr27.natural_memory import causal_episode,brier,source_guard
 from research.mr28.native_innovation import NativeInnovation45
 from research.mr28.probe_original import source_models
