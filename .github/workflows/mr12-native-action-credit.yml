@@ -1,0 +1,38 @@
+name: MR12 Native Action-Conditioned Learning
+on:
+  push:
+    branches:
+      - research/mr12-native-action-credit-20261021
+  pull_request:
+    branches:
+      - research/mr11-native-action-observability-20261021
+permissions:
+  contents: read
+concurrency:
+  group: mr12-native-action-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-native-action-credit:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - name: Exact GitHub source checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Action information enters original native observation and learner
+        run: python -B -m unittest discover -s tests -p test_mr12_native_action_credit.py -v
+      - name: Preserve original MR11 native aliasing negative
+        run: python -B -m unittest discover -s tests -p test_mr11_native_action_observability.py -v
+      - name: Preserve MR10 original cell-role necessity negative
+        run: python -B -m unittest discover -s tests -p test_mr10_native_role_identifiability.py -v
+      - name: Frozen original source unchanged by native executions
+        run: git diff --exit-code
