@@ -1,0 +1,49 @@
+{
+  "schema": "yggdrasil.mr26.native-public-novelty-causal-acquisition.dev.v1",
+  "predecessor": "56eebe89749c3c3ddfad10ce1ce4366d78c83381",
+  "independent_original_farama_source": "7f5853792ea7f04f75614661006d87fcf949f26d",
+  "fresh_development_seeds": [
+    263,
+    269,
+    271,
+    277,
+    281,
+    283,
+    293,
+    307
+  ],
+  "original_native_environments": [
+    "DoorKeyEnv(size=8)",
+    "EmptyEnv(size=8)"
+  ],
+  "action_budget_each_original_episode": 256,
+  "baseline": "Call MR24A original public_only_action unchanged, original per-seed Random(1000003*seed+337)",
+  "candidate": "Generic source-independent full PUBLIC image novelty + within-frame action coverage; no object types, env grid, pose, mission, reward or role oracle",
+  "camera_input": "Unmodified original public uint8 7x7x3 image SHA256 only",
+  "action_base_weights": [
+    18,
+    18,
+    46,
+    7,
+    3,
+    8
+  ],
+  "action_selection_formula": "weight[a] * (1+3/(1+within_image_action_attempts[a])) * (0.5 + (1+global_new_public_image_count[a])/(2+global_action_attempts[a]))",
+  "novelty_definition": "after genuine env.step, 1 if resulting full original public-image SHA256 is NOT in 128-entry bounded FIFO visited-hash set, else 0",
+  "candidate_rng_seed": "1000003*seed+337",
+  "candidate_memory_limit": "128 SHA256 hashes; 6 action attempt counters per image; 6 global attempts and 6 global novelty successes. Untrained policy storage accounted separate from 45 trainable native coefficients and 32-byte MR15 sidecar.",
+  "no_hidden_evaluator_fields_to_action_selection": true,
+  "native_evaluator_scope": "After original source action only: Key held change, original Door state change, native termination; no feedback to either policy",
+  "qualified_natural_exposure": "One uninterrupted DoorKey original native episode has authentic key pickup followed by original door unlock AND positive MR15 sampled public tile changes at both events.",
+  "preregistered_MR26_success": "At least one new candidate-development exposure and strictly more DoorKey seed-level exposures than unchanged baseline across 8 new seeds.",
+  "fairness": "Both policies same original Farama seed and 256 action maximum; no handbuilt solver/teleport, no object/coordinate decoder, no source-specific route, no adaptive reseeding/tuning after results.",
+  "no_model_training": true,
+  "no_protected_first_use": true,
+  "original_native_trainable_parameters_still_45": true,
+  "blocked": [
+    "G29 atlas exact-source review and final Linux/Windows regression",
+    "Farama original root Apache vs MIT package metadata license",
+    "total process tree CPU/RSS resource parity",
+    "no prospective hidden-door learning until training exposure passes"
+  ]
+}
