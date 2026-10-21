@@ -67,6 +67,11 @@ def evaluate_indistinguishable_functional_loss(world_a, world_b, bits, damaged, 
     if (event_a.source_commit != event_b.source_commit or
         event_a.source_sha256 != event_b.source_sha256):
         raise ValueError("unmatched native source provenance")
+    # Only the sender's own learned role, adjacency and observed damage
+    # status may reach local recovery. No global PRE-lesion identity digest.
+    if (event_a.before_local_sha256 != event_b.before_local_sha256 or
+        event_a.after_local_sha256 != event_b.after_local_sha256):
+        raise ValueError("local survivor evidence identity drift")
     # The intervention must destroy only local target-role information.
     same_damaged_state = a.snapshot() == b.snapshot()
     if not same_damaged_state:
