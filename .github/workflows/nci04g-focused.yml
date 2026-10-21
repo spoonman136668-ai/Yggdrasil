@@ -1,0 +1,35 @@
+name: NCI-04G Yggdrasil Development Focused
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Focused development-only local recovery contracts
+        run: python -B -m unittest discover -s tests -p test_nci04g_local_reconstruction.py -v
+      - name: Emit pre-primary generator digest (no outcomes)
+        shell: bash
+        run: sha256sum scripts/nci04g_development.py
+      - name: Frozen source-free development comparison (negative retained)
+        if: ${{ hashFiles('research/contrib/openai/nci04g-y1/result.json') == '' }}
+        shell: bash
+        run: python -B -m scripts.nci04g_development --primary --manifest research/contrib/openai/nci04g-y1/input-manifest.json
+      - name: Read-only source identity and clean checkout
+        shell: bash
+        run: |
+          test -z "$(git status --porcelain)"
+          echo "NCI04G_YGGDRASIL_FOCUSED_HEAD=$(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
