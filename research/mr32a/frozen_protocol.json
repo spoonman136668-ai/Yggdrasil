@@ -1,0 +1,55 @@
+{
+  "schema": "yggdrasil.mr32a.isolated-native-acquisition-cost.development.v1",
+  "parent_exact_commit": "bcb40f3ed66ba1e1ed8eb0bd3b1842094140dc1e",
+  "original_farama_source_commit": "7f5853792ea7f04f75614661006d87fcf949f26d",
+  "development_door_seeds": [
+    677,
+    683,
+    691,
+    701,
+    709,
+    719,
+    727,
+    733
+  ],
+  "development_empty_seeds": [
+    739,
+    743,
+    751,
+    757
+  ],
+  "stream_ids": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "max_original_native_actions_per_episode": 256,
+  "unchanged_public_only_actors": [
+    "novelty",
+    "contrast"
+  ],
+  "unchanged_actor_source": "research.mr31.matched_public_actor.EqualCapacityPublicActor",
+  "unchanged_original_native_episode_source": "research.mr31.original_acquisition.episode",
+  "no_new_learner_or_parameter_changes": true,
+  "original_45_trainable_parameters_unchanged": true,
+  "source_model_sensor_32_bytes_unchanged": true,
+  "policy_memory": "128 FIFO original public SHA-256 keys + 6 uint32 per key, 18 global uint32, RNG state and pending key per policy, same fixed allocation budget",
+  "isolation": "fresh dedicated Python process per policy, sequential execution with no overlapping source-native actors, subprocess stdout/stderr recorded, all original env and evaluator included in process CPU and OS peak resident bytes",
+  "resource_measurement": "time.process_time_ns for entire worker from start through trace serialization (excluding minor final JSON receipt print); OS ru_maxrss linux / peak_wset Windows; exact process output diagnostic pickle bytes; no allocation omitted from worker",
+  "cost_nonregression_strict": "same original source-family/seed/stream cohort, source-native action counts and fully separated worker processes. Candidate total CPU <= baseline total CPU AND native source process peak RSS <= baseline. Different source trajectories can have different native step lengths, so report per-step and equal-prefix metrics but do not claim matched execution-workload proof.",
+  "causal_coverage_gate": "candidate must yield strictly more independent DoorKey reset seed clusters with true same FULL current MR15+action/pose/inventory but different world and next eight-bit consequence than baseline, using only the min actual native episode lengths per matched policy/seed/stream pair",
+  "door_gate": "candidate visible genuine original key-to-door episodes >= baseline (full native trajectories) and report door-specific strict pairs separately",
+  "reproduction": "identical original source event digests per platform, clean original worktrees, no synthetic histories, no private grid/pose/inventory to actor",
+  "fail_closed_on": [
+    "worker failure",
+    "missing mandatory receipt",
+    "nonidentical structural actor budgets",
+    "truncated strict pair audit",
+    "nonreproduced Windows vs Linux source receipt",
+    "scientific protected first use"
+  ],
+  "known_limit": "isolated process includes native source+posthoc evaluator and trace serialization, but not the parent CI runner/GitHub machine total energy, and policy actions change source workload; per-step CPU isn't algorithm-only cost. Experimental development data only.",
+  "no_postresult_tuning": true,
+  "scientific_admission": false
+}
