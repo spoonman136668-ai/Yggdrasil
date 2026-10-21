@@ -56,8 +56,20 @@ jobs:
           SDL_AUDIODRIVER: dummy
         run: |
           cd yggdrasil
-          python -m py_compile research/mr29/native_causal_alias.py
-          python -B -m research.mr29.native_causal_alias ../external/minigrid 2>&1 | tee ../mr29-native-source-receipt.log
+          python -B - <<'PY' | tee ../mr29-native-source-receipt.log
+          import ast, pathlib, sys, traceback
+          path = pathlib.Path("research/mr29/native_causal_alias.py")
+          try:
+              ast.parse(path.read_text(encoding="utf-8"), str(path))
+              print("MR29_PYTHON_SYNTAX=PASS", flush=True)
+              from research.mr29.native_causal_alias import main
+              print("MR29_ORIGINAL_SOURCE_IMPORT=PASS", flush=True)
+              main("../external/minigrid")
+          except BaseException as error:
+              print("MR29_DIAGNOSTIC_FAILURE=" + type(error).__name__ + ": " + str(error), flush=True)
+              traceback.print_exc(file=sys.stdout)
+              sys.exit(1)
+          PY
           grep -q '^MR29_NATURAL_ORIGINAL_FULL_INPUT_CAUSAL_CONTRAST=' ../mr29-native-source-receipt.log
       - name: Original and third-party exact source checkouts remain clean
         shell: bash
