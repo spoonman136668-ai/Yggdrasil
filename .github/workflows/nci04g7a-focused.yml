@@ -20,7 +20,9 @@ jobs:
         with:
           python-version: '3.12'
       - name: G7A authentic-source causal observation and controls
-        run: python -B -m unittest discover -s tests -p test_nci04g7a_environment.py -v
+        run: |
+          python -B -m unittest discover -s tests -p test_nci04g7a_environment.py -v
+          python -B -m unittest discover -s tests -p test_nci04h_local_repair.py -v
       - name: Exact-source read-only acceptance
         run: |
           test -z "$(git status --porcelain)"
