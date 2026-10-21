@@ -1,0 +1,49 @@
+{
+  "schema": "yggdrasil.mr24.natural-native-history-custody.dev.v1",
+  "parent_head": "e1c4a90f5695cbd64a217c450808b4f9203bad9c",
+  "farama_source_sha": "7f5853792ea7f04f75614661006d87fcf949f26d",
+  "environments": [
+    "DoorKeyEnv(size=8)",
+    "EmptyEnv(size=8)"
+  ],
+  "development_seeds": [
+    173,
+    179,
+    181,
+    191
+  ],
+  "max_native_steps_per_environment": 256,
+  "fixed_exploration_policy": "source-independent seeded action chooser, no hidden env/grid/pose/mission/reward/object labels; public image validated but not semantically decoded",
+  "action_distribution_per_100": [
+    "forward x46",
+    "left x18",
+    "right x18",
+    "pickup x7",
+    "toggle x8",
+    "drop x3"
+  ],
+  "audit_only_evaluator_fields": [
+    "native door locked/open state changes",
+    "source key carrying transitions",
+    "actual independent original action consequences",
+    "source termination"
+  ],
+  "learner_inputs": [
+    "native executed action",
+    "source public 7x7x3 view",
+    "existing MR15 sampled 24-byte sensory cache plus 8 delta bits"
+  ],
+  "no_model_trained": true,
+  "positive_feasibility_condition": "original uninterrupted native trajectory actually exposes a key pickup and later door unlock with a public-observable precursor; model-free evaluator verifies source consequences",
+  "negative_condition": "absence of original end-to-end causal events under this frozen exploration policy means the protocol lacks usable training evidence, NOT that memory is theoretically impossible",
+  "forbidden": [
+    "position staging",
+    "hidden-source oracle for action selection",
+    "precomputed solver routes",
+    "teacher outcome labels",
+    "extra trainable weights",
+    "protected scientific first-use",
+    "paid API"
+  ],
+  "scientific_admission": false
+}
