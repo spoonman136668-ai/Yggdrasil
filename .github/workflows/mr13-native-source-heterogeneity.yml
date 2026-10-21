@@ -1,0 +1,38 @@
+name: MR13 Native Heterogeneity Source Audit
+on:
+  push:
+    branches:
+      - research/mr13-source-birth-heterogeneity-audit-20261021
+  pull_request:
+    branches:
+      - research/mr12-native-action-credit-20261021
+permissions:
+  contents: read
+concurrency:
+  group: mr13-native-source-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  native-heterogeneity-source-gate:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Exact source checkout with no persisted credential
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Frozen Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Original Git-native source conditional cell functions
+        run: python -B -m unittest discover -s tests -p test_mr13_native_source_heterogeneity.py -v
+      - name: Existing MR12 native action credit engineering acceptance
+        run: python -B -m unittest discover -s tests -p test_mr12_native_action_credit.py -v
+      - name: Original MR10 distinct-role non-necessity negative
+        run: python -B -m unittest discover -s tests -p test_mr10_native_role_identifiability.py -v
+      - name: Source must remain unchanged
+        run: git diff --exit-code
