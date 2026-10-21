@@ -1,0 +1,114 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "NCI04G-Y1",
+  "contributor": "openai-chatgpt-assisted-source-free-development",
+  "contribution_class": "successor-proposal",
+  "scope": "NCI-04G source-bound DEVELOPMENT feasibility only; not independently accepted science",
+  "code_preexistence": "No NCI-04G replacement implementation exists in parent. This preregistration must precede all NCI-04G experiment code and results.",
+  "protected_scientific_first_use": 0,
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "independent_first_use": false
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage",
+    "silently reclassifying a true negative as infrastructure failure",
+    "automatic merge or promotion"
+  ],
+  "resource_acceptance": "Record wall/CPU time, peak RSS, resident state and serialized bytes, training observations, prediction calls, intervention calls, rebuild/recovery work, message bytes where relevant. Any deterioration against the exact-parent conventional and native controls is NO-GO, not a hidden optimization trade.",
+  "question": "Can local cells learn which neighboring information survives loss of function and selectively exchange it to reconstruct an injured function, without copied weights, a global routing oracle, or postlesion target labels?",
+  "hypothesis": "A local prelesion reliability-dependent message policy can use informative surviving neighbors when the other neighbor is irrelevant, transfer when graph neighborhoods change, and abstain when reconstruction is information-theoretically impossible.",
+  "exact_parent_sha": "3194e13625586b48ef1713061b3c6a57662b9549",
+  "predecessor_evidence": [
+    "https://github.com/spoonman136668-ai/Yggdrasil/pull/331",
+    "https://github.com/spoonman136668-ai/Yggdrasil/pull/332",
+    "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/39525420772"
+  ],
+  "changed_paths": [
+    "yggdrasil/nci04g_local_reconstruction.py",
+    "tests/test_nci04g_local_reconstruction.py",
+    "research/contrib/openai/nci04g-y1/**",
+    ".ice/** (only if source-bound atlas regeneration becomes required)"
+  ],
+  "inputs": [],
+  "frozen_design": {
+    "status": "PRECODE_DEVELOPMENT_DESIGN; not independent scientific preregistration",
+    "seeds": {
+      "train": [
+        1201,
+        1202,
+        1203,
+        1204,
+        1205,
+        1206,
+        1207,
+        1208
+      ],
+      "development_heldout": [
+        2201,
+        2202,
+        2203,
+        2204,
+        2205,
+        2206,
+        2207,
+        2208,
+        2209,
+        2210,
+        2211,
+        2212,
+        2213,
+        2214,
+        2215,
+        2216
+      ]
+    },
+    "split": "Prelesion observable local observations on bounded 8-cell two-neighbor graphs, with informative left/right position balanced and permuted in unseen heldout graphs. Include one-informative/one-distractor case, redundant-information case, and two-uninformative impossibility case; do not supply hidden labels or global adjacency beyond each cell's immediate neighbors.",
+    "ordering": "Train policies and equally informed controls only on source-free train seeds; freeze before 16 heldout development seeds and include zero-supervision postlesion sequences. Report all runs.",
+    "data_budget": "At most 128 prelesion observations per train seed; zero postlesion true target labels; at most 16 synchronous one-hop communication steps per lesion. All observations and message traffic charged equally.",
+    "compute_budget": "Same prelesion outcome streams, training and prediction budgets for conventional controls. Charge all neighbor message bytes, storage, CPU/RSS and repair steps. No hidden external model calls, global evaluator, copied cell weights, or extra target labels.",
+    "capacity": "Preserve 8 cells, native LocalGenome K=3,D=7, existing role-state and genome budget of exact-parent LocalTaskRuntime; any additional resident routing parameters must displace—not silently expand—existing learned state. Never weaken damage semantics.",
+    "evaluator": "Measured correct functional reconstruction for recoverable lesions; strict abstention when both neighbors uninformative; balanced left/right unseen topology transfer; native task snapshot and restart; CPU/RSS/state/message/repair ledger.",
+    "deterministic_expected": true,
+    "source_birth": "source-free procedural; exact generator hash, source manifests and evaluation logic must be sealed before any primary evaluation or classify INVALID",
+    "comparison_rule": "candidate must beat strongest fully trained equal-information conventional local/recurrent control at equal/lower total cost OR match correct decisions with >=10% total CPU reduction and no memory or message-budget regression; no hard false-positive predictions on impossible-information controls."
+  },
+  "controls": [
+    "fully trained local conditional-count predictor with identical observations",
+    "fully trained equal-budget local recurrent graph predictor",
+    "original NCI-04D2 symmetric neighbor pseudo-target average",
+    "routing-disabled no-message ablation",
+    "informativeness-learning-disabled fixed equal-neighbor averaging",
+    "retained-prelesion-knowledge-disabled sham policy"
+  ],
+  "metrics": [
+    "recoverable_lesion_correct",
+    "impossible_information_hard_false_predictions",
+    "unseen_topology_transfer_accuracy",
+    "message_bytes",
+    "prelesion_observations",
+    "postlesion_true_labels",
+    "CPU_time",
+    "peak_RSS",
+    "resident_state_bytes",
+    "repair_operations",
+    "ablation_effect"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT-FEASIBLE only if >=12/16 recoverable heldout tests succeed when one neighbor alone is informative, zero impossible-information hard false predictions, true postlesion labels=0, each locality restriction proven, learned routing and retained-knowledge ablations each impair recovery, and candidate exceeds strongest fully trained control at equal/lower all-in cost OR equals its decisions with >=10% CPU saving and zero memory/message regression.",
+    "mixed": "Some necessary conditions met but comparator, transfer, causal ablation, or resource evidence incomplete. No scientific admission.",
+    "negative": "Valid source/evidence with any required recovery, zero-hard-false-positive, comparator, or CPU/memory/message criterion failed.",
+    "invalid": "Source or prereg identity drift; local-only restriction broken; postlesion true labels or hidden target oracle used; comparator not trained equally; generator not sealed before outcomes; missing ledger; altered test thresholds or input budgets."
+  },
+  "methodological_limits": "Eight-cell source-free development feasibility only, not accepted regeneration or general cognition; broader original 16/7/9 architecture and earlier negatives remain preserved."
+}
