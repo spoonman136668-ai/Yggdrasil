@@ -1,0 +1,50 @@
+{
+  "schema": "yggdrasil.mr14.external-source-birth.v1",
+  "status": "DEVELOPMENT_SOURCE_CANDIDATE_ONLY_NOT_SCIENTIFICALLY_ADMITTED",
+  "upstream_repository": "Farama-Foundation/Minigrid",
+  "upstream_commit": "7f5853792ea7f04f75614661006d87fcf949f26d",
+  "source_precedent": "spoonman136668-ai/FORGE PR #701 NCI-04G7C external-source intake",
+  "source_family": "native-third-party-partially-observable-grid-environment",
+  "source_author_independence": true,
+  "scientific_first_use": false,
+  "protected_holdout_used": false,
+  "learner_trained": false,
+  "source_contract": {
+    "runtime": "Original Minigrid DoorKeyEnv and MiniGridEnv.step, not a rewritten XOR world",
+    "action_to_consequence": "Original door/key/wall/goal transitions",
+    "candidate_information": "agent's partial image/direction plus the action; no evaluator object type, tile identity, reward or target role supplied to a learner",
+    "direct_local_native_mapping_admitted": false,
+    "deterministic_source_dev_probe_only": true
+  },
+  "source_blobs": {
+    "minigrid/minigrid_env.py": "eb29e9a902de0715ab77ec981a2113576d7664fa",
+    "minigrid/core/world_object.py": "ea13f6d452e9762a28354611f36738a1f77c26d9",
+    "minigrid/envs/doorkey.py": "df5b29ef063be34e6d83b8b478e092c6e3e01512",
+    "minigrid/envs/empty.py": "8810bb0fa156d18475022edd8859b135ef745a5f",
+    "minigrid/core/actions.py": "b440438bcb5a76a113d9d947b87a54dc8479ab15",
+    "minigrid/core/constants.py": "9763c63b0a65398c8c8a1f3f6ef1487709f7e038",
+    "pyproject.toml": "61ab88372ca553af255a42564260994be808ac12",
+    "LICENSE": "880057397a1f9f7b3b1f0870eb84fa699ecbf50c"
+  },
+  "license": {
+    "root_license_prefix": "Apache License",
+    "pyproject_license_text": "MIT License",
+    "verified_consistent": false,
+    "disposition": "NEEDS_UPSTREAM_LICENSE_RECONCILIATION_BEFORE_REDISTRIBUTION_OR_PRODUCTION"
+  },
+  "firstuse_blockers": [
+    "Only source bytes and a known development transition probe; not an independently held novel task selection",
+    "Locally observable compressed 8-cell / 45-coefficient mapping not qualified; object IDs and evaluator privileged state must not leak",
+    "No frozen prospective unfamiliar task set and equal-information fully trained strong controls",
+    "No process-complete paired CPU/peak RSS plus wire, persistence and restart accounting",
+    "Original public source is not proof of hidden scientific first use"
+  ],
+  "isolation": {
+    "no_ckb_plane": true,
+    "no_paid_api": true,
+    "no_controller_dispatch": true,
+    "no_new_scheduler": true,
+    "no_production": true,
+    "no_merge": true
+  }
+}
