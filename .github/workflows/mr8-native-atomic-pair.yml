@@ -1,0 +1,38 @@
+name: MR8 Native Atomic Pair Integration
+on:
+  push:
+    branches:
+      - research/mr8-atomic-native-pair-repair-20261021
+  pull_request:
+    branches:
+      - research/mr7-native-snapshot-custody-20261021
+permissions:
+  contents: read
+concurrency:
+  group: mr8-native-atomic-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  native-atomic-development:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - name: Exact proposed source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Native original producer to atomic repair development qualification
+        run: python -B -m unittest discover -s tests -p test_mr8_atomic_native_pair.py -v
+      - name: Original sequential native mismatch preserved
+        run: python -B -m unittest discover -s tests -p test_mr7_native_pair_snapshot_custody.py -v
+      - name: Original local repair regression
+        run: python -B -m unittest discover -s tests -p test_nci04h_local_repair.py -v
+      - name: Source files unmodified by execution
+        run: git diff --exit-code
