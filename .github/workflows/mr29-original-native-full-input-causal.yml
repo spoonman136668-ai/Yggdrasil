@@ -56,7 +56,8 @@ jobs:
           SDL_AUDIODRIVER: dummy
         run: |
           cd yggdrasil
-          python -B -m research.mr29.native_causal_alias ../external/minigrid | tee ../mr29-native-source-receipt.log
+          python -m py_compile research/mr29/native_causal_alias.py
+          python -B -m research.mr29.native_causal_alias ../external/minigrid 2>&1 | tee ../mr29-native-source-receipt.log
           grep -q '^MR29_NATURAL_ORIGINAL_FULL_INPUT_CAUSAL_CONTRAST=' ../mr29-native-source-receipt.log
       - name: Original and third-party exact source checkouts remain clean
         shell: bash
