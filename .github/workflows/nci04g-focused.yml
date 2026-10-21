@@ -8,6 +8,8 @@ jobs:
   focused:
     runs-on: ubuntu-latest
     timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -18,7 +20,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Focused development-only local recovery contracts
-        run: python -m unittest discover -s tests -p test_nci04g_local_reconstruction.py -v
+        run: python -B -m unittest discover -s tests -p test_nci04g_local_reconstruction.py -v
       - name: Read-only source identity and clean checkout
         shell: bash
         run: |
