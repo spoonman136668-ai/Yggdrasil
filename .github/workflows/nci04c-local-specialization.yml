@@ -1,0 +1,52 @@
+name: NCI04C Yggdrasil local specialization and damage recovery
+on:
+  push:
+    branches: [research/nci04c-local-specialization-20261020]
+    paths: ['.github/workflows/nci04c-local-specialization.yml']
+permissions:
+  contents: read
+jobs:
+  bounded-local-specialization:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify preregistration and source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor a528e32fefe0fcb27abf0aac012c71b532a4ad22 "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/local_specialization.py)" = cb8333000158dd8a346d145f852de8b8a604a6c2
+          test "$(git hash-object tests/test_local_specialization.py)" = e9810a26a34e10a8a811e724979113df492278d2
+          python - <<'PY'
+          import json
+          d=json.load(open('research/contrib/openai/nci04c/frozen.json'))
+          assert d['schema']=='nci04c.native-mechanism-feasibility.v1'
+          assert d['project']=='Yggdrasil' and not d['independent_science_first_use']
+          print('NCI04C_Y_PREREG_AND_IDENTITY=PASS')
+          PY
+      - name: Local specialization, lesion and cold retrain comparison
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s tests -p 'test_local_specialization.py' -v 2>&1 | tee "$RUNNER_TEMP/nci04c-yggdrasil.log"
+          echo 'NCI04C_Y_FOCUSED=PASS'
+      - name: Full repository Python regression and atlas guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s tests -p 'test_*.py'
+          echo 'NCI04C_Y_FULL_REGRESSION=PASS'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nci04c-yggdrasil-local
+          path: ${{ runner.temp }}/nci04c-yggdrasil.log
+          if-no-files-found: warn
+          retention-days: 90
