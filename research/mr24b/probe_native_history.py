@@ -358,3 +358,4 @@ def main(root):
 if __name__=="__main__":
     if len(sys.argv)!=2:
         raise SystemExit("Usage: python -m research.mr24b.probe_native_history UPSTREAM")
+    main(sys.argv[1])
