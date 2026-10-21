@@ -56,7 +56,8 @@ jobs:
           SDL_AUDIODRIVER: dummy
         run: |
           cd yggdrasil
-          python -B -m research.mr24b.probe_native_history ../external/minigrid
+          python -B -m research.mr24b.probe_native_history ../external/minigrid | tee ../mr24b-qualified-receipt.log
+          grep -q '^MR24B_UNINTERRUPTED_NATIVE_LEARNED_HISTORY=' ../mr24b-qualified-receipt.log
       - name: Both exact original project and external source checkouts unchanged
         shell: bash
         run: |
