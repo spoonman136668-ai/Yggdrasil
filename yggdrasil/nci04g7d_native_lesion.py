@@ -8,6 +8,7 @@ target output, role weights or a predictor's guess as a learning label.
 """
 from dataclasses import dataclass
 import hashlib
+import json
 import pathlib
 import subprocess
 from .task_runtime import LocalTaskRuntime
@@ -24,8 +25,8 @@ class NeighborLesionEvidence:
     neighbor: int
     before_neighbor_damaged: int
     after_neighbor_damaged: int
-    before_snapshot_sha256: str
-    after_snapshot_sha256: str
+    before_local_sha256: str
+    after_local_sha256: str
     sequence: int
     evidence_basis: str = "NATIVE_RUNTIME_OWNED_STRUCTURAL_LESION_NOT_FUNCTIONAL_LABEL"
 
@@ -88,11 +89,23 @@ class NativeNeighborLesionObserver:
                 or own_role_before != tuple(self.runtime.core.roles[sender])
                 or sender in self.runtime.damaged):
             raise ValueError("native structural transition inconsistency")
+        # A global PRE-lesion snapshot hash would leak target-role identity.
+        # The neighbor-facing event authenticates only locally visible facts.
+        local_before = json.dumps({
+            "sender":sender,"neighbor":neighbor,
+            "sender_role":own_role_before,
+            "neighbor_damaged":observed_before
+        },sort_keys=True,separators=(",",":"))
+        local_after = json.dumps({
+            "sender":sender,"neighbor":neighbor,
+            "sender_role":tuple(self.runtime.core.roles[sender]),
+            "neighbor_damaged":observed_after
+        },sort_keys=True,separators=(",",":"))
         self._emitted = True
         return NeighborLesionEvidence(
             source_commit=commit, source_sha256=hashes, sender=sender,
             neighbor=neighbor, before_neighbor_damaged=observed_before,
             after_neighbor_damaged=observed_after,
-            before_snapshot_sha256=hashlib.sha256(before.encode()).hexdigest(),
-            after_snapshot_sha256=hashlib.sha256(after.encode()).hexdigest(),
+            before_local_sha256=hashlib.sha256(local_before.encode()).hexdigest(),
+            after_local_sha256=hashlib.sha256(local_after.encode()).hexdigest(),
             sequence=1)
