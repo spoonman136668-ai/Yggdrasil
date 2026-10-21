@@ -1,0 +1,36 @@
+name: MR11 Native Action Observability
+on:
+  push:
+    branches:
+      - research/mr11-native-action-observability-20261021
+  pull_request:
+    branches:
+      - research/mr10-role-identifiability-20261021
+permissions:
+  contents: read
+concurrency:
+  group: mr11-observability-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  source-native-action-contrast:
+    timeout-minutes: 15
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Checkout exact source with no stored credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Original native world counterfactual action observability
+        run: python -B -m unittest discover -s tests -p test_mr11_native_action_observability.py -v
+      - name: MR10 original-role necessity negative retained
+        run: python -B -m unittest discover -s tests -p test_mr10_native_role_identifiability.py -v
+      - name: Source code unchanged by tests
+        run: git diff --exit-code
