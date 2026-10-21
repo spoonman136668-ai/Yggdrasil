@@ -5,6 +5,8 @@ protected first-use, new learner, role targets or scientific acceptance.
 """
 import json
 import pathlib
+import subprocess
+import tempfile
 import unittest
 
 from yggdrasil.task_runtime import LocalTaskRuntime
@@ -23,7 +25,23 @@ class NativePairSnapshotCustody(unittest.TestCase):
         before_first = runtime.snapshot()
         original_damaged_role = list(runtime.core.roles[0])
         bits = [1, 0, 1, 0, 1, 0, 1, 0]
-        observer = BoundedLocalEnvironment(ROOT, runtime)
+        # Windows Git checkout can translate LF to CRLF and fail the unchanged
+        # model-independent source-bytes verifier. Materialize the identical
+        # Git commit in a disposable non-translating worktree; do NOT weaken
+        # the producer's exact Git blob check or rewrite tracked source.
+        temp = tempfile.TemporaryDirectory(prefix="mr7-native-source-")
+        self.addCleanup(temp.cleanup)
+        checkout = pathlib.Path(temp.name) / "source"
+        subprocess.run(["git", "clone", "--quiet", "--no-hardlinks",
+                        "--no-checkout", str(ROOT), str(checkout)],
+                       check=True, capture_output=True)
+        subprocess.run(["git", "-C", str(checkout), "config",
+                        "core.autocrlf", "false"], check=True, capture_output=True)
+        head = subprocess.check_output(["git", "-C", str(ROOT),
+                                        "rev-parse", "HEAD"], text=True).strip()
+        subprocess.run(["git", "-C", str(checkout), "checkout", "--quiet",
+                        "--detach", head], check=True, capture_output=True)
+        observer = BoundedLocalEnvironment(checkout, runtime)
 
         # Use ONLY the original Git-pinned, model-independent simulated
         # environment producer. Unlike H's unit fixture, each genuine native
