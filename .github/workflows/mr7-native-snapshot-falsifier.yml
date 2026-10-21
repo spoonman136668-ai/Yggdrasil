@@ -1,0 +1,36 @@
+name: MR7 Existing Native Packet Snapshot Falsifier
+on:
+  push:
+    branches:
+      - research/mr7-native-snapshot-custody-20261021
+  pull_request:
+    branches:
+      - research/nci04h-ygg-local-recovery-20261021
+permissions:
+  contents: read
+concurrency:
+  group: mr7-native-packet-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  native-snapshot-contrast:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact native development source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Actual Git-source-pinned two-message native integration falsifier
+        run: python -B -m unittest discover -s tests -p test_mr7_native_pair_snapshot_custody.py -v
+      - name: Original local repair regression only
+        run: python -B -m unittest discover -s tests -p test_nci04h_local_repair.py -v
+      - name: No unapproved source mutation
+        run: git diff --exit-code
