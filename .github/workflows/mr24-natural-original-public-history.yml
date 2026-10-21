@@ -1,0 +1,65 @@
+name: MR24 Uninterrupted Original Native Public History
+on:
+  push:
+    branches:
+      - research/mr24-natural-native-history-custody-20261021
+  pull_request:
+    branches:
+      - research/mr23b-native-occluded-memory-20261021
+permissions:
+  contents: read
+concurrency:
+  group: mr24-natural-native-history-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-native-public-experience:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Preserve Windows checkout byte identity
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --global core.autocrlf false
+      - name: Exact Yggdrasil MR24 development source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: yggdrasil
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Exact original Farama independently authored source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Original native Python source runtime
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Authenticate original eight Farama source blobs
+        shell: bash
+        run: python -B yggdrasil/research/mr14/verify_farama_native.py --manifest yggdrasil/research/mr14/farama_source_manifest.json --upstream external/minigrid
+      - name: Install existing pinned native source dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==2.1.3 gymnasium==1.1.1 pygame-ce==2.5.3
+      - name: Audit uninterrupted source-native observations and real original events
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: |
+          cd yggdrasil
+          python -B -m research.mr24.natural_history ../external/minigrid
+      - name: Both source checkouts remain unmodified
+        shell: bash
+        run: |
+          git -C yggdrasil diff --exit-code
+          git -C external/minigrid diff --exit-code
+          test -z "$(git -C external/minigrid status --porcelain)"
