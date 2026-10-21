@@ -12,7 +12,8 @@ import pathlib
 import subprocess
 from .task_runtime import LocalTaskRuntime
 
-SOURCE_FILES = ("yggdrasil/task_runtime.py", "yggdrasil/developmental.py")
+SOURCE_FILES = ("yggdrasil/task_runtime.py", "yggdrasil/developmental.py",
+                "yggdrasil/nci04g7d_native_lesion.py")
 
 
 @dataclass(frozen=True)
