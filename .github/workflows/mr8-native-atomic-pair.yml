@@ -1,11 +1,13 @@
-name: MR8 Native Atomic Pair Integration
+name: MR8 MR9 Native Repair and Functional Audit
 on:
   push:
     branches:
       - research/mr8-atomic-native-pair-repair-20261021
+      - research/mr9-native-functional-recovery-20261021
   pull_request:
     branches:
       - research/mr7-native-snapshot-custody-20261021
+      - research/mr8-atomic-native-pair-repair-20261021
 permissions:
   contents: read
 concurrency:
@@ -28,6 +30,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: MR9 original trained function lesion and label-free repair audit
+        run: python -B -m unittest discover -s tests -p test_mr9_native_functional_recovery.py -v
       - name: Native original producer to atomic repair development qualification
         run: python -B -m unittest discover -s tests -p test_mr8_atomic_native_pair.py -v
       - name: Original sequential native mismatch preserved
