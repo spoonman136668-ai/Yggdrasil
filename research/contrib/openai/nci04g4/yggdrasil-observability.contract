@@ -1,0 +1,32 @@
+NCI-04G4 / YGGDRASIL / SOURCE-BOUND ARCHITECTURAL REVISION
+STATUS: ENGINEERING CONTRACT / NOT IMPLEMENTED / NO SCIENTIFIC FIRST USE
+BASE_REPOSITORY: spoonman136668-ai/Yggdrasil
+BASE_COMMIT: 3194e13625586b48ef1713061b3c6a57662b9549
+NCI04G3_NEGATIVE_RESULT: https://github.com/spoonman136668-ai/Yggdrasil/blob/327b9bf735c03e1a3aba275787d6ef163eb37a44/research/contrib/openai/nci04g-y1/result.json
+NCI04G3_FACTS: 12/16 held-out correct; 4 hard false positives; conventional control 12/16; candidate much slower. No scientific admission.
+
+NECESSARY INFORMATION CONDITION
+For a damaged cell D, suppose two possible surviving worlds provide exactly the same prelesion local messages, surviving cell states and postlesion one-hop sensory evidence, yet require opposite repaired functional outputs at D. Every deterministic repair algorithm constrained to those observations produces the same output in both worlds and must be wrong in at least one unless it abstains. Training a reliability weight cannot resolve an unobserved operator change. This is an impossibility/identifiability proof, not a new scientific evaluation.
+
+SOURCE-BOUND ENGINEERING FINDING
+Current yggdrasil/task_runtime.py defines 8 cells, exactly two listed neighbors per cell, LocalGenome with 3 shared experts and 7 features, and repair_unlabeled. The original method averages two neighbors' pseudo-predictions; the NCI-04G3 candidate added prelesion off-cell local counts and learned-neighbor selection but has no postlesion observable indicating a switched functional operator. The 4 false positives are therefore informative failures. Do not increase thresholds to hide them, declare an unobservable operator knowable, or interpret this small 8-cell development configuration as the whole original 16-cell program.
+
+REQUIRED NATIVE SEAM (strictly local; no postlesion target labels)
+Input at cell j: its own prelesion time-series, neighboring one-hop messages, its observable local dynamical discrepancy from predictions, timestamp/sequence, and a bounded evidence-origin marker. A discrepancy must be measurable in the cell's runtime without knowing the damaged cell's target output or evaluator labels.
+Repair message from j to adjacent damaged cell D: a fixed-byte learned sufficient statistic and confidence/uncertainty derived from the permitted local evidence, never copied weights or a global optimizer's target.
+Output: candidate repaired functional distribution, explicit abstention when neighboring worlds cannot be separated; reconstructed state must persist across stop/restore/continue.
+No global adjacency knowledge beyond direct neighbors. Charge all message bytes, retained state, damage/recovery operations, CPU/RSS. Additional routing parameters must displace existing capacity, never silently increase it.
+
+DISCRIMINATING DEVELOPMENT TEST (requires measurable endogenous error signal)
+1. Demonstrate two candidate postlesion worlds with different functions DO yield distinguishing locally observable residuals under permissible one-hop experience. If not, stop that source family and abstain.
+2. Train the cell-local predictor of which neighbors carry uniquely relevant information before lesion on authentic local dynamics, not a hand-specified confidence operator.
+3. Test changing informative-neighbor positions and unfamiliar topology while preserving local observation limits.
+4. Prohibit postlesion true target labels; independently audit message topology, parameter sharing, and restart continuity.
+5. Compare fully trained local recurrent, conditional and graph controls with the exact same input/compute/state/message budgets; freeze causal ablations (routing, local credit, retained distributed state) before observing outcomes.
+6. Require zero hard false positives and baseline preservation, then resource nonregression before scientific first-use can be considered.
+
+STOP RULE
+If no endogenous local evidence distinguishes changed functions, an algorithm cannot recover those functions soundly. Preserve abstentions and negative results; do not tune confidence or add hidden postlesion labels. No protected scientific first-use, no replay of the original 16-seed development evaluation, no new controller or infrastructure.
+
+NEXT OWNER ACTION
+Add one real cell-local sensory-residual and message-custody adapter to the existing native task runtime, verify non-oracle provenance and fixed total memory/one-hop message budgets, then implement the smallest learnable local credit/routing update. Full regressive acceptance remains separate.
