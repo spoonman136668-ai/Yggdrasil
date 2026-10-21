@@ -13,7 +13,7 @@ from yggdrasil.nci04g7e_functional_custody import (
 )
 
 ROOT=pathlib.Path(__file__).resolve().parents[1]
-INPUT=(1,0,0,0,0,0,0,0)
+INPUT=(1,1,0,0,0,0,0,0)
 
 def two_native_functions():
     a=LocalTaskRuntime()
