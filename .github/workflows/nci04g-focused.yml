@@ -25,6 +25,7 @@ jobs:
         shell: bash
         run: sha256sum scripts/nci04g_development.py
       - name: Frozen source-free development comparison (negative retained)
+        if: ${{ hashFiles('research/contrib/openai/nci04g-y1/result.json') == '' }}
         shell: bash
         run: python -B -m scripts.nci04g_development --primary --manifest research/contrib/openai/nci04g-y1/input-manifest.json
       - name: Read-only source identity and clean checkout
