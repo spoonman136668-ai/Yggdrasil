@@ -1,0 +1,28 @@
+{
+  "schema": "yggdrasil.mr23b.original-hidden-door-memory-necessity.dev.v1",
+  "base_candidate": "7c055b9ce7d6e0cdc84ea5889557445defe6b6e1",
+  "independent_mr23a_readout_negative": "985408e0325e2a7e34b5fe7648e45d036ccc0474",
+  "farama_commit": "7f5853792ea7f04f75614661006d87fcf949f26d",
+  "original_source": "DoorKeyEnv(size=8)",
+  "frozen_seed": 11,
+  "intervention_A": "Native original PICKUP key, original TOGGLE locked door using key, then native DROP key back to its source location. Evaluator temporarily sets player pose for the three source actions; this is not an uninterrupted naturally navigated agent episode.",
+  "control_B": "At identical evaluator-staged poses run three native DROP actions without carried item; original door remains locked.",
+  "post_condition": "Exact original world differences confined to the door's encoded tile; same key position, no item carried, same native step count.",
+  "pre_action": "Bounded exhaustive lexicographic probe over identical evaluator-staged empty world positions, all four orientations and native action LEFT, RIGHT, FORWARD; require byte-identical current 7x7x3 public images and MR15 visible 24-byte samples, identical pre-action eight delta bits [0]*8 and original action.",
+  "post_action": "Native original env.step emits actual public image. Count cases where next image differs and separately cases where original next 8 MR15 change bits differ. No hidden source state or object labels given to a learner.",
+  "max_candidate_source_pairs": 432,
+  "positive_condition": "At least one equal-current-public-image/action pair has different authentic next-public-source image and 8-bit MR15 outcome. If none, report a bounded negative with no seed search or retuning.",
+  "scientific_scope": "This is an evaluator-staged source-native partial-observability witness, not trained causal memory, naturally navigated role specialization, transfer or independent heldout evaluation.",
+  "trainable_coefficients_added": 0,
+  "existing_model_coefficients": 45,
+  "original_sensor_nontrained_sidecar_bytes": 32,
+  "no_learner_or_comparator_trained": true,
+  "protected_scientific_first_use": false,
+  "source_world_privileged_fields": "Only diagnostic evaluator selects interventions and validates equal observable input and one-door world difference; no learner receives them.",
+  "unresolved": [
+    "G29 legitimate source-index and full Windows/Linux regression",
+    "Farama upstream Apache vs MIT metadata licensing",
+    "Native all-in CPU RSS and matched recurrent/conditional controls",
+    "Prospective useful learned memory and scientific unknown task transfer"
+  ]
+}
