@@ -21,6 +21,9 @@ jobs:
           python-version: '3.12'
       - name: Focused development-only local recovery contracts
         run: python -B -m unittest discover -s tests -p test_nci04g_local_reconstruction.py -v
+      - name: Emit pre-primary generator digest (no outcomes)
+        shell: bash
+        run: sha256sum scripts/nci04g_development.py
       - name: Read-only source identity and clean checkout
         shell: bash
         run: |
