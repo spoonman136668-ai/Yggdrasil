@@ -1,0 +1,63 @@
+name: MR14 Independent Farama Native Source Intake
+on:
+  push:
+    branches:
+      - research/mr14-farama-source-intake-20261021
+  pull_request:
+    branches:
+      - research/mr13-source-birth-heterogeneity-audit-20261021
+permissions:
+  contents: read
+concurrency:
+  group: mr14-farama-native-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  source-birth-and-native-development-probe:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - name: Set exact Git byte policy before BOTH original source checkouts
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --global core.autocrlf false
+      - name: Exact proposed Yggdrasil source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: yggdrasil
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Independently authored original Farama source, frozen SHA
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Python 3.11 for original native source runtime
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Verify all independent source blobs and licensing discrepancy first
+        shell: bash
+        run: python -B yggdrasil/research/mr14/verify_farama_native.py --manifest yggdrasil/research/mr14/farama_source_manifest.json --upstream external/minigrid
+      - name: Install only pinned open-source native environment dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==2.1.3 gymnasium==1.1.1 pygame-ce==2.5.3
+      - name: Execute ORIGINAL external native consequences under source custody
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: python -B yggdrasil/research/mr14/verify_farama_native.py --manifest yggdrasil/research/mr14/farama_source_manifest.json --upstream external/minigrid --native-probe
+      - name: Confirm original Yggdrasil and source checkouts remain unchanged
+        shell: bash
+        run: |
+          git -C yggdrasil diff --exit-code
+          git -C external/minigrid diff --exit-code
+          test -z "$(git -C external/minigrid status --porcelain)"
