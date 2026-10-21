@@ -14,7 +14,7 @@ import subprocess
 import sys
 import time
 
-ROOT=pathlib.Path(__file__).resolve().parents[2]
+ROOT=pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 sys.path.insert(0,str(ROOT/"research"/"mr15"))
 from research.mr15.public_view_delta import PublicViewLocalDelta,SOURCE_COMMIT
