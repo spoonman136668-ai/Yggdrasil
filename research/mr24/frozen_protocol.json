@@ -1,0 +1,63 @@
+{
+  "schema": "yggdrasil.mr24.native-occluded-public-history-learning.dev.v1",
+  "parent_exact_yggdrasil_sha": "e1c4a90f5695cbd64a217c450808b4f9203bad9c",
+  "original_farama_source_commit": "7f5853792ea7f04f75614661006d87fcf949f26d",
+  "original_environment": "DoorKeyEnv(size=8)",
+  "train_development_seeds": [
+    13,
+    17
+  ],
+  "evaluation_known_development_seed": 11,
+  "source_training_epochs": 3,
+  "source_train_arm_order": [
+    "original_unlocked_door",
+    "original_locked_door"
+  ],
+  "real_native_interventions_unlocked": [
+    3,
+    5,
+    4
+  ],
+  "real_native_control_actions_locked": [
+    4,
+    4,
+    4
+  ],
+  "evaluator_staged_poses": [
+    "original_empty_neighbor_of_key",
+    "original_empty_neighbor_of_door",
+    "original_empty_neighbor_of_key"
+  ],
+  "reprimed_public_sensor_each_staged_move": true,
+  "known_original_probe_pose": [
+    1,
+    1,
+    3
+  ],
+  "known_original_probe_action": 1,
+  "model_families": [
+    "Original 45-native-weight MR19 retained local predictive state plus eight bounded activations",
+    "Conventional 45-weight fully trained recurrent control plus eight bounded activations",
+    "Conventional 45-weight fully trained public-input stateless expert control",
+    "MR19 identical weights with all eight retained states ablated only at probe"
+  ],
+  "observation_input": "Exact existing eight previously sampled original public triple bytes (24), original known action, freshly re-primed eight temporal bits; post-source next public 8 delta bits only after step",
+  "allowed_history": "Agent-facing original public raw samples and genuine step action/outcome only; no source-world grid/object names, pose, carrying or intervention arm ID enters model",
+  "privileged_evaluator_scope": "Original empty-neighbor coordinates/key/door introspection only to stage interventions, validate exact single-door world difference and test matched present original public image",
+  "no_naturally_navigated_claim": true,
+  "no_protected_science_first_use": true,
+  "success_required_for_scientific_readiness": "Pre-outcome retained state distinguish causal pairs and improve mean Brier over same-model zero-state and equally informed fully trained 45-weight recurrent control; no promotion based on mere prediction separation or source intervention knowing which arm; evaluated seed is previously seen in MR23B so development ONLY",
+  "fixed_trainable_slots": 45,
+  "candidate_additional_episodic_activations": 8,
+  "conventional_recurrent_additional_episodic_activations": 8,
+  "untrained_MR15_sidecar_bytes": 32,
+  "hyperparameters_frozen": "Use unchanged original MR19/MR18 default coefficients learning rules and zero manual tuning",
+  "original_native_source_witness_only": true,
+  "blocked": [
+    "Full G29 exact source atlas repin and one complete Windows/Linux regression",
+    "Original Farama upstream license discrepancy",
+    "Naturally navigated source intervention without evaluator staging",
+    "All-in separately measured model process CPU RSS serialized state and communications",
+    "New independently custodied unfamiliar-task transfer and required strong matched-cost baselines"
+  ]
+}
