@@ -1,0 +1,43 @@
+{
+  "schema": "yggdrasil.mr25b.natural-public-twins.dev.v1",
+  "parent_commit": "bfac577cd6b944be48f34e9a7a12216f9e1d4901",
+  "original_farama_git_commit": "7f5853792ea7f04f75614661006d87fcf949f26d",
+  "source_classes": [
+    "DoorKeyEnv(size=8)",
+    "EmptyEnv(size=8)"
+  ],
+  "development_reset_seeds": [
+    223,
+    227,
+    229,
+    233,
+    239,
+    241
+  ],
+  "uninterrupted_action_stream_ids": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "max_native_original_steps_per_stream": 256,
+  "action_policy": "fixed independent seeded MR24A public-image-only action bucket: forward 46, left 18, right 18, pickup 7, toggle 8, drop 3 of 100; actor rng = Random(1000003*seed + 337 + 10007*stream_id)",
+  "prospective_pair_key": "same original reset seed AND identical full 7x7x3 uint8 preaction public image bytes AND identical next chosen original action, across different independently executed source-native streams",
+  "primary_witness": "different actual eight next original MR15 public tile-change bits after native step; must have different preceding public action-history receipts",
+  "secondary_witness": "different original next full public image bytes even when eight sampled targets match",
+  "evaluator_only_strata": [
+    "same original agent position and orientation",
+    "same native carried-inventory signature",
+    "same native world grid bytes",
+    "same original hidden-door open or locked truth when present"
+  ],
+  "strong_hidden_world_witness": "all source-native original reset seed, agent position, facing, carried inventory identical, full current public image identical, same action, but source grid differs and original eight observed next-bit targets differ; no post-hoc pose staging",
+  "strict_door_witness": "strong hidden world witness AND source-native door locked/open state differs in evaluator-only audit",
+  "no_priviliged_source_to_policy": true,
+  "no_learned_model": true,
+  "keep_all_positive_and_negative_witnesses": true,
+  "same_working_memory_budget": "original model remains unchanged 45 trainable coefficients; native actor uses MR15 32-byte retained sensor only; auditor stores read-only development trace for offline analysis (not learner input or retained state)",
+  "scientific_first_use": false,
+  "no_postresult_policy_seed_or_source_expansion": true,
+  "no_automatic_proceed_to_memory_training_without_natural_contrast": true
+}
