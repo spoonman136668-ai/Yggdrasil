@@ -20,16 +20,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     steps:
+      - name: Set exact Git byte policy before BOTH original source checkouts
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --global core.autocrlf false
       - name: Exact proposed Yggdrasil source
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: yggdrasil
           fetch-depth: 0
           persist-credentials: false
-      - name: Set original upstream Git byte policy before external checkout
-        if: runner.os == 'Windows'
-        shell: bash
-        run: git config --global core.autocrlf false
       - name: Independently authored original Farama source, frozen SHA
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
