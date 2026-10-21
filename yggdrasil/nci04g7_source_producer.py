@@ -65,7 +65,13 @@ class SourceBoundNativeCellSensor:
         self.valid_bits(current_bits)
         if type(bit_history) not in (list,tuple) or not 1<=len(bit_history)<=MAX_SOURCE_EVENTS:
             raise ValueError("prelesion experience budget exceeded")
-        if from_cell not in self.credit.adapter.runtime.neighbors[recipient] or from_cell in self.credit.adapter.runtime.damaged or recipient not in self.credit.adapter.runtime.damaged:
+        native=self.credit.adapter.runtime
+        if native.neighbors!=tuple(((i-1)%CELLS,(i+1)%CELLS) for i in range(CELLS)):
+            raise ValueError("native ring producer cannot attest custom graph topology")
+        if (type(recipient)!=int or type(from_cell)!=int
+            or not 0<=recipient<CELLS or not 0<=from_cell<CELLS
+            or from_cell not in native.neighbors[recipient]
+            or from_cell in native.damaged or recipient not in native.damaged):
             raise ValueError("unqualified one-hop source")
         events=[]
         for pair in bit_history:
