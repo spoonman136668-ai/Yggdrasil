@@ -391,3 +391,4 @@ def main(folder):
 if __name__=="__main__":
     if len(sys.argv)!=2:
         raise SystemExit("Usage: python -m research.mr29.native_causal_alias ORIGINAL_FARAMA_SOURCE")
+    main(sys.argv[1])
