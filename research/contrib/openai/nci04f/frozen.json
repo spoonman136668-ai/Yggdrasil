@@ -1,0 +1,31 @@
+{
+  "schema": "nci04f.yggdrasil.asymmetric_neighbor_recovery_falsification.v1",
+  "parent_source": "78be35992449965e39a52b9a19b2217fb6996528",
+  "parent_evidence": "f99dc23f30a864c00d6ee72f69be5b5a5aa4768a",
+  "scope": "ONE_FINAL_SOURCE_ONLY_DISCRIMINATING_FAILURE_TEST",
+  "hypothesis": "Blank-cell reconstruction should exploit one strongly informative surviving neighbor even when the other neighbor has only noise; otherwise the consensus rule is not a general distributed functional recovery mechanism.",
+  "frozen": {
+    "cells": 8,
+    "lesion_cell": 3,
+    "informative_neighbor": 2,
+    "uninformative_neighbor": 4,
+    "training_steps": 64,
+    "postlesion_steps": 16,
+    "latent_function": "missing cell output = immediate-left-neighbor own sensor; right neighbor sensor cycles independently of left",
+    "impossible_control": "missing output is independent of both neighbors; zero hard false function claims",
+    "query_after_one_hop": true
+  },
+  "strong_controls": [
+    "training-only local 2x2 Bernoulli response table using the same surviving left neighbor observations",
+    "blank-cell no-survivor-data ablation",
+    "original 2-neighbor-consensus candidate"
+  ],
+  "required": "At least one recovered functional prediction under uniquely informative surviving data, no hard false predictions on irrecoverable negative, zero postlesion target supervision. If candidate abstains on all resolvable cases, report NEGATIVE; do not loosen consensus thresholds.",
+  "constraints": {
+    "original_nci04e_source_untouched": true,
+    "no_global_cell_signal": true,
+    "scientific_first_use": 0,
+    "protected_main_unchanged": true,
+    "auto_merge": false
+  }
+}
