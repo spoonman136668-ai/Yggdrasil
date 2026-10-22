@@ -301,7 +301,7 @@ def run(audit, model, farama, pycolab, math_source, lib, output):
 if __name__ == "__main__":
     if len(sys.argv) == 5 and sys.argv[1] == "--bench-child":
         print(json.dumps(one_round(sys.argv[2:])))
-    elif len(sys.argv) == 8 and sys.argv[1] == "--evaluate":
+    elif len(sys.argv) == 9 and sys.argv[1] == "--evaluate":
         run(*sys.argv[2:])
     else:
         raise SystemExit("MR34I9B_INVALID_BOUNDED_EXECUTION_ARGUMENTS")
