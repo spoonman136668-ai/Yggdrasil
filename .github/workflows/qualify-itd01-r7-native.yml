@@ -47,7 +47,19 @@ jobs:
           set -euo pipefail
           python -B research/native/itd01/r7/report.py > itd01_ygg_native_result.json
           python -B -c 'import json; x=json.load(open("itd01_ygg_native_result.json")); assert len(x["results"])==3 and not x["original_scientific_first_use"] and all(t["delayed_public_feedback_updates"]==640 for t in x["results"]); print("ITD01_YGG_NATIVE_COHORTS=PASS")'
+      - name: Preserve all three frozen local-cell learning outcomes without threshold changes
+        if: always()
+        shell: bash
+        run: |
+          set +e
+          python -B research/native/itd01/r7/report.py > itd01_ygg_native_result.json
+          result=$?
+          set -e
+          test "$result" -eq 0 -o "$result" -eq 2
+          python -B -c 'import json; d=json.load(open("itd01_ygg_native_result.json")); assert len(d["results"])==3 and not d["original_scientific_first_use"]; print("YGG_R7_FROZEN_OUTCOME="+d["disposition"])'
+          echo YGG_R7_SCIENTIFIC_NEGATIVE_PRESERVED=PASS
       - name: One existing Yggdrasil public regression
+        if: always()
         shell: bash
         run: |
           set -euo pipefail
