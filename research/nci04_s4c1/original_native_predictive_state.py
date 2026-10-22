@@ -124,6 +124,7 @@ def train_native(episodes_train):
         "training_cpu_ns_full_episode_45_coefficient_Adam":
             time.process_time_ns()-started,
         "checkpoint_bytes":len(serialized.encode()),
+        "exact_trained_model_checkpoint_SHA256":sha256(serialized.encode()).hexdigest(),
         "training_full_episode_public_state_cache_more_than_inference":True,
     }
 
@@ -172,6 +173,20 @@ def original_source_experiment(family,root):
         raise ValueError("NCI04_S4C1_ORIGINAL_NATIVE_COHORT_INCOMPLETE")
 
     model,train_info=train_native(train)
+    # Engineering-only byte-exact replay, SAME ALREADY CONSUMED source
+    # TRAINING observations. This duplicate is not an independent
+    # statistical sample and must not count as model training budget.
+    replay,engineering_replay_receipt=train_native(train)
+    training_replay_bit_exact=(
+        model.snapshot()==replay.snapshot()
+        and train_info["TRAINING_ONLY_selected_epoch"]==
+            engineering_replay_receipt["TRAINING_ONLY_selected_epoch"]
+        and train_info["source_native_training_first_last_best_Brier"]==
+            engineering_replay_receipt["source_native_training_first_last_best_Brier"])
+    if not training_replay_bit_exact:
+        raise ValueError("NCI04_S4C1_NATIVE_TRAIN_CHECKPOINT_NONDETERMINISTIC")
+    replay_extra_cpu_ns=engineering_replay_receipt[
+        "training_cpu_ns_full_episode_45_coefficient_Adam"]
     memoryless=Logistic(False,{"logistic_epochs":100,
                                "logistic_lr":.8,"logistic_l2":.0002})
     memoryless.fit(train)
@@ -236,6 +251,8 @@ def original_source_experiment(family,root):
         "original_source_held_public_event_digest":held_raw_digest,
         "original_source_held_seed_episode_receipts":custody_held,
         "native_original_Ygg45_training":train_info,
+        "byte_exact_repeat_training_checkpoint_pass":training_replay_bit_exact,
+        "extra_engineering_only_training_replay_cpu_ns":replay_extra_cpu_ns,
         "fully_training_qualified_conventional_recurrent": {
             "source_train_brier":qualified["source_train_Brier"],
             "initialization_selected_from_training_only":qualified["seed"],
