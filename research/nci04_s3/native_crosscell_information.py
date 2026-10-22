@@ -292,7 +292,7 @@ def main(source):
         ("DoorKeyEnv(size=8)",lambda:DoorKeyEnv(size=8,render_mode=None)),
         ("EmptyEnv(size=8)",lambda:EmptyEnv(size=8,render_mode=None))
     )
-    report={}
+    reports={}
     receipts=[]
     t0=time.process_time_ns()
     for family,ctor in factories:
