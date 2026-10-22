@@ -57,7 +57,13 @@ def audit(name,root,protocol):
     initial=model.snapshot()
     if sha(initial.encode())!=custody["original_native_initializer_sha"]:
         raise ValueError("MR34I2_SOURCE_INITIAL_MODEL_DRIFT")
+    pre_FD_gradient=list(model.analytic_bptt(native[0]))
+    pre_FD_hashes=[sha(g.tobytes()) for g in pre_FD_gradient]
+    pre_FD_weights=pair(model.params())
     finite_diff=model.source_gradient_finite_difference(native[0])
+    post_FD_weights=pair(model.params())
+    if pre_FD_weights!=post_FD_weights:
+        raise ValueError("MR34I2_FINITE_DIFFERENCE_CHANGED_NATIVE_WEIGHTS")
     moments1=[np.zeros_like(w) for w in model.params()]
     moments2=[np.zeros_like(w) for w in model.params()]
     traces=[]
@@ -76,6 +82,16 @@ def audit(name,root,protocol):
                     "raw_roles_actual":rawsha[1],
                     "raw_roles_expected":custody["original_first_gradient_8x3_sha"][name],
                     "model_initial_sha":sha(initial.encode()),
+                    "pre_FD_gradient_shared_sha":pre_FD_hashes[0],
+                    "pre_FD_gradient_roles_sha":pre_FD_hashes[1],
+                    "pre_FD_equals_expected":pre_FD_hashes==[
+                        custody["original_first_gradient_3x7_sha"][name],
+                        custody["original_first_gradient_8x3_sha"][name]],
+                    "weights_identical_before_after_FD":pre_FD_weights==post_FD_weights,
+                    "original_first_episode_current_tensor_sha":sha(b"".join(
+                        row[0].tobytes() for row in native[0])),
+                    "original_first_episode_label_tensor_sha":sha(b"".join(
+                        row[2].tobytes() for row in native[0])),
                     "unchanged_original_source_event_sha":source_digest}))
                 raise ValueError("MR34I2_ORIGINAL_FIRST_GRADIENT_DRIFT")
             reg=[g+(.0002*w if w.ndim==2 else 0.)
