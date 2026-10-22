@@ -1,0 +1,44 @@
+{
+  "schema": "nci04.mr34i7.portable_nonlearning_sigmoid_candidate.v1",
+  "exact_predecessor_MR34I6_SHA": "cb8f61f54b49663962de59c36dbd62a7eb33e08e",
+  "exact_original_S4C1_SHA": "8e1561eb1a542e21307bac669c42435cf48e59bd",
+  "exact_original_authored_sources": {
+    "FaramaMiniGridDoorKey8": "7f5853792ea7f04f75614661006d87fcf949f26d",
+    "DeepMindPycolabApprehend": "6504c8065dd5322438f23a2a9026649904f3322a"
+  },
+  "source_inputs": "Reuse MR34I4 code and its exact 490 already-consumed original frozen development-only binary64 inputs: 42 edge neighbors, 128 seeded and two original source families each 160 first-public preaction logits. Validate identical MR34I4 input SHA before candidate outcomes.",
+  "exact_source_input_SHA256": {
+    "canonical_frozen_boundaries": "d6e87d59c48e7a464f564ecaeb7c7f8d5282755fa67e9a9725617f7f9ea21718",
+    "canonical_seeded_binary64_inputs": "1012ca50ca7f8a14444535c922d88a91ece8f0362a1979b73d08aff146d22b9b",
+    "FaramaMiniGridDoorKey8": "ba501812452b529cf35d4aaa176f9d5a0b5cfbb57a388d67c49dfbc547109486",
+    "DeepMindPycolabApprehend": "23d9db17d29ed9646afac1b34000d0be320c2fa50ca424db2f85f1829be11bd7"
+  },
+  "candidate_kernel": {
+    "id": "decimal48_source_neutral_nonlearning_sigmoid",
+    "semantics": "Input float64 u, clamp to [-35,35] with exact binary64 clipping; Decimal.from_float(exact clipped binary64), decimal context prec=48 round_half_even; p = 1 / (1 + exp(-u)) with Decimal.exp, then float(p) nearest IEEE754 binary64. Stable original order, 8-element predictions. No use of original model private features.",
+    "initial_state": "none",
+    "parameter_changes": false,
+    "exact_reference": "Same Decimal algorithm at higher 80-digit context with exact same clipped binary64 input; an internal higher-precision comparison, NOT an independent mathematical proof of correctly rounded exp.",
+    "separate_mathematical_baseline": "Original unmodified numpy 8-wide 1/(1+np.exp(-np.clip(u,-35,35))) evaluated in fresh fixed NumPy1.26.4 Python3.11 process on same input."
+  },
+  "precommitted_acceptance": {
+    "all_source_jobs": "Windows x2, Ubuntu x2 all PASS exact source/clean Git, original 490 input SHA and emitted unrounded per-cohort binary64 stage outputs",
+    "cross_platform_output": "Candidate Decimal48 must be bit-exact across all 4 jobs, each candidate cohort, all 490 finite positive outputs",
+    "numerical_accuracy": "For all 490 exact same inputs, Decimal48 candidate <=1 integer binary64 ULP from Decimal80 reference; non-monotonicity on sorted fixed edge inputs prohibited; record all mismatch counts / first differing index/bytes vs original and oracle",
+    "measured_cost": "Three passes of all source outputs for each kernel warmup, then 16 repeated all-490 cases per kernel in same process process_time_ns; original and candidate model-independent computation CPU compared; candidate median total CPU must be <= 2000x NumPy original median per same runner, record cost and per source-family time; OS peak RSS measured, no absolute cross-run hardware speedup claim",
+    "stability": "The independently frozen higher-precision Decimal80 reference also bit-exact across four jobs",
+    "fail_closed": "Any source logit identity drift, missing CPU/RSS or candidate/oracle mismatch >1ULP, or runtime ratio >2000x is NO_GO. No adjustment after observed result."
+  },
+  "source_original_git_clean": true,
+  "no_original_model_patch": true,
+  "no_weight_update_or_adam_training": true,
+  "no_new_sci_source_seed": true,
+  "no_protected_held_source_task": true,
+  "no_PR_merge": true,
+  "no_paid_api": true,
+  "one_python_process_per_runner": true,
+  "no_S4C1_portable_checkpoint_claim": true,
+  "no_native_cognitive_transfer_claim": true,
+  "frozen_future_gate": "Only after bounded nonlearning kernel GO, independently freeze model-semantic integration and full S4C1 retraining across OS with competent conventional resource-matched controls. Do not silently replace original source learner or relabel previous failures.",
+  "G29_full_windows_linux_acceptance": "BLOCKED"
+}
