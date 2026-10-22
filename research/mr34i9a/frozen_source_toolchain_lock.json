@@ -1,0 +1,40 @@
+{
+  "core_math": {
+    "commit": "74fcd1094a316164c94481f40f5c9658439bee63",
+    "git_blob_sha": "196e71ff8f00ab9df0802f3661cbe845ff8e118c",
+    "license": "MIT source comment; license must remain intact",
+    "path": "src/binary64/exp/exp.c",
+    "source_mirror": "Cactus-proj/core-math",
+    "symbol": "cr_exp",
+    "upstream_authentication": "MIRROR_ONLY_NOT_VERIFIED_AGAINST_GITLAB"
+  },
+  "governance": "Not a dispatch, candidate acceptance, repo mutation, source qualification receipt, or scientific authority.",
+  "schema": "yggdrasil.mr34i9a.toolchain_source_lock.proposal.v1",
+  "status": "ADVISORY_TOOLCHAIN_PIN_NOT_CHECKED_IN_NOT_EXECUTED",
+  "zig": {
+    "build_backend": "Invoke pinned zig cc binary directly; any system cc/gcc/clang substitution is a fail-closed mismatch",
+    "compile_profile_proposal": {
+      "C_ABI": "void candidate_sigmoid8(const double input_u[8], double output_p[8])",
+      "compiler_contract": "-ffp-contract=off; direct explicit __builtin_fma within pinned third-party source remains as authored",
+      "ieee_rounding": "Require FE_TONEAREST during every call; compilation must preserve required fenv semantics; reject if target compiler cannot enforce/verify semantics",
+      "licenses": "Preserve exact CORE-MATH MIT notice in original source and distributed binary attribution",
+      "loader": "Python ctypes loading absolute SHA-identified .dll/.so with signature/abi checks; no fallback to NumPy exp if library load fails",
+      "optimization": "-O2",
+      "source_origin": "Compile only exact vendored exp.c blob and the separately authored eight-lane wrapper, no mutable package-manager download",
+      "unsafe_fast_math": "prohibited; -fno-fast-math"
+    },
+    "linux_x86_64": {
+      "sha256": "d45312e61ebcc48032b77bc4cf7fd6915c11fa16e4aad116b66c9468211230ea",
+      "url": "https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz"
+    },
+    "name": "Zig (bundled zig cc / Clang+LLD)",
+    "official_manifest": "https://ziglang.org/download/index.json",
+    "resolved_runtime_identity_at_qualification": "Record both binary archive sha256, zig version, zig cc -v, generated shared-library hash, compiler options, target CPU/ABI, shared libs, OS image and Python/NumPy wheels; no test completion without these",
+    "source_of_hashes": "Official Zig 0.13.0 download manifest; listed hashes independently inspected, archive bytes NOT yet independently downloaded or authenticated",
+    "version": "0.13.0",
+    "windows_x86_64": {
+      "sha256": "d859994725ef9402381e557c60bb57497215682e355204d754ee3df75ee3c158",
+      "url": "https://ziglang.org/download/0.13.0/zig-windows-x86_64-0.13.0.zip"
+    }
+  }
+}

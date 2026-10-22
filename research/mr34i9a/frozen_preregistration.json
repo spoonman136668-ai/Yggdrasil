@@ -1,0 +1,111 @@
+{
+  "candidate_definition": {
+    "behavior": "For each of exactly eight original float64 preactivations: finite guard, binary64 clamp to [-35,35], correctly rounded candidate cr_exp(-u), binary64 denominator 1.0 + result, and binary64 numerator reciprocal 1.0 / denominator. Reproduce original operation order and record every stage's uint64 IEEE-754 bytes.",
+    "environment": "Declare rounding mode FE_TONEAREST, 64-bit binary64 intermediates, explicit FMA/FP contraction behavior, no fast-math, no architecture-adaptive source alteration and no silent runtime fallback.",
+    "numeric_oracle": "Original MR34I4 Decimal80 plus MR34I8 Decimal120 outputs; compare raw binary64 representation, not rounded printed decimals.",
+    "original_control": "Original NumPy p=1./(1.+np.exp(-np.clip(u,-35.,35.))) eight-wide unchanged; preserve its exact execution context.",
+    "public_abi": "void candidate_sigmoid8(const double input_u[8], double output_p[8]);",
+    "source_mutation": "None to original S4C1, Farama, Pycolab, installed runtime, 45 weights, BPTT, Adam or native snapshots."
+  },
+  "frozen_proposed_acceptance": {
+    "cpu": "For every worker the median actual per-eight-wide-call inclusive process CPU for candidate <= original NumPy under matched five-pair ABBA comparisons; any regression means RESOURCE_NO_GO.",
+    "memory": "Matched candidate process-tree peak resident bytes <= original baseline process-tree peak resident bytes; any regression means RESOURCE_NO_GO; retain actual source actor and native learner costs separately.",
+    "numeric": "All 490 candidate binary64 sigmoid outputs are bitwise equal across the four workers; each output within <=1 ULP of Decimal120 reference; original NumPy disagreements must be reported without correction.",
+    "repeat_control": "One fixed four-worker qualification; an infrastructure-failed run may be independently diagnosed, but never omit a completed unfavorable result or choose the best runner.",
+    "semantic_scope": "ENGINEERING_KERNEL_ONLY. Never admit S4C1 40-epoch trained checkpoint, unfamiliar transfer or protected scientific first-use based on the kernel.",
+    "source": "All four workers' model and external source exact immutable identities PASS; all 490 original input values match the previously frozen source-derived bytes."
+  },
+  "gate_disposition": {
+    "archive_download_sha_verification": "NOT_PERFORMED",
+    "candidate_wrapper": "NOT_IMPLEMENTED",
+    "final_full_regression": "NOT_RUN",
+    "promotion": "NOT_AUTHORIZED",
+    "science_first_use": "BLOCKED",
+    "source_only_protocol_git_commit": "NOT_PERFORMED",
+    "source_only_protocol_git_tree_identity": "NOT_ASSIGNED",
+    "toolchain_metadata_pin": "COMPLETE_OFFICIAL_MANIFEST_METADATA_ONLY",
+    "windows_linux_qualification": "NOT_RUN"
+  },
+  "intent": "One bounded development-only falsification of a compiled deterministic exponential-based sigmoid kernel against the original unchanged NumPy eight-wide sigmoid, before any 45-weight S4C1 training or protected third-source scientific evaluation.",
+  "measurement": {
+    "bench_interface": "Call the candidate through the actual proposed Python/C ABI on identical eight-wide arrays; do not benchmark one bulk C call against repeated eight-wide NumPy calls if actual integration would incur per-call overhead.",
+    "ci_matrix": "windows-latest x2, ubuntu-latest x2; separately log exact resolved runner image and toolchain identity",
+    "microbenchmark": "3 untimed warmups; 256 timed repetitions of the exact four input cohorts in fixed source order, retaining cohort count and total 490 values; baseline/candidate in balanced ABBA order with five full paired rounds per host",
+    "preflight": "Clean exact commit/tree SHA for all sources and strictly identical original input SHA per frozen cohort; reject any upstream actor/logit drift before benchmarking",
+    "repeatability": "Recompute identical original input and candidate output raw hashes within each worker; confirm identical bits across all four jobs and within same OS replicas.",
+    "resources": "Measure both matched isolated process configurations (original-only and candidate-loaded), CPU, wall, process-tree peak resident memory and candidate .so/.dll bytes with source collection cost clearly separated. Include communication/FFI costs for actual proposed interface.",
+    "timing": "Use aggregate process CPU ns for each full paired round; preserve individual raw records, balanced-order medians, and aggregate wall ns as secondary metric. Reject zero aggregate CPU durations or corrupt runs without selecting a favorable rerun."
+  },
+  "next_if_fail": "Close current high-precision sigmoid replacement search as a resource or numerical negative; continue causal-information, local specialization and transferable-memory research without opening unfamiliar scientific first-use.",
+  "next_if_pass": "A SEPARATE preregistered MR34I10 tests original 45-parameter S4C1 forward/backward, first-gradient parity and cross-OS 40-epoch final checkpoint byte identity with equally informed trained controls, all-in CPU/RSS/storage and unchanged first-use custody.",
+  "original_development_inputs": {
+    "canonical_frozen_boundaries": 42,
+    "canonical_seeded_binary64_inputs": 128,
+    "farama_expected_logit_sha256": "ba501812452b529cf35d4aaa176f9d5a0b5cfbb57a388d67c49dfbc547109486",
+    "farama_original_training_logits": 160,
+    "first_use": "Previously consumed original S4C1 development TRAINING episodes only; no held or protected independent source.",
+    "pycolab_expected_logit_sha256": "23d9db17d29ed9646afac1b34000d0be320c2fa50ca424db2f85f1829be11bd7",
+    "pycolab_original_training_logits": 160,
+    "total": 490
+  },
+  "preimplementation_acceptance_notes": {
+    "bench_cpu": "Require positive aggregate process CPU over matched trials; user-space FFI and library loading are counted in relevant operation costs",
+    "freeze_boundary": "First authorized git commit contains only this reviewed protocol and independent toolchain lock. Implementation, generated binary and workflow MUST occur in later bounded commits.",
+    "memory": "Strict no-increase RSS budget is potentially difficult for a dynamic library: retain it exactly as preregistered, report FAIL if exceeded rather than retroactively relaxing.",
+    "numerical_environment": "Check FE_TONEAREST at runtime, finite inputs, no altered clipping/order, no silent fallback, and non-overlapping input/output buffers unless explicitly supported by ABI",
+    "reference_semantics": "cr_exp correctly rounded exp on binary64 is not a proof that the composed 1/(1+exp(-u)) equals the high-precision sigmoid after intermediate rounding. Keep <=1 ULP frozen tolerance.",
+    "separate_integration": "Original G29 indexed-file-set fail-closed remains a separate independent integration gate even when the kernel microbenchmark passes.",
+    "source-firstuse": "Only original consumed development input suite; do not open independent third-source or any protected held test.",
+    "stop_policy": "A compiler incompatibility or cross-OS output mismatch is a failed bounded gate unless demonstrably mechanical pre-measurement failure qualifies for separately frozen repair; never alter numerical acceptance post-result."
+  },
+  "required_workflow": "Through existing authorized CKB-plane engineering/qualification authority only: source-only protocol first commit -> clean exact source qualification checkout -> bounded implementation -> focused tests -> one full final regression -> build -> guarded engineering acceptance if separately authorized. No direct repo mutation or run was performed by this chat.",
+  "schema": "yggdrasil.mr34i9a.fast_compiled_binary64_kernel_preregistration.proposal.v2",
+  "source_custody": {
+    "audit_predecessor_project": "spoonman136668-ai/Yggdrasil",
+    "candidate_exp_blob": "196e71ff8f00ab9df0802f3661cbe845ff8e118c",
+    "candidate_exp_path": "src/binary64/exp/exp.c",
+    "candidate_license": "MIT as included in source; retain license and notice in any implementation",
+    "candidate_mirror_commit": "74fcd1094a316164c94481f40f5c9658439bee63",
+    "candidate_symbol": "double cr_exp(double x) confirmed in pinned GitHub source exp.c",
+    "candidate_vendor": "Third-party GitHub mirror Cactus-proj/core-math; exact mirror bytes pinned, but identity to upstream GitLab not independently established",
+    "compiled_wrapper_source_sha256": "TO_BE_DERIVED_FROM_EXACT_WRAPPER_SOURCE_AFTER_SOURCE_ONLY_PROTOCOL_COMMIT; DO_NOT_PREDICT_HASH",
+    "compiler_toolchain": {
+      "build_backend": "Invoke pinned zig cc binary directly; any system cc/gcc/clang substitution is a fail-closed mismatch",
+      "compile_profile_proposal": {
+        "C_ABI": "void candidate_sigmoid8(const double input_u[8], double output_p[8])",
+        "compiler_contract": "-ffp-contract=off; direct explicit __builtin_fma within pinned third-party source remains as authored",
+        "ieee_rounding": "Require FE_TONEAREST during every call; compilation must preserve required fenv semantics; reject if target compiler cannot enforce/verify semantics",
+        "licenses": "Preserve exact CORE-MATH MIT notice in original source and distributed binary attribution",
+        "loader": "Python ctypes loading absolute SHA-identified .dll/.so with signature/abi checks; no fallback to NumPy exp if library load fails",
+        "optimization": "-O2",
+        "source_origin": "Compile only exact vendored exp.c blob and the separately authored eight-lane wrapper, no mutable package-manager download",
+        "unsafe_fast_math": "prohibited; -fno-fast-math"
+      },
+      "linux_x86_64": {
+        "sha256": "d45312e61ebcc48032b77bc4cf7fd6915c11fa16e4aad116b66c9468211230ea",
+        "url": "https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz"
+      },
+      "name": "Zig (bundled zig cc / Clang+LLD)",
+      "official_manifest": "https://ziglang.org/download/index.json",
+      "resolved_runtime_identity_at_qualification": "Record both binary archive sha256, zig version, zig cc -v, generated shared-library hash, compiler options, target CPU/ABI, shared libs, OS image and Python/NumPy wheels; no test completion without these",
+      "source_of_hashes": "Official Zig 0.13.0 download manifest; listed hashes independently inspected, archive bytes NOT yet independently downloaded or authenticated",
+      "version": "0.13.0",
+      "windows_x86_64": {
+        "sha256": "d859994725ef9402381e557c60bb57497215682e355204d754ee3df75ee3c158",
+        "url": "https://ziglang.org/download/0.13.0/zig-windows-x86_64-0.13.0.zip"
+      }
+    },
+    "previous_frozen_protocol_blob": "5858b8be1e851ef6adcdc105bbe102d2a4b7cdab",
+    "previous_numeric_probe_pr": 413,
+    "previous_probe_blob": "02fc452b26e21c4bc7ad0b3e6edf9371115d968e",
+    "previous_probe_exact_head": "54c306895388ae1d4c725661ce6d497967dad811",
+    "runtime_and_dependency_identity": "Capture pinned Python 3.11, NumPy 1.26.4 and all DLL/shared-library/compilation flags. Reject unexpected compiler, CPU model, or toolchain changes rather than normalizing outputs.",
+    "unchanged_deepmind_pycolab_commit": "6504c8065dd5322438f23a2a9026649904f3322a",
+    "unchanged_farama_minigrid_commit": "7f5853792ea7f04f75614661006d87fcf949f26d",
+    "unchanged_native_s4c1_commit": "8e1561eb1a542e21307bac669c42435cf48e59bd",
+    "unchanged_native_s4c1_model_blob": "32d090785f7f3b95c132ebba5ca965b3ece2bc95",
+    "upstream_provenance_warning": "GitHub mirror commit/blob verified from connected GitHub repository; upstream GitLab binary/source equivalence not independently authenticated. Preserve mirror classification, do not claim upstream identity."
+  },
+  "status": "SOURCE_ONLY_PREREGISTRATION_READY_FOR_AUTHORIZED_REVIEW_NOT_COMMITTED_NOT_FROZEN_NOT_RUN",
+  "stop_rule": "Terminate at first identity drift, disallowed source event, provenance gap, candidate error, cross-OS hash disagreement, CPU/RSS regression, or G29 full project acceptance failure. Preserve negative result and avoid further numeric sweeps under same protocol."
+}
