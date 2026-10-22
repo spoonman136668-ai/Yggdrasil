@@ -1,0 +1,71 @@
+name: ITD-01 R7 Yggdrasil native local-cell cognition DEV
+on:
+  push:
+    branches: [research/itd01-r7-native-yggdrasil-cellular-20261022]
+permissions:
+  contents: read
+concurrency:
+  group: itd01-r7-yggdrasil-native-20261022
+  cancel-in-progress: false
+jobs:
+  independent-local-cell-public-learning:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 22
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 22
+          clean: true
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Source-only prereg born before local learner
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 9b069040feeddd9f509ab2c8ac9656d0a2c07d77 HEAD
+          git show --format= --name-only 00d83b8e64bcb8c4ceea8fbcd9ab57b1f6dd8350 | python -B -c 'import sys; p=sys.stdin.read().splitlines(); assert p==["research/native/itd01/r7/PREREG.md"],p'
+          git diff --name-only 9b069040feeddd9f509ab2c8ac9656d0a2c07d77 HEAD | python -B -c 'import sys; p=set(sys.stdin.read().splitlines()); allowed={"research/native/itd01/r7/PREREG.md","research/native/itd01/r7/native_cells.py","research/native/itd01/r7/test_native_cells.py","research/native/itd01/r7/report.py",".github/workflows/qualify-itd01-r7-native.yml"}; assert p==allowed,(p,allowed)'
+          echo ITD01_YGG_R7_PREREG_FIRST=PASS
+      - name: Focused authentic local Hebbian plasticity and cold-memory tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd01/r7 -p 'test_native_cells.py' -v > itd01_ygg_native_tests.log 2>&1
+          cat itd01_ygg_native_tests.log
+          echo ITD01_YGG_NATIVE_FOCUSED=PASS
+      - name: Original three-seed true local state train score ablations
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/native/itd01/r7/report.py > itd01_ygg_native_result.json
+          python -B -c 'import json; x=json.load(open("itd01_ygg_native_result.json")); assert len(x["results"])==3 and not x["original_scientific_first_use"] and all(t["delayed_public_feedback_updates"]==640 for t in x["results"]); print("ITD01_YGG_NATIVE_COHORTS=PASS")'
+      - name: One existing Yggdrasil public regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py'
+          echo ITD01_YGG_EXISTING_REGRESSION=PASS
+      - name: Clean source and no original science authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          git status --porcelain --untracked-files=all | python -B -c 'import sys; x=sys.stdin.read().splitlines(); allowed={"?? itd01_ygg_native_tests.log","?? itd01_ygg_native_result.json"}; assert all(r in allowed for r in x),x'
+          echo ITD01_YGG_ORIGINAL_FIRST_USE=BLOCKED
+          echo ITD01_YGG_NATIVE_OWN_CODE_ONLY=PASS
+      - name: Preserve first-look learning results and negative evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: itd01-r7-yggdrasil-native-${{ matrix.os }}
+          path: |
+            itd01_ygg_native_tests.log
+            itd01_ygg_native_result.json
+          if-no-files-found: ignore
