@@ -1,0 +1,83 @@
+{
+  "schema": "yggdrasil.nci04.s4c0.independent-conventional-recurrent-adequacy.dev.v1",
+  "parent_exact_mr34f_head": "53fcafe5db83fbde30771cbd0a25f06d8af681b9",
+  "original_engines": {
+    "FaramaMiniGridDoorKey8": "7f5853792ea7f04f75614661006d87fcf949f26d",
+    "DeepMindPycolabApprehend": "6504c8065dd5322438f23a2a9026649904f3322a"
+  },
+  "past_MR34F_held_DEV_results": "Farama recurrent Brier 0.197944 worse than memoryless 0.059703; Pycolab recurrent 0.146287 vs memoryless 0.149181; prior history logistic gains 0.001855 Farama, 0.019811 Pycolab and strict original GO false",
+  "new_source_train_only_development_reset_seeds": [
+    1613,
+    1619,
+    1621,
+    1627,
+    1637,
+    1657,
+    1663,
+    1667,
+    1669,
+    1693,
+    1697,
+    1699,
+    1709,
+    1721,
+    1723,
+    1733,
+    1741,
+    1747,
+    1753,
+    1759
+  ],
+  "new_held_development_original_reset_seeds": [
+    1777,
+    1783,
+    1787,
+    1789,
+    1801,
+    1811,
+    1823,
+    1831
+  ],
+  "native_action_cap": 96,
+  "native_policy": "unchanged original MR34F source-blind seeded random public action RNG, no hidden world/reward/mission or target to actor",
+  "common_original_public_input": "exact original MR34F 23 values = 16 source-public byte-segment means/nonzero proportions + 7 announced native action onehot, original 8 NEXT public segment-change binary targets",
+  "competitors": [
+    "MR34F 23-input current-only trained logistic, 100 epochs fixed, identical original source data",
+    "MR34F symbolic-history bounded 128 context controls, same train data",
+    "MR34F Bayesian bounded 128 context controls, same train data",
+    "23x8 input, 8 state, 8 target conventional tanh recurrent (original MR34F architecture) trained with analytic full-episode cross-entropy BPTT and bias-corrected per-episode Adam optimizer"
+  ],
+  "recurrent_precommitted_optimizer": {
+    "train_only_epochs_max": 65,
+    "lr": 0.03,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "epsilon": 1e-8,
+    "l2": 0.0002,
+    "global_norm_clip": 5,
+    "restart_seeds": [
+      17,
+      31
+    ],
+    "early_stop_rule": "after each full pass over frozen training episodes, compare source TRAINING Brier only. First epoch for which recurrent training Brier <= the already trained same-public memoryless logistic training Brier +0.001; otherwise 65 epochs then choose lowest TRAINING-Brier checkpoint among all epochs/restarts. Never use held development for selection."
+  },
+  "gradient_integrity": "Central finite difference on genuine first source train native episode, recurrent cross-entropy analytic BPTT full episode, epsilon=1e-5; evaluate sampled coordinates wx[0,0], wx[7,2], wh[2,2], wh[0,6], wy[3,1], bh[3], by[7], with max abs analytic-vs-finite difference <=1e-5. No data/weights modified by check.",
+  "science_go_required": [
+    "Central gradient fidelity PASS on both native engines and Windows/Linux",
+    "Recurrent training Brier <= fully trained current-only logistic training Brier +0.001 with train-only chosen checkpoint on both source engines",
+    "Frozen held-dev recurrent preaction Brier no worse than trained memoryless on BOTH engines",
+    "At least five of eight distinct held-dev source reset seed clusters are not worse than trained memoryless on each engine",
+    "No held-development model/optimizer updates and no hidden-source input",
+    "All original public-action source episode hashes identical across independent Windows x2 Linux x2",
+    "End-to-end original source + model CPU/OS peak RSS/model bytes reported, but complete equal-total-model cost is NOT established"
+  ],
+  "strong_control_limit": "This verifies trainability of one conventional recurrent architecture; it does not establish matched 45-coefficient all-in total costs, convergence of all alternatives, truly causal public history, or proof of independent cognitive transfer.",
+  "not_existing_MR34F_result_revision": true,
+  "no_new_ygg_model_trained": true,
+  "no_protected_scientific_first_use": true,
+  "no_outcome_based_seeds_or_training_search": true,
+  "source_atlas_and_full_regression": "G29 STILL FAIL-CLOSED",
+  "scientific_admission": false
+}
