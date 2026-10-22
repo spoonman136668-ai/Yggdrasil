@@ -1,0 +1,68 @@
+{
+  "schema": "yggdrasil.mr34i7.paired_same_host_numpy_avx512f_nonlearning.v1",
+  "experiment": "MR34I7 — same-runner fresh-process AVX512F disable, original NumPy kernel forensic comparison",
+  "exact_MR34I6_parent": "cb8f61f54b49663962de59c36dbd62a7eb33e08e",
+  "original_MR34I4_kernel_blob_sha": "79df5303a4278d65363d8ab17a5d832c576b8722",
+  "original_MR34I4_protocol_blob_sha": "ea88e1f1110de08973d3868b00d1f2574a16f580",
+  "unchanged_original_S4C1_model": "8e1561eb1a542e21307bac669c42435cf48e59bd",
+  "unchanged_original_sources": {
+    "FaramaMiniGridDoorKey8": "7f5853792ea7f04f75614661006d87fcf949f26d",
+    "DeepMindPycolabApprehend": "6504c8065dd5322438f23a2a9026649904f3322a"
+  },
+  "original_source_public_first_logit_sha": {
+    "FaramaMiniGridDoorKey8": "ba501812452b529cf35d4aaa176f9d5a0b5cfbb57a388d67c49dfbc547109486",
+    "DeepMindPycolabApprehend": "23d9db17d29ed9646afac1b34000d0be320c2fa50ca424db2f85f1829be11bd7"
+  },
+  "strictly_reused_source_cohorts": {
+    "frozen_boundary_neighbors": 42,
+    "frozen_Python_seed341234_random": 128,
+    "FaramaMiniGridDoorKey8_previous_training_only_first_logits": 160,
+    "DeepMindPycolabApprehend_previous_training_only_first_logits": 160,
+    "total_original_binary64_inputs": 490,
+    "third_source_untouched": true,
+    "held_source_untouched": true
+  },
+  "controlled_intervention": {
+    "os_repeats": {
+      "ubuntu-latest": 2,
+      "windows-latest": 2
+    },
+    "per_identical_GitHub_runner": [
+      "default",
+      "disable_avx512f"
+    ],
+    "implementation": "Two distinct original Python3.11/NumPy1.26.4 processes sequentially on the SAME allocated physical GitHub job; default NPY_DISABLE_CPU_FEATURES UNSET; disabled environment NPY_DISABLE_CPU_FEATURES=AVX512F before interpreter starts.",
+    "full_original_MR34I4_kernel_reexecution": true,
+    "original_vector_exp_and_sigmoid_raw_IEEE754_bytes": true,
+    "original_scalar_exp_sigmoid_and_math_exp_reference": true,
+    "80_digit_Decimal_reference": true,
+    "actual_Numpy_Dispatch_and_CPUID": true,
+    "host_hardware_identity_recorded": true,
+    "native_source_CPU_peak_RSS": true,
+    "no_new_trained_episode_logits": true,
+    "no_source_or_model_mutations": true
+  },
+  "fail_closed_checks": [
+    "Exact original Git and blob identity, all three original checkouts clean",
+    "First created protocol commit must precede execution workflow, and contain no workflow/code",
+    "Both modes see identical 490 original binary64 inputs and reproduce MR34I4 first-public-logit original source hashes",
+    "Disabled arm must have numpy runtime __cpu_features__.AVX512F false; if already false in default mark intervention NOT_ELIGIBLE, not a positive",
+    "All four jobs have both fresh-interpreter original kernel receipts; paired separate-process CPU platform identity must match",
+    "Any changed upstream original source/model/feature/held identity blocks numeric-portability claims",
+    "An AVX512F cause requires a true available->disabled feature transition on a same-host pair AND corresponding exp difference AND reproducible disabled outputs cross-host; mere correlation or green jobs is not causal evidence",
+    "Preserve prior results, no rounding to create equality and no model numerical semantics change"
+  ],
+  "decision_rules": {
+    "NO_INTERVENTION": "No same-host runner had AVX512F enabled in default and successfully disabled in the second process; diagnostic executed but causal AVX512F test NOT ELIGIBLE",
+    "DISABLE_NO_EFFECT": "At least one eligible same-host pair; output exp/sigmoid bytes unchanged in that pair; hypothesized AVX512F flag alone not supported for these frozen values",
+    "DISABLE_EFFECT_UNPORTABLE": "Eligible pair shows altered bytes but disabled-mode across 4 hosts not identical on all 490 source inputs; not portable",
+    "AVX512F_DISPATCH_POSSIBLE": "Eligible pair changes result and full disabled-mode 4-host results identical, including Decimal; evidence consistent with AVX512F dispatch role, but unique CPU instruction cause not proven",
+    "SOURCE_IDENTITY_FAIL": "Original source/model or input SHA changed; reject any math portability result"
+  },
+  "scientific_claims": "NONE; candidate untrained first-public-logit numeric diagnostic, not mid-trained original divergent u, not checkpoint qualification or unfamiliar-task transfer",
+  "scientific_first_use": false,
+  "portable_original_trained_checkpoint": "NO_GO",
+  "G29_and_full_Windows_Linux_regression": "FAIL_CLOSED",
+  "PR_governance": "DRAFT_UNMERGED",
+  "user_cost_constraint": "No paid API"
+}
