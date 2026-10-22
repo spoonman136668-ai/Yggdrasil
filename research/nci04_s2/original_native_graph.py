@@ -44,6 +44,43 @@ ROLE_PERM=(0,2,4,6,1,3,5,7)
 N=8
 
 
+class TopologyCounterfactual(LocalPredictiveMessages45):
+    """Preserve exact frozen S1 weights while allowing source-blind rewires.
+
+    S1 correctly rejects any changed topology in its own native restore
+    contract. The S2 *evaluation-only* adapter restores the S1 native
+    weights/state at their ORIGINAL topology, then reapplies the frozen
+    counterfactual graph and verifies the entire canonical snapshot.
+    It does not weaken the S1 production/native acceptance guard.
+    """
+    @classmethod
+    def restore(cls,payload):
+        obj=json.loads(payload)
+        if (type(obj) is not dict or "native" not in obj or
+            "neighbors" not in obj["native"]):
+            raise ValueError("NCI04_S2_NOT_A_NATIVE_S1_SNAPSHOT")
+        original=obj["native"]["neighbors"]
+        # All graphs are separately checked against their preregistered
+        # forms, not arbitrary source-supplied network graphs.
+        allowed=[graph(k) for k in (
+            "ring","reverse_ring","skip_two","skip_three",
+            "permuted_graph")]
+        real=tuple(tuple(n) for n in original)
+        if real not in allowed:
+            raise ValueError("NCI04_S2_UNFROZEN_GRAPH_IN_SNAPSHOT")
+        obj["native"]["neighbors"]=graph("ring")
+        canonical=json.dumps(obj,sort_keys=True,separators=(",",":"))
+        standard=LocalPredictiveMessages45.restore(canonical)
+        adapted=cls()
+        adapted.runtime=standard.runtime
+        adapted.runtime.neighbors=real
+        adapted.state=standard.state
+        adapted.trace=standard.trace
+        if adapted.snapshot()!=payload:
+            raise ValueError("NCI04_S2_NATIVE_GRAPH_SNAPSHOT_DRIFT")
+        return adapted
+
+
 def protocol_verified(source):
     p=json.loads(CONTRACT.read_text(encoding="utf-8"))
     if (p["schema"]!=SCHEMA or
@@ -81,14 +118,14 @@ def graph(name):
 def counterfactual_models(frozen):
     graph_models={}
     for name in GRAPH:
-        m=LocalPredictiveMessages45.restore(frozen)
+        m=TopologyCounterfactual.restore(frozen)
         m.runtime.neighbors=graph(name)
         # Round-trip proves all original 45 weights and the eight
         # states are still valid under the altered exact graph.
-        if LocalPredictiveMessages45.restore(m.snapshot()).snapshot()!=m.snapshot():
+        if TopologyCounterfactual.restore(m.snapshot()).snapshot()!=m.snapshot():
             raise ValueError("NCI04_S2_GRAPH_RESTORE_NOT_CANONICAL")
         graph_models[name]=m
-    m=LocalPredictiveMessages45.restore(frozen)
+    m=TopologyCounterfactual.restore(frozen)
     roles=[r[:] for r in m.runtime.core.roles]
     m.runtime.core.roles=[roles[i][:] for i in ROLE_PERM]
     graph_models["roles_permuted"]=m
@@ -175,7 +212,7 @@ def single_episode(factory,family,seed,graph_models,baseline_frozen,receipt):
                     raise ValueError("NCI04_S2_NATIVE_SENSOR_RESTART_DRIFT")
                 for name,m in list(graph_models.items()):
                     state=m.snapshot()
-                    graph_models[name]=LocalPredictiveMessages45.restore(state)
+                    graph_models[name]=TopologyCounterfactual.restore(state)
                     if graph_models[name].snapshot()!=state:
                         raise ValueError("NCI04_S2_NATIVE_GRAPH_COLD_RESTART_FAIL")
                 receipt["native_graph_restart_checks"]+=len(graph_models)
