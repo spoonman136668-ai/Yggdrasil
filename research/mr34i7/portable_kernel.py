@@ -181,6 +181,7 @@ def main(s4c1,farama,pycolab):
         ["git","-C",str(project),"rev-parse","HEAD:research/mr34i4/kernel_probe.py"],text=True).strip()
     if prior!=current:
         raise ValueError("MR34I7_FROZEN_SOURCE_COHORT_GENERATION_CODE_MODIFIED")
+    sys.path.insert(0,str(project))
     orig=check_git(s4c1,ORIGINAL_S4C1)
     source_paths={"FaramaMiniGridDoorKey8":check_git(farama,ORIGINAL_SOURCES["FaramaMiniGridDoorKey8"]),
                  "DeepMindPycolabApprehend":check_git(pycolab,ORIGINAL_SOURCES["DeepMindPycolabApprehend"])}
