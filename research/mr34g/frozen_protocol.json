@@ -1,0 +1,65 @@
+{
+  "schema": "yggdrasil.mr34g.train_only_conventional_recurrence_adequacy.v1",
+  "exact_prior_mr34f_sha": "df842b5857efd1821d2712b4adb49b79c1d8db59",
+  "original_source_sha": {
+    "FaramaMiniGridDoorKey8": "7f5853792ea7f04f75614661006d87fcf949f26d",
+    "DeepMindPycolabApprehend": "6504c8065dd5322438f23a2a9026649904f3322a"
+  },
+  "new_training_only_development_native_reset_seeds": [
+    1613,
+    1619,
+    1621,
+    1627,
+    1637,
+    1657,
+    1663,
+    1667,
+    1669,
+    1693,
+    1697,
+    1699,
+    1709,
+    1721,
+    1723,
+    1733,
+    1741,
+    1747,
+    1753,
+    1759
+  ],
+  "source_native_action_limit": 96,
+  "source_policy": "Original MR34F public-blind random.Random(1000003*seed+337).randrange(source original action count). No private inputs, source code remains unchanged.",
+  "canonical_original_public_features": "Exactly frozen MR34F 23-value original public 16 per-eight-slice mean/nonzero and 7 chosen-action onehot, eight original next-change-bit targets.",
+  "conventional_architecture": "Unchanged original MR34F 23-input tanh 8-state recurrent, original 8-bin sigmoid output, identical coefficient initialization seed and source training episodes. The only difference is independently preregistered optimizer and controlled training adequacy.",
+  "controls": [
+    "Full-batch regularized 23-input current-only logistic 100 fixed epochs, same training data, original MR34F code",
+    "Original MR34F recurrent SGD 24 epochs and identical source original training, frozen optimizer negative reference",
+    "New correctly differentiated one-episode BPTT with fixed Adam optimizer, 192 complete training epochs, learning rate 0.01, beta1 0.9, beta2 0.999, eps 1e-8, global norm gradient clip 5, full episode update; source reset seeds never shuffled."
+  ],
+  "model_initialization_seeds": [
+    17,
+    31
+  ],
+  "optimizer_frozen": {
+    "adam_epochs": 192,
+    "adam_lr": 0.01,
+    "beta1": 0.9,
+    "beta2": 0.999,
+    "epsilon": 1e-8,
+    "global_gradient_l2_clip": 5,
+    "train_order": "fixed ascending source reset seeds",
+    "baseline_sgd_epochs": 24,
+    "baseline_logistic_epochs": 100
+  },
+  "native_source_first_use": "TRAINING-only development cohort, not protected scientific first use. No eval/heldout seeds, data, losses, threshold adjustments, or science transfer claims.",
+  "train_only_go": "Within each independent source, the trained recurrent 8-state Adam candidate must (1) improve mean source TRAINING Brier by >=25% relative to its exact frozen initial output, (2) reach mean TRAINING Brier <= same-input regularized logistic train Brier plus 0.01, (3) source code and authentic original input/next-action evidence SHA identical Windows and Linux. Otherwise adequacy NO-GO for this fixed training procedure.",
+  "diagnostics": "For both fixed recurrent training initializations retain first and final TRAINING source Brier, select by training result only, report original SGD 24 epochs, logistic current-only 100 fixed epochs; record independent per-reset-seed training score and genuine source event digest.",
+  "resource_accounting": "Whole native original source plus full training and source profiling CPU, peak OS RSS, original public bytes processed, optimizer Adam first and second moment state bytes alongside source model final checkpoint, per-model train/inference CPU, logical original environment+source code bytes not measured; no full parity claim.",
+  "no_scientific_first_use": true,
+  "no_prospective_evaluation": true,
+  "no_yggdrasil_cognitive_model_modification": true,
+  "no_retuning_of_mr34f_protocol_or_scientific_decision": true,
+  "stop_if_failed": true,
+  "engineering_integration_G29": "BLOCKED pending reviewed exact-source atlas and final Windows/Linux full regressions",
+  "scientific_admission": "NO_GO"
+}
