@@ -96,14 +96,14 @@ def benchmark(fn,values):
     for _ in range(3):fn(values)
     samples=[]
     for _ in range(16):
-        start=time.process_time_ns()
+        start=time.perf_counter_ns()
         fn(values)
-        samples.append(time.process_time_ns()-start)
+        samples.append(time.perf_counter_ns()-start)
     if not all(x>0 for x in samples):
         raise ValueError("MR34I7_UNMEASURED_PROCESS_CPU")
-    return {"trial16_process_CPU_ns":samples,
-            "median_single_490case_cohort_CPU_ns":int(statistics.median(samples)),
-            "sum16_process_CPU_ns":sum(samples)}
+    return {"trial16_perf_elapsed_ns":samples,
+            "median_single_cohort_perf_elapsed_ns":int(statistics.median(samples)),
+            "sum16_perf_elapsed_ns":sum(samples)}
 
 def run_group(name,values,source_receipt=None):
     blob=raw(values)
@@ -126,15 +126,15 @@ def run_group(name,values,source_receipt=None):
     orig_t=benchmark(unchanged_numpy_original,values)
     cand_t=benchmark(lambda v:portable_decimal(v,48),values)
     oracle_t=benchmark(lambda v:portable_decimal(v,80),values)
-    ratio=cand_t["median_single_490case_cohort_CPU_ns"]/max(
-        1,orig_t["median_single_490case_cohort_CPU_ns"])
+    ratio=cand_t["median_single_cohort_perf_elapsed_ns"]/max(
+        1,orig_t["median_single_cohort_perf_elapsed_ns"])
     first_diff=next((i for i,(x,y) in enumerate(zip(original,candidate))
                      if raw([x])!=raw([y])),None)
     raw_outputs={
         "original_numpy_binary64_hex":raw(original).hex(),
         "portable_decimal48_binary64_hex":raw(candidate).hex(),
         "decimal80_reference_binary64_hex":raw(oracle).hex()}
-    print("MR34I7_PORTABLE_KERNEL_RAW_SECTION="+canon({
+    print("MR34I7B_PORTABLE_KERNEL_RAW_SECTION="+canon({
         "cohort":name,"binary64_source_input_hex":blob.hex(),
         "source_outputs_unrounded_binary64_hex":raw_outputs}))
     result={
@@ -151,12 +151,26 @@ def run_group(name,values,source_receipt=None):
       "original_numpy_benchmark":orig_t,
       "portable_decimal48_benchmark":cand_t,
       "decimal80_reference_benchmark":oracle_t,
-      "same_process_candidate_to_original_CPU_median_ratio":ratio,
+      "same_process_candidate_to_original_wall_elapsed_median_ratio":ratio,
       "candidate_explicit_accurate_enough":max(distance)<=1,
-      "candidate_within_precommitted_same_process_CPU_budget":ratio<=2000,
+      "candidate_within_new_frozen_wall_elapsed_budget":ratio<=2000,
     }
     if source_receipt is not None:result["original_source_custody"]=source_receipt
     return result
+
+def contract_b():
+    prereg=Path(__file__).resolve().parents[1]/"mr34i7b"/"frozen_protocol.json"
+    p=json.loads(prereg.read_text(encoding="utf-8"))
+    if (p["schema"]!="nci04.mr34i7b.portable_kernel_highres_cost_requalification.v1"
+        or p["parent_exact_MR34I7_incomplete_qualification_SHA"]!="8b27a38674ceb73ac3415846ee6cb5c9a2da08e5"
+        or p["cohorts_original_490_input_shas"]!=EXPECTED
+        or p["benchmark_qualification"]["warmup_iterations"]!=3
+        or p["benchmark_qualification"]["original_repetitions_per_four_original_cohorts"]!=16
+        or not p["benchmark_qualification"]["qualified_clock"].startswith("time.perf_counter_ns()")
+        or p["no_change_to_numerical_candidate"] is not True
+        or p["no_new_source_or_held_first_use"] is not True):
+        raise ValueError("MR34I7B_FROZEN_NEW_BENCHMARK_PROTOCOL_DRIFT")
+    return prereg
 
 def process_memory():
     import psutil
@@ -173,6 +187,7 @@ def process_memory():
 
 def main(s4c1,farama,pycolab):
     contract()
+    new_protocol=contract_b()
     project=Path(__file__).resolve().parents[2]
     prior=subprocess.check_output(
         ["git","-C",str(project),"rev-parse",
@@ -202,14 +217,17 @@ def main(s4c1,farama,pycolab):
     for family,path in source_paths.items():check_git(path,ORIGINAL_SOURCES[family])
     check_git(orig,ORIGINAL_S4C1)
     is_go=all(c["candidate_explicit_accurate_enough"] and
-              c["candidate_within_precommitted_same_process_CPU_budget"]
+              c["candidate_within_new_frozen_wall_elapsed_budget"]
               for c in sections)
-    print("MR34I7_PORTABLE_NONLEARNING_SIGMOID_CANDIDATE="+canon({
-       "preregistered_before_source_protocol_SHA256":sha(PROTO.read_bytes()),
+    print("MR34I7B_PORTABLE_NONLEARNING_SIGMOID_CANDIDATE="+canon({
+       "previous_MR34I7_protocol_SHA256":sha(PROTO.read_bytes()),
+       "new_preregistered_MR34I7B_protocol_SHA256":sha(new_protocol.read_bytes()),
+       "new_benchmark_clock":"perf_counter_ns_wall_not_process_CPU",
+       "previous_frozen_qualification":"2_OF_4_Windows_short_CPU_clock_failure_NOT_QUALIFIED",
        "pinned_original_S4C1_unmodified":ORIGINAL_S4C1,
        "candidate_identifier":"decimal48_source_neutral_nonlearning_sigmoid",
        "original_source_and_kernel_cohorts":sections,
-       "frozen_candidate_local_accuracy_and_cost_GO":is_go,
+       "new_frozen_candidate_local_accuracy_and_highres_wall_cost_GO":is_go,
        "genuine_original_public_input_cross_OS_reproducibility":"PENDING_FOUR_SOURCE_RECEIPT_COMPARISON",
        "candidate_cross_OS_bitwise_reproducibility":"PENDING_FOUR_SOURCE_RECEIPT_COMPARISON",
        "reference_is_higher_precision_SAME_decimal_algorithm_not_independent_math_proof":True,
