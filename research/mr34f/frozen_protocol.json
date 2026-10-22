@@ -1,0 +1,83 @@
+{
+  "schema": "yggdrasil.mr34f.prospective-public-history-trained-controls.dev.v1",
+  "exact_mr34e_source_parent": "c441771db794db23dbe6b823e45ab741b2ec87f0",
+  "source_git_commits": {
+    "FaramaMiniGridDoorKey8": "7f5853792ea7f04f75614661006d87fcf949f26d",
+    "DeepMindPycolabApprehend": "6504c8065dd5322438f23a2a9026649904f3322a"
+  },
+  "new_frozen_development_training_reset_seeds": [
+    1409,
+    1423,
+    1427,
+    1429,
+    1433,
+    1439,
+    1447,
+    1451,
+    1453,
+    1459,
+    1471,
+    1481,
+    1483,
+    1487,
+    1489,
+    1493,
+    1499,
+    1511,
+    1523,
+    1531
+  ],
+  "new_frozen_held_development_evaluation_seeds": [
+    1543,
+    1549,
+    1553,
+    1559,
+    1567,
+    1571,
+    1579,
+    1583,
+    1597,
+    1601
+  ],
+  "one_source_blind_policy_stream_per_seed": true,
+  "original_native_action_limit": 96,
+  "source_random_policy": "random.Random(1000003*seed+337).randrange(original_action_count); no source secrets",
+  "source_initialization": "Farama DoorKeyEnv(size=8).reset(seed), DeepMind Apprehend random.seed(seed) before original make_game",
+  "original_public_observations": "Farama public original uint8 (7,7,3), Pycolab original repainted public uint8 (10,7), hide P and b as X",
+  "common_raw_public_feature_encoder": "Eight contiguous equal-width slices of full original public flattened bytes, per slice (mean byte /255, nonzero fraction), plus seven fixed action one-hot, exactly same observable derived features to all supervised competitors; full original public bytes never supplied to one model in preference to another.",
+  "target": "Eight next-public frame slice binary changed/unchanged indicators comparing original public current vs next after genuine native source step, predicted before step.",
+  "model_controls": {
+    "memoryless": "23-input 8-output conventional regularized sigmoid logistic, full-batch gradient trained for 100 epochs; no historical inputs",
+    "explicit_history": "69-input 8-output regularized sigmoid logistic: common 23 current features plus two previous 23 input vectors, trained on same training seed episodes; zero both previous vectors for same-weights history ablation",
+    "recurrent": "Conventional tanh 8-state 23-input recurrent network trained by full episode analytic BPTT for 24 fixed epochs, 2 frozen initializations, choose by TRAINING score only; no heldout tuning",
+    "recurrent_ablation": "Same fully trained recurrent weights, hidden state zeroed every step at scoring; does not retrain",
+    "bayesian": "Public-encoded current 16 feature bins + announced action, 128-key bounded Beta-Bernoulli counts trained on all source training episodes, global action posterior fallback",
+    "symbolic_history": "Public-encoded current 16 feature bins + announced action and previous two 23-value feature bins, 128-key bounded finite-context rule frequency table with global fallback; trained on all source training episodes"
+  },
+  "common_learning_and_regularization": {
+    "logistic_epochs": 100,
+    "logistic_lr": 0.8,
+    "logistic_l2": 0.0002,
+    "recurrent_epochs": 24,
+    "recurrent_lr": 0.04,
+    "recurrent_init_seeds": [
+      17,
+      31
+    ],
+    "recurrent_gradient_clip": 5,
+    "common_context_max_entries": 128
+  },
+  "historical_prospective_control_conditions": "Compare held-development per-reset seed Brier: full history logistic vs trained memoryless and its same-weight history zero-ablation; recurrent vs trained memoryless and same-weight zero-state; Bayesian and symbolic included as stronger/alternative conventional comparisons.",
+  "information_DEV_GO": "Both native source families: history logistic strictly better than memoryless by >=0.002 absolute mean 8-bit held-development Brier; >=7 of 10 independent evaluation seed clusters improve, same-weight history ablation strictly worse; recurrent no worse than memoryless in either source. This only qualifies one development hypothesis, not scientific admission.",
+  "negative_falsifiers": "History advantage absent or ablation ineffective => information benefit NOT demonstrated for tested encoding/training budget. Stop; no post-result parameter tuning, model selection on evaluation seeds, additional seed searches, or reinterpretation of retrospectives as prospective.",
+  "equal_access_limit": "Every model sees same 16 derived current-public values + same announced action, but different architecture/memory sizes; do NOT claim equal total resource matched without budget matching.",
+  "evidence": "Exact full original native source action/public digest with 30 genuine reset-seed episodes per engine; original upstream SHA unchanged and clean. Windows ×2 Ubuntu ×2 native exact predictive scores/source traces; full worker process CPU+peak RSS and per-model isolated training/inference CPU, checkpoint JSON byte counts, in-process recurrent state messages/read proxies. No source-private info to model.",
+  "source_first_use_scientific": false,
+  "source_cohorts_development_only": true,
+  "no_yggdrasil_learner_training": true,
+  "no_protected_scientific_first_use": true,
+  "no_model_decisions_revised_after_first_result": true,
+  "scientific_admission": "NO_GO",
+  "G29_source_atlas_and_final_regressions": "BLOCKED",
+  "source_license_review": "retain Farama metadata conflict, Pycolab Apache-2 source; do not bundle original source"
+}
