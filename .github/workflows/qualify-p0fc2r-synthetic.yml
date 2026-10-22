@@ -1,0 +1,79 @@
+name: P0F-C2R synthetic-only qualification (non-admitting)
+
+on:
+  push:
+    branches:
+      - qualify/nci04-p0fc2r-synthetic-20261022
+    paths:
+      - .github/workflows/qualify-p0fc2r-synthetic.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: p0fc2r-synthetic-only-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  synthetic:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - name: Checkout exact qualification-only commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Fail closed on identity/scope drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse 'HEAD^')" = "faff7d9802610d6fd1c1ce2c9722ce3350ef4c85"
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD)" = ".github/workflows/qualify-p0fc2r-synthetic.yml"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/public_counts.py)" = "6a42b4d1d040d0924dbb153a6dfc1d24c3dc3e10"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/FROZEN_DESIGN.json)" = "42db4b7e285a1ee0423c219febc6892f76d9e875"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/provenance_receipt.py)" = "4de1d68678b03b252e1808612c3447b3948e6d5c"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/test_provenance_receipt.py)" = "c68e70c199c23b7d38cc364fb331051b04e9f7b3"
+          echo "P0FC2R_PREIMAGE_SCOPE_AND_BLOBS=PASS"
+      - name: Focused synthetic learner and provenance tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/nci04_p0fc2/public_counts.py
+          python -B -m unittest discover -s research/nci04_p0fc2 -p 'test_*.py' -v
+          echo "P0FC2R_SYNTHETIC_FOCUSED=PASS"
+      - name: Cross-process evidence hash-seed invariance
+        shell: bash
+        run: |
+          set -euo pipefail
+          first=""
+          for seed in 0 11 777; do
+            receipt="$(PYTHONHASHSEED="$seed" python -B -c "import sys; sys.path.insert(0, 'research/nci04_p0fc2'); from test_provenance_receipt import EvidenceEnvelopeTests; t=EvidenceEnvelopeTests(); t.setUp(); print(t.envelope()['envelope_sha256'])")"
+            test "${#receipt}" -eq 64
+            if [ -z "$first" ]; then first="$receipt"; else test "$receipt" = "$first"; fi
+          done
+          echo "P0FC2R_HASHSEED_INVARIANCE=PASS sha256=$first"
+      - name: One complete existing repository Python regression (G29 gate retained)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          echo "P0FC2R_FULL_REPO_PYTHON_REGRESSION=PASS"
+      - name: Verify no tracked-file mutations
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "$(git status --porcelain)"
+          echo "P0FC2R_QUALIFICATION_WORKTREE_CLEAN=PASS"
