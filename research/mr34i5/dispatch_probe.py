@@ -75,7 +75,7 @@ def worker(json_path,mode):
         out.append({"cohort":row["cohort"],"n":len(row["hex_values"]),"pad":pad,
                     "input_hex":pack(xs).hex(),"exp_hex":pack(ex).hex(),
                     "p_hex":pack(prob).hex(),"ref_hex":pack(ref).hex(),
-                    "input_sha":sha(pack(xs)),"exp_sha":sha(pack(ex)),
+                    "input_sha":sha(pack(xs[:len(row["hex_values"])])),"exp_sha":sha(pack(ex)),
                     "p_sha":sha(pack(prob)),"ref_sha":sha(pack(ref))})
     if sys.platform=="win32":
         peak=getattr(psutil.Process().memory_info(),"peak_wset",None)
