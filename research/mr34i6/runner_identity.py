@@ -36,8 +36,8 @@ def hash256(x):return sha256(x).hexdigest()
 def canon(v):return json.dumps(v,sort_keys=True,separators=(",",":"),allow_nan=False)
 def byt(v):return np.asarray(v,dtype=np.float64).tobytes(order="C")
 def audit_vector(v):
-    a=np.asarray(v,dtype=np.float64)
-    if not a.flags.c_contiguous or not np.isfinite(a).all():
+    a=np.ascontiguousarray(np.asarray(v,dtype=np.float64))
+    if not np.isfinite(a).all():
         raise ValueError("MR34I6_SOURCE_NUMERIC_ARRAY_INVALID")
     return {"sha256":hash256(byt(a)),"float64_hex":byt(a).hex(),"shape":list(a.shape)}
 
