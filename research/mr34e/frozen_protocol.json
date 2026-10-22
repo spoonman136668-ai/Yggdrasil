@@ -1,0 +1,69 @@
+{
+  "schema": "yggdrasil.mr34e.two-independently-authored-original-public-history-alias.dev.v1",
+  "parent_exact_git_sha": "a2464da8d3a8a9bb28dcd3a37638c5309dc63247",
+  "public_source_engines": [
+    {
+      "id": "FaramaMiniGridDoorKey8",
+      "repo": "Farama-Foundation/Minigrid",
+      "source_sha": "7f5853792ea7f04f75614661006d87fcf949f26d",
+      "public_shape": [
+        7,
+        7,
+        3
+      ],
+      "native_actions": 7,
+      "native_reset": "DoorKeyEnv(size=8).reset(seed=s)",
+      "native_step": "DoorKeyEnv.step"
+    },
+    {
+      "id": "DeepMindPycolabApprehend",
+      "repo": "google-deepmind/pycolab",
+      "source_sha": "6504c8065dd5322438f23a2a9026649904f3322a",
+      "public_shape": [
+        10,
+        7
+      ],
+      "native_actions": 2,
+      "native_reset": "random.seed(s); apprehend.make_game().its_showtime()",
+      "native_step": "game.play",
+      "source_public_mask": "original ObservationCharacterRepainter({\"P\":\"X\",\"b\":\"X\")"
+    }
+  ],
+  "new_development_only_independent_native_reset_seeds": [
+    1201,
+    1213,
+    1217,
+    1223,
+    1229,
+    1231,
+    1237,
+    1249,
+    1259,
+    1277,
+    1279,
+    1283,
+    1289,
+    1291,
+    1297,
+    1301
+  ],
+  "public_action_policy": "source independent random.Random(1000003 * seed + 337).randrange(original public action count); one action stream per independent seed",
+  "max_original_native_actions_per_seed": 96,
+  "original_action_source_custody": "Only source-native original env.reset/env.step or original game.its_showtime/game.play; no original source modifications, no hidden-world labels/reward or source evaluator info supplied to actor.",
+  "public_history_context": "Current complete original source public observation, original current announced action and previous at most TWO complete publicly seen observations and original actions (left-pad with fixed zero public frames and action byte 255 at episode start).",
+  "retrospect_alias_current": "Hash complete original publicly observed current-frame bytes plus announced original action; no source-private fields.",
+  "retrospective_next": "Hash complete original publicly observed NEXT-frame bytes returned by original native step.",
+  "cross_seed_evidence": "Compare source event pairs ONLY if reset seeds differ. Record total matched exact public-current-action pairs and those with distinct real original next public frames, cluster pairs, whether prior two-action/public frames differ, and pairs with still identical complete two-step historical context. Never treat correlated time steps as independent science.",
+  "prerequisite_information_signal": "Within each of the two independent original source families, require >=2 distinct reset-seed clusters featuring cross-seed exact-current-action and different true-next-public outcomes, and at least 1 such pair distinguished by a prior two-step public-action/observation history; otherwise DEVELOPMENT NO-GO for this strict full-input alias prerequisite. This is NOT proof of prospective predictive utility.",
+  "upper_bound_note": "Different public histories in retrospect cannot itself establish that a learned model predicts outcomes; no conventional learners trained and no general causal identifiability conclusion.",
+  "evidence_reproducibility": "Cross-OS and within-OS repeat exact ORIGINAL episode/action count, original source-action/public SHA digests and alias-count receipts.",
+  "no_candidate_model_training": true,
+  "no_privileged_state_to_actor_or_representations": true,
+  "independent_first_use_scientific_samples_consumed": false,
+  "no_source_tuning_or_seed_search_after_results": true,
+  "no_release_or_merge": true,
+  "complete_resource_receipt": "Original native two-engine process CPU, OS peak RSS, counted public history hashed byte volume and resulting receipt bytes. Comparable resource parity not inferred between distinct engines.",
+  "original_source_licenses": "Farama redistribution metadata conflict unresolved; DeepMind Pycolab original Apache-2 licensed; source artifacts are checked out separately and not bundled.",
+  "integration_G29": "BLOCKED pending legitimate original-source-bound atlas and full OS regressions",
+  "scientific_admission": "NO_GO regardless of development signal"
+}
