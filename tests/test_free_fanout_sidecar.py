@@ -4,6 +4,7 @@ import json
 import pathlib
 import tempfile
 import unittest
+from unittest import mock
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("free_fanout_sidecar", ROOT / "scripts" / "free_fanout_sidecar.py")
@@ -181,6 +182,33 @@ out.write_text(json.dumps({"candidate_id": "wrong"}) + "\\n", encoding="utf-8")
             with self.assertRaises(ff.FanoutError) as ctx:
                 ff.run_candidate(m, root, "smoke-a", out)
         self.assertIn("FREE_FANOUT_RESULT_ID_MISMATCH", str(ctx.exception))
+
+    def test_missing_resource_accounting_never_emits_success(self):
+        # Valid synthetic result: missing OS accounting must fail closed.
+        manifest = base_manifest()
+        result = {
+            "candidate_id": "smoke-a",
+            "interface": manifest["candidate_interface"]["signature"],
+            "metric": {"name": "synthetic", "value": 1.0},
+            "resource_usage": {"parameters": 0, "context_bytes": 0, "model_calls": 0},
+            "total_slots": 16, "active_slots": 7, "retained_slots": 9,
+            "hidden_persistent_memory_growth": False,
+        }
+        payload = json.dumps(result)
+        source = (
+            "import pathlib,sys\n"
+            "pathlib.Path(sys.argv[sys.argv.index('--output') + 1]).write_text("
+            + repr(payload) + ", encoding='utf-8')\n"
+        )
+        td, root = self.make_package(source)
+        self.addCleanup(td.cleanup)
+        with tempfile.TemporaryDirectory() as out:
+            with mock.patch.object(ff, "resource", None):
+                with self.assertRaises(ff.FanoutError) as context:
+                    ff.run_candidate(manifest, root, "smoke-a", out)
+            self.assertIn("FREE_FANOUT_RESOURCE_ACCOUNTING_UNAVAILABLE",
+                          str(context.exception))
+            self.assertFalse((pathlib.Path(out) / "candidate-envelope.json").exists())
 
     def test_aggregate_rejects_missing_candidate_envelope(self):
         m = base_manifest()
