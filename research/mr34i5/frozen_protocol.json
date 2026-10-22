@@ -1,0 +1,63 @@
+{
+  "schema": "yggdrasil.mr34i5.source-nonlearning-numpy-dispatch.v1",
+  "preceding_experiment": "MR34I4",
+  "exact_MR34I4_parent_commit": "43e1fd51fc5cd7193978b527daa67d3f02314db8",
+  "exact_original_S4C1_commit": "8e1561eb1a542e21307bac669c42435cf48e59bd",
+  "original_third_party_git_commits": {
+    "FaramaMiniGridDoorKey8": "7f5853792ea7f04f75614661006d87fcf949f26d",
+    "DeepMindPycolabApprehend": "6504c8065dd5322438f23a2a9026649904f3322a"
+  },
+  "original_MR34I4_source_u_sha256": {
+    "FaramaMiniGridDoorKey8": "ba501812452b529cf35d4aaa176f9d5a0b5cfbb57a388d67c49dfbc547109486",
+    "DeepMindPycolabApprehend": "23d9db17d29ed9646afac1b34000d0be320c2fa50ca424db2f85f1829be11bd7"
+  },
+  "source_input_corpus": "EXACT same 490 frozen MR34I4 original nonlearning input logit binary64 values: 42 boundaries/neighbors + 128 seeded static + first authentic PUBLIC preaction logits of 20 already-consumed TRAINING episodes in each of two original engines (160 each); no new source resets, held data, state update or protected unfamiliar first use",
+  "cohort_order_and_lengths": [
+    [
+      "canonical_frozen_boundaries",
+      42
+    ],
+    [
+      "canonical_seeded_binary64_inputs",
+      128
+    ],
+    [
+      "FaramaMiniGridDoorKey8",
+      160
+    ],
+    [
+      "DeepMindPycolabApprehend",
+      160
+    ]
+  ],
+  "numpy_runtime_version": "1.26.4",
+  "python_runtime_version": "3.11",
+  "cpu_feature_env": "NPY_DISABLE_CPU_FEATURES applied before NumPy import in a fresh separate child process; inspect actual __cpu_features__ to determine if an intended feature was available and disabled; no unsupported feature may be represented as an effective intervention",
+  "single_variable_arms_in_order": [
+    {
+      "name": "original_default",
+      "disable": ""
+    },
+    {
+      "name": "disable_FMA3",
+      "disable": "FMA3"
+    },
+    {
+      "name": "disable_AVX2_FMA3",
+      "disable": "AVX2,FMA3"
+    }
+  ],
+  "original_source_vector_expression": "1./(1.+numpy.exp(-numpy.clip(u,-35.,35.))) on 8-wide native float64 input vectors",
+  "decimal_80digit_original_MR34I4_reference": "Original source-independent Decimal.from_float clipped input, context precision 80, exp, sigmoid and final float64; diagnostic only, no replacement",
+  "frozen_decision": "Compare per-input raw binary64 source identity and exp/sigmoid/Decimal SHA across Windows×2 and Ubuntu×2, with per-OS repeat; record per-arm actual NumPy CPU feature flags and separate subprocess CPU/RSS; reject scientific checkpoint admission regardless of dispatch outcome; an identical output on this test is NOT proof of portable training or matched total resource cost",
+  "no_original_model_source_change": true,
+  "no_learner_training_or_optimizer": true,
+  "no_new_development_or_held_source_use": true,
+  "no_qualified_scientific_first_use": true,
+  "no_original_MR34I4_protocol_revision": true,
+  "source_and_agent_authenticity_required": true,
+  "require_independent_windows_and_linux_replicates_each_two": true,
+  "PR_state": "DRAFT_UNMERGED",
+  "G29_full_regression": "SEPARATE_FAIL_CLOSED",
+  "portable_original_checkpoint": "NO_GO"
+}
