@@ -1,0 +1,180 @@
+{
+  "schema": "yggdrasil.nci04.p0fc2.public-history-conditional-counts.dev.v1",
+  "status": "PRE_EXECUTION_DESIGN_NOT_INDEPENDENTLY_ADMITTED",
+  "parents": {
+    "isolated_branch_parent": "5e28b7aca91111bc4184f8bebbd916f8f1138fd7",
+    "original_p0fc1_protocol_commit": "188dd247e8762aac4fb232db663667feb5700d52",
+    "original_p0fc1_protocol_blob": "bd347fde2042d03b40414057d92ed240f3f0f39d",
+    "p0fc1_preflight_review_blob": "dfff62977052a334ca82b145793d9f93a934d66d",
+    "qualified_mr34e_dev": "3d952e897768b052a5bd89851f2aa0e354f97193",
+    "s4c1_failed_checkpoint_head": "8e1561eb1a542e21307bac669c42435cf48e59bd",
+    "work_item": "https://github.com/spoonman136668-ai/Yggdrasil/issues/407"
+  },
+  "source": {
+    "original_git_commits": {
+      "FaramaMiniGridDoorKey8": "7f5853792ea7f04f75614661006d87fcf949f26d",
+      "DeepMindPycolabApprehend": "6504c8065dd5322438f23a2a9026649904f3322a"
+    },
+    "original_public_uint8_shapes": {
+      "FaramaMiniGridDoorKey8": [
+        7,
+        7,
+        3
+      ],
+      "DeepMindPycolabApprehend": [
+        10,
+        7
+      ]
+    },
+    "original_native_action_counts": {
+      "FaramaMiniGridDoorKey8": 7,
+      "DeepMindPycolabApprehend": 2
+    },
+    "engine_source_worktrees_must_be_clean": true,
+    "engines_fit_and_test_separately": true,
+    "no_cross_engine_weight_transfer_claim": true,
+    "no_private_state_reward_hidden_identity_mission_to_actor_or_predictor": true,
+    "original_unmodified_upstream_runtime_only": true
+  },
+  "cohorts": {
+    "status": "PROVISIONAL_PENDING_FULL_CONSUMED_LEDGER_AND_INDEPENDENT_SOURCE_BIRTH_REVIEW",
+    "engineering_only": [
+      699901,
+      699907,
+      699911,
+      699931
+    ],
+    "train_fit": [
+      700101,
+      700103,
+      700109,
+      700127,
+      700129,
+      700171,
+      700181,
+      700201,
+      700211,
+      700223,
+      700237,
+      700249,
+      700271,
+      700277,
+      700279,
+      700303,
+      700307,
+      700319,
+      700333,
+      700339
+    ],
+    "train_validation": [
+      700361,
+      700369,
+      700381,
+      700391
+    ],
+    "held_development": [
+      701101,
+      701107,
+      701111,
+      701117,
+      701147,
+      701159,
+      701171,
+      701181,
+      701201,
+      701209,
+      701213,
+      701219
+    ],
+    "protected_scientific_first_use": "NOT_ALLOCATED_AND_NOT_AUTHORIZED",
+    "no_reuse_of_historical_dev_held_evaluations": true
+  },
+  "actor": {
+    "same_across_original_sources_in_structure": true,
+    "python_rng": "random.Random(1000003*source_reset_seed+337)",
+    "native_action": "actor.randrange(native_action_count)",
+    "maximum_true_original_source_actions_per_episode": 96,
+    "stop_on_source_termination": true,
+    "one_uninterrupted_native_episode_per_seed": true,
+    "no_oracle_interventions_or_post_outcome_seed_search": true
+  },
+  "public_prediction": {
+    "current_source_public_frame": "full unmodified original emitted uint8 bytes, C-order in each engine original array shape",
+    "action": "announced native index only",
+    "history_steps": 2,
+    "start_of_episode_history_sentinel": "exact tagged sentinel distinct from genuine bytes, no wrap across episodes",
+    "next_public_target": "one of 256 original next-public uint8 values at each byte position",
+    "output": "per-position probability vector over exactly values 0..255, normalized and strictly positive",
+    "primary_loss": "mean across byte positions of -ln P(actual next byte), then mean steps within episode; held reports equal-weight independent reset episode means",
+    "primary_measure_unit": "nats per public byte",
+    "primary_score_is_marginal_not_full_joint_frame_likelihood": true,
+    "no_truncation_to_s4c1_any_changed_binary_labels": true,
+    "no_hidden_or_derived_source_identity_in_predictor": true
+  },
+  "fixed_training_estimators": {
+    "uniform_dirichlet_pseudocount_per_value": 0.5,
+    "context_shrinkage_strength": 8,
+    "source_specific_independent_fit": true,
+    "all_counts_from_training_fit_episodes_only": true,
+    "backoff": "BasePrior(v|byte_position,current_public_byte_at_position,announced_action) = (count_next_v + 0.5)/(count_all + 256*0.5)",
+    "full_context_current": "length-delimited exact ORIGINAL entire current frame bytes plus action",
+    "full_context_history": "same full_context_current plus previous two original public frame bytes and announced actions, with explicit episode-boundary sentinel",
+    "current_model": "P_current(v) = (N_current_key_pos_v + 8*BasePrior(v))/(N_current_key_pos + 8)",
+    "history_model": "P_history(v) = (N_history_key_pos_v + 8*BasePrior(v))/(N_history_key_pos + 8)",
+    "prior_only_control": "BasePrior(v)",
+    "copy_baseline": "P(v)=0.90 if v is current byte plus 0.10/256; otherwise 0.10/256; equivalently 0.90*I[v=current]+0.10/256",
+    "training_method": "exact complete counts over fixed training data, no optimizer, learning rate, epochs or local-search freedom",
+    "identical_source_episode_inputs_for_all_estimators": true,
+    "no_neural_recurrent_or_native_yggdrasil_architectural_claim": true,
+    "no_45_parameter_model_trained": true
+  },
+  "train_only_decision": {
+    "reference_selection": "minimum validation mean per-episode categorical NLL among prior-only, copy-baseline, full-current counts",
+    "reference_tie_break_order": [
+      "copy-baseline",
+      "prior-only",
+      "full-current counts"
+    ],
+    "reference_trained_on": "train_fit seeds only for validation comparison",
+    "history_candidate": "precommitted full-current plus exactly 2 prior public frames/action counts; no alternative history lengths",
+    "preheld_stop_rule": "If history validation per-episode mean categorical NLL >= selected current-only reference, STOP before any held-development episode.",
+    "after_validation": "Refit both history candidate and selected reference count prior on all 24 combined train-fit and train-validation reset seeds; fixed selection retained",
+    "no_held_based_model_choice": true
+  },
+  "original_source_information_coverage": {
+    "training_only_exact_complete_public_and_native_action_alias_groups_from_distinct_source_reset_seeds_minimum": 1,
+    "training_only_independent_seed_clusters_with_different_authentic_next_full_public_minimum": 2,
+    "if_missing": "P0FC2_INFORMATION_ACQUISITION_NO_GO_STOP_BEFORE_HELD",
+    "current_plus_history_distinct_but_not_necessarily_prospectively_predictive": true
+  },
+  "prospective_held_dev_criteria": {
+    "independent_held_reset_seed_clusters_per_source": 12,
+    "per_seed_effect": "D = mean_nats_per_byte_current_reference - mean_nats_per_byte_history_model",
+    "source_mean_gain_nats_per_byte_at_least": 0.005,
+    "independent_clusters_positive_gain_at_least": 8,
+    "paired_cluster_bootstrap_iterations": 10000,
+    "paired_cluster_bootstrap_random_seed": 40720261022,
+    "paired_cluster_bootstrap_method": "sample 12 seed indices with replacement; recompute mean(D); sorted percentile lower endpoint at 2.5%; require >0",
+    "both_sources_must_pass": true,
+    "frozen_acceptance_applies_only_to_this_counts_family_prospective_development_finding": true,
+    "not_proof_of_self_organizing_state_transfer": true
+  },
+  "replay_and_cost": {
+    "original_public_action_next_event_sha256_exact_four_jobs": "Windows x2, Linux x2; preserve original source independent SHA, clean worktrees",
+    "model_loss_cross_os_abs_tolerance": 0.000001,
+    "count_checkpoint_canonical_encoding": "sorted context keys and value counts, exact original source identity; no Python dict iteration dependence",
+    "report": "native original source generation and actor CPU, each predictor fit/eval CPU, OS RSS with shared-process caveat, count tables/checkpoint bytes, history bytes, communication bytes",
+    "if_any_mandatory_check_fails": "FAIL_CLOSED_PRESERVE_ALL_NEGATIVE_RESULTS"
+  },
+  "governance": {
+    "role": "standalone narrowly scoped conventional public-history information test, not native 45-slot model qualification",
+    "previous_s4c1_identity_and_scientific_no_go_retained": true,
+    "older_mr34f_and_s4a_frozen_negatives_preserved": true,
+    "independent_custody_and_citations_required_before_source_execution": true,
+    "CKB_plane_sole_execution_authority": true,
+    "no_actions_dispatched": true,
+    "no_first_use": true,
+    "no_merge_or_promotion": true,
+    "G29_and_full_native_regression_required_before_future_promotion": true
+  }
+}
