@@ -1,0 +1,96 @@
+{
+  "schema": "yggdrasil.mr34i3.original-local-analytic-gradient-primitive-observer.v1",
+  "exact_MR34I2_parent_sha": "d12e3ba781c0e03bc277c4e58c1263662f00c9a9",
+  "exact_S4C1_original_sha": "8e1561eb1a542e21307bac669c42435cf48e59bd",
+  "sources": {
+    "FaramaMiniGridDoorKey8": "7f5853792ea7f04f75614661006d87fcf949f26d",
+    "DeepMindPycolabApprehend": "6504c8065dd5322438f23a2a9026649904f3322a"
+  },
+  "training_only_previously_consumed_source_seeds": [
+    1861,
+    1867,
+    1871,
+    1873,
+    1877,
+    1879,
+    1889,
+    1901,
+    1907,
+    1913,
+    1931,
+    1933,
+    1949,
+    1951,
+    1973,
+    1979,
+    1987,
+    1993,
+    1997,
+    1999
+  ],
+  "excluded_held_dev_seeds": [
+    2003,
+    2011,
+    2017,
+    2027,
+    2029,
+    2039,
+    2053,
+    2063
+  ],
+  "original_training_algorithm": {
+    "lr": 0.035,
+    "l2": 0.0002,
+    "clip": 5,
+    "beta1": 0.9,
+    "beta2": 0.999,
+    "epsilon": 1e-8,
+    "epochs_traced": 1,
+    "first_number_source_updates_per_family": {
+      "FaramaMiniGridDoorKey8": 3,
+      "DeepMindPycolabApprehend": 8
+    }
+  },
+  "previously_observed_first_OS_numerical_difference": {
+    "FaramaMiniGridDoorKey8": {
+      "step": 3,
+      "seed": 1871,
+      "first_stage": "raw_original_local_8x3_analytic_BPTT_gradient"
+    },
+    "DeepMindPycolabApprehend": {
+      "step": 8,
+      "seed": 1901,
+      "first_stage": "raw_original_local_8x3_analytic_BPTT_gradient"
+    }
+  },
+  "source_provenance_first_gradient_MR34I2": {
+    "FaramaMiniGridDoorKey8": {
+      "source_event_sha": "566f5e271e01421248bfabeb4326d01408d992276b877a978d96f14daf93797b",
+      "initial_native_model_snapshot_sha": "45038837837af310f04d8dee2f91c4d5e106e2beb476e6c866b3c8b8b28e96a4"
+    },
+    "DeepMindPycolabApprehend": {
+      "source_event_sha": "9ea175b912b734c7470f93d0b2584eea6c2ce01962aae285a66b4d4834b5346e",
+      "initial_native_model_snapshot_sha": "45038837837af310f04d8dee2f91c4d5e106e2beb476e6c866b3c8b8b28e96a4"
+    }
+  },
+  "trace_scope": "Perform PINNED original forward() and analytic_bptt() with Python line-level sys.settrace observers at only the known first divergent update. Record source 'forward' predictions, local cell read/u/p/ns and analytic_bptt backward row dz,du, dg and local-role dr accumulators and future. Original source code unedited. Capture every backward row stage on the exact whole source episode, with row-level numeric checksum and float64 bytes hash.",
+  "observer_sensitivity": "At original source update 3 Farama and update 8 Pycolab run ORIGINAL analytic_bptt() sequentially UNTRACED_PRE, then TRACED, then UNTRACED_POST before exactly ONE original Adam update from the first raw gradient. Record and compare triple exact gradient hashes. Observation ordering is a possible influence; do not claim instrumentation is inert.",
+  "first_cross_platform_difference": "Compare exact ordered stage records for original source target update across Windows×2 and Ubuntu×2. Report first different (source,forward/or backward row, source step, primitive variable); NOT just whole gradient. Equal cross-platform raw gradient required for portable acceptance; no tolerance relaxation.",
+  "source_original_code_interface_contract": {
+    "forward": "NativePredictiveQuotient45.forward original S4C1 Git SHA",
+    "backward": "NativePredictiveQuotient45.analytic_bptt original S4C1 Git SHA",
+    "train_native": "Read-only arithmetic mirror of exact original optimizer applied once per already-consumed episode; no original code mutation"
+  },
+  "hard_boundaries": [
+    "No new seed, task, held or source first use",
+    "No new hyperparameter, float32 or portable-kernel revision",
+    "No observer-written native-state values",
+    "No use of source-private labels or evaluator identity",
+    "No cross-platform bit-equivalence claim if differences remain"
+  ],
+  "financial_constraints": "No paid API",
+  "qualified_result": "Diagnostic GO if all 4 original source and tracer jobs execute and raw stage records are available for objective comparison, whether records match or differ; trained checkpoint admission stays NO_GO until exact trained source-native requalification",
+  "scientific_admission": "NO_GO",
+  "G29_full_OS_integration": "BLOCKED",
+  "PR_state": "DRAFT_UNMERGED"
+}
