@@ -1,0 +1,63 @@
+{
+  "schema": "yggdrasil.nci04.s2.native-learned-graph-necessity.dev.v1",
+  "exact_s1_parent_sha": "c8fc71d59d8e08c51e89282be4fc9f6ae0a07e02",
+  "exact_original_farama_commit": "7f5853792ea7f04f75614661006d87fcf949f26d",
+  "s1_results": "native Windows Linux S1 pass; tiny message advantage 0.000020/0.000018, Empty full-state ablation wins, full cost and transfer NO-GO",
+  "frozen_training_already_consumed_seeds": [
+    263,
+    269,
+    271,
+    277,
+    281,
+    283,
+    293,
+    307
+  ],
+  "fresh_development_only_native_eval_seeds": [
+    827,
+    829,
+    839,
+    853,
+    857,
+    859
+  ],
+  "original_native_worlds": [
+    "DoorKeyEnv(size=8)",
+    "EmptyEnv(size=8)"
+  ],
+  "native_source_max_actions_each": 256,
+  "unchanged_public_actor": "MR26 BoundedPublicNoveltyExplorer, full original current public image only and post-original-action next public image; no source world/pose/mission/reward",
+  "exact_original_model": "NCI04-S1 LocalPredictiveMessages45 with 45 coefficients and eight bounded local scalar states; fit exactly once on frozen original training sources. No model/actor retuning; all counterfactuals identical trained weights and source actions",
+  "controls": {
+    "ring": "original native i-1, i+1 eight-cell ring",
+    "opposite_orientation_ring": "identical original two neighbors with ordering swapped; implementation invariance check must be bit identical or fail",
+    "skip_two": "i-2, i+2 modulo eight (same two one-hop reads per cell)",
+    "skip_three": "i-3, i+3 modulo eight (same two one-hop reads per cell)",
+    "permuted_graph": "start original cyclic index order [0,2,4,6,1,3,5,7], connect each original cell's predecessors and successors in that order (same two neighbor messages)",
+    "no_neighbor_messages": "same learned weights and eight local states, zero neighbor channel at prediction",
+    "zero_all_episodic_state": "same learned weights, zero all eight state values at prediction",
+    "learned_roles_reassigned": "permute all eight three-coefficient learned role vectors by [0,2,4,6,1,3,5,7]; graph remains original, probes whether learned roles are location-specific, not pure message topology",
+    "trained_recurrent": "equal-original-training fully trained 45-weight eight-state Recurrent45, same public information",
+    "trained_memoryless": "equal-original-training fully trained 45-weight Native45, same public information",
+    "public_conditional_count": "equal-original-training PublicCount; memory unmatched"
+  },
+  "necessary_success": [
+    "original native ring lower prospective proper preaction Brier by >=0.0001 than all three rewired graphs AND message-off in both worlds",
+    "original ring lower prospective Brier than all fully trained 45-weight controls in both worlds",
+    "original ring lower prospective loss than full-state-zero model in both worlds",
+    "ring benefit vs every rewired graph in >=4 of 6 native independent development seeds per world",
+    "permuted learned roles meaningfully hurt vs original ring, not merely numeric nonzero role parameters",
+    "isolation full process training CPU peak RSS model storage and communication budgets match before any scientific admission"
+  ],
+  "message_payload": "each nonablated graph reads precisely two prior state floats per each of eight original camera-relative cells/action = 16 scalar reads, 128 float64-equivalent bytes per step; in-process reads not wire",
+  "initial_ring_is_predefined_not_discovered": true,
+  "zero_evaluator_hidden_labels_to_learner": true,
+  "no_source_private_truth_to_actor": true,
+  "no_postresult_seeds_or_weight_tuning": true,
+  "original_45_trainable_slots": true,
+  "original_8_inference_states": true,
+  "s1_training_only_64_scalar_previous_public_trace_is_additional": true,
+  "first_use_protected": false,
+  "scientific_admission": false,
+  "source_g29_atlas": "blocked pending legitimate exact-source reviewed repin and complete regression"
+}
