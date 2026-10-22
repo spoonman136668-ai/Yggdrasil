@@ -1,0 +1,134 @@
+name: P0FC2R Q7 source atlas and synthetic qualification
+on:
+  push:
+    branches: [repair/nci04-p0fc2r-q7-atlas-portability-20261022]
+    paths: ['.github/workflows/qualify-p0fc2r-q7-source-atlas.yml']
+permissions:
+  contents: read
+jobs:
+  atlas:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    outputs:
+      artifact_sha: ${{ steps.seal.outputs.artifact_sha }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Source and old atlas custody gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 'faff7d9802610d6fd1c1ce2c9722ce3350ef4c85' HEAD
+          changed="$(git diff --name-only faff7d9802610d6fd1c1ce2c9722ce3350ef4c85 HEAD | LC_ALL=C sort)"
+          expected="$(printf '%s\n' '.github/workflows/qualify-p0fc2r-q7-source-atlas.yml' 'scripts/free_fanout_sidecar.py' | LC_ALL=C sort)"
+          test "$changed" = "$expected"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/public_counts.py)" = "6a42b4d1d040d0924dbb153a6dfc1d24c3dc3e10"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/FROZEN_DESIGN.json)" = "42db4b7e285a1ee0423c219febc6892f76d9e875"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/provenance_receipt.py)" = "4de1d68678b03b252e1808612c3447b3948e6d5c"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/test_provenance_receipt.py)" = "c68e70c199c23b7d38cc364fb331051b04e9f7b3"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path('.ice/code-atlas.json').read_text())
+          assert a['source_commit']=='ade909c83d82d5882de3f7b866c4b2e3dc5740ad'
+          assert a['source_reviewed_labels']==0
+          assert a['authority']=='advisory-locators-only'
+          print('Q7_HISTORICAL_ATLAS_IDENTITY=PASS')
+          PY
+      - name: Generate source-bound provisional locators
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          a=json.loads(Path('.ice/code-atlas.json').read_text())
+          assert a['source_commit']==os.environ['GITHUB_SHA']
+          assert a['source_reviewed_labels']==0 and a['wingless_evidence_imported'] is False
+          assert a['authority']=='advisory-locators-only'
+          paths={f['path'] for f in a['files']}
+          for p in ('research/nci04_p0fc2/public_counts.py','research/nci04_p0fc2/FROZEN_DESIGN.json','research/nci04_p0fc2/provenance_receipt.py','research/nci04_p0fc2/test_provenance_receipt.py','scripts/free_fanout_sidecar.py'):
+              assert p in paths,p
+          print('Q7_ATLAS_SOURCE_COVERAGE=PASS')
+          PY
+      - name: Seal atlas only on separate review branch
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "$(git ls-remote --heads origin refs/heads/review/nci04-p0fc2r-q7-atlas-20261022)"
+          git config user.name 'q7-source-review'
+          git config user.email 'q7-source-review@users.noreply.github.com'
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          changed="$(git diff --cached --name-only | LC_ALL=C sort)"
+          expected="$(printf '%s\n' '.ice/code-atlas.html' '.ice/code-atlas.ice' '.ice/code-atlas.json' | LC_ALL=C sort)"
+          test "$changed" = "$expected"
+          git -c commit.gpgsign=false commit -m 'atlas: provisional current-source locators for independent Q7 review'
+          sha="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$GITHUB_SHA"
+          git push origin "HEAD:refs/heads/review/nci04-p0fc2r-q7-atlas-20261022"
+          echo "artifact_sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "Q7_PROVISIONAL_ATLAS_COMMIT=$sha"
+  final:
+    needs: atlas
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.artifact_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify prospective G29 origin and exact blob custody
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.artifact_sha }}"
+          source="$(python -c 'import json;print(json.load(open(".ice/code-atlas.json"))["source_commit"])')"
+          test "$(git rev-parse HEAD^)" = "$source"
+          changed="$(git diff --name-only HEAD^ HEAD | LC_ALL=C sort)"
+          expected="$(printf '%s\n' '.ice/code-atlas.html' '.ice/code-atlas.ice' '.ice/code-atlas.json' | LC_ALL=C sort)"
+          test "$changed" = "$expected"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/public_counts.py)" = "6a42b4d1d040d0924dbb153a6dfc1d24c3dc3e10"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/FROZEN_DESIGN.json)" = "42db4b7e285a1ee0423c219febc6892f76d9e875"
+          echo 'Q7_FINAL_SOURCE_IDENTITY=PASS'
+      - name: Focused candidate synthetic tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/nci04_p0fc2/public_counts.py
+          python -B -m unittest discover -s research/nci04_p0fc2 -p 'test_*.py' -v
+          echo 'Q7_FOCUSED=PASS'
+      - name: Exactly one final full native Python regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          echo 'Q7_FINAL_FULL_REGRESSION=PASS'
+      - name: Verify no tracked mutation
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "$(git status --porcelain)"
+          echo 'Q7_CLEAN_SOURCE=PASS'
