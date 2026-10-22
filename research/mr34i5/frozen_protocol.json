@@ -1,0 +1,62 @@
+{
+  "schema": "yggdrasil.mr34i5.numpy_runtime_feature_control.nonlearning.original.v1",
+  "exact_predecessor_MR34I4_head_sha": "43e1fd51fc5cd7193978b527daa67d3f02314db8",
+  "exact_unmodified_original_S4C1": "8e1561eb1a542e21307bac669c42435cf48e59bd",
+  "original_source_git_shas": {
+    "FaramaMiniGridDoorKey8": "7f5853792ea7f04f75614661006d87fcf949f26d",
+    "DeepMindPycolabApprehend": "6504c8065dd5322438f23a2a9026649904f3322a"
+  },
+  "exact_MR34I4_input_cohorts_sha256": {
+    "canonical_frozen_boundaries": "d6e87d59c48e7a464f564ecaeb7c7f8d5282755fa67e9a9725617f7f9ea21718",
+    "canonical_seeded_binary64_inputs": "1012ca50ca7f8a14444535c922d88a91ece8f0362a1979b73d08aff146d22b9b",
+    "FaramaMiniGridDoorKey8": "ba501812452b529cf35d4aaa176f9d5a0b5cfbb57a388d67c49dfbc547109486",
+    "DeepMindPycolabApprehend": "23d9db17d29ed9646afac1b34000d0be320c2fa50ca424db2f85f1829be11bd7"
+  },
+  "training_original_source_reset_seeds": "Only MR34I4 already consumed 20 S4C1 training seeds; native source collection and original model initial forward only. No gradient optimizer or held task.",
+  "numeric_modes": [
+    {
+      "mode": "default",
+      "environment": {
+        "NPY_DISABLE_CPU_FEATURES": null
+      },
+      "must_have_feature_state": "none: identify enabled baseline and dispatch at runtime"
+    },
+    {
+      "mode": "disable_avx2_fma3",
+      "environment": {
+        "NPY_DISABLE_CPU_FEATURES": "AVX2,FMA3"
+      },
+      "must_have_feature_state": "numpy.core._multiarray_umath.__cpu_features__ must report AVX2=false and FMA3=false; absent dispatch flags or NumPy unsupported is fail-closed"
+    }
+  ],
+  "numerical_runtime": "numpy==1.26.4; Python 3.11; process startup environment before any numpy import; original 8x float64 np.clip / np.exp / sigmoid unchanged; compare 80-digit Decimal fixed reference across ORIGINAL MR34I4 490 input cases.",
+  "precommitted_replicas": {
+    "os": [
+      "ubuntu-latest",
+      "windows-latest"
+    ],
+    "repeat": [
+      1,
+      2
+    ],
+    "mode": [
+      "default",
+      "disable_avx2_fma3"
+    ],
+    "expected_eight_original_native_jobs": 8
+  },
+  "all_feature_controls_validated": "Check requested NPY_DISABLE_CPU_FEATURES is applied only in disable mode, fixed NumPy 1.26.4, matching CPU dispatch introspection; do not assume disabling AVX2,FMA3 disables AVX512/other SIMD, or controls entire libm/ufunc path.",
+  "source_critical_matched_inputs": "Require all 490 raw source u input binary64 SHA from MR34I4 match frozen source hashes in all 8 jobs before ANY numerical comparison.",
+  "objective_comparisons": "For each four-cohort case, compare original NumPy exp and source original p float64 binary64 array SHA within mode same OS, across OS, and across modes; compare Decimal reference SHA, NumPy CPU reported flags and original source u SHA. For any mismatch print first differing index and true raw float64 bit pattern; preserve all original raw bytes. Never assert kernel improvement based on 8 CI green jobs alone.",
+  "bounded_engineering_go": "Source SHA and inputs bitwise reproducible and CPU dispatch mode validated on all 8 jobs. Distinct original NumPy outputs accepted as negative evidence; reproducible numerical kernel under disabled mode would require identical original exp and p across four disabled original OS jobs. High precision reference must remain identical across all jobs.",
+  "no_relaxation": "Do not modify source learner math, original optimizer, original source family, target scientific cohort, base binary64 samples, rounding of original results, original trained checkpoint or first use; retain all prior negative results.",
+  "prior_first_numpy_exp_divergence": "MR34I4 first original NumPy exp discrepancy on u=-32 original boundary index 3 between Ubuntu replicas despite bit exact inputs; other original random source input exp differences cross-OS.",
+  "scientific_status": {
+    "portable_trained_S4C1_checkpoint": "NO_GO",
+    "unfamiliar_task_cognitive_transfer": "NOT_TESTED",
+    "protected_first_use_consumed": false,
+    "G29_atlas_and_full_OS_regression": "FAIL_CLOSED"
+  },
+  "resources": "Full original source 490-case CPU/RSS plus numerical probing; no learner training and no matched cognitive deployment claims.",
+  "draft_unmerged": true
+}
