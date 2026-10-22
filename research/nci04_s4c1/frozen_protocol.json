@@ -1,0 +1,101 @@
+{
+  "schema": "yggdrasil.nci04.s4c1.native-prediction-conditioned-state.dev.v1",
+  "exact_qualified_parent": "f3751b15e8139a68f34fb695b8bf418492086dc5",
+  "source_original_commits": {
+    "FaramaMiniGridDoorKey8": "7f5853792ea7f04f75614661006d87fcf949f26d",
+    "DeepMindPycolabApprehend": "6504c8065dd5322438f23a2a9026649904f3322a"
+  },
+  "prior_native_S4C0_adequacy": "Windows twice Linux twice PASS, eight-state recurrent certified prospective DoorKey Brier .05494334, Pycolab .14287174; old MR34F weak recurrent remains negative and held seeds consumed",
+  "distinct_new_train_development_reset_seeds": [
+    1861,
+    1867,
+    1871,
+    1873,
+    1877,
+    1879,
+    1889,
+    1901,
+    1907,
+    1913,
+    1931,
+    1933,
+    1949,
+    1951,
+    1973,
+    1979,
+    1987,
+    1993,
+    1997,
+    1999
+  ],
+  "distinct_new_held_development_reset_seeds": [
+    2003,
+    2011,
+    2017,
+    2027,
+    2029,
+    2039,
+    2053,
+    2063
+  ],
+  "source_native_step_cap": 96,
+  "source_actor": "existing unchanged MR34F native source-blind random actor, one policy stream, original public frames only, no evaluator hidden state or reward",
+  "common_original_public_features": "MR34F 23 values from eight original full-public byte-segment mean/nonzero proportions + seven announced native action one-hot values. All conventional controls get these 23 preaction values. Candidate receives strictly LESS: 7 deterministic features per cell (intercept, own segment mean/nonzero, across-segment mean/nonzero, cos/sin of native action index), no hidden source teacher",
+  "true_public_target": "Eight native NEXT-frame source-public segment-change bits authentically computed after source-native action, learned only in TRAINING not evaluation state; source masks and all 8 labels identical to conventional controls",
+  "native_structure": "Original Yggdrasil LocalTaskRuntime/LocalGenome 3x7 common genome (21) + eight 3-coefficient local role vectors (24) = EXACTLY 45 trainable coefficients. Eight bounded scalar inference states, no new persistent weights, no preassigned messaging ring used for inference.",
+  "novel_hypothesis": "Each cell learns to compress its own CURRENT PREDICTED OUTCOME, not true outcome, as a predictive-state quotient: p=sigmoid(g0 dot f + role0 + state*(g1 dot f+role1)); next_state=tanh(g2 dot f + role2*(2p-1)). Full episode causal-time-ordered Bernoulli cross-entropy derivative trains shared and local parameters; no actual target feedback or future leak into evaluation memory. Semantic world roles NOT predefined/discovered.",
+  "training_algorithm": {
+    "epochs_max": 40,
+    "learning_rate": 0.035,
+    "adam_betas": [
+      0.9,
+      0.999
+    ],
+    "adam_epsilon": 1e-8,
+    "l2": 0.0002,
+    "global_gradient_clip": 5,
+    "source_train_only_best_epoch_checkpoint": true,
+    "no_held_dev_hyperparameter_selection": true,
+    "no_held_dev_weight_updates": true
+  },
+  "gradient_finite_diff": {
+    "difference_step": 0.00001,
+    "maximum_abs_error": 0.00001,
+    "weights_tested": [
+      "shared[0,0]",
+      "shared[1,1]",
+      "shared[2,3]",
+      "roles[0,0]",
+      "roles[1,1]",
+      "roles[2,2]"
+    ]
+  },
+  "ablations": [
+    "native same learned 45 weights with eight carried states zeroed at each preaction",
+    "same learned 45 weights with eight local 3-coefficient role vectors cyclically permuted",
+    "native exact trained state checkpoint cold restore and equal event predictions"
+  ],
+  "controls": [
+    "equally original-data trained S4C0 correct-BPTT eight-state conventional recurrent with Adam train-only selection, 23 public input values",
+    "fully trained MR34F conventional memoryless 23-feature logistic",
+    "128-context Bayesian counts",
+    "128-context symbolic two-step public-history counts"
+  ],
+  "frozen_dev_success": [
+    "candidate strict held original native Brier improves vs all competent recurrent, memoryless, Bayesian, symbolic controls on BOTH independently authored engines",
+    "candidate held source native Brier improves by >=0.002 vs exact same weights with all recurrent states erased on BOTH",
+    "candidate intact beats own state ablation on >=6 of 8 new distinct original held native reset clusters in EACH engine",
+    "learned local role reassignment worsens prediction on BOTH engines",
+    "source-native Windows x2 Linux x2 identical per-episode public-action source digests and numerical metrics",
+    "exact original 45 trainable coefficient and eight bounded inference-state budget unchanged",
+    "source/model training total CPU, OS RSS, source policy, serialized model and internal memory communication measured; cannot scientific-admit without resource matching"
+  ],
+  "resource_limit": "Candidate uses only 7 derived public features per cell vs controls full 23, no more source information. Offline full-episode BPTT caches entire original public history during TRAINING and counts this training-only memory; source and models share same worker RAM. No network wire, no learned edge messages. All-in per-model isolated cost and scientific first-use NOT qualified.",
+  "alias_target_requirement": "Natural current-public identical but next-public divergent source contexts must be measured as a separate qualification before scientific transfer claim. This gate's native public 23-feature loss is NOT proof of causal alias-specific competence.",
+  "provenance": "new DEV cohorts only, do not reuse MR34F/S4C0 consumed held seeds, no paid API or other repos, no intervention staging",
+  "G29_atlas": "BLOCKED pending exact-source reviewed repin and complete Windows/Linux regressions",
+  "source_license_review": "UNRESOLVED upstream distribution metadata",
+  "original_native_runtime_production_changed": false,
+  "scientific_first_use_protected": false,
+  "scientific_admission": false
+}
