@@ -15,6 +15,8 @@ TARGETS={"FaramaMiniGridDoorKey8":(3,1871),"DeepMindPycolabApprehend":(8,1901)}
 ORIGINS={"FaramaMiniGridDoorKey8":"7f5853792ea7f04f75614661006d87fcf949f26d",
          "DeepMindPycolabApprehend":"6504c8065dd5322438f23a2a9026649904f3322a"}
 PARENT="8e1561eb1a542e21307bac669c42435cf48e59bd"
+TRAIN=(1861,1867,1871,1873,1877,1879,1889,1901,1907,1913,
+       1931,1933,1949,1951,1973,1979,1987,1993,1997,1999)
 
 def h(v):return sha256(v).hexdigest()
 def enc(obj):return json.dumps(obj,sort_keys=True,separators=(",",":"))
@@ -50,8 +52,8 @@ def raw(v):
 
 def observed_gradient(model,episode):
     """Read original stack frames but never write their locals or parameters."""
-    bptt=NativePredictiveQuotient45.analytic_bptt.__code__
-    forward=NativePredictiveQuotient45.forward.__code__
+    bptt=type(model).analytic_bptt.__code__
+    forward=type(model).forward.__code__
     f_at={98:("read","read"),99:("u","u"),100:("p","p"),101:("ns","next_s")}
     b_at={129:("dz","dz"),130:("du","du"),
           131:("dg0","dg"),132:("dg1","dg"),133:("dg2","dg"),
