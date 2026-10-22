@@ -90,6 +90,7 @@ def run(engine,source):
         actions=17
     started=time.process_time_ns()
     receipts=[]
+    public_frame_audits=[]
     total_steps=0
     total_public_bytes=0
     ended_early=0
@@ -104,9 +105,12 @@ def run(engine,source):
             else:
                 obs=env.reset()
             history=sha256()
+            public_step_hashes=[]  # evaluator-side diagnostic only
+            initial_public_digest=None
             steps=0
             try:
                 before=public_bytes(obs,shape)
+                initial_public_digest=sha256(before).hexdigest()
                 for index in range(cfg["maximum_original_native_actions_per_episode"]):
                     action=rng.randrange(actions)
                     if engine=="farama":
@@ -121,6 +125,7 @@ def run(engine,source):
                     history.update(before)
                     history.update(bytes([action]))
                     history.update(after)
+                    public_step_hashes.append(sha256(after).hexdigest())
                     before=after
                     steps+=1
                     total_public_bytes+=len(after)
@@ -133,6 +138,12 @@ def run(engine,source):
                     "reset_seed":seed,"source_stream":stream,
                     "actual_original_steps":steps,
                     "public_action_consequence_sha256":history.hexdigest(),
+                })
+                public_frame_audits.append({
+                    "reset_seed":seed,
+                    "source_stream":stream,
+                    "initial_public_image_sha256":initial_public_digest,
+                    "after_each_original_step_public_image_sha256":public_step_hashes,
                 })
                 total_steps+=steps
             finally:
@@ -154,6 +165,8 @@ def run(engine,source):
         "original_source_public_observation_bytes_processed":total_public_bytes,
         "original_native_action_consequence_digest":digest,
         "per_seed_stream_original_receipts":receipts,
+        "read_only_public_image_divergence_diagnostics":public_frame_audits,
+        "extra_public_hash_instrumentation_cost_included":True,
         "full_isolated_worker_cpu_ns":time.process_time_ns()-started,
         "full_original_source_process_os_peak_rss_bytes":peak_resident(),
         "new_protected_first_use_consumed":False,
