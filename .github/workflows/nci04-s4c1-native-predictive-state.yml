@@ -8,6 +8,16 @@ on:
       - research/nci04-s4c0-recurrent-adequacy-20261021
 permissions:
   contents: read
+# Fully freeze numerical kernel parallelism BEFORE importing numpy.
+# The prior four focused jobs had identical native event hashes but
+# differed in Pycolab learned checkpoint/held development Brier.
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  BLIS_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+  VECLIB_MAXIMUM_THREADS: '1'
 concurrency:
   group: nci04-s4c1-native-predictive-state-${{ github.ref }}
   cancel-in-progress: false
