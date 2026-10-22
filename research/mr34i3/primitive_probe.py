@@ -9,9 +9,6 @@ from hashlib import sha256
 from pathlib import Path
 import json, subprocess, sys, time
 import numpy as np
-from research.mr34f.prospective_controls import episodes
-from research.nci04_s4c1.native_predictive_quotient import NativePredictiveQuotient45
-from research.nci04_s4c1.original_native_predictive_state import TRAIN,protocol as s4c1_protocol
 
 FILE=Path(__file__).with_name("frozen_protocol.json")
 TARGETS={"FaramaMiniGridDoorKey8":(3,1871),"DeepMindPycolabApprehend":(8,1901)}
@@ -84,6 +81,9 @@ def observed_gradient(model,episode):
     return gradient,observations
 
 def local_audit(name,root,p):
+    from research.mr34f.prospective_controls import episodes
+    from research.nci04_s4c1.native_predictive_quotient import NativePredictiveQuotient45
+    from research.nci04_s4c1.original_native_predictive_state import TRAIN,protocol as s4c1_protocol
     s4c1_protocol()
     original,receipts=episodes(root,name,TRAIN)
     source=h(enc(receipts).encode())
