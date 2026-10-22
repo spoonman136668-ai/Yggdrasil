@@ -223,7 +223,7 @@ def main(original_farama,original_pycolab):
     training_go=all(x["precommitted_qualifier_recurrent_training_adequacy_GO"]
                     for x in report.values())
     print("MR34G_CONVENTIONAL_RECURRENT_TRAIN_ONLY_ADEQUACY="+canon({
-        "preregistered_precode_protocol_sha256":sha(FROZEN.read_bytes()),
+        "preregistered_precode_protocol_sha256":sha(FILE.read_bytes()),
         "independently_authored_original_source_controls":report,
         "frozen_training_adequacy_GO":bool(training_go),
         "original_sources_and_all_training_CPU_ns":time.process_time_ns()-start,
