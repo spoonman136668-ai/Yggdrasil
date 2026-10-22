@@ -1,0 +1,49 @@
+{
+  "schema": "yggdrasil.mr34b.independent-original-source-admission.dev.v1",
+  "exact_yggdrasil_parent_sha": "a7e85db2eefe975799acd2f2b23e981db0fcf91a",
+  "primary_source": {
+    "repository": "Farama-Foundation/Minigrid",
+    "sha": "7f5853792ea7f04f75614661006d87fcf949f26d",
+    "class": "minigrid.envs.doorkey.DoorKeyEnv(size=8)",
+    "public_observation": "obs['image'] uint8 7x7x3",
+    "source_action_ids": "0..6"
+  },
+  "independent_second_source": {
+    "repository": "danijar/crafter",
+    "sha": "e04542a2159f1aad3d4c5ad52e8185717380ee3a",
+    "class": "crafter.Env",
+    "public_observation": "env.reset or env.step observation uint8 64x64x3, no info fields",
+    "source_action_ids": "0..len(env.action_names)-1",
+    "independent_from_farama": true
+  },
+  "preregistered_new_development_only_seeds": [
+    911,
+    919,
+    929,
+    937
+  ],
+  "public_action_stream_ids": [
+    0,
+    1
+  ],
+  "maximum_original_native_actions_per_episode": 96,
+  "planned_native_episodes_per_source": 8,
+  "source_original_actions": "Source native env.reset and env.step without staged or simulated world state.",
+  "action_policy": "Uniform Random seeded int(1000003*seed+337+10007*stream), source-independent no world truth, action from public action-space size only, no reward or info used",
+  "native_episode_digest": "SHA256 over chronological source identifier, reset seed, stream, public observation before and after actual original step, and chosen original action",
+  "public_stimuli": "Only source observations and available action index. No environment source-private state, world location, goal, reward, mission or info.",
+  "source_differences": "This is source admission, not equality of observation or action spaces, sampled history features, or learner inputs.",
+  "source_creation_and_custody": "Exact upstream Git checkouts, clean worktrees, one native worker per independent environment, unaltered original source engines.",
+  "heldout_science_families_consumed": false,
+  "protected_first_use": false,
+  "no_native_yggdrasil_learner_training": true,
+  "allow_new_cognitive_claims": false,
+  "primary_evidence": "Genuine count of source-native public action/next-observation transitions, deterministic cross-OS episode hash receipt, independent source provenance and public-only actor, no fabricated transitions.",
+  "admissibility_pass": "Both upstream exact original SHA pins verified and all 16 episodes contain >=1 native source step, authentic unchanged public observation shape/dtype, repeatable Windows/Linux digest, zero private world inputs to policy. Stop if a source cannot run unchanged.",
+  "target_future_experiment": "After dual original native admission, freeze prospective public-history vs current-observation conventional learner training and independent preregistered evaluation; no claim of history sufficiency from source admission.",
+  "resource_receipt": "Actor+environment+source trace process CPU, OS peak RSS, serialized digest and source byte counts separately by source, with no interfamily efficiency claims.",
+  "no_tuning_after_results": true,
+  "g29_original_atlas": "BLOCKED until exact reviewed source-bound artifact repair and final regressions",
+  "upstream_license_review": "REVIEW_REQUIRED before redistribution",
+  "scientific_admission": "NO_GO"
+}
