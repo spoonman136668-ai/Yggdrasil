@@ -1,0 +1,134 @@
+name: P0FC2R Q7 G29 reanchor and native regression
+
+on:
+  push:
+    branches:
+      - repair/nci04-p0fc2r-g29-portability-20261022
+    paths:
+      - .github/workflows/qualify-p0fc2r-q7.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: p0fc2r-q7-one-source-one-qualification
+  cancel-in-progress: false
+
+jobs:
+  reanchor:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    outputs:
+      source_sha: ${{ steps.reanchor.outputs.source_sha }}
+      evidence_sha: ${{ steps.reanchor.outputs.evidence_sha }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Pin exact new source and immutable P0FC2 inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = "repair/nci04-p0fc2r-g29-portability-20261022"
+          test "$(git rev-parse HEAD^)" = "f09359101c7f5f084944a882d5dcb8e241b3910f"
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD)" = ".github/workflows/qualify-p0fc2r-q7.yml"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/public_counts.py)" = "6a42b4d1d040d0924dbb153a6dfc1d24c3dc3e10"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/FROZEN_DESIGN.json)" = "42db4b7e285a1ee0423c219febc6892f76d9e875"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/provenance_receipt.py)" = "4de1d68678b03b252e1808612c3447b3948e6d5c"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/test_provenance_receipt.py)" = "c68e70c199c23b7d38cc364fb331051b04e9f7b3"
+          test "$(git rev-parse HEAD:scripts/free_fanout_sidecar.py)" = "76c36a3dedb73ce9e60ea79a5118f42bbf493f52"
+          test "$(git rev-parse HEAD:tests/test_free_fanout_sidecar.py)" = "4bf7f0d5bf5047617617c898859a41fcb7d67e13"
+          test -z "$(git status --porcelain)"
+          echo "Q7_SOURCE_IDENTITY=PASS"
+      - name: Reanchor G29 to genuine source parent and commit only atlas artifacts
+        id: reanchor
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_sha="$(git rev-parse HEAD)"
+          python scripts/build_code_atlas.py --source-commit "$source_sha" --write
+          recorded="$(python -c "import json;print(json.load(open('.ice/code-atlas.json', encoding='utf-8'))['source_commit'])")"
+          test "$recorded" = "$source_sha"
+          expected="$(printf '%s\n' '.ice/code-atlas.html' '.ice/code-atlas.ice' '.ice/code-atlas.json')"
+          actual="$(git diff --name-only)"
+          test "$actual" = "$expected"
+          test -z "$(git ls-files --others --exclude-standard)"
+          git config user.name "p0fc2r-qualified-atlas"
+          git config user.email "p0fc2r-qualified-atlas@users.noreply.github.com"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only)" = "$expected"
+          git commit -m "docs(ice): G29 source-bound reanchor of Q7 candidate"
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD)" = "$expected"
+          python scripts/build_code_atlas.py --check
+          git push origin HEAD:refs/heads/repair/nci04-p0fc2r-g29-portability-20261022
+          echo "source_sha=$source_sha" >> "$GITHUB_OUTPUT"
+          echo "evidence_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "Q7_ATLAS_REANCHORED=PASS"
+
+  native:
+    needs: reanchor
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - name: Configure checkout identity on both platforms
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.reanchor.outputs.evidence_sha }}
+          persist-credentials: false
+          fetch-depth: 0
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Verify exact source pin and frozen learner contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.reanchor.outputs.evidence_sha }}"
+          test "$(git rev-parse HEAD^)" = "${{ needs.reanchor.outputs.source_sha }}"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/public_counts.py)" = "6a42b4d1d040d0924dbb153a6dfc1d24c3dc3e10"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/FROZEN_DESIGN.json)" = "42db4b7e285a1ee0423c219febc6892f76d9e875"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/provenance_receipt.py)" = "4de1d68678b03b252e1808612c3447b3948e6d5c"
+          test "$(git rev-parse HEAD:research/nci04_p0fc2/test_provenance_receipt.py)" = "c68e70c199c23b7d38cc364fb331051b04e9f7b3"
+          python scripts/build_code_atlas.py --check
+          echo "Q7_G29_EXACT_SOURCE_ACCEPTANCE=PASS"
+      - name: Focused synthetic and portability regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/nci04_p0fc2/public_counts.py
+          python -B -m unittest discover -s research/nci04_p0fc2 -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_free_fanout_sidecar.py' -v
+          echo "Q7_FOCUSED_WINDOWS_LINUX=PASS"
+      - name: One complete native repository Python regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          echo "Q7_FINAL_FULL_NATIVE_PYTHON_REGRESSION=PASS"
+      - name: Verify no worktree mutations
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "$(git status --porcelain)"
+          echo "Q7_WORKTREE_UNCHANGED=PASS"
