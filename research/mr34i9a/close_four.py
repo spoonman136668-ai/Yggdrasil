@@ -4,6 +4,7 @@ Never filter unfavorable workers. A negative result is a valid scientific
 engineering-kernel closure, not a reason to rerun or alter frozen thresholds.
 """
 import json
+import os
 from pathlib import Path
 import sys
 
@@ -33,7 +34,7 @@ def close(folder, out):
         if (item["schema"] != "yggdrasil.mr34i9b.compiled_eightwide_development_only.v1"
             or item["original_source_pins"] != PINS
             or item["source_sha"] !=
-                "REPLACE_WITH_WORKFLOW_IMPLEMENTATION_SHA"
+                os.environ["GITHUB_SHA"]
             or item["scientific_first_use"] is not False
             or item["training_performed"] is not False
             or item["original_learner_modified"] is not False
