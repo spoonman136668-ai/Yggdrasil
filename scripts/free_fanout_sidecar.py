@@ -6,7 +6,12 @@ import math
 import os
 import pathlib
 import re
-import resource
+# Resource accounting is POSIX-only. On other systems preserve importable
+# validation, but reject successful candidate evidence without real CPU/RSS data.
+try:
+    import resource
+except ImportError:
+    resource = None
 import subprocess
 import sys
 import time
@@ -294,7 +299,7 @@ def run_candidate(manifest, package_root, candidate_id, output_root):
         "--output", str(result_path),
     ]
 
-    before = resource.getrusage(resource.RUSAGE_CHILDREN)
+    before = resource.getrusage(resource.RUSAGE_CHILDREN) if resource is not None else None
     started = time.monotonic()
     try:
         proc = subprocess.run(
@@ -312,7 +317,7 @@ def run_candidate(manifest, package_root, candidate_id, output_root):
         (output_root / "stderr.txt").write_text(exc.stderr or "", encoding="utf-8")
         fail("FREE_FANOUT_CANDIDATE_TIMEOUT")
     elapsed = time.monotonic() - started
-    after = resource.getrusage(resource.RUSAGE_CHILDREN)
+    after = resource.getrusage(resource.RUSAGE_CHILDREN) if resource is not None else None
 
     (output_root / "stdout.txt").write_text(proc.stdout, encoding="utf-8")
     (output_root / "stderr.txt").write_text(proc.stderr, encoding="utf-8")
@@ -322,6 +327,10 @@ def run_candidate(manifest, package_root, candidate_id, output_root):
         fail("FREE_FANOUT_RESULT_MISSING")
 
     result = validate_result(load(result_path), candidate_id, manifest)
+    # Windows cannot supply resource.getrusage(RUSAGE_CHILDREN). Never claim
+    # a zero/default peak RSS or CPU result as an accepted measurement.
+    if resource is None:
+        fail("FREE_FANOUT_RESOURCE_MEASUREMENT_UNAVAILABLE")
     peak_rss_kib = int(after.ru_maxrss)
     measurements = {
         "elapsed_seconds": round(elapsed, 6),
