@@ -262,9 +262,9 @@ def main(source):
         "replayed_previously_consumed_original_source_episodes":len(episode_receipts),
         "source_development_frozen_preaction_results":results,
         "precommitted_development_history_signal_go":candidate_go,
-        "full_worker_cpu_ns_including_original_source_replay":
+        "audit_parent_cpu_ns_excludes_original_source_subprocess":
             time.process_time_ns()-start,
-        "whole_process_peak_rss_bytes_including_native_source":
+        "audit_parent_peak_rss_bytes_excludes_original_source_subprocess":
             peak_os_resident_bytes(),
         "two_source_families_independently_authored":False,
         "protected_scientific_first_use":False,
