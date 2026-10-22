@@ -69,6 +69,14 @@ def audit(name,root,protocol):
             rawsha=[sha(g.tobytes()) for g in raw]
             if t==1 and (rawsha[0]!=custody["original_first_gradient_3x7_sha"][name]
                 or rawsha[1]!=custody["original_first_gradient_8x3_sha"][name]):
+                print("MR34I2_FROZEN_FIRST_GRADIENT_FAILURE="+canonical({
+                    "source":name,"original_training_seed":SEEDS[j],
+                    "raw_shared_actual":rawsha[0],
+                    "raw_shared_expected":custody["original_first_gradient_3x7_sha"][name],
+                    "raw_roles_actual":rawsha[1],
+                    "raw_roles_expected":custody["original_first_gradient_8x3_sha"][name],
+                    "model_initial_sha":sha(initial.encode()),
+                    "unchanged_original_source_event_sha":source_digest}))
                 raise ValueError("MR34I2_ORIGINAL_FIRST_GRADIENT_DRIFT")
             reg=[g+(.0002*w if w.ndim==2 else 0.)
                  for g,w in zip(raw,model.params())]
