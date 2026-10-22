@@ -1,0 +1,100 @@
+{
+  "schema": "yggdrasil.mr34i4.original_sigmoid_nonlearning_numerical_oracle.v1",
+  "exact_original_MR34I3_parent": "d01fed0738e44dce8753c00c7cca30f258a3385b",
+  "original_unedited_model_source": "8e1561eb1a542e21307bac669c42435cf48e59bd",
+  "authentic_source_original_commits": {
+    "FaramaMiniGridDoorKey8": "7f5853792ea7f04f75614661006d87fcf949f26d",
+    "DeepMindPycolabApprehend": "6504c8065dd5322438f23a2a9026649904f3322a"
+  },
+  "reused_only_original_source_training_seeds": [
+    1861,
+    1867,
+    1871,
+    1873,
+    1877,
+    1879,
+    1889,
+    1901,
+    1907,
+    1913,
+    1931,
+    1933,
+    1949,
+    1951,
+    1973,
+    1979,
+    1987,
+    1993,
+    1997,
+    1999
+  ],
+  "prohibited_held_development_seeds": [
+    2003,
+    2011,
+    2017,
+    2027,
+    2029,
+    2039,
+    2053,
+    2063
+  ],
+  "canonical_test_inputs": {
+    "frozen_base_binary64_hex": [
+      "-0x1.1800000000000p+5",
+      "-0x1.0000000000000p+5",
+      "-0x1.0000000000000p+4",
+      "-0x1.0000000000000p+2",
+      "-0x1.0000000000000p+0",
+      "-0x1.0000000000000p-3",
+      "-0x0.0p+0",
+      "0x0.0p+0",
+      "0x1.0000000000000p-3",
+      "0x1.0000000000000p+0",
+      "0x1.0000000000000p+2",
+      "0x1.0000000000000p+4",
+      "0x1.0000000000000p+5",
+      "0x1.1800000000000p+5"
+    ],
+    "add_immediate_neighbor_binary64_around_each_base": true,
+    "frozen_seeded_random_input_count": 128,
+    "frozen_random_input_generator": "Python random.Random(341234).uniform(-35.0,35.0); convert each generated native float to exact binary64; no OS-dependent math calls",
+    "source_native_original_training_case": "For EACH original independently authored source, use only FIRST public preaction 23-feature input from each of 20 already-consumed original source TRAINING episodes, original unmodified NativePredictiveQuotient45 initial parameters, and original cell_public_features; evaluate ORIGINAL initial model with no previous recurrent state, construct source u=f@g[0]+roles[:,0] and read=f@g[1]+roles[:,1]. 8 source-prediction logits per episode. All original source-u input hex strings must match across OS/replicas before any primitive equivalence claim. No source-private features, reward or holdout.",
+    "scalar_vector_block_size": 8,
+    "sorted_test_inputs": "fixed base/neighbor order then seeded randomized 128 then actual original SOURCE logit tensors in fixed family/train reset order; pad final seeded group only if needed using +0.0 and report counts"
+  },
+  "comparison_candidates": [
+    {
+      "name": "source_original_numpy_vector_sigmoid",
+      "operation": "p=1./(1.+np.exp(-np.clip(u,-35.,35.))); u shape (8,), float64, no replacement in original model"
+    },
+    {
+      "name": "numpy_scalar_exp_diagnostic",
+      "operation": "for each clipped float64 input, np.exp(np.float64(-clip)) then numpy float64 normalization; not original vector path"
+    },
+    {
+      "name": "system_math_exp_diagnostic",
+      "operation": "math.exp(float(-clip)); Python float64 add/divide"
+    },
+    {
+      "name": "high_precision_decimal_oracle",
+      "operation": "Decimal.from_float(EXACT source binary64 after clamping to [-35,+35]), unary negation, context precision=80 decimal exp, one/(one+exp), explicit nearest binary64 float conversion"
+    }
+  ],
+  "decimal_precision_digits": 80,
+  "agreement_go": "Original binary64 source input cohort must be bit-exact across Windows2/Linux2 and 4/4 source+kernel jobs PASS; high-precision Decimal oracle p outputs MUST be bit-identical for ALL 4 jobs, with documented per-input binary64 bit patterns; the original vector np.exp/normalization may differ and must be retained as a NEGATIVE, never normalized to pass; inspect exact first index and stage of observed differences. If source input differs, report source-local corpus nonqualification and do not conflate input and kernel origins.",
+  "numerical_accuracy_guard": "Each oracle p output finite, in [0,1], and monotonically ordered across sorted canonical static inputs. Record exact integer ULP distance of each observed original vector output to Decimal oracle. No threshold-based promotion or rounding of observed source output.",
+  "cost_accounting": "Same-process native source collection + all nonlearning candidate math evaluations CPU/OS peak RSS, Decimal reference CPU separately, every original source input byte hash and source actor receipts, final serialized report bytes; no learner training/optimizer and no neural model benefit/cost inference.",
+  "strict_safety": {
+    "no_original_model_source_patch": true,
+    "no_gradient_or_weight_training": true,
+    "no_retraining_or_precision_change": true,
+    "no_new_seed_or_scientific_first_use": true,
+    "no_held_or_third_source_executed": true,
+    "no_API_spend": true,
+    "no_merge": true,
+    "no_trading_or_controller_actions": true
+  },
+  "G29_atlas_and_full_OS_regression": "FAIL_CLOSED",
+  "portable_original_learned_checkpoint_admission": "NO_GO",
+  "cognitive_unfamiliar_transfer_scientific_admission": "NO_GO"
+}
