@@ -1,0 +1,100 @@
+{
+  "schema": "yggdrasil.mr34i8.frozen_portable_decimal80_nonlearning_candidate.v1",
+  "goal": "Investigate a wholly separate portable binary64 sigmoid kernel and its actual CPU/resource cost without modifying the original S4C1 trained learner.",
+  "exact_predecessor_MR34I7": "5f0520006d9ec17f88bc6bd67ca205df2a6fb10c",
+  "exact_unchanged_MR34I4_kernel_probe_blob": "79df5303a4278d65363d8ab17a5d832c576b8722",
+  "exact_unchanged_original_ygg_s4c1": "8e1561eb1a542e21307bac669c42435cf48e59bd",
+  "independent_original_sources": {
+    "FaramaMiniGridDoorKey8": "7f5853792ea7f04f75614661006d87fcf949f26d",
+    "DeepMindPycolabApprehend": "6504c8065dd5322438f23a2a9026649904f3322a"
+  },
+  "original_MR34I4_source_public_logit_identity_sha": {
+    "FaramaMiniGridDoorKey8": "ba501812452b529cf35d4aaa176f9d5a0b5cfbb57a388d67c49dfbc547109486",
+    "DeepMindPycolabApprehend": "23d9db17d29ed9646afac1b34000d0be320c2fa50ca424db2f85f1829be11bd7"
+  },
+  "original_source_train_only_reset_seeds": [
+    1861,
+    1867,
+    1871,
+    1873,
+    1877,
+    1879,
+    1889,
+    1901,
+    1907,
+    1913,
+    1931,
+    1933,
+    1949,
+    1951,
+    1973,
+    1979,
+    1987,
+    1993,
+    1997,
+    1999
+  ],
+  "prohibited_original_held_reset_seeds": [
+    2003,
+    2011,
+    2017,
+    2027,
+    2029,
+    2039,
+    2053,
+    2063
+  ],
+  "original_frozen_input_cohorts": [
+    {
+      "name": "canonical_frozen_boundaries",
+      "count": 42
+    },
+    {
+      "name": "canonical_seeded_binary64_inputs",
+      "count": 128,
+      "generator": "original MR34I4 Python Random(341234)"
+    },
+    {
+      "name": "FaramaMiniGridDoorKey8",
+      "count": 160,
+      "source": "unchanged first original public logit / preaction, original first 20 consumed training episodes"
+    },
+    {
+      "name": "DeepMindPycolabApprehend",
+      "count": 160,
+      "source": "unchanged first original public logit / preaction, original first 20 consumed training episodes"
+    }
+  ],
+  "predeclared_competitors": {
+    "original": "Original unchanged 8-wide float64 p=1./(1.+np.exp(-np.clip(u,-35.,35.))), isolated from candidate",
+    "portable_candidate": "For each exact input float64, clamp [-35,35] with exact input float64 comparisons, Decimal.from_float(exact clamped input), 80-decimal-digit local context exp, p=1/(1+exp(-u)), convert via Python float to nearest binary64; no NumPy exp calls in candidate",
+    "independent_higher_precision_reference": "Decimal.from_float(clamped original exact binary64), Decimal context 120 digits, exp and sigmoid; convert to nearest binary64; only a higher-precision crosscheck, not independent implementation/math proof",
+    "original_70bit_prerecorded_reference": "MR34I4 earlier 80-digit Decimal outputs provide external existing exact-sha comparators; full equality checked against reference computed on same frozen original cohort."
+  },
+  "cpu_benchmark": {
+    "fixed_batched_input_count": 490,
+    "timed_repetitions": 32,
+    "warmup_repetitions": 2,
+    "source_actor_and_model_original_provenance_cpu_recorded": true,
+    "per_competitor_process_cpu_ns": true,
+    "per_competitor_elapsed_ns": true,
+    "whole_worker_OS_peak_RSS_bytes": true,
+    "report_cost_ratio_candidate_to_original": true,
+    "no_automatic_cost_waiver": true,
+    "timings_are_local_microbench_only_not_full_40_epoch_model_or_conventional_control_parity": true
+  },
+  "acceptance": {
+    "four_native_workers": "Windows x2, Ubuntu x2, each independently original source-clean and exact-protocol anchored",
+    "source_identity": "All 4 original source logit SHA match frozen previous baseline; if any mismatch, fail original-source admission; do not call candidate model portable",
+    "candidate_repeatability": "Binary64 candidate output SHA identical on both OS and all four workers for every cohort",
+    "precision": "Candidate Decimal80 float64 bytes match Decimal120 float64 across frozen 490 examples, or record accuracy NO_GO; Decimal80 same as existing MR34I4 oracle",
+    "original_semantics": "Original NumPy output bytes reported unchanged even if they differ, and exact number of original-vs-candidate ULP differences retained",
+    "cpu_efficiency": "Candidate per-cohort measured isolated CPU cost <= original NumPy isolated CPU cost is needed for no-regression engineering GO; otherwise resource GO=FAIL even if deterministic",
+    "scientific_model_acceptance": "Always NO_GO in this experiment: standalone kernel cannot qualify original learner without separately frozen end-to-end model-specific acceptance"
+  },
+  "stop_rule": "No input retuning, no new seeds, no reruns to select favorable workers, no original Ygg/Minigrid/Pycolab source editing, no original model checkpoint/optimizer updates, no protected unfamiliar third-source first-use or held-dev access.",
+  "no_new_model_training": true,
+  "no_scientific_first_use": true,
+  "G29_and_full_OS_project_regression": "FAIL_CLOSED",
+  "governance": "DRAFT_UNMERGED; original training remains NO_GO; no controller, broker, production, or paid API."
+}
