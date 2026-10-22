@@ -1,0 +1,59 @@
+{
+  "schema": "yggdrasil.mr33.original-public-stationary-intervention-signal.v1",
+  "base_exact_source_sha": "a7a26e1480c7499f83491c54a9efa58f3d27451c",
+  "original_farama_sha": "7f5853792ea7f04f75614661006d87fcf949f26d",
+  "mr32a_previously_consumed_episodes": 96,
+  "mr32a_original_native_development_digest": "cb12b87859c478fa1213bb0dbed3ec201f2ceff13b0de7ba988dc3a54747e729",
+  "existing_source_reset_seeds_only": {
+    "DoorKey": [
+      677,
+      683,
+      691,
+      701,
+      709,
+      719,
+      727,
+      733
+    ],
+    "Empty": [
+      739,
+      743,
+      751,
+      757
+    ]
+  },
+  "original_unaltered_source_actor_modes": [
+    "novelty",
+    "contrast"
+  ],
+  "source_trace_reuse": "Run MR32A exact unmodified original native source workers; reject if episode/source sha differs. Never expand seeds.",
+  "predeclared_stationary_intervention_actions": [
+    3,
+    4,
+    5
+  ],
+  "predeclared_motion_actions_excluded_from_primary": [
+    0,
+    1,
+    2
+  ],
+  "stationary_geometry_rationale": "pickup/drop/toggle do not themselves rotate or translate native MiniGrid camera. The full original 7x7 public before/after frames occupy aligned coordinates. This does NOT verify camera geometry for turn/move actions, which are excluded from the primary.",
+  "binary_public_target": "At each source-native stationary action, did the actual NEXT public 7x7x3 byte image differ from the current full public image? Exclude each episode's last event because the frozen MR32A trace lacks that event's next full public image.",
+  "preaction_predictors": [
+    "global_action_online_laplace_bernoulli: (total past changed for action+1)/(total past attempts for action+2)",
+    "local_full_public_context_online: 128-entry FIFO of full-current-public SHA256 keys, 6 per-action attempted/changed counters, posterior = (local successes + 2*global_action_forecast)/(local attempts+2)",
+    "local_MR15_24byte_sampled_context_online: 128-entry FIFO of original public_raw_view 24-byte sample keys, same count capacity, same posterior",
+    "MR31_actual_local_changed_uncertainty: 4p(1-p) from locally predicted changed probability, evaluated as a *ranking/association diagnostic only*, NOT an event probability/Brier"
+  ],
+  "preaction_only": "All online probabilities recorded before the original outcome and memory updated only after actual original next frame is read. Reset counters at original env.reset.",
+  "primary_scoring": "Proper prequential Brier for source-native stationary interaction consequences, by source family and actor policy, weighted by real original stationary actions; no duplicate counting correlated steps as independent science.",
+  "secondary_scoring": "Report within-episode action-stratified calibration, per-reset-seed sign counts, and native causal strict-pair members' average uncertainty; original evaluator classifications NEVER used to train any predictor or policy.",
+  "precommitted_signal_go": "Under BOTH policy-produced distributions and BOTH source classes, bounded full-view online predictor Brier must be strictly lower than global action-only and MR15 sampled-view controls, and independent original DoorKey seed cluster signs must not favor global. Otherwise RETIRE predictive utility claim for this objective.",
+  "source_first_use": false,
+  "trained_native_yggdrasil_coefficients_changed": 0,
+  "new_exploration_policy": false,
+  "existing_eight_state_learner_changed": false,
+  "no_model_production_or_merge": true,
+  "governance": "This is a diagnostic on previously consumed development, not a new protected test, nor independent causal identification from logged observational correlations.",
+  "G29_source_atlas": "BLOCKED pending reviewed source-pin repair and full OS regression"
+}
