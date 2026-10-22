@@ -1,0 +1,108 @@
+{
+  "schema": "yggdrasil.mr34i6.real_runner_and_native_first_logit_custody.dev.v1",
+  "predecessor_exact_MR34I5_SHA": "3af78f470d413c2f10249c7f3a0dbe0cdd62fe44",
+  "original_S4C1_sha": "8e1561eb1a542e21307bac669c42435cf48e59bd",
+  "original_independently_authored_sources": {
+    "FaramaMiniGridDoorKey8": "7f5853792ea7f04f75614661006d87fcf949f26d",
+    "DeepMindPycolabApprehend": "6504c8065dd5322438f23a2a9026649904f3322a"
+  },
+  "training_only_consumed_S4C1_reset_seeds": [
+    1861,
+    1867,
+    1871,
+    1873,
+    1877,
+    1879,
+    1889,
+    1901,
+    1907,
+    1913,
+    1931,
+    1933,
+    1949,
+    1951,
+    1973,
+    1979,
+    1987,
+    1993,
+    1997,
+    1999
+  ],
+  "original_MR34I4_frozen_first_logit_SHA": {
+    "FaramaMiniGridDoorKey8": "ba501812452b529cf35d4aaa176f9d5a0b5cfbb57a388d67c49dfbc547109486",
+    "DeepMindPycolabApprehend": "23d9db17d29ed9646afac1b34000d0be320c2fa50ca424db2f85f1829be11bd7"
+  },
+  "original_MR34I1_training_public_source_receipts": {
+    "FaramaMiniGridDoorKey8": "566f5e271e01421248bfabeb4326d01408d992276b877a978d96f14daf93797b",
+    "DeepMindPycolabApprehend": "9ea175b912b734c7470f93d0b2584eea6c2ce01962aae285a66b4d4834b5346e"
+  },
+  "original_S4C1_init_model_checkpoint_SHA": "45038837837af310f04d8dee2f91c4d5e106e2beb476e6c866b3c8b8b28e96a4",
+  "exact_modes": [
+    {
+      "mode": "default",
+      "set_before_numPy_import": {
+        "NPY_DISABLE_CPU_FEATURES": null
+      }
+    },
+    {
+      "mode": "disable_avx2_fma3",
+      "set_before_numPy_import": {
+        "NPY_DISABLE_CPU_FEATURES": "AVX2,FMA3"
+      }
+    }
+  ],
+  "matrix": {
+    "os": [
+      "ubuntu-latest",
+      "windows-latest"
+    ],
+    "replicas": [
+      1,
+      2
+    ],
+    "mode": [
+      "default",
+      "disable_avx2_fma3"
+    ],
+    "expected_runs": 8
+  },
+  "numpy_pinned": "1.26.4",
+  "python_pinned": "3.11",
+  "hardware_evidence_fields": [
+    "OS name/version/build/machine",
+    "Python version and compiler",
+    "GitHub Actions runner image and name",
+    "CPU vendor/family/model/stepping/processor id where available without admin",
+    "CPU manufacturer/brand from /proc/cpuinfo or Windows CIM",
+    "actual OS CPU instruction flags and microcode when available",
+    "NumPy compiled baseline and dispatch and actual CPU flags",
+    "NumPy show_runtime BLAS and SIMD details",
+    "process environmental CPU feature mode",
+    "full input corpus source and public hashes"
+  ],
+  "per_source_per_original_training_seed_stages": [
+    "original native source action-public episode receipt exact SHA",
+    "original first current public 23-input float64 SHA",
+    "original 8x7 cell_public_features float64 SHA",
+    "original initial 45-model g,roles source-frozen SHA",
+    "native original read dot f@g[1] SHA",
+    "native original u dot f@g[0] SHA",
+    "native original roles[:,0] SHA",
+    "native original addition f@g[0]+roles[:,0] SHA",
+    "native original full MR34I4 source logit u after +0*read float64 SHA",
+    "native original first public prediction exact original 8wide np.exp sigmoid SHA"
+  ],
+  "comparison_method": "All 20 previously consumed training reset seeds × two independent original source families × 8 real OS/mode jobs. Record complete 8-element binary64 hex for source stages per seed, so first differing stage, index and bits can be established without new first-use. Compare within same OS/mode replica, between OS at same mode, default vs disabled within OS. Do not use rounded prints.",
+  "qualification": "Per-job diagnostic PASS requires exact original Git+source event SHA, initial source model SHA and clear actual CPU identity; any original logit drift is retained as FAIL-CLOSED original source-logit custody, but diagnostic must emit enough bytes to localize first divergent source stage. Original trained model portable checkpoint remains NO_GO even if logit matches.",
+  "no_source_data_change": true,
+  "no_original_model_or_optimizer_training": true,
+  "no_original_upstream_edit": true,
+  "no_new_original_source_cohorts": true,
+  "no_held_development_source_read": true,
+  "no_protected_third_source_first_use": true,
+  "no_paid_API": true,
+  "no_PR_merge": true,
+  "no_controller_or_broker_action": true,
+  "scientific_admission": "NO_GO",
+  "G29_full_windows_linux_atlas": "FAIL_CLOSED"
+}
