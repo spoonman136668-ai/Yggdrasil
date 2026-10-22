@@ -1,0 +1,74 @@
+{
+  "schema": "yggdrasil.mr34a.public-history-information.dev.v1",
+  "exact_parent_sha": "a7e85db2eefe975799acd2f2b23e981db0fcf91a",
+  "independently_authored_original_source_sha": "7f5853792ea7f04f75614661006d87fcf949f26d",
+  "source_digest_previous_mr32a": "cb12b87859c478fa1213bb0dbed3ec201f2ceff13b0de7ba988dc3a54747e729",
+  "reuse_previously_consumed_mr32a_episodes": 96,
+  "no_new_original_source_executions_or_seeds": true,
+  "no_protected_first_use": true,
+  "original_source_families": [
+    "DoorKeyEnv(size=8)",
+    "EmptyEnv(size=8)"
+  ],
+  "source_families_independently_authored": false,
+  "actor_modes": [
+    "novelty",
+    "contrast"
+  ],
+  "training_reset_seeds": {
+    "DoorKey": [
+      677,
+      683,
+      691,
+      701
+    ],
+    "Empty": [
+      739,
+      743
+    ]
+  },
+  "evaluation_reset_seeds_previously_consumed": {
+    "DoorKey": [
+      709,
+      719,
+      727,
+      733
+    ],
+    "Empty": [
+      751,
+      757
+    ]
+  },
+  "original_stream_ids": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "native_max_original_steps_per_episode": 256,
+  "target": "Eight public sampled-image changed/unchanged bits from actual immediate original source next observation. Preaction predictions only; no source truth or after frame provided before prediction.",
+  "current_public_input": "Original MR15 public_raw_view 24 bytes and announced original native action, nothing private",
+  "history": "Two preceding original public actions plus two preceding 8-bit postaction sampled image-change vectors; no cross-episode carry, use 255 action pad and zero byte-vector pad for first steps.",
+  "models": {
+    "global": "Training-only action-conditioned 8 Bernoulli frequencies; common prior.",
+    "current": "128 FIFO public-current-sample+action keyed 8 Bernoulli count vectors, backed off to frozen global posterior.",
+    "history": "128 FIFO public-current-sample+action+2 previously observed action/outcome pairs keyed 8 Bernoulli count vectors, backed off to same frozen global posterior.",
+    "ablation": "History-key model trained with original histories, evaluated with history replaced by fixed all-pad values (same learned tables), to test retained historical dependence."
+  },
+  "counts_prior_strength": 2,
+  "max_cached_contexts_per_model": 128,
+  "common_current_public_bytes": 24,
+  "independent_unit": "Original source reset seed, not multiple within-seed episodes or overlapping time steps",
+  "no_validation_training_updates": true,
+  "primary_metric": "Prospective held-out eight-bit mean Brier aggregated per independent reset seed, per source family, per policy; current vs history and ablated history",
+  "dev_signal_go": "History Brier strictly improves vs CURRENT control in both original actor policy distributions on DoorKey and is no worse than current on Empty; at least 3/4 DoorKey held-development seeds per policy improve; ablated-history must not outperform intact-history",
+  "no_hypothesis_tuning_after_result": true,
+  "hidden_world_truth_to_models": false,
+  "no_new_yggdrasil_parameters_or_model_changes": true,
+  "no_history_source_family_science_admission": true,
+  "capacity_accounting": "Report actual table entries, serialized checkpoint bytes, complete worker CPU and OS max RSS, original source replay and all persistence. This diagnostic does not claim matched deployment resource parity.",
+  "source_license_distribution_issue": "UNRESOLVED",
+  "g29_source_bound_atlas": "BLOCKED pending reviewed legitimate repin and final native OS regression",
+  "scientific_admission": "NO_GO regardless of dev result",
+  "if_fail": "Keep negative; do not optimize MR19-MR33 recurrence or exploration. Next test independent authentic source families or a different information-sufficiency definition, without enlarging model."
+}
