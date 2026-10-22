@@ -77,8 +77,15 @@ jobs:
           VECLIB_MAXIMUM_THREADS: '1'
         run: |
           set -o pipefail
-          python -B audit/research/mr34i4/kernel_probe.py s4c1 external/minigrid external/pycolab | tee mr34i5-feature-dispatch-nonlearning-reference.log
-          grep -q '^MR34I4_ORIGINAL_SIGMOID_NUMERICAL_REFERENCE=' mr34i5-feature-dispatch-nonlearning-reference.log
+          export MR34I5_DISPATCH_MODE="${{ matrix.mode }}"
+          unset NPY_ENABLE_CPU_FEATURES
+          if [[ "${{ matrix.mode }}" == "disable_avx2_fma3" ]]; then
+            export NPY_DISABLE_CPU_FEATURES="AVX2,FMA3"
+          else
+            unset NPY_DISABLE_CPU_FEATURES
+          fi
+          python -B audit/research/mr34i5/cpu_dispatch_probe.py s4c1 external/minigrid external/pycolab | tee mr34i5-feature-dispatch-source-receipt.log
+          grep -q '^MR34I5_ORIGINAL_NUMPY_CPU_DISPATCH=' mr34i5-feature-dispatch-source-receipt.log
       - name: Confirm exact original project, source and audit worktrees intact
         shell: bash
         run: |
