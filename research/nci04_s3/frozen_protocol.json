@@ -1,0 +1,57 @@
+{
+  "schema": "yggdrasil.nci04.s3.original-public-crosscell-conditional-info.dev.v1",
+  "source_parent_s2": "def4e3a9d803c80631c00b7e138a5c54cda349e9",
+  "original_independent_farama_git": "7f5853792ea7f04f75614661006d87fcf949f26d",
+  "original_native_worlds": [
+    "DoorKeyEnv(size=8)",
+    "EmptyEnv(size=8)"
+  ],
+  "prior_consumed_development_train_seeds": [
+    263,
+    269,
+    271,
+    277,
+    281,
+    283,
+    293,
+    307
+  ],
+  "prospective_only_development_eval_seeds": [
+    877,
+    881,
+    883,
+    887,
+    907,
+    911
+  ],
+  "max_uninterrupted_original_native_actions_each": 256,
+  "public_only_action_policy": "original unmodified MR26 BoundedPublicNoveltyExplorer seeded per ORIGINAL reset; actor sees only original full 7x7x3 public image",
+  "individual_receiver_cell_own_context": "original 3 public uint8 tile bytes, one genuine prior native MR15 public-change bit (one-step local history), original preselected native action; no private pose/grid identities",
+  "added_information_treatments": [
+    "ring donors i-1 and i+1: two original public 3-byte tile triplets + each donor previous native delta bit",
+    "skip three donors i-3 and i+3: same two triplets and prior public delta bits",
+    "permuted-control donors from cyclic order [0,2,4,6,1,3,5,7], excluding self: same two triplets and prior public delta bits",
+    "all-public original 7x7x3 uint8 image as a broader conventional whole-camera-view context, hashed at fixed key size but not matched effective information or camera corrected"
+  ],
+  "controls": "own local public context and action only; per receiver/action global Laplace; ring donors; skip-three; fixed permuted; full public view",
+  "estimators": "All per-cell conventional online context-count predictors use exactly 128 FIFO 32-byte context-hash entries per original receiving cell; each entry two uint32-equivalent integer counts (trials,changed). Each per-cell action-specific global prior gets original public data. Candidate and control same cache capacity, prior pseudo count 4.",
+  "prospective_eval": "Train online only in already consumed development source seeds. Freeze ALL learned count associations before any newly frozen evaluation seed; ephemeral true prior public-delta bits continue from real native steps; original source actor stays independently public-only.",
+  "information_readout": "Prequential proper mean Brier and log-loss on native source next eight public delta target bits, comparisons paired per original native seed. Separate original actions 0/1/2 camera-motion from original actions 3/4/5 stationary public interventions.",
+  "preregistered_minimum": [
+    "ring donor reduces held-out Brier by >=0.001 versus own-only and by >=0.001 versus skip-three and permuted donors in BOTH original source worlds",
+    "ring donor advantage over own-only on at least four of six independent native evaluation seeds per source world",
+    "for camera-stationary actions, >=16 original positive changed outcomes per source family, and ring must lower loss vs own-only there",
+    "no trained-context table adaptations during new dev evaluation",
+    "same maximum context cache capacity and 32-byte hashed lookup keys across all local-context models"
+  ],
+  "note_on_comparators": "Global and whole-public predictors are conventional controls but finite bounded count estimators; full public is not camera-corrected, and 128-entry hashed contexts are not expressive or sufficient statistics. A negative cannot prove zero conditional mutual information.",
+  "source_input_memory_truth": "MR15 original 24 raw bytes plus 8 prior bits unchanged; S3 separate evaluator's eight per-cell count caches are NOT native 45-weight learning memory; count their entire footprint and do not claim original candidate 45-parameter parity",
+  "source_private_world_never_input": true,
+  "no_new_Ygg_45_weight_learner_training": true,
+  "no_new_scientific_first_use": true,
+  "no_postresult_expansion_or_tuning": true,
+  "communication_budget": "informational shadow reads two three-byte neighbor public triplets and two prior bits per cell (up to 8 unencoded public bytes/cell/action); no physical edge network is executed, so physical wire remains unqualified",
+  "source_g29_atlas": "STILL_BLOCKED",
+  "independent_source_family_transfer": false,
+  "scientific_admission": false
+}
