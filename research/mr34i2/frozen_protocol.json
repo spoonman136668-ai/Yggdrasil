@@ -1,0 +1,95 @@
+{
+  "schema": "yggdrasil.mr34i2.original_s4c1_train_only_first_optimizer_divergence.v1",
+  "exact_MR34I1_parent_sha": "98cb359a7a61372e6d2fad73a5a1483313a30afd",
+  "exact_original_Ygg_S4C1_git_sha": "8e1561eb1a542e21307bac669c42435cf48e59bd",
+  "original_unmodified_training_source_blob": "343ff9d7ab72c47c2307cca2115b303a8a9555f9",
+  "original_upstream_source_commits": {
+    "FaramaMiniGridDoorKey8": "7f5853792ea7f04f75614661006d87fcf949f26d",
+    "DeepMindPycolabApprehend": "6504c8065dd5322438f23a2a9026649904f3322a"
+  },
+  "reused_only_consumed_S4C1_training_seeds": [
+    1861,
+    1867,
+    1871,
+    1873,
+    1877,
+    1879,
+    1889,
+    1901,
+    1907,
+    1913,
+    1931,
+    1933,
+    1949,
+    1951,
+    1973,
+    1979,
+    1987,
+    1993,
+    1997,
+    1999
+  ],
+  "strict_prohibited_old_held_seeds": [
+    2003,
+    2011,
+    2017,
+    2027,
+    2029,
+    2039,
+    2053,
+    2063
+  ],
+  "original_training_algorithm": {
+    "epochs_in_full_trainer": 40,
+    "observed_only_first_n_epochs": 2,
+    "source_episodes_per_epoch": 20,
+    "adam_lr": 0.035,
+    "beta1": 0.9,
+    "beta2": 0.999,
+    "epsilon": 1e-8,
+    "l2": 0.0002,
+    "clip_l2": 5,
+    "initialization": "NativePredictiveQuotient45 genuine LocalTaskRuntime",
+    "original_first_gradient_finite_difference_before_updates": true,
+    "original_update_order": "source TRAIN reset seed order, no permutation"
+  },
+  "require_original_sources_pinned_and_clean": true,
+  "source_input_custody_requirements": {
+    "previous_MR34I1_source_event_shas": {
+      "FaramaMiniGridDoorKey8": "566f5e271e01421248bfabeb4326d01408d992276b877a978d96f14daf93797b",
+      "DeepMindPycolabApprehend": "9ea175b912b734c7470f93d0b2584eea6c2ce01962aae285a66b4d4834b5346e"
+    },
+    "original_native_initializer_sha": "45038837837af310f04d8dee2f91c4d5e106e2beb476e6c866b3c8b8b28e96a4",
+    "original_first_gradient_3x7_sha": {
+      "FaramaMiniGridDoorKey8": "c9609c448f4aacb55ecc3c8619bad3b8ba01292bbb2642d56e5a486898c3d925",
+      "DeepMindPycolabApprehend": "28f369fc4a4641c1d6aea7c6a5a3c4b3829db8360a8ffe8645ed97687719ca7f"
+    },
+    "original_first_gradient_8x3_sha": {
+      "FaramaMiniGridDoorKey8": "f0dac505e06e2cb437b4488ee4d95b309d22c35bef9131dc1c365164be1c99a0",
+      "DeepMindPycolabApprehend": "c0b37e396775908d067b2ad78a2c7db7311532f0ff25272cb05196543eade677"
+    }
+  },
+  "per_training_native_update_first_two_epochs_only": [
+    "public original episode seed and 45 pre-update native model weight bytes sha",
+    "original analytic BPTT native 3x7 and 8x3 float64 gradient sha separately (before regularization)",
+    "original regularized full 45 gradient float64 sha and L2 norm float64 8byte sha",
+    "clipped native 45 gradient float64 sha",
+    "Adam first moment and second moment raw float64 sha",
+    "bias corrected first and second moments float64 sha",
+    "original Adam parameter delta float64 sha",
+    "post-update exact 45 native parameter float64 sha",
+    "training Adam moment step count (1-40) and original source seed"
+  ],
+  "require_4_native_jobs": "Windows2 + Ubuntu2; records identical per native source before divergence; report exact first (family,source-seed,epoch,update-index,stage) that differs across platforms and separately same-OS repeats. NOT sufficient merely to see all CI jobs pass.",
+  "fail_closed_rule": "If ANY expected original source/first-gradient hash drifts, stop before training. If stage hash differs, numeric-trained-model exact cross-platform identity NO_GO; do not relax exact checkpoint requirement. A first divergence classification is a diagnosis not repair.",
+  "no_original_native_trainer_edits": true,
+  "no_training_lr_epochs_seed_architecture_or_dtype_adjustment": true,
+  "no_new_source_first_use": true,
+  "no_old_held_cohort_read": true,
+  "no_evaluation_or_transfer_or_selected_models": true,
+  "whole_original_source_worker_CPU_and_OS_peak_RSS_required": true,
+  "scientific_admission": "NO_GO",
+  "independent_unfamiliar_family_transfer": "BLOCKED",
+  "G29_and_full_native_windows_linux_regression": "FAIL_CLOSED",
+  "PR_governance": "DRAFT_UNMERGED"
+}
