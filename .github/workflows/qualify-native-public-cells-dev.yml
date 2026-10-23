@@ -1,0 +1,62 @@
+name: Yggdrasil public native-cell test coverage DEV qualification
+on:
+  push:
+    branches: [dev/f139-native-cells-focused-tests-20261023]
+permissions:
+  contents: read
+concurrency:
+  group: ygg-native-public-focused-tests
+  cancel-in-progress: true
+jobs:
+  native-focused-and-original-baseline:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Pin literal Git checkout paths
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Exact source identity and no frozen research policy mutation
+        shell: bash
+        run: |
+          set -euo pipefail
+          base=9b069040feeddd9f509ab2c8ac9656d0a2c07d77
+          test "$(git merge-base "$base" HEAD)" = "$base"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          expected="$(printf '%s\n' '.github/workflows/qualify-native-public-cells-dev.yml' 'tests/test_native_cells.py' 'yggdrasil/public_causal_cells.py')"
+          test "$(git diff --name-only "$base" HEAD)" = "$expected"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo YGG_NATIVE_PUBLIC_SOURCE_EXACT=PASS
+      - name: Prove real nonzero public learning and restart tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_native_cells.py' -v
+          echo YGG_NATIVE_NONEMPTY_REAL_TEST_DISCOVERY=PASS
+      - name: Exactly one final full original Yggdrasil regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -c "from pathlib import Path; [compile(p.read_bytes(), str(p), 'exec') for p in [Path('yggdrasil/public_causal_cells.py'), Path('tests/test_native_cells.py')]]"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo YGG_NATIVE_ORIGINAL_REGRESSION=PASS
+      - name: No scientific authority or accepted state
+        shell: bash
+        run: |
+          echo YGG_NATIVE_DEV_ONLY=TRUE
+          echo YGG_NATIVE_SCIENTIFIC_FIRST_USE=FALSE
+          echo YGG_ACCEPTED_REFS_UNCHANGED=TRUE
+          echo YGG_NATIVE_BASELINE_CONTROL_NOT_TRANSFER_CLAIM=TRUE
