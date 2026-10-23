@@ -35,7 +35,7 @@ jobs:
           git merge-base --is-ancestor "$first" HEAD
           test "$(git hash-object research/native/itd01/r7/native_cells.py)" = "4c492a494ac5b25d5e9c49b98185be6a2c966b2f"
           test "$(git hash-object research/native/itd01/mass_r10/cs14_action_owned_native_cells.py)" = "33bdae91b5aa9697f01c3b41a62ce824c9a9e61b"
-          git diff --name-only "$parent" HEAD | python -B -c 'import sys;got=set(sys.stdin.read().splitlines());want={"research/native/itd01/mass_r10/CS17_PREREG.md","research/native/itd01/mass_r10/run_cs17_original_bsuit_memory.py","research/native/itd01/mass_r10/test_cs17_original_bsuit_memory.py",".github/workflows/mass-cs17-original-bsuite-memory.yml"};assert got==want,(got,want)'
+          git diff --name-only "$parent" HEAD | python -B -c 'import sys;got=set(sys.stdin.read().splitlines());want={"research/native/itd01/mass_r10/CS17_PREREG.md","research/native/itd01/mass_r10/CS17_SEED_CORRIGENDUM.md","research/native/itd01/mass_r10/run_cs17_original_bsuit_memory.py","research/native/itd01/mass_r10/test_cs17_original_bsuit_memory.py",".github/workflows/mass-cs17-original-bsuite-memory.yml"};assert got==want,(got,want)'
       - name: Checkout untouched external original DeepMind bsuite
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:

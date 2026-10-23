@@ -81,7 +81,7 @@ def source_class(root):
 
 def source_seed(role,delay_index,rep,index):
     base={"FIT":3400000,"VALID":3500000,"DEV":3600000}[role]
-    return base+100000*delay_index+10000*rep+index
+    return base+300000*delay_index+10000*rep+index
 
 def cue_from_public(observation,length,first=False):
     import numpy as np
