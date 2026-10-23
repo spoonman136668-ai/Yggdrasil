@@ -1,0 +1,81 @@
+name: Mass Research native Yggdrasil neighbor causal-contribution audit
+on:
+  pull_request:
+    branches: [research/itd01-r7-native-yggdrasil-cellular-20261022]
+permissions:
+  contents: read
+concurrency:
+  group: mass-ygg-r7-neighbor-mechanism
+  cancel-in-progress: false
+jobs:
+  bounded-source-only-audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_CONFIG_COUNT: '1'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          clean: true
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Exact unmodified native Ygg source and prereg FIRST
+        shell: bash
+        run: |
+          set -euo pipefail
+          base=f3cdabdb3420bb8604e41dda9903ae65eba008e7
+          git merge-base --is-ancestor "$base" HEAD
+          test "$(git rev-parse 6f379f1e21bc0a6a6f201e22fb4082ce9cd290ba^)" = "$base"
+          test "$(git show --format= --name-only 6f379f1e21bc0a6a6f201e22fb4082ce9cd290ba)" = "research/native/itd01/r7/MASS_NEIGHBOR_CAUSALITY_FROZEN.md"
+          git diff --name-only "$base" HEAD | python -B -c 'import sys; got=set(sys.stdin.read().splitlines()); want={"research/native/itd01/r7/MASS_NEIGHBOR_CAUSALITY_FROZEN.md","research/native/itd01/r7/mass_neighbor_audit.py","research/native/itd01/r7/test_mass_neighbor_audit.py",".github/workflows/qualify-mass-ygg-r7-neighbor.yml"}; assert got==want,(got,want)'
+          for spec in research/native/itd01/r7/native_cells.py:4c492a494ac5b25d5e9c49b98185be6a2c966b2f research/native/itd01/r7/MASS_NEIGHBOR_CAUSALITY_FROZEN.md:be5492cd1ad48a6879c8689594fdca670e1bae1f research/native/itd01/r7/mass_neighbor_audit.py:5a0d31bab8d5c619cccee91b1ae714b5e83f9110 research/native/itd01/r7/test_mass_neighbor_audit.py:d0b23b1dae3995ae5b125523f22161f06663724f; do
+            path="${spec%%:*}"; expected="${spec#*:}"
+            test "$(git rev-parse HEAD:"$path")" = "$expected"
+            test "$(git hash-object --no-filters -- "$path")" = "$expected"
+          done
+          echo MASS_YGG_NATIVE_R7_UNCHANGED_MODEL_AND_PREREG_FIRST=PASS
+      - name: Native Ygg mechanistic causal-neighbor test without original episodes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd01/r7 -p 'test_mass_neighbor_audit.py' -v
+          python -B research/native/itd01/r7/mass_neighbor_audit.py > mass_ygg_neighbor_audit.json
+          python -B -c 'import json; a=json.load(open("mass_ygg_neighbor_audit.json")); assert a["all_original_predictions_match_zero_neighbor"] and a["evaluated_synthetic_counterfactuals"]==32 and not a["scientific_first_use"] and not a["original_r7_training_or_scoring"]; print("MASS_YGG_NEIGHBOR_PREDICTION_INERT=PASS")'
+          echo MASS_YGG_ORIGINAL_SCIENCE_AND_R7_COHORTS=NOT_RUN
+      - name: One original native-focused regression without scientific gate replay
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd01/r7 -p 'test_native_cells.py'
+          echo MASS_YGG_EXISTING_NATIVE_FOCUSED_REGRESSION=PASS
+      - name: Full existing Yggdrasil regression (unmodified inherited ancestor constraint)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py'
+          echo MASS_YGG_FULL_EXISTING_REGRESSION=PASS
+      - name: No source mutation, original science or authority consumption
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git status --porcelain --untracked-files=all | python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); assert a <= {"?? mass_ygg_neighbor_audit.json"},a'
+          echo MASS_YGG_SOURCE_READONLY=PASS
+          echo MASS_YGG_NATIVE_R7_FROZEN_NO_GO=UNCHANGED
+          echo MASS_YGG_ORIGINAL_H1_H2_FIRST_USE=NOT_PERFORMED
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mass-ygg-native-neighbor-${{ matrix.os }}
+          path: mass_ygg_neighbor_audit.json
+          if-no-files-found: ignore
