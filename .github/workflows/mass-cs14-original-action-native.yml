@@ -54,11 +54,18 @@ jobs:
           set -e
           echo "$rc" >cs14-evidence/pip-exit.txt
           test "$rc" -eq 0
-      - name: Original Yggdrasil R7 LocalCell regression must still pass unchanged
+      - name: Record frozen original R7 suite without blocking separate PUBLIC development observation
         shell: bash
         run: |
-          set -euo pipefail
-          PYTHONPATH=research/native/itd01/r7 python -B -m unittest discover -s research/native/itd01/r7 -p 'test_native_cells.py' -v 2>&1 | tee cs14-evidence/original-native-r7-regression.log
+          set -uo pipefail
+          set +e
+          PYTHONPATH=research/native/itd01/r7 python -B -m unittest discover -s research/native/itd01/r7 -p 'test_native_cells.py' -v >cs14-evidence/original-native-r7-regression.log 2>&1
+          rc=$?
+          set -e
+          cat cs14-evidence/original-native-r7-regression.log
+          printf '%s\n' "$rc" >cs14-evidence/original-native-r7-regression-exit.txt
+          echo "ORIGINAL_FROZEN_R7_REGRESSION_EXIT=$rc"
+          echo "The frozen R7 failure remains a STRICT final integration/promotion blocker."
       - name: Test original action isolation and cold native source-free invariants
         shell: bash
         run: |
@@ -77,3 +84,10 @@ jobs:
           name: mass-cs14-original-action-owned-native-evidence
           path: cs14-evidence/
           retention-days: 30
+      - name: Enforce frozen original R7 regression as final integration blocker
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f cs14-evidence/original-native-r7-regression-exit.txt
+          test "$(cat cs14-evidence/original-native-r7-regression-exit.txt)" = "0"
