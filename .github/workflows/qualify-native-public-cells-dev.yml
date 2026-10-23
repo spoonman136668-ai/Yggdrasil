@@ -35,7 +35,7 @@ jobs:
           base=9b069040feeddd9f509ab2c8ac9656d0a2c07d77
           test "$(git merge-base "$base" HEAD)" = "$base"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          expected="$(printf '%s\n' '.github/workflows/qualify-native-public-cells-dev.yml' 'tests/test_native_cells.py' 'yggdrasil/public_causal_cells.py')"
+          expected="$(printf '%s\n' '.github/workflows/generate-native-public-atlas-dev.yml' '.github/workflows/qualify-native-public-cells-dev.yml' '.ice/code-atlas.html' '.ice/code-atlas.ice' '.ice/code-atlas.json' 'tests/test_native_cells.py' 'yggdrasil/public_causal_cells.py')"
           test "$(git diff --name-only "$base" HEAD)" = "$expected"
           test -z "$(git status --porcelain --untracked-files=all)"
           echo YGG_NATIVE_PUBLIC_SOURCE_EXACT=PASS
