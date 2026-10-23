@@ -6,7 +6,11 @@ permissions:
   contents: read
 jobs:
   focused:
-    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -16,12 +20,13 @@ jobs:
         with:
           python-version: '3.11'
       - name: Existing R9 public-smoke focused tests
+        shell: bash
         run: |
           python -B -m unittest discover -s research/native/itd01/nld03 -p test_cued_state.py -v
           python -B research/native/itd01/nld03/cued_state.py --smoke > nld03_report.json
           python -B -c 'import json; x=json.load(open("nld03_report.json")); assert not x["first_use_heldout"]; print(x["disposition"])'
       - uses: actions/upload-artifact@v4
         with:
-          name: nld03-sourcefree-report
+          name: nld03-sourcefree-${{ matrix.os }}
           path: nld03_report.json
           if-no-files-found: error
