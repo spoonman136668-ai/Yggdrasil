@@ -105,6 +105,27 @@ def experiment(seed, smoke=False):
     frozen_checkpoints={a.name:hashlib.sha256(a.save()).hexdigest()
                         for a in agents}
     checkpoint_bytes={a.name:len(a.save()) for a in agents}
+    # Parameter-only source state excludes inference measurement counters.
+    def learned_bytes(a):
+        if isinstance(a,LocalActionColony):
+            return json.dumps({"cells":{
+                f:[(c.fast,c.slow,c.public_updates) for c in a.cells[f]]
+                for f in FAMILIES},
+                "bias":a.bias,
+                "feedback_updates":a.feedback_updates,
+                "weight_changes":a.weight_changes}, sort_keys=True,
+                separators=(",",":")).encode()
+        if isinstance(a,PairwisePerceptron):
+            return json.dumps({"weights":a.weights,"bias":a.bias,
+                "feedback_updates":a.feedback_updates,
+                "weight_changes":a.weight_changes},sort_keys=True,
+                separators=(",",":")).encode()
+        return json.dumps({"memory":a.memory,
+            "feedback_updates":a.feedback_updates,
+            "weight_changes":a.weight_changes},sort_keys=True,
+            separators=(",",":")).encode()
+    frozen_learned={a.name:hashlib.sha256(learned_bytes(a)).hexdigest()
+                    for a in agents}
     restored=LocalActionColony.restore(native.save())
     if restored.save()!=native.save():
         raise AssertionError("R9_NATIVE_SAVE_COLD_RESTORE_FAILED")
@@ -112,19 +133,11 @@ def experiment(seed, smoke=False):
                                counts["DEV_C_POST"])
     results["A_RETAINED"]=evaluate(reported_agents,seed,"DEV_A_RETAINED","A",
                                    counts["DEV_A_RETAINED"])
-    # Source versions of inference counters can mutate; validate only the
-    # frozen learned prediction parameters and public train updates.
-    def fitted_state(a):
-        if isinstance(a,LocalActionColony):
-            return ([(c.fast,c.slow,c.public_updates)
-                     for f in FAMILIES for c in a.cells[f]],
-                    a.bias,a.feedback_updates,a.weight_changes)
-        if isinstance(a,PairwisePerceptron):
-            return (a.weights,a.bias,a.feedback_updates,a.weight_changes)
-        return (a.memory,a.feedback_updates,a.weight_changes)
-    # Not a post-DEV tuning path; DEV only evaluates frozen fitted states.
-    # Evaluate again only if necessary? No. Checkpoint saved before DEV,
-    # and evaluate contains zero update calls to agent learn_delayed.
+    # Evaluating DEV never updates the trained state. If it does, fail closed.
+    observed_learned={a.name:hashlib.sha256(learned_bytes(a)).hexdigest()
+                      for a in agents}
+    if observed_learned!=frozen_learned:
+        raise AssertionError("R9_DEV_OR_VALID_UPDATED_FITTED_PARAMETERS")
     fitted_sizes=checkpoint_bytes
     cpu=time.process_time()-total_start
     py_heap=tracemalloc.get_traced_memory()[1]
@@ -173,6 +186,8 @@ def experiment(seed, smoke=False):
             a.name:a.feedback_updates for a in (standard,memory)
         },
         "fitted_source_checkpoint_sha256":frozen_checkpoints,
+        "fitted_parameter_only_sha256":frozen_learned,
+        "fitted_parameter_unchanged_through_dev":True,
         "fitted_source_checkpoint_bytes":fitted_sizes,
         "native_cold_restore_exact":True,
         "family_evidence":results,
