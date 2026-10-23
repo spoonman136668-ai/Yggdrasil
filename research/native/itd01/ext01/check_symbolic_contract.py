@@ -14,6 +14,7 @@ FILES = {
     "dm_alchemy/symbolic_alchemy_test.py": "2c044c997429b33646c6525f0a79323f645ade74",
     "docs/index.md": "77f540812c7bc63b7d01b62d9cbd81e61587d70f",
     "setup.py": "a99fdd6f4134fb8c9074cc6c1d91bb18f1ca8365",
+    "dm_alchemy/types/graphs.py": "29e058dbecb54a3d38d276de12d320d3cb6b5fec",
 }
 REQUIRED_METHODS = (
     "__init__", "reset", "step", "step_slot_based_action",
@@ -96,6 +97,47 @@ def inspect_symbolic_ast(raw: bytes) -> dict:
     }
 
 
+def inspect_graph_constraints(raw: bytes) -> dict:
+    """Source-only constraint diversity check, NOT a nonisomorphism proof."""
+    tree = ast.parse(raw.decode("utf-8-sig"), filename="graphs.py")
+    functions = {n.name: n for n in tree.body if isinstance(n, ast.FunctionDef)}
+    labels = ("no_bottleneck_constraints", "bottleneck1_constraints",
+              "bottleneck2_constraints", "bottleneck3_constraints")
+    signatures = {}
+    for label in labels:
+        require(label in functions, "original graph-constraint family missing: " + label)
+        returns = [n for n in functions[label].body if isinstance(n, ast.Return)]
+        require(len(returns) == 1, "graph family not literal: " + label)
+        try:
+            constraints = ast.literal_eval(returns[0].value)
+        except (ValueError, TypeError, SyntaxError, MemoryError):
+            require(False, "graph family not inspectable as a literal: " + label)
+        require(isinstance(constraints, list) and len(constraints) == 1,
+                "graph constraint distribution shape drift: " + label)
+        matrix = constraints[0]
+        require(len(matrix) == 3 and all(len(row) == 3 for row in matrix),
+                "graph constraint axes drift: " + label)
+        signatures[label] = sum(item not in ("X", "*")
+                                 for row in matrix for item in row)
+    require(signatures == {"no_bottleneck_constraints": 0,
+                           "bottleneck1_constraints": 2,
+                           "bottleneck2_constraints": 1,
+                           "bottleneck3_constraints": 3},
+            "source-level graph constraint classes drifted")
+    for fname in ("graph_distr", "random_graph"):
+        require(fname in functions, "upstream graph-distribution API missing: " + fname)
+    require("get_num_constraints" in ast.unparse(functions["graph_distr"]),
+            "graph class count no longer enters upstream distribution")
+    return {
+        "native_constraint_classes": signatures,
+        "distinct_declared_constraint_counts": [0, 1, 2, 3],
+        "nonisomorphic_graph_families_proven": False,
+        "unseen_graph_family_birth_witnessed": False,
+        "finite_episode_identifiability_proven": False,
+        "graph_sampling_executed": False,
+    }
+
+
 def audit(upstream: Path) -> dict:
     require(git(upstream, "rev-parse", "HEAD") == UPSTREAM_SHA,
             "upstream source commit drift")
@@ -109,6 +151,8 @@ def audit(upstream: Path) -> dict:
                           "bytes": len(raw)}
     contract = inspect_symbolic_ast(
         (upstream / "dm_alchemy/symbolic_alchemy.py").read_bytes())
+    graph_contract = inspect_graph_constraints(
+        (upstream / "dm_alchemy/types/graphs.py").read_bytes())
     doc = (upstream / "docs/index.md").read_text(encoding="utf-8")
     require("symbolic version" in doc.lower(), "source native symbolic documentation missing")
     require("stone" in doc.lower() and "potion" in doc.lower(),
@@ -119,6 +163,7 @@ def audit(upstream: Path) -> dict:
         "exact_upstream_commit": UPSTREAM_SHA,
         "source_files": observed,
         "contract": contract,
+        "graph_family_static_contract": graph_contract,
         "benchmark_installed_or_imported": False,
         "benchmark_reset_or_step_executed": False,
         "generated_episodes": 0,
