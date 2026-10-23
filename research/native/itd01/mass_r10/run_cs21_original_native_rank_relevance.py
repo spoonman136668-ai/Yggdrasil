@@ -250,9 +250,13 @@ def evaluate(Source,di,num_decks,models):
                   (ARMS[2],"native_vs_erased"),(ARMS[3],"native_vs_permuted")):
    other=scores[n]["original_source_DEV_episode_receipts"][i]["genuine_source_DEV_action_reward_trace"]
    counters[label]+=sum(x[1]!=y[1] for x,y in zip(native,other))
- require(scores[ARMS[1]]["original_source_DEV_episode_receipts"]==
-         scores[ARMS[2]]["original_source_DEV_episode_receipts"],
-         "COLD_ERASED_NATIVE_SHOULD_EXACTLY_EQUAL_CS20_CONVENTIONAL_REWARD")
+ for a,b in zip(scores[ARMS[1]]["original_source_DEV_episode_receipts"],
+                 scores[ARMS[2]]["original_source_DEV_episode_receipts"]):
+  require(a["genuine_source_DEV_action_reward_trace"]==
+          b["genuine_source_DEV_action_reward_trace"] and
+          a["actual_public_rank_observation_SHA256"]==
+          b["actual_public_rank_observation_SHA256"],
+          "COLD_ERASED_NATIVE_SHOULD_EXACTLY_EQUAL_CS20_CONVENTIONAL_ACTIONS")
  return scores,counters
 
 def main():
