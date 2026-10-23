@@ -1,0 +1,76 @@
+name: Mass Research R8 action-causal public information sufficiency
+on:
+  pull_request:
+    branches: [research/itd01-r7-native-yggdrasil-cellular-20261022]
+permissions:
+  contents: read
+concurrency:
+  group: mass-r8-public-action-falsification
+  cancel-in-progress: false
+jobs:
+  independent-causal-input:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 18
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_CONFIG_COUNT: '1'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 30
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Frozen source identity and prereg first before any synthetic causal data
+        shell: bash
+        run: |
+          set -euo pipefail
+          base=f3cdabdb3420bb8604e41dda9903ae65eba008e7
+          git merge-base --is-ancestor "$base" HEAD
+          test "$(git rev-parse f91273a635fc3cc8c5d0b4a7039f97f706f9e768^)" = "$base"
+          test "$(git show --format= --name-only f91273a635fc3cc8c5d0b4a7039f97f706f9e768)" = "research/native/itd01/r7/MASS_R8_FROZEN_ACTION_INFORMATION.md"
+          git diff --name-only "$base" HEAD | python -B -c 'import sys; got=set(sys.stdin.read().splitlines()); allowed={"research/native/itd01/r7/MASS_R8_FROZEN_ACTION_INFORMATION.md","research/native/itd01/r7/mass_r8_action_audit.py","research/native/itd01/r7/test_mass_r8_action_audit.py",".github/workflows/qualify-mass-r8-action-audit.yml"}; assert got==allowed,(got,allowed)'
+          for spec in research/native/itd01/r7/native_cells.py:4c492a494ac5b25d5e9c49b98185be6a2c966b2f research/native/itd01/r7/MASS_R8_FROZEN_ACTION_INFORMATION.md:ca9cb01ff6c985e9901ea0dc5347fd82ba314869 research/native/itd01/r7/mass_r8_action_audit.py:05741d63669c31984bc9337ae772c48ad6a0a7b9 research/native/itd01/r7/test_mass_r8_action_audit.py:21c06122f4cc19cb5aef872eb0ab73bbe85510a0; do
+            path="${spec%%:*}"; expected="${spec#*:}"
+            test "$(git rev-parse HEAD:"$path")" = "$expected"
+            test "$(git hash-object --no-filters -- "$path")" = "$expected"
+          done
+          echo MASS_R8_FROZEN_SOURCE_IDENTICAL_AND_ADD_ONLY=PASS
+      - name: Execute new source-free public intervention pairs and adversarial tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd01/r7 -p 'test_mass_r8_action_audit.py' -v
+          python -B research/native/itd01/r7/mass_r8_action_audit.py > mass_r8_action_information.json
+          python -B -c 'import json; r=json.load(open("mass_r8_action_information.json")); assert r["disposition"]=="YGG_R7_ACTION_OMITTED_CAUSAL_HISTORY_NONIDENTIFIABILITY_PROVED"; fs=r["family_results"]; assert len(fs)==2; assert all(f["native_paired_mean_success"]==.5 and f["action_aware_control_success_per_world"]==[1.0,1.0] and len(set(f["native_checkpoint_sha256"]))==1 and len(set(f["public_action_histories_sha256"]))==2 and f["first_public_feedback_tick"]==[2,2] for f in fs.values()); assert not r["original_r7_cohorts_rerun"] and r["scientific_admission"]=="NONE"; print("MASS_R8_PUBLIC_ACTION_INFORMATION_GAP=REPRODUCED")'
+          echo MASS_R8_PROTECTED_ORIGINAL_FIRST_USE=NONE
+      - name: Preserve original native R7 NO-GO without reusing consumed scientific seeds
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -c 'from pathlib import Path; s=Path("research/native/itd01/r7/test_native_cells.py").read_text(); assert "test_frozen_three_init_cohorts_keep_original_negatives" in s and "self.assertTrue(gates(xs),xs)" in s; print("MASS_R8_R7_FROZEN_NO_GO_UNCHANGED_NOT_RERUN")'
+          echo MASS_R8_FULL_EXISTING_REGRESSION=NOT_CLAIMED_EXISTING_R7_SCIENCE_FAILS
+          echo MASS_R8_G29_CODE_ATLAS_INHERITED_ANCESTRY=NOT_CLAIMED
+      - name: Retain public only evidence and unchanged original source
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git status --porcelain --untracked-files=all | python -B -c 'import sys; r=set(sys.stdin.read().splitlines()); assert r<={"?? mass_r8_action_information.json"},r'
+          echo MASS_R8_CLEAN_NATIVE_SOURCE=PASS
+          echo MASS_R8_H1_H2_ORIGINAL_SCIENTIFIC_EXECUTION=NOT_PERFORMED
+          echo MASS_R8_NEW_YGG_ARCHITECTURE=NOT_IMPLEMENTED
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mass-r8-action-identifiability-${{ matrix.os }}
+          path: mass_r8_action_information.json
+          if-no-files-found: ignore
