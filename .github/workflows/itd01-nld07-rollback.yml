@@ -1,0 +1,87 @@
+name: ITD01 NLD07 prospective rollback attribution smoke
+on:
+  pull_request:
+    branches: [research/itd01-nld06-continuous-surprise-20261023]
+permissions:
+  contents: read
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_CONFIG_COUNT: '1'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Frozen prereg first and exact original NLD06 source lineage
+        shell: bash
+        run: |
+          set -euo pipefail
+          base=95ccf52bfe4207d22dbe0cd22369ec3c1447740e
+          first=c8804a2637831af34561d70286efb11d54d62496
+          test "$(git rev-parse "$first^")" = "$base"
+          test "$(git show --format= --name-only "$first")" = "research/native/itd01/nld07/PREREG.md"
+          test "$(git rev-parse "$first:research/native/itd01/nld07/PREREG.md")" = "$(git rev-parse HEAD:research/native/itd01/nld07/PREREG.md)"
+          git diff --name-only "$base" HEAD | python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); b={"research/native/itd01/nld07/PREREG.md","research/native/itd01/nld07/rollback.py","research/native/itd01/nld07/test_rollback.py",".github/workflows/itd01-nld07-rollback.yml"}; assert a==b,(a,b)'
+          test "$(git rev-parse HEAD:research/native/itd01/nld06/continuous_surprise.py)" = 7f1b99f7c6937d2c847bb287e1cef23d16792cf9
+          test "$(git rev-parse HEAD:research/native/itd01/r9/action_cells.py)" = 882bfca8172e7e2d25fc617cd34dbc811383cede
+          echo NLD07_PROTOCOL_AND_UNCHANGED_NLD06=PASS
+      - name: Source-free fixed rollback intervention and matched conventional learners
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd01/nld07 -p test_rollback.py -v
+          python -B research/native/itd01/nld07/rollback.py --smoke > nld07_sourcefree.json
+          python -B -c 'import json; x=json.load(open("nld07_sourcefree.json")); assert x["source_free_old_dev_seed"]==3 and not x["protected_first_use"] and x["uninterrupted_public_actions"]==256 and x["forensic_private_feedback_ticks"]==[129,140,257] and x["authenticated_ckb_scientific_admission"]=="NOT_OBSERVED"; print("NLD07_ACTUAL_RETAINED_A=",x["score_A_retained_after_B"]["routed_correct_of_56"])'
+          git status --porcelain --untracked-files=all | python -B -c 'import sys; a=sys.stdin.read().splitlines(); assert a==["?? nld07_sourcefree.json"],a'
+          sha256sum nld07_sourcefree.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nld07-sourcefree-${{ matrix.os }}
+          path: nld07_sourcefree.json
+          if-no-files-found: error
+  compare:
+    needs: [verify]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: nld07-sourcefree-*
+          path: original-artifacts
+          merge-multiple: false
+      - name: Exact complete report comparison across Windows and Ubuntu
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,hashlib,pathlib
+          def read(os):
+              p=pathlib.Path("original-artifacts")/("nld07-sourcefree-"+os)/"nld07_sourcefree.json"
+              raw=p.read_bytes()
+              return json.loads(raw),hashlib.sha256(raw).hexdigest()
+          a,sa=read("ubuntu-24.04")
+          b,sb=read("windows-2022")
+          assert a==b,"NLD07_ORIGINAL_CROSS_OS_FORENSIC_DRIFT"
+          assert not a["protected_first_use"]
+          assert a["source_free_old_dev_seed"]==3
+          print("NLD07_CROSS_OS_RESULT_REPRODUCIBLE=PASS")
+          print("NLD07_UBUNTU_SHA256="+sa)
+          print("NLD07_WINDOWS_SHA256="+sb)
+          print("NLD07_RETENTION_NATIVE=",a["score_A_retained_after_B"]["routed_correct_of_56"])
+          print("NLD07_PROTECTED_FIRST_USE=NONE")
+          PY
