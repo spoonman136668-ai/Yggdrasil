@@ -1,0 +1,49 @@
+name: NLD06 public continuous state diagnostic
+on:
+  pull_request:
+    branches: [research/itd01-nld05-error-driven-context-20261023]
+permissions:
+  contents: read
+jobs:
+  sourcefree:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Frozen original source and prereg-first lineage
+        shell: bash
+        run: |
+          set -euo pipefail
+          base=fafe088ea6c065123b88e83532bde06a9998a72f
+          first=020f282af0a62316ebc320e40cc06a1e5adeda3a
+          test "$(git rev-parse "$first^")" = "$base"
+          test "$(git show --format= --name-only "$first")" = "research/native/itd01/nld06/PREREG.md"
+          test "$(git rev-parse "$first:research/native/itd01/nld06/PREREG.md")" = "$(git rev-parse HEAD:research/native/itd01/nld06/PREREG.md)"
+          test "$(git rev-parse HEAD:research/native/itd01/nld05/context_formation.py)" = f5759ee526eeaee01a88941f980cc9c15b61f9f6
+          git diff --name-only "$base" HEAD | python -B -c 'import sys; assert set(sys.stdin.read().splitlines())=={"research/native/itd01/nld06/PREREG.md","research/native/itd01/nld06/continuous_surprise.py","research/native/itd01/nld06/test_continuous_surprise.py",".github/workflows/itd01-nld06-continuous.yml"}'
+      - name: Previously exposed public feedback only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd01/nld06 -p test_continuous_surprise.py -v
+          python -B research/native/itd01/nld06/continuous_surprise.py --smoke > nld06_report.json
+          python -B -c 'import json; x=json.load(open("nld06_report.json")); assert not x["protected_first_use"] and not x["source_reset_visible_to_models"] and x["source_seed"]==3'
+          test "$(git status --porcelain --untracked-files=all)" = "?? nld06_report.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nld06-original-${{ matrix.os }}
+          path: nld06_report.json
+          if-no-files-found: error
