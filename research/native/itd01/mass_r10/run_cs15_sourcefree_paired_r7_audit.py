@@ -11,7 +11,10 @@ from dataclasses import asdict
 import hashlib
 import json
 from pathlib import Path
-import resource
+try:
+    import resource  # POSIX-only; Windows runs exactly same science without RSS
+except ImportError:
+    resource=None
 import subprocess
 import sys
 import time
@@ -251,10 +254,10 @@ def main():
             "original_native_source_files_mutated":False,
             "frozen_historical_R7_test_still_a_promotion_blocker":True,
         }
-        try:
+        if resource is not None:
             metadata["peak_process_RSS_KiB_linux_only"]=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-        except Exception:
-            metadata["peak_process_RSS_KiB_linux_only"]="NOT_MEASURED"
+        else:
+            metadata["peak_process_RSS_KiB_linux_only"]="NOT_MEASURED_ON_WINDOWS"
         (out/"cs15-process-resource-metadata.json").write_text(json.dumps(metadata,sort_keys=True,indent=2)+"\n")
     print("CS15_DISPOSITION="+rec["disposition"],flush=True)
     print("CS15_LOGICAL_RECEIPT_SHA256="+sha(rec),flush=True)
