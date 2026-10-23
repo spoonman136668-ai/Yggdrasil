@@ -1,0 +1,90 @@
+name: ITD01 NLD05 public prediction-error context formation smoke
+on:
+  pull_request:
+    branches: [research/itd01-nld04-history-context-20261023]
+permissions:
+  contents: read
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_CONFIG_COUNT: '1'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Verify original NLD04 source/prereg and four exact additive paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          base=2b11b0156afb516ef7b52e411aae6a82921344d7
+          first=f921387c67d48b69f4ebfaceb91e853fbbcbb932
+          test "$(git rev-parse "$first^")" = "$base"
+          git merge-base --is-ancestor "$first" HEAD
+          test "$(git show --format= --name-only "$first")" = "research/native/itd01/nld05/PREREG.md"
+          test "$(git rev-parse "$first:research/native/itd01/nld05/PREREG.md")" = "$(git rev-parse HEAD:research/native/itd01/nld05/PREREG.md)"
+          git diff --name-only "$base" HEAD | python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); b={"research/native/itd01/nld05/PREREG.md","research/native/itd01/nld05/context_formation.py","research/native/itd01/nld05/test_context_formation.py",".github/workflows/itd01-nld05-context-formation.yml"}; assert a==b,(a,b)'
+          test "$(git rev-parse HEAD:research/native/itd01/nld04/history_context.py)" = 71a8c8994384a181f93b260bc53a1a0ee3f27e05
+          test "$(git rev-parse HEAD:research/native/itd01/nld03/cued_state.py)" = abe7c87f1edf3cb832f2915e20d778a7a47b2e12
+          test "$(git rev-parse HEAD:research/native/itd01/nld02/shared_bank.py)" = de30b7d2c869d84e31ec366854753b1c583119e3
+          echo NLD05_ORIGINAL_CODE_FROZEN=PASS
+      - name: Exact bounded existing DEV source and comparative context creation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd01/nld05 -p 'test_context_formation.py' -v
+          python -B research/native/itd01/nld05/context_formation.py --smoke > nld05_sourcefree.json
+          python -B -c 'import json; x=json.load(open("nld05_sourcefree.json")); assert x["already_exposed_public_R9_seed"]==3 and not x["protected_first_use"] and x["formation_diagnostic_outcome_cost_each_phase"]==16 and x["eval_unscored_probe_cost_each_role"]==8 and x["authenticated_ckb_scientific_admission"]=="NOT_OBSERVED"; print("NLD05_ERROR_FORMED_CONTEXT_RESULTS=RECORDED",x["phase_formation"],x["evaluation"]["stage_0"]["correct_scored_of_56"],x["evaluation"]["stage_1"]["correct_scored_of_56"])'
+          git status --porcelain --untracked-files=all | python -B -c 'import sys; a=sys.stdin.read().splitlines(); assert a==["?? nld05_sourcefree.json"],a'
+          sha256sum nld05_sourcefree.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nld05-public-source-${{ matrix.os }}
+          path: nld05_sourcefree.json
+          if-no-files-found: error
+  compare:
+    needs: [verify]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: nld05-public-source-*
+          path: reports
+          merge-multiple: false
+      - name: Compare original independently recorded cross-OS native state
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,hashlib,pathlib
+          def receipt(os):
+              p=pathlib.Path("reports")/("nld05-public-source-"+os)/"nld05_sourcefree.json"
+              raw=p.read_bytes()
+              return json.loads(raw),hashlib.sha256(raw).hexdigest()
+          linux,lh=receipt("ubuntu-24.04")
+          windows,wh=receipt("windows-2022")
+          assert linux==windows,"NLD05_CROSS_OS_REPORT_DRIFT"
+          assert not linux["protected_first_use"]
+          assert linux["native_slot_names_generated_from_prediction_error_only"]
+          assert linux["causal_composition"]=="NOT_TESTED_PREDEFINED_FEATURE_MAP_TWO_SLOT_LIMIT"
+          print("NLD05_CROSS_OS_REPRODUCIBLE=PASS")
+          print("NLD05_LINUX_REPORT_SHA256="+lh)
+          print("NLD05_WINDOWS_REPORT_SHA256="+wh)
+          print("NLD05_PUBLIC_HISTORY_CONTEXT_FORMATION="+json.dumps(linux["phase_formation"],sort_keys=True))
+          print("NLD05_NO_INDEPENDENT_FIRST_USE=PASS")
+          PY
