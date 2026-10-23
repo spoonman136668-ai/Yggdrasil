@@ -1,0 +1,82 @@
+name: Mass CS12 original POBAX portable causal-rule rewarded transfer
+on:
+  push:
+    branches:
+      - research/mass-cs12-causal-assignment-rule-transfer-20261023
+permissions:
+  contents: read
+concurrency:
+  group: mass-cs12-original-causal-rule-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-source-portable-causal-inference:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 28
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PIP_DISABLE_PIP_VERSION_CHECK: '1'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      XLA_FLAGS: '--xla_cpu_multi_thread_eigen=false intra_op_parallelism_threads=1'
+      JAX_PLATFORMS: cpu
+    steps:
+      - name: Checkout original source-first prereg and candidate
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 7
+          persist-credentials: false
+      - name: Prove first-only frozen protocol ancestry and pure additive implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          first=4ba9cda4083d8c0bc9c622e0828ee5d9edec2195
+          parent=1f5969101b06b7cdf05b101d02b708c591854f57
+          test "$(git rev-parse "$first^")" = "$parent"
+          test "$(git show --format= --name-only "$first")" = "research/native/itd01/mass_r10/CS12_PREREG.md"
+          git merge-base --is-ancestor "$first" HEAD
+          git diff --name-only "$parent" HEAD | python -B -c 'import sys;got=set(sys.stdin.read().splitlines());want={"research/native/itd01/mass_r10/CS12_PREREG.md","research/native/itd01/mass_r10/run_cs12_original_portable_causal_rule.py","research/native/itd01/mass_r10/test_cs12_original_portable_causal_rule.py",".github/workflows/mass-cs12-original-portable-causal-rule.yml"};assert got==want,(got,want)'
+      - name: Checkout original independent POBAX unchanged at pinned Git source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: taodav/pobax
+          ref: a5e1d62d14e4efe783885b9d4f19cffa2a568eec
+          path: external/pobax-original
+          persist-credentials: false
+      - name: Setup Python 3.11 CPU source
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install bounded original source CPU JAX dependencies
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p cs12-evidence
+          set +e
+          timeout 480s python -m pip install --no-cache-dir --timeout 35 --retries 1 'jax==0.6.2' 'jaxlib==0.6.2' chex gymnax flax brax >cs12-evidence/pip-install.log 2>&1
+          rc=$?
+          if [ "$rc" -eq 0 ]; then
+            timeout 60s python -m pip install --no-deps -e external/pobax-original >>cs12-evidence/pip-install.log 2>&1
+            rc=$?
+          fi
+          set -e
+          printf '%s\n' "$rc" >cs12-evidence/pip-exit.txt
+          test "$rc" -eq 0
+      - name: Focused pure original-source-free transfer rule and controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v research/native/itd01/mass_r10/test_cs12_original_portable_causal_rule.py 2>&1 | tee cs12-evidence/focused-tests.log
+      - name: Run frozen original-source 60 FIT and 3024 rewarded DEV episodes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/native/itd01/mass_r10/run_cs12_original_portable_causal_rule.py \
+            --upstream external/pobax-original --out cs12-evidence/
+      - name: Preserve original public FIT, actual rewards and all scientific negatives
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mass-cs12-original-causal-rule-rewarded
+          path: cs12-evidence/
+          retention-days: 30
