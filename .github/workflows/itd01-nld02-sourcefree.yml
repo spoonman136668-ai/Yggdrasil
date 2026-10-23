@@ -1,0 +1,96 @@
+name: ITD01 NLD02 one-bank learning and task-alias diagnostic
+on:
+  pull_request:
+    branches: [research/itd01-staged-native-learning-r9smoke-20261023]
+permissions:
+  contents: read
+concurrency:
+  group: itd01-nld02-existing-smoke-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+jobs:
+  smoke:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_CONFIG_COUNT: '1'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Confirm original R9, NLD01, and protocol-first four-file scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          base=71a31aaa98efa639265baa81ae021c261458aa19
+          pre=eea51c2ac320f6b82ff6788ebc3fd17deff4c498
+          test "$(git rev-parse "$pre^")" = "$base"
+          git merge-base --is-ancestor "$base" HEAD
+          test "$(git show --format= --name-only "$pre")" = "research/native/itd01/nld02/PREREG.md"
+          test "$(git rev-parse "$pre:research/native/itd01/nld02/PREREG.md")" = "$(git rev-parse HEAD:research/native/itd01/nld02/PREREG.md)"
+          git diff --name-only "$base" HEAD | python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); b={"research/native/itd01/nld02/PREREG.md","research/native/itd01/nld02/shared_bank.py","research/native/itd01/nld02/test_shared_bank.py",".github/workflows/itd01-nld02-sourcefree.yml"}; assert a==b,(a,b)'
+          for entry in research/native/itd01/r9/action_cells.py:882bfca8172e7e2d25fc617cd34dbc811383cede research/native/itd01/r9/report_r9.py:3629a41a9a15e6559d21cdc96a5431f964cfd3df research/native/itd01/nld01/learning_cycle.py:79016ce5311ea1cecc8e10be30f1caf5735beb61; do
+            name="${entry%%:*}"; expected="${entry#*:}"
+            test "$(git rev-parse HEAD:"$name")" = "$expected"
+            test "$(git hash-object --no-filters -- "$name")" = "$expected"
+          done
+          echo NLD02_R9_NLD01_AND_FROZEN_PREREG=PASS
+      - name: One-bank delayed-feedback learner and matched shared controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd01/nld02 -p 'test_shared_bank.py' -v
+          python -B research/native/itd01/nld02/shared_bank.py --smoke > nld02_smoke.json
+          python -B -c 'import json; x=json.load(open("nld02_smoke.json")); assert x["only_reused_development_smoke_seed"]==3 and x["active_native_cell_banks"]==1 and not x["native_input_has_family_or_task_identity"] and not x["scientific_first_use"] and x["known_source_alias_certificate"]["different_A_B_action_targets_without_task_cue"]==8; print("NLD02_SHARED_LEARNER_SOURCEFREE_DIAGNOSTIC=RECORDED",x["contrasts"])'
+          git status --porcelain --untracked-files=all | python -B -c 'import sys; x=sys.stdin.read().splitlines(); assert x==["?? nld02_smoke.json"],x'
+          sha256sum nld02_smoke.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nld02-source-free-${{ matrix.os }}
+          path: nld02_smoke.json
+          if-no-files-found: ignore
+  compare:
+    needs: [smoke]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: nld02-source-free-*
+          path: reports
+          merge-multiple: false
+      - name: Exact source-free non-timing learning/retention report parity
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,pathlib
+          root=pathlib.Path("reports")
+          def read(os):
+              p=root/("nld02-source-free-"+os)/"nld02_smoke.json"
+              return json.loads(p.read_text()),hashlib.sha256(p.read_bytes()).hexdigest()
+          linux,lh=read("ubuntu-24.04")
+          windows,wh=read("windows-2022")
+          assert linux==windows,"NLD02_ORIGINAL_CROSS_OS_NATIVE_STATE_DRIFT"
+          assert linux["original_r9_101_211_307_reused"] is False
+          assert linux["disposition"]=="NLD02_SHARED_BANK_EXISTING_SOURCE_DEV_DIAGNOSTIC_RETAIN_ALL_RESULTS"
+          print("NLD02_CROSS_OS_EXACT_SEMANTIC_PARITY=PASS")
+          print("NLD02_LINUX_RECEIPT_SHA256="+lh)
+          print("NLD02_WINDOWS_RECEIPT_SHA256="+wh)
+          print("NLD02_A_CONTRASTS="+json.dumps(linux["contrasts"],sort_keys=True))
+          print("NLD02_TASK_INFORMATION_ALIAS=8_OF_16")
+          print("NLD02_SCIENTIFIC_FIRST_USE=NONE")
+          PY
