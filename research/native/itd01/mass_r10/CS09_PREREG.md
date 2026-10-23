@@ -1,0 +1,40 @@
+# Mass CS09 — Prospective original-source paired eviction replication and stronger fixed-FIT competitors
+
+**Freeze FIRST before writing code or consuming original-source episodes.** The sole file in this first commit is this protocol. Exact parent CS08 source-only branch `c822b8e80757895ab44e64c19111685eb9a68f46`, frozen CS08 first-prereg `faac43a908fcf7836fddc5b4d6cf73aa556abad5`. Previous CS08 runner #39961326020 yielded genuine binding K4 and an aggregate gain for FIT-selected `frequent`, BUT per-seed original rewards were omitted and all other K4 baselines tied. This gate is a *new* public-development cohort, not a rescore, not a repaired run, not an independent scientific first-use. Protect all prior positive and negative receipts unchanged.
+
+## Independently authored original source, immutable identity
+Use original source-owned `proroklab/popgym@410d5aa626dae8024f498354d8781a0d1870c399` unchanged, original `popgym/envs/concentration.py` Git blob `8f0d2d316c1ae63a7965ce1c56295a9aa403bbb9`; `popgym/core/deck.py` `12bcabfa9a96fd1261809ef0a446c74d3f3bfa86`; `popgym/core/env.py` `26a20ba3531730b76e135f48e8fc25bb6b620984`; `pyproject.toml` `20bd0e278a519452d66c57f2fbbff58fdcdce5c8`. Original 52-face-down card public board; legal actions 0..51; original 104-step maximum, actual reward, original match/terminate/truncate semantics, discard original `info` and all `get_state`/deck/private fields. No simulator rewrite or hidden-answers. Source-owned original `reset/step` is invoked anew per arm and seed.
+
+## Research question
+(1) Can the CS08 fixed *frequency* priority advantage be independently repeated on **new** source-native layouts with per-seed authentic rewards and deterministic paired uncertainty? (2) Can a prospectively FIT-selected **parametric conventional frequency/recency priority** beat CS08's already-public fixed `frequent`, as well as FIFO, LRU and rank-support at the **same actual K=4 cache capacity** under real eviction? Preserve negative if no. Neither ranking formula nor memory architecture is learned end-to-end; the only learned parameter is discrete FIT model selection. No native Yggdrasil/Wingless or genuine unfamiliar transfer claim.
+
+## First-use roles and exact new public seeds (all newly consumed public)
+Three development replicas r=0,1,2, disjoint original reset seeds:
+- FIT 20 per each of six candidate priority rules: seeds `1200000+1000*r+i`, i=0..19. **Six source-native original episodes per seed**, one per distinct priority, different actions and observations may arise. All FIT action budgets equal, but **not identical training histories**; no equal-information training claim.
+- VALID 12 per each of six evaluation arms: seeds `1210000+1000*r+i`, i=0..11, scored once and NEVER used for model selection.
+- DEV 48 per each of six evaluation arms: seeds `1220000+1000*r+i`, i=0..47, scored once and NEVER used for model selection, tuning or new chosen controls.
+- Exactly `3*(6*20+6*12+6*48)=1440` original source instances, legal card flips <=`1440*104=149760`. No reuse of CS07/CS08 original role seeds. Actual source counts and consumed seed identities in receipt. FAIL on changed/missing counts.
+
+## Frozen six FIT menu policies and six evaluation arms
+All policies run identical CS07/08 **hand-designed** source-public card matcher and eviction infrastructure. Every K4 policy retains the same extra public rank-frequency counts (13 categories), up to 52 seen-location flags, timestamp metadata, matching/status action information; this state is counted in complete actual serialized state. K=4 is NOT a total-state four-item bound; do not claim it is. Evict minimum priority at full K4, deterministic oldest insertion/index tie. Menu:
+1. `frequent`: CS08 priority `rank_seen[current_rank]`
+2. `hybrid_025`: `rank_seen[current_rank] + (last_access_step/104)*0.25`
+3. `hybrid_100`: `rank_seen[current_rank] + (last_access_step/104)*1.0`
+4. `hybrid_400`: `rank_seen[current_rank] + (last_access_step/104)*4.0`
+5. `novelty`: CS08 `-rank_seen[current_rank]`
+6. `rank_support`: CS08 currently-matched cached rank multiplicity + most recent access
+Ties in FIT total original reward choose the FIRST of this exact ordered menu. None of the formulas use original-source unseen labels or private cards.
+Six VALID/DEV arms: reward-FIT-selected K4; **strong fixed CS08 winner frequent K4**; FIFO K4; LRU K4; rank_support K4; full conventional LRU K52. All five K4 arms have exactly four unmatched position↔rank cache slots; the full control is intentionally larger. No untrained fake conventional baseline; strongest fixed heuristic `frequent` is preserved as required.
+
+## Provenance and audit completeness
+For **every** source-native episode in FIT/VALID/DEV, retain raw row `{seed,arm,role,reward_sum,matched_pairs,original_steps,actual_evictions,peak_cache,eviction_events_SHA256,public_action_board_reward_trace_SHA256,complete_serialized_state_bytes,source_end_flags}`. This corrects CS08's missing per-seed rewards. No original hidden deck/info. Separate FIT records from score records and hash both. Report exact per-replica treatment/control differences, per-source-episode reward histogram, observed binding percentages, fraction complete source pairs, observed cache max, true serialized measured bytes inclusive of common auxiliary state and active policy metadata, per-arm actual process CPU including simulator, process-wide max RSS **not** isolated model-RSS parity. Raw data must permit independently recomputing means and paired bootstrapped intervals, not only aggregate hashes.
+Uncertainty: paired bootstrap **5,000** resamples per replica/comparison using `random.Random(20261023+100*rep+comparison_index)`, sample 48 original DEV seed indices with replacement, take differences `candidate_minus_control`, sort means, percentile 2.5%/97.5% using zero-index `int(0.025*5000)` and `int(0.975*5000)-1`. This descriptive interval is not an independently witnessed novel-family confidence statement. Paired seed resets can yield different trajectories after different actions; pairing is by shared source seed, not identical experience.
+
+## Predeclared advancement/falsification
+- **Actual pressure guard:** each evaluated K4 policy peak=4 and at least 45 of 48 DEV original source episodes in EVERY replica have >=1 real eviction; full K52 must attain observed peak >=6 at least once. Fail meaningful memory pressure => `PUBLIC_CS09_INSUFFICIENT_ACTUAL_BINDING` and preserve all.
+- **Replication of prior fixed frequent heuristic:** frequent minus FIFO and frequent minus LRU must both >=0.05 mean original DEV reward **and bootstrap lower 95% bound >0** in each replica. This is a separately reported `CS08_FREQUENCY_HEURISTIC_REPLICATES`, not a new cognitive mechanism.
+- **New fitted selector advantage:** reward-selected K4 minus the already-known fixed `frequent` >=0.04 and lower paired bootstrap 95% >0, and >=0.04 over both FIFO and LRU and >=0.03 over rank_support, in EVERY replica. Otherwise valid `PUBLIC_CS09_NO_GAIN_VS_STRONG_FREQUENT`, no posthoc winner. If selected rule is `frequent` then by identity candidate=fixed frequent, no novel fit gain. In every case, require full K52 upper bound reported.
+- Never infer independent first use, causal-transfer proof, per-model equal CPU/RSS or native Wingless/Yggdrasil architecture. A positive still only supports FIT choosing one of five hand-designed parameters. No hard false positive scientific generalization claim.
+
+## Execution and preservation
+Only bounded original-source Ubuntu PUBLIC-delegated development workflow, exact parent and FIRST Git identity, additive-only implementation paths, immutable external source blobs, no paid models, no modified historical evidence. Stop and preserve receipt on contract failures; no protected R10 #422/H1/H2, no CKB-controller authority substitution, no accepted ref merge/promotion, no waiver of other inherited G29/R7Q and proxy fanout failures. Negative result is meaningful if strong conventional frequent survives fresh source repetition.
