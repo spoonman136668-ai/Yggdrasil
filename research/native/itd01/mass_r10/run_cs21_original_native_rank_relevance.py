@@ -205,7 +205,6 @@ def models_from_fit(fit):
        ARMS[0]:native_cpu,ARMS[4]:rank_cpu}.get(name,"shared_c_lambda_SOURCE_FIT_model"),
     "online_public_rank_history_counter_slots":0 if name==ARMS[4] else 13,
     "original_fitted_model_sha256":hashlib.sha256(serialized).hexdigest()}
-  }
  return ms,resources,{"shared_true_original_c":c,
     "shared_true_source_fit_lambda":lam,
     "shared_source_original_next_rank_likelihood_grid":ll,
