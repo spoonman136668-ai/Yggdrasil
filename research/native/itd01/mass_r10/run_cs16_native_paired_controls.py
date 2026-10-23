@@ -215,7 +215,11 @@ def model_case(model_type,groups):
                 k:before_stats[k][0]["accuracy"]-after_stats[k][0]["accuracy"]
                 for k in COHORTS[:3]},
             "source_free_recorded_model_state":after.counts(),
-            "source_model_checkpoint_bytes":len(after_blob),
+            # Cross-OS logical bytes are length of the separately declared
+            # 11-place canonical science representation; actual raw bytes
+            # remain recorded without modification in OS resource metadata.
+            "source_model_checkpoint_bytes":len(canonical(
+                rounded_state(after.counts(),after_blob,model_type)).encode()),
             "source_model_state_round12_SHA256":digest(rounded_state(after.counts(),after_blob,model_type)),
             "source_native_checkpoint_state_hash":frozen_sha if model_type is Native else None}
     info={"fit_CPU_ns":fit_cpu,"DEV_predict_CPU_ns":infer_cpu,
