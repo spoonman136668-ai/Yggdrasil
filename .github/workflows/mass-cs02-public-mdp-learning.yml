@@ -1,0 +1,74 @@
+name: Mass CS02 original MDP fitted contextual vs blind controls
+on:
+  push:
+    branches:
+      - research/mass-cs02-trained-contextual-original-mdp-20261023
+permissions:
+  contents: read
+concurrency:
+  group: mass-cs02-original-source-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  public-learning-and-controls:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PIP_DISABLE_PIP_VERSION_CHECK: '1'
+    steps:
+      - name: Checkout committed candidate and frozen protocol ancestry
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 8
+      - name: Verify first prereg before any source use
+        shell: bash
+        run: |
+          set -euo pipefail
+          first=e7b0cc68ddc7974bc26e9f10ee3026bc40daf77e
+          parent=9abbae2c62b4bbcfad292cfc4a80f9842b5e8fcf
+          test "$(git rev-parse "$first^")" = "$parent"
+          test "$(git show --format= --name-only "$first")" = "research/native/itd01/mass_r10/CS02_PREREG.md"
+          git merge-base --is-ancestor "$first" HEAD
+          git diff --name-only "$parent" HEAD | python -B -c 'import sys; got=set(sys.stdin.read().splitlines()); want={"research/native/itd01/mass_r10/CS02_PREREG.md","research/native/itd01/mass_r10/run_cs02_public_mdp_learning.py","research/native/itd01/mass_r10/test_cs02_public_mdp_learning.py",".github/workflows/mass-cs02-public-mdp-learning.yml"}; assert got==want,(got,want)'
+      - name: Checkout pinned original Causal-Gymnasium causal source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: CausalAILab/Causal-Gymnasium
+          ref: c94e9a4cd3641588b6b8507e71ccee5c27032bdf
+          path: external/Causal-Gymnasium
+          persist-credentials: false
+      - name: Install supported Python interpreter
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install original untouched package dependencies
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p cs02-evidence
+          set +e
+          timeout 330s python -m pip install --no-cache-dir --timeout 30 --retries 1 -e external/Causal-Gymnasium >cs02-evidence/pip-install.log 2>&1
+          rc=$?
+          set -e
+          printf '%s\n' "$rc" > cs02-evidence/pip-exit.txt
+          test "$rc" -eq 0
+      - name: Run focused source-free learner and split tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v research/native/itd01/mass_r10/test_cs02_public_mdp_learning.py 2>&1 | tee cs02-evidence/focused-tests.log
+      - name: Run preregistered source-native public FIT VALID DEV exactly once
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/native/itd01/mass_r10/run_cs02_public_mdp_learning.py \
+            --upstream external/Causal-Gymnasium \
+            --out cs02-evidence/
+      - name: Preserve full public source evidence including negatives
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mass-cs02-original-mdp-public-learning
+          path: cs02-evidence/
+          retention-days: 30
