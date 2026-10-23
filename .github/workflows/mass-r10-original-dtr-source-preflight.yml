@@ -44,6 +44,19 @@ jobs:
           set -e
           printf '%s\n' "$rc" > source-evidence/pip-exit.txt
           echo "ORIGINAL_UPSTREAM_PIP_EXIT=$rc"
+      - name: Supply missing upstream undeclared minigrid import prerequisite
+        shell: bash
+        run: |
+          set -uo pipefail
+          set +e
+          timeout 105s python -m pip install --no-cache-dir --timeout 25 --retries 1 "minigrid==2.3.1" >source-evidence/minigrid-install.log 2>&1
+          rc=$?
+          set -e
+          echo "ORIGINAL_IMPORT_UNDECLARED_MINIGRID_EXIT=$rc"
+          printf '%s\n' "$rc" > source-evidence/minigrid-exit.txt
+          if [ "$rc" -ne 0 ]; then
+            echo "$rc" > source-evidence/pip-exit.txt
+          fi
       - name: Audit actual pinned Git objects and original DTR import without running episodes
         shell: bash
         run: |
