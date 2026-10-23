@@ -1,0 +1,61 @@
+name: Mass R10 isolated original DTR source import preflight
+on:
+  push:
+    branches:
+      - review/mass-r10-dtr-package-preflight-20261023
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: mass-r10-isolated-dtr-source-preflight-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  isolated-original-dtr:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PIP_DISABLE_PIP_VERSION_CHECK: '1'
+    steps:
+      - name: Checkout exact Mass Research source-only branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+      - name: Checkout pinned unmodified original upstream DTR repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: CausalAILab/Causal-Gymnasium
+          ref: c94e9a4cd3641588b6b8507e71ccee5c27032bdf
+          path: external/Causal-Gymnasium
+          persist-credentials: false
+      - name: Setup Python with original supported NumPy ABI
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install actual upstream setup.py dependencies without package modifications
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p source-evidence
+          set +e
+          timeout 330s python -m pip install --no-cache-dir --timeout 30 --retries 1 -e external/Causal-Gymnasium >source-evidence/pip-install.log 2>&1
+          rc=$?
+          set -e
+          printf '%s\n' "$rc" > source-evidence/pip-exit.txt
+          echo "ORIGINAL_UPSTREAM_PIP_EXIT=$rc"
+      - name: Verify exact original DTR core classes through isolated source import without episodes
+        shell: bash
+        run: |
+          set -uo pipefail
+          python -B research/native/itd01/mass_r10/preflight_original_dtr.py \
+            --upstream external/Causal-Gymnasium \
+            --pip-exit "$(cat source-evidence/pip-exit.txt)" \
+            --receipt source-evidence/receipt.json
+      - name: Retain original package and preflight failure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mass-r10-isolated-original-dtr-source-preflight
+          path: source-evidence/
+          retention-days: 30
