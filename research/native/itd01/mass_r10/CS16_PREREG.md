@@ -1,0 +1,32 @@
+# CS16 — independent paired R7 retention versus matched learned conventional controls
+
+PROSPECTIVE FIRST-COMMIT-ONLY frozen PUBLIC-development test, directly on CS15 verified source-free paired audit parent 9990bd7d7ba510d7e236ea8a68d895c0ea62a6f0 (PR #464). No source episodes/data/model measurement or implementation before this prereg. Original R7 native_cells.py Git blob 4c492a494ac5b25d5e9c49b98185be6a2c966b2f, frozen test_native_cells.py blob 5565929be0e91c679bfd3c6741d171b69d9a013f. Both untouched. Historical R7 seed31 FAIL and original gates(study seeds17,31,47)==FALSE must remain frozen, unwaived and block integration. CS13/14 original-source positives and strong conventional negatives, CS15 measurement-confound positive, original R10 #422, G29/R7Q and all NCI-04/ITD-01/BIO/FORGE/Optimizer and additive ELG-01 charter unchanged.
+
+## Source and original order
+
+Source is original unchanged public source-free R7 PublicDevGenerator(seed+71); this is PUBLIC test fixture, NOT source-owned original unknown environment, no scientific independent unfamiliar first use. Six prospectively fixed NEW public development seeds: 131,157,181,197,223,251; no seed replacements. Generate exact original prefix in order: train_A 320, valid_A 160, train_B 320, retained_A 160, held_B 160. Then two additional genuinely distinct original generator draws extra_A 160 and extra_B 160. Only train_A and train_B (chronological 640 public feedback events) are permitted FIT. Everything else frozen labeled DEV and never used for fitting, tuning, selection, target leakage or learner update. Each model gets same full public context A/B, same 4-bit sensors and same outcome after each real original generator FIT row, no source rule privileged input.
+
+After A320 FIT, freeze model, score EACH of three A DEV sets (valid_A/retained_A/extra_A). After B320 FIT, cold restore without resetting A and re-score IDENTICAL three A DEV sets and both B DEV sets (held_B/extra_B). Save per-source hashed cohort identity and predictions. Original native A four local cell states should remain byte-identical; original B cells and total original checkpoint must change. Native 640 delayed feedback updates, 2560 local-cell updates, 5120 neighbor messages and exact cold restore; compare historical seed31 original unpaired 6.25 percentage points with same-item zero change, and algebraic unpaired loss decomposition on all six new seeds. No replacement of old failure.
+
+## Six frozen policy arms
+
+1. actual_native_R7_Colony: original untouched Colony and original predict/context/sensors/learn_completed_public_feedback, delay_steps=2, 320 A then 320 B updates.
+2. trained_full_episodic_Laplace: store every full original public FIT context/4bits/label record, predict with Laplace(+1,+1) probability for context plus exact 4-bit key; ties False. This is a strong full-information conventional episodic competitor with memory storage/cost.
+3. trained_contextual_logistic: 5 weights per public context, bias plus FOUR signed sensor bits (bit True maps +1, False -1), online one chronological SGD PASS, lr 0.08 and L2 0.003; predicts probability>0.5, tie False.
+4. trained_recurrent_EMA: same 5 weights per context plus a sixth prior-outcome EMA feature; EMA initialized zero and updated only AFTER legitimate FIT public outcome, 0.9*old +0.1*(2*label-1). Six weights updated once per source public FIT row, lr0.08 and L2 0.003. Freeze EMA and weights for DEV; no DEV update. This is a tiny trained conventional recurrent-memory baseline, not a large optimized learned RNN; limitations explicit.
+5. public_source_law_oracle: privileged known fixture A=bit2, B=NOT bit1; never treat as equally trained. No model FIT.
+6. no_learning_constant_zero: cheap negative, predicts False always.
+
+All trained methods see exactly same 320 A and 320 B FIT examples, B training may or may not impact A predictions; measure and report for each. No hyperparameter changes after source DEV scores. All model checkpoints/state are exact frozen bytes before and after; compare exact score outcomes and bytes, number of model updates, FIT train CPU, final inference CPU, model persistent memory serialized bytes and full-run process CPU/RSS (NOT isolated model memory and no accurate energy estimate). Original G29/R7Q invalid/incomplete is not waived.
+
+## Prospective qualified result and falsifier
+
+Source-free PUBLIC CS16 native paired-retention noninferiority PASS only if:
+- original full frozen R7 source/test Git blob authentic; original historical frozen gates FAIL and seed31 original exact 0.93125/0.86875 reproduced, not waived.
+- for all six NEW public DEV seeds, original R7 A-cell states unchanged after B-only training, exact native cold restore, native predictions identical before/after on each SAME three distinct 160-case A sets: zero changes over 2880 paired A cases; Native B-source acquired over B-only updates and native heldout A and B scores >=0.75 each seed.
+- native pooled A-post and B-post accuracies both at least +0.15 absolute better than constant zero, and noninferior by no more than 0.05 to the BEST of the three FIT-trained episodic, logistic, recurrent baselines separately on pooled A and pooled B.
+- original unpaired-vs-paired decomposition exactly verified all six; no test examples accidentally trained, checkpoints and original order/seed hashes match. Hosted Windows and Linux science JSON canonical SHA exactly matches; process measurements may vary outside science JSON.
+
+Valid science negative must be reported PUBLIC_CS16_NATIVE_PAIRED_RETENTION_NONINFERIORITY_NOT_SHOWN, not retuned. Any source identity, original frozen gate, label leak, mutation, checkpoint or policy violation => PUBLIC_CS16_INVALID (CI fails). Original frozen 7-test suite remains FAIL and is independently archived by BOTH hosted jobs as an immutable final integration/promotion blocker regardless of this isolated PUBLIC diagnostic PASS.
+
+No novel native cognitive advantage, unseen-family transfer, action-conditioned learning, or independently witnessed first use claimed even for a PASS. Neither this PR nor its evidence authorizes replacing original R7 gates or promoting CS14. A new acceptance protocol would require separate Research Charter/CKB-plane owner approval and independently sourced unfamiliar tests against strong trained alternatives and full resource budget.
