@@ -59,8 +59,8 @@ class NativeEpisode:
         self.reward_checks=0.;self.reward_samples=0.;self.reward_exit=0.
         self.steps=[]
     def key(self,family,index):
-        return (4000000 if family=="check" else 8000000 if family=="sample" else 7000000)+
-                ROLE_CODES[self.role]*1000000+self.map_idx*100000+self.idx*1000+index
+        return ((4000000 if family=="check" else 8000000 if family=="sample" else 7000000)
+                + ROLE_CODES[self.role]*1000000+self.map_idx*100000+self.idx*1000+index)
     def check(self,rock_idx):
         need(0<=rock_idx<5,"ILLEGAL_SOURCE_CHECK_INDEX")
         pos=source_position(self.obs)
@@ -416,11 +416,9 @@ def main():
              ("fit_source_original_episodes","valid_source_original_episodes","dev_source_original_episodes"))
         receipt["total_native_original_source_actions"]=sum(
             m["public_FIT_native_total_actions"]+
-            sum(x["total_source_action_calls"] for x in m[role].values())
-            for m in receipt["map_replicas"] for role in ("valid","dev")
-        )-sum(m["public_FIT_native_total_actions"] for m in receipt["map_replicas"])
-        receipt["total_native_original_source_actions"]+=sum(
-            m["public_FIT_native_total_actions"] for m in receipt["map_replicas"])
+            sum(x["total_source_action_calls"] for role in ("valid","dev")
+                for x in m[role].values())
+            for m in receipt["map_replicas"])
         need(receipt["total_native_original_source_resets"]==2*(96+6*(24+48)),
              "SOURCE_ORIGINAL_ROLE_TOTAL_DRIFT")
         receipt["full_shared_PUBLIC_FIT_history_sha256"]=digest(all_fits)
