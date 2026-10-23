@@ -1,0 +1,74 @@
+name: Mass CS15 read-only frozen R7 paired retention measurement audit
+on:
+  push:
+    branches:
+      - research/mass-cs15-r7-paired-retention-audit-20261023
+permissions:
+  contents: read
+concurrency:
+  group: mass-cs15-paired-audit-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-R7-public-measurement:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout original unchanged native and FIRST-only audit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 7
+          persist-credentials: false
+      - name: Verify FIRST prereg and exact 4-file additive source scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          first=e743767fd31d3cc30437c41df73f595c5132c9b4
+          parent=adb0ca9091762a110d65257ffe4bdcc8e90b46a3
+          test "$(git rev-parse "$first^")" = "$parent"
+          test "$(git show --format= --name-only "$first")" = "research/native/itd01/mass_r10/CS15_PREREG.md"
+          git merge-base --is-ancestor "$first" HEAD
+          test "$(git hash-object research/native/itd01/r7/native_cells.py)" = "4c492a494ac5b25d5e9c49b98185be6a2c966b2f"
+          test "$(git hash-object research/native/itd01/r7/test_native_cells.py)" = "5565929be0e91c679bfd3c6741d171b69d9a013f"
+          git diff --name-only "$parent" HEAD | python -B -c 'import sys;got=set(sys.stdin.read().splitlines());want={"research/native/itd01/mass_r10/CS15_PREREG.md","research/native/itd01/mass_r10/run_cs15_sourcefree_paired_r7_audit.py","research/native/itd01/mass_r10/test_cs15_sourcefree_paired_r7_audit.py",".github/workflows/mass-cs15-paired-r7-audit.yml"};assert got==want,(got,want)'
+      - name: Setup Python 3.11, no third-party or original source installation
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Record original historical R7 FAIL exactly, without waiving it
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p cs15-evidence
+          set +e
+          PYTHONPATH=research/native/itd01/r7 python -B -m unittest discover -s research/native/itd01/r7 -p 'test_native_cells.py' -v >cs15-evidence/original-frozen-R7-history.log 2>&1
+          rc=$?
+          set -e
+          echo "ORIGINAL_UNCHANGED_R7_EXIT=$rc"
+          printf '%s\n' "$rc" >cs15-evidence/original-frozen-R7-exit.txt
+          cat cs15-evidence/original-frozen-R7-history.log
+          test "$rc" = "1"
+          grep -q "FAIL: test_frozen_three_init_cohorts_keep_original_negatives" cs15-evidence/original-frozen-R7-history.log
+          echo "CS15 DOES NOT WAIVE THE FROZEN ORIGINAL R7 FAILURE"
+      - name: Run prospective paired original-example audit focused tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v research/native/itd01/mass_r10/test_cs15_sourcefree_paired_r7_audit.py 2>&1 | tee cs15-evidence/focused-tests.log
+      - name: Run six-seed paired source-free R7 study with original failure retained
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/native/itd01/mass_r10/run_cs15_sourcefree_paired_r7_audit.py --out cs15-evidence/
+      - name: Preserve original failed R7 and new paired diagnostic proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mass-cs15-paired-r7-sourcefree-${{ matrix.os }}
+          path: cs15-evidence/
+          retention-days: 30
