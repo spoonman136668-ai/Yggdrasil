@@ -1,0 +1,77 @@
+name: Mass DTR01 native original public two-stage engineering smoke
+on:
+  push:
+    branches:
+      - research/mass-dtr01-native-public-smoke-20261023
+permissions:
+  contents: read
+concurrency:
+  group: mass-dtr01-source-smoke-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-public-native-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+    steps:
+      - name: Checkout frozen source-first experiment branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 6
+      - name: Check first-only prereg, original import-parent, additive paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          first=4d31b11b7f7e8156cf0d2e65f8da1fe0ecd54dcb
+          parent=a119d8ccccdf7f8d1b78f5c67f10acbc0fcb59d4
+          test "$(git rev-parse "$first^")" = "$parent"
+          test "$(git show --format= --name-only "$first")" = "research/native/itd01/mass_r10/DTR01_PREREG.md"
+          git merge-base --is-ancestor "$first" HEAD
+          git diff --name-only "$parent" HEAD | python -B -c 'import sys; got=set(sys.stdin.read().splitlines()); want={"research/native/itd01/mass_r10/DTR01_PREREG.md","research/native/itd01/mass_r10/smoke_original_dtr_native.py",".github/workflows/mass-dtr01-native-public-smoke.yml"}; assert got==want,(got,want)'
+      - name: Checkout original independent upstream Causal-Gymnasium at exact source SHA
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: CausalAILab/Causal-Gymnasium
+          ref: c94e9a4cd3641588b6b8507e71ccee5c27032bdf
+          path: external/Causal-Gymnasium
+          persist-credentials: false
+      - name: Setup original-compatible Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.11"
+      - name: Install original upstream declared dependencies; preserve failure logs
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p dtr01-evidence
+          set +e
+          timeout 330s python -m pip install --no-cache-dir --timeout 30 --retries 1 -e external/Causal-Gymnasium >dtr01-evidence/pip-install.log 2>&1
+          rc=$?
+          set -e
+          printf '%s\n' "$rc" >dtr01-evidence/pip-exit.txt
+          test "$rc" -eq 0
+      - name: Check original pinned source and isolated import; NO episodes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/native/itd01/mass_r10/preflight_original_dtr.py \
+            --upstream external/Causal-Gymnasium \
+            --pip-exit "$(cat dtr01-evidence/pip-exit.txt)" \
+            --receipt dtr01-evidence/source-preflight.json
+      - name: Run exactly two preregistered original-public DTR episodes plus source-owned twins
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/native/itd01/mass_r10/smoke_original_dtr_native.py \
+            --upstream external/Causal-Gymnasium \
+            --receipt dtr01-evidence/smoke-receipt.json
+      - name: Preserve original source and terminal negative evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mass-dtr01-native-source-public-smoke
+          path: dtr01-evidence/
+          retention-days: 30
