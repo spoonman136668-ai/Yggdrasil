@@ -57,7 +57,7 @@ jobs:
           set -euo pipefail
           python -B -m unittest discover -s research/native/itd01/ext01 -p test_symbolic_contract.py -v
           python -B research/native/itd01/ext01/check_symbolic_contract.py --upstream upstream --audit > ext01_contract_receipt.json
-          python -B -c 'import json; x=json.load(open("ext01_contract_receipt.json")); assert x["exact_upstream_commit"]=="68a26254b5c0f15e84fa0c15d66bf0c626ede8e0" and x["contract"]["integer_action_count_default_no_end_trial"]==40 and x["generated_episodes"]==0 and not x["external_scientific_first_use"] and not x["benchmark_installed_or_imported"] and x["ckb_controller_admission"]=="NOT_OBSERVED"; print("EXT01_NATIVE_ALCHEMY_SOURCE_CONTRACT=PASS")'
+          python -B -c 'import json; x=json.load(open("ext01_contract_receipt.json")); assert x["exact_upstream_commit"]=="68a26254b5c0f15e84fa0c15d66bf0c626ede8e0" and x["contract"]["integer_action_count_default_no_end_trial"]==40 and x["graph_family_static_contract"]["distinct_declared_constraint_counts"]==[0,1,2,3] and not x["graph_family_static_contract"]["nonisomorphic_graph_families_proven"] and x["generated_episodes"]==0 and not x["external_scientific_first_use"] and not x["benchmark_installed_or_imported"] and x["ckb_controller_admission"]=="NOT_OBSERVED"; print("EXT01_NATIVE_ALCHEMY_SOURCE_CONTRACT=PASS")'
           git status --porcelain --untracked-files=all | python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); assert a=={"?? ext01_contract_receipt.json","?? upstream/"},a'
           sha256sum ext01_contract_receipt.json
       - uses: actions/upload-artifact@v4
