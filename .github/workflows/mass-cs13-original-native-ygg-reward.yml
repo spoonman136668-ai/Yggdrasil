@@ -1,0 +1,83 @@
+name: Mass CS13 original POBAX actual native Yggdrasil R7 rewarded action
+on:
+  push:
+    branches:
+      - research/mass-cs13-real-ygg-native-source-action-20261023
+permissions:
+  contents: read
+concurrency:
+  group: mass-cs13-authentic-native-original-source-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-source-native-yggdrasil:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 23
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PIP_DISABLE_PIP_VERSION_CHECK: '1'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      XLA_FLAGS: '--xla_cpu_multi_thread_eigen=false intra_op_parallelism_threads=1'
+      JAX_PLATFORMS: cpu
+    steps:
+      - name: Checkout immutable source-first qualified original Yggdrasil
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 7
+          persist-credentials: false
+      - name: Verify frozen FIRST commit ancestor, additive scope and unchanged authentic native source
+        shell: bash
+        run: |
+          set -euo pipefail
+          first=b2d5bec1ca0a36efa4f51d5cd53cc34ec8c61d5a
+          parent=19ae30404e7664f228384f449af9600f1a7adf55
+          test "$(git rev-parse "$first^")" = "$parent"
+          test "$(git show --format= --name-only "$first")" = "research/native/itd01/mass_r10/CS13_PREREG.md"
+          git merge-base --is-ancestor "$first" HEAD
+          git diff --name-only "$parent" HEAD | python -B -c 'import sys; got=set(sys.stdin.read().splitlines()); want={"research/native/itd01/mass_r10/CS13_PREREG.md","research/native/itd01/mass_r10/run_cs13_original_native_ygg_action.py","research/native/itd01/mass_r10/test_cs13_original_native_ygg_action.py",".github/workflows/mass-cs13-original-native-ygg-reward.yml"}; assert got==want,(got,want)'
+          test "$(git hash-object research/native/itd01/r7/native_cells.py)" = "4c492a494ac5b25d5e9c49b98185be6a2c966b2f"
+      - name: Checkout exactly pinned original external POBAX
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: taodav/pobax
+          ref: a5e1d62d14e4efe783885b9d4f19cffa2a568eec
+          path: external/pobax-original
+          persist-credentials: false
+      - name: Setup original Python 3.11 native+source runtime
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install bounded original CPU JAX source dependencies
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p cs13-evidence
+          set +e
+          timeout 480s python -m pip install --no-cache-dir --timeout 35 --retries 1 'jax==0.6.2' 'jaxlib==0.6.2' chex gymnax flax brax >cs13-evidence/pip-install.log 2>&1
+          rc=$?
+          if [ "$rc" -eq 0 ]; then
+            timeout 60s python -m pip install --no-deps -e external/pobax-original >>cs13-evidence/pip-install.log 2>&1
+            rc=$?
+          fi
+          set -e
+          printf '%s\n' "$rc" >cs13-evidence/pip-exit.txt
+          test "$rc" -eq 0
+      - name: Run actual Yggdrasil native source-free focused original tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v research/native/itd01/mass_r10/test_cs13_original_native_ygg_action.py 2>&1 | tee cs13-evidence/focused-tests.log
+      - name: Execute untouched original R7 native FIT and actual POBAX source-native DEV
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=research/native/itd01/r7 python -B research/native/itd01/mass_r10/run_cs13_original_native_ygg_action.py \
+            --upstream external/pobax-original --out cs13-evidence/
+      - name: Archive original source rewards and all native/conventional negatives
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mass-cs13-actual-native-original-reward
+          path: cs13-evidence/
+          retention-days: 30
