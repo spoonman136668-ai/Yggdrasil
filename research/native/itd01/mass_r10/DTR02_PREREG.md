@@ -1,0 +1,38 @@
+# Mass DTR-02 — frozen public learning comparison on original upstream DTR
+
+**Source-first scientific-development protocol.** The FIRST commit on this branch must add only this file. Frozen source parent: DTR-01 `aaa35082eefa6c5410d780a1cc456b85c8609b09`, [DTR-01 original hosted smoke #39930965685](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/39930965685), original artifact SHA256 `0d9df3e75fd60b6ee9e9729b467b37db22f30e8ece1250946edf7084e6a0ccab`. Immutable upstream `CausalAILab/Causal-Gymnasium@c94e9a4cd3641588b6b8507e71ccee5c27032bdf`. Keep DTR01 two engineering seeds 920101/920102 consumed and never use as novel science.
+
+## Actual question
+
+On the **same public, previously inspected single two-stage DTR law**, does a genuinely FIT-trained compact action-conditioned predictive reward model learn a policy outperforming equally informed, genuinely FIT-trained tabular world-model and episodic-action-value controls (plus a fixed policy), with unprivileged observations `S1, X1, S2, X2, terminal reward Y`? The frozen H0 is **no credible advantage**, including ties/regressions. This experiment only qualifies **public within-family learning**. It is not a native Wingless/Yggdrasil implementation or an unfamiliar causal transfer experiment.
+
+## Frozen data access and roles
+
+Three independent public source-free replicas indexed r=0,1,2. For each replica, FIT: 256 original-DTR episodes with source reset seeds `1100000 + r*10000 + i` (i=0..255), FIT_VALID: 64 seeds `1200000 + r*10000+i`, scored DEV: 128 seeds `1300000 + r*10000+i`. Disjoint seeds, no protected original H1/H2, R7/R9, R10, or DTR01. Do not tune models, fit thresholds or choose winner after FIT_VALID or DEV; frozen hyperparameters are used in every replica. FIT_VALID is a transparent locked diagnostic, no tuning.
+
+All trained arms share a **single authentic FIT public-action transcript** per seed/replica (not four separately sampled sources). Exploration `(X1,X2)` cycles through `(0,0),(0,1),(1,0),(1,1)` in order, chosen before reset. Source-owned original `DTRPCH` (via qualified isolated-original import) executes original reset and two original `.do` calls per FIT episode. The scripted sampler receives only public callbacks. Terminal source-native Y and S1,S2 entered after their public release; never read `env`, `u`, causal graph, `ctf_do`, raw `info` or source internals in learner or control. Log source actual FIT counts, training updates, public rewards and transcript SHA. FIT episode order is fixed.
+
+After FIT, each learned arm is frozen and independently evaluated on the **same source reset seed list** for FIT_VALID then DEV, using policy-chosen actions. Each score seed has a separate fresh original-source PCH instance *per arm*, with no shared private state. Agents may choose different legal action paths, so observations/rewards may differ despite paired seeds. Each score episode must have exactly 2 public binary actions and legal stage feedback. Policies do not receive terminal reward before choosing X2, and evaluation cannot update weights/memory. Source-native rewards are 0 at first stage, terminal 0/1 at second stage.
+
+## Frozen candidates and baselines
+
+1. **Candidate — fitted compact public predictive reward model.** Two learnable components fitted from the 256 public FIT traces: regularized logistic next-observation model `P(S2|S1,X1)` and logistic terminal-reward model `P(Y|S1,X1,S2,X2)`. Binary public feature vectors with a frozen, nonprivileged interaction basis. Optimize FIT public examples for **6 passes**, learning rate **0.08**, L2 **0.003**, weights initialized at zero; no private simulator transition math or precomputed true action values. At stage 0 choose X1 maximizing expected terminal reward under the predicted S2 distribution, then choose X2 maximizing predicted terminal reward for the actually observed S2. Ties select action 0. **This is a conventional compact learned predictive-state *reference*, NOT a qualified Yggdrasil cell learner.**
+2. **Trained tabular world-model control.** FIT-frequency-based Laplace-smoothed estimates of `P(S2|S1,X1)` and `P(Y|S1,X1,S2,X2)` from exactly the same 256 public FIT traces, independently computed. Laplace prior +1 success/+1 failure fixed. Maximize two-stage expected reward with action tie 0.
+3. **Trained episodic nearest-context control.** Retain exactly the 256 public FIT tuples. For each possible context/action, score the three-nearest observed terminal results by Hamming distance over public `S1,X1,S2,X2` (stable FIT index order on ties); use the **same** learned public transition-frequency estimate as the tabular model to aggregate over unknown S2 at stage 0. Never inspect actual SCM law or hidden labels. Action tie 0.
+4. **Fixed action-only control.** Always X1=0,X2=0; no fit.
+
+Each of the 3 learned arms must actually change/create its model state from FIT data (not a scripted source-law oracle). Report count of unique learned states, complete serialized model bytes, optimizer update/evaluation counts, FIT/VALID/DEV terminal reward successes and percentages, cost of original source environment interactions, per-arm CPU timing and process-inclusive maximum RSS. **Process-inclusive RSS is NOT per-model RSS**; no complete scientific resource parity or learned cognition benefit can be claimed without isolated child-process qualification.
+
+## Decision, falsification, no leakage
+
+Primary public DEV candidate-vs-strongest trained conventional control **per replica**, with transparent signed difference; no averaging away replica regression. *Exploratory* public positive only if candidate >= the strongest trained control on each replica, strictly better on at least two replicas, and no stored-state erasure ablation equality (if state erased, candidate action outcomes should change). Otherwise conclude `PUBLIC_DTR02_NO_GAIN` and retain every negative. This is not a predeclared 10pp scientific R10 threshold and never licenses full-domain transfer.
+
+Strict fail-closed source matching: original upstream commit, pinned original Git blob list, clean original tracked source, unchanged prereg Git blob and FIRST-only prereg commit ancestry, all exact FIT/VALID/DEV counts, two calls per original source episode, no callbacks with private or future fields, and no learner state mutation on validation/DEV. Absent equal public information or missing receipts => `INVALID_SOURCE_OR_PARITY`, not GO.
+
+One GitHub-hosted **Ubuntu** development execution is permitted after this prereg and code admission, with pinning, bounded dependency installation (<=330 seconds), original raw receipt upload on PASS/FAIL. Retain errors. No Windows equivalence or one-full-regression claim unless separately verified; G29 inherited source index remains FAIL and cannot be waived.
+
+## Safety, authority, and accepted conclusion
+
+No source generator rewrite, no R10 native #422 protocol edit, no sealed heldouts, no accepted-ref promotion, no CKB/FORGE authority substitution, no live trading, no paid models, no source-law oracle features, no developer task labeled first-use protected science. This PUBLIC DEVELOPMENT test does not require protected first-use custody and does not grant existing controller scientific-admission rights. If source ownership or authority prevents running, stop at prereg rather than fake execution.
+
+**Expected terminal report:** original source and complete model FIT receipt with positive or negative exact public results, fair trained controls and actual counted costs. No new research novelty/transfer or Yggdrasil-native improvements may be inferred from either outcome.
