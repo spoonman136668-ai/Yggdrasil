@@ -1,0 +1,72 @@
+name: Mass CS07 original POPGym concentration associative-memory budget
+on:
+  push:
+    branches:
+      - research/mass-cs07-original-concentration-associative-memory-20261023
+permissions:
+  contents: read
+concurrency:
+  group: mass-cs07-source-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-public-card-memory:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PIP_DISABLE_PIP_VERSION_CHECK: '1'
+    steps:
+      - name: Checkout frozen exact FIRST prereg and additive source candidate
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 8
+      - name: Enforce first-only protocol and no predecessor source edit
+        shell: bash
+        run: |
+          set -euo pipefail
+          first=47e739e2872cdaed1908dab4c8f33553ec5ed913
+          parent=7c391ac1aafc1bed4db17f89ebdd217c8bad9b2b
+          test "$(git rev-parse "$first^")" = "$parent"
+          test "$(git show --format= --name-only "$first")" = "research/native/itd01/mass_r10/CS07_PREREG.md"
+          git merge-base --is-ancestor "$first" HEAD
+          git diff --name-only "$parent" HEAD | python -B -c 'import sys;got=set(sys.stdin.read().splitlines());want={"research/native/itd01/mass_r10/CS07_PREREG.md","research/native/itd01/mass_r10/run_cs07_concentration_associations.py","research/native/itd01/mass_r10/test_cs07_concentration_associations.py",".github/workflows/mass-cs07-popgym-concentration.yml"};assert got==want,(got,want)'
+      - name: Checkout original independent POPGym source at immutable Git SHA
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: proroklab/popgym
+          ref: 410d5aa626dae8024f498354d8781a0d1870c399
+          path: external/popgym
+          persist-credentials: false
+      - name: Setup original compatible Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install unchanged original POPGym package
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p cs07-evidence
+          set +e
+          timeout 240s python -m pip install --no-cache-dir --timeout 30 --retries 1 -e external/popgym >cs07-evidence/pip-install.log 2>&1
+          rc=$?
+          set -e
+          echo "$rc" >cs07-evidence/pip-exit.txt
+          test "$rc" -eq 0
+      - name: Focused source-free public association and seed tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v research/native/itd01/mass_r10/test_cs07_concentration_associations.py 2>&1 | tee cs07-evidence/focused-tests.log
+      - name: Execute frozen public FIT and original VALID DEV once
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/native/itd01/mass_r10/run_cs07_concentration_associations.py --upstream external/popgym --out cs07-evidence/
+      - name: Preserve genuine source, trained budget and negative evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mass-cs07-original-popgym-concentration
+          path: cs07-evidence/
+          retention-days: 30
