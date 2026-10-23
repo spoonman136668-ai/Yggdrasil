@@ -1,0 +1,73 @@
+name: Mass CS16 native paired retention versus matched conventional memories
+on:
+  push:
+    branches:
+      - research/mass-cs16-matched-retention-controls-20261023
+permissions:
+  contents: read
+concurrency:
+  group: mass-cs16-paired-controls-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  matched-public-native-retention:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout immutable FIRST-only protocol and exact original R7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 7
+          persist-credentials: false
+      - name: Enforce original R7 and frozen historical gates, additive-only CS16 scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          first=a3ab35bd541ed587059ddaf513350c9b5902325c
+          parent=9990bd7d7ba510d7e236ea8a68d895c0ea62a6f0
+          test "$(git rev-parse "$first^")" = "$parent"
+          test "$(git show --format= --name-only "$first")" = "research/native/itd01/mass_r10/CS16_PREREG.md"
+          git merge-base --is-ancestor "$first" HEAD
+          test "$(git hash-object research/native/itd01/r7/native_cells.py)" = "4c492a494ac5b25d5e9c49b98185be6a2c966b2f"
+          test "$(git hash-object research/native/itd01/r7/test_native_cells.py)" = "5565929be0e91c679bfd3c6741d171b69d9a013f"
+          git diff --name-only "$parent" HEAD | python -B -c 'import sys;got=set(sys.stdin.read().splitlines());want={"research/native/itd01/mass_r10/CS16_PREREG.md","research/native/itd01/mass_r10/run_cs16_native_paired_controls.py","research/native/itd01/mass_r10/test_cs16_native_paired_controls.py",".github/workflows/mass-cs16-paired-retention.yml"};assert got==want,(got,want)'
+      - name: Setup Python 3.11 without third-party model or research source dependency
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Verify and preserve ORIGINAL frozen R7 hard failed integration test
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p cs16-evidence
+          set +e
+          PYTHONPATH=research/native/itd01/r7 python -B -m unittest discover -s research/native/itd01/r7 -p test_native_cells.py -v >cs16-evidence/frozen-original-R7-suite.log 2>&1
+          rc=$?
+          set -e
+          echo "$rc" >cs16-evidence/frozen-original-R7-exit.txt
+          cat cs16-evidence/frozen-original-R7-suite.log
+          test "$rc" = "1"
+          grep -q "FAIL: test_frozen_three_init_cohorts_keep_original_negatives" cs16-evidence/frozen-original-R7-suite.log
+          echo "ORIGINAL R7 SCIENTIFIC INTEGRATION GATE REMAINS FAILED; NO WAIVER"
+      - name: Focused original fixture and equal-FIT memory model tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v research/native/itd01/mass_r10/test_cs16_native_paired_controls.py 2>&1 | tee cs16-evidence/focused-tests.log
+      - name: Execute prospectively frozen six public sourcefree paired retention cases
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/native/itd01/mass_r10/run_cs16_native_paired_controls.py --out cs16-evidence/
+      - name: Preserve full public FIT source, native/equal-FIT scores and historical R7 fail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mass-cs16-paired-conventional-${{ matrix.os }}
+          path: cs16-evidence/
+          retention-days: 30
