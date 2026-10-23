@@ -2,6 +2,9 @@
 from __future__ import annotations
 import json
 import unittest
+import sys
+from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parent))
 from cs14_action_owned_native_cells import ActionOwnedNativeCells,LocalCell
 from run_cs14_original_action_owned_native import Explore,ARMS,seed,FIT_N,VALID_N,DEV_N
 

@@ -49,8 +49,12 @@ jobs:
           set -uo pipefail
           mkdir -p cs14-evidence
           set +e
-          timeout 330s python -m pip install --no-cache-dir --timeout 30 --retries 1 -e external/Causal-Gymnasium >cs14-evidence/pip-install.log 2>&1
+          timeout 180s python -m pip install --no-cache-dir --timeout 30 --retries 1 'numpy==1.26.4' 'gymnasium==0.29.1' 'networkx>=2.6.3' 'pydash>=5.1.0' 'toposort>=1.7' 'pydot>=1.4.2' >cs14-evidence/pip-install.log 2>&1
           rc=$?
+          if [ "$rc" -eq 0 ]; then
+            timeout 60s python -m pip install --no-deps -e external/Causal-Gymnasium >>cs14-evidence/pip-install.log 2>&1
+            rc=$?
+          fi
           set -e
           echo "$rc" >cs14-evidence/pip-exit.txt
           test "$rc" -eq 0

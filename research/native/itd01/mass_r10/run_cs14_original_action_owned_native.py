@@ -172,11 +172,9 @@ def score_role(Source,role,rep,models):
             model=models[name];tab=models[ARMS[1]]
             n_brier=sum((model.predict_next(s,a)-ns)**2
                         for s,a,y,ns,last in rows)/n_actions
-            tab_brier=sum((tab.cells[s][a][1]/sum(tab.cells[s][a])-ns)**2
-                          for s,a,y,ns,last in rows)/n_actions
-            # The tab model above predicts *reward*, not transition.
-            # Replaced below by source-original FIT transition counts, never
-            # represent reward posterior as a trained transition control.
+            # Report only genuinely FIT-native next-state predictions.
+            # The prior CS02 tabular comparator was trained on rewards, not
+            # source transitions; do not mislabel it a transition estimator.
             item["native_real_next_state_Brier_score"]=n_brier
             item["public_next_state_uninformative_half_Brier"]=.25
         result[name]=item
