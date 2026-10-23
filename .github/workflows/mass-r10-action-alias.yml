@@ -1,0 +1,59 @@
+name: Mass R10-I exact unknown-action-address audit
+on:
+  pull_request:
+    branches: [review/mass-r10-finite-probe-audit-20261023]
+permissions:
+  contents: read
+concurrency:
+  group: mass-r10-i-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_CONFIG_COUNT: '1'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+          fetch-depth: 30
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Freeze first prereg and limit to four additive research paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          parent=d31c8d00ccc2bb00f098b87097610329637a37f6
+          first=53b93e8174664ff74cb750a9caacf4abad2d6d2d
+          test "$(git rev-parse "$first^")" = "$parent"
+          test "$(git show --format= --name-only "$first")" = "research/native/itd01/mass_r10/PREREG_ACTION_ALIAS.md"
+          git merge-base --is-ancestor "$first" HEAD
+          git diff --name-only "$parent" HEAD | python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); b={"research/native/itd01/mass_r10/PREREG_ACTION_ALIAS.md","research/native/itd01/mass_r10/action_alias.py","research/native/itd01/mass_r10/test_action_alias.py",".github/workflows/mass-r10-action-alias.yml"}; assert a==b,(a,b)'
+          test "$(git rev-parse "$first:research/native/itd01/mass_r10/PREREG_ACTION_ALIAS.md")" = "$(git rev-parse HEAD:research/native/itd01/mass_r10/PREREG_ACTION_ALIAS.md)"
+          echo MASS_R10_I_FROZEN_PREREG_AND_SCOPE=PASS
+      - name: Exact symbolic risk tests and preserve source-only evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd01/mass_r10 -p 'test_action_alias.py' -v
+          python -B research/native/itd01/mass_r10/action_alias.py --audit > mass_r10_i_report.json
+          python -B -c 'import json; x=json.load(open("mass_r10_i_report.json")); assert x["schema"]=="mass.r10.action-address-screen.v1" and x["budget"]==32 and x["sampled_rows"]==0 and x["actual_r10_source_certificate"]=="NOT_ESTABLISHED" and x["scientific_first_use"] is False and x["ckb_admission"]=="NOT_OBSERVED"; assert len(x["cases"])==5; assert all(v["allocation"]==[16,16] and v["allocation_count"]==33 for v in x["cases"].values()); print("MASS_R10_I_EXACT_SYMBOLIC_AUDIT=PASS")'
+          git status --porcelain --untracked-files=all | python -B -c 'import sys; a=sys.stdin.read().splitlines(); assert a==["?? mass_r10_i_report.json"],a'
+          sha256sum mass_r10_i_report.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mass-r10-i-${{ matrix.os }}
+          path: mass_r10_i_report.json
+          if-no-files-found: ignore
