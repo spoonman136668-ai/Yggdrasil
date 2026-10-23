@@ -1,0 +1,5 @@
+# CS18 seed role segregation corrigendum (before original source execution)
+
+The unchanged FIRST protocol CS18_PREREG.md at cc4ddbba70b411b85f7b1e1d602a4a503c2dadf2 specified FIT seeds 4100000+100000*type+10000*rep and DEV seeds 4200000+100000*type+10000*rep, which collide for neighboring types. The protocol simultaneously requires role isolation. This contradiction was found in static pre-source implementation review. No original POPGym source reset/step has yet occurred; this correction is prospective, not result-informed.
+
+The exact DEV base is amended to **4500000**, making FIT type bases (4100000,4200000,4300000) and DEV type bases (4500000,4600000,4700000). Same two reps, i0..31, 192 FIT and 768 DEV source-original episodes, 48960 original source actions, 4 arms, three original deck families, original source commit/blobs, original original native constraints, tests and thresholds remain identical. Frozen FIRST protocol stays committed unmodified. Workflow must prove this corrigendum is present and source roles disjoint before original source execution. The source native result will cite both immutable prereg and this frozen pre-execution correction.
