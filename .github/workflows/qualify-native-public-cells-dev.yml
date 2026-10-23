@@ -45,14 +45,26 @@ jobs:
           set -euo pipefail
           python -B -m unittest discover -s tests -p 'test_native_cells.py' -v
           echo YGG_NATIVE_NONEMPTY_REAL_TEST_DISCOVERY=PASS
-      - name: Exactly one final full original Yggdrasil regression
+      - name: Final platform-qualified original Yggdrasil regression
         shell: bash
         run: |
           set -euo pipefail
-          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            # Existing test_free_fanout_sidecar.py imports POSIX-only
+            # resource at module import, so Windows cannot execute it.
+            # Never pretend the original Linux-only suite passed here.
+            python -B -m unittest discover -s tests -p 'test_code_atlas.py' -v
+            python -B -m unittest discover -s tests -p 'test_portable_checkpoint.py' -v
+            python -B -m unittest discover -s tests -p 'test_native_cells.py' -v
+            echo YGG_NATIVE_WINDOWS_SUPPORTED_REGRESSION=PASS
+            echo YGG_NATIVE_WINDOWS_POSIX_RESOURCE_SUITE=NOT_RUN_UNSUPPORTED
+          else
+            python -B -m unittest discover -s tests -p 'test_*.py' -v
+            echo YGG_NATIVE_LINUX_COMPLETE_REGRESSION=PASS
+          fi
           python -B -c "from pathlib import Path; [compile(p.read_bytes(), str(p), 'exec') for p in [Path('yggdrasil/public_causal_cells.py'), Path('tests/test_native_cells.py')]]"
           test -z "$(git status --porcelain --untracked-files=all)"
-          echo YGG_NATIVE_ORIGINAL_REGRESSION=PASS
+          echo YGG_NATIVE_SOURCE_WORKTREE_CLEAN=PASS
       - name: No scientific authority or accepted state
         shell: bash
         run: |
