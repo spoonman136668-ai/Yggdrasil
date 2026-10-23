@@ -1,0 +1,100 @@
+name: ITD01 NLD01 staged native learning and retention smoke
+on:
+  pull_request:
+    branches: [research/itd01-r9-native-action-causal-20261022]
+permissions:
+  contents: read
+concurrency:
+  group: itd01-nld01-smoke-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+jobs:
+  smoke:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_CONFIG_COUNT: '1'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Exact R9 identity, frozen prereg and four additive files
+        shell: bash
+        run: |
+          set -euo pipefail
+          base=b60453d7a5100eea037dfb77b3660783139d11dd
+          pre=d34a6bec7ddc3384465008580715a0a68f7e731c
+          git merge-base --is-ancestor "$base" HEAD
+          test "$(git rev-parse "$pre^")" = "$base"
+          test "$(git show --format= --name-only "$pre")" = "research/native/itd01/nld01/PREREG.md"
+          test "$(git rev-parse "$pre:research/native/itd01/nld01/PREREG.md")" = "$(git rev-parse HEAD:research/native/itd01/nld01/PREREG.md)"
+          git diff --name-only "$base" HEAD | python -B -c 'import sys; actual=set(sys.stdin.read().splitlines()); expected={"research/native/itd01/nld01/PREREG.md","research/native/itd01/nld01/learning_cycle.py","research/native/itd01/nld01/test_learning_cycle.py",".github/workflows/itd01-nld01-sourcefree.yml"}; assert actual==expected,(actual,expected)'
+          for entry in research/native/itd01/r9/action_cells.py:882bfca8172e7e2d25fc617cd34dbc811383cede research/native/itd01/r9/report_r9.py:3629a41a9a15e6559d21cdc96a5431f964cfd3df research/native/itd01/r9/test_action_cells.py:d5200be712262b2a7d9c2edbf52926f1db64531f; do
+            name="${entry%%:*}"; expected="${entry#*:}"
+            test "$(git rev-parse HEAD:"$name")" = "$expected"
+            test "$(git hash-object --no-filters -- "$name")" = "$expected"
+          done
+          echo NLD01_NATIVE_R9_SOURCE_AND_PROTOCOL=PASS
+      - name: Bounded native learning, retention and controls on public smoke only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd01/nld01 -p 'test_learning_cycle.py' -v
+          python -B research/native/itd01/nld01/learning_cycle.py --smoke > nld01_smoke.json
+          python -B -c 'import json; x=json.load(open("nld01_smoke.json")); assert x["public_smoke_seed"]==3 and x["fit_per_public_family"]==128 and x["fitted_arms_equal_public_delayed_feedback"] and x["independent_source_first_use"] is False and x["ckb_admission"]=="NOT_OBSERVED" and x["unfamiliar_transfer"]=="NOT_TESTED_ORIGINAL_R9_ZERO_SHOT_NO_GO"; print("NLD01_BOUNDED_NATIVE_SMOKE=RECORDED",x["disposition"])'
+          git status --porcelain --untracked-files=all | python -B -c 'import sys; actual=sys.stdin.read().splitlines(); assert actual==["?? nld01_smoke.json"],actual'
+          sha256sum nld01_smoke.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nld01-source-free-${{ matrix.os }}
+          path: nld01_smoke.json
+          if-no-files-found: ignore
+  compare:
+    needs: [smoke]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: nld01-source-free-*
+          path: reports
+          merge-multiple: false
+      - name: Verify semantic equality excluding CPU timing
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import copy,hashlib,json,pathlib
+          root=pathlib.Path("reports")
+          def read(os):
+              p=root/("nld01-source-free-"+os)/"nld01_smoke.json"
+              return json.loads(p.read_text()),hashlib.sha256(p.read_bytes()).hexdigest()
+          lin,lh=read("ubuntu-24.04")
+          win,wh=read("windows-2022")
+          def normalized(x):
+              z=copy.deepcopy(x)
+              for item in z["fit_public_traces"]:
+                  item.pop("shared_fit_process_cpu_seconds",None)
+              return z
+          assert normalized(lin)==normalized(win),"NLD01_CROSS_OS_SEMANTIC_DRIFT"
+          assert lin["disposition"]==win["disposition"]
+          print("NLD01_CROSS_OS_SEMANTIC_REPRODUCIBILITY=PASS")
+          print("NLD01_LINUX_SHA256="+lh)
+          print("NLD01_WINDOWS_SHA256="+wh)
+          print("NLD01_NATIVE_SMOKE="+lin["disposition"])
+          print("NLD01_TRANSFER_AND_COMPOSITION=NOT_TESTED")
+          print("NLD01_PROTECTED_FIRST_USE=NONE")
+          PY
