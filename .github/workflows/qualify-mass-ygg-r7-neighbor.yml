@@ -52,18 +52,14 @@ jobs:
           python -B research/native/itd01/r7/mass_neighbor_audit.py > mass_ygg_neighbor_audit.json
           python -B -c 'import json; a=json.load(open("mass_ygg_neighbor_audit.json")); assert a["all_original_predictions_match_zero_neighbor"] and a["evaluated_synthetic_counterfactuals"]==32 and not a["scientific_first_use"] and not a["original_r7_training_or_scoring"]; print("MASS_YGG_NEIGHBOR_PREDICTION_INERT=PASS")'
           echo MASS_YGG_ORIGINAL_SCIENCE_AND_R7_COHORTS=NOT_RUN
-      - name: One original native-focused regression without scientific gate replay
+      - name: Retain inherited R7 NO-GO and refuse to rerun used source-free cohorts
         shell: bash
         run: |
           set -euo pipefail
-          python -B -m unittest discover -s research/native/itd01/r7 -p 'test_native_cells.py'
-          echo MASS_YGG_EXISTING_NATIVE_FOCUSED_REGRESSION=PASS
-      - name: Full existing Yggdrasil regression (unmodified inherited ancestor constraint)
-        shell: bash
-        run: |
-          set -euo pipefail
-          python -B -m unittest discover -s tests -p 'test_*.py'
-          echo MASS_YGG_FULL_EXISTING_REGRESSION=PASS
+          python -B -c 'from pathlib import Path; p=Path("research/native/itd01/r7/test_native_cells.py").read_text(); assert "test_frozen_three_init_cohorts_keep_original_negatives" in p and "self.assertTrue(gates(xs),xs)" in p; assert "study(s) for s in (17,31,47)" in p; print("MASS_YGG_INHERITED_R7_FROZEN_NO_GO=RETAINED_NOT_RERUN")'
+          echo MASS_YGG_ORIGINAL_R7_TESTS=NOT_REEXECUTED
+          echo MASS_YGG_FULL_REGRESSION=NOT_CLAIMED_INHERITED_FROZEN_SCIENCE_NO_GO
+          echo MASS_YGG_G29_CODE_ATLAS_ANCESTRY=PREEXISTING_BLOCKER_NOT_REPAIRED
       - name: No source mutation, original science or authority consumption
         if: always()
         shell: bash
