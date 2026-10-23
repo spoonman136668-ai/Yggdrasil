@@ -1,0 +1,74 @@
+name: Mass CS01 original MDP public causal-information screen
+on:
+  push:
+    branches:
+      - research/mass-cs01-original-confounded-mdp-screen-20261023
+permissions:
+  contents: read
+concurrency:
+  group: mass-cs01-original-mdp-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-source-decision-information:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PIP_DISABLE_PIP_VERSION_CHECK: '1'
+    steps:
+      - name: Checkout frozen source-first audit branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 6
+      - name: Enforce original FIRST prereg and additive scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          first=c93e78d04c3361b797efd691de3ffa39141ccc5e
+          parent=d52db4e1fafd86374596ceb5e922eb4b84768341
+          test "$(git rev-parse "$first^")" = "$parent"
+          test "$(git show --format= --name-only "$first")" = "research/native/itd01/mass_r10/CS01_PREREG.md"
+          git merge-base --is-ancestor "$first" HEAD
+          git diff --name-only "$parent" HEAD | python -B -c 'import sys; got=set(sys.stdin.read().splitlines()); want={"research/native/itd01/mass_r10/CS01_PREREG.md","research/native/itd01/mass_r10/isolated_original_mdp_import.py","research/native/itd01/mass_r10/screen_original_mdp_public.py","research/native/itd01/mass_r10/test_cs01_public_math.py",".github/workflows/mass-cs01-original-mdp-public.yml"}; assert got==want,(got,want)'
+      - name: Checkout original independent upstream source at exact Git commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: CausalAILab/Causal-Gymnasium
+          ref: c94e9a4cd3641588b6b8507e71ccee5c27032bdf
+          path: external/Causal-Gymnasium
+          persist-credentials: false
+      - name: Setup Python original supported ABI
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install original unchanged source dependencies
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p cs01-evidence
+          set +e
+          timeout 330s python -m pip install --no-cache-dir --timeout 30 --retries 1 -e external/Causal-Gymnasium >cs01-evidence/pip-install.log 2>&1
+          rc=$?
+          set -e
+          printf '%s\n' "$rc" >cs01-evidence/pip-exit.txt
+          test "$rc" -eq 0
+      - name: Test source-free exact rational causal-screen math
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v research/native/itd01/mass_r10/test_cs01_public_math.py 2>&1 | tee cs01-evidence/focused-tests.log
+      - name: Execute source-verified MDP law and public 180-action engineering smoke once
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/native/itd01/mass_r10/screen_original_mdp_public.py \
+            --upstream external/Causal-Gymnasium \
+            --out cs01-evidence/
+      - name: Preserve original evidence and negative results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mass-cs01-original-mdp-public-screen
+          path: cs01-evidence/
+          retention-days: 30
