@@ -48,7 +48,7 @@ jobs:
           test "$(git rev-parse "$pre^")" = "$parent"
           test "$(git show --format= --name-only "$pre")" = "research/native/itd01/ext01/PREREG.md"
           git merge-base --is-ancestor bb92770132718b9a5de771729e4fcef790356f94 HEAD
-          git diff --name-only "$parent" HEAD | python -B -c 'import sys; actual=set(sys.stdin.read().splitlines()); expected={"research/native/itd01/ext01/PREREG.md","research/native/itd01/ext01/check_symbolic_contract.py","research/native/itd01/ext01/test_symbolic_contract.py",".github/workflows/itd01-ext01-source-contract.yml",".ice/code-atlas.json",".ice/code-atlas.html",".ice/code-atlas.ice"}; assert actual==expected,(actual,expected)'
+          git diff --name-only "$parent" HEAD | python -B -c 'import sys; actual=set(sys.stdin.read().splitlines()); expected={"research/native/itd01/ext01/PREREG.md","research/native/itd01/ext01/check_symbolic_contract.py","research/native/itd01/ext01/test_symbolic_contract.py",".github/workflows/itd01-ext01-source-contract.yml","scripts/free_fanout_sidecar.py","tests/test_free_fanout_sidecar.py",".ice/code-atlas.json",".ice/code-atlas.html",".ice/code-atlas.ice"}; assert actual==expected,(actual,expected)'
           test "$(git rev-parse "$pre:research/native/itd01/ext01/PREREG.md")" = "$(git rev-parse HEAD:research/native/itd01/ext01/PREREG.md)"
           test "$(git -C upstream rev-parse HEAD)" = 68a26254b5c0f15e84fa0c15d66bf0c626ede8e0
           echo EXT01_FIRST_PROTOCOL_AND_BOTH_SOURCE_PINS=PASS
