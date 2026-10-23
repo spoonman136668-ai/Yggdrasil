@@ -1,0 +1,57 @@
+name: ITD-01 NLD04 public-history context smoke
+on:
+  pull_request:
+    branches: [research/itd01-nld03-public-cue-20261023]
+permissions:
+  contents: read
+jobs:
+  smoke:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_CONFIG_COUNT: '1'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Immutable protocol first and four additive code paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          base=940662119e063eddc49fe6a5f78da399ba8f356b
+          first=e0ebac4173aaf3760ad62ffbb76ff69894b12e7d
+          test "$(git rev-parse "$first^")" = "$base"
+          git merge-base --is-ancestor "$first" HEAD
+          test "$(git show --format= --name-only "$first")" = "research/native/itd01/nld04/PREREG.md"
+          test "$(git rev-parse "$first:research/native/itd01/nld04/PREREG.md")" = "$(git rev-parse HEAD:research/native/itd01/nld04/PREREG.md)"
+          git diff --name-only "$base" HEAD | python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); b={"research/native/itd01/nld04/PREREG.md","research/native/itd01/nld04/history_context.py","research/native/itd01/nld04/test_history_context.py",".github/workflows/itd01-nld04-history.yml"}; assert a==b,(a,b)'
+          test "$(git rev-parse HEAD:research/native/itd01/nld03/cued_state.py)" = abe7c87f1edf3cb832f2915e20d778a7a47b2e12
+          test "$(git rev-parse HEAD:research/native/itd01/nld02/shared_bank.py)" = de30b7d2c869d84e31ec366854753b1c583119e3
+          echo NLD04_ORIGINAL_PARENTS_AND_FROZEN_PROTOCOL=PASS
+      - name: Existing public R9 smoke context inference (no scientific first-use)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd01/nld04 -p test_history_context.py -v
+          python -B research/native/itd01/nld04/history_context.py --smoke > nld04_report.json
+          python -B -c 'import json; x=json.load(open("nld04_report.json")); assert x["source_first_use"]=="REUSED_ALREADY_PUBLIC_R9_DEVELOPMENT_SEED_3" and not x["protected_first_use_consumed"] and x["public_probe_count_per_family"]==8 and x["scored_steps_per_family"]==56 and x["ckb_scientific_admission"]=="NOT_OBSERVED"; print("NLD04_DEV_CONTEXT_RESULT=RECORDED",x["eval_a"]["correct_counts_over_56"],x["eval_b"]["correct_counts_over_56"])'
+          git status --porcelain --untracked-files=all | python -B -c 'import sys; a=sys.stdin.read().splitlines(); assert a==["?? nld04_report.json"],a'
+          sha256sum nld04_report.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nld04-sourcefree-${{ matrix.os }}
+          path: nld04_report.json
+          if-no-files-found: error
