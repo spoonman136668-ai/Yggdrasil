@@ -7,6 +7,7 @@ import unittest
 
 from check_symbolic_contract import (
     FILES, UPSTREAM_SHA, audit, git_blob_sha, inspect_symbolic_ast,
+    inspect_graph_constraints,
 )
 
 FAKE = '''
@@ -82,8 +83,47 @@ class SourceContractTests(unittest.TestCase):
         raw = b"binary\0native\r\n"
         self.assertEqual(len(git_blob_sha(raw)), 40)
         self.assertNotEqual(git_blob_sha(raw), git_blob_sha(raw + b"!"))
-        self.assertEqual(len(FILES), 4)
+        self.assertEqual(len(FILES), 5)
         self.assertEqual(len(UPSTREAM_SHA), 40)
+
+
+    def test_declared_native_graph_class_distinctions(self):
+        source = """def no_bottleneck_constraints():
+    return [[['X', '*', '*'], ['*', 'X', '*'], ['*', '*', 'X']]]
+def bottleneck1_constraints():
+    return [[['X', '-1', '1'], ['*', 'X', '*'], ['*', '*', 'X']]]
+def bottleneck2_constraints():
+    return [[['X', '-1', '*'], ['*', 'X', '*'], ['*', '*', 'X']]]
+def bottleneck3_constraints():
+    return [[['X', '-1', '1'], ['*', 'X', '*'], ['*', '-1', 'X']]]
+def graph_distr(constraints):
+    return get_num_constraints(constraints)
+def random_graph(distr):
+    return distr
+"""
+        result = inspect_graph_constraints(source.encode())
+        self.assertEqual(result["distinct_declared_constraint_counts"], [0, 1, 2, 3])
+        self.assertFalse(result["nonisomorphic_graph_families_proven"])
+        self.assertFalse(result["unseen_graph_family_birth_witnessed"])
+        self.assertFalse(result["finite_episode_identifiability_proven"])
+        self.assertFalse(result["graph_sampling_executed"])
+
+    def test_graph_constraint_drift_rejected(self):
+        source = """def no_bottleneck_constraints():
+    return [[['X', '*', '*'], ['*', 'X', '*'], ['*', '*', 'X']]]
+def bottleneck1_constraints():
+    return [[['X', '*', '*'], ['*', 'X', '*'], ['*', '*', 'X']]]
+def bottleneck2_constraints():
+    return [[['X', '-1', '*'], ['*', 'X', '*'], ['*', '*', 'X']]]
+def bottleneck3_constraints():
+    return [[['X', '-1', '1'], ['*', 'X', '*'], ['*', '-1', 'X']]]
+def graph_distr(constraints):
+    return get_num_constraints(constraints)
+def random_graph(distr):
+    return distr
+"""
+        with self.assertRaisesRegex(ValueError, "classes drifted"):
+            inspect_graph_constraints(source.encode())
 
     def test_unauthorized_lookalike_checkout_rejected(self):
         with tempfile.TemporaryDirectory() as d:
