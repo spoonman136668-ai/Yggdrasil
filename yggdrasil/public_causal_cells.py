@@ -69,6 +69,8 @@ class PublicCausalCells:
         for cell in self._counts:
             for arm in cell:
                 for count in arm:
+                    if type(count) is not int or not 0 <= count <= 65535:
+                        raise ValueError("PUBLIC_CAUSAL_COUNT_INVALID")
                     raw.extend(struct.pack(">H", count))
         digest = hashlib.sha256(raw).digest()
         return bytes(raw) + digest
