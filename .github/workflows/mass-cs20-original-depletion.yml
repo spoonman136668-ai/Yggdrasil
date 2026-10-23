@@ -1,0 +1,63 @@
+name: Mass CS20 actual source FIT-learned rank depletion vs conventional memories
+on:
+  push:
+    branches:
+      - research/mass-cs20-learned-depletion-baselines-20261023
+permissions:
+  contents: read
+jobs:
+  real-popgym-learned-history:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 22
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 7
+          persist-credentials: false
+      - name: Enforce immutable FIRST ancestry, source owner and scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          first=7e6cce12c7ed5be036b135a7ef44123d8dee4517
+          parent=1a69b3cc220523e59a2e1fed72de45cec42a9728
+          test "$(git rev-parse "$first^")" = "$parent"
+          test "$(git show --format= --name-only "$first")" = "research/native/itd01/mass_r10/CS20_PREREG.md"
+          git merge-base --is-ancestor "$first" HEAD
+          test "$(git hash-object research/native/itd01/r7/native_cells.py)" = "4c492a494ac5b25d5e9c49b98185be6a2c966b2f"
+          git diff --name-only "$parent" HEAD | python -B -c 'import sys;g=set(sys.stdin.read().splitlines());w={"research/native/itd01/mass_r10/CS20_PREREG.md","research/native/itd01/mass_r10/run_cs20_original_depletion_belief.py","research/native/itd01/mass_r10/test_cs20_original_depletion_belief.py",".github/workflows/mass-cs20-original-depletion.yml"};assert g==w,(g,w)'
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: proroklab/popgym
+          ref: 410d5aa626dae8024f498354d8781a0d1870c399
+          path: external/popgym-original
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install only genuine source-required numerical runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p cs20-evidence
+          timeout 180s python -m pip install --no-cache-dir --timeout 35 --retries 1 'numpy==1.26.4' 'gymnasium==0.29.1' 2>&1 | tee cs20-evidence/source-install.log
+      - name: Qualify FIT DEV source seed and frozen model math before external action
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v research/native/itd01/mass_r10/test_cs20_original_depletion_belief.py 2>&1 | tee cs20-evidence/source-free-focused-tests.log
+      - name: Execute original 2240 POPGym resets and 230720 source-owned rewarded actions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/native/itd01/mass_r10/run_cs20_original_depletion_belief.py \
+            --upstream external/popgym-original --out cs20-evidence
+      - name: Preserve genuine FIT and source DEV records, including negatives
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mass-cs20-original-learned-depletion-evidence
+          path: cs20-evidence/
+          retention-days: 30
