@@ -99,8 +99,8 @@ class ActionOwnedNativeCells:
             for s in (0,1):
                 for a in (0,1):
                     x=d["buckets"][str(s)+":"+str(a)]
-                    if set(x)!={"reward","next_state","count"} or
-                       type(x["count"]) is not int or x["count"]<0:
+                    if (set(x)!={"reward","next_state","count"} or
+                        type(x["count"]) is not int or x["count"]<0):
                         raise ValueError("CS14_NATIVE_BUCKET_INVALID")
                     for field in ("reward","next_state"):
                         vals=x[field]
