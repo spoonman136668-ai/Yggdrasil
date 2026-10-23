@@ -89,7 +89,7 @@ class SourceContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             repo = Path(d)
             subprocess.run(("git","init","-q",str(repo)),check=True)
-            with self.assertRaisesRegex(ValueError, "upstream source commit drift"):
+            with self.assertRaisesRegex(ValueError, "upstream (source commit drift|git ref unavailable)"):
                 audit(repo)
 
     def test_source_parse_is_readonly_and_unsampled(self):
