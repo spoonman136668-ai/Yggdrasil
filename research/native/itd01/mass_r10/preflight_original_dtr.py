@@ -16,6 +16,8 @@ BLOBS = {
     "causal_gym/envs/__init__.py": "a36a43e2ccbca2c924db6b2852c70b5635bca181",
     "causal_gym/envs/dtr.py": "6af2371dce21804140ea141ccb7be14e003ba275",
     "causal_gym/core/pch.py": "ff37780c6b791877c70583b8d5f699be7fcd8817",
+    "causal_gym/core/__init__.py": "7affd0694b0f31dcc05e3d6b47a5eaf3d311e327",
+    "causal_gym/core/scm.py": "f66f2638c797cfeaf0e96d4e13c06d4fabc2c8d5",
 }
 def command(args: list[str], cwd: pathlib.Path | None = None, timeout: int = 35) -> dict:
     try:
@@ -32,7 +34,7 @@ def main() -> int:
     args = ap.parse_args()
     upstream = pathlib.Path(args.upstream).resolve()
     data = {
-        "schema": "mass.original-dtr.package-preflight.v1",
+        "schema": "mass.original-dtr.isolated-source-preflight.v1",
         "source_repo": "CausalAILab/Causal-Gymnasium",
         "expected_source_sha": PIN,
         "required_git_blobs": BLOBS,
@@ -62,16 +64,20 @@ def main() -> int:
         "print('ORIGINAL_SOURCE_AST_PASS')", str(upstream)])
     data["controls"]["syntax"] = compile_check
     ok &= compile_check["exit"] == 0
-    # Import the original installed package, not a rewritten module or stub.
-    import_check = command([sys.executable, "-B", "-c",
-        "import inspect, causal_gym;"
-        "from causal_gym.envs.dtr import DTRSCM,DTRPCH;"
-        "assert inspect.isclass(DTRSCM) and inspect.isclass(DTRPCH);"
-        "assert callable(DTRSCM.reset) and callable(DTRSCM.step);"
-        "print('ORIGINAL_DTR_IMPORT_PASS_NO_RESET_OR_STEP')"], timeout=45)
-    data["controls"]["upstream_package_import"] = import_check
+    # The canonical package import has a preserved NO-GO in original runs
+    # 39927671719 and 39928144555 (minigrid, then torchvision).
+    # Import only ORIGINAL, independently pinned DTR+core modules, in a new
+    # child interpreter. No shadow SCM/PCH classes and NO reset or step.
+    data["import_mode"] = "ISOLATED_ORIGINAL_DTR_NOT_CANONICAL_PACKAGE_IMPORT"
+    loader = pathlib.Path(__file__).with_name("isolated_original_dtr_import.py")
+    import_check = (command([sys.executable, "-B", str(loader),
+                            "--upstream", str(upstream)], timeout=45)
+                    if ok and args.pip_exit == 0
+                    else {"exit": 126, "stdout": "", "stderr": "EXACT_SOURCE_OR_PIP_FAIL_CLOSED"})
+    data["controls"]["isolated_original_dtr_import"] = import_check
+    data["canonical_package_import_qualified"] = False
     ok &= (args.pip_exit == 0 and import_check["exit"] == 0)
-    data["disposition"] = "ORIGINAL_DTR_PACKAGE_PREFLIGHT_PASS" if ok else "ORIGINAL_DTR_PACKAGE_PREFLIGHT_NO_GO"
+    data["disposition"] = "ISOLATED_ORIGINAL_DTR_SOURCE_PREFLIGHT_PASS" if ok else "ISOLATED_ORIGINAL_DTR_SOURCE_PREFLIGHT_NO_GO"
     receipt = pathlib.Path(args.receipt)
     receipt.parent.mkdir(parents=True, exist_ok=True)
     receipt.write_text(json.dumps(data, sort_keys=True, indent=2) + "\n")

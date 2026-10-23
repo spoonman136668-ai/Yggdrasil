@@ -1,4 +1,4 @@
-name: Mass R10 external DTR original-package source preflight
+name: Mass R10 isolated original DTR source import preflight
 on:
   push:
     branches:
@@ -7,10 +7,10 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: mass-r10-dtr-source-preflight-${{ github.ref }}
+  group: mass-r10-isolated-dtr-source-preflight-${{ github.ref }}
   cancel-in-progress: false
 jobs:
-  original-package:
+  isolated-original-dtr:
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     env:
@@ -44,20 +44,7 @@ jobs:
           set -e
           printf '%s\n' "$rc" > source-evidence/pip-exit.txt
           echo "ORIGINAL_UPSTREAM_PIP_EXIT=$rc"
-      - name: Supply missing upstream undeclared minigrid import prerequisite
-        shell: bash
-        run: |
-          set -uo pipefail
-          set +e
-          timeout 105s python -m pip install --no-cache-dir --timeout 25 --retries 1 "minigrid==2.3.1" >source-evidence/minigrid-install.log 2>&1
-          rc=$?
-          set -e
-          echo "ORIGINAL_IMPORT_UNDECLARED_MINIGRID_EXIT=$rc"
-          printf '%s\n' "$rc" > source-evidence/minigrid-exit.txt
-          if [ "$rc" -ne 0 ]; then
-            echo "$rc" > source-evidence/pip-exit.txt
-          fi
-      - name: Audit actual pinned Git objects and original DTR import without running episodes
+      - name: Verify exact original DTR core classes through isolated source import without episodes
         shell: bash
         run: |
           set -uo pipefail
@@ -69,6 +56,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mass-r10-original-dtr-source-preflight
+          name: mass-r10-isolated-original-dtr-source-preflight
           path: source-evidence/
           retention-days: 30
