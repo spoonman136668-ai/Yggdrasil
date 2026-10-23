@@ -1,0 +1,113 @@
+name: ITD01 R9 Yggdrasil native delayed public action causal development
+on:
+  pull_request:
+    branches: [research/itd01-r7-native-yggdrasil-cellular-20261022]
+permissions:
+  contents: read
+concurrency:
+  group: itd01-r9-ygg-action-native-original-sourcefree-dev
+  cancel-in-progress: false
+jobs:
+  frozen-source-and-focused:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_CONFIG_COUNT: '1'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 45
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Verify prereg born FIRST, native R7 original frozen and exactly five additive paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          base=f3cdabdb3420bb8604e41dda9903ae65eba008e7
+          pre=1d56f737ccdbfd54290a6137b7bc22e2aee96f79
+          git merge-base --is-ancestor "$base" HEAD
+          test "$(git rev-parse "$pre^")" = "$base"
+          test "$(git show --format= --name-only "$pre")" = "research/native/itd01/r9/PREREG.md"
+          git diff --name-only "$base" HEAD | python -B -c 'import sys; s=set(sys.stdin.read().splitlines()); expected={"research/native/itd01/r9/PREREG.md","research/native/itd01/r9/action_cells.py","research/native/itd01/r9/report_r9.py","research/native/itd01/r9/test_action_cells.py",".github/workflows/qualify-itd01-r9-native.yml"}; assert s==expected,(s,expected)'
+          for spec in research/native/itd01/r7/native_cells.py:4c492a494ac5b25d5e9c49b98185be6a2c966b2f research/native/itd01/r9/PREREG.md:8769c789c049c9b94b96f22a45da125d03f9086f research/native/itd01/r9/action_cells.py:882bfca8172e7e2d25fc617cd34dbc811383cede research/native/itd01/r9/report_r9.py:3629a41a9a15e6559d21cdc96a5431f964cfd3df research/native/itd01/r9/test_action_cells.py:d5200be712262b2a7d9c2edbf52926f1db64531f; do
+            path="${spec%%:*}"; expected="${spec#*:}"
+            test "$(git rev-parse HEAD:"$path")" = "$expected"
+            test "$(git hash-object --no-filters -- "$path")" = "$expected"
+          done
+          echo YGG_R9_EXACT_SOURCE_AND_FROZEN_PREREG_FIRST=PASS
+      - name: Adversarial delayed causal state learning tests and smoke only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd01/r9 -p 'test_action_cells.py' -v
+          python -B research/native/itd01/r9/report_r9.py --smoke > r9_sourcefree_smoke.json
+          python -B -c 'import json; x=json.load(open("r9_sourcefree_smoke.json")); assert x["development_smoke_only"] and x["native_cold_restore_exact"] and x["native_delayed_public_feedback_updates"]==24 and x["fitted_parameter_unchanged_through_dev"] and not x["original_H1_H2_source_first_use"]; print("YGG_R9_PUBLIC_ACTION_DELAYED_FEEDBACK_SMOKE=PASS")'
+          echo YGG_R9_ORIGINAL_101_211_307=NOT_EXPOSED_IN_FOCUSED
+      - name: Check archived original R7 negative as static source without replaying used seeds
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -c 'from pathlib import Path; p=Path("research/native/itd01/r7/test_native_cells.py").read_text(); assert "test_frozen_three_init_cohorts_keep_original_negatives" in p and "self.assertTrue(gates(xs),xs)" in p; print("YGG_R7_PREEXISTING_FROZEN_NO_GO=RETAINED_NOT_RERUN")'
+          echo YGG_R9_EXISTING_FULL_REGRESSION=NOT_CLAIMED_G29_SOURCE_ANCESTRY_AND_R7_NEGATIVE
+      - name: Assert exact source cleanliness
+        shell: bash
+        run: |
+          set -euo pipefail
+          git status --porcelain --untracked-files=all | python -B -c 'import sys; r=sys.stdin.read().splitlines(); assert r==["?? r9_sourcefree_smoke.json"],r'
+          echo YGG_R9_FOCUSED_READONLY=PASS
+
+  frozen-original-public-development:
+    needs: frozen-source-and-focused
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 26
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Execute each prospectively frozen source-free seed exactly once
+        shell: bash
+        run: |
+          set -euo pipefail
+          for seed in 101 211 307; do
+            python -B research/native/itd01/r9/report_r9.py --seed "$seed" > "itd01_r9_${seed}.json"
+          done
+          python -B -c 'import json; xs=[json.load(open("itd01_r9_%s.json"%s)) for s in (101,211,307)]; assert len(xs)==3; assert all(x["schema"]=="itd01.r9.native-action-causal-public-dev.v1" and not x["development_smoke_only"] and x["native_delayed_public_feedback_updates"]==640 and x["fitted_parameter_unchanged_through_dev"] and x["native_cold_restore_exact"] and not x["original_H1_H2_source_first_use"] for x in xs); assert all(all(y["all_actions_legal"] for y in x["family_evidence"].values()) for x in xs); print("YGG_R9_FROZEN_ORIGINAL_SOURCE_FREE_THREE_SEEDS=RECORDED")'
+          sha256sum itd01_r9_*.json > itd01_r9_manifest.sha256
+      - name: Retain every negative, resource limitation and no-science boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -c 'import json; xs=[json.load(open("itd01_r9_%s.json"%s)) for s in (101,211,307)]; print("YGG_R9_FROZEN_DISPOSITIONS="+",".join(x["disposition"] for x in xs)); print("YGG_R9_ZERO_SHOT_TRANSFER="+",".join(str(x["native_c_zero_shot_transfer_provisionally_pass"]) for x in xs)); print("YGG_R9_NEIGHBOR_BENEFIT="+",".join(str(x["native_neighbor_causal_benefit_provisionally_pass"]) for x in xs)); print("YGG_R9_PER_MODEL_CPU_RSS=NOT_QUALIFIED")'
+          git status --porcelain --untracked-files=all | python -B -c 'import sys; r=set(sys.stdin.read().splitlines()); assert r=={"?? itd01_r9_101.json","?? itd01_r9_211.json","?? itd01_r9_307.json","?? itd01_r9_manifest.sha256"},r'
+          echo YGG_R9_PROTECTED_FIRST_USE=NOT_PERFORMED
+          echo YGG_R9_NATIVE_WINGLESS=NOT_EXECUTED
+          echo YGG_R9_SCIENTIFIC_CKB_AUTHORITY=NOT_ADMITTED
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: itd01-r9-native-sourcefree-${{ matrix.os }}
+          path: |
+            itd01_r9_*.json
+            itd01_r9_manifest.sha256
+          if-no-files-found: ignore
