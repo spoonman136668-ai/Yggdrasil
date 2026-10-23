@@ -418,7 +418,7 @@ def evaluate(agents,seed,role,family,n,checkpoint=None):
     restored=LocalActionColony.restore(native.save())
     if native.save()!=restored.save():
         raise AssertionError("R9_NATIVE_COLD_RESTORE_CHANGED")
-    if any(a.pending for a in agents):
+    if any(getattr(a, "pending", {}) for a in agents):
         raise AssertionError("R9_EVAL_PENDING_FEEDBACK")
     return {
         "role":role,"family":family,"n":n,
