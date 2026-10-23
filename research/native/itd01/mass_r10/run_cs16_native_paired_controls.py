@@ -40,7 +40,7 @@ def digest(x):
     return hashlib.sha256(canonical(x).encode()).hexdigest()
 def file_blob(path):
     p=subprocess.run(["git","hash-object","--",str(path)],capture_output=True,
-                     text=True,cwd=HERE.parents[4],timeout=20)
+                     text=True,cwd=HERE.parents[3],timeout=20)
     need(p.returncode==0,"FROZEN_R7_GIT_NOT_AVAILABLE")
     return p.stdout.strip()
 def verify_original():
