@@ -17,7 +17,7 @@ import sys
 import time
 
 from screen_cs06_original_pobax import source_identity,original_scoped_modules,array,UPSTREAM
-from run_cs08_original_active_rock_probe import SOURCE_MAP_CELLS if False else POSITIONS
+from run_cs08_original_active_rock_probe import POSITIONS
 from run_cs10_original_rewarded_cross_episode import need,canonical,digest
 from run_cs11_original_new_map_transfer import PublicSourceEpisode
 
