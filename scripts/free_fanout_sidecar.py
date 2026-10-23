@@ -6,7 +6,11 @@ import math
 import os
 import pathlib
 import re
-import resource
+try:
+    import resource
+except ImportError:
+    # Windows lacks POSIX rusage. Never treat missing accounting as a valid envelope.
+    resource = None
 import subprocess
 import sys
 import time
@@ -294,7 +298,8 @@ def run_candidate(manifest, package_root, candidate_id, output_root):
         "--output", str(result_path),
     ]
 
-    before = resource.getrusage(resource.RUSAGE_CHILDREN)
+    before = (resource.getrusage(resource.RUSAGE_CHILDREN)
+              if resource is not None else None)
     started = time.monotonic()
     try:
         proc = subprocess.run(
@@ -312,7 +317,8 @@ def run_candidate(manifest, package_root, candidate_id, output_root):
         (output_root / "stderr.txt").write_text(exc.stderr or "", encoding="utf-8")
         fail("FREE_FANOUT_CANDIDATE_TIMEOUT")
     elapsed = time.monotonic() - started
-    after = resource.getrusage(resource.RUSAGE_CHILDREN)
+    after = (resource.getrusage(resource.RUSAGE_CHILDREN)
+             if resource is not None else None)
 
     (output_root / "stdout.txt").write_text(proc.stdout, encoding="utf-8")
     (output_root / "stderr.txt").write_text(proc.stderr, encoding="utf-8")
@@ -322,6 +328,8 @@ def run_candidate(manifest, package_root, candidate_id, output_root):
         fail("FREE_FANOUT_RESULT_MISSING")
 
     result = validate_result(load(result_path), candidate_id, manifest)
+    if resource is None or before is None or after is None:
+        fail("FREE_FANOUT_RESOURCE_ACCOUNTING_UNAVAILABLE")
     peak_rss_kib = int(after.ru_maxrss)
     measurements = {
         "elapsed_seconds": round(elapsed, 6),
