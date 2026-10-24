@@ -20,7 +20,7 @@ def trained():
 class R7Tests(unittest.TestCase):
  def test_actual_nonlinear_unseen_composition(self):
   m=trained()
-  for seed in (11,13):
+  for seed in (11,12):
    for x in (9,47,133,222):
     for ops in ((0,1,2),(2,0,0,1,2)):
      result=x
