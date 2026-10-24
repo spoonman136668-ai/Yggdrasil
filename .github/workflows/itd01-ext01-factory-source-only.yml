@@ -45,7 +45,7 @@ jobs:
           set -euo pipefail
           parent=e8b201b1f19392213f1ef41a546828821e5ed419
           git merge-base --is-ancestor "$parent" HEAD
-          git diff --name-only "$parent" HEAD | python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); b={"research/native/itd01/ext01/ext01_factory_contract_gate.py","research/native/itd01/ext01/test_ext01_factory_contract_gate.py",".github/workflows/itd01-ext01-factory-source-only.yml"}; assert a==b,(a,b)'
+          git diff --name-only "$parent" HEAD | python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); b={"research/native/itd01/ext01/ext01_factory_contract_gate.py","research/native/itd01/ext01/test_ext01_factory_contract_gate.py",".github/workflows/itd01-ext01-factory-source-only.yml",".ice/code-atlas.json",".ice/code-atlas.html",".ice/code-atlas.ice"}; assert a==b,(a,b)'
           test "$(git -C upstream rev-parse HEAD)" = 68a26254b5c0f15e84fa0c15d66bf0c626ede8e0
       - name: Original-source test and static contract verification only
         shell: bash
