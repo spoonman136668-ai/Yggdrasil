@@ -124,6 +124,16 @@ def trace_one(family, root):
              best]
     )
     if not original_valid:
+        print("MR34I2_TRACER_VALIDATION_DIAGNOSTIC="+canon({
+            "source":family, "expected_checkpoint_sha":expected[0],
+            "traced_checkpoint_sha":actual_sha,"unchanged_original_checkpoint_sha":original_sha,
+            "expected_selected_epoch":expected[1],
+            "traced_selected_epoch":selected_epoch,
+            "unchanged_original_selected_epoch":receipt["TRAINING_ONLY_selected_epoch"],
+            "traced_first_last_best":[epoch_record[0]["train_only_source_Brier"],
+                 epoch_record[-1]["train_only_source_Brier"],best],
+            "unchanged_original_first_last_best":receipt["source_native_training_first_last_best_Brier"]
+        }))
         raise RuntimeError("MR34I2_TRACER_NOT_EXACT_PINNED_NATIVE_MODEL")
     original_git(root,SOURCES[family])
     return {
