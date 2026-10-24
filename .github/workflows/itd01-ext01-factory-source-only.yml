@@ -1,4 +1,4 @@
-name: EXT01 public original factory source-only verification
+name: EXT01 original factory source and full regression
 on:
   pull_request:
     branches:
@@ -58,6 +58,14 @@ jobs:
           git -C upstream diff --exit-code
           git diff --exit-code
           sha256sum original_factory_mode_receipt.json original_source_contract_receipt.json
+      - name: Final original-source G29 and complete repository regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git -C upstream diff --exit-code
+          git diff --exit-code
       - uses: actions/upload-artifact@v4
         if: always()
         with:
