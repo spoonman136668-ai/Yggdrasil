@@ -19,7 +19,7 @@ class FrozenConventionalSourceFree(unittest.TestCase):
         self.assertEqual(len(DEV),12)
         self.assertEqual(len(set(TRAIN+SELECT+DEV)),42)
         self.assertFalse(z["promotion"])
-        self.assertIn("proper",z["evaluation"].lower())
+        self.assertIn("categorical",z["evaluation"].lower())
 
     def test_original_action_checked_and_history_source_fields_only(self):
         a=bytes([3,7,0])
@@ -41,7 +41,7 @@ class FrozenConventionalSourceFree(unittest.TestCase):
         self.assertTrue(np.all(np.isfinite(known)))
         self.assertTrue(np.all(np.isfinite(hold)))
         self.assertGreater(hold[0],known[0])
-        self.assertNotEqual(float(known[0]),float(known[3]))
+        self.assertGreater(float(hold[0]),float(hold[1]))
 
     def test_actual_gradient_updates_and_training_only_metrics(self):
         x=np.array([[0.,1.,0.],[1.,0.,1.],[0.,1.,1.],[1.,1.,0.]]*6)
@@ -70,7 +70,7 @@ class FrozenConventionalSourceFree(unittest.TestCase):
         result=cluster_compare(seeds,curr,hist)
         self.assertEqual(result["independent_original_source_reset_clusters"],12)
         self.assertEqual(result["original_held_events"],24)
-        self.assertAlmostEqual(result["paired_seed_mean_full_frame_history_gain_nats"],1.0)
+        self.assertAlmostEqual(result["paired_reset_seed_mean_full_frame_history_gain_nats"],1.0)
         self.assertGreater(result["paired_seed_cluster_95_percentile_interval"][0],0)
 
 
