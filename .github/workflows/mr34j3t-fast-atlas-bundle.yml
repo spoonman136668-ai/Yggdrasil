@@ -27,7 +27,7 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-          import base64,hashlib,json,os,pathlib,re,subprocess,sys
+          import base64,gzip,hashlib,json,os,pathlib,re,subprocess,sys
           sys.path.insert(0, str(pathlib.Path('scripts').resolve()))
           import build_code_atlas as atlas
           source=os.environ['GITHUB_SHA']
@@ -76,8 +76,12 @@ jobs:
           assert set(art)==set(atlas.OUT)
           for name,body in art.items():assert len(body)>100
           print('MR34J3T_CANONICAL_BUILDER_BLOB_VALIDATION=PASS',len(paths),result['counts']['symbols'])
-          encoded=base64.b64encode(json.dumps(art,sort_keys=True,ensure_ascii=True).encode('ascii')).decode('ascii')
-          print('MR34J3T_EXACT_G29_BUNDLE_B64:'+encoded)
+          raw=json.dumps(art,sort_keys=True,ensure_ascii=True).encode('ascii')
+          compressed=gzip.compress(raw,compresslevel=9,mtime=0)
+          encoded=base64.b64encode(compressed).decode('ascii')
+          print('MR34J3T_GZIP_BYTES='+str(len(compressed)))
+          for idx in range(0,len(encoded),3000):
+              print('MR34J3T_EXACT_G29_GZ64_%05d:'%(idx//3000)+encoded[idx:idx+3000])
           print('MR34J3T_ARTIFACT_GENERATED_NOT_ADMITTED='+source)
           PY
           git diff --exit-code
