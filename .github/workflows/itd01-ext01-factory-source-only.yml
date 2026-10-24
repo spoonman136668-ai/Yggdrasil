@@ -1,0 +1,68 @@
+name: EXT01 public original factory source-only verification
+on:
+  pull_request:
+    branches:
+      - integration/itd01-ext01-win-resource-q7-20261023
+permissions:
+  contents: read
+concurrency:
+  group: ext01-factory-source-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-factory-source-audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_CONFIG_COUNT: '1'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: google-deepmind/dm_alchemy
+          ref: 68a26254b5c0f15e84fa0c15d66bf0c626ede8e0
+          path: upstream
+          fetch-depth: 1
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Fail-closed exact branch ancestry and source-only paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          parent=e8b201b1f19392213f1ef41a546828821e5ed419
+          git merge-base --is-ancestor "$parent" HEAD
+          git diff --name-only "$parent" HEAD | python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); b={"research/native/itd01/ext01/ext01_factory_contract_gate.py","research/native/itd01/ext01/test_ext01_factory_contract_gate.py",".github/workflows/itd01-ext01-factory-source-only.yml"}; assert a==b,(a,b)'
+          test "$(git -C upstream rev-parse HEAD)" = 68a26254b5c0f15e84fa0c15d66bf0c626ede8e0
+      - name: Original-source test and static contract verification only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd01/ext01 -p test_ext01_factory_contract_gate.py -v
+          python -B research/native/itd01/ext01/check_symbolic_contract.py --upstream upstream --audit > original_source_contract_receipt.json
+          python -B research/native/itd01/ext01/ext01_factory_contract_gate.py --upstream upstream > original_factory_mode_receipt.json
+          python -B -c 'import json; x=json.load(open("original_factory_mode_receipt.json")); assert x["upstream_commit"]=="68a26254b5c0f15e84fa0c15d66bf0c626ede8e0" and x["upstream_blob"]=="e9485856726462f0c4a9aa2501e14ebedb5e4122" and x["episodes"]==0 and not x["scientific_first_use"] and x["mode_not_sealed"] and len(x["factory_switches"])==3; print("EXT01_ORIGINAL_FACTORY_SOURCE_ONLY_PASS")'
+          git -C upstream diff --exit-code
+          git diff --exit-code
+          sha256sum original_factory_mode_receipt.json original_source_contract_receipt.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ext01-original-factory-source-only-${{ matrix.os }}
+          path: |
+            original_factory_mode_receipt.json
+            original_source_contract_receipt.json
+          if-no-files-found: ignore
