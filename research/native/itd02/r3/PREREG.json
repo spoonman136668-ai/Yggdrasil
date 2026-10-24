@@ -1,0 +1,32 @@
+{
+  "schema": "itd02.r3.frozen-local-causal-nav-v1",
+  "parent": "4b1b1f83f2f2d555312fdb1bf1aba5288cd833d3",
+  "r2_blob": "f7e47dfef309e1c0bcc871d518154fd950b3eca0",
+  "objective": "Yggdrasil R3 add an episode-persistent learned public transition graph + finite optimistic lookahead. An unchanged Yggdrasil R2 source/weights governs real local inhibitory credit; new graph edges must be created only by actually observed public forward consequence, never hidden maze map. This is an engineered native memory/planning hypothesis, not novel cognitive architecture proof.",
+  "learning": "During original FIT, R2 cells learn unchanged on all real public action-consequence transitions. R3 graph memory is reset per episode, built only from that episode's real public observations and actual transitions. In heldout unfamiliar worlds, R2 model weights fixed; ephemeral graph learns only actual visited obstacle outcomes, with identical online experience allowed to a conventional optimistic planner comparator. No reward-based heldout fitting.",
+  "planning": {
+    "state": "public current x,y,heading,goal x,y,front-blocked plus actual episodic forward edge success/fail and visit counts",
+    "orientation": "0 east,1 south,2 west,3 north; do not assume movement if original observed transition differs. Observed source R2 original local sensor still used.",
+    "grid": "unknown map grid bounded by documented public map dimensions 0..18 for FourRooms,0..7 for Empty; this is a configured task boundary, not a hidden wall mask",
+    "model": "learn delta-per-heading from real FIT forward successful transitions; no invented source transitions. Online transition failures identify obstacle edges.",
+    "decision": "bounded Dijkstra search over current pose and heading using known failed edges forbidden, unknown forward edges cost 1.35, observed free edges cost 1.0, turn cost .35, per-visited-state-cost .05; next action is first of lowest-cost plan to publicly observed goal. R2 native local inhibitory score resolves exact ties only. Do not use BFS expert trajectory as the output.",
+    "fallback": "if no path under bounded graph, use local source-owned R2; no protected dev tuning"
+  },
+  "tests": [
+    "three legal actions",
+    "train real source before use",
+    "retain learned map across a cold checkpoint while no hidden wall data",
+    "same-coordinate public obstruction learned only from physical outcome",
+    "unblocked unrelated edge not automatically prohibited",
+    "goal-directed multi-step path can require temporary movement away from goal",
+    "no DEV/reward oracle access",
+    "original R2 immutable"
+  ],
+  "governance": {
+    "source_only": true,
+    "scientific_first_use": false,
+    "scientific_accepted": false,
+    "no_F139_CKB_FSA": true,
+    "keep_draft": true
+  }
+}
