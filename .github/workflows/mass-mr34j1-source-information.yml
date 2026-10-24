@@ -1,0 +1,210 @@
+name: Mass MR34J1 original third public representation and temporal history DEV
+on:
+  pull_request:
+    branches: [research/mass-mr34j0-third-original-native-transfer-20261023]
+    paths:
+      - 'research/mr34j1/**'
+      - '.github/workflows/mass-mr34j1-source-information.yml'
+permissions:
+  contents: read
+concurrency:
+  group: mass-mr34j1-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  VECLIB_MAXIMUM_THREADS: '1'
+  BLIS_NUM_THREADS: '1'
+  SDL_VIDEODRIVER: dummy
+  SDL_AUDIODRIVER: dummy
+
+jobs:
+  original-public-information-frozen:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Preserve original third source bytes on Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: research
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: sparisi/gym_gridworlds
+          ref: c6d406680d552489c3230dec9714b066c7fd303d
+          path: external/gym_gridworlds
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install exact original source-only dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==1.26.4 gymnasium==1.1.1 pygame-ce==2.5.3 six==1.17.0 psutil==6.1.1
+      - name: Verify frozen FIRST-only contract and original MR34J0 negatives unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research
+          parent=dbdd9b75c7fb518e28441597421e86f0073421ea
+          first=23e336a093673f9c5a05e81a08d3f91485367f7e
+          test "$(git rev-parse "${first}^")" = "$parent"
+          git merge-base --is-ancestor "$first" HEAD
+          test "$(git show --format= --name-only "$first")" = 'research/mr34j1/FROZEN_PROTOCOL.md'
+          for file in research/mr34j0/third_transfer.py research/mr34i/admit_gridworld.py research/mr34f/prospective_controls.py; do
+            test "$(git hash-object "$file")" = "$(git rev-parse "$parent:$file")"
+          done
+          changed="$(git diff --name-only "$parent" HEAD | LC_ALL=C sort)"
+          allowed="$(printf '%s\n' \
+            '.github/workflows/mass-mr34j1-source-information.yml' \
+            'research/mr34j1/FROZEN_PROTOCOL.md' \
+            'research/mr34j1/public_information.py' \
+            'research/mr34j1/test_public_information.py' | LC_ALL=C sort)"
+          test "$changed" = "$allowed"
+          echo MR34J1_FIRST_PROTOCOL_AND_FROZEN_SOURCE_SCOPE_PASS
+      - name: Source-free public encoding and fit-only history tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research
+          python -B -m unittest -v research.mr34j1.test_public_information 2>&1 | tee ../mr34j1-focused.log
+      - name: Train only on frozen new original third FIT; seal then evaluate separate DEV
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research
+          python -B -m research.mr34j1.public_information ../external/gym_gridworlds ../mr34j1-source.json 2>&1 | tee ../mr34j1-original.log
+          python - <<'PY'
+          import json,pathlib
+          z=json.loads(pathlib.Path("../mr34j1-source.json").read_text())
+          assert z["original_protected_scientific_first_use"] is False
+          assert z["original_native45_retrained_or_retuned"] is False
+          assert z["models_sealed_before_held_original_source_first_action"] is True
+          assert z["original_held_source_train_updates"]==0
+          a=z["original_development_fit_source"]
+          b=z["original_development_disjoint_held_source"]
+          assert len(a["original_source_episode_receipts"])==32
+          assert len(b["original_source_episode_receipts"])==16
+          assert a["public_unicode_changed_action_count"]>0
+          assert b["public_unicode_changed_action_count"]>0
+          assert len(z["FIT_only_original_all_five_model_seal_SHA256"])==6
+          scores=z["held_original_source_per_seed_proper_Brier"]
+          assert len(scores)==6
+          assert all(len(x["original_held_seed_cluster_Brier"])==8 for x in scores.values())
+          print("MR34J1_GENUINE_THIRD_DEVELOPMENT_FIT_SEALED_AND_HELD_ORIGINAL_PASS")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mass-mr34j1-${{ matrix.os }}
+          path: |
+            mr34j1-focused.log
+            mr34j1-original.log
+            mr34j1-source.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Verify original upstream source and research branch unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          for d in research external/gym_gridworlds; do
+            git -C "$d" diff --exit-code
+            test -z "$(git -C "$d" status --porcelain)"
+          done
+          echo MR34J1_GENUINE_ORIGINAL_THIRD_SOURCE_READ_ONLY
+
+  independent-third-source-information-comparison:
+    needs: original-public-information-frozen
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: mass-mr34j1-*
+          path: evidence
+      - name: Verify source custody and independently classify representation/history hypotheses
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,math
+          a=json.loads((pathlib.Path("evidence")/"mass-mr34j1-ubuntu-24.04"/"mr34j1-source.json").read_text())
+          b=json.loads((pathlib.Path("evidence")/"mass-mr34j1-windows-2025"/"mr34j1-source.json").read_text())
+          for side in (a,b):
+              assert side["scientific_admission"]=="NO_GO"
+              assert side["original_native45_retrained_or_retuned"] is False
+              assert side["models_sealed_before_held_original_source_first_action"] is True
+          for key in ("original_development_fit_source",
+                      "original_development_disjoint_held_source",
+                      "FIT_only_source_codepoint_dictionary",
+                      "FIT_source_genuine_public_feature_sha256",
+                      "FIT_source_real_original_eightbit_next_target_sha256",
+                      "HELD_source_genuine_public_feature_sha256",
+                      "HELD_source_real_original_eightbit_next_target_sha256",
+                      "FIT_only_public_observation_target_collision_diagnostics",
+                      "source_FIT_true_eight_bin_change_frequencies",
+                      "source_HELD_true_eight_bin_change_frequencies"):
+              # Source receipts contain CPU measurements. Compare exact source
+              # event arrays and digests, not wall/CPU clocks.
+              if key.endswith("_source"):
+                  for field in ("original_source_episode_receipts","original_real_source_receipt_sha256",
+                                "total_genuine_source_actions","public_unicode_changed_action_count"):
+                      assert a[key][field]==b[key][field],("SOURCE_GIT_OR_PUBLIC_DRIFT",key,field)
+              else:
+                  assert a[key]==b[key],("PUBLIC_SENSOR_OR_TARGET_DRIFT",key)
+          x=a["held_original_source_per_seed_proper_Brier"]
+          y=b["held_original_source_per_seed_proper_Brier"]
+          differences={}
+          for name in x:
+              differences[name]=max(abs(x[name]["original_held_seed_cluster_Brier"][k]-
+                                        y[name]["original_held_seed_cluster_Brier"][k])
+                                    for k in x[name]["original_held_seed_cluster_Brier"])
+          reproducible=all(math.isfinite(v) and v<=1e-5 for v in differences.values())
+          da=a["independent_frozen_information_hypotheses"]
+          db=b["independent_frozen_information_hypotheses"]
+          rep=bool(da["frozen_representation_signal"] and db["frozen_representation_signal"] and reproducible)
+          hist=bool(da["frozen_history_incremental_signal"] and db["frozen_history_incremental_signal"] and reproducible)
+          if rep and hist:
+              decision="MR34J1_REPRESENTATION_AND_HISTORY_DEV_SIGNALS_NOT_SCIENCE"
+          elif rep:
+              decision="MR34J1_REPRESENTATION_DEV_SIGNAL_NOT_SCIENCE"
+          elif hist:
+              decision="MR34J1_HISTORY_DEV_SIGNAL_NOT_SCIENCE"
+          else:
+              decision="MR34J1_PUBLIC_INFORMATION_DEV_NO_GO"
+          report={
+              "authentic_original_source_git_SHA":a["third_independent_original_source_sha"],
+              "source_fit_original_event_SHA":a["original_development_fit_source"]["original_real_source_receipt_sha256"],
+              "source_held_original_event_SHA":a["original_development_disjoint_held_source"]["original_real_source_receipt_sha256"],
+              "original_FIT_source_actions":a["original_development_fit_source"]["total_genuine_source_actions"],
+              "original_HELD_source_actions":a["original_development_disjoint_held_source"]["total_genuine_source_actions"],
+              "original_held_independent_source_seed_clusters":8,
+              "FIT_only_unicode_codepoint_vocabulary":a["FIT_only_source_codepoint_dictionary"],
+              "original_source_training_only_empirical_aliasing":a["FIT_only_public_observation_target_collision_diagnostics"],
+              "per_model_original_held_seed_cluster_Brier_ubuntu":x,
+              "per_model_original_held_seed_cluster_Brier_windows":y,
+              "cross_host_per_original_seed_Brier_max_abs_delta":differences,
+              "cross_host_source_score_reproducibility_PASS":reproducible,
+              "frozen_representation_signal_each_OS":[da["frozen_representation_signal"],db["frozen_representation_signal"]],
+              "frozen_history_signal_each_OS":[da["frozen_history_incremental_signal"],db["frozen_history_incremental_signal"]],
+              "no_native_retraining_or_native_protected_first_use":True,
+              "previous_MR34J0_native_transfer_negative_preserved":True,
+              "resource_energy_or_model_RSS_Pareto_qualified":False,
+              "original_G29_integration":"FAIL_CLOSED",
+              "scientific_admission":"NO_GO"
+          }
+          print("MR34J1_ORIGINAL_SOURCE_PUBLIC_INFORMATION_AUDIT="+json.dumps(report,sort_keys=True))
+          print("MR34J1_FROZEN_TERMINAL_DISPOSITION="+decision)
+          print("MR34J1_PROTECTED_FIRST_USE_ZERO")
+          PY
