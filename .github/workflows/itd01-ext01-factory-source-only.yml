@@ -53,7 +53,7 @@ jobs:
           set -euo pipefail
           python -B -m unittest discover -s research/native/itd01/ext01 -p test_ext01_factory_contract_gate.py -v
           python -B research/native/itd01/ext01/check_symbolic_contract.py --upstream upstream --audit > original_source_contract_receipt.json
-          python -B research/native/itd01/ext01/ext01_factory_contract_gate.py --upstream upstream > original_factory_mode_receipt.json
+          python -B research/native/itd01/ext01/ext01_factory_contract_gate.py --upstream upstream --output original_factory_mode_receipt.json
           python -B -c 'import json; x=json.load(open("original_factory_mode_receipt.json")); assert x["upstream_commit"]=="68a26254b5c0f15e84fa0c15d66bf0c626ede8e0" and x["upstream_blob"]=="e9485856726462f0c4a9aa2501e14ebedb5e4122" and x["episodes"]==0 and not x["scientific_first_use"] and x["mode_not_sealed"] and len(x["factory_switches"])==3; print("EXT01_ORIGINAL_FACTORY_SOURCE_ONLY_PASS")'
           git -C upstream diff --exit-code
           git diff --exit-code
