@@ -1,0 +1,30 @@
+name: ITD-02 R3 Yggdrasil learned episodic navigation source
+on:
+  push:
+    branches: [research/itd02-r3-episodic-causal-navigation-20261024]
+permissions:
+  contents: read
+jobs:
+  native-original-model-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 12
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Frozen source before new original causal experiment
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse '4ae8559545161a031c756461dc725807dc0e2c90^')" = '4b1b1f83f2f2d555312fdb1bf1aba5288cd833d3'
+          git merge-base --is-ancestor 4ae8559545161a031c756461dc725807dc0e2c90 HEAD
+          test "$(git hash-object research/native/itd02/r3/PREREG.json)" = 'd518e5443d0d6462f8fa32fb41283c8a26aca2ad'
+      - name: Source-own native episodic learning, topology and checkpoint tests
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s research/native/itd02/r3 -p 'test_navigator.py' -v
+          echo 'ITD02_R3_SOURCE_ONLY_NATIVE_PASS'
+          echo 'ITD02_R3_NEW_MINIGRID_EPISODES=0'
