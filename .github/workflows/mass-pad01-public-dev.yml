@@ -1,0 +1,81 @@
+name: "Mass PAD01 internally authored public causal-action development"
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/native/itd01/mass_pad01/**'
+      - '.github/workflows/mass-pad01-public-dev.yml'
+permissions:
+  contents: read
+concurrency:
+  group: mass-pad01-public-dev-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+jobs:
+  frozen-development:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify frozen first source and exact isolated scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          first=4f100e9e4fc1ff439482668b73d221c76e3b0ebf
+          protected=9b069040feeddd9f509ab2c8ac9656d0a2c07d77
+          test "$(git rev-parse "${first}^")" = "$protected"
+          git merge-base --is-ancestor "$first" HEAD
+          test "$(git show --format= --name-only "$first")" = "research/native/itd01/mass_pad01/PAD01_FIRST_PROTOCOL.md"
+          actual="$(git diff --name-only "$protected" HEAD | LC_ALL=C sort)"
+          expected="$(printf '%s\n' \
+            '.github/workflows/mass-pad01-public-dev.yml' \
+            'research/native/itd01/mass_pad01/PAD01_FIRST_PROTOCOL.md' \
+            'research/native/itd01/mass_pad01/run.py' \
+            'research/native/itd01/mass_pad01/test_pad01.py' | LC_ALL=C sort)"
+          test "$actual" = "$expected"
+          echo PAD01_FROZEN_SCOPE_PASS
+      - name: Run source-free focused controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v research.native.itd01.mass_pad01.test_pad01 2>&1 | tee pad01-focused.log
+      - name: Evaluate exactly one public original internally authored development cohort
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m research.native.itd01.mass_pad01.run --out pad01-evidence/receipt.json | tee pad01-evidence-console.log
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          z=json.loads(Path("pad01-evidence/receipt.json").read_text())
+          assert z["source_task_count"]==6
+          assert z["source_public_fit_actions"]==576
+          assert z["source_public_dev_actions"]==4608
+          assert z["no_protected_holdout_consumed"] is True
+          assert z["disposition"]["scientific_classification"]=="PAD01_PUBLIC_DEVELOPMENT_NO_GO"
+          assert z["disposition"]["independent_replication"]=="NOT_PERFORMED"
+          print("PAD01_EVIDENCE_COLLECTION_COMPLETE_NO_SCIENCE_PROMOTION")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pad01-public-development-original-receipt
+          path: |
+            pad01-focused.log
+            pad01-evidence-console.log
+            pad01-evidence/receipt.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Fail closed on tracked worktree changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "$(git status --porcelain --untracked-files=no)"
+          echo PAD01_GIT_TRACKED_CLEAN_PASS
