@@ -1,0 +1,221 @@
+name: Mass MR34J0 original third-family learned-native development transfer
+on:
+  pull_request:
+    branches: [research/mr34i-independent-third-source-birth-20261022]
+    paths:
+      - 'research/mr34j0/**'
+      - '.github/workflows/mass-mr34j0-third-source-transfer.yml'
+permissions:
+  contents: read
+concurrency:
+  group: mass-mr34j0-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  VECLIB_MAXIMUM_THREADS: '1'
+  BLIS_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+  SDL_VIDEODRIVER: dummy
+  SDL_AUDIODRIVER: dummy
+
+jobs:
+  independent-third-original-source-learning:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 55
+    steps:
+      - name: Preserve original source Git bytes on Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: research
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 8e1561eb1a542e21307bac669c42435cf48e59bd
+          path: original_s4c1
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: google-deepmind/pycolab
+          ref: 6504c8065dd5322438f23a2a9026649904f3322a
+          path: external/pycolab
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: sparisi/gym_gridworlds
+          ref: c6d406680d552489c3230dec9714b066c7fd303d
+          path: external/gym_gridworlds
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Original public source and NumPy dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==1.26.4 gymnasium==1.1.1 pygame-ce==2.5.3 six==1.17.0 psutil==6.1.1
+      - name: Original Windows Pycolab curses
+        if: runner.os == 'Windows'
+        shell: bash
+        run: python -m pip install --disable-pip-version-check windows-curses==2.4.1
+      - name: Confirm protocol FIRST parent and exact four additive files only
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research
+          parent=06afcc66f26ef02605bdcca45ed89cada3d2ac48
+          first=67ceb8db50db5e52fe6387358b0cd6b43947cb9d
+          test "$(git rev-parse "${first}^")" = "$parent"
+          git merge-base --is-ancestor "$first" HEAD
+          test "$(git show --format= --name-only "$first")" = 'research/mr34j0/FROZEN_PROTOCOL.md'
+          test "$(git hash-object research/mr34i/admit_gridworld.py)" = "$(git rev-parse "$parent:research/mr34i/admit_gridworld.py")"
+          for file in research/mr34f/prospective_controls.py research/mr34g/train_adequacy.py research/mr34h/generalization.py; do
+            test "$(git hash-object "$file")" = "$(git rev-parse "$parent:$file")"
+          done
+          diff="$(git diff --name-only "$parent" HEAD | LC_ALL=C sort)"
+          expect="$(printf '%s\n' \
+            '.github/workflows/mass-mr34j0-third-source-transfer.yml' \
+            'research/mr34j0/FROZEN_PROTOCOL.md' \
+            'research/mr34j0/third_transfer.py' \
+            'research/mr34j0/test_third_transfer.py' | LC_ALL=C sort)"
+          test "$diff" = "$expect"
+          echo MR34J0_FROZEN_SOURCE_FIRST_ONLY_PASS
+      - name: Source-free test genuine third Unicode bridge and model-sealing boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research
+          python -B -m unittest -v research.mr34j0.test_third_transfer 2>&1 | tee ../mr34j0-focused.log
+      - name: Fit strong controls on original familiar source, test third original DEV only
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research
+          python -B -m research.mr34j0.third_transfer ../original_s4c1 ../external/minigrid ../external/pycolab ../external/gym_gridworlds ../mr34j0-original.json 2>&1 | tee ../mr34j0-original.log
+          python - <<'PY'
+          import json,pathlib,math
+          x=json.loads(pathlib.Path("../mr34j0-original.json").read_text())
+          assert x["blinded_scientific_third_source_family_FIRST_USE"] is False
+          assert x["new_third_source_training_gradient_steps"]==0
+          assert x["scientific_admission"]=="NO_GO"
+          fit=x["genuine_familiar_original_source_FIT"]
+          third=x["genuine_original_third_source_unseen_reset_DEV"]
+          assert fit["sealed_models_before_third_source_reset"] is True
+          assert fit["familiar_FIT_original_episode_count"]==40
+          assert len(fit["all_familiar_fit_model_seal_SHA256"])==5
+          assert third["no_third_source_fitting_performed"] is True
+          assert len(third["source_original_sealed_original_public_unicode_event_receipts"])==16
+          e=x["actual_fitted_models_unfamiliar_third_source_DEV"]
+          assert e["original_models_sealed_across_all_DEV_source_actions"]
+          assert len(e["per_source_public_DEV_reset_cluster_proper_Brier"])==6
+          assert all(0.<=v<=1. for v in
+               e["original_third_source_proper_Brier_mean_across_8_original_seed_clusters"].values())
+          print("MR34J0_AUTHENTIC_THIRD_DEVELOPMENT_NO_PROTECTED_FIRST_USE_PASS")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mass-mr34j0-${{ matrix.os }}
+          path: |
+            mr34j0-focused.log
+            mr34j0-original.log
+            mr34j0-original.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Confirm all FOUR independently authored original source worktrees clean
+        shell: bash
+        run: |
+          set -euo pipefail
+          for dir in research original_s4c1 external/minigrid external/pycolab external/gym_gridworlds; do
+            git -C "$dir" diff --exit-code
+            test -z "$(git -C "$dir" status --porcelain)"
+          done
+          echo MR34J0_ALL_ORIGINAL_SOURCES_UNMODIFIED
+
+  third-original-cross-platform-judge:
+    needs: independent-third-original-source-learning
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: mass-mr34j0-*
+          path: evidence
+      - name: Strict original third source, fitted controls, resource and native loss verdict
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,math
+          originals={}
+          for os in ("ubuntu-24.04","windows-2025"):
+              file=pathlib.Path("evidence")/f"mass-mr34j0-{os}"/"mr34j0-original.json"
+              r=json.loads(file.read_text())
+              assert r["scientific_admission"]=="NO_GO"
+              assert not r["blinded_scientific_third_source_family_FIRST_USE"]
+              originals[os]=r
+          a=originals["ubuntu-24.04"]
+          b=originals["windows-2025"]
+          x=a["genuine_familiar_original_source_FIT"]
+          y=b["genuine_familiar_original_source_FIT"]
+          assert x["familiar_source_original_authors"]==y["familiar_source_original_authors"],"FAMILIAR_SOURCE_IDENTITY_DRIFT"
+          assert a["genuine_original_third_source_unseen_reset_DEV"]["source_original_sealed_original_public_unicode_event_receipts"]==b["genuine_original_third_source_unseen_reset_DEV"]["source_original_sealed_original_public_unicode_event_receipts"],"THIRD_ORIGINAL_SOURCE_AND_PUBLIC_SENSOR_DRIFT"
+          assert a["genuine_original_third_source_unseen_reset_DEV"]["source_original_dev_public_action_digest"]==b["genuine_original_third_source_unseen_reset_DEV"]["source_original_dev_public_action_digest"]
+          osdelta={}
+          ea=a["actual_fitted_models_unfamiliar_third_source_DEV"]
+          eb=b["actual_fitted_models_unfamiliar_third_source_DEV"]
+          for name in ea["original_third_source_proper_Brier_mean_across_8_original_seed_clusters"]:
+              v=ea["original_third_source_proper_Brier_mean_across_8_original_seed_clusters"][name]
+              w=eb["original_third_source_proper_Brier_mean_across_8_original_seed_clusters"][name]
+              osdelta[name]=abs(v-w)
+          score_repro=all(math.isfinite(v) and v<=1e-5 for v in osdelta.values())
+          on_both=(a["prospective_science_DEV_signal_all_conditions_met"] and
+                   b["prospective_science_DEV_signal_all_conditions_met"] and score_repro and
+                   x["familiar_training_fitted_recurrent_adequacy"] and
+                   y["familiar_training_fitted_recurrent_adequacy"])
+          verdict=("MR34J0_CROSS_FAMILY_DEVELOPMENT_SIGNAL_NOT_SCIENCE"
+                   if on_both else "MR34J0_CROSS_FAMILY_DEVELOPMENT_NO_GO")
+          report={
+            "original_authored_FIT_sources":x["familiar_source_original_authors"],
+            "original_third_source_and_action_SHA256":a["genuine_original_third_source_unseen_reset_DEV"]["source_original_dev_public_action_digest"],
+            "DEV_original_action_count":a["genuine_original_third_source_unseen_reset_DEV"]["source_all_16_public_episode_actions"],
+            "all_model_mean_Brier_ubuntu":ea["original_third_source_proper_Brier_mean_across_8_original_seed_clusters"],
+            "all_model_mean_Brier_windows":eb["original_third_source_proper_Brier_mean_across_8_original_seed_clusters"],
+            "cross_OS_mean_Brier_abs_delta":osdelta,
+            "qualifying_score_reproducibility":score_repro,
+            "native_trained_original_checkpoint_SHA_ubuntu":x["all_familiar_fit_model_seal_SHA256"]["native45"],
+            "native_trained_original_checkpoint_SHA_windows":y["all_familiar_fit_model_seal_SHA256"]["native45"],
+            "original_native_exact_cross_OS_checkpoint_bytes_equal":x["all_familiar_fit_model_seal_SHA256"]["native45"]==y["all_familiar_fit_model_seal_SHA256"]["native45"],
+            "fitted_control_training_adequacy_ubuntu":x["familiar_training_fitted_recurrent_adequacy"],
+            "fitted_control_training_adequacy_windows":y["familiar_training_fitted_recurrent_adequacy"],
+            "candidate_frozen_gate_met_each_original_OS":[a["prospective_science_DEV_signal_all_conditions_met"],b["prospective_science_DEV_signal_all_conditions_met"]],
+            "native_to_conventional_training_CPU_ratio_each":[a["native_to_recurrent_two_init_fit_CPU_ratio"],b["native_to_recurrent_two_init_fit_CPU_ratio"]],
+            "native_to_conventional_inference_CPU_ratio_each":[a["native_to_recurrent_original_third_inference_CPU_ratio"],b["native_to_recurrent_original_third_inference_CPU_ratio"]],
+            "resource_true_energy_or_model_isolated_peak_RSS_qualified":False,
+            "third_source_already_seen_DEV_before_this_gate":True,
+            "protected_scientific_first_use":False,
+            "G29_native_protected_integration":"BLOCKED",
+            "scientific_admission":"NO_GO"}
+          print("MR34J0_ORIGINAL_THIRD_FAMILY_CROSS_OS_EVIDENCE="+json.dumps(report,sort_keys=True))
+          print("MR34J0_FROZEN_TERMINAL_DISPOSITION="+verdict)
+          print("MR34J0_PROTECTED_FIRST_USE=ZERO")
+          PY
