@@ -343,6 +343,7 @@ def make_decision(scores):
 
 def run(original_source,output):
     source_original_git_readonly(original_source)
+    sys.path.insert(0,str(Path(original_source).resolve()))
     t0=time.process_time_ns()
     fit,fit_receipt=source_cohort(original_source,FIT,"original_public_development_FIT")
     book=fit_codebook(fit)
