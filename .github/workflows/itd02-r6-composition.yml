@@ -1,0 +1,29 @@
+name: ITD-02 R6 causal composition source-only
+on:
+  push:
+    branches: [research/itd02-r6-affine-composition-20261024]
+permissions:
+  contents: read
+jobs:
+  genuine-local-causal-memory:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 12
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify frozen source and original native R5 custody
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse '1a05aa43b4edb5acc540743077762650a3f8fd82^')" = '6f9cb5c80f278eab15f73a7a121dc4fa1f331b92'
+          git merge-base --is-ancestor 1a05aa43b4edb5acc540743077762650a3f8fd82 HEAD
+          test "$(git hash-object research/native/itd02/r6/PREREG.json)" = 'ab10ce217dd777e3d6f8ef0b1577f91b6721a344'
+          test "$(git hash-object research/native/itd02/r5/concurrent_cues.py)" = '4182889a47e31391a95ea3a2f5d8a4b87bcd6359'
+          PYTHONPATH=. python -B -m unittest discover -s research/native/itd02/r6 -p 'test_composer.py' -v
+          echo 'ITD02_R6_NATIVE_CAUSAL_SOURCE_ONLY=PASS'
+          echo 'ITD02_R6_WORLD_STUDY_EPISODES=0'
