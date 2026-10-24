@@ -1,0 +1,181 @@
+name: "Mass P0F-C1C matched-capacity genuine-source train/select diagnosis"
+on:
+  pull_request:
+    branches: [research/p0fc1b-full-public-learned-controls-20261023]
+    paths:
+      - 'research/p0fc1c/**'
+      - '.github/workflows/mass-p0fc1c-matched-history.yml'
+permissions:
+  contents: read
+concurrency:
+  group: mass-p0fc1c-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  BLIS_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+  PYTHONDONTWRITEBYTECODE: '1'
+jobs:
+  matched-original-public-train-select:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - name: Preserve Git source SHA across original Windows checkout
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: yggdrasil
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: google-deepmind/pycolab
+          ref: 6504c8065dd5322438f23a2a9026649904f3322a
+          path: external/pycolab
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install unchanged original development source dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==1.26.4 six==1.17.0 psutil==6.1.1 gymnasium==1.1.1 pygame-ce==2.5.3
+      - name: Original Pycolab Windows curses dependency
+        if: runner.os == 'Windows'
+        shell: bash
+        run: python -m pip install --disable-pip-version-check windows-curses==2.4.1
+      - name: Verify frozen first source and unchanged existing learned model
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd yggdrasil
+          first=005629efceea2542159eb6cd4968e1614e8559ab
+          original=2add84058d5c5466562a6a6c00e99ac4d90389b8
+          test "$(git rev-parse "${first}^")" = "$original"
+          git merge-base --is-ancestor "$first" HEAD
+          test "$(git show --format= --name-only "$first")" = 'research/p0fc1c/FROZEN_TRAIN_SELECT_ABLATION.md'
+          for p in research/p0fc1b/full_public_controls.py research/p0fc1b/FROZEN_TRAINED_CONVENTIONAL_CONTRACT.json; do
+            test "$(git hash-object "$p")" = "$(git rev-parse "$original:$p")"
+          done
+          actual="$(git diff --name-only "$original" HEAD | LC_ALL=C sort)"
+          expected="$(printf '%s\n' \
+            '.github/workflows/mass-p0fc1c-matched-history.yml' \
+            'research/p0fc1c/FROZEN_TRAIN_SELECT_ABLATION.md' \
+            'research/p0fc1c/train_select_only.py' \
+            'research/p0fc1c/test_train_select_only.py' | LC_ALL=C sort)"
+          test "$actual" = "$expected"
+          echo P0FC1C_FROZEN_ONLY_FIRST_AND_EXISTING_MODEL_UNCHANGED
+      - name: Focused source-free training and DEV exclusion tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd yggdrasil
+          python -B -m unittest -v research.p0fc1c.test_train_select_only 2>&1 | tee ../p0fc1c-focused.log
+      - name: Verify unchanged original Farama source
+        shell: bash
+        run: python -B yggdrasil/research/mr14/verify_farama_native.py --manifest yggdrasil/research/mr14/farama_source_manifest.json --upstream external/minigrid
+      - name: One honest original TRAIN and train-only SELECT matched intervention
+        shell: bash
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: |
+          set -euo pipefail
+          cd yggdrasil
+          python -B -m research.p0fc1c.train_select_only ../external/minigrid ../external/pycolab | tee ../p0fc1c-original-report.log
+          grep -q '^P0FC1C_MATCHED_TRAIN_SELECT=' ../p0fc1c-original-report.log
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          lines=Path("../p0fc1c-original-report.log").read_text().splitlines()
+          out=[json.loads(line.split("=",1)[1]) for line in lines if line.startswith("P0FC1C_MATCHED_TRAIN_SELECT=")]
+          assert len(out)==1
+          o=out[0]
+          assert o["source_real_DEV_samples_generated"]==0
+          assert o["scientific_first_use_consumed"] is False
+          assert len(o["source_reports"])==2
+          for s in o["source_reports"].values():
+              assert s["original_train_reset_clusters"]==24
+              assert s["original_selection_reset_clusters"]==6
+              assert s["same_model_parameter_count"]>0
+              assert s["original_train_native_action_steps"]>0
+              assert s["original_selection_native_action_steps"]>0
+          print("P0FC1C_ORIGINAL_SOURCE_TRAIN_SELECT_ONLY_COMPLETE_NO_DEV")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mass-p0fc1c-${{ matrix.os }}-train-select
+          path: |
+            p0fc1c-focused.log
+            p0fc1c-original-report.log
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Verify no original repository/source edits
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C yggdrasil diff --exit-code
+          git -C external/minigrid diff --exit-code
+          git -C external/pycolab diff --exit-code
+          test -z "$(git -C yggdrasil status --porcelain)"
+          test -z "$(git -C external/minigrid status --porcelain)"
+          test -z "$(git -C external/pycolab status --porcelain)"
+          echo P0FC1C_READ_ONLY_SOURCE_WORKTREES_PASS
+
+  independently-reconcile-original-two-oses:
+    needs: matched-original-public-train-select
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: mass-p0fc1c-*-train-select
+          path: evidence
+      - name: Fail closed if original source identity or matched result drifts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,math
+          data={}
+          for os in ("ubuntu-24.04","windows-2025"):
+              path=pathlib.Path("evidence")/f"mass-p0fc1c-{os}-train-select"/"p0fc1c-original-report.log"
+              lines=path.read_text().splitlines()
+              content=[json.loads(x.split("=",1)[1]) for x in lines if x.startswith("P0FC1C_MATCHED_TRAIN_SELECT=")]
+              assert len(content)==1,(os,len(content))
+              data[os]=content[0]
+          a,b=data.values()
+          assert a["source_real_DEV_samples_generated"]==b["source_real_DEV_samples_generated"]==0
+          assert a["scientific_first_use_consumed"] is b["scientific_first_use_consumed"] is False
+          assert a["original_C1B_contract_sha256"]==b["original_C1B_contract_sha256"]
+          for name in a["source_reports"]:
+              x,y=a["source_reports"][name],b["source_reports"][name]
+              for fld in ("original_source_sha","original_train_episode_digest",
+                          "original_selection_episode_digest","original_train_native_action_steps",
+                          "original_selection_native_action_steps","same_model_parameter_count",
+                          "same_model_train_updates","development_diagnostic_disposition"):
+                  assert x[fld]==y[fld],(name,fld,x[fld],y[fld])
+              for fld in ("visible_history_train_gain_masked_minus_visible_nats",
+                          "visible_history_selection_cluster_gain_masked_minus_visible_nats"):
+                  assert math.isfinite(x[fld]) and abs(x[fld]-y[fld])<.002,(name,fld,x[fld],y[fld])
+              for arm in ("history_masked","history_visible"):
+                  assert x["arms"][arm]["trained_checkpoint_sha256"]==y["arms"][arm]["trained_checkpoint_sha256"],(name,arm)
+          print("P0FC1C_ORIGINAL_SOURCE_TRAIN_SELECTION_CROSS_OS_PASS")
+          print("P0FC1C_SCIENCE_FIRST_USE_UNTOUCHED")
+          PY
