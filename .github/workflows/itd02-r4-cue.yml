@@ -1,0 +1,28 @@
+name: ITD-02 R4 original native delayed-cue learning
+on:
+  push:
+    branches: [research/itd02-r4-cue-binding-20261024]
+permissions:
+  contents: read
+jobs:
+  source-owned-memory-learning:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 12
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Freeze-before-learning and source-native tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse '7ca23f3b177967fb874324a7718ef4cfa358981e^')" = 'fbf78bcc6988755ba0e3e026f06d273839c1fa9f'
+          git merge-base --is-ancestor 7ca23f3b177967fb874324a7718ef4cfa358981e HEAD
+          test "$(git hash-object research/native/itd02/r4/PREREG.json)" = '8be70e973bdbf9f1799e5fafd0e376da4bc83911'
+          PYTHONPATH=. python -B -m unittest discover -s research/native/itd02/r4 -p 'test_cue_cells.py' -v
+          echo 'R4_NATIVE_DELAYED_CUE_SOURCE=PASS'
+          echo 'R4_NEW_MEMORY_ENV_EPISODES=0'
