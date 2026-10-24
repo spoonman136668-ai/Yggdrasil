@@ -1,0 +1,29 @@
+name: ITD-02 R5 original concurrent native cue binding
+on:
+  push:
+    branches: [research/itd02-r5-concurrent-binding-20261024]
+permissions:
+  contents: read
+jobs:
+  source-only-concurrent-memory:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 12
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Source-owned original R4+R5 persistent memory with frozen prereg
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse 'b68ea1d8122ddf7477389eff4eb4574d910ee001^')" = '3d9b3e282533c92557e947a3c2d5271f671165f9'
+          git merge-base --is-ancestor b68ea1d8122ddf7477389eff4eb4574d910ee001 HEAD
+          test "$(git hash-object research/native/itd02/r5/PREREG.json)" = '758a1c537b911a0d12d9a18becf2fe462c666480'
+          test "$(git hash-object research/native/itd02/r4/cue_cells.py)" = 'bb8747e225335affe0e23f57e3c5d692a25bf473'
+          PYTHONPATH=. python -B -m unittest discover -s research/native/itd02/r5 -p 'test_concurrent_cues.py' -v
+          echo 'ITD02_R5_CONCURRENT_SOURCE_ONLY=PASS'
+          echo 'ITD02_R5_MINIGRID_EPISODES=0'
