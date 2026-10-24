@@ -1,0 +1,224 @@
+name: Mass MR34I12 complete native portable recurrent TRAIN feasibility
+on:
+  pull_request:
+    branches: [research/mass-mr34i11-initial-u-portability-20261023]
+    paths:
+      - 'research/mr34i12/**'
+      - '.github/workflows/mass-mr34i12-portable-recurrent.yml'
+permissions:
+  contents: read
+concurrency:
+  group: mass-mr34i12-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  BLIS_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+  VECLIB_MAXIMUM_THREADS: '1'
+  SDL_VIDEODRIVER: dummy
+  SDL_AUDIODRIVER: dummy
+
+jobs:
+  frozen-source-native-train:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+        repeat: [1, 2]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - name: Original Git blob identity on Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: audit
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 8e1561eb1a542e21307bac669c42435cf48e59bd
+          path: original_s4c1
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: google-deepmind/pycolab
+          ref: 6504c8065dd5322438f23a2a9026649904f3322a
+          path: external/pycolab
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install exact original source/numeric dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==1.26.4 gymnasium==1.1.1 pygame-ce==2.5.3 six==1.17.0 psutil==6.1.1
+      - name: Pycolab original Windows curses
+        if: runner.os == 'Windows'
+        shell: bash
+        run: python -m pip install --disable-pip-version-check windows-curses==2.4.1
+      - name: Verify FIRST contract and four new paths only, original kernels immutable
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd audit
+          parent=f37da027ab92618c21d47fd2a50c46d949ef6bca
+          first=84790ee328d3f4c3ba8fbe6c8f9077f7844ba8fc
+          test "$(git rev-parse "${first}^")" = "$parent"
+          git merge-base --is-ancestor "$first" HEAD
+          test "$(git show --format= --name-only "$first")" = 'research/mr34i12/FROZEN_PROTOCOL.md'
+          for p in research/mr34i11/initial_u.py research/mr34i10/fixed160_train.py research/mr34i9/optin_train.py research/mr34i7/portable_kernel.py; do
+            test "$(git hash-object "$p")" = "$(git rev-parse "$parent:$p")"
+          done
+          changed="$(git diff --name-only "$parent" HEAD | LC_ALL=C sort)"
+          allowed="$(printf '%s\n' \
+            '.github/workflows/mass-mr34i12-portable-recurrent.yml' \
+            'research/mr34i12/FROZEN_PROTOCOL.md' \
+            'research/mr34i12/portable_recurrent.py' \
+            'research/mr34i12/test_portable_recurrent.py' | LC_ALL=C sort)"
+          test "$changed" = "$allowed"
+          echo MR34I12_FROZEN_PRECODE_SOURCE_SCOPE_PASS
+      - name: Focused source-free native gradient, state, 40epoch comparison tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd audit
+          python -B -m unittest -v research.mr34i12.test_portable_recurrent 2>&1 | tee ../mr34i12-focused.log
+      - name: Real original previously consumed TRAIN only; all four full trained arms
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd audit
+          python -B -m research.mr34i12.portable_recurrent ../original_s4c1 ../external/minigrid ../external/pycolab ../mr34i12-original.json 2>&1 | tee ../mr34i12-original.log
+          python - <<'PY'
+          import json,pathlib,math
+          d=json.loads(pathlib.Path("../mr34i12-original.json").read_text())
+          assert d["original_protected_or_DEV_first_use"] is False
+          assert d["native_original_and_prior_numeric_implementations_untouched"]
+          assert d["scientific_admission"]=="NO_GO"
+          assert len(d["source_reports"])==2
+          for family,z in d["source_reports"].items():
+              assert z["previously_consumed_training_only_reset_count"]==20
+              assert z["original_imported_trainer_local_parity"]
+              assert z["actual_original_source_protected_first_use_or_DEV_actions"]==0
+              for name in ("original_full40_native_copy","reference_Decimal48_full40",
+                           "prior_Q160_full40","new_fsum_Q160_full40"):
+                  r=z[name]
+                  assert r["source_actual_training_updates"]==800
+                  assert len(r["original_train_only_epoch_Brier"])==40
+                  assert len(r["original_train_only_epoch_checkpoint_sha256"])==40
+                  assert r["source_native_gradient_finite_difference"]["passed"]
+                  assert r["exact_native_45_weights"]
+              assert all(math.isfinite(x) for x in z["TRAIN_only_selected_model_Brier"].values())
+          print("MR34I12_ALL_ORIGINAL_SOURCE_TRAINED_RECURRENT_40EPOCH_CUSTODY_PASS")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mass-mr34i12-${{ matrix.os }}-${{ matrix.repeat }}
+          path: |
+            mr34i12-focused.log
+            mr34i12-original.log
+            mr34i12-original.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: All genuine original and native source unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          for p in audit original_s4c1 external/minigrid external/pycolab; do
+            git -C "$p" diff --exit-code
+            test -z "$(git -C "$p" status --porcelain)"
+          done
+          echo MR34I12_ALL_ORIGINAL_SOURCE_READONLY_PASS
+
+  independent-original-cross-host-qualification:
+    needs: frozen-source-native-train
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: mass-mr34i12-*
+          path: evidence
+      - name: Judge exact 4-host native recurrent learning and frozen CPU/Brier gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,math
+          workers={}
+          for os in ("ubuntu-24.04","windows-2025"):
+              for rep in (1,2):
+                  p=pathlib.Path("evidence")/f"mass-mr34i12-{os}-{rep}"/"mr34i12-original.json"
+                  d=json.loads(p.read_text())
+                  assert d["original_protected_or_DEV_first_use"] is False
+                  assert d["scientific_admission"]=="NO_GO"
+                  workers[os,rep]=d
+          report={}
+          final=True
+          for family in ("FaramaMiniGridDoorKey8","DeepMindPycolabApprehend"):
+              vals=[workers[os,rep]["source_reports"][family] for os,rep in
+                    (("ubuntu-24.04",1),("ubuntu-24.04",2),
+                     ("windows-2025",1),("windows-2025",2))]
+              first=vals[0]
+              for v in vals[1:]:
+                  for field in ("original_authored_source_git_sha",
+                                "original_original_action_target_receipt_SHA256",
+                                "original_public_source_23_69_8_tensors",
+                                "original_native_initial_genotype_SHA256"):
+                      assert v[field]==first[field],("MR34I12_ORIGINAL_SOURCE_DRIFT",family,field)
+              learned=[v["new_fsum_Q160_full40"] for v in vals]
+              expected=learned[0]
+              exact=(
+                  len({v["source_trained_45_native_checkpoint_sha256"] for v in learned})==1
+                  and len({v["source_train_only_selected_epoch"] for v in learned})==1
+                  and all(v["original_train_only_epoch_Brier"]==
+                          expected["original_train_only_epoch_Brier"] for v in learned[1:])
+                  and all(v["original_train_only_epoch_checkpoint_sha256"]==
+                          expected["original_train_only_epoch_checkpoint_sha256"] for v in learned[1:]))
+              cpu=[v["candidate_to_unmodified_original_CPU_ratio"] for v in vals]
+              decimal=[v["candidate_to_qualified_Decimal48_CPU_ratio"] for v in vals]
+              brier=[v["candidate_Brier_minus_prior_Q160"] for v in vals]
+              budget=all(0<z<=2.5 and 0<k<=1.0 and math.isfinite(z) and math.isfinite(k)
+                         for z,k in zip(cpu,decimal))
+              brier_pass=all(math.isfinite(x) and x<=.01 for x in brier)
+              gradients=all(v["candidate_original_source_full40_valid"] for v in vals)
+              passed=exact and budget and brier_pass and gradients
+              final=final and passed
+              report[family]={
+                  "original_authored_source_event_digest":first["original_original_action_target_receipt_SHA256"],
+                  "old_original_initial_u_matching_history":[v["original_native_u_history_matches"] for v in vals],
+                  "candidate_full40_native_model_45weight_cross4_exact":exact,
+                  "candidate_four_selected_epoch":[v["source_train_only_selected_epoch"] for v in learned],
+                  "candidate_four_trained_checkpoint_SHA256":[v["source_trained_45_native_checkpoint_sha256"] for v in learned],
+                  "candidate_CPU_to_original_four":[round(v,4) for v in cpu],
+                  "candidate_CPU_to_Decimal48_four":[round(v,4) for v in decimal],
+                  "candidate_train_only_Brier_delta_vs_Q160_four":[round(v,9) for v in brier],
+                  "frozen_CPU_screen_met":budget,
+                  "frozen_TRAIN_only_fitness_screen_met":brier_pass,
+                  "original_source_gradients_verified":gradients,
+                  "qualified_engineering_only":passed,
+                  "true_CPU_nonregression_vs_unmodified_original":all(z<=1. for z in cpu),
+                  "scientific_admission":"NO_GO"
+              }
+          verdict=("MR34I12_PORTABLE_RECURRENT_ENGINEERING_FEASIBLE_NOT_SCIENCE"
+                   if final else "MR34I12_PORTABLE_RECURRENT_NUMERICS_NO_GO")
+          print("MR34I12_INDEPENDENT_ALL_FOUR_ORIGINALS="+json.dumps(report,sort_keys=True))
+          print("MR34I12_FROZEN_TERMINAL_DISPOSITION="+verdict)
+          print("MR34I12_ORIGINAL_PROTECTED_FIRST_USE=ZERO")
+          PY
