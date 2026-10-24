@@ -1,0 +1,33 @@
+name: ITD-02 Yggdrasil native 3-action interface
+on:
+  push:
+    branches: [research/itd02-r1-three-action-native-20261024]
+permissions:
+  contents: read
+jobs:
+  source-only-native-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 16
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify preregistration preceded additive native implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse '85ac9f148122c57f49978cd62d2a5b085f97972b^')" = 'b60453d7a5100eea037dfb77b3660783139d11dd'
+          git merge-base --is-ancestor 85ac9f148122c57f49978cd62d2a5b085f97972b HEAD
+          test "$(git hash-object research/native/itd02/r1/PREREG.json)" = '1a4760d07472af72ea3d8dea6e977b693f5c1450'
+          echo 'ITD02_R1_NATIVE_PROTOCOL_IDENTITY=PASS'
+      - name: Run actual source-owned native three-action qualification and cold process
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s research/native/itd02/r1 -p 'test_native_policy.py' -v
+          echo 'ITD02_R1_NATIVE_SOURCE_ONLY_INTERFACE=PASS'
+          echo 'ITD02_R1_MINIGRID_PROSPECTIVE_SCIENCE=NOT_STARTED'
