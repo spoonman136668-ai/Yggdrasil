@@ -70,7 +70,6 @@ jobs:
           print("MR34J3S_EXACT_SOURCE_AND_NO_ORIGINAL_EXECUTION=PASS")
           PY
           python -B research/mr34j3/verify_admission_snapshot.py
-          python -B research/mr34j3/source_preflight.py --inspect-spec-only
 
       - name: Install wheel-hash-verified candidate dependencies (no MiniGrid)
         shell: bash
@@ -78,6 +77,7 @@ jobs:
           set -euo pipefail
           python -m pip install --disable-pip-version-check --no-cache-dir --require-hashes --only-binary=:all: -r research/mr34j3/requirements-py311-linux-windows-sha256.txt
           python -m pip check
+          python -B research/mr34j3/source_preflight.py --inspect-spec-only
           python - <<'PY'
           from importlib.metadata import version
           expected = {
