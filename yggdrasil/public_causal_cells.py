@@ -57,8 +57,13 @@ class PublicCausalCells:
         trials1 = zero1 + one1
         if not trials0 or not trials1:
             return None
-        # Exact integer cross-products avoid rounding/tuned thresholds.
-        lhs, rhs = one0 * trials1, one1 * trials0
+        # Development hypothesis: a fixed Jeffreys Beta(1/2, 1/2)
+        # posterior mean discourages overconfident decisions from a
+        # sparsely observed arm. This is a conventional causal-control
+        # comparator, not a novel transfer or scientific acceptance claim.
+        # Cross-products preserve exact arithmetic and fixed memory.
+        lhs = (2 * one0 + 1) * (2 * trials1 + 2)
+        rhs = (2 * one1 + 1) * (2 * trials0 + 2)
         if lhs == rhs:
             return None
         return 0 if lhs > rhs else 1
