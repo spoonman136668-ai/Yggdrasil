@@ -46,8 +46,16 @@ class PublicCausalCells:
         cell = self._address(address, retained)
         arm = self._bit(action, "ACTION")
         result = self._bit(public_outcome, "PUBLIC_OUTCOME")
-        old = self._counts[cell][arm][result]
-        self._counts[cell][arm][result] = min(65535, old + 1)
+        # F139 G3 prospective mechanism: when this arm's public evidence
+        # exhausts one unsigned-16-bit budget, consolidate both outcomes by
+        # one bit before incorporating the newly observed consequence.
+        # No cross-context pooling, hidden state, extra memory, or threshold
+        # fitted to a particular task. Exact counts are unchanged pre-cap.
+        counts = self._counts[cell][arm]
+        if counts[0] + counts[1] >= 65535:
+            counts[0] //= 2
+            counts[1] //= 2
+        counts[result] += 1
 
     def choose(self, address: int, *, retained: bool = False) -> int | None:
         """Compare matched empirical rates. Abstain without both arms' evidence."""
