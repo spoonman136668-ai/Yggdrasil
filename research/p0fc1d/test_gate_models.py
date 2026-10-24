@@ -60,7 +60,8 @@ class LearnedGateTests(unittest.TestCase):
 
     def test_cluster_bootstrap_reproducible_no_per_transition_pseudoreplication(self):
         delta=[.1]*12
-        self.assertEqual(g.confidence(delta),[.10000000000000002,.10000000000000002])
+        self.assertAlmostEqual(g.confidence(delta)[0],.1,places=12)
+        self.assertAlmostEqual(g.confidence(delta)[1],.1,places=12)
         with self.assertRaises(ValueError):
             g.confidence([.1]*11)
 
