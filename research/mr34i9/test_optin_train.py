@@ -1,9 +1,16 @@
 """MR34I9 focused synthetic (source-free) validation of opt-in native training."""
 import ast
 from pathlib import Path
+import sys
 import unittest
 
 import numpy as np
+
+# The original native model is pinned in a separate read-only Git checkout.
+original_s4c1=Path(__file__).resolve().parents[3]/"original_s4c1"
+if not original_s4c1.is_dir():
+    raise RuntimeError("MR34I9_PINNED_ORIGINAL_S4C1_CHECKOUT_MISSING")
+sys.path.insert(0,str(original_s4c1))
 
 from research.mr34i9 import optin_train as q
 from research.mr34i7.portable_kernel import portable_decimal
