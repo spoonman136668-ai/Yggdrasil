@@ -1,0 +1,29 @@
+name: ITD-02 R7 nonlinear causal source-only
+on:
+  push:
+    branches: [research/itd02-r7-nonlinear-parents-20261024]
+permissions:
+  contents: read
+jobs:
+  original-native-nonlinear-local-fit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 12
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Frozen original Ygg R7 native source qualifications
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse '01b4d5f8a01b68d4ae63bdbe376e2e807d8ba506^')" = '5fcfa67f041658d34040e05bc0141ce05092c30b'
+          git merge-base --is-ancestor 01b4d5f8a01b68d4ae63bdbe376e2e807d8ba506 HEAD
+          test "$(git hash-object research/native/itd02/r7/PREREG.json)" = '90def4fb42537a214c8aaa6f3ac14b2858498de7'
+          test "$(git hash-object research/native/itd02/r6/composer.py)" = '236386eab51461343d3c2103851ad1de110769a4'
+          PYTHONPATH=. python -B -m unittest discover -s research/native/itd02/r7 -p 'test_learner.py' -v
+          echo 'R7_SOURCE_ONLY_NATIVE_NONLINEAR=PASS'
+          echo 'R7_FUTURE_HELDOUT_EXPOSURE=0'
