@@ -49,6 +49,27 @@ class PublicCausalCells:
         old = self._counts[cell][arm][result]
         self._counts[cell][arm][result] = min(65535, old + 1)
 
+    def observe_adaptive(self, address: int, action: int,
+                         public_outcome: int, *, retained: bool = False) -> None:
+        """Opt-in bounded fast-update memory, with unchanged checkpoint size.
+
+        This development-only candidate tests a different causal hypothesis
+        from permanently saturated counts: once an arm reaches the existing
+        16-bit evidence budget, halve both outcome bins together before
+        admitting the next genuine public consequence. The paired reduction
+        retains approximate empirical odds while making room for unfamiliar
+        later outcomes. It never infers or synthesizes missing observations.
+        The original saturating observe method remains a matched control.
+        """
+        cell = self._address(address, retained)
+        arm = self._bit(action, "ACTION")
+        result = self._bit(public_outcome, "PUBLIC_OUTCOME")
+        zero, one = self._counts[cell][arm]
+        if zero + one >= 65535:
+            self._counts[cell][arm][0] = (zero + 1) // 2
+            self._counts[cell][arm][1] = (one + 1) // 2
+        self._counts[cell][arm][result] += 1
+
     def choose(self, address: int, *, retained: bool = False) -> int | None:
         """Compare matched empirical rates. Abstain without both arms' evidence."""
         cell = self._address(address, retained)
