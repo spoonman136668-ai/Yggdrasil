@@ -1,0 +1,17 @@
+{
+  "schema": "itd02.r4.frozen-native-cue-reward-association-v1",
+  "parent": "fbf78bcc6988755ba0e3e026f06d273839c1fa9f",
+  "hypothesis": "Episode cue memory with reward-based local association predicts delayed choice, compared against equally informed one-bit conventional learner.",
+  "learning": "Retain episode early cue once; FIT selected actual candidate+reward updates Beta Bernoulli counts for match vs mismatch. No hidden success label. Reward updates only selected physical action outcome; persistent state survives cold restart.",
+  "prior": "K5A R3 engineered causal planning tied conventional online planner. This is independent memory problem, not another renamed planner.",
+  "public_data": "Actual original MemoryEnv full grid seen ONLY by the shared route executor and phase-specific cue/branch extractor. Policy sees early cue token at phase 1 and two branch candidate tokens at phase 2, not earlier cue again. No environment success_pos API.",
+  "tests": "No memory before episode, trained real binary feedback and cold restore, invalid feedback atomic, missing cue ablation, same FIT conventional baseline.",
+  "governance": {
+    "scientific_first_use": false,
+    "scientific_accepted": false,
+    "original_R3_unchanged": true,
+    "no_F139_CKB_FSA": true,
+    "no_protected_merge": true,
+    "draft": true
+  }
+}
