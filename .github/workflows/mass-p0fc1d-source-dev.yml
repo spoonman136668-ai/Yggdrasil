@@ -1,0 +1,187 @@
+name: "Mass P0F-C1D source-authentic learned selective history controls"
+on:
+  pull_request:
+    branches: [research/mass-p0fc1c-matched-history-input-20261023]
+    paths:
+      - 'research/p0fc1d/**'
+      - '.github/workflows/mass-p0fc1d-source-dev.yml'
+permissions:
+  contents: read
+concurrency:
+  group: mass-p0fc1d-source-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  BLIS_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+  PYTHONDONTWRITEBYTECODE: '1'
+jobs:
+  original-public-development:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - name: Keep original Git blob identities intact on Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: yggdrasil
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: google-deepmind/pycolab
+          ref: 6504c8065dd5322438f23a2a9026649904f3322a
+          path: external/pycolab
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install original-only source numerical dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==1.26.4 six==1.17.0 psutil==6.1.1 gymnasium==1.1.1 pygame-ce==2.5.3
+      - name: Install Pycolab Windows source dependency
+        if: runner.os == 'Windows'
+        shell: bash
+        run: python -m pip install --disable-pip-version-check windows-curses==2.4.1
+      - name: Verify preregistration FIRST and original source + full neural code unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd yggdrasil
+          prior=4f4bc22812b1fe695e2a909483c0417b87ddffb8
+          first=2e2b6198c6704874d9cd03df29085590d336e453
+          test "$(git rev-parse "${first}^")" = "$prior"
+          git merge-base --is-ancestor "$first" HEAD
+          test "$(git show --format= --name-only "$first")" = 'research/p0fc1d/FROZEN_PROTOCOL.md'
+          for path in research/p0fc1b/full_public_controls.py research/p0fc1c/train_select_only.py research/p0fc1c/FROZEN_TRAIN_SELECT_ABLATION.md; do
+            test "$(git hash-object "$path")" = "$(git rev-parse "$prior:$path")"
+          done
+          actual="$(git diff --name-only "$prior" HEAD | LC_ALL=C sort)"
+          expected="$(printf '%s\n' \
+            '.github/workflows/mass-p0fc1d-source-dev.yml' \
+            'research/p0fc1d/FROZEN_PROTOCOL.md' \
+            'research/p0fc1d/gate_models.py' \
+            'research/p0fc1d/test_gate_models.py' | LC_ALL=C sort)"
+          test "$actual" = "$expected"
+          echo P0FC1D_FIRST_FROZEN_NEW_PATHS_ONLY_PASS
+      - name: Focused source-free numerical and memory isolation controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd yggdrasil
+          python -B -m unittest -v research.p0fc1d.test_gate_models 2>&1 | tee ../p0fc1d-focused.log
+      - name: Verify original Farama source bytes against existing trusted manifest
+        shell: bash
+        run: python -B yggdrasil/research/mr14/verify_farama_native.py --manifest yggdrasil/research/mr14/farama_source_manifest.json --upstream external/minigrid
+      - name: Run one prospective PUBLIC original-source train/select/DEV with frozen candidate
+        shell: bash
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: |
+          set -euo pipefail
+          cd yggdrasil
+          python -B -m research.p0fc1d.gate_models ../external/minigrid ../external/pycolab | tee ../p0fc1d-original-report.log
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          lines=Path("../p0fc1d-original-report.log").read_text().splitlines()
+          saved=[json.loads(x.split("=",1)[1]) for x in lines if x.startswith("P0FC1D_ORIGINAL_SOURCE_GATE=")]
+          assert len(saved)==1
+          o=saved[0]
+          assert o["original_protected_scientific_first_use"] is False
+          assert o["scientific_admission"]=="NOT_QUALIFIED"
+          assert len(o["source_reports"])==2
+          for z in o["source_reports"].values():
+              assert (z["train_original_source_reset_clusters"],z["selection_original_source_reset_clusters"],z["dev_original_source_reset_clusters"])==(24,6,12)
+              assert set(z["arm_reports"])=={"history_masked","history_visible","trained_history_shrink","learned_two_gate"}
+              assert z["all_models_original_public_source_train_select_dev_same"]
+              assert z["arm_reports"]["learned_two_gate"]["trainable_parameters_including_gates"]==z["arm_reports"]["history_visible"]["trainable_parameters_including_gates"]+2
+          print("P0FC1D_SOURCE_PUBLIC_DEV_RECONCILED_NO_SCIENCE_PROMOTION")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mass-p0fc1d-${{ matrix.os }}-source-dev
+          path: |
+            p0fc1d-focused.log
+            p0fc1d-original-report.log
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Reject source or existing model mutation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C yggdrasil diff --exit-code
+          git -C external/minigrid diff --exit-code
+          git -C external/pycolab diff --exit-code
+          test -z "$(git -C yggdrasil status --porcelain)"
+          test -z "$(git -C external/minigrid status --porcelain)"
+          test -z "$(git -C external/pycolab status --porcelain)"
+          echo P0FC1D_SOURCE_READONLY_PASS
+
+  reconcile-original-sources:
+    needs: original-public-development
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: mass-p0fc1d-*-source-dev
+          path: evidence
+      - name: Compare original source event identities, outcomes and trained model numerics
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,math,pathlib
+          results={}
+          for os in ("ubuntu-24.04","windows-2025"):
+              p=pathlib.Path("evidence")/f"mass-p0fc1d-{os}-source-dev"/"p0fc1d-original-report.log"
+              records=[json.loads(x.split("=",1)[1]) for x in p.read_text().splitlines()
+                       if x.startswith("P0FC1D_ORIGINAL_SOURCE_GATE=")]
+              assert len(records)==1
+              results[os]=records[0]
+          ubuntu,windows=results.values()
+          assert ubuntu["first_protocol_commit"]==windows["first_protocol_commit"]
+          assert ubuntu["original_protected_scientific_first_use"] is windows["original_protected_scientific_first_use"] is False
+          assert ubuntu["development_accuracy_screen_signal"]==windows["development_accuracy_screen_signal"]
+          for key in ubuntu["source_reports"]:
+              a,b=ubuntu["source_reports"][key],windows["source_reports"][key]
+              for fld in ("source_commit_sha","fit_source_sha256","selection_source_sha256","dev_source_sha256",
+                          "train_original_source_actions","select_original_source_actions","dev_original_source_actions",
+                          "dev_accuracy_boundary_met","best_audit_only_conventional_arm"):
+                  assert a[fld]==b[fld],(key,fld)
+              for arm in a["arm_reports"]:
+                  x,y=a["arm_reports"][arm],b["arm_reports"][arm]
+                  assert x["trainable_parameters_including_gates"]==y["trainable_parameters_including_gates"]
+                  assert x["training_updates"]==y["training_updates"]
+                  assert x["checkpoint_bytes"]==y["checkpoint_bytes"]
+                  for z in (x,y):
+                      digest=z["checkpoint_sha256"]
+                      assert len(digest)==64 and all(c in "0123456789abcdef" for c in digest)
+                  for fld in ("original_fit_source_loss_nats_complete_frame",
+                              "original_select_source_loss_nats_complete_frame",
+                              "original_public_dev_log_loss_nats_complete_frame"):
+                      assert math.isfinite(x[fld]) and abs(x[fld]-y[fld])<.01,(key,arm,fld)
+                  for xg,yg in zip(x["history_gate_values_after_fit"],y["history_gate_values_after_fit"]):
+                      assert abs(xg-yg)<.01
+          print("P0FC1D_INDEPENDENT_ORIGINAL_SOURCE_CROSS_OS=PASS")
+          print("P0FC1D_PROTECTED_FIRST_USE=NOT_CONSUMED")
+          PY
