@@ -56,7 +56,28 @@ class PublicCausalCells:
         trials0 = zero0 + one0
         trials1 = zero1 + one1
         if not trials0 or not trials1:
-            return None
+            # Experimental partial pooling: borrow only public outcomes
+            # from other addresses in this SAME active/retained tier.
+            # Confounding across contexts may make this worse than abstention.
+            start = self.ACTIVE_SLOTS if retained else 0
+            limit = self.RETAINED_SLOTS if retained else self.ACTIVE_SLOTS
+            pooled0 = pooled1 = 0
+            for other in range(start, start + limit):
+                if other == cell:
+                    continue
+                (n00, n01), (n10, n11) = self._counts[other]
+                if not trials0:
+                    pooled0 += n00
+                    one0 += n01
+                if not trials1:
+                    pooled1 += n10
+                    one1 += n11
+            if not trials0:
+                trials0 = pooled0 + one0
+            if not trials1:
+                trials1 = pooled1 + one1
+            if not trials0 or not trials1:
+                return None
         # Exact integer cross-products avoid rounding/tuned thresholds.
         lhs, rhs = one0 * trials1, one1 * trials0
         if lhs == rhs:
