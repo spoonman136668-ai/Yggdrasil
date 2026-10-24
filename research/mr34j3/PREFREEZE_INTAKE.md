@@ -4,14 +4,13 @@
 This additive source-intake record is stacked on Yggdrasil MR34J2 PR #491,
 exact parent commit `73826ea76bd6944fb00d0d127d28c8e74cb4d98d`.
 It creates no workflow, runner, schedule, queue, research reservation, operating
-controller, accepted reference or scientific result. **The implementation is
-not included in this commit and is not repository-frozen.** Do not dispatch it.
+controller, accepted reference or scientific result. **The source-free implementation is staged in this draft branch, but is not CKB-plane-qualified or accepted as an immutable original-source execution package.** Do not dispatch it.
 
 ## Proposed original source, budgets and controls
 
 Original upstream: `Farama-Foundation/Minigrid@7f5853792ea7f04f75614661006d87fcf949f26d`;
-`MiniGrid-MemoryS7-v0`, public observation only. The separate local
-MR34J3N candidate has 55 passing source-free tests; that result does not
+`MiniGrid-MemoryS7-v0`, public observation only. The staged
+MR34J3N candidate has 55 passing local source-free tests; that result does not
 qualify the upstream simulator, operating dependencies, or source ledger.
 
 Proposed disjoint seed values: preflight 16, FIT 768, DEV 128, HELD 256,
@@ -30,9 +29,9 @@ objects may influence a decision. All reset/step costs are charged.
 
 ## Source-free code identity manifest — candidate only
 
-These are SHA-256 hashes of separate local files, NOT files committed by
-this intake-only PR. A future authorized source freeze must transfer those
-exact bytes or record a fully reviewed replacement and requalify.
+These are SHA-256 hashes of 15 files now staged in `research/mr34j3/`.
+Staging is **not** an authoritative CKB-plane source freeze. The owner must
+independently verify the exact future execution commit and all bytes.
 
 | Candidate file | SHA-256 |
 |---|---|
@@ -60,7 +59,8 @@ source checkout/import/reset. There is NO installed valid admission verifier.
 ## Hard admission blockers observed 2026-10-24
 
 - CKB-plane R246 draft PR #630 at `652de120d73934e3dc148bc8c07c07b3fcc11440`
-  is **unexecuted, proposal-only principal-comparator source**.
+  remains proposal-only; R247 successfully ran a read-only principal audit but
+  did **not** authenticate operating tokens. R248 remains a separate draft.
 - CKB R242 original operating evidence recorded `FILE_ADD_FILE=GRANTED`
   to the ordinary research worker in both proxy response directories.
 - The original Wingless and Yggdrasil proxy writer blob
@@ -77,8 +77,8 @@ source checkout/import/reset. There is NO installed valid admission verifier.
   preflight authorization have not happened.
 
 **Only CKB-plane's existing sole authority may admit or consume source.**
-This draft intake MUST remain unmerged and non-operational; later research
-source files must be reviewed and frozen before first use. No FORGE,
+This draft intake MUST remain unmerged and non-operational; staged research
+source files must be independently reviewed and owner-frozen before first use. No FORGE,
 KTRADE, Wingless autonomy, active Yggdrasil feeder, CKB queue, credentials,
 broker, or runtime controls are changed by this source-only PR.
 
@@ -107,8 +107,8 @@ The current CKB-plane operating research write proxy remains unsigned and
 its response-directory worker create-file right is not confined to a
 separately authenticated writer. No real CKB-plane lease/authority can be
 inferred from the test or from a repo PR. The source-free MR34J3N candidate
-with 55 passing offline tests remains a **separate local artifact**, not
-committed by this source-intake branch.
+with 55 passing offline tests is **staged in this draft branch**; neither
+the staging commit nor the 55 offline tests establish scientific admission.
 
 **Fail-closed science decision:** source attempts `0`; authorized original
 MiniGrid preflight `NO`; authoritative source/seed/arm/host reservation `NO`;
@@ -117,3 +117,30 @@ protected scientific advancement `NO`. Next owner-controlled step is
 operating job/process token and ACL separation with signed response and
 durable one-use claim verification, followed by exact source integration,
 hash-locked runner install, affected tests and a single full regression.
+
+## MR34J3R — source-only staged candidate; original execution disabled
+
+The MR34J3N source-free candidate was added as 19 files on draft PR #493 at
+commit `653b1f99ef834de0c51d2241cf13ecae098f9700`, stacked on
+MR34J2 PR #491 exact head `73826ea76bd6944fb00d0d127d28c8e74cb4d98d`.
+This includes all 15 hash-manifest entries, the local HOLD audit, its two
+required input receipts, test modules, and the candidate dependency lock.
+No original simulator was installed or invoked by the local qualification.
+
+To reproduce **source-free** validation from the repo root without installing
+Gymnasium/MiniGrid or accessing original source:
+
+```bash
+python -B -m unittest discover -s research/mr34j3 -p 'test_*.py' -q
+python -B research/mr34j3/verify_admission_snapshot.py
+python -B research/mr34j3/source_preflight.py --inspect-spec-only
+```
+
+Local standalone reproduction: **55/55 tests PASS**, 15/15 manifest SHA-256
+PASS, admission snapshot returns `status=HOLD`, `execution_permission=false`.
+This is **not** the required two-host CI, source-import validation, final
+full native regression, or live scientific acceptance. Original-source CLI
+intentionally fails `CKB_OWNER_LEASE_VERIFIER_NOT_INSTALLED_NO_SOURCE_EXECUTION`
+before source checkout/import/reset. Do not remove or bypass this fail-closed
+barrier without independently authenticated CKB-plane authorization and
+replacement verifier tests. No automated workflow or runner change is added.
