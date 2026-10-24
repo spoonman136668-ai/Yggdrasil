@@ -140,7 +140,7 @@ class GridColony:
             if hashlib.sha256(canonical(data)).hexdigest()!=wire["sha256"]:
                 raise ValueError("Y_R1_CHECKPOINT_TAMPER")
             if (set(data)!={"schema","feedback_updates","cells"} or
-                data["schema"]!=SCHEMA or set(data["cells"])=={"0","1","2"} is False):
+                data["schema"]!=SCHEMA or set(data["cells"])!={"0","1","2"}):
                 raise ValueError("Y_R1_CHECKPOINT_SOURCE_IDENTITY")
             n=data["feedback_updates"]
             if type(n) is not int or n<0 or n>=2**63:
