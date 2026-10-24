@@ -1,0 +1,33 @@
+name: ITD-02 R2 Yggdrasil original causal affordance qualification
+on:
+  push:
+    branches: [research/itd02-r2-observed-affordance-20261024]
+permissions:
+  contents: read
+jobs:
+  source-only-native-learned-action-outcomes:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 12
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify frozen prereg and original immutable native R1
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse '709afb418426d118f02dce28c6163a3bfe8140a7^')" = '1b042d6bf4832d885d80ef73f3ab29d8a600bfe2'
+          git merge-base --is-ancestor 709afb418426d118f02dce28c6163a3bfe8140a7 HEAD
+          test "$(git hash-object research/native/itd02/r2/PREREG.json)" = 'fea2a2a4ca84cdce2f802a852d160d160d5cdf68'
+          echo 'ITD02_R2_PRE_SCIENCE_FREEZE=PASS'
+      - name: Native original learned-only affordance tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s research/native/itd02/r2 -p 'test_affordance_cells.py' -v
+          echo 'ITD02_R2_NATIVE_SOURCE_ONLY=PASS'
+          echo 'ITD02_R2_FRESH_MINIGRID_EPISODES=0'
