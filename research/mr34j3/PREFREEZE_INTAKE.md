@@ -81,3 +81,39 @@ This draft intake MUST remain unmerged and non-operational; later research
 source files must be reviewed and frozen before first use. No FORGE,
 KTRADE, Wingless autonomy, active Yggdrasil feeder, CKB queue, credentials,
 broker, or runtime controls are changed by this source-only PR.
+
+## MR34J3Q — independently checked R247 operating receipt (nonadmitting)
+
+CKB-plane R247 [read-only qualified Actions run 40087187298](https://github.com/spoonman136668-ai/ckb-plane/actions/runs/40087187298)
+ran from exact proposal head `3b61075924dd80ba0b1e8ed08bd89380a009de42`.
+Both preflight and existing Windows-host observation jobs completed successfully.
+Original host log job `120852458508` reports:
+
+- `R246_WINGLESS_SERVICE_BINDING_CLASS=CANDIDATE_ONLY`
+- `R246_YGGDRASIL_SERVICE_BINDING_CLASS=CANDIDATE_ONLY`
+- `R246_WINGLESS_SERVICE_VS_RESEARCH_TOKEN=UNKNOWN`
+- `R246_YGGDRASIL_SERVICE_VS_RESEARCH_TOKEN=UNKNOWN`
+- `R246_PROXY_SERVICES_SAME_PRINCIPAL=UNKNOWN`
+- `R246_GITHUB_JOB_WORKER_TOKEN_ATTESTED=FALSE`
+- `R246_ACTUAL_PROXY_WRITER_PROCESS_ATTESTED=FALSE`
+- `R246_R242_ORDINARY_RESEARCH_CREATE_FILE=GRANTED`
+- `R246_UNSIGNED_RESPONSE_ORIGIN=UNTRUSTED`
+- `R247_REAL_JOB_TOKEN_PROOF=NOT_ATTESTED`
+- `R247_LIVE_REPAIR=NOT_EXECUTED`
+- `R247_SCIENTIFIC_FIRST_USE=BLOCKED`
+
+**This successful read-only test proves uncertainty, not isolation.**
+The current CKB-plane operating research write proxy remains unsigned and
+its response-directory worker create-file right is not confined to a
+separately authenticated writer. No real CKB-plane lease/authority can be
+inferred from the test or from a repo PR. The source-free MR34J3N candidate
+with 55 passing offline tests remains a **separate local artifact**, not
+committed by this source-intake branch.
+
+**Fail-closed science decision:** source attempts `0`; authorized original
+MiniGrid preflight `NO`; authoritative source/seed/arm/host reservation `NO`;
+operating writer custody `UNKNOWN`; package integration `NOT QUALIFIED`;
+protected scientific advancement `NO`. Next owner-controlled step is
+operating job/process token and ACL separation with signed response and
+durable one-use claim verification, followed by exact source integration,
+hash-locked runner install, affected tests and a single full regression.
