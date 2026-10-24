@@ -88,9 +88,12 @@ def audit_source(raw):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--upstream", type=Path, required=True)
+    ap.add_argument("--output", type=Path, required=True)
     args = ap.parse_args()
     result = audit_source(original_bytes(args.upstream))
-    print(json.dumps({"upstream_commit": COMMIT, "upstream_blob": BLOB, **result}, sort_keys=True))
+    payload = (json.dumps({"upstream_commit": COMMIT, "upstream_blob": BLOB, **result},
+                          sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
+    args.output.write_bytes(payload)
 
 
 if __name__ == "__main__":
