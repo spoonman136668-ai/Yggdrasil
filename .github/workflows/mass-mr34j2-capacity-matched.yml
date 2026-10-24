@@ -1,0 +1,209 @@
+name: Mass MR34J2 capacity-matched original public representation DEV
+on:
+  pull_request:
+    branches: [research/mass-mr34j1-source-information-20261024]
+    paths:
+      - 'research/mr34j2/**'
+      - '.github/workflows/mass-mr34j2-capacity-matched.yml'
+permissions:
+  contents: read
+concurrency:
+  group: mass-mr34j2-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  BLIS_NUM_THREADS: '1'
+  VECLIB_MAXIMUM_THREADS: '1'
+  SDL_VIDEODRIVER: dummy
+  SDL_AUDIODRIVER: dummy
+
+jobs:
+  authentic-source-fixed-capacity:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Preserve upstream source Git bytes under Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: research
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: sparisi/gym_gridworlds
+          ref: c6d406680d552489c3230dec9714b066c7fd303d
+          path: external/gym_gridworlds
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Pin original public source-only numeric dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==1.26.4 gymnasium==1.1.1 pygame-ce==2.5.3 six==1.17.0 psutil==6.1.1
+      - name: Verify first frozen protocol, exact parent and additive research-only scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research
+          parent=a8b81e674b6d583549a5c80bede3a4ee5998665f
+          first=789f122b92c8cc2ae644154daeafb135a27d1045
+          test "$(git rev-parse "${first}^")" = "$parent"
+          git merge-base --is-ancestor "$first" HEAD
+          test "$(git show --format= --name-only "$first")" = 'research/mr34j2/FROZEN_PROTOCOL.md'
+          for p in research/mr34j1/public_information.py research/mr34j0/third_transfer.py research/mr34i/admit_gridworld.py; do
+            test "$(git hash-object "$p")" = "$(git rev-parse "$parent:$p")"
+          done
+          changed="$(git diff --name-only "$parent" HEAD | LC_ALL=C sort)"
+          allowed="$(printf '%s\n' \
+            '.github/workflows/mass-mr34j2-capacity-matched.yml' \
+            'research/mr34j2/FROZEN_PROTOCOL.md' \
+            'research/mr34j2/matched_public.py' \
+            'research/mr34j2/test_matched_public.py' | LC_ALL=C sort)"
+          test "$changed" = "$allowed"
+          echo MR34J2_FROZEN_FIRST_GIT_CUSTODY_PASS
+      - name: Validate source-free public 23D injectivity and matched train coefficients
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research
+          python -B -m unittest -v research.mr34j2.test_matched_public 2>&1 | tee ../mr34j2-focused.log
+      - name: Collect only new genuine original source public FIT and disjoint DEV once
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd research
+          python -B -m research.mr34j2.matched_public ../external/gym_gridworlds ../mr34j2-source.json 2>&1 | tee ../mr34j2-original.log
+          python - <<'PY'
+          import json,pathlib,math
+          x=json.loads(pathlib.Path("../mr34j2-source.json").read_text())
+          assert x["source_original_science_protected_first_use"] is False
+          assert x["models_not_refit_on_HELD"] is True
+          assert x["original_native_recurrent_learning_retested"] is False
+          assert x["scientific_admission"]=="NO_GO"
+          fit=x["source_original_fresh_FIT_receipt"]
+          held=x["source_original_fresh_HELD_receipt"]
+          assert len(fit["original_source_episode_receipts"])==32
+          assert len(held["original_source_episode_receipts"])==16
+          assert fit["public_unicode_changed_action_count"]>0
+          assert held["public_unicode_changed_action_count"]>0
+          assert set(fit["original_reset_seeds"]).isdisjoint(held["original_reset_seeds"])
+          assert len(x["FIT_only_public_unicode_vocabulary"])<=5
+          assert len(x["HELD_original_source_eight_seed_mean_Brier"])==7
+          for k,v in x["trainable_model_parameter_counts"].items():
+              if k!="categorical_onehot_full_reference":
+                  assert v==192,(k,v)
+          for k,z in x["HELD_original_source_eight_seed_mean_Brier"].items():
+              assert len(z["genuine_original_held_seed_cluster_Brier"])==8
+              assert math.isfinite(z["source_HELD_mean_eight_independent_seed_Brier"])
+          assert len(x["HELD_original_source_frozen_matched_capacity_screen"])==2
+          print("MR34J2_ORIGINAL_HELD_DEVELOPMENT_MODELS_SEALED_AND_SOURCE_AUTHENTIC")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mass-mr34j2-${{ matrix.os }}
+          path: |
+            mr34j2-focused.log
+            mr34j2-original.log
+            mr34j2-source.json
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Verify original upstream source and research checkout unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          for d in research external/gym_gridworlds; do
+            git -C "$d" diff --exit-code
+            test -z "$(git -C "$d" status --porcelain)"
+          done
+          echo MR34J2_ORIGINAL_SOURCE_AND_ALL_RESEARCH_SOURCE_UNTOUCHED
+
+  independent-original-source-judge:
+    needs: authentic-source-fixed-capacity
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: mass-mr34j2-*
+          path: evidence
+      - name: Reconcile original source, exact 192 trainable parameters and paired cluster result
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,math
+          a=json.loads((pathlib.Path("evidence")/"mass-mr34j2-ubuntu-24.04"/"mr34j2-source.json").read_text())
+          b=json.loads((pathlib.Path("evidence")/"mass-mr34j2-windows-2025"/"mr34j2-source.json").read_text())
+          assert a["scientific_admission"]==b["scientific_admission"]=="NO_GO"
+          assert a["source_original_science_protected_first_use"]==b["source_original_science_protected_first_use"]==False
+          for field in ("source_original_fresh_FIT_receipt","source_original_fresh_HELD_receipt"):
+              x,y=a[field],b[field]
+              for k in ("original_authored_source_git_SHA","original_reset_seeds",
+                        "original_source_episode_receipts","original_real_source_receipt_sha256",
+                        "total_genuine_source_actions","public_unicode_changed_action_count"):
+                  assert x[k]==y[k],("ORIGINAL_SOURCE_CUSTODY_DRIFT",field,k)
+          for field in ("FIT_only_public_unicode_vocabulary","FIT_only_symbol2d_coordinates",
+                        "FIT_only_coordinate_assignment_original","FIT_only_coordinate_assignment_alternative",
+                        "FIT_original_public_8bit_targets_sha256",
+                        "HELD_original_public_8bit_targets_sha256",
+                        "FIT_original_public_features_sha256","HELD_original_public_features_sha256",
+                        "trainable_model_parameter_counts",
+                        "HELD_original_source_OOV_public_cell_count"):
+              assert a[field]==b[field],("SOURCE_PUBLIC_ENCODER_OR_TARGET_DRIFT",field)
+          names=a["HELD_original_source_eight_seed_mean_Brier"]
+          deltas={}
+          for name in names:
+              d=a["HELD_original_source_eight_seed_mean_Brier"][name]
+              e=b["HELD_original_source_eight_seed_mean_Brier"][name]
+              deltas[name]=max(abs(d["genuine_original_held_seed_cluster_Brier"][seed]-
+                                   e["genuine_original_held_seed_cluster_Brier"][seed])
+                               for seed in d["genuine_original_held_seed_cluster_Brier"])
+          reproducible=all(math.isfinite(z) and z<=1e-5 for z in deltas.values())
+          first=a["HELD_original_source_frozen_matched_capacity_screen"]
+          second=b["HELD_original_source_frozen_matched_capacity_screen"]
+          positive=(reproducible and a["HELD_original_both_symbol_assignments_development_screen_pass"]
+                    and b["HELD_original_both_symbol_assignments_development_screen_pass"]
+                    and all(first[k]["frozen_matched_capacity_source_DEV_screen_pass"]
+                            and second[k]["frozen_matched_capacity_source_DEV_screen_pass"]
+                            for k in ("symbol23_coordinates_A","symbol23_coordinates_B")))
+          verdict=("MR34J2_CAPACITY_MATCHED_REPRESENTATION_DEV_SIGNAL_NOT_SCIENCE"
+                   if positive else "MR34J2_CAPACITY_MATCHED_REPRESENTATION_DEV_NO_GO")
+          report={
+              "original_third_source_git_sha":a["unchanged_independent_original_upstream_git"],
+              "FIT_original_event_sha":a["source_original_fresh_FIT_receipt"]["original_real_source_receipt_sha256"],
+              "HELD_original_event_sha":a["source_original_fresh_HELD_receipt"]["original_real_source_receipt_sha256"],
+              "FIT_original_action_count":a["source_original_fresh_FIT_receipt"]["total_genuine_source_actions"],
+              "HELD_original_action_count":a["source_original_fresh_HELD_receipt"]["total_genuine_source_actions"],
+              "original_HELD_independent_reset_seed_count":8,
+              "FIT_only_public_codepoint_dictionary":a["FIT_only_public_unicode_vocabulary"],
+              "HELD_original_unseen_source_codepoints":a["HELD_original_source_OOV_public_cell_count"],
+              "all_model_matched_23D_trainable_coefficient_counts":a["trainable_model_parameter_counts"],
+              "source_HELD_cluster_Brier_ubuntu":{n:record["source_HELD_mean_eight_independent_seed_Brier"] for n,record in names.items()},
+              "source_HELD_cluster_Brier_windows":{n:record["source_HELD_mean_eight_independent_seed_Brier"] for n,record in b["HELD_original_source_eight_seed_mean_Brier"].items()},
+              "per_model_per_seed_OS_Brier_max_abs_delta":deltas,
+              "source_cross_OS_scores_reproducible":reproducible,
+              "frozen_mapping_A_screen_each_OS":[first["symbol23_coordinates_A"],second["symbol23_coordinates_A"]],
+              "frozen_mapping_B_screen_each_OS":[first["symbol23_coordinates_B"],second["symbol23_coordinates_B"]],
+              "capacity_matched_both_mapping_DEV_signal":bool(positive),
+              "does_NOT_requalify_native_MR34J0":True,
+              "original_source_unfamiliar_protected_first_use":False,
+              "original_G29_native_integration":"FAIL_CLOSED",
+              "scientific_admission":"NO_GO"
+          }
+          print("MR34J2_GENUINE_ORIGINAL_CROSS_OS_CAPACITY_AUDIT="+json.dumps(report,sort_keys=True))
+          print("MR34J2_FROZEN_TERMINAL_DISPOSITION="+verdict)
+          print("MR34J2_PROTECTED_FIRST_USE_ZERO")
+          PY
