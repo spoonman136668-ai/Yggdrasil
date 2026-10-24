@@ -12,7 +12,7 @@ def truth(seed,action,x):
 
 def trained():
  m=NonlinearLocalLearner()
- for seed in (11,13):
+ for seed in (11,12):
   for state in random.Random(seed).sample(range(256),192):
    for action in range(3):m.observe(str(seed),action,state,truth(seed,action,state))
  m.fit()
@@ -29,7 +29,7 @@ class R7Tests(unittest.TestCase):
  def test_cross_world_different(self):
   m=trained()
   self.assertNotEqual([m.predict("11",i,[0,1]) for i in range(20)],
-                      [m.predict("13",i,[0,1]) for i in range(20)])
+                      [m.predict("12",i,[0,1]) for i in range(20)])
  def test_invalid_source_is_atomic(self):
   m=NonlinearLocalLearner();m.observe("w",0,7,3)
   for args in (("w",0,7,2),("w",4,1,3),("w",1,300,3)):
