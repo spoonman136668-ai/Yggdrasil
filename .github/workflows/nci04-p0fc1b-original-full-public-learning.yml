@@ -1,0 +1,156 @@
+name: P0F-C1B Original Complete-Public Learned Conventional Controls
+on:
+  push:
+    branches:
+      - research/p0fc1b-full-public-learned-controls-20261023
+permissions:
+  contents: read
+concurrency:
+  group: p0fc1b-source-controls-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  BLIS_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+jobs:
+  source-native-conventional:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - name: Retain source original Git blob identities on Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --global core.autocrlf false
+      - name: Checkout isolated prospective P0F-C1B Yggdrasil source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: yggdrasil
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Checkout authentic pinned Farama MiniGrid
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          persist-credentials: false
+      - name: Checkout separately authored pinned original DeepMind Pycolab
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: google-deepmind/pycolab
+          ref: 6504c8065dd5322438f23a2a9026649904f3322a
+          path: external/pycolab
+          persist-credentials: false
+      - name: Pinned Python runtime
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install pinned original only source and numerical dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==1.26.4 six==1.17.0 psutil==6.1.1 gymnasium==1.1.1 pygame-ce==2.5.3
+      - name: Pycolab original curses compatibility Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: python -m pip install --disable-pip-version-check windows-curses==2.4.1
+      - name: Verify frozen protocol FIRST, unchanged predecessor and four additive files
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd yggdrasil
+          first=614b807968f52fd3252a5c7618382f99e8af4f87
+          prior=fc303bebe75bfa274dee9a7ab8e7467b6cc08f28
+          test "$(git rev-parse "$first^")" = "$prior"
+          test "$(git show --format= --name-only "$first")" = 'research/p0fc1b/FROZEN_TRAINED_CONVENTIONAL_CONTRACT.json'
+          git diff --name-only "$prior" HEAD | python -B -c 'import sys;actual=set(sys.stdin.read().splitlines());want={"research/p0fc1b/FROZEN_TRAINED_CONVENTIONAL_CONTRACT.json","research/p0fc1b/full_public_controls.py","research/p0fc1b/test_full_public_controls.py",".github/workflows/nci04-p0fc1b-original-full-public-learning.yml"};assert actual==want,(actual,want)'
+          python -B -c "import ast,pathlib;[ast.parse(pathlib.Path(p).read_text()) for p in ('research/p0fc1b/full_public_controls.py','research/p0fc1b/test_full_public_controls.py')]"
+      - name: Run source-free real learned-network and frozen-role tests BEFORE original source
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          cd yggdrasil
+          python -B -m unittest -v research.p0fc1b.test_full_public_controls
+      - name: Verify independently authored original source bytes
+        shell: bash
+        run: python -B yggdrasil/research/mr14/verify_farama_native.py --manifest yggdrasil/research/mr14/farama_source_manifest.json --upstream external/minigrid
+      - name: Original source actions and full frame trained conventional comparison
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: |
+          set -euo pipefail
+          cd yggdrasil
+          python -B -m research.p0fc1b.full_public_controls ../external/minigrid ../external/pycolab | tee ../p0fc1b-original-report.log
+          grep -q '^P0FC1B_ORIGINAL_LEARNED_FULL_PUBLIC_CONTROLS=' ../p0fc1b-original-report.log
+      - name: Fail closed on source mutation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C yggdrasil diff --exit-code
+          git -C external/minigrid diff --exit-code
+          git -C external/pycolab diff --exit-code
+          test -z "$(git -C yggdrasil status --porcelain)"
+          test -z "$(git -C external/minigrid status --porcelain)"
+          test -z "$(git -C external/pycolab status --porcelain)"
+      - name: Preserve immutable source and learning results including negative cases
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p0fc1b-original-${{ matrix.os }}
+          path: p0fc1b-original-report.log
+          if-no-files-found: warn
+          retention-days: 30
+
+  independently-reconcile-two-oses:
+    needs: source-native-conventional
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Download preserved complete source reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: p0fc1b-original-*
+          path: evidence
+      - name: Verify real source roles and separately fitted model stability
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib
+          data={}
+          for os in ("ubuntu-24.04","windows-2025"):
+              p=pathlib.Path("evidence")/("p0fc1b-original-"+os)/"p0fc1b-original-report.log"
+              lines=p.read_text(encoding="utf-8").splitlines()
+              m=[s.split("=",1)[1] for s in lines if s.startswith("P0FC1B_ORIGINAL_LEARNED_FULL_PUBLIC_CONTROLS=")]
+              assert len(m)==1,(os,len(m))
+              data[os]=json.loads(m[0])
+          a,b=data.values()
+          assert a["frozen_contract_sha256"]==b["frozen_contract_sha256"]
+          assert a["first_use_consumed"] is False and b["first_use_consumed"] is False
+          assert set(a["source_reports"])==set(b["source_reports"])
+          for src in a["source_reports"]:
+              aa,bb=a["source_reports"][src],b["source_reports"][src]
+              for k in ("original_train_episode_digest","original_selection_episode_digest",
+                        "original_dev_episode_digest","original_original_source_commit_sha"):
+                  assert aa[k]==bb[k],(src,k)
+              assert aa["public_dev_disposition"]==bb["public_dev_disposition"]
+              for k in ("paired_reset_seed_mean_full_frame_history_gain_nats",
+                        "current_model_original_dev_mean_full_frame_logloss_nats",
+                        "historical_model_original_dev_mean_full_frame_logloss_nats"):
+                  assert abs(aa[k]-bb[k])<.002,(src,k,aa[k],bb[k])
+              for arm in ("current_full_public_model","historical_two_step_full_public_model"):
+                  x,y=aa[arm],bb[arm]
+                  assert x["selected_learning_rate"]==y["selected_learning_rate"]
+                  assert x["selected_initialization_seed"]==y["selected_initialization_seed"]
+          print("P0FC1B_INDEPENDENT_ORIGINAL_CROSS_OS=PASS_PUBLIC_DEV_ONLY")
+          print("P0FC1B_PROTECTED_SCIENTIFIC_FIRST_USE=NOT_CONSUMED")
+          PY
