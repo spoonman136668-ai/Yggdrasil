@@ -1,0 +1,223 @@
+name: Mass MR34I10 deterministic Q160 fast source-native full-training screen
+on:
+  pull_request:
+    branches: [repair/mr34i9-optin-full-train-portability-20261023]
+    paths:
+      - 'research/mr34i10/**'
+      - '.github/workflows/mass-mr34i10-fastportable-original.yml'
+permissions:
+  contents: read
+concurrency:
+  group: mass-mr34i10-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  BLIS_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+  VECLIB_MAXIMUM_THREADS: '1'
+  SDL_VIDEODRIVER: dummy
+  SDL_AUDIODRIVER: dummy
+jobs:
+  original-source-training-frozen-q160:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+        repeat: [1, 2]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - name: Preserve exact Git original source blobs on Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: audit
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 8e1561eb1a542e21307bac669c42435cf48e59bd
+          path: original_s4c1
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: google-deepmind/pycolab
+          ref: 6504c8065dd5322438f23a2a9026649904f3322a
+          path: external/pycolab
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Original source and numerical dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==1.26.4 gymnasium==1.1.1 pygame-ce==2.5.3 six==1.17.0 psutil==6.1.1
+      - name: Original Windows curses for Pycolab
+        if: runner.os == 'Windows'
+        shell: bash
+        run: python -m pip install --disable-pip-version-check windows-curses==2.4.1
+      - name: Verify FIRST frozen contract, exact parent and unchanged kernels
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd audit
+          parent=fb09dd537183bb56ce10a96c27695883fe32cf52
+          first=ca07d425f16943ecfc3a3731119236465dcbbe22
+          test "$(git rev-parse "${first}^")" = "$parent"
+          git merge-base --is-ancestor "$first" HEAD
+          test "$(git show --format= --name-only "$first")" = "research/mr34i10/FROZEN_PROTOCOL.md"
+          for f in research/mr34i9/optin_train.py research/mr34i7/portable_kernel.py research/mr34i4/kernel_probe.py; do
+            test "$(git hash-object "$f")" = "$(git rev-parse "$parent:$f")"
+          done
+          actual="$(git diff --name-only "$parent" HEAD | LC_ALL=C sort)"
+          expected="$(printf '%s\n' \
+            '.github/workflows/mass-mr34i10-fastportable-original.yml' \
+            'research/mr34i10/FROZEN_PROTOCOL.md' \
+            'research/mr34i10/fixed160_train.py' \
+            'research/mr34i10/test_fixed160.py' | LC_ALL=C sort)"
+          test "$actual" = "$expected"
+          echo MR34I10_PRECODE_FIRST_AND_FROZEN_SOURCE_SCOPE_PASS
+      - name: Focused source-free fixed160 and synthetic native gradient/40epoch tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd audit
+          python -B -m unittest -v research.mr34i10.test_fixed160 2>&1 | tee ../mr34i10-focused.log
+      - name: One genuine source TRAIN-only prospective fixedpoint numeric qualification
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd audit
+          python -B -m research.mr34i10.fixed160_train ../original_s4c1 ../external/minigrid ../external/pycolab ../mr34i10-receipt.json 2>&1 | tee ../mr34i10-original.log
+          python - <<'PY'
+          import json,pathlib
+          x=json.loads(pathlib.Path("../mr34i10-receipt.json").read_text())
+          assert x["genuine_original_TRAIN_ONLY"] and x["no_held_or_protected_scientific_first_use"]
+          assert not x["native_production_or_earlier_numeric_kernel_modified"]
+          assert x["frozen_Q160_iterations"]==59
+          assert len(x["source_reports"])==2
+          for name,z in x["source_reports"].items():
+              assert z["original_source_TRAIN_reset_count"]==20
+              assert z["original_source_DEV_or_scientific_first_use_actions"]==0
+              assert z["original_imported_trainer_is_bit_equal_to_engineering_copy_same_host"]
+              for field in ("original_unchanged_native_40epoch_trace",
+                            "portable_decimal48_reference_40epoch_trace",
+                            "candidate_fixed160_40epoch_trace"):
+                  rep=z[field]
+                  assert rep["source_actual_training_updates"]==800
+                  assert len(rep["original_train_only_epoch_Brier"])==40
+                  assert rep["source_native_gradient_finite_difference"]["passed"]
+              assert z["candidate_fixed160_40epoch_trace"]["exact_native_45_weights"]
+              assert len(z["original_490_source_neutral_numeric_fidelity"])==3
+          print("MR34I10_ORIGINAL_SOURCE_ALL_THREE_NATIVE_40EPOCHS_FINISHED")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mass-mr34i10-${{ matrix.os }}-${{ matrix.repeat }}
+          path: |
+            mr34i10-focused.log
+            mr34i10-original.log
+            mr34i10-receipt.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Original source and native worktree identity unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          for p in audit original_s4c1 external/minigrid external/pycolab; do
+            git -C "$p" diff --exit-code
+            test -z "$(git -C "$p" status --porcelain)"
+          done
+          echo MR34I10_SOURCE_AND_ORIGINAL_NATIVE_UNMODIFIED
+
+  genuine-source-cross-platform-verdict:
+    needs: original-source-training-frozen-q160
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: mass-mr34i10-*
+          path: evidence
+      - name: Strict four-original-source numerical fidelity, checkpoint and CPU gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,pathlib,math
+          data={}
+          for os in ("ubuntu-24.04","windows-2025"):
+              for repeat in (1,2):
+                  path=pathlib.Path("evidence")/f"mass-mr34i10-{os}-{repeat}"/"mr34i10-receipt.json"
+                  rec=json.loads(path.read_text())
+                  assert rec["no_held_or_protected_scientific_first_use"] is True
+                  assert rec["scientific_admission"]=="NO_GO"
+                  data[os,repeat]=rec
+          results={}
+          pass_all=True
+          for family in ("FaramaMiniGridDoorKey8","DeepMindPycolabApprehend"):
+              a=[data[o,r]["source_reports"][family] for o,r in
+                 (("ubuntu-24.04",1),("ubuntu-24.04",2),
+                  ("windows-2025",1),("windows-2025",2))]
+              for x in a[1:]:
+                  for field in ("original_authored_source_git_sha",
+                                "source_original_public_action_target_SHA256",
+                                "source_original_23_69_8_public_binary64",
+                                "original_source_TRAIN_actions",
+                                "original_initial_45_native_snapshot_sha256"):
+                      assert a[0][field]==x[field],("MR34I10_ORIGINAL_SOURCE_OR_INITIAL_MODEL_DRIFT",family,field)
+              z=[x["candidate_fixed160_40epoch_trace"] for x in a]
+              r=[x["portable_decimal48_reference_40epoch_trace"] for x in a]
+              numerical=all(x["all_490_original_numerical_inputs_exact"] for x in a)
+              reference_identity=all(
+                  r[0]["source_trained_45_native_checkpoint_sha256"]==
+                      j["source_trained_45_native_checkpoint_sha256"] for j in r[1:])
+              exact_all40=all(x["candidate_matches_reference_all40_original_training_byte_exact"] for x in a)
+              cross_exact=(
+                  len({x["source_trained_45_native_checkpoint_sha256"] for x in z})==1
+                  and len({x["source_train_only_selected_epoch"] for x in z})==1
+                  and all(z[0]["original_train_only_epoch_Brier"]==j["original_train_only_epoch_Brier"] for j in z[1:])
+                  and all(z[0]["original_train_only_epoch_checkpoint_sha256"]==
+                          j["original_train_only_epoch_checkpoint_sha256"] for j in z[1:]))
+              compared=[x["candidate_to_Decimal48_training_CPU_ratio"] for x in a]
+              vsnumpy=[x["candidate_to_unmodified_NumPy_training_CPU_ratio"] for x in a]
+              speed=all(math.isfinite(i) and math.isfinite(j) and 0<i<=.75 and 0<j<=2.
+                        for i,j in zip(compared,vsnumpy))
+              qualifies=numerical and reference_identity and exact_all40 and cross_exact and speed
+              pass_all &= qualifies
+              results[family]={
+                  "authentic_original_action_target_sha256":a[0]["source_original_public_action_target_SHA256"],
+                  "all_original_490_corpus_outputs_exact":numerical,
+                  "reference_decimal48_checkpoint_cross4_identical":reference_identity,
+                  "fast_fixedpoint_same_source_full40_exact_vs_Decimal48":exact_all40,
+                  "fixed160_cross_OS_full40_epoch_loss_and_checkpoint_bit_exact":cross_exact,
+                  "CPU_ratio_to_decimal48_four_independent_workers":compared,
+                  "CPU_ratio_to_original_NumPy_four_independent_workers":vsnumpy,
+                  "frozen_speed_budget_met":speed,
+                  "true_CPU_nonregression_vs_numpy":all(j<=1 for j in vsnumpy),
+                  "fixed160_candidate_checkpoint_SHA256_4":[x["source_trained_45_native_checkpoint_sha256"] for x in z],
+                  "engineering_screen_pass":qualifies,
+                  "scientific_admission":"NO_GO"
+              }
+          verdict=("MR34I10_PORTABLE_FAST_ENGINEERING_SCREEN_PASS_NOT_SCIENCE"
+                   if pass_all else "MR34I10_PORTABLE_FIXEDPOINT_NO_GO")
+          print("MR34I10_INDEPENDENT_ORIGINAL_SOURCE_CROSS_OS="+json.dumps(results,sort_keys=True))
+          print("MR34I10_FROZEN_TERMINAL_DISPOSITION="+verdict)
+          print("MR34I10_PROTECTED_FIRST_USE=ZERO")
+          # A negative remains a completed truthful audit, never a model GO.
+          PY
