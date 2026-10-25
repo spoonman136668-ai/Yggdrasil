@@ -17,7 +17,7 @@ from research.mass_r7c29.effects import event_split,make_arms,train,data_event,e
 from research.mass_r7c30.independent_logistic import IndependentPublicLogistic,independently_encoded_public
 
 HERE=Path(__file__).resolve().parent
-ROOT=HERE.parents[2]
+ROOT=HERE.parents[1]
 P=json.loads((HERE/"PREREG.json").read_text())
 
 
