@@ -52,8 +52,9 @@ jobs:
           git -C research merge-base --is-ancestor 57016113ed42a928150d609640f5e038653410c7 "$GITHUB_SHA"
           test "$(git -C external/minigrid rev-parse HEAD)" = "7f5853792ea7f04f75614661006d87fcf949f26d"
           test "$(git -C external/minigrid hash-object minigrid/envs/doorkey.py)" = "df5b29ef063be34e6d83b8b478e092c6e3e01512"
-          test "$(git -C owner-r10 rev-parse HEAD)" = "56e0c14393b8a7ddee479dbee6779f092f33267d"
-          test "$(git -C owner-r10 hash-object research/native/itd02/r10/public_adapter.py)" = "3917d36ce9f86a2c1b998a0a2f93fb27674a9205"
+          test "$(git -C owner-r11 rev-parse HEAD)" = "56e0c14393b8a7ddee479dbee6779f092f33267d"
+          test "$(git -C owner-r11 hash-object research/native/itd02/r10/public_adapter.py)" = "3917d36ce9f86a2c1b998a0a2f93fb27674a9205"
+          test "$(git -C owner-r11 hash-object research/native/itd02/r11/affordance_cells.py)" = "614c7dfb1b43f485009b70cb85e9b7b5119cafc2"
           python -m py_compile research/research/mass_r7c30/run.py research/research/mass_r7c30/control.py research/research/mass_r7c30/compare.py
           echo 'R7C30_ORIGINAL_SOURCE_OWNER_R11_IDENTITY=PASS'
       - name: Install exact original upstream MiniGrid
@@ -63,7 +64,7 @@ jobs:
           python -m pip install ./external/minigrid
       - name: Original R10/R11 source-only focused public learning checks
         shell: bash
-        working-directory: owner-r10
+        working-directory: owner-r11
         run: |
           set -euo pipefail
           python -B -m unittest research.native.itd02.r10.test_public_adapter -q
