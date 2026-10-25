@@ -1,0 +1,33 @@
+{
+  "schema": "optimizer.o22u.retrospective-original-action-cycle-veto.v1",
+  "classification": "HISTORICAL_PUBLIC_FIT_TRACE_FORENSICS_NOT_NEW_PHYSICAL_ACTION_EVALUATION",
+  "source_first": true,
+  "parent": "e0c391bd2d1ceada25ba4b88d419a4dcdd41b543",
+  "original_farama": "Farama-Foundation/Minigrid@7f5853792ea7f04f75614661006d87fcf949f26d",
+  "original_r3_blob": "5348238f4ec2183bea29262659883391b5f429fd",
+  "original_c31_bridge_blob": "fbc37f22b3a820552540a28eb97f81f32034a08a",
+  "C32_run_id": 40192579434,
+  "C32_artifact_id": 12598538562,
+  "C32_artifact_name": "itd02-c32-true-original-source-physical-choice-FIT",
+  "C32_archive_sha256": "25dfa8e78f2a3fde82e81b9bd7f6312e7413341a74d3579036757dbf9509b4bd",
+  "expected_c32_episodes_per_process": 56,
+  "expected_c32_physical_actions_per_process": 4652,
+  "new_source_resets_and_steps_allowed": 0,
+  "source_truth_scope": "Only actual original C32 chosen-action before/after/reward traces from two already consumed public FIT physical runs; no authored physics, no inference from unexecuted alternate actions.",
+  "fixed_rule": "Only when learned bridge proposes an opposite turn substitution versus original R3, reject the substitution if that candidate is opposite to the immediately preceding actually executed source turn, both turns are at same public x/y, and source step indices are consecutive. Revert to untouched original R3 action. Never alter R3 forward, source collision front, or original R3 nonoverride.",
+  "retrospective_replay": "Keep the ORIGINAL C32 physical selected actions and physical states as the immutable historical stream, even if hypothetical veto predicts a DIFFERENT action; never feed hypothetically vetoed action back as if executed. Veto audit cannot infer alternative future goals/rewards.",
+  "acceptance": [
+    "Rehash/verify every original C32 actual episode source action/reward trace, all 56 per process, and exact cross-process science agreement",
+    "Count vetoable originally selected opposite turn overrides separately for native, full9 logistic, shuffled and time-only controls",
+    "Preserve original R3 and frozen baseline outputs exactly, including any ordinary original-R3 inverse turns",
+    "No veto when there is no previous source action, when public pose moved, or when proposal equals baseline or is forward",
+    "Restore explicit action-proposal history in fresh Python process and reject modified checkpoint/tampered public event",
+    "Never claim physically realized improvement from retrospective veto counts"
+  ],
+  "next_source_science": "Before any fresh original-source action test, separately qualify a genuinely trained multi-step action-value and information-gathering policy with equal-FIT conventional model-based/recurrent competitors. No more myopic turn-override variants on consumed seeds.",
+  "FSA_protected_first_use_allowed": false,
+  "change_native_source_allowed": false,
+  "merge_allowed": false,
+  "paid_API_allowed": false,
+  "user_library_upload_allowed": false
+}
