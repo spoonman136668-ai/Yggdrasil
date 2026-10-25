@@ -1,0 +1,54 @@
+name: Mass R7-C33 original DoorKey after-door read-only forensic
+on:
+  push:
+    branches:
+      - research/mass-r7c33-doorkey-after-door-forensic-20261025
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: mass-r7c33-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  immutable-original-door-after-opening-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Authenticate exact old source and immutable C32 artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object research/native/itd02/r3/navigator.py)" = "5348238f4ec2183bea29262659883391b5f429fd"
+          python -m py_compile research/mass_r7c33/audit.py
+          mkdir -p "$RUNNER_TEMP/mass-r7c33"
+          curl --fail --silent --show-error --location --retry 2 \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header "Accept: application/vnd.github+json" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/12601376550/zip" \
+            --output "$RUNNER_TEMP/mass-r7c33/source-c32.zip"
+          echo "f2f8685067224ce39e6338ed3cc613fccd2130abdc09625e6640d09fb93b3699  $RUNNER_TEMP/mass-r7c33/source-c32.zip" | sha256sum --check -
+          echo "R7C33_EXACT_HISTORIC_SOURCE_ARTIFACT=PASS"
+      - name: Independent read-only source science audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/mass_r7c33/audit.py "$RUNNER_TEMP/mass-r7c33/source-c32.zip" "$RUNNER_TEMP/mass-r7c33/result-1.json"
+          python -B research/mass_r7c33/audit.py "$RUNNER_TEMP/mass-r7c33/source-c32.zip" "$RUNNER_TEMP/mass-r7c33/result-2.json"
+          cmp "$RUNNER_TEMP/mass-r7c33/result-1.json" "$RUNNER_TEMP/mass-r7c33/result-2.json"
+          echo "R7C33_TWO_EXACT_AUDIT_PROCESS_RESULTS=PASS"
+      - name: Archive reproducible post-door evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: mass-r7c33-original-source-post-door-evidence
+          path: ${{ runner.temp }}/mass-r7c33/result-*.json
+          if-no-files-found: warn
+          retention-days: 80
