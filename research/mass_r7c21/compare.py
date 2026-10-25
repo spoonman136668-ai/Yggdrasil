@@ -1,6 +1,7 @@
 """Source-first R7-C21: independent-run equality + prespecified scientific veto."""
 import hashlib,json,sys
 from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
 from research.native.itd02.r1.native_policy import canonical
 HERE=Path(__file__).resolve().parent
 P=json.loads((HERE/'PREREG.json').read_text())
