@@ -164,7 +164,7 @@ class R12SourceOnly(unittest.TestCase):
         self.assertEqual(b.select(key,"carrying_changed",[.2]*7,1),3)
         self.assertIsNone(select_public_action(n,key,"carrying_changed",costs=[0]*7,min_samples=5)["action"])
 
-    def test_equal_public_information_parity_on_840_queries(self):
+    def test_equal_public_information_parity_on_120_queries(self):
         n,b=train()
         checked=0
         for front in (KEY,LOCKED,OPEN,GOAL,(2,5,0)):
