@@ -11,8 +11,11 @@ import hashlib
 import json
 import math
 from pathlib import Path
-import resource
 import time
+try:
+ import resource
+except ImportError:
+ resource=None  # Windows source-only unit tests; original source runner uses Linux
 import traceback
 import numpy as np
 
