@@ -19,6 +19,22 @@ def load_owner():
     assert m.UPSTREAM_MINIGRID_COMMIT==P['upstream'].split("@")[-1]
     return m
 
+def normalized_original_public(raw):
+    """Bounded, provenance-preserving conversion of original numpy direction.
+
+    The pinned upstream original Gymnasium DoorKey reset returns a numpy
+    integral direction, while the owner R10 transport strictly demands a
+    Python int. This is external evaluation adaptation, NOT owner integration.
+    """
+    import numpy as np
+    assert type(raw) is dict and set(raw)=={'image','direction','mission'}
+    d=raw['direction']
+    if type(d) is not int:
+        assert isinstance(d,np.integer),('NONINTEGER_ORIGINAL_DIRECTION',type(d).__name__)
+        d=int(d)
+    assert 0<=d<=3
+    return {'image':raw['image'],'direction':d,'mission':raw['mission']}
+
 def independent_cues(raw):
     # Independently perform source-public parsing and compare with owner parser.
     assert type(raw) is dict and set(raw)=={'image','direction','mission'}
@@ -122,12 +138,12 @@ def main():
         adapter=owner.DoorKeyPublicAdapter()
         try:
             raw,_=env.reset(seed=seed)
-            adapter.reset_public(raw)
+            adapter.reset_public(normalized_original_public(raw))
             episode=[]
             for step in range(P['max_original_steps_per_seed']):
-                frame=owner.public_observation(raw)
-                cues=owner.public_cues(raw)
-                independent=independent_cues(raw)
+                frame=owner.public_observation(normalized_original_public(raw))
+                cues=owner.public_cues(normalized_original_public(raw))
+                independent=independent_cues(normalized_original_public(raw))
                 assert independent['front']==cues['front']
                 assert independent['carried']==cues['carried']
                 assert independent['direction']==cues['direction']
@@ -135,7 +151,7 @@ def main():
                 actual=int(adapter.submit(action))
                 assert actual==action and 0<=actual<7
                 after,reward,done,truncated,_=env.step(action)
-                returned=adapter.complete(after,float(reward),bool(done),bool(truncated))
+                returned=adapter.complete(normalized_original_public(after),float(reward),bool(done),bool(truncated))
                 assert returned['action']==action and returned['ordinal']==step+1
                 assert returned['pose_delta'] is None
                 counts[action]+=1
