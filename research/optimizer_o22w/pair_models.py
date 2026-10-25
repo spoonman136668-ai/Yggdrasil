@@ -150,9 +150,9 @@ def _verified(raw,schema,cap):
         if type(raw) is not bytes or not 0<len(raw)<=cap:
             raise ValueError("O22W_COLD_OVERSIZE")
         w=json.loads(raw)
-        if type(w) is not dict or set(w)!={"body","sha256"} or
+        if (type(w) is not dict or set(w)!={"body","sha256"} or
             type(w["body"]) is not dict or w["body"].get("schema")!=schema or
-            hashlib.sha256(canonical(w["body"])).hexdigest()!=w["sha256"]:
+            hashlib.sha256(canonical(w["body"])).hexdigest()!=w["sha256"]):
             raise ValueError("O22W_COLD_HASH")
         return w["body"]
     except (ValueError,TypeError,KeyError,OverflowError) as e:
