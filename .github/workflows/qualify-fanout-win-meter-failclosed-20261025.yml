@@ -37,14 +37,25 @@ jobs:
           test "$(git rev-parse HEAD:research/native/itd01/r7/native_cells.py)" = '4c492a494ac5b25d5e9c49b98185be6a2c966b2f'
           test "$(git rev-parse HEAD:research/native/itd02/r7/PREREG.json)" = '90def4fb42537a214c8aaa6f3ac14b2858498de7'
           test "$(git rev-parse HEAD:research/native/itd02/r7/learner.py)" = '204ecd993b954b23e66d6d1e8b3568e7c93183c5'
-          test "$(git diff --name-only 'be0db27807d7f4ad5ccc19a81b183a26d4ae51e3' HEAD | grep -v '^.github/workflows/qualify-fanout-win-meter-failclosed-20261025.yml$' | grep -v '^scripts/free_fanout_sidecar.py$' | grep -v '^tests/test_free_fanout_sidecar.py$' | wc -l)" -eq 0
+          python - <<'PY'
+          import subprocess
+          base="be0db27807d7f4ad5ccc19a81b183a26d4ae51e3"
+          names=set(subprocess.check_output(["git","diff","--name-only",base,"HEAD"],text=True).splitlines())
+          allowed={".github/workflows/qualify-fanout-win-meter-failclosed-20261025.yml",
+                   "scripts/free_fanout_sidecar.py","tests/test_free_fanout_sidecar.py"}
+          assert names==allowed,(names,allowed)
+          PY
       - name: Original manifest and runtime guards plus Windows no-meter negative
         shell: bash
         env:
           PYTHONDONTWRITEBYTECODE: '1'
         run: |
           set -euo pipefail
-          python -B -m py_compile scripts/free_fanout_sidecar.py tests/test_free_fanout_sidecar.py
+          python -B - <<'PY'
+          import ast,pathlib
+          for p in ("scripts/free_fanout_sidecar.py","tests/test_free_fanout_sidecar.py"):
+              ast.parse(pathlib.Path(p).read_text(encoding="utf-8"),filename=p)
+          PY
           python -B -m unittest discover -s tests -p 'test_free_fanout_sidecar.py' -v
           python -B -m unittest discover -s tests -p 'test_portable_checkpoint.py' -v
           echo FANOUT_SOURCEONLY_WINDOWS_IMPORT_SAFE=PASS
