@@ -1,0 +1,53 @@
+name: ITD-02 CartPoleWind three-arm public-wire development qualification
+on:
+  push:
+    branches:
+      - research/itd02-cartpolewind-comparison-dev-20261025
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare-source-only:
+    name: Public-wire comparison source-only ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 30
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Frozen-first provenance, source identity and public-only focused tests
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          git merge-base --is-ancestor 282f16224470d7e4d244a34e727c58d32c746cac HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'PREREG_NOT_FROZEN_BEFORE_IMPLEMENTATION' }
+          git merge-base --is-ancestor 63b3a3897a44c2557ba28cd19bf715981b24a2d7 HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'CONSTRUCTOR_FOUNDATION_IDENTITY_DRIFT' }
+          if ((git hash-object research/native/itd02/r7/learner.py).Trim() -cne '204ecd993b954b23e66d6d1e8b3568e7c93183c5') { throw 'FROZEN_R7_MODIFIED' }
+          if ((git hash-object research/native/itd02/cartpolewind_constructor/owner_constructor.py).Trim() -cne '5173773261ab11b79648d1a0db809ba3a50859ac') { throw 'ORIGINAL_SOURCE_OWNER_CHANGED' }
+          $env:PYTHONPATH = '.'
+          python -B -m unittest research.native.itd02.cartpolewind_compare_dev.test_compare -v
+          if ($LASTEXITCODE -ne 0) { throw 'THREE_ARM_FOCUSED_DEV_FAILURE' }
+          Write-Output 'CARTPOLEWIND_PUBLIC_WIRE_THREE_ARM_FOCUSED=PASS'
+          Write-Output 'ORIGINAL_CARTPOLE_EPISODES=0'
+          Write-Output 'SCIENTIFIC_GO=FALSE'
+      - name: One development integration regression across R1-R7 plus comparison
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $env:PYTHONPATH = '.'
+          python -B -m unittest research.native.itd02.r1.test_native_policy research.native.itd02.r2.test_affordance_cells research.native.itd02.r3.test_navigator research.native.itd02.r4.test_cue_cells research.native.itd02.r5.test_concurrent_cues research.native.itd02.r6.test_composer research.native.itd02.r7.test_learner research.native.itd02.cartpolewind_compare_dev.test_compare -v
+          if ($LASTEXITCODE -ne 0) { throw 'NATIVE_DEVELOPMENT_INTEGRATION_REGRESSION_FAILED' }
+          git diff --exit-code
+          if ($LASTEXITCODE -ne 0) { throw 'DIRTY_QUALIFICATION_WORKTREE' }
+          Write-Output 'SOURCE_ONLY_DEVELOPMENT_INTEGRATION=PASS'
+          Write-Output 'FULL_PRODUCTION_REGRESSION_NOT_CLAIMED=TRUE'
+          Write-Output 'PROTECTED_SCIENTIFIC_FIRST_USE=NOT_AUTHORIZED'
