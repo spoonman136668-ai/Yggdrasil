@@ -1,0 +1,54 @@
+{
+  "schema": "itd02.c29.native-cell-next-public-front-prediction-from-authentic-fit.v1",
+  "status": "FIT_ONLY_PREDICTION_AND_POLICY_PROXY_NO_DEV_VALID_PROTECTED",
+  "source_base_head": "955465676893e18d673ccb804f27e7c04160bdc3",
+  "source_fit": {
+    "run_id": 40186388994,
+    "artifact_id": 12596362847,
+    "artifact_zip_sha256": "2e0492af74cd68f8fc9ee7d5cfffcc6a936614e23f9061457f70dcd49cf84810",
+    "reconciliation_sha256": "78a078d6643f0372b9eedd20954b63a388e01611f853ea3831851f893380d87d",
+    "source_original": "Farama-Foundation/Minigrid@7f5853792ea7f04f75614661006d87fcf949f26d",
+    "selected_actions": {
+      "left": 236,
+      "right": 143,
+      "forward": 426
+    },
+    "info_returned": {
+      "blocked": 4,
+      "clear": 41
+    },
+    "original_c28_head": "955465676893e18d673ccb804f27e7c04160bdc3"
+  },
+  "preserved_original_r1_cells_git_blob": "3aa22b1e418a7f8cd9619c476f02b8c614917b16",
+  "public_input_fields": [
+    "x",
+    "y",
+    "goal_x",
+    "goal_y",
+    "direction",
+    "front_blocked"
+  ],
+  "selected_effect": "actual returned next-front obstructed after original chosen action",
+  "train_split": "First eight of twelve frozen C28 FIT seeds per original family to train; last four each for internal FIT-only check. After scoring may fit remaining eight FIT episodes; no new holdout or DEV.",
+  "models": {
+    "native": "Separate action-specific nine original R1 LocalCell fast/slow predictor trained on public selected action outcome only; original R1/R2/R3 source untouched.",
+    "conventional": "Independently implemented Beta count model per selected action, heading, current front status, with recency discount and full checkpoint."
+  },
+  "controls": [
+    "action-shuffled native training",
+    "frozen no-cell predictor",
+    "time-only Bayesian ignoring selected action",
+    "full-state cold-restored conventional"
+  ],
+  "protocol": "Each FIT result prequentially predicted before training on its own actual selected return; report internal FIT-only Brier/NLL and samples by action and source family.",
+  "choice_probe": "Hand specified uncertainty-versus-probe-cost decision proxy to test native-cell influence on constructed off-policy choice queries; not trained VOI or original-world utility.",
+  "stop_rules": [
+    "Pin exact provider artifact original ZIP SHA256 and duplicate ledger/role/source identity or fail.",
+    "No source env import/reset/step; no new source episodes or previously consumed DEV.",
+    "No causal identification for unselected interventions from one on-policy trajectory; source obstacles autonomously move on each legal action.",
+    "Reject claims of native superiority without strong full-cost independent fitted controls and real source decision impact.",
+    "Fresh Python process must exactly restore native AND conventional outcome forecasts and proxy decisions.",
+    "Do not change FSA #83 protected scientific first-use; no merge, scheduler/controller, paid API, Library."
+  ],
+  "governance": "Additive prereg-before-code draft child of source FIT C28; zeros for new source DEV and protected source first use."
+}
