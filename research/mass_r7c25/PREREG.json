@@ -1,0 +1,80 @@
+{
+  "schema": "mass.r7c25.fit-proven-public-information-acquisition.v1",
+  "classification": "PUBLIC_DEVELOPMENT_ONLY_NOT_PROTECTED",
+  "source": {
+    "upstream": "Farama-Foundation/Minigrid@7f5853792ea7f04f75614661006d87fcf949f26d",
+    "dynamic_blob": "68436cecc35116c23c2f196c22fa3a19c6410b95",
+    "original_r3_head": "fbf78bcc6988755ba0e3e026f06d273839c1fa9f",
+    "parent_c24_commit": "bfe812bc3cd671082e94562a2e96d3177a14eb1e"
+  },
+  "fit": {
+    "same_12_original_actions": true,
+    "source_episodes_for_fit_screen": {
+      "MiniGrid-FourRooms-v0": [
+        27101,
+        27103,
+        27107,
+        27109
+      ],
+      "MiniGrid-Dynamic-Obstacles-8x8-v0": [
+        27101,
+        27103,
+        27107,
+        27109
+      ]
+    },
+    "expected_fit_sha256": "4e4e9446169f61a7d1a0398b4fff2d0e31510356111c2cc59fdbeca899f6ce60",
+    "qualification_gate": "native_active must perform at least 1 actual opposite-turn information intervention across authentic FIT-only episodes before ANY fresh development seed is evaluated; fail closed otherwise"
+  },
+  "dev": {
+    "MiniGrid-FourRooms-v0": [
+      38101,
+      38103,
+      38107,
+      38109,
+      38111,
+      38113,
+      38117,
+      38119,
+      38123,
+      38129,
+      38131,
+      38137
+    ],
+    "MiniGrid-Dynamic-Obstacles-8x8-v0": [
+      39101,
+      39103,
+      39107,
+      39109,
+      39111,
+      39113,
+      39117,
+      39119,
+      39123,
+      39129,
+      39131,
+      39137
+    ]
+  },
+  "actions_per_episode_cap": 256,
+  "arms": [
+    "native_selective",
+    "native_active",
+    "conventional_persistent",
+    "conventional_bayesian",
+    "conventional_active"
+  ],
+  "intervention": "At a source-native turn recommendation, the agent can replace the selected left/right turn with the opposite legal turn when the selected direction was previously observed during the episode and the alternative has never been observed. Value of information bonus of 0.9 minus 0.35 times the increase in goal Manhattan distance; change only if positive. Both arms see identical binary public front sensing (no hidden grid, object identity, source seed or future outcome). The turn reveals a new public front only upon actual execution. Learned 12 true FIT motors fixed; active turn is an engineered hypothesis, not learned causal value.",
+  "equal_information": "Native active and fully restored conventional Bayesian active use the SAME predeclared information switch. Conventional persistent learned map and non-active native/Bayesian included. Each policy runs own source trajectories and retains only source observations and own action consequences.",
+  "measurement": [
+    "exact number of actual native candidate FIT-only information-gathering turns (must be >0)",
+    "actual new public frontage revealed after eligible turn",
+    "DEV goal rewards, goal success, source collision failures, steps, horizon, exploration steps",
+    "complete per-step genuine source observation/action/consequence/reward traces SHA256",
+    "dual process reproducibility",
+    "complete cold process restored next action for native and Bayesian learned temporal state",
+    "whole-process CPU/RSS/checkpoint bytes"
+  ],
+  "admission": "No promotion or scientific superiority claims based on public DEV. NO-GO if native loses goals, fails to acquire any FIT information, or conventional dominates in task success and cost. Preserve FIT/DEV role separation and protected science untouched.",
+  "governance": "Mass Research independent additive draft branch only. No Yggdrasil owner source changes, no FORGE/CKB controller edits, no paid API, no merges, no library storage."
+}
