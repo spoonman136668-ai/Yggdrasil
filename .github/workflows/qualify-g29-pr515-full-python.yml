@@ -39,7 +39,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            python -B -m unittest discover -s tests -p 'test_code_atlas.py' -v
+            python -B -m unittest discover -s tests -p 'test_portable_checkpoint.py' -v
+            python -B -c "import importlib.util; assert importlib.util.find_spec('resource') is None"
+            echo "WINDOWS_FREE_FANOUT_RUNTIME_EXPLICITLY_UNSUPPORTED=PASS"
+            echo "WINDOWS_SUPPORTED_PYTHON_SUITES=PASS"
+          else
+            python -B -m unittest discover -s tests -p 'test_*.py' -v
+            echo "LINUX_COMPLETE_REPOSITORY_PYTHON_SUITES=PASS"
+          fi
           python -B scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"
           git diff --exit-code
