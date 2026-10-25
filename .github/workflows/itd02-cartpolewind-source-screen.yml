@@ -1,0 +1,72 @@
+name: ITD02 CartPoleWind original source and blind-horizon screen
+on:
+  push:
+    branches: [research/itd02-cartpolewind-source-admission-20261025]
+    paths:
+      - 'research/native/itd02/cartpolewind_source_screen/**'
+      - '.github/workflows/itd02-cartpolewind-source-screen.yml'
+permissions:
+  contents: read
+concurrency:
+  group: ygg-itd02-cartpolewind-source-only-20261025
+  cancel-in-progress: false
+jobs:
+  pinned-source-protocol:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: ygg
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: CausalAILab/Causal-Gymnasium
+          ref: c94e9a4cd3641588b6b8507e71ccee5c27032bdf
+          path: upstream
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Freeze original upstream, local prereg and proposed protocol
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C upstream rev-parse HEAD)" = c94e9a4cd3641588b6b8507e71ccee5c27032bdf
+          test "$(git -C upstream rev-parse HEAD:causal_gym/envs/cartpole_wind.py)" = d65a6a31941709dc9201259d80dd4ebbcf48b4fa
+          test "$(git -C upstream rev-parse HEAD:causal_gym/core/pch.py)" = ff37780c6b791877c70583b8d5f699be7fcd8817
+          test "$(git -C upstream rev-parse HEAD:causal_gym/core/task.py)" = 668262f3f5c88fa2865b08ef10bbf96b09a3b73e
+          test "$(git -C ygg rev-parse HEAD:research/native/itd02/cartpolewind_source_screen/PREREG.json)" = ae23e603f94359f300a6ddd6e93baa4e2ff7d21a
+          test "$(git -C ygg rev-parse HEAD:research/native/itd02/cartpolewind_source_screen/contract.py)" = 81beb03851b64209daf3cdbfd9138bd902bba818
+          git -C ygg merge-base --is-ancestor 4c024df12a4b18a4bc34d8952072009a41c9df83 HEAD
+          python -B - <<'PY'
+          import pathlib,json
+          d=json.loads(pathlib.Path("ygg/research/native/itd02/cartpolewind_source_screen/PREREG.json").read_text())
+          assert d["status"] == "FROZEN_BEFORE_AUDIT_IMPLEMENTATION_AND_RUN"
+          assert d["upstream_commit"] == "c94e9a4cd3641588b6b8507e71ccee5c27032bdf"
+          assert d["rights"]["upstream_Python_import"] is False
+          assert d["rights"]["original_source_episodes"] == 0
+          assert d["rights"]["protected_first_use"] is False
+          assert d["scientific_go"] is False
+          PY
+      - name: Zero-episode source AST and adversarial payload-filter qualification
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B ygg/research/native/itd02/cartpolewind_source_screen/contract.py upstream
+          test -z "$(git -C upstream status --porcelain --untracked-files=all)"
+          test -z "$(git -C ygg status --porcelain --untracked-files=all)"
+          echo CARTPOLEWIND_ORIGINAL_WORLD_EPISODES=0
+          echo CARTPOLEWIND_UPSTREAM_MODULE_IMPORTS=0
+          echo CARTPOLEWIND_SOURCE_ONLY_ADMISSION_NOT_SCIENCE=TRUE
+          echo CARTPOLEWIND_SCIENTIFIC_GO=FALSE
