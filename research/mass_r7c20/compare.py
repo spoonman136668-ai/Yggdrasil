@@ -18,7 +18,7 @@ for arm in arms:
         assert set(w['totals'])==set(p['source_original']['gym_ids'])
         assert len(w['episodes'])==len(p['source_original']['gym_ids'])*len(p['roles']['dev_seeds'])
         assert all(x['checkpoint_bytes']>0 for x in w['episodes'])
-        assert all(x['cpu_fit_seconds']>=0 and x['cpu_dev_seconds']>=0 for _ in (0,))
+        assert w['cpu_fit_seconds']>=0 and w['cpu_dev_seconds']>=0
         assert w['peak_process_rss_kib']>0
         runs.append(w)
     for f in ('fit_sha256','fit_total','totals','episodes','max_checkpoint_bytes'):
