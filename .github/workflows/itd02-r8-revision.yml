@@ -1,0 +1,80 @@
+name: ITD-02 R8 original source-only online causal revision
+on:
+  push:
+    branches: [research/itd02-r8-online-revision-20261024]
+permissions:
+  contents: read
+jobs:
+  r8-source-only:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 16
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate source-first frozen protocol and immutable R7
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 0f118dbfdb72817ce409c61e118c2d790903ea39 HEAD
+          test "$(git hash-object research/native/itd02/r8/PREREG.json)" = "cf9584c0d4fa059ce2ee1d51ba128b9d0fbf8cf5"
+          test "$(git hash-object research/native/itd02/r7/learner.py)" = "204ecd993b954b23e66d6d1e8b3568e7c93183c5"
+          test "$(git hash-object research/native/itd02/r8/revision.py)" = "346fb9eb7462208a6cbd28cfb51716c22e5ec857"
+          echo "R8_ORIGINAL_SOURCE_AND_FREEZE=PASS"
+      - name: Exact original-native change and revert tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd02/r8 -p 'test_revision.py' -v
+          echo "R8_SOURCEONLY=PASS"
+          echo "R8_ORIGINAL_PHYSICAL_SOURCE_EPISODES=0"
+          echo "R8_PROTECTED_SCIENCE_FIRST_USE=0"
+
+  atlas-reanchor-once:
+    if: github.event.head_commit.message == 'Arm R8 artifact-only G29 reanchor'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Authenticate frozen R8 source HEAD and regenerate ONLY G29 artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          A="$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$A"
+          test -z "$(git status --porcelain)"
+          git merge-base --is-ancestor 0f118dbfdb72817ce409c61e118c2d790903ea39 "$A"
+          test "$(git hash-object research/native/itd02/r7/learner.py)" = "204ecd993b954b23e66d6d1e8b3568e7c93183c5"
+          test "$(git hash-object research/native/itd02/r8/revision.py)" = "346fb9eb7462208a6cbd28cfb51716c22e5ec857"
+          python scripts/build_code_atlas.py --write --source-commit "$A"
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          test "$(git diff --cached --name-only | wc -l | tr -d ' ')" = "3"
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git diff --cached --quiet && exit 1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Re-anchor G29 artifacts to frozen R8 source $A"
+          B="$(git rev-parse HEAD)"
+          git merge-base --is-ancestor "$A" "$B"
+          test "$(git diff-tree --no-commit-id --name-only -r "$B" | wc -l | tr -d ' ')" = "3"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin "HEAD:refs/heads/research/itd02-r8-online-revision-20261024"
+          echo "R8_ARTIFACT_ONLY_B=$B"
+          echo "R8_ORIGINAL_SOURCE_A=$A"
