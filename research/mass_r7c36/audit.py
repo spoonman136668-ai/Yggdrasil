@@ -127,7 +127,7 @@ def audit_one(process):
          process.get("science_accepted") is not False or
          process.get("original_R3_modified") is not False):
         raise ValueError("C36_ORIGINAL_C35_NEGATIVE_SOURCE_IDENTITY_DRIFT")
-    details=[];stats=defaultdict(lambda:defaultdict(lambda:defaultdict(int)))
+    details=[];stats=defaultdict(lambda:defaultdict(lambda:defaultdict(lambda:defaultdict(int))))
     for role,key in (("FIT","source_original_fit_real_two_action_forks"),
                      ("FIT_CHECK","source_independent_internal_fit_check_real_forks")):
         anchors=process[key];seen=set()
