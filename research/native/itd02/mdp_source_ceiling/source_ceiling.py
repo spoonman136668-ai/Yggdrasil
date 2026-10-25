@@ -100,7 +100,7 @@ def main(source_root):
     must(ast.unparse(reward_ast) == "((self.s != x) != u1) != u3", "ORIGINAL_REWARD_IDENTITY_CHANGED")
     transition = method(m, "state_transition")
     ret = [x.value for x in transition.body if isinstance(x, ast.Return)]
-    must(len(ret) == 1 and ast.unparse(ret[0]) == "(u1 != u2) != (s | x)", "ORIGINAL_TRANSITION_IDENTITY_CHANGED")
+    must(len(ret) == 1 and ast.unparse(ret[0]) == "(u1 != u2) != s | x", "ORIGINAL_TRANSITION_IDENTITY_CHANGED")
     must("self.num_step > self._max_step" in ast.unparse(step), "TIMEOUT_BOUNDARY_CHANGED")
     must("self.env.sample_u()" in ast.unparse(method(p, "do")), "INTERVENTION_EXOGENOUS_SAMPLE_MISSING")
     do_syntax = ast.unparse(method(p, "do"))
