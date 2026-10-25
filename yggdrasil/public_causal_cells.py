@@ -55,7 +55,9 @@ class PublicCausalCells:
         (zero0, one0), (zero1, one1) = self._counts[cell]
         trials0 = zero0 + one0
         trials1 = zero1 + one1
-        if not trials0 or not trials1:
+        # G3 hypothesis: refuse fragile causal rankings at sparse local counts.
+        # Never borrow counts from other contexts or memory tiers.
+        if trials0 < 3 or trials1 < 3:
             return None
         # Exact integer cross-products avoid rounding/tuned thresholds.
         lhs, rhs = one0 * trials1, one1 * trials0
