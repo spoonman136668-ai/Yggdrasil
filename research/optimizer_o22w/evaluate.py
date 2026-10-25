@@ -48,7 +48,7 @@ def original_c35(source):
         for row in anchors:
             fam=row["family"]
             key=(fam,row["seed"],row["tick"])
-            if key in seen or fam not in P["source_C35_families"]:
+            if key in seen or fam not in ("MiniGrid-FourRooms-v0","MiniGrid-Dynamic-Obstacles-8x8-v0"):
                 raise ValueError("O22W_ORIGINAL_ANCHOR_OR_FAMILY")
             seen.add(key)
             s=row["public_initial"];public(s)
