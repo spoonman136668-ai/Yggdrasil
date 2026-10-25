@@ -47,7 +47,7 @@ class SourceOnlyTests(unittest.TestCase):
         picked = bridge.complete(holding, 0, False, False)
         self.assertTrue(picked["visible_key_pickup"])
         self.assertEqual(picked["carried_after"], [5, 4, 0])
-        # Intermediate publicly returned chosen action; not a synthetic hidden teleport.
+        # Synthetic public fixture sequence only, NOT original environment physics.
         bridge.submit(2)
         locked = frame(front=(4, 4, 2), held=(5, 4, 0))
         bridge.complete(locked, 0, False, False)
