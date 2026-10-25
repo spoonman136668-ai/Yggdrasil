@@ -1,0 +1,109 @@
+name: ITD-02 C35 original physically executed two-action causal source FIT
+on:
+  push:
+    branches:
+      - research/itd02-c35-original-two-action-forks-20261025
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: itd02-c35-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-frozen-source-preflight:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Frozen original R3 source, prior C34 and C35 preregistration
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse 9c27058b5b4609e2a2d93597388099599daf7752^)" = b81a7085afb7ccfba6e9fec0a303c83d731ae6f7
+          git merge-base --is-ancestor 9c27058b5b4609e2a2d93597388099599daf7752 "$GITHUB_SHA"
+          test "$(git hash-object research/mass_r7c35/PREREG.json)" = 4acfeb4471bc542e973c1faef9f18b6b94e6632e
+          test "$(git hash-object research/native/itd02/r3/navigator.py)" = 5348238f4ec2183bea29262659883391b5f429fd
+          test "$(git hash-object research/mass_r7c34/PREREG.json)" = e154109d14846b4a037bbdf22c466a4e8a42ef83
+          python -m pip install numpy==1.26.4
+          python -B -m unittest research.mass_r7c35.test_true_pair -v
+          echo C35_FROZEN_BEFORE_TRUE_ACTION_EXPERIMENT=PASS
+          echo C35_PRECHECK_NEW_ORIGINAL_WORLD_STEPS=ZERO
+  two-step-true-original-source:
+    needs: [original-frozen-source-preflight]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      PYTHONHASHSEED: '0'
+      PYTHONDONTWRITEBYTECODE: '1'
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          path: research
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          fetch-depth: 0
+          persist-credentials: false
+          path: external/minigrid
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Verify immutable source Git SHA and the frozen original native baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C research rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git -C research hash-object research/mass_r7c35/PREREG.json)" = 4acfeb4471bc542e973c1faef9f18b6b94e6632e
+          test "$(git -C research hash-object research/native/itd02/r3/navigator.py)" = 5348238f4ec2183bea29262659883391b5f429fd
+          test "$(git -C external/minigrid rev-parse HEAD)" = 7f5853792ea7f04f75614661006d87fcf949f26d
+          test "$(git -C external/minigrid hash-object minigrid/envs/fourrooms.py)" = d79f007e00f95f48284da66d760872483c02fab2
+          test "$(git -C external/minigrid hash-object minigrid/envs/dynamicobstacles.py)" = 68436cecc35116c23c2f196c22fa3a19c6410b95
+          echo C35_OWNER_AND_INDEPENDENT_UPSTREAM_AUTHENTICATED=PASS
+      - name: Install original unmodified source and numerical baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install ./external/minigrid
+          python -m pip install numpy==1.26.4
+      - name: Execute every actual two-action source fork on fresh original worlds twice
+        shell: bash
+        working-directory: research
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/c35-original-evidence"
+          python -B -m research.mass_r7c35.run --output "$RUNNER_TEMP/c35-original-evidence/process-a.json" > "$RUNNER_TEMP/c35-original-evidence/process-a.log" 2>&1 || { cat "$RUNNER_TEMP/c35-original-evidence/process-a.log"; exit 1; }
+          python -B -m research.mass_r7c35.run --output "$RUNNER_TEMP/c35-original-evidence/process-b.json" > "$RUNNER_TEMP/c35-original-evidence/process-b.log" 2>&1 || { cat "$RUNNER_TEMP/c35-original-evidence/process-b.log"; exit 1; }
+          cat "$RUNNER_TEMP/c35-original-evidence/process-a.log"
+          cat "$RUNNER_TEMP/c35-original-evidence/process-b.log"
+          python -B -m research.mass_r7c35.compare --first "$RUNNER_TEMP/c35-original-evidence/process-a.json" --second "$RUNNER_TEMP/c35-original-evidence/process-b.json" --output "$RUNNER_TEMP/c35-original-evidence/comparison.json"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo C35_TRUE_TWO_ACTION_FORKS_AND_REPEATED_PUBLIC_ORIGINAL_SOURCE=PASS
+          echo C35_PROTECTED_FIRST_USE=FALSE
+      - name: Preserve full genuine two-action FIT source traces and negatives
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-c35-original-source-physical-two-action-FIT
+          path: ${{ runner.temp }}/c35-original-evidence/
+          if-no-files-found: warn
+          retention-days: 80
