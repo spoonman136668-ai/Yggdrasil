@@ -12,8 +12,22 @@ PUBLIC={"x","y","direction","goal_x","goal_y","front_blocked"}
 def check(report):
     if report.get("schema")!=PROTOCOL["schema"]:
         raise ValueError("C37_WRONG_ORIGINAL_PROTOCOL")
-    if report.get("FIT_trained_two_action_original_forks")!=279:
-        raise ValueError("C37_FIT_IDENTITY_DRIFT")
+    # C35 original FIT has 31 anchors x nine real pairs = 279 actions.
+    # The frozen C36/C37 option learner fits only the three predeclared
+    # (turn/forward, turn/forward, forward/forward) pairs per anchor.
+    frozen_pairs=PROTOCOL["FIT_only"]["actualPairCount"]
+    option_count=len(PROTOCOL["mechanism"]["optionCandidates"])
+    if frozen_pairs%9 or option_count!=3:
+        raise ValueError("C37_FROZEN_PAIR_PORTFOLIO_INVALID")
+    if report.get("FIT_trained_two_action_original_forks")!=frozen_pairs//3:
+        raise ValueError("C37_TRAINED_OPTION_SUBSET_IDENTITY_DRIFT")
+    criteria=report.get("criteria")
+    if not isinstance(criteria,dict) or not criteria:
+        raise ValueError("C37_MISSING_FROZEN_ACCEPTANCE_EVIDENCE")
+    expected_verdict=(PROTOCOL["preregAccept"]["positive"] if all(criteria.values())
+                      else PROTOCOL["preregAccept"]["noGo"])
+    if report.get("scientific_result")!=expected_verdict:
+        raise ValueError("C37_SOURCE_VERDICT_NOT_SUPPORTED_BY_FROZEN_GATES")
     if (report.get("first_use") is not False or
         report.get("scientific_accepted") is not False or
         report.get("original_R3_source_modified") is not False):
