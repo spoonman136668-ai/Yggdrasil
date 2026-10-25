@@ -1,0 +1,28 @@
+{
+  "id": "Y019-LOCALITY-PRESSURE",
+  "parent": "89df917bb5177e39a039f5b2da0cfb67f64209ab",
+  "question": "On exactly the archived R016 selected-key stages, what is the effect of reducing the available local placement radius on augmenting-path versus greedy feasibility?",
+  "arms": {
+    "A0": "R016 full original local cell order radius 2",
+    "A1": "radius-one restricted local cells: only cells at circular distance <=1 from each home, with original order preserved"
+  },
+  "controls": [
+    "reproduce Y018 original-order baseline 6/6 matched and 0/6 greedy",
+    "selected keys and all candidate-ranking information unchanged",
+    "16 cells, 7 active, 9 retained, no growth",
+    "do not compensate reduced radius with additional candidates or search"
+  ],
+  "budgets": {
+    "stages": 6,
+    "arms": 2,
+    "max_placement_evaluations": 24,
+    "external_models": 0
+  },
+  "classification": {
+    "supported": "A0 reproduced and restricted radius worsens matching feasibility in at least one stage",
+    "negative": "A0 reproduced and restricted matching remains feasible all stages",
+    "invalid": "Any source/key parity, baseline, geometry or deterministic-replay mismatch"
+  },
+  "interpretation": "Previously consumed synthetic source, not unseen evaluation; feasibility reduction is expected, report unmodified values",
+  "authority": "research read-only; no accepted ref or controller operations"
+}
