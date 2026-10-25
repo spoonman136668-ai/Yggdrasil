@@ -38,8 +38,11 @@ jobs:
           test "$(git rev-parse HEAD:research/native/itd01/r7/native_cells.py)" = '4c492a494ac5b25d5e9c49b98185be6a2c966b2f'
           python - <<'PY'
           import subprocess
+          # e6ab is the pre-regeneration source commit. Its old generated atlas
+          # blobs are the known three additional differences from base B.
           expected={".github/workflows/qualify-fanout-win-meter-failclosed-20261025.yml",
-                    "scripts/free_fanout_sidecar.py","tests/test_free_fanout_sidecar.py"}
+                    "scripts/free_fanout_sidecar.py","tests/test_free_fanout_sidecar.py",
+                    ".ice/code-atlas.json",".ice/code-atlas.html",".ice/code-atlas.ice"}
           found=set(subprocess.check_output(["git","diff","--name-only","be0db27807d7f4ad5ccc19a81b183a26d4ae51e3","HEAD"],text=True).splitlines())
           assert found==expected,(found,expected)
           PY
