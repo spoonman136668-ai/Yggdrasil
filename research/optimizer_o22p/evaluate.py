@@ -205,8 +205,10 @@ def main():
     meaningful = (decision_cases["native_versus_shuffled_different"] > 0 and
                   decision_cases["native_versus_frozen_different"] > 0)
     # Never confuse an off-policy proposal with source-observed action value.
-    if not native_better_both or not meaningful:
-        decision = "NO_GO_NATIVE_CONVENTIONAL_PARITY_OR_NO_CAUSAL_DECISION_LEVERAGE"
+    if not native_better_both:
+        decision = "NO_GO_CONVENTIONAL_BETTER_BOTH_OVERALL_FIT_CHECK_LABELS"
+    elif not meaningful:
+        decision = "NO_GO_NATIVE_ACTION_CONDITIONING_NOT_DEMONSTRATED"
     else:
         decision = "FIT_ONLY_PREDICTION_SIGNAL_NOT_TRUE_CAUSAL_VALUE"
     result = {
