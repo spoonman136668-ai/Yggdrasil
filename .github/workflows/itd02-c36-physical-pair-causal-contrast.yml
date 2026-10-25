@@ -1,0 +1,102 @@
+name: ITD-02 C36 matched original physical two-action intervention contrasts (source-only)
+on:
+  push:
+    branches:
+      - research/itd02-c36-matched-action-sequence-causal-controls-20261025
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: itd02-c36-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  public-causal-intervention-boundary:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Lock original and C36 source-first scientific question
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor b57938a578a45b04c336e97466208b6df62fac04 "$GITHUB_SHA"
+          git merge-base --is-ancestor cc2f53e507e62f3095fb09e04399e7e7d335a6bd "$GITHUB_SHA"
+          test "$(git hash-object research/native/itd02/r3/navigator.py)" = 5348238f4ec2183bea29262659883391b5f429fd
+          test "$(git hash-object research/mass_r7c35/PREREG.json)" = 4acfeb4471bc542e973c1faef9f18b6b94e6632e
+          test "$(git hash-object research/mass_r7c35/run.py)" = 28cad35dfa2ff40753790ba8745fdc205dee0ba5
+          test "$(git hash-object research/mass_r7c35/compare.py)" = 077e59ec80cb535808f78b1e670778a42f01115a
+          python -m py_compile research/mass_r7c36/audit.py research/mass_r7c36/test_audit.py
+          echo C36_ORIGINAL_FROZEN_SOURCE_FIRST=PASS
+      - name: Source-free matched-physical-intervention and sensor-rights tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest research.mass_r7c36.test_audit -v
+          echo C36_NO_ACTUAL_NEW_MINIGRID_RESET_OR_STEP=PASS
+          echo C36_PROTECTED_FIRST_USE=DENIED
+
+  original-archived-physical-contrast-audit:
+    needs: [public-causal-intervention-boundary]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      GH_C35_SOURCE_ARTIFACT_ID: '12603145885'
+      GH_C35_PROVIDER_ZIP_SHA256: '4e35aef3238b6ba2b9d83c4e9e288ff2d8dd3edd23177974b9deb088cca66ca3'
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install only prior source comparator numerical parser
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install numpy==1.26.4
+      - name: Reauthenticate exact untouched original C35 archived matched physical interventions
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          mkdir -p "$RUNNER_TEMP/c36-original-c35" "$RUNNER_TEMP/c36-results"
+          curl -fLsS --retry 2 -H "Authorization: Bearer $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" -o "$RUNNER_TEMP/c35-immutable-actual-world-forks.zip" "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/$GH_C35_SOURCE_ARTIFACT_ID/zip"
+          echo "$GH_C35_PROVIDER_ZIP_SHA256  $RUNNER_TEMP/c35-immutable-actual-world-forks.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/c35-immutable-actual-world-forks.zip" -d "$RUNNER_TEMP/c36-original-c35"
+          echo C36_C35_REAL_SOURCE_ZIP_SHA256=PASS
+      - name: Reconcile both exact physically executed source studies and audit genuine action-order effects
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m research.mass_r7c36.audit --original-c35-archive "$RUNNER_TEMP/c36-original-c35" --out "$RUNNER_TEMP/c36-results/source-contrast-A.json"
+          python -B -m research.mass_r7c36.audit --original-c35-archive "$RUNNER_TEMP/c36-original-c35" --out "$RUNNER_TEMP/c36-results/source-contrast-B.json"
+          cmp "$RUNNER_TEMP/c36-results/source-contrast-A.json" "$RUNNER_TEMP/c36-results/source-contrast-B.json"
+          echo C36_TWO_SOURCE_ONLY_CAUSAL_CONTRAST_PROCESSES=EXACT_PASS
+          echo C36_NEW_ORIGINAL_SOURCE_ACTIONS=ZERO
+          echo C36_PROTECTED_FIRST_USE=DENIED
+      - name: Retain direct original physically matched interventions in GitHub only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-c36-physical-action-pair-counterfactual-custody
+          path: ${{ runner.temp }}/c36-results/
+          if-no-files-found: warn
+          retention-days: 80
