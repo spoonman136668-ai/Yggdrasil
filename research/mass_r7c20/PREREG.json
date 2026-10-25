@@ -1,0 +1,61 @@
+{
+  "schema": "mass.r7c20.public-original-minigrid-nav-dev.v1",
+  "classification": "PUBLIC_DEVELOPMENT_ONLY_NOT_PROTECTED_FIRST_USE",
+  "source_original": {
+    "repo": "Farama-Foundation/Minigrid",
+    "commit": "7f5853792ea7f04f75614661006d87fcf949f26d",
+    "install": "pip install ./external/minigrid",
+    "gym_ids": [
+      "MiniGrid-Empty-8x8-v0",
+      "MiniGrid-FourRooms-v0"
+    ],
+    "wrapper": "minigrid.wrappers.FullyObsWrapper",
+    "no_hidden_unwrapped_access": true
+  },
+  "yggdrasil": {
+    "r3_head": "fbf78bcc6988755ba0e3e026f06d273839c1fa9f",
+    "r1_blob": "3aa22b1e418a7f8cd9619c476f02b8c614917b16",
+    "r2_blob": "f7e47dfef309e1c0bcc871d518154fd950b3eca0",
+    "r3_blob": "5348238f4ec2183bea29262659883391b5f429fd",
+    "patch": "experimental isolated one-line initial forward-edge public front_blocked veto; original source unchanged"
+  },
+  "roles": {
+    "fit_seeds": [
+      27101,
+      27103,
+      27107,
+      27109
+    ],
+    "dev_seeds": [
+      28101,
+      28103,
+      28107,
+      28109
+    ],
+    "fit_steps_per_family": 2400,
+    "dev_cap_steps": 192,
+    "fit_select": "earliest four actually successful legal forward observations, one per orientation 0..3, plus first eight physically blocked public forward observations; exactly twelve selected native/source-conventional training events",
+    "dev_episodes_per_arm": 8,
+    "source_public_types": "current six-field PublicGrid obtained ONLY from returned FullyObsWrapper image and observation.direction; objective and bounds extracted from public wrapper image"
+  },
+  "arms": [
+    "native_r3_original_exact_source",
+    "native_r3_one_line_experimental",
+    "independent_learned_conventional_optimistic_spatial_planner"
+  ],
+  "experience_budget": "Identical 12 FIT action outcomes; during DEV each learner permitted its own actually performed action outcomes, with no hidden map; no DEV weight changes (learn_local=False), only episodic learning of observed edges",
+  "outcomes": [
+    "goal successes and original reward",
+    "first blocked-forward actions",
+    "repeat blocked-forward actions",
+    "total actions",
+    "cold-process checkpoint restore",
+    "CPU seconds full loop by arm",
+    "peak process RSS and checkpoints",
+    "policy-specific action/outcome trace sha256"
+  ],
+  "controls": "Do not use closed K4X CHECK/DEV 3100..3107, 9300 or any prior scientific first-use; no private graph, source seed handed to policy, BFS expert, paid dependencies; do not promote novel architecture from a tie; fail closed if source hash/motor coverage or source-published public observation wrong",
+  "positive_advance": "Repaired R3 demonstrates fewer actual blocked actions AND no loss in goal success versus unchanged R3 across preregistered public DEV; native superiority requires a strict improvement against independently implemented learned conventional planner on goals/resources and independent qualification",
+  "fail_closed": "Any code/source drift, unexpected observational syntax, missing fitted motor directions, source-visible hidden field, nonreproducibility, or unknown runner resources blocks scientific advancement. Source-only code checks are not full G29 qualification.",
+  "governance": "This is independent Mass Research additive dev runner on separate research branch based on draft R3. No edit to owner R3, no Forge or CKB scheduling/cutover, no protected first-use, no merge."
+}
