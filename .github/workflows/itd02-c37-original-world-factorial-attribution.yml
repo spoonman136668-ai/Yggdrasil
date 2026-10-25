@@ -1,0 +1,104 @@
+name: ITD-02 C37 original-world native causal-effect attribution and loop veto (read-only)
+on:
+  push:
+    branches:
+      - research/itd02-c37-source-policy-mechanism-attribution-20261025
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: itd02-c37-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verified_original_source_policy_tests:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Frozen-first C37 protocol and unchanged original native R3 C36 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor f7379c51097151a9e72c72dd0976728ca9c541d2 "$GITHUB_SHA"
+          git merge-base --is-ancestor e1a8465128debff54ed8f07597396df759187ed0 "$GITHUB_SHA"
+          test "$(git hash-object research/native/itd02/r3/navigator.py)" = 5348238f4ec2183bea29262659883391b5f429fd
+          test "$(git hash-object research/mass_r7c36/PREREG.json)" = aa8471767755030bd288efc4a58d4ed5849ef56b
+          test "$(git hash-object research/mass_r7c36/run.py)" = 6262dd2f70a972ab7fca7d6b294582fecc87ce23
+          test "$(git hash-object research/mass_r7c36/compare.py)" = 59724057f3ce95af66d107a4535b1f99ac4465c7
+          python -m py_compile research/mass_r7c37/attribution.py research/mass_r7c37/test_attribution.py
+          echo C37_SOURCE_FIRST_NATIVE_R3_AND_C36_POLICY_FROZEN=PASS
+      - name: Source-only selected action consequence and origin integrity tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest research.mass_r7c37.test_attribution -v
+          echo C37_SOURCE_ONLY_FULL_EPISODE_FACTORIAL_TEST=PASS
+          echo C37_NEW_ORIGINAL_MINIGRID_RESET_STEP=ZERO
+          echo C37_PROTECTED_FIRST_USE=DENIED
+
+  original_original_real_source_policy_attribution:
+    needs: [verified_original_source_policy_tests]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      OPENBLAS_NUM_THREADS: '1'
+      GH_ORIGINAL_C36_ARTIFACT: '12603637633'
+      GH_ORIGINAL_C36_ZIP_SHA256: 'e2a8e8a0c22822cb3b7f6d0c7f9be16b3abf90ac13326ef4fd5b1b2cd2072ab4'
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install only original C36 numerical comparison dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install numpy==1.26.4
+      - name: Original exact physical source two-producer C36 ZIP custody
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          mkdir -p "$RUNNER_TEMP/c37-original-C36-policy" "$RUNNER_TEMP/c37-results"
+          curl -fLsS --retry 2 -H "Authorization: Bearer $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" -o "$RUNNER_TEMP/c37-authenticated-original-physical-world.zip" "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/$GH_ORIGINAL_C36_ARTIFACT/zip"
+          echo "$GH_ORIGINAL_C36_ZIP_SHA256  $RUNNER_TEMP/c37-authenticated-original-physical-world.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/c37-authenticated-original-physical-world.zip" -d "$RUNNER_TEMP/c37-original-C36-policy"
+          echo C37_FROZEN_ORIGINAL_REAL_WORLD_C36_ZIP=PASS
+      - name: Verify previous independent original source science and factor physically executed ablations
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m research.mass_r7c37.attribution --original-C36-evidence "$RUNNER_TEMP/c37-original-C36-policy" --output "$RUNNER_TEMP/c37-results/native-conditional-vs-veto-factorial-a.json"
+          python -B -m research.mass_r7c37.attribution --original-C36-evidence "$RUNNER_TEMP/c37-original-C36-policy" --output "$RUNNER_TEMP/c37-results/native-conditional-vs-veto-factorial-b.json"
+          cmp "$RUNNER_TEMP/c37-results/native-conditional-vs-veto-factorial-a.json" "$RUNNER_TEMP/c37-results/native-conditional-vs-veto-factorial-b.json"
+          echo C37_TWO_WHOLE_INDEPENDENT_SOURCE_ONLY_ATTRIBUTIONS=EXACT_PASS
+          echo C37_ORIGINAL_ENV_REAL_NEW_ACTIONS=ZERO
+          echo C37_PROTECTED_FIRST_USE=DENIED
+      - name: Preserve honest negative causal attribution and full original-world receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-c37-original-native-vs-shuffled-source-episode-attribution
+          path: ${{ runner.temp }}/c37-results/
+          if-no-files-found: warn
+          retention-days: 80
