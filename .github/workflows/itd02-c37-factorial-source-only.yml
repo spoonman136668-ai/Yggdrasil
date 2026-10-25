@@ -1,0 +1,45 @@
+name: ITD-02 C37 frozen causal factorial source-only qualification
+on:
+  push:
+    branches: [research/itd02-c37-factorial-loop-causality-20261025]
+permissions:
+  contents: read
+jobs:
+  source-qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      PYTHONHASHSEED: '0'
+      PYTHONDONTWRITEBYTECODE: '1'
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Validate source-first preregistration and immutable R3 and C36
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse ada51d4891483df1d436ba7994ce6312c7a9fbbc^)" = e1a8465128debff54ed8f07597396df759187ed0
+          git merge-base --is-ancestor ada51d4891483df1d436ba7994ce6312c7a9fbbc "$GITHUB_SHA"
+          test "$(git hash-object research/mass_r7c37/PREREG.json)" = 1bc5ace19e8bdcae2509bfc293cb1442415b0064
+          test "$(git hash-object research/mass_r7c36/run.py)" = 6262dd2f70a972ab7fca7d6b294582fecc87ce23
+          test "$(git hash-object research/native/itd02/r3/navigator.py)" = 5348238f4ec2183bea29262659883391b5f429fd
+          echo C37_GENUINE_UNCHANGED_ORIGINAL_SOURCE_FREEZE=PASS
+      - name: Source-only factorial public-state and cold model tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install numpy==1.26.4
+          python -B -m unittest research.mass_r7c37.test_factorial -v
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo C37_SOURCE_ONLY_FIT_AND_NATIVE_R3=PASS
+          echo C37_FRESH_WORLD_SOURCE_EXECUTIONS=ZERO
