@@ -56,4 +56,4 @@ print('R7C20_REPEATED_PUBLIC_ORIGINAL_SOURCE=PASS')
 print('R7C20_RESULT_SHA256='+hashlib.sha256(encoded).hexdigest())
 print('R7C20_DECISION='+stop)
 for fam,row in decisions.items():
-    print(fam,json.dumps({arm:row[arm] for arm in arms},sort_keys=True))
+    print(fam,json.dumps({arm:row['corrected' if arm=='patched' else arm] for arm in arms},sort_keys=True))
