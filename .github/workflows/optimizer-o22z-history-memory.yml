@@ -1,0 +1,71 @@
+name: Optimizer O22-Z source-only retained public history decision
+on:
+  push:
+    branches:
+      - research/optimizer-o22z-history-dependent-public-belief-20261025
+  pull_request:
+    paths:
+      - research/optimizer_o22z/**
+      - .github/workflows/optimizer-o22z-history-memory.yml
+permissions:
+  contents: read
+jobs:
+  original-R1-public-history-memory:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Verify original source and genuine source-first frozen hypothesis
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 64c2baf98e062f9174914504add6641f5ae2ec9d HEAD
+          git merge-base --is-ancestor b6c5c9533fea0aac0440ce36d82b239912d4a124 HEAD
+          test "$(git hash-object research/native/itd02/r1/native_policy.py)" = '3aa22b1e418a7f8cd9619c476f02b8c614917b16'
+          test "$(git hash-object research/native/itd02/r3/navigator.py)" = '5348238f4ec2183bea29262659883391b5f429fd'
+          python -B -c "import json;p=json.load(open('research/optimizer_o22z/PREREG.json'));assert p['classification']=='SOURCE_ONLY_ENGINEERING_IDENTIFIABILITY_FIXTURES_NOT_REAL_ORIGINAL_WORLD_SCIENCE' and p['fixed_identical_query']['front_blocked'] is True"
+          echo O22Z_ORIGINAL_NATIVE_SOURCE_FROZEN=PASS
+      - name: Seven focused legal public memory/cold/source no-claims tests
+        run: python -B -m unittest -v research.optimizer_o22z.test_history_memory
+  deterministic-independent-source-only-certificate:
+    needs: original-R1-public-history-memory
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Reproduce two genuinely separate Python source-only analyses
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/o22z-report"
+          python -B -m research.optimizer_o22z.evaluate --out "$RUNNER_TEMP/o22z-report/run-a.json"
+          python -B -m research.optimizer_o22z.evaluate --out "$RUNNER_TEMP/o22z-report/run-b.json"
+          python -B -c "import pathlib,json,os;a=pathlib.Path(os.environ['RUNNER_TEMP'])/'o22z-report';x=json.loads((a/'run-a.json').read_text());y=json.loads((a/'run-b.json').read_text());assert x['science_SHA256']==y['science_SHA256'] and x['science']==y['science'];assert x['science']['public_world_source_original_new_episodes']==0;print('O22Z_REPEATED_SOURCE_ONLY_SCIENCE_HASH=PASS');print(x['science_SHA256'])"
+          python -B -m json.tool "$RUNNER_TEMP/o22z-report/run-a.json"
+      - name: Archive unpromotable source-only engineering receipt in GitHub
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: optimizer-o22z-authored-public-history-mechanism-only
+          path: ${{ runner.temp }}/o22z-report/run-*.json
+          if-no-files-found: warn
+          retention-days: 80
