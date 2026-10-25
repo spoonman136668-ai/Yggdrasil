@@ -83,7 +83,11 @@ class R8Tests(unittest.TestCase):
         import pathlib
         path=pathlib.Path(__file__).resolve().parents[1]/'r7'/'learner.py'
         source=path.read_bytes()
-        blob=hashlib.sha1(b'blob '+str(len(source)).encode()+b'\0'+source).hexdigest()
+        # Windows Git worktrees may contain CRLF; authenticate the canonical
+        # LF Git object, rejecting any non-CRLF stray carriage return.
+        canonical=source.replace(b'\r\n',b'\n')
+        self.assertNotIn(b'\r',canonical)
+        blob=hashlib.sha1(b'blob '+str(len(canonical)).encode()+b'\0'+canonical).hexdigest()
         self.assertEqual(blob,'204ecd993b954b23e66d6d1e8b3568e7c93183c5')
         n,order=make_evidence()
         self.assertEqual(n.events,1152)
