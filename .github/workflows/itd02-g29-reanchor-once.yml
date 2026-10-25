@@ -1,0 +1,51 @@
+name: ITD02 one-shot G29 source-only atlas reanchor
+on:
+  push:
+    branches:
+      - research/itd02-cartpolewind-comparison-dev-20261025
+permissions:
+  contents: read
+jobs:
+  exact-generated-artifacts:
+    if: github.event.head_commit.message == 'Arm ITD02 bounded G29 reanchor'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Bounded artifact-only refresh; no original research and no accepted ref
+        shell: bash
+        run: |
+          set -euo pipefail
+          A="${GITHUB_SHA}"
+          test "$(git rev-parse HEAD)" = "$A"
+          test "$GITHUB_REF_NAME" = "research/itd02-cartpolewind-comparison-dev-20261025"
+          test -z "$(git status --porcelain)"
+          git merge-base --is-ancestor 63b3a3897a44c2557ba28cd19bf715981b24a2d7 "$A"
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = "cef1378fd3c47ebc74675bd9dde19a183775ceeb"
+          test "$(git rev-parse HEAD:research/native/itd02/r7/learner.py)" = "204ecd993b954b23e66d6d1e8b3568e7c93183c5"
+          test "$(git rev-parse HEAD:.github/workflows/yggdrasil-g29-atlas.yml)" = "baa005e32579327d5dde27a1a7bf653eb85c665c"
+          python scripts/build_code_atlas.py --write --source-commit "$A"
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git diff --cached --quiet && exit 1
+          test "$(git diff --name-only | wc -l | tr -d ' ')" = "0"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Re-anchor ITD02 G29 atlas to exact source $A"
+          B="$(git rev-parse HEAD)"
+          test "$(git diff-tree --no-commit-id --name-only -r "$B" | wc -l | tr -d ' ')" = "3"
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = "cef1378fd3c47ebc74675bd9dde19a183775ceeb"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin "HEAD:refs/heads/research/itd02-cartpolewind-comparison-dev-20261025"
+          echo "ITD02_G29_EXACT_SOURCE_COMMIT=$A"
+          echo "ITD02_G29_THREE_ARTIFACT_ONLY_BOT_COMMIT=$B"
+          echo "ITD02_G29_SCIENTIFIC_GO=FALSE"
