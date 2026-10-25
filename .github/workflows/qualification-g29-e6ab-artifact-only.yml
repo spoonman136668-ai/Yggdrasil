@@ -1,0 +1,61 @@
+name: G29 pinned e6ab artifact-only production
+on:
+  push:
+    branches: [qualification/ygg-g29-e6ab-artifact-only-20261025]
+    paths:
+      - '.github/workflows/qualification-g29-e6ab-artifact-only.yml'
+permissions:
+  contents: read
+concurrency:
+  group: ygg-g29-e6ab-once-output
+  cancel-in-progress: false
+jobs:
+  produce-pinned-source-atlas:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: e6abcb27c46940c4fc80ad1b53f5e4011469c008
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Emit exactly 3 G29 atlas artifacts from original source commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 'e6abcb27c46940c4fc80ad1b53f5e4011469c008'
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = 'cef1378fd3c47ebc74675bd9dde19a183775ceeb'
+          test "$(git rev-parse HEAD:tests/test_free_fanout_sidecar.py)" = 'b9fa5313a6b3dfcbb3911a6d5154ec5f50d89421'
+          test "$(git rev-parse HEAD:research/native/itd02/r7/learner.py)" = '204ecd993b954b23e66d6d1e8b3568e7c93183c5'
+          python -B scripts/build_code_atlas.py --write --source-commit e6abcb27c46940c4fc80ad1b53f5e4011469c008
+          python - <<'PY'
+          import hashlib,json,subprocess,pathlib
+          targets={".ice/code-atlas.json",".ice/code-atlas.html",".ice/code-atlas.ice"}
+          altered=set(subprocess.check_output(["git","diff","--name-only"],text=True).splitlines())
+          untracked=subprocess.check_output(["git","ls-files","--others","--exclude-standard"],text=True).splitlines()
+          assert altered==targets,(altered,targets)
+          assert not untracked,untracked
+          obj=json.loads(pathlib.Path(".ice/code-atlas.json").read_text(encoding="utf-8"))
+          assert obj["source_commit"]=="e6abcb27c46940c4fc80ad1b53f5e4011469c008"
+          assert obj["authority"]=="advisory-locators-only"
+          assert obj["counts"]["files"]==100
+          for path in sorted(targets):
+              p=pathlib.Path(path)
+              assert p.is_file() and p.stat().st_size>100
+              print("ATLAS_FILE",path,hashlib.sha256(p.read_bytes()).hexdigest())
+          print("G29_ORIGINAL_SOURCE_ARTIFACTS_ONLY=PASS")
+          print("G29_SCIENTIFIC_GO=FALSE")
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ygg-g29-e6ab-exact-original-outputs
+          path: |
+            .ice/code-atlas.json
+            .ice/code-atlas.html
+            .ice/code-atlas.ice
+          retention-days: 3
+          if-no-files-found: error
