@@ -7,7 +7,7 @@ import sys
 import unittest
 
 from research.optimizer_o22x.transition_belief import NativeCausalCells,ConventionalNineRidge,choose
-from research.optimizer_o22w.pair_models import FullNineRidgePairs,select,geometric_pair,SAFE
+from research.optimizer_o22w.pair_models import FullNineRidgePairs,select,geometric_pair,LEGAL as SAFE
 
 
 def s(x=2,y=3,direction=0):
