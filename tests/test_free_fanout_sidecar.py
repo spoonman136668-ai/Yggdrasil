@@ -166,7 +166,7 @@ class RuntimeValidationTests(unittest.TestCase):
     def test_package_helper_remains_callable_on_windows(self):
         # Only tests requiring an executing POSIX-metered child may be skipped.
         self.assertFalse(getattr(type(self).make_package, "__unittest_skip__", False))
-        td, root = self.make_package("print('synthetic public source only')\\n")
+        td, root = self.make_package("pass")
         self.addCleanup(td.cleanup)
         self.assertTrue((root / "research" / "fanout" / "smoke_candidate.py").is_file())
 
