@@ -20,8 +20,6 @@ import traceback
 import numpy as np
 
 from research.native.itd02.r1.native_policy import canonical
-from research.mass_r7c20 import run as c20
-from research.mass_r7c22 import run as c22
 
 HERE=Path(__file__).resolve().parent
 P=json.loads((HERE/"PREREG.json").read_text())
@@ -46,6 +44,7 @@ def validate():
  return P
 
 def public(obs,goal):
+ from research.mass_r7c22 import run as c22
  s=c22.public_dynamic(obs,goal).__dict__.copy()
  if(set(s)!=FIELDS or
      not all(type(s[k]) is int for k in ("x","y","goal_x","goal_y","direction")) or
@@ -59,6 +58,7 @@ def source_sha(obs,goal):
        canonical([int(obs["direction"]),list(goal)])).hexdigest()
 
 def anchor(family,seed,tick):
+ from research.mass_r7c20 import run as c20
  env=c20.env_make(family)
  try:
   obs,_=env.reset(seed=seed);goal=c20.goal_from(obs)
@@ -81,6 +81,7 @@ def anchor(family,seed,tick):
  finally:env.close()
 
 def physically_execute_pair(anchor,pair):
+ from research.mass_r7c20 import run as c20
  fam,seed=anchor["family"],anchor["seed"]
  env=c20.env_make(fam)
  try:
