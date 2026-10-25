@@ -1,0 +1,49 @@
+name: ITD-02 C26 frozen FIT action coverage (source-only)
+on:
+  push:
+    branches:
+      - research/itd02-c26-fit-identifiability-20261025
+permissions:
+  contents: read
+concurrency:
+  group: itd02-c26-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  source-only-certification:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Confirm prereg before code and immutable original source identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 252ed0b82fde80fd2409e44c08193c960afd33f1 "$GITHUB_SHA"
+          test "$(git hash-object research/mass_r7c20/run.py)" = "8de70742db29aa56ab928ba10b6fb1003fc82351"
+          test "$(git hash-object research/mass_r7c20/PREREG.json)" = "360463a8e41ed628153c60dc53445169c04d2ab6"
+          test "$(git hash-object research/mass_r7c25/PREREG.json)" = "2796e9f7faf94af4766016aac306ad1143e05e0e"
+          python -m py_compile research/mass_r7c26/certificate.py research/mass_r7c26/test_certificate.py
+          echo "C26_FROZEN_SOURCE_AND_ORIGINAL_OWNER_IDENTITIES=PASS"
+      - name: Focused dual-OS source-only qualification (no source episode)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest research.mass_r7c26.test_certificate -v
+          python -B -m research.mass_r7c26.certificate
+          echo "C26_SOURCE_ONLY_ACTION_IDENTIFIABILITY=PASS_NEGATIVE"
+          echo "C26_ORIGINAL_SOURCE_EPISODES=0"
+          echo "C26_PROTECTED_FIRST_USE=DENIED"
