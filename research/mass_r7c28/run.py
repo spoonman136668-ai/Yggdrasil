@@ -29,7 +29,7 @@ TYPES = ("left", "right", "forward")
 
 
 def _git_blob(data: bytes) -> str:
-    return hashlib.sha1(b"blob " + str(len(data)).encode("ascii") + b"\\0" + data).hexdigest()
+    return hashlib.sha1(b"blob " + str(len(data)).encode("ascii") + b"\0" + data).hexdigest()
 
 
 def verify_source_custody() -> None:
@@ -182,7 +182,7 @@ def main():
     parser.add_argument("--out",required=True)
     args=parser.parse_args()
     value=fit_ledger()
-    Path(args.out).write_bytes(canonical(value)+b"\\n")
+    Path(args.out).write_bytes(canonical(value)+b"\n")
 
 
 if __name__=="__main__":
