@@ -1,0 +1,98 @@
+{
+  "schema": "itd02.c32.real-physical-selected-policy-fit-v1",
+  "parentC31": "f46fdd149af4f676a17941073fe3d61aaeebbcca",
+  "source": {
+    "upstream": "Farama-Foundation/Minigrid@7f5853792ea7f04f75614661006d87fcf949f26d",
+    "fourroomsBlob": "d79f007e00f95f48284da66d760872483c02fab2",
+    "dynamicBlob": "68436cecc35116c23c2f196c22fa3a19c6410b95",
+    "originalR3Blob": "5348238f4ec2183bea29262659883391b5f429fd",
+    "originalR1Blob": "3aa22b1e418a7f8cd9619c476f02b8c614917b16",
+    "unchangedC31BridgeBlob": "fbc37f22b3a820552540a28eb97f81f32034a08a"
+  },
+  "priorFIT": {
+    "artifactId": 12596362847,
+    "zipSHA256": "2e0492af74cd68f8fc9ee7d5cfffcc6a936614e23f9061457f70dcd49cf84810",
+    "authenticatedEvents": 805,
+    "trainingRole": "exact C31 8/12 original FIT episodes per family, never earlier check/dev for training",
+    "motorBootstrap": 12
+  },
+  "prospectivePublicFIT": {
+    "families": {
+      "MiniGrid-FourRooms-v0": [
+        62021,
+        62023,
+        62027,
+        62029
+      ],
+      "MiniGrid-Dynamic-Obstacles-8x8-v0": [
+        62121,
+        62123,
+        62127,
+        62129
+      ]
+    },
+    "maxActionsPerEpisode": 256,
+    "actionSet": [
+      0,
+      1,
+      2
+    ],
+    "observationFields": [
+      "x",
+      "y",
+      "direction",
+      "goal_x",
+      "goal_y",
+      "front_blocked"
+    ],
+    "allArmsOwnIdenticallySeededOriginalWorld": true,
+    "allModelWeightsFrozenFromPriorFIT": true,
+    "newWorldsNotUsedForLearningModelWeights": true,
+    "resetNativeR3EpisodeGraphEveryNewWorld": true,
+    "sourceCurrentPublicSensorBeforeAction": true,
+    "dynamicPolicyDivergenceAfterFirstDifferentAction": true,
+    "doNotClaimSameLaterState": true
+  },
+  "actors": [
+    "r3_original",
+    "native",
+    "native_frozen",
+    "native_shuffled",
+    "full9_conventional_sgd",
+    "full9_conventional_momentum",
+    "temporal_bayes"
+  ],
+  "choice": "Unchanged original R3 chooses action first. Frozen C31 native and comparator predictors may substitute only opposite legal turn if predicted next-front blocked difference greater than frozen 0.1; forward never overruled. Each proposed action then physically executes in source, actual public consequence/reward returned. Native R3 episodic graph updated solely with that policy's physically chosen action outcomes; all arms retain same original C28 FIT-trained predictor weights and 12 real FIT motors.",
+  "acceptance": {
+    "minNativeActuallyChosenDeviations": 1,
+    "minAdditionalNativeGoalsVsR3": 0,
+    "minAdditionalNativeGoalsVsBestConventional": 0,
+    "minNativeRealRewardGainVsR3": 0.01,
+    "minNativeRealRewardGainVsBestConventional": 0.01,
+    "collisionTerminalNoWorseThanR3": true,
+    "wholeExperimentTwoIndependentProcessesExactSourceScience": true,
+    "positive": "BOUNDED_C32_ORIGINAL_SOURCE_PHYSICAL_FIT_POLICY_GAIN_NOT_TRANSFER",
+    "noGo": "NO_C32_REAL_SOURCE_NATIVE_EFFECT_DECISION_ADVANTAGE"
+  },
+  "resources": {
+    "allActualSelectedActions": true,
+    "fullPublicActionAfterAndRewardTrace": true,
+    "realSourceGoalAndHorizon": true,
+    "coldSeparateOSR3AndLearnerAtStepThree": true,
+    "checkpointBytes": true,
+    "totalPythonCPUAndPeakRSS": true,
+    "energyUnmeasured": true
+  },
+  "governance": {
+    "originalOwnerNativeUnchanged": true,
+    "newTrialPublicFITOnly": true,
+    "protectedScientificFirstUse": false,
+    "scientificAccepted": false,
+    "independentNewFamilyTransfer": false,
+    "draftUnmerged": true,
+    "noPaidAPI": true,
+    "noChatGPTLibrary": true,
+    "noF139CKBPlane": true,
+    "allHistoricalNegativesProtected": true
+  }
+}
