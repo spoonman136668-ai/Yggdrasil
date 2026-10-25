@@ -4,6 +4,7 @@ import json
 import pathlib
 import tempfile
 import unittest
+from unittest import mock
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("free_fanout_sidecar", ROOT / "scripts" / "free_fanout_sidecar.py")
@@ -151,6 +152,18 @@ class ManifestValidationTests(unittest.TestCase):
             ff.validate_manifest_path("research/fanout/../../manifest.json")
 
 class RuntimeValidationTests(unittest.TestCase):
+    def test_no_posix_meter_fails_closed_before_any_candidate_execution(self):
+        m = base_manifest()
+        with tempfile.TemporaryDirectory() as td:
+            work = pathlib.Path(td)
+            with mock.patch.object(ff, "resource", None), mock.patch.object(ff.subprocess, "run") as dispatch:
+                with self.assertRaises(ff.FanoutError) as ctx:
+                    ff.run_candidate(m, work, "smoke-a", work / "out")
+                self.assertIn("FREE_FANOUT_RESOURCE_ACCOUNTING_UNAVAILABLE", str(ctx.exception))
+                dispatch.assert_not_called()
+            self.assertFalse((work / "out").exists())
+
+    @unittest.skipIf(__import__("os").name == "nt", "POSIX child resource meter unavailable: fail-closed Windows")
     def make_package(self, source):
         td = tempfile.TemporaryDirectory()
         root = pathlib.Path(td.name)
@@ -169,6 +182,7 @@ class RuntimeValidationTests(unittest.TestCase):
                 ff.run_candidate(m, root, "smoke-a", out)
         self.assertIn("FREE_FANOUT_RESULT_MISSING", str(ctx.exception))
 
+    @unittest.skipIf(__import__("os").name == "nt", "POSIX child resource meter unavailable: fail-closed Windows")
     def test_mismatched_candidate_id_rejected(self):
         m = base_manifest()
         source = """import json, pathlib, sys
