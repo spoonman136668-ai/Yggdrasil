@@ -36,7 +36,7 @@ jobs:
           if ((git hash-object research/native/itd02/r7/learner.py).Trim() -cne '204ecd993b954b23e66d6d1e8b3568e7c93183c5') { throw 'FROZEN_R7_MODIFIED' }
           if ((git hash-object research/native/itd02/cartpolewind_constructor/owner_constructor.py).Trim() -cne '5173773261ab11b79648d1a0db809ba3a50859ac') { throw 'ORIGINAL_SOURCE_OWNER_CHANGED' }
           $env:PYTHONPATH = '.'
-          python -B -m unittest research.native.itd02.cartpolewind_compare_dev.test_compare research.native.itd02.cartpolewind_compare_dev.test_score_contract -v
+          python -B -m unittest research.native.itd02.cartpolewind_compare_dev.test_compare research.native.itd02.cartpolewind_compare_dev.test_score_contract research.native.itd02.cartpolewind_compare_dev.test_frozen_eval -v
           if ($LASTEXITCODE -ne 0) { throw 'THREE_ARM_FOCUSED_DEV_FAILURE' }
           Write-Output 'CARTPOLEWIND_PUBLIC_WIRE_THREE_ARM_FOCUSED=PASS'
           Write-Output 'ORIGINAL_CARTPOLE_EPISODES=0'
@@ -46,7 +46,7 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $env:PYTHONPATH = '.'
-          python -B -m unittest research.native.itd02.r1.test_native_policy research.native.itd02.r2.test_affordance_cells research.native.itd02.r3.test_navigator research.native.itd02.r4.test_cue_cells research.native.itd02.r5.test_concurrent_cues research.native.itd02.r6.test_composer research.native.itd02.r7.test_learner research.native.itd02.cartpolewind_compare_dev.test_compare research.native.itd02.cartpolewind_compare_dev.test_score_contract -v
+          python -B -m unittest research.native.itd02.r1.test_native_policy research.native.itd02.r2.test_affordance_cells research.native.itd02.r3.test_navigator research.native.itd02.r4.test_cue_cells research.native.itd02.r5.test_concurrent_cues research.native.itd02.r6.test_composer research.native.itd02.r7.test_learner research.native.itd02.cartpolewind_compare_dev.test_compare research.native.itd02.cartpolewind_compare_dev.test_score_contract research.native.itd02.cartpolewind_compare_dev.test_frozen_eval -v
           if ($LASTEXITCODE -ne 0) { throw 'NATIVE_DEVELOPMENT_INTEGRATION_REGRESSION_FAILED' }
           git diff --exit-code
           if ($LASTEXITCODE -ne 0) { throw 'DIRTY_QUALIFICATION_WORKTREE' }
