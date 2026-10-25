@@ -1,0 +1,95 @@
+name: Mass R7-C34 original DoorKey physical goal-front forensic
+on:
+  push:
+    branches:
+      - research/mass-r7c34-goal-front-original-fork-20261025
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: mass-r7c34-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-doorkey-authenticated-forward-intervention:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 28
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      GH_TOKEN: ${{ github.token }}
+      OWNER_R12_ROOT: ${{ github.workspace }}/owner-r12
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: research
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: spoonman136668-ai/Yggdrasil
+          ref: 6e2d4a219b1fb62e0124ba053b65b7e3fdd46546
+          path: owner-r12
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Freeze and source custody before any original MiniGrid reset
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C research rev-parse HEAD)" = "$GITHUB_SHA"
+          git -C research merge-base --is-ancestor 5323c8632c4c105fe392c254fe2aee7f7ae613da "$GITHUB_SHA"
+          test "$(git -C external/minigrid rev-parse HEAD)" = "7f5853792ea7f04f75614661006d87fcf949f26d"
+          test "$(git -C external/minigrid hash-object minigrid/envs/doorkey.py)" = "df5b29ef063be34e6d83b8b478e092c6e3e01512"
+          test "$(git -C external/minigrid hash-object minigrid/core/constants.py)" = "9763c63b0a65398c8c8a1f3f6ef1487709f7e038"
+          test "$(git -C owner-r12 rev-parse HEAD)" = "6e2d4a219b1fb62e0124ba053b65b7e3fdd46546"
+          test "$(git -C owner-r12 hash-object research/native/itd02/r10/public_adapter.py)" = "3917d36ce9f86a2c1b998a0a2f93fb27674a9205"
+          python -m py_compile research/research/mass_r7c34/run.py research/research/mass_r7c34/compare.py
+          mkdir -p "$RUNNER_TEMP/mass-r7c34"
+          curl --fail --silent --show-error --location --retry 2 \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header "Accept: application/vnd.github+json" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/12601376550/zip" \
+            --output "$RUNNER_TEMP/mass-r7c34/source-c32.zip"
+          echo "f2f8685067224ce39e6338ed3cc613fccd2130abdc09625e6640d09fb93b3699  $RUNNER_TEMP/mass-r7c34/source-c32.zip" | sha256sum --check -
+          echo "R7C34_ORIGINAL_SOURCE_AND_REPLAY_ARTIFACT=PASS"
+      - name: Install only pinned original Farama MiniGrid
+        run: |
+          set -euo pipefail
+          python -m pip install ./external/minigrid
+      - name: Independently replay source and physically test goal-front source choice
+        working-directory: research
+        shell: bash
+        run: |
+          set -euo pipefail
+          for rep in 1 2; do
+            python -B research/mass_r7c34/run.py "$RUNNER_TEMP/mass-r7c34/source-c32.zip" "$RUNNER_TEMP/mass-r7c34/result-$rep.json"
+          done
+          python -B research/mass_r7c34/compare.py "$RUNNER_TEMP/mass-r7c34"
+      - name: Preserve complete reproducible original-source cause test
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: mass-r7c34-authentic-doorkey-goal-front-intervention-evidence
+          path: ${{ runner.temp }}/mass-r7c34/result-*.json
+          if-no-files-found: warn
+          retention-days: 80
+      - name: Preserve scientific reconciler
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: mass-r7c34-science-reconciliation
+          path: ${{ runner.temp }}/mass-r7c34/comparison.json
+          if-no-files-found: warn
+          retention-days: 80
