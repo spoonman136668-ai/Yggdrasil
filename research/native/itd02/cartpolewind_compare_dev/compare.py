@@ -75,6 +75,7 @@ class Model:
         self.table = {}
         self.trace = [0.0] * 4
         self.recurrent = {str(a): [0.0] * 9 for a in (0, 1)}
+        self._frozen_fit_sha256 = None  # Local evaluation guard, outside checkpoint schema.
 
     def _key(self, obs):
         # Tabular control discretizes PUBLIC inputs only, on fixed bins.
@@ -92,10 +93,56 @@ class Model:
 
     def choose(self, observation):
         obs = _observation(observation)
+        if (self._frozen_fit_sha256 is not None
+                and self.fitted_parameter_sha256() != self._frozen_fit_sha256):
+            raise ValueError("FROZEN_FIT_CHANGED")
         self.action_calls += 1
         return 0 if self._q(obs, 0) >= self._q(obs, 1) else 1
 
+    def fitted_parameter_sha256(self):
+        """Hash FIT parameters only, excluding live public history and counters."""
+        if self.arm == "native":
+            learned = {"fast": self.fast, "slow": self.slow}
+        elif self.arm == "tabular":
+            learned = {"table": self.table}
+        else:
+            learned = {"recurrent": self.recurrent}
+        return hashlib.sha256(_canonical({"schema": SCHEMA,
+            "arm": self.arm, "parameters": learned})).hexdigest()
+
+    def start_frozen_evaluation(self, expected_weight_sha256, reset_trace=True):
+        """The trusted evaluation owner must supply independently sealed FIT identity."""
+        if (type(expected_weight_sha256) is not str
+                or len(expected_weight_sha256) != 64
+                or self.fitted_parameter_sha256() != expected_weight_sha256):
+            raise ValueError("FITTED_WEIGHT_IDENTITY_MISMATCH")
+        if type(reset_trace) is not bool:
+            raise ValueError("INVALID_EVALUATION_HISTORY_RESET")
+        if reset_trace:
+            self.episode_boundary()
+        self._frozen_fit_sha256 = expected_weight_sha256
+
+    def frozen_public_return(self, next_observation, terminal=False, truncated=False):
+        """After selected action, advance allowed recurrent public state without learning."""
+        if self._frozen_fit_sha256 is None:
+            raise ValueError("NOT_FROZEN_EVALUATION")
+        if type(terminal) is not bool or type(truncated) is not bool:
+            raise ValueError("INVALID_EVALUATION_TERMINAL")
+        after = _observation(next_observation)
+        if self.fitted_parameter_sha256() != self._frozen_fit_sha256:
+            raise ValueError("FROZEN_FIT_CHANGED")
+        if self.arm == "recurrent":
+            self.trace = [0.0] * 4 if terminal or truncated else [
+                _clip(.8 * prior + .2 * value)
+                for prior, value in zip(self.trace, after)
+            ]
+        if self.fitted_parameter_sha256() != self._frozen_fit_sha256:
+            raise ValueError("FROZEN_FIT_CHANGED")
+
+
     def observe(self, record):
+        if self._frozen_fit_sha256 is not None:
+            raise ValueError("FITTING_FORBIDDEN_DURING_EVALUATION")
         before, action, after, reward, terminal = _event(record)
         q_old = self._q(before, action)
         # Source-blind, bounded public one-step TD target; no oracle target.
