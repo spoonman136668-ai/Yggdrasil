@@ -1,0 +1,90 @@
+{
+  "schema": "ygg.itd02.cartpole_wind.original_source_readonly_admission.v1",
+  "status": "FROZEN_BEFORE_AUDIT_IMPLEMENTATION_AND_RUN",
+  "program": "Research Charter #857 ITD-02 Learning an Unfamiliar World",
+  "scientific_authority": "FORGE FSA #83; not granted by this development source feasibility screen",
+  "own_base": "5a22ef149bc280dd51596a18230d869d2a103a35",
+  "upstream_repo": "CausalAILab/Causal-Gymnasium",
+  "upstream_commit": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+  "authenticated_blobs": {
+    "causal_gym/envs/cartpole_wind.py": "d65a6a31941709dc9201259d80dd4ebbcf48b4fa",
+    "causal_gym/core/pch.py": "ff37780c6b791877c70583b8d5f699be7fcd8817",
+    "causal_gym/core/task.py": "668262f3f5c88fa2865b08ef10bbf96b09a3b73e"
+  },
+  "rights": {
+    "upstream_read_only": true,
+    "source_AST_analysis": true,
+    "upstream_Python_import": false,
+    "instantiate_environment": false,
+    "original_source_episodes": 0,
+    "training": false,
+    "protected_first_use": false,
+    "runner_external_api_charges": false
+  },
+  "source_checks": [
+    "Original SCM uses Gymnasium CartPole-v1 action transitions modified by hidden wind added to cart velocity.",
+    "Hidden wind resampled after every real step, reset seeded; reward and terminal events come from original Gym CartPole.",
+    "Original SCM enforces max_episode_steps=200 by its own elapsed-step truncation even if underlying wrapper horizon changes.",
+    "Ordinary do_policy observes state only; raw Gym info remains untrusted and must be stripped before learner delivery.",
+    "Source default Task permits see/do/ctf_do and ctf_do yields wind-dependent behavioral intuition; do-only least-privilege plus source-worker isolation required.",
+    "Public output shape and finite numeric data need a strict explicit scalar-only whitelist; candidate must not access source references, Gym environment, raw info, get_graph, rendering, source code, see/ctf_do.",
+    "Parameters wind_mean/wind_std/init_theta_std change conditions but not independently authored causal task family; no unfamiliar-structure transfer claimed.",
+    "Original source and all preserved native R7 experimental and negative outcome identities unchanged."
+  ],
+  "candidate_future_dev_protocol": {
+    "allowed_ingress": "observation four finite floats, action 0/1, resulting observation four finite floats, finite reward, terminated, truncated; omit raw info entirely",
+    "episode_horizon": "original max_episode_steps=200; additionally enforce externally capped 200 actions",
+    "privileged_paths_denied": [
+      "source reference",
+      "env",
+      "_env",
+      "unwrapped",
+      "sample_u",
+      "current_wind",
+      "get_graph",
+      "see",
+      "ctf_do",
+      "raw info",
+      "source P",
+      "action() behavioral hint"
+    ],
+    "frozen_least_privilege_regime": "Task(learning_regime=LearningRegime.do), verified at owned source worker; do not rely solely on task as physical isolation",
+    "fully_trained_controls_required": [
+      "matched experience budget neural action-value control",
+      "matched experience and input recurrent/state-space control",
+      "deterministic simple public-state controller as shortcut check"
+    ],
+    "transfer_scope": "wind-condition parameter transfer can be public developmental only; independent unseen causal task family NOT demonstrated",
+    "metrics": [
+      "return and safety terminations",
+      "action quality",
+      "next-state prediction",
+      "paired same-input retention",
+      "cold restoration",
+      "unfamiliar parameter transfer",
+      "peak RSS",
+      "CPU",
+      "checkpoint bytes",
+      "total train+inference cost"
+    ]
+  },
+  "fail_closed": [
+    "any upstream SHA drift",
+    "any source dynamic permission or method shape drift",
+    "any source import or original episode",
+    "any candidate raw private values",
+    "any prospective FIT/CHECK/DEV consumption",
+    "any nonfinite or malformed scalar array",
+    "any unknown source family promotion"
+  ],
+  "decision": "source-only screen can produce development-only eligible or no-go engineering verdict; never SCIENTIFIC_GO without FSA",
+  "preserve": [
+    "frozen ITD-01 R7 original FAIL and causal sampling-confound audit",
+    "native R7 versus trained control parity",
+    "DTR-02 shortcut",
+    "CS13 RockSample near-ceiling",
+    "one-bit original MDP memoryless optimality",
+    "FrozenLake leakage and horizon NO-GO"
+  ],
+  "scientific_go": false
+}
