@@ -51,6 +51,17 @@ jobs:
           curl -fLsS --retry 2 -H "Authorization: Bearer $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" -o "$RUNNER_TEMP/c38-original-C35.zip" "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/12603145885/zip"
           echo "4e35aef3238b6ba2b9d83c4e9e288ff2d8dd3edd23177974b9deb088cca66ca3  $RUNNER_TEMP/c38-original-C35.zip" | sha256sum -c -
           python -m zipfile -e "$RUNNER_TEMP/c38-original-C35.zip" "$RUNNER_TEMP/c38-c35-FIT"
+          # Windows Git autocrlf may change the local checkout bytes of the
+          # original C35 protocol. Its frozen original Git blob, NOT a new
+          # protocol, is the authenticated original source SHA input.
+          python - <<'PY'
+          import pathlib,subprocess,hashlib
+          p=pathlib.Path("research/mass_r7c35/PREREG.json")
+          frozen=subprocess.check_output(["git","show","HEAD:"+p.as_posix()])
+          p.write_bytes(frozen)
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==hashlib.sha256(frozen).hexdigest()
+          print("C38_ORIGINAL_C35_TRACKED_PREREG_BLOB_BYTES=PASS")
+          PY
           echo C38_ORIGINAL_C35_PUBLIC_PHYSICAL_FIT_SHA256=PASS
       - name: Repeat FIT-model fingerprints in fresh processes at one-thread and two-thread BLAS
         shell: bash
@@ -66,7 +77,7 @@ jobs:
           folder=pathlib.Path(os.environ["RUNNER_TEMP"])/"c38-results"
           a,b,c=(json.loads((folder/n).read_text()) for n in ("source-one-thread-a.json","source-one-thread-b.json","source-two-threads.json"))
           assert a["science"]==b["science"] and a["science_sha256"]==b["science_sha256"],"C38_FRESH_PROCESS_SAME_HOST_DRIFT"
-          fields=("source_original_FIT_training_order_sha256",
+          fields=("original_source_FIT_training_order_sha256",
                   "real_selected_source_FIT_model_features_sha256",
                   "real_selected_source_FIT_real_progress_labels_sha256",
                   "model_prior_count_sha256","model_conditional_count_sha256",
