@@ -42,12 +42,21 @@ def assignment_value(function, variable):
 
 
 def info_fields(fn):
-    return sorted(set(
+    fields = set(
         z.slice.value for z in ast.walk(fn)
         if isinstance(z, ast.Subscript) and isinstance(z.value, ast.Name)
         and z.value.id == "info" and isinstance(z.slice, ast.Constant)
         and isinstance(z.slice.value, str)
-    ))
+    )
+    for z in ast.walk(fn):
+        if (isinstance(z, ast.Assign) and len(z.targets) == 1
+                and isinstance(z.targets[0], ast.Name) and z.targets[0].id == "info"
+                and isinstance(z.value, ast.Dict)):
+            for key in z.value.keys:
+                require(isinstance(key, ast.Constant) and isinstance(key.value, str),
+                        "ORIGINAL_INFO_NONLITERAL_KEY")
+                fields.add(key.value)
+    return sorted(fields)
 
 
 def main(root):
