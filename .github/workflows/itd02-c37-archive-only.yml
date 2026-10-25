@@ -1,0 +1,107 @@
+name: ITD-02 C37 archive-only original-world independent evidence audit
+on:
+  push:
+    branches: [research/itd02-c37-factorial-loop-causality-20261025]
+    paths:
+      - '.github/workflows/itd02-c37-archive-only.yml'
+      - 'research/mass_r7c37/compare.py'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  original-reports-only:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONHASHSEED: '0'
+      PYTHONDONTWRITEBYTECODE: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Check frozen source and independent source verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object research/mass_r7c37/PREREG.json)" = 1bc5ace19e8bdcae2509bfc293cb1442415b0064
+          test "$(git hash-object research/native/itd02/r3/navigator.py)" = 5348238f4ec2183bea29262659883391b5f429fd
+          python -m pip install numpy==1.26.4
+          python -B -c 'import research.mass_r7c37.compare; print("C37_INDEPENDENT_COMPARATOR_CODE=PASS")'
+      - name: Authenticate TWO original-source execution archives without rerunning worlds
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/c37-a" "$RUNNER_TEMP/c37-b" "$RUNNER_TEMP/c37-audit"
+          curl -fLsS --retry 2 -H "Authorization: Bearer $GITHUB_TOKEN" -o "$RUNNER_TEMP/one.zip" \
+            https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/12604831642/zip
+          echo "091d87ad5be235798ec857c6adee3aacf390773ffba71ddafce116eea378d5e1  $RUNNER_TEMP/one.zip" | sha256sum -c -
+          curl -fLsS --retry 2 -H "Authorization: Bearer $GITHUB_TOKEN" -o "$RUNNER_TEMP/two.zip" \
+            https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/12605151152/zip
+          echo "8b18bba6f71397d33713d8299fd036661afb27c02c45d0a7d6b6e842942e8d3d  $RUNNER_TEMP/two.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/one.zip" -d "$RUNNER_TEMP/c37-a"
+          unzip -q "$RUNNER_TEMP/two.zip" -d "$RUNNER_TEMP/c37-b"
+          echo C37_BOTH_IMMUTABLE_ORIGINAL_ARCHIVES=PASS
+      - name: Independently verify four existing OS reports; no source resets or steps
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m research.mass_r7c37.compare \
+            --first "$RUNNER_TEMP/c37-a/process-a.json" \
+            --second "$RUNNER_TEMP/c37-a/process-b.json" \
+            --output "$RUNNER_TEMP/c37-audit/execution-one.json"
+          python -B -m research.mass_r7c37.compare \
+            --first "$RUNNER_TEMP/c37-b/process-a.json" \
+            --second "$RUNNER_TEMP/c37-b/process-b.json" \
+            --output "$RUNNER_TEMP/c37-audit/execution-two.json"
+          python -B - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          root=Path(os.environ["RUNNER_TEMP"])
+          a=json.loads((root/"c37-a"/"process-a.json").read_text())
+          b=json.loads((root/"c37-b"/"process-a.json").read_text())
+          verified=[]
+          for f in ("execution-one.json","execution-two.json"):
+              item=json.loads((root/"c37-audit"/f).read_text())
+              assert item["science_identical"] is True
+              assert item["source_A"]=="NO_C37_FACTORIAL_NATIVE_CAUSAL_MEMORY_SUPERIORITY"
+              assert item["source_B"]=="NO_C37_FACTORIAL_NATIVE_CAUSAL_MEMORY_SUPERIORITY"
+              verified.append(item["result"])
+          def identities(report):
+              return {(r["arm"],r["family"],r["seed"]):r["original_trace_sha256"]
+                      for r in report["original_source_true_physical_actor_episodes"]}
+          traces_match=identities(a)==identities(b)
+          models_match=a["original_FIT_model_sha256"]==b["original_FIT_model_sha256"]
+          result={
+              "original_source_worlds_reexecuted":0,
+              "complete_original_source_reports_checked":4,
+              "source_action_trajectories_per_full_run":len(identities(a)),
+              "all_original_source_trajectories_repeated":traces_match,
+              "FIT_trained_model_sha_identical_across_runs":models_match,
+              "model_SHA_run1":a["original_FIT_model_sha256"],
+              "model_SHA_run2":b["original_FIT_model_sha256"],
+              "source_scientific_outcome":"NO_C37_FACTORIAL_NATIVE_CAUSAL_MEMORY_SUPERIORITY",
+              "archive_custody":"PASS" if traces_match else "BLOCKED_SOURCE_TRAJECTORY_DRIFT",
+              "cross_run_model_identity":"PASS" if models_match else "DRIFT_NOT_QUALIFIED",
+              "science_promoted":False,"protected_first_use":False
+          }
+          (root/"c37-audit"/"four-reports.json").write_text(json.dumps(result,sort_keys=True,indent=2)+"\n")
+          print("C37_ARCHIVED_EVIDENCE_CUSTODY="+result["archive_custody"])
+          print("C37_CROSS_RUN_MODEL_IDENTITY="+result["cross_run_model_identity"])
+          print("C37_ORIGINAL_FIRST_USE=FALSE")
+          assert traces_match
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo C37_FOUR_ARCHIVED_ORIGINAL_REPORTS_CHECKED_NO_NEW_WORLD_EXPOSURE=PASS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: itd02-c37-original-four-report-science-audit
+          path: ${{ runner.temp }}/c37-audit/
+          if-no-files-found: warn
+          retention-days: 80
