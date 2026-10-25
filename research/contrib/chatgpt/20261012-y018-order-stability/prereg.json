@@ -1,0 +1,16 @@
+{
+  "id":"Y018-ORDER-STABILITY",
+  "parent":"58a077575e114eb21e4bbd3aa55458c5d8aa9871",
+  "question":"Does reversing motif traversal preserve fixed-capacity assignment success?",
+  "arms":["Y017 exact original order: greedy versus matching","Y017 exact reversed order: greedy versus matching"],
+  "stages":6,
+  "capacity":16,
+  "radius":2,
+  "evaluation_count":24,
+  "external_model_calls":0,
+  "required_control":"Exact archived Y017 selected-key streams; abort without original keys. Baseline matching six valid and greedy six invalid.",
+  "supported":"Baseline matches and matching succeeds all twelve cases while greedy fails at least one.",
+  "negative":"Matching fails or greedy succeeds all cases.",
+  "invalid":"Any provenance, parity, control or deterministic-replay mismatch.",
+  "scope":"Read-only synthetic science; no promotion"
+}
