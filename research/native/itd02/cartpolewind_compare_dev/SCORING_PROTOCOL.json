@@ -1,0 +1,47 @@
+{
+  "schema": "ygg.itd02.cartpolewind.comparison_scoring_contract.v1",
+  "status": "SOURCE_ONLY_FREEZE_BEFORE_SCORING_CODE",
+  "parent_source_head": "52f444ccfbc26062106d11d56ad1c9b6510a818b",
+  "immutable_public_source": "CausalAILab/Causal-Gymnasium@c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+  "immutable_cartpole_blob": "d65a6a31941709dc9201259d80dd4ebbcf48b4fa",
+  "developer_three_arm_source": "research/native/itd02/cartpolewind_compare_dev/compare.py",
+  "hypothesis": "Compare native fast/slow TD, fully fitted conventional binned tabular TD, and fully fitted conventional recurrent-linear TD on both identical public training data and independently run equal-budget paired evaluation episodes. Shared-data fitting does not prove action quality or causal exploration.",
+  "development_only": true,
+  "immutable_arms": [
+    "native",
+    "tabular",
+    "recurrent"
+  ],
+  "learning_phase": "identical ordered, legally obtained public FIT transition tuples across all arms; FIT-only tuning; require each arm consume equal counts; model freeze before scored episodes",
+  "evaluation_phase": "independent source-owner process per arm and trial, matched public evaluation seed/cohort IDs frozen before first use, policies choose binary action from four real-valued observables, no online parameter fitting during scored episodes, episode return/length/termination and resource metrics scored without privileged info",
+  "cohort_separation": "real FIT, VALID and one DEV identities must be admitted/frozen and disjoint by existing FORGE FSA; this engineering branch consumes zero originals and no actual protected seed list",
+  "comparison_protocol": "evaluate individual paired trial returns per arm on identically identified cohorts; no inter-arm state sharing or reward replay from a competitor during evaluation; report per-arm returns, episode lengths, action calls, wall/CPU, max child RSS, serialized model bytes, and baseline-adjusted signed differences without selection on DEV",
+  "bias_checks": [
+    "no hidden source wind/private info/graph/counterfactual return",
+    "same public observation/action/reward event schema",
+    "no model-weight changes during evaluation",
+    "cold-process model restoration and per-arm episode state reset",
+    "fixed number of evaluation episodes/trials, source-owner records original terminal or truncation",
+    "paired ID equality, no duplicate trials or overlap with FIT/VALID",
+    "admission and protected claims require independent FSA receipts external to this code; a structural digest or locally written JSON never suffices"
+  ],
+  "hard_boundaries": {
+    "original_resets": 0,
+    "original_steps": 0,
+    "real_fits": 0,
+    "real_rewards": 0,
+    "scientific_go": false,
+    "original_firstuse_denied": true,
+    "forbidden": [
+      "source-owner episode activation",
+      "new controller/scheduler/witness/signing keys",
+      "FSA reservation/ledger writes",
+      "protected holdout exposure",
+      "synthetic physics simulator/testbed generation",
+      "automatic model selection, acceptance or production promotion",
+      "paid API"
+    ]
+  },
+  "scoring_note": "Pure static parser/score-aggregation on hardcoded synthetic PUBLIC metrics for development. Every output must self-label source-only and scientific_go=false; no claims of actual environment performance.",
+  "follow_on": "Only original existing FSA owner can admit freeze/source/seeds/steps/budgets and produce original independent start/witness; prepare training/evaluation adapter only after that admission contract is qualified. No DEV peeking or post-DEV adaptation."
+}
