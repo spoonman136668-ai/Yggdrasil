@@ -66,11 +66,11 @@ def _verify(raw,identity,max_size):
 def _cells_to_wire(cells):
     return [[[c.fast,c.slow,c.updates] for c in head] for head in cells]
 
-def _cells_from_wire(rows,expected):
+def _cells_from_wire(rows,expected,action):
     if type(rows) is not list or len(rows)!=2:
         raise ValueError("O22X_BAD_CELL_HEADS")
     heads=[]
-    for head in rows:
+    for index,head in enumerate(rows):
         if type(head) is not list or len(head)!=9:
             raise ValueError("O22X_BAD_CELL_FEATURE_WIDTH")
         cohort=[]
@@ -78,7 +78,7 @@ def _cells_from_wire(rows,expected):
             if (type(c) is not list or len(c)!=3 or
                 any(type(v) not in (float,int) or not math.isfinite(v) for v in c) or
                 abs(c[0])>32 or abs(c[1])>32 or
-                type(c[2]) is not int or c[2]!=expected):
+                type(c[2]) is not int or c[2]!=(expected if action==2 or index==0 else 0)):
                 raise ValueError("O22X_BAD_CELL_STATE")
             cohort.append(LocalCell(*c))
         heads.append(cohort)
@@ -124,7 +124,7 @@ class NativeCausalCells:
             raise ValueError("O22X_NATIVE_ACTION_COUNT")
         o=cls()
         for a,v in b["cells"].items():
-            heads=_cells_from_wire(v,b["actions"][a])
+            heads=_cells_from_wire(v,b["actions"][a],int(a))
             # Exactly ZERO local movement weight updates for turns.
             if a!="2" and any(c.updates!=0 for c in heads[1]):
                 raise ValueError("O22X_TURN_MOVEMENT_LEARNED")
