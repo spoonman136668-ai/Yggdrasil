@@ -40,7 +40,7 @@ jobs:
           test "$(git rev-parse HEAD:.github/workflows/yggdrasil-g29-atlas.yml)" = "baa005e32579327d5dde27a1a7bf653eb85c665c"
           test -z "$(git status --porcelain)"
           echo G29_SIMULATED_MERGE_TWO_PARENTS_AND_TREE=PASS
-      - name: Qualify unmodified merged tree: G29, supported OS regression, no source rewrites
+      - name: "Qualify unmodified merged tree - G29, supported OS regression, no source rewrites"
         shell: bash
         run: |
           set -euo pipefail
