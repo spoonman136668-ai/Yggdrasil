@@ -1,0 +1,44 @@
+{
+  "schema": "yggdrasil.itd02.r12.source-only-public-outcome-choice-v1",
+  "status": "FROZEN_BEFORE_SOURCE_OR_TESTS",
+  "parent": "56e0c14393b8a7ddee479dbee6779f092f33267d",
+  "original_sha": {
+    "r7": "204ecd993b954b23e66d6d1e8b3568e7c93183c5",
+    "r8": "346fb9eb7462208a6cbd28cfb51716c22e5ec857",
+    "r9": "66ec3befe92e2d2c2b7116217354a40f59e659d7",
+    "r10": "3917d36ce9f86a2c1b998a0a2f93fb27674a9205",
+    "r11": "614c7dfb1b43f485009b70cb85e9b7b5119cafc2"
+  },
+  "question": "Can original R11 source-public selected-action consequence counts be used to select an action for an EXPLICIT public intent rather than only predict, without hardcoding desired action names?",
+  "inputs": "Original R10 exact public image/direction/mission and original R11 learned counts from actually selected and returned source-free public action effects. No environment grid/global pose/carrying private state/door simulator truth.",
+  "objectives": [
+    "carrying_changed",
+    "visible_door_state_changed",
+    "positive_reward"
+  ],
+  "decision": "For each of 7 legal actions, use entire learned empirical outcome distribution and expected declared public intent utility minus nonnegative per-action cost. Do not use preconfigured action-to-key or door mapping. No known positive expected value means abstain. Unknown-context actions cannot be treated as positives. Exact ties lower action ID. Explicitly no autonomous mission parser or map navigation.",
+  "training": "Source-free manually authored public 7x7x3 observations and selected action/return fixture rows, including no-key and carrying-key otherwise identical door contexts, key pickup, contradictory evidence for one action and a source-free earned public reward example. No actual original Farama MiniGrid episodes.",
+  "controls": "Independent equally FIT-trained count-table expected-utility conventional controller sees identical public actions/outcomes, source reward, declared utilities/cost, and confidence. Untrained no-evidence abstain control.",
+  "metrics": [
+    "actual chosen legal actions and abstentions in public-context fixtures",
+    "empirical uncertainty/cost tradeoff",
+    "same-data independent conventional action parity",
+    "conservative no observed evidence outcome",
+    "fresh process cold checkpoint restoration",
+    "exact original R7-R11 source SHA and hosted Linux/Windows source-only tests"
+  ],
+  "vetoes": [
+    "Source-only functional action selection is not autonomous key retrieval, goal-directed DoorKey navigation or original externally qualified physics",
+    "Identical conventional decision across same public training rows prevents native intelligence novelty claim",
+    "Source-first frozen evidence must be preserved, and no protected seed or FSA first-use is touched"
+  ],
+  "governance": {
+    "FSA_83_open": true,
+    "draft_unmerged": true,
+    "no_existing_native_changes": true,
+    "no_paid_API": true,
+    "no_CKB_or_F139_actions": true,
+    "no_protected_holdout": true,
+    "no_library_upload": true
+  }
+}
