@@ -88,6 +88,8 @@ def validate_anchor(row,protocol,role):
         prior=initial
         for idx,x in enumerate(steps):
             prior=validate_selected_step(x,int(pair[idx]),prior)
+            if idx==0 and (x["term"] or x["trunc"]):
+                raise ValueError("C36_CANNOT_HAVE_TWO_PHYSICAL_ACTIONS_AFTER_FIRST_TERMINATION")
         if (r.get("actually_observed_next_front_blocked") is not prior["front_blocked"] or
             type(r.get("actual_source_reward_sum")) not in (int,float) or
             not math.isclose(sum(x["reward"] for x in steps),r["actual_source_reward_sum"],abs_tol=1e-12) or
