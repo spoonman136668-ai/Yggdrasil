@@ -20,7 +20,7 @@ import time
 
 from research.native.itd02.r1.native_policy import canonical
 from research.optimizer_o22w.evaluate import original_c35, observed, train_pair, cold as direct_cold
-from research.optimizer_o22w.pair_models import FullNineRidgePairs,geometric_pair,select,SAFE,PAIRS
+from research.optimizer_o22w.pair_models import FullNineRidgePairs,geometric_pair,select,LEGAL as SAFE,PAIRS
 from research.optimizer_o22x.evaluate import train as fit_transitions, cold as transition_cold
 from research.optimizer_o22x.transition_belief import NativeCausalCells,ConventionalNineRidge,choose,two_step_belief
 
