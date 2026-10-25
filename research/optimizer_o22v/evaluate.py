@@ -13,7 +13,6 @@ import io
 import json
 import os
 from pathlib import Path
-import resource
 import subprocess
 import sys
 import time
@@ -190,6 +189,7 @@ def proposal_audit(rows,models):
 
 
 def main():
+    import resource  # POSIX hosted original FIT audit only; Windows unit imports remain legal
     parser=argparse.ArgumentParser()
     parser.add_argument("--source-zip",type=Path,required=True)
     parser.add_argument("--out",type=Path,required=True)
