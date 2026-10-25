@@ -133,7 +133,7 @@ def main():
     require("causal_gym.envs.cartpole_wind" in sys.modules,
             "ORIGINAL_SOURCE_IMPORT_WAS_LOST")
     print("CARTPOLEWIND_OWNER_SEPARATE_PROCESS=PASS", flush=True)
-    print("CARTPOLEWIND_ORIGINAL_MODULE_IMPORTS=0", flush=True)
+    print("CARTPOLEWIND_ORIGINAL_MODULE_IMPORTS=1", flush=True)
     print("CARTPOLEWIND_ORIGINAL_ENV_EPISODES=0", flush=True)
     print("CARTPOLEWIND_SCIENTIFIC_GO=FALSE", flush=True)
 
