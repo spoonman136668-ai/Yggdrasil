@@ -19,8 +19,6 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(ROOT))
-from research.mass_r7c20 import run as c20
-from research.mass_r7c25 import run as c25
 from research.native.itd02.r1.native_policy import canonical
 
 P = json.loads((HERE / "PREREG.json").read_text(encoding="utf-8"))
@@ -31,7 +29,7 @@ def _git_blob(data: bytes) -> str:
     return hashlib.sha1(b"blob " + str(len(data)).encode("ascii") + b"\0" + data).hexdigest()
 
 
-def verify_source_custody() -> None:
+def verify_source_custody(c20) -> None:
     for path, blob in (
         ("research/native/itd02/r1/native_policy.py", P["original_source"]["native_r1_blob"]),
         ("research/native/itd02/r2/affordance_cells.py", P["original_source"]["native_r2_blob"]),
@@ -116,8 +114,13 @@ def validate_episode(family: str, seed: int, rows: list, cap: int) -> tuple[list
 
 
 def fit_ledger() -> dict:
+    # Source-specific research parents import POSIX-only resource accounting.
+    # Import them strictly in the Linux ORIGINAL FIT execution path, not in
+    # Windows source-event grammar tests.
+    from research.mass_r7c20 import run as c20
+    from research.mass_r7c25 import run as c25
     import gymnasium, minigrid  # original package only used within genuine FIT runner
-    verify_source_custody()
+    verify_source_custody(c20)
     timer=time.process_time()
     selected,old_sha,source_counts=c20.fit_data()
     if old_sha != P["frozen_motor_fit"]["original_fit_selected_sha256"] or len(selected)!=12:
