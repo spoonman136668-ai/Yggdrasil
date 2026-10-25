@@ -1,0 +1,55 @@
+{
+  "schema": "itd02.c33.C32-trajectory-failure-forensics-source-only.v1",
+  "role": "FROZEN C32 PHYSICALLY EXECUTED PUBLIC FIT EVIDENCE FORENSIC ONLY",
+  "C32_original_source_head": "e0c391bd2d1ceada25ba4b88d419a4dcdd41b543",
+  "C32_original_physical_action_run": 40192579434,
+  "C32_artifact_id": 12598538562,
+  "C32_artifact_zip_sha256": "25dfa8e78f2a3fde82e81b9bd7f6312e7413341a74d3579036757dbf9509b4bd",
+  "C32_protocol_git_blob": "5400dd02667db518a3de7ac3732799b492102603",
+  "C32_physical_episode_git_blob": "ca30f27e13fec9c51fd4af93239cccaec93b6e61",
+  "C32_compare_git_blob": "816d2da9f8616ff3327efe36e6377ce077a61aa6",
+  "original_source": "Farama-Foundation/Minigrid@7f5853792ea7f04f75614661006d87fcf949f26d",
+  "frozen_actors": [
+    "r3_original",
+    "native",
+    "native_frozen",
+    "native_shuffled",
+    "full9_conventional_sgd",
+    "full9_conventional_momentum",
+    "temporal_bayes"
+  ],
+  "frozen_seed_roles": {
+    "MiniGrid-FourRooms-v0": [
+      62021,
+      62023,
+      62027,
+      62029
+    ],
+    "MiniGrid-Dynamic-Obstacles-8x8-v0": [
+      62121,
+      62123,
+      62127,
+      62129
+    ]
+  },
+  "metrics_definition": {
+    "physically_selected_actions": "Count exact C32 physical source_actual_actions per arm, never model proposals",
+    "executed_turn_substitutions": "Count event executed != original_r3_proposed and verify both legal turns",
+    "adjacent_undo_turns": "Count adjacent real actions turning LEFT followed by RIGHT or RIGHT followed by LEFT, with no agent translation, and original agent pose/heading returned on second observed after.",
+    "same_pose_4_step_revisits": "For each physical source public agent pose (x,y,direction), count step ends matching a pose encountered within previous 4 source steps of the same episode; measured as retrospective recurrences, not causal information gain.",
+    "no_translation_turn_run_max": "Longest contiguous physical source run of turn actions with unchanged x/y. Derived from actual chosen actions, not simulated policy.",
+    "unique_visited_agent_poses": "Number of distinct (x,y,direction) public poses at preaction plus postaction including initial state per episode.",
+    "first_actual_action_divergence_vs_original": "For each original-source seed, compare physically selected action and before-public state from beginning until first different chosen action; after that, policies' following states must be treated as independent.",
+    "full_action_trace_identity": "Compare for each same-source start seed independent native and conventional full actually returned before/action/after/reward/termination traces, not just total goals; do not imply statistically independent seeds from repeated processes.",
+    "source_family_stratification": "Keep FourRooms and DynamicObstacles separate for each model; do not hide native failure in pooled totals."
+  },
+  "decision": "C31/C32 myopic R3 alternate-turn override remains explicitly SCIENTIFIC NO-GO and stopped regardless of these forensic numbers. No tuning model, threshold, source observations, branch, seed role, or new MiniGrid episode on exposed evidence.",
+  "safety_stop": [
+    "Fail closed unless exact original Actions ZIP SHA256, exact C32 immutable source program and prereg blobs match.",
+    "All archived exact original C32 process A and B original action science must reconcile byte-for-byte modulo declared resource fields.",
+    "Check 56 real source episodes per process, full 0/1/2 source step legality, public shape, complete original per-episode SHA and total source actor counts, including terminal honesty.",
+    "Record if native/SGD or native/momentum original true physical trajectories match exactly; negative from original source rather than model-hypothetical.",
+    "Any forensic finding is retrospective mechanism diagnosis on CONSUMED FIT, not a fresh independent evaluation; no statistical p-value or causal treatment-effect claims.",
+    "One new source-only Linux and Windows acceptance; no new source import/reset/step, new public DEV/VALID/protected science, accepted refs, original R1/R2/R3 edits, FORGE/CKB authority path, paid API, or Library files."
+  ]
+}
