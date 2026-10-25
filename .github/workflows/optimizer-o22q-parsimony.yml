@@ -1,0 +1,73 @@
+name: Optimizer O22-Q minimal source action baseline certificate
+on:
+  push:
+    branches:
+      - research/optimizer-o22q-simple-action-controls-20261025
+  pull_request:
+    paths:
+      - research/optimizer_o22q/**
+      - .github/workflows/optimizer-o22q-parsimony.yml
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source-only-test:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Require original O22-P identity and protocol before source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 1abd30df66277d3f61be3d9315734dd268665696 HEAD
+          git merge-base --is-ancestor 6e8541b916ad82ae1cd980bf3682af270a981bd4 HEAD
+          python -B -c "import json;p=json.load(open('research/optimizer_o22q/PREREG.json'));assert p['controls']['original_source_reset_and_steps_allowed']==0 and not p['controls']['protected_first_use_allowed']"
+      - name: Original public-data conditional model source-only unit + separate Python cold
+        run: python -B -m unittest -v research.optimizer_o22q.test_parsimonious
+
+  frozen-source-parsimony:
+    runs-on: ubuntu-24.04
+    needs: source-only-test
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Retrieve same prior authentic FIT with no simulator run
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/o22q-frozen-FIT" "$RUNNER_TEMP/o22q-result"
+          gh run download 40186158097 --repo "$GITHUB_REPOSITORY" --name optimizer-o22o-authentic-original-turn-action-FIT-receipts --dir "$RUNNER_TEMP/o22q-frozen-FIT"
+          python -B -c "import json,pathlib,os,hashlib;d=json.load(open('research/optimizer_o22p/PREREG.json'))['source_artifact'];p=pathlib.Path(os.environ['RUNNER_TEMP'])/'o22q-frozen-FIT';assert hashlib.sha256((p/'fit-1.json').read_bytes()).hexdigest()==d['fit1_file_sha256'] and hashlib.sha256((p/'fit-2.json').read_bytes()).hexdigest()==d['fit2_file_sha256']"
+      - name: Train all fair parsimonious arms and compare prior native results
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/optimizer_o22q/audit.py --source "$RUNNER_TEMP/o22q-frozen-FIT" --out "$RUNNER_TEMP/o22q-result/comparison.json"
+          python -B -m json.tool "$RUNNER_TEMP/o22q-result/comparison.json"
+      - name: Archive original FIT diagnostic negative and positive findings
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: optimizer-o22q-frozen-internal-fit-parsimony
+          path: ${{ runner.temp }}/o22q-result/
+          if-no-files-found: warn
+          retention-days: 80
