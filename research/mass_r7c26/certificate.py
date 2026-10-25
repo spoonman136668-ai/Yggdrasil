@@ -23,9 +23,12 @@ def git_blob_sha(raw: bytes) -> str:
 
 def checked_original(path: str, expected: str) -> bytes:
     data = (ROOT / path).read_bytes()
-    if git_blob_sha(data) != expected:
+    # Windows Git worktrees may materialize CRLF even when the pinned Git
+    # object is LF; Git blob identity must check canonical repository bytes.
+    canonical_git_bytes = data.replace(bytes((13, 10)), bytes((10,)))
+    if git_blob_sha(canonical_git_bytes) != expected:
         raise ValueError("SOURCE_IDENTITY_DRIFT:" + path)
-    return data
+    return canonical_git_bytes
 
 
 def certify_frozen_selected_fit() -> dict:
