@@ -206,9 +206,10 @@ def prediction_metrics(model,events):
 
 
 def event_split(data):
-    ordered=P["source_fit_split"]
-    left={(fam,seed) for fam,seeds in ordered["learn"].items() for seed in seeds}
-    test={(fam,seed) for fam,seeds in ordered["internal_fit_check"].items() for seed in seeds}
+    from research.mass_r7c28.run import P as SOURCE_FIT_PROTOCOL
+    original=SOURCE_FIT_PROTOCOL["new_fit_episodes"]
+    left={(fam,seed) for fam,seeds in original.items() for seed in seeds[:8]}
+    test={(fam,seed) for fam,seeds in original.items() for seed in seeds[8:]}
     if left&test:raise ValueError("FIT_DATA_SPLIT_COLLISION")
     train=[e for e in data if (e["family"],e["seed"]) in left]
     check=[e for e in data if (e["family"],e["seed"]) in test]
