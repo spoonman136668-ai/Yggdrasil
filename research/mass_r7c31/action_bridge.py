@@ -135,8 +135,9 @@ def qualified_disposition(results):
     shifted=results["shuffled_action"]["changed_from_r3"]
     if native==0:
         return "NO_GO_NATIVE_LEARNED_CELLS_DO_NOT_CHANGE_R3_CHOICE"
-    if results["native"]["decisions"]==results["frozen"]["decisions"]:
+    chosen=lambda name:[d["model_proposed_action_NOT_EXECUTED"] for d in results[name]["decisions"]]
+    if chosen("native")==chosen("frozen"):
         return "NO_GO_SAME_CHOICES_AS_FROZEN_CELLS"
-    if results["native"]["decisions"]==results["shuffled_action"]["decisions"]:
+    if chosen("native")==chosen("shuffled_action"):
         return "NO_GO_SAME_CHOICES_AS_SHIFTED_ACTIONS"
     return "FIT_ONLY_NATIVE_CHOICE_LEVERAGE_WITHOUT_ORIGINAL_SOURCE_ACTION_OUTCOME"
