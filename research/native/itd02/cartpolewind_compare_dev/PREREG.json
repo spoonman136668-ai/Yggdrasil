@@ -1,0 +1,47 @@
+{
+  "schema": "ygg.itd02.cartpolewind.public_dev_three_arm_comparison.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION",
+  "purpose": "Build and verify interface-compatible native fast/slow local learner and two fully fitted conventional comparators for later authenticated original-source public development; engineering only.",
+  "source_parent": "63b3a3897a44c2557ba28cd19bf715981b24a2d7",
+  "source_upstream": "CausalAILab/Causal-Gymnasium@c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+  "original_cartpolewind_blob": "d65a6a31941709dc9201259d80dd4ebbcf48b4fa",
+  "frozen_ygg_r7_learner_blob": "204ecd993b954b23e66d6d1e8b3568e7c93183c5",
+  "problem": "R7 state 8-bit/3 actions/192 samples per action incompatible with CartPoleWind 4 public finite continuous state floats/2 actions; do not relabel R7 as original learner or discretize environment secretly.",
+  "arms": [
+    "NATIVE_LOCAL_FAST_SLOW_TD",
+    "CONVENTIONAL_BINNED_TABULAR_TD",
+    "CONVENTIONAL_RECURRENT_LINEAR_TD"
+  ],
+  "public_protocol": {
+    "observation": "exactly four finite, bounded floats",
+    "action": "exact int 0 or 1",
+    "reward": "one finite numeric scalar",
+    "termination": "booleans terminated and truncated",
+    "hidden_fields": "never accepted or inspected",
+    "source": "unmodified original CartPoleWind only after qualified FSA permit; synthetic development rows are NOT a substitute original-world experience"
+  },
+  "fit_split": "development-only hardcoded synthetic PUBLIC wire rows in unit tests; no unseeded/adaptive sampling; authentic FIT/VALID/DEV seeds/episode budgets to be separately frozen and admitted before original first use; never tune on protected DEV.",
+  "fairness": "Each arm initialized fresh; identical ordered public transitions, episode boundaries and available actions; no code-level oracle/simulator imports; each arm may differ only in learning algorithm; tests verify exact parity.",
+  "memory": "checkpoint/restore after fitting, cold Python process verification, no original private source or raw info fields; report serialized model bytes.",
+  "resource": "account public transition count, action count, checkpoint bytes; CPU and RSS measurements required for later admitted real FIT/VALID/DEV; no performance or transfer claims from synthetic examples.",
+  "permitted": [
+    "source-only branch changes under new cartpolewind_compare_dev folder",
+    "frozen-first contract and unit tests against literal synthetic protocol rows only",
+    "Python import, deterministic local focused engineering tests",
+    "GitHub-hosted source-only CI for branch"
+  ],
+  "forbidden": [
+    "original upstream reset/step/do, real environment action/episode or reward sampling",
+    "model evaluation on protected original cohorts",
+    "modified original upstream source or R7 model",
+    "synthetic substitute environment or simulator invented as benchmark",
+    "claim of fitted original-world learning, superiority or transfer",
+    "FSA admission, new control plane/scheduler/queue, promotion or accepted ref changes",
+    "paid model APIs"
+  ],
+  "scientific_go": false,
+  "original_episode_budget": 0,
+  "original_episode_count_target": 0,
+  "original_fit": false,
+  "qualification": "New changes must pass focused source-only tests; one final full system regression separately required before any promotion."
+}
