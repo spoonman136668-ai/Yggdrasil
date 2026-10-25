@@ -32,6 +32,21 @@ jobs:
           python-version: "3.12"
       - run: python scripts/build_code_atlas.py --check-if-present
       - run: python -m unittest discover -s tests -p test_code_atlas.py -v
-      - if: always()
-        run: python scripts/build_code_atlas.py --emit-base64 --source-commit ${{ github.event.pull_request.head.sha || github.sha }}
+      # Only on a failed validation, emit bounded debug metadata.
+      # Do not print the entire atlas as Base64 into GitHub Actions logs.
+      - if: failure()
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          for name in (".ice/code-atlas.json", ".ice/code-atlas.html", ".ice/code-atlas.ice"):
+              path = Path(name)
+              if not path.is_file():
+                  print("G29_ATLAS_DEBUG_MISSING=" + name)
+                  continue
+              raw = path.read_bytes()
+              print("G29_ATLAS_DEBUG=" + name +
+                    " BYTES=" + str(len(raw)) +
+                    " SHA256=" + hashlib.sha256(raw).hexdigest())
+          PY
       - run: git diff --exit-code
