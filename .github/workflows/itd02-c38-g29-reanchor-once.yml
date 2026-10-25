@@ -1,0 +1,54 @@
+name: ITD02 C38 one-shot source-only G29 atlas reanchor
+on:
+  push:
+    branches:
+      - research/itd02-c38-fit-numerical-identity-20261025
+permissions:
+  contents: read
+jobs:
+  exact-generated-atlas-only:
+    if: github.event.head_commit.message == 'Arm C38 bounded G29 reanchor'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Freeze original lineage and update only three generated source locators
+        shell: bash
+        run: |
+          set -euo pipefail
+          A="${GITHUB_SHA}"
+          test "$(git rev-parse HEAD)" = "$A"
+          test "$GITHUB_REF_NAME" = "research/itd02-c38-fit-numerical-identity-20261025"
+          test -z "$(git status --porcelain)"
+          git merge-base --is-ancestor b5121c68621949f28aa7b2608f8896a0f9358c7d "$A"
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = "cef1378fd3c47ebc74675bd9dde19a183775ceeb"
+          test "$(git rev-parse HEAD:research/mass_r7c36/run.py)" = "6262dd2f70a972ab7fca7d6b294582fecc87ce23"
+          test "$(git rev-parse HEAD:research/mass_r7c38/PREREG.json)" = "32380a8c40d947e604d9f67ef8207ef5be690914"
+          test "$(git rev-parse HEAD:research/mass_r7c38/DETERMINISTIC_SHADOW_PROTOCOL.json)" = "946bff15506634f717978db914341b02a9c9c1aa"
+          test "$(git rev-parse HEAD:research/mass_r7c38/deterministic_shadow.py)" = "18aca857f54ded0b6fbf817fe40098e53f59bf6f"
+          test "$(git rev-parse HEAD:research/mass_r7c38/shadow_driver.py)" = "92b0c14dff1495a68e1125236e32fa04a09bb8b3"
+          test "$(git rev-parse HEAD:research/mass_r7c38/test_deterministic_shadow.py)" = "a42844d396dbd456b78295d0bae19a3945433ed0"
+          python scripts/build_code_atlas.py --write --source-commit "$A"
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          test "$(git diff --cached --name-only | wc -l | tr -d ' ')" = "3"
+          test -z "$(git diff --name-only)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Re-anchor C38 G29 atlas to exact source $A"
+          B="$(git rev-parse HEAD)"
+          test "$(git diff-tree --no-commit-id --name-only -r "$B" | wc -l | tr -d ' ')" = "3"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin "HEAD:refs/heads/research/itd02-c38-fit-numerical-identity-20261025"
+          echo "C38_G29_ATLAS_SOURCE_COMMIT=$A"
+          echo "C38_G29_THREE_GENERATED_ONLY_COMMIT=$B"
+          echo "C38_SCIENTIFIC_GO=FALSE"
