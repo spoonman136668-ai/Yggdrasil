@@ -11,7 +11,6 @@ import hashlib
 import json
 import math
 import os
-import resource
 import sys
 import time
 from collections import Counter
