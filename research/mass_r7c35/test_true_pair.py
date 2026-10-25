@@ -32,7 +32,7 @@ class C35SourceOnly(unittest.TestCase):
   self.assertTrue(all(len(x["FIT"])==8 and len(x["FIT_CHECK"])==4
        and not set(x["FIT"])&set(x["FIT_CHECK"])
        for x in p["worlds"].values()))
-  self.assertFalse(p["limits"]["noNativeNoveltyClaim"])
+  self.assertTrue(p["limits"]["noNativeNoveltyClaim"])
  def test_no_source_privileged_model_feature(self):
   a=sample("MiniGrid-FourRooms-v0")
   self.assertEqual(len(c.features(a,(1,2))),20)
