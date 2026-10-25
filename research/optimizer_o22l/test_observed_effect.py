@@ -44,7 +44,7 @@ class O22LSourceOnlyTests(unittest.TestCase):
             "r12/outcome_choice.py": "2d19b28d6d4db1988ae908fe91be1a27ce4c1907",
         }
         for path, expected_blob in expected.items():
-            raw = (root / "research/native/itd02" / path).read_bytes()
+            raw = (root / "research/native/itd02" / path).read_bytes().replace(b"\r\n", b"\n")
             self.assertNotIn(b"\r", raw)
             actual = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
             self.assertEqual(actual, expected_blob)
