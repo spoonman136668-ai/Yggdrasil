@@ -42,6 +42,7 @@ jobs:
           python -m pip install numpy==1.26.4
           python -m py_compile research/mass_r7c38/numeric_identity.py research/mass_r7c38/test_numeric_identity.py
           python -B -m unittest research.mass_r7c38.test_numeric_identity -v
+          python -B -m unittest research.mass_r7c38.test_deterministic_shadow -v
           echo C38_ORIGINAL_SOURCE_ONLY_NUMERIC_IDENTITY_FOCUS=PASS
       - name: Download exact original archived physical FIT only
         shell: bash
@@ -93,6 +94,25 @@ jobs:
           print("C38_THREAD_1_VS_2_ATTRIBUTION="+status)
           print("C38_FROZEN_OLD_C37_CROSS_HOST_DRIFT_STILL_UNQUALIFIED=TRUE")
           print("C38_NEW_MINIGRID_RESET_STEP=ZERO; C38_PROTECTED_FIRST_USE=DENIED")
+          PY
+          # New separate deterministic shadow: original C36 FIT/physical
+          # source/model remains untouched; both processes read FIT only.
+          export OPENBLAS_NUM_THREADS=1
+          python -B -m research.mass_r7c38.shadow_driver --original-fit-dir "$RUNNER_TEMP/c38-c35-FIT" --out "$RUNNER_TEMP/c38-results/shadow-one-a.json"
+          python -B -m research.mass_r7c38.shadow_driver --original-fit-dir "$RUNNER_TEMP/c38-c35-FIT" --out "$RUNNER_TEMP/c38-results/shadow-one-b.json"
+          python - <<'PY'
+          import json,os,pathlib
+          folder=pathlib.Path(os.environ["RUNNER_TEMP"])/"c38-results"
+          a,b=(json.loads((folder/n).read_text()) for n in ("shadow-one-a.json","shadow-one-b.json"))
+          assert a["science"]==b["science"] and a["science_sha256"]==b["science_sha256"],"C38_SHADOW_NONDETERMINISTIC_FRESH_PROCESS"
+          assert a["science"]["FIT_physical_selected_training_options"]==93
+          assert a["science"]["deterministic_reference"]["feature_dimensions"]==14
+          assert a["science"]["native_causal_superiority"]=="NOT_TESTED"
+          assert a["science"]["original_source_new_steps"]==0
+          print("C38_DETERMINISTIC_SHADOW_SHA256="+a["science"]["deterministic_reference"]["shadow_coefficients_sha256"])
+          print("C38_DETERMINISTIC_SHADOW_SCIENCE_SHA256="+a["science_sha256"])
+          print("C38_DETERMINISTIC_SHADOW_INDEPENDENT_PROCESSES=PASS")
+          print("C38_SHADOW_SCIENTIFIC_GO=FALSE")
           PY
       - name: Preserve public-only source numeric identity in GitHub Actions
         if: always()
