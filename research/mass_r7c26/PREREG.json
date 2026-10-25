@@ -1,0 +1,74 @@
+{
+  "schema": "mass.r7c26.original-source-paired-action-and-revealed-information-ablation.v1",
+  "status": "PUBLIC_DEVELOPMENT_ONLY_NO_PROTECTED_FIRST_USE",
+  "source": {
+    "upstream": "Farama-Foundation/Minigrid@7f5853792ea7f04f75614661006d87fcf949f26d",
+    "dynamic_blob": "68436cecc35116c23c2f196c22fa3a19c6410b95",
+    "owner_r3_head": "fbf78bcc6988755ba0e3e026f06d273839c1fa9f",
+    "parent_c25_head": "2946768748a8464052f7dc00575ab387abb77d0c"
+  },
+  "fit": {
+    "same_12_genuine_fit_public_actions": true,
+    "expected_sha256": "4e4e9446169f61a7d1a0398b4fff2d0e31510356111c2cc59fdbeca899f6ce60",
+    "native_fit_info_turns_previously_verified": 8
+  },
+  "fresh_public_dev": {
+    "MiniGrid-FourRooms-v0": [
+      42101,
+      42103,
+      42107,
+      42109,
+      42111,
+      42113,
+      42117,
+      42119,
+      42123,
+      42129,
+      42131,
+      42137
+    ],
+    "MiniGrid-Dynamic-Obstacles-8x8-v0": [
+      43101,
+      43103,
+      43107,
+      43109,
+      43111,
+      43113,
+      43117,
+      43119,
+      43123,
+      43129,
+      43131,
+      43137
+    ]
+  },
+  "max_episode_actions": 256,
+  "intervention": "Execute the original pretrained R3 public NativeActive or separately FIT-trained conventional BayesianActive until the FIRST actual turn which the source-public unseen-vs-known rule changes. Clone ONLY the evaluator's original-source wrapped environment and exact online learner state at that instant. The policy receives no cloned simulator state or private original map. On one clone force the chosen information-facing turn, and on the other force its opposite non-information-facing turn; both cost precisely one physical source action, with identical preaction public state, original source RNG state, FIT weights and learned preaction memory. Thereafter disable additional information-turn heuristic in BOTH fork arms, use respective memory-enabled native or independent conventional planner; each receives only its OWN real action and public consequences. This identifies effect of that *intervention action* but not information separately from heading/route change.",
+  "native_blinded_extra": "On THIRD matching evaluator clone take SAME information-facing turn as native informative branch. At the immediate next decision, erase the newly exposed front obstacle bit for that single decision, substitute nonprivileged optimistic unknown/default-clear into the memory-update input, then delete that synthetic edge entry before actually executing its next selected legal action. All subsequent genuine source observations/consequences stay intact. This predeclared one-reading sensor ablation is intentionally information-restricting and does not claim identical internal state after divergence. Native info and native blinded have identical real first-turn trajectories and source RNG until the first post-turn choice.",
+  "cohorts": [
+    "native_fork_information",
+    "native_fork_matched_sham_turn",
+    "native_fork_information_blinded_one_reading",
+    "conventional_fork_information",
+    "conventional_fork_matched_sham_turn"
+  ],
+  "no_trigger": "If a new source episode contains no actual eligible first probe, record it as non-forked with zero paired evidence and do not impute counterfactual reward.",
+  "metrics": [
+    "number of authentic source eligible first-probe states by original family",
+    "identical pre-fork source public observations and preaction source model digest across branches",
+    "paired actual action and reward trajectories from physical source clones; later decision count; original goal and source collision successes; actual action costs including shared pre-fork prefix",
+    "postturn factual newly revealed blocked/clear public bit; number of later decisions on its saved heading edge; native information vs same-turn one-reading blinding; convergence or action divergence",
+    "duplicate independent whole-process scientific replay equal, source original SHA, full actual reward/trajectory log hashes",
+    "fresh Python cold restore of full native and complete conventional belief state to same next action at fork",
+    "original whole-process CPU and RSS and complete checkpoint bytes"
+  ],
+  "stop_rules": [
+    "Fail closed if original Gymnasium wrapper cannot be evaluator-cloned before intervention; never fabricate an outcome",
+    "Fail closed if information and blinded branches do not have identical after-first-action original-source outcomes or public state",
+    "Do not claim an information-only causal effect from informative vs sham heading forks, because their orientation differs",
+    "Do not claim an information-only benefit if native info and identical-turn blinded memory controls yield indistinguishable decisions",
+    "No protected source first-use, no owner R3 or FORGE/CKB controller edits, no paid APIs or merge",
+    "All scientific positives/negatives preserved; no tuning on old C20-C25 consumed DEV seeds"
+  ],
+  "governance": "Independent Mass Research draft branch source-first prereg; unchanged owner R1-R3 source and prior immutable negative evidence; no ChatGPT Library persistence."
+}
