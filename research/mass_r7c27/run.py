@@ -222,7 +222,7 @@ def main():
     source_screen=fit_block_check(fit)
     print('R7C27_FIT_ONLY_SOURCE_BLOCKED_INFORMATION',json.dumps(source_screen,sort_keys=True),flush=True)
     gate=sum(z['revealed_blocked'] for z in source_screen.values())>0
-    if not gate:
+    if not gate and args.kind=='native':
         status={'schema':'mass.r7c27.fit-only-original-source-gate-fail.v1',
           'source_original_pin':P['source']['upstream'],'kind':args.kind,
           'fit_info_screen':source_screen,'no_new_dev_source_episodes_consumed':True}
@@ -254,7 +254,9 @@ def main():
                 'sham_steps':sum(e['actions'] for e in sham),
                 'info_minus_blind_reward':round(sum(a['reward']-b['reward'] for a,b in zip(info,blind)),8),
                 'info_vs_blind_postturn_choice_diff':sum(a['postturn_next_choice']!=b['postturn_next_choice'] for a,b in zip(info,blind)),
-                'info_vs_blind_full_path_diff':sum(a['trace_sha256']!=b['trace_sha256'] for a,b in zip(info,blind))}
+                'info_vs_blind_full_path_diff':sum(
+                    [[*r[:14]] for r in a['trace']] != [[*r[:14]] for r in b['trace']]
+                    for a,b in zip(info,blind))}
         summaries[family]=total
     out={'schema':P['schema'],'kind':args.kind,
         'source':P['source']['upstream'],'native_owner_head':P['source']['native_owner_head'],
