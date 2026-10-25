@@ -1,0 +1,156 @@
+{
+  "schema": "itd02.c35.prospective-real-two-action-source-effect-v1",
+  "parentC34": "b81a7085afb7ccfba6e9fec0a303c83d731ae6f7",
+  "source": {
+    "external": "Farama-Foundation/Minigrid@7f5853792ea7f04f75614661006d87fcf949f26d",
+    "fourroomsGitBlob": "d79f007e00f95f48284da66d760872483c02fab2",
+    "dynamicObstaclesGitBlob": "68436cecc35116c23c2f196c22fa3a19c6410b95",
+    "nativeOriginalR3GitBlob": "5348238f4ec2183bea29262659883391b5f429fd",
+    "originalPublicSensorGitBlob": "7dbce42a00488af67dca626b89ca9bed927f4d60"
+  },
+  "worlds": {
+    "MiniGrid-FourRooms-v0": {
+      "FIT": [
+        74101,
+        74103,
+        74105,
+        74107,
+        74109,
+        74111,
+        74113,
+        74115
+      ],
+      "FIT_CHECK": [
+        75101,
+        75103,
+        75105,
+        75107
+      ]
+    },
+    "MiniGrid-Dynamic-Obstacles-8x8-v0": {
+      "FIT": [
+        74201,
+        74203,
+        74205,
+        74207,
+        74209,
+        74211,
+        74213,
+        74215
+      ],
+      "FIT_CHECK": [
+        75201,
+        75203,
+        75205,
+        75207
+      ]
+    }
+  },
+  "role": "PROSPECTIVE_PUBLIC_DEVELOPMENT_FIT_AND_FIT_CHECK_ONLY",
+  "protocol": {
+    "sourcePrefixTicks": [
+      0,
+      3,
+      6
+    ],
+    "publicPrefixActionsRepeated": [
+      2,
+      0,
+      2,
+      1,
+      2,
+      0
+    ],
+    "sourcePhysicalActionPairs": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        2,
+        2
+      ]
+    ],
+    "originalEachForkSeparateSeedReset": true,
+    "originalAllPriorSourcePrefixSixFieldsAndGridSHAExact": true,
+    "discardWholeAnchorIfAnyPairSourceTerminatesBeforeSecondAction": true,
+    "originalMaximumSelectedSteps": 8,
+    "independentSourcePublicObservationFields": [
+      "x",
+      "y",
+      "goal_x",
+      "goal_y",
+      "direction",
+      "front_blocked"
+    ],
+    "sourceGridForIdentityChecksOnly": true,
+    "noHiddenObjectClassPositionAsModelInput": true,
+    "noUnexecutedActionLabels": true,
+    "noOldC28_C32_C34WeightsOrEvalWorlds": true
+  },
+  "prediction": {
+    "target": "actual after SECOND physically executed source selected action: bool public front_blocked; auxiliary actual signed goal-Manhattan progress, source goal and motion",
+    "physicalPairCountPerAnchoredState": 9,
+    "allModelsTrainOnExactlySameActualFITPairOutcomes": true,
+    "primarySourceConditionalCount": "per-family public first-front, direction, and 2-legal-actions actual two-step observation count, smoothed with 16 FIT-only action-pair prior pseudo-observations",
+    "matchedConventionalPairPrior": "same source FIT data, family and actually executed 2-action pair prior Beta(1,1)",
+    "strongIndependentLinear": "same original source FIT pair outcomes, independently trained conventional ridge with bias, public x/y, clipped goal dx/dy, heading one-hot, front blocked, pair one-hot, family indicator, L2=10; probability clipped to [0.01,0.99]",
+    "ablation": "history blind action-pair marginal prior, not inference from fabricated two-step counterfactuals",
+    "smoothingPseudoObservations": 16,
+    "linearRidgePenalty": 10,
+    "crossPhaseModelFrozen": true
+  },
+  "acceptance": {
+    "minimumOriginalFITFullyPairedAnchors": 30,
+    "minimumFITCHECKFullyPairedAnchors": 15,
+    "minimumRealSourceFITCHECKPairTrials": 135,
+    "minimumConditionalBrierGainVsIndependentLinear": 0.01,
+    "minimumConditionalBrierGainVsSourcePairPrior": 0.01,
+    "minDistinctOriginalTwoActionPairsInEachFamily": 9,
+    "wholeTwoOSRunsScienceIdentical": true,
+    "positive": "BOUNDED_C35_TWO_STEP_CAUSAL_SOURCE_CONDITIONAL_FIT_PREDICTION_NOT_POLICY",
+    "noGo": "NO_C35_TWO_STEP_CAUSAL_SOURCE_EFFECT_PREDICTIVE_ADVANTAGE"
+  },
+  "limits": {
+    "sourceRoleNotProtectedScientificFirstUse": true,
+    "noForeignSourceFamilyTransferClaim": true,
+    "noGoalPolicyControlChange": true,
+    "originalR3Untouched": true,
+    "noNativeNoveltyClaim": true,
+    "noC32ConsumedSeeds": true,
+    "noTestDrivenPosthocThresholdChanges": true,
+    "storeInGitHubOnly": true,
+    "noPaidAPI": true,
+    "noFORGEorCKBController": true,
+    "draftUnmerged": true,
+    "energyNotMeasured": true
+  }
+}
