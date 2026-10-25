@@ -110,6 +110,7 @@ print('R7C29_OWNER_COLD_ORIGINAL_PUBLIC_RESTORE=PASS')
 
 def main():
     import gymnasium as gym
+    import minigrid  # registers the authenticated original MiniGrid environment IDs
     owner=load_owner()
     selected=[]
     counts=collections.Counter()
