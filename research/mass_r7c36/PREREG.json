@@ -1,0 +1,107 @@
+{
+  "schema": "itd02.c36.actual-source-fit-two-step-commit-policy-v1",
+  "parentC35": "cc2f53e507e62f3095fb09e04399e7e7d335a6bd",
+  "originalSource": {
+    "upstream": "Farama-Foundation/Minigrid@7f5853792ea7f04f75614661006d87fcf949f26d",
+    "fourroomsBlob": "d79f007e00f95f48284da66d760872483c02fab2",
+    "dynamicBlob": "68436cecc35116c23c2f196c22fa3a19c6410b95",
+    "nativeR3Blob": "5348238f4ec2183bea29262659883391b5f429fd",
+    "originalPublicSensorBlob": "7dbce42a00488af67dca626b89ca9bed927f4d60"
+  },
+  "trainOnly": {
+    "C35SourceArtifact": 12603145885,
+    "sha256": "4e35aef3238b6ba2b9d83c4e9e288ff2d8dd3edd23177974b9deb088cca66ca3",
+    "sourceKey": "source_original_fit_real_two_action_forks",
+    "expectedMatchedFIT": 31,
+    "expectedTruePairActions": 279,
+    "forbidC35FITCHECKModelTraining": true,
+    "allArmsReceiveSameTrueSourceTwoActionOutcomes": true
+  },
+  "freshPublicEpisodeEvaluation": {
+    "MiniGrid-FourRooms-v0": [
+      86101,
+      86103,
+      86105,
+      86107
+    ],
+    "MiniGrid-Dynamic-Obstacles-8x8-v0": [
+      86201,
+      86203,
+      86205,
+      86207
+    ]
+  },
+  "maxSourceActions": 128,
+  "srcActions": [
+    0,
+    1,
+    2
+  ],
+  "mechanism": {
+    "name": "bounded two-step causal option with witnessed return prevention",
+    "frozenRidgePenalty": 10,
+    "shrinkageSourceObservations": 16,
+    "actionR3ReferenceAlwaysComputed": true,
+    "optionCandidates": [
+      [
+        0,
+        2
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        2
+      ]
+    ],
+    "requireAtLeastFITContextCount": 2,
+    "minimumPredictedGoalProgressToCommit": 0.5,
+    "minimumPredictedAdvantageOverR3Option": 0.5,
+    "mechanismLogic": "At each step, calculate unchanged R3 chosen action first; only if R3 is a TURN and the learned 2-step public goal-progress posterior of the same-turn+forward option is below alternate-turn+forward by >=0.5 and chosen alternate-turn+forward has predicted goal progress >=0.5, select opposite turn and commit one FORWARD action if subsequent real source public front is unblocked. Never alter an R3 forward. Abort pending forward on front-blocked or terminal. Do not choose an opposite turn if the previous observed action was the opposite turn at the same physical pose, to avoid reversing into a stationary two-step loop. Always feed actual action and actual source consequence into R3; retain only source-observed public history. Never use original full grid or any unselected fork during evaluation.",
+    "optionColdRestart": "frozen trained option models plus episode-local last source action/pose and pending actual forward have authenticated snapshot after three actual source steps, restore from genuinely separate OS process and verify next chosen action",
+    "sourcePredictions": "true physically executed source two-action signed goal-Manhattan progress, conditional by family/public-front/heading/pair with shrinkage sixteen to FIT-trained real pair prior; conventional learned ridge predicts same true signed progress using full public x/y/goal/heading/front and pair one-hot",
+    "stopOnExcessiveReversals": true
+  },
+  "arms": [
+    "original_r3",
+    "causal_two_step",
+    "no_memory_ablation",
+    "shuffled_effect_control",
+    "trained_conventional_ridge_two_step"
+  ],
+  "criteria": {
+    "allActorsHaveEightSameOriginalSourceWorlds": true,
+    "minPhysicallyExecutedNativeTurnOptionOverrides": 1,
+    "minNativeGoalsOverOriginalR3": 0,
+    "minNativeGoalsOverBestConventional": 0,
+    "minNativeActualMeanSourceRewardGainOverR3": 0.01,
+    "minNativeActualMeanSourceRewardGainOverBestConventional": 0.01,
+    "noWorseActualCollisionTerminals": true,
+    "exactWholeProcessRepeat": true,
+    "positive": "BOUNDED_C36_TRUE_SOURCE_TWO_STEP_PLANNING_FIT_SIGNAL_NOT_TRANSFER",
+    "noGo": "NO_C36_TRUE_SOURCE_TWO_STEP_CAUSAL_POLICY_ADVANCEMENT"
+  },
+  "limitations": {
+    "developmentOnly": true,
+    "notProtectedFirstUse": true,
+    "notIndependentlyUnfamiliarSourceFamily": true,
+    "notNativeNovelty": true,
+    "sourceArchiveFullGridOnlyForProvenance": true,
+    "noHiddenMapPolicyInputs": true,
+    "sourceOnlyDataTrainedPriorToAnyFreshEpisode": true,
+    "doNotTuneThresholdOnFreshEvaluations": true,
+    "keepAllHistoricalNegatives": true,
+    "FORGEIndependentScienceAdmissionRequired": true
+  },
+  "governance": {
+    "originalR3NeverModified": true,
+    "unmergedDraft": true,
+    "noPaidAPI": true,
+    "noNewCKBPlaneF139Dispatch": true,
+    "noChatGPTLibrary": true,
+    "resourceAccountingPythonCPUandPeakRSS": true,
+    "energyUnmeasured": true
+  }
+}
