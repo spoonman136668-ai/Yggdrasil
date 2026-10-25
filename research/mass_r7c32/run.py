@@ -27,12 +27,15 @@ def evaluate(source_dir):
     motors=learned_source_motors(training)
     episodes=[]
     cap=P["prospectivePublicFIT"]["maxActionsPerEpisode"]
+    # Only transport names differ: these are EXACT original frozen C31 models.
+    original_name={"native_frozen":"frozen","native_shuffled":"shuffled_action"}
     for arm in P["actors"]:
+        old=original_name.get(arm,arm)
+        model=None if arm=="r3_original" else models[old]
         for family,seeds in P["prospectivePublicFIT"]["families"].items():
             for seed in seeds:
                 episodes.append(run_episode(family,seed,arm,
-                    None if arm=="r3_original" else models[arm],
-                    motors,cap,cold_policy))
+                    model,motors,cap,cold_policy))
     cohorts={}
     for arm in P["actors"]:
         rows=[e for e in episodes if e["arm"]==arm]
