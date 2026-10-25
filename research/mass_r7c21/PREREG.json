@@ -1,0 +1,62 @@
+{
+  "schema": "mass.r7c21.frozen-public-mini-grid-sensor-memory-v1",
+  "classification": "PUBLIC_ORIGINAL_SOURCE_DEVELOPMENT_ONLY",
+  "parent_c20": "8d5eecc04141401a5d4f102395cb7fa3637b493f",
+  "original_r3": "fbf78bcc6988755ba0e3e026f06d273839c1fa9f",
+  "original_source": "Farama-Foundation/Minigrid@7f5853792ea7f04f75614661006d87fcf949f26d",
+  "source_types": [
+    "MiniGrid-Empty-8x8-v0",
+    "MiniGrid-FourRooms-v0"
+  ],
+  "public_wrapper": "FullyObsWrapper; agent and goal coordinates, immediate front tile, heading from public image; no unwrapped state",
+  "fit_roles": {
+    "reused_valid_public_fit_seeds": [
+      27101,
+      27103,
+      27107,
+      27109
+    ],
+    "steps_per_family": 2400,
+    "exact_selected_events": "same first one true forward per heading and eight true blocked forward no-motion; identical twelve real FIT observations, do not refit differently per arm"
+  },
+  "dev_roles": {
+    "previous_development_seeds_excluded": [
+      28101,
+      28103,
+      28107,
+      28109
+    ],
+    "fresh_dev_seeds": [
+      29101,
+      29103,
+      29107,
+      29109,
+      29111,
+      29113,
+      29117,
+      29119
+    ],
+    "max_actions_per_episode": 192,
+    "episodes_per_arm": 16
+  },
+  "arms": [
+    "original",
+    "guard_only",
+    "native_sensor_memory",
+    "conventional"
+  ],
+  "native_sensor_memory_mechanism": "Original R3 unmodified learner subclass: when public front_blocked, record current heading forward edge in episodic blocked memory BEFORE A*; if public front_clear, record the current forward edge as open; use unchanged R3 planning and actual-action observe. This uses only current returned public observation, stores no hidden grid and changes no native weights.",
+  "guard_only_mechanism": "Exactly existing C20 experimental one-line current-first-edge veto, ephemeral only",
+  "conventional": "Independently implemented learned motor optimistic occupancy planner, same 12 genuine public FIT, online public sensor updates and experienced consequences",
+  "ablation": "guard_only versus native_sensor_memory identifies retaining currently observed obstruction in episodic model instead of only blocking first hypothetical edge",
+  "frozen_acceptance": "NO-GO unless native_sensor_memory original-source FourRooms goals do not regress vs original and guard-only on the new eight seeds, and no false clear-front veto. No native superiority unless it also exceeds strong conventional on goals plus all resource costs.",
+  "metrics": [
+    "per family goals, original rewards",
+    "first/repeat observed blocked-forward attempts",
+    "total actions and source horizon terminations",
+    "complete within-episode observed action/consequence trace and cold-process checkpoint receipts",
+    "process CPU/RSS and max checkpoint bytes",
+    "both independent runs scientific hashes identical"
+  ],
+  "governance": "Existing native R1-R3 immutable and owner PR unchanged. Independent Mass research draft only; no protected scientific first-use, no hidden maps, no FORGE controller/CKB plane actions, no paid tools; fail closed on source or model identity drift; no tuning on already known 28107 failure."
+}
