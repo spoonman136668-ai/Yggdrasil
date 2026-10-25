@@ -33,5 +33,20 @@ jobs:
       - run: python scripts/build_code_atlas.py --check-if-present
       - run: python -m unittest discover -s tests -p test_code_atlas.py -v
       - if: always()
-        run: python scripts/build_code_atlas.py --emit-base64 --source-commit ${{ github.event.pull_request.head.sha || github.sha }}
+        name: Emit bounded diagnostic for the committed atlas (no giant Base64 log line)
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          names = (".ice/code-atlas.json", ".ice/code-atlas.html", ".ice/code-atlas.ice")
+          paths = [Path(name) for name in names]
+          if not all(p.is_file() for p in paths):
+              print("YGG_G29_BUNDLE_MISSING")
+          else:
+              parts = [p.read_bytes() for p in paths]
+              digest = hashlib.sha256(b"".join(parts)).hexdigest()
+              print("YGG_G29_BUNDLE_SHA256=" + digest)
+              print("YGG_G29_BUNDLE_BYTES=" + str(sum(map(len, parts))))
+          PY
       - run: git diff --exit-code
