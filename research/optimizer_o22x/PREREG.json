@@ -28,7 +28,7 @@
     "turn_right_increment_heading_mod4": true,
     "turn_has_no_physical_translation": true,
     "forward_translation_only_along_heading": true,
-    "forward_when_public_front_blocked_probability_zero": true,
+    "forward_when_public_front_blocked_probability_zero": false,
     "two_step_pairs": [
       [
         0,
@@ -85,7 +85,8 @@
     "default_prior_front_blocked": 0.5,
     "default_prior_forward_move": 0.5,
     "original_R1_learning_rate_source_unmodified": true,
-    "conventional_ridge_lambda": 1
+    "conventional_ridge_lambda": 1,
+    "public_front_blocked_is_a_preaction_sensor_not_guaranteed_collision": "When moving obstacles change during an original legal action, source observations with front_blocked=true can still return physical movement. Learn the forward movement effect from original source-selected action/returned effect; don't hard-code zero."
   },
   "comparisons": [
     "Both native and conventional actually trained on the same 558 originally executed FIT first/second action source transitions; repeated anchored source forks are correlated, not 558 independent worlds.",
@@ -106,5 +107,10 @@
     "no_Github_F139_CKB_controller_mutation": true,
     "no_paid_API": true,
     "no_ChatGPT_Library": true
+  },
+  "source_first_protocol_correction_before_model_code": {
+    "previous_protocol_only_commit": "4ac0f5b22857fdf78363955ae713597d7b6cfa87",
+    "reason": "Pre-implementation inspection of immutable already-executed C35 original source FIT revealed at least one physically executed forward with public front_blocked=true and real translation. A zero-movement hard rule would contradict authenticated original physics. No O22-X implementation or source world actions preceded this correction.",
+    "unchanged_original_source_fits": true
   }
 }
