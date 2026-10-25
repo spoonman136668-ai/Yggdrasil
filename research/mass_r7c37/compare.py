@@ -4,6 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 from research.native.itd02.r1.native_policy import canonical
+from research.mass_r7c36.run import P as C36_FROZEN_PROTOCOL
 
 ROOT=Path(__file__).resolve().parent
 PROTOCOL=json.loads((ROOT/"PREREG.json").read_text())
@@ -16,8 +17,9 @@ def check(report):
     # The frozen C36/C37 option learner fits only the three predeclared
     # (turn/forward, turn/forward, forward/forward) pairs per anchor.
     frozen_pairs=PROTOCOL["FIT_only"]["actualPairCount"]
-    option_count=len(PROTOCOL["mechanism"]["optionCandidates"])
-    if frozen_pairs%9 or option_count!=3:
+    option_count=len(C36_FROZEN_PROTOCOL["mechanism"]["optionCandidates"])
+    if (frozen_pairs%9 or option_count!=3 or
+        C36_FROZEN_PROTOCOL["mechanism"]["optionCandidates"]!=[[0,2],[1,2],[2,2]]):
         raise ValueError("C37_FROZEN_PAIR_PORTFOLIO_INVALID")
     if report.get("FIT_trained_two_action_original_forks")!=frozen_pairs//3:
         raise ValueError("C37_TRAINED_OPTION_SUBSET_IDENTITY_DRIFT")
