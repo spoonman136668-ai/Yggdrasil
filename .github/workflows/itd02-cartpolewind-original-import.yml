@@ -36,7 +36,7 @@ jobs:
           test "$(git -C upstream rev-parse HEAD)" = c94e9a4cd3641588b6b8507e71ccee5c27032bdf
           test "$(git -C upstream rev-parse HEAD:causal_gym/envs/cartpole_wind.py)" = d65a6a31941709dc9201259d80dd4ebbcf48b4fa
           test "$(git -C ygg rev-parse HEAD:research/native/itd02/cartpolewind_real_preflight/PREREG.json)" = 36e25edea265eb4be6a707ae7b4d4a6a07c54f66
-          test "$(git -C ygg rev-parse HEAD:research/native/itd02/cartpolewind_real_preflight/owner_authentic.py)" = de86d44a474bc72fba89500ed3c25d8f5259cc7f
+          test "$(git -C ygg rev-parse HEAD:research/native/itd02/cartpolewind_real_preflight/owner_authentic.py)" = 497ad79e9320fffa95fce9bf65a9aaa3475a2e2f
           test "$(git -C ygg rev-parse HEAD:research/native/itd02/cartpolewind_real_preflight/client_authenticated.py)" = 0f142c5ac39a37fe4369f7401e5d92e2a4cac222
           test "$(git -C ygg rev-parse HEAD:research/native/itd02/cartpolewind_real_preflight/owner_import.Dockerfile)" = 48ee2eb985e1b05983dac4a7f1952d538bf49175
           test "$(git -C ygg rev-parse HEAD:research/native/itd02/cartpolewind_real_preflight/client_import.Dockerfile)" = 9014649f3338842235de3e39b184ab1b55f4ffa3
@@ -125,10 +125,11 @@ jobs:
           docker logs "$OWNER_CONTAINER" 2>&1 | grep -F 'CARTPOLEWIND_ORIGINAL_ENV_EPISODES=0'
           docker logs "$OWNER_CONTAINER" 2>&1 | grep -F 'CARTPOLEWIND_AUTHENTIC_ORIGINAL_MODULE_IMPORTED=PASS'
           docker logs "$OWNER_CONTAINER" 2>&1 | grep -F 'CARTPOLEWIND_ORIGINAL_GYM_ENV_CONSTRUCTION_GUARDED=PASS'
-          docker logs "$OWNER_CONTAINER" 2>&1 | grep -F 'CARTPOLEWIND_ORIGINAL_MODULE_IMPORTS=0'
+          docker logs "$OWNER_CONTAINER" 2>&1 | grep -F 'CARTPOLEWIND_ORIGINAL_MODULE_IMPORTS=1'
           test -z "$(git -C upstream status --porcelain --untracked-files=all)"
           test -z "$(git -C ygg status --porcelain --untracked-files=all)"
-          echo CARTPOLEWIND_SOURCE_LEARNER_TWO_CONTAINER_BOUNDARY=PASS\n          echo CARTPOLEWIND_PINNED_AUTHENTIC_MODULE_IMPORT_ONLY=PASS
+          echo CARTPOLEWIND_SOURCE_LEARNER_TWO_CONTAINER_BOUNDARY=PASS
+          echo CARTPOLEWIND_PINNED_AUTHENTIC_MODULE_IMPORT_ONLY=PASS
           echo CARTPOLEWIND_SYNTHETIC_PROTOCOL_ONLY=TRUE
           echo CARTPOLEWIND_REAL_EXTERNAL_EPISODES=0
           echo CARTPOLEWIND_SCIENTIFIC_GO=FALSE
