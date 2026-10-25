@@ -1,0 +1,47 @@
+name: G29 PR515 full Python regression (qualified exact-head only)
+on:
+  push:
+    branches: [qualification/g29-pr515-full-regression-20261025]
+permissions:
+  contents: read
+jobs:
+  full-regression:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_CONFIG_COUNT: '1'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 14275a69ee553d2ed17c4a9e551d2486454d58f3
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Reject any checkout other than exact reviewed G29 PR515
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "14275a69ee553d2ed17c4a9e551d2486454d58f3"
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = "cef1378fd3c47ebc74675bd9dde19a183775ceeb"
+          test "$(git rev-parse HEAD:.github/workflows/yggdrasil-g29-atlas.yml)" = "baa005e32579327d5dde27a1a7bf653eb85c665c"
+          test -z "$(git status --porcelain)"
+          echo G29_PR515_FROZEN_SOURCE=PASS
+      - name: ONE full repository Python regression and G29 integrity
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git diff --exit-code
+          echo YGG_G29_PR515_FULL_PYTHON_REGRESSION=PASS
+          echo YGG_FSA_ORIGINAL_SCIENCE_FIRST_USE=ZERO
