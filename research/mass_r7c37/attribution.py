@@ -60,8 +60,16 @@ def audit_episode(e):
         act=s["real_selected"];base=s["R3_proposed"]
         if type(act) is not int or type(base) is not int or act not in (0,1,2) or base not in (0,1,2):
             raise ValueError("C37_UNSUPPORTED_SOURCE_ACTION")
-        if act!=base and not (act in (0,1) and base in (0,1)):
-            raise ValueError("C37_BROKEN_ORIGINAL_FORWARD_GUARD")
+        if act!=base:
+            # A committed second original physical FORWARD legitimately follows
+            # a genuine previous option-start TURN when current public front is clear.
+            committed_forward=(act==2 and base in (0,1) and
+                s["option_second_action"] is True and previous is not None and
+                previous["two_step_option_started"] is True and
+                previous["real_selected"] in (0,1) and b["front_blocked"] is False)
+            switched_turn=(act in (0,1) and base in (0,1))
+            if not (committed_forward or switched_turn):
+                raise ValueError("C37_BROKEN_ORIGINAL_FORWARD_GUARD")
         if (b["goal_x"],b["goal_y"])!=(a["goal_x"],a["goal_y"]):
             raise ValueError("C37_GOAL_PRIVILEGE_ORIGINAL_DRIFT")
         if act in (0,1):
