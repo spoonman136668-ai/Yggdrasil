@@ -1,0 +1,134 @@
+name: ITD02 CartPoleWind authenticated original module import, zero episodes
+on:
+  push:
+    branches: [research/itd02-cartpolewind-real-import-boundary-20261025]
+    paths:
+      - 'research/native/itd02/cartpolewind_real_preflight/**'
+      - '.github/workflows/itd02-cartpolewind-original-import.yml'
+permissions:
+  contents: read
+concurrency:
+  group: ygg-itd02-cartpolewind-original-import-20261025
+  cancel-in-progress: false
+jobs:
+  source-owner-versus-learner:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: ygg
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: CausalAILab/Causal-Gymnasium
+          ref: c94e9a4cd3641588b6b8507e71ccee5c27032bdf
+          path: upstream
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Pin original source, freeze protocol and immutable original learner
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C upstream rev-parse HEAD)" = c94e9a4cd3641588b6b8507e71ccee5c27032bdf
+          test "$(git -C upstream rev-parse HEAD:causal_gym/envs/cartpole_wind.py)" = d65a6a31941709dc9201259d80dd4ebbcf48b4fa
+          test "$(git -C ygg rev-parse HEAD:research/native/itd02/cartpolewind_real_preflight/PREREG.json)" = 36e25edea265eb4be6a707ae7b4d4a6a07c54f66
+          test "$(git -C ygg rev-parse HEAD:research/native/itd02/cartpolewind_real_preflight/owner_authentic.py)" = de86d44a474bc72fba89500ed3c25d8f5259cc7f
+          test "$(git -C ygg rev-parse HEAD:research/native/itd02/cartpolewind_real_preflight/client_authenticated.py)" = 0f142c5ac39a37fe4369f7401e5d92e2a4cac222
+          test "$(git -C ygg rev-parse HEAD:research/native/itd02/cartpolewind_real_preflight/owner_import.Dockerfile)" = 48ee2eb985e1b05983dac4a7f1952d538bf49175
+          test "$(git -C ygg rev-parse HEAD:research/native/itd02/cartpolewind_real_preflight/client_import.Dockerfile)" = 9014649f3338842235de3e39b184ab1b55f4ffa3
+          test "$(git -C ygg rev-parse HEAD:research/native/itd02/r7/learner.py)" = 204ecd993b954b23e66d6d1e8b3568e7c93183c5
+          git -C ygg merge-base --is-ancestor 05718a012cdc8e8b208c490d06375c70a747c56c HEAD
+          python3 - <<'PY'
+          import pathlib,json
+          p=json.loads(pathlib.Path("ygg/research/native/itd02/cartpolewind_real_preflight/PREREG.json").read_text())
+          assert p["status"]=="FROZEN_BEFORE_IMPLEMENTATION_AND_EXECUTION"
+          assert p["not_allowed"].count("real CartPole-v1 or CartPoleWind environment instance")==1
+          assert p["predeclared_action"].startswith("Load the unchanged original")
+          assert p["scientific_go"] is False
+          PY
+      - name: Build distinct images from physically separate contexts
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker version >/dev/null
+          export OWNER_CTX="$RUNNER_TEMP/itd02-source-image"
+          export CLIENT_CTX="$RUNNER_TEMP/itd02-learner-image"
+          mkdir -p "$OWNER_CTX" "$CLIENT_CTX"
+          cp ygg/research/native/itd02/cartpolewind_real_preflight/owner_authentic.py "$OWNER_CTX/owner_authentic.py"
+          cp ygg/research/native/itd02/cartpolewind_real_preflight/owner_import.Dockerfile "$OWNER_CTX/Dockerfile"
+          cp upstream/causal_gym/envs/cartpole_wind.py "$OWNER_CTX/source_original.py"
+          cp -a upstream/causal_gym "$OWNER_CTX/causal_gym"
+          test "$(find "$OWNER_CTX/causal_gym" -type f | wc -l)" -gt 30
+          test ! -e "$CLIENT_CTX/causal_gym"
+          printf 'PRIVATE_CARTPOLEWIND_CANARY_DO_NOT_EXPOSE\n' > "$OWNER_CTX/private_canary.txt"
+          cp ygg/research/native/itd02/cartpolewind_real_preflight/client_authenticated.py "$CLIENT_CTX/client_authenticated.py"
+          cp ygg/research/native/itd02/cartpolewind_real_preflight/client_import.Dockerfile "$CLIENT_CTX/Dockerfile"
+          test "$(find "$OWNER_CTX" -maxdepth 1 -type f | wc -l)" -eq 4
+          test "$(find "$CLIENT_CTX" -type f | wc -l)" -eq 2
+          test ! -e "$CLIENT_CTX/source_original.py"
+          test ! -e "$CLIENT_CTX/private_canary.txt"
+          docker pull python:3.12-slim-bookworm
+          docker build --quiet --network=default -t "ygg-itd02-owner:$GITHUB_RUN_ID" "$OWNER_CTX"
+          docker build --quiet --network=none -t "ygg-itd02-client:$GITHUB_RUN_ID" "$CLIENT_CTX"
+      - name: Run isolated nonroot processes, prove source denial and reject wire attacks
+        shell: bash
+        run: |
+          set -euo pipefail
+          export ISOLATION_NET="ygg-isolation-$GITHUB_RUN_ID"
+          export OWNER_CONTAINER="ygg-source-$GITHUB_RUN_ID"
+          export CLIENT_CONTAINER="ygg-learner-$GITHUB_RUN_ID"
+          cleanup() {
+            docker logs "$OWNER_CONTAINER" 2>&1 || true
+            docker logs "$CLIENT_CONTAINER" 2>&1 || true
+            docker rm -f "$CLIENT_CONTAINER" "$OWNER_CONTAINER" >/dev/null 2>&1 || true
+            docker network rm "$ISOLATION_NET" >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+          docker network create --internal "$ISOLATION_NET" >/dev/null
+          docker run -d --name "$OWNER_CONTAINER" --network "$ISOLATION_NET" \
+            --network-alias source-owner --read-only --user 65534:65534 \
+            --cap-drop=ALL --security-opt=no-new-privileges:true \
+            --pids-limit=64 --memory=256m --cpus=1 \
+            "ygg-itd02-owner:$GITHUB_RUN_ID" >/dev/null
+          docker run -d --name "$CLIENT_CONTAINER" --network "$ISOLATION_NET" \
+            --read-only --user 65534:65534 --cap-drop=ALL \
+            --security-opt=no-new-privileges:true --pids-limit=64 \
+            --memory=256m --cpus=1 \
+            "ygg-itd02-client:$GITHUB_RUN_ID" >/dev/null
+          python3 - <<'PY'
+          import json, os, subprocess
+          ids=[]
+          for name in (os.environ["OWNER_CONTAINER"],os.environ["CLIENT_CONTAINER"]):
+              c=json.loads(subprocess.check_output(["docker","inspect",name]))[0]
+              h=c["HostConfig"]
+              assert h["ReadonlyRootfs"] is True and h["Privileged"] is False
+              assert "ALL" in h["CapDrop"]
+              assert any("no-new-privileges" in s for s in h["SecurityOpt"])
+              assert not h["Binds"] and not c["Mounts"]
+              assert h["PidMode"]!="host" and h["NetworkMode"]==os.environ["ISOLATION_NET"]
+              assert h["PortBindings"] in (None,{})
+              assert int(h["Memory"])>0 and int(h["PidsLimit"])>0
+              ids.append(c["Id"])
+          assert len(set(ids))==2
+          n=json.loads(subprocess.check_output(["docker","network","inspect",os.environ["ISOLATION_NET"]]))[0]
+          assert n["Internal"] is True and len(n["Containers"])==2
+          print("CARTPOLEWIND_TWO_SEPARATE_LOCKED_CONTAINERS=PASS")
+          PY
+          test "$(timeout 45s docker wait "$CLIENT_CONTAINER")" = 0
+          test "$(timeout 45s docker wait "$OWNER_CONTAINER")" = 0
+          docker logs "$CLIENT_CONTAINER" 2>&1 | grep -F 'CARTPOLEWIND_PRIVATE_FILES_INACCESSIBLE=PASS'
+          docker logs "$CLIENT_CONTAINER" 2>&1 | grep -F 'CARTPOLEWIND_PROTOCOL_PRIVILEGED_REQUESTS_DENIED=20'
+          docker logs "$OWNER_CONTAINER" 2>&1 | grep -F 'CARTPOLEWIND_ORIGINAL_ENV_EPISODES=0'
+          docker logs "$OWNER_CONTAINER" 2>&1 | grep -F 'CARTPOLEWIND_AUTHENTIC_ORIGINAL_MODULE_IMPORTED=PASS'
+          docker logs "$OWNER_CONTAINER" 2>&1 | grep -F 'CARTPOLEWIND_ORIGINAL_GYM_ENV_CONSTRUCTION_GUARDED=PASS'
+          docker logs "$OWNER_CONTAINER" 2>&1 | grep -F 'CARTPOLEWIND_ORIGINAL_MODULE_IMPORTS=0'
+          test -z "$(git -C upstream status --porcelain --untracked-files=all)"
+          test -z "$(git -C ygg status --porcelain --untracked-files=all)"
+          echo CARTPOLEWIND_SOURCE_LEARNER_TWO_CONTAINER_BOUNDARY=PASS\n          echo CARTPOLEWIND_PINNED_AUTHENTIC_MODULE_IMPORT_ONLY=PASS
+          echo CARTPOLEWIND_SYNTHETIC_PROTOCOL_ONLY=TRUE
+          echo CARTPOLEWIND_REAL_EXTERNAL_EPISODES=0
+          echo CARTPOLEWIND_SCIENTIFIC_GO=FALSE
