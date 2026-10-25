@@ -1,0 +1,22 @@
+{
+  "id": "Y022-HELDOUT-GEOMETRY-TRANSFER",
+  "parent": "195c9a0312eb6bce1e5f96ef0f2b0353f2062d13",
+  "freeze": "Before execution: seeds 0..3 development, seeds 4..7 heldout; no tuning after holdout",
+  "generator": "16-cell circular graph, 16 unique motif keys, each key home=(7*key+seed) mod 16; radius-one and radius-two neighborhoods from frozen circular distance, rotation and key-order perturbation only",
+  "arms": [
+    "A0 radius one bipartite maximum matching",
+    "A1 radius two bipartite maximum matching"
+  ],
+  "metric": "exact matching cardinality and Hall deficiency by seed, including negative/zero effects",
+  "success": "report quantitative transfer without requiring historical deficiency to reproduce; accept valid negative findings",
+  "invalid": "source drift, duplicate homes, nonmonotonic radius-one vs radius-two cardinality, determinism mismatch",
+  "budget": {
+    "seeds": 8,
+    "heldout": 4,
+    "cells": 16,
+    "keys": 16,
+    "radii": 2,
+    "model_calls": 0
+  },
+  "scope": "new synthetic cohort, not original Y021 R016 transfer, no accepted-ref mutation"
+}
