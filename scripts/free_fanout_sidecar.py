@@ -6,7 +6,12 @@ import math
 import os
 import pathlib
 import re
-import resource
+# Native child-process peak-RSS accounting is POSIX-only.
+# Never substitute zero/synthetic metrics or execute an unmetered candidate.
+try:
+    import resource
+except ImportError:
+    resource = None
 import subprocess
 import sys
 import time
@@ -272,6 +277,10 @@ def build_candidate_env(home_dir, tmp_dir, data_class):
     }
 
 def run_candidate(manifest, package_root, candidate_id, output_root):
+    # A Windows run may validate manifests but cannot launch under an absent
+    # resource meter. This is a real qualification NO-GO, not a test bypass.
+    if resource is None:
+        fail("FREE_FANOUT_RESOURCE_ACCOUNTING_UNAVAILABLE")
     candidate = candidate_by_id(manifest, candidate_id)
     output_root = pathlib.Path(output_root).resolve()
     output_root.mkdir(parents=True, exist_ok=True)
