@@ -75,7 +75,8 @@ def replay_one(record,first_t):
             assert after["observation_sha256"]==old["public_after_sha256"],("ORIGINAL_PREFIX_AFTER_DRIFT",seed,t)
             assert after["front"]==old["front_after"],("ORIGINAL_FRONT_AFTER_DRIFT",seed,t)
             assert float(reward)==float(old["r"]) and bool(done)==old["done"] and bool(trunc)==old["trunc"],("ORIGINAL_SOURCE_REWARD_DRIFT",seed,t)
-            assert old["a"]==old["collector_a"]
+            # Owner R12 may legitimately choose differently from collector.
+            # Only archived ACTUALLY EXECUTED a controls true source replay.
             prefix.append([t,old["a"],before["observation_sha256"],
                            after["observation_sha256"],float(reward),bool(done),bool(trunc)])
             obs=next_obs
