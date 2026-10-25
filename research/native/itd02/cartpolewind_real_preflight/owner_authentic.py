@@ -1,7 +1,8 @@
 """Source-owner *synthetic-only* transport fixture.
 
-Original upstream CartPoleWind source exists in this image ONLY as inert data.
-No import of its code; no environment construction; reset/step forbidden.
+The original upstream CartPoleWind and core modules ARE imported here solely
+inside the isolated source-owner container. No environment construction,
+reset, step, episode or model training is authorized.
 """
 import json
 import os
@@ -20,7 +21,7 @@ ORIGINAL_CARTPOLE_BLOB = "d65a6a31941709dc9201259d80dd4ebbcf48b4fa"
 
 def git_blob(path):
     blob = path.read_bytes()
-    return hashlib.sha1(b"blob " + str(len(blob)).encode("ascii") + b"\\0" + blob).hexdigest()
+    return hashlib.sha1(b"blob " + str(len(blob)).encode("ascii") + b"\0" + blob).hexdigest()
 
 
 def load_authenticated_original_classes():
