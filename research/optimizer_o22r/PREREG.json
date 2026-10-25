@@ -1,0 +1,42 @@
+{
+  "schema": "optimizer.o22r.temporal-conditional-effect-controlled-replay.v1",
+  "classification": "OBSERVATIONAL_ORIGINAL_FIT_ONLY_ALREADY_EXPOSED_INTERNAL_CHECK",
+  "source_first": true,
+  "parent_o22q_head": "3ef8b83211747cb13e31f26870a4c658a14f2eae",
+  "pinned_source": "Farama-Foundation/Minigrid@7f5853792ea7f04f75614661006d87fcf949f26d",
+  "previous_authentic_fit_run": 40186158097,
+  "previous_authentic_fit_artifact_id": 12595798717,
+  "source_sha1_first": "5c8385c69b0b53646b2d3f414c4aa02106d48f5a758f26dca6721653a33cc2fa",
+  "source_sha1_second": "b0179e3c6b3ab177ca553714cbf2f64d82d20bcd63e55417659701d4b5c6624f",
+  "roles": "Exactly frozen O22P/O22Q 12 train FIT episodes (399 original selected actions), four already-seen internal FIT checks (150 selected actions); NEVER describe these checks as unseen future validation or protected science.",
+  "public_legal_effects": [
+    "actual selected-action source-public next front blocked binary",
+    "actual agent translation binary"
+  ],
+  "independent_control": {
+    "discounted_beta": "Separately coded per selected (action,current_front) Bernoulli Beta posterior with prior pseudocount (1,1) and fixed chronological forgetting coefficient 0.92. Forgetting prior itself must NOT be decayed.",
+    "cumulative_beta": "Identical features and prior, but no temporal forgetting, comparable to frozen O22Q simple action+front.",
+    "phase_only": "Chosen action + episode step phase (0-7, 8-23, 24+) but no front history; tests crude elapsed-time confound.",
+    "reversed_fit_order": "Learn same events and labels, but reverse each authentic original episode's recorded selected-event order as a dependence-control, not new original source or equivalent on-policy learning.",
+    "native_control": "Unmodified source O22P NativePlasticCells, exactly same training history/feature set, and its fast=0 ablation after source training. Native surrogate is NOT original Ygg R2 integrated architecture."
+  },
+  "evaluation": {
+    "per_family_per_action_Brier": true,
+    "public_state_label_base_rates": true,
+    "observed_context_label_flip_counts_train_only": true,
+    "source_public_selected_step_reversible_prediction_without_future_leak": true,
+    "fresh_python_interpreter_full_checkpoint": true,
+    "equal_selected_authentic_source_train_steps": 399,
+    "original_environment_resets_or_steps_added": 0,
+    "full_source_dev_validation_protected_episodes_added": 0,
+    "cpu_and_complete_checkpoint_bytes": true,
+    "no_significance_or_causal_value_claim_on_internal_fit": true
+  },
+  "predeclared_honest_interpretation": [
+    "If original-native pooled accuracy loses to discounted conventional, native advantage refuted for this already-exposed in-sample comparison.",
+    "If original-native dynamic-front Brier advantage persists but discounted baseline closes it, stop native novelty hypothesis.",
+    "If native dynamic-front advantage persists against this single prereg alternative, label exploratory only; do not optimize on exposed checks or infer physical policy performance.",
+    "Chronological selected labels reflect changes in observations and moving world, not isolated causal intervention value of other actions.",
+    "No paid API, autonomous runner/controller modification, original R1–R12 edits, protected/DEV first-use, new model dispatch or merge."
+  ]
+}
