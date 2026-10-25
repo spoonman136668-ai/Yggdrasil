@@ -1,0 +1,50 @@
+{
+  "schema": "itd02.c34.public-action-history-sufficiency.v1",
+  "classification": "SOURCE_ONLY_CAUSAL_HISTORY_IDENTIFIABILITY_INTERNAL_FIT_ONLY",
+  "frozen_parent_head": "1b0d56e53ac72792b967dfa08e21e3b60ef517d1",
+  "original_source": "Farama-Foundation/Minigrid@7f5853792ea7f04f75614661006d87fcf949f26d",
+  "original_native_r1_git_blob": "3aa22b1e418a7f8cd9619c476f02b8c614917b16",
+  "source_dataset": {
+    "run_id": 40186388994,
+    "artifact_id": 12596362847,
+    "zip_sha256": "2e0492af74cd68f8fc9ee7d5cfffcc6a936614e23f9061457f70dcd49cf84810",
+    "reconciliation_sha256": "78a078d6643f0372b9eedd20954b63a388e01611f853ea3831851f893380d87d",
+    "selected_events": 805,
+    "action_counts": {
+      "left": 236,
+      "right": 143,
+      "forward": 426
+    },
+    "info_front": {
+      "blocked": 4,
+      "clear": 41
+    }
+  },
+  "historical_negative": {
+    "C32_real_8_seed_fit_pr": 538,
+    "run_id": 40192579434,
+    "C33_forensic_pr": 541,
+    "native_goals": 2,
+    "original_r3_goals": 8,
+    "real_native_turn_reversals": 843,
+    "source_action_episodes_reused_for_new_eval": 0
+  },
+  "hypothesis": "Test whether already-authenticated PUBLIC action/observation history carries predictive information about next true public front obstacle bit beyond a same-cue source-public Markov baseline; establish legitimate two/three physical action-sequence coverage before a native learned belief/world model is proposed.",
+  "models": {
+    "markov_beta": "FIT count posterior P(next_front_blocked|direction,current_front,actually_selected_action), Beta(1,1), source-family label excluded from prediction input",
+    "historical_shrinkage_beta": "Same actual current source-public predictor plus genuinely prior selected physical action, preceding source public front and preceding actual displacement. Empirical FIT history bucket Beta posterior shrunk with exactly two pseudo-observations centered at FIT-trained base conditional probability. No unknown->false imputation.",
+    "full_public_conventional": "C30 independently implemented conventional nine public features with action-selected online logistic SGD 0.16 (momentum 0), trained only once on frozen C28 FIT, not tuned to this check.",
+    "original_local_cells": "C29 unmodified original Ygg R1 local-cell next-front predictor trained from exactly same original-source physical FIT selected actions.",
+    "history_shuffle": "Preserve all true training current observations/actions/consequence counts but rotate prior-history tokens within each original family by one event; same fixed source-real FIT episodes, no new samples or private info, do not shuffle check targets."
+  },
+  "roles": "Same C29-C33 frozen exact first 8 of 12 original C28 FIT seeds per source family to train, last four per family internal FIT-check only; not a fresh DEV or unfamiliar source. Each source event predicted BEFORE any fitting of its target; evaluate terminal reported aggregate Brier/logloss, per-family Brier, 2-step/3-step real supported trajectories and exact-public alias contradiction coverage. Do not retune memory prior, model structure or thresholds after seeing internal FIT check.",
+  "stop_rules": [
+    "Only authenticated previously collected original 805 selected physical action+public successor events, exact immutable prior ZIP + original episode hashes and duplicate-producer comparison; no MiniGrid import/reset/step.",
+    "History token must be strictly PREVIOUS physically chosen action, previous publicly observed front bit, and observed physical displacement. Never future next-action, private wall/ball type, source seed/latent object map.",
+    "Reset memory at each original source-episode boundary; no cross-seed leakage. Full source-public event chain/goal/termination rechecked and no new episode role.",
+    "If no repeated full-public state/action counterexample, report insufficient alias evidence, not Markov sufficiency. If previous-history model fails to beat fitted same-cue and stronger full-public controls on FIT check, report NO-GO hidden-memory benefit.",
+    "Do not claim actual multi-step planning, causal identification for unselected actions, native advantage, external action/reward goal gain, significance of within-episode steps, dynamic obstacle causal agency, unfamiliar transfer or protected first use.",
+    "Two independent canonical report computations from exact same archive agree; Linux and Windows source-free test and fresh Python checkpoint restoration of history model.",
+    "Preserve C31/C32 learned alternate-turn override STOP and original R3 baseline. No merge, new FORGE/CKB control path, paid API, original science authority, user Library."
+  ]
+}
