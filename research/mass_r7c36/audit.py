@@ -175,10 +175,10 @@ def main():
     a=p.parse_args()
     archive=a.original_c35_archive
     members={v.name for v in archive.iterdir() if v.is_file()}
-    if members!={"run-1.json","run-2.json","comparison.json"}:
+    if members!={"process-a.json","process-b.json","comparison.json","process-a.log","process-b.log"}:
         raise ValueError("C36_UNEXPECTED_ORIGINAL_C35_ARCHIVE_CONTENTS")
-    x=json.loads((archive/"run-1.json").read_bytes())
-    y=json.loads((archive/"run-2.json").read_bytes())
+    x=json.loads((archive/"process-a.json").read_bytes())
+    y=json.loads((archive/"process-b.json").read_bytes())
     # Original C35 unchanged verifier authenticates all source SHA, two runs.
     from research.mass_r7c35.compare import compare as original_reconcile
     c=original_reconcile(x,y)
