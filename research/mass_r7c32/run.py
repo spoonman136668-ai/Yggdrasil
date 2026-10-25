@@ -4,7 +4,6 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
-import resource
 import time
 from research.native.itd02.r1.native_policy import canonical
 from research.mass_r7c29.analysis import read_frozen_artifact
@@ -93,6 +92,7 @@ def evaluate(source_dir):
         "scientific_first_use":False,"scientific_accepted":False}
 
 def main():
+    import resource  # original Linux-source runner only; Windows source-only tests stay portable
     ap=argparse.ArgumentParser()
     ap.add_argument("--original-fit-dir",required=True)
     ap.add_argument("--output",required=True)
