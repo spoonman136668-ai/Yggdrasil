@@ -1,0 +1,53 @@
+{
+  "schema": "itd02.c31.native-source-selected-effect-action-bridge.v1",
+  "classification": "FIT_ONLY_ACTION_SELECTION_CERTIFICATE_NO_EXTERNAL_NEW_EPISODES",
+  "base_c30_head": "a2d654f37d5386e99a87ea3df4c15aa0e71a7625",
+  "actual_original_frozen_fit_artifact_id": 12596362847,
+  "actual_original_zip_sha256": "2e0492af74cd68f8fc9ee7d5cfffcc6a936614e23f9061457f70dcd49cf84810",
+  "original_C28_report_sha256": "78a078d6643f0372b9eedd20954b63a388e01611f853ea3831851f893380d87d",
+  "original_R3_blob": "5348238f4ec2183bea29262659883391b5f429fd",
+  "original_FourRooms_blob": "d79f007e00f95f48284da66d760872483c02fab2",
+  "exact_public_source_dims": {
+    "MiniGrid-FourRooms-v0": [
+      19,
+      19
+    ],
+    "MiniGrid-Dynamic-Obstacles-8x8-v0": [
+      8,
+      8
+    ]
+  },
+  "frozen_train_check": "Use exact C30 8 original FIT seeds/family to fit selected-effect predictors, remaining 4/family FIT-only state histories for action-selection observation, NOT as new DEV or independent trial.",
+  "policy_scope": "Append separate R3 navigator decision wrapper. Must call unchanged R3 Navigator.choose for first action; only consider alternative turn when original baseline is left/right. Score actual learned source next-front-blocked probability conditional on selected hypothetical alternative from learned public FIT. Do not override legal forward, goal terminal, blocked front, or original R3 source planner safety. Do not represent hypothetical successor as physically observed or identified counterfactual.",
+  "fixed_candidate_criterion": {
+    "active_if_original_action_is_turn": true,
+    "proposed_action": "other legal 90 degree turn only",
+    "alternate_min_predicted_obstruction_reduction": 0.1,
+    "source_action_set": [
+      0,
+      1,
+      2
+    ],
+    "physical_utility_claim": false
+  },
+  "comparators": [
+    "native-original-r1-fast-slow-trained",
+    "original-r3-without-bridge",
+    "native-selected-action-shuffled",
+    "native-no-cell-frozen",
+    "independent-same9-feature-logistic-sgd",
+    "independent-same9-feature-logistic-momentum",
+    "source-time-only-beta"
+  ],
+  "acceptance": [
+    "At least one actual FIT-only public source observation causes an active native-choice shift compared with frozen original R3 (else NO-GO action leverage).",
+    "Action choice changes must be causally attributable to the learned model under a fixed identical R3 public source state, not a policy-specific turn bonus.",
+    "Record every native and conventional source-free proposed action, source state identity and candidate probabilities and clear yes/no/no-cell controls.",
+    "Reject if any candidate acts without four physical motor directions already learned solely from FIT original actions, or if hidden state/privileged original source leaks.",
+    "All actions must be legal original 0/1/2 and retain original forward risk guard; output cannot claim a source reward/benefit for an unexecuted chosen alternative.",
+    "Actual original-world selected-action/return effectiveness and unknown-family transfer remain separate, unexecuted gates.",
+    "Full policy wrapper and predictor and original Navigator cold restore in fresh Python process without data loss.",
+    "Hosted focused Linux and Windows, reverify pinned original source C28 artifact twice and all 805 source-FIT receipts; no new source resets/steps, protected uses, paid API, merge or Library."
+  ],
+  "source_fairness_note": "Even changed actual policy choices on historic original FIT states are SOURCE-FREE counterfactual proposals. Source-world rewards need physically executed different selected actions and matched conventional controls after new prospective FIT freeze."
+}
