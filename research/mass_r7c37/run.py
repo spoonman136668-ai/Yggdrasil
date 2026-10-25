@@ -12,7 +12,7 @@ except ImportError:
  resource=None
 from research.native.itd02.r1.native_policy import PublicGrid,canonical
 from research.native.itd02.r3.navigator import Navigator
-from research.mass_r7c36.run import CausalOptions,read_C35_fit,make_nav,source_front
+from research.mass_r7c36.run import CausalOptions,read_C35_fit,make_nav,source_front,P as P_C36
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
@@ -77,9 +77,9 @@ def choose_action(nav,model,fam,s,arm,last_action,last_pose,pending):
  else:
   baseline,_=model.predict(fam,s.__dict__,(r3,2),mode)
   alternative,n=model.predict(fam,s.__dict__,(other,2),mode)
- if (n<P["mechanism"]["requireAtLeastFITContextCount"] or
-     alternative-baseline<P["mechanism"]["minimumPredictedAdvantageOverR3Option"] or
-     alternative<P["mechanism"]["minimumPredictedGoalProgressToCommit"]):
+ if (n<P_C36["mechanism"]["requireAtLeastFITContextCount"] or
+     alternative-baseline<P_C36["mechanism"]["minimumPredictedAdvantageOverR3Option"] or
+     alternative<P_C36["mechanism"]["minimumPredictedGoalProgressToCommit"]):
   return r3,r3,False,False
  return r3,other,True,False
 
