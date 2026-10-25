@@ -87,7 +87,7 @@ class NativeCellEffect:
             cells=[]
             for c in cohort:
                 if type(c) is not dict or set(c)!={"fast","slow","updates"}:raise ValueError("BAD_CELL_RECORD")
-                if type(c["updates"]) is not int or not 0<=c["updates"]<=m.updates:
+                if type(c["updates"]) is not int or not 0<=c["updates"]<=raw["updates"]:
                     raise ValueError("BAD_CELL_UPDATES")
                 for n in ("fast","slow"):
                     if type(c[n]) not in (float,int) or not math.isfinite(c[n]) or abs(c[n])>32:
