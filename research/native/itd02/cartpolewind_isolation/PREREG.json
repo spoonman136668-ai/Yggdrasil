@@ -1,0 +1,52 @@
+{
+  "schema": "ygg.itd02.cartpolewind.two_container_boundary.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_EXECUTION",
+  "program": "ITD-02 Learning an Unfamiliar World",
+  "source_owner": "Yggdrasil development source-only research",
+  "science_owner": "FORGE FSA #83 not granted",
+  "parent_source_commit": "a18a3b65e420d47bf61ff8ad7325d4c13ce95eec",
+  "upstream_repo": "CausalAILab/Causal-Gymnasium",
+  "upstream_commit": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+  "upstream_source_path": "causal_gym/envs/cartpole_wind.py",
+  "upstream_blob": "d65a6a31941709dc9201259d80dd4ebbcf48b4fa",
+  "rights": {
+    "read_original_source_file_in_owner_container": true,
+    "import_upstream_module": false,
+    "construct_upstream_environment": false,
+    "call_reset_or_step": false,
+    "run_original_episodes": 0,
+    "run_native_learner_training": false,
+    "run_prospective_first_use": false,
+    "create_controller_or_experiment_queue": false,
+    "production_promotion": false
+  },
+  "implementation_contract": {
+    "owner_container": "read-only Linux non-root container containing only frozen CartPoleWind source text, owned source-only mock server, and private synthetic canary; no original source Python import",
+    "learner_container": "separately built read-only Linux non-root client image containing ONLY client protocol code; original source, private marker, repository and Docker socket not mounted",
+    "network": "fresh Docker internal bridge scoped to two containers with only one protocol port, no published host port",
+    "host_capabilities": "GitHub-hosted ubuntu Docker only; no privileged mode; --cap-drop ALL; --security-opt no-new-privileges; --read-only; --pids-limit, --memory and --cpus",
+    "source_worker_protocol": "bounded newline-delimited JSON, strict message count/size, allow health/probe/quit only, reject direct introspection, see, ctf_do, env, path, private wind, raw info and episode actions",
+    "synthetic_public_response": "four finite state values, one finite reward, terminal/truncation; never source wind, original info or source references",
+    "source_private_canary": "private wind marker and actual original source file exist only in source-owner image; client explicitly verifies absence",
+    "forbidden_fallback": "if Docker unavailable, container isolation, network, file separation, or tests fail then FAIL CLOSED, no local same-process simulator acceptance"
+  },
+  "qualification_checks": [
+    "Verify upstream checkout SHA and original source Git blob, original source file in owner build context only.",
+    "Verify literal source belongs only to source image and no source/secret exists in learner build context or image.",
+    "Prove real distinct OS process/container/PID namespace and private source inaccessible to learner.",
+    "Verify client cannot open original source, private wind marker or docker.sock and runs unprivileged on read-only filesystem.",
+    "Exercise health, benign synthetic public response and direct source/private info attacks via bounded protocol.",
+    "Verify JSON output schema whitelist, never return original wind or private info; demonstrate bad actions do not start original episodes.",
+    "Require source worker reports original_imports=0, original_episodes=0, protected_first_use=false; no native learning claimed.",
+    "Verify source worktree and prereg/learner blobs unchanged; no mainline merge."
+  ],
+  "expected_status": "ENGINEERING_BOUNDARY_SCREEN_ONLY; no external-world training or source use; FSA and data ownership remain separate",
+  "frozen_prior_negatives": [
+    "R7 frozen retention gate FAIL, its later paired-sample confounding finding",
+    "R7 native conventional parity",
+    "one-bit MDP Bayes source ceiling",
+    "FrozenLake unsafe raw diagnostics and missing horizon",
+    "DTR and RockSample ceilings"
+  ],
+  "scientific_go": false
+}
