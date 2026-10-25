@@ -18,7 +18,7 @@ P = json.loads((HERE / "PREREG.json").read_text(encoding="utf-8"))
 
 
 def git_blob_sha(raw: bytes) -> str:
-    return hashlib.sha1(b"blob " + str(len(raw)).encode("ascii") + b"\\0" + raw).hexdigest()
+    return hashlib.sha1(b"blob " + str(len(raw)).encode("ascii") + b"\0" + raw).hexdigest()
 
 
 def checked_original(path: str, expected: str) -> bytes:
