@@ -151,6 +151,29 @@ def main():
         raise ValueError("O22X_EQUAL_SOURCE_SELECTED_FIT_ROWS")
     cold_bytes={key:cold(m,check[0]["public_initial"]) for key,m in models.items()}
     result,simple=scores(check,models)
+    # Added descriptive provenance only after initial archived result:
+    # does NOT alter model, fit, role split, chosen action or scientific threshold.
+    decision_rows=[]
+    for anchor in check:
+        state=anchor["public_initial"]
+        actual={
+            name:choose(m,state)
+            for name,m in models.items()
+        }
+        physically_realized={
+            name:observed(anchor,p)["progress"] for name,p in actual.items()
+        }
+        decision_rows.append({
+            "family":anchor["family"],"seed":anchor["seed"],"source_prefix_tick":anchor["tick"],
+            "model_chosen_legal_physical_pair":actual,
+            "physically_realized_goal_progress":physically_realized,
+            "native_choice_equals_zero_cell":
+                actual["native_original_R1_compositional"]==actual["untrained_original_R1_cells"],
+            "native_choice_equals_shuffled":
+                actual["native_original_R1_compositional"]==actual["native_left_right_action_shuffled_negative"],
+            "native_choice_equals_full9_conventional":
+                actual["native_original_R1_compositional"]==actual["independent_full9_ridge_compositional"]
+        })
     native=result["native_original_R1_compositional"]
     ridge=result["independent_full9_ridge_compositional"]
     passed=True
@@ -177,6 +200,10 @@ def main():
       "source_original_step_count_new":0,
       "original_native_R1_R3_untouched":True,
       "source_matched_model_composition":result,
+      "source_original_exact_policy_choice_identity":decision_rows,
+      "native_action_equals_zero_cell_count":sum(int(r["native_choice_equals_zero_cell"]) for r in decision_rows),
+      "native_action_equals_shuffled_count":sum(int(r["native_choice_equals_shuffled"]) for r in decision_rows),
+      "native_action_equals_independent_conventional_count":sum(int(r["native_choice_equals_full9_conventional"]) for r in decision_rows),
       "simple_baseline_fixed_forward22":simple,
       "full_fresh_os_model_cold_bytes":cold_bytes,
       "source_FIT_training_CPU_seconds":costs,
