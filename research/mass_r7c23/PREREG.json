@@ -1,0 +1,78 @@
+{
+  "schema": "mass.r7c23.online-public-causal-obstacle-revision.v1",
+  "classification": "PUBLIC_EXTERNAL_ORIGINAL_SOURCE_DEVELOPMENT_ONLY_NOT_PROTECTED_FIRST_USE",
+  "frozen_before_runner": "This PREREG file commits before creating testing source or hosting new episodes",
+  "original_source": "Farama-Foundation/Minigrid@7f5853792ea7f04f75614661006d87fcf949f26d",
+  "source_dynamic_blob": "68436cecc35116c23c2f196c22fa3a19c6410b95",
+  "owner_native_head": "fbf78bcc6988755ba0e3e026f06d273839c1fa9f",
+  "prior_mass_head": "b0e2ffca623a8854ef4d391610a4c3c848521077",
+  "static_original": "MiniGrid-FourRooms-v0",
+  "moving_original": "MiniGrid-Dynamic-Obstacles-8x8-v0",
+  "source_public": "FullyObsWrapper pose, heading, goal, binary front blocked; wall vs ball type discarded for ALL learner arms; no .unwrapped or hidden map",
+  "fit": {
+    "source": "unchanged mass_r7c22 original authentic 12 publicly observed FIT actions",
+    "source_fit_seeds": [
+      27101,
+      27103,
+      27107,
+      27109
+    ],
+    "total_action_observations_per_family": 2400,
+    "selected_rows": 12,
+    "expected_fit_sha256": "4e4e9446169f61a7d1a0398b4fff2d0e31510356111c2cc59fdbeca899f6ce60"
+  },
+  "dev": {
+    "static_seeds": [
+      34101,
+      34103,
+      34107,
+      34109,
+      34111,
+      34113,
+      34117,
+      34119,
+      34123,
+      34129,
+      34131,
+      34137
+    ],
+    "dynamic_seeds": [
+      35101,
+      35103,
+      35107,
+      35109,
+      35111,
+      35113,
+      35117,
+      35119,
+      35123,
+      35129,
+      35131,
+      35137
+    ],
+    "source_task_action_cap": 256
+  },
+  "arms": [
+    "original",
+    "native_persistent",
+    "native_selective",
+    "conventional_recent",
+    "conventional_ttl",
+    "conventional_probabilistic"
+  ],
+  "native_selective": "Original R3 unchanged. At each returned public observation, maintain per-edge history of blocked/clear, observation count, consecutive confirmations, and reversals; public-only. Observed blocked edges expire after 2 steps unless three consecutive confirmations with no reversal, in which case retain until a contradictory public reading. An edge observed to reverse receives a 1-step expiry; observed clear edges expire after 3 steps. Recompute R3's planning blocked/open edges from current effective evidence before native choose; actual action outcome uses original R3 observe. Store evidence and R3 snapshot in authenticated cold-persistent wrapper.",
+  "conventional_recent": "Original independent conventional learned-motor planner, clearing prior edge beliefs each current planning step",
+  "conventional_ttl": "Same independently fitted conventional learned-motor planner, retain blocked/open public edge observations only for 2 previously completed decision steps",
+  "conventional_probabilistic": "Same independently fitted conventional learned-motor planner, per-edge Beta(1,1) beliefs with exponential discount 0.8 per step, blocked threshold >=0.60, clear threshold <=0.40, otherwise unknown; current public observation always updated first.",
+  "evidence": "Every arm receives equal same twelve actual source FIT observations, actual own policies/interventions and only past public observations in that episode; no environment object class feature, fixed map, predicted future obstacle oracle or extra training.",
+  "criteria": [
+    "Two independent whole-process original-source experiments per arm, byte-identical science, no original source identity drift",
+    "Compare native selective to native persistent and competent conventional recent TTL Bayesian controls on goals, source collisions, steps, original rewards in each original family",
+    "Native GO must not regress in either original static or dynamic family against trained conventional best practical comparable arm; otherwise NO-GO",
+    "Improved decisions must be based on observed changes not hidden wall/ball labels",
+    "Cold fresh OS process restores full native memory including selective belief state; CPU, peak RSS, checkpoint storage measured",
+    "No protected cohort first-use and no merge/admission on this public DEV result alone"
+  ],
+  "controls": "Stop on source drift, unsupported observations, dynamic collision semantics, unavailable runner, nondeterminism. Preserve all prior R1–R10 and C20-C22 negative and positive findings.",
+  "governance": "Mass Research independent draft branch, not Yggdrasil source-owner, no FORGE/CKB-plane actions, no protected evaluation, no paid APIs, no ChatGPT Library upload."
+}
