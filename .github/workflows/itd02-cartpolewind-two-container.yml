@@ -118,7 +118,7 @@ jobs:
           test "$(timeout 45s docker wait "$CLIENT_CONTAINER")" = 0
           test "$(timeout 45s docker wait "$OWNER_CONTAINER")" = 0
           docker logs "$CLIENT_CONTAINER" 2>&1 | grep -F 'CARTPOLEWIND_PRIVATE_FILES_INACCESSIBLE=PASS'
-          docker logs "$CLIENT_CONTAINER" 2>&1 | grep -F 'CARTPOLEWIND_PROTOCOL_PRIVILEGED_REQUESTS_DENIED=19'
+          docker logs "$CLIENT_CONTAINER" 2>&1 | grep -F 'CARTPOLEWIND_PROTOCOL_PRIVILEGED_REQUESTS_DENIED=20'
           docker logs "$OWNER_CONTAINER" 2>&1 | grep -F 'CARTPOLEWIND_ORIGINAL_ENV_EPISODES=0'
           docker logs "$OWNER_CONTAINER" 2>&1 | grep -F 'CARTPOLEWIND_ORIGINAL_MODULE_IMPORTS=0'
           test -z "$(git -C upstream status --porcelain --untracked-files=all)"
