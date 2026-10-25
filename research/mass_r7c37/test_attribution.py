@@ -52,6 +52,18 @@ class OriginalSelectedPolicyMechanisticUnit(unittest.TestCase):
         self.assertAlmostEqual(x["reward"],.8)
         self.assertEqual(x["steps"],1)
 
+    def test_genuine_committed_public_clear_source_forward_allowed(self):
+        first=step(0,state(d=0),0,state(d=3),proposed=1,option=True)
+        second=step(1,state(d=3,front=False),2,state(x=2,y=1,d=3),proposed=0,second=True)
+        row=audit_episode(episode([first,second]))
+        self.assertEqual(row["observed_second_option_steps"],1)
+        self.assertEqual(row["R3_turn_overrides"],2)
+
+    def test_no_forged_pending_second_forward(self):
+        first=step(0,state(d=0),0,state(d=3),proposed=1,option=False)
+        second=step(1,state(d=3),2,state(x=2,y=1,d=3),proposed=0,second=True)
+        with self.assertRaisesRegex(ValueError,"FORWARD_GUARD"):
+            audit_episode(episode([first,second]))
     def test_physical_chosen_action_difference_same_source_before(self):
         a=episode([step(0,state(d=0),0,state(d=3))],arm="original_r3")
         b=episode([step(0,state(d=0),1,state(d=1))])
