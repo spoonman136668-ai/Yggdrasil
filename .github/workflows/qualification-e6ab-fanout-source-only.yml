@@ -1,0 +1,64 @@
+name: Exact e6ab dual-OS fanout source-only acceptance
+on:
+  push:
+    branches: [qualification/ygg-g29-e6ab-artifact-only-20261025]
+    paths:
+      - '.github/workflows/qualification-e6ab-fanout-source-only.yml'
+permissions:
+  contents: read
+concurrency:
+  group: ygg-e6ab-fanout-exact-source-single
+  cancel-in-progress: false
+jobs:
+  frozen-source-focused:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 'e6abcb27c46940c4fc80ad1b53f5e4011469c008'
+          fetch-depth: 0
+          clean: true
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Assert exact immutable source and three-file source delta
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 'e6abcb27c46940c4fc80ad1b53f5e4011469c008'
+          test "$(git rev-parse HEAD:scripts/free_fanout_sidecar.py)" = 'f05187381cf3bfbe17415c6d9bfeb586ea949b87'
+          test "$(git rev-parse HEAD:tests/test_free_fanout_sidecar.py)" = 'b9fa5313a6b3dfcbb3911a6d5154ec5f50d89421'
+          test "$(git rev-parse HEAD:research/native/itd02/r7/learner.py)" = '204ecd993b954b23e66d6d1e8b3568e7c93183c5'
+          test "$(git rev-parse HEAD:research/native/itd01/r7/native_cells.py)" = '4c492a494ac5b25d5e9c49b98185be6a2c966b2f'
+          python - <<'PY'
+          import subprocess
+          expected={".github/workflows/qualify-fanout-win-meter-failclosed-20261025.yml",
+                    "scripts/free_fanout_sidecar.py","tests/test_free_fanout_sidecar.py"}
+          found=set(subprocess.check_output(["git","diff","--name-only","be0db27807d7f4ad5ccc19a81b183a26d4ae51e3","HEAD"],text=True).splitlines())
+          assert found==expected,(found,expected)
+          PY
+      - name: Existing real source-only tests and negative execution guard
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import ast,pathlib
+          for path in ("scripts/free_fanout_sidecar.py","tests/test_free_fanout_sidecar.py"):
+              ast.parse(pathlib.Path(path).read_text(encoding="utf-8"),filename=path)
+          PY
+          python -B -m unittest discover -s tests -p test_free_fanout_sidecar.py -v
+          python -B -m unittest discover -s tests -p test_portable_checkpoint.py -v
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo "FANOUT_AT_E6AB_SOURCE_ONLY=PASS"
+          echo "FANOUT_WINDOWS_CANDIDATE_METER=NOT_IMPLEMENTED"
+          echo "FANOUT_NO_UNMETERED_EXECUTION=VERIFIED"
+          echo "FANOUT_PROTECTED_FIT_CHECK_DEV_CONSUMED=0"
+          echo "FANOUT_SCIENTIFIC_GO=FALSE"
