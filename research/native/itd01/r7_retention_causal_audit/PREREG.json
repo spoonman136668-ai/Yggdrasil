@@ -1,0 +1,31 @@
+{
+  "schema": "ygg.itd01.r7.dev_retention_causal_audit.v1",
+  "status": "FROZEN_BEFORE_AUDIT_EXECUTION",
+  "source_branch": "research/itd02-r7-nonlinear-parents-20261024",
+  "original_source_commit": "5a22ef149bc280dd51596a18230d869d2a103a35",
+  "original_source_path": "research/native/itd01/r7/native_cells.py",
+  "original_source_git_blob": "4c492a494ac5b25d5e9c49b98185be6a2c966b2f",
+  "original_test_path": "research/native/itd01/r7/test_native_cells.py",
+  "original_test_git_blob": "5565929be0e91c679bfd3c6741d171b69d9a013f",
+  "historical_only_dev_seeds": [
+    17,
+    31,
+    47
+  ],
+  "fit_per_context": 320,
+  "public_validation_per_context": 160,
+  "protected_original_source_first_use": false,
+  "admission_authority": false,
+  "scientific_go": false,
+  "questions": [
+    "Is the original between-sample A accuracy change caused by learning context B or by using two different public A validation samples?",
+    "Do all A predictions and all A local-cell parameters remain exact across public B-only feedback?",
+    "Does no-B feedback ablation reproduce original between-sample accuracy gap?",
+    "Does authentic public B feedback alter B predictions and improve B evaluation, proving the B intervention was applied?"
+  ],
+  "frozen_negative": "The original unchanged gates(xs) FAIL on seed31 because before-on-VAL_A minus after-on-RETAINED_A exceeds 0.05; preserve that failure exactly regardless of audit.",
+  "method": "Run original model/source on historical public developer cohorts only. Compare predictions on SAME public samples before and after B feedback; compare original differently sampled VAL_A versus RETAINED_A; no B-feedback ablation. Enumerate all 16 possible legal A input patterns. Verify B receives exactly 320 valid public feedback updates and checkpoint cold restore. Record CPU time and measured peak Python memory. Never edit original source or original test.",
+  "decision_rule": "If all paired A samples/16 input patterns and A-cell checkpoint payload are byte-identical across B feedback and a no-B ablation matches after-B A scores, classify the original A accuracy difference as sample-composition confounding rather than demonstrated interference/forgetting. Still retain original gate FAIL, and do not claim novel native retention gain.",
+  "preserved_r7_primary_frozen_failure": true,
+  "hard_stop_on_identity_drift": true
+}
