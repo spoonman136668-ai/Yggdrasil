@@ -1,0 +1,55 @@
+{
+  "schema": "itd02.r10.source_only.public_doorkey.seven_action_adapter.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_RESULTS",
+  "parent_head": "3308e3fe9d58152d3b9e4caee896430f21df6ad9",
+  "original_ygg_native_git_blobs": {
+    "r7": "204ecd993b954b23e66d6d1e8b3568e7c93183c5",
+    "r8": "346fb9eb7462208a6cbd28cfb51716c22e5ec857",
+    "r9": "66ec3befe92e2d2c2b7116217354a40f59e659d7"
+  },
+  "original_upstream": {
+    "repo": "Farama-Foundation/Minigrid",
+    "commit": "7f5853792ea7f04f75614661006d87fcf949f26d",
+    "git_blobs": {
+      "minigrid/envs/doorkey.py": "df5b29ef063be34e6d83b8b478e092c6e3e01512",
+      "minigrid/minigrid_env.py": "eb29e9a902de0715ab77ec981a2113576d7664fa",
+      "minigrid/core/world_object.py": "ea13f6d452e9762a28354611f36738a1f77c26d9",
+      "minigrid/core/actions.py": "b440438bcb5a76a113d9d947b87a54dc8479ab15",
+      "minigrid/core/constants.py": "9763c63b0a65398c8c8a1f3f6ef1487709f7e038"
+    }
+  },
+  "objective": "Implement strict source-public observation and legal 7-action event transport to native future 7-action experimental learner, without silently modifying R7/R8/R9 fixed 3-action API or inventing state fields.",
+  "public_sensor_contract": "Only original env.gen_obs() dict keys image (7x7x3 public agent-centric encoded view), direction (int 0..3), mission (exact DoorKey mission). Key in hand is visible at agent view cell per upstream gen_obs_grid; nearby door encoded as door type/state from actual public view, no env.carrying/env.grid/global coordinates.",
+  "actions": {
+    "left": 0,
+    "right": 1,
+    "forward": 2,
+    "pickup": 3,
+    "drop": 4,
+    "toggle": 5,
+    "done": 6
+  },
+  "rules": [
+    "reject hidden fields/extra keys, malformed type/range, unsupported view or mission; no privileged environmental state",
+    "reject out-of-range/invalid action, duplicate in-flight submission, illegal postterminal transitions, inconsistent role/pairing",
+    "emit exact chosen action, public-before/public-after hashes, public directly observed carrying and front door deltas, explicit unknown pose rather than oracle forward movement",
+    "allow only source-returned numeric reward, terminated/truncated flags; capture source-public outcome before next action",
+    "public observations may normalize original NumPy image to plain list; no Grid/worldobject private handles",
+    "bounded action ledger, deterministic JSON digest, distinct fresh Python process checkpoint restore, corruption rejection",
+    "7-action adapter never routes action 3/4/5/6 through R7-R9 3-action acceptors",
+    "source-only tests use authored public pixel arrays as fixtures; NOT original source environment execution or scientific first use",
+    "compare independent conventional public-observation parser on exactly same fixture visibility, no stronger information baseline",
+    "complete Linux/Windows source-only focused tests and separate G29 generated-atlas check, no protected promotion"
+  ],
+  "governance": {
+    "draft_only": true,
+    "first_use": false,
+    "FSA_83_open": true,
+    "no_hidden_ORACLE": true,
+    "no_protected_cohorts": true,
+    "no_paid_API": true,
+    "no_controller_or_CKB_changes": true,
+    "no_original_R7_R8_R9_modifications": true
+  },
+  "scientific_claim": "Engineering public observation/action compatibility only; NOT evidence of learned unlocking, task success, action consequence prediction or native superiority."
+}
