@@ -127,7 +127,7 @@ def main(source_root):
             continue
         method_name = identity_gate.comparators[0].value
         allowed_regimes[method_name] = [ast.unparse(x) for x in membership_gate.comparators[0].elts]
-    must(set(allowed_regimes) == {"see", "do", "ctf_do", "step"}, "PCH_PERMISSION_METHOD_SET_DRIFT")
+    must(set(allowed_regimes) == {"see", "do", "ctf_do"}, "PCH_PERMISSION_METHOD_SET_DRIFT")
     task_new = method(task_cls, "__new__")
     default_regime = ast.unparse(task_new.args.defaults[0])
     must(default_regime == "LearningRegime.ctf_do", "DEFAULT_TASK_PERMISSION_CHANGED")
