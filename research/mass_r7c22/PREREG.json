@@ -1,0 +1,54 @@
+{
+  "schema": "mass.r7c22.original-source-dynamic-obstacles-development.v1",
+  "classification": "ORIGINAL_EXTERNAL_SOURCE_PUBLIC_DEVELOPMENT_NOT_PROTECTED_FIRST_USE",
+  "source": "Farama-Foundation/Minigrid@7f5853792ea7f04f75614661006d87fcf949f26d",
+  "dynamic_class_source_blob": "68436cecc35116c23c2f196c22fa3a19c6410b95",
+  "environment": "MiniGrid-Dynamic-Obstacles-8x8-v0",
+  "public_source": "FullyObsWrapper encoded public agent/goal tiles and current heading; front_blocked true for original WALL or BALL; never use MiniGrid .unwrapped, source layout/hidden obstacle position",
+  "source_semantics": "The original DynamicObstaclesEnv.step samples not_clear from preaction grid, then moves obstacles before MiniGridEnv.step; forward into a preaction ball can terminate with reward -1 even if the agent later moves. Preserve collision and motion metrics separately; never assert every blocked-forward implies zero movement.",
+  "original_native": "Yggdrasil R3 #497 fbf78bcc6988755ba0e3e026f06d273839c1fa9f",
+  "parent_c21_head": "f409036e9ac2881b527c9bdb718efffb8a3195be",
+  "prior_static_fit": "Reuse frozen C21 exactly 12 genuine public FIT source effects and same selection seed identities 27101,27103,27107,27109; don't alter original 12-example native fit or comparator fit",
+  "fresh_public_dynamic_dev_seeds": [
+    32101,
+    32103,
+    32107,
+    32109,
+    32111,
+    32113,
+    32117,
+    32119,
+    32123,
+    32129,
+    32131,
+    32137
+  ],
+  "dev_max_actions": 256,
+  "arms": [
+    "original",
+    "guard_only",
+    "native_sensor_memory",
+    "conventional",
+    "conventional_recent"
+  ],
+  "conventional_recent_definition": "Independent existing conventional learned-motor source + current observed sensor, but discard stale previously observed edge blocked/open records before each planning decision (keep agent's visit counts). Equal 12 genuine source FIT events; does not get privileged object type, ground truth, or movement forecasts.",
+  "comparisons": "Compare all policies on same fresh dynamic original source resets and actual own chosen action outcomes, twice independent processes per arm. Current public binary front blocked available identically across arms. Extra recorded current tile ID (wall vs ball) forbidden as policy input.",
+  "diagnostics": [
+    "original task goal count and reward sum",
+    "collision-terminated episodes reward -1; separately wall-or-ball publicly blocked forward action and observed no-motion",
+    "steps to goal / horizon",
+    "full per-step action/outcome/reward logs",
+    "dynamic episodes and any within-episode front-cell 1->0 and 0->1 status reversals, only for analyst after policy outcomes",
+    "cold subprocess restored native/conventional memory",
+    "FIT and DEV CPU, whole-process peak RSS and checkpoint bytes",
+    "dually repeated identical scientific hashes"
+  ],
+  "stop_conditions": [
+    "Any Python program or source identity drift; upstream cannot be pinned",
+    "If actual original dynamic task requires different action interface, fail closed",
+    "If any arm reads hidden map or sensor distinction unavailable to another, abort",
+    "No promotion if conventional matches or wins, if task success regresses, or if measured improvements are solely static-world effects",
+    "Do not use this cohort after results for tuning or protected first-use"
+  ],
+  "governance": "Separate Mass research DRAFT branch; Yggdrasil source R1/R2/R3 owner branch and protected cohorts remain unchanged; no FORGE or CKB controller changes, live deployment or paid services."
+}
