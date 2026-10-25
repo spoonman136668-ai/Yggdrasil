@@ -1,0 +1,98 @@
+name: ITD-02 C34 authentic-source public history sufficiency (no new episodes)
+on:
+  push:
+    branches:
+      - research/itd02-c34-public-belief-identifiability-20261025
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: itd02-c34-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  source_only_public_history_tests:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Check frozen protocol before code and original Ygg owner custody
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 35bf6fefc25fdef0c4c1b244002b56e83f9b85a7 "$GITHUB_SHA"
+          git merge-base --is-ancestor 1b0d56e53ac72792b967dfa08e21e3b60ef517d1 "$GITHUB_SHA"
+          test "$(git hash-object research/native/itd02/r1/native_policy.py)" = "3aa22b1e418a7f8cd9619c476f02b8c614917b16"
+          test "$(git hash-object research/mass_r7c28/PREREG.json)" = "$(git rev-parse 955465676893e18d673ccb804f27e7c04160bdc3:research/mass_r7c28/PREREG.json)"
+          test "$(git hash-object research/mass_r7c33/PREREG.json)" = "$(git rev-parse 1b0d56e53ac72792b967dfa08e21e3b60ef517d1:research/mass_r7c33/PREREG.json)"
+          python -m py_compile research/mass_r7c34/belief.py research/mass_r7c34/audit.py research/mass_r7c34/test_belief.py
+          echo "C34_FROZEN_ORIGINAL_C28_C33_SOURCE=PASS"
+      - name: Source-free causal-prior memory and real two-step grammar focused tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest research.mass_r7c34.test_belief -v
+          echo "C34_SOURCE_ONLY_PUBLIC_HISTORY_UNITS=PASS"
+          echo "C34_NEW_ORIGINAL_SOURCE_ACTIONS=0"
+          echo "C34_PROTECTED_FIRST_USE=DENIED"
+
+  original_source_multi_step_fit_certificate:
+    needs: [source_only_public_history_tests]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 16
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      GH_ORIGINAL_FIT_ARTIFACT_ID: '12596362847'
+      GH_ORIGINAL_FIT_ARCHIVE_SHA: '2e0492af74cd68f8fc9ee7d5cfffcc6a936614e23f9061457f70dcd49cf84810'
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Fetch exact already authentic original source FIT data, never environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          mkdir -p "$RUNNER_TEMP/c34-original-C28-fit" "$RUNNER_TEMP/c34-results"
+          curl -fLsS --retry 2 -H "Authorization: Bearer $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" -o "$RUNNER_TEMP/c34-original-physical-fit.zip" "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/$GH_ORIGINAL_FIT_ARTIFACT_ID/zip"
+          echo "$GH_ORIGINAL_FIT_ARCHIVE_SHA  $RUNNER_TEMP/c34-original-physical-fit.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/c34-original-physical-fit.zip" -d "$RUNNER_TEMP/c34-original-C28-fit"
+          python -B -m research.mass_r7c28.compare "$RUNNER_TEMP/c34-original-C28-fit"
+          echo "C34_C28_ORIGINAL_SELECTED_ACTION_DOUBLE_PRODUCER=PASS"
+      - name: Compute source-public causal-history identifiability, reproducibly twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m research.mass_r7c34.audit --authentic-original-fit-dir "$RUNNER_TEMP/c34-original-C28-fit" --output "$RUNNER_TEMP/c34-results/source-fit-a.json"
+          python -B -m research.mass_r7c34.audit --authentic-original-fit-dir "$RUNNER_TEMP/c34-original-C28-fit" --output "$RUNNER_TEMP/c34-results/source-fit-b.json"
+          cmp "$RUNNER_TEMP/c34-results/source-fit-a.json" "$RUNNER_TEMP/c34-results/source-fit-b.json"
+          echo "C34_TWO_INDEPENDENT_FIT_SOURCE_ONLY_MODEL_PROCESSES=EXACT_PASS"
+          echo "C34_NEW_MINIGRID_RESETS_STEPS=0"
+          echo "C34_NO_NEW_DEV_OR_PROTECTED_FIRST_USE=PASS"
+      - name: Retain source-identifiable model and negative evidence in GitHub only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-c34-source-public-history-and-multistep-sufficiency
+          path: ${{ runner.temp }}/c34-results/
+          if-no-files-found: warn
+          retention-days: 80
