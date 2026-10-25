@@ -49,7 +49,7 @@ def run_source_fit(model,baseline,role,seeds,episode_indices):
             for step in range(P['protocol_roles']['source_episode_action_cap']):
                 public=owner.public_observation(collector.normalized_original_public(raw))
                 cues=owner.public_cues(public)
-                independent=collector.independent_cues(public)
+                independent=collector.independent_cues(collector.normalized_original_public(raw))
                 assert independent['front']==cues['front']
                 assert independent['carried']==cues['carried']
                 assert independent['direction']==cues['direction']
