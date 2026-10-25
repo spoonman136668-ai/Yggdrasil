@@ -75,12 +75,7 @@ jobs:
           done
           # Source-original mechanistic veto is not a runner failure:
           # if no native causal signal, never execute FIT validation or controls.
-          qualified="$(python - "$RUNNER_TEMP/mass-r7c28-results/native-1.json" <<'PY'
-import json,sys
-x=json.load(open(sys.argv[1]))
-print('yes' if x['gate']=='FIT_CAUSAL_INFORMATION_IDENTIFIED_TRAIN_ONLY' else 'no')
-PY
-)"
+          qualified="$(python -c "import json,sys; x=json.load(open(sys.argv[1])); print('yes' if x['gate']=='FIT_CAUSAL_INFORMATION_IDENTIFIED_TRAIN_ONLY' else 'no')" "$RUNNER_TEMP/mass-r7c28-results/native-1.json")"
           if [ "$qualified" = yes ]; then
             for rep in 1 2; do
               python -B research/mass_r7c28/run.py --kind conventional --out "$RUNNER_TEMP/mass-r7c28-results/conventional-$rep.json"
