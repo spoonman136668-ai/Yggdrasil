@@ -1,0 +1,88 @@
+name: Mass R7-C29 authenticated original DoorKey seven-action FIT
+on:
+  push:
+    branches:
+      - research/mass-r7c29-doorkey-public-fit-20261025
+permissions:
+  contents: read
+concurrency:
+  group: mass-r7c29-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-fit-public-actions:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      R10_SOURCE_FILE: ${{ github.workspace }}/owner-r10/research/native/itd02/r10/public_adapter.py
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: research
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: spoonman136668-ai/Yggdrasil
+          ref: c66064abb438e743fc4c30cf9c1a382cebef8e98
+          path: owner-r10
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Verify frozen original source and owner public action contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C research rev-parse HEAD)" = "$GITHUB_SHA"
+          git -C research merge-base --is-ancestor f10ad1e2355c73dc5640ad3377c384d7b5e15ce9 "$GITHUB_SHA"
+          test "$(git -C external/minigrid rev-parse HEAD)" = "7f5853792ea7f04f75614661006d87fcf949f26d"
+          test "$(git -C external/minigrid hash-object minigrid/envs/doorkey.py)" = "df5b29ef063be34e6d83b8b478e092c6e3e01512"
+          test "$(git -C owner-r10 rev-parse HEAD)" = "c66064abb438e743fc4c30cf9c1a382cebef8e98"
+          test "$(git -C owner-r10 hash-object research/native/itd02/r10/public_adapter.py)" = "3917d36ce9f86a2c1b998a0a2f93fb27674a9205"
+          python -m py_compile research/research/mass_r7c29/collect.py research/research/mass_r7c29/compare.py
+          echo 'R7C29_ORIGINAL_SOURCE_OWNER_IDENTITY=PASS'
+      - name: Install exact original upstream MiniGrid
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install ./external/minigrid
+      - name: Original R10 source-only focused public action checks
+        shell: bash
+        working-directory: owner-r10
+        run: |
+          set -euo pipefail
+          python -B -m unittest research.native.itd02.r10.test_public_adapter -q
+          echo 'R7C29_AUTHENTIC_OWNER_R10_SOURCE_ONLY=PASS'
+      - name: Two independent original source public FIT runs
+        shell: bash
+        working-directory: research
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/mass-r7c29-evidence"
+          for rep in 1 2; do
+            python -B research/mass_r7c29/collect.py "$RUNNER_TEMP/mass-r7c29-evidence/fit-$rep.json"
+          done
+          python -B research/mass_r7c29/compare.py "$RUNNER_TEMP/mass-r7c29-evidence"
+      - name: Preserve complete verified FIT receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: mass-r7c29-original-doorkey-public-seven-action-fit
+          path: ${{ runner.temp }}/mass-r7c29-evidence/
+          if-no-files-found: warn
+          retention-days: 80
