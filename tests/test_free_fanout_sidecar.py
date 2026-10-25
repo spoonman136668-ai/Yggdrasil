@@ -163,7 +163,13 @@ class RuntimeValidationTests(unittest.TestCase):
                 dispatch.assert_not_called()
             self.assertFalse((work / "out").exists())
 
-    @unittest.skipIf(__import__("os").name == "nt", "POSIX child resource meter unavailable: fail-closed Windows")
+    def test_package_helper_remains_callable_on_windows(self):
+        # Only tests requiring an executing POSIX-metered child may be skipped.
+        self.assertFalse(getattr(type(self).make_package, "__unittest_skip__", False))
+        td, root = self.make_package("print('synthetic public source only')\\n")
+        self.addCleanup(td.cleanup)
+        self.assertTrue((root / "research" / "fanout" / "smoke_candidate.py").is_file())
+
     def make_package(self, source):
         td = tempfile.TemporaryDirectory()
         root = pathlib.Path(td.name)
@@ -172,6 +178,7 @@ class RuntimeValidationTests(unittest.TestCase):
         target.write_text(source, encoding="utf-8")
         return td, root
 
+    @unittest.skipIf(__import__("os").name == "nt", "POSIX child resource meter unavailable: fail-closed Windows")
     def test_missing_result_rejected(self):
         m = base_manifest()
         source = "import sys\nsys.exit(0)\n"
