@@ -1,0 +1,40 @@
+{
+  "schema": "itd02.c27.public-front-presence-contract.v1",
+  "classification": "SOURCE_ONLY_INTERFACE_AND_CONSEQUENCE_CUSTODY_NOT_ORIGINAL_SOURCE_SCIENCE",
+  "frozen_parent": "ba055a29f4c5ac7eaec3d785fef21dae763c5dc2",
+  "upstream": "Farama-Foundation/Minigrid@7f5853792ea7f04f75614661006d87fcf949f26d",
+  "native_original_r1_blob": "3aa22b1e418a7f8cd9619c476f02b8c614917b16",
+  "original_c26_fork_run_blob": "39adfd2187c2beb6850e3f90d53d868335cfaf8e",
+  "original_c26_fork_head": "4a28b1538042743a84954eb47dbb6ba226ccbb9a",
+  "original_c26_blind_results": "8/8 first-turn public bits CLEAR; 0/8 full-versus-default-clear differences",
+  "current_frozen_shared_selected_fit_actions": {
+    "left": 0,
+    "right": 0,
+    "forward": 12
+  },
+  "hypothesis": "An honest missing front observation must be an explicit third state, never a false/clear boolean, and a blinded selected-action outcome must not update edge evidence using withheld sensor contents.",
+  "rights": [
+    "Source may offer authenticated six-field PublicGrid; only the evaluator chooses whether to reveal current front, and the policy receives a validated tokenized public view.",
+    "Represent front as CLEAR, BLOCKED or UNKNOWN; when UNKNOWN the model's public data contains no true front blocked boolean.",
+    "Any request to downcast UNKNOWN to R1 PublicGrid must fail closed. Do not change original R1/R2/R3 modules.",
+    "Equal physical action, reward, source clock and chosen selected-action outcome receipts permitted to both; masked current front forbidden from entering sensor memory as a false clear.",
+    "Do not learn from rejected/duplicate/out-of-sequence or malformed selected-action returns.",
+    "Proof of source-only decision contrasts under authored fixtures is interface engineering, never original-world causal identification."
+  ],
+  "required_tests": [
+    "Full known clear and known blocked differ from unknown/masked; no silent UNKNOWN->CLEAR fallback",
+    "Same original public source bit CLEAR: shown policy sees CLEAR, withheld policy sees UNKNOWN (unlike original C26)",
+    "Same original public source bit BLOCKED: shown policy sees BLOCKED, withheld policy sees UNKNOWN",
+    "One legal physical selected turn with withheld after-front must NOT update sensor edge memory or reveal bit through checkpoint/choice",
+    "Legal visible returned front can update episode evidence; blinded visible outcomes still update public pose/motor consequences and real reward accounting",
+    "Reject malformed frame, boolean disguised as integer, extra/privileged source fields, duplicate/out of order event, invalid selected-action outcome, corrupted checkpoint",
+    "Fresh Python process cold restoration yields identical next public decision for known/unknown states",
+    "Pass Python source-only focused tests on Ubuntu and Windows, with frozen native source hash check."
+  ],
+  "fail_rules": [
+    "No new original MiniGrid reset/step, new source birth, hidden-source oracle, DEV tuning or protected first use.",
+    "Do not call engineered mask-only or hand-coded guarded action novelty or intelligence.",
+    "Do not issue new source DEV episodes until complete turn-inclusive original FIT, matched conventional time/belief controls and FSA permitted science are qualified independently."
+  ],
+  "governance": "Additive draft child of C26 FIT source-only certificate; original immutable research and FORGE FSA #83 authority unchanged, no controller, paid API, main merge, or Library use."
+}
