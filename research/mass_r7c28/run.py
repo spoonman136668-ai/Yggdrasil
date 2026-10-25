@@ -139,7 +139,7 @@ def fit_ledger() -> dict:
         for ep in source_episodes:
             if hashlib.sha256(canonical(ep["trace"])).hexdigest()!=ep["trace_sha256"]:
                 raise ValueError("SOURCE_C25_RAW_TRACE_SHA256_MISMATCH")
-            ev,receipt=validate_episode(family,ep["seed"],ep["trace"],P["max_new_fit_actions_per_episode"])
+            ev,receipt=validate_episode(family,ep["seed"],ep["trace"],c25.P["actions_per_episode_cap"])
             if len(ev)!=ep["steps"]:
                 raise ValueError("SOURCE_ACTION_COUNT_MISMATCH")
             events.extend(ev);episode_receipts.append(receipt)
