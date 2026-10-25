@@ -108,10 +108,37 @@ def main(source_root):
     see_syntax = ast.unparse(method(p, "see"))
     must("see_policy(self.env.s, u1)" in see_syntax, "BEHAVIORAL_U1_VISIBILITY_CHANGED")
     must("info['natural_action'] = x" in see_syntax, "BEHAVIORAL_ACTION_VISIBILITY_CHANGED")
-    check = ast.unparse(method(wrapper, "_permission_check"))
-    must("LearningRegime.do" in check and "LearningRegime.ctf_do" in check, "PCH_PERMISSION_CHECK_CHANGED")
+    permission_method = method(wrapper, "_permission_check")
+    # The original PCH permission contract allows default ctf_do to use
+    # BOTH ordinary do and privileged counterfactual operations.
+    allowed_regimes = {}
+    for gate in ast.walk(permission_method):
+        if not isinstance(gate, ast.BoolOp) or not isinstance(gate.op, ast.And) or len(gate.values) != 2:
+            continue
+        identity_gate, membership_gate = gate.values
+        if not (isinstance(identity_gate, ast.Compare) and
+                isinstance(membership_gate, ast.Compare) and
+                len(identity_gate.ops) == 1 and isinstance(identity_gate.ops[0], ast.Eq) and
+                isinstance(identity_gate.left, ast.Name) and identity_gate.left.id == "name" and
+                len(identity_gate.comparators) == 1 and isinstance(identity_gate.comparators[0], ast.Constant) and
+                isinstance(membership_gate.ops[0], ast.NotIn) and
+                ast.unparse(membership_gate.left) == "self.task.learning_regime" and
+                isinstance(membership_gate.comparators[0], ast.List)):
+            continue
+        method_name = identity_gate.comparators[0].value
+        allowed_regimes[method_name] = [ast.unparse(x) for x in membership_gate.comparators[0].elts]
+    must(set(allowed_regimes) == {"see", "do", "ctf_do", "step"}, "PCH_PERMISSION_METHOD_SET_DRIFT")
     task_new = method(task_cls, "__new__")
-    must(ast.unparse(task_new.args.defaults[0]) == "LearningRegime.ctf_do", "DEFAULT_TASK_PERMISSION_CHANGED")
+    default_regime = ast.unparse(task_new.args.defaults[0])
+    must(default_regime == "LearningRegime.ctf_do", "DEFAULT_TASK_PERMISSION_CHANGED")
+    default_do = default_regime in allowed_regimes["do"]
+    default_ctf = default_regime in allowed_regimes["ctf_do"]
+    default_see = default_regime in allowed_regimes["see"]
+    must(default_do and default_ctf and default_see, "ORIGINAL_DEFAULT_PRIVILEGES_DRIFT")
+    must(("LearningRegime.do" in allowed_regimes["do"]) and
+         ("LearningRegime.do" not in allowed_regimes["ctf_do"]) and
+         ("LearningRegime.do" not in allowed_regimes["see"]),
+         "NO_RESTRICTED_DO_ONLY_SCOPE")
 
     rows = []
     joint_probs = []
@@ -162,8 +189,8 @@ def main(source_root):
         "suboptimal_action_expected_reward": "9/50",
         "per_mistake_immediate_regret": "16/25",
         "multi_step_limit": "Per-step conditional reward cannot exceed 41/50; source resamples exogenous variables each step, so immediate memoryless state-matching policy reaches this ceiling on every nonterminal step.",
-        "default_PCH_task_DO_authorized": False,
-        "explicit_Task_learning_regime_do_required": True,
+        "default_PCH_task_DO_authorized": default_do,\n        "default_PCH_task_CTF_DO_authorized": default_ctf,\n        "default_PCH_task_SEE_authorized": default_see,
+        "explicit_Task_learning_regime_do_required_for_LEAST_PRIVILEGE": True,
         "see_custom_policy_receives_hidden_u1": True,
         "see_or_ctf_do_allowed_for_fitted_comparators": False,
         "independently_different_MDP_causal_families_in_source": 1,
