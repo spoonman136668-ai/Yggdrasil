@@ -43,7 +43,19 @@ def build(others):
         if name=="native_untrained_zero":
             continue
         if name=="conventional_full9_direct_pairs":
-            costs[name]=train_pair(m,others)
+            # Original O22-W helper hardcodes all 31 original FIT anchors.
+            # Here each excluded world has FEWER source FIT anchors; use
+            # its unchanged independent learner on precisely those others.
+            t0=time.process_time()
+            for anchor in others:
+                for pair in PAIRS:
+                    m.learn(anchor["public_initial"],pair,observed(anchor,pair))
+            m.finalize()
+            if m.n!=len(others)*len(PAIRS) or any(
+                value!=len(others) for value in m.counts.values()
+            ):
+                raise ValueError("O22Y_DIRECT_PAIR_PER_WORLD_SEED_RIGHTS")
+            costs[name]=round(time.process_time()-t0,8)
         else:
             costs[name]=fit_transitions(m,others,action_shift=name=="native_shuffled_negative")
     expected=len(others)*18
