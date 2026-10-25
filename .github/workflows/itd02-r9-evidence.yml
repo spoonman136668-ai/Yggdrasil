@@ -1,0 +1,87 @@
+name: ITD-02 R9 Evidence-Gated Causal Revision (source-only)
+on:
+  push:
+    branches: [research/itd02-r9-evidence-gating-20261025]
+permissions:
+  contents: read
+jobs:
+  r9-focused:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_CONFIG_COUNT: '1'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Validate source-first ancestry and exact original/native SHA identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 1ff734e7d5c8b0d4a9f26395b23eb50547a4177e HEAD
+          test "$(git rev-parse HEAD:research/native/itd02/r9/PREREG.json)" = "84637ba02627a4b817b0d894b124055ce352543d"
+          test "$(git rev-parse HEAD:research/native/itd02/r7/learner.py)" = "204ecd993b954b23e66d6d1e8b3568e7c93183c5"
+          test "$(git rev-parse HEAD:research/native/itd02/r8/revision.py)" = "346fb9eb7462208a6cbd28cfb51716c22e5ec857"
+          test "$(git rev-parse HEAD:research/native/itd02/r9/evidence_cells.py)" = "66ec3befe92e2d2c2b7116217354a40f59e659d7"
+          test "$(git rev-parse HEAD:research/native/itd02/r9/test_evidence_cells.py)" = "6ad55c9f477a2aab9fef09d5d31bbab9b1a075d9"
+          echo "R9_PRE_REGISTERED_EXACT_SOURCE=PASS"
+      - name: Execute original R7/R8 and independent conventional source-only gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd02/r9 -p 'test_evidence_cells.py' -v
+          python -B -c "from research.native.itd02.r9.test_evidence_cells import prospective_48; a=prospective_48('stationary'); b=prospective_48('changed'); assert a['prequential']=={'r8':20,'r9':0,'conventional':0,'r7':0},a['prequential']; assert b['prequential']=={'r8':0,'r9':5,'conventional':5,'r7':20},b['prequential']; print('R9_EXACT_PREQUENTIAL_CONVENTIONAL_NO_NOVELTY=PASS')"
+          test -z "$(git status --porcelain)"
+          echo "R9_FOCUSED_DEVELOPMENT=PASS"
+          echo "R9_INDEPENDENT_EXTERNAL_FIRST_USE=0"
+
+  one-shot-atlas:
+    if: github.event.head_commit.message == 'Arm R9 G29 artifact reanchor'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Re-anchor ONLY three generated atlas files to exact frozen R9 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          A="$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$A"
+          test -z "$(git status --porcelain)"
+          git merge-base --is-ancestor 1ff734e7d5c8b0d4a9f26395b23eb50547a4177e "$A"
+          test "$(git rev-parse HEAD:research/native/itd02/r9/evidence_cells.py)" = "66ec3befe92e2d2c2b7116217354a40f59e659d7"
+          python scripts/build_code_atlas.py --write --source-commit "$A"
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git diff --cached --quiet && exit 1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Re-anchor G29 to frozen R9 source $A"
+          B="$(git rev-parse HEAD)"
+          git merge-base --is-ancestor "$A" "$B"
+          test "$(git diff-tree --no-commit-id --name-only -r "$B" | wc -l | tr -d ' ')" = "3"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin "HEAD:refs/heads/research/itd02-r9-evidence-gating-20261025"
+          echo "R9_FROZEN_SOURCE_A=$A"
+          echo "R9_GENERATED_ARTIFACT_ONLY_B=$B"

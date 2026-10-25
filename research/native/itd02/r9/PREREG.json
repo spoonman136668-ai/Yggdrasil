@@ -1,0 +1,44 @@
+{
+  "schema": "itd02.r9.sourceonly-calibrated-evidence-gate-v1",
+  "status": "FROZEN_BEFORE_R9_CODE_OR_FIXTURE_EXECUTION",
+  "parent_head": "369f749553b480ee9b83dc6cde686a430a3db7f1",
+  "original_R7_learner_blob": "204ecd993b954b23e66d6d1e8b3568e7c93183c5",
+  "original_R8_revision_blob": "346fb9eb7462208a6cbd28cfb51716c22e5ec857",
+  "hypothesis": "With identical public experiences and no private change oracle, an action-owned fast/slow hypothesis gate using independent post-discovery evidence and calibrated observation reliability avoids R8's corroboration-free false switches but can trade response delay against real change.",
+  "calibration": "Fit public observation-error rate using a separately labeled source-free STATIONARY training calibration segment only: exactly 64 selected actions with eight deliberately corrupted public feedback outcomes, Beta(1,7) pseudo-counts give p=(8+1)/(64+8)=0.125. Both native and conventional receive identical public calibration; do not provide a hidden sensor-error label to learners.",
+  "discovery": "Original R7 first fits 192 lawful source-free public selected transitions for EACH of 3 actions (576 total); preserve original source checkpoint. Original R8 is fitted from 32 distinct observed action1 consequences, 28 stable, four structured contradictions. Freeze candidate model thereafter. This discovery transcript MUST NOT also count toward the posterior change evidence.",
+  "validation": "48 further selected source-free public effects, fixed active rule query previously unseen public states where stable and discovered candidate disagree, then fallback smallest available state. The source-free legal action budget is 48 per arm. Two latent worlds are identical through discovery: stationary with corrupted discovery feedback vs truly changed clean world. Both return public outcomes to model, not latent rule flags.",
+  "native": "New R9 wrapper around UNCHANGED R7/R8: per-action stable and candidate hypotheses, public mismatch noise estimate, sequential likelihood ratio updated ONLY on post-discovery selected effects where predictions disagree, prior change odds fixed 1e-4, accept candidate at posterior odds>=1, revert on contradicted evidence, cold persisted state. Candidate is not rerun to refit on validation data.",
+  "controls": [
+    "unchanged native R8 on exact validation public stream",
+    "original native R7 frozen baseline",
+    "independent conventional three-parent conditional-table fit from same 32 public discovery rows and SAME calibration error count; independently implemented sequential likelihood gate and identical prior",
+    "plain adaptive always-candidate and always-stable ablations"
+  ],
+  "metrics": [
+    "prequential 48-step full next-state errors",
+    "stationary false switches",
+    "genuine-change acceptance delay",
+    "number of informative legal actions",
+    "full 256-state final diagnostic error separately scored",
+    "native change/reversion",
+    "cold checkpoint restoration",
+    "native process CPU and checkpoint bytes (not matched total Pareto)"
+  ],
+  "advancement": [
+    "two OS source identity/focused tests PASS",
+    "stationary false switch count lower than original R8 with measured changed-world cost",
+    "independent sequential conventional parity or improvement honestly stated; tie forbids novelty",
+    "no hidden latent rule, no duplicate discovery evidence, no self-authored environment misrepresented as external first use"
+  ],
+  "limits": "This is INTERNALLY AUTHORED synthetic source-only DEVELOPMENT, not independently authored external physics; prior odds 1e-4 fixed, only observation reliability calibrated from FIT. Same policy-selected stream for all learning arms, score before each effect.",
+  "governance": {
+    "no_original_R7_R8_change": true,
+    "draft_unmerged": true,
+    "first_use": false,
+    "FORGE_FSA_83_open": true,
+    "protected_cohorts_unconsumed": true,
+    "no_paid_API": true,
+    "no_scheduler_or_CKB_changes": true
+  }
+}
