@@ -109,11 +109,15 @@ def certify_candidate_event_coverage(events: list[dict]) -> dict:
         raise ValueError("FIT_EVENT_BUDGET_OR_TYPE")
     counts = Counter()
     last_seq: dict[str, int] = {}
+    last_after: dict[str, dict] = {}
+    ended: set[str] = set()
     for ev in events:
         if type(ev) is not dict or set(ev) != EVENT_FIELDS:
             raise ValueError("NONPUBLIC_EVENT_OR_METADATA")
         if type(ev["episode"]) is not str or not ev["episode"] or len(ev["episode"]) > 128:
             raise ValueError("INVALID_EPISODE_ID")
+        if ev["episode"] in ended:
+            raise ValueError("SOURCE_EPISODE_ALREADY_TERMINAL")
         if type(ev["seq"]) is not int or ev["seq"] != last_seq.get(ev["episode"], -1) + 1:
             raise ValueError("DUPLICATE_OUT_OF_ORDER_OR_MISSING_ACTION_RETURN")
         if type(ev["action"]) is not int or ev["action"] not in (0, 1, 2):
@@ -124,6 +128,8 @@ def certify_candidate_event_coverage(events: list[dict]) -> dict:
             raise ValueError("MALFORMED_TERMINATION")
         before = _public(ev["before"])
         after = _public(ev["after"])
+        if ev["episode"] in last_after and before != last_after[ev["episode"]]:
+            raise ValueError("UNLINKED_SOURCE_ACTION_CONSEQUENCE")
         if (before["goal_x"], before["goal_y"]) != (after["goal_x"], after["goal_y"]):
             raise ValueError("PRIVILEGED_OR_CHANGED_GOAL")
         action = ev["action"]
@@ -137,6 +143,9 @@ def certify_candidate_event_coverage(events: list[dict]) -> dict:
             raise ValueError("FORWARD_RETURN_NOT_SOURCE_LEGAL")
         counts[action] += 1
         last_seq[ev["episode"]] = ev["seq"]
+        last_after[ev["episode"]] = after
+        if ev["terminal"]:
+            ended.add(ev["episode"])
     return {
         "schema": "itd02.c26.action-family-coverage-only.v1",
         "selected_legal_action_counts": {str(a): counts[a] for a in (0, 1, 2)},
