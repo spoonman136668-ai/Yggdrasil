@@ -246,7 +246,7 @@ def main():
         )
     )
     positive=len(positive_seed)>=3 and familiar>=1 and moving>=1 and strict
-    decision=("SOURCE_FIT_ONLY_DISCRIMINATING_REAL_ACTION_ROSTER_REQUIRES_FRESH_OWNER_CONFIRMATION"
+    scientific_decision=("SOURCE_FIT_ONLY_DISCRIMINATING_REAL_ACTION_ROSTER_REQUIRES_FRESH_OWNER_CONFIRMATION"
               if positive else "NO_GO_EXISTING_AUTHENTIC_PHYSICAL_ROSTER_DOES_NOT_ESTABLISH_LEARNED_ACTION_LEVERAGE")
     science={
         "schema":P["schema"],
@@ -268,7 +268,7 @@ def main():
         "unchanged_C36_C37_original_source_negative_results":True,
         "genuinely_new_unfamiliar_source_family_transfer":"NOT_TESTED",
         "protected_first_use":"DENIED_FORGE_FSA_83",
-        "scientific_gate":decision
+        "scientific_gate":scientific_decision
     }
     science_hash=hashlib.sha256(canonical(science)).hexdigest()
     result={
@@ -291,7 +291,7 @@ def main():
         print("O22Y_"+fam+"_NATIVE_VS_RIDGE_DIFFERENCES="+str(int(aggregate[fam]["native_vs_composed_ridge_different"])),flush=True)
     print("O22Y_SOURCE_SCIENCE_CANONICAL_SHA256="+science_hash,flush=True)
     print("O22Y_GENUINELY_NEW_SOURCE_ACTIONS=ZERO",flush=True)
-    print("O22Y_SCIENTIFIC_GATE="+decision,flush=True)
+    print("O22Y_SCIENTIFIC_GATE="+scientific_decision,flush=True)
 
 
 if __name__=="__main__":
