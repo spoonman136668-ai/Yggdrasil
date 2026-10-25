@@ -11,7 +11,7 @@ import hashlib
 import json
 import math
 
-from research.native.itd02.r1.native_policy import PublicGrid
+from research.native.itd02.r1.native_policy import PublicGrid, features as validate_original_public
 
 CLEAR = "CLEAR"
 BLOCKED = "BLOCKED"
@@ -67,6 +67,7 @@ def from_source(source_public: PublicGrid, reveal: bool) -> PublicView:
     """
     if type(source_public) is not PublicGrid or type(reveal) is not bool:
         raise ValueError("ORIGINAL_PUBLIC_SOURCE_OR_VISIBILITY_INVALID")
+    validate_original_public(source_public)
     return PublicView(source_public.x, source_public.y,
                       source_public.goal_x, source_public.goal_y,
                       source_public.direction,
