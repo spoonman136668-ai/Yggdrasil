@@ -156,9 +156,9 @@ def new_process_checkpoint(model,b):
         "'proposal':m.propose(p['public']),'events':m.events}))"
     )
     blob=canonical({"class":type(model).__name__,"state":cp.decode(),"public":b})
-    env=dict(os.environ,PYTHONPATH=str(HERE.parents[2]),PYTHONDONTWRITEBYTECODE="1")
+    env=dict(os.environ,PYTHONPATH=str(HERE.parents[1]),PYTHONDONTWRITEBYTECODE="1")
     child=subprocess.run([sys.executable,"-B","-c",program],input=blob,
-        capture_output=True,timeout=20,cwd=HERE.parents[2],env=env)
+        capture_output=True,timeout=20,cwd=HERE.parents[1],env=env)
     if child.returncode:
         raise ValueError("O22V_FRESH_PYTHON_PROCESS_FAILED:"+child.stderr.decode())
     got=json.loads(child.stdout)
