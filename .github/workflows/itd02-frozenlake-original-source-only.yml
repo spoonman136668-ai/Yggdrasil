@@ -1,0 +1,71 @@
+name: ITD02 FrozenLake original source-only admission
+on:
+  push:
+    branches: [research/itd02-frozenlake-source-admission-audit-20261025]
+    paths:
+      - 'research/native/itd02/frozenlake_source_screen/**'
+      - '.github/workflows/itd02-frozenlake-original-source-only.yml'
+permissions:
+  contents: read
+concurrency:
+  group: ygg-itd02-frozenlake-original-source-only-20261025
+  cancel-in-progress: false
+jobs:
+  original-source-only:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: ygg
+          persist-credentials: false
+          fetch-depth: 0
+          clean: true
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: CausalAILab/Causal-Gymnasium
+          ref: c94e9a4cd3641588b6b8507e71ccee5c27032bdf
+          path: upstream
+          persist-credentials: false
+          fetch-depth: 0
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify authenticated upstream origin and prereg-first custody
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C upstream rev-parse HEAD)" = c94e9a4cd3641588b6b8507e71ccee5c27032bdf
+          test "$(git -C upstream rev-parse HEAD:causal_gym/envs/frozen_lake.py)" = 259051fbd3489e2354ac6af062e09be0c6ffb9dc
+          test "$(git -C upstream rev-parse HEAD:causal_gym/core/pch.py)" = ff37780c6b791877c70583b8d5f699be7fcd8817
+          test "$(git -C upstream rev-parse HEAD:causal_gym/core/task.py)" = 668262f3f5c88fa2865b08ef10bbf96b09a3b73e
+          test "$(git -C ygg rev-parse HEAD:research/native/itd02/frozenlake_source_screen/PREREG.json)" = 682b9a595f0a418285bb29eca0ad409b18b10127
+          test "$(git -C ygg rev-parse HEAD:research/native/itd02/frozenlake_source_screen/frozenlake_screen.py)" = 0d21f4e0a02a7b8986ae62c6e20192cdcafbaf70
+          git -C ygg merge-base --is-ancestor e41b90bbbe9d7b6b9676513e6fa42de0d96b6cc8 HEAD
+          python -B - <<'PY'
+          import json,pathlib
+          p=json.loads(pathlib.Path('ygg/research/native/itd02/frozenlake_source_screen/PREREG.json').read_text())
+          assert p["status"]=="FROZEN_BEFORE_SCREEN_IMPLEMENTATION_AND_EXECUTION"
+          assert p["source_commit"]=="c94e9a4cd3641588b6b8507e71ccee5c27032bdf"
+          assert p["execution_rights"]["upstream_python_import"] is False
+          assert p["execution_rights"]["environment_reset"] is False
+          assert p["execution_rights"]["environment_step"] is False
+          assert p["scientific_go"] is False
+          PY
+      - name: Static source interface qualification, zero episodes
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B ygg/research/native/itd02/frozenlake_source_screen/frozenlake_screen.py upstream
+          test -z "$(git -C ygg status --porcelain --untracked-files=all)"
+          test -z "$(git -C upstream status --porcelain --untracked-files=all)"
+          echo ITD02_FROZENLAKE_SOURCE_IMPORTS=0
+          echo ITD02_FROZENLAKE_ORIGINAL_EPISODES=0
+          echo ITD02_FROZENLAKE_SCIENTIFIC_GO=FALSE
