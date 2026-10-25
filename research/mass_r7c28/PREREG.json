@@ -1,0 +1,57 @@
+{
+  "schema": "mass.r7c28.train-only-source-information-value-qualification.v1",
+  "source_first": "Prereq commit before learner design/code and experiments; no DEV first use allowed until FIT causal value empirically qualified",
+  "classification": "FIT_ONLY original externally-authored MiniGrid; no protected holdouts, no new DEV",
+  "original_source": "Farama-Foundation/Minigrid@7f5853792ea7f04f75614661006d87fcf949f26d",
+  "native_owner_sha": "fbf78bcc6988755ba0e3e026f06d273839c1fa9f",
+  "parent_mass_c27_sha": "80e9b195bbd8aa9b67e0ab88e7832f0de7f8eff2",
+  "frozen_twelve_actual_motor_FIT_sha256": "4e4e9446169f61a7d1a0398b4fff2d0e31510356111c2cc59fdbeca899f6ce60",
+  "fit_training_seed_cohorts": {
+    "MiniGrid-FourRooms-v0": [
+      27101,
+      27103,
+      27107,
+      27109,
+      27111,
+      27113,
+      27117,
+      27119
+    ],
+    "MiniGrid-Dynamic-Obstacles-8x8-v0": [
+      27101,
+      27103,
+      27107,
+      27109,
+      27111,
+      27113,
+      27117,
+      27119
+    ]
+  },
+  "fit_validation_seed_cohorts": {
+    "MiniGrid-FourRooms-v0": [
+      27123,
+      27129,
+      27131,
+      27137
+    ],
+    "MiniGrid-Dynamic-Obstacles-8x8-v0": [
+      27123,
+      27129,
+      27131,
+      27137
+    ]
+  },
+  "arms": [
+    "native",
+    "conventional"
+  ],
+  "public_observation": "FullyObsWrapper output reduced to x,y,heading,goal and binary current front_blocked; never expose wall/ball source object class, unwrapped grid, future outcome or source seed to policy",
+  "causal_observation_ablation": "Continue unchanged real source active policy to every genuine FIT information-facing turn. Clone source wrapped environment and complete public learner only inside evaluator at preaction time. In A actually execute the information-facing turn and use the actual newly exposed front obstruction bit; in B execute the SAME physically information-facing turn and actual first source step but mask the new public front bit to FALSE for one decision and delete only synthetic evidence before continuing with true source. In C use the opposite previously-known-side turn, same one physical action cost but different heading (route confounded); all actions and rewards from original MiniGrid.",
+  "qualification_before_learning": "Require >0 actual originally BLOCKED first postturn front readings among FIT training only, >0 TRUE immediate next-decision divergences on same physical informative-vs-blinded first action, and >0 verified original-source long-horizon reward or goals different on those blocked FIT training forks. If this is not met, stop, publish source evidence and do not train a decision-value classifier or consume FIT validation. No speculative label invention.",
+  "learned_value_if_qualified": "From FIT training ONLY, train a source-public Bayesian categorical value model predicting if information facing first turn improves future source reward relative to same-physical-turn one-reading-blind and conventional known-facing control. Features restricted to source family, public goal-distance band, public current front_blocked, known-side and unknown-side evidence counts, and selected turn, computed BEFORE the intervention. Use fixed Laplace(1,1) shrinkage, no hyperparameter search. Independent conventional learner receives same labels and equivalent features. Explicitly measure learned FIT validation held-out-seed regret vs always probe, never probe and independent conventional baseline. Never use DEV or protected to fit or tune.",
+  "data_validity": "Forks within an episode are correlated. Present per-seed paired deltas and cluster summaries. Equal first physical source action is necessary for information causality. Condition on blocked vs clear outcome only for post-hoc diagnostic, never select favorable validation cases for training.",
+  "controls": "Native and independent conventional get exact same 12 real motor FIT actions and their own authentic public policy histories; trained value model cannot claim architectural novelty if matched conventional ties. Cold process restore full public history to equal next choice. Full original CPU/RSS and model bytes recorded. No actual original-source hidden environment labels in model feature input.",
+  "no_promotion": "This is just a fit-only value-identifiability gate; if it passes, a separate source-first preregistered DEV evaluation is needed before any substantive transfer evidence; no owner implementation change, no controller merge, no protected cohort.",
+  "owner": "Mass Research independent draft branch; preserve original R3, R7-C20-C27 and original protected scientific boundaries; zero paid API and no ChatGPT Library."
+}
