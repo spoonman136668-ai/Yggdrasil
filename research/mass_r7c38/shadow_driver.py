@@ -38,7 +38,6 @@ def report(original_fit_dir):
       "original_C36_regression_features_sha256":sha(rows),
       "original_C36_actual_physical_labels_sha256":sha(labels),
       "deterministic_reference":reference,
-      "original_vs_reference_FIT_only_diagnostic":comparison,
       "original_C37_crosshost_model_sha_drift":"STILL_NOT_QUALIFIED",
       "native_causal_superiority":"NOT_TESTED",
       "original_source_new_steps":0,
@@ -48,6 +47,7 @@ def report(original_fit_dir):
       "original_unmodified_numpy_float64_coefficients":model.ridge,
       "original_model_source_numerical_backend":"platform-dependent_numpy",
       "shadow_cpu_seconds":run_cpu,
+      "original_vs_shadow_FIT_only_platform_diagnostic":comparison,
       "openblas_threads":os.environ.get("OPENBLAS_NUM_THREADS")}
     return {"science":science,"science_sha256":sha(science),"runtime_not_part_of_science":runtime}
 def main():
@@ -63,6 +63,6 @@ def main():
     print("C38_REFERENCE_SOURCE_FIT_ACTUAL_OPTIONS="+str(s["FIT_physical_selected_training_options"]))
     print("C38_REFERENCE_EXACT_COEFF_SHA256="+s["deterministic_reference"]["shadow_coefficients_sha256"])
     print("C38_REFERENCE_CROSSHOST_CANONICAL_SCIENCE_SHA256="+result["science_sha256"])
-    print("C38_REFERENCE_FIT_TOP_ACTION_FLIPS="+str(s["original_vs_reference_FIT_only_diagnostic"]["original_source_FIT_three_candidate_rank_flip_count"]))
+    print("C38_REFERENCE_FIT_TOP_ACTION_FLIPS="+str(result["runtime_not_part_of_science"]["original_vs_shadow_FIT_only_platform_diagnostic"]["original_source_FIT_three_candidate_rank_flip_count"]))
     print("C38_ORIGINAL_SOURCE_NEW_STEPS=0; C38_SCIENTIFIC_GO=FALSE",flush=True)
 if __name__=="__main__":main()
