@@ -1,4 +1,4 @@
-"""Static source admission checks for pinned upstream DTR; never runs the environment."""
+"""Static preflight for pinned upstream DTR source; never imports/runs its environment."""
 import ast
 import os
 import subprocess
@@ -57,47 +57,38 @@ class PinnedDTRSourcePreflight(unittest.TestCase):
         reset_text = ast.unparse(methods["reset"])
         step_text = ast.unparse(methods["step"])
         self.assertIn("self.rng = np.random.default_rng(seed)", reset_text)
-        self.assertIn("return self.s1", reset_text)
+        self.assertIn("return (self.s1", reset_text)
         self.assertIn("if self.stage == 0", step_text)
         self.assertIn("elif self.stage == 1", step_text)
         self.assertIn("self.stage = 1", step_text)
         self.assertIn("self.stage = 2", step_text)
-        self.assertIn("return self.s2, 0, False, False", step_text)
-        self.assertIn("return None, self.y, True, False", step_text)
-        # Static source inspection only; no reset, action or step is called.
+        self.assertIn("return (self.s2, 0, False, False", step_text)
+        self.assertIn("return (None, self.y, True, False", step_text)
         self.assertIn("self.u = self.rng.random()", reset_text)
         self.assertIn("self.env.u", ast.unparse(class_methods(self.dtr, "DTRPCH")["see"]))
 
-    def test_upstream_diagnostic_info_contains_fields_that_must_be_dropped(self):
+    def test_diagnostic_info_and_pch_policy_expose_fields_the_learner_must_not_receive(self):
         step_text = ast.unparse(class_methods(self.dtr, "DTRSCM")["step"])
         pch = class_methods(self.dtr, "DTRPCH")
         see_text = ast.unparse(pch["see"])
         do_text = ast.unparse(pch["do"])
         ctf_text = ast.unparse(pch["ctf_do"])
-        for key in ('"s1"', '"x1"', '"s2"', '"x2"', '"y"', '"stage"'):
+        for key in ("'s1'", "'x1'", "'s2'", "'x2'", "'y'", "'stage'"):
             self.assertIn(key, step_text)
         self.assertIn("self.env.u", see_text)
         self.assertIn("self.env.s1", see_text)
         self.assertIn("self.env.s2", do_text)
         self.assertIn("self.env.action()", ctf_text)
-        # The downstream event allowlist is pinned by the pure projector and
-        # never accepts a dict; this is a static source audit, not an execution.
-        self.assertNotIn("info", PUBLIC_KEYS)
-        self.assertNotIn("u", PUBLIC_KEYS)
-        self.assertNotIn("s1", PUBLIC_KEYS)
-        self.assertNotIn("x1", PUBLIC_KEYS)
-        self.assertNotIn("s2", PUBLIC_KEYS)
-        self.assertNotIn("x2", PUBLIC_KEYS)
-        self.assertNotIn("y", PUBLIC_KEYS)
+        for private in ("info", "u", "s1", "x1", "s2", "x2", "y", "get_graph", "env"):
+            self.assertNotIn(private, PUBLIC_KEYS)
 
-    def test_no_environment_import_or_episode_execution_in_preflight(self):
-        # Confirm this test module uses AST/source inspection and git only.
-        source = Path(__file__).read_text(encoding="utf-8")
-        self.assertNotIn("DTRSCM(", source)
-        self.assertNotIn(".reset(", source)
-        self.assertNotIn(".step(", source)
-        self.assertIn("ast.parse", source)
-        self.assertIn('"git"', source)
+    def test_preflight_imports_only_source_text_and_never_instantiates_environment(self):
+        test_tree = ast.parse(Path(__file__).read_text(encoding="utf-8"))
+        call_nodes = [node for node in ast.walk(test_tree) if isinstance(node, ast.Call)]
+        self.assertFalse(any(isinstance(node.func, ast.Name) and node.func.id == "DTRSCM" for node in call_nodes))
+        self.assertFalse(any(isinstance(node.func, ast.Attribute) and node.func.attr in ("reset", "step") for node in call_nodes))
+        imports = [node.module for node in ast.walk(test_tree) if isinstance(node, ast.ImportFrom)]
+        self.assertFalse(any(module and module.startswith("causal_gym") for module in imports))
 
 
 if __name__ == "__main__":
