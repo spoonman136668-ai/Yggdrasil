@@ -7,21 +7,21 @@ from research.native.itd02.minigrid_memory_event_contract import (
 from research.native.itd02.minigrid_memory_witness import verify_history_witness_pair
 
 
-def obs(marker=0, direction=0):
+def obs(marker=0, direction=0, cell=(2, 3)):
     image = [[[0, 0, 0] for _ in range(7)] for _ in range(7)]
-    image[2][3][0] = marker
+    image[cell[0]][cell[1]][0] = marker
     return {"image": image, "direction": direction, "mission": MISSION}
 
 
 def episode(seed, prior_marker, decision_marker=5, decision_action=0, reward=0.64):
     receipt = dict(SOURCE)
     return [
-        project_reset((obs(prior_marker), {"hidden": "ignored"}),
+        project_reset((obs(prior_marker, cell=(2, 6)), {"hidden": "ignored"}),
                       episode_seed=seed, source_receipt=receipt),
         project_step((obs(prior_marker, 1), 0.0, False, False, {"private": 1}),
                      episode_seed=seed, seq=1, action=2,
                      source_receipt=receipt),
-        project_step((obs(decision_marker, 0), 0.0, False, False, {}),
+        project_step((obs(decision_marker, 0, cell=(1, 6)), 0.0, False, False, {}),
                      episode_seed=seed, seq=2, action=2,
                      source_receipt=receipt),
         project_step((obs(8, 3), 0.0, False, False, {}),
@@ -33,7 +33,7 @@ def episode(seed, prior_marker, decision_marker=5, decision_action=0, reward=0.6
     ]
 
 
-def verify(a, b, cue_cell_a=(2, 3), cue_cell_b=(2, 3), upper_cell=(2, 3)):
+def verify(a, b, cue_cell_a=(2, 6), cue_cell_b=(2, 6), upper_cell=(1, 6)):
     return verify_history_witness_pair(
         a, b, decision_seq_a=2, decision_seq_b=2,
         public_cue_cell_a=cue_cell_a, public_cue_cell_b=cue_cell_b,
@@ -106,8 +106,8 @@ class PublicHistoryWitnessTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             verify_history_witness_pair(
                 a, b, decision_seq_a=True, decision_seq_b=2,
-                public_cue_cell_a=(2, 3), public_cue_cell_b=(2, 3),
-                public_upper_object_cell=(2, 3),
+                public_cue_cell_a=(2, 6), public_cue_cell_b=(2, 6),
+                public_upper_object_cell=(1, 6),
             )
 
 
