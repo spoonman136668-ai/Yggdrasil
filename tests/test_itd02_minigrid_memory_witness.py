@@ -64,37 +64,37 @@ class PublicHistoryWitnessTests(unittest.TestCase):
             verify(a, b)
 
     def test_rejects_identical_prior_history(self):
-        a = episode(10001, prior_marker=2, decision_action=0)
-        b = episode(20001, prior_marker=2, decision_action=0)
+        a = episode(10001, prior_marker=5, decision_action=0)
+        b = episode(20001, prior_marker=5, decision_action=0)
         with self.assertRaisesRegex(ValueError, "WITNESS_PRIOR_HISTORIES_IDENTICAL"):
             verify(a, b)
 
     def test_rejects_action_that_disagrees_with_public_rule(self):
-        a = episode(10001, prior_marker=2, decision_action=0)
-        b = episode(20001, prior_marker=3, decision_action=0)
+        a = episode(10001, prior_marker=5, decision_action=0)
+        b = episode(20001, prior_marker=6, decision_action=0)
         with self.assertRaisesRegex(ValueError, "WITNESS_B_ACTION_DOES_NOT_MATCH_PUBLIC_SOURCE_RULE"):
             verify(a, b)
 
     def test_rejects_missing_forward_route_continuation(self):
-        a = episode(10001, prior_marker=2, decision_action=0)
-        b = episode(20001, prior_marker=3, decision_action=1)
+        a = episode(10001, prior_marker=5, decision_action=0)
+        b = episode(20001, prior_marker=6, decision_action=1)
         b[4]["action"] = 1
         with self.assertRaisesRegex(ValueError, "WITNESS_B_DID_NOT_CONTINUE_FORWARD"):
             verify(a, b)
 
     def test_rejects_zero_reward_or_nonterminal_pair(self):
-        a = episode(10001, prior_marker=2, decision_action=0)
-        b = episode(20001, prior_marker=3, decision_action=1, reward=0.0)
+        a = episode(10001, prior_marker=5, decision_action=0)
+        b = episode(20001, prior_marker=6, decision_action=1, reward=0.0)
         with self.assertRaisesRegex(ValueError, "WITNESS_B_NO_PUBLIC_SUCCESS_REWARD"):
             verify(a, b)
-        c = episode(20002, prior_marker=3, decision_action=1)
+        c = episode(20002, prior_marker=6, decision_action=1)
         c[-1]["terminated"] = False
         with self.assertRaisesRegex(ValueError, "WITNESS_B_NOT_TERMINAL_SUCCESS"):
             verify(a, c)
 
     def test_rejects_invalid_decision_sequence(self):
-        a = episode(10001, prior_marker=2, decision_action=0)
-        b = episode(20001, prior_marker=3, decision_action=1)
+        a = episode(10001, prior_marker=5, decision_action=0)
+        b = episode(20001, prior_marker=6, decision_action=1)
         with self.assertRaises(ValueError):
             verify_history_witness_pair(
                 a, b, decision_seq_a=True, decision_seq_b=2,
