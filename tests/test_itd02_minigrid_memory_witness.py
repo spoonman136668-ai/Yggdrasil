@@ -38,12 +38,12 @@ def episode(seed, prior_marker, decision_marker=5, decision_action=0,
     ))
     # The choice is selected at observation seq=6; its event is seq=7.
     events.append(project_step(
-        (obs(8, 3), 0.0, False, False, {}),
+        (obs(8, 3 if decision_action == 0 else 1), 0.0, False, False, {}),
         episode_seed=seed, seq=7, action=decision_action, source_receipt=receipt,
     ))
     # Turn then move forward into the selected branch's success position.
     events.append(project_step(
-        (obs(4, 0), reward, True, False, {}),
+        (obs(4, 3 if decision_action == 0 else 1), reward, True, False, {}),
         episode_seed=seed, seq=8, action=2, source_receipt=receipt,
     ))
     return events
@@ -107,6 +107,20 @@ class PublicHistoryWitnessTests(unittest.TestCase):
         b = episode(20001, prior_marker=6, decision_action=1,
                     extra_decision_cells=extra)
         with self.assertRaisesRegex(ValueError, "WITNESS_A_END_OBJECTS_NOT_UNIQUELY_VISIBLE"):
+            verify(a, b)
+
+    def test_rejects_turn_that_does_not_match_selected_action(self):
+        a = episode(10001, prior_marker=5, decision_action=0)
+        b = episode(20001, prior_marker=6, decision_action=1)
+        b[7]["observation"]["direction"] = 3
+        with self.assertRaisesRegex(ValueError, "WITNESS_B_TURN_DIRECTION_MISMATCH"):
+            verify(a, b)
+
+    def test_rejects_forward_transition_that_changes_heading(self):
+        a = episode(10001, prior_marker=5, decision_action=0)
+        b = episode(20001, prior_marker=6, decision_action=1)
+        b[8]["observation"]["direction"] = 3
+        with self.assertRaisesRegex(ValueError, "WITNESS_B_FORWARD_DIRECTION_MISMATCH"):
             verify(a, b)
 
     def test_rejects_missing_forward_route_continuation(self):
