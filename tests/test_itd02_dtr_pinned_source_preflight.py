@@ -5,6 +5,8 @@ import subprocess
 import unittest
 from pathlib import Path
 
+from research.native.itd02.dtr_public_event_contract import PUBLIC_KEYS
+
 UPSTREAM_COMMIT = "c94e9a4cd3641588b6b8507e71ccee5c27032bdf"
 DTR_BLOB = "6af2371dce21804140ea141ccb7be14e003ba275"
 PCH_BLOB = "ff37780c6b791877c70583b8d5f699be7fcd8817"
@@ -64,7 +66,7 @@ class PinnedDTRSourcePreflight(unittest.TestCase):
         self.assertIn("return None, self.y, True, False", step_text)
         # Static source inspection only; no reset, action or step is called.
         self.assertIn("self.u = self.rng.random()", reset_text)
-        self.assertIn('"u": self.u', ast.unparse(class_methods(self.dtr, "DTRPCH")["see"]))
+        self.assertIn("self.env.u", ast.unparse(class_methods(self.dtr, "DTRPCH")["see"]))
 
     def test_upstream_diagnostic_info_contains_fields_that_must_be_dropped(self):
         step_text = ast.unparse(class_methods(self.dtr, "DTRSCM")["step"])
@@ -80,7 +82,13 @@ class PinnedDTRSourcePreflight(unittest.TestCase):
         self.assertIn("self.env.action()", ctf_text)
         # The downstream event allowlist is pinned by the pure projector and
         # never accepts a dict; this is a static source audit, not an execution.
-        self.assertNotIn("info", {"observation", "action", "reward", "terminated", "truncated"})
+        self.assertNotIn("info", PUBLIC_KEYS)
+        self.assertNotIn("u", PUBLIC_KEYS)
+        self.assertNotIn("s1", PUBLIC_KEYS)
+        self.assertNotIn("x1", PUBLIC_KEYS)
+        self.assertNotIn("s2", PUBLIC_KEYS)
+        self.assertNotIn("x2", PUBLIC_KEYS)
+        self.assertNotIn("y", PUBLIC_KEYS)
 
     def test_no_environment_import_or_episode_execution_in_preflight(self):
         # Confirm this test module uses AST/source inspection and git only.
