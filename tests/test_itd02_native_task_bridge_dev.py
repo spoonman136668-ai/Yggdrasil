@@ -100,6 +100,44 @@ class RealNativeRuntimeBridgeTests(unittest.TestCase):
         self.assertEqual(restored.model_identities(), sealed)
         self.assertLess(len(saved), 65536)
 
+    def test_sealed_bridge_checkpoint_restores_as_evaluation_only(self):
+        import hashlib
+        m = NativeTaskRingBridgeDev()
+        fit_public(m, count=3)
+        identities = m.model_identities()
+        m.start_frozen_evaluation(identities["native"], identities["memory"])
+        m.start_observation("Nothing")
+        frozen = m.checkpoint()
+        restored = NativeTaskRingBridgeDev.restore(frozen)
+        self.assertEqual(restored._frozen_native, identities["native"])
+        self.assertEqual(restored.memory._frozen_hash, identities["memory"])
+        with self.assertRaisesRegex(ValueError, "FITTING_FORBIDDEN"):
+            restored.accept_public_transition("Backup", "MRV", 10,
+                                              learning=True)
+        self.assertEqual(restored.model_identities(), identities)
+        restored.accept_public_transition("Backup", "MRV", 0,
+                                          learning=False, terminal=True)
+        self.assertEqual(restored.model_identities(), identities)
+
+        # Even with a recomputed outer digest, mixed frozen/unfrozen state
+        # is forbidden. Never silently downgrade to a FIT checkpoint.
+        altered = json.loads(frozen)
+        altered["body"]["frozen_native_sha256"] = None
+        canonical = json.dumps(altered["body"], sort_keys=True,
+                               separators=(",", ":"), allow_nan=False).encode()
+        altered["sha256"] = hashlib.sha256(canonical).hexdigest()
+        with self.assertRaisesRegex(ValueError, "UNTRUSTED"):
+            NativeTaskRingBridgeDev.restore(json.dumps(altered).encode())
+
+        old = json.loads(frozen)
+        old["body"]["schema"] = "ygg.itd02.native_task_ring_bridge.source_only.v1"
+        old["body"].pop("frozen_native_sha256")
+        canonical = json.dumps(old["body"], sort_keys=True,
+                               separators=(",", ":"), allow_nan=False).encode()
+        old["sha256"] = hashlib.sha256(canonical).hexdigest()
+        with self.assertRaisesRegex(ValueError, "UNTRUSTED"):
+            NativeTaskRingBridgeDev.restore(json.dumps(old).encode())
+
     def test_illegal_public_data_and_native_lesions_fail_closed(self):
         m = NativeTaskRingBridgeDev()
         for bad in ("u_wind", "hidden_state", None, {"obs": "Nothing"}):
