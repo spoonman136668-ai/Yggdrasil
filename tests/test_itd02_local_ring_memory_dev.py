@@ -8,7 +8,7 @@ import unittest
 
 from yggdrasil.itd02_local_ring_memory_dev import (
     ACTIONS, ACTION_SITES, CELLS, NativeRingMemoryDev, OBSERVATIONS,
-    OBS_SITES, ROUNDS, _local_exchange, _public_pulse,
+    OBS_SITES, ROUNDS, _local_credit, _local_exchange, _public_pulse,
 )
 
 
@@ -42,6 +42,21 @@ class LocalRingDevTests(unittest.TestCase):
             self.assertAlmostEqual(sum(propagated), 1.)
         with self.assertRaises(ValueError):
             _local_exchange(signal, rounds=ROUNDS + 1)
+
+    def test_reward_credit_cannot_cross_more_than_two_neighbor_hops(self):
+        credit = _local_credit(0, 1.0)
+        for site, value in enumerate(credit):
+            distance = min(site, CELLS - site)
+            if distance <= ROUNDS:
+                self.assertGreater(value, 0.)
+            else:
+                self.assertEqual(value, 0.)
+        self.assertGreater(_local_credit(5, -1.)[3], 0.)
+        self.assertEqual(_local_credit(5, -1.)[1], 0.)
+        with self.assertRaises(ValueError):
+            _local_credit(8, 1.)
+        with self.assertRaises(ValueError):
+            _local_credit(0, 1., rounds=ROUNDS + 1)
 
     def test_frozen_action_can_depend_on_observed_history(self):
         model = NativeRingMemoryDev()
