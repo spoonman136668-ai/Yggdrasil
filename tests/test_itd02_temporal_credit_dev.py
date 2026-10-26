@@ -26,7 +26,7 @@ def two_step_training(reward):
     model.feedback(first, 0.0, terminal=False)
     before_delayed_credit = [row[:] for row in model.memory.heads]
     # This fixture represents the next chosen action, not a simulator.
-    force_action(model, "TurnAround")
+    model.memory.heads[ACTIONS.index("TurnAround")][0] = 3.1
     model.advance("Nothing")
     second = model.choose()
     assert second == "TurnAround"
@@ -99,7 +99,7 @@ class TemporalCreditDevTests(unittest.TestCase):
         model.advance("LRV")
         action = model.choose()
         model.feedback(action, 0.0, terminal=False)
-        force_action(model, "TurnAround")
+        model.memory.heads[ACTIONS.index("TurnAround")][0] = 3.1
         model.advance("Nothing")
         selected = model.choose()
         saved = model.checkpoint()
