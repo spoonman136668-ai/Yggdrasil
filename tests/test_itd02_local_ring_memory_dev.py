@@ -150,6 +150,42 @@ class LocalRingDevTests(unittest.TestCase):
         self.assertEqual(m.parameter_sha256(), frozen)
         m.feedback("Backup", 0., learning=False, terminal=True)
 
+    def test_frozen_checkpoint_cannot_restart_as_trainable(self):
+        m = NativeRingMemoryDev()
+        m.advance("LRV")
+        m.feedback("Backup", 10.)
+        digest = m.parameter_sha256()
+        m.start_frozen_evaluation(digest)
+        m.advance("Nothing")
+        frozen_snapshot = m.checkpoint()
+        restored = NativeRingMemoryDev.restore(frozen_snapshot)
+        self.assertEqual(restored._frozen_hash, digest)
+        self.assertTrue(restored.pending)
+        with self.assertRaisesRegex(ValueError, "FITTING_FORBIDDEN"):
+            restored.feedback("Backup", 10., learning=True)
+        self.assertEqual(restored.parameter_sha256(), digest)
+        restored.feedback("Backup", 0., learning=False, terminal=True)
+        self.assertEqual(restored.parameter_sha256(), digest)
+
+        # Recompute the unkeyed checkpoint digest to ensure the frozen
+        # parameter identity is validated independently of envelope integrity.
+        bad = json.loads(frozen_snapshot)
+        bad["body"]["frozen_sha256"] = "0" * 64
+        raw = json.dumps(bad["body"], sort_keys=True,
+                         separators=(",", ":"), allow_nan=False).encode()
+        bad["sha256"] = hashlib.sha256(raw).hexdigest()
+        with self.assertRaisesRegex(ValueError, "UNTRUSTED"):
+            NativeRingMemoryDev.restore(json.dumps(bad).encode())
+
+        legacy = json.loads(frozen_snapshot)
+        legacy["body"]["schema"] = "ygg.itd02.local_ring_memory.source_only.v1"
+        legacy["body"].pop("frozen_sha256")
+        raw = json.dumps(legacy["body"], sort_keys=True,
+                         separators=(",", ":"), allow_nan=False).encode()
+        legacy["sha256"] = hashlib.sha256(raw).hexdigest()
+        with self.assertRaisesRegex(ValueError, "UNTRUSTED"):
+            NativeRingMemoryDev.restore(json.dumps(legacy).encode())
+
     def test_snapshot_tampering_denied_and_midtrial_cold_restore(self):
         m = NativeRingMemoryDev()
         m.advance("MRV")
