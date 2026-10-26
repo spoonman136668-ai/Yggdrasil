@@ -41,16 +41,11 @@ def episode(seed, prior_marker, decision_marker=5, decision_action=0,
         (obs(8, 3 if decision_action == 0 else 1), 0.0, False, False, {}),
         episode_seed=seed, seq=7, action=decision_action, source_receipt=receipt,
     ))
-    # First forward move reaches the cell immediately before the end object.
+    # One forward move enters success_pos; source terminates immediately.
     turn_direction = 3 if decision_action == 0 else 1
     events.append(project_step(
-        (obs(4, turn_direction), 0.0, False, False, {}),
-        episode_seed=seed, seq=8, action=2, source_receipt=receipt,
-    ))
-    # The second forward move reaches the selected end-object/success position.
-    events.append(project_step(
         (obs(4, turn_direction), reward, True, False, {}),
-        episode_seed=seed, seq=9, action=2, source_receipt=receipt,
+        episode_seed=seed, seq=8, action=2, source_receipt=receipt,
     ))
     return events
 
@@ -129,18 +124,11 @@ class PublicHistoryWitnessTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "WITNESS_B_FORWARD_DIRECTION_MISMATCH"):
             verify(a, b)
 
-    def test_rejects_missing_final_forward_even_if_reward_is_positive(self):
+    def test_rejects_terminal_reward_when_success_action_is_not_forward(self):
         a = episode(10001, prior_marker=5, decision_action=0)
         b = episode(20001, prior_marker=6, decision_action=1)
-        b[9]["action"] = 0
-        with self.assertRaisesRegex(ValueError, "WITNESS_B_FINAL_FORWARD_MISSING"):
-            verify(a, b)
-
-    def test_rejects_final_step_heading_change(self):
-        a = episode(10001, prior_marker=5, decision_action=0)
-        b = episode(20001, prior_marker=6, decision_action=1)
-        b[9]["observation"]["direction"] = 3
-        with self.assertRaisesRegex(ValueError, "WITNESS_B_FINAL_DIRECTION_MISMATCH"):
+        b[8]["action"] = 0
+        with self.assertRaisesRegex(ValueError, "WITNESS_B_DID_NOT_CONTINUE_FORWARD"):
             verify(a, b)
 
     def test_rejects_missing_forward_route_continuation(self):
