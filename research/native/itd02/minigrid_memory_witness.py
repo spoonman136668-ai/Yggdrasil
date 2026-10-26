@@ -32,8 +32,6 @@ def verify_history_witness_pair(
     public_cue_cell_a,
     public_cue_cell_b,
     public_upper_object_cell,
-    agent_direction_a,
-    agent_direction_b,
 ):
     """Verify a preregistered decision point in two public episodes.
 
@@ -99,15 +97,17 @@ def verify_history_witness_pair(
     if public_upper_end_object_a != public_upper_end_object_b:
         raise ValueError("WITNESS_UPPER_OBJECT_CLASS_MISMATCH")
     public_upper_end_object = public_upper_end_object_a
+    # Facing direction is read from the public decision observation itself,
+    # never from an independently supplied label.
     expected_a = expected_branch_action(
         public_start_cue_a,
         public_upper_end_object,
-        agent_direction=agent_direction_a,
+        agent_direction=decision_a["observation"]["direction"],
     )
     expected_b = expected_branch_action(
         public_start_cue_b,
         public_upper_end_object,
-        agent_direction=agent_direction_b,
+        agent_direction=decision_b["observation"]["direction"],
     )
     if action_a != expected_a:
         raise ValueError("WITNESS_A_ACTION_DOES_NOT_MATCH_PUBLIC_SOURCE_RULE")
