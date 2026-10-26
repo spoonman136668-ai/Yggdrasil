@@ -175,6 +175,14 @@ def verify_history_witness_pair(
         raise ValueError("WITNESS_A_FORWARD_DIRECTION_MISMATCH")
     if b[decision_seq_b + 2]["observation"]["direction"] != expected_direction_b:
         raise ValueError("WITNESS_B_FORWARD_DIRECTION_MISMATCH")
+    if a[decision_seq_a + 3]["action"] != FORWARD:
+        raise ValueError("WITNESS_A_FINAL_FORWARD_MISSING")
+    if b[decision_seq_b + 3]["action"] != FORWARD:
+        raise ValueError("WITNESS_B_FINAL_FORWARD_MISSING")
+    if a[decision_seq_a + 3]["observation"]["direction"] != expected_direction_a:
+        raise ValueError("WITNESS_A_FINAL_DIRECTION_MISMATCH")
+    if b[decision_seq_b + 3]["observation"]["direction"] != expected_direction_b:
+        raise ValueError("WITNESS_B_FINAL_DIRECTION_MISMATCH")
     if action_a == action_b:
         raise ValueError("WITNESS_DECISION_ACTIONS_NOT_DISTINCT")
 
