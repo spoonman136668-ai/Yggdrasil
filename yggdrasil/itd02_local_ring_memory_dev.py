@@ -10,7 +10,7 @@ import hashlib
 import json
 import math
 
-SCHEMA = "ygg.itd02.local_ring_memory.source_only.v1"
+SCHEMA = "ygg.itd02.local_ring_memory.source_only.v2"
 OBSERVATIONS = ("LRV", "MRV", "docked_MRV", "Nothing", "docked_LRV")
 ACTIONS = ("TurnAround", "GoForward", "Backup")
 # Interleave input/output cell sites on the unchanged eight-site ring.
@@ -185,7 +185,8 @@ class NativeRingMemoryDev:
                 "memory": self.memory, "pulse": self._pulse,
                 "before": self._before, "pending": self.pending,
                 "updates": self.updates, "action_calls": self.action_calls,
-                "messages": self.messages}
+                "messages": self.messages,
+                "frozen_sha256": self._frozen_hash}
         payload = _canonical(body)
         if len(payload) > MAX_CHECKPOINT_BYTES:
             raise ValueError("CHECKPOINT_OVER_BUDGET")
@@ -204,7 +205,8 @@ class NativeRingMemoryDev:
                 raise ValueError("BAD_CHECKPOINT_DIGEST")
             if type(body) is not dict or set(body) != {"schema", "gates", "heads", "memory",
                                                      "pulse", "before", "pending", "updates",
-                                                     "action_calls", "messages"} or body["schema"] != SCHEMA:
+                                                     "action_calls", "messages",
+                                                     "frozen_sha256"} or body["schema"] != SCHEMA:
                 raise ValueError("BAD_CHECKPOINT_SCHEMA")
             fields = ("gates", "memory", "pulse", "before")
             if any(type(body[k]) is not list or len(body[k]) != CELLS or
@@ -225,6 +227,13 @@ class NativeRingMemoryDev:
             obj._pulse = [float(v) for v in body["pulse"]]
             obj._before = [float(v) for v in body["before"]]
             obj.pending = body["pending"]
+            frozen = body["frozen_sha256"]
+            if frozen is not None:
+                if (type(frozen) is not str or len(frozen) != 64 or
+                        any(c not in "0123456789abcdef" for c in frozen) or
+                        frozen != obj.parameter_sha256()):
+                    raise ValueError("BAD_FROZEN_PARAMETER_IDENTITY")
+            obj._frozen_hash = frozen
             for name in ("updates", "action_calls", "messages"):
                 setattr(obj, name, body[name])
             return obj
