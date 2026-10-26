@@ -1,0 +1,80 @@
+name: ITD-02 MiniGrid atlas reanchor and final regression
+on:
+  pull_request:
+    paths:
+      - 'research/native/itd02/minigrid_memory_event_contract.py'
+      - 'tests/test_itd02_minigrid_memory_event_contract.py'
+      - 'tests/test_itd02_minigrid_memory_source_preflight.py'
+      - 'research/native/itd02/minigrid_memory_witness.py'
+      - 'research/native/itd02/minigrid_memory_witness_rules.py'
+      - 'tests/test_itd02_minigrid_memory_witness.py'
+      - 'tests/test_itd02_minigrid_memory_witness_rules.py'
+      - 'research/native/itd02/minigrid_memory_witness_rules.py'
+      - 'research/native/itd02/minigrid_memory_preregistration_candidate.md'
+      - '.github/workflows/itd02-minigrid-memory-source-preflight.yml'
+      - '.github/workflows/itd02-atlas-export.yml'
+      - '.github/workflows/yggdrasil-g29-atlas.yml'
+      - '.ice/code-atlas.json'
+  workflow_dispatch:
+concurrency:
+  group: itd02-atlas-reanchor-${{ github.event.pull_request.number || github.ref_name }}
+  cancel-in-progress: true
+permissions:
+  contents: write
+jobs:
+  reconcile-canonical-atlas:
+    if: github.event_name == 'pull_request' && github.actor == 'spoonman136668-ai' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'research/itd02-minigrid-memory-contract-20261026'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external-minigrid
+          persist-credentials: false
+          fetch-depth: 1
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Rebuild canonical atlas from exact checked-out HEAD
+        run: python scripts/build_code_atlas.py --write --source-commit "${{ github.event.pull_request.head.sha }}"
+      - name: Archive deterministic atlas artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: itd02-minigrid-atlas-reanchor
+          path: |
+            .ice/code-atlas.json
+            .ice/code-atlas.html
+            .ice/code-atlas.ice
+          if-no-files-found: error
+          retention-days: 3
+      - name: Commit only generated atlas files if changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          if ! git diff --quiet -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+            git commit -m "G29: reconcile canonical generated source atlas"
+          fi
+      - name: G29 canonical atlas identity check on regenerated source tree
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: G29 pinned source-atlas acceptance tests
+        run: python -B -m unittest discover -s tests -p "test_code_atlas.py" -v
+      - name: One final full regression with exact pinned MiniGrid source
+        env:
+          MINIGRID_SOURCE: external-minigrid
+        run: python -B -m unittest discover -s tests -v
+      - name: Verify generated tree is clean
+        run: git diff --exit-code
+      - name: Publish generated-only atlas commit
+        env:
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: git push origin "HEAD:${BRANCH}"
