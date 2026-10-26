@@ -65,6 +65,15 @@ class PublicCausalCells:
 
     def snapshot(self) -> bytes:
         """One immutable, versioned 164-byte checkpoint with SHA-256 integrity."""
+        if (type(self._counts) is not list or len(self._counts) != 16
+                or any(type(cell) is not list or len(cell) != 2
+                       for cell in self._counts)
+                or any(type(arm) is not list or len(arm) != 2
+                       for cell in self._counts for arm in cell)):
+            raise ValueError("PUBLIC_CAUSAL_STATE_SHAPE_INVALID")
+        if any(type(count) is not int or not 0 <= count <= 65535
+               for cell in self._counts for arm in cell for count in arm):
+            raise ValueError("PUBLIC_CAUSAL_STATE_COUNT_INVALID")
         raw = bytearray(self.MAGIC)
         for cell in self._counts:
             for arm in cell:
