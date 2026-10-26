@@ -150,10 +150,20 @@ def validate_episode(events):
     seeds = {event.get("episode_seed") for event in events}
     if len(seeds) != 1:
         raise ValueError("EPISODE_SEED_DRIFT")
+    for event in events:
+        if type(event["episode_seed"]) is not int or not 0 <= event["episode_seed"] <= MAX_SEED:
+            raise ValueError("INVALID_EPISODE_SEED")
+        if type(event["seq"]) is not int or not 0 <= event["seq"] <= MAX_STEPS:
+            raise ValueError("INVALID_EVENT_SEQUENCE")
+        if type(event["terminated"]) is not bool or type(event["truncated"]) is not bool:
+            raise ValueError("INVALID_TERMINATION_FLAGS")
+        normalized = project_observation(event["observation"])
+        if normalized != event["observation"]:
+            raise ValueError("NONCANONICAL_PUBLIC_OBSERVATION")
     first = events[0]
     if first["kind"] != "reset" or first["seq"] != 0 or first["action"] is not None:
         raise ValueError("MISSING_RESET_EVENT")
-    if first["reward"] != 0.0 or first["terminated"] or first["truncated"]:
+    if type(first["reward"]) is not float or first["reward"] != 0.0 or first["terminated"] or first["truncated"]:
         raise ValueError("INVALID_RESET_EVENT")
     for i, event in enumerate(events[1:], start=1):
         if event["kind"] != "transition" or event["seq"] != i:
