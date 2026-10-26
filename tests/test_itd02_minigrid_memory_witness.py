@@ -15,37 +15,51 @@ def obs(marker=0, direction=0, cell=(2, 3), extra_cells=()):
     return {"image": image, "direction": direction, "mission": MISSION}
 
 
-def episode(seed, prior_marker, decision_marker=6, decision_action=0,
+def episode(seed, prior_marker, decision_marker=5, decision_action=0,
             reward=0.64, extra_reset_cells=(), extra_decision_cells=()):
     receipt = dict(SOURCE)
-    return [
+    events = [
         project_reset((obs(prior_marker, cell=(2, 6), extra_cells=extra_reset_cells),
                        {"hidden": "ignored"}),
                       episode_seed=seed, source_receipt=receipt),
-        project_step((obs(prior_marker, 1), 0.0, False, False, {"private": 1}),
-                     episode_seed=seed, seq=1, action=2, source_receipt=receipt),
-        project_step((obs(decision_marker, 0, cell=(1, 6),
-                          extra_cells=(((5, 6), 6),) + tuple(extra_decision_cells)),
-                      0.0, False, False, {}),
-                     episode_seed=seed, seq=2, action=2, source_receipt=receipt),
-        project_step((obs(8, 3), 0.0, False, False, {}),
-                     episode_seed=seed, seq=3, action=decision_action, source_receipt=receipt),
-        project_step((obs(4, 0), reward, True, False, {"success_pos": [1, 2]}),
-                     episode_seed=seed, seq=4, action=2, source_receipt=receipt),
     ]
+    # MemoryS7 width=9, hallway_end=6; reset cue visibility requires agent_x=1.
+    # Six FORWARD actions move the agent from x=1 to the branch entrance x=7.
+    for seq in range(1, 6):
+        events.append(project_step(
+            (obs(1, 0), 0.0, False, False, {}),
+            episode_seed=seed, seq=seq, action=2, source_receipt=receipt,
+        ))
+    events.append(project_step(
+        (obs(decision_marker, 0, cell=(1, 6),
+             extra_cells=(((5, 6), 6),) + tuple(extra_decision_cells)),
+         0.0, False, False, {}),
+        episode_seed=seed, seq=6, action=2, source_receipt=receipt,
+    ))
+    # The choice is selected at observation seq=6; its event is seq=7.
+    events.append(project_step(
+        (obs(8, 3), 0.0, False, False, {}),
+        episode_seed=seed, seq=7, action=decision_action, source_receipt=receipt,
+    ))
+    # Turn then move forward into the selected branch's success position.
+    events.append(project_step(
+        (obs(4, 0), reward, True, False, {}),
+        episode_seed=seed, seq=8, action=2, source_receipt=receipt,
+    ))
+    return events
 
 
 def verify(a, b, cue_cell_a=(2, 6), cue_cell_b=(2, 6),
-           upper_cell=(1, 6), lower_cell=(5, 6)):
+           upper_cell=(1, 6), lower_cell=(5, 6), seq_a=6, seq_b=6):
     return verify_history_witness_pair(
-        a, b, decision_seq_a=2, decision_seq_b=2,
+        a, b, decision_seq_a=seq_a, decision_seq_b=seq_b,
         public_cue_cell_a=cue_cell_a, public_cue_cell_b=cue_cell_b,
         public_upper_object_cell=upper_cell, public_lower_object_cell=lower_cell,
     )
 
 
 class PublicHistoryWitnessTests(unittest.TestCase):
-    def test_same_decision_view_distinct_history_rule_actions_and_later_success(self):
+    def test_same_branch_entrance_view_distinct_history_rule_actions_and_success(self):
         a = episode(10001, prior_marker=5, decision_action=0)
         b = episode(20001, prior_marker=6, decision_action=1)
         receipt = verify(a, b)
@@ -87,17 +101,18 @@ class PublicHistoryWitnessTests(unittest.TestCase):
             verify(a, b)
 
     def test_rejects_extra_key_ball_in_decision_view(self):
+        extra = (((0, 0), 5),)
         a = episode(10001, prior_marker=5, decision_action=0,
-                    extra_decision_cells=(((0, 0), 5),))
+                    extra_decision_cells=extra)
         b = episode(20001, prior_marker=6, decision_action=1,
-                    extra_decision_cells=(((0, 0), 5),))
+                    extra_decision_cells=extra)
         with self.assertRaisesRegex(ValueError, "WITNESS_A_END_OBJECTS_NOT_UNIQUELY_VISIBLE"):
             verify(a, b)
 
     def test_rejects_missing_forward_route_continuation(self):
         a = episode(10001, prior_marker=5, decision_action=0)
         b = episode(20001, prior_marker=6, decision_action=1)
-        b[4]["action"] = 1
+        b[8]["action"] = 1
         with self.assertRaisesRegex(ValueError, "WITNESS_B_DID_NOT_CONTINUE_FORWARD"):
             verify(a, b)
 
@@ -114,20 +129,22 @@ class PublicHistoryWitnessTests(unittest.TestCase):
     def test_rejects_non_east_facing_public_decision_observation(self):
         a = episode(10001, prior_marker=5, decision_action=0)
         b = episode(20001, prior_marker=6, decision_action=1)
-        a[2]["observation"]["direction"] = 1
-        b[2]["observation"]["direction"] = 1
+        a[6]["observation"]["direction"] = 1
+        b[6]["observation"]["direction"] = 1
         with self.assertRaisesRegex(ValueError, "WITNESS_DECISION_POSE_MISMATCH"):
             verify(a, b)
 
-    def test_rejects_invalid_decision_sequence(self):
+    def test_rejects_unpreregistered_decision_sequence(self):
         a = episode(10001, prior_marker=5, decision_action=0)
         b = episode(20001, prior_marker=6, decision_action=1)
-        with self.assertRaises(ValueError):
-            verify_history_witness_pair(
-                a, b, decision_seq_a=True, decision_seq_b=2,
-                public_cue_cell_a=(2, 6), public_cue_cell_b=(2, 6),
-                public_upper_object_cell=(1, 6), public_lower_object_cell=(5, 6),
-            )
+        with self.assertRaisesRegex(ValueError, "WITNESS_DECISION_SEQUENCE_NOT_PREREGISTERED"):
+            verify(a, b, seq_a=5, seq_b=5)
+
+    def test_rejects_invalid_decision_sequence_type(self):
+        a = episode(10001, prior_marker=5, decision_action=0)
+        b = episode(20001, prior_marker=6, decision_action=1)
+        with self.assertRaisesRegex(ValueError, "WITNESS_DECISION_SEQUENCE_INVALID"):
+            verify(a, b, seq_a=True)
 
 
 if __name__ == "__main__":
