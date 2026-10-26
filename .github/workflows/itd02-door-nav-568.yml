@@ -1,0 +1,19 @@
+name: ITD-02 Door Navigation Source-Free Focused
+
+on:
+  pull_request:
+    paths:
+      - 'research/itd02/door_nav_568/**'
+      - '.github/workflows/itd02-door-nav-568.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  source-free-focused:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Focused public action learner tests only
+        run: python -m unittest discover -s research/itd02/door_nav_568 -p 'test_public_action_memory.py' -v
