@@ -158,10 +158,23 @@ def verify_history_witness_pair(
         raise ValueError("WITNESS_A_ACTION_DOES_NOT_MATCH_PUBLIC_SOURCE_RULE")
     if action_b != expected_b:
         raise ValueError("WITNESS_B_ACTION_DOES_NOT_MATCH_PUBLIC_SOURCE_RULE")
+
+    # The decision action is a turn: LEFT from east must produce north-facing
+    # public direction 3; RIGHT from east must produce south-facing direction 1.
+    expected_direction_a = 3 if action_a == 0 else 1
+    expected_direction_b = 3 if action_b == 0 else 1
+    if a[decision_seq_a + 1]["observation"]["direction"] != expected_direction_a:
+        raise ValueError("WITNESS_A_TURN_DIRECTION_MISMATCH")
+    if b[decision_seq_b + 1]["observation"]["direction"] != expected_direction_b:
+        raise ValueError("WITNESS_B_TURN_DIRECTION_MISMATCH")
     if a[decision_seq_a + 2]["action"] != FORWARD:
         raise ValueError("WITNESS_A_DID_NOT_CONTINUE_FORWARD")
     if b[decision_seq_b + 2]["action"] != FORWARD:
         raise ValueError("WITNESS_B_DID_NOT_CONTINUE_FORWARD")
+    if a[decision_seq_a + 2]["observation"]["direction"] != expected_direction_a:
+        raise ValueError("WITNESS_A_FORWARD_DIRECTION_MISMATCH")
+    if b[decision_seq_b + 2]["observation"]["direction"] != expected_direction_b:
+        raise ValueError("WITNESS_B_FORWARD_DIRECTION_MISMATCH")
     if action_a == action_b:
         raise ValueError("WITNESS_DECISION_ACTIONS_NOT_DISTINCT")
 
