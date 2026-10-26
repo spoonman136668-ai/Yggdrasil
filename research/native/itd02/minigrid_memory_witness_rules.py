@@ -50,3 +50,31 @@ def public_object_at(observation, coordinate):
     if type(object_index) is not int or object_index not in (5, 6):
         raise ValueError("PUBLIC_CELL_NOT_KEY_OR_BALL")
     return "key" if object_index == 5 else "ball"
+
+
+def public_key_ball_cells(observation):
+    """List all visible Key/Ball cells in a 7x7 public observation.
+
+    The output is a candidate inventory only. It does not assign semantic roles
+    such as "start cue" or "upper branch"; those roles must be preregistered and
+    validated using public event geometry. Occluded cells are not inferred.
+    """
+    if type(observation) is not dict or type(observation.get("image")) not in (list, tuple):
+        raise ValueError("PUBLIC_IMAGE_REQUIRED")
+    image = observation["image"]
+    if len(image) != 7:
+        raise ValueError("PUBLIC_IMAGE_SHAPE_INVALID")
+    found = []
+    for x, column in enumerate(image):
+        if type(column) not in (list, tuple) or len(column) != 7:
+            raise ValueError("PUBLIC_IMAGE_SHAPE_INVALID")
+        for y, cell in enumerate(column):
+            if type(cell) not in (list, tuple) or len(cell) != 3:
+                raise ValueError("PUBLIC_CELL_ENCODING_INVALID")
+            object_index = cell[0]
+            if type(object_index) is int and object_index in (5, 6):
+                found.append({
+                    "coordinate": [x, y],
+                    "object": "key" if object_index == 5 else "ball",
+                })
+    return found
