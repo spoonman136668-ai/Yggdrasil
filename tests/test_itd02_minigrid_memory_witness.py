@@ -58,8 +58,8 @@ class PublicHistoryWitnessTests(unittest.TestCase):
                          "PUBLIC_EVENT_WITNESS_SHAPE_PASS_SOURCE_PROVENANCE_NOT_ATTESTED")
 
     def test_rejects_different_decision_observation(self):
-        a = episode(10001, prior_marker=2, decision_action=0)
-        b = episode(20001, prior_marker=3, decision_marker=10, decision_action=1)
+        a = episode(10001, prior_marker=5, decision_action=0)
+        b = episode(20001, prior_marker=6, decision_marker=10, decision_action=1)
         with self.assertRaisesRegex(ValueError, "WITNESS_DECISION_OBSERVATION_MISMATCH"):
             verify(a, b)
 
