@@ -27,6 +27,8 @@ jobs:
         run: python -B -m unittest discover -s tests -p test_itd02_minigrid_memory_event_contract.py -v
       - name: Verify public-history witness receipt contract
         run: python -B -m unittest discover -s tests -p test_itd02_minigrid_memory_witness.py -v
+      - name: Verify frozen public cue rule
+        run: python -B -m unittest discover -s tests -p test_itd02_minigrid_memory_witness_rules.py -v
       - name: Verify pinned upstream source contract
         env:
           MINIGRID_SOURCE: external-minigrid
@@ -55,6 +57,8 @@ jobs:
           python-version: "3.12"
       - name: Verify public event contract
         run: python -B -m unittest discover -s tests -p test_itd02_minigrid_memory_event_contract.py -v
+      - name: Verify frozen public cue rule
+        run: python -B -m unittest discover -s tests -p test_itd02_minigrid_memory_witness_rules.py -v
       - name: Verify pinned upstream source contract
         env:
           MINIGRID_SOURCE: external-minigrid
