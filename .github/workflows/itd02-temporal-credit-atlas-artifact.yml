@@ -1,0 +1,52 @@
+name: ITD-02 temporal-credit source-atlas reanchor and final regression
+on:
+  pull_request:
+    paths:
+      - 'yggdrasil/itd02_temporal_credit_dev.py'
+      - 'tests/test_itd02_temporal_credit_dev.py'
+      - '.github/workflows/itd02-temporal-credit-atlas-artifact.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  generate-qualify:
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Regenerate advisory atlas against the exact PR source tree
+        run: python scripts/build_code_atlas.py --write --source-commit ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Preserve generated source-atlas receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: itd02-temporal-credit-atlas-reanchor
+          path: |
+            .ice/code-atlas.json
+            .ice/code-atlas.html
+            .ice/code-atlas.ice
+          if-no-files-found: error
+          retention-days: 3
+      - name: Commit only deterministic generated atlas files in the PR branch
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          git diff --cached --quiet && exit 0
+          git commit -m "Reanchor advisory source atlas to temporal-credit candidate"
+      - name: One final full repository regression on the generated candidate tree
+        run: python -B -m unittest discover -s tests -v
+      - name: Verify generated candidate tree is clean
+        run: git diff --exit-code
+      - name: Publish the generated-only commit to this PR branch
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: git push origin "HEAD:${BRANCH}"
