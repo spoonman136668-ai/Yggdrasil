@@ -78,3 +78,18 @@ def public_key_ball_cells(observation):
                     "object": "key" if object_index == 5 else "ball",
                 })
     return found
+
+
+def rotate_left_cell_coordinate(x, y, *, width=7, height=7):
+    """Map a cell through the pinned Grid.rotate_left coordinate transform.
+
+    Source rule: destination (x', y') = (y, height - 1 - x).
+    This is pure arithmetic; it does not import or execute MiniGrid.
+    """
+    if type(x) is not int or type(y) is not int:
+        raise ValueError("GRID_COORDINATE_INVALID")
+    if type(width) is not int or type(height) is not int or width <= 0 or height <= 0:
+        raise ValueError("GRID_DIMENSION_INVALID")
+    if not (0 <= x < width and 0 <= y < height):
+        raise ValueError("GRID_COORDINATE_INVALID")
+    return (y, height - 1 - x)
