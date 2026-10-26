@@ -51,6 +51,19 @@ class MatchedTDLambdaControlTests(unittest.TestCase):
         self.assertEqual(control.events, 2)
         self.assertEqual(control.traces, {})
 
+    def test_repeated_pair_uses_accumulating_eligibility(self):
+        control = ConventionalTDLambdaControlDev()
+        control.advance("LRV")
+        control.feedback("Backup", 0.0, next_observation="Nothing", terminal=False)
+        first = control.traces["LRV|Backup"]
+        control.advance("LRV")
+        control.feedback("Backup", 0.0, next_observation="Nothing", terminal=False)
+        second = control.traces["LRV|Backup"]
+        self.assertAlmostEqual(first, 1.0)
+        # Previous eligibility decays by gamma*lambda, then current visit adds 1.
+        self.assertAlmostEqual(second, 1.0 + 0.95 * 0.80)
+        self.assertGreater(second, first)
+
     def test_bad_events_leave_pending_and_values_unchanged(self):
         control = ConventionalTDLambdaControlDev()
         control.advance("LRV")
@@ -73,13 +86,17 @@ class MatchedTDLambdaControlTests(unittest.TestCase):
         self.assertEqual(restored.q, control.q)
         self.assertEqual(restored.traces, control.traces)
         self.assertEqual(restored.pending, "Nothing")
+        # Finish the restored pending action through the public API before
+        # freezing; tests must not bypass pending-action custody.
+        restored.feedback("Backup", 0.0, terminal=True)
+        self.assertIsNone(restored.pending)
+        self.assertEqual(restored.events, 2)
         digest = restored.parameter_sha256()
-        restored.pending = None
         restored.start_frozen_evaluation(digest)
         restored.advance("MRV")
         restored.feedback("GoForward", 100.0, next_observation="LRV", learning=False, terminal=True)
         self.assertEqual(restored.parameter_sha256(), digest)
-        self.assertEqual(restored.events, 1)
+        self.assertEqual(restored.events, 2)
 
     def test_corrupt_checkpoint_rejected(self):
         control = ConventionalTDLambdaControlDev()
