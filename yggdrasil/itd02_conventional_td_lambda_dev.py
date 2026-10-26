@@ -90,12 +90,12 @@ class ConventionalTDLambdaControlDev:
         old_events = self.events
         try:
             if learning:
-                # Accumulating replacing trace for the currently selected pair.
+                # Accumulating eligibility trace for the currently selected pair.
                 for k in list(self.traces):
                     self.traces[k] = _clip(self.traces[k] * GAMMA * LAMBDA, TRACE_CAP)
                     if abs(self.traces[k]) < 1e-12:
                         del self.traces[k]
-                self.traces[key] = 1.0
+                self.traces[key] = _clip(self.traces.get(key, 0.0) + 1.0, TRACE_CAP)
                 old_value = self.q.get(key, 0.0)
                 if terminal:
                     target = float(reward)
