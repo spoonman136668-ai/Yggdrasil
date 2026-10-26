@@ -46,7 +46,7 @@ Each trainable arm receives the same training interaction budget, optimizer/sear
 ## 4. Splits, tuning, and frozen evaluation
 
 Use this deterministic seed allocation, with each seed used for exactly one split and never reused across splits:
-- FIT: integers 10000–10999 (1,000 episodes per training seed; actual repeats defined by the final trainer contract).
+- FIT: integers 10000–10999; one original-source episode per seed for the frozen FIT cohort (1,000 FIT episodes total). Any repeated parameter-training passes must reuse only those stored FIT events, must not recollect episodes, and count toward the same 1,000,000-step-per-arm ceiling. Record the exact per-seed episode count and total environment steps in the admission receipt before execution.
 - VALID: integers 20000–20199 (200 episodes).
 - DEV: integers 30000–30199 (200 episodes).
 
