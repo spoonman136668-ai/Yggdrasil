@@ -13,7 +13,7 @@ def obs(marker=0, direction=0):
     return {"image": image, "direction": direction, "mission": MISSION}
 
 
-def episode(seed, prior_marker, decision_marker=9, decision_action=0, reward=0.64):
+def episode(seed, prior_marker, decision_marker=5, decision_action=0, reward=0.64):
     receipt = dict(SOURCE)
     return [
         project_reset((obs(prior_marker), {"hidden": "ignored"}),
@@ -33,20 +33,20 @@ def episode(seed, prior_marker, decision_marker=9, decision_action=0, reward=0.6
     ]
 
 
-def verify(a, b, cue_a="key", cue_b="ball", upper="key"):
+def verify(a, b, cue_cell_a=(2, 3), cue_cell_b=(2, 3), upper_cell=(2, 3)):
     return verify_history_witness_pair(
         a, b, decision_seq_a=2, decision_seq_b=2,
-        public_start_cue_a=cue_a, public_start_cue_b=cue_b,
-        public_upper_end_object=upper, agent_direction_a=0, agent_direction_b=0,
+        public_cue_cell_a=cue_cell_a, public_cue_cell_b=cue_cell_b,
+        public_upper_object_cell=upper_cell, agent_direction_a=0, agent_direction_b=0,
     )
 
 
 class PublicHistoryWitnessTests(unittest.TestCase):
     def test_same_decision_view_different_history_rule_action_and_later_success(self):
-        a = episode(10001, prior_marker=2, decision_action=0)
-        b = episode(20001, prior_marker=3, decision_action=1)
+        a = episode(10001, prior_marker=5, decision_action=0)
+        b = episode(20001, prior_marker=6, decision_action=1)
         receipt = verify(a, b)
-        reverse = verify(b, a, cue_a="ball", cue_b="key")
+        reverse = verify(b, a)
         self.assertEqual(receipt["decision_observation_sha256"],
                          reverse["decision_observation_sha256"])
         self.assertNotEqual(receipt["history_a_sha256"], receipt["history_b_sha256"])
@@ -67,7 +67,7 @@ class PublicHistoryWitnessTests(unittest.TestCase):
         a = episode(10001, prior_marker=2, decision_action=0)
         b = episode(20001, prior_marker=2, decision_action=0)
         with self.assertRaisesRegex(ValueError, "WITNESS_PRIOR_HISTORIES_IDENTICAL"):
-            verify(a, b, cue_a="key", cue_b="key")
+            verify(a, b)
 
     def test_rejects_action_that_disagrees_with_public_rule(self):
         a = episode(10001, prior_marker=2, decision_action=0)
@@ -98,8 +98,8 @@ class PublicHistoryWitnessTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             verify_history_witness_pair(
                 a, b, decision_seq_a=True, decision_seq_b=2,
-                public_start_cue_a="key", public_start_cue_b="ball",
-                public_upper_end_object="key", agent_direction_a=0, agent_direction_b=0,
+                public_cue_cell_a=(2, 3), public_cue_cell_b=(2, 3),
+                public_upper_object_cell=(2, 3), agent_direction_a=0, agent_direction_b=0,
             )
 
 
