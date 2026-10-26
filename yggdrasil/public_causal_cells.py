@@ -65,6 +65,15 @@ class PublicCausalCells:
 
     def snapshot(self) -> bytes:
         """One immutable, versioned 164-byte checkpoint with SHA-256 integrity."""
+        # The fixed checkpoint layout assumes exactly 16 cells, each with two
+        # actions and two binary outcomes. Fail before emitting a truncated or
+        # structurally ambiguous checkpoint if private memory was corrupted.
+        if (type(self._counts) is not list or len(self._counts) != 16
+                or any(type(cell) is not list or len(cell) != 2
+                       for cell in self._counts)
+                or any(type(arm) is not list or len(arm) != 2
+                       for cell in self._counts for arm in cell)):
+            raise ValueError("PUBLIC_CAUSAL_STATE_SHAPE_INVALID")
         raw = bytearray(self.MAGIC)
         for cell in self._counts:
             for arm in cell:
