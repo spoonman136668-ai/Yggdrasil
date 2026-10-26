@@ -94,7 +94,7 @@ class MiniGridMemoryPublicEventTests(unittest.TestCase):
         bad_img = copy.deepcopy(image)
         bad_img[0][0][0] = 256
         bad_results = [
-            (public_obs(), 0, False, False, {}),
+            (public_obs(), True, False, False, {}),
             (public_obs(), float("nan"), False, False, {}),
             (public_obs(), 1.1, True, False, {}),
             (public_obs(), 0.0, 1, False, {}),
@@ -127,9 +127,7 @@ class MiniGridMemoryPublicEventTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "EPISODE_SEED_DRIFT"):
             validate_episode(changed)
         changed = [dict(e) for e in events]
-        changed[3]["terminated"] = False
-        changed[3]["truncated"] = False
-        changed.append(dict(changed[3], seq=4, terminated=True))
+        changed.append(dict(changed[3], seq=4))
         with self.assertRaisesRegex(ValueError, "EVENT_AFTER_TERMINAL|EVENT_SEQUENCE_DRIFT"):
             validate_episode(changed)
         with self.assertRaisesRegex(ValueError, "INVALID_EPISODE_LENGTH"):
