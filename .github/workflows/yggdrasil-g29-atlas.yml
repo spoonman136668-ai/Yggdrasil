@@ -37,5 +37,6 @@ jobs:
       - run: python scripts/build_code_atlas.py --check-if-present
       - run: python -m unittest discover -s tests -p test_code_atlas.py -v
       - if: always()
-        run: python scripts/build_code_atlas.py --emit-base64 --source-commit ${{ github.event.pull_request.head.sha || github.sha }}
+        name: Emit bounded source identity diagnostic
+        run: python -c "import json; from pathlib import Path; a=json.loads(Path('.ice/code-atlas.json').read_text(encoding='utf-8')); print('YGG_G29_SOURCE=' + a['source_commit']); print('YGG_G29_COUNTS=' + json.dumps(a['counts'], sort_keys=True))"
       - run: git diff --exit-code
