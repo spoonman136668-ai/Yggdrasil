@@ -71,6 +71,21 @@ def verify_history_witness_pair(
     if digest_a != digest_b:
         raise ValueError("WITNESS_DECISION_OBSERVATION_MISMATCH")
 
+    prefix_a = [
+        {"observation": e["observation"], "action": e["action"],
+         "reward": e["reward"], "terminated": e["terminated"],
+         "truncated": e["truncated"]}
+        for e in a[:decision_seq_a]
+    ]
+    prefix_b = [
+        {"observation": e["observation"], "action": e["action"],
+         "reward": e["reward"], "terminated": e["terminated"],
+         "truncated": e["truncated"]}
+        for e in b[:decision_seq_b]
+    ]
+    if _canonical(prefix_a) == _canonical(prefix_b):
+        raise ValueError("WITNESS_PRIOR_HISTORIES_IDENTICAL")
+
     action_a = a[decision_seq_a + 1]["action"]
     action_b = b[decision_seq_b + 1]["action"]
     expected_a = expected_branch_action(
@@ -94,20 +109,7 @@ def verify_history_witness_pair(
     if action_a == action_b:
         raise ValueError("WITNESS_DECISION_ACTIONS_NOT_DISTINCT")
 
-    prefix_a = [
-        {"observation": e["observation"], "action": e["action"],
-         "reward": e["reward"], "terminated": e["terminated"],
-         "truncated": e["truncated"]}
-        for e in a[:decision_seq_a]
-    ]
-    prefix_b = [
-        {"observation": e["observation"], "action": e["action"],
-         "reward": e["reward"], "terminated": e["terminated"],
-         "truncated": e["truncated"]}
-        for e in b[:decision_seq_b]
-    ]
-    if _canonical(prefix_a) == _canonical(prefix_b):
-        raise ValueError("WITNESS_PRIOR_HISTORIES_IDENTICAL")
+
 
     return {
         "schema": SCHEMA,
