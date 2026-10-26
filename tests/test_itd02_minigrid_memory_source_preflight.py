@@ -93,7 +93,7 @@ class PinnedMiniGridMemoryPreflight(unittest.TestCase):
         self.assertIn("obs = self.gen_obs()", reset_text)
         self.assertIn("return (obs, {})", reset_text)
         self.assertIn("return (obs, reward, terminated, truncated, {})", step_text)
-        self.assertIn("return obs, reward, terminated, truncated, info", ast.unparse(methods(classes(self.trees["memory"])["MemoryEnv"])["step"]))
+        self.assertIn("return (obs, reward, terminated, truncated, info)", ast.unparse(methods(classes(self.trees["memory"])["MemoryEnv"])["step"]))
 
     def test_registered_fixed_size_variants_and_no_private_object_in_info(self):
         registration = ast.unparse(self.trees["registration"])
