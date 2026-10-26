@@ -89,7 +89,8 @@ class PublicHistoryWitnessTests(unittest.TestCase):
     def test_rejects_extra_key_ball_in_decision_view(self):
         a = episode(10001, prior_marker=5, decision_action=0,
                     extra_decision_cells=(((0, 0), 5),))
-        b = episode(20001, prior_marker=6, decision_action=1)
+        b = episode(20001, prior_marker=6, decision_action=1,
+                    extra_decision_cells=(((0, 0), 5),))
         with self.assertRaisesRegex(ValueError, "WITNESS_A_END_OBJECTS_NOT_UNIQUELY_VISIBLE"):
             verify(a, b)
 
