@@ -17,7 +17,7 @@ from .itd02_local_ring_memory_dev import (
     _canonical, _finite,
 )
 
-SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v1"
+SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v2"
 REWARDS = (-3, 0, 10)  # source-declared observable labels; NOT source reward law
 MAX_BYTES = 65536
 RING = tuple(((i - 1) % CELLS, (i + 1) % CELLS) for i in range(CELLS))
@@ -161,7 +161,8 @@ class NativeTaskRingBridgeDev:
         body = {"schema": SCHEMA, "native": json.loads(self.native.snapshot()),
                 "memory": json.loads(self.memory.checkpoint()),
                 "observation": self._observation,
-                "transitions": self.transitions, "score_calls": self.score_calls}
+                "transitions": self.transitions, "score_calls": self.score_calls,
+                "frozen_native_sha256": self._frozen_native}
         data = _canonical(body)
         if len(data) > MAX_BYTES:
             raise ValueError("BRIDGE_CHECKPOINT_OVER_BUDGET")
@@ -180,7 +181,7 @@ class NativeTaskRingBridgeDev:
                 raise ValueError("BRIDGE_CHECKPOINT_DIGEST")
             if type(body) is not dict or set(body) != {
                     "schema", "native", "memory", "observation",
-                    "transitions", "score_calls"} or body["schema"] != SCHEMA:
+                    "transitions", "score_calls", "frozen_native_sha256"} or body["schema"] != SCHEMA:
                 raise ValueError("BRIDGE_CHECKPOINT_SCHEMA")
             if (body["observation"] is not None and
                     (type(body["observation"]) is not str or
@@ -197,6 +198,15 @@ class NativeTaskRingBridgeDev:
             obj._observation = body["observation"]
             obj.transitions = body["transitions"]
             obj.score_calls = body["score_calls"]
+            frozen_native = body["frozen_native_sha256"]
+            if (frozen_native is None) != (memory._frozen_hash is None):
+                raise ValueError("BRIDGE_FROZEN_MODE_MISMATCH")
+            if frozen_native is not None:
+                if (type(frozen_native) is not str or len(frozen_native) != 64 or
+                        any(c not in "0123456789abcdef" for c in frozen_native) or
+                        frozen_native != obj._native_identity()):
+                    raise ValueError("BRIDGE_FROZEN_NATIVE_IDENTITY_MISMATCH")
+            obj._frozen_native = frozen_native
             return obj
         except (ValueError, TypeError, OverflowError, KeyError, AttributeError) as exc:
             raise ValueError("UNTRUSTED_NATIVE_BRIDGE_CHECKPOINT") from exc
