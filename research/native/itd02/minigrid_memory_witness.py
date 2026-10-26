@@ -50,6 +50,8 @@ def verify_history_witness_pair(
 
     if type(decision_seq_a) is not int or type(decision_seq_b) is not int:
         raise ValueError("WITNESS_DECISION_SEQUENCE_INVALID")
+    if decision_seq_a != 6 or decision_seq_b != 6:
+        raise ValueError("WITNESS_DECISION_SEQUENCE_NOT_PREREGISTERED")
     if not (0 <= decision_seq_a < len(a) - 2):
         raise ValueError("WITNESS_A_DECISION_OUT_OF_RANGE")
     if not (0 <= decision_seq_b < len(b) - 2):
