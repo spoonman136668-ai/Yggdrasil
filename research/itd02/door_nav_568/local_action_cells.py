@@ -2,10 +2,7 @@
 
 Reuses the original R7 LocalCell. NOT a qualified native navigation model.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "native" / "itd01" / "r7"))
-from native_cells import LocalCell
+from native_cells_r7 import LocalCell
 
 class LocalActionConsequences:
     def __init__(self):
