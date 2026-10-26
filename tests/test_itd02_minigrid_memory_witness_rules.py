@@ -2,7 +2,7 @@
 import unittest
 
 from research.native.itd02.minigrid_memory_witness_rules import (
-    LEFT, RIGHT, expected_branch_action, public_object_at, public_key_ball_cells, rotate_left_cell_coordinate, east_facing_public_view_coordinate, east_facing_public_view_coordinate,
+    LEFT, RIGHT, expected_branch_action, public_object_at, public_key_ball_cells, rotate_left_cell_coordinate, east_facing_public_view_coordinate,
 )
 
 
@@ -94,8 +94,8 @@ class PublicCueRuleTests(unittest.TestCase):
 
     def test_global_geometry_maps_upper_target_to_correct_public_cell(self):
         # At hallway_end, the upper object is one cell ahead and two cells north.
-        hallway_end = 8
-        agent_y = 5
+        hallway_end = 6  # MemoryS7: width=9, hallway_end=width-3
+        agent_y = 3  # MemoryS7: height=7
         self.assertEqual(
             east_facing_public_view_coordinate(
                 hallway_end + 1, agent_y - 2, hallway_end, agent_y
@@ -105,9 +105,9 @@ class PublicCueRuleTests(unittest.TestCase):
 
     def test_global_public_view_transform_rejects_invalid_inputs(self):
         with self.assertRaisesRegex(ValueError, "GLOBAL_VIEW_COORDINATE_INVALID"):
-            east_facing_public_view_coordinate(1, 4, True, 5)
+            east_facing_public_view_coordinate(1, 2, True, 3)
         with self.assertRaisesRegex(ValueError, "WITNESS_VIEW_SIZE_MISMATCH"):
-            east_facing_public_view_coordinate(1, 4, 1, 5, view_size=5)
+            east_facing_public_view_coordinate(1, 2, 1, 3, view_size=5)
 
 
 if __name__ == "__main__":
