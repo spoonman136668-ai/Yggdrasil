@@ -1,0 +1,34 @@
+name: ITD-02 temporal-credit source-atlas artifact
+on:
+  pull_request:
+    paths:
+      - 'yggdrasil/itd02_temporal_credit_dev.py'
+      - 'tests/test_itd02_temporal_credit_dev.py'
+      - '.github/workflows/itd02-temporal-credit-atlas-artifact.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  generate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Recompute exact atlas from pinned source head
+        run: python scripts/build_code_atlas.py --write --source-commit ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Export generated atlas outputs for content-addressed reanchor
+        uses: actions/upload-artifact@v4
+        with:
+          name: itd02-temporal-credit-atlas-reanchor
+          path: |
+            .ice/code-atlas.json
+            .ice/code-atlas.html
+            .ice/code-atlas.ice
+          if-no-files-found: error
+          retention-days: 3
