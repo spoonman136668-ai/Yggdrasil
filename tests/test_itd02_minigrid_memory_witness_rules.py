@@ -2,7 +2,7 @@
 import unittest
 
 from research.native.itd02.minigrid_memory_witness_rules import (
-    LEFT, RIGHT, expected_branch_action,
+    LEFT, RIGHT, expected_branch_action, public_object_at,
 )
 
 
@@ -27,6 +27,25 @@ class PublicCueRuleTests(unittest.TestCase):
             with self.subTest(direction=direction):
                 with self.assertRaisesRegex(ValueError, "WITNESS_POSE_NOT_EAST_FACING"):
                     expected_branch_action("key", "key", agent_direction=direction)
+
+    def test_object_class_comes_from_public_image_channel_zero(self):
+        image = [[[1, 0, 0] for _ in range(7)] for _ in range(7)]
+        image[2][3][0] = 5
+        observation = {"image": image, "direction": 0, "mission": "public"}
+        self.assertEqual(public_object_at(observation, (2, 3)), "key")
+        image[2][3][0] = 6
+        self.assertEqual(public_object_at(observation, (2, 3)), "ball")
+
+    def test_object_classifier_rejects_invalid_cells_and_nonobjects(self):
+        image = [[[1, 0, 0] for _ in range(7)] for _ in range(7)]
+        observation = {"image": image}
+        for coordinate in ((-1, 0), (7, 2), (True, 1), (1,), None):
+            with self.subTest(coordinate=coordinate):
+                with self.assertRaises(ValueError):
+                    public_object_at(observation, coordinate)
+        image[2][3][0] = 2  # wall, not a key/ball label
+        with self.assertRaisesRegex(ValueError, "PUBLIC_CELL_NOT_KEY_OR_BALL"):
+            public_object_at(observation, (2, 3))
 
 
 if __name__ == "__main__":
