@@ -48,6 +48,15 @@ def _local_exchange(values, rounds=ROUNDS):
     return result
 
 
+
+def _local_credit(site, signal, rounds=ROUNDS):
+    """Propagate scalar reward credit only through bounded neighbor hops."""
+    if type(site) is not int or not 0 <= site < CELLS or not _finite(signal):
+        raise ValueError("INVALID_LOCAL_CREDIT")
+    seed = [0.] * CELLS
+    seed[site] = float(signal)
+    return _local_exchange(seed, rounds=rounds)
+
 def _public_pulse(observation):
     if type(observation) is not str or observation not in OBSERVATIONS:
         raise ValueError("INVALID_PUBLIC_OBSERVATION")
@@ -141,17 +150,17 @@ class NativeRingMemoryDev:
             prediction = sum(a * b for a, b in zip(weights, x))
             error = max(-2., min(2., float(reward) - prediction))
             old_mem_weight = weights[2]
-            # Each cell's local gate sees only its own pulse and prior state.
-            # Gradient credit is routed to the chosen readout across ring
-            # edges, not obtained from hidden state or simulator physics.
+            # Reward credit originates at the chosen action site and travels
+            # through the same bounded neighbor-only ring, in the reverse
+            # direction. Cells outside the two-hop support receive exactly 0.
+            credit = _local_credit(site, error * old_mem_weight)
             for cell in range(CELLS):
-                unit = [0.] * CELLS
-                unit[cell] = 1.
-                influence = _local_exchange(unit)[site]
+                if credit[cell] == 0.:
+                    continue
                 gate = _sigmoid(self.gates[cell])
                 grad = (self._before[cell] - self._pulse[cell]) * gate * (1. - gate)
                 self.gates[cell] = max(-4., min(4., self.gates[cell]
-                                        + .12 * error * old_mem_weight * influence * grad * 16.))
+                                        + .12 * credit[cell] * grad * 16.))
             for j in range(3):
                 weights[j] = max(-16., min(16., weights[j] + .28 * error * x[j]))
             self.updates += 1
