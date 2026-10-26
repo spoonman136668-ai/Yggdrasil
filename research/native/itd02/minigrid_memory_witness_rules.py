@@ -93,3 +93,22 @@ def rotate_left_cell_coordinate(x, y, *, width=7, height=7):
     if not (0 <= x < width and 0 <= y < height):
         raise ValueError("GRID_COORDINATE_INVALID")
     return (y, height - 1 - x)
+
+
+def east_facing_public_view_coordinate(global_x, global_y, agent_x, agent_y, *, view_size=7):
+    """Map a global cell into the public 7x7 view for an east-facing agent.
+
+    The pinned MiniGrid pipeline slices from (agent_x, agent_y-view_size//2),
+    then rotates the slice left once for direction 0. This source-derived,
+    pure coordinate calculation does not instantiate or query the environment.
+    """
+    values = (global_x, global_y, agent_x, agent_y, view_size)
+    if any(type(value) is not int for value in values):
+        raise ValueError("GLOBAL_VIEW_COORDINATE_INVALID")
+    if view_size != 7 or view_size <= 0:
+        raise ValueError("WITNESS_VIEW_SIZE_MISMATCH")
+    local_x = global_x - agent_x
+    local_y = global_y - (agent_y - view_size // 2)
+    if not (0 <= local_x < view_size and 0 <= local_y < view_size):
+        raise ValueError("GLOBAL_CELL_OUTSIDE_PUBLIC_VIEW")
+    return rotate_left_cell_coordinate(local_x, local_y, width=view_size, height=view_size)
