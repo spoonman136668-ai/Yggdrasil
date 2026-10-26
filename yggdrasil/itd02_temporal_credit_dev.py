@@ -115,6 +115,7 @@ class TemporalCreditRingDev:
         predicted = sum(w * x for w, x in zip(old_weights, features))
         delta = _clip(float(reward) - predicted, ERROR_CAP)
         old_memory_snapshot = self.memory.checkpoint()
+        old_frozen_hash = self.memory._frozen_hash
         old_traces = self.eligibility
         old_selected = self._selected_action
         old_features = self._selected_features
@@ -141,6 +142,7 @@ class TemporalCreditRingDev:
                 self.eligibility = [[0.0, 0.0, 0.0] for _ in ACTIONS]
         except Exception:
             self.memory = NativeRingMemoryDev.restore(old_memory_snapshot)
+            self.memory._frozen_hash = old_frozen_hash
             self.eligibility = old_traces
             self._selected_action = old_selected
             self._selected_features = old_features
