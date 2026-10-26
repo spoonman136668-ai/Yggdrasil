@@ -2,7 +2,7 @@
 import unittest
 
 from research.native.itd02.minigrid_memory_witness_rules import (
-    LEFT, RIGHT, expected_branch_action, public_object_at, public_key_ball_cells, rotate_left_cell_coordinate,
+    LEFT, RIGHT, expected_branch_action, public_object_at, public_key_ball_cells, rotate_left_cell_coordinate, east_facing_public_view_coordinate,
 )
 
 
