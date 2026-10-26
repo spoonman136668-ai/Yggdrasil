@@ -96,6 +96,7 @@ class PublicHistoryWitnessTests(unittest.TestCase):
         a = episode(10001, prior_marker=5, decision_action=0)
         b = episode(20001, prior_marker=6, decision_action=1)
         a[2]["observation"]["direction"] = 1
+        b[2]["observation"]["direction"] = 1
         with self.assertRaisesRegex(ValueError, "WITNESS_POSE_NOT_EAST_FACING"):
             verify(a, b)
 
