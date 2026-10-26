@@ -129,6 +129,20 @@ class PublicHistoryWitnessTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "WITNESS_B_FORWARD_DIRECTION_MISMATCH"):
             verify(a, b)
 
+    def test_rejects_missing_final_forward_even_if_reward_is_positive(self):
+        a = episode(10001, prior_marker=5, decision_action=0)
+        b = episode(20001, prior_marker=6, decision_action=1)
+        b[9]["action"] = 0
+        with self.assertRaisesRegex(ValueError, "WITNESS_B_FINAL_FORWARD_MISSING"):
+            verify(a, b)
+
+    def test_rejects_final_step_heading_change(self):
+        a = episode(10001, prior_marker=5, decision_action=0)
+        b = episode(20001, prior_marker=6, decision_action=1)
+        b[9]["observation"]["direction"] = 3
+        with self.assertRaisesRegex(ValueError, "WITNESS_B_FINAL_DIRECTION_MISMATCH"):
+            verify(a, b)
+
     def test_rejects_missing_forward_route_continuation(self):
         a = episode(10001, prior_marker=5, decision_action=0)
         b = episode(20001, prior_marker=6, decision_action=1)
