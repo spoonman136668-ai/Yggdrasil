@@ -24,3 +24,29 @@ def expected_branch_action(public_start_cue, public_upper_end_object, *, agent_d
     if type(agent_direction) is not int or agent_direction != 0:
         raise ValueError("WITNESS_POSE_NOT_EAST_FACING")
     return LEFT if public_start_cue == public_upper_end_object else RIGHT
+
+
+def public_object_at(observation, coordinate):
+    """Classify one object from a recorded public image cell [x, y, channel].
+
+    MiniGrid encodes object identity in channel 0: key=5, ball=6. Coordinates
+    must be frozen in advance and supplied by a public-only evaluator. This
+    function does not attest that the chosen cell semantically is the cue or
+    upper branch; it only decodes the recorded public bytes.
+    """
+    if type(observation) is not dict or type(observation.get("image")) not in (list, tuple):
+        raise ValueError("PUBLIC_IMAGE_REQUIRED")
+    if type(coordinate) not in (list, tuple) or len(coordinate) != 2:
+        raise ValueError("PUBLIC_CELL_COORDINATE_INVALID")
+    x, y = coordinate
+    if type(x) is not int or type(y) is not int or not (0 <= x < 7 and 0 <= y < 7):
+        raise ValueError("PUBLIC_CELL_COORDINATE_INVALID")
+    image = observation["image"]
+    try:
+        cell = image[x][y]
+        object_index = cell[0]
+    except (IndexError, TypeError) as exc:
+        raise ValueError("PUBLIC_CELL_ENCODING_INVALID") from exc
+    if type(object_index) is not int or object_index not in (5, 6):
+        raise ValueError("PUBLIC_CELL_NOT_KEY_OR_BALL")
+    return "key" if object_index == 5 else "ball"
