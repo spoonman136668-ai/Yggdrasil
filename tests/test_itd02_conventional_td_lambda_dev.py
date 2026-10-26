@@ -73,13 +73,17 @@ class MatchedTDLambdaControlTests(unittest.TestCase):
         self.assertEqual(restored.q, control.q)
         self.assertEqual(restored.traces, control.traces)
         self.assertEqual(restored.pending, "Nothing")
+        # Finish the restored pending action through the public API before
+        # freezing; tests must not bypass pending-action custody.
+        restored.feedback("Backup", 0.0, terminal=True)
+        self.assertIsNone(restored.pending)
+        self.assertEqual(restored.events, 2)
         digest = restored.parameter_sha256()
-        restored.pending = None
         restored.start_frozen_evaluation(digest)
         restored.advance("MRV")
         restored.feedback("GoForward", 100.0, next_observation="LRV", learning=False, terminal=True)
         self.assertEqual(restored.parameter_sha256(), digest)
-        self.assertEqual(restored.events, 1)
+        self.assertEqual(restored.events, 2)
 
     def test_corrupt_checkpoint_rejected(self):
         control = ConventionalTDLambdaControlDev()
