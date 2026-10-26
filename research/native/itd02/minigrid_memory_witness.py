@@ -7,6 +7,7 @@ import hashlib
 import json
 
 from .minigrid_memory_event_contract import public_receipt_digest, validate_episode
+from .minigrid_memory_witness_rules import FORWARD, expected_branch_action
 
 SCHEMA = "ygg.itd02.minigrid_memory.witness_pair.v1"
 
@@ -22,7 +23,7 @@ def _observation_digest(observation):
     return hashlib.sha256(_canonical(observation)).hexdigest()
 
 
-def verify_history_witness_pair(episode_a, episode_b, *, decision_seq_a, decision_seq_b):
+def verify_history_witness_pair(episode_a, episode_b, *, decision_seq_a, decision_seq_b,\n                               public_start_cue_a, public_start_cue_b,\n                               public_upper_end_object, agent_direction_a,\n                               agent_direction_b):
     """Verify a preselected decision point in two public episodes.
 
     `decision_seq_*` identifies the event whose observation is the decision
