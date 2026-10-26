@@ -2,7 +2,7 @@
 import unittest
 
 from research.native.itd02.minigrid_memory_witness_rules import (
-    LEFT, RIGHT, expected_branch_action, public_object_at, public_key_ball_cells, rotate_left_cell_coordinate, east_facing_public_view_coordinate,
+    LEFT, RIGHT, expected_branch_action, public_object_at, public_key_ball_cells, rotate_left_cell_coordinate, east_facing_public_view_coordinate, east_facing_public_view_coordinate,
 )
 
 
@@ -82,6 +82,31 @@ class PublicCueRuleTests(unittest.TestCase):
                     rotate_left_cell_coordinate(x, y)
         with self.assertRaisesRegex(ValueError, "GRID_DIMENSION_INVALID"):
             rotate_left_cell_coordinate(0, 0, width=0)
+
+
+    def test_global_geometry_maps_start_cue_only_at_visible_endpoint(self):
+        # Cue global cell is (1, agent_y-1); for agent_x=1 it maps to image (2,6).
+        self.assertEqual(east_facing_public_view_coordinate(1, 4, 1, 5), (2, 6))
+        # Moving the agent right makes that cue fall outside the public view.
+        with self.assertRaisesRegex(ValueError, "GLOBAL_CELL_OUTSIDE_PUBLIC_VIEW"):
+            east_facing_public_view_coordinate(1, 4, 2, 5)
+
+    def test_global_geometry_maps_upper_target_to_correct_public_cell(self):
+        # At hallway_end, the upper object is one cell ahead and two cells north.
+        hallway_end = 8
+        agent_y = 5
+        self.assertEqual(
+            east_facing_public_view_coordinate(
+                hallway_end + 1, agent_y - 2, hallway_end, agent_y
+            ),
+            (1, 5),
+        )
+
+    def test_global_public_view_transform_rejects_invalid_inputs(self):
+        with self.assertRaisesRegex(ValueError, "GLOBAL_VIEW_COORDINATE_INVALID"):
+            east_facing_public_view_coordinate(1, 4, True, 5)
+        with self.assertRaisesRegex(ValueError, "WITNESS_VIEW_SIZE_MISMATCH"):
+            east_facing_public_view_coordinate(1, 4, 1, 5, view_size=5)
 
 
 if __name__ == "__main__":
