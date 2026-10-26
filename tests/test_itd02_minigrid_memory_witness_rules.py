@@ -93,15 +93,25 @@ class PublicCueRuleTests(unittest.TestCase):
             east_facing_public_view_coordinate(1, 2, 2, 3)
 
     def test_global_geometry_maps_upper_target_to_correct_public_cell(self):
-        # At hallway_end, the upper object is one cell ahead and two cells north.
-        hallway_end = 6  # MemoryS7: width=9, hallway_end=width-3
-        agent_y = 3  # MemoryS7: height=7
+        # At the branch entrance (x=hallway_end+1), upper/lower are
+        # directly north/south in the same column as the agent.
+        hallway_end = 6  # MemoryS7 width=9, hallway_end=width-3
+        agent_x = hallway_end + 1
+        agent_y = 3  # MemoryS7 height=7
         self.assertEqual(
             east_facing_public_view_coordinate(
-                hallway_end + 1, agent_y - 2, hallway_end, agent_y
+                hallway_end + 1, agent_y - 2, agent_x, agent_y
             ),
-            (1, 5),
+            (1, 6),
         )
+        self.assertEqual(
+            east_facing_public_view_coordinate(
+                hallway_end + 1, agent_y + 2, agent_x, agent_y
+            ),
+            (5, 6),
+        )
+        # One cell earlier, the target view is at (1,5), but the correct
+        # next action is still FORWARD for both histories.
 
     def test_global_public_view_transform_rejects_invalid_inputs(self):
         with self.assertRaisesRegex(ValueError, "GLOBAL_VIEW_COORDINATE_INVALID"):
