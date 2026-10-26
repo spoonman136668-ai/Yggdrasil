@@ -2,7 +2,7 @@
 import unittest
 
 from research.native.itd02.minigrid_memory_witness_rules import (
-    LEFT, RIGHT, expected_branch_action, public_object_at,
+    LEFT, RIGHT, expected_branch_action, public_object_at, public_key_ball_cells,
 )
 
 
@@ -46,6 +46,27 @@ class PublicCueRuleTests(unittest.TestCase):
         image[2][3][0] = 2  # wall, not a key/ball label
         with self.assertRaisesRegex(ValueError, "PUBLIC_CELL_NOT_KEY_OR_BALL"):
             public_object_at(observation, (2, 3))
+
+    def test_inventory_finds_only_visible_key_ball_cells(self):
+        image = [[[1, 0, 0] for _ in range(7)] for _ in range(7)]
+        image[0][6][0] = 5
+        image[4][1][0] = 6
+        observation = {"image": image, "direction": 0, "mission": "public"}
+        self.assertEqual(public_key_ball_cells(observation), [
+            {"coordinate": [0, 6], "object": "key"},
+            {"coordinate": [4, 1], "object": "ball"},
+        ])
+
+    def test_inventory_fails_closed_on_wrong_shape_or_cell_encoding(self):
+        for observation in (
+            {"image": [[[0, 0, 0] for _ in range(6)] for _ in range(7)]},
+            {"image": [[[0, 0] for _ in range(7)] for _ in range(7)]},
+            {"image": []},
+            {},
+        ):
+            with self.subTest(observation_shape=repr(observation)[:30]):
+                with self.assertRaises(ValueError):
+                    public_key_ball_cells(observation)
 
 
 if __name__ == "__main__":
