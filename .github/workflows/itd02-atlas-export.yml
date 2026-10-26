@@ -1,4 +1,4 @@
-name: ITD-02 atlas canonical reconciliation
+name: ITD-02 MiniGrid atlas reanchor and final regression
 on:
   pull_request:
     paths:
@@ -13,19 +13,37 @@ permissions:
   contents: write
 jobs:
   reconcile-canonical-atlas:
+    if: github.event_name == 'pull_request' && github.actor == 'spoonman136668-ai' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'research/itd02-minigrid-memory-contract-20261026'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
           persist-credentials: true
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external-minigrid
+          persist-credentials: false
+          fetch-depth: 1
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: "3.12"
       - name: Rebuild canonical atlas from exact checked-out HEAD
-        run: python scripts/build_code_atlas.py --write --source-commit "$(git rev-parse HEAD)"
-      - name: Commit canonical generated atlas if changed
+        run: python scripts/build_code_atlas.py --write --source-commit "${{ github.event.pull_request.head.sha }}"
+      - name: Archive deterministic atlas artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: itd02-minigrid-atlas-reanchor
+          path: |
+            .ice/code-atlas.json
+            .ice/code-atlas.html
+            .ice/code-atlas.ice
+          if-no-files-found: error
+          retention-days: 3
+      - name: Commit only generated atlas files if changed
         shell: bash
         run: |
           set -euo pipefail
@@ -35,5 +53,14 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
             git commit -m "G29: reconcile canonical generated source atlas"
-            git push origin "HEAD:${{ github.event.pull_request.head.ref || github.ref_name }}"
           fi
+      - name: One final full regression with exact pinned MiniGrid source
+        env:
+          MINIGRID_SOURCE: external-minigrid
+        run: python -B -m unittest discover -s tests -v
+      - name: Verify generated tree is clean
+        run: git diff --exit-code
+      - name: Publish generated-only atlas commit
+        env:
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: git push origin "HEAD:${BRANCH}"
