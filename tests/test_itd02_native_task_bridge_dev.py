@@ -121,8 +121,9 @@ class RealNativeRuntimeBridgeTests(unittest.TestCase):
                 self.assertEqual(m.memory.checkpoint(), memory_before)
         m.accept_public_transition("Backup", "MRV", 10, terminal=True)
         m.native.lesion([0])
+        m.start_observation("MRV")
         with self.assertRaisesRegex(ValueError, "LESION"):
-            m.start_observation("MRV") if False else m.accept_public_transition("Backup", "MRV", 0)
+            m.accept_public_transition("Backup", "MRV", 0)
         with self.assertRaisesRegex(ValueError, "REQUIRES_INTACT"):
             NativeTaskRingBridgeDev(native=m.native)
 
