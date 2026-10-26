@@ -1,0 +1,42 @@
+name: ITD-02 pinned DTR source preflight
+on:
+  pull_request:
+    paths:
+      - 'research/native/itd02/dtr_public_event_contract.py'
+      - 'tests/test_itd02_dtr_public_event_contract.py'
+      - 'tests/test_itd02_dtr_pinned_source_preflight.py'
+      - '.github/workflows/itd02-dtr-public-event-contract.yml'
+      - '.github/workflows/itd02-dtr-source-preflight.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pinned-source-preflight:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: CausalAILab/Causal-Gymnasium
+          ref: c94e9a4cd3641588b6b8507e71ccee5c27032bdf
+          path: external-causal-gym
+          persist-credentials: false
+          fetch-depth: 1
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Pure public-event contract tests
+        run: python -B -m unittest discover -s tests -p test_itd02_dtr_public_event_contract.py -v
+      - name: Verify exact clean upstream checkout and static API
+        env:
+          CAUSAL_GYM_SOURCE: external-causal-gym
+        run: python -B -m unittest discover -s tests -p test_itd02_dtr_pinned_source_preflight.py -v
+      - name: No repository changes
+        run: git diff --exit-code
