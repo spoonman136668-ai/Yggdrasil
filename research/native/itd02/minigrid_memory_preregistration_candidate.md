@@ -56,6 +56,12 @@ Use FIT for parameter updates only. VALID may select one configuration per arm u
 
 The witness-pair set must be constructed and validated before model training, using only source task rules and the public event protocol. Pair membership, labels, and an independent evaluator's derivation must be committed and hash-pinned before any held-out evaluation. The evaluator may use a separately isolated task-construction process, but may not reveal private state or labels to the learner. If a valid paired witness cannot be built and independently validated under this separation, the memory-required claim is inconclusive and the trial stops.
 
+### Frozen MemoryS7 branch-decision geometry
+
+For registered `MiniGrid-MemoryS7-v0` at the pinned source, the fixed layout has width 9, height 7, and `hallway_end=6`. The witness inclusion rule requires the reset public image to expose the unique Key/Ball cue at image cell `(2,6)`; this corresponds to the source cue at global `(1,2)` and implies the reset agent starts at `x=1`. Six `FORWARD` transitions reach the branch entrance `x=7`; the public decision observation is therefore event sequence `6`, before the branch-turn action is selected. At this view, the upper and lower end objects must be the only visible Key/Ball cells at image coordinates `(1,6)` and `(5,6)`, respectively. The candidate choices are `LEFT=0` when the cue matches the upper object and `RIGHT=1` otherwise, followed by `FORWARD=2`; both traces must later end with positive public reward and terminal success.
+
+This is a source-derived admission candidate, not episode evidence. Before original-source first-use, an independent reviewer must verify the geometry and action-to-success rule from the pinned public source, and the source-authorized receipt must confirm the public-pixel inclusion conditions. If the expected cells are absent, ambiguous, or inconsistent in actual observations, reject the pair; do not read hidden grid fields to salvage it.
+
 ## 5. Cold-restart retention
 
 After final training and validation selection, terminate the learner process. Reconstruct it in a fresh process with no inherited RAM, caches, environment object, RNG state, hidden-state buffer or files except the preregistered persistent artifact and pinned configuration. Run DEV through the public interface from fresh episode resets. No model update during DEV. Record artifact hashes before and after; unexpected change fails the gate.
