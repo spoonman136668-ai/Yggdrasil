@@ -51,7 +51,7 @@ class LocalRingDevTests(unittest.TestCase):
                 self.assertGreater(value, 0.)
             else:
                 self.assertEqual(value, 0.)
-        self.assertGreater(_local_credit(5, -1.)[3], 0.)
+        self.assertLess(_local_credit(5, -1.)[3], 0.)
         self.assertEqual(_local_credit(5, -1.)[1], 0.)
         with self.assertRaises(ValueError):
             _local_credit(8, 1.)
