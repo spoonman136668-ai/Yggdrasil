@@ -7,7 +7,7 @@ import hashlib
 import json
 
 from .minigrid_memory_event_contract import public_receipt_digest, validate_episode
-from .minigrid_memory_witness_rules import FORWARD, expected_branch_action
+from .minigrid_memory_witness_rules import FORWARD, expected_branch_action, public_object_at
 
 SCHEMA = "ygg.itd02.minigrid_memory.witness_pair.v1"
 
@@ -29,9 +29,9 @@ def verify_history_witness_pair(
     *,
     decision_seq_a,
     decision_seq_b,
-    public_start_cue_a,
-    public_start_cue_b,
-    public_upper_end_object,
+    public_cue_cell_a,
+    public_cue_cell_b,
+    public_upper_object_cell,
     agent_direction_a,
     agent_direction_b,
 ):
@@ -88,6 +88,17 @@ def verify_history_witness_pair(
 
     action_a = a[decision_seq_a + 1]["action"]
     action_b = b[decision_seq_b + 1]["action"]
+    # Labels are decoded from public image bytes at preregistered coordinates;
+    # callers cannot simply assert that an arbitrary cell contains a key/ball.
+    public_start_cue_a = public_object_at(a[0]["observation"], public_cue_cell_a)
+    public_start_cue_b = public_object_at(b[0]["observation"], public_cue_cell_b)
+    public_upper_end_object_a = public_object_at(
+        decision_a["observation"], public_upper_object_cell)
+    public_upper_end_object_b = public_object_at(
+        decision_b["observation"], public_upper_object_cell)
+    if public_upper_end_object_a != public_upper_end_object_b:
+        raise ValueError("WITNESS_UPPER_OBJECT_CLASS_MISMATCH")
+    public_upper_end_object = public_upper_end_object_a
     expected_a = expected_branch_action(
         public_start_cue_a,
         public_upper_end_object,
@@ -128,7 +139,7 @@ def verify_history_witness_pair(
         "public_upper_end_object": public_upper_end_object,
         "expected_action_a": expected_a,
         "expected_action_b": expected_b,
-        "classification_provenance": "CLAIMED_PUBLIC_IMAGE_CLASSIFICATIONS_NOT_INDEPENDENTLY_ATTESTED",
+        "classification_provenance": "KEY_BALL_DECODED_FROM_PUBLIC_IMAGE_BYTES_COORDINATES_SEMANTICS_NOT_ATTESTED",
         "terminal_reward_a": final_a["reward"],
         "terminal_reward_b": final_b["reward"],
         "claim": "PUBLIC_EVENT_WITNESS_SHAPE_PASS_SOURCE_PROVENANCE_NOT_ATTESTED",
