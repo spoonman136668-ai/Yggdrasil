@@ -63,6 +63,10 @@ jobs:
             git add .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
             git commit -m "G29: reconcile canonical generated source atlas"
           fi
+      - name: G29 canonical atlas identity check on regenerated source tree
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: G29 pinned source-atlas acceptance tests
+        run: python -B -m unittest discover -s tests -p "test_code_atlas.py" -v
       - name: One final full regression with exact pinned MiniGrid source
         env:
           MINIGRID_SOURCE: external-minigrid
