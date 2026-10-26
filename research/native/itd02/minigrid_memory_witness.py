@@ -60,6 +60,12 @@ def verify_history_witness_pair(
     if decision_a["seq"] != decision_seq_a or decision_b["seq"] != decision_seq_b:
         raise ValueError("WITNESS_DECISION_SEQUENCE_DRIFT")
 
+    # The source terminates on entry to success_pos: one FORWARD after the
+    # turn reaches success. Reject synthetic/extraneous events after that point.
+    if len(a) - 1 != decision_seq_a + 2:
+        raise ValueError("WITNESS_A_TERMINAL_NOT_AT_FIRST_FORWARD")
+    if len(b) - 1 != decision_seq_b + 2:
+        raise ValueError("WITNESS_B_TERMINAL_NOT_AT_FIRST_FORWARD")
     final_a, final_b = a[-1], b[-1]
     for label, final in (("A", final_a), ("B", final_b)):
         if not (final["terminated"] and not final["truncated"]):
@@ -175,14 +181,6 @@ def verify_history_witness_pair(
         raise ValueError("WITNESS_A_FORWARD_DIRECTION_MISMATCH")
     if b[decision_seq_b + 2]["observation"]["direction"] != expected_direction_b:
         raise ValueError("WITNESS_B_FORWARD_DIRECTION_MISMATCH")
-    if a[decision_seq_a + 3]["action"] != FORWARD:
-        raise ValueError("WITNESS_A_FINAL_FORWARD_MISSING")
-    if b[decision_seq_b + 3]["action"] != FORWARD:
-        raise ValueError("WITNESS_B_FINAL_FORWARD_MISSING")
-    if a[decision_seq_a + 3]["observation"]["direction"] != expected_direction_a:
-        raise ValueError("WITNESS_A_FINAL_DIRECTION_MISMATCH")
-    if b[decision_seq_b + 3]["observation"]["direction"] != expected_direction_b:
-        raise ValueError("WITNESS_B_FINAL_DIRECTION_MISMATCH")
     if action_a == action_b:
         raise ValueError("WITNESS_DECISION_ACTIONS_NOT_DISTINCT")
 
