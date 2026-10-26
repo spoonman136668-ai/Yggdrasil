@@ -2,7 +2,7 @@
 import unittest
 
 from research.native.itd02.minigrid_memory_witness_rules import (
-    LEFT, RIGHT, expected_branch_action, public_object_at, public_key_ball_cells,
+    LEFT, RIGHT, expected_branch_action, public_object_at, public_key_ball_cells, rotate_left_cell_coordinate,
 )
 
 
@@ -67,6 +67,21 @@ class PublicCueRuleTests(unittest.TestCase):
             with self.subTest(observation_shape=repr(observation)[:30]):
                 with self.assertRaises(ValueError):
                     public_key_ball_cells(observation)
+
+    def test_pinned_rotate_left_mapping_matches_witness_target_coordinate(self):
+        # In the 7x7 view the local pre-rotation upper target (1,1)
+        # maps to image coordinate (1,5), not (1,6).
+        self.assertEqual(rotate_left_cell_coordinate(1, 1), (1, 5))
+        self.assertEqual(rotate_left_cell_coordinate(0, 0), (0, 6))
+        self.assertEqual(rotate_left_cell_coordinate(6, 6), (6, 0))
+
+    def test_rotate_left_mapping_rejects_invalid_coordinate_and_dimensions(self):
+        for x, y in ((-1, 0), (7, 0), (0, 7), (True, 0)):
+            with self.subTest(x=x, y=y):
+                with self.assertRaisesRegex(ValueError, "GRID_COORDINATE_INVALID"):
+                    rotate_left_cell_coordinate(x, y)
+        with self.assertRaisesRegex(ValueError, "GRID_DIMENSION_INVALID"):
+            rotate_left_cell_coordinate(0, 0, width=0)
 
 
 if __name__ == "__main__":
