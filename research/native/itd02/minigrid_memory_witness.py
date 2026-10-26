@@ -73,9 +73,9 @@ def verify_history_witness_pair(
     # Lock this candidate to the preregistered MemoryS7 public-view geometry.
     if tuple(public_cue_cell_a) != (2, 6) or tuple(public_cue_cell_b) != (2, 6):
         raise ValueError("WITNESS_CUE_COORDINATE_NOT_PREREGISTERED")
-    if tuple(public_upper_object_cell) != (1, 5):
+    if tuple(public_upper_object_cell) != (1, 6):
         raise ValueError("WITNESS_UPPER_COORDINATE_NOT_PREREGISTERED")
-    if tuple(public_lower_object_cell) != (5, 5):
+    if tuple(public_lower_object_cell) != (5, 6):
         raise ValueError("WITNESS_LOWER_COORDINATE_NOT_PREREGISTERED")
 
     for label, episode, cue_cell in (
@@ -181,7 +181,7 @@ def verify_history_witness_pair(
         "public_start_cue_b": public_start_cue_b,
         "public_upper_end_object": public_upper_end_object,
         "public_lower_end_object": public_lower_end_object_a,
-        "visible_end_object_cells": [[1, 5], [5, 5]],
+        "visible_end_object_cells": [[1, 6], [5, 6]],
         "expected_action_a": expected_a,
         "expected_action_b": expected_b,
         "classification_provenance": "KEY_BALL_DECODED_FROM_PUBLIC_IMAGE_BYTES_COORDINATES_SEMANTICS_NOT_ATTESTED",
