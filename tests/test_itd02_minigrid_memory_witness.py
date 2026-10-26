@@ -15,7 +15,7 @@ def obs(marker=0, direction=0, cell=(2, 3), extra_cells=()):
     return {"image": image, "direction": direction, "mission": MISSION}
 
 
-def episode(seed, prior_marker, decision_marker=5, decision_action=0,
+def episode(seed, prior_marker, decision_marker=6, decision_action=0,
             reward=0.64, extra_reset_cells=(), extra_decision_cells=()):
     receipt = dict(SOURCE)
     return [
@@ -24,8 +24,8 @@ def episode(seed, prior_marker, decision_marker=5, decision_action=0,
                       episode_seed=seed, source_receipt=receipt),
         project_step((obs(prior_marker, 1), 0.0, False, False, {"private": 1}),
                      episode_seed=seed, seq=1, action=2, source_receipt=receipt),
-        project_step((obs(decision_marker, 0, cell=(1, 5),
-                          extra_cells=(((5, 5), 6),) + tuple(extra_decision_cells)),
+        project_step((obs(decision_marker, 0, cell=(1, 6),
+                          extra_cells=(((5, 6), 6),) + tuple(extra_decision_cells)),
                       0.0, False, False, {}),
                      episode_seed=seed, seq=2, action=2, source_receipt=receipt),
         project_step((obs(8, 3), 0.0, False, False, {}),
@@ -36,7 +36,7 @@ def episode(seed, prior_marker, decision_marker=5, decision_action=0,
 
 
 def verify(a, b, cue_cell_a=(2, 6), cue_cell_b=(2, 6),
-           upper_cell=(1, 5), lower_cell=(5, 5)):
+           upper_cell=(1, 6), lower_cell=(5, 6)):
     return verify_history_witness_pair(
         a, b, decision_seq_a=2, decision_seq_b=2,
         public_cue_cell_a=cue_cell_a, public_cue_cell_b=cue_cell_b,
@@ -57,7 +57,7 @@ class PublicHistoryWitnessTests(unittest.TestCase):
         self.assertEqual(receipt["expected_action_b"], 1)
         self.assertEqual(receipt["terminal_reward_a"], receipt["terminal_reward_b"])
         self.assertEqual(a[-1]["action"], b[-1]["action"])
-        self.assertEqual(receipt["visible_end_object_cells"], [[1, 5], [5, 5]])
+        self.assertEqual(receipt["visible_end_object_cells"], [[1, 6], [5, 6]])
         self.assertEqual(receipt["claim"],
                          "PUBLIC_EVENT_WITNESS_SHAPE_PASS_SOURCE_PROVENANCE_NOT_ATTESTED")
 
@@ -126,7 +126,7 @@ class PublicHistoryWitnessTests(unittest.TestCase):
             verify_history_witness_pair(
                 a, b, decision_seq_a=True, decision_seq_b=2,
                 public_cue_cell_a=(2, 6), public_cue_cell_b=(2, 6),
-                public_upper_object_cell=(1, 5), public_lower_object_cell=(5, 5),
+                public_upper_object_cell=(1, 6), public_lower_object_cell=(5, 6),
             )
 
 
