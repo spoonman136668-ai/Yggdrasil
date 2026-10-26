@@ -1,0 +1,25 @@
+name: ITD-02 atlas canonical export (temporary qualification helper)
+on:
+  pull_request:
+    paths:
+      - 'research/native/itd02/minigrid_memory_event_contract.py'
+      - 'tests/test_itd02_minigrid_memory_event_contract.py'
+      - 'tests/test_itd02_minigrid_memory_source_preflight.py'
+      - '.github/workflows/itd02-minigrid-memory-source-preflight.yml'
+      - '.github/workflows/itd02-atlas-export.yml'
+      - '.ice/code-atlas.json'
+permissions:
+  contents: read
+jobs:
+  build-canonical-atlas:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Generate canonical artifacts and emit bundle for exact commit
+        run: python scripts/build_code_atlas.py --source-commit "${{ github.event.pull_request.head.sha || github.sha }}" --write --emit-base64
