@@ -21,7 +21,7 @@ def episode(seed, prior_marker, decision_marker=5, decision_action=0, reward=0.6
         project_step((obs(prior_marker, 1), 0.0, False, False, {"private": 1}),
                      episode_seed=seed, seq=1, action=2,
                      source_receipt=receipt),
-        project_step((obs(decision_marker, 2), 0.0, False, False, {}),
+        project_step((obs(decision_marker, 0), 0.0, False, False, {}),
                      episode_seed=seed, seq=2, action=2,
                      source_receipt=receipt),
         project_step((obs(8, 3), 0.0, False, False, {}),
@@ -37,7 +37,7 @@ def verify(a, b, cue_cell_a=(2, 3), cue_cell_b=(2, 3), upper_cell=(2, 3)):
     return verify_history_witness_pair(
         a, b, decision_seq_a=2, decision_seq_b=2,
         public_cue_cell_a=cue_cell_a, public_cue_cell_b=cue_cell_b,
-        public_upper_object_cell=upper_cell, agent_direction_a=0, agent_direction_b=0,
+        public_upper_object_cell=upper_cell,
     )
 
 
@@ -92,6 +92,13 @@ class PublicHistoryWitnessTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "WITNESS_B_NOT_TERMINAL_SUCCESS"):
             verify(a, c)
 
+    def test_rejects_non_east_facing_public_decision_observation(self):
+        a = episode(10001, prior_marker=5, decision_action=0)
+        b = episode(20001, prior_marker=6, decision_action=1)
+        a[2]["observation"]["direction"] = 1
+        with self.assertRaisesRegex(ValueError, "WITNESS_POSE_NOT_EAST_FACING"):
+            verify(a, b)
+
     def test_rejects_invalid_decision_sequence(self):
         a = episode(10001, prior_marker=5, decision_action=0)
         b = episode(20001, prior_marker=6, decision_action=1)
@@ -99,7 +106,7 @@ class PublicHistoryWitnessTests(unittest.TestCase):
             verify_history_witness_pair(
                 a, b, decision_seq_a=True, decision_seq_b=2,
                 public_cue_cell_a=(2, 3), public_cue_cell_b=(2, 3),
-                public_upper_object_cell=(2, 3), agent_direction_a=0, agent_direction_b=0,
+                public_upper_object_cell=(2, 3),
             )
 
 
