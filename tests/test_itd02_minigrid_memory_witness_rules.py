@@ -85,11 +85,12 @@ class PublicCueRuleTests(unittest.TestCase):
 
 
     def test_global_geometry_maps_start_cue_only_at_visible_endpoint(self):
-        # Cue global cell is (1, agent_y-1); for agent_x=1 it maps to image (2,6).
-        self.assertEqual(east_facing_public_view_coordinate(1, 4, 1, 5), (2, 6))
+        # MemoryS7 has height 7, so agent_y=3 and the cue is global (1,2).
+        # At agent_x=1 it maps to public image (2,6).
+        self.assertEqual(east_facing_public_view_coordinate(1, 2, 1, 3), (2, 6))
         # Moving the agent right makes that cue fall outside the public view.
         with self.assertRaisesRegex(ValueError, "GLOBAL_CELL_OUTSIDE_PUBLIC_VIEW"):
-            east_facing_public_view_coordinate(1, 4, 2, 5)
+            east_facing_public_view_coordinate(1, 2, 2, 3)
 
     def test_global_geometry_maps_upper_target_to_correct_public_cell(self):
         # At hallway_end, the upper object is one cell ahead and two cells north.
