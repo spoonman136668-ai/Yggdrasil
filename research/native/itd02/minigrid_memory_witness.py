@@ -7,7 +7,7 @@ import hashlib
 import json
 
 from .minigrid_memory_event_contract import public_receipt_digest, validate_episode
-from .minigrid_memory_witness_rules import FORWARD, expected_branch_action, public_object_at
+from .minigrid_memory_witness_rules import FORWARD, expected_branch_action, public_object_at, public_key_ball_cells
 
 SCHEMA = "ygg.itd02.minigrid_memory.witness_pair.v1"
 
@@ -32,6 +32,7 @@ def verify_history_witness_pair(
     public_cue_cell_a,
     public_cue_cell_b,
     public_upper_object_cell,
+    public_lower_object_cell,
 ):
     """Verify a preregistered decision point in two public episodes.
 
@@ -69,6 +70,30 @@ def verify_history_witness_pair(
     if digest_a != digest_b:
         raise ValueError("WITNESS_DECISION_OBSERVATION_MISMATCH")
 
+    # Lock this candidate to the preregistered MemoryS7 public-view geometry.
+    if tuple(public_cue_cell_a) != (2, 6) or tuple(public_cue_cell_b) != (2, 6):
+        raise ValueError("WITNESS_CUE_COORDINATE_NOT_PREREGISTERED")
+    if tuple(public_upper_object_cell) != (1, 5):
+        raise ValueError("WITNESS_UPPER_COORDINATE_NOT_PREREGISTERED")
+    if tuple(public_lower_object_cell) != (5, 5):
+        raise ValueError("WITNESS_LOWER_COORDINATE_NOT_PREREGISTERED")
+
+    for label, episode, cue_cell in (
+        ("A", a, public_cue_cell_a), ("B", b, public_cue_cell_b)
+    ):
+        reset_observation = episode[0]["observation"]
+        if reset_observation["direction"] != 0:
+            raise ValueError("WITNESS_" + label + "_RESET_POSE_MISMATCH")
+        visible = public_key_ball_cells(reset_observation)
+        if visible != [{
+            "coordinate": [cue_cell[0], cue_cell[1]],
+            "object": public_object_at(reset_observation, cue_cell),
+        }]:
+            raise ValueError("WITNESS_" + label + "_RESET_CUE_NOT_UNIQUELY_VISIBLE")
+
+    if decision_a["observation"]["direction"] != 0 or decision_b["observation"]["direction"] != 0:
+        raise ValueError("WITNESS_DECISION_POSE_MISMATCH")
+
     prefix_a = [
         {"observation": e["observation"], "action": e["action"],
          "reward": e["reward"], "terminated": e["terminated"],
@@ -94,8 +119,26 @@ def verify_history_witness_pair(
         decision_a["observation"], public_upper_object_cell)
     public_upper_end_object_b = public_object_at(
         decision_b["observation"], public_upper_object_cell)
+    public_lower_end_object_a = public_object_at(
+        decision_a["observation"], public_lower_object_cell)
+    public_lower_end_object_b = public_object_at(
+        decision_b["observation"], public_lower_object_cell)
     if public_upper_end_object_a != public_upper_end_object_b:
         raise ValueError("WITNESS_UPPER_OBJECT_CLASS_MISMATCH")
+    if public_lower_end_object_a != public_lower_end_object_b:
+        raise ValueError("WITNESS_LOWER_OBJECT_CLASS_MISMATCH")
+    if public_upper_end_object_a == public_lower_end_object_a:
+        raise ValueError("WITNESS_END_OBJECTS_NOT_DISTINCT")
+    for label, observation in (("A", decision_a["observation"]), ("B", decision_b["observation"])):
+        visible = public_key_ball_cells(observation)
+        expected = [
+            {"coordinate": [public_upper_object_cell[0], public_upper_object_cell[1]],
+             "object": public_object_at(observation, public_upper_object_cell)},
+            {"coordinate": [public_lower_object_cell[0], public_lower_object_cell[1]],
+             "object": public_object_at(observation, public_lower_object_cell)},
+        ]
+        if visible != expected:
+            raise ValueError("WITNESS_" + label + "_END_OBJECTS_NOT_UNIQUELY_VISIBLE")
     public_upper_end_object = public_upper_end_object_a
     # Facing direction is read from the public decision observation itself,
     # never from an independently supplied label.
@@ -137,6 +180,8 @@ def verify_history_witness_pair(
         "public_start_cue_a": public_start_cue_a,
         "public_start_cue_b": public_start_cue_b,
         "public_upper_end_object": public_upper_end_object,
+        "public_lower_end_object": public_lower_end_object_a,
+        "visible_end_object_cells": [[1, 5], [5, 5]],
         "expected_action_a": expected_a,
         "expected_action_b": expected_b,
         "classification_provenance": "KEY_BALL_DECODED_FROM_PUBLIC_IMAGE_BYTES_COORDINATES_SEMANTICS_NOT_ATTESTED",
