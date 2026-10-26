@@ -23,27 +23,37 @@ def _observation_digest(observation):
     return hashlib.sha256(_canonical(observation)).hexdigest()
 
 
-def verify_history_witness_pair(episode_a, episode_b, *, decision_seq_a, decision_seq_b,\n                               public_start_cue_a, public_start_cue_b,\n                               public_upper_end_object, agent_direction_a,\n                               agent_direction_b):
-    """Verify a preselected decision point in two public episodes.
+def verify_history_witness_pair(
+    episode_a,
+    episode_b,
+    *,
+    decision_seq_a,
+    decision_seq_b,
+    public_start_cue_a,
+    public_start_cue_b,
+    public_upper_end_object,
+    agent_direction_a,
+    agent_direction_b,
+):
+    """Verify a preregistered decision point in two public episodes.
 
-    `decision_seq_*` identifies the event whose observation is the decision
-    observation. The *next event's action* is the action selected at that
-    observation. Later public terminal success confirms both recorded paths
-    ultimately succeeded; this avoids incorrectly comparing the action on the
-    terminal transition (which may be the same forward action in both paths).
+    decision_seq_* identifies the event whose observation is the decision
+    observation. The next event's action is the action selected there. Later
+    terminal success confirms that each recorded path ultimately succeeded.
+    The exact decision indices must be frozen before held-out outcomes open.
 
-    Exact indices must be preregistered before held-out outcomes are opened.
-    This validates only event structure; it cannot attest authentic collection
-    or independently establish the optimal label from hidden source fields.
+    This validates receipt structure and supplied public-object classifications.
+    It cannot attest authentic collection or independently prove that the
+    classifications were extracted from public pixels.
     """
     a = validate_episode(episode_a)
     b = validate_episode(episode_b)
 
     if type(decision_seq_a) is not int or type(decision_seq_b) is not int:
         raise ValueError("WITNESS_DECISION_SEQUENCE_INVALID")
-    if not (0 <= decision_seq_a < len(a) - 1):
+    if not (0 <= decision_seq_a < len(a) - 2):
         raise ValueError("WITNESS_A_DECISION_OUT_OF_RANGE")
-    if not (0 <= decision_seq_b < len(b) - 1):
+    if not (0 <= decision_seq_b < len(b) - 2):
         raise ValueError("WITNESS_B_DECISION_OUT_OF_RANGE")
     decision_a, decision_b = a[decision_seq_a], b[decision_seq_b]
     if decision_a["seq"] != decision_seq_a or decision_b["seq"] != decision_seq_b:
@@ -61,9 +71,26 @@ def verify_history_witness_pair(episode_a, episode_b, *, decision_seq_a, decisio
     if digest_a != digest_b:
         raise ValueError("WITNESS_DECISION_OBSERVATION_MISMATCH")
 
-    # The event after a decision observation carries the action chosen there.
     action_a = a[decision_seq_a + 1]["action"]
     action_b = b[decision_seq_b + 1]["action"]
+    expected_a = expected_branch_action(
+        public_start_cue_a,
+        public_upper_end_object,
+        agent_direction=agent_direction_a,
+    )
+    expected_b = expected_branch_action(
+        public_start_cue_b,
+        public_upper_end_object,
+        agent_direction=agent_direction_b,
+    )
+    if action_a != expected_a:
+        raise ValueError("WITNESS_A_ACTION_DOES_NOT_MATCH_PUBLIC_SOURCE_RULE")
+    if action_b != expected_b:
+        raise ValueError("WITNESS_B_ACTION_DOES_NOT_MATCH_PUBLIC_SOURCE_RULE")
+    if a[decision_seq_a + 2]["action"] != FORWARD:
+        raise ValueError("WITNESS_A_DID_NOT_CONTINUE_FORWARD")
+    if b[decision_seq_b + 2]["action"] != FORWARD:
+        raise ValueError("WITNESS_B_DID_NOT_CONTINUE_FORWARD")
     if action_a == action_b:
         raise ValueError("WITNESS_DECISION_ACTIONS_NOT_DISTINCT")
 
@@ -94,6 +121,12 @@ def verify_history_witness_pair(episode_a, episode_b, *, decision_seq_a, decisio
         "episode_b_sha256": public_receipt_digest(b),
         "decision_action_a": action_a,
         "decision_action_b": action_b,
+        "public_start_cue_a": public_start_cue_a,
+        "public_start_cue_b": public_start_cue_b,
+        "public_upper_end_object": public_upper_end_object,
+        "expected_action_a": expected_a,
+        "expected_action_b": expected_b,
+        "classification_provenance": "CLAIMED_PUBLIC_IMAGE_CLASSIFICATIONS_NOT_INDEPENDENTLY_ATTESTED",
         "terminal_reward_a": final_a["reward"],
         "terminal_reward_b": final_b["reward"],
         "claim": "PUBLIC_EVENT_WITNESS_SHAPE_PASS_SOURCE_PROVENANCE_NOT_ATTESTED",
