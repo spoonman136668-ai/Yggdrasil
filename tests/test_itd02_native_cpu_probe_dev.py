@@ -33,9 +33,21 @@ class NativeCpuProbeTests(unittest.TestCase):
         self.assertFalse(result["authentic_original_world_executed"])
         self.assertFalse(result["independent_scientific_qualification"])
         self.assertTrue(result["original_native_parameter_changed"])
-        self.assertTrue(result["native_memory_parameter_changed"])
+        # This two-step fixture emits reward=0 exclusively. The original
+        # local memory's reward-weighted update has zero error at its zero
+        # initialization, so no parameter change is the correct negative.
+        self.assertFalse(result["native_memory_parameter_changed"])
         if result["final_peak_rss_bytes"] is not None:
             self.assertGreater(result["final_peak_rss_bytes"], 0)
+
+    def test_positive_public_feedback_updates_both_native_components(self):
+        # A separate SOURCE-FREE 4-step fixture issues +10 at step 3.
+        # The learning-positive contrast must be measured, not manufactured
+        # by changing the original reward update equations.
+        result = run_probe(episodes=2, steps=4)
+        self.assertTrue(result["original_native_parameter_changed"])
+        self.assertTrue(result["native_memory_parameter_changed"])
+        self.assertEqual(result["public_interactions"], 8)
 
     def test_invalid_budgets_rejected(self):
         for episodes, steps in ((0, 1), (33, 1), (1, 0), (1, 65),
