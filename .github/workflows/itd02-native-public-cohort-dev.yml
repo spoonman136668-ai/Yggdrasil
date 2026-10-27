@@ -1,0 +1,46 @@
+name: ITD-02 native public FIT cohort CPU-only development
+on:
+  push:
+    branches:
+      - research/itd02-native-multiepisode-retail-dev-20261027
+  pull_request:
+    paths:
+      - yggdrasil/itd02_native_public_cohort_dev.py
+      - tests/test_itd02_native_public_cohort_dev.py
+      - .github/workflows/itd02-native-public-cohort-dev.yml
+permissions:
+  contents: read
+jobs:
+  native-local-cpu-only:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Native unassisted multi-episode learning and real disk/process cold resume
+        shell: pwsh
+        run: |
+          python -B -m unittest discover -s tests -p test_itd02_native_public_cohort_dev.py -v
+          if ($LASTEXITCODE -ne 0) { throw "ITD02_NATIVE_COHORT_FAILED" }
+          python -B -m unittest discover -s tests -p test_itd02_public_source_journal_dev.py -v
+          if ($LASTEXITCODE -ne 0) { throw "ITD02_CUSTODY_FAILED" }
+          python -B -m unittest discover -s tests -p test_itd02_native_training_session_dev.py -v
+          if ($LASTEXITCODE -ne 0) { throw "ITD02_NATIVE_SESSION_FAILED" }
+      - name: Preserve original checkout and non-promotional evidence
+        shell: pwsh
+        run: |
+          $dirty = @(git status --porcelain --untracked-files=all)
+          if ($dirty.Count -gt 0) { throw "ITD02_DEVELOPMENT_CHECKOUT_DIRTY $($dirty -join ',')" }
+          "SOURCE_FREE_COHORT_ENGINEERING_CHECK=PASS" >> $env:GITHUB_STEP_SUMMARY
+          "Not original Shuttle source first-use; not retail PC energy/RAM acceptance." >> $env:GITHUB_STEP_SUMMARY
