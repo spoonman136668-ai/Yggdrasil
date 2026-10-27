@@ -40,6 +40,8 @@ class EvidenceGatedReplay:
 
     def restore_with_evidence(self):
         if len(self.feedback) < 2:
+            self.feedback.clear()
+            self.reference = ()
             return False
         # Compare observed outcomes under the same public frame and tested
         # action. Restore only on a unique strictly better retrospective fit.
