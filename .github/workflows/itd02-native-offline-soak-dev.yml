@@ -1,0 +1,49 @@
+name: ITD-02 native offline CPU-only cold-restart soak
+on:
+  pull_request:
+    paths:
+      - scripts/itd02_native_local_soak_dev.py
+      - tests/test_itd02_native_local_soak_dev.py
+      - .github/workflows/itd02-native-offline-soak-dev.yml
+  push:
+    branches:
+      - research/itd02-native-offline-soak-retail-meter-20261027
+permissions:
+  contents: read
+jobs:
+  cpu-only-native-soak:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Native source-free soak, real child-process crashes and custody
+        shell: pwsh
+        run: |
+          python -B -m unittest discover -s tests -p test_itd02_native_local_soak_dev.py -v
+          if ($LASTEXITCODE -ne 0) { throw 'SOURCE_FREE_LOCAL_SOAK_FAILED' }
+          python -B -m unittest discover -s tests -p test_itd02_public_source_journal_dev.py -v
+          if ($LASTEXITCODE -ne 0) { throw 'ORIGINAL_NATIVE_CUSTODY_REGRESSION' }
+      - name: Emit unambiguous developer resource metrics
+        shell: pwsh
+        run: |
+          python -B scripts/itd02_native_local_soak_dev.py --root "$env:RUNNER_TEMP/ygg-native-local-soak" --episodes 12 --steps 16
+          if ($LASTEXITCODE -ne 0) { throw 'SOURCE_FREE_NATIVE_RESOURCE_SOAK_FAILED' }
+          python -B -c "import json,sys;from pathlib import Path;r=json.loads((Path(sys.argv[1])/'source-free-metrics.json').read_text());assert r['original_source_episodes']==0 and r['total_native_interactions']==192 and r['cold_process_restarts']==11 and not r['retail_pc_qualified'];print('CPU_ONLY_SOURCE_FREE_MEASUREMENT=PASS',json.dumps({k:v for k,v in r.items() if k!='per_episode'},sort_keys=True))" "$env:RUNNER_TEMP/ygg-native-local-soak"
+          if ($LASTEXITCODE -ne 0) { throw 'SOURCE_FREE_METRIC_CONTRACT_FAILED' }
+      - name: Final clean checkout
+        shell: pwsh
+        run: |
+          $status = @(git status --porcelain --untracked-files=all)
+          if ($status.Count -gt 0) { throw "SOURCE_CHECKOUT_DIRTY $($status -join ', ')" }
