@@ -35,3 +35,19 @@ class RiskCalibratedTests(unittest.TestCase):
 
 if __name__=="__main__":
     unittest.main()
+
+    def test_calibrated_risk_and_coverage_are_explicitly_pinned(self):
+        rows=run()["experiments"]
+        for family,correct,wrong,abstain in (("parity",0,0,72),
+                                              ("first_bit",12,0,60)):
+            subset=[r for r in rows if r["rule"]==family]
+            self.assertEqual(sum(x["heldout"]["calibrated"]["correct"]
+                                 for x in subset),correct)
+            self.assertEqual(sum(x["heldout"]["calibrated"]["wrong"]
+                                 for x in subset),wrong)
+            self.assertEqual(sum(x["heldout"]["calibrated"]["abstentions"]
+                                 for x in subset),abstain)
+        self.assertTrue(any(r["chosen_cutoff"] is not None
+                            for r in rows if r["rule"]=="first_bit"))
+        self.assertTrue(all(r["chosen_cutoff"] is None
+                            for r in rows if r["rule"]=="parity"))
