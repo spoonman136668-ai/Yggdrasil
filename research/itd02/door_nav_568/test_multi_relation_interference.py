@@ -31,3 +31,11 @@ class MultiRelationInterferenceTests(unittest.TestCase):
         self.assertEqual(last["tabular_trained"]["correct"], 2)
         self.assertEqual(last["tabular_trained"]["wrong"], 0)
         self.assertEqual(last["tabular_heldout"]["abstentions"], 2)
+
+    def test_documented_interference_regression(self):
+        end = measure()["phases"][-1]
+        self.assertEqual(end["native_trained"]["correct"], 1)
+        self.assertEqual(end["native_trained"]["abstentions"], 1)
+        self.assertEqual(end["tabular_trained"]["correct"], 2)
+        self.assertEqual(end["native_heldout"]["correct"], 1)
+        self.assertEqual(end["tabular_heldout"]["abstentions"], 2)
