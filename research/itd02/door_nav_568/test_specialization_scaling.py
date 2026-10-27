@@ -38,3 +38,18 @@ class ScalingTests(unittest.TestCase):
         self.assertGreater(small["native_rejected"],0)
         self.assertEqual(big["native_rejected"],0)
         self.assertTrue(big["cold_restore_exact"])
+
+    def test_generated_interference_is_preserved_as_negative_control(self):
+        report=run()
+        grouped={n:[] for n in (2,4,8,12)}
+        for row in report["runs"]:
+            grouped[row["relationships"]].append(row)
+            self.assertEqual(row["native_rejected"],0)
+        expected={2:(6,6),4:(3,12),8:(6,24),12:(3,36)}
+        for n,(native_count,tabular_count) in expected.items():
+            self.assertEqual(sum(x["native_trained"]["correct"] for x in grouped[n]),native_count)
+            self.assertEqual(sum(x["table_trained"]["correct"] for x in grouped[n]),tabular_count)
+        self.assertGreater(sum(row["native_heldout"]["wrong"]
+                               for row in report["runs"]),0)
+        self.assertEqual(sum(row["table_heldout"]["wrong"]
+                             for row in report["runs"]),0)
