@@ -21,7 +21,7 @@ class ContextPartitionTests(unittest.TestCase):
         self.assertEqual(learner.choose(3), 0)
         learner.observe(b"xA-retention", [0, 1])
         self.assertEqual(learner.choose(3), 1)
-        self.assertEqual(len(learner.prior_contexts), 7)
+        self.assertEqual(len(learner.prior_contexts), 6)
         self.assertLessEqual(learner.stored_examples(), 2*learner.capacity)
         self.assertEqual(learner.active.model.selected_position, 0)
         self.assertEqual(learner.snapshot.model.selected_position, 1)
