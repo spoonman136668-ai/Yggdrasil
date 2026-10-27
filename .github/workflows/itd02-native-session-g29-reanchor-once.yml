@@ -1,0 +1,66 @@
+name: ITD-02 G29 one-time native-session atlas reanchor
+on:
+  push:
+    branches:
+      - qualification/itd02-native-session-g29-source-reanchor-20261027
+    paths:
+      - .github/workflows/itd02-native-session-g29-reanchor-once.yml
+permissions:
+  contents: write
+concurrency:
+  group: itd02-g29-native-session-source-reanchor-once
+  cancel-in-progress: false
+jobs:
+  source-only-atlas:
+    if: ${{ github.actor == 'spoonman136668-ai' && github.run_attempt == 1 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prove one additive workflow only on exact frozen native source
+        shell: bash
+        run: |
+          set -euo pipefail
+          source='7f33b1ec7ebbf3be48509a03f58b87b189ac630a'
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor "$source" HEAD
+          test "$(git rev-list --count "$source"..HEAD)" = 2
+          test -z "$(git status --porcelain --untracked-files=all)"
+          actual="$(git diff --name-only "$source" HEAD)"
+          test "$actual" = '.github/workflows/itd02-native-session-g29-reanchor-once.yml'
+          echo 'G29_NATIVE_SESSION_ONE_TIME_SOURCE_BOUND=PASS'
+      - name: Rebuild only deterministic source-locator atlas from exact HEAD
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          python -m unittest discover -s tests -p test_itd02_native_training_session_dev.py -v
+          python -m unittest discover -s tests -p test_itd02_native_task_bridge_dev.py -v
+          echo 'G29_NATIVE_SESSION_ATLAS_AND_MODEL_FOCUSED=PASS'
+      - name: Publish only generated atlas locators to this isolated branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = qualification/itd02-native-session-g29-source-reanchor-20261027
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          test -n "$(git diff --cached --name-only)"
+          actual="$(git diff --cached --name-only)"
+          expected="$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          test "$actual" = "$expected"
+          test -z "$(git diff --name-only)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'index(itd02): source-pin native training session to G29 atlas'
+          # G29 verifies the COMMITTED artifacts; validating the generated
+          # files before committing them necessarily compares to stale HEAD.
+          python scripts/build_code_atlas.py --check-if-present
+          python -m unittest discover -s tests -p test_code_atlas.py -v
+          git push origin HEAD:refs/heads/qualification/itd02-native-session-g29-source-reanchor-20261027
+          echo 'G29_NATIVE_SESSION_ISOLATED_ATLAS_REANCHOR=PASS'
