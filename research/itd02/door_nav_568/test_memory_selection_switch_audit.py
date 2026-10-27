@@ -14,6 +14,24 @@ class MemorySelectionSwitchTests(unittest.TestCase):
         self.assertTrue(all(c["stored_examples"] <= data["memory_cap"] for c in data["cases"]))
         self.assertEqual(data["correct"] + data["abstentions"] + data["wrong_decisions"], 7)
 
+    def test_experimentally_observed_return_and_aliasing_failures(self):
+        result = run()
+        cases = {case["case"]: case for case in result["cases"]}
+        for label, decision, memory in (
+            ("A_prior", 1, "snapshot"),
+            ("B_changed", 0, "active"),
+            ("B_return", 0, "active"),
+            ("B_reward_corrupted", 0, "active"),
+            ("A_return", None, None),
+            ("B_public_collision", None, None),
+            ("unknown_family", None, None),
+        ):
+            self.assertEqual(cases[label]["decision"], decision)
+            self.assertEqual(cases[label]["selected"], memory)
+        self.assertEqual(result["correct"], 4)
+        self.assertEqual(result["abstentions"], 3)
+        self.assertEqual(result["wrong_decisions"], 0)
+
     def test_preserves_wrong_answers_and_abstentions(self):
         result = run()
         for case in result["cases"]:
