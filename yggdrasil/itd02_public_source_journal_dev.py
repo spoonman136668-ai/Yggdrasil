@@ -90,7 +90,7 @@ def inspect_custody(directory, *, expected_source_sha256=None):
     raw = _read_checked(root / "public-events.jsonl", MAX_JOURNAL_BYTES)
     _need(raw and raw.endswith(b"\n"), "TORN_EVENT_STREAM")
     lines = raw.splitlines()
-    _need(2 <= len(lines) <= 2 * MAX_STEPS + 4, "EVENT_COUNT")
+    _need(1 <= len(lines) <= 2 * MAX_STEPS + 4, "EVENT_COUNT")
     prev = ZERO
     previous_kind = None
     events = []
