@@ -3,6 +3,7 @@
 Never import the original published POMDP or reset/step it here.
 The author-built source fixture is a plumbing test only, not science.
 """
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -17,7 +18,7 @@ from yggdrasil.itd02_public_source_journal_dev import (
 )
 from yggdrasil.itd02_native_training_session_dev import NativeTrainingSessionDev
 
-IDENTITY = "a69baec2d6e83e239bafa4c6b74faead794e7c91400bf69c7d3813ed114cea94"
+IDENTITY = hashlib.sha256(b"ITD02-SOURCE-FREE-JOURNAL-TEST-NOT-PUBLISHED-SHUTTLE").hexdigest()
 ROLE = "OWNER_PUBLIC_FIT_DEVELOPMENT_ONLY"
 
 
@@ -213,6 +214,50 @@ class PublicSourceJournalTests(unittest.TestCase):
             path.write_bytes(path.read_bytes() + b"tamper")
             with self.assertRaisesRegex(SourceCustodyDenied, "CHECKPOINT_INTEGRITY"):
                 inspect_custody(temp)
+
+    def test_cold_process_death_after_intent_never_reissues_source_effect(self):
+        # A TRUE subprocess exits abruptly, without Python finally blocks
+        # or closing the source owner. The fsynced journal must remain in an
+        # uncommitted state in the surviving verifier process.
+        for location in ("reset", "step"):
+            with self.subTest(location=location):
+                with tempfile.TemporaryDirectory() as folder:
+                    subprocess_body = """
+import os, sys
+from yggdrasil.itd02_public_source_journal_dev import JournaledPublicSourceDev
+from yggdrasil.itd02_native_training_session_dev import NativeTrainingSessionDev
+class PublicDie:
+    def reset_public(self):
+        if sys.argv[2] == "reset":
+            os._exit(61)
+        return "docked_MRV"
+    def step_public(self, action):
+        os._exit(62)
+owner = JournaledPublicSourceDev(
+    sys.argv[1], PublicDie(),
+    episode_id="sourcefree-process-death",
+    source_sha256=sys.argv[3], max_steps=2,
+    role="OWNER_PUBLIC_FIT_DEVELOPMENT_ONLY")
+owner.execute_one(NativeTrainingSessionDev(max_steps=2))
+"""
+                    child = subprocess.run(
+                        [sys.executable, "-B", "-c", subprocess_body,
+                         folder, location, IDENTITY],
+                        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                        timeout=20)
+                    self.assertEqual(child.returncode,
+                                     61 if location == "reset" else 62,
+                                     msg=child.stderr.decode(errors="replace"))
+                    checked = inspect_custody(
+                        folder, expected_source_sha256=IDENTITY)
+                    self.assertEqual(checked["status"], "QUARANTINE")
+                    self.assertFalse(checked["checkpoint_verified"])
+                    with self.assertRaises(FileExistsError):
+                        source(folder, SourceFreePublicFixture())
+                    with self.assertRaisesRegex(SourceCustodyDenied,
+                                                "COLD_RESTORE_NOT_COMMITTED"):
+                        load_verified_native_model(
+                            folder, expected_source_sha256=IDENTITY)
 
     def test_source_owner_role_and_session_ceiling_required(self):
         with tempfile.TemporaryDirectory() as temp:
