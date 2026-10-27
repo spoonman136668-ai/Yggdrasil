@@ -1,0 +1,90 @@
+name: ITD-02 read-only native credit attribution v7 versus v8
+on:
+  push:
+    branches:
+      - research/itd02-v8-native-credit-path-audit-20261027
+permissions:
+  contents: read
+jobs:
+  native-source-locked-attribution:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+        variant: [v7, v8]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      SOURCE_PIN: ${{ matrix.variant == 'v7' && '3a32bd54f270058462d662302eb5732878d2edee' || '658b855d1b217d20ed9d431fe99b2e866469b7e9' }}
+    steps:
+      - name: Preserve Git SHA identity without newline transforms
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Checkout harness and historical preregistration
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          path: diagnostic
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Checkout exact unchanged native original
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ env.SOURCE_PIN }}
+          path: native
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Authenticate preregistered diagnostic and immutable native source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C diagnostic rev-parse HEAD)" = "$GITHUB_SHA"
+          git -C diagnostic merge-base --is-ancestor b3b22342d8c957040ae00407014e4a52c8553498 "$GITHUB_SHA"
+          test "$(git -C native rev-parse HEAD)" = "$SOURCE_PIN"
+          test -z "$(git -C diagnostic status --porcelain --untracked-files=all)"
+          test -z "$(git -C native status --porcelain --untracked-files=all)"
+      - name: Run chosen-action native learning with read-only diagnostic copies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B diagnostic/research/itd02_v8_native_credit_path_diagnostic.py \
+            --variant "${{ matrix.variant }}" --root "$GITHUB_WORKSPACE/native" \
+            --output "$RUNNER_TEMP/itd02-v8-credit-${{ matrix.variant }}.json"
+      - name: Confirm fair accounting and untouched model sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          r=Path(os.environ["RUNNER_TEMP"]) / "itd02-v8-credit-${{ matrix.variant }}.json"
+          v=json.loads(r.read_text("utf-8"))
+          assert v["native_acted_selected_public_events"]==1728
+          assert v["classification"]=="CREDIT_PATH_DIAGNOSTIC_ONLY__NO_SCIENCE"
+          assert v["independent_scientific_first_use"] is False
+          assert v["accepted_model_updated"] is False
+          assert len(v["trials"])==12
+          assert all(p["total_decisions"]==576 for p in v["summary"].values())
+          assert all(all(t["phases"][phase]["cold_process_restored"]
+                  for phase in ("initial","unfamiliar","reversal"))
+                  for t in v["trials"])
+          print("ITD02_NATIVE_CREDIT_PATH_CUSTODY_PASS_NO_SCIENCE")
+          PY
+          test -z "$(git -C diagnostic status --porcelain --untracked-files=all)"
+          test -z "$(git -C native status --porcelain --untracked-files=all)"
+      - name: Preserve source-free negative evidence including model contribution audit
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-credit-${{ matrix.variant }}-${{ matrix.os }}
+          path: ${{ runner.temp }}/itd02-v8-credit-${{ matrix.variant }}.json
+          if-no-files-found: warn
+          retention-days: 7
