@@ -155,7 +155,7 @@ class PublicSourceJournalTests(unittest.TestCase):
                 custody.execute_one(NativeTrainingSessionDev(max_steps=2))
             journal = Path(temp) / "public-events.jsonl"
             raw = journal.read_bytes()
-            journal.write_bytes(raw.replace(b"GoForward", b"Backup___", 1))
+            journal.write_bytes(raw.replace(b"source-free-fixture-1", b"source-free-fixture-2", 1))
             with self.assertRaises(SourceCustodyDenied):
                 inspect_custody(temp)
             journal.write_bytes(raw[:-1])
