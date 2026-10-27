@@ -36,6 +36,20 @@ jobs:
           assert set(changed) == set(names), changed
           print('ITD02_G29_SOURCE_ARTIFACT_GENERATED', index['source_commit'], index['counts'])
           PY
+      - name: Emit reviewable source-blob chunks for content-addressed commit
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64, hashlib
+          from pathlib import Path
+          for name in ("code-atlas.json", "code-atlas.html", "code-atlas.ice"):
+              raw = Path(".ice", name).read_bytes()
+              encoded = base64.b64encode(raw).decode("ascii")
+              print("ITD02_G29_BEGIN|" + name + "|" + str(len(raw)) + "|" + hashlib.sha256(raw).hexdigest())
+              for n, start in enumerate(range(0, len(encoded), 12000)):
+                  print("ITD02_G29_PART|" + name + "|" + str(n) + "|" + encoded[start:start+12000])
+              print("ITD02_G29_END|" + name)
+          PY
       - name: Export the three exact generated artifacts for review
         uses: actions/upload-artifact@v4
         with:
