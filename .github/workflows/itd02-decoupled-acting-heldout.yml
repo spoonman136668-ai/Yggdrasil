@@ -1,0 +1,348 @@
+name: ITD-02 v3 disjoint native reward input acting comparison
+on:
+  push:
+    branches:
+      - research/itd02-decoupled-input-sites-20261027
+permissions:
+  contents: read
+jobs:
+  public-transfer:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+        implementation: [frozen, candidate]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      IMPLEMENTATION: ${{ matrix.implementation }}
+      SOURCE_SHA: ${{ matrix.implementation == 'frozen' && 'a39171a76d0d7817e3563682bb139a9d7ecf37c4' || '41164fe99d47d4a85b7144b36cbd613f28929082' }}
+    steps:
+      - name: Enforce source byte-preserving checkout
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ env.SOURCE_SHA }}
+          fetch-depth: 0
+          clean: true
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Check exact source identity without altering draft or G29
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          for p in ("yggdrasil/task_runtime.py",
+                    "yggdrasil/itd02_native_task_bridge_dev.py",
+                    "yggdrasil/itd02_local_ring_memory_dev.py"):
+              assert Path(p).read_bytes()==subprocess.check_output(["git","show","HEAD:"+p])
+          PY
+          # Original and v3 candidate are distinct native wire/checkpoint
+          # encodings; this source-free test is NOT exact-source G29.
+          if [ "$IMPLEMENTATION" = candidate ]; then
+            grep -q 'two-/three-hot' research/experiments/itd02-decoupled-public-input-prereg-20261027.md
+          fi
+          test -z "$(git status --porcelain)"
+      - name: Run preregistered 64-pair source-free three-reward acting comparison
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          """Synthetic randomized held-out family and contingency-shift discrimination.
+          
+          Only engineering public (observation, action, consequence), not source-world data.
+          Model/control see the same observation ordering and are independent on-policy actors.
+          """
+          import collections
+          import hashlib
+          import json
+          import os
+          import platform
+          import statistics
+          import subprocess
+          import sys
+          import time
+          from yggdrasil.itd02_native_task_bridge_dev import NativeTaskRingBridgeDev
+          from yggdrasil.itd02_local_ring_memory_dev import ACTIONS
+          
+          TRAIN=("LRV","MRV","Nothing")
+          HELD=("docked_LRV","docked_MRV")
+          ALL=TRAIN+HELD
+          ACTORS=("native","count_ema","count_window","count_mean")
+          FAMILIES=tuple(range(62,70))
+          SEEDS=tuple(range(60,68))
+          STEPS_TRAIN=90
+          STEPS_TRANSFER=90
+          
+          def target(tag,family,seed,observation,salt=0):
+              data=f"{tag}:{family}:{seed}:{observation}:{salt}".encode("ascii")
+              value=hashlib.sha256(data).digest()[0]
+              return ACTIONS[value%len(ACTIONS)]
+          
+          def laws(family,seed):
+              old={o:target("old",family,seed,o) for o in ALL}
+              for salt in range(100):
+                  new={o:target("unfamiliar",family,seed,o,salt) for o in ALL}
+                  if sum(new[o]!=old[o] for o in TRAIN)>=2:
+                      break
+              else:
+                  raise AssertionError("SOURCE_LAW_NOT_DISCRIMINATING")
+              return old,new
+          
+          def make_actor(mode):
+              return {
+                  "mode":mode,
+                  "model":NativeTaskRingBridgeDev() if mode=="native" else None,
+                  "visits":collections.Counter(),
+                  "table":{},"ema":{},"window":{},
+                  "log":[],"cpu_ns":0,"last_checkpoint_bytes":0,
+                  "peak_checkpoint_bytes":0
+              }
+          
+          def value(actor,obs,action):
+              key=(obs,action)
+              mode=actor["mode"]
+              if mode=="count_ema":
+                  return actor["ema"].get(key,0.0)
+              if mode=="count_window":
+                  last=actor["window"].get(key,())
+                  return sum(last)/len(last) if last else 0.0
+              n,total=actor["table"].get(key,(0,0))
+              return total/n if n else 0.0
+          
+          def choose(actor,obs,seed):
+              v=actor["visits"][obs]
+              if actor["model"] is not None:
+                  actor["model"].start_observation(obs)
+                  greedy=actor["model"].choose()
+              else:
+                  greedy=max(ACTIONS,key=lambda a:value(actor,obs,a))
+              # Same deterministic, source-blind action opportunities for every actor.
+              # Bootstrap covers 3 actions, periodic probe rotates every 9th visit.
+              forced=v<3 or (v>=3 and (v+seed)%9==0)
+              if forced:
+                  if v<3:
+                      action=ACTIONS[(v+seed)%len(ACTIONS)]
+                  else:
+                      action=ACTIONS[(((v+seed)//9)+seed)%len(ACTIONS)]
+              else:
+                  action=greedy
+              actor["visits"][obs]+=1
+              return action,forced
+          
+          def update(actor,obs,action,reward):
+              if actor["model"] is not None:
+                  m=actor["model"]
+                  m.accept_public_transition(action,"Nothing",reward,learning=True,terminal=True)
+                  saved=m.checkpoint()
+              else:
+                  key=(obs,action)
+                  n,total=actor["table"].get(key,(0,0))
+                  actor["table"][key]=(n+1,total+reward)
+                  previous=actor["ema"].get(key)
+                  actor["ema"][key]=float(reward) if previous is None else 0.5*reward+0.5*previous
+                  last=actor["window"].setdefault(key,[])
+                  last.append(reward)
+                  if len(last)>6:
+                      del last[:-6]
+                  payload={
+                      "mode":actor["mode"],
+                      "table":sorted((o,a,n,total) for (o,a),(n,total) in actor["table"].items()),
+                      "ema":sorted((o,a,v) for (o,a),v in actor["ema"].items()) if actor["mode"]=="count_ema" else [],
+                      "window":sorted((o,a,list(v)) for (o,a),v in actor["window"].items()) if actor["mode"]=="count_window" else []
+                  }
+                  saved=json.dumps(payload,sort_keys=True,separators=(",",":")).encode()
+              actor["last_checkpoint_bytes"]=len(saved)
+              actor["peak_checkpoint_bytes"]=max(actor["peak_checkpoint_bytes"],len(saved))
+          
+          def public_evaluator_reward(action,optimal):
+              if action==optimal:
+                  return 10
+              if ACTIONS.index(action)==(ACTIONS.index(optimal)+1)%3:
+                  return 0
+              return -3
+
+          def move(actor,obs,law,seed):
+              t0=time.process_time_ns()
+              action,forced=choose(actor,obs,seed)
+              reward=public_evaluator_reward(action,law[obs])
+              update(actor,obs,action,reward)
+              actor["cpu_ns"]+=time.process_time_ns()-t0
+              actor["log"].append((obs,action,reward,forced))
+              return reward
+          
+          def frozen_actions(actor):
+              if actor["model"] is None:
+                  return {o:max(ACTIONS,key=lambda a:value(actor,o,a)) for o in ALL}
+              ids=actor["model"].model_identities()
+              saved=actor["model"].checkpoint()
+              choices={}
+              for o in ALL:
+                  m=NativeTaskRingBridgeDev.restore(saved)
+                  m.start_frozen_evaluation(ids["native"],ids["memory"])
+                  m.start_observation(o)
+                  choices[o]=m.choose()
+                  if m.model_identities()!=ids:
+                      raise AssertionError("FROZEN_EVALUATION_CHANGED_MODEL")
+              return choices
+          
+          def scores(choices,law):
+              return {
+                  "seen":sum(public_evaluator_reward(choices[o],law[o]) for o in TRAIN),
+                  "heldout":sum(public_evaluator_reward(choices[o],law[o]) for o in HELD)
+              }
+          
+          def cold_restore(actor,expected_steps):
+              if actor["model"] is None:
+                  return None
+              m=actor["model"]
+              raw=m.checkpoint()
+              body={
+                  "identity":m.model_identities(),
+                  "transitions":m.transitions,
+                  "snapshot_sha256":hashlib.sha256(raw).hexdigest(),
+              }
+              program=(
+                "import hashlib,json,sys;"
+                "from yggdrasil.itd02_native_task_bridge_dev import NativeTaskRingBridgeDev;"
+                "raw=sys.stdin.buffer.read();m=NativeTaskRingBridgeDev.restore(raw);"
+                "print(json.dumps({'identity':m.model_identities(),"
+                "'transitions':m.transitions,'snapshot_sha256':hashlib.sha256(m.checkpoint()).hexdigest()}))"
+              )
+              output=subprocess.run([sys.executable,"-B","-c",program],
+                                    input=raw,capture_output=True,check=True,timeout=20)
+              observed=json.loads(output.stdout)
+              if observed!=body or observed["transitions"]!=expected_steps:
+                  raise AssertionError("COLD_SOURCE_CHECKPOINT_NOT_RESTORED")
+              actions_before=frozen_actions(actor)
+              actor["model"]=NativeTaskRingBridgeDev.restore(raw)
+              if frozen_actions(actor)!=actions_before:
+                  raise AssertionError("COLD_RESTORE_CHANGED_FROZEN_BEHAVIOR")
+              return {"fresh_process":True,"retained_actions":True,
+                      "checkpoint_bytes":len(raw),"identity_sha256":hashlib.sha256(raw).hexdigest()}
+          
+          def summary_phase(actor,part,old,new):
+              rewards=[x[2] for x in part]
+              if len(rewards)!=90:
+                  raise AssertionError("INCORRECT_OBSERVATION_BUDGET")
+              choices=frozen_actions(actor)
+              return {
+                  "reward_total":sum(rewards),
+                  "first24_mean":statistics.mean(rewards[:24]),
+                  "last24_mean":statistics.mean(rewards[-24:]),
+                  "forced":sum(x[3] for x in part),
+                  "selected_action_counts":dict(__import__("collections").Counter(x[1] for x in part)),
+                  "public_reward_labels":dict(__import__("collections").Counter(str(x[2]) for x in part)),
+                  "policy":choices,
+                  "frozen_old":scores(choices,old),
+                  "frozen_new":scores(choices,new),
+                  "cpu_ns_cumulative":actor["cpu_ns"],
+                  "last_checkpoint_bytes":actor["last_checkpoint_bytes"],
+                  "peak_checkpoint_bytes":actor["peak_checkpoint_bytes"]
+              }
+          
+          def trial(family,seed):
+              original,new=laws(family,seed)
+              actors={name:make_actor(name) for name in ACTORS}
+              phases={}
+              cold={}
+              for phase,law,length,observations in (
+                  ("initial",original,STEPS_TRAIN,TRAIN),
+                  ("unfamiliar",new,STEPS_TRANSFER,ALL)
+              ):
+                  for epoch in range(length):
+                      obs=observations[(epoch+seed)%len(observations)]
+                      for actor in actors.values():
+                          move(actor,obs,law,seed)
+                  phases[phase]={}
+                  for name,actor in actors.items():
+                      part=actor["log"][-length:]
+                      phases[phase][name]=summary_phase(actor,part,original,new)
+                      if phase=="initial" and name=="native":
+                          cold=cold_restore(actor,STEPS_TRAIN)
+              for name,actor in actors.items():
+                  if len(actor["log"])!=STEPS_TRAIN+STEPS_TRANSFER:
+                      raise AssertionError("ACTOR_INCONSISTENT_BUDGET")
+                  if actor["model"] is not None and actor["model"].transitions!=STEPS_TRAIN+STEPS_TRANSFER:
+                      raise AssertionError("NATIVE_TRANSITIONS_NOT_ACCOUNTED")
+              return {"family":family,"seed":seed,
+                      "source_law_fingerprints":{
+                          "initial":hashlib.sha256(json.dumps(original,sort_keys=True).encode()).hexdigest(),
+                          "unfamiliar":hashlib.sha256(json.dumps(new,sort_keys=True).encode()).hexdigest()},
+                      "cold_restart":cold,"phases":phases}
+          
+          start=time.perf_counter()
+          trials=[trial(family,seed) for family in FAMILIES for seed in SEEDS]
+          means={}
+          for phase in ("initial","unfamiliar"):
+              means[phase]={}
+              for actor in ACTORS:
+                  parts=[t["phases"][phase][actor] for t in trials]
+                  means[phase][actor]={
+                      "total_reward":statistics.mean(p["reward_total"] for p in parts),
+                      "first24_mean":statistics.mean(p["first24_mean"] for p in parts),
+                      "last24_mean":statistics.mean(p["last24_mean"] for p in parts),
+                      "frozen_new_seen":statistics.mean(p["frozen_new"]["seen"] for p in parts),
+                      "frozen_new_heldout":statistics.mean(p["frozen_new"]["heldout"] for p in parts),
+                      "peak_checkpoint_bytes":max(p["peak_checkpoint_bytes"] for p in parts),
+                      "actor_cpu_seconds":round(sum(p["cpu_ns_cumulative"] for p in parts)/1e9,6)
+                  }
+          comparison={
+              "native_vs_best_count_initial":means["initial"]["native"]["total_reward"]-
+                  max(means["initial"][c]["total_reward"] for c in ACTORS if c!="native"),
+              "native_vs_best_count_unfamiliar":means["unfamiliar"]["native"]["total_reward"]-
+                  max(means["unfamiliar"][c]["total_reward"] for c in ACTORS if c!="native"),
+              "native_vs_ema_unfamiliar":means["unfamiliar"]["native"]["total_reward"]-
+                  means["unfamiliar"]["count_ema"]["total_reward"]
+          }
+          receipt={
+              "schema":"ygg.itd02.joint-code-independent-reward.v1",
+              "scientific_first_use":False,
+              "authority":"synthetic-matched-public-interface-fixture-only",
+              "implementation":os.environ["IMPLEMENTATION"],
+              "source_sha":os.environ["SOURCE_SHA"],
+              "platform":platform.platform(),
+              "seed_count":len(SEEDS),
+              "family_count":len(FAMILIES),
+              "actors":ACTORS,
+              "observed_initial_contexts":TRAIN,
+              "unseen_contexts_until_transfer":HELD,
+              "episodes_per_actor_per_trial":180,
+              "evaluator_public_reward_categories":[-3,0,10],
+              "candidate_native_schema":"source_only.v3",
+              "original_native_schema":"source_only.v2",
+              "total_public_actor_steps":len(FAMILIES)*len(SEEDS)*len(ACTORS)*180,
+              "mean_per_trial":means,
+              "comparison":comparison,
+              "wall_seconds":round(time.perf_counter()-start,5),
+              "trials":trials,
+          }
+          if receipt["total_public_actor_steps"]!=46080 or len(trials)!=64:
+              raise AssertionError("RESOURCE_OR_TRIAL_ACCOUNTING_ERROR")
+          if not all(t["cold_restart"]["fresh_process"] and t["cold_restart"]["retained_actions"]
+                     for t in trials):
+              raise AssertionError("COLD_RESTART_ACCOUNTING_ERROR")
+          with open(os.path.join(os.environ["RUNNER_TEMP"],"itd02_unfamiliar_result.json"),
+                    "w",encoding="utf-8") as fp:
+              json.dump(receipt,fp,indent=2,sort_keys=True)
+          print("ITD02_UNFAMILIAR_SUMMARY="+json.dumps({k:v for k,v in receipt.items() if k!="trials"},sort_keys=True))
+          
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Upload full negative and positive engineering evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: itd02-joint-code-${{ matrix.implementation }}-${{ matrix.os }}
+          path: ${{ runner.temp }}/itd02_unfamiliar_result.json
+          if-no-files-found: warn
+          retention-days: 14
