@@ -5,6 +5,8 @@ distinct public frames, isolates the conflicting observations. Source-free
 experimental candidate, not a general causal representation.
 """
 from feature_eligibility_cells import FeatureEligibilityCells
+from native_cells_r7 import LocalCell
+import hashlib
 
 class AdaptiveFeatureCells(FeatureEligibilityCells):
     def __init__(self, max_states=128, trace_limit=4, feature_bytes=2):
@@ -36,6 +38,13 @@ class AdaptiveFeatureCells(FeatureEligibilityCells):
             prior = self.exemplars.get(prefix)
             if prior is not None and prior[0] != frame and prior[1] != chosen_action:
                 self.split.add(prefix)
+                for old_frame, old_action in (prior, (frame, chosen_action)):
+                    key = hashlib.sha256(b"exact:" + old_frame).hexdigest()
+                    if key not in self.cells:
+                        if len(self.cells) >= self.max_states:
+                            raise ValueError("STATE_CAP_REACHED")
+                        self.cells[key] = [LocalCell() for _ in range(7)]
+                    self.cells[key][old_action].feel(True, True)
             else:
                 self.exemplars[prefix] = (frame, chosen_action)
         super().learn(chosen_action, next_public_frame, reward, done)
