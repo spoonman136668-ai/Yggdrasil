@@ -31,7 +31,7 @@ jobs:
           source='7f33b1ec7ebbf3be48509a03f58b87b189ac630a'
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git merge-base --is-ancestor "$source" HEAD
-          test "$(git rev-list --count "$source"..HEAD)" = 1
+          test "$(git rev-list --count "$source"..HEAD)" = 2
           test -z "$(git status --porcelain --untracked-files=all)"
           actual="$(git diff --name-only "$source" HEAD)"
           test "$actual" = '.github/workflows/itd02-native-session-g29-reanchor-once.yml'
@@ -41,7 +41,6 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
-          python -m unittest discover -s tests -p test_code_atlas.py -v
           python -m unittest discover -s tests -p test_itd02_native_training_session_dev.py -v
           python -m unittest discover -s tests -p test_itd02_native_task_bridge_dev.py -v
           echo 'G29_NATIVE_SESSION_ATLAS_AND_MODEL_FOCUSED=PASS'
@@ -59,5 +58,9 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -m 'index(itd02): source-pin native training session to G29 atlas'
+          # G29 verifies the COMMITTED artifacts; validating the generated
+          # files before committing them necessarily compares to stale HEAD.
+          python scripts/build_code_atlas.py --check-if-present
+          python -m unittest discover -s tests -p test_code_atlas.py -v
           git push origin HEAD:refs/heads/qualification/itd02-native-session-g29-source-reanchor-20261027
           echo 'G29_NATIVE_SESSION_ISOLATED_ATLAS_REANCHOR=PASS'
