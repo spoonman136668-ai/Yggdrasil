@@ -3,3 +3,5 @@ import json
 from conventional_online_baseline import TabularOnlineBaseline
 from online_public_learning import PublicOnlineTransitions
 from two_hop_evidence_audit import build, SECOND
+
+KEYS = [(frame, action) for frame, action, old, changed in SECOND]
