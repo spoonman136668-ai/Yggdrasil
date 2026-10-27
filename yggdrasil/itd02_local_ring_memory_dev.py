@@ -105,9 +105,12 @@ class NativeRingMemoryDev:
         self.pending = True
 
     def _signals(self):
-        now = _local_exchange(self._pulse)
-        retained = _local_exchange(self.memory)
-        self.messages += 2 * CELLS * 2 * ROUNDS  # signals x cells x neighbor directions x hops
+        # Experimental readout-only, physical third neighbor-to-neighbor hop.
+        # Each exchange call remains at or below the original two-hop bound.
+        # Credit propagation in feedback() still stops at two hops.
+        now = _local_exchange(_local_exchange(self._pulse), rounds=1)
+        retained = _local_exchange(_local_exchange(self.memory), rounds=1)
+        self.messages += 2 * CELLS * 2 * (ROUNDS + 1)
         return now, retained
 
     def q_values(self):
