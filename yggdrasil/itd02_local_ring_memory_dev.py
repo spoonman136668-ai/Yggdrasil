@@ -154,7 +154,13 @@ class NativeRingMemoryDev:
             # LocalTaskRuntime remain unchanged. Compete against the original
             # rule and independently acting recency controls before admission.
             error = max(-13., min(13., float(reward) - prediction))
-            recency_step = .7 * error / (1. + sum(v * v for v in x))
+            # Locally observed contradiction: the chosen head predicted
+            # a sufficiently strong reward sign opposite to the consequence.
+            # No unchosen action outcome, hidden world field or global
+            # teacher is consulted. Pre-registered, bounded dev hypothesis.
+            contradicted = abs(prediction) >= 1. and prediction * float(reward) < 0.
+            gain = 1.12 if contradicted else .7
+            recency_step = gain * error / (1. + sum(v * v for v in x))
             old_mem_weight = weights[2]
             # Reward credit originates at the chosen action site and travels
             # through the same bounded neighbor-only ring, in the reverse
@@ -166,7 +172,8 @@ class NativeRingMemoryDev:
                 gate = _sigmoid(self.gates[cell])
                 grad = (self._before[cell] - self._pulse[cell]) * gate * (1. - gate)
                 self.gates[cell] = max(-4., min(4., self.gates[cell]
-                                        + .12 * credit[cell] * grad * 16.))
+                                        + (.15 if contradicted else .12)
+                                        * credit[cell] * grad * 16.))
             for j in range(3):
                 weights[j] = max(-16., min(16., weights[j] + recency_step * x[j]))
             self.updates += 1
