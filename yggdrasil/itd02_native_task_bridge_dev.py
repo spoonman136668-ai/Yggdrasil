@@ -10,6 +10,7 @@ predictor and the bounded ring-memory policy fit on the *same* public events.
 import hashlib
 import json
 import math
+from itertools import combinations
 
 from .task_runtime import LocalTaskRuntime
 from .itd02_local_ring_memory_dev import (
@@ -17,10 +18,25 @@ from .itd02_local_ring_memory_dev import (
     _canonical, _finite,
 )
 
-SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v2"
+SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v3"
 REWARDS = (-3, 0, 10)  # source-declared observable labels; NOT source reward law
 MAX_BYTES = 65536
 RING = tuple(((i - 1) % CELLS, (i + 1) % CELLS) for i in range(CELLS))
+
+
+# Source-free experimental joint code. All reward-output cells remain zero
+# on NATIVE INPUT. These fixed observation/action codes are not learned labels,
+# privileged source state, or a change to public reward-outcome site encoding.
+_PAIR_CODES = tuple(combinations(OBS_SITES, 2))
+_TRIPLE_CODES = tuple(combinations(OBS_SITES, 3))
+_PUBLIC_CODEBOOK = {
+    (obs, action): (
+        _PAIR_CODES[OBSERVATIONS.index(obs)] if action == "Backup" else
+        _TRIPLE_CODES[OBSERVATIONS.index(obs)] if action == "GoForward" else
+        _TRIPLE_CODES[5 + OBSERVATIONS.index(obs)]
+    )
+    for obs in OBSERVATIONS for action in ACTIONS
+}
 
 
 def public_bits(observation, action):
@@ -29,8 +45,8 @@ def public_bits(observation, action):
     if type(action) is not str or action not in ACTIONS:
         raise ValueError("INVALID_PUBLIC_ACTION")
     cells = [0] * CELLS
-    cells[OBS_SITES[OBSERVATIONS.index(observation)]] = 1
-    cells[ACTION_SITES[ACTIONS.index(action)]] = 1
+    for site in _PUBLIC_CODEBOOK[(observation, action)]:
+        cells[site] = 1
     return cells
 
 
