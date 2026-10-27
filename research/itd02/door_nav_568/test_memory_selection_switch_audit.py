@@ -49,6 +49,22 @@ class MemorySelectionSwitchTests(unittest.TestCase):
                 self.assertNotEqual(evidence["active_matches"],
                                     evidence["archive_matches"])
 
+    def test_causal_identifiability_negatives_are_distinct(self):
+        cases = {case["case"]: case for case in run()["cases"]}
+        returning = cases["A_return"]["diagnostics"]
+        self.assertEqual((returning["active_matches"],
+                          returning["archive_matches"]), (2, 2))
+        self.assertEqual(returning["active_prediction"],
+                         returning["archive_prediction"])
+        collision = cases["B_public_collision"]["diagnostics"]
+        self.assertEqual((collision["active_matches"],
+                          collision["archive_matches"]), (0, 0))
+        unknown = cases["unknown_family"]["diagnostics"]
+        self.assertEqual(unknown["active_prediction"], [None, None])
+        self.assertEqual(unknown["archive_prediction"], [None, None])
+        for name in ("A_return", "B_public_collision", "unknown_family"):
+            self.assertIsNone(cases[name]["selected"])
+
     def test_preserves_wrong_answers_and_abstentions(self):
         result = run()
         for case in result["cases"]:
