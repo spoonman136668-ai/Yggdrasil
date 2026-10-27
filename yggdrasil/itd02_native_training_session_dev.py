@@ -59,22 +59,34 @@ class NativeTrainingSessionDev:
             # This may irrevocably advance the original environment. Do NOT
             # retry the source action if it fails or returns invalid public data.
             event = source.step_public(action)
-            if (type(event) is not tuple or len(event) != 3 or
+            # Legacy source owners return (observation, reward, terminal).
+            # The ORIGINAL published Shuttle is a continuing task; eligible
+            # public owner adapters must declare a fourth TRUNCATED bit when
+            # they end a bounded FIT episode. NEVER report truncation as a
+            # terminal source success.
+            if (type(event) is not tuple or len(event) not in (3, 4) or
                     type(event[0]) is not str or event[0] not in OBSERVATIONS or
                     type(event[1]) is not int or
-                    type(event[2]) is not bool):
+                    type(event[2]) is not bool or
+                    (len(event) == 4 and type(event[3]) is not bool)):
                 raise ValueError("YGG_SELF_TRAINING_INVALID_SOURCE_CONSEQUENCE")
-            next_observation, reward, terminal = event
+            next_observation, reward, terminal = event[:3]
+            truncated = event[3] if len(event) == 4 else False
+            if terminal and truncated:
+                raise ValueError("YGG_SELF_TRAINING_CONFLICTING_SOURCE_END")
+            complete = terminal or truncated
             self.model.accept_public_transition(
                 action, next_observation, reward, learning=True,
-                terminal=terminal)
+                terminal=complete)
             reward_total += reward
             observation = next_observation
-            if terminal:
+            if complete:
                 checkpoint = self.model.checkpoint()
                 self._source_boundary_uncertain = False
                 return {"steps": step + 1,
                         "reward": reward_total,
+                        "terminal": terminal,
+                        "truncated": truncated,
                         "transitions": self.model.transitions,
                         "native_identities": self.model.model_identities(),
                         "checkpoint": checkpoint}
