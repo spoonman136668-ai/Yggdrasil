@@ -75,9 +75,16 @@ def process_memory():
             ]
         item = Counters()
         item.cb = ctypes.sizeof(item)
-        handle = ctypes.windll.kernel32.GetCurrentProcess()
-        valid = ctypes.windll.psapi.GetProcessMemoryInfo(
-            handle, ctypes.byref(item), item.cb)
+        # ctypes defaults to C int return values without prototypes, which
+        # truncates 64-bit Windows HANDLEs and silently loses RSS evidence.
+        current = ctypes.windll.kernel32.GetCurrentProcess
+        current.argtypes = []
+        current.restype = wintypes.HANDLE
+        get_info = ctypes.windll.psapi.GetProcessMemoryInfo
+        get_info.argtypes = [wintypes.HANDLE, ctypes.POINTER(Counters),
+                             wintypes.DWORD]
+        get_info.restype = wintypes.BOOL
+        valid = get_info(current(), ctypes.byref(item), item.cb)
         if valid:
             return int(item.WorkingSetSize), int(item.PeakWorkingSetSize)
         return None, None
