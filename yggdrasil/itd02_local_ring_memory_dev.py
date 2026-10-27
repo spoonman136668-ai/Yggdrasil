@@ -148,12 +148,18 @@ class NativeRingMemoryDev:
             x = (1., now[site], 16. * hist[site])
             weights = self.heads[idx]
             prediction = sum(a * b for a, b in zip(weights, x))
-            error = max(-2., min(2., float(reward) - prediction))
+            # A bounded, locally normalized recency update. Only this
+            # action cell's public reward prediction is corrected; intact
+            # neighbor-only routing, trainable parameter count and the native
+            # LocalTaskRuntime remain unchanged. Compete against the original
+            # rule and independently acting recency controls before admission.
+            error = max(-13., min(13., float(reward) - prediction))
+            recency_step = .7 * error / (1. + sum(v * v for v in x))
             old_mem_weight = weights[2]
             # Reward credit originates at the chosen action site and travels
             # through the same bounded neighbor-only ring, in the reverse
             # direction. Cells outside the two-hop support receive exactly 0.
-            credit = _local_credit(site, error * old_mem_weight)
+            credit = _local_credit(site, max(-2., min(2., error)) * old_mem_weight)
             for cell in range(CELLS):
                 if credit[cell] == 0.:
                     continue
@@ -162,7 +168,7 @@ class NativeRingMemoryDev:
                 self.gates[cell] = max(-4., min(4., self.gates[cell]
                                         + .12 * credit[cell] * grad * 16.))
             for j in range(3):
-                weights[j] = max(-16., min(16., weights[j] + .28 * error * x[j]))
+                weights[j] = max(-16., min(16., weights[j] + recency_step * x[j]))
             self.updates += 1
         self.pending = False
         if terminal:
