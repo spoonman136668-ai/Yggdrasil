@@ -81,6 +81,7 @@ jobs:
               values=[]
               for obs in (first,second):
                   obj=NativeRingMemoryDev()
+                  obj.heads[ACTIONS.index(action)][1]=1.
                   obj.advance(obs)
                   values.append(obj.q_values()[ACTIONS.index(action)])
               assert values[0]!=values[1], (action,first,second,values)
