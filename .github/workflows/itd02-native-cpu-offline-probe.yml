@@ -1,0 +1,58 @@
+name: ITD-02 native CPU-only offline source-free portability
+on:
+  push:
+    branches:
+      - research/itd02-native-cpu-offline-metrics-20261027
+  pull_request:
+    paths:
+      - yggdrasil/itd02_native_cpu_probe_dev.py
+      - tests/test_itd02_native_cpu_probe_dev.py
+      - .github/workflows/itd02-native-cpu-offline-probe.yml
+permissions:
+  contents: read
+jobs:
+  portable-cpu-native:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONNOUSERSITE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Test native model CPU-only source-free durability instrumentation
+        shell: pwsh
+        run: |
+          python -B -m unittest discover -s tests -p test_itd02_native_cpu_probe_dev.py -v
+          if ($LASTEXITCODE -ne 0) { throw 'NATIVE_CPU_PORTABILITY_PROBE_TEST_FAILURE' }
+          python -B -m unittest discover -s tests -p test_itd02_public_source_journal_dev.py -v
+          if ($LASTEXITCODE -ne 0) { throw 'NATIVE_DURABLE_SOURCE_REGRESSION' }
+      - name: Output explicit non-retail CPU/RAM/storage receipts
+        shell: pwsh
+        run: |
+          python -B -m yggdrasil.itd02_native_cpu_probe_dev --episodes 8 --steps 4 > "$env:RUNNER_TEMP/itd02_cpu_probe.json"
+          if ($LASTEXITCODE -ne 0) { throw 'NATIVE_CPU_PORTABILITY_PROBE_RUN_FAILURE' }
+          $result = Get-Content "$env:RUNNER_TEMP/itd02_cpu_probe.json" -Raw | ConvertFrom-Json
+          if ($result.status -ne "SOURCE_FREE_DEVELOPMENT_ONLY" -or $result.authentic_original_world_executed -or $result.true_retail_hardware_qualification -or $result.independent_scientific_qualification) { throw 'SOURCE_FREE_SCIENCE_BOUNDARY_DRIFT' }
+          if ($result.public_interactions -ne 32 -or $result.episodes -ne 8 -or $result.durable_storage_bytes -le 0) { throw 'NATIVE_CPU_BUDGET_OR_ACCOUNTING_FAILURE' }
+          "## Native learner offline CPU-source-free development receipt (${{ matrix.os }})" >> $env:GITHUB_STEP_SUMMARY
+          'Hosted CI only, NOT a retail computer performance certification or original-source scientific experiment.' >> $env:GITHUB_STEP_SUMMARY
+          'CPU/runtime + whole process resident memory, disk journal+checkpoints, and cold restore; external source and GPU/energy unmeasured.' >> $env:GITHUB_STEP_SUMMARY
+          '~~~json' >> $env:GITHUB_STEP_SUMMARY
+          Get-Content "$env:RUNNER_TEMP/itd02_cpu_probe.json" >> $env:GITHUB_STEP_SUMMARY
+          '~~~' >> $env:GITHUB_STEP_SUMMARY
+          Get-Content "$env:RUNNER_TEMP/itd02_cpu_probe.json"
+      - name: Clean checkout without source changes
+        shell: pwsh
+        run: |
+          $status = @(git status --porcelain --untracked-files=all)
+          if ($status.Count -gt 0) { throw "NATIVE_OFFLINE_PROBE_CHECKOUT_DRIFT: $($status -join ', ')" }
