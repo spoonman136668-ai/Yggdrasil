@@ -9,18 +9,18 @@ from yggdrasil.itd02_local_ring_memory_dev import ACTIONS, CELLS
 
 class LocalRegisterTests(unittest.TestCase):
     def test_real_retention_per_public_transition_and_frozen_veto(self):
-        self.assertEqual(SCHEMA,"ygg.itd02.native_task_ring_bridge.source_only.v4")
+        self.assertEqual(SCHEMA,"ygg.itd02.native_task_ring_bridge.source_only.v5")
         m=NativeTaskRingBridgeDev()
         self.assertEqual(m.cell_trace,[0.]*CELLS)
         m.start_observation("LRV")
         m.accept_public_transition("Backup","Nothing",10,terminal=True)
         self.assertEqual(m.transitions,1)
         self.assertEqual(len(m.cell_trace),8)
-        self.assertEqual(m.cell_trace,[0.,0.25,0.,0.,0.,0.,0.,0.25] if False else
-                         [0.25*(2*b-1) for b in __import__(
-                            "yggdrasil.itd02_native_task_bridge_dev",
-                            fromlist=["_temporal_public_bits"]
-                         )._temporal_public_bits("LRV","Backup",0)])
+        from yggdrasil.itd02_native_task_bridge_dev import _temporal_public_bits, RING
+        bits=_temporal_public_bits("LRV","Backup",0)
+        self.assertEqual(m.cell_trace,[
+            .125*(2*bits[RING[i][0]]-1)+.125*(2*bits[RING[i][1]]-1)
+            for i in range(CELLS)])
         prior=list(m.cell_trace)
         m.start_observation("MRV")
         m.accept_public_transition("TurnAround","Nothing",0,terminal=True)
