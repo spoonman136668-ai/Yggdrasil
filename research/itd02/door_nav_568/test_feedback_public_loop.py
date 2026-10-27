@@ -48,6 +48,7 @@ class FeedbackLoopTests(unittest.TestCase):
     def test_recovery_does_not_fake_disagreement_without_a_frozen_candidate(self):
         learner = FeedbackPublicLoop(enabled=True, recovery=True)
         learner.model.active_links = dict(learner.model.archived_links)
+        learner.learned.links = dict(learner.model.archived_links)
         outcome = learner.episode(PublicWorld("A"), budget=4)
         self.assertIsNone(outcome["selected"])
         self.assertEqual(outcome["actions"], 0)
