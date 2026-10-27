@@ -142,6 +142,7 @@ def inspect_custody(directory, *, expected_source_sha256=None):
                 _need(set(event) == {"kind"}, "RESET_INTENT_FIELDS")
             if kind == "reset_result":
                 _need(set(event) == {"kind", "observation"} and
+                      type(event["observation"]) is str and
                       event["observation"] in OBSERVATIONS,
                       "RESET_PUBLIC_FIELDS")
             if kind == "step_intent":
@@ -153,6 +154,7 @@ def inspect_custody(directory, *, expected_source_sha256=None):
             if kind == "step_result":
                 _need(set(event) == {"kind", "observation", "reward",
                                      "terminal", "truncated"} and
+                      type(event["observation"]) is str and
                       event["observation"] in OBSERVATIONS and
                       type(event["reward"]) is int and
                       event["reward"] in (-3, 0, 10) and
@@ -161,13 +163,9 @@ def inspect_custody(directory, *, expected_source_sha256=None):
                       not (event["terminal"] and event["truncated"]),
                       "STEP_PUBLIC_FIELDS")
                 step_index = sum(x["kind"] == "step_intent" for x in events)
-                _need(step_index <= lines[0] is False or True, "UNREACHABLE") if False else None
                 # This external journal does not infer a task terminal.
                 _need(step_index <= events[0]["max_steps"],
                       "SOURCE_BUDGET_EXCEEDED")
-                if event["terminal"] or event["truncated"]:
-                    # Any later source action would silently replay an episode.
-                    pass
             if kind == "checkpoint_intent":
                 _need(previous_kind == "step_result" and
                       (events[-1]["terminal"] or events[-1]["truncated"]) and
@@ -227,6 +225,7 @@ class JournaledPublicSourceDev:
         self.blocked = False
         self.state = "header"
         self.steps = 0
+        self.ended = False
         self.seq = 0
         self.prev = ZERO
         self.max_steps = max_steps
@@ -267,8 +266,8 @@ class JournaledPublicSourceDev:
     def step_public(self, action):
         _need(not self.blocked and
               self.state in ("reset_result", "step_result") and
-              self.steps < self.max_steps and
-              action in ACTIONS and type(action) is str,
+              self.steps < self.max_steps and not self.ended and
+              type(action) is str and action in ACTIONS,
               "STEP_NOT_ELIGIBLE")
         self._record({"kind": "step_intent", "action": action,
                       "index": self.steps})
@@ -286,6 +285,7 @@ class JournaledPublicSourceDev:
         # A bounded continuing benchmark MUST explicitly declare its end.
         # Expiration without terminal/truncated is not a checkpoint boundary.
         self.steps += 1
+        self.ended = terminal or truncated
         self.blocked = False
         self._record({"kind": "step_result", "observation": public,
                       "reward": reward, "terminal": terminal,
