@@ -9,7 +9,7 @@ from yggdrasil.itd02_local_ring_memory_dev import ACTIONS, CELLS
 
 class LocalRegisterTests(unittest.TestCase):
     def test_real_retention_per_public_transition_and_frozen_veto(self):
-        self.assertEqual(SCHEMA,"ygg.itd02.native_task_ring_bridge.source_only.v5")
+        self.assertEqual(SCHEMA,"ygg.itd02.native_task_ring_bridge.source_only.v6")
         m=NativeTaskRingBridgeDev()
         self.assertEqual(m.cell_trace,[0.]*CELLS)
         m.start_observation("LRV")
