@@ -1,4 +1,4 @@
-name: ITD-02 G29 read-only source atlas artifact
+name: ITD-02 PR588 exact-head full integration qualification
 on:
   push:
     branches:
@@ -6,59 +6,45 @@ on:
 permissions:
   contents: read
 jobs:
-  render-source-atlas:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
+  exact-source-regression:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
     steps:
-      - uses: actions/checkout@v4
+      - name: Preserve byte-exact Git source
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          persist-credentials: false
-          ref: abe7e1f0e2dfbad4d024750545fab5f60245f175
+          ref: c92d0ff4f1cda4ba2714f1066d37b3cc48e46626
           fetch-depth: 0
-      - uses: actions/setup-python@v5
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
-          python-version: '3.11'
-      - name: Pin source and generate advisory artifacts without repository writes
+          python-version: '3.12'
+      - name: Verify immutable candidate and source-only no-drift
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "abe7e1f0e2dfbad4d024750545fab5f60245f175"
-          python scripts/build_code_atlas.py --source-commit "abe7e1f0e2dfbad4d024750545fab5f60245f175" --write
-          python - <<'PY'
-          from pathlib import Path
-          import json, os, subprocess
-          index = json.loads(Path('.ice/code-atlas.json').read_text('utf-8'))
-          assert index['source_commit'] == 'abe7e1f0e2dfbad4d024750545fab5f60245f175'
-          assert index['authority'] == 'advisory-locators-only'
-          assert index['source_reviewed_labels'] == 0
-          assert index['wingless_evidence_imported'] is False
-          names = ['.ice/code-atlas.json','.ice/code-atlas.html','.ice/code-atlas.ice']
-          assert all(Path(p).is_file() and Path(p).stat().st_size > 0 for p in names)
-          changed = subprocess.check_output(['git','diff','--name-only'], text=True).splitlines()
-          assert set(changed) == set(names), changed
-          print('ITD02_G29_SOURCE_ARTIFACT_GENERATED', index['source_commit'], index['counts'])
-          PY
-      - name: Emit reviewable source-blob chunks for content-addressed commit
+          test "$(git rev-parse HEAD)" = "c92d0ff4f1cda4ba2714f1066d37b3cc48e46626"
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: One full Python system regression (all discovered tests)
+        shell: bash
+        run: python -B -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Confirm pinned G29 Atlas without regeneration or bypass
+        shell: bash
+        run: python -B scripts/build_code_atlas.py --check-if-present
+      - name: Confirm source remains clean after tests
         shell: bash
         run: |
-          python - <<'PY'
-          import base64, hashlib
-          from pathlib import Path
-          for name in ("code-atlas.json", "code-atlas.html", "code-atlas.ice"):
-              raw = Path(".ice", name).read_bytes()
-              encoded = base64.b64encode(raw).decode("ascii")
-              print("ITD02_G29_BEGIN|" + name + "|" + str(len(raw)) + "|" + hashlib.sha256(raw).hexdigest())
-              for n, start in enumerate(range(0, len(encoded), 12000)):
-                  print("ITD02_G29_PART|" + name + "|" + str(n) + "|" + encoded[start:start+12000])
-              print("ITD02_G29_END|" + name)
-          PY
-      - name: Export the three exact generated artifacts for review
-        uses: actions/upload-artifact@v4
-        with:
-          name: itd02-g29-atlas-source-pinned
-          path: |
-            .ice/code-atlas.json
-            .ice/code-atlas.html
-            .ice/code-atlas.ice
-          if-no-files-found: error
-          retention-days: 3
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "c92d0ff4f1cda4ba2714f1066d37b3cc48e46626"
+          test -z "$(git status --porcelain --untracked-files=all)"
