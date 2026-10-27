@@ -8,7 +8,10 @@ unchanged across regimes, it refuses to claim corroboration.
 from evidence_gated_replay import EvidenceGatedReplay
 
 class SuccessorCorroboratedReplay:
-    def __init__(self):
+    def __init__(self, max_successors=128):
+        if type(max_successors) is not int or not 2 <= max_successors <= 256:
+            raise ValueError("SUCCESSOR_CAP_INVALID")
+        self.max_successors = max_successors
         self.learner = EvidenceGatedReplay(feature_positions=2, max_examples=8)
         self.current_successors = {}
         self.archived_successors = {}
@@ -27,10 +30,16 @@ class SuccessorCorroboratedReplay:
         frame, legal = self.learner.active.current
         if action not in legal or not isinstance(next_frame, bytes):
             raise ValueError("OWNED_PUBLIC_TRANSITION_REQUIRED")
+        key = (frame, action)
         if self.recording_probe:
-            self.probe_successors.append(((frame, action), next_frame))
+            if len(self.probe_successors) >= self.max_successors:
+                raise ValueError("PROBE_SUCCESSOR_CAP_REACHED")
+            self.probe_successors.append((key, next_frame))
         else:
-            self.current_successors[(frame, action)] = next_frame
+            if (key not in self.current_successors and
+                    len(self.current_successors) >= self.max_successors):
+                raise ValueError("SUCCESSOR_CAP_REACHED")
+            self.current_successors[key] = next_frame
         self.learner.learn(action, next_frame, reward, done)
 
     def archive(self):
