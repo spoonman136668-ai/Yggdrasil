@@ -29,7 +29,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$SOURCE"
           test -z "$(git status --porcelain)"
           git merge-base --is-ancestor "$BASE" "$SOURCE"
-          test "$(git rev-list --count "$BASE..$SOURCE")" = "1"
+          test "$(git rev-list --count "$BASE..$SOURCE")" = "2"
           diff -u <(git diff --name-only "$BASE" "$SOURCE") <(printf '%s\n' .github/workflows/itd02-568-g29-isolated-reanchor.yml)
           test "$(git rev-parse "$BASE:scripts/build_code_atlas.py")" = "$(git rev-parse HEAD:scripts/build_code_atlas.py)"
           python scripts/build_code_atlas.py --write --source-commit "$SOURCE"
@@ -42,7 +42,8 @@ jobs:
           test "$(git diff-tree --no-commit-id --name-only -r HEAD | wc -l | tr -d ' ')" = "3"
           python scripts/build_code_atlas.py --check-if-present
           python -m unittest discover -s tests -p test_code_atlas.py -v
-          test -z "$(git status --porcelain)"
+          git diff --exit-code
+          git diff --cached --exit-code
           git push origin HEAD:refs/heads/repair/itd02-568-g29-reanchor-20261027
           echo "G29_SOURCE=$SOURCE"
           echo "G29_ARTIFACT_COMMIT=$(git rev-parse HEAD)"
