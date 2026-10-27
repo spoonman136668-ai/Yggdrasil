@@ -11,7 +11,7 @@ from yggdrasil.itd02_local_ring_memory_dev import ACTIONS, ACTION_SITES, OBSERVA
 
 class TemporalLocalPublicTests(unittest.TestCase):
     def test_each_reward_cell_sees_unique_15_contexts_across_two_phases(self):
-        self.assertEqual(SCHEMA,"ygg.itd02.native_task_ring_bridge.source_only.v4")
+        self.assertEqual(SCHEMA,"ygg.itd02.native_task_ring_bridge.source_only.v5")
         neighborhoods={
             0:(7,1),
             2:(1,3),
