@@ -17,6 +17,12 @@ jobs:
       TARGET_SHA: e8c7dca8966a7d2721f49df2a9ac4c7419921097
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
+      - name: Keep original Git blobs byte-identical across operating systems
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+          git config --global core.safecrlf true
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: e8c7dca8966a7d2721f49df2a9ac4c7419921097
@@ -32,6 +38,16 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$TARGET_SHA"
           test -z "$(git status --porcelain)"
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          for path in ('yggdrasil/task_runtime.py','yggdrasil/nci04g7d_native_lesion.py',
+                       'yggdrasil/nci04g7e_functional_custody.py'):
+              git_blob=subprocess.check_output(['git','show','HEAD:'+path])
+              if Path(path).read_bytes()!=git_blob:
+                  raise RuntimeError('SOURCE_BLOB_BYTES_DIFFER_FROM_GIT:'+path)
+          print('BYTE_EXACT_NATIVE_SOURCE=PASS')
+          PY
           python scripts/build_code_atlas.py --check-if-present
           python -m unittest discover -s tests -p test_code_atlas.py -v
           test -z "$(git status --porcelain)"
@@ -42,7 +58,26 @@ jobs:
           import json, os, platform, sys, time, unittest
           t0=time.perf_counter()
           c0=time.process_time()
-          suite=unittest.defaultTestLoader.discover('tests', pattern='test_*.py')
+          from pathlib import Path
+          windows_resource_only = (
+              'test_free_fanout_sidecar.py',
+              'test_nci04g6_native_credit.py',
+              'test_nci04g7_source_producer.py',
+          )
+          all_modules=sorted(Path('tests').glob('test_*.py'))
+          if sys.platform=='win32':
+              excluded=[p.name for p in all_modules if p.name in windows_resource_only]
+              if len(excluded)!=len(windows_resource_only):
+                  sys.exit('EXPECTED_UNIX_RESOURCE_MODULE_MISSING')
+              test_files=[p for p in all_modules if p.name not in windows_resource_only]
+          else:
+              excluded=[]
+              test_files=all_modules
+          loader=unittest.TestLoader()
+          suite=unittest.TestSuite(
+              loader.discover('tests',pattern=p.name)
+              for p in test_files
+          )
           result=unittest.TextTestRunner(verbosity=2).run(suite)
           data={
               "schema":"ygg.itd02.pr574.full-regression.v1",
@@ -51,6 +86,9 @@ jobs:
               "python":platform.python_version(),
               "logical_cpus":os.cpu_count(),
               "tests_run":result.testsRun,
+              "test_modules_included":[p.name for p in test_files],
+              "unix_resource_modules_excluded":excluded,
+              "full_suite_scope":'linux_complete' if not excluded else 'windows_portable_only',
               "failures":len(result.failures),
               "errors":len(result.errors),
               "skipped":len(result.skipped),
