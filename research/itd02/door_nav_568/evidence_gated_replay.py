@@ -50,6 +50,10 @@ class EvidenceGatedReplay:
         active_score = match(self.reference)
         archive_scores = [match(snapshot) for snapshot in self.archives]
         if not archive_scores or max(archive_scores) <= active_score:
+            # An evaluated but unsuccessful probe cannot be reused alongside
+            # one subsequent observation to manufacture two confirmations.
+            self.feedback.clear()
+            self.reference = ()
             return False
         best = archive_scores.index(max(archive_scores))
         selected = self.archives[best]
