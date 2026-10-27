@@ -16,6 +16,7 @@ class EvidenceGatedReplay:
         self.active = LearnedByteCells(feature_positions, max_examples=max_examples)
         self.archives = []
         self.feedback = []
+        self.reference = ()
 
     def observe(self, frame, actions):
         self.active.observe(frame, actions)
@@ -25,6 +26,8 @@ class EvidenceGatedReplay:
 
     def learn(self, action, next_frame, reward, done):
         frame, _ = self.active.current
+        if not self.feedback:
+            self.reference = tuple(self.active.examples)
         self.feedback.append((frame, action, int(reward > 0)))
         self.feedback = self.feedback[-2:]
         self.active.learn(action, next_frame, reward, done)
@@ -44,7 +47,7 @@ class EvidenceGatedReplay:
             known = {(f, a): positive for f, a, positive in snapshot}
             return sum(known.get((f, a)) == outcome for f, a, outcome in self.feedback
                        if (f, a) in known)
-        active_score = match(self.active.examples)
+        active_score = match(self.reference)
         archive_scores = [match(snapshot) for snapshot in self.archives]
         if not archive_scores or max(archive_scores) <= active_score:
             return False
@@ -55,4 +58,5 @@ class EvidenceGatedReplay:
             self.active.observe(frame, [0, 1])
             self.active.learn(action, b"replay-public-placeholder", outcome, True)
         self.feedback.clear()
+        self.reference = ()
         return True
