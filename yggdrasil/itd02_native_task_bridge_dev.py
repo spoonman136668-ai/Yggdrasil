@@ -17,7 +17,7 @@ from .itd02_local_ring_memory_dev import (
     _canonical, _finite,
 )
 
-SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v2"
+SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v3"
 REWARDS = (-3, 0, 10)  # source-declared observable labels; NOT source reward law
 MAX_BYTES = 65536
 RING = tuple(((i - 1) % CELLS, (i + 1) % CELLS) for i in range(CELLS))
@@ -32,6 +32,26 @@ def public_bits(observation, action):
     cells[OBS_SITES[OBSERVATIONS.index(observation)]] = 1
     cells[ACTION_SITES[ACTIONS.index(action)]] = 1
     return cells
+
+
+def _temporal_public_bits(observation, action, phase):
+    """Two local temporal observations, never an action bit at reward sites.
+
+    Site pairs neighboring the original reward heads jointly distinguish
+    all 15 public observation-action contexts *across both phases*.
+    This does not add a learnable model or a global message edge.
+    """
+    # Run the original public-interface validations before constructing codes.
+    public_bits(observation, action)
+    if type(phase) is not int or phase not in (0, 1):
+        raise ValueError("INVALID_PUBLIC_ENCODING_PHASE")
+    index = ACTIONS.index(action) * len(OBSERVATIONS) + OBSERVATIONS.index(observation)
+    high, low = divmod(index, 4)
+    cell_symbols = {1: high, 7: low, 3: low, 4: high, 6: low}
+    result = [0] * CELLS
+    for site, symbol in cell_symbols.items():
+        result[site] = (symbol >> phase) & 1
+    return result
 
 
 def public_outcome(next_observation, reward):
@@ -92,9 +112,16 @@ class NativeTaskRingBridgeDev:
         scores = []
         for action in ACTIONS:
             # Public action-conditioning through native own/neighbor cells.
-            predictions = self.native.predict(public_bits(self._observation, action))
-            scores.append(sum(float(value) * predictions[ACTION_SITES[index]]
-                              for index, value in enumerate(REWARDS)))
+            # Each candidate is scored twice, using two source-blind temporal
+            # neighbor-only binary views. Original native core remains intact.
+            phase_scores = []
+            for phase in (0, 1):
+                predictions = self.native.predict(
+                    _temporal_public_bits(self._observation, action, phase))
+                phase_scores.append(sum(
+                    float(value) * predictions[ACTION_SITES[index]]
+                    for index, value in enumerate(REWARDS)))
+            scores.append(sum(phase_scores) / 2.)
         self.score_calls += 1
         return scores
 
@@ -110,7 +137,9 @@ class NativeTaskRingBridgeDev:
                                  learning=True, terminal=False):
         # Validate ALL public fields and authorizations before either learner
         # can mutate. Do not forward raw info or privileged environment object.
-        before = public_bits(self._observation, action) if self._observation is not None else None
+        before = (_temporal_public_bits(self._observation, action,
+                                      self.transitions % 2)
+                  if self._observation is not None else None)
         after = public_outcome(next_observation, reward)
         if before is None or not self.memory.pending:
             raise ValueError("NO_PENDING_PUBLIC_TRANSITION")
