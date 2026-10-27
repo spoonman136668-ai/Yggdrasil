@@ -12,6 +12,8 @@ concurrency:
   cancel-in-progress: false
 jobs:
   exact-source-index:
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
     if: ${{ github.actor == 'spoonman136668-ai' && github.run_attempt == 1 }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
@@ -31,7 +33,7 @@ jobs:
           source='33c686e0e5d98e6889c73ed954215f516e6d66db'
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git merge-base --is-ancestor "$source" HEAD
-          test "$(git rev-list --count "$source"..HEAD)" = 1
+          test "$(git rev-list --count "$source"..HEAD)" = 2
           test -z "$(git status --porcelain --untracked-files=all)"
           changed="$(git diff --name-only "$source" HEAD)"
           test "$changed" = '.github/workflows/itd02-native-session-boundary-g29-once.yml'
@@ -58,6 +60,10 @@ jobs:
           git commit -m 'index(itd02): exact-head G29 native session source refresh'
           python scripts/build_code_atlas.py --check-if-present
           python -m unittest discover -s tests -p test_code_atlas.py -v
-          test -z "$(git status --porcelain --untracked-files=all)"
+          if test -n "$(git status --porcelain --untracked-files=all)"; then
+            git status --porcelain --untracked-files=all
+            echo "G29_QUALIFICATION_WORKTREE_DIRTY" >&2
+            exit 1
+          fi
           git push origin HEAD:refs/heads/research/itd02-native-session-boundary-guard-20261027
           echo 'NATIVE_SESSION_BOUNDARY_INDEX_SOURCE_QUALIFIED=PASS'
