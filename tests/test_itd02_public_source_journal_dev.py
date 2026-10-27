@@ -13,6 +13,7 @@ from unittest.mock import patch
 
 from yggdrasil.itd02_public_source_journal_dev import (
     JournaledPublicSourceDev, SourceCustodyDenied, inspect_custody,
+    load_verified_native_model,
 )
 from yggdrasil.itd02_native_training_session_dev import NativeTrainingSessionDev
 
@@ -85,6 +86,46 @@ class PublicSourceJournalTests(unittest.TestCase):
             self.assertNotIn(b"seed", raw)
             self.assertIn(b"step_intent", raw)
             self.assertIn(b"checkpoint_result", raw)
+
+    def test_native_learned_state_cold_restores_and_trains_again(self):
+        # Two source-FREE independent owner episodes with distinct durable
+        # journals; no model-writing agent between native learning episodes.
+        with tempfile.TemporaryDirectory() as temp:
+            first_dir = Path(temp) / "first"
+            second_dir = Path(temp) / "second"
+            learner = NativeTrainingSessionDev(max_steps=2)
+            with source(first_dir, SourceFreePublicFixture()) as first:
+                result1 = first.execute_one(learner)
+            cold = load_verified_native_model(
+                first_dir, expected_source_sha256=IDENTITY)
+            self.assertEqual(cold.model_identities(),
+                             learner.model.model_identities())
+            # Provenance/custody can be verified from a different Python
+            # process without replaying any source interaction.
+            check = subprocess.run([
+                sys.executable, "-B", "-c",
+                "import json,sys;from yggdrasil.itd02_public_source_journal_dev "
+                "import inspect_custody; print(json.dumps(inspect_custody(sys.argv[1])))",
+                str(first_dir)], text=True, capture_output=True, check=True)
+            self.assertEqual(json.loads(check.stdout)["status"], "COMMITTED")
+            with source(second_dir, SourceFreePublicFixture()) as second:
+                result2 = second.execute_one(
+                    NativeTrainingSessionDev(model=cold, max_steps=2))
+            self.assertEqual(result2["transitions"],
+                             result1["transitions"] + 2)
+            self.assertEqual(result2["custody"]["status"], "COMMITTED")
+            self.assertNotEqual(result1["custody"]["head"],
+                                result2["custody"]["head"])
+
+    def test_quarantined_source_cannot_cold_restore_native_state(self):
+        with tempfile.TemporaryDirectory() as temp:
+            with source(temp, SourceFreePublicFixture(fail_step=True)) as custody:
+                with self.assertRaises(ConnectionError):
+                    custody.execute_one(NativeTrainingSessionDev(max_steps=2))
+            with self.assertRaisesRegex(SourceCustodyDenied,
+                                        "COLD_RESTORE_NOT_COMMITTED"):
+                load_verified_native_model(
+                    temp, expected_source_sha256=IDENTITY)
 
     def test_unknown_step_is_durably_quarantined_and_not_reissued(self):
         with tempfile.TemporaryDirectory() as temp:
