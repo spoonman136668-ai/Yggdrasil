@@ -35,6 +35,14 @@ def run():
             successor = b"M1-intermediate" if good else b"D2-intermediate"
             agent.observe(frame, [0, 1])
             agent.learn(action, successor, int(not good) if corrupt else 0, False)
+        evidence = list(agent.evidence)
+        diagnostics = {
+            "active_prediction": [sample[3][0] for sample in evidence],
+            "archive_prediction": [sample[3][1] for sample in evidence],
+            "observed_successor": [sample[2] for sample in evidence],
+            "active_matches": sum(sample[3][0] == sample[2] for sample in evidence),
+            "archive_matches": sum(sample[3][1] == sample[2] for sample in evidence),
+        }
         admitted = agent.resolve_probe()
         agent.observe(frame, [0, 1])
         decision = agent.choose(3)
@@ -49,6 +57,7 @@ def run():
             "probe_actions": 2,
             "reward_corrupted": corrupt,
             "stored_examples": agent.stored_examples(),
+            "diagnostics": diagnostics,
         })
         agent.current = None
         agent.active.current = None
