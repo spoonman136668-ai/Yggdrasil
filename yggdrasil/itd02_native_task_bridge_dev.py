@@ -121,7 +121,10 @@ class NativeTaskRingBridgeDev:
                 phase_scores.append(sum(
                     float(value) * predictions[ACTION_SITES[index]]
                     for index, value in enumerate(REWARDS)))
-            scores.append(sum(phase_scores) / 2.)
+            # Evaluation-only local temporal ordering control: the prior
+            # phase score is retained until the second phase completes.
+            # No learned/persistent state crosses public transitions.
+            scores.append(.25 * phase_scores[0] + .75 * phase_scores[1])
         self.score_calls += 1
         return scores
 
