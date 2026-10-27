@@ -140,6 +140,60 @@ class NativeTrainingSessionTests(unittest.TestCase):
             self.assertEqual(source.resets, 1)
             self.assertEqual(source.actions, [])
 
+    def test_opt_in_model_owned_exploration_and_cold_restart(self):
+        source = PublicSource()
+        session = NativeTrainingSessionDev(max_steps=1, exploration_period=9)
+        checkpoints = []
+        completed = session.train_bounded(source, 6, checkpoints.append)
+        self.assertEqual(len(completed), 6)
+        # The exploration schedule is derived solely from model-owned,
+        # checkpointed action_calls, not an evaluator's hidden optimal action.
+        self.assertEqual(source.actions,
+                         ["TurnAround", "TurnAround", "GoForward",
+                          "GoForward", "Backup", "Backup"])
+        self.assertEqual(session.model.memory.action_calls, 6)
+        self.assertEqual(session.model.transitions, 6)
+        self.assertEqual(len(checkpoints), 6)
+        cold = NativeTrainingSessionDev(
+            NativeTaskRingBridgeDev.restore(checkpoints[-1]),
+            max_steps=1, exploration_period=9)
+        self.assertEqual(cold.model.memory.action_calls, 6)
+        other_source = PublicSource()
+        expected = session.train_bounded(source, 1, lambda _: None)
+        observed = cold.train_bounded(other_source, 1, lambda _: None)
+        self.assertEqual(source.actions[-1], other_source.actions[-1])
+        self.assertEqual(expected, observed)
+        self.assertEqual(session.model.checkpoint(), cold.model.checkpoint())
+
+    def test_invalid_exploration_and_frozen_evaluation_fail_closed(self):
+        for invalid in (True, -1, 1, 65, 3.14):
+            with self.assertRaisesRegex(ValueError, "EXPLORATION_INVALID"):
+                NativeTrainingSessionDev(exploration_period=invalid)
+        for invalid in (True, -1, 97):
+            with self.assertRaisesRegex(ValueError, "EXPLORATION_INVALID"):
+                NativeTrainingSessionDev(exploration_period=9,
+                                         exploration_bootstrap_calls=invalid)
+        session = NativeTrainingSessionDev(max_steps=1, exploration_period=9)
+        native_id = session.model.model_identities()
+        session.model.start_frozen_evaluation(native_id["native"],
+                                              native_id["memory"])
+        with self.assertRaisesRegex(ValueError, "EXPLORATION_REQUIRES_TRAINING_MODE"):
+            session.model.choose_training()
+        with self.assertRaisesRegex(ValueError, "SOURCE_OR_MODE_INVALID"):
+            session.run_episode(PublicSource())
+
+    def test_exploratory_training_retains_uncertain_checkpoint_quarantine(self):
+        session = NativeTrainingSessionDev(max_steps=1, exploration_period=6)
+        source = PublicSource()
+        with self.assertRaisesRegex(RuntimeError, "DURABLE_CHECKPOINT_UNCERTAIN"):
+            session.train_bounded(
+                source, 2, lambda _: (_ for _ in ()).throw(
+                    RuntimeError("DURABLE_CHECKPOINT_UNCERTAIN")))
+        self.assertEqual(len(source.actions), 1)
+        with self.assertRaisesRegex(ValueError, "SOURCE_OR_MODE_INVALID"):
+            session.run_episode(source)
+        self.assertEqual((source.resets, len(source.actions)), (1, 1))
+
     def test_original_model_frozen_mode_remains_untrainable(self):
         source = PublicSource()
         session = NativeTrainingSessionDev(max_steps=1)
