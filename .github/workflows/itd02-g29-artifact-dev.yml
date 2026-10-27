@@ -1,0 +1,62 @@
+name: ITD-02 G29 read-only source atlas artifact
+on:
+  push:
+    branches:
+      - repair/itd02-training-custody-20261027-r1
+permissions:
+  contents: read
+jobs:
+  render-source-atlas:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Pin source and generate advisory artifacts without repository writes
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          python - <<'PY'
+          from pathlib import Path
+          import json, os, subprocess
+          index = json.loads(Path('.ice/code-atlas.json').read_text('utf-8'))
+          assert index['source_commit'] == os.environ['GITHUB_SHA']
+          assert index['authority'] == 'advisory-locators-only'
+          assert index['source_reviewed_labels'] == 0
+          assert index['wingless_evidence_imported'] is False
+          names = ['.ice/code-atlas.json','.ice/code-atlas.html','.ice/code-atlas.ice']
+          assert all(Path(p).is_file() and Path(p).stat().st_size > 0 for p in names)
+          changed = subprocess.check_output(['git','diff','--name-only'], text=True).splitlines()
+          assert set(changed) == set(names), changed
+          print('ITD02_G29_SOURCE_ARTIFACT_GENERATED', index['source_commit'], index['counts'])
+          PY
+      - name: Emit reviewable source-blob chunks for content-addressed commit
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64, hashlib
+          from pathlib import Path
+          for name in ("code-atlas.json", "code-atlas.html", "code-atlas.ice"):
+              raw = Path(".ice", name).read_bytes()
+              encoded = base64.b64encode(raw).decode("ascii")
+              print("ITD02_G29_BEGIN|" + name + "|" + str(len(raw)) + "|" + hashlib.sha256(raw).hexdigest())
+              for n, start in enumerate(range(0, len(encoded), 12000)):
+                  print("ITD02_G29_PART|" + name + "|" + str(n) + "|" + encoded[start:start+12000])
+              print("ITD02_G29_END|" + name)
+          PY
+      - name: Export the three exact generated artifacts for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: itd02-g29-atlas-source-pinned
+          path: |
+            .ice/code-atlas.json
+            .ice/code-atlas.html
+            .ice/code-atlas.ice
+          if-no-files-found: error
+          retention-days: 3
