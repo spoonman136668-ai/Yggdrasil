@@ -22,6 +22,10 @@ class NativeTrainingSessionDev:
         if type(self.model) is not NativeTaskRingBridgeDev:
             raise ValueError("YGG_SELF_TRAINING_NATIVE_RUNTIME_REQUIRED")
         self.max_steps = max_steps
+        # Once reset/step might have affected the independent source, this
+        # session cannot initiate another reset until its terminal result is
+        # observed and checkpointed. Reconcile uncertain effects externally.
+        self._source_boundary_uncertain = False
 
     def run_episode(self, source):
         """Act, observe, train original local cells, and cold-checkpoint.
@@ -31,12 +35,16 @@ class NativeTrainingSessionDev:
         object or source-private grid. Ambiguous source writes are NEVER
         retried. A nonterminal budget exhaustion is not a fabricated terminal.
         """
-        if (not callable(getattr(source, "reset_public", None)) or
+        if (self._source_boundary_uncertain or
+                not callable(getattr(source, "reset_public", None)) or
                 not callable(getattr(source, "step_public", None)) or
                 self.model._observation is not None or self.model.memory.pending or
                 self.model._frozen_native is not None or
                 self.model.memory._frozen_hash is not None):
             raise ValueError("YGG_SELF_TRAINING_SOURCE_OR_MODE_INVALID")
+        # Reset itself is a source-side effect: arm BEFORE calling it.
+        # Any exception is ambiguous and cannot be replayed in this session.
+        self._source_boundary_uncertain = True
         initial = source.reset_public()
         if type(initial) is not str or initial not in OBSERVATIONS:
             raise ValueError("YGG_SELF_TRAINING_INITIAL_PUBLIC_OBSERVATION_INVALID")
@@ -64,6 +72,7 @@ class NativeTrainingSessionDev:
             observation = next_observation
             if terminal:
                 checkpoint = self.model.checkpoint()
+                self._source_boundary_uncertain = False
                 return {"steps": step + 1,
                         "reward": reward_total,
                         "transitions": self.model.transitions,
@@ -81,7 +90,13 @@ class NativeTrainingSessionDev:
             result = self.run_episode(source)
             # The owner controls durable checkpoint identity and provenance.
             # Failure stops immediately, never replays a consumed episode.
-            save(result["checkpoint"])
+            try:
+                save(result["checkpoint"])
+            except Exception:
+                # The episode completed, but its durable recording may not
+                # have. Stop rather than starting another source episode.
+                self._source_boundary_uncertain = True
+                raise
             completed.append({k: v for k, v in result.items()
                               if k != "checkpoint"})
         return completed
