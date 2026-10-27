@@ -53,3 +53,17 @@ class LocalSpecializationTests(unittest.TestCase):
                              restored.predict_public(CTX,bits))
         with self.assertRaises((ValueError,TypeError)):
             SpecializedColony.restore(m.checkpoint()[:-2]+b"xx")
+
+    def test_interleaved_independent_relationships_survive_restore(self):
+        model = SpecializedColony()
+        # No block-training shortcut: public consequences arrive alternately.
+        for _ in range(2):
+            for bits, value in PATTERNS:
+                model.learn_completed_public_feedback(CTX, bits, value, 2)
+        after = SpecializedColony.restore(model.checkpoint())
+        for bits, value in PATTERNS:
+            self.assertEqual(model.predict_public(CTX, bits), value)
+            self.assertEqual(after.predict_public(CTX, bits), value)
+        for bits, _ in UNSEEN:
+            self.assertIsNone(model.predict_public(CTX, bits))
+        self.assertEqual(model.feedback_updates, 4)
