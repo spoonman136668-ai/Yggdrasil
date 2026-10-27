@@ -17,7 +17,7 @@ from .itd02_local_ring_memory_dev import (
     _canonical, _finite,
 )
 
-SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v5"
+SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v6"
 REWARDS = (-3, 0, 10)  # source-declared observable labels; NOT source reward law
 MAX_BYTES = 65536
 RING = tuple(((i - 1) % CELLS, (i + 1) % CELLS) for i in range(CELLS))
@@ -88,6 +88,7 @@ class NativeTaskRingBridgeDev:
         self.score_calls = 0
         # Eight deterministic bounded cell-local traces, not trained weights.
         self.cell_trace = [0.] * CELLS
+        self.action_credit = [0.] * len(ACTIONS)
 
     def start_observation(self, observation):
         if self._observation is not None or self.memory.pending:
@@ -131,7 +132,7 @@ class NativeTaskRingBridgeDev:
                     self.cell_trace[left] * (2 * bits[left] - 1)
                     + self.cell_trace[right] * (2 * bits[right] - 1)
                 ) / 2.
-            scores.append(sum(phase_scores) / 2. + .10 * contrast)
+            scores.append(sum(phase_scores) / 2. + .10 * contrast + .15 * self.action_credit[ACTIONS.index(action)])
         self.score_calls += 1
         return scores
 
@@ -166,13 +167,20 @@ class NativeTaskRingBridgeDev:
             if self._native_identity() != self._frozen_native or (
                     self.memory.parameter_sha256() != self.memory._frozen_hash):
                 raise ValueError("FROZEN_WEIGHT_IDENTITY_DRIFT")
+        predicted_before = self.native_reward_scores()[ACTIONS.index(action)] if learning else None
         native_snap = self.native.snapshot()
         memory_snap = self.memory.checkpoint()
         trace_snap = list(self.cell_trace)
+        credit_snap = list(self.action_credit)
         try:
             if learning:
                 self.native.observe(before, after)
             self.memory.feedback(action, reward, learning=learning, terminal=terminal)
+            if learning:
+                selected = ACTIONS.index(action)
+                error = max(-13., min(13., float(reward) - predicted_before))
+                self.action_credit[selected] = max(-13., min(13.,
+                    .75 * self.action_credit[selected] + .25 * error))
             if learning:
                 # Original public input bits only. Each cell updates its own
                 # retained register; no oracle or other cell's state enters.
@@ -188,6 +196,7 @@ class NativeTaskRingBridgeDev:
             self.native = LocalTaskRuntime.restore(native_snap)
             self.memory = NativeRingMemoryDev.restore(memory_snap)
             self.cell_trace = trace_snap
+            self.action_credit = credit_snap
             raise
 
     def reset_episode(self):
@@ -213,7 +222,8 @@ class NativeTaskRingBridgeDev:
                 "observation": self._observation,
                 "transitions": self.transitions, "score_calls": self.score_calls,
                 "frozen_native_sha256": self._frozen_native,
-                "cell_trace": self.cell_trace}
+                "cell_trace": self.cell_trace,
+                "action_credit": self.action_credit}
         data = _canonical(body)
         if len(data) > MAX_BYTES:
             raise ValueError("BRIDGE_CHECKPOINT_OVER_BUDGET")
@@ -233,7 +243,7 @@ class NativeTaskRingBridgeDev:
             if type(body) is not dict or set(body) != {
                     "schema", "native", "memory", "observation",
                     "transitions", "score_calls", "frozen_native_sha256",
-                    "cell_trace"} or body["schema"] != SCHEMA:
+                    "cell_trace", "action_credit"} or body["schema"] != SCHEMA:
                 raise ValueError("BRIDGE_CHECKPOINT_SCHEMA")
             if (body["observation"] is not None and
                     (type(body["observation"]) is not str or
@@ -256,6 +266,12 @@ class NativeTaskRingBridgeDev:
                         or not -1. <= x <= 1. for x in trace)):
                 raise ValueError("BRIDGE_CELL_TRACE_INVALID")
             obj.cell_trace = [float(x) for x in trace]
+            credit = body['action_credit']
+            if (type(credit) is not list or len(credit) != len(ACTIONS) or
+                    any(type(x) not in (int,float) or not math.isfinite(x)
+                        or not -13. <= x <= 13. for x in credit)):
+                raise ValueError('BRIDGE_ACTION_CREDIT_INVALID')
+            obj.action_credit = [float(x) for x in credit]
             frozen_native = body["frozen_native_sha256"]
             if (frozen_native is None) != (memory._frozen_hash is None):
                 raise ValueError("BRIDGE_FROZEN_MODE_MISMATCH")
