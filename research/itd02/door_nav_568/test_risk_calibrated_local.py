@@ -33,9 +33,6 @@ class RiskCalibratedTests(unittest.TestCase):
         self.assertEqual(a["calibration_actions"],b["calibration_actions"])
         self.assertEqual(a["actions"],b["actions"])
 
-if __name__=="__main__":
-    unittest.main()
-
     def test_calibrated_risk_and_coverage_are_explicitly_pinned(self):
         rows=run()["experiments"]
         for family,correct,wrong,abstain in (("parity",0,0,72),
@@ -51,3 +48,7 @@ if __name__=="__main__":
                             for r in rows if r["rule"]=="first_bit"))
         self.assertTrue(all(r["chosen_cutoff"] is None
                             for r in rows if r["rule"]=="parity"))
+
+if __name__=="__main__":
+    unittest.main()
+
