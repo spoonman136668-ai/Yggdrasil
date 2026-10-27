@@ -3,8 +3,8 @@ import json
 from feedback_public_loop import FeedbackPublicLoop
 from native_public_loop import PublicWorld
 
-def arm(enabled):
-    learner = FeedbackPublicLoop(enabled=enabled)
+def arm(enabled, recovery=False):
+    learner = FeedbackPublicLoop(enabled=enabled, recovery=recovery)
     rounds = [("A", True, False), ("B", False, True),
               ("A", False, False), ("B", False, False)]
     out = []
@@ -24,6 +24,8 @@ def arm(enabled):
             "online_examples": observation["online_examples"],
             "online_records": observation["online_records"],
             "decision_ns": observation.get("decision_ns"),
+            "fallback_used": observation.get("fallback_used", False),
+            "candidate_count": observation.get("candidate_count"),
         })
     return {
         "rounds": out,
@@ -40,7 +42,8 @@ def run():
     return {
         "frozen_selector_control": arm(False),
         "online_feedback": arm(True),
-        "scope": "Synthetic public feedback only; identical sequence and budgets",
+        "feedback_with_qualified_fallback": arm(True, recovery=True),
+        "scope": "Synthetic public feedback only; identical sequence and budgets; fallback uses frozen prior hypothesis pool only after lost candidate coverage",
         "caveat": "Wall-clock nanoseconds are descriptive on shared CI runners, not energy or retail-hardware qualification",
     }
 
