@@ -50,13 +50,11 @@ class EvidenceSelectedThreeStep(ContextPartitionedThreeStep):
         if (len(samples) < 2 or
                 len({(frame, action) for frame, action, _, _ in samples}) != len(samples)):
             return False
-        # A candidate must predict every observed consequence: otherwise
-        # unknown responses may produce misleading apparent superiority.
-        if any(None in predictions for _, _, _, predictions in samples):
-            return False
+        # Only admit a unique candidate matching all observed consequences.
+        # Competing unknown predictions are not counted as observed errors.
         scores = [sum(predictions[i] == observed
                       for _, _, observed, predictions in samples) for i in (0, 1)]
-        if scores[0] == scores[1] or max(scores) == 0:
+        if scores[0] == scores[1] or max(scores) != len(samples):
             return False
         self.selected = ("active", "snapshot")[0 if scores[0] > scores[1] else 1]
         return True
