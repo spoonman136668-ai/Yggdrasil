@@ -90,7 +90,7 @@ def inspect_custody(directory, *, expected_source_sha256=None):
     raw = _read_checked(root / "public-events.jsonl", MAX_JOURNAL_BYTES)
     _need(raw and raw.endswith(b"\n"), "TORN_EVENT_STREAM")
     lines = raw.splitlines()
-    _need(1 <= len(lines) <= 2 * MAX_STEPS + 4, "EVENT_COUNT")
+    _need(1 <= len(lines) <= 2 * MAX_STEPS + 5, "EVENT_COUNT")
     prev = ZERO
     previous_kind = None
     events = []
@@ -193,6 +193,23 @@ def inspect_custody(directory, *, expected_source_sha256=None):
             "episode": events[0]["episode"],
             "steps": sum(x["kind"] == "step_result" for x in events),
             "checkpoint_verified": status == "COMMITTED"}
+
+
+def load_verified_native_model(directory, *, expected_source_sha256):
+    """Cold-load original native learner ONLY from a fully committed journal.
+
+    A quarantined or modified event stream cannot be treated as a checkpoint.
+    This does not authorize the next source episode or a science first-use.
+    """
+    receipt = inspect_custody(
+        directory, expected_source_sha256=expected_source_sha256)
+    _need(receipt["status"] == "COMMITTED", "COLD_RESTORE_NOT_COMMITTED")
+    from .itd02_native_task_bridge_dev import NativeTaskRingBridgeDev
+    raw = _read_checked(Path(directory) / "learned-checkpoint.bin", 65536)
+    model = NativeTaskRingBridgeDev.restore(raw)
+    _need(model._observation is None and not model.memory.pending,
+          "RESTORED_NATIVE_PENDING_TRANSITION")
+    return model
 
 
 class JournaledPublicSourceDev:
