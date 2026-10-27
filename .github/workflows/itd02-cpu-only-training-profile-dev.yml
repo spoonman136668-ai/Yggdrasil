@@ -43,6 +43,9 @@ jobs:
           if ($m.classification -ne 'SOURCE_FREE_ENGINEERING_ONLY' -or $m.source_is_original_published_shuttle -ne $false -or $m.not_retail_hardware_acceptance -ne $true -or $m.public_action_interactions -ne 128 -or $m.native_cold_restores -ne 8 -or $m.process_cpu_seconds -lt 0 -or $m.wall_seconds -le 0 -or $m.total_on_disk_checkpoints_bytes -le 0 -or $m.total_on_disk_public_event_journal_bytes -le 0) {
             throw "SOURCEFREE_RESOURCE_PROFILE_INVALID"
           }
+          if ($m.peak_process_resident_bytes -eq $null -or $m.peak_process_resident_bytes -le 0 -or $m.resident_memory_final_bytes -eq $null -or $m.resident_memory_final_bytes -le 0) {
+            throw "PROCESS_RSS_MEASUREMENT_UNAVAILABLE"
+          }
           "SOURCEFREE_CPU_PROFILE_OS=$($m.environment.os)" >> $env:GITHUB_STEP_SUMMARY
           "SOURCEFREE_PUBLIC_INTERACTIONS=$($m.public_action_interactions)" >> $env:GITHUB_STEP_SUMMARY
           "SOURCEFREE_CPU_SECONDS=$($m.process_cpu_seconds)" >> $env:GITHUB_STEP_SUMMARY
