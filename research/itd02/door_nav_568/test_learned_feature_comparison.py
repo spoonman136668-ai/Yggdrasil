@@ -42,3 +42,13 @@ class LearnedFeatureComparisonTests(unittest.TestCase):
         self.assertEqual(len(observed),4)
         self.assertTrue(all(item["distinct_features"]<=4 for item in observed))
         self.assertTrue(any(item["ambiguous_features"]>0 for item in observed))
+
+    def test_current_local_feature_transfer_does_not_earn_promotion(self):
+        rows=run()["experiments"]
+        for rule in ("parity","first_bit"):
+            group=[r for r in rows if r["rule"]==rule]
+            linear=sum(r["heldout"]["linear"]["correct"] for r in group)
+            native=sum(r["heldout"]["native"]["correct"] for r in group)
+            wrong=sum(r["heldout"]["native"]["wrong"] for r in group)
+            self.assertLess(native,linear)
+            self.assertGreater(wrong,0)
