@@ -1,0 +1,228 @@
+name: ITD-02 frozen local signal alias diagnostic
+on:
+  push:
+    branches:
+      - qualification/itd02-local-alias-diagnostic-20261027
+permissions:
+  contents: read
+jobs:
+  structural-alias:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      SOURCE_SHA: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Keep source identity byte-exact
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Enforce source SHA and exact G29 upstream Atlas
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          python - <<'PY'
+          import subprocess
+          from pathlib import Path
+          for name in ("yggdrasil/itd02_local_ring_memory_dev.py",
+                       "yggdrasil/itd02_native_task_bridge_dev.py",
+                       "yggdrasil/task_runtime.py"):
+              assert Path(name).read_bytes()==subprocess.check_output(["git","show","HEAD:"+name])
+          PY
+          # Parent source is held fixed; its PR #582 G29 admission is still pending.
+          test -z "$(git status --porcelain)"
+      - name: Diagnose local head alias invariant and native rescue
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          """Read-only source-frozen diagnosis of two-hop local observation aliases.
+          
+          Synthetic forced-action diagnostic, NOT on-policy evidence or science first-use.
+          """
+          import hashlib
+          import json
+          import os
+          import platform
+          import subprocess
+          import sys
+          import time
+          
+          from yggdrasil.itd02_local_ring_memory_dev import (
+            ACTIONS, ACTION_SITES, OBSERVATIONS, OBS_SITES, CELLS, ROUNDS,
+            NativeRingMemoryDev, _local_exchange, _local_credit, _public_pulse
+          )
+          from yggdrasil.itd02_native_task_bridge_dev import NativeTaskRingBridgeDev
+          
+          START=time.perf_counter()
+          CASES=(("TurnAround","MRV","docked_MRV"),
+                 ("GoForward","Nothing","docked_LRV"))
+          
+          if CELLS!=8 or ROUNDS!=2:
+              raise RuntimeError("FROZEN_NATIVE_RING_SPEC_CHANGED")
+          if set(OBSERVATIONS)!={"LRV","MRV","docked_MRV","Nothing","docked_LRV"}:
+              raise RuntimeError("PUBLIC_OBS_DOMAIN_DRIFT")
+          
+          # A signal reaching a local action head always uses its two-hop features.
+          matrix={}
+          for action,site in zip(ACTIONS,ACTION_SITES):
+              matrix[action]={}
+              for observation in OBSERVATIONS:
+                  signal=_local_exchange(_public_pulse(observation))
+                  matrix[action][observation]=signal[site]
+          assert matrix["TurnAround"]["MRV"]==matrix["TurnAround"]["docked_MRV"]==0.
+          assert matrix["GoForward"]["Nothing"]==matrix["GoForward"]["docked_LRV"]==0.
+          assert len({_public_pulse(o).index(1.) for o in OBSERVATIONS})==5
+          # A distinct action head may still receive a different native recurrent score;
+          # these proofs concern the *memory head*, never the entire combined agent.
+          
+          alias={}
+          for action,first,second in CASES:
+              site=ACTION_SITES[ACTIONS.index(action)]
+              samples=[]
+              # One-hot observations always remain distinct at input, yet these pairs
+              # remain identical to the selected memory head for arbitrary learned gates
+              # and selected-head weights in an episode-start state.
+              for gates,heads_name in (
+                  ([1.]*8,"initial"),
+                  ([-4.,4.,1.,-1.,2.,-2.,.5,-.5],"asymmetric"),
+                  ([0.,2.,-2.,1.,-1.,3.,-3.,.5],"altered")
+              ):
+                  outputs=[]
+                  for obs in (first,second):
+                      m=NativeRingMemoryDev()
+                      m.gates=list(gates)
+                      m.heads=[[2.5+index,-1.1,.75] for index in range(3)]
+                      m.reset_episode()
+                      m.advance(obs)
+                      local_now=_local_exchange(m._pulse)[site]
+                      local_retained=_local_exchange(m.memory)[site]
+                      selected_score=m.q_values()[ACTIONS.index(action)]
+                      outputs.append((local_now,local_retained,selected_score))
+                  if outputs[0]!=outputs[1] or outputs[0][:2]!=(0.,0.):
+                      raise AssertionError("HYPOTHESIZED_LOCAL_ALIAS_NOT_PRESENT")
+                  samples.append({"gates":heads_name,"selected_head_features":outputs[0][:2],
+                                  "selected_head_score":outputs[0][2],
+                                  "two_public_observations_different":first!=second})
+              if _local_credit(site,1.)[OBS_SITES[OBSERVATIONS.index(first)]]!=0.:
+                  raise AssertionError("CREDIT_REACHES_UNOBSERVED_REMOTE_CELL")
+              if _local_credit(site,1.)[OBS_SITES[OBSERVATIONS.index(second)]]!=0.:
+                  raise AssertionError("CREDIT_REACHES_UNOBSERVED_REMOTE_CELL")
+          
+              # Matched, deterministic forced PUBLIC actions reveal a contradiction:
+              # different public observations can have different lawful evaluator
+              # rewards, but the selected local memory head cannot encode that difference.
+              bridge=NativeTaskRingBridgeDev()
+              control={}
+              for n in range(192):
+                  obs=first if n%2==0 else second
+                  reward=10 if obs==first else -3
+                  bridge.start_observation(obs)
+                  bridge.accept_public_transition(action,"Nothing",reward,
+                                                  learning=True,terminal=True)
+                  key=(obs,action)
+                  count,total=control.get(key,(0,0))
+                  control[key]=(count+1,total+reward)
+              assert bridge.transitions==192
+              checkpoint=bridge.checkpoint()
+              trained_ident=bridge.model_identities()
+              # New interpreter cold-restore verifies BOTH native and memory state.
+              program=(
+                "import json,sys,hashlib;"
+                "from yggdrasil.itd02_native_task_bridge_dev import NativeTaskRingBridgeDev;"
+                "raw=sys.stdin.buffer.read();m=NativeTaskRingBridgeDev.restore(raw);"
+                "print(json.dumps({'identities':m.model_identities(),"
+                "'transitions':m.transitions,"
+                "'snapshot_sha256':hashlib.sha256(m.checkpoint()).hexdigest()}))"
+              )
+              ret=subprocess.run((sys.executable,"-B","-c",program),input=checkpoint,
+                                 capture_output=True,check=True,timeout=20)
+              observed=json.loads(ret.stdout)
+              expected={"identities":trained_ident,"transitions":192,
+                        "snapshot_sha256":hashlib.sha256(checkpoint).hexdigest()}
+              if observed!=expected:
+                  raise AssertionError("FRESH_PROCESS_RESTORE_IDENTITY_FAILURE")
+          
+              records={}
+              for obs in (first,second):
+                  m=NativeTaskRingBridgeDev.restore(checkpoint)
+                  m.start_frozen_evaluation(trained_ident["native"],
+                                            trained_ident["memory"])
+                  m.start_observation(obs)
+                  site_now=_local_exchange(m.memory._pulse)[site]
+                  site_history=_local_exchange(m.memory.memory)[site]
+                  head=m.memory.q_values()[ACTIONS.index(action)]
+                  native=m.native_reward_scores()[ACTIONS.index(action)]
+                  selected=m.choose()
+                  if m.model_identities()!=trained_ident:
+                      raise AssertionError("FROZEN_TEST_MUTATED_PARAMETERS")
+                  n,total=control[(obs,action)]
+                  records[obs]={"site_now":site_now,"site_history":site_history,
+                                "memory_selected_head_score":head,
+                                "original_native_reward_score":native,
+                                "combined_chosen_action":selected,
+                                "conventional_observation_action_mean_reward":total/n,
+                                "training_events":n}
+              if (records[first]["site_now"]!=records[second]["site_now"] or
+                  records[first]["site_history"]!=records[second]["site_history"] or
+                  records[first]["memory_selected_head_score"]!=
+                    records[second]["memory_selected_head_score"]):
+                  raise AssertionError("TRAINING_REMOVED_PROVEN_STRUCTURAL_ALIAS")
+              if (records[first]["conventional_observation_action_mean_reward"]-
+                  records[second]["conventional_observation_action_mean_reward"]!=13):
+                  raise AssertionError("CONTROL_DID_NOT_DISTINGUISH_PUBLIC_CONTEXT")
+              alias[action]={"pair":[first,second],"counterfactual_reward_gap":13,
+                             "persistent_after_real_native_training":True,
+                             "fresh_process_retention":True,
+                             "trained_bridge_checkpoint_bytes":len(checkpoint),
+                             "original_native_parameters_changed":
+                                 trained_ident["native"]!=NativeTaskRingBridgeDev().model_identities()["native"],
+                             "records":records,"gate_variations":samples}
+          
+          receipt={
+            "schema":"ygg.itd02.local-route-alias-diagnostic.v1",
+            "authority":"development-source-only-no-FSA-no-simulated-world-admission",
+            "source_sha":os.environ["SOURCE_SHA"],
+            "os":platform.platform(),
+            "ring_cells":CELLS,"max_neighbor_hops":ROUNDS,
+            "action_head_sites":dict(zip(ACTIONS,ACTION_SITES)),
+            "observation_sites":dict(zip(OBSERVATIONS,OBS_SITES)),
+            "two_hop_selected_action_signal":matrix,
+            "structural_observation_aliases":alias,
+            "forced_public_events":192*len(CASES),
+            "all_action_head_alias_invariants_pass":True,
+            "whole_native_model_ambiguity_claim":"NOT_PROVEN_original-native-score-measured-separately",
+            "heldout_transfer_claim":False,
+            "scientific_first_use":False,
+            "elapsed_seconds":round(time.perf_counter()-START,6)
+          }
+          path=os.path.join(os.environ["RUNNER_TEMP"],"itd02_local_alias.json")
+          with open(path,"w",encoding="utf-8") as f:
+              json.dump(receipt,f,sort_keys=True,indent=2)
+          print("ITD02_ALIAS_RECEIPT="+json.dumps(receipt,sort_keys=True))
+          
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Upload frozen native and conventional discrimination evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: itd02-local-alias-${{ matrix.os }}
+          path: ${{ runner.temp }}/itd02_local_alias.json
+          if-no-files-found: warn
+          retention-days: 14
