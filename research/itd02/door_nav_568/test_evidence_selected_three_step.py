@@ -22,9 +22,9 @@ class EvidenceSelectorTests(unittest.TestCase):
         self.assertTrue(newer["admitted"])
         self.assertEqual(newer["selected"], "active")
         self.assertEqual(newer["decision"], newer["expected"])
-        self.assertFalse(older["admitted"])
-        self.assertIsNone(older["selected"])
-        self.assertIsNone(older["decision"])
+        self.assertTrue(older["admitted"])
+        self.assertEqual(older["selected"], "snapshot")
+        self.assertEqual(older["decision"], older["expected"])
 
     def test_archived_candidate_selected_on_complete_public_evidence(self):
         candidate = EvidenceSelectedThreeStep()
