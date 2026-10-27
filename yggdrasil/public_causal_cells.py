@@ -63,6 +63,22 @@ class PublicCausalCells:
             return None
         return 0 if lhs > rhs else 1
 
+    def probe_uncertain(self, address: int, *, retained: bool = False) -> int:
+        """Select public action with greatest LOCAL Beta(1,1) uncertainty.
+
+        No other context, hidden outcomes, memory writes, or changed choose().
+        Equal scores deterministically choose action zero.
+        """
+        cell = self._address(address, retained)
+        (zero0, one0), (zero1, one1) = self._counts[cell]
+        n0, n1 = zero0 + one0 + 2, zero1 + one1 + 2
+        a0, a1 = (zero0 + 1) * (one0 + 1), (zero1 + 1) * (one1 + 1)
+        # Compare Beta variances exactly: a / (n*n*(n+1)).
+        lhs = a0 * n1 * n1 * (n1 + 1)
+        rhs = a1 * n0 * n0 * (n0 + 1)
+        return 1 if rhs > lhs else 0
+
+
     def snapshot(self) -> bytes:
         """One immutable, versioned 164-byte checkpoint with SHA-256 integrity."""
         raw = bytearray(self.MAGIC)
