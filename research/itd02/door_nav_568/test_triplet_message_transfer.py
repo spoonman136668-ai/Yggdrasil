@@ -40,3 +40,17 @@ class TripletTransferTests(unittest.TestCase):
                 comparator.observe(bits,label)
         for bits,_ in families(17):
             self.assertEqual(local.predict(bits),comparator.predict(bits))
+
+    def test_scientific_equivalence_and_parity_failure_are_pinned(self):
+        rows=run()["experiments"]
+        for row in rows:
+            self.assertEqual(row["heldout"]["local"],
+                             row["heldout"]["triplet_table"])
+            self.assertEqual(row["train"]["local"],
+                             row["train"]["triplet_table"])
+        for rule,correct,wrong in (("parity",0,17),("first_bit",15,0)):
+            subset=[row for row in rows if row["rule"]==rule]
+            self.assertEqual(sum(row["heldout"]["local"]["correct"]
+                                 for row in subset),correct)
+            self.assertEqual(sum(row["heldout"]["local"]["wrong"]
+                                 for row in subset),wrong)
