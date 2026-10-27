@@ -17,7 +17,7 @@ from .itd02_local_ring_memory_dev import (
     _canonical, _finite,
 )
 
-SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v4"
+SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v5"
 REWARDS = (-3, 0, 10)  # source-declared observable labels; NOT source reward law
 MAX_BYTES = 65536
 RING = tuple(((i - 1) % CELLS, (i + 1) % CELLS) for i in range(CELLS))
@@ -172,7 +172,8 @@ class NativeTaskRingBridgeDev:
                 # retained register; no oracle or other cell's state enters.
                 self.cell_trace = [
                     max(-1., min(1., .75 * self.cell_trace[i]
-                                 + .25 * (2 * before[i] - 1)))
+                                 + .125 * (2 * before[RING[i][0]] - 1)
+                                 + .125 * (2 * before[RING[i][1]] - 1)))
                     for i in range(CELLS)
                 ]
             self.transitions += 1
