@@ -24,6 +24,11 @@ class SourceFreeCostProbeTests(unittest.TestCase):
             self.assertGreater(receipt[field], 0 if field !=
                                "training_and_checkpoint_cpu_ns" else -1)
         self.assertIsInstance(receipt["native_model_identities"], dict)
+        for label in ("source_free_action_trace_sha256",
+                      "native_parameters_rounded_8dp_sha256_diagnostic"):
+            self.assertEqual(len(receipt[label]), 64)
+            self.assertTrue(all(x in "0123456789abcdef" for x in receipt[label]))
+        self.assertFalse(receipt["cross_os_byte_identical_claim"])
         self.assertIsNone(receipt["peak_power_watts"])
         self.assertIsNone(receipt["gpu_vram_bytes"])
         self.assertTrue(receipt["whole_process_peak_rss_bytes"] is None or
