@@ -40,9 +40,9 @@ class SpecializedColony(ReversalColony):
                 else:
                     no += 1
         # Three separately trained local receptive fields must agree.
-        if yes >= 3 and no == 0:
+        if yes >= 3 and yes > no:
             return True
-        if no >= 3 and yes == 0:
+        if no >= 3 and no > yes:
             return False
         return None
 
