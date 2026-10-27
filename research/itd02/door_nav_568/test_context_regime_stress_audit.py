@@ -24,6 +24,17 @@ class ContextRegimeStressTests(unittest.TestCase):
         self.assertLessEqual(snap, 128)
         self.assertGreaterEqual(snap, single)
 
+    def test_observed_failure_modes_remain_explicit(self):
+        report = run()
+        single = report["agents"]["single"]
+        snapshot = report["agents"]["snapshot"]
+        self.assertEqual(single["A_old_retention"], 0)
+        self.assertEqual(single["A_return"], 0)
+        self.assertEqual(snapshot["A_old_retention"], 1)
+        self.assertEqual(snapshot["B_colliding_context"], 1)
+        self.assertEqual(snapshot["A_return"], 0)
+        self.assertEqual((single["examples"], snapshot["examples"]), (64, 76))
+
     def test_collision_and_return_are_reported_not_silently_accepted(self):
         report = run()
         for candidate in report["agents"].values():
