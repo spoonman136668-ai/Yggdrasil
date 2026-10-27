@@ -87,9 +87,18 @@ def peak_self_rss_bytes():
                 ]
             info = Counters()
             info.cb = ctypes.sizeof(info)
-            handle = ctypes.windll.kernel32.GetCurrentProcess()
-            ok = ctypes.windll.psapi.GetProcessMemoryInfo(
-                handle, ctypes.byref(info), info.cb)
+            kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+            psapi = ctypes.WinDLL("psapi", use_last_error=True)
+            # ctypes' default c_int return would truncate pseudo-HANDLE on
+            # 64-bit Windows, making GetProcessMemoryInfo return NULL.
+            current = kernel.GetCurrentProcess
+            current.argtypes = []
+            current.restype = wintypes.HANDLE
+            get_counters = psapi.GetProcessMemoryInfo
+            get_counters.argtypes = [
+                wintypes.HANDLE, ctypes.POINTER(Counters), wintypes.DWORD]
+            get_counters.restype = wintypes.BOOL
+            ok = get_counters(current(), ctypes.byref(info), info.cb)
             if ok and info.PeakWorkingSetSize > 0:
                 return int(info.PeakWorkingSetSize)
         except (AttributeError, ImportError, OSError, ValueError):
