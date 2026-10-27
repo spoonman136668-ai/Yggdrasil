@@ -37,3 +37,16 @@ class CorroborationTests(unittest.TestCase):
                                  16-row["count"])
             self.assertEqual(strict["correct"]+strict["wrong"]+
                              strict["abstentions"],16-row["count"])
+
+    def test_zero_coverage_must_not_be_claimed_as_transfer(self):
+        experiments=run()["experiments"]
+        for rule in ("parity","first_bit"):
+            rows=[row for row in experiments if row["rule"]==rule]
+            strict=[row["heldout"]["corroborated"] for row in rows]
+            self.assertEqual(sum(x["wrong"] for x in strict),0)
+            self.assertEqual(sum(x["correct"] for x in strict),0)
+            self.assertEqual(sum(x["abstentions"] for x in strict),72)
+            self.assertLess(sum(x["correct"] for x in strict),
+                            sum(row["heldout"]["linear"]["correct"] for row in rows))
+        self.assertEqual(
+            sum(row["training"]["corroborated"]["correct"] for row in experiments),7)
