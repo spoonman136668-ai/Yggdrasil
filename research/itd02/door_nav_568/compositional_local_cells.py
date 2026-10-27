@@ -55,8 +55,8 @@ class AffineMessageCell:
             if idx is None: return None
             pivot=rows.pop(idx)
             pivots[column]=pivot
-            rows=[[v^(pivot[j] if v[column] else 0) for j,v in enumerate(v)]
-                  for v in rows]
+            rows=[[value ^ (pivot[j] if row[column] else 0)
+                   for j,value in enumerate(row)] for row in rows]
             for prev in pivots:
                 if prev!=column and pivots[prev][column]:
                     pivots[prev]=[v^pivot[j] for j,v in enumerate(pivots[prev])]
