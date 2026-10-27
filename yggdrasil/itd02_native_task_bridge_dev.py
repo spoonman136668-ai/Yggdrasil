@@ -106,6 +106,39 @@ class NativeTaskRingBridgeDev:
         self.memory.action_calls += 1
         return ACTIONS[max(range(len(ACTIONS)), key=lambda i: combined[i])]
 
+    def choose_training(self, *, exploration_period=9, bootstrap_calls=18):
+        """Opt-in model-owned bounded exploration, never a source policy.
+
+        The native learner still computes its original public candidate scores.
+        Exploration uses only the checkpointed model-owned action-call count,
+        not an evaluator reward map, an external action, or hidden source data.
+        Ordinary choose() and frozen evaluation are unchanged. Its restart
+        configuration must be supplied by the owner with source custody.
+        """
+        if (type(exploration_period) is not int or
+                not 2 <= exploration_period <= 64 or
+                type(bootstrap_calls) is not int or
+                not 0 <= bootstrap_calls <= 96):
+            raise ValueError("NATIVE_EXPLORATION_BUDGET_INVALID")
+        if (self._frozen_native is not None or
+                self.memory._frozen_hash is not None):
+            raise ValueError("EXPLORATION_REQUIRES_TRAINING_MODE")
+        native = self.native_reward_scores()
+        retained = self.memory.q_values()
+        scores = [retained[i] + .15 * native[i]
+                  for i in range(len(ACTIONS))]
+        calls = self.memory.action_calls
+        greedy = max(range(len(ACTIONS)), key=lambda i: scores[i])
+        index = greedy
+        # Small, generic warm-start samples every action before relying on
+        # the trained scores. No task-specific action/reward oracle is used.
+        if calls < bootstrap_calls:
+            index = (calls // 2) % len(ACTIONS)
+        elif calls % exploration_period == 0:
+            index = (calls // exploration_period) % len(ACTIONS)
+        self.memory.action_calls += 1
+        return ACTIONS[index]
+
     def accept_public_transition(self, action, next_observation, reward, *,
                                  learning=True, terminal=False):
         # Validate ALL public fields and authorizations before either learner
