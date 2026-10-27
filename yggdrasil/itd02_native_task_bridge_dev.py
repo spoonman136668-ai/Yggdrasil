@@ -102,7 +102,7 @@ class NativeTaskRingBridgeDev:
         native = self.native_reward_scores()
         memory = self.memory.q_values()
         # Source-blind fixed fusion, not hidden-state access or oracle planning.
-        combined = [memory[i] + .15 * native[i] for i in range(len(ACTIONS))]
+        combined = [memory[i] + .60 * native[i] for i in range(len(ACTIONS))]
         self.memory.action_calls += 1
         return ACTIONS[max(range(len(ACTIONS)), key=lambda i: combined[i])]
 
