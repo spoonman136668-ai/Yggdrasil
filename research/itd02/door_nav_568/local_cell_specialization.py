@@ -1,7 +1,7 @@
 """Bounded local sensory specialization for R7 cells.
 
 Each cell observes only its own public sensor and its ring neighbor. It owns
-at most two receptive-field slots, each containing the last two completed
+at most four configurable receptive-field slots, each containing the last two completed
 public outcomes. There is no centrally keyed context-to-answer table: votes
 come from distinct independently updated local receptive fields. Three
 nonconflicting cell votes are required, otherwise abstain.
@@ -11,8 +11,11 @@ import json
 from local_cell_reversal_candidate import ReversalColony
 
 class SpecializedColony(ReversalColony):
-    def __init__(self):
+    def __init__(self, slots_per_cell=2):
+        if type(slots_per_cell) is not int or not 1 <= slots_per_cell <= 4:
+            raise ValueError("SPECIALIZED_SLOT_CAP_INVALID")
         super().__init__()
+        self.slots_per_cell = slots_per_cell
         self.slots = {ctx: [{} for _ in range(4)] for ctx in ("A", "B")}
 
     def learn_completed_public_feedback(self, context, sensors, public_outcome, delay_steps):
@@ -22,7 +25,7 @@ class SpecializedColony(ReversalColony):
             raise ValueError("COMPLETED_PUBLIC_FEEDBACK_REQUIRED")
         for i, slot in enumerate(self.slots[context]):
             receptive = (sensors[i], sensors[(i + 1) % 4])
-            if receptive not in slot and len(slot) >= 2:
+            if receptive not in slot and len(slot) >= self.slots_per_cell:
                 raise ValueError("LOCAL_RECEPTIVE_FIELD_CAP")
         super().learn_completed_public_feedback(context, sensors, public_outcome, delay_steps)
         for i, slot in enumerate(self.slots[context]):
@@ -51,7 +54,7 @@ class SpecializedColony(ReversalColony):
         slots = {ctx: [[{"receptive": list(key), "recent": list(values)}
                          for key, values in sorted(slot.items())]
                         for slot in self.slots[ctx]] for ctx in ("A", "B")}
-        body = {"schema": "ygg.r7.local_specialized.v1", "base": cells, "slots": slots}
+        body = {"schema": "ygg.r7.local_specialized.v1", "base": cells, "slots": slots, "slots_per_cell": self.slots_per_cell}
         raw = json.dumps(body, sort_keys=True, separators=(",", ":")).encode()
         signed = json.dumps({"payload": body, "sha256": hashlib.sha256(raw).hexdigest()},
                             sort_keys=True, separators=(",", ":")).encode()
@@ -73,7 +76,10 @@ class SpecializedColony(ReversalColony):
         if body.get("schema") != "ygg.r7.local_specialized.v1" or set(body["slots"]) != {"A", "B"}:
             raise ValueError("SPECIALIZED_CHECKPOINT_SCHEMA")
         restored_base = ReversalColony.restore(body["base"].encode())
-        result = cls()
+        cap = body.get("slots_per_cell", 2)
+        if type(cap) is not int or not 1 <= cap <= 4:
+            raise ValueError("SPECIALIZED_SLOT_CAP_INVALID")
+        result = cls(slots_per_cell=cap)
         result.cells = restored_base.cells
         result.feedback_updates = restored_base.feedback_updates
         result.neighbor_messages = restored_base.neighbor_messages
@@ -81,7 +87,7 @@ class SpecializedColony(ReversalColony):
             if len(body["slots"][ctx]) != 4:
                 raise ValueError("SPECIALIZED_CELL_COUNT")
             for i, entries in enumerate(body["slots"][ctx]):
-                if type(entries) is not list or len(entries) > 2:
+                if type(entries) is not list or len(entries) > cap:
                     raise ValueError("SPECIALIZED_SLOT_CAP")
                 for item in entries:
                     if type(item) is not dict or set(item) != {"receptive", "recent"}:
