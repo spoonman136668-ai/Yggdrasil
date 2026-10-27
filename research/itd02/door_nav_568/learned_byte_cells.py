@@ -7,11 +7,14 @@ Finite training data can confound positions; held-out controls are required.
 from native_cells_r7 import LocalCell
 
 class LearnedByteCells:
-    def __init__(self, feature_positions=8, max_groups=128):
+    def __init__(self, feature_positions=8, max_groups=128, max_examples=256):
         if type(feature_positions) is not int or not 1 <= feature_positions <= 16:
             raise ValueError("FEATURE_POSITION_CAP")
         if type(max_groups) is not int or not 1 <= max_groups <= 128:
             raise ValueError("GROUP_CAP")
+        if type(max_examples) is not int or not 8 <= max_examples <= 4096:
+            raise ValueError("EXAMPLE_CAP_INVALID")
+        self.max_examples = max_examples
         self.positions = feature_positions
         self.max_groups = max_groups
         self.examples = []
@@ -34,6 +37,8 @@ class LearnedByteCells:
             raise ValueError("PUBLIC_CONSEQUENCE_REQUIRED")
         frame, _ = self.current
         self.examples.append((frame, action, int(reward > 0)))
+        if len(self.examples) > self.max_examples:
+            self.examples.pop(0)
         # Choose the smallest public-byte position whose conditional
         # (byte value, action) buckets have least contradictory feedback.
         def contradictions(pos):
