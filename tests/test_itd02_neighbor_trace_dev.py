@@ -5,7 +5,7 @@ from yggdrasil.itd02_local_ring_memory_dev import ACTIONS,ACTION_SITES,OBSERVATI
 
 class NeighborTraceTests(unittest.TestCase):
     def test_reward_site_traces_react_to_two_neighbor_bits(self):
-        self.assertTrue(SCHEMA.endswith("source_only.v5"))
+        self.assertTrue(SCHEMA.endswith("source_only.v6"))
         self.assertEqual(CELLS,8)
         for site in ACTION_SITES:
             readings={}
