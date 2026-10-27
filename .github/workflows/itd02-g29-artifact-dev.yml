@@ -51,8 +51,14 @@ jobs:
               "test_nci04g7_source_producer.py",
           }
           assert len(paths) == 14 and posix_only <= {p.name for p in paths}, "EXACT_TEST_CATALOG_DRIFT"
-          assert all("import resource" in Path("tests", name).read_text("utf-8")
-                     for name in posix_only), "UNIX_MODULE_REASON_DRIFT"
+          posix_import_sources = {
+              "test_free_fanout_sidecar.py": "scripts/free_fanout_sidecar.py",
+              "test_nci04g6_native_credit.py": "tests/test_nci04g6_native_credit.py",
+              "test_nci04g7_source_producer.py": "tests/test_nci04g7_source_producer.py",
+          }
+          assert set(posix_import_sources) == posix_only, "UNIX_MODULE_CATALOG_DRIFT"
+          assert all("import resource" in Path(source).read_text("utf-8")
+                     for source in posix_import_sources.values()), "UNIX_MODULE_REASON_DRIFT"
           sys.path.insert(0, str(Path("tests").resolve()))
           loader = unittest.TestLoader()
           suite = unittest.TestSuite()
