@@ -17,7 +17,9 @@ PAIRS=((False,False),(False,True),(True,False),(True,True))
 FRAMES={value: ((False,False) if not value else (True,False))
         for value in (False,True)}
 
-def trial(heldout=(True,True),bias=False):
+def trial(heldout=(True,True),bias=False,rule="xor"):
+    if rule not in ("xor","and"):
+        raise ValueError("PUBLIC_RULE_INVALID")
     if heldout not in ((False,False),(True,False),(False,True),(True,True)):
         raise ValueError("HELDOUT_CONFIG_INVALID")
     candidate=CompositionalLocalCells()
@@ -40,7 +42,7 @@ def trial(heldout=(True,True),bias=False):
     for messages in compositions:
         if messages==heldout:continue
         frame=FRAMES[messages[0]]+FRAMES[messages[1]]
-        result=messages[0]^messages[1]^bias
+        result=((messages[0]^messages[1]) if rule=="xor" else (messages[0] and messages[1]))^bias
         for _ in range(2):
             start=process_time_ns()
             candidate.observe_final(frame,result)
@@ -53,7 +55,7 @@ def trial(heldout=(True,True),bias=False):
             times["tabular"]+=process_time_ns()-start
             final_actions+=1
     testframe=FRAMES[heldout[0]]+FRAMES[heldout[1]]
-    correct=heldout[0]^heldout[1]^bias
+    correct=((heldout[0]^heldout[1]) if rule=="xor" else (heldout[0] and heldout[1]))^bias
     outcomes={}
     for name,result in (("native",candidate.predict(testframe)),
                         ("factorized",factor.predict(testframe)),
@@ -62,7 +64,7 @@ def trial(heldout=(True,True),bias=False):
                         "wrong":int(result is not None and result!=correct),
                         "abstention":int(result is None)}
     return {
-        "heldout":list(heldout),"bias":bias,
+        "heldout":list(heldout),"bias":bias,"rule":rule,
         "public_pair_actions":pair_actions,"public_final_actions":final_actions,
         "total_public_actions":pair_actions+final_actions,
         "native_observations":candidate.observations(),
@@ -82,7 +84,10 @@ def run():
           ((False,False),(False,True),(True,False),(True,True))
           for bias in (False,True)]
     return {"runs":rows,
-            "scope":"Eight held-out two-stage compositions; completed public intermediate and terminal outcomes, independent conventional factorization",
+            "non_affine_negative":[trial(heldout,bias,"and") for heldout in
+             ((False,False),(False,True),(True,False),(True,True))
+             for bias in (False,True)],
+            "scope":"Eight held-out affine compositions plus eight non-affine negative controls; completed public feedback and matched conventional factorization",
             "limits":"Handcrafted binary public subcause probes and affine compositional hypothesis; this is not autonomous discovery, original DoorKey, or demonstrated native superiority."}
 if __name__=="__main__":
     print(json.dumps(run(),sort_keys=True))
