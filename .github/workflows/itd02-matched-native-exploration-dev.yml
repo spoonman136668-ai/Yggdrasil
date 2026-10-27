@@ -64,7 +64,7 @@ jobs:
           )
           PHASES=(("initial",120),("reversal",60))
           SEEDS=(0,1,2,3)
-          ACTORS=("native_greedy","native_probe","count_probe")
+          ACTORS=("native_greedy","native_probe","count_probe","count_ema","count_window")
           TRIALS=[]
           def cold_model(checkpoint, expected):
               code=("import json,sys,hashlib;"
@@ -91,8 +91,9 @@ jobs:
           
           def new_actor(mode):
               return {"mode":mode,
-                      "model":None if mode=="count_probe" else NativeTaskRingBridgeDev(),
-                      "table":{},"visits":Counter(),"log":[],"checkpoints":[]}
+                      "model":None if mode.startswith("count") else NativeTaskRingBridgeDev(),
+                      "table":{},"ema":{},"window":{},
+                      "visits":Counter(),"log":[],"checkpoints":[]}
           def choose(actor,obs,seed):
               mode=actor["mode"]
               v=actor["visits"][obs]
@@ -102,12 +103,18 @@ jobs:
                   greedy=m.choose()
               else:
                   def mean(a):
-                      n,total=actor["table"].get((obs,a),(0,0))
-                      return total/n if n else 0
+                      key=(obs,a)
+                      if mode=="count_ema":
+                          return actor["ema"].get(key,0.)
+                      if mode=="count_window":
+                          records=actor["window"].get(key,())
+                          return sum(records)/len(records) if records else 0.
+                      n,total=actor["table"].get(key,(0,0))
+                      return total/n if n else 0.
                   greedy=max(ACTIONS,key=mean)
               # Exactly the same fixed source-blind exploration opportunities for the
               # native and conventional acting learners. No guessed reward law.
-              forced=(mode.endswith("probe") and (v<3 or (v+seed)%9==0))
+              forced=(mode!="native_greedy" and (v<3 or (v+seed)%9==0))
               if forced:
                   act=ACTIONS[(v+seed)%len(ACTIONS)]
               else:
@@ -127,8 +134,15 @@ jobs:
                   checkpoint=m.checkpoint()
                   actor["checkpoints"].append(checkpoint)
               else:
-                  n,total=actor["table"].get((obs,action),(0,0))
-                  actor["table"][(obs,action)]=(n+1,total+reward)
+                  key=(obs,action)
+                  n,total=actor["table"].get(key,(0,0))
+                  actor["table"][key]=(n+1,total+reward)
+                  prior=actor["ema"].get(key)
+                  actor["ema"][key]=float(reward) if prior is None else (prior+reward)/2.
+                  window=actor["window"].setdefault(key,[])
+                  window.append(reward)
+                  if len(window)>6:
+                      window.pop(0)
               actor["log"].append((obs,action,reward,forced))
               return reward
           
@@ -139,8 +153,14 @@ jobs:
               else:
                   def best(obs):
                       def val(a):
-                          n,total=actor["table"].get((obs,a),(0,0))
-                          return total/n if n else 0
+                          key=(obs,a)
+                          if actor["mode"]=="count_ema":
+                              return actor["ema"].get(key,0.)
+                          if actor["mode"]=="count_window":
+                              window=actor["window"].get(key,())
+                              return sum(window)/len(window) if window else 0.
+                          n,total=actor["table"].get(key,(0,0))
+                          return total/n if n else 0.
                       return max(ACTIONS,key=val)
                   choices={obs:best(obs) for obs in TRAIN+UNSEEN}
               scores={}
@@ -194,7 +214,23 @@ jobs:
                       raise AssertionError("UNMATCHED_PUBLIC_BUDGET")
               return {"family":family,"seed":seed,"actors":records,
                       "cold_restarts":cold,
-                      "count_control_entries":len(actors["count_probe"]["table"]),
+                      "count_control_entries":{
+                          mode:len(actors[mode]["table"])
+                          for mode in ("count_probe","count_ema","count_window")
+                      },
+                      "conventional_storage_bytes":{
+                          mode:len(json.dumps({
+                            "table":sorted((k[0],k[1],v[0],v[1])
+                                           for k,v in actors[mode]["table"].items()),
+                            "ema":sorted((k[0],k[1],v)
+                                         for k,v in actors[mode]["ema"].items())
+                                         if mode=="count_ema" else [],
+                            "window":sorted((k[0],k[1],v)
+                                            for k,v in actors[mode]["window"].items())
+                                            if mode=="count_window" else []
+                          },separators=(",",":"),sort_keys=True).encode())
+                          for mode in ("count_probe","count_ema","count_window")
+                      },
                       "native_final_checkpoint_bytes":{
                           m:len(actors[m]["checkpoints"][-1])
                           for m in ("native_greedy","native_probe")}}
@@ -223,6 +259,11 @@ jobs:
            "native_probe_better_than_count_probe_both_phases":
               all(means["native_probe"][p]["total_reward_mean"]>
                   means["count_probe"][p]["total_reward_mean"] for p,_ in PHASES),
+           "native_probe_vs_recency_controls_reversal":{
+              mode:means["native_probe"]["reversal"]["total_reward_mean"]-
+                   means[mode]["reversal"]["total_reward_mean"]
+              for mode in ("count_ema","count_window")
+           },
            "native_probe_seen_control_gap_initial":
               means["native_probe"]["initial"]["seen_frozen_reward_mean"]-
               means["count_probe"]["initial"]["seen_frozen_reward_mean"],
@@ -246,7 +287,7 @@ jobs:
            "trials":TRIALS,
            "wall_seconds":round(time.perf_counter()-t0,5)
           }
-          if len(TRIALS)!=8 or receipt["total_actor_public_steps"]!=4320:
+          if len(TRIALS)!=8 or receipt["total_actor_public_steps"]!=7200:
               raise AssertionError("TRIAL_ACCOUNTING_INVALID")
           if not all(len(t["cold_restarts"])==2 and all(v["fresh_interpreter"]
               for v in t["cold_restarts"].values()) for t in TRIALS):
