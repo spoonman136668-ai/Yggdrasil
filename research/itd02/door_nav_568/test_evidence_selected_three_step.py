@@ -15,6 +15,17 @@ class EvidenceSelectorTests(unittest.TestCase):
             self.assertLessEqual(candidate["stored_examples"], candidate["max_examples"])
             self.assertIn(candidate["decision"], (None, 0, 1))
 
+    def test_verified_positive_and_negative_selection_are_frozen(self):
+        report = run()
+        newer = report["B_changed"]
+        older = report["A_prior_context"]
+        self.assertTrue(newer["admitted"])
+        self.assertEqual(newer["selected"], "active")
+        self.assertEqual(newer["decision"], newer["expected"])
+        self.assertFalse(older["admitted"])
+        self.assertIsNone(older["selected"])
+        self.assertIsNone(older["decision"])
+
     def test_no_evidence_abstains_and_duplicate_probe_is_rejected(self):
         candidate = EvidenceSelectedThreeStep()
         fit(candidate, PublicTransitionPlanner())
