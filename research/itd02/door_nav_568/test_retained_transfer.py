@@ -51,3 +51,16 @@ class RetainedTransferTests(unittest.TestCase):
         unrelated=[r for r in run()["runs"]
                    if r["relationship_diagnostic"]=="unrelated"]
         self.assertGreater(sum(r["after"]["local"]["wrong"] for r in unrelated),0)
+
+    def test_transfer_must_not_promote_under_unrelated_drift(self):
+        rows=run()["runs"]
+        negative=[r for r in rows if r["relationship_diagnostic"]=="unrelated"]
+        expected={"correct":288,"wrong":384,"abstentions":0}
+        observed={key:sum(r["after"]["local"][key] for r in negative)
+                  for key in expected}
+        self.assertEqual(observed,expected)
+        self.assertEqual(observed["wrong"],sum(
+            r["after"]["table"]["wrong"] for r in negative))
+        self.assertEqual(sum(r["after"]["scratch"]["abstentions"]
+                             for r in negative),672)
+        self.assertGreater(observed["wrong"],observed["correct"])
