@@ -1,0 +1,270 @@
+name: ITD-02 source-free matched action-exploration qualification
+on:
+  push:
+    branches:
+      - qualification/itd02-exploration-matched-20261027
+permissions:
+  contents: read
+jobs:
+  native-explore-comparison:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 18
+    env:
+      SOURCE_SHA: e8c7dca8966a7d2721f49df2a9ac4c7419921097
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Set unchanged source byte identity
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: e8c7dca8966a7d2721f49df2a9ac4c7419921097
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Check exact read-only native source and Atlas
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+      - name: Run native exploration candidate and independently acting conventional control
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          """Development-only, public consequence, matched-budget mechanism discrimination."""
+          import hashlib
+          import json
+          import os
+          import platform
+          import statistics
+          import subprocess
+          import sys
+          import time
+          from collections import Counter
+          from yggdrasil.itd02_native_task_bridge_dev import NativeTaskRingBridgeDev
+          from yggdrasil.itd02_local_ring_memory_dev import ACTIONS
+          
+          TRAIN=("LRV","MRV")
+          UNSEEN=("docked_LRV","docked_MRV")
+          FAMILIES=(
+            {"LRV":"Backup","MRV":"GoForward","docked_LRV":"Backup","docked_MRV":"GoForward"},
+            {"LRV":"GoForward","MRV":"Backup","docked_LRV":"GoForward","docked_MRV":"Backup"},
+          )
+          PHASES=(("initial",120),("reversal",60))
+          SEEDS=(0,1,2,3)
+          ACTORS=("native_greedy","native_probe","count_probe")
+          TRIALS=[]
+          def cold_model(checkpoint, expected):
+              code=("import json,sys,hashlib;"
+                    "from yggdrasil.itd02_native_task_bridge_dev import NativeTaskRingBridgeDev;"
+                    "raw=sys.stdin.buffer.read();m=NativeTaskRingBridgeDev.restore(raw);"
+                    "print(json.dumps({'id':m.model_identities(),'n':m.transitions,"
+                    "'sha':hashlib.sha256(m.checkpoint()).hexdigest()}))")
+              p=subprocess.run((sys.executable,"-B","-c",code),input=checkpoint,
+                  stdout=subprocess.PIPE,stderr=subprocess.PIPE,check=True,timeout=20)
+              got=json.loads(p.stdout)
+              if got != expected:
+                  raise AssertionError("COLD_RESTART_NATIVE_STATE_MISMATCH")
+              return NativeTaskRingBridgeDev.restore(checkpoint)
+          
+          def trained_native_choice(model, obs):
+              m=NativeTaskRingBridgeDev.restore(model.checkpoint())
+              ids=m.model_identities()
+              m.start_frozen_evaluation(ids["native"],ids["memory"])
+              m.start_observation(obs)
+              choice=m.choose()
+              if m.model_identities()!=ids:
+                  raise AssertionError("EVAL_UPDATED_PARAMETERS")
+              return choice
+          
+          def new_actor(mode):
+              return {"mode":mode,
+                      "model":None if mode=="count_probe" else NativeTaskRingBridgeDev(),
+                      "table":{},"visits":Counter(),"log":[],"checkpoints":[]}
+          def choose(actor,obs,seed):
+              mode=actor["mode"]
+              v=actor["visits"][obs]
+              if mode.startswith("native"):
+                  m=actor["model"]
+                  m.start_observation(obs)
+                  greedy=m.choose()
+              else:
+                  def mean(a):
+                      n,total=actor["table"].get((obs,a),(0,0))
+                      return total/n if n else 0
+                  greedy=max(ACTIONS,key=mean)
+              # Exactly the same fixed source-blind exploration opportunities for the
+              # native and conventional acting learners. No guessed reward law.
+              forced=(mode.endswith("probe") and (v<3 or (v+seed)%9==0))
+              if forced:
+                  act=ACTIONS[(v+seed)%len(ACTIONS)]
+              else:
+                  act=greedy
+              if act not in ACTIONS:
+                  raise AssertionError("NONPUBLIC_ACTION")
+              actor["visits"][obs]+=1
+              return act,forced
+          
+          def step(actor,obs,law,seed):
+              # Independent source reset for every actor, with same obs/order/budget.
+              action,forced=choose(actor,obs,seed)
+              reward=10 if action==law[obs] else -3  # evaluator owns the law
+              if actor["model"] is not None:
+                  m=actor["model"]
+                  m.accept_public_transition(action,"Nothing",reward,learning=True,terminal=True)
+                  checkpoint=m.checkpoint()
+                  actor["checkpoints"].append(checkpoint)
+              else:
+                  n,total=actor["table"].get((obs,action),(0,0))
+                  actor["table"][(obs,action)]=(n+1,total+reward)
+              actor["log"].append((obs,action,reward,forced))
+              return reward
+          
+          def evaluate(actor,law):
+              if actor["model"] is not None:
+                  choices={obs:trained_native_choice(actor["model"],obs)
+                           for obs in TRAIN+UNSEEN}
+              else:
+                  def best(obs):
+                      def val(a):
+                          n,total=actor["table"].get((obs,a),(0,0))
+                          return total/n if n else 0
+                      return max(ACTIONS,key=val)
+                  choices={obs:best(obs) for obs in TRAIN+UNSEEN}
+              scores={}
+              for scope,obslist in (("seen",TRAIN),("unseen",UNSEEN)):
+                  scores[scope]=sum(10 if choices[obs]==law[obs] else -3 for obs in obslist)
+              return {"choices":choices,"reward_if_frozen":scores}
+          
+          def run_trial(family,seed):
+              original=FAMILIES[family]
+              reversed_law=FAMILIES[1-family]
+              actors={mode:new_actor(mode) for mode in ACTORS}
+              records={mode:{"initial":None,"reversal":None} for mode in ACTORS}
+              cold={}
+              for phase,length in PHASES:
+                  law=original if phase=="initial" else reversed_law
+                  for epoch in range(length):
+                      obs=TRAIN[(epoch+seed)%2]
+                      for mode in ACTORS:
+                          step(actors[mode],obs,law,seed)
+                  for mode in ACTORS:
+                      a=actors[mode]
+                      x=a["log"][-length:]
+                      assert len(x)==length
+                      first=[row[2] for row in x[:24]]
+                      last=[row[2] for row in x[-24:]]
+                      records[mode][phase]={
+                        "reward_total":sum(row[2] for row in x),
+                        "first24_mean":statistics.mean(first),
+                        "last24_mean":statistics.mean(last),
+                        "forced_actions":sum(row[3] for row in x),
+                        "action_counts":dict(Counter(row[1] for row in x)),
+                        "frozen":evaluate(a,law),
+                      }
+                      if phase=="initial" and a["model"] is not None:
+                          m=a["model"]
+                          snap=m.checkpoint()
+                          expected={"id":m.model_identities(),"n":length,
+                                    "sha":hashlib.sha256(snap).hexdigest()}
+                          restored=cold_model(snap,expected)
+                          before={obs:trained_native_choice(m,obs) for obs in TRAIN+UNSEEN}
+                          after={obs:trained_native_choice(restored,obs) for obs in TRAIN+UNSEEN}
+                          if before!=after:
+                              raise AssertionError("COLD_RESTART_ACTION_DRIFT")
+                          a["model"]=restored
+                          cold[mode]={"fresh_interpreter":True,"action_retained":True,
+                                      "state_sha256":expected["sha"],"bytes":len(snap)}
+              for mode,a in actors.items():
+                  if (len(a["log"])!=180 or
+                      (a["model"] is not None and
+                       (a["model"].transitions!=180 or len(a["checkpoints"])!=180))):
+                      raise AssertionError("UNMATCHED_PUBLIC_BUDGET")
+              return {"family":family,"seed":seed,"actors":records,
+                      "cold_restarts":cold,
+                      "count_control_entries":len(actors["count_probe"]["table"]),
+                      "native_final_checkpoint_bytes":{
+                          m:len(actors[m]["checkpoints"][-1])
+                          for m in ("native_greedy","native_probe")}}
+          
+          t0=time.perf_counter()
+          for family in range(len(FAMILIES)):
+              for seed in SEEDS:
+                  TRIALS.append(run_trial(family,seed))
+          means={}
+          for actor in ACTORS:
+              means[actor]={}
+              for phase,_ in PHASES:
+                  group=[t["actors"][actor][phase] for t in TRIALS]
+                  means[actor][phase]={
+                     "total_reward_mean":statistics.mean(x["reward_total"] for x in group),
+                     "first24_mean":statistics.mean(x["first24_mean"] for x in group),
+                     "last24_mean":statistics.mean(x["last24_mean"] for x in group),
+                     "seen_frozen_reward_mean":statistics.mean(x["frozen"]["reward_if_frozen"]["seen"] for x in group),
+                     "unseen_frozen_reward_mean":statistics.mean(x["frozen"]["reward_if_frozen"]["unseen"] for x in group),
+                     "forced_mean":statistics.mean(x["forced_actions"] for x in group)
+                  }
+          comparison={
+           "native_probe_better_than_native_greedy_both_phases":
+              all(means["native_probe"][p]["total_reward_mean"]>
+                  means["native_greedy"][p]["total_reward_mean"] for p,_ in PHASES),
+           "native_probe_better_than_count_probe_both_phases":
+              all(means["native_probe"][p]["total_reward_mean"]>
+                  means["count_probe"][p]["total_reward_mean"] for p,_ in PHASES),
+           "native_probe_seen_control_gap_initial":
+              means["native_probe"]["initial"]["seen_frozen_reward_mean"]-
+              means["count_probe"]["initial"]["seen_frozen_reward_mean"],
+           "native_probe_unseen_control_gap_initial":
+              means["native_probe"]["initial"]["unseen_frozen_reward_mean"]-
+              means["count_probe"]["initial"]["unseen_frozen_reward_mean"]
+          }
+          receipt={
+           "schema":"ygg.itd02.matched-exploration.source-free.v1",
+           "source_sha":os.environ["SOURCE_SHA"],
+           "authority":"source-free-dev-only-no-external-science",
+           "platform":platform.platform(),
+           "seed_count":len(SEEDS),
+           "family_count":len(FAMILIES),
+           "episodes_per_actor_per_trial":sum(n for _,n in PHASES),
+           "total_actor_public_steps":sum(n for _,n in PHASES)*len(TRIALS)*len(ACTORS),
+           "matched_exploration":"fixed-public-observation-visit-opportunities",
+           "conventional_actor_is_independent_on_policy":True,
+           "oracle_law_visible_to_actor":False,
+           "means":means,"comparison":comparison,
+           "trials":TRIALS,
+           "wall_seconds":round(time.perf_counter()-t0,5)
+          }
+          if len(TRIALS)!=8 or receipt["total_actor_public_steps"]!=4320:
+              raise AssertionError("TRIAL_ACCOUNTING_INVALID")
+          if not all(len(t["cold_restarts"])==2 and all(v["fresh_interpreter"]
+              for v in t["cold_restarts"].values()) for t in TRIALS):
+              raise AssertionError("COLD_RESTART_NOT_COMPLETE")
+          path=os.path.join(os.environ["RUNNER_TEMP"],"itd02_exploration_matched.json")
+          with open(path,"w",encoding="utf-8") as out:
+              json.dump(receipt,out,sort_keys=True,indent=2)
+          print("ITD02_EXPLORATION_SUMMARY="+json.dumps(
+              {k:v for k,v in receipt.items() if k!="trials"},sort_keys=True))
+          # Candidate failure is preserved, NOT silently optimized or discarded.
+          
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Upload full source-free negative and positive evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: itd02-exploration-${{ matrix.os }}
+          path: ${{ runner.temp }}/itd02_exploration_matched.json
+          if-no-files-found: warn
+          retention-days: 14
