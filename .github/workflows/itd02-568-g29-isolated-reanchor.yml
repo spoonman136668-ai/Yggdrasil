@@ -1,0 +1,48 @@
+name: ITD-02 568 isolated G29 artifact reanchor
+on:
+  push:
+    branches:
+      - repair/itd02-568-g29-reanchor-20261027
+permissions:
+  contents: read
+jobs:
+  artifact-only-reanchor:
+    if: github.event.head_commit.message == 'Arm isolated ITD-02 G29 reanchor'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Reanchor only generated G29 artifacts to exact isolated source
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=21199ca7b761acc66d5c479355bd33c21ba8859d
+          SOURCE="$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test -z "$(git status --porcelain)"
+          git merge-base --is-ancestor "$BASE" "$SOURCE"
+          test "$(git rev-list --count "$BASE..$SOURCE")" = "1"
+          diff -u <(git diff --name-only "$BASE" "$SOURCE") <(printf '%s\n' .github/workflows/itd02-568-g29-isolated-reanchor.yml)
+          test "$(git rev-parse "$BASE:scripts/build_code_atlas.py")" = "$(git rev-parse HEAD:scripts/build_code_atlas.py)"
+          python scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git diff --cached --quiet && exit 1
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "Reanchor ITD-02 568 G29 to source $SOURCE"
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | wc -l | tr -d ' ')" = "3"
+          python scripts/build_code_atlas.py --check-if-present
+          python -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/repair/itd02-568-g29-reanchor-20261027
+          echo "G29_SOURCE=$SOURCE"
+          echo "G29_ARTIFACT_COMMIT=$(git rev-parse HEAD)"
