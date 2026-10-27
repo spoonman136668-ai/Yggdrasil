@@ -26,6 +26,34 @@ class EvidenceSelectorTests(unittest.TestCase):
         self.assertIsNone(older["selected"])
         self.assertIsNone(older["decision"])
 
+    def test_archived_candidate_selected_on_complete_public_evidence(self):
+        candidate = EvidenceSelectedThreeStep()
+        fit(candidate, PublicTransitionPlanner())
+        candidate.freeze_boundary()
+        candidate.probing = True
+        candidate.evidence = [
+            (b"xA-public", 0, ord("D"), (None, ord("D"))),
+            (b"xA-public", 1, ord("M"), (None, ord("M"))),
+        ]
+        self.assertTrue(candidate.resolve_probe())
+        self.assertEqual(candidate.selected, "snapshot")
+
+    def test_partial_or_equal_predictions_still_abstain(self):
+        candidate = EvidenceSelectedThreeStep()
+        fit(candidate, PublicTransitionPlanner())
+        candidate.freeze_boundary()
+        for predictions in (
+            ((None, ord("D")), (None, None)),
+            ((ord("D"), ord("D")), (ord("M"), ord("M"))),
+        ):
+            candidate.probing = True
+            candidate.evidence = [
+                (b"xA-public", 0, ord("D"), predictions[0]),
+                (b"xA-public", 1, ord("M"), predictions[1]),
+            ]
+            self.assertFalse(candidate.resolve_probe())
+            self.assertIsNone(candidate.selected)
+
     def test_no_evidence_abstains_and_duplicate_probe_is_rejected(self):
         candidate = EvidenceSelectedThreeStep()
         fit(candidate, PublicTransitionPlanner())
