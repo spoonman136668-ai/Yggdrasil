@@ -15,13 +15,23 @@ MAX_SESSION_EPISODES = 128
 class NativeTrainingSessionDev:
     """Wrap exactly one original native model and a source-owner-operated task."""
 
-    def __init__(self, model=None, *, max_steps=128):
+    def __init__(self, model=None, *, max_steps=128,
+                 exploration_period=0, exploration_bootstrap_calls=18):
+        if (type(exploration_period) is not int or
+                (exploration_period != 0 and not 2 <= exploration_period <= 64) or
+                type(exploration_bootstrap_calls) is not int or
+                not 0 <= exploration_bootstrap_calls <= 96):
+            raise ValueError("YGG_SELF_TRAINING_EXPLORATION_INVALID")
         if type(max_steps) is not int or not 1 <= max_steps <= MAX_EPISODE_STEPS:
             raise ValueError("YGG_SELF_TRAINING_STEP_BUDGET_INVALID")
         self.model = NativeTaskRingBridgeDev() if model is None else model
         if type(self.model) is not NativeTaskRingBridgeDev:
             raise ValueError("YGG_SELF_TRAINING_NATIVE_RUNTIME_REQUIRED")
         self.max_steps = max_steps
+        # Opt-in: original greedy behavior remains the default. The source
+        # owner must retain this configuration beside checkpoint identity.
+        self.exploration_period = exploration_period
+        self.exploration_bootstrap_calls = exploration_bootstrap_calls
         # External/source-owner reconciliation remains mandatory after a fault.
         # This local latch is not a durable receipt across process restarts.
         self._quarantined = False
@@ -60,7 +70,10 @@ class NativeTrainingSessionDev:
         for step in range(self.max_steps):
             try:
                 self.model.start_observation(observation)
-                action = self.model.choose()
+                action = (self.model.choose_training(
+                    exploration_period=self.exploration_period,
+                    bootstrap_calls=self.exploration_bootstrap_calls)
+                    if self.exploration_period else self.model.choose())
             except BaseException:
                 self._quarantined = True
                 raise
