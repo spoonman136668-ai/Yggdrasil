@@ -1,0 +1,53 @@
+name: ITD-02 native crash recovery and CPU resource engineering
+on:
+  push:
+    branches:
+      - research/itd02-native-crash-retail-meter-20261027
+  pull_request:
+    paths:
+      - 'yggdrasil/itd02_local_resource_probe_dev.py'
+      - 'tests/test_itd02_local_resource_probe_dev.py'
+      - 'tests/test_itd02_public_source_journal_dev.py'
+      - '.github/workflows/itd02-native-crash-retail-meter.yml'
+permissions:
+  contents: read
+jobs:
+  native-cold-crash-and-cost:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Crash actual child process; read cold source custody without replay
+        shell: pwsh
+        run: |
+          python -B -m unittest discover -s tests -p test_itd02_public_source_journal_dev.py -v
+          if ($LASTEXITCODE -ne 0) { throw 'PUBLIC_SOURCE_CRASH_TEST_FAILED' }
+          python -B -m unittest discover -s tests -p test_itd02_local_resource_probe_dev.py -v
+          if ($LASTEXITCODE -ne 0) { throw 'NATIVE_RESOURCE_PROBE_TEST_FAILED' }
+          python -B -m unittest discover -s tests -p test_itd02_native_training_session_dev.py -v
+          if ($LASTEXITCODE -ne 0) { throw 'ORIGINAL_TRAINER_REGRESSION_FAILED' }
+      - name: Measure whole local training and persistence (hosted CI comparator only)
+        shell: pwsh
+        run: |
+          python -B -m yggdrasil.itd02_local_resource_probe_dev --episodes 3 --steps 16 --output "$env:RUNNER_TEMP/ygg-itd02-native-local-cost.json"
+          if ($LASTEXITCODE -ne 0) { throw 'NATIVE_SOURCEFREE_COST_MEASUREMENT_FAILED' }
+          python -B -c "import json,sys; p=json.load(open(sys.argv[1], encoding='utf-8')); assert p['authentic_environment_steps']==0 and not p['consumer_retail_acceptance'] and p['public_interactions']==48; print('ITD02_NATIVE_COST_CLASSIFICATION_PASS')" "$env:RUNNER_TEMP/ygg-itd02-native-local-cost.json"
+          if ($LASTEXITCODE -ne 0) { throw 'NATIVE_COST_SOURCE_CLAIM_INVALID' }
+      - name: Ensure source checkout remains clean
+        shell: pwsh
+        run: |
+          $dirty = @(git status --porcelain --untracked-files=all)
+          if ($dirty.Count -gt 0) { throw "NATIVE_RESOURCE_CHECKOUT_DRIFT: $($dirty -join ', ')" }

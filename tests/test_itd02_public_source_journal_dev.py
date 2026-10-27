@@ -214,6 +214,82 @@ class PublicSourceJournalTests(unittest.TestCase):
             with self.assertRaisesRegex(SourceCustodyDenied, "CHECKPOINT_INTEGRITY"):
                 inspect_custody(temp)
 
+    def test_real_process_exit_after_source_step_intent_cold_quarantines(self):
+        # A separate Python process exits while applying a SOURCE-FREE toy
+        # action, without unwinding or calling any cleanup code. The parent
+        # proves the intent was already durable and no action was replayed.
+        with tempfile.TemporaryDirectory() as temp:
+            child = """
+import os,sys
+from yggdrasil.itd02_public_source_journal_dev import JournaledPublicSourceDev
+from yggdrasil.itd02_native_training_session_dev import NativeTrainingSessionDev
+class CrashAfterIntent:
+    def reset_public(self):
+        return 'docked_MRV'
+    def step_public(self, action):
+        os._exit(71)
+with JournaledPublicSourceDev(
+    sys.argv[1], CrashAfterIntent(), episode_id='child-crash-after-intent',
+    source_sha256=sys.argv[2], max_steps=2,
+    role='OWNER_PUBLIC_FIT_DEVELOPMENT_ONLY',
+) as owner:
+    owner.execute_one(NativeTrainingSessionDev(max_steps=2))
+raise AssertionError('source crash not reached')
+"""
+            done = subprocess.run(
+                [sys.executable, "-B", "-c", child, temp, IDENTITY],
+                capture_output=True, text=True, timeout=15)
+            self.assertEqual(done.returncode, 71, done.stderr)
+            cold = inspect_custody(temp, expected_source_sha256=IDENTITY)
+            self.assertEqual(cold["status"], "QUARANTINE")
+            self.assertEqual(cold["steps"], 0)
+            journal = (Path(temp) / "public-events.jsonl").read_text("ascii")
+            self.assertIn('"kind":"step_intent"', journal)
+            self.assertNotIn('"kind":"step_result"', journal)
+            self.assertFalse((Path(temp) / "learned-checkpoint.bin").exists())
+            with self.assertRaises(FileExistsError):
+                source(temp, SourceFreePublicFixture())
+
+    def test_real_process_exit_after_checkpoint_intent_cold_quarantines(self):
+        # Source-FREE end-of-episode process crash after checkpoint INTENT,
+        # before final journal commit. This isn't a power-loss durability test.
+        with tempfile.TemporaryDirectory() as temp:
+            child = """
+import os,sys
+import yggdrasil.itd02_public_source_journal_dev as j
+from yggdrasil.itd02_native_training_session_dev import NativeTrainingSessionDev
+class FinishedToySource:
+    def reset_public(self):
+        return 'docked_MRV'
+    def step_public(self, action):
+        return ('Nothing', 0, False, True)
+def die_before_checkpoint(directory, payload):
+    os._exit(72)
+j._atomic_checkpoint = die_before_checkpoint
+with j.JournaledPublicSourceDev(
+    sys.argv[1], FinishedToySource(), episode_id='child-crash-before-checkpoint',
+    source_sha256=sys.argv[2], max_steps=1,
+    role='OWNER_PUBLIC_FIT_DEVELOPMENT_ONLY',
+) as owner:
+    owner.execute_one(NativeTrainingSessionDev(max_steps=1))
+raise AssertionError('checkpoint crash not reached')
+"""
+            done = subprocess.run(
+                [sys.executable, "-B", "-c", child, temp, IDENTITY],
+                capture_output=True, text=True, timeout=15)
+            self.assertEqual(done.returncode, 72, done.stderr)
+            cold = inspect_custody(temp, expected_source_sha256=IDENTITY)
+            self.assertEqual(cold["status"], "QUARANTINE")
+            self.assertEqual(cold["steps"], 1)
+            self.assertFalse(cold["checkpoint_verified"])
+            raw = (Path(temp) / "public-events.jsonl").read_text("ascii")
+            self.assertIn('"kind":"checkpoint_intent"', raw)
+            self.assertNotIn('"kind":"checkpoint_result"', raw)
+            with self.assertRaisesRegex(
+                SourceCustodyDenied, "COLD_RESTORE_NOT_COMMITTED"):
+                load_verified_native_model(
+                    temp, expected_source_sha256=IDENTITY)
+
     def test_source_owner_role_and_session_ceiling_required(self):
         with tempfile.TemporaryDirectory() as temp:
             with self.assertRaisesRegex(SourceCustodyDenied, "NO_PUBLIC_FIT_OWNER_ROLE"):
