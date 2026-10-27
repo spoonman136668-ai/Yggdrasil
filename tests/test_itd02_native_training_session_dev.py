@@ -92,6 +92,43 @@ class NativeTrainingSessionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "BUDGET_INVALID"):
             session.train_bounded(source, 129, lambda x: None)
 
+    def test_no_automatic_replay_of_nonterminal_source_episode(self):
+        source = PublicSource(terminal=False)
+        session = NativeTrainingSessionDev(max_steps=1)
+        with self.assertRaisesRegex(ValueError, "NO_SOURCE_TERMINAL"):
+            session.run_episode(source)
+        self.assertEqual(session.model.transitions, 1)
+        with self.assertRaisesRegex(ValueError, "SOURCE_OR_MODE_INVALID"):
+            session.run_episode(source)
+        self.assertEqual(source.resets, 1)
+        self.assertEqual(len(source.actions), 1)
+
+    def test_failed_source_reset_does_not_replay_unknown_effect(self):
+        class AmbiguousReset(PublicSource):
+            def reset_public(self):
+                self.resets += 1
+                raise OSError("RESET_MAY_HAVE_CONSUMED_SOURCE")
+        source = AmbiguousReset()
+        session = NativeTrainingSessionDev(max_steps=1)
+        with self.assertRaisesRegex(OSError, "RESET_MAY_HAVE"):
+            session.run_episode(source)
+        with self.assertRaisesRegex(ValueError, "SOURCE_OR_MODE_INVALID"):
+            session.run_episode(source)
+        self.assertEqual(source.resets, 1)
+        self.assertEqual(source.actions, [])
+
+    def test_uncertain_checkpoint_sink_stops_future_episodes(self):
+        source = PublicSource()
+        session = NativeTrainingSessionDev(max_steps=1)
+        def failed_save(_):
+            raise OSError("UNKNOWN_DURABLE_SAVE")
+        with self.assertRaisesRegex(OSError, "UNKNOWN_DURABLE_SAVE"):
+            session.train_bounded(source, 2, failed_save)
+        with self.assertRaisesRegex(ValueError, "SOURCE_OR_MODE_INVALID"):
+            session.run_episode(source)
+        self.assertEqual(source.resets, 1)
+        self.assertEqual(len(source.actions), 1)
+
     def test_original_model_frozen_mode_remains_untrainable(self):
         source = PublicSource()
         session = NativeTrainingSessionDev(max_steps=1)
