@@ -1,0 +1,122 @@
+name: ITD-02 cell-owned ordered local credit v8 regression
+on:
+  push:
+    branches:
+      - research/itd02-local-ordered-credit-20261027
+permissions:
+  contents: read
+jobs:
+  full-source-free-regression:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve exact Git native source bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify unchanged native runtime, isolated candidate diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python - <<'PY'
+          import subprocess
+          from pathlib import Path
+          for name in ('yggdrasil/task_runtime.py',
+                       'yggdrasil/itd02_native_task_bridge_dev.py',
+                       'yggdrasil/itd02_local_ring_memory_dev.py'):
+              assert Path(name).read_bytes() == subprocess.check_output(['git','show','HEAD:'+name])
+          print('NATIVE_BLOB_BYTE_IDENTITY_PASS')
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Run all non-Atlas original tests and emit source-limited regression receipt
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os, platform, time, unittest
+          from pathlib import Path
+          t0=time.perf_counter()
+          python_tests=sorted(Path('tests').glob('test_*.py'))
+          exclusions={'test_code_atlas.py':'ATLAS_NEEDS_EXACT_REGEN'}
+          if os.name=='nt':
+              exclusions.update({
+                  'test_free_fanout_sidecar.py':'UNIX_ONLY_RESOURCE_IMPORT',
+                  'test_nci04g6_native_credit.py':'UNIX_ONLY_RESOURCE_IMPORT',
+                  'test_nci04g7_source_producer.py':'UNIX_ONLY_RESOURCE_IMPORT'
+              })
+          suites=unittest.TestSuite()
+          for name in python_tests:
+              if name.name not in exclusions:
+                  suites.addTests(unittest.defaultTestLoader.discover('tests',pattern=name.name))
+          r=unittest.TextTestRunner(verbosity=2).run(suites)
+          from yggdrasil.itd02_local_ring_memory_dev import NativeRingMemoryDev
+          m=NativeRingMemoryDev()
+          assert len(m.gates)==8 and len(m.heads)==3 and all(len(row)==3 for row in m.heads)
+          assert not hasattr(m,'global_reward_oracle')
+          from yggdrasil.itd02_native_task_bridge_dev import (
+              SCHEMA, _temporal_public_bits, NativeTaskRingBridgeDev
+          )
+          from yggdrasil.itd02_local_ring_memory_dev import (
+              ACTIONS, ACTION_SITES, OBSERVATIONS
+          )
+          assert SCHEMA.endswith("source_only.v8")
+          assert len(m.gates)+sum(map(len,m.heads))==17
+          for site,neighbors in {0:(7,1),2:(1,3),5:(4,6)}.items():
+              seen=set()
+              for o in OBSERVATIONS:
+                  for a in ACTIONS:
+                      frames=(_temporal_public_bits(o,a,0),
+                              _temporal_public_bits(o,a,1))
+                      assert all(frames[p][site]==0 for p in (0,1))
+                      seen.add(tuple(frames[phase][n] for phase in (0,1)
+                                     for n in neighbors))
+              assert len(seen)==15, ("TEMPORAL_LOCAL_CAPACITY_FAIL",site)
+          assert not hasattr(NativeTaskRingBridgeDev(),"global_reward_oracle")
+
+          receipt={
+              "schema":"itd02.two-phase.native-local.candidate-regression.v1",
+              "candidate_sha":os.environ["GITHUB_SHA"],
+              "os":platform.platform(),
+              "all_test_module_count":len(python_tests),
+              "executed_modules":[p.name for p in python_tests if p.name not in exclusions],
+              "excluded_modules":exclusions,
+              "tests_run":r.testsRun,
+              "test_errors":len(r.errors),
+              "test_failures":len(r.failures),
+              "passed":r.wasSuccessful(),
+              "local_cell_gate_parameters":len(m.gates),
+              "native_action_head_parameters":sum(map(len,m.heads)),
+              "elapsed_seconds":round(time.perf_counter()-t0,4),
+              "scientific_first_use":False,
+              "g29_status":"NOT_REGENERATED_FOR_CANDIDATE",
+              "two_phase_neighbor_contexts_per_reward_site":15,
+              "native_predict_calls_per_full_choice":6,
+              "native_observe_calls_per_public_transition":1,
+              "native_checkpoint_schema":"source_only.v8"
+          }
+          print('ITD02_LOCAL_RECENCY_REGRESSION='+json.dumps(receipt,sort_keys=True))
+          if not r.wasSuccessful() or r.testsRun<40:
+              raise SystemExit('CANDIDATE_SOURCE_REGRESSION_FAIL_CLOSED')
+          PY
+      - name: Assert no source or accepted state changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "$(git status --porcelain)"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
