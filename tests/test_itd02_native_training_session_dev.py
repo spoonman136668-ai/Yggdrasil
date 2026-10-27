@@ -92,6 +92,54 @@ class NativeTrainingSessionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "BUDGET_INVALID"):
             session.train_bounded(source, 129, lambda x: None)
 
+    def test_completed_episode_needs_checkpoint_ack_before_reuse(self):
+        source = PublicSource()
+        session = NativeTrainingSessionDev(max_steps=1)
+        result = session.run_episode(source)
+        self.assertEqual(len(source.actions), 1)
+        with self.assertRaisesRegex(ValueError, "SOURCE_OR_MODE_INVALID"):
+            session.run_episode(source)
+        self.assertEqual(source.resets, 1)
+        saved = []
+        session.persist_completed(lambda data: saved.append(data))
+        self.assertEqual(saved, [result["checkpoint"]])
+        session.run_episode(source)
+        self.assertEqual(source.resets, 2)
+
+    def test_failed_sink_quarantines_repeated_calls(self):
+        source = PublicSource()
+        session = NativeTrainingSessionDev(max_steps=1)
+        def ambiguous_sink(_data):
+            raise RuntimeError("DURABLE_CHECKPOINT_UNCERTAIN")
+        with self.assertRaisesRegex(RuntimeError, "CHECKPOINT_UNCERTAIN"):
+            session.train_bounded(source, 2, ambiguous_sink)
+        self.assertEqual((source.resets, len(source.actions)), (1, 1))
+        for operation in (lambda: session.run_episode(source),
+                          lambda: session.train_bounded(source, 1, lambda _: None),
+                          lambda: session.persist_completed(lambda _: None)):
+            with self.assertRaisesRegex(ValueError, "SOURCE_OR_MODE_INVALID|CHECKPOINT_NOT_READY"):
+                operation()
+        self.assertEqual((source.resets, len(source.actions)), (1, 1))
+
+    def test_ambiguous_reset_and_invalid_reset_quarantine(self):
+        class AmbiguousReset(PublicSource):
+            def reset_public(self):
+                self.resets += 1
+                raise RuntimeError("SOURCE_RESET_UNCERTAIN")
+        class InvalidReset(PublicSource):
+            def reset_public(self):
+                self.resets += 1
+                return "SOURCE_PRIVATE_VALUE"
+        for source, error, pattern in ((AmbiguousReset(), RuntimeError, "SOURCE_RESET_UNCERTAIN"),
+                                       (InvalidReset(), ValueError, "INITIAL_PUBLIC_OBSERVATION_INVALID")):
+            session = NativeTrainingSessionDev(max_steps=1)
+            with self.assertRaisesRegex(error, pattern):
+                session.run_episode(source)
+            with self.assertRaisesRegex(ValueError, "SOURCE_OR_MODE_INVALID"):
+                session.run_episode(source)
+            self.assertEqual(source.resets, 1)
+            self.assertEqual(source.actions, [])
+
     def test_original_model_frozen_mode_remains_untrainable(self):
         source = PublicSource()
         session = NativeTrainingSessionDev(max_steps=1)
