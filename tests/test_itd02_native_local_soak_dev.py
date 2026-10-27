@@ -41,7 +41,10 @@ class OfflineNativeSoakTests(unittest.TestCase):
             self.assertEqual(result["total_native_interactions"], 12)
             self.assertEqual(result["cold_process_restarts"], 2)
             self.assertEqual(len(result["per_episode"]), 3)
-            self.assertGreater(result["total_child_cpu_ns"], 0)
+            if result["total_child_cpu_ns"] is not None:
+                self.assertGreater(result["total_child_cpu_ns"], 0)
+            # An OS timer may be too coarse for a tiny episode. A measured
+            # zero is never emitted as truthful CPU consumption.
             self.assertGreater(result["journal_and_checkpoint_bytes"], 0)
             self.assertIsNone(result["process_tree_peak_rss_bytes"])
             self.assertIsNone(result["power_joules"])
