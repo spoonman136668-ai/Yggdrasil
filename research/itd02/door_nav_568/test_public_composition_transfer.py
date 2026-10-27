@@ -44,5 +44,17 @@ class PublicCompositionTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             local.observe_pair(2,(True,False),True)
 
+    def test_non_affine_negative_transfer_is_not_promotion(self):
+        rows=run()["non_affine_negative"]
+        self.assertEqual(len(rows),8)
+        for row in rows:
+            self.assertEqual(row["total_public_actions"],22)
+            self.assertEqual(row["heldout_results"]["native"],
+                             row["heldout_results"]["factorized"])
+            self.assertEqual(row["heldout_results"]["native"]["wrong"],1)
+            self.assertEqual(row["heldout_results"]["tabular"]["abstention"],1)
+        with self.assertRaises(ValueError):
+            trial(rule="unsupported")
+
 if __name__=="__main__":
     unittest.main()
