@@ -38,9 +38,9 @@ jobs:
       - name: Emit unambiguous developer resource metrics
         shell: pwsh
         run: |
-          python -B scripts/itd02_native_local_soak_dev.py --root "$env:RUNNER_TEMP/ygg-native-local-soak" --episodes 4 --steps 8
+          python -B scripts/itd02_native_local_soak_dev.py --root "$env:RUNNER_TEMP/ygg-native-local-soak" --episodes 12 --steps 16
           if ($LASTEXITCODE -ne 0) { throw 'SOURCE_FREE_NATIVE_RESOURCE_SOAK_FAILED' }
-          python -B -c "import json,sys;from pathlib import Path;r=json.loads((Path(sys.argv[1])/'source-free-metrics.json').read_text());assert r['original_source_episodes']==0 and r['total_native_interactions']==32 and r['cold_process_restarts']==3 and not r['retail_pc_qualified'];print('CPU_ONLY_SOURCE_FREE_MEASUREMENT=PASS',json.dumps({k:v for k,v in r.items() if k!='per_episode'},sort_keys=True))" "$env:RUNNER_TEMP/ygg-native-local-soak"
+          python -B -c "import json,sys;from pathlib import Path;r=json.loads((Path(sys.argv[1])/'source-free-metrics.json').read_text());assert r['original_source_episodes']==0 and r['total_native_interactions']==192 and r['cold_process_restarts']==11 and not r['retail_pc_qualified'];print('CPU_ONLY_SOURCE_FREE_MEASUREMENT=PASS',json.dumps({k:v for k,v in r.items() if k!='per_episode'},sort_keys=True))" "$env:RUNNER_TEMP/ygg-native-local-soak"
           if ($LASTEXITCODE -ne 0) { throw 'SOURCE_FREE_METRIC_CONTRACT_FAILED' }
       - name: Final clean checkout
         shell: pwsh
