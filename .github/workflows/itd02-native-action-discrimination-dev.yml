@@ -156,13 +156,15 @@ jobs:
                   bridge=session.model
                   trusted_ids=bridge.model_identities()
                   check=bridge.checkpoint()
-                  code="""import json,sys,hashlib
-from yggdrasil.itd02_native_task_bridge_dev import NativeTaskRingBridgeDev
-raw=sys.stdin.buffer.read()
-m=NativeTaskRingBridgeDev.restore(raw)
-print(json.dumps({"ids":m.model_identities(),"transitions":m.transitions,
-"checkpoint_sha256":hashlib.sha256(m.checkpoint()).hexdigest()}))
-"""
+                  code=(
+                      'import json,sys,hashlib; '
+                      'from yggdrasil.itd02_native_task_bridge_dev import NativeTaskRingBridgeDev; '
+                      'raw=sys.stdin.buffer.read(); '
+                      'm=NativeTaskRingBridgeDev.restore(raw); '
+                      'print(json.dumps({"ids":m.model_identities(),'
+                      '"transitions":m.transitions,'
+                      '"checkpoint_sha256":hashlib.sha256(m.checkpoint()).hexdigest()}))'
+                  )
                   proc=subprocess.run([sys.executable,"-B","-c",code],
                                        input=check,stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE,check=True,timeout=15)
