@@ -160,7 +160,9 @@ def child(root, index, steps, crash_index):
         "journal_head": receipt["head"],
         "journal_events": receipt["event_count"],
         "wall_ns": wall_ns,
-        "process_cpu_ns": cpu_ns,
+        # Windows' process_time_ns can round a sub-tick episode to zero.
+        # Unknown is NOT zero CPU usage; never invent a precision we lack.
+        "process_cpu_ns": cpu_ns if cpu_ns > 0 else None,
         "peak_self_rss_bytes": peak_self_rss_bytes(),
         "checkpoint_bytes": (base / "learned-checkpoint.bin").stat().st_size,
         "journal_bytes": (base / "public-events.jsonl").stat().st_size,
@@ -209,7 +211,10 @@ def soak(root, episodes, steps, crash_index):
         "steps_per_episode": steps,
         "total_native_interactions": episodes * steps,
         "cold_process_restarts": max(0, episodes - 1),
-        "total_child_cpu_ns": sum(r["process_cpu_ns"] for r in rows),
+        "total_child_cpu_ns": (
+            sum(r["process_cpu_ns"] for r in rows)
+            if all(r["process_cpu_ns"] is not None for r in rows)
+            else None),
         "total_child_wall_ns": sum(r["wall_ns"] for r in rows),
         "observed_peak_child_rss_bytes": (
             max(r["peak_self_rss_bytes"] for r in rows)
