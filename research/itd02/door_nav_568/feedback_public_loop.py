@@ -12,9 +12,10 @@ from native_public_loop import STARTS
 from revalidating_probe_scheduler import RevalidatingProbeScheduler
 
 class FeedbackPublicLoop(LearningPublicLoop):
-    def __init__(self, enabled=True, capacity=128):
+    def __init__(self, enabled=True, capacity=128, recovery=False):
         super().__init__(capacity=capacity)
         self.enabled = enabled
+        self.recovery = recovery
 
     def episode(self, world, budget=6, recheck=False):
         if not self.enabled:
@@ -25,6 +26,16 @@ class FeedbackPublicLoop(LearningPublicLoop):
         start_ns = perf_counter_ns()
         scheduler = RevalidatingProbeScheduler(current, archive, STARTS,
                                                self.memory, limit=budget)
+        # A complete loss of disagreement is NOT evidence that either model
+        # is correct. Recover only the independent pre-update hypothesis pool;
+        # every recovered hypothesis must still pass physical corroboration.
+        fallback_used = False
+        if self.recovery and not scheduler.candidates:
+            scheduler = RevalidatingProbeScheduler(
+                dict(self.model.active_links), archive, STARTS,
+                self.memory, limit=budget)
+            fallback_used = True
+        candidate_count = len(scheduler.candidates)
         trace = []
         if recheck:
             for key in sorted(self.memory.exceptions):
@@ -64,4 +75,7 @@ class FeedbackPublicLoop(LearningPublicLoop):
             "online_records": len(self.learned.links),
             "decision_ns": elapsed_ns,
             "feedback_enabled": True,
+            "recovery_enabled": self.recovery,
+            "fallback_used": fallback_used,
+            "candidate_count": candidate_count,
         }
