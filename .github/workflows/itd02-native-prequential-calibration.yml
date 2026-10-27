@@ -38,7 +38,7 @@ jobs:
           test "$(git merge-base "$SOURCE_SHA" HEAD)" = "$SOURCE_SHA"
           python - <<'PY'
           from pathlib import Path
-          import subprocess
+          import subprocess, os
           original=[
              "yggdrasil/itd02_native_task_bridge_dev.py",
              "yggdrasil/itd02_local_ring_memory_dev.py",
@@ -48,7 +48,7 @@ jobs:
              "tests/test_itd02_local_ring_memory_dev.py"
           ]
           for p in original:
-              expected=subprocess.check_output(["git","show",f"{source}:"+p])
+              expected=subprocess.check_output(["git","show",os.environ["SOURCE_SHA"]+":"+p])
               if Path(p).read_bytes()!=expected:
                   raise AssertionError("NATIVE_SOURCE_HAS_DRIFTED:"+p)
           current=subprocess.check_output(["git","diff","--name-only", "a39171a76d0d7817e3563682bb139a9d7ecf37c4", "HEAD"],text=True).splitlines()
