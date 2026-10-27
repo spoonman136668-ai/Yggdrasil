@@ -1,0 +1,232 @@
+name: ITD-02 native action discrimination source-free (read-only)
+on:
+  push:
+    branches:
+      - qualification/itd02-native-action-discrimination-20261027
+permissions:
+  contents: read
+jobs:
+  matched-public-trace:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      TARGET_SHA: e8c7dca8966a7d2721f49df2a9ac4c7419921097
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Force Git source byte identity for native provenance
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: e8c7dca8966a7d2721f49df2a9ac4c7419921097
+          persist-credentials: false
+          fetch-depth: 0
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Frozen SHA and original G29 source custody
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$TARGET_SHA"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+      - name: Same-public-evidence native learner versus conventional counts, with cold restart
+        shell: bash
+        run: |
+          python - <<'PY'
+          import collections, hashlib, json, os, platform, subprocess, sys, time
+          from yggdrasil.itd02_native_task_bridge_dev import NativeTaskRingBridgeDev
+          from yggdrasil.itd02_native_training_session_dev import NativeTrainingSessionDev
+          from yggdrasil.itd02_local_ring_memory_dev import ACTIONS
+
+          TRAIN_OBSERVATIONS=("LRV","MRV")
+          HELDOUT_OBSERVATIONS=("docked_LRV","docked_MRV")
+          # Source-only engineering fixture. This entire reward law is
+          # evaluator-private, NOT available as a policy feature or input.
+          A={"LRV":"Backup","MRV":"GoForward","docked_LRV":"Backup","docked_MRV":"GoForward"}
+          B={"LRV":"GoForward","MRV":"Backup","docked_LRV":"GoForward","docked_MRV":"Backup"}
+
+          class PublicOneStepSource:
+              def __init__(self):
+                  self.episodes=0
+                  self.steps=0
+                  self.current=None
+                  self.logged=[]
+                  self.phase="initial"
+              def reset_public(self):
+                  if self.current is not None:
+                      raise RuntimeError("SOURCE_EPISODE_ALREADY_ACTIVE")
+                  obs=TRAIN_OBSERVATIONS[self.episodes % 2]
+                  self.current=obs
+                  self.episodes+=1
+                  return obs
+              def step_public(self, action):
+                  if self.current is None or action not in ACTIONS:
+                      raise RuntimeError("INVALID_PUBLIC_SOURCE_STEP")
+                  obs=self.current
+                  preferred=(A if self.phase=="initial" else B)[obs]
+                  reward=10 if action==preferred else -3
+                  self.logged.append({"observation":obs,"action":action,
+                                      "reward":reward,"phase":self.phase})
+                  self.steps+=1
+                  self.current=None
+                  return ("Nothing",reward,True)
+
+          class PublicCountControl:
+              """Reward count/mean comparator with identical selected-action evidence.
+
+              It is a REPLAY control, not a counterfactually interactive actor.
+              Unseen obs/action mean = 0; tie order is source-independent.
+              """
+              def __init__(self):
+                  self.table={}
+              def observe(self,obs,action,reward):
+                  count,total=self.table.get((obs,action),(0,0))
+                  self.table[(obs,action)]=(count+1,total+reward)
+              def choose(self,obs):
+                  return max(ACTIONS,key=lambda a:(
+                      (self.table[(obs,a)][1]/self.table[(obs,a)][0])
+                      if (obs,a) in self.table else 0.))
+              def storage_bytes(self):
+                  return len(json.dumps(sorted((obs,a,n,total)
+                     for (obs,a),(n,total) in self.table.items()),separators=(',',':')).encode())
+
+          def native_actions_from_checkpoint(checkpoint,observations):
+              choices={}
+              for observation in observations:
+                  m=NativeTaskRingBridgeDev.restore(checkpoint)
+                  ids=m.model_identities()
+                  m.start_frozen_evaluation(ids["native"],ids["memory"])
+                  m.start_observation(observation)
+                  choices[observation]=m.choose()
+                  if m.model_identities()!=ids:
+                      raise RuntimeError("FROZEN_MODEL_MUTATED")
+              return choices
+
+          def evaluations(checkpoint, control, law):
+              obs=TRAIN_OBSERVATIONS+HELDOUT_OBSERVATIONS
+              n=native_actions_from_checkpoint(checkpoint,obs)
+              c={o:control.choose(o) for o in obs}
+              def marks(chosen, subset):
+                  return sum(10 if chosen[o]==law[o] else -3 for o in subset)
+              return {"native_actions":n,"count_actions":c,
+                      "seen_native_reward":marks(n,TRAIN_OBSERVATIONS),
+                      "seen_count_reward":marks(c,TRAIN_OBSERVATIONS),
+                      "unseen_native_reward":marks(n,HELDOUT_OBSERVATIONS),
+                      "unseen_count_reward":marks(c,HELDOUT_OBSERVATIONS)}
+
+          source=PublicOneStepSource()
+          session=NativeTrainingSessionDev(max_steps=1)
+          control=PublicCountControl()
+          snapshots=[]
+          cold={"fresh_interpreter_verified":False}
+          initial=NativeTaskRingBridgeDev().checkpoint()
+          initial_eval=evaluations(initial,control,A)
+          t0=time.perf_counter()
+          cpu0=time.process_time()
+          phase_segments=[]
+          for phase,count in (("initial",64),("reversal",32)):
+              source.phase=phase
+              start=len(source.logged)
+              for _ in range(count):
+                  before_steps=source.steps
+                  outcome=session.train_bounded(source,1,snapshots.append)
+                  if len(outcome)!=1 or source.steps!=before_steps+1:
+                      raise RuntimeError("SOURCE_TRANSACTION_NOT_EXACTLY_ONCE")
+                  item=source.logged[-1]
+                  control.observe(item["observation"],item["action"],item["reward"])
+              logs=source.logged[start:]
+              phase_segments.append({
+                  "phase":phase,"episodes":len(logs),
+                  "first_16_mean_reward":sum(x["reward"] for x in logs[:16])/16,
+                  "last_16_mean_reward":sum(x["reward"] for x in logs[-16:])/16,
+                  "action_counts":dict(collections.Counter(x["action"] for x in logs)),
+                  "reward_total":sum(x["reward"] for x in logs)
+              })
+              if phase=="initial":
+                  before_restart=evaluations(snapshots[-1],control,A)
+                  bridge=session.model
+                  trusted_ids=bridge.model_identities()
+                  check=bridge.checkpoint()
+                  code="""import json,sys,hashlib
+from yggdrasil.itd02_native_task_bridge_dev import NativeTaskRingBridgeDev
+raw=sys.stdin.buffer.read()
+m=NativeTaskRingBridgeDev.restore(raw)
+print(json.dumps({"ids":m.model_identities(),"transitions":m.transitions,
+"checkpoint_sha256":hashlib.sha256(m.checkpoint()).hexdigest()}))
+"""
+                  proc=subprocess.run([sys.executable,"-B","-c",code],
+                                       input=check,stdout=subprocess.PIPE,
+                                       stderr=subprocess.PIPE,check=True,timeout=15)
+                  value=json.loads(proc.stdout)
+                  if (value["ids"]!=trusted_ids or value["transitions"]!=64
+                      or value["checkpoint_sha256"]!=hashlib.sha256(check).hexdigest()):
+                      raise RuntimeError("COLD_RESTART_DID_NOT_RETAIN_NATIVE_STATE")
+                  fresh_model=NativeTaskRingBridgeDev.restore(check)
+                  cold_choices=evaluations(fresh_model.checkpoint(),control,A)
+                  if cold_choices!=before_restart:
+                      raise RuntimeError("COLD_RESTART_CHANGED_ACTION_POLICY")
+                  cold={"fresh_interpreter_verified":True,
+                        "original_checkpoint_sha256":hashlib.sha256(check).hexdigest(),
+                        "native_and_memory_identical":True,
+                        "actions_identical_on_4_public_contexts":True,
+                        "checkpoint_bytes":len(check)}
+                  session=NativeTrainingSessionDev(fresh_model,max_steps=1)
+          final_eval=evaluations(snapshots[-1],control,B)
+          result={
+              "schema":"ygg.itd02.native-action-discrimination.engineering.v1",
+              "source_sha":os.environ["TARGET_SHA"],
+              "authority":"source-free-fixture-only-no-scientific-first-use",
+              "platform":platform.platform(),
+              "python":platform.python_version(),
+              "initial_actions":initial_eval,
+              "after_training_before_reversal":before_restart,
+              "after_reversal":final_eval,
+              "phase_segments":phase_segments,
+              "cold_restart":cold,
+              "matched_public_record_count":len(source.logged),
+              "native_transition_count":session.model.transitions,
+              "source_episodes":source.episodes,
+              "source_steps":source.steps,
+              "checkpoints":len(snapshots),
+              "control_count_entries":len(control.table),
+              "control_storage_bytes":control.storage_bytes(),
+              "final_native_checkpoint_bytes":len(snapshots[-1]),
+              "native_policy_changed_after_training":(
+                  initial_eval["native_actions"]!=before_restart["native_actions"]),
+              "native_policy_changed_after_reversal":(
+                  before_restart["native_actions"]!=final_eval["native_actions"]),
+              "elapsed_seconds":round(time.perf_counter()-t0,6),
+              "main_process_cpu_seconds":round(time.process_time()-cpu0,6)
+          }
+          if (len(source.logged)!=96 or source.episodes!=96 or source.steps!=96
+              or len(snapshots)!=96 or session.model.transitions!=96
+              or not cold["fresh_interpreter_verified"] or source.current is not None):
+              raise RuntimeError("DEVELOPMENT_TRACE_CUSTODY_INVALID")
+          if set(x["reward"] for x in source.logged)-{-3,10}:
+              raise RuntimeError("UNSUPPORTED_ENGINEERING_REWARD")
+          with open(os.path.join(os.environ["RUNNER_TEMP"],"native_action_discrimination.json"),
+                    "w",encoding="utf-8") as fp:
+              json.dump(result,fp,sort_keys=True,indent=2)
+          print("ITD02_ACTION_DISCRIMINATION_RECEIPT="+json.dumps(result,sort_keys=True))
+          # This gate checks instrument integrity. A poor result is a
+          # preserved scientific-negative engineering observation, not a
+          # reason to forge improvement or retry a protected environment.
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Upload independent, source-only diagnostic receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: itd02-native-action-discrimination-${{ matrix.os }}
+          path: ${{ runner.temp }}/native_action_discrimination.json
+          if-no-files-found: warn
+          retention-days: 14
