@@ -9,6 +9,7 @@ import unittest
 from yggdrasil.itd02_native_public_cohort_dev import (
     SourceCustodyDenied, train_or_resume_public_cohort,
 )
+from yggdrasil.itd02_native_task_bridge_dev import NativeTaskRingBridgeDev
 
 SOURCE = "a69baec2d6e83e239bafa4c6b74faead794e7c91400bf69c7d3813ed114cea94"
 
@@ -53,8 +54,12 @@ class NativeCohortTests(unittest.TestCase):
                 f = PublicSourceFixture(index)
                 created.append(f)
                 return f
+            initial_model_identities = NativeTaskRingBridgeDev().model_identities()
             out = train_or_resume_public_cohort(
                 root, factory, source_sha256=SOURCE, episodes=3, max_steps=2)
+            # Actual existing local cells and ring state must change during
+            # source-free feedback; a no-op fake trainer is unacceptable.
+            self.assertNotEqual(out["native_model_identities"], initial_model_identities)
             self.assertEqual(out["completed_episodes"], 3)
             self.assertEqual(out["total_public_actions"], 6)
             self.assertEqual(out["past_episodes_skipped_without_replay"], 0)
