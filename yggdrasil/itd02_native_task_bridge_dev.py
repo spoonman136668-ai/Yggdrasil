@@ -17,7 +17,7 @@ from .itd02_local_ring_memory_dev import (
     _canonical, _finite,
 )
 
-SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v7"
+SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v8"
 REWARDS = (-3, 0, 10)  # source-declared observable labels; NOT source reward law
 MAX_BYTES = 65536
 RING = tuple(((i - 1) % CELLS, (i + 1) % CELLS) for i in range(CELLS))
@@ -54,6 +54,17 @@ def _temporal_public_bits(observation, action, phase):
     return result
 
 
+def _local_ordered_word(observation, action, site):
+    """Four neighbor bits, phase-zero then phase-one, at one reward cell."""
+    if site not in ACTION_SITES:
+        raise ValueError("INVALID_LOCAL_CREDIT_SITE")
+    left, right = RING[site]
+    first = _temporal_public_bits(observation, action, 0)
+    second = _temporal_public_bits(observation, action, 1)
+    return (first[left] << 3) | (first[right] << 2) | (
+        second[left] << 1) | second[right]
+
+
 def public_outcome(next_observation, reward):
     if type(next_observation) is not str or next_observation not in OBSERVATIONS:
         raise ValueError("INVALID_PUBLIC_SUCCESSOR")
@@ -88,7 +99,7 @@ class NativeTaskRingBridgeDev:
         self.score_calls = 0
         # Eight deterministic bounded cell-local traces, not trained weights.
         self.cell_trace = [0.] * CELLS
-        self.action_credit = [[0.] * len(ACTIONS) for _ in OBSERVATIONS]
+        self.action_credit = [[0.] * 16 for _ in ACTION_SITES]
 
     def start_observation(self, observation):
         if self._observation is not None or self.memory.pending:
@@ -132,7 +143,9 @@ class NativeTaskRingBridgeDev:
                     self.cell_trace[left] * (2 * bits[left] - 1)
                     + self.cell_trace[right] * (2 * bits[right] - 1)
                 ) / 2.
-            scores.append(sum(phase_scores) / 2. + .10 * contrast + .15 * self.action_credit[OBSERVATIONS.index(self._observation)][ACTIONS.index(action)])
+            scores.append(sum(phase_scores) / 2. + .10 * contrast + .15 * sum(float(value) * self.action_credit[index][
+                _local_ordered_word(self._observation, action, ACTION_SITES[index])]
+                for index, value in enumerate(REWARDS)))
         self.score_calls += 1
         return scores
 
@@ -167,7 +180,14 @@ class NativeTaskRingBridgeDev:
             if self._native_identity() != self._frozen_native or (
                     self.memory.parameter_sha256() != self.memory._frozen_hash):
                 raise ValueError("FROZEN_WEIGHT_IDENTITY_DRIFT")
-        predicted_before = self.native_reward_scores()[ACTIONS.index(action)] if learning else None
+        site_training = None
+        if learning:
+            site_training = [
+                (index, _local_ordered_word(self._observation, action, site),
+                 float(self.native.predict(_temporal_public_bits(
+                     self._observation, action, self.transitions % 2))[site]))
+                for index, site in enumerate(ACTION_SITES)
+            ]
         native_snap = self.native.snapshot()
         memory_snap = self.memory.checkpoint()
         trace_snap = list(self.cell_trace)
@@ -177,11 +197,11 @@ class NativeTaskRingBridgeDev:
                 self.native.observe(before, after)
             self.memory.feedback(action, reward, learning=learning, terminal=terminal)
             if learning:
-                selected = ACTIONS.index(action)
-                error = max(-13., min(13., float(reward) - predicted_before))
-                observation_index = OBSERVATIONS.index(self._observation)
-                self.action_credit[observation_index][selected] = max(-13., min(13.,
-                    .75 * self.action_credit[observation_index][selected] + .25 * error))
+                for index, word, estimate in site_training:
+                    target = float(reward == REWARDS[index])
+                    prev = self.action_credit[index][word]
+                    self.action_credit[index][word] = max(-1., min(1.,
+                        .75 * prev + .25 * (target - estimate)))
             if learning:
                 # Original public input bits only. Each cell updates its own
                 # retained register; no oracle or other cell's state enters.
@@ -268,10 +288,10 @@ class NativeTaskRingBridgeDev:
                 raise ValueError("BRIDGE_CELL_TRACE_INVALID")
             obj.cell_trace = [float(x) for x in trace]
             credit = body['action_credit']
-            if (type(credit) is not list or len(credit) != len(OBSERVATIONS) or
-                    any(type(row) is not list or len(row) != len(ACTIONS) or
+            if (type(credit) is not list or len(credit) != len(ACTION_SITES) or
+                    any(type(row) is not list or len(row) != 16 or
                         any(type(x) not in (int,float) or not math.isfinite(x)
-                            or not -13. <= x <= 13. for x in row) for row in credit)):
+                            or not -1. <= x <= 1. for x in row) for row in credit)):
                 raise ValueError('BRIDGE_ACTION_CREDIT_INVALID')
             obj.action_credit = [[float(x) for x in row] for row in credit]
             frozen_native = body["frozen_native_sha256"]
