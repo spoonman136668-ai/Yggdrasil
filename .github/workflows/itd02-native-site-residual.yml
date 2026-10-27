@@ -1,0 +1,67 @@
+name: ITD-02 original native chosen-action reward site residual
+on:
+  push:
+    branches:
+      - qualification/itd02-native-site-residual-20261027
+permissions:
+  contents: read
+jobs:
+  original-native-site:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      SOURCE_SHA: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+      PYTHONPATH: .
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve original source line endings
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Assert original source bytes and isolated diagnostic files
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git merge-base "$SOURCE_SHA" HEAD)" = "$SOURCE_SHA"
+          python - <<'PY'
+          from pathlib import Path
+          import os,subprocess
+          for p in ("yggdrasil/itd02_native_task_bridge_dev.py",
+                    "yggdrasil/itd02_local_ring_memory_dev.py",
+                    "yggdrasil/task_runtime.py","yggdrasil/developmental.py"):
+              original=subprocess.check_output(["git","show",os.environ["SOURCE_SHA"]+":"+p])
+              assert Path(p).read_bytes()==original, ("ORIGINAL_SOURCE_CHANGED",p)
+          authorized={
+             "research/diagnostics/itd02_native_site_residual_20261027.py",
+             ".github/workflows/itd02-native-site-residual.yml"}
+          changed=set(subprocess.check_output(
+              ["git","diff","--name-only",os.environ["SOURCE_SHA"],"HEAD"],text=True).splitlines())
+          assert changed==authorized,("SOURCE_DIFF_UNAUTHORIZED",changed)
+          print("FROZEN_ORIGINAL_SOURCE_PASS")
+          PY
+      - name: Record reward-site pre-feedback residuals on unseen families
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/diagnostics/itd02_native_site_residual_20261027.py
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: itd02-original-site-residual-${{ matrix.os }}
+          path: ${{ runner.temp }}/itd02_native_site_residual.json
+          if-no-files-found: warn
+          retention-days: 14
