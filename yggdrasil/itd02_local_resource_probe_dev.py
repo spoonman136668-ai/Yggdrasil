@@ -39,6 +39,7 @@ class SourceFreeMeterFixture:
         self.t = 0
         self.max_steps = max_steps
         self.actions = 0
+        self.action_history = []
 
     def reset_public(self):
         return "docked_MRV"
@@ -46,6 +47,7 @@ class SourceFreeMeterFixture:
     def step_public(self, action):
         self.t += 1
         self.actions += 1
+        self.action_history.append(action)
         # No original state, original model file, or protected source.
         obs = "Nothing" if self.t % 2 else "docked_MRV"
         reward = 10 if action == "Backup" and self.t % 4 == 0 else 0
@@ -116,6 +118,8 @@ def run_source_free_resource_probe(*, episodes=3, steps=16):
     checkpoint_bytes = 0
     learned = None
     last_hash = None
+    all_actions = []
+    native_rounded = None
     with tempfile.TemporaryDirectory(prefix="ygg-itd02-sourcefree-meter-") as root:
         for episode in range(episodes):
             directory = Path(root) / ("episode-%d" % episode)
@@ -134,6 +138,20 @@ def run_source_free_resource_probe(*, episodes=3, steps=16):
                 directory, expected_source_sha256=FIXTURE_SOURCE)
             last_hash = learned.model_identities()
             total_steps += result["steps"]
+            all_actions.extend(fixture.action_history)
+            # Diagnostic only: comparable quantized native weights can
+            # distinguish insignificant cross-OS math differences from
+            # a changed action trace. NOT a scientific score/checkpoint.
+            native = json.loads(learned.native.snapshot())
+            coeffs = [
+                round(float(x), 8)
+                for section in ("genome", "roles")
+                for row in native["core"][section]
+                for x in row
+            ]
+            native_rounded = hashlib.sha256(
+                json.dumps(coeffs, separators=(",", ":")).encode("ascii")
+            ).hexdigest()
             disk_bytes += (directory / "public-events.jsonl").stat().st_size
             size = (directory / "learned-checkpoint.bin").stat().st_size
             checkpoint_bytes += size
@@ -162,6 +180,11 @@ def run_source_free_resource_probe(*, episodes=3, steps=16):
         "mean_whole_pipeline_wall_us_per_interaction": (
             round(wall_ns / total_steps / 1000, 3)),
         "native_model_identities": last_hash,
+        "source_free_action_trace_sha256": hashlib.sha256(
+            json.dumps(all_actions, separators=(",", ":")).encode("ascii")
+        ).hexdigest(),
+        "native_parameters_rounded_8dp_sha256_diagnostic": native_rounded,
+        "cross_os_byte_identical_claim": False,
         "peak_power_watts": None,
         "gpu_vram_bytes": None,
     }
