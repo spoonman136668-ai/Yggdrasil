@@ -123,9 +123,15 @@ class NativeTaskRingBridgeDev:
                 phase_scores.append(sum(
                     float(value) * predictions[ACTION_SITES[index]]
                     for index, value in enumerate(REWARDS)))
-            scores.append(sum(phase_scores) / 2. + .10 * sum(
-                float(value) * self.cell_trace[ACTION_SITES[index]]
-                for index, value in enumerate(REWARDS)))
+            bits = _temporal_public_bits(self._observation, action, 0)
+            contrast = 0.
+            for index, value in enumerate(REWARDS):
+                left, right = RING[ACTION_SITES[index]]
+                contrast += float(value) * (
+                    self.cell_trace[left] * (2 * bits[left] - 1)
+                    + self.cell_trace[right] * (2 * bits[right] - 1)
+                ) / 2.
+            scores.append(sum(phase_scores) / 2. + .10 * contrast)
         self.score_calls += 1
         return scores
 
