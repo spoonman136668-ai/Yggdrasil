@@ -11,6 +11,7 @@ class ReplayProbeFreshness(unittest.TestCase):
         training_phase(agent, "B")
         self.assertFalse(agent.restore_with_evidence())
         self.assertEqual(len(agent.feedback), 0)
+        agent.start_probe()
         agent.observe(b"xB-train", [0, 1])
         agent.learn(1, b"terminal", 0, True)
         self.assertFalse(agent.restore_with_evidence())
