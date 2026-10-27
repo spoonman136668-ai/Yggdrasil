@@ -15,7 +15,9 @@ from conventional_composition_controls import ConventionalFactorized,Conventiona
 MESSAGES=((False,False),(False,True),(True,False),(True,True))
 
 def trial(heldout,rule_id):
-    if type(rule_id) is not int or not 0<=rule_id<6 or heldout not in MESSAGES:
+    if (type(rule_id) is not int or not 0<=rule_id<6 or
+        type(heldout) is not tuple or len(heldout)!=2 or
+        any(type(x) is not bool for x in heldout) or heldout not in MESSAGES):
         raise ValueError("EXPERIMENT_INPUT_INVALID")
     local=OperationLearningCells()
     conventional=ConventionalOperationControl()
