@@ -1,0 +1,37 @@
+name: ITD-02 native self-training development qualification
+on:
+  push:
+    branches:
+      - research/itd02-native-self-training-session-20261027
+  pull_request:
+    paths:
+      - 'yggdrasil/itd02_native_training_session_dev.py'
+      - 'tests/test_itd02_native_training_session_dev.py'
+      - '.github/workflows/itd02-native-self-training-dev.yml'
+permissions:
+  contents: read
+jobs:
+  native-training-session:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Focused native self-training and original bridge validation
+        shell: pwsh
+        run: |
+          python -m unittest discover -s tests -p 'test_itd02_native_training_session_dev.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'SELF_TRAINING_TEST_FAILURE' }
+          python -m unittest discover -s tests -p 'test_itd02_native_task_bridge_dev.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'NATIVE_BRIDGE_REGRESSION' }
+      - name: Source syntax qualification
+        shell: pwsh
+        run: |
+          python -m py_compile yggdrasil/itd02_native_training_session_dev.py tests/test_itd02_native_training_session_dev.py
+          if ($LASTEXITCODE -ne 0) { throw 'SOURCE_SYNTAX_FAILURE' }
