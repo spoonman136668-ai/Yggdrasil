@@ -25,7 +25,7 @@ def run():
             native.learn(action, successor, 0, False)
     native.observe(probe, [0, 1])
     after = native.choose(horizon=3)
-    native.observe(b"zB-retained", [0, 1])
+    native.observe(b"xA-retention", [0, 1])
     retained = native.choose(horizon=3)
     exact.observe(probe, [0, 1])
     baseline = exact.choose(horizon=3)
@@ -34,7 +34,7 @@ def run():
         "after": after,
         "expected_repaired_action": 0,
         "other_family_action": retained,
-        "expected_other_family_action": 0,
+        "expected_other_family_action": 1,
         "conventional_exact_state_action": baseline,
         "intervention_actions": 24,
         "retained_fit_examples": len(native.model.examples),
