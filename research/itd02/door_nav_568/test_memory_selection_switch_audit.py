@@ -32,6 +32,23 @@ class MemorySelectionSwitchTests(unittest.TestCase):
         self.assertEqual(result["abstentions"], 3)
         self.assertEqual(result["wrong_decisions"], 0)
 
+    def test_probe_prediction_provenance_and_score_accounting(self):
+        report = run()
+        for case in report["cases"]:
+            evidence = case["diagnostics"]
+            self.assertEqual(len(evidence["observed_successor"]), 2)
+            for key, score in (("active_prediction", "active_matches"),
+                               ("archive_prediction", "archive_matches")):
+                self.assertEqual(evidence[score], sum(
+                    predicted == observed for predicted, observed in zip(
+                        evidence[key], evidence["observed_successor"]
+                    )))
+            if case["admitted"]:
+                self.assertEqual(max(evidence["active_matches"],
+                                     evidence["archive_matches"]), 2)
+                self.assertNotEqual(evidence["active_matches"],
+                                    evidence["archive_matches"])
+
     def test_preserves_wrong_answers_and_abstentions(self):
         result = run()
         for case in result["cases"]:
