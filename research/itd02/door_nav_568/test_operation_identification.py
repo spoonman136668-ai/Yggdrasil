@@ -32,5 +32,16 @@ class OperationIdentificationTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             trial((1,0),0)
 
+    def test_holdout_predictions_prevent_false_non_affine_promotion(self):
+        rows=run()["experiments"]
+        totals={}
+        for name in ("local","conventional","affine","exact"):
+            totals[name]=tuple(sum(r["results"][name][key] for r in rows)
+                               for key in ("correct","wrong","abstention"))
+        self.assertEqual(totals["local"],(16,0,8))
+        self.assertEqual(totals["conventional"],(16,0,8))
+        self.assertEqual(totals["affine"],(8,16,0))
+        self.assertEqual(totals["exact"],(0,0,24))
+
 if __name__=="__main__":
     unittest.main()
