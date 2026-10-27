@@ -44,7 +44,8 @@ def _hash(value):
 
 def _read_checked(path, limit):
     _need(path.is_file() and not path.is_symlink(), "FILE_MISSING_OR_SYMLINK")
-    fd = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0))
+    fd = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) |
+                 getattr(os, "O_BINARY", 0))
     try:
         raw = os.read(fd, limit + 1)
         _need(len(raw) <= limit, "FILE_OVERSIZE")
@@ -70,7 +71,8 @@ def _atomic_checkpoint(directory, payload):
           "CHECKPOINT_SIZE")
     _need(not name.exists() and not name.is_symlink(), "CHECKPOINT_ALREADY_EXISTS")
     fd = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL |
-                 getattr(os, "O_NOFOLLOW", 0), 0o600)
+                 getattr(os, "O_NOFOLLOW", 0) |
+                 getattr(os, "O_BINARY", 0), 0o600)
     try:
         rest = payload
         while rest:
