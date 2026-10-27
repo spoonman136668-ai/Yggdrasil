@@ -33,10 +33,14 @@ class LocalSpecializationTests(unittest.TestCase):
         self.assertIsNone(m.predict_public(CTX,bits))
         m.learn_completed_public_feedback(CTX,bits,outcome,2)
         self.assertEqual(m.predict_public(CTX,bits),outcome)
+        # Fill the second local receptive field before checking the cap.
+        other_bits, other_outcome = PATTERNS[1]
+        for _ in range(2):
+            m.learn_completed_public_feedback(CTX,other_bits,other_outcome,2)
         # Each cell has at most two local receptive field identities.
         with self.assertRaises(ValueError):
             m.learn_completed_public_feedback(CTX,(False,False,True,True),True,2)
-        self.assertEqual(m.feedback_updates,2)
+        self.assertEqual(m.feedback_updates,4)
 
     def test_tampered_state_refused(self):
         m = SpecializedColony()
