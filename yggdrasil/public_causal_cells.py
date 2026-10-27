@@ -1,8 +1,9 @@
-"""Development-only, fixed-budget public-observation causal cells.
+"""Development-only public-observation causal cells with local plasticity.
 
-Sixteen total addresses: seven active and nine retained. No hidden outcome
-oracle, transformer, model API, source-family selection or scientific authority.
-This is a simple explicit-memory *control*, not evidence of novel cognition.
+Sixteen total addresses: seven fast active cells and nine slow retained cells.
+The mechanism stores only action-conditioned public-outcome traces. It has no
+outcome oracle, transformer, model API, source-family selection, or scientific
+authority. This source is a candidate mechanism, not an experimental result.
 """
 
 from __future__ import annotations
@@ -12,7 +13,13 @@ import struct
 
 
 class PublicCausalCells:
-    """Fixed 16 x 2 action x 2 observed-outcome counters (128 learned bytes)."""
+    """Fixed 16 x 2 action x 2 locally plastic public-outcome traces.
+
+    Active cells apply bounded decay to a non-saturated acted-on outcome trace;
+    retained cells are saturating count traces. Saturated traces remain at the
+    representable maximum when reinforced, preserving fixed-width checkpoint
+    semantics while sacrificing further frequency resolution at that ceiling.
+    """
 
     __slots__ = ("_counts",)
 
@@ -21,6 +28,8 @@ class PublicCausalCells:
     LEARNED_BYTES = 16 * 2 * 2 * 2
     MAGIC = b"YPC1"
     CHECKPOINT_BYTES = len(MAGIC) + LEARNED_BYTES + 32
+    _ACTIVE_LEAK_SHIFT = 3
+    _COUNT_MAX = 65535
 
     def __init__(self) -> None:
         self._counts = [[[0, 0] for _ in range(2)] for _ in range(16)]
@@ -42,29 +51,36 @@ class PublicCausalCells:
 
     def observe(self, address: int, action: int, public_outcome: int, *,
                 retained: bool = False) -> None:
-        """Learn only after the environment reveals an actual binary outcome."""
+        """Update only the acted-on arm after a revealed public outcome.
+
+        Active traces decay only while the reinforced outcome remains below the
+        fixed-width ceiling. This avoids turning repeated reinforcement of an
+        already saturated trace into an unintended decrement.
+        """
         cell = self._address(address, retained)
         arm = self._bit(action, "ACTION")
         result = self._bit(public_outcome, "PUBLIC_OUTCOME")
-        old = self._counts[cell][arm][result]
-        self._counts[cell][arm][result] = min(65535, old + 1)
+        traces = self._counts[cell][arm]
+        if not retained and traces[result] < self._COUNT_MAX:
+            traces[0] -= traces[0] >> self._ACTIVE_LEAK_SHIFT
+            traces[1] -= traces[1] >> self._ACTIVE_LEAK_SHIFT
+        traces[result] = min(self._COUNT_MAX, traces[result] + 1)
 
     def choose(self, address: int, *, retained: bool = False) -> int | None:
-        """Compare matched empirical rates. Abstain without both arms' evidence."""
+        """Choose the arm with the greater learned public success rate."""
         cell = self._address(address, retained)
         (zero0, one0), (zero1, one1) = self._counts[cell]
         trials0 = zero0 + one0
         trials1 = zero1 + one1
         if not trials0 or not trials1:
             return None
-        # Exact integer cross-products avoid rounding/tuned thresholds.
         lhs, rhs = one0 * trials1, one1 * trials0
         if lhs == rhs:
             return None
         return 0 if lhs > rhs else 1
 
     def snapshot(self) -> bytes:
-        """One immutable, versioned 164-byte checkpoint with SHA-256 integrity."""
+        """Return an immutable, versioned checkpoint with SHA-256 integrity."""
         raw = bytearray(self.MAGIC)
         for cell in self._counts:
             for arm in cell:
