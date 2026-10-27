@@ -1,0 +1,46 @@
+name: ITD-02 public-source durable no-replay development
+on:
+  pull_request:
+    paths:
+      - yggdrasil/itd02_public_source_journal_dev.py
+      - tests/test_itd02_public_source_journal_dev.py
+      - .github/workflows/itd02-public-source-journal-dev.yml
+  push:
+    branches:
+      - research/itd02-public-fit-durable-custody-20261027
+permissions:
+  contents: read
+jobs:
+  local-custody:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact source-free journal, native-model and public-source checks
+        shell: pwsh
+        run: |
+          python -B -m unittest discover -s tests -p test_itd02_public_source_journal_dev.py -v
+          if ($LASTEXITCODE -ne 0) { throw "SOURCE_JOURNAL_TESTS_FAILED" }
+          python -B -m unittest discover -s tests -p test_itd02_native_training_session_dev.py -v
+          if ($LASTEXITCODE -ne 0) { throw "NATIVE_TRAINING_SESSION_TESTS_FAILED" }
+          python -B -m unittest discover -s tests -p test_itd02_published_shuttle_source_dev.py -v
+          if ($LASTEXITCODE -ne 0) { throw "PUBLISHED_SOURCE_PARSER_TESTS_FAILED" }
+          python -B -m unittest discover -s tests -p test_itd02_native_task_bridge_dev.py -v
+          if ($LASTEXITCODE -ne 0) { throw "ORIGINAL_NATIVE_BRIDGE_TESTS_FAILED" }
+      - name: Preserve clean source-only checkout
+        shell: pwsh
+        run: |
+          $status = @(git status --porcelain --untracked-files=all)
+          if ($status.Count -gt 0) { throw "SOURCE_CHECKOUT_DRIFT: $($status -join ', ')" }
