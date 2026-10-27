@@ -63,6 +63,12 @@ class PublicCausalCells:
             return None
         return 0 if lhs > rhs else 1
 
+    def evidence(self, address: int, *, retained: bool = False) -> tuple[int, int]:
+        """Return total trials per arm for explicit uncertainty quantification."""
+        cell = self._address(address, retained)
+        (zero0, one0), (zero1, one1) = self._counts[cell]
+        return (zero0 + one0, zero1 + one1)
+
     def snapshot(self) -> bytes:
         """One immutable, versioned 164-byte checkpoint with SHA-256 integrity."""
         raw = bytearray(self.MAGIC)
