@@ -1,0 +1,75 @@
+name: ITD-02 original-native source-frozen reward-site diagnostic
+on:
+  push:
+    branches:
+      - qualification/itd02-native-reward-site-decoder-20261027
+permissions:
+  contents: read
+jobs:
+  native-site-decoder:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONPATH: .
+      PYTHONDONTWRITEBYTECODE: '1'
+      SOURCE_SHA: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+    steps:
+      - name: Pin checkout line endings before source read
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify unchanged native code and negative-control-only diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git merge-base "$SOURCE_SHA" HEAD)" = "$SOURCE_SHA"
+          python - <<'PY'
+          import os, subprocess
+          from pathlib import Path
+          for p in ("yggdrasil/itd02_native_task_bridge_dev.py",
+                    "yggdrasil/itd02_local_ring_memory_dev.py",
+                    "yggdrasil/task_runtime.py",
+                    "yggdrasil/developmental.py",
+                    "tests/test_itd02_native_task_bridge_dev.py"):
+              original=subprocess.check_output(["git","show",os.environ["SOURCE_SHA"]+":"+p])
+              assert Path(p).read_bytes()==original, ("ORIGINAL_SOURCE_CHANGED",p)
+          allowed={
+            "research/diagnostics/itd02-native-reward-site-prereg-20261027.md",
+            "research/diagnostics/itd02_native_reward_site_decoder_20261027.py",
+            ".github/workflows/itd02-native-reward-site-decoder.yml"
+          }
+          diff=set(subprocess.check_output(
+              ["git","diff","--name-only",os.environ["SOURCE_SHA"],"HEAD"],text=True).splitlines())
+          assert diff==allowed, ("UNAUTHORIZED_FROZEN_SOURCE_DIFF",diff)
+          print("SOURCE_FROZEN_AND_DIAGNOSTIC_ONLY_PASS")
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Inspect actual native reward-site predictions before public outcome
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/diagnostics/itd02_native_reward_site_decoder_20261027.py
+          test -z "$(git status --porcelain)"
+      - name: Preserve full original-source decoder diagnosis and negative controls
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: itd02-original-reward-sites-${{ matrix.os }}
+          path: |
+            ${{ runner.temp }}/itd02_native_reward_site_summary.json
+            ${{ runner.temp }}/itd02_native_reward_site_trials.json
+          if-no-files-found: warn
+          retention-days: 14
