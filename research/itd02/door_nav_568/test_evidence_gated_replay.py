@@ -11,6 +11,7 @@ class EvidenceReplayTests(unittest.TestCase):
         training_phase(agent, "B")
         self.assertEqual(evaluate(agent, "B"), 4)
         self.assertEqual(evaluate(agent, "A"), 2)
+        agent.start_probe()
         # Opposite rewards under A versus B at matched public state/actions.
         for frame, action, reward in ((b"xB-train", 1, 0), (b"yA-train", 1, 1)):
             agent.observe(frame, [0, 1])
@@ -25,6 +26,7 @@ class EvidenceReplayTests(unittest.TestCase):
         agent.archive()
         training_phase(agent, "B")
         self.assertFalse(agent.restore_with_evidence())
+        agent.start_probe()
         agent.observe(b"xB-train", [0, 1])
         agent.learn(1, b"terminal", 0, True)
         self.assertFalse(agent.restore_with_evidence())
