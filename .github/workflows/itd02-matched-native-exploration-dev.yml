@@ -114,9 +114,16 @@ jobs:
                   greedy=max(ACTIONS,key=mean)
               # Exactly the same fixed source-blind exploration opportunities for the
               # native and conventional acting learners. No guessed reward law.
-              forced=(mode!="native_greedy" and (v<3 or (v+seed)%9==0))
+              bootstrap=v<3
+              periodic=(v>=3 and (v+seed)%9==0)
+              forced=(mode!="native_greedy" and (bootstrap or periodic))
               if forced:
-                  act=ACTIONS[(v+seed)%len(ACTIONS)]
+                  if bootstrap:
+                      act=ACTIONS[(v+seed)%len(ACTIONS)]
+                  else:
+                      # Full three-action periodic rotation. The former
+                      # modulus coupled to 9 selected action zero every time.
+                      act=ACTIONS[(((v+seed)//9)+seed)%len(ACTIONS)]
               else:
                   act=greedy
               if act not in ACTIONS:
@@ -280,7 +287,7 @@ jobs:
            "family_count":len(FAMILIES),
            "episodes_per_actor_per_trial":sum(n for _,n in PHASES),
            "total_actor_public_steps":sum(n for _,n in PHASES)*len(TRIALS)*len(ACTORS),
-           "matched_exploration":"fixed-public-observation-visit-opportunities",
+           "matched_exploration":"first-three-plus-rotating-every-ninth-public-visit",
            "conventional_actor_is_independent_on_policy":True,
            "oracle_law_visible_to_actor":False,
            "means":means,"comparison":comparison,
