@@ -34,6 +34,17 @@ class MultiRegimeComparisonTests(unittest.TestCase):
                     self.assertEqual(values["correct"] + values["wrong"] +
                                      values["abstentions"], 2)
 
+    def test_measured_online_plasticity_failure_is_frozen(self):
+        data = run()["matched_two_sample"]
+        native = [stage["after"]["native"] for stage in data["stages"]]
+        tabular = [stage["after"]["tabular"] for stage in data["stages"]]
+        self.assertEqual([r["correct"] for r in native], [2, 0, 0, 2, 0, 0])
+        self.assertEqual([r["wrong"] for r in native], [0, 2, 2, 0, 2, 2])
+        self.assertEqual([r["correct"] for r in tabular], [2, 0, 0, 2, 0, 0])
+        self.assertEqual([r["wrong"] for r in tabular], [0, 0, 0, 0, 2, 0])
+        self.assertEqual(data["native_revisions"], 2)
+        self.assertGreater(data["native_bytes"], data["tabular_bytes"])
+
     def test_memory_accounting_and_no_imputed_success(self):
         self.assertEqual(score([None, b"wrong"], (b"right", b"correct")),
                          {"correct": 0, "wrong": 1, "abstentions": 1})
