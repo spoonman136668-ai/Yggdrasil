@@ -16,6 +16,18 @@ class FeedbackLoopTests(unittest.TestCase):
             self.assertLessEqual(arm["online_records"], 128)
             self.assertTrue(all(item["actions"] <= 6 for item in arm["rounds"]))
 
+    def test_online_feedback_regression_is_retained(self):
+        report = run()
+        baseline = report["frozen_selector_control"]
+        feedback = report["online_feedback"]
+        self.assertEqual((baseline["correct"], baseline["abstentions"],
+                          baseline["wrong"]), (4, 0, 0))
+        self.assertEqual((feedback["correct"], feedback["abstentions"],
+                          feedback["wrong"]), (3, 1, 0))
+        self.assertEqual(feedback["rounds"][-1]["actions"], 0)
+        self.assertIsNone(feedback["rounds"][-1]["selected"])
+        self.assertEqual((baseline["actions"], feedback["actions"]), (18, 14))
+
     def test_prior_evidence_not_current_or_future_outcome(self):
         learner = FeedbackPublicLoop(enabled=True)
         before = dict(learner.learned.links)
