@@ -47,7 +47,8 @@ def _write_manifest_once(root, data):
     path = root / "cohort.json"
     raw = _json(data) + b"\n"
     fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL |
-                 getattr(os, "O_NOFOLLOW", 0), 0o600)
+                 getattr(os, "O_NOFOLLOW", 0) |
+                 getattr(os, "O_BINARY", 0), 0o600)
     try:
         rest = raw
         while rest:
