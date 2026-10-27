@@ -26,7 +26,16 @@ def trial(world="A", corrupted=False, reverse_starts=False):
     if chosen is None:
         raise AssertionError("NO_DISTINGUISHING_PAIR")
     # Environment is not queried until the planner has committed its probes.
-    public_first = {(frame, action): next_frame for frame, action, next_frame in FIRST}
+    # Independent deterministic physical first-hop fixture supports EVERY
+    # legal action, including candidates chosen by the planner rather than
+    # the earlier manually selected FIRST sequence.
+    public_first = {
+        (frame, action): (b"M1-intermediate" if
+                          action == (1 if frame[1:2] == b"A" else 0)
+                          else b"D2-intermediate")
+        for frame in (b"xA-training", b"xB-training")
+        for action in (0, 1)
+    }
     public_second = {
         (middle, action): (old if world == "A" else new)
         for middle, action, old, new in SECOND
