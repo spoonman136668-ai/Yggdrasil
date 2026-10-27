@@ -1,0 +1,234 @@
+name: ITD-02 matched on-policy native exploration vs counts (source-free)
+on:
+  push:
+    branches:
+      - qualification/itd02-onpolicy-native-exploration-20261027
+permissions:
+  contents: read
+jobs:
+  public-evidence-comparison:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      TARGET_SHA: 18bf2c064403152d3e40ba4540cbf5383419b7c8
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve exact native Git blob bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 18bf2c064403152d3e40ba4540cbf5383419b7c8
+          clean: true
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify source identity and native selection unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$TARGET_SHA"
+          test -z "$(git status --porcelain)"
+          python -m unittest discover -s tests -p test_itd02_native_training_session_dev.py -v
+          python -m unittest discover -s tests -p test_itd02_native_task_bridge_dev.py -v
+      - name: Independently acting matched public-observation comparison
+        shell: bash
+        run: |
+          python - <<'PY'
+          import collections, hashlib, json, os, platform, statistics, subprocess, sys, time
+          from yggdrasil.itd02_native_training_session_dev import NativeTrainingSessionDev
+          from yggdrasil.itd02_native_task_bridge_dev import NativeTaskRingBridgeDev
+          from yggdrasil.itd02_local_ring_memory_dev import ACTIONS
+          SEEDS=range(12)
+          PHASES=(('initial',64),('reversal',32))
+          CONTEXTS=('LRV','MRV')
+          UNSEEN=('docked_LRV','docked_MRV')
+          def correct(seed,phase,obs):
+              left=obs in ('LRV','docked_LRV')
+              # The source-only evaluator retains this function. Policies
+              # never receive its map, seed, expected action or privileged state.
+              want='Backup' if left else 'GoForward'
+              if bool(seed%2) ^ (phase=='reversal'):
+                  want='GoForward' if left else 'Backup'
+              return want
+          class Source:
+              def __init__(self,seed,phase):
+                  self.seed=seed
+                  self.phase=phase
+                  self.episodes=0
+                  self.actions=0
+                  self.current=None
+                  self.trace=[]
+              def reset_public(self):
+                  if self.current is not None: raise RuntimeError('UNFINISHED_EPISODE')
+                  self.current=CONTEXTS[(self.episodes+self.seed)%2]
+                  self.episodes+=1
+                  return self.current
+              def step_public(self,action):
+                  if self.current is None or action not in ACTIONS:
+                      raise RuntimeError('UNSELECTED_SOURCE_ACTION')
+                  obs=self.current
+                  self.current=None
+                  reward=10 if action==correct(self.seed,self.phase,obs) else -3
+                  self.actions+=1
+                  self.trace.append((obs,action,reward,self.phase))
+                  return ('Nothing',reward,True)
+          class Count:
+              def __init__(self): self.table={}; self.calls=0
+              def choose(self,obs,exploration=True):
+                  best=max(ACTIONS,key=lambda a:
+                      self.table[(obs,a)][1]/self.table[(obs,a)][0]
+                      if (obs,a) in self.table else 0)
+                  if exploration:
+                      n=self.calls
+                      if n<18: best=ACTIONS[(n//2)%len(ACTIONS)]
+                      elif n%9==0: best=ACTIONS[(n//9)%len(ACTIONS)]
+                  self.calls+=1
+                  return best
+              def observe(self,obs,action,reward):
+                  n,s=self.table.get((obs,action),(0,0))
+                  self.table[(obs,action)]=(n+1,s+reward)
+              def exploit(self,obs):
+                  return max(ACTIONS,key=lambda a:
+                      self.table[(obs,a)][1]/self.table[(obs,a)][0]
+                      if (obs,a) in self.table else 0)
+              def bytes(self):
+                  return len(json.dumps(sorted((o,a,n,s)
+                      for (o,a),(n,s) in self.table.items())).encode())
+          def frozen_native(model,obs):
+              checkpoint=model.checkpoint()
+              candidate=NativeTaskRingBridgeDev.restore(checkpoint)
+              ids=candidate.model_identities()
+              candidate.start_frozen_evaluation(ids['native'],ids['memory'])
+              candidate.start_observation(obs)
+              action=candidate.choose()
+              if candidate.model_identities()!=ids:
+                  raise RuntimeError('FROZEN_MODEL_PARAMETERS_DRIFT')
+              return action
+          def policy_run(seed,kind):
+              source=Source(seed,'initial')
+              native=kind in ('native_greedy','native_explore')
+              if native:
+                  period=9 if kind=='native_explore' else 0
+                  session=NativeTrainingSessionDev(max_steps=1, exploration_period=period)
+                  saved=[None]
+                  def save(raw): saved[0]=raw
+              else:
+                  counts=Count()
+              parts=[]
+              previous=None
+              start=time.perf_counter()
+              cpu=time.process_time()
+              for phase,episodes in PHASES:
+                  source.phase=phase
+                  first=len(source.trace)
+                  for _ in range(episodes):
+                      if native:
+                          completed=session.train_bounded(source,1,save)
+                          if len(completed)!=1: raise RuntimeError('BAD_NATIVE_RESPONSE')
+                      else:
+                          obs=source.reset_public()
+                          action=counts.choose(obs)
+                          next_obs,reward,terminal=source.step_public(action)
+                          if next_obs!='Nothing' or not terminal:
+                              raise RuntimeError('BAD_COUNT_SOURCE_CONSEQUENCE')
+                          counts.observe(obs,action,reward)
+                  tail=source.trace[first:]
+                  if len(tail)!=episodes or source.current is not None:
+                      raise RuntimeError('SOURCE_COUNTER_MISMATCH')
+                  parts.append({'phase':phase,'episodes':episodes,
+                         'mean_reward':sum(z[2] for z in tail)/episodes,
+                         'first_16_mean':sum(z[2] for z in tail[:16])/16,
+                         'last_16_mean':sum(z[2] for z in tail[-16:])/16,
+                         'reward_total':sum(z[2] for z in tail)})
+                  if native and phase=='initial':
+                      raw=saved[0]
+                      cmd=('import json,sys,hashlib; '
+                          'from yggdrasil.itd02_native_task_bridge_dev import NativeTaskRingBridgeDev; '
+                          'm=NativeTaskRingBridgeDev.restore(sys.stdin.buffer.read()); '
+                          'print(json.dumps({"ids":m.model_identities(), "n":m.transitions, '
+                          '"checkpoint":hashlib.sha256(m.checkpoint()).hexdigest()}))')
+                      proc=subprocess.run([sys.executable,'-B','-c',cmd],
+                             input=raw,stdout=subprocess.PIPE,stderr=subprocess.PIPE,
+                             check=True,timeout=15)
+                      witness=json.loads(proc.stdout)
+                      if (witness['n']!=64 or
+                          witness['ids']!=session.model.model_identities() or
+                          witness['checkpoint']!=hashlib.sha256(raw).hexdigest()):
+                          raise RuntimeError('NATIVE_COLD_RESTART_CUSTODY_FAILED')
+                      session=NativeTrainingSessionDev(NativeTaskRingBridgeDev.restore(raw),
+                             max_steps=1,exploration_period=period)
+              if source.actions!=96 or source.episodes!=96 or len(source.trace)!=96:
+                  raise RuntimeError('MISMATCHED_INFORMATION_BUDGET')
+              if native:
+                  if session.model.transitions!=96 or session.model.memory.action_calls!=96:
+                      raise RuntimeError('NATIVE_STATE_COUNT_MISMATCH')
+                  frozen={obs:frozen_native(session.model,obs) for obs in CONTEXTS+UNSEEN}
+                  storage=len(saved[0])
+              else:
+                  if counts.calls!=96: raise RuntimeError('COUNT_ACTION_COUNT_MISMATCH')
+                  frozen={obs:counts.exploit(obs) for obs in CONTEXTS+UNSEEN}
+                  storage=counts.bytes()
+              return {'seed':seed,'model':kind,'phases':parts,'frozen':frozen,
+                      'seen_final_correct':sum(frozen[obs]==correct(seed,'reversal',obs)
+                                               for obs in CONTEXTS),
+                      'unseen_final_correct':sum(frozen[obs]==correct(seed,'reversal',obs)
+                                                 for obs in UNSEEN),
+                      'bytes':storage,'elapsed':time.perf_counter()-start,
+                      'cpu':time.process_time()-cpu,
+                      'source_steps':source.actions}
+          t0=time.perf_counter()
+          rows=[]
+          for seed in SEEDS:
+              for kind in ('native_greedy','native_explore','count_explore'):
+                  rows.append(policy_run(seed,kind))
+          groups={}
+          for kind in ('native_greedy','native_explore','count_explore'):
+              subset=[r for r in rows if r['model']==kind]
+              groups[kind]={
+                  'initial_mean_reward':round(statistics.mean(r['phases'][0]['mean_reward']
+                                                       for r in subset),6),
+                  'reversal_mean_reward':round(statistics.mean(r['phases'][1]['mean_reward']
+                                                        for r in subset),6),
+                  'seen_correct_of_24':sum(r['seen_final_correct'] for r in subset),
+                  'unseen_correct_of_24':sum(r['unseen_final_correct'] for r in subset),
+                  'mean_checkpoint_or_table_bytes':round(statistics.mean(r['bytes']
+                                                               for r in subset),2),
+                  'mean_cpu_seconds':round(statistics.mean(r['cpu'] for r in subset),6),
+                  'mean_elapsed_seconds':round(statistics.mean(r['elapsed']
+                                                               for r in subset),6)}
+          receipt={'schema':'ygg.itd02.matched-onpolicy-native-exploration.source-free.v1',
+              'source_sha':os.environ['TARGET_SHA'],
+              'authority':'engineering-fixture-only-no-source-world-or-first-use',
+              'seeds':len(list(SEEDS)),
+              'public_training_obs':list(CONTEXTS),
+              'heldout_public_obs':list(UNSEEN),
+              'episodes_per_policy_seed':96,
+              'total_source_steps':sum(r['source_steps'] for r in rows),
+              'os':platform.platform(),'python':platform.python_version(),
+              'groups':groups,'per_seed':rows,
+              'total_wall_seconds':round(time.perf_counter()-t0,5)}
+          if receipt['total_source_steps']!=12*3*96:
+              raise RuntimeError('FULL_MATCHED_SOURCE_STEPS_INVALID')
+          path=os.path.join(os.environ['RUNNER_TEMP'],'itd02_matched_onpolicy.json')
+          with open(path,'w',encoding='utf-8') as fp:
+              json.dump(receipt,fp,indent=2,sort_keys=True)
+          print('ITD02_MATCHED_ONPOLICY_SUMMARY='+json.dumps(
+                {k:v for k,v in receipt.items() if k!='per_seed'},sort_keys=True))
+          PY
+      - name: Save full raw source-free comparison receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: itd02-matched-onpolicy-${{ matrix.os }}
+          path: ${{ runner.temp }}/itd02_matched_onpolicy.json
+          if-no-files-found: warn
+          retention-days: 14
