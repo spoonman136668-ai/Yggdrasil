@@ -66,6 +66,7 @@ class EvidenceGatedReplay:
             # one subsequent observation to manufacture two confirmations.
             self.feedback.clear()
             self.reference = ()
+            self.probe_active = False
             return False
         best = archive_scores.index(max(archive_scores))
         selected = self.archives[best]
