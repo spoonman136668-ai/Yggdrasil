@@ -36,9 +36,38 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "c92d0ff4f1cda4ba2714f1066d37b3cc48e46626"
           test -z "$(git status --porcelain --untracked-files=all)"
-      - name: One full Python system regression (all discovered tests)
+      - name: Full Linux system regression; exact Windows-compatible system suite
         shell: bash
-        run: python -B -m unittest discover -s tests -p 'test_*.py' -v
+        run: |
+          set -euo pipefail
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            python -B - <<'PY'
+          from pathlib import Path
+          import sys, unittest
+          paths = sorted(Path("tests").glob("test_*.py"))
+          posix_only = {
+              "test_free_fanout_sidecar.py",
+              "test_nci04g6_native_credit.py",
+              "test_nci04g7_source_producer.py",
+          }
+          assert len(paths) == 14 and posix_only <= {p.name for p in paths}, "EXACT_TEST_CATALOG_DRIFT"
+          assert all("import resource" in Path("tests", name).read_text("utf-8")
+                     for name in posix_only), "UNIX_MODULE_REASON_DRIFT"
+          sys.path.insert(0, str(Path("tests").resolve()))
+          loader = unittest.TestLoader()
+          suite = unittest.TestSuite()
+          for p in paths:
+              if p.name not in posix_only:
+                  suite.addTests(loader.loadTestsFromName(p.stem))
+          print("WINDOWS_UNIX_ONLY_MODULES_EXCLUDED_WITH_REASON=" + ",".join(sorted(posix_only)), flush=True)
+          print("WINDOWS_INCLUDED_MODULE_COUNT=" + str(len(paths)-len(posix_only)), flush=True)
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          if not result.wasSuccessful() or result.testsRun < 50:
+              sys.exit(1)
+          PY
+          else
+            python -B -m unittest discover -s tests -p 'test_*.py' -v
+          fi
       - name: Confirm pinned G29 Atlas without regeneration or bypass
         shell: bash
         run: python -B scripts/build_code_atlas.py --check-if-present
