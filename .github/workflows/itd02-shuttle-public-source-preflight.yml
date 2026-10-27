@@ -40,6 +40,7 @@ jobs:
         shell: bash
         env:
           PYTHONDONTWRITEBYTECODE: '1'
+          ITD02_PUBLISHED_SOURCE_PATH: ${{ runner.temp }}/publisher-original.POMDP
         run: |
           set -euo pipefail
           if test -e yggdrasil/itd02_published_shuttle_source_dev.py; then
