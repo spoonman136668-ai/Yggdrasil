@@ -17,7 +17,7 @@ from .itd02_local_ring_memory_dev import (
     _canonical, _finite,
 )
 
-SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v6"
+SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v7"
 REWARDS = (-3, 0, 10)  # source-declared observable labels; NOT source reward law
 MAX_BYTES = 65536
 RING = tuple(((i - 1) % CELLS, (i + 1) % CELLS) for i in range(CELLS))
@@ -88,7 +88,7 @@ class NativeTaskRingBridgeDev:
         self.score_calls = 0
         # Eight deterministic bounded cell-local traces, not trained weights.
         self.cell_trace = [0.] * CELLS
-        self.action_credit = [0.] * len(ACTIONS)
+        self.action_credit = [[0.] * len(ACTIONS) for _ in OBSERVATIONS]
 
     def start_observation(self, observation):
         if self._observation is not None or self.memory.pending:
@@ -132,7 +132,7 @@ class NativeTaskRingBridgeDev:
                     self.cell_trace[left] * (2 * bits[left] - 1)
                     + self.cell_trace[right] * (2 * bits[right] - 1)
                 ) / 2.
-            scores.append(sum(phase_scores) / 2. + .10 * contrast + .15 * self.action_credit[ACTIONS.index(action)])
+            scores.append(sum(phase_scores) / 2. + .10 * contrast + .15 * self.action_credit[OBSERVATIONS.index(self._observation)][ACTIONS.index(action)])
         self.score_calls += 1
         return scores
 
@@ -171,7 +171,7 @@ class NativeTaskRingBridgeDev:
         native_snap = self.native.snapshot()
         memory_snap = self.memory.checkpoint()
         trace_snap = list(self.cell_trace)
-        credit_snap = list(self.action_credit)
+        credit_snap = [list(row) for row in self.action_credit]
         try:
             if learning:
                 self.native.observe(before, after)
@@ -179,8 +179,9 @@ class NativeTaskRingBridgeDev:
             if learning:
                 selected = ACTIONS.index(action)
                 error = max(-13., min(13., float(reward) - predicted_before))
-                self.action_credit[selected] = max(-13., min(13.,
-                    .75 * self.action_credit[selected] + .25 * error))
+                observation_index = OBSERVATIONS.index(self._observation)
+                self.action_credit[observation_index][selected] = max(-13., min(13.,
+                    .75 * self.action_credit[observation_index][selected] + .25 * error))
             if learning:
                 # Original public input bits only. Each cell updates its own
                 # retained register; no oracle or other cell's state enters.
@@ -267,11 +268,12 @@ class NativeTaskRingBridgeDev:
                 raise ValueError("BRIDGE_CELL_TRACE_INVALID")
             obj.cell_trace = [float(x) for x in trace]
             credit = body['action_credit']
-            if (type(credit) is not list or len(credit) != len(ACTIONS) or
-                    any(type(x) not in (int,float) or not math.isfinite(x)
-                        or not -13. <= x <= 13. for x in credit)):
+            if (type(credit) is not list or len(credit) != len(OBSERVATIONS) or
+                    any(type(row) is not list or len(row) != len(ACTIONS) or
+                        any(type(x) not in (int,float) or not math.isfinite(x)
+                            or not -13. <= x <= 13. for x in row) for row in credit)):
                 raise ValueError('BRIDGE_ACTION_CREDIT_INVALID')
-            obj.action_credit = [float(x) for x in credit]
+            obj.action_credit = [[float(x) for x in row] for row in credit]
             frozen_native = body["frozen_native_sha256"]
             if (frozen_native is None) != (memory._frozen_hash is None):
                 raise ValueError("BRIDGE_FROZEN_MODE_MISMATCH")
