@@ -17,6 +17,13 @@ class EvidenceGatedReplay:
         self.archives = []
         self.feedback = []
         self.reference = ()
+        self.probe_active = False
+
+    def start_probe(self):
+        # Only explicitly admitted post-training feedback can restore an archive.
+        self.feedback.clear()
+        self.reference = ()
+        self.probe_active = True
 
     def observe(self, frame, actions):
         self.active.observe(frame, actions)
@@ -26,10 +33,11 @@ class EvidenceGatedReplay:
 
     def learn(self, action, next_frame, reward, done):
         frame, _ = self.active.current
-        if not self.feedback:
-            self.reference = tuple(self.active.examples)
-        self.feedback.append((frame, action, int(reward > 0)))
-        self.feedback = self.feedback[-2:]
+        if self.probe_active:
+            if not self.feedback:
+                self.reference = tuple(self.active.examples)
+            self.feedback.append((frame, action, int(reward > 0)))
+            self.feedback = self.feedback[-2:]
         self.active.learn(action, next_frame, reward, done)
 
     def archive(self):
@@ -39,9 +47,10 @@ class EvidenceGatedReplay:
             self.archives = self.archives[-self.max_archives:]
 
     def restore_with_evidence(self):
-        if len(self.feedback) < 2:
+        if not self.probe_active or len(self.feedback) < 2:
             self.feedback.clear()
             self.reference = ()
+            self.probe_active = False
             return False
         # Compare observed outcomes under the same public frame and tested
         # action. Restore only on a unique strictly better retrospective fit.
@@ -65,4 +74,5 @@ class EvidenceGatedReplay:
             self.active.learn(action, b"replay-public-placeholder", outcome, True)
         self.feedback.clear()
         self.reference = ()
+        self.probe_active = False
         return True
