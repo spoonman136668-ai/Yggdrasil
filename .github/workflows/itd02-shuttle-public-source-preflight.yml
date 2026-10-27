@@ -1,0 +1,48 @@
+name: ITD-02 published Shuttle source identity preflight
+on:
+  push:
+    branches:
+      - research/itd02-published-shuttle-public-source-20261027
+  pull_request:
+    paths:
+      - 'yggdrasil/itd02_published_shuttle_source_dev.py'
+      - 'tests/test_itd02_published_shuttle_source_dev.py'
+      - 'yggdrasil/itd02_native_training_session_dev.py'
+      - '.github/workflows/itd02-shuttle-public-source-preflight.yml'
+permissions:
+  contents: read
+jobs:
+  original-published-source-preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Read only original publisher's public text, no world steps
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://www.pomdp.org/examples/shuttle.95.POMDP'
+          curl --fail --location --silent --show-error --retry 1 --max-time 30 "$url" -o "$RUNNER_TEMP/publisher-original.POMDP"
+          test "$(wc -c < "$RUNNER_TEMP/publisher-original.POMDP")" -gt 1200
+          test "$(wc -c < "$RUNNER_TEMP/publisher-original.POMDP")" -lt 12000
+          grep -Fqx 'actions: TurnAround GoForward Backup' "$RUNNER_TEMP/publisher-original.POMDP"
+          grep -Fqx 'observations: 5' "$RUNNER_TEMP/publisher-original.POMDP"
+          grep -Fqx 'states:  8' "$RUNNER_TEMP/publisher-original.POMDP"
+          echo "PUBLISHED_SHUTTLE_ORIGINAL_SHA256=$(sha256sum "$RUNNER_TEMP/publisher-original.POMDP" | cut -d' ' -f1)"
+          echo "PUBLISHED_SHUTTLE_ORIGINAL_BYTES=$(wc -c < "$RUNNER_TEMP/publisher-original.POMDP")"
+          echo 'PUBLISHED_SHUTTLE_SOURCE_DISCOVERY=PASS'
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: No original episodes; only source parser and native-session regression
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          if test -e yggdrasil/itd02_published_shuttle_source_dev.py; then
+            python -m unittest discover -s tests -p 'test_itd02_published_shuttle_source_dev.py' -v
+          fi
+          python -m unittest discover -s tests -p 'test_itd02_native_training_session_dev.py' -v
