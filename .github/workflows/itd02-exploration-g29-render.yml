@@ -1,0 +1,61 @@
+name: ITD-02 source-pinned G29 exploration atlas renderer (read-only)
+on:
+  push:
+    branches:
+      - qualification/itd02-onpolicy-native-exploration-20261027
+permissions:
+  contents: read
+jobs:
+  generate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      TARGET_SHA: 18bf2c064403152d3e40ba4540cbf5383419b7c8
+    steps:
+      - name: Preserve native source bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 18bf2c064403152d3e40ba4540cbf5383419b7c8
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Render from frozen source and export exact blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$TARGET_SHA"
+          python scripts/build_code_atlas.py --source-commit "$TARGET_SHA" --write
+          python - <<'PY'
+          import base64,hashlib,json,os,subprocess
+          from pathlib import Path
+          ix=json.loads(Path('.ice/code-atlas.json').read_text('utf-8'))
+          assert ix['source_commit']==os.environ['TARGET_SHA']
+          assert ix['authority']=='advisory-locators-only'
+          paths=['.ice/code-atlas.json','.ice/code-atlas.html','.ice/code-atlas.ice']
+          delta=set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines())
+          assert delta==set(paths), delta
+          print('G29_EXPLORATION_SOURCE_COUNTS='+json.dumps(ix['counts'],sort_keys=True))
+          for path in paths:
+              name=Path(path).name
+              data=Path(path).read_bytes()
+              encoded=base64.b64encode(data).decode('ascii')
+              print('G29_EXPLORATION_BEGIN|'+name+'|'+str(len(data))+'|'+hashlib.sha256(data).hexdigest())
+              for i,off in enumerate(range(0,len(encoded),12000)):
+                  print('G29_EXPLORATION_PART|'+name+'|'+str(i)+'|'+encoded[off:off+12000])
+              print('G29_EXPLORATION_END|'+name)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: itd02-exploration-g29-exact-source
+          path: |
+            .ice/code-atlas.json
+            .ice/code-atlas.html
+            .ice/code-atlas.ice
+          if-no-files-found: error
+          retention-days: 5
