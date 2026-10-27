@@ -17,3 +17,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Focused source-free tests
         run: python -m unittest discover -s research/itd02/door_nav_568 -p 'test_*.py' -v
+      - name: Emit matched replay versus scratch metrics
+        working-directory: research/itd02/door_nav_568
+        run: python replay_efficiency_benchmark.py
