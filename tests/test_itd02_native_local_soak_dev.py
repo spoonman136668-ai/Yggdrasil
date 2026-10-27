@@ -46,6 +46,8 @@ class OfflineNativeSoakTests(unittest.TestCase):
             # An OS timer may be too coarse for a tiny episode. A measured
             # zero is never emitted as truthful CPU consumption.
             self.assertGreater(result["journal_and_checkpoint_bytes"], 0)
+            self.assertGreater(result["total_host_wall_ns"],
+                               result["total_child_wall_ns"])
             self.assertIsNone(result["process_tree_peak_rss_bytes"])
             self.assertIsNone(result["power_joules"])
             self.assertTrue(result["native_parameter_identity_changed"])
