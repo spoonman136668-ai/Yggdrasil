@@ -14,7 +14,7 @@ import math
 from .task_runtime import LocalTaskRuntime
 from .itd02_local_ring_memory_dev import (
     ACTIONS, ACTION_SITES, CELLS, NativeRingMemoryDev, OBSERVATIONS, OBS_SITES,
-    _canonical, _finite,
+    _canonical, _finite, _local_exchange,
 )
 
 SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v2"
@@ -101,8 +101,17 @@ class NativeTaskRingBridgeDev:
     def choose(self):
         native = self.native_reward_scores()
         memory = self.memory.q_values()
-        # Source-blind fixed fusion, not hidden-state access or oracle planning.
-        combined = [memory[i] + .15 * native[i] for i in range(len(ACTIONS))]
+        # Experimental source-blind action-local reliability rescue:
+        # the original two-hop neighbor relay tells each action cell whether
+        # THIS public observation reached its readout. A blind action cell
+        # leans on the existing native prediction, rather than inventing an
+        # oracle label or raising native influence for all actions.
+        reach = _local_exchange(self.memory._pulse)
+        self.memory.messages += CELLS * 2 * 2  # extra two-hop observation relay
+        combined = [
+            memory[i] + (.60 if reach[ACTION_SITES[i]] == 0. else .15) * native[i]
+            for i in range(len(ACTIONS))
+        ]
         self.memory.action_calls += 1
         return ACTIONS[max(range(len(ACTIONS)), key=lambda i: combined[i])]
 
