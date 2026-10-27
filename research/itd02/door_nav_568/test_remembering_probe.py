@@ -15,8 +15,22 @@ class RememberingProbeTests(unittest.TestCase):
         self.assertEqual(len(memory.exceptions), 1)
         second = RememberingProbeScheduler(native.active_links,
                                            native.archived_links, starts, memory)
-        self.assertNotEqual(second.next_probe(), key)
+        next_key = second.next_probe()
+        self.assertNotEqual(next_key, key)
         self.assertLessEqual(len(second.candidates), 3)
+        # Public consequences are supplied only after scheduling each action.
+        from two_hop_evidence_audit import SECOND
+        successors = {(frame, action): old for frame, action, old, newer in SECOND}
+        while next_key is not None:
+            follow = second.first_outcome(native.active_links[next_key])
+            if follow is not None:
+                second.second_outcome(successors[follow])
+            if second.decision() is not None:
+                break
+            next_key = second.next_probe()
+        self.assertEqual(second.decision(), "snapshot")
+        self.assertEqual(second.actions, 4)
+        self.assertEqual(len(memory.exceptions), 1)
 
     def test_capacity_rejects_additional_exceptions(self):
         memory = PublicExceptionMemory(capacity=1)
