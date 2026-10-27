@@ -171,6 +171,7 @@ def child(root, index, steps, crash_index):
 
 
 def soak(root, episodes, steps, crash_index):
+    total_wall_start = time.perf_counter_ns()
     if root.exists():
         raise RuntimeError("SOURCE_FREE_FRESH_RUN_ROOT_REQUIRED")
     root.mkdir(parents=True, exist_ok=False, mode=0o700)
@@ -216,6 +217,9 @@ def soak(root, episodes, steps, crash_index):
             if all(r["process_cpu_ns"] is not None for r in rows)
             else None),
         "total_child_wall_ns": sum(r["wall_ns"] for r in rows),
+        # Unlike child timing, this includes starting each new Python
+        # interpreter and verifying its durable previous checkpoint.
+        "total_host_wall_ns": time.perf_counter_ns() - total_wall_start,
         "observed_peak_child_rss_bytes": (
             max(r["peak_self_rss_bytes"] for r in rows)
             if all(r["peak_self_rss_bytes"] is not None for r in rows)
