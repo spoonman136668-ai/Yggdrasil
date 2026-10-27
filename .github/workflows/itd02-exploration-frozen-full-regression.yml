@@ -1,0 +1,198 @@
+name: ITD-02 exploration frozen full regression (read-only)
+on:
+  push:
+    branches:
+      - qualification/itd02-exploration-frozen-full-regression-20261027
+permissions:
+  contents: read
+jobs:
+  regression:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      TARGET_SHA: 3723afc95cbe5d3355b54b479499036499c7183f
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Keep original Git blobs byte-identical across operating systems
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+          git config --global core.safecrlf true
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 3723afc95cbe5d3355b54b479499036499c7183f
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact frozen source and G29 authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$TARGET_SHA"
+          test -z "$(git status --porcelain)"
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          for path in ('yggdrasil/task_runtime.py','yggdrasil/nci04g7d_native_lesion.py',
+                       'yggdrasil/nci04g7e_functional_custody.py'):
+              git_blob=subprocess.check_output(['git','show','HEAD:'+path])
+              if Path(path).read_bytes()!=git_blob:
+                  raise RuntimeError('SOURCE_BLOB_BYTES_DIFFER_FROM_GIT:'+path)
+          print('BYTE_EXACT_NATIVE_SOURCE=PASS')
+          PY
+          python scripts/build_code_atlas.py --check-if-present
+          python -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
+      - name: Complete original repository Python test discovery with resource receipt
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os, platform, sys, time, unittest
+          t0=time.perf_counter()
+          c0=time.process_time()
+          from pathlib import Path
+          windows_resource_only = (
+              'test_free_fanout_sidecar.py',
+              'test_nci04g6_native_credit.py',
+              'test_nci04g7_source_producer.py',
+          )
+          all_modules=sorted(Path('tests').glob('test_*.py'))
+          if sys.platform=='win32':
+              excluded=[p.name for p in all_modules if p.name in windows_resource_only]
+              if len(excluded)!=len(windows_resource_only):
+                  sys.exit('EXPECTED_UNIX_RESOURCE_MODULE_MISSING')
+              test_files=[p for p in all_modules if p.name not in windows_resource_only]
+          else:
+              excluded=[]
+              test_files=all_modules
+          loader=unittest.TestLoader()
+          suite=unittest.TestSuite(
+              loader.discover('tests',pattern=p.name)
+              for p in test_files
+          )
+          result=unittest.TextTestRunner(verbosity=2).run(suite)
+          data={
+              "schema":"ygg.itd02.exploration.full-regression.v1",
+              "source_sha":os.environ["TARGET_SHA"],
+              "os":platform.platform(),
+              "python":platform.python_version(),
+              "logical_cpus":os.cpu_count(),
+              "tests_run":result.testsRun,
+              "test_modules_included":[p.name for p in test_files],
+              "unix_resource_modules_excluded":excluded,
+              "full_suite_scope":'linux_complete' if not excluded else 'windows_portable_only',
+              "failures":len(result.failures),
+              "errors":len(result.errors),
+              "skipped":len(result.skipped),
+              "elapsed_seconds":round(time.perf_counter()-t0,6),
+              "main_process_cpu_seconds":round(time.process_time()-c0,6),
+              "passed":result.wasSuccessful()
+          }
+          with open(os.path.join(os.environ['RUNNER_TEMP'],'itd02_full_regression.json'),'w',encoding='utf-8') as fp:
+              json.dump(data,fp,sort_keys=True,indent=2)
+          print("ITD02_FULL_REGRESSION_RECEIPT="+json.dumps(data,sort_keys=True))
+          if not result.wasSuccessful() or result.testsRun < 40:
+              sys.exit("ITD02_FULL_REGRESSION_FAILED_OR_INCOMPLETE")
+          PY
+      - name: Measure actual native source-free model learning resource envelope
+        shell: bash
+        run: |
+          python - <<'PY'
+          import ctypes, json, os, platform, statistics, sys, time
+          from yggdrasil.itd02_native_training_session_dev import NativeTrainingSessionDev
+          class PublicEngineeringSource:
+              def __init__(self):
+                  self.resets=0
+                  self.actions=0
+              def reset_public(self):
+                  self.resets+=1
+                  return "LRV"
+              def step_public(self, action):
+                  self.actions+=1
+                  return ("MRV", 10 if action=="TurnAround" else 0, True)
+          def peak_rss_bytes():
+              if os.name != 'nt':
+                  import resource
+                  return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024
+              from ctypes import wintypes
+              class PMC(ctypes.Structure):
+                  _fields_=[
+                      ("cb",wintypes.DWORD),("PageFaultCount",wintypes.DWORD),
+                      ("PeakWorkingSetSize",ctypes.c_size_t),("WorkingSetSize",ctypes.c_size_t),
+                      ("QuotaPeakPagedPoolUsage",ctypes.c_size_t),("QuotaPagedPoolUsage",ctypes.c_size_t),
+                      ("QuotaPeakNonPagedPoolUsage",ctypes.c_size_t),("QuotaNonPagedPoolUsage",ctypes.c_size_t),
+                      ("PagefileUsage",ctypes.c_size_t),("PeakPagefileUsage",ctypes.c_size_t)
+                  ]
+              m=PMC()
+              m.cb=ctypes.sizeof(m)
+              ctypes.windll.kernel32.GetCurrentProcess.restype=ctypes.c_void_p
+              handle=ctypes.windll.kernel32.GetCurrentProcess()
+              ctypes.windll.psapi.GetProcessMemoryInfo.argtypes=[ctypes.c_void_p,ctypes.c_void_p,ctypes.c_uint32]
+              if not ctypes.windll.psapi.GetProcessMemoryInfo(handle,ctypes.byref(m),ctypes.sizeof(m)):
+                  raise RuntimeError("WIN32_RESOURCE_ACCOUNTING_FAILED")
+              return int(m.PeakWorkingSetSize)
+          source=PublicEngineeringSource()
+          session=NativeTrainingSessionDev(max_steps=1, exploration_period=9)
+          records=[]
+          checkpoints=[]
+          t0=time.perf_counter()
+          cpu0=time.process_time()
+          for _ in range(32):
+              start=time.perf_counter()
+              result=session.train_bounded(source,1,checkpoints.append)
+              records.append((time.perf_counter()-start)*1000)
+              if len(result)!=1:
+                  raise RuntimeError("NATIVE_TRAINING_RESULT_MISSING")
+          cpu=time.process_time()-cpu0
+          total=time.perf_counter()-t0
+          receipt={
+              "schema":"ygg.itd02.exploration.source-free-resource-envelope.v1",
+              "authority":"engineering-only-no-source-first-use",
+              "source_sha":os.environ["TARGET_SHA"],
+              "os":platform.platform(),
+              "python":platform.python_version(),
+              "logical_cpus":os.cpu_count(),
+              "episodes":len(records),
+              "source_resets":source.resets,
+              "source_actions":source.actions,
+              "model_transitions":session.model.transitions,
+              "checkpoint_count":len(checkpoints),
+              "last_checkpoint_bytes":len(checkpoints[-1]),
+              "total_checkpoint_bytes":sum(map(len,checkpoints)),
+              "elapsed_seconds":round(total,6),
+              "cpu_seconds_main_process":round(cpu,6),
+              "mean_episode_ms":round(statistics.mean(records),5),
+              "max_episode_ms":round(max(records),5),
+              "peak_rss_bytes_main_process":peak_rss_bytes()
+          }
+          if (source.resets!=32 or source.actions!=32 or session.model.transitions!=32
+              or len(checkpoints)!=32 or receipt["peak_rss_bytes_main_process"]<=0):
+              raise RuntimeError("NATIVE_RESOURCE_RECEIPT_INVALID")
+          with open(os.path.join(os.environ['RUNNER_TEMP'],'itd02_native_resource.json'),'w',encoding='utf-8') as fp:
+              json.dump(receipt,fp,sort_keys=True,indent=2)
+          print("ITD02_NATIVE_RESOURCE_RECEIPT="+json.dumps(receipt,sort_keys=True))
+          PY
+      - name: Verify source tree unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$TARGET_SHA"
+          git diff --exit-code
+      - name: Upload independent development receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: itd02-exploration-regression-${{ matrix.os }}
+          path: |
+            ${{ runner.temp }}/itd02_full_regression.json
+            ${{ runner.temp }}/itd02_native_resource.json
+          if-no-files-found: warn
+          retention-days: 14
