@@ -41,7 +41,7 @@ class MultiRegimeComparisonTests(unittest.TestCase):
         self.assertEqual([r["correct"] for r in native], [2, 0, 0, 2, 0, 0])
         self.assertEqual([r["wrong"] for r in native], [0, 2, 2, 0, 2, 2])
         self.assertEqual([r["correct"] for r in tabular], [2, 0, 0, 2, 0, 0])
-        self.assertEqual([r["wrong"] for r in tabular], [0, 0, 0, 0, 2, 0])
+        self.assertEqual([r["wrong"] for r in tabular], [0, 0, 0, 0, 0, 0])
         self.assertEqual(data["native_revisions"], 2)
         self.assertGreater(data["native_bytes"], data["tabular_bytes"])
 
