@@ -1,0 +1,26 @@
+# ITD-02 frozen two-step action-history parity — preregistration before any code change
+
+## Source and nonauthority
+Original eight-cell source commit `658b855d1b217d20ed9d431fe99b2e866469b7e9`, original `yggdrasil/itd02_native_task_bridge_dev.py` blob `0fa6afbdd0140972db94ec072f5cab0c13c194ae`, eight-site original `LocalTaskRuntime`, original ring memory and all accepted refs held fixed. Source-only engineering/representation diagnostic; not original Shuttle, scientific first use, causal generalization evidence, new controller or accepted ref. No alteration to FORGE, Wingless, owner F139, CKB-plane, or other drafts.
+
+## Exact mechanism under test
+The original native bridge updates `cell_trace[i]` using two original ring-neighbor bits of the actually selected public action/observation in the learning branch of `accept_public_transition`. Frozen `learning=False` calls consume legal public actions but do **not** advance that action/observation trace. Frozen evaluation therefore may equate distinct public action histories at a shared subsequent observation, even while initial observation memory is retained. This is a potential inference-state parity failure, not an inherent proof of inability to learn.
+
+Two exact versions:
+- **original**: untouched source on pinned commit.
+- **trace-parity candidate**: run the **same exact existing deterministic bounded `cell_trace` update** after every successfully accepted public transition, including frozen `learning=False`. All 8 trace sites, neighbor topology, coefficients (.75,.125,.125), public encoding, source-only reward labels and episode reset semantics unchanged. The native/core weights, cell roles, local ring-memory weights/gates and action-credit array are not trained in frozen mode. No extra weights, novel planner, oracle, source-world info or preference table. Rejections and snapshot restore must roll back trace just as on learning.
+
+## Frozen exact tests before/after
+
+Use deterministic public source-free legal probes with observation first `LRV` or `MRV`; at step 1 take each of three explicitly chosen public **test-intervention** actions with legal next `Nothing`, public reward 0 and `terminal=False`. At step 2 begin the identical public `Nothing` observation and read native action vector, neighbor-memory vector, fused chooser and eight action traces. These first-step test interventions are **diagnostics**, not claims of an autonomous acting decision or genuine policy improvement.
+
+Precondition: train genuine original `NativeTaskRingBridgeDev` on exactly **54 source-free** publicly authorized single-step transitions from the deterministic cyclic fixture `obs `LRV`, `MRV`, `Nothing`; `action=ACTIONS[step%3]`; reward `REWARDS[step%3]`; legal next `Nothing`, terminal true. Native learned genome and memory and checkpoint are then frozen. Only the public interface is given to the actor. Each independent frozen diagnostic starts from the *same immutable original model snapshot* and must be source-exact for the corresponding candidate/original.
+
+Six prefix contexts (2 observations × 3 first-actions) each repeated across **three independent frozen snapshot phases**: immediately untrained, after 27 real fit events, after 54. All frozen actions require `learning=False`; zero changes to original genome, cell roles and local-memory trainable parameters; training counters exactly unchanged; frozen `model_identities()` stable; fresh-process cold restore and checkpoint integrity intact. `cell_trace` is an **inference state**, not a learned parameter: a post-public-event change is permissible; protected fitted weights may not change. Original versus candidate should be identical on fitted train-event checkpoints and on score before the first frozen event.
+
+Primary parity measurements: (a) distinct first actions result in different 8-site trace vectors at identical later current observation, (b) whether native scores and action ranking respond to the preceding action; compare all pairs using absolute-difference tolerance 1e-12, (c) native frozen event number, trace initialization, byte-identical stored learned weights and identical source feedback exposure, (d) separate initial-observation carry control (LRV vs MRV), (e) no fake reinforcement/acceptance. Do not assert a particular rewarded best action; no hidden world law is being tested.
+
+A pass is engineering **source-faithful inference history restoration** if candidate traces reflect legal prior action and original frozen snapshots do not, while stored trained weights stay constant, and Linux/Windows both match exact trace/score statistics. If scores remain unresponsive, classify **partial/insufficient**. Even on pass, this is *NOT a scientific learning or transfer gain*. It only repairs parity needed for later real 2-step causal tasks. Do not promote, merge, loosen first-use, tune metric after outcomes, or claim autonomous performance improvement.
+
+## Isolation and acceptance
+Use existing GitHub-hosted Linux/Windows qualification. Keep candidate in isolated unmerged branch, test complete original native/bridge regressions, publish source-exact runs and negative cases. No paid API, no additional controller, no Windows owner cutover, and no CKB-plane dependency. Original protected training, original worlds, retail consumer hardware acceptance, and science remain gated.
