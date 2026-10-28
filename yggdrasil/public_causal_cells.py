@@ -63,6 +63,44 @@ class PublicCausalCells:
             return None
         return 0 if lhs > rhs else 1
 
+    def choose_wilson(self, address: int, *, retained: bool = False) -> int | None:
+        """Optional 95% Wilson-interval abstention control, not a learned oracle.
+
+        Each arm needs independently observed public outcomes. Return an
+        action only when its *lower* success bound exceeds the other arm's
+        upper bound. Otherwise abstain instead of converting sparse noise
+        into a certain action. No counter or checkpoint bytes are changed.
+        """
+        from math import sqrt
+
+        cell = self._address(address, retained)
+        (zero0, one0), (zero1, one1) = self._counts[cell]
+
+        def bounds(failures: int, successes: int) -> tuple[float, float] | None:
+            trials = failures + successes
+            if trials == 0:
+                return None
+            # Fixed conventional two-sided 95% normal quantile: no tuning on
+            # held-out rewards, adaptive thresholds, or private world state.
+            z = 1.959963984540054
+            z2 = z * z
+            p = successes / trials
+            divisor = 1.0 + z2 / trials
+            center = (p + z2 / (2.0 * trials)) / divisor
+            radius = z * sqrt((p * (1.0 - p) + z2 / (4.0 * trials))
+                              / trials) / divisor
+            return center - radius, center + radius
+
+        arm0 = bounds(zero0, one0)
+        arm1 = bounds(zero1, one1)
+        if arm0 is None or arm1 is None:
+            return None
+        if arm0[0] > arm1[1]:
+            return 0
+        if arm1[0] > arm0[1]:
+            return 1
+        return None
+
     def snapshot(self) -> bytes:
         """One immutable, versioned 164-byte checkpoint with SHA-256 integrity."""
         raw = bytearray(self.MAGIC)
