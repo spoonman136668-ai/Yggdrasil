@@ -58,7 +58,7 @@ def trial(target):
             "public_target_feedback":2*step,
             "probe":list(key) if key is not None else None,
             "scores":{name:evaluate(agent,target) for name,agent in agents.items()},
-            "fallback":{name:getattr(agent,"fallback",False) for name,agent in agents},
+            "fallback":{name:getattr(agent,"fallback",False) for name,agent in agents.items()},
             "remaining_source":{name:agent.remaining() for name,agent in agents.items()},
             "candidate_target_feedback":agents["local_recovery"].public_feedback,
             "conventional_target_feedback":agents["conventional_recovery"].public_feedback,
