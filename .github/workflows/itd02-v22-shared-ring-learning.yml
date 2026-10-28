@@ -1,0 +1,127 @@
+name: ITD-02 V22 edge-shared cell memory source-only qualification
+on:
+  push:
+    branches:
+      - research/itd02-v22-edge-shared-context-learning-20261028
+permissions:
+  contents: read
+jobs:
+  v22-source-only-local-shared-learning:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Fix exact source bytes across OS
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Checkout exact pinned V22 source commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify prereg chronology and immutable native and control sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 6147b787068caa55a4782e076dd6ae82e651dcbc "$GITHUB_SHA"
+          git merge-base --is-ancestor 818ebe040844f9858e74fdded7b4ff0515fa10d0 "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+          test "$(git hash-object yggdrasil/itd02_local_ring_memory_dev.py)" = 1db0835d5c99456bcf99a013d4836f49314a9d39
+          test "$(git hash-object yggdrasil/itd02_v17_neighbor_carried_learner_dev.py)" = 4e3c77797e66df3a26742d23d18f038644891e55
+          test "$(git hash-object yggdrasil/itd02_v18_intermediate_plasticity_dev.py)" = 711391944be7bd94f1898005d1233bfe52a6f216
+          test "$(git hash-object research/itd02_v18_intermediate_plasticity_audit.py)" = 7a8f361ff13cf75f716c544add192c2ff9c5aae9
+          test "$(git hash-object yggdrasil/itd02_v20_causal_credit_dev.py)" = c7eb9cfc0a4820400fb3c8b78febeb11ae035570
+          test "$(git hash-object research/itd02_v21_capacity_learning_audit.py)" = 0e1135d87fe3ed0f823d9956cf1eadde81254ea6
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: V22 original-ring shared-cell integrity and no-sharing controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v22"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v22_shared_context_ring.py' -v > "$RUNNER_TEMP/v22/focused.log" 2>&1
+          cat "$RUNNER_TEMP/v22/focused.log"
+          echo ITD02_V22_SOURCE_ONLY_LOCAL_SHARED_INTEGRITY_PASS
+      - name: Exact 72-fold V22 shared versus isolated and pooled source-public controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B research/itd02_v22_shared_ring_learning_audit.py > "$RUNNER_TEMP/v22/audit.json"
+          python - "$RUNNER_TEMP/v22/audit.json" <<'PY'
+          import json, math, sys
+          from pathlib import Path
+          d=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          assert d["schema"]=="ygg.itd02.v22.neighbor_shared_source_public_toy.v1"
+          assert d["source_only"] and not d["scientific_first_use"]
+          assert not d["original_world_training"] and d["original_native_model_unchanged"]
+          assert d["original_native_ring_cells"]==8
+          assert d["fixed_source_public_channels"]==7
+          assert d["scalar_output_neighbor_hops"]==4
+          assert d["trainable_shared_cell_weights"]==160
+          assert d["trainable_selected_action_biases"]==3
+          assert d["trainable_scalars_per_v22_arm"]==163
+          assert d["training_updates_per_arm_per_fold"]==560
+          assert d["public_histories_per_family"]==36 and d["heldout_families"]==2
+          assert set(d["structural_witness"])=={"shared","action_partition"}
+          assert all(v["selected_bias_only"] and
+                     v["two_different_actual_selected_actions_experienced"] and
+                     v["original_native_model_unchanged"] and
+                     v["learned_parameter_count"]==163
+                     for v in d["structural_witness"].values())
+          for family in ("additive","nonadditive"):
+              err=d["matched_toy_absolute_errors"][family]
+              assert set(err)=={"v22_shared_ring","v22_no_share_partition_163_scalars",
+                  "v20_original_causal_credit","v18_plastic_gains","v18_frozen_gains",
+                  "v17_additive","strong_35_example_pooled_interaction_ridge"}
+              assert all(math.isfinite(x) and x>=0 for x in err.values())
+          assert d["max_checkpoint_bytes"]<=8192
+          assert all(v>0 for v in d["total_edge_scalar_messages"].values())
+          assert len(d["canonical_72_case_sha256"])==64
+          assert d["classification"] in {
+              "V22_SHARED_LOCAL_LEARNING_NO_CONTROLLED_TRANSFER_GAIN__NO_SCIENCE",
+              "V22_LOCAL_SHARED_TOY_TRANSFER_CONTROL_NOT_BEATEN__NO_SCIENCE",
+              "V22_LOCAL_SHARED_TOY_TRANSFER__NO_SCIENCE"}
+          print("ITD02_V22_MATCHED_LOCAL_SHARED_LEARNING_COMPLETE_NO_SCIENCE")
+          PY
+          cat "$RUNNER_TEMP/v22/audit.json"
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: One final V21 V20 V19 V18 V17 V16 V15 V12 original-native regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B research/itd02_v21_capacity_learning_audit.py > "$RUNNER_TEMP/v22/inherited-v21.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v21_capacity_learning_audit.py' -v
+          PYTHONPATH=. python -B research/itd02_v20_responsibility_gated_audit.py > "$RUNNER_TEMP/v22/inherited-v20.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v20_responsibility_gated_credit.py' -v
+          PYTHONPATH=. python -B research/itd02_v19_local_credit_causality_audit.py > "$RUNNER_TEMP/v22/inherited-v19.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v19_local_credit_causality.py' -v
+          PYTHONPATH=. python -B research/itd02_v18_intermediate_plasticity_audit.py > "$RUNNER_TEMP/v22/inherited-v18.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v18_intermediate_plasticity_dev.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v17_neighbor_carried_learner_dev.py' -v
+          PYTHONPATH=. python -B research/itd02_v16_locality_transfer_audit.py > "$RUNNER_TEMP/v22/inherited-v16.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v15_frozen_native_local_readout.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_native_task_bridge_dev.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_local_ring_memory_dev.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v12_delayed_local_eligibility.py' -v
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo ITD02_V22_FINAL_ORIGINAL_NATIVE_INTEGRATION_PASS_NO_SCIENCE
+      - name: Preserve immutable cross-host source-only evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-v22-source-only-shared-ring-${{ matrix.os }}
+          path: ${{ runner.temp }}/v22/*
+          if-no-files-found: warn
+          retention-days: 7
