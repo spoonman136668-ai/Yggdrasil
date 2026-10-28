@@ -1,0 +1,110 @@
+name: ITD-02 v9 preregistered native arbitration source-free evaluation
+on:
+  push:
+    branches:
+      - research/itd02-v9-sourcepublic-local-arbitration-20261027
+permissions:
+  contents: read
+jobs:
+  v9-native-v8-and-independent-controls:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        name: Preserve exact Git source bytes
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          path: harness
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 658b855d1b217d20ed9d431fe99b2e866469b7e9
+          path: native-v8
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: cc03dc6738ef884ca552c50f980ddbce393750bb
+          path: native-v9
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify preregistered chronological and source-custody bounds
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C harness merge-base --is-ancestor a6bd25e16d5ade740062a29b63e2cbb83af14b91 "$GITHUB_SHA"
+          test "$(git -C native-v8 rev-parse HEAD)" = 658b855d1b217d20ed9d431fe99b2e866469b7e9
+          test "$(git -C native-v9 rev-parse HEAD)" = cc03dc6738ef884ca552c50f980ddbce393750bb
+          test -z "$(git -C harness status --porcelain --untracked-files=all)"
+          test -z "$(git -C native-v8 status --porcelain --untracked-files=all)"
+          test -z "$(git -C native-v9 status --porcelain --untracked-files=all)"
+      - name: Test genuine v9 native output-local custody, cold-restart, tamper and frozen mode
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH="$GITHUB_WORKSPACE/native-v9" python -B harness/tests/test_itd02_v9_local_arbitration_dev.py -v
+          cd native-v9
+          python -B -m unittest discover -s tests -p test_itd02_native_task_bridge_dev.py -v
+          python -B -m unittest discover -s tests -p test_itd02_local_ring_memory_dev.py -v
+          python -B -m unittest discover -s tests -p test_itd02_native_training_session_dev.py -v
+      - name: Genuine on-policy native and conventional selected-action comparisons
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v9-result"
+          for name in v8 v9; do
+            python -B harness/research/itd02_v9_local_arbitration_eval.py \
+              --variant "$name" --root "$GITHUB_WORKSPACE/native-$name" \
+              --output "$RUNNER_TEMP/v9-result/$name.json"
+          done
+          for name in count_mean ema_half rolling_six; do
+            python -B harness/research/itd02_v9_local_arbitration_eval.py \
+              --variant "$name" --output "$RUNNER_TEMP/v9-result/$name.json"
+          done
+          python -B harness/research/itd02_v9_local_arbitration_eval.py \
+            --aggregate "$RUNNER_TEMP/v9-result" \
+            --output "$RUNNER_TEMP/v9-result/aggregate.json"
+      - name: Validate exact source-free 8640 selected public rewards and fail-closed boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os,json
+          from pathlib import Path
+          root=Path(os.environ["RUNNER_TEMP"])/"v9-result"
+          a=json.loads((root/"aggregate.json").read_text("utf-8"))
+          assert a["events_all_arms"]==8640 and a["events_per_arm"]==1728
+          assert a["scientific_first_use_authorized"] is False
+          assert a["promotion_authorized"] is False
+          assert a["retail_pc_evidence"] is False
+          assert len(a["means"])==5
+          print("ITD02_V9_ARBITRATION_ACCOUNTING_PASS__NO_SCIENCE")
+          PY
+          test -z "$(git -C harness status --porcelain --untracked-files=all)"
+          test -z "$(git -C native-v8 status --porcelain --untracked-files=all)"
+          test -z "$(git -C native-v9 status --porcelain --untracked-files=all)"
+      - name: Retain exact per-trial negative results, receipts, resource accounting
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-v9-arbitration-${{ matrix.os }}
+          path: ${{ runner.temp }}/v9-result/*.json
+          if-no-files-found: warn
+          retention-days: 7
