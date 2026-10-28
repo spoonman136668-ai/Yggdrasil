@@ -1,7 +1,10 @@
 """NCI-04G6 development-only local credit integration and resource checks."""
 import json
 import math
-import resource
+try:
+    import resource
+except ImportError:
+    resource = None  # POSIX process metering unavailable: measurement test unsupported
 import time
 import tracemalloc
 import unittest
@@ -23,6 +26,7 @@ class StrongLocalCount:
         return sum(len(str(k))+16 for k in self.table)
 
 class NCI04G6LocalCredit(unittest.TestCase):
+    @unittest.skipIf(resource is None, "POSIX resource accounting unavailable: cannot qualify CPU/RSS")
     def test_existing_roles_learn_from_own_measured_residual_only(self):
         runtime=LocalTaskRuntime()
         baseline=StrongLocalCount()
