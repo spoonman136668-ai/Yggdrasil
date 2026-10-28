@@ -384,9 +384,27 @@ def summarize_thread_stats(ring, stats):
             any(x["counts"]["builds"] != EXPECTED_BUILDS or
                 x["counts"]["clears"] != EXPECTED_BUILDS or
                 x["counts"]["hits"] <= 0 or
-                x["counts"]["peer_bytes_sent"] != x["counts"]["peer_bytes_received"]
+                x["counts"]["peer_sent"] != EXPECTED_BUILDS * 2 * HOPS or
+                x["counts"]["peer_received"] != EXPECTED_BUILDS * 2 * HOPS
                 for x in stats)):
-        raise AssertionError("V31T_ORIGINAL_RING_THREAD_OR_IPC_CUSTODY_FAILED")
+        raise AssertionError(
+            "V31T_ORIGINAL_RING_THREAD_OR_IPC_CUSTODY_FAILED_" +
+            json.dumps({
+                "counts": [
+                    {k: x["counts"][k] for k in (
+                        "peer_sent", "peer_received",
+                        "peer_bytes_sent", "peer_bytes_received",
+                        "builds", "hits", "clears", "max_bank_slots")}
+                    for x in stats
+                ],
+                "total": {k: result[k] for k in (
+                    "peer_sent", "peer_received",
+                    "peer_bytes_sent", "peer_bytes_received",
+                    "builds", "hits", "clears", "max_slots_per_cell")},
+                "invalidations": ring.invalidations,
+                "row_requests": ring.rows_requested,
+            },sort_keys=True,separators=(",",":"))
+        )
     return result
 
 
