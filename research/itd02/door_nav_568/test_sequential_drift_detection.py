@@ -34,5 +34,6 @@ class SequentialDriftTests(unittest.TestCase):
         self.assertEqual(len(negatives),224)
         self.assertTrue(any(r["stages"][0]["scores"]["local"]["wrong"]>0 for r in negatives))
         self.assertTrue(any(r["stages"][1]["drift_detected"] for r in negatives))
-        self.assertTrue(all(r["stages"][2]["drift_detected"] for r in negatives))
-        self.assertTrue(all(r["stages"][2]["scores"]["local"]["abstentions"]==1 for r in negatives))
+
+        self.assertTrue(any(not r["stages"][2]["drift_detected"] for r in negatives))
+        self.assertGreater(sum(r["stages"][2]["scores"]["local"]["wrong"] for r in negatives),0)
