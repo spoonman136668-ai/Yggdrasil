@@ -638,3 +638,78 @@ jobs:
           assert len(summaries)==3 and all(x['updates']==14400 for x in summaries)
           PY
           test -z "$(git status --porcelain)"
+  aba-local-consolidation-isolation:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compare local memory credit gating against unchanged EMA baseline
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, platform
+          from pathlib import Path
+          raw=Path('yggdrasil/itd02_local_ring_memory_dev.py').read_text()
+          credit='credit = _local_credit(site, max(-2., min(2., error)) * old_mem_weight)'
+          assert raw.count(credit)==1
+          arms={'original':raw,
+                'positive_memory_only':raw.replace(credit,'credit = _local_credit(site, max(0., min(2., error)) * old_mem_weight)'),
+                'negative_memory_only':raw.replace(credit,'credit = _local_credit(site, min(0., max(-2., error)) * old_mem_weight)'),
+                'no_gate_credit':raw.replace(credit,'credit = _local_credit(site, 0.)')}
+          histories=('LRV','docked_LRV')
+          out=[]
+          for arm,src in arms.items():
+            ns={'__name__':'local_credit_'+arm}
+            exec(compile(src,'<sourcefree-gating-probe>','exec'),ns)
+            Model=ns['NativeRingMemoryDev'];actions=ns['ACTIONS']
+            native_reward=[0,0,0];ema_reward=[0,0,0];native_accuracy=[0,0,0];ema_accuracy=[0,0,0]
+            for mapping in (0,1):
+              for seed in (11,23,37,53,71,97):
+                m=Model();ema={(h,a):0. for h in histories for a in actions}
+                for phase,regime in enumerate(('A','B','A')):
+                  def correct(h):
+                    return 'GoForward' if (((h=='LRV')==(regime=='A')) != bool(mapping)) else 'Backup'
+                  for n in range(200):
+                    h=histories[(n+seed+phase)%2]
+                    probe=(n+seed)%5==0
+                    forced=actions[((n+seed)//5)%3]
+                    m.reset_episode();m.advance(h);m.feedback('TurnAround',0.)
+                    m.advance('Nothing');selected=forced if probe else m.choose()
+                    rew=1. if selected==correct(h) else -1.
+                    m.feedback(selected,rew,terminal=True);native_reward[phase]+=rew
+                    ema_pick=max(actions,key=lambda a:ema[(h,a)])
+                    ema_act=forced if probe else ema_pick
+                    erew=1. if ema_act==correct(h) else -1.
+                    ema[(h,ema_act)]+=.5*(erew-ema[(h,ema_act)])
+                    ema_reward[phase]+=erew
+                  f=Model.restore(m.checkpoint());f.start_frozen_evaluation(f.parameter_sha256())
+                  for h in histories:
+                    f.reset_episode();f.advance(h);f.feedback('TurnAround',0.,learning=False)
+                    f.advance('Nothing');choice=f.choose()
+                    f.feedback(choice,0.,learning=False,terminal=True)
+                    native_accuracy[phase]+=int(choice==correct(h))
+                    ema_accuracy[phase]+=int(max(actions,key=lambda a:ema[(h,a)])==correct(h))
+                assert len(m.checkpoint())<8192
+            out.append({'arm':arm,'native_reward':native_reward,'ema_reward':ema_reward,
+              'native_correct_of_24':native_accuracy,'ema_correct_of_24':ema_accuracy})
+          print('ABA_LOCAL_CREDIT_GATING='+json.dumps({'source_sha':'a39171a76d0d7817e3563682bb139a9d7ecf37c4',
+             'os':platform.platform(),'sourcefree':True,'original_world_steps':0,'results':out},sort_keys=True))
+          assert len(out)==4
+          PY
+          test -z "$(git status --porcelain)"
