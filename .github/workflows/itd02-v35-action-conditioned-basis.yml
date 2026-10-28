@@ -1,0 +1,125 @@
+name: ITD-02 V35 new local-action basis with independent conventional controls
+on:
+  push:
+    branches:
+      - research/itd02-v35-action-conditioned-local-basis-20261028
+permissions:
+  contents: read
+jobs:
+  v35-native-basis:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Exact Unix/Windows source-newline policy
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Checkout exact immutable source with no retained credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+          clean: true
+      - name: Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Check V34 parent, V35 prereg chronology and original native exact blob pins
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor fbfd6a97556be1ccb9263ba12725601924ececdf "$GITHUB_SHA"
+          git merge-base --is-ancestor 44fd6face69012d23898e8af34bb92e0ad672463 "$GITHUB_SHA"
+          git merge-base --is-ancestor 5713987296745903d6fdff14b6cd5996ff9f872c "$GITHUB_SHA"
+          git merge-base --is-ancestor 6bc7002cfae528ae28f055956104f85da880e56c "$GITHUB_SHA"
+          git merge-base --is-ancestor 1ea1c072077d8c548853bb605eba4960a570a2ad "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+          test "$(git hash-object yggdrasil/itd02_local_ring_memory_dev.py)" = 1db0835d5c99456bcf99a013d4836f49314a9d39
+          test "$(git hash-object yggdrasil/itd02_v22_shared_context_ring_dev.py)" = 73dc4d7580f7f0b8ed8de1119b06504c44b0818f
+          test "$(git hash-object yggdrasil/itd02_v24_protected_dual_memory_dev.py)" = 9ef95a28e9060dd79105f51122d527351756a1e0
+          test "$(git hash-object yggdrasil/itd02_v25_unlabeled_return_dev.py)" = f90e5029b121cbfc2e361f9e0941985eb1e69e3d
+          test "$(git hash-object yggdrasil/itd02_v26_calibrated_return_dev.py)" = 8a0417d34c6ba94a4eaef33d767da14a4a5c9709
+          test "$(git hash-object yggdrasil/itd02_v30_public_probe_policy_dev.py)" = bcc1f0b4e2ec0fcd8b2af69dfb0e6d4d2ca27a4a
+          test "$(git hash-object yggdrasil/itd02_v32_source_surprise_probation_dev.py)" = 9252b554c25bfdc5b6adb733f94b0c3d2b2ec92e
+          test "$(git hash-object research/itd02_v33_unseen_family_independent_controls_audit.py)" = 3545f88f5689f8d5aa6e5d75b1344d7a7a83a8f2
+          test "$(git hash-object research/itd02_v34_local_credit_spillover_audit.py)" = 5991b116c5e24d4d6a2a8b1793becefc040cb85f
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Focused original-basis locality and candidate integrity tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v35_action_conditioned_local_basis.py' -v
+          echo V35_FOCUSED_SOURCE_ONLY_TESTS_PASS_NOT_SCIENCE
+      - name: Independently chosen D1 D2 D3 public feedback with native and RLS comparisons
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v35"
+          if ! PYTHONPATH=. python -B research/itd02_v35_action_conditioned_local_basis_audit.py > "$RUNNER_TEMP/v35/audit.json" 2> "$RUNNER_TEMP/v35/stderr.txt"; then
+            cat "$RUNNER_TEMP/v35/stderr.txt"
+            exit 1
+          fi
+          python - "$RUNNER_TEMP/v35/audit.json" <<'PY'
+          import json,sys
+          d=json.load(open(sys.argv[1],encoding="utf-8"))
+          assert d["schema"]=="ygg.itd02.v35.fixed_local_action_basis.source_only.v1"
+          assert d["source_only"] and not d["scientific_first_use"]
+          assert not d["original_world_training"] and not d["learned_native_action_identities"]
+          assert not d["original_8cell_ring_modified"] and not d["FORGE_mutated"]
+          assert d["worlds"]==["D1","D2","D3"]
+          assert d["independent_arms"]==21 and len(d["independent_modes"])==7
+          assert d["paired_mode_count_per_world"]==3
+          assert d["source_pretraining_selected_rewards"]==576
+          assert d["target_common_selected_rewards"]==12 and d["extra_public_probes"]==3
+          assert d["native_trainable_scalars"]==163
+          assert len(set(d["world_truth_table_sha256"].values()))==3
+          assert len(d["canonical_public_events_predictions_regret_sha256"])==64
+          assert len(d["independent_arm_summary"])==21
+          assert all(r["checkpoint_bytes"] is None or r["checkpoint_bytes"]<=12288
+                     for r in d["independent_arm_summary"])
+          assert all(v["unchanged"] and v["updates"]==0
+                     for v in d["negative_controls"].values())
+          assert d["classification"] in {
+            "V35_LOCAL_BASIS_TRANSFER_GAIN_NOT_ESTABLISHED__NO_SCIENCE",
+            "V35_STRONG_CONTROL_OR_PREDICTION_GATES_FAILED__NO_SCIENCE",
+            "V35_BOUNDED_NEW_LOCAL_BASIS_ENGINEERING_POSITIVE__NO_SCIENCE"}
+          print("V35_CLASSIFICATION",d["classification"])
+          print("V35_CANONICAL_SHA",d["canonical_public_events_predictions_regret_sha256"])
+          print("V35_WORLD_DIGESTS",json.dumps(d["world_truth_table_sha256"],sort_keys=True))
+          print("V35_PREDECLARED_GATES",json.dumps(d["predeclared_gates"],sort_keys=True))
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Focused inherited native V34 through V22 regression suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v34_local_credit_spillover.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v33_unseen_family_independent_controls.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v32_source_surprise_probation.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v31_credit_readout_attribution.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v30_public_probe_policy.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v29_observational_equivalence.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v26_calibrated_return.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v25_unlabeled_return_dev.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v24_protected_dual_memory.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v22_shared_context_ring.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_native_task_bridge_dev.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_local_ring_memory_dev.py' -v
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo V35_INHERITED_NATIVE_SAFETY_PASS_NOT_SCIENCE
+      - name: Preserve independently verifiable per-host evidence and error logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-v35-local-action-basis-${{ matrix.os }}
+          path: ${{ runner.temp }}/v35/*
+          retention-days: 7
+          if-no-files-found: warn
