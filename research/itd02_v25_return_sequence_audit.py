@@ -32,7 +32,7 @@ class RidgeCUSUM:
  def __init__(self,source):
   self.source=SharedContextRingDev.restore(source)
   self.weights=[0.0]*80
-  self.diag=[100.0]*80
+  self.precision=[[100.0 if i==j else 0.0 for j in range(80)] for i in range(80)]
   self.cusum=0.0
   self.use_ridge=False
   self.source_loss=0.0;self.ridge_loss=0.0;self.events=0
@@ -49,10 +49,13 @@ class RidgeCUSUM:
   if self.cusum>2:self.use_ridge=True
   if self.cusum<0.25:self.use_ridge=False
   x=features80(*case)
-  denom=1.0+sum(d*v*v for d,v in zip(self.diag,x))
+  px=[sum(v*t for v,t in zip(row,x)) for row in self.precision]
+  denom=1.0+sum(v*t for v,t in zip(x,px))
+  assert denom>0
   err=y-r
-  self.weights=[w+err*d*v/denom for w,d,v in zip(self.weights,self.diag,x)]
-  self.diag=[max(0.01,d-d*d*v*v/denom) for d,v in zip(self.diag,x)]
+  self.weights=[w+err*v/denom for w,v in zip(self.weights,px)]
+  self.precision=[[self.precision[i][j]-px[i]*px[j]/denom for j in range(80)]
+                  for i in range(80)]
   self.events+=1
 
 def readout_regret(model,fast,destructive,conventional,regime):
