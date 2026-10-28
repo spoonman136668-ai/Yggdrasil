@@ -43,12 +43,25 @@ jobs:
           test "$GITHUB_REF_NAME" = 'research/itd02-v31t-eight-thread-ring-20261028'
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test "$(git rev-parse "$prereg^")" = "$parent"
-          test "$(git rev-parse HEAD^)" = c2fd7c2382f00784d300a78562a98dc1ca0d1850
+          test "$(git rev-parse HEAD^)" = cf47edd2f3511b055c27e2ab7081dc2ab1edfa91
+          # Historical bot index is accounted for and must be EXACTLY the
+          # three derived G29 files; it is not an unreviewed source change.
+          first_source=0cbc581da066a52a5c85f226ec2a50a470b37549
+          first_g29=fbb36b259301d77b5e2215c48563d6d18e60f35e
+          test "$(git rev-parse "$first_g29^")" = "$first_source"
+          git merge-base --is-ancestor "$first_g29" HEAD
+          git merge-base --is-ancestor c2fd7c2382f00784d300a78562a98dc1ca0d1850 HEAD
+          git diff --name-only "$first_source" "$first_g29" | sort > "$RUNNER_TEMP/v31t-original-g29-actual"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/v31t-original-g29-allowed"
+          diff -u "$RUNNER_TEMP/v31t-original-g29-allowed" "$RUNNER_TEMP/v31t-original-g29-actual"
           git merge-base --is-ancestor "$prereg" HEAD
           test -z "$(git diff --name-only "$parent" HEAD -- yggdrasil)"
           git diff --name-only "$parent" HEAD | sort > "$RUNNER_TEMP/v31t-actual"
           printf '%s\n' \
             .github/workflows/itd02-v31t-eight-thread-ring.yml \
+            .ice/code-atlas.html \
+            .ice/code-atlas.ice \
+            .ice/code-atlas.json \
             research/itd02_v31t_thread_ring_preregistration.md \
             research/itd02_v31t_thread_ring_resource_audit.py | sort > "$RUNNER_TEMP/v31t-allowed"
           diff -u "$RUNNER_TEMP/v31t-allowed" "$RUNNER_TEMP/v31t-actual"
