@@ -1,0 +1,75 @@
+name: ITD-02 V31K read-only inherited regression attribution
+on:
+  push:
+    branches: [research/itd02-v31k-inherited-regression-baseline-20261028]
+permissions:
+  contents: read
+jobs:
+  inherited-baseline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compare V31I baseline versus V31J unchanged regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor ddfe54fb1fb2bf82b0284b27abbb0531553e0d64 "$GITHUB_SHA"
+          mkdir -p "$RUNNER_TEMP/v31k"
+          for item in baseline:78df5918c785879895092ae8d2eeb677c9260638 candidate:00f9b3c67459516eb5f362a6113ae219b6e9fd8d; do
+            label="${item%%:*}"; sha="${item#*:}"
+            path="$RUNNER_TEMP/v31k/$label"
+            git worktree add --detach "$path" "$sha"
+            test "$(git -C "$path" rev-parse HEAD)" = "$sha"
+            test "$(git -C "$path" hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+            test ! -f "$path/research/itd02_v31_heldout_evaluator.py"
+            set +e
+            (cd "$path" && PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_*.py' -v) > "$RUNNER_TEMP/v31k/$label.log" 2>&1
+            echo "$?" > "$RUNNER_TEMP/v31k/$label.exit"
+            set -e
+          done
+          python - "$RUNNER_TEMP/v31k" <<'PY'
+          import json,pathlib,re,sys
+          p=pathlib.Path(sys.argv[1]); result={}
+          for label in ("baseline","candidate"):
+              s=(p/(label+".log")).read_text(errors="replace")
+              names=sorted(set(re.findall(r"^(?:FAIL|ERROR): ([^\n]+)",s,re.M)))
+              result[label]={"exit_status":int((p/(label+".exit")).read_text()),
+                             "failed_test_ids":names,
+                             "summary_lines":re.findall(r"^(?:Ran \d+ tests.*|FAILED \(.*|OK)$",s,re.M)[-3:]}
+          base=set(result["baseline"]["failed_test_ids"])
+          new=set(result["candidate"]["failed_test_ids"])
+          result["common"]=sorted(base&new)
+          result["candidate_only"]=sorted(new-base)
+          result["baseline_only"]=sorted(base-new)
+          result["classification"]="V31K_BASELINE_ATTRIBUTED_INHERITED_STILL_BLOCKED__NO_SCIENCE"
+          result["scientific_first_use"]=False
+          result["reserved_holdout_evaluated"]=False
+          (p/"report.json").write_text(json.dumps(result,sort_keys=True,indent=2))
+          print(json.dumps(result,sort_keys=True))
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Retain uncensored logs and comparison
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-v31k-inherited-regression-baseline
+          path: ${{ runner.temp }}/v31k/*.log
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Retain structured witness
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-v31k-report
+          path: ${{ runner.temp }}/v31k/report.json
+          retention-days: 7
+          if-no-files-found: warn
