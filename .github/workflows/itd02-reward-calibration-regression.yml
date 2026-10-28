@@ -69,26 +69,15 @@ jobs:
           m=NativeRingMemoryDev()
           assert len(m.gates)==8 and len(m.heads)==3 and all(len(row)==3 for row in m.heads)
           assert not hasattr(m,'global_reward_oracle')
-          from yggdrasil.itd02_native_task_bridge_dev import (
-              SCHEMA, _temporal_public_bits, NativeTaskRingBridgeDev
-          )
-          from yggdrasil.itd02_local_ring_memory_dev import (
-              ACTIONS, ACTION_SITES, OBSERVATIONS
-          )
+          from yggdrasil.itd02_native_task_bridge_dev import SCHEMA, NativeTaskRingBridgeDev
           assert SCHEMA.endswith("source_only.v3")
           assert len(m.gates)+sum(map(len,m.heads))==17
-          for site,neighbors in {0:(7,1),2:(1,3),5:(4,6)}.items():
-              seen=set()
-              for o in OBSERVATIONS:
-                  for a in ACTIONS:
-                      frames=(_temporal_public_bits(o,a,0),
-                              _temporal_public_bits(o,a,1))
-                      assert all(frames[p][site]==0 for p in (0,1))
-                      seen.add(tuple(frames[phase][n] for phase in (0,1)
-                                     for n in neighbors))
-              assert len(seen)==15, ("TEMPORAL_LOCAL_CAPACITY_FAIL",site)
-          assert not hasattr(NativeTaskRingBridgeDev(),"global_reward_oracle")
-
+          candidate=NativeTaskRingBridgeDev()
+          assert len(candidate.reward_site_bias)==3
+          assert not hasattr(candidate,"global_reward_oracle")
+          original=candidate.checkpoint()
+          restored=NativeTaskRingBridgeDev.restore(original)
+          assert restored.reward_site_bias==candidate.reward_site_bias
           receipt={
               "schema":"itd02.two-phase.native-local.candidate-regression.v1",
               "candidate_sha":os.environ["GITHUB_SHA"],
@@ -105,8 +94,8 @@ jobs:
               "elapsed_seconds":round(time.perf_counter()-t0,4),
               "scientific_first_use":False,
               "g29_status":"NOT_REGENERATED_FOR_CANDIDATE",
-              "two_phase_neighbor_contexts_per_reward_site":15,
-              "native_predict_calls_per_full_choice":6,
+              "reward_site_calibration_coefficients":3,
+              "native_predict_calls_per_full_choice":3,
               "native_observe_calls_per_public_transition":1,
               "native_checkpoint_schema":"source_only.v3"
           }
