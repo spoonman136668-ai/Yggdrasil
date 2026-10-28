@@ -47,10 +47,12 @@ class GenuinePublicTemporalEligibilityTests(unittest.TestCase):
         for m,first in ((a,"Backup"),(b,"TurnAround")):
             m.start_observation("MRV")
             m.accept_public_transition(first,"Nothing",0,learning=True,terminal=False)
-        enc_a=a._task_bits("Nothing","GoForward",0)
-        enc_b=b._task_bits("Nothing","GoForward",0)
+        # A single source phase may alias; the preregistered mechanism
+        # explicitly retains BOTH original binary encoding phases.
+        enc_a=[tuple(a._task_bits("Nothing","GoForward",p)) for p in (0,1)]
+        enc_b=[tuple(b._task_bits("Nothing","GoForward",p)) for p in (0,1)]
         assert enc_a!=enc_b
-        self.assertEqual(len(enc_a),8)
+        self.assertEqual(len(enc_a[0]),8)
         self.assertEqual(a.native.neighbors,b.native.neighbors)
 
     def test_frozen_public_history_advances_but_never_trains_weights(self):
