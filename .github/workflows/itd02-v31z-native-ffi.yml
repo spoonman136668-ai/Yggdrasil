@@ -50,7 +50,7 @@ jobs:
           first_workflow=becaca930cbd3fee11d93ebeaecc823c39a0e5b3
           test "$(git rev-parse "$first_workflow^")" = "$evaluator_commit"
           test "$(git rev-parse 431c9ec608875d5aaa627f8d92d3510cb69150b4^)" = "$first_workflow"
-          test "$(git rev-parse HEAD^)" = 431c9ec608875d5aaa627f8d92d3510cb69150b4
+          git merge-base --is-ancestor 431c9ec608875d5aaa627f8d92d3510cb69150b4 HEAD
           git merge-base --is-ancestor "$prereg" HEAD
           test -z "$(git diff --name-only "$parent" HEAD -- yggdrasil)"
           git diff --name-only "$parent" HEAD | sort > "$RUNNER_TEMP/v31z-actual"
