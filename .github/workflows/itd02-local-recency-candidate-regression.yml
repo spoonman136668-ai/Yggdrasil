@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - research/itd02-native-local-recency-probe-20261027
+      - qualification/itd02-aba-sourcefree-20261027
 permissions:
   contents: read
 jobs:
@@ -96,3 +97,108 @@ jobs:
           set -euo pipefail
           test -z "$(git status --porcelain)"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+
+  aba-development-probe:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve native bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          fetch-depth: 0
+          clean: true
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Source-free A-B-A retention versus independent public-reward EMA
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "a39171a76d0d7817e3563682bb139a9d7ecf37c4"
+          python - <<'PY'
+          import hashlib, json, os, platform
+          from yggdrasil.itd02_local_ring_memory_dev import NativeRingMemoryDev, ACTIONS
+          histories=("LRV","docked_LRV")
+          actions=("TurnAround","GoForward","Backup")
+          native=NativeRingMemoryDev()
+          # Acting comparator: per-public-history/action recency EMA, no privileged
+          # state. Equal action opportunities, deterministic probe cadence.
+          ema={(h,a):0.0 for h in histories for a in actions}
+          seen={(h,a):0 for h in histories for a in actions}
+          def public_reward(regime,history,action):
+              good="GoForward" if (history=="LRV") == (regime=="A") else "Backup"
+              return 1.0 if action==good else -1.0
+          def select_ema(history):
+              return max(actions,key=lambda a:ema[(history,a)])
+          def public_native_episode(model,history,action, reward, training=True):
+              model.reset_episode()
+              model.advance(history)
+              model.feedback("TurnAround",0.0,learning=training)
+              model.advance("Nothing")
+              proposed=model.choose()
+              model.feedback(action,reward,learning=training,terminal=True)
+              return proposed
+          def evaluate(label):
+              evaluation=NativeRingMemoryDev.restore(native.checkpoint())
+              evaluation.start_frozen_evaluation(evaluation.parameter_sha256())
+              native_correct=ema_correct=0
+              choices={}
+              for h in histories:
+                  proposed=public_native_episode(evaluation,h,"TurnAround",0.0,training=False)
+                  baseline=select_ema(h)
+                  correct="GoForward" if (h=="LRV") == (label=="A") else "Backup"
+                  native_correct+=int(proposed==correct)
+                  ema_correct+=int(baseline==correct)
+                  choices[h]={"native":proposed,"ema":baseline}
+              return {"native_correct_of_2":native_correct,"ema_correct_of_2":ema_correct,
+                      "choices":choices}
+          receipt={"schema":"itd02.aba.sourcefree.probe.v1","source_sha":"a39171a76d0d7817e3563682bb139a9d7ecf37c4",
+                   "os":platform.platform(),"scientific_first_use":False,
+                   "source_original_world_episodes":0,"equal_public_interactions":True,
+                   "regimes":[]}
+          for regime in ("A","B","A"):
+              result={"regime":regime,"before":evaluate(regime),
+                      "train_rewards":{"native":0.0,"ema":0.0}}
+              for episode in range(200):
+                  h=histories[episode%2]
+                  # Both receive 200 interactions per regime. On each 5th episode,
+                  # use the same probe action; no future-reward or oracle action selection.
+                  probe=episode%5==0
+                  probe_action=actions[(episode//5)%len(actions)]
+                  native.reset_episode()
+                  native.advance(h)
+                  native.feedback("TurnAround",0.0)
+                  native.advance("Nothing")
+                  proposed=native.choose()
+                  chosen=probe_action if probe else proposed
+                  reward=public_reward(regime,h,chosen)
+                  native.feedback(chosen,reward,terminal=True)
+                  result["train_rewards"]["native"]+=reward
+                  chosen_ema=probe_action if probe else select_ema(h)
+                  reward_ema=public_reward(regime,h,chosen_ema)
+                  result["train_rewards"]["ema"]+=reward_ema
+                  seen[(h,chosen_ema)]+=1
+                  ema[(h,chosen_ema)]+=.5*(reward_ema-ema[(h,chosen_ema)])
+              result["after"]=evaluate(regime)
+              result["native_parameter_hash"]=native.parameter_sha256()
+              result["native_checkpoint_bytes"]=len(native.checkpoint())
+              receipt["regimes"].append(result)
+          receipt["native_updates"]=native.updates
+          receipt["comparator_observations"]=sum(seen.values())
+          print("ITD02_ABA_SOURCEFREE_RECEIPT="+json.dumps(receipt,sort_keys=True))
+          assert receipt["native_updates"]>0 and sum(seen.values())==600
+          assert all(s["native_checkpoint_bytes"]<=8192 for s in receipt["regimes"])
+          PY
+          test -z "$(git status --porcelain)"
