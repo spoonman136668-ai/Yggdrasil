@@ -1,0 +1,45 @@
+# ITD-02 V26 preregistration — source-return selectivity under confusable public feedback
+
+**Research state:** source-only developmental preregistration. This is committed before any V26 candidate, V26 auditor or V26 result. The tested foundation is the exact unmerged V25 draft PR #610 head `7f3d16b542e83c87abdacdf8e8988ca20c1e215e`, with its original preregistration `d3af4f93f6a34f7685a4fb0fd1afe007041de538`. V25's exact Windows/Linux 2/2 witness is [run 40675072666](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/40675072666), canonical public+regret case SHA `5fa52980a90450714ab068818a673e1beef34c898da232d08a60e6d6c36fa82a`. Its outcome is permanently `V25_RETURN_REACTIVATION_NOT_ESTABLISHED__NO_SCIENCE`: T1 return after 1 observation; T2 return after 5 (bound <=4 failed), unchanged-T1 produced four false source reactivations (allowed zero). Stronger prediction error alone cannot rescue these fail conditions. Neither new threshold selection nor a rerun can retrospectively revise V25's class.
+
+## Research hypothesis
+
+Test whether *context-diverse, prospectively confirmed prediction evidence*, rather than an undifferentiated 3-of-4 residual sign vote, can recognize the return of previously retained source knowledge while rejecting spurious source preference within a continuing unfamiliar reward mapping. The source eight-cell V22 bank remains physically protected; the fast bank remains independent and learns only from observed selected public terminal rewards. The source-return decision is made **without** regime names, scripted stage boundaries, future outcomes, counterfactual selected rewards, evaluator labels or explicit source lookup calls.
+
+The central detection logic is an external engineering comparison, **not** native distributed learned recognition or an autonomous causal model. V26 must expose that distinction. This is a follow-up on V25's observed failure, not an independently novel scientific first-use test.
+
+## Frozen candidate family and registration before executable V26 code
+
+V26A is a single separately initialized controller over unchanged V24 banks. Let `d=|observed_reward - fast_prediction_before_feedback| - |observed_reward - slow_prediction_before_feedback|`, positive favoring SLOW, using only the actual selected action. Maintain a 4-observation rolling window of `d` and cue-group `g = index(PUBLIC_CUES,cue) mod 2` (a fixed public representation). On a full 4-window: select SLOW from FAST only if (a) at least **3** observations have `d >= 0.10`, (b) **each** cue group represented in the window has at least **one** `d >= 0.10`, (c) **both** cue groups have occurred in the window, and (d) the sum of all four `d` values is at least **0.40**. Select FAST from SLOW only if at least **3** observations have `d <= -0.10` and the four-event sum is at most **-0.40**. Otherwise retain the active head. No retroactive gate update. Retain same absolute public errors as V25; this is a fixed evidence-confirmation change, not data-dependent threshold fitting. Record all candidate votes and cue provenance. The candidate learns no new parameter and must not use stage duration as a timer.
+
+V26B is **not** authorized by this preregistration: no unbounded candidate sweep, detector retuning, separate learned gate, weight transfer or architecture replacement if V26A fails. A different design requires its own preregistered prospective gate.
+
+## Immutable source/data and evaluation protocol
+
+Reuse V25's exact original V22, original V24 protected dual bank, original synthetic source/T1/T2 reward mappings, the identical 576 source-training histories and exact selected-action event format. V25's seven already-observed streams are *retrospective diagnostics* only. They cannot count as prospective evidence.
+
+Create a **distinct V26 development evaluation stream set**, with no candidate-specific family choosing or threshold adjustment: S→T1→S and S→T2→S with exactly 12 target selected rewards and 12 return selected rewards each; S→T1→T2→S and S→T2→T1→S with 8 and 10 target observations, 12 return observations; unchanged-T1, unchanged-T2, unchanged-S with matched public observations; and a confusable target-to-target stream T1→T2→T1 with **no source return**. Evaluation-only regime identity must never be forwarded into the candidate. For fresh V26 observation order, use each V25 predeclared `context(i,offset)` public tuple but permute its position with coprime affine index `(5*i + shift) % 12`, shifts `1, 4, 7, 10` assigned to the four return streams, and `2, 5, 8, 11` for controls. The exact stream construction, short-segment truncation order, epoch lengths and audit-only split must be frozen in a **second pre-executable protocol commit** before any V26 executable learner or auditor. This requirement explicitly blocks using present V25 results to optimize V26 evaluation identities after code is run. Store both case hashes and exact source pins. No private target label exposure.
+
+Use 12 legal first-action/cue contexts per stage for audit-only action regret over 3 possible second actions, 24 withheld second-action outcomes per target mapping, 1/4/8/12 prospective return prediction-error checkpoints, first source reactivation latency measured in observed return feedback counts, all false activations in ongoing target streams, source retention, target adaptation and all raw gate transitions. Never train on audit-only counterfactuals.
+
+## Frozen comparators and primary gates
+
+Compare on *matched public selected feedback*, same starting source checkpoint, equal episode counts and recorded resource costs:
+- exact original V25 3-of-4 voting controller, unchanged, as the historical failure baseline;
+- V24 protected source alone, always-fast scratch, V23 original source-destructive fine-tuning;
+- independent conventional full 80-feature matrix online RLS plus sequential CUSUM/Page-Hinkley and a two-expert public-error selector; zero and observed-mean;
+- a fixed V26 ablation that removes cross-cue corroboration but keeps 4-event sum and same 0.10 margin; this tests whether the cue-diversity feature, rather than an unspecified extra advantage, produces improvement;
+- privileged evaluation-only boundary-aware chooser as an **inadmissible oracle upper bound**, never a fair controller baseline.
+
+**Ordered outcome rules** (all failure labels end `__NO_SCIENCE`):
+1. Integrity or source/target information isolation broken, source SHA changes, missing comparator/case manifest/host checks, or checkpoint over 12,288 bytes: `V26_ENGINEERING_BLOCKED__NO_SCIENCE`.
+2. Both simple returns must select SLOW by at most the **4th observed return reward**; unchanged-target and T1→T2→T1 decoy must have **zero false source reactivations** during their evaluated final segments. Otherwise `V26_SOURCE_RETURN_SELECTIVITY_NOT_ESTABLISHED__NO_SCIENCE`.
+3. If detection passes, require >=10% reduction in total prospective 12-return-event absolute error against both always-fast and matched conventional 80-feature RLS detector on **each** simple return, and strictly lower 12-context return action regret than both; otherwise `V26_REACTIVATION_WITHOUT_STRONG_CONTROL_GAIN__NO_SCIENCE`.
+4. If both simple returns pass, secondary longer-return streams and unchanged controls must also pass the same detection and no-false-positive conditions; target adaptation withheld error may not exceed always-fast by >10% on T1 or T2. Otherwise `V26_RETURN_GAIN_NOT_ROBUST__NO_SCIENCE`.
+5. Only all gates passing can be `V26_BOUNDED_SYNTHETIC_RETURN_SELECTIVITY_ENGINEERING_POSITIVE__NO_SCIENCE`. No class establishes independent new-world generalization, local native cognition, scientific first-use or self-improvement.
+
+## Exact qualification and authority boundary
+
+Use the existing original 8-cell ring and its unchanged 163-learned-scalar V22 source and fast banks (326 total; 163 fast trainable). No extra paid API or external service. Check exact ancestor commit and Git blob identities of original native bridge/ring/V22, unchanged V23/V24/V25 sources, independent source/fast checkpoint cold restore and corruption rejection, legal selected-action-only learning, and reproducible cross-host canonical case+regret hashes. Reuse the exact immutable foundation; qualify only V26 delta and affected selector/readout interface, then execute **one final inherited V25→V12 original native regression** before any development result is treated as qualified. Report CPU time, wall time, memory, checkpoint size and scalar message counts per host separately from deterministic case SHA. GitHub-hosted Python measurements are not retail Windows-PC throughput/energy qualification.
+
+Preserve all earlier negative results, existing FORGE work, queued research, and active native models. No merge, deployment, original-world actuation, new scheduler/controller, accepted-ref mutation, FORGE/CKB-plane modification, G29 or write-proxy waiver, or model/science promotion. This preregistration is an isolated development branch and grants no execution or acceptance authority.
