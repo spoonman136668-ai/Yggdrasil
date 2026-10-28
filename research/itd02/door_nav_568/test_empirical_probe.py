@@ -45,3 +45,18 @@ class EmpiricalProbeTests(unittest.TestCase):
                              [[False,True]])
         with self.assertRaises(ValueError):
             trial(16)
+
+    def test_unfamiliar_source_memory_is_not_a_safe_transfer_claim(self):
+        rows=run()["cases"]
+        familiar=[r for r in rows if r["source_member_diagnostic"]]
+        unfamiliar=[r for r in rows if not r["source_member_diagnostic"]]
+        def aggregate(group,arm,key):
+            return sum(r["stages"][1]["scores"][arm][key] for r in group)
+        self.assertEqual((aggregate(familiar,"local_active","correct"),
+                          aggregate(familiar,"local_active","wrong")),(8,0))
+        self.assertEqual((aggregate(unfamiliar,"local_active","correct"),
+                          aggregate(unfamiliar,"local_active","wrong")),(8,16))
+        self.assertEqual((aggregate(unfamiliar,"local_fixed","correct"),
+                          aggregate(unfamiliar,"local_fixed","wrong")),(4,10))
+        self.assertGreater(aggregate(unfamiliar,"local_active","wrong"),
+                           aggregate(unfamiliar,"local_fixed","wrong"))
