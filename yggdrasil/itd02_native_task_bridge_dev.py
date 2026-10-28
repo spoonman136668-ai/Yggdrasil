@@ -17,7 +17,7 @@ from .itd02_local_ring_memory_dev import (
     _canonical, _finite,
 )
 
-SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v8"
+SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v11"
 REWARDS = (-3, 0, 10)  # source-declared observable labels; NOT source reward law
 MAX_BYTES = 65536
 RING = tuple(((i - 1) % CELLS, (i + 1) % CELLS) for i in range(CELLS))
@@ -100,12 +100,17 @@ class NativeTaskRingBridgeDev:
         # Eight deterministic bounded cell-local traces, not trained weights.
         self.cell_trace = [0.] * CELLS
         self.action_credit = [[0.] * 16 for _ in ACTION_SITES]
+        self.site_residual = [0.] * CELLS
+        self._frozen_site_residual = None
 
     def start_observation(self, observation):
         if self._observation is not None or self.memory.pending:
             raise ValueError("PUBLIC_TRANSITION_PENDING")
         if self._frozen_native is not None and self._native_identity() != self._frozen_native:
             raise ValueError("NATIVE_FROZEN_PARAMETER_DRIFT")
+        if (self._frozen_site_residual is not None and
+                self._residual_digest() != self._frozen_site_residual):
+            raise ValueError("FROZEN_SITE_RESIDUAL_DRIFT")
         self.memory.advance(observation)
         self._observation = observation
 
@@ -118,11 +123,30 @@ class NativeTaskRingBridgeDev:
             "neighbors": self.native.neighbors,
         })).hexdigest()
 
+    def _residual_digest(self):
+        return hashlib.sha256(_canonical(self.site_residual)).hexdigest()
+
+    def _calibrated_predictions(self, bits):
+        predictions = self.native.predict(bits)
+        result = []
+        for site, value in enumerate(predictions):
+            correction = self.site_residual[site]
+            if correction == 0.:
+                result.append(value)
+            else:
+                p = max(1.e-6, min(1. - 1.e-6, float(value)))
+                logit = math.log(p / (1. - p)) + correction
+                result.append(1. / (1. + math.exp(-max(-35., min(35., logit)))))
+        return result
+
     def native_reward_scores(self):
         if self._observation is None or not self.memory.pending:
             raise ValueError("PUBLIC_OBSERVATION_REQUIRED")
         if self._frozen_native is not None and self._native_identity() != self._frozen_native:
             raise ValueError("NATIVE_FROZEN_PARAMETER_DRIFT")
+        if (self._frozen_site_residual is not None and
+                self._residual_digest() != self._frozen_site_residual):
+            raise ValueError("FROZEN_SITE_RESIDUAL_DRIFT")
         scores = []
         for action in ACTIONS:
             # Public action-conditioning through native own/neighbor cells.
@@ -130,7 +154,7 @@ class NativeTaskRingBridgeDev:
             # neighbor-only binary views. Original native core remains intact.
             phase_scores = []
             for phase in (0, 1):
-                predictions = self.native.predict(
+                predictions = self._calibrated_predictions(
                     _temporal_public_bits(self._observation, action, phase))
                 phase_scores.append(sum(
                     float(value) * predictions[ACTION_SITES[index]]
@@ -180,8 +204,13 @@ class NativeTaskRingBridgeDev:
             if self._native_identity() != self._frozen_native or (
                     self.memory.parameter_sha256() != self.memory._frozen_hash):
                 raise ValueError("FROZEN_WEIGHT_IDENTITY_DRIFT")
+        if (self._frozen_site_residual is not None and
+                self._residual_digest() != self._frozen_site_residual):
+            raise ValueError("FROZEN_SITE_RESIDUAL_DRIFT")
         site_training = None
+        before_calibrated = None
         if learning:
+            before_calibrated = self._calibrated_predictions(before)
             site_training = [
                 (index, _local_ordered_word(self._observation, action, site),
                  float(self.native.predict(_temporal_public_bits(
@@ -192,10 +221,17 @@ class NativeTaskRingBridgeDev:
         memory_snap = self.memory.checkpoint()
         trace_snap = list(self.cell_trace)
         credit_snap = [list(row) for row in self.action_credit]
+        residual_snap = list(self.site_residual)
         try:
             if learning:
                 self.native.observe(before, after)
             self.memory.feedback(action, reward, learning=learning, terminal=terminal)
+            if learning:
+                # All eight original targets remain active. Each residual
+                # uses only its own public consequence and prefeedback fit.
+                self.site_residual = [max(-2., min(2.,
+                    self.site_residual[i] + .05 * (float(after[i]) - before_calibrated[i])))
+                    for i in range(CELLS)]
             if learning:
                 for index, word, estimate in site_training:
                     target = float(reward == REWARDS[index])
@@ -218,6 +254,7 @@ class NativeTaskRingBridgeDev:
             self.memory = NativeRingMemoryDev.restore(memory_snap)
             self.cell_trace = trace_snap
             self.action_credit = credit_snap
+            self.site_residual = residual_snap
             raise
 
     def reset_episode(self):
@@ -232,6 +269,7 @@ class NativeTaskRingBridgeDev:
             raise ValueError("NATIVE_WEIGHT_IDENTITY_MISMATCH")
         self.memory.start_frozen_evaluation(memory_sha)
         self._frozen_native = native_sha
+        self._frozen_site_residual = self._residual_digest()
 
     def model_identities(self):
         return {"native": self._native_identity(),
@@ -244,7 +282,9 @@ class NativeTaskRingBridgeDev:
                 "transitions": self.transitions, "score_calls": self.score_calls,
                 "frozen_native_sha256": self._frozen_native,
                 "cell_trace": self.cell_trace,
-                "action_credit": self.action_credit}
+                "action_credit": self.action_credit,
+                "site_residual": self.site_residual,
+                "frozen_site_residual_sha256": self._frozen_site_residual}
         data = _canonical(body)
         if len(data) > MAX_BYTES:
             raise ValueError("BRIDGE_CHECKPOINT_OVER_BUDGET")
@@ -264,7 +304,8 @@ class NativeTaskRingBridgeDev:
             if type(body) is not dict or set(body) != {
                     "schema", "native", "memory", "observation",
                     "transitions", "score_calls", "frozen_native_sha256",
-                    "cell_trace", "action_credit"} or body["schema"] != SCHEMA:
+                    "cell_trace", "action_credit",
+                    "site_residual", "frozen_site_residual_sha256"} or body["schema"] != SCHEMA:
                 raise ValueError("BRIDGE_CHECKPOINT_SCHEMA")
             if (body["observation"] is not None and
                     (type(body["observation"]) is not str or
@@ -294,6 +335,18 @@ class NativeTaskRingBridgeDev:
                             or not -1. <= x <= 1. for x in row) for row in credit)):
                 raise ValueError('BRIDGE_ACTION_CREDIT_INVALID')
             obj.action_credit = [[float(x) for x in row] for row in credit]
+            residual = body["site_residual"]
+            if (type(residual) is not list or len(residual) != CELLS or
+                    any(type(v) not in (int, float) or not math.isfinite(v)
+                        or not -2. <= v <= 2. for v in residual)):
+                raise ValueError("BRIDGE_SITE_RESIDUAL_INVALID")
+            obj.site_residual = [float(v) for v in residual]
+            frozen_residual = body["frozen_site_residual_sha256"]
+            if frozen_residual is not None and (
+                    type(frozen_residual) is not str or
+                    frozen_residual != obj._residual_digest()):
+                raise ValueError("BRIDGE_SITE_RESIDUAL_FROZEN_IDENTITY")
+            obj._frozen_site_residual = frozen_residual
             frozen_native = body["frozen_native_sha256"]
             if (frozen_native is None) != (memory._frozen_hash is None):
                 raise ValueError("BRIDGE_FROZEN_MODE_MISMATCH")
@@ -302,6 +355,8 @@ class NativeTaskRingBridgeDev:
                         any(c not in "0123456789abcdef" for c in frozen_native) or
                         frozen_native != obj._native_identity()):
                     raise ValueError("BRIDGE_FROZEN_NATIVE_IDENTITY_MISMATCH")
+            if (frozen_native is None) != (obj._frozen_site_residual is None):
+                raise ValueError("BRIDGE_SITE_RESIDUAL_FROZEN_MODE_MISMATCH")
             obj._frozen_native = frozen_native
             return obj
         except (ValueError, TypeError, OverflowError, KeyError, AttributeError) as exc:
