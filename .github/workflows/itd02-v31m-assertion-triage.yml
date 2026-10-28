@@ -32,8 +32,9 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/v31m"
+          cd tests
           set +e
-          PYTHONPATH=.:tests python -B -m unittest -v             test_itd02_cell_temporal_register_dev.LocalRegisterTests.test_real_retention_per_public_transition_and_frozen_veto             test_itd02_two_phase_public_native_dev.TemporalLocalPublicTests.test_each_reward_cell_sees_unique_15_contexts_across_two_phases             test_itd02_neighbor_trace_dev.NeighborTraceTests.test_frozen_never_updates_neighbor_state             test_itd02_neighbor_trace_dev.NeighborTraceTests.test_reward_site_traces_react_to_two_neighbor_bits             test_itd02_context_credit_v7_dev.TestContextCredit.test_only_observed_context_and_action_credit_changes             test_itd02_local_credit_v6_dev.LocalCredit.test_selected_only             test_code_atlas.G29.test_source_and_pinned_artifact > "$RUNNER_TEMP/v31m/seven.log" 2>&1
+          PYTHONPATH="$GITHUB_WORKSPACE" python -B -m unittest -v             test_itd02_cell_temporal_register_dev.LocalRegisterTests.test_real_retention_per_public_transition_and_frozen_veto             test_itd02_two_phase_public_native_dev.TemporalLocalPublicTests.test_each_reward_cell_sees_unique_15_contexts_across_two_phases             test_itd02_neighbor_trace_dev.NeighborTraceTests.test_frozen_never_updates_neighbor_state             test_itd02_neighbor_trace_dev.NeighborTraceTests.test_reward_site_traces_react_to_two_neighbor_bits             test_itd02_context_credit_v7_dev.TestContextCredit.test_only_observed_context_and_action_credit_changes             test_itd02_local_credit_v6_dev.LocalCredit.test_selected_only             test_code_atlas.G29.test_source_and_pinned_artifact > "$RUNNER_TEMP/v31m/seven.log" 2>&1
           status=$?
           set -e
           echo "$status" > "$RUNNER_TEMP/v31m/exit"
@@ -49,6 +50,7 @@ jobs:
           (p/"report.json").write_text(json.dumps(result,indent=2,sort_keys=True))
           print(json.dumps(result,sort_keys=True))
           PY
+          cd ..
           test -z "$(git status --porcelain --untracked-files=all)"
       - name: Retain original test traces
         if: always()
