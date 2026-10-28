@@ -1,0 +1,38 @@
+name: ITD02 equal parameter local gradient diagnostic
+on:
+  push:
+    branches: [qualification/itd02-budget-matched-local-gradient-20261028]
+permissions:
+  contents: read
+jobs:
+  diagnosis:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    env:
+      SOURCE_SHA: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+      PYTHONPATH: .
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code "$SOURCE_SHA" -- yggdrasil/task_runtime.py yggdrasil/developmental.py yggdrasil/itd02_native_task_bridge_dev.py
+          python -B research/diagnostics/itd02_budget_local_20261028.py
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: itd02-budget-local-${{ matrix.os }}
+          path: ${{ runner.temp }}/itd02_budget_local.json
+          retention-days: 14
