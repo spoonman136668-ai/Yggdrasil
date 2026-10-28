@@ -50,3 +50,21 @@ class SourceRecoveryTests(unittest.TestCase):
                 model.observe_target(INPUTS[0],1)
         with self.assertRaises(ValueError):
             trial(16)
+
+    def test_detection_limits_are_scientific_negative_controls(self):
+        cases=run()["cases"]
+        unfamiliar=[case for case in cases if not case["in_memory_diagnostic"]]
+        expected=((16,12,0),(16,0,0),(4,8,8))
+        for index,(wrong,abstain,detected) in enumerate(expected):
+            self.assertEqual(sum(case["stages"][index]["scores"]["local_recovery"]["wrong"]
+                                 for case in unfamiliar),wrong)
+            self.assertEqual(sum(case["stages"][index]["scores"]["local_recovery"]["abstentions"]
+                                 for case in unfamiliar),abstain)
+            self.assertEqual(sum(case["stages"][index]["fallback"]["local_recovery"]
+                                 for case in unfamiliar),detected)
+        for case in cases:
+            for stage in case["stages"]:
+                self.assertEqual(stage["scores"]["local_recovery"],
+                                 stage["scores"]["conventional_recovery"])
+                self.assertEqual(stage["scores"]["local_recovery"],
+                                 stage["scores"]["source_only"])
