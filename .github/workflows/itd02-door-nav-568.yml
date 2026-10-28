@@ -326,3 +326,83 @@ jobs:
             "os":platform.platform(),"synthetic_only":True,"protected_steps":0,"phases":rows},sort_keys=True))
           assert len(rows)==3 and all(len(row["snapshots"])==10 for row in rows)
           PY
+  aba-exploration-isolation:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compare exploration schedules with unchanged native update rule
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,platform
+          from yggdrasil.itd02_local_ring_memory_dev import NativeRingMemoryDev,ACTIONS
+          histories=("LRV","docked_LRV")
+          def correct(r,h):
+              return "GoForward" if ((h=="LRV")==(r=="A")) else "Backup"
+          def eval_model(m,regime):
+              e=NativeRingMemoryDev.restore(m.checkpoint())
+              e.start_frozen_evaluation(e.parameter_sha256())
+              out={}
+              for h in histories:
+                  e.reset_episode()
+                  e.advance(h)
+                  e.feedback("TurnAround",0.0,learning=False)
+                  e.advance("Nothing")
+                  choice=e.choose()
+                  e.feedback(choice,0.0,learning=False,terminal=True)
+                  out[h]=choice
+              return sum(out[h]==correct(regime,h) for h in histories),out
+          results=[]
+          # Each arm receives exactly 600 public action/reward events,
+          # identical training phase lengths and history order.
+          for period in (0,5,3,1):
+              m=NativeRingMemoryDev()
+              phases=[]
+              for regime in ("A","B","A"):
+                  score=0
+                  action_counts={a:0 for a in ACTIONS}
+                  for n in range(200):
+                      h=histories[n%2]
+                      m.reset_episode()
+                      m.advance(h)
+                      m.feedback("TurnAround",0.0)
+                      m.advance("Nothing")
+                      greedy=m.choose()
+                      # Probe override is an experimental actuator, not a model oracle.
+                      probe=period>0 and n%period==0
+                      chosen=ACTIONS[(n//max(period,1))%len(ACTIONS)] if probe else greedy
+                      reward=1.0 if chosen==correct(regime,h) else -1.0
+                      m.feedback(chosen,reward,terminal=True)
+                      score+=reward
+                      action_counts[chosen]+=1
+                  ncorrect,choices=eval_model(m,regime)
+                  phases.append({"regime":regime,"reward":score,
+                      "correct_of_2":ncorrect,"choices":choices,
+                      "action_counts":action_counts})
+              results.append({"probe_period":period,"phases":phases,
+                  "updates":m.updates,"checkpoint_bytes":len(m.checkpoint())})
+          receipt={"schema":"itd02.aba.exploration-isolation.v1",
+             "source_sha":"a39171a76d0d7817e3563682bb139a9d7ecf37c4",
+             "os":platform.platform(),"source_free":True,
+             "original_world_steps":0,"results":results}
+          print("ABA_EXPLORATION_ISOLATION="+json.dumps(receipt,sort_keys=True))
+          assert all(x["updates"]==1200 for x in results)
+          assert all(x["checkpoint_bytes"]<8192 for x in results)
+          PY
