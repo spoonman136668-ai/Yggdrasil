@@ -17,7 +17,7 @@ from .itd02_local_ring_memory_dev import (
     _canonical, _finite,
 )
 
-SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v8"
+SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v12"
 REWARDS = (-3, 0, 10)  # source-declared observable labels; NOT source reward law
 MAX_BYTES = 65536
 RING = tuple(((i - 1) % CELLS, (i + 1) % CELLS) for i in range(CELLS))
@@ -100,6 +100,8 @@ class NativeTaskRingBridgeDev:
         # Eight deterministic bounded cell-local traces, not trained weights.
         self.cell_trace = [0.] * CELLS
         self.action_credit = [[0.] * 16 for _ in ACTION_SITES]
+        # Bounded public prior-action state, never learned global lookup keys.
+        self.temporal_eligibility = None
 
     def start_observation(self, observation):
         if self._observation is not None or self.memory.pending:
@@ -118,6 +120,15 @@ class NativeTaskRingBridgeDev:
             "neighbors": self.native.neighbors,
         })).hexdigest()
 
+    def _task_bits(self, observation, action, phase):
+        # Same-site causal temporal composition; original native runtime
+        # still computes all predictions from only original ring neighbors.
+        current = _temporal_public_bits(observation, action, phase)
+        if observation != "Nothing" or self.temporal_eligibility is None:
+            return current
+        prior = self.temporal_eligibility[phase]
+        return [now ^ older for now, older in zip(current, prior)]
+
     def native_reward_scores(self):
         if self._observation is None or not self.memory.pending:
             raise ValueError("PUBLIC_OBSERVATION_REQUIRED")
@@ -131,11 +142,11 @@ class NativeTaskRingBridgeDev:
             phase_scores = []
             for phase in (0, 1):
                 predictions = self.native.predict(
-                    _temporal_public_bits(self._observation, action, phase))
+                    self._task_bits(self._observation, action, phase))
                 phase_scores.append(sum(
                     float(value) * predictions[ACTION_SITES[index]]
                     for index, value in enumerate(REWARDS)))
-            bits = _temporal_public_bits(self._observation, action, 0)
+            bits = self._task_bits(self._observation, action, 0)
             contrast = 0.
             for index, value in enumerate(REWARDS):
                 left, right = RING[ACTION_SITES[index]]
@@ -161,8 +172,8 @@ class NativeTaskRingBridgeDev:
                                  learning=True, terminal=False):
         # Validate ALL public fields and authorizations before either learner
         # can mutate. Do not forward raw info or privileged environment object.
-        before = (_temporal_public_bits(self._observation, action,
-                                      self.transitions % 2)
+        before = (self._task_bits(self._observation, action,
+                                  self.transitions % 2)
                   if self._observation is not None else None)
         after = public_outcome(next_observation, reward)
         if before is None or not self.memory.pending:
@@ -184,7 +195,7 @@ class NativeTaskRingBridgeDev:
         if learning:
             site_training = [
                 (index, _local_ordered_word(self._observation, action, site),
-                 float(self.native.predict(_temporal_public_bits(
+                 float(self.native.predict(self._task_bits(
                      self._observation, action, self.transitions % 2))[site]))
                 for index, site in enumerate(ACTION_SITES)
             ]
@@ -192,6 +203,9 @@ class NativeTaskRingBridgeDev:
         memory_snap = self.memory.checkpoint()
         trace_snap = list(self.cell_trace)
         credit_snap = [list(row) for row in self.action_credit]
+        eligibility_snap = (None if self.temporal_eligibility is None
+                            else [list(v) for v in self.temporal_eligibility])
+        prior_public_observation = self._observation
         try:
             if learning:
                 self.native.observe(before, after)
@@ -211,6 +225,12 @@ class NativeTaskRingBridgeDev:
                              + .125 * (2 * before[RING[i][1]] - 1)))
                 for i in range(CELLS)
             ]
+            # This state is learned from the real first selected public
+            # transition only. Never store phase/family/source-law labels.
+            self.temporal_eligibility = (None if terminal else [
+                _temporal_public_bits(prior_public_observation, action, phase)
+                for phase in (0, 1)
+            ])
             self.transitions += 1
             self._observation = None
         except Exception:
@@ -218,12 +238,14 @@ class NativeTaskRingBridgeDev:
             self.memory = NativeRingMemoryDev.restore(memory_snap)
             self.cell_trace = trace_snap
             self.action_credit = credit_snap
+            self.temporal_eligibility = eligibility_snap
             raise
 
     def reset_episode(self):
         if self._observation is not None or self.memory.pending:
             raise ValueError("PENDING_PUBLIC_STEP")
         self.memory.reset_episode()
+        self.temporal_eligibility = None
 
     def start_frozen_evaluation(self, native_sha, memory_sha):
         if self._observation is not None or self.memory.pending:
@@ -244,7 +266,8 @@ class NativeTaskRingBridgeDev:
                 "transitions": self.transitions, "score_calls": self.score_calls,
                 "frozen_native_sha256": self._frozen_native,
                 "cell_trace": self.cell_trace,
-                "action_credit": self.action_credit}
+                "action_credit": self.action_credit,
+                "temporal_eligibility": self.temporal_eligibility}
         data = _canonical(body)
         if len(data) > MAX_BYTES:
             raise ValueError("BRIDGE_CHECKPOINT_OVER_BUDGET")
@@ -264,7 +287,8 @@ class NativeTaskRingBridgeDev:
             if type(body) is not dict or set(body) != {
                     "schema", "native", "memory", "observation",
                     "transitions", "score_calls", "frozen_native_sha256",
-                    "cell_trace", "action_credit"} or body["schema"] != SCHEMA:
+                    "cell_trace", "action_credit",
+                    "temporal_eligibility"} or body["schema"] != SCHEMA:
                 raise ValueError("BRIDGE_CHECKPOINT_SCHEMA")
             if (body["observation"] is not None and
                     (type(body["observation"]) is not str or
@@ -294,6 +318,15 @@ class NativeTaskRingBridgeDev:
                             or not -1. <= x <= 1. for x in row) for row in credit)):
                 raise ValueError('BRIDGE_ACTION_CREDIT_INVALID')
             obj.action_credit = [[float(x) for x in row] for row in credit]
+            eligibility = body["temporal_eligibility"]
+            if eligibility is not None:
+                if (type(eligibility) is not list or len(eligibility) != 2 or
+                        any(type(view) is not list or len(view) != CELLS or
+                            any(type(bit) is not int or bit not in (0, 1)
+                                for bit in view) for view in eligibility)):
+                    raise ValueError("BRIDGE_TEMPORAL_ELIGIBILITY_INVALID")
+                eligibility = [list(v) for v in eligibility]
+            obj.temporal_eligibility = eligibility
             frozen_native = body["frozen_native_sha256"]
             if (frozen_native is None) != (memory._frozen_hash is None):
                 raise ValueError("BRIDGE_FROZEN_MODE_MISMATCH")
