@@ -361,6 +361,7 @@ def fresh_worker(arm,seed):
             "native_actual_weight_plasticity":arm=="native" and checkpoint!=before_weights,
             "cold_original_process":cold,
             "training_cpu_ns_including_rust":trained-begin,
+        "training_cpu_below_os_clock_resolution":trained==begin,
             "whole_parent_process_cpu_ns_including_rust":total,
             "actual_os_peak_resident_bytes":rss,"os_peak_resident_method":method,
             "source_sha256":API.source_sha256,"binary_sha256":API.binary_sha256,
@@ -393,10 +394,16 @@ def launch(arm,seed):
         d.get("rust_is_original_yggdrasil_learner") is not False or
         d.get("independent_cell_thread_or_process_execution") is not False):
         raise AssertionError("V32A_WORKER_REPORTED_UNPINNED_SOURCE_OR_UNAUTHORIZED_MODEL")
-    for k in ("whole_parent_process_cpu_ns_including_rust","actual_os_peak_resident_bytes",
-              "training_cpu_ns_including_rust"):
+    for k in ("whole_parent_process_cpu_ns_including_rust","actual_os_peak_resident_bytes"):
         if type(d.get(k)) is not int or d[k]<=0:
             raise AssertionError("V32A_UNMETERED_NATIVE_RESOURCE_"+k)
+    # Windows process_time_ns may quantize a short standalone train phase to
+    # zero ticks. Preserve its true measured zero and explicit status; NEVER
+    # treat it as evidence of free CPU, or weaken whole-process CPU/RSS checks.
+    train=d.get("training_cpu_ns_including_rust")
+    if (type(train) is not int or train<0 or
+        d.get("training_cpu_below_os_clock_resolution") is not (train==0)):
+        raise AssertionError("V32A_INVALID_WINDOWS_PROCESS_CLOCK_DIAGNOSTIC")
     meter=("LINUX_GETRUSAGE_SELF_RU_MAXRSS_KIB_X1024" if sys.platform=="linux"
            else "WINDOWS_GETPROCESSMEMORYINFO_PEAKWORKINGSETSIZE_BYTES" if sys.platform=="win32" else None)
     if not meter or d.get("os_peak_resident_method")!=meter:
@@ -434,6 +441,7 @@ def audit():
             "fresh_cold_checkpoint_and_96_predictions_exact":True,
             "actual_cpu_and_rss_by_arm":{arm:{
                 "training_process_cpu_ns":x["training_cpu_ns_including_rust"],
+                "training_cpu_below_os_clock_resolution":x["training_cpu_below_os_clock_resolution"],
                 "whole_parent_process_cpu_ns":x["whole_parent_process_cpu_ns_including_rust"],
                 "actual_os_peak_resident_bytes":x["actual_os_peak_resident_bytes"],
                 "subprocess_wall_ns":x["full_subprocess_wall_ns"],
