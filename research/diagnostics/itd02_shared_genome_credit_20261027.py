@@ -10,18 +10,21 @@ for obs in OBSERVATIONS:
   for target_reward in (-3,0,10):
    after=public_outcome("Nothing",target_reward)
    for trained_site in ACTION_SITES:
-    runtime=LocalTaskRuntime()
-    src=[0]*8
-    for i in range(8):src[i]=after[i] if i==trained_site else runtime.predict(before)[i]>=.5
-    # Measure precisely the effect of one original observe, preserving fixed native source.
-    old=runtime.predict(before)
-    runtime.observe(before,after)
-    new=runtime.predict(before)
-    direct=new[trained_site]-old[trained_site]
-    collateral=sum(abs(new[k]-old[k]) for k in ACTION_SITES if k!=trained_site)
+    control=LocalTaskRuntime()
+    treatment=LocalTaskRuntime()
+    # Controlled counterfactual differs ONLY in the chosen site's outcome
+    # bit; all other seven labels, original source and initial genomes match.
+    toggled=list(after)
+    toggled[trained_site]=1-toggled[trained_site]
+    control.observe(before,after)
+    treatment.observe(before,toggled)
+    p0=control.predict(before)
+    p1=treatment.predict(before)
+    direct=p1[trained_site]-p0[trained_site]
+    collateral=sum(abs(p1[k]-p0[k]) for k in ACTION_SITES if k!=trained_site)
     rows.append({"obs":obs,"action":action,"reward":target_reward,
       "head":trained_site,"direct_change":direct,"total_head_collateral":collateral,
-      "neighbor_reward_head_overlap":len(set(runtime.neighbors[trained_site])&set(ACTION_SITES))})
+      "neighbor_reward_head_overlap":len(set(control.neighbors[trained_site])&set(ACTION_SITES))})
 assert len(rows)==135
 by_head={}
 for site in ACTION_SITES:
@@ -33,7 +36,7 @@ receipt={"schema":"itd02.original-native-shared-genome-collateral.v1",
  "source_sha":os.environ["SOURCE_SHA"],"observations":len(OBSERVATIONS),
  "actions":len(ACTIONS),"reward_labels":3,"controlled_pairs":len(rows),
  "head_site_analysis":by_head,"shared_expert_genome":True,
- "causal_scope":"One local training event updates all sites via shared expert genome; mechanism audit only, not chosen-action task performance.",
+ "causal_scope":"Matched originals; flip only one reward output target before one full observe. Measures collateral response through shared expert genome; not native on-policy improvement.",
  "source_modified":False,"scientific_first_use":False}
 p=os.path.join(os.environ["RUNNER_TEMP"],"native_crosscell_credit.json")
 with open(p,"w") as f:json.dump(receipt,f,sort_keys=True,indent=2)
