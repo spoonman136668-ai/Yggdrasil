@@ -1,0 +1,86 @@
+name: ITD-02 V15 frozen-native source-public local readout qualification
+on:
+  push:
+    branches:
+      - research/itd02-v15-frozen-native-local-readout-20261028
+permissions:
+  contents: read
+jobs:
+  frozen-native-local-readout:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Exact source bytes on both OS
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Checkout exact pushed tree
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Preregistration ancestry and unchanged original model blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 76d23a62c276606c5088554ce3a846dc1fcfae4a "$GITHUB_SHA"
+          git merge-base --is-ancestor 903b8ba6c5c4a9df626e2f2c0d21e019059b6445 "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+          test "$(git hash-object yggdrasil/itd02_local_ring_memory_dev.py)" = 1db0835d5c99456bcf99a013d4836f49314a9d39
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Focused V15 synthetic mechanical diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v15-local"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v15_frozen_native_local_readout.py' -v > "$RUNNER_TEMP/v15-local/focused.log" 2>&1
+          cat "$RUNNER_TEMP/v15-local/focused.log"
+          python - "$RUNNER_TEMP/v15-local/focused.log" <<'PY'
+          import json,sys
+          from pathlib import Path
+          lines=Path(sys.argv[1]).read_text(encoding="utf-8").splitlines()
+          receipts=[json.loads(x.split("=",1)[1]) for x in lines if x.startswith("V15_ENGINEERING_DIAGNOSTIC=")]
+          assert len(receipts)==1, "MISSING_V15_DIAGNOSTIC"
+          r=receipts[0]
+          assert r["classification"]=="V15_PUBLIC_FEEDBACK_LOCAL_READOUT_FITS_TOY__NO_SCIENCE"
+          assert r["contexts"]==36 and r["synthetic_training_updates"]==144
+          assert r["local_learned_scalars"]==192 and r["native_cold_checkpoint_equal"]
+          assert abs(r["toy_relative_absolute_error"]-0.0625)<1e-10
+          assert r["original_native_parameters_modified"] is False
+          assert r["original_memory_parameters_modified"] is False
+          assert r["scientific_first_use"] is False and r["original_world_training"] is False
+          assert r["input_fanout_native_admissibility"]=="NOT_PROVEN"
+          print("ITD02_V15_FROZEN_NATIVE_LOCAL_PUBLIC_TOY_GATE_PASS_NO_SCIENCE")
+          PY
+      - name: Final original-native V12 bridge and ring integration regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v15-local"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_native_task_bridge_dev.py' -v > "$RUNNER_TEMP/v15-local/original-bridge.log" 2>&1
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_local_ring_memory_dev.py' -v >> "$RUNNER_TEMP/v15-local/original-bridge.log" 2>&1
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v12_delayed_local_eligibility.py' -v >> "$RUNNER_TEMP/v15-local/original-bridge.log" 2>&1
+          cat "$RUNNER_TEMP/v15-local/original-bridge.log"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo "ITD02_V15_FINAL_ORIGINAL_NATIVE_INTEGRATION_PASS_NO_SCIENCE"
+      - name: Preserve qualification traces
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-v15-frozen-native-local-${{ matrix.os }}
+          path: ${{ runner.temp }}/v15-local/*.log
+          if-no-files-found: warn
+          retention-days: 7
