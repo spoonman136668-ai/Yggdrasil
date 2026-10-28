@@ -43,7 +43,7 @@ jobs:
           test "$GITHUB_REF_NAME" = 'research/itd02-v31t-eight-thread-ring-20261028'
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test "$(git rev-parse "$prereg^")" = "$parent"
-          test "$(git rev-parse HEAD^)" = 7cb6bfa3c6f4bbaf6053913a4e84824ca7a69e97
+          test "$(git rev-parse HEAD^)" = 33f8253fe114f360dc805eeb22f804d25c8b23a5
           git merge-base --is-ancestor "$prereg" HEAD
           test -z "$(git diff --name-only "$parent" HEAD -- yggdrasil)"
           git diff --name-only "$parent" HEAD | sort > "$RUNNER_TEMP/v31t-actual"
