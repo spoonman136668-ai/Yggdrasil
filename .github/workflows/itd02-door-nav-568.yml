@@ -1,0 +1,171 @@
+name: ITD-02 Door Navigation Source-Free Focused
+
+on:
+  pull_request:
+    paths:
+      - 'research/itd02/door_nav_568/**'
+      - '.github/workflows/itd02-door-nav-568.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  source-free-focused:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Focused source-free tests
+        run: python -m unittest discover -s research/itd02/door_nav_568 -p 'test_*.py' -v
+      - name: Emit matched replay versus scratch metrics
+        working-directory: research/itd02/door_nav_568
+        run: python replay_efficiency_benchmark.py
+      - name: Emit noisy replay false-restoration audit
+        working-directory: research/itd02/door_nav_568
+        run: python noisy_replay_audit.py
+      - name: Emit exhaustive corruption-policy comparison
+        working-directory: research/itd02/door_nav_568
+        run: python replay_corruption_comparison.py
+      - name: Emit weighted independent and correlated replay-noise results
+        working-directory: research/itd02/door_nav_568
+        run: python replay_noise_probabilities.py
+      - name: Emit matched public successor-corroboration comparison
+        working-directory: research/itd02/door_nav_568
+        run: python successor_comparison_benchmark.py
+      - name: Emit three-step online correction and retention outcome
+        working-directory: research/itd02/door_nav_568
+        run: python three_step_online_correction.py
+      - name: Emit repeated-regime collision and memory-pressure audit
+        working-directory: research/itd02/door_nav_568
+        run: python context_regime_stress_audit.py
+      - name: Emit public evidence-selected memory outcomes
+        working-directory: research/itd02/door_nav_568
+        run: python evidence_selection_audit.py
+
+      - name: Audit memory switches
+        working-directory: research/itd02/door_nav_568
+        run: python memory_selection_switch_audit.py
+
+      - name: Audit two-hop causal memory evidence
+        working-directory: research/itd02/door_nav_568
+        run: python two_hop_evidence_audit.py
+
+      - name: Audit learned informative causal probe selection
+        working-directory: research/itd02/door_nav_568
+        run: python selected_causal_probe_audit.py
+
+      - name: Audit adaptive probe retries and budgets
+        working-directory: research/itd02/door_nav_568
+        run: python adaptive_probe_audit.py
+
+      - name: Audit retained public probe exceptions
+        working-directory: research/itd02/door_nav_568
+        run: python remembered_probe_audit.py
+
+      - name: Audit retained public revalidation
+        working-directory: research/itd02/door_nav_568
+        run: python revalidation_audit.py
+
+      - name: Audit online public transition learning
+        working-directory: research/itd02/door_nav_568
+        run: python online_public_learning_audit.py
+
+      - name: Audit online-feedback versus frozen selector
+        working-directory: research/itd02/door_nav_568
+        run: python feedback_public_loop_audit.py
+
+      - name: Audit unfamiliar successor transfer against matched frozen control
+        working-directory: research/itd02/door_nav_568
+        run: python unfamiliar_transition_transfer_audit.py
+
+      - name: Audit multi-regime native versus conventional online learning
+        working-directory: research/itd02/door_nav_568
+        run: python multi_regime_online_comparison.py
+
+      - name: Audit recency plasticity against equally adaptive tabular control
+        working-directory: research/itd02/door_nav_568
+        run: python recency_adaptation_audit.py
+
+      - name: Audit actual R7 native cell plasticity against recency control
+        working-directory: research/itd02/door_nav_568
+        run: python native_cell_recency_bridge_audit.py
+
+      - name: Audit bounded native R7 cell reversal against conventional adaptive learning
+        working-directory: research/itd02/door_nav_568
+        run: python local_cell_reversal_audit.py
+
+      - name: Audit native-cell multi-relation interference and unfamiliar features
+        working-directory: research/itd02/door_nav_568
+        run: python multi_relation_interference_audit.py
+
+      - name: Audit bounded cell-local specialization and interference controls
+        working-directory: research/itd02/door_nav_568
+        run: python local_cell_specialization_audit.py
+
+      - name: Audit generated relationship family scaling and local slot capacity
+        working-directory: research/itd02/door_nav_568
+        run: python specialization_scaling_audit.py
+
+      - name: Audit local receptive field information sufficiency
+        working-directory: research/itd02/door_nav_568
+        run: python local_feature_sufficiency_audit.py
+
+      - name: Audit learned receptive fields versus online conventional controls
+        working-directory: research/itd02/door_nav_568
+        run: python learned_feature_comparison_audit.py
+
+      - name: Audit fail-closed local corroboration and held-out risk versus controls
+        working-directory: research/itd02/door_nav_568
+        run: python corroborated_local_audit.py
+
+      - name: Audit prequential risk-calibrated local prediction and coverage
+        working-directory: research/itd02/door_nav_568
+        run: python risk_calibrated_local_audit.py
+
+      - name: Audit distributed triplet evidence versus conventional triplet control
+        working-directory: research/itd02/door_nav_568
+        run: python triplet_message_transfer_audit.py
+
+      - name: Audit two-stage public composition against conventional factorized and exact controls
+        working-directory: research/itd02/door_nav_568
+        run: python public_composition_transfer_audit.py
+
+      - name: Audit learned composition operation identification against matched conventional controls
+        working-directory: research/itd02/door_nav_568
+        run: python operation_identification_audit.py
+
+      - name: Audit unrestricted public operation identifiability and information-gaining probes
+        working-directory: research/itd02/door_nav_568
+        run: python unrestricted_operation_audit.py
+
+      - name: Audit retained local transfer versus equal-information conventional memory and scratch
+        working-directory: research/itd02/door_nav_568
+        run: python retained_transfer_audit.py
+
+      - name: Audit sequential public drift detection and conventional memory parity
+        working-directory: research/itd02/door_nav_568
+        run: python sequential_drift_detection_audit.py
+
+      - name: Audit risk-aware active public probes against fixed and independent conventional controls
+        working-directory: research/itd02/door_nav_568
+        run: python risk_aware_drift_audit.py
+
+      - name: Audit unequal-information public probe selection versus fixed and conventional controls
+        working-directory: research/itd02/door_nav_568
+        run: python asymmetric_probe_audit.py
+
+      - name: Audit empirically learned source hypotheses and unfamiliar-target probing
+        working-directory: research/itd02/door_nav_568
+        run: python empirical_probe_audit.py
+
+      - name: Audit unfamiliar source-memory contradiction recovery and matched controls
+        working-directory: research/itd02/door_nav_568
+        run: python source_memory_recovery_audit.py
+
+      - name: Audit corroborated transfer predictions with equal-information memory controls
+        working-directory: research/itd02/door_nav_568
+        run: python corroborated_memory_transfer_audit.py
+
+      - name: Audit held-out prequential error calibration and matched conventional learner
+        working-directory: research/itd02/door_nav_568
+        run: python heldout_error_calibration_audit.py
