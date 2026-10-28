@@ -38,4 +38,5 @@ jobs:
           PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v31_public_history_dev.py' -v
           test ! -f research/itd02_v31_holdout_results.json
           test -z "$(git status --porcelain --untracked-files=all)"
-          echo V31_DEV_ONLY_CANDIDATE_SOURCE_PASS_HOLDOUT_NOT_TOUCHED
+          PYTHONPATH=. python -B research/itd02_v31_public_history_dev_audit.py
+          echo V31_DEV_ONLY_BEHAVIOR_RECORDED_HOLDOUT_NOT_TOUCHED
