@@ -111,7 +111,7 @@ def evaluate(model, contexts, feedback, *, freeze=True):
     if freeze:
         recovered.start_frozen_evaluation()
     frozen_hash = recovered.parameters_sha256()
-    preds = [episode(recovered, c, feedback(c), fit=False) for c in contexts]
+    preds = [episode(recovered, c, feedback(*c), fit=False) for c in contexts]
     assert recovered.parameters_sha256() == frozen_hash
     assert recovered.native_ids == model.native_ids
     return preds
