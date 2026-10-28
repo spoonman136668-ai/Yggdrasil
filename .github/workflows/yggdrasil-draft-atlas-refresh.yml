@@ -24,12 +24,13 @@ jobs:
         run: |
           set -euo pipefail
           test "$GITHUB_REF_NAME" = 'engineering/optin-free-research-executor-20261028'
-          test "$(git rev-parse HEAD^)" = '64e91bf50ee5fd314cdcd238fda49000f7d56bf4'
+          test "$(git rev-parse HEAD^)" = '6de0c31c706ec58d5edd358371beeb2501ebf1f6'
           test "$(git rev-parse origin/main)" = '14275a69ee553d2ed17c4a9e551d2486454d58f3'
           python3 - <<'PY'
           import subprocess
           allowed={
             '.github/workflows/yggdrasil-draft-atlas-refresh.yml',
+            '.github/workflows/free-research-isolation-qualify.yml',
             '.ice/code-atlas.json',
             '.ice/code-atlas.html',
             '.ice/code-atlas.ice',
