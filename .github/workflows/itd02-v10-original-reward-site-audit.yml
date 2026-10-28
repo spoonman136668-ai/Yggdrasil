@@ -1,0 +1,114 @@
+name: ITD-02 v10 source-only original reward-site training interference
+on:
+  push:
+    branches:
+      - research/itd02-v10-reward-site-interference-20261027
+permissions:
+  contents: read
+jobs:
+  original-source-native-vs-masked-3:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      V8_SHA: 658b855d1b217d20ed9d431fe99b2e866469b7e9
+    steps:
+      - name: Preserve exact source bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Read-only preregistered evaluator and workflow
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          path: harness
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Exact unchanged original native model
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 658b855d1b217d20ed9d431fe99b2e866469b7e9
+          path: native
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Check immutable original runtime and early precommit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C harness merge-base --is-ancestor a490096476a967bd57f5aa20e793b72676b55a0a "$GITHUB_SHA"
+          test "$(git -C native rev-parse HEAD)" = "$V8_SHA"
+          test -z "$(git -C harness status --porcelain --untracked-files=all)"
+          test -z "$(git -C native status --porcelain --untracked-files=all)"
+          python -B - <<'PY'
+          import hashlib
+          from pathlib import Path
+          src=Path("native/yggdrasil/task_runtime.py").read_bytes()
+          assert b"self.core.events+=1" in src
+          assert b"for i,target in enumerate(outcomes)" in src
+          print("ITD02_NATIVE_ORIGINAL_FULL8_TRAINING_SOURCE_PASS")
+          PY
+      - name: Source-original reward-site masked training and frozen custody tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B harness/research/itd02_v10_reward_site_interference.py \
+            --self-test --root "$GITHUB_WORKSPACE/native"
+      - name: Matched genuinely chosen-action training and independent controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v10-results"
+          for name in full8 reward3; do
+            python -B harness/research/itd02_v10_reward_site_interference.py \
+              --variant "$name" --root "$GITHUB_WORKSPACE/native" \
+              --output "$RUNNER_TEMP/v10-results/$name.json"
+          done
+          for name in count_mean ema_half rolling_six; do
+            python -B harness/research/itd02_v10_reward_site_interference.py \
+              --variant "$name" --output "$RUNNER_TEMP/v10-results/$name.json"
+          done
+          python -B harness/research/itd02_v10_reward_site_interference.py \
+            --aggregate "$RUNNER_TEMP/v10-results" \
+            --output "$RUNNER_TEMP/v10-results/aggregate.json"
+      - name: Verify complete on-policy source-free negatives and pristine originals
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os,json
+          from pathlib import Path
+          root=Path(os.environ["RUNNER_TEMP"])/"v10-results"
+          data=json.loads((root/"aggregate.json").read_text("utf-8"))
+          assert data["events_all_arms"]==8640 and data["events_per_arm"]==1728
+          assert data["scientific_first_use_authorized"] is False
+          assert data["promotion_authorized"] is False
+          assert data["retail_pc_evidence"] is False
+          assert set(data["means"])=={"full8","reward3","count_mean","ema_half","rolling_six"}
+          assert set(data["gradient_pairs"])=={"full8","reward3"}
+          for variant in ("full8","reward3"):
+            doc=json.loads((root/(variant+".json")).read_text("utf-8"))
+            assert all(len(t["gradient_pair"])==3 and all(t["cold_restore_verified"].values())
+                       for t in doc["trials"])
+            assert doc["selected_public_feedback_events"]==1728
+          print("ITD02_V10_SOURCE_ORIGINAL_CELL_CREDIT_GATE_PASS_NO_SCIENCE")
+          PY
+          test -z "$(git -C harness status --porcelain --untracked-files=all)"
+          test -z "$(git -C native status --porcelain --untracked-files=all)"
+      - name: Keep negative raw families, phase/source attribution and machine receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-v10-sourcefree-native-credit-${{ matrix.os }}
+          path: ${{ runner.temp }}/v10-results/*.json
+          if-no-files-found: warn
+          retention-days: 7
