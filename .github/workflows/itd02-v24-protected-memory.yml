@@ -1,0 +1,132 @@
+name: ITD-02 V24 protected source and fast local memory
+on:
+  push:
+    branches:
+      - research/itd02-v24-protected-dual-timescale-memory-20261028
+permissions:
+  contents: read
+jobs:
+  v24-source-only-consolidation:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Cross-platform exact source bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Checkout exact source SHA, no credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Frozen preregistration and original native source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor e5bf689f213a72d9f572320fc14ab2eeb05cc0ff "$GITHUB_SHA"
+          git merge-base --is-ancestor 230bc53bdce762e36907df645c957ae043f075be "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+          test "$(git hash-object yggdrasil/itd02_local_ring_memory_dev.py)" = 1db0835d5c99456bcf99a013d4836f49314a9d39
+          test "$(git hash-object yggdrasil/itd02_v22_shared_context_ring_dev.py)" = 73dc4d7580f7f0b8ed8de1119b06504c44b0818f
+          test "$(git hash-object research/itd02_v23_unfamiliar_mapping_audit.py)" = 72281fcfb849d96c6ef3b9740c24508dbaa5edfd
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: V24 protected source and public selector safety controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v24"
+          if ! PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v24_protected_dual_memory.py' -v > "$RUNNER_TEMP/v24/focused.log" 2>&1; then
+            cat "$RUNNER_TEMP/v24/focused.log"
+            exit 1
+          fi
+          cat "$RUNNER_TEMP/v24/focused.log"
+          echo ITD02_V24_SOURCE_MEMORY_PROTECTION_AND_PUBLIC_SELECTOR_PASS
+      - name: V24 preregistered retention, target transfer, resource and regret
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! PYTHONPATH=. python -B research/itd02_v24_protected_dual_memory_audit.py > "$RUNNER_TEMP/v24/audit.json" 2> "$RUNNER_TEMP/v24/audit.err"; then
+            cat "$RUNNER_TEMP/v24/audit.err"
+            exit 1
+          fi
+          python - "$RUNNER_TEMP/v24/audit.json" <<'PY'
+          import json,math,sys
+          from pathlib import Path
+          d=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          assert d["schema"]=="ygg.itd02.v24.protected_slow_and_evidence_selected_fast.source_only.v1"
+          assert d["source_only"] and not d["scientific_first_use"] and not d["original_world_training"]
+          assert d["original_native_unchanged"] and not d["independent_unfamiliar_world_transfer_proven"]
+          assert d["physical_native_ring_cells_per_bank"]==8
+          assert d["stored_learned_scalars"]==326 and d["target_trainable_scalars"]==163
+          assert d["explicit_external_source_target_boundary"] and d["uses_centralized_two_loss_selector"]
+          assert d["source_pretraining_episodes"]==576
+          assert d["target_label_count_per_family"]==12 and d["target_heldout_outcome_count_per_family"]==24
+          assert len(d["canonical_48_case_sha256"])==64
+          assert set(d["retention_and_target_metrics"])=={"cue_second","triple_parity"}
+          for family,r in d["retention_and_target_metrics"].items():
+              t=r["source_retention"]
+              assert r["protected_source_sha_unchanged"] and r["fast_equals_scratch_24_predictions"]
+              assert abs(t["protected_after"]-t["protected_before"])<=1e-10
+              assert abs(t["protected_before"]-8.379481333119655)<=1e-8
+              assert r["selector"]["flips"]<=12
+              assert r["selector"]["cumulative_source_prediction_absolute_error"]>=0
+              assert r["selector"]["cumulative_fast_prediction_absolute_error"]>=0
+              assert max(r["checkpoint_bytes"].values())<=12288
+              assert all(math.isfinite(v) and v>=0 for v in r["errors"].values())
+              assert all(0<=p["optimal_count"]<=12 and p["sum_regret"]>=0 for p in r["regrets"].values())
+              assert all(v>=0 for bank in r["edge_messages"].values() for v in bank.values())
+          assert d["classification"] in {
+             "V24_PROTECTED_SOURCE_RETENTION_BUT_ACTIVE_TARGET_ADAPTATION_NO_GO__NO_SCIENCE",
+             "V24_SOURCE_MEMORY_PRESERVED_TARGET_PARITY_ONLY__NO_SCIENCE",
+             "V24_PROTECTED_MEMORY_AND_TARGET_TOY_GAIN__NO_SCIENCE"}
+          assert d["host_specific_resources"]["wall_seconds"]>0
+          assert d["host_specific_resources"]["python_tracemalloc_peak_bytes"]>0
+          print("ITD02_V24_TWO_TARGET_REWARD_RETENTION_AND_LEARNED_STATE_PASS_NO_SCIENCE")
+          PY
+          cat "$RUNNER_TEMP/v24/audit.json"
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Inherited V23 V22 V21 V20 V19 V18 V17 V16 V15 V12 native regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B research/itd02_v23_unfamiliar_mapping_audit.py > "$RUNNER_TEMP/v24/inherited-v23.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v23_unfamiliar_mapping_audit.py' -v
+          PYTHONPATH=. python -B research/itd02_v22_shared_ring_learning_audit.py > "$RUNNER_TEMP/v24/inherited-v22.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v22_shared_context_ring.py' -v
+          PYTHONPATH=. python -B research/itd02_v21_capacity_learning_audit.py > "$RUNNER_TEMP/v24/inherited-v21.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v21_capacity_learning_audit.py' -v
+          PYTHONPATH=. python -B research/itd02_v20_responsibility_gated_audit.py > "$RUNNER_TEMP/v24/inherited-v20.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v20_responsibility_gated_credit.py' -v
+          PYTHONPATH=. python -B research/itd02_v19_local_credit_causality_audit.py > "$RUNNER_TEMP/v24/inherited-v19.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v19_local_credit_causality.py' -v
+          PYTHONPATH=. python -B research/itd02_v18_intermediate_plasticity_audit.py > "$RUNNER_TEMP/v24/inherited-v18.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v18_intermediate_plasticity_dev.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v17_neighbor_carried_learner_dev.py' -v
+          PYTHONPATH=. python -B research/itd02_v16_locality_transfer_audit.py > "$RUNNER_TEMP/v24/inherited-v16.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v15_frozen_native_local_readout.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_native_task_bridge_dev.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_local_ring_memory_dev.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v12_delayed_local_eligibility.py' -v
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo ITD02_V24_FINAL_V23_V22_V21_V20_V19_V18_V17_V16_V15_V12_NATIVE_PASS
+      - name: Preserve exact-source V24 host receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-v24-protected-dual-memory-${{ matrix.os }}
+          path: ${{ runner.temp }}/v24/*
+          retention-days: 7
+          if-no-files-found: warn
