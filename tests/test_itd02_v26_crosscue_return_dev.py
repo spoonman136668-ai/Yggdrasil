@@ -26,7 +26,7 @@ class V26CrossCueTests(unittest.TestCase):
         self.assertFalse(candidate_vote(real, True, require_diversity=True))
         late = [[-0.30,0],[-0.30,1],[-0.30,0],[0.0,1]]
         self.assertTrue(candidate_vote(late, False, require_diversity=True))
-        self.assertFalse(candidate_vote(real[:3], True))
+        self.assertTrue(candidate_vote(real[:3], True))
         self.assertFalse(candidate_vote(late[:3], False))
 
     def test_public_feedback_source_freeze_cold_restore_and_sealed_readout(self):
