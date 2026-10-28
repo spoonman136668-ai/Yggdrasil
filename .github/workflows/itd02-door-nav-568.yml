@@ -564,3 +564,77 @@ jobs:
           assert all(x['checkpoint_bytes']<8192 for x in outcomes)
           PY
           test -z "$(git status --porcelain)"
+  aba-negative-credit-isolation:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compare fixed-rate and stronger negative-error local correction
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,platform
+          from pathlib import Path
+          src=Path('yggdrasil/itd02_local_ring_memory_dev.py').read_text()
+          target='recency_step = .7 * error / (1. + sum(v * v for v in x))'
+          assert src.count(target)==1
+          cases={
+            'original':src,
+            'negative_x2':src.replace(target,'recency_step = (.7 if error >= 0 else 1.4) * error / (1. + sum(v * v for v in x))'),
+            'negative_x1_5':src.replace(target,'recency_step = (.7 if error >= 0 else 1.05) * error / (1. + sum(v * v for v in x))')
+          }
+          summaries=[]
+          for case,source in cases.items():
+            ns={'__name__':'isolated_credit_'+case}
+            exec(compile(source,'<local-credit-isolation>','exec'),ns)
+            Model=ns['NativeRingMemoryDev'];ACTIONS=ns['ACTIONS']
+            total=[0,0,0];correct_total=[0,0,0];updates=0
+            for mapping in (0,1):
+              for seed in (11,23,37,53,71,97):
+                m=Model()
+                for phase,regime in enumerate(('A','B','A')):
+                  for n in range(200):
+                    h=('LRV','docked_LRV')[(n+seed+phase)%2]
+                    good='GoForward' if (((h=='LRV')==(regime=='A')) != bool(mapping)) else 'Backup'
+                    m.reset_episode();m.advance(h);m.feedback('TurnAround',0.)
+                    m.advance('Nothing');proposed=m.choose()
+                    forced=ACTIONS[((n+seed)//5)%3]
+                    chosen=forced if (n+seed)%5==0 else proposed
+                    reward=1. if chosen==good else -1.
+                    total[phase]+=reward
+                    m.feedback(chosen,reward,terminal=True)
+                  frozen=Model.restore(m.checkpoint())
+                  frozen.start_frozen_evaluation(frozen.parameter_sha256())
+                  for h in ('LRV','docked_LRV'):
+                    expected='GoForward' if (((h=='LRV')==(regime=='A')) != bool(mapping)) else 'Backup'
+                    frozen.reset_episode();frozen.advance(h)
+                    frozen.feedback('TurnAround',0.,learning=False)
+                    frozen.advance('Nothing');pick=frozen.choose()
+                    frozen.feedback(pick,0.,learning=False,terminal=True)
+                    correct_total[phase]+=pick==expected
+                assert len(m.checkpoint())<8192
+                updates+=m.updates
+            summaries.append({'arm':case,'rewards':total,'correct_of_24':correct_total,'updates':updates})
+          print('ABA_NEGATIVE_CREDIT_ISOLATION='+json.dumps({
+            'source_sha':'a39171a76d0d7817e3563682bb139a9d7ecf37c4',
+            'os':platform.platform(),'results':summaries,
+            'source_free':True,'protected_world_steps':0,'scientific_acceptance':False},sort_keys=True))
+          assert len(summaries)==3 and all(x['updates']==14400 for x in summaries)
+          PY
+          test -z "$(git status --porcelain)"
