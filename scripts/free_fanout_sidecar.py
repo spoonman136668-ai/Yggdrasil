@@ -6,7 +6,10 @@ import math
 import os
 import pathlib
 import re
-import resource
+try:
+    import resource  # POSIX: actual child CPU and RSS enforcement
+except ImportError:
+    resource = None  # Unsupported host; run_candidate fails closed before dispatch
 import subprocess
 import sys
 import time
@@ -272,6 +275,10 @@ def build_candidate_env(home_dir, tmp_dir, data_class):
     }
 
 def run_candidate(manifest, package_root, candidate_id, output_root):
+    # Do not start a candidate when required child RSS/CPU accounting is unavailable.
+    # In particular, Windows lacks the POSIX resource module; never fake zero usage.
+    if resource is None:
+        fail("FREE_FANOUT_RESOURCE_ACCOUNTING_UNAVAILABLE")
     candidate = candidate_by_id(manifest, candidate_id)
     output_root = pathlib.Path(output_root).resolve()
     output_root.mkdir(parents=True, exist_ok=True)
