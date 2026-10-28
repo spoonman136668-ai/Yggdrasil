@@ -55,13 +55,44 @@ class RidgeCUSUM:
   self.diag=[max(0.01,d-d*d*v*v/denom) for d,v in zip(self.diag,x)]
   self.events+=1
 
+def readout_regret(model,fast,destructive,conventional,regime):
+ # External evaluator only: never passes counterfactual outcomes to a learner.
+ a=UnlabeledReturnRingDev.restore(model.checkpoint())
+ b=SharedContextRingDev.restore(fast.checkpoint())
+ d=SharedContextRingDev.restore(destructive.checkpoint())
+ regret={k:0.0 for k in ("active","always_fast","destructive","conventional","two_expert","source")}
+ error={k:0.0 for k in regret}
+ for cue in PUBLIC_CUES:
+  for first in ACTIONS:
+   scores={k:[] for k in regret}
+   actual=[]
+   for second in ACTIONS:
+    case=(cue,first,second)
+    a.start_observation(cue);a.accept_first(first)
+    scores["active"].append(a.score(second))
+    scores["source"].append(a.bank.source_score(second))
+    a.accept_second(second,0.0,learning=False)
+    scores["always_fast"].append(public_step(b,case))
+    scores["destructive"].append(public_step(d,case))
+    _,_,cp,tp=conventional.predictions(case)
+    scores["conventional"].append(cp)
+    scores["two_expert"].append(tp)
+    actual.append(reward(regime,case))
+   best=max(actual)
+   for key,values in scores.items():
+    idx=max(range(3),key=lambda i:values[i])
+    regret[key]+=best-actual[idx]
+    error[key]+=sum(abs(p-y) for p,y in zip(values,actual))
+ return {"regret":{k:round(v,10) for k,v in regret.items()},
+         "error":{k:round(v,10) for k,v in error.items()}}
+
 def run(name,stages,offset,source):
  model=UnlabeledReturnRingDev(source)
  fast=SharedContextRingDev()
  destructive=SharedContextRingDev.restore(source)
  conventional=RidgeCUSUM(source)
  sha=model.bank.source_sha
- rec=[];first_return=None;return_count=0;false_source=0
+ rec=[];snapshots=[];first_return=None;return_count=0;false_source=0
  return_error={"active":0.0,"fast":0.0,"conventional":0.0}
  for stage,(regime,count) in enumerate(stages):
   for i in range(count):
@@ -84,6 +115,9 @@ def run(name,stages,offset,source):
     return_error["conventional"]+=abs(cp-y)
    if name.startswith("unchanged_t") and stage==1 and i>=4:
     false_source+=int(not model.use_fast)
+   if i+1 in (1,4,8,12):
+    snapshots.append({"stage":stage,"event":i+1,"family_evaluator_only":regime,
+                      **readout_regret(model,fast,destructive,conventional,regime)})
    rec.append({"stage_evaluator_only":stage,"index":i+1,"public":case,
      "reward":round(y,12),"active_pre":round(active,12),
      "fast_pre":round(fp,12),"conventional_pre":round(cp,12),
@@ -93,7 +127,7 @@ def run(name,stages,offset,source):
  return {"stream":name,"events":len(rec),"return_latency":first_return,
  "return_events":return_count,"false_source_unchanged_target":false_source,
  "return_preupdate_error":return_error,"source_sha_unchanged":True,
- "checkpoint_bytes":len(model.checkpoint()),"records":rec}
+ "checkpoint_bytes":len(model.checkpoint()),"records":rec,"snapshots":snapshots}
 
 def main():
  root=Path(__file__).resolve().parents[1]
@@ -118,8 +152,9 @@ def main():
  "full_behavioral_science_qualification":False,
  "basic_reactivation_within_four":return_ok,"unchanged_target_no_false_source":no_false,
  "return_error_10pct_better_both":gain,
- "streams":[{k:v for k,v in x.items() if k!="records"} for x in results],
+ "action_regret_measured":True,
+ "streams":[{k:v for k,v in x.items() if k not in ("records","snapshots")} for x in results],
  "canonical_public_evidence_sha256":hashlib.sha256(canonical(
- [{"name":x["stream"],"records":x["records"]} for x in results])).hexdigest()},
+ [{"name":x["stream"],"records":x["records"],"snapshots":x["snapshots"]} for x in results])).hexdigest()},
  sort_keys=True,separators=(",",":")))
 if __name__=="__main__":main()
