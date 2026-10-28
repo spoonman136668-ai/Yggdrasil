@@ -1,0 +1,38 @@
+name: ITD02 V22 identical sample count readout control
+on:
+  push:
+    branches: [research/itd02-v22-head-sample-parity-20261028]
+permissions:
+  contents: read
+jobs:
+  paired:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      PYTHONPATH: .
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code 6147b787068caa55a4782e076dd6ae82e651dcbc -- yggdrasil research/itd02_v21_capacity_learning_audit.py
+          python -B research/itd02_v22_equal_sample_audit.py
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: itd02-v22-${{ matrix.os }}
+          path: ${{ runner.temp }}/itd02_v22.json
+          retention-days: 14
