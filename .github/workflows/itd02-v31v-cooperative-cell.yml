@@ -1,0 +1,177 @@
+name: ITD-02 V31V original cooperative eight owner-cell neighbor state versus V31R and actual OS resources
+on:
+  push:
+    branches: [research/itd02-v31v-cooperative-cell-state-20261028]
+    paths: [.github/workflows/itd02-v31v-cooperative-cell.yml]
+permissions:
+  contents: read
+concurrency:
+  group: itd02-v31v-g29-single-source-20261028
+  cancel-in-progress: false
+jobs:
+  source-reanchor:
+    if: ${{ github.actor == 'spoonman136668-ai' && github.run_attempt == 1 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    outputs:
+      published_sha: ${{ steps.publish.outputs.published_sha }}
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve exact Git source bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          clean: true
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Validate frozen ancestor, exact V31V_COOP contract-only delta
+        shell: bash
+        run: |
+          set -euo pipefail
+          parent=f8047172b26d9b7514ba814af57aba23a1b8662c
+          prereg=24d5e17f9286a5ef888c607fe391e096ad769722
+          test "$GITHUB_REF_NAME" = 'research/itd02-v31v-cooperative-cell-state-20261028'
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse "$prereg^")" = "$parent"
+          test "$(git rev-parse HEAD^)" = 9e20cd3fe59f145861983b1e33704c163d1fc5df
+          # Immutable prior G29 bot-only commit is accounted for exactly,
+          # never any unexplained original/native model file delta.
+          first_source=fddd2c8315a03a42a0341dc323904acb43cab607
+          first_bot=c15f7c318f48bed94d6f895fe3fa4291a41cef60
+          test "$(git rev-parse "$first_bot^")" = "$first_source"
+          git merge-base --is-ancestor "$first_bot" HEAD
+          git diff --name-only "$first_source" "$first_bot" | sort > "$RUNNER_TEMP/v31v-original-bot-actual"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/v31v-original-bot-allowed"
+          diff -u "$RUNNER_TEMP/v31v-original-bot-allowed" "$RUNNER_TEMP/v31v-original-bot-actual"
+          git merge-base --is-ancestor "$prereg" HEAD
+          test -z "$(git diff --name-only "$parent" HEAD -- yggdrasil)"
+          git diff --name-only "$parent" HEAD | sort > "$RUNNER_TEMP/v31v-actual"
+          printf '%s\n' \
+            .github/workflows/itd02-v31v-cooperative-cell.yml \
+            .ice/code-atlas.html \
+            .ice/code-atlas.ice \
+            .ice/code-atlas.json \
+            research/itd02_v31v_cooperative_cell_preregistration.md \
+            research/itd02_v31v_cooperative_cell_audit.py | sort > "$RUNNER_TEMP/v31v-allowed"
+          diff -u "$RUNNER_TEMP/v31v-allowed" "$RUNNER_TEMP/v31v-actual"
+          test "$(git hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+          test "$(git hash-object yggdrasil/itd02_v22_shared_context_ring_dev.py)" = 73dc4d7580f7f0b8ed8de1119b06504c44b0818f
+          test "$(git hash-object research/itd02_v31j_executed_edge_ledger_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31j_executed_edge_ledger_audit.py")"
+          test "$(git hash-object research/itd02_v31i_cold_restart_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31i_cold_restart_audit.py")"
+          test "$(git hash-object research/itd02_v31m_opt_bounded_ring_cache_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31m_opt_bounded_ring_cache_audit.py")"
+          test "$(git hash-object research/itd02_v31n_episode_ring_cache_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31n_episode_ring_cache_audit.py")"
+          test "$(git hash-object research/itd02_v31o_full_process_resource_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31o_full_process_resource_audit.py")"
+          test "$(git hash-object research/itd02_v31p_long_session_amortization_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31p_long_session_amortization_audit.py")"
+          test "$(git hash-object research/itd02_v31q_varied_public_resource_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31q_varied_public_resource_audit.py")"
+          test "$(git hash-object research/itd02_v31r_bank_cell_locality_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31r_bank_cell_locality_audit.py")"
+          test "$(git hash-object research/itd02_v31s_eight_process_ring_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31s_eight_process_ring_audit.py")"
+          test "$(git hash-object research/itd02_v31t_thread_ring_resource_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31t_thread_ring_resource_audit.py")"
+          test "$(git hash-object research/itd02_v31u_neighbor_mailbox_resource_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31u_neighbor_mailbox_resource_audit.py")"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo V31V_COOP_CONTRACT_SCOPE_PASS
+      - name: Run source-only inherited focused tests and unchanged V31J ledger
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_*.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_free_fanout_sidecar.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_nci04g*.py' -v
+          PYTHONPATH=. python -B research/itd02_v31i_cold_restart_audit.py
+          PYTHONPATH=. python -B research/itd02_v31j_executed_edge_ledger_audit.py
+          PYTHONPATH=. python -B research/itd02_v31v_cooperative_cell_audit.py
+      - name: Recreate G29 derived Atlas from exactly this qualified source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          test -z "$(git diff --name-only -- ':!/.ice/code-atlas.json' ':!/.ice/code-atlas.html' ':!/.ice/code-atlas.ice')"
+      - name: Commit only derived source locators on isolated branch
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = 'research/itd02-v31v-cooperative-cell-state-20261028'
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          git diff --cached --name-only > "$RUNNER_TEMP/v31v-atlas-actual"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/v31v-atlas-allowed"
+          diff -u "$RUNNER_TEMP/v31v-atlas-allowed" "$RUNNER_TEMP/v31v-atlas-actual"
+          test -z "$(git diff --name-only)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'index(V31V_COOP): pin source-derived G29 locators without learner changes'
+          python -B scripts/build_code_atlas.py --check-if-present
+          PYTHONPATH=. python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+          echo "published_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo V31V_COOP_EXACT_G29_SOURCE_REANCHORED
+      - name: One complete inherited Python regression after committed G29 (Ubuntu)
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B - <<'PY'
+          import unittest
+          suite=unittest.TestLoader().discover("tests",pattern="test_*.py")
+          result=unittest.TextTestRunner(verbosity=2).run(suite)
+          assert result.wasSuccessful(), "V31V_COOP_LINUX_FULL_REGRESSION_FAILED"
+          assert result.testsRun==139 and not result.skipped, "V31V_COOP_LINUX_TEST_COVERAGE_CHANGED"
+          print("V31V_COOP_LINUX_ALL_139_TESTS_RAN_NO_SKIPS")
+          PY
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo V31V_COOP_UBUNTU_FULL_REGRESSION_PASS
+  cross-host:
+    needs: source-reanchor
+    if: ${{ needs.source-reanchor.result == 'success' }}
+    runs-on: windows-2022
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.source-reanchor.outputs.published_sha }}
+          fetch-depth: 0
+          clean: true
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact generated source and complete Windows regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = '${{ needs.source-reanchor.outputs.published_sha }}'
+          python -B scripts/build_code_atlas.py --check-if-present
+          PYTHONPATH=. python -B research/itd02_v31j_executed_edge_ledger_audit.py
+          PYTHONPATH=. python -B research/itd02_v31v_cooperative_cell_audit.py
+          PYTHONPATH=. python -B - <<'PY'
+          import unittest
+          suite=unittest.TestLoader().discover("tests",pattern="test_*.py")
+          result=unittest.TextTestRunner(verbosity=2).run(suite)
+          expected={"test_missing_result_rejected","test_mismatched_candidate_id_rejected",
+                    "test_existing_roles_learn_from_own_measured_residual_only",
+                    "test_separate_native_model_output_and_equal_information_controls"}
+          skipped={test.id().rsplit(".",1)[-1] for test,why in result.skipped}
+          assert result.wasSuccessful(), "V31V_COOP_WINDOWS_DISCOVERED_REGRESSION_FAILED"
+          assert result.testsRun==139, "V31V_COOP_WINDOWS_TEST_DISCOVERY_INCOMPLETE"
+          assert len(result.skipped)==4 and skipped==expected, "V31V_COOP_WINDOWS_UNAUTHORIZED_TEST_SKIP"
+          assert all("POSIX" in why for test,why in result.skipped), "V31V_COOP_WINDOWS_SKIP_REASON_DRIFT"
+          print("V31V_COOP_WINDOWS_139_DISCOVERED_135_EXECUTED_4_RESOURCE_UNSUPPORTED")
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo V31V_COOP_WINDOWS_SCOPED_REGRESSION_PASS_RESOURCE_UNSUPPORTED
