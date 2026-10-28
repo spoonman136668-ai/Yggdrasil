@@ -43,3 +43,14 @@ class AsymmetricProbeTests(unittest.TestCase):
             cell.observe(INPUTS[1],True)
         with self.assertRaises(ValueError):
             trial(15)
+
+    def test_information_gain_advantage_and_control_equivalence(self):
+        cases=run()["cases"]
+        for i,expected in enumerate(((8,6),(8,6))):
+            active=sum(r["steps"][i]["scores"]["local_active"]["correct"] for r in cases)
+            fixed=sum(r["steps"][i]["scores"]["local_fixed"]["correct"] for r in cases)
+            self.assertEqual((active,fixed),expected)
+            self.assertEqual(sum(r["steps"][i]["scores"]["local_active"]["wrong"] for r in cases),0)
+            self.assertEqual(sum(r["steps"][i]["scores"]["local_fixed"]["wrong"] for r in cases),0)
+        self.assertEqual([r["steps"][1]["candidate_counts"]["local_active"] for r in cases],[1]*4)
+        self.assertEqual([r["steps"][1]["candidate_counts"]["local_fixed"] for r in cases],[1,1,2,2])
