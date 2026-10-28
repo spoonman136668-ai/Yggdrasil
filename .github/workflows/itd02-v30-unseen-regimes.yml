@@ -1,0 +1,80 @@
+name: ITD-02 V30 frozen V26 unseen synthetic reward law qualification
+on:
+  push:
+    branches:
+      - research/itd02-v30-heldout-regime-discrimination-20261028
+permissions:
+  contents: read
+jobs:
+  v30-holdout:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Host independent exact bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify V30 prereg preceding code and original source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor e75d84f2cbf5f898aa3aa273c656e25a09780f30 "$GITHUB_SHA"
+          git merge-base --is-ancestor 0588b08f13e1d8b3fbe5fb23da74af56b031e438 "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+          test "$(git hash-object yggdrasil/itd02_local_ring_memory_dev.py)" = 1db0835d5c99456bcf99a013d4836f49314a9d39
+          test "$(git hash-object yggdrasil/itd02_v22_shared_context_ring_dev.py)" = 73dc4d7580f7f0b8ed8de1119b06504c44b0818f
+      - name: Run untouched V26 on three heldout reward mappings and control streams
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v30"
+          if ! PYTHONPATH=. python -B research/itd02_v30_heldout_regime_audit.py > "$RUNNER_TEMP/v30/results.json" 2> "$RUNNER_TEMP/v30/errors.log"; then
+            cat "$RUNNER_TEMP/v30/errors.log"
+            exit 1
+          fi
+          python - "$RUNNER_TEMP/v30/results.json" <<'PY'
+          import json,sys
+          d=json.load(open(sys.argv[1]))
+          assert d["schema"]=="ygg.itd02.v30.heldout_regime_frozen_v26.source_only.v1"
+          assert d["candidate_scalars"]==326 and len(d["streams"])==6
+          assert d["action_regret_measured"] and not d["scientific_first_use"]
+          assert not d["original_world_training"]
+          assert len(d["canonical_public_evidence_sha256"])==64
+          assert all(s["source_sha_unchanged"] and s["checkpoint_bytes"]<=12288 for s in d["streams"])
+          assert d["classification"] in ("V30_FROZEN_DETECTOR_UNSEEN_FAMILY_NO_GO__NO_SCIENCE",
+               "V30_FROZEN_DETECTOR_STRONG_CONTROL_NO_GO__NO_SCIENCE")
+          print("V30_UNSEEN_SYNTHETIC_FAMILY_ONLY__NOT_INDEPENDENT_WORLD_SCIENCE")
+          PY
+          cat "$RUNNER_TEMP/v30/results.json"
+      - name: Keep frozen V29 V26 and original source compatibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v26_calibrated_return.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v25_unlabeled_return_dev.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_native_task_bridge_dev.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_local_ring_memory_dev.py' -v
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Preserve exact host reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-v30-unseen-mapping-${{ matrix.os }}
+          path: ${{ runner.temp }}/v30/*
+          retention-days: 7
+          if-no-files-found: warn
