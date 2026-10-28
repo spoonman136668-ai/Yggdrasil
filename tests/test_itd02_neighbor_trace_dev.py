@@ -5,7 +5,7 @@ from yggdrasil.itd02_local_ring_memory_dev import ACTIONS,ACTION_SITES,OBSERVATI
 
 class NeighborTraceTests(unittest.TestCase):
     def test_reward_site_traces_react_to_two_neighbor_bits(self):
-        self.assertTrue(SCHEMA.endswith("source_only.v8"))
+        self.assertTrue(SCHEMA.endswith("source_only.v12"))
         self.assertEqual(CELLS,8)
         for site in ACTION_SITES:
             readings={}
@@ -30,7 +30,14 @@ class NeighborTraceTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"FITTING_FORBIDDEN"):
             m.accept_public_transition("Backup","Nothing",10,learning=True)
         self.assertEqual(frozen,m.cell_trace)
+        # V12 explicitly retains inference trace updates, not weight updates.
+        bits=m._task_bits("LRV","Backup",m.transitions%2)
+        expected=[max(-1.,min(1.,.75*frozen[i]
+                    +.125*(2*bits[RING[i][0]]-1)
+                    +.125*(2*bits[RING[i][1]]-1))) for i in range(CELLS)]
         m.accept_public_transition("Backup","Nothing",10,learning=False,terminal=True)
-        self.assertEqual(frozen,m.cell_trace)
+        self.assertEqual(expected,m.cell_trace)
+        self.assertEqual(ids,m.model_identities())
+        self.assertEqual(m.checkpoint(),NativeTaskRingBridgeDev.restore(m.checkpoint()).checkpoint())
 
 if __name__=="__main__":unittest.main()

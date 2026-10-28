@@ -9,7 +9,7 @@ from yggdrasil.itd02_local_ring_memory_dev import ACTIONS, CELLS
 
 class LocalRegisterTests(unittest.TestCase):
     def test_real_retention_per_public_transition_and_frozen_veto(self):
-        self.assertEqual(SCHEMA,"ygg.itd02.native_task_ring_bridge.source_only.v8")
+        self.assertEqual(SCHEMA,"ygg.itd02.native_task_ring_bridge.source_only.v12")
         m=NativeTaskRingBridgeDev()
         self.assertEqual(m.cell_trace,[0.]*CELLS)
         m.start_observation("LRV")
@@ -32,8 +32,16 @@ class LocalRegisterTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"FITTING_FORBIDDEN"):
             m.accept_public_transition("GoForward","Nothing",10,learning=True)
         self.assertEqual(before,m.cell_trace)
+        # V12 advances bounded public inference traces even with frozen learning.
+        # The genuine native and local-memory parameter identities must not move.
+        bits=m._task_bits("Nothing","GoForward",m.transitions%2)
+        expected=[max(-1.,min(1.,.75*before[i]
+                    +.125*(2*bits[RING[i][0]]-1)
+                    +.125*(2*bits[RING[i][1]]-1))) for i in range(CELLS)]
         m.accept_public_transition("GoForward","Nothing",0,learning=False,terminal=True)
-        self.assertEqual(before,m.cell_trace)
+        self.assertEqual(expected,m.cell_trace)
+        self.assertEqual(ids,m.model_identities())
+        self.assertEqual(m.checkpoint(),NativeTaskRingBridgeDev.restore(m.checkpoint()).checkpoint())
 
     def test_v4_roundtrip_and_historical_v3_schema_denial(self):
         m=NativeTaskRingBridgeDev()
