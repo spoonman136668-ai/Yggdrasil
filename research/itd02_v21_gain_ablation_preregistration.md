@@ -1,0 +1,7 @@
+# ITD-02 V21 locked causal gain ablation — 2026-10-28
+
+Parent: V20 source-only PR #604 exact f5fd77ef7b56c84cf7d8e848a05eee3e2411e56f. Historical negatives preserved. First perform zero-code-change independent split-aware ablation on the original V20 learner before suggesting any new plasticity rule.
+
+Hypothesis: persistent relay gain plasticity often harms heldout nonlinear reward prediction after the selected reward-head weights have learned. For each of 36 leave-one-public-history-out folds and both additive/nonadditive toy families, train V20 on 35 contexts for the original fixed 16 epochs. Evaluate heldout target with the exact same fitted head and native weights (A) learned relay gains, (B) original initial gains restored for inference only, (C) original V18 frozen intermediates, (D) strong public interaction ridge. Record per-case signed and absolute prediction errors, number of cases reset improves/worsens, and gain magnitude. No post-hoc threshold tuning.
+
+Go only to a newly preregistered causal mechanism if a positive pattern emerges and can be explained by actual local learned credit, not decoder choice. Explicit limitation: this is a source-only toy; it does not prove original-world learning, novel-family transfer, native autonomy, retail performance, or favorable comparison with conventional learners. Do not change original V20, accepted refs, PRs, FSA, G29, FORGE or controller.
