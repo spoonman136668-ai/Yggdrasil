@@ -1,0 +1,105 @@
+name: ITD-02 V29 synthetic selected-feedback information sufficiency witness
+on:
+  push:
+    branches:
+      - research/itd02-v29-observational-equivalence-20261028
+permissions:
+  contents: read
+jobs:
+  v29-identifiability:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Cross-platform exact Git line endings
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Checkout exact source without credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify V29 frozen prereg-before-code and no original source drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor e226cf23ef7c130f7edb72822052e88d52059766 "$GITHUB_SHA"
+          git merge-base --is-ancestor 752e708080fa7a2e6b5c9e30ad5cff7274ae3ba6 "$GITHUB_SHA"
+          git merge-base --is-ancestor a877e458bd517ca02cf80d2ca7198643367d5c52 "$GITHUB_SHA"
+          git merge-base --is-ancestor 22221f2b1164f70fa15cf513c763908b12e4e970 "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+          test "$(git hash-object yggdrasil/itd02_local_ring_memory_dev.py)" = 1db0835d5c99456bcf99a013d4836f49314a9d39
+          test "$(git hash-object yggdrasil/itd02_v22_shared_context_ring_dev.py)" = 73dc4d7580f7f0b8ed8de1119b06504c44b0818f
+          test "$(git hash-object yggdrasil/itd02_v24_protected_dual_memory_dev.py)" = 9ef95a28e9060dd79105f51122d527351756a1e0
+          test "$(git hash-object yggdrasil/itd02_v25_unlabeled_return_dev.py)" = f90e5029b121cbfc2e361f9e0941985eb1e69e3d
+          test "$(git hash-object yggdrasil/itd02_v26_calibrated_return_dev.py)" = 8a0417d34c6ba94a4eaef33d767da14a4a5c9709
+          test "$(git hash-object research/itd02_v28_context_diverse_shadow_audit.py)" = 844efa1e5a618f770f9ea4b642f1fb519a85953a
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: V29 frozen toy reward/matched histories unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v29_observational_equivalence.py' -v
+      - name: Run V29 paired worlds, offline regret and separate 13th public probe
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v29"
+          PYTHONPATH=. python -B research/itd02_v29_observational_equivalence_audit.py > "$RUNNER_TEMP/v29/evidence.json" 2> "$RUNNER_TEMP/v29/error.log" || { cat "$RUNNER_TEMP/v29/error.log"; exit 1; }
+          python - "$RUNNER_TEMP/v29/evidence.json" <<'PY'
+          import json,sys
+          d=json.load(open(sys.argv[1],encoding='utf-8'))
+          assert d["schema"]=="ygg.itd02.v29.observational_equivalence.source_only.v1"
+          assert d["source_only"] and not d["scientific_first_use"]
+          assert not d["original_world_training"] and not d["new_native_exploration_policy"]
+          assert d["original_native_source_unchanged"]
+          assert d["source_pretraining_selected_rewards"]==576
+          assert d["common_selected_rewards"]==12
+          assert d["changed_optimal_actions"]==12
+          assert d["unobserved_second_action_counterfactuals"]==24
+          assert d["model_and_full_matrix_rls_state_identical_before_probe"]
+          assert d["strictly_positive_theoretical_joint_regret_lower_bound"]>0
+          assert d["probe_separates_worlds"]
+          assert d["world_manifest_sha256"]["A"]==d["world_manifest_sha256"]["B0"]
+          assert d["world_manifest_sha256"]["A"]!=d["world_manifest_sha256"]["B"]
+          assert d["classification"]=="V29_SYNTHETIC_PUBLIC_INFORMATION_INSUFFICIENCY_WITNESSED__NO_SCIENCE"
+          print("V29_CLASSIFICATION",d["classification"])
+          print("V29_CANONICAL_CASE_POLICY_SHA256",d["canonical_case_policy_sha256"])
+          print("V29_COMMON_PUBLIC_SHA256",d["observed_public_sha256"])
+          print("V29_MIN_JOINT_REGRET",d["strictly_positive_theoretical_joint_regret_lower_bound"])
+          print("V29_MODELS_REGRET",json.dumps(d["paired_regrets"],sort_keys=True))
+          print("V29_SEPARATE_PROBE_REWARDS",json.dumps(d["probe_rewards"],sort_keys=True))
+          PY
+      - name: One bounded inherited V26/V25/V24/V22 native safety regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v26_calibrated_return.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v25_unlabeled_return_dev.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v24_protected_dual_memory.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v22_shared_context_ring.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_native_task_bridge_dev.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_local_ring_memory_dev.py' -v
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo V29_SOURCE_ONLY_IDENTIFIABILITY_WITNESS_NOT_MODEL_PERFORMANCE
+      - name: Retain host-specific evidence and failure log
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-v29-information-witness-${{ matrix.os }}
+          path: ${{ runner.temp }}/v29/*
+          retention-days: 7
+          if-no-files-found: warn
