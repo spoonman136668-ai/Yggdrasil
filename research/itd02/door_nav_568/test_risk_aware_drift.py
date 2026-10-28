@@ -49,3 +49,17 @@ class RiskAwareDriftTests(unittest.TestCase):
         for row in run()["runs"]:
             self.assertEqual(row["stages"][0]["new_public_observations"],1)
             self.assertIn(row["relation"],("same","complement","unrelated"))
+
+    def test_active_probing_must_not_claim_efficiency_gain(self):
+        rows=run()["runs"]
+        for row in rows:
+            for stage in row["stages"]:
+                self.assertEqual(stage["scores"]["native_active"],
+                                 stage["scores"]["native_fixed"])
+                self.assertEqual(stage["probe_paths"]["native_active"],
+                                 stage["probe_paths"]["native_fixed"])
+        unrelated=[r for r in rows if r["relation"]=="unrelated"]
+        final=[r["stages"][2]["scores"]["native_active"] for r in unrelated]
+        self.assertEqual(sum(r["correct"] for r in final),48)
+        self.assertEqual(sum(r["wrong"] for r in final),64)
+        self.assertEqual(sum(r["abstentions"] for r in final),112)
