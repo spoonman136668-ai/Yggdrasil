@@ -1,0 +1,7 @@
+# V31I preregistered checkpoint cold-restart custody
+
+Exact V31H parent `a6e54f8cb6c0ff50976b2c748697990bc74d599f`. Freeze before executable. Goal: externally serialize and cold-restore the existing V31D public-only selector without altering its decisions, native banks or Q1–Q3 reserved holdout.
+
+Use deterministic canonical envelope with body comprising dual-bank V24 checkpoint, fast selector flag, prior 3 actual public residual observations, prior 3 selected public context identities, selector count; SHA-256 of canonical body. Restore MUST reject altered digest, malformed sizes, invalid selectors, noncanonical bytes and impossible history lengths. Validate exact uninterrupted versus interrupted/restarted public action decisions, bank parameter hashes, error and subsequent online state on original development sequences only. Do not edit V31D model logic or source-memory weights. Current V31D's independent public history is necessary to restore exactly, unlike simply restoring V24 bank.
+
+Require both Windows+Linux host-identical canonical behavioral hashes, scoped native tests and zero holdout calls. Explicit checkpoint <=12288 bytes; exceedance is NO-GO rather than relaxing budget. A passing test is engineering custody, not native scientific acceptance. Communication accounting and complete inherited V30→V12 regression remain separate. No merge, first-use, FORGE/CKB-plane/G29 or promotion.
