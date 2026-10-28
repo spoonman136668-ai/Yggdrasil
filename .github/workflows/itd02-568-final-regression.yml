@@ -1,0 +1,94 @@
+name: ITD-02 568 exact-foundation final regression
+on:
+  push:
+    branches:
+      - qualification/itd02-568-full-regression-20261027
+permissions:
+  contents: read
+jobs:
+  final-regression:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Keep exact Git source bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          clean: true
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify pinned repaired source and one-file harness delta
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=c9ed651c6d9ae2d0a551909c1fa60e2fb39185d8
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-list --count "$BASE..HEAD")" = 1
+          git diff --name-only "$BASE" HEAD > changed.txt
+          grep -Fxq '.github/workflows/itd02-568-final-regression.yml' changed.txt
+          test "$(wc -l < changed.txt | tr -d ' ')" = 1
+          rm changed.txt
+          test -z "$(git status --porcelain)"
+          echo "FOUNDATION_SHA=$BASE"
+          echo "HARNESS_SHA=$GITHUB_SHA"
+      - name: Final applicable repository and source-free integration regression
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os, platform, pathlib, time, unittest
+          start = time.perf_counter()
+          modules = sorted(pathlib.Path("tests").glob("test_*.py"))
+          if not modules:
+              raise SystemExit("NO_TEST_MODULES")
+          exclusions = {}
+          if os.name == "nt":
+              exclusions = {x:"EXISTING_UNIX_ONLY_RESOURCE_IMPORT" for x in (
+                  "test_free_fanout_sidecar.py",
+                  "test_nci04g6_native_credit.py",
+                  "test_nci04g7_source_producer.py")}
+          for name in exclusions:
+              if not (pathlib.Path("tests")/name).exists():
+                  raise SystemExit("MISSING_DOCUMENTED_EXCLUSION_"+name)
+          suite = unittest.TestSuite()
+          for path in modules:
+              if path.name not in exclusions:
+                  suite.addTests(unittest.defaultTestLoader.discover("tests", pattern=path.name))
+          result = unittest.TextTestRunner(verbosity=1).run(suite)
+          print("FINAL_REPOSITORY_REGRESSION="+json.dumps({
+              "candidate_foundation_sha":"c9ed651c6d9ae2d0a551909c1fa60e2fb39185d8",
+              "qualification_harness_sha":os.environ["GITHUB_SHA"],
+              "platform":platform.platform(),
+              "modules":len(modules),"excluded":exclusions,
+              "tests_run":result.testsRun,"failures":len(result.failures),
+              "errors":len(result.errors),"passed":result.wasSuccessful(),
+              "elapsed_seconds":round(time.perf_counter()-start,3),
+              "protected_first_use":False},sort_keys=True))
+          if not result.wasSuccessful() or result.testsRun < 40:
+              raise SystemExit("FULL_REGRESSION_FAIL_CLOSED")
+          secondary = unittest.defaultTestLoader.discover("research/itd02/door_nav_568", pattern="test_*.py")
+          r2 = unittest.TextTestRunner(verbosity=1).run(secondary)
+          print("FINAL_SOURCE_FREE_INTEGRATION="+json.dumps({"tests_run":r2.testsRun,
+              "failures":len(r2.failures),"errors":len(r2.errors),
+              "passed":r2.wasSuccessful()},sort_keys=True))
+          if not r2.wasSuccessful() or r2.testsRun < 4:
+              raise SystemExit("SOURCE_FREE_INTEGRATION_FAIL_CLOSED")
+          PY
+      - name: Assert no untracked or modified source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "$(git status --porcelain)"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
