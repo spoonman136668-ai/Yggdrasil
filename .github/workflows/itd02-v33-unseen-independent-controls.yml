@@ -1,0 +1,119 @@
+name: ITD-02 V33 new synthetic worlds with independently choosing matched-budget controls
+on:
+  push:
+    branches:
+      - research/itd02-v33-prospective-unseen-mappings-20261028
+permissions:
+  contents: read
+jobs:
+  v33-prospective-holdout:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Exact Git newline policy on both hosts
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Checkout exact run SHA with no persisted credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Chronology, protected source and no original native drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 446af1295c5c318c4c520f467b767d6ed700c9fe "$GITHUB_SHA"
+          git merge-base --is-ancestor 07ea08ada05a09008a055d077ea4edb996f2b237 "$GITHUB_SHA"
+          git merge-base --is-ancestor a5e1b9b78e6bbf76f1e83a229fabd8b10695219f "$GITHUB_SHA"
+          git merge-base --is-ancestor c1ae7b6bac56f705dc6c935a0194c80190367f54 "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+          test "$(git hash-object yggdrasil/itd02_local_ring_memory_dev.py)" = 1db0835d5c99456bcf99a013d4836f49314a9d39
+          test "$(git hash-object yggdrasil/itd02_v22_shared_context_ring_dev.py)" = 73dc4d7580f7f0b8ed8de1119b06504c44b0818f
+          test "$(git hash-object yggdrasil/itd02_v24_protected_dual_memory_dev.py)" = 9ef95a28e9060dd79105f51122d527351756a1e0
+          test "$(git hash-object yggdrasil/itd02_v25_unlabeled_return_dev.py)" = f90e5029b121cbfc2e361f9e0941985eb1e69e3d
+          test "$(git hash-object yggdrasil/itd02_v26_calibrated_return_dev.py)" = 8a0417d34c6ba94a4eaef33d767da14a4a5c9709
+          test "$(git hash-object yggdrasil/itd02_v30_public_probe_policy_dev.py)" = bcc1f0b4e2ec0fcd8b2af69dfb0e6d4d2ca27a4a
+          test "$(git hash-object yggdrasil/itd02_v32_source_surprise_probation_dev.py)" = 9252b554c25bfdc5b6adb733f94b0c3d2b2ec92e
+          test "$(git hash-object research/itd02_v32_source_surprise_probation_audit.py)" = a300f3ff6512d4266131092344a5443f00062511
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Focused new world/independent chooser/frozen readout controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v33_unseen_family_independent_controls.py' -v
+          echo V33_FOCUSED_ENGINEERING_TESTS_PASS_NOT_SCIENCE
+      - name: V33 28-arm prospective world/chooser/regret and source return audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v33"
+          if ! PYTHONPATH=. python -B research/itd02_v33_unseen_family_independent_controls_audit.py > "$RUNNER_TEMP/v33/evidence.json" 2> "$RUNNER_TEMP/v33/stderr.txt"; then
+            cat "$RUNNER_TEMP/v33/stderr.txt"
+            exit 1
+          fi
+          python - "$RUNNER_TEMP/v33/evidence.json" <<'PY'
+          import json,sys
+          d=json.load(open(sys.argv[1],encoding="utf-8"))
+          assert d["schema"]=="ygg.itd02.v33.prospective_unseen_action_control.source_only.v1"
+          assert not d["scientific_first_use"] and not d["original_world_training"]
+          assert not d["unknown_real_world_generalization"] and not d["native_learned_selector"]
+          assert d["source_only"] and d["worlds"]==["A0","U1","U2","U3"]
+          assert len(d["independent_chooser_modes"])==7
+          assert d["independent_arm_count"]==28
+          assert d["source_training_selected_rewards"]==576
+          assert d["base_selected_reward_budget"]==12 and d["extra_chooser_budget"]==3
+          assert d["source_return_selected_rewards"]==12
+          assert d["native_stored_learned_scalars"]==326 and d["native_fast_trainable_scalars"]==163
+          assert len(set(d["frozen_world_manifest_sha256"].values()))==4
+          assert len(d["canonical_all_selected_feedback_and_regret_sha256"])==64
+          assert len(d["rows"])==28
+          assert all(r["checkpoint_bytes"] is None or r["checkpoint_bytes"]<=12288 for r in d["rows"])
+          assert d["classification"] in {
+            "V33_UNSEEN_WORLD_LEARNING_GAIN_NOT_ESTABLISHED__NO_SCIENCE",
+            "V33_RETURN_OR_SOURCE_RETENTION_FAILED__NO_SCIENCE",
+            "V33_HOLDOUT_STRONG_CONTROL_GAIN_NOT_ESTABLISHED__NO_SCIENCE",
+            "V33_BOUNDED_SYNTHETIC_UNSEEN_FAMILY_ENGINEERING_POSITIVE__NO_SCIENCE"}
+          print("V33_CLASSIFICATION",d["classification"])
+          print("V33_CANONICAL_ALL_SELECTED_SHA",d["canonical_all_selected_feedback_and_regret_sha256"])
+          print("V33_FROZEN_FAMILY_MANIFEST_SHA",json.dumps(d["frozen_world_manifest_sha256"],sort_keys=True))
+          print("V33_PREDECLARED_GATES",json.dumps(d["predeclared_gates"],sort_keys=True))
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Inherited focused V32 through V22 original native regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v32_source_surprise_probation.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v31_credit_readout_attribution.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v30_public_probe_policy.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v29_observational_equivalence.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v26_calibrated_return.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v25_unlabeled_return_dev.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v24_protected_dual_memory.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v22_shared_context_ring.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_native_task_bridge_dev.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_local_ring_memory_dev.py' -v
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo V33_SOURCE_ONLY_SAFETY_PASS_NOT_SCIENCE
+      - name: Retain independent host evidence and diagnostic logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-v33-prospective-unseen-${{ matrix.os }}
+          path: ${{ runner.temp }}/v33/*
+          retention-days: 7
+          if-no-files-found: warn
