@@ -1,6 +1,7 @@
 import copy
 import importlib.util
 import json
+import os
 import pathlib
 import tempfile
 import unittest
@@ -159,6 +160,7 @@ class RuntimeValidationTests(unittest.TestCase):
         target.write_text(source, encoding="utf-8")
         return td, root
 
+    @unittest.skipIf(os.name != "posix", "POSIX-only resource-counted candidate execution")
     def test_missing_result_rejected(self):
         m = base_manifest()
         source = "import sys\nsys.exit(0)\n"
@@ -169,6 +171,7 @@ class RuntimeValidationTests(unittest.TestCase):
                 ff.run_candidate(m, root, "smoke-a", out)
         self.assertIn("FREE_FANOUT_RESULT_MISSING", str(ctx.exception))
 
+    @unittest.skipIf(os.name != "posix", "POSIX-only resource-counted candidate execution")
     def test_mismatched_candidate_id_rejected(self):
         m = base_manifest()
         source = """import json, pathlib, sys
@@ -181,6 +184,24 @@ out.write_text(json.dumps({"candidate_id": "wrong"}) + "\\n", encoding="utf-8")
             with self.assertRaises(ff.FanoutError) as ctx:
                 ff.run_candidate(m, root, "smoke-a", out)
         self.assertIn("FREE_FANOUT_RESULT_ID_MISMATCH", str(ctx.exception))
+
+    def test_unavailable_resource_metrics_fail_closed_before_dispatch(self):
+        # Validate the same guard on Linux as on Windows, without a fake reading.
+        m = base_manifest()
+        td, root = self.make_package("raise RuntimeError('MUST_NOT_EXECUTE')\n")
+        self.addCleanup(td.cleanup)
+        actual_resource = ff.resource
+        try:
+            ff.resource = None
+            with tempfile.TemporaryDirectory() as output_parent:
+                output = pathlib.Path(output_parent) / "candidate-output"
+                with self.assertRaises(ff.FanoutError) as ctx:
+                    ff.run_candidate(m, root, "smoke-a", output)
+                self.assertEqual(
+                    "FREE_FANOUT_RESOURCE_ACCOUNTING_UNAVAILABLE", str(ctx.exception))
+                self.assertFalse(output.exists(), "candidate output created before metering admission")
+        finally:
+            ff.resource = actual_resource
 
     def test_aggregate_rejects_missing_candidate_envelope(self):
         m = base_manifest()
