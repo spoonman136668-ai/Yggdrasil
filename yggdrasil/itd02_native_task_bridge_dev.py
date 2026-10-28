@@ -202,15 +202,15 @@ class NativeTaskRingBridgeDev:
                     prev = self.action_credit[index][word]
                     self.action_credit[index][word] = max(-1., min(1.,
                         .75 * prev + .25 * (target - estimate)))
-            if learning:
-                # Original public input bits only. Each cell updates its own
-                # retained register; no oracle or other cell's state enters.
-                self.cell_trace = [
-                    max(-1., min(1., .75 * self.cell_trace[i]
-                                 + .125 * (2 * before[RING[i][0]] - 1)
-                                 + .125 * (2 * before[RING[i][1]] - 1)))
-                    for i in range(CELLS)
-                ]
+            # This bounded LOCAL TRACE is public inference state, not a
+            # fitted parameter. Advance on every accepted public event,
+            # including frozen inference, using the original identical rule.
+            self.cell_trace = [
+                max(-1., min(1., .75 * self.cell_trace[i]
+                             + .125 * (2 * before[RING[i][0]] - 1)
+                             + .125 * (2 * before[RING[i][1]] - 1)))
+                for i in range(CELLS)
+            ]
             self.transitions += 1
             self._observation = None
         except Exception:
