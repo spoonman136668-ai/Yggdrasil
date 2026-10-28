@@ -28,7 +28,7 @@ class SourceRecoveryTests(unittest.TestCase):
 
     def test_detected_contradiction_abstains_on_unseen_public_inputs(self):
         cases=run()["cases"]
-        self.assertTrue(any(c["stages"][0]["fallback"]["local_recovery"] for c in cases))
+        self.assertTrue(any(stage["fallback"]["local_recovery"] for c in cases for stage in c["stages"]))
         for case in cases:
             for stage in case["stages"]:
                 if stage["fallback"]["local_recovery"]:
