@@ -45,3 +45,17 @@ class HeldoutErrorCalibrationTests(unittest.TestCase):
 
     def test_source_custody_training_is_bounded(self):
         self.assertEqual(len(episode(EmpiricalLocalProbe,3)),2)
+
+    def test_conservative_risk_gate_has_zero_coverage(self):
+        folds=run()["folds"]
+        for group in (True,False):
+            rows=[r for r in folds if r["source_member_diagnostic"]==group]
+            self.assertEqual(len(rows),4 if group else 12)
+            for stage in (0,1):
+                results=[r["arms"]["local"]["scores"][stage] for r in rows]
+                self.assertEqual(sum(r["calibrated"]["correct"] for r in results),0)
+                self.assertEqual(sum(r["calibrated"]["wrong"] for r in results),0)
+                self.assertEqual(sum(r["calibrated"]["abstentions"] for r in results),
+                                 (3-stage)*len(rows))
+        self.assertEqual(sum(r["arms"]["local"]["scores"][1]["raw"]["wrong"]
+                             for r in folds if not r["source_member_diagnostic"]),16)
