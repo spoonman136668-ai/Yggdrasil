@@ -17,7 +17,7 @@ from .itd02_local_ring_memory_dev import (
     _canonical, _finite,
 )
 
-SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v2"
+SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v3"
 REWARDS = (-3, 0, 10)  # source-declared observable labels; NOT source reward law
 MAX_BYTES = 65536
 RING = tuple(((i - 1) % CELLS, (i + 1) % CELLS) for i in range(CELLS))
@@ -66,6 +66,7 @@ class NativeTaskRingBridgeDev:
         self._frozen_native = None
         self.transitions = 0
         self.score_calls = 0
+        self.reward_site_bias = [0.] * len(REWARDS)
 
     def start_observation(self, observation):
         if self._observation is not None or self.memory.pending:
@@ -93,7 +94,8 @@ class NativeTaskRingBridgeDev:
         for action in ACTIONS:
             # Public action-conditioning through native own/neighbor cells.
             predictions = self.native.predict(public_bits(self._observation, action))
-            scores.append(sum(float(value) * predictions[ACTION_SITES[index]]
+            scores.append(sum(float(value) * max(0., min(1.,
+                              predictions[ACTION_SITES[index]] + self.reward_site_bias[index]))
                               for index, value in enumerate(REWARDS)))
         self.score_calls += 1
         return scores
@@ -127,17 +129,27 @@ class NativeTaskRingBridgeDev:
             if self._native_identity() != self._frozen_native or (
                     self.memory.parameter_sha256() != self.memory._frozen_hash):
                 raise ValueError("FROZEN_WEIGHT_IDENTITY_DRIFT")
+        bias_before = list(self.reward_site_bias)
+        predicted_sites = ([self.native.predict(before)[site]
+                            for site in ACTION_SITES] if learning else None)
         native_snap = self.native.snapshot()
         memory_snap = self.memory.checkpoint()
         try:
             if learning:
                 self.native.observe(before, after)
             self.memory.feedback(action, reward, learning=learning, terminal=terminal)
+            if learning:
+                for k in range(len(REWARDS)):
+                    target = float(reward == REWARDS[k])
+                    self.reward_site_bias[k] = max(-1., min(1.,
+                        .875 * self.reward_site_bias[k] + .125 *
+                        (target - predicted_sites[k])))
             self.transitions += 1
             self._observation = None
         except Exception:
             self.native = LocalTaskRuntime.restore(native_snap)
             self.memory = NativeRingMemoryDev.restore(memory_snap)
+            self.reward_site_bias = bias_before
             raise
 
     def reset_episode(self):
@@ -162,7 +174,8 @@ class NativeTaskRingBridgeDev:
                 "memory": json.loads(self.memory.checkpoint()),
                 "observation": self._observation,
                 "transitions": self.transitions, "score_calls": self.score_calls,
-                "frozen_native_sha256": self._frozen_native}
+                "frozen_native_sha256": self._frozen_native,
+                "reward_site_bias": self.reward_site_bias}
         data = _canonical(body)
         if len(data) > MAX_BYTES:
             raise ValueError("BRIDGE_CHECKPOINT_OVER_BUDGET")
@@ -181,7 +194,8 @@ class NativeTaskRingBridgeDev:
                 raise ValueError("BRIDGE_CHECKPOINT_DIGEST")
             if type(body) is not dict or set(body) != {
                     "schema", "native", "memory", "observation",
-                    "transitions", "score_calls", "frozen_native_sha256"} or body["schema"] != SCHEMA:
+                    "transitions", "score_calls", "frozen_native_sha256",
+                    "reward_site_bias"} or body["schema"] != SCHEMA:
                 raise ValueError("BRIDGE_CHECKPOINT_SCHEMA")
             if (body["observation"] is not None and
                     (type(body["observation"]) is not str or
@@ -198,6 +212,12 @@ class NativeTaskRingBridgeDev:
             obj._observation = body["observation"]
             obj.transitions = body["transitions"]
             obj.score_calls = body["score_calls"]
+            bias = body["reward_site_bias"]
+            if (type(bias) is not list or len(bias) != len(REWARDS) or
+                    any(type(v) not in (int,float) or not math.isfinite(v)
+                        or not -1. <= v <= 1. for v in bias)):
+                raise ValueError("BRIDGE_REWARD_SITE_BIAS_INVALID")
+            obj.reward_site_bias = [float(v) for v in bias]
             frozen_native = body["frozen_native_sha256"]
             if (frozen_native is None) != (memory._frozen_hash is None):
                 raise ValueError("BRIDGE_FROZEN_MODE_MISMATCH")
