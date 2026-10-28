@@ -478,3 +478,89 @@ jobs:
           assert all(a['updates']==1200 and a['checkpoint_bytes']<8192 for a in results)
           PY
           test -z "$(git status --porcelain)"
+  aba-multiseed-holdout:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Held-out action schedules and task mappings with independently acting EMA
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,platform
+          from yggdrasil.itd02_local_ring_memory_dev import NativeRingMemoryDev,ACTIONS
+          from pathlib import Path
+          src=Path('yggdrasil/itd02_local_ring_memory_dev.py').read_text()
+          marker='recency_step = .7 * error /'
+          assert src.count(marker)==1
+          histories=('LRV','docked_LRV')
+          outcomes=[]
+          for mapping in (0,1):
+            for seed in (11,23,37,53,71,97):
+              for rate in ('.35','.7','1.0'):
+                namespace={'__name__':'isolated_holdout_'+rate.replace('.','_')}
+                exec(compile(src.replace(marker,'recency_step = '+rate+' * error /'),'<in_memory_holdout>','exec'),namespace)
+                Model=namespace['NativeRingMemoryDev']
+                native=Model()
+                ema={(h,a):0. for h in histories for a in ACTIONS}
+                correct_map=lambda regime,h: ('GoForward' if ((h=='LRV')==(regime=='A')) ^ bool(mapping) else 'Backup')
+                phases=[]
+                for ix,regime in enumerate(('A','B','A')):
+                  earned={'native':0.,'ema':0.}
+                  for n in range(200):
+                    # Different deterministic history order and probe phases, fixed across arms.
+                    h=histories[(n+seed+ix)%2]
+                    native.reset_episode();native.advance(h)
+                    native.feedback('TurnAround',0.);native.advance('Nothing')
+                    proposed=native.choose()
+                    probe=(n+seed)%5==0
+                    forced=ACTIONS[((n+seed)//5)%3]
+                    chosen=forced if probe else proposed
+                    rew=1. if chosen==correct_map(regime,h) else -1.
+                    native.feedback(chosen,rew,terminal=True)
+                    earned['native']+=rew
+                    emap=max(ACTIONS,key=lambda x:ema[(h,x)])
+                    selected=forced if probe else emap
+                    erew=1. if selected==correct_map(regime,h) else -1.
+                    ema[(h,selected)]+=.5*(erew-ema[(h,selected)])
+                    earned['ema']+=erew
+                  fitted=Model.restore(native.checkpoint())
+                  fitted.start_frozen_evaluation(fitted.parameter_sha256())
+                  frozen={}
+                  for h in histories:
+                    fitted.reset_episode();fitted.advance(h)
+                    fitted.feedback('TurnAround',0.,learning=False)
+                    fitted.advance('Nothing')
+                    choice=fitted.choose()
+                    fitted.feedback(choice,0.,learning=False,terminal=True)
+                    frozen[h]=choice
+                  phases.append({'regime':regime,'train_reward':earned,
+                    'native_correct':sum(frozen[h]==correct_map(regime,h) for h in histories),
+                    'ema_correct':sum(max(ACTIONS,key=lambda x:ema[(h,x)])==correct_map(regime,h) for h in histories)})
+                outcomes.append({'mapping':mapping,'seed':seed,'rate':rate,
+                    'phases':phases,'checkpoint_bytes':len(native.checkpoint())})
+          result={'schema':'itd02.aba.multiseed.holdout.v1',
+            'source_sha':'a39171a76d0d7817e3563682bb139a9d7ecf37c4',
+            'os':platform.platform(),'results':outcomes,'protected_world_steps':0,
+            'scientific_acceptance':False}
+          print('ABA_MULTISEED_HOLDOUT='+json.dumps(result,sort_keys=True))
+          assert len(outcomes)==36
+          assert all(x['checkpoint_bytes']<8192 for x in outcomes)
+          PY
+          test -z "$(git status --porcelain)"
