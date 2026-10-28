@@ -34,7 +34,8 @@ jobs:
           test "$(git hash-object yggdrasil/itd02_local_ring_memory_dev.py)" = 1db0835d5c99456bcf99a013d4836f49314a9d39
           test "$(git hash-object yggdrasil/itd02_v22_shared_context_ring_dev.py)" = 73dc4d7580f7f0b8ed8de1119b06504c44b0818f
           test ! -f research/itd02_v31_heldout_evaluator.py
-          test ! -f yggdrasil/itd02_v31_public_history_dev.py
+          test -f yggdrasil/itd02_v31_public_history_dev.py
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v31_public_history_dev.py' -v
           test ! -f research/itd02_v31_holdout_results.json
           test -z "$(git status --porcelain --untracked-files=all)"
-          echo V31_HOLDOUT_PREREG_ONLY_PASS_NO_CANDIDATE_OR_SCIENCE
+          echo V31_DEV_ONLY_CANDIDATE_SOURCE_PASS_HOLDOUT_NOT_TOUCHED
