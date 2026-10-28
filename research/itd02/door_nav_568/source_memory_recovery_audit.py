@@ -49,7 +49,7 @@ def trial(target):
             repetitions=2 if name!="source_only" else 1
             for _ in range(repetitions):
                 start=process_time_ns()
-                if key not in agent.observed or name!="source_only":
+                if (key not in agent.observed or name!="source_only") and (name!="source_only" or agent.remaining()>0):
                     agent.observe_target(key,truth(target,key))
                 cpu[name]+=process_time_ns()-start
         stages.append({
