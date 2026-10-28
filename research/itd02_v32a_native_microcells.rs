@@ -210,7 +210,7 @@ pub unsafe extern "C" fn v32a_save(p:*const Ring,out:*mut u8,len:usize)->i32{
     if p.is_null() || out.is_null(){return -1}
     if len!=SIZE{return -2}
     let r=&*p;
-    if !r.layout_ok() || r.pending {return -3}
+    if !r.layout_ok() {return -3}
     let mut data=Vec::with_capacity(SIZE);
     data.extend_from_slice(MAGIC);
     data.extend_from_slice(&r.update_calls.to_le_bytes());
