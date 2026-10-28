@@ -1,0 +1,87 @@
+name: ITD-02 V31J original edge-ledger audit (development only)
+on:
+  push:
+    branches: [research/itd02-v31j-edge-ledger-audit-20261028]
+permissions:
+  contents: read
+jobs:
+  executed-ring-ledger:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Frozen prereg first and exact original native source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor a5161885dc8b96f50205ddd9908799ed603b010e "$GITHUB_SHA"
+          test "$(git rev-parse a5161885dc8b96f50205ddd9908799ed603b010e^)" = 78df5918c785879895092ae8d2eeb677c9260638
+          test "$(git hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+          test "$(git hash-object yggdrasil/itd02_v17_neighbor_carried_learner_dev.py)" = 4e3c77797e66df3a26742d23d18f038644891e55
+          test "$(git hash-object yggdrasil/itd02_v22_shared_context_ring_dev.py)" = 73dc4d7580f7f0b8ed8de1119b06504c44b0818f
+          test -z "$(git diff --name-only 78df5918c785879895092ae8d2eeb677c9260638 "$GITHUB_SHA" -- yggdrasil)"
+          test ! -f research/itd02_v31_heldout_evaluator.py
+          git diff --name-only 78df5918c785879895092ae8d2eeb677c9260638 "$GITHUB_SHA" | sort > "$RUNNER_TEMP/actual-v31j-paths"
+          printf '%s\n' \
+            .github/workflows/itd02-v31j-edge-ledger.yml \
+            research/itd02_v31j_edge_ledger_preregistration.md \
+            research/itd02_v31j_executed_edge_ledger_audit.py | sort > "$RUNNER_TEMP/allowed-v31j-paths"
+          diff -u "$RUNNER_TEMP/allowed-v31j-paths" "$RUNNER_TEMP/actual-v31j-paths"
+      - name: Count executed ring scalar-hops against recorded counters
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v31j"
+          PYTHONPATH=. python -B research/itd02_v31j_executed_edge_ledger_audit.py > "$RUNNER_TEMP/v31j/audit.json"
+          python - "$RUNNER_TEMP/v31j/audit.json" <<'PY'
+          import json,sys
+          d=json.load(open(sys.argv[1],encoding='utf-8'))
+          assert d['classification'] in ('V31J_UNMETERED_RECOMPUTATION_FOUND__NO_SCIENCE','V31J_LEDGER_CONSISTENT__NO_SCIENCE')
+          assert d['events']==24 and d['continuous_and_cold_restart_identical']
+          assert not d['scientific_first_use'] and not d['reserved_q_holdout_evaluated']
+          assert not d['native_model_modified'] and not d['physical_transport_bytes_measured']
+          assert d['canonical_trace_sha256']=='84427bdfa27b0a43e30a699548877a9184413e62e0a6ec6de491fb5ed184b7ff'
+          assert d['checkpoint_sha256']=='0b03b83f999afdab24eb71805a24766fa6b98c069151d14bccfa949602b63c48'
+          print('V31J_LEDGER_EVIDENCE_ONLY_NO_SCIENCE')
+          PY
+          cat "$RUNNER_TEMP/v31j/audit.json"
+          PYTHONPATH=. python -B research/itd02_v31i_cold_restart_audit.py
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v26_calibrated_return.py' -v
+      - name: One complete inherited Python regression (Ubuntu)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Source immutability and no untracked files
+        if: always()
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Retain exact development-only evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-v31j-${{ matrix.os }}
+          path: ${{ runner.temp }}/v31j/*
+          retention-days: 7
+          if-no-files-found: warn
