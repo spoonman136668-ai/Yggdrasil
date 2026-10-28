@@ -1,67 +1,80 @@
 name: ITD-02 Door Navigation Source-Free Focused
-
 on:
   pull_request:
     paths:
       - 'research/itd02/door_nav_568/**'
       - '.github/workflows/itd02-door-nav-568.yml'
-
 permissions:
   contents: read
-
 jobs:
-  source-free-focused:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
+  final-native-integration:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
     steps:
-      - uses: actions/checkout@v4
-      - name: Focused source-free tests
-        run: python -m unittest discover -s research/itd02/door_nav_568 -p 'test_*.py' -v
-      - name: Emit matched replay versus scratch metrics
-        working-directory: research/itd02/door_nav_568
-        run: python replay_efficiency_benchmark.py
-      - name: Emit noisy replay false-restoration audit
-        working-directory: research/itd02/door_nav_568
-        run: python noisy_replay_audit.py
-      - name: Emit exhaustive corruption-policy comparison
-        working-directory: research/itd02/door_nav_568
-        run: python replay_corruption_comparison.py
-      - name: Emit weighted independent and correlated replay-noise results
-        working-directory: research/itd02/door_nav_568
-        run: python replay_noise_probabilities.py
-      - name: Emit matched public successor-corroboration comparison
-        working-directory: research/itd02/door_nav_568
-        run: python successor_comparison_benchmark.py
-      - name: Emit three-step online correction and retention outcome
-        working-directory: research/itd02/door_nav_568
-        run: python three_step_online_correction.py
-      - name: Emit repeated-regime collision and memory-pressure audit
-        working-directory: research/itd02/door_nav_568
-        run: python context_regime_stress_audit.py
-      - name: Emit public evidence-selected memory outcomes
-        working-directory: research/itd02/door_nav_568
-        run: python evidence_selection_audit.py
-
-      - name: Audit memory switches
-        working-directory: research/itd02/door_nav_568
-        run: python memory_selection_switch_audit.py
-
-      - name: Audit two-hop causal memory evidence
-        working-directory: research/itd02/door_nav_568
-        run: python two_hop_evidence_audit.py
-
-      - name: Audit learned informative causal probe selection
-        working-directory: research/itd02/door_nav_568
-        run: python selected_causal_probe_audit.py
-
-      - name: Audit adaptive probe retries and budgets
-        working-directory: research/itd02/door_nav_568
-        run: python adaptive_probe_audit.py
-
-      - name: Audit retained public probe exceptions
-        working-directory: research/itd02/door_nav_568
-        run: python remembered_probe_audit.py
-
-      - name: Audit retained public revalidation
-        working-directory: research/itd02/door_nav_568
-        run: python revalidation_audit.py
+      - name: Preserve Git-native line endings
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: c9ed651c6d9ae2d0a551909c1fa60e2fb39185d8
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact qualified source tree and execute final integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "c9ed651c6d9ae2d0a551909c1fa60e2fb39185d8"
+          test -z "$(git status --porcelain)"
+          python - <<'PY'
+          import json, os, pathlib, platform, time, unittest
+          started=time.perf_counter()
+          paths=sorted(pathlib.Path('tests').glob('test_*.py'))
+          if not paths: raise SystemExit('NO_REPOSITORY_TESTS')
+          exclusions={}
+          if os.name=='nt':
+              exclusions={x:'UNIX_ONLY_RESOURCE_IMPORT' for x in (
+                 'test_free_fanout_sidecar.py',
+                 'test_nci04g6_native_credit.py',
+                 'test_nci04g7_source_producer.py')}
+              if not all((pathlib.Path('tests')/x).is_file() for x in exclusions):
+                  raise SystemExit('EXPECTED_WINDOWS_EXCLUSION_MISSING')
+          suite=unittest.TestSuite()
+          for p in paths:
+              if p.name not in exclusions:
+                  suite.addTests(unittest.defaultTestLoader.discover('tests',pattern=p.name))
+          report=unittest.TextTestRunner(verbosity=1).run(suite)
+          print('FINAL_NATIVE_REGRESSION='+json.dumps({
+              'source_sha':'c9ed651c6d9ae2d0a551909c1fa60e2fb39185d8',
+              'harness_event_sha':os.environ['GITHUB_SHA'],
+              'os':platform.platform(),
+              'executed_module_count':len(paths)-len(exclusions),
+              'excluded':exclusions,
+              'tests_run':report.testsRun,'failures':len(report.failures),
+              'errors':len(report.errors),'success':report.wasSuccessful(),
+              'seconds':round(time.perf_counter()-started,3),
+              'scientific_first_use':False},sort_keys=True))
+          if report.testsRun<40 or not report.wasSuccessful():
+              raise SystemExit('FINAL_NATIVE_REGRESSION_FAILED')
+          tests=unittest.defaultTestLoader.discover('research/itd02/door_nav_568',pattern='test_*.py')
+          focused=unittest.TextTestRunner(verbosity=1).run(tests)
+          print('FINAL_ITD02_SOURCE_FREE='+json.dumps({
+              'source_sha':'c9ed651c6d9ae2d0a551909c1fa60e2fb39185d8','tests_run':focused.testsRun,
+              'errors':len(focused.errors),'failures':len(focused.failures),
+              'success':focused.wasSuccessful()},sort_keys=True))
+          if focused.testsRun<4 or not focused.wasSuccessful():
+              raise SystemExit('FINAL_ITD02_SOURCE_FREE_FAILED')
+          PY
+          test -z "$(git status --porcelain)"
+          test "$(git rev-parse HEAD)" = "c9ed651c6d9ae2d0a551909c1fa60e2fb39185d8"
