@@ -257,6 +257,7 @@ def run_family(family, frozen_source, observed, withheld):
     assert all(len(m.cell_weights)*HEAD_FEATURES+len(m.action_biases)==163
                for m in models.values())
     zero_shot = {}
+    zero_shot_predictions = {}
     retention_before = {}
     snapshots = {}
     for name,m in models.items():
@@ -267,6 +268,7 @@ def run_family(family, frozen_source, observed, withheld):
                 p-source_target(*case,nonlinear=True))
                 for p,case in zip(source_pred,CONTEXTS))
         z = evaluate(m,withheld,target)
+        zero_shot_predictions[name] = z
         zero_shot[name] = sum(abs(p-target(*case))
                              for p,case in zip(z,withheld))
         snapshots[name]=m.parameters_sha256()
@@ -335,7 +337,7 @@ def run_family(family, frozen_source, observed, withheld):
             "family":family,"cue":cue,"actual_first":first,
             "selected_second":second,"target":round(truth,12),
             "zero_shot":{
-                n:round(evaluate(models[n],[case],target)[0],12)
+                n:round(zero_shot_predictions[n][i],12)
                 for n in models
             },
             "after_12_target_feedback":{n:round(predictions[n][i],12)
