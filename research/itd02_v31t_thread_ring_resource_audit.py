@@ -292,9 +292,20 @@ class ThreadRing:
                     any(x["native_thread_id"] != self.threads[i].native_id or
                         x.get("process_id") != os.getpid() or
                         type(x.get("thread_cpu_ns")) is not int or
-                        x["thread_cpu_ns"] <= 0
+                        x["thread_cpu_ns"] < 0
                         for i, x in enumerate(stats))):
-                raise AssertionError("V31T_THREAD_CPU_OR_IDENTITY_MISSING")
+                raise AssertionError(
+                    "V31T_THREAD_CPU_OR_IDENTITY_MISSING_" +
+                    json.dumps([
+                        {
+                            "expected_id": self.threads[i].native_id,
+                            "actual_id": x.get("native_thread_id"),
+                            "process_id": x.get("process_id"),
+                            "thread_cpu_ns": x.get("thread_cpu_ns"),
+                        }
+                        for i, x in enumerate(stats)
+                    ], sort_keys=True, separators=(",", ":"))
+                )
         return stats
 
 
@@ -364,6 +375,9 @@ def summarize_thread_stats(ring, stats):
         "clears": sum(x["counts"]["clears"] for x in stats),
         "max_slots_per_cell": max(x["counts"]["max_bank_slots"] for x in stats),
         "thread_cpu_sum_diagnostic_ns": sum(x["thread_cpu_ns"] for x in stats),
+        "thread_cpu_zero_resolution_samples": sum(
+            x["thread_cpu_ns"] == 0 for x in stats),
+        "thread_cpu_diagnostic_not_whole_process_meter": True,
         "parent_control_bytes_sent": ring.parent_control_bytes_sent,
         "parent_control_bytes_received": ring.parent_control_bytes_received,
         "per_cell": stats,
