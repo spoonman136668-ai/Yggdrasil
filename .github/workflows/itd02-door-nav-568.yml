@@ -794,3 +794,53 @@ jobs:
           assert len(rows)==3
           PY
           test -z "$(git status --porcelain)"
+  local-observation-identifiability:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Audit action-local feature collisions before training
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,platform
+          from itertools import combinations
+          from yggdrasil.itd02_local_ring_memory_dev import NativeRingMemoryDev,OBSERVATIONS,ACTIONS,ACTION_SITES
+          features={}
+          for history in OBSERVATIONS:
+            m=NativeRingMemoryDev()
+            m.reset_episode();m.advance(history)
+            m.feedback('TurnAround',0.)
+            m.advance('Nothing')
+            now,retained=m._signals()
+            features[history]={action:[round(now[site],12),round(16*retained[site],12)]
+                               for action,site in zip(ACTIONS,ACTION_SITES)}
+          collisions={}
+          for action in ACTIONS:
+            pairs=[list(pair) for pair in combinations(OBSERVATIONS,2)
+                if features[pair[0]][action]==features[pair[1]][action]]
+            collisions[action]=pairs
+          print('LOCAL_IDENTIFIABILITY='+json.dumps({
+              'source_sha':'a39171a76d0d7817e3563682bb139a9d7ecf37c4',
+              'os':platform.platform(),'features':features,
+              'exact_collisions':collisions,'unseen_world_steps':0,
+              'claim':'static_bounded_2hop_signal_visibility_only'},sort_keys=True))
+          assert len(features)==5 and len(collisions)==3
+          PY
+          test -z "$(git status --porcelain)"
