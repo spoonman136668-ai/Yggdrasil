@@ -43,12 +43,24 @@ jobs:
           test "$GITHUB_REF_NAME" = 'research/itd02-v31v-cooperative-cell-state-20261028'
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test "$(git rev-parse "$prereg^")" = "$parent"
-          test "$(git rev-parse HEAD^)" = c20878a25e04731d435a94780f9309cd6e39df83
+          test "$(git rev-parse HEAD^)" = 9e20cd3fe59f145861983b1e33704c163d1fc5df
+          # Immutable prior G29 bot-only commit is accounted for exactly,
+          # never any unexplained original/native model file delta.
+          first_source=fddd2c8315a03a42a0341dc323904acb43cab607
+          first_bot=c15f7c318f48bed94d6f895fe3fa4291a41cef60
+          test "$(git rev-parse "$first_bot^")" = "$first_source"
+          git merge-base --is-ancestor "$first_bot" HEAD
+          git diff --name-only "$first_source" "$first_bot" | sort > "$RUNNER_TEMP/v31v-original-bot-actual"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/v31v-original-bot-allowed"
+          diff -u "$RUNNER_TEMP/v31v-original-bot-allowed" "$RUNNER_TEMP/v31v-original-bot-actual"
           git merge-base --is-ancestor "$prereg" HEAD
           test -z "$(git diff --name-only "$parent" HEAD -- yggdrasil)"
           git diff --name-only "$parent" HEAD | sort > "$RUNNER_TEMP/v31v-actual"
           printf '%s\n' \
             .github/workflows/itd02-v31v-cooperative-cell.yml \
+            .ice/code-atlas.html \
+            .ice/code-atlas.ice \
+            .ice/code-atlas.json \
             research/itd02_v31v_cooperative_cell_preregistration.md \
             research/itd02_v31v_cooperative_cell_audit.py | sort > "$RUNNER_TEMP/v31v-allowed"
           diff -u "$RUNNER_TEMP/v31v-allowed" "$RUNNER_TEMP/v31v-actual"
