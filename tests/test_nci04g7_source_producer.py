@@ -5,7 +5,10 @@ claim hidden truth, physical cell sensing or recovery of the damaged target.
 """
 import json
 import pathlib
-import resource
+try:
+    import resource
+except ImportError:
+    resource = None  # POSIX process metering unavailable: measurement test unsupported
 import time
 import tracemalloc
 import unittest
@@ -36,6 +39,7 @@ def history():
     ) for n in range(16)]
 
 class NativeSourceBoundSensor(unittest.TestCase):
+    @unittest.skipIf(resource is None, "POSIX resource accounting unavailable: cannot qualify CPU/RSS")
     def test_separate_native_model_output_and_equal_information_controls(self):
         baseline=LocalTaskRuntime()
         experiences=history()
