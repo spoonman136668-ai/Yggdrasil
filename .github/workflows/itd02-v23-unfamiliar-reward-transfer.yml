@@ -50,7 +50,10 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/v23"
-          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v23_unfamiliar_mapping_audit.py' -v > "$RUNNER_TEMP/v23/focused.log" 2>&1
+          if ! PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v23_unfamiliar_mapping_audit.py' -v > "$RUNNER_TEMP/v23/focused.log" 2>&1; then
+            cat "$RUNNER_TEMP/v23/focused.log"
+            exit 1
+          fi
           cat "$RUNNER_TEMP/v23/focused.log"
           echo ITD02_V23_TARGET_LEAKAGE_AND_RING_LESION_CONTROLS_PASS_NO_SCIENCE
       - name: Preregistered disjoint target transfer, retention, regret and lesion
