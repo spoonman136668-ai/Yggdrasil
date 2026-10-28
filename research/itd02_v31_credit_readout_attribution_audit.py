@@ -33,13 +33,10 @@ PINS={
  "yggdrasil/itd02_v24_protected_dual_memory_dev.py":"9ef95a28e9060dd79105f51122d527351756a1e0",
  "yggdrasil/itd02_v25_unlabeled_return_dev.py":"f90e5029b121cbfc2e361f9e0941985eb1e69e3d",
  "yggdrasil/itd02_v26_calibrated_return_dev.py":"8a0417d34c6ba94a4eaef33d767da14a4a5c9709",
- "yggdrasil/itd02_v30_public_probe_policy_dev.py":"0ab746be054b8149d2419aa005e8842f70dd6a32",
+ "yggdrasil/itd02_v30_public_probe_policy_dev.py":"bcc1f0b4e2ec0fcd8b2af69dfb0e6d4d2ca27a4a",
  "research/itd02_v29_observational_equivalence_audit.py":"86e30048b336b20d15a7a2c76d87d48d205c023f",
  "research/itd02_v30_budgeted_action_exploration_audit.py":"2991bdcf8e2c6878691548a0d3e9d5521b9eb85c",
 }
-# NOTE: The V30 public-policy blob pin above is replaced by git hash from exact
-# V30 parent during CI/source verification if the hardcoded pin is corrected
-# before the V31 audit's first execution. No benchmark thresholds may change.
 
 
 def verify():
