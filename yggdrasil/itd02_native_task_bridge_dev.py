@@ -17,7 +17,7 @@ from .itd02_local_ring_memory_dev import (
     _canonical, _finite,
 )
 
-SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v8"
+SCHEMA = "ygg.itd02.native_task_ring_bridge.source_only.v9"
 REWARDS = (-3, 0, 10)  # source-declared observable labels; NOT source reward law
 MAX_BYTES = 65536
 RING = tuple(((i - 1) % CELLS, (i + 1) % CELLS) for i in range(CELLS))
@@ -100,12 +100,18 @@ class NativeTaskRingBridgeDev:
         # Eight deterministic bounded cell-local traces, not trained weights.
         self.cell_trace = [0.] * CELLS
         self.action_credit = [[0.] * 16 for _ in ACTION_SITES]
+        # Exactly one learned reliability scalar at each original action head.
+        self.reliability = [0.] * len(ACTIONS)
+        self._frozen_reliability = None
 
     def start_observation(self, observation):
         if self._observation is not None or self.memory.pending:
             raise ValueError("PUBLIC_TRANSITION_PENDING")
         if self._frozen_native is not None and self._native_identity() != self._frozen_native:
             raise ValueError("NATIVE_FROZEN_PARAMETER_DRIFT")
+        if (self._frozen_reliability is not None and
+                self._reliability_digest() != self._frozen_reliability):
+            raise ValueError("FROZEN_RELIABILITY_DRIFT")
         self.memory.advance(observation)
         self._observation = observation
 
@@ -117,6 +123,9 @@ class NativeTaskRingBridgeDev:
             "roles": self.native.core.roles,
             "neighbors": self.native.neighbors,
         })).hexdigest()
+
+    def _reliability_digest(self):
+        return hashlib.sha256(_canonical(self.reliability)).hexdigest()
 
     def native_reward_scores(self):
         if self._observation is None or not self.memory.pending:
@@ -152,8 +161,11 @@ class NativeTaskRingBridgeDev:
     def choose(self):
         native = self.native_reward_scores()
         memory = self.memory.q_values()
-        # Source-blind fixed fusion, not hidden-state access or oracle planning.
-        combined = [memory[i] + .15 * native[i] for i in range(len(ACTIONS))]
+        # Chosen-action feedback adapts only the corresponding output cell.
+        # Zero-initialized reliability preserves the exact original v8 scores.
+        combined = [(1. - .10 * self.reliability[i]) * memory[i]
+                    + (.15 + .10 * self.reliability[i]) * native[i]
+                    for i in range(len(ACTIONS))]
         self.memory.action_calls += 1
         return ACTIONS[max(range(len(ACTIONS)), key=lambda i: combined[i])]
 
@@ -180,8 +192,16 @@ class NativeTaskRingBridgeDev:
             if self._native_identity() != self._frozen_native or (
                     self.memory.parameter_sha256() != self.memory._frozen_hash):
                 raise ValueError("FROZEN_WEIGHT_IDENTITY_DRIFT")
+        if (self._frozen_reliability is not None and
+                self._reliability_digest() != self._frozen_reliability):
+            raise ValueError("FROZEN_RELIABILITY_DRIFT")
         site_training = None
+        prefeedback_reliability = None
         if learning:
+            selected = ACTIONS.index(action)
+            native_forecast = self.native_reward_scores()[selected]
+            memory_forecast = self.memory.q_values()[selected]
+            prefeedback_reliability = (native_forecast, memory_forecast)
             site_training = [
                 (index, _local_ordered_word(self._observation, action, site),
                  float(self.native.predict(_temporal_public_bits(
@@ -192,10 +212,20 @@ class NativeTaskRingBridgeDev:
         memory_snap = self.memory.checkpoint()
         trace_snap = list(self.cell_trace)
         credit_snap = [list(row) for row in self.action_credit]
+        reliability_snap = list(self.reliability)
         try:
             if learning:
                 self.native.observe(before, after)
             self.memory.feedback(action, reward, learning=learning, terminal=terminal)
+            if learning:
+                native_forecast, memory_forecast = prefeedback_reliability
+                clamp = lambda x: max(-13., min(13., x))
+                e_native = abs(float(reward) - clamp(native_forecast))
+                e_memory = abs(float(reward) - clamp(memory_forecast))
+                advantage = max(-1., min(1., (e_memory - e_native) / 26.))
+                prev = self.reliability[selected]
+                self.reliability[selected] = max(-1., min(1.,
+                    .9 * prev + .1 * advantage))
             if learning:
                 for index, word, estimate in site_training:
                     target = float(reward == REWARDS[index])
@@ -218,6 +248,7 @@ class NativeTaskRingBridgeDev:
             self.memory = NativeRingMemoryDev.restore(memory_snap)
             self.cell_trace = trace_snap
             self.action_credit = credit_snap
+            self.reliability = reliability_snap
             raise
 
     def reset_episode(self):
@@ -232,6 +263,7 @@ class NativeTaskRingBridgeDev:
             raise ValueError("NATIVE_WEIGHT_IDENTITY_MISMATCH")
         self.memory.start_frozen_evaluation(memory_sha)
         self._frozen_native = native_sha
+        self._frozen_reliability = self._reliability_digest()
 
     def model_identities(self):
         return {"native": self._native_identity(),
@@ -244,7 +276,9 @@ class NativeTaskRingBridgeDev:
                 "transitions": self.transitions, "score_calls": self.score_calls,
                 "frozen_native_sha256": self._frozen_native,
                 "cell_trace": self.cell_trace,
-                "action_credit": self.action_credit}
+                "action_credit": self.action_credit,
+                "reliability": self.reliability,
+                "frozen_reliability_sha256": self._frozen_reliability}
         data = _canonical(body)
         if len(data) > MAX_BYTES:
             raise ValueError("BRIDGE_CHECKPOINT_OVER_BUDGET")
@@ -264,7 +298,8 @@ class NativeTaskRingBridgeDev:
             if type(body) is not dict or set(body) != {
                     "schema", "native", "memory", "observation",
                     "transitions", "score_calls", "frozen_native_sha256",
-                    "cell_trace", "action_credit"} or body["schema"] != SCHEMA:
+                    "cell_trace", "action_credit",
+                    "reliability", "frozen_reliability_sha256"} or body["schema"] != SCHEMA:
                 raise ValueError("BRIDGE_CHECKPOINT_SCHEMA")
             if (body["observation"] is not None and
                     (type(body["observation"]) is not str or
@@ -294,6 +329,18 @@ class NativeTaskRingBridgeDev:
                             or not -1. <= x <= 1. for x in row) for row in credit)):
                 raise ValueError('BRIDGE_ACTION_CREDIT_INVALID')
             obj.action_credit = [[float(x) for x in row] for row in credit]
+            trust = body["reliability"]
+            if (type(trust) is not list or len(trust) != len(ACTIONS) or
+                    any(type(x) not in (int, float) or not math.isfinite(x)
+                        or not -1. <= x <= 1. for x in trust)):
+                raise ValueError("BRIDGE_RELIABILITY_INVALID")
+            obj.reliability = [float(x) for x in trust]
+            frozen_gate = body["frozen_reliability_sha256"]
+            if frozen_gate is not None and (
+                    type(frozen_gate) is not str or
+                    frozen_gate != obj._reliability_digest()):
+                raise ValueError("BRIDGE_RELIABILITY_FROZEN_IDENTITY")
+            obj._frozen_reliability = frozen_gate
             frozen_native = body["frozen_native_sha256"]
             if (frozen_native is None) != (memory._frozen_hash is None):
                 raise ValueError("BRIDGE_FROZEN_MODE_MISMATCH")
@@ -302,6 +349,8 @@ class NativeTaskRingBridgeDev:
                         any(c not in "0123456789abcdef" for c in frozen_native) or
                         frozen_native != obj._native_identity()):
                     raise ValueError("BRIDGE_FROZEN_NATIVE_IDENTITY_MISMATCH")
+            if (frozen_native is None) != (obj._frozen_reliability is None):
+                raise ValueError("BRIDGE_RELIABILITY_FROZEN_MODE_MISMATCH")
             obj._frozen_native = frozen_native
             return obj
         except (ValueError, TypeError, OverflowError, KeyError, AttributeError) as exc:
