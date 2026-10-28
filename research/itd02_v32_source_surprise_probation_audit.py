@@ -34,7 +34,7 @@ PINS={
  "yggdrasil/itd02_v30_public_probe_policy_dev.py":"bcc1f0b4e2ec0fcd8b2af69dfb0e6d4d2ca27a4a",
  "research/itd02_v29_observational_equivalence_audit.py":"86e30048b336b20d15a7a2c76d87d48d205c023f",
  "research/itd02_v30_budgeted_action_exploration_audit.py":"2991bdcf8e2c6878691548a0d3e9d5521b9eb85c",
- "research/itd02_v31_credit_readout_attribution_audit.py":"d51b0dd9e04288372d899387d2823c947d4d037e",
+ "research/itd02_v31_credit_readout_attribution_audit.py":"52423d71d499f1de8e1fc11d072b363bd588ff4c",
 }
 
 def verify():
