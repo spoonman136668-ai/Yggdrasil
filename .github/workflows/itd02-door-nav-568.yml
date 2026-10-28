@@ -406,3 +406,75 @@ jobs:
           assert all(x["updates"]==1200 for x in results)
           assert all(x["checkpoint_bytes"]<8192 for x in results)
           PY
+  aba-update-rate-isolation:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compare exactly one local reward-step coefficient
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,platform,pathlib,hashlib
+          src=pathlib.Path('yggdrasil/itd02_local_ring_memory_dev.py').read_text()
+          target='recency_step = .7 * error /'
+          assert src.count(target)==1, 'EXACT_SINGLE_LOCAL_UPDATE_SITE_REQUIRED'
+          histories=('LRV','docked_LRV')
+          results=[]
+          for rate in ('.35','.7','1.0'):
+              changed=src.replace(target,'recency_step = '+rate+' * error /')
+              namespace={'__name__':'bounded_local_rate_probe_'+rate.replace('.','_')}
+              exec(compile(changed,'<source-free-local-rate-probe>','exec'),namespace)
+              Model=namespace['NativeRingMemoryDev']
+              ACTIONS=namespace['ACTIONS']
+              def correct(regime,h):
+                  return 'GoForward' if (h=='LRV')==(regime=='A') else 'Backup'
+              def evaluate(model,regime):
+                  restored=Model.restore(model.checkpoint())
+                  restored.start_frozen_evaluation(restored.parameter_sha256())
+                  count=0
+                  for h in histories:
+                      restored.reset_episode();restored.advance(h)
+                      restored.feedback('TurnAround',0.,learning=False)
+                      restored.advance('Nothing');choice=restored.choose()
+                      restored.feedback(choice,0.,learning=False,terminal=True)
+                      count+=choice==correct(regime,h)
+                  return count
+              m=Model()
+              stages=[]
+              for regime in ('A','B','A'):
+                  reward_total=0
+                  for n in range(200):
+                      h=histories[n%2]
+                      m.reset_episode();m.advance(h)
+                      m.feedback('TurnAround',0.);m.advance('Nothing')
+                      greedy=m.choose()
+                      chosen=ACTIONS[(n//5)%3] if n%5==0 else greedy
+                      reward=1. if chosen==correct(regime,h) else -1.
+                      m.feedback(chosen,reward,terminal=True)
+                      reward_total+=reward
+                  stages.append({'regime':regime,'reward':reward_total,'correct_of_2':evaluate(m,regime)})
+              results.append({'coefficient':rate,'stages':stages,'updates':m.updates,
+                  'checkpoint_bytes':len(m.checkpoint()),'probe_source_sha256':hashlib.sha256(changed.encode()).hexdigest()})
+          print('ABA_RATE_ISOLATION='+json.dumps({'source_sha':'a39171a76d0d7817e3563682bb139a9d7ecf37c4',
+              'os':platform.platform(),'arms':results,'original_world_steps':0,
+              'scientific_acceptance':False},sort_keys=True))
+          assert all(a['updates']==1200 and a['checkpoint_bytes']<8192 for a in results)
+          PY
+          test -z "$(git status --porcelain)"
