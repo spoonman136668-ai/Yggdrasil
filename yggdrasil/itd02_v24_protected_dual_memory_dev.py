@@ -163,13 +163,14 @@ class ProtectedDualMemoryRingDev:
             for name in ("slow_loss","fast_loss"):
                 if not _valid_finite(b[name], 0.0, 1e9):
                     raise ValueError("INVALID_ONLINE_LOSS_COUNTER")
+            gate_expected = (b["fast_loss"] <= b["slow_loss"]
+                             if b["target_updates"] > 0 else False)
             if (type(b["target_updates"]) is not int or b["target_updates"] < 0
                     or b["target_updates"] != fast.updates or
                     type(b["gate_flips"]) is not int or
                     not 0 <= b["gate_flips"] <= b["target_updates"] or
                     type(b["gate_fast"]) is not bool or
-                    b["gate_fast"] != (b["fast_loss"] <= b["slow_loss"])
-                        if b["target_updates"] > 0 else b["gate_fast"] is not False):
+                    b["gate_fast"] != gate_expected):
                 raise ValueError("INVALID_PUBLIC_SELECTOR_PROVENANCE")
             obj = cls.__new__(cls)
             obj.slow, obj.fast = slow, fast
