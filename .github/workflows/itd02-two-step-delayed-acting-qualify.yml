@@ -1,0 +1,120 @@
+name: ITD-02 two-step delayed acting source-free original vs trace parity
+on:
+  push:
+    branches:
+      - research/itd02-delayed-two-step-acting-20261027
+permissions:
+  contents: read
+jobs:
+  two-step-acting-versus-history-aware-controls:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Disable checkout newline mutation
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Read-only preregistered evaluator and source-accounting witnesses
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          path: harness
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Unmodified original eight-cell native source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 658b855d1b217d20ed9d431fe99b2e866469b7e9
+          path: native-original
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Exact frozen action-history trace-only source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: cd3821f8429ce48580f3132bb2ca0d93e2c94782
+          path: native-parity
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify chronological prereg, source SHA and exact unchanged native learning
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C harness merge-base --is-ancestor 6e8181392a7c5aacd95761c0f2d09c4f8a063c4 "$GITHUB_SHA"
+          git -C harness merge-base --is-ancestor 83633c96e7b460d6063ca80d7bd33ee32d3fbd3d "$GITHUB_SHA"
+          test "$(git -C native-original rev-parse HEAD)" = 658b855d1b217d20ed9d431fe99b2e866469b7e9
+          test "$(git -C native-parity rev-parse HEAD)" = cd3821f8429ce48580f3132bb2ca0d93e2c94782
+          test -z "$(git -C harness status --porcelain --untracked-files=all)"
+          test -z "$(git -C native-original status --porcelain --untracked-files=all)"
+          test -z "$(git -C native-parity status --porcelain --untracked-files=all)"
+          python - <<'PY'
+          from pathlib import Path
+          for p in ("yggdrasil/task_runtime.py","yggdrasil/itd02_local_ring_memory_dev.py"):
+              assert (Path("native-original")/p).read_bytes()==(Path("native-parity")/p).read_bytes(), p
+          print("ITD02_TWO_STEP_ORIGINAL_NATIVE_LEARNING_SOURCE_IDENTITY_PASS")
+          PY
+      - name: Preregistered actual two-step public chosen actions and delayed consequence
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/itd02-two-step-results"
+          for arm in original parity; do
+            python -B harness/research/itd02_two_step_delayed_acting_dev.py \
+              --arm "$arm" --root "$GITHUB_WORKSPACE/native-$arm" \
+              --output "$RUNNER_TEMP/itd02-two-step-results/$arm.json"
+          done
+          for arm in history_ema history_count blind_ema; do
+            python -B harness/research/itd02_two_step_delayed_acting_dev.py \
+              --arm "$arm" --output "$RUNNER_TEMP/itd02-two-step-results/$arm.json"
+          done
+          python -B harness/research/itd02_two_step_delayed_acting_dev.py \
+            --compare "$RUNNER_TEMP/itd02-two-step-results" \
+            --output "$RUNNER_TEMP/itd02-two-step-results/comparison.json"
+      - name: Fail-closed chosen-feedback counts and source-free scientific gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"itd02-two-step-results"
+          c=json.loads((p/"comparison.json").read_text("utf-8"))
+          assert c["actual_feedback_events_all_arms"]==17280
+          assert c["actual_feedback_events_per_arm"]==3456
+          assert c["two_step_episodes_per_arm"]==1728
+          assert c["acting_source_equivalent"] is True
+          assert c["fitted_checkpoint_sha_equal"] is True
+          assert c["first_use"] is False and c["scientific_promotion"] is False
+          assert c["retail_pc_validated"] is False and c["original_world_tested"] is False
+          for arm in ("original","parity","history_ema","history_count","blind_ema"):
+              v=json.loads((p/(arm+".json")).read_text("utf-8"))
+              assert len(v["trials"])==12
+              assert all(t["selected_public_feedback_events"]==288
+                 for t in v["trials"])
+              assert all(all(t["phase_results"][ph]["event_count"]==96
+                 for ph in ("initial","unfamiliar","reversal")) for t in v["trials"])
+          print("ITD02_TWO_STEP_GENUINE_ACTING_SOURCE_CUSTODY_PASS_NO_SCIENCE")
+          PY
+          test -z "$(git -C harness status --porcelain --untracked-files=all)"
+          test -z "$(git -C native-original status --porcelain --untracked-files=all)"
+          test -z "$(git -C native-parity status --porcelain --untracked-files=all)"
+      - name: Retain all per-trial decisions, negative results and resource receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-two-step-acting-${{ matrix.os }}
+          path: ${{ runner.temp }}/itd02-two-step-results/*.json
+          if-no-files-found: warn
+          retention-days: 7
