@@ -297,8 +297,14 @@ class EightCellRing:
             return None
         stats = []
         if self.started and not abort:
-            self._request_all([{"op": "STOP"}] * CELLS, "STATS")
-            # Need the actual STATS response values returned by _request_all.
+            stats = self._request_all([{"op": "STOP"}] * CELLS, "STATS")
+            if (len(stats) != 8 or
+                    any(x.get("pid") != self.children[i].pid or
+                        type(x.get("cpu_ns")) is not int or x["cpu_ns"] <= 0 or
+                        type(x.get("peak_rss_bytes")) is not int or
+                        x["peak_rss_bytes"] <= 0
+                        for i,x in enumerate(stats))):
+                raise AssertionError("V31S_CHILD_CPU_RSS_PROCESS_ID_PROVENANCE_DRIFT")
         for c in self.controllers:
             c.close()
         for p in self.children:
