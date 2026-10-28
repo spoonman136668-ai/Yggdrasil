@@ -49,12 +49,24 @@ jobs:
           test "$(git rev-parse "$rust_first^")" = "$prereg"
           test "$(git rev-parse "$rust_final^")" = "$rust_first"
           test "$(git rev-parse "$evaluator^")" = "$rust_final"
-          test "$(git rev-parse HEAD^)" = "$evaluator"
+          first_workflow=8ff161319d1249b94a59d69ae63525e9033d3d14
+          first_bot=4829ec1f2abe1d0e903af2511d4001f269bc4cc0
+          source_clock_fix=467817b9d427fbab6cca0947270d8dce8bbb0b56
+          test "$(git rev-parse "$first_workflow^")" = "$evaluator"
+          test "$(git rev-parse "$first_bot^")" = "$first_workflow"
+          test "$(git rev-parse "$source_clock_fix^")" = "$first_bot"
+          test "$(git rev-parse HEAD^)" = "$source_clock_fix"
+          git diff --name-only "$first_workflow" "$first_bot" | sort > "$RUNNER_TEMP/v32a-original-g29-delta"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/v32a-original-g29-allowed"
+          diff -u "$RUNNER_TEMP/v32a-original-g29-allowed" "$RUNNER_TEMP/v32a-original-g29-delta"
           git merge-base --is-ancestor "$prereg" HEAD
           test -z "$(git diff --name-only "$parent" HEAD -- yggdrasil)"
           git diff --name-only "$parent" HEAD | sort > "$RUNNER_TEMP/v32a-actual"
           printf '%s\n' \
             .github/workflows/itd02-v32a-native-microcells.yml \
+            .ice/code-atlas.html \
+            .ice/code-atlas.ice \
+            .ice/code-atlas.json \
             research/itd02_v32a_native_microcells_preregistration.md \
             research/itd02_v32a_native_microcells.rs \
             research/itd02_v32a_native_microcells_audit.py | sort > "$RUNNER_TEMP/v32a-allowed"
