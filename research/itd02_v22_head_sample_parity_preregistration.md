@@ -1,0 +1,6 @@
+# V22 head sample parity preregistration — 2026-10-28
+Parent immutable V21 #605 SHA 6147b787068caa55a4782e076dd6ae82e651dcbc. The V21 source-only 4-hop readout has rank 12 for each action head, but its 11-sample per-head leave-one-out ridge was compared against 35 pooled examples. This difference confounds statistical sample quantity with distributed capability.
+
+Before changing any native learning rule, run a matched per-head conventional ridge using exactly the same 11 training examples, same 20 source-public features, same fixed regularizer and heldout folds as V21. Independently compare a conventional 11-sample public cue/first-action interaction ridge; keep the historical 35-sample strong pooled comparator visibly separate. No hidden laws inside candidate, no alternative family selected based on results, no source change, no source acceptance.
+
+Report additive and nonlinear folds separately, full source provenance, rank, CPU/runtime costs, and Windows/Linux equality. Interpret as synthetic source-only, not true acting, transfer, science, retail performance or successful self-improvement. A new cross-head neighbor-sharing mechanism needs its own preregistration and fresh independently selected worlds.
