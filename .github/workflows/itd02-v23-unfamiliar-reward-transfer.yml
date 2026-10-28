@@ -1,0 +1,142 @@
+name: ITD-02 V23 unfamiliar synthetic mapping transfer and lesion
+on:
+  push:
+    branches:
+      - research/itd02-v23-unfamiliar-transfer-retention-lesion-20261028
+permissions:
+  contents: read
+jobs:
+  v23-source-only-transfer:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Guarantee byte-exact checkout behavior
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Checkout exact immutable V23 source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          clean: true
+          persist-credentials: false
+      - name: Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Preregistered chronology and frozen native-source boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c17567365db1c0e401843c3151d375361af15806 "$GITHUB_SHA"
+          git merge-base --is-ancestor adfba157d11b656f11e77b9ba2153801b3124f85 "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+          test "$(git hash-object yggdrasil/itd02_local_ring_memory_dev.py)" = 1db0835d5c99456bcf99a013d4836f49314a9d39
+          test "$(git hash-object research/itd02_v18_intermediate_plasticity_audit.py)" = 7a8f361ff13cf75f716c544add192c2ff9c5aae9
+          test "$(git hash-object yggdrasil/itd02_v20_causal_credit_dev.py)" = c7eb9cfc0a4820400fb3c8b78febeb11ae035570
+          test "$(git hash-object yggdrasil/itd02_v22_shared_context_ring_dev.py)" = 73dc4d7580f7f0b8ed8de1119b06504c44b0818f
+          test "$(git hash-object research/itd02_v22_shared_ring_learning_audit.py)" = 050f7b521907656eae596c659a44c5702a226b5f
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: V23 frozen public target, feedback-isolation, and edge-lesion unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v23"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v23_unfamiliar_mapping_audit.py' -v > "$RUNNER_TEMP/v23/focused.log" 2>&1
+          cat "$RUNNER_TEMP/v23/focused.log"
+          echo ITD02_V23_TARGET_LEAKAGE_AND_RING_LESION_CONTROLS_PASS_NO_SCIENCE
+      - name: Preregistered disjoint target transfer, retention, regret and lesion
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B research/itd02_v23_unfamiliar_mapping_audit.py > "$RUNNER_TEMP/v23/audit.json"
+          python - "$RUNNER_TEMP/v23/audit.json" <<'PY'
+          import json,math,sys
+          from pathlib import Path
+          d=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          assert d["schema"]=="ygg.itd02.v23.unfamiliar_synthetic_reward_map_transfer.source_only.v1"
+          assert d["source_only"] and not d["scientific_first_use"] and not d["original_world_training"]
+          assert not d["original_native_genome_modified"]
+          assert d["same_original_public_history_domain"]
+          assert d["target_mappings_disjoint_from_pretraining"]
+          assert not d["independent_unfamiliar_world_transfer_proven"]
+          assert d["original_ring_cells"]==8 and d["learned_scalars_per_v22_arm"]==163
+          assert d["source_pretraining_updates"]==576
+          assert d["target_public_feedback_labels_per_family"]==12
+          assert d["target_heldout_action_outcomes_per_family"]==24
+          assert d["target_action_choice_contexts_per_family"]==12
+          assert d["target_family_names"]==["cue_second","triple_parity"]
+          assert len(d["source_only_48_case_sha256"])==64
+          for family in d["target_family_names"]:
+              m=d["target_family_metrics"][family]
+              assert set(m["zero_shot_errors"])=={
+                  "pretrained_shared","scratch_shared","pretrained_partition"}
+              assert set(m["after_12_feedback_errors"])=={
+                  "pretrained_shared","scratch_shared","pretrained_partition",
+                  "conventional_12_label_ridge","zero_constant","mean_of_12_observed"}
+              assert all(math.isfinite(v) and v>=0
+                  for v in m["zero_shot_errors"].values())
+              assert all(math.isfinite(v) and v>=0
+                  for v in m["after_12_feedback_errors"].values())
+              assert m["lesion"]["changed_heldout_predictions"]>0
+              assert m["lesion"]["original_directed_edges_per_output_hop"]==16
+              assert m["lesion"]["surviving_directed_edges_per_output_hop"]==14
+              assert max(m["checkpoint_bytes"].values())<=8192
+              assert all(v>0 for sub in m["edge_scalar_messages"].values() for v in sub.values())
+              for p in m["action_selection_regret"].values():
+                  assert math.isfinite(p["total_regret"]) and p["total_regret"]>=0
+                  assert 0<=p["optimal_context_count"]<=12
+              for k in ("pretrained_shared","pretrained_partition"):
+                  assert math.isfinite(m["source_retention_before"][k])
+                  assert math.isfinite(m["source_retention_after"][k])
+          allowed={
+              "V23_UNFAMILIAR_SYNTHETIC_TRANSFER_NOT_ESTABLISHED__NO_SCIENCE",
+              "V23_SYNTHETIC_TRANSFER_GAIN_STRONG_CONTROL_NOT_BEATEN__NO_SCIENCE",
+              "V23_SYNTHETIC_TRANSFER_BOUNDED_ENGINEERING_POSITIVE__NO_SCIENCE"}
+          assert d["classification"] in allowed
+          r=d["host_specific_resource_probes"]
+          assert r["wall_seconds"]>0 and r["cpu_seconds"]>0
+          assert r["tracemalloc_peak_bytes"]>0
+          assert all(v<=8192 for v in r["source_pretraining_checkpoint_bytes"].values())
+          print("ITD02_V23_TWO_DISJOINT_PUBLIC_REWARD_MAPS_COMPLETE_NO_SCIENCE")
+          PY
+          cat "$RUNNER_TEMP/v23/audit.json"
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: One final V22 V21 V20 V19 V18 V17 V16 V15 V12 original-native regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B research/itd02_v22_shared_ring_learning_audit.py > "$RUNNER_TEMP/v23/inherited-v22.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v22_shared_context_ring.py' -v
+          PYTHONPATH=. python -B research/itd02_v21_capacity_learning_audit.py > "$RUNNER_TEMP/v23/inherited-v21.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v21_capacity_learning_audit.py' -v
+          PYTHONPATH=. python -B research/itd02_v20_responsibility_gated_audit.py > "$RUNNER_TEMP/v23/inherited-v20.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v20_responsibility_gated_credit.py' -v
+          PYTHONPATH=. python -B research/itd02_v19_local_credit_causality_audit.py > "$RUNNER_TEMP/v23/inherited-v19.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v19_local_credit_causality.py' -v
+          PYTHONPATH=. python -B research/itd02_v18_intermediate_plasticity_audit.py > "$RUNNER_TEMP/v23/inherited-v18.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v18_intermediate_plasticity_dev.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v17_neighbor_carried_learner_dev.py' -v
+          PYTHONPATH=. python -B research/itd02_v16_locality_transfer_audit.py > "$RUNNER_TEMP/v23/inherited-v16.json"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v15_frozen_native_local_readout.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_native_task_bridge_dev.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_local_ring_memory_dev.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v12_delayed_local_eligibility.py' -v
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo ITD02_V23_FINAL_ORIGINAL_NATIVE_REGRESSION_PASS_NO_SCIENCE
+      - name: Retain exact host source-only transfer receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-v23-unfamiliar-reward-mapping-${{ matrix.os }}
+          path: ${{ runner.temp }}/v23/*
+          if-no-files-found: warn
+          retention-days: 7
