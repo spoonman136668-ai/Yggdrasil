@@ -1,0 +1,81 @@
+name: ITD-02 native proposal Yggdrasil source-only feasibility reproduction
+on:
+  push:
+    branches: [research/itd02-free-proposal-native-feasibility-20261028]
+    paths: [.github/workflows/itd02-free-proposal-native-feasibility-20261028.yml]
+permissions:
+  contents: read
+jobs:
+  v22-retrospective-native-controls:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact prereg and frozen original source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = '0c86949b30346e90cc112b4837d40f5387127af0'
+          test "$(git rev-parse HEAD^^)" = 'c17567365db1c0e401843c3151d375361af15806'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/itd02-free-proposal-native-feasibility-20261028.yml'
+          test "$(git diff --name-only HEAD^^ HEAD^)" = 'research/itd02-free-proposal-native-feasibility-20261028.md'
+          test -z "$(git status --porcelain)"
+          echo ITD02_EXTERNAL_PROPOSAL_V22_ORIGINAL_SOURCE_FROZEN=PASS
+      - name: Original eight-cell native-source integrity
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v22_shared_context_ring.py' -v
+          echo ITD02_V22_NATIVE_SOURCE_ONLY_TESTS_PASS
+      - name: Repeat exact existing 72-case strong-control comparison
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B research/itd02_v22_shared_ring_learning_audit.py > "$RUNNER_TEMP/v22-independent-reproduction.json"
+          python - "$RUNNER_TEMP/v22-independent-reproduction.json" <<'PY'
+          import json,sys,hashlib
+          from pathlib import Path
+          p=Path(sys.argv[1]);d=json.loads(p.read_text(encoding='utf-8'))
+          assert d['schema']=='ygg.itd02.v22.neighbor_shared_source_public_toy.v1'
+          assert d['original_native_ring_cells']==8
+          assert d['public_histories_per_family']==36
+          assert d['heldout_families']==2
+          assert d['training_updates_per_arm_per_fold']==560
+          assert d['canonical_72_case_sha256']=='969e64223bdc60b52ab46d65305483aaed36224ed746a48efd405e5e4b419b1a'
+          assert d['classification']=='V22_LOCAL_SHARED_TOY_TRANSFER_CONTROL_NOT_BEATEN__NO_SCIENCE'
+          assert d['shared_improves_5pct_vs_both_local_controls'] is True
+          assert d['beats_strong_conventional_pooled_control'] is False
+          assert d['source_only'] and not d['scientific_first_use']
+          assert d['original_native_model_unchanged'] and not d['original_world_training']
+          assert d['trainable_scalars_per_v22_arm']==163
+          assert d['max_checkpoint_bytes']<=8192
+          for family,arms in d['matched_toy_absolute_errors'].items():
+              assert arms['v22_shared_ring'] > arms['strong_35_example_pooled_interaction_ridge'],family
+              print('ITD02_V22_'+family.upper()+'_SHARED_ABSOLUTE_ERROR='+str(arms['v22_shared_ring']))
+              print('ITD02_V22_'+family.upper()+'_POOLED_ABSOLUTE_ERROR='+str(arms['strong_35_example_pooled_interaction_ridge']))
+          print('ITD02_V22_CANONICAL_72_CASE_REPRODUCED=PASS')
+          print('ITD02_V22_STRONG_CONTROL_SUPERIOR_SCIENTIFIC_NO_GO=PASS')
+          print('ITD02_V22_ORIGINAL_WORLD_LEARNING=NOT_TESTED')
+          print('ITD02_V22_TIMED_48H_RETENTION=NOT_TESTED')
+          print('ITD02_V22_RETAIL_PERFORMANCE=NOT_TESTED')
+          print('ITD02_V22_REPORT_SHA256='+hashlib.sha256(p.read_bytes()).hexdigest())
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: itd02-ygg-v22-retrospective-${{ matrix.os }}
+          path: ${{ runner.temp }}/v22-independent-reproduction.json
+          retention-days: 7
+          if-no-files-found: warn
