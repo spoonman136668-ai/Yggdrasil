@@ -1,0 +1,66 @@
+name: ITD-02 V31O-SRC strict G29 provenance
+on:
+  push:
+    branches: [research/itd02-v31o-src-g29-custody-20261028]
+permissions:
+  contents: read
+jobs:
+  g29-provenance:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Strict G29 source pins and original failing test
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7685934381b6c1d62cff26b04f23487627977a64 "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+          test ! -f research/itd02_v31_heldout_evaluator.py
+          mkdir -p "$RUNNER_TEMP/v31o"
+          set +e
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_code_atlas.py' -v > "$RUNNER_TEMP/v31o/g29.log" 2>&1
+          status=$?
+          set -e
+          echo "$status" > "$RUNNER_TEMP/v31o/test_exit"
+          python - "$RUNNER_TEMP/v31o" <<'PY'
+          import pathlib,json,subprocess,sys,re,hashlib
+          p=pathlib.Path(sys.argv[1]);log=(p/"g29.log").read_text(errors="replace")
+          root=pathlib.Path.cwd()
+          head=subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip()
+          atlas=root/".ice/code-atlas.json"
+          declared=json.loads(atlas.read_text())["source_commit"] if atlas.exists() else None
+          ancestor=(subprocess.run(["git","merge-base","--is-ancestor",declared,head],capture_output=True).returncode==0) if declared else None
+          diff=subprocess.run(["git","diff","--name-only",declared,head],capture_output=True,text=True).stdout.splitlines() if ancestor else []
+          errors=re.findall(r"^(?:FAIL|ERROR): ([^\n]+)",log,re.M)
+          traces=log[log.find("ERROR:"):] if "ERROR:" in log else log[-4000:]
+          result={"classification":"V31O_SRC_G29_STRICT_PROVENANCE_CAPTURED__ACCEPTANCE_BLOCKED__NO_SCIENCE",
+            "head":head,"g29_source_commit":declared,"g29_source_is_ancestor":ancestor,
+            "diff_file_count":len(diff),"first_changed_files":diff[:25],
+            "g29_test_exit":int((p/"test_exit").read_text()),"failed_tests":errors,
+            "traceback_sha256":hashlib.sha256(traces.encode()).hexdigest(),
+            "original_traceback_tail":traces[-3500:],
+            "scientific_first_use":False,"reserved_holdout_evaluated":False}
+          (p/"report.json").write_text(json.dumps(result,sort_keys=True,indent=2))
+          print(json.dumps(result,sort_keys=True))
+          assert "test_source_and_pinned_artifact" in " ".join(errors)
+          assert result["g29_test_exit"]!=0
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Keep original error unchanged
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-v31o-src-${{ matrix.os }}
+          path: ${{ runner.temp }}/v31o/*
+          retention-days: 7
