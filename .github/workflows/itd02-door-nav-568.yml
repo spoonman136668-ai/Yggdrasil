@@ -264,3 +264,65 @@ jobs:
               "claim":"synthetic_checkpoint_diagnostic_only"},sort_keys=True))
           assert len(summaries)==3 and all(s["checkpoint_bytes"]<8192 for s in summaries)
           PY
+  aba-action-credit-diagnostic:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve native bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Log native local action scores before and after A B A
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,platform
+          from yggdrasil.itd02_local_ring_memory_dev import NativeRingMemoryDev,ACTIONS
+          m=NativeRingMemoryDev()
+          histories=("LRV","docked_LRV")
+          rows=[]
+          for regime in ("A","B","A"):
+              phase={"regime":regime,"snapshots":[],"reward":0}
+              for episode in range(201):
+                  if episode in (0,10,50,100,200):
+                      for h in histories:
+                          probe=NativeRingMemoryDev.restore(m.checkpoint())
+                          probe.reset_episode()
+                          probe.advance(h)
+                          probe.feedback("TurnAround",0.0)
+                          probe.advance("Nothing")
+                          q=probe.q_values()
+                          phase["snapshots"].append({"episode":episode,"history":h,
+                            "q":dict(zip(ACTIONS,[round(x,5) for x in q])),
+                            "chosen":ACTIONS[max(range(3),key=lambda i:q[i])]})
+                  if episode==200: break
+                  h=histories[episode%2]
+                  m.reset_episode()
+                  m.advance(h)
+                  m.feedback("TurnAround",0.0)
+                  m.advance("Nothing")
+                  proposed=m.choose()
+                  chosen=ACTIONS[(episode//5)%3] if episode%5==0 else proposed
+                  good="GoForward" if (h=="LRV")== (regime=="A") else "Backup"
+                  reward=1.0 if chosen==good else -1.0
+                  m.feedback(chosen,reward,terminal=True)
+                  phase["reward"]+=reward
+              rows.append(phase)
+          print("ABA_ACTION_CREDIT_DIAGNOSTIC="+json.dumps({"source_sha":"a39171a76d0d7817e3563682bb139a9d7ecf37c4",
+            "os":platform.platform(),"synthetic_only":True,"protected_steps":0,"phases":rows},sort_keys=True))
+          assert len(rows)==3 and all(len(row["snapshots"])==10 for row in rows)
+          PY
