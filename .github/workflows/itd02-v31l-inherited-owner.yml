@@ -1,0 +1,66 @@
+name: ITD-02 V31L inherited regression owner custody
+on:
+  push:
+    branches: [research/itd02-v31l-inherited-failure-ownership-20261028]
+permissions:
+  contents: read
+jobs:
+  owner-custody:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact unchanged failures and source ownership
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 39e3eb4e1465be14e2ed704a23f40f4c3d5f54cb "$GITHUB_SHA"
+          mkdir -p "$RUNNER_TEMP/v31l"
+          for pair in baseline:78df5918c785879895092ae8d2eeb677c9260638 candidate:00f9b3c67459516eb5f362a6113ae219b6e9fd8d; do
+            name="${pair%%:*}"; sha="${pair#*:}"
+            git worktree add --detach "$RUNNER_TEMP/v31l/$name" "$sha"
+            (cd "$RUNNER_TEMP/v31l/$name" && PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_*.py' -v) > "$RUNNER_TEMP/v31l/$name.log" 2>&1 || true
+          done
+          python - "$RUNNER_TEMP/v31l" <<'PY'
+          import json,pathlib,re,sys,hashlib
+          p=pathlib.Path(sys.argv[1]); original=p/'baseline'; candidate=p/'candidate'
+          matches=[]
+          for label in ('baseline','candidate'):
+              s=(p/(label+'.log')).read_text(errors='replace')
+              matches.append(set(re.findall(r'^(?:FAIL|ERROR): ([^\n]+)',s,re.M)))
+          assert len(matches[0])==7 and matches[0]==matches[1]
+          rows=[]
+          for test in sorted(matches[0]):
+              module=re.search(r'\((test_[a-z0-9_]+)\.',test)
+              assert module,test
+              path='tests/'+module.group(1)+'.py'
+              raw1=(original/path).read_bytes();raw2=(candidate/path).read_bytes()
+              assert raw1==raw2
+              owner=('G29 Atlas acceptance' if 'code_atlas' in path else
+                'original native schema/temporal observations' if 'temporal' in path or 'two_phase' in path else
+                'native neighbor trace' if 'neighbor_trace' in path else
+                'native observed-action credit')
+              rows.append({'test':test,'source_path':path,'owner_category':owner,'test_source_sha256':hashlib.sha256(raw1).hexdigest()})
+          report={'schema':'v31l.inherited_ownership.v1','classification':'V31L_FAILURE_OWNER_IDENTIFIED_INHERITED_BLOCKED__NO_SCIENCE',
+             'common_failures':len(rows),'baseline_only':0,'candidate_only':0,
+             'native_source_modified':False,'heldout_evaluated':False,
+             'science_first_use':False,'owner_evidence':rows}
+          (p/'report.json').write_text(json.dumps(report,sort_keys=True,indent=2))
+          print(json.dumps(report,sort_keys=True))
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Preserve untouched logs and attribution
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-v31l-owner-evidence
+          path: |
+            ${{ runner.temp }}/v31l/*.log
+            ${{ runner.temp }}/v31l/report.json
+          retention-days: 7
