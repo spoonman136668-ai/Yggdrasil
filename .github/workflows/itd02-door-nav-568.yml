@@ -713,3 +713,84 @@ jobs:
           assert len(out)==4
           PY
           test -z "$(git status --porcelain)"
+  aba-unfamiliar-public-task:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generalize local credit to unseen public histories and alternate actions
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,platform
+          from pathlib import Path
+          base=Path('yggdrasil/itd02_local_ring_memory_dev.py').read_text()
+          line='credit = _local_credit(site, max(-2., min(2., error)) * old_mem_weight)'
+          assert base.count(line)==1
+          variants={'original':base,'negative_only':base.replace(line,'credit = _local_credit(site, min(0., max(-2., error)) * old_mem_weight)'),
+                    'no_gate':base.replace(line,'credit = _local_credit(site, 0.)')}
+          tasks=(('MRV','docked_MRV','Backup','TurnAround'),
+                 ('docked_MRV','Nothing','TurnAround','GoForward'),
+                 ('Nothing','MRV','GoForward','Backup'))
+          rows=[]
+          for name,source in variants.items():
+            ns={'__name__':'unfamiliar_fixture_'+name}
+            exec(compile(source,'<unfamiliar-public-task>','exec'),ns)
+            Model=ns['NativeRingMemoryDev'];actions=ns['ACTIONS']
+            total=[0,0,0];accuracy=[0,0,0];ema_total=[0,0,0];ema_accuracy=[0,0,0]
+            for task in tasks:
+              h1,h2,good1,good2=task
+              for seed in (11,23,37,53):
+                m=Model();ema={(h,a):0. for h in (h1,h2) for a in actions}
+                for phase,regime in enumerate(('A','B','A')):
+                  def good(h):
+                    target=good1 if h==h1 else good2
+                    alternative=good2 if h==h1 else good1
+                    return target if regime=='A' else alternative
+                  for n in range(200):
+                    h=(h1,h2)[(n+seed+phase)%2]
+                    forced=actions[((n+seed)//5)%3]
+                    probe=(n+seed)%5==0
+                    m.reset_episode();m.advance(h);m.feedback('TurnAround',0.)
+                    m.advance('Nothing');chosen=forced if probe else m.choose()
+                    reward=1. if chosen==good(h) else -1.
+                    m.feedback(chosen,reward,terminal=True);total[phase]+=reward
+                    ema_action=max(actions,key=lambda a:ema[(h,a)])
+                    ec=forced if probe else ema_action
+                    er=1. if ec==good(h) else -1.
+                    ema[(h,ec)]+=.5*(er-ema[(h,ec)]);ema_total[phase]+=er
+                  frozen=Model.restore(m.checkpoint())
+                  frozen.start_frozen_evaluation(frozen.parameter_sha256())
+                  for h in (h1,h2):
+                    frozen.reset_episode();frozen.advance(h)
+                    frozen.feedback('TurnAround',0.,learning=False)
+                    frozen.advance('Nothing');choice=frozen.choose()
+                    frozen.feedback(choice,0.,learning=False,terminal=True)
+                    accuracy[phase]+=int(choice==good(h))
+                    ema_accuracy[phase]+=int(max(actions,key=lambda a:ema[(h,a)])==good(h))
+                assert len(m.checkpoint())<8192
+            rows.append({'arm':name,'reward':total,'correct_out_of_24':accuracy,
+                         'ema_reward':ema_total,'ema_correct_out_of_24':ema_accuracy})
+          print('ABA_UNFAMILIAR_PUBLIC_TASK='+json.dumps({
+             'source_sha':'a39171a76d0d7817e3563682bb139a9d7ecf37c4',
+             'os':platform.platform(),'tasks':len(tasks),'schedules_per_task':4,
+             'synthetic_only':True,'original_world_steps':0,'results':rows},sort_keys=True))
+          assert len(rows)==3
+          PY
+          test -z "$(git status --porcelain)"
