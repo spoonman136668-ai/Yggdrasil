@@ -1,0 +1,46 @@
+name: ITD-02 V31B public surprise dev only
+on:
+  push:
+    branches: [research/itd02-v31b-public-surprise-recovery-20261028]
+permissions:
+  contents: read
+jobs:
+  development:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pin prereg native and sealed Q holdout
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor eb158cdfac8c0dba5ff0e231cf8ba105d45f5775 "$GITHUB_SHA"
+          git merge-base --is-ancestor 630ae83680c082ea2dc6f338c965c7501ae1895e "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+          test "$(git hash-object yggdrasil/itd02_v22_shared_context_ring_dev.py)" = 73dc4d7580f7f0b8ed8de1119b06504c44b0818f
+          test ! -f research/itd02_v31_heldout_evaluator.py
+      - name: Run fixed development-only public stream and inherited focused tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B research/itd02_v31b_public_surprise_dev_audit.py
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v26_calibrated_return.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v25_unlabeled_return_dev.py' -v
+          test -z "$(git status --porcelain --untracked-files=all)"
