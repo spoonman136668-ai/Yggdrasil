@@ -1,67 +1,846 @@
 name: ITD-02 Door Navigation Source-Free Focused
-
 on:
   pull_request:
     paths:
       - 'research/itd02/door_nav_568/**'
       - '.github/workflows/itd02-door-nav-568.yml'
-
 permissions:
   contents: read
-
 jobs:
-  source-free-focused:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
+  final-native-integration:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
     steps:
-      - uses: actions/checkout@v4
-      - name: Focused source-free tests
-        run: python -m unittest discover -s research/itd02/door_nav_568 -p 'test_*.py' -v
-      - name: Emit matched replay versus scratch metrics
-        working-directory: research/itd02/door_nav_568
-        run: python replay_efficiency_benchmark.py
-      - name: Emit noisy replay false-restoration audit
-        working-directory: research/itd02/door_nav_568
-        run: python noisy_replay_audit.py
-      - name: Emit exhaustive corruption-policy comparison
-        working-directory: research/itd02/door_nav_568
-        run: python replay_corruption_comparison.py
-      - name: Emit weighted independent and correlated replay-noise results
-        working-directory: research/itd02/door_nav_568
-        run: python replay_noise_probabilities.py
-      - name: Emit matched public successor-corroboration comparison
-        working-directory: research/itd02/door_nav_568
-        run: python successor_comparison_benchmark.py
-      - name: Emit three-step online correction and retention outcome
-        working-directory: research/itd02/door_nav_568
-        run: python three_step_online_correction.py
-      - name: Emit repeated-regime collision and memory-pressure audit
-        working-directory: research/itd02/door_nav_568
-        run: python context_regime_stress_audit.py
-      - name: Emit public evidence-selected memory outcomes
-        working-directory: research/itd02/door_nav_568
-        run: python evidence_selection_audit.py
-
-      - name: Audit memory switches
-        working-directory: research/itd02/door_nav_568
-        run: python memory_selection_switch_audit.py
-
-      - name: Audit two-hop causal memory evidence
-        working-directory: research/itd02/door_nav_568
-        run: python two_hop_evidence_audit.py
-
-      - name: Audit learned informative causal probe selection
-        working-directory: research/itd02/door_nav_568
-        run: python selected_causal_probe_audit.py
-
-      - name: Audit adaptive probe retries and budgets
-        working-directory: research/itd02/door_nav_568
-        run: python adaptive_probe_audit.py
-
-      - name: Audit retained public probe exceptions
-        working-directory: research/itd02/door_nav_568
-        run: python remembered_probe_audit.py
-
-      - name: Audit retained public revalidation
-        working-directory: research/itd02/door_nav_568
-        run: python revalidation_audit.py
+      - name: Preserve Git-native line endings
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: c9ed651c6d9ae2d0a551909c1fa60e2fb39185d8
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact qualified source tree and execute final integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "c9ed651c6d9ae2d0a551909c1fa60e2fb39185d8"
+          test -z "$(git status --porcelain)"
+          python - <<'PY'
+          import json, os, pathlib, platform, time, unittest
+          started=time.perf_counter()
+          paths=sorted(pathlib.Path('tests').glob('test_*.py'))
+          if not paths: raise SystemExit('NO_REPOSITORY_TESTS')
+          exclusions={}
+          if os.name=='nt':
+              exclusions={x:'UNIX_ONLY_RESOURCE_IMPORT' for x in (
+                 'test_free_fanout_sidecar.py',
+                 'test_nci04g6_native_credit.py',
+                 'test_nci04g7_source_producer.py')}
+              exclusions={x:reason for x,reason in exclusions.items() if (pathlib.Path('tests')/x).is_file()}
+          suite=unittest.TestSuite()
+          for p in paths:
+              if p.name not in exclusions:
+                  suite.addTests(unittest.defaultTestLoader.discover('tests',pattern=p.name))
+          report=unittest.TextTestRunner(verbosity=1).run(suite)
+          print('FINAL_NATIVE_REGRESSION='+json.dumps({
+              'source_sha':'c9ed651c6d9ae2d0a551909c1fa60e2fb39185d8',
+              'harness_event_sha':os.environ['GITHUB_SHA'],
+              'os':platform.platform(),
+              'executed_module_count':len(paths)-len(exclusions),
+              'excluded':exclusions,
+              'tests_run':report.testsRun,'failures':len(report.failures),
+              'errors':len(report.errors),'success':report.wasSuccessful(),
+              'seconds':round(time.perf_counter()-started,3),
+              'scientific_first_use':False},sort_keys=True))
+          if len(paths) != 3 or report.testsRun < (17 if os.name == 'nt' else 37) or not report.wasSuccessful():
+              raise SystemExit('FINAL_NATIVE_REGRESSION_FAILED')
+          tests=unittest.defaultTestLoader.discover('research/itd02/door_nav_568',pattern='test_*.py')
+          focused=unittest.TextTestRunner(verbosity=1).run(tests)
+          print('FINAL_ITD02_SOURCE_FREE='+json.dumps({
+              'source_sha':'c9ed651c6d9ae2d0a551909c1fa60e2fb39185d8','tests_run':focused.testsRun,
+              'errors':len(focused.errors),'failures':len(focused.failures),
+              'success':focused.wasSuccessful()},sort_keys=True))
+          if focused.testsRun<4 or not focused.wasSuccessful():
+              raise SystemExit('FINAL_ITD02_SOURCE_FREE_FAILED')
+          PY
+          test -z "$(git status --porcelain)"
+          test "$(git rev-parse HEAD)" = "c9ed651c6d9ae2d0a551909c1fa60e2fb39185d8"
+  aba-development-probe:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve native bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          fetch-depth: 0
+          clean: true
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Source-free A-B-A retention versus independent public-reward EMA
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "a39171a76d0d7817e3563682bb139a9d7ecf37c4"
+          python - <<'PY'
+          import hashlib, json, os, platform
+          from yggdrasil.itd02_local_ring_memory_dev import NativeRingMemoryDev, ACTIONS
+          histories=("LRV","docked_LRV")
+          actions=("TurnAround","GoForward","Backup")
+          native=NativeRingMemoryDev()
+          # Acting comparator: per-public-history/action recency EMA, no privileged
+          # state. Equal action opportunities, deterministic probe cadence.
+          ema={(h,a):0.0 for h in histories for a in actions}
+          seen={(h,a):0 for h in histories for a in actions}
+          def public_reward(regime,history,action):
+              good="GoForward" if (history=="LRV") == (regime=="A") else "Backup"
+              return 1.0 if action==good else -1.0
+          def select_ema(history):
+              return max(actions,key=lambda a:ema[(history,a)])
+          def public_native_episode(model,history,action, reward, training=True):
+              model.reset_episode()
+              model.advance(history)
+              model.feedback("TurnAround",0.0,learning=training)
+              model.advance("Nothing")
+              proposed=model.choose()
+              model.feedback(action,reward,learning=training,terminal=True)
+              return proposed
+          def evaluate(label):
+              evaluation=NativeRingMemoryDev.restore(native.checkpoint())
+              evaluation.start_frozen_evaluation(evaluation.parameter_sha256())
+              native_correct=ema_correct=0
+              choices={}
+              for h in histories:
+                  proposed=public_native_episode(evaluation,h,"TurnAround",0.0,training=False)
+                  baseline=select_ema(h)
+                  correct="GoForward" if (h=="LRV") == (label=="A") else "Backup"
+                  native_correct+=int(proposed==correct)
+                  ema_correct+=int(baseline==correct)
+                  choices[h]={"native":proposed,"ema":baseline}
+              return {"native_correct_of_2":native_correct,"ema_correct_of_2":ema_correct,
+                      "choices":choices}
+          receipt={"schema":"itd02.aba.sourcefree.probe.v1","source_sha":"a39171a76d0d7817e3563682bb139a9d7ecf37c4",
+                   "os":platform.platform(),"scientific_first_use":False,
+                   "source_original_world_episodes":0,"equal_public_interactions":True,
+                   "regimes":[]}
+          for regime in ("A","B","A"):
+              result={"regime":regime,"before":evaluate(regime),
+                      "train_rewards":{"native":0.0,"ema":0.0}}
+              for episode in range(200):
+                  h=histories[episode%2]
+                  # Both receive 200 interactions per regime. On each 5th episode,
+                  # use the same probe action; no future-reward or oracle action selection.
+                  probe=episode%5==0
+                  probe_action=actions[(episode//5)%len(actions)]
+                  native.reset_episode()
+                  native.advance(h)
+                  native.feedback("TurnAround",0.0)
+                  native.advance("Nothing")
+                  proposed=native.choose()
+                  chosen=probe_action if probe else proposed
+                  reward=public_reward(regime,h,chosen)
+                  native.feedback(chosen,reward,terminal=True)
+                  result["train_rewards"]["native"]+=reward
+                  chosen_ema=probe_action if probe else select_ema(h)
+                  reward_ema=public_reward(regime,h,chosen_ema)
+                  result["train_rewards"]["ema"]+=reward_ema
+                  seen[(h,chosen_ema)]+=1
+                  ema[(h,chosen_ema)]+=.5*(reward_ema-ema[(h,chosen_ema)])
+              result["after"]=evaluate(regime)
+              result["native_parameter_hash"]=native.parameter_sha256()
+              result["native_checkpoint_bytes"]=len(native.checkpoint())
+              receipt["regimes"].append(result)
+          receipt["native_updates"]=native.updates
+          receipt["comparator_observations"]=sum(seen.values())
+          print("ITD02_ABA_SOURCEFREE_RECEIPT="+json.dumps(receipt,sort_keys=True))
+          assert receipt["native_updates"]>0 and sum(seen.values())==600
+          assert all(s["native_checkpoint_bytes"]<=8192 for s in receipt["regimes"])
+          PY
+          test -z "$(git status --porcelain)"
+  aba-retention-diagnostic:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve source bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Diagnose return-A recovery with frozen checkpoints and no new reward
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,platform
+          from yggdrasil.itd02_local_ring_memory_dev import NativeRingMemoryDev,ACTIONS
+          histories=("LRV","docked_LRV")
+          acts=("TurnAround","GoForward","Backup")
+          def good(regime,h):
+              return "GoForward" if (h=="LRV") == (regime=="A") else "Backup"
+          def choice(m,h,training=True):
+              m.reset_episode()
+              m.advance(h)
+              m.feedback("TurnAround",0.,learning=training)
+              m.advance("Nothing")
+              out=m.choose()
+              return out
+          m=NativeRingMemoryDev()
+          summaries=[]
+          frozen_A=None
+          for stage,regime in enumerate(("A","B","A")):
+              chosen_counts={a:0 for a in acts}
+              rewards=0
+              if stage==2:
+                  # This uses an A-trained checkpoint saved BEFORE B.
+                  old=NativeRingMemoryDev.restore(frozen_A)
+                  old.start_frozen_evaluation(old.parameter_sha256())
+                  old_votes={}
+                  for h in histories:
+                      a=choice(old,h,False)
+                      old.feedback(a,0.,learning=False,terminal=True)
+                      old_votes[h]=a
+              else:
+                  old_votes=None
+              for episode in range(200):
+                  h=histories[episode%2]
+                  a=choice(m,h)
+                  selected=acts[(episode//5)%3] if episode%5==0 else a
+                  reward=1. if selected==good(regime,h) else -1.
+                  m.feedback(selected,reward,terminal=True)
+                  chosen_counts[selected]+=1
+                  rewards+=reward
+              if stage==0:
+                  frozen_A=m.checkpoint()
+              observer=NativeRingMemoryDev.restore(m.checkpoint())
+              observer.start_frozen_evaluation(observer.parameter_sha256())
+              votes={}
+              for h in histories:
+                  a=choice(observer,h,False)
+                  observer.feedback(a,0.,learning=False,terminal=True)
+                  votes[h]=a
+              summaries.append({"phase":stage+1,"regime":regime,"train_reward":rewards,
+                  "chosen_counts":chosen_counts,"frozen_choices":votes,
+                  "return_A_old_frozen_choices":old_votes,
+                  "parameter_sha":m.parameter_sha256(),
+                  "checkpoint_bytes":len(m.checkpoint())})
+          print("ABA_RETENTION_DIAGNOSTIC="+json.dumps({"source_sha":"a39171a76d0d7817e3563682bb139a9d7ecf37c4",
+              "os":platform.platform(),"stages":summaries,"protected_world_steps":0,
+              "claim":"synthetic_checkpoint_diagnostic_only"},sort_keys=True))
+          assert len(summaries)==3 and all(s["checkpoint_bytes"]<8192 for s in summaries)
+          PY
+  aba-action-credit-diagnostic:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve native bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Log native local action scores before and after A B A
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,platform
+          from yggdrasil.itd02_local_ring_memory_dev import NativeRingMemoryDev,ACTIONS
+          m=NativeRingMemoryDev()
+          histories=("LRV","docked_LRV")
+          rows=[]
+          for regime in ("A","B","A"):
+              phase={"regime":regime,"snapshots":[],"reward":0}
+              for episode in range(201):
+                  if episode in (0,10,50,100,200):
+                      for h in histories:
+                          probe=NativeRingMemoryDev.restore(m.checkpoint())
+                          probe.reset_episode()
+                          probe.advance(h)
+                          probe.feedback("TurnAround",0.0)
+                          probe.advance("Nothing")
+                          q=probe.q_values()
+                          phase["snapshots"].append({"episode":episode,"history":h,
+                            "q":dict(zip(ACTIONS,[round(x,5) for x in q])),
+                            "chosen":ACTIONS[max(range(3),key=lambda i:q[i])]})
+                  if episode==200: break
+                  h=histories[episode%2]
+                  m.reset_episode()
+                  m.advance(h)
+                  m.feedback("TurnAround",0.0)
+                  m.advance("Nothing")
+                  proposed=m.choose()
+                  chosen=ACTIONS[(episode//5)%3] if episode%5==0 else proposed
+                  good="GoForward" if (h=="LRV")== (regime=="A") else "Backup"
+                  reward=1.0 if chosen==good else -1.0
+                  m.feedback(chosen,reward,terminal=True)
+                  phase["reward"]+=reward
+              rows.append(phase)
+          print("ABA_ACTION_CREDIT_DIAGNOSTIC="+json.dumps({"source_sha":"a39171a76d0d7817e3563682bb139a9d7ecf37c4",
+            "os":platform.platform(),"synthetic_only":True,"protected_steps":0,"phases":rows},sort_keys=True))
+          assert len(rows)==3 and all(len(row["snapshots"])==10 for row in rows)
+          PY
+  aba-exploration-isolation:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compare exploration schedules with unchanged native update rule
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,platform
+          from yggdrasil.itd02_local_ring_memory_dev import NativeRingMemoryDev,ACTIONS
+          histories=("LRV","docked_LRV")
+          def correct(r,h):
+              return "GoForward" if ((h=="LRV")==(r=="A")) else "Backup"
+          def eval_model(m,regime):
+              e=NativeRingMemoryDev.restore(m.checkpoint())
+              e.start_frozen_evaluation(e.parameter_sha256())
+              out={}
+              for h in histories:
+                  e.reset_episode()
+                  e.advance(h)
+                  e.feedback("TurnAround",0.0,learning=False)
+                  e.advance("Nothing")
+                  choice=e.choose()
+                  e.feedback(choice,0.0,learning=False,terminal=True)
+                  out[h]=choice
+              return sum(out[h]==correct(regime,h) for h in histories),out
+          results=[]
+          # Each arm receives exactly 600 public action/reward events,
+          # identical training phase lengths and history order.
+          for period in (0,5,3,1):
+              m=NativeRingMemoryDev()
+              phases=[]
+              for regime in ("A","B","A"):
+                  score=0
+                  action_counts={a:0 for a in ACTIONS}
+                  for n in range(200):
+                      h=histories[n%2]
+                      m.reset_episode()
+                      m.advance(h)
+                      m.feedback("TurnAround",0.0)
+                      m.advance("Nothing")
+                      greedy=m.choose()
+                      # Probe override is an experimental actuator, not a model oracle.
+                      probe=period>0 and n%period==0
+                      chosen=ACTIONS[(n//max(period,1))%len(ACTIONS)] if probe else greedy
+                      reward=1.0 if chosen==correct(regime,h) else -1.0
+                      m.feedback(chosen,reward,terminal=True)
+                      score+=reward
+                      action_counts[chosen]+=1
+                  ncorrect,choices=eval_model(m,regime)
+                  phases.append({"regime":regime,"reward":score,
+                      "correct_of_2":ncorrect,"choices":choices,
+                      "action_counts":action_counts})
+              results.append({"probe_period":period,"phases":phases,
+                  "updates":m.updates,"checkpoint_bytes":len(m.checkpoint())})
+          receipt={"schema":"itd02.aba.exploration-isolation.v1",
+             "source_sha":"a39171a76d0d7817e3563682bb139a9d7ecf37c4",
+             "os":platform.platform(),"source_free":True,
+             "original_world_steps":0,"results":results}
+          print("ABA_EXPLORATION_ISOLATION="+json.dumps(receipt,sort_keys=True))
+          assert all(x["updates"]==1200 for x in results)
+          assert all(x["checkpoint_bytes"]<8192 for x in results)
+          PY
+  aba-update-rate-isolation:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compare exactly one local reward-step coefficient
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,platform,pathlib,hashlib
+          src=pathlib.Path('yggdrasil/itd02_local_ring_memory_dev.py').read_text()
+          target='recency_step = .7 * error /'
+          assert src.count(target)==1, 'EXACT_SINGLE_LOCAL_UPDATE_SITE_REQUIRED'
+          histories=('LRV','docked_LRV')
+          results=[]
+          for rate in ('.35','.7','1.0'):
+              changed=src.replace(target,'recency_step = '+rate+' * error /')
+              namespace={'__name__':'bounded_local_rate_probe_'+rate.replace('.','_')}
+              exec(compile(changed,'<source-free-local-rate-probe>','exec'),namespace)
+              Model=namespace['NativeRingMemoryDev']
+              ACTIONS=namespace['ACTIONS']
+              def correct(regime,h):
+                  return 'GoForward' if (h=='LRV')==(regime=='A') else 'Backup'
+              def evaluate(model,regime):
+                  restored=Model.restore(model.checkpoint())
+                  restored.start_frozen_evaluation(restored.parameter_sha256())
+                  count=0
+                  for h in histories:
+                      restored.reset_episode();restored.advance(h)
+                      restored.feedback('TurnAround',0.,learning=False)
+                      restored.advance('Nothing');choice=restored.choose()
+                      restored.feedback(choice,0.,learning=False,terminal=True)
+                      count+=choice==correct(regime,h)
+                  return count
+              m=Model()
+              stages=[]
+              for regime in ('A','B','A'):
+                  reward_total=0
+                  for n in range(200):
+                      h=histories[n%2]
+                      m.reset_episode();m.advance(h)
+                      m.feedback('TurnAround',0.);m.advance('Nothing')
+                      greedy=m.choose()
+                      chosen=ACTIONS[(n//5)%3] if n%5==0 else greedy
+                      reward=1. if chosen==correct(regime,h) else -1.
+                      m.feedback(chosen,reward,terminal=True)
+                      reward_total+=reward
+                  stages.append({'regime':regime,'reward':reward_total,'correct_of_2':evaluate(m,regime)})
+              results.append({'coefficient':rate,'stages':stages,'updates':m.updates,
+                  'checkpoint_bytes':len(m.checkpoint()),'probe_source_sha256':hashlib.sha256(changed.encode()).hexdigest()})
+          print('ABA_RATE_ISOLATION='+json.dumps({'source_sha':'a39171a76d0d7817e3563682bb139a9d7ecf37c4',
+              'os':platform.platform(),'arms':results,'original_world_steps':0,
+              'scientific_acceptance':False},sort_keys=True))
+          assert all(a['updates']==1200 and a['checkpoint_bytes']<8192 for a in results)
+          PY
+          test -z "$(git status --porcelain)"
+  aba-multiseed-holdout:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Held-out action schedules and task mappings with independently acting EMA
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,platform
+          from yggdrasil.itd02_local_ring_memory_dev import NativeRingMemoryDev,ACTIONS
+          from pathlib import Path
+          src=Path('yggdrasil/itd02_local_ring_memory_dev.py').read_text()
+          marker='recency_step = .7 * error /'
+          assert src.count(marker)==1
+          histories=('LRV','docked_LRV')
+          outcomes=[]
+          for mapping in (0,1):
+            for seed in (11,23,37,53,71,97):
+              for rate in ('.35','.7','1.0'):
+                namespace={'__name__':'isolated_holdout_'+rate.replace('.','_')}
+                exec(compile(src.replace(marker,'recency_step = '+rate+' * error /'),'<in_memory_holdout>','exec'),namespace)
+                Model=namespace['NativeRingMemoryDev']
+                native=Model()
+                ema={(h,a):0. for h in histories for a in ACTIONS}
+                correct_map=lambda regime,h: ('GoForward' if ((h=='LRV')==(regime=='A')) ^ bool(mapping) else 'Backup')
+                phases=[]
+                for ix,regime in enumerate(('A','B','A')):
+                  earned={'native':0.,'ema':0.}
+                  for n in range(200):
+                    # Different deterministic history order and probe phases, fixed across arms.
+                    h=histories[(n+seed+ix)%2]
+                    native.reset_episode();native.advance(h)
+                    native.feedback('TurnAround',0.);native.advance('Nothing')
+                    proposed=native.choose()
+                    probe=(n+seed)%5==0
+                    forced=ACTIONS[((n+seed)//5)%3]
+                    chosen=forced if probe else proposed
+                    rew=1. if chosen==correct_map(regime,h) else -1.
+                    native.feedback(chosen,rew,terminal=True)
+                    earned['native']+=rew
+                    emap=max(ACTIONS,key=lambda x:ema[(h,x)])
+                    selected=forced if probe else emap
+                    erew=1. if selected==correct_map(regime,h) else -1.
+                    ema[(h,selected)]+=.5*(erew-ema[(h,selected)])
+                    earned['ema']+=erew
+                  fitted=Model.restore(native.checkpoint())
+                  fitted.start_frozen_evaluation(fitted.parameter_sha256())
+                  frozen={}
+                  for h in histories:
+                    fitted.reset_episode();fitted.advance(h)
+                    fitted.feedback('TurnAround',0.,learning=False)
+                    fitted.advance('Nothing')
+                    choice=fitted.choose()
+                    fitted.feedback(choice,0.,learning=False,terminal=True)
+                    frozen[h]=choice
+                  phases.append({'regime':regime,'train_reward':earned,
+                    'native_correct':sum(frozen[h]==correct_map(regime,h) for h in histories),
+                    'ema_correct':sum(max(ACTIONS,key=lambda x:ema[(h,x)])==correct_map(regime,h) for h in histories)})
+                outcomes.append({'mapping':mapping,'seed':seed,'rate':rate,
+                    'phases':phases,'checkpoint_bytes':len(native.checkpoint())})
+          result={'schema':'itd02.aba.multiseed.holdout.v1',
+            'source_sha':'a39171a76d0d7817e3563682bb139a9d7ecf37c4',
+            'os':platform.platform(),'results':outcomes,'protected_world_steps':0,
+            'scientific_acceptance':False}
+          print('ABA_MULTISEED_HOLDOUT='+json.dumps(result,sort_keys=True))
+          assert len(outcomes)==36
+          assert all(x['checkpoint_bytes']<8192 for x in outcomes)
+          PY
+          test -z "$(git status --porcelain)"
+  aba-negative-credit-isolation:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compare fixed-rate and stronger negative-error local correction
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,platform
+          from pathlib import Path
+          src=Path('yggdrasil/itd02_local_ring_memory_dev.py').read_text()
+          target='recency_step = .7 * error / (1. + sum(v * v for v in x))'
+          assert src.count(target)==1
+          cases={
+            'original':src,
+            'negative_x2':src.replace(target,'recency_step = (.7 if error >= 0 else 1.4) * error / (1. + sum(v * v for v in x))'),
+            'negative_x1_5':src.replace(target,'recency_step = (.7 if error >= 0 else 1.05) * error / (1. + sum(v * v for v in x))')
+          }
+          summaries=[]
+          for case,source in cases.items():
+            ns={'__name__':'isolated_credit_'+case}
+            exec(compile(source,'<local-credit-isolation>','exec'),ns)
+            Model=ns['NativeRingMemoryDev'];ACTIONS=ns['ACTIONS']
+            total=[0,0,0];correct_total=[0,0,0];updates=0
+            for mapping in (0,1):
+              for seed in (11,23,37,53,71,97):
+                m=Model()
+                for phase,regime in enumerate(('A','B','A')):
+                  for n in range(200):
+                    h=('LRV','docked_LRV')[(n+seed+phase)%2]
+                    good='GoForward' if (((h=='LRV')==(regime=='A')) != bool(mapping)) else 'Backup'
+                    m.reset_episode();m.advance(h);m.feedback('TurnAround',0.)
+                    m.advance('Nothing');proposed=m.choose()
+                    forced=ACTIONS[((n+seed)//5)%3]
+                    chosen=forced if (n+seed)%5==0 else proposed
+                    reward=1. if chosen==good else -1.
+                    total[phase]+=reward
+                    m.feedback(chosen,reward,terminal=True)
+                  frozen=Model.restore(m.checkpoint())
+                  frozen.start_frozen_evaluation(frozen.parameter_sha256())
+                  for h in ('LRV','docked_LRV'):
+                    expected='GoForward' if (((h=='LRV')==(regime=='A')) != bool(mapping)) else 'Backup'
+                    frozen.reset_episode();frozen.advance(h)
+                    frozen.feedback('TurnAround',0.,learning=False)
+                    frozen.advance('Nothing');pick=frozen.choose()
+                    frozen.feedback(pick,0.,learning=False,terminal=True)
+                    correct_total[phase]+=pick==expected
+                assert len(m.checkpoint())<8192
+                updates+=m.updates
+            summaries.append({'arm':case,'rewards':total,'correct_of_24':correct_total,'updates':updates})
+          print('ABA_NEGATIVE_CREDIT_ISOLATION='+json.dumps({
+            'source_sha':'a39171a76d0d7817e3563682bb139a9d7ecf37c4',
+            'os':platform.platform(),'results':summaries,
+            'source_free':True,'protected_world_steps':0,'scientific_acceptance':False},sort_keys=True))
+          assert len(summaries)==3 and all(x['updates']==14400 for x in summaries)
+          PY
+          test -z "$(git status --porcelain)"
+  aba-local-consolidation-isolation:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compare local memory credit gating against unchanged EMA baseline
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, platform
+          from pathlib import Path
+          raw=Path('yggdrasil/itd02_local_ring_memory_dev.py').read_text()
+          credit='credit = _local_credit(site, max(-2., min(2., error)) * old_mem_weight)'
+          assert raw.count(credit)==1
+          arms={'original':raw,
+                'positive_memory_only':raw.replace(credit,'credit = _local_credit(site, max(0., min(2., error)) * old_mem_weight)'),
+                'negative_memory_only':raw.replace(credit,'credit = _local_credit(site, min(0., max(-2., error)) * old_mem_weight)'),
+                'no_gate_credit':raw.replace(credit,'credit = _local_credit(site, 0.)')}
+          histories=('LRV','docked_LRV')
+          out=[]
+          for arm,src in arms.items():
+            ns={'__name__':'local_credit_'+arm}
+            exec(compile(src,'<sourcefree-gating-probe>','exec'),ns)
+            Model=ns['NativeRingMemoryDev'];actions=ns['ACTIONS']
+            native_reward=[0,0,0];ema_reward=[0,0,0];native_accuracy=[0,0,0];ema_accuracy=[0,0,0]
+            for mapping in (0,1):
+              for seed in (11,23,37,53,71,97):
+                m=Model();ema={(h,a):0. for h in histories for a in actions}
+                for phase,regime in enumerate(('A','B','A')):
+                  def correct(h):
+                    return 'GoForward' if (((h=='LRV')==(regime=='A')) != bool(mapping)) else 'Backup'
+                  for n in range(200):
+                    h=histories[(n+seed+phase)%2]
+                    probe=(n+seed)%5==0
+                    forced=actions[((n+seed)//5)%3]
+                    m.reset_episode();m.advance(h);m.feedback('TurnAround',0.)
+                    m.advance('Nothing');selected=forced if probe else m.choose()
+                    rew=1. if selected==correct(h) else -1.
+                    m.feedback(selected,rew,terminal=True);native_reward[phase]+=rew
+                    ema_pick=max(actions,key=lambda a:ema[(h,a)])
+                    ema_act=forced if probe else ema_pick
+                    erew=1. if ema_act==correct(h) else -1.
+                    ema[(h,ema_act)]+=.5*(erew-ema[(h,ema_act)])
+                    ema_reward[phase]+=erew
+                  f=Model.restore(m.checkpoint());f.start_frozen_evaluation(f.parameter_sha256())
+                  for h in histories:
+                    f.reset_episode();f.advance(h);f.feedback('TurnAround',0.,learning=False)
+                    f.advance('Nothing');choice=f.choose()
+                    f.feedback(choice,0.,learning=False,terminal=True)
+                    native_accuracy[phase]+=int(choice==correct(h))
+                    ema_accuracy[phase]+=int(max(actions,key=lambda a:ema[(h,a)])==correct(h))
+                assert len(m.checkpoint())<8192
+            out.append({'arm':arm,'native_reward':native_reward,'ema_reward':ema_reward,
+              'native_correct_of_24':native_accuracy,'ema_correct_of_24':ema_accuracy})
+          print('ABA_LOCAL_CREDIT_GATING='+json.dumps({'source_sha':'a39171a76d0d7817e3563682bb139a9d7ecf37c4',
+             'os':platform.platform(),'sourcefree':True,'original_world_steps':0,'results':out},sort_keys=True))
+          assert len(out)==4
+          PY
+          test -z "$(git status --porcelain)"
+  aba-unfamiliar-public-task:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generalize local credit to unseen public histories and alternate actions
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,platform
+          from pathlib import Path
+          base=Path('yggdrasil/itd02_local_ring_memory_dev.py').read_text()
+          line='credit = _local_credit(site, max(-2., min(2., error)) * old_mem_weight)'
+          assert base.count(line)==1
+          variants={'original':base,'negative_only':base.replace(line,'credit = _local_credit(site, min(0., max(-2., error)) * old_mem_weight)'),
+                    'no_gate':base.replace(line,'credit = _local_credit(site, 0.)')}
+          tasks=(('MRV','docked_MRV','Backup','TurnAround'),
+                 ('docked_MRV','Nothing','TurnAround','GoForward'),
+                 ('Nothing','MRV','GoForward','Backup'))
+          rows=[]
+          for name,source in variants.items():
+            ns={'__name__':'unfamiliar_fixture_'+name}
+            exec(compile(source,'<unfamiliar-public-task>','exec'),ns)
+            Model=ns['NativeRingMemoryDev'];actions=ns['ACTIONS']
+            total=[0,0,0];accuracy=[0,0,0];ema_total=[0,0,0];ema_accuracy=[0,0,0]
+            for task in tasks:
+              h1,h2,good1,good2=task
+              for seed in (11,23,37,53):
+                m=Model();ema={(h,a):0. for h in (h1,h2) for a in actions}
+                for phase,regime in enumerate(('A','B','A')):
+                  def good(h):
+                    target=good1 if h==h1 else good2
+                    alternative=good2 if h==h1 else good1
+                    return target if regime=='A' else alternative
+                  for n in range(200):
+                    h=(h1,h2)[(n+seed+phase)%2]
+                    forced=actions[((n+seed)//5)%3]
+                    probe=(n+seed)%5==0
+                    m.reset_episode();m.advance(h);m.feedback('TurnAround',0.)
+                    m.advance('Nothing');chosen=forced if probe else m.choose()
+                    reward=1. if chosen==good(h) else -1.
+                    m.feedback(chosen,reward,terminal=True);total[phase]+=reward
+                    ema_action=max(actions,key=lambda a:ema[(h,a)])
+                    ec=forced if probe else ema_action
+                    er=1. if ec==good(h) else -1.
+                    ema[(h,ec)]+=.5*(er-ema[(h,ec)]);ema_total[phase]+=er
+                  frozen=Model.restore(m.checkpoint())
+                  frozen.start_frozen_evaluation(frozen.parameter_sha256())
+                  for h in (h1,h2):
+                    frozen.reset_episode();frozen.advance(h)
+                    frozen.feedback('TurnAround',0.,learning=False)
+                    frozen.advance('Nothing');choice=frozen.choose()
+                    frozen.feedback(choice,0.,learning=False,terminal=True)
+                    accuracy[phase]+=int(choice==good(h))
+                    ema_accuracy[phase]+=int(max(actions,key=lambda a:ema[(h,a)])==good(h))
+                assert len(m.checkpoint())<8192
+            rows.append({'arm':name,'reward':total,'correct_out_of_24':accuracy,
+                         'ema_reward':ema_total,'ema_correct_out_of_24':ema_accuracy})
+          print('ABA_UNFAMILIAR_PUBLIC_TASK='+json.dumps({
+             'source_sha':'a39171a76d0d7817e3563682bb139a9d7ecf37c4',
+             'os':platform.platform(),'tasks':len(tasks),'schedules_per_task':4,
+             'synthetic_only':True,'original_world_steps':0,'results':rows},sort_keys=True))
+          assert len(rows)==3
+          PY
+          test -z "$(git status --porcelain)"
+  local-observation-identifiability:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a39171a76d0d7817e3563682bb139a9d7ecf37c4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Audit action-local feature collisions before training
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,platform
+          from itertools import combinations
+          from yggdrasil.itd02_local_ring_memory_dev import NativeRingMemoryDev,OBSERVATIONS,ACTIONS,ACTION_SITES
+          features={}
+          for history in OBSERVATIONS:
+            m=NativeRingMemoryDev()
+            m.reset_episode();m.advance(history)
+            m.feedback('TurnAround',0.)
+            m.advance('Nothing')
+            now,retained=m._signals()
+            features[history]={action:[round(now[site],12),round(16*retained[site],12)]
+                               for action,site in zip(ACTIONS,ACTION_SITES)}
+          collisions={}
+          for action in ACTIONS:
+            pairs=[list(pair) for pair in combinations(OBSERVATIONS,2)
+                if features[pair[0]][action]==features[pair[1]][action]]
+            collisions[action]=pairs
+          print('LOCAL_IDENTIFIABILITY='+json.dumps({
+              'source_sha':'a39171a76d0d7817e3563682bb139a9d7ecf37c4',
+              'os':platform.platform(),'features':features,
+              'exact_collisions':collisions,'unseen_world_steps':0,
+              'claim':'static_bounded_2hop_signal_visibility_only'},sort_keys=True))
+          assert len(features)==5 and len(collisions)==3
+          PY
+          test -z "$(git status --porcelain)"
