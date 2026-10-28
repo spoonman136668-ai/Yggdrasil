@@ -1,0 +1,70 @@
+name: ITD-02 PR589 exact-source derived Atlas reanchor
+on:
+  push:
+    branches: [qualification/itd02-pr589-atlas-exact-source-20261027]
+    paths: [.github/workflows/itd02-pr589-g29-exact-source-reanchor-once.yml]
+permissions:
+  contents: write
+concurrency:
+  group: itd02-pr589-g29-exact-source-reanchor-once
+  cancel-in-progress: false
+jobs:
+  exact-source-derived-index:
+    if: ${{ github.actor == 'spoonman136668-ai' && github.run_attempt == 1 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve original exact Git bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          clean: true
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Guard PR589 exact source and strictly one new workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='56cadede0706537412765add0062c74afe28dab4'
+          test "$GITHUB_REF_NAME" = 'qualification/itd02-pr589-atlas-exact-source-20261027'
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = "e2252a9cb09166341b032fa8f3a441dbdb6345ec"
+          test "$(git rev-parse HEAD^^)" = "$base"
+          test "$(git rev-list --count "$base"..HEAD)" = 2
+          test "$(git diff --name-only "$base" HEAD)" = '.github/workflows/itd02-pr589-g29-exact-source-reanchor-once.yml'
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo "PR589_G29_EXACT_SOURCE_WORKFLOW_ONLY=PASS"
+      - name: Generate deterministic source locator index and run applicable source-free tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          python -B -m unittest discover -s research/itd02/door_nav_568 -p 'test_*.py' -v
+          echo "PR589_G29_GENERATION_AND_FOCUSED_TESTS=PASS"
+      - name: Publish derived Atlas artifacts to this isolated branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = 'qualification/itd02-pr589-atlas-exact-source-20261027'
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          actual="$(git diff --cached --name-only)"
+          expected="$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          test "$actual" = "$expected"
+          test -z "$(git diff --name-only)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'index(itd02): exact PR589 source derived G29 locators'
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+          echo "PR589_G29_PINNED_ATLAS_QUALIFIED=PASS"
