@@ -42,7 +42,7 @@ class V22SharedContextTests(unittest.TestCase):
         self.assertEqual(shared.native_ids, partition.native_ids)
         for model in (shared, partition):
             self.assertEqual(len(model.cell_weights)*HEAD_FEATURES+3,163)
-            self.assertEqual(model.scores if hasattr(model,"scores") else model.score is not None,True)
+            self.assertTrue(callable(model.score))
             model.start_observation("LRV")
             with self.assertRaises(ValueError):
                 model.accept_first("Backup", reward=1)
