@@ -28,7 +28,7 @@ SOURCE_REFS = {
     "v9": "cc03dc6738ef884ca552c50f980ddbce393750bb",
 }
 PERMS = tuple(itertools.permutations(ACTIONS))
-assert len(PERMS) == 6 and len(VARIANTS) == 7
+assert len(PERMS) == 6 and len(VARIANTS) == 5
 
 def canon(obj):
     return json.dumps(obj, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
