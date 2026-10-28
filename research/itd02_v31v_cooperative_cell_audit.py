@@ -290,13 +290,16 @@ def overhead_diagnostic():
         if unwire(raw) != frame:
             raise AssertionError("V31V_JSON_ROUNDTRIP_DRIFT")
     json_ns = time.process_time_ns() - t
-    if min(original_ns,coop_ns,json_ns) <= 0:
+    # On Windows process_time_ns can quantize <1 clock tick to zero.
+    # JSON-only diagnostic is not a resource gate; retain measured zero.
+    if original_ns <= 0 or coop_ns <= 0 or json_ns < 0:
         raise AssertionError("V31V_INVALID_MECHANISM_CPU_DIAGNOSTIC")
     return {
         "repetitions_each":128,
         "original_site_features_process_cpu_ns":original_ns,
         "cooperative_owner_build_process_cpu_ns":coop_ns,
         "single_json_frame_roundtrip_128_process_cpu_ns":json_ns,
+        "json_diagnostic_below_os_clock_resolution":json_ns == 0,
         "single_json_frame_serialized_length_bytes":len(wire(frame)),
         "seven_float_logical_payload_bytes":56,
         "interpretation":"DESCRIPTIVE_DIFFERENT_OPERATIONS_NOT_CAUSAL_COST_ADDITIVITY",
