@@ -1,0 +1,24 @@
+# ITD-02 v10 — prerecorded native reward-site gradient interference test
+
+**Recorded before diagnostic code or execution.** Immutable original actual eight-cell Yggdrasil native source `658b855d1b217d20ed9d431fe99b2e866469b7e9`; `LocalTaskRuntime` source blob `68a1423e0bd7206af511212c14b6ce8534154cc2`; unchanged PR #582/#588, FORGE/CKB-plane/controller and protected scientific first use. Previous v9 reliability gate did not improve outcomes (exact #40608852897); do not retune that mechanism.
+
+## Causal diagnostic question
+`LocalTaskRuntime.observe` fits **all eight cell outcomes** while each cell's mixture-of-three experts shares the same three sets of `K=3,D=7` genome weights. The evaluator-private public-outcome encoding only expresses observed reward category on the **original output sites 0,2,5**; all other five output target bits are constantly zero. Test whether those five always-negative training targets cause genuine cross-cell gradient interference that harms *acting* native learning.
+
+## Source-preserving intervention
+For exactly one legal chosen action's public consequence, compare:
+- **full8**: unchanged original `NativeTaskRingBridgeDev.accept_public_transition`, one original `LocalTaskRuntime.observe` on all 8 cells.
+- **reward3**: same unchanged public and native code, but on the isolated experimental runner only temporarily replace the **invocation** of `native.observe` so it applies the *unchanged* `LocalGenome.train_cell` at **only original cell indices 0,2,5**, with each target's actual public bit. Preserve one `core.events` increment per complete public action and all pending/checkpoint rules. Revert the override immediately after the real public transition or on error. This is a development-only training-site mask; a positive result would require an independently qualified real implementation. No new weights, no new cell topology, no hidden source information, no manually instructed actions, no source-unseen rewards, no inferred teacher labels, no external model.
+- **count_mean**, **EMA(alpha .5)**, **rolling-six**: independently acting source-blind classical public observation/action learners. For each visited public observation, source-blind initial 3-action cycle, and one source-blind probe every 9 visits (all counts are genuine actions); otherwise choose each model's fitted best legal action. No shared fit data, source laws or cross-arm results.
+
+## Predeclared one-time synthetic development source
+Six new IDs **240–245**, all six permutations of `(TurnAround, GoForward, Backup)`, two new seeds **1181,1193**. Per family/seed/arm, three phases of **48 actual chosen action/feedback events**:
+- familiar public LRV/MRV → actions permutation (a,b);
+- unfamiliar docked_LRV/docked_MRV → (b,c);
+- familiar reversal LRV/MRV → (c,a).
+Public observation alternates by `(step+seed)%2`. Source-private task law returns reward +10 for the correct action, otherwise -3, and public successor `Nothing`; true only for the action the learner itself actually chooses. `phase` and `law` never passed to learners. Greedy native arms choose through their unchanged `choose()`, no forced exploration. Existing native/model retention state persists across all phases. **1,728 actual public chosen feedback events per arm/OS; 8,640 total across five arms per OS**; independent Linux and Windows hosted runs.
+
+Each phase: checkpoint, byte-exact fresh-interpreter cold restore, settled pending state, update count, original eight-cell ring identity, model source pin, event trace receipt; sample frozen readout for seen/unfamiliar/reversal without fitting, no protected original world. For mechanistic attribution, independently clone one model before *the same genuinely observed* public reward and apply both one-step updates (full8/reward3) in disposable snapshots; compare the change in the three public reward output predictions versus the remaining five cells, plus learned shared genome and cell role deltas. Do not feed diagnostic copy outputs back into acting policies. Report public reward and model CPU/wall/RSS, allocated peak, byte cost for checkpoints, number of accepted feedback events, and source SHA. GitHub-hosted resource use does **not** qualify retail Windows hardware.
+
+## Decision
+Hypothesis test **only**. Qualify new mechanism for a standalone subsequent implementation **only if reward3 improves both unfamiliar adaptation and reversal versus original full8 without material familiar/retention/resource loss, and improves on the strongest independent conventional control under preregistered measures**. Otherwise `DEVELOPMENT_NEGATIVE_OR_MIXED__NO_SCIENCE`. Source-free positive result is *never* independent accepted science, first-use authority or automatic merge. Preserve every negative trial, no after-outcome edits to constants, no CKB-plane dependency, no new controller, and no paid inference.
