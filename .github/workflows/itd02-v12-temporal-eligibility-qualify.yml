@@ -1,0 +1,142 @@
+name: ITD-02 v12 eight-cell temporal eligibility delayed acting
+on:
+  push:
+    branches:
+      - research/itd02-v12-local-temporal-eligibility-20261027
+permissions:
+  contents: read
+jobs:
+  public-history-temporal-acting:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve source bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Checkout preregistration, evaluator, test source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          path: harness
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Exact immutable original native model
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 658b855d1b217d20ed9d431fe99b2e866469b7e9
+          path: native-original
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Exact immutable frozen-history parity learner
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: cd3821f8429ce48580f3132bb2ca0d93e2c94782
+          path: native-parity
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Exact source-frozen eight-cell temporal learner
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 2b7531724335ba122a5aef67e56b8661aaec8dfe
+          path: native-v12
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Check exact source lineage and preregistered immutable protocol
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C harness merge-base --is-ancestor 827185530ead89dd64b249ff409e5c1eb80ab341 "$GITHUB_SHA"
+          test "$(git -C native-original rev-parse HEAD)" = 658b855d1b217d20ed9d431fe99b2e866469b7e9
+          test "$(git -C native-parity rev-parse HEAD)" = cd3821f8429ce48580f3132bb2ca0d93e2c94782
+          test "$(git -C native-v12 rev-parse HEAD)" = 2b7531724335ba122a5aef67e56b8661aaec8dfe
+          python - <<'PY'
+          from pathlib import Path
+          for name in ("yggdrasil/task_runtime.py","yggdrasil/itd02_local_ring_memory_dev.py"):
+              b=(Path("native-original")/name).read_bytes()
+              assert b==(Path("native-parity")/name).read_bytes()
+              assert b==(Path("native-v12")/name).read_bytes()
+          print("ITD02_V12_FULL8_LEARNING_RULE_AND_RING_BYTE_IDENTICAL")
+          PY
+          test -z "$(git -C harness status --porcelain --untracked-files=all)"
+          test -z "$(git -C native-original status --porcelain --untracked-files=all)"
+          test -z "$(git -C native-parity status --porcelain --untracked-files=all)"
+          test -z "$(git -C native-v12 status --porcelain --untracked-files=all)"
+      - name: Qualify native public temporal eligibility, tamper and cold checkpoints
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH="$GITHUB_WORKSPACE/native-v12" python -B harness/tests/test_itd02_v12_delayed_local_eligibility.py -v
+          cd native-v12
+          python -B -m unittest discover -s tests -p test_itd02_native_task_bridge_dev.py -v
+          python -B -m unittest discover -s tests -p test_itd02_local_ring_memory_dev.py -v
+          python -B -m unittest discover -s tests -p test_itd02_native_training_session_dev.py -v
+      - name: Execute six genuinely acting delayed-consequence native and conventional arms
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v12-eligibility-results"
+          for arm in original parity v12; do
+            python -B harness/research/itd02_v12_temporal_eligibility_acting_eval.py \
+              --arm "$arm" --root "$GITHUB_WORKSPACE/native-$arm" \
+              --output "$RUNNER_TEMP/v12-eligibility-results/$arm.json"
+          done
+          for arm in history_ema history_count blind_ema; do
+            python -B harness/research/itd02_v12_temporal_eligibility_acting_eval.py \
+              --arm "$arm" --output "$RUNNER_TEMP/v12-eligibility-results/$arm.json"
+          done
+          python -B harness/research/itd02_v12_temporal_eligibility_acting_eval.py \
+            --compare "$RUNNER_TEMP/v12-eligibility-results" \
+            --output "$RUNNER_TEMP/v12-eligibility-results/comparison.json"
+      - name: Check public actual feedback and complete strict source no-go
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"v12-eligibility-results"
+          z=json.loads((p/"comparison.json").read_text("utf-8"))
+          assert z["actual_feedback_events_all_arms"]==20736
+          assert z["actual_feedback_events_per_arm"]==3456
+          assert z["two_step_episodes_per_arm"]==1728
+          assert z["acting_source_equivalent"] is True
+          assert z["fitted_checkpoint_sha_equal"] is True
+          assert z["first_use"] is False and z["scientific_promotion"] is False
+          assert z["original_world_tested"] is False and z["retail_pc_validated"] is False
+          assert set(z["phase_earned_mean"])=={"original","parity","v12","history_ema","history_count","blind_ema"}
+          v=json.loads((p/"v12.json").read_text("utf-8"))
+          assert len(v["trials"])==12 and v["temporal_bit_context_aliases"]["legal_contexts"]==36
+          assert all(t["selected_public_feedback_events"]==288 and t["two_step_episodes"]==144
+              for t in v["trials"])
+          assert all(len(t["phase_results"])==3 and all(
+              t["phase_results"][q]["event_count"]==96
+              for q in ("initial","unfamiliar","reversal")) for t in v["trials"])
+          print("ITD02_V12_SELECTED_PUBLIC_TWO_STEP_ACCOUNTING_PASS_NO_SCIENCE")
+          PY
+          test -z "$(git -C harness status --porcelain --untracked-files=all)"
+          test -z "$(git -C native-original status --porcelain --untracked-files=all)"
+          test -z "$(git -C native-parity status --porcelain --untracked-files=all)"
+          test -z "$(git -C native-v12 status --porcelain --untracked-files=all)"
+      - name: Preserve real negative/positive decisions, source pins and resource metrics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-v12-temporal-eligibility-${{ matrix.os }}
+          path: ${{ runner.temp }}/v12-eligibility-results/*.json
+          if-no-files-found: warn
+          retention-days: 7
