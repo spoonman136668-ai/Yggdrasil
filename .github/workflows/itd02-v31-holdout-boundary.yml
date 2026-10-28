@@ -1,0 +1,42 @@
+name: ITD-02 V31 holdout boundary integrity
+on:
+  push:
+    branches:
+      - research/itd02-v31-public-history-independent-split-20261028
+permissions:
+  contents: read
+jobs:
+  verify-boundary:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - name: LF checkout
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Freeze prereg chronology, original sources and absence of test executable
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 94dbd1ccda2095eb2f087c244647ebfc9656e007 "$GITHUB_SHA"
+          git merge-base --is-ancestor 94c9245b02f7164c7ac28ce6b82c7a36606bf92a "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+          test "$(git hash-object yggdrasil/itd02_local_ring_memory_dev.py)" = 1db0835d5c99456bcf99a013d4836f49314a9d39
+          test "$(git hash-object yggdrasil/itd02_v22_shared_context_ring_dev.py)" = 73dc4d7580f7f0b8ed8de1119b06504c44b0818f
+          test ! -f research/itd02_v31_heldout_evaluator.py
+          test -f yggdrasil/itd02_v31_public_history_dev.py
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_v31_public_history_dev.py' -v
+          test ! -f research/itd02_v31_holdout_results.json
+          test -z "$(git status --porcelain --untracked-files=all)"
+          PYTHONPATH=. python -B research/itd02_v31_public_history_dev_audit.py
+          echo V31_DEV_ONLY_BEHAVIOR_RECORDED_HOLDOUT_NOT_TOUCHED
