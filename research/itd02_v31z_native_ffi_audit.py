@@ -199,6 +199,11 @@ def native_adapter():
     old_site = v22._site_features
     old_mix = v22._mix_scalars
     handles = WeakKeyDictionary()
+    # Weak keys may expire across original pack/restore cold restarts.
+    # Retain every *opaque native handle* until this whole adapter context
+    # exits; otherwise a cold-restored bank's legitimate build counters
+    # disappear from the provenance audit and its native memory leaks.
+    all_handles = []
     allocated = []
     counts = {
         "distinct_original_cell_owners_per_bank": 0,
@@ -222,6 +227,7 @@ def native_adapter():
             if any(set(addr) & set(prev) for prev in allocated):
                 raise AssertionError("V31Z_MODEL_BANKS_SHARE_NATIVE_CELL_HEAP")
             allocated.append(addr)
+            all_handles.append(handle)
             handles[bank] = handle
         counts["distinct_original_cell_owners_per_bank"] = CELLS
         return handles[bank]
@@ -246,7 +252,7 @@ def native_adapter():
         v22.SharedContextRingDev.accept_first = old_first
         v22.SharedContextRingDev._features = old_features
         try:
-            for handle in handles.values():
+            for handle in all_handles:
                 d = NATIVE.get_stats(handle)
                 if (d["separate_cell_count"] != CELLS or
                         d["feature_row_width"] != HEAD_FEATURES):
@@ -260,7 +266,7 @@ def native_adapter():
             if old_site is not v22._site_features or old_mix is not v22._mix_scalars:
                 raise AssertionError("V31Z_ORIGINAL_SITE_OR_SCALAR_LEARNING_WAS_PATCHED")
         finally:
-            for handle in handles.values():
+            for handle in all_handles:
                 NATIVE.free(handle)
 
 
@@ -280,7 +286,9 @@ def run(source, blocks, arm, *, cold=False):
                 counters["total_native_heap_handles"] < 2 or
                 counters["different_bank_cell_heaps_not_shared"] is not True or
                 counters["original_native_python_learner_modified"] is not False):
-            raise AssertionError("V31Z_NATIVE_PER_BANK_OWNERSHIP_OR_LOGICAL_RING_FAILED")
+            raise AssertionError(
+                "V31Z_NATIVE_PER_BANK_OWNERSHIP_OR_LOGICAL_RING_FAILED " +
+                json.dumps(counters,sort_keys=True,separators=(",",":")))
     else:
         arm_x = "linked" if arm == "v31x" else arm
         signatures, _ = v31x.run(source, blocks, arm_x, cold=cold)
