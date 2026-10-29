@@ -151,6 +151,26 @@ class ManifestValidationTests(unittest.TestCase):
             ff.validate_manifest_path("research/fanout/../../manifest.json")
 
 class RuntimeValidationTests(unittest.TestCase):
+    def assertNoResourceFailsBeforeDispatch(self, manifest):
+        # A Windows host has no POSIX child resource metrics. Neither a
+        # candidate nor its output directory may be created in that case.
+        with tempfile.TemporaryDirectory() as td:
+            root = pathlib.Path(td)
+            output = root / "should-not-exist"
+            with self.assertRaises(ff.FanoutError) as ctx:
+                ff.run_candidate(manifest, root / "not-a-package", "smoke-a", output)
+            self.assertEqual(str(ctx.exception),
+                             "FREE_FANOUT_RESOURCE_ACCOUNTING_UNAVAILABLE")
+            self.assertFalse(output.exists())
+
+    def test_forced_missing_resource_fails_closed_on_every_platform(self):
+        saved = ff.resource
+        try:
+            ff.resource = None
+            self.assertNoResourceFailsBeforeDispatch(base_manifest())
+        finally:
+            ff.resource = saved
+
     def make_package(self, source):
         td = tempfile.TemporaryDirectory()
         root = pathlib.Path(td.name)
@@ -161,6 +181,9 @@ class RuntimeValidationTests(unittest.TestCase):
 
     def test_missing_result_rejected(self):
         m = base_manifest()
+        if ff.resource is None:
+            self.assertNoResourceFailsBeforeDispatch(m)
+            return
         source = "import sys\nsys.exit(0)\n"
         td, root = self.make_package(source)
         self.addCleanup(td.cleanup)
@@ -171,6 +194,9 @@ class RuntimeValidationTests(unittest.TestCase):
 
     def test_mismatched_candidate_id_rejected(self):
         m = base_manifest()
+        if ff.resource is None:
+            self.assertNoResourceFailsBeforeDispatch(m)
+            return
         source = """import json, pathlib, sys
 out = pathlib.Path(sys.argv[sys.argv.index("--output") + 1])
 out.write_text(json.dumps({"candidate_id": "wrong"}) + "\\n", encoding="utf-8")
