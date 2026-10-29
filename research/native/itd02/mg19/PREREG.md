@@ -1,0 +1,7 @@
+# MG19: independently native local-cell genuine MiniGrid mission envelope
+
+Central research prereg in FORGE commit `9715598cd35001a184f8ef12d0f0360fa933313f` precedes code. Frozen original Yggdrasil R20 native parent `a9942978f92e762e404fe50ce29445ea4639b4c2`, authentic MG18 prior negative interface evidence [FORGE run 40853260524](https://github.com/spoonman136668-ai/FORGE/actions/runs/40853260524).
+
+An opt-in local-cell bridge accepts original source selected `image,direction,mission` untouched and persists full-mission state-specific selected action/outcome memory; new pickup missions use unchanged R17 native contextual successor learning and never R18 global mission action reward preference. Only inside inherited R20/R18/R17, which are still DoorKey-specific, does the new wrapper project to an explicitly disclosed DoorKey compatibility mission. No stage oracle, private map, privileged object identity, future outcome, token/transformer cognitive core or collector-selected live action.
+
+Cross-mission and cross-view reward credit isolation, no-duplicate action custody, genuine-mission first event, original source cold snapshot/restore integrity and inherited R20/R18/R17 tests required across Ubuntu and Windows. This is **source-only engineering** and does not demonstrate real MiniGrid compositional learning or authorize source-world first use, accepted ref, autonomy/controller mutation, model promotion, main merge, or G29/Atlas bypass.
