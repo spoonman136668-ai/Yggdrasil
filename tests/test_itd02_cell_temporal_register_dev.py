@@ -9,7 +9,7 @@ from yggdrasil.itd02_local_ring_memory_dev import ACTIONS, CELLS
 
 class LocalRegisterTests(unittest.TestCase):
     def test_real_retention_per_public_transition_and_frozen_veto(self):
-        self.assertEqual(SCHEMA,"ygg.itd02.native_task_ring_bridge.source_only.v8")
+        self.assertEqual(SCHEMA,"ygg.itd02.native_task_ring_bridge.source_only.v12")
         m=NativeTaskRingBridgeDev()
         self.assertEqual(m.cell_trace,[0.]*CELLS)
         m.start_observation("LRV")
@@ -33,7 +33,9 @@ class LocalRegisterTests(unittest.TestCase):
             m.accept_public_transition("GoForward","Nothing",10,learning=True)
         self.assertEqual(before,m.cell_trace)
         m.accept_public_transition("GoForward","Nothing",0,learning=False,terminal=True)
-        self.assertEqual(before,m.cell_trace)
+        self.assertNotEqual(before,m.cell_trace)  # v12 bounded inference state advances
+        self.assertTrue(all(-1 <= v <= 1 for v in m.cell_trace))
+        self.assertEqual(ids,m.model_identities())  # fitted parameters remain frozen
 
     def test_v4_roundtrip_and_historical_v3_schema_denial(self):
         m=NativeTaskRingBridgeDev()
