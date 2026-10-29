@@ -50,6 +50,25 @@ class R21LocalOriginalEvidenceTests(unittest.TestCase):
             baseline=actor.parent.choose(candidate)
             self.assertEqual(chosen["action"],baseline["action"])
             self.assertEqual(chosen["status"],baseline["status"])
+    def test_real_selected_competing_context_can_change_unseen_action(self):
+        actor=LocalConsequenceCells()
+        elsewhere=view(near=4,far=1)
+        elsewhere_after=view(near=4,far=2)
+        for _ in range(12):
+            learn(actor,elsewhere,0,elsewhere_after)
+        a=view(near=1,far=1);after=view(near=1,far=2)
+        for _ in range(2):
+            learn(actor,a,5,after)
+        unseen=view(direction=3,far=7,near=1)
+        adapter=OriginalMissionAdapter();adapter.reset_public(unseen)
+        actor.start_session(adapter,"r21-competing-original-source-qualifier",live=False)
+        baseline=actor.parent.choose(unseen)
+        result=actor.choose(unseen)
+        if baseline["action"]!=5:
+            self.assertEqual(result["action"],5)
+            self.assertEqual(result["status"],"SELECT_NATIVE_LOCAL_SELECTED_CAUSAL_EFFECT")
+        self.assertEqual(actor.samples,14)
+
     def test_headings_no_effects_and_changed_mission_fail_closed(self):
         actor=LocalConsequenceCells();a=view(mission=GOAL)
         turned=view(mission=GOAL,direction=1)
