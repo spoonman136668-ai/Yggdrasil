@@ -1,0 +1,3 @@
+# V31S-SRC — Windows traceback first, no blind fixes
+
+Exact parent PR #663 `d8c1eecd303a80f46da40417cfbad0f16f43a53f`. Previous differential isolated three Windows import failures and two G7 runtime exceptions; five corresponding modules passed on Ubuntu. Preserve source unchanged, Q1–Q3 sealed. First run the same five modules on Windows/Linux, output the **raw final 3000 characters of each traceback** and original statuses; include a control test for platform API dependencies. No rewriting native model, tests or G29. Only propose a repair after seeing actual stack traces. Classification `V31S_SRC_TRACE_CAPTURED__REPAIR_PENDING__NO_SCIENCE` even if wrapper CI passes. No merge, scientific acceptance, FORGE/CKB-plane/controller change or G29 waiver.
