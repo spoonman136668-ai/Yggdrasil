@@ -2,7 +2,7 @@ import unittest
 from yggdrasil.itd02_native_task_bridge_dev import NativeTaskRingBridgeDev,SCHEMA
 class TestContextCredit(unittest.TestCase):
  def test_only_observed_context_and_action_credit_changes(self):
-  self.assertTrue(SCHEMA.endswith("source_only.v8"))
+  self.assertTrue(SCHEMA.endswith("source_only.v12"))
   m=NativeTaskRingBridgeDev();m.start_observation("LRV")
   m.accept_public_transition("Backup","Nothing",10,terminal=True)
   from yggdrasil.itd02_native_task_bridge_dev import _local_ordered_word
