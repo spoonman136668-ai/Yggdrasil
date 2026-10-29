@@ -40,7 +40,7 @@ PINS={
  "yggdrasil/itd02_v26_calibrated_return_dev.py":"8a0417d34c6ba94a4eaef33d767da14a4a5c9709",
  "yggdrasil/itd02_v30_public_probe_policy_dev.py":"bcc1f0b4e2ec0fcd8b2af69dfb0e6d4d2ca27a4a",
  "yggdrasil/itd02_v35_action_conditioned_ring_dev.py":"04c21dc35054e98bc1a366af7c962983e64ef02d",
- "research/itd02_v36_public_identifiability_rank_audit.py":"PIN_TO_REPLACE",
+ "research/itd02_v36_public_identifiability_rank_audit.py":"2ccaab236ca56f347d59e47f756e9e78f9104479",
 }
 def verify():
     root=Path(__file__).resolve().parents[1]
