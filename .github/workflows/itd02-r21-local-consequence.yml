@@ -1,0 +1,63 @@
+name: ITD-02 R21 native local selected-consequence regression
+on:
+  push:
+    branches: [research/itd02-r21-local-consequence-20261029]
+permissions:
+  contents: read
+jobs:
+  original-source-native-local-consequence:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    timeout-minutes: 40
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Preserve original git LF
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Exact original source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Native Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Prospective source freeze and unchanged parent
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor a9942978f92e762e404fe50ce29445ea4639b4c2 "$GITHUB_SHA"
+          git merge-base --is-ancestor 4ba8f6f09d122a52577c477019cbaf22e7b5ed68 "$GITHUB_SHA"
+          test "$(git hash-object research/native/itd02/r21/PREREG.md)" = 13901611aed97d41058d446f6e3be11e9ea3d22b
+          test "$(git hash-object research/native/itd02/r21/local_consequence_cells.py)" = 8bc5d17004e0dd826fd1064bb960d1d3df5321a5
+          test "$(git hash-object research/native/itd02/r21/checkpoint.py)" = f75c17f570b42f11c68642201033e2c5fea41063
+          test "$(git hash-object research/native/itd02/r21/test_local_consequence_cells.py)" = c56ba52d4cf217af7aa645bca583f75a1fc40ebc
+          test "$(git hash-object research/native/itd02/r20/state_credit_cells.py)" = b81af09e879ddab30955bd5debc2a89ce5266ae3
+          echo MG17C_YGG_ORIGINAL_SELECTED_SOURCE_FROZEN_PASS
+      - name: Focused and original inherited selected-public regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            research.native.itd02.r10.test_public_adapter \
+            research.native.itd02.r11.test_affordance_cells \
+            research.native.itd02.r12.test_outcome_choice \
+            research.native.itd02.r13.test_explore_choice \
+            research.native.itd02.r14.test_temporal_cells \
+            research.native.itd02.r15.test_continuity_cells \
+            research.native.itd02.r16.test_motion_cells \
+            research.native.itd02.r17.test_successor_cells \
+            research.native.itd02.r18.test_mission_cells \
+            research.native.itd02.r20.test_state_credit_cells \
+            research.native.itd02.r21.test_local_consequence_cells
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo MG17C_YGG_LOCAL_SELECTED_SOURCE_ENGINEERING_PASS_NO_SCIENCE
