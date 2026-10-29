@@ -1,0 +1,55 @@
+{
+  "schema": "yggdrasil.itd02.r13.native-uncertainty-sourceonly.v1",
+  "freeze": "BEFORE_R13_EXECUTABLE_CODE",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "commit": "6e2d4a219b1fb62e0124ba053b65b7e3fdd46546",
+    "r10_public_blob": "3917d36ce9f86a2c1b998a0a2f93fb27674a9205",
+    "r11_local_cells_blob": "614c7dfb1b43f485009b70cb85e9b7b5119cafc2",
+    "r12_choice_blob": "2d19b28d6d4db1988ae908fe91be1a27ce4c1907"
+  },
+  "negative_anchor": {
+    "forge_mg03_pr": 1069,
+    "source_run": 40796318964,
+    "original_sha256": "4268e4ef94685eaa55d51200dafc50a15591df5f44cc3e8e9f7410fde19c7354",
+    "ygg_r12_live_native_proposals": 0,
+    "external_fallback_steps": 512,
+    "real_goals": 0,
+    "science": false
+  },
+  "candidate": "A new opt-in policy decision layer on the unchanged R10 public observation, R11 local selected-effect counts, and R12 positive-reward selector; not a change to the frozen original R12.",
+  "policy": {
+    "public": "Accept exactly R10 image 7x7x3, direction and source DoorKey mission; reject additional private keys and any altered mission.",
+    "action": "Preserve existing R12 positive_reward action whenever original observed positive effect exists; otherwise choose among original seven legal actions by least native observed public context/action feedback count.",
+    "tie": "Use SHA256 canonical public local cues (front,carried,direction) as stable starting action ID; deterministic tie-breaking, no random or external collector-based native choice.",
+    "update": "Keep unchanged R10.submit/complete and R11.learn_selected exactly once per original real env.step selected consequence. R13 selector itself does not synthesize observations, rewards, learned parameters, or mutate original cells.",
+    "checkpoint": "Use unchanged R11 source-authenticated checkpoint and R10 session checkpoint; cold restore must yield same native source action for same public cues and count memory.",
+    "source_bound": "No new privileged env.grid/agent_pos/env.carrying/seed/door key map, no task-specific key/pickup/door solution mapping. Explicit no mission-understanding claim."
+  },
+  "focused_tests": [
+    "With no observed positive reward select a native legal original action, never abstain",
+    "One real selected feedback changes proposal by context/action support",
+    "Original R12 observed-positive-reward proposal keeps priority",
+    "Restored original R11 checkpoint selects same native action",
+    "R10 rejects altered public schema, extra private fields and mission",
+    "No selected event may be learned twice, no mutation on rejected input"
+  ],
+  "controls": {
+    "later_paired_MG04": "Compare separately qualified DK8-Go and R13-local-cells with original DK7/R12 and matched random / collector baselines on same authentic Farama source and matched training/reward/CPU budgets. Original external fallback must be disabled for native-attribution arm.",
+    "not_executed": true
+  },
+  "qualification": {
+    "pass": "R13_NATIVE_UNCERTAINTY_SOURCE_READY__NO_SCIENCE",
+    "fail": "R13_SOURCE_OR_SELECTED_EFFECT_CUSTODY_BLOCKED__NO_SCIENCE",
+    "scope": "focused source-only tests Windows and Linux; inherited G29 and v12 regressions remain independently blocking",
+    "scientific_first_use": false
+  },
+  "authority": {
+    "controller_dispatch": false,
+    "accepted_ref_mutation": false,
+    "merge": false,
+    "model_promotion": false,
+    "sealed_holdout_access": false,
+    "existing_R10_R11_R12_rewrite": false
+  }
+}
