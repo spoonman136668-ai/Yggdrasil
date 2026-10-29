@@ -201,7 +201,7 @@ def fresh_worker(arm,seed):
         current=lambda cold=False: (
             capture_native(p,cold=cold) if native
             else capture_conventional(conv))
-        phases["before_training"]=current()
+        stages["before_training"]=current()
         if arm!="native_fresh_b":
             phases["a240"]=train_native(p,arm,"a",initial,True) if native \
                 else train_conventional(conv,"a",initial)
