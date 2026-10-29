@@ -2,7 +2,7 @@ import json,unittest,hashlib
 from yggdrasil.itd02_native_task_bridge_dev import NativeTaskRingBridgeDev,SCHEMA
 class LocalCredit(unittest.TestCase):
  def test_selected_only(self):
-  self.assertTrue(SCHEMA.endswith("source_only.v8"))
+  self.assertTrue(SCHEMA.endswith("source_only.v12"))
   m=NativeTaskRingBridgeDev()
   m.start_observation("LRV")
   m.accept_public_transition("Backup","Nothing",10,terminal=True)
