@@ -1,0 +1,50 @@
+name: ITD-02 R14 original selected public temporal memory source-only
+on:
+  push:
+    branches: [research/itd02-r14-public-temporal-loop-memory-20261028]
+permissions:
+  contents: read
+jobs:
+  native-original-source-temporal-memory:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Original Git LF policy
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Prereg before new executable and original R10 through R13 source preserved
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor b27372e6c670166749dc3dc41ab6cfe9b263292f "$GITHUB_SHA"
+          git merge-base --is-ancestor 5cdbb0a1445f2144e3f36601ec0178b65e9c07aa "$GITHUB_SHA"
+          git merge-base --is-ancestor 0897e17c1841b33d0ce7d40ee2bbad00eeaa05b0 "$GITHUB_SHA"
+          test "$(git hash-object research/native/itd02/r10/public_adapter.py)" = 3917d36ce9f86a2c1b998a0a2f93fb27674a9205
+          test "$(git hash-object research/native/itd02/r11/affordance_cells.py)" = 614c7dfb1b43f485009b70cb85e9b7b5119cafc2
+          test "$(git hash-object research/native/itd02/r12/outcome_choice.py)" = 2d19b28d6d4db1988ae908fe91be1a27ce4c1907
+          test "$(git hash-object research/native/itd02/r13/explore_choice.py)" = 51c421fbd34b5e88e02bf89acab0de7b11eee1c9
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Focused original R10 R11 R13 selected source regression plus R14 memory
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONPATH: .
+        run: |
+          set -euo pipefail
+          python -B -m unittest research.native.itd02.r14.test_temporal_cells research.native.itd02.r13.test_explore_choice -v
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo R14_SOURCE_ONLY_NATIVE_TEMPORAL_QUALIFIED_NOT_SCIENCE
