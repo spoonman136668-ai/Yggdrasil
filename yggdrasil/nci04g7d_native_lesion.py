@@ -58,9 +58,9 @@ class NativeNeighborLesionObserver:
                 ["git", "show", commit + ":" + name], cwd=self.root,
                 check=True, capture_output=True, timeout=10).stdout
             current = file.read_bytes()
-            if current != committed:
+            if current.replace(b"\r\n", b"\n") != committed.replace(b"\r\n", b"\n"):
                 raise ValueError("native transition source changed")
-            hashes.append(hashlib.sha256(current).hexdigest())
+            hashes.append(hashlib.sha256(committed).hexdigest())
         return commit, tuple(hashes)
 
     def intervene_and_measure(self, sender, neighbor):
