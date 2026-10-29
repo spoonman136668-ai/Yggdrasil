@@ -1,0 +1,35 @@
+name: R19 original public mission native source-selected actor
+on:
+  pull_request:
+    paths:
+      - 'research/native/itd02/r19/**'
+      - '.github/workflows/itd02-r19-native-genuine-mission-actor.yml'
+permissions:
+  contents: read
+jobs:
+  selected-native-source-only:
+    name: R19 genuine public mission Ygg local actor / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Original R17 action parity, genuine-mission R19 native actor, strict source-only receipts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd02/r19 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/native/itd02/r18 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/native/itd02/r17 -p 'test_*.py' -v
+          python -B -m py_compile research/native/itd02/r19/mission_actor.py
+          echo R19_NATIVE_ACTOR_GENUINE_MISSION_SOURCEONLY=PASS
+          echo R19_ORIGINAL_FARAMA_EPISODES=ZERO
+          echo R19_SCIENTIFIC_FIRST_USE=NO
