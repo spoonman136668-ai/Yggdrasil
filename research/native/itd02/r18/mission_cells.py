@@ -122,13 +122,6 @@ class MissionCells:
         if (type(adapter)is not OriginalMissionAdapter or
             before["mission"]!=after["mission"] or
             adapter.pending is not None or adapter.current!=after or
-            not adapter.ledger or adapter.events!=self.parent.samples-self.parent.parent.local.samples+adapter.events):
-            # The last expression is deliberately not source authority; use the
-            # direct R10 cursor and mission event digest checks below.
-            pass
-        if (type(adapter)is not OriginalMissionAdapter or
-            before["mission"]!=after["mission"] or
-            adapter.pending is not None or adapter.current!=after or
             adapter.inner.current!=q or not adapter.ledger or
             adapter.events!=adapter.inner.events or
             adapter.inner.events!=self.parent.parent.local.local.cursor+1):
