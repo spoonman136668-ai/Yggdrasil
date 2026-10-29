@@ -1,0 +1,66 @@
+name: ITD-02 V31Q-SRC full inherited unmodified
+on:
+  push:
+    branches: [research/itd02-v31q-src-v12-inherited-contract-20261028]
+permissions:
+  contents: read
+jobs:
+  baseline:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify prereg and immutable native implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 6d43bb2c49a0d08f95f0b0013e4315b55df50db1 "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+          test ! -f research/itd02_v31_heldout_evaluator.py
+      - name: Original inherited tests with raw status and focused v12 control
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v31q"
+          set +e
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_*.py' -v > "$RUNNER_TEMP/v31q/inherited.log" 2>&1
+          echo $? > "$RUNNER_TEMP/v31q/inherited.exit"
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_native_task_bridge_dev.py' -v > "$RUNNER_TEMP/v31q/native_v12.log" 2>&1
+          echo $? > "$RUNNER_TEMP/v31q/native_v12.exit"
+          python scripts/build_code_atlas.py --check > "$RUNNER_TEMP/v31q/atlas.log" 2>&1
+          echo $? > "$RUNNER_TEMP/v31q/atlas.exit"
+          set -e
+          python - "$RUNNER_TEMP/v31q" <<'PY'
+          import json,pathlib,re,sys
+          p=pathlib.Path(sys.argv[1]);s=(p/'inherited.log').read_text(errors='replace')
+          failures=sorted(set(re.findall(r'^(?:FAIL|ERROR): ([^\n]+)',s,re.M)))
+          d={'schema':'v31q.src.inherited.v1',
+             'classification':'V31Q_SRC_INHERITED_RECONCILIATION_BLOCKED__NO_SCIENCE',
+             'inherited_exit':int((p/'inherited.exit').read_text()),
+             'v12_focused_exit':int((p/'native_v12.exit').read_text()),
+             'strict_g29_exit':int((p/'atlas.exit').read_text()),
+             'failure_identities':failures,
+             'summary':re.findall(r'^(?:Ran \d+ tests.*|FAILED \(.*|OK)$',s,re.M)[-3:],
+             'original_tests_modified':False,'native_source_modified':False,
+             'holdout_evaluated':False,'scientific_first_use':False}
+          assert d['v12_focused_exit']==0 and d['inherited_exit']!=0
+          (p/'report.json').write_text(json.dumps(d,sort_keys=True,indent=2))
+          print(json.dumps(d,sort_keys=True))
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: itd02-v31q-src-${{ matrix.os }}
+          path: ${{ runner.temp }}/v31q/*
+          retention-days: 7
