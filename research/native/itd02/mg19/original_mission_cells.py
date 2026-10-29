@@ -112,6 +112,3 @@ class OriginalMissionAdapter:
         self.events+=1
         return result
 
-
-# Alias retains the original R18 class and its type checks.
-OriginalMissionAdapterR18=OriginalMissionAdapter.__mro__[1] if False else None
