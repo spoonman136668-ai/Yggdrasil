@@ -1,0 +1,60 @@
+name: ITD-02 R18 actual original mission local-cell selected-source qualification
+on:
+  push:
+    branches: [research/itd02-r18-original-mission-20261029]
+permissions:
+  contents: read
+jobs:
+  original-mission-boundary-and-source-feedback:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Original native LF policy
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Exact source checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Source Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Frozen prereg source and unchanged local parent
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 770244b04d011466458b2335d3951daf7653dc8f "$GITHUB_SHA"
+          git merge-base --is-ancestor a13a4a91107f84798c2de6ea510f7867007d1063 "$GITHUB_SHA"
+          test "$(git hash-object research/native/itd02/r18/PREREG.md)" = ef9d7bc9f809d9eceac2161ee947615df621a8b3
+          test "$(git hash-object research/native/itd02/r18/mission_cells.py)" = 531b4f258408eb38f38794f03a192aacdad42315
+          test "$(git hash-object research/native/itd02/r18/test_mission_cells.py)" = e50ad4b55935a05e8a8baa326b9af24bcf0d5b83
+          test "$(git hash-object research/native/itd02/r17/successor_cells.py)" = 9354a1f0b732100ab943a5caee80b3849e3c1ea0
+          echo R18_FROZEN_ACTUAL_SOURCE_MISSION_AND_UNCHANGED_CELLS_PASS
+      - name: Inherited native R10-R18 local selected-feedback regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            research.native.itd02.r10.test_public_adapter \
+            research.native.itd02.r11.test_affordance_cells \
+            research.native.itd02.r12.test_outcome_choice \
+            research.native.itd02.r13.test_explore_choice \
+            research.native.itd02.r14.test_temporal_cells \
+            research.native.itd02.r15.test_continuity_cells \
+            research.native.itd02.r16.test_motion_cells \
+            research.native.itd02.r17.test_successor_cells \
+            research.native.itd02.r18.test_mission_cells
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo R18_GENUINE_MISSION_SELECTED_FEEDBACK_ENGINEERING_ONLY
