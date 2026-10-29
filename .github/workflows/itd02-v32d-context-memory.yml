@@ -1,0 +1,219 @@
+name: ITD-02 V32D eight private native local memory banks and surprise-gated reversal controls
+on:
+  push:
+    branches: [research/itd02-v32d-local-context-memory-20261028]
+    paths: [.github/workflows/itd02-v32d-context-memory.yml]
+permissions:
+  contents: read
+concurrency:
+  group: itd02-v32d-g29-single-source-20261028
+  cancel-in-progress: false
+jobs:
+  source-reanchor:
+    if: ${{ github.actor == 'spoonman136668-ai' && github.run_attempt == 1 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    outputs:
+      published_sha: ${{ steps.publish.outputs.published_sha }}
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve exact Git source bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          clean: true
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Validate frozen ancestor, exact V32D_LOCAL contract-only delta
+        shell: bash
+        run: |
+          set -euo pipefail
+          parent=6ecdf32894926301aa51ad3ef5c2cc4276c63058
+          prereg=efa623e4442d1fced8dec7fb24108e9e5810f0df
+          native_source=25ffcc631b784a0ede4496612adb4a34815b0b85
+          evaluator=2cd78fe9ad5d193a07f2a8f5ce7372f971a255e5
+          test "$GITHUB_REF_NAME" = 'research/itd02-v32d-local-context-memory-20261028'
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse "$prereg^")" = "$parent"
+          test "$(git rev-parse "$native_source^")" = "$prereg"
+          test "$(git rev-parse "$evaluator^")" = "$native_source"
+          test "$(git rev-parse HEAD^)" = "$evaluator"
+          git merge-base --is-ancestor "$prereg" HEAD
+          test -z "$(git diff --name-only "$parent" HEAD -- yggdrasil)"
+          git diff --name-only "$parent" HEAD | sort > "$RUNNER_TEMP/v32d-actual"
+          printf '%s\n' \
+            .github/workflows/itd02-v32d-context-memory.yml \
+            research/itd02_v32d_context_memory_preregistration.md \
+            research/itd02_v32d_context_memory.rs \
+            research/itd02_v32d_context_memory_audit.py | sort > "$RUNNER_TEMP/v32d-allowed"
+          diff -u "$RUNNER_TEMP/v32d-allowed" "$RUNNER_TEMP/v32d-actual"
+          test "$(git hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+          test "$(git hash-object yggdrasil/itd02_v22_shared_context_ring_dev.py)" = 73dc4d7580f7f0b8ed8de1119b06504c44b0818f
+          test "$(git hash-object research/itd02_v31j_executed_edge_ledger_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31j_executed_edge_ledger_audit.py")"
+          test "$(git hash-object research/itd02_v31i_cold_restart_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31i_cold_restart_audit.py")"
+          test "$(git hash-object research/itd02_v31m_opt_bounded_ring_cache_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31m_opt_bounded_ring_cache_audit.py")"
+          test "$(git hash-object research/itd02_v31n_episode_ring_cache_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31n_episode_ring_cache_audit.py")"
+          test "$(git hash-object research/itd02_v31o_full_process_resource_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31o_full_process_resource_audit.py")"
+          test "$(git hash-object research/itd02_v31p_long_session_amortization_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31p_long_session_amortization_audit.py")"
+          test "$(git hash-object research/itd02_v31q_varied_public_resource_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31q_varied_public_resource_audit.py")"
+          test "$(git hash-object research/itd02_v31r_bank_cell_locality_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31r_bank_cell_locality_audit.py")"
+          test "$(git hash-object research/itd02_v31s_eight_process_ring_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31s_eight_process_ring_audit.py")"
+          test "$(git hash-object research/itd02_v31t_thread_ring_resource_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31t_thread_ring_resource_audit.py")"
+          test "$(git hash-object research/itd02_v31u_neighbor_mailbox_resource_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31u_neighbor_mailbox_resource_audit.py")"
+          test "$(git hash-object research/itd02_v31v_cooperative_cell_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31v_cooperative_cell_audit.py")"
+          test "$(git hash-object research/itd02_v31w_dual_buffer_owner_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31w_dual_buffer_owner_audit.py")"
+          test "$(git hash-object research/itd02_v31x_linked_neighbor_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31x_linked_neighbor_audit.py")"
+          test "$(git hash-object research/itd02_v31y_sparse_frontier_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31y_sparse_frontier_audit.py")"
+          test "$(git hash-object research/itd02_v31z_native_ring.rs)" = "$(git rev-parse "$parent:research/itd02_v31z_native_ring.rs")"
+          test "$(git hash-object research/itd02_v31z_native_ffi_audit.py)" = "$(git rev-parse "$parent:research/itd02_v31z_native_ffi_audit.py")"
+          test "$(git hash-object research/itd02_v32a_native_microcells.rs)" = "$(git rev-parse "$parent:research/itd02_v32a_native_microcells.rs")"
+          test "$(git hash-object research/itd02_v32a_native_microcells_audit.py)" = "$(git rev-parse "$parent:research/itd02_v32a_native_microcells_audit.py")"
+          test "$(git hash-object research/itd02_v32a_native_microcells_preregistration.md)" = "$(git rev-parse "$parent:research/itd02_v32a_native_microcells_preregistration.md")"
+          test "$(git hash-object research/itd02_v32b_null_margin_audit.py)" = "$(git rev-parse "$parent:research/itd02_v32b_null_margin_audit.py")"
+          test "$(git hash-object research/itd02_v32b_null_margin_preregistration.md)" = "$(git rev-parse "$parent:research/itd02_v32b_null_margin_preregistration.md")"
+          test "$(git hash-object research/itd02_v32c_world_reversal_audit.py)" = "$(git rev-parse "$parent:research/itd02_v32c_world_reversal_audit.py")"
+          test "$(git hash-object research/itd02_v32c_world_reversal_preregistration.md)" = "$(git rev-parse "$parent:research/itd02_v32c_world_reversal_preregistration.md")"
+          test "$(git hash-object research/itd02_v32a_native_microcells.rs)" = "$(git rev-parse "$parent:research/itd02_v32a_native_microcells.rs")"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo V32D_LOCAL_CONTRACT_SCOPE_PASS
+      - name: Compile single pinned source Rust native module once for Ubuntu
+        shell: bash
+        run: |
+          set -euo pipefail
+          rustc --version
+          test "$(git hash-object research/itd02_v32a_native_microcells.rs)" = "$(git rev-parse "$GITHUB_SHA:research/itd02_v32a_native_microcells.rs")"
+          t0=$(date +%s%N)
+          rustc --edition=2021 -C opt-level=3 --crate-type cdylib research/itd02_v32a_native_microcells.rs -o "$RUNNER_TEMP/v32d_frozen_v32a.so"
+          rustc --edition=2021 -C opt-level=3 --crate-type cdylib research/itd02_v32d_context_memory.rs -o "$RUNNER_TEMP/v32d_private_cells.so"
+          t1=$(date +%s%N)
+          test -s "$RUNNER_TEMP/v32d_frozen_v32a.so"
+          test -s "$RUNNER_TEMP/v32d_private_cells.so"
+          sha256sum "$RUNNER_TEMP/v32d_frozen_v32a.so" research/itd02_v32a_native_microcells.rs
+          sha256sum "$RUNNER_TEMP/v32d_private_cells.so" research/itd02_v32d_context_memory.rs
+          echo "V32D_LOCAL_NATIVE_BUILD_WALL_NS=$((t1-t0))"
+          echo "V32A_NATIVE_LIBRARY=$RUNNER_TEMP/v32d_frozen_v32a.so" >> "$GITHUB_ENV"
+          echo "V32D_NATIVE_LIBRARY=$RUNNER_TEMP/v32d_private_cells.so" >> "$GITHUB_ENV"
+          echo V31Z_LINUX_NATIVE_COMPILED_CUSTODY_PASS
+      - name: Run source-only inherited focused tests and unchanged V31J ledger
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_*.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_free_fanout_sidecar.py' -v
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_nci04g*.py' -v
+          PYTHONPATH=. python -B research/itd02_v31i_cold_restart_audit.py
+          PYTHONPATH=. python -B research/itd02_v31j_executed_edge_ledger_audit.py
+          PYTHONPATH=. python -B research/itd02_v32d_context_memory_audit.py
+      - name: Recreate G29 derived Atlas from exactly this qualified source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          test -z "$(git diff --name-only -- ':!/.ice/code-atlas.json' ':!/.ice/code-atlas.html' ':!/.ice/code-atlas.ice')"
+      - name: Commit only derived source locators on isolated branch
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = 'research/itd02-v32d-local-context-memory-20261028'
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          git diff --cached --name-only > "$RUNNER_TEMP/v32d-atlas-actual"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/v32d-atlas-allowed"
+          diff -u "$RUNNER_TEMP/v32d-atlas-allowed" "$RUNNER_TEMP/v32d-atlas-actual"
+          test -z "$(git diff --name-only)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'index(V32D_LOCAL): pin source-derived G29 locators without learner changes'
+          python -B scripts/build_code_atlas.py --check-if-present
+          PYTHONPATH=. python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+          echo "published_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo V32D_LOCAL_EXACT_G29_SOURCE_REANCHORED
+      - name: One complete inherited Python regression after committed G29 (Ubuntu)
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B - <<'PY'
+          import unittest
+          suite=unittest.TestLoader().discover("tests",pattern="test_*.py")
+          result=unittest.TextTestRunner(verbosity=2).run(suite)
+          assert result.wasSuccessful(), "V32D_LOCAL_LINUX_FULL_REGRESSION_FAILED"
+          assert result.testsRun==139 and not result.skipped, "V32D_LOCAL_LINUX_TEST_COVERAGE_CHANGED"
+          print("V32D_LOCAL_LINUX_ALL_139_TESTS_RAN_NO_SKIPS")
+          PY
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo V32D_LOCAL_UBUNTU_FULL_REGRESSION_PASS
+  cross-host:
+    needs: source-reanchor
+    if: ${{ needs.source-reanchor.result == 'success' }}
+    runs-on: windows-2022
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.source-reanchor.outputs.published_sha }}
+          fetch-depth: 0
+          clean: true
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compile same immutable Rust 2021 native FFI once for Windows
+        shell: bash
+        run: |
+          set -euo pipefail
+          rustc --version
+          t0=$(date +%s%N)
+          rustc --edition=2021 -C opt-level=3 --crate-type cdylib research/itd02_v32a_native_microcells.rs -o "$RUNNER_TEMP/v32d_frozen_v32a.dll"
+          rustc --edition=2021 -C opt-level=3 --crate-type cdylib research/itd02_v32d_context_memory.rs -o "$RUNNER_TEMP/v32d_private_cells.dll"
+          t1=$(date +%s%N)
+          test -s "$RUNNER_TEMP/v32d_frozen_v32a.dll"
+          test -s "$RUNNER_TEMP/v32d_private_cells.dll"
+          sha256sum "$RUNNER_TEMP/v32d_frozen_v32a.dll" research/itd02_v32a_native_microcells.rs
+          sha256sum "$RUNNER_TEMP/v32d_private_cells.dll" research/itd02_v32d_context_memory.rs
+          echo "V32D_LOCAL_NATIVE_BUILD_WALL_NS=$((t1-t0))"
+          echo "V32A_NATIVE_LIBRARY=$RUNNER_TEMP/v32d_frozen_v32a.dll" >> "$GITHUB_ENV"
+          echo "V32D_NATIVE_LIBRARY=$RUNNER_TEMP/v32d_private_cells.dll" >> "$GITHUB_ENV"
+          echo V31Z_WINDOWS_NATIVE_COMPILED_CUSTODY_PASS
+      - name: Verify exact generated source and complete Windows regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = '${{ needs.source-reanchor.outputs.published_sha }}'
+          python -B scripts/build_code_atlas.py --check-if-present
+          PYTHONPATH=. python -B research/itd02_v31j_executed_edge_ledger_audit.py
+          PYTHONPATH=. python -B research/itd02_v32d_context_memory_audit.py
+          PYTHONPATH=. python -B - <<'PY'
+          import unittest
+          suite=unittest.TestLoader().discover("tests",pattern="test_*.py")
+          result=unittest.TextTestRunner(verbosity=2).run(suite)
+          expected={"test_missing_result_rejected","test_mismatched_candidate_id_rejected",
+                    "test_existing_roles_learn_from_own_measured_residual_only",
+                    "test_separate_native_model_output_and_equal_information_controls"}
+          skipped={test.id().rsplit(".",1)[-1] for test,why in result.skipped}
+          assert result.wasSuccessful(), "V32D_LOCAL_WINDOWS_DISCOVERED_REGRESSION_FAILED"
+          assert result.testsRun==139, "V32D_LOCAL_WINDOWS_TEST_DISCOVERY_INCOMPLETE"
+          assert len(result.skipped)==4 and skipped==expected, "V32D_LOCAL_WINDOWS_UNAUTHORIZED_TEST_SKIP"
+          assert all("POSIX" in why for test,why in result.skipped), "V32D_LOCAL_WINDOWS_SKIP_REASON_DRIFT"
+          print("V32D_LOCAL_WINDOWS_139_DISCOVERED_135_EXECUTED_4_RESOURCE_UNSUPPORTED")
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo V32D_LOCAL_WINDOWS_SCOPED_REGRESSION_PASS_RESOURCE_UNSUPPORTED
