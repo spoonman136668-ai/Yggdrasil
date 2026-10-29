@@ -100,7 +100,7 @@ class NativeSourceBoundSensor(unittest.TestCase):
           "candidate_new_trainable_coefficients":0,
           "fixed_message_bytes":len(message),
           "source_execution_parent_cpu_ns":parent_cpu,
-          "source_execution_child_cpu_us":int((child_after.ru_utime+child_after.ru_stime-child_before.ru_utime-child_before.ru_stime)*1_000_000),
+          "source_execution_child_cpu_us":(int((child_after.ru_utime+child_after.ru_stime-child_before.ru_utime-child_before.ru_stime)*1_000_000) if child_after is not None and child_before is not None else "NOT_MEASURED_WINDOWS"),
           "source_execution_child_peak_rss_native_units":(child_after.ru_maxrss if child_after is not None else 'NOT_MEASURED_WINDOWS'),
           "tracemalloc_peak_bytes":heap_peak,
           "all_in_efficient_transfer":"NOT_QUALIFIED: unpaired snapshots/RSS, source-trained model costs, no unseen native task or true sensor",
