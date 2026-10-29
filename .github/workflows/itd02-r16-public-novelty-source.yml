@@ -1,0 +1,48 @@
+name: ITD-02 R16 local-cell own-selected public novelty
+on:
+  push:
+    branches: [research/itd02-r16-public-novelty-20261029]
+permissions:
+  contents: read
+jobs:
+  original-local-native-source:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - name: Fix original Git source newline policy
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Prereg and source pins original R10-R15
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 630dde83f45d845488d59a36136d6c026e10880b "$GITHUB_SHA"
+          git merge-base --is-ancestor ce341b56a2b344371df98655b7ffd5281b1d27b9 "$GITHUB_SHA"
+          test "$(git hash-object research/native/itd02/r16/selected_novelty.py)" = 6718c9aeb5485992822102926fecc20fdf2aaa0b
+          test "$(git hash-object research/native/itd02/r15/continuity_cells.py)" = 6b31f4b0c301564b2793bef8a296a4e722825f01
+          test "$(git hash-object research/native/itd02/r11/affordance_cells.py)" = 614c7dfb1b43f485009b70cb85e9b7b5119cafc2
+          test "$(git hash-object research/native/itd02/r10/public_adapter.py)" = 3917d36ce9f86a2c1b998a0a2f93fb27674a9205
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Test public-source native local selected actions, cold native restore
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONPATH: .
+        run: |
+          set -euo pipefail
+          python -B -m unittest research.native.itd02.r16.test_selected_novelty research.native.itd02.r15.test_continuity_cells -v
+          echo R16_ORIGINAL_SELECTED_SOURCE_NOVELTY_QUALIFIED_NOT_SCIENCE
