@@ -1,0 +1,62 @@
+name: ITD-02 R20 exact-public reward gate local-cell qualification
+on:
+  push:
+    branches: [research/itd02-r20-state-conditioned-credit-20261029]
+permissions:
+  contents: read
+jobs:
+  native-state-conditional-original-selected-credit:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    timeout-minutes: 40
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Original LF source
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Exact native source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Frozen Python runtime
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Freeze parent and prospective state-credit source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 5a3f9f19142b97a11aa88da09eafbffdf932a024 "$GITHUB_SHA"
+          git merge-base --is-ancestor f0cb9f45f9def049c6fbc8cefce8bd75a8dca32f "$GITHUB_SHA"
+          test "$(git hash-object research/native/itd02/r20/PREREG.md)" = 202ff68301bab24a8c253551544afeae6c484171
+          test "$(git hash-object research/native/itd02/r20/state_credit_cells.py)" = b81af09e879ddab30955bd5debc2a89ce5266ae3
+          test "$(git hash-object research/native/itd02/r20/checkpoint.py)" = bdc8aea593ac338d3f21dc8a1a9f00a3ff3a7cdc
+          test "$(git hash-object research/native/itd02/r20/test_state_credit_cells.py)" = 7009ab4a37a0fd40e6dad60d333bac20fc9e28bf
+          test "$(git hash-object research/native/itd02/r18/mission_cells.py)" = 531b4f258408eb38f38794f03a192aacdad42315
+          echo MG16_R20_LOCAL_CELL_FROZEN_SOURCE_PASS
+      - name: Original selected public source native regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            research.native.itd02.r10.test_public_adapter \
+            research.native.itd02.r11.test_affordance_cells \
+            research.native.itd02.r12.test_outcome_choice \
+            research.native.itd02.r13.test_explore_choice \
+            research.native.itd02.r14.test_temporal_cells \
+            research.native.itd02.r15.test_continuity_cells \
+            research.native.itd02.r16.test_motion_cells \
+            research.native.itd02.r17.test_successor_cells \
+            research.native.itd02.r18.test_mission_cells \
+            research.native.itd02.r20.test_state_credit_cells
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo MG16_YGG_R20_EXACT_PUBLIC_SOURCE_ENGINEERING_PASS_NO_SCIENCE
