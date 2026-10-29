@@ -543,9 +543,9 @@ def audit():
         for q in results)
     print(json.dumps({
         "schema":SCHEMA,"host":sys.platform,"status":"COMPLETE",
-        "classification":("V32E_PRIVATE_CONTEXT_MEMORY_REVERSES_AND_RETURNS__NO_SCIENCE"
+        "classification":("V32E_PAIR_CONSENSUS_FALSE_ALARM_RESISTANT_REVERSAL__NO_SCIENCE"
                           if positive else
-                          "V32E_LOCAL_MEMORY_OR_STRONG_NULL_NEGATIVE__NO_SCIENCE"),
+                          "V32E_PAIR_CONSENSUS_OR_NULL_NEGATIVE__NO_SCIENCE"),
         "new_native_source_sha256":API.source_sha256,
         "new_native_binary_sha256":API.binary_sha256,
         "old_untouched_v32a_rust_source_sha256":v32a.API.source_sha256,
