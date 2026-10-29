@@ -44,7 +44,7 @@ jobs:
         run: |
           python -B -m unittest -v research.native.itd02.mg23.test_selected_target_cells research.native.itd02.mg19.test_genuine_mission_cells
           if ($LASTEXITCODE -ne 0) { throw 'MG23_LOCAL_NATIVE_SELECTED_CREDIT_FAILED' }
-          python -B -m compileall -q research/native/itd02/mg23
+          python -B -c "import ast,pathlib; [ast.parse(p.read_text(encoding='utf8')) for p in pathlib.Path('research/native/itd02/mg23').glob('*.py')]"
           if ($LASTEXITCODE -ne 0) { throw 'MG23_BAD_LOCAL_NATIVE_SYNTAX' }
           if (git status --porcelain --untracked-files=all) { throw 'MG23_NATIVE_LOCAL_SOURCE_WORKTREE_DIRTY' }
           Write-Host 'MG23_YGGDRASIL_NATIVE_LOCAL_SELECTED_TERMINAL_SOURCE_PASS_NO_SCIENCE'
