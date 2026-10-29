@@ -41,6 +41,12 @@ class EpisodicCells:
         if self.native.session is None:
             raise ValueError("R14_MISSING_SOURCE_SESSION")
         current=cues["observation_sha256"]
+        baseline=propose_native_action(self.native,before)
+        if baseline["status"]=="SELECT_NATIVE_OBSERVED_POSITIVE_REWARD":
+            return {"schema":SCHEMA,"action":baseline["action"],
+                    "status":"SELECT_NATIVE_OBSERVED_POSITIVE_REWARD",
+                    "learned_selected_transitions":baseline.get("learned_context_samples",0),
+                    "external_fallback":False}
         candidates=[]
         for action in range(7):
             outcomes=self.transitions.get(current,{}).get(str(action),{})
@@ -56,10 +62,9 @@ class EpisodicCells:
             return {"schema":SCHEMA,"action":action,
                     "status":"SELECT_NATIVE_LEARNED_PUBLIC_TRANSITION_NOVELTY",
                     "learned_selected_transitions":total,"external_fallback":False}
-        default=propose_native_action(self.native,before)
-        return {"schema":SCHEMA,"action":default["action"],
+        return {"schema":SCHEMA,"action":baseline["action"],
                 "status":"SELECT_NATIVE_BASE_EXPLORATION",
-                "learned_selected_transitions":default.get("learned_context_samples",0),
+                "learned_selected_transitions":baseline.get("learned_context_samples",0),
                 "external_fallback":False}
 
     def learn_selected(self, adapter):
