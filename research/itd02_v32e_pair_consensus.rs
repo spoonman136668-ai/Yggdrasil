@@ -355,8 +355,7 @@ pub unsafe extern "C" fn v32e_load(p:*mut Ring,buffer:*const u8,len:usize)->i32{
         if windows[i][0..PAIRS].iter().any(|x|*x>3)
             || windows[i][PAIRS..WINDOW].iter().any(|x|*x>1)
             || windows[i][PAIRS..WINDOW].iter().map(|x|*x as u64).sum::<u64>() != next_fill
-            || windows[i][PAIRS..WINDOW].iter().enumerate().any(
-                |(j,c)| *c>0 && windows[i][j]<3) {return -8}
+            {return -8}
         for b in 0..2 {for a in 0..A {for c in 0..C {
             let val=f64::from_le_bytes(bytes[at..at+8].try_into().unwrap());
             at+=8;
