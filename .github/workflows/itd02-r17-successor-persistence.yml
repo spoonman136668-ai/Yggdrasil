@@ -1,0 +1,59 @@
+name: ITD-02 R17 selected successor persistence local-cell qualification
+on:
+  push:
+    branches: [research/itd02-r17-successor-persistence-20261029]
+permissions:
+  contents: read
+jobs:
+  original-native-selected-public-successors:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Source LF policy
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Exact original local-cell source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Frozen source Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Source prereg and original native parents unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 02552f4b3a0ce2aebdcc20cfbde5f78af62e01ed "$GITHUB_SHA"
+          git merge-base --is-ancestor ea3a6c12bb11464f829f211105251621317ad2f0 "$GITHUB_SHA"
+          test "$(git hash-object research/native/itd02/r17/PREREG.md)" = 823a308298ae8bfa783088dc66aa2b63b0782197
+          test "$(git hash-object research/native/itd02/r17/successor_cells.py)" = 9354a1f0b732100ab943a5caee80b3849e3c1ea0
+          test "$(git hash-object research/native/itd02/r17/test_successor_cells.py)" = b9973e3c9449e992372f2eaa5e0984cb18a928c6
+          test "$(git hash-object research/native/itd02/r16/motion_cells.py)" = 708d5d48c8aee5d1650d7fbb3983976197bc9f9a
+          echo R17_FROZEN_SOURCE_NATIVE_PARENT_PASS
+      - name: Original native R10-R17 selected public consequence regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            research.native.itd02.r10.test_public_adapter \
+            research.native.itd02.r11.test_affordance_cells \
+            research.native.itd02.r12.test_outcome_choice \
+            research.native.itd02.r13.test_explore_choice \
+            research.native.itd02.r14.test_temporal_cells \
+            research.native.itd02.r15.test_continuity_cells \
+            research.native.itd02.r16.test_motion_cells \
+            research.native.itd02.r17.test_successor_cells
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo R17_NATIVE_SUCCESSOR_PERSISTENCE_QUALIFIED_SOURCE_ONLY__NO_SCIENCE
