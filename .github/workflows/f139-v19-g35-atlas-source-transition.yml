@@ -66,6 +66,7 @@ jobs:
           & python -B -m unittest discover -s tests -p test_code_atlas.py -v
           if($LASTEXITCODE -eq 0){throw 'F139_G35_EXPECTED_PRECOMMIT_STALE_ARTIFACT_REJECTION_MISSING'}
           Write-Output 'F139_G35_HISTORIC_OLD_ATLAS_STALENESS_RETAINED=PASS'
+          exit 0
       - name: Commit only generated G29 artifacts to draft branch
         shell: pwsh
         env:
@@ -76,8 +77,9 @@ jobs:
           $source=(& git rev-parse HEAD | Out-String).Trim()
           & git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
           if($LASTEXITCODE -ne 0){throw 'F139_G35_GIT_STAGE_FAILED'}
-          if((@(& git diff --cached --name-only | Sort-Object) -join '|') -cne
-              (@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json')|Sort-Object -join '|')){
+          $staged=@(& git diff --cached --name-only | Sort-Object)
+          $expected=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json') | Sort-Object
+          if(($staged -join '|') -cne ($expected -join '|')){
             throw 'F139_G35_STAGED_SCOPE_DRIFT'
           }
           & git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'F139 G35: frozen G29 source atlas for exact prior code commit'
