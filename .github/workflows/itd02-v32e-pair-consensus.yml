@@ -49,12 +49,24 @@ jobs:
           test "$(git rev-parse "$native_first^")" = "$prereg"
           test "$(git rev-parse "$native_final^")" = "$native_first"
           test "$(git rev-parse "$evaluator^")" = "$native_final"
-          test "$(git rev-parse HEAD^)" = "$evaluator"
+          first_workflow=c16e5c19103ab6b4180fb8713de4974e5c66f476
+          first_bot=8f7b0b415b9c40e201c62182e9c13bc1d932556a
+          classification_fix=dfdd603fa1a75649aa2c6ed9c14cab4b1cbb4799
+          test "$(git rev-parse "$first_workflow^")" = "$evaluator"
+          test "$(git rev-parse "$first_bot^")" = "$first_workflow"
+          test "$(git rev-parse "$classification_fix^")" = "$first_bot"
+          test "$(git rev-parse HEAD^)" = "$classification_fix"
+          git diff --name-only "$first_workflow" "$first_bot" | sort > "$RUNNER_TEMP/v32e-original-g29-actual"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | sort > "$RUNNER_TEMP/v32e-original-g29-expected"
+          diff -u "$RUNNER_TEMP/v32e-original-g29-expected" "$RUNNER_TEMP/v32e-original-g29-actual"
           git merge-base --is-ancestor "$prereg" HEAD
           test -z "$(git diff --name-only "$parent" HEAD -- yggdrasil)"
           git diff --name-only "$parent" HEAD | sort > "$RUNNER_TEMP/v32e-actual"
           printf '%s\n' \
             .github/workflows/itd02-v32e-pair-consensus.yml \
+            .ice/code-atlas.html \
+            .ice/code-atlas.ice \
+            .ice/code-atlas.json \
             research/itd02_v32e_pair_consensus_preregistration.md \
             research/itd02_v32e_pair_consensus.rs \
             research/itd02_v32e_pair_consensus_audit.py | sort > "$RUNNER_TEMP/v32e-allowed"
