@@ -1,0 +1,93 @@
+name: F139 issue1138 isolated baseline versus staged source negative reproduction
+on:
+  push:
+    branches: [qualification/f139-i1138-worker-negative-reproduction-20261029]
+    paths: [.github/workflows/f139-i1138-worker-negative-reproducer.yml]
+permissions:
+  contents: read
+concurrency:
+  group: f139-i1138-negative-repro-20261029
+  cancel-in-progress: false
+jobs:
+  reproduce:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.actor == 'spoonman136668-ai' &&
+      github.ref == 'refs/heads/qualification/f139-i1138-worker-negative-reproduction-20261029' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 021423311027517c9096c76bed7d35ac53c4a229
+          path: baseline
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 339276862e42a067344990dc20d907f203009b90
+          path: candidate
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Diagnose baseline and fixed staged candidate without re-dispatch or promotion
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          GIT_TERMINAL_PROMPT: '0'
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,subprocess,sys
+          orig=pathlib.Path("baseline").resolve(strict=True)
+          prop=pathlib.Path("candidate").resolve(strict=True)
+          rel="yggdrasil/public_causal_cells.py"
+          old="021423311027517c9096c76bed7d35ac53c4a229"
+          new="339276862e42a067344990dc20d907f203009b90"
+          def git(root,*args):
+              v=subprocess.run(["git","-C",str(root),*args],capture_output=True,text=True,timeout=20)
+              assert v.returncode==0,v.stderr[:200]
+              return v.stdout.strip()
+          assert git(orig,"rev-parse","HEAD")==old
+          assert git(orig,"rev-parse","HEAD^{tree}")=="93620bd8e46bfbae1dbcd8e4ce397e27044de4f1"
+          assert git(prop,"rev-parse","HEAD")==new
+          assert git(prop,"rev-parse","HEAD^")==old
+          assert git(prop,"diff","--name-only",old,new).splitlines()==[rel]
+          a=(orig/rel).read_bytes()
+          b=(prop/rel).read_bytes()
+          assert a!=b and hashlib.sha256(b).hexdigest()=="f14eae1488b9f038dacb8d10a3b1a47967fad45046052b04b679d18b69815ae1"
+          def test(phase,pattern):
+              try:
+                  v=subprocess.run([sys.executable,"-B","-m","unittest","discover","-s","tests","-p",pattern,"-v"],
+                      cwd=orig,capture_output=True,text=True,timeout=80)
+                  rc,out=v.returncode,v.stdout+v.stderr
+              except subprocess.TimeoutExpired as e: rc,out=124,str(e)
+              lines=[x.strip() for x in out.splitlines() if x.startswith(("ERROR:","FAIL:","Traceback","RuntimeError:","ImportError:","ModuleNotFoundError:","Ran ","FAILED (","OK"))]
+              print("F139_I1138_TEST_RESULT="+json.dumps({"phase":phase,"platform":sys.platform,"rc":rc,
+                 "errors":lines[:25],"tail":out[-2100:],"sha256":hashlib.sha256(out.encode()).hexdigest()},sort_keys=True),flush=True)
+              return rc,out
+          base_atlas,base_a_out=test("baseline-atlas","test_code_atlas.py")
+          base_all,base_all_out=test("baseline-full","test_*.py")
+          (orig/rel).write_bytes(b)
+          assert git(orig,"status","--porcelain","--untracked-files=all").splitlines()==[" M "+rel]
+          focused,focused_out=test("staged-focused","test_native_cells.py")
+          atlas,atlas_out=test("staged-atlas","test_code_atlas.py")
+          all_rc,all_out=test("staged-full","test_*.py")
+          result={"schema":"forge.f139.i1138.negative-attribution.v1","platform":sys.platform,
+            "clean_baseline_atlas_rc":base_atlas,"clean_baseline_full_rc":base_all,
+            "staged_native_rc":focused,"staged_atlas_rc":atlas,"staged_full_rc":all_rc,
+            "dirty_source_mismatch_detected":"working source mismatch" in atlas_out,
+            "source_sha":old,"candidate_sha":new,
+            "provider_replay":False,"original_owner_writes":0,"scientific_first_use":False}
+          print("F139_I1138_NEGATIVE_ATTRIBUTION="+json.dumps(result,sort_keys=True),flush=True)
+          assert focused==0,"FOCUSED_NATIVE_NEGATIVE_UNEXPECTED"
+          assert all_rc!=0,"FAILED_WORKER_FULL_SUITE_NOT_REPRODUCED"
+          if base_all!=0:print("F139_I1138_BASELINE_FULL_SUITE_ALREADY_NEGATIVE=TRUE")
+          elif base_atlas==0 and atlas!=0 and "working source mismatch" in atlas_out:
+              print("F139_I1138_DIRTY_STAGE_ATLAS_CONFLICT_REPRODUCED=TRUE")
+          else:print("F139_I1138_WORKER_NEGATIVE_CAUSE_REQUIRES_FURTHER_ISOLATION=TRUE")
+          PY
