@@ -1,0 +1,59 @@
+name: ITD-02 R15 original-public object-continuity local-cell qualification
+on:
+  push:
+    branches:
+      - research/itd02-r15-public-object-continuity-20261029
+permissions:
+  contents: read
+jobs:
+  original-local-cell-source:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Original source newline policy
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Source-exact source checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Frozen Python 3.11
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Frozen prereg and unchanged original native R10-R14 foundations
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c09b674d7045daca98b7881fda2fe54120c8fdd6 "$GITHUB_SHA"
+          git merge-base --is-ancestor 5408f143d50859ec86209d800a9fbd6f03889eea "$GITHUB_SHA"
+          test "$(git hash-object research/native/itd02/r15/PREREG.md)" = e93d7feef1231759e63f6ebe109f2199d287076c
+          test "$(git hash-object research/native/itd02/r15/continuity_cells.py)" = 6b31f4b0c301564b2793bef8a296a4e722825f01
+          test "$(git hash-object research/native/itd02/r15/test_continuity_cells.py)" = bfda39787c1546a6c5f9271c2b3eb27b202521d1
+          test "$(git hash-object research/native/itd02/r14/temporal_cells.py)" = 8cacaad50e8d484f72da5067ff1f03c187877f27
+          test "$(git hash-object research/native/itd02/r11/affordance_cells.py)" = 614c7dfb1b43f485009b70cb85e9b7b5119cafc2
+          echo R15_FROZEN_MG09_PREREG_AND_NATIVE_PARENT_PASS
+      - name: Focused original R10-R15 selected public source regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            research.native.itd02.r10.test_public_adapter \
+            research.native.itd02.r11.test_affordance_cells \
+            research.native.itd02.r12.test_outcome_choice \
+            research.native.itd02.r13.test_explore_choice \
+            research.native.itd02.r14.test_temporal_cells \
+            research.native.itd02.r15.test_continuity_cells
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo R15_NATIVE_PUBLIC_OBJECT_CONTINUITY_SOURCE_ONLY__NO_SCIENCE
