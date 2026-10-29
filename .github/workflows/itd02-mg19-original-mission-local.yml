@@ -1,0 +1,59 @@
+name: ITD-02 MG19 Yggdrasil genuine original mission local cells
+on:
+  push:
+    branches: [research/itd02-mg19-genuine-mission-local-cells-20261029]
+permissions:
+  contents: read
+jobs:
+  genuine-mission-local-cell-custody:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      PYTHONUTF8: '1'
+    steps:
+      - name: Native original LF
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Exact qualified original parent and candidate
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify source prereg before code and inherited parent unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor a9942978f92e762e404fe50ce29445ea4639b4c2 "$GITHUB_SHA"
+          git merge-base --is-ancestor ee2b666749ce7c6ce6448276274585376445c40c "$GITHUB_SHA"
+          test "$(git hash-object research/native/itd02/mg19/PREREG.md)" = 4897dd65b849ef8057973b1fafd3995178a515bc
+          test "$(git hash-object research/native/itd02/mg19/original_mission_cells.py)" = 91686b42a46359fb22db7b1fe678a92dede222c0
+          test "$(git hash-object research/native/itd02/mg19/genuine_mission_cells.py)" = 6a2a60eb9c9b77436421aa7ccbe785d29a163280
+          test "$(git hash-object research/native/itd02/mg19/test_genuine_mission_cells.py)" = 74fa677e93d4bb1eea4b3aa28fa1fc381abbbb72
+          test "$(git hash-object research/native/itd02/r20/state_credit_cells.py)" = b81af09e879ddab30955bd5debc2a89ce5266ae3
+          test "$(git hash-object research/native/itd02/r18/mission_cells.py)" = 531b4f258408eb38f38794f03a192aacdad42315
+          test "$(git diff --name-only a9942978f92e762e404fe50ce29445ea4639b4c2 "$GITHUB_SHA" | sort)" = "$(printf '%s\n' .github/workflows/itd02-mg19-original-mission-local.yml research/native/itd02/mg19/PREREG.md research/native/itd02/mg19/original_mission_cells.py research/native/itd02/mg19/genuine_mission_cells.py research/native/itd02/mg19/test_genuine_mission_cells.py | sort)"
+      - name: Pinned source Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Source-only exact mission local-cell unit and inherited regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            research.native.itd02.mg19.test_genuine_mission_cells \
+            research.native.itd02.r20.test_state_credit_cells \
+            research.native.itd02.r18.test_mission_cells \
+            research.native.itd02.r17.test_successor_cells \
+            research.native.itd02.r10.test_public_adapter
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo MG19_YGGDRASIL_NATIVE_GENUINE_ORIGINAL_MISSION_ENGINEERING_PASS_NO_SCIENCE
