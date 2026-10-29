@@ -41,11 +41,11 @@ class R21LocalOriginalEvidenceTests(unittest.TestCase):
         a=view(mission=GOAL)
         after=view(mission=GOAL,far=2)
         for _ in range(2):learn(actor,a,4,after)
-        for candidate in (view(mission=GOAL,near=6,direction=1),
-                          view(mission=MISSION,direction=1)):
+        for case_index,candidate in enumerate((view(mission=GOAL,near=6,direction=1),
+                          view(mission=MISSION,direction=1))):
             adapter=OriginalMissionAdapter()
             adapter.reset_public(candidate)
-            actor.start_session(adapter,"r21-independent-negative-source",live=False)
+            actor.start_session(adapter,"r21-independent-negative-source-"+str(case_index),live=False)
             chosen=actor.choose(candidate)
             baseline=actor.parent.choose(candidate)
             self.assertEqual(chosen["action"],baseline["action"])
