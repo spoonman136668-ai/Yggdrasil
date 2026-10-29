@@ -32,8 +32,8 @@ PINS={
  "yggdrasil/itd02_v26_calibrated_return_dev.py":"8a0417d34c6ba94a4eaef33d767da14a4a5c9709",
  "yggdrasil/itd02_v30_public_probe_policy_dev.py":"bcc1f0b4e2ec0fcd8b2af69dfb0e6d4d2ca27a4a",
  "yggdrasil/itd02_v32_source_surprise_probation_dev.py":"9252b554c25bfdc5b6adb733f94b0c3d2b2ec92e",
- "yggdrasil/itd02_v35_action_conditioned_ring_dev.py":"9a958c9bcae6e0ae588a0798f75216bdf79046c",
- "research/itd02_v35_action_conditioned_local_basis_audit.py":"9000000000000000000000000000000000000000",
+ "yggdrasil/itd02_v35_action_conditioned_ring_dev.py":"04c21dc35054e98bc1a366af7c962983e64ef02d",
+ "research/itd02_v35_action_conditioned_local_basis_audit.py":"2a2b6ae3d5482d2735ca9afd15fab7353b7f0134",
 }
 def verify():
     root=Path(__file__).resolve().parents[1]
