@@ -45,7 +45,11 @@ jobs:
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test "$(git rev-parse "$prereg^")" = "$parent"
           test "$(git rev-parse "$evaluator^")" = "$prereg"
-          test "$(git rev-parse HEAD^)" = "$evaluator"
+          first_workflow=c42784c163dd3956b3eb0b11512b6a1b2b498019
+          audit_bookkeeping_fix=7a3c9c9edb3084311b8da25b81c53e8d0291b1d3
+          test "$(git rev-parse "$first_workflow^")" = "$evaluator"
+          test "$(git rev-parse "$audit_bookkeeping_fix^")" = "$first_workflow"
+          test "$(git rev-parse HEAD^)" = "$audit_bookkeeping_fix"
           git merge-base --is-ancestor "$prereg" HEAD
           test -z "$(git diff --name-only "$parent" HEAD -- yggdrasil)"
           git diff --name-only "$parent" HEAD | sort > "$RUNNER_TEMP/v32c-actual"
