@@ -1,0 +1,36 @@
+name: ITD-02 V32C-SRC real layout discrimination
+on:
+  push:
+    branches: [research/itd02-v32c-src-layout-discrimination-20261028]
+permissions:
+  contents: read
+jobs:
+  layout:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Source pin and genuine environment setup
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor f889ced77f5aa2c81d57ae6b28c589912338b5a4 "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+          test ! -f research/itd02_v31_heldout_evaluator.py
+          python -m pip install --disable-pip-version-check 'gymnasium==1.2.1' 'minigrid==3.0.0'
+      - name: Evaluate preregistered public layout distinctness
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B research/itd02_v32c_src_layout_probe.py
+          test -z "$(git status --porcelain --untracked-files=all)"
