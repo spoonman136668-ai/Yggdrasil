@@ -5,7 +5,10 @@ claim hidden truth, physical cell sensing or recovery of the damaged target.
 """
 import json
 import pathlib
-import resource
+try:
+    import resource
+except ModuleNotFoundError:
+    resource = None
 import time
 import tracemalloc
 import unittest
@@ -62,9 +65,9 @@ class NativeSourceBoundSensor(unittest.TestCase):
         pred_recurrent=recurrent.predict(bitvector)[7]
         tracemalloc.start()
         t0=time.process_time_ns()
-        child_before=resource.getrusage(resource.RUSAGE_CHILDREN)
+        child_before=(resource.getrusage(resource.RUSAGE_CHILDREN) if resource is not None else None)
         message,source=sensor.observe_native_source(0,7,experiences,bitvector,1)
-        child_after=resource.getrusage(resource.RUSAGE_CHILDREN)
+        child_after=(resource.getrusage(resource.RUSAGE_CHILDREN) if resource is not None else None)
         parent_cpu=time.process_time_ns()-t0
         heap_current,heap_peak=tracemalloc.get_traced_memory()
         tracemalloc.stop()
@@ -97,8 +100,8 @@ class NativeSourceBoundSensor(unittest.TestCase):
           "candidate_new_trainable_coefficients":0,
           "fixed_message_bytes":len(message),
           "source_execution_parent_cpu_ns":parent_cpu,
-          "source_execution_child_cpu_us":int((child_after.ru_utime+child_after.ru_stime-child_before.ru_utime-child_before.ru_stime)*1_000_000),
-          "source_execution_child_peak_rss_native_units":child_after.ru_maxrss,
+          "source_execution_child_cpu_us":(int((child_after.ru_utime+child_after.ru_stime-child_before.ru_utime-child_before.ru_stime)*1_000_000) if child_after is not None and child_before is not None else "NOT_MEASURED_WINDOWS"),
+          "source_execution_child_peak_rss_native_units":(child_after.ru_maxrss if child_after is not None else 'NOT_MEASURED_WINDOWS'),
           "tracemalloc_peak_bytes":heap_peak,
           "all_in_efficient_transfer":"NOT_QUALIFIED: unpaired snapshots/RSS, source-trained model costs, no unseen native task or true sensor",
           "scientific_first_use":False,
