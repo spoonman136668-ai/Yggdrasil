@@ -1,7 +1,10 @@
 """NCI-04G6 development-only local credit integration and resource checks."""
 import json
 import math
-import resource
+try:
+    import resource
+except ModuleNotFoundError:
+    resource = None
 import time
 import tracemalloc
 import unittest
@@ -84,7 +87,7 @@ class NCI04G6LocalCredit(unittest.TestCase):
           "fully_trained_conventional_prequential_loss":control_loss,
           "candidate_cpu_ns":elapsed_candidate,"control_cpu_ns":elapsed_control,
           "candidate_tracemalloc_peak_bytes":peak,
-          "process_peak_rss_native_units":resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+          "process_peak_rss_native_units":(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss if resource is not None else 'NOT_MEASURED_WINDOWS'),
           "conventional_count_storage_estimate_bytes":baseline.budget(),
           "source_provenance":"UNVERIFIED_LOCAL_SENSOR_INPUT",
           "comparison_classification":"NOT_ADMITTED: caller-supplied own transition is not an independently authenticated native sensor; matched all-in CPU/RSS and local recoverability absent",
