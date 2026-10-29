@@ -6,7 +6,10 @@ import math
 import os
 import pathlib
 import re
-import resource
+try:
+    import resource
+except ModuleNotFoundError:
+    resource = None
 import subprocess
 import sys
 import time
@@ -294,6 +297,8 @@ def run_candidate(manifest, package_root, candidate_id, output_root):
         "--output", str(result_path),
     ]
 
+    if resource is None:
+        fail('FREE_FANOUT_RESOURCE_ACCOUNTING_UNAVAILABLE')
     before = resource.getrusage(resource.RUSAGE_CHILDREN)
     started = time.monotonic()
     try:
