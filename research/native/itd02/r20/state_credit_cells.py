@@ -89,3 +89,10 @@ class StateCreditCells:
             stat["positive"]+=1
         self._valid()
         return result
+    def checkpoint(self):
+        from research.native.itd02.r20.checkpoint import checkpoint
+        return checkpoint(self)
+    @classmethod
+    def restore(cls,blob):
+        from research.native.itd02.r20.checkpoint import restore
+        return restore(blob)
