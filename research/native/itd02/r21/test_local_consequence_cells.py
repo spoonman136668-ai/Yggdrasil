@@ -64,9 +64,10 @@ class R21LocalOriginalEvidenceTests(unittest.TestCase):
         actor.start_session(adapter,"r21-competing-original-source-qualifier",live=False)
         baseline=actor.parent.choose(unseen)
         result=actor.choose(unseen)
-        if baseline["action"]!=5:
-            self.assertEqual(result["action"],5)
-            self.assertEqual(result["status"],"SELECT_NATIVE_LOCAL_SELECTED_CAUSAL_EFFECT")
+        self.assertNotEqual(baseline["action"],5,
+            "test did not establish a competing original native action")
+        self.assertEqual(result["action"],5)
+        self.assertEqual(result["status"],"SELECT_NATIVE_LOCAL_SELECTED_CAUSAL_EFFECT")
         self.assertEqual(actor.samples,14)
 
     def test_headings_no_effects_and_changed_mission_fail_closed(self):
