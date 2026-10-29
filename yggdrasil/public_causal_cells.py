@@ -50,15 +50,40 @@ class PublicCausalCells:
         self._counts[cell][arm][result] = min(65535, old + 1)
 
     def choose(self, address: int, *, retained: bool = False) -> int | None:
-        """Compare matched empirical rates. Abstain without both arms' evidence."""
+        """Compare matched empirical rates with hierarchical prior from peer cells.
+        Abstain without both arms' evidence."""
         cell = self._address(address, retained)
         (zero0, one0), (zero1, one1) = self._counts[cell]
         trials0 = zero0 + one0
         trials1 = zero1 + one1
-        if not trials0 or not trials1:
+        # Compute global counts from all other cells (peer prior)
+        global_counts = [[0, 0] for _ in range(2)]
+        for i, c in enumerate(self._counts):
+            if i == cell:
+                continue
+            for arm in range(2):
+                for outcome in range(2):
+                    global_counts[arm][outcome] += c[arm][outcome]
+        g_trials0 = global_counts[0][0] + global_counts[0][1]
+        g_trials1 = global_counts[1][0] + global_counts[1][1]
+        # If no peer evidence, fall back to original cell-only comparison
+        if g_trials0 == 0 and g_trials1 == 0:
+            if not trials0 or not trials1:
+                return None
+            lhs, rhs = one0 * trials1, one1 * trials0
+            if lhs == rhs:
+                return None
+            return 0 if lhs > rhs else 1
+        # Posterior success and trials (cell + peer prior)
+        post_success0 = one0 + global_counts[0][1]
+        post_trials0 = trials0 + g_trials0
+        post_success1 = one1 + global_counts[1][1]
+        post_trials1 = trials1 + g_trials1
+        if post_trials0 == 0 or post_trials1 == 0:
             return None
         # Exact integer cross-products avoid rounding/tuned thresholds.
-        lhs, rhs = one0 * trials1, one1 * trials0
+        lhs = post_success0 * post_trials1
+        rhs = post_success1 * post_trials0
         if lhs == rhs:
             return None
         return 0 if lhs > rhs else 1
