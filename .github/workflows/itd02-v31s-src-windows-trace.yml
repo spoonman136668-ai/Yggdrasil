@@ -1,0 +1,48 @@
+name: ITD-02 V31S-SRC original Windows trace capture
+on:
+  push:
+    branches: [research/itd02-v31s-src-windows-trace-20261028]
+permissions:
+  contents: read
+jobs:
+  trace:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Preserve exact-source traceback without waivers
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor a7ee41887e3a20668459e5b238441c4e484918c1 "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/itd02_native_task_bridge_dev.py)" = 71eff80e3cfabb627e9d08d558b63f4043ce1fd5
+          test ! -f research/itd02_v31_heldout_evaluator.py
+          mkdir -p "$RUNNER_TEMP/v31s"
+          for name in test_free_fanout_sidecar test_nci04g6_native_credit test_nci04g7_source_producer test_nci04g7d_native_lesion test_nci04g7e_functional_custody; do
+            set +e
+            PYTHONPATH=. python -B -m unittest discover -s tests -p "$name.py" -v > "$RUNNER_TEMP/v31s/$name.log" 2>&1
+            status=$?
+            set -e
+            echo "===== ORIGINAL $name STATUS=$status ====="
+            python - "$RUNNER_TEMP/v31s/$name.log" <<'PY'
+          import pathlib,sys
+          print(pathlib.Path(sys.argv[1]).read_text(errors='replace')[-3500:])
+          PY
+          done
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: itd02-v31s-src-${{ matrix.os }}
+          path: ${{ runner.temp }}/v31s/*
+          retention-days: 7
