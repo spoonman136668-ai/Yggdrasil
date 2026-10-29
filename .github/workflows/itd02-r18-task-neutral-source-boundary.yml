@@ -1,0 +1,34 @@
+name: R18 original mission-preserving local public source contract
+on:
+  pull_request:
+    paths:
+      - 'research/native/itd02/r18/**'
+      - '.github/workflows/itd02-r18-task-neutral-source-boundary.yml'
+permissions:
+  contents: read
+jobs:
+  public-native-only:
+    name: R18 original Ygg public mission and selected source / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Source-free old R17 and opt-in new R18 boundary checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd02/r18 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/native/itd02/r17 -p 'test_*.py' -v
+          python -B -m py_compile research/native/itd02/r18/public_boundary.py
+          echo R18_ORIGINAL_MISSION_PUBLIC_BOUNDARY=PASS
+          echo R18_EXTERNAL_SOURCE_EPISODES=ZERO
+          echo R18_NATIVE_SCIENCE_ADMISSION=NO
