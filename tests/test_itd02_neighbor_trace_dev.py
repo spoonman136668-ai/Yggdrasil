@@ -5,7 +5,7 @@ from yggdrasil.itd02_local_ring_memory_dev import ACTIONS,ACTION_SITES,OBSERVATI
 
 class NeighborTraceTests(unittest.TestCase):
     def test_reward_site_traces_react_to_two_neighbor_bits(self):
-        self.assertTrue(SCHEMA.endswith("source_only.v8"))
+        self.assertTrue(SCHEMA.endswith("source_only.v12"))
         self.assertEqual(CELLS,8)
         for site in ACTION_SITES:
             readings={}
@@ -31,6 +31,8 @@ class NeighborTraceTests(unittest.TestCase):
             m.accept_public_transition("Backup","Nothing",10,learning=True)
         self.assertEqual(frozen,m.cell_trace)
         m.accept_public_transition("Backup","Nothing",10,learning=False,terminal=True)
-        self.assertEqual(frozen,m.cell_trace)
+        self.assertNotEqual(frozen,m.cell_trace)  # v12 public inference state updates
+        self.assertTrue(all(-1 <= v <= 1 for v in m.cell_trace))
+        self.assertEqual(ids,m.model_identities())  # trained parameters do not
 
 if __name__=="__main__":unittest.main()
