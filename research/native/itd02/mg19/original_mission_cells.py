@@ -51,7 +51,9 @@ def original_public(p):
 
 def legacy_public(p):
     original_public(p)
-    return old_projected(p if p["mission"] in LEGACY else dict(p,mission=MISSION))
+    if p["mission"] in LEGACY:
+        return p  # preserve exact DoorKey and goal-only parent behavior
+    return old_projected(dict(p,mission=MISSION))
 
 
 def blank():
