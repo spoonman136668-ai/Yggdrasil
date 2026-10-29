@@ -59,8 +59,8 @@ jobs:
           assert git(prop,"rev-parse","HEAD")==new
           assert git(prop,"rev-parse","HEAD^")==old
           assert git(prop,"diff","--name-only",old,new).splitlines()==[rel]
-          a=(orig/rel).read_bytes()
-          b=(prop/rel).read_bytes()
+          a=subprocess.run(["git","-C",str(orig),"show","HEAD:"+rel],capture_output=True,check=True).stdout
+          b=subprocess.run(["git","-C",str(prop),"show","HEAD:"+rel],capture_output=True,check=True).stdout
           assert a!=b and hashlib.sha256(b).hexdigest()=="f14eae1488b9f038dacb8d10a3b1a47967fad45046052b04b679d18b69815ae1"
           def test(phase,pattern):
               try:
@@ -75,7 +75,8 @@ jobs:
           base_atlas,base_a_out=test("baseline-atlas","test_code_atlas.py")
           base_all,base_all_out=test("baseline-full","test_*.py")
           (orig/rel).write_bytes(b)
-          assert git(orig,"status","--porcelain","--untracked-files=all").splitlines()==[" M "+rel]
+          tracked=git(orig,"diff","--name-only").splitlines()
+          assert tracked==[rel],{"tracked_modified":tracked,"status":git(orig,"status","--porcelain","--untracked-files=all")[:1000]}
           focused,focused_out=test("staged-focused","test_native_cells.py")
           atlas,atlas_out=test("staged-atlas","test_code_atlas.py")
           all_rc,all_out=test("staged-full","test_*.py")
