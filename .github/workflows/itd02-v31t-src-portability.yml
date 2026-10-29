@@ -35,6 +35,7 @@ jobs:
             set -e
             echo "$status" > "$RUNNER_TEMP/v31t/$name.exit"
             echo "$name: $status"
+            if [ "$status" -ne 0 ]; then tail -n 45 "$RUNNER_TEMP/v31t/$name.log"; fi
           done
           PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_itd02_native_task_bridge_dev.py' -v
           python - "$RUNNER_TEMP/v31t" <<'PY'
