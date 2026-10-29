@@ -63,6 +63,21 @@ class PublicCausalCells:
             return None
         return 0 if lhs > rhs else 1
 
+    def observed_rate(self, address: int, action: int, *,
+                      retained: bool = False) -> tuple[int, int] | None:
+        """Report an action's observed public-success fraction without prediction.
+
+        Exact (successes, trials) integers avoid rounding away uncertainty,
+        preserve the existing 128-byte learned state/checkpoint, and abstain
+        when this arm has no actual public observations. This method never
+        infers a counterfactual or changes choose()/choose_wilson() behavior.
+        """
+        cell = self._address(address, retained)
+        arm = self._bit(action, "ACTION")
+        failures, successes = self._counts[cell][arm]
+        trials = failures + successes
+        return (successes, trials) if trials else None
+
     def choose_wilson(self, address: int, *, retained: bool = False) -> int | None:
         """Optional 95% Wilson-interval abstention control, not a learned oracle.
 
