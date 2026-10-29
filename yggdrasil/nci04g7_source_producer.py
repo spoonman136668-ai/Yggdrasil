@@ -40,7 +40,7 @@ class SourceBoundNativeCellSensor:
             committed=subprocess.run(["git","show","HEAD:"+name],
                 cwd=self.root,capture_output=True,check=True,timeout=10).stdout
             current=path.read_bytes()
-            if current!=committed:
+            if current.replace(b"\r\n", b"\n") != committed.replace(b"\r\n", b"\n"):
                 raise ValueError("native producer source/commit mismatch")
             pinned[name]=hashlib.sha256(committed).hexdigest()
         commit=subprocess.run(["git","rev-parse","HEAD"],cwd=self.root,
