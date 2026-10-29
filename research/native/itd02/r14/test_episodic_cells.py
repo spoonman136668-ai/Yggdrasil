@@ -41,6 +41,23 @@ class R14SourceSelectedOnly(unittest.TestCase):
         with self.assertRaises(ValueError):EpisodicCells.restore(blob+b"0")
         with self.assertRaises(ValueError):EpisodicCells.restore(blob[:-1]+b"x")
 
+    def test_original_positive_reward_stays_ahead_of_transition_novelty(self):
+        adapter=DoorKeyPublicAdapter()
+        unchanged=public(0);changed=public(1)
+        adapter.reset_public(unchanged)
+        agent=EpisodicCells()
+        agent.start_session(adapter,"r14-original-reward-priority")
+        adapter.submit(0)
+        adapter.complete(unchanged,1.0,False,False)
+        agent.learn_selected(adapter)
+        adapter.submit(1)
+        adapter.complete(changed,0.0,False,False)
+        agent.learn_selected(adapter)
+        chosen=agent.propose(unchanged)
+        self.assertEqual(chosen["status"],"SELECT_NATIVE_OBSERVED_POSITIVE_REWARD")
+        self.assertEqual(chosen["action"],0)
+        self.assertEqual(agent.samples,2)
+
     def test_bad_public_and_unreturned_event_fail_without_updates(self):
         adapter=DoorKeyPublicAdapter()
         original=public()
