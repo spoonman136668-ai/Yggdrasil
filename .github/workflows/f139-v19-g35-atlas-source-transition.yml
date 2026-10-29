@@ -1,0 +1,134 @@
+name: F139 V19 G35 source-locked G29 atlas refresh on isolated draft
+on:
+  push:
+    branches: [repair/f139-v19-g35-code-atlas-source-transition-20261029]
+    paths:
+      - .github/workflows/f139-v19-g35-atlas-source-transition.yml
+permissions:
+  contents: write
+concurrency:
+  group: f139-v19-g35-isolated-atlas-source-transition
+  cancel-in-progress: false
+jobs:
+  generate-frozen-g29-once:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.actor == 'spoonman136668-ai' &&
+      github.ref == 'refs/heads/repair/f139-v19-g35-code-atlas-source-transition-20261029' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - name: Disable automatic line-ending transformation
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact pre-atlas source custody and one workflow delta only
+        shell: pwsh
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          $ErrorActionPreference='Stop'
+          $original='9c59dbbd10cfdf74c5288d6f44ea8082ceb67438'
+          $actual=(& git rev-parse HEAD | Out-String).Trim()
+          if($actual -cne $env:GITHUB_SHA){throw 'F139_G35_SOURCE_SHA_DRIFT'}
+          if(@(& git status --porcelain --untracked-files=all).Count -ne 0){throw 'F139_G35_NOT_CLEAN'}
+          if((@(& git diff --name-only $original HEAD) -join '|') -cne '.github/workflows/f139-v19-g35-atlas-source-transition.yml'){
+            throw 'F139_G35_ONLY_ONE_ADDED_WORKFLOW_ALLOWED'
+          }
+          if($env:GH_TOKEN -or $env:OPENAI_API_KEY -or $env:F139_WORKER_HMAC_KEY){
+            throw 'F139_G35_SECRET_ENVIRONMENT_MUST_BE_ABSENT'
+          }
+          Write-Output ('F139_G35_SOURCE_COMMIT='+$actual)
+          Write-Output 'F139_G35_ONE_WORKFLOW_SOURCE_ONLY=PASS'
+      - name: Build exact source-indexed G29 snapshot (no model or candidate execution)
+        shell: pwsh
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          $ErrorActionPreference='Stop'
+          $source=(& git rev-parse HEAD | Out-String).Trim()
+          & python -B scripts/build_code_atlas.py --source-commit $source --write
+          if($LASTEXITCODE -ne 0){throw 'F139_G35_ATLAS_GENERATOR_FAILED'}
+          & python -B -c "import json,sys; x=json.load(open('.ice/code-atlas.json',encoding='utf-8')); assert x['source_commit']==sys.argv[1] and x['authority']=='advisory-locators-only' and x['source_reviewed_labels']==0 and x['wingless_evidence_imported'] is False; print('F139_G35_ATLAS_SOURCE_IDENTITY=PASS')" $source
+          if($LASTEXITCODE -ne 0){throw 'F139_G35_ATLAS_SOURCE_BINDING_FAILED'}
+          $files=@(& git diff --name-only | Sort-Object)
+          $expected=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json')|Sort-Object
+          if(($files -join '|') -cne ($expected -join '|')){throw ('F139_G35_OUTPUT_SCOPE_DRIFT='+($files -join ','))}
+          & python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          if($LASTEXITCODE -eq 0){throw 'F139_G35_EXPECTED_PRECOMMIT_STALE_ARTIFACT_REJECTION_MISSING'}
+          Write-Output 'F139_G35_HISTORIC_OLD_ATLAS_STALENESS_RETAINED=PASS'
+      - name: Commit only generated G29 artifacts to draft branch
+        shell: pwsh
+        env:
+          BRANCH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $branch='repair/f139-v19-g35-code-atlas-source-transition-20261029'
+          $source=(& git rev-parse HEAD | Out-String).Trim()
+          & git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          if($LASTEXITCODE -ne 0){throw 'F139_G35_GIT_STAGE_FAILED'}
+          if((@(& git diff --cached --name-only | Sort-Object) -join '|') -cne
+              (@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json')|Sort-Object -join '|')){
+            throw 'F139_G35_STAGED_SCOPE_DRIFT'
+          }
+          & git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'F139 G35: frozen G29 source atlas for exact prior code commit'
+          if($LASTEXITCODE -ne 0){throw 'F139_G35_COMMIT_FAILED'}
+          $auth=[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes('x-access-token:'+$env:BRANCH_TOKEN))
+          & git -c ('http.extraheader=AUTHORIZATION: basic '+$auth) push origin ('HEAD:refs/heads/'+$branch)
+          if($LASTEXITCODE -ne 0){throw 'F139_G35_BRANCH_ONLY_PUSH_FAILED'}
+          Write-Output ('F139_G35_ATLAS_SOURCE_COMMIT='+$source)
+          Write-Output 'F139_G35_DRAFT_ONLY_ARTIFACT_PUSH=PASS'
+  verify-complete-source:
+    needs: generate-frozen-g29-once
+    if: needs.generate-frozen-g29-once.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - name: Disable autocrlf
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@v4
+        with:
+          ref: repair/f139-v19-g35-code-atlas-source-transition-20261029
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Cross-platform original G29 and sidecar portability full suite
+        shell: pwsh
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          $ErrorActionPreference='Stop'
+          $source=(git rev-parse HEAD^ | Out-String).Trim()
+          if((git show --pretty= --name-only HEAD | Out-String).Trim() -notmatch '^.ice/code-atlas'){
+            throw 'F139_G35_EXPECTED_ATLAS_ONLY_COMMIT_MISSING'
+          }
+          & python -B scripts/build_code_atlas.py --source-commit $source --check
+          if($LASTEXITCODE -ne 0){throw 'F139_G35_G29_CHECK_FAILED'}
+          & python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          if($LASTEXITCODE -ne 0){throw 'F139_G35_G29_REGRESSION_FAILED'}
+          & python -B -m unittest discover -s tests -p test_free_fanout_sidecar.py -v
+          if($LASTEXITCODE -ne 0){throw 'F139_G35_FANOUT_RESOURCE_TEST_FAILED'}
+          & python -B -m unittest discover -s tests -p 'test_*.py' -v
+          if($LASTEXITCODE -ne 0){throw 'F139_G35_FULL_SOURCE_REGRESSION_FAILED'}
+          Write-Output 'F139_G35_FULL_PLAIN_SOURCE_REGRESSION=PASS'
+          Write-Output 'F139_G35_ORIGINAL_SIGNED_NATIVE_WORKER=UNCHANGED'
+          Write-Output 'F139_G35_CANDIDATE_OVERLAY_ATLAS=EXPECTED_REJECT'
+          Write-Output 'F139_G35_SCIENTIFIC_FIRST_USE=FALSE'
