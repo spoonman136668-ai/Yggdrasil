@@ -24,8 +24,8 @@ class TestR16OriginalSelectedPublicNovelty(unittest.TestCase):
         cp=native.checkpoint()
         cold=NativeNovelty.restore(cp)
         self.assertEqual(cold.checkpoint(),cp)
-        # Session-dependent action selection is allowed only after a source session.
-        with self.assertRaises(ValueError):cold.choose(v)
+        # An authenticated restored source session must produce the same public action.
+        self.assertEqual(cold.choose(v),decision)
         with self.assertRaises(ValueError):NativeNovelty.restore(cp+b"0")
     def test_reject_unreturned_or_private_source(self):
         v=frame();adapter=DoorKeyPublicAdapter();adapter.reset_public(v)
