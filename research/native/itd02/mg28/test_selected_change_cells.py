@@ -22,6 +22,9 @@ class MG28SelectedSourceTest(unittest.TestCase):
         after=frame(heading=1)
         model=SelectedChangeCells()
         disabled=SelectedChangeCells(enabled=False)
+        initial=OriginalMissionAdapter()
+        initial.reset_public(before)
+        model.start_session(initial,"mg28-initial-source",live=False)
         proposal=model.choose(before)
         self.assertIn(proposal["action"],range(7))
         chosen=(proposal["action"]+1)%7
