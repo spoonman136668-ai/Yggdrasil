@@ -41,7 +41,7 @@ jobs:
           set -euo pipefail
           python scripts/build_code_atlas.py --check-if-present
           python -m unittest discover -s tests -p test_code_atlas.py -q
-          python -B research/native/itd02/mg81/paired_original_dev.py --phase preflight
+          python -B -m research.native.itd02.mg81.paired_original_dev --phase preflight
           python - <<'PY'
           import ast, pathlib
           ast.parse(pathlib.Path('research/native/itd02/mg81/paired_original_dev.py').read_text('utf8'))
@@ -71,7 +71,7 @@ jobs:
           set -euo pipefail
           root="$RUNNER_TEMP/mg81"
           export PYTHONPATH="$GITHUB_WORKSPACE"
-          python -B research/native/itd02/mg81/paired_original_dev.py             --phase train --source-root "$root/minigrid" --output-root "$root"             > "$root/train.log" 2>&1 || { tail -100 "$root/train.log"; exit 1; }
+          python -B -m research.native.itd02.mg81.paired_original_dev             --phase train --source-root "$root/minigrid" --output-root "$root"             > "$root/train.log" 2>&1 || { tail -100 "$root/train.log"; exit 1; }
           tail -2 "$root/train.log"
           test -s "$root/train.json"
           test -z "$(git status --porcelain --untracked-files=all)"
@@ -81,7 +81,7 @@ jobs:
           set -euo pipefail
           root="$RUNNER_TEMP/mg81"
           export PYTHONPATH="$GITHUB_WORKSPACE"
-          python -B research/native/itd02/mg81/paired_original_dev.py             --phase heldout --source-root "$root/minigrid" --output-root "$root"             > "$root/heldout.log" 2>&1 || { tail -100 "$root/heldout.log"; exit 1; }
+          python -B -m research.native.itd02.mg81.paired_original_dev             --phase heldout --source-root "$root/minigrid" --output-root "$root"             > "$root/heldout.log" 2>&1 || { tail -100 "$root/heldout.log"; exit 1; }
           tail -2 "$root/heldout.log"
           test -s "$root/heldout.json"
           python - "$root" <<'PY'
