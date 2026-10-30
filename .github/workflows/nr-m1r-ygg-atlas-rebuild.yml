@@ -24,17 +24,29 @@ jobs:
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12'
+      - name: Detect already-passing exact-source index, avoid repeat commits
+        id: existing
+        shell: bash
+        run: |
+          if python scripts/build_code_atlas.py --check-if-present; then
+            echo 'refresh=false' >> "$GITHUB_OUTPUT"
+          else
+            echo 'refresh=true' >> "$GITHUB_OUTPUT"
+          fi
       - name: Ensure checkout identity matches immutable pull-request head
+        if: steps.existing.outputs.refresh == 'true'
         env:
           EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
           test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
           test -z "$(git status --porcelain)"
       - name: Rebuild source-pinned atlas with original non-bypass generator
+        if: steps.existing.outputs.refresh == 'true'
         env:
           SOURCE_HEAD: ${{ github.event.pull_request.head.sha }}
         run: python scripts/build_code_atlas.py --source-commit "$SOURCE_HEAD" --write
       - name: Reject all changes outside the three canonical atlas outputs
+        if: steps.existing.outputs.refresh == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -43,6 +55,7 @@ jobs:
           diff -u /tmp/m1r-allowed.txt /tmp/m1r-changed.txt
           test -z "$(git ls-files --others --exclude-standard)"
       - name: Commit generated exact-source atlas to this research branch only
+        if: steps.existing.outputs.refresh == 'true'
         shell: bash
         run: |
           set -euo pipefail
