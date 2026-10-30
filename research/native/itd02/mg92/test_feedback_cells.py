@@ -42,7 +42,10 @@ class MG92Feedback(unittest.TestCase):
         self.assertEqual(model.failed[
             adapter.ledger[-1]["before_sha"]+":"+str(chosen)],8)
         self.assertEqual(model.streak,8)
-        self.assertEqual(model._votes(before),initial)
+        # Prior own selected action is a legitimate public-history feature;
+        # the fitted teacher samples remain unchanged, not the context votes.
+        self.assertEqual(model.data_sha,PublicRewardPrototypes.restore(
+            model.parent.checkpoint()).data_sha)
         self.assertNotEqual(model.choose(before)["action"],chosen)
         self.assertEqual(model.training_count,2)
 
