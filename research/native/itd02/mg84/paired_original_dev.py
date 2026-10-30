@@ -168,7 +168,7 @@ def episode(gym, family, entry, seed, model, role, phase):
             action = choice["action"]
             if action not in range(7) or choice.get("external_fallback") is not False:
                 raise RuntimeError("MG84_NATIVE_ORIGINAL_ACTION_INVALID")
-            expected_status={"mg83_revisit":"MG84_REVISITED_ORIGINAL_PUBLIC_CONSEQUENCE_ESCAPE",
+            expected_status={"mg83_revisit":"MG83_REVISITED_ORIGINAL_PUBLIC_CONSEQUENCE_ESCAPE",
                              "mg82_effect":"MG82_SELECTED_PUBLIC_EFFECT_EXPLORE",
                              "mg82_count_only":"MG82_COUNT_ONLY_EXPLORE"}[role]
             override = choice.get("status") == expected_status
@@ -176,7 +176,7 @@ def episode(gym, family, entry, seed, model, role, phase):
             # *passthrough* for MG83. It is not an MG83 revisit override.
             inherited=(role==ROLES[0] and
                        choice.get("status")=="MG82_SELECTED_PUBLIC_EFFECT_EXPLORE")
-            if (choice.get("status") in ("MG84_REVISITED_ORIGINAL_PUBLIC_CONSEQUENCE_ESCAPE",
+            if (choice.get("status") in ("MG83_REVISITED_ORIGINAL_PUBLIC_CONSEQUENCE_ESCAPE",
                                         "MG82_SELECTED_PUBLIC_EFFECT_EXPLORE",
                                         "MG82_COUNT_ONLY_EXPLORE")
                 and not (override or inherited)):
