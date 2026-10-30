@@ -213,6 +213,10 @@ def main():
         for role in ROLES:
             checkpoint=out/("checkpoint-"+family+"-"+role+".bin")
             model=learner(role) if a.phase=="train" else restored(role,checkpoint.read_bytes())
+            # MG37 wraps the unchanged MG28 parent and deliberately does not
+            # expose a separate top-level samples property.
+            initial_samples=(model.parent.samples if role==ROLES[0]
+                             else model.samples)
             if a.phase=="train":
                 for seed in seeds:
                     results.append(episode(gym,family,entry,seed,model,role,"train"))
@@ -222,11 +226,13 @@ def main():
                 checkpoint.write_bytes(wire)
             else:
                 results.append(episode(gym,family,entry,heldout,model,role,"heldout"))
-            if model.samples != (len(seeds)*0 + sum(
-                    e["original_selected_actions"] for e in results
-                    if e["family"]==family and e["role"]==role and
-                    e["phase"]=="train") if a.phase=="train" else model.samples):
-                raise RuntimeError("MG81_TRAIN_SOURCE_SAMPLE_DRIFT")
+            final_samples=(model.parent.samples if role==ROLES[0]
+                           else model.samples)
+            observed=sum(e["original_selected_actions"] for e in results
+                         if e["family"]==family and e["role"]==role
+                         and e["phase"]==a.phase)
+            if final_samples!=initial_samples+observed:
+                raise RuntimeError("MG81_ORIGINAL_SELECTED_SAMPLE_CONSERVATION")
     role_counts={role:sum(q["original_selected_actions"] for q in results
                           if q["role"]==role) for role in ROLES}
     if any(v<=0 for v in role_counts.values()):
