@@ -183,13 +183,13 @@ def episode(gym, family, entry, seed, model, role, phase):
                     raise RuntimeError("MG86_REPAIRED_CONTROL_STATUS_DRIFT")
                 override=False
             elif role==ROLES[1]:
-                if not (type(status) is str and status.startswith("MG86_PUBLIC_")):
-                    raise RuntimeError("MG86_FROZEN_MG86_STATUS_DRIFT")
+                if not (type(status) is str and status.startswith("MG85_PUBLIC_")):
+                    raise RuntimeError("MG86_FROZEN_MG85_STATUS_DRIFT")
                 override=False
             else:
                 if (status in ("MG83_REVISITED_ORIGINAL_PUBLIC_CONSEQUENCE_ESCAPE",
                                "MG82_SELECTED_PUBLIC_EFFECT_EXPLORE") or
-                    type(status) is str and (status.startswith("MG86_PUBLIC_")
+                    type(status) is str and (status.startswith("MG85_PUBLIC_")
                                              or status.startswith("MG86_CONVENTIONAL_"))):
                     raise RuntimeError("MG86_NATIVE_COUNT_ROLE_DRIFT")
                 override=status=="MG82_COUNT_ONLY_EXPLORE"
