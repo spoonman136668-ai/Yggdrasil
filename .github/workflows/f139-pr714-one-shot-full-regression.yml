@@ -82,6 +82,55 @@ jobs:
           print('F139_714_NATIVE_READOUT_NO_MUTATION=PASS')
           '@ | python -B -
           if($LASTEXITCODE -ne 0){throw 'F139_714_NATIVE_READOUT_FAILED'}
+      - name: Deterministic 8100-case exact-rational contrast proof (no model)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          @'
+          from fractions import Fraction
+          from yggdrasil.public_causal_cells import PublicCausalCells
+          cases = 0
+          abstentions = 0
+          for fail0 in range(10):
+              for success0 in range(9):
+                  for fail1 in range(10):
+                      for success1 in range(9):
+                          c = PublicCausalCells()
+                          for fail, success, action in ((fail0, success0, 0), (fail1, success1, 1)):
+                              for _ in range(fail):
+                                  c.observe(0, action, 0)
+                              for _ in range(success):
+                                  c.observe(0, action, 1)
+                          retained_before = c.snapshot()
+                          actual = c.observed_action_contrast(0)
+                          total0, total1 = fail0 + success0, fail1 + success1
+                          if total0 == 0 or total1 == 0:
+                              assert actual is None
+                              assert c.choose(0) is None
+                              abstentions += 1
+                          else:
+                              expected = Fraction(success1, total1) - Fraction(success0, total0)
+                              assert actual is not None
+                              numerator, denominator = actual
+                              assert denominator == total0 * total1 and denominator > 0
+                              assert Fraction(numerator, denominator) == expected
+                              assert c.choose(0) == (1 if expected > 0 else 0 if expected < 0 else None)
+                          assert c.snapshot() == retained_before
+                          assert c.observed_action_contrast(0, retained=True) is None
+                          cases += 1
+          assert cases == 8100 and abstentions == 179, (cases, abstentions)
+          # Counter saturation, equal rates, and 164-byte checkpoint provenance.
+          saturated = PublicCausalCells()
+          saturated._counts[0] = [[65535, 65535], [65535, 65535]]
+          checkpoint = saturated.snapshot()
+          assert len(checkpoint) == 164
+          assert saturated.observed_action_contrast(0) == (0, 4294836225)
+          assert saturated.choose(0) is None
+          assert saturated.snapshot() == checkpoint
+          assert PublicCausalCells.restore(checkpoint).observed_action_contrast(0) == (0, 4294836225)
+          print(f'F139_714_PROPERTY_EXACT_8100_PASS cases={cases} abstentions={abstentions}')
+          '@ | python -B -
+          if($LASTEXITCODE -ne 0){throw 'F139_714_PROPERTY_EXACT_8100_FAILED'}
       - name: Mandatory complete repository unittest regression
         shell: pwsh
         run: |
