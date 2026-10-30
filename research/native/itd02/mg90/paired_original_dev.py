@@ -46,7 +46,7 @@ FAMILIES = (
 )
 BLOBS = {
     "research/native/itd02/mg90/relational_cells.py":
-        "8fb359dc1d00e311da410e7eba6ef6401179aba3",
+        "35051cdc198727ed1f56d025159c96f075768354",
     "research/native/itd02/mg89/landmark_cells.py":
         "ac505e4c2dfd41ce29189fbc202c42f188f0f39d",
     "research/native/itd02/mg88/alignment_cells.py":
