@@ -89,7 +89,14 @@ def public(raw):
     image = raw["image"]
     if type(image).__module__ == "numpy" and type(image).__name__ == "ndarray":
         image = image.tolist()
-    frame = {"image":image, "direction":raw["direction"],
+    direction = raw["direction"]
+    # Original Farama's scalar numpy.int64 is public, but the frozen R10 API
+    # deliberately requires a canonical JSON-native Python int.
+    if type(direction).__module__.startswith("numpy") and hasattr(direction,"item"):
+        direction = direction.item()
+    if type(direction) is not int:
+        raise RuntimeError("MG81_NONCANONICAL_PUBLIC_DIRECTION")
+    frame = {"image":image, "direction":direction,
              "mission":raw["mission"]}
     original_public(frame)
     return frame
