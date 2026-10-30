@@ -1,0 +1,50 @@
+name: ITD-02 MG23 Yggdrasil selected original mission local target and delayed credit
+on:
+  push:
+    branches: [research/itd02-mg23-local-target-delayed-selected-credit-20261029]
+permissions:
+  contents: read
+jobs:
+  exact-native-selected-source:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONHASHSEED: '0'
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUTF8: '1'
+    steps:
+      - name: Source exact original Git line endings
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Frozen native local-cell parent unchanged
+        shell: pwsh
+        run: |
+          git merge-base --is-ancestor f0dd99d59ce00da7ad17ff49900a1af6d2322a77 $env:GITHUB_SHA
+          if ($LASTEXITCODE -ne 0) { throw 'MG23_YGG_ORIGINAL_PARENT_MISSING' }
+          $changed=@(git diff --name-only f0dd99d59ce00da7ad17ff49900a1af6d2322a77 $env:GITHUB_SHA)
+          if (@($changed | Where-Object {$_ -notlike 'research/native/itd02/mg23/*' -and $_ -ne '.github/workflows/itd02-mg23-yggdrasil-local-credit.yml'}).Count -ne 0) {
+            throw 'MG23_UNAUTHORIZED_NATIVE_LOCAL_SOURCE_CHANGE'
+          }
+          if ((git hash-object research/native/itd02/mg19/genuine_mission_cells.py).Trim() -ne '6a2a60eb9c9b77436421aa7ccbe785d29a163280') { throw 'MG23_LOCAL_NATIVE_PARENT_DRIFT' }
+      - name: Test Yggdrasil real source selected-feedback and native local delayed memory
+        shell: pwsh
+        run: |
+          python -B -m unittest -v research.native.itd02.mg23.test_selected_target_cells research.native.itd02.mg23.test_nr_m1x_eligibility_control research.native.itd02.mg19.test_genuine_mission_cells
+          if ($LASTEXITCODE -ne 0) { throw 'MG23_LOCAL_NATIVE_SELECTED_CREDIT_FAILED' }
+          python -B -c "import ast,pathlib; [ast.parse(p.read_text(encoding='utf8')) for p in pathlib.Path('research/native/itd02/mg23').glob('*.py')]"
+          if ($LASTEXITCODE -ne 0) { throw 'MG23_BAD_LOCAL_NATIVE_SYNTAX' }
+          if (git status --porcelain --untracked-files=all) { throw 'MG23_NATIVE_LOCAL_SOURCE_WORKTREE_DIRTY' }
+          Write-Host 'MG23_YGGDRASIL_NATIVE_LOCAL_SELECTED_TERMINAL_SOURCE_PASS_NO_SCIENCE'
