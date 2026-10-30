@@ -11,6 +11,11 @@ from research.native.itd02.mg19.original_mission_cells import OriginalMissionAda
 from research.native.itd02.mg23.selected_target_cells import observed_key
 
 class MG82PublicEffectTest(unittest.TestCase):
+    def prime(self, model, before):
+        adapter=OriginalMissionAdapter()
+        adapter.reset_public(before)
+        model.start_session(adapter,"mg82-test-prime",live=False)
+
     def train(self, model, before, action, after, index):
         adapter=OriginalMissionAdapter()
         adapter.reset_public(before)
@@ -22,6 +27,7 @@ class MG82PublicEffectTest(unittest.TestCase):
     def test_zero_effect_stalling_triggers_empirical_alternative(self):
         agent=PublicEffectCells(mode="effect")
         before=frame()
+        self.prime(agent,before)
         parent_action=agent.parent.choose(before)["action"]
         for n in range(2):
             self.train(agent,before,parent_action,before,n)
@@ -37,6 +43,8 @@ class MG82PublicEffectTest(unittest.TestCase):
         before=frame()
         after=frame(heading=1)
         actors=[PublicEffectCells(mode=m) for m in ("effect","count")]
+        for actor in actors:
+            self.prime(actor,before)
         native=actors[0].parent.choose(before)["action"]
         for agent in actors:
             for i in range(2):
@@ -50,6 +58,7 @@ class MG82PublicEffectTest(unittest.TestCase):
         red=frame("pick up the red ball")
         blue=frame("pick up the blue ball")
         agent=PublicEffectCells()
+        self.prime(agent,red)
         action=agent.parent.choose(red)["action"]
         self.train(agent,red,action,red,1)
         self.assertNotEqual(observed_key(red),observed_key(blue))
