@@ -124,10 +124,10 @@ jobs:
           saturated._counts[0] = [[65535, 65535], [65535, 65535]]
           checkpoint = saturated.snapshot()
           assert len(checkpoint) == 164
-          assert saturated.observed_action_contrast(0) == (0, 4294836225)
+          assert saturated.observed_action_contrast(0) == (0, (2 * 65535) ** 2)
           assert saturated.choose(0) is None
           assert saturated.snapshot() == checkpoint
-          assert PublicCausalCells.restore(checkpoint).observed_action_contrast(0) == (0, 4294836225)
+          assert PublicCausalCells.restore(checkpoint).observed_action_contrast(0) == (0, (2 * 65535) ** 2)
           print(f'F139_714_PROPERTY_EXACT_8100_PASS cases={cases} abstentions={abstentions}')
           '@ | python -B -
           if($LASTEXITCODE -ne 0){throw 'F139_714_PROPERTY_EXACT_8100_FAILED'}
