@@ -14,7 +14,10 @@ from pathlib import Path
 import subprocess
 import sys
 import time
-import resource
+try:
+    import resource
+except ModuleNotFoundError:
+    resource=None  # Windows source-only validation; original Farama runner is Linux.
 
 from research.native.itd02.mg19.original_mission_cells import (
     OriginalMissionAdapter, original_public)
@@ -298,7 +301,8 @@ def main():
             "roles":list(ROLES),"family_count":3,
             "episodes":results,"source_step_counts":role_counts,
             "scientific_admission":"DEV_ONLY_NO_CAUSAL_OR_GENERALIZATION_CLAIM",
-            "process_max_rss_kib":resource.getrusage(resource.RUSAGE_SELF).ru_maxrss}
+            "process_max_rss_kib":(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+                                   if resource is not None else None)}
     payload=canonical(report)
     target=out/(a.phase+".json")
     target.write_bytes(payload)
