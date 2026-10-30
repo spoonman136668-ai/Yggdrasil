@@ -6,7 +6,10 @@ import math
 import os
 import pathlib
 import re
-import resource
+try:
+    import resource  # POSIX child CPU/RSS accounting; unavailable on Windows
+except ImportError:
+    resource = None  # Fail closed before starting any candidate on unsupported hosts
 import subprocess
 import sys
 import time
@@ -272,6 +275,10 @@ def build_candidate_env(home_dir, tmp_dir, data_class):
     }
 
 def run_candidate(manifest, package_root, candidate_id, output_root):
+    # A candidate must never run if child CPU and peak RSS cannot be measured.
+    # This guard precedes all filesystem writes and subprocess creation.
+    if resource is None:
+        fail("FREE_FANOUT_RESOURCE_ACCOUNTING_UNAVAILABLE")
     candidate = candidate_by_id(manifest, candidate_id)
     output_root = pathlib.Path(output_root).resolve()
     output_root.mkdir(parents=True, exist_ok=True)

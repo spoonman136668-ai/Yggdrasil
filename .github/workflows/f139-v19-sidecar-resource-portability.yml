@@ -1,0 +1,95 @@
+name: F139 V19 Yggdrasil inherited Windows resource import source-only parity
+on:
+  push:
+    branches: [repair/f139-v19-g29-windows-resource-sidecar-20261029]
+    paths:
+      - scripts/free_fanout_sidecar.py
+      - tests/test_free_fanout_sidecar.py
+      - .github/workflows/f139-v19-sidecar-resource-portability.yml
+permissions:
+  contents: read
+concurrency:
+  group: f139-v19-ygg-source-portability-20261029
+  cancel-in-progress: false
+jobs:
+  verify-unaltered-baseline-and-scope:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.actor == 'spoonman136668-ai' &&
+      github.ref == 'refs/heads/repair/f139-v19-g29-windows-resource-sidecar-20261029' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 18
+    steps:
+      - name: Disable line-ending rewrite before source checkout
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify no native learner or frozen G29 artifact changed
+        shell: pwsh
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          $ErrorActionPreference='Stop'
+          $base='021423311027517c9096c76bed7d35ac53c4a229'
+          if ((& git rev-parse HEAD | Out-String).Trim() -cne $env:GITHUB_SHA) {
+            throw 'F139_RESOURCE_SOURCE_HEAD_DRIFT'
+          }
+          & git merge-base --is-ancestor $base HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'F139_RESOURCE_UNQUALIFIED_BASE' }
+          $actual=@(& git diff --name-only $base HEAD | Sort-Object)
+          $allowed=@(
+            '.github/workflows/f139-v19-sidecar-resource-portability.yml',
+            'scripts/free_fanout_sidecar.py',
+            'tests/test_free_fanout_sidecar.py'
+          ) | Sort-Object
+          if (($actual -join '|') -cne ($allowed -join '|')) {
+            throw ('F139_RESOURCE_OUT_OF_SCOPE_FILES='+($actual -join ','))
+          }
+          if (@(& git status --porcelain --untracked-files=all).Count -ne 0) {
+            throw 'F139_RESOURCE_CHECKOUT_DIRTY'
+          }
+          Write-Output 'F139_RESOURCE_ONLY_THREE_PATHS=PASS'
+      - name: Original pinned G29 pristine baseline (must pass unchanged)
+        shell: pwsh
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          $ErrorActionPreference='Stop'
+          $base='021423311027517c9096c76bed7d35ac53c4a229'
+          $dest=Join-Path $env:RUNNER_TEMP 'original-baseline'
+          & git worktree add --detach $dest $base
+          if($LASTEXITCODE -ne 0) {throw 'F139_RESOURCE_ORIGINAL_BASELINE_CHECKOUT_FAILED'}
+          Push-Location $dest
+          try {
+            & python -B -m unittest discover -s tests -p test_code_atlas.py -v
+            if($LASTEXITCODE -ne 0) {throw 'F139_RESOURCE_ORIGINAL_G29_ATLAS_FAILED'}
+          } finally {Pop-Location}
+          Write-Output 'F139_G29_UNMODIFIED_BASELINE_PASS=TRUE'
+      - name: Candidate sidecar import, manifest and fail-closed runtime regression
+        shell: pwsh
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          $ErrorActionPreference='Stop'
+          & python -B -m unittest discover -s tests -p test_free_fanout_sidecar.py -v
+          if($LASTEXITCODE -ne 0) { throw 'F139_RESOURCE_PORTABILITY_REGRESSION_FAILED' }
+          & python -B -c "import ast,pathlib; ast.parse(pathlib.Path('scripts/free_fanout_sidecar.py').read_text()); ast.parse(pathlib.Path('tests/test_free_fanout_sidecar.py').read_text())"
+          if($LASTEXITCODE -ne 0) { throw 'F139_RESOURCE_SOURCE_COMPILE_FAILED' }
+          Write-Output 'F139_RESOURCE_PORTABILITY_FOCUSED=PASS'
+          Write-Output 'F139_RESOURCE_UNAVAILABLE_CHILD_CPU_RSS=FAIL_CLOSED_BEFORE_DISPATCH'
+          Write-Output 'F139_HISTORICAL_G29_CHANGED_SOURCE=NOT_QUALIFIED'
+          Write-Output 'F139_NATIVE_WORKER_SIGNED_RECEIPT=NOT_QUALIFIED'
+          Write-Output 'F139_SCIENTIFIC_FIRST_USE=FALSE'
