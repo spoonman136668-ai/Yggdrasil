@@ -41,7 +41,7 @@ FAMILIES = (
 )
 BLOBS = {
     "research/native/itd02/mg85/public_map_control.py":
-        "6b1dc9862f159ed0e52bef2ee0cb95da8e400595",
+        "cdb2a6bf4feca1093537bab2d9207ea9f5e24e07",
     "research/native/itd02/mg83/revisit_cells.py":
         "f45ff00875256502011c39e5a5b0ea40300286ab",
     "research/native/itd02/mg82/effect_cells.py":
