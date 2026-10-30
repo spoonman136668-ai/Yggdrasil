@@ -144,7 +144,8 @@ class PublicMapControl:
     def _approach_object(self,parent,types,color=None):
         options=[]
         for k,tile in self.grid.items():
-            if tile[0] not in types or color is not None and tile[1]!=color:
+            if (tile[0] not in types or color is not None and tile[1]!=color
+                or tile[0]==4 and tile[2]==0):
                 continue
             target=pos(k)
             for _,adj in self._neighbors(target):
