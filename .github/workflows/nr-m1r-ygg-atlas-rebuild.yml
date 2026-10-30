@@ -1,0 +1,60 @@
+name: NR-M1R Yggdrasil One-Time Exact-Source Atlas Rebuild
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/nr-m1r-ygg-atlas-rebuild.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  exact-source-atlas-maintenance:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'research/itd02-nr-m1q-local-task-effect-20261030'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out exact approved same-repository research head
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Set up original Python toolchain
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Ensure checkout identity matches immutable pull-request head
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          test -z "$(git status --porcelain)"
+      - name: Rebuild source-pinned atlas with original non-bypass generator
+        env:
+          SOURCE_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: python scripts/build_code_atlas.py --source-commit "$SOURCE_HEAD" --write
+      - name: Reject all changes outside the three canonical atlas outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --name-only | sort > /tmp/m1r-changed.txt
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | sort > /tmp/m1r-allowed.txt
+          diff -u /tmp/m1r-allowed.txt /tmp/m1r-changed.txt
+          test -z "$(git ls-files --others --exclude-standard)"
+      - name: Commit generated exact-source atlas to this research branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          git commit -m 'chore(nr-m1r): rebuild exact-source Yggdrasil G29 atlas'
+          git push origin HEAD:refs/heads/research/itd02-nr-m1q-local-task-effect-20261030
+      - name: Verify original G29 source-index acceptance after commit
+        run: |
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+
+# Scope: existing exact-head G29 index generator, same-repo draft research branch only.
+# No source-world stepping, source edits, accepted main, controller or test waiver.
