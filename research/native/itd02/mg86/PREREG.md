@@ -1,0 +1,23 @@
+# ITD-02 MG86 — Repair conventional public-only positive control, fresh prospective cohort
+
+Frozen prospectively **before MG86 implementation or original-world first use**. The prior MG85 native-engineering and original Farama run passed but the hand-engineered conventional planner failed with 0 task successes and recorded repeated pickup/drop and left-turn/forward cycling. Original MG85 evidence remains sealed: [negative MG85 PR #705](https://github.com/spoonman136668-ai/Yggdrasil/pull/705#issuecomment-6519596193), run `41034117483`, exact source head `15a01ae172bb2f28716ab99009c097d993206822`. Do not replay MG85 seeds for post-hoc fitting.
+
+## Original source custody and roles
+
+- Original upstream Farama MiniGrid commit `7f5853792ea7f04f75614661006d87fcf949f26d`, `minigrid/envs/doorkey.py` original Git blob `df5b29ef063be34e6d83b8b478e092c6e3e01512`.
+- Frozen historical hand-engineered MG85 control `research/native/itd02/mg85/public_map_control.py`, blob `cdb2a6bf4feca1093537bab2d9207ea9f5e24e07`; frozen native count-only MG82 control `research/native/itd02/mg82/effect_cells.py`, blob `7e45d03a83f6e17c36337acf7d2ec9d8e703a056`.
+- Roles: `mg86_public_map_repaired` (new **explicitly conventional, hand-coded** public map planner, **not a native learning breakthrough**); `mg85_public_map_control` (unchanged failed conventional parent); `mg82_count_only` (unchanged native exploratory baseline).
+- MG86 prospective changes limited to **no gratuitous key pickup–drop repetition** (hold key until a matching door opens; release only in public empty front when accessing the actual mission target requires freeing hands), explicit checked source-selected forward movement, and bounded revisit-aware navigation/frontier choice. No hidden agent_pos, environment grid, carrying, secret location or other original simulator internals. Only public 7×7 image/direction/mission, own selected actions and returned reward/termination. Planner may encode original action/object/mission semantics; this extra *inductive prior* makes comparison diagnostic, not information-parity scientific evidence.
+- Retain public-only original-source selected SHA-ledger custody, independent process checkpoint restore, no samples shared across roles/families, deterministic planning, capped cells, fail-closed source pin and exact model hash, no alternative environment or imitation reward.
+
+## Prospective experimental cohort and acceptance
+
+- Registered families: `MiniGrid-KeyCorridorS3R2-v0`, `MiniGrid-KeyCorridorS4R3-v0`, `MiniGrid-ObstructedMaze-1Dl-v0`, exactly matching the source registration and index from the frozen original MiniGrid.
+- Development seeds (one pair/family): (1411101,1411103), (1411201,1411203), (1411301,1411303). **Heldout seeds:** (1511107), (1511207), (1511307). None belong to MG81–MG85 earlier prospective cohort. No seed switching, no threshold/behavior tuning after first original action.
+- Exactly 18 DEV and 9 cold-process HELDOUT episodes (27 total) on three roles, fixed **384 source-selected action budget per episode**, original termination/truncation may occur earlier. Same family/seed action/observation/reward limits for all roles; no cross-role memory.
+- Original-world positive **terminal task reward** and actual success are PRIMARY. Action histograms, adjacent pickup→drop and drop→pickup pairs, public key/door/goal visibility, repeated same selected source consequence, source step and wall time, process peak RSS and original selected ledger SHA are secondary. A source-public key disappearance/door opening is not proof of task success.
+- Engineering prior to original-world first use: original source identity, unchanged MG85/MG82 baselines, MG86 exact source, source-only Linux/Windows tests of memory, carrying-release guard, blocked-forward handling, no hidden-state leaks, and G29 original source-index acceptance. Retain unsuccessful trials/artifacts and disclose any repair. Checkpoint must be canonical and cold-restored in separate OS process before HELDOUT.
+- Success of a hand-engineered conventional baseline is merely a **valid task-solvability calibration**; no promotion of Yggdrasil or scientific first-use. Failure cannot prove tasks unsolvable or native parity. New native learner promotion still requires equally informed/trained Bayesian/model-based/recurrent controls, true heldout success, unfamiliar-family transfer, and compute/memory accounting.
+
+## Scope
+One isolated draft PR. Never merge into main automatically, change FORGE controller/scheduler, interrupt FORGE autonomy, mutate Wingless or CKB-plane or suppress failures. Store raw actual original-world evidence in GitHub Actions and a concise FORGE research-advisory note, not local user receipts.

@@ -1,0 +1,112 @@
+name: ITD02 MG86 Original Farama repaired public map calibration DEV
+on:
+  pull_request:
+    paths:
+      - research/native/itd02/mg86/**
+      - .github/workflows/itd02-mg86-original-paired-local.yml
+      - .ice/code-atlas.json
+      - .ice/code-atlas.html
+      - .ice/code-atlas.ice
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  original-farama-paired-dev:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    env:
+      PYTHONHASHSEED: '0'
+      PYTHONUTF8: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+      PIP_DISABLE_PIP_VERSION_CHECK: '1'
+    steps:
+      - name: Keep original source LF
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Check out exact Yggdrasil proposed source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Original Python 3.11
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Original source atlas qualification before any MiniGrid steps
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_code_atlas.py --check-if-present
+          python -m unittest discover -s tests -p test_code_atlas.py -q
+          python -B -m research.native.itd02.mg86.paired_original_dev --phase preflight
+          python - <<'PY'
+          import ast, pathlib
+          ast.parse(pathlib.Path('research/native/itd02/mg86/paired_original_dev.py').read_text('utf8'))
+          print('MG86_ORIGINAL_WORLD_SCRIPT_AST_PASS')
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Acquire exact original Farama source without candidate changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/mg86"
+          mkdir -p "$root"
+          python -m pip install 'pip==24.0' 'setuptools==69.5.1' 'wheel==0.43.0'
+          python -m pip install 'numpy==1.26.4' 'gymnasium==1.1.1' 'pygame-ce==2.5.3'
+          git init -q "$root/minigrid"
+          git -C "$root/minigrid" remote add origin https://github.com/Farama-Foundation/Minigrid.git
+          git -C "$root/minigrid" fetch --no-tags --depth 1 origin 7f5853792ea7f04f75614661006d87fcf949f26d
+          git -C "$root/minigrid" checkout --detach -q 7f5853792ea7f04f75614661006d87fcf949f26d
+          test "$(git -C "$root/minigrid" rev-parse HEAD)" = 7f5853792ea7f04f75614661006d87fcf949f26d
+          test "$(git -C "$root/minigrid" hash-object minigrid/envs/doorkey.py)" = df5b29ef063be34e6d83b8b478e092c6e3e01512
+          python -m pip install --no-deps -e "$root/minigrid"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo MG86_FARAMA_AUTHENTIC_SOURCE_PIN_PASS
+      - name: Original selected-action DEVELOPMENT from unchanged native actors
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/mg86"
+          export PYTHONPATH="$GITHUB_WORKSPACE"
+          python -B -m research.native.itd02.mg86.paired_original_dev             --phase train --source-root "$root/minigrid" --output-root "$root"             > "$root/train.log" 2>&1 || { tail -100 "$root/train.log"; exit 1; }
+          tail -2 "$root/train.log"
+          test -s "$root/train.json"
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Independent process cold-restored HELDOUT original source
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/mg86"
+          export PYTHONPATH="$GITHUB_WORKSPACE"
+          python -B -m research.native.itd02.mg86.paired_original_dev             --phase heldout --source-root "$root/minigrid" --output-root "$root"             > "$root/heldout.log" 2>&1 || { tail -100 "$root/heldout.log"; exit 1; }
+          tail -2 "$root/heldout.log"
+          test -s "$root/heldout.json"
+          python - "$root" <<'PY'
+          import json, pathlib, sys
+          root=pathlib.Path(sys.argv[1])
+          train=json.loads((root/'train.json').read_text('utf-8'))
+          heldout=json.loads((root/'heldout.json').read_text('utf-8'))
+          assert train['source_step_counts']['mg86_public_map_repaired']>0
+          assert train['source_step_counts']['mg85_public_map_control']>0 and train['source_step_counts']['mg82_count_only']>0
+          assert len(train['episodes'])==18 and len(heldout['episodes'])==9
+          assert all(e['original_selected_actions']>0 for e in heldout['episodes'])
+          assert set(e['seed'] for e in heldout['episodes'])=={1511107,1511207,1511307}
+          print('MG86_PROSPECTIVE_MATCHED_ORIGINAL_WORLD_DEV_AND_COLD_HELDOUT_RECORDED_NO_SCIENCE')
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Preserve authentic world evidence and errors
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: mg86-yggdrasil-paired-original-farama-dev
+          path: |
+            ${{ runner.temp }}/mg86/train.json
+            ${{ runner.temp }}/mg86/heldout.json
+            ${{ runner.temp }}/mg86/train.log
+            ${{ runner.temp }}/mg86/heldout.log
+            ${{ runner.temp }}/mg86/checkpoint-*.bin
+          retention-days: 30
+          if-no-files-found: warn
