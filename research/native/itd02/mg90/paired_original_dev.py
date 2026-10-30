@@ -194,7 +194,7 @@ def episode(gym, family, entry, seed, model, role, phase):
                 raise RuntimeError("MG90_NATIVE_ORIGINAL_ACTION_INVALID")
             status=choice.get("status")
             required={
-                ROLES[1]:"MG90_SELECTED_PUBLIC_LANDMARK_LINKS",
+                ROLES[1]:"MG89_SELECTED_PUBLIC_LANDMARK_LINKS",
                 ROLES[2]:"MG87_PUBLIC_COUNT_ABLATION",
             }
             if role==ROLES[0]:
