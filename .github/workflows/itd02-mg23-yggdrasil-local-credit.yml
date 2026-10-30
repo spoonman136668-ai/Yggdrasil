@@ -42,7 +42,7 @@ jobs:
       - name: Test Yggdrasil real source selected-feedback and native local delayed memory
         shell: pwsh
         run: |
-          python -B -m unittest -v research.native.itd02.mg23.test_selected_target_cells research.native.itd02.mg19.test_genuine_mission_cells
+          python -B -m unittest -v research.native.itd02.mg23.test_selected_target_cells research.native.itd02.mg23.test_nr_m1x_eligibility_control research.native.itd02.mg19.test_genuine_mission_cells
           if ($LASTEXITCODE -ne 0) { throw 'MG23_LOCAL_NATIVE_SELECTED_CREDIT_FAILED' }
           python -B -c "import ast,pathlib; [ast.parse(p.read_text(encoding='utf8')) for p in pathlib.Path('research/native/itd02/mg23').glob('*.py')]"
           if ($LASTEXITCODE -ne 0) { throw 'MG23_BAD_LOCAL_NATIVE_SYNTAX' }
