@@ -1,0 +1,102 @@
+name: F139 PR714 isolated full-source regression (one-shot)
+on:
+  push:
+    branches: [qualification/f139-pr714-full-integration-20261030]
+    paths:
+      - .github/workflows/f139-pr714-one-shot-full-regression.yml
+permissions:
+  contents: read
+jobs:
+  full-source:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.ref == 'refs/heads/qualification/f139-pr714-full-integration-20261030' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Source-pinned PR714 checkout; no credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact immutable source and original candidate parentage
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $sha=(& git rev-parse HEAD | Out-String).Trim()
+          if($sha -cne '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'){throw 'F139_714_SHA_MISMATCH'}
+          $first=(& git rev-parse 'HEAD^^' | Out-String).Trim()
+          if($first -cne 'ddee0d82a1e37038304fb862ac725240142c840f'){throw 'F139_714_CANDIDATE_IDENTITY_DRIFT'}
+          $base=(& git rev-parse 'HEAD^^^' | Out-String).Trim()
+          if($base -cne 'fc5d28a836f33caad3a576e0a6d4a1bf211cd857'){throw 'F139_714_BASELINE_DRIFT'}
+          $actual=@(& git diff --name-only $base HEAD | Where-Object { $_ -and $_.Trim() } | Sort-Object)
+          $expected=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json','yggdrasil/public_causal_cells.py') | Sort-Object
+          if(($actual -join '|') -cne ($expected -join '|')){throw ('F139_714_DIFF_SCOPE_DRIFT='+($actual -join ','))}
+          $status=@(& git status --porcelain --untracked-files=all | Where-Object {$_})
+          if($status.Count -ne 0){throw 'F139_714_INITIAL_WORKTREE_DIRTY'}
+          Write-Host 'F139_714_IMMUTABLE_SOURCE_AND_SCOPE=PASS'
+      - name: Regenerated G29 atlas and provenance verification
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          & python -B scripts/build_code_atlas.py --check-if-present
+          if($LASTEXITCODE -ne 0){throw 'F139_714_G29_ATLAS_FAILED'}
+          Write-Host 'F139_714_G29_ATLAS=PASS'
+      - name: Focused original native action contrast with no model or filesystem mutation
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          @'
+          from yggdrasil.public_causal_cells import PublicCausalCells
+          c = PublicCausalCells()
+          assert c.observed_action_contrast(0) is None
+          c.observe(0, 0, 1)
+          assert c.observed_action_contrast(0) is None
+          c.observe(0, 1, 0)
+          before = c.snapshot()
+          assert c.observed_action_contrast(0) == (-1, 1)
+          assert c.choose(0) == 0
+          assert c.observed_action_contrast(0, retained=True) is None
+          assert c.snapshot() == before
+          assert PublicCausalCells.restore(before).observed_action_contrast(0) == (-1, 1)
+          p = PublicCausalCells()
+          p.observe(0, 0, 0)
+          p.observe(0, 1, 1)
+          assert p.observed_action_contrast(0) == (1, 1)
+          t = PublicCausalCells()
+          t.observe(0, 0, 1)
+          t.observe(0, 1, 1)
+          assert t.observed_action_contrast(0) == (0, 1)
+          print('F139_714_NATIVE_READOUT_NO_MUTATION=PASS')
+          '@ | python -B -
+          if($LASTEXITCODE -ne 0){throw 'F139_714_NATIVE_READOUT_FAILED'}
+      - name: Mandatory complete repository unittest regression
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          & python -B -m unittest discover -s tests -p 'test_*.py' -v
+          if($LASTEXITCODE -ne 0){throw 'F139_714_FULL_UNITTTEST_FAILED'}
+          Write-Host 'F139_714_FULL_SOURCE_REGRESSION=PASS'
+      - name: Verify immutable worktree after qualification
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          & git diff --exit-code
+          if($LASTEXITCODE -ne 0){throw 'F139_714_WORKTREE_DIFF'}
+          $status=@(& git status --porcelain --untracked-files=all | Where-Object {$_})
+          if($status.Count -ne 0){throw 'F139_714_WORKTREE_MUTATION'}
+          Write-Host 'F139_714_NO_SOURCE_OR_LEDGER_MUTATION=PASS'
+          Write-Host 'F139_714_SCIENTIFIC_FIRST_USE=FALSE'
+          Write-Host 'F139_714_MODEL_API_CALLS=0'
