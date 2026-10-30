@@ -1,3 +1,5 @@
+import subprocess
+import sys
 import unittest
 from research.native.itd02.mg37.source_bridge import SelectedProgressCells
 from research.native.itd02.mg37.progress_cells import LocalProgressCells
@@ -23,6 +25,24 @@ class MG49CheckpointTest(unittest.TestCase):
             SelectedProgressCells.restore(raw+b"x")
         with self.assertRaises(ValueError):
             SelectedProgressCells.restore(raw.replace(b"mg49",b"mg48"))
+
+    def test_separate_process_cold_restore(self):
+        model=SelectedProgressCells()
+        key=observed_key(frame())
+        cell=LocalProgressCells()
+        for _ in range(5):
+            cell.observe_selected(0,0)
+            cell.observe_selected(1,1)
+        model.cells[key]=cell
+        raw=model.checkpoint()
+        code=("import sys; from research.native.itd02.mg37.source_bridge "
+              "import SelectedProgressCells; "
+              "sys.stdout.buffer.write(SelectedProgressCells.restore("
+              "sys.stdin.buffer.read()).checkpoint())")
+        result=subprocess.run([sys.executable,"-c",code],input=raw,
+                              capture_output=True,check=True)
+        self.assertEqual(result.stdout,raw)
+
     def test_reject_corrupt_reward(self):
         model=SelectedProgressCells()
         key=observed_key(frame())
