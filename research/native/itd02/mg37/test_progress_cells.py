@@ -17,6 +17,8 @@ class MG37ProgressTest(unittest.TestCase):
             m.observe_selected(1,1)
         self.assertEqual(m.choose(0),(0,False))
         m.observe_selected(1,-1)
+        m.observe_selected(1,-1)
+        m.observe_selected(1,-1)
         self.assertEqual(m.choose(0),(0,False))
     def test_reject_non_public_reward(self):
         m=LocalProgressCells()
