@@ -22,7 +22,7 @@ class MG49CheckpointTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             SelectedProgressCells.restore(raw+b"x")
         with self.assertRaises(ValueError):
-            SelectedProgressCells.restore(raw.replace(b"MG49",b"MG48"))
+            SelectedProgressCells.restore(raw.replace(b"mg49",b"mg48"))
     def test_reject_corrupt_reward(self):
         model=SelectedProgressCells()
         key=observed_key(frame())
