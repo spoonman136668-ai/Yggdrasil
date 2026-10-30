@@ -153,9 +153,14 @@ def episode(gym, family, entry, seed, model, role, phase):
                              "mg82_effect":"MG82_SELECTED_PUBLIC_EFFECT_EXPLORE",
                              "mg82_count_only":"MG82_COUNT_ONLY_EXPLORE"}[role]
             override = choice.get("status") == expected_status
-            if choice.get("status") in ("MG83_REVISITED_ORIGINAL_PUBLIC_CONSEQUENCE_ESCAPE",
-                                       "MG82_SELECTED_PUBLIC_EFFECT_EXPLORE",
-                                       "MG82_COUNT_ONLY_EXPLORE") and not override:
+            # An unchanged MG82 parent effect proposal is a legitimate
+            # *passthrough* for MG83. It is not an MG83 revisit override.
+            inherited=(role==ROLES[0] and
+                       choice.get("status")=="MG82_SELECTED_PUBLIC_EFFECT_EXPLORE")
+            if (choice.get("status") in ("MG83_REVISITED_ORIGINAL_PUBLIC_CONSEQUENCE_ESCAPE",
+                                        "MG82_SELECTED_PUBLIC_EFFECT_EXPLORE",
+                                        "MG82_COUNT_ONLY_EXPLORE")
+                and not (override or inherited)):
                 raise RuntimeError("MG83_COMPARATOR_ACTION_STATUS_DRIFT")
             if override:
                 overrides += 1
