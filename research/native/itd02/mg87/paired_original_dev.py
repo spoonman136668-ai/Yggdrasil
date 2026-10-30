@@ -189,7 +189,7 @@ def episode(gym, family, entry, seed, model, role, phase):
                 ROLES[2]:"MG87_PUBLIC_COUNT_ABLATION",
             }
             if role==ROLES[3]:
-                if not (type(status) is str and status.startswith("MG87_CONVENTIONAL_")):
+                if not (type(status) is str and status.startswith("MG86_CONVENTIONAL_")):
                     raise RuntimeError("MG87_FROZEN_CONVENTIONAL_IDENTITY_DRIFT")
             elif status!=required[role]:
                 raise RuntimeError("MG87_LEARNED_CONTROL_IDENTITY_DRIFT")
