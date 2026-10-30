@@ -47,7 +47,7 @@ class MG86Control(unittest.TestCase):
         model.carrying=5
         model.key_color=0
         model.opened=1
-        model.grid["2,1"]=[6,2,0]
+        ob["image"][4][5]=[6,2,0]  # Genuine public object, not injected map memory
         self.assertEqual(model.choose(ob)["action"],4)
         after=frame("pick up the blue ball")
         after["image"][3][5]=[5,0,0]
