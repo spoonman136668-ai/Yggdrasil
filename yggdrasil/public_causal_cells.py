@@ -63,6 +63,24 @@ class PublicCausalCells:
             return None
         return 0 if lhs > rhs else 1
 
+    def observed_action_contrast(self, address: int, *,
+                                 retained: bool = False) -> tuple[int, int] | None:
+        """Exact public-outcome rate contrast (action 1 minus action 0).
+
+        Return (signed_numerator, positive_denominator), not a float. Both
+        actions must have independently observed outcomes, or abstain. Only
+        public action/outcome counts are read; correlation is not treated as
+        an intervention or a counterfactual. No learned bytes, checkpoint
+        format, confidence threshold or existing decisions are changed.
+        """
+        cell = self._address(address, retained)
+        (fail0, success0), (fail1, success1) = self._counts[cell]
+        total0 = fail0 + success0
+        total1 = fail1 + success1
+        if not total0 or not total1:
+            return None
+        return (success1 * total0 - success0 * total1, total0 * total1)
+
     def choose_wilson(self, address: int, *, retained: bool = False) -> int | None:
         """Optional 95% Wilson-interval abstention control, not a learned oracle.
 
