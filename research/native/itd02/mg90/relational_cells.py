@@ -165,6 +165,12 @@ class RelationalFrontierCells:
         edges=sum(len(i["next"]) for rows in self.graph.values() for i in rows)
         if dest not in item["next"] and edges>=MAX_EDGES:
             raise ValueError("MG90_SELECTED_EDGE_LIMIT")
+        # Attribute an actually executed shortest-source-edge plan, never
+        # a counterfactual frontier proposal or unselected policy action.
+        currentrow=self.graph.get(ident)
+        traversed=(currentrow is not None and
+                   all(item["count"]>0 for item in currentrow)
+                   and self._route(ident)==a)
         n=self.samples
         receipt=self.parent.learn_selected(adapter,before,after)
         if self.samples!=n+1:
@@ -172,6 +178,8 @@ class RelationalFrontierCells:
         selected=self.graph.setdefault(ident,newrow())[a]
         selected["count"]+=1
         selected["next"][dest]=selected["next"].get(dest,0)+1
+        if traversed:
+            self.frontier_routes+=1
         self.trace.append([ident,a])
         self.trace=self.trace[-TRACE:]
         if reward>0:
