@@ -1,0 +1,69 @@
+# One-shot branch-scoped regeneration of the existing advisory G29 atlas.
+# Never dispatches research, models, controller work, or accepted-ref updates.
+name: Yggdrasil draft source Atlas regeneration
+on:
+  push:
+    branches:
+      - engineering/optin-free-research-executor-20261028
+    paths:
+      - .github/workflows/yggdrasil-draft-atlas-refresh.yml
+permissions:
+  contents: write
+jobs:
+  reanchor:
+    if: github.repository == 'spoonman136668-ai/Yggdrasil'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Verify exact preexisting candidate and bounded source delta
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = 'engineering/optin-free-research-executor-20261028'
+          test "$(git rev-parse HEAD^1)" = 'bc0436fc84de4e0affe29dca2068fd7c2ac5f2d7'
+          test "$(git rev-parse HEAD^2)" = '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
+          test "$(git rev-parse origin/main)" = '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
+          python3 - <<'PY'
+          import subprocess
+          allowed={
+            '.github/workflows/yggdrasil-draft-atlas-refresh.yml',
+            '.github/workflows/free-research-isolation-qualify.yml',
+            '.github/workflows/repo-local-autonomy-qualify.yml',
+            '.research-autonomy/config.json',
+            'scripts/Invoke-NemotronRepoAgent.ps1',
+            'scripts/Invoke-RepoLocalResearchCycle.ps1',
+          }
+          changed=set(subprocess.check_output(
+              ['git','diff','--name-only','origin/main...HEAD'],text=True
+          ).splitlines())
+          if changed != allowed:
+              raise SystemExit('ATLAS_DRAFT_SCOPE_MISMATCH '+repr(sorted(changed^allowed)))
+          print('ATLAS_DRAFT_SOURCE_SCOPE_PASS')
+          PY
+      - name: Regenerate committed advisory index from frozen exact tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_commit="$(git rev-parse HEAD)"
+          python3 -B scripts/build_code_atlas.py --source-commit "$source_commit" --write
+          python3 - <<'PY'
+          import subprocess
+          allowed={'.ice/code-atlas.json','.ice/code-atlas.html','.ice/code-atlas.ice'}
+          changed=set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines())
+          if changed != allowed:
+              raise SystemExit('ATLAS_GENERATED_OUTPUT_SCOPE_MISMATCH '+repr(sorted(changed^allowed)))
+          print('ATLAS_BOUNDED_OUTPUT_SCOPE_PASS')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          git commit -m 'Atlas: re-anchor advisory locators to exact executor draft'
+          python3 -B scripts/build_code_atlas.py --check-if-present
+          python3 -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/engineering/optin-free-research-executor-20261028
+          echo 'YGG_G29_DRAFT_ATLAS_REANCHOR=PASS'

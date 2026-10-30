@@ -87,7 +87,24 @@ function Get-OptionalMindContext([int]$MaxChars=12000){
 }
 
 if(-not(Test-Path -LiteralPath $RepoPath -PathType Container)){throw "REPO_PATH_MISSING path=$RepoPath"}
-if([string]::IsNullOrWhiteSpace($env:GITHUB_TOKEN)){throw 'GITHUB_TOKEN_MISSING'}
+# Keep the original GitHub credential requirement for the normal scheduler,
+# but permit the *separately gated*, ephemeral, author-only free endpoint
+# to enter its credential-denial path. It must never inherit a GitHub token.
+if([string]::IsNullOrWhiteSpace($env:GITHUB_TOKEN)){
+    $EarlyConfigPath=Join-Path (Split-Path -Parent $PSScriptRoot) '.research-autonomy\config.json'
+    if(-not(Test-Path -LiteralPath $EarlyConfigPath -PathType Leaf)){
+        throw 'GITHUB_TOKEN_MISSING'
+    }
+    $EarlyConfig=Get-Content -LiteralPath $EarlyConfigPath -Raw|ConvertFrom-Json
+    if([string]$EarlyConfig.schema -cne 'research.autonomy.v2' -or
+       [string]$EarlyConfig.program -cne 'Yggdrasil' -or
+       [string]$EarlyConfig.authority -cne 'research-only' -or
+       [string]$EarlyConfig.research_executor -cne 'free-nemotron-opt-in-v1' -or
+       [string]$env:RESEARCH_FREE_EXECUTOR_OWNER_ACK -cne '1' -or
+       [string]$env:RUNNER_ENVIRONMENT -cne 'github-hosted'){
+        throw 'GITHUB_TOKEN_MISSING'
+    }
+}
 
 Push-Location $RepoPath
 try{
@@ -126,7 +143,26 @@ try{
     if(Test-Path -LiteralPath $RunRoot){Remove-Item -LiteralPath $RunRoot -Recurse -Force}
     New-Item -ItemType Directory -Force -Path $RunRoot|Out-Null
 
-    $MindContext=Get-OptionalMindContext
+    $ExecutorConfig=Join-Path (Split-Path -Parent $PSScriptRoot) '.research-autonomy\config.json'
+    if(-not(Test-Path -LiteralPath $ExecutorConfig -PathType Leaf)){throw 'RESEARCH_EXECUTOR_CONFIG_MISSING'}
+    $ExecutorDocument=Get-Content -LiteralPath $ExecutorConfig -Raw | ConvertFrom-Json
+    if([string]$ExecutorDocument.schema -cne 'research.autonomy.v2' -or
+       [string]$ExecutorDocument.program -cne 'Yggdrasil' -or
+       [string]$ExecutorDocument.authority -cne 'research-only'){
+        throw 'RESEARCH_EXECUTOR_SOURCE_POLICY_DRIFT'
+    }
+    $ExecutorMode='disabled'
+    if($ExecutorDocument.PSObject.Properties.Name -contains 'research_executor'){
+        $ExecutorMode=[string]$ExecutorDocument.research_executor
+    }
+    # External free trials must not receive private machine-local Mind-Palace
+    # context even if a public source checkout is configured for the agent.
+    if($ExecutorMode -ceq 'free-nemotron-opt-in-v1'){
+        $MindContext=''
+        Write-Host 'RESEARCH_EXTERNAL_PRIVATE_CONTEXT=EXCLUDED'
+    }else{
+        $MindContext=Get-OptionalMindContext
+    }
     $PromptPath=Join-Path $RunRoot 'agent-prompt.txt'
     $LastMessagePath=Join-Path $RunRoot 'agent-last-message.txt'
     $Prompt=@"
@@ -169,15 +205,65 @@ $MindContext
 "@
     [IO.File]::WriteAllText($PromptPath,$Prompt,(New-Object Text.UTF8Encoding($false)))
 
-    # Model-authored research work is handled in ChatGPT/GitHub under frozen
-    # preregistration and qualification rules. A GitHub-hosted scheduled run
-    # is not itself a ChatGPT executor and must not consume any Codex quota.
-    # Preserve an exact-source, no-mutation watchdog observation. No hidden
-    # model, provider, retry, source commit, or scientific-result promotion.
-    Write-Host 'RESEARCH_AGENT_POLICY=GPT_CHAT_GITHUB_SOURCE_ONLY_NO_CODEX_NO_EXTERNAL_APIS'
-    Write-Host 'RESEARCH_EXECUTOR_UNATTENDED=NOT_CONFIGURED_NO_MODEL_INVOCATION'
-    Write-CycleResult -Advanced $false -Reason 'gpt-authored-research-required-no-unattended-model' -Head $StartSha
-    return
+    # The original schedule and qualification wrapper remain authoritative.
+    # An explicitly source-configured, second-gated free-only agent may author
+    # a frozen research proposal. Without both gates this stays a read-only
+    # watchdog; source promotion never silently enables remote inference.
+    if($ExecutorMode -ceq 'disabled'){
+        Write-Host 'RESEARCH_AGENT_POLICY=GPT_CHAT_GITHUB_SOURCE_ONLY_NO_CODEX_NO_EXTERNAL_APIS'
+        Write-Host 'RESEARCH_EXECUTOR_UNATTENDED=NOT_CONFIGURED_NO_MODEL_INVOCATION'
+        Write-CycleResult -Advanced $false -Reason 'gpt-authored-research-required-no-unattended-model' -Head $StartSha
+        return
+    }
+    if($ExecutorMode -cne 'free-nemotron-opt-in-v1' -or
+       [string]$env:RESEARCH_FREE_EXECUTOR_OWNER_ACK -cne '1'){
+        throw 'RESEARCH_FREE_EXECUTOR_EXPLICIT_OWNER_GATE_REQUIRED'
+    }
+    # No paid provider/model fallback. DPAPI owner credentials and original
+    # bound agent tool policy remain unchanged. Neither this script nor CI
+    # claims a scientific first-use or automatically merges accepted refs.
+    # Model-generated code and tool-initiated native tests must never run on
+    # the privileged persistent Windows research machine with host secrets.
+    # An ephemeral credential-free execution design must be qualified first.
+    if([string]$env:RUNNER_ENVIRONMENT -cne 'github-hosted'){
+        throw 'RESEARCH_FREE_EXECUTOR_REQUIRES_EPHEMERAL_RUNNER'
+    }
+    # This authoring phase must never inherit GitHub write or workstation credentials.
+    # Public source metadata can be read without a GitHub bearer token.
+    foreach($SecretName in @('GITHUB_TOKEN','GH_TOKEN','NVIDIA_API_KEY','OPENAI_API_KEY','AWS_ACCESS_KEY_ID')){
+        if(-not [string]::IsNullOrWhiteSpace([string][Environment]::GetEnvironmentVariable($SecretName))){
+            throw 'RESEARCH_FREE_AUTHOR_HAS_UNEXPECTED_PRIVILEGED_CREDENTIAL'
+        }
+    }
+    if([string]::IsNullOrWhiteSpace([string]$env:RESEARCH_FREE_BUNDLE_OUTPUT)){
+        throw 'RESEARCH_FREE_AUTHOR_BUNDLE_OUTPUT_REQUIRED'
+    }
+    if([string]::IsNullOrWhiteSpace([string]$env:RUNNER_TEMP) -or
+       -not([IO.Path]::GetFullPath($env:RESEARCH_FREE_BUNDLE_OUTPUT).StartsWith(
+           [IO.Path]::GetFullPath($env:RUNNER_TEMP).TrimEnd('\')+'\',
+           [StringComparison]::OrdinalIgnoreCase))){
+        throw 'RESEARCH_FREE_AUTHOR_BUNDLE_MUST_BE_IN_EPHEMERAL_TEMP'
+    }
+    if($Repository -cne 'spoonman136668-ai/Yggdrasil'){
+        throw 'RESEARCH_FREE_EXECUTOR_REPOSITORY_IDENTITY_DRIFT'
+    }
+    $Metadata=Invoke-RestMethod -Method Get -TimeoutSec 20 `
+        -Uri ('https://api.github.com/repos/'+$Repository) `
+        -Headers @{ Accept='application/vnd.github+json' }
+    if([string]$Metadata.full_name -cne $Repository -or $Metadata.private -ne $false -or
+       $Metadata.archived -ne $false){
+        throw 'RESEARCH_FREE_EXECUTOR_PUBLIC_SOURCE_REQUIRED'
+    }
+    $OnlyFreeModel='nvidia/nemotron-3-ultra-550b-a55b:free'
+    Write-Host 'RESEARCH_EXECUTOR_UNATTENDED=EXPLICIT_FREE_ONLY_OPT_IN'
+    & (Join-Path $PSScriptRoot 'Invoke-NemotronRepoAgent.ps1') `
+        -RepoPath $RepoPath -Program 'Yggdrasil' -ActiveBranch $ActiveBranch `
+        -StartSha $StartSha -PromptPath $PromptPath `
+        -LastMessagePath $LastMessagePath -Provider 'openrouter' `
+        -Model $OnlyFreeModel -MaxRounds 8 -NoProcessTools
+    if(-not(Test-Path -LiteralPath $LastMessagePath -PathType Leaf)){
+        throw 'RESEARCH_FREE_EXECUTOR_NO_TERMINAL_REPORT'
+    }
     if(((& git status --porcelain)-join'').Trim()){throw 'AGENT_LEFT_UNCOMMITTED_CHANGES'}
     $BranchAfter=((& git branch --show-current 2>$null|Select-Object -First 1)|Out-String).Trim()
     if($BranchAfter-cne$ActiveBranch){throw "AGENT_BRANCH_CHANGED expected=$ActiveBranch actual=$BranchAfter"}
@@ -197,6 +283,33 @@ $MindContext
     $FirstFiles=@(Get-CommitFiles $Commits[0])
     if($FirstFiles.Count-ne1 -or -not$FirstFiles[0].StartsWith('research/experiments/') -or -not$FirstFiles[0].EndsWith('.ice')){
         throw "PREREG_NOT_FIRST_AND_ALONE files=$($FirstFiles -join ',')"
+    }
+
+    if($ExecutorMode -ceq 'free-nemotron-opt-in-v1'){
+        # The remote author may create bounded local commits, never run its
+        # scripts, qualify a result, push a branch or claim native acceptance
+        # in the provider-credential job. The second independent job receives
+        # a Git bundle and must verify base/candidate identity before testing.
+        if($Commits.Count-eq1){
+            $Summary=[IO.File]::ReadAllText($LastMessagePath)
+            if($Summary -notmatch 'RESEARCH_TERMINAL=PREREG_BLOCKED'){
+                throw 'FREE_AUTHOR_PREREG_ONLY_WITHOUT_BLOCKED_MARKER'
+            }
+        }else{
+            $LastFiles=@(Get-CommitFiles $Commits[-1])
+        if(@('.yggdrasil/qualification-request.json','.yggdrasil/isolated-run.json') | Where-Object{$LastFiles-notcontains$_}){throw 'FREE_AUTHOR_REQUEST_MISSING'}
+        }
+        $BundleOut=[IO.Path]::GetFullPath($env:RESEARCH_FREE_BUNDLE_OUTPUT)
+        if(Test-Path -LiteralPath $BundleOut){throw 'FREE_AUTHOR_BUNDLE_ALREADY_EXISTS'}
+        & git bundle create $BundleOut HEAD ("^"+$StartSha)
+        if($LASTEXITCODE-ne0){throw 'FREE_AUTHOR_BUNDLE_CREATE_FAILED'}
+        & git bundle verify $BundleOut
+        if($LASTEXITCODE-ne0){throw 'FREE_AUTHOR_BUNDLE_VERIFY_FAILED'}
+        Write-CycleResult -Advanced $false -Reason 'credential-free-qualification-required' -Head $StartSha
+        Write-Host 'RESEARCH_FREE_AUTHORING_ONLY_BUNDLE_READY'
+        Write-Host 'RESEARCH_FREE_AUTHORING_NATIVE_EXECUTION=ZERO'
+        Write-Host 'RESEARCH_FREE_AUTHORING_GITHUB_PUSH=ZERO'
+        return
     }
 
     if($Commits.Count-eq1){
