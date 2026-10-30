@@ -49,6 +49,26 @@ class PublicCausalCells:
         old = self._counts[cell][arm][result]
         self._counts[cell][arm][result] = min(65535, old + 1)
 
+    def observe_recency(self, address: int, action: int, public_outcome: int, *,
+                        retained: bool = False) -> None:
+        """Opt-in bounded recency learning from actual public consequences.
+
+        The original observe() remains a cumulative, saturating control.
+        This independent arm-local variant halves old binary-outcome evidence
+        only at the predeclared 256-observation capacity, then adds the actual
+        new observation. It can adapt when causal effects reverse without
+        adding state, increasing checkpoint bytes, or reading hidden outcomes.
+        Both arms still require their own direct evidence before choose().
+        """
+        cell = self._address(address, retained)
+        arm = self._bit(action, "ACTION")
+        result = self._bit(public_outcome, "PUBLIC_OUTCOME")
+        counts = self._counts[cell][arm]
+        if counts[0] + counts[1] >= 256:
+            counts[0] //= 2
+            counts[1] //= 2
+        counts[result] += 1
+
     def choose(self, address: int, *, retained: bool = False) -> int | None:
         """Compare matched empirical rates. Abstain without both arms' evidence."""
         cell = self._address(address, retained)
