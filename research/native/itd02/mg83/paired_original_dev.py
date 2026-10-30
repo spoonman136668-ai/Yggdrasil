@@ -45,7 +45,7 @@ BLOBS = {
     "research/native/itd02/mg28/selected_change_cells.py":
         "2c30ca4da6f6603ecc5ec36b1f460a246b120d89",
 }
-ROLES = ("mg83_revisit", "mg83_effect", "mg83_count_only")
+ROLES = ("mg83_revisit", "mg82_effect", "mg82_count_only")
 CAP = 192
 
 def git(*args, cwd=None):
@@ -150,12 +150,12 @@ def episode(gym, family, entry, seed, model, role, phase):
             if action not in range(7) or choice.get("external_fallback") is not False:
                 raise RuntimeError("MG83_NATIVE_ORIGINAL_ACTION_INVALID")
             expected_status={"mg83_revisit":"MG83_REVISITED_ORIGINAL_PUBLIC_CONSEQUENCE_ESCAPE",
-                             "mg83_effect":"MG82_SELECTED_PUBLIC_EFFECT_EXPLORE",
-                             "mg83_count_only":"MG82_COUNT_ONLY_EXPLORE"}[role]
+                             "mg82_effect":"MG82_SELECTED_PUBLIC_EFFECT_EXPLORE",
+                             "mg82_count_only":"MG82_COUNT_ONLY_EXPLORE"}[role]
             override = choice.get("status") == expected_status
             if choice.get("status") in ("MG83_REVISITED_ORIGINAL_PUBLIC_CONSEQUENCE_ESCAPE",
-                                       "MG83_SELECTED_PUBLIC_EFFECT_EXPLORE",
-                                       "MG83_COUNT_ONLY_EXPLORE") and not override:
+                                       "MG82_SELECTED_PUBLIC_EFFECT_EXPLORE",
+                                       "MG82_COUNT_ONLY_EXPLORE") and not override:
                 raise RuntimeError("MG83_COMPARATOR_ACTION_STATUS_DRIFT")
             if override:
                 overrides += 1
