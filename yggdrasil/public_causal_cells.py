@@ -119,6 +119,35 @@ class PublicCausalCells:
             return 1
         return None
 
+    def choose_with_public_costs(self, address: int, cost0: int, cost1: int, *,
+                                 reward_value: int = 1,
+                                 retained: bool = False) -> int | None:
+        """Opt-in action selection with externally observed public action costs.
+
+        Compare empirical success * reward_value - public per-action cost.
+        Use exact integer cross-products, not a tuned floating threshold.
+        Both actions require their own observed outcomes. The caller must
+        independently establish costs as publicly observable; no unobserved
+        counterfactual reward, state mutation, oracle or new learned bytes.
+        With zero costs, decisions match choose() exactly.
+        """
+        if (type(cost0) is not int or type(cost1) is not int
+                or not 0 <= cost0 <= 65535
+                or not 0 <= cost1 <= 65535):
+            raise ValueError("PUBLIC_CAUSAL_COST_INVALID")
+        if type(reward_value) is not int or not 1 <= reward_value <= 65535:
+            raise ValueError("PUBLIC_CAUSAL_REWARD_VALUE_INVALID")
+        cell = self._address(address, retained)
+        (fail0, success0), (fail1, success1) = self._counts[cell]
+        total0, total1 = fail0 + success0, fail1 + success1
+        if not total0 or not total1:
+            return None
+        lhs = (success0 * reward_value - cost0 * total0) * total1
+        rhs = (success1 * reward_value - cost1 * total1) * total0
+        if lhs == rhs:
+            return None
+        return 0 if lhs > rhs else 1
+
     def snapshot(self) -> bytes:
         """One immutable, versioned 164-byte checkpoint with SHA-256 integrity."""
         raw = bytearray(self.MAGIC)
