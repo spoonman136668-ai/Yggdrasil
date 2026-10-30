@@ -1,0 +1,61 @@
+name: Yggdrasil PR714 exact-source full regression (read-only)
+on:
+  push:
+    branches: [qualification/f139-pr714-full-20261030]
+    paths:
+      - .github/workflows/f139-pr714-full-qualification-20261030.yml
+permissions:
+  contents: read
+concurrency:
+  group: ygg-pr714-immutable-full-20261030
+  cancel-in-progress: false
+jobs:
+  native-source-regression:
+    name: full native source (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    steps:
+      - name: Preserve source bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact immutable source and provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9
+          test "$(git rev-parse HEAD^^^)" = fc5d28a836f33caad3a576e0a6d4a1bf211cd857
+          test "$(git rev-parse HEAD^^)" = ddee0d82a1e37038304fb862ac725240142c840f
+          diff -u <(git diff --name-only HEAD^^ HEAD | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo 'F139_PR714_PINNED_HEAD=PASS'
+      - name: Frozen G29 validator
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -B scripts/build_code_atlas.py --check-if-present
+      - name: All native Python regression tests (same suite as G35 qualified source)
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -B -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Clean exact source after full regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo 'F139_PR714_FULL_SOURCE_AND_ATLAS=PASS'
