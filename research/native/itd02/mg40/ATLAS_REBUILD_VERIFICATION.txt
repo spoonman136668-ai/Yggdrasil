@@ -28,3 +28,12 @@ source commit, because the mutable MG37 parent branch had advanced and caused
 a merge conflict. The source code and canonical G29 source identity have not
 been rebased, replaced or expanded. Independent full PR checks must run on
 this exact new head; this ignored-extension text must never enter G29.
+
+FINAL REBUILD CUSTODY
+Current G29 manifest source commit: 146a0f056483fdc30ce996a8e72ddfcd847c0f90.
+Rebuilt atlas-only child commit: 9b8e803debfcc320164e7ba2a5d515f6d5213446.
+The one-time maintenance workflow now checks whether the original G29 index
+already passes before building, to prevent repeated re-anchoring commits.
+Exact original generator postcommit --check-if-present passed in CI
+run #41028593235. This ignored-extension receipt triggers the independent
+original G29 Linux+Windows checks on a non-bot branch head.
