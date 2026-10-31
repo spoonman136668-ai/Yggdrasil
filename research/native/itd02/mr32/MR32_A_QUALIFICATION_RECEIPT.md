@@ -127,3 +127,8 @@ Corrected source now:
 - adds tests for action separation and an action-insensitive memoryless control.
 
 These are source changes only. They supersede earlier local test counts and require a fresh exact-head Windows/Linux run. No passing CI is claimed for MR32-C until that run terminates successfully. The action index 0..2 is a development assumption; source-owner mapping and original-world permission remain absent. The candidate has not been scientifically evaluated.
+
+
+## MR32-C follow-up comparator repair
+
+The action-conditioned conventional prototype control initially wrote every unseen action-context prototype into active slot zero, accidentally overwriting other action keys. Corrected it to use an empty active slot first and only replace an existing active prototype when all active slots are occupied. This is a comparator engineering repair. The exact-head dual-platform workflow must cover it before the control is considered qualified. No scientific comparison result is claimed.
