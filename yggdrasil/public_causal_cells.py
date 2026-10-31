@@ -49,6 +49,27 @@ class PublicCausalCells:
         old = self._counts[cell][arm][result]
         self._counts[cell][arm][result] = min(65535, old + 1)
 
+    def observe_rescaled(self, address: int, action: int, public_outcome: int, *,
+                         retained: bool = False) -> None:
+        """Opt-in bounded adaptation when a cell's 16-bit counter saturates.
+
+        The baseline observe() remains strictly saturating. This alternative
+        halves all four counters for the selected cell only when the counter
+        receiving the next public observation is already full, then records
+        the new observation. It preserves the 128-byte state and checkpoint
+        format while allowing an explicitly selected caller to keep learning
+        after long runs. Rescaling is lossy and is not a scientific result.
+        """
+        cell = self._address(address, retained)
+        arm = self._bit(action, "ACTION")
+        result = self._bit(public_outcome, "PUBLIC_OUTCOME")
+        if self._counts[cell][arm][result] == 65535:
+            for arm_counts in self._counts[cell]:
+                for outcome in range(2):
+                    arm_counts[outcome] //= 2
+        old = self._counts[cell][arm][result]
+        self._counts[cell][arm][result] = min(65535, old + 1)
+
     def choose(self, address: int, *, retained: bool = False) -> int | None:
         """Compare matched empirical rates. Abstain without both arms' evidence."""
         cell = self._address(address, retained)
