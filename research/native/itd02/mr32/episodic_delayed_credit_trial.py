@@ -455,42 +455,57 @@ def run() -> dict:
         method: hashlib.sha256(fitted_checkpoints[method]).hexdigest()
         for method in METHODS
     }
-    restored_states = {}
-    checkpoint_bytes = {}
-    for method in METHODS:
-        restored = PolicyState.restore(fitted_checkpoints[method])
-        if restored.snapshot() != fitted_checkpoints[method]:
-            raise RuntimeError("FIT_COLD_RESTORE_BYTE_MISMATCH")
-        restored_states[method] = restored
-        checkpoint_bytes[method] = len(fitted_checkpoints[method])
+    checkpoint_bytes = {
+        method: len(fitted_checkpoints[method]) for method in METHODS
+    }
+    fit_weights_sha256 = {
+        method: _canonical_sha(states[method].weights) for method in METHODS
+    }
 
     transfer_episode_receipts = []
     transfer_event_rows = []
     transfer_cluster_rows = []
-    transfer_feedback_before = {
-        method: restored_states[method].feedback_events for method in METHODS
-    }
+    transfer_feedback_counts = {method: 0 for method in METHODS}
+    transfer_cold_restore_counts = {method: 0 for method in METHODS}
 
     for cluster_index, seed in enumerate(TRANSFER_SEEDS):
         regime = _seed_regime(cluster_index, 16)
         cluster_rows = []
+
+        # Each transfer cluster starts from the identical FIT terminal
+        # checkpoint. No query/use/recency state carries across seed clusters.
+        cluster_states = {}
+        cluster_start_checkpoint_sha256 = {}
+        cluster_start_weights_sha256 = {}
+        cluster_start_feedback = {}
+        cluster_start_episodes = {}
+        for method in METHODS:
+            restored = PolicyState.restore(fitted_checkpoints[method])
+            if restored.snapshot() != fitted_checkpoints[method]:
+                raise RuntimeError("TRANSFER_CLUSTER_COLD_RESTORE_BYTE_MISMATCH")
+            cluster_states[method] = restored
+            cluster_start_checkpoint_sha256[method] = hashlib.sha256(
+                restored.snapshot()).hexdigest()
+            cluster_start_weights_sha256[method] = _canonical_sha(restored.weights)
+            cluster_start_feedback[method] = restored.feedback_events
+            cluster_start_episodes[method] = restored.episodes_seen
+            transfer_cold_restore_counts[method] += 1
+
         for episode in range(8):
             spec = make_episode_spec(seed, regime, episode)
             baseline_return = no_memory_return(spec)
             method_returns = {}
             method_uses = {}
-            method_actions = {}
             method_loo = {}
             for method in METHODS:
                 tick = time.process_time_ns()
-                actions, uses, public_events = restored_states[method].act_episode(
+                actions, uses, public_events = cluster_states[method].act_episode(
                     spec.public_items, seed, regime, episode
                 )
                 result = terminal_return(actions, spec)
                 method_cpu[method] += time.process_time_ns() - tick
                 method_returns[method] = result
                 method_uses[method] = [receipt.item for receipt in uses]
-                method_actions[method] = actions
                 loo = []
                 for use in uses:
                     ablated = list(actions)
@@ -527,8 +542,39 @@ def run() -> dict:
                 "loo_diagnostic": method_loo,
                 "transfer_feedback_applied": False,
             })
+
+        cluster_feedback_delta = {}
+        cluster_terminal_weights_sha256 = {}
+        cluster_end_checkpoint_sha256 = {}
+        cluster_episode_delta = {}
+        for method in METHODS:
+            state = cluster_states[method]
+            feedback_delta = state.feedback_events - cluster_start_feedback[method]
+            episode_delta = state.episodes_seen - cluster_start_episodes[method]
+            weights_sha = _canonical_sha(state.weights)
+            if feedback_delta != 0:
+                raise RuntimeError("TRANSFER_FEEDBACK_WAS_APPLIED")
+            if weights_sha != fit_weights_sha256[method]:
+                raise RuntimeError("TRANSFER_LEARNED_WEIGHTS_CHANGED")
+            if episode_delta != 8:
+                raise RuntimeError("TRANSFER_CLUSTER_EPISODE_COUNT_MISMATCH")
+            cluster_feedback_delta[method] = feedback_delta
+            cluster_episode_delta[method] = episode_delta
+            cluster_terminal_weights_sha256[method] = weights_sha
+            cluster_end_checkpoint_sha256[method] = hashlib.sha256(
+                state.snapshot()).hexdigest()
+            transfer_feedback_counts[method] += feedback_delta
+
         transfer_cluster_rows.append({
-            "seed": seed, "regime": regime, "episode_count": len(cluster_rows),
+            "seed": seed,
+            "regime": regime,
+            "episode_count": len(cluster_rows),
+            "cold_restore_checkpoint_sha256": cluster_start_checkpoint_sha256,
+            "fit_weights_sha256": cluster_start_weights_sha256,
+            "terminal_weights_sha256": cluster_terminal_weights_sha256,
+            "terminal_checkpoint_sha256": cluster_end_checkpoint_sha256,
+            "episodes_executed_after_restore": cluster_episode_delta,
+            "feedback_events_applied": cluster_feedback_delta,
             "successes": {
                 method: sum(row["terminal_return"][method] for row in cluster_rows)
                 for method in METHODS
@@ -539,12 +585,6 @@ def run() -> dict:
                 for method in METHODS
             },
         })
-
-    transfer_feedback_counts = {
-        method: restored_states[method].feedback_events
-                - transfer_feedback_before[method]
-        for method in METHODS
-    }
 
     total_successes = {
         method: sum(row["successes"][method] for row in transfer_cluster_rows)
@@ -653,6 +693,7 @@ def run() -> dict:
             "regime_mean_terminal_success": regime_means,
             "deca_wins_by_regime_vs_strongest": regime_wins,
             "feedback_events_applied": transfer_feedback_counts,
+            "cold_restore_cluster_count_by_method": transfer_cold_restore_counts,
         },
         "resource_diagnostics": {
             "process_cpu_ns": total_cpu,
