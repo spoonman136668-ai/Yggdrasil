@@ -85,7 +85,12 @@ class ConventionalPrototypeControl:
             slot.support=min(65535,slot.support+1)
             slot.last_used=self.step
         else:
-            index=0
+            active = [(i, s) for i, s in enumerate(self.slots) if s.active]
+            empty = next((i for i, slot in active if not slot.valid), None)
+            if empty is not None:
+                index = empty
+            else:
+                index, _ = min(active, key=lambda pair: (pair[1].support, pair[1].last_used, pair[0]))
             self.slots[index]=Slot(features=list(x),target=list(y),support=1,
                                    residual_ema=0.0,contradictions=0,
                                    last_used=self.step,active=True,action=selected_action)
