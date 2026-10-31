@@ -33,6 +33,24 @@ class ControlTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError,"NO_PENDING"):
             c.observe_selected_outcome(yvec(1))
 
+
+    def test_prototype_control_does_not_mix_actions(self):
+        c=ConventionalPrototypeControl()
+        c.predict(xvec(0), 0); c.observe_selected_outcome(yvec(0))
+        c.predict(xvec(0), 1); c.observe_selected_outcome(yvec(1))
+        p0=c.predict(xvec(0), 0); c.observe_selected_outcome(yvec(0))
+        p1=c.predict(xvec(0), 1); c.observe_selected_outcome(yvec(1))
+        self.assertNotEqual(p0.values, p1.values)
+
+    def test_memoryless_control_ignores_action_but_checks_it(self):
+        c=MemorylessMean()
+        c.predict(xvec(0), 0); c.observe_selected_outcome(yvec(0))
+        p0=c.predict(xvec(0), 0); c.observe_selected_outcome(yvec(0))
+        p1=c.predict(xvec(0), 1); c.observe_selected_outcome(yvec(1))
+        self.assertEqual(p0.values, p1.values)
+        with self.assertRaisesRegex(ValueError, "SELECTED_ACTION_OUT_OF_RANGE"):
+            c.predict(xvec(0), 3)
+
     def test_controls_report_serialized_state_separately(self):
         self.assertTrue(MemorylessMean().state_bytes())
         self.assertTrue(ConventionalPrototypeControl().state_bytes())
