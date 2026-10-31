@@ -44,9 +44,20 @@ jobs:
           from pathlib import Path
           result=json.loads(Path('../mr32m-task-utility-receipt.json').read_text())
           assert result['schema']=='yggdrasil.mr32m.task-derived-utility.v1'
+          assert result['fit']['fit_episodes']==48
+          assert len(result['fit']['fit_episode_receipts'])==48
+          assert len(result['fit']['fit_feedback_receipts'])==(
+              result['fit']['fit_feedback_count_h']+
+              result['fit']['fit_feedback_count_bayesian'])
           assert result['transfer']['seed_cluster_count']==16
+          assert len(result['transfer']['per_episode_receipts'])==64
           assert result['transfer']['feedback_events_h']==0
           assert result['transfer']['feedback_events_bayesian']==0
+          assert all(e['transfer_feedback_events']==0
+                     for e in result['transfer']['per_episode_receipts'])
+          assert result['resource_diagnostics']['process_peak_rss_bytes'] is not None
+          assert result['resource_diagnostics']['process_peak_rss_method'] in (
+              'windows_peak_working_set','linux_ru_maxrss')
           assert result['falsifiers']['fit_transfer_seeds_disjoint']
           print('MR32M_TASK_DERIVED_FEEDBACK_SOURCE_ONLY_CONTRACT=PASS')
           PY
