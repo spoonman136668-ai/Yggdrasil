@@ -29,8 +29,9 @@ jobs:
       - name: Exact source syntax and focused tests
         shell: bash
         run: |
-          python -B -m py_compile research/native/itd02/mr32/residual_belief.py research/native/itd02/mr32/test_residual_belief.py
-          python -B -m unittest -v research.native.itd02.mr32.test_residual_belief
+          cd research/native/itd02/mr32
+          python -B -m py_compile residual_belief.py test_residual_belief.py
+          python -B -m unittest -v test_residual_belief
       - name: Clean source checkout
         shell: bash
         run: git diff --exit-code
