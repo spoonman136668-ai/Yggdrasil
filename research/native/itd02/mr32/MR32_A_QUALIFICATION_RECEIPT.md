@@ -187,3 +187,10 @@ Disposition:
 `G29_ATLAS=BLOCKED_STALE_INDEX`
 `SCIENTIFIC_EFFICACY=NOT_TESTED`
 `ORIGINAL_WORLD_FIRST_USE=BLOCKED_FSA04`
+
+
+## MR32-G interaction Bayesian baseline
+
+Added `interaction_bayes_control.py`, which extends the Bayesian linear feature map with all feature×selected-action terms (68 coefficients per output), plus `test_interaction_bayes_control.py`. The test includes a balanced, held-out sign-reversal synthetic relation to verify that the interaction basis can represent action-conditioned feature effects that the additive model cannot.
+
+The dedicated workflow already compiles and runs this test module and includes the model in the resource inventory. New commit requires exact-head Windows/Linux qualification. This control is still a diagonal-covariance Bayesian linear predictor over a fixed interaction basis, not a full Bayesian causal learner. No native-learning result or original-world cohort is claimed.
