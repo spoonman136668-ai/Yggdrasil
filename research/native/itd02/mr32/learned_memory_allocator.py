@@ -124,6 +124,10 @@ class LearnedMemoryAllocator:
         retained_slots = retained_memories + [
             Memory(active=False,representation=[0.0]*REPRESENTATION)
             for _ in range(RETAINED-len(retained_memories))]
+        for memory in active_slots:
+            memory.active = True
+        for memory in retained_slots:
+            memory.active = False
         self.memories = active_slots + retained_slots
         self._check()
 
