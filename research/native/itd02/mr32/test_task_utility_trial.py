@@ -7,7 +7,8 @@ from learned_memory_allocator import LearnedMemoryAllocator
 from task_utility_trial import (
     FIT_SEEDS, TRANSFER_SEEDS, ACTIVE, TOTAL, _event, _fit,
     _fixed_sets, _metadata, _permute, _query_order, _representation,
-    _bootstrap_lower, run,
+    _bootstrap_lower, _paired_memory_utility, _score_task_action,
+    TaskEvent, run,
 )
 
 
@@ -26,6 +27,14 @@ class TaskUtilityTrialTests(unittest.TestCase):
         self.assertEqual(_query_order(1009, 0, 2),
                          _query_order(1009, 0, 2))
         self.assertIn(a.task_return, (-1.0, 1.0))
+
+    def test_task_utility_is_paired_return_against_no_memory_abstention(self):
+        event = TaskEvent(item=3, guessed_action=1, correct_action=1)
+        self.assertEqual(_score_task_action(event, None), 0.0)
+        self.assertEqual(_score_task_action(event, 1), 1.0)
+        self.assertEqual(_score_task_action(event, 0), -1.0)
+        self.assertEqual(_paired_memory_utility(event, 1), 1.0)
+        self.assertEqual(_paired_memory_utility(event, 0), -1.0)
 
     def test_all_methods_use_seven_of_sixteen_memory_records(self):
         fixed = _fixed_sets(1009, 0, _permute(1009, 0))
