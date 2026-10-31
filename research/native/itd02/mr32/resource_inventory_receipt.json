@@ -1,0 +1,47 @@
+{
+  "schema":"yggdrasil.mr32.resource_inventory.receipt.v1",
+  "classification":"DETERMINISTIC_SOURCE_ONLY_RESOURCE_DIAGNOSTIC_NOT_PARITY_OR_EFFICACY",
+  "workflow_run_id":41217380126,
+  "head_sha":"14f653d7b3d4d7fe68ca83f5cd65e8d4eaa3e5e2",
+  "source_blobs":{
+    "residual_belief.py":"d3d3890afa8f8286beef7b20d59212cc2018e5e9",
+    "mr32_controls.py":"ed0a90ccca65a917ef10a440a9af23f023104c4d",
+    "resource_inventory.py":"a0bb5c399ef94b5d81e4e34ed8367d2e519d1343"
+  },
+  "protocol":{
+    "steps":256,
+    "stream":"same deterministic synthetic public feature/action/outcome sequence for each learner",
+    "learners":["residual_belief","memoryless_mean","conventional_prototype"],
+    "metrics":["serialized_state_bytes","deep_python_object_bytes","tracemalloc_peak_bytes","wall_seconds"]
+  },
+  "windows":{
+    "residual_belief":{"serialized_state_bytes":3853,"deep_python_object_bytes":7335,"tracemalloc_peak_bytes":178456,"wall_seconds":0.04369452},
+    "memoryless_mean":{"serialized_state_bytes":63,"deep_python_object_bytes":852,"tracemalloc_peak_bytes":166320,"wall_seconds":0.004367265999},
+    "conventional_prototype":{"serialized_state_bytes":3483,"deep_python_object_bytes":4419,"tracemalloc_peak_bytes":134736,"wall_seconds":0.010730298}
+  },
+  "linux":{
+    "residual_belief":{"serialized_state_bytes":3853,"deep_python_object_bytes":7335,"tracemalloc_peak_bytes":178352,"wall_seconds":0.0964194},
+    "memoryless_mean":{"serialized_state_bytes":63,"deep_python_object_bytes":852,"tracemalloc_peak_bytes":166312,"wall_seconds":0.0089751},
+    "conventional_prototype":{"serialized_state_bytes":3483,"deep_python_object_bytes":4419,"tracemalloc_peak_bytes":134728,"wall_seconds":0.0210007}
+  },
+  "findings":{
+    "against_conventional_prototype":{
+      "mr32_serialized_state_bytes_ratio":1.1062,
+      "mr32_deep_object_bytes_ratio":1.6601,
+      "mr32_tracemalloc_peak_ratio_windows":1.3247,
+      "mr32_tracemalloc_peak_ratio_linux":1.3234,
+      "mr32_wall_time_ratio_windows":4.0717,
+      "mr32_wall_time_ratio_linux":4.5914
+    },
+    "interpretation":"On this single synthetic stream MR32 uses 10.6% more serialized bytes and 66% more deep Python object bytes than the conventional prototype; peak traced allocation is about 32% higher. Wall time was about 4.1-4.6x higher. The memoryless predictor has much smaller serialized/object state, but its traced transient peak is not the lowest due to Python allocation behavior. The prototype has no demonstrated resource advantage."
+  },
+  "limitations":[
+    "Single fixed 256-step synthetic stream; no randomization or task-level efficacy.",
+    "Windows and Ubuntu hosted runners are not calibrated hardware, and wall time is noisy.",
+    "tracemalloc is not process RSS; Python deep-size is implementation/interpreter-dependent.",
+    "MR32 checkpoint envelope differs from controls' state serialization formats; canonical equivalent persistence format is needed.",
+    "No recurrent or Bayesian/state-space control.",
+    "No reward, transfer, prediction accuracy or decision improvement measured."
+  ],
+  "decision":"NEGATIVE FOR RESOURCE EFFICIENCY ON THIS PROTOTYPE. Do not claim compactness or total-resource parity. Before additional feature work, simplify or replace MR32's state/update algorithm and introduce equal-format full-state accounting plus stronger conventional recurrent/Bayesian controls."
+}
