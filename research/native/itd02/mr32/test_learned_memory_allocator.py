@@ -108,6 +108,14 @@ class LearnedAllocatorTests(unittest.TestCase):
         self.assertEqual(result["transfer"]["feedback_events"],0)
         self.assertEqual(result["transfer"]["records"],16)
 
+    def test_leave_one_profile_out_transfer_has_no_feedback(self):
+        from learned_retention_cv import run
+        result=run()
+        self.assertEqual(result["summary"]["folds"],8)
+        self.assertEqual(result["summary"]["transfer_feedback_events"],0)
+        self.assertTrue(all(f["fit_profiles"]==7 for f in result["folds"]))
+        self.assertTrue(all(f["transfer_feedback_events"]==0 for f in result["folds"]))
+
     def test_unselected_memory_cannot_receive_outcome_credit(self):
         m=LearnedMemoryAllocator();m.insert("m",rep(0))
         with self.assertRaisesRegex(RuntimeError,"NO_PENDING"):
