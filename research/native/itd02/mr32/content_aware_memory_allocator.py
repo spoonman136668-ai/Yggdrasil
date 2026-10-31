@@ -207,7 +207,7 @@ class ContentAwareMemoryAllocator:
                           sort_keys=True,separators=(",",":"),allow_nan=False).encode()
 
     @classmethod
-    def restore(cls,raw:bytes)->"LearnedMemoryAllocator":
+    def restore(cls,raw:bytes)->"ContentAwareMemoryAllocator":
         try:
             envelope=json.loads(raw.decode("utf-8"));payload=envelope["payload"]
             canonical=json.dumps(payload,sort_keys=True,separators=(",",":"),allow_nan=False).encode()
