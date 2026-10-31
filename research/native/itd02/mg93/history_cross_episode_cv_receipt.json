@@ -1,0 +1,62 @@
+{
+  "schema":"mg93.history_cv.public_transition.receipt.v1",
+  "classification":"RETROSPECTIVE_CROSS_EPISODE_PREDICTIVE_SCREEN_NOT_CAUSAL",
+  "source":{
+    "workflow_run_id":41047254253,
+    "artifact_id":12972852607,
+    "artifact_zip_sha256":"9f284ce2b793a2f6e0d0d8a1cb097efb5a9e5ce9b5d75f5c53a77f8474d0104a",
+    "heldout_json_sha256":"0cdb155ce150717c3a678f6c536a81f5f4203dd96acafee459b2fdc1d2a36427"
+  },
+  "execution":{
+    "script_commit":"640d5324a08a7287aba43df8a01c0fdc426ae1ba",
+    "script_git_blob_sha1":"37151f3d352f397775af4cf05b7dcc8c0c2d4bfa",
+    "script_raw_sha256":"0692c083c4c376e041b243cd2c7ac80f0644fb43c44d7db98526824dad228587",
+    "result_raw_sha256":"a434fb78911575a87693b9cf10c37049b32a4b7e7377f744404abf0e6b1b2ba7",
+    "exact_source_blob_execution":true
+  },
+  "protocol":{
+    "roles":4,"families_per_role":4,"episodes_per_role_family":3,
+    "cross_validation":"leave-one-episode-out; train on two episode ledgers, predict third; rotate all three",
+    "prediction":"exact successor public digest from current public before digest/action and optional preceding selected public history",
+    "total_test_steps":{
+      "mg92_native_feedback":3906,
+      "mg91_frozen_native_prototypes":3906,
+      "mg91_independent_linear_control":3906,
+      "mg86_frozen_teacher":952
+    }
+  },
+  "mg92_native_feedback":{
+    "public_state_action":{"covered":357,"steps":3906,"coverage":0.0913978495,"correct":66,"correct_fraction_all_steps":0.0168970814,"accuracy_covered":0.1848739496},
+    "plus_previous_action":{"covered":134,"steps":3906,"coverage":0.0343061956,"correct":66,"correct_fraction_all_steps":0.0168970814,"accuracy_covered":0.4925373134},
+    "plus_previous_public_transition":{"covered":66,"steps":3906,"coverage":0.0168970814,"correct":0,"correct_fraction_all_steps":0.0,"accuracy_covered":0.0},
+    "plus_previous_two_actions":{"covered":132,"steps":3906,"coverage":0.0337941628,"correct":66,"correct_fraction_all_steps":0.0168970814,"accuracy_covered":0.5}
+  },
+  "mg86_frozen_teacher":{
+    "public_state_action":{"covered":26,"steps":952,"coverage":0.0273109244,"correct":18,"correct_fraction_all_steps":0.0189075630,"accuracy_covered":0.6923076923},
+    "plus_previous_action":{"covered":24,"steps":952,"coverage":0.0252100840,"correct":18,"correct_fraction_all_steps":0.0189075630,"accuracy_covered":0.75},
+    "plus_previous_public_transition":{"covered":14,"steps":952,"coverage":0.0147058824,"correct":8,"correct_fraction_all_steps":0.0084033613,"accuracy_covered":0.5714285714},
+    "plus_previous_two_actions":{"covered":22,"steps":952,"coverage":0.0231092437,"correct":16,"correct_fraction_all_steps":0.0168067227,"accuracy_covered":0.7272727273}
+  },
+  "mg91_frozen_native_prototypes":{
+    "public_state_action":{"covered":2,"steps":3906,"coverage":0.0005120328,"correct":0,"correct_fraction_all_steps":0.0,"accuracy_covered":0.0},
+    "plus_previous_action":{"covered":2,"steps":3906,"coverage":0.0005120328,"correct":0,"correct_fraction_all_steps":0.0,"accuracy_covered":0.0},
+    "plus_previous_public_transition":{"covered":0,"steps":3906,"coverage":0.0,"correct":0,"correct_fraction_all_steps":0.0,"accuracy_covered":null},
+    "plus_previous_two_actions":{"covered":0,"steps":3906,"coverage":0.0,"correct":0,"correct_fraction_all_steps":0.0,"accuracy_covered":null}
+  },
+  "mg91_independent_linear_control":{
+    "public_state_action":{"covered":0,"steps":3906,"coverage":0.0,"correct":0,"correct_fraction_all_steps":0.0,"accuracy_covered":null},
+    "plus_previous_action":{"covered":0,"steps":3906,"coverage":0.0,"correct":0,"correct_fraction_all_steps":0.0,"accuracy_covered":null},
+    "plus_previous_public_transition":{"covered":0,"steps":3906,"coverage":0.0,"correct":0,"correct_fraction_all_steps":0.0,"accuracy_covered":null},
+    "plus_previous_two_actions":{"covered":0,"steps":3906,"coverage":0.0,"correct":0,"correct_fraction_all_steps":0.0,"accuracy_covered":null}
+  },
+  "finding":"For MG92, extra exact history reduces coverage sharply and does not increase the number of correct held-out successor predictions: 66 correct under all four key granularities. Public-state/action lookup covers 357/3906 and gets 66 correct; previous-action key covers 134/3906 and also gets 66 correct; adding the full previous transition covers 66/3906 and gets zero correct; two previous actions cover 132/3906 and gets 66 correct. Exact-key history therefore provides no demonstrated cross-seed benefit in this sample.",
+  "limitations":[
+    "Three seeds per role/family; very small clustered observational sample.",
+    "Exact-key lookup is not a capacity-matched learned recurrent or Bayesian baseline.",
+    "More history creates more specific keys and lower coverage; abstention/coverage is essential.",
+    "Policy-selected observations/actions only; no counterfactual action outcomes or randomized memory ablation.",
+    "Public digest can alias latent state and may conceal task-relevant variables.",
+    "No inference of reward benefit, causal representation, or unfamiliar-family transfer."
+  ],
+  "decision":"NEGATIVE FOR EXACT-KEY HISTORY AUGMENTATION. This does not falsify all compact learned belief-state mechanisms. The next genuine candidate must compress history into a bounded predictive belief updated by observed prediction residuals and contradictions, then prospectively compare memory-on/off with matched recurrent/Bayesian controls and terminal reward after authorized first-use."
+}
