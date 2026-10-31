@@ -83,6 +83,24 @@ class ContentAwareAllocatorTests(unittest.TestCase):
         self.assertEqual(restored.weights,m.weights)
         self.assertEqual(restored.stats(),m.stats())
 
+    def test_delayed_feedback_uses_use_time_content_and_metadata(self):
+        m=ContentAwareMemoryAllocator()
+        m.insert("source",content(True,0),evidence_count=32,prediction_error=0.25,contradiction_rate=0.5)
+        m.mark_use("source")
+        captured=tuple(m._get("source").pending_features)
+        before=list(m.weights)
+        expected_prediction=m._utility_for_features(captured)
+        error=1.0-expected_prediction
+        expected=[w+0.08*error*x for w,x in zip(before,captured)]
+        for i in range(5):
+            m.insert(f"later-{i}",content(False,i),evidence_count=1)
+        self.assertNotEqual(captured,tuple(m._features(m._get("source"))))
+        m.observe_task_outcome("source",1.0)
+        for got,want in zip(m.weights,expected):
+            self.assertAlmostEqual(got,want,places=12)
+        self.assertIsNone(m._get("source").pending_features)
+        self.assertFalse(m._get("source").pending_use)
+
     def test_pending_feedback_and_invalid_content_rejected(self):
         m=ContentAwareMemoryAllocator()
         with self.assertRaisesRegex(ValueError,"REPRESENTATION_DIMENSION"):
