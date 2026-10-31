@@ -11,7 +11,7 @@ import json
 import math
 from typing import Iterable, Optional
 
-SCHEMA = "yggdrasil.mr32.learned-memory-allocator.v2"
+SCHEMA = "yggdrasil.mr32.learned-memory-allocator.v3"
 REPRESENTATION = 16
 META = 5
 TOTAL = 16
@@ -45,6 +45,7 @@ class Memory:
     active: bool = False
     pending_use: bool = False
     occupied: bool = False
+    pending_features: list[float] | None = None
 
 
 class LearnedMemoryAllocator:
@@ -71,15 +72,22 @@ class LearnedMemoryAllocator:
     def _features(self, memory: Memory) -> tuple[float, ...]:
         return (1.0,) + self._metadata(memory)
 
-    def predicted_utility(self, memory: Memory) -> float:
-        if not memory.occupied:
-            return -1.0
-        raw = sum(w*x for w,x in zip(self.weights,self._features(memory)))
+    @staticmethod
+    def _sigmoid_utility(raw: float) -> float:
         if raw >= 0:
             e = math.exp(-min(raw,40.0))
             return 1.0/(1.0+e)
         e = math.exp(max(raw,-40.0))
         return e/(1.0+e)
+
+    def _utility_for_features(self, features: Iterable[float]) -> float:
+        raw = sum(w*x for w,x in zip(self.weights,features))
+        return self._sigmoid_utility(raw)
+
+    def predicted_utility(self, memory: Memory) -> float:
+        if not memory.occupied:
+            return -1.0
+        return self._utility_for_features(self._features(memory))
 
     def insert(self, key: str, representation: Iterable[float], *,
                evidence_count: int = 1, prediction_error: float = 0.0,
@@ -138,6 +146,7 @@ class LearnedMemoryAllocator:
         self.step+=1
         memory.uses=min(65535,memory.uses+1)
         memory.last_used=self.step
+        memory.pending_features=list(self._features(memory))
         memory.pending_use=True
 
     def observe_task_outcome(self,key:str,usefulness:float) -> dict:
@@ -146,13 +155,16 @@ class LearnedMemoryAllocator:
             raise RuntimeError("NO_PENDING_MEMORY_USE")
         if isinstance(usefulness,bool) or not math.isfinite(usefulness) or not 0<=usefulness<=1:
             raise ValueError("USEFULNESS_RANGE")
-        features=self._features(memory)
-        prediction=self.predicted_utility(memory)
+        if not memory.pending_use or memory.pending_features is None:
+            raise RuntimeError("PENDING_FEATURE_RECEIPT_MISSING")
+        features=tuple(memory.pending_features)
+        prediction=self._utility_for_features(features)
         error=usefulness-prediction
         for i,x in enumerate(features):
             self.weights[i]=max(-WEIGHT_LIMIT,min(WEIGHT_LIMIT,self.weights[i]+LR*error*x))
         self.loss_ema=0.9*self.loss_ema+0.1*error*error
         memory.pending_use=False
+        memory.pending_features=None
         self.feedback_count+=1
         self._assign([m for m in self.memories if m.occupied])
         memory=self._get(key)
@@ -180,6 +192,8 @@ class LearnedMemoryAllocator:
             raise RuntimeError("DUPLICATE_MEMORY_KEY")
         if any(m.pending_use and not m.occupied for m in self.memories):
             raise RuntimeError("EMPTY_PENDING_MEMORY")
+        if any(m.pending_use != (m.pending_features is not None) for m in self.memories):
+            raise RuntimeError("PENDING_FEATURE_RECEIPT_INVARIANT")
 
     def snapshot(self)->bytes:
         if any(m.pending_use for m in self.memories):
@@ -225,7 +239,7 @@ class LearnedMemoryAllocator:
             memory=Memory(**row)
             if memory.active!=(i<ACTIVE):
                 raise ValueError("CHECKPOINT_PARTITION_ORDER")
-            if memory.pending_use:
+            if memory.pending_use or memory.pending_features is not None:
                 raise ValueError("CHECKPOINT_PENDING_USE")
             if memory.occupied:
                 if not isinstance(memory.key,str) or not memory.key or len(memory.key)>128:
@@ -236,7 +250,7 @@ class LearnedMemoryAllocator:
                 if not 0<=memory.prediction_error<=1 or not 0<=memory.contradiction_rate<=1:
                     raise ValueError("CHECKPOINT_META_RANGE")
             else:
-                if memory.key or memory.evidence_count or memory.uses or memory.last_used or memory.pending_use:
+                if memory.key or memory.evidence_count or memory.uses or memory.last_used or memory.pending_use or memory.pending_features is not None:
                     raise ValueError("CHECKPOINT_EMPTY_SLOT")
                 memory.representation=[0.0]*REPRESENTATION
             restored.append(memory)
