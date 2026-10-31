@@ -26,7 +26,7 @@ class MemorylessMean:
         return Prediction(values, 1.0 if not self.count else 0.5, self.count > 0)
 
     def observe_selected_outcome(self, outcome: Iterable[float]) -> None:
-        if not self.pending:
+        if self.pending is False:
             raise RuntimeError("NO_PENDING_SELECTED_ACTION")
         y = _vector(outcome, TARGETS, "OUTCOME")
         self.pending = False
@@ -51,7 +51,7 @@ class ConventionalPrototypeControl:
         self.pending = None
         self.step = 0
 
-    def predict(self, features: Iterable[float]) -> Prediction:
+    def predict(self, features: Iterable[float], selected_action: int) -> Prediction:
         if self.pending is not None:
             raise RuntimeError("PENDING_OUTCOME_MUST_BE_RESOLVED")
         x = _vector(features, FEATURES, "FEATURES")
