@@ -39,6 +39,31 @@ def deep_size(obj, seen=None):
     return total
 
 
+def common_checkpoint(model):
+    """Wrap every model payload in one canonical accounting envelope."""
+    if hasattr(model, "snapshot"):
+        native = model.snapshot()
+    else:
+        native = model.state_bytes()
+    try:
+        decoded = json.loads(native.decode("utf-8"))
+    except Exception as exc:
+        raise ValueError("MODEL_CHECKPOINT_NOT_JSON") from exc
+    payload = decoded.get("payload", decoded)
+    model_payload = {"model_type": type(model).__name__, "state": payload}
+    canonical = json.dumps(model_payload, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
+    digest = __import__("hashlib").sha256(canonical).hexdigest()
+    envelope = {"schema": "yggdrasil.mr32.common-checkpoint.v1",
+                "payload_sha256": digest, "payload": model_payload}
+    common = json.dumps(envelope, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
+    # Verify the common envelope before counting it.
+    restored = json.loads(common.decode("utf-8"))
+    verify = json.dumps(restored["payload"], sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
+    if __import__("hashlib").sha256(verify).hexdigest() != restored["payload_sha256"]:
+        raise ValueError("COMMON_CHECKPOINT_HASH")
+    return len(native), len(common)
+
+
 def execute(model, steps):
     started = time.perf_counter()
     tracemalloc.start()
@@ -51,13 +76,11 @@ def execute(model, steps):
     _, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
     elapsed = time.perf_counter() - started
-    if isinstance(model, ResidualBelief):
-        checkpoint = model.snapshot()
-    else:
-        checkpoint = model.state_bytes()
+    native_bytes, common_bytes = common_checkpoint(model)
     return {
         "steps": steps,
-        "serialized_state_bytes": len(checkpoint),
+        "native_serialized_state_bytes": native_bytes,
+        "common_checkpoint_envelope_bytes": common_bytes,
         "deep_python_object_bytes": deep_size(model),
         "tracemalloc_peak_bytes": peak,
         "wall_seconds": elapsed,
@@ -80,10 +103,11 @@ def execute_allocator(model, steps):
     _, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
     elapsed = time.perf_counter() - started
-    checkpoint = model.snapshot()
+    native_bytes, common_bytes = common_checkpoint(model)
     return {
         "steps": steps,
-        "serialized_state_bytes": len(checkpoint),
+        "native_serialized_state_bytes": native_bytes,
+        "common_checkpoint_envelope_bytes": common_bytes,
         "deep_python_object_bytes": deep_size(model),
         "tracemalloc_peak_bytes": peak,
         "wall_seconds": elapsed,
