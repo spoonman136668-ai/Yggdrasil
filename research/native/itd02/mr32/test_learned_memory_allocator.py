@@ -14,6 +14,13 @@ class LearnedAllocatorTests(unittest.TestCase):
             self.assertLessEqual(m.stats()["active"],ACTIVE)
             self.assertLessEqual(m.stats()["retained"],RETAINED)
 
+    def test_exact_partition_exists_from_empty_initialization(self):
+        m=LearnedMemoryAllocator()
+        self.assertEqual(len(m.memories),TOTAL)
+        self.assertEqual(sum(slot.active for slot in m.memories),ACTIVE)
+        self.assertEqual(sum(not slot.active for slot in m.memories),RETAINED)
+        self.assertEqual(m.stats()["occupied"],0)
+
     def test_policy_weights_change_only_after_downstream_feedback(self):
         m=LearnedMemoryAllocator();m.insert("useful",rep(0),evidence_count=8)
         before=list(m.weights)
