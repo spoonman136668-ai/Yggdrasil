@@ -109,3 +109,10 @@ This pilot's metadata basis (evidence count, use count, recency, prediction-erro
 The deterministic resource inventory now wraps every model's model-specific payload in a shared `yggdrasil.mr32.common-checkpoint.v1` envelope with canonical JSON and a SHA-256 payload digest. It retains and reports native serialized byte count separately, alongside common-envelope byte count, deep Python object estimate, traced allocation peak and wall time. A cross-model test covers all seven model/control types and verifies common envelope identity and payload hash.
 
 This standardizes serialization framing, not semantic state capacity: model payloads still differ in their number/type of variables, and deep object size/tracemalloc remain interpreter-specific/non-RSS. Equal total resource parity still requires matching representation capacity, CPU/inference budgets, calibrated RSS and repeated runs.
+
+
+## MR32-K — held-out task-usefulness transfer falsification
+
+The new `learned_retention_eval.py` trains the utility weights on eight FIT metadata profiles for 30 feedback epochs. It then transfers only the learned weights into a fresh allocator and inserts 16 disjoint-key TRANSFER records. Evaluation feedback is zero. The active 7-slot set is compared with fixed-recency and evidence-only top-seven controls on the same held-out records. A reproducible machine-readable result is emitted by the script and the workflow runs it on Windows and Linux.
+
+The synthetic label is a fixed majority rule over evidence-count category, prediction-error category and contradiction-rate category. FIT and TRANSFER share this same generating rule. This only falsifies whether the linear scorer can learn this simple metadata rule and generalize it to new records; it does not model genuine future queries, causal worlds, real task reward, interference, or a novel task family. No scientific efficacy claim.
