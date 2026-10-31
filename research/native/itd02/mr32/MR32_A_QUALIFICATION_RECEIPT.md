@@ -201,3 +201,13 @@ The dedicated workflow already compiles and runs this test module and includes t
 The initial allocator draft capped memory count at 16 but represented partially filled stores with fewer than 16 positions. This did not meet the repository's exact fixed-state contract. The implementation was revised to use 16 explicit positions from initialization, with exactly 7 active and 9 retained slots at all times; unoccupied positions are explicit placeholders. A dedicated test now asserts the partition before any memory is inserted. Rebalancing fills the top seven predicted-utility entries into active slots and the next nine into retained slots; when full, the lowest-utility retained item is evicted. Pending-use items cannot be evicted.
 
 This is a correctness fix to the source-only learned allocator. It requires fresh exact-head Linux/Windows qualification; no earlier CI result covers this revision.
+
+## MR32-H first exact-head attempt and partition-flag repair
+
+First MR32-H exact-head workflow run `41224230048` failed on both Windows and Linux: all seven allocator tests reached a shared `ACTIVE_PARTITION` exception. Diagnosis: `_assign` chose the correct top-seven and retained-nine objects but retained their old `active` flags after moving them between partitions. This was a real implementation defect caught by the new exact-partition test, not an infra or scientific failure.
+
+Corrective source commit: `fc5e3e43989353511890e93341896d1ce057e427`, file blob `337d3d4ee86fca464e62926c6c9fe493a912b433`. Rebalancing now explicitly sets every selected active entry's flag true and every retained entry's flag false before invariant validation. The correction has been read back from GitHub.
+
+A fresh exact-head Windows/Linux run for `fc5e3e4...` has not yet been observed through the available Actions run listing. Therefore MR32-H remains **UNQUALIFIED**; run `41224230048` remains FAIL and is not relabelled. The earlier MR32-G 37-test PASS does not qualify this newly added allocator.
+
+G29 remains separately stale-index blocked; no full integration acceptance is claimed.
