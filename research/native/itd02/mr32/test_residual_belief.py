@@ -71,7 +71,7 @@ class ResidualBeliefTests(unittest.TestCase):
     def test_invalid_dimensions_and_nonfinite_values_rejected(self):
         m = ResidualBelief()
         with self.assertRaisesRegex(ValueError, "DIMENSION"):
-            m.predict((0.0,))
+            m.predict((0.0,), 0)
         m.predict(xvec(0), 0)
         with self.assertRaisesRegex(ValueError, "OUT_OF_RANGE"):
             m.observe_selected_outcome([float("nan")] * TARGETS)
