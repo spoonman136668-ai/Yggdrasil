@@ -330,12 +330,18 @@ class PolicyState:
         for value in uses:
             if isinstance(value, bool) or not isinstance(value, int) or value < 0:
                 raise ValueError("POLICY_CHECKPOINT_USE_RANGE")
-        for value in last_used:
-            if isinstance(value, bool) or not isinstance(value, int) or value < -1 or value >= max(1, clock):
-                raise ValueError("POLICY_CHECKPOINT_RECENCY_RANGE")
         for value in (clock, feedback, episodes):
             if isinstance(value, bool) or not isinstance(value, int) or value < 0:
                 raise ValueError("POLICY_CHECKPOINT_COUNTER_RANGE")
+        if clock != episodes * EVENTS:
+            raise ValueError("POLICY_CHECKPOINT_CLOCK_EPISODE_MISMATCH")
+        for value in last_used:
+            if (isinstance(value, bool) or not isinstance(value, int)
+                    or value < -1 or (value != -1 and value >= clock)):
+                raise ValueError("POLICY_CHECKPOINT_RECENCY_RANGE")
+        if method in LEARNED:
+            if sum(uses) != feedback or feedback > episodes * EVENTS:
+                raise ValueError("POLICY_CHECKPOINT_FEEDBACK_USE_MISMATCH")
         state.weights = list(weights)
         state.uses = list(uses)
         state.last_used = list(last_used)
@@ -548,8 +554,10 @@ def run() -> dict:
         method: total_successes[method] / (len(TRANSFER_SEEDS) * 8)
         for method in METHODS
     }
-    strongest = max((method for method in METHODS if method != "deca_q16"),
-                    key=lambda method: (total_successes[method], method))
+    comparator_order = METHODS[:-1]
+    strongest = max(comparator_order,
+                    key=lambda method: (total_successes[method],
+                                        -comparator_order.index(method)))
     paired_differences = {
         method: [
             row["mean_return_q16"]["deca_q16"]
@@ -592,7 +600,7 @@ def run() -> dict:
     mc_state = checkpoint_bytes["uniform_mc"]
     mean_delta_q16 = sum(paired_differences[strongest]) // len(TRANSFER_SEEDS)
     falsifiers = {
-        "delta_at_least_0_02": mean_delta_q16 >= (2 * Q // 100),
+        "delta_at_least_0_02": mean_delta_q16 >= ((2 * Q + 99) // 100),
         "wins_at_least_24_of_32": wins[strongest] >= 24,
         "wins_at_least_12_of_16_each_regime": all(
             value >= 12 for value in regime_wins.values()
@@ -609,7 +617,7 @@ def run() -> dict:
         "classification": "CONTROLLED_MULTI_STEP_TASK_FIXTURE_DEVELOPMENT_ONLY",
         "protocol": {
             "protocol_parent_sha": "8220c8dccbd389a7ea348d88d8ceb92835dd3453",
-            "protocol_current_sha": "188fbf831a569d96d8e700c15f159ccc44fd9e55",
+            "protocol_current_sha": "7cb8acbbc945d32abb669bd85d1ffeebc803b08b",
             "fit_seeds": list(FIT_SEEDS),
             "transfer_seeds": list(TRANSFER_SEEDS),
             "fit_episode_count": len(FIT_SEEDS) * 8,
