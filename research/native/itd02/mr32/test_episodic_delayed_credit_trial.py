@@ -231,7 +231,6 @@ class FullTrialTests(unittest.TestCase):
 
     def test_each_transfer_seed_cluster_cold_restores_fit_terminal_checkpoint(self):
         fit_sha = self.result["fit"]["checkpoint_sha256"]
-        fit_weights = self.result["fit"]["checkpoint_sha256"]
         transfer = self.result["transfer"]
         self.assertEqual(transfer["cold_restore_cluster_count_by_method"],
                          {method: 32 for method in METHODS})
