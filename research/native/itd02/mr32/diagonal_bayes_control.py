@@ -98,12 +98,19 @@ class DiagonalBayesControl:
         model = cls()
         p_rows, w_rows = [], []
         for p, w in zip(precision, weighted):
-            p_row = _vector(p, DIM, "PRECISION")
-            w_row = _vector(w, DIM, "WEIGHTED_SUM")
-            if any(v <= 0 for v in p_row):
+            if not isinstance(p, list) or len(p) != DIM or not isinstance(w, list) or len(w) != DIM:
+                raise ValueError("CHECKPOINT_ROW_DIMENSION")
+            try:
+                p_row = [float(v) for v in p]
+                w_row = [float(v) for v in w]
+            except (TypeError, ValueError) as exc:
+                raise ValueError("CHECKPOINT_ROW_NUMERIC") from exc
+            if not all(math.isfinite(v) and v > 0 for v in p_row):
                 raise ValueError("CHECKPOINT_PRECISION")
-            p_rows.append(list(p_row))
-            w_rows.append(list(w_row))
+            if not all(math.isfinite(v) for v in w_row):
+                raise ValueError("CHECKPOINT_WEIGHTED_SUM")
+            p_rows.append(p_row)
+            w_rows.append(w_row)
         if not isinstance(payload.get("steps"), int) or payload["steps"] < 0:
             raise ValueError("CHECKPOINT_STEPS")
         model.precision, model.weighted_sum, model.steps = p_rows, w_rows, payload["steps"]
