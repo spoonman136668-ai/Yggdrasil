@@ -47,6 +47,56 @@ class LearnedAllocatorTests(unittest.TestCase):
         self.assertGreater(m.predicted_utility(m._get("reliable")),
                            m.predicted_utility(m._get("unreliable")))
 
+    def test_heldout_task_usefulness_ranking_beats_fixed_recency_and_evidence(self):
+        # FIT: all 8 combinations of three metadata properties, repeated
+        # across balanced rounds. No held-out item or label is exposed here.
+        fit=LearnedMemoryAllocator()
+        profiles=[]
+        for hi_evidence in (False,True):
+            for low_error in (False,True):
+                for low_contradiction in (False,True):
+                    profiles.append((
+                        64 if hi_evidence else 2,
+                        0.0 if low_error else 1.0,
+                        0.0 if low_contradiction else 1.0,
+                        int(sum((hi_evidence,low_error,low_contradiction))>=2)
+                    ))
+        for _ in range(30):
+            for i,(evidence,error,contradiction,label) in enumerate(profiles):
+                key=f"fit-{i}"
+                if not any(m.occupied and m.key==key for m in fit.memories):
+                    fit.insert(key,rep(i),evidence_count=evidence,
+                               prediction_error=error,contradiction_rate=contradiction)
+                fit.mark_use(key)
+                fit.observe_task_outcome(key,float(label))
+
+        # TRANSFER: a new empty store receives weights only. Evaluation
+        # memories and their future usefulness labels are never fed back.
+        held=LearnedMemoryAllocator()
+        held.weights=list(fit.weights)
+        evaluation=[]
+        for repeat in range(2):
+            for i,(evidence,error,contradiction,label) in enumerate(profiles):
+                key=f"eval-{repeat}-{i}"
+                result=held.insert(key,rep(100+repeat*8+i),evidence_count=evidence,
+                                   prediction_error=error,contradiction_rate=contradiction)
+                evaluation.append((key,label,evidence))
+        # Arrange no feedback at all during evaluation. Compare the active
+        # set with deterministic fixed-recency (most recently inserted) and
+        # evidence-only (largest evidence count) controls on the same cohort.
+        active={m.key for m in held.memories if m.occupied and m.active}
+        positive=sum(label for _,label,_ in evaluation)
+        active_hits=sum(label for key,label,_ in evaluation if key in active)
+        recency_hits=sum(label for key,label,_ in sorted(evaluation,key=lambda x:x[0],reverse=True)[:ACTIVE])
+        evidence_hits=sum(label for key,label,_ in sorted(evaluation,key=lambda x:(-x[2],x[0]))[:ACTIVE])
+        learned_precision=active_hits/ACTIVE
+        recency_precision=recency_hits/ACTIVE
+        evidence_precision=evidence_hits/ACTIVE
+        self.assertGreater(learned_precision,recency_precision)
+        self.assertGreater(learned_precision,evidence_precision)
+        self.assertEqual(held.feedback_count,0)
+        self.assertEqual(positive,8)
+
     def test_unselected_memory_cannot_receive_outcome_credit(self):
         m=LearnedMemoryAllocator();m.insert("m",rep(0))
         with self.assertRaisesRegex(RuntimeError,"NO_PENDING"):
