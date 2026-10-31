@@ -57,3 +57,13 @@ Keep MR32 residual prototype, conventional controls and learned allocator as sep
 ## MR32-I — learned ranking discrimination test added
 
 A further regression now gives two memory records different evidence/error metadata, holds one useful and one unhelpful under repeated post-use feedback, and asserts that the learned utility score moves from a tie to rank the useful record higher. Both entries are marked used before each outcome; the test does not assign credit to unselected memories. The fixture is synthetic and proves the linear learner can fit this simple feedback distinction, not that such metadata predicts future task value in an authentic environment. Exact-head requalification is pending.
+
+## MR32-I exact-head ranking regression closure
+
+Added `test_downstream_feedback_learns_utility_ranking`: two memory records begin tied, receive repeated explicit selected-use feedback with opposite synthetic downstream usefulness labels, and the learned utility predictor must rank the positive-feedback profile above the negative-feedback profile.
+
+Corrected exact-head MR32-specific run `41224447528` at source/test head `3549b5b724d90fadc8fa00878a4d28baf1064b72`:
+- Ubuntu job `124605576064`: PASS, 46 tests, syntax, inventory and clean checkout.
+- Windows job `124605575932`: PASS, 46 tests, syntax, inventory and clean checkout.
+
+This establishes that the toy online linear utility scorer can fit this constructed metadata/usefulness relationship. It does not establish that these metadata predict real task value, that the policy improves task reward, or that the retention policy transfers to unfamiliar tasks. Synthetic labels only.
