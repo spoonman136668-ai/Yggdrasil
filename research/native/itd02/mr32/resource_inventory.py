@@ -12,6 +12,7 @@ from mr32_controls import MemorylessMean, ConventionalPrototypeControl
 from recurrent_control import RecurrentStateSpaceControl
 from diagonal_bayes_control import DiagonalBayesControl
 from interaction_bayes_control import InteractionBayesControl
+from interaction_bayes_control import InteractionBayesControl
 
 
 def vector(n, size):
@@ -73,6 +74,7 @@ def run(steps):
             "conventional_prototype": execute(ConventionalPrototypeControl(), steps),
             "recurrent_state_space": execute(RecurrentStateSpaceControl(), steps),
             "diagonal_bayes": execute(DiagonalBayesControl(), steps),
+            "interaction_bayes": execute(InteractionBayesControl(), steps),
             "interaction_bayes": execute(InteractionBayesControl(), steps),
         },
         "limits": [
