@@ -30,6 +30,23 @@ class LearnedAllocatorTests(unittest.TestCase):
         self.assertNotEqual(before,m.weights)
         self.assertEqual(m.feedback_count,1)
 
+    def test_downstream_feedback_learns_utility_ranking(self):
+        m=LearnedMemoryAllocator()
+        m.insert("reliable",rep(0),evidence_count=64,prediction_error=0.0,contradiction_rate=0.0)
+        m.insert("unreliable",rep(1),evidence_count=1,prediction_error=1.0,contradiction_rate=1.0)
+        reliable=m._get("reliable")
+        unreliable=m._get("unreliable")
+        initial_reliable=m.predicted_utility(reliable)
+        initial_unreliable=m.predicted_utility(unreliable)
+        self.assertEqual(initial_reliable,initial_unreliable)
+        for _ in range(40):
+            m.mark_use("reliable")
+            m.observe_task_outcome("reliable",1.0)
+            m.mark_use("unreliable")
+            m.observe_task_outcome("unreliable",0.0)
+        self.assertGreater(m.predicted_utility(m._get("reliable")),
+                           m.predicted_utility(m._get("unreliable")))
+
     def test_unselected_memory_cannot_receive_outcome_credit(self):
         m=LearnedMemoryAllocator();m.insert("m",rep(0))
         with self.assertRaisesRegex(RuntimeError,"NO_PENDING"):
