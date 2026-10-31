@@ -86,3 +86,10 @@ Added an eight-fold diagnostic withholding one of the eight metadata combination
 Added a separate allocator variant whose utility predictor includes the five metadata features and all 16 values of the stored memory representation. It preserves the same fixed total/active/retained partition, pending-feedback guard and integrity-checked cold checkpoint. MR32-H remains unchanged for direct comparison.
 
 The focused synthetic test trains on content patterns with identical metadata and evaluates new memory keys without transfer feedback, against the metadata-only scorer. This isolates whether representation content itself can affect learned retention. It remains a fixed-dimensional hand-engineered input basis and a linear scorer, not learned compression or a general memory architecture. Exact-head requalification pending.
+
+
+## MR32-N — delayed-feedback credit correction
+
+The metadata-only allocator and its content-aware sibling previously recomputed utility features when feedback arrived. This meant delayed outcome labels updated the scorer using later recency/use metadata instead of the original retrieval state. Both now store the exact feature vector at `mark_use` and apply the eventual gradient to that frozen vector. The pending feature receipt is cleared after feedback and cannot be checkpointed while pending. Schema versions were bumped to reject older checkpoint layouts.
+
+Two new regressions insert intervening memories before outcome feedback and verify the update matches the frozen use-time feature vector. Exact-head dual-platform qualification pending.
