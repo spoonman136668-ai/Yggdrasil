@@ -30,9 +30,10 @@ jobs:
         shell: bash
         run: |
           cd research/native/itd02/mr32
-          python -B -m py_compile residual_belief.py test_residual_belief.py mr32_controls.py test_mr32_controls.py recurrent_control.py test_recurrent_control.py diagonal_bayes_control.py test_diagonal_bayes_control.py interaction_bayes_control.py test_interaction_bayes_control.py learned_memory_allocator.py test_learned_memory_allocator.py resource_inventory.py test_common_checkpoint.py
+          python -B -m py_compile residual_belief.py test_residual_belief.py mr32_controls.py test_mr32_controls.py recurrent_control.py test_recurrent_control.py diagonal_bayes_control.py test_diagonal_bayes_control.py interaction_bayes_control.py test_interaction_bayes_control.py learned_memory_allocator.py test_learned_memory_allocator.py resource_inventory.py test_common_checkpoint.py learned_retention_eval.py
           python -B -m unittest -v test_residual_belief test_mr32_controls test_recurrent_control test_diagonal_bayes_control test_interaction_bayes_control test_learned_memory_allocator test_common_checkpoint
           python -B resource_inventory.py --steps 256
+          python -B learned_retention_eval.py
       - name: Clean source checkout
         shell: bash
         run: git diff --exit-code
