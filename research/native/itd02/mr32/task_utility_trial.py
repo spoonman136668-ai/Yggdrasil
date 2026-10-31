@@ -203,6 +203,96 @@ class InteractionBayesianUtility:
         self.feedback_count += 1
         self._rank()
 
+    def snapshot(self) -> bytes:
+        payload = {
+            "schema": "yggdrasil.mr32m.interaction-bayesian-utility.v1",
+            "mean": self.mean,
+            "variance": self.variance,
+            "noise": self.noise,
+            "step": self.step,
+            "feedback_count": self.feedback_count,
+            "records": [r.__dict__ for r in self.records],
+        }
+        canonical = json.dumps(
+            payload, sort_keys=True, separators=(",", ":"), allow_nan=False
+        ).encode("utf-8")
+        envelope = {
+            "payload": payload,
+            "sha256": hashlib.sha256(canonical).hexdigest(),
+        }
+        return json.dumps(
+            envelope, sort_keys=True, separators=(",", ":"), allow_nan=False
+        ).encode("utf-8")
+
+    @classmethod
+    def restore(cls, raw: bytes) -> "InteractionBayesianUtility":
+        try:
+            envelope = json.loads(raw.decode("utf-8"))
+            payload = envelope["payload"]
+            canonical = json.dumps(
+                payload, sort_keys=True, separators=(",", ":"), allow_nan=False
+            ).encode("utf-8")
+        except Exception as exc:
+            raise ValueError("BAYES_CHECKPOINT_FORMAT") from exc
+        if hashlib.sha256(canonical).hexdigest() != envelope.get("sha256"):
+            raise ValueError("BAYES_CHECKPOINT_HASH_MISMATCH")
+        if payload.get("schema") != "yggdrasil.mr32m.interaction-bayesian-utility.v1":
+            raise ValueError("BAYES_CHECKPOINT_SCHEMA")
+        model = cls()
+        mean = payload.get("mean")
+        variance = payload.get("variance")
+        if not isinstance(mean, list) or len(mean) != 16:
+            raise ValueError("BAYES_CHECKPOINT_MEAN")
+        if not isinstance(variance, list) or len(variance) != 16:
+            raise ValueError("BAYES_CHECKPOINT_VARIANCE")
+        model.mean = [float(x) for x in mean]
+        model.variance = [float(x) for x in variance]
+        if not all(math.isfinite(x) for x in model.mean):
+            raise ValueError("BAYES_CHECKPOINT_MEAN_RANGE")
+        if not all(math.isfinite(x) and x > 0 for x in model.variance):
+            raise ValueError("BAYES_CHECKPOINT_VARIANCE_RANGE")
+        noise = float(payload.get("noise"))
+        step = payload.get("step")
+        feedback_count = payload.get("feedback_count")
+        if not math.isfinite(noise) or noise <= 0:
+            raise ValueError("BAYES_CHECKPOINT_NOISE")
+        if isinstance(step, bool) or not isinstance(step, int) or step < 0:
+            raise ValueError("BAYES_CHECKPOINT_STEP")
+        if (isinstance(feedback_count, bool) or
+                not isinstance(feedback_count, int) or feedback_count < 0):
+            raise ValueError("BAYES_CHECKPOINT_FEEDBACK_COUNT")
+        rows = payload.get("records")
+        if not isinstance(rows, list) or len(rows) != TOTAL:
+            raise ValueError("BAYES_CHECKPOINT_RECORDS")
+        restored = []
+        for row in rows:
+            record = BayesianRecord(**row)
+            if (not isinstance(record.key, str) or not record.key or
+                    not 0 <= record.item < TOTAL or
+                    record.guess not in (0, 1) or
+                    not isinstance(record.active, bool) or
+                    isinstance(record.uses, bool) or
+                    not isinstance(record.uses, int) or record.uses < 0 or
+                    isinstance(record.last_used, bool) or
+                    not isinstance(record.last_used, int) or
+                    record.last_used < 0 or record.last_used > step or
+                    not 1 <= record.evidence_count <= 65535 or
+                    not 0 <= record.prediction_error <= 1 or
+                    not 0 <= record.contradiction_rate <= 1):
+                raise ValueError("BAYES_CHECKPOINT_RECORD_RANGE")
+            restored.append(record)
+        if len({record.key for record in restored}) != TOTAL:
+            raise ValueError("BAYES_CHECKPOINT_DUPLICATE_KEY")
+        if len({record.item for record in restored}) != TOTAL:
+            raise ValueError("BAYES_CHECKPOINT_DUPLICATE_ITEM")
+        if sum(record.active for record in restored) != ACTIVE:
+            raise ValueError("BAYES_CHECKPOINT_ACTIVE_PARTITION")
+        model.noise = noise
+        model.step = step
+        model.feedback_count = feedback_count
+        model.records = restored
+        return model
+
     def active_items(self) -> set[int]:
         return {r.item for r in self.records if r.active}
 
@@ -347,6 +437,8 @@ def _fit() -> tuple[list[float], InteractionBayesianUtility, dict]:
             row["controller"] == "mr32_h_learned" for row in feedback_receipts),
         "fit_feedback_count_bayesian": sum(
             row["controller"] == "interaction_bayesian" for row in feedback_receipts),
+        "bayesian_fit_checkpoint_bytes": len(bayes.snapshot()),
+        "bayesian_fit_checkpoint_sha256": hashlib.sha256(bayes.snapshot()).hexdigest(),
         "fit_feedback_receipts": feedback_receipts,
         "fit_episode_receipts": episode_receipts,
         "learned_weights": h_weights,
@@ -401,10 +493,18 @@ def run() -> dict:
         bayes = _bayes_from_fit(bayes_mean, bayes_variance)
         bayes.insert_records(seed, regime, permutation)
         h_state_bytes.append(len(h.snapshot()))
-        bayes_state_bytes.append(len(json.dumps({
-            "mean": bayes.mean, "variance": bayes.variance,
-            "records": [r.__dict__ for r in bayes.records]
-        }, sort_keys=True, separators=(",", ":")).encode()))
+        bayes_checkpoint = bayes.snapshot()
+        bayes_restored = InteractionBayesianUtility.restore(bayes_checkpoint)
+        if (bayes_restored.active_items() != bayes.active_items()
+                or bayes_restored.feedback_count != bayes.feedback_count):
+            raise RuntimeError("BAYES_CHECKPOINT_COLD_RESTORE_MISMATCH")
+        for record in bayes.records:
+            restored_record = next(r for r in bayes_restored.records
+                                   if r.item == record.item)
+            if bayes_restored.predict(restored_record) != bayes.predict(record):
+                raise RuntimeError("BAYES_CHECKPOINT_NEXT_PREDICTION_MISMATCH")
+        bayes = bayes_restored
+        bayes_state_bytes.append(len(bayes_checkpoint))
 
         for episode in range(EPISODES_PER_TRANSFER_CLUSTER):
             actual_episode = cluster * 10 + episode
