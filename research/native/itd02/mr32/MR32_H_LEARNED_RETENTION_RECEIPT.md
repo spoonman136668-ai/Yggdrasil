@@ -67,3 +67,10 @@ Corrected exact-head MR32-specific run `41224447528` at source/test head `3549b5
 - Windows job `124605575932`: PASS, 46 tests, syntax, inventory and clean checkout.
 
 This establishes that the toy online linear utility scorer can fit this constructed metadata/usefulness relationship. It does not establish that these metadata predict real task value, that the policy improves task reward, or that the retention policy transfers to unfamiliar tasks. Synthetic labels only.
+
+
+## MR32-K — held-out FIT-to-TRANSFER retention experiment
+
+Added `learned_retention_eval.py`. FIT consists of eight metadata profiles trained for 30 epochs using explicit post-use feedback. TRANSFER uses 16 disjoint memory keys in a fresh allocator; only the learned utility weights are carried over and no TRANSFER feedback is supplied. The active 7-slot set is measured against fixed-recency and evidence-only top-seven controls over the same held-out cohort. Script output is JSON and the dedicated workflow now executes it on both operating systems.
+
+The deterministic hidden label is a majority rule over three known metadata properties (high evidence, low prediction error, low contradiction). The FIT and TRANSFER records share this generating rule. This checks generalization to new records under the same synthetic rule, not generalization to an unfamiliar causal environment. It is not an independent unseen task family, not a real task-reward benchmark and not evidence of improved cognition. Exact-head dual-platform result pending.
