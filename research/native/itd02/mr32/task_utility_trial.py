@@ -82,13 +82,21 @@ def _paired_memory_utility(event: TaskEvent, guessed_action: int) -> float:
             - _score_task_action(event, None))
 
 
+def _stored_guess(seed: int, regime: int, item: int) -> int:
+    # This is the action proposed by the stored public memory representation.
+    rng = random.Random((seed * 131_071) ^ (regime * 524_287) ^ item)
+    return rng.randrange(2)
+
+
 def _event(seed: int, regime: int, episode: int, step: int,
            item: int) -> TaskEvent:
     evidence, error, contradiction = _metadata(item)
     p = _correct_probability(regime, evidence, error, contradiction)
+    # Correctness is conditional on the exact action encoded in the memory.
+    guess = _stored_guess(seed, regime, item)
     rng = random.Random((seed * 1_000_003) ^ (regime * 97_409)
-                        ^ (episode * 65_537) ^ (step * 257) ^ item)
-    guess = rng.randrange(2)
+                        ^ (episode * 65_537) ^ (step * 257) ^ item
+                        ^ 0x4D523332)
     correct = guess if rng.random() < p else 1 - guess
     return TaskEvent(item, guess, correct)
 
@@ -105,8 +113,7 @@ def _query_order(seed: int, regime: int, episode: int) -> list[int]:
 def _representation(item: int, seed: int, regime: int) -> tuple[float, ...]:
     # First coordinate is the stored proposed action (-1 or +1); remaining
     # coordinates are a deterministic public item code, not the hidden answer.
-    rng = random.Random((seed * 131_071) ^ (regime * 524_287) ^ item)
-    guess = rng.randrange(2)
+    guess = _stored_guess(seed, regime, item)
     values = [0.0] * 16
     values[0] = 1.0 if guess else -1.0
     values[item % 15 + 1] = 1.0
@@ -115,16 +122,6 @@ def _representation(item: int, seed: int, regime: int) -> tuple[float, ...]:
 
 def _key(seed: int, regime: int, item: int, permutation: list[int]) -> str:
     return f"{permutation[item]:02d}-r{regime}-s{seed}-m{item:02d}"
-
-
-def _feature_values(memory) -> tuple[float, ...]:
-    age = max(0, memory.step - memory.last_used) if hasattr(memory, "step") else 0
-    evidence = _norm_evidence(memory.evidence_count)
-    uses = min(1.0, math.log1p(memory.uses) / math.log(257.0))
-    recency = 1.0 / (1.0 + max(0, memory.current_step - memory.last_used) / 32.0)
-    return (evidence, uses, recency,
-            max(0.0, min(1.0, memory.prediction_error)),
-            max(0.0, min(1.0, memory.contradiction_rate)))
 
 
 @dataclass
