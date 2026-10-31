@@ -15,12 +15,14 @@ class MemorylessMean:
         self.total = [0.0] * TARGETS
         self.pending = False
 
-    def predict(self, features: Iterable[float]) -> Prediction:
-        if self.pending:
+    def predict(self, features: Iterable[float], selected_action: int) -> Prediction:
+        if self.pending is not False:
             raise RuntimeError("PENDING_OUTCOME_MUST_BE_RESOLVED")
         _vector(features, FEATURES, "FEATURES")
+        if isinstance(selected_action, bool) or selected_action not in (0, 1, 2):
+            raise ValueError("SELECTED_ACTION_OUT_OF_RANGE")
         values = tuple(v / self.count for v in self.total) if self.count else (0.0,) * TARGETS
-        self.pending = True
+        self.pending = selected_action
         return Prediction(values, 1.0 if not self.count else 0.5, self.count > 0)
 
     def observe_selected_outcome(self, outcome: Iterable[float]) -> None:
@@ -53,26 +55,28 @@ class ConventionalPrototypeControl:
         if self.pending is not None:
             raise RuntimeError("PENDING_OUTCOME_MUST_BE_RESOLVED")
         x = _vector(features, FEATURES, "FEATURES")
+        if isinstance(selected_action, bool) or selected_action not in (0, 1, 2):
+            raise ValueError("SELECTED_ACTION_OUT_OF_RANGE")
         valid = [( _distance(x,tuple(s.features)), i, s)
-                 for i,s in enumerate(self.slots) if s.valid]
+                 for i,s in enumerate(self.slots) if s.valid and s.action == selected_action]
         valid.sort(key=lambda row:(row[0],row[1]))
         if not valid:
             pred = Prediction((0.0,)*TARGETS,1.0,False)
         else:
             distance, _, slot = valid[0]
             pred = Prediction(tuple(slot.target),distance,True)
-        self.pending=(x,pred.values)
+        self.pending=(x,selected_action,pred.values)
         return pred
 
     def observe_selected_outcome(self, outcome: Iterable[float]) -> None:
         if self.pending is None:
             raise RuntimeError("NO_PENDING_SELECTED_ACTION")
         y=_vector(outcome,TARGETS,"OUTCOME")
-        x,_=self.pending
+        x,selected_action,_=self.pending
         self.pending=None
         self.step+=1
         valid=[(_distance(x,tuple(s.features)),i,s)
-               for i,s in enumerate(self.slots) if s.valid]
+               for i,s in enumerate(self.slots) if s.valid and s.action == selected_action]
         if valid:
             _,index,slot=min(valid,key=lambda row:(row[0],row[1]))
             rate=1.0/(slot.support+1)
@@ -84,7 +88,7 @@ class ConventionalPrototypeControl:
             index=0
             self.slots[index]=Slot(features=list(x),target=list(y),support=1,
                                    residual_ema=0.0,contradictions=0,
-                                   last_used=self.step,active=True)
+                                   last_used=self.step,active=True,action=selected_action)
         self._check()
 
     def _check(self):
