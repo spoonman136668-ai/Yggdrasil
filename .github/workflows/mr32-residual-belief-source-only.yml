@@ -30,8 +30,8 @@ jobs:
         shell: bash
         run: |
           cd research/native/itd02/mr32
-          python -B -m py_compile residual_belief.py test_residual_belief.py mr32_controls.py test_mr32_controls.py recurrent_control.py test_recurrent_control.py resource_inventory.py
-          python -B -m unittest -v test_residual_belief test_mr32_controls test_recurrent_control
+          python -B -m py_compile residual_belief.py test_residual_belief.py mr32_controls.py test_mr32_controls.py recurrent_control.py test_recurrent_control.py diagonal_bayes_control.py test_diagonal_bayes_control.py resource_inventory.py
+          python -B -m unittest -v test_residual_belief test_mr32_controls test_recurrent_control test_diagonal_bayes_control
           python -B resource_inventory.py --steps 256
       - name: Clean source checkout
         shell: bash
