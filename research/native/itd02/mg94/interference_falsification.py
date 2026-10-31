@@ -32,7 +32,7 @@ def run():
     restored = PublicHistoryTransitions.restore(snapshot)
     after = [query(restored, 0), query(restored, 1)]
     assert after == [(20, 25), (5, 5)]
-    assert restored.snapshot() == snapshot if False else True
+    assert PublicHistoryTransitions.restore(snapshot).snapshot() == snapshot
     print("MG94_L_INTERFERENCE: initial=%r after=%r" % (initial, after))
     print("DEVELOPMENT_NEGATIVE: no task-aware selective consolidation or interference isolation")
 if __name__ == "__main__":
