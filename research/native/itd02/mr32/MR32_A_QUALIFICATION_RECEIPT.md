@@ -71,3 +71,11 @@ The first exact-head MR32-specific workflow run, `41209034566`, completed with *
 Corrective workflow commit: `78e66a443bb6bd5d214ed2c0c6d98e29fcbb892a`. The workflow now changes into `research/native/itd02/mr32` before byte-compilation and unittest discovery. The correction was read back from GitHub. A new exact-head dual-platform run was not observable after this update through the connected Actions endpoints; therefore the fix is committed but **Windows/Linux requalification remains PENDING/UNVERIFIED**. Do not cite run `41209034566` as PASS.
 
 The local 9/9 result remains source-working-copy evidence. Scientific gain remains NOT TESTED.
+
+## Final MR32-specific exact-head qualification update
+
+After correcting the test working directory, the exact-head dedicated workflow run `41209106407` completed **SUCCESS** on both `ubuntu-latest` and `windows-latest`. Both jobs completed source checkout, Python setup, syntax compilation, the nine focused unit tests and clean-checkout verification. This qualifies the committed MR32 candidate files on both operating systems for these focused source-only contracts.
+
+The previous run `41209034566` remains recorded as a failed test-discovery attempt; it is superseded by the passing corrected run, not erased.
+
+At the time of this update, separate G29 atlas workflow `41209106414` remained in progress on Linux while the Windows job failed closed at `scripts/build_code_atlas.py --check-if-present` because the MR32 paths changed the indexed file set. The MR32-specific source-only PASS does NOT imply G29 atlas acceptance or full integration regression PASS.
