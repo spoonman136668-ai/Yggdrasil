@@ -52,3 +52,8 @@ These are single-pass hosted runner diagnostics, not calibrated performance or f
 ## Next admissible work
 
 Keep MR32 residual prototype, conventional controls and learned allocator as separate candidates; do not merge their memory states or combine results after seeing tests. Prepare a preregistered three-to-five mechanism pilot under a fresh authorized source-birth epoch, with frozen FIT/CHECK/TRANSFER cohorts, same-information recurrent/Bayesian controls and a fixed total 16/7/9 state budget. Until FSA-04 authority is independently deployed and qualified, continue only source engineering and synthetic contract tests. Preserve negative and harness results. No source integration, merge, accepted-ref update or promotion is requested.
+
+
+## MR32-I — learned ranking discrimination test added
+
+A further regression now gives two memory records different evidence/error metadata, holds one useful and one unhelpful under repeated post-use feedback, and asserts that the learned utility score moves from a tie to rank the useful record higher. Both entries are marked used before each outcome; the test does not assign credit to unselected memories. The fixture is synthetic and proves the linear learner can fit this simple feedback distinction, not that such metadata predicts future task value in an authentic environment. Exact-head requalification is pending.
