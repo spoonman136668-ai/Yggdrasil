@@ -133,6 +133,8 @@ class TaskUtilityTrialTests(unittest.TestCase):
         self.assertGreater(result["resource_diagnostics"]["tracemalloc_peak_bytes"], 0)
         self.assertIn("process_peak_rss_bytes", result["resource_diagnostics"])
         self.assertIn("process_peak_rss_method", result["resource_diagnostics"])
+        self.assertEqual(set(result["resource_diagnostics"]["selector_state_bytes_mean"]), set(means))
+        self.assertIn("all-in resource parity", result["resource_diagnostics"]["selector_state_scope"])
         self.assertIn("delta_at_least_0_02", result["falsifiers"])
 
 
