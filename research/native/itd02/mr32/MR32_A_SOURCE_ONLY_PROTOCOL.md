@@ -116,3 +116,10 @@ This standardizes serialization framing, not semantic state capacity: model payl
 The new `learned_retention_eval.py` trains the utility weights on eight FIT metadata profiles for 30 feedback epochs. It then transfers only the learned weights into a fresh allocator and inserts 16 disjoint-key TRANSFER records. Evaluation feedback is zero. The active 7-slot set is compared with fixed-recency and evidence-only top-seven controls on the same held-out records. A reproducible machine-readable result is emitted by the script and the workflow runs it on Windows and Linux.
 
 The synthetic label is a fixed majority rule over evidence-count category, prediction-error category and contradiction-rate category. FIT and TRANSFER share this same generating rule. This only falsifies whether the linear scorer can learn this simple metadata rule and generalize it to new records; it does not model genuine future queries, causal worlds, real task reward, interference, or a novel task family. No scientific efficacy claim.
+
+
+## MR32-L — leave-one-profile-out diagnostic
+
+Added `learned_retention_cv.py`: eight folds each withhold one of the eight metadata profiles during FIT. Each fit receives seven of eight profile combinations for 30 rounds; only learned utility weights move into a fresh TRANSFER store. The omitted profile is represented in the transfer cohort, with zero transfer feedback. Per-fold learned active-set precision is reported against fixed recency and evidence-only controls. The dedicated Windows/Linux workflow runs the eight-fold diagnostic and its structural tests.
+
+This is a profile-combination holdout under the same known synthetic majority-rule generator, not an unfamiliar task family or causal world. It is more discriminating than disjoint IDs with every profile observed during FIT, but remains synthetic and limited.
