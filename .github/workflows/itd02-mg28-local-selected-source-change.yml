@@ -1,0 +1,57 @@
+name: ITD-02 MG28 independent Yggdrasil selected next-public source effect
+on:
+  push:
+    branches: [research/itd02-mg28-local-public-change-signal-20261029]
+permissions:
+  contents: read
+jobs:
+  mg28-native-source-only:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      PYTHONUTF8: '1'
+    steps:
+      - name: Source LFs
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Frozen original MG23 local parent
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: No parent modification outside native MG28
+        shell: pwsh
+        run: |
+          git merge-base --is-ancestor a052b06b010ec9e61e4a46e0d57f544a76590c33 $env:GITHUB_SHA
+          if ($LASTEXITCODE -ne 0) { throw 'MG28_NOT_MG23_PARENT' }
+          $allowed=@(
+            'research/native/itd02/mg28/selected_change_cells.py'
+            'research/native/itd02/mg28/test_selected_change_cells.py'
+            '.github/workflows/itd02-mg28-local-selected-source-change.yml'
+          )
+          $actual=@(git diff --name-only a052b06b010ec9e61e4a46e0d57f544a76590c33 $env:GITHUB_SHA)
+          if (@(Compare-Object $allowed $actual).Count -ne 0) { throw 'MG28_CHANGED_LOCAL_PARENT_OR_OTHER_SOURCE' }
+          if (git status --porcelain --untracked-files=all) { throw 'MG28_LOCAL_SOURCE_DIRTY' }
+          Write-Host 'MG28_NATIVE_YGG_PARENT_FROZEN_AND_SCOPE_PASS'
+      - name: Python 3.11
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Native cold and no-signal strict original public tests
+        shell: pwsh
+        run: |
+          python -B -m unittest -q research.native.itd02.mg28.test_selected_change_cells research.native.itd02.mg23.test_selected_target_cells research.native.itd02.mg19.test_genuine_mission_cells
+          if ($LASTEXITCODE -ne 0) { throw 'MG28_LOCAL_SELECTED_SOURCE_TEST_FAILED' }
+          python -B -c "import ast,sys,pathlib; [ast.parse(pathlib.Path(p).read_text(encoding='utf-8')) for p in sys.argv[1:]]" research/native/itd02/mg28/selected_change_cells.py research/native/itd02/mg28/test_selected_change_cells.py
+          if ($LASTEXITCODE -ne 0) { throw 'MG28_SOURCE_SYNTAX_FAILED' }
+          if (git status --porcelain --untracked-files=all) { throw 'MG28_LOCAL_TEST_MUTATED_PARENT' }
+          Write-Host 'MG28_YGG_SELECTED_NONTERMINAL_SOURCE_CREDIT_PASS_NO_ORIGINAL_WORLD_STEPS_NO_SCIENCE'
