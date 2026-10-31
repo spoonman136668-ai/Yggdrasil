@@ -140,3 +140,18 @@ The first action-conditioned CI run associated with head `5cbc17f44ece54d9d427dc
 Corrected the test to call `predict((0.0,), 0)` and committed it at `122de0a152b41e3d4eb7203f7914850764bfee7a`. The corrected file was read back. A fresh exact-head MR32 Windows/Linux CI result for `122de0a...` was not observable through the connected workflow-run listing at the time of this receipt; therefore current action-conditioned code is **NOT YET QUALIFIED**. Prior MR32 pass `41214448272` predates action conditioning and does not qualify this code.
 
 The G29 atlas workflow remains fail-closed on the new file set. No acceptance or promotion is requested.
+
+## MR32-C corrected exact-head CI closure
+
+After fixing the final stale test call to supply selected action `0`, exact-head dedicated Actions run `41216087359` completed SUCCESS on both Windows and Ubuntu.
+
+Both jobs completed:
+- Python syntax compilation for residual candidate, both conventional controls and both test files.
+- Full focused unittest invocation for `test_residual_belief` and `test_mr32_controls`.
+- Clean-checkout verification.
+
+This is the corrected action-conditioned source and test set. The earlier run `41216007649` failed on the missing selected-action argument; it is retained as a harness failure and is not counted as passing qualification.
+
+At the same PR head, the separate G29 workflow run `41216087470` did not pass: Windows failed at atlas file-set freshness (`YGG_ATLAS_FAIL_CLOSED: indexed file set changed`); Linux had reached the same failing freshness check and remained in atlas regeneration at last observation. G29 and full integration qualification remain blocked until the canonical generated atlas artifacts are refreshed and both platforms complete their checks.
+
+MR32 focused CI PASS is only source/software-contract qualification. It does not demonstrate efficacy, causal learning advantage, equal total-resource performance, or unfamiliar-world transfer. FSA-04 remains OPEN and original-world first-use remains blocked.
