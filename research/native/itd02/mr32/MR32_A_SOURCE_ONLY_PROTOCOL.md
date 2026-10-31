@@ -95,3 +95,10 @@ The action-conditioned conventional prototype now allocates the first empty acti
 Added a separate conventional baseline whose fixed basis includes bias, public features, selected-action indicators and every feature×action interaction. It has 68 coefficients per consequence output and a diagonal Gaussian posterior. This can represent action-specific feature effects that the additive diagonal Bayesian control cannot.
 
 A held-out sign-reversal contract test now trains on a balanced action×feature development set and checks that the interaction model has lower error on the held-out combinations than the additive model. It is a deterministic synthetic expressivity check, not evidence about either native architecture. Model remains linear in its explicitly expanded basis and diagonal in posterior covariance; it is not a Bayesian causal graph learner/planner.
+
+
+## MR32-H — trainable downstream-usefulness memory allocator
+
+Added a separate candidate which maintains exactly 16 positions at all times: 7 active and 9 retained, including explicit empty slots before the store is populated. It learns a bounded linear utility predictor from post-task usefulness feedback for memory items explicitly marked as used. The learned score—not a fixed novelty or prediction-error threshold—determines the active/retained ranking and eviction order. Feedback cannot be assigned to an item that was not marked used. Pending feedback prevents checkpointing and eviction.
+
+This pilot's metadata basis (evidence count, use count, recency, prediction-error summary and contradiction rate), linear predictor and update rule are fixed engineering choices. Its utility weights are learned from downstream labels. It is therefore a trainable retention scorer, not a fully learned representation or end-to-end memory policy. Synthetic test/inventory labels are only software-contract fixtures; no scientific efficacy is inferred.
