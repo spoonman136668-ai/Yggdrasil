@@ -97,6 +97,17 @@ class LearnedAllocatorTests(unittest.TestCase):
         self.assertEqual(held.feedback_count,0)
         self.assertEqual(positive,8)
 
+    def test_reproducible_heldout_evaluation_emits_control_metrics(self):
+        from learned_retention_eval import run
+        result=run()
+        learned=result["results"]["learned_utility"]["precision_at_7"]
+        recency=result["results"]["fixed_recency"]["precision_at_7"]
+        evidence=result["results"]["evidence_only"]["precision_at_7"]
+        self.assertGreater(learned,recency)
+        self.assertGreater(learned,evidence)
+        self.assertEqual(result["transfer"]["feedback_events"],0)
+        self.assertEqual(result["transfer"]["records"],16)
+
     def test_unselected_memory_cannot_receive_outcome_credit(self):
         m=LearnedMemoryAllocator();m.insert("m",rep(0))
         with self.assertRaisesRegex(RuntimeError,"NO_PENDING"):
