@@ -86,7 +86,10 @@ class DelayedCreditTests(unittest.TestCase):
         feedback = state.apply_terminal_feedback(uses, delta)
         self.assertEqual(state.feedback_events, len(uses))
         self.assertEqual(len(feedback), len(uses))
-        self.assertTrue(any(state.weights))
+        if delta == 0:
+            self.assertEqual(state.weights, [0] * 6)
+        else:
+            self.assertTrue(any(state.weights))
 
     def test_no_memory_or_unselected_record_receives_episodic_credit(self):
         state = PolicyState.create("uniform_mc")
