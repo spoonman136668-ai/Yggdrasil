@@ -1,0 +1,164 @@
+name: MR32-O Episodic Delayed-Credit Source-Only Qualification
+
+on:
+  push:
+    branches:
+      - research/mr32-episodic-delayed-credit-20261031
+  pull_request:
+    branches:
+      - research/mr32-residual-belief-dev-20261031
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mr32-o-delayed-credit-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  focused:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+
+      - name: Install pinned process-resource measurement dependency
+        shell: bash
+        run: python -m pip install --disable-pip-version-check psutil==6.1.1
+
+      - name: Compile and run focused delayed-credit contract tests
+        shell: bash
+        run: |
+          cd research/native/itd02/mr32
+          python -B -m py_compile episodic_delayed_credit_trial.py test_episodic_delayed_credit_trial.py
+          python -B -m unittest -v test_episodic_delayed_credit_trial
+
+      - name: Run frozen FIT and TRANSFER cohorts
+        shell: bash
+        run: |
+          cd research/native/itd02/mr32
+          python -B episodic_delayed_credit_trial.py > "$RUNNER_TEMP/mr32o-${{ matrix.os }}.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          result = json.loads(Path(os.environ["RUNNER_TEMP"], "mr32o-${{ matrix.os }}.json").read_text())
+          assert result["schema"] == "yggdrasil.mr32o.episodic-delayed-credit.v1"
+          assert result["classification"] == "CONTROLLED_MULTI_STEP_TASK_FIXTURE_DEVELOPMENT_ONLY"
+          assert result["fit"]["event_receipt_count"] == 16 * 8 * 6
+          assert len(result["fit"]["episode_receipts"]) == 16 * 8
+          assert result["transfer"]["event_receipt_count"] == 32 * 8 * 6
+          assert len(result["transfer"]["episode_receipts"]) == 32 * 8
+          assert len(result["transfer"]["cluster_receipts"]) == 32
+          assert result["transfer"]["feedback_events_applied"] == {
+              "random": 0, "fixed_recency": 0, "evidence_only": 0,
+              "uniform_mc": 0, "interaction": 0, "deca_q16": 0
+          }
+          assert set(result["fit"]["checkpoint_sha256"]) == {
+              "random", "fixed_recency", "evidence_only",
+              "uniform_mc", "interaction", "deca_q16"
+          }
+          assert set(result["resource_diagnostics"]["checkpoint_bytes"]) == {
+              "random", "fixed_recency", "evidence_only",
+              "uniform_mc", "interaction", "deca_q16"
+          }
+          assert result["resource_diagnostics"]["process_peak_rss_bytes"] is not None
+          assert result["falsifiers"]["fit_transfer_seed_disjoint"]
+          print("MR32O_FROZEN_TASK_AND_DELAYED_CREDIT_CONTRACT=PASS")
+          print("MR32O_DEVELOPMENT_SIGNAL=" + str(result["development_signal"]))
+          print("MR32O_STRONGEST_COMPARATOR=" + result["transfer"]["strongest_comparator"])
+          print("MR32O_DECA_MEAN_DELTA=" + str(result["transfer"]["deca_mean_delta_vs_strongest"]))
+          print("MR32O_FALSIFIERS=" + json.dumps(result["falsifiers"], sort_keys=True))
+          PY
+
+      - name: Verify clean source checkout
+        shell: bash
+        run: git diff --exit-code
+
+      - name: Upload immutable per-platform trial receipt
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: mr32-o-${{ matrix.os }}
+          path: ${{ runner.temp }}/mr32o-${{ matrix.os }}.json
+          if-no-files-found: error
+          retention-days: 14
+
+  cross-platform:
+    needs: focused
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+
+      - name: Download Windows and Ubuntu receipts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: mr32-o-*
+          path: ${{ runner.temp }}/mr32o-receipts
+          merge-multiple: true
+
+      - name: Exact cross-platform task, model and score reconciliation
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          folder = Path(os.environ["RUNNER_TEMP"], "mr32o-receipts")
+          files = sorted(folder.glob("mr32o-*.json"))
+          assert len(files) == 2, [str(p) for p in files]
+          results = [json.loads(p.read_text()) for p in files]
+          left, right = results
+
+          def pick(result):
+              return {
+                  "protocol": result["protocol"],
+                  "fit": {
+                      "event_sha256": result["fit"]["event_sha256"],
+                      "event_receipt_count": result["fit"]["event_receipt_count"],
+                      "feedback_counts": result["fit"]["feedback_counts"],
+                      "checkpoint_sha256": result["fit"]["checkpoint_sha256"],
+                      "episode_receipts": result["fit"]["episode_receipts"],
+                      "feedback_receipts": result["fit"]["feedback_receipts"],
+                      "cluster_receipts": result["fit"]["cluster_receipts"],
+                  },
+                  "transfer": {
+                      "event_sha256": result["transfer"]["event_sha256"],
+                      "event_receipt_count": result["transfer"]["event_receipt_count"],
+                      "episode_receipts": result["transfer"]["episode_receipts"],
+                      "cluster_receipts": result["transfer"]["cluster_receipts"],
+                      "method_mean_terminal_success": result["transfer"]["method_mean_terminal_success"],
+                      "strongest_comparator": result["transfer"]["strongest_comparator"],
+                      "deca_mean_delta_vs_strongest": result["transfer"]["deca_mean_delta_vs_strongest"],
+                      "deca_wins_by_comparator": result["transfer"]["deca_wins_by_comparator"],
+                      "bootstrap_2p5_q16_by_comparator": result["transfer"]["bootstrap_2p5_q16_by_comparator"],
+                      "regime_mean_terminal_success": result["transfer"]["regime_mean_terminal_success"],
+                      "deca_wins_by_regime_vs_strongest": result["transfer"]["deca_wins_by_regime_vs_strongest"],
+                      "feedback_events_applied": result["transfer"]["feedback_events_applied"],
+                  },
+                  "falsifiers": result["falsifiers"],
+                  "development_signal": result["development_signal"],
+              }
+
+          assert pick(left) == pick(right), "MR32O_WINDOWS_LINUX_RESULT_DIVERGENCE"
+          assert left["fit"]["checkpoint_sha256"] == right["fit"]["checkpoint_sha256"]
+          print("MR32O_WINDOWS_LINUX_EVENT_AND_CHECKPOINT_PARITY=PASS")
+          print("MR32O_WINDOWS_LINUX_TRANSFER_SCORE_PARITY=PASS")
+          print("MR32O_FROZEN_VERDICT=" + str(left["development_signal"]))
+          PY
