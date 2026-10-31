@@ -435,11 +435,25 @@ def run() -> dict:
     cpu_ns = time.process_time_ns() - cpu_started
     wall_ns = time.perf_counter_ns() - started
     rss_bytes = None
+    rss_method = "unavailable"
     try:
-        import psutil  # type: ignore
-        rss_bytes = psutil.Process().memory_info().rss
+        import os
+        if os.name == "nt":
+            import psutil  # type: ignore
+            rss_bytes = int(psutil.Process().memory_info().peak_wset)
+            rss_method = "windows_peak_working_set"
+        else:
+            import resource
+            # Linux ru_maxrss is reported in KiB.
+            rss_bytes = int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024)
+            rss_method = "linux_ru_maxrss"
     except Exception:
-        pass
+        try:
+            import psutil  # type: ignore
+            rss_bytes = int(psutil.Process().memory_info().rss)
+            rss_method = "current_rss_fallback_not_peak"
+        except Exception:
+            pass
 
     strongest_delta = means["mr32_h_learned"] - means[strongest]
     result = {
@@ -474,6 +488,7 @@ def run() -> dict:
             "process_cpu_ns": cpu_ns,
             "wall_ns": wall_ns,
             "process_peak_rss_bytes": rss_bytes,
+            "process_peak_rss_method": rss_method,
             "tracemalloc_current_bytes": current,
             "tracemalloc_peak_bytes": peak,
             "h_checkpoint_bytes_mean": sum(h_state_bytes) / len(h_state_bytes),
