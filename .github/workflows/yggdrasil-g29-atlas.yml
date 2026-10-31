@@ -18,6 +18,7 @@ jobs:
           python-version: "3.12"
       - run: python scripts/build_code_atlas.py --check-if-present
       - run: python -m unittest discover -s tests -p test_code_atlas.py -v
+      - run: python -B -m unittest discover -s tests -p 'test_native_cells*.py' -v
       - run: git diff --exit-code
   linux:
     runs-on: ubuntu-latest
@@ -32,6 +33,7 @@ jobs:
           python-version: "3.12"
       - run: python scripts/build_code_atlas.py --check-if-present
       - run: python -m unittest discover -s tests -p test_code_atlas.py -v
+      - run: python -B -m unittest discover -s tests -p 'test_native_cells*.py' -v
       - if: always()
         name: Emit bounded diagnostic for the committed atlas (no giant Base64 log line)
         shell: bash
