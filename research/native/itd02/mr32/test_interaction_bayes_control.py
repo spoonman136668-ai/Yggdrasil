@@ -59,4 +59,35 @@ class InteractionBayesTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"DIMENSION"):
             InteractionBayesControl._phi((0.0,),0)
 
+    def test_action_feature_interaction_generalizes_heldout_sign(self):
+        from diagonal_bayes_control import DiagonalBayesControl
+        interaction=InteractionBayesControl()
+        additive=DiagonalBayesControl()
+        # Balanced development fit: y0 = feature[0] for action 0,
+        # and y0 = -feature[0] for action 1. Action and feature main effects
+        # alone cannot represent the sign reversal.
+        for _ in range(40):
+            for action in (0,1):
+                for sign in (-1.0,1.0):
+                    features=(sign,)+(0.0,)*(FEATURES-1)
+                    target=(sign if action==0 else -sign,)+(0.0,)*(TARGETS-1)
+                    interaction.predict(features,action);interaction.observe_selected_outcome(target)
+                    additive.predict(features,action);additive.observe_selected_outcome(target)
+        squared_interaction=0.0
+        squared_additive=0.0
+        cases=0
+        for action in (0,1):
+            for sign in (-1.0,1.0):
+                features=(sign,)+(0.0,)*(FEATURES-1)
+                expected=sign if action==0 else -sign
+                pi=interaction.predict(features,action)
+                pa=additive.predict(features,action)
+                squared_interaction+=(pi.values[0]-expected)**2
+                squared_additive+=(pa.values[0]-expected)**2
+                interaction.observe_selected_outcome((expected,)+(0.0,)*(TARGETS-1))
+                additive.observe_selected_outcome((expected,)+(0.0,)*(TARGETS-1))
+                cases+=1
+        self.assertLess(squared_interaction/cases,squared_additive/cases)
+
+
 if __name__=="__main__":unittest.main()
