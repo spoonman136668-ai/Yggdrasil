@@ -10,7 +10,7 @@ def evaluate(order):
     for key in ("full","action","context"):
         model=Lookup(key)
         for a,c,i in order*3:model.learn(a,c,i,environment(a,c,i))
-        result[key]=sum(model.predict(a,c,i)==environment(a,c,i) for a,c,i in test)
+        result[key]={"correct":sum(model.predict(a,c,i)==environment(a,c,i) for a,c,i in test),\n                     "state":(model.out[:],model.seen[:])}
     return result
 
 def run():
