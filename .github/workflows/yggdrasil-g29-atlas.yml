@@ -52,6 +52,29 @@ jobs:
           new_imports = [(x["line"], x["literal"]) for x in expected["imports"]
                          if x["file"] == path]
           print("H39_DIAG_TEST_IMPORT_CHANGES=" + str((old_imports, new_imports)))
+          def normalize(value, source_sha):
+              if isinstance(value, str):
+                  return value.replace(source_sha, "<SOURCE>")
+              if isinstance(value, list):
+                  return [normalize(x, source_sha) for x in value]
+              if isinstance(value, dict):
+                  return {k: normalize(v, source_sha) for k, v in value.items()}
+              return value
+          a, b = normalize(actual, actual["source_commit"]), normalize(expected, head)
+          for key in ("files", "symbols", "imports"):
+              oldrows, newrows = a[key], b[key]
+              diff = []
+              for i in range(max(len(oldrows), len(newrows))):
+                  left = oldrows[i] if i < len(oldrows) else None
+                  right = newrows[i] if i < len(newrows) else None
+                  if key == "files" and left and right and (
+                          left.get("path") == ".github/workflows/yggdrasil-g29-atlas.yml"):
+                      for row in (left, right):
+                          row = row
+                          row["sha256"], row["bytes"] = "<WORKFLOW_SOURCE>", -1
+                  if left != right:
+                      diff.append((i, left, right))
+              print("H39_DIAG_STRUCT_DIFF_" + key.upper() + "=" + str(diff[:3])[:2200])
           PY
       - run: python scripts/build_code_atlas.py --check-if-present
       - run: python -m unittest discover -s tests -p test_code_atlas.py -v
