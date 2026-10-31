@@ -48,11 +48,13 @@ class ResidualBeliefTests(unittest.TestCase):
         m = ResidualBelief()
         for i in range(12):
             m.predict(xvec(i)); m.observe_selected_outcome(yvec(i))
-        expected = m.predict(xvec(3)); m.pending = None
-        restored = ResidualBelief.restore(m.snapshot())
-        actual = restored.predict(xvec(3)); restored.pending = None
+        blob = m.snapshot()
+        control = ResidualBelief.restore(blob)
+        restored = ResidualBelief.restore(blob)
+        expected = control.predict(xvec(3))
+        actual = restored.predict(xvec(3))
         self.assertEqual(expected, actual)
-        self.assertEqual(m.stats(), restored.stats())
+        self.assertEqual(control.stats(), restored.stats())
 
     def test_pending_outcome_cannot_be_checkpointed(self):
         m = ResidualBelief(); m.predict(xvec(0))
