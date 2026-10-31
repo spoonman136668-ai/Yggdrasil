@@ -182,11 +182,13 @@ class InteractionBayesianUtility:
         x = self._features(record, self.step)
         target = 0.5 + 0.5 * task_return  # paired no-memory return is zero
         prediction = self.predict(record)
+        innovation_variance = self.noise + sum(
+            self.variance[i] * value * value for i, value in enumerate(x))
         for i, value in enumerate(x):
             prior = self.variance[i]
-            gain = prior * value / (self.noise + prior * value * value)
-            self.mean[i] += gain * (target - prediction) * value
-            self.variance[i] = max(1e-9, prior * (1.0 - gain * value))
+            gain = prior * value / innovation_variance
+            self.mean[i] += gain * (target - prediction)
+            self.variance[i] = max(1e-9, prior - gain * prior * value)
         self.feedback_count += 1
         self._rank()
 
@@ -226,7 +228,8 @@ def _fixed_sets(seed: int, regime: int, permutation: list[int]) -> dict[str, set
     random_order = list(range(TOTAL))
     random.Random((seed * 65_521) ^ (regime * 104_729)).shuffle(random_order)
     random_set = set(random_order[:ACTIVE])
-    recency = set(sorted(range(TOTAL), key=lambda i: keys[i])[-ACTIVE:])
+    # Item insertion order is the common immutable recency order.
+    recency = set(range(TOTAL - ACTIVE, TOTAL))
     evidence = set(sorted(range(TOTAL),
                            key=lambda i: (-_metadata(i)[0], keys[i]))[:ACTIVE])
     return {"random": random_set, "fixed_recency": recency,
@@ -242,41 +245,41 @@ def _fit() -> tuple[list[float], InteractionBayesianUtility, dict]:
     h_weights = [0.0] * 6
     bayes = InteractionBayesianUtility()
     event_receipts = []
-    # Eight independently permuted FIT clusters; six episodes in each.
+    # Eight FIT clusters: four frozen clusters per independently parameterized regime.
     for cluster, seed in enumerate(FIT_SEEDS):
-        for regime in (0, 1):
-            permutation = _permute(seed, regime)
-            h, h_keys = _new_h_allocator(seed, regime, permutation, h_weights)
-            bayes.insert_records(seed, regime, permutation)
-            for episode in range(EPISODES_PER_FIT_CLUSTER // 2):
-                actual_episode = cluster * 10 + episode
-                for step, item in enumerate(_query_order(seed, regime, actual_episode)):
-                    event = _event(seed, regime, actual_episode, step, item)
-                    active = _h_active_items(h, h_keys)
-                    if item in active:
-                        key = h_keys[item]
-                        mem = h._get(key)
-                        guess = 1 if mem.representation[0] > 0 else 0
-                        task_return = 1.0 if guess == event.correct_action else -1.0
-                        # Exact paired counterfactual: no-memory returns 0.0.
-                        paired_delta = task_return - 0.0
-                        h.mark_use(key)
-                        h.observe_task_outcome(key, 0.5 + 0.5 * paired_delta)
-                    b_record = next(r for r in bayes.records if r.item == item)
-                    if b_record.active:
-                        task_return = 1.0 if b_record.guess == event.correct_action else -1.0
-                        bayes.observe_use(b_record, task_return)
-                    event_receipts.append({
-                        "phase": "fit", "seed": seed, "regime": regime,
-                        "episode": actual_episode, "step": step, "item": item,
-                        "correct_action_sha": hashlib.sha256(
-                            str(event.correct_action).encode()).hexdigest(),
-                    })
-            h_weights = list(h.weights)
-            # The learned allocator's weights, not its memory state, cross clusters.
+        regime = 0 if cluster < len(FIT_SEEDS) // 2 else 1
+        permutation = _permute(seed, regime)
+        h, h_keys = _new_h_allocator(seed, regime, permutation, h_weights)
+        bayes.insert_records(seed, regime, permutation)
+        for episode in range(EPISODES_PER_FIT_CLUSTER):
+            actual_episode = cluster * 10 + episode
+            for step, item in enumerate(_query_order(seed, regime, actual_episode)):
+                event = _event(seed, regime, actual_episode, step, item)
+                if item in _h_active_items(h, h_keys):
+                    key = h_keys[item]
+                    mem = h._get(key)
+                    guess = 1 if mem.representation[0] > 0 else 0
+                    task_return = 1.0 if guess == event.correct_action else -1.0
+                    # The no-memory replay returns 0.0 on the same task state.
+                    paired_delta = task_return - 0.0
+                    h.mark_use(key)
+                    h.observe_task_outcome(key, 0.5 + 0.5 * paired_delta)
+                b_record = next(r for r in bayes.records if r.item == item)
+                if b_record.active:
+                    task_return = 1.0 if b_record.guess == event.correct_action else -1.0
+                    bayes.observe_use(b_record, task_return)
+                event_receipts.append({
+                    "phase": "fit", "seed": seed, "regime": regime,
+                    "episode": actual_episode, "step": step, "item": item,
+                    "correct_action_sha": hashlib.sha256(
+                        str(event.correct_action).encode()).hexdigest(),
+                })
+        h_weights = list(h.weights)
     receipt = {
         "fit_seeds": list(FIT_SEEDS),
-        "fit_episodes": len(FIT_SEEDS) * 2 * (EPISODES_PER_FIT_CLUSTER // 2),
+        "fit_regimes": {"0": list(FIT_SEEDS[:len(FIT_SEEDS)//2]),
+                        "1": list(FIT_SEEDS[len(FIT_SEEDS)//2:])},
+        "fit_episodes": len(FIT_SEEDS) * EPISODES_PER_FIT_CLUSTER,
         "fit_event_count": len(event_receipts),
         "fit_event_sha256": _record_hash(event_receipts),
         "learned_weights": h_weights,
@@ -312,7 +315,7 @@ def run() -> dict:
     bayes_mean = list(bayes_fit.mean)
     bayes_variance = list(bayes_fit.variance)
 
-    held_cluster_rows = []
+    cluster_rows = []
     held_event_receipts = []
     h_transfer_feedback = 0
     bayes_transfer_feedback = 0
@@ -320,93 +323,116 @@ def run() -> dict:
     bayes_state_bytes = []
 
     for cluster, seed in enumerate(TRANSFER_SEEDS):
+        regime = 0 if cluster < len(TRANSFER_SEEDS) // 2 else 1
         regime_returns = {name: [] for name in
                           ("random", "fixed_recency", "evidence_only",
                            "mr32_h_learned", "interaction_bayesian")}
-        for regime in (0, 1):
-            permutation = _permute(seed, regime)
-            fixed = _fixed_sets(seed, regime, permutation)
-            h, h_keys = _new_h_allocator(seed, regime, permutation, h_weights)
-            bayes = _bayes_from_fit(bayes_mean, bayes_variance)
-            bayes.insert_records(seed, regime, permutation)
-            h_state_bytes.append(len(h.snapshot()))
-            bayes_state_bytes.append(len(json.dumps({
-                "mean": bayes.mean, "variance": bayes.variance,
-                "records": [r.__dict__ for r in bayes.records]
-            }, sort_keys=True, separators=(",", ":")).encode()))
-            for episode in range(EPISODES_PER_TRANSFER_CLUSTER):
-                actual_episode = cluster * 10 + episode
-                for step, item in enumerate(_query_order(seed, regime, actual_episode)):
-                    event = _event(seed, regime, actual_episode, step, item)
-                    for name, active in fixed.items():
-                        if item in active:
-                            evidence, error, contradiction = _metadata(item)
-                            guess = 1 if _representation(item, seed, regime)[0] > 0 else 0
-                            score = 1.0 if guess == event.correct_action else -1.0
-                        else:
-                            score = 0.0
-                        regime_returns[name].append(score)
-                    if item in _h_active_items(h, h_keys):
-                        key = h_keys[item]
-                        mem = h._get(key)
-                        guess = 1 if mem.representation[0] > 0 else 0
+        permutation = _permute(seed, regime)
+        fixed = _fixed_sets(seed, regime, permutation)
+        h, h_keys = _new_h_allocator(seed, regime, permutation, h_weights)
+        bayes = _bayes_from_fit(bayes_mean, bayes_variance)
+        bayes.insert_records(seed, regime, permutation)
+        h_state_bytes.append(len(h.snapshot()))
+        bayes_state_bytes.append(len(json.dumps({
+            "mean": bayes.mean, "variance": bayes.variance,
+            "records": [r.__dict__ for r in bayes.records]
+        }, sort_keys=True, separators=(",", ":")).encode()))
+
+        for episode in range(EPISODES_PER_TRANSFER_CLUSTER):
+            actual_episode = cluster * 10 + episode
+            for step, item in enumerate(_query_order(seed, regime, actual_episode)):
+                event = _event(seed, regime, actual_episode, step, item)
+                for name, active in fixed.items():
+                    if item in active:
+                        guess = 1 if _representation(item, seed, regime)[0] > 0 else 0
                         score = 1.0 if guess == event.correct_action else -1.0
-                        regime_returns["mr32_h_learned"].append(score)
-                    else:
-                        regime_returns["mr32_h_learned"].append(0.0)
-                    b_record = next(r for r in bayes.records if r.item == item)
-                    if b_record.active:
-                        score = 1.0 if b_record.guess == event.correct_action else -1.0
                     else:
                         score = 0.0
-                    regime_returns["interaction_bayesian"].append(score)
-                    held_event_receipts.append({
-                        "phase": "transfer", "seed": seed, "regime": regime,
-                        "episode": actual_episode, "step": step, "item": item,
-                        "correct_action_sha": hashlib.sha256(
-                            str(event.correct_action).encode()).hexdigest(),
-                    })
-            h_transfer_feedback += h.feedback_count
-            bayes_transfer_feedback += bayes.feedback_count
-        for name, values in regime_returns.items():
-            held_cluster_rows.append({
-                "seed": seed, "method": name,
-                "mean_task_return": sum(values) / len(values),
-                "task_count": len(values),
-            })
+                    regime_returns[name].append(score)
 
-    # Reconcile to one row per seed/method, paired on identical task events.
-    cluster_map: dict[int, dict[str, float]] = {}
-    for row in held_cluster_rows:
-        cluster_map.setdefault(row["seed"], {})[row["method"]] = row["mean_task_return"]
+                if item in _h_active_items(h, h_keys):
+                    mem = h._get(h_keys[item])
+                    guess = 1 if mem.representation[0] > 0 else 0
+                    score = 1.0 if guess == event.correct_action else -1.0
+                else:
+                    score = 0.0
+                regime_returns["mr32_h_learned"].append(score)
+
+                b_record = next(r for r in bayes.records if r.item == item)
+                if b_record.active:
+                    score = 1.0 if b_record.guess == event.correct_action else -1.0
+                else:
+                    score = 0.0
+                regime_returns["interaction_bayesian"].append(score)
+
+                held_event_receipts.append({
+                    "phase": "transfer", "seed": seed, "regime": regime,
+                    "episode": actual_episode, "step": step, "item": item,
+                    "correct_action_sha": hashlib.sha256(
+                        str(event.correct_action).encode()).hexdigest(),
+                })
+
+        h_transfer_feedback += h.feedback_count
+        bayes_transfer_feedback += bayes.feedback_count
+        cluster_rows.append({
+            "seed": seed, "regime": regime,
+            "method_mean_task_return": {
+                name: sum(values) / len(values)
+                for name, values in regime_returns.items()
+            },
+            "task_count": len(next(iter(regime_returns.values()))),
+        })
+
     methods = ("random", "fixed_recency", "evidence_only",
                "mr32_h_learned", "interaction_bayesian")
-    means = {method: sum(cluster_map[s][method] for s in TRANSFER_SEEDS)
-             / len(TRANSFER_SEEDS) for method in methods}
-    h_wins = {}
-    lower_bounds = {}
-    for comparator in methods:
-        if comparator == "mr32_h_learned":
-            continue
-        diffs = [cluster_map[s]["mr32_h_learned"] - cluster_map[s][comparator]
-                 for s in TRANSFER_SEEDS]
-        h_wins[comparator] = sum(d > 0 for d in diffs)
-        lower_bounds[comparator] = _bootstrap_lower(diffs)
-    strongest = max(m for m in methods if m != "mr32_h_learned",
+    means = {method: sum(row["method_mean_task_return"][method]
+                         for row in cluster_rows) / len(cluster_rows)
+             for method in methods}
+    strongest = max((m for m in methods if m != "mr32_h_learned"),
                     key=lambda m: means[m])
-    strongest_delta = means["mr32_h_learned"] - means[strongest]
+    paired_diffs = {
+        comparator: [
+            row["method_mean_task_return"]["mr32_h_learned"]
+            - row["method_mean_task_return"][comparator]
+            for row in cluster_rows
+        ]
+        for comparator in methods if comparator != "mr32_h_learned"
+    }
+    h_wins = {name: sum(diff > 0 for diff in diffs)
+              for name, diffs in paired_diffs.items()}
+    lower_bounds = {name: _bootstrap_lower(diffs)
+                    for name, diffs in paired_diffs.items()}
+
     regime_detail = {}
+    regime_wins = {}
     for regime in (0, 1):
-        selected = [r for r in held_cluster_rows if r["method"] == "mr32_h_learned"]
-        # regime values are retained in the stream hash; the per-regime table
-        # is computed separately from task events below in future refinements.
-        regime_detail[str(regime)] = {"seed_clusters": len(TRANSFER_SEEDS),
-                                      "paired_per_regime_replay": True}
+        rows = [row for row in cluster_rows if row["regime"] == regime]
+        regime_means = {
+            method: sum(row["method_mean_task_return"][method] for row in rows)
+            / len(rows) for method in methods
+        }
+        comparator_wins = sum(
+            row["method_mean_task_return"]["mr32_h_learned"]
+            > row["method_mean_task_return"][strongest] for row in rows)
+        regime_wins[str(regime)] = comparator_wins
+        regime_detail[str(regime)] = {
+            "seed_clusters": len(rows),
+            "method_mean_task_return": regime_means,
+            "mr32_h_wins_vs_overall_strongest": comparator_wins,
+        }
 
     current, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
     cpu_ns = time.process_time_ns() - cpu_started
     wall_ns = time.perf_counter_ns() - started
+    rss_bytes = None
+    try:
+        import psutil  # type: ignore
+        rss_bytes = psutil.Process().memory_info().rss
+    except Exception:
+        pass
+
+    strongest_delta = means["mr32_h_learned"] - means[strongest]
     result = {
         "schema": "yggdrasil.mr32m.task-derived-utility.v1",
         "classification": "CONTROLLED_TASK_FIXTURE_DEVELOPMENT_NOT_SCIENTIFIC_ADMISSION",
@@ -417,6 +443,7 @@ def run() -> dict:
             "transfer_episodes_per_cluster": EPISODES_PER_TRANSFER_CLUSTER,
             "tasks_per_episode": TASKS_PER_EPISODE,
             "active_budget": ACTIVE, "total_memory_budget": TOTAL,
+            "fit_regime_split": 4, "transfer_regime_split": 8,
         },
         "fit": fit_receipt,
         "transfer": {
@@ -430,12 +457,14 @@ def run() -> dict:
             "bootstrap_2p5_by_comparator": lower_bounds,
             "strongest_comparator": strongest,
             "delta_vs_strongest": strongest_delta,
-            "per_seed": cluster_map,
+            "per_seed": cluster_rows,
             "regime_detail": regime_detail,
+            "regime_wins_vs_overall_strongest": regime_wins,
         },
         "resource_diagnostics": {
             "process_cpu_ns": cpu_ns,
             "wall_ns": wall_ns,
+            "process_peak_rss_bytes": rss_bytes,
             "tracemalloc_current_bytes": current,
             "tracemalloc_peak_bytes": peak,
             "h_checkpoint_bytes_mean": sum(h_state_bytes) / len(h_state_bytes),
@@ -444,20 +473,14 @@ def run() -> dict:
         "falsifiers": {
             "delta_at_least_0_02": strongest_delta >= 0.02,
             "wins_at_least_12_of_16": h_wins.get(strongest, 0) >= 12,
+            "wins_at_least_6_of_8_each_regime": all(v >= 6 for v in regime_wins.values()),
             "bootstrap_lower_above_zero": lower_bounds.get(strongest, -1.0) > 0,
             "transfer_feedback_zero": h_transfer_feedback == 0 and bayes_transfer_feedback == 0,
             "fit_transfer_seeds_disjoint": not set(FIT_SEEDS).intersection(TRANSFER_SEEDS),
         },
     }
-    result["development_signal"] = all((
-        result["falsifiers"]["delta_at_least_0_02"],
-        result["falsifiers"]["wins_at_least_12_of_16"],
-        result["falsifiers"]["bootstrap_lower_above_zero"],
-        result["falsifiers"]["transfer_feedback_zero"],
-        result["falsifiers"]["fit_transfer_seeds_disjoint"],
-    ))
+    result["development_signal"] = all(result["falsifiers"].values())
     return result
-
 
 if __name__ == "__main__":
     print(json.dumps(run(), sort_keys=True, indent=2, allow_nan=False))
