@@ -116,6 +116,24 @@ class LearnedAllocatorTests(unittest.TestCase):
         self.assertTrue(all(f["fit_profiles"]==7 for f in result["folds"]))
         self.assertTrue(all(f["transfer_feedback_events"]==0 for f in result["folds"]))
 
+    def test_delayed_feedback_uses_use_time_metadata_not_arrival_time(self):
+        m=LearnedMemoryAllocator()
+        m.insert("source",rep(0),evidence_count=32,prediction_error=0.25,contradiction_rate=0.5)
+        m.mark_use("source")
+        captured=tuple(m._get("source").pending_features)
+        before=list(m.weights)
+        expected_prediction=m._utility_for_features(captured)
+        error=1.0-expected_prediction
+        expected=[w+0.08*error*x for w,x in zip(before,captured)]
+        for i in range(5):
+            m.insert(f"later-{i}",rep(i+1),evidence_count=1)
+        self.assertNotEqual(captured,tuple(m._features(m._get("source"))))
+        m.observe_task_outcome("source",1.0)
+        for got,want in zip(m.weights,expected):
+            self.assertAlmostEqual(got,want,places=12)
+        self.assertIsNone(m._get("source").pending_features)
+        self.assertFalse(m._get("source").pending_use)
+
     def test_unselected_memory_cannot_receive_outcome_credit(self):
         m=LearnedMemoryAllocator();m.insert("m",rep(0))
         with self.assertRaisesRegex(RuntimeError,"NO_PENDING"):
