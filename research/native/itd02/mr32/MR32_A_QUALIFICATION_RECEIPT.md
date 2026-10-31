@@ -79,3 +79,35 @@ After correcting the test working directory, the exact-head dedicated workflow r
 The previous run `41209034566` remains recorded as a failed test-discovery attempt; it is superseded by the passing corrected run, not erased.
 
 At the time of this update, separate G29 atlas workflow `41209106414` remained in progress on Linux while the Windows job failed closed at `scripts/build_code_atlas.py --check-if-present` because the MR32 paths changed the indexed file set. The MR32-specific source-only PASS does NOT imply G29 atlas acceptance or full integration regression PASS.
+
+## MR32-B — conventional controls and exact-head qualification
+
+Current PR #716 head: `c753e5044ecb6570915405978f8c79d01e42662d`.
+
+Added:
+- `mr32_controls.py`: a memoryless global-mean control and a conventional nearest-prototype/online-EMA control.
+- `test_mr32_controls.py`: four interface/partition/state-serialization tests.
+- Updated protocol and dedicated workflow to include both control tests on Linux and Windows.
+
+Exact-head dedicated source-only Actions run `41214448272` completed:
+- Ubuntu: **PASS**.
+- Windows: **PASS**.
+- Syntax compile, residual-belief tests, control tests and clean-checkout checks all completed successfully.
+
+The tests establish interface and bounded-slot software properties only. The conventional prototype shares a 16-slot, 7/9 partition, but exact byte/resource parity is NOT established. These controls are not yet a capable trained recurrent/state-space or Bayesian/model-based comparison; no efficacy result is claimed.
+
+The separate G29 atlas workflow `41214448271` remains an integration blocker:
+- Windows failed at `scripts/build_code_atlas.py --check-if-present` because the new MR32 paths are not indexed.
+- Linux was still in progress at this receipt update, with the same freshness check already failed and regeneration/clean-check steps pending.
+- Do not mark G29/full integration PASS. The exact MR32-specific Linux/Windows workflow remains green independently.
+
+Next safe gate: resolve generated atlas artifacts using the repository generator against the exact PR head, then complete G29 and required full regression. Following integration, add full recurrent/Bayesian controls and total-byte/process-resource accounting in a frozen source-only development protocol. No original-world admission or scientific cohort use is authorized.
+
+Disposition:
+`MR32_SOURCE_ONLY_CI_LINUX=PASS`
+`MR32_SOURCE_ONLY_CI_WINDOWS=PASS`
+`MR32_CONVENTIONAL_CONTROLS=IMPLEMENTED_INTERFACE_ONLY`
+`TOTAL_RESOURCE_PARITY=UNVERIFIED`
+`G29_ATLAS=BLOCKED_STALE_INDEX`
+`NATIVE_SCIENTIFIC_GAIN=NOT_TESTED`
+`ORIGINAL_WORLD_FIRST_USE=BLOCKED`
