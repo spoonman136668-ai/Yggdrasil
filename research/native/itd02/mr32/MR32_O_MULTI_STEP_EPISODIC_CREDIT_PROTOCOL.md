@@ -156,3 +156,28 @@ The canonical checkpoint is JSON with sorted keys and compact separators, protec
 ## 10. Exact primary-result computation
 
 For each of the 32 TRANSFER seed clusters, compute each policy's mean terminal success over its eight episodes. Aggregate mean return is the unweighted mean of the 32 cluster means; each cluster has equal weight. Paired cluster differences are candidate minus comparator. Bootstrap resampling samples 32 cluster indices with replacement, 10,000 times, using \`random.Random(320014)\`; sort the resulting means and report element 249 (zero-based) as the frozen 2.5th-percentile lower bound. Win counts compare paired cluster means strictly (\`candidate > comparator\`); ties are not wins.
+
+
+## 11. Fixed-point update and selector details
+
+- Learned selector weights initialize to six or sixteen zero integers as appropriate. All feature and weight values use signed Q16 integers, with floor division at every specified division. No float conversion is permitted in task generation, policy scoring or weight updates.
+- The six-element base feature vector is \`[Q, evidence_q16, error_q16, contradiction_q16, recency_q16, uses_q16]\`. The interaction model appends the ten pairwise Q16 products of the five non-bias features in lexicographic \`(i,j)\` order for \`1 <= i < j <= 6\`.
+- For an observation-time feature vector \`x\`, prediction is \`clamp(sum(w[j] * x[j]) // Q, -Q, Q)\`.
+- At terminal update, process use receipts in increasing event-step order. Each receipt retains its observation-time feature vector and step. Compute all integer credit allocations before updating coefficients. Candidate trace uses the normalized eligibility allocation; uniform Monte Carlo and interaction control use equal integer allocation. For any nonzero remainder after floor division, add it to the latest selected-use receipt so the credited integers sum exactly to \`delta_q16\`.
+- For each receipt in event order, compute the current prediction, \`error_q16 = allocated_credit_q16 - prediction_q16\`, then update each coefficient as \`w[j] = clamp(w[j] + (alpha_q16 * error_q16 * x[j]) // (Q*Q), -4*Q, 4*Q)\`. This event-order online replay occurs only after the episode's terminal scalar has arrived.
+- Uniform Monte Carlo and DECA-Q16 both have exactly six coefficients. The interaction learned control has exactly sixteen. The policy with the larger interaction basis is not given extra episodes or feedback records.
+
+### Selector behavior
+
+- Random: select seven item IDs from a deterministic \`random.Random((cluster_seed * 65521) XOR (regime * 104729) XOR (episode_index * 257) XOR 0x52414E44)\` stream.
+- Fixed recency: choose seven records sorted by \`(-last_used_clock, item_id)\`; all initialize to \`last_used_clock=-1\`.
+- Evidence-only: choose seven records sorted by \`(-evidence_count, item_id)\`.
+- Learned selectors: choose seven records sorted by \`(-predicted_utility_q16, item_id)\`.
+- The event clock increments once after every public query event whether a record was active or not. When an active record is actually retrieved, capture its feature vector first, then increment its use count and set its last-used clock to the current event clock.
+- In TRANSFER, learned model weights are frozen. Public event-clock, use-count and recency state may evolve from observed queries and actual retrievals; this is not outcome feedback.
+
+### Receipts and audit separation
+
+Task generator output includes a sealed evaluator-only task specification (goal positions and required actions). The policy runner receives only the public query stream and its own memory state. The evaluator computes the paired terminal return only after the policy has completed all 12 actions. The terminal delta and use receipts are passed to the selected controller update function; the evaluator-only goal specification and per-memory leave-one-out diagnostics are never passed to any learner.
+
+For TRANSFER, each used memory receives an evaluator-only leave-one-out diagnostic: recompute terminal task return with that one selected memory's action replaced by the no-memory fallback while all other recorded actions remain fixed. Record its terminal return and marginal effect, but do not use it for feedback, model updates, selection or threshold decisions.
