@@ -181,3 +181,10 @@ For each of the 32 TRANSFER seed clusters, compute each policy's mean terminal s
 Task generator output includes a sealed evaluator-only task specification (goal positions and required actions). The policy runner receives only the public query stream and its own memory state. The evaluator computes the paired terminal return only after the policy has completed all 12 actions. The terminal delta and use receipts are passed to the selected controller update function; the evaluator-only goal specification and per-memory leave-one-out diagnostics are never passed to any learner.
 
 For TRANSFER, each used memory receives an evaluator-only leave-one-out diagnostic: recompute terminal task return with that one selected memory's action replaced by the no-memory fallback while all other recorded actions remain fixed. Record its terminal return and marginal effect, but do not use it for feedback, model updates, selection or threshold decisions.
+
+
+## 12. Deterministic tie and threshold semantics
+
+- Comparator selection uses the fixed listed order \`random\`, \`fixed_recency\`, \`evidence_only\`, \`uniform_mc\`, \`interaction\`; exclude \`deca_q16\`, choose the comparator with the greatest aggregate TRANSFER return, and resolve exact ties in favor of the earliest method in this order.
+- A +0.02 return margin is evaluated in integer Q16 with the exact inclusive threshold \`ceil(0.02 * 65536) = 1311\`. Values below 1311 Q16 units do not pass, including 1310.
+- The bootstrap lower bound must be strictly greater than zero; ties remain non-wins in cluster win counts.
