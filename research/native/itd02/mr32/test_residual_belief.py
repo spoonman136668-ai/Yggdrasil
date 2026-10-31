@@ -84,9 +84,9 @@ class ResidualBeliefTests(unittest.TestCase):
         self.assertFalse(unseen.covered)
         m.observe_selected_outcome(yvec(1))
         action_zero = m.predict(xvec(0), 0)
-        m.pending = None
+        m.observe_selected_outcome(yvec(0))
         action_one = m.predict(xvec(0), 1)
-        m.pending = None
+        m.observe_selected_outcome(yvec(1))
         self.assertNotEqual(action_zero.values, action_one.values)
 
     def test_invalid_selected_action_is_rejected(self):
