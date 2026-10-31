@@ -8,7 +8,7 @@ from task_utility_trial import (
     FIT_SEEDS, TRANSFER_SEEDS, ACTIVE, TOTAL, _event, _fit,
     _fixed_sets, _metadata, _permute, _query_order, _representation,
     _bootstrap_lower, _paired_memory_utility, _score_task_action,
-    _stored_guess, TaskEvent, run,
+    _stored_guess, InteractionBayesianUtility, TaskEvent, run,
 )
 
 
@@ -68,6 +68,24 @@ class TaskUtilityTrialTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "NO_PENDING"):
             model.observe_task_outcome("item", 1.0)
         self.assertEqual(model.feedback_count, 0)
+
+    def test_bayesian_checkpoint_cold_restore_preserves_next_prediction(self):
+        model = InteractionBayesianUtility()
+        model.insert_records(101, 0, _permute(101, 0))
+        before = {record.item: model.predict(record) for record in model.records}
+        snapshot = model.snapshot()
+        restored = InteractionBayesianUtility.restore(snapshot)
+        after = {record.item: restored.predict(record) for record in restored.records}
+        self.assertEqual(before, after)
+        self.assertEqual(model.active_items(), restored.active_items())
+        self.assertEqual(snapshot, restored.snapshot())
+
+    def test_bayesian_checkpoint_tampering_fails_closed(self):
+        model = InteractionBayesianUtility()
+        model.insert_records(101, 0, _permute(101, 0))
+        damaged = model.snapshot().replace(b'"noise":0.25', b'"noise":0.5')
+        with self.assertRaisesRegex(ValueError, "HASH_MISMATCH"):
+            InteractionBayesianUtility.restore(damaged)
 
     def test_fit_uses_only_frozen_fit_events(self):
         weights, bayes, receipt = _fit()
