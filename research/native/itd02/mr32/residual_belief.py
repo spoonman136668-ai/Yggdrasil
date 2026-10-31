@@ -11,7 +11,7 @@ import json
 import math
 from typing import Iterable, Optional
 
-SCHEMA = "yggdrasil.mr32.residual-belief.v1"
+SCHEMA = "yggdrasil.mr32.residual-belief.action-conditioned.v2"
 FEATURES, TARGETS = 16, 8
 ACTIVE_SLOTS, RETAINED_SLOTS = 7, 9
 TOTAL_SLOTS = ACTIVE_SLOTS + RETAINED_SLOTS
