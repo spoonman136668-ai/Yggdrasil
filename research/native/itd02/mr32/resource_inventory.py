@@ -12,6 +12,7 @@ from mr32_controls import MemorylessMean, ConventionalPrototypeControl
 from recurrent_control import RecurrentStateSpaceControl
 from diagonal_bayes_control import DiagonalBayesControl
 from interaction_bayes_control import InteractionBayesControl
+from learned_memory_allocator import LearnedMemoryAllocator
 from interaction_bayes_control import InteractionBayesControl
 
 
@@ -63,6 +64,32 @@ def execute(model, steps):
     }
 
 
+
+def execute_allocator(model, steps):
+    started = time.perf_counter()
+    tracemalloc.start()
+    for i in range(steps):
+        key = f"memory-{i}"
+        model.insert(key, vector(i, 16), evidence_count=(i % 32)+1,
+                     prediction_error=(i % 10)/10.0,
+                     contradiction_rate=(i % 5)/5.0)
+        current = next((m for m in model.memories if m.key == key), None)
+        if current is not None and current.active:
+            model.mark_use(key)
+            model.observe_task_outcome(key, 1.0 if i % 3 == 0 else 0.0)
+    _, peak = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
+    elapsed = time.perf_counter() - started
+    checkpoint = model.snapshot()
+    return {
+        "steps": steps,
+        "serialized_state_bytes": len(checkpoint),
+        "deep_python_object_bytes": deep_size(model),
+        "tracemalloc_peak_bytes": peak,
+        "wall_seconds": elapsed,
+    }
+
+
 def run(steps):
     return {
         "schema": "yggdrasil.mr32.resource_inventory.v1",
@@ -75,6 +102,7 @@ def run(steps):
             "recurrent_state_space": execute(RecurrentStateSpaceControl(), steps),
             "diagonal_bayes": execute(DiagonalBayesControl(), steps),
             "interaction_bayes": execute(InteractionBayesControl(), steps),
+            "learned_memory_allocator": execute_allocator(LearnedMemoryAllocator(), steps),
             "interaction_bayes": execute(InteractionBayesControl(), steps),
         },
         "limits": [
@@ -83,7 +111,7 @@ def run(steps):
             "Serialized MR32 state uses an integrity envelope while controls emit compact state JSON; formats are not yet semantically equal persistence contracts.",
             "No exact total-resource parity claim; use same interpreter/build and common serialization envelopes before comparing.",
             "Diagonal Bayesian linear control is included; an action-feature interaction Bayesian linear control is included; no nonlinear Bayesian network or full planning agent is included.",
-            "No scientific efficacy, causal improvement, terminal reward or transfer is measured."
+            "Allocator receives deterministic synthetic usefulness feedback only; no task efficacy, causal improvement, terminal reward or transfer is measured."
         ]
     }
 
