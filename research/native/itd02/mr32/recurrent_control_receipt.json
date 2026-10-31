@@ -1,0 +1,52 @@
+{
+  "schema":"yggdrasil.mr32.recurrent-control-source-receipt.v1",
+  "classification":"SOURCE_ONLY_COMPARATOR_AND_RESOURCE_DIAGNOSTIC_NOT_EFFICACY",
+  "head_sha":"b5967e19e8ef268664d8b1c374ae1a332867aa78",
+  "workflow_run_id":41217976466,
+  "source_blobs":{
+    "recurrent_control.py":"c802fe07e3bb1c45af2e119719d8940a86ce31a5",
+    "test_recurrent_control.py":"be76700bdb19a0da07e84b5eb79f13b32d2b28c6",
+    "resource_inventory.py":"a0bb5c399ef94b5d81e4e34ed8367d2e519d1343"
+  },
+  "qualification":{
+    "windows":"PASS",
+    "ubuntu":"PASS",
+    "test_count_each_platform":22,
+    "syntax_compilation":"PASS",
+    "clean_checkout":"PASS"
+  },
+  "protocol":{
+    "steps":256,
+    "input":"16 normalized public features and explicit selected action in {0,1,2}",
+    "feedback":"8 normalized observed selected-action consequence values",
+    "model":"16-dimensional fixed recurrent state, deterministic fixed projection/recurrence, online-trained linear readout",
+    "limitations":"initial reservoir/state-space comparator; fixed recurrence, not a tuned/trainable full RNN or Bayesian/model-based learner"
+  },
+  "windows":{
+    "conventional_prototype":{"serialized_state_bytes":3483,"deep_python_object_bytes":4419,"tracemalloc_peak_bytes":134728,"wall_seconds":0.0218523},
+    "memoryless_mean":{"serialized_state_bytes":63,"deep_python_object_bytes":852,"tracemalloc_peak_bytes":166312,"wall_seconds":0.0089751},
+    "recurrent_state_space":{"serialized_state_bytes":3170,"deep_python_object_bytes":5808,"tracemalloc_peak_bytes":114584,"wall_seconds":0.1180963},
+    "residual_belief":{"serialized_state_bytes":3853,"deep_python_object_bytes":7335,"tracemalloc_peak_bytes":178352,"wall_seconds":0.101644}
+  },
+  "ubuntu":{
+    "conventional_prototype":{"serialized_state_bytes":3483,"deep_python_object_bytes":4419,"tracemalloc_peak_bytes":134736,"wall_seconds":0.018002679},
+    "memoryless_mean":{"serialized_state_bytes":63,"deep_python_object_bytes":852,"tracemalloc_peak_bytes":166320,"wall_seconds":0.007253987},
+    "recurrent_state_space":{"serialized_state_bytes":3170,"deep_python_object_bytes":5808,"tracemalloc_peak_bytes":114592,"wall_seconds":0.103282902},
+    "residual_belief":{"serialized_state_bytes":3853,"deep_python_object_bytes":7335,"tracemalloc_peak_bytes":178456,"wall_seconds":0.074022891}
+  },
+  "interpretation":{
+    "state_size":"Recurrent serialized state is 3,170 bytes vs MR32 3,853 bytes; recurrent Python object estimate 5,808 vs MR32 7,335 bytes.",
+    "runtime":"Recurrent wall time is noisy and differs by runner: 0.118s Windows / 0.103s Ubuntu vs MR32 0.102s Windows / 0.074s Ubuntu. In these runs the recurrent comparator is not faster than MR32. It is faster or slower? No robust conclusion; repeat controlled timing required.",
+    "peak":"Recurrent traced peak ~114.6KB vs MR32 ~178.4KB, but this is not process RSS.",
+    "decision":"No scientific winner. This is an initial comparator and not a controlled parity benchmark. The comparison demonstrates MR32 is not obviously more compact than a simple recurrent state-space representation."
+  },
+  "limits":[
+    "Single deterministic synthetic stream and one 256-step inventory per OS.",
+    "Hosted runners are not calibrated benchmark hardware; timing is noisy.",
+    "tracemalloc is not OS RSS; Python object deep-size is interpreter-dependent.",
+    "Persistence envelopes and semantics are not common across implementations.",
+    "No trained recurrent optimization sweep or Bayesian/model-based comparator.",
+    "No prediction-error efficacy, reward, decision gain, causal correction advantage or unfamiliar transfer measured."
+  ],
+  "decision":"A simple recurrent-state control is now in the suite. MR32 does not show a compactness advantage; inference/runtime results are inconclusive/noisy. Next: common checkpoint envelope, controlled repeated timing/resource measurement, and a proper Bayesian control. No original-world admission or scientific claim."
+}
