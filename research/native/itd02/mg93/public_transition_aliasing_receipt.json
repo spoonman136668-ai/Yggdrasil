@@ -1,0 +1,43 @@
+{
+  "schema":"mg93.public_transition_aliasing.receipt.v1",
+  "classification":"RETROSPECTIVE_ORIGINAL_LEDGER_DIAGNOSTIC_NOT_CAUSAL",
+  "source":{"workflow_run_id":41047254253,"artifact_id":12972852607,"artifact_zip_sha256":"9f284ce2b793a2f6e0d0d8a1cb097efb5a9e5ce9b5d75f5c53a77f8474d0104a","heldout_json_sha256":"0cdb155ce150717c3a678f6c536a81f5f4203dd96acafee459b2fdc1d2a36427","episodes":48,"roles":4},
+  "contexts":["public_state_action","plus_previous_action","plus_previous_public_state_action","plus_previous_two_actions"],
+  "role_summaries":{
+    "mg92_native_feedback":{
+      "MiniGrid-DoorKey-6x6-v0":{"steps":1080,"keys":[22,25,27,30],"ambiguous":[0,0,0,0]},
+      "MiniGrid-KeyCorridorS3R2-v0":{"steps":810,"keys":[43,48,52,51],"ambiguous":[1,1,1,1]},
+      "MiniGrid-KeyCorridorS4R3-v0":{"steps":1152,"keys":[40,45,46,50],"ambiguous":[2,1,0,0]},
+      "MiniGrid-ObstructedMaze-1Dl-v0":{"steps":864,"keys":[47,53,54,56],"ambiguous":[0,0,0,0]},
+      "total_steps":3906,"total_unique_keys":[152,171,179,187],"total_ambiguous_keys":[3,2,1,1]
+    },
+    "mg91_frozen_native_prototypes":{
+      "total_steps":3906,"total_unique_keys":[121,128,134,140],"total_ambiguous_keys":[1,1,0,0]
+    },
+    "mg91_independent_linear_control":{
+      "total_steps":3906,"total_unique_keys":[38,43,50,50],"total_ambiguous_keys":[0,0,0,0]
+    },
+    "mg86_frozen_teacher":{
+      "MiniGrid-DoorKey-6x6-v0":{"steps":88,"keys":[80,82,85,83],"ambiguous":[3,2,2,2]},
+      "MiniGrid-KeyCorridorS3R2-v0":{"steps":318,"keys":[89,99,99,105],"ambiguous":[2,2,2,1]},
+      "MiniGrid-KeyCorridorS4R3-v0":{"steps":475,"keys":[234,248,254,261],"ambiguous":[5,5,4,4]},
+      "MiniGrid-ObstructedMaze-1Dl-v0":{"steps":71,"keys":[65,65,67,65],"ambiguous":[1,1,1,1]},
+      "total_steps":952,"total_unique_keys":[468,494,505,514],"total_ambiguous_keys":[11,10,9,8]
+    }
+  },
+  "execution_boundary":{
+    "archive_sha256_verified":true,
+    "heldout_json_sha256_verified":true,
+    "local_diagnostic_reproduction":true,
+    "committed_short_script_blob":"975490fa55fbec30248d0f3120151dc187023e20",
+    "committed_short_script_exact_local_execution":"NOT_CLAIMED",
+    "original_environment_reset_or_step":0
+  },
+  "interpretation":{
+    "mg92": "Across the four families, public state/action mapping had 3 ambiguous keys among 152 observed keys. Adding the previous public transition reduced this to 1 among 179 keys; adding two preceding actions did not resolve the remaining S3R2 ambiguity.",
+    "mg91": "One ambiguous key among 121 public state/action keys was resolved by adding the previous public transition in this retrospective sample.",
+    "teacher": "Eleven ambiguous public state/action keys reduced to eight with two prior actions; residual aliasing remained.",
+    "caveat": "Key counts grow as history is added, so raw ambiguity counts and fractions are descriptive, not controlled estimates of memory efficiency. The three seeds per family are a small clustered sample. A public observation digest may omit latent inventory/pose or alias different physical states."
+  },
+  "decision":"A short history/belief representation is a justified hypothesis to test prospectively; this archive does not show that adding memory improves task reward, causal decisions, unfamiliar-family transfer, or solves MG93 failures. No policy changes, no original experiment, no acceptance."
+}
