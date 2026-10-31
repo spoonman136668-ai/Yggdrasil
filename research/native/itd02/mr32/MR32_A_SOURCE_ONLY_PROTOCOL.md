@@ -123,3 +123,10 @@ The synthetic label is a fixed majority rule over evidence-count category, predi
 Added `learned_retention_cv.py`: eight folds each withhold one of the eight metadata profiles during FIT. Each fit receives seven of eight profile combinations for 30 rounds; only learned utility weights move into a fresh TRANSFER store. The omitted profile is represented in the transfer cohort, with zero transfer feedback. Per-fold learned active-set precision is reported against fixed recency and evidence-only controls. The dedicated Windows/Linux workflow runs the eight-fold diagnostic and its structural tests.
 
 This is a profile-combination holdout under the same known synthetic majority-rule generator, not an unfamiliar task family or causal world. It is more discriminating than disjoint IDs with every profile observed during FIT, but remains synthetic and limited.
+
+
+## MR32-M — content-conditioned learned allocator
+
+A separate `ContentAwareMemoryAllocator` candidate now learns utility from the original five metadata signals plus the full 16-value stored representation. It retains the exact 16-slot, 7-active/9-retained contract and integrity-checked cold checkpoints; the metadata-only MR32-H candidate is unchanged. The dedicated Windows/Linux workflow now compiles, tests and resource-inventories both allocator variants.
+
+The source-only discrimination fixture holds all metadata constant and trains on positive/negative content patterns, then tests new memory keys without evaluation feedback. This asks whether learned memory content can influence retention rather than relying exclusively on programmed metadata summaries. The representation dimension itself remains fixed and hand-authored, and the utility learner remains a linear online scorer. No original-world or authentic task outcome data are used.
