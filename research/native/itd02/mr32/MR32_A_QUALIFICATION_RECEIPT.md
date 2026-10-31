@@ -63,3 +63,11 @@ Disposition:
 `SCIENTIFIC_GAIN=NOT_TESTED`
 `ORIGINAL_WORLD_FIRST_USE=BLOCKED`
 `ACCEPTANCE_OR_PROMOTION=NOT_GRANTED`
+
+## Post-receipt CI finding and repair
+
+The first exact-head MR32-specific workflow run, `41209034566`, completed with **Windows FAIL and Linux FAIL** in the test-invocation step. Both failures were the same harness defect: the test runner was invoked from repository root while the test module imports its sibling as `residual_belief`, producing `ModuleNotFoundError`. This was a test-discovery/infrastructure failure, not a model or scientific result.
+
+Corrective workflow commit: `78e66a443bb6bd5d214ed2c0c6d98e29fcbb892a`. The workflow now changes into `research/native/itd02/mr32` before byte-compilation and unittest discovery. The correction was read back from GitHub. A new exact-head dual-platform run was not observable after this update through the connected Actions endpoints; therefore the fix is committed but **Windows/Linux requalification remains PENDING/UNVERIFIED**. Do not cite run `41209034566` as PASS.
+
+The local 9/9 result remains source-working-copy evidence. Scientific gain remains NOT TESTED.
