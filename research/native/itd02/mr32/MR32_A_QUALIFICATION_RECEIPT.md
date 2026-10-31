@@ -155,3 +155,35 @@ This is the corrected action-conditioned source and test set. The earlier run `4
 At the same PR head, the separate G29 workflow run `41216087470` did not pass: Windows failed at atlas file-set freshness (`YGG_ATLAS_FAIL_CLOSED: indexed file set changed`); Linux had reached the same failing freshness check and remained in atlas regeneration at last observation. G29 and full integration qualification remain blocked until the canonical generated atlas artifacts are refreshed and both platforms complete their checks.
 
 MR32 focused CI PASS is only source/software-contract qualification. It does not demonstrate efficacy, causal learning advantage, equal total-resource performance, or unfamiliar-world transfer. FSA-04 remains OPEN and original-world first-use remains blocked.
+
+## MR32-D — cross-platform source-only resource inventory
+
+The updated exact-head Actions run `41217380126` passed on Ubuntu and Windows. It compiled all four candidate/control/test modules, ran both focused suites, ran `resource_inventory.py --steps 256`, and passed clean-checkout verification.
+
+Measured results on the same deterministic 256-step synthetic stream:
+
+| Metric | MR32 residual belief | Conventional prototype | Memoryless mean |
+|---|---:|---:|---:|
+| Serialized state bytes | 3,853 | 3,483 | 63 |
+| Deep Python object bytes | 7,335 | 4,419 | 852 |
+| Windows tracemalloc peak | 178,456 | 134,736 | 166,320 |
+| Windows wall seconds | 0.04369 | 0.01073 | 0.00437 |
+| Linux tracemalloc peak | 178,352 | 134,728 | 166,312 |
+| Linux wall seconds | 0.09642 | 0.02100 | 0.00898 |
+
+These are descriptive host measurements, not fair resource parity: checkpoint formats differ, Python deep-size/tracemalloc are not OS process RSS, and wall-time measurements on hosted runners are noisy. Still, the initial signal is unfavorable: MR32 uses more stored state and substantially more runtime than the conventional prototype on this stream. Its compactness/resource advantage is **not demonstrated**.
+
+Machine-readable result: `research/native/itd02/mr32/resource_inventory_receipt.json`, commit `0a6946f60993a6c236f932fb233b51bbe1052a30`.
+
+## Latest separate G29 state
+
+At exact code head `14f653d7b3d4d7fe68ca83f5cd65e8d4eaa3e5e2`, G29 run `41217380160` remained in progress on Linux and failed on Windows at the same fail-closed indexed-file-set check. It is not a MR32 source test failure; the generated advisory atlas artifacts have not been refreshed for the new files. Atlas and full integration acceptance remain blocked.
+
+Disposition:
+`MR32_ACTION_CONDITIONED_FOCUSED_CI_WINDOWS=PASS`
+`MR32_ACTION_CONDITIONED_FOCUSED_CI_LINUX=PASS`
+`MR32_256_STEP_RESOURCE_INVENTORY=PASS_EXECUTION`
+`MR32_RESOURCE_ADVANTAGE=NOT_DEMONSTRATED`
+`G29_ATLAS=BLOCKED_STALE_INDEX`
+`SCIENTIFIC_EFFICACY=NOT_TESTED`
+`ORIGINAL_WORLD_FIRST_USE=BLOCKED_FSA04`
