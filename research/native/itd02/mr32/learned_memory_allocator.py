@@ -1,9 +1,8 @@
 """MR32-H: learned task-utility memory allocator pilot.
 
-A fixed 16-slot allocator (7 active, 9 retained) learns a linear utility
-predictor from explicit post-task usefulness feedback for memories actually
-used. It does not use novelty or residual thresholds to decide retention.
-Source-only pilot: no native-world feedback or protected cohort is included.
+Exactly sixteen slots are maintained at all times: seven active and nine
+retained. The allocator learns a linear utility predictor from explicit
+post-task usefulness feedback for memories actually used. Source-only pilot.
 """
 from __future__ import annotations
 from dataclasses import dataclass, asdict
@@ -12,7 +11,7 @@ import json
 import math
 from typing import Iterable, Optional
 
-SCHEMA = "yggdrasil.mr32.learned-memory-allocator.v1"
+SCHEMA = "yggdrasil.mr32.learned-memory-allocator.v2"
 REPRESENTATION = 16
 META = 5
 TOTAL = 16
@@ -36,21 +35,24 @@ def _vec(values: Iterable[float], size: int, name: str) -> tuple[float, ...]:
 
 @dataclass
 class Memory:
-    key: str
-    representation: list[float]
-    evidence_count: int = 1
+    key: str = ""
+    representation: list[float] | None = None
+    evidence_count: int = 0
     uses: int = 0
     last_used: int = 0
     prediction_error: float = 0.0
     contradiction_rate: float = 0.0
     active: bool = False
     pending_use: bool = False
+    occupied: bool = False
 
 
 class LearnedMemoryAllocator:
-    """Utility model is learned only from downstream usefulness feedback."""
+    """Fixed 7/9 allocator with learned downstream-usefulness ranking."""
     def __init__(self):
-        self.memories: list[Memory] = []
+        self.memories = [Memory(active=(i < ACTIVE),
+                                representation=[0.0] * REPRESENTATION)
+                         for i in range(TOTAL)]
         self.weights = [0.0] * (META + 1)
         self.step = 0
         self.feedback_count = 0
@@ -70,9 +72,9 @@ class LearnedMemoryAllocator:
         return (1.0,) + self._metadata(memory)
 
     def predicted_utility(self, memory: Memory) -> float:
+        if not memory.occupied:
+            return -1.0
         raw = sum(w*x for w,x in zip(self.weights,self._features(memory)))
-        # A bounded monotone transform; the learned weights, not fixed
-        # novelty/contradiction thresholds, determine relative retention value.
         if raw >= 0:
             e = math.exp(-min(raw,40.0))
             return 1.0/(1.0+e)
@@ -84,37 +86,45 @@ class LearnedMemoryAllocator:
                contradiction_rate: float = 0.0) -> dict:
         if not isinstance(key,str) or not key or len(key)>128:
             raise ValueError("MEMORY_KEY")
-        if any(m.key==key for m in self.memories):
+        if any(m.occupied and m.key==key for m in self.memories):
             raise ValueError("DUPLICATE_MEMORY_KEY")
         rep = _vec(representation,REPRESENTATION,"REPRESENTATION")
-        for name,value in (("evidence_count",evidence_count),):
-            if isinstance(value,bool) or not isinstance(value,int) or value<1 or value>65535:
-                raise ValueError(name.upper())
+        if isinstance(evidence_count,bool) or not isinstance(evidence_count,int) or not 1<=evidence_count<=65535:
+            raise ValueError("EVIDENCE_COUNT")
         for name,value in (("prediction_error",prediction_error),("contradiction_rate",contradiction_rate)):
-            if not math.isfinite(value) or value<0 or value>1:
+            if not math.isfinite(value) or not 0<=value<=1:
                 raise ValueError(name.upper())
         self.step += 1
-        self.memories.append(Memory(key,list(rep),evidence_count,0,self.step,
-                                    prediction_error,contradiction_rate,False,False))
-        self._rebalance()
-        retained = next(m for m in self.memories if m.key==key)
-        return {"key":key,"partition":"active" if retained.active else "retained",
-                "total":len(self.memories),"active":sum(m.active for m in self.memories),
-                "retained":sum(not m.active for m in self.memories)}
-
-    def _rebalance(self) -> None:
-        # Predicted downstream usefulness determines exact partition membership.
-        ranked = sorted(self.memories,key=lambda m:(-self.predicted_utility(m),m.key))
-        active_keys={m.key for m in ranked[:ACTIVE]}
-        for m in self.memories:
-            m.active=m.key in active_keys
-        if len(self.memories)>TOTAL:
-            # Evict only the lowest predicted-utility retained memory.
-            victim = min((m for m in self.memories if not m.active),
-                         key=lambda m:(self.predicted_utility(m),m.key))
-            if victim.pending_use:
+        candidate = Memory(key,list(rep),evidence_count,0,self.step,
+                           prediction_error,contradiction_rate,False,False,True)
+        empty = next((i for i,m in enumerate(self.memories) if not m.occupied),None)
+        if empty is None:
+            pool = [m for m in self.memories if m.occupied] + [candidate]
+            ranked = sorted(pool,key=lambda m:(-self.predicted_utility(m),m.key))
+            discarded = ranked[TOTAL:]
+            if any(m.pending_use for m in discarded):
                 raise RuntimeError("CANNOT_EVICT_PENDING_MEMORY_FEEDBACK")
-            self.memories.remove(victim)
+            pool = ranked[:TOTAL]
+        else:
+            pool = [m for m in self.memories if m.occupied] + [candidate]
+        self._assign(pool)
+        stored = next((m for m in self.memories if m.occupied and m.key==key),None)
+        stats = self.stats()
+        return {"key":key,
+                "partition":("evicted" if stored is None else ("active" if stored.active else "retained")),
+                **stats}
+
+    def _assign(self, pool: list[Memory]) -> None:
+        occupied = sorted(pool,key=lambda m:(-self.predicted_utility(m),m.key))[:TOTAL]
+        active_memories = occupied[:ACTIVE]
+        retained_memories = occupied[ACTIVE:]
+        active_slots = active_memories + [
+            Memory(active=True,representation=[0.0]*REPRESENTATION)
+            for _ in range(ACTIVE-len(active_memories))]
+        retained_slots = retained_memories + [
+            Memory(active=False,representation=[0.0]*REPRESENTATION)
+            for _ in range(RETAINED-len(retained_memories))]
+        self.memories = active_slots + retained_slots
         self._check()
 
     def mark_use(self,key:str) -> None:
@@ -130,7 +140,7 @@ class LearnedMemoryAllocator:
         memory=self._get(key)
         if not memory.pending_use:
             raise RuntimeError("NO_PENDING_MEMORY_USE")
-        if not math.isfinite(usefulness) or not 0.0<=usefulness<=1.0:
+        if isinstance(usefulness,bool) or not math.isfinite(usefulness) or not 0<=usefulness<=1:
             raise ValueError("USEFULNESS_RANGE")
         features=self._features(memory)
         prediction=self.predicted_utility(memory)
@@ -140,26 +150,32 @@ class LearnedMemoryAllocator:
         self.loss_ema=0.9*self.loss_ema+0.1*error*error
         memory.pending_use=False
         self.feedback_count+=1
-        self._rebalance()
+        self._assign([m for m in self.memories if m.occupied])
+        memory=self._get(key)
         return {"prediction_before":prediction,"observed_usefulness":usefulness,
                 "squared_error":error*error,"feedback_count":self.feedback_count,
                 "partition":"active" if memory.active else "retained"}
 
     def _get(self,key:str)->Memory:
         for memory in self.memories:
-            if memory.key==key:
+            if memory.occupied and memory.key==key:
                 return memory
         raise KeyError("UNKNOWN_MEMORY_KEY")
 
     def _check(self)->None:
-        if len(self.memories)>TOTAL:
-            raise RuntimeError("MEMORY_CAPACITY")
-        if sum(m.active for m in self.memories)>ACTIVE:
-            raise RuntimeError("ACTIVE_CAPACITY")
-        if sum(not m.active for m in self.memories)>RETAINED:
-            raise RuntimeError("RETAINED_CAPACITY")
-        if len({m.key for m in self.memories})!=len(self.memories):
+        if len(self.memories)!=TOTAL:
+            raise RuntimeError("MEMORY_SLOT_COUNT")
+        if sum(m.active for m in self.memories)!=ACTIVE:
+            raise RuntimeError("ACTIVE_PARTITION")
+        if sum(not m.active for m in self.memories)!=RETAINED:
+            raise RuntimeError("RETAINED_PARTITION")
+        if any(m.active!=(i<ACTIVE) for i,m in enumerate(self.memories)):
+            raise RuntimeError("SLOT_ORDER")
+        keys=[m.key for m in self.memories if m.occupied]
+        if len(set(keys))!=len(keys):
             raise RuntimeError("DUPLICATE_MEMORY_KEY")
+        if any(m.pending_use and not m.occupied for m in self.memories):
+            raise RuntimeError("EMPTY_PENDING_MEMORY")
 
     def snapshot(self)->bytes:
         if any(m.pending_use for m in self.memories):
@@ -167,7 +183,7 @@ class LearnedMemoryAllocator:
         self._check()
         payload={"schema":SCHEMA,"partition":{"total":TOTAL,"active":ACTIVE,"retained":RETAINED},
                  "step":self.step,"feedback_count":self.feedback_count,"loss_ema":self.loss_ema,
-                 "weights":self.weights,"memories":[asdict(m) for m in sorted(self.memories,key=lambda x:x.key)]}
+                 "weights":self.weights,"memories":[asdict(m) for m in self.memories]}
         canonical=json.dumps(payload,sort_keys=True,separators=(",",":"),allow_nan=False).encode()
         return json.dumps({"payload":payload,"sha256":hashlib.sha256(canonical).hexdigest()},
                           sort_keys=True,separators=(",",":"),allow_nan=False).encode()
@@ -198,29 +214,38 @@ class LearnedMemoryAllocator:
         if not math.isfinite(loss) or loss<0:
             raise ValueError("CHECKPOINT_LOSS")
         rows=payload.get("memories")
-        if not isinstance(rows,list) or len(rows)>TOTAL:
+        if not isinstance(rows,list) or len(rows)!=TOTAL:
             raise ValueError("CHECKPOINT_CAPACITY")
-        model.memories=[]
-        for row in rows:
-            mem=Memory(**row)
-            _vec(mem.representation,REPRESENTATION,"REPRESENTATION")
-            if mem.pending_use:
+        restored=[]
+        for i,row in enumerate(rows):
+            memory=Memory(**row)
+            if memory.active!=(i<ACTIVE):
+                raise ValueError("CHECKPOINT_PARTITION_ORDER")
+            if memory.pending_use:
                 raise ValueError("CHECKPOINT_PENDING_USE")
-            if mem.evidence_count<1 or mem.evidence_count>65535 or mem.uses<0 or mem.uses>65535 or mem.last_used<0:
-                raise ValueError("CHECKPOINT_COUNTER")
-            if not 0<=mem.prediction_error<=1 or not 0<=mem.contradiction_rate<=1:
-                raise ValueError("CHECKPOINT_META_RANGE")
-            model.memories.append(mem)
+            if memory.occupied:
+                if not isinstance(memory.key,str) or not memory.key or len(memory.key)>128:
+                    raise ValueError("CHECKPOINT_MEMORY_KEY")
+                memory.representation=list(_vec(memory.representation,REPRESENTATION,"REPRESENTATION"))
+                if not 1<=memory.evidence_count<=65535 or not 0<=memory.uses<=65535 or memory.last_used<0:
+                    raise ValueError("CHECKPOINT_COUNTER")
+                if not 0<=memory.prediction_error<=1 or not 0<=memory.contradiction_rate<=1:
+                    raise ValueError("CHECKPOINT_META_RANGE")
+            else:
+                if memory.key or memory.evidence_count or memory.uses or memory.last_used or memory.pending_use:
+                    raise ValueError("CHECKPOINT_EMPTY_SLOT")
+                memory.representation=[0.0]*REPRESENTATION
+            restored.append(memory)
+        model.memories=restored
         model.step=payload["step"];model.feedback_count=payload["feedback_count"]
         model.loss_ema=loss;model.weights=weights
         model._check()
-        expected={m.key for m in sorted(model.memories,key=lambda m:(-model.predicted_utility(m),m.key))[:ACTIVE]}
-        if any(m.active!=(m.key in expected) for m in model.memories):
-            raise ValueError("CHECKPOINT_PARTITION_INCONSISTENT")
         return model
 
     def stats(self)->dict:
         self._check()
-        return {"total":len(self.memories),"active":sum(m.active for m in self.memories),
-                "retained":sum(not m.active for m in self.memories),
+        occupied=sum(m.occupied for m in self.memories)
+        return {"total":TOTAL,"active":ACTIVE,"retained":RETAINED,"occupied":occupied,
+                "active_occupied":sum(m.occupied and m.active for m in self.memories),
+                "retained_occupied":sum(m.occupied and not m.active for m in self.memories),
                 "feedback_count":self.feedback_count,"loss_ema":self.loss_ema}
