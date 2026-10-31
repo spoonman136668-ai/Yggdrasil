@@ -74,3 +74,8 @@ This establishes that the toy online linear utility scorer can fit this construc
 Added `learned_retention_eval.py`. FIT consists of eight metadata profiles trained for 30 epochs using explicit post-use feedback. TRANSFER uses 16 disjoint memory keys in a fresh allocator; only the learned utility weights are carried over and no TRANSFER feedback is supplied. The active 7-slot set is measured against fixed-recency and evidence-only top-seven controls over the same held-out cohort. Script output is JSON and the dedicated workflow now executes it on both operating systems.
 
 The deterministic hidden label is a majority rule over three known metadata properties (high evidence, low prediction error, low contradiction). The FIT and TRANSFER records share this generating rule. This checks generalization to new records under the same synthetic rule, not generalization to an unfamiliar causal environment. It is not an independent unseen task family, not a real task-reward benchmark and not evidence of improved cognition. Exact-head dual-platform result pending.
+
+
+## MR32-L — leave-one-profile-out holdout added
+
+Added an eight-fold diagnostic withholding one of the eight metadata combinations from FIT per fold. Each fit trains on seven profiles; learned weights only are transferred to a fresh store containing new records including the omitted combination. No transfer feedback is given. The script reports per-fold active precision and whether the withheld profile is selected, alongside recency/evidence controls. The cross-platform workflow now executes this diagnostic and a structural test. This tests combination-level generalization under the same synthetic majority-rule generator, not a new task family.
