@@ -638,9 +638,13 @@ def run() -> dict:
     mc_cpu = method_cpu["uniform_mc"]
     deca_state = checkpoint_bytes["deca_q16"]
     mc_state = checkpoint_bytes["uniform_mc"]
-    mean_delta_q16 = sum(paired_differences[strongest]) // len(TRANSFER_SEEDS)
+    mean_delta_q16_sum = sum(paired_differences[strongest])
+    mean_delta_q16 = mean_delta_q16_sum // len(TRANSFER_SEEDS)
+    minimum_delta_q16 = (2 * Q + 99) // 100
     falsifiers = {
-        "delta_at_least_0_02": mean_delta_q16 >= ((2 * Q + 99) // 100),
+        "delta_at_least_0_02": (
+            mean_delta_q16_sum >= minimum_delta_q16 * len(TRANSFER_SEEDS)
+        ),
         "wins_at_least_24_of_32": wins[strongest] >= 24,
         "wins_at_least_12_of_16_each_regime": all(
             value >= 12 for value in regime_wins.values()
@@ -687,7 +691,12 @@ def run() -> dict:
             "cluster_receipts": transfer_cluster_rows,
             "method_mean_terminal_success": mean_success,
             "strongest_comparator": strongest,
-            "deca_mean_delta_vs_strongest": mean_delta_q16 / Q,
+            "deca_mean_delta_vs_strongest": (
+                mean_delta_q16_sum / (len(TRANSFER_SEEDS) * Q)
+            ),
+            "deca_mean_delta_q16_floor": mean_delta_q16,
+            "deca_delta_q16_sum": mean_delta_q16_sum,
+            "minimum_delta_q16": minimum_delta_q16,
             "deca_wins_by_comparator": wins,
             "bootstrap_2p5_q16_by_comparator": bootstrap,
             "regime_mean_terminal_success": regime_means,
