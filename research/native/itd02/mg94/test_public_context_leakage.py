@@ -17,11 +17,12 @@ class FrozenContextTests(unittest.TestCase):
             self.assertEqual(len(out["heldout"]),len(flipped))
             self.assertEqual(out["frozen_policy"],{str(k):v for k,v in baseline.items()})
 
-    def test_prefix_disjointness_is_not_independent_transfer(self):
+    def test_prefixes_are_disjoint_but_not_independent_transfer(self):
         train_prefixes={cc.public_context(v) for v in TRAIN.values()}
         held_prefixes={cc.public_context(v) for v in HELDOUT.values()}
-        # Deliberate context overlap is explicit, not a new-world claim.
-        self.assertTrue(train_prefixes.intersection(held_prefixes))
+        # Every held-out public prefix is unseen; fallback is disabled.
+        # Distinct synthetic prefixes do NOT establish unfamiliar-world transfer.
+        self.assertFalse(train_prefixes.intersection(held_prefixes))
 
     def test_missing_prefix_fails_closed(self):
         fitted=cc.fit(TRAIN.values())
