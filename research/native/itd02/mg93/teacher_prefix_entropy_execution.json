@@ -1,0 +1,54 @@
+{
+  "schema": "mg93.teacher_prefix_entropy_execution.v1",
+  "classification": "RETROSPECTIVE_EXPLORATORY_ASSOCIATION_NOT_CAUSAL",
+  "source": {
+    "workflow_run_id": 41047254253,
+    "artifact_id": 12972852607,
+    "artifact_zip_sha256": "9f284ce2b793a2f6e0d0d8a1cb097efb5a9e5ce9b5d75f5c53a77f8474d0104a",
+    "heldout_json_sha256": "0cdb155ce150717c3a678f6c536a81f5f4203dd96acafee459b2fdc1d2a36427"
+  },
+  "execution": {
+    "script_commit": "a1f6a6bae16f53e7b8c310311f6d24f72cca1013",
+    "script_git_blob_sha1": "e599d8007500237e0fb87807a4e7fbc090707632",
+    "script_raw_sha256": "c4566ca3a450d844c54ec05cc4a163a7329a54776042877b4caa931b3a6d162e",
+    "result_raw_sha256": "20a08640e94c95a4b9c7a4fec37bdd0820c0e164f93aa1430b6b1e43ad73e8dd",
+    "exact_source_blob_execution": true
+  },
+  "sample": {
+    "role": "mg86_frozen_teacher",
+    "episodes": 12,
+    "successes": 10,
+    "failures": 2,
+    "task_families": 4
+  },
+  "results": {
+    "8_action_fixed_horizon": {
+      "auc_success_ranked_by_action_entropy": 0.725,
+      "success_mean_entropy_bits": 1.7855185563,
+      "failure_mean_entropy_bits": 1.3828560637,
+      "unstratified_label_reallocation_fraction_ge_observed": 0.196969697,
+      "interpretation": "weak descriptive ranking; no causal or reliable early prediction evidence"
+    },
+    "16_action_variable_horizon": {
+      "auc_success_ranked_by_action_entropy": 0.95,
+      "success_mean_entropy_bits": 1.9764853048,
+      "failure_mean_entropy_bits": 1.460589846,
+      "interpretation": "NOT VALID AS FIXED-HORIZON PREDICTION: one episode terminates at action 14"
+    },
+    "32_action_variable_horizon": {
+      "auc_success_ranked_by_action_entropy": 1.0,
+      "success_mean_entropy_bits": 2.0651830318,
+      "failure_mean_entropy_bits": 1.3244863654,
+      "interpretation": "NOT VALID AS FIXED-HORIZON PREDICTION: multiple successful episodes terminate before 32 actions"
+    }
+  },
+  "statistical_caveats": [
+    "Only eight-action prefix is complete and fixed-length for all 12 episodes.",
+    "Only two failures; the 12 episodes are clustered across four different task families.",
+    "The reported label-reallocation fractions are unstratified descriptive references, not inferential p-values.",
+    "The 16- and 32-action windows are confounded by outcome-dependent episode termination.",
+    "Same hand-coded teacher generated all 12 role episodes; this is not an equally trained baseline.",
+    "No intervention or unselected counterfactual actions exist in the archived artifact."
+  ],
+  "decision": "DO_NOT_OPTIMIZE_ACTION_ENTROPY. The clean fixed-horizon screen is weak (AUC 0.725). The more impressive later-window results are contaminated by episode length and termination. This does not support entropy as a causal mechanism or a native learning improvement."
+}
