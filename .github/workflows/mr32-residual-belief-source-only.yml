@@ -49,6 +49,7 @@ jobs:
           assert len(result['fit']['fit_feedback_receipts'])==(
               result['fit']['fit_feedback_count_h']+
               result['fit']['fit_feedback_count_bayesian'])
+          assert len(result['fit']['bayesian_fit_checkpoint_sha256'])==64
           assert result['transfer']['seed_cluster_count']==16
           assert len(result['transfer']['per_episode_receipts'])==64
           assert result['transfer']['feedback_events_h']==0
@@ -58,6 +59,9 @@ jobs:
           assert result['resource_diagnostics']['process_peak_rss_bytes'] is not None
           assert result['resource_diagnostics']['process_peak_rss_method'] in (
               'windows_peak_working_set','linux_ru_maxrss')
+          assert set(result['resource_diagnostics']['selector_state_bytes_mean'])=={
+              'random','fixed_recency','evidence_only','mr32_h_learned',
+              'interaction_bayesian'}
           assert result['falsifiers']['fit_transfer_seeds_disjoint']
           print('MR32M_TASK_DERIVED_FEEDBACK_SOURCE_ONLY_CONTRACT=PASS')
           PY
