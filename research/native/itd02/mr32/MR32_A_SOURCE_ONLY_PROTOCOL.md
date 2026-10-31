@@ -57,3 +57,14 @@ The current implementation is a compact prototype using nearest-prototype residu
 - MR29/MR30A negatives remain immutable; MR31 remains an acquisition-only development result.
 - FSA-04 issue #83 is OPEN; independent durable first-use authority is NOT DEPLOYED.
 - No original environment reset/step, protected cohort, new source-family intake, workflow dispatch, queue/controller, source integration, merge, accepted ref, runtime activation or promotion is authorized or performed by this branch.
+
+
+## MR32-B conventional controls added (source-only)
+
+Two explicit controls now share the candidate's public input/selected-outcome interface:
+- `MemorylessMean`: global outcome mean, with no input-conditioned persistent representation.
+- `ConventionalPrototypeControl`: nearest-prototype/online-EMA predictor with the same 16-slot and 7/9 partition counts, but no residual-driven promotion/demotion policy.
+
+These provide a basic source-level comparator, not an adequately strong complete conventional baseline suite. The shared slot count is **not** a claim of exact byte, Python object, checkpoint or runtime resource parity. The control stores full feature/target vectors in all 16 slots but does not have MR32's same state semantics. Full serialized state and total process-resource measurements are still required.
+
+Both control tests are included in the dedicated Windows/Linux source-only workflow. Any passing tests qualify only interface and deterministic software behavior. They do not establish efficacy or learning advantage. A capable trained recurrent/state-space and Bayesian/model-based comparator remains mandatory before scientific claims.
