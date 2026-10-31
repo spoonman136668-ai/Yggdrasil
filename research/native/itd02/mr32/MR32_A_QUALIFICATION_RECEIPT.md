@@ -111,3 +111,19 @@ Disposition:
 `G29_ATLAS=BLOCKED_STALE_INDEX`
 `NATIVE_SCIENTIFIC_GAIN=NOT_TESTED`
 `ORIGINAL_WORLD_FIRST_USE=BLOCKED`
+
+
+## MR32-C — selected-action conditioning correction
+
+Source review identified a critical omission in MR32-A/B: the predictive belief key was public features only, not (public features, selected action). This could conflate consequences of distinct actions and did not meet the ITD-02 action→consequence requirement.
+
+Corrected source now:
+- requires selected action explicitly on prediction;
+- conditions belief lookup and update on that action;
+- persists the action key in each occupied slot;
+- binds action to the pending one-shot feedback receipt;
+- bumps checkpoint schema to `yggdrasil.mr32.residual-belief.action-conditioned.v2`;
+- updates both conventional controls to the same call contract;
+- adds tests for action separation and an action-insensitive memoryless control.
+
+These are source changes only. They supersede earlier local test counts and require a fresh exact-head Windows/Linux run. No passing CI is claimed for MR32-C until that run terminates successfully. The action index 0..2 is a development assumption; source-owner mapping and original-world permission remain absent. The candidate has not been scientifically evaluated.
