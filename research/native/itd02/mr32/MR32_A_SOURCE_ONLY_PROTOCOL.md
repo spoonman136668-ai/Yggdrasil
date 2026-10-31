@@ -102,3 +102,10 @@ A held-out sign-reversal contract test now trains on a balanced action×feature 
 Added a separate candidate which maintains exactly 16 positions at all times: 7 active and 9 retained, including explicit empty slots before the store is populated. It learns a bounded linear utility predictor from post-task usefulness feedback for memory items explicitly marked as used. The learned score—not a fixed novelty or prediction-error threshold—determines the active/retained ranking and eviction order. Feedback cannot be assigned to an item that was not marked used. Pending feedback prevents checkpointing and eviction.
 
 This pilot's metadata basis (evidence count, use count, recency, prediction-error summary and contradiction rate), linear predictor and update rule are fixed engineering choices. Its utility weights are learned from downstream labels. It is therefore a trainable retention scorer, not a fully learned representation or end-to-end memory policy. Synthetic test/inventory labels are only software-contract fixtures; no scientific efficacy is inferred.
+
+
+## MR32-J — common checkpoint accounting
+
+The deterministic resource inventory now wraps every model's model-specific payload in a shared `yggdrasil.mr32.common-checkpoint.v1` envelope with canonical JSON and a SHA-256 payload digest. It retains and reports native serialized byte count separately, alongside common-envelope byte count, deep Python object estimate, traced allocation peak and wall time. A cross-model test covers all seven model/control types and verifies common envelope identity and payload hash.
+
+This standardizes serialization framing, not semantic state capacity: model payloads still differ in their number/type of variables, and deep object size/tracemalloc remain interpreter-specific/non-RSS. Equal total resource parity still requires matching representation capacity, CPU/inference budgets, calibrated RSS and repeated runs.
