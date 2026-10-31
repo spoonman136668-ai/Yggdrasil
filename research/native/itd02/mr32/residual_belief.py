@@ -45,10 +45,11 @@ class Slot:
     contradictions: int = 0
     last_used: int = 0
     active: bool = False
+    action: Optional[int] = None
 
     @property
     def valid(self) -> bool:
-        return self.features is not None and self.target is not None and self.support > 0
+        return self.features is not None and self.target is not None and self.support > 0 and self.action in (0, 1, 2)
 
     def utility(self, now: int) -> float:
         if not self.valid:
@@ -70,7 +71,7 @@ class ResidualBelief:
     def __init__(self) -> None:
         self.slots = [Slot(active=(i < ACTIVE_SLOTS)) for i in range(TOTAL_SLOTS)]
         self.step = 0
-        self.pending: Optional[tuple[tuple[float, ...], tuple[float, ...], float]] = None
+        self.pending: Optional[tuple[tuple[float, ...], int, tuple[float, ...], float]] = None
 
     @property
     def active_count(self) -> int:
@@ -84,13 +85,15 @@ class ResidualBelief:
         if len(self.slots) != TOTAL_SLOTS or self.active_count != ACTIVE_SLOTS or self.retained_count != RETAINED_SLOTS:
             raise RuntimeError("FIXED_SLOT_PARTITION_BROKEN")
 
-    def predict(self, public_features: Iterable[float]) -> Prediction:
+    def predict(self, public_features: Iterable[float], selected_action: int) -> Prediction:
         if self.pending is not None:
             raise RuntimeError("PENDING_OUTCOME_MUST_BE_RESOLVED")
         x = _vector(public_features, FEATURES, "FEATURES")
+        if isinstance(selected_action, bool) or selected_action not in (0, 1, 2):
+            raise ValueError("SELECTED_ACTION_OUT_OF_RANGE")
         valid = []
         for index, slot in enumerate(self.slots):
-            if slot.valid:
+            if slot.valid and slot.action == selected_action:
                 valid.append((_distance(x, tuple(slot.features or ())), index, slot))
         if not valid:
             pred = Prediction((0.0,)*TARGETS, 1.0, False)
@@ -107,19 +110,19 @@ class ResidualBelief:
                                for j in range(TARGETS))
                 uncertainty = sum(w*d for w, (d, _, _) in zip(weights, nearest))/total
                 pred = Prediction(values, uncertainty, True)
-        self.pending = (x, pred.values, pred.uncertainty)
+        self.pending = (x, selected_action, pred.values, pred.uncertainty)
         return pred
 
     def observe_selected_outcome(self, actual_outcome: Iterable[float]) -> dict:
         if self.pending is None:
             raise RuntimeError("NO_PENDING_SELECTED_ACTION")
         y = _vector(actual_outcome, TARGETS, "OUTCOME")
-        x, predicted, uncertainty = self.pending
+        x, selected_action, predicted, uncertainty = self.pending
         self.pending = None
         residual = _distance(predicted, y)
         self.step += 1
         valid = [(_distance(x, tuple(s.features or ())), i, s)
-                 for i, s in enumerate(self.slots) if s.valid]
+                 for i, s in enumerate(self.slots) if s.valid and s.action == selected_action]
         valid.sort(key=lambda row: (row[0], row[1]))
         nearest = valid[0] if valid else None
         novel = nearest is None or nearest[0] > NOVELTY_THRESHOLD
@@ -130,7 +133,7 @@ class ResidualBelief:
             index = self._allocate_active()
             self.slots[index] = Slot(features=list(x), target=list(y), support=1,
                                      residual_ema=residual, contradictions=int(contradiction),
-                                     last_used=self.step, active=True)
+                                     last_used=self.step, active=True, action=selected_action)
             disposition = "formed_active_state"
         elif nearest is not None:
             _, index, slot = nearest
@@ -174,7 +177,7 @@ class ResidualBelief:
                                  target=None if not source.valid else source.target[:],
                                  support=source.support, residual_ema=source.residual_ema,
                                  contradictions=source.contradictions, last_used=source.last_used,
-                                 active=False)
+                                 active=False, action=source.action)
         self.slots[active_index] = Slot(active=True)
 
     def _promote_retained(self, retained_index: int) -> None:
@@ -183,14 +186,14 @@ class ResidualBelief:
             raise RuntimeError("INVALID_RETAINED_PROMOTION_TARGET")
         preserved = Slot(features=moved.features[:], target=moved.target[:],
                          support=moved.support, residual_ema=moved.residual_ema,
-                         contradictions=moved.contradictions, last_used=self.step, active=True)
+                         contradictions=moved.contradictions, last_used=self.step, active=True, action=moved.action)
         active = [(i, s) for i, s in enumerate(self.slots) if s.active]
         victim, victim_slot = min(active, key=lambda pair: (pair[1].utility(self.step), pair[0]))
         self.slots[retained_index] = Slot(
             features=victim_slot.features[:], target=victim_slot.target[:],
             support=victim_slot.support, residual_ema=victim_slot.residual_ema,
             contradictions=victim_slot.contradictions, last_used=victim_slot.last_used,
-            active=False)
+            active=False, action=victim_slot.action)
         self.slots[victim] = preserved
 
     def snapshot(self) -> bytes:
@@ -233,9 +236,11 @@ class ResidualBelief:
                 if not math.isfinite(slot.residual_ema) or slot.residual_ema < 0:
                     raise ValueError("CHECKPOINT_RESIDUAL")
                 if slot.valid:
+                    if slot.action not in (0, 1, 2):
+                        raise ValueError("CHECKPOINT_ACTION")
                     slot.features = list(_vector(slot.features, FEATURES, "FEATURES"))
                     slot.target = list(_vector(slot.target, TARGETS, "OUTCOME"))
-                elif slot.features is not None or slot.target is not None or slot.support != 0:
+                elif slot.features is not None or slot.target is not None or slot.support != 0 or slot.action is not None:
                     raise ValueError("CHECKPOINT_PARTIAL_SLOT")
         except (TypeError, KeyError) as exc:
             raise ValueError("CHECKPOINT_SLOT_FORMAT") from exc
