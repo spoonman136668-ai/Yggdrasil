@@ -30,8 +30,8 @@ jobs:
         shell: bash
         run: |
           cd research/native/itd02/mr32
-          python -B -m py_compile residual_belief.py test_residual_belief.py
-          python -B -m unittest -v test_residual_belief
+          python -B -m py_compile residual_belief.py test_residual_belief.py mr32_controls.py test_mr32_controls.py
+          python -B -m unittest -v test_residual_belief test_mr32_controls
       - name: Clean source checkout
         shell: bash
         run: git diff --exit-code
