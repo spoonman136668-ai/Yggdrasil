@@ -79,3 +79,10 @@ The deterministic hidden label is a majority rule over three known metadata prop
 ## MR32-L — leave-one-profile-out holdout added
 
 Added an eight-fold diagnostic withholding one of the eight metadata combinations from FIT per fold. Each fit trains on seven profiles; learned weights only are transferred to a fresh store containing new records including the omitted combination. No transfer feedback is given. The script reports per-fold active precision and whether the withheld profile is selected, alongside recency/evidence controls. The cross-platform workflow now executes this diagnostic and a structural test. This tests combination-level generalization under the same synthetic majority-rule generator, not a new task family.
+
+
+## MR32-M — content-conditioned retention candidate opened
+
+Added a separate allocator variant whose utility predictor includes the five metadata features and all 16 values of the stored memory representation. It preserves the same fixed total/active/retained partition, pending-feedback guard and integrity-checked cold checkpoint. MR32-H remains unchanged for direct comparison.
+
+The focused synthetic test trains on content patterns with identical metadata and evaluates new memory keys without transfer feedback, against the metadata-only scorer. This isolates whether representation content itself can affect learned retention. It remains a fixed-dimensional hand-engineered input basis and a linear scorer, not learned compression or a general memory architecture. Exact-head requalification pending.
