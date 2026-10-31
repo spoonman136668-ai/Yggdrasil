@@ -13,6 +13,7 @@ from recurrent_control import RecurrentStateSpaceControl
 from diagonal_bayes_control import DiagonalBayesControl
 from interaction_bayes_control import InteractionBayesControl
 from learned_memory_allocator import LearnedMemoryAllocator
+from content_aware_memory_allocator import ContentAwareMemoryAllocator
 from interaction_bayes_control import InteractionBayesControl
 
 
@@ -127,6 +128,7 @@ def run(steps):
             "diagonal_bayes": execute(DiagonalBayesControl(), steps),
             "interaction_bayes": execute(InteractionBayesControl(), steps),
             "learned_memory_allocator": execute_allocator(LearnedMemoryAllocator(), steps),
+            "content_aware_allocator": execute_allocator(ContentAwareMemoryAllocator(), steps),
             "interaction_bayes": execute(InteractionBayesControl(), steps),
         },
         "limits": [
