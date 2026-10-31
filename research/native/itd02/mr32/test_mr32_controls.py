@@ -56,4 +56,28 @@ class ControlTests(unittest.TestCase):
         self.assertTrue(ConventionalPrototypeControl().state_bytes())
 
 
+    def test_diagonal_bayesian_control_updates_posterior_and_restarts(self):
+        from diagonal_bayes_control import DiagonalBayesControl
+        c=DiagonalBayesControl()
+        before=[r[:] for r in c.precision]
+        c.predict(xvec(0),0)
+        self.assertEqual(before,c.precision)
+        c.observe_selected_outcome(yvec(0))
+        self.assertGreater(c.precision[0][0],before[0][0])
+        data=c.snapshot()
+        left=DiagonalBayesControl.restore(data)
+        right=DiagonalBayesControl.restore(data)
+        self.assertEqual(left.predict(xvec(1),1),right.predict(xvec(1),1))
+
+    def test_bayesian_control_rejects_pending_checkpoint_and_bad_action(self):
+        from diagonal_bayes_control import DiagonalBayesControl
+        c=DiagonalBayesControl()
+        with self.assertRaisesRegex(ValueError,"SELECTED_ACTION"):
+            c.predict(xvec(0),3)
+        c.predict(xvec(0),0)
+        with self.assertRaisesRegex(RuntimeError,"PENDING"):
+            c.snapshot()
+        c.observe_selected_outcome(yvec(0))
+
+
 if __name__=="__main__": unittest.main()
