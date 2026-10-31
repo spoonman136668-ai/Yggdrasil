@@ -194,3 +194,10 @@ Disposition:
 Added `interaction_bayes_control.py`, which extends the Bayesian linear feature map with all feature×selected-action terms (68 coefficients per output), plus `test_interaction_bayes_control.py`. The test includes a balanced, held-out sign-reversal synthetic relation to verify that the interaction basis can represent action-conditioned feature effects that the additive model cannot.
 
 The dedicated workflow already compiles and runs this test module and includes the model in the resource inventory. New commit requires exact-head Windows/Linux qualification. This control is still a diagonal-covariance Bayesian linear predictor over a fixed interaction basis, not a full Bayesian causal learner. No native-learning result or original-world cohort is claimed.
+
+
+## MR32-H learned allocator exact-partition correction
+
+The initial allocator draft capped memory count at 16 but represented partially filled stores with fewer than 16 positions. This did not meet the repository's exact fixed-state contract. The implementation was revised to use 16 explicit positions from initialization, with exactly 7 active and 9 retained slots at all times; unoccupied positions are explicit placeholders. A dedicated test now asserts the partition before any memory is inserted. Rebalancing fills the top seven predicted-utility entries into active slots and the next nine into retained slots; when full, the lowest-utility retained item is evicted. Pending-use items cannot be evicted.
+
+This is a correctness fix to the source-only learned allocator. It requires fresh exact-head Linux/Windows qualification; no earlier CI result covers this revision.
