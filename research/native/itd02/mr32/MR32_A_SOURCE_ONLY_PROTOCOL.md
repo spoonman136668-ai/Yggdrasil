@@ -68,3 +68,18 @@ Two explicit controls now share the candidate's public input/selected-outcome in
 These provide a basic source-level comparator, not an adequately strong complete conventional baseline suite. The shared slot count is **not** a claim of exact byte, Python object, checkpoint or runtime resource parity. The control stores full feature/target vectors in all 16 slots but does not have MR32's same state semantics. Full serialized state and total process-resource measurements are still required.
 
 Both control tests are included in the dedicated Windows/Linux source-only workflow. Any passing tests qualify only interface and deterministic software behavior. They do not establish efficacy or learning advantage. A capable trained recurrent/state-space and Bayesian/model-based comparator remains mandatory before scientific claims.
+
+
+## MR32-C critical interface correction: selected-action conditioning
+
+The original MR32-A/B prototype keyed predictive beliefs only by public features. That is insufficient for an action→consequence learner: two different selected actions in the same public context could be mixed into one successor prediction.
+
+MR32-C corrects this before further qualification:
+- `predict(public_features, selected_action)` requires an explicit selected action in the existing bounded action domain 0..2.
+- Belief retrieval and update are conditioned on that action; outcomes from different actions cannot update the same slot.
+- The pending feedback receipt binds public features, selected action, prediction and uncertainty; feedback remains single-use and strictly post-prediction.
+- Each occupied checkpoint slot persists its selected-action key. The checkpoint schema is bumped to `yggdrasil.mr32.residual-belief.action-conditioned.v2`; legacy unconditioned snapshots are rejected as incompatible.
+- Both conventional controls accept the same selected-action interface. The global-mean control deliberately ignores action in prediction, while the conventional prototype conditions on it.
+- New tests verify that the residual candidate does not mix outcomes from different actions, that the prototype control separates action-conditioned outcomes, and that the memoryless baseline remains action-insensitive.
+
+This fixes a necessary interface omission, not a scientific gain. The selected-action domain is a development interface assumption and still requires owner-authenticated mapping to the original Yggdrasil action semantics before any original-world use. No original environment or protected cohort was accessed.
