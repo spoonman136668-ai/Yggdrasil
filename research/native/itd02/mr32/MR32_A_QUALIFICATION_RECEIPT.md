@@ -132,3 +132,11 @@ These are source changes only. They supersede earlier local test counts and requ
 ## MR32-C follow-up comparator repair
 
 The action-conditioned conventional prototype control initially wrote every unseen action-context prototype into active slot zero, accidentally overwriting other action keys. Corrected it to use an empty active slot first and only replace an existing active prototype when all active slots are occupied. This is a comparator engineering repair. The exact-head dual-platform workflow must cover it before the control is considered qualified. No scientific comparison result is claimed.
+
+## MR32-C first exact-head attempt and harness repair
+
+The first action-conditioned CI run associated with head `5cbc17f44ece54d9d427dcfa27d2e28049e93b29` was run `41216007649`. Linux and Windows both failed in the focused unit-test step. Linux logs isolated one stale test call: the invalid-feature-dimension test called `predict(features)` without the now-required selected-action argument, so Python raised a missing-argument `TypeError` before checking the dimension. This was a test-harness/interface migration defect, not a learner result.
+
+Corrected the test to call `predict((0.0,), 0)` and committed it at `122de0a152b41e3d4eb7203f7914850764bfee7a`. The corrected file was read back. A fresh exact-head MR32 Windows/Linux CI result for `122de0a...` was not observable through the connected workflow-run listing at the time of this receipt; therefore current action-conditioned code is **NOT YET QUALIFIED**. Prior MR32 pass `41214448272` predates action conditioning and does not qualify this code.
+
+The G29 atlas workflow remains fail-closed on the new file set. No acceptance or promotion is requested.
