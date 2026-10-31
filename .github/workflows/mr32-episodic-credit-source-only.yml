@@ -13,7 +13,7 @@ permissions:
 
 concurrency:
   group: mr32-o-delayed-credit-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   focused:
@@ -60,10 +60,25 @@ jobs:
           assert result["transfer"]["event_receipt_count"] == 32 * 8 * 6
           assert len(result["transfer"]["episode_receipts"]) == 32 * 8
           assert len(result["transfer"]["cluster_receipts"]) == 32
-          assert result["transfer"]["feedback_events_applied"] == {
-              "random": 0, "fixed_recency": 0, "evidence_only": 0,
-              "uniform_mc": 0, "interaction": 0, "deca_q16": 0
+          expected_methods = {
+              "random", "fixed_recency", "evidence_only",
+              "uniform_mc", "interaction", "deca_q16"
           }
+          assert result["transfer"]["feedback_events_applied"] == {
+              method: 0 for method in expected_methods
+          }
+          assert result["transfer"]["cold_restore_cluster_count_by_method"] == {
+              method: 32 for method in expected_methods
+          }
+          for cluster in result["transfer"]["cluster_receipts"]:
+              assert cluster["cold_restore_checkpoint_sha256"] == result["fit"]["checkpoint_sha256"]
+              assert cluster["terminal_weights_sha256"] == cluster["fit_weights_sha256"]
+              assert cluster["episodes_executed_after_restore"] == {
+                  method: 8 for method in expected_methods
+              }
+              assert cluster["feedback_events_applied"] == {
+                  method: 0 for method in expected_methods
+              }
           assert set(result["fit"]["checkpoint_sha256"]) == {
               "random", "fixed_recency", "evidence_only",
               "uniform_mc", "interaction", "deca_q16"
