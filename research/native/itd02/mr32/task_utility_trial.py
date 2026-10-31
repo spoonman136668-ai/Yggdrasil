@@ -69,6 +69,19 @@ class TaskEvent:
         return 1.0 if self.guessed_action == self.correct_action else -1.0
 
 
+def _score_task_action(event: TaskEvent, guessed_action: int | None) -> float:
+    # Abstaining without a retrieved memory has a declared zero-return baseline.
+    if guessed_action is None:
+        return 0.0
+    return 1.0 if guessed_action == event.correct_action else -1.0
+
+
+def _paired_memory_utility(event: TaskEvent, guessed_action: int) -> float:
+    # Same deterministic task state: action with memory minus abstain/no-memory.
+    return (_score_task_action(event, guessed_action)
+            - _score_task_action(event, None))
+
+
 def _event(seed: int, regime: int, episode: int, step: int,
            item: int) -> TaskEvent:
     evidence, error, contradiction = _metadata(item)
@@ -165,6 +178,7 @@ class InteractionBayesianUtility:
     def insert_records(self, seed: int, regime: int,
                        permutation: list[int]) -> None:
         self.records = []
+        self.step = 0
         for item in range(TOTAL):
             evidence, error, contradiction = _metadata(item)
             key = _key(seed, regime, item, permutation)
@@ -259,14 +273,12 @@ def _fit() -> tuple[list[float], InteractionBayesianUtility, dict]:
                     key = h_keys[item]
                     mem = h._get(key)
                     guess = 1 if mem.representation[0] > 0 else 0
-                    task_return = 1.0 if guess == event.correct_action else -1.0
-                    # The no-memory replay returns 0.0 on the same task state.
-                    paired_delta = task_return - 0.0
+                    paired_delta = _paired_memory_utility(event, guess)
                     h.mark_use(key)
                     h.observe_task_outcome(key, 0.5 + 0.5 * paired_delta)
                 b_record = next(r for r in bayes.records if r.item == item)
                 if b_record.active:
-                    task_return = 1.0 if b_record.guess == event.correct_action else -1.0
+                    task_return = _paired_memory_utility(event, b_record.guess)
                     bayes.observe_use(b_record, task_return)
                 event_receipts.append({
                     "phase": "fit", "seed": seed, "regime": regime,
@@ -345,24 +357,24 @@ def run() -> dict:
                 for name, active in fixed.items():
                     if item in active:
                         guess = 1 if _representation(item, seed, regime)[0] > 0 else 0
-                        score = 1.0 if guess == event.correct_action else -1.0
+                        score = _score_task_action(event, guess)
                     else:
-                        score = 0.0
+                        score = _score_task_action(event, None)
                     regime_returns[name].append(score)
 
                 if item in _h_active_items(h, h_keys):
                     mem = h._get(h_keys[item])
                     guess = 1 if mem.representation[0] > 0 else 0
-                    score = 1.0 if guess == event.correct_action else -1.0
+                    score = _score_task_action(event, guess)
                 else:
-                    score = 0.0
+                    score = _score_task_action(event, None)
                 regime_returns["mr32_h_learned"].append(score)
 
                 b_record = next(r for r in bayes.records if r.item == item)
                 if b_record.active:
-                    score = 1.0 if b_record.guess == event.correct_action else -1.0
+                    score = _score_task_action(event, b_record.guess)
                 else:
-                    score = 0.0
+                    score = _score_task_action(event, None)
                 regime_returns["interaction_bayesian"].append(score)
 
                 held_event_receipts.append({
