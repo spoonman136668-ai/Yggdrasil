@@ -1,0 +1,33 @@
+name: MR32 Residual Belief Source-Only Qualification
+on:
+  push:
+    branches:
+      - research/mr32-residual-belief-dev-20261031
+permissions:
+  contents: read
+concurrency:
+  group: mr32-source-only-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  focused:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact source syntax and focused tests
+        shell: bash
+        run: |
+          python -B -m py_compile research/native/itd02/mr32/residual_belief.py research/native/itd02/mr32/test_residual_belief.py
+          python -B -m unittest -v research.native.itd02.mr32.test_residual_belief
+      - name: Clean source checkout
+        shell: bash
+        run: git diff --exit-code
