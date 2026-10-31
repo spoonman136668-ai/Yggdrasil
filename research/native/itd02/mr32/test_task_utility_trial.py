@@ -8,7 +8,7 @@ from task_utility_trial import (
     FIT_SEEDS, TRANSFER_SEEDS, ACTIVE, TOTAL, _event, _fit,
     _fixed_sets, _metadata, _permute, _query_order, _representation,
     _bootstrap_lower, _paired_memory_utility, _score_task_action,
-    TaskEvent, run,
+    _stored_guess, TaskEvent, run,
 )
 
 
@@ -35,6 +35,14 @@ class TaskUtilityTrialTests(unittest.TestCase):
         self.assertEqual(_score_task_action(event, 0), -1.0)
         self.assertEqual(_paired_memory_utility(event, 1), 1.0)
         self.assertEqual(_paired_memory_utility(event, 0), -1.0)
+
+    def test_task_truth_is_conditioned_on_the_action_stored_in_memory(self):
+        for seed in FIT_SEEDS[:2]:
+            for regime in (0, 1):
+                for item in range(TOTAL):
+                    event = _event(seed, regime, 3, 7, item)
+                    self.assertEqual(event.guessed_action,
+                                     _stored_guess(seed, regime, item))
 
     def test_all_methods_use_seven_of_sixteen_memory_records(self):
         fixed = _fixed_sets(1009, 0, _permute(1009, 0))
@@ -68,6 +76,10 @@ class TaskUtilityTrialTests(unittest.TestCase):
         self.assertEqual(receipt["fit_seeds"], list(FIT_SEEDS))
         self.assertEqual(receipt["fit_episodes"], 48)
         self.assertEqual(receipt["fit_event_count"], 48 * 16)
+        self.assertEqual(len(receipt["fit_episode_receipts"]), 48)
+        self.assertEqual(len(receipt["fit_feedback_receipts"]),
+                         receipt["fit_feedback_count_h"]
+                         + receipt["fit_feedback_count_bayesian"])
         self.assertEqual(receipt["bayes_feedback_count"], bayes.feedback_count)
         self.assertNotIn("transfer_event_sha256", receipt)
 
@@ -83,6 +95,10 @@ class TaskUtilityTrialTests(unittest.TestCase):
         self.assertEqual(transfer["event_count"], 16 * 4 * 16)
         self.assertEqual(transfer["seed_cluster_count"], 16)
         self.assertEqual(len(transfer["per_seed"]), 16)
+        self.assertEqual(len(transfer["per_episode_receipts"]), 64)
+        self.assertTrue(all(row["task_count"] == 16
+                            and row["transfer_feedback_events"] == 0
+                            for row in transfer["per_episode_receipts"]))
         self.assertEqual(transfer["regime_detail"]["0"]["seed_clusters"], 8)
         self.assertEqual(transfer["regime_detail"]["1"]["seed_clusters"], 8)
         self.assertEqual(result["classification"],
@@ -98,6 +114,7 @@ class TaskUtilityTrialTests(unittest.TestCase):
         self.assertGreater(result["resource_diagnostics"]["process_cpu_ns"], 0)
         self.assertGreater(result["resource_diagnostics"]["tracemalloc_peak_bytes"], 0)
         self.assertIn("process_peak_rss_bytes", result["resource_diagnostics"])
+        self.assertIn("process_peak_rss_method", result["resource_diagnostics"])
         self.assertIn("delta_at_least_0_02", result["falsifiers"])
 
 
