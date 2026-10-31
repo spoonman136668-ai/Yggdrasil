@@ -229,6 +229,25 @@ class FullTrialTests(unittest.TestCase):
                     episode["terminal_return"][method] - episode["no_memory_return"]
                 )
 
+    def test_each_transfer_seed_cluster_cold_restores_fit_terminal_checkpoint(self):
+        fit_sha = self.result["fit"]["checkpoint_sha256"]
+        fit_weights = self.result["fit"]["checkpoint_sha256"]
+        transfer = self.result["transfer"]
+        self.assertEqual(transfer["cold_restore_cluster_count_by_method"],
+                         {method: 32 for method in METHODS})
+        self.assertTrue(all(value == 0
+                            for value in transfer["feedback_events_applied"].values()))
+        for cluster in transfer["cluster_receipts"]:
+            self.assertEqual(cluster["episode_count"], 8)
+            self.assertEqual(cluster["episodes_executed_after_restore"],
+                             {method: 8 for method in METHODS})
+            self.assertEqual(cluster["feedback_events_applied"],
+                             {method: 0 for method in METHODS})
+            self.assertEqual(cluster["cold_restore_checkpoint_sha256"], fit_sha)
+            self.assertEqual(cluster["terminal_weights_sha256"],
+                             cluster["fit_weights_sha256"])
+        self.assertEqual(len(transfer["cluster_receipts"]), 32)
+
     def test_receipts_contain_only_sealed_hidden_spec_digests(self):
         for row in self.result["fit"]["episode_receipts"]:
             self.assertEqual(len(row["terminal_return"]), len(METHODS))
