@@ -102,3 +102,57 @@ The result must include:
 - No changes to S4C1, MR32-H/M/N historical code or receipts, native R7, accepted refs, original task engines, FORGE, Wingless, production runtime, controllers, queues or schedulers.
 - FSA-04 #83 remains the independent science authority boundary. No protected source experiment can start until its prerequisites are independently established and authorized.
 - No atlas waiver, merge, promotion, release, deployment, runner/controller mutation or paid API.
+
+
+## 9. Exact task-generator and fixed-point specification
+
+This section is frozen before executable task code.
+
+### Memory bank
+
+For public item IDs 0 through 15:
+
+- \`evidence_level = item % 8\`; public evidence count is \`2 ** evidence_level\`.
+- \`error_level = (item // 2 + item // 8) % 4\`.
+- \`contradiction_level = (3 * item + item // 4) % 4\`.
+- Public proposed action is \`(item * 7 + 3) & 1\`.
+- Metadata and proposed action remain immutable throughout FIT and TRANSFER. They do not encode the hidden task goal or correct action.
+
+For regime 0, the hidden probability (basis points) that the proposed action is correct is:
+\`clamp(5600 + 400*evidence_level - 450*error_level - 300*contradiction_level, 2000, 9500)\`.
+
+For regime 1 it is:
+\`clamp(5200 + 160*evidence_level - 250*error_level - 150*contradiction_level + 200*evidence_level*(3-contradiction_level), 2000, 9500)\`.
+
+The two reliability functions are evaluator-only task-generation rules. No probability or correctness label is delivered to a policy.
+
+### Episode stream
+
+- \`episode_seed = (cluster_seed * 1000003) XOR (regime * 97409) XOR (episode_index * 65537) XOR 0x4D52324F\`.
+- Initialize \`random.Random(episode_seed)\`; choose the 12 public item IDs with \`sample(range(16), 12)\`; choose three distinct hidden goal positions with \`sorted(sample(range(12), 3))\`.
+- For goal index \`g\` at hidden position \`p\`, let \`item = query_stream[p]\`; initialize a separate RNG with \`episode_seed XOR (item * 257) XOR (g * 65537) XOR 0x4F445543\`. Draw \`randrange(10000)\`. The hidden required action equals the stored proposal if the draw is below the regime/item reliability in basis points; otherwise it is the opposite bit.
+- The policy receives only the 12 sequential public observations \`(step, item_id)\`. It does not receive the hidden goal positions, goal index, required action, correctness, stage/progress or any reward before episode termination.
+- A task is complete only if all three hidden goal events are answered correctly in event order. The episode terminal return is exactly 1 for completion and 0 otherwise. No partial or intermediate reward is exposed.
+- The evaluator-only no-memory paired replay uses action 0 on every event of the same episode. It is not a second sampled task and supplies no additional policy observation.
+- Each item ID appears at most once per episode, so a selected record has at most one use receipt in that episode.
+
+### Q16 arithmetic
+
+- \`Q = 65536\`; all learned weights, feature values, predicted utilities, reward deltas, eligibility and credit allocations are signed/integer Q16. No floating-point model arithmetic, transcendental functions or platform BLAS are used.
+- Base feature vector (six integers): bias \`Q\`; evidence \`evidence_level * Q // 7\`; error \`error_level * Q // 3\`; contradiction \`contradiction_level * Q // 3\`; recency \`Q // (1 + age)\`; and use count \`min(uses,16) * Q // 16\`. Age is the event-clock difference from the last actual use; initial \`last_used=-1\`, \`uses=0\`.
+- Interaction-control feature vector adds all ten pairwise products of the five non-bias features, each computed as \`(x_i * x_j) // Q\`, for exactly 16 coefficients including bias.
+- Prediction is \`clamp(sum(weight_i * feature_i) // Q, -Q, Q)\`. Weights start at zero and clamp to \`[-4*Q, 4*Q]\`. The frozen learning-rate integer is \`alpha_q16=5243\`.
+- For each terminal paired outcome, \`delta_q16 = (terminal_return_with_policy - terminal_return_no_memory) * Q\`.
+- Uniform episodic Monte Carlo divides \`delta_q16\` equally among the records actually used in that episode. DECA-Q16 uses \`lambda_q16=52429\`; its raw eligibility for a use at step \`t\` is repeated Q16 multiplication of lambda over \`11-t\` delays. Normalize those eligibilities so their integer credits sum exactly to \`delta_q16\`; assign any integer-division remainder to the most recently used record. This prevents the trace candidate from receiving a larger total episode signal than the uniform control.
+- The interaction learned control uses the same uniform conserved episode-credit allocation and the fixed 16-feature interaction basis. The only candidate-vs-uniform difference is temporal eligibility weighting; the interaction control is the stronger richer-feature comparator.
+- For each used record and its immutable use-time feature receipt, compute \`error_q16 = credit_q16 - prediction_q16\`; update each coefficient by \`floor(alpha_q16 * error_q16 * feature_q16 / Q^2)\`, then clamp. Update only after the terminal episode return is available. No unselected record receives feedback.
+
+### State and transfer semantics
+
+All six selectors start from the same 16-record bank and exactly seven active / nine retained entries. Learned policies update their active set by descending predicted utility, then immutable item ID. The random, recency and evidence-only controls are deterministic under their frozen seed/tie rules. FIT carries each policy's own learned weights, usage counters and checkpoint state across its 128 episodes. TRANSFER begins from each FIT terminal checkpoint; each transfer seed cluster gets a cold copy of that checkpoint, executes its eight episodes without task-outcome updates, and records any public use/recency state changes separately from learned-weight changes.
+
+The canonical checkpoint is JSON with sorted keys and compact separators, protected by SHA256. Cold restore must preserve exact next active set, next action selection, fixed-point predictions, usage counters and learned weights.
+
+## 10. Exact primary-result computation
+
+For each of the 32 TRANSFER seed clusters, compute each policy's mean terminal success over its eight episodes. Aggregate mean return is the unweighted mean of the 32 cluster means; each cluster has equal weight. Paired cluster differences are candidate minus comparator. Bootstrap resampling samples 32 cluster indices with replacement, 10,000 times, using \`random.Random(320014)\`; sort the resulting means and report element 249 (zero-based) as the frozen 2.5th-percentile lower bound. Win counts compare paired cluster means strictly (\`candidate > comparator\`); ties are not wins.
