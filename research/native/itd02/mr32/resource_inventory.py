@@ -9,6 +9,7 @@ import argparse, json, sys, time, tracemalloc
 from dataclasses import fields, is_dataclass
 from residual_belief import ResidualBelief
 from mr32_controls import MemorylessMean, ConventionalPrototypeControl
+from recurrent_control import RecurrentStateSpaceControl
 
 
 def vector(n, size):
@@ -68,13 +69,14 @@ def run(steps):
             "residual_belief": execute(ResidualBelief(), steps),
             "memoryless_mean": execute(MemorylessMean(), steps),
             "conventional_prototype": execute(ConventionalPrototypeControl(), steps),
+            "recurrent_state_space": execute(RecurrentStateSpaceControl(), steps),
         },
         "limits": [
             "One deterministic synthetic stream; not a training/evaluation experiment.",
             "Python deep-size and tracemalloc depend on interpreter/platform and omit allocator/OS process RSS.",
             "Serialized MR32 state uses an integrity envelope while controls emit compact state JSON; formats are not yet semantically equal persistence contracts.",
             "No exact total-resource parity claim; use same interpreter/build and common serialization envelopes before comparing.",
-            "No recurrent or Bayesian state-space control is included.",
+            "No Bayesian/model-based control is included; a simple recurrent state-space comparator is included.",
             "No scientific efficacy, causal improvement, terminal reward or transfer is measured."
         ]
     }
