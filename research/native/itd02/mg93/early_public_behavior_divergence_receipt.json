@@ -1,0 +1,66 @@
+{
+  "schema": "mg93.early_public_behavior_divergence.receipt.v1",
+  "classification": "RETROSPECTIVE_AUTHENTIC_ORIGINAL_LEDGER_DIAGNOSTIC_NOT_CAUSAL",
+  "source": {
+    "workflow_run_id": 41047254253,
+    "artifact_id": 12972852607,
+    "artifact_zip_sha256": "9f284ce2b793a2f6e0d0d8a1cb097efb5a9e5ce9b5d75f5c53a77f8474d0104a",
+    "heldout_json_sha256": "0cdb155ce150717c3a678f6c536a81f5f4203dd96acafee459b2fdc1d2a36427",
+    "artifact_train_test_scope": "MG93 original heldout phase, 12 paired seeds, 4 roles"
+  },
+  "analysis": {
+    "script_commit": "da0777dedb66314dd89cc1efe62ae7321644be66",
+    "script_git_blob": "faea586ea8617b0beab6f2924f49d9adf5be4489",
+    "executed_script_git_blob_match": true,
+    "result_json_sha256": "92a4065b0c04059a509828daf42b1aaa3005cd2c3da0d3f33bb79756e2e08479",
+    "prefix": "first 16 selected public source actions; teacher episode that terminates at step 14 uses all 14 available steps, no padding",
+    "metrics": {
+      "mg92_native_feedback": {
+        "episodes": 12,
+        "mean_unique_returned_public_view_fraction": 0.59375,
+        "mean_unique_before_action_after_edge_fraction": 0.7083333333,
+        "mean_action_entropy_bits": 1.4204708291,
+        "positive_rewards_within_prefix": 0,
+        "eventual_task_successes": 0
+      },
+      "mg91_frozen_native_prototypes": {
+        "episodes": 12,
+        "mean_unique_returned_public_view_fraction": 0.4583333333,
+        "mean_unique_before_action_after_edge_fraction": 0.53125,
+        "mean_action_entropy_bits": 1.0721863236,
+        "positive_rewards_within_prefix": 0,
+        "eventual_task_successes": 0
+      },
+      "mg91_independent_linear_control": {
+        "episodes": 12,
+        "mean_unique_returned_public_view_fraction": 0.1458333333,
+        "mean_unique_before_action_after_edge_fraction": 0.1979166667,
+        "mean_action_entropy_bits": 0.1749165905,
+        "positive_rewards_within_prefix": 0,
+        "eventual_task_successes": 0
+      },
+      "mg86_frozen_teacher": {
+        "episodes": 12,
+        "mean_unique_returned_public_view_fraction": 0.9739583333,
+        "mean_unique_before_action_after_edge_fraction": 1.0,
+        "mean_action_entropy_bits": 1.8905027283,
+        "positive_rewards_within_prefix": 1,
+        "eventual_task_successes": 10
+      }
+    },
+    "paired_mg92_vs_teacher": {
+      "teacher_more_unique_returned_views": 12,
+      "teacher_more_unique_transition_edges": 11,
+      "ties_on_transition_edges": 1,
+      "teacher_lower_on_either_metric": 0
+    }
+  },
+  "interpretation": "The successful/frozen teacher's early trajectories were more diverse and yielded more distinct public transition edges than the three trained controls in this exposed cohort. This is an association in a hand-coded teacher-vs-learned-policy comparison, not a causal mechanism. The teacher is not an equally trained conventional control. Novelty/action entropy may be a symptom of competent navigation, not its cause. Do not optimize these metrics directly or claim a policy benefit.",
+  "limitations": [
+    "Retrospective exposed MG93 artifact only; no new original environment reset or step.",
+    "The 12 paired episodes are the same seeds already used in MG93, not a new cohort.",
+    "No counterfactual unselected actions; no causal attribution.",
+    "No inference about genuine unfamiliar-family generalization.",
+    "No source or policy changes, no first-use, no promotion, no acceptance."
+  ]
+}
