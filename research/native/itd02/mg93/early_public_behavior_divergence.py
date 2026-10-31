@@ -21,8 +21,8 @@ def entropy(values):
 
 def episode_metrics(ep):
     rows = ep["source_ledger"][:PREFIX]
-    if len(rows) != PREFIX:
-        raise ValueError("PREFIX_TOO_SHORT")
+    if not rows:
+        raise ValueError("EMPTY_EPISODE_PREFIX")
     required = ("before_sha", "after_sha", "action", "reward")
     if any(any(k not in row for k in required) for row in rows):
         raise ValueError("SOURCE_LEDGER_SCHEMA")
@@ -56,8 +56,8 @@ def run(path):
         rows = [episode_metrics(v[role]) for v in grouped.values()]
         per_role[role] = {
             "episodes": len(rows),
-            "unique_after_fraction": statistics.mean(x["unique_after"]/PREFIX for x in rows),
-            "unique_edge_fraction": statistics.mean(x["unique_transition_edges"]/PREFIX for x in rows),
+            "unique_after_fraction": statistics.mean(x["unique_after"]/x["steps"] for x in rows),
+            "unique_edge_fraction": statistics.mean(x["unique_transition_edges"]/x["steps"] for x in rows),
             "mean_action_entropy_bits": statistics.mean(x["action_entropy_bits"] for x in rows),
             "positive_rewards_first16": sum(x["positive_reward_events"] for x in rows),
             "eventual_successes": sum(x["eventual_success"] for x in rows),
@@ -84,6 +84,7 @@ def run(path):
         "phase": "heldout",
         "paired_seed_count": len(grouped),
         "prefix_steps": PREFIX,
+        "actual_prefix_lengths": {role: [len(v[role]["source_ledger"][:PREFIX]) for v in grouped.values()] for role in ROLES},
         "roles": per_role,
         "native_teacher_paired": pairs,
         "interpretation_limit": "Prefix novelty and action entropy are descriptive diagnostics, not randomized interventions, learned causal explanations, or proof that maximizing novelty improves reward."
