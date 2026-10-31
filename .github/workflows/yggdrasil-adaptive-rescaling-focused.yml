@@ -1,0 +1,35 @@
+name: Yggdrasil focused adaptive-rescaling qualification (not G29)
+on:
+  pull_request:
+    branches: [f139/dev-adaptive-cell-count-rescaling-20261031]
+    paths:
+      - 'yggdrasil/public_causal_cells.py'
+      - 'tests/test_native_cells.py'
+      - 'tests/test_public_causal_cells_rescaled.py'
+      - '.github/workflows/yggdrasil-adaptive-rescaling-focused.yml'
+permissions:
+  contents: read
+concurrency:
+  group: yggdrasil-adaptive-rescaling-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+jobs:
+  focused:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Existing native causal-cell tests
+        run: python -B -m unittest discover -s tests -p test_native_cells.py -v
+      - name: Adaptive rescaling focused regression
+        run: python -B -m unittest discover -s tests -p test_public_causal_cells_rescaled.py -v
+      - name: Compile Yggdrasil package and tests
+        run: python -B -m compileall -q yggdrasil tests
