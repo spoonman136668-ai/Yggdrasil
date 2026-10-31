@@ -481,6 +481,9 @@ def run() -> dict:
     bayes_transfer_feedback = 0
     h_state_bytes = []
     bayes_state_bytes = []
+    fixed_state_bytes = {
+        "random": [], "fixed_recency": [], "evidence_only": []
+    }
 
     for cluster, seed in enumerate(TRANSFER_SEEDS):
         regime = 0 if cluster < len(TRANSFER_SEEDS) // 2 else 1
@@ -489,6 +492,9 @@ def run() -> dict:
                            "mr32_h_learned", "interaction_bayesian")}
         permutation = _permute(seed, regime)
         fixed = _fixed_sets(seed, regime, permutation)
+        for name, active in fixed.items():
+            fixed_state_bytes[name].append(
+                len(json.dumps(sorted(active), separators=(",", ":")).encode()))
         h, h_keys = _new_h_allocator(seed, regime, permutation, h_weights)
         bayes = _bayes_from_fit(bayes_mean, bayes_variance)
         bayes.insert_records(seed, regime, permutation)
@@ -682,7 +688,15 @@ def run() -> dict:
             "tracemalloc_current_bytes": current,
             "tracemalloc_peak_bytes": peak,
             "h_checkpoint_bytes_mean": sum(h_state_bytes) / len(h_state_bytes),
-            "bayes_state_json_bytes_mean": sum(bayes_state_bytes) / len(bayes_state_bytes),
+            "bayes_checkpoint_bytes_mean": sum(bayes_state_bytes) / len(bayes_state_bytes),
+            "selector_state_bytes_mean": {
+                "random": sum(fixed_state_bytes["random"]) / len(fixed_state_bytes["random"]),
+                "fixed_recency": sum(fixed_state_bytes["fixed_recency"]) / len(fixed_state_bytes["fixed_recency"]),
+                "evidence_only": sum(fixed_state_bytes["evidence_only"]) / len(fixed_state_bytes["evidence_only"]),
+                "mr32_h_learned": sum(h_state_bytes) / len(h_state_bytes),
+                "interaction_bayesian": sum(bayes_state_bytes) / len(bayes_state_bytes),
+            },
+            "selector_state_scope": "diagnostic selector payload only; shared memory records and interpreter/runtime overhead excluded; not all-in resource parity",
         },
         "falsifiers": {
             "delta_at_least_0_02": strongest_delta >= 0.02,
