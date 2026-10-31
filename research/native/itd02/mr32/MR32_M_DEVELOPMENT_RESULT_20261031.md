@@ -63,3 +63,37 @@ The task generator is a controlled, deterministic task fixture. The outcome-deri
 Retain MR32-H and its Bayesian comparator as a negative benchmark. Any new utility mechanism must have a new preregistration and disjoint TRANSFER cohort before execution. The existing held-out cohort is consumed and cannot be reused for tuning. An authentic original-source task-reward experiment remains blocked by the independent FSA-04 authority and first-use boundary in FORGE issue #83.
 
 No integration, merge, promotion, accepted-ref mutation, native runner/controller/queue change, paid API or protected scientific first-use was performed.
+
+
+## Current-head regression and cross-OS numerical caveat
+
+The latest PR-head check was Actions run #41228767431 on branch head
+99e2e287c211cebe903ad84c73cfe5f9fd6a2239.
+
+- Ubuntu focused job: PASS, 69 tests.
+- Windows focused job: PASS, 69 tests.
+- FIT event SHA256: identical across OS,
+  50b9fae42ccb8d2947f0e9e1bd94b5896da02dbbbab0517a4208b8bc695057bd.
+- TRANSFER event SHA256: identical across OS,
+  5eb3145cffa0f0550768cf4721b03f72b4fa5342d6e2ede25dbc63ddc7191c1b.
+- All five method mean task returns, all per-seed outcomes, win counts,
+  bootstrap bounds and the frozen NO-GO verdict are identical across OS.
+- Bayesian FIT checkpoint SHA256 is **not** byte-identical: Ubuntu
+  81edada1d974be9c7ed652c94e987fba47f8df7781f8fb9ba6739af94f193f32;
+  Windows 1c0cb8720c19350bd6214644dcf4cdbfe82d9b1d6848f5b59a39dc378b5be07a.
+  Inspection of the 16 posterior means/variances shows only last-bit
+  differences around 1e-17; same task rankings and exact transfer score are
+  preserved. Intra-OS integrity-checked restore and next-prediction tests
+  pass on both OSes.
+
+**Portability disposition:** exact cross-platform model-checkpoint identity is
+UNVERIFIED/FAIL for the Bayesian control. Functional held-out behavior and
+event custody reproduce, but this is not a bitwise-identical learned-state
+qualification. Do not repair this by editing the consumed TRANSFER data or
+selecting new precision from its results. A portability fix requires a
+separate frozen protocol and new disjoint FIT/TRANSFER cohorts.
+
+The exact-head G29 atlas workflow for this branch independently failed on
+Windows with YGG_ATLAS_FAIL_CLOSED: indexed file set changed; Linux was still
+queued when checked. This remains a separate integration blocker. No atlas
+waiver or merge was attempted.
