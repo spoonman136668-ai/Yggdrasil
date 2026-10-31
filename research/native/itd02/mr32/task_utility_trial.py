@@ -384,6 +384,7 @@ def run() -> dict:
 
     cluster_rows = []
     held_event_receipts = []
+    held_episode_receipts = []
     h_transfer_feedback = 0
     bayes_transfer_feedback = 0
     h_state_bytes = []
@@ -407,37 +408,67 @@ def run() -> dict:
 
         for episode in range(EPISODES_PER_TRANSFER_CLUSTER):
             actual_episode = cluster * 10 + episode
+            episode_returns = {name: 0.0 for name in regime_returns}
+            episode_selected = {name: [] for name in regime_returns}
             for step, item in enumerate(_query_order(seed, regime, actual_episode)):
                 event = _event(seed, regime, actual_episode, step, item)
+                event_selected = {}
+                event_scores = {}
                 for name, active in fixed.items():
-                    if item in active:
-                        guess = 1 if _representation(item, seed, regime)[0] > 0 else 0
+                    is_selected = item in active
+                    if is_selected:
+                        guess = _stored_guess(seed, regime, item)
                         score = _score_task_action(event, guess)
+                        episode_selected[name].append(item)
                     else:
                         score = _score_task_action(event, None)
+                    event_selected[name] = is_selected
+                    event_scores[name] = score
                     regime_returns[name].append(score)
+                    episode_returns[name] += score
 
-                if item in _h_active_items(h, h_keys):
+                h_is_selected = item in _h_active_items(h, h_keys)
+                if h_is_selected:
                     mem = h._get(h_keys[item])
                     guess = 1 if mem.representation[0] > 0 else 0
                     score = _score_task_action(event, guess)
+                    episode_selected["mr32_h_learned"].append(item)
                 else:
                     score = _score_task_action(event, None)
+                event_selected["mr32_h_learned"] = h_is_selected
+                event_scores["mr32_h_learned"] = score
                 regime_returns["mr32_h_learned"].append(score)
+                episode_returns["mr32_h_learned"] += score
 
                 b_record = next(r for r in bayes.records if r.item == item)
-                if b_record.active:
+                bayes_is_selected = b_record.active
+                if bayes_is_selected:
                     score = _score_task_action(event, b_record.guess)
+                    episode_selected["interaction_bayesian"].append(item)
                 else:
                     score = _score_task_action(event, None)
+                event_selected["interaction_bayesian"] = bayes_is_selected
+                event_scores["interaction_bayesian"] = score
                 regime_returns["interaction_bayesian"].append(score)
+                episode_returns["interaction_bayesian"] += score
 
                 held_event_receipts.append({
                     "phase": "transfer", "seed": seed, "regime": regime,
                     "episode": actual_episode, "step": step, "item": item,
                     "correct_action_sha": hashlib.sha256(
                         str(event.correct_action).encode()).hexdigest(),
+                    "selected": event_selected,
+                    "task_return": event_scores,
+                    "feedback_applied": False,
                 })
+
+            held_episode_receipts.append({
+                "seed": seed, "regime": regime, "episode": actual_episode,
+                "task_count": TASKS_PER_EPISODE,
+                "selected_items": episode_selected,
+                "task_return": episode_returns,
+                "transfer_feedback_events": 0,
+            })
 
         h_transfer_feedback += h.feedback_count
         bayes_transfer_feedback += bayes.feedback_count
@@ -539,6 +570,7 @@ def run() -> dict:
             "strongest_comparator": strongest,
             "delta_vs_strongest": strongest_delta,
             "per_seed": cluster_rows,
+            "per_episode_receipts": held_episode_receipts,
             "regime_detail": regime_detail,
             "regime_wins_vs_overall_strongest": regime_wins,
         },
