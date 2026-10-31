@@ -130,3 +130,10 @@ This is a profile-combination holdout under the same known synthetic majority-ru
 A separate `ContentAwareMemoryAllocator` candidate now learns utility from the original five metadata signals plus the full 16-value stored representation. It retains the exact 16-slot, 7-active/9-retained contract and integrity-checked cold checkpoints; the metadata-only MR32-H candidate is unchanged. The dedicated Windows/Linux workflow now compiles, tests and resource-inventories both allocator variants.
 
 The source-only discrimination fixture holds all metadata constant and trains on positive/negative content patterns, then tests new memory keys without evaluation feedback. This asks whether learned memory content can influence retention rather than relying exclusively on programmed metadata summaries. The representation dimension itself remains fixed and hand-authored, and the utility learner remains a linear online scorer. No original-world or authentic task outcome data are used.
+
+
+## MR32-N — delayed-feedback receipt correctness
+
+Source review found that both learned allocator variants recomputed metadata when the task usefulness label arrived. When feedback was delayed, the recency/use features therefore described the later receipt-arrival state rather than the state at the original retrieval. Both variants now capture the exact utility feature vector in a per-memory pending receipt at `mark_use`, use that frozen vector for the later gradient update, then clear it. Checkpointing remains refused while any such receipt is pending. Checkpoint schemas are bumped to v3 (metadata-only) and v2 (content-aware) so older state cannot be mistaken for the new delayed-feedback contract.
+
+New tests insert five distractors between use and outcome and compare the actual weight update to the exact use-time feature vector. No synthetic task-performance claim is made from this fix.
