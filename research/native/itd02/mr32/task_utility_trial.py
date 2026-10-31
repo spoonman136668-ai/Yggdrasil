@@ -256,6 +256,8 @@ def _fit() -> tuple[list[float], InteractionBayesianUtility, dict]:
     h_weights = [0.0] * 6
     bayes = InteractionBayesianUtility()
     event_receipts = []
+    feedback_receipts = []
+    episode_receipts = []
     # Eight FIT clusters: four frozen clusters per independently parameterized regime.
     for cluster, seed in enumerate(FIT_SEEDS):
         regime = 0 if cluster < len(FIT_SEEDS) // 2 else 1
@@ -264,25 +266,75 @@ def _fit() -> tuple[list[float], InteractionBayesianUtility, dict]:
         bayes.insert_records(seed, regime, permutation)
         for episode in range(EPISODES_PER_FIT_CLUSTER):
             actual_episode = cluster * 10 + episode
+            h_selected = []
+            bayes_selected = []
+            h_episode_return = 0.0
+            bayes_episode_return = 0.0
             for step, item in enumerate(_query_order(seed, regime, actual_episode)):
                 event = _event(seed, regime, actual_episode, step, item)
-                if item in _h_active_items(h, h_keys):
+                h_is_selected = item in _h_active_items(h, h_keys)
+                if h_is_selected:
                     key = h_keys[item]
                     mem = h._get(key)
                     guess = 1 if mem.representation[0] > 0 else 0
+                    h_score = _score_task_action(event, guess)
                     paired_delta = _paired_memory_utility(event, guess)
                     h.mark_use(key)
                     h.observe_task_outcome(key, 0.5 + 0.5 * paired_delta)
+                    h_selected.append(item)
+                    feedback_receipts.append({
+                        "controller": "mr32_h_learned", "seed": seed,
+                        "regime": regime, "episode": actual_episode,
+                        "step": step, "item": item,
+                        "paired_task_return_delta": paired_delta,
+                    })
+                else:
+                    h_score = _score_task_action(event, None)
+                h_episode_return += h_score
+
                 b_record = next(r for r in bayes.records if r.item == item)
-                if b_record.active:
-                    task_return = _paired_memory_utility(event, b_record.guess)
-                    bayes.observe_use(b_record, task_return)
+                bayes_is_selected = b_record.active
+                if bayes_is_selected:
+                    bayes_score = _score_task_action(event, b_record.guess)
+                    paired_delta = _paired_memory_utility(event, b_record.guess)
+                    bayes.observe_use(b_record, paired_delta)
+                    bayes_selected.append(item)
+                    feedback_receipts.append({
+                        "controller": "interaction_bayesian", "seed": seed,
+                        "regime": regime, "episode": actual_episode,
+                        "step": step, "item": item,
+                        "paired_task_return_delta": paired_delta,
+                    })
+                else:
+                    bayes_score = _score_task_action(event, None)
+                bayes_episode_return += bayes_score
+
                 event_receipts.append({
                     "phase": "fit", "seed": seed, "regime": regime,
                     "episode": actual_episode, "step": step, "item": item,
                     "correct_action_sha": hashlib.sha256(
                         str(event.correct_action).encode()).hexdigest(),
+                    "selected": {
+                        "mr32_h_learned": h_is_selected,
+                        "interaction_bayesian": bayes_is_selected,
+                    },
+                    "task_return": {
+                        "mr32_h_learned": h_score,
+                        "interaction_bayesian": bayes_score,
+                    },
                 })
+            episode_receipts.append({
+                "seed": seed, "regime": regime, "episode": actual_episode,
+                "task_count": TASKS_PER_EPISODE,
+                "selected_items": {
+                    "mr32_h_learned": h_selected,
+                    "interaction_bayesian": bayes_selected,
+                },
+                "task_return": {
+                    "mr32_h_learned": h_episode_return,
+                    "interaction_bayesian": bayes_episode_return,
+                },
+            })
         h_weights = list(h.weights)
     receipt = {
         "fit_seeds": list(FIT_SEEDS),
@@ -291,6 +343,12 @@ def _fit() -> tuple[list[float], InteractionBayesianUtility, dict]:
         "fit_episodes": len(FIT_SEEDS) * EPISODES_PER_FIT_CLUSTER,
         "fit_event_count": len(event_receipts),
         "fit_event_sha256": _record_hash(event_receipts),
+        "fit_feedback_count_h": sum(
+            row["controller"] == "mr32_h_learned" for row in feedback_receipts),
+        "fit_feedback_count_bayesian": sum(
+            row["controller"] == "interaction_bayesian" for row in feedback_receipts),
+        "fit_feedback_receipts": feedback_receipts,
+        "fit_episode_receipts": episode_receipts,
         "learned_weights": h_weights,
         "bayes_feedback_count": bayes.feedback_count,
         "bayes_mean": bayes.mean,
