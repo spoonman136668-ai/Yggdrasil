@@ -88,3 +88,10 @@ This fixes a necessary interface omission, not a scientific gain. The selected-a
 ## MR32-C control correction
 
 The action-conditioned conventional prototype now allocates the first empty active slot when it encounters a previously unseen (public features, action) pair. The prior control implementation unconditionally wrote slot zero for every new pair, overwriting a different action's state; this was a comparator implementation defect, not an MR32 result. When all active slots are occupied, the baseline replaces the least-supported/oldest active prototype. Its fixed partition remains 7/9. This policy is intentionally conventional and still does not claim matched resource bytes.
+
+
+## MR32-G — interaction-capable diagonal Bayesian control
+
+Added a separate conventional baseline whose fixed basis includes bias, public features, selected-action indicators and every feature×action interaction. It has 68 coefficients per consequence output and a diagonal Gaussian posterior. This can represent action-specific feature effects that the additive diagonal Bayesian control cannot.
+
+A held-out sign-reversal contract test now trains on a balanced action×feature development set and checks that the interaction model has lower error on the held-out combinations than the additive model. It is a deterministic synthetic expressivity check, not evidence about either native architecture. Model remains linear in its explicitly expanded basis and diagonal in posterior covariance; it is not a Bayesian causal graph learner/planner.
