@@ -1,6 +1,6 @@
 name: YGG-DB01 isolated atlas repair and qualification
 on:
-  workflow_dispatch:
+  workflow_dispatch: {}
   push:
     branches: [research/ygg-db01-development-only]
     paths:
@@ -29,7 +29,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test -z "$(git status --porcelain)"
           git merge-base --is-ancestor f6ac65d5ab1fef28d1780b5ffb53f8b8319aa2fc "$GITHUB_SHA"
-          test "$(git diff --name-only f6ac65d5ab1fef28d1780b5ffb53f8b8319aa2fc HEAD)" = '.github/workflows/ygg-db01-atlas-repair.yml'
+          test "$(git diff --name-only f6ac65d5ab1fef28d1780b5ffb53f8b8319aa2fc HEAD | LC_ALL=C sort)" = '.github/workflows/ygg-db01-atlas-repair.yml'
           python scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
           git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
           test "$(git diff --cached --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
@@ -41,6 +41,6 @@ jobs:
           python -m unittest discover -s research/contrib/spoonman136668-ai/ygg-db01 -p 'test_*.py' -v
           python -m unittest discover -s tests -p 'test_*.py' -v
           test -z "$(git status --porcelain)"
-          git push origin HEAD:refs/heads/research/ygg-db01-development-only
+          git push --force-with-lease=refs/heads/research/ygg-db01-development-only:$GITHUB_SHA origin HEAD:refs/heads/research/ygg-db01-development-only
           echo "YGG_DB01_SOURCE=$GITHUB_SHA"
           echo "YGG_DB01_ARTIFACT_COMMIT=$(git rev-parse HEAD)"
