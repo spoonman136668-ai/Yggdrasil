@@ -1,0 +1,84 @@
+name: F139 leave-one-out control development qualification
+on:
+  pull_request:
+    paths:
+      - 'yggdrasil/public_causal_cells.py'
+      - 'tests/test_native_cells_loo_stable.py'
+      - '.github/workflows/f139-loo-development-qualification.yml'
+permissions:
+  contents: read
+jobs:
+  qualify:
+    if: github.head_ref == 'qualification/f139-loo-stable-20261101'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        env:
+          GIT_CONFIG_COUNT: '1'
+          GIT_CONFIG_KEY_0: core.autocrlf
+          GIT_CONFIG_VALUE_0: 'false'
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: qualification
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        env:
+          GIT_CONFIG_COUNT: '1'
+          GIT_CONFIG_KEY_0: core.autocrlf
+          GIT_CONFIG_VALUE_0: 'false'
+        with:
+          ref: 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9
+          path: baseline
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Authenticate exact source and run pristine full regression
+        shell: python
+        run: |
+          import pathlib, subprocess
+          baseline=pathlib.Path('baseline').resolve()
+          sha=subprocess.check_output(['git','rev-parse','HEAD'],cwd=baseline,text=True).strip()
+          assert sha == '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
+          assert not subprocess.check_output(['git','status','--porcelain','--untracked-files=all'],cwd=baseline,text=True).strip()
+          subprocess.run(['python','-B','-m','unittest','discover','-s','tests','-v'],cwd=baseline,check=True)
+          print('LOO_PRISTINE_FULL_REGRESSION=PASS')
+      - name: Check immutable overlay, independent oracle and existing native interfaces
+        shell: python
+        run: |
+          import pathlib, subprocess, hashlib, os
+          baseline=pathlib.Path('baseline').resolve()
+          qualification=pathlib.Path('qualification').resolve()
+          data=subprocess.check_output(['git','show','e5d1dd4efcd9efa334cfa2e0d45a5351db11cce3:yggdrasil/public_causal_cells.py'],cwd=qualification)
+          assert hashlib.sha256(data).hexdigest() == '9c9e3a85debe856030cbbf48ecdaf679b6d2db64b11c5a0d35d54781cf5d05ce'
+          assert (qualification/'yggdrasil/public_causal_cells.py').read_bytes() == data
+          (baseline/'yggdrasil/public_causal_cells.py').write_bytes(data)
+          environment=dict(os.environ,PYTHONPATH=str(baseline))
+          subprocess.run(['python','-B',str(qualification/'tests/test_native_cells_loo_stable.py'),'-v'],cwd=baseline,env=environment,check=True)
+          subprocess.run(['python','-B','-m','unittest','discover','-s','tests','-p','test_native_cells*.py','-v'],cwd=baseline,check=True)
+          print('LOO_EXACT_SOURCE_AND_FOCUSED_ORACLE=PASS')
+      - name: Full overlay regression with explicit frozen-atlas negative
+        working-directory: baseline
+        shell: python
+        run: |
+          import unittest, pathlib, sys
+          sys.path.insert(0,str(pathlib.Path.cwd()))
+          suite=unittest.defaultTestLoader.discover('tests')
+          result=unittest.TextTestRunner(verbosity=2).run(suite)
+          expected={'test_code_atlas.G29.test_html_injection_encoding','test_code_atlas.G29.test_source_and_pinned_artifact'}
+          actual={test.id() for test,trace in result.errors}
+          assert result.testsRun == 54 and not result.failures
+          assert actual == expected, (actual,expected)
+          assert all('YGG_ATLAS_FAIL_CLOSED' in trace and 'working source mismatch' in trace for test,trace in result.errors)
+          print('LOO_FULL_OVERLAY_NON_ATLAS=PASS')
+          print('LOO_G29_NEGATIVE=EXPECTED_SOURCE_OVERLAY_REJECTION')
+          print('SCIENTIFIC_FIRST_USE=false')
