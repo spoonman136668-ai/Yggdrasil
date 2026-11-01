@@ -119,6 +119,39 @@ class PublicCausalCells:
             return 1
         return None
 
+    def choose_loo_stable(self, address: int, *,
+                          retained: bool = False) -> int | None:
+        """Opt-in empirical choice stable to removing any one observed outcome.
+
+        This fixed leave-one-out sensitivity control is not a confidence
+        interval or causal intervention. Read only the selected cell's public
+        counts; abstain if deleting any existing observation empties an arm,
+        ties the rates, or reverses their ordering. No learned state changes.
+        """
+        cell = self._address(address, retained)
+        failures0, successes0 = self._counts[cell][0]
+        failures1, successes1 = self._counts[cell][1]
+        totals = (failures0 + successes0, failures1 + successes1)
+        if min(totals) <= 1:
+            return None
+        successes = (successes0, successes1)
+        counts = ((failures0, successes0), (failures1, successes1))
+        difference = successes0 * totals[1] - successes1 * totals[0]
+        if difference == 0:
+            return None
+        for arm in range(2):
+            for outcome in range(2):
+                if counts[arm][outcome] == 0:
+                    continue
+                n0 = totals[0] - (arm == 0)
+                n1 = totals[1] - (arm == 1)
+                s0 = successes[0] - (arm == 0 and outcome == 1)
+                s1 = successes[1] - (arm == 1 and outcome == 1)
+                after = s0 * n1 - s1 * n0
+                if after * difference <= 0:
+                    return None
+        return 0 if difference > 0 else 1
+
     def snapshot(self) -> bytes:
         """One immutable, versioned 164-byte checkpoint with SHA-256 integrity."""
         raw = bytearray(self.MAGIC)
