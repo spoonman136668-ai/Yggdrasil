@@ -70,7 +70,8 @@ jobs:
         working-directory: baseline
         shell: python
         run: |
-          import unittest
+          import unittest, pathlib, sys
+          sys.path.insert(0,str(pathlib.Path.cwd()))
           suite=unittest.defaultTestLoader.discover('tests')
           result=unittest.TextTestRunner(verbosity=2).run(suite)
           expected={'test_code_atlas.G29.test_html_injection_encoding','test_code_atlas.G29.test_source_and_pinned_artifact'}
