@@ -18,10 +18,11 @@ from counterfactual_shapley import (
     uniform_q16_credits,
 )
 from mr32p_evaluator import (
-    evaluate_all_coalitions, make_private_task, public_policy_message,
+    evaluate_all_coalitions, make_private_task, public_memory_records,
+    public_policy_begin_message, public_policy_step_message,
 )
 from mr32p_policy import initial_state
-from mr32p_process import invoke_policy
+from mr32p_process import PolicySession
 
 FIT_SEEDS = (
     2003, 2011, 2017, 2027, 2029, 2039, 2053, 2063,
@@ -119,69 +120,110 @@ def _credits(method: str, selected_ids: list[int],
 def _episode_step(method: str, spec, state: dict, training: bool,
                   policy_cpu: dict, policy_peak_rss: dict,
                   evaluator_cpu: dict, credit_cpu: dict,
-                  learner_update_calls: dict) -> tuple[dict, dict]:
-    public_message = public_policy_message(spec, method, state)
-    policy_out = invoke_policy(public_message)
-    policy_cpu[method] += policy_out["policy_cpu_ns"]
-    child_rss = policy_out.get("policy_peak_rss_bytes")
-    if child_rss is not None:
-        policy_peak_rss[method] = max(policy_peak_rss[method], child_rss)
-    selected = policy_out["selected_items"]
-    receipts = policy_out["use_receipts"]
-    if len(selected) != 7 or len(receipts) != 7:
-        raise RuntimeError("MR32P_POLICY_USE_COUNT")
-    if selected != sorted(selected):
-        raise RuntimeError("MR32P_SELECTED_ID_ORDER")
+                  learner_update_calls: dict,
+                  policy_nonce: int = 0) -> tuple[dict, dict]:
+    """Run one policy episode with a sequential, one-cue-at-a-time interface."""
+    actions = []
+    public_trace = []
+    receipts = []
+    child_cpu_ns = 0
+    child_peak_rss = None
+    record_by_id = {row["item_id"]: row for row in public_memory_records()}
+    session = PolicySession(timeout_seconds=60)
+    try:
+        begin_message = public_policy_begin_message(method, state, policy_nonce)
+        begin_out = session.request(begin_message)
+        child_cpu_ns += begin_out["policy_cpu_ns"]
+        if begin_out.get("policy_peak_rss_bytes") is not None:
+            child_peak_rss = begin_out["policy_peak_rss_bytes"]
+        selected = begin_out["selected_items"]
+        state_after = begin_out["state"]
+        if len(selected) != 7 or selected != sorted(set(selected)):
+            raise RuntimeError("MR32P_POLICY_ACTIVE_PARTITION")
 
-    record_by_id = {row["item_id"]: row for row in public_message["records"]}
-    expected_actions = [
-        record_by_id[item]["proposed_action"] if item in set(selected) else 0
-        for item in spec.public_items
-    ]
-    if policy_out["actions"] != expected_actions:
-        raise RuntimeError("MR32P_POLICY_ACTION_USE_PARITY")
+        # The private episode spec remains in this parent process. The child
+        # receives only the current query cue on each request; future cues are
+        # never included in any policy message.
+        for step, item in enumerate(spec.public_items):
+            step_message = public_policy_step_message(
+                method, step, item, selected, state_after
+            )
+            step_out = session.request(step_message)
+            child_cpu_ns += step_out["policy_cpu_ns"]
+            rss_step = step_out.get("policy_peak_rss_bytes")
+            if rss_step is not None:
+                child_peak_rss = max(child_peak_rss or 0, rss_step)
+            if step_out["step"] != step or step_out["item_id"] != item:
+                raise RuntimeError("MR32P_POLICY_STEP_RESPONSE_IDENTITY")
+            action = step_out["action"]
+            expected_action = (
+                record_by_id[item]["proposed_action"] if item in set(selected) else 0
+            )
+            if action != expected_action:
+                raise RuntimeError("MR32P_POLICY_ACTION_USE_PARITY")
+            receipt = step_out["use_receipt"]
+            if step_out["selected"]:
+                if receipt is None:
+                    raise RuntimeError("MR32P_MISSING_USE_RECEIPT")
+                receipts.append(receipt)
+            elif receipt is not None:
+                raise RuntimeError("MR32P_UNSELECTED_USE_RECEIPT")
+            actions.append(action)
+            public_trace.append({
+                "step": step, "item_id": item,
+                "selected": step_out["selected"], "action": action,
+            })
+            state_after = step_out["state"]
 
-    evaluator_start = time.process_time_ns()
-    coalition_values = evaluate_all_coalitions(spec, selected)
-    evaluator_cpu[method] += time.process_time_ns() - evaluator_start
-    if len(coalition_values) != 128 or set(coalition_values) != set(range(128)):
-        raise RuntimeError("MR32P_COALITION_COVERAGE")
-    baseline = coalition_values[0]
-    observed = coalition_values[127]
-    credit_values: tuple[int, ...] = ()
-    shapley_numerators: tuple[int, ...] | None = None
-    shapley_denominator: int | None = None
+        if len(receipts) != 7 or len(actions) != 16:
+            raise RuntimeError("MR32P_POLICY_USE_COUNT")
 
-    state_after = policy_out["state_after_episode"]
-    if training and method in LEARNED:
-        credit_start = time.process_time_ns()
-        credit_values, shapley_numerators, shapley_denominator = _credits(
-            method, selected, coalition_values
-        )
-        credit_cpu[method] += time.process_time_ns() - credit_start
-        if len(credit_values) != 7:
-            raise RuntimeError("MR32P_CREDIT_COUNT")
-        # Coalition player order is sorted item ID; align receipts before the
-        # learner API reorders them by immutable event step.
-        receipt_by_id = {row["item_id"]: row for row in receipts}
-        ordered_receipts = [receipt_by_id[item] for item in selected]
-        update_message = {
-            "schema": "yggdrasil.mr32p.policy-message.v1",
-            "operation": "update",
-            "method": method,
-            "episode_terminal": True,
-            "state": state_after,
-            "use_receipts": ordered_receipts,
-            "credits_q16": list(credit_values),
-        }
-        update_out = invoke_policy(update_message)
-        learner_update_calls[method] += 1
-        policy_cpu[method] += update_out["policy_cpu_ns"]
-        update_rss = update_out.get("policy_peak_rss_bytes")
-        if update_rss is not None:
-            policy_peak_rss[method] = max(policy_peak_rss[method], update_rss)
-        state_after = dict(state_after)
-        state_after["weights"] = update_out["weights"]
+        evaluator_start = time.process_time_ns()
+        coalition_values = evaluate_all_coalitions(spec, selected)
+        evaluator_cpu[method] += time.process_time_ns() - evaluator_start
+        if len(coalition_values) != 128 or set(coalition_values) != set(range(128)):
+            raise RuntimeError("MR32P_COALITION_COVERAGE")
+        baseline = coalition_values[0]
+        observed = coalition_values[127]
+        credit_values: tuple[int, ...] = ()
+        shapley_numerators: tuple[int, ...] | None = None
+        shapley_denominator: int | None = None
+
+        if training and method in LEARNED:
+            credit_start = time.process_time_ns()
+            credit_values, shapley_numerators, shapley_denominator = _credits(
+                method, selected, coalition_values
+            )
+            credit_cpu[method] += time.process_time_ns() - credit_start
+            if len(credit_values) != 7:
+                raise RuntimeError("MR32P_CREDIT_COUNT")
+            # Coalition player order is sorted item ID; use receipts are matched
+            # to that order while preserving each immutable use-time feature.
+            receipt_by_id = {row["item_id"]: row for row in receipts}
+            ordered_receipts = [receipt_by_id[item] for item in selected]
+            update_message = {
+                "schema": "yggdrasil.mr32p.policy-message.v1",
+                "operation": "update",
+                "method": method,
+                "episode_terminal": True,
+                "state": state_after,
+                "use_receipts": ordered_receipts,
+                "credits_q16": list(credit_values),
+            }
+            update_out = session.request(update_message)
+            learner_update_calls[method] += 1
+            child_cpu_ns += update_out["policy_cpu_ns"]
+            update_rss = update_out.get("policy_peak_rss_bytes")
+            if update_rss is not None:
+                child_peak_rss = max(child_peak_rss or 0, update_rss)
+            state_after = dict(state_after)
+            state_after["weights"] = update_out["weights"]
+    finally:
+        session.close()
+
+    policy_cpu[method] += child_cpu_ns
+    if child_peak_rss is not None:
+        policy_peak_rss[method] = max(policy_peak_rss[method], child_peak_rss)
 
     if sum(credit_values) != (observed - baseline) * Q16 and method == "shapley" and training:
         raise RuntimeError("MR32P_SHAPLEY_CREDIT_EFFICIENCY")
@@ -195,11 +237,12 @@ def _episode_step(method: str, spec, state: dict, training: bool,
         "regime": spec.regime,
         "episode": spec.episode,
         "public_items": list(spec.public_items),
-        "public_actions": policy_out["actions"],
+        "public_actions": actions,
+        "public_step_trace": public_trace,
         "selected_items": selected,
         "use_receipts_by_item_id": [
             {k: row[k] for k in ("step", "item_id", "action", "features_q16")}
-            for row in receipts
+            for row in sorted(receipts, key=lambda row: row["item_id"])
         ],
         "private_spec_sha256": _private_spec_sha(spec),
         "coalition_values": [coalition_values[mask] for mask in range(128)],
