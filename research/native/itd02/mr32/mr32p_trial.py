@@ -118,7 +118,8 @@ def _credits(method: str, selected_ids: list[int],
 
 def _episode_step(method: str, spec, state: dict, training: bool,
                   policy_cpu: dict, policy_peak_rss: dict,
-                  evaluator_cpu: dict, credit_cpu: dict) -> tuple[dict, dict]:
+                  evaluator_cpu: dict, credit_cpu: dict,
+                  learner_update_calls: dict) -> tuple[dict, dict]:
     public_message = public_policy_message(spec, method, state)
     policy_out = invoke_policy(public_message)
     policy_cpu[method] += policy_out["policy_cpu_ns"]
@@ -174,6 +175,7 @@ def _episode_step(method: str, spec, state: dict, training: bool,
             "credits_q16": list(credit_values),
         }
         update_out = invoke_policy(update_message)
+        learner_update_calls[method] += 1
         policy_cpu[method] += update_out["policy_cpu_ns"]
         update_rss = update_out.get("policy_peak_rss_bytes")
         if update_rss is not None:
@@ -251,6 +253,7 @@ def run() -> dict:
     fit_states = {method: initial_state() for method in METHODS}
     fit_receipts = []
     fit_feedback_counts = {method: 0 for method in METHODS}
+    fit_update_calls = {method: 0 for method in METHODS}
     fit_cluster_receipts = []
 
     for cluster_index, seed in enumerate(FIT_SEEDS):
@@ -261,7 +264,8 @@ def run() -> dict:
             for method in METHODS:
                 next_state, receipt = _episode_step(
                     method, spec, fit_states[method], True,
-                    policy_cpu, policy_peak_rss, evaluator_cpu, credit_cpu
+                    policy_cpu, policy_peak_rss, evaluator_cpu, credit_cpu,
+                    fit_update_calls
                 )
                 fit_states[method] = next_state
                 fit_receipts.append(receipt)
@@ -273,6 +277,10 @@ def run() -> dict:
             "successes": cluster_success,
         })
 
+    for method in METHODS:
+        expected_updates = 128 if method in LEARNED else 0
+        if fit_update_calls[method] != expected_updates:
+            raise RuntimeError("MR32P_FIT_UPDATE_CALL_COUNT")
     checkpoint_bytes = {}
     checkpoints = {}
     checkpoint_sha256 = {}
@@ -290,6 +298,7 @@ def run() -> dict:
     transfer_receipts = []
     transfer_cluster_receipts = []
     transfer_feedback_counts = {method: 0 for method in METHODS}
+    transfer_update_calls = {method: 0 for method in METHODS}
     cold_restore_counts = {method: 0 for method in METHODS}
 
     for cluster_index, seed in enumerate(TRANSFER_SEEDS):
@@ -297,6 +306,7 @@ def run() -> dict:
         cluster_states = {}
         cluster_starts = {}
         cluster_success = {method: 0 for method in METHODS}
+        cluster_update_calls = {method: 0 for method in METHODS}
         for method in METHODS:
             restored = restore_state(checkpoints[method])
             if snapshot_state(restored) != checkpoints[method]:
@@ -310,7 +320,8 @@ def run() -> dict:
             for method in METHODS:
                 next_state, receipt = _episode_step(
                     method, spec, cluster_states[method], False,
-                    policy_cpu, policy_peak_rss, evaluator_cpu, credit_cpu
+                    policy_cpu, policy_peak_rss, evaluator_cpu, credit_cpu,
+                    cluster_update_calls
                 )
                 cluster_states[method] = next_state
                 transfer_receipts.append(receipt)
@@ -321,6 +332,9 @@ def run() -> dict:
         for method in METHODS:
             state = cluster_states[method]
             weights_sha = _sha(state["weights"])
+            if cluster_update_calls[method] != 0:
+                raise RuntimeError("MR32P_TRANSFER_LEARNER_UPDATE_CALL")
+            transfer_update_calls[method] += cluster_update_calls[method]
             if weights_sha != fit_weights_sha256[method]:
                 raise RuntimeError("MR32P_TRANSFER_WEIGHTS_CHANGED")
             end_weights_sha[method] = weights_sha
@@ -332,7 +346,8 @@ def run() -> dict:
             "cold_restore_checkpoint_sha256": cluster_starts,
             "terminal_weights_sha256": end_weights_sha,
             "terminal_state_sha256": end_state_sha,
-            "feedback_events_applied": {method: 0 for method in METHODS},
+            "feedback_events_applied": cluster_update_calls,
+            "learner_update_calls": cluster_update_calls,
             "successes": cluster_success,
         })
 
@@ -378,6 +393,9 @@ def run() -> dict:
             for method in METHODS
         }
 
+    transfer_feedback_counts = dict(transfer_update_calls)
+    if any(transfer_feedback_counts.values()):
+        raise RuntimeError("MR32P_TRANSFER_FEEDBACK_NOT_ZERO")
     delta_q16_sum = sum(paired[strongest])
     mean_delta_q16 = delta_q16_sum // len(TRANSFER_SEEDS)
     candidate_cpu = policy_cpu["shapley"] + credit_cpu["shapley"]
@@ -437,6 +455,7 @@ def run() -> dict:
             "event_sha256": _sha(fit_receipts),
             "episode_receipt_count": len(fit_receipts),
             "feedback_counts": fit_feedback_counts,
+            "learner_update_calls": fit_update_calls,
             "cluster_receipts": fit_cluster_receipts,
             "checkpoint_sha256": checkpoint_sha256,
             "checkpoint_bytes": checkpoint_bytes,
@@ -447,6 +466,7 @@ def run() -> dict:
             "episode_receipt_count": len(transfer_receipts),
             "cluster_receipts": transfer_cluster_receipts,
             "feedback_events_applied": transfer_feedback_counts,
+            "learner_update_calls": transfer_update_calls,
             "cold_restore_cluster_count_by_method": cold_restore_counts,
             "method_mean_terminal_success_q16": means,
             "strongest_comparator": strongest,
