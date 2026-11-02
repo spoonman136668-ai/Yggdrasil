@@ -105,23 +105,26 @@ def _peak_rss() -> tuple[int | None, str]:
 
 
 def _credits(method: str, selected_ids: list[int],
-             coalition_values: dict[int, int]) -> tuple[int, ...]:
+             coalition_values: dict[int, int]) -> tuple[tuple[int, ...], tuple[int, ...] | None, int | None]:
     if method == "uniform_mc":
-        return uniform_q16_credits(selected_ids, coalition_values)
+        return uniform_q16_credits(selected_ids, coalition_values), None, None
     if method == "leave_one_out":
-        return leave_one_out_q16_credits(selected_ids, coalition_values)
+        return leave_one_out_q16_credits(selected_ids, coalition_values), None, None
     if method == "shapley":
-        credits, _, _ = shapley_q16_credits(selected_ids, coalition_values)
-        return credits
-    return ()
+        credits, numerators, delta = shapley_q16_credits(selected_ids, coalition_values)
+        return credits, numerators, 5040
+    return (), None, None
 
 
 def _episode_step(method: str, spec, state: dict, training: bool,
-                  policy_cpu: dict, evaluator_cpu: dict,
-                  credit_cpu: dict) -> tuple[dict, dict]:
+                  policy_cpu: dict, policy_peak_rss: dict,
+                  evaluator_cpu: dict, credit_cpu: dict) -> tuple[dict, dict]:
     public_message = public_policy_message(spec, method, state)
     policy_out = invoke_policy(public_message)
     policy_cpu[method] += policy_out["policy_cpu_ns"]
+    child_rss = policy_out.get("policy_peak_rss_bytes")
+    if child_rss is not None:
+        policy_peak_rss[method] = max(policy_peak_rss[method], child_rss)
     selected = policy_out["selected_items"]
     receipts = policy_out["use_receipts"]
     if len(selected) != 7 or len(receipts) != 7:
@@ -145,11 +148,15 @@ def _episode_step(method: str, spec, state: dict, training: bool,
     baseline = coalition_values[0]
     observed = coalition_values[127]
     credit_values: tuple[int, ...] = ()
+    shapley_numerators: tuple[int, ...] | None = None
+    shapley_denominator: int | None = None
 
     state_after = policy_out["state_after_episode"]
     if training and method in LEARNED:
         credit_start = time.process_time_ns()
-        credit_values = _credits(method, selected, coalition_values)
+        credit_values, shapley_numerators, shapley_denominator = _credits(
+            method, selected, coalition_values
+        )
         credit_cpu[method] += time.process_time_ns() - credit_start
         if len(credit_values) != 7:
             raise RuntimeError("MR32P_CREDIT_COUNT")
@@ -168,6 +175,9 @@ def _episode_step(method: str, spec, state: dict, training: bool,
         }
         update_out = invoke_policy(update_message)
         policy_cpu[method] += update_out["policy_cpu_ns"]
+        update_rss = update_out.get("policy_peak_rss_bytes")
+        if update_rss is not None:
+            policy_peak_rss[method] = max(policy_peak_rss[method], update_rss)
         state_after = dict(state_after)
         state_after["weights"] = update_out["weights"]
 
@@ -199,6 +209,10 @@ def _episode_step(method: str, spec, state: dict, training: bool,
         "terminal_delta": observed - baseline,
         "credit_method": method if training and method in LEARNED else None,
         "credits_q16_by_item_id": list(credit_values),
+        "shapley_exact_numerators_by_item_id": (
+            list(shapley_numerators) if shapley_numerators is not None else None
+        ),
+        "shapley_common_denominator": shapley_denominator,
         "transfer_feedback_applied": False,
     }
     return state_after, episode_receipt
@@ -223,6 +237,7 @@ def run() -> dict:
     policy_cpu = {method: 0 for method in METHODS}
     evaluator_cpu = {method: 0 for method in METHODS}
     credit_cpu = {method: 0 for method in METHODS}
+    policy_peak_rss = {method: 0 for method in METHODS}
     fit_states = {method: initial_state() for method in METHODS}
     fit_receipts = []
     fit_feedback_counts = {method: 0 for method in METHODS}
@@ -236,7 +251,7 @@ def run() -> dict:
             for method in METHODS:
                 next_state, receipt = _episode_step(
                     method, spec, fit_states[method], True,
-                    policy_cpu, evaluator_cpu, credit_cpu
+                    policy_cpu, policy_peak_rss, evaluator_cpu, credit_cpu
                 )
                 fit_states[method] = next_state
                 fit_receipts.append(receipt)
@@ -358,6 +373,10 @@ def run() -> dict:
     candidate_cpu = policy_cpu["shapley"] + credit_cpu["shapley"]
     control_cpu = policy_cpu["leave_one_out"] + credit_cpu["leave_one_out"]
     rss, rss_method = _peak_rss()
+    max_child_rss = max(policy_peak_rss.values()) if policy_peak_rss else 0
+    conservative_parent_plus_child_rss = (
+        rss + max_child_rss if rss is not None and max_child_rss > 0 else None
+    )
     current_mem, peak_mem = tracemalloc.get_traced_memory()
     tracemalloc.stop()
     parent_cpu = time.process_time_ns() - start_cpu
@@ -424,6 +443,7 @@ def run() -> dict:
         },
         "resources": {
             "policy_process_cpu_ns": policy_cpu,
+            "policy_process_peak_rss_bytes": policy_peak_rss,
             "coalition_evaluator_cpu_ns": evaluator_cpu,
             "credit_allocator_cpu_ns": credit_cpu,
             "shapley_policy_plus_credit_cpu_ns": candidate_cpu,
@@ -433,6 +453,8 @@ def run() -> dict:
             "process_wall_ns": wall,
             "process_peak_rss_bytes": rss,
             "process_peak_rss_method": rss_method,
+            "max_policy_child_peak_rss_bytes": max_child_rss,
+            "conservative_parent_plus_child_peak_rss_bytes": conservative_parent_plus_child_rss,
             "tracemalloc_current_bytes": current_mem,
             "tracemalloc_peak_bytes": peak_mem,
         },
