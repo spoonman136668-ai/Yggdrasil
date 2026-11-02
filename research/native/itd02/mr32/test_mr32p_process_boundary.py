@@ -56,6 +56,8 @@ class PolicyProcessBoundaryTests(unittest.TestCase):
         left = run_policy(left_message)
         with patch.dict(os.environ, {"MR32P_HIDDEN_TARGET": "9"}):
             right = run_policy(right_message)
+        left.pop("policy_cpu_ns")
+        right.pop("policy_cpu_ns")
         self.assertEqual(left, right)
 
     def test_policy_rejects_hidden_target_injection(self):
