@@ -10,6 +10,7 @@ import json
 import os
 import random
 import sys
+import time
 
 Q = 65_536
 TOTAL = 16
@@ -285,12 +286,14 @@ def main() -> int:
         message = json.loads(raw)
         if not isinstance(message, dict):
             raise PolicyInputError("POLICY_MESSAGE_NOT_OBJECT")
+        cpu_start = time.process_time_ns()
         if message.get("operation") == "act":
             result = select_and_act(message)
         elif message.get("operation") == "update":
             result = apply_post_episode_credits(message)
         else:
             raise PolicyInputError("POLICY_OPERATION")
+        result["policy_cpu_ns"] = time.process_time_ns() - cpu_start
         sys.stdout.write(json.dumps(result, sort_keys=True, separators=(",", ":")))
         sys.stdout.write("\n")
         return 0
