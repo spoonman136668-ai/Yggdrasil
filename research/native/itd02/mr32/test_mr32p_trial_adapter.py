@@ -13,12 +13,12 @@ from mr32p_trial import (
 
 class TrialAdapterTests(unittest.TestCase):
     def setUp(self):
-        self.spec = make_private_task(73, 0, 2)  # not a FIT/TRANSFER seed
+        self.spec = make_private_task(73, 0, 2)  # outside both frozen cohorts
         self.policy_cpu = {method: 0 for method in METHODS}
         self.policy_peak_rss = {method: 0 for method in METHODS}
         self.evaluator_cpu = {method: 0 for method in METHODS}
         self.credit_cpu = {method: 0 for method in METHODS}
-        self.learner_update_calls = {method: 0 for method in METHODS}
+        self.fit_update_calls = {method: 0 for method in METHODS}
 
     def test_frozen_margin_gate_checks_every_comparator(self):
         passing = {method: DELTA_THRESHOLD_Q16 for method in COMPARATORS}
@@ -36,7 +36,7 @@ class TrialAdapterTests(unittest.TestCase):
                     method, self.spec, initial_state(), True,
                     self.policy_cpu, self.policy_peak_rss,
                     self.evaluator_cpu, self.credit_cpu,
-                    self.learner_update_calls
+                    self.fit_update_calls,
                 )
                 self.assertEqual(len(receipt["coalition_values"]), 128)
                 self.assertEqual(len(receipt["selected_items"]), 7)
@@ -47,28 +47,31 @@ class TrialAdapterTests(unittest.TestCase):
                 self.assertEqual(receipt["coalition_values"][127],
                                  receipt["terminal_return"])
                 self.assertFalse(receipt["transfer_feedback_applied"])
-        self.assertEqual(self.learner_update_calls[method], 1)
-        self.assertEqual(transfer_calls, {name: 0 for name in METHODS})
-        self.assertEqual(self.learner_update_calls[method], 1)
-        self.assertEqual(transfer_calls, {name: 0 for name in METHODS})
                 if method in LEARNED:
                     self.assertEqual(receipt["credit_method"], method)
                     self.assertEqual(len(receipt["credits_q16_by_item_id"]), 7)
-                    if method == "shapley":
-                        self.assertEqual(len(receipt["shapley_exact_numerators_by_item_id"]), 7)
-                        self.assertEqual(receipt["shapley_common_denominator"], 5040)
-                        self.assertEqual(
-                            sum(receipt["shapley_exact_numerators_by_item_id"]),
-                            5040 * receipt["terminal_delta"]
-                        )
-                    else:
-                        self.assertIsNone(receipt["shapley_exact_numerators_by_item_id"])
+                    self.assertEqual(self.fit_update_calls[method], 1)
                     self.assertGreaterEqual(self.policy_cpu[method], 0)
                     self.assertGreaterEqual(self.credit_cpu[method], 0)
                     self.assertGreaterEqual(self.policy_peak_rss[method], 0)
                 else:
+                    self.assertEqual(self.fit_update_calls[method], 0)
                     self.assertIsNone(receipt["credit_method"])
                     self.assertEqual(receipt["credits_q16_by_item_id"], [])
+
+                if method == "shapley":
+                    self.assertEqual(
+                        len(receipt["shapley_exact_numerators_by_item_id"]), 7
+                    )
+                    self.assertEqual(receipt["shapley_common_denominator"], 5040)
+                    self.assertEqual(
+                        sum(receipt["shapley_exact_numerators_by_item_id"]),
+                        5040 * receipt["terminal_delta"],
+                    )
+                else:
+                    self.assertIsNone(
+                        receipt["shapley_exact_numerators_by_item_id"]
+                    )
 
     def test_shapley_and_uniform_episode_updates_conserve_terminal_delta(self):
         for method in ("uniform_mc", "shapley"):
@@ -77,15 +80,18 @@ class TrialAdapterTests(unittest.TestCase):
                     method, self.spec, initial_state(), True,
                     self.policy_cpu, self.policy_peak_rss,
                     self.evaluator_cpu, self.credit_cpu,
-                    self.learner_update_calls
+                    self.fit_update_calls,
                 )
                 expected = (
                     receipt["terminal_return"] - receipt["no_memory_return"]
                 ) * 65_536
                 self.assertEqual(sum(receipt["credits_q16_by_item_id"]), expected)
                 if method == "shapley":
-                    self.assertEqual(sum(receipt["shapley_exact_numerators_by_item_id"]),
-                                     5040 * (receipt["terminal_return"] - receipt["no_memory_return"]))
+                    self.assertEqual(
+                        sum(receipt["shapley_exact_numerators_by_item_id"]),
+                        5040 * (receipt["terminal_return"]
+                                - receipt["no_memory_return"]),
+                    )
 
     def test_fit_checkpoint_round_trip_and_tamper_rejection(self):
         for method in METHODS:
@@ -103,16 +109,19 @@ class TrialAdapterTests(unittest.TestCase):
             method, self.spec, initial_state(), True,
             self.policy_cpu, self.policy_peak_rss,
             self.evaluator_cpu, self.credit_cpu,
-            self.learner_update_calls
+            self.fit_update_calls,
         )
+        self.assertEqual(self.fit_update_calls[method], 1)
         fit_weights = list(state["weights"])
         transfer_calls = {name: 0 for name in METHODS}
         transfer_state, receipt = _episode_step(
             method, self.spec, restore_state(snapshot_state(state)), False,
             self.policy_cpu, self.policy_peak_rss,
-            self.evaluator_cpu, self.credit_cpu, transfer_calls
+            self.evaluator_cpu, self.credit_cpu,
+            transfer_calls,
         )
         self.assertEqual(transfer_state["weights"], fit_weights)
+        self.assertEqual(transfer_calls, {name: 0 for name in METHODS})
         self.assertIsNone(receipt["credit_method"])
         self.assertEqual(receipt["credits_q16_by_item_id"], [])
         self.assertFalse(receipt["transfer_feedback_applied"])
