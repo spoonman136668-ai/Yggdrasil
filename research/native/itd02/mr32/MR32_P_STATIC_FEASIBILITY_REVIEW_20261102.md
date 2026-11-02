@@ -89,3 +89,44 @@ Newly PASS:
 - The frozen FIT/TRANSFER seed lists have not been evaluated and must remain untouched until the end-to-end runner and focused invariants pass on one exact SHA.
 
 **Disposition:** static mechanism/kernel and policy/evaluator feasibility PASS. Full experiment readiness remains **UNVERIFIED**. No FIT or TRANSFER task event, no source-family experiment and no scientific acceptance occurred. Continue only with bounded integration of the frozen runner and its tests; do not dispatch the cohort until those checks pass.
+
+
+## 2026-11-02 sequential-stream and integrated adapter gate — PASS
+
+This update supersedes the earlier “still unverified” bullets for the policy/evaluator boundary and hand-fixture adapter. It does **not** clear or execute the preregistered FIT/TRANSFER cohorts.
+
+- Exact tested source head: \`88d38f06b6c40c93b8f5d0bf9cd6062aad64106a\`.
+- Static Actions run: https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/41503085486
+- Ubuntu: 36/36 tests PASS.
+- Windows: 36/36 tests PASS.
+- No Python ResourceWarnings in the final pipe-cleanup run.
+- Protocol blob: \`1fc7179ce06a9cfc4ebebdb6036dd2cf213345f8\`.
+- Policy process blob: \`88ee2442931fea31d233001cecd4968993703bec\`.
+- Sanitized persistent launcher blob: \`7c9ee931c8d025d3731252778cd5cc0a1f37c430\`.
+- Evaluator-only route/replay blob: \`d070586b473ae5ade2a76befdf3d79ae44ed20b0\`.
+- Integrated hand-fixture runner blob: \`9cf5729086acad91f4126f25c8652a53b25c05f28\` (note: exact blob identity is the source returned at the qualified branch head; verify via the file SHA before any later use).
+- Streaming boundary tests blob: \`0da497457df67780167213841f7dc2c9c258d757\`.
+
+### Newly qualified invariants
+
+1. Policy episode begins with public memory records, public selector state and a deterministic nonce derived only from FIT/TRANSFER phase and frozen cluster/episode list positions. It receives no task seed, regime, initial route position or future cue sequence.
+2. The persistent child process receives exactly one current \`(step, item_id)\` cue per request. It never receives the full/future query permutation. The parent evaluator retains the task spec and delivers the cues one at a time.
+3. Windows/Linux policy traces are deterministic under private-target perturbation when public cues are held fixed; timing and RSS are recorded separately and excluded from equality comparisons.
+4. Hidden-target/future-query fields are rejected by exact message schemas. Preterminal learner feedback is rejected; post-episode updates require the terminal marker and episode-boundary clock.
+5. The six-method adapter completes one non-cohort hand episode per method, evaluating exactly 128 coalitions and reconciling empty/full coalition endpoints with no-memory/original policy outcomes.
+6. Shapley exact rational numerators, common denominator 5040 and Q16 credits are recorded; exact integer efficiency is checked. Uniform control credits are also conserved. LOO remains intentionally non-additive.
+7. Hand-fixture FIT update calls are observed at the learner process boundary; transfer-mode adapter calls have a separate counter and prove zero update calls/unchanged learned weights.
+8. Runner acceptance checks apply the frozen +0.02 threshold against **every** comparator; not only the strongest. Transfer cluster cold restores and update-call counters are asserted in the orchestration code.
+
+### Boundary interpretation and remaining work
+
+The child-process boundary is a tested **source/API information boundary with sanitized inherited environment**, not an OS sandbox or cryptographic barrier against a privileged operator who can inspect evaluator source or repository files. The experiment's claim is limited accordingly; this does not authorize original-source or protected first-use.
+
+**Remaining blockers before any cohort run:**
+- The complete frozen FIT/TRANSFER run has not been executed. All frozen seeds remain untouched.
+- The complete two-platform FIT/TRANSFER receipt reconciliation (task/coalition hashes, model/checkpoint hashes, per-cluster returns, update-call counts and resource ceilings) has not yet run at a single exact head.
+- Full runner wall-time and aggregate child/parent peak-memory measurements at full cohort size have not been independently inspected. The hand-fixture adapters prove behavior, not full-cohort resource feasibility.
+- The route world is still a deterministic synthetic development fixture; no Farama/Pycolab/MiniGrid/Crafter/Gridworlds or external independent source has been executed.
+- The per-method evaluator performs equal 128-coalition work on each episode. Shapley allocation is exact; the measured resource comparison still must pass on actual Windows and Ubuntu FIT/TRANSFER runs.
+
+**Disposition:** algebraic kernel, sequential information-flow boundary, deterministic 128-coalition evaluator and hand-fixture six-method adapters are **PASS**. Full cohort qualification and scientific efficacy remain **UNVERIFIED**. Do not reuse MR32-O cohorts, alter thresholds after TRANSFER, integrate, merge, promote or claim independent source admission. FSA-04 issue #83 remains OPEN.
