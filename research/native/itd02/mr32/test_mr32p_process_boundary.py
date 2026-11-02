@@ -3,9 +3,8 @@ from __future__ import annotations
 
 from dataclasses import replace
 import json
-from pathlib import Path
-import subprocess
-import sys
+import os
+from unittest.mock import patch
 import unittest
 
 from counterfactual_shapley import shapley_q16_credits
@@ -14,17 +13,11 @@ from mr32p_evaluator import (
     public_memory_records, public_policy_message, terminal_return, transition,
 )
 from mr32p_policy import initial_state
+from mr32p_process import invoke_policy, PolicyProcessError
 
 
-POLICY_SCRIPT = Path(__file__).with_name("mr32p_policy.py")
-
-
-def run_policy(message: dict) -> subprocess.CompletedProcess:
-    return subprocess.run(
-        [sys.executable, str(POLICY_SCRIPT)],
-        input=json.dumps(message, sort_keys=True, separators=(",", ":")),
-        text=True, capture_output=True, check=False,
-    )
+def run_policy(message: dict) -> dict:
+    return invoke_policy(message)
 
 
 class PolicyProcessBoundaryTests(unittest.TestCase):
@@ -61,23 +54,18 @@ class PolicyProcessBoundaryTests(unittest.TestCase):
         )
         self.assertEqual(left_message, right_message)
         left = run_policy(left_message)
-        right = run_policy(right_message)
-        self.assertEqual(left.returncode, 0, left.stderr)
-        self.assertEqual(right.returncode, 0, right.stderr)
-        self.assertEqual(left.stdout, right.stdout)
+        with patch.dict(os.environ, {"MR32P_HIDDEN_TARGET": "9"}):
+            right = run_policy(right_message)
+        self.assertEqual(left, right)
 
     def test_policy_rejects_hidden_target_injection(self):
         malicious = dict(self.message)
         malicious["target_position"] = self.spec.target_position
-        result = run_policy(malicious)
-        self.assertEqual(result.returncode, 2)
-        self.assertIn("POLICY_MESSAGE_FIELDS", result.stderr)
-        self.assertEqual(result.stdout, "")
+        with self.assertRaisesRegex(PolicyProcessError, "POLICY_MESSAGE_FIELDS"):
+            run_policy(malicious)
 
     def test_policy_output_contains_only_public_action_and_use_receipts(self):
-        result = run_policy(self.message)
-        self.assertEqual(result.returncode, 0, result.stderr)
-        output = json.loads(result.stdout)
+        output = run_policy(self.message)
         self.assertEqual(set(output), {
             "schema", "method", "selected_items", "actions",
             "public_trace", "use_receipts", "state_after_episode",
@@ -92,7 +80,7 @@ class PolicyProcessBoundaryTests(unittest.TestCase):
         self.assertNotIn("terminal_return", serialized)
 
     def test_policy_update_rejects_preterminal_credit(self):
-        result = json.loads(run_policy(self.message).stdout)
+        result = run_policy(self.message)
         update = {
             "schema": "yggdrasil.mr32p.policy-message.v1",
             "operation": "update",
@@ -102,9 +90,8 @@ class PolicyProcessBoundaryTests(unittest.TestCase):
             "use_receipts": result["use_receipts"],
             "credits_q16": [0] * ACTIVE,
         }
-        failed = run_policy(update)
-        self.assertEqual(failed.returncode, 2)
-        self.assertIn("FEEDBACK_BEFORE_TERMINAL", failed.stderr)
+        with self.assertRaisesRegex(PolicyProcessError, "FEEDBACK_BEFORE_TERMINAL"):
+            run_policy(update)
 
     def test_policy_update_rejects_coalition_table_or_hidden_target(self):
         result = json.loads(run_policy(self.message).stdout)
@@ -118,9 +105,8 @@ class PolicyProcessBoundaryTests(unittest.TestCase):
             "credits_q16": [0] * ACTIVE,
             "coalition_values": {0: 0},
         }
-        failed = run_policy(update)
-        self.assertEqual(failed.returncode, 2)
-        self.assertIn("LEARNER_MESSAGE_FIELDS", failed.stderr)
+        with self.assertRaisesRegex(PolicyProcessError, "LEARNER_MESSAGE_FIELDS"):
+            run_policy(update)
 
 
 class EvaluatorCoalitionTests(unittest.TestCase):
@@ -167,6 +153,16 @@ class EvaluatorCoalitionTests(unittest.TestCase):
                          (values[(1 << ACTIVE) - 1] - values[0]) * 65536)
         self.assertEqual(delta,
                          values[(1 << ACTIVE) - 1] - values[0])
+
+    def test_noncohort_hand_fixtures_have_both_success_and_failure_coalitions(self):
+        players = (0, 2, 4, 6, 8, 10, 12)
+        hand_seeds = (37, 41, 43, 47, 53, 59, 61, 67)
+        for index, seed in enumerate(hand_seeds):
+            regime = index % 2
+            spec = make_private_task(seed, regime, index % 3)
+            values = evaluate_all_coalitions(spec, players)
+            self.assertEqual(set(values.values()), {0, 1},
+                             msg=f"degenerate hand fixture seed={seed} regime={regime}")
 
     def test_evaluator_rejects_unordered_or_duplicate_players(self):
         with self.assertRaisesRegex(ValueError, "COALITION_PLAYERS_NOT_SORTED"):
