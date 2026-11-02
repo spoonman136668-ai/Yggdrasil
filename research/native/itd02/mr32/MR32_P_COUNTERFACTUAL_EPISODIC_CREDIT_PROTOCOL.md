@@ -191,7 +191,7 @@ Record exact protocol blob SHA, source commit and source blob SHAs; task-generat
 
 The implementation must have two separately testable interfaces:
 
-1. **Policy process interface:** receives only the frozen public query permutation, public memory records and public policy state; during each episode it returns the seven selected IDs and the 16 action decisions. It is not passed the environment target, transition state, regime role weights, terminal outcome, coalition masks, coalition-return table or evaluator callback.
+1. **Policy process interface:** receives public memory records and public policy state at episode start, plus a deterministic policy-selection nonce independent of task seed, regime, query permutation and outcome. It returns seven selected IDs. Thereafter, it receives exactly one current `(step, item_id)` cue per request, plus those public IDs, public current memory record and public policy state. It never receives the full/future query permutation. The experiment harness drives the sequential request/response stream and records the 16 actions. The process is not passed the environment target, transition state, regime role weights, terminal outcome, coalition masks, coalition-return table or evaluator callback.
 2. **Evaluator interface:** receives the deterministic private task spec and the frozen policy action/use receipt. It performs the 128 counterfactual replays and returns a terminal coalition-value receipt to the experiment harness. The harness converts that table to the selected estimator's allowed per-use credit vector and only then calls the policy's post-episode learner update API.
 
 The experiment harness must serialize and validate the policy input/output contract. The post-episode learner API must reject unrecognized fields and reject any attempt to update before the end-of-episode marker. The hidden target/state and complete coalition table remain outside the policy process. This is an information-boundary test, not a claim of cryptographic secrecy against an operator who can inspect evaluator source.
@@ -211,3 +211,17 @@ Before the first MR32-P task execution, commit a review receipt establishing:
 - no executable cohort is run until the protocol, static feasibility review and focused identifiability tests are committed and frozen.
 
 If exact Shapley or evaluator isolation is infeasible within the frozen budgets, record a protocol-level NO-GO and stop. Do not replace exact Shapley with a cheaper approximation after seeing cohort outcomes.
+
+
+## 15. Sequential policy stream and random-selector nonce
+
+- One policy process is started per policy/episode and remains alive until the episode-end learner update (if any) has completed. The process receives one JSON-lines message per request and emits one response per message; it must read and answer each line before the harness sends the next request.
+- The first \`begin\` request contains only schema, operation, method, the 16 public memory records, policy state and \`policy_nonce\`. It contains no task seed, regime, initial position, public cue permutation or hidden task spec.
+- The next 16 \`step\` requests each contain only schema, operation, method, current step index, current item ID, selected ID list, the public record for that single item and current public policy state. No future query item, complete query list, hidden target or evaluator result is included.
+- The policy state event clock must satisfy \`step == clock % 16\` for each event. It increments once per public event whether the record is selected or not. The learner update is accepted only when the state clock is at an episode boundary and \`episode_terminal=true\`.
+- The random-selector nonce is determined only from public protocol position:
+  \`phase_tag=0x46\` for FIT and \`phase_tag=0x54\` for TRANSFER;
+  \`policy_nonce=(phase_tag<<56)|(cluster_index<<8)|episode_index\`.
+  Cluster and episode indices refer only to the frozen list order. The nonce is not derived from task seed, regime, query permutation, target, terminal outcome or another method's results. Every platform therefore generates the same random selection without revealing future task cues.
+- The persistent child environment is allowlisted and contains no evaluator hidden-state variables. The child is launched with a separate process and sanitized environment. Each request/response is captured as an immutable public trace; timing/RSS are recorded separately and excluded from deterministic trace-equality comparisons.
+- The evaluator harness may retain the complete future query stream because it creates and runs the private task spec. It is responsible for sending one current cue at a time; it must not serialize the full stream into the child request or expose it in child environment variables, filesystem paths, command-line arguments or process working data.
