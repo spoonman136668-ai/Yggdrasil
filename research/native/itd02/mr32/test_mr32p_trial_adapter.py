@@ -14,6 +14,7 @@ class TrialAdapterTests(unittest.TestCase):
     def setUp(self):
         self.spec = make_private_task(73, 0, 2)  # not a FIT/TRANSFER seed
         self.policy_cpu = {method: 0 for method in METHODS}
+        self.policy_peak_rss = {method: 0 for method in METHODS}
         self.evaluator_cpu = {method: 0 for method in METHODS}
         self.credit_cpu = {method: 0 for method in METHODS}
 
@@ -22,7 +23,8 @@ class TrialAdapterTests(unittest.TestCase):
             with self.subTest(method=method):
                 next_state, receipt = _episode_step(
                     method, self.spec, initial_state(), True,
-                    self.policy_cpu, self.evaluator_cpu, self.credit_cpu
+                    self.policy_cpu, self.policy_peak_rss,
+                    self.evaluator_cpu, self.credit_cpu
                 )
                 self.assertEqual(len(receipt["coalition_values"]), 128)
                 self.assertEqual(len(receipt["selected_items"]), 7)
@@ -36,8 +38,18 @@ class TrialAdapterTests(unittest.TestCase):
                 if method in LEARNED:
                     self.assertEqual(receipt["credit_method"], method)
                     self.assertEqual(len(receipt["credits_q16_by_item_id"]), 7)
+                    if method == "shapley":
+                        self.assertEqual(len(receipt["shapley_exact_numerators_by_item_id"]), 7)
+                        self.assertEqual(receipt["shapley_common_denominator"], 5040)
+                        self.assertEqual(
+                            sum(receipt["shapley_exact_numerators_by_item_id"]),
+                            5040 * receipt["terminal_delta"]
+                        )
+                    else:
+                        self.assertIsNone(receipt["shapley_exact_numerators_by_item_id"])
                     self.assertGreaterEqual(self.policy_cpu[method], 0)
                     self.assertGreaterEqual(self.credit_cpu[method], 0)
+                    self.assertGreaterEqual(self.policy_peak_rss[method], 0)
                 else:
                     self.assertIsNone(receipt["credit_method"])
                     self.assertEqual(receipt["credits_q16_by_item_id"], [])
@@ -47,12 +59,16 @@ class TrialAdapterTests(unittest.TestCase):
             with self.subTest(method=method):
                 _, receipt = _episode_step(
                     method, self.spec, initial_state(), True,
-                    self.policy_cpu, self.evaluator_cpu, self.credit_cpu
+                    self.policy_cpu, self.policy_peak_rss,
+            self.evaluator_cpu, self.credit_cpu
                 )
                 expected = (
                     receipt["terminal_return"] - receipt["no_memory_return"]
                 ) * 65_536
                 self.assertEqual(sum(receipt["credits_q16_by_item_id"]), expected)
+                if method == "shapley":
+                    self.assertEqual(sum(receipt["shapley_exact_numerators_by_item_id"]),
+                                     5040 * (receipt["terminal_return"] - receipt["no_memory_return"]))
 
     def test_fit_checkpoint_round_trip_and_tamper_rejection(self):
         for method in METHODS:
