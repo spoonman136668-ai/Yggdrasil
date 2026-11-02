@@ -6,7 +6,8 @@ import unittest
 from mr32p_evaluator import make_private_task
 from mr32p_policy import initial_state
 from mr32p_trial import (
-    LEARNED, METHODS, _episode_step, restore_state, snapshot_state,
+    COMPARATORS, DELTA_THRESHOLD_Q16, LEARNED, METHODS, _episode_step,
+    _frozen_margin_pass, restore_state, snapshot_state,
 )
 
 
@@ -17,6 +18,15 @@ class TrialAdapterTests(unittest.TestCase):
         self.policy_peak_rss = {method: 0 for method in METHODS}
         self.evaluator_cpu = {method: 0 for method in METHODS}
         self.credit_cpu = {method: 0 for method in METHODS}
+
+    def test_frozen_margin_gate_checks_every_comparator(self):
+        passing = {method: DELTA_THRESHOLD_Q16 for method in COMPARATORS}
+        self.assertTrue(_frozen_margin_pass(passing))
+        one_below = dict(passing)
+        one_below[COMPARATORS[-1]] = DELTA_THRESHOLD_Q16 - 1
+        self.assertFalse(_frozen_margin_pass(one_below))
+        with self.assertRaisesRegex(ValueError, "COMPARATOR_DELTA_SET"):
+            _frozen_margin_pass({COMPARATORS[0]: DELTA_THRESHOLD_Q16})
 
     def test_all_six_methods_complete_one_hand_fixture_episode(self):
         for method in METHODS:
