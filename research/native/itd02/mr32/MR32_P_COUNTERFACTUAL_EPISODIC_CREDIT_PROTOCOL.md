@@ -171,3 +171,43 @@ Record exact protocol blob SHA, source commit and source blob SHAs; task-generat
 - No edit to MR32-H/M/O historical code or receipts, S4C1 reference code, accepted refs, native research controllers, queues, schedulers, FORGE, Wingless or production runtime.
 - No merge, promotion, deployment, release, atlas waiver, runner/controller mutation or paid API.
 - This protocol freezes research design only. It does not grant execution, acceptance, source-admission or promotion authority.
+
+
+## 12. Exact integer learning, update and receipt semantics
+
+- \(Q=65536\). All model weights, features, predictions, credit signals and updates are signed integer Q16. No floating-point model arithmetic, BLAS, nondeterministic reductions or platform-specific math is permitted.
+- At the start of each episode, capture the selected seven records' public feature vector at the actual-use event. The immutable feature receipt is \`[Q, evidence_level*Q//7, error_level*Q//3, contradiction_level*Q//3, Q//(1+age), min(uses,16)*Q//16]\`. Use-time feature values cannot be recomputed from the end-of-episode state.
+- Prediction is \`clamp(sum(w[j]*x[j])//Q, -Q, Q)\`; each learner has six weights, initially zero and clamped to \`[-4*Q,4*Q]\`.
+- For terminal delta \(d=v(N)-v(\varnothing)\), uniform control credits are \`floor(d*Q/7)\` for each used memory, then the residual integer units are assigned one per record in ascending immutable item ID until the seven credits sum exactly to \`d*Q\`.
+- Leave-one-out control credit for item \(i\) is exactly \`(v(N)-v(N_without_i))*Q\`. It is not normalized; it can overcount synergy or redundancy. This is intentional and is measured as a control, not corrected after results.
+- Shapley credit numerators are computed from the exact factorial-weighted sum in Section 3 with common denominator \(7!=5040\). For each item, calculate the signed Q16 credit by floor division of \`numerator*Q//5040\`. Since the exact Shapley values sum to the integer episode delta, the remaining Q16 units are nonnegative and fewer than seven; assign them one each in ascending immutable item ID. Assert \`sum(credits_q16)==d*Q\`.
+- For each selected memory in ascending event-step order, compute \`error_q16=credit_q16-prediction_q16\`, then update \`w[j] = clamp(w[j] + (5243*error_q16*x[j])//(Q*Q), -4*Q, 4*Q)\`. The prediction for a receipt is computed against the model state immediately before that receipt's update. No update occurs before the terminal feedback boundary.
+- All three learned selectors use exactly this same feature basis, coefficient count, initializer, clipping, learning rate and update order. Their only difference is the frozen credit estimator.
+- FIT processes clusters in their listed order, episodes 0 through 7 per cluster. Each learned controller carries its own FIT-trained weights/use counts/recency across the complete FIT stream. TRANSFER starts each cluster from the exact immutable FIT terminal checkpoint; no TRANSFER state may flow from one seed cluster to another.
+- A checkpoint is compact sorted-key JSON with schema/version and SHA256. Cold restore must preserve exact weights, counters, next active set and next action. Reject unknown fields, non-integer Q16 values, duplicate item IDs, invalid 7/9 partition or hash mismatch.
+- Per-episode receipt ordering is fixed by \`(seed_cluster_index, episode_index, method_order, coalition_bitmask_ascending)\`; selected memory IDs and credit allocations are serialized in ascending item ID. No dependence on Python set/dict iteration is allowed.
+
+## 13. Leakage-resistant policy/evaluator process boundary
+
+The implementation must have two separately testable interfaces:
+
+1. **Policy process interface:** receives only the frozen public query permutation, public memory records and public policy state; during each episode it returns the seven selected IDs and the 16 action decisions. It is not passed the environment target, transition state, regime role weights, terminal outcome, coalition masks, coalition-return table or evaluator callback.
+2. **Evaluator interface:** receives the deterministic private task spec and the frozen policy action/use receipt. It performs the 128 counterfactual replays and returns a terminal coalition-value receipt to the experiment harness. The harness converts that table to the selected estimator's allowed per-use credit vector and only then calls the policy's post-episode learner update API.
+
+The experiment harness must serialize and validate the policy input/output contract. The post-episode learner API must reject unrecognized fields and reject any attempt to update before the end-of-episode marker. The hidden target/state and complete coalition table remain outside the policy process. This is an information-boundary test, not a claim of cryptographic secrecy against an operator who can inspect evaluator source.
+
+The public task permutation is the same across methods; the hidden target and transition state are identical across coalition replays. Counterfactual replays hold the original policy's seven selected IDs and proposed actions fixed: they intervene only on whether each selected memory's action is admitted, and let the environment evolve normally from the beginning. This defines the causal estimand as the selected memory's contribution within the realized policy's fixed episode coalition game, not as a global effect under re-running the memory selector.
+
+## 14. Static feasibility review before implementation
+
+Before the first MR32-P task execution, commit a review receipt establishing:
+- 128 coalition bitmasks are exactly the complete powerset for seven players, with no duplicate or missing mask;
+- replay engine is deterministic under fixed episode/coalition identity;
+- the policy cannot access the evaluator's hidden target or coalition table through function arguments, shared mutable state, imports, filesystem, environment variables or receipt objects;
+- exact Shapley test fixtures cover additive, null, pure synergy, interchangeable redundancy, harmful record, negative episode delta, item permutation and integer remainder cases;
+- all methods receive the same 128 replay evaluator budget per episode and identical task/query streams;
+- source task generator uses integer-only deterministic operations and identical event/target hashes across Windows and Ubuntu;
+- the protocol seed lists are disjoint from both MR32-M and MR32-O historical cohorts;
+- no executable cohort is run until the protocol, static feasibility review and focused identifiability tests are committed and frozen.
+
+If exact Shapley or evaluator isolation is infeasible within the frozen budgets, record a protocol-level NO-GO and stop. Do not replace exact Shapley with a cheaper approximation after seeing cohort outcomes.
