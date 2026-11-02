@@ -18,6 +18,7 @@ class TrialAdapterTests(unittest.TestCase):
         self.policy_peak_rss = {method: 0 for method in METHODS}
         self.evaluator_cpu = {method: 0 for method in METHODS}
         self.credit_cpu = {method: 0 for method in METHODS}
+        self.learner_update_calls = {method: 0 for method in METHODS}
 
     def test_frozen_margin_gate_checks_every_comparator(self):
         passing = {method: DELTA_THRESHOLD_Q16 for method in COMPARATORS}
@@ -34,7 +35,8 @@ class TrialAdapterTests(unittest.TestCase):
                 next_state, receipt = _episode_step(
                     method, self.spec, initial_state(), True,
                     self.policy_cpu, self.policy_peak_rss,
-                    self.evaluator_cpu, self.credit_cpu
+                    self.evaluator_cpu, self.credit_cpu,
+                    self.learner_update_calls
                 )
                 self.assertEqual(len(receipt["coalition_values"]), 128)
                 self.assertEqual(len(receipt["selected_items"]), 7)
@@ -45,6 +47,8 @@ class TrialAdapterTests(unittest.TestCase):
                 self.assertEqual(receipt["coalition_values"][127],
                                  receipt["terminal_return"])
                 self.assertFalse(receipt["transfer_feedback_applied"])
+        self.assertEqual(self.learner_update_calls[method], 1)
+        self.assertEqual(transfer_calls, {name: 0 for name in METHODS})
                 if method in LEARNED:
                     self.assertEqual(receipt["credit_method"], method)
                     self.assertEqual(len(receipt["credits_q16_by_item_id"]), 7)
@@ -95,7 +99,8 @@ class TrialAdapterTests(unittest.TestCase):
         state, _ = _episode_step(
             method, self.spec, initial_state(), True,
             self.policy_cpu, self.policy_peak_rss,
-            self.evaluator_cpu, self.credit_cpu
+            self.evaluator_cpu, self.credit_cpu,
+            self.learner_update_calls
         )
         fit_weights = list(state["weights"])
         transfer_state, receipt = _episode_step(
