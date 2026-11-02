@@ -133,16 +133,33 @@ def evaluate_all_coalitions(
     return values
 
 
-def public_policy_message(spec: PrivateTaskSpec, method: str,
-                          state: dict) -> dict:
-    """Construct the policy-only view; private task fields are deliberately omitted."""
-    if spec.schema != TASK_SCHEMA:
-        raise ValueError("PRIVATE_TASK_SCHEMA")
+def public_policy_begin_message(method: str, state: dict,
+                               policy_nonce: int) -> dict:
+    """Policy receives public memory records but no query stream or task identity."""
     return {
         "schema": "yggdrasil.mr32p.policy-message.v1",
-        "operation": "act",
+        "operation": "begin",
         "method": method,
-        "public_items": list(spec.public_items),
         "records": public_memory_records(),
+        "state": state,
+        "policy_nonce": policy_nonce,
+    }
+
+
+def public_policy_step_message(method: str, step: int, item_id: int,
+                               selected_items: Sequence[int],
+                               state: dict) -> dict:
+    """Pass only the current public cue; never pass future query items."""
+    records = public_memory_records()
+    if isinstance(item_id, bool) or not isinstance(item_id, int) or item_id not in range(TOTAL):
+        raise ValueError("PUBLIC_POLICY_STEP_ITEM_RANGE")
+    return {
+        "schema": "yggdrasil.mr32p.policy-message.v1",
+        "operation": "step",
+        "method": method,
+        "step": step,
+        "item_id": item_id,
+        "selected_items": list(selected_items),
+        "record": records[item_id],
         "state": state,
     }
