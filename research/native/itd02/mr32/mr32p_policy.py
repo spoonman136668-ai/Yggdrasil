@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import random
 import sys
 
@@ -226,6 +227,7 @@ def apply_post_episode_credits(message: dict) -> dict:
     if not isinstance(credits, list) or len(credits) != ACTIVE:
         raise PolicyInputError("LEARNER_CREDIT_COUNT")
     seen = set()
+    seen_items = set()
     normalized = []
     for use, credit in zip(receipts, credits):
         _require_keys(use, {
@@ -238,8 +240,11 @@ def apply_post_episode_credits(message: dict) -> dict:
         seen.add(step)
         if isinstance(item, bool) or not isinstance(item, int) or not 0 <= item < TOTAL:
             raise PolicyInputError("LEARNER_ITEM_RANGE")
-        if isinstance(action, bool) or action not in (0, 1):
+        if isinstance(action, bool) or not isinstance(action, int) or action not in (0, 1):
             raise PolicyInputError("LEARNER_ACTION_RANGE")
+        if item in seen_items:
+            raise PolicyInputError("LEARNER_DUPLICATE_ITEM")
+        seen_items.add(item)
         if isinstance(credit, bool) or not isinstance(credit, int):
             raise PolicyInputError("LEARNER_CREDIT_INTEGER")
         if not -Q <= credit <= Q:
@@ -247,7 +252,8 @@ def apply_post_episode_credits(message: dict) -> dict:
         features = use["features_q16"]
         if (not isinstance(features, list) or len(features) != 6
                 or any(isinstance(x, bool) or not isinstance(x, int)
-                       for x in features)):
+                       or not 0 <= x <= Q for x in features)
+                or features[0] != Q):
             raise PolicyInputError("LEARNER_FEATURE_VECTOR")
         normalized.append((step, item, tuple(features), credit))
     normalized.sort(key=lambda row: row[0])
@@ -272,6 +278,9 @@ def apply_post_episode_credits(message: dict) -> dict:
 
 def main() -> int:
     try:
+        if any(key.startswith(("MR32P_HIDDEN_", "MR32P_EVALUATOR_"))
+               for key in os.environ):
+            raise PolicyInputError("FORBIDDEN_EVALUATOR_ENVIRONMENT")
         raw = sys.stdin.read()
         message = json.loads(raw)
         if not isinstance(message, dict):
