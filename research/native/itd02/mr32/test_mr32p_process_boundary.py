@@ -94,7 +94,7 @@ class PolicyProcessBoundaryTests(unittest.TestCase):
             run_policy(update)
 
     def test_policy_update_rejects_coalition_table_or_hidden_target(self):
-        result = json.loads(run_policy(self.message).stdout)
+        result = run_policy(self.message)
         update = {
             "schema": "yggdrasil.mr32p.policy-message.v1",
             "operation": "update",
