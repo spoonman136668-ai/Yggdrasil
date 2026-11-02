@@ -46,8 +46,11 @@ class PublicCausalCells:
         cell = self._address(address, retained)
         arm = self._bit(action, "ACTION")
         result = self._bit(public_outcome, "PUBLIC_OUTCOME")
-        old = self._counts[cell][arm][result]
-        self._counts[cell][arm][result] = min(65535, old + 1)
+        # Decay both arms in this public cell before adding new evidence.
+        for prior_arm in self._counts[cell]:
+            for outcome in range(2):
+                prior_arm[outcome] //= 2
+        self._counts[cell][arm][result] += 1
 
     def choose(self, address: int, *, retained: bool = False) -> int | None:
         """Compare matched empirical rates. Abstain without both arms' evidence."""
