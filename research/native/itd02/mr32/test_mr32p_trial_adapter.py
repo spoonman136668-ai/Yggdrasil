@@ -49,6 +49,8 @@ class TrialAdapterTests(unittest.TestCase):
                 self.assertFalse(receipt["transfer_feedback_applied"])
         self.assertEqual(self.learner_update_calls[method], 1)
         self.assertEqual(transfer_calls, {name: 0 for name in METHODS})
+        self.assertEqual(self.learner_update_calls[method], 1)
+        self.assertEqual(transfer_calls, {name: 0 for name in METHODS})
                 if method in LEARNED:
                     self.assertEqual(receipt["credit_method"], method)
                     self.assertEqual(len(receipt["credits_q16_by_item_id"]), 7)
@@ -103,9 +105,11 @@ class TrialAdapterTests(unittest.TestCase):
             self.learner_update_calls
         )
         fit_weights = list(state["weights"])
+        transfer_calls = {name: 0 for name in METHODS}
         transfer_state, receipt = _episode_step(
             method, self.spec, restore_state(snapshot_state(state)), False,
-            self.policy_cpu, self.evaluator_cpu, self.credit_cpu
+            self.policy_cpu, self.policy_peak_rss,
+            self.evaluator_cpu, self.credit_cpu, transfer_calls
         )
         self.assertEqual(transfer_state["weights"], fit_weights)
         self.assertIsNone(receipt["credit_method"])
