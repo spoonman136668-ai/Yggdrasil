@@ -60,7 +60,7 @@ class TrialAdapterTests(unittest.TestCase):
                 _, receipt = _episode_step(
                     method, self.spec, initial_state(), True,
                     self.policy_cpu, self.policy_peak_rss,
-            self.evaluator_cpu, self.credit_cpu
+                    self.evaluator_cpu, self.credit_cpu
                 )
                 expected = (
                     receipt["terminal_return"] - receipt["no_memory_return"]
@@ -84,7 +84,8 @@ class TrialAdapterTests(unittest.TestCase):
         method = "shapley"
         state, _ = _episode_step(
             method, self.spec, initial_state(), True,
-            self.policy_cpu, self.evaluator_cpu, self.credit_cpu
+            self.policy_cpu, self.policy_peak_rss,
+            self.evaluator_cpu, self.credit_cpu
         )
         fit_weights = list(state["weights"])
         transfer_state, receipt = _episode_step(
