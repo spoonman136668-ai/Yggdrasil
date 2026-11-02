@@ -1,8 +1,4 @@
-"""Policy-side process boundary for MR32-P.
-
-This module imports no evaluator or task-generator code. Its only inputs are
-public memory/query records and public selector state.
-"""
+"""Policy-only process for MR32-P; query cues arrive one event at a time."""
 from __future__ import annotations
 
 import hashlib
@@ -15,6 +11,7 @@ import time
 Q = 65_536
 TOTAL = 16
 ACTIVE = 7
+EVENTS = 16
 METHODS = {
     "random", "fixed_recency", "evidence_only",
     "uniform_mc", "leave_one_out", "shapley",
@@ -31,6 +28,17 @@ class PolicyInputError(ValueError):
 def _require_keys(value: dict, keys: set[str], code: str) -> None:
     if not isinstance(value, dict) or set(value) != keys:
         raise PolicyInputError(code)
+
+
+def _peak_rss_bytes() -> int | None:
+    try:
+        if os.name == "nt":
+            import psutil  # type: ignore
+            return int(psutil.Process().memory_info().peak_wset)
+        import resource
+        return int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024)
+    except Exception:
+        return None
 
 
 def _features(record: dict, uses: list[int], last_used: list[int],
@@ -53,31 +61,33 @@ def _predict(weights: list[int], features: tuple[int, ...]) -> int:
     return max(-Q, min(Q, sum(w * x for w, x in zip(weights, features)) // Q))
 
 
+def _validate_record(row: object) -> dict:
+    _require_keys(row, {
+        "item_id", "evidence_level", "error_level",
+        "contradiction_level", "proposed_action",
+    }, "PUBLIC_RECORD_FIELDS")
+    for key in ("item_id", "evidence_level", "error_level",
+                "contradiction_level", "proposed_action"):
+        value = row[key]
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise PolicyInputError("PUBLIC_RECORD_INTEGER")
+    if not 0 <= row["item_id"] < TOTAL:
+        raise PolicyInputError("PUBLIC_ITEM_RANGE")
+    if not 0 <= row["evidence_level"] <= 7:
+        raise PolicyInputError("PUBLIC_EVIDENCE_RANGE")
+    if not 0 <= row["error_level"] <= 3:
+        raise PolicyInputError("PUBLIC_ERROR_RANGE")
+    if not 0 <= row["contradiction_level"] <= 3:
+        raise PolicyInputError("PUBLIC_CONTRADICTION_RANGE")
+    if row["proposed_action"] not in (0, 1):
+        raise PolicyInputError("PUBLIC_ACTION_RANGE")
+    return dict(row)
+
+
 def _validate_records(records: object) -> list[dict]:
     if not isinstance(records, list) or len(records) != TOTAL:
         raise PolicyInputError("PUBLIC_RECORD_COUNT")
-    normalized = []
-    for row in records:
-        _require_keys(row, {
-            "item_id", "evidence_level", "error_level",
-            "contradiction_level", "proposed_action",
-        }, "PUBLIC_RECORD_FIELDS")
-        for key in ("item_id", "evidence_level", "error_level",
-                    "contradiction_level", "proposed_action"):
-            value = row[key]
-            if isinstance(value, bool) or not isinstance(value, int):
-                raise PolicyInputError("PUBLIC_RECORD_INTEGER")
-        if not 0 <= row["item_id"] < TOTAL:
-            raise PolicyInputError("PUBLIC_ITEM_RANGE")
-        if not 0 <= row["evidence_level"] <= 7:
-            raise PolicyInputError("PUBLIC_EVIDENCE_RANGE")
-        if not 0 <= row["error_level"] <= 3:
-            raise PolicyInputError("PUBLIC_ERROR_RANGE")
-        if not 0 <= row["contradiction_level"] <= 3:
-            raise PolicyInputError("PUBLIC_CONTRADICTION_RANGE")
-        if row["proposed_action"] not in (0, 1):
-            raise PolicyInputError("PUBLIC_ACTION_RANGE")
-        normalized.append(dict(row))
+    normalized = [_validate_record(row) for row in records]
     if {row["item_id"] for row in normalized} != set(range(TOTAL)):
         raise PolicyInputError("PUBLIC_ITEM_SET")
     return sorted(normalized, key=lambda row: row["item_id"])
@@ -97,7 +107,7 @@ def _validate_state(state: object) -> dict:
     if not isinstance(last_used, list) or len(last_used) != TOTAL:
         raise PolicyInputError("PUBLIC_STATE_RECENCY")
     for value in weights:
-        if isinstance(value, bool) or not isinstance(value, int) or not -4*Q <= value <= 4*Q:
+        if isinstance(value, bool) or not isinstance(value, int) or not -4 * Q <= value <= 4 * Q:
             raise PolicyInputError("PUBLIC_STATE_WEIGHT_RANGE")
     for value in uses:
         if isinstance(value, bool) or not isinstance(value, int) or value < 0:
@@ -118,17 +128,6 @@ def _validate_state(state: object) -> dict:
     }
 
 
-def _peak_rss_bytes() -> int | None:
-    try:
-        if os.name == "nt":
-            import psutil  # type: ignore
-            return int(psutil.Process().memory_info().peak_wset)
-        import resource
-        return int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024)
-    except Exception:
-        return None
-
-
 def initial_state() -> dict:
     return {
         "schema": STATE_SCHEMA,
@@ -139,30 +138,25 @@ def initial_state() -> dict:
     }
 
 
-def select_and_act(message: dict) -> dict:
+def begin_episode(message: dict) -> dict:
     _require_keys(message, {
-        "schema", "operation", "method", "public_items", "records", "state"
-    }, "POLICY_MESSAGE_FIELDS")
-    if message["schema"] != INPUT_SCHEMA or message["operation"] != "act":
-        raise PolicyInputError("POLICY_MESSAGE_SCHEMA_OR_OPERATION")
+        "schema", "operation", "method", "records", "state", "policy_nonce"
+    }, "POLICY_BEGIN_FIELDS")
+    if message["schema"] != INPUT_SCHEMA or message["operation"] != "begin":
+        raise PolicyInputError("POLICY_BEGIN_SCHEMA")
     method = message["method"]
     if method not in METHODS:
         raise PolicyInputError("POLICY_METHOD")
-    items = message["public_items"]
-    if (not isinstance(items, list) or len(items) != TOTAL
-            or any(isinstance(x, bool) or not isinstance(x, int) for x in items)
-            or set(items) != set(range(TOTAL))):
-        raise PolicyInputError("PUBLIC_QUERY_PERMUTATION")
+    nonce = message["policy_nonce"]
+    if isinstance(nonce, bool) or not isinstance(nonce, int) or not 0 <= nonce < 2**64:
+        raise PolicyInputError("POLICY_NONCE_RANGE")
     records = _validate_records(message["records"])
     state = _validate_state(message["state"])
     by_id = {row["item_id"]: row for row in records}
 
     if method == "random":
-        digest = hashlib.sha256(
-            json.dumps(items, separators=(",", ":")).encode("ascii")
-        ).digest()
-        rng = random.Random(int.from_bytes(digest[:8], "big"))
-        selected = set(rng.sample(range(TOTAL), ACTIVE))
+        order = random.Random(nonce).sample(range(TOTAL), TOTAL)
+        selected = set(order[:ACTIVE])
     elif method == "fixed_recency":
         selected = set(sorted(
             range(TOTAL), key=lambda item: (-state["last_used"][item], item)
@@ -183,40 +177,67 @@ def select_and_act(message: dict) -> dict:
 
     if len(selected) != ACTIVE:
         raise PolicyInputError("ACTIVE_PARTITION")
-    actions = []
-    uses = []
-    public_trace = []
-    for step, item in enumerate(items):
-        if item in selected:
-            row = by_id[item]
-            features = _features(row, state["uses"], state["last_used"],
-                                 state["clock"])
-            action = row["proposed_action"]
-            uses.append({
-                "step": step,
-                "item_id": item,
-                "action": action,
-                "features_q16": list(features),
-            })
-            state["uses"][item] += 1
-            state["last_used"][item] = state["clock"]
-        else:
-            action = 0
-        actions.append(action)
-        public_trace.append({
-            "step": step, "item_id": item,
-            "selected": item in selected, "action": action,
-        })
-        state["clock"] += 1
-
     return {
-        "schema": "yggdrasil.mr32p.policy-output.v1",
+        "schema": "yggdrasil.mr32p.policy-begin-output.v1",
         "method": method,
         "selected_items": sorted(selected),
-        "actions": actions,
-        "public_trace": public_trace,
-        "use_receipts": uses,
-        "state_after_episode": state,
+        "state": state,
+    }
+
+
+def step_episode(message: dict) -> dict:
+    _require_keys(message, {
+        "schema", "operation", "method", "step", "item_id",
+        "selected_items", "record", "state",
+    }, "POLICY_STEP_FIELDS")
+    if message["schema"] != INPUT_SCHEMA or message["operation"] != "step":
+        raise PolicyInputError("POLICY_STEP_SCHEMA")
+    method = message["method"]
+    if method not in METHODS:
+        raise PolicyInputError("POLICY_METHOD")
+    step, item = message["step"], message["item_id"]
+    if isinstance(step, bool) or not isinstance(step, int) or not 0 <= step < EVENTS:
+        raise PolicyInputError("POLICY_STEP_RANGE")
+    if isinstance(item, bool) or not isinstance(item, int) or not 0 <= item < TOTAL:
+        raise PolicyInputError("POLICY_ITEM_RANGE")
+    record = _validate_record(message["record"])
+    if record["item_id"] != item:
+        raise PolicyInputError("POLICY_RECORD_ITEM_MISMATCH")
+    selected_items = message["selected_items"]
+    if (not isinstance(selected_items, list) or len(selected_items) != ACTIVE
+            or selected_items != sorted(set(selected_items))
+            or any(isinstance(x, bool) or not isinstance(x, int)
+                   or not 0 <= x < TOTAL for x in selected_items)):
+        raise PolicyInputError("POLICY_SELECTED_PARTITION")
+    state = _validate_state(message["state"])
+    if step != state["clock"] % EVENTS:
+        raise PolicyInputError("POLICY_STEP_CLOCK_MISMATCH")
+    selected = item in set(selected_items)
+    if selected:
+        features = _features(record, state["uses"], state["last_used"],
+                             state["clock"])
+        action = record["proposed_action"]
+        receipt = {
+            "step": step,
+            "item_id": item,
+            "action": action,
+            "features_q16": list(features),
+        }
+        state["uses"][item] += 1
+        state["last_used"][item] = state["clock"]
+    else:
+        action = 0
+        receipt = None
+    state["clock"] += 1
+    return {
+        "schema": "yggdrasil.mr32p.policy-step-output.v1",
+        "method": method,
+        "step": step,
+        "item_id": item,
+        "selected": selected,
+        "action": action,
+        "use_receipt": receipt,
+        "state": state,
     }
 
 
@@ -233,12 +254,14 @@ def apply_post_episode_credits(message: dict) -> dict:
     if message["episode_terminal"] is not True:
         raise PolicyInputError("FEEDBACK_BEFORE_TERMINAL")
     state = _validate_state(message["state"])
+    if state["clock"] % EVENTS != 0:
+        raise PolicyInputError("FEEDBACK_NOT_EPISODE_BOUNDARY")
     receipts, credits = message["use_receipts"], message["credits_q16"]
     if not isinstance(receipts, list) or len(receipts) != ACTIVE:
         raise PolicyInputError("LEARNER_USE_RECEIPTS")
     if not isinstance(credits, list) or len(credits) != ACTIVE:
         raise PolicyInputError("LEARNER_CREDIT_COUNT")
-    seen = set()
+    seen_steps = set()
     seen_items = set()
     normalized = []
     for use, credit in zip(receipts, credits):
@@ -247,19 +270,17 @@ def apply_post_episode_credits(message: dict) -> dict:
         }, "LEARNER_USE_FIELDS")
         step, item, action = use["step"], use["item_id"], use["action"]
         if (isinstance(step, bool) or not isinstance(step, int)
-                or not 0 <= step < TOTAL or step in seen):
+                or not 0 <= step < EVENTS or step in seen_steps):
             raise PolicyInputError("LEARNER_STEP_RANGE_OR_DUPLICATE")
-        seen.add(step)
+        seen_steps.add(step)
         if isinstance(item, bool) or not isinstance(item, int) or not 0 <= item < TOTAL:
             raise PolicyInputError("LEARNER_ITEM_RANGE")
-        if isinstance(action, bool) or not isinstance(action, int) or action not in (0, 1):
-            raise PolicyInputError("LEARNER_ACTION_RANGE")
         if item in seen_items:
             raise PolicyInputError("LEARNER_DUPLICATE_ITEM")
         seen_items.add(item)
-        if isinstance(credit, bool) or not isinstance(credit, int):
-            raise PolicyInputError("LEARNER_CREDIT_INTEGER")
-        if not -Q <= credit <= Q:
+        if isinstance(action, bool) or not isinstance(action, int) or action not in (0, 1):
+            raise PolicyInputError("LEARNER_ACTION_RANGE")
+        if isinstance(credit, bool) or not isinstance(credit, int) or not -Q <= credit <= Q:
             raise PolicyInputError("LEARNER_CREDIT_RANGE")
         features = use["features_q16"]
         if (not isinstance(features, list) or len(features) != 6
@@ -269,7 +290,6 @@ def apply_post_episode_credits(message: dict) -> dict:
             raise PolicyInputError("LEARNER_FEATURE_VECTOR")
         normalized.append((step, item, tuple(features), credit))
     normalized.sort(key=lambda row: row[0])
-
     for step, item, features, credit in normalized:
         prediction = _predict(state["weights"], features)
         error = credit - prediction
@@ -289,25 +309,38 @@ def apply_post_episode_credits(message: dict) -> dict:
 
 
 def main() -> int:
+    cpu_last = time.process_time_ns()
     try:
         if any(key.startswith(("MR32P_HIDDEN_", "MR32P_EVALUATOR_"))
                for key in os.environ):
             raise PolicyInputError("FORBIDDEN_EVALUATOR_ENVIRONMENT")
-        raw = sys.stdin.read()
-        message = json.loads(raw)
-        if not isinstance(message, dict):
-            raise PolicyInputError("POLICY_MESSAGE_NOT_OBJECT")
-        cpu_start = time.process_time_ns()
-        if message.get("operation") == "act":
-            result = select_and_act(message)
-        elif message.get("operation") == "update":
-            result = apply_post_episode_credits(message)
-        else:
-            raise PolicyInputError("POLICY_OPERATION")
-        result["policy_cpu_ns"] = time.process_time_ns() - cpu_start
-        result["policy_peak_rss_bytes"] = _peak_rss_bytes()
-        sys.stdout.write(json.dumps(result, sort_keys=True, separators=(",", ":")))
-        sys.stdout.write("\n")
+        for raw in sys.stdin:
+            try:
+                message = json.loads(raw)
+                if not isinstance(message, dict):
+                    raise PolicyInputError("POLICY_MESSAGE_NOT_OBJECT")
+                operation = message.get("operation")
+                if operation == "begin":
+                    result = begin_episode(message)
+                elif operation == "step":
+                    result = step_episode(message)
+                elif operation == "update":
+                    result = apply_post_episode_credits(message)
+                else:
+                    raise PolicyInputError("POLICY_OPERATION")
+                cpu_now = time.process_time_ns()
+                result["policy_cpu_ns"] = cpu_now - cpu_last
+                cpu_last = cpu_now
+                result["policy_peak_rss_bytes"] = _peak_rss_bytes()
+                sys.stdout.write(json.dumps(
+                    result, sort_keys=True, separators=(",", ":")
+                ) + "\n")
+                sys.stdout.flush()
+            except Exception as exc:
+                sys.stdout.write(json.dumps({
+                    "error": type(exc).__name__ + ":" + str(exc)
+                }, sort_keys=True, separators=(",", ":")) + "\n")
+                sys.stdout.flush()
         return 0
     except Exception as exc:
         sys.stderr.write(type(exc).__name__ + ":" + str(exc) + "\n")
