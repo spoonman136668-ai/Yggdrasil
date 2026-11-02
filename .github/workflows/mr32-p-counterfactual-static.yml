@@ -33,8 +33,8 @@ jobs:
         shell: bash
         run: |
           cd research/native/itd02/mr32
-          python -B -m py_compile counterfactual_shapley.py test_counterfactual_shapley.py mr32p_policy.py mr32p_process.py mr32p_evaluator.py test_mr32p_process_boundary.py
-          python -B -m unittest -v test_counterfactual_shapley test_mr32p_process_boundary
+          python -B -m py_compile counterfactual_shapley.py test_counterfactual_shapley.py mr32p_policy.py mr32p_process.py mr32p_evaluator.py mr32p_trial.py test_mr32p_process_boundary.py test_mr32p_trial_adapter.py
+          python -B -m unittest -v test_counterfactual_shapley test_mr32p_process_boundary test_mr32p_trial_adapter
 
       - name: Verify source checkout is unchanged
         shell: bash
