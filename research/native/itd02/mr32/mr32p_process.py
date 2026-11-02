@@ -101,19 +101,31 @@ class PolicySession:
                 self.process.stdin.close()
             except Exception:
                 pass
+        timed_out = False
         try:
             self.process.wait(timeout=self.timeout_seconds)
         except subprocess.TimeoutExpired:
+            timed_out = True
             self.process.kill()
             self.process.wait()
-            raise PolicyProcessError("POLICY_SESSION_CLOSE_TIMEOUT")
-        if self.process.returncode != 0:
-            stderr = ""
-            if self.process.stderr is not None:
+        stderr = ""
+        returncode = self.process.returncode
+        if returncode != 0 and self.process.stderr is not None:
+            try:
                 stderr = self.process.stderr.read()
+            except Exception:
+                pass
+        for stream in (self.process.stdout, self.process.stderr):
+            if stream is not None:
+                try:
+                    stream.close()
+                except Exception:
+                    pass
+        if timed_out:
+            raise PolicyProcessError("POLICY_SESSION_CLOSE_TIMEOUT")
+        if returncode != 0:
             raise PolicyProcessError(
-                "POLICY_SESSION_EXIT:" + str(self.process.returncode)
-                + ":" + stderr.strip()
+                "POLICY_SESSION_EXIT:" + str(returncode) + ":" + stderr.strip()
             )
 
     def __enter__(self) -> "PolicySession":
