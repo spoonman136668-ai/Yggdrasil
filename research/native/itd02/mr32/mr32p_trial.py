@@ -45,8 +45,9 @@ RESULT_SCHEMA = "yggdrasil.mr32p.counterfactual-trial.v1"
 BOOTSTRAP_SEED = 320116
 BOOTSTRAP_DRAWS = 10_000
 DELTA_THRESHOLD_Q16 = 1311
-PARENT_PROTOCOL_SHA = "f8182087d63513f1bc1031a3a37b355c826a5e14"
-PROTOCOL_SHA = "823d006fd8453907a19c608770d682135aba070d"
+PARENT_PROTOCOL_COMMIT = "68f21c26e9cf42390cd1e09d2a2403011827d3cb"
+PROTOCOL_COMMIT = "09d3c11f2e55385c4ff1bea9035a3bc60c6e5c4d"
+PROTOCOL_BLOB_SHA = "1fc7179ce06a9cfc4ebebdb6036dd2cf213345f8"
 
 
 def _canonical(value: object) -> bytes:
@@ -493,8 +494,9 @@ def run() -> dict:
         "classification": "CONTROLLED_SYNTHETIC_DEVELOPMENT_ONLY",
         "source_commit": os.environ.get("GITHUB_SHA"),
         "protocol": {
-            "parent_commit": "68f21c26e9cf42390cd1e09d2a2403011827d3cb",
-            "protocol_commit": PROTOCOL_SHA,
+            "parent_commit": PARENT_PROTOCOL_COMMIT,
+            "protocol_commit": PROTOCOL_COMMIT,
+            "protocol_blob_sha256": PROTOCOL_BLOB_SHA,
             "fit_seeds": list(FIT_SEEDS),
             "transfer_seeds": list(TRANSFER_SEEDS),
             "fit_episode_count": len(fit_receipts) // len(METHODS),
