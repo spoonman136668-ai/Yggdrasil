@@ -218,6 +218,16 @@ def _episode_step(method: str, spec, state: dict, training: bool,
     return state_after, episode_receipt
 
 
+def _frozen_margin_pass(deltas_q16: dict[str, int]) -> bool:
+    if set(deltas_q16) != set(COMPARATORS):
+        raise ValueError("MR32P_COMPARATOR_DELTA_SET")
+    if any(isinstance(value, bool) or not isinstance(value, int)
+           for value in deltas_q16.values()):
+        raise ValueError("MR32P_COMPARATOR_DELTA_INTEGER")
+    return all(value >= DELTA_THRESHOLD_Q16
+               for value in deltas_q16.values())
+
+
 def _bootstrap_lower(differences: list[int]) -> int:
     rng = random.Random(BOOTSTRAP_SEED)
     n = len(differences)
@@ -391,7 +401,7 @@ def run() -> dict:
         for method in COMPARATORS
     }
     falsifiers = {
-        "delta_at_least_0_02_each_comparator": all(delta_margin_pass.values()),
+        "delta_at_least_0_02_each_comparator": _frozen_margin_pass(comparator_delta_q16),
         "wins_at_least_24_of_32": wins[strongest] >= 24,
         "wins_at_least_12_of_16_each_regime": all(
             value >= 12 for value in regime_wins.values()
