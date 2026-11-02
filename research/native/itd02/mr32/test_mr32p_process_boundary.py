@@ -70,13 +70,15 @@ class PolicyProcessBoundaryTests(unittest.TestCase):
         output = run_policy(self.message)
         self.assertEqual(set(output), {
             "schema", "method", "selected_items", "actions",
-            "public_trace", "use_receipts", "state_after_episode", "policy_cpu_ns",
+            "public_trace", "use_receipts", "state_after_episode", "policy_cpu_ns", "policy_peak_rss_bytes",
         })
         self.assertEqual(len(output["actions"]), EVENTS)
         self.assertEqual(len(output["selected_items"]), ACTIVE)
         self.assertEqual(len(output["use_receipts"]), ACTIVE)
         self.assertEqual(output["state_after_episode"]["clock"], EVENTS)
         self.assertGreaterEqual(output["policy_cpu_ns"], 0)
+        self.assertTrue(output["policy_peak_rss_bytes"] is None
+                        or output["policy_peak_rss_bytes"] > 0)
         serialized = json.dumps(output, sort_keys=True)
         self.assertNotIn("target_position", serialized)
         self.assertNotIn("coalition_values", serialized)
