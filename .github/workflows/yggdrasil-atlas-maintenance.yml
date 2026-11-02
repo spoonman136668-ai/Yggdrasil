@@ -1,0 +1,147 @@
+name: Yggdrasil Atlas Maintenance
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+  workflow_run:
+    workflows: [Yggdrasil G29 Atlas Acceptance]
+    types: [completed]
+  pull_request:
+    paths:
+      - .github/workflows/yggdrasil-atlas-maintenance.yml
+      - scripts/repair_code_atlas.py
+      - tests/test_atlas_repair.py
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+concurrency:
+  group: atlas-maintenance-${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha }}
+  cancel-in-progress: false
+jobs:
+  source:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      ((github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request' &&
+        github.event.workflow_run.head_repository.full_name == github.repository) ||
+       ((github.event_name == 'pull_request' || github.event_name == 'pull_request_target') && github.event.pull_request.user.login == 'spoonman136668-ai' &&
+        github.event.pull_request.head.repo.full_name == github.repository))
+    runs-on: ubuntu-latest
+    outputs:
+      source: ${{ steps.resolve.outputs.source }}
+      pr: ${{ steps.resolve.outputs.pr }}
+      control: ${{ steps.control.outputs.sha }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - id: control
+        shell: bash
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - id: resolve
+        name: Lease the exact open owner proposal
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python -I scripts/repair_code_atlas.py resolve
+  qualification:
+    needs: source
+    name: atlas-qualification (${{ matrix.platform }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux
+            os: ubuntu-latest
+          - platform: windows
+            os: windows-2022
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.source.outputs.control }}
+          path: control
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.source.outputs.source }}
+          path: candidate
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Build an isolated metadata-only companion using the control builder
+        env:
+          ATLAS_SOURCE: ${{ needs.source.outputs.source }}
+        run: python -I control/scripts/repair_code_atlas.py prepare --root candidate --control control --source "$env:ATLAS_SOURCE" --receipt receipts/receipt.json
+        if: runner.os == 'Windows'
+      - name: Build an isolated metadata-only companion using the control builder
+        if: runner.os != 'Windows'
+        env:
+          ATLAS_SOURCE: ${{ needs.source.outputs.source }}
+        run: python -I control/scripts/repair_code_atlas.py prepare --root candidate --control control --source "$ATLAS_SOURCE" --receipt receipts/receipt.json
+      - name: Run unchanged committed-blob acceptance
+        working-directory: candidate
+        run: python scripts/build_code_atlas.py --check
+      - name: Run unchanged atlas guard tests without write credentials
+        working-directory: candidate
+        run: python -m unittest discover -s tests -p test_code_atlas.py -v
+      - name: Run control repair regression tests without write credentials
+        run: python -m unittest discover -s control/tests -p test_atlas_repair.py -v
+      - name: Qualify the maintenance change against the full suite
+        if: github.event_name == 'pull_request'
+        working-directory: candidate
+        run: python -m unittest discover -s tests -v
+      - name: Verify qualification left the exact companion untouched
+        run: python -I control/scripts/repair_code_atlas.py verify --root candidate --receipt receipts/receipt.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: atlas-qualification-${{ matrix.platform }}
+          path: receipts/receipt.json
+          if-no-files-found: error
+          retention-days: 14
+  publish:
+    # PR code never receives write credentials. These two events load the
+    # workflow and control helper from trusted base/default main.
+    if: github.event_name == 'workflow_run' || github.event_name == 'pull_request_target'
+    needs: [source, qualification]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: write
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.source.outputs.control }}
+          path: control
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.source.outputs.source }}
+          path: candidate
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: atlas-qualification-*
+          path: receipts
+      - name: Independently rebuild, compare both OS receipts, recheck lease, publish companion and dispatch strict G29
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ATLAS_SOURCE: ${{ needs.source.outputs.source }}
+          ATLAS_PR: ${{ needs.source.outputs.pr }}
+        run: python -I control/scripts/repair_code_atlas.py publish --root candidate --control control --source "$ATLAS_SOURCE" --pr "$ATLAS_PR" --receipts receipts
