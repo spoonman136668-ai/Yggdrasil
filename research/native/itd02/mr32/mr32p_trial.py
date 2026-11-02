@@ -512,6 +512,7 @@ def run() -> dict:
             "learner_update_calls": fit_update_calls,
             "cluster_receipts": fit_cluster_receipts,
             "checkpoint_sha256": checkpoint_sha256,
+            "weights_sha256": fit_weights_sha256,
             "checkpoint_bytes": checkpoint_bytes,
             "episode_receipts": fit_receipts,
         },
