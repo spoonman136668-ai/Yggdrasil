@@ -74,7 +74,7 @@ def transition(position: int, item: int, action: int, regime: int) -> int:
         raise ValueError("WORLD_POSITION_RANGE")
     if not 0 <= item < TOTAL:
         raise ValueError("WORLD_ITEM_RANGE")
-    if action not in (0, 1):
+    if isinstance(action, bool) or not isinstance(action, int) or action not in (0, 1):
         raise ValueError("WORLD_ACTION_RANGE")
     if regime not in (0, 1):
         raise ValueError("WORLD_REGIME_RANGE")
