@@ -46,8 +46,11 @@ class PublicCausalCells:
         cell = self._address(address, retained)
         arm = self._bit(action, "ACTION")
         result = self._bit(public_outcome, "PUBLIC_OUTCOME")
-        old = self._counts[cell][arm][result]
-        self._counts[cell][arm][result] = min(65535, old + 1)
+        # Decay both arms in this public cell before adding new evidence.
+        for prior_arm in self._counts[cell]:
+            for outcome in range(2):
+                prior_arm[outcome] //= 2
+        self._counts[cell][arm][result] += 1
 
     def choose(self, address: int, *, retained: bool = False) -> int | None:
         """Compare matched empirical rates. Abstain without both arms' evidence."""
@@ -58,8 +61,15 @@ class PublicCausalCells:
         if not trials0 or not trials1:
             return None
         # Exact integer cross-products avoid rounding/tuned thresholds.
-        lhs, rhs = one0 * trials1, one1 * trials0
+        lhs = (one0 + 1) * (trials1 + 2)
+        rhs = (one1 + 1) * (trials0 + 2)
         if lhs == rhs:
+            return None
+        gap = lhs - rhs
+        # Abstain inside one empirical standard error of the rate gap.
+        variance = (one0 * zero0 * trials1 ** 3
+                    + one1 * zero1 * trials0 ** 3)
+        if gap * gap * trials0 * trials1 <= variance:
             return None
         return 0 if lhs > rhs else 1
 
