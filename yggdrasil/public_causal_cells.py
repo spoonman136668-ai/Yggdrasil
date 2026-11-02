@@ -61,6 +61,12 @@ class PublicCausalCells:
         lhs, rhs = one0 * trials1, one1 * trials0
         if lhs == rhs:
             return None
+        gap = lhs - rhs
+        # Abstain inside one empirical standard error of the rate gap.
+        variance = (one0 * zero0 * trials1 ** 3
+                    + one1 * zero1 * trials0 ** 3)
+        if gap * gap * trials0 * trials1 <= variance:
+            return None
         return 0 if lhs > rhs else 1
 
     def snapshot(self) -> bytes:
