@@ -58,8 +58,15 @@ class PublicCausalCells:
         if not trials0 or not trials1:
             return None
         # Exact integer cross-products avoid rounding/tuned thresholds.
-        lhs, rhs = one0 * trials1, one1 * trials0
+        lhs = (one0 + 1) * (trials1 + 2)
+        rhs = (one1 + 1) * (trials0 + 2)
         if lhs == rhs:
+            return None
+        gap = lhs - rhs
+        # Abstain inside one empirical standard error of the rate gap.
+        variance = (one0 * zero0 * trials1 ** 3
+                    + one1 * zero1 * trials0 ** 3)
+        if gap * gap * trials0 * trials1 <= variance:
             return None
         return 0 if lhs > rhs else 1
 
