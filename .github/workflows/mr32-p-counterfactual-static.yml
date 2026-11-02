@@ -1,0 +1,41 @@
+name: MR32-P Counterfactual Credit Static Qualification
+
+on:
+  push:
+    branches:
+      - research/mr32-counterfactual-episodic-credit-20261102
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mr32-p-static-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  algebraic:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+
+      - name: Compile exact-credit kernel and algebraic tests
+        shell: bash
+        run: |
+          cd research/native/itd02/mr32
+          python -B -m py_compile counterfactual_shapley.py test_counterfactual_shapley.py
+          python -B -m unittest -v test_counterfactual_shapley
+
+      - name: Verify source checkout is unchanged
+        shell: bash
+        run: git diff --exit-code
