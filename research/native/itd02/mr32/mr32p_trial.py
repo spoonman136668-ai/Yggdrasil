@@ -83,6 +83,19 @@ def restore_state(raw: bytes) -> dict:
     return json.loads(_canonical(state).decode("utf-8"))
 
 
+def _policy_nonce(phase: str, cluster_index: int, episode_index: int) -> int:
+    if phase not in ("fit", "transfer"):
+        raise ValueError("MR32P_POLICY_NONCE_PHASE")
+    if not 0 <= cluster_index < (16 if phase == "fit" else 32):
+        raise ValueError("MR32P_POLICY_NONCE_CLUSTER")
+    if not 0 <= episode_index < 8:
+        raise ValueError("MR32P_POLICY_NONCE_EPISODE")
+    phase_tag = 0x46 if phase == "fit" else 0x54
+    # Derived only from public protocol position, never task seed, regime,
+    # query permutation or outcome.
+    return (phase_tag << 56) | (cluster_index << 8) | episode_index
+
+
 def _private_spec_sha(spec) -> str:
     return _sha({
         "seed": spec.seed,
@@ -304,7 +317,7 @@ def run() -> dict:
                 next_state, receipt = _episode_step(
                     method, spec, fit_states[method], True,
                     policy_cpu, policy_peak_rss, evaluator_cpu, credit_cpu,
-                    fit_update_calls
+                    fit_update_calls, _policy_nonce("fit", cluster_index, episode)
                 )
                 fit_states[method] = next_state
                 fit_receipts.append(receipt)
@@ -360,7 +373,7 @@ def run() -> dict:
                 next_state, receipt = _episode_step(
                     method, spec, cluster_states[method], False,
                     policy_cpu, policy_peak_rss, evaluator_cpu, credit_cpu,
-                    cluster_update_calls
+                    cluster_update_calls, _policy_nonce("transfer", cluster_index, episode)
                 )
                 cluster_states[method] = next_state
                 transfer_receipts.append(receipt)
