@@ -382,8 +382,16 @@ def run() -> dict:
     parent_cpu = time.process_time_ns() - start_cpu
     wall = time.perf_counter_ns() - start_wall
 
+    comparator_delta_q16 = {
+        method: sum(paired[method]) // len(TRANSFER_SEEDS)
+        for method in COMPARATORS
+    }
+    delta_margin_pass = {
+        method: comparator_delta_q16[method] >= DELTA_THRESHOLD_Q16
+        for method in COMPARATORS
+    }
     falsifiers = {
-        "delta_at_least_0_02": mean_delta_q16 >= 1311,
+        "delta_at_least_0_02_each_comparator": all(delta_margin_pass.values()),
         "wins_at_least_24_of_32": wins[strongest] >= 24,
         "wins_at_least_12_of_16_each_regime": all(
             value >= 12 for value in regime_wins.values()
@@ -432,8 +440,10 @@ def run() -> dict:
             "cold_restore_cluster_count_by_method": cold_restore_counts,
             "method_mean_terminal_success_q16": means,
             "strongest_comparator": strongest,
-            "shapley_mean_delta_q16": mean_delta_q16,
-            "shapley_mean_delta": mean_delta_q16 / Q16,
+            "shapley_mean_delta_q16_vs_strongest": mean_delta_q16,
+            "shapley_mean_delta_vs_strongest": mean_delta_q16 / Q16,
+            "mean_delta_q16_by_comparator": comparator_delta_q16,
+            "delta_margin_pass_by_comparator": delta_margin_pass,
             "shapley_wins_by_comparator": wins,
             "bootstrap_lower_q16_by_comparator": bootstrap,
             "regime_mean_terminal_success_q16": regime_means,
