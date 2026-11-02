@@ -122,7 +122,7 @@ def _episode_step(method: str, spec, state: dict, training: bool,
                   evaluator_cpu: dict, credit_cpu: dict,
                   learner_update_calls: dict,
                   policy_nonce: int = 0) -> tuple[dict, dict]:
-    """Run one policy episode with a sequential, one-cue-at-a-time interface."""
+    """Run with a persistent policy child and strictly sequential cue delivery."""
     actions = []
     public_trace = []
     receipts = []
@@ -131,28 +131,26 @@ def _episode_step(method: str, spec, state: dict, training: bool,
     record_by_id = {row["item_id"]: row for row in public_memory_records()}
     session = PolicySession(timeout_seconds=60)
     try:
-        begin_message = public_policy_begin_message(method, state, policy_nonce)
-        begin_out = session.request(begin_message)
+        begin_out = session.request(
+            public_policy_begin_message(method, state, policy_nonce)
+        )
         child_cpu_ns += begin_out["policy_cpu_ns"]
-        if begin_out.get("policy_peak_rss_bytes") is not None:
-            child_peak_rss = begin_out["policy_peak_rss_bytes"]
+        child_peak_rss = begin_out.get("policy_peak_rss_bytes")
         selected = begin_out["selected_items"]
         state_after = begin_out["state"]
         if len(selected) != 7 or selected != sorted(set(selected)):
             raise RuntimeError("MR32P_POLICY_ACTIVE_PARTITION")
 
-        # The private episode spec remains in this parent process. The child
-        # receives only the current query cue on each request; future cues are
-        # never included in any policy message.
+        # The parent holds the complete task stream; the child receives exactly
+        # one current cue per step and cannot inspect future query positions.
         for step, item in enumerate(spec.public_items):
-            step_message = public_policy_step_message(
+            step_out = session.request(public_policy_step_message(
                 method, step, item, selected, state_after
-            )
-            step_out = session.request(step_message)
+            ))
             child_cpu_ns += step_out["policy_cpu_ns"]
-            rss_step = step_out.get("policy_peak_rss_bytes")
-            if rss_step is not None:
-                child_peak_rss = max(child_peak_rss or 0, rss_step)
+            step_rss = step_out.get("policy_peak_rss_bytes")
+            if step_rss is not None:
+                child_peak_rss = max(child_peak_rss or 0, step_rss)
             if step_out["step"] != step or step_out["item_id"] != item:
                 raise RuntimeError("MR32P_POLICY_STEP_RESPONSE_IDENTITY")
             action = step_out["action"]
@@ -197,11 +195,9 @@ def _episode_step(method: str, spec, state: dict, training: bool,
             credit_cpu[method] += time.process_time_ns() - credit_start
             if len(credit_values) != 7:
                 raise RuntimeError("MR32P_CREDIT_COUNT")
-            # Coalition player order is sorted item ID; use receipts are matched
-            # to that order while preserving each immutable use-time feature.
             receipt_by_id = {row["item_id"]: row for row in receipts}
             ordered_receipts = [receipt_by_id[item] for item in selected]
-            update_message = {
+            update_out = session.request({
                 "schema": "yggdrasil.mr32p.policy-message.v1",
                 "operation": "update",
                 "method": method,
@@ -209,8 +205,7 @@ def _episode_step(method: str, spec, state: dict, training: bool,
                 "state": state_after,
                 "use_receipts": ordered_receipts,
                 "credits_q16": list(credit_values),
-            }
-            update_out = session.request(update_message)
+            })
             learner_update_calls[method] += 1
             child_cpu_ns += update_out["policy_cpu_ns"]
             update_rss = update_out.get("policy_peak_rss_bytes")
@@ -258,6 +253,7 @@ def _episode_step(method: str, spec, state: dict, training: bool,
             list(shapley_numerators) if shapley_numerators is not None else None
         ),
         "shapley_common_denominator": shapley_denominator,
+        "policy_nonce": policy_nonce,
         "transfer_feedback_applied": False,
     }
     return state_after, episode_receipt
