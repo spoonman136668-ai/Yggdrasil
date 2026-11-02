@@ -300,7 +300,7 @@ def run() -> dict:
             for method in METHODS:
                 next_state, receipt = _episode_step(
                     method, spec, cluster_states[method], False,
-                    policy_cpu, evaluator_cpu, credit_cpu
+                    policy_cpu, policy_peak_rss, evaluator_cpu, credit_cpu
                 )
                 cluster_states[method] = next_state
                 transfer_receipts.append(receipt)
