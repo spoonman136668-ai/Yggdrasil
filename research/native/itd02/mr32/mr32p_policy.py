@@ -118,6 +118,17 @@ def _validate_state(state: object) -> dict:
     }
 
 
+def _peak_rss_bytes() -> int | None:
+    try:
+        if os.name == "nt":
+            import psutil  # type: ignore
+            return int(psutil.Process().memory_info().peak_wset)
+        import resource
+        return int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024)
+    except Exception:
+        return None
+
+
 def initial_state() -> dict:
     return {
         "schema": STATE_SCHEMA,
@@ -294,6 +305,7 @@ def main() -> int:
         else:
             raise PolicyInputError("POLICY_OPERATION")
         result["policy_cpu_ns"] = time.process_time_ns() - cpu_start
+        result["policy_peak_rss_bytes"] = _peak_rss_bytes()
         sys.stdout.write(json.dumps(result, sort_keys=True, separators=(",", ":")))
         sys.stdout.write("\n")
         return 0
