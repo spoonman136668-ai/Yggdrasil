@@ -23,6 +23,18 @@ The package checkout uses `persist-credentials: false`.
 
 ## Candidate interface
 
+Manifest and result validation, preparation, and artifact aggregation can be
+imported without the Unix-only Python `resource` module, including on Windows.
+Candidate execution still requires that module for actual CPU/RSS accounting.
+When it is unavailable, `run_candidate` rejects with
+`FREE_FANOUT_RESOURCE_ACCOUNTING_UNAVAILABLE` before creating output or starting
+a process. No Windows worker backend or replacement measurements are supplied.
+
+The complete public regression runs on both platforms. The two real-subprocess
+worker tests run on supported platforms and are explicitly reported unsupported
+on Windows; portable-import and pre-execution rejection tests run on both.
+Passing portable validation does not qualify Windows fanout execution.
+
 Target interface: `cognition_consumer(retained_state, local_state) -> decision_state`
 
 For Yggdrasil the interface contract is fail-closed at `16 total / 7 active / 9 retained`. Hidden persistent-memory growth, addressing changes, and capacity growth are rejected by this schema.
