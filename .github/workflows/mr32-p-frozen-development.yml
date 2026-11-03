@@ -30,8 +30,8 @@ jobs:
           REQUESTED_SHA: ${{ inputs.source_sha }}
         run: |
           [[ "$REQUESTED_SHA" =~ ^[a-f0-9]{40}$ ]]
-          test "$GITHUB_REF_NAME" = "research/mr32-counterfactual-episodic-credit-20261102"
-          test "$REQUESTED_SHA" = "$GITHUB_SHA"
+          # The dispatch ref is the default branch; research source is pinned below.
+          test "$GITHUB_REF_NAME" = "${{ github.event.repository.default_branch }}"
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ inputs.source_sha }}
@@ -45,6 +45,7 @@ jobs:
           REQUESTED_SHA: ${{ inputs.source_sha }}
         run: |
           test "$(git rev-parse HEAD)" = "$REQUESTED_SHA"
+          test "$(git rev-parse HEAD:research/native/itd02/mr32/MR32_P_COUNTERFACTUAL_EPISODIC_CREDIT_PROTOCOL.md)" = "1fc7179ce06a9cfc4ebebdb6036dd2cf213345f8"
           test -z "$(git status --porcelain)"
       - name: Focused tests
         shell: bash
@@ -83,8 +84,8 @@ jobs:
         env:
           REQUESTED_SHA: ${{ inputs.source_sha }}
         run: |
-          test "$GITHUB_SHA" = "$REQUESTED_SHA"
           test "$(git rev-parse HEAD)" = "$REQUESTED_SHA"
+          test "$(git rev-parse HEAD:research/native/itd02/mr32/MR32_P_COUNTERFACTUAL_EPISODIC_CREDIT_PROTOCOL.md)" = "1fc7179ce06a9cfc4ebebdb6036dd2cf213345f8"
           test -z "$(git status --porcelain)"
       - name: Execute frozen six-method experiment once
         shell: bash
