@@ -60,3 +60,14 @@ The validator emits a content digest, missing evidence list and fixed analytic r
 The preflight **fails closed** for schema, cohort overlap, condition/budget, external hash, authority or threshold drift. Even if every external evidence field is populated with correctly formatted declarations, it returns `STRUCTURE_ONLY_EXTERNAL_AUTHENTICITY_UNVERIFIED` and `primary_execution_allowed=false`: a manifest cannot authenticate itself or become an independent scientific custodian. The G33/G34 preregistration is unchanged and `INCOMPLETE_NOT_FROZEN`.
 
 Required before first-use: original independent task source/license and immutable digest, separately sourced evaluator and frozen label/task cohort manifests, external prediction-seal and label-release receipts, predeclared thresholds, actual compute/resource evidence, independent authority review and explicit primary execution authorization. No protected data were used to create this planning-only candidate; this is *not* primary qualification.
+
+
+## G36 — original-source custody inspection boundary (NO-GO)
+
+A read-only search of the current original Yggdrasil PR #719 and repository records found no authenticated G36 original task source, evaluator, independently admitted FIT/TRANSFER cohort manifests, prospective custodian, prediction seal, label release, or frozen scientific thresholds. The nine slots in `g36_evidence_index.json` remain **null** rather than invented or retroactively asserted.
+
+`g36_originals.py` is a bounded offline **metadata-receipt integrity verifier**, not a scientific authority. It checks that externally supplied original receipt files exist under an isolated `originals/` directory, match declared SHA-256 bytes, have pinned source references and strictly claimed chronological seal/release order, and reference the exact G35 plan hash. It reads *receipts only*, not protected task labels, and never trains or launches inference. Partial/missing receipts result in `MISSING_ORIGINAL_RECEIPTS`; complete matching bytes would still return `HASHES_MATCH_AUTHENTICITY_UNVERIFIED` because file hashes, source URLs, actor strings, and timestamps cannot independently authenticate their own custody.
+
+Its regression tests use ephemeral **synthetic negative fixtures** under temporary directories solely to exercise tampering, unpinned sources, invalid chronology, authority escalation, and missing evidence. No synthetic fixtures are durable research evidence or replacement historical receipts.
+
+**Current G36 outcome:** engineering hardening may be qualified; independent source and custody admission remains `NO-GO`. The prior G35 plan and G33 draft remain unmodified; neither primary execution nor scientific acceptance is granted. Recovery requires independently original, authorized research-custodian evidence and external adjudication, not another development-only code artifact.
