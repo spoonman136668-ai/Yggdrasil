@@ -33,5 +33,12 @@ jobs:
       - run: python scripts/build_code_atlas.py --check-if-present
       - run: python -m unittest discover -s tests -p test_code_atlas.py -v
       - if: always()
-        run: python scripts/build_code_atlas.py --emit-base64 --source-commit ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python scripts/build_code_atlas.py --emit-base64 --source-commit ${{ github.event.pull_request.head.sha || github.sha }} > "$RUNNER_TEMP/ygg-atlas-bundle.txt"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ygg-g29-exact-source-atlas
+          path: ${{ runner.temp }}/ygg-atlas-bundle.txt
+          if-no-files-found: error
+          retention-days: 90
       - run: git diff --exit-code
