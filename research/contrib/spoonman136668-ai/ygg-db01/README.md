@@ -165,3 +165,21 @@ This is an explicit synthetic context/retention interface test, not
 held-out transfer, open-world cognition, learned reward understanding,
 or independent scientific evidence. G36 custody remains NO-GO and
 production/primary use remains blocked.
+
+## G45 — representation-capacity witness versus supervised optimization
+
+G45 tests the precise G44 conflicting-rule input/output interface without
+modifying G33's 398-parameter shared-cell architecture or G44's feedback
+learning. A transparent, **hand-constructed, not learned** four-hidden-unit
+genome demonstrates a possible context/cue conjunction if it satisfies the
+four balanced sign pairs. A separate, limited supervised training probe
+starts from seeded or G38-trained genomes and trains visible/masked context
+on the same four explicitly synthetic answer labels for 16 rounds and
+8 gradient calls per pair. Masked context cannot distinguish opposing rules.
+Novel cue magnitudes of 0.5 are *within-family interpolation only*.
+
+The independent report `YGG_G45_DEV_REPRESENTATION_JSON=` includes all
+positive and negative results without elevating supervised labels into
+native reward comprehension. A hand-built witness is evidence of possible
+*representation*, not acquisition or autonomous learning. Frozen G36
+custody, independent transfer and scientific acceptance remain NO-GO.
