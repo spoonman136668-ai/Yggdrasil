@@ -91,7 +91,7 @@ jobs:
         shell: bash
         run: |
           cd research/native/itd02/mr32
-          python -B mr32p_trial.py > "$GITHUB_WORKSPACE/mr32p-result.json"
+          GITHUB_SHA="${{ inputs.source_sha }}" python -B mr32p_trial.py > "$GITHUB_WORKSPACE/mr32p-result.json"
       - name: Validate immutable trial counts and invariants
         shell: bash
         run: |
