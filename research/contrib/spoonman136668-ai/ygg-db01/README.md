@@ -203,3 +203,23 @@ same gradient-call count, but not necessarily the same computational
 cost. `YGG_G46_DEV_OPTIMIZATION_JSON=` publishes the complete diagnostic
 in both OS logs. G36 custody, primary science, authentic transfer,
 and native reward comprehension remain NO-GO/UNVERIFIED.
+
+## G47 — opposing-context gradient projection (synthetic engineering diagnostic)
+
+G47 adds an **externally engineered** projection of the supervised
+gradient update against its conflicting opposite-context gradient. The
+projection acts on the existing 398-parameter shared genome; it does not
+create context-specific genomes, neurons, or answer tables. Baseline and
+projection evaluate both synthetic context gradients per update (same
+256 gradient evaluations for 128 updates). Both warm/seeded starts
+and visible/masked context controls are included. The baseline must
+reproduce the G46 four-round checkpoint. Scores, loss, projection
+activation counts, and all failures are retained in
+`YGG_G47_DEV_PROJECTION_JSON=`.
+
+Targets for both counterfactual gradients are explicit **synthetic
+supervised labels**, and are *not* available in the original feedback
+environment. Success would therefore be a diagnostic of update
+geometry only, not independent native learning, memory, or genuine
+held-out transfer. No primary cohort, model API, controller or
+production activation; G36 custody remains NO-GO.
