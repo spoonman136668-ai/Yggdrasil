@@ -6,7 +6,7 @@ claim, held-out transfer, or scientific acceptance follows from this test.
 import json
 import unittest
 
-from native_dg1a import DG1APrototype, GENOME_PARAMETER_COUNT, INPUTS, HIDDEN
+from native_dg1a import DG1APrototype, GENOME_PARAMETER_COUNT, INPUTS, HIDDEN, SharedGenome
 from g38_native_learning import (CUES, NOVEL_CUES, ROUNDS, FRAMES,
                                  GRADIENT_CALLS, MARGIN, action, sensory,
                                  perceived_valence, run_development, value)
@@ -262,6 +262,98 @@ def build_g51_report(results):
     }
 
 
+G52_ARMS = ("full", "omit_output_bias", "omit_hidden_bias",
+            "omit_sensory_weights", "omit_other_first_weights",
+            "omit_second_weights", "no_update")
+
+
+def g52_counterfactual_genome(before, candidate, arm):
+    """Revert one disjoint parameter group's one-step delta, without retraining."""
+    if type(arm) is not str or arm not in G52_ARMS:
+        raise ValueError("YGG_G52_INVALID_ARM")
+    if arm == "full":
+        return candidate
+    if arm == "no_update":
+        return before
+    first = list(candidate.first)
+    first_bias = candidate.first_bias
+    second = candidate.second
+    second_bias = candidate.second_bias
+    if arm == "omit_sensory_weights":
+        for j in range(HIDDEN):
+            first[j * INPUTS + INPUTS - 1] = before.first[j * INPUTS + INPUTS - 1]
+    if arm == "omit_other_first_weights":
+        for j in range(HIDDEN):
+            for k in range(INPUTS - 1):
+                first[j * INPUTS + k] = before.first[j * INPUTS + k]
+    if arm == "omit_hidden_bias":
+        first_bias = before.first_bias
+    if arm == "omit_second_weights":
+        second = before.second
+    if arm == "omit_output_bias":
+        second_bias = before.second_bias
+    return SharedGenome(tuple(first), first_bias, second, second_bias)
+
+
+def build_g52_report(results):
+    """Remove single groups from the SAME frozen counterfactual update.
+
+    Nonlinear group interactions forbid treating these differences as additive
+    causal decompositions or as evidence of native reward comprehension.
+    """
+    model = DG1APrototype()
+    initial = model.initial_state()
+    rows = []
+    for trained_arm in ("matched", "antithetic"):
+        for round_index, genome in zip(CHECKPOINTS, results[trained_arm]["g51_genomes"]):
+            old_neg = value(model, genome, -1.0)
+            old_pos = value(model, genome, 1.0)
+            for cue in CUES:
+                policy_action = action(model, genome, cue)
+                explore = round_index < ROUNDS and round_index % 4 == 0
+                chosen = -policy_action if explore else policy_action
+                correct = int(chosen == -(1 if cue > 0 else -1))
+                for feedback in ("matched", "antithetic"):
+                    outcome = 1 - correct if feedback == "antithetic" else correct
+                    wave = matched_feedback(outcome, "mapped",
+                                            length=FRAMES, seed=100 + round_index)
+                    valence = perceived_valence(model, genome, wave)
+                    target = chosen * valence * MARGIN
+                    candidate = model.fit_one_cell(initial, sensory(cue), genome,
+                                                   1, 1, target, learning_rate=0.5)
+                    for arm in G52_ARMS:
+                        modified = g52_counterfactual_genome(genome, candidate, arm)
+                        new_neg = value(model, modified, -1.0)
+                        new_pos = value(model, modified, 1.0)
+                        rows.append({
+                            "trained_arm": trained_arm,
+                            "rounds": round_index, "training_cue": cue,
+                            "feedback": feedback, "arm": arm,
+                            "chosen_action": chosen,
+                            "exploration_applied": explore,
+                            "delta_intercept": round(
+                                (new_neg + new_pos - old_neg - old_pos) / 2.0, 15),
+                            "delta_slope": round(
+                                (new_pos - new_neg - old_pos + old_neg) / 2.0, 15),
+                            "delta_negative": round(new_neg - old_neg, 15),
+                            "delta_positive": round(new_pos - old_pos, 15),
+                            "genome_parameters": modified.parameter_count
+                        })
+    return {
+        "schema": "yggdrasil.g52.synthetic-single-group-delta-reversal.v1",
+        "evidence": "SELF_AUTHORED_SYNTHETIC_DEV_ONLY",
+        "parameter_groups_are_nonadditive": True,
+        "probe_updates_committed_to_learner": False,
+        "unmodified_learning_rule": True,
+        "diagnostic_updates_per_source_feedback": 1,
+        "diagnostic_gradient_calls": len(rows) // len(G52_ARMS),
+        "scientific_acceptance": "NO_GO",
+        "genuine_transfer": "UNVERIFIED",
+        "primary_execution_allowed": False,
+        "rows": rows
+    }
+
+
 class G48NativeFeedbackDiagnostics(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -366,6 +458,31 @@ class G48NativeFeedbackDiagnostics(unittest.TestCase):
         print("YGG_G51_DEV_ATTRIBUTION_JSON=" +
               json.dumps(report, sort_keys=True, separators=(",", ":"),
                          allow_nan=False), flush=True)
+
+    def test_g52_group_delta_reversal_at_frozen_checkpoints(self):
+        report = build_g52_report(self.results)
+        self.assertEqual(report["scientific_acceptance"], "NO_GO")
+        self.assertFalse(report["probe_updates_committed_to_learner"])
+        self.assertEqual(report["diagnostic_gradient_calls"], 32)
+        self.assertEqual(len(report["rows"]), 32 * len(G52_ARMS))
+        for i in range(0, len(report["rows"]), len(G52_ARMS)):
+            trial = report["rows"][i:i + len(G52_ARMS)]
+            self.assertEqual([r["arm"] for r in trial], list(G52_ARMS))
+            self.assertTrue(all(r["genome_parameters"] == GENOME_PARAMETER_COUNT
+                                for r in trial))
+            no_update = trial[-1]
+            self.assertEqual(no_update["delta_slope"], 0)
+            self.assertEqual(no_update["delta_intercept"], 0)
+            self.assertEqual(no_update["delta_negative"], 0)
+            self.assertEqual(no_update["delta_positive"], 0)
+            self.assertTrue(all(trial[0]["trained_arm"] == r["trained_arm"] and
+                                trial[0]["rounds"] == r["rounds"] and
+                                trial[0]["feedback"] == r["feedback"] and
+                                trial[0]["training_cue"] == r["training_cue"]
+                                for r in trial))
+        print("YGG_G52_DEV_GROUP_DELTA_JSON=" + json.dumps(
+            report, sort_keys=True, separators=(",", ":"), allow_nan=False),
+            flush=True)
 
     def test_fail_closed(self):
         for invalid in (None, "", "protected", "heldout", 7):
