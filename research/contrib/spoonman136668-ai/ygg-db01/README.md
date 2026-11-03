@@ -142,3 +142,26 @@ negative ones. This development-only comparison cannot demonstrate genuine
 held-out transfer, independently learned reward interpretation, or a
 general cognitive mechanism. G36 custody and protected first-use remain
 NO-GO; no acceptance/promotion or controller changes are authorized.
+
+## G44 — context-dependent conflicting rules (synthetic, NOT primary science)
+
+G44 presents two independent local signals to a single, fixed-capacity
+398-parameter shared genome: immutable channel-0 task context (+1/-1)
+and local sensory cue (+1/-1). The toy world's correct action depends
+on the combination; neither individual signal suffices. The action
+target stays inside the environment. Learner updates receive chosen
+action, local signals, and temporal feedback decoded by the SAME
+externally engineered G38 periodicity decoder.
+
+Matched-feedback, sham-feedback, and zero-energy no-feedback conditions
+are crossed with visible/masked context. Both context groups and cue signs
+have paired frame/update budgets; masked context makes the two conflicting
+rules information-theoretically indistinguishable. All arms start from
+the same G38-trained genome, with no parameter growth or context-specific
+genome copies. The receipt reports both task accuracies and their joint
+accuracy; engineering tests DO NOT enforce a positive result.
+
+This is an explicit synthetic context/retention interface test, not
+held-out transfer, open-world cognition, learned reward understanding,
+or independent scientific evidence. G36 custody remains NO-GO and
+production/primary use remains blocked.
