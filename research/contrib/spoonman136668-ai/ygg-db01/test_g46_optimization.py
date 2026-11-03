@@ -58,7 +58,7 @@ class G46OptimizationTests(unittest.TestCase):
         self.assertEqual(r["scientific_acceptance"], "NO_GO")
         self.assertEqual(r["native_reward_learning"], "UNVERIFIED")
         self.assertEqual(r["genuine_transfer"], "UNVERIFIED")
-        self.assertEqual(json.loads(report_json()), r)
+        self.assertEqual(json.loads(report_json()), json.loads(json.dumps(r)))
         print("YGG_G46_DEV_OPTIMIZATION_JSON=" + report_json(), flush=True)
 
     def test_invalid_inputs_fail_closed(self):
