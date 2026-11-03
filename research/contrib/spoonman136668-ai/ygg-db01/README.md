@@ -183,3 +183,23 @@ positive and negative results without elevating supervised labels into
 native reward comprehension. A hand-built witness is evidence of possible
 *representation*, not acquisition or autonomous learning. Frozen G36
 custody, independent transfer and scientific acceptance remain NO-GO.
+
+## G46 — bounded optimization diagnostic (synthetic only)
+
+G46 holds the G45 398-parameter architecture, four task/context pairs,
+16 training rounds, eight gradient calls per pair and synthetic target
+labels fixed. It compares three predeclared arms: the exact G45 baseline
+(learning rate 0.5, alternating forward/reversed order); interleaving
+context per cue at the same rate; and baseline order at learning rate
+0.1. Seeded and G38-pretrained starts and visible/masked context remain
+crossed. It records balanced task accuracy, within-family interpolation,
+and mean squared synthetic-target error at rounds 0,4,8,16, plus local
+one-update response coupling across opposing contexts. Neither a
+hand-built witness nor a change to G44 reward learning is used to train.
+
+The unchanged G45 baseline genome must replay exactly. Negative results
+are reported without a performance PASS threshold. Every arm has the
+same gradient-call count, but not necessarily the same computational
+cost. `YGG_G46_DEV_OPTIMIZATION_JSON=` publishes the complete diagnostic
+in both OS logs. G36 custody, primary science, authentic transfer,
+and native reward comprehension remain NO-GO/UNVERIFIED.
