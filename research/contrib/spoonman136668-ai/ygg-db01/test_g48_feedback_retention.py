@@ -128,6 +128,7 @@ class G48NativeFeedbackDiagnostics(unittest.TestCase):
         self.assertEqual(report["genuine_transfer"], "UNVERIFIED")
         self.assertEqual([r["arm"] for r in report["rows"]], list(ARMS))
         self.assertEqual(json.loads(json.dumps(report)), report)
+        print("YGG_G48_DEV_FEEDBACK_JSON=" + json.dumps(report, sort_keys=True, separators=(",", ":"), allow_nan=False), flush=True)
 
     def test_fail_closed(self):
         for invalid in (None, "", "protected", "heldout", 7):
