@@ -1,0 +1,53 @@
+name: Native learned-state session engineering
+on:
+  push:
+    branches: [research/native-language-session-20261103]
+permissions:
+  contents: read
+jobs:
+  session:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Byte-stable native identity
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Immutable native parent and scope before code
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor be0fb8bb684fa80a22a3c3d9b4ed29e4c4a0c920 HEAD
+          test "$(git hash-object research/native/itd01/r7/native_cells.py)" = 4c492a494ac5b25d5e9c49b98185be6a2c966b2f
+          git diff --exit-code adb0ca9091762a110d65257ffe4bdcc8e90b46a3 -- research/native/itd01/r7/native_cells.py
+      - name: Session state, feedback and fresh-process restore
+        shell: bash
+        run: python -B -m unittest discover -s research/native_language_session -p 'test_*.py' -v
+      - name: Original native interface regression
+        if: always()
+        shell: bash
+        run: python -B -m unittest discover -s research/native/itd01/r7 -p 'test_native_cells.py' -v
+      - name: Mandatory existing public regression
+        if: always()
+        shell: bash
+        run: python -B -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Existing G29 Atlas validation, unwaived
+        if: always()
+        shell: bash
+        run: python -B scripts/build_code_atlas.py --check-if-present
+      - name: Clean source
+        if: always()
+        shell: bash
+        run: git diff --exit-code
