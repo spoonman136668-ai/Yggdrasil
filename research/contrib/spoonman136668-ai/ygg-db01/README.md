@@ -49,3 +49,14 @@ In addition to mapped/reversed and outcome-blind paired-seed sham, `polarity_fli
 G34 tests verify signed-histogram/energy parity, temporal nonperiodicity, pairwise inversions, independent sham, invalid input failure, identical update counts/local channels for both bounded developmental fixtures, and unmodified research authority. Resource accounting and scientific evaluation remain outside these unit tests.
 
 The `g33_prereg_draft.json` status stays `INCOMPLETE_NOT_FROZEN`, with explicit missing source/custodian/task/evaluator/cohort/threshold fields and `primary_execution_allowed=false`. Authentic first-use still needs a frozen task, dataset/labels, independent source custody, matched conventional controls and complete all-in compute/energy accounting, acceptance rules and separate authorized research execution.
+
+
+## G35: prospective task/custody admission preflight — still NO-GO
+
+`g35_candidate.json` and `g35_preflight.py` specify a *proposed*, not frozen, deterministic 4×4/16-channel DG-1A diagnostic design. Its two disjoint planned seed groups (eight seeds each) and paired-outcome intention are scheduling constraints **not authentic FIT/TRANSFER task cohorts or labels**. Every feedback condition receives exactly 16 frames, 256 cell updates, zero primary training updates, and the same fixed 398-parameter shared genome. The energy-matched comparison explicitly excludes zero-energy `no_feedback`.
+
+The validator emits a content digest, missing evidence list and fixed analytic resource proxy: 256 cell updates, 1,600 neighborhood visits and 25,600 neighborhood-channel reads per case, plus 2,048 logical state and 3,184 logical genome float bytes. These are **algorithmic proxies**, not observed wall time, FLOPs, actual Python resident memory, total energy cost or scientific equal-resource proof. All-in runtime accounting and proper matched conventional baselines remain missing.
+
+The preflight **fails closed** for schema, cohort overlap, condition/budget, external hash, authority or threshold drift. Even if every external evidence field is populated with correctly formatted declarations, it returns `STRUCTURE_ONLY_EXTERNAL_AUTHENTICITY_UNVERIFIED` and `primary_execution_allowed=false`: a manifest cannot authenticate itself or become an independent scientific custodian. The G33/G34 preregistration is unchanged and `INCOMPLETE_NOT_FROZEN`.
+
+Required before first-use: original independent task source/license and immutable digest, separately sourced evaluator and frozen label/task cohort manifests, external prediction-seal and label-release receipts, predeclared thresholds, actual compute/resource evidence, independent authority review and explicit primary execution authorization. No protected data were used to create this planning-only candidate; this is *not* primary qualification.
