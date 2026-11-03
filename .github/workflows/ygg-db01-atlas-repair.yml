@@ -9,6 +9,8 @@ permissions:
   contents: read
 jobs:
   generate:
+    outputs:
+      artifact_sha: ${{ steps.publish.outputs.artifact_sha }}
     if: github.repository == 'spoonman136668-ai/Yggdrasil' && github.ref == 'refs/heads/research/ygg-db01-development-only' && github.run_attempt == 1
     runs-on: ubuntu-24.04
     timeout-minutes: 15
@@ -23,6 +25,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Freeze source, regenerate exactly three files, and commit
+        id: publish
         shell: bash
         run: |
           set -euo pipefail
@@ -31,7 +34,11 @@ jobs:
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test -z "$(git status --porcelain)"
           git merge-base --is-ancestor f6ac65d5ab1fef28d1780b5ffb53f8b8319aa2fc "$GITHUB_SHA"
-          test "$(git diff --name-only f6ac65d5ab1fef28d1780b5ffb53f8b8319aa2fc HEAD | LC_ALL=C sort)" = '.github/workflows/ygg-db01-atlas-repair.yml'
+          # The prior bot-created commit only regenerated these three atlas files.
+          # Permit this workflow-only follow-up; fail closed on every other source change.
+          git merge-base --is-ancestor a096e645067910d1db4b46903d451f21947764d0 "$GITHUB_SHA"
+          test "$(git diff --name-only a096e645067910d1db4b46903d451f21947764d0 HEAD | LC_ALL=C sort)" = '.github/workflows/ygg-db01-atlas-repair.yml'
+          test "$(git diff --name-only f6ac65d5ab1fef28d1780b5ffb53f8b8319aa2fc HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .github/workflows/ygg-db01-atlas-repair.yml .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
           python scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
           git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
           test "$(git diff --cached --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
@@ -50,3 +57,40 @@ jobs:
           git push --force-with-lease=refs/heads/research/ygg-db01-development-only:$GITHUB_SHA origin HEAD:refs/heads/research/ygg-db01-development-only
           echo "YGG_DB01_SOURCE=$GITHUB_SHA"
           echo "YGG_DB01_ARTIFACT_COMMIT=$(git rev-parse HEAD)"
+          echo "artifact_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  qualify-exact-artifact:
+    needs: generate
+    if: needs.generate.result == 'success' && needs.generate.outputs.artifact_sha != ''
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.generate.outputs.artifact_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact published SHA, atlas, focused and full regression
+        shell: bash
+        env:
+          EXPECTED_ARTIFACT_SHA: ${{ needs.generate.outputs.artifact_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_ARTIFACT_SHA"
+          test -z "$(git status --porcelain)"
+          python scripts/build_code_atlas.py --check-if-present
+          python -m unittest discover -s research/contrib/spoonman136668-ai/ygg-db01 -p 'test_*.py' -v
+          python -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo "YGG_DB01_QUALIFIED_EXACT_HEAD=$EXPECTED_ARTIFACT_SHA"
