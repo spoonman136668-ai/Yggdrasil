@@ -58,7 +58,15 @@ class PublicCausalCells:
         if not trials0 or not trials1:
             return None
         # Exact integer cross-products avoid rounding/tuned thresholds.
-        lhs, rhs = one0 * trials1, one1 * trials0
+        # F139_TYPED_RATE_PROGRAM=rate add add zero zero add zero one add add total zero add zero zero
+        numerator0 = 1
+        numerator1 = 1
+        denominator0 = trials0
+        denominator1 = trials1
+        if denominator0 <= 0 or denominator1 <= 0:
+            return None
+        lhs = numerator0 * denominator1
+        rhs = numerator1 * denominator0
         if lhs == rhs:
             return None
         return 0 if lhs > rhs else 1
