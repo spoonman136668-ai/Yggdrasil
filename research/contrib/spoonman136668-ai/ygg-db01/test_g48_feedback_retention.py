@@ -215,7 +215,11 @@ def build_g51_report(results):
             before_negative = value(model, genome, -1.0)
             before_positive = value(model, genome, 1.0)
             for cue in CUES:
-                chosen = action(model, genome, cue)
+                policy_action = action(model, genome, cue)
+                # Match the G48 exploration schedule when the checkpoint
+                # begins an actual training round. Round 16 is post-horizon.
+                exploration_applied = round_index < ROUNDS and round_index % 4 == 0
+                chosen = -policy_action if exploration_applied else policy_action
                 correct = int(chosen == -(1 if cue > 0 else -1))
                 for feedback in ("matched", "antithetic", "no_feedback"):
                     outcome = 1 - correct if feedback == "antithetic" else correct
@@ -230,6 +234,9 @@ def build_g51_report(results):
                     rows.append({
                         "trained_arm": trained_arm, "rounds": round_index,
                         "training_cue": cue, "feedback": feedback,
+                        "policy_action": policy_action, "chosen_action": chosen,
+                        "exploration_applied": exploration_applied,
+                        "post_training_probe": round_index >= ROUNDS,
                         "decoded_valence": decoded,
                         "delta_intercept": round(((after_negative + after_positive) -
                                                  (before_negative + before_positive)) / 2.0, 15),
@@ -246,6 +253,8 @@ def build_g51_report(results):
         "probe_gradient_calls": len(rows),
         "feedback_decoder": "EXTERNALLY_ENGINEERED_G38",
         "source_training_budget_unchanged": True,
+        "G48_exploration_schedule_replicated_for_in_horizon_probes": True,
+        "round_16_is_post_training_probe": True,
         "scientific_acceptance": "NO_GO",
         "genuine_transfer": "UNVERIFIED",
         "primary_execution_allowed": False,
@@ -340,6 +349,15 @@ class G48NativeFeedbackDiagnostics(unittest.TestCase):
             self.assertEqual(sum(v["parameters"] for v in row["parameter_groups"].values()),
                              GENOME_PARAMETER_COUNT)
             self.assertIn(row["decoded_valence"], (-1, 0, 1))
+            if row["rounds"] in (0, 4, 8):
+                self.assertTrue(row["exploration_applied"])
+                self.assertFalse(row["post_training_probe"])
+                self.assertEqual(row["chosen_action"], -row["policy_action"])
+            else:
+                self.assertEqual(row["rounds"], 16)
+                self.assertFalse(row["exploration_applied"])
+                self.assertTrue(row["post_training_probe"])
+                self.assertEqual(row["chosen_action"], row["policy_action"])
             if row["feedback"] == "no_feedback":
                 self.assertTrue(all(v["l2_change"] < 1e-12
                                     for v in row["parameter_groups"].values()))
