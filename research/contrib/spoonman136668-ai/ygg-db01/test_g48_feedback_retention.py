@@ -25,10 +25,22 @@ def run(arm):
     genome = run_development("mapped").genome
     initial = model.initial_state()
     checkpoints = []
+    diagnostics = []
+    start_genome = genome
+    parts = ("first", "first_bias", "second", "second_bias")
+    drift = lambda a, b: sum((x - y) ** 2 for name in parts for x, y in zip(getattr(a, name), getattr(b, name))) ** 0.5
 
     def record(rounds):
         blob = freeze_genome(genome)
         restored = restore_genome(blob)
+        diagnostics.append({
+            "rounds": rounds,
+            "per_cue": [{"cue": cue, "signed_output": round(value(model, restored, cue), 12),
+                         "chosen_action": action(model, restored, cue),
+                         "correct_reversed_action": -1 if cue > 0 else 1}
+                        for cue in (-1.0, -0.5, -0.25, 0.25, 0.5, 1.0)],
+            "parameter_distance_from_start": round(drift(start_genome, restored), 12)
+        })
         checkpoints.append({
             "rounds": rounds,
             "source": accuracy(model, restored, NOVEL_CUES, 1),
@@ -70,7 +82,8 @@ def run(arm):
         "feedback_frames": interactions * FRAMES,
         "gradient_calls": interactions * GRADIENT_CALLS,
         "genome_parameters": genome.parameter_count,
-        "genome": genome
+        "genome": genome,
+        "g49_diagnostics": diagnostics
     }
 
 
@@ -79,6 +92,7 @@ def build_report():
     for arm in ARMS:
         row = run(arm)
         row.pop("genome")
+        row.pop("g49_diagnostics")
         rows.append(row)
     return {
         "schema": "yggdrasil.g48.synthetic-native-feedback-retention.v1",
@@ -87,6 +101,24 @@ def build_report():
         "antithetic_control_is_not_random_shuffling": True,
         "scientific_acceptance": "NO_GO",
         "genuine_transfer": "UNVERIFIED",
+        "primary_execution_allowed": False,
+        "rows": rows
+    }
+
+
+def build_g49_report():
+    rows = []
+    for arm in ARMS:
+        r = run(arm)
+        rows.append({"arm": arm, "checkpoints": r["g49_diagnostics"],
+                     "interactions": r["interactions"],
+                     "gradient_calls": r["gradient_calls"],
+                     "genome_parameters": r["genome_parameters"]})
+    return {
+        "schema": "yggdrasil.g49.synthetic-cue-margin-diagnostic.v1",
+        "evidence": "SELF_AUTHORED_SYNTHETIC_DEV_ONLY",
+        "scientific_acceptance": "NO_GO",
+        "reward_decoder": "EXTERNALLY_ENGINEERED",
         "primary_execution_allowed": False,
         "rows": rows
     }
@@ -129,6 +161,23 @@ class G48NativeFeedbackDiagnostics(unittest.TestCase):
         self.assertEqual([r["arm"] for r in report["rows"]], list(ARMS))
         self.assertEqual(json.loads(json.dumps(report)), report)
         print("YGG_G48_DEV_FEEDBACK_JSON=" + json.dumps(report, sort_keys=True, separators=(",", ":"), allow_nan=False), flush=True)
+
+    def test_g49_per_cue_margin_and_interference_receipt(self):
+        report = build_g49_report()
+        self.assertEqual(report["scientific_acceptance"], "NO_GO")
+        self.assertEqual(len(report["rows"]), len(ARMS))
+        for row in report["rows"]:
+            self.assertEqual(len(row["checkpoints"]), len(CHECKPOINTS))
+            for checkpoint in row["checkpoints"]:
+                self.assertEqual(len(checkpoint["per_cue"]), 6)
+                self.assertGreaterEqual(checkpoint["parameter_distance_from_start"], 0)
+        for row in report["rows"]:
+            if row["arm"] in ("frozen", "no_feedback"):
+                self.assertTrue(all(c["parameter_distance_from_start"] == 0
+                                    for c in row["checkpoints"]))
+        print("YGG_G49_DEV_CUE_DIAGNOSTIC_JSON=" +
+              json.dumps(report, sort_keys=True, separators=(",", ":"),
+                         allow_nan=False), flush=True)
 
     def test_fail_closed(self):
         for invalid in (None, "", "protected", "heldout", 7):
