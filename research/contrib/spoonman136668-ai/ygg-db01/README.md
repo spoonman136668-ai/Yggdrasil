@@ -108,3 +108,19 @@ Warm-start has additional earlier source-training cost, so the matched
 adaptation-call budgets do not establish matched total training compute.
 Original custody, truly independent transfer, learned reward interpretation,
 protected first use, and scientific acceptance remain NO-GO/UNVERIFIED.
+
+## G42 — synthetic task-reversal interference trace
+
+`g42_interference.py` replays the existing G40 adaptation mechanics at
+round checkpoints 0, 1, 2, 4, 8, 12 and 16 for every condition and both
+warm/cold starts. It records source and reversed-target accuracy, Euclidean
+genome weight drift, and exact interaction/frame/gradient-call counts. The
+independent G40 endpoint comparison rejects implementation drift. A full
+machine-readable `YGG_G42_DEV_TRACE_JSON=` receipt is printed by Linux
+and Windows focused tests. Negative results do not fail qualification.
+
+The synthetic setup has two cues, a fixed externally engineered periodicity
+decoder and **unmatched additional warm-start source training**; it is
+neither independent transfer nor learned native reward interpretation.
+Protected first use, original custody, and scientific acceptance remain
+NO-GO/UNVERIFIED. No production, controller, model API or accepted state changes.
