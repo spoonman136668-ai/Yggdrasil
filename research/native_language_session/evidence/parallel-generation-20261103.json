@@ -1,0 +1,87 @@
+{
+  "schema": "research.native-parallel-byte-generation.engineering-receipt.v1",
+  "project": "Yggdrasil",
+  "authority": "engineering-observation-only",
+  "evidence_basis": "Connected GitHub run/job metadata and decoded logs; agent-recorded, not signed scientific acceptance.",
+  "source": {
+    "commit": "3fe387dc6440d79a194e0460c96a51d4e26f6604",
+    "tree": "45305e2536c08575680a58b9a90734dec9f32626",
+    "parent_before_generation": "815256cfbc32ddc6241257954add8dd49f8d8ac9",
+    "scope_commit": "9412c96cec6c855e27f30e68c4210b44cce82b9b",
+    "selector_git_blob": "fd53e676118b48baa16ef31cd2e306ecd29f4015",
+    "original_native_git_blob": "4c492a494ac5b25d5e9c49b98185be6a2c966b2f",
+    "backbone_and_selector_unchanged": true
+  },
+  "design": {
+    "output_mode": "parallel-native-byte-field",
+    "conditioning": "all fields read the same complete input; no generated prefix feedback",
+    "host_execution": "serial; no parallel speed claim",
+    "whole_response_bank": false,
+    "response_digests_used_for_selection": false,
+    "variable_bit_models": "original native text classifier over generic 0/1",
+    "constant_fields": "empirical values shared by all supplied examples",
+    "new_controller_queue_or_scheduler": false
+  },
+  "limits": {
+    "examples_min": 2,
+    "examples_max": 8,
+    "input_bytes_max": 128,
+    "total_training_input_bytes_max": 512,
+    "response_bytes_max": 16,
+    "bit_fields_max": 128,
+    "length_fields": 1,
+    "checkpoint_bytes_max": 1048576
+  },
+  "qualification": {
+    "run": 41631119966,
+    "conclusion": "FAIL_RETAINED_ORIGINAL_SCIENTIFIC_GATE",
+    "linux": {
+      "job": 125900643413,
+      "session_text_generation_tests": {
+        "total": 14,
+        "passed": 14
+      },
+      "complete_public_regression": {
+        "total": 39,
+        "passed": 39,
+        "skipped": 0
+      }
+    },
+    "windows": {
+      "job": 125900643062,
+      "session_text_generation_tests": {
+        "total": 14,
+        "passed": 14
+      },
+      "complete_public_regression": {
+        "total": 39,
+        "passed": 37,
+        "unsupported": 2
+      },
+      "unsupported_scope": "Two POSIX-worker real-subprocess cases only; Windows worker execution denied"
+    },
+    "g29": {
+      "run": 41631125322,
+      "conclusion": "PASS_BOTH_OS"
+    },
+    "retained_r7_original": {
+      "tests": 7,
+      "passed": 6,
+      "failed": 1,
+      "seed31_drop": 0.0625,
+      "frozen_maximum_drop": 0.05,
+      "source_cohorts_controls_and_threshold_unchanged": true
+    }
+  },
+  "engineering_fixtures": "Invented training pairs only; variable-length UTF-8 and restart parity tested. Forced bit changes demonstrate mechanical assembly and invalid-output preservation, not learned novelty.",
+  "useful_learned_novelty": "UNVERIFIED",
+  "scientific_language_proof": "UNVERIFIED",
+  "equally_informed_trained_controls": "NOT_RUN",
+  "real_language_development_and_frozen_holdout": "NOT_RUN",
+  "efficiency_gain": "UNVERIFIED",
+  "protected_first_use": false,
+  "protected_main_mutation": false,
+  "forge_live_owner_change": false,
+  "forge_development_takeover": false,
+  "scientific_promotion_authority": false
+}
