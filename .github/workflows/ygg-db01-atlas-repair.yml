@@ -26,6 +26,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # Keep local Python import caches out of the exact-source working tree.
+          export PYTHONDONTWRITEBYTECODE=1
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test -z "$(git status --porcelain)"
           git merge-base --is-ancestor f6ac65d5ab1fef28d1780b5ffb53f8b8319aa2fc "$GITHUB_SHA"
@@ -40,7 +42,11 @@ jobs:
           python scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --check
           python -m unittest discover -s research/contrib/spoonman136668-ai/ygg-db01 -p 'test_*.py' -v
           python -m unittest discover -s tests -p 'test_*.py' -v
-          test -z "$(git status --porcelain)"
+          if test -n "$(git status --porcelain)"; then
+            echo 'YGG_DB01_UNEXPECTED_WORKTREE_DIRT' >&2
+            git status --short >&2
+            exit 1
+          fi
           git push --force-with-lease=refs/heads/research/ygg-db01-development-only:$GITHUB_SHA origin HEAD:refs/heads/research/ygg-db01-development-only
           echo "YGG_DB01_SOURCE=$GITHUB_SHA"
           echo "YGG_DB01_ARTIFACT_COMMIT=$(git rev-parse HEAD)"
