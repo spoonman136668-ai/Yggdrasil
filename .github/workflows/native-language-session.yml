@@ -30,6 +30,7 @@ jobs:
         run: |
           set -euo pipefail
           git merge-base --is-ancestor be0fb8bb684fa80a22a3c3d9b4ed29e4c4a0c920 HEAD
+          git merge-base --is-ancestor 478f375ba6be5aba495b0b6e3933ca2ad2c0d359 HEAD
           test "$(git hash-object research/native/itd01/r7/native_cells.py)" = 4c492a494ac5b25d5e9c49b98185be6a2c966b2f
           git diff --exit-code adb0ca9091762a110d65257ffe4bdcc8e90b46a3 -- research/native/itd01/r7/native_cells.py
       - name: Session state, feedback and fresh-process restore
