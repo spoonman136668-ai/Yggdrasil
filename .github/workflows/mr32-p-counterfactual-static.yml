@@ -19,7 +19,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -35,6 +35,21 @@ jobs:
           cd research/native/itd02/mr32
           python -B -m py_compile counterfactual_shapley.py test_counterfactual_shapley.py mr32p_policy.py mr32p_process.py mr32p_evaluator.py mr32p_trial.py test_mr32p_process_boundary.py test_mr32p_trial_adapter.py
           python -B -m unittest -v test_counterfactual_shapley test_mr32p_process_boundary test_mr32p_trial_adapter
+
+      - name: Record exact checked-out source identity
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git rev-parse HEAD
+          git status --porcelain
+
+      - name: Install full-regression test runner
+        shell: bash
+        run: python -m pip install --disable-pip-version-check pytest
+
+      - name: Full Yggdrasil regression
+        shell: bash
+        run: python -m pytest -q
 
       - name: Verify source checkout is unchanged
         shell: bash
