@@ -124,3 +124,21 @@ decoder and **unmatched additional warm-start source training**; it is
 neither independent transfer nor learned native reward interpretation.
 Protected first use, original custody, and scientific acceptance remain
 NO-GO/UNVERIFIED. No production, controller, model API or accepted state changes.
+
+## G43 — bounded synthetic plasticity reset comparison
+
+G43 compares the unchanged G40 warm-start baseline against **two frozen
+interventions**, blending 25% or 50% of the original seeded genome into the
+source-trained genome before target-rule reversal. This is a deliberately
+simple weight-reset mechanism, not a new model architecture. All arms
+retain 398 parameters, identical 32 adaptation interactions, 512 waveform
+frames, and 256 gradient calls; blend arithmetic is additional overhead
+and all arms incur the earlier G38 source pretraining. Controls are mapped,
+outcome-blind sham and zero-energy no-feedback, with both source and target
+accuracy recorded before/after adaptation.
+
+The `YGG_G43_DEV_PLASTICITY_JSON=` receipt reports all arms including
+negative ones. This development-only comparison cannot demonstrate genuine
+held-out transfer, independently learned reward interpretation, or a
+general cognitive mechanism. G36 custody and protected first-use remain
+NO-GO; no acceptance/promotion or controller changes are authorized.
