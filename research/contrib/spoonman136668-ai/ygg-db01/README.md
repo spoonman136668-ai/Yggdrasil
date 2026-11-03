@@ -95,3 +95,16 @@ starts without a success threshold or scientific acceptance. Cue magnitudes
 remain in the original task family; adaptation is a toy diagnostic, **not
 independent held-out transfer**. Primary source admission, G36 original
 custody, frozen scientific thresholds and protected evaluation remain NO-GO.
+
+## G41 — deterministic synthetic development score receipt
+
+`g41_score_report.py` produces a JSON receipt for all ten G40
+warm/cold by mapped/reversed/sham/no-feedback/decoder-ablation conditions.
+It records before/after target-rule accuracy, score changes, fixed adaptation
+budgets and a purely descriptive warm-start diagnostic. The test prints
+`YGG_G41_DEV_REPORT_JSON=` to both platform qualification logs.
+Negative outcomes are reported, **not** treated as engineering failures.
+Warm-start has additional earlier source-training cost, so the matched
+adaptation-call budgets do not establish matched total training compute.
+Original custody, truly independent transfer, learned reward interpretation,
+protected first use, and scientific acceptance remain NO-GO/UNVERIFIED.
