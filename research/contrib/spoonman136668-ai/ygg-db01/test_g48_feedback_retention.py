@@ -6,7 +6,7 @@ claim, held-out transfer, or scientific acceptance follows from this test.
 import json
 import unittest
 
-from native_dg1a import DG1APrototype, GENOME_PARAMETER_COUNT
+from native_dg1a import DG1APrototype, GENOME_PARAMETER_COUNT, INPUTS, HIDDEN
 from g38_native_learning import (CUES, NOVEL_CUES, ROUNDS, FRAMES,
                                  GRADIENT_CALLS, MARGIN, action, sensory,
                                  perceived_valence, run_development, value)
@@ -26,6 +26,7 @@ def run(arm):
     initial = model.initial_state()
     checkpoints = []
     diagnostics = []
+    g51_genomes = []
     start_genome = genome
     parts = ("first", "first_bias", "second", "second_bias")
     drift = lambda a, b: sum((x - y) ** 2 for name in parts for x, y in zip(getattr(a, name), getattr(b, name))) ** 0.5
@@ -33,6 +34,7 @@ def run(arm):
     def record(rounds):
         blob = freeze_genome(genome)
         restored = restore_genome(blob)
+        g51_genomes.append(restored)
         diagnostics.append({
             "rounds": rounds,
             "per_cue": [{"cue": cue, "signed_output": round(value(model, restored, cue), 12),
@@ -83,7 +85,8 @@ def run(arm):
         "gradient_calls": interactions * GRADIENT_CALLS,
         "genome_parameters": genome.parameter_count,
         "genome": genome,
-        "g49_diagnostics": diagnostics
+        "g49_diagnostics": diagnostics,
+        "g51_genomes": g51_genomes
     }
 
 
@@ -93,6 +96,7 @@ def build_report():
         row = run(arm)
         row.pop("genome")
         row.pop("g49_diagnostics")
+        row.pop("g51_genomes")
         rows.append(row)
     return {
         "schema": "yggdrasil.g48.synthetic-native-feedback-retention.v1",
@@ -176,6 +180,79 @@ def build_g50_report(results):
     }
 
 
+def g51_groups(before, after):
+    """Partition an unchanged 398-parameter genome by interpretable coordinates."""
+    import math
+    sensory_indices = set(j * INPUTS + INPUTS - 1 for j in range(HIDDEN))
+    components = {
+        "sensory_input_weights": [(a - b) ** 2 for i, (a, b) in enumerate(
+            zip(before.first, after.first)) if i in sensory_indices],
+        "other_first_layer_weights": [(a - b) ** 2 for i, (a, b) in enumerate(
+            zip(before.first, after.first)) if i not in sensory_indices],
+        "hidden_bias": [(a - b) ** 2 for a, b in zip(before.first_bias, after.first_bias)],
+        "second_layer_weights": [(a - b) ** 2 for a, b in zip(before.second, after.second)],
+        "output_bias": [(a - b) ** 2 for a, b in zip(before.second_bias, after.second_bias)]
+    }
+    counts = {name: len(values) for name, values in components.items()}
+    if sum(counts.values()) != GENOME_PARAMETER_COUNT:
+        raise ValueError("YGG_G51_BAD_PARAMETER_PARTITION")
+    return {name: {"parameters": counts[name], "l2_change": round(math.sqrt(sum(vals)), 15)}
+            for name, vals in components.items()}
+
+
+def build_g51_report(results):
+    """Counterfactual single-step probes, discarded after measurement.
+
+    Feedback waveform is generated in the synthetic world from the chosen action.
+    No rule label is supplied to fit_one_cell, which still uses the engineered G38
+    periodicity decoder. All probe arms reuse identical frozen checkpoints.
+    """
+    model = DG1APrototype()
+    initial = model.initial_state()
+    rows = []
+    for trained_arm in ("matched", "antithetic"):
+        for round_index, genome in zip(CHECKPOINTS, results[trained_arm]["g51_genomes"]):
+            before_negative = value(model, genome, -1.0)
+            before_positive = value(model, genome, 1.0)
+            for cue in CUES:
+                chosen = action(model, genome, cue)
+                correct = int(chosen == -(1 if cue > 0 else -1))
+                for feedback in ("matched", "antithetic", "no_feedback"):
+                    outcome = 1 - correct if feedback == "antithetic" else correct
+                    condition = "no_feedback" if feedback == "no_feedback" else "mapped"
+                    wave = matched_feedback(outcome, condition, length=FRAMES, seed=100 + round_index)
+                    decoded = perceived_valence(model, genome, wave)
+                    target = chosen * decoded * MARGIN if decoded else value(model, genome, cue)
+                    updated = model.fit_one_cell(initial, sensory(cue), genome, 1, 1,
+                                                 target, learning_rate=0.5)
+                    after_negative = value(model, updated, -1.0)
+                    after_positive = value(model, updated, 1.0)
+                    rows.append({
+                        "trained_arm": trained_arm, "rounds": round_index,
+                        "training_cue": cue, "feedback": feedback,
+                        "decoded_valence": decoded,
+                        "delta_intercept": round(((after_negative + after_positive) -
+                                                 (before_negative + before_positive)) / 2.0, 15),
+                        "delta_slope": round(((after_positive - after_negative) -
+                                             (before_positive - before_negative)) / 2.0, 15),
+                        "delta_output_negative": round(after_negative - before_negative, 15),
+                        "delta_output_positive": round(after_positive - before_positive, 15),
+                        "parameter_groups": g51_groups(genome, updated)
+                    })
+    return {
+        "schema": "yggdrasil.g51.synthetic-counterfactual-update-attribution.v1",
+        "evidence": "SELF_AUTHORED_SYNTHETIC_DEV_ONLY",
+        "probe_updates_committed_to_learner": False,
+        "probe_gradient_calls": len(rows),
+        "feedback_decoder": "EXTERNALLY_ENGINEERED_G38",
+        "source_training_budget_unchanged": True,
+        "scientific_acceptance": "NO_GO",
+        "genuine_transfer": "UNVERIFIED",
+        "primary_execution_allowed": False,
+        "rows": rows
+    }
+
+
 class G48NativeFeedbackDiagnostics(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -250,6 +327,25 @@ class G48NativeFeedbackDiagnostics(unittest.TestCase):
             self.assertTrue(all(c["parameter_distance_from_start"] == 0
                                 for c in r["checkpoints"]))
         print("YGG_G50_DEV_BOUNDARY_JSON=" +
+              json.dumps(report, sort_keys=True, separators=(",", ":"),
+                         allow_nan=False), flush=True)
+
+    def test_g51_counterfactual_update_attribution(self):
+        report = build_g51_report(self.results)
+        self.assertEqual(report["scientific_acceptance"], "NO_GO")
+        self.assertFalse(report["probe_updates_committed_to_learner"])
+        self.assertEqual(report["probe_gradient_calls"], 48)
+        self.assertEqual(len(report["rows"]), 48)
+        for row in report["rows"]:
+            self.assertEqual(sum(v["parameters"] for v in row["parameter_groups"].values()),
+                             GENOME_PARAMETER_COUNT)
+            self.assertIn(row["decoded_valence"], (-1, 0, 1))
+            if row["feedback"] == "no_feedback":
+                self.assertTrue(all(v["l2_change"] < 1e-12
+                                    for v in row["parameter_groups"].values()))
+        self.assertEqual(self.results["matched"]["genome"],
+                         run("matched")["genome"])
+        print("YGG_G51_DEV_ATTRIBUTION_JSON=" +
               json.dumps(report, sort_keys=True, separators=(",", ":"),
                          allow_nan=False), flush=True)
 
