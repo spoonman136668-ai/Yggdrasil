@@ -124,6 +124,58 @@ def build_g49_report():
     }
 
 
+def g50_boundary_from_checkpoint(checkpoint):
+    """Descriptive endpoint secant, not a claim of globally linear behavior."""
+    cues = checkpoint["per_cue"]
+    if len(cues) != 6 or [x["cue"] for x in cues] != [-1.0, -0.5, -0.25, 0.25, 0.5, 1.0]:
+        raise ValueError("YGG_G50_CUE_GRID")
+    outputs = [x["signed_output"] for x in cues]
+    if any(type(x) not in (float, int) for x in outputs):
+        raise ValueError("YGG_G50_NONNUMERIC")
+    import math
+    if not all(math.isfinite(x) for x in outputs):
+        raise ValueError("YGG_G50_NONFINITE")
+    intercept = (outputs[0] + outputs[-1]) / 2.0
+    slope = (outputs[-1] - outputs[0]) / 2.0
+    crossings = []
+    for left, right in zip(cues, cues[1:]):
+        y1, y2 = left["signed_output"], right["signed_output"]
+        if (y1 <= 0 < y2) or (y2 <= 0 < y1):
+            x1, x2 = left["cue"], right["cue"]
+            crossings.append(round(x1 - y1 * (x2 - x1) / (y2 - y1), 12))
+    return {
+        "rounds": checkpoint["rounds"],
+        "endpoint_intercept": round(intercept, 12),
+        "endpoint_slope": round(slope, 12),
+        "endpoint_zero_crossing": round(-intercept / slope, 12)
+                                  if abs(slope) > 1e-12 else None,
+        "observed_bracketed_crossings": crossings,
+        "all_negative": all(x < 0 for x in outputs),
+        "all_positive": all(x >= 0 for x in outputs),
+        "parameter_distance_from_start": checkpoint["parameter_distance_from_start"]
+    }
+
+
+def build_g50_report(results):
+    rows = []
+    for arm in ARMS:
+        checkpoints = results[arm]["g49_diagnostics"]
+        rows.append({"arm": arm,
+                     "checkpoints": [g50_boundary_from_checkpoint(c)
+                                     for c in checkpoints],
+                     "genome_parameters": results[arm]["genome_parameters"],
+                     "gradient_calls": results[arm]["gradient_calls"]})
+    return {
+        "schema": "yggdrasil.g50.synthetic-decision-boundary-diagnostic.v1",
+        "interpretation": "ENDPOINT_SECANT_AND_OBSERVED_SIGN_BRACKETS_ONLY",
+        "evidence": "SELF_AUTHORED_SYNTHETIC_DEV_ONLY",
+        "fixed_engineered_feedback_decoder": True,
+        "scientific_acceptance": "NO_GO",
+        "primary_execution_allowed": False,
+        "rows": rows
+    }
+
+
 class G48NativeFeedbackDiagnostics(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -176,6 +228,28 @@ class G48NativeFeedbackDiagnostics(unittest.TestCase):
                 self.assertTrue(all(c["parameter_distance_from_start"] == 0
                                     for c in row["checkpoints"]))
         print("YGG_G49_DEV_CUE_DIAGNOSTIC_JSON=" +
+              json.dumps(report, sort_keys=True, separators=(",", ":"),
+                         allow_nan=False), flush=True)
+
+    def test_g50_boundary_instrumentation(self):
+        report = build_g50_report(self.results)
+        self.assertEqual(report["scientific_acceptance"], "NO_GO")
+        self.assertEqual([r["arm"] for r in report["rows"]], list(ARMS))
+        for r in report["rows"]:
+            self.assertEqual(len(r["checkpoints"]), len(CHECKPOINTS))
+            for c in r["checkpoints"]:
+                self.assertIsInstance(c["endpoint_slope"], float)
+                self.assertIsInstance(c["endpoint_intercept"], float)
+                self.assertEqual(len(c["observed_bracketed_crossings"]) <= 5, True)
+        matched = report["rows"][0]["checkpoints"]
+        self.assertEqual(matched[0]["rounds"], 0)
+        self.assertFalse(matched[0]["all_negative"])
+        self.assertTrue(matched[-1]["all_negative"])
+        self.assertEqual(matched[-1]["observed_bracketed_crossings"], [])
+        for r in report["rows"][2:]:
+            self.assertTrue(all(c["parameter_distance_from_start"] == 0
+                                for c in r["checkpoints"]))
+        print("YGG_G50_DEV_BOUNDARY_JSON=" +
               json.dumps(report, sort_keys=True, separators=(",", ":"),
                          allow_nan=False), flush=True)
 
