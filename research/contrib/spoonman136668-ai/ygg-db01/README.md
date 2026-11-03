@@ -21,3 +21,11 @@ Adapter unit-test PASS is not learning improvement. Even if trained behavior imp
 
 ## Authority
 Research-only source branch. No production, promotion, scheduler, queue, owner, or protected first-use authority.
+
+## Development-only negative-control interface (G32)
+
+`feedback_control(outcome, condition, length, seed)` is environment-side and exposes *only* temporal samples to `LocalDevelopment.step`. Conditions are `mapped` (success beats/failure noise), `reversed` (mapping swapped), `sham` (seed parity selects beats/noise independent of outcome; use identical seeds for paired outcomes), and `no_feedback` (all-zero samples). All conditions use the same frame count and the same fixed-capacity local-update call budget. The sham parity scheme is a provisional diagnostic, not independently randomized task data. No feedback condition grants the learner a direct outcome-bit input.
+
+Focused tests exercise exact mapping, inverse mapping, outcome-blind sham, zero input, guard rejections, locality, fixed dimensions, and repeatability. These are structural development checks only; they do not establish improved learning, matched signal energy, scientific transfer, or DG-1 native integration.
+
+**Native interface audit:** The executable here is `LocalDevelopment.step(state, sensory)`, a provisional fixed-capacity 2D fixture; the accepted DG-1 substrate still requires separately verified native integration. `PublicCausalCells` is a conventional comparator. Do not represent either as an accepted DG-1 cognitive result. A prospective primary experiment still requires an independently frozen task/evaluator, balanced paired seeds, signal-amplitude and valence controls, complete compute accounting, source custody, thresholds and authorization. No primary or held-out evaluation is enabled by this change.

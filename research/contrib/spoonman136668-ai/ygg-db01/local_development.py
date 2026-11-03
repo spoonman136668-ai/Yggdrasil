@@ -75,3 +75,30 @@ def feedback(outcome: int, length: int = 16, seed: int = 17) -> tuple[float, ...
         state &= 0xFFFFFFFF
         samples.append((state / 0xFFFFFFFF) * 2.0 - 1.0)
     return tuple(samples)
+
+def feedback_control(outcome: int, condition: str = "mapped",
+                     length: int = 16, seed: int = 17) -> tuple[float, ...]:
+    """Environment-side negative controls; outcome never enters LocalDevelopment.
+
+    Sham selection depends on the frozen seed parity, never on outcome. Pair
+    identical seeds across outcomes so this is label independent. No-feedback
+    keeps the same frame budget and a zero sensory signal.
+    """
+    if type(condition) is not str or condition not in (
+            "mapped", "reversed", "sham", "no_feedback"):
+        raise ValueError("YGG_DB01_CONTROL_INVALID")
+    # Validate even controls that do not use the outcome or RNG.
+    if type(outcome) is not int or outcome not in (0, 1):
+        raise ValueError("YGG_DB01_OUTCOME_INVALID")
+    if type(length) is not int or not 4 <= length <= 1024:
+        raise ValueError("YGG_DB01_LENGTH_INVALID")
+    if type(seed) is not int or not 0 <= seed < 2**32:
+        raise ValueError("YGG_DB01_SEED_INVALID")
+    if condition == "no_feedback":
+        return (0.0,) * length
+    if condition == "sham":
+        # Half even/odd seeds select noise/beats, independent of outcomes.
+        return feedback(seed & 1, length=length, seed=seed)
+    if condition == "reversed":
+        outcome = 1 - outcome
+    return feedback(outcome, length=length, seed=seed)

@@ -45,6 +45,60 @@ class DevelopmentTests(unittest.TestCase):
         self.assertGreater(next_state[0][1][1], 0.)
         self.assertEqual(next_state[3][3][1], 0.)
 
+
+    def test_counterfactual_feedback_controls(self):
+        for length in (4, 16, 17):
+            for seed in (0, 1, 16, 17):
+                for outcome in (0, 1):
+                    self.assertEqual(
+                        mod.feedback_control(outcome, "mapped", length, seed),
+                        mod.feedback(outcome, length, seed))
+                    self.assertEqual(
+                        mod.feedback_control(outcome, "reversed", length, seed),
+                        mod.feedback(1 - outcome, length, seed))
+                    self.assertEqual(
+                        mod.feedback_control(outcome, "no_feedback", length, seed),
+                        (0.0,) * length)
+                self.assertEqual(
+                    mod.feedback_control(0, "sham", length, seed),
+                    mod.feedback_control(1, "sham", length, seed))
+                self.assertEqual(
+                    mod.feedback_control(0, "sham", length, seed),
+                    mod.feedback(seed & 1, length, seed))
+        for bad in (True, 1, "unknown", None):
+            with self.assertRaises(ValueError):
+                mod.feedback_control(1, bad)
+        for bad in (True, -1, 2, 0.5):
+            with self.assertRaises(ValueError):
+                mod.feedback_control(bad, "no_feedback")
+        with self.assertRaises(ValueError):
+            mod.feedback_control(1, "sham", length=3)
+        with self.assertRaises(ValueError):
+            mod.feedback_control(1, "reversed", seed=-1)
+
+    def test_equal_frame_budget_local_channel_and_deterministic_replay(self):
+        model = mod.LocalDevelopment()
+        initial = tuple(tuple((0.0, 0.0) for _ in range(4)) for _ in range(4))
+        def run(outcome, condition, seed=17):
+            state = initial
+            frames = mod.feedback_control(outcome, condition, length=16, seed=seed)
+            for sample in frames:
+                signal = tuple(tuple(sample if (y, x) == (1, 1) else 0.0
+                                     for x in range(4)) for y in range(4))
+                state = model.step(state, signal)
+                self.assertEqual(len(state), 4)
+                self.assertTrue(all(len(row) == 4 for row in state))
+                self.assertTrue(all(cell[0] == 0.0 for row in state for cell in row))
+            return state, len(frames)
+        for condition in ("mapped", "reversed", "sham", "no_feedback"):
+            for outcome in (0, 1):
+                self.assertEqual(run(outcome, condition), run(outcome, condition))
+                self.assertEqual(run(outcome, condition)[1], 16)
+        self.assertEqual(run(0, "sham"), run(1, "sham"))
+        self.assertEqual(run(0, "no_feedback"), run(1, "no_feedback"))
+        self.assertEqual(run(1, "reversed"), run(0, "mapped"))
+        self.assertEqual(run(0, "reversed"), run(1, "mapped"))
+
     def test_shape_and_signal_guards(self):
         model = mod.LocalDevelopment()
         state = tuple(tuple((0., 0.) for _ in range(4)) for _ in range(4))
