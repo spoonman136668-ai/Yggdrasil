@@ -79,3 +79,19 @@ Its regression tests use ephemeral **synthetic negative fixtures** under tempora
 Development fixture: 16 rounds, 2 synthetic training cues, 16 feedback frames and 8 G33 gradient calls per interaction. The shared genome is retained across interactions; evaluation is made after training on the same cue signs at smaller, unused amplitudes (±0.5). This is simple within-task synthetic interpolation, NOT independently sourced held-out transfer. Controls are mapped/reversed/sham (matched signed histograms, energy and fixed update budget) and zero-energy no_feedback (explicit ablation, not energy-matched). Both the outcome mapping and synthetic fixtures are self-authored and never primary science. No additional autonomous runner, model inference API, new controller or paid service is used.
 
 The code-level result, if qualified, shows only that a tiny cellular policy can update its shared weights using an engineered sensory-reward adapter on a fixed toy binary task. It does NOT prove learned valence, persistent recurrent memory, language, open-world causal intelligence, genuine task transfer, or acceptance of the North Star. All G35/G36 originals and frozen primary requirements remain untouched; G36's nine receipt slots stay null and primary/protected execution remains NO-GO. Preserve both positive and negative control results and exact-HEAD Linux/Windows focused and mandatory full regression.
+
+## G40 — task-rule reversal with adaptation (synthetic diagnostic only)
+
+The source-trained G38 genome is reused or replaced with a fresh seeded genome,
+then exposed to a **reversed** binary cue-action relationship. The world alone
+knows the correct action. Learner updates receive only selected action,
+local cue, and G34 feedback waveform; the decoder remains hand-engineered.
+Matched/reversed/sham conditions have the same signed waveform energy and
+update budgets. No-feedback and decoder-ablation are zero-energy ablations,
+not matched-energy controls.
+
+The test records deterministic before/after target-rule scores for warm/cold
+starts without a success threshold or scientific acceptance. Cue magnitudes
+remain in the original task family; adaptation is a toy diagnostic, **not
+independent held-out transfer**. Primary source admission, G36 original
+custody, frozen scientific thresholds and protected evaluation remain NO-GO.
