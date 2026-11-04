@@ -1,0 +1,104 @@
+name: YGG-DB01 isolated atlas repair and qualification
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [research/ygg-db01-development-only]
+    paths:
+      - .github/workflows/ygg-db01-atlas-repair.yml
+permissions:
+  contents: read
+jobs:
+  generate:
+    outputs:
+      artifact_sha: ${{ steps.publish.outputs.artifact_sha }}
+    if: github.repository == 'spoonman136668-ai/Yggdrasil' && github.ref == 'refs/heads/research/ygg-db01-development-only' && github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Freeze source, regenerate exactly three files, and commit
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Keep local Python import caches out of the exact-source working tree.
+          export PYTHONDONTWRITEBYTECODE=1
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          git merge-base --is-ancestor f6ac65d5ab1fef28d1780b5ffb53f8b8319aa2fc "$GITHUB_SHA"
+          # G38 isolated synthetic native-policy learning, original G36 custody still NO-GO.
+          # G46: exact test-harness JSON normalization; no science/learner change.
+          # G48: report synthetic feedback metrics in both qualification logs.
+          # G49: per-cue margin and parameter-drift readout; no learning rule change.
+          # G50: read-only secant/crossing diagnostics from G49 checkpoints.
+          # G51: exact-source counterfactual attribution qualification, no learner update.
+          # G52: frozen diagnostic group-delta qualification; no learner or architecture change.
+          # G53: fixed-budget 0.5 weight-group training ablation, synthetic development only.
+          # G54: frozen two-seed and two-waveform cue-grid robustness, no learner redesign.
+          # G55: decoder sensitivity readout and matched-marginal negative controls only.
+          git merge-base --is-ancestor 9314edb5fe2e4d2f7b7721ee79dbde59250582db "$GITHUB_SHA"
+          test "$(git diff --name-only 9314edb5fe2e4d2f7b7721ee79dbde59250582db HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .github/workflows/ygg-db01-atlas-repair.yml research/contrib/spoonman136668-ai/ygg-db01/README.md research/contrib/spoonman136668-ai/ygg-db01/g38_native_learning.py research/contrib/spoonman136668-ai/ygg-db01/test_g38_native_learning.py research/contrib/spoonman136668-ai/ygg-db01/test_g39_retention_transfer.py research/contrib/spoonman136668-ai/ygg-db01/g40_adaptation.py research/contrib/spoonman136668-ai/ygg-db01/test_g40_adaptation.py research/contrib/spoonman136668-ai/ygg-db01/g41_score_report.py research/contrib/spoonman136668-ai/ygg-db01/test_g41_score_report.py research/contrib/spoonman136668-ai/ygg-db01/g42_interference.py research/contrib/spoonman136668-ai/ygg-db01/test_g42_interference.py research/contrib/spoonman136668-ai/ygg-db01/g43_plasticity.py research/contrib/spoonman136668-ai/ygg-db01/test_g43_plasticity.py research/contrib/spoonman136668-ai/ygg-db01/g44_context.py research/contrib/spoonman136668-ai/ygg-db01/test_g44_context.py research/contrib/spoonman136668-ai/ygg-db01/g45_representation.py research/contrib/spoonman136668-ai/ygg-db01/test_g45_representation.py research/contrib/spoonman136668-ai/ygg-db01/g46_optimization.py research/contrib/spoonman136668-ai/ygg-db01/test_g46_optimization.py research/contrib/spoonman136668-ai/ygg-db01/g47_projection.py research/contrib/spoonman136668-ai/ygg-db01/test_g47_projection.py research/contrib/spoonman136668-ai/ygg-db01/test_g48_feedback_retention.py .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          test "$(git diff --name-only f6ac65d5ab1fef28d1780b5ffb53f8b8319aa2fc HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .github/workflows/ygg-db01-atlas-repair.yml .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json research/contrib/spoonman136668-ai/ygg-db01/README.md research/contrib/spoonman136668-ai/ygg-db01/g33_prereg_draft.json research/contrib/spoonman136668-ai/ygg-db01/g35_candidate.json research/contrib/spoonman136668-ai/ygg-db01/g35_preflight.py research/contrib/spoonman136668-ai/ygg-db01/g36_evidence_index.json research/contrib/spoonman136668-ai/ygg-db01/g36_originals.py research/contrib/spoonman136668-ai/ygg-db01/local_development.py research/contrib/spoonman136668-ai/ygg-db01/matched_feedback.py research/contrib/spoonman136668-ai/ygg-db01/native_dg1a.py research/contrib/spoonman136668-ai/ygg-db01/test_g35_preflight.py research/contrib/spoonman136668-ai/ygg-db01/test_g36_originals.py research/contrib/spoonman136668-ai/ygg-db01/test_local_development.py research/contrib/spoonman136668-ai/ygg-db01/test_matched_feedback.py research/contrib/spoonman136668-ai/ygg-db01/test_native_dg1a.py research/contrib/spoonman136668-ai/ygg-db01/g38_native_learning.py research/contrib/spoonman136668-ai/ygg-db01/test_g38_native_learning.py research/contrib/spoonman136668-ai/ygg-db01/test_g39_retention_transfer.py research/contrib/spoonman136668-ai/ygg-db01/g40_adaptation.py research/contrib/spoonman136668-ai/ygg-db01/test_g40_adaptation.py research/contrib/spoonman136668-ai/ygg-db01/g41_score_report.py research/contrib/spoonman136668-ai/ygg-db01/test_g41_score_report.py research/contrib/spoonman136668-ai/ygg-db01/g42_interference.py research/contrib/spoonman136668-ai/ygg-db01/test_g42_interference.py research/contrib/spoonman136668-ai/ygg-db01/g43_plasticity.py research/contrib/spoonman136668-ai/ygg-db01/test_g43_plasticity.py research/contrib/spoonman136668-ai/ygg-db01/g44_context.py research/contrib/spoonman136668-ai/ygg-db01/test_g44_context.py research/contrib/spoonman136668-ai/ygg-db01/g45_representation.py research/contrib/spoonman136668-ai/ygg-db01/test_g45_representation.py research/contrib/spoonman136668-ai/ygg-db01/g46_optimization.py research/contrib/spoonman136668-ai/ygg-db01/test_g46_optimization.py research/contrib/spoonman136668-ai/ygg-db01/g47_projection.py research/contrib/spoonman136668-ai/ygg-db01/test_g47_projection.py research/contrib/spoonman136668-ai/ygg-db01/test_g48_feedback_retention.py | LC_ALL=C sort)"
+          python scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          test "$(git diff --cached --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "YGG-DB01: regenerate exact-source G29 atlas"
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          python scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --check
+          python -m unittest discover -s research/contrib/spoonman136668-ai/ygg-db01 -p 'test_*.py' -v
+          python -m unittest discover -s tests -p 'test_*.py' -v
+          if test -n "$(git status --porcelain)"; then
+            echo 'YGG_DB01_UNEXPECTED_WORKTREE_DIRT' >&2
+            git status --short >&2
+            exit 1
+          fi
+          git push --force-with-lease=refs/heads/research/ygg-db01-development-only:$GITHUB_SHA origin HEAD:refs/heads/research/ygg-db01-development-only
+          echo "YGG_DB01_SOURCE=$GITHUB_SHA"
+          echo "YGG_DB01_ARTIFACT_COMMIT=$(git rev-parse HEAD)"
+          echo "artifact_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  qualify-exact-artifact:
+    needs: generate
+    if: needs.generate.result == 'success' && needs.generate.outputs.artifact_sha != ''
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.generate.outputs.artifact_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact published SHA, atlas, focused and full regression
+        shell: bash
+        env:
+          EXPECTED_ARTIFACT_SHA: ${{ needs.generate.outputs.artifact_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_ARTIFACT_SHA"
+          test -z "$(git status --porcelain)"
+          python scripts/build_code_atlas.py --check-if-present
+          python -m unittest discover -s research/contrib/spoonman136668-ai/ygg-db01 -p 'test_*.py' -v
+          python -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo "YGG_DB01_QUALIFIED_EXACT_HEAD=$EXPECTED_ARTIFACT_SHA"
