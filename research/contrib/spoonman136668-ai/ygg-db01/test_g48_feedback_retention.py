@@ -18,12 +18,17 @@ ARMS = ("matched", "antithetic", "no_feedback", "frozen")
 CHECKPOINTS = (0, 4, 8, 16)
 
 
-def run(arm, attenuation="full"):
+def run(arm, attenuation="full", seed_offset=0, feedback_condition="mapped"):
     if type(arm) is not str or arm not in ARMS:
         raise ValueError("YGG_G48_ARM")
     if type(attenuation) is not str or attenuation not in (
             "full", "sensory_half", "second_half"):
         raise ValueError("YGG_G53_INVALID_ATTENUATION")
+    if type(seed_offset) is not int or seed_offset not in (0, 4096):
+        raise ValueError("YGG_G54_SEED_PROFILE")
+    if type(feedback_condition) is not str or feedback_condition not in (
+            "mapped", "phase_shift"):
+        raise ValueError("YGG_G54_WAVEFORM_PROFILE")
     model = DG1APrototype()
     genome = run_development("mapped").genome
     initial = model.initial_state()
@@ -66,9 +71,10 @@ def run(arm, attenuation="full"):
             correct = int(chosen == -(1 if cue > 0 else -1))
             if arm == "antithetic":
                 correct = 1 - correct
-            condition = "no_feedback" if arm == "no_feedback" else "mapped"
+            condition = ("no_feedback" if arm == "no_feedback"
+                         else feedback_condition)
             waveform = matched_feedback(correct, condition,
-                                        length=FRAMES, seed=100 + rnd)
+                                        length=FRAMES, seed=100 + rnd + seed_offset)
             valence = perceived_valence(model, genome, waveform)
             target = chosen * valence * MARGIN if valence else value(
                 model, genome, cue)
@@ -432,6 +438,88 @@ def build_g53_report(baseline):
     }
 
 
+# G54 frozen development-only factorial; do not tune against these results.
+G54_GRID = (-1.0, -0.75, -0.5, -0.25, -0.125,
+            0.125, 0.25, 0.5, 0.75, 1.0)
+G54_PROFILES = ((0, "mapped"), (4096, "mapped"),
+                (0, "phase_shift"), (4096, "phase_shift"))
+G54_VARIANTS = (("matched", "full"), ("matched", "sensory_half"),
+                ("antithetic", "full"))
+
+
+def g54_evaluate(model, genome):
+    """Signed decision margins on predeclared unfamiliar evaluation cues."""
+    points = []
+    for cue in G54_GRID:
+        signed_output = value(model, genome, cue)
+        expected = -1 if cue > 0 else 1
+        points.append({
+            "cue": cue, "signed_output": round(signed_output, 12),
+            "expected_reversed_action": expected,
+            "chosen_action": action(model, genome, cue),
+            "signed_reversed_margin": round(expected * signed_output, 12)
+        })
+    return {
+        "correct": sum(int(p["chosen_action"] == p["expected_reversed_action"])
+                       for p in points),
+        "total": len(points),
+        "small_magnitude_correct": sum(
+            int(p["chosen_action"] == p["expected_reversed_action"])
+            for p in points if abs(p["cue"]) <= 0.25),
+        "small_magnitude_total": 4,
+        "minimum_signed_margin": min(p["signed_reversed_margin"] for p in points),
+        "points": points
+    }
+
+
+def build_g54_report(baseline):
+    """Test fixed G53 attenuation across seed/waveform changes without retuning."""
+    model = DG1APrototype()
+    rows = []
+    for offset, waveform in G54_PROFILES:
+        for arm, attenuation in G54_VARIANTS:
+            if offset == 0 and waveform == "mapped" and attenuation == "full":
+                result = baseline[arm]
+            else:
+                result = run(arm, attenuation=attenuation,
+                             seed_offset=offset, feedback_condition=waveform)
+            if (result["interactions"] != ROUNDS * len(CUES) or
+                    result["feedback_frames"] != ROUNDS * len(CUES) * FRAMES or
+                    result["gradient_calls"] != ROUNDS * len(CUES) * GRADIENT_CALLS or
+                    result["genome_parameters"] != GENOME_PARAMETER_COUNT):
+                raise ValueError("YGG_G54_BUDGET_OR_ARCHITECTURE_DRIFT")
+            row = {
+                "training_arm": arm, "variant": attenuation,
+                "waveform": waveform, "seed_offset": offset,
+                "interactions": result["interactions"],
+                "feedback_frames": result["feedback_frames"],
+                "gradient_calls": result["gradient_calls"],
+                "genome_parameters": result["genome_parameters"],
+                "start": g54_evaluate(model, result["g51_genomes"][0]),
+                "end": g54_evaluate(model, result["genome"]),
+                "checkpoint_reversed": [c["reversed"] for c in result["checkpoints"]]
+            }
+            rows.append(row)
+    return {
+        "schema": "yggdrasil.g54.synthetic-fixed-attenuation-factorial.v1",
+        "evidence": "SELF_AUTHORED_SYNTHETIC_DEV_ONLY",
+        "predeclared_seed_offsets": [0, 4096],
+        "predeclared_waveform_profiles": ["mapped", "phase_shift"],
+        "predeclared_cue_grid": list(G54_GRID),
+        "attenuation_fraction": 0.5,
+        "trained_profile_count": len(G54_PROFILES),
+        "control_arms": ["matched_full", "antithetic_full",
+                         "no_feedback_g53", "frozen_g53"],
+        "no_feedback_and_frozen_reuse_G53": True,
+        "architecture_unchanged": True,
+        "training_budget_unchanged": True,
+        "scientific_acceptance": "NO_GO",
+        "genuine_transfer": "UNVERIFIED",
+        "primary_execution_allowed": False,
+        "rows": rows
+    }
+
+
 class G48NativeFeedbackDiagnostics(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -610,6 +698,42 @@ class G48NativeFeedbackDiagnostics(unittest.TestCase):
         self.assertEqual(report["rows"][-1]["checkpoints"],
                          report["rows"][-2]["checkpoints"])
         print("YGG_G53_DEV_TRAINING_ATTENUATION_JSON=" + json.dumps(
+            report, sort_keys=True, separators=(",", ":"), allow_nan=False),
+            flush=True)
+
+    def test_g54_fixed_robustness_factorial(self):
+        for kw in ({"seed_offset": -1},
+                   {"seed_offset": 123},
+                   {"feedback_condition": "protected"},
+                   {"feedback_condition": "sham"}):
+            with self.assertRaises(ValueError):
+                run("matched", **kw)
+        report = build_g54_report(self.results)
+        self.assertEqual(report["scientific_acceptance"], "NO_GO")
+        self.assertEqual(len(report["rows"]), 12)
+        self.assertEqual(report["attenuation_fraction"], 0.5)
+        for profile in G54_PROFILES:
+            sub = [r for r in report["rows"] if
+                   (r["seed_offset"], r["waveform"]) == profile]
+            self.assertEqual(len(sub), 3)
+            self.assertEqual([(r["training_arm"], r["variant"]) for r in sub],
+                             list(G54_VARIANTS))
+            for row in sub:
+                self.assertEqual(row["genome_parameters"], GENOME_PARAMETER_COUNT)
+                self.assertEqual(row["gradient_calls"],
+                                 ROUNDS * len(CUES) * GRADIENT_CALLS)
+                self.assertEqual(row["end"]["total"], len(G54_GRID))
+                self.assertEqual(row["end"]["small_magnitude_total"], 4)
+                self.assertEqual(len(row["end"]["points"]), len(G54_GRID))
+                self.assertEqual(row["start"]["points"],
+                                 report["rows"][0]["start"]["points"])
+                self.assertEqual(len(row["checkpoint_reversed"]), len(CHECKPOINTS))
+                for point in row["end"]["points"]:
+                    self.assertEqual(point["expected_reversed_action"],
+                                     -1 if point["cue"] > 0 else 1)
+        self.assertEqual(report["rows"][0]["checkpoint_reversed"],
+                         [c["reversed"] for c in self.results["matched"]["checkpoints"]])
+        print("YGG_G54_DEV_FIXED_ROBUSTNESS_JSON=" + json.dumps(
             report, sort_keys=True, separators=(",", ":"), allow_nan=False),
             flush=True)
 
