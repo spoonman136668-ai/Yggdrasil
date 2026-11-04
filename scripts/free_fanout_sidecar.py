@@ -6,10 +6,16 @@ import math
 import os
 import pathlib
 import re
-import resource
 import subprocess
 import sys
 import time
+
+try:
+    import resource
+except ModuleNotFoundError as exc:
+    if exc.name != "resource":
+        raise
+    resource = None
 
 SCHEMA = "research.free-fanout.v1"
 ENVELOPE_SCHEMA = "research.free-fanout-envelope.v1"
@@ -272,6 +278,10 @@ def build_candidate_env(home_dir, tmp_dir, data_class):
     }
 
 def run_candidate(manifest, package_root, candidate_id, output_root):
+    # Validation/aggregation are portable. Execution requires real accounting;
+    # never launch a candidate or create output with unavailable measurements.
+    if resource is None:
+        fail("FREE_FANOUT_RESOURCE_ACCOUNTING_UNAVAILABLE")
     candidate = candidate_by_id(manifest, candidate_id)
     output_root = pathlib.Path(output_root).resolve()
     output_root.mkdir(parents=True, exist_ok=True)
