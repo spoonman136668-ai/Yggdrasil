@@ -32,10 +32,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          base=e9bc50d60ecd437f377ba109cee9d21cef84ce2b
+          base=5e74f8db85b2f5839c42148c0dfba69a88b1a2c9
           test "$(git merge-base "$base" HEAD)" = "$base"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          expected="$(printf '%s\n' '.github/workflows/qualify-native-public-cells-dev.yml' '.ice/code-atlas.html' '.ice/code-atlas.ice' '.ice/code-atlas.json' 'scripts/free_fanout_sidecar.py' 'tests/test_free_fanout_sidecar.py' 'tests/test_native_cells.py' 'yggdrasil/public_causal_cells.py')"
+          expected="$(printf '%s\n' '.github/workflows/qualify-native-public-cells-dev.yml' '.ice/code-atlas.html' '.ice/code-atlas.ice' '.ice/code-atlas.json' 'tests/test_native_cells.py' 'yggdrasil/public_causal_cells.py')"
           test "$(git diff --name-only "$base" HEAD)" = "$expected"
           test -z "$(git status --porcelain --untracked-files=all)"
           echo YGG_NATIVE_PUBLIC_SOURCE_EXACT=PASS

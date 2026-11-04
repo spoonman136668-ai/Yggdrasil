@@ -6,16 +6,13 @@ import math
 import os
 import pathlib
 import re
+try:
+    import resource  # POSIX child CPU/RSS accounting; unavailable on Windows
+except ImportError:
+    resource = None  # Fail closed before starting any candidate on unsupported hosts
 import subprocess
 import sys
 import time
-
-try:
-    import resource
-except ModuleNotFoundError as exc:
-    if exc.name != "resource":
-        raise
-    resource = None
 
 SCHEMA = "research.free-fanout.v1"
 ENVELOPE_SCHEMA = "research.free-fanout-envelope.v1"
@@ -278,8 +275,8 @@ def build_candidate_env(home_dir, tmp_dir, data_class):
     }
 
 def run_candidate(manifest, package_root, candidate_id, output_root):
-    # Validation/aggregation are portable. Execution requires real accounting;
-    # never launch a candidate or create output with unavailable measurements.
+    # A candidate must never run if child CPU and peak RSS cannot be measured.
+    # This guard precedes all filesystem writes and subprocess creation.
     if resource is None:
         fail("FREE_FANOUT_RESOURCE_ACCOUNTING_UNAVAILABLE")
     candidate = candidate_by_id(manifest, candidate_id)

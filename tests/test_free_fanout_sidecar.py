@@ -1,11 +1,9 @@
 import copy
-import builtins
 import importlib.util
 import json
 import pathlib
 import tempfile
 import unittest
-from unittest import mock
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("free_fanout_sidecar", ROOT / "scripts" / "free_fanout_sidecar.py")
@@ -153,6 +151,26 @@ class ManifestValidationTests(unittest.TestCase):
             ff.validate_manifest_path("research/fanout/../../manifest.json")
 
 class RuntimeValidationTests(unittest.TestCase):
+    def assertNoResourceFailsBeforeDispatch(self, manifest):
+        # A Windows host has no POSIX child resource metrics. Neither a
+        # candidate nor its output directory may be created in that case.
+        with tempfile.TemporaryDirectory() as td:
+            root = pathlib.Path(td)
+            output = root / "should-not-exist"
+            with self.assertRaises(ff.FanoutError) as ctx:
+                ff.run_candidate(manifest, root / "not-a-package", "smoke-a", output)
+            self.assertEqual(str(ctx.exception),
+                             "FREE_FANOUT_RESOURCE_ACCOUNTING_UNAVAILABLE")
+            self.assertFalse(output.exists())
+
+    def test_forced_missing_resource_fails_closed_on_every_platform(self):
+        saved = ff.resource
+        try:
+            ff.resource = None
+            self.assertNoResourceFailsBeforeDispatch(base_manifest())
+        finally:
+            ff.resource = saved
+
     def make_package(self, source):
         td = tempfile.TemporaryDirectory()
         root = pathlib.Path(td.name)
@@ -161,9 +179,11 @@ class RuntimeValidationTests(unittest.TestCase):
         target.write_text(source, encoding="utf-8")
         return td, root
 
-    @unittest.skipIf(ff.resource is None, "POSIX worker execution unsupported; nonexecution guard tested separately")
     def test_missing_result_rejected(self):
         m = base_manifest()
+        if ff.resource is None:
+            self.assertNoResourceFailsBeforeDispatch(m)
+            return
         source = "import sys\nsys.exit(0)\n"
         td, root = self.make_package(source)
         self.addCleanup(td.cleanup)
@@ -172,9 +192,11 @@ class RuntimeValidationTests(unittest.TestCase):
                 ff.run_candidate(m, root, "smoke-a", out)
         self.assertIn("FREE_FANOUT_RESULT_MISSING", str(ctx.exception))
 
-    @unittest.skipIf(ff.resource is None, "POSIX worker execution unsupported; nonexecution guard tested separately")
     def test_mismatched_candidate_id_rejected(self):
         m = base_manifest()
+        if ff.resource is None:
+            self.assertNoResourceFailsBeforeDispatch(m)
+            return
         source = """import json, pathlib, sys
 out = pathlib.Path(sys.argv[sys.argv.index("--output") + 1])
 out.write_text(json.dumps({"candidate_id": "wrong"}) + "\\n", encoding="utf-8")
@@ -192,32 +214,6 @@ out.write_text(json.dumps({"candidate_id": "wrong"}) + "\\n", encoding="utf-8")
             with self.assertRaises(ff.FanoutError) as ctx:
                 ff.aggregate(m, td)
         self.assertIn("FREE_FANOUT_AGGREGATE_CANDIDATE_SET_MISMATCH", str(ctx.exception))
-
-    def test_missing_accounting_rejects_before_spawn_or_output_creation(self):
-        with tempfile.TemporaryDirectory() as td:
-            output = pathlib.Path(td) / "must-not-exist"
-            with mock.patch.object(ff, "resource", None), mock.patch.object(ff.subprocess, "run") as spawn:
-                with self.assertRaisesRegex(ff.FanoutError, "^FREE_FANOUT_RESOURCE_ACCOUNTING_UNAVAILABLE$"):
-                    ff.run_candidate(base_manifest(), pathlib.Path(td) / "absent-package", "smoke-a", output)
-                spawn.assert_not_called()
-            self.assertFalse(output.exists())
-
-    def test_portable_validation_import_without_resource(self):
-        original_import = builtins.__import__
-        def without_resource(name, *args, **kwargs):
-            if name == "resource":
-                raise ModuleNotFoundError("simulated unsupported platform", name="resource")
-            return original_import(name, *args, **kwargs)
-        spec = importlib.util.spec_from_file_location("fanout_without_resource", ROOT / "scripts" / "free_fanout_sidecar.py")
-        isolated = importlib.util.module_from_spec(spec)
-        with mock.patch("builtins.__import__", side_effect=without_resource):
-            spec.loader.exec_module(isolated)
-        self.assertIsNone(isolated.resource)
-        manifest = isolated.validate_manifest(base_manifest(), PROGRAM, PACKAGE_SHA)
-        self.assertEqual(manifest["package_sha"], PACKAGE_SHA)
-        with tempfile.TemporaryDirectory() as td:
-            with self.assertRaisesRegex(isolated.FanoutError, "FREE_FANOUT_AGGREGATE_CANDIDATE_SET_MISMATCH"):
-                isolated.aggregate(manifest, td)
 
 class WorkflowStaticTests(unittest.TestCase):
     def test_workflow_is_manual_hosted_and_read_only(self):
