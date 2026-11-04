@@ -520,6 +520,89 @@ def build_g54_report(baseline):
     }
 
 
+G55_SEEDS = (100, 4196)
+G55_CONDITIONS = ("mapped", "phase_shift", "polarity_flip",
+                  "reversed", "sham", "no_feedback")
+G55_OUTCOMES = (0, 1)
+
+
+def g55_waveform_probe(model, genome, waveform):
+    """Read-only sensory response audit, never a training input."""
+    valid_shape = (type(waveform) is tuple and len(waveform) == FRAMES and
+                   all(type(v) in (int, float) for v in waveform))
+    if not valid_shape:
+        raise ValueError("YGG_G55_INVALID_WAVEFORM")
+    from matched_feedback import PATTERN
+    marginal_valid = sorted(waveform) == sorted(PATTERN * (FRAMES // 4))
+    response = tuple(value(model, genome, sample) for sample in waveform)
+    response_cardinality = len(set(response))
+    observed_period_four = all(response[i] == response[i + 4]
+                               for i in range(FRAMES - 4))
+    try:
+        decoded = perceived_valence(model, genome, waveform)
+        rejected = None
+    except ValueError as error:
+        decoded, rejected = None, str(error)
+    return {
+        "waveform": list(waveform),
+        "marginal_valid": marginal_valid,
+        "response_cardinality": response_cardinality,
+        "response_period_four": observed_period_four,
+        "perceived_valence": decoded,
+        "rejection": rejected
+    }
+
+
+def build_g55_report(baseline):
+    """Frozen inputs demonstrate invariances and decoder admissibility."""
+    model = DG1APrototype()
+    genome = baseline["matched"]["g51_genomes"][0]
+    cases = []
+    for seed in G55_SEEDS:
+        for outcome in G55_OUTCOMES:
+            for condition in G55_CONDITIONS:
+                waveform = matched_feedback(outcome, condition,
+                                            length=FRAMES, seed=seed)
+                cases.append({
+                    "seed": seed, "outcome": outcome, "condition": condition,
+                    **g55_waveform_probe(model, genome, waveform)
+                })
+    from matched_feedback import PATTERN
+    constructed = (
+        ("regular_original", PATTERN * (FRAMES // 4)),
+        ("regular_phase_reordered", (0.0, 1.0, -1.0, 0.0) * (FRAMES // 4)),
+        ("nonperiodic_equal_marginal", matched_feedback(
+            0, "mapped", length=FRAMES, seed=100)),
+        ("invalid_marginal", (0.5,) * FRAMES),
+        ("zero_energy", (0.0,) * FRAMES)
+    )
+    extra = [{"name": name, **g55_waveform_probe(model, genome, waveform)}
+             for name, waveform in constructed]
+    # An explicitly degenerate native sensory response should fail closed.
+    collapsed = SharedGenome(
+        tuple(0.0 for _ in genome.first),
+        tuple(0.0 for _ in genome.first_bias),
+        tuple(0.0 for _ in genome.second),
+        tuple(0.0 for _ in genome.second_bias))
+    collapse = g55_waveform_probe(model, collapsed, constructed[0][1])
+    return {
+        "schema": "yggdrasil.g55.synthetic-decoder-sensitivity-audit.v1",
+        "evidence": "SELF_AUTHORED_SYNTHETIC_DEV_ONLY",
+        "probe_training_steps": 0,
+        "fixed_genome_parameters": GENOME_PARAMETER_COUNT,
+        "seeds": list(G55_SEEDS),
+        "conditions": list(G55_CONDITIONS),
+        "outcomes": list(G55_OUTCOMES),
+        "case_count": len(cases),
+        "waveform_mutation_controls": extra,
+        "sensory_collapse_control": collapse,
+        "scientific_acceptance": "NO_GO",
+        "genuine_transfer": "UNVERIFIED",
+        "primary_execution_allowed": False,
+        "cases": cases
+    }
+
+
 class G48NativeFeedbackDiagnostics(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -734,6 +817,53 @@ class G48NativeFeedbackDiagnostics(unittest.TestCase):
         self.assertEqual(report["rows"][0]["checkpoint_reversed"],
                          [c["reversed"] for c in self.results["matched"]["checkpoints"]])
         print("YGG_G54_DEV_FIXED_ROBUSTNESS_JSON=" + json.dumps(
+            report, sort_keys=True, separators=(",", ":"), allow_nan=False),
+            flush=True)
+
+    def test_g55_readonly_decoder_sensitivity_audit(self):
+        report = build_g55_report(self.results)
+        self.assertEqual(report["schema"],
+                         "yggdrasil.g55.synthetic-decoder-sensitivity-audit.v1")
+        self.assertEqual(report["scientific_acceptance"], "NO_GO")
+        self.assertEqual(report["probe_training_steps"], 0)
+        self.assertEqual(report["case_count"], 24)
+        self.assertEqual(len(report["cases"]), 24)
+        self.assertEqual(report["fixed_genome_parameters"], GENOME_PARAMETER_COUNT)
+        for seed in G55_SEEDS:
+            for outcome in G55_OUTCOMES:
+                sub = [r for r in report["cases"] if
+                       r["seed"] == seed and r["outcome"] == outcome]
+                self.assertEqual([r["condition"] for r in sub],
+                                 list(G55_CONDITIONS))
+                self.assertEqual(sub[0]["perceived_valence"],
+                                 1 if outcome == 1 else -1)
+                self.assertEqual(sub[1]["perceived_valence"],
+                                 sub[0]["perceived_valence"])
+                self.assertEqual(sub[2]["perceived_valence"],
+                                 sub[0]["perceived_valence"])
+                self.assertEqual(sub[3]["perceived_valence"],
+                                 -sub[0]["perceived_valence"])
+                self.assertEqual(sub[5]["perceived_valence"], 0)
+                self.assertIsNone(sub[5]["rejection"])
+                self.assertNotEqual(sub[0]["waveform"], sub[1]["waveform"])
+                self.assertTrue(all(r["response_cardinality"] == 3
+                                    for r in sub[:5]))
+        extra = report["waveform_mutation_controls"]
+        self.assertEqual([r["name"] for r in extra],
+                         ["regular_original", "regular_phase_reordered",
+                          "nonperiodic_equal_marginal",
+                          "invalid_marginal", "zero_energy"])
+        self.assertEqual([r["perceived_valence"] for r in extra],
+                         [1, 1, -1, None, 0])
+        self.assertEqual(extra[3]["rejection"], "YGG_G38_MARGINAL_DRIFT")
+        self.assertEqual(extra[0]["response_cardinality"], 3)
+        self.assertEqual(extra[1]["response_cardinality"], 3)
+        self.assertEqual(report["sensory_collapse_control"]["rejection"],
+                         "YGG_G38_SENSORY_COLLAPSED")
+        self.assertEqual(report["sensory_collapse_control"]["response_cardinality"], 1)
+        self.assertEqual(self.results["matched"]["genome"],
+                         run("matched")["genome"])
+        print("YGG_G55_DEV_DECODER_AUDIT_JSON=" + json.dumps(
             report, sort_keys=True, separators=(",", ":"), allow_nan=False),
             flush=True)
 
