@@ -1,0 +1,88 @@
+name: Yggdrasil empirical-rate repair DEV qualification
+on:
+  push:
+    branches: [dev/public-rate-repair-20261104]
+permissions:
+  contents: read
+concurrency:
+  group: ygg-public-rate-repair-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  native-focused-and-original-baseline:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Pin literal Git checkout paths
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Exact source and frozen candidate custody
+        shell: bash
+        run: |
+          set -euo pipefail
+          base=5e74f8db85b2f5839c42148c0dfba69a88b1a2c9
+          test "$(git merge-base "$base" HEAD)" = "$base"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          expected="$(printf '%s\n' '.github/workflows/qualify-native-public-cells-dev.yml' '.ice/code-atlas.html' '.ice/code-atlas.ice' '.ice/code-atlas.json' 'tests/test_native_cells.py' 'yggdrasil/public_causal_cells.py')"
+          test "$(git diff --name-only "$base" HEAD)" = "$expected"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo YGG_NATIVE_PUBLIC_SOURCE_EXACT=PASS
+      - name: Frozen defective candidate must fail unequal-exposure control
+        shell: python
+        run: |
+          import subprocess, sys, types, unittest
+          source = subprocess.check_output(['git', 'show', 'e9bc50d60ecd437f377ba109cee9d21cef84ce2b:yggdrasil/public_causal_cells.py'])
+          module = types.ModuleType('yggdrasil.public_causal_cells')
+          exec(compile(source, '<frozen-pr801>', 'exec'), module.__dict__)
+          sys.modules[module.__name__] = module
+          sys.path.insert(0, 'tests')
+          suite = unittest.defaultTestLoader.loadTestsFromName('test_native_cells.NativeCausalCellsTests.test_unequal_exposure_prefers_rate_over_raw_success_count')
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          assert result.testsRun == 1 and len(result.failures) == 4 and not result.errors, 'NEGATIVE_CONTROL_NOT_DETECTED'
+          print('YGG_FROZEN_PR801_UNEQUAL_EXPOSURE_REJECTED=PASS')
+      - name: Focused public-learning and affected checkpoint interfaces
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_native_cells.py' -v
+          python -B -m unittest discover -s tests -p 'test_portable_checkpoint.py' -v
+          echo YGG_NATIVE_RATE_FOCUSED=PASS
+      - name: Mandatory complete public regression and source build
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -c "from pathlib import Path; [compile(p.read_bytes(), str(p), 'exec') for root in ('yggdrasil', 'scripts', 'tests') for p in Path(root).rglob('*.py')]"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo YGG_NATIVE_COMPLETE_PLATFORM_REGRESSION=PASS
+          echo YGG_NATIVE_DEV_ONLY=TRUE
+          echo YGG_NATIVE_SCIENTIFIC_FIRST_USE=FALSE
+      - name: Immutable execution identity
+        if: always()
+        shell: python
+        run: |
+          import hashlib, json, os, pathlib, platform, subprocess
+          identity = {'schema': 'yggdrasil.public-rate-dev-qualification.v1', 'sha': os.environ['GITHUB_SHA'], 'tree': subprocess.check_output(['git','rev-parse','HEAD^{tree}'], text=True).strip(), 'run_id': os.environ['GITHUB_RUN_ID'], 'attempt': os.environ['GITHUB_RUN_ATTEMPT'], 'os': os.environ['RUNNER_OS'], 'python': platform.python_version(), 'job_status': '${{ job.status }}', 'negative_source': 'e9bc50d60ecd437f377ba109cee9d21cef84ce2b', 'scientific_first_use': False, 'promotion_authority': False}
+          identity['source_sha256'] = {p: hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest() for p in ('yggdrasil/public_causal_cells.py', 'tests/test_native_cells.py', 'scripts/free_fanout_sidecar.py', 'tests/test_free_fanout_sidecar.py', '.github/workflows/qualify-native-public-cells-dev.yml')}
+          dest = pathlib.Path(os.environ['RUNNER_TEMP']) / 'public-rate-receipt.json'
+          dest.write_text(json.dumps(identity, sort_keys=True, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps(identity, sort_keys=True))
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: public-rate-receipt-${{ matrix.os }}
+          path: ${{ runner.temp }}/public-rate-receipt.json
+          if-no-files-found: error

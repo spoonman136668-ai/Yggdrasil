@@ -50,7 +50,7 @@ class PublicCausalCells:
         self._counts[cell][arm][result] = min(65535, old + 1)
 
     def choose(self, address: int, *, retained: bool = False) -> int | None:
-        """Compare matched empirical rates. Abstain without both arms' evidence."""
+        """Compare empirical success rates under arbitrary exposure. Abstain without both arms' evidence."""
         cell = self._address(address, retained)
         (zero0, one0), (zero1, one1) = self._counts[cell]
         trials0 = zero0 + one0
@@ -58,7 +58,8 @@ class PublicCausalCells:
         if not trials0 or not trials1:
             return None
         # Exact integer cross-products avoid rounding/tuned thresholds.
-        lhs, rhs = one0 * trials1, one1 * trials0
+        lhs = one0 * trials1
+        rhs = one1 * trials0
         if lhs == rhs:
             return None
         return 0 if lhs > rhs else 1
