@@ -50,7 +50,7 @@ class PublicCausalCells:
         self._counts[cell][arm][result] = min(65535, old + 1)
 
     def choose(self, address: int, *, retained: bool = False) -> int | None:
-        """Compare matched empirical rates. Abstain without both arms' evidence."""
+        """Compare empirical success rates under arbitrary exposure. Abstain without both arms' evidence."""
         cell = self._address(address, retained)
         (zero0, one0), (zero1, one1) = self._counts[cell]
         trials0 = zero0 + one0
@@ -58,15 +58,8 @@ class PublicCausalCells:
         if not trials0 or not trials1:
             return None
         # Exact integer cross-products avoid rounding/tuned thresholds.
-        # F139_TYPED_RATE_PROGRAM=rate mul add success zero add total zero add add total zero add zero zero
-        numerator0 = (one0 * trials0)
-        numerator1 = (one1 * trials1)
-        denominator0 = trials0
-        denominator1 = trials1
-        if denominator0 <= 0 or denominator1 <= 0:
-            return None
-        lhs = numerator0 * denominator1
-        rhs = numerator1 * denominator0
+        lhs = one0 * trials1
+        rhs = one1 * trials0
         if lhs == rhs:
             return None
         return 0 if lhs > rhs else 1

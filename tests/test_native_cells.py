@@ -114,5 +114,57 @@ class NativeCausalCellsTests(unittest.TestCase):
         self.assertIsNone(cells.choose(2))
 
 
+    @staticmethod
+    def history(success0, trials0, success1, trials1, *, retained=False):
+        cells = PublicCausalCells()
+        for action, successes, trials in ((0, success0, trials0), (1, success1, trials1)):
+            for index in range(trials):
+                cells.observe(0, action, int(index < successes), retained=retained)
+        return cells
+
+    def test_unequal_exposure_prefers_rate_over_raw_success_count(self):
+        for retained in (False, True):
+            for counts, expected in (((2, 2, 3, 10), 0), ((3, 10, 2, 2), 1)):
+                with self.subTest(counts=counts, retained=retained):
+                    cells = self.history(*counts, retained=retained)
+                    self.assertEqual(cells.choose(0, retained=retained), expected)
+                    restored = PublicCausalCells.restore(cells.snapshot())
+                    self.assertEqual(restored.choose(0, retained=retained), expected)
+                    self.assertIsNone(restored.choose(0, retained=not retained))
+
+    def test_unequal_exposure_equal_rates_abstain(self):
+        for counts in ((1, 2, 3, 6), (2, 2, 10, 10), (0, 2, 0, 10)):
+            with self.subTest(counts=counts):
+                self.assertIsNone(self.history(*counts).choose(0))
+
+    def test_zero_success_and_missing_exposure_controls(self):
+        for counts, expected in (((0, 2, 1, 10), 1), ((1, 10, 0, 2), 0),
+                                 ((0, 0, 3, 10), None), ((2, 2, 0, 0), None)):
+            with self.subTest(counts=counts):
+                self.assertEqual(self.history(*counts).choose(0), expected)
+
+    def test_small_histories_match_independent_rational_oracle(self):
+        from fractions import Fraction
+        for trials0 in range(1, 11):
+            for trials1 in range(1, 11):
+                for success0 in range(trials0 + 1):
+                    for success1 in range(trials1 + 1):
+                        rate0 = Fraction(success0, trials0)
+                        rate1 = Fraction(success1, trials1)
+                        expected = None if rate0 == rate1 else int(rate1 > rate0)
+                        with self.subTest(counts=(success0, trials0, success1, trials1)):
+                            self.assertEqual(self.history(success0, trials0, success1, trials1).choose(0), expected)
+
+    def test_unequal_histories_continue_identically_after_restore(self):
+        original = self.history(2, 2, 3, 10)
+        restored = PublicCausalCells.restore(original.snapshot())
+        for outcome in (0, 0, 0, 0, 0, 0):
+            for cells in (original, restored):
+                cells.observe(0, 0, outcome)
+        self.assertEqual(original.choose(0), 1)
+        self.assertEqual(restored.choose(0), 1)
+        self.assertEqual(original.snapshot(), restored.snapshot())
+
+
 if __name__ == "__main__":
     unittest.main()
