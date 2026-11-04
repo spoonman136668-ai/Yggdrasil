@@ -18,9 +18,12 @@ ARMS = ("matched", "antithetic", "no_feedback", "frozen")
 CHECKPOINTS = (0, 4, 8, 16)
 
 
-def run(arm):
+def run(arm, attenuation="full"):
     if type(arm) is not str or arm not in ARMS:
         raise ValueError("YGG_G48_ARM")
+    if type(attenuation) is not str or attenuation not in (
+            "full", "sensory_half", "second_half"):
+        raise ValueError("YGG_G53_INVALID_ATTENUATION")
     model = DG1APrototype()
     genome = run_development("mapped").genome
     initial = model.initial_state()
@@ -74,7 +77,8 @@ def run(arm):
                     initial, sensory(cue), genome, 1, 1,
                     target, learning_rate=0.5)
                 if arm != "frozen":
-                    genome = candidate
+                    genome = (candidate if attenuation == "full" else
+                              g53_attenuate(genome, candidate, attenuation))
         if rnd + 1 in CHECKPOINTS:
             record(rnd + 1)
     interactions = ROUNDS * len(CUES)
@@ -354,6 +358,80 @@ def build_g52_report(results):
     }
 
 
+G53_INTERVENTIONS = ("sensory_half", "second_half")
+G53_CONTROL_ARMS = ("matched", "antithetic", "no_feedback", "frozen")
+
+
+def g53_attenuate(before, candidate, variant):
+    """Scale only one weight-group update by 0.5; leave other deltas untouched.
+
+    The original model architecture, feedback decoder, and gradient budget
+    remain fixed. This is a development-only training ablation.
+    """
+    if variant not in G53_INTERVENTIONS or type(variant) is not str:
+        raise ValueError("YGG_G53_INVALID_ATTENUATION")
+    if before.parameter_count != GENOME_PARAMETER_COUNT or (
+            candidate.parameter_count != GENOME_PARAMETER_COUNT):
+        raise ValueError("YGG_G53_CAPACITY_DRIFT")
+    if variant == "sensory_half":
+        first = list(candidate.first)
+        for j in range(HIDDEN):
+            ix = j * INPUTS + INPUTS - 1
+            first[ix] = before.first[ix] + (candidate.first[ix] - before.first[ix]) * 0.5
+        return SharedGenome(tuple(first), candidate.first_bias,
+                            candidate.second, candidate.second_bias)
+    second = tuple(a + (b - a) * 0.5 for a, b in
+                   zip(before.second, candidate.second))
+    return SharedGenome(candidate.first, candidate.first_bias,
+                        second, candidate.second_bias)
+
+
+def build_g53_report(baseline):
+    """Frozen-budget training-level comparison; no protected transfer."""
+    if any(arm not in baseline for arm in G53_CONTROL_ARMS):
+        raise ValueError("YGG_G53_MISSING_CONTROLS")
+    rows = []
+    for arm in G53_CONTROL_ARMS:
+        orig = baseline[arm]
+        runs = (("full", orig),)
+        if arm in ("matched", "antithetic"):
+            runs += tuple((variant, run(arm, variant)) for variant in G53_INTERVENTIONS)
+        for variant, result in runs:
+            if (result["genome_parameters"] != GENOME_PARAMETER_COUNT or
+                result["interactions"] != ROUNDS * len(CUES) or
+                result["gradient_calls"] != ROUNDS * len(CUES) * GRADIENT_CALLS):
+                raise ValueError("YGG_G53_BUDGET_DRIFT")
+            rows.append({
+                "arm": arm, "variant": variant,
+                "interactions": result["interactions"],
+                "feedback_frames": result["feedback_frames"],
+                "gradient_calls": result["gradient_calls"],
+                "genome_parameters": result["genome_parameters"],
+                "checkpoints": [{
+                    "rounds": cp["rounds"],
+                    "source": cp["source"], "reversed": cp["reversed"],
+                    "interpolation": cp["interpolation"],
+                    "restored_equal": cp["restored_equal"],
+                    "endpoint_slope": g50_boundary_from_checkpoint(diag)["endpoint_slope"],
+                    "endpoint_intercept": g50_boundary_from_checkpoint(diag)["endpoint_intercept"],
+                    "parameter_distance_from_start": diag["parameter_distance_from_start"]
+                } for cp, diag in zip(result["checkpoints"], result["g49_diagnostics"])]
+            })
+    return {
+        "schema": "yggdrasil.g53.synthetic-training-group-attenuation.v1",
+        "evidence": "SELF_AUTHORED_SYNTHETIC_DEV_ONLY",
+        "frozen_variants": list(G53_INTERVENTIONS),
+        "attenuation_fraction": 0.5,
+        "baseline_controls_reused_without_retraining": True,
+        "matched_training_budgets": True,
+        "fixed_engineered_feedback_decoder": True,
+        "scientific_acceptance": "NO_GO",
+        "genuine_transfer": "UNVERIFIED",
+        "primary_execution_allowed": False,
+        "rows": rows
+    }
+
+
 class G48NativeFeedbackDiagnostics(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -481,6 +559,57 @@ class G48NativeFeedbackDiagnostics(unittest.TestCase):
                                 trial[0]["training_cue"] == r["training_cue"]
                                 for r in trial))
         print("YGG_G52_DEV_GROUP_DELTA_JSON=" + json.dumps(
+            report, sort_keys=True, separators=(",", ":"), allow_nan=False),
+            flush=True)
+
+    def test_g53_frozen_training_group_attenuation(self):
+        model = DG1APrototype()
+        before = self.results["matched"]["g51_genomes"][0]
+        candidate = model.fit_one_cell(model.initial_state(), sensory(-1.0),
+                                       before, 1, 1, -MARGIN,
+                                       learning_rate=0.5)
+        for variant in G53_INTERVENTIONS:
+            changed = g53_attenuate(before, candidate, variant)
+            self.assertEqual(changed.parameter_count, GENOME_PARAMETER_COUNT)
+            self.assertNotEqual(changed, before)
+            self.assertNotEqual(changed, candidate)
+            if variant == "sensory_half":
+                self.assertEqual(changed.second, candidate.second)
+                self.assertEqual(changed.first_bias, candidate.first_bias)
+                self.assertEqual(changed.second_bias, candidate.second_bias)
+                for j in range(HIDDEN):
+                    i = j * INPUTS + INPUTS - 1
+                    self.assertAlmostEqual(
+                        changed.first[i] - before.first[i],
+                        (candidate.first[i] - before.first[i]) * 0.5,
+                        places=14)
+            else:
+                self.assertEqual(changed.first, candidate.first)
+                self.assertEqual(changed.first_bias, candidate.first_bias)
+                self.assertEqual(changed.second_bias, candidate.second_bias)
+                for a, b, c in zip(before.second, candidate.second, changed.second):
+                    self.assertAlmostEqual(c - a, 0.5 * (b - a), places=14)
+        with self.assertRaises(ValueError):
+            g53_attenuate(before, candidate, "invalid")
+        report = build_g53_report(self.results)
+        self.assertEqual(len(report["rows"]), 8)
+        self.assertEqual(report["scientific_acceptance"], "NO_GO")
+        for row in report["rows"]:
+            self.assertEqual(row["genome_parameters"], GENOME_PARAMETER_COUNT)
+            self.assertEqual(row["gradient_calls"], ROUNDS * len(CUES) * GRADIENT_CALLS)
+            self.assertEqual(len(row["checkpoints"]), len(CHECKPOINTS))
+            self.assertEqual([c["rounds"] for c in row["checkpoints"]], list(CHECKPOINTS))
+            self.assertTrue(all(c["restored_equal"] for c in row["checkpoints"]))
+        self.assertEqual(
+            [(r["arm"], r["variant"]) for r in report["rows"]],
+            [("matched", "full"), ("matched", "sensory_half"),
+             ("matched", "second_half"),
+             ("antithetic", "full"), ("antithetic", "sensory_half"),
+             ("antithetic", "second_half"), ("no_feedback", "full"),
+             ("frozen", "full")])
+        self.assertEqual(report["rows"][-1]["checkpoints"],
+                         report["rows"][-2]["checkpoints"])
+        print("YGG_G53_DEV_TRAINING_ATTENUATION_JSON=" + json.dumps(
             report, sort_keys=True, separators=(",", ":"), allow_nan=False),
             flush=True)
 
