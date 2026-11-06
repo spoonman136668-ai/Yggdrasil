@@ -8,6 +8,7 @@ on:
       - yggdrasil/itd02_native_public_cohort_dev.py
       - tests/test_itd02_native_public_cohort_dev.py
       - .github/workflows/itd02-native-public-cohort-dev.yml
+      - scripts/itd02_native_cohort_checkpoint_evidence_dev.py
 permissions:
   contents: read
 jobs:
@@ -44,3 +45,21 @@ jobs:
           if ($dirty.Count -gt 0) { throw "ITD02_DEVELOPMENT_CHECKOUT_DIRTY $($dirty -join ',')" }
           "SOURCE_FREE_COHORT_ENGINEERING_CHECK=PASS" >> $env:GITHUB_STEP_SUMMARY
           "Not original Shuttle source first-use; not retail PC energy/RAM acceptance." >> $env:GITHUB_STEP_SUMMARY
+      - name: Export actual source-free learned-state checkpoint across three OS processes
+        shell: pwsh
+        run: |
+          $root = Join-Path $env:RUNNER_TEMP "ygg-itd02-cold-native-artifact"
+          $sha = (git rev-parse HEAD).Trim()
+          python -B scripts/itd02_native_cohort_checkpoint_evidence_dev.py --phase prefix --root $root --source-commit-sha $sha
+          if ($LASTEXITCODE -ne 0) { throw "ITD02_PREFIX_EVIDENCE_FAILED" }
+          python -B scripts/itd02_native_cohort_checkpoint_evidence_dev.py --phase resume --root $root --source-commit-sha $sha
+          if ($LASTEXITCODE -ne 0) { throw "ITD02_RESUME_EVIDENCE_FAILED" }
+          python -B scripts/itd02_native_cohort_checkpoint_evidence_dev.py --phase verify --root $root --source-commit-sha $sha
+          if ($LASTEXITCODE -ne 0) { throw "ITD02_COLD_READBACK_FAILED" }
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: ygg-itd02-sourcefree-native-checkpoint-${{ matrix.os }}
+          path: ${{ runner.temp }}/ygg-itd02-cold-native-artifact/
+          if-no-files-found: error
+          retention-days: 30
