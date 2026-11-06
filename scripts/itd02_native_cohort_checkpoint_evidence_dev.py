@@ -13,6 +13,11 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import sys
+
+# Direct script invocation sets sys.path[0] to scripts/, not the checkout root.
+# Import only the exact checkout-owned native module; no global installation.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from yggdrasil.itd02_native_public_cohort_dev import train_or_resume_public_cohort
 from yggdrasil.itd02_public_source_journal_dev import inspect_custody, load_verified_native_model
