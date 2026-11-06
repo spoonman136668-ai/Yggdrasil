@@ -97,7 +97,7 @@ def _verify_root_files(root):
 
 def train_or_resume_public_cohort(
     root, source_factory, *, source_sha256, episodes, max_steps,
-    role=ROLE,
+    role=ROLE, new_episodes_limit=None,
 ):
     """Continue a finite local dev training cohort without replaying actions.
 
@@ -115,6 +115,13 @@ def train_or_resume_public_cohort(
     _require(type(max_steps) is int and 1 <= max_steps <= MAX_STEPS,
              "STEP_BUDGET")
     _require(role == ROLE, "OWNER_ROLE_REQUIRED")
+    # Only a bounded development-stage stop, not a changed cohort identity.
+    # A later independent process can reopen the same original cohort spec
+    # and continue from its last committed native checkpoint.
+    _require(new_episodes_limit is None or
+             type(new_episodes_limit) is int and
+             1 <= new_episodes_limit <= episodes,
+             "NEW_EPISODE_LIMIT")
     _require(callable(source_factory), "SOURCE_FACTORY_REQUIRED")
     root = Path(root)
     _require(not root.is_symlink(), "COHORT_ROOT_SYMLINK")
@@ -152,6 +159,9 @@ def train_or_resume_public_cohort(
         past.append(result)
     receipts = list(past)
     for i in range(len(past) + 1, episodes + 1):
+        if (new_episodes_limit is not None and
+                i > len(past) + new_episodes_limit):
+            break
         # Reserve exact identity BEFORE invoking source factory; its creation
         # might itself consume an external source or throw ambiguously.
         path = root / f"episode-{i:06d}"
