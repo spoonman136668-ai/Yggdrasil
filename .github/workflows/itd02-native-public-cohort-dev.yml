@@ -63,3 +63,20 @@ jobs:
           path: ${{ runner.temp }}/ygg-itd02-cold-native-artifact/
           if-no-files-found: error
           retention-days: 30
+      - name: Generate exact-source G29 index for immutable manual reconciliation
+        if: matrix.os == 'ubuntu-24.04'
+        shell: pwsh
+        run: |
+          $source = (git rev-parse HEAD).Trim()
+          python -B scripts/build_code_atlas.py --source-commit $source --write
+          if ($LASTEXITCODE -ne 0) { throw "YGG_G29_SOURCE_INDEX_GENERATION_FAILED" }
+      - uses: actions/upload-artifact@v4
+        if: success() && matrix.os == 'ubuntu-24.04'
+        with:
+          name: ygg-g29-source-index-development
+          path: |
+            .ice/code-atlas.json
+            .ice/code-atlas.html
+            .ice/code-atlas.ice
+          if-no-files-found: error
+          retention-days: 30
