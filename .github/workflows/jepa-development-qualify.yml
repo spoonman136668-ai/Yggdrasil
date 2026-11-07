@@ -1,0 +1,57 @@
+name: Yggdrasil source-only JEPA development qualification
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'yggdrasil/paired_view_jepa.py'
+      - 'tests/test_paired_view_jepa.py'
+      - 'research/experiments/jepa-dev/**'
+      - '.github/workflows/jepa-development-qualify.yml'
+permissions:
+  contents: read
+jobs:
+  development:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Focused development tests
+        run: python -B -m unittest discover -s tests -p test_paired_view_jepa.py -v
+      - name: Full original Python regression
+        run: python -B -m unittest discover -s tests -p test_*.py -v
+      - name: Verify source compiles
+        run: python -B -m compileall -q yggdrasil tests
+
+      - name: Prepare bounded G29 atlas companion (read-only artifact; no ref writes)
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          if python -B scripts/build_code_atlas.py --check-if-present; then
+            echo "YGG_G29_ATLAS_ALREADY_CURRENT"
+          else
+            python -B scripts/build_code_atlas.py --source-commit "$(git rev-parse HEAD)" --write
+            echo "YGG_G29_SOURCE_COMPANION_GENERATED_ONLY"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ygg-jepa-atlas-${{ matrix.os }}
+          path: |
+            .ice/code-atlas.json
+            .ice/code-atlas.html
+            .ice/code-atlas.ice
+          include-hidden-files: true
+          retention-days: 5
