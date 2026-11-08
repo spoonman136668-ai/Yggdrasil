@@ -22,6 +22,15 @@ Language acquisition, representation learning, generation, knowledge acquisition
 
 Any substrate-changing extension must be preregistered, experimentally justified, bounded to the minimum necessary delta, preserve previously established capabilities unless the experiment explicitly tests them, and qualify affected interfaces before acceptance.
 
+STRICT TOKEN-FREE NATIVE COGNITION INVARIANT
+The Yggdrasil target cognitive system must be token-free throughout its own learned perception, state, continual learning, memory, reasoning and generation path. It must not depend on language token IDs, a tokenizer vocabulary, subword/BPE segmentation, next-token prediction objectives, token-indexed working or persistent memory, token-sequence planning or autoregressive token generation. Renaming token embeddings as continuous features, using an external token model as the hidden cognitive core, or wrapping a conventional language model in developmental components is not compliance.
+
+The established DG-1 cell/genome/phenotype substrate must learn representations from raw perceptual, language-as-signal, physical and action-consequence observations without a token-vocabulary intermediary. Cognition must arise from locally bounded developmental state, native causal interaction, memory/reorganization/repair and regenerative learning. Numeric cell identities, cellular time steps or binary transport required by software are not a language tokenizer, but must not be converted into token-based learned reasoning or language generation.
+
+Only independently labeled conventional token-based systems are permissible as **external comparison baselines or bounded research tools**; their own token prediction, inference or hidden state cannot count as Yggdrasil capability. Evaluate token-free input-to-native-state-to-reasoning/action, progressive language competence without linguistic-token intermediates, causal generalization, novel transfer, cold retention, regeneration under interference and whole-process compute/memory against trained matched controls.
+
+This constraint shares the *destination* with Wingless and TTT-Hybrid-Lab, not the controller, source tree or implementation. Yggdrasil must preserve its independent developmental/cellular genome/phenotype architecture. All established DG-1 and ongoing frozen first-use protocols remain unchanged; this prospective constraint cannot be retroactively used to change their scientific classification or evidence.
+
 NATIVE CAPABILITY REQUIREMENT
 A capability counts toward the standalone-model North Star only when it is produced by the Wingless/Yggdrasil system's own learned state and substrate. External-model assistance during research or training does not count as model capability.
 
