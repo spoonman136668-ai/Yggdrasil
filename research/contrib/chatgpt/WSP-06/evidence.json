@@ -1,0 +1,165 @@
+{
+  "schema": "wsp06.public-dev-evidence.v1",
+  "experiment": "WSP-06",
+  "classification": {
+    "engineering": "INITIAL_EXACT_SOURCE_DUAL_OS_PASS__FINAL_POST_EVIDENCE_REGRESSION_REQUIRED",
+    "science": "SCIENTIFIC_UNVERIFIED__TIE_WITH_CONVERGED_TRAINED_AND_EXACT_SYMBOLIC",
+    "deployment": "NONE"
+  },
+  "lineage": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "branch": "research/wsp06-weight-programmed-causal-circuit-20261110",
+    "predecessor_pr": 870,
+    "base_commit": "6c45a20af790d7eca8d1b69387559000b2bc4d03",
+    "protocol_first_commit": "9bd5d74087c89a42a919f1f8348825cd5e86e84d",
+    "protocol_git_blob_sha1": "3d7b09700f476b7464e9392d7c2ad9bd2f15bec0",
+    "protocol_sha256": "d99f05bc65d0909ae8a47a7a23253fef8a01c460a1894718a3e3d4ec6ac2d3f0",
+    "prereg_commit": "28d9631040c71ee8a47ccf1b1a381df26ce0b3d9",
+    "model_source_sha256": "f408c30d607546a17ac09d5ac74d7e20d568d2eb32fea17ba6ed347a3409d450",
+    "initial_qualified_source_commit": "4349e92bf354b3e075a4567b12e667c6816bc688",
+    "initial_qualified_tree": "e3bd96519a59431ec50dd014d525a206545a179e",
+    "generated_code_atlas_pin": "05bf49355be61b96f3176a7f482d1dfed1bb4bc9",
+    "source_frozen_before_results": true
+  },
+  "receipts": {
+    "initial_full_exact_source": {
+      "id": 42918295878,
+      "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/42918295878",
+      "sha": "4349e92bf354b3e075a4567b12e667c6816bc688",
+      "windows": "SUCCESS",
+      "linux": "SUCCESS",
+      "per_platform": {
+        "existing_repository": 54,
+        "wsp01": 7,
+        "wsp02": 8,
+        "wsp03": 9,
+        "wsp04": 10,
+        "wsp05": 10,
+        "wsp06": 10,
+        "total": 108
+      },
+      "frozen_dev_runner": "PASS",
+      "g29_integrity": "PASS",
+      "clean_tree": "PASS"
+    },
+    "initial_g29_acceptance": {
+      "id": 42918295765,
+      "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/42918295765",
+      "sha": "4349e92bf354b3e075a4567b12e667c6816bc688",
+      "windows": "SUCCESS",
+      "linux": "SUCCESS"
+    },
+    "infra_caveat": "Separate pre-existing prepare-ckb-research-write-proxy-fanout-r3.yml push failures are not WSP06 read-only PR matrix qualification and are not represented as passing."
+  },
+  "design": {
+    "raw_input": "stateID, action, reward, successorID; external host converts fixed ID range 1000..1011 to one-hot only",
+    "fixed_numeric_coefficients": {
+      "signature_classifier": 12,
+      "action_router": 4,
+      "total": 16
+    },
+    "plastic_synapses": {
+      "T0_successor": 144,
+      "R0_action0_reward": 12,
+      "C0_observed_action0": 12,
+      "R1_signature_reward": 4,
+      "C1_observed_signature": 4,
+      "F_safety_latch": 1,
+      "total": 177,
+      "all_initial_values": 0
+    },
+    "total_weight_slots": 193,
+    "generic_numerical_tape": {
+      "read_ops": 14,
+      "learn_ops": 30,
+      "program_sha256": "afaad271b72fc947efa26cf4a250f06ab2257788ef57868bd1ad21f927819c43",
+      "activation_primitives": [
+        "matrix-vector multiply",
+        "threshold",
+        "concatenation",
+        "scalar multiplication and sum",
+        "absolute difference",
+        "binary local outer-product OR"
+      ],
+      "task_specific_python_maps_in_circuit": false,
+      "external_engine_remains": true
+    },
+    "gradient_updates": 0,
+    "positive_synapses_at_final_after_20_interventions": {
+      "min": 34,
+      "max": 38
+    },
+    "learned_task": "Two-hop causal action consequence equivalence learned from raw transition observations. Fixed two-hop signature wiring is an inductive prior: not unknown feature-program synthesis."
+  },
+  "evaluation": {
+    "worlds": 32,
+    "raw_action0_experiences_per_world": 12,
+    "raw_action1_experiences_per_world": 8,
+    "heldout_action1_labels_per_world": 4,
+    "total_heldout_binary_rewards": 128,
+    "abstention_counts_as_wrong": true,
+    "exact_scores": {
+      "numeric_weight_circuit": 128,
+      "exact_symbolic_matcher": 128,
+      "fully_converged_33_param_mlp": 128,
+      "one_step_control": 64,
+      "identity_memorizer": 0,
+      "erased_numeric": 0
+    },
+    "conventional_baseline": {
+      "architecture": "2-8-1 tanh/sigmoid",
+      "trainable_float_parameters": 33,
+      "optimizer": "deterministic full-batch Adam",
+      "learning_rate": 0.03,
+      "seed": 17,
+      "stop_bce": 0.02,
+      "gradient_steps_total": 1386,
+      "converged_worlds": 32,
+      "unconverged_worlds": 0,
+      "mean_train_bce_linux": 0.019065383501256368,
+      "mean_train_bce_windows": 0.019065383501256365,
+      "matched_information": true,
+      "matched_total_compute": false
+    },
+    "retention": {
+      "cold_restore_exact": 32,
+      "identical_replay_of_four_observed_events": 32,
+      "independent_model_world_isolation": 32,
+      "checkpoint_bytes": 674
+    },
+    "ablations": {
+      "zero_numeric_transition_matrix_caused_abstention_every_world": 32,
+      "zero_fixed_signature_weights_caused_abstention_every_world": 32,
+      "experience_erasure_correct_binary_rewards": 0
+    },
+    "hidden_holdout_reward_shift": {
+      "alternative_has_identical_20_public_events": true,
+      "before_witness_confidently_wrong_rewards": 128,
+      "after_one_genuine_shifted_label_global_abstentions": 128,
+      "new_shifted_rules_acquired": 0,
+      "scientific_classification": "NEGATIVE for out-of-family reliable prediction, detection only post evidence, NOT recovered learning"
+    },
+    "runner_wall_seconds": {
+      "linux": {
+        "numeric_compilation_plus_restoration_ablation_negative": 0.219247,
+        "trained_fit": 0.1064,
+        "whole_dev_runner": 0.327135
+      },
+      "windows": {
+        "numeric_compilation_plus_restoration_ablation_negative": 0.164724,
+        "trained_fit": 0.093862,
+        "whole_dev_runner": 0.259888
+      },
+      "comparison": "UNCONTROLLED DIFFERENT WORKLOADS AND PYTHON INTERPRETER; no speedup claim. Numeric workload contains cold restores, negative and ablation testing; baseline timing fits only."
+    }
+  },
+  "scope_and_limitations": {
+    "scientific_first_use": "NOT AUTHORIZED, NOT RUN",
+    "superiority": "NONE on accuracy. Independent exact symbolic and fully converged conventional baseline both tie 128/128. No matched data or whole-process cost superiority.",
+    "model_entirety": "A bounded WSP05 cognitive *task* solver was shifted into numeric synapses and a generic execution tape. This is not general intelligence, arbitrary new-rule learning, a self-contained hardware neural processor, or every possible inference and update mechanism independently proven in weights.",
+    "static_priors": "Two-hop causal identity based on action0 outcomes, 4-signature threshold decode and outer-product plasticity are supplied in code/weights. Those are programmed structural assumptions.",
+    "data_limit": "All public synthetic environments are constructed by the same team; true novel independent environments not used.",
+    "auth": "Draft only, no merge/accepted ref, no new owner/queue/schedule/runner/live training/integration, no paid APIs.",
+    "engineering_scope_exception": "Read-only WSP06 PR CI workflow and required generated three G29 atlas companions outside research-only paths; provenance file written after the initial successful evaluation, requiring full final SHA requalification."
+  }
+}
