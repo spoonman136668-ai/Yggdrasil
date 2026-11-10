@@ -1,0 +1,85 @@
+{
+  "schema": "wsp02.public-dev-result.v1",
+  "experiment_id": "WSP-02",
+  "classification": "ENGINEERING_PASS__SCIENTIFIC_NEGATIVE_OOD",
+  "evidence_scope": "Fully public author-specified synthetic DEV; not independent first-use, not a strongest-baseline scientific comparison",
+  "prereg_initial_commit": "7b86a26cb764865c54b2444580d97179d10e40d7",
+  "spec_hash_corrected_preoutcome_commit": "a165e9160c5b29e9ff7332ddddf1df52b1b9fa56",
+  "original_negative_first_ci": {
+    "run_id": 42873845179,
+    "head_sha": "9673331a6c6277e94eb683923e4dcb383186054a",
+    "windows": "FAIL one OOD diagnostic expectation",
+    "linux": "FAIL one OOD diagnostic expectation",
+    "message": "Observed 64 false decisive choices; test initially incorrectly expected zero. This failure was preserved, not reclassified as infrastructure."
+  },
+  "diagnostic_correction": "After red first run, test expected false-decisive count was changed to the mathematically derived 64; experiment rule, control budget, transfer contexts, tests of in-family capabilities and OOD witness remain unchanged. This is a disclosed post-result diagnostic change, not a confirmatory SCIENTIFIC_PASS.",
+  "measured_candidate_sha": "9d0d1639eb9448385c2097be068f4cf5c319ea3b",
+  "measured_candidate_tree_sha": "b6eae028aaf5408f84cf592cc2a6af1f2719796b",
+  "full_regression_run_id": 42874559417,
+  "atlas_run_id": 42874559609,
+  "platforms": {
+    "linux": {
+      "os": "ubuntu-latest",
+      "python": "3.12.16",
+      "repo_tests_passed": 54,
+      "wsp01_tests_passed": 7,
+      "wsp02_tests_passed": 8,
+      "dev_runner_seconds": 3.529746
+    },
+    "windows": {
+      "os": "windows-2022",
+      "python": "3.12.10",
+      "repo_tests_passed": 54,
+      "wsp01_tests_passed": 7,
+      "wsp02_tests_passed": 8,
+      "dev_runner_seconds": 5.331156
+    }
+  },
+  "worlds": 64,
+  "observations_per_world": 6,
+  "in_family": {
+    "transfer_cases": 256,
+    "decisive_cases": 128,
+    "correct_abstentions": 128,
+    "correct_including_abstentions": {
+      "weight_written": 256,
+      "exact_symbolic": 256,
+      "tabular": 128,
+      "erased": 128,
+      "trained_mlp": 64
+    }
+  },
+  "out_of_family": {
+    "perturbation": "XOR(context_bit0 AND context_bit1) applied to public binary reward",
+    "before_public_witness": {
+      "wrong_decisive_actions": 64,
+      "wrong_reward_predictions": 256
+    },
+    "one_public_witness": "context=3,action=0",
+    "after_witness": {
+      "empty_hypothesis_sets": 64,
+      "incorrect_decisive_actions": 0,
+      "decision_coverage": 0
+    },
+    "interpretation": "The out-of-family mechanism was not identifiable in the first six contexts. XOR flipping binary rewards reverses action preference in decisive cases. After witness the exact hypothesis set empties; abstention is not recovery."
+  },
+  "model": {
+    "permanent_binary_connection_weights": 3072,
+    "frozen_weights_sha256": "02e818eb0d986a1a29cbfa297ebad7162a62da2d6e01b8f7b2f9a578e9c60230",
+    "recurrent_state_bits": 64,
+    "checkpoint_bytes": 44,
+    "gradient_steps": 0
+  },
+  "trained_control": {
+    "parameters": 65,
+    "optimizer": "full-batch deterministic gradient descent",
+    "seed": 17,
+    "steps_per_world": 512,
+    "learning_rate": 0.05,
+    "mean_final_train_bce": 0.09831739977239343,
+    "qualification": "Frozen-budget control, not independently qualified strongest trained baseline or matched total compute"
+  },
+  "scientific_conclusion": "NO scientific superiority vs exact symbolic control; OOD overconfidence falsifies broad reliability. Needs a genuinely new causal mechanism and fresh independent source before any scientific advancement claim.",
+  "deployment": "NONE",
+  "exact_source_final_qualification": "Results/provenance JSON and derived G29 atlas companions will be added after these source-measured receipts; final candidate must rerun exact SHA full regression."
+}
