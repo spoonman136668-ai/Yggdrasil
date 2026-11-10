@@ -1,0 +1,47 @@
+{
+  "schema": "wsp09.public-dev-protocol.v1",
+  "experiment": "WSP-09",
+  "parent_sha": "daedeb9b75cf078f3612920d71f3392ce24a8743",
+  "primary_question": "Can a homogeneous numerical neural circuit choose and write previously unknown association identities into initially blank synaptic slots by its own activity, instead of choosing from pre-enumerated task representations or using Python to choose addresses, labels or slots?",
+  "scope_of_claim": "This constructs new *instances* of learned representations, NOT previously unsupported computational primitive types. It is a small bounded neural associative memory, not general intelligence or arbitrary causal-operator discovery.",
+  "input": "Four binary sensory bits x0..x3, one binary observed action-consequence label y, a constant 1. For three-bit tasks, x3=0. Host only validates and forwards bits, with no state-to-class mapping, pattern lookup or slot-selection branch.",
+  "neural_architecture": {
+    "fixed": "16 IDENTICAL initially blank slots. Each has an experience-written used weight, four experience-written address weights and one experience-written reward weight. A fixed numeric threshold-neuron graph computes address equality and a first-free-slot winner, selects a plastic memory slot, detects repeats and contradictions, and emits reward and covered/confidence. No per-input identity detector weights or per-task hypothesis weights preloaded.",
+    "plastic": "16*(used1+address4+label1)+fault1 = 97 writable binary synaptic coefficients, all initialized 0. No label/class function enumerated in fixed synapses.",
+    "plastic_update": "One homogeneous local three-factor synaptic write w<-OR(w,activity[pre]*activity[post]*activity[mod]) applied simultaneously AFTER forward inference. Used, address, label and fault weights are allocated by precompiled numeric eligibility gates, not by task-specific Python branching.",
+    "runtime": "One homogeneous weighted-sum/threshold neuron kernel and one generic synaptic OR learning kernel. No dictionary, symbolic lookup, explicit context-address allocation in Python, adaptive opcode dispatch, gradient optimizer or external function evaluator in the model. Python builder compiles the prior fixed equality/first-free rule once; the generic Python neuron VM remains external.",
+    "limits": "16 slots, four input dimensions, 97 plastic weights, <=3 fixed-coefficient slots reused, <=512 total threshold nodes, <=1600 directed synaptic incidence edges, snapshot canonical with program hash/weights SHA-256."
+  },
+  "frozen_data": {
+    "three_bit": "ALL 256 possible Boolean truth tables on three input bits, integer mask 0..255. For each mask, eight distinct patterns in order random.Random(0xC0FFEE + mask*131 + 3*1000003).shuffle([0..7]); reveal label=(mask>>pattern)&1 at each real observation. x3 padded 0.",
+    "four_bit": "72 distinct four-input Boolean truth tables: the eight fixed masks [0x0000,0xffff,0x6996,0x9669,0xaaaa,0x5555,0xcccc,0x3333] and 64 unique masks from SHA256('WSP09-mask|seed='+decimal_seed) first 2 bytes interpreted little-endian, scanning increasing seed, skipping duplicates and fixed masks. Pattern order random.Random(0xC0FFEE+mask*131+4*1000003).shuffle([0..15]).",
+    "worlds": 328,
+    "unique_observations": "256*8 +72*16 = 3200 genuine context/reward observations.",
+    "queries": "Before EACH first occurrence of a pattern, require abstention (3200/3200), then after genuine witness immediately require correct label (3200/3200). After all observations, 3200/3200 recalled correct labels. No unused pattern is scored as transfer or novel-world generalization.",
+    "baselines": "Independent exact symbolic associative map with the identical 3200 public observations, required parity. Gradient-trained logistic one-hot 16-feature, 16-parameter conventional neural output layer on eight predefined four-input tables (the eight fixed masks). Full batch Adam seed17, learning rate0.05, stop BCE<=0.02, max3000 epochs; all sixteen observations per table supplied. 8*16=128 conventional covered predictions; if not converged, mark qualified-trained baseline UNVERIFIED.",
+    "negative": "Each learned world receives exactly one previously seen pattern with inverted label after final scoring. Numeric contradiction latch must become 1 and ALL outputs subsequently abstain, no false inference of the shifted function. The two histories prior to contradictory observation are identical. No recovery unless new independent evidence supplied. A fifth input dimension must be rejected.",
+    "ablation": "Zero used synapses after learning -> all patterns abstain; zero one label synapse must change at least one known positive prediction (on a positive-containing table); zero address synapses must destroy discriminating mapping. Cold exact weights, four old-event replays, separate-world isolation.",
+    "information_limit": "For arbitrary Boolean functions with independent unknown labels, no learner can predict any unobserved bit with guaranteed correctness without prior rule information. Complete coverage of n=4 requires 16 label bits worst case. This gate cannot demonstrate sample-efficiency gain and MUST state it explicitly.",
+    "engineering_pass": "All 328 tables with all 3200 pre-observation abstentions, immediate post-witness label correctness and full replay; 328 exact cold restores, 328 four-event idempotent replays, learned numeric weights and fault guard, eight conventional trained controls convergence disclosed, full original + WSP01..09 dual-platform exact-source regression, source atlas and clean checkout.",
+    "scientific_pass": "NOT CLAIMED by public author-visible DEV. Even perfect implementation establishes generic weight-coded association allocation, NOT new neural primitive type generation, general cognition, causal transfer to independently unfamiliar dynamics, or compute/data superiority.",
+    "invalid": "Do not alter masks, seeds, outcome rule, training budgets, source assumption, controls or scoring after first DEV run. Engineering bug fixes must be disclosed and entire final exact-SHA regression rerun."
+  },
+  "authority": {
+    "isolated_development": true,
+    "draft_unmerged": true,
+    "no_scheduler": true,
+    "no_owner_controller_or_research_loop_change": true,
+    "no_independent_scientific_first_use": true,
+    "no_paid_api": true,
+    "no_deployment": true
+  },
+  "paths": {
+    "research": "research/contrib/chatgpt/WSP-09/**",
+    "qualification_only": [
+      ".github/workflows/wsp09-pr-validation.yml",
+      ".ice/code-atlas.json",
+      ".ice/code-atlas.html",
+      ".ice/code-atlas.ice"
+    ]
+  }
+}

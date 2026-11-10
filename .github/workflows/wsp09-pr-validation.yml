@@ -1,0 +1,56 @@
+# Public synthetic DEV qualification. No schedule/dispatch or private runners.
+name: WSP-09 neural synaptic self-allocation DEV regression
+on:
+  pull_request:
+    branches:
+      - research/wsp08-synaptic-representation-growth-20261110
+      - main
+    paths:
+      - 'research/contrib/chatgpt/WSP-09/**'
+      - '.ice/code-atlas.*'
+      - '.github/workflows/wsp09-pr-validation.yml'
+permissions:
+  contents: read
+jobs:
+  regression:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: G29 source atlas exact pin
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Full original Yggdrasil tests
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Preserve WSP-01
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-01 -p "test_*.py" -v
+      - name: Preserve WSP-02 scientific negative
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-02 -p "test_*.py" -v
+      - name: Preserve WSP-03
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-03 -p "test_*.py" -v
+      - name: Preserve WSP-04
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-04 -p "test_*.py" -v
+      - name: Preserve WSP-05
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-05 -p "test_*.py" -v
+      - name: Preserve WSP-06
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-06 -p "test_*.py" -v
+      - name: Preserve WSP-07
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-07 -p "test_*.py" -v
+      - name: Preserve WSP-08
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-08 -p "test_*.py" -v
+      - name: WSP-09 neural first-free allocator, negatives, trained comparator
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-09 -p "test_*.py" -v
+      - name: Frozen 328-world online self-allocation and gradient baseline
+        run: python research/contrib/chatgpt/WSP-09/run_dev.py
+      - name: Reject source mutation
+        run: git diff --exit-code
