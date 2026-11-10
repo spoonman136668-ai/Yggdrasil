@@ -155,7 +155,8 @@ class NumericalTape:
                     raise ValueError("WSP06_L1_SHAPE_INVALID")
                 data[destination] = [sum(abs(x-y) for x,y in zip(left,right))]
             elif op == "outer_or":
-                name, post, pre, gate = args
+                name = destination
+                post, pre, gate = args
                 matrix = weights[name]
                 post_v, pre_v, gate_v = (data[x] for x in (post,pre,gate))
                 if len(gate_v) != 1 or len(matrix) != len(post_v) or any(
