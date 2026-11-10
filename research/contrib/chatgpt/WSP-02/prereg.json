@@ -16,7 +16,7 @@
   "inputs": [
     {
       "name": "WSP02:v1 fully public binary causal interaction protocol",
-      "sha256": "c25f7939a98b26a55bbd0489c7e99821bf9ffa8f8864a973137fee6b47c6dc3f",
+      "sha256": "17fd933168b069dcb2161c0a8c9a92a7231a2845582780bc2fd5aaf34b44f7d9",
       "source": "Synthetic generator only; spec string in WSP-02 model. No external first-use or hidden labels. OOD adds conjunction bit0&bit1 outside programmed family."
     }
   ],
@@ -28,7 +28,7 @@
     "ordering": "64-world ascending h, 6 observations in fixed order, 4 transfer contexts ascending order, then one extra out-of-family witness.",
     "data_budget": "6 binary public outcomes per world (384 across independent worlds). OOD witness one extra public outcome after pre-witness OOD evaluation. No hidden outcomes or model calls.",
     "compute_budget": "At most one fixed recurrent update per public observation per model, with 64x32 compatibility bits and 8x2x64 readout bits; 3,072 immutable weights and 64-bit state. Training control: 512 full-batch gradient steps per world (frozen), no extra observations. Report time/compute separately, no claim of matched FLOPs.",
-    "capacity": "Weight-written: 64 binary state cells, 2048 binary compatibility weights plus 1024 binary readout weights (3072), 0 trainable weights. Exact symbolic: 64 candidate flags. Tabular: 8 contexts x 2 actions x 2 outcomes integer counters. Conventional trainable control: 6 input features, 8 tanh hidden units, 1 sigmoid output, fixed 512 epochs, learning rate 0.05, seed=17, no pretraining; full-batch binary cross-entropy, evaluate action scores at same contexts.",
+    "capacity": "Weight-written: 64 binary state cells, 2048 binary compatibility weights plus 1024 binary readout weights (3072), 0 trainable weights. Exact symbolic: 64 candidate flags. Tabular: 8 contexts x 2 actions x 2 outcomes integer counters. Conventional trainable control: 6 input features, 8 tanh hidden units, 1 sigmoid output, fixed 512 epochs, learning rate 0.05, seed=17, no pretraining; full-batch binary cross-entropy, evaluate action scores at same contexts. Explicit candidate encoding: h=(mask<<3)|(interaction<<2)|(flip<<1)|bias. Binary output has 64 possibilities.",
     "evaluator": "Exact 256 transfer decisions (64 worlds x 4 contexts), scoring abstention as correct ONLY on a true tie. Separate score: OOD pre-witness decisive false predictions, post-witness incorrect decisive predictions, cold checkpoint integrity, fixed-weight checksum, trainable control fit/transfer counts, data/CPU wall time; no score mixing.",
     "deterministic_expected": true
   },
@@ -72,5 +72,14 @@
     "promotion_authority": false,
     "scheduler_or_queue_authority": false
   },
-  "preregistration_note": "Frozen public DEV synthetic test protocol only. No independent scientific first-use or official research integration. New CI and generated atlas companions require explicit qualification and documented scope deviation."
+  "preregistration_note": "Frozen public DEV synthetic test protocol only. No independent scientific first-use or official research integration. New CI and generated atlas companions require explicit qualification and documented scope deviation.",
+  "protocol_correction": {
+    "stage": "BEFORE_ANY_PRIMARY_OUTCOME_OR_EVALUATION",
+    "original_spec_sha256": "c25f7939a98b26a55bbd0489c7e99821bf9ffa8f8864a973137fee6b47c6dc3f",
+    "corrected_spec_sha256": "17fd933168b069dcb2161c0a8c9a92a7231a2845582780bc2fd5aaf34b44f7d9",
+    "reason": "Original prereg draft used an incorrect placeholder spec hash. The actual frozen public WSP02:v1 rule is defined exactly by the SPEC constant in weight_written.py. Correction is made before running tests/primary score; original edit preserved in Git history.",
+    "intervention_rule": "reward=parity(mask&context)^bias^(action&flip)^(action&context_bit2&interaction), mask 3 bits, interaction/flip/bias one bit each; h=(mask<<3)|(interaction<<2)|(flip<<1)|bias",
+    "ood_interpretation": "OOD term XOR(context bit0 & context bit1) is action-independent: reward predictions can fail while preferred action is unchanged. Report both; no post-result OOD change.",
+    "notes": "All results remain publicly authored DEV; not confirmatory independent first-use."
+  }
 }
