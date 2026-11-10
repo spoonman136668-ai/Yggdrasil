@@ -1,0 +1,46 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-05",
+  "contribution_class": "public-dev-causal-representation-pilot",
+  "source_parent_sha": "3d33928603b22fd2d6f9243b6fe7017763797388",
+  "protocol": {
+    "first_commit": "3dec3e79c3d833605a6c76f1ce7b9571cffa985c",
+    "git_blob_sha": "03041e58ed19782e06dd949037c83fcd07425840",
+    "path": "research/contrib/chatgpt/WSP-05/protocol.json"
+  },
+  "hypothesis": "With opaque identities and no provided latent state labels or monomial rules, a direct weight writer can construct from 20 real public transition interventions a two-step action-consequence representation enabling 128/128 held-out action1 reward predictions across 32 public worlds. Strong exact symbolic two-step matcher should tie; one-step and state-ID memorization controls should fail. A hidden held-out-only action1 shift causes 128 errors before evidence and only fail-closed abstention after first contradiction.",
+  "primary_metric": "Exact binary action1 rewards on four unseen third-replica states in each of 32 frozen synthetic worlds, no training label leakage.",
+  "frozen_experiment": "Exactly protocol.json as written, no further change after first run; user-specified research-first-use authority absent, DEV only.",
+  "comparison": "Independent symbolic signature map, one-step ablation, exact state-ID memorizer, erased state, and a fully trained-to-frozen-loss-budget 33-param 2-8-1 Adam MLP using identical signatures and 8 public action1 labels. Report nonconvergence as not scientifically qualified.",
+  "controls": [
+    "stratified 32 seeds and all 16 arbitrary mappings twice",
+    "opaque state ID permutation",
+    "20 public interventions per world exactly",
+    "no hidden latent q or seed-to-mask supplied to any learner",
+    "adversarial heldout-only shift and genuine contradiction observation",
+    "cold canonical restore and previously seen event replay",
+    "fail-closed corrupted checkpoint/invalid input and wrong-world namespace behavior"
+  ],
+  "scoring": "Abstention counts as incorrect on binary reward task; separately count false-decisions and abstentions. Identical public information across models. Train budget <=2048 Adam steps and convergence BCE<=0.02; if not achieved, do not call MLP fully trained.",
+  "science_status": "Only public author-visible synthetic DEV evidence, no independent scientific first-use. Symbolic tie proves no performance advantage; unknown mathematical primitive discovery not established, since the two-step signature representation is specified as allowed learner algorithm.",
+  "operational": {
+    "no_new_controller": true,
+    "no_scheduler": true,
+    "no_research_queue": true,
+    "no_model_activation": true,
+    "no_merge": true,
+    "no_paid_api": true,
+    "no_first_use": true,
+    "changed_paths": [
+      "research/contrib/chatgpt/WSP-05/**"
+    ],
+    "engineering_companions": [
+      ".github/workflows/wsp05-pr-validation.yml",
+      ".ice/code-atlas.json",
+      ".ice/code-atlas.html",
+      ".ice/code-atlas.ice"
+    ]
+  },
+  "invalid": "Any modification of data budget, environment dynamics, seeds, heldout task, stop threshold, negative or scoring after outcomes; separately disclosed implementation bug fixes allowed only for engineering and require full final requalification."
+}
