@@ -1,0 +1,35 @@
+{
+  "schema": "wsp06.public-dev-protocol.v1",
+  "experiment": "WSP-06",
+  "parent_sha": "6c45a20af790d7eca8d1b69387559000b2bc4d03",
+  "claim": "Attempt to implement the entire bounded WSP-05 causal task solver using only numeric weight matrices, threshold neurons, generic local plastic writes, and a declarative recurrent execution program. The Python host may encode raw state IDs and check integrity but must not calculate the causal fingerprint, latent class, reward or policy.",
+  "world": "Exact WSP-05 public 32 worlds, seeds 0..31; 12 action0 reward/transition observations then 8 action1 reward/transition observations; 4 withheld action1 rewards per world = 128 heldout tests. No new world generator or altered labels.",
+  "inputs": "State and successor onehot vectors over 12 raw state IDs 1000..1011; action bit and reward bit; no class or signature feature supplied.",
+  "fixed_weights": "Public fixed 4x3 binary-signature classifier on two circuit-computed action0 consequence bits and bias. Four detector rows correspond to 00,01,10,11 and are assembled numerically. Additional action gating and stack wiring programmed as numeric coefficients.",
+  "plastic_weights": "T0 (12x12) action0 successor, R0 (1x12) action0 reward, C0 (1x12) observed, R1 (1x4) action1 reward per learned signature, C1 (1x4) observed signature, F (1x1) fail-closed latch; 177 writable scalars, initialized to zero. All task knowledge resides in these matrices, not Python dicts keyed by states, signatures or outcomes.",
+  "readout": "x -> T0*x successor vector; R0*x first reward, R0*(T0*x) successor reward; matrix-threshold 2-bit to 4-way neural detector; R1*detector binary output. Confidence from C0*x, C0*(T0*x), C1*detector and safety latch. Entire causal inference must use weighted tensor ops.",
+  "update": "Fixed generic synapse rule U <- BooleanOR(U, gate * outer(post,pre)), with action0/action1 gates derived numerically from action input; action1 signature computed from prior weight state before write. Idempotent replay; an incompatible witnessed known outcome must set numeric F to one and suppress future prediction. No gradient-based optimizer.",
+  "executor": "Generic numerical network interpreter executing matrix-vector multiply, threshold, stack, product, OR-outer update, and numeric guard checks. No environment-specific Python symbolic maps, hidden labels, seed-dependent reward calculators or custom Python inference shortcuts. This is an experiment toward full weight-space programming, not proof every aspect of a general cognition architecture lives in weights.",
+  "checkpoint": "Canonical versioned serialization of all plastic and fixed weight tensors, explicit circuit-program identity and SHA-256 integrity. Verify exact cold restore, no state drift on four repeated experiences and separate-world isolation.",
+  "controls": [
+    "WSP-05 independent symbolic two-hop signature matcher on same raw experiences",
+    "WSP-05 fully converged 33-param trained 2-8-1 MLP on same public outcome information",
+    "No transition memory ablation",
+    "Disabled fixed signature classification ablation",
+    "Erased plastic weights",
+    "First-only consequence ablation"
+  ],
+  "metrics": [
+    "128 exact binary held-out rewards, abstention counts incorrect",
+    "all 32 cold restores, replays and isolation checks",
+    "128 confident mistakes on adversarial heldout-only reward flips before evidence",
+    "128 abstentions after one contradictory shifted heldout observation, not learning",
+    "nonzero actual synapse writes and frozen weight counts",
+    "timing, stored model bytes, committed provenance and full regression"
+  ],
+  "negative": "A WSP-05 alternative shifts only heldout action1 rewards, invisible in 20 public experiences. Must report confident errors before witness and fail-closed after one contradiction; no inferred unavailable labels.",
+  "engineering_gate": "Exact-SHA full Windows and Linux tests including existing 54 + WSP01-05 + WSP06, frozen 32-world runner, source atlas, clean checkout; direct circuit matches 128/128 strong controls, numeric memory/weight custody verified.",
+  "science_status": "Always SCIENCE_UNVERIFIED on this public authored synthetic experiment, even on perfect accuracy: strong controls tie; fixed signature construction and plastic synapse engine remain an explicit prior; unknown-world transfer and total compute parity not established.",
+  "invalid": "Post-outcome source generator/seed/method/threshold/budget alteration; hidden WSP05 environment data accessed by the circuit; arbitrary Python task-specific reasoning; fake numeric weights; missing failures. Source bug repairs only after disclosure and complete requalification.",
+  "scope": "Isolated WSP-06 only, read-only GitHub PR CI and generated G29 atlas exceptions. No merge, controller, schedule, research loop, live training, paid API, independent first use, or deployment."
+}
