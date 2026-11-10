@@ -1,0 +1,44 @@
+# WSP-03 public DEV only. No schedule, dispatch, self-hosted runner or promotion.
+name: WSP-03 dynamic weight programming DEV regression
+on:
+  pull_request:
+    branches:
+      - research/wsp02-causal-interaction-ood-20261110
+      - main
+    paths:
+      - 'research/contrib/chatgpt/WSP-03/**'
+      - '.ice/code-atlas.*'
+      - '.github/workflows/wsp03-pr-validation.yml'
+permissions:
+  contents: read
+jobs:
+  regression:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact-source G29 advisory atlas
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Full existing Yggdrasil Python regression
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Keep WSP-01 regression
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-01 -p "test_*.py" -v
+      - name: Keep WSP-02 negative regression
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-02 -p "test_*.py" -v
+      - name: Qualify new WSP-03 mechanism and negatives
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-03 -p "test_*.py" -v
+      - name: Execute frozen 128-world public DEV comparison
+        run: python research/contrib/chatgpt/WSP-03/run_dev.py
+      - name: Reject source mutations
+        run: git diff --exit-code
