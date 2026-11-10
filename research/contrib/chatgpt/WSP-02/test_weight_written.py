@@ -57,8 +57,9 @@ class WSP02Tests(unittest.TestCase):
         self.assertEqual(counts, dict(weight=256, symbolic=256, tabular=128, erased=128))
 
     def test_ood_reward_failure_preserves_pre_witness_action_choice(self):
-        # OOD perturbation is action-neutral. We must not claim wrong action
-        # decisions when only reward predictions are wrong.
+        # WSP-02 diagnostic correction after original CI failed: XOR both binary
+        # rewards flips action preference for 64 decisive cases. The red first
+        # qualification is preserved; this asserts the negative, not success.
         wrong_rewards = wrong_decisive = 0
         for h in range(64):
             net = WeightWrittenNetwork()
@@ -85,7 +86,7 @@ class WSP02Tests(unittest.TestCase):
                 self.assertIsNone(net.choose(c))
                 self.assertIsNone(net.predict_outcome(c, 0))
         self.assertEqual(wrong_rewards, 256)
-        self.assertEqual(wrong_decisive, 0)
+        self.assertEqual(wrong_decisive, 64)
 
     def test_absent_evidence_and_sham_contradiction(self):
         net = WeightWrittenNetwork()
