@@ -1,0 +1,102 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-03",
+  "contribution_class": "bounded-public-dev-successor",
+  "exact_parent_sha": "caec8404e21ceae2c24016ebffcfc5fcca6a249c",
+  "question": "Can a programmed feature-construction circuit create a new three-way causal-conjunction neuron from one genuine public observation, cold-retain it, and transfer it to a never-observed four-way context?",
+  "hypothesis": "With a degree-3 bounded conjunction grammar and 22 public basis observations plus one witnessed triple observation, a directly compiled circuit and the exact symbolic ANF solver each transfer on context 15 for all 128 public DEV configurations (16 seeds x 4 unseen triple masks x novelty [0,1]). The no-growth quadratic control does not acquire novel three-way interactions. A previously unobserved fourth-order interaction remains outside the admitted model, causing an error followed by a fail-closed abstention after public contradiction.",
+  "protocol": {
+    "path": "research/contrib/chatgpt/WSP-03/protocol.txt",
+    "sha256": "0399ed5c5ffcc4eb88acac6c8c16be78d1c1543ae56ccaf1a991fcf0526f3752",
+    "bytes": 650
+  },
+  "lineage": {
+    "wsp01_pr": 853,
+    "wsp02_pr": 862,
+    "wsp02_sha": "caec8404e21ceae2c24016ebffcfc5fcca6a249c",
+    "wsp02_negative": "64 confident wrong OOD actions, not recovered after contradiction; retain negative."
+  },
+  "changed_paths": [
+    "research/contrib/chatgpt/WSP-03/**"
+  ],
+  "frozen_design": {
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "triple_masks": [
+      7,
+      11,
+      13,
+      14
+    ],
+    "novelty_states": [
+      0,
+      1
+    ],
+    "world_order": "seed ascending, triple mask ascending, novelty ascending, 128 independent public DEV configurations",
+    "environment": "4-bit context c, action a=0/1, reward bit. Degree<=2 base reward is XOR over conjunction masks m with popcount<=2 and m subset of c; coefficient b(seed,a,m) is first SHA-256 digest byte of UTF-8 'WSP03-baseline|seed='+decimal(seed)+'|action='+decimal(a)+'|mask='+decimal(m) masked with &1. Novel term XORs reward iff novelty=1 AND action=1 AND the chosen 3-bit triple mask is subset of c. Fourth-order negative additionally XORs reward iff action=1 AND c=15.",
+    "baseline_observations": "contexts (0,1,2,4,8,3,5,6,9,10,12) in that order with both actions 0 then 1 per context; exactly 22 publicly revealed outcomes; freeze evaluation before witness",
+    "witness": "Exactly one additional genuine public observation for (context=triple mask, action=1); then test transfer context=15 on which no outcome was observed",
+    "pre_post_metrics": "Before triple witness record exact action choice and both binary reward predictions at context15. After witness and after integrity-checked cold restore, score exact action choice and both binary reward predictions at context15. Abstention is correct only on a true tie.",
+    "replay": "Re-observe four already known basis outcomes at (0,0),(1,0),(4,1),(12,1) after cold restore; require exact checkpoint repeat; no extra new outcomes",
+    "fourth_order_negative": "Only for novelty=1 worlds, introduce an additional independent fourth-order term at context15/action1. Before any fourth-order evidence count incorrect transfer. Then reveal one actual context15/action1 outcome. The max-degree-3 circuit must refuse a new fourth-order neuron and abstain, not imply successful induction.",
+    "mechanism": "Direct weight programming: dynamically allocate one 4-input binary positive-weight threshold cell for an observed nonzero ANF residual, with gate weights 1 on a context bit in the observed monomial mask, 0 elsewhere, integer threshold popcount(mask), and an XOR output connection per action. Fixed creation algorithm, at most 15 cells per action, max degree 3. Store observed event log and canonical SHA-256 integrity checkpoint; zero gradient optimizer steps. The grammar is pre-specified, not open-ended beyond degree 3.",
+    "controls": [
+      "Exact independent symbolic algebraic-normal-form (ANF) coefficient inversion with identical data and degree-3 assumption, expected to tie; strongest native no-gradient control",
+      "No-growth quadratic circuit sharing baseline inference and observations; cannot allocate novel triple gate, must abstain on contradiction",
+      "State-erased direct circuit with no public observations",
+      "Conventional MLP 5 inputs, 10 tanh hidden units, 1 sigmoid readout (71 trainable floating coefficients), deterministic seed=17, 512 full-batch gradient descent steps at learning rate 0.05, trained only on same 23 public observations; output both probabilities and exact binary policy, report loss and failures. This is frozen-budget, not independently fully converged or matched in compute."
+    ],
+    "metrics": [
+      "128-world exact post-witness decision score with correct ties explicitly separated",
+      "128-world pre-witness wrong confident actions and wrong binary reward predictions",
+      "Exact symbolic parity, no-growth and erased, MLP score and train loss",
+      "New 3-way gate counts and 4-weight connection identities, maximum degree and capacity",
+      "Cold-restore and 4 observation replay equality",
+      "64 higher-order negatives: wrong decisive before extra witness, fail-closed abstention afterward",
+      "End-to-end wall time and stored bytes; no hidden optimizer or examples"
+    ],
+    "limits": {
+      "observations_per_world": 23,
+      "gradient_steps_direct": 0,
+      "gradient_steps_mlp": 512,
+      "seed_mlp": 17,
+      "max_nodes_per_action": 15,
+      "max_degree": 3,
+      "model_calls": 0,
+      "cost_paid_api": 0
+    }
+  },
+  "classification": {
+    "engineering_pass": "Cross-OS exact-source full regression and WSP-01/WSP-02/WSP-03 tests PASS, matches independent symbolic on 128 after-witness decisions, stores and restores exact mechanism, source generation guard PASS, 4-way contradiction fails closed.",
+    "scientific_status": "SCIENTIFIC_UNVERIFIED even if passed; fully public synthetic worlds, programmed monomial family, no independent first-use, no proven strongest trained control, FLOP/action parity or natural-world generalization; exact symbolic tie implies no mechanism superiority.",
+    "negative": "If 128 post-witness transfers fail or higher order escapes without genuine evidence, preserve original negative and don't change thresholds after outcomes.",
+    "invalid": "Any after-result alteration to protocol, source-world family, seeds, witness, transfer, threshold, metrics, comparator budget or output interpretation invalidates confirmatory classification."
+  },
+  "authority": {
+    "development_only": true,
+    "accepted_refs_untouched": true,
+    "no_merge": true,
+    "no_controller_or_scheduler": true,
+    "no_live_research_loop": true,
+    "no_scientific_first_use": true,
+    "no_paid_calls": true
+  },
+  "note": "All protocol and source changes are public DEV before primary run. New read-only PR CI and exact-source G29 generated artifacts outside prereg changed_paths must be disclosed as engineering companions."
+}

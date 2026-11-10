@@ -1,0 +1,156 @@
+{
+  "schema": "wsp03.public-dev-evidence.v1",
+  "experiment_id": "WSP-03",
+  "source": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "branch": "research/wsp03-direct-causal-rule-construction-20261110",
+    "base_pr": 862,
+    "base_sha": "caec8404e21ceae2c24016ebffcfc5fcca6a249c",
+    "protocol_first_commit": "70c225eb8935f9ed2221a9710e2c5d73e564a290",
+    "prereg_commit": "867fe34c29657a1780fe84507f1bdf535956914c",
+    "protocol_sha256": "0399ed5c5ffcc4eb88acac6c8c16be78d1c1543ae56ccaf1a991fcf0526f3752",
+    "first_qualified_measured_sha": "680d9599cc30574eea4af4b91d1d62d6a863cb67",
+    "first_qualified_measured_tree": "450d2b22f324a70b8e4e6878d6dfb82776433c3a",
+    "circuit_model_sha256": "02cb4d25f2c6875cf8c81285bf90f4b3c7940c2457c1c43eee8e4f886e4ab805",
+    "provenance_class": "public development synthetic only; no independent scientific first-use"
+  },
+  "receipts": {
+    "full_regression": {
+      "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/42879207484",
+      "run_id": 42879207484,
+      "head_sha": "680d9599cc30574eea4af4b91d1d62d6a863cb67",
+      "conclusion": "success",
+      "windows": "PASS",
+      "linux": "PASS",
+      "per_os_test_counts": {
+        "repo": 54,
+        "wsp01": 7,
+        "wsp02": 8,
+        "wsp03": 9
+      },
+      "clean_tree": true,
+      "atlas_check": true
+    },
+    "atlas": {
+      "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/42879209824",
+      "run_id": 42879209824,
+      "conclusion": "success",
+      "windows": "PASS",
+      "linux": "PASS"
+    },
+    "first_failed_run": {
+      "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/42878489719",
+      "run_id": 42878489719,
+      "type": "ENGINEERING_ERROR",
+      "cause": "NameError in independent symbolic ANF control from unbound coefficient variable; corrected in commit 7c4c597de262cfbf4b8d9d0b1ac86792d7f74cd7. No scientific outcomes from this failed step."
+    },
+    "second_failed_run": {
+      "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/42878812802",
+      "run_id": 42878812802,
+      "type": "CROSS_PLATFORM_TEST_PLUMBING",
+      "cause": "Windows protocol.txt checkout CRLF made raw-byte SHA mismatch; normalize CRLF to LF only for protocol integrity comparison, commit 344c7afa5e73dbcffbf0254f92b8ab3a09dcb130. Linux suite passed. Original protocol bytes and semantic experiment unmodified."
+    }
+  },
+  "observations": {
+    "worlds": 128,
+    "seeds": 16,
+    "novel_triple_masks": [
+      7,
+      11,
+      13,
+      14
+    ],
+    "novelty_states": [
+      0,
+      1
+    ],
+    "baseline_public_outcomes_per_world": 22,
+    "witness_public_outcomes_per_world": 1,
+    "transfer_context": 15,
+    "decisive_worlds": 64,
+    "true_tie_worlds": 64,
+    "after_witness_exact_policy_including_correct_tie_abstentions": {
+      "direct_weight_circuit": 128,
+      "exact_symbolic_anf": 128,
+      "no_growth_quadratic": 96,
+      "state_erased": 64,
+      "conventional_trained_mlp": 37
+    },
+    "before_novel_witness": {
+      "worlds_with_unseen_triple": 64,
+      "wrong_policy": 64,
+      "wrong_confident_decisive": 32,
+      "wrong_binary_reward_prediction_action1": 64
+    },
+    "dynamic_connections": {
+      "new_triple_gate_count": 64,
+      "each_new_gate_binary_input_connection_weights": 4,
+      "output_join": "XOR parity",
+      "zero_gradient_updates": true,
+      "max_degree": 3,
+      "max_gate_count_observed_total": 17,
+      "max_gates_per_action": 15
+    },
+    "cold_restoration": {
+      "exact": 128,
+      "repeat_observation_checkpoint_idempotence": 128,
+      "checkpoint_min_bytes": 342,
+      "checkpoint_max_bytes": 363
+    },
+    "fourth_order_negative": {
+      "cases": 64,
+      "unseen_fourth_order_wrong_policy": 64,
+      "unseen_fourth_order_confident_wrong": 32,
+      "after_one_real_fourth_order_outcome_fail_closed_abstentions": 64,
+      "successfully_recovered_new_fourth_order_rule": 0
+    },
+    "mlp": {
+      "architecture": "5-10-1 tanh/sigmoid",
+      "trainable_parameters": 71,
+      "full_batch_steps_per_world": 512,
+      "seed": 17,
+      "learning_rate": 0.05,
+      "mean_final_train_cross_entropy": 0.5390784204114889,
+      "compute_matched": false,
+      "independent_full_convergence_qualified": false
+    },
+    "environment": {
+      "linux": {
+        "runner": "github-hosted ubuntu-latest",
+        "python": "3.12.16",
+        "dev_runner_elapsed_seconds": 22.076041,
+        "compiled_circuit_plus_restore_and_negative_seconds": 0.091145,
+        "mlp_fit_seconds": 21.966299
+      },
+      "windows": {
+        "runner": "github-hosted windows-2022",
+        "python": "3.12.10",
+        "dev_runner_elapsed_seconds": 23.854507,
+        "compiled_circuit_plus_restore_and_negative_seconds": 0.100449,
+        "mlp_fit_seconds": 23.730571
+      },
+      "time_comparison_caveat": "Not matched FLOPs/throughput; CI platform timing and implementation overhead differ; no 2x system cost claim."
+    }
+  },
+  "classification": {
+    "engineering": "PASS at measured source SHA; post-result evidence addition will require final exact-source requalification",
+    "science": "UNVERIFIED: exact symbolic solver 128/128 ties, public author-visible synthetic data, frozen grammar supplied in advance, MLP not a fully converged strongest trained comparator; no scientific performance advantage or general intelligence claim",
+    "mechanism": "Observed outcomes can cause a new binary conjunction gate with directly programmed weights and threshold within bounded degree-three grammar. This is EXPERIENCE-DRIVEN LEARNING without gradient descent, not skipping experiential learning.",
+    "limits": "64 novel configurations fail before intervention; 64 higher-order negative variants fail despite previous novelty training and only fail-closed after evidence; no general arbitrary rule discovery, safe unknown handling before real contradiction, interference testing or autonomous self-improvement."
+  },
+  "scope_deviations": [
+    "Read-only pull-request CI workflow and mandatory G29 generated atlas artifacts outside prereg changed_paths; they are engineering companions, no science changes.",
+    "One-line symbolic control variable binding repair following first CI error, science source/rule/observations not changed.",
+    "Windows CRLF canonicalization in protocol integrity test; frozen protocol SHA and physical experiment unchanged.",
+    "Post-result author-reported evidence file added for permanent custody; not independent evaluation."
+  ],
+  "authority": {
+    "draft_unmerged": true,
+    "no_accepted_ref_changed": true,
+    "no_production": true,
+    "no_training_loop": true,
+    "no_scheduler": true,
+    "no_paid_api": true,
+    "no_independent_scientific_first_use": true
+  }
+}
