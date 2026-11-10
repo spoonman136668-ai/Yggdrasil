@@ -1,0 +1,52 @@
+# Isolated public DEV qualification. No schedule/dispatch/private runners.
+name: WSP-07 homogeneous compiled neural controller DEV regression
+on:
+  pull_request:
+    branches:
+      - research/wsp06-weight-programmed-causal-circuit-20261110
+      - main
+    paths:
+      - 'research/contrib/chatgpt/WSP-07/**'
+      - '.ice/code-atlas.*'
+      - '.github/workflows/wsp07-pr-validation.yml'
+permissions:
+  contents: read
+jobs:
+  regression:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact-source G29 atlas integrity
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Full Yggdrasil regression
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Preserve WSP-01
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-01 -p "test_*.py" -v
+      - name: Preserve WSP-02 negative
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-02 -p "test_*.py" -v
+      - name: Preserve WSP-03
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-03 -p "test_*.py" -v
+      - name: Preserve WSP-04
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-04 -p "test_*.py" -v
+      - name: Preserve WSP-05
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-05 -p "test_*.py" -v
+      - name: Preserve WSP-06
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-06 -p "test_*.py" -v
+      - name: Qualify WSP-07 numeric-only control graph and negative
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-07 -p "test_*.py" -v
+      - name: Frozen 32-world WSP-07 public DEV comparison
+        run: python research/contrib/chatgpt/WSP-07/run_dev.py
+      - name: Clean-tree guard
+        run: git diff --exit-code

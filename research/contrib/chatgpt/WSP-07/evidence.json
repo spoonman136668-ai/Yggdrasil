@@ -1,0 +1,161 @@
+{
+  "schema": "wsp07.public-dev-evidence.v1",
+  "experiment_id": "WSP-07",
+  "qualification_status": {
+    "initial_exact_source_engineering": "PASS_UBUNTU_AND_WINDOWS",
+    "final_after_evidence_commit": "REQUIRES_EXACT_SOURCE_REQUALIFICATION",
+    "scientific": "UNVERIFIED: exact symbolic and fully converged Adam baseline tie 128/128",
+    "deployment": "NONE"
+  },
+  "source": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "branch": "research/wsp07-synaptic-control-graph-20261110",
+    "base_pr": 871,
+    "parent_sha": "e7d163c137a64c1cda3f040832adbb32323768ff",
+    "protocol_initial_commit": "2c0d46737e94fd3360e9909a80e1f57b3990ef27",
+    "protocol_git_blob": "ab9dc59ec030858d5fe28a4efa6019b5509ed3b3",
+    "protocol_sha256": "80c9c45248f62f85441d62052fecf90f42d32a845e772268dee67faca08a51bf",
+    "prereg_commit": "c3df0e167b09dbe4d77351e1e9b7cdbcf0dfae60",
+    "numeric_graph_source_sha256": "26c11680068c6853bcfd8708f7df1277dab564423c71c259ab3c7e1ea002a868",
+    "initial_qualified_candidate": "376a0967a96a9559b846ecab8d9f65afd518e408",
+    "initial_qualified_tree": "a93bb52f2bec946d7d0fd1593975ecf8f8a14dc2",
+    "initial_atlas_source_pin": "b59f9eadef44a75f4bcd112e2949f08c48da545f"
+  },
+  "first_qualification": {
+    "full_regression": {
+      "run_id": 42920832199,
+      "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/42920832199",
+      "sha": "376a0967a96a9559b846ecab8d9f65afd518e408",
+      "status": "SUCCESS",
+      "windows": "SUCCESS",
+      "linux": "SUCCESS",
+      "python_tests_per_os": {
+        "repository": 54,
+        "wsp01": 7,
+        "wsp02": 8,
+        "wsp03": 9,
+        "wsp04": 10,
+        "wsp05": 10,
+        "wsp06": 10,
+        "wsp07": 11,
+        "total": 119
+      },
+      "frozen_public_runner": "PASS",
+      "clean_tree": "PASS",
+      "g29_source_integrity": "PASS"
+    },
+    "atlas_acceptance": {
+      "run_id": 42920832137,
+      "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/42920832137",
+      "status": "SUCCESS",
+      "sha": "376a0967a96a9559b846ecab8d9f65afd518e408",
+      "windows": "SUCCESS",
+      "linux": "SUCCESS"
+    }
+  },
+  "measured": {
+    "worlds": 32,
+    "opaque_states_per_world": 12,
+    "public_action0_events_per_world": 12,
+    "public_action1_events_per_world": 8,
+    "heldout_action1_binary_outcomes_per_world": 4,
+    "heldout_total": 128,
+    "abstention_counts_wrong": true,
+    "correct_binary_predictions": {
+      "homogeneous_compiled_neural_graph": 128,
+      "wsp06_python_opcode_numeric": 128,
+      "independent_exact_symbolic": 128,
+      "converged_33_float_param_adam_mlp": 128,
+      "one_step_ablation": 64,
+      "identity_memorizer": 0,
+      "erased_state": 0
+    },
+    "compiled_circuit": {
+      "input_neurons": 27,
+      "total_threshold_nodes": 91,
+      "fixed_numeric_weight_coefficients": 101,
+      "plastic_numeric_coefficients": 177,
+      "total_numeric_weight_slots": 278,
+      "synaptic_incidence_edges": 302,
+      "local_plasticity_rules": 177,
+      "program_sha256": "69a7596562086f71b6fd17f781ea2029b6e09e87d2df96d4c7abb62626e68a27",
+      "min_positive_plastic_connections_after_20_events": 34,
+      "max_positive_plastic_connections_after_20_events": 38,
+      "gradient_training_steps": 0,
+      "task_specific_runtime_opcode_dispatch": false,
+      "task_specific_python_symbolic_causal_maps": false,
+      "external_generic_python_neuron_vm": true
+    },
+    "retention": {
+      "all_32_worlds_cold_restore_exact": 32,
+      "replayed_four_existing_experiences_idempotent": 32,
+      "isolation_of_32_independent_worlds": 32,
+      "checkpoint_bytes": 752
+    },
+    "ablations": {
+      "remove_all_learned_successor_connections_abstains_all_four_worlds": 32,
+      "remove_all_four_signature_detector_fixed_weights_abstains_all_four_worlds": 32,
+      "remove_action1_coverage_memory_abstains_all_four_worlds": 32
+    },
+    "negative": {
+      "alternate_world_with_identical_20_public_events_but_inverted_4_heldout_rewards": true,
+      "wrong_confident_hidden_outcomes_before_any_revealing_action": 128,
+      "after_one_genuine_contradiction_witness_abstains_on_all_128": 128,
+      "shifted_rules_recovered": 0,
+      "interpretation": "The alternative is indistinguishable from public observations. Numeric fault detection after evidence is not unseen-world adaptation or hidden-rule identification."
+    },
+    "strong_conventional_control": {
+      "architecture": "2-8-1 tanh sigmoid",
+      "float_trainable_parameters": 33,
+      "optimizer": "deterministic full-batch Adam",
+      "seed": 17,
+      "learning_rate": 0.03,
+      "loss_stop_bce": 0.02,
+      "converged_worlds": 32,
+      "gradient_steps_total": 1386,
+      "linux_mean_final_bce": 0.019065383501256368,
+      "windows_mean_final_bce": 0.019065383501256365,
+      "identical_observational_information": true,
+      "matched_process_compute": false
+    },
+    "dev_timing": {
+      "linux_seconds": {
+        "compiled_graph_training_cold_ablations_negative": 0.268431,
+        "trained_fit": 0.08499,
+        "whole_runner": 0.354752
+      },
+      "windows_seconds": {
+        "compiled_graph_training_cold_ablations_negative": 0.258224,
+        "trained_fit": 0.091797,
+        "whole_runner": 0.351296
+      },
+      "limitation": "Different workloads; neural path includes restore/replay/ablations and adversarial probes while MLP path includes fit only; no speedup nor energy comparison supported."
+    }
+  },
+  "interpretation": {
+    "achieved": "All task-specific action routing, two-hop inference, local plastic update gating, contradiction detection and confidence/fault control encoded in fixed neural threshold graph and 177 plastic numeric synapses. Single homogeneous generic threshold evaluation and local Hebbian OR update are shared across the entire graph.",
+    "not_achieved": "No independent general intelligence, arbitrary causal prior creation, end-to-end 100% knowledge without experience, intrinsic neural processor, autonomous VM, computational/data superiority, or novel-world transfer. Compiler is code and generic Python runtime still executes weights."
+  },
+  "engineering_exceptions": {
+    "research_change_path": "research/contrib/chatgpt/WSP-07/**",
+    "qualifier_files": [
+      ".github/workflows/wsp07-pr-validation.yml",
+      ".ice/code-atlas.json",
+      ".ice/code-atlas.html",
+      ".ice/code-atlas.ice"
+    ],
+    "post_scoring_record": true,
+    "needs_final_atlas_reanchor_and_full_dual_os_requal": true
+  },
+  "authority": {
+    "draft_unmerged": true,
+    "no_accepted_source": true,
+    "no_scheduler": true,
+    "no_controller_or_autonomous_loop_change": true,
+    "no_new_runner": true,
+    "no_paid_api": true,
+    "no_independent_scientific_first_use": true,
+    "no_deployment": true
+  },
+  "unrelated_failures": "Prior prepare-ckb-research-write-proxy-fanout-r3.yml push-event failures occur in separate pre-existing automation; not evidence of regression success or failure of the read-only WSP07 dev experiment."
+}

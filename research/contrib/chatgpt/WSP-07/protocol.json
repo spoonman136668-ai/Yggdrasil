@@ -1,0 +1,58 @@
+{
+  "schema": "wsp07.public-dev-protocol.v1",
+  "experiment": "WSP-07",
+  "parent_sha": "e7d163c137a64c1cda3f040832adbb32323768ff",
+  "question": "Can the WSP-06 task-specific 44-op declarative read/learn tape be compiled into fixed threshold-neuron synaptic edges and persistent plastic neural connections, so the runtime executes one homogeneous threshold rule and one homogeneous gated local plasticity rule without opcode dispatch or model-specific control flow?",
+  "hypothesis": "A flat fixed neural gate graph plus local plastic edges processes the same 20 raw action-outcome events per world, produces all 128 heldout action1 rewards, updates all memory as synapse weights, detects contradictory evidence, and preserves cold checkpoints. Python task-specific control is permitted only at source-graph compilation; at runtime, no named task opcodes or symbolic causal computations are allowed.",
+  "data_source": "Reuse exactly the unchanged WSP-05 PublicWorld authored synthetic generator (32 seeds 0..31, state IDs 1000..1011, 12 public action0 interventions, 8 public action1 interventions, 4 unseen action1 outcomes per world), available in exact predecessor WSP-06 SHA. Do not expose simulator internals to compiled inference.",
+  "input_and_output": "Fixed identity-only conversion of raw state and next state to 12-way one-hot, binary action and reward, constant-one input. Prediction returns binary action1 reward if confident; otherwise abstain. No hidden-class or signature values supplied from Python.",
+  "compiled_neural_substrate": {
+    "graph": "Compile named neural design to numeric arrays once: node thresholds, directed weighted synaptic edges, sparse incidence indices, binary plastic-tag list. After compilation, runtime has NO task-specific string names, no opcode dispatch, no Python branch on action, reward, signature, observed state, causal rule, or update choice.",
+    "inference": "Transition successor T0, observed action0 reward R0, action0 observation coverage C0, successor's action0 reward, fixed threshold-gate 2-bit to 4-way signature, action1 reward readout R1 and coverage C1, fault latch F. All learned data are weights, not Python dictionaries. Neural output confidence is gated by coverage and fault neurons.",
+    "plasticity": "Generic post-before-write update for all tagged weights: w[e] <- bool(w[e] OR (a[pre] AND a[post] AND a[third_factor])). The third-factor neuron is itself generated from numerically weighted thresholds, covering action0 versus action1, not-observed gates, reward/transition conflicts, missing causal basis, and fault latch. No task-specific Python decision on synapse updates.",
+    "memory": "177 distinct initially zero plastic scalar weights (T0 12x12, R0 12, C0 12, R1 4, C1 4, F 1); shared coefficient references allow R0/C0 to be read at both state and successor nodes. Fixed graph coefficients, thresholds, edge lists and plastic triples are all committed and serialized, with every fixed coefficient inspectable. At most 1024 fixed scalar edge weights and 512 threshold nodes.",
+    "executor": "One numerical forward evaluation rule: each node outputs 1 iff sum of (weight[index] * earlier source activation) >= node_threshold; otherwise 0. One generic local synaptic OR update rule, with all updates simultaneous after forward. All branches in interpreter solely for input shape/integrity validation and output None for low confidence; no task-specific op dispatch. Python executable is a generic neural VM; not a fully self-contained hardware neuron or standalone model independent of computation.",
+    "checkpoint": "Canonical bytes, SHA-256 integrity, full fixed and plastic coefficients, graph/program hash; restore must reject damaged/noncanonical/fixed-weight-altered sources. Replaying four already witnessed events must leave identical bytes. Isolated separately learned worlds do not share synapses."
+  },
+  "controls": {
+    "strong": [
+      "WSP-06 exact symbolic two-step causal signature matcher, identical raw interventions; expected 128/128 tie",
+      "WSP-05 converged deterministic 33-float-parameter Adam baseline using same 8 observed action1 rewards, fixed original 0.02 BCE loss threshold and 2048-step cap; original 32/32 convergence expected"
+    ],
+    "ablations": [
+      "All transition plastic synapses set to zero after exposure: heldout predictions unavailable",
+      "All signature detection fixed weights set to zero: heldout predictions unavailable",
+      "All plastic state erased: no heldout predictions",
+      "Delete learned action1 coverage synapses: no heldout predictions",
+      "Negative/invalid one-hot input and tampered checkpoint fail closed"
+    ],
+    "negative": "WSP-05 heldout-only action1 rewards inverted after 20 identical training interventions, yielding 128 confidently wrong predictions before hidden-label witness, then one real contradicting heldout reward causes numeric fault latch to set and 128 post-witness abstentions; zero successful shifted-rule recoveries."
+  },
+  "outcomes": {
+    "primary": "128/128 correct binary heldout outcomes from numeric circuit on public in-family synthetic 32 worlds, and exact parity with strong independent symbolic + trained baseline. Abstentions count incorrect.",
+    "mandatory": [
+      "all 32 exact cold checkpoint restores and replay integrity tests",
+      "all 32 independent world isolation tests",
+      "coverage and confidence neural gates and fault gate obey ablation and adversarial behavior",
+      "nonzero neural synapse memory writes and 177 plastic slots, input program deterministic",
+      "full exact-source dual-OS original Yggdrasil regressions plus WSP01-WSP07 suites and frozen development runner",
+      "source atlas G29 and clean checkout pass Windows and Linux",
+      "report metrics total fixed/plastic weights, active connection count, executor steps, wall clock and negatives"
+    ],
+    "engineering_pass": "Only when new compiled graph has no task-specific runtime branches/opcode dispatch, 128/128 heldout binary outcomes, negatives/restores, all prior source tests and both OS final exact-source CI passes.",
+    "science": "Always SCIENCE_UNVERIFIED, even on engineering pass. This is author-visible synthetic family with fixed causal fingerprint inductive bias, and exact symbolic/trained controls expected to tie. No transfer to unknown real-world domains, fully neuron-hosted system, matched whole-process compute/energy or data reduction.",
+    "invalid": "Changing frozen worlds/observation order, baselines, pass thresholds, representation control semantics, input mapping, model capacity budgets or negative adversary after seeing outcomes. Implementation bug fixes must be labeled, with complete full final regression and unchanged scientific scoring."
+  },
+  "authority": {
+    "dev_only": true,
+    "strict_isolation": true,
+    "draft_unmerged": true,
+    "no_runner_owner_or_controller_change": true,
+    "no_new_scheduler": true,
+    "no_first_use_science": true,
+    "no_paid_api": true,
+    "no_accepted_source": true,
+    "no_forge_training_loop": true
+  },
+  "source_scope": "research/contrib/chatgpt/WSP-07/**; necessary read-only PR CI and generated G29 source atlas engineering companions disclosed separately"
+}
