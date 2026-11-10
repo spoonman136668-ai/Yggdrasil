@@ -1,0 +1,58 @@
+{
+  "schema": "wsp05.public-dev-protocol.v1",
+  "experiment_id": "WSP-05",
+  "hypothesis": "A generic two-intervention consequence-signature compiler, without a supplied Boolean monomial reward grammar or latent state labels, can construct binary detector weights for behaviorally equivalent opaque states and transfer held-out action1 rewards across randomized state identities. It must tie an exact symbolic signature matcher and fail closed when an observationally indistinguishable world violates that relationship.",
+  "universe": {
+    "seeds": "integer 0..31, ordered",
+    "classes": "four hidden behavior classes q=0..3, each with three opaque state identities (training replicas 0,1; held-out replica 2); identities from seeded shuffle of 1000..1011, never provided with class labels to models",
+    "actions": "0 and 1",
+    "action0": "public reward=(q&1); public next state is hidden class (q>>1) with replica (i+1)%3. Thus the first and successor action0 rewards jointly form a two-bit causal fingerprint; this construction is evaluator knowledge, not an input feature supplied to inference algorithms.",
+    "action1": "public reward is bit q of a seed-dependent arbitrary 4-bit lookup mask (seed %16); public next is class ((q+2)%4), replica (i+1)%3. Neither latent q nor mask is provided to models.",
+    "environments": "32 opaque state graphs; no reused state IDs within each world; no externally sourced data or heldout third-party evaluation; all DEV synthetic.",
+    "negative": "The four held-out replicas have their action1 reward flipped but all revealed action0 and train-replica action1 interactions unchanged. Before a held-out action1 is observed the shift is information-theoretically unidentifiable from the public data. The first held-out action1 witness must cause global fail-closed abstention, not magical recovery."
+  },
+  "frozen_experience": {
+    "phase0": "For all 12 states in opaque-ID ascending order, perform action0 and reveal (stateID,action=0,reward,nextID), exactly 12 public interventions.",
+    "phase1": "For eight training replicas (i=0,1) sorted by opaque ID, perform action1 and reveal (stateID,action=1,reward,nextID), exactly 8 further public interventions. No held-out action1 until scoring.",
+    "test": "Predict binary action1 reward on four held-out replicas i=2, sorted by opaque state ID. Transfer score 32 worlds x4 =128. Abstention counts as error because binary reward always defined; report abstentions separately.",
+    "cold": "Snapshot learner after 20 public interventions, restore, verify identical predictions and state bytes. Replay any four already seen action0 and action1 events; require no state change. Verify state independence for an interleaved unrelated seed with its own separate state.",
+    "negative": "Evaluate same four withheld action1 rewards after flipping all four; count 128 wrong confident predictions before witness. Then reveal one flipped heldout action1 outcome, sorted by opaque ID, and require the circuit to abstain globally on all four. No other negative outcomes may be used to update the model."
+  },
+  "model": {
+    "learner": "No access to q, seed, mask or generator. Compute signature for state from its publicly observed action0 outcome and public action0 outcome of publicly observed successor. On each action1 training observation, compile new 4-way one-hot diagnostic detector weights, with two active ones and a threshold 2, to map causal fingerprint to observed action1 reward. Repeated signature conflicts fail closed; integrity-check event log and canonical cold checkpoint. No gradient optimization.",
+    "limits": "At most four distinct signature detectors per world, each four binary input weights and one threshold plus observed output bit; no network, API, scheduler or owner loop. No fifth detector allocated after conflict.",
+    "safety": "No prediction when diagnostic chain missing; if signature output contradictory on genuine new observation, abort/abstain for entire world rather than invent an explanation."
+  },
+  "controls": {
+    "exact_symbolic": "Independent exact two-bit causal-signature map, same 20 public interventions, no trained network or constructed threshold cells; strongest native no-gradient control and expected tie.",
+    "one_step": "Same public action0 and action1 data but allowed only initial action0 reward; only predict if all training signatures sharing that bit agree; otherwise abstain.",
+    "identity_lookup": "Exact stateID memorizer for training action1, cannot transfer to held-out identity; abstain.",
+    "state_erased": "No prior observations, must abstain.",
+    "trained": "2-8-1 tanh/sigmoid network with 33 float trainable scalars, features are the exact same two observed action0 outcomes, trained only on the 8 public training-replica action1 labels. Adam full-batch optimizer learning rate .03, seed 17, up to 2048 steps, stop only at mean binary cross-entropy <=0.02. Report train loss, gradient step count, convergence count and transfer accuracy; if fails converge, baseline unqualified, not a favorable scientific comparison."
+  },
+  "metrics": {
+    "primary": "128 exact heldout binary action1 rewards after 20 public interventions, model vs exact symbolic and fully trained conventional control",
+    "secondary": [
+      "128 one-step-ablation outcomes and abstentions",
+      "128 identity-ablation outcomes and abstentions",
+      "learner's created binary detector count/weights and checkpoint bytes",
+      "32 cold restores and replay equality",
+      "128 pre-witness adversarial incorrect predictions, after public witness global abstention",
+      "trained network convergence receipts, training steps and total wall time"
+    ],
+    "engineering_pass": "Cross-platform full exact-source Python regression, all mechanism tests and negative controls, candidate source atlas and clean checkout PASS. Direct learned circuit equals exact signature matcher on all 128, no evaluator-label leakage, cold restoration and shift abstention exact.",
+    "scientific_pass": "Never from this public DEV protocol; stronger independent unknown-world source, actual action-consequence transfer under matched total action and compute budgets, fully trained baselines, independent scientific qualification and first-use authorization required.",
+    "invalid": "After-run changes to world generator, observational budget, hidden shift, train stop, seed list, metrics, masks/thresholds or scoring. Disclose any implementation bug repair and requalify, do not relabel negative as success."
+  },
+  "authority": {
+    "isolated_development_only": true,
+    "branch_parent": "3d33928603b22fd2d6f9243b6fe7017763797388",
+    "no_merge": true,
+    "no_training_or_research_loop": true,
+    "no_scheduler": true,
+    "no_self_hosted_runners": true,
+    "no_paid_api": true,
+    "no_independent_scientific_first_use": true
+  },
+  "generated_companions": "Source files under research/contrib/chatgpt/WSP-05/**. A read-only PR CI workflow and generated G29 atlas companions may be added solely for exact-source qualification with explicit scope disclosure."
+}
