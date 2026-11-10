@@ -1,0 +1,76 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-02",
+  "contributor": "chatgpt-research",
+  "contribution_class": "successor-proposal",
+  "question": "Can a no-gradient, directly weight-programmed fixed recurrent network infer unfamiliar context-dependent action effects from six public interventions, cold-retain them, and fail closed on observed out-of-family behavior?",
+  "hypothesis": "For 64 explicitly enumerable synthetic causal rules, a 64-bit recurrent version-space state with 3,072 directly compiled immutable binary weights will exactly infer held-out context-dependent action preferences from six observations, match an exact symbolic solver, and abstain after contradiction. Its pre-witness OOD failures and all baselines must be counted without tuning.",
+  "exact_parent_sha": "7a1685afee3fc09d39f081626f143d16f0a124b2",
+  "predecessor_evidence": [
+    "WSP-01 PR #853 candidate 7a1685afee3fc09d39f081626f143d16f0a124b2: 384 fixed weights, public parity family, 16/16 exact synthetic DEV decisions, exact symbolic tie, Windows/Linux Python and Atlas CI PASS."
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/WSP-02/**"
+  ],
+  "inputs": [
+    {
+      "name": "WSP02:v1 fully public binary causal interaction protocol",
+      "sha256": "c25f7939a98b26a55bbd0489c7e99821bf9ffa8f8864a973137fee6b47c6dc3f",
+      "source": "Synthetic generator only; spec string in WSP-02 model. No external first-use or hidden labels. OOD adds conjunction bit0&bit1 outside programmed family."
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      17
+    ],
+    "split": "All 64 public h=0..63 DEV worlds; observations (context,action)=(0,0),(1,0),(2,0),(4,0),(0,1),(4,1) in fixed order, public reward observed only after action. Transfer query contexts 3,5,6,7, no transfer labels exposed to model or fitted control until scoring. OOD uses same six observations, adds XOR(context bit0 AND bit1) to reward and evaluates same transfer queries; OOD witness is context=3/action=0 after pre-witness scoring.",
+    "ordering": "64-world ascending h, 6 observations in fixed order, 4 transfer contexts ascending order, then one extra out-of-family witness.",
+    "data_budget": "6 binary public outcomes per world (384 across independent worlds). OOD witness one extra public outcome after pre-witness OOD evaluation. No hidden outcomes or model calls.",
+    "compute_budget": "At most one fixed recurrent update per public observation per model, with 64x32 compatibility bits and 8x2x64 readout bits; 3,072 immutable weights and 64-bit state. Training control: 512 full-batch gradient steps per world (frozen), no extra observations. Report time/compute separately, no claim of matched FLOPs.",
+    "capacity": "Weight-written: 64 binary state cells, 2048 binary compatibility weights plus 1024 binary readout weights (3072), 0 trainable weights. Exact symbolic: 64 candidate flags. Tabular: 8 contexts x 2 actions x 2 outcomes integer counters. Conventional trainable control: 6 input features, 8 tanh hidden units, 1 sigmoid output, fixed 512 epochs, learning rate 0.05, seed=17, no pretraining; full-batch binary cross-entropy, evaluate action scores at same contexts.",
+    "evaluator": "Exact 256 transfer decisions (64 worlds x 4 contexts), scoring abstention as correct ONLY on a true tie. Separate score: OOD pre-witness decisive false predictions, post-witness incorrect decisive predictions, cold checkpoint integrity, fixed-weight checksum, trainable control fit/transfer counts, data/CPU wall time; no score mixing.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Strong exact symbolic enumeration of all 64 programmed hypotheses and identical evidence/action sequence; expected to tie if mechanism correct.",
+    "Matched-evidence tabular empirical action/outcome estimator (unseen contexts abstain).",
+    "State-erased direct-weight network before observations.",
+    "Fully optimized to frozen 512-step budget 6-8-1 conventional tanh-sigmoid network with same observation sequence and no transfer labels. Report fit residual and convergence rather than asserting full convergence.",
+    "Out-of-family conjunctive perturbation, not included in programmed weights, measured before and after one genuine contradictory intervention.",
+    "Cold checkpoint restore and exact subsequent update; invalid inputs/checkpoint corruption rejection."
+  ],
+  "metrics": [
+    "in-family exact decisions of 256 incl abstentions",
+    "decisive action accuracy and abstention rate",
+    "symbolic exact 256 count",
+    "tabular/erased exact 256 counts",
+    "trainable fixed-budget comparator exact and decisive counts",
+    "out-of-family false-decisive count before evidence and after contradiction witness",
+    "viable hypotheses counts",
+    "fixed and retained bytes, operations and CPU wall time",
+    "checkpoint/tamper/invalid negative checks"
+  ],
+  "classification_rules": {
+    "supported": "DEV_MECHANISM_PASS iff fixed model matches symbolic on all 256 in-family cases, cold restore exact, OOD contradiction witness yields zero candidates and no decisive incorrect action, and bounded tests pass. Does NOT confer SCIENTIFIC_PASS.",
+    "mixed": "ENGINEERING_MIXED if main predictions pass but checkpoint tamper rejection, invalid input, OOD abstention, or reproducibility fail.",
+    "negative": "DEV_MECHANISM_NEGATIVE if any of 256 intended in-family outcomes differ from exact symbolic, or if observed OOD contradiction does not force abstention; SCIENTIFIC_NO_ADVANTAGE if tied with exact symbolic. Report any false confidence before OOD witness as failure, not success.",
+    "invalid": "Any post-result adjustment of rule family, order, transfer set, OOD, thresholds, training budget, source hashes or controls; source/custody mismatch, extra outcomes, API/network leakage, accepted source modification."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Frozen public DEV synthetic test protocol only. No independent scientific first-use or official research integration. New CI and generated atlas companions require explicit qualification and documented scope deviation."
+}
