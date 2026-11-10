@@ -1,6 +1,6 @@
 # WSP-02 — Directly programmed causal-interaction weights (DEV only)
 
-**Status:** implementation awaiting independently executed engineering checks. **Not a scientific first-use result**, training-free general intelligence, or deployment claim. Stacked on unmerged [WSP-01 PR #853](https://github.com/spoonman136668-ai/Yggdrasil/pull/853); the two projects are not modified outside isolated research files plus the existing generated G29 atlas.
+**Status:** post-run diagnosis recorded; initial cross-platform OOD negative preserved and fixed-mechanism engineering requalification pending. **Not a scientific first-use result**, training-free general intelligence, or deployment claim. Stacked on unmerged [WSP-01 PR #853](https://github.com/spoonman136668-ai/Yggdrasil/pull/853); the two projects are not modified outside isolated research files plus the existing generated G29 atlas.
 
 ## Research question
 
@@ -24,9 +24,9 @@ Observe only these six public (context, action) interventions, in order: `(0,0),
 
 ## Out-of-family falsification
 
-The frozen outside-family world adds `XOR(context_bit0 AND context_bit1)` to the reward. This perturbation is **action-independent**: it can invalidate predicted rewards without changing the best action. WSP-02 must separately report bad reward predictions before any OOD witness, bad decisive action choices, and the post-witness survival/abstention state.
+The frozen outside-family world adds `XOR(context_bit0 AND context_bit1)` to the reward. **Correction after the first CI result:** This perturbation is independent of the chosen action, but because the binary reward is XOR-flipped, it **reverses the preferred action when the two original action rewards differ**. The initial assumption that the best action stays unchanged was incorrect; do not reuse it. WSP-02 must separately report bad reward predictions before any OOD witness, bad decisive action choices, and the post-witness survival/abstention state.
 
-The OOD witness is a single additional **observed** `context=3, action=0` reward, after pre-witness evaluation. The known family cannot explain that observation after all six initial interventions; a correctly programmed bounded candidate set must become empty and abstain. This does not establish general OOD detection or recovery. If the true reward changes only by an action-neutral offset, action preference can remain correct for the wrong reason.
+The OOD witness is a single additional **observed** `context=3, action=0` reward, after pre-witness evaluation. The known family cannot explain that observation after all six initial interventions; a correctly programmed bounded candidate set must become empty and abstain. This does not establish general OOD detection or recovery. The OOD effect is unobserved in all six public interventions, so before the witness even a perfectly implemented known-family inference mechanism has no data to identify it. Record the consequent false decisive action choices as a scientific negative. An empty hypothesis set after the witness is **abstention**, not recovery or learning a new rule.
 
 ## Exact reproducibility
 
