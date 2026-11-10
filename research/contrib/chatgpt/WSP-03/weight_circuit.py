@@ -271,7 +271,7 @@ class ExactSymbolicANF:
         if self._unsafe or any((m, action) not in self._seen
                                for m in BASIS if (m & context) == m):
             return None
-        return sum(coeff for m, coef in self._coef[action].items()
+        return sum(coef for m, coef in self._coef[action].items()
                    if (m & context) == m) & 1
 
     def choose(self, context: int) -> int | None:
