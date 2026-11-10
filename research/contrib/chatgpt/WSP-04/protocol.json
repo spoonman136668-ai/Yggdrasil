@@ -1,0 +1,118 @@
+{
+  "schema": "wsp04.public-dev-protocol.v1",
+  "experiment": "WSP-04",
+  "predecessor_sha": "1b254caada6bfa2003eda8c641f125498cd3e1e7",
+  "research_question": "Can a 5-input recurrent weight-writing circuit invent fourth-order causal features when the previous WSP-03 degree-three gate language failed, retain multiple newly compiled features, and correctly refuse a fifth-order explanation when evidence is insufficient?",
+  "world": {
+    "context_bits": 5,
+    "context_values": "0..31",
+    "actions": [
+      0,
+      1
+    ],
+    "outcomes": [
+      0,
+      1
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "pairs": [
+      [
+        15,
+        23
+      ],
+      [
+        15,
+        27
+      ],
+      [
+        23,
+        29
+      ],
+      [
+        27,
+        30
+      ],
+      [
+        29,
+        30
+      ]
+    ],
+    "novelty_modes": [
+      0,
+      1,
+      2
+    ],
+    "lower_degree_basis": "all integer mask values 0..31 with popcount<=3, sorted ascending (26 contexts)",
+    "coefficients": "SHA256 UTF8 string 'WSP04|seed={seed}|action={action}|mask={mask}' first digest byte &1. Base reward XORs all coefficients for basis monomials mask subset context.",
+    "novel": "Only action=1 has fourth-order monomials: mode0 none, mode1 first pair mask, mode2 first and second pair masks. Each active monomial toggles binary reward iff its mask subset context.",
+    "negative": "After scoring, fifth-order negative flips action1 reward only when context=31, independently for every 120-world configuration.",
+    "adversarial_info_limit": "At context31, only two of five possible fourth-order coefficients are observed. No learner can identify a fifth-order cause uniquely without additional lower-order evidence. Do not claim identified fifth-order structure."
+  },
+  "evaluation": {
+    "order": "seed 0..7; pairs as listed; novelty mode 0,1,2; 120 public worlds. For each: observe 26 lower-degree contexts x action0 then action1 (52 outcomes); score context31 before witnesses; observe first pair mask/action1; score; observe second pair mask/action1; score; cold checkpoint; replay four already seen outcomes; score independent fifth-order perturbation before witness; observe one actual context31/action1 fifth-order negative; verify fail-closed.",
+    "frozen_transfer_context": 31,
+    "observations": 52,
+    "witnesses": 2,
+    "holdout": "No reward at context31 before test; no held-out label fed to fit control.",
+    "replay": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        8,
+        0
+      ],
+      [
+        14,
+        1
+      ]
+    ],
+    "correct_scoring": "Exact action decision including abstain only when true reward tie. Also separately score reward-0 and reward-1, decisive vs ties, confidence errors.",
+    "controls": [
+      "Independent exact symbolic ANF inversion on identical experiences, with sparse-default extrapolation; must tie direct-weight circuit if correct",
+      "Degree-3 no-growth circuit with identical experience; must refuse nonzero observed degree-four effect",
+      "Experience-erased direct-weight circuit, must abstain with insufficient basis",
+      "Fixed-budget conventional 6-12-1 tanh/sigmoid MLP, 97 floating parameters, seed17, learning rate .05, 256 full-batch epochs, trained only on 54 public (context,action,outcome) examples per world"
+    ],
+    "measurements": [
+      "post-two-witness 120 exact decisions",
+      "pre/after first witness confident errors",
+      "new fourth-order binary threshold cells and recurrent state",
+      "cold restore and replay",
+      "fifth-order negative pre-witness wrong confidently decisive cases and fail-closed after genuine contradicting witness",
+      "trained MLP final loss, correctness, wall-clock time and circuit memory"
+    ],
+    "fixed_operational_budgets": {
+      "max_input_bits": 5,
+      "max_threshold_cells_per_action": 32,
+      "learned_gradient_steps": 0,
+      "mlp_epochs_per_world": 256,
+      "mlp_training_seed": 17,
+      "mlp_training_learning_rate": 0.05,
+      "max_total_training_examples_per_world": 54,
+      "paid_apis": 0,
+      "external_solvers": 0
+    }
+  },
+  "acceptance": {
+    "mechanism_pass": "If and only if exact symbolic/control and direct circuit agree for all 120 final decisions and both reward predictions, all final decisions match the frozen synthetic world, all 120 cold restores/replays are exact, a fourth-order threshold gate is genuinely added on public residual, and fifth-order witness yields conservative abstention without over-claimed recovery.",
+    "negative": "Preserve both initial and intermediate confident errors, especially degree5 false confidence. A tie with symbolic gives NO scientific advantage.",
+    "science": "Public synthetic development only. No independently sourced novel world, strong fully converged trained comparator, parity-matched whole-process compute, or first-use. SCIENTIFIC_UNVERIFIED even on 120/120.",
+    "invalid": "Changing world generator, masks, seeds, observation order, holdout, witness, model capacity, controls, thresholds or metric definitions after primary outcomes. Implementation bug repairs must be documented and rerun full final qualification.",
+    "scope": "Isolated research/contrib/chatgpt/WSP-04 plus generated fail-closed G29 atlas and read-only PR CI companions; no existing model/controller/runner/schedule/acceptance changes."
+  }
+}
