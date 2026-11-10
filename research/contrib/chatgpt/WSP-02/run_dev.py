@@ -69,11 +69,11 @@ def run() -> dict:
     assert scores["tabular"] == scores["erased"] == 128
     assert ood_zero_candidate == cold_restore_exact == 64
     assert (ood_wrong_reward_predictions, ood_wrong_decisive_actions,
-            ood_after_witness_wrong_decisive) == (256, 0, 0)
+            ood_after_witness_wrong_decisive) == (256, 64, 0)
 
     return {
         "schema": "wsp02.dev-run.v1",
-        "classification": "DEV_MECHANISM_PASS_SCIENCE_UNVERIFIED",
+        "classification": "ENGINEERING_MECHANICS_PASS_SCIENTIFIC_NEGATIVE_OOD",
         "evaluation": "public synthetic DEV, not independent first-use",
         "experiment": "WSP-02",
         "worlds": 64, "public_observations_per_world": 6,
@@ -85,7 +85,7 @@ def run() -> dict:
             "pre_witness_wrong_decisive_actions": ood_wrong_decisive_actions,
             "post_witness_wrong_decisive_actions": ood_after_witness_wrong_decisive,
             "post_witness_zero_survivors": ood_zero_candidate,
-            "critical_limit": "OOD action-neutral XOR offset does not change preferred action, despite 256 wrong reward predictions; demonstrates an OOD limitation, not generalization."
+            "critical_limit": "OOD reward XOR flips the preferred action on 64 decisive cases; 256 reward predictions also fail. After the public contradictory witness the model abstains entirely; no OOD adaptation demonstrated."
         },
         "memory": {"cold_exact_restores": cold_restore_exact,
                    "state_bits": 64, "checkpoint_bytes": 44,
@@ -99,7 +99,7 @@ def run() -> dict:
             "conventional_mlp_mean_final_train_loss": sum(mlp_loss)/len(mlp_loss)
         },
         "elapsed_seconds_for_whole_python_dev_run": round(time.perf_counter() - start, 6),
-        "scientific_caveat": "Symbolic control ties exactly; conventional model may fail to converge on 6 examples and is not a qualified strongest baseline; no matched total compute or prospective unseen test."
+        "scientific_caveat": "SCIENTIFIC_NEGATIVE: 64 wrong confident out-of-family action choices before witness. Symbolic solver tied in-family, conventional control not a qualified strongest baseline; no matched compute or prospective first-use."
     }
 
 
