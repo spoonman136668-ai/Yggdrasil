@@ -14,7 +14,7 @@ ROOT = pathlib.Path(__file__).resolve().parent
 
 class WSP03Tests(unittest.TestCase):
     def test_frozen_protocol_and_preregistered_capacity(self):
-        self.assertEqual(hashlib.sha256((ROOT / "protocol.txt").read_bytes()).hexdigest(),
+        self.assertEqual(hashlib.sha256((ROOT / "protocol.txt").read_bytes().replace(b"\r\n", b"\n")).hexdigest(),
                          PROTOCOL_SHA256)
         self.assertEqual(BASIS, (0, 1, 2, 4, 8, 3, 5, 6, 9, 10, 12))
         self.assertEqual((SEEDS, TRIPLES, TRANSFER), (tuple(range(16)), (7, 11, 13, 14), 15))
