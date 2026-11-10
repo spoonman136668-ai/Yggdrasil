@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-01",
+  "contributor": "chatgpt-research",
+  "contribution_class": "successor-proposal",
+  "question": "Can an exactly weight-programmed recurrent threshold network perform deterministic causal rule inference and cold-retained transfer without gradient training?",
+  "hypothesis": "A 16-hypothesis binary recurrent net constructed solely from explicit weight matrices and threshold gates can eliminate inconsistent hypotheses from four public interventions and make exactly correct decisions/abstentions on unseen compositional context 3. This demonstrates compilation feasibility, NOT new intelligence or scientific superiority over a symbolic solver.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    "Yggdrasil yggdrasil/public_causal_cells.py is an explicit-counter control, not a directly weight-programmed neural implementation"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/WSP-01/**"
+  ],
+  "inputs": [
+    {
+      "name": "public exhaustive binary-parity causal family WSP01:v1",
+      "sha256": "ccb1a24ad20a91d3e3c5f5962045749f98a5edb67c5a18e950729fa5d9543926",
+      "source": "Fully synthetic, task specification string fixed in prereg and README; no sealed or user data; no originality claims"
+    }
+  ],
+  "frozen_design": {
+    "seeds": [],
+    "split": "All 16 synthetic hypotheses are public DEV fixtures; four observed interventions (context,action): (0,0),(1,0),(2,0),(0,1); query withheld composition context=3 only after observations; no independent first-use",
+    "ordering": "Hypothesis ID h=(context_mask << 2)|(action_flip <<1)|bias, enumerate 0..15 ascending; observations in listed order; evaluate after all four",
+    "data_budget": "4 public real-outcome observations per hypothesis; 64 total observations in 16 independent DEV fixture runs; no pretraining",
+    "compute_budget": "One deterministic recurrent weight update per observation, <=16x16 binary multiply-add checks per update; zero optimization steps; no GPU or external model calls",
+    "capacity": "16 binary recurrent hypothesis cells; 256 immutable 0/1 compatibility weights + 128 immutable 0/1 query/readout weights; no growth; serialized state is 16 bits plus checksum header",
+    "evaluator": "Predict decision {0,1,ABSTAIN} for context=3 by unanimous surviving-hypothesis action preference. Correct label: choose action whose parity reward is strictly greater, otherwise ABSTAIN. Count exact match over 16 public hypotheses",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Exact symbolic version-space enumeration using the identical family, all four observations, and the same decision rule (strong control; should tie)",
+    "Tabular public-context action/outcome control with identical observations and no structural extrapolation",
+    "State-erased weight-written network on the same transfer query (no experience)",
+    "Contradictory public outcome on a repeated intervention must yield zero viable hypotheses and abstain",
+    "Cold checkpoint restore and byte-identical replay"
+  ],
+  "metrics": [
+    "exact 16-way prediction count",
+    "decisive and abstain counts separately",
+    "symbolic parity count",
+    "tabular count",
+    "erased count",
+    "checkpoint round-trip exact bytes",
+    "fixed-weights digest",
+    "no-gradient/no-external-model calls",
+    "time and peak memory when measured"
+  ],
+  "classification_rules": {
+    "supported": "DEV mechanism verification only: exactly 16/16 query decisions, 16/16 symbolic parity, cold-restore equality, contradiction abstention and tests pass. No SCIENTIFIC_SUPPORTED can be claimed from these public fixtures.",
+    "mixed": "If mechanics meet decision checks but durability, invalid-input, or isolation checks fail, ENGINEERING_MIXED and do not qualify.",
+    "negative": "If any of 16 fixed public mechanical fixtures fail, MECHANISM_NEGATIVE. Matching the exact symbolic solver establishes no scientific improvement; claim SCIENTIFIC_UNVERIFIED regardless of DEV outcome.",
+    "invalid": "Any change in frozen family, observation order, budget, hypothesis labels or scoring after an outcome; leakage/hidden data; missing SHA custody; unbounded runtime/permissions"
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Freeze DEV synthetic fixture before running. This pilot is not independent scientific first-use. Do not dispatch original research, train live models, or promote without separate authority and qualification."
+}
