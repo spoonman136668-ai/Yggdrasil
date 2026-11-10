@@ -1,0 +1,37 @@
+# WSP-01 isolated, read-only development qualification.
+# No schedule, dispatch, runner ownership, source promotion or research first-use.
+name: WSP-01 candidate full regression
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/contrib/chatgpt/WSP-01/**'
+      - '.ice/code-atlas.*'
+      - '.github/workflows/wsp01-pr-validation.yml'
+permissions:
+  contents: read
+jobs:
+  regression:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact-source code atlas
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Entire existing repository Python regression
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Isolated directly programmed weights DEV controls
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-01 -p "test_*.py" -v
+      - name: Reject working-tree changes
+        run: git diff --exit-code
