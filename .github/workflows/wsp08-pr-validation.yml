@@ -1,0 +1,54 @@
+# Public synthetic DEV only: no schedule, dispatch, private runner or promotion.
+name: WSP-08 learned synaptic representation-depth DEV regression
+on:
+  pull_request:
+    branches:
+      - research/wsp07-synaptic-control-graph-20261110
+      - main
+    paths:
+      - 'research/contrib/chatgpt/WSP-08/**'
+      - '.ice/code-atlas.*'
+      - '.github/workflows/wsp08-pr-validation.yml'
+permissions:
+  contents: read
+jobs:
+  regression:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: G29 source atlas exact pin
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Full original Yggdrasil regression
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Preserve WSP-01
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-01 -p "test_*.py" -v
+      - name: Preserve WSP-02 negative
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-02 -p "test_*.py" -v
+      - name: Preserve WSP-03
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-03 -p "test_*.py" -v
+      - name: Preserve WSP-04
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-04 -p "test_*.py" -v
+      - name: Preserve WSP-05
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-05 -p "test_*.py" -v
+      - name: Preserve WSP-06
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-06 -p "test_*.py" -v
+      - name: Preserve WSP-07
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-07 -p "test_*.py" -v
+      - name: WSP-08 288-query representation growth and negatives
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-08 -p "test_*.py" -v
+      - name: Frozen 36-world development results and converged baseline
+        run: python research/contrib/chatgpt/WSP-08/run_dev.py
+      - name: Verify clean source
+        run: git diff --exit-code
