@@ -1,0 +1,28 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-06",
+  "parent_sha": "6c45a20af790d7eca8d1b69387559000b2bc4d03",
+  "protocol": {
+    "path": "research/contrib/chatgpt/WSP-06/protocol.json",
+    "first_commit_sha": "9bd5d74087c89a42a919f1f8348825cd5e86e84d",
+    "git_blob_sha": "3d7b09700f476b7464e9392d7c2ad9bd2f15bec0"
+  },
+  "hypothesis": "Complete WSP-05 bounded action-consequence inference, causal feature formation, persistent memory writes and heldout prediction can be expressed in compiled numeric fixed/plastic weight matrices executed by generic tensor ops; no Python symbolic task maps. 128/128 correctly predicted outcomes from raw observations; exact numerical weight-state checkpoints/ablations; 128 false confident OOD predictions and fail-closed after contradicted witness.",
+  "comparator": "WSP-05 exact symbolic signature and previously converged 2-8-1 Adam trained baseline; both prior 128/128, must not claim advantage. New control if needed gets same raw events, trained 8 public labels. Report cost and any differences.",
+  "positive_acceptance": "128 correct, all 32 cold restores, 32 replay checks, all numeric weights counted and mutation verified (177 plastic scalars and fixed 4x3 plus route gating), no hidden data leakage, output suppressed when core weights disabled.",
+  "negative_acceptance": "All 128 adversarial heldout-only flips wrong confidently before revealed evidence and all 128 abstain after first real contradiction; never claim that abstention is successful recovery.",
+  "frozen_data": "WSP-05 32 seeds, 20 raw interventions per world, 4 withheld outcomes/world; unchanged original evaluator and observation order; data embargo applies only to future independent first-use, not this authored public DEV.",
+  "invalid": "Changing outcome generator, actions/seeds, checkpoint protocols, negative, evaluation thresholds or comparator budgets after a result; hidden WSP05 generator or symbolic signature code inside new neural circuit; missing exact final cross-platform regression.",
+  "scope": {
+    "changes": "WSP-06 research only plus read-only PR workflow and necessary generated G29 atlas",
+    "development_only": true,
+    "independent_science_first_use": false,
+    "merge": false,
+    "controller": false,
+    "scheduler": false,
+    "paid_api": false,
+    "model_activation": false
+  },
+  "limit": "Generic numerical interpreter and Hebbian/local write primitive are software operations; implementing a bounded cognitive task in weight matrices is not yet an entirely self-contained neuron-level runtime, arbitrary new-rule invention, or general intelligence."
+}
