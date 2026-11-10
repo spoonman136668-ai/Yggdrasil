@@ -1,0 +1,149 @@
+{
+  "schema": "wsp05.public-dev-evidence.v1",
+  "experiment_id": "WSP-05",
+  "classification": {
+    "engineering": "PASS at initially measured exact source; final post-evidence exact SHA regression pending",
+    "science": "UNVERIFIED, NO ADVANTAGE OVER CONVERGED TRAINED OR EXACT SYMBOLIC CONTROL",
+    "deployment": "NONE"
+  },
+  "lineage": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "branch": "research/wsp05-causal-state-signature-20261110",
+    "base_pr": 868,
+    "base_sha": "3d33928603b22fd2d6f9243b6fe7017763797388",
+    "protocol_first_commit": "3dec3e79c3d833605a6c76f1ce7b9571cffa985c",
+    "protocol_blob_sha1": "03041e58ed19782e06dd949037c83fcd07425840",
+    "protocol_sha256": "300d26de9efff1da0c067d971ae430768cedbaae8da2720ad3f6a4fa8ccaf0ab",
+    "prereg_commit": "839fac156d5741408702e48c41c86f652ebff52c",
+    "model_source_sha256": "4769f98935ba9614a02f0f2c670ed7325e12aa93c409940ef52be689200c52df",
+    "initial_qualified_candidate": "30e82bf06fc3143ec8d3bb5548be413a1973b9a6",
+    "initial_qualified_tree": "308cf2b97e56bcd59693d8c407bb08060acaa19f",
+    "initial_generated_atlas_pin": "88ffeac671ec60137acf436e9e5e3f684240fe2a"
+  },
+  "qualification": {
+    "full_regression": {
+      "run_id": 42910223650,
+      "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/42910223650",
+      "sha": "30e82bf06fc3143ec8d3bb5548be413a1973b9a6",
+      "windows": "SUCCESS",
+      "linux": "SUCCESS",
+      "python_tests_per_platform": {
+        "repo": 54,
+        "wsp01": 7,
+        "wsp02": 8,
+        "wsp03": 9,
+        "wsp04": 10,
+        "wsp05": 10,
+        "total": 98
+      },
+      "public_dev_runner": "PASS",
+      "atlas_integrity": "PASS",
+      "clean_worktree": "PASS"
+    },
+    "source_atlas": {
+      "run_id": 42910223361,
+      "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/42910223361",
+      "sha": "30e82bf06fc3143ec8d3bb5548be413a1973b9a6",
+      "windows": "SUCCESS",
+      "linux": "SUCCESS"
+    },
+    "runner_environment": "GitHub-hosted Windows 2022 and Ubuntu; Python 3.12 standard library only, no self-hosted, no schedule"
+  },
+  "measurement": {
+    "worlds": 32,
+    "opaque_states_per_world": 12,
+    "public_action0_outcomes": 12,
+    "public_action1_training_outcomes": 8,
+    "heldout_predictions": 128,
+    "abstention_is_failure": true,
+    "exact_binary_rewards": {
+      "direct_weight_writer": 128,
+      "exact_symbolic_matcher": 128,
+      "fully_converged_trained_mlp": 128,
+      "one_step_causal_ablation": 64,
+      "identity_memorizer": 0,
+      "erased_model": 0
+    },
+    "network": {
+      "learned_two_step_causal_signature_gates": 128,
+      "binary_connections_programmed": 512,
+      "binary_input_weights_per_gate": 4,
+      "gradient_steps": 0,
+      "hidden_class_labels_used": false,
+      "first_world_gate_count": 4
+    },
+    "mlp": {
+      "architecture": "2-8-1 tanh sigmoid",
+      "float_parameters": 33,
+      "optimizer": "deterministic full-batch Adam",
+      "seed": 17,
+      "learning_rate": 0.03,
+      "stop_mean_bce": 0.02,
+      "gradient_steps_limit_per_world": 2048,
+      "converged_worlds": 32,
+      "nonconverged_worlds": 0,
+      "gradient_steps_total": 1386,
+      "mean_final_train_bce_linux": 0.019065383501256368,
+      "mean_final_train_bce_windows": 0.019065383501256365,
+      "whole_process_compute_matched": false,
+      "inference_information_matched": true
+    },
+    "retention": {
+      "exact_cold_checkpoint_restore": 32,
+      "identical_replay_of_four_already_observed_events": 32,
+      "independent_world_isolation_receipts": 32,
+      "checkpoint_bytes": 465
+    },
+    "ablations": {
+      "one_step_correct": 64,
+      "one_step_abstentions": 64,
+      "state_id_memorizer_abstentions": 128,
+      "erased_model_abstentions": 128
+    },
+    "adversarial_unseen_heldout_shift": {
+      "alternative_world_same_all_20_public_observations": true,
+      "prewitness_incorrect_predictions": 128,
+      "prewitness_confidently_incorrect": 128,
+      "after_one_actual_heldout_reward_witness_fail_closed_abstentions": 128,
+      "unknown_shift_rules_recovered": 0,
+      "identifiability": "The unobserved held-out-only reward flip is impossible to infer from all twenty public interventions. One contradictory label cannot justify inferring the other three unseen labels."
+    }
+  },
+  "wall_clock_seconds": {
+    "linux": {
+      "direct_plus_cold_and_negative": 0.013055,
+      "trained_fit": 0.086758,
+      "end_to_end": 0.100923
+    },
+    "windows": {
+      "direct_plus_cold_and_negative": 0.017435,
+      "trained_fit": 0.120788,
+      "end_to_end": 0.13967
+    },
+    "disclaimer": "Different algorithms and feature construction/inference costs were not controlled for FLOPs, setup and total system overhead; no computational advantage claimed."
+  },
+  "scientific_limit": {
+    "superiority_over_symbolic": "NONE, exact tie 128/128",
+    "superiority_over_fully_trained_conventional": "NONE, exact tie 128/128 with converged control",
+    "does_new_representation_emerge": "Yes within a supplied two-step action-consequence signature inductive bias, not an arbitrary new mathematics or general intelligence claim.",
+    "holdout_independence": "All synthetic evaluation data author visible, no independent scientific first-use.",
+    "next_falsifiable_requirement": "Independent novel environment source with preregistered outcomes, stronger fitted baselines, matched action/compute and retention interference. Without authority for first use, keep development only."
+  },
+  "scope": {
+    "engineering_companions_outside_frozen_research_paths": [
+      ".github/workflows/wsp05-pr-validation.yml",
+      ".ice/code-atlas.json",
+      ".ice/code-atlas.html",
+      ".ice/code-atlas.ice"
+    ],
+    "new_evidence_written_after_scoring": true,
+    "final_sha_must_requalify": true,
+    "no_schedule": true,
+    "no_merge": true,
+    "no_research_loop_dispatch": true,
+    "no_controller_or_runner_ownership": true,
+    "no_live_training": true,
+    "no_paid_api": true,
+    "no_production": true
+  }
+}
