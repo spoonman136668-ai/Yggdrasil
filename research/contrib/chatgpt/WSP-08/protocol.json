@@ -1,0 +1,70 @@
+{
+  "schema": "wsp08.public-dev-protocol.v1",
+  "experiment": "WSP-08",
+  "parent": "b7a5ed64c617051cd5028c36467a782c9b343120",
+  "primary_question": "Can learned neural synapses choose how deep an action-consequence representation must be, rather than being given WSP07's fixed two-step representation, while keeping inference, conflict detection, depth activation and memory in a homogeneous numerical threshold-neuron graph?",
+  "public_worlds": {
+    "seeds": "0 through 11 inclusive",
+    "modes": [
+      1,
+      2,
+      3
+    ],
+    "count": 36,
+    "hidden_classes": "eight q=0..7",
+    "replicas": "three i=0,1,2 per q",
+    "identities": "24 opaque integer IDs 1000..1023, assigned to (q,i) by seeded pseudorandom shuffle with seed*8999+101; no learner receives q/i, world seed, mode or mapping.",
+    "action0": "Reward q&1, successor hidden q//2 with replica (i+1)%3. Successor is always a raw opaque ID.",
+    "action1": "Reward ((q >> (mode-1)) & 1), successor hidden ((q+2)%8) with replica (i+1)%3. This function is evaluator-only, not available to inference.",
+    "holdout_shift": "Flip only heldout action1 rewards of replica i=2. Preserve all public observed transitions exactly."
+  },
+  "observation_schedule": {
+    "phase0": "All 24 action0 (state,action,reward,next-state) outcomes in ascending opaque state ID; no hidden labels.",
+    "phase1": "All 16 action1 outcomes from replicas i=0 and i=1 in ascending opaque state ID.",
+    "holdout": "Predict action1 reward on each of eight unseen replica i=2 opaque IDs. Total 36*8=288 unseen binary labels, abstentions incorrect.",
+    "strict_budget": "40 genuine observed transitions/world, exactly 36 worlds; no oracle/future labels or extra action2 outcomes. Holdout never supplied before scoring."
+  },
+  "mechanism": {
+    "fixed_priors": "A generic action0 successor chaining operator with at most three lagged action0 rewards, a binary threshold gate compiler, and a fixed structural-split rule: if action1 outcomes contradict at current prefix depth, activate the next feature depth via a plastic gating weight. Candidate feature generator limited to 1,2,3 action0-reward hops; NOT open-ended unknown operator invention.",
+    "weight_storage": "T0 24x24 successor edges, R0 24 action0 reward, C0 24 action0 coverage, A1 24 action1 reward, AC 24 action1 coverage, B1/B2/B3 24 each observed training-state lagged action0 reward bits, G2/G3 two plastic representation-depth on-switches, F one plastic fault latch. Total plastic = 576+24+24+24+24+72+2+1 = 747. All start at 0.",
+    "compute": "Compile all task-specific inference and learning eligibility into fixed weighted threshold connections. Runtime only generic forward threshold and generic three-factor post/pre/modulator OR synaptic write (no Python branch on mode, signature, depth, reward or action). Raw identity-to-onehot host is permitted; source graph constructor is code. Fixed layer can prewire three candidate paths but active representation is selected only by learned G2/G3 synapses.",
+    "initial": "Depth1 only active G2=0,G3=0. Genuine public conflicting action1 outcomes for identical depth1 histories activate G2; if depth2 prefix still conflicts activate G3; if same full depth3 still conflicts activate fault latch F and abstain.",
+    "recognition": "Each action1 public label stores its observed first/second/third action0 reward bits in numeric synapse arrays. For query state, compare its prefix against stored observed action1 states using neuronized equality, AND gating by G2/G3; accept only if public training labels match unanimously for that prefix, otherwise abstain.",
+    "checkpoint": "Canonical numeric fixed/plastic weights and program SHA256 with digest; exact restore and four-event replay must preserve bytes and predictions.",
+    "limits": "At most 2500 fixed coefficient slots, 747 writable coefficient slots, 1300 threshold nodes, 5000 directed edges. All generated source graph weights counted and reported. No new controller, scheduler or code trained via gradient."
+  },
+  "frozen_controls": {
+    "exact_symbolic": "Independent exact minimal-prefix-depth selector, same raw 40 public transitions, no hidden q or mode; expected 288/288 tie. Derive lagged outcomes only from observations.",
+    "fixed_depth1": "Fixed one-hop action0 signature classifier on same public data, no growth; must fail on modes2/3.",
+    "fixed_depth2": "Fixed two-hop action0 classifier on same public data, no growth; must fail on mode3.",
+    "erased": "Zero numeric synapses, abstention on all heldouts.",
+    "converged_train": "Conventional 3-input 8-hidden tanh sigmoid MLP (41 floating trainable parameters), features all three lagged public action0 rewards for each of 16 public action1 training states. Deterministic full-batch Adam seed17, learning rate .03, max 2048 steps/world, BCE stop <=0.02. If any world not converged, mark strongest trained baseline unqualified; do not claim superiority.",
+    "negative": "Alternative holdout-only reward shift leaves all 40 public outcomes unchanged; before witness count all 288 confidently wrong predicted labels if the in-family circuit is confident; after exactly one genuine shifted heldout action1 observation/world set plastic fault and abstain globally on all eight. No hidden shifted rule recovery."
+  },
+  "required_results": {
+    "worlds": 36,
+    "heldouts": 288,
+    "expected_depth_selection": {
+      "mode1": 1,
+      "mode2": 2,
+      "mode3": 3
+    },
+    "cold_exact_restore": 36,
+    "replay_exact": 36,
+    "cross_world_isolation": 36,
+    "engineering": "128 WSP01-07 and original tests (119) plus WSP08 tests, full cross-platform final source/atlas regression; graph numeric-gating results match exact symbolic on all 288, strong control report and negatives, no task-specific runtime dispatch.",
+    "science": "Public synthetic developmental evidence only. Scientific superiority, open-ended latent rule invention, independently unknown environment first-use, fully matched whole-process compute/data/energy and real-world intelligence NOT proven."
+  },
+  "authority": {
+    "isolated_branch": true,
+    "draft_unmerged": true,
+    "no_controller": true,
+    "no_scheduler": true,
+    "no_external_paid_api": true,
+    "no_independent_science_first_use": true,
+    "no_existing_research_loop_impact": true,
+    "no_training_dispatch": true
+  },
+  "scope": "research/contrib/chatgpt/WSP-08/** plus generated G29 source atlas and one read-only pull_request CI workflow as disclosed engineering-only companions.",
+  "invalid": "No changes to seeds, transition/reward generators, unseen label schedule, modes, control limits, stop threshold, architecture budget or scoring after primary outcome. Preserve model negatives, disclose bug repairs and requalify at final exact SHA."
+}

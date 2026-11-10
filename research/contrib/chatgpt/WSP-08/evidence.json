@@ -1,0 +1,174 @@
+{
+  "schema": "wsp08.public-dev-evidence.v1",
+  "experiment_id": "WSP-08",
+  "classification": {
+    "initial_candidate_engineering": "PASS_LINUX_AND_WINDOWS",
+    "final_after_post_result_evidence": "PENDING_EXACT_SOURCE_REQUALIFICATION",
+    "science": "SCIENTIFIC_UNVERIFIED__EXACT_SYMBOLIC_AND_CONVERGED_ADAM_TIE",
+    "deployment": "NONE"
+  },
+  "source": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "branch": "research/wsp08-synaptic-representation-growth-20261110",
+    "base_pr": 872,
+    "base_sha": "b7a5ed64c617051cd5028c36467a782c9b343120",
+    "protocol_first_commit": "8495a4a7b7dd46b5f86e8296b6a30ea5b4eb1109",
+    "protocol_git_blob_sha1": "d4addc190df49fc52dd8fa9dfae5df55e4a2c9e0",
+    "protocol_sha256": "6961d46bf97385480b015e37d00a973da1b184b126b5e44d1c3f88ce76986615",
+    "prereg_commit": "7908bb13838f59b15eaea3c99a1024027db83580",
+    "graph_source_sha256": "9216f8fb52486def3be8f16b0be6c57382231e6937d0804c72d199e0cf10ff8c",
+    "first_qualified_sha": "a7957ae51c8b77a0963730d9fc87050c4e4e67ad",
+    "first_qualified_tree": "16eb23350293c4a01557c66a9d259a5b74f8dece",
+    "first_generated_atlas_source_pin": "cbcba97c9820856abc14695d620b1d0da15845e9"
+  },
+  "first_qualification": {
+    "full_regression": {
+      "run": 42923357699,
+      "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/42923357699",
+      "status": "SUCCESS",
+      "windows": "SUCCESS",
+      "linux": "SUCCESS",
+      "source_sha": "a7957ae51c8b77a0963730d9fc87050c4e4e67ad",
+      "per_os_tests": {
+        "original_repository": 54,
+        "wsp01": 7,
+        "wsp02": 8,
+        "wsp03": 9,
+        "wsp04": 10,
+        "wsp05": 10,
+        "wsp06": 10,
+        "wsp07": 11,
+        "wsp08": 13,
+        "total": 132
+      },
+      "frozen_36_worlds": "PASS",
+      "g29_integrity": "PASS",
+      "clean_tree": "PASS"
+    },
+    "atlas": {
+      "run": 42923357573,
+      "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/42923357573",
+      "status": "SUCCESS",
+      "windows": "SUCCESS",
+      "linux": "SUCCESS",
+      "same_source_sha": "a7957ae51c8b77a0963730d9fc87050c4e4e67ad"
+    }
+  },
+  "measurements": {
+    "worlds": 36,
+    "seeds": 12,
+    "task_modes": [
+      1,
+      2,
+      3
+    ],
+    "hidden_classes": 8,
+    "opaque_states": 24,
+    "action0_observations_per_world": 24,
+    "action1_observations_per_world": 16,
+    "total_public_observations_per_world": 40,
+    "unseen_action1_labels_per_world": 8,
+    "total_unseen_labels": 288,
+    "abstention_counted_incorrect": true,
+    "correct_binary_heldout": {
+      "growing_weight_programmed": 288,
+      "independent_exact_symbolic_minimal_depth": 288,
+      "fully_converged_41_float_parameter_Adam_MLP": 288,
+      "fixed_depth1": 96,
+      "fixed_depth2": 192,
+      "erased_memory": 0
+    },
+    "grown_internal_representation": {
+      "depth1_selected_worlds": 12,
+      "depth2_selected_worlds": 12,
+      "depth3_selected_worlds": 12,
+      "depth2_gate_synapse_writes": 24,
+      "depth3_gate_synapse_writes": 12,
+      "plastic_scalar_synapse_slots": 747,
+      "fixed_coefficient_slots": 2,
+      "total_independent_numeric_coefficient_slots": 749,
+      "compiled_neurons": 1082,
+      "numeric_edge_incidences": 3039,
+      "synaptic_local_update_rules": 747,
+      "positive_persistent_plastic_synapses_min": 108,
+      "positive_persistent_plastic_synapses_max": 110,
+      "program_sha256": "5dfad37e1b8c2238e1d994c5eafdb1cb2fa98bb387311f383bd49172c7565f62",
+      "direct_gradient_steps": 0,
+      "novel_operator_invented": false,
+      "preprogrammed_candidate_max_hops": 3,
+      "generic_Python_VM_remains": true,
+      "comment": "Two fixed-coefficient slots (+1,-1) are reused across many graph edges; 3039 edge incidences are not independently trainable numeric parameter slots."
+    },
+    "trained_control": {
+      "architecture": "3-8-1 tanh/sigmoid",
+      "float_parameters": 41,
+      "optimizer": "full-batch Adam",
+      "learning_rate": 0.03,
+      "seed": 17,
+      "stop_mean_bce": 0.02,
+      "max_steps_per_world": 2048,
+      "converged_worlds": 36,
+      "unconverged_worlds": 0,
+      "total_gradient_steps": 1488,
+      "mean_final_train_bce": 0.019392299735105867,
+      "matched_40_public_interventions": true,
+      "matched_process_compute": false
+    },
+    "retention": {
+      "cold_restores_exact": 36,
+      "four_event_replay_preserves_checkpoint": 36,
+      "independent_world_isolation": 36,
+      "checkpoint_bytes": 1683
+    },
+    "ablations": {
+      "zero_transition_weights_suppresses_all_8_predictions_worlds": 36,
+      "zero_action1_coverage_suppresses_all_8_predictions_worlds": 36
+    },
+    "adversarial_unknown_shift": {
+      "alternative_world_leaves_all_40_observations_unchanged": true,
+      "before_witness_confidently_wrong_predictions": 288,
+      "after_one_genuinely_observed_shifting_reward_global_abstentions": 288,
+      "new_shifted_rules_recovered": 0,
+      "information_theoretic_limit": "No pre-revelation evidence distinguishes the heldout-only flipped world from original; abstention after one contradiction is detection, not inference of other hidden labels."
+    }
+  },
+  "runtime": {
+    "linux_seconds": {
+      "numeric_development_including_restore_replay_ablation_negative": 1.629796,
+      "MLP_training_only": 0.197656,
+      "whole_dev_runner": 1.829614
+    },
+    "windows_seconds": {
+      "numeric_development_including_restore_replay_ablation_negative": 3.565668,
+      "MLP_training_only": 0.427898,
+      "whole_dev_runner": 3.99751
+    },
+    "claim": "Not matched workloads, FLOPs, energy, architecture or whole-process costs; no comparative speedup or data-saving claim supported."
+  },
+  "science": {
+    "supported": "Learned activation of depth2/depth3 feature gates under public outcome contradictions within preprogrammed finite feature family; cold persistence, exact symbolic/trained tie, numeric execution.",
+    "not_supported": "Unrestricted new feature operator invention, arbitrary causal language, superior intelligence, lower sample complexity than equally informed controls, lower compute/energy, autonomous research, unknown external environments, independently authorized scientific acceptance.",
+    "scientific_first_use": "NOT_AUTHORIZED_NOT_EXECUTED"
+  },
+  "scope": {
+    "research_paths": [
+      "research/contrib/chatgpt/WSP-08/**"
+    ],
+    "engineering_only_companions": [
+      ".github/workflows/wsp08-pr-validation.yml",
+      ".ice/code-atlas.json",
+      ".ice/code-atlas.html",
+      ".ice/code-atlas.ice"
+    ],
+    "post_result_evidence_requires_final_CI": true,
+    "no_merge": true,
+    "no_main_change": true,
+    "no_scheduler": true,
+    "no_new_runner": true,
+    "no_controller_or_forge_research_loop": true,
+    "no_paid_api": true,
+    "no_science_first_use": true,
+    "no_deployment": true
+  },
+  "unrelated_infrastructure": "Existing prepare-ckb-research-write-proxy-fanout-r3.yml push-event failures appear on intermediate branch commits and are not the PASS-qualified WSP08 pull-request regression; leave them separate."
+}
