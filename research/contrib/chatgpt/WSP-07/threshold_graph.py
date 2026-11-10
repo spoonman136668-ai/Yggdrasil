@@ -207,22 +207,6 @@ class UniformNeuronVM:
     signature, graph-construction opcode or hidden world information.
     """
     @staticmethod
-    def activate(spec: CompiledSpec, weights: list[int],
-                 inputs: tuple[int, ...]) -> list[int]:
-        if len(inputs)!=INPUT_COUNT or any(v not in (0,1) for v in inputs):
-            raise ValueError("WSP07_INPUT_SHAPE_INVALID")
-        activity = list(inputs) + [0]*(len(spec.threshold)-INPUT_COUNT)
-        total = [0]*len(spec.threshold)
-        for dst,src,param in spec.edges:
-            total[dst] += weights[param]*activity[src]
-            # Every source node precedes its target. Future targets may
-            # receive multiple edges from interleaved destination order;
-            # finalize preceding nodes when the target ID increases.
-            # The adjacency ordering is validated by the compiler.
-            # (Implemented below via per-node boundaries in generic kernel.)
-        return activity
-
-    @staticmethod
     def evaluate(spec: CompiledSpec, weights: list[int],
                  inputs: tuple[int, ...]) -> list[int]:
         if len(weights)!=len(spec.initial_weights) or len(inputs)!=INPUT_COUNT:
