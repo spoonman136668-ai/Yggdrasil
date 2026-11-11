@@ -1,0 +1,39 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-16",
+  "project": "Yggdrasil",
+  "contribution_class": "falsification",
+  "exact_parent_sha": "150c4d5ca2114d2f93d8a5af240bd23b1ef2c2d1",
+  "question": "Can neutral synaptic exploration cross WSP15's structural credit barrier after an actual contradictory witness, while preserving previously valid observations?",
+  "hypothesis": "From each frozen WSP15 acquired circuit, neutral non-worsening numeric updates recover the new witness in at least122/128 tasks, fit at least730/768 total observations after adaptation, and retain every previously correct original prediction. A missed condition is SCIENTIFIC_NEGATIVE; no post-result budget or policy tuning.",
+  "frozen_design": {
+    "initial_tasks": "32 original signatures at [0,1,2,4,7] x seeds [17,29,43,71]. Initial state is exactly WSP15 strict update with1024 trials, independently reproduced. No cherry-picked successful circuits.",
+    "contradiction": "One new observed context3 with label opposite the initial circuit prediction. This is a deliberately adversarial witnessed relationship, not unexplained environment drift. All methods get identical actual five+one observations per paired task. The witness is not an input to noise proposal generation.",
+    "hidden": "contexts5,6; exhaustively score all4 compatible assignments per task. Each deterministic evidence-only arm must be exactly512/1024. No unseen-family generalization claim.",
+    "budget": "1024 further single-row rewire proposals per arm/task, noise seed unchanged and restarted. No early exit or extra attempts. Same six NAND sites /75 binary synaptic scalars as WSP15.",
+    "plasticity": "Numeric mismatch/reward threshold commits trial weights when total six-observation mismatch does not increase. This permits neutral intermediate wiring. Same generic simulator, independent noise, masked updates; no symbolic graph selection. Original five observations are replayed and counted as external evidence storage (not synaptic memory).",
+    "seeds": [17,29,43,71],
+    "protected_first_use": false,
+    "stop": "fixed trial budget;30minute hosted timeout"
+  },
+  "controls": {
+    "strict": "Same initial circuit, six observations and noise; strict reward threshold as WSP15",
+    "random": "Same proposals/evaluations; force all commits",
+    "disabled": "Same proposals/evaluations; force no commits",
+    "symbolic": "Exact frozen WSP14 NAND catalog, select lowest(cost,mask) compatible with SIX observed labels. Full setup measured; no hidden labels. Independent symbolic expression output.",
+    "precompiled": "Numerical WSP14 circuit from symbolic selection; external compiled control only",
+    "trained": "Eight independent logits, genuine Adam LR.1,BCE<=.02 within2048 steps, SIX observations; all128 tasks convergence mandatory. Equal information, not capacity/FLOP-matched strongest structural neural baseline",
+    "negative": "No witness arm must keep the initial graph unchanged; ambiguity of two unobserved labels remains50%; corrupted checkpoints rejected"
+  },
+  "metrics": ["before/after witness correctness", "six-observation accuracy", "initially valid old predictions retained/lost", "exact fitted tasks", "neutral/improving accepted proposals", "wiring changes", "cold restoration", "hidden ambiguity bound", "NAND evaluations", "noise draws", "gradient steps", "phase/end-to-end runtime", "comparator convergence and scores"],
+  "classification_rules": {
+    "dev_supported": "witness correct>=122/128 AND total observed>=730/768 AND zero loss of previously correct original predictions AND reproducible128/128 cold restores",
+    "negative": "any frozen recovery/retention threshold missed with valid controls",
+    "invalid": "hidden leakage, changed seeds/budget/threshold, invalid source/custody or comparator, task-specific external selection",
+    "scientific_pass": "Unavailable: authored public DEV and strongest exact symbolic reference. No superiority without independent matched whole-process comparison"
+  },
+  "changed_paths": ["research/contrib/chatgpt/WSP-16/**", ".github/workflows/wsp16-pr-validation.yml", ".ice/code-atlas.json", ".ice/code-atlas.html", ".ice/code-atlas.ice"],
+  "qualification": "Final exact SHA/tree, all original+WSP01-16 tests, WSP16 frozen evaluator, source integrity/permanent atlas on GitHub-hosted Ubuntu and Windows2022. Predecessor evaluator outcomes reused only at exact unchanged predecessor blobs; previous full suite is not a substitute for final unit regression.",
+  "authority": {"research_only": true, "production_authority": false, "accepted_ref_mutation": false, "promotion_authority": false, "scheduler_or_queue_authority": false},
+  "preregistration_note": "Committed locally AND published remotely before implementation and all primary WSP16 execution; WSP15 negative remains frozen and unchanged."
+}
