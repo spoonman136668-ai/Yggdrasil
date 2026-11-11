@@ -1,4 +1,4 @@
-name: WSP capacity certificate regression (reused WSP21-30)
+name: WSP capacity certificate regression (reused WSP21-31)
 on:
   pull_request:
     branches:
@@ -12,6 +12,7 @@ on:
       - research/wsp27-error-directed-structural-credit-20261111
       - research/wsp28-disjoint-credit-replication-20261111
       - research/wsp29-acquired-module-composition-20261111
+      - research/wsp30-composition-limit-diagnostic-20261111
     paths:
       - 'research/contrib/chatgpt/WSP-21/**'
       - 'research/contrib/chatgpt/WSP-22/**'
@@ -23,6 +24,7 @@ on:
       - 'research/contrib/chatgpt/WSP-28/**'
       - 'research/contrib/chatgpt/WSP-29/**'
       - 'research/contrib/chatgpt/WSP-30/**'
+      - 'research/contrib/chatgpt/WSP-31/**'
       - '.github/workflows/wsp21-pr-validation.yml'
       - '.ice/code-atlas.*'
 permissions:
@@ -60,7 +62,7 @@ jobs:
               for offset in range(0,len(encoded),4096):
                   print("WSP21_ATLAS|"+path+"|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
           PY
-      - name: Full original WSP01-17 WSP19-30 regression and composition limit diagnostic
+      - name: Full original WSP01-17 WSP19-31 regression and one-query fact acquisition
         env:
           PYTHONDONTWRITEBYTECODE: '1'
-        run: python research/contrib/chatgpt/WSP-30/qualify.py
+        run: python research/contrib/chatgpt/WSP-31/qualify.py
