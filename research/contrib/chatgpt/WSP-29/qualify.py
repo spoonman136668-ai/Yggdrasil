@@ -27,6 +27,12 @@ def run():
         tick = time.perf_counter()
         p = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace", env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"})
         combined = p.stdout+p.stderr
+        if label == "WSP29-DEV" and p.returncode == 0:
+            # Full primary traces stay in the repository. Avoid duplicating a
+            # multi-megabyte trace in both console output and final receipt.
+            dev = json.loads(p.stdout)
+            dev["trace_records"] = len(dev.pop("traces", []))
+            combined = json.dumps(dev, sort_keys=True, indent=2)+p.stderr
         print(f"\nWSP29_STEP {label}\n{combined}", flush=True)
         found = re.search(r"Ran (\d+) tests? in", combined)
         count = int(found.group(1)) if found else 0
@@ -38,7 +44,7 @@ def run():
             print("WSP29_QUALIFICATION_RECEIPT "+json.dumps(receipt, sort_keys=True), flush=True)
             raise SystemExit(p.returncode)
         if label == "WSP29-DEV":
-            receipt["scientific_dev"] = json.loads(p.stdout)
+            receipt["scientific_dev"] = dev
     receipt["total_seconds"] = round(time.perf_counter()-start, 6)
     receipt["status"] = "PASS"
     print("WSP29_QUALIFICATION_RECEIPT "+json.dumps(receipt, sort_keys=True), flush=True)
