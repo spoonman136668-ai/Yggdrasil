@@ -13,3 +13,13 @@ A nonlinear counterworld preserves every acquired event and flips the previously
 `python research/contrib/chatgpt/WSP-24/run_dev.py`
 
 Final qualification: all original+WSP01-17+WSP19-24 tests, frozen full causal evaluator, interface/negative/cold controls, permanent G29 and clean source on hosted Ubuntu/Windows2022 at one SHA/tree. Existing read-only hosted workflow reused; no new workflow, owner/controller/scheduler/queue/private worker, paid API, protected first-use, merge/integration or deployment.
+
+## First frozen result
+
+DEV_SUPPORTED, symbolic/trained TIE:64/64 worlds identified,512/512 heldout joint Z predictions after64 cold restores,64/64 learned Y buckets preserved after additional Y intervention.32 worlds need1 intervention and32 need2,96 total plus128 initial events.37 resident task scalars and288-byte checkpoints.128 numeric/symbolic policy checks agree;49,152 candidate prediction evaluations for selection.
+
+Uniform exhaustive random querying:1,088/3,584 complete-identification cases (30.357%);23,296/28,672 correct/covered joint predictions (81.25%, abstentions counted wrong). Active identification gain69.643 percentage points. Observation-only64/64 worlds remain causally ambiguous;256/512 joint responses known. All128 conventional bucket fits converge,6,464 optimizer steps,512/512 joint predictions.
+
+The nonlinear counterworld preserves all acquired observations but causes128/512 confident errors. After one genuine counterexample,64/64 models fault and abstain; no outside-family recovery is claimed. Erasure causes512/512 abstentions. Numerical checkpoint digest e23f4d0a898ff883604bf00ce63be13618b9827833928c8b9f607a193494e2bd and trace8d6167d9abfe423943d15053c872a8817cfaf7777ca61aceff59b1d0889f134f must reproduce on final qualification.
+
+Whole local assay1.216s. Active/symbolic timers include query selection/update only; random timer covers56x more policy schedules and trained timer covers fit only. Construction, initialization, cold restore, scoring and controls are included in whole-assay time. These partial arm timings do not establish computational superiority. X/Y heldout output bits are supplied clamp values; only Z is a learned prediction. The family, causal order, candidate hypotheses and controller program are programmed knowledge, explicitly included in the scientific limits.
