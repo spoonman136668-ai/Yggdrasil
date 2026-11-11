@@ -13,3 +13,7 @@ Commands:
 `python research/contrib/chatgpt/WSP-22/run_dev.py`
 
 The existing read-only hosted WSP21 PR workflow is reused for WSP22; no additional workflow/controller/scheduler is added. Final source needs all original+WSP01-17+WSP19-22 unit suites, frozen evaluator, permanent G29 and clean source on Windows2022 and Ubuntu. No merge, main/accepted baseline edits, model training/integration, owners/controllers/queues/schedulers, private worker, paid API or protected first-use.
+
+## First frozen result
+
+Both search modes certify4/11 targets:32 at5 sites;40,41,62 at6. Each mode independently verifies24/24 public labels,32/32 full-context numeric/Boolean agreements and4 cold restores. Together with the unchanged parent,57/64 signatures have constructive witnesses. Remaining1,14,17,30,33,46,49 are UNRESOLVED here; depth6 was reached, no resource cap. Connected search10,310 states/84,519 transitions; disconnected9,982/103,989. No improvement in native learning is claimed. A separately frozen independent reachable-set proof is needed before inferring infeasibility or attributing learner errors to capacity.
