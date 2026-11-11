@@ -1,0 +1,34 @@
+{
+ "schema":"yggdrasil.external-research-prereg.v1",
+ "experiment_id":"WSP-19",
+ "project":"Yggdrasil",
+ "contribution_class":"falsification",
+ "exact_parent_sha":"6ecc10fbe2ac2ffd3286acec863aeccb2ac9d067",
+ "question":"Does direct NAND weight compilation retain a meaningful end-to-end cost advantage over converged conventional training after search, checkpoint/restore and inference are counted?",
+ "priority_note":"WSP18 unfamiliar composition is deferred: WSP15/16 failed construction/recovery and WSP17 storage merely ties. The handoff explicitly prioritizes whole-process cost even with fewer experiments. This is a cost experiment, not another claim from Boolean accuracy.",
+ "hypothesis":"The programmed circuit has at least2x lower median end-to-end wall time than the faster converged conventional control at ALL three frozen inference workloads, while fitting all observed outcomes. Any workload missing this threshold is an efficiency negative. Exact symbolic comparison and information ambiguity are mandatory; superiority over all controls requires also beating exact symbolic, which is not assumed.",
+ "frozen_design":{
+  "tasks":"All32 signatures of the five observations at contexts[0,1,2,4,7]; no task filtering. The other three labels are never passed to any method.",
+  "repeats_seeds":[17,29,43],
+  "method_order":"Rotate [compiled,symbolic,adam8hot,mlp] left by repeat index to reduce order bias. Fresh isolated module/cache for each arm/repeat; explicitly include catalog/search setup for both compiled and symbolic arms.",
+  "query_workloads_per_task":[1,32,1024],
+  "query_order":"contexts i%8 for i in0..N-1 per task. Each workload's cost is its measured inference time plus measured construction+checkpoint+restore cost. Construction done once per arm/repeat, reused only to measure multiple declared workload projections; actual whole experiment elapsed is reported separately.",
+  "compiled":"Unchanged WSP14 exact NAND synthesis and NumericNand compiler/runtime. Search and compile are EXTERNAL and preprogrammed. This is the strongest working direct-compilation reference, not a claim WSP15/16 native construction succeeded.",
+  "symbolic":"Same frozen exact synthesis and recursive symbolic execution; no neural compilation. Same observations and search prior; fresh catalog per repeat. Serialize/reload the selected tree rather than silently using a free external cache.",
+  "adam8hot":"Unchanged WSP14 genuine full-batch Adam, max2048 steps/BCE<=.02. Fresh module and caches per repeat; all32 signatures must converge.",
+  "mlp":"Conventional fully trained3-input/8-tanh-hidden/1-sigmoid model,41 floating scalars, seeded uniform initialization[-.5,.5], full-batch Adam LR.05,beta.9/.999,eps1e-8,max4096 updates, mean public BCE<=.02. No hidden examples or extra restarts. Failed convergence invalidates that comparator; never relabel it as direct-model superiority.",
+  "memory":"tracemalloc peak during construction+checkpoint/restore for each arm; tracing overhead included in timing and disclosed. JSON checkpoint byte count, scalar counts, optimizer steps, NAND/search/library size, cold restoration and exact replay checksum reported. No claim that scalar-operation count equals hardware FLOPs/energy.",
+  "quality":"All methods must fit160/160 public labels per repeat. Exhaustive256-world hidden score must equal384/768 per repeat for every method; no unknown-world advantage can be inferred.",
+  "stop":"Three repeats, fixed budgets;30minute hosted timeout. No post-result workload/threshold/baseline/seed changes. Python3.12 stdlib CPU only. No GPU/paid API/protected first-use."
+ },
+ "metrics":["public and hidden accuracy","construction time","checkpoint/restore time","per-workload inference/end-to-end time","median speed ratios vs fastest converged trained and exact symbolic","tracemalloc peak","serialized checkpoint bytes","model scalar counts","training convergence/updates","cold checksum agreement","actual whole assay wall time"],
+ "classification_rules":{
+  "efficiency_supported_dev":"All observed fits and convergence/custody controls valid and median compiled/fastest-trained end-to-end<=.5 at each of1,32,1024 queries/task on both required platforms",
+  "negative":"At least one declared workload fails2x threshold with valid controls; report exactly which workload/method dominates",
+  "invalid":"Nonconverged comparator, identity/custody/leakage/checkpoint failure or changed frozen budget/design",
+  "scientific_pass":"Unavailable: authored public DEV and implementation-specific timing. No universal training-elimination, energy or architectural superiority claim. Exact symbolic baseline remains mandatory."
+ },
+ "changed_paths":["research/contrib/chatgpt/WSP-19/**",".github/workflows/wsp19-pr-validation.yml",".ice/code-atlas.json",".ice/code-atlas.html",".ice/code-atlas.ice"],
+ "qualification":"Commit remote prereg before implementation/primary. Exact final SHA/tree full original+WSP01-17 andWSP19 regression, frozen cost assay, permanent G29, source cleanliness on hosted Windows2022 and Ubuntu. No WSP18 exists or is claimed. Predecessor DEV reused only at byte-identical source/input identities.",
+ "authority":{"research_only":true,"production_authority":false,"accepted_ref_mutation":false,"promotion_authority":false,"scheduler_or_queue_authority":false}
+}
