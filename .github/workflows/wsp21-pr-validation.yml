@@ -1,10 +1,12 @@
-name: WSP-21 constructive six-site capacity certificate regression
+name: WSP capacity certificate regression (reused WSP21-22)
 on:
   pull_request:
     branches:
       - research/wsp20-protected-joint-structural-credit-20261110
+      - research/wsp21-six-site-capacity-certificates-20261110
     paths:
       - 'research/contrib/chatgpt/WSP-21/**'
+      - 'research/contrib/chatgpt/WSP-22/**'
       - '.github/workflows/wsp21-pr-validation.yml'
       - '.ice/code-atlas.*'
 permissions:
@@ -42,7 +44,7 @@ jobs:
               for offset in range(0,len(encoded),4096):
                   print("WSP21_ATLAS|"+path+"|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
           PY
-      - name: Full original WSP01-17 WSP19-21 regression and capacity certificate
+      - name: Full original WSP01-17 WSP19-22 regression and DAG capacity certificate
         env:
           PYTHONDONTWRITEBYTECODE: '1'
-        run: python research/contrib/chatgpt/WSP-21/qualify.py
+        run: python research/contrib/chatgpt/WSP-22/qualify.py
