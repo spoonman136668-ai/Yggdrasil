@@ -1,0 +1,120 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-13",
+  "project": "Yggdrasil",
+  "research_class": "public-synthetic-development",
+  "exact_parent_sha": "9eba581e9b774db58734a8f623b5830f313efd42",
+  "parent_pr": 878,
+  "question": "Can the WSP-12 numeric threshold substrate create new conjunction feature INSTANCES from observed contradictions, with their identities absent from the compiled feature vocabulary, and use those learned synaptic addresses to generalize to unobserved supersets?",
+  "hypothesis": "Exhaust 1024 possible 10-bit cubic interaction masks on five binary inputs with a fixed nonzero 16-bit degree<=2 base coefficient vector 0xA65D. Given 16 genuine low-order basis labels and 10 genuine triple-only labels per world, a numeric synaptic model can allocate initially empty 5-bit-addressed composite conjunction clauses from nonzero observed residuals and reach 6144/6144 predictions on 6 unseen four/five-active-bit contexts. An equally informed independent exact GF(2) symbolic polynomial learner must tie. Degree<=2 and feature-ablated models score 3072/6144. An unobserved fourth-order interaction causes 2048 wrong hidden predictions, requiring a fail-closed latch after one new genuinely observed contradiction.",
+  "domain": {
+    "n_bits": 5,
+    "base_coefficients_hex": "0xA65D",
+    "base_monomials": "All subsets of 5 input indices with cardinality <=2, sorted by (cardinality, integer mask), 16 total",
+    "higher_order_experiences": "All ten 3-active-bit contexts, sorted by integer input mask; no cubic monomial addresses or labels may be supplied to model except as actual observed bits/outcomes",
+    "heldout": "All six 4- or 5-active-bit contexts, no outcomes shown before predictions",
+    "world_codes": "Every 10-bit cubic coefficient code from 0 through 1023 inclusive; evaluator maps bits to sorted triple monomials",
+    "gf2": "XOR parity of active monomial coefficients"
+  },
+  "observations": {
+    "low_basis": [
+      0,
+      1,
+      2,
+      4,
+      8,
+      16,
+      3,
+      5,
+      6,
+      9,
+      10,
+      12,
+      17,
+      18,
+      20,
+      24
+    ],
+    "triple_contexts": [
+      7,
+      11,
+      13,
+      14,
+      19,
+      21,
+      22,
+      25,
+      26,
+      28
+    ],
+    "hidden_contexts": [
+      15,
+      23,
+      27,
+      29,
+      30,
+      31
+    ],
+    "worlds": 1024,
+    "per_world_public_labels": 26,
+    "per_world_hidden_labels": 6,
+    "total_public_labels": 26624,
+    "total_hidden_labels": 6144
+  },
+  "architecture": {
+    "allowed_primitives": "Fixed weighted-sum threshold activation, numerically constructed XOR/AND/OR/NOT gates, fixed base degree<=2 feature grammar, generic 10 blank composite address slots, generic first-free numerical selection and synaptic OR-write",
+    "novelty_boundary": "The MODEL must not pre-list cubic monomial masks or allocate clauses in Python using mask lookup. It writes previously empty ADDRESS and OCCUPANCY synapses from actual contradictory cubic training outcomes, then fires the new conjunction when subsequent contexts contain all learned address bits. AND and parity operators are preprogrammed; new primitive TYPES are NOT invented.",
+    "base_phase": "Sixteen low-order public observations fit 16 base weights by numeric local gates; fixed sequence may be validated by Python as data custody",
+    "composite_phase": "Ten public 3-active-bit events; any residual 1 triggers numerically chosen first-free clause and numerically writes 5-bit address weights from the witnessed input. All ten witnessed contexts are stored as separate numeric address synapses to prevent duplicates, including residual-zero cases",
+    "prediction": "All computed by generic numeric threshold gates, synaptic weights, runtime addresses and an XOR chain; no hidden function code or truth-table lookup",
+    "checkpoint": "Canonical architecture hash, complete base/feature/witness synaptic coefficients and seen/occupied flags, fault latch and integrity hash; exact cold restoration; no gradients"
+  },
+  "controls": {
+    "symbolic": "Independent GF(2) Möbius inversion over the same 26 observations, target 6144/6144",
+    "base_only": "Numeric fitted degree<=2 substrate with composite features disabled, target 3072/6144",
+    "feature_ablation": "Numeric synapses zeroed after training, target 3072/6144",
+    "zero_predictor": "Constant zero control, target 3072/6144",
+    "ood": "Fourth-order x0*x1*x2*x3 changes exactly 2 of 6 hidden labels and none of 26 public training labels, 2048/6144 errors; after one actually observed contradicting hidden outcome, latch fault and abstain, no unknown-rule repair",
+    "guardrails": "Reject duplicate/out-of-order/malformed observations, noncanonical/tampered checkpoint, independent world contamination"
+  },
+  "thresholds": {
+    "hidden_exact": 6144,
+    "symbolic_exact": 6144,
+    "base_only_exact": 3072,
+    "feature_ablation_exact": 3072,
+    "zero_exact": 3072,
+    "ood_wrong": 2048,
+    "restores": 1024,
+    "observed_contradiction_latches": 1024,
+    "gradient_steps": 0
+  },
+  "methodology": {
+    "seeds": "exhaustive, no PRNG",
+    "dependencies": "Python 3.12 stdlib",
+    "model_calls": 0,
+    "first_use": "public synthetic DEV only; no independent scientific first-use",
+    "compute": "Measure runner walltime but do not claim efficiency superiority without source-matched matched baselines and equal-process cost",
+    "platforms": [
+      "GitHub-hosted Ubuntu",
+      "GitHub-hosted Windows 2022"
+    ]
+  },
+  "scientific_limits": "This is genuinely new rule INSTANCES, assembled as preprogrammed conjunctions with learned addresses; it is not invention of an unknown operator type. Exact symbolic solver should tie, no scientific superiority. Samples and computational resources not yet matched to a fully trained neural control. OOD negative is expected and must be preserved.",
+  "scope": {
+    "research_paths": [
+      "research/contrib/chatgpt/WSP-13/**"
+    ],
+    "permitted_qualification_companions": [
+      "read-only GitHub-hosted pull_request workflow, no schedule",
+      "G29 generated atlas artifacts"
+    ],
+    "forbidden": [
+      "main or accepted ref mutations",
+      "FORGE, Wingless, Yggdrasil owner/controller/scheduler/queue changes",
+      "self-hosted runners",
+      "merge, promotion, production or first-use",
+      "paid APIs or secrets"
+    ]
+  },
+  "qualifications": "Full exact-final-SHA original Yggdrasil + WSP01-13 Windows/Linux regression; deterministic frozen DEV runner and tests; G29 committed source-atlas acceptance both platforms; clean source. Scientific qualification remains separate. Commit this prereg before implementation/results."
+}
