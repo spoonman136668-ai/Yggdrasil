@@ -1,14 +1,16 @@
-name: WSP capacity certificate regression (reused WSP21-23)
+name: WSP capacity certificate regression (reused WSP21-24)
 on:
   pull_request:
     branches:
       - research/wsp20-protected-joint-structural-credit-20261110
       - research/wsp21-six-site-capacity-certificates-20261110
       - research/wsp22-six-site-dag-capacity-20261111
+      - research/wsp23-checked-capacity-ceiling-20261111
     paths:
       - 'research/contrib/chatgpt/WSP-21/**'
       - 'research/contrib/chatgpt/WSP-22/**'
       - 'research/contrib/chatgpt/WSP-23/**'
+      - 'research/contrib/chatgpt/WSP-24/**'
       - '.github/workflows/wsp21-pr-validation.yml'
       - '.ice/code-atlas.*'
 permissions:
@@ -46,7 +48,7 @@ jobs:
               for offset in range(0,len(encoded),4096):
                   print("WSP21_ATLAS|"+path+"|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
           PY
-      - name: Full original WSP01-17 WSP19-23 regression and checked capacity ceiling
+      - name: Full original WSP01-17 WSP19-24 regression and active causal knowledge
         env:
           PYTHONDONTWRITEBYTECODE: '1'
-        run: python research/contrib/chatgpt/WSP-23/qualify.py
+        run: python research/contrib/chatgpt/WSP-24/qualify.py
