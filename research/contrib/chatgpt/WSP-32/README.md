@@ -1,67 +1,90 @@
-# WSP-32 — cumulative fact acquisition: PREPARED, PRIMARY NOT RUN
+# WSP-32 — cumulative fact acquisition: DEV_SUPPORTED
 
-This successor tests whether acquiring a second actual source fact improves answers
-about a composed task while preserving all original facts and the first acquired
-fact. WSP-31 is the parent: PR #921, candidate
-`162f6bb911933cd68add7eb1eca989100cc61f26`, tree
-`131fa5c2943052e4445271e98e23bdf84857c8f0`. Its exact-source Windows/Ubuntu
-regression and G29 passed (runs 43081211073 and 43081211039), 321 tests per OS.
-WSP-31's actual one-query gain is 170/3840 common unqueried labels; that remains a
-finite-family DEV result, not complete training or independent scientific proof.
+Two sequentially selected actual source facts improve never-queried composed
+answers from **4,228 to 4,583 /5,760**, a gain of **355 /6.16 percentage points**
+over one selected fact. All preset comparison and retention conditions pass in
+the first primary assay. This is bounded cumulative knowledge acquisition on an
+authored public finite family, not complete training or independent SCIENTIFIC_PASS.
 
-## Frozen comparison
+| Arm | Actual new source answers/case | Native correct/5760 | Shared-feature trained head | Gradient source/head |
+|---|---:|---:|---:|---:|
+| Two impact-selected facts | 2 | 4583 | 3910 | 3999 |
+| Two fixed-first facts | 2 | 4346 | 3910 | 3940 |
+| One impact-selected fact | 1 | 4228 | 3800 | 3846 |
+| No query | 0 | 4036 | 3676 | 3408 |
 
-Use the identical 120 acquired modules, including 13 imperfect modules, and all
-1,920 worlds. Every arm receives the same original observations and memory
-representation. No target is queried; all 5,760 target labels at inputs 3,5,6
-remain unqueried for every arm.
+Gains: +355 versus one selected fact (threshold58), +547 versus noquery
+(threshold116), +237 versus two fixed-first facts (threshold0). Native scores
+exceed its two yoked genuinely converged trained controls by673 and584;
+threshold permitted at most57 fewer. Different priors/capacity/optimizer costs
+prevent universal direct-versus-gradient or efficiency conclusions. Exact symbolic
+execution of the same effective tables agrees in138,240/138,240 checks: a tie.
 
-| Arm | Actual source answers | Selection |
-|---|---:|---|
-| source_two | 2 | Impact selection, then replan after actual first answer |
-| source_first_two | 2 | First remaining unknown address |
-| source_one | 1 | Impact selection |
-| no_query | 0 | No acquisition |
+## What changed and what was retained
 
-The preset hypothesis requires source_two gains of at least 58 answers over
-source_one, at least 116 over no_query, no loss against source_first_two, and
-within 57 of each of two same-information converged conventional heads. Any miss
-is NEGATIVE. Every previous actual fact and source-bank byte must survive. Each
-phase is cold restored; continuation uses the restored state. A symbolic control
-must agree exactly, so a symbolic tie is expected rather than superiority.
+The same120 actually acquired WSP29 modules, including13 imperfect modules, and
+all1,920 worlds are retained. Initial observations are12 source facts and5 target
+facts per world. No target query is permitted: every arm is scored on the same
+three NEVER-queried target inputs3,5,6. WSP31 excluded its selected target question
+for allarms, giving a different3840label scoring set; do not directly compare its
+2662/3840 to these5760label totals.
 
-Persistent numerical values use 208 bits: unchanged 206 binary facts/banks/routes
-plus a two-bit counter. Count another 16 derived fallback bits and up to 8 impact
-score bits, program/static policy, temporary branch state and Python overhead.
-The memory primitive, finite route language and question heuristic are supplied.
-This does not invent its own instruments, general architecture or learning rule.
-Conventional controls are trained on yoked actual evidence with different
-capacity and priors; no efficiency or universal direct-versus-gradient claim.
+The source_two arm selects one source question, receives its actual binary answer,
+writes that fact, refits routing, then cold-restores and selects the second question
+from remaining unknown source addresses. Selection uses only existing actual facts
+and counterfactual0/1 predictions, never hidden answers. All prior known facts
+remain protected. Unknown guesses may change and are not called established facts.
 
-## Status and reproduction
+All293,760 original-fact checks,13,440 acquired-fact checks and evidence replays,
+153,600 locality checks,17,280 base-bank/cold-phase checks,9,600 question-invariance
+checks and7,680 equal-evidence output checks pass. All9,600 selected answers are
+actual source observations. Immutable sourcebank bytes never change. Bad answers,
+contradictions, budgets, unsolicited addresses, unknown-label contamination and
+malformed checkpoints are covered by negative tests. This is fixed bounded
+memory, not arbitrary lifelong/noise-robust retention or preservation of all old guesses.
 
-The preregistration is committed locally at
-`54486683c80df4cbb1dc4a3ff7db95d052bb3be2`. Its GitHub
-push was rejected by automatic approval review, so it has NOT been published.
-No WSP-32 primary run, new learned-result metric, hosted qualification or PR has
-been produced. No valid scientific outcome has been consumed or retuned.
+Persistent numerical capacity is208valuebits:206 unchanged binary bank/fact/route
+values plus a2bit query counter. Count16 derived fallback bits and up to8 impact
+score bits (max232residentvaluebits), programmed policy/addressing/route templates,
+two temporary counterfactual states, serialization and Python metadata. Native
+retained Python state measured up to5224bytes; checkpoints1712–1720bytes. The generic
+memory primitive,12route language and sensitivity planner are supplied; no
+architecture/instrument/algorithm invention is demonstrated.
 
-Focused tests exercise sequential retention, source locality, query budget,
-atomic rejection, counterfactual isolation, cold continuation, checkpoint
-corruption, unknown-label contamination and symbolic agreement. Full final
-Windows/Ubuntu engineering qualification remains pending the permitted remote
-preregistration and primary assay. The original regression's first local attempt
-correctly rejected the changed uncommitted source and stale atlas; permanent
-source pinning is required before rerunning it.
+## Controls, cost and custody
 
-When remote publication is authorized, publish the preregistration commit first,
-then the already prepared implementation, record the actual execution SHA before
-running the primary assay, preserve complete stdout/result/provenance, pin atlas
-to the evidence source and run full exact-final-source validation on both OSes.
-Reuse `.github/workflows/wsp21-pr-validation.yml`; stack a draft on the WSP-31
-branch. Do not run the primary twice to seek a positive outcome. Reproduction:
-`python research/contrib/chatgpt/WSP-32/run_dev.py`; full qualification:
-`python research/contrib/chatgpt/WSP-32/qualify.py`.
+Each arm's two conventional source fits and two targetheads see exactly its actual
+facts and answers. They are yoked-information controls, not independently learned
+queryplanners. All30,720logical fit requests satisfy frozen BCE<=0.01:6,880fresh
+converged fits and23,840exact semantic/provenance cache hits,621,580actual Adam
+updates. Cache memory5,005,300Pythonbytes. Whole firstlocal assay85.661seconds,
+including69,120 counterfactual states and9,600 planner passes.
+No matched FLOP/energy/host-to-host efficiency claim is made.
 
-No main/accepted ref, merge, deployment, private runner, controller, queue,
-scheduler, paid API, protected first-use, Hybrid or FORGE change is included.
+Remote preregistration4995bd999cc4cace7d4be5d027dabb6364c2775d preceded implementation
+9689034475572680ca1bb935b5205ac163b9f3b2 and the first clean-source primary execution
+at tree2284ada49be46413314e5f20319937869ae2b81f. Earlier local preparation and the
+initial approval-review publication block are historical; operator approved
+publication and execution before the remote freeze and primary run. CLI write
+credentials were absent, so the connected GitHub account published it.
+No data/learner/threshold changes followed the primary outcome.
+
+`result.json.gz` preserves EVERY primary JSON value and trace. It is a deterministic
+gzip container with mtime0; decompress and JSON-load it, then serialize sorted keys
+with indent2 plus newline to reconstruct exact original primary stdout. Both
+hashes and the successful reconstruction are recorded in`provenance.json`.
+`summary.json` is the same result without duplicate trace arrays.
+
+Local preparation original+WSP01–17/WSP19–32 unit regression passed329/329 tests.
+The first uncommitted-source attempt correctly rejected a stale atlas; its source
+pin was repaired before that pass. Final exact-source Windows/Ubuntu regression,
+frozen assay, permanentG29 and clean-source qualification is pending returned CI
+receipts. Existing WSP21workflow is reused, no new workflow/private runner.
+Reproduce:`python research/contrib/chatgpt/WSP-32/run_dev.py`.
+Full qualification:`python research/contrib/chatgpt/WSP-32/qualify.py`.
+
+No merge/main/accepted-state, promotion, deployment, FORGE/Hybrid integration,
+owner/controller/queue/scheduler changes, paid API or protected first-use occurs.
+The next research question is whether these gains persist when useful new facts
+must be acquired under broader representation/connection uncertainty; no successor
+study has been started or preregistered here.
