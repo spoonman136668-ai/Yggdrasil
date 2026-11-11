@@ -1,0 +1,103 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt",
+  "experiment_id": "WSP-12",
+  "class": "isolated-public-development",
+  "parent_pr": 877,
+  "parent_sha": "fedc433625838c5f561e3d3d4203970029c985f7",
+  "question": "Can a homogeneous numeric-threshold circuit choose which PREDEFINED pairwise interaction weights to activate from actual evidence, rather than Python selecting an affine function or interaction rule?",
+  "hypothesis": "Across all 2^11=2048 four-input Boolean polynomial functions of GF(2) degree<=2, 11 genuine basis/single/pair outcome observations trigger local numerical weight updates that recover all 11 coefficients without gradient optimization. The resulting numeric circuit must predict all 5 unseen triple/quadruple input labels per world (10240/10240) and tie an equally informed exact GF(2) symbolic solver. Linear-only and zero-output controls each score 5120/10240. A cubic hidden intervention invisible to all 11 witnesses forces 4096 wrong hidden predictions; no unknown-rule recovery.",
+  "domain": "Four binary context bits. f(x)=c_empty XOR Σ_i c_i*x_i XOR Σ_{i<j} c_ij*x_i*x_j, GF(2). All 2048 coefficient vectors enumerated. Context bit 0 least significant. All coefficients and hidden targets defined by independent evaluator oracle, NEVER passed to model.",
+  "exposure": {
+    "observations_ordered_indices": [
+      0,
+      1,
+      2,
+      4,
+      8,
+      3,
+      5,
+      9,
+      6,
+      10,
+      12
+    ],
+    "heldout_indices": [
+      7,
+      11,
+      13,
+      14,
+      15
+    ],
+    "per_world_observations": 11,
+    "per_world_heldouts": 5,
+    "total_worlds": 2048,
+    "total_observations": 22528,
+    "total_heldouts": 10240
+  },
+  "numeric_contract": {
+    "initial_weight_slots": 11,
+    "initial_seen_slots": 11,
+    "initial_fault_latch": 0,
+    "model_input": "Only actual observed (four context bits, one binary outcome), in frozen witness order; no target function code, coefficients, hidden labels or oracle masks",
+    "activation": "All equality decoding, coefficient residuals, rule selection, XOR/parity inference and conflict gating built solely from one generic weighted-sum threshold kernel and fixed wiring; direct observations may supply external bit values",
+    "plasticity": "Every slot is initially zero; generic OR of existing coefficient with an eligible (context recognized AND unseen slot AND numeric XOR(label, prior prediction)) gate. Seen bits also set by eligible observed inputs. This implements monotonic selection of preprovided monomial features; no optimizer, no gradient steps.",
+    "runtime_inference": "Use plastic synaptic coefficients multiplying fixed monomial activations and threshold-gate XOR chain; no Python truth table or function-code dispatch; no model-side symbolic polynomial evaluator.",
+    "checkpoint": "Canonical immutable architecture identity, all 11 plastic coefficient bits, seen flags, and fault latch with hashed cold restore and malformed checkpoint rejection."
+  },
+  "controls": {
+    "symbolic": "Independent GF(2) basis coefficient solver, same 11 outcomes, target 10240/10240",
+    "linear_only": "Numeric circuit with only 5 bias/linear public witnesses; no pair features, target 5120/10240",
+    "zero_output": "Predict 0 for all withhelds; 5120/10240 expected",
+    "oracle": "The evaluator's source truth-function generation is NOT model input",
+    "oddfamily": "Flip ground truth by x0*x1*x2 (cubic feature) while preserving ALL 11 public observations; expect EXACTLY 2/5 wrong hidden labels per world = 4096/10240. One witnessed contradiction must fail-closed instead of claiming cubic recovery",
+    "ablation": "Zero interaction coefficients after fitting; exactly 5120/10240 correct, proving pairwise updates affect results",
+    "poison": "Corrupted snapshot, wrong dimensions, noncanonical flags, duplicated/incomplete/out-of-order witnesses rejected",
+    "restore": "2048/2048 full state restores with identical hidden predictions and source hash"
+  },
+  "budgets": {
+    "python_version": "3.12",
+    "dependencies": "stdlib only",
+    "seeds": "none: exhaustive deterministic finite domain",
+    "model_calls": 0,
+    "gpu": 0,
+    "gradients": 0,
+    "wall_clock_dev_seconds_budget": 120,
+    "platforms": [
+      "Ubuntu GitHub-hosted",
+      "Windows 2022 GitHub-hosted"
+    ],
+    "no_paid_apis": true
+  },
+  "frozen_thresholds": {
+    "numeric_heldout_exact": 10240,
+    "symbolic_heldout_exact": 10240,
+    "linear_only_exact": 5120,
+    "zero_output_exact": 5120,
+    "ablation_exact": 5120,
+    "ood_wrong": 4096,
+    "cold_restores": 2048,
+    "fault_latches": 2048,
+    "gradient_steps": 0
+  },
+  "negative_interpretation": "The polynomial feature family and write-eligibility schedule are deliberately preprogrammed. Numeric evidence-dependent feature selection is NOT novel operator synthesis, unconditional unknown-world transfer or proof of superior efficiency versus exact symbolic or fully trained conventional methods. Scientific superiority must remain UNVERIFIED, OOD negative must be reported.",
+  "scope": {
+    "research_paths": [
+      "research/contrib/chatgpt/WSP-12/**"
+    ],
+    "qualification_companions": [
+      "read-only pull_request hosted CI workflow",
+      "regenerated G29 source-atlas artifacts"
+    ],
+    "forbidden": [
+      "main or accepted state mutations",
+      "FORGE, Wingless or Yggdrasil controller/owner/scheduler/queue edits",
+      "self-hosted runner",
+      "promotion, merge, deployment",
+      "scientific independent first-use",
+      "secrets or paid API"
+    ]
+  },
+  "staging": "Freeze and commit this prereg on a new exact-SHA child of WSP-11 before implementation and before first primary evaluator result; preserve protocol and negative outcomes. Final source must pass 100% original+WSP01-12 exact-SHA full regression Windows/Linux, G29 atlas, clean checkout. CI pass is engineering only."
+}
