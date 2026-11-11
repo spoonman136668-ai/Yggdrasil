@@ -1,0 +1,91 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-14",
+  "project": "Yggdrasil",
+  "class": "isolated-public-synthetic-DEV",
+  "parent_pr": 879,
+  "parent_sha": "fc061c4869fa27a688defd110466e6278e84b4a6",
+  "question": "Can examples select and assemble a reusable multi-gate *operation* that is absent as a named operator, using only a fixed universal NAND gate library, and can heldout outcomes be distinguished from irreducible information ambiguity?",
+  "frozen_hypothesis": {
+    "synthesis": "A deterministic enumerator of tree programs built exclusively from the three raw input sources and 2-input NAND will find all 256 3-input Boolean truth functions with at most 14 NAND sites. It chooses a minimum-NAND function compatible with five public observations, then physically programs a new numerical NAND threshold circuit. The target operation's identity/full truth table is NEVER passed to synthesis.",
+    "exact_reproduction": "For each of all 256 Boolean worlds, the synthesized threshold circuit must reproduce all five observed labels (1280/1280) and agree with independently evaluated selected symbolic NAND program for every 3-bit input (2048/2048), with zero gradient steps in the synthesized circuit.",
+    "information_bound": "Across every possible 3-input Boolean function with five fixed publicly observed labels and three hidden labels, a deterministic rule cannot exceed 384/768 hidden correct on uniform exhaustive enumeration. The model, the equally-informed exact symbolic minimum-NAND solver, and an eight-hot fully trained memorization control are expected to tie at exactly 384/768.",
+    "restricted_family": "Also report the deterministic minimal-NAND-cost <= 4 subset, using identical five observations, same global candidate space, same source, and no post-outcome tuning. Report coverage and heldout accuracy and the exact trained control accuracy. No frozen scientific superiority claim even if this subset is easier.",
+    "hidden_negative": "A counterfactual world that flips all three withheld labels but holds the five public labels identical is information-theoretically indistinguishable. If the original model made C correct guesses then on flipped alternatives it must make 768-C correct (and C wrong); it may not claim OOD recovery.",
+    "structural_negative": "Clearing compiled gate-input synaptic connections must change at least one derived output on the set of nontrivial chosen programs, with fully empty circuits always rejected for prediction.",
+    "robustness": "Every source-matched numeric circuit checkpoint must cold restore, reject invalid masks/corruption/noncanonical wires; no cross-world state or hidden target labels may leak."
+  },
+  "domain": {
+    "n_input_bits": 3,
+    "worlds": "all 256 Boolean masks, 0..255, no random seeds",
+    "public_indices": [
+      0,
+      1,
+      2,
+      4,
+      7
+    ],
+    "heldout_indices": [
+      3,
+      5,
+      6
+    ],
+    "world_count": 256,
+    "public_total": 1280,
+    "heldout_total": 768,
+    "full_binary_queries": 2048,
+    "budget": "Up to 14 two-input NAND nodes in a Boolean expression tree; 3 raw input sources; deterministic minimal-size program per truth mask; ties broken by ascending program fingerprint and candidate mask.",
+    "numeric_circuit": "All task-specific directed synapse connections and output index initially blank; after an evidence-conditioned NAND synthesis chooses a program, it is compiled into weighted-threshold nodes (two -1 edges with threshold -1 for NAND). Runtime uses numeric weighted sum and threshold only. The source-program selection is an EXTERNAL Python enumerative algorithm, not autonomous numerical neural synthesis. No named XOR, MAJORITY, MUX, or parity operators are supplied to the programming grammar.",
+    "canonical_evaluation": "Public observations are raw three-bit context plus binary actual outcome; program selection may compute truth masks for library candidates but cannot consult any task-specific hidden label or whole target truth table."
+  },
+  "comparator": {
+    "independent_symbolic": "Directly evaluate the chosen NAND expression symbolically without running the numeric circuit, equal information and program prior. Must tie every observed, hidden and full-input selected-program evaluation.",
+    "trained_8hot": "A genuine deterministic full-batch Adam fit of 8 independent one-hot feature logits with seed17/no random state, learning rate0.1 and at most 2048 epochs to mean training BCE<=0.02, trained only on five observed examples. Any failure to converge is reportable baseline failure; never reclassify as model advantage. Unknown inputs have zero initial logit and predict 0 (threshold>0.5). The model is not a strongest multi-layer neural control.",
+    "zero_output": "Predict zero for all three withheld inputs per world, expected 384/768 on unrestricted cohort.",
+    "no_synthesis": "Observed-only associative recall abstains on all withhelds; abstentions counted incorrect on this binary task.",
+    "falsification": "All hidden labels flipped, public labels unchanged, test both cohorts and every restored checkpoint."
+  },
+  "acceptance": {
+    "required": {
+      "complete_boolean_catalog": 256,
+      "observed_fit": 1280,
+      "numeric_vs_symbolic_all_queries": 2048,
+      "uniform_hidden_correct": 384,
+      "uniform_hidden_total": 768,
+      "uniform_symbolic_hidden_correct": 384,
+      "zero_output_hidden_correct": 384,
+      "train_8hot_uniform_hidden_correct": 384,
+      "train_8hot_converged_signatures": 32,
+      "restored_numeric_circuits": 256,
+      "gradient_updates_in_direct_circuit": 0,
+      "hidden_flip_wrong": 384,
+      "control_gate_ablation_changes": ">=1"
+    },
+    "conditional_subset": "Report <=4 minimal-NAND subset size/accuracy without retrospective threshold tuning; scientific superiority requires independent stronger matched comparator and whole-process cost, NOT this test."
+  },
+  "method": {
+    "python": "3.12 standard library only",
+    "seeds": "fully enumerated truth functions; fixed deterministic hash tie-breakers; 8-hot Adam deterministic",
+    "fully_matched_info": true,
+    "metrics": "NAND gate count, circuit weights, tool/runtime costs, search effort, exact correctness, checkpoints, negative cases, trained-control converged status",
+    "exclusions": "No site-specific ad hoc features, hidden-target checks during search, generic Python truth-table lookup during numeric runtime, paid APIs, external model calls or private scientific first-use."
+  },
+  "scientific_limits": "Gate primitives and the bounded synthesis search algorithm are PREPROGRAMMED in Python. This constructs previously unnamed compositional operations from observations and compiles them into numeric synapses; it does NOT demonstrate neural discovery of new primitive types, automatic intelligence, data-free learning or compute/energy superiority. The unrestricted 256-world cohort has an information-theoretic 50% hidden limit.",
+  "scope": {
+    "paths": [
+      "research/contrib/chatgpt/WSP-14/**"
+    ],
+    "companions": [
+      "PR-only GitHub-hosted read-only dual-OS regression",
+      "G29 three generated atlas artifacts"
+    ],
+    "forbidden": [
+      "main or accepted state",
+      "FORGE/Wingless/Yggdrasil owners/controllers/runners/queues/schedulers",
+      "self-hosted or paid API",
+      "merge/promotion/deployment",
+      "independent scientific first use"
+    ]
+  },
+  "qualification": "Freeze this pre-reg in a separate ancestor commit before implementation and primary runs. Full final original+WSP01-14 Windows and Ubuntu regression, frozen evaluator, clean tree and independently accepted permanent G29 atlas on the same final SHA. Earlier CI results cannot substitute."
+}
