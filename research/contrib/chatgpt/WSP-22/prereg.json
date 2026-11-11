@@ -1,0 +1,24 @@
+{
+ "schema":"yggdrasil.external-research-prereg.v1","experiment_id":"WSP-22","project":"Yggdrasil","contribution_class":"falsification",
+ "exact_parent_sha":"c497d935955950710237b22feeec03632c32ff14",
+ "question":"Do constructive six-site NAND DAG witnesses resolve the11 observation signatures left unresolved by WSP21's expression-tree compiler?",
+ "hypothesis":"All11 targets have independently verified witnesses in the exact six-site numerical architecture. Test connected-input DAGs and canonical disconnected-input DAGs separately so sharing is not confused with access to a constant-zero afferent. Failure to find a witness within the frozen budget is UNRESOLVED, never a false unsatisfiability claim.",
+ "frozen_design":{
+  "observed_indices":[0,1,2,4,7,3],"targets":[1,14,17,30,32,33,40,41,46,49,62],
+  "target_origin":"Exactly the11 WSP21 signatures having selected expression cost>6 at the qualified parent; no post-result additions or removals.",
+  "capacity":"3 raw input bits,<=6 feedforward NAND sites,75 binary one-hot-or-empty incoming/output row scalars as unchanged WSP15/WSP20. Output must connect to a raw input or gate; it cannot connect directly to the disconnected zero source.",
+  "arms":["connected","allow_disconnected"],
+  "search":"Deterministic breadth-first enumeration of sets of available six-observation response vectors. Add NAND of each unordered source pair. Previously generated gates may be reused, so this is DAG search. Deduplicate equivalent available response sets; record a valid target-output witness BEFORE pruning a duplicate/null-valued output. Semantic merging is valid for the six exposed observations only, not hidden truth.",
+  "connected":"Initial sources only the three raw inputs. Every used incoming row has exactly one nonzero entry; no constant-zero afferent.",
+  "allow_disconnected":"Also allow an all-zero incoming row as the numerical model already permits. This is source -1 for input only, never an output address. No increase in sites or scalar count.",
+  "budget":"Per arm maximum500000 unique states and10000000 attempted unordered-pair transitions, depth<=6. Stop after all11 targets have witnesses. Deterministic ascending states/source-values/pairs, no RNG. No budget increases or post-result solver changes. If a cap is hit, report unresolved targets. No UNSAT claim without a separately checked proof.",
+  "verification":"Each witness is checked independently through generic numeric WSP15 dot/threshold execution, an independent boolean graph interpreter across all8 contexts, canonical75-scalar checkpoint restore, and a checker of depth/forward-only addresses and strict-versus-disconnected semantics.11 SAT witnesses plus unchanged WSP21's53 certificates cover the full64-signature domain if all succeed.",
+  "controls":"Return exactly the11 original unresolved identities. Reject >6sites, forward/cyclic addresses, illegal output -1, nonbinary evidence, disallowed disconnected rows and corrupted checkpoints. Compare merged search against independent brute wiring enumeration at depth<=2 to audit sharing/deduplication/null-output handling. All256 worlds must remain256/512 on the two hidden labels for any complete evidence-only predictor.",
+  "scientific_limits":"External exact oracle, not native neural discovery or improved learning. Do not train the numerical learner on oracle answers or change WSP15/16/20 baselines. No claim that every full three-input truth function fits6 sites. Hidden truth remains ambiguous. No stronger superiority claim from the capacity result."
+ },
+ "metrics":["SAT-certified targets per arm","site-count distribution","states/transitions/time","independent symbolic-numeric agreement","cold restores","strict-vs-disconnected difference","hidden ambiguity bound","certificate digest"],
+ "classification_rules":{"capacity_resolved":"11/11 constructive independently checked SAT witnesses in canonical allow_disconnected architecture","sharing_sufficient":"11/11 also verified in connected arm","unresolved":"Any target without a verified witness at the frozen cap; absence is not UNSAT","invalid":"bad checker/custody/evidence or changed protocol; preserve first failure","scientific_superiority":"None: capacity diagnosis only"},
+ "changed_paths":["research/contrib/chatgpt/WSP-22/**",".github/workflows/wsp21-pr-validation.yml",".ice/code-atlas.json",".ice/code-atlas.html",".ice/code-atlas.ice"],
+ "qualification":"Remote prereg before implementation/primary. Focused/interfaces/negative controls, frozen evaluator, then final exact SHA/tree full original+WSP01-17+WSP19-22 unit regression, permanent G29 and clean source on GitHub-hosted Ubuntu/Windows2022. Reuse existing read-only PR workflow rather than adding a new workflow. No private runner or production acceptance.",
+ "authority":{"research_only":true,"production_authority":false,"accepted_ref_mutation":false,"promotion_authority":false,"scheduler_or_queue_authority":false}
+}
