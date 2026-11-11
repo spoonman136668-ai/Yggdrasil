@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-10",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can a fixed generic threshold-neuron substrate receive all task-specific Boolean circuit connectivity directly through programmed numerical weights, rather than gradient training or an associative-label slot table?",
+  "hypothesis": "All 16 two-input and 256 three-input Boolean functions can be realized exactly as newly enabled sparse synaptic connections from input polarities into formerly disconnected AND gate sites and then to an OR output, when a complete truth table is supplied to the compiler. This proves bounded programmable logic, NOT novel operator invention, zero-information learning, or data/compute superiority.",
+  "exact_parent_sha": "475ad598f06b2b38fba58a2d9f428c723c57758f",
+  "predecessor_evidence": [
+    {
+      "pr": 874,
+      "commit": "475ad598f06b2b38fba58a2d9f428c723c57758f",
+      "evidence": "research/contrib/chatgpt/WSP-09/evidence.json"
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/WSP-10/**",
+    "optional explicitly identified PR-only qualification workflow and G29 generated artifacts; no authority files"
+  ],
+  "inputs": [
+    {
+      "name": "complete 2-input Boolean truth tables, masks 0..15",
+      "sha256": "130b6fd5bb66c430b2bdcb32218c5d4e4247b82df157d0fdfbd6593549961f19",
+      "source": "deterministic grammar descriptor 'WSP10|2-bit|all-masks-0..15'; task specification itself reveals all 4 labels"
+    },
+    {
+      "name": "complete 3-input Boolean truth tables, masks 0..255",
+      "sha256": "2028f1b3364ac68a03ddae0f0fe357fff0bb21dcb06ce43d45b064eb14b307ee",
+      "source": "deterministic grammar descriptor 'WSP10|3-bit|all-masks-0..255'; task specification itself reveals all 8 labels"
+    }
+  ],
+  "frozen_design": {
+    "seeds": [],
+    "split": "No held-out split: compiler receives full truth table; all 4 or 8 contexts are in-spec, NOT unseen generalization.",
+    "ordering": "n=2 then n=3; masks in ascending integer order; query patterns ascending; input bits least-significant first.",
+    "data_budget": "272 full truth-table specifications, equivalent to 2112 revealed binary labels; zero separately sampled outcomes, NOT zero information.",
+    "compute_budget": "Deterministic one-pass compiler per mask; maximum 8 minterm gate sites, no iterative search, no gradient, no external API or model calls.",
+    "capacity": "For n inputs: 2^n fixed empty n-input AND gate sites; 2*n signed/polarity input wires per gate and one gate-to-output wire, all task-specific wires initially 0. At n=3: 8*(2*3+1)=56 writable binary synapses. Input polarity inverter and AND/OR threshold operator types are fixed.",
+    "evaluator": "For each mask and pattern x, compare threshold-net output with (mask>>x)&1, with separate exact symbolic lookup control. 2112/2112 is the engineering exactness criterion. Record active edge counts, snapshot integrity and failure controls.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Independent symbolic truth-table lookup gets EXACTLY the same complete truth-table specification, 2112/2112 required.",
+    "All-zero crossbar weights (no task program): requires output=0 for every input and must fail on each positive target label, not be credited as learning.",
+    "Ablate one required gate-to-output connection for every nonzero mask: must flip at least the corresponding positive minterm to zero.",
+    "A predeclared one-hot table mask=2 at n=3, swap sensory bit 0 and 1 at evaluation: must expose a wrong prediction (identity mapping is not invariant).",
+    "Cold restores and corruption/tampering rejection for every world. No hidden labels, external worker, training-loop, pretrained feature model or paid model."
+  ],
+  "metrics": [
+    "exact_outputs/2112",
+    "symbolic_exact_outputs/2112",
+    "all_zero_negative_mismatches",
+    "ablation_detected_by_mask",
+    "crossbar_active_edge_count",
+    "cold_restore_exact_count",
+    "programmed_weight_sha256",
+    "gradient_steps"
+  ],
+  "classification_rules": {
+    "supported": "ENGINEERING-ONLY if 2112/2112 numerical and symbolic outputs match, every nonzero-mask ablation detects change, all cold restores and tamper negatives pass, 0 gradient steps, all task-specific connectivity initially 0, and final exact-SHA dual-platform regression and source-integrity guards pass.",
+    "mixed": "Correct circuit construction but incomplete mandatory negative, restore, or qualification; report each failing axis without scientific claims.",
+    "negative": "Numerical circuit cannot represent one or more finite truth-table specifications within frozen 56-weight n=3 capacity, or primary exactness falls below 2112/2112.",
+    "invalid": "Post-result threshold, masks, capacity, evaluator or code-source changes without independent requalification; missing prereg chronology; malformed inputs; untrusted evidence; inconsistent exact source."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "scientific_limits": "All target labels are supplied up front; equal-information exact symbolic compilation should tie. Zero gradient updates does not imply less total information, model autonomy, novel primitive invention, arbitrary reasoning, faster end-to-end execution or beneficial learning.",
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "independent_scientific_first_use": false,
+    "no_paid_api": true,
+    "no_forge_or_other_owners": true,
+    "no_self_hosted_runners": true
+  },
+  "preregistration_note": "Commit this file BEFORE any WSP-10 primary runner/test result. This is an isolated public synthetic development pilot, not scientific acceptance."
+}
