@@ -1,0 +1,71 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-35",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "title": "Ground-up blank numerical circuit weights: new topology compositions without gradient training",
+  "parent_sha": "e7c73a39ba8b604983d503858b2fcc68932ac925",
+  "parent_tree": "27a2f0acc1f9ed119f5b2062273bf357277a06a6",
+  "prior": [
+    "WSP-06 #871 exact bounded 128/128 tie with symbolic/trained, no unknown primitive acquisition",
+    "WSP-33 #923 unfamiliar operators SCIENTIFIC_NEGATIVE",
+    "WSP-34 #924 numerical operators pooled improvement but switch regression, MIXED"
+  ],
+  "question": "Can a wholly blank 8-gate numerical circuit, filled deterministically with source-provided topology and 2-input Boolean gate tables, execute never-seen compositions after a weight-only cold restore and exceed null/noncompositional controls? This tests compiler fidelity and scope, not learning unknown rules.",
+  "problem": {
+    "input_bits": 3,
+    "gates": 8,
+    "truth_table_order": "00,01,10,11; index=2*left+right",
+    "permitted_truth_table_masks": [
+      8,
+      14,
+      6,
+      9,
+      7,
+      1,
+      11,
+      4
+    ],
+    "gate_source": "For each gate i, parent indices refer to three external features 0..2 or already-defined prior gates 3..(i+2); no future gates. Base chain uses left previous gate for i>0; primary disjoint skip topology uses a deterministic previous/skip pair. Right parent is deterministic index from digest, with no target-label-based filtering.",
+    "weights": "8 rows of 2*11 one-hot routing bits +4 Boolean LUT bits +1 enabled bit =216 writable bits, initially zero. No static pretrained weights, no gradient in direct arm. Generic fixed arithmetic runtime uses one-hot dot products and 4-way Boolean multiplexer; count Python kernel, serializer and source compiler independently.",
+    "evidence": "Compiler and trained control receive the exact same eight parent-selector pairs and four primitive gate truth values per world. No complete three-input final target truth table, evaluated labels or hidden evaluator output enters synthesis or training.",
+    "frozen_generator": "sha256('WSP35-V1|'+cohort+'|'+str(world)+'|'+str(gate)); generated topology+truth independent of output labels, no filtering. DEV cohort name DEV (64 worlds, topology chain); PRIMARY cohort name PRIMARY (256 worlds, skip/interleaved topology), all eight 3-bit contexts scored for each world.",
+    "primary_worlds": 256,
+    "primary_labels": 2048,
+    "dev_worlds": 64,
+    "dev_labels": 512
+  },
+  "arms": {
+    "direct": "Zero blank 216-bit weight array; compile the eight permitted primitive rows directly; generic numeric inference from frozen checkpoint only.",
+    "blank": "Same interpreter with all zero and all disabled synapses; defaults to zero, no source writes.",
+    "lookup_only": "Uses only last gate truth table evaluated on external bits x0,x1, cannot follow earlier parents; no hidden outputs.",
+    "conventional": "Per-gate four-logit sigmoid/BCE supervised gradient control on exactly the four source-provided truth-table rows, with same topology and final generic circuit interpreter; train until BCE<=0.01 per gate, lr1.0, max 4096 updates per distinct 4-bit table, deterministic exact-table cache. Count fresh fits, gradient updates, bytes and walltime.",
+    "oracle": "Evaluator-only independent explicit symbolic gate truth-table interpreter; never read by direct program or gradient fit."
+  },
+  "primary_pass": "engineering guards all pass; direct correct >=1843/2048 (90% rounded up) and >=205 ahead of each blank and lookup_only. Trained control must have BCE<=0.01 and be reported independently; score parity to trained and oracle is not evidence of intelligent generalization.",
+  "classification": {
+    "DEV_SUPPORTED": "All source and retention/integrity controls pass, correct>=1843 and delta>=205 to both null arms; reports conventional control, independent evaluator and no claim of unknown rule inference.",
+    "MIXED": "Engineering valid, direct better than nulls but misses >=1 threshold.",
+    "SCIENTIFIC_NEGATIVE": "Engineering valid but fails to improve on any null arm.",
+    "INVALID": "Any leaky target labels, malformed source accepted, missing controls, unaccounted capacity, nonreplayable snapshot, mismatch in evaluator, incompletely trained conventional baseline, unrun worlds or changed primary protocol."
+  },
+  "negatives": [
+    "invalid gate selector or future/cyclic parent fails atomic",
+    "malformed or contradictory source evidence fails",
+    "tampered digest/checkpoint reject",
+    "cold-restore bit-equal prediction",
+    "blank abstains/returns zero without leakage",
+    "swap truth-table row changes stored weights",
+    "removing routing or an inner gate must change at least one diagnostic world",
+    "DEV-primary family identity distinct",
+    "identical spec implies identical checkpoint"
+  ],
+  "limits": [
+    "Fully programmed means program compilation from full primitive specification, not autonomous acquisition of unknown knowledge, language comprehension, real intelligence or replacing all learning.",
+    "A supplied generic interpreter and deterministic program compiler are explicitly counted authored machinery; trained control uses sigmoid floats instead of binary bits, so total capacity/compute not strictly matched.",
+    "Public synthetic DEV only; no independent SCIENTIFIC_PASS, architecture-level efficiency claim or first-use acceptance."
+  ],
+  "qualification": "Preregister alone before implementation and one untouched PRIMARY run; focused/negative tests; mandatory full Yggdrasil + WSP01-17 and WSP19-35 regression on exact source; hosted Ubuntu/Windows same SHA; reuse existing WSP21 validation workflow/atlas. Record exact seed, hashes, time, source tree, artifacts only on branch.",
+  "authority": "Isolated public external-contribution draft only. No main/accepted refs, merge, deployment, FORGE/Hybrid integration, controller, owner, scheduler/queue/runner/private science, paid API or protected first-use."
+}

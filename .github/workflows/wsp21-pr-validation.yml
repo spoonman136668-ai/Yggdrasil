@@ -1,4 +1,4 @@
-name: WSP capacity certificate regression (reused WSP21-34)
+name: WSP capacity certificate regression (reused WSP21-35)
 on:
   pull_request:
     branches:
@@ -16,6 +16,7 @@ on:
       - research/wsp31-one-query-fact-acquisition-20261111
       - research/wsp32-cumulative-fact-acquisition-20261111
       - research/wsp33-unfamiliar-rule-transfer-20261111
+      - research/wsp34-numeric-operator-construction-20261111
     paths:
       - 'research/contrib/chatgpt/WSP-21/**'
       - 'research/contrib/chatgpt/WSP-22/**'
@@ -31,6 +32,7 @@ on:
       - 'research/contrib/chatgpt/WSP-32/**'
       - 'research/contrib/chatgpt/WSP-33/**'
       - 'research/contrib/chatgpt/WSP-34/**'
+      - 'research/contrib/chatgpt/WSP-35/**'
       - '.github/workflows/wsp21-pr-validation.yml'
       - '.ice/code-atlas.*'
 permissions:
@@ -68,7 +70,11 @@ jobs:
               for offset in range(0,len(encoded),4096):
                   print("WSP21_ATLAS|"+path+"|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
           PY
-      - name: Full original WSP01-17 WSP19-34 regression and operator-construction assay
+      - name: Full original WSP01-17 WSP19-35 regression and blank-weight DEV assay
         env:
           PYTHONDONTWRITEBYTECODE: '1'
-        run: python research/contrib/chatgpt/WSP-34/qualify.py
+        run: python research/contrib/chatgpt/WSP-35/qualify.py
+      - name: Frozen WSP35 public DEV PRIMARY (all 256 disjoint circuits)
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python research/contrib/chatgpt/WSP-35/run_dev.py --cohort PRIMARY
