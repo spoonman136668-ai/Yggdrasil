@@ -121,7 +121,9 @@ def run():
                 max_checkpoint = max(max_checkpoint, len(original))
                 if tuple(predict(model, layer, i) for i in PUBLIC) != tuple(target[i] for i in PUBLIC):
                     raise AssertionError("WSP34_TARGET_RETENTION")
-                if len(layer.observations) != len(PUBLIC):
+                rows = model.effective_tables()
+                expected_unique = {((rows[0][i], rows[1][i], i & 1), model.target_labels[i]) for i in PUBLIC}
+                if set(layer.observations) != expected_unique:
                     raise AssertionError("WSP34_MISSING_KNOWN_FACT")
                 survivors = sum(layer.eligible)
                 diagnostics["eligible_candidates_sum"] += survivors
