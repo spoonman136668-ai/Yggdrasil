@@ -1,0 +1,92 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-29",
+  "project": "Yggdrasil",
+  "contribution_class": "falsification",
+  "goal_issue": 910,
+  "parent_sha": "a3ba14ac39f02fdc9b0add6c50ec95c653b47a51",
+  "question": "Can a numerical router learn compositions of actually acquired imperfect modules from raw examples,transfer to unobserved composed inputs,and preserve its base skills?",
+  "hypothesis": "Across1920authored worlds,native composition fits at least8640/9600observed labels(90%),improves unobserved composed-output accuracy by>=288/5760(5percentagepoints) over BOTH composition-disabled and trained raw8hot controls,and is within57/5760(onepercentagepoint rounded down)of EACH trained reused-feature comparator. Preserve all1920base banks,30720base predictions,1920cold checkpoints and exact symbolic agreement. Any missed threshold is NEGATIVE.",
+  "module_acquisition": {
+    "cohort": "All120WSP28case-manifest entries,in existing seed/signature order. Recompute unchanged WSP15initial acquisition plus WSP27Routed.error_routed8192steps on each case's6actual examples. Every resulting checkpoint must equal its WSP28error_routed SHA256;observed total707/720,107perfect and13imperfect modules,all included.",
+    "pairing": "Per seed,30consecutive cohort entries form15adjacent disjoint pairs.60pairs total,no accuracy-based selection. Keep original module bank order;do not provide semantic names or target wiring IDs to learner.",
+    "storage": "Two actual75binary-synapse graphs per bank=150bits. Every target learner sees same12source example input/labels plus5actual target examples,via its declared representation. No true module hidden outcomes or true recipe passed to learning.",
+    "cost": "Native module reconstruction timed once across120modules,amortized and disclosed. Gradient-base control trains120separate8logit models on identical actual6labels,not native predictions. No perfect hand-programmed module substitution."
+  },
+  "worlds": {
+    "per_pair": "Enumerate all16completions of the two modules' unobserved base contexts5,6;each module's6actual labels fixed. Candidate base modules unchanged across completions. True source tables are EVALUATOR ONLY.",
+    "targets": "For every completion enumerate two recipes:(first bank0,outer bank1,inject raw coordinate0) and(first bank1,outer bank0,inject coordinate2). Truth h(x)=outer(x with selected coordinate overwritten by first(x)). These recipe IDs NEVER enter candidate.60pairsx16x2=1920worlds;correlated public synthetic fixtures,not independent natural tasks.",
+    "target_observations": [
+      0,
+      1,
+      2,
+      4,
+      7
+    ],
+    "heldout_composed_inputs": [
+      3,
+      5,
+      6
+    ],
+    "labels": "9600actual target training labels,5760unobserved composed labels. Source truth/target recipe/heldout outcomes prohibited in candidate features,selection,gradients and stopping rules.",
+    "information_limit": "Evaluator groups worlds by pair and identical5actual target labels,computes maximum majority-vote heldout accuracy over indistinguishable completions. Preserve ambiguity and count unavoidable errors;never feed this oracle bound to any learner."
+  },
+  "candidate": {
+    "template": "Two-stage supplied generic composition language. First bank selector2onehot,outer selector2onehot,injection selector3onehot:12possible configurations(including self-compositions). No named operation catalog or true recipe supplied. This is learning a composition INSTANCE within a preprogrammed language,not invention of an arbitrary new primitive/metagraph.",
+    "numeric_learning": "For every configuration score only5actual target observations,then numerical threshold pairwise first-winner gates write selected2+2+3route bits. No host min/sort/task-dependent compiler chooses the route. Occupancy bit enables prediction after learning. Zero continuous gradient updates;static enumeration/update rule disclosed.",
+    "prediction": "Evaluate both frozen bank graphs on rawx,weighted-select first output,replace input by numeric injection weights,then evaluate both banks at modified input and select outer. Four generic graph forwards per prediction,no world dictionary,outcome table or targetID.",
+    "capacity": "150base knowledgebits+7routebits+1occupied=158persistent binary scalars. Static12x7route descriptor bits=84supplied program bits,plus generic VM/update/checksum code. The repertoire has only12routings;capacity is explicitly above a single75bit graph and cannot be called free.",
+    "retention": "Base banks immutable under target learning. Every world verifies all16base outputs and bank bytes before/after learning and after coldrestore. This does NOT preserve a history of distinct composed heads;one current head percase. No learned task-ID routing or multi-composition lifelong-memory claim.",
+    "persistence": "Canonical checksummed checkpoint stores both actual graph weights,route/occupancy and fixed lesion config. No recipe/taskID,transcript or hidden labels. Erased occupied state abstains;malformed/noncanonical states reject."
+  },
+  "controls": {
+    "composition_disabled": "Identical158bit candidate and observations/12configuration scoring;injection lesion forces second-stage inputs to remain rawx. Still evaluates4graphs perprediction. Can select best single stored module,but cannot nest them.",
+    "symbolic_same_language": "Independent host enumeration over same12configurations,actual learned graphs and5actual target labels,first-index tie. Must exactly tie native choices/all8outputs. Not evidence of superiority over synthesis.",
+    "trained_raw": "Genuinely trained8hot target logits on actual5target labels. Receives same source observations,with separately trained source logits,cost charged,but no composition features. Unobserved target logits remain0,threshold>=0=>1.",
+    "trained_shared_features": "Genuine20weight logistic head over12composed responses of SAME actually acquired native module bank plus8raw onehot features. Fits only actual5target labels;rawfeatures guarantee representable interpolation. Shares native acquisition cost and feature extraction. More float capacity/prior differs,disclose;strong matched-representation gradient comparator.",
+    "trained_gradient_base": "120genuinely trained8logit source models on same actual6labels. Threshold source logits tobinary,build same12composition features+8rawonehot,then genuine20weight target head on5actual labels. No target routing recipe supplied. Fully conventional source+head gradients,different representation/capacity and optimizer cost disclosed.",
+    "optimizer": "All logistic models initialized0,full-batch Adam LR0.1,beta0.9/0.999,epsilon1e-8,meanBCE<=0.01,max4096updates. All120sourcefits+1920rawheads+1920sharedheads+1920gradient-baseheads MUST converge. No hidden-label validation or model selection. Count actual updates/losses/time. Predictions threshold round(logit,12)>=0 for deterministic near-zero readout;optimization/loss remain unrounded. Cross-platform integer outputs/routes/checkpoint/trace digests must match exactly;floating losses/timings are reported separately and need not be bit-identical.",
+    "negatives": "Constructed imperfect modules retained;erasure abstention,changed base weights/tamper/noncanonical checks,invalidinput/examples. Unobserved base-label completions preserve information ambiguity;do not call hidden failure an infrastructure error."
+  },
+  "metrics": [
+    "observedfit and heldoutaccuracy eacharm",
+    "source acquisition707/720 and13imperfect included",
+    "12configuration choice/symbolic equality",
+    "base banks/predictions retained",
+    "cold bytes/all8outputs",
+    "all genuine optimizer convergence/steps/BCE",
+    "information-theoretic heldoutbound",
+    "module-instance/route capacity and checkpointbytes",
+    "module reconstruction,featurebuild,routelearning,gradientfits,whole-process timing and retained memory",
+    "exact-source/config/module/trace digests"
+  ],
+  "budget": {
+    "fixed": "1920worlds,12configurationx5actual observations per native/lesioned task,norestarts,nodatasetfiltering,noextra observations or source retraining. Same information is NOT equal capacity/FLOPs:report architecture/gradient/dot-operation costs separately. Context-aware featurecaches allowed within an arm,measured and disclosed;no hidden target cache inside candidate.",
+    "stop": "Single frozen run,max30minperhostedjob,max4096perfit,nonconvergence INVALID,no postresultthreshold/case changes. Preserve nulls/negatives.",
+    "qualification": "All original+WSP01-17/WSP19-29 unit suites,full frozen WSP29 comparison,G29 and clean source on exact finalSHA/tree hostedUbuntu+Windows2022. No predictive selection as finalqualification."
+  },
+  "classification": {
+    "engineering_pass": "Sourcecustody/symbolic/retention/cold/validation controls,1920worlds/all13imperfect modules,all5880gradient fits converge,informationbounds valid",
+    "dev_supported": "nativeobserved>=8640,heldout gains>=288overlesion AND rawtrained,and at most57correct below EACH strong reused-feature gradient control,allretentionvalid",
+    "negative": "Valid run misses any frozen primary threshold;report partialeffects/ceilings without upgrading claim",
+    "invalid": "Oracle/certificate/recipe/hiddenlabel leakage,omittedimperfectmodules,nonconvergedbaseline,budget/custody/protocolfailure",
+    "scientific_pass": "Unavailable:publicfinite authored taskfamily,preprogrammed12routingtemplate,correlatedworlds,noindependent unfamiliar-worldqualification or universal direct-training advantage."
+  },
+  "changed_paths": [
+    "research/contrib/chatgpt/WSP-29/**",
+    ".github/workflows/wsp21-pr-validation.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "authority": {
+    "isolated_public_DEV": true,
+    "production": false,
+    "accepted_ref": false,
+    "merge": false,
+    "promotion": false,
+    "controller_runner_queue_scheduler_changes": false,
+    "paid_API": false
+  },
+  "evidence": "Remote prereg before implementation/outcomes;repository result/provenance/README and module checkpoints,prior evidence immutable;reuse existing workflow,no additionalworkflow. No skill/library evidence packages."
+}
