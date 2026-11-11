@@ -1,0 +1,48 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-15",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "exact_parent_sha": "5826ca6fcdd59312cbe8f03e069c95b691a11b08",
+  "question": "Can reward-modulated numerical structural plasticity write NAND connectivity from observations without a symbolic expression compiler selecting the graph?",
+  "hypothesis": "A bounded numerical trial/commit circuit will fit at least 95% of public labels across all 32 five-label signatures and four noise seeds, exceed disabled-plasticity and random-update public accuracy by at least 10 percentage points, and cold-restore exactly. Failure is a scientific negative, not a reason to change the frozen budget.",
+  "mechanism": {
+    "substrate": "3 raw bits, 6 feedforward NAND threshold sites; each of 12 incoming connections and the output is a one-hot numeric synaptic vector. Initially all connections zero and output connected to input0. Task-specific mutation locations and replacement source vectors arrive as evidence-independent noise. A threshold mismatch population accumulates observed error; a numeric threshold reward neuron admits strict improvements. Masked synaptic updates commit or revert the proposed wiring. No symbolic program, truth-mask candidate catalog, task-conditioned Python min/sort/argmin or compiled graph is supplied to the candidate.",
+    "honesty": "This is a deliberately hand-designed numerical implementation of stochastic structural search with a scalar reward comparator, not invention of a new primitive or a proof that search has ceased. The question is whether the decisions are actually realized by numerical synaptic state/threshold transitions. If the code selects a task-specific graph externally, the experiment is INVALID. No claim that writing the search policy in numerical form makes it intrinsically superior or autonomous.",
+    "external": "Python implements generic bounded simulation, independent pseudorandom proposal inputs, input validation, counters, checkpoint IO and diagnostics. It must not condition mutation proposals on target masks/hidden labels or select an improved graph using a Python conditional. Gates and reward comparator are predesigned."
+  },
+  "frozen_design": {
+    "worlds": "all 256 3-input Boolean masks; learning executed once for each of 32 unique signatures at public indices [0,1,2,4,7] and seeds [17,29,43,71], then evaluated for every compatible world; no task labels beyond the five examples enter the learner",
+    "seeds": [17,29,43,71],
+    "split": {"observed": [0,1,2,4,7], "hidden": [3,5,6]},
+    "ordering": "observations fixed above; signature enumeration binary ascending; seeds fixed order",
+    "data_budget": "five outcomes per task, no extra interventions",
+    "compute_budget": "1024 proposed single-row rewires per signature/seed; six gates on each of five public contexts per trial; all methods receive equal observations, measured operations/times, no false compute parity",
+    "capacity": "six NAND sites, 12 one-hot incoming rows of lengths 3..8 and one length9 output row: 75 binary synaptic scalars plus 1 output selector row of9 = 75 total (actual count verified in report); scalar loss/reward activity and evidence buffers counted separately; no task-ID input",
+    "deterministic_expected": true,
+    "stop": "Always exactly1024 trials; no extra trials after poor fit; 30 minute hosted job timeout, no protected first use"
+  },
+  "controls": {
+    "exact_symbolic": "Frozen WSP14 synthesize, same five examples, independent expression runtime; perfect public fit expected; full search and cache setup counted separately",
+    "trained": "Frozen WSP14 fully trained eight-hot Adam BCE<=.02 within2048 steps, same observations, convergence checked; a converged memorizer is not a strongest structural neural baseline",
+    "precompiled": "Frozen WSP14 NumericNand compilation from exact symbolic program, same evidence; an externally constructed reference, not proof of internal construction",
+    "random_update": "Same proposals and budget; force commit reward1 regardless of error",
+    "disabled": "Same proposals, losses and budget, force commit reward0",
+    "unidentifiable": "For all256 worlds each deterministic evidence-only method must produce exactly384/768 correct per seed on uniform hidden labels; identical evidence with all hidden flipped must not change learned synapses",
+    "reward_lesion": "Replacing numerical reward feedback with0 must match disabled circuit bit for bit"
+  },
+  "metrics": ["public accuracy over128 signatures/seeds *5", "exact signatures fitted", "hidden correct over3072", "accepted structural changes", "proposals", "NAND evaluations", "numeric scalar operations", "external noise draws", "end-to-end wall time", "checkpoint bytes", "cold restore agreement", "trained convergence", "all control scores"],
+  "classification_rules": {
+    "engineering": "Implementation checks, strict custody/malformed input/feedback controls and reproducibility pass; engineering does not require the hypothesis to succeed",
+    "mechanism_supported_dev": "public fit>=608/640 and >=64/640 extra correct over each random/disabled control; 128/128 cold snapshots and deterministic replay; this is development support only",
+    "negative": "Any frozen mechanism threshold missed, with valid controls",
+    "scientific_pass": "Not available from this authored public DEV experiment; requires strongest matched baseline and independent qualification; preserve exact symbolic tie or deficit",
+    "invalid": "Task-specific external selection, hidden label leakage, changed budget/threshold, invalid comparator/custody or broken deterministic simulation"
+  },
+  "changed_paths": ["research/contrib/chatgpt/WSP-15/**", ".github/workflows/wsp15-pr-validation.yml", ".ice/code-atlas.json", ".ice/code-atlas.html", ".ice/code-atlas.ice"],
+  "qualification": "Pin final SHA/tree, full original + WSP01-15 unit regressions, all predecessor DEV evaluators and new frozen DEV evaluator, permanent G29 atlas, clean source, read-only PR GitHub-hosted Ubuntu and Windows2022 at the same exact source. No self-hosted jobs.",
+  "authority": {"research_only": true, "production_authority": false, "accepted_ref_mutation": false, "promotion_authority": false, "scheduler_or_queue_authority": false},
+  "prohibited_after_primary_run": ["threshold changes", "budget or capacity growth", "post-result split/seed changes", "post-result method selection", "hidden-label leakage"],
+  "preregistration_note": "Commit before implementation and primary outcomes. Capacity arithmetic typo, if any, must be disclosed before first evaluation; intended row lengths specify architecture exactly."
+}
