@@ -1,0 +1,24 @@
+{
+ "schema":"yggdrasil.external-research-prereg.v1",
+ "experiment_id":"WSP-20","project":"Yggdrasil","contribution_class":"falsification",
+ "exact_parent_sha":"443c11e18182d55535225d8b640da50ac1982141",
+ "question":"Do coherent multi-connection proposals plus per-observation numeric protection improve safe structural credit assignment beyond single-row proposals?",
+ "hypothesis":"Joint protected updates achieve>=730/768 observed labels,>=122/128 corrected witnesses,0 loss of originally valid predictions, AND>=16 more correct observations than protected single-row updates at the same8192 current/trial evaluation budget. Any condition missed is a frozen negative, even if both methods improve relative to WSP16's smaller budget.",
+ "frozen_design":{
+  "tasks":"All32 five-label signatures x seeds17,29,43,71, initialized with the unchanged WSP15 strict1024-proposal circuit. Actual context3 label is opposite that initial prediction, as in unchanged WSP16. No filtering.",
+  "capacity":"same6 NAND sites/75 binary synaptic scalars. Five per-observation protection activity bits computed numerically from initially valid predictions; these are additional task state and counted. Six examples externally retained for replay and counted.",
+  "budget":"8192 proposals per arm/task, no early stopping, same current and candidate six-example forward evaluations for every arm. This is8x WSP16's adaptation budget, explicitly a NEW frozen DEV experiment, not a retuning/replacement of its negative. Joint proposals touch up to3 rows versus1 for single; report actual touched coordinates/row writes, and do NOT claim equal parameter-update cost or whole-process superiority.",
+  "proposal":"Evidence-independent noise supplies a single random row/source and a random NAND site with two legal source addresses every step. On even steps joint policy simultaneously writes that site's two incoming one-hot rows and directs output to it; on odd steps it uses the supplied single-row proposal. Single controls always use the same supplied single-row proposal. All arms draw identical noise fields. Python may schedule proposals from noise/step only, never task outcomes. Numeric reward and masked writes choose the accepted graph.",
+  "protection":"Freeze a5-bit activity mask of which original observations the initial circuit already gets right. Numeric reward permits total-error nonincrease AND zero proposed mismatch on every protected observation. Unprotected neutral comparator uses only total-error nonincrease. No target identity, hidden label, symbolic program or external task-specific graph choice enters candidate dynamics.",
+  "arms":["joint_protected","single_protected","single_neutral","disabled"],
+  "references":"Unchanged WSP16 exact symbolic/precompiled/converged conventional results on identical task observations, source/input identity verified. All produce768/768; no superiority over these controls claimed. Existing WSP19 whole-process cost negative preserved.",
+  "hidden":"Contexts5,6; exhaustive4 compatible assignments per task, each evidence-only arm exactly512/1024. No unfamiliar-mechanism transfer claim.",
+  "stop":"Fixed8192 proposals per task/arm; hosted job30minute timeout; no budget/seed/policy/threshold changes after primary results.",
+  "seeds":[17,29,43,71]
+ },
+ "metrics":["observed accuracy","witness recovery","old-valid retention/loss","joint-minus-single protected accuracy","exact tasks","accepted neutral/improving proposals","actual touched synapses/rows","forward evaluations","noise draws","protection state bits","checkpoint/cold/replay","wall time"],
+ "classification_rules":{"supported_dev":"all frozen accuracy/recovery/retention/gain conditions and custody hold","negative":"any threshold missed with valid controls","invalid":"leakage,external outcome-conditioned proposal/graph choice, changed protocol or source/custody failure","scientific_pass":"Unavailable without independent matched strongest comparison; manually designed stochastic structural-search rule, public DEV only"},
+ "changed_paths":["research/contrib/chatgpt/WSP-20/**",".github/workflows/wsp20-pr-validation.yml",".ice/code-atlas.json",".ice/code-atlas.html",".ice/code-atlas.ice"],
+ "qualification":"Remote prereg before implementation/primary. Exact final SHA/tree original+WSP01-17+WSP19+WSP20 full unit regression, frozen WSP20 evaluator, permanent G29/source integrity on hosted Windows2022 and Ubuntu. Immutable predecessor DEV reused only for identical source/inputs. No WSP18 is claimed.",
+ "authority":{"research_only":true,"production_authority":false,"accepted_ref_mutation":false,"promotion_authority":false,"scheduler_or_queue_authority":false}
+}
