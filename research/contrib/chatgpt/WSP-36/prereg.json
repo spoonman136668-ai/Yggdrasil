@@ -1,0 +1,94 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-36",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "title": "Partial observation to persistent numeric weights: unknown gate acquisition and held-out rule limits",
+  "parent_sha": "595252273310abfa272f452afc46800b7f38766b",
+  "parent_tree": "69c704ed4a8d70aa813985ae4e4de8c62d3c873c",
+  "prior": [
+    "WSP-33 #923 unfamiliar-rule transfer SCIENTIFIC_NEGATIVE",
+    "WSP-34 #924 numeric-operator improvement MIXED (switch regression)",
+    "WSP-35 #926 direct-blank circuit 2048/2048 trained tie with FULL primitive tables supplied; source 595252273310abfa272f452afc46800b7f38766b, engineering PASS"
+  ],
+  "hypothesis": "An initially blank numeric circuit can acquire previously unknown gate semantics from three external bit-level interventions per gate, store them in synapses and execute new eight-gate compositions after cold restoration, if—and only if—the true gate belongs to a declared finite known family. It will not be claimed to solve arbitrary unknown rules or outperform an information-matched conventional learner.",
+  "cohorts": {
+    "DEV": {
+      "worlds": 64,
+      "source": "Unchanged WSP35 generate('DEV',w); no primary observations or target labels during implementation"
+    },
+    "PRIMARY": {
+      "worlds": 256,
+      "source": "Unchanged WSP35 generate('PRIMARY',w); all eight external 3-bit contexts evaluated per world"
+    }
+  },
+  "inputs_and_custody": {
+    "teacher": "Each gate i has hidden four-entry truth values; learner receives source-provided topology (a,b), known set of eight possible primitive masks but no actual per-gate mask/truth; only probe(i,row) reveals the true bit at requested row. Final full-network target labels never enter either learner.",
+    "known_masks": [
+      8,
+      14,
+      6,
+      9,
+      7,
+      1,
+      11,
+      4
+    ],
+    "predeclared_probe_rows_3": [
+      0,
+      1,
+      3
+    ],
+    "ablation_probe_rows_2": [
+      0,
+      1
+    ],
+    "full_probe_rows_4": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "truth_index": "2*left+right, rows 0=00,1=01,2=10,3=11",
+    "known_family_identifiability": "All eight masks have distinct observation signatures for rows 0,1,3, verified as a protocol property, not after PRIMARY.",
+    "generator": "Source is WSP35-V1 source spec, deterministic world order, no rejection/filtering. 256 PRIMARY worlds x 8 gates x 4 true gate rows =8192 primary gate outputs, 256 x 8 final contexts =2048 circuit outputs.",
+    "no_leakage": "True masks, unprobed row 2, and final circuit output labels are held only by independent teacher/evaluator. Learner receives three requested row bits, graph, family and no unseen target.",
+    "ood": "Every PRIMARY world replaces only gate 7's hidden row-2 truth bit with its complement while preserving its topology and all other gates. The OOD teacher is not one of the declared primitive masks; 3-probe learner cannot distinguish changed vs unchanged rule. Four-row oracle remains allowed as an informational upper bound."
+  },
+  "arms": {
+    "direct_3": "Start with all 216 WSP35 zero bits, request rows [0,1,3] of each gate, choose unique consistent known-family mask using only observed bits, numerically program all routing/truth/enable synapses via WSP35 NumericCircuit; checkpoint-only cold replay.",
+    "direct_2": "Same blank circuit and graph, rows [0,1] only, choose lowest numeric mask from consistent known family (fixed tie break), direct-write and cold restore.",
+    "direct_0": "All zero circuit, no queries.",
+    "conventional_3": "Same topology, identical three true observations per gate and same known-family prior; identify same unique table, train GateTrainCache sigmoid/BCE four-output primitive logits to <=0.01 with 4096-iteration cap and report gradient updates/cache hits/storage/whole-process time; no final target labels.",
+    "full4": "Four true observations per gate without mask-family restriction; directly write observed primitive table, cold restore, and report full-information upper bound; apply to OOD as control.",
+    "independent_oracle": "Evaluate the actual teacher full truth tables by separate symbolic interpreter, never reachable by inference arms."
+  },
+  "frozen_primary": {
+    "gate_rows": 8192,
+    "circuit_outputs": 2048,
+    "gates": 8,
+    "worlds": 256,
+    "requested_3_probe_bits": 6144,
+    "requested_2_probe_bits": 4096,
+    "requested_4_probe_bits": 8192,
+    "metric": "Correct binary gate outputs for every row of every true gate (8192) plus composed circuit outputs for all three-bit inputs (2048). Count retained exact checkpoints, masks identified, query count, measured runtime, serialized bytes and independent parity.",
+    "pass": "All custody/negative/clean-source guards pass, direct_3 >=7783/8192 gate rows (95%), >=1946/2048 composed outputs (95%), direct_3 at least 820 gate rows (>10 percentage points) better than direct_2; conventional_3 converges and independent evaluator parity holds. A direct_3 vs conventional_3 tie is not superiority.",
+    "ood_guard": "Report 3-probe OOD last-gate row accuracy separately across all 1024 rows; because flipped row 2 is unobserved, direct_3 must miss exactly 256 of 1024 OOD last-gate rows, while full4 must correctly recover all 1024. Do not call OOD failure improvement.",
+    "label": "DEV_SUPPORTED only; no independent SCIENTIFIC_PASS or measured whole-model efficiency claim"
+  },
+  "negatives": [
+    "A purported fully unknown gate mask is never exposed by the learner API.",
+    "Attempted read of unqueried row rejected or absent from learner input.",
+    "Three observations uniquely identify known-family masks; two do not identify all masks.",
+    "An out-of-family flip of row 2 is unobservable to three-row query schedule and must be reported as its expected error, not filtered.",
+    "Swapping one observed bit changes inferred mask or causes explicit inconsistent-evidence rejection without partially updating weights.",
+    "Tampered, stale or noncanonical WSP35 checkpoint rejected; unmodified snapshots restore predictions bit-for-bit.",
+    "Same teacher row answers/topology imply identical written weights; different topology changes routing bits.",
+    "Conventional fit BCE<=0.01 for every fresh known mask, all cached fits keyed by exact mask and hyperparameters, no train/test leakage.",
+    "Original WSP33 negatives and WSP34 conditional-switch regression replay unchanged, and old WSP35 frozen primary remains unchanged."
+  ],
+  "scientific_interpretation": "Demonstrates direct synaptic encoding of newly observed bounded knowledge with strong prior family, not autonomous new operator invention. The three probes determine a three-bit signature precisely because the family was enumerated; the out-of-family withheld truth row proves an information-theoretic blind spot. Fully trained matched-information control expected to tie. Unknown-rule discovery outside that family remains unproved.",
+  "protocol": "Freeze prereg-only commit before any implementation or PRIMARY invocation. Implement and test DEV only; then one frozen public PRIMARY on isolated branch; record all arms, limits, scores, per-OS trace hashes, exact SHA/tree, runner/cost and code receipts. Mandatory final full prior WSP regression plus WSP36 tests, frozen WSP33/WSP34 assays, G29 atlas and clean source both hosted Windows/Linux at candidate SHA, requalify on artifact changes.",
+  "authority": "Public synthetic DEV, isolated contributor draft PR stacked on WSP35 #926 only. No main/accepted refs, merge, deployment, protected scientific first-use, FORGE/Hybrid integration, controllers, owner/scheduler/queues, private runners or paid APIs."
+}
