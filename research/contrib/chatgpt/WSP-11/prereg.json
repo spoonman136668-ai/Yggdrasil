@@ -1,0 +1,70 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-11",
+  "project": "Yggdrasil",
+  "contribution_class": "isolated-public-dev",
+  "exact_parent_sha": "1557da7deea1f68b6e7213d8266cc090116b6ef4",
+  "question": "Can a complete numeric weight-space Boolean circuit be programmed with no gradient steps from HALF of a 3-bit truth table, when a restrictive affine hypothesis class is explicitly supplied?",
+  "hypothesis": "For every 3-input affine parity Boolean function (16 coefficient tuples), four public basis observations (000,100,010,001) uniquely determine the complete function, enabling 64/64 held-out correct numeric circuit predictions. An exact GF2 symbolic solver must tie. A structurally indistinguishable out-of-family pairwise interaction must cause 32/64 wrong held-out predictions. No general-Boolean superiority is claimed.",
+  "synthetic_generator": "Exhaustive coefficient integers 0..15, bit0=bias, bits1..3=three parity coefficients; f(x)=bias XOR XOR_j (coefficient[j] AND x[j]); contexts indexed bit0 least-significant. No randomness or extra witnesses.",
+  "observations_indices": [
+    0,
+    1,
+    2,
+    4
+  ],
+  "heldout_indices": [
+    3,
+    5,
+    6,
+    7
+  ],
+  "worlds": 16,
+  "public_labels_per_world": 4,
+  "heldout_labels_per_world": 4,
+  "heldout_total": 64,
+  "implementation": "Infer affine coefficients from four basis observations in deterministic Python code, generate a complete inferred truth table, use unchanged WSP-10 DirectCrossbar.from_spec(3,mask) to write task-specific connections from zero; evaluate heldout via numeric threshold sums; zero gradient updates. Inference prior is preprogrammed software, NOT automatically discovered or itself in neural weights.",
+  "controls": {
+    "exact_symbolic": "Independent GF2 affine solver receiving the same four outcomes, target 64/64",
+    "observed_only": "Compile a WSP-10 crossbar with ones ONLY at observed positive contexts, assigning zero to unknown heldouts; target 32/64",
+    "full_spec_oracle": "Eight labels per world and 64/64 accuracy; UNFAIR information advantage, diagnostics only",
+    "ood": "Flip labels iff (x0 AND x1), leaving all four observed basis labels intact; 32/64 hidden predictions WRONG is mandatory falsification, with no claim of OOD recovery",
+    "ablation": "With all programmed synapses zeroed, accuracy is 32/64 on in-family heldouts",
+    "tamper": "Reject edited snapshots and invalid input types"
+  },
+  "invariants": [
+    "No target labels or test contexts passed to the compiler other than the four public contexts and their labels",
+    "No gradient training and no external model/API",
+    "No per-task truth-table lookup in numeric inference",
+    "No post-test changes to hypothesis or thresholds",
+    "No cross-world state leakage",
+    "No output claimed as native novel operator invention"
+  ],
+  "thresholds": {
+    "affine_exact": 64,
+    "symbolic_exact": 64,
+    "observed_only_exact": 32,
+    "ood_wrong": 32,
+    "cold_restore_exact": 16,
+    "gradient_steps": 0
+  },
+  "scientific_interpretation": "Bounded conditional generalization from an explicitly supplied GF2 hypothesis prior. The exact symbolic solver must tie; no gain in information theory, training energy, compute, independent unfamiliar-world transfer, or general intelligence is established. Scientific superiority remains UNVERIFIED; an OOD counterexample is an expected negative.",
+  "scope": {
+    "allowed": [
+      "research/contrib/chatgpt/WSP-11/**"
+    ],
+    "qualification_companions": [
+      "PR-only read-only hosted CI workflow",
+      "G29 generated atlas artifacts after source freeze"
+    ],
+    "forbidden": [
+      "main or accepted ref edits",
+      "FORGE/Wingless/Yggdrasil controller/owner/queue/schedule edits",
+      "self-hosted runners",
+      "deployment/promotion/merge",
+      "paid API",
+      "independent first-use"
+    ]
+  },
+  "staging": "This prereg file must be committed on new child branch before code or primary output; later test runs can qualify DEV only."
+}
