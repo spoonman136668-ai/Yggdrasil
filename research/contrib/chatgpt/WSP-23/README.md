@@ -11,3 +11,9 @@ The unchanged WSP15/WSP20 workload generator reconstructs128 tasks and original-
 `python research/contrib/chatgpt/WSP-23/run_dev.py`
 
 Optional `--write-evidence PATH` writes local proof/trace/results without modifying default CI source. Repository proof artifacts, when present, must recompute exactly. The existing hosted PR workflow is reused; full final original+WSP01-17+WSP19-23 tests, proof evaluator, G29 and clean source are required on Windows2022/Ubuntu. No additional workflow, owner/controller/runner/queue/scheduler, paid API, protected first-use, merge/admission or deployment.
+
+## First frozen result
+
+Producer and independent checker agree:57 reachable responses,7 infeasible signatures1,14,17,30,33,46,49 in both modes. Connected closure10,310 states/84,519 transitions; disconnected9,982/103,989, all below frozen caps. Both modes supply57 independently verified SAT witnesses and57 cold restores. The stored proof lists every reachable frontier at depths0..6, and default CI recomputes it byte-canonically.
+
+The unchanged128-task workload contains16 infeasible targets. Exact maximum observed accuracy respecting the original-valid mask is752/768. The saved single-protected learner scores742, leaving10 avoidable errors, while16 of its26 errors are unavoidable under six sites. This does not change earlier frozen negative outcomes or show new learned improvement; it corrects the interpretation of a larger-capacity control. Independent qualification is still required for any broader learning or unfamiliar-world claim.
