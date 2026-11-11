@@ -1,0 +1,28 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-33",
+  "title": "Unfamiliar operator and connection-rule transfer under bounded cumulative factual acquisition",
+  "parent_sha": "a1fb2121612cd5ce36f7751c3c50d865e50647ce",
+  "parent_tree_sha": "d331c5704686d852106c583a5027c1ba9e676251",
+  "question": "Do WSP-32's cumulative direct fact edits improve never-queried composed predictions when the target's true combination rule is outside the learner's supplied 12-route language?",
+  "frozen_hypothesis": "Across all 5,760 held-out target labels, the WSP32 frozen 2-query native learner gains at least 58 correct over its 1-query arm, at least 116 over no-query, at least ties 2 fixed-first queries, and is no more than 57 correct below each independently fitted same-information trained-head control. Existing actual source/target and acquired source facts must be exactly retained through both cold-restored updates. A failure of any prespecified threshold is SCIENTIFIC_NEGATIVE, never silently retuned or counted as success.",
+  "cohort": "Exactly 60 existing WSP29 source module pairs including all 13 imperfect modules, crossed with 16 completion masks and two evaluator-only non-native target rules = 1,920 worlds. The 1,920 cases x 3 common never-queried target addresses (3,5,6) yield 5,760 primary labels. No sorting/filtering worlds by whether the novel rule is accidentally expressible; report expressibility as a separately predeclared diagnostic. Existing source-bank payloads and WSP29 module/result integrity hashes follow the unchanged WSP32 validated loader. No new real-world/private data or external first-use.",
+  "unknown_rules": {
+    "xor": "target(x) = source0(x) XOR source1(x); evaluator knows operator, learner does not",
+    "switch": "target(x) = source0(x) when input bit x[0] is 0, else source1(x); evaluator knows operator, learner does not"
+  },
+  "evidence": "Each world begins with the same 6 known input/output facts per source bank at indices 0,1,2,3,4,7 and 5 observed target facts at indices 0,1,2,4,7. Only selected actual source-bit answers at the four candidate unknown source addresses are permitted thereafter. Never reveal the rule name, completion mask, source truth table, hidden target labels, or evaluator-only world identity to learner/selector/trained heads.",
+  "arms": {
+    "source_two": "WSP32 frozen impact-selected 2 true source answers with cold restoration between answers; query planner not modified",
+    "source_first_two": "WSP32 frozen fixed-first 2 true source answers; exactly identical factual budget",
+    "source_one": "WSP32 frozen impact-selected 1 true source answer",
+    "no_query": "WSP32 memory and routing with 0 new source answers"
+  },
+  "controls": "Two unchanged WSP31/WSP32 converged Adam source/target-head control pipelines are fitted to each arm's EXACT actual observed source and target facts, with unchanged feature classes, BCE <= .01, optimizer, maximum updates and semantic cache keys including source and actual evidence. The exact symbolic interpreter of the frozen effective tables must equal every native output, a tie/control, not a competing algorithm. A privileged rule-aware oracle is evaluator-only upper bound and cannot be presented as equal-information. Independently count representable (within original 12-route grammar) vs nonrepresentable targets without dropping any world or changing primary scores.",
+  "retention_and_safety": "After every actual write, verify all original 12 source and 5 target facts, every earlier acquired fact, unchanged immutable source-bank checkpoint bytes, source-locality, idempotent exact replay, collision/contradiction rejection, and cold restoration. Assert equal observed evidence yields equal questions and outputs even when hidden rule/truth differs. Fail closed on any unseen-label influence, changed learner code, corrupted checkpoint, budget overrun or bad provenance.",
+  "statistical_unit": "Report pooled held-out accuracy and paired deltas; give paired improvements grouped by all 60 source-pair clusters and by both rule classes, plus representable/nonrepresentable strata. These authored dependent synthetic worlds are not independent scientific replication; cluster summaries are descriptive, not an unearned significance claim.",
+  "qualification": "First freeze this protocol commit before any successor learner/test/result code. Then add isolated WSP33 diagnostic, tests, exact hashes, complete frozen primary output and negative controls. Reuse existing WSP21 PR regression with updated read-only WSP33 path coverage, permanent G29 clean source atlas and full final original plus WSP suites on hosted Ubuntu and Windows 2022 at identical final SHA. Do not consider a passing workflow itself a scientific finding.",
+  "budget": "One primary evaluation over 1,920 worlds and four arms; 9,600 maximum queried source answers across arms, with equivalent 30,720 logical matched fits to WSP32, at most 30 minutes per hosted job; no extra freezable variants, cherry-picking, threshold edits, new seeds, paid API, self-hosted runner, scheduled task or source-bank retraining.",
+  "decision": "If all thresholds and controls pass, DEV_SUPPORTED limited to unfamiliar authored rule transfer; otherwise preserve SCIENTIFIC_NEGATIVE or INVALID if controls/custody fail. Irrespective of outcome: no independent SCIENTIFIC_PASS, complete-training claim, general intelligence claim, deployment or architecture promotion.",
+  "authority": "Isolated public DEV on draft stacked WSP32 only. No main/accepted-ref edits, merge, deployment, FORGE/Hybrid integration, controller/owner/runner/queue/scheduler change, live trading, protected first-use or paid service."
+}
