@@ -1,0 +1,111 @@
+{
+  "schema": "wsp35.primary-evidence.v1",
+  "source_sha": "208055b4f9c11c01ff1abab29a08f19294023783",
+  "source_tree": "310b13fdba4c51ef0082c4be81d77ab9a4b4a239",
+  "prereg_sha": "ad447decf89513681cb5dd878eccac17a067334f",
+  "status": "DEV_SUPPORTED",
+  "independent_science": "UNVERIFIED",
+  "cross_os_equal_fields": [
+    "scores",
+    "checks",
+    "trace_sha256",
+    "min_null_gain",
+    "conventional",
+    "capacity",
+    "engineering",
+    "scientific_status",
+    "schema"
+  ],
+  "first_primary_run": 43118067551,
+  "primary": {
+    "linux": {
+      "capacity": {
+        "checkpoint_max_bytes": 538,
+        "runtime": "fixed numerical one-hot and truth-LUT arithmetic, Python host counted separately",
+        "writable_bits": 216
+      },
+      "checks": {
+        "cold": 256,
+        "oracle_parity": 2048,
+        "source_replays": 256,
+        "target_labels": 2048,
+        "weight_replays": 256,
+        "worlds": 256
+      },
+      "cohort": "PRIMARY",
+      "conventional": {
+        "actual_gradient_updates": 816,
+        "cache_hits": 2040,
+        "fresh_converged_fits": 8,
+        "max_bce": 0.00990988832188421,
+        "note": "same topology and primitive evidence, but sigmoid floats and costs differ"
+      },
+      "denominator": 2048,
+      "engineering": "PASS",
+      "environment": {
+        "platform": "Linux-7.0.0-1019-azure-x86_64-with-glibc2.43",
+        "python": "3.12.16 (main, Oct 26 2026, 02:48:44) [GCC 15.2.0]"
+      },
+      "limits": "The source supplies ALL primitive truth tables and topology. This proves compilation/replay fidelity in an authored tiny task, NOT inference of unknown rules, whole intelligence or a matched-cost speedup.",
+      "min_null_gain": 806,
+      "schema": "wsp35.direct-blank-circuit.v1",
+      "scientific_status": "DEV_SUPPORTED",
+      "scores": {
+        "blank": 1008,
+        "conventional": 2048,
+        "direct": 2048,
+        "lookup_only": 1242,
+        "oracle": 2048
+      },
+      "seconds": 0.266951,
+      "threshold_correct": 1843,
+      "threshold_null_gain": 205,
+      "trace_sha256": "a03a63b43025e050fc946bd241452e9cde57b95989225c3323eb9b0f13641475"
+    },
+    "windows": {
+      "capacity": {
+        "checkpoint_max_bytes": 538,
+        "runtime": "fixed numerical one-hot and truth-LUT arithmetic, Python host counted separately",
+        "writable_bits": 216
+      },
+      "checks": {
+        "cold": 256,
+        "oracle_parity": 2048,
+        "source_replays": 256,
+        "target_labels": 2048,
+        "weight_replays": 256,
+        "worlds": 256
+      },
+      "cohort": "PRIMARY",
+      "conventional": {
+        "actual_gradient_updates": 816,
+        "cache_hits": 2040,
+        "fresh_converged_fits": 8,
+        "max_bce": 0.00990988832188421,
+        "note": "same topology and primitive evidence, but sigmoid floats and costs differ"
+      },
+      "denominator": 2048,
+      "engineering": "PASS",
+      "environment": {
+        "platform": "Windows-2022Server-10.0.20348-SP0",
+        "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+      },
+      "limits": "The source supplies ALL primitive truth tables and topology. This proves compilation/replay fidelity in an authored tiny task, NOT inference of unknown rules, whole intelligence or a matched-cost speedup.",
+      "min_null_gain": 806,
+      "schema": "wsp35.direct-blank-circuit.v1",
+      "scientific_status": "DEV_SUPPORTED",
+      "scores": {
+        "blank": 1008,
+        "conventional": 2048,
+        "direct": 2048,
+        "lookup_only": 1242,
+        "oracle": 2048
+      },
+      "seconds": 0.36251,
+      "threshold_correct": 1843,
+      "threshold_null_gain": 205,
+      "trace_sha256": "a03a63b43025e050fc946bd241452e9cde57b95989225c3323eb9b0f13641475"
+    }
+  },
+  "explanation": "The source compiler received every gate truth table and every DAG edge. The directly written 216-bit circuit reproduced all 2048 outputs. The conventional and exact-symbolic arms tied; no unknown-rule learning or superior compute demonstrated."
+}

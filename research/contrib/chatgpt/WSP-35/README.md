@@ -16,3 +16,13 @@
 **Important limitations.** This extension is not a new unknown-rule learner, no real-world generalization claim, no information efficiency/speed superiority claim, and no independent SCIENTIFIC_PASS; WSP-06 already demonstrated a narrower task-specific fully numeric circuit. WSP-33 negative and WSP-34 mixed findings are immutable predecessors.
 
 Current README describes the implementation contract and does not itself claim a PRIMARY score, CI qualification, promotion or scientific acceptance.
+
+## Frozen first primary — public DEV, identical cross-platform reproduction
+
+**Result:** Direct-programmed blank circuit **2048/2048** (100%), fully converged gate-wise trained control **2048/2048** (100%), evaluator **2048/2048**, lookup-only **1242/2048**, blank/null **1008/2048**. Strongest-null advantage **806** exceeds prereg margin 205; correct count exceeds threshold 1843. Scientific classification **DEV_SUPPORTED**, independent SCIENTIFIC_PASS **UNVERIFIED**. No source, split, thresholds or mechanisms changed after observation.
+
+Primary source `208055b4f9c11c01ff1abab29a08f19294023783`, tree `310b13fdba4c51ef0082c4be81d77ab9a4b4a239`; prereg-only commit `ad447decf89513681cb5dd878eccac17a067334f`. Both hosted Linux and Windows pass **353** unit tests each, full WSP33 and WSP34 frozen DEV, WSP35 DEV, G29 and clean-tree regression. Primary [run #43118067551](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43118067551); G29 [run #43118067967](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43118067967).
+
+All **256** worlds, **256** cold restores, **256** exact same-source replays and **2048** independent oracle checks passed. Both systems have the same scores, checks, trained-control receipts and primary trace `a03a63b43025e050fc946bd241452e9cde57b95989225c3323eb9b0f13641475`. Conventional comparator had 8 fresh converged table fits, 2040 exact cache hits, 816 actual updates, BCE <= 0.00990988832188421. 216 writable binary synapses, 538-byte complete serialized checkpoint; Python compiler and generic numerical VM cost remain separate and unmatched.
+
+**Scientific limitation:** Primitive truth tables and the full circuit topology are provided for each case. This is an exact numerical circuit *compilation and replay* result, not learned unknown-rule construction, whole intelligence, broader knowledge completion, a trained-model performance victory or a matched total-cost speed claim. Earlier WSP33 negative and WSP34 mixed results remain unchanged. Complete per-OS primary output is in `result.json`; signed step-level custody and source coordinates in `provenance.json`. Evidence-bearing source must be independently requalified on its final exact SHA.
