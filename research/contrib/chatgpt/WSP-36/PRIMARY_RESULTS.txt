@@ -1,0 +1,106 @@
+{
+  "schema": "wsp36.primary-evidence.v1",
+  "status": "PRIMARY_OBSERVED_EXACT_SOURCE; FINAL_EVIDENCE_COMMIT_REQUALIFICATION_REQUIRED",
+  "study": "WSP-36 three-probe unknown gate acquisition",
+  "source": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "pr": 927,
+    "pr_branch": "research/wsp36-three-probe-unknown-gate-acquisition-20261111",
+    "pr_base": "research/wsp35-blank-circuit-construction-20261111",
+    "prereg_commit": "e2014e4d02e7d98cb72fe87786af4b60f5a75deb",
+    "tested_commit": "738cac47dc0c4d2b41f80a866a7086f640869240",
+    "tested_tree": "781788262e84851210a9b75328fd27cd50f2b040",
+    "g29_index_source": "2d6dba8d6ed47ea0c52892150409c07ade2b8017"
+  },
+  "qualification": {
+    "workflow_run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43121418383",
+    "trigger": "pull_request",
+    "complete": true,
+    "conclusion": "success",
+    "jobs": {
+      "linux": {
+        "job_id": 130862568124,
+        "platform": "Linux-7.0.0-1019-azure-x86_64-with-glibc2.43",
+        "python": "3.12.16",
+        "unique_regression_tests": 360,
+        "receipt_status": "PASS",
+        "total_qualification_steps_seconds": 244.109067
+      },
+      "windows": {
+        "job_id": 130862567827,
+        "platform": "Windows-2022Server-10.0.20348-SP0",
+        "python": "3.12.10",
+        "unique_regression_tests": 360,
+        "receipt_status": "PASS",
+        "total_qualification_steps_seconds": 350.038112
+      }
+    },
+    "primary_result_cross_platform": "EXACT_METRIC_AND_TRACE_DIGEST_MATCH",
+    "atlas": "PASS",
+    "clean_worktree": "PASS"
+  },
+  "primary": {
+    "schema": "wsp36.partial-evidence-weight-acquisition.v1",
+    "cohort": "PRIMARY",
+    "worlds": 256,
+    "gates_per_world": 8,
+    "gate_rows": 8192,
+    "composed_outputs": 2048,
+    "engineering": "PASS",
+    "scientific_status": "DEV_SUPPORTED",
+    "thresholds": {
+      "gate_correct": 7783,
+      "composed_correct": 1946,
+      "gate_gain": 820
+    },
+    "scores_gate_rows": {
+      "direct_0": 4131,
+      "direct_2": 6618,
+      "direct_3": 8192,
+      "trained_3": 8192,
+      "full4": 8192
+    },
+    "scores_composed": {
+      "direct_0": 1008,
+      "direct_2": 1420,
+      "direct_3": 2048,
+      "trained_3": 2048,
+      "full4": 2048
+    },
+    "two_to_three_probe_gate_gain": 1574,
+    "query_counts": {
+      "three": 6144,
+      "two": 4096,
+      "four": 8192,
+      "ood_three": 6144,
+      "ood_four": 8192
+    },
+    "cold_restores": 1536,
+    "source_replays": 256,
+    "oracle_parity": 2048,
+    "ood": {
+      "three_gate7_correct": 768,
+      "four_gate7_correct": 1024,
+      "gate7_rows": 1024,
+      "deliberate_unobserved_row_failure": "PRESERVED"
+    },
+    "capacity": {
+      "direct_writable_bits": 216,
+      "max_serialized_bytes": 538
+    },
+    "conventional": {
+      "actual_gradient_updates": 816,
+      "fresh_converged_fits": 8,
+      "cache_hits": 2040,
+      "worst_bce": 0.00990988832188421
+    },
+    "trace_sha256": "b0832e016e96c5d112e2df4f5422370e478376dbd25506055ddecd3f40879a1f"
+  },
+  "interpretation": {
+    "engineering": "PASS on both OS for pre-evidence source",
+    "scientific": "Bounded known-family rule acquisition succeeds and ties the converged conventional control. Not a SCIENTIFIC_PASS, no demonstrated superiority; observed out-of-family failure is mandatory negative evidence.",
+    "deployment": "NONE; draft PR remains isolated. No main, accepted ref, owner queue, runner, controller or FORGE/Hybrid integration.",
+    "limits": "Small synthetic known finite gate family and authored Python prior plus generic numeric interpreter; three probe bits uniquely identify each predeclared mask; not arbitrary knowledge acquisition, autonomous operator discovery, overall training replacement, or matched end-to-end compute."
+  },
+  "provenance_note": "This .txt is a non-executable receipt under WSP-36, excluded from the existing G29 indexed source extensions. It records the exact predecessor SHA and workflow evidence; final candidate SHA requires its own CI regression."
+}
