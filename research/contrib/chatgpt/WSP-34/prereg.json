@@ -1,0 +1,91 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-34",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "title": "Numerical operator synthesis without a pretrained operator or named-rule templates",
+  "exact_parent_sha": "d80a5a20714c10bae72e218798edb12dc94000b6",
+  "exact_parent_tree_sha": "9c8ba42dd50248829220262ce9c1ed60e0e5074a",
+  "predecessor_evidence": [
+    "WSP-32 #922: 4583/5760 bounded in-grammar cumulative fact acquisition",
+    "WSP-33 #923: 3184/5760 unfamiliar XOR/switch; fixed-first 3304, converged shared 3508, converged source/head 3636; engineering PASS, scientific negative"
+  ],
+  "question": "Can a blank, rule-neutral numerical operator layer acquire the missing XOR/multiplexer structures from the same evidence without rule identity, pretrained operator weights, new source queries or gradient training?",
+  "frozen_hypothesis": "A generic 3-input degree<=3 Boolean polynomial numerical circuit, with operator candidate synapses updated solely by observed source and target facts, improves accuracy by >=58 correct of the SAME 5760 WSP33 never-queried target labels over WSP33 frozen selected-two native result 3184, preserves every old target fact, and does not regress on either rule subgroup. The stronger converged control score 3636 is reported independently; not beating it bars any relative-superiority claim.",
+  "changed_paths": [
+    "research/contrib/chatgpt/WSP-34/**",
+    ".github/workflows/wsp21-pr-validation.yml",
+    ".ice/code-atlas.*"
+  ],
+  "cohort": {
+    "identity": "Exactly the WSP33 60 source-pair x 16 completion x 2 unknown-rule worlds; 1920 worlds/5760 heldout target labels; WSP29 original actual source checkpoints verified by WSP33 loader; no subgroup removal",
+    "target_known_indices": [
+      0,
+      1,
+      2,
+      4,
+      7
+    ],
+    "target_hidden_indices": [
+      3,
+      5,
+      6
+    ],
+    "source_fact_known_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      7
+    ],
+    "source_new_fact_budget": 2,
+    "source_selection": "Exact frozen WSP32 selected-two query/answer policy, no modifications; cold restore after each answer",
+    "unknown_rule_oracle": "Only evaluator uses WSP33 XOR and switch, never learner"
+  },
+  "numerical_machine": {
+    "inputs": "three numerical bits (effective source0(x), effective source1(x), x[0]); source tables are WSP32 as actually acquired",
+    "basis": "8 fixed Boolean monomials 1,a,b,c,ab,ac,bc,abc over GF(2), in this exact order; every coefficient vector in 0..255 is initially an eligible anonymous numerical circuit; no named XOR/switch templates",
+    "plasticity": "For each original observed target (not hidden targets), propagate numerical basis through each coefficient vector, multiply per-circuit eligibility by equality-to-real-target; reject contradictions; no weights trained by gradients",
+    "inference": "Surviving-circuit vote weighted 2^(-number-of-one-coefficients), using integer weights 2^(8-popcount); tie=>0; previously observed target bits override vote. All 256 candidates included regardless of hindsight. Operate on 3-bit binary signals with generic arithmetic; no rule label/path in learner.",
+    "memory": "256 eligibility bits plus 256*8 static coefficient bits, WSP32 source+fact state; report persistent/static/program bytes and all-in time, do not claim all model synthesized",
+    "gradients": 0,
+    "deterministic": true
+  },
+  "arms": [
+    "selected-two numerical operator",
+    "selected-two unchanged WSP33 native",
+    "selected-two unchanged WSP33 converged shared-feature trained head",
+    "selected-two unchanged WSP33 converged source/head",
+    "selected-two numerical linear-only ablation (masks 0..15; same evidence, no extra calls)"
+  ],
+  "tests": [
+    "known target and original/acquired source-fact retention after cold restore",
+    "bit-identical deterministic snapshot and replay",
+    "identical observed evidence => identical operator and prediction irrespective of hidden evaluator rule",
+    "negative: contradictory fact, invalid evidence and hidden target query rejected",
+    "ablation of interaction terms",
+    "zero observations => no oracle knowledge",
+    "compare all worlds, both unknown rules and representability groups, with no selective filtering"
+  ],
+  "frozen_design": {
+    "seeds": [],
+    "split": "All WSP33 cases fixed in prior source, 5 known targets and 3 heldout; no fresh splits",
+    "ordering": "WSP33 pair/completion/rule sequence",
+    "data_budget": "WSP33 exact 9600 source actual answers across four original arms; WSP34 observes 2 answers/world only, 3840 WSP34 model answers, no target queries",
+    "compute_budget": "One primary full 1920-world study; 30 min hosted per OS; no model API, GPU or paid service",
+    "capacity": "Fixed 256 candidate 8-bit coefficients + 256 eligibility bits and unchanged source memory",
+    "evaluator": "Heldout exact correct /5760 and by-rule; previously known source/target facts must remain exact",
+    "deterministic_expected": true
+  },
+  "classification_rules": {
+    "supported": "DEV_SUPPORTED if all custody/retention and source-budget checks pass, >=3242/5760, and neither XOR nor switch correct count below prior WSP33 selected-two subgroup (988/2880 XOR, 2196/2880 switch). Stronger trained control 3636 is separately disclosed and not called beaten unless score>=3636.",
+    "mixed": "MIXED if engineering passes and pooled score improves but either prereg rule subgroup regresses, or pooled below 3242.",
+    "negative": "SCIENTIFIC_NEGATIVE if engineering passes but pooled score<=3184, or pooled gain fails positive threshold; report all scores including negative ablation.",
+    "invalid": "INVALID if protocol/source/checkpoint mismatch, oracle leak, budgets exceeded, data filtering, or retention and replay controls fail."
+  },
+  "scientific_limits": "PUBLIC DEV only. Candidate coefficient basis, selection method, WSP32 source memory, and simulator are preauthored. This is zero-gradient numerical operator inference, NOT complete-programmed general intelligence, no proof of new primitive discovery without supplied universal basis, not fully zero-training, not independent unseen-world scientific acceptance, and not matched architecture-level efficiency.",
+  "permitted": "Isolated draft successor proposal; no current main, protected accepted-state, merge, promotion, integration, deployment, controller, queue, scheduler, private runner or first-use scientist gate mutation.",
+  "preregistration_note": "This file committed alone before any WSP34 learner, test or primary results; negative findings must be preserved unchanged."
+}
