@@ -1,0 +1,89 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-27",
+  "project": "Yggdrasil",
+  "contribution_class": "falsification",
+  "goal_issue": 910,
+  "parent_sha": "8f9c7fecc69cf21261cd2bf7bafb05961d3ce1f6",
+  "question": "Does locally propagated Boolean influence proxy routing of observed errors improve structural learning over error-agnostic and correct-output routing, under fixed capacity/information/forward budgets?",
+  "hypothesis": "Error-routed rewiring gains at least4 correct labels over EACH of original_single,uniform_matched,correct_routed, with observed fit at least746/768,zero initially correct facts lost and no per-task capacity ceiling violation. Reaching752 closes the original10-error gap but is secondary; missing any primary threshold is NEGATIVE.",
+  "workload": {
+    "seeds": [
+      17,
+      29,
+      43,
+      71
+    ],
+    "signatures": "all32 frozen signatures,128 cases,original WSP15 acquisition1024trials unchanged",
+    "observed_contexts": [
+      0,
+      1,
+      2,
+      4,
+      7,
+      3
+    ],
+    "feedback": "Actual six-example original/witness workload; context3 witness opposite of initial prediction. Initial472 valid observations must remain protected.",
+    "hidden": "Evaluate both unobserved contexts5,6 over all4 hidden assignments,never candidate feedback",
+    "evaluator_only": "WSP23 per-task ceiling trace and original WSP26 control result; NEVER proof wiring witnesses,optimal responses,target IDs or hidden labels in candidate"
+  },
+  "mechanism": {
+    "inference": "Unchanged6NAND sites,13 one-hot-or-empty afferent/output rows,75binary coordinates,output exactly onehot;5old-valid protection bits;external replay six3bit-input/1bit-label examples=24bits",
+    "packed_forward": "Reuse WSP26 exact packed NAND semantics,adding a current-forward activation trace; each trial evaluates committed and proposed circuits on all6examples. No source catalog or symbolic synthesis.",
+    "backward_influence": "Output-source sensitivity starts as all6lanes. Walk six gates in reverse: sensitivity of gate-afferentA is gate-output sensitivity AND current activation of afferentB; conversely forB. Propagate these masks to the existing selected source by bitwise OR. Row12(output selector) has all6lanes sensitivity. Eligibility for row is nonempty intersection of its sensitivity with feedback lanes. No loss-gradient descent; exact Boolean sensitivity is a supplied credit-routing rule. IMPORTANT: OR-combined reverse local sensitivities are only a proxy for total causal influence when paths reconverge. Local gate derivatives are exact,global row effects need not be. Preserve a constructed reconvergence negative and independently measure proxy false positives/negatives; do not require false global exactness or claim that the proxy establishes causal credit.",
+    "selection": "Fixed cyclic-first eligible row beginning at the original random row index, implemented by binary eligibility and first-win products. If no row eligible,all13 eligible. This cyclic policy is not claimed uniform among eligible rows. Even trials always use original random row/source exploration; odd routed trials use chosen row and auxiliary random source. All writes remain single-row.",
+    "streams": "Original WSP20 Random(seed) draws j,k,g,a,b exactly every trial; g,a,b remain unused for one-row updates. Separate Random(seed+27000) draws one source index for the selected row every trial in every arm,even when unused. Auxiliary variable-bound draws may diverge by arm; original stream stays unchanged.",
+    "commit": "Same numerical nonworsening six-example error gate AND zero protected-old errors. Direct masked one-hot row rewrite,not continuous weight-gradient optimization. Failed proposals never change committed weights.",
+    "limits": "Hand-designed local Boolean credit rule. Inactive hidden structure remains explored by original random even steps. It is not algorithm invention,arbitrary primitive discovery,unfamiliar transfer or complete training."
+  },
+  "arms": {
+    "error_routed": "Feedback lanes=current actual prediction errors;odd trials use eligible-row/auxiliary source",
+    "correct_routed": "Negative relevance control:feedback lanes=currently correct observed predictions;otherwise identical",
+    "uniform_matched": "Odd trials original uniform row,auxiliary source;no eligibility routing. Matches source-stream/use schedule and extra diagnostics",
+    "original_single": "Exact strongest WSP20/WSP26 original random row/source every trial;extra trace/influence/auxiliary diagnostics computed and ignored. Must reproduce742 and all7 prior aggregate counters exactly",
+    "disabled": "Same error-routed schedule and evaluation,but commit gate0. Must preserve original rows and472 fit"
+  },
+  "budget": {
+    "trials_per_task_per_arm": 8192,
+    "actual_current_plus_trial_six_context_forward_evaluations_per_task": 98304,
+    "logical_NAND_evaluations_per_task": 589824,
+    "additional_credit_work": "One6gate reverse influence sweep and13row eligibility/selection per trial in EVERY arm; report reverse steps,eligibility tests,aux draws,all7 original counters and actual timings. Additional trace/credit arithmetic is not free or equal to old uninstrumented timing.",
+    "update_cost": "One proposed row/trial across all arms; random streams and update acceptance differ. No graph bank,restarts,early stop or task/seed selection.",
+    "memory": "75persistent inferencebits+5protectionbits,24external replaybits;working13current+13trial rowwords,9sixbit activations,9sixbit node sensitivities,13sixbit afferent/output influences,eligibility/firstwinner,2RNGstates,counters. Count Python/checkpoint overhead; no hidden workspace-free claim.",
+    "replays": "Separate128cold restores/arm,4full deterministic signature19 replays perarm,charged in total time;not additional primary adaptation",
+    "stop": "One frozen comparison,max30min hostedjob;valid negative retained,no result-based tuning. No next experiment execution implicitly queued."
+  },
+  "controls": [
+    "256independent legal circuits x all8contexts:traced packed forward equals original numerical simulator",
+    "256circuits x each13row scalar input toggle x all8contexts:independent full numerical intervention recomputation measures proxy agreement/falsepositives/falsenegatives. Reconvergence mismatch is an expected model limitation,not an engineering failure. Local NAND two-input derivatives must be exact for all4 input assignments; known NAND(shared,shared) negative must demonstrate missed global influence.",
+    "four fixed128trial original_single prefix audits versus unchanged WSP20 reference before primary",
+    "128cold restores/arm and4seed-replays/arm;all8outputs+checkpoint bytes",
+    "strict invalid seed/mode/example/checkpoint and noncanonical-state negatives",
+    "baseline742 and all7 original operation counters exact;disabled472 and original weights exact;all arms old-valid loss0 and per-case finite capacity ceiling"
+  ],
+  "classification": {
+    "engineering_pass": "All controls,custody,budgets,reference state/operation checks valid;valid negative exits0",
+    "dev_supported": "error_routed>=746/768 and>=4 labels above EACH original_single,uniform_matched,correct_routed;zero initially correct fact loss;all controls valid",
+    "negative": "Any frozen primary gain requirement missed with valid controls. Report partial effects without upgrading result.",
+    "invalid": "Candidate receives oracle/certificate/task identity;capacity/info/budget drift;baseline/differential/custody failure;protocol changed after primary",
+    "scientific_pass": "Unavailable:already-studied public finite fixtures,supplied primitives/credit algorithm;larger exact-symbolic/fully-trained references fit768 but capacity-unmatched"
+  },
+  "qualification": "Frozen remote prereg before implementation/outcomes;existingWSP21read-only PR workflow on hostedWindows2022+Ubuntu,exact finalSHA/tree full original+WSP01-17/WSP19-27 suites,frozen evaluator,G29,clean source. All source/results/provenance in repo,earlier artifacts immutable.",
+  "changed_paths": [
+    "research/contrib/chatgpt/WSP-27/**",
+    ".github/workflows/wsp21-pr-validation.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "authority": {
+    "isolated_public_DEV": true,
+    "production": false,
+    "accepted_ref": false,
+    "promotion": false,
+    "merge": false,
+    "runner_or_controller_changes": false,
+    "queue_or_scheduler": false,
+    "paid_API": false
+  }
+}
