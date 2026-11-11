@@ -1,0 +1,48 @@
+name: WSP-21 constructive six-site capacity certificate regression
+on:
+  pull_request:
+    branches:
+      - research/wsp20-protected-joint-structural-credit-20261110
+    paths:
+      - 'research/contrib/chatgpt/WSP-21/**'
+      - '.github/workflows/wsp21-pr-validation.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  regression:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Emit exact G29 snapshot for permanent source pinning
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64,subprocess
+          from pathlib import Path
+          from scripts import build_code_atlas as atlas
+          sha=subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip()
+          artifacts=atlas.render(atlas.snapshot(Path(".").resolve(),sha))
+          print("WSP21_ATLAS_SOURCE|"+sha)
+          for path,content in artifacts.items():
+              encoded=base64.b64encode(content.encode("utf-8")).decode("ascii")
+              for offset in range(0,len(encoded),4096):
+                  print("WSP21_ATLAS|"+path+"|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
+          PY
+      - name: Full original WSP01-17 WSP19-21 regression and capacity certificate
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python research/contrib/chatgpt/WSP-21/qualify.py
