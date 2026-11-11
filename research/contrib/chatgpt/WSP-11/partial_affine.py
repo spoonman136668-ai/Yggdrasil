@@ -110,7 +110,7 @@ def symbolic_gf2(observations: tuple, x: tuple[int, int, int]) -> int:
         pivot = next((r for r in range(k, 4) if rows[r][k]), None)
         if pivot is None:
             raise ValueError("WSP11_UNDERSPECIFIED")
-        r = rows.index(pivot)
+        r = pivot
         rows[k], rows[r] = rows[r], rows[k]
         for j in range(4):
             if j != k and rows[j][k]:
