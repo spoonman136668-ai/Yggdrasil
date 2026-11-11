@@ -30,6 +30,27 @@ jobs:
           python-version: '3.12'
       - name: Validate G29 source snapshot generation (NOT committed atlas acceptance)
         run: python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }}
+      - name: Emit G29 candidate atlas chunks (advisory output, no repository writes)
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64
+          import json
+          import subprocess
+          from pathlib import Path
+          from scripts import build_code_atlas as atlas
+          root = Path(".").resolve()
+          sha = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+          artifacts = atlas.render(atlas.snapshot(root, sha))
+          for path, content in artifacts.items():
+              encoded = base64.b64encode(
+                  json.dumps(content, ensure_ascii=True).encode("ascii")
+              ).decode("ascii")
+              for offset in range(0, len(encoded), 1800):
+                  print("WSP10_ATLAS_PART|" + path + "|" +
+                        str(offset // 1800) + "|" + encoded[offset:offset+1800])
+          PY
       - name: Original Yggdrasil full regression
         run: python -m unittest discover -s tests -p "test_*.py" -v
       - name: All prior WSP-01 through WSP-09 full regressions
