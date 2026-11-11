@@ -73,7 +73,7 @@ def run():
                 predictions[mode] = tuple(model.predict(context(i)) for i in range(8))
                 times[mode] += time.perf_counter()-tick
                 for name in operations[mode]:
-                    operations[mode][name] += getattr(model, name)
+                    operations[mode][name] += getattr(model, {"nand_evaluations": "gate_evaluations"}.get(name, name))
                 if mode == "disabled" and model.rows != initial.rows:
                     raise AssertionError("WSP16_NO_WITNESS_STATE_CHANGED")
                 if mode == "neutral":
