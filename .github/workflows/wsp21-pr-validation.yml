@@ -1,4 +1,4 @@
-name: WSP capacity certificate regression (reused WSP21-27)
+name: WSP capacity certificate regression (reused WSP21-28)
 on:
   pull_request:
     branches:
@@ -9,6 +9,7 @@ on:
       - research/wsp24-active-causal-knowledge-20261111
       - research/wsp25-local-causal-rule-repair-20261111
       - research/wsp26-protected-two-row-credit-20261111
+      - research/wsp27-error-directed-structural-credit-20261111
     paths:
       - 'research/contrib/chatgpt/WSP-21/**'
       - 'research/contrib/chatgpt/WSP-22/**'
@@ -17,6 +18,7 @@ on:
       - 'research/contrib/chatgpt/WSP-25/**'
       - 'research/contrib/chatgpt/WSP-26/**'
       - 'research/contrib/chatgpt/WSP-27/**'
+      - 'research/contrib/chatgpt/WSP-28/**'
       - '.github/workflows/wsp21-pr-validation.yml'
       - '.ice/code-atlas.*'
 permissions:
@@ -54,7 +56,7 @@ jobs:
               for offset in range(0,len(encoded),4096):
                   print("WSP21_ATLAS|"+path+"|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
           PY
-      - name: Full original WSP01-17 WSP19-27 regression and error-directed credit
+      - name: Full original WSP01-17 WSP19-28 regression and disjoint credit replication
         env:
           PYTHONDONTWRITEBYTECODE: '1'
-        run: python research/contrib/chatgpt/WSP-27/qualify.py
+        run: python research/contrib/chatgpt/WSP-28/qualify.py
