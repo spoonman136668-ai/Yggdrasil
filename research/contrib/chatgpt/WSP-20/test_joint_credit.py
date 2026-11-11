@@ -1,10 +1,21 @@
 import hashlib
 import json
+import random
 import unittest
-from joint_credit import JointNand,PlasticNand,context,proposal,errors,threshold
+from joint_credit import JointNand,PlasticNand,context,proposal,errors,errors_reference,threshold,LENGTHS
 
 
 class WSP20Tests(unittest.TestCase):
+    def test_packed_execution_matches_original_all_contexts_256_circuits(self):
+        rng=random.Random(1729)
+        obs=tuple((context(i),i%2) for i in range(8))
+        for _ in range(256):
+            m=PlasticNand()
+            for j,n in enumerate(LENGTHS):
+                k=rng.randrange(n+1) if j<12 else rng.randrange(n)
+                m.rows[j]=[int(i==k) for i in range(n)]
+            self.assertEqual(errors(m.rows,obs),errors_reference(m.rows,obs))
+
     def test_coherent_proposal_wires_legal_gate_and_output(self):
         old=PlasticNand().rows;new=proposal(old,(0,0,2,3,4),True)
         self.assertEqual(new[4],[0,0,0,1,0]);self.assertEqual(new[5],[0,0,0,0,1]);self.assertEqual(new[-1][5],1)

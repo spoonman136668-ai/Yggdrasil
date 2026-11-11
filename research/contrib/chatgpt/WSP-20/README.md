@@ -11,3 +11,7 @@ Remote preregistration `e885a33b6700fefca8ecf15019df31a6ffa75762` preceded imple
 `python research/contrib/chatgpt/WSP-20/run_dev.py`
 
 Final original+WSP01-17+WSP19+WSP20 unit regression, frozen evaluator, permanent atlas and source integrity must pass on hosted Windows2022 and Ubuntu at one exact SHA/tree. No merge, main/accepted refs, controller/owner/runner/queue/scheduler, paid API or protected scientific first-use.
+
+## Semantics-preserving execution optimization
+
+The first primary run started at source bf91c084f869638301c33e77514150947b4d0c5c using generic binary dot products. Before any primary aggregate result was inspected, an independent256-circuit/1536-context microbenchmark showed exact packed-dot agreement and3.207x speedup (.9895s versus.3085s for64 repeats). Production preserves the original numerical XOR thresholds too; it uses popcount of binary weight/activation intersections for the same sum(w*v). An additional independent parity test covers all8 contexts on256 legal circuits,2048 comparisons. No graph proposal, reward/protection threshold, seed, observation or evaluation budget changed. The first reference run is retained to compare whole-run state digests; final qualification uses the new exact source. This microbenchmark is not a measured whole-pipeline3.2x gain.
