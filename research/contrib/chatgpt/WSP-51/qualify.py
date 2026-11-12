@@ -22,7 +22,7 @@ def main():
         p=subprocess.run(cmd,text=True,capture_output=True,encoding="utf-8",errors="replace",
                          env={**os.environ,"PYTHONDONTWRITEBYTECODE":"1"})
         out=p.stdout+p.stderr
-        tests=sum(map(int,re.findall(r"Ran (\\d+) tests? in",out)))
+        tests=sum(map(int,re.findall(r"Ran (\d+) tests? in",out)))
         receipt["unique_tests"]+=tests
         receipt["steps"].append({"name":name,"seconds":time.perf_counter()-t,"exit":p.returncode,"tests":tests})
         print("WSP51_STEP "+name+"\n"+out,flush=True)
