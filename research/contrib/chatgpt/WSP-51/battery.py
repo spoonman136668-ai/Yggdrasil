@@ -88,7 +88,7 @@ def one_episode(width, family, seed, encoding_kind, cohort):
     def evaluate(phase):
         t = time.perf_counter()
         facts = {(a, x): y for a, x, y in rows}
-        assert len(facts) == sum(b.seen.bit_count() for b in learned.cycle.seen), "EXACT_FACT_CUSTODY"
+        assert len(facts) == sum(bits.bit_count() for bits in learned.cycle.seen), "EXACT_FACT_CUSTODY"
         assert all(learned.apply(a, x) == y and raw.apply(a, x) == y for (a, x), y in facts.items()), "FACT_RETENTION"
         assert len(rows) <= 8192
         snapshot = learned.snapshot()
