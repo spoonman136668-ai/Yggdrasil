@@ -8,6 +8,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from source import Observation, SourceWorld
 from controls import WholeStreamTable, ErasedControl
+from direct_writer import DirectWeightWriter
 
 
 @dataclass(frozen=True)
@@ -66,3 +67,28 @@ def run_selftest_controls(world: SourceWorld) -> dict:
             arm["cold_restore_parity"] = True
         receipts["arms"][name] = arm
     return receipts
+
+def run_selftest_writer(world: SourceWorld) -> dict:
+    """Only fixture seeds, no DEV/PRIMARY scientific execution."""
+    if world.cohort != 'SELFTEST':
+        raise PermissionError('registered research cohorts are not fixtures')
+    model = DirectWeightWriter()
+    learn_observations(model, world.phase_a)
+    a = score_observations(model, world.heldout_a)
+    learn_observations(model, world.phase_b)
+    b = score_observations(model, world.heldout_b)
+    retention = score_observations(model, world.heldout_a)
+    restored = DirectWeightWriter.restore(model.snapshot())
+    if (score_observations(restored, world.heldout_a) != retention or
+            score_observations(restored, world.heldout_b) != b):
+        raise AssertionError('direct weight writer cold restore changed predictions')
+    return {'source':world.source_receipt(),
+            'arm': 'pure_direct_heuristic',
+            'phase_a': asdict(a), 'phase_b': asdict(b),
+            'a_retention_after_b': asdict(retention),
+            'exposed_actions': model.actions,
+            'informative_experiences': model.informative,
+            'gradient_steps': 0,
+            'numeric_weights': model.numeric_weight_count(),
+            'persistent_capacity_bits_upper_bound': model.capacity_bits(),
+            'cold_restore_parity': True}
