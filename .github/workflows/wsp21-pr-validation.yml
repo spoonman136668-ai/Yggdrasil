@@ -76,6 +76,7 @@ jobs:
           artifacts=atlas.render(atlas.snapshot(Path(".").resolve(),sha))
           print("WSP21_ATLAS_SOURCE|"+sha)
           for path,content in artifacts.items():
+              if path.endswith(".html"): continue
               encoded=base64.b64encode(content.encode("utf-8")).decode("ascii")
               for offset in range(0,len(encoded),4096):
                   print("WSP21_ATLAS|"+path+"|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
