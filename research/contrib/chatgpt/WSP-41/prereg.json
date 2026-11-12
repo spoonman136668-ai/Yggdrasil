@@ -59,7 +59,8 @@
     "plan_candidates": 8,
     "cold": "exact snapshot restore and corruption rejection",
     "retention": "freeze first-world weights while learning one separate world, count additional acquisition queries",
-    "repair": "report all cached contradictions remaining after construction, no perfect-fit filtering"
+    "repair": "report all cached contradictions remaining after construction, no perfect-fit filtering",
+    "exact_reconstruction": "For structured families report exact learned support-set equality per action, including spurious terms; arbitrary_hash has no finite target support score."
   },
   "metrics": [
     "action exact",
@@ -76,7 +77,7 @@
   ],
   "thresholds": {
     "engineering": "all prior full regression plus WSP41 tests, atlas and clean source on Windows/Linux, identical integer metric and trace",
-    "bounded": "all single_degree6 active128 episodes >=95% one-step,>=90% composition,>=90% plans; report every mixed family and budget without tuning",
+    "bounded": "all single_degree6 active128 episodes >=95% one-step,>=90% composition,>=90% plans; report every mixed family and budget without tuning Additionally require exact source-support reconstruction in every single_degree6 active128 action; evaluator-only parameter comparison, never supplied to learner.",
     "scientific": "DEV_SUPPORTED only for preset bounded thresholds, MIXED/NEGATIVE otherwise. No SCIENTIFIC_PASS without independent unfamiliar domain, matched strongest fully trained neural control and whole-process comparison. Symbolic runtime agreement is not control evidence for learning superiority."
   },
   "budget": {
@@ -103,5 +104,6 @@
     "Synthetic memberships are experience; zero gradients is not zero learning or zero data.",
     "Arbitrary unknown knowledge cannot be reconstructed without informative evidence."
   ],
-  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_PRIMARY"
+  "status": "PREREG_AMENDED_AFTER_DEV_BEFORE_PRIMARY",
+  "dev_diagnostic": "DEV showed mostly inactive random inputs can make a zero residual look accurate on a degree6 conjunction. Before PRIMARY, add exact recovered-support scoring as an additional required bound; keep all original prediction and comparator metrics. This is an explicit pre-PRIMARY amendment following DEV, not a PRIMARY-driven change."
 }
