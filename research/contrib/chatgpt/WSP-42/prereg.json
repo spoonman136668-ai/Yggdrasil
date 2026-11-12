@@ -1,0 +1,94 @@
+{
+  "schema": "wsp42.full-map-circuit-acquisition.v1",
+  "experiment_id": "WSP-42",
+  "date": "2026-11-11",
+  "parent_sha": "fa31ca3d91bf455aad0db0282cf2030aeb85ad65",
+  "parent_pr": 932,
+  "question": "Can direct numerical construction acquire an entire hidden state-transition map, rather than just one residual output bit on a supplied rotation?",
+  "hypothesis": "Basis interrogation builds unknown affine coefficients, then counterexample-minimized feature growth can acquire some complete vector nonlinear transition maps. Probe budget, output-cancellation and incorrect minimal features should expose failures; fully known affine success alone is insufficient for nonlinear support.",
+  "dimensions_max_first": [
+    32,
+    16,
+    8
+  ],
+  "families": [
+    "affine",
+    "four_nonlinear",
+    "eight_nonlinear"
+  ],
+  "actions": 2,
+  "budgets_per_action": [
+    128,
+    64
+  ],
+  "split": {
+    "DEV": [
+      61
+    ],
+    "PRIMARY": [
+      1409,
+      1423,
+      1427,
+      1429
+    ],
+    "seed_tag": "WSP42|cohort|seed|width|family"
+  },
+  "world": "Each action is an unknown vector-valued GF2 polynomial. Each output has hidden random bias and four distinct linear inputs. Nonlinear families add four/eight distinct monomials of random degree2..4, each with independent random nonzero output-vector coefficient. All matrix, bias, support and output coefficients hidden. Learner receives only width, budget and genuine full-state transition replies. No fixed rotation or known output map.",
+  "learner": "Query zero and every singleton (width+1 observations/action) to directly construct bias and linear vector coefficients. Then cycle real all-ones/random states (.5/.75/.875, fixed policy seed1997+width). Replay cached contradictions first. Select lowest differing output bit and greedily remove set input bits while that output's residual stays1. XOR full residual vector at remaining witness into a newly allocated mask feature (or existing coefficient). Any degree0..width allowed; cap width+1+32 cells/action and256 updates/action. Cached actual responses stored/counted. No hidden source or mask enumeration. Budget exhaustion during minimization preserves current model.",
+  "arms": [
+    "direct_full_map",
+    "basis_only_affine_model_same_initial_evidence",
+    "fully_fitted_multioutput_Hamming_RBF_same_active_transcript",
+    "independent_symbolic_execution_of_stored_numeric_coefficients",
+    "zero_map"
+  ],
+  "trained_control": "Closed-form conventional shared Hamming RBF Gram/Cholesky interpolation k=2^(-Hamming), one output coefficient vector per source input. Fit every observed output bit to max residual<=1e-7. Rounding12 decimals at threshold.5. This is trained kernel regression, not matched strongest neural control; all coefficients, input centers, probe cache and all-in time counted.",
+  "tests": {
+    "primary_episodes": 72,
+    "heldout_states": 64,
+    "heldout_sampling": "with replacement excluding active training action/state pairs",
+    "composition_sequences": 24,
+    "depths": [
+      2,
+      3,
+      4
+    ],
+    "plans": 4,
+    "plan_depth": 3,
+    "plan_candidates": 8,
+    "exact_structure": "evaluator compares all learned vector coefficients with hidden full polynomial; never supplies parameters to learner",
+    "cold": "exact checkpoint replay, corruption rejection",
+    "retention": "second independent full map acquired, no collateral first-world weight mutation; separate queries/cost reported",
+    "controls": "no fixed background; basis-only must fail on hidden nonlinear features where exposed; retain all errors and cached contradictions"
+  },
+  "thresholds": {
+    "engineering": "all mandatory previous regression and WSP42 tests plus clean tree/source atlas Windows/Linux; identical integer primary scores/trace",
+    "affine": "all affine128 source coefficients exactly recovered and all unseen states/compositions/goals correct",
+    "nonlinear": "on four_nonlinear128, >=95% exact one-step,>=90% composition/plans,>=90% exact action maps and >=10pp one-step gain over basis-only. All widths and seeds included, no filtering. Eight-term boundary reported separately.",
+    "scientific": "DEV_SUPPORTED only if affine and nonlinear bounds both pass, MIXED if affine bound only or partial nonlinear recovery; SCIENTIFIC_NEGATIVE if neither; INVALID on oracle leaks/protocol drift. No independent SCIENTIFIC_PASS or general intelligence without novel domains and matched strongest neural baselines."
+  },
+  "budget": {
+    "source_queries_primary_max": 256,
+    "secondary_world_separate": true,
+    "max_update_steps_per_action": 256,
+    "timeout_minutes": 30,
+    "stdlib": true,
+    "full_final_regression": true,
+    "hosted_windows_linux": true,
+    "paid": false,
+    "schedules": false
+  },
+  "permitted_paths": [
+    "research/contrib/chatgpt/WSP-42/**",
+    ".github/workflows/wsp21-pr-validation.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "Isolated contributor draft public synthetic research only; no merge/main, official loops, self-hosted runners, protected first-use, accepted refs, controller, scheduler, paid API, deployment or live actions.",
+  "limits": [
+    "Input bits and action identity explicitly given; state representation and search machinery supplied.",
+    "AND/XOR and affine priors are preauthored. All learned transition coefficients start unknown, but the discovery algorithm remains external Python software.",
+    "Converged kernel fit does not imply strongest neural comparator or matched capacity/cost.",
+    "No ground-up general intelligence claim from a synthetic full-map experiment."
+  ],
+  "status": "PREREG_FROZEN_BEFORE_IMPLEMENTATION_AND_PRIMARY"
+}
