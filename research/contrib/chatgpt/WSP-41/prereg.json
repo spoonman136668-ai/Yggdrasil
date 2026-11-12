@@ -1,0 +1,109 @@
+{
+  "schema": "wsp41.counterexample-circuit-growth.v1",
+  "experiment_id": "WSP-41",
+  "date": "2026-11-11",
+  "parent_sha": "002a142eed798b8adbf749015cc19bf171d54eb3",
+  "parent_pr": 931,
+  "question": "Can a blank numerical action circuit grow nonlinear features from contradictory experience without a supplied degree ceiling or enumeration of candidate supports?",
+  "hypothesis": "Counterexample minimization plus sparse XOR-of-conjunction weight construction will recover some higher-order sparse mechanisms outside WSP40's degree<=3 vocabulary. Multiple-term cancellation and arbitrary functions may defeat bounded greedy discovery; preserve the failures.",
+  "dimensions_max_first": [
+    16,
+    12,
+    8
+  ],
+  "families": [
+    "single_degree6",
+    "four_mixed_terms",
+    "eight_mixed_terms",
+    "arbitrary_hash"
+  ],
+  "actions": 2,
+  "budgets_per_action": [
+    128,
+    64
+  ],
+  "capacity_per_action": 32,
+  "split": {
+    "DEV": [
+      59
+    ],
+    "PRIMARY": [
+      1301,
+      1303,
+      1307,
+      1319
+    ],
+    "seed_tag": "WSP41|cohort|seed|width|family"
+  },
+  "world": "Known cyclic state rotation plus scalar XOR residual into bit0. Single degree6 uses random six distinct inputs. Four/eight mixed use distinct uniformly sampled supports of degrees1..6 XORed. Arbitrary residual uses SHA256 of fixed world tag, action, state &1, representing an unstructured deterministic function. Learner only receives width and probe replies; no source/family/seed/support.",
+  "learner": "Start zero terms. Probe stream cycles all-ones and pseudorandom states with densities.5/.75/.875, seed977+width, independent of world. On contradiction, greedily delete set bits in increasing index while residual relative to current model stays1. Write resulting support to numeric AND weights/threshold and XOR coefficient; toggle existing support. Supports may have any degree0..width. Limit32 cells/action,512 updates/action; on capacity or budget stop preserve current candidate. Cached real replies do not cause new oracle calls; all resident cache/steps/queries counted. Replay first cached contradiction before selecting new source probe. No brute-force candidate mask enumeration.",
+  "controls": [
+    "same-active-transcript independent symbolic execution of learned supports (runtime parity, not independent discovery)",
+    "fully fitted conventional Hamming RBF kernel least-squares interpolation same active transcript, k=2^(-Hamming), threshold.5",
+    "same-budget random-transcript fully fitted identical RBF",
+    "zero residual",
+    "literal observed-state table"
+  ],
+  "trained": "Exact Cholesky solve K alpha=y for distinct source states, positive-definite Hamming kernel, no regularizer or early stop. Require max train residual<=1e-7 per action or mark trained comparator unqualified. Capacity n_observations floating coefficients plus n_observations raw state centers; different prior/capacity explicitly measured. This is trained conventional kernel regression, not a fully trained neural comparator.",
+  "tests": {
+    "heldout_states": 64,
+    "heldout": "sample with replacement excluding active probe states. Controls with other transcripts may have seen states; count explicitly.",
+    "composition_sequences": 24,
+    "depths": [
+      2,
+      3,
+      4
+    ],
+    "plans": 4,
+    "plan_depth": 3,
+    "plan_candidates": 8,
+    "cold": "exact snapshot restore and corruption rejection",
+    "retention": "freeze first-world weights while learning one separate world, count additional acquisition queries",
+    "repair": "report all cached contradictions remaining after construction, no perfect-fit filtering",
+    "exact_reconstruction": "For structured families report exact learned support-set equality per action, including spurious terms; arbitrary_hash has no finite target support score."
+  },
+  "metrics": [
+    "action exact",
+    "composition exact",
+    "plan success",
+    "terms/degrees/updates/cache/query counts",
+    "matched-budget active/random RBF difference",
+    "same-info fitted RBF gap",
+    "memory bytes and capacity",
+    "train residual/convergence",
+    "construction, inference/planning, entire assay walltime",
+    "cold retention, corruption and independent-world isolation",
+    "trace/source/tree/prereg hashes, Python and OS"
+  ],
+  "thresholds": {
+    "engineering": "all prior full regression plus WSP41 tests, atlas and clean source on Windows/Linux, identical integer metric and trace",
+    "bounded": "all single_degree6 active128 episodes >=95% one-step,>=90% composition,>=90% plans; report every mixed family and budget without tuning Additionally require exact source-support reconstruction in every single_degree6 active128 action; evaluator-only parameter comparison, never supplied to learner.",
+    "scientific": "DEV_SUPPORTED only for preset bounded thresholds, MIXED/NEGATIVE otherwise. No SCIENTIFIC_PASS without independent unfamiliar domain, matched strongest fully trained neural control and whole-process comparison. Symbolic runtime agreement is not control evidence for learning superiority."
+  },
+  "budget": {
+    "primary_episodes": 96,
+    "max_source_queries_per_episode": 512,
+    "primary_queries_per_action": 128,
+    "secondary_world_separate": true,
+    "timeout_minutes": 30,
+    "stdlib": true,
+    "hosted_windows_linux": true,
+    "full_final_regression": true,
+    "paid": false,
+    "schedules": false
+  },
+  "permitted_paths": [
+    "research/contrib/chatgpt/WSP-41/**",
+    ".github/workflows/wsp21-pr-validation.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "External bounded synthetic contributor draft only; no merge/main/accepted refs, official research, self-hosted runner, protected first-use, controller, scheduler, live action, paid API or deployment.",
+  "limits": [
+    "Generic search, probing, minimization and allocation are externally written Python software, not learned or numeric internal cognition.",
+    "AND/XOR/rotation operator family is supplied; removing degree ceiling does not discover new computational primitives.",
+    "Synthetic memberships are experience; zero gradients is not zero learning or zero data.",
+    "Arbitrary unknown knowledge cannot be reconstructed without informative evidence."
+  ],
+  "status": "PREREG_AMENDED_AFTER_DEV_BEFORE_PRIMARY",
+  "dev_diagnostic": "DEV showed mostly inactive random inputs can make a zero residual look accurate on a degree6 conjunction. Before PRIMARY, add exact recovered-support scoring as an additional required bound; keep all original prediction and comparator metrics. This is an explicit pre-PRIMARY amendment following DEV, not a PRIMARY-driven change."
+}
