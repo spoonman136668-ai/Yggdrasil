@@ -1,0 +1,121 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-52",
+  "title": "Raw-stream syntax acquisition followed by direct numerical knowledge writes",
+  "status": "PROTOCOL_ONLY_NOT_EXECUTED",
+  "created": "2026-11-12",
+  "parent": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "sha": "9e6374119602ea57e479a1b36a35a5c0e932b4e1",
+    "line": "qualified WSP47",
+    "parent_pr": 938,
+    "other_evidence": "WSP51 language PR #942 is an unqualified exploratory sibling, not an accepted parent or training-data source"
+  },
+  "hypothesis": "Given only raw undelimited acoustic sample streams plus observed action consequences, a minimal representation warmup followed by direct numerical association writes can learn a bounded new lexicon and syntax, compose unshown instructions, recover from later contradiction, and retain prior knowledge. Any accuracy or whole-process-efficiency advantage must be demonstrated against a fully trained neural comparator and a strong symbolic grammar learner. A tie is not evidence of superiority.",
+  "novelty_vs_WSP51": "WSP51 supplies byte-sized word identities, frame boundaries, role slots, and two verb mechanisms. WSP52 must withhold segment boundaries, lexical addresses, grammar order and reordering on transfer, while preserving physical affordances and causal observations to all arms. The mechanism still relies on a finite programmed candidate grammar and supplied physical action library.",
+  "non_goals": [
+    "natural-language understanding",
+    "open-ended language generation",
+    "grammar induction with no structural prior",
+    "arbitrary representation invention",
+    "general intelligence",
+    "training-free acquisition of unobserved facts",
+    "inference about private, protected or paid data"
+  ],
+  "source": {
+    "type": "public synthetic deterministic, generator to be implemented AFTER this immutable preregistration and pinned BEFORE any DEV run",
+    "source_descriptor": "SHA256('WSP52|'+cohort+'|'+seed+'|'+encoding+'|'+component+'/'+index) as PRNG keys, byte-counter collision rejection; generated raw binary streams and before/after physical states only. Exact generator code SHA256, test vectors, candidate tree, and all source exposure digests must be recorded prior to DEV; no data from WSP51 PRIMARY or protected archives.",
+    "observations": "An utterance is a single unsplit binary acoustic stream; examples include the initial full eight-object physical state, stream, executed physical action's final state and source action/reset costs. No word boundaries, word identities, role labels, token IDs, grammar-order labels or oracle latent vectors.",
+    "semantics": "Eight entities at locations 0..3; four destination concepts; three permitted physical effects set object location to destination, destination+1 mod4, or destination+2 mod4. The physical action family is an allowed supplied simulator for every arm, NOT a discovered action ontology.",
+    "language": "15 unique variable-length 4..6-bit acoustic codewords: 8 entity names, 4 destination names, 3 action names. The generator enforces unique decodability within a world but supplies no codebook, delimiters, or role-order hints to learners. Phase A encodes three meanings under one of six slot permutations; phase B uses a different secret permutation. Identical information and syntax hypothesis class are available to all comparison arms.",
+    "source_controls": "Records must prove the 36 phase-A training commands are unique, cover every lexical meaning at least twice, and exclude their heldout combinations. 6 phase-B examples supply finite transfer evidence. No free resets or probes; the actual action budget is 42 per condition. Test instructions never enter a learner's constructor or updates."
+  },
+  "splits": {
+    "DEV": [
+      101,
+      103,
+      107
+    ],
+    "PRIMARY": [
+      1201,
+      1213,
+      1237,
+      1249
+    ],
+    "encodings": [
+      "identity",
+      "permuted",
+      "rotated"
+    ],
+    "cohort_separation": "Independent keyed source worlds; no seed or raw acoustic dictionary reuse between DEV/PRIMARY; once frozen, do not change assignments"
+  },
+  "interventions": {
+    "phase_A": "36 preselected distinct demonstrated commands spanning the known 8x4x3=96 semantic action triples, raw stream only; all arms receive the identical ordered source",
+    "phase_B": "After A evaluation, 6 additional demonstrated commands under a different secret slot permutation; all arms receive the same examples",
+    "evaluation": "Phase A: at least 60 unused triples per world (raw streams in known hidden A syntax). Phase B: all unseen semantic triples excluding its 6 demonstrations in hidden B syntax, including objects/destinations not paired in B. Cold reload and phase A repeat after B; all scores use actual next physical state, never next-symbol prediction.",
+    "negative_controls": [
+      "unknown acoustic binary sequences not generated from any learned word",
+      "role-order swap not represented in either evidenced grammar",
+      "ambiguous/aliased codebook counterworlds that are observationally indistinguishable",
+      "contradictory observed event updates requiring selective invalidation rather than silent overwrite"
+    ],
+    "invalid_condition": "Any per-world generator defect that exposes semantic labels, omits a word, accidentally reuses a heldout full stream in training, or fails its own generated-code unique-decodability condition invalidates that condition; do not discard such conditions after seeing model outcomes."
+  },
+  "arms": {
+    "pure_direct": "No gradient steps. Enumerate bounded segmentations (word lengths4..6) and the six order permutations, maintain evidence-consistent candidate structures and a numerical addressed bitplane memory of grounded associations. Commit or revise weights only when observationally justified; ambiguous candidate predictions abstain. Count enumeration, branch operations, memory bits and updates.",
+    "minimal_train_then_direct": "Exactly 64 deterministic gradient representation-warmup steps on the same raw streams and physical consequences (no oracle primitive targets), then use the same evidence-based direct numerical weight writer. Pre-fix initialization, optimizer and architecture before DEV and PRIMARY. Do not select the best number of warmup steps after seeing results.",
+    "conventional": "Independent genuinely trained raw-stream temporal sequence learner with bounded <=65,536 trainable parameters; same inputs and observable action consequences, no oracle lexical labels; full optimizer convergence procedure frozen before DEV, with maximum 20,000 updates, fixed early-stop rule and identical CPU-only cost accounting. This is a small conventional baseline, not state-of-art natural language.",
+    "symbolic": "Independent exhaustive evidence-consistent segmentation and grammar learner with the same available hypothesis prior and observations. Strong equality/abstention and exact evidence memory. Count full search cost, not just inference.",
+    "lookup": "Exact whole-stream demonstrated transition table with no compositional inference; same source evidence.",
+    "erase": "No learned association state; returns unknown.",
+    "oracle_ceiling": "Evaluator-only true generator mapping, never exposed to learner; descriptive score ceiling only, excluded from strongest fair comparator."
+  },
+  "budgets": {
+    "evidence": "36 A + 6 B demonstrations per condition, all charged, no extra active queries. Identical source order for all arms.",
+    "training": "Hybrid exactly64 gradient updates; pure direct/symbolic/lookup zero gradient updates; trained up to 20000 optimizer updates with frozen early-stop stopping criterion; precise FLOPs/CPU-time/memory and full hypothesis search included.",
+    "candidate_limits": "Three segments of length4..6, six permutations, no hidden lexical dictionary, state-dependent action hypotheses from the supplied physical library. Freeze absolute hypothesis/node/CPU/memory caps in implementation protocol before first DEV.",
+    "capacity": "Before DEV, serialize total persistent bits including codebook/segmentation candidates/conflicts/optimizer state; report all capacities. If capacities differ, no equal-capacity claim; add a capacity-matched control or mark superiority unverified.",
+    "hardware": "Stdlib and optionally pinned local CPU deep-learning dependency; no paid APIs, GPU/private runner, or schedules"
+  },
+  "gates": {
+    "prerequisite": "Commit generator, exact source identity, test vectors, both baseline implementations, limits, end-to-end cost methodology, clean and cold-restorable state. Independent protocol review before protected first use.",
+    "DEV": "Public development cohort only; preserve all positive, negative and partial results; freeze before PRIMARY.",
+    "engineering": "Focused tests including source isolation and leakage negatives, inherited WSP01-47 full regression, exact candidate SHA/tree and G29 source atlas, Linux and Windows completion. No selective re-running of outcomes.",
+    "primary": "Separately authorized/admitted protected first-use after final source and evaluator pin. No post-result source, seed, threshold, capacity, model-choice or stopping-rule changes.",
+    "science": "At least 85% exact unseen A action consequences and 75% unseen B after 6 examples; >=95% unchanged A retention after B; 100% cold restore and observed-fact recall; zero incorrect confident predictions on ambiguous counterworlds. For SCIENTIFIC_PASS additionally improve >=5 percentage points over the strongest fully qualified conventional OR symbolic control on the predeclared joint unseen measure at equal source and no greater whole-process cost, OR tie strongest control within 1pp at <=50% whole-process cost with no worse negative/retention metrics. Other cases are MIXED or NEGATIVE, never 'general intelligence'.",
+    "accept": "Independent qualified custody and project-owner science acceptance required; this document alone does not grant acceptance or integration authority."
+  },
+  "measuring": [
+    "overall unseen world-state exactness",
+    "phase A and phase B accuracy separated",
+    "A retention after B",
+    "semantic grounding not from full-stream memorization",
+    "unknown/ambiguous false-confidence rates",
+    "cold restore parity and tamper rejection",
+    "total experience/actions/resets",
+    "parameters and persistent memory bits",
+    "SGD steps, hypothesis candidates, wall time, actual CPU compute",
+    "source hashes, model seeds and test split provenance"
+  ],
+  "stop_rules": [
+    "No post-PRIMARY tuning",
+    "No hidden extra examples/resets",
+    "Stop and classify negative if all valid arms fail generalization and retraining cannot be compared fairly",
+    "If lexical/syntax family not identifiable from supplied observations, abstention is correct; never fabricate recovered meanings",
+    "If source or provenance drifts, invalidate scientific result and requalify source prior to any new execution"
+  ],
+  "boundaries": {
+    "research_only": true,
+    "proposal_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "merge_authority": false,
+    "first_use_authority": false,
+    "official_loop": false,
+    "runner_dispatch_authority": false,
+    "scheduled_tasks": false,
+    "paid_api": false,
+    "private_data": false
+  },
+  "note": "Preregistered design only. No WSP52 source, model, DEV, PRIMARY, CI, acceptance, or performance claim exists at this commit. Parent source is qualified WSP47, not the active WSP51 branch. Changes must remain an isolated research candidate."
+}
