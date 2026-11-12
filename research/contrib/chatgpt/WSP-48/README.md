@@ -1,0 +1,13 @@
+# WSP48: numerical factual-frontier exploration
+
+Preregistered before implementation at 374d61b55c337c9fb20b6b18ed60d1a15de878d4, on WSP47 candidate 9e6374119602ea57e479a1b36a35a5c0e932b4e1. External synthetic contributor draft, no official integration.
+
+Both policies maintain byte-identical WSP47 equation banks and identical factual graph/visit memory. Only the action rule differs: numeric backwards predecessor waves toward an untried action versus least-visited action at current state. Every frontier action is checked against an independent queue/sets shortest-path reference on exactly the same observed facts. Reference time is included in frontier timing, so these are instrumented whole-process costs, not isolated policy-speed claims. The candidate receives neither true graph nor family/seed. Only actual current-state actions, with reset to zero every 64 actions, provide knowledge.
+
+All 128/256/512/1024-step prefixes are retained. Evaluator-only admissible source states have minimum distance at most63 from zero. Common unseen queries exclude the union of both policies' facts. No unseen cases means unavailable; replay is separate. One-hot control reads every supplied label exactly; inference cannot recover arbitrary hash labels without observations. Consistent wrong polynomial priors can remain confident; all wrong-known answers and inaccessible counterworlds are reported.
+
+DEV seed89 completed before PRIMARY: frontier 87.0664% versus least-visit78.4418% mean width8 coverage at512 steps, +8.6246 percentage points, below preset10pp. Final frontier mean replay100%. Classification MIXED_NUMERIC_FRONTIER_BOUNDARY. No threshold or policy tuning follows this result. All12,288 DEV shadow actions matched. Local assay15.091 seconds, environment-specific; CI receipts supersede local timing.
+
+`equations.py` SHA256 bf04ed6499b35880bd7f38fccd55c0bd28999d9060c96b3217f825e10f402810 is frozen WSP47. Frozen world and numeric support are unchanged. Fixed bit-register payload excludes variable-width Python visit counters, object overhead and interpreter memory; it is not process RAM. Both arms allocate the same counters/registers. No claim of learned exploration, representation invention, neural training replacement or general intelligence.
+
+Run focused tests with `python -m unittest discover -s research/contrib/chatgpt/WSP-48 -p 'test_*.py' -v`. `qualify.py` runs all inherited tests and frozen WSP47 PRIMARY, then WSP48 tests/DEV and clean-source check. Existing WSP21 workflow runs full final regression and WSP48 PRIMARY on Linux/Windows. Source plus regenerated atlas is pinned before that first primary run. All primary outcomes, including misses, stay in the draft PR record.

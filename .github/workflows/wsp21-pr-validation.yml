@@ -1,4 +1,4 @@
-name: WSP capacity certificate regression (reused WSP21-47)
+name: WSP capacity certificate regression (reused WSP21-48)
 on:
   pull_request:
     branches:
@@ -29,6 +29,7 @@ on:
       - research/wsp44-randomized-contradiction-restriction-20261111
       - research/wsp45-numeric-internal-acquisition-20261112
       - research/wsp46-action-reachable-acquisition-20261112
+      - research/wsp47-numeric-trajectory-equations-20261112
     paths:
       - 'research/contrib/chatgpt/WSP-21/**'
       - 'research/contrib/chatgpt/WSP-22/**'
@@ -56,7 +57,8 @@ on:
       - 'research/contrib/chatgpt/WSP-44/**'
       - 'research/contrib/chatgpt/WSP-45/**'
       - 'research/contrib/chatgpt/WSP-46/**'
-      - 'research/contrib/chatgpt/WSP-47/**'
+      - 'research/contrib/chatgpt/WSP-48/**'
+      - 'research/contrib/chatgpt/WSP-48/**'
       - '.github/workflows/wsp21-pr-validation.yml'
       - '.ice/code-atlas.*'
 permissions:
@@ -95,11 +97,11 @@ jobs:
               for offset in range(0,len(encoded),4096):
                   print("WSP21_ATLAS|"+path+"|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
           PY
-      - name: Full WSP01-46 regression plus WSP47 integrated DEV
+      - name: Full WSP01-47 regression plus WSP48 integrated DEV
         env:
           PYTHONDONTWRITEBYTECODE: '1'
-        run: python research/contrib/chatgpt/WSP-47/qualify.py
-      - name: Frozen WSP47 public PRIMARY (numerical trajectory equations)
+        run: python research/contrib/chatgpt/WSP-48/qualify.py
+      - name: Frozen WSP48 public PRIMARY (numerical factual-frontier exploration)
         env:
           PYTHONDONTWRITEBYTECODE: '1'
-        run: python research/contrib/chatgpt/WSP-47/battery.py --cohort PRIMARY
+        run: python research/contrib/chatgpt/WSP-48/battery.py --cohort PRIMARY
