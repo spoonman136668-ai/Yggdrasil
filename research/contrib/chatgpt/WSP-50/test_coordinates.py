@@ -33,5 +33,5 @@ class Tests(unittest.TestCase):
     def test_cold_and_tamper(self):
         m=CycleModel(4);m.observe(1,5,3);s=m.snapshot();r=CycleModel.restore(s);self.assertEqual(r.snapshot(),s);self.assertEqual(r.apply(1,5),3)
         with self.assertRaises(ValueError):CycleModel.restore(s+b'x')
-    def test_frozen_raw(self):self.assertEqual(hashlib.sha256(Path(__file__).with_name('raw_equations.py').read_bytes()).hexdigest(),'bf04ed6499b35880bd7f38fccd55c0bd28999d9060c96b3217f825e10f402810')
+    def test_frozen_raw(self):self.assertEqual(hashlib.sha256(Path(__file__).with_name('raw_equations.py').read_bytes().replace(b'\r\n',b'\n')).hexdigest(),'bf04ed6499b35880bd7f38fccd55c0bd28999d9060c96b3217f825e10f402810')
 if __name__=='__main__':unittest.main()
