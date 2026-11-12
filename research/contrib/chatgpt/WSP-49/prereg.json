@@ -1,0 +1,107 @@
+{
+  "schema": "wsp49.frozen-representation-boundary.v1",
+  "experiment_id": "WSP-49",
+  "date": "2026-11-12",
+  "parent_sha": "9e6374119602ea57e479a1b36a35a5c0e932b4e1",
+  "parent_pr": 938,
+  "question": "Does the frozen WSP47 numerical learner generalize outside Boolean-polynomial generators and remain useful under isomorphic changes of state encoding?",
+  "hypothesis": "A supplied low-degree bit vocabulary may support raw structured maps but fail after an unknown nonlinear state relabeling. Finite ground-up learning must be distinguished from universal representation discovery. This is a frozen-learner boundary assay,not a tuned replacement.",
+  "widths": [
+    8,
+    6,
+    4
+  ],
+  "families": [
+    "affine_bits",
+    "modular_arithmetic",
+    "saturating_counter",
+    "coupled_grid",
+    "checksum_machine",
+    "random_map"
+  ],
+  "encodings": [
+    "identity",
+    "linear_bijection",
+    "random_permutation"
+  ],
+  "actions": 2,
+  "budgets": [
+    128,
+    512,
+    1024
+  ],
+  "reset_every_steps": 64,
+  "split": {
+    "DEV": [
+      97
+    ],
+    "PRIMARY": [
+      2111,
+      2113,
+      2129,
+      2131
+    ],
+    "seed_tag": "WSP49|cohort|seed|width|family"
+  },
+  "source": "Start0; every64 real actions reset0; encoder fixes0. Same latent world/policy trajectory for each encoding. Identity, invertible GF2 map built by 4*width random distinct-row XOR elementary operations from identity, and random permutation of labels1..N-1 fixing0; independent encoding RNG tags. Candidate sees only encoded state/current actual action and encoded outcome; no family/seed/decode tables.",
+  "families_detail": {
+    "affine_bits": "Frozen WSP47 linear World generator.",
+    "modular_arithmetic": "action0=(x+c0)%N, action1=(m*x+c1)%N; c0,m uniform odd1..N-1,c1 uniform0..N-1.",
+    "saturating_counter": "action0=min(N-1,x+s0),action1=max(0,x-s1),strides uniform1..7.",
+    "coupled_grid": "side=2**(width/2),x=lo,y=hi. action0: x=(x+s0)%side,y=(y+(old_x&1))%side. action1:y=(y+s1)%side,x=(x+(old_y&1))%side. s0,s1 uniform odd1..side-1.",
+    "checksum_machine": "half-width halves lo,hi. action0: hi=(hi+c0)%side,lo=lo XOR new_hi. action1: hi=hi XOR rotl1(lo),lo=(lo+c1)%side. c0,c1 uniform odd1..side-1.",
+    "random_map": "Frozen WSP47 arbitrary_hash World generator,information negative."
+  },
+  "learner": "Byte-identical WSP47 degree1/2/3/full equation banks and first-consistent adaptive selector. Least-visited current-state action policy with numeric comparator/tie0. No new prior,feature,search,operator,representation learner or post-result tuning. All banks/facts preallocated identically.",
+  "controls": [
+    "same four frozen degree banks",
+    "fully fitted observed-fact one-hot control",
+    "identity and linear-bijection same latent tasks",
+    "same latent rows/actions under all encodings asserted",
+    "independent cross-platform qualification"
+  ],
+  "tests": {
+    "primary_worlds": 72,
+    "encoded_conditions": 216,
+    "budget_evaluations": 648,
+    "actions_each_condition": 1024,
+    "unseen": 64,
+    "unseen_sampling": "Use common latent admissible queries unobserved by the identical latent trajectory; same sample encoded in every arm; if none,unavailable not generalization.",
+    "admissible": "Evaluator-only minimum distance<=63 from0.",
+    "replay": "all admissible state/action pairs; all observed facts separately; wrong-known on all pairs and inadmissible pairs.",
+    "composition": 24,
+    "plans": 4,
+    "plan_depth": 3,
+    "plan_candidates": 8,
+    "cold": "every bank snapshot/digest replay; corruption rejection; numerical facts and action budgets; latent rows/action equivalence across encodings",
+    "counterworld": "preserve unobserved-edge alternatives and the information-theoretic negative"
+  },
+  "thresholds": {
+    "engineering": "all inherited full WSP01-47 tests,seven or more new tests,G29/clean tree Windows/Linux; identical trace; source/action equivalence and100% observed recall.",
+    "bounded": "At1024 actions, non-affine/nonrandom families pooled unseen accuracy>=.90 for each encoding and random-permutation accuracy within5pp of identity,with genuinely unseen cases in every encoding; all observed facts exact. Report each width/family/encoding/prefix,even when aggregate passes. No unseen cases ->UNVERIFIED for generalization,not PASS.",
+    "classification": "DEV_SUPPORTED_FROZEN_REPRESENTATION_TRANSFER only if all positive criteria pass; valid misses=MIXED_FROZEN_REPRESENTATION_BOUNDARY; invariant failure INVALID. No independent SCIENTIFIC_PASS or GI."
+  },
+  "budget": {
+    "stdlib": true,
+    "max_source_steps_condition": 1024,
+    "max_features_bank": 256,
+    "timeout_minutes": 60,
+    "full_final_regression": true,
+    "hosted_windows_linux": true,
+    "paid": false,
+    "schedules": false
+  },
+  "authority": "External public synthetic contributor draft only. Isolated sibling of WSP48 based on qualified WSP47 to avoid importing an unfinished policy. No main/merge/accepted refs,official loop,private runner,protected first-use,controller,scheduler,paid API,integration,deployment or live action.",
+  "permitted_paths": [
+    "research/contrib/chatgpt/WSP-49/**",
+    ".github/workflows/wsp21-pr-validation.yml",
+    ".ice/code-atlas.*"
+  ],
+  "limits": [
+    "Finite small deterministic worlds,supplied bits/actions and polynomial vocabulary.",
+    "No continuous/noisy/partial-observation worlds or learned new representations.",
+    "Raw labels and extra feature banks count; whole-process cost and absence of strongest matched neural controls explicit.",
+    "This study identifies limits; a failed boundary is not fixed by changing the frozen metric."
+  ],
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_PRIMARY"
+}
