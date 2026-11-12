@@ -1,0 +1,100 @@
+{
+  "schema": "wsp40.active-nonlinear-discovery.v1",
+  "experiment_id": "WSP-40",
+  "parent_sha": "8380c48a6c8c3ece52bb4a255e4e4daeef5bb8d7",
+  "parent_pr": 930,
+  "date": "2026-11-11",
+  "question": "Can finite-prior intervention selection acquire hidden nonlinear causes rather than merely scaling affine tables?",
+  "hypothesis": "Entropy-selected state interventions identify unknown conjunctions of degree 2 or 3 with fewer observations than random probes, supporting direct numerical construction, unseen-state action prediction and composition. Two-conjunction XOR and degree4 falsify a single-degree<=3 structural prior. This is bounded hypothesis selection, not autonomous invention of primitives.",
+  "dimensions_max_first": [
+    16,
+    8,
+    4
+  ],
+  "families": [
+    "pair",
+    "triple",
+    "quartic_ood",
+    "xor_pairs_ood"
+  ],
+  "actions": 2,
+  "budgets_per_action": [
+    12,
+    4
+  ],
+  "split": {
+    "DEV": [
+      53
+    ],
+    "PRIMARY": [
+      1201,
+      1213,
+      1217,
+      1223
+    ],
+    "seed_tag": "WSP40|cohort|seed|width|family"
+  },
+  "world": "Each action cyclically rotates the binary state by action+1 and XORs its hidden nonlinear Boolean residual into output bit0. Hidden support is sampled uniformly without exposing seed/family/support to learners. Pair/triple/quartic is AND on sampled support; xor_pairs is XOR of two distinct sampled pair-ANDs. Rotation is explicitly given structural background, not acquired.",
+  "learner": "Candidate masks enumerate all nonempty subsets degree<=3; active query greedily balances surviving hypotheses over all-ones, single-coordinate deletions and 24 deterministic pseudorandom states (density .5/.75/.875). Queries never repeated; ties by numeric query. Remaining candidate lexicographic minimum is written as 0/1 connection weights and AND threshold. Empty version space uses residual0 and reports contradiction. Runtime uses stored numeric conjunction plus given rotation.",
+  "arms": [
+    "active_direct",
+    "random_direct_same_query_count",
+    "independent_set_identifier_same_active_transcript",
+    "fully_fitted_real_linear_degree<=3_monomial_regression_same_active_transcript",
+    "passive_singleton_same_query_count",
+    "zero_residual"
+  ],
+  "trained_control": "Analytical minimum-norm ordinary least-squares fit using two-pass modified Gram-Schmidt on observed feature vectors. Feature prior same monomial dictionary incl constant, multiple coefficients allowed. Check convergence on supplied labels and report failures/residual. This is a fully fitted conventional linear feature model, not a neural baseline nor matched architecture capacity.",
+  "tests": {
+    "heldout_states_per_episode": 64,
+    "composition_sequences": 24,
+    "depths": [
+      2,
+      3,
+      4
+    ],
+    "plan_goals": 4,
+    "plan_depth": 3,
+    "plan_candidates": 8,
+    "retention": "snapshot before training second independent world, exact cold replay after, reject corruption",
+    "repair": "one witnessed nonlinear-residual contradiction can eliminate candidates; score before/after, no hidden support access"
+  },
+  "metrics": [
+    "exact action states",
+    "exact composed states",
+    "oracle-validated plan success",
+    "identified unique support",
+    "remaining hypotheses and contradictions",
+    "query transcripts/digests",
+    "trained residual/convergence and predictions",
+    "cold retention/tamper",
+    "construction and inference seconds separately by arm",
+    "source, tree, Python, OS, total wall time"
+  ],
+  "classification": {
+    "engineering": "all deterministic unit/regression tests plus source atlas and clean tree Windows/Linux; identical integer scores and trace across OS; no hidden-label leakage",
+    "bounded_support": "pair/triple active12 >=95% exact heldout states, >=90% composition and plans, >=90% unique identification, >=5 percentage point gain over random4 on heldout; compare active4 vs random4 separately. Strong same-transcript control must agree exactly.",
+    "negative": "Preserve all OOD misses and ambiguity. Report OOD fractions even if accidentally represented on observed states.",
+    "science": "No independent SCIENTIFIC_PASS without unseen-domain independent replication, matched strongest neural controls and all-in cost. Classify DEV_SUPPORTED/MIXED/SCIENTIFIC_NEGATIVE based on preset bounded thresholds; strong-control tie is no direct-programming superiority."
+  },
+  "budget": {
+    "episodes_primary": 96,
+    "stdlib_only": true,
+    "max_queries_per_episode": 24,
+    "timeout_minutes": 30,
+    "full_final_regression": true,
+    "hosted": [
+      "ubuntu-latest",
+      "windows-2022"
+    ],
+    "paid_apis": false,
+    "schedules": false
+  },
+  "permitted_paths": [
+    "research/contrib/chatgpt/WSP-40/**",
+    ".github/workflows/wsp21-pr-validation.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "Isolated contributor draft, bounded public synthetic DEV/PRIMARY and established hosted CI only. No merge/main/accepted refs, official loop, private runner, controllers, live actions or deployment.",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_PRIMARY"
+}
