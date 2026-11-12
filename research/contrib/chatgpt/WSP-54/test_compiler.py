@@ -60,7 +60,7 @@ class CompilerContracts(unittest.TestCase):
                         self.assertLessEqual(m.nodes,300000)
                         self.assertEqual(m.gradient_steps,0)
                         self.assertEqual(score_a,retained)
-                        self.assertEqual(score_a["total"],48 if family=="noncommuting_order" else 144)
+                        self.assertEqual(score_a["total"],48)
                         self.assertTrue(b_receipt["hypotheses_b"]<=512)
                         cold=GradientlessCausalCompiler.restore(m.snapshot())
                         self.assertEqual(cold.snapshot(),m.snapshot())

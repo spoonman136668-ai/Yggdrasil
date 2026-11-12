@@ -94,9 +94,9 @@ class GradientlessCausalCompiler:
         (self.b if self.sealed_a else self.a).append((b,s,a))
 
     def _tick(self):
-        self.nodes+=1
-        if self.nodes>MAX_NODES:
+        if self.nodes>=MAX_NODES:
             raise BudgetExceeded("candidate node bound")
+        self.nodes+=1
 
     def _entity_options(self, rows,slot):
         labeled=[(grounded_entity(b,a),splits(s)) for b,s,a in rows]
@@ -237,7 +237,12 @@ class GradientlessCausalCompiler:
                         if e_slot==v_slot:
                             continue
                         candidate={**h,"entity_slot":e_slot,"verb_slot":v_slot}
-                        self._tick()
+                        try:
+                            self._tick()
+                        except BudgetExceeded:
+                            self.incomplete=True
+                            self.b_hypotheses=[]
+                            break
                         if all(self._infer(b,s,candidate)==a for b,s,a in self.b):
                             self.b_hypotheses.append(candidate)
                             if len(self.b_hypotheses)>MAX_MODELS:
