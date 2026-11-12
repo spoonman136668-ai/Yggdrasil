@@ -1,0 +1,126 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-51",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "date": "2026-11-12",
+  "exact_parent_sha": "9e6374119602ea57e479a1b36a35a5c0e932b4e1",
+  "parent_pr": 938,
+  "question": "Can a learner ground a tiny unfamiliar utterance system in observed objects and action consequences, directly write numerical association weights, compose unseen instructions and preserve knowledge, at the same experience budget as a fitted trained control?",
+  "hypothesis": "A fixed gated numeric acoustic-address memory can acquire primitive noun, destination and verb associations from 10 actual demonstrations and compose held-out instructions without iterative optimization of those associations. The supplied three-slot syntax, acoustic symbol boundaries, two candidate verb mechanisms, and action simulator are not discovered. A matched evidence-table control should tie; neural superiority is not presumed.",
+  "inputs": [
+    {
+      "name": "synthetic grounded microlanguage",
+      "source": "stdlib-only SHA256-derived deterministic synthetic utterance forms; public, no real-language data, no private inputs",
+      "sha256": "Defined by frozen generator formula: SHA256('WSP51|'+cohort+'|'+seed+'|'+encoding+'|'+role+'|'+index), first 8-bit unique unused address by counter increments; actual input records and digests emitted by evaluator before scoring; no held-out answer revealed to learner."
+    }
+  ],
+  "split": {
+    "DEV": [
+      103
+    ],
+    "PRIMARY": [
+      2309,
+      2311,
+      2333,
+      2357
+    ],
+    "cohort_tag": "WSP51|cohort|seed|encoding",
+    "encodings": [
+      "identity",
+      "permuted",
+      "shifted"
+    ],
+    "worlds_per_seed": 3,
+    "isolated_worlds": 12
+  },
+  "world": "Four visible distinguishable entities with one binary position each, observed through explicit pointing; two destination effects (0/1). Two candidate verb rules place(target) and avoid(target), names permuted per world. Acoustic forms are random unique byte-valued pulse addresses, not existing vocabulary. A three-frame utterance with supplied pause boundaries has fixed [verb,noun,destination] syntax. Learner never gets the world's private acoustic maps or a demonstration of a full three-frame composition outside verb evidence. Verbs are inferred from actual before/after world transitions, with both candidate hypotheses checked. Target demos identify destination by actual environment sensor, nouns by actual pointing. All observations and actions counted.",
+  "exposure": "Exactly 4 noun pointing experiences + 2 destination pointing experiences + 4 verb action demonstrations (2 per verb, at both targets with reset/reference physical states explicitly charged). All arms receive identical ordered observations. No label hints except observed event consequences and predefined verb-hypothesis family. Acoustic identity is reencoded by one-to-one unique 8-bit pulse map per condition, not provided to learner. All learners begin empty and have no pretrained language.",
+  "models": {
+    "direct": "Three numeric bitplane memories (noun 256x2, destination 256x1, verb 256x1) and occupancy masks; acoustic equality gates write concept values learned from observed grounding, with contradictory observations setting a per-address conflict bit and preventing confident prediction; decoder composes via fixed supplied syntax and action arithmetic.",
+    "trained": "Independent one-hot linear logistic/softmax learner: same three acoustic input/output heads, trained on the identical 10 event labels with frozen 100 full-order SGD passes, step size 0.2, no pretrained embeddings and no additional observations; use fixed winner with calibrated abstention on unobserved pulse forms. Training and inference CPU/time count.",
+    "evidence_table": "Strong exact symbolic paired-experience dictionary with same source observations, fixed syntax, action and abstention; expected to tie direct writes.",
+    "erase": "Same decoding/effector structure with no acquired association weights; reports only unknown."
+  },
+  "frozen_design": {
+    "seeds": [
+      103,
+      2309,
+      2311,
+      2333,
+      2357
+    ],
+    "split": "DEV only 103; PRIMARY 2309,2311,2333,2357. No cross-cohort seed reuse. Three encoding conditions per seed.",
+    "ordering": "Ground nouns in source entity order0..3, then destinations0..1, then verbs by source order, each with both destination observations. Heldout 16 [verb2 x noun4 x destination2] compositions in lexicographic semantic order; learner sees acoustic frames only. Evaluator labels withheld until scoring.",
+    "data_budget": "10 teacher experiences per encoding condition; no data augmentation or free reruns; 16 heldout compositions (not supplied during learning); 4 unknown-pulse negatives; 1 contradiction per condition after primary readout; single cold reload; 4 swapped-slot negatives.",
+    "compute_budget": "Stdlib Python 3.12, 100 passes x10 supervised examples in gradient control; direct/lookup exactly 10 write events; count steps and wall-clock per learner; per-condition <=10000 source-free decoding operations; <=20 seconds local per seed; exact source/actions/timing recorded.",
+    "capacity": "Direct 3 x 256 addressed word arrays with 2/1/1 output bits, three occupancy masks and conflict mask; trained 256x4 logits + seen masks, table up to10 keys. Capacities not equal; report them explicitly. Fixed grammar/action vocabulary and sampler shared.",
+    "evaluator": "Execute decoded command from identical fresh known 4-bit entity-state snapshot and compare predicted resulting state to heldout authoritative simulated consequence; count abstentions wrong. Cold restore byte-identity and prediction parity. Unknown and slot-order errors must abstain; retention/contradiction separately.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Direct numerical writes",
+    "Minimal-training calibrated linear heads (100 SGD passes, identical experiences)",
+    "Exact evidence table",
+    "Erase/no-evidence",
+    "Unknown pulse heldout",
+    "Wrong slot order",
+    "Contradictory grounding after baseline",
+    "Novel unpaired acoustic remapping (no transfer claim)"
+  ],
+  "metrics": [
+    "heldout_compositional_action_accuracy",
+    "observed_grounding_accuracy",
+    "trained_and_table_accuracy",
+    "unknown_false_confidence",
+    "slot_order_false_confidence",
+    "retention_after_later_updates",
+    "contradiction_detection",
+    "cold_restore_parity",
+    "memory_bits",
+    "model_updates",
+    "experience_count",
+    "CPU_walltime_including_training_and_writes"
+  ],
+  "classification_rules": {
+    "engineering_pass": "Focused tests, inherited WSP01-47 full regression, source/identity and actual-observation parity, successful Linux+Windows CI and G29 source atlas on candidate SHA; no source-drift or dirty checkout.",
+    "dev_supported": "On PRIMARY direct >=95% heldout composition and 100% observed facts, 100% cold parity, zero unknown/slot-order false-confidence, contradiction detected in all 12 conditions; equal source budgets. Gradient and exact-table comparator results all reported, not filtered. No general-language claim.",
+    "scientific_supported": "Only if direct beats strongest fully trained AND exact-table control by >=5 percentage points on matched PRIMARY composition while passing all dev_supported rules and total cost <= both; no retroactive metric changes. Exact-table expected to tie, so scientific superiority is unlikely in this toy.",
+    "mixed": "Any informative incomplete result or bounded gain without all thresholds, including control tie, engineering passes without scientific superiority.",
+    "negative": "Direct fails preregistered dev thresholds with complete valid evidence; or direct provides no advantage over strongest controls (explicitly record tie as no superiority).",
+    "invalid": "Source or seed leakage, nonshared evidence, heldout labels supplied to learner, unmatched action budget, corrupted restore accepted, missing controls, unstable source identity or failed qualification prevents scientific result."
+  },
+  "risks": [
+    "Fixed word/pause segmentation and 3-slot syntax are supplied, not learned. This is artificial compositional grounding, not natural-language understanding.",
+    "The teacher explicitly points and exposes actions; knowledge cannot be inferred without source information.",
+    "Two verb hypotheses are preprogrammed, not invented. Novel grammar/real audio/general cognition remain untested.",
+    "Address memory is a full 256-slot lookup; direct weight writing could tie an ordinary table. Count capacity and no blanket training-cost advantage claim.",
+    "Standard trained one-hot head uses supervised labels inferred from sensory consequences; this is a limited conventional baseline, not strongest modern neural model."
+  ],
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/WSP-51/**",
+    ".github/workflows/wsp21-pr-validation.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "official_loop": false,
+    "first_use_private_data": false,
+    "paid_api": false,
+    "scheduled_tasks": false
+  },
+  "preregistration_note": "This frozen prereg commit precedes any WSP51 implementation, DEV or PRIMARY. Any corrections post implementation must be non-outcome-informed and versioned explicitly before protected PRIMARY; no scientific claim without original-source qualification."
+}
