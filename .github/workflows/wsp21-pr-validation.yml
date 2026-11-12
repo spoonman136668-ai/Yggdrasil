@@ -100,7 +100,7 @@ jobs:
       - name: WSP52 source-only SELFTEST (no DEV or PRIMARY exposure)
         env:
           PYTHONDONTWRITEBYTECODE: '1'
-        run: python research/contrib/chatgpt/WSP-52/test_source.py
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-52 -p 'test_*.py' -v
       - name: Full WSP01-46 regression plus WSP47 integrated DEV
         env:
           PYTHONDONTWRITEBYTECODE: '1'
