@@ -1,0 +1,90 @@
+{
+  "schema": "wsp45.numeric-internal-acquisition.v1",
+  "experiment_id": "WSP-45",
+  "date": "2026-11-12",
+  "parent_sha": "16e33b463ac503cfa3a9a9413961f20549c94fdc",
+  "parent_pr": 935,
+  "question": "Can acquisition, probe selection, coverage tracking and numerical coefficient writes run as fixed threshold/synaptic state transitions, rather than an external task-dependent discovery compiler?",
+  "hypothesis": "A fixed general threshold machine can incrementally compute certified Boolean polynomial coefficients from actual replies, acquire linear/quadratic operators from their complete low-degree subcubes, and recover arbitrary operators only after sufficient information. Missing high-order evidence must preserve errors, not fictitious inference.",
+  "widths_max_first": [
+    8,
+    6,
+    4
+  ],
+  "actions": 2,
+  "families": [
+    "linear",
+    "quadratic",
+    "cubic_ood",
+    "arbitrary_hash"
+  ],
+  "phases": [
+    "linear_basis",
+    "quadratic_basis",
+    "full_truth"
+  ],
+  "split": {
+    "DEV": [
+      73
+    ],
+    "PRIMARY": [
+      1709,
+      1721,
+      1723,
+      1733
+    ],
+    "seed_tag": "WSP45|cohort|seed|width|family"
+  },
+  "world": "Unknown width-bit output map for each of2 actions. Linear has random bias and4 distinct linear inputs/output (at width4 all4). Quadratic adds4 distinct pair-input monomials with random nonzero output vector; cubic adds4 degree3 terms instead. Arbitrary_hash generates deterministic unstructured full output vectors. Learner receives only width, actual numeric x/y replies and preprogrammed local arithmetic; never family/seed/source.",
+  "numeric_machine": "Fixed bit arrays for observed truth weights, seen bits, partial ANF coefficient weights, subset-coverage counts and fault telemetry. All observations are decoded by fixed signed-weight threshold matches over every state; selected old reply read by dot products. Numeric delta-XOR toggles each coefficient whose mask contains the observed input; coverage counts increment only for newly seen inputs. Coefficients become active only when every submask has been observed, using numeric threshold gates. Data-dependent Python candidate search/dictionary/min/sort is absent from learning updates. Fixed loops are generic simulation. All probe choices come from numeric first-missing winner gates over a prewired degree-then-state address order. Output parity uses threshold gates; source adapter just packs chosen numeric address. This is a programmed learning algorithm, not autonomous algorithm invention.",
+  "capacity": "Each action resident truth2**n*n bits, partial coefficients2**n*n bits, seen2**n bits, subset counts2**n bounded integers, fault bit. Certified coefficient bits derived, fixed readout mask weights/prewired order static. Include all storage and checkpoint bytes; fixed feature family preallocated, no dynamic capacity.",
+  "phases_spec": "Observe exactly every state of degree<=1, then<=2, then all states, using numeric query policy. Score each phase on32 sampled-with-replacement unseen inputs/action where any remain; full phase uses exhaustive all-state replay and must never be called unseen generalization. Evaluate24 unseen action sequences of length2..4/phase and4 depth3 goals using learned maps. Full-phase compositions can reuse seen primitive inputs but have untrained action sequences.",
+  "controls": [
+    "independent external exact Boolean Mobius/compiler from identical replies with same zero-for-unobserved coefficient prior; must tie",
+    "fully fitted conventional one-hot least-squares lookup from same replies (unique observed one-hot coefficients take target, unseen zero; global minimum training error0)",
+    "zero-weight memory and disabled-learning ablation",
+    "counterexample: cubic/hash scores preserved at early phases",
+    "independent second-world memory and cold/tamper/replay"
+  ],
+  "trained_control": "Closed-form fully fitted conventional one-hot linear regression, outputs per observed source address. Explicitly different feature prior; its unseen scores cannot establish superiority to strongest trained neural model.",
+  "tests": {
+    "primary_worlds": 48,
+    "phase_evaluations": 144,
+    "unseen_per_partial_phase_per_action": 32,
+    "full_replay_per_action": "2**width",
+    "sequences": 24,
+    "plans": 4,
+    "plan_depth": 3,
+    "plan_candidates": 8,
+    "repair": "after full acquisition flip one actual input/action/output bit in source, observe exactly that real replacement once; all updated coefficients and all full replay must match external independent compilation; other action and second world unchanged",
+    "incremental_certificate": "all activated coefficients equal true full-source coefficients for linear/quadratic/cubic teacher; only when all submasks observed; hash full certificate validated by independent exhaustive coefficients"
+  },
+  "thresholds": {
+    "engineering": "full final inherited regression,new tests,source atlas,clean tree Windows/Linux; identical integer scores/trace and numeric/external coefficient/readout parity",
+    "positive": "all linear linear-basis and quadratic quadratic-basis unseen predictions/compositions/goals exact; all full maps and one-observation point repairs exact; zero disabled-learning information gain",
+    "negative": "cubic/hash early stages must have nonzero failures, report every world and stage; full-truth replay is not generalization",
+    "science": "DEV_SUPPORTED only for preset bounded numeric-internalization and negatives. No independent SCIENTIFIC_PASS or general intelligence; all rules, learning arithmetic and representation family remain supplied."
+  },
+  "budget": {
+    "stdlib": true,
+    "timeout_minutes": 45,
+    "full_final_regression": true,
+    "hosted_windows_linux": true,
+    "max_truth_states_per_action": 256,
+    "paid": false,
+    "schedules": false
+  },
+  "permitted_paths": [
+    "research/contrib/chatgpt/WSP-45/**",
+    ".github/workflows/wsp21-pr-validation.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "Isolated bounded public synthetic contributor draft/hosted CI. No merge/main/accepted refs, official loop, private runner, protected first-use, controller,scheduler,paid API,integration,deployment or live action.",
+  "limits": [
+    "The exact general threshold/synaptic learning procedure and finite Boolean feature basis are programmed.",
+    "Unknown facts still require source observations. No prior-free or evidence-free knowledge.",
+    "This does not port all ofWSP44 adaptive randomized discovery into neurons; it first isolates internal exact acquisition/selection/certification arithmetic.",
+    "Python remains the generic numerical simulator/validation/IO, not absent software."
+  ],
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_PRIMARY"
+}
