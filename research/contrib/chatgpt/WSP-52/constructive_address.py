@@ -285,3 +285,24 @@ class ConstructiveAddressWriter:
 
     def capacity_bits(self):
         return 8 * len(self.snapshot().encode("ascii"))
+
+
+class CountOnlyAddressWriter(ConstructiveAddressWriter):
+    """No-gradient control with identical raw partition and numeric write rules.
+
+    Uses observed co-occurrence support for address selection rather than a
+    learned continuous margin. The same supplied unordered-effect prior applies.
+    This control is not automatically capacity/compute matched to the gradient
+    model, but helps isolate whether gradients add beyond simple frequency.
+    """
+
+    def __init__(self, *, steps=0):
+        if type(steps) is not int or steps != 0:
+            raise ValueError("count-only control requires zero gradient steps")
+        super().__init__(steps=steps)
+
+    def _entity_score(self, word, entity):
+        counts = self.support.get(word)
+        if not counts or counts.get(entity, 0) < MIN_SUPPORT or len(counts) != 1:
+            return None
+        return float(counts[entity])

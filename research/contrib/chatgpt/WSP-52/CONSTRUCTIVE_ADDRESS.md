@@ -24,3 +24,8 @@ Run:
 Required engineering gates: inherited full WSP01–47 Linux/Windows regression and exact-source G29 atlas (Linux/Windows). Record exact SHA, results and any infrastructure failure in PR #943, not in the user's Library. No merge, official autonomy/controller integration, acceptance, deployment, paid service or scheduled tasks.
 
 Only a **prospectively frozen**, independently meaning-identifiable successor source with order-sensitive counterworlds, matched controls and unbiased first-use evaluation could support a scientific claim about learned representations versus conventional/symbolic methods. Exploratory SELFTEST performance, positive or negative, does not confer that claim.
+
+
+## Follow-up mechanism-control clarification
+
+The gradient arm's initial six-fixture result was viewed before this additional control was implemented. The additional **count-only address control** therefore remains exploratory and cannot retroactively establish a confirmatory scientific result. It uses the identical three-part raw-stream hypothesis family, raw observation budget, commutative effect keys and numerical write/readout rules; it selects addresses using unanimous observed-frequency support rather than 64 learned gradient updates. Record the full six-fixture outcomes and persistent bits for both without changing thresholds or discarding negative outcomes. This control deliberately avoids the earlier structurally trivial zero-gradient ablation (which could not write at all). Capacity and total CPU/search work still differ and must not be claimed matched.

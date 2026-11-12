@@ -4,7 +4,7 @@ import math
 import unittest
 from dataclasses import asdict
 
-from constructive_address import ConstructiveAddressWriter, _features, _observable
+from constructive_address import ConstructiveAddressWriter, CountOnlyAddressWriter, _features, _observable
 from source import Observation, build_world
 from fixture_harness import learn_observations, score_observations
 from direct_writer import DirectWeightWriter
@@ -93,22 +93,30 @@ class ConstructiveAddressTests(unittest.TestCase):
                 w = build_world("SELFTEST", seed, encoding)
                 model = ConstructiveAddressWriter()
                 ablation = ConstructiveAddressWriter(steps=0)
+                count_only = CountOnlyAddressWriter()
                 direct = DirectWeightWriter()
-                for learner in (model, ablation, direct):
+                for learner in (model, ablation, count_only, direct):
                     learn_observations(learner, w.phase_a)
                 model.seal_a()
                 ablation.seal_a()
+                count_only.seal_a()
                 a = score_observations(model, w.heldout_a)
+                count_a = score_observations(count_only, w.heldout_a)
                 direct_a = score_observations(direct, w.heldout_a)
-                for learner in (model, ablation, direct):
+                for learner in (model, ablation, count_only, direct):
                     learn_observations(learner, w.phase_b)
                 model.finalize_b()
                 ablation.finalize_b()
+                count_only.finalize_b()
                 b = score_observations(model, w.heldout_b)
+                count_b = score_observations(count_only, w.heldout_b)
                 direct_b = score_observations(direct, w.heldout_b)
                 model.use_phase("A")
                 retention = score_observations(model, w.heldout_a)
                 replay = ConstructiveAddressWriter.restore(model.snapshot())
+                count_replay = CountOnlyAddressWriter.restore(count_only.snapshot())
+                self.assertEqual(count_replay.snapshot(), count_only.snapshot())
+                self.assertEqual(count_only.gradient_steps, 0)
                 self.assertEqual(replay.actions, 42)
                 self.assertEqual(replay.gradient_steps, 64)
                 for row in w.heldout_a[:3]+w.heldout_b[:3]:
@@ -117,6 +125,9 @@ class ConstructiveAddressTests(unittest.TestCase):
                 rows.append({"seed":seed, "encoding":encoding,
                              "A":asdict(a),"B":asdict(b),"retention":asdict(retention),
                              "direct_A":asdict(direct_a),"direct_B":asdict(direct_b),
+                             "count_only_A":asdict(count_a),"count_only_B":asdict(count_b),
+                             "count_only_capacity_bits":count_only.capacity_bits(),
+                             "count_only_numeric_weights":count_only.numeric_weight_count,
                              "actions":model.actions,
                              "gradient_updates":model.gradient_steps,
                              "gradient_operations":model.gradient_operations,
