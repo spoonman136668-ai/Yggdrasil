@@ -40,6 +40,6 @@ class Tests(unittest.TestCase):
     def test_frozen_equations(self):
         import hashlib
         from pathlib import Path
-        self.assertEqual(hashlib.sha256(Path(__file__).with_name('equations.py').read_bytes()).hexdigest(),'bf04ed6499b35880bd7f38fccd55c0bd28999d9060c96b3217f825e10f402810')
+        self.assertEqual(hashlib.sha256(Path(__file__).with_name('equations.py').read_bytes().replace(b'\r\n', b'\n')).hexdigest(),'bf04ed6499b35880bd7f38fccd55c0bd28999d9060c96b3217f825e10f402810')
 
 if __name__=='__main__':unittest.main()
