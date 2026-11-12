@@ -1,0 +1,101 @@
+{
+  "schema": "wsp43.proven-nonlinear-coefficients.v1",
+  "experiment_id": "WSP-43",
+  "date": "2026-11-11",
+  "parent_sha": "1865d48a7a1ccc25fd24fd89b653493cd944e021",
+  "parent_pr": 933,
+  "question": "Can witnessed, exact finite-difference coefficient construction fix the full-map nonlinear discovery limit, and where do data/compute ceilings appear at maximum scale?",
+  "hypothesis": "Repeated counterexample minimization followed by a complete local subset interrogation yields exact vector polynomial coefficients instead of heuristic full-residual writes. At sufficient evidence budget, this should reduce false coefficients and improve full-map recovery versus the frozen WSP42 heuristic. High-width/high-term budgets and subset screens may still fail; retain all negatives.",
+  "dimensions_max_first": [
+    128,
+    64,
+    32,
+    16,
+    8
+  ],
+  "families": [
+    "eight_nonlinear",
+    "sixteen_nonlinear",
+    "thirtytwo_nonlinear"
+  ],
+  "actions": 2,
+  "budgets_max_first": [
+    1024,
+    512,
+    128
+  ],
+  "split": {
+    "DEV": [
+      67
+    ],
+    "PRIMARY": [
+      1511,
+      1523,
+      1531,
+      1543
+    ],
+    "seed_tag": "WSP43|cohort|seed|width|family"
+  },
+  "world": "Same unknown vector-valued GF2 polynomial structure as WSP42, with random hidden bias/four sparse linear inputs per output and8/16/32 unique nonlinear degree2..4 terms, each carrying an independent nonzero output-vector coefficient. Width now up to128. No known transition background or hidden source supplied to learner.",
+  "learned_capacity_per_action": "width+33 total resident nonzero vector features in both direct and heuristic arms; up to32 hidden nonlinear features fits by construction, no adaptive capacity growth",
+  "source_budget": "effective per action=min(preregistered budget,2**width-32) so evaluation retains unseen states. If effective<width+1, pre-screen that cell without running. Record screened cells separately, never call them failed or executed. Actual source query/cache-read counts reported for every arm.",
+  "direct_algorithm": "Acquire bias/full singleton basis. On first cached/new counterexample select lowest residual output bit. Repeatedly remove set input bits, restarting full passes until no deletion retains that bit's residual. If witness degree>8, resource-screen this local subset and stop acquisition without claiming recovery. Otherwise query every subset of witness, with exact real source responses and count/cache all calls. Complete GF2 Boolean Mobius transform gives all actual vector coefficients in that subcube. Only after complete interrogation, replace those exact coefficients in resident numeric model; no partial unsupported writes. This may learn multiple features; max256 update batches/action and fixed resident capacity. Stop with current model on source/capacity/subset budget.",
+  "arms": [
+    "direct_exact_local_coefficients",
+    "WSP42_heuristic_same_source_budget_ceiling_capacity_and_policy_seed",
+    "converged_independent_GF2_feature_regression_same_direct_transcript_and_discovered_feature_vocabulary",
+    "basis_only_affine",
+    "zero_map"
+  ],
+  "control": "Frozen WSP42 heuristic copied verbatim except accepted width/budget range and shared policy seed2333+width, plus effective-budget cap; no original WSP42 source mutation. Conventional GF2 vector regression does exact Gaussian elimination on all direct observed states and direct discovered monomial features. Report rank, inconsistent equations and training errors. It is a fitted algebraic system-ID control with supplied discovered representation, not a neural baseline and not independent discovery. No SCIENTIFIC_PASS over training without strongest matched neural control.",
+  "tests": {
+    "planned_primary_cells": 180,
+    "expected_budget_screens": 12,
+    "expected_executed": 168,
+    "heldout_states": 64,
+    "composition_sequences": 24,
+    "depths": [
+      2,
+      3,
+      4
+    ],
+    "plan_goals": 4,
+    "plan_depth": 3,
+    "plan_candidates": 8,
+    "structure": "exact complete action map and false/wrong output coefficient counts against evaluator-only source",
+    "cold": "canonical snapshot replay/corruption rejection",
+    "retention": "separate independent acquired world; source/cost counted separately; preserve first-world bytes",
+    "negative": "128-bit/128-probe cells screened (129 basis replies needed); preserve all acquisition stops, cache contradictions, representation/subset limits"
+  },
+  "thresholds": {
+    "engineering": "all predecessor full final tests, WSP43 tests, clean source/atlas on Windows/Linux; primary integer scores and trace agree",
+    "coefficient": "direct must have zero wrong nonzero coefficients in every completed batch/cell; failures INVALID for the asserted exact transform invariant",
+    "bounded_gain": "on width<=32, eight/sixteen nonlinear,1024-budget executed cells: direct exact action-map fraction>=.90,heldout>=.95,composition/plans>=.90,and matched-ceiling heuristic one-step margin>=5pp. No post-result threshold/split/budget adjustment; report all other cells.",
+    "scientific": "DEV_SUPPORTED for preset gain and invariant, MIXED if invariant holds but gain threshold misses, NEGATIVE if valid but no useful recovery. No independent SCIENTIFIC_PASS/general intelligence/unknown primitive invention/training replacement."
+  },
+  "budget": {
+    "primary_max_source_queries_per_action": 1024,
+    "max_update_batches_per_action": 256,
+    "max_subset_degree": 8,
+    "max_subset_source_states": 256,
+    "timeout_minutes": 45,
+    "stdlib": true,
+    "full_final_regression": true,
+    "hosted_windows_linux": true,
+    "paid": false,
+    "schedules": false
+  },
+  "permitted_paths": [
+    "research/contrib/chatgpt/WSP-43/**",
+    ".github/workflows/wsp21-pr-validation.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "External synthetic contributor draft only; no accepted refs/main/merge, official loops/private runner/protected first-use/controllers/schedulers/paid API/live action/deployment.",
+  "limits": [
+    "State bits/action IDs and AND/XOR numeric operator algebra remain supplied.",
+    "Discovery/minimization/finite-difference mechanism is authored external Python, not learned internal general cognition.",
+    "Fitted algebraic control has supplied discovered features; it cannot establish neural training superiority.",
+    "Additional source probes buy information; larger budget is never described as free learning."
+  ],
+  "status": "PREREG_FROZEN_BEFORE_IMPLEMENTATION_AND_PRIMARY"
+}
