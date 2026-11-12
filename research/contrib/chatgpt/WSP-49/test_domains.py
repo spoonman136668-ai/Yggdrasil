@@ -5,7 +5,7 @@ from observer import Observer
 from equations import EquationBank
 
 class Tests(unittest.TestCase):
-    def test_frozen_kernel(self):self.assertEqual(hashlib.sha256(Path(__file__).with_name('equations.py').read_bytes()).hexdigest(),'bf04ed6499b35880bd7f38fccd55c0bd28999d9060c96b3217f825e10f402810')
+    def test_frozen_kernel(self):self.assertEqual(hashlib.sha256(Path(__file__).with_name('equations.py').read_bytes().replace(b'\r\n', b'\n')).hexdigest(),'bf04ed6499b35880bd7f38fccd55c0bd28999d9060c96b3217f825e10f402810')
     def test_encodings_bijection(self):
         for w,k in itertools.product((4,6,8),('identity','linear_bijection','random_permutation')):
             e=Encoding(w,k,'unit');self.assertEqual(e.encode(0),0)
