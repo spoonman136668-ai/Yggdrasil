@@ -1,0 +1,82 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-38",
+  "track": "weight-space programming",
+  "contributor": "chatgpt",
+  "title": "Ceiling-first full-stack training-free numerical world model: highest reliable scale and backoff",
+  "source_parent_sha": "d32651ffb8d2c34aa3c4ceb617857df5d98dc9f9",
+  "source_parent_pr": "https://github.com/spoonman136668-ai/Yggdrasil/pull/928",
+  "frozen_at": "2026-11-11",
+  "developer_disclosure": "Local DEV prototype source was constructed and smoke-tested before this preregistration; no PRIMARY world/score was executed. Therefore DEV numbers are exploratory. All PRIMARY seeds, thresholds and cohorts are frozen by this committed prereg prior to PRIMARY.",
+  "objective": "Implement a complete bounded training-free numerical relation model with memory, multi-hop inference, intervention, repair, cold restore and unseen query compositions. Attempt max preregistered scale first, back off through fixed sizes, preserve resource and negative results, and compare a strong sparse Python symbolic oracle. Explicitly separate specified algorithm compilation from autonomous knowledge discovery.",
+  "hypotheses": [
+    "With complete, explicit graph observations and supplied numerical interpreter, composed answers at all executed sizes remain exact without gradient fitting.",
+    "The general-purpose interpreter can reuse acquired numerical graph weights for new compositions after cold restore and local edge intervention.",
+    "Upper scale eventually becomes cost- or memory-noncompetitive with a sparse symbolic graph representation; determine the largest scale satisfying a prespecified latency criterion.",
+    "Withheld true edges cannot be perfectly recovered from incomplete observations alone; demonstrate this negative without target-label leakage."
+  ],
+  "fixed_design": {
+    "relation_count": 8,
+    "edges_per_relation_per_entity": 3,
+    "entity_scale_maxfirst": [
+      32768,
+      16384,
+      8192,
+      4096,
+      1024,
+      256
+    ],
+    "dense_nominal_memory_budget_bytes": 536870912,
+    "budget_rule": "Screen levels whose 8*N*N/8 dense-bit bytes exceed budget before attempting. Mark RESOURCE_SCREENED_NOT_EXECUTED; never call this a model failure.",
+    "evaluation_worlds": {
+      "DEV": [
+        7
+      ],
+      "PRIMARY": [
+        1103,
+        1109,
+        1117
+      ]
+    },
+    "primary_seeds_no_pretuning": true,
+    "source_generator": "SHA256('WSP38-EDGE-V1|world|N|rel|entity|counter') first 8 bytes modulo N, deterministically filling 3 unique edges for each row",
+    "heldout_graph_source": "SHA256('WSP38-WITHHOLD|world|N|rel|source|target') modulo 2; remove roughly half of true edges from learner observations only",
+    "source_scope": "Synthetic seeded public directed multi-relation graph; no hidden-source labels sent to model; no natural text, knowledge base from a corpus, or real environment is provided.",
+    "prompt_free_query_type": "(source integer, ordered relation sequence of length 1–6, target integer)",
+    "queries_per_size_world": 48,
+    "novel_composition_queries_per_size_world": 24,
+    "novel_queries": "Independent deterministic query seed world+500, not passed to model during construction.",
+    "fidelity_metric": "All evaluated answers must match independent Python set-based graph walk on complete source records.",
+    "cold": "Snapshot complete numeric state, validate SHA256 and exact canonical re-encoding.",
+    "repair": "Remove one observed relation edge; require changed factual answer, exactly one fewer edge, and unaffected relation rows unchanged with cold replay.",
+    "negative": "Half-withheld observations must fail to recover at least one true edge; report number missing without inventing a guess.",
+    "baselines": [
+      "Python set-based sparse graph traversal with identical complete information and query set",
+      "Incomplete-observation numerical world (negative control)"
+    ],
+    "trained_baseline": "Not feasible in this bounded experiment; do not claim superiority over fully trained conventional neural learners or all-in training replacement.",
+    "code_identity": {
+      "model_py_sha256": "0e6baf46379857e343ff840a5656cd4a509e81a2bc69213f1af824b85bde2510",
+      "battery_py_sha256": "e0acdd4fa83e445b50f7737cf716377a3833568eba4cf838ad0039e4a87b8a23",
+      "test_model_py_sha256": "2048d5b547f0a703f4986e7e0046ec4ffbb4d2bd8485e7f99ad9abc4182cceed"
+    },
+    "query_grounding": "For each sampled relation sequence, verify the entire positive and negative reachability bitset against independently computed sparse graph reachability, not merely a random positive/negative target. Preserve exact all-positive checks as efficacy controls."
+  },
+  "thresholds": {
+    "engineering": "Every executed scale: zero mismatches across FULL positive/negative reachable-target sets for sampled and held-out sequences; cold exact parity, successful isolated repair, half-withheld known-edge failures, corruption rejection, regression passes on Windows and Linux.",
+    "primary_success": "Both platforms complete all primary worlds and provide source/tree receipts, deterministic correctness digests, and full legacy regressions.",
+    "resource_exclusion": "Never classify a prescreened memory level as a computational or scientific failure.",
+    "sweetspot": "Largest executed scale that scores 100% and has aggregate numeric query time <=2.0 times Python sparse oracle across 3 primary worlds on each platform; report per-platform winners separately and only claim shared winner if same. Timing is implementation and hardware dependent.",
+    "scientific_classification": "BOUNDARY_MEASURED when qualified. SCIENTIFIC_NEGATIVE for claims of superior model intelligence: identical known-data answers cannot show independent knowledge discovery. INVALID if leakage, missing controls, unqualified source, unplanned tuning or drifting primary."
+  },
+  "stop": {
+    "per_run_minute_cap": 30,
+    "no_extra_github_workflows": true,
+    "no_paid_api": true,
+    "no_exhaustive_unsafe_memory_allocation": true,
+    "no_schedule_or_private_runner": true,
+    "no_main_merge_promotion_or_deployment": true,
+    "no_forge_yggdrasil_owner_controller_mutations": true
+  },
+  "prereg_revision": "Pre-PRIMARY correction: initial DEV revealed that sampling only random targets could overrepresent easy negative answers. Strengthened frozen full-reachability-set oracle controls and updated source hash, without changing cohort seeds, size ladder, thresholds for sweetspot, budget or experiment scope. Both prereg revisions precede remote implementation and first PRIMARY."
+}

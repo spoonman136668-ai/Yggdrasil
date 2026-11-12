@@ -1,4 +1,4 @@
-name: WSP capacity certificate regression (reused WSP21-37)
+name: WSP capacity certificate regression (reused WSP21-38)
 on:
   pull_request:
     branches:
@@ -19,6 +19,7 @@ on:
       - research/wsp34-numeric-operator-construction-20261111
       - research/wsp35-blank-circuit-construction-20261111
       - research/wsp36-three-probe-unknown-gate-acquisition-20261111
+      - research/wsp37-multiaxis-weight-knowledge-frontier-20261111
     paths:
       - 'research/contrib/chatgpt/WSP-21/**'
       - 'research/contrib/chatgpt/WSP-22/**'
@@ -37,6 +38,7 @@ on:
       - 'research/contrib/chatgpt/WSP-35/**'
       - 'research/contrib/chatgpt/WSP-36/**'
       - 'research/contrib/chatgpt/WSP-37/**'
+      - 'research/contrib/chatgpt/WSP-38/**'
       - '.github/workflows/wsp21-pr-validation.yml'
       - '.ice/code-atlas.*'
 permissions:
@@ -74,11 +76,11 @@ jobs:
               for offset in range(0,len(encoded),4096):
                   print("WSP21_ATLAS|"+path+"|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
           PY
-      - name: Full original WSP01-17 WSP19-37 regression and six-regime DEV assay
+      - name: Full original WSP01-17 WSP19-38 regression and ceiling-first DEV assay
         env:
           PYTHONDONTWRITEBYTECODE: '1'
-        run: python research/contrib/chatgpt/WSP-37/qualify.py
-      - name: Frozen WSP37 public PRIMARY (six regimes, 3 budgets, 256 worlds each)
+        run: python research/contrib/chatgpt/WSP-38/qualify.py
+      - name: Frozen WSP38 public PRIMARY (peak-first memory, reasoning, repair, and cost)
         env:
           PYTHONDONTWRITEBYTECODE: '1'
-        run: python research/contrib/chatgpt/WSP-37/battery.py --cohort PRIMARY
+        run: python research/contrib/chatgpt/WSP-38/battery.py --cohort PRIMARY
