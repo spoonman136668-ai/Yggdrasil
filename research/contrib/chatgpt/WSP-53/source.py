@@ -195,6 +195,8 @@ def build_world(family: str, cohort: str, seed: int, encoding: str,
         raise ValueError("unregistered seed")
     if encoding not in ENCODINGS:
         raise ValueError("unregistered encoding")
+    if cohort == "DEV":
+        raise PermissionError("DEV locked until complete comparator qualification and admission")
     if cohort == "PRIMARY" and not primary_admitted:
         raise PermissionError("PRIMARY first-use requires separately admitted evidence")
     rng = _Keyed(family, cohort, seed, encoding)

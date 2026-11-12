@@ -74,6 +74,8 @@ class WSP53SourceTests(unittest.TestCase):
         for family in FAMILIES:
             with self.assertRaises(PermissionError):
                 build_world(family, "PRIMARY", 5101, "identity")
+            with self.assertRaises(PermissionError):
+                build_world(family, "DEV", 3101, "identity")
             with self.assertRaises(ValueError):
                 build_world(family, "DEV", 9901, "identity")
             with self.assertRaises(ValueError):
