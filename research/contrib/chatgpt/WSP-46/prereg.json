@@ -1,0 +1,93 @@
+{
+  "schema": "wsp46.action-reachable-acquisition.v1",
+  "experiment_id": "WSP-46",
+  "date": "2026-11-12",
+  "parent_sha": "c2710ab16fc37b1467212c5dec40a345988859ef",
+  "parent_pr": 936,
+  "question": "Does the numerical acquisition mechanism still learn when it can obtain only real action-reachable trajectories, instead of arbitrary state membership probes?",
+  "hypothesis": "Known-family numerical acquisition may transfer some information under trajectory sampling, but missing basis/subcube evidence and unreachable states can block it. An unrestricted membership control will remain exact after full coverage; its success must not be presented as trajectory intelligence.",
+  "widths_max_first": [
+    8,
+    6,
+    4
+  ],
+  "families": [
+    "linear",
+    "quadratic",
+    "cubic_ood",
+    "arbitrary_hash"
+  ],
+  "actions": 2,
+  "budgets": [
+    512,
+    1024
+  ],
+  "reset_every_steps": 64,
+  "split": {
+    "DEV": [
+      79
+    ],
+    "PRIMARY": [
+      1801,
+      1811,
+      1823,
+      1831
+    ],
+    "seed_tag": "WSP46|cohort|seed|width|family"
+  },
+  "world": "Same frozen WSP45 map generator,disjoint tags. Agent starts state0. Only choose action0/1 from current state; next state is full true output. Reset only to0 every64 actual transitions, counted. No arbitrary state injections in trajectory arms. Evaluator computes complete reachability graph separately and never supplies it to agents.",
+  "arms": [
+    "numerical least-visited-action trajectory policy",
+    "random-action trajectory with same source-step/reset budget",
+    "unrestricted-membership numerical acquisition counterfactual control, same raw reply count (after full coverage repeats source0)",
+    "fully fitted one-hot regression on active trajectory transcript",
+    "zero learned memory"
+  ],
+  "native_policy": "Prewired signed-weight threshold state-address matches read numeric visit weights for each action. Choose minimum-visit action with numeric comparator/tie0, then gated visit-count increments. Each actual reply updates the unchanged frozen WSP45 NumericLearner for that action. Python routes source events and simulates numeric arithmetic; no hidden source/reachability oracle enters learner/policy.",
+  "frozen_numeric_source_sha": "731008fa9adaed3d2cf880078cb342511e620838",
+  "capacity": "frozen WSP45 task memory for each of2 actions plus2*(2**width) bounded visit counters; same learning capacity across numerical trajectory/random/membership arms. Host evaluator/control storage counted separately.",
+  "tests": {
+    "primary_worlds": 48,
+    "budget_evaluations": 96,
+    "reachable_unseen": "evaluate up to64 state/action pairs reachable from0 and not observed by active policy; with-replacement sampling. If none remain, explicitly report NO_UNSEEN_REACHABLE_CASES and score exhaustive reachable replay separately, never claim unseen generalization.",
+    "all_state_unseen": "up to64 unobserved action/state pairs including unreachable; mark unavailable if exhausted; metrics distinguish reachable/unreachable",
+    "full_replay": "all2*2**width source transitions",
+    "composition_sequences": 24,
+    "plan_goals": 4,
+    "plan_depth": 3,
+    "plan_candidates": 8,
+    "source_restriction": "assert every active/random observed state belongs to evaluator reachability and transition follows previous true output or scheduled reset",
+    "counterworld": "if any action/state unobserved, evaluator creates alternative source differing only there; all observed replies remain identical, learned checkpoint identical, one prediction cannot be correct for both; preserve non-identifiability",
+    "cold": "both action memories replay exactly; corruption and erased-memory tests",
+    "costs": "actual transitions,resets,unique state/action evidence,coverage,threshold evaluations,probe cache/task bits,timings"
+  },
+  "trained_control": "closed-form one-hot least squares fits all active observed labels exactly; same transcript but different generalization prior; not strongest-neural comparison.",
+  "thresholds": {
+    "engineering": "all previous full tests,new focused tests,source atlas and clean tree Windows/Linux; integer scores/trace equal",
+    "membership": "all membership full-source replay exact by512 raw replies at width<=8; same numeric memory and prior",
+    "trajectory": "at1024 source steps,active must have>=95% on genuinely unseen reachable labels when available,>=90% exact reachable full replay,and>=5pp reachable-unseen gain vs random on common evaluable labels; no filtering out worlds with inaccessible basis; unavailable unseen cases excluded from that metric but counts/magnitude reported",
+    "science": "DEV_SUPPORTED only if membership and trajectory bounds pass with actual unseen cases; MIXED if membership passes but trajectory bound fails/unavailable; NEGATIVE if neither. No general intelligence or impossibility claim for all possible trajectory learners."
+  },
+  "budget": {
+    "max_source_steps_per_arm_world": 1024,
+    "stdlib": true,
+    "timeout_minutes": 60,
+    "full_final_regression": true,
+    "hosted_windows_linux": true,
+    "paid": false,
+    "schedules": false
+  },
+  "permitted_paths": [
+    "research/contrib/chatgpt/WSP-46/**",
+    ".github/workflows/wsp21-pr-validation.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "External bounded synthetic contributor draft only; no merge/main/accepted refs,official loop,private runner,protected first-use,controller,scheduler,paid API,integration,deployment or live actions.",
+  "limits": [
+    "Input/state bits and action IDs still given; least-visit policy is not learned exploration.",
+    "Numerical acquisition has the same finite all-subset feature prior; failure can be evidence-policy/representation specific.",
+    "Unrestricted membership control can collect different information despite equal raw counts; no efficiency superiority.",
+    "All code,learning arithmetic and priors are programmed; independent GI/training replacement unverified."
+  ],
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_PRIMARY"
+}
