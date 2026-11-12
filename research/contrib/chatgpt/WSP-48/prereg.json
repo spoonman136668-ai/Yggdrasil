@@ -1,0 +1,94 @@
+{
+  "schema": "wsp48.numeric-frontier-exploration.v1",
+  "experiment_id": "WSP-48",
+  "date": "2026-11-12",
+  "parent_sha": "9e6374119602ea57e479a1b36a35a5c0e932b4e1",
+  "parent_pr": 938,
+  "question": "Can a programmed numerical agent acquire useful knowledge more efficiently by navigating its learned factual transition graph to untried actions?",
+  "hypothesis": "Bitset backward reach waves from untried-action states can choose shortest known paths to missing experience. Under the same real-action/reset budgets and identical equation learner/capacity, this should improve unique evidence coverage over least-visited actions. It is programmed exploration,not invention of an exploration algorithm.",
+  "widths_max_first": [
+    8,
+    6,
+    4
+  ],
+  "families": [
+    "linear",
+    "quadratic",
+    "cubic_ood",
+    "arbitrary_hash"
+  ],
+  "actions": 2,
+  "budgets": [
+    128,
+    256,
+    512,
+    1024
+  ],
+  "reset_every_steps": 64,
+  "split": {
+    "DEV": [
+      89
+    ],
+    "PRIMARY": [
+      2003,
+      2011,
+      2017,
+      2027
+    ],
+    "seed_tag": "WSP48|cohort|seed|width|family"
+  },
+  "world": "Frozen WSP47 map generator with new disjoint tags. Start0; only real current-state actions; reset only to0 every64 transitions. Evaluator-only admissible source-state set is minimum distance<=63 from0, because the64th action is followed by reset. No true graph/family/seed reaches the learner.",
+  "learner": "Byte-identical WSP47 equation banks degree1/2/3/full and numerical first-consistent selection. Same four-bank memory in all policy arms. Actual observed facts feed graph and equation memories; no source-state injection.",
+  "numeric_policy": "Known-action bitplanes and vector predecessor bit registers are updated only from actual replies. Frontier=all_states XOR(seen_action0 AND seen_action1). If current state has an untried action choose first;otherwise propagate predecessor bitsets backwards from frontier until current appears or propagation saturates (at most2**width rounds). Select first actual known outgoing edge into prior reach wave. If no path choose the same numeric least-visit fallback. Fixed masked-OR word operations implement the supplied reachability circuit; Python simulates it and decodes termination. No hidden graph/BFS oracle in candidate.",
+  "arms": [
+    "numerical factual-frontier policy",
+    "same numeric equation learner with least-visit policy",
+    "independent queue-BFS policy reference on exactly candidate's learned factual graph, shadow action check without extra source calls",
+    "fully fitted observed-fact one-hot readout, same facts per policy"
+  ],
+  "capacity": "Each policy gets same four equation banks/action,fact bitplanes,2*N visit counters and N predecessor words of N bits. Both maintain all graph registers even when baseline ignores them. Additional graph capacity relative to WSP47 is explicit.",
+  "tests": {
+    "primary_worlds": 48,
+    "budget_evaluations": 192,
+    "source_actions_each_world_policy": 1024,
+    "shadow_policy_checks": 49152,
+    "coverage": "unique actual admissible state/action pairs divided by evaluator admissible pairs; report each prefix and first full-coverage step if any",
+    "prediction": "64 common unseen admissible pairs if available,otherwise unavailable; exact admissible replay and all observed recall",
+    "sequences": 24,
+    "plans": 4,
+    "plan_depth": 3,
+    "plan_candidates": 8,
+    "confidence": "preserve all unknown/incorrect model-relative predictions and unattainable counterfactual limits",
+    "cold": "equation banks canonical snapshot replay/corruption, policy source/reset/graph consistency",
+    "parity": "every numeric frontier action equals independent queue BFS/tie0 on same learned facts and least-visit fallback"
+  },
+  "trained_control": "No new neural-training superiority comparison; frozen strongest matched batch GF2 control qualified in WSP47. Numerical and queue policy parity isolates supplied policy realization. One-hot readout fully fits actual observed replies. No SCIENTIFIC_PASS without independent unfamiliar domains/strongest neural controls.",
+  "thresholds": {
+    "engineering": "complete inherited full tests,new focused tests,G29/clean tree Windows/Linux; identical integer scores/trace; zero source-injection or shadow-policy mismatches",
+    "bounded": "at width8,512-step prefix,mean frontier coverage>=.75 and>=10pp over least-visit. At1024 steps,frontier mean admissible replay>=.90 over all widths/families,and every observed fact exact. Report all prefixes/failures without tuning; missing unseen cases never count as generalization.",
+    "science": "DEV_SUPPORTED if bounds pass,MIXED if valid but threshold misses,INVALID on source/parity/fact-retention violations. No learned exploration algorithm,representation invention,GI or efficiency superiority over general training."
+  },
+  "budget": {
+    "stdlib": true,
+    "max_source_steps_policy": 1024,
+    "max_bitset_rounds_decision": 256,
+    "timeout_minutes": 60,
+    "full_final_regression": true,
+    "hosted_windows_linux": true,
+    "paid": false,
+    "schedules": false
+  },
+  "permitted_paths": [
+    "research/contrib/chatgpt/WSP-48/**",
+    ".github/workflows/wsp21-pr-validation.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "External synthetic contributor draft only;no main/merge/accepted refs,official loop,private runner,protected first-use,controller/scheduler,paid API,integration,deployment or live action.",
+  "limits": [
+    "Bits/actions,finite mathematical priors and exploration algorithm remain supplied.",
+    "Coverage gain is active data selection under equal raw source budgets; computation may increase.",
+    "Pure source-graph policy ignores time remaining to next scheduled reset; retain resulting failures.",
+    "Lower-prior counterfactual certainty remains model-relative; unknown primitive/representation learning unproved."
+  ],
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_PRIMARY"
+}
