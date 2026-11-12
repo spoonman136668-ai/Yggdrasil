@@ -1,0 +1,95 @@
+{
+  "schema": "wsp50.experiential-cycle-coordinates.v1",
+  "experiment_id": "WSP-50",
+  "date": "2026-11-12",
+  "parent_sha": "9e6374119602ea57e479a1b36a35a5c0e932b4e1",
+  "parent_pr": 938,
+  "question": "Can programmed numerical coordinate acquisition from actual action cycles recover an unfamiliar state representation and enable held-out operator inference?",
+  "hypothesis": "If action0 forms a verified full cycle, numeric address memories can assign experience-order coordinates without an encoder oracle. A supplied affine-modular operator prior can then be fitted from two actual action1 observations, independent of raw state relabeling. This learns a representation inside a supplied cyclic scaffold; it does not invent arbitrary representations.",
+  "widths": [
+    8,
+    6,
+    4
+  ],
+  "families": [
+    "affine",
+    "quadratic_second",
+    "random_second",
+    "broken_spine"
+  ],
+  "encodings": [
+    "identity",
+    "linear_bijection",
+    "random_permutation"
+  ],
+  "split": {
+    "DEV": [
+      101
+    ],
+    "PRIMARY": [
+      2203,
+      2207,
+      2213,
+      2221
+    ],
+    "seed_tag": "WSP50|cohort|seed|width|family"
+  },
+  "world": "N=2**width,start0,no free resets. Draw c,m,q uniform odd1..N-1,b uniform0..N-1 from tag+'|parameters'. action0=(x+c)%N except broken_spine uses hash(tag|spine|x)[0]&(N-1). action1=(m*x+b)%N affine/broken;quadratic adds q*x*x moduloN;random_second uses hash(tag|second|x)[0]&(N-1). Evaluator encodings as WSP49: identity,4*width invertible elementary GF2 row XORs,permutation1..N-1 fixing0,tag+'|encoding|kind'.",
+  "candidate": "Preallocated numeric raw-address->cycle-index and cycle-index->raw-label memories plus observed transition fact bitplanes. Fixed equality-threshold gates write/match addresses; fixed enumeration numeric modular inverse on odd input; generic Python simulator/valid decoder. Cycle acquisition follows action0 for exactlyN real transitions and certifies all N distinct sources seen and terminal0. Invalid spine rejects inferred prior and uses facts only.",
+  "fit": "After valid cycle and return0: one actual action1 response gives b in learned coordinates. At current coordinate, if even take one action0 step to an odd input;then actual action1 gives second equation,m=(y-b)*inverse(odd_input)%N. No arbitrary-state injection, hidden decoder or family label. Before validation evaluate fixed unknown-action1 probes and full replay in acquired representation; all action0 edges are observed,so only held-out action1 predictions count as generalization.",
+  "validation": "Select up to16 as-yet-unobserved action1 input coordinates in fixed width-bit-reversal order. Navigate only by actual action0, using acquired cycle coordinates, then act1. Update facts and permanently reject affine prior after any contradictory reply. No refitting or new feature after contradiction. Invalid spine does not navigate by uncertified coordinates and collects16 actual least-visit actions as factual fallback. All source actions,including navigation,charged.",
+  "arms": [
+    "numeric acquired-coordinate model",
+    "frozen WSP47 raw-bit equation banks and adaptive model streamed exactly the same actual ordered replies",
+    "fully fitted observed-fact one-hot control",
+    "independent conventional affine fit on identical acquired coordinates/data;must tie numerical modular inverse/coefficients before validation"
+  ],
+  "tests": {
+    "primary_latent_worlds": 48,
+    "encoded_conditions": 144,
+    "phases": [
+      "post_fit",
+      "post_validation"
+    ],
+    "source_budget_max_condition": 8192,
+    "fit_unseen": 64,
+    "sampling": "common latent unobserved action1 inputs sampled with replacement if any; use same queries across encodings; no unseen cases unavailable.",
+    "replay": "all state/action pairs,observed recall separately; confidence errors in negative families explicitly retained",
+    "composition": 24,
+    "plans": 4,
+    "depth": 3,
+    "plan_candidates": 8,
+    "cold": "canonical JSON state checksum,restore/replay,tamper rejection of learned coordinate/fact/parameter memories",
+    "parity": "raw relabeling must yield same latent actual action trajectory. All labels/cycle indices from actual source only. Independent affine coefficient parity conditional valid cycle; learned representation tables checked against actual cycle,never supplied to candidate."
+  },
+  "thresholds": {
+    "engineering": "full inherited WSP01-47 regression,new focused tests,G29/clean tree Windows/Linux,identical trace and zero source/oracle/coordinate-control mismatches.",
+    "positive": "Affine-family post_fit unseen action1 accuracy>=.99 in each encoding,100% observed recall,random-permutation drop<=1pp from identity,all genuine unseen cases disclosed.",
+    "negative": "After validation >=90% quadratic_second and random_second conditions reject the misspecified affine prior; preserve false-confident post_fit and any post_validation failures. Broken-spine cycle validity must agree with actual full-cycle certification; chance true cycles reported rather than forced negative.",
+    "science": "DEV_SUPPORTED_ACQUIRED_CYCLE_COORDINATES if all preset bounds pass,MIXED if valid miss,INVALID on source/parity/fact errors. No independent SCIENTIFIC_PASS,GI,arbitrary representation invention or superiority over strongest neural training."
+  },
+  "controls": "Affine control fits exactly two received equations in same acquired coordinates; classical pow(x,-1,N) only in evaluator/reference. Learner uses fixed numeric inverse enumeration. All raw equation banks larger capacity than candidate coordinate model; disclose capacities and whole-process costs. One-hot fits actual labels exactly. No trained-neural superiority claim.",
+  "budget": {
+    "stdlib": true,
+    "max_source_actions": 8192,
+    "max_coordinate_size": 256,
+    "timeout_minutes": 60,
+    "hosted_windows_linux": true,
+    "full_final_regression": true,
+    "paid": false,
+    "schedules": false
+  },
+  "permitted_paths": [
+    "research/contrib/chatgpt/WSP-50/**",
+    ".github/workflows/wsp21-pr-validation.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "External public synthetic contributor draft,sibling from qualified WSP47. No official loop,main,merge,accepted state,private runner,protected first-use,controller,scheduler,paid API,integration,deployment or live action.",
+  "limits": [
+    "Cycle scaffold,affine prior,learning rule,bits/actions supplied.",
+    "Full cycle costsN observations; no arbitrary decoder acquisition without data.",
+    "Negative confidence before contradiction is model-relative,not knowledge certainty.",
+    "Known reset-free deterministic finite worlds;not partial observation,noise,continuous reality or GI."
+  ],
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_PRIMARY"
+}
