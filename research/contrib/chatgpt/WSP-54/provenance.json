@@ -1,0 +1,37 @@
+{
+  "schema": "wsp54.exploratory-provenance.v1",
+  "experiment_id": "WSP-54",
+  "prereg_commit": "1f73151b5f2c071f17f48f45006e870ddfd0ac0d",
+  "code_commit": "032318c8929e158b365f1c02f679214a631fc84b",
+  "code_paths": [
+    "research/contrib/chatgpt/WSP-54/compiler.py",
+    "research/contrib/chatgpt/WSP-54/test_compiler.py"
+  ],
+  "source_parent": "0c3eb396a7faa44457d2d8ef0d4b3ded81ba1f81",
+  "wsp53_source_blob_sha": "191e362bb9f12bb00b6e1a4364c8f1510ecc47df",
+  "ci_ubuntu_job_id": 131581847080,
+  "ci_run_id": 43332936876,
+  "environment": "GitHub Actions ubuntu-latest Python 3.12, no external model or paid API",
+  "commit_message": "ci(wsp54): execute frozen SELFTEST on both OS and bound search nodes",
+  "seeds": [
+    9901,
+    9902
+  ],
+  "encodings": [
+    "identity",
+    "permuted",
+    "rotated"
+  ],
+  "families": [
+    "anchored_effect",
+    "noncommuting_order"
+  ],
+  "action_count_per_world": 60,
+  "search_node_limit": 300000,
+  "gradient_steps": 0,
+  "source_isolation": "compiler.py has no source module import; test_compiler.py alone imports evaluator for SELFTEST. Original heldouts are never passed to compiler.observe().",
+  "scientific_admission": false,
+  "device_inference": "No GPU used or required",
+  "rerun": "python -m unittest discover -s research/contrib/chatgpt/WSP-54 -p 'test_*.py' -v",
+  "classification": "exploratory source-only engineering result, no confirmation of general language, general intelligence, or training cost advantage"
+}
