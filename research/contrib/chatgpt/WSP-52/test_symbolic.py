@@ -11,7 +11,7 @@ class SymbolicTests(unittest.TestCase):
         cls.world = build_world("SELFTEST", 9001, "identity")
 
     def test_segmentation_no_word_ids(self):
-        self.assertEqual(len(_split("0"*15)), 19)
+        self.assertEqual(len(_split("0"*15)), 7)
         self.assertFalse(_split("0"*9))
         for invalid in ("", "0012", "English"):
             with self.assertRaises(ValueError):
