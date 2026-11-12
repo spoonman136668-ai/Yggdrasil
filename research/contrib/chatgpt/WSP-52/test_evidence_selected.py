@@ -107,5 +107,56 @@ class EvidenceSelectedTests(unittest.TestCase):
             run_selftest_selection(replace(self.world, cohort="PRIMARY"))
 
 
+    def test_six_condition_fixture_receipts_no_threshold_tuning(self):
+        """Report every pre-existing fixture condition, including negative outcomes.
+
+        Nothing in this test chooses parameter settings after reading a score.
+        The source worlds are SELFTEST and must not be treated as a valid PRIMARY.
+        """
+        import json
+        from direct_writer import DirectWeightWriter
+        from order_invariant_ablation import OrderInvariantReadout
+        from fixture_harness import learn_observations, score_observations
+        rows = []
+        for seed in (9001, 9002):
+            for encoding in ("identity", "permuted", "rotated"):
+                world = build_world("SELFTEST", seed, encoding)
+                selected = run_selftest_selection(world)
+                fixed = {}
+                for label, cls in (("slot", DirectWeightWriter),
+                                   ("explicit_invariant", OrderInvariantReadout)):
+                    model = cls()
+                    learn_observations(model, world.phase_a)
+                    a = score_observations(model, world.heldout_a)
+                    learn_observations(model, world.phase_b)
+                    b = score_observations(model, world.heldout_b)
+                    retention = score_observations(model, world.heldout_a)
+                    fixed[label] = {
+                        "a_correct": a.correct, "b_correct": b.correct,
+                        "b_wrong_confident": b.wrong_confident,
+                        "retained_a_correct": retention.correct,
+                        "retained_a_wrong_confident": retention.wrong_confident,
+                    }
+                self.assertEqual(selected["unique_environment_actions"], 42)
+                self.assertEqual(selected["replay_writes"], 246)
+                rows.append({
+                    "seed": seed, "encoding": encoding, "selected": selected["selected"],
+                    "selected_a_correct": selected["phase_a"]["correct"],
+                    "selected_b_correct": selected["phase_b"]["correct"],
+                    "selected_b_wrong_confident": selected["phase_b"]["wrong_confident"],
+                    "selected_retained_a_correct": selected["retained_a"]["correct"],
+                    "selected_retained_a_wrong_confident": selected["retained_a"]["wrong_confident"],
+                    "gain": selected["selector"]["gain"],
+                    "loss": selected["selector"]["loss"], "baseline": fixed,
+                    "capacity_bits": selected["total_persistent_bits"],
+                })
+        self.assertEqual(len(rows), 6)
+        self.assertEqual(sum(r["selected_b_correct"] + r["selected_b_wrong_confident"]
+                             for r in rows) <= 540, True)
+        # Fixture data is emitted into repository CI logs, NOT to an external library.
+        print("WSP52_EVIDENCE_SELECTION_SELFTEST " + json.dumps(
+            rows, sort_keys=True, separators=(",", ":")), flush=True)
+
+
 if __name__ == "__main__":
     unittest.main()
