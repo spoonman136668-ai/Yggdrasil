@@ -57,12 +57,13 @@
     "trained_baseline": "Not feasible in this bounded experiment; do not claim superiority over fully trained conventional neural learners or all-in training replacement.",
     "code_identity": {
       "model_py_sha256": "0e6baf46379857e343ff840a5656cd4a509e81a2bc69213f1af824b85bde2510",
-      "battery_py_sha256": "6a4ddab4efd126a10acbd9dae63e3175cf25a676eeb0d8375dd0d1d509758325",
+      "battery_py_sha256": "e0acdd4fa83e445b50f7737cf716377a3833568eba4cf838ad0039e4a87b8a23",
       "test_model_py_sha256": "2048d5b547f0a703f4986e7e0046ec4ffbb4d2bd8485e7f99ad9abc4182cceed"
-    }
+    },
+    "query_grounding": "For each sampled relation sequence, verify the entire positive and negative reachability bitset against independently computed sparse graph reachability, not merely a random positive/negative target. Preserve exact all-positive checks as efficacy controls."
   },
   "thresholds": {
-    "engineering": "Every executed scale: zero mismatched complete-information answers, 24/24 novel compositions, cold exact parity, successful isolated repair, half-withheld known-edge failures, corruption rejection, regression passes on Windows and Linux.",
+    "engineering": "Every executed scale: zero mismatches across FULL positive/negative reachable-target sets for sampled and held-out sequences; cold exact parity, successful isolated repair, half-withheld known-edge failures, corruption rejection, regression passes on Windows and Linux.",
     "primary_success": "Both platforms complete all primary worlds and provide source/tree receipts, deterministic correctness digests, and full legacy regressions.",
     "resource_exclusion": "Never classify a prescreened memory level as a computational or scientific failure.",
     "sweetspot": "Largest executed scale that scores 100% and has aggregate numeric query time <=2.0 times Python sparse oracle across 3 primary worlds on each platform; report per-platform winners separately and only claim shared winner if same. Timing is implementation and hardware dependent.",
@@ -76,5 +77,6 @@
     "no_schedule_or_private_runner": true,
     "no_main_merge_promotion_or_deployment": true,
     "no_forge_yggdrasil_owner_controller_mutations": true
-  }
+  },
+  "prereg_revision": "Pre-PRIMARY correction: initial DEV revealed that sampling only random targets could overrepresent easy negative answers. Strengthened frozen full-reachability-set oracle controls and updated source hash, without changing cohort seeds, size ladder, thresholds for sweetspot, budget or experiment scope. Both prereg revisions precede remote implementation and first PRIMARY."
 }
