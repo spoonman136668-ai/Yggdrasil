@@ -1,0 +1,82 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-37",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "title": "Multi-axis weight-programmed knowledge frontier: arity, information, transfer, memory, repair, and whole-process cost",
+  "prereg_date": "2026-11-11",
+  "parent_sha": "26e559a5b2fc8359c5263a69fbbdf85134e78069",
+  "parent_branch": "research/wsp36-three-probe-unknown-gate-acquisition-20261111",
+  "hypothesis": "With a known generic Boolean evaluator and observed input/output rows, full-table knowledge can be directly stored in numeric weights for previously unspecified Boolean functions of arity 2, 3 and 4, survive cold restoration, compose in new DAGs, and admit isolated repairs. With uniformly arbitrary rules and only half the rows, no method without extra prior information can reliably infer the unseen rows. Direct weight writing must be compared against a fully converged matched-information gradient learner AND a simpler exact table-memory baseline, including all-in cost.",
+  "regimes": {
+    "arity": [
+      2,
+      3,
+      4
+    ],
+    "rule_source": [
+      "arbitrary",
+      "structured"
+    ],
+    "budgets": [
+      "zero",
+      "half",
+      "full"
+    ],
+    "worlds": {
+      "DEV": 64,
+      "PRIMARY": 256
+    },
+    "gates_per_world": 8,
+    "ambient_inputs": "arity+1",
+    "scoring": "all 2^(arity+1) inputs per world; all 2^arity rows for each gate",
+    "source_generation": "SHA256('WSP37-V1|cohort|arity|kind|world|gate') with distinct cohort names, zero filtering; each arity/rule class isolated",
+    "rule_definitions": "arbitrary: uniform digest bits over the complete 2^arity-entry truth-table space; structured: deterministic parity/threshold/multiplexer family with source spec, learning arms not given hidden family choice",
+    "topology": "forward-only DAG, deterministic SHA256 route choices; final gate mixes previous gates",
+    "heldout": "PRIMARY corpus generated only by frozen code after prereg commit, no tuning on PRIMARY"
+  },
+  "measurements": [
+    "primitive_exact/total per regime/budget",
+    "composed_exact/total per regime/budget",
+    "unseen_row_accuracy_half",
+    "cold_checkpoint_parity",
+    "zero_query_vs_half_vs_full",
+    "OOD transfer to independently generated DAG with acquired gate functions but unseen topology",
+    "one-row causal repair with unaffected gates preserved",
+    "checkpoint corruption/tampering reject",
+    "source and learned-state hashes",
+    "queries and usable bits",
+    "whole-process observations, compile/fit, restore and inference wall time separately; serialized bytes"
+  ],
+  "arms": [
+    "direct_weight_write with zeros for unobserved slots",
+    "gradient-trained per-gate converged sigmoid/BCE using identical observations; unseen logits initialized 0",
+    "literal_table_memory using identical observations, default 0 for unobserved",
+    "unprogrammed all-zero circuit",
+    "full-information oracle for evaluator only"
+  ],
+  "controls": [
+    "half-probe shuffled row order checked deterministically",
+    "arbitrary-source half-information theoretical no-free-lunch negative",
+    "strong literal table baseline expected to equal or outperform direct writing",
+    "frozen irrelevant-gate repair and true single-row mutation",
+    "cross-platform deterministic score hashes",
+    "wrong size/nonbit/truncated/corrupted checkpoint reject",
+    "empty/zero-probe baseline",
+    "training convergence checked on every observed label"
+  ],
+  "thresholds": {
+    "engineering": "all guardrails true, no leaked source rules or evaluator target labels, 0 failed tests across Windows/Linux",
+    "scientific_positive": "primary direct full-rule >= 0.99 on primitive and composed outputs in all six regimes; cold and repair parity 1.0; half arbitrary unseen must remain between 0.42 and 0.58 aggregate. Scientific superiority requires direct result strictly above both conventional gradient and literal-table comparator under matched observations plus lower measured end-to-end cost in both OS, not just zero gradient count.",
+    "mixed": "engineering pass but partial accuracy/cost margins fail scientific positive, or primary metrics differ across OS despite valid output",
+    "negative": "engineering-valid primary without measured accuracy/cost superiority over both strongest controls; preserve all failures",
+    "invalid": "hidden input leakage, changed prereg after first primary, nonmatched information, unexpected source drift, unqualified run, or ineffective negative controls"
+  },
+  "limits": {
+    "primary_allowed": "frozen synthetic public contribution after prereg, not independent official science acceptance",
+    "scope": "isolated successor of WSP36, no merge/promote/main, no official Yggdrasil/FORGE or private executor",
+    "budget": "pure Python standard-library, no paid API, hosted existing Windows+Linux CI; development must remain well within 30-minute job cap",
+    "scientific_caveat": "This does not test autonomous acquisition of world knowledge, text semantics, fully trained large models, or general reasoning; fixed topology is provided and source truth row queries are privileged."
+  }
+}
