@@ -1,0 +1,94 @@
+{
+  "schema": "wsp44.randomized-contradiction-restriction.v1",
+  "experiment_id": "WSP-44",
+  "date": "2026-11-11",
+  "parent_sha": "157ef25fc05f447b5d94187aa5dd6ff6bb3b6338",
+  "parent_pr": 934,
+  "question": "Can sparse randomized restrictions escape large cancellation traps while retaining exact coefficient construction and a fixed information/capacity budget?",
+  "hypothesis": "Before WSP43's deletion search, repeatedly query random half-subsets of a contradictory witness, keeping only subsets preserving its selected output residual. This should find smaller exact-interrogation subcubes at64/128-bit widths without writing false coefficients. Thirtytwo-term and low-budget failures may persist.",
+  "dimensions_max_first": [
+    128,
+    64,
+    32,
+    16,
+    8
+  ],
+  "families": [
+    "eight_nonlinear",
+    "sixteen_nonlinear",
+    "thirtytwo_nonlinear"
+  ],
+  "actions": 2,
+  "budgets_max_first": [
+    1024,
+    512,
+    128
+  ],
+  "split": {
+    "DEV": [
+      71
+    ],
+    "PRIMARY": [
+      1601,
+      1607,
+      1609,
+      1613
+    ],
+    "seed_tag": "WSP44|cohort|seed|width|family"
+  },
+  "world": "Same hidden whole vector map generator as WSP43 but disjoint seed tag; no exposed source matrices, supports, family or seeds.",
+  "algorithm": "Exactly WSP43 direct algorithm with one pre-minimization phase: while witness has>8 bits, sample independent Bernoulli.5 subsets of its set bits using existing fixed2333+width policy RNG. Keep subset only if selected lowest differing output bit remains residual1. Reset consecutive-failure counter on shrink; at32 consecutive failures or128 total trials for that witness stop restriction and fall back to frozen repeated-deletion search. Every source response uses the same cache and source budget. Existing degree8/full-subset transform,capacity and update limits unchanged. No source-query ceiling or model-capacity increase; actual computation may increase and must be measured.",
+  "control": "Copied frozen WSP43 direct acquisition with same width/query ceiling/capacity/policy seed, called baseline. Both see genuine independently selected probes under same maximum ceilings, not identical observations; actual used queries and baseline test exposure counted. Independent fitted GF2 feature regression on direct transcript and discovered vocabulary; basis-only/zero. Algebraic regression is not a matched strongest neural baseline and supplies no discovery evidence.",
+  "capacity_per_action": "width+33 vector features, no growth of ceiling",
+  "source_budget": "min(ceiling,2**width-32) per action. Pre-screen if width+1 basis replies exceed that budget.",
+  "tests": {
+    "planned_primary_cells": 180,
+    "budget_screened": 12,
+    "executed": 168,
+    "heldout_states": 64,
+    "composition_sequences": 24,
+    "depths": [
+      2,
+      3,
+      4
+    ],
+    "plans": 4,
+    "plan_depth": 3,
+    "plan_candidates": 8,
+    "exact_structure": "hidden evaluator-only coefficient equality and complete maps; zero false direct coefficients required",
+    "cold": "snapshot replay/corruption rejection",
+    "retention": "separately acquired second world with counted queries/cost, first model byte equality",
+    "negative": "all128-probe screens, halving failures, subset stops, ambiguous/unresolved maps and low-budget effects preserved"
+  },
+  "thresholds": {
+    "engineering": "all previous full tests and new focused tests, clean source/G29 on Windows/Linux; identical integer primary scores/trace",
+    "invariant": "zero false direct nonzero coefficients across all executed episodes; wrong writes INVALID",
+    "bounded_gain": "on width64/128,eight_nonlinear,1024-ceiling cells:heldout>=.95,composition/plans>=.90,exact action-map fraction>=.90,and heldout gain versus WSP43 control>=10pp. Report every other family/width/budget without selection.",
+    "scientific": "DEV_SUPPORTED only for preset gain, MIXED on exact invariant with partial gains/missed thresholds, NEGATIVE if no useful recovery. No independent SCIENTIFIC_PASS/general intelligence/unknown primitive invention/neural training replacement."
+  },
+  "budget": {
+    "max_source_queries_per_action": 1024,
+    "max_halving_trials_per_witness": 128,
+    "max_consecutive_failed_halves": 32,
+    "max_exact_subset_degree": 8,
+    "max_update_batches": 256,
+    "timeout_minutes": 45,
+    "stdlib": true,
+    "full_final_regression": true,
+    "hosted_windows_linux": true,
+    "paid": false,
+    "schedules": false
+  },
+  "permitted_paths": [
+    "research/contrib/chatgpt/WSP-44/**",
+    ".github/workflows/wsp21-pr-validation.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "Isolated external contributor synthetic draft; no merge/main/accepted refs, protected first-use, official loop, private runner, controller, scheduler, paid API, integration, deployment or live actions.",
+  "limits": [
+    "All discovery machinery is supplied Python; state bits, action identity and AND/XOR algebra are not invented by the agent.",
+    "Extra cached trials are real compute, extra source queries consume the unchanged ceiling.",
+    "Exact coefficient proof and broad synthetic success do not establish general intelligence or general superiority to training."
+  ],
+  "status": "PREREG_FROZEN_BEFORE_IMPLEMENTATION_AND_PRIMARY"
+}
