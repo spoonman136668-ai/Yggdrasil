@@ -1,0 +1,118 @@
+{
+  "schema": "wsp39.full-capability-ceiling-prereg.v1",
+  "experiment_id": "WSP-39",
+  "title": "Maximum-first programmatic model construction: inference, action prediction, lookahead planning, transfer, persistence, repair and falsification",
+  "experiment_class": "synthetic external research; independent test of specified algorithm construction, not general intelligence",
+  "source_parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "commit": "82bf5c4a2d705afd2598f1dada03fd5ad2f37bc2",
+    "pr": 929
+  },
+  "prereg_date": "2026-11-11",
+  "hypothesis": "For hidden affine binary dynamical systems, sufficient actively queried basis observations allow direct complete numeric weight construction that supports unseen states, novel action sequences, bounded goal planning, cold memory and local repair without fitting gradient parameters. The result will tie a strong exact-system-identification baseline; partial probes and unknown nonlinear conjunctions must expose information/expressivity limits.",
+  "family": [
+    "affine",
+    "interaction_ood"
+  ],
+  "dimensions_max_first": [
+    1024,
+    512,
+    256,
+    128,
+    64
+  ],
+  "actions": 4,
+  "observation_budgets": [
+    "basis_full",
+    "basis_half"
+  ],
+  "split": {
+    "DEV": [
+      41,
+      43
+    ],
+    "PRIMARY": [
+      1049,
+      1051,
+      1061,
+      1063
+    ],
+    "seed_tag": "WSP39-V1|cohort|world|dimension|family|action|out_bit|mask",
+    "disjoint": true
+  },
+  "world": {
+    "state_domain": "d-bit binary states",
+    "transition": "y = A_action x XOR b_action, with at most 4 nonzero causal inputs/output; interaction_ood adds x[0] AND x[1] to output bit0 on each action; hidden rule never passed to learner",
+    "training_probes": "zero vector plus unit vectors e_j for all basis_full indices, first half basis_half; evaluator sends only outputs of actual probes",
+    "no_other_training": true
+  },
+  "tests": {
+    "heldout_states_per_world": 8,
+    "multistep_sequences_per_world": 8,
+    "heldout_action_steps": [
+      2,
+      3,
+      4
+    ],
+    "plan_goals_per_world": 3,
+    "planner_exact_action_depth": 3,
+    "search_budget_per_goal": 64,
+    "unknown_target": "goal created by independent hidden oracle with 3 actions; model selects from 64 action strings using its own programmed state",
+    "repair": "flip 1 action's 1 output-to-input causal coefficient; observe only zero and relevant basis input on that action, then change precisely one stored weight and cold-restore; untouched entries and memories must remain identical",
+    "retention": "retain a second independently acquired world alongside first, checking SHA256 replay",
+    "negative": "basis_half cannot infer missing columns; interaction_ood hidden x0 AND x1 absent on all zero/basis probes; score and preserve"
+  },
+  "arms": [
+    "numeric_direct_weight_program",
+    "independent exact GF(2) reference system identifier with matched observations",
+    "training-state exact lookup memory",
+    "unprogrammed identity/zero control",
+    "oracle_hidden_evaluator_only"
+  ],
+  "metrics": [
+    "heldout action bitwise accuracy and whole-state exact",
+    "unseen 2-4 step sequence bitwise and whole-state exact",
+    "plan success validated by hidden oracle",
+    "cold checkpoint and second-world retention",
+    "one-weight repair and negative controls",
+    "observations, numeric capacity bits, source bytes, checkpoint bytes, acquire and planning times",
+    "unknown family and partial-probe failure rates"
+  ],
+  "thresholds": {
+    "engineering": "zero invalid or leaked training queries; perfect cold and repair custody; source-parity between independently implemented direct and matched GF2 ID on supplied data; pass all regression tests Windows/Linux",
+    "positive_known_family": "for affine and basis_full, every heldout one-step and multistep state is bitwise exact, every plan reaches evaluator goal, and cold/repair checks pass (for all dimensions)",
+    "negative_controls": "interaction_ood full-basis has nonzero whole-state failures on random unfamiliar states; affine basis_half also has nonzero full-state failures. Report magnitudes, not filter examples.",
+    "scientific": "SCIENTIFIC_NEGATIVE if no measurable gain over equally informed strong GF2 comparator; MIXED if full affine construction succeeds with expected negative failures but no independent intelligence inference; INVALID on oracle/data leakage or prereg drift; no SCIENTIFIC_PASS without an independently qualified and matched trained nonlinear comparator and unseen-domain ability.",
+    "sweetspot": "largest dimension on both OS with 100% known-family exact/plan success and total compiled inference + planning walltime no more than 2.0 times equally informed strong baseline, with separate per-platform reporting; timings hardware-sensitive."
+  },
+  "budget": {
+    "max_dimensions": 1024,
+    "max_numeric_bits": 4198400,
+    "max_actions_per_plan": 64,
+    "python_stdlib_only": true,
+    "full_final_regression": true,
+    "github_hosted_windows_linux": true,
+    "timeout_minutes": 30,
+    "scheduled_tasks": false,
+    "paid_apis": false
+  },
+  "authority": {
+    "public_dev_draft_only": true,
+    "merge": false,
+    "main": false,
+    "scientific_first_use": "frozen public synthetic PRIMARY on permitted hosted workflow only, not independent protected science",
+    "owner_control": false,
+    "private_runner": false,
+    "forge_integration": false,
+    "wingless_integration": false,
+    "hybrid_integration": false,
+    "live_actions": false
+  },
+  "limits": [
+    "All known-family linear structure and interpretation machinery are designed by humans, not learned from open-world data.",
+    "GF2 training-free construction is not a fully trained neural network nor proven complete intelligence.",
+    "Synthetic bit tasks, no tokenization and no transformer, but this alone does not prove native cognition.",
+    "Do not equate success on oracle-supplied probing with autonomously finding unknown knowledge."
+  ],
+  "status": "PREREG_FROZEN_BEFORE_IMPLEMENTATION_AND_PRIMARY"
+}
