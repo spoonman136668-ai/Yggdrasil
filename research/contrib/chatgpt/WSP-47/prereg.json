@@ -1,0 +1,102 @@
+{
+  "schema": "wsp47.numeric-trajectory-equations.v1",
+  "experiment_id": "WSP-47",
+  "date": "2026-11-12",
+  "parent_sha": "77be80a28a1c84d27c973b817329bb92493c20e6",
+  "parent_pr": 937,
+  "question": "Can a fixed numerical equation-memory learner acquire useful transition models from arbitrary trajectory observations without requiring zero/basis/subcube probes?",
+  "hypothesis": "Bit-parallel gated GF2 elimination plus explicit observed-fact numeric memory can infer labels whose feature vectors lie in the observation span, preserving facts and uncertainty. A fixed hierarchy of degree1/2/3/full polynomial feature banks can reject inconsistent lower priors from actual contradictions. Shared trajectory evidence isolates the learning-rule difference from WSP46's subcube certificate bottleneck.",
+  "widths_max_first": [
+    8,
+    6,
+    4
+  ],
+  "families": [
+    "linear",
+    "quadratic",
+    "cubic_ood",
+    "arbitrary_hash"
+  ],
+  "actions": 2,
+  "budgets": [
+    512,
+    1024
+  ],
+  "feature_degrees": [
+    1,
+    2,
+    3,
+    "full"
+  ],
+  "reset_every_steps": 64,
+  "split": {
+    "DEV": [
+      83
+    ],
+    "PRIMARY": [
+      1901,
+      1907,
+      1913,
+      1931
+    ],
+    "seed_tag": "WSP47|cohort|seed|width|family"
+  },
+  "world": "Frozen WSP46 source generator, disjoint world tags. Exact same least-visit source policy and raw action/reset budgets for every learning arm. Generate one genuine trajectory per world, stream identical ordered actual replies into every candidate/control. No arbitrary-state injection or hidden source/reachability data supplied.",
+  "numeric_algorithm": "Each bank preallocates one pivot row per monomial feature. For every observation, fixed column loop uses row-bit AND occupancy gates for XOR elimination, and row-bit AND unoccupied gates for one-hot masked numeric pivot/rhs writes. Stored rows/rhs/occupancy are numeric bit registers; no host candidate search or dictionary learning. Prediction eliminates query features with the same fixed stored rows; residual zero plus nonfault signals model-relative known. A numeric observed-address bitplane memory overrides with actual observed facts. Word-wise Boolean operations are a bit-parallel implementation of supplied fixed gated circuit; generic Python simulator remains.",
+  "adaptive": "Maintain all4 banks (degree1,2,3,full), choose first nonfaulted bank by fixed numeric first-viable winner gates, never family/world-ID selection. Model validity is relative to selected finite prior; a consistent wrong prior can be confident before a contradiction. Always report that limitation.",
+  "capacity": "Per action/bank M pivot feature words of M bits, M width-bit rhs words, M occupancy bits, and full observed fact bitplanes/seen. M=sum(C(width,k),k<=degree). All4 banks preallocated; larger/multiple bank capacity is explicit, not matched to WSP46. Same exact evidence/action cost, measure actual CPU/memory.",
+  "arms": [
+    "numerical equation banks degree1/2/3/full",
+    "numeric first-consistent-bank adaptive model",
+    "independent batch sparse-set GF2 system identifier on identical facts/features, with observed-fact override",
+    "frozen WSP46 numeric subcube learner on same exact trajectory",
+    "fully fitted one-hot least-squares observed-fact control",
+    "erased numeric memory"
+  ],
+  "tests": {
+    "primary_worlds": 48,
+    "budget_evaluations": 96,
+    "candidate_bank_conditions": 384,
+    "adaptive_conditions": 96,
+    "reachable_unseen": "64 common genuinely unseen reachable queries if available; otherwise report unavailable and exhaustive reachable replay separately",
+    "full_replay": "all state/action pairs, distinguish observed and unreachable",
+    "composition_sequences": 24,
+    "plans": 4,
+    "plan_depth": 3,
+    "plan_candidates": 8,
+    "knowledge": "validity/abstentions counted wrong in accuracy; report known coverage and correctness separately",
+    "cold": "canonical snapshots/digest tamper rejection/replay of every bank; no source calls during reconstruction",
+    "retention": "later updates on other action do not mutate first action; all observed facts remain exact after later data",
+    "counterworld": "an unobserved edge can change while preserving all actual source replies; inference is prior-relative, not proof of arbitrary unknown facts"
+  },
+  "trained_control": "Converged independent GF2 algebraic system-ID on the same candidate vocabulary/data is the strongest matched mathematical control and must tie. One-hot conventional least-squares head also fits supplied labels exactly. These are not strongest matched neural models and cannot establish neural-training replacement.",
+  "thresholds": {
+    "engineering": "complete mandatory original+prior regression,focused new tests,clean tree/G29 Windows/Linux; identical integer scores/trace; numerical/batch fit prediction+validity parity",
+    "equation": "zero wrong known predictions for each source family's matching degree bank (linear1,quadratic2,cubic3,hash full) and exact observed-fact recall for every bank; no confidence guarantee for misspecified priors",
+    "bounded": "adaptive at1024 steps>=95% genuinely unseen reachable accuracy when evaluable,>=90% reachable replay,and100% observed recall; frozen WSP46 common-data comparison reported without filtering; lack of unseen cases explicit",
+    "science": "DEV_SUPPORTED only if bounds/invariants pass, MIXED otherwise, INVALID on matched-prior known-prediction or numeric/reference parity violation. No independent SCIENTIFIC_PASS,unknown representation/primitive invention,GI or general efficiency/training superiority."
+  },
+  "budget": {
+    "max_source_steps_world": 1024,
+    "max_features_bank": 256,
+    "stdlib": true,
+    "timeout_minutes": 60,
+    "full_final_regression": true,
+    "hosted_windows_linux": true,
+    "paid": false,
+    "schedules": false
+  },
+  "permitted_paths": [
+    "research/contrib/chatgpt/WSP-47/**",
+    ".github/workflows/wsp21-pr-validation.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "External bounded public synthetic contributor draft only; no main/merge/accepted refs,official loop,private runner,protected first-use,controller,scheduler,paid API,integration,deployment or live action.",
+  "limits": [
+    "Fixed polynomial vocabulary and Gaussian elimination circuit are supplied, not discovered.",
+    "Adaptive uses a preprogrammed finite model hierarchy, not arbitrary new operations.",
+    "All observed-fact memory and larger equation-bank capacity count.",
+    "No proof that consistent low-degree prior is the true source family; outside-prior confident negatives must remain."
+  ],
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_PRIMARY"
+}
