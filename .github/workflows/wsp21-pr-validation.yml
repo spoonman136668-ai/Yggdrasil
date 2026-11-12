@@ -87,17 +87,28 @@ jobs:
         shell: bash
         run: |
           python - <<'PY'
-          import base64,subprocess
+          import base64,json,subprocess
           from pathlib import Path
           from scripts import build_code_atlas as atlas
           sha=subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip()
-          artifacts=atlas.render(atlas.snapshot(Path(".").resolve(),sha))
-          print("WSP21_ATLAS_SOURCE|"+sha)
-          for path,content in artifacts.items():
-              # WSP53 isolated source reanchor: emit all three exact atlas artifacts.
-              encoded=base64.b64encode(content.encode("utf-8")).decode("ascii")
-              for offset in range(0,len(encoded),4096):
-                  print("WSP21_ATLAS|"+path+"|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
+          current=atlas.snapshot(Path(".").resolve(),sha)
+          previous=json.loads(Path(".ice/code-atlas.json").read_text("utf-8"))
+          old_files={x["path"]:x for x in previous["files"]}
+          new_files={x["path"]:x for x in current["files"]}
+          changed=sorted(p for p,v in new_files.items() if p not in old_files or
+                         old_files[p]["sha256"]!=v["sha256"])
+          removed=sorted(set(old_files)-set(new_files))
+          delta={"old_source":previous["source_commit"],
+                 "source":sha,"counts":current["counts"],"changed":changed,
+                 "removed":removed,
+                 "files":[v for v in current["files"] if v["path"] in changed],
+                 "symbols":[v for v in current["symbols"] if v["file"] in changed],
+                 "imports":[v for v in current["imports"] if v["file"] in changed]}
+          encoded=base64.b64encode(json.dumps(delta,sort_keys=True,
+                               separators=(",",":"),ensure_ascii=True).encode("ascii")).decode("ascii")
+          print("WSP53_ATLAS_DELTA_SOURCE|"+sha)
+          for offset in range(0,len(encoded),4096):
+              print("WSP53_ATLAS_DELTA|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
           PY
       - name: WSP53 source-only SELFTEST (no DEV or PRIMARY exposure)
         env:
