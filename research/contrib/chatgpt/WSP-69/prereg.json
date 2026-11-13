@@ -1,0 +1,80 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-69",
+  "created": "2026-11-13",
+  "status": "FROZEN_PROSPECTIVE_SELFTEST_NOT_SCIENTIFIC_ACCEPTANCE",
+  "title": "Cumulative residual-directed hidden neuron construction via direct numerical weight edits",
+  "parent": {
+    "pr": 960,
+    "head": "c882f1dc951f20d1dfcc48952fd2d0fd84f28389",
+    "state": "WSP68 frozen NEGATIVE; 144/768 confident correct, 8/298 unseen correct, 24 wrong, 28/384 composites, 71.13% retention; online fixed readout edits matched separately converged ridge exactly; focused and G29 PASS two OS, full inherited still in progress."
+  },
+  "question": "Does residual-guided construction and persistent editing of real ReLU hidden neurons create more useful generalization and retention than identically sized random hidden neurons, without source-aligned symbolic causal-rule programming?",
+  "source": {
+    "cohort": "SELFTEST only",
+    "seeds": [
+      4301,
+      4302,
+      4303,
+      4304,
+      4305,
+      4306,
+      4307,
+      4308,
+      4309,
+      4310,
+      4311,
+      4312
+    ],
+    "family": "Four parity XOR, four three-way conjunction and four mixed parity/negated conjunction/coupled action-effect worlds. Newly salted and permuted from WSP69 source; partly same mechanism families as WSP68, not natural out-of-distribution transfer.",
+    "train": "96 charged physically continuous no-reset randomized actions per world from all-zero sensor state, one COMMON public ledger for all arms, Stage A 48 and Stage B +48. No arbitrary source queries, hidden roles, or labels.",
+    "audit": "12×16 states×4 actions=768 full evaluator-only physical outcomes after both phases, split genuinely observed vs unseen; 32 two-action compositions/world=384 evaluator-only tasks."
+  },
+  "candidate": {
+    "representation": "8 binary inputs (4 sensors + 4 public action one-hots), frozen independent 32 ReLU neuron bank seeded 68182026, plus raw 8 skip and bias. Append 12 stage-A and 12 stage-B real adaptive ReLU neurons, with weights derived from actual input vector of residual-heavy public training observations. Each new neuron h(x)=ReLU(1-0.5 Hamming(x,c)) using source-blind prototype c and no output labels embedded. Hidden weights therefore constructed/edited from experience; NOT a source-specific causal rule compiler or an automatically discovered universal representation grammar.",
+    "selection": "At each milestone, fit source-blind ridge (λ=0.5) readout to available charged observations with current bank (without new neurons). Rank each unique observed public state/action by mean squared four-sensor residual of its charged outcomes, descending with canonical state/action tie-breaking; append up to 12 largest residual unselected public exemplars. First 12 after 48 charges, another 12 after 96. No heldout or source-physics access. No selection tuning or validation-on-test.",
+    "weight_updates": "After appending neurons, replay ONLY the actual charged public ledger into a 4-output recursive ridge least-squares (initial readout zero, inverse-covariance 2I, rank-one Sherman Morrison). Resulting readout and hidden neuron weight/bias arrays are actual numerical neural parameters, and update via direct weight programming, not gradients.",
+    "confidence": "Per bit margin abs(raw−0.5) >=0.27 and posterior feature leverage <=2.0 for confident full-vector prediction, using same thresholds as WSP68. Forced results reported. All models see identical cutoff; no tuning.",
+    "retention": "Matrix-only cold restore and tamper rejection in both phases; stage-A correct confident physical outcomes must remain correct/confident after Stage B. Saved model snapshot excludes charged experience/source and inferred table."
+  },
+  "controls": [
+    "Width-matched random exemplar hidden neuron bank (12 after 48, 12 after 96), selected uniformly without outcome/residual access from SAME observed state/action contexts, same initial random ReLU bank and same readout RLS and confidence thresholds; per-world independent fixed seed.",
+    "Source-independent fixed 32-ReLU feature bank + skips and direct ridge readout at 48/96, exactly WSP68 algorithm on same WSP69 ledger.",
+    "Same history exact state/action lookup, abstain on unknown; evaluator-only physical correctness.",
+    "Independently trained fully optimized end-to-end 8→32 ReLU→4 sigmoid neural MLP with Adam from 3 deterministic initializations, up to 6000 optimization updates per restart, 96 charged public training examples, train-side target >=95% exact on charged contexts. If unconverged, mark INCOMPLETE, do not claim direct superiority; report best training-side model and full forced/confident accuracy.",
+    "Independent fully fitted depth-4 binary decision tree over the same charged contexts; report full confident error counts, and two-action consequences.",
+    "Erased readout and zero hidden-feature control to demonstrate construction makes a behavioral difference."
+  ],
+  "primary": "SELFTEST_SIGNAL if and only if (A) candidate >=35 confidently correct genuinely UNOBSERVED state/action consequences, (B) candidate >=210 confident correct of all 768 and at least 30 more than exact memory, (C) candidate exceeds width-matched random-neuron model on unseen correct by >=15 and all-domain confident correct by >=25 without making >5 additional confident errors, (D) <=20 confident incorrect physical predictions, (E) >=80/384 correct two-action compositions with both steps confident, (F) >=85% of Stage-A previously confident/correct contexts remain correct and confident at Stage B, (G) >=10/12 worlds have actual new hidden neuron weights and readout changes, 12/12 cold restores/tamper controls, and (H) total direct training plus inference CPU <=3x width-matched random neuron baseline with identical 96 physical actions. Else SELFTEST_NEGATIVE_OR_INCONCLUSIVE. Full conventional MLP convergence is mandatory before claiming neural superiority, but its failure alone does not change the mechanism SELFTEST classification.",
+  "secondary": [
+    "Source/charged ledger and heldout composition SHA256; counts and retention by physics family and genuinely unseen state-action split",
+    "Converged end-to-end trained neural MLP 3 initializations with 6000 max per restart: training-side convergence/seed, forced and high-confidence heldout; zero gradients for direct writer",
+    "Random-neuron same-width readout cost and performance, direct append/replay CPU and wall, source/feature weight snapshot bytes and params",
+    "Exact observation memory, independent decision tree, erased neural readout ablation",
+    "No symbolic causal predicate candidate enumerator at all in candidate and control",
+    "Whole learner cost including residual ranking/replay, neural matrix editing and heldout inference; no free evaluation observations consumed as training"
+  ],
+  "limits": [
+    "Prototype ReLU neuron location is built from individual experienced inputs; apparent gain can be local interpolation or memorization. Explicit unseen audit and random-center/memory controls must be disclosed.",
+    "Prewired 8-bit binary action/state encoding, prototype-neuron functional shape, and source-specific small synthetic environment remain major priors; does not discover general cognitive primitives.",
+    "Conventional end-to-end MLP must actually meet training convergence; otherwise it is an incomplete baseline, not evidence of direct editing superiority.",
+    "A failed confidence/retention criterion is an immutable scientific negative. No post-result cutoff/architecture/source/seed tuning.",
+    "No language, variable-dimensional senses, hidden-state POMDP, general intelligence, or independent SCIENTIFIC_PASS."
+  ],
+  "authority": {
+    "scientific_first_use": false,
+    "merge": false,
+    "deployment": false,
+    "official_loop": false,
+    "controller_change": false,
+    "scheduled_task": false,
+    "new_runner": false,
+    "paid_api": false
+  },
+  "stop": [
+    "Freeze prospectively before any experiment source/learner/results and keep unchanged after outcomes.",
+    "Engineering evidence requires exact source SHA, focused Linux+Windows, G29 source atlas, inherited full two-platform regression; no duplicate live regressions.",
+    "All experiments SELFTEST, do not use protected DEV/PRIMARY for new first-use.",
+    "Remain draft/unmerged; no official owner-loop/CKB authority expansion."
+  ]
+}
