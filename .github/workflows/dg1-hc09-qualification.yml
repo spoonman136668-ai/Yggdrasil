@@ -1,0 +1,84 @@
+name: DG1-HC09 Two-Regime Nonlinear Causal Cells DEV
+on:
+  pull_request:
+    paths:
+      - 'research/contrib/chatgpt/dg1-hc09-20261113/**'
+      - '.github/workflows/dg1-hc09-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compile causal memory, conventional and frozen evaluator
+        run: |
+          python -m py_compile research/contrib/chatgpt/dg1-hc09-20261113/model.py
+          python -m py_compile research/contrib/chatgpt/dg1-hc09-20261113/conventional_control.py
+          python -m py_compile research/contrib/chatgpt/dg1-hc09-20261113/eval_dev.py
+      - name: Test source-only controls, cold retention and adverse physics
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/dg1-hc09-20261113 -p "test_*.py" -v
+      - name: Run preregistered 28-world six-control DEV, retain negatives
+        run: python research/contrib/chatgpt/dg1-hc09-20261113/eval_dev.py > hc09-result.json
+      - name: Report exact frozen science verdict
+        run: python -c "import json; r=json.load(open('hc09-result.json')); print('HC09_DEV',r['classification'],'affine',r['stationary_affine_pass'],'majority',r['stationary_majority_pass'],'ABA',r['A_B_A_retention_pass'],'cubic_wrong',r['out_of_grammar_confident_wrong']); print(r['aggregate'])"
+      - name: Preserve entire policy/physical ledger evidence, including failures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-hc09-dev-evidence-${{ matrix.os }}
+          path: hc09-result.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Mandatory full inherited source regression
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Exact-source G29 atlas check
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: No modified source after testing
+        run: git diff --exit-code
+      - name: Generate atlas against exact source candidate SHA
+        if: always() && matrix.os == 'ubuntu-latest'
+        run: python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+      - name: Print bounded base64 exact-source G29 chunks for final pin
+        if: always() && matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          for ext in ('json', 'html', 'ice'):
+              raw = Path('.ice/code-atlas.'+ext).read_bytes()
+              print('DG1_HC09_ATLAS_START:'+ext+':'+str(len(raw)))
+              txt = base64.b64encode(raw).decode('ascii')
+              for i in range(0, len(txt), 4096):
+                  print('DG1_HC09_ATLAS_CHUNK:'+ext+':'+txt[i:i+4096])
+              print('DG1_HC09_ATLAS_END:'+ext)
+          PY
+      - name: Preserve generated exact-head atlas
+        if: always() && matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-hc09-g29-atlas
+          path: |
+            .ice/code-atlas.json
+            .ice/code-atlas.html
+            .ice/code-atlas.ice
+          if-no-files-found: warn
+          retention-days: 7
