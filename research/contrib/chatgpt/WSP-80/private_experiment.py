@@ -126,6 +126,7 @@ def freeze_developer_models(paid, seed=DEVELOPER_ONLY, *, train_conventional=Tru
              "MLP_train_exact": mlp_receipt["best_train_exact"],
              "MLP_gradient_updates_total": mlp_receipt["gradient_updates_total"],
              "MLP_restarts": mlp_receipt["restarts"],
+             "MLP_trials": mlp_receipt["trials"],
              "candidate_paid_actions": 384, "random_paid_actions": 384}
     if not mlp.fully_trained:
         stats["MLP_incomplete"] = True

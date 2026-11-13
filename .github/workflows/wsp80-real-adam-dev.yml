@@ -1,0 +1,38 @@
+name: WSP80 genuine three-restart Adam developer-only probe
+on:
+  push:
+    branches: [research/wsp80-paid-novelty-structural-weight-repair-20261113]
+permissions:
+  contents: read
+jobs:
+  real-adam-developer-only:
+    if: github.event.head_commit.message == 'ci(wsp80): run real Adam developer probe on pinned source'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Source pinned atlas and clean checkout
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+      - name: Train three genuine Adam restarts and score UNREGISTERED developer world only
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: python research/contrib/chatgpt/WSP-80/developer_adam_probe.py --developer-only
+      - name: Source checkout unchanged
+        shell: bash
+        run: git diff --exit-code
