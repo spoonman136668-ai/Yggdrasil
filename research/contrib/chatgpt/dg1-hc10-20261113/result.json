@@ -1,0 +1,341 @@
+{
+  "schema": "ygg.dg1-hc10.frozen-primary-dev-result.v1",
+  "experiment": "DG1-HC10",
+  "prereg_first_commit": "3781294c45a9e0e271afcfa036bc2afe8577ad27",
+  "first_testable_source_sha": "b443d2dea1b85471126dda5dfa8bdb875cfa8988",
+  "classification": "MIXED_DEV",
+  "scientific_acceptance": "UNVERIFIED",
+  "ABA_primary_pass": false,
+  "stationary_majority_pass": true,
+  "out_of_grammar_confident_wrong": 74,
+  "frozen_primary_requirement": "8 A-B-A worlds: candidate >=160/512 correct, >=64/512 more correct than original HC09, AND zero confidently wrong; zero-confident-wrong condition FAIL (128 wrong). No retuning.",
+  "score_tuple_order": [
+    "correct",
+    "wrong_confident",
+    "abstained"
+  ],
+  "cohorts": {
+    "ABA": {
+      "seeds": [
+        81001,
+        81002,
+        81003,
+        81004,
+        81005,
+        81006,
+        81007,
+        81008
+      ],
+      "queries": 512,
+      "candidate": [
+        259,
+        128,
+        125
+      ],
+      "independent_conventional_jsd": [
+        259,
+        128,
+        125
+      ],
+      "unmodified_HC09": [
+        110,
+        62,
+        340
+      ],
+      "no_reactivation": [
+        18,
+        6,
+        488
+      ],
+      "single_bank": [
+        256,
+        128,
+        128
+      ],
+      "cyclic": [
+        223,
+        67,
+        222
+      ],
+      "candidate_per_seed": [
+        [
+          81001,
+          2,
+          0,
+          62,
+          0
+        ],
+        [
+          81002,
+          48,
+          16,
+          0,
+          1
+        ],
+        [
+          81003,
+          40,
+          24,
+          0,
+          1
+        ],
+        [
+          81004,
+          1,
+          0,
+          63,
+          0
+        ],
+        [
+          81005,
+          40,
+          24,
+          0,
+          1
+        ],
+        [
+          81006,
+          48,
+          16,
+          0,
+          1
+        ],
+        [
+          81007,
+          40,
+          24,
+          0,
+          1
+        ],
+        [
+          81008,
+          40,
+          24,
+          0,
+          1
+        ]
+      ],
+      "candidate_at_audit_16": [
+        274,
+        0,
+        238
+      ],
+      "candidate_at_audit_32_B": [
+        65,
+        72,
+        375
+      ],
+      "candidate_at_audit_40_return_A": [
+        259,
+        128,
+        125
+      ],
+      "old_HC09_at_16": [
+        274,
+        0,
+        238
+      ],
+      "old_HC09_at_32_B": [
+        78,
+        72,
+        362
+      ],
+      "old_HC09_at_40_A": [
+        110,
+        62,
+        340
+      ],
+      "candidate_gain_correct_over_old": 149,
+      "candidate_excess_confident_errors_over_old": 66,
+      "failed_condition": "Zero confident wrong violated; 149 extra correct comes with 66 extra wrong. Same capacity/steps, does NOT solve dependable context recovery."
+    },
+    "stationary_majority": {
+      "seeds": [
+        81009,
+        81010,
+        81011,
+        81012,
+        81013,
+        81014,
+        81015,
+        81016
+      ],
+      "queries": 512,
+      "candidate": [
+        512,
+        0,
+        0
+      ],
+      "independent_conventional_jsd": [
+        512,
+        0,
+        0
+      ],
+      "unmodified_HC09": [
+        512,
+        0,
+        0
+      ],
+      "no_reactivation": [
+        512,
+        0,
+        0
+      ],
+      "single_bank": [
+        512,
+        0,
+        0
+      ],
+      "cyclic": [
+        381,
+        0,
+        131
+      ]
+    },
+    "OOD_cubic": {
+      "seeds": [
+        81017,
+        81018,
+        81019,
+        81020,
+        81021,
+        81022,
+        81023,
+        81024
+      ],
+      "queries": 512,
+      "candidate": [
+        438,
+        74,
+        0
+      ],
+      "independent_conventional_jsd": [
+        438,
+        74,
+        0
+      ],
+      "unmodified_HC09": [
+        438,
+        74,
+        0
+      ],
+      "no_reactivation": [
+        438,
+        74,
+        0
+      ],
+      "single_bank": [
+        438,
+        74,
+        0
+      ],
+      "cyclic": [
+        187,
+        35,
+        290
+      ],
+      "candidate_per_seed": [
+        [
+          81017,
+          60,
+          4,
+          0
+        ],
+        [
+          81018,
+          54,
+          10,
+          0
+        ],
+        [
+          81019,
+          48,
+          16,
+          0
+        ],
+        [
+          81020,
+          54,
+          10,
+          0
+        ],
+        [
+          81021,
+          54,
+          10,
+          0
+        ],
+        [
+          81022,
+          60,
+          4,
+          0
+        ],
+        [
+          81023,
+          54,
+          10,
+          0
+        ],
+        [
+          81024,
+          54,
+          10,
+          0
+        ]
+      ],
+      "safety": "FAIL: confident assertions outside fixed 40-rule/action grammar."
+    }
+  },
+  "capacity": {
+    "candidate": 320,
+    "independent_conventional_jsd": 320,
+    "unmodified_HC09": 320,
+    "no_reactivation": 320,
+    "single_bank": 160,
+    "cyclic": 320
+  },
+  "physical_cost": {
+    "world_count": 24,
+    "policy_arms": 6,
+    "charged_steps_total": 6528,
+    "ABA_per_arm_per_world": 40,
+    "stationary_per_arm_per_world": 48,
+    "exogenous_flips_all_policies_each": 192,
+    "model_updates_on_flip": 0,
+    "strict_equal_actual_actions": true
+  },
+  "runtime": {
+    "ubuntu": {
+      "candidate_learning_ms_total": 262.854,
+      "conventional_jsd_learning_ms_total": 227.133,
+      "original_HC09_learning_ms_total": 228.076,
+      "cyclic_learning_ms_total": 61.405,
+      "peak_python_traced_bytes": 206815
+    },
+    "windows": {
+      "candidate_learning_ms_total": 370.103,
+      "conventional_jsd_learning_ms_total": 321.827,
+      "original_HC09_learning_ms_total": 350.819,
+      "cyclic_learning_ms_total": 94.688,
+      "peak_python_traced_bytes": 206880
+    },
+    "matched_total_compute": false
+  },
+  "source_evidence": {
+    "initial_run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43453657632",
+    "ubuntu_artifact": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43453657632/artifacts/14053421474",
+    "windows_artifact": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43453657632/artifacts/14053936233",
+    "raw_json_SHA256": {
+      "ubuntu": "5c840586b6ea9e0447ccaedf48c161a7082623c49cb414f9f99784aca7291ee0",
+      "windows": "8e6246d242dd20c7d73c450c362aef0bb1b13042bdd996a6b70d7a67d602a662"
+    },
+    "deterministic_fields_canonical_SHA256": "6310fa3e49ddd9d2aee1f1ac16436b6405332565514dbeebc8fb8ab3e58b2b48",
+    "deterministic_canonical_length_bytes": 99851,
+    "stable_fields_equal_on_both_OS": true,
+    "canonical_method": "JSON sorted keys compact ASCII; remove only top-level peak_python_tracemalloc_bytes and per-world per-policy fields policy_decision_ns and whole_learning_ns; all 144 action ledger SHA256 and physical/evaluator metrics remain included."
+  },
+  "interpretation": "Context-targeted action selection can increase return-A prediction coverage but raises confidently wrong predictions and ties a separately coded conventional Jensen-Shannon context selector. The retained fixed-context model still cannot safely identify regime membership without stronger evidence or uncertainty handling. All worlds synthetic, source-aligned, not native model integration.",
+  "engineering_preliminary": "9/9 focused tests each OS PASS; inherited complete regression FAIL only G29 stale indexed-file list after adding source; exact source atlas refresh then full mandatory final regression required.",
+  "decision": "Do not merge/integrate/promote. Preserve scientific negative, compare independent strong BOCPD and adversarial unmodeled causal structures in a separate newly preregistered experiment."
+}
