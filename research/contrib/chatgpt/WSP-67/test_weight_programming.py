@@ -109,8 +109,12 @@ class FrozenDirectWeightProgramming(unittest.TestCase):
             programmer.observe(Experience((1,1,1,1),0,first.after))
         self.assertEqual(programmer.ledger,[])
         programmer.observe(first)
+        # A physical self-loop is legal; disallow a genuinely discontinuous
+        # charged source receipt rather than forbidding repeated observations.
+        illegal=tuple(1-x if i==0 else x
+                      for i,x in enumerate(programmer.current))
         with self.assertRaises(ValueError):
-            programmer.observe(first)
+            programmer.observe(type(first)(illegal,0,programmer.current))
         with self.assertRaises(ValueError):
             programmer.observe(type(first)(programmer.current,0,programmer.current,0))
 
