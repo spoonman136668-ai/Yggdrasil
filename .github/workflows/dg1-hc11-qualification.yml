@@ -55,6 +55,21 @@ jobs:
       - name: Prepare source-index artifact for bounded atlas refresh
         if: always() && matrix.os == 'ubuntu-latest'
         run: python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+      - name: Emit exact G29 chunks for provenance-checked atlas-only commit
+        if: always() && matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          for ext in ('json', 'html', 'ice'):
+              raw=Path('.ice/code-atlas.'+ext).read_bytes()
+              print('DG1_HC11_ATLAS_START:'+ext+':'+str(len(raw)))
+              encoded=base64.b64encode(raw).decode('ascii')
+              for i in range(0,len(encoded),4096):
+                  print('DG1_HC11_ATLAS_CHUNK:'+ext+':'+encoded[i:i+4096])
+              print('DG1_HC11_ATLAS_END:'+ext)
+          PY
       - name: Preserve G29 generated atlas for separate review
         if: always() && matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
