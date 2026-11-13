@@ -1,0 +1,114 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "DG1-HC06",
+  "contributor": "chatgpt",
+  "contribution_class": "disjoint-replication-falsification",
+  "question": "Does HC05 two-step Gini intervention policy outperform a separately implemented conventional Bayesian entropy lookahead, with matched physical actions, prior hypothesis capacity, and new unseen worlds? Does it retain anything after phase reversal, and is it calibrated under unseen graph topology?",
+  "hypothesis": "HC05's two-step Gini policy may match or exceed Bayesian Shannon entropy in some synthetic worlds, but any gain is not established before the prospective test. Its monotonic masks should expose limitation under A/B/A and graph shift. Even a positive in-family result would be source-only and not proof of independent science.",
+  "exact_parent_sha": "3fa5b59208b250df14b0775d3134fd187dfc540b",
+  "HC05_PR": 966,
+  "existing_result": "HC05 MIXED_DEV: stationary 436/512 vs roundrobin 420/512 below 0.0625 prereg margin; routing 234/256 vs greedy 210/256; 38 confidently wrong on majority out-of-class worlds. Keep frozen and unmerged.",
+  "source_blobs_hc05": {
+    "model": "f8976741063d36075677bdfa55d488bfa878710a",
+    "evaluator": "8da71f567728548ec8b03e26982dbc86ca9ec911"
+  },
+  "scope": {
+    "research_only": true,
+    "changed_paths": [
+      "research/contrib/chatgpt/dg1-hc06-20261113/prereg.json",
+      "research/contrib/chatgpt/dg1-hc06-20261113/bayesian_control.py",
+      "research/contrib/chatgpt/dg1-hc06-20261113/eval_dev.py",
+      "research/contrib/chatgpt/dg1-hc06-20261113/test_hc06.py",
+      "research/contrib/chatgpt/dg1-hc06-20261113/README.md",
+      "research/contrib/chatgpt/dg1-hc06-20261113/result.json",
+      "research/contrib/chatgpt/dg1-hc06-20261113/provenance.json",
+      ".github/workflows/dg1-hc06-qualification.yml",
+      ".ice/code-atlas.json",
+      ".ice/code-atlas.html",
+      ".ice/code-atlas.ice"
+    ],
+    "native_model_edited": false,
+    "protected_science": false
+  },
+  "worlds": {
+    "in_distribution": [
+      41001,
+      41002,
+      41003,
+      41004,
+      41005,
+      41006,
+      41007,
+      41008
+    ],
+    "rewired_graph": [
+      41009,
+      41010,
+      41011,
+      41012,
+      41013,
+      41014,
+      41015,
+      41016
+    ],
+    "majority_negative": [
+      41017,
+      41018,
+      41019,
+      41020,
+      41021,
+      41022,
+      41023,
+      41024
+    ],
+    "return_A": [
+      41025,
+      41026,
+      41027,
+      41028,
+      41029,
+      41030,
+      41031,
+      41032
+    ],
+    "state": "4 physical bits, 4 selected public actions. Each action flips only its own bit depending on hidden law and sign.",
+    "generation": "For per-action independent RNG: random.Random(seed*97 + action*37), family=randrange(3), sign=randrange(2). Initial state=seed%16.",
+    "physics": "original ring left=(a-1)%4, right=(a+1)%4; parity XOR, parity XOR own-bit, AND. For rewired graph use left=(a+1)%4, right=(a+2)%4 (non-incident original pair); majority uses majority(left,own,right) with independent sign. For return-A original ring sign toggles only in phase B (A=16,B=8,A-return=1); no task labels passed to learner.",
+    "training": "Exactly 12 chronological public actions in each stable world (24 total stable) and 25 in each return-A world (8). No reset, no oracle calls, no artificial state visits. Every arm independently evolves its own physical trajectory from same initial state.",
+    "post_test": "Evaluator-only exact next state for 16 states x4 actions after training in true final active phase. Scores correct, confidently wrong, abstained and unseen. Abstentions count as no coverage."
+  },
+  "learners": {
+    "candidate": "Unmodified HC05 CausalProbeCells import exactly from parent source, 6 local rule hypotheses per action, 24 logical hypothesis-mask bits, two-step expected Gini information intervention, fixed tie breaks.",
+    "independent_conventional": "Separate BayesianEntropyPlanner in bayesian_control.py (no HC05 model import) implementing 6 same local rule hypotheses/action, integer-mask posterior update from public after only, Shannon entropy information gain and 2-step expectimax, fixed lowest-index ties. Same 24 logical prior-mask bits, physical interaction allowance and planning depth; conventional control code independently implemented.",
+    "other_controls": "HC05 one-step Gini, roundrobin, seeded random with same 12/25 actions; negative 'forced guess' diagnostic optional. Don't equate compute with just physical action equality. Report measured wall time/operation counts and Python heap.",
+    "model_budget": "24 logical hypothesis bits plus bounded counters and bytes; identical hypothesis capacity and action information, not necessarily equal CPU; no gradient, paid API, tokens, or transformers.",
+    "checkpoint": "Candidate HC05 1024-byte checksum checkpoint unchanged; independent baseline canonical SHA256 snapshot ≤1024 bytes, strict restore, cold parity; source model isolation."
+  },
+  "outcome_rules": {
+    "primary": "Across 8 new same-family worlds, candidate zero confidently wrong, mean correct per 64 >= Bayesian entropy + 4 per 64 (0.0625), and cold checkpoint parity. If not, NEGATIVE_GENERALIZATION_SIGNAL; do not relax.",
+    "rewired": "Out-of-distribution topology: independently report total confident wrong out of 512. Only if zero wrong and >=256 correct total count as positive OOD DEV; otherwise OOD_NEGATIVE.",
+    "majority": "All confident errors and exact coverage reported. Zero wrong on finite majority cohort insufficient for broad safety.",
+    "return_A": "At least 256 correct/512 after 25 actions, zero confident wrong, and cold retention parity, otherwise RETENTION_NEGATIVE; no hidden phase labels.",
+    "aggregate": "Only call DEV_SUPPORTED_BUT_NOT_SCIENCE if primary AND rewired AND return_A pass and no confident errors on majority. Otherwise MIXED_DEV if any component passes or NEGATIVE_DEV if none.",
+    "invalid": "Any source/seed/threshold change after outcome; any uncharged physical interaction, evaluation leakage, wrong parent SHA or source model blob, unequal action budgets per world, wrong restoration or file provenance.",
+    "science_pass": "NOT AVAILABLE: these are hand-specified four-bit worlds and matched prior; even if DEV passes, independent real-world, matched whole-process compute, conventional trained baselines and transfer needed."
+  },
+  "metrics": [
+    "Per-world per-arm real-action ledger SHA256, total physical actions, unique observed pairs, final 64-query score and unseen score, error/abstention rates",
+    "Candidate vs independent Bayesian 2-step Shannon entropy; one-step Gini/roundrobin/random",
+    "Exact executable policy source SHA, Git tree/CI, cold restore hash",
+    "Per-arm whole training and decision time, operation counts where comparable, peak Python tracemalloc, checkpoint bytes",
+    "Out-of-basis conf errors; switching A/B/A retention failure; no post-result retuning"
+  ],
+  "execution": {
+    "hosted_github_actions_only": true,
+    "windows_and_ubuntu": true,
+    "python": "3.12 standard-library",
+    "no_new_owners_or_schedulers": true,
+    "scientific_first_use": false,
+    "accepted_ref_mutation": false,
+    "model_integration": false
+  },
+  "prereg_note": "This exact prospective plan committed before any HC06 code or primary results. Preserve null and negatives and don't reclassify after observing them."
+}
