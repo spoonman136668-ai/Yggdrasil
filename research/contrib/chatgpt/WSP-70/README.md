@@ -1,7 +1,7 @@
 # WSP-70 — Direct neural weight imprinting of reusable action-conditioned factors
 
 ## Custody and prospective hypothesis
-- Frozen preimplementation hypothesis and controls: `prereg.json`, first commit `1f0de5a7ddc9ee92c1dc7b44c826ac03c0d4a650` (verify in history). The frozen source, thresholds and seeds are never tuned after observing outputs.
+- Frozen preimplementation hypothesis and controls: `prereg.json`, first commit `1fe7762b208ecd01300acf9819c6d11cfa76ef0e`. The frozen source, thresholds and seeds are never tuned after observing outputs.
 - Parent [WSP69 draft PR #962](https://github.com/spoonman136668-ai/Yggdrasil/pull/962) exact SHA `3e16a34b888564e1ba316f3e5330c3851e69360e`. The earlier WSP69 failure is retained: 279/768 correct confident, just 6/307 unseen, 26 confidently wrong, and the equally sized random-prototype control reached 261/768; fully converged end-to-end MLP reached 446/768 confident correct. WSP69's mandatory full regression was still in progress when WSP70 branched.
 - The new falsifiable question: can **learned selection of reusable sensor interactions**, encoded directly as executable hidden ReLU weights, predict physical consequences on never-experienced state/action contexts beyond equal-width randomly selected interactions and preserve existing knowledge?
 
