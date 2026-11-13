@@ -81,5 +81,10 @@ jobs:
           import hashlib
           for ext in ('json','html','ice'):
               raw=Path('.ice/code-atlas.'+ext).read_bytes()
-              print('SL08_ATLAS:',ext,len(raw),hashlib.sha256(raw).hexdigest())
+              import base64
+              encoded=base64.b64encode(raw).decode('ascii')
+              print('SL08_ATLAS_START:'+ext+':'+str(len(raw))+':'+hashlib.sha256(raw).hexdigest())
+              for offset in range(0,len(encoded),4096):
+                  print('SL08_ATLAS_CHUNK:'+ext+':'+encoded[offset:offset+4096])
+              print('SL08_ATLAS_END:'+ext)
           PY
