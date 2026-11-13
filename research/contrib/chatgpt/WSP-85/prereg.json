@@ -1,0 +1,120 @@
+{
+  "schema": "wsp85.discriminating-intervention-development.v1",
+  "status": "FROZEN_BEFORE_SOURCE_POLICY_LEARNER_IMPLEMENTATION_OR_OUTCOMES",
+  "parent": {
+    "sha": "f0ac74d8a83ac60fa23e7c4fd20934df50835a33",
+    "tree": "3f48ede726f6d44db33f82d4e8fd07fca6c0f061",
+    "original_WSP84_prereg_blob": "5da5a2409842e7cbce27468b2b44a5de1b907607",
+    "original_WSP84_numeric_blob": "474df711d2a7ea66b96595b3565940a242e20f73",
+    "original_WSP84_symbolic_blob": "66c10358ed2ea4c0833f51fc0e1b7d9689551dd3",
+    "original_WSP84_strong_adam64_blob": "5586b30add3f4c86c6183b9510f352507fad2860",
+    "registered_WSP80_prereg_blob": "0e96f4e0eff1ced7f87b754a2ad4fbb75c7b3d58"
+  },
+  "scientific_question": "With equal physical observations and exactly matched final model classes, can feedback-driven interventions disambiguate competing causal feature/operator hypotheses better than deterministic random action selection or passive periodic observation? Test hypothesis-driven action choice, paid observation quality, cold numeric prediction, cross-world portability and whole-process CPU.",
+  "source": {
+    "unregistered_worlds": [
+      {
+        "seed": 10201,
+        "family": "three_temporal_majority"
+      },
+      {
+        "seed": 10202,
+        "family": "three_temporal_majority"
+      },
+      {
+        "seed": 10203,
+        "family": "three_temporal_majority"
+      },
+      {
+        "seed": 10204,
+        "family": "three_temporal_majority"
+      },
+      {
+        "seed": 10205,
+        "family": "memoryless_control"
+      },
+      {
+        "seed": 10206,
+        "family": "memoryless_control"
+      }
+    ],
+    "private_rule": "Each paid action flips its corresponding visible 6-bit state position. In new-rule worlds it additionally flips one SHA256-secret target bit if >=2 of 3 SHA256-secret balanced 3-of-6 action-membership indicators on current, last, and penultimate actions hold. Missing history slots yield 0. Private masks/target derived independently from WSP85|DEV|seed|mask|slot-v1 and WSP85|DEV|seed|target-v1 and NOT available to learners/policies. Memoryless controls have only base toggle.",
+    "initial_state": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "no_reset_within_session": true,
+    "arm_names": [
+      "hypothesis_active",
+      "hash_random",
+      "cyclic_passive"
+    ],
+    "independently_charged_sessions_per_world": 3,
+    "paid_actions_per_arm": 384,
+    "stageA_first144_actions": "SHA256('WSP85|DEV|seed|stageA|step-v1') first8 bytes mod6; identical physically charged but independent sessions across all three arms.",
+    "stageB_240_actions": {
+      "hypothesis_active": "Public-history-only, generic 20x20x20 one balanced membership mask per action-history slot, learned partial 3-input Boolean truth tables consistent with charged StageA and subsequent paid outcomes. Rebuild version space every 12 actions, with unknown table cells allowed only in selection phase. Rank one-step present and two-step anticipated outcome disagreement across all consistent source-blind hypotheses plus source-blind unobserved action triple coverage, ties broken by lowest action. No private source fields/labels. If public residual signal is all zero (memoryless control), select maximum uncovered triple diversity. Max 512 consistent hypotheses retained in deterministic lexicographic order for bounded evaluation; same rule before outcomes.",
+      "hash_random": "SHA256('WSP85|DEV|seed|random|step-v1') first8 bytes mod6, independent of physics.",
+      "cyclic_passive": "(step + seed%6)%6, independent of physics."
+    },
+    "primary_scoring_contexts": "The identical frozen 43 contexts from WSP84: empty, all six one-action histories, all 36 two-action histories; all 64 visible states and six actions per context. Score source-private truth ONLY after SHA256 freezing all model predictions for that arm.",
+    "per_arm_private_queries": 16512,
+    "all_arm_queries": 297216,
+    "physically_paid_actions": 6912,
+    "protected_scientific_cohort": "WSP80 seeds 5601..5616 NEVER read, instantiated, or consumed"
+  },
+  "controls": {
+    "numeric": "Exactly original WSP84 PaidOperatorInducer with identical source code, full 384 charged actions/arm, same abstain rule and cold restoration.",
+    "symbolic": "Exactly original independent WSP84 truth-table solver with same paid observations and hypothesis class; parity requirement 18/18 arm models. Identical performance rules out numeric intelligence superiority.",
+    "neural": "Exactly original WSP84 genuine three-restart 25->64 ReLU->6 Adam (6000 gradient steps cap/restart, >=95% paid exact train accuracy convergence), fresh independent restart seed per (world,arm) but unchanged algorithm and action observations. Failure to converge is reported, not hidden.",
+    "alternatives": "Original WSP83 135-atom two-XOR compiler, same observations. Fixed memoryless base-action flip and paid exact state/action/last2 lookup.",
+    "matched_charges": "Each arm obtains its own full 384 paid action-consequence rows from same private source initial condition and StageA; no arm observes any other arm's charged labels or private source. Same final fit and scoring classes for all arms.",
+    "compute": "Report total per-arm acquisition+policy selection+compiler+Adam training+inference process CPU and wall-clock, plus peak RSS diagnostics. Never present partial optimizer-only timing as whole-process speedup."
+  },
+  "predeclared_dev_thresholds": {
+    "unregistered_worlds_exact": 6,
+    "charged_arm_sessions_exact": 18,
+    "paid_actions_exact": 6912,
+    "numerical_symbolic_query_parity_sessions_min": 18,
+    "active_novel_correct_over_random_aggregate_min": 500,
+    "active_novel_correct_over_passive_aggregate_min": 1000,
+    "active_novel_confident_wrong_total_max": 0,
+    "active_novel_worlds_with_at_least_16000_correct_min": 3,
+    "active_novel_aggregate_never_paid_correct_min": 18000,
+    "active_minimal_operator_candidate_reduction_vs_random_total_min": 2,
+    "control_worlds_active_perfect_correct_count_min": 2,
+    "neural_baselines_fully_trained_sessions_min": 12,
+    "active_actions_different_from_random_or_passive_stageB_min": 100,
+    "active_policies_read_private_truth_count_exact": 0,
+    "full_prelabel_SHA256_freeze_before_all_private_scores": true,
+    "cold_restoration_and_tamper_refusal": true,
+    "registered_WSP80_seed_first_use_exact": 0
+  },
+  "admission": {
+    "frozen_source_and_prereg_SHA_required": true,
+    "exact_GitHub_SHA_clean_checkout": true,
+    "pinned_G29_generated_only_atlas_companion": true,
+    "focused_synthetic_tests_both_OS": true,
+    "full_inherited_root_regression_both_OS": true,
+    "source_first_use_is_UNREGISTERED_developer_only": true,
+    "same_seed_arm_live_physics_parameters_confirmed_by_private_receipt_post_freeze": true
+  },
+  "stop": "One frozen cohort, one charged trajectory per arm/world, no retries or newly chosen seeds after first result. Preserve negative or null findings and unqualified neural baselines; no post-outcome threshold or mechanism tuning. Standard engineering defects may be repaired BEFORE first developer first-use with full exact source requalification. Registered scientific source is independently fenced.",
+  "interpretation": "Developer-only six-bit familiar source family. Active intervention policy has a researcher-provided restricted 8000-hypothesis 3-mask family and two-step planning; numerical weight compilation is unchanged WSP84. An intervention gain is evidence for causal-experiment design, not open-ended representation invention or general intelligence. Symbolic parity precludes numeric intelligence superiority; no inference of AGI or open-world portability.",
+  "authority": {
+    "draft_PR_only": true,
+    "merge": false,
+    "accepted_refs": false,
+    "registered_scientific_first_use": false,
+    "controller_or_loop": false,
+    "new_runner": false,
+    "scheduled_task": false,
+    "deployment": false,
+    "paid_API": false,
+    "user_Library": false
+  }
+}
