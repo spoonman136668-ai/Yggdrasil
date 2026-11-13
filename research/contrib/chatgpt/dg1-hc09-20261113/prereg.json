@@ -1,0 +1,99 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "id": "DG1-HC09",
+  "date": "2026-11-13",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "parent": "aa8927d462cab69ba6b4a7fd704ec66d2a62af34",
+  "prior_pr": 974,
+  "source_only": true,
+  "hypothesis": "A bounded two-bank executable causal memory with an enlarged but fixed library of affine and 3-bit-majority mechanisms can retain distinct A/B/A physics and avoid confident extrapolation in supported nonlinear worlds under explicitly charged physical state perturbations. It may tie a conventional symbolic changepoint controller and may abstain excessively after unseen shifts.",
+  "known_HC08": "HC08 charged actuation PASS on 8 fresh rewired 512/512 vs no actuator 418/512, but outside grammar 76 confidently wrong and A/B/A 80 confidently wrong. Preserve evidence; no first-use or promotion.",
+  "physical_worlds": {
+    "stationary_affine": [
+      71001,
+      71002,
+      71003,
+      71004,
+      71005,
+      71006,
+      71007,
+      71008
+    ],
+    "stationary_majority": [
+      71009,
+      71010,
+      71011,
+      71012,
+      71013,
+      71014,
+      71015,
+      71016
+    ],
+    "A_B_A": [
+      71017,
+      71018,
+      71019,
+      71020,
+      71021,
+      71022,
+      71023,
+      71024
+    ],
+    "out_of_grammar": "effect = bit0 & bit1 & bit2 & bit3 XOR sign, outside included affine or majority triple grammar for some observations.",
+    "format": "four public bits; 4 mechanism actions. Physically contiguous trajectories starting at seed%16; RNG per action Random(seed*101+action*31), sign first randrange(2), optional own slope second randrange(2).",
+    "affine": "effect = bit((a+1)%4) XOR bit((a+2)%4) XOR (own_bit&slope) XOR sign",
+    "majority": "effect=majority(bit((a+1)%4),bit((a+2)%4),own_bit) XOR sign",
+    "ABA": "A uses affine source, B inverts ALL mechanism action effects (no state reset), final A returns; boundaries at charged physical action index 16, 28; 16 A + 12 B + 4 return-A =32 total steps, no phase label visible to models.",
+    "interventions": "Mechanism action 0..3 costs 1 step; exogenous forced flip of chosen state bit costs 1 step, changes public state but provides no learned physics transition; no arbitrary state access, no free oracle, no hidden regime labels. 48 physical steps in stationary+negative (max 8 flips); 32 in ABA (max 6 flips)."
+  },
+  "candidate": {
+    "rules": "40 deterministic candidate programs/action: 32 affine (all 16 parent masks x signs) and 8 majority of all 4 choose 3 triples x signs; uniform prior. 4 actions x 40 mask bits per bank, maximum two banks = 320 logical hypothesis bits plus fixed counters, actually measure bytes and heap.",
+    "update": "Only public causal action transitions eliminate hypotheses within currently active bank. If inconsistent and another retained bank is compatible, reactivate older bank; else if free bank allocate new fully general bank. At two-bank capacity with no compatible bank, mark unresolved and abstain, do NOT overwrite old memories. Exogenous flips NEVER call observe.",
+    "predict": "Predict only when all surviving hypotheses in active bank for action agree, and when last causal event was unresolved return explicit abstain. No hidden-regime oracle or phase labels.",
+    "policy": "Use HC08 information-seeking causal action when any active-bank action has positive Gini; otherwise choose a costed bit flip maximizing sum of Gini over hypothetical postflip public state, lowest-index ties. At flip budget cap choose lowest-index causal action.",
+    "checkpoint": "Canonical SHA256 verified immutable snapshot <=4096 bytes; strict restore with exact parity and no state/counter overflow."
+  },
+  "controls": {
+    "matched_conventional": "Independently implemented symbolic two-regime changepoint version-space controller, same 40 functions/action, max 2 banks, 320 logical mask bits, same Gini physical steering/step budget. It might tie; no algorithmic superiority inference.",
+    "no_reactivation": "Same candidate and same two banks/capacity, but matching previous bank cannot be reactivated, must abstain when only old bank fits. Tests reuse vs capacity, equal actions.",
+    "single_bank": "Identical 40-rule bank with only 1 bank =160 bits (NOT equal-capacity), fail-closed on unrepresented switch; mechanistic ablation.",
+    "fixed_HC08": "Original HC08 single affine bank with charged actuation (128 bits), no nonlinear or regime store; unmatched capacity historical control.",
+    "round_robin": "Same 320-bit candidate model with scheduled costed flips and action t%4, to test active intervention value with matched action budget."
+  },
+  "frozen_metrics": {
+    "stationary_affine": "Candidate zero wrong-confident, >=384/512 correct in eight worlds, same actual action rights as matched conventional.",
+    "stationary_majority": "Candidate zero wrong-confident, >=256/512 correct in eight worlds; improvement >=+64 correct/512 over frozen HC08 affine-only control (historical, unequal capacity).",
+    "ABA": "Candidate zero confidently wrong and >=128/512 correct on eight return-A worlds, at least +64 correct compared with equal-capacity no-reactivation control; report per-seed cold restore and physical step counts. This is limited source-only DEV.",
+    "OOD": "All confidently wrong on four cubic out-of-grammar worlds report as unsafe; 0 finite error does not prove safety. Do not extend grammar after looking.",
+    "classification": "DEV_MECHANISM_SUPPORTED_NOT_SCIENCE only when stationary_affine + stationary_majority + ABA all pass AND no OOD confident errors. MIXED_DEV if any main cohort passes; NEGATIVE_DEV if none. INVALID for hidden source labels, exceeded budgets, changed seeds/thresholds after result, noncanonical checkpoint or missing model capacity/custody. SCIENTIFIC_PASS cannot be asserted.",
+    "caveats": "Results on hand-designed 4-bit physics and preselected affine/majority rules, conventional equivalent can tie; no general causal grammar discovery, independent natural-world transfer, AGI or automatic Yggdrasil runtime improvement."
+  },
+  "provenance": {
+    "seeds_frozen": true,
+    "no_model_calls": true,
+    "no_gradient": true,
+    "python": "3.12 standard-library",
+    "report_linux_windows": true,
+    "log_each_real_action_ledger_digest": true,
+    "measure_time_and_python_tracemalloc": true,
+    "full_inherited_regression": true,
+    "exact_G29_source_atlas": true
+  },
+  "changed_paths": [
+    "research/contrib/chatgpt/dg1-hc09-20261113/*",
+    ".github/workflows/dg1-hc09-qualification.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "authority": {
+    "external_research_only": true,
+    "merge": false,
+    "native_integration": false,
+    "accepted_refs": false,
+    "scheduled_task": false,
+    "paid_API": false,
+    "protected_science": false,
+    "other_research_branches_untouched": true
+  }
+}
