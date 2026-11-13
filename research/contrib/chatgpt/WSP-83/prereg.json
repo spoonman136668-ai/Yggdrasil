@@ -1,0 +1,132 @@
+{
+  "schema": "wsp83.xor-composed-feature-development.v1",
+  "state": "FROZEN_BEFORE_SOURCE_LEARNER_UNIT_TESTS_OR_OUTCOMES",
+  "objective": "Falsify WSP82 limitation: create a reusable XOR composition of two paid-data-identified primitive temporal features that does not exist as a single primitive in WSP82's 135-gate basis.",
+  "parent": {
+    "exact_sha": "ccea1458e2328983030bb919fbd07bdfbb570730",
+    "tree_sha": "3ddb765f4c9f9a4099c976146b08c30cb0fce427",
+    "WSP82_numeric_basis_blob": "79e5fcce5df0954d1ac818cb4b2797eab6a82392",
+    "WSP82_history_Adam_blob": "1c5b63c69a8cc6d1b1c1cb353347f0aa40deae5c",
+    "WSP80_registered_prereg_blob": "0e96f4e0eff1ced7f87b754a2ad4fbb75c7b3d58",
+    "protected_WSP80_seeds": "5601..5616 NOT USED"
+  },
+  "new_unregistered_cohort": [
+    {
+      "seed": 9901,
+      "family": "temporal_xor_new"
+    },
+    {
+      "seed": 9902,
+      "family": "temporal_xor_new"
+    },
+    {
+      "seed": 9903,
+      "family": "memoryless_control"
+    },
+    {
+      "seed": 9904,
+      "family": "memoryless_control"
+    }
+  ],
+  "source_private": {
+    "initial_visible_state": "six zero bits",
+    "initial_history": [],
+    "transition": "Each paid action flips its own visible bit. In temporal_xor_new worlds an extra visible bit (action+hidden_offset)%6 flips iff ((len(history)>=2 and history[-1]==history[-2]) XOR (len(history)>=1 and history[-1]==hidden_marker)). Hidden offset in [1..5], marker in [0..5], both SHA256-derived separately from seed and NOT exposed to learners. memoryless_control has only own-bit toggle.",
+    "offset": "1 + SHA256('WSP83|DEV|seed|offset-v1') integer mod 5",
+    "marker": "SHA256('WSP83|DEV|seed|marker-v1') integer mod 6",
+    "exact_paid_action_schedule": "SHA256('WSP83|DEV|seed|action|step') digest first8 bytes %6, step 0..383; no reset",
+    "paid_actions_each": 384,
+    "paid_actions_total": 1536,
+    "contexts": [
+      [],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        3,
+        3
+      ],
+      [
+        4,
+        4
+      ],
+      [
+        5,
+        5
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        5,
+        3
+      ]
+    ],
+    "public_query_count_per_world": 4608,
+    "public_query_count_total": 18432,
+    "physically_unpaid_counterfactual": "All 64 public visible states x6 actions x12 fixed past-action histories, evaluator truth only AFTER SHA256 freezing complete model predictions.",
+    "registered_or_protected_source_access": false
+  },
+  "models": {
+    "candidate": "Generic, source-blind extension of frozen WSP82 135 Boolean/ReLU public-history feature atoms. Start by attempting single-atom exact fit; if impossible, learn minimum description-length XOR of TWO DISTINCT basis feature predicates per output residual from 384 charged samples (all 135 choose2 considered), program numeric one-hot gate weights plus XOR ReLU composition, cold restore, abstain for ambiguous equal-minimum hypotheses.",
+    "legacy": "Original exact WSP82 135 singleton-feature compiler, unchanged; expected to reject temporal XOR source; do not weaken source or model.",
+    "symbolic": "Independent exactly same-expressivity explicit Boolean feature composer and XOR truth table, fit to same paid history, full query parity required, so any tie is NO numerical intelligence advantage.",
+    "neural": "Original genuinely trained WSP82 25->32 ReLU->6 sigmoid history-aware Adam baseline, 3 independent frozen restarts with <=6000 updates/restart; receives exact 384 paid public rows, no hidden source; >=95% charged training accuracy means CONVERGED, otherwise incomplete negative.",
+    "other": "Original memoryless action flip and exact (state,action,last2history) charged pair memorization with abstain; frozen-before-scoring.",
+    "capacity_provenance": "No new primitive boolean operators beyond a fixed two-atom XOR combiner; 135 features and XOR were selected by researcher before results. No open-ended invention claim."
+  },
+  "budgets_and_fence": {
+    "paid_action_cost": 1,
+    "paid_events_per_world": 384,
+    "all_arms_same_public_history": true,
+    "physical_reset": false,
+    "post_result_retry_or_threshold_tuning": false,
+    "source_evaluator_private": true,
+    "frozen_before_private_labels": true,
+    "no_protected_science_first_use": true,
+    "repo_PR_draft_only": true,
+    "no_merge_controller_runner_deploy_scheduled_tasks_paid_API": true,
+    "outcomes_github_only": true,
+    "max_minutes_each_OS": 45
+  },
+  "thresholds": {
+    "both_new_worlds_singleton_old_model_incompatible": true,
+    "controls_legacy_model_compatible_count_min": 2,
+    "numeric_new_worlds_confident_correct_each_min": 4000,
+    "numeric_new_worlds_confident_wrong_each_max": 0,
+    "new_worlds_learned_two_atom_XOR_count_min": 2,
+    "new_worlds_correct_gain_over_memoryless_total_min": 1200,
+    "new_worlds_correct_genuinely_unpaid_total_min": 1000,
+    "control_worlds_numeric_correct_each_min": 4608,
+    "numeric_independent_symbolic_exact_full_parity_worlds_min": 4,
+    "real_history_Adam_95pct_converged_worlds_min": 2,
+    "exact_cold_restore_full_predictions": true,
+    "corrupted_snapshot_rejected": true,
+    "paid_actions_total_exact": 1536,
+    "protected_scientific_first_use_count": 0
+  },
+  "stop": "Exactly one source-paid trajectory per specified unregistered seed, both OS. Preserve any negative outcomes and failure of thresholds. Engineering corrections before first DEV run allowed with exact-source requalification. After first DEV results, do not change source/model/thresholds and call it same experiment.",
+  "interpretation": "This can establish useful automatically composed numerical features outside the WSP82 singleton bank, but cannot show unrestricted discovery, reasoning, AGI, or superiority to independent same-expressivity symbolic composition. 12 chosen counterfactual contexts are researcher-defined, not naturally sampled trajectories."
+}
