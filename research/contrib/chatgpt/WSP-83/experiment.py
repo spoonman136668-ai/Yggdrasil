@@ -81,7 +81,8 @@ def readonly_source_admission():
             or prereg["source_private"]["public_query_count_total"]!=18432
             or prereg["source_private"]["contexts"]!=[list(h) for h in source.CONTEXTS]
             or prereg["source_private"]["registered_or_protected_source_access"] is not False
-            or prereg["authority"]["registered_first_use"] is not False):
+            or prereg["budgets_and_fence"]["no_protected_science_first_use"] is not True
+            or prereg["budgets_and_fence"]["repo_PR_draft_only"] is not True):
         raise RuntimeError("frozen developer source contract drift")
     return sha,prereg
 
