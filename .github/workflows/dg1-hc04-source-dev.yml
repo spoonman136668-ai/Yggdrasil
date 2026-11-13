@@ -1,0 +1,83 @@
+name: DG1-HC04 Version-Space Source DEV Qualification
+on:
+  pull_request:
+    paths:
+      - 'research/contrib/chatgpt/dg1-hc04-20261113/**'
+      - '.github/workflows/dg1-hc04-source-dev.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compile frozen mechanism and source-only evaluator
+        run: |
+          python -m py_compile research/contrib/chatgpt/dg1-hc04-20261113/model.py
+          python -m py_compile research/contrib/chatgpt/dg1-hc04-20261113/eval_dev.py
+      - name: HC04 mechanistic source and negative-control tests
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/dg1-hc04-20261113 -p "test_*.py" -v
+      - name: Prospective synthetic DEV test; do not hide negatives
+        run: python research/contrib/chatgpt/dg1-hc04-20261113/eval_dev.py > hc04-result.json
+      - name: Print frozen classifier without changing verdict
+        run: python -c "import json; r=json.load(open('hc04-result.json')); print(r['classification'], 'parity',r['parity_cohort_pass'],'own_bit',r['own_bit_cohort_pass'],'AND_wrong',r['out_of_basis_confident_errors'],'conventional_equal',r['control_equivalence_verified'])"
+      - name: Preserve per-platform scientific development evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-hc04-dev-evidence-${{ matrix.os }}
+          path: hc04-result.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Inherited final repository regression including G29
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Independent exact-source G29 atlas
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Tracked repository unchanged
+        run: git diff --exit-code
+      - name: Generate exact-head atlas for custody
+        if: always() && matrix.os == 'ubuntu-latest'
+        run: python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+      - name: Emit bounded source atlas for exact-tree commit
+        if: always() && matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          for ext in ('json', 'html', 'ice'):
+              raw = Path('.ice/code-atlas.' + ext).read_bytes()
+              print('DG1_HC04_ATLAS_START:' + ext + ':' + str(len(raw)))
+              payload = base64.b64encode(raw).decode('ascii')
+              for idx in range(0, len(payload), 4096):
+                  print('DG1_HC04_ATLAS_CHUNK:' + ext + ':' + payload[idx:idx+4096])
+              print('DG1_HC04_ATLAS_END:' + ext)
+          PY
+      - name: Archive exact-head source atlas
+        if: always() && matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-hc04-g29-atlas
+          path: |
+            .ice/code-atlas.json
+            .ice/code-atlas.html
+            .ice/code-atlas.ice
+          if-no-files-found: warn
+          retention-days: 7
