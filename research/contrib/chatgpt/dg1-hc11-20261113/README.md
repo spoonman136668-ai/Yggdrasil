@@ -30,3 +30,15 @@ python scripts/build_code_atlas.py --check-if-present
 ```
 
 Official Yggdrasil research-loop execution, merge/promotion, native integration and WSP weight editing remain separate and unauthorized by this contribution.
+
+## Frozen prospective development outcome — negative coverage
+
+First testable source `c935c9f623b42b3f1dbf4f179f7ff0cc8b1ff559`; cross-platform run [43468455539](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43468455539). Full source and receipt identity in `result.json` and `provenance.json`. The 9 focused tests passed on both operating systems. Generated G29 was stale because the candidate adds files; that is an engineering indexing defect, not a scientific outcome.
+
+| Frozen cohort (512 evaluator-only transitions) | Native two-witness correct/wrong/abstain | Conventional two-witness | Ungated native |
+|---|---|---|---|
+| A→B→A | 8 / 0 / 504 | 8 / 0 / 504 | 294 / 156 / 62 |
+| Stationary majority | 10 / 0 / 502 | 10 / 0 / 502 | 512 / 0 / 0 |
+| Unfamiliar cubic | 14 / 0 / 498 | 14 / 0 / 498 | 281 / 44 / 187 |
+
+Classification: **MIXED_DEV / PRIMARY NO-GO**. Zero confident errors were observed, but the preregistered required coverage (32 ABA, 64 stationary) failed, and the ordinary conventional controller was exactly tied. This approach is physical-experience recall with abstention, not safe compositional transfer. No post-result threshold or seed adjustment. Preserve the negative. No merge or native integration.
