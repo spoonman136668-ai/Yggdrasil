@@ -1,0 +1,62 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-57",
+  "created": "2026-11-12",
+  "status": "EXPLORATORY_ENGINEERING_PROSPECTIVE_NOT_SCIENTIFICALLY_ADMITTED",
+  "title": "Sparse active causal intervention programming of unknown finite operations",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 947,
+    "sha": "5160227ab731f76501e2803afed403d9aa1d51d1",
+    "qualification": "WSP56 focused+G29 pass, inherited full regression pending"
+  },
+  "question": "Can a source-blind, zero-gradient solver infer unobserved operator responses with fewer than 28 complete unary examples, and does choosing informative physical interventions outperform random interventions under an equal action budget?",
+  "hypothesis": "A table-candidate elimination mechanism with causal composition constraints and interventions ranked by predicted output diversity will give >10 percentage-point exact coverage gain over a seeded random-query control on their shared unseen query set, without wrong-confident predictions.",
+  "source": {
+    "code": "new standalone evaluator-only WSP57/source.py; no WSP56/WSP53 generator import",
+    "cohort": "SELFTEST only; six frozen independent seeds 2301 through 2306; DEV/PRIMARY forbidden",
+    "world": "4 hidden distinct random non-affine permutations on seven physical states, sampled by deterministic seed with no fixed semantics passed to learner",
+    "intervention": "query (first-operator-channel, second-operator-channel, before-state) -> observed final state; channels are primitive actions, not language tokens",
+    "common_training": "Exactly 3 unary input->output probes for each of four operators at states 0,2,4 (12 charged actions) supplied identically to both arms",
+    "action_budget": "24 additional charged two-operator physical queries per arm, selected sequentially without observing outcomes ahead of selection",
+    "arms": "active maximizes current finite-hypothesis output diversity; seeded-random chooses uniformly among unqueried actions; both receive equal 36 total charged interactions",
+    "eval": "all ordered distinct operator pairs and seven before-states (84 candidates), excluding every pair query charged by either arm; same remaining heldout set for both arms",
+    "isolation": "private permutation tables and heldout outputs never provided to learner. Outcomes for chosen charged actions are evaluator-supplied only after selection."
+  },
+  "learner": {
+    "prior": "Each operator is a permutation on seven states, not prewired lookup/true family or affine arithmetic; numeric state and four primitive action channels declared",
+    "mechanism": "Enumerate at most 24 admissible completions per operator after 3 unary probes; arc-consistency filtering from observed compositions; predict only unanimous candidates; no gradients",
+    "state": "persist public action history, surviving candidate function tables and schema-hashed cold snapshot; no hidden source import",
+    "per_arm_budget": {
+      "unary": 12,
+      "paired": 24,
+      "max_candidate_tables": 96,
+      "max_pair_constraint_passes": 100,
+      "max_snapshot_bytes": 1000000
+    }
+  },
+  "metrics": [
+    "Active versus random exact predictions and abstentions on identically unseen common queries (micro and per-seed)",
+    "Wrong-confident predictions (must be zero)",
+    "Number of consistent table completions after initial unary and final pairs",
+    "Seeded action trajectory receipts and strict action-cost parity",
+    "Cold-restored prediction parity and canonical/tamper failures",
+    "Whole-process wall/CPU and persistent bits",
+    "Comparison against unary-only observational baseline (same 12 unary actions, fewer physical queries explicitly not action matched)"
+  ],
+  "criterion": "SELFTEST_SIGNAL only if active-minus-random accuracy on common heldouts >=0.10 absolute, active exact coverage >=0.40, zero wrong-confident across both arms, all 6 worlds complete with 36 charged actions/arm and cold restore valid. Else preserve negative/inconclusive without retuning.",
+  "stop_rules": [
+    "No tuning after withheld results; no reusing WSP56 observed worlds or hidden operation maps",
+    "No oracle truth tables in learner or active selector; source evaluator may only reveal outcomes of charged chosen actions",
+    "Ambiguity -> abstain, no random confident guesses",
+    "No protected first-use, merge, deployment, official research-loop integration or paid APIs/scheduled tasks",
+    "A positive result only indicates selective intervention value in a small finite permutation world; full conventional, independent symbolic and external-distribution controls required before scientific claims"
+  ],
+  "boundaries": {
+    "development_isolated": true,
+    "science_first_use": false,
+    "merge": false,
+    "deployment": false,
+    "official_loop": false
+  }
+}
