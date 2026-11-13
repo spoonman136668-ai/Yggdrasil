@@ -1,0 +1,107 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment": "WSP-76",
+  "date": "2026-11-13",
+  "status": "FROZEN_PROSPECTIVE_SELFTEST",
+  "parent": {
+    "pr": 973,
+    "exact_head": "27c50ae9d5e22b5978c8c1f9eb748e836c64cd96",
+    "science": "WSP75 FROZEN NEGATIVE: reachable-neural-novelty+direct hidden edit 315/768 correct vs uniform random 325, observed contexts 371 vs random 393, old retention 281/295, only 19 correct never charged, 36 primary wrong confident; focused+G29 PASS dual OS, mandatory full in progress. Preserve as negative."
+  },
+  "question": "Can actual observed state/action contrasts, rather than model-imagined next states, guide charged interventions toward identifying physically meaningful action-specific effects, producing better genuinely unseen physical predictions after gradient-free numeric weight edits than matched-paid uniform random and cyclic balanced exploration?",
+  "physics": {
+    "kind": "SELFTEST only; no protected DEV/PRIMARY first use",
+    "primary_seeds": [
+      5001,
+      5002,
+      5003,
+      5004,
+      5005,
+      5006,
+      5007,
+      5008,
+      5009,
+      5010,
+      5011,
+      5012
+    ],
+    "negative_seeds": [
+      5013,
+      5014,
+      5015,
+      5016
+    ],
+    "families": "4 conditional-XOR, 4 conditional-conjunction, 4 mixed-coupled; four separately declared nested conditional adversarial worlds. Each hidden world has 4 binary public sensors, 4 permuted public actions; every action toggles its own hidden-role bit and may conditionally flip others using current public state. Unlike WSP74/75 majority trap, this source has explicit structural controllability and an evaluator-only prereg reachability audit >=12 of 16 public states from zero before outcome; not a proof of broad-world transfer.",
+    "charged": "For EACH of 16 independently salted source worlds, 3 physically distinct source-identical copies, one per intervention policy. ALL 3 copies charge 96 IDENTICAL A public actions/consequences and then each 48 actual B interventions with no trajectory reset. 16×3×144=6,912 REAL charged physical actions; no unpaid state transition, teleport, arbitrary query, source role leak. Policies see actual prior paid public rows only.",
+    "heldout": "After all policy/weights frozen: 12×64=768 primary physical state/action source truths; four negative ×64=256; 12×32=384 primary two-action compositions. Evaluate exact genuine never-charged per-arm state/action contexts and cold retention. No privileged source truth enters training."
+  },
+  "teachers": "Use unchanged WSP70 primary residual-selected and secondary random-feature numerical ReLU teachers on 96 shared physically charged A examples; their hidden neuron growth at 48/96 remains same. Teachers freeze after A; primary hidden/readout snapshot is shared by all B arms.",
+  "policy": {
+    "observed_contrast": "On current real observed state, derive actual paid (state,action,next_state) evidence; B action counts, distinct per-action empirical XOR change signatures, and any state with two actually tested actions yielding different physical outcomes. Eligible actions are those whose B count ≤minimum B action count+1 (hard bounded balance, no action channel starved); among eligible score +12 if current state has an actually charged DIFFERENT action but this exact state/action not previously charged, +8 if exact state/action never charged, +4 if public action has >=2 empirically distinct paid XOR-effect signatures and exact state/action uncharged, +4 if at current state two actually tested actions have different outcomes and exact state/action uncharged, +2/(1+real B action count). Pick max, SHA256 deterministic seed/step/action tie break, execute exactly ONE real action and append its physically paid consequence. No neural-imagined counterfactual, no source roles/heldout truth.",
+    "uniform_random": "Separate SHA256-seeded independent real B uniform random action per step; same 48 physical actions and same Stage-A numerical network, but different actual paid information.",
+    "balanced": "Source-blind precommitted 4-action repeated public cycle with SHA256-determined permutation per seed, 48 real B actions, each public action exactly 12 times; does NOT adapt based on paid consequences.",
+    "cost": "All THREE physically paid source streams charged separately. Equal action counts do NOT imply equal information/coverage; explicitly report paid exact contrasts and reachable-state visitation, action-frequency balance, and whole CPU."
+  },
+  "same_weight_learning": "All three policies perform identical exact frozen WSP74 finite-difference direct hidden-ReLU input-weight coordinate repair: up to four ±0.5 real sensor input coefficients among learned Stage-A signed interaction neurons, top eight via paid B residual; then numerical readout ridge refit on actual 144 charged A+B rows. Real numeric weights/covariance only on cold restore, no neural gradients, source/import lookup at inference, change of width or extra training data.",
+  "controls": [
+    "Within the same observed-contrast B charged trajectory, same learner frozen Stage-A hidden bank with 144-row RLS readout-only refit (no hidden edit).",
+    "Same observed-contrast charged trajectory and neural width with randomly chosen four existing hidden-neuron weight coordinate edits + identical readout refit.",
+    "Uniform random B and fixed cyclic balanced B independently physically paid and then identical exact WSP74 numeric repair; compare policy separately from representation repair.",
+    "Independent exact lookup and depth-four decision tree on the identical observed-contrast charged A+B rows; report unseen/false confidence.",
+    "Independent fully trainable conventional 8-input 32-ReLU 4-output sigmoid MLP, 3 seeded Adam restarts (max 6000 each) on the exact same 144 paid observed-contrast A+B rows, ≥95% training exact required for converged; report its confident and forced scores, CPU and total updates. Do not claim neural superiority if undertrained or unequal confidence.",
+    "All numeric models cold-reconstruct exactly from matrix-only snapshots, verified tamper rejection; no raw ledger retained."
+  ],
+  "new_causal_evidence": "From ONLY actually paid public rows, per real visible state form unordered distinct action pairs (a,b) with both physically charged at that exact state and different observed next states. These are observed paired action–consequence contrasts under a deterministic-state intervention, not mere increase in visited states or predicted counterfactuals. Count the total unique such state/action-pair contrasts after A and after B, and incremental discoveries in B for each policy. Private source evaluator truth is used ONLY to audit full reachability after training and to score heldout predictions.",
+  "primary": {
+    "classification": "SELFTEST_SIGNAL iff ALL; else SELFTEST_NEGATIVE_OR_INCONCLUSIVE without post-result tuning",
+    "reachable_public_states_min_each_world": 12,
+    "observed_contrast_primary_correct_min": 360,
+    "observed_vs_uniform_correct_gain_min": 18,
+    "observed_vs_balanced_correct_gain_min": 18,
+    "observed_vs_same_ledger_readout_only_gain_min": 15,
+    "observed_vs_same_ledger_random_hidden_edit_gain_min": 15,
+    "incremental_actual_paired_contrast_gain_vs_uniform_min": 15,
+    "incremental_actual_paired_contrast_gain_vs_balanced_min": 15,
+    "genuine_never_charged_correct_min": 24,
+    "genuine_never_charged_gain_over_uniform_min": 8,
+    "primary_wrong_confident_max": 24,
+    "stageA_true_confident_retention_min": 0.8,
+    "two_step_primary_correct_min": 115,
+    "nested_negative_wrong_confident_max_256": 16,
+    "actual_hidden_edits_in_primary_worlds_min": 10,
+    "cold_snapshots_restore_and_tamper_worlds": 16,
+    "measured_candidate_policy_plus_repair_cpu_over_uniform_max": 6
+  },
+  "secondary": [
+    "Source-private SHA256, full reachable-state set count and evaluator-only reachability BFS, three physically distinct no-reset charged A/B ledgers + SHA256, exact 144 paid actions each.",
+    "All real observed paired action–consequence contrast certificates before/after B per policy, action counts, distinct real visited states and input/action contexts; predicted novelty never substituted for physical evidence.",
+    "Same-world fully trained conventional MLP training convergence and exact same charged evidence, candidate RLS/refit and random hidden edits, confident correct/wrong/abstain by family and never-paid states.",
+    "Whole CPU of policy and neural repair separately from charged action count, conventional full training, normal Linux/Windows CPU differences; exact-source cold snapshot SHA and tamper.",
+    "If evaluator-only reachability preflight finds <12 for any world, classify FAIL; do not regenerate worlds or silently filter bad worlds after outcome."
+  ],
+  "limitations": [
+    "Hidden-source prewired 4-bit Boolean physics family and source-aligned 2/3-literal signed conjunction neural features remain powerful priors, not natural world AGI or language.",
+    "Observed paired action contrasts can be caused by different interventions at the same deterministic state; not formal general causal identifiability in noisy hidden confounding environments.",
+    "Even with source-independent action choice, extra physically paid contexts under different policies are unequal information. Action budgets match but actual useful evidence differs.",
+    "Finite difference is real supervised numerical optimization from paid observations, not zero-data weight programming.",
+    "A synthetic SELFTEST signal would NOT authorize merge, protected scientific first-use, deployment, official Yggdrasil/FORGE loop integration or SCIENTIFIC_PASS."
+  ],
+  "authority": {
+    "draft_only": true,
+    "protected_first_use": false,
+    "merge": false,
+    "promotion": false,
+    "deployment": false,
+    "owner_loop": false,
+    "controller": false,
+    "runner_change": false,
+    "scheduling": false,
+    "paid_API": false
+  },
+  "qualification": [
+    "Freeze entire prereg before source/selector/test/first use.",
+    "Focused Ubuntu+Windows, generated-only G29 atlas from exact source and inherited mandatory full dual-platform regression on final candidate SHA required for ENGINEERING_PASS.",
+    "No after-outcome source/threshold/seed/score tuning; mechanical defects preserve scientific semantics and require exact SHA requalification.",
+    "No duplicate running GitHub runs, no official owner/controller change, no SCIENTIFIC_PASS implied by engineering."
+  ]
+}
