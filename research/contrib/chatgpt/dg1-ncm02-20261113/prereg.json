@@ -1,0 +1,76 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "DG1-NCM02",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can the existing native public causal cells preserve physically learned action preferences while recycling active sites for new learning, using only the original 7 active + 9 retained cell budget and unchanged 164-byte checkpoint?",
+  "hypothesis": "Opt-in transactional archiving of an observed active cell into one unused retained cell followed by recycling only that active cell preserves archived action evidence across contradictory new experiences, compared with reusing a single active cell; this is a functional retention mechanism, not generalization or a claim against equal-capacity conventional memory.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "source_blob_sha": "5c9a9904e31688bebc2e53723569e1fb988a981f",
+  "predecessor_evidence": [
+    "DG1-MC01 draft PR #958 at 7c78ef0e7c3714a006599bbfb3a4d5e1fbccfddb: INVALID_DEV, leave independent/unmerged",
+    "Original main PublicCausalCells is an explicit memory control; no claim of native reasoning improvement"
+  ],
+  "changed_paths": [
+    "yggdrasil/public_causal_cells.py",
+    "tests/test_native_causal_consolidation.py",
+    "research/contrib/chatgpt/dg1-ncm02-20261113/prereg.json",
+    "research/contrib/chatgpt/dg1-ncm02-20261113/README.md"
+  ],
+  "inputs": [
+    {
+      "name": "deterministic public-only binary intervention examples",
+      "sha256": "generated deterministically by source tests, no external dataset",
+      "source": "synthetic deterministic development fixtures defined in test source; never protected world data"
+    }
+  ],
+  "frozen_design": {
+    "deterministic_expected": true,
+    "capacity": "exactly 7 active and 9 retained native slots, 16*2*2*2=128 learned bytes; checkpoint 164 bytes",
+    "data_budget": "24 observed binary outcomes per arm in initial task; 24 per arm in contradictory subsequent task; other cases bounded in unit tests",
+    "compute_budget": "integer copies and checks over fixed 2x2 counters; no gradient, no external model, no new allocation beyond existing 16 cell slots",
+    "training": "only preexisting observe(address, action, public_outcome) from actual public reports; no fabricated observations inserted",
+    "candidate": "opt-in consolidate_and_recycle(active_address,retained_address), move exact counts to previously empty retained slot and atomically clear only source active slot; reject incomplete source, occupied destination, invalid addresses",
+    "comparator": "unchanged original PublicCausalCells reused at same active site without archival; additional equal-capacity retained-slot manual-custody comparator treated as functionally equivalent",
+    "source_test_splits": "finite public tests for two contradictory observed tasks; source-only developer check, no sealed primary cohort"
+  },
+  "controls": [
+    "original choose() unchanged for all untouched cells",
+    "same-action evidence before archival and checkpoint restore",
+    "single active slot reused without archiving (interference control)",
+    "manually routed same-capacity retained cells (non-superiority control)",
+    "occupied destination and missing-arm evidence negative controls",
+    "tampered checkpoint and invalid type negative controls"
+  ],
+  "metrics": [
+    "archived action-choice parity before vs after recycling and contradictory next task",
+    "new active action-choice change after later observations",
+    "untouched-slot byte parity",
+    "snapshot length=164 and exact cold-restoration",
+    "retained-capacity accounting and zero extra learned bytes",
+    "legacy source focused and final full regression on exact SHA, both platforms and G29 atlas"
+  ],
+  "classification_rules": {
+    "engineering_pass": "100% of frozen unit invariants pass, with exact 164-byte checkpoint and unchanged old chooser interface; both platform final full regression + G29 atlas pass required for engineering promotion",
+    "engineering_fail": "any mutation before validation, silent overwrite, frozen-score mismatch, checkpoint format or existing decision drift, or absent full regression",
+    "scientific_supported": "NOT CLAIMABLE: neither this deterministic functional fixture nor the archive operation proves AGI, transfer, lower compute, or superiority to equal-capacity conventional storage",
+    "negative": "record unsuccessful retention/compatibility controls exactly; no post-result test tuning",
+    "invalid": "missing source custody, source mismatch, accidental protected data/runner use or unsupported scientific inference"
+  },
+  "prohibited_after_primary_run": [
+    "post-result data/threshold changes",
+    "positive science claim on functional benchmark",
+    "mutating main, #958, #954, #600 or official owner/runtime",
+    "new controller, scheduler, runner or paid API"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "promotion_policy": "Beneficial native feature only as a qualified opt-in candidate; actual model deployment/promotion requires separate acceptance and authoritative approval after final exact-SHA dual-platform regression and stronger independent retention/transfer evidence.",
+  "preregistration_note": "Frozen before any DG1-NCM02 implementation. Source-only synthetic engineering tests do not use protected scientific first-use."
+}
