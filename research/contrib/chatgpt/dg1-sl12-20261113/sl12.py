@@ -120,6 +120,23 @@ class World(sl11.World):
         self.paid += 1
         return kind, action, following
 
+    def audit_truth(self, state, action, completed):
+        """Strict evaluator-only truth for the predeclared SL12 audit steps.
+
+        The frozen SL09 evaluator permits only its own four audit times.
+        SL12 preregistered earlier phase-return audits at 40/44/56.
+        Physics and learner inputs are unchanged; this is never a training API.
+        """
+        if type(completed) is not int or completed not in AUDITS:
+            raise ValueError("SL12_FORBIDDEN_EVALUATOR_AUDIT")
+        sl09.check_state(state)
+        sl09.check_action(action)
+        bit = sl09.flip(
+            self._programs[(self._phase(completed - 1), action)],
+            state, action,
+        )
+        return state ^ (bit << action)
+
 
 class ArchiveMemory:
     """Reactivation distinguished from creating a new physical memory bank."""
