@@ -12,7 +12,7 @@ from pathlib import Path
 
 HC10 = Path(__file__).resolve().parents[1] / "dg1-hc10-20261113"
 if str(HC10) not in sys.path:
-    sys.path.insert(0, str(HC10))
+    sys.path.append(str(HC10))
 from interbank_policy import base, choose as native_choose
 from conventional_jsd import control, choose as conventional_choose
 
