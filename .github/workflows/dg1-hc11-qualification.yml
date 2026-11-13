@@ -1,0 +1,68 @@
+name: DG1-HC11 Physical Witness Confidence DEV
+on:
+  pull_request:
+    paths:
+      - 'research/contrib/chatgpt/dg1-hc11-20261113/**'
+      - '.github/workflows/dg1-hc11-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compile gate and prospective evaluator
+        run: |
+          python -m py_compile research/contrib/chatgpt/dg1-hc11-20261113/gate.py
+          python -m py_compile research/contrib/chatgpt/dg1-hc11-20261113/eval_dev.py
+      - name: Focused custody, physics and negative tests
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/dg1-hc11-20261113 -p "test_*.py" -v
+      - name: Run preregistered prospective held-out world cohort
+        run: python research/contrib/chatgpt/dg1-hc11-20261113/eval_dev.py > hc11-result.json
+      - name: Report scientific outcomes without changing thresholds
+        run: python -c "import json; r=json.load(open('hc11-result.json')); print('HC11_DEV',r['classification'],'primary',r['primary_pass'],'control_tie',r['conventional_tie_or_better']); print(r['aggregate'])"
+      - name: Preserve every per-world audit and action receipt
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-hc11-dev-evidence-${{ matrix.os }}
+          path: hc11-result.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Mandatory inherited full final regression
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: G29 exact-source atlas acceptance
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Check source is unchanged after tests
+        run: git diff --exit-code
+      - name: Prepare source-index artifact for bounded atlas refresh
+        if: always() && matrix.os == 'ubuntu-latest'
+        run: python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+      - name: Preserve G29 generated atlas for separate review
+        if: always() && matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-hc11-G29-atlas
+          path: |
+            .ice/code-atlas.json
+            .ice/code-atlas.html
+            .ice/code-atlas.ice
+          if-no-files-found: warn
+          retention-days: 7
