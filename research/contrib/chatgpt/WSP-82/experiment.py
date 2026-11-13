@@ -33,7 +33,7 @@ FROZEN = {
     "research/contrib/chatgpt/WSP-82/source.py":
         "081180827de282c2c2ab4cc756f7e7a91f5e070d",
     "research/contrib/chatgpt/WSP-82/temporal_weights.py":
-        "3bf68c63f7d46f3523b972b51ed1774043523bef",
+        "79e5fcce5df0954d1ac818cb4b2797eab6a82392",
     "research/contrib/chatgpt/WSP-82/independent_symbolic.py":
         "8b2de938d46ecfb273edb0895e02f8bd773c6e94",
     "research/contrib/chatgpt/WSP-82/history_adam.py":

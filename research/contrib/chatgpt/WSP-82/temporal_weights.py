@@ -79,7 +79,8 @@ class PaidTemporalFeatureEditor:
         self._compiled = None
 
     def charge(self, before, action, after, action_cost=1):
-        if (not _valid(before, action, tuple(self._history))
+        if (self._rows is None or self._history is None
+                or not _valid(before, action, tuple(self._history))
                 or type(after) is not tuple or after not in STATES
                 or type(action_cost) is not int or action_cost != 1
                 or before != self.current or self.charges >= 384
