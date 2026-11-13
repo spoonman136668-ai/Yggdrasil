@@ -1,0 +1,100 @@
+name: DG1-SL02 isolated wake-sleep falsification
+on:
+  pull_request:
+    paths:
+      - 'research/contrib/chatgpt/dg1-sl02-20261113/**'
+      - '.github/workflows/dg1-sl02-qualification.yml'
+permissions:
+  contents: read
+jobs:
+  development-qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify immutable evidence archive and safely extract
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib, tarfile
+          from pathlib import Path
+          path = Path('research/contrib/chatgpt/dg1-sl02-20261113/sl02-evidence.tar.xz')
+          assert hashlib.sha256(path.read_bytes()).hexdigest() == '942f46822b41a3a523b51840f5235ea80fd1c20ec707ff8beaaddd13e1a585a9'
+          out = Path('_sl02_exec')
+          out.mkdir(exist_ok=False)
+          with tarfile.open(path, 'r:xz') as archive:
+              assert set(archive.getnames()) == {'sl02.py','test_sl02.py','result-aggregate.json','manifest.json'}
+              archive.extractall(out,filter='data')
+          PY
+      - name: Compile isolated source
+        run: python -m py_compile _sl02_exec/sl02.py _sl02_exec/test_sl02.py
+      - name: Run focused guards and custody tests
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s _sl02_exec -p "test_*.py" -v
+      - name: Reproduce all preregistered physical worlds
+        run: python _sl02_exec/sl02.py > _sl02_exec/reproduced.json
+      - name: Check deterministic results, physical traces and source identity
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('_sl02_exec')
+          manifest=json.loads((p/'manifest.json').read_text())
+          for filename,digest in manifest['source_hashes'].items():
+              assert hashlib.sha256((p/filename).read_bytes()).hexdigest() == digest
+          assert manifest['prereg_sha'] == 'edfbb0cac4d24be50f1238f59c4ff88a62a94449'
+          e=json.loads((p/'result-aggregate.json').read_text())
+          r=json.loads((p/'reproduced.json').read_text())
+          for key in ('schema','classification','primary_pass','aggregate_final',
+                      'sleep_ties_online_replay_control','native_superior_to_conventional',
+                      'charged_actions_all_arms'):
+              assert e[key] == r[key], key
+          assert len(e['world_receipts']) == len(r['worlds']) == 24
+          for saved,actual in zip(e['world_receipts'],r['worlds']):
+              assert saved['seed'] == actual['seed'] and saved['group'] == actual['group']
+              assert saved['trace_sha256'] == actual['physical_trace_sha256']
+              assert saved['final_sleep'] == actual['audits']['sleep_repair']['48']
+              assert saved['final_online'] == actual['audits']['native_no_sleep']['48']
+          print('SL02 FROZEN SCIENCE:',r['classification'],'primary',r['primary_pass'])
+          print('Control superiority:',r['native_superior_to_conventional'])
+          PY
+      - name: Mandatory inherited full regression
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Clean test material before checking source custody
+        if: always()
+        shell: bash
+        run: rm -rf _sl02_exec
+      - name: Verify no tracked source mutations
+        run: git diff --exit-code
+
+      - name: Produce source-pinned G29 atlas for separate review (not a code modification)
+        if: always() && matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+          python - <<'PY'
+          import base64
+          from pathlib import Path
+          for ext in ('json','html','ice'):
+              raw=Path('.ice/code-atlas.'+ext).read_bytes()
+              enc=base64.b64encode(raw).decode('ascii')
+              print('SL02_ATLAS_START:'+ext+':'+str(len(raw)))
+              for i in range(0,len(enc),4096):
+                  print('SL02_ATLAS_CHUNK:'+ext+':'+enc[i:i+4096])
+              print('SL02_ATLAS_END:'+ext)
+          PY

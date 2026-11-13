@@ -1,0 +1,75 @@
+{
+  "schema": "ygg.dg1-sl02.wake-sleep-context-recovery-prereg.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_RESULTS",
+  "parent_sl01_sha": "3ede680b1d90b0d311d4f362e3f86c9077fc72a6",
+  "hypothesis": "At scheduled label-blind offline rests, bounded replay that repairs two causal-rule memories improves return-to-A prediction coverage over a strong online two-bank learner without increased dangerous confident errors.",
+  "cohorts": {
+    "ABA": {
+      "seeds": [
+        94001,
+        94002,
+        94003,
+        94004,
+        94005,
+        94006,
+        94007,
+        94008
+      ],
+      "steps": 48,
+      "phase_b": "17<=step<33; 0-based; hidden from agents"
+    },
+    "stationary_majority": {
+      "seeds": [
+        94009,
+        94010,
+        94011,
+        94012,
+        94013,
+        94014,
+        94015,
+        94016
+      ],
+      "steps": 48
+    },
+    "unfamiliar_cubic": {
+      "seeds": [
+        94017,
+        94018,
+        94019,
+        94020,
+        94021,
+        94022,
+        94023,
+        94024
+      ],
+      "steps": 48
+    }
+  },
+  "frozen_physics": "Exactly HC11 finite 4-bit / 4-action synthetic world functions and seed-derived sign/slope, with one physical state trajectory per seed shared by every arm. Starts seed %16. At most eight charged exogenous flips, which cannot be trained as mechanism observations. Fixed public round-robin causal-action chooser with periodic charged flips; no learner/oracle-selected state resets.",
+  "learned_grammar": "Prior 40-rule/4-action HC09 affine-and-three-bit-majority grammar; cubic intentionally outside grammar; no evaluator labels, target physics or hidden phase passed to any arm.",
+  "offline_schedule": "Rest/consolidation after physical steps 8,16,24,32,40,48, independent of phase and without extra physical actions. All arms know step count and observe exactly the same physical events.",
+  "arms": [
+    "sleep_repair: online native two-bank inference plus bounded 32-event physical log, offline deterministic replay and repair of memory-bank assignments with unlabeled finite-state fit; no simulated transitions permitted to teach",
+    "native_no_sleep: exact HC09 online two-bank learner with identical 32-event log but no offline replay",
+    "conventional_online: separately coded HC09 conventional two-context version-space model, same physical stream and bounded 32-event log",
+    "online_replay_control: identical consolidation algorithm with identical replay-work cap applied online after each scheduled boundary (tests offline timing rather than extra compute)"
+  ],
+  "budgets": "48 physical steps/world; max 8 charged exogenous flips; two causal memory banks x four 40-rule masks; at most 32 physical observation tuples per arm; <=8192-byte integrity-checked snapshots and deterministic cold restoration. Report actual bytes, physical actions and whole-process runtimes; do not assert equal total compute.",
+  "metrics": [
+    "before-update prequential outcomes on actual causal actions by phase (A1, B, A2)",
+    "evaluator-only 64 state/action audit at steps 16, 32, 48 (truth never fitted)",
+    "return-to-A held-out pair correct/wrong_confident/abstained at step 48",
+    "stationary and cubic confident-error counts, unlabeled bank-switch evidence",
+    "cross-platform deterministic results, checkpoint SHA256, physical trajectory SHA256 and entire-process timing"
+  ],
+  "frozen_primary": {
+    "return_A_correct_gain_over_strongest_online": 24,
+    "return_A_wrong_confident_excess_over_strongest_online_max": 8,
+    "return_A_unseen_correct_gain_over_strongest_online": 16,
+    "stationary_correct_degradation_max": 8,
+    "unfamiliar_cubic_wrong_confident_max": 8,
+    "native_superiority_requires_strict_gain_over_best_conventional": true,
+    "classification": "DEV_SIGNAL only if ALL thresholds hold and error controls pass; otherwise MIXED_DEV/NEGATIVE_DEV. Even passing cannot establish scientific/AGI superiority. No post-result threshold or seed tuning."
+  },
+  "integrity": "Do not feed evaluator audits to training; sleep sees only previous physical observations. No full-world generator access in model, no hidden-phase input, no gradients, token prediction, paid API, controller scheduling, protected science first use, main/accepted reference or native deployment. SL01 and HC11 negative outcomes remain immutable."
+}
