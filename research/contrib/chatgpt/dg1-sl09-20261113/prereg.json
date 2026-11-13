@@ -1,0 +1,91 @@
+{
+  "schema": "ygg.dg1-sl09.compositional-rule-discovery-prereg.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_OUTCOME",
+  "experiment_id": "DG1-SL09",
+  "project": "Yggdrasil",
+  "parent_exact_sha": "f5770c5a3090d90a2c25c6200f51c817ac247160",
+  "parent_pr": 990,
+  "hypothesis": "A bounded, non-token compositional program memory learned only from paid physical before/action/after events can reuse primitive causal rules in unseen compositions and restore previously learned context after interference, outperforming a fully informed independent Bayesian grammar control and independent tabular and frozen native controls at matched physical information and without excess confident errors.",
+  "scope": "Isolated source-only synthetic development. This is not a native model integration, AGI claim, or scientific acceptance. Preserve SL07/SL08 negative results.",
+  "world": {
+    "state": "4 public binary state bits, actions 0..3; a valid causal action can only flip its own bit. Change occurs iff an action-conditioned compositional Boolean predicate is true.",
+    "grammar": "Each action predicate is (gate0(bit[a],bit[(a+1)%4]) gate2 gate1(bit[(a+2)%4],bit[(a+3)%4])), where each gate is one of AND, OR, XOR, NAND, NOR, XNOR. Per-world/phase/operator tuple is hidden, with no world-seed or rule labels passed to any model; all learners may know the same public grammar.",
+    "phases": "80 paid steps per independent world/arm. Public fixed actions step%4 except ten chargeable perturbation flips at step indices 6,14,22,30,38,46,54,62,70,78. Hidden phase A for steps 0..29, B for 30..59, and at 60..79 A/B/A/mixed-new-composition for RETURN_A/RETURN_B/STABLE/COMPOSITION_OOD respectively; STABLE uses A throughout. Fixed state before each arm derived only in environment seed. All models see the exact same physical event stream.",
+    "seeds": {
+      "RETURN_A": [
+        102001,
+        102002,
+        102003,
+        102004,
+        102005,
+        102006,
+        102007,
+        102008
+      ],
+      "RETURN_B": [
+        102009,
+        102010,
+        102011,
+        102012,
+        102013,
+        102014,
+        102015,
+        102016
+      ],
+      "STABLE": [
+        102017,
+        102018,
+        102019,
+        102020,
+        102021,
+        102022,
+        102023,
+        102024
+      ],
+      "COMPOSITION_OOD": [
+        102025,
+        102026,
+        102027,
+        102028,
+        102029,
+        102030,
+        102031,
+        102032
+      ]
+    },
+    "formula_selection": "Implement seed-separated deterministic draws for A from triplets of AND/OR/XOR, B from NAND/NOR/XNOR, and OOD from mixed triplets combining members of both families. Each phase has a different action-conditioned program. Program selection and hidden labels are environment-only and never accessible to agents.",
+    "audit": "Frozen evaluator-only full 16 states x 4 actions after step 60,64,72,80. Audit truths and rule identifiers never used as learner updates. Evaluate 512 final held-out action/state pairs per cohort per arm; separately report previously unseen state/action pairs."
+  },
+  "protocol": {
+    "arms": [
+      "candidate_compositional_episodic",
+      "candidate_no_composition",
+      "candidate_no_episodic",
+      "independent_exact_bayes_grammar",
+      "independent_tabular_episodic",
+      "frozen_native_cold_three_bank"
+    ],
+    "intervention_policy": "All arms use the same full fixed physical trajectory. Each arm/world performs exactly 80 paid steps (70 causal consequences and 10 paid perturbation flips), 32 worlds x 6 arms = 15,360 paid steps, including 13,440 observed causal consequences. No learner-chosen action, free reset, oracle, hallucinated counterexample, external pretraining, or replay of evaluator audits.",
+    "learning": "Strictly pre-update prediction then one update for an actual charged causal event. Candidate uses bounded compositional Boolean program hypotheses and retains context-indexed causal memory. No-composition replaces program induction with independent action-state memory. No-episodic loses archived context. Independent Bayesian baseline exhaustively scores the same public grammar given exactly the same data and action schedule (no weaker grammar or fewer training events). Independent tabular model gets the same physical data and episodic budget. Frozen native ColdThreeBank(gate=True,evict=False) is a separately labeled baseline, not represented as the candidate.",
+    "capacity": "At most 8,192 serialized checkpoint bytes per arm, including all retained events, hypothesis state and cold-restoration metadata. Strict canonical hash and tamper rejection. No hidden truth/seed/phase in state.",
+    "cold": "At step 60 take serialized checkpoint, restore into a new process-equivalent instance, check byte identical and predictions identical across all state/action queries, and continue. Test final restoration and interference/return metrics separately.",
+    "controls": "Negative tests for impossible physical steps, hidden-label injection, evaluator-as-training, zero-cost evidence, changed seed, checkpoint corruption. Exact physical trajectory SHA-256 parity for all arms and cross-platform deterministic outputs excluding runtime timing."
+  },
+  "thresholds": {
+    "primary_candidate": "candidate_compositional_episodic",
+    "COMPOSITION_OOD_correct_gain_vs_best_independent_grammar_or_tabular_min": 16,
+    "COMPOSITION_OOD_unseen_correct_gain_vs_best_independent_grammar_or_tabular_min": 8,
+    "COMPOSITION_OOD_wrong_confident_excess_vs_safest_independent_max": 4,
+    "RETURN_A_correct_loss_vs_best_independent_max": 16,
+    "RETURN_B_correct_loss_vs_best_independent_max": 16,
+    "STABLE_correct_loss_vs_best_independent_max": 8,
+    "STABLE_wrong_confident_excess_vs_safest_independent_max": 0,
+    "candidate_gain_vs_ablations_required": true,
+    "cold_and_budget_and_trace_required": true,
+    "candidate_median_cpu_ratio_vs_independent_exact_bayes_max": 1,
+    "classification": "Primary DEV_SIGNAL_NOT_SCIENCE only if all quantitative and integrity gates pass on untouched preregistered source; otherwise MIXED_DEV for partial gains or NEGATIVE_DEV; INVALID for leakage, changed data/threshold, missing exact original source custody or cross-platform mismatch. DEV_SIGNAL does not authorize scientific promotion, AGI claim or deployment."
+  },
+  "qualification": "Exact committed source syntax/focused and negative tests, mandatory full inherited repo regression on final candidate SHA on Ubuntu and Windows, G29 source atlas hash audit, source and raw outcome/provenance in GitHub only, original prospective runs reported separately from engineering pass. No post-outcome tuning of this study.",
+  "isolation": "Draft and unmerged; no native/main/accepted-ref, Forge/Wingless/Hybrid, owner/controller/loop, first-use, live deployment or weight-programming source writes. No scheduled task, paid API, model tokenization, or workstation mutation.",
+  "limitations": "Synthetic toy world, 32 seeds, and evaluator's uniform queries do not establish AGI or real-world generalization. Fully informed Bayesian baseline may dominate. Follow-up independent benchmark/replicate required even if DEV_SIGNAL."
+}

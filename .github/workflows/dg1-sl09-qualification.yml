@@ -1,0 +1,89 @@
+name: DG1-SL09 compositional paid causal-rule discovery DEV
+on:
+  pull_request:
+    paths:
+      - 'research/contrib/chatgpt/dg1-sl09-20261113/**'
+      - '.github/workflows/dg1-sl09-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Syntax verify source and focused tests
+        run: python -m py_compile research/contrib/chatgpt/dg1-sl09-20261113/sl09.py research/contrib/chatgpt/dg1-sl09-20261113/test_sl09.py
+      - name: Safety, no-oracle, paid-physics and cold-restore tests
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/dg1-sl09-20261113 -p 'test_*.py' -v
+      - name: Prospectively run preregistered 32-world six-arm synthetic DEV
+        run: python research/contrib/chatgpt/dg1-sl09-20261113/sl09.py > sl09-result.json
+      - name: Verify physical-trace custody and report scientific gate separately
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('sl09-result.json').read_text())
+          assert r['preregister_commit']=='9f760727f58058a538f4af82a0d4494b98be11c9'
+          assert r['world_count']==32 and len(r['arms'])==6
+          assert r['charged_steps']==15360 and r['causal_observations']==13440
+          assert all(len(set(a['trace_sha256'] for a in w['arms'].values()))==1 for w in r['worlds'])
+          assert all(a['paid_steps']==80 and a['flips']==10 and a['causal_observations']==70 and
+                     a['cold_checkpoint_bytes']<=8192 and a['final_checkpoint_bytes']<=8192
+                     for w in r['worlds'] for a in w['arms'].values())
+          print('SL09_PRIMARY:'+str(r['primary_pass']))
+          print('SL09_CLASSIFICATION:'+r['classification'])
+          print('SL09_METRICS:'+json.dumps(r['aggregates'],sort_keys=True,separators=(',',':')))
+          print('SL09_CPU_RATIO:'+str(r['median_candidate_cpu_ratio_vs_bayesian']))
+          PY
+      - name: Mandatory inherited repository regression on candidate SHA
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: G29 pinned atlas source check
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Preserve original raw prospective result in GitHub Actions
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-sl09-paid-worlds-${{ matrix.os }}
+          path: sl09-result.json
+          if-no-files-found: ignore
+      - name: Remove transient generated outcome
+        if: always()
+        shell: bash
+        run: rm -f sl09-result.json
+      - name: Assert no tracked source mutation by runtime
+        if: always()
+        run: git diff --exit-code
+      - name: Generate exact source-index reanchor payload
+        if: always() && matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,base64
+          for ext in ('json','html','ice'):
+              raw=Path('.ice/code-atlas.'+ext).read_bytes()
+              encoded=base64.b64encode(raw).decode('ascii')
+              print('SL09_ATLAS_START:'+ext+':'+str(len(raw))+':'+hashlib.sha256(raw).hexdigest())
+              for offset in range(0,len(encoded),4096):
+                  print('SL09_ATLAS_CHUNK:'+ext+':'+encoded[offset:offset+4096])
+              print('SL09_ATLAS_END:'+ext)
+          PY
