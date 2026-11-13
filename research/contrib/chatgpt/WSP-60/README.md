@@ -25,3 +25,6 @@ python -m unittest discover -s research/contrib/chatgpt/WSP-60 -p 'test_*.py' -v
 ```
 
 Only existing Linux/Windows GitHub CI and full inherited regression with exact-source G29 atlas. No DEV/PRIMARY first-use, autonomous owner-loop integration, new controller/runner, schedule, paid API, scientific promotion, merge or deployment. The simulator permits arbitrary-state intervention resets without charging their real-world cost.
+
+## Mechanical qualification repair
+The initial focused run on source `370403806b6d0308ba5b8fccbbc6c1c97dd6193c` had a **harness assertion error**: it rejected physically successful control plans of length 2–4 if they were not oracle-shortest. The preregistered objective scores success **within four actions**, not oracle-optimal route length. Commit `f4d8a8ae7d5f8a21caa0b68968ba19e3465a27ff` removes that unregistered shortestness assertion without altering any task, world, probe decision, candidate, score threshold or experimental algorithm. The aborted first run is not evidence of scientific criterion failure; rerun exact-source final qualification.
