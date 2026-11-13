@@ -32,3 +32,17 @@ jobs:
         run: python -m py_compile yggdrasil/public_causal_cells.py
       - name: Ensure no tests modify the repository
         run: git diff --exit-code
+      - name: Build exact-source G29 atlas bundle for later review (artifact only)
+        if: matrix.os == 'ubuntu-latest'
+        run: python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+      - name: Upload generated G29 source atlas bundle (no source mutation)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-ncm02-g29-atlas
+          path: |
+            .ice/code-atlas.json
+            .ice/code-atlas.html
+            .ice/code-atlas.ice
+          if-no-files-found: error
+          retention-days: 3
