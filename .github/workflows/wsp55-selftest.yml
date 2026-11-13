@@ -1,0 +1,30 @@
+name: WSP55 source-only operator SELFTEST
+on:
+  pull_request:
+    branches:
+      - research/wsp54-gradientless-causal-compiler-20261112
+    paths:
+      - 'research/contrib/chatgpt/WSP-55/**'
+      - '.github/workflows/wsp55-selftest.yml'
+permissions:
+  contents: read
+jobs:
+  focused:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: WSP55 frozen noncommuting SELFTEST only (no DEV or PRIMARY)
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-55 -p 'test_*.py' -v
