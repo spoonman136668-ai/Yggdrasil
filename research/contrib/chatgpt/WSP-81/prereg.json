@@ -1,0 +1,108 @@
+{
+  "schema": "wsp81.history-dependent-dev-prereg.v1",
+  "state": "FROZEN_BEFORE_SOURCE_IMPLEMENTATION_OR_RESULTS",
+  "provenance": {
+    "parent_commit": "e2a363943d3ac81875cbcc237f2cc53b4b594112",
+    "parent_tree": "02f42b39e386c7f65f1738d9452725ec8a7bbbcc",
+    "inherit_registered_wsp80_prereg_blob": "0e96f4e0eff1ced7f87b754a2ad4fbb75c7b3d58",
+    "protected_WSP80_seed_range": [
+      5601,
+      5616
+    ],
+    "new_cohort": "UNREGISTERED_DEV_ONLY"
+  },
+  "hypothesis": "A previously unknown one-bit latent regime makes identical visible state/action pairs have different public consequences. Standard WSP80 Markov source-blind editor is misspecified. Can a paid-history-conditioned weight compiler infer a compact latent transition mechanism and predict held-out public outcomes without private regime labels?",
+  "source": {
+    "role": "new independent evaluator-only history-dependent source module; not WSP80 source.py",
+    "seeds": [
+      {
+        "seed": 9401,
+        "family": "hidden_two_mode"
+      },
+      {
+        "seed": 9402,
+        "family": "hidden_two_mode"
+      },
+      {
+        "seed": 9403,
+        "family": "hidden_two_mode"
+      },
+      {
+        "seed": 9404,
+        "family": "hidden_two_mode"
+      },
+      {
+        "seed": 9405,
+        "family": "memoryless_control"
+      },
+      {
+        "seed": 9406,
+        "family": "memoryless_control"
+      }
+    ],
+    "public_states": "all 64 six-bit states; six actions; latent state is unobservable to learner",
+    "hidden_rules": "All worlds start latent z=0, visible before state all zeros. Every action a flips visible bit a. For hidden_two_mode: an unknown trigger action t changes the latent z AFTER the visible transition. When pre-action z=1 and a!=t, an additional bit (a+offset)%6 is flipped (offset in [1..5]). Trigger and offset derive from SHA256('WSP81|DEV|seed|private-params-v1') and are invisible to learner. memoryless_control has no hidden flip (only visible action-bit toggle). Source no reset during paid session.",
+    "observables": "Only before state, public action, after state, one-unit charge, ordered action history. No latent labels/unknown trigger/offset/physics oracle in any learner or action selector.",
+    "schedule": "384 physically paid steps per world. StageA 144 actions use SHA256('WSP81|DEV|seed|stageA|step') modulo 6. StageB 240 actions use SHA256('WSP81|DEV|seed|stageB|step') modulo 6. Entire action schedule fixed without source/private knowledge; no reset, no free queries.",
+    "paid_actions_per_world": 384,
+    "total_paid_actions": 2304,
+    "private_evaluation_contexts": [
+      [],
+      [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    ],
+    "private_evaluation": "For each context, evaluator assigns appropriate latent z after applying context from initial z=0, then scores ALL 384 public state/action queries with private source transition. Exactly 768 queries per world; 4608 total. Counterfactual public-state conditioning is a fixed evaluator query and may contain states unreachable from context; it is not paid training data.",
+    "seed_reuse_or_registered_access": false
+  },
+  "models": {
+    "new_history_aware_numeric": "Learn from charged trajectory by enumerating 31 predefined hypotheses: one memoryless XOR-action baseline plus t in 0..5 and offset in 1..5 for the two-state family. Reject inconsistent hypotheses using ONLY ordered charged public observations. Convert all surviving hypotheses to numeric ReLU readout for public visible transition and a history-conditioned numeric binary mode register. Cold inference uses frozen numeric weights/mode triggers; abstains if surviving hypotheses disagree. Class discovery is NOT open-ended.",
+    "independent_symbolic_same_family": "Separate implementation from charged trajectory only, same 31 hypothesis class, same abstention rule. Exact parity is required, so a tie is NOT an intelligence advantage.",
+    "legacy_markov": "WSP80 PaidStructuralWeightEditor trained sequentially on exactly same 384 charged public rows; record if it refuses conflicting deterministic duplicates. Never alter WSP80 source.",
+    "memoryless_control": "Fixed visible XOR-action baseline, ignores history; same 768 private queries.",
+    "paid_lookup": "Only public (visible state, action) pairs from charged ledger, abstain on contradictions/unseen pairs. No regime labels or private truth.",
+    "conventional": "Existing full WSP77 Adam 12->32->6 baseline trained from 384 public rows with 3 fixed restarts, 6000 maximum updates each, confidence and convergence receipts. This is memoryless and cannot substitute for strong history-aware symbolic control."
+  },
+  "constraints": {
+    "zero_registered_source_first_use": true,
+    "all_new_development_sources_unprotected": true,
+    "prelabel_frozen_before_private_truth": true,
+    "no_train_truth_oracle": true,
+    "no_second_trial_if_failed": true,
+    "no_post_result_threshold_changes": true,
+    "no_merge_or_deployment": true,
+    "no_paid_apis": true,
+    "no_new_scheduled_tasks": true,
+    "results_in_repo_only": true
+  },
+  "thresholds": {
+    "hidden_worlds_with_paid_public_deterministic_conflicts_min": 3,
+    "deterministic_controls_with_conflicts_max": 0,
+    "latent_worlds_700_plus_correct_of_768_min": 3,
+    "latent_worlds_any_wrong_confident_max": 0,
+    "controls_perfect_768_of_768_min": 2,
+    "history_numeric_symbolic_exact_parity_worlds_min": 6,
+    "latent_correct_gain_over_memoryless_aggregate_min": 500,
+    "correct_on_unpaid_public_pairs_min": 400,
+    "cold_restore_match_all_evaluated_queries": true,
+    "corrupted_snapshot_must_fail": true,
+    "paid_budget_exact": true
+  },
+  "stop_criteria": "Use exactly the six frozen seeds and the single 384-action trajectory each. Preserve all negative results. If training cannot fit, report negative/UNVERIFIED; do not change source, allocation, seed, family or thresholds in this protocol.",
+  "interpretation": "This is genuinely out of WSP80's deterministic visible-state Markov assumption, but the new learner receives a PREDEFINED finite latent-family hypothesis class. It cannot prove discovery of an unforeseen law, general intelligence, broad transfer, language ability, or superiority over same-expressivity symbolic inference.",
+  "authority": {
+    "draft_only": true,
+    "registered_science_first_use": false,
+    "protected_DEV_or_PRIMARY": false,
+    "merges": false,
+    "promotion": false,
+    "controllers": false,
+    "schedules": false,
+    "deployment": false
+  }
+}
