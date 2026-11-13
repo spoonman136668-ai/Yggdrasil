@@ -1,0 +1,83 @@
+name: DG1-HC03 Contradiction Program Cells Source Dev
+on:
+  pull_request:
+    paths:
+      - 'research/contrib/chatgpt/dg1-hc03-20261113/**'
+      - '.github/workflows/dg1-hc03-source-dev.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compile source-only program and evaluator
+        run: |
+          python -m py_compile research/contrib/chatgpt/dg1-hc03-20261113/model.py
+          python -m py_compile research/contrib/chatgpt/dg1-hc03-20261113/eval_dev.py
+      - name: Public source-only unit and negative controls
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/dg1-hc03-20261113 -p "test_*.py" -v
+      - name: Frozen physical development diagnostic (no sealed science)
+        run: python research/contrib/chatgpt/dg1-hc03-20261113/eval_dev.py > hc03-result.json
+      - name: Report classification with negative outcome preserved
+        run: python -c "import json; r=json.load(open('hc03-result.json')); print(r['dev_classification'], 'candidate', r['mean_candidate_exact_accuracy'], 'single_reset', r['mean_single_reset_exact_accuracy'], 'out_of_family_confident_errors',r['out_of_family_confident_errors'])"
+      - name: Preserve development evidence artifact
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-hc03-dev-evidence-${{ matrix.os }}
+          path: hc03-result.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Inherited final full repository regression
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: G29 exact-source atlas verification
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Check source tree stays clean
+        run: git diff --exit-code
+      - name: Build exact-head source atlas for qualification custody
+        if: always() && matrix.os == 'ubuntu-latest'
+        run: python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+      - name: Emit bounded source atlas content for exact tree commit
+        if: always() && matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          for ext in ('json', 'html', 'ice'):
+              raw = Path('.ice/code-atlas.' + ext).read_bytes()
+              print('DG1_HC03_ATLAS_START:' + ext + ':' + str(len(raw)))
+              b64 = base64.b64encode(raw).decode('ascii')
+              for offset in range(0, len(b64), 4096):
+                  print('DG1_HC03_ATLAS_CHUNK:' + ext + ':' + b64[offset:offset+4096])
+              print('DG1_HC03_ATLAS_END:' + ext)
+          PY
+      - name: Archive generated exact-head G29 atlas
+        if: always() && matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-hc03-g29-atlas
+          path: |
+            .ice/code-atlas.json
+            .ice/code-atlas.html
+            .ice/code-atlas.ice
+          if-no-files-found: warn
+          retention-days: 7
