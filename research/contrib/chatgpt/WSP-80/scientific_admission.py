@@ -54,8 +54,14 @@ def validate_frozen_protocol(data):
             or t.get("independent_symbolic_exact_parity_worlds") != 16):
         raise ValueError("frozen threshold drift")
     authority = data.get("authority", {})
-    if (not authority or any(type(value) is not bool or value
-                             for value in authority.values())):
+    if (type(authority) is not dict or
+            set(authority) != {"draft_unmerged", "protected_scientific_first_use",
+                               "official_loop", "accepted_refs", "merges",
+                               "controllers", "runners", "scheduled_tasks",
+                               "deployment", "paid_apis"} or
+            authority["draft_unmerged"] is not True or
+            any(value is not False for key, value in authority.items()
+                if key != "draft_unmerged")):
         raise PermissionError("protected or deployment authority changed")
     return True
 
