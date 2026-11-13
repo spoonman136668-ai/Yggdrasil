@@ -144,8 +144,13 @@ def main():
         for w in inside
     )
     mean = lambda key: sum(w[key] for w in inside) / 4
-    best_control = max(mean("no_neighbor_balanced_accuracy"),
-                       mean("always_no_change_balanced_accuracy"), 0.0)
+    # Undefined balanced accuracy means an invalid seed, not a zero score.
+    # Report the frozen failure without averaging null values or retuning.
+    best_control = (
+        max(mean("no_neighbor_balanced_accuracy"),
+            mean("always_no_change_balanced_accuracy"), 0.0)
+        if valid else None
+    )
     passed_signal = valid and all(
         w["candidate_balanced_accuracy"] >= 0.70 for w in inside
     ) and mean("candidate_balanced_accuracy") >= best_control + 0.10 and all(
@@ -158,7 +163,7 @@ def main():
         verdict = "INVALID_DEV"
     elif passed_signal:
         verdict = "DEV_SIGNAL_CANDIDATE_UNQUALIFIED"
-    elif mean("candidate_balanced_accuracy") > best_control:
+    elif valid and mean("candidate_balanced_accuracy") > best_control:
         verdict = "MIXED_DEV"
     else:
         verdict = "NEGATIVE_DEV"
