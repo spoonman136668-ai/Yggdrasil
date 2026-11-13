@@ -1,0 +1,63 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-61",
+  "created": "2026-11-13",
+  "title": "No-reset reachable-state causal learning under hidden three-way logic",
+  "status": "PROSPECTIVE_DEVELOPMENT_SELFTEST_NOT_SCIENTIFIC_ACCEPTANCE",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "PR": 951,
+    "SHA": "74796fa9d40a1723b725a1356777061d0fc69a1b",
+    "parent_ci": "focused, G29, full regression Linux/Windows PASS; scientific superiority test NEGATIVE"
+  },
+  "question": "When physical interventions must be reached through the agent's own actions, can a source-blind gradientless learner discover unfamiliar multiway causal rules, retain safe knowledge, and plan actions from new starts?",
+  "design": {
+    "source_path": "research/contrib/chatgpt/WSP-61/source.py evaluator-only; not reused WSP59 or WSP60 source family",
+    "worlds": 12,
+    "seeds": [
+      2701,
+      2702,
+      2703,
+      2704,
+      2705,
+      2706,
+      2707,
+      2708,
+      2709,
+      2710,
+      2711,
+      2712
+    ],
+    "family_A": "6 worlds: four binary state variables, four shuffled action channels, unknown shuffled role indices; action 0 unconditional toggles first role, then conditional toggles form a causal chain of control dependence.",
+    "family_B": "6 worlds: four binary state variables and shuffled action channels/roles; actions 2 and 3 toggle on XOR parity of three other current bits, adding third-order conditional rules outside WSP60's <=2-parent structure.",
+    "reset": "One fixed initial all-zero sensor state per world. Training can call evaluator step() ONLY for the current reachable state/action. The next observation state becomes the only next legal training state. No state teleport, query reset, oracle shortest path, or hidden world information available during training.",
+    "cost": "Each arm must execute exactly 80 chronological charged actions from initial all-zero. Identical 80-action cap per world; no uncharged scientific evaluation feedback fed into learner. 12 x 80 = 960 observed actions per arm.",
+    "policy_arms": "Causal active action selector: prefer uncovered context, uncertain predicted outcomes and next state novelty when predicted, using only public history. Seed-hashed uniform random action control. Both use identical gradientless learner and initial state; any divergent state trajectories are logged.",
+    "learner": "Infer current state bit width from observed sensor tuple; at most 3 parent input bits per output bit. Keep all consistent partial lookup explanations for every subset of 0..3 parents, abstain whenever *any* remains ungrounded/disagrees at query; direct numerical tables, no oracle channel roles, no prewired source physics, no gradient or tokens.",
+    "task_generation": "32 deterministic evaluator-only two-to-six-step distinct-state goal tasks/world, selected from source-reachable states and oracle shortest paths. Each task supplies a starting sensor state tuple and an exact target sensor state tuple; no language grounding is claimed. No source shortest-path plan or hidden physics exposed to the agent.",
+    "test_scoring": "384 identical tasks/arm; max six actions in generated agent plan; goals evaluated by actual source dynamics. Separate 12*64 heldout state-action prediction audit (all states and actions), 100% false-confidence penalty. Evaluate cold-restored planning/prediction parity.",
+    "controls": "Same action-count random policy with same model/planner; active exact observed-state/action lookup with same 80 interventions; evaluator-only oracle to audit reachability/upper bound, never present to learner.",
+    "dev_protected": "SELFTEST seeds only. DEV/PRIMARY explicitly blocked, scientific first use not authorized."
+  },
+  "criterion": "SELFTEST_SIGNAL if active success >=55% of 384 heldout tasks, active advantage >=10 percentage points over random on exactly matched tasks, zero active confidently wrong physical predictions on 12 x 64 state/action audit, action custody 80 exactly per arm/world, and cold-restore parity. Otherwise SELFTEST_NEGATIVE_OR_INCONCLUSIVE. Zero-wrong constraint cannot be relaxed.",
+  "secondary": [
+    "Source-state coverage and pair-action coverage attained while physically navigating; no-reset enforcement",
+    "Chain vs triple-XOR family separate results",
+    "Whole-process action count, model selection effort, snapshots including raw evidence, CPU/wall",
+    "Exact observation lookup ablation with same active history; source oracle upper bound reported",
+    "Cross-platform deterministic source and action ledger SHA256 receipts"
+  ],
+  "limits": [
+    "This still assumes transparent binary physical sensors and a prior bound of 3 causal parents, so it is not unconstrained representation discovery.",
+    "Supplied goals are raw target state vectors, not natural language. Prior WSP59 taught symbol mapping should not be inherited as an untested result here.",
+    "Unseen starts provided by evaluator only at final testing, not by a training reset. Test prep oracle selects achievable tasks but supplies no plan to learner.",
+    "Not independent natural-world general intelligence or matched strong conventional neural baseline; no scientific superiority claim.",
+    "No deployment, merge/promotion, paid API, schedule, runner reconfiguration, controller change or official loop integration."
+  ],
+  "stop_rules": [
+    "Frozen seeds/families/budgets/criterion before generator or model implementation/outcome.",
+    "Do not tune prior, policy, threshold or goals after seeing SELFTEST outcomes; keep negative.",
+    "Infrastructural or harness defects corrected only without changing frozen semantics; otherwise a new prospective experiment.",
+    "Require source/PR exact SHA, Linux+Windows focused and mandatory inherited full regression, G29 atlas on candidate."
+  ]
+}
