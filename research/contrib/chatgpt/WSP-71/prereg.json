@@ -1,0 +1,107 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment": "WSP-71",
+  "created": "2026-11-13",
+  "title": "Gradientless sleep-style consolidation: transfer fast neural knowledge into durable weights under capped physical rehearsal",
+  "status": "FROZEN_PROSPECTIVE_SELFTEST_NOT_INDEPENDENT_SCIENTIFIC_PASS",
+  "parent": {
+    "pr": 963,
+    "head": "3da5a11b9ad2d12c71aa9e138ecd7205737e8b04",
+    "engineering": "Focused and G29 PASS both; mandatory full regression PASS both (verified at branch creation).",
+    "scientific": "WSP70 frozen negative: 399/768 primary confident correct, 39/336 unseen vs 10 matched random features, cold retention 194/208, 8 wrong confident on 128 quartic challenges (frozen max 6). No merge/integration."
+  },
+  "motivation": "Explore consolidation/rehearsal principles suggested by user-shared arXiv:2606.03979, without adopting its token-language-model foundation or conventional gradient update methods. This is NOT a replication or verification of that paper.",
+  "question": "Can a fast numerical weight-programmed neural teacher transfer retained knowledge to a fresh durable neural readout through synthetic, teacher-labeled offline rehearsal after additional real experience, while protecting earlier capabilities better than compute-matched B-only repetition and safely recognizing incorrect teacher pseudo-labels?",
+  "cohort": {
+    "kind": "SELFTEST only",
+    "seeds": [
+      4501,
+      4502,
+      4503,
+      4504,
+      4505,
+      4506,
+      4507,
+      4508,
+      4509,
+      4510,
+      4511,
+      4512,
+      4513,
+      4514
+    ],
+    "primary": "12 in-family: 4 parity, 4 three-way conjunction, 4 mixed negation/coupled worlds",
+    "adversarial": "2 separately declared quartic four-bit parity near-family negative worlds",
+    "source": "WSP-71/source.py new SHA256 world salt and permuted roles, evaluator-only labels; source never imported by teacher/durable neural code"
+  },
+  "physical": "Each world is ONE actual physically continuous, no-reset 192-action stream from all-zero sensors; Phase A first 96 public actions, Phase B next 96, all policies seeded source-blind. No free training resets, hidden source roles, state teleports or oracle answers. Source A and B physics remain THE SAME; this is a distribution-of-experience retention test, NOT a transfer to unfamiliar physical rules.",
+  "teacher": "Stage A exactly 96 charged public observations used by unchanged WSP70 gradient-free ReusableInteractionNeural, with scheduled hidden-neuron imprints at its original 48 and 96 milestones. Save Stage A purely numerical hidden/bias/readout/covariance snapshot (no charged ledger), then discard raw A evidence for candidate durable learner.",
+  "dreaming": {
+    "query_budget": 32,
+    "candidates": "All 64 public four-bit state/action contexts (not physical queries), order previously UNCHARGED-A contexts first, then charged contexts with fixed seeded tie order; take only Stage A teacher confidently predicted full four-bit next-state labels and at most 32 per world. Those labels are synthetic and may be wrong. Teacher gets NO oracle labels or hidden mode. If fewer than 32 confident, use actual count, no padding with oracle.",
+    "duration": "One deterministic offline 'sleep' pass; no background or scheduled task. All synthetic predictions treated as extra information and inference cost charged, not free fresh physical experiences."
+  },
+  "durable": {
+    "architecture": "Reuse the SAME frozen Stage A numerical 8→32+24 ReLU hidden bank from teacher (plus public sensor/action skip+bias); do not add hidden neurons or inspect source physics in Phase B. Learn a fresh 4-output durable neural readout by explicit rank-one RLS weight edits (λ=0.5, covariance 2I) from Phase B 96 public physical rows plus up to 32 synthetic teacher-labeled rehearsal rows. No gradients, symbolic causal rule compiler or source lookup during inference.",
+    "order": "Train each durable student on identical 96 Phase B physical rows FIRST, then append its matched-size rehearsal rows. Each observation edits real output weight vectors; inference uses only numeric hidden/readout/covariance parameters.",
+    "retention": "Evaluate teacher Stage A correct+confident predictions (scored evaluator-only) vs each frozen durable student after Phase B; count recovery, forgetting, new B-only contexts and genuinely never-physically-seen source pairs.",
+    "confidence": "Exactly original WSP70 thresholds: each raw output |y−0.5|≥0.27 and posterior leverage≤2.0, fixed before outcomes.",
+    "custody": "Snapshot numerical matrices/covariance/charge counters without ledger or synthetic labels, canonical SHA256; confirm exact cold prediction parity and tamper rejection."
+  },
+  "controls": [
+    "COMPUTE-MATCHED B-repeat: same 96 Phase B physical rows + k duplicate Phase B public charged rows (k equals actual confident dream count), selected by fixed source-independent seeded order; same feature bank and RLS, same compute action count and confidence. This is the primary fair comparison.",
+    "SAME-BUDGET REAL A memory replay: same 96 Phase B rows + k distinct stored A observations from the original charged Phase A ledger, selected before any evaluator outcomes; this model is allowed explicit old raw memory and represents a stronger information/custody comparator (not the same memory limit).",
+    "PHASE-B-ONLY: same 96 Phase B rows and no rehearsal, diagnostic only; lower compute, do not treat its weaker score as matched compute victory.",
+    "CORRUPTED DREAM negative: same Phase B rows + k synthetic rows but with public action channel rotated by +1 and teacher next state unchanged; tests whether unearned pseudo-labels lead to unsafe confidence (no source import).",
+    "Stage A frozen neural teacher; same-evidence exact A and B state/action lookup; separately fully trained 8→32→4 end-to-end MLP with three seeded Adam restarts on Phase B 96 public physical rows (≥95% train exact to mark converged; trained MLP does not have A teacher knowledge).",
+    "Independent evaluator full physical domain and 32 two-action tasks/world for correct/confident/wrong/abstained, genuine unseen charged contexts, teacher pseudo label correctness audited AFTER all training."
+  ],
+  "frozen_primary": {
+    "classification": "SELFTEST_SIGNAL only if ALL preregistered conditions; else SELFTEST_NEGATIVE_OR_INCONCLUSIVE with no retuning.",
+    "primary_cases": 768,
+    "min_durable_correct": 260,
+    "min_gain_confident_correct_vs_matched_b_repeats": 20,
+    "min_stageA_retention": 0.82,
+    "min_gain_retained_stageA_vs_matched_b_repeats": 15,
+    "min_genuinely_never_charged_correct": 18,
+    "max_wrong_confident": 24,
+    "min_correct_two_action_compositions": 100,
+    "min_teacher_dream_truth_fraction": 0.85,
+    "min_worlds_with_nonzero_synthetic_dreams": 10,
+    "cold_parity_tamper_required_worlds": 12,
+    "max_cpu_ratio_vs_B_repeat": 2,
+    "max_wrong_confident_two_quartic_worlds": 6
+  },
+  "reports": [
+    "Per-source world SHA256, Phase A and B physical ledgers SHA256, teacher/cold/durable and B-repeat numeric weights hashes and bytes, dream source-free contexts+labels SHA256 and true accuracy (evaluation-only).",
+    "Equal actual synthetic count k for every control, action data and CPU/wall costs for teacher, synthetic inference, all student rank-one updates, evaluation and fully trained MLP.",
+    "Count model confidence/wrong/abstain for Phase A eligibility, end-of-B complete 64 physical contexts, truly unseen state/action pairs, B-only contexts and 32 heldout compositions.",
+    "Train convergence status for ordinary gradient-trained end-to-end MLP and comparison with explicit stored-A true-memory rehearsal.",
+    "A/B are distribution shifts within same physics, no independent environment transfer; stale or contradictory teacher-generated dream samples may worsen results.",
+    "Matched action count does not guarantee matched information (dreams have pseudo labels derived from Stage A knowledge; replaying duplicates has no such knowledge). Do not claim equal total information or compute absent measured bound."
+  ],
+  "limitations": [
+    "Fast model's original signed-conjunction feature grammar is supplied; durable hidden neuron bank is frozen rather than independently learned, and student learns only output weights.",
+    "Synthetic public state/action enumeration is not a physically charged experience, so any apparent gain may be extrapolation from teacher priors rather than new causal evidence; distinguish pseudo labels from physical results.",
+    "One same-physics no-reset stream, small binary state space, one offline replay and deterministic supervised world; no AGI, independent novel physics, general language, independent SCIENTIFIC_PASS or proof of all-gradient-free universal learning.",
+    "This is an independent methodological extrapolation motivated by arXiv:2606.03979, not a claim that the paper used direct weight programming."
+  ],
+  "governance": {
+    "protected_DEV_PRIMARY_first_use": false,
+    "merge": false,
+    "promotion": false,
+    "official_loop": false,
+    "deployment": false,
+    "new_controller": false,
+    "new_runner": false,
+    "scheduling": false,
+    "paid_apis": false
+  },
+  "stop": [
+    "Freeze this file BEFORE generating fresh evaluator source, learner, test and first synthetic result.",
+    "Preserve WSP70 scientific negative and passed engineering; no retroactive change to results or thresholds.",
+    "After outcome no confidence cutoff, algorithm, curriculum, source-seed or control retuning. Mechanical issues must be fixed without changing frozen semantic protocol and all exact-source tests rerun.",
+    "Require focused Linux+Windows, generated-only source-pinned G29 atlas, and mandatory inherited two-platform full regression on final exact SHA before engineering closure.",
+    "If a protection or authority ambiguity arises, remain isolated SELFTEST and fail closed; no background execution or scheduling."
+  ]
+}
