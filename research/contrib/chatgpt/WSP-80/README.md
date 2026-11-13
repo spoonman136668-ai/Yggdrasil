@@ -28,7 +28,7 @@ From repo root:
 
     python -m unittest discover -s research/contrib/chatgpt/WSP-80 -p 'test_*.py' -v
 
-On 2026-11-13, **6/6 unit tests PASS** locally on Python 3, with GitHub source blobs verified against tested files: mathematical quartic contradiction and numeric repair, cubic no-false-expansion, cold snapshot checksum/charge continuity, developer-only paid session and policy, protected-cohort guard, 64-state reachability of all sixteen source generators. Developer exact-truth-table fixtures are deliberately not physical learning experience; source reachability check is a private generator sanity check, not a heldout model outcome.
+On 2026-11-13, **7/7 unit tests PASS** locally on Python 3, with GitHub source blobs verified against tested files: mathematical quartic contradiction and numeric repair, cubic no-false-expansion, cold snapshot checksum/charge continuity, developer-only paid session and policy, protected-cohort guard, 64-state reachability of all sixteen source generators, and a full 384-action no-reset developer-only intervention/weight-compilation/cold-restore smoke on an unregistered source seed 9001 (not a WSP80 science outcome). Developer exact-truth-table fixtures are deliberately not physical learning experience; source reachability check is a private generator sanity check, not a heldout model outcome.
 
 ## Not implemented or executed
 
