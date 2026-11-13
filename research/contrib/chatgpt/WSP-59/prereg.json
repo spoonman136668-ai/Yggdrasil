@@ -1,0 +1,72 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-59",
+  "created": "2026-11-12",
+  "title": "Cold-start grounded instruction and causal planning in unfamiliar compositional worlds",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 949,
+    "sha": "6df0917e97fe22255153ae7af00d98fecc7c605a",
+    "scope": "WSP58 frozen SELFTEST signal PASS, Linux/Windows focused + G29 PASS, full regression still pending"
+  },
+  "status": "FROZEN_EXPLORATORY_DEVELOPMENT_NO_SCIENTIFIC_FIRST_USE",
+  "research_question": "Can a source-blind, zero-gradient, non-next-token causal learner infer transition rules in unfamiliar worlds from charged interactions, ground previously unseen byte-encoded task symbols from demonstrations, plan multi-step solutions, and preserve knowledge after cold restoration?",
+  "independence": "All WSP59 seed worlds new. Separate evaluator-only generator; does not import previous WSP57/58 world functions or share their operator-table structure. Does not establish broad independent external distribution or AGI.",
+  "source": {
+    "code": "research/contrib/chatgpt/WSP-59/source.py (evaluator-only)",
+    "cohort": "SELFTEST, eight preregistered seeds 2501-2508. DEV/PRIMARY forbidden.",
+    "states": "3 observable discrete physical registers: 5-position dial, binary gate and binary marker (20 joint states). Four unlabeled action channels, randomly permuted per world.",
+    "hidden_physics": "Different non-affine 5-state dial permutations, gate-conditional dial transformation, marker-conditional dial transformation, dial-conditional binary gate toggle, dial-conditional binary marker toggle; per-world hidden shuffled channels and independent stochastic-looking but deterministic parameter seeds. Every next-state register depends on at most two current-state registers, with identities as special cases.",
+    "exposed_information": "Each charged intervention returns only (current-state, chosen-action-channel, next-state); no function tables, variable causal parents, channel roles, withheld action transitions, source import, or task-plan oracle.",
+    "instructions": "Nine nonce ASCII byte phrases, randomized per world, each demonstrated with its corresponding single grounded (register,value) predicate; heldout tasks contain novel two-predicate conjunctions in a fixed public ' & ' interface format, never shown as combined examples.",
+    "action_budget": "40 charged state-action probes per policy: 10 distinct states for each of 4 channels. Causal-coverage policy chooses pairwise-context-covering states before seeing outcomes; random policy chooses 10 distinct states per channel without replacement from same 20 possible states. Both receive identical demonstration budget of nine labeled phrases.",
+    "tasks": "32 per world; 256 total. At task generation choose starts and conjunctive predicate goals with an oracle-achievable shortest plan length 2-4 and nontrivial initial condition. No task outcome or required sequence used for learner selection; evaluator uses oracle exclusively to construct and score test goals.",
+    "task_scoring": "The agent only observes heldout start state and composed instruction bytes, not parsed goal predicates or source simulator. It must independently infer goal semantics from demos, synthesize a plan of <=4 actions using its learned transition model, and return action channels. Score success by executing returned plan on original source world.",
+    "source_receipts": "World/hypothesis/train ledgers hashed with SHA256, seeds, action count, prospective holdout task SHA256, deterministic platform invariance."
+  },
+  "learner": {
+    "no_gradients": true,
+    "architecture": "General three-register, max-two-causal-parent truth-table constraint induction from charged observations: choose smallest fully covered consistent parent subset for each next-state register/action. Store learned numerical transition tables explicitly; no hidden source families or oracle action roles imported.",
+    "active_policy": "Pairwise-state-context coverage for all unknown causal-parent subsets, source-blind, precommit to state probes. This is structured experimental design, NOT feedback-adaptive curiosity.",
+    "language_interface": "Raw byte strings -> taught grounded predicate records; conjunction parsing is a given syntax contract, not natural language or open vocabulary understanding. Underlying causal state/plan representations are numerical; no autoregressive next-token training.",
+    "planner": "Breadth-first search over uniquely predictable learned transitions, maximum depth 4, shortest-first, deterministic tie-break; abstain when missing safe model steps.",
+    "retention": "Canonical SHA256 snapshot of all public observations and demonstration mappings; cold restore reconstructs numerical tables and yields identical predictions/plans; tamper must fail."
+  },
+  "controls": [
+    "Seed-hashed random 40-action policy with identical learner, same symbol demonstrations, same heldout goals, same breadth-first planner",
+    "Exact state-action memorization on active 40 interventions (no causal factorization), same instruction mapping/planner",
+    "Permutation/shuffle of grounded symbol demonstration semantics as a language grounding negative control (same 40 physical interventions)."
+  ],
+  "metrics": [
+    "Fraction of 256 heldout goals solved with physically valid plans (micro + each world) for all controls",
+    "Heldout transition prediction correct/wrong/abstain across each 80 state-action table; target 0 active wrong-confident",
+    "Unseen conjunction grounding exact mapping, plan length and correctness against oracle shortest path",
+    "Cold snapshot parity, SHA256, tampering, retained planning across cold restore",
+    "Action budget exactly 40, symbol demos exactly 9 per policy, source/seed independence",
+    "Per-world whole-process wall/CPU plus memory snapshot bits; planning search expansions and stored numeric table size"
+  ],
+  "frozen_primary_success": "Exploratory SELFTEST_SIGNAL only if causal coverage agent solves >=65% of 256 heldout tasks, beats equally probed random agent by >=15 percentage points on exactly the same tasks, makes ZERO incorrect confident transition predictions across all 8 x 80 physical transitions, achieves 100% exact taught predicate decoding and cold restore parity in all 8 worlds. Otherwise record SELFTEST_NEGATIVE_OR_INCONCLUSIVE; no retrospective tuning.",
+  "structural_controls": "Exact-memory and language-shuffle negative controls are reported as diagnostic, not required to fail a threshold to rescue a missed primary criterion.",
+  "limitations": [
+    "Factored max-two-parent prior is aligned with evaluator's generated world family, therefore learned transitions do not establish unconstrained new causal law discovery",
+    "All nine primitive predicate meanings are explicitly demonstrated; novel instruction generalization is fixed-conjunction composition, NOT general natural-language comprehension",
+    "Tasks generated to be reachable within 2-4 steps; this is a structured finite planning benchmark, not unbounded autonomy",
+    "No fully trained conventional neural agent or independently implemented equal-compute symbolic control; action matched does not imply compute matched.",
+    "No WSP59 DEV/PRIMARY scientific first-use, unrelated model deployment, integration or scientific superiority conclusion"
+  ],
+  "boundaries": {
+    "first_use": false,
+    "merge": false,
+    "deployment": false,
+    "official_loop": false,
+    "controller_changes": false,
+    "schedule": false,
+    "paid_apis": false
+  },
+  "stop_rules": [
+    "Predeclared 8 seeds, thresholds, 40 probe actions, 9 demos, 32 tasks, structural prior and metric frozen before model/source code and outcomes.",
+    "Do not modify frozen WSP58 experiment or thresholds.",
+    "Any source/schema implementation bug is documented and fixed without outcome-dependent policy/tuning; if outcome-guided changes needed a new prereg experiment is required.",
+    "Full inherited Linux/Windows regression, focused controls and G29 exact-source atlas before engineering closure."
+  ]
+}
