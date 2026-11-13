@@ -1,0 +1,80 @@
+{
+  "schema": "ygg.dg1-sl04.causal-sleep-context-transfer-prereg.v1",
+  "status": "FROZEN_BEFORE_SL04_IMPLEMENTATION_AND_RESULTS",
+  "project": "Yggdrasil",
+  "experiment": "DG1-SL04",
+  "source_parent_sha": "dacb637b034189029d6b22a885c63d520aedf1fd",
+  "frozen_sl03_candidate": "research/contrib/chatgpt/dg1-sl03-20261113/sl03.py@dacb637b034189029d6b22a885c63d520aedf1fd",
+  "hypothesis": "The frozen SL03 selective consolidation mechanism preserves causal competence on previously unseen interventions after unlabeled A→B→A return without increasing confident errors, when challenged by independent conventional hidden-context and matched-information controls.",
+  "preregistered_cohorts": {
+    "ABA": {
+      "seeds": [
+        96001,
+        96002,
+        96003,
+        96004,
+        96005,
+        96006,
+        96007,
+        96008
+      ],
+      "length": 64,
+      "hidden_phases": "A steps 0-19, B 20-39, A 40-63"
+    },
+    "ABC_capacity": {
+      "seeds": [
+        96009,
+        96010,
+        96011,
+        96012,
+        96013,
+        96014,
+        96015,
+        96016
+      ],
+      "length": 64,
+      "hidden_phases": "A 0-19, B 20-39, distinct C 40-63 (three contexts exceeding two-bank capacity)"
+    },
+    "OOD_cubic": {
+      "seeds": [
+        96017,
+        96018,
+        96019,
+        96020,
+        96021,
+        96022,
+        96023,
+        96024
+      ],
+      "length": 64,
+      "hidden_phases": "stable cubic out-of-rule-family"
+    }
+  },
+  "world": "Synthetic four-bit state, four physical causal actions. A and B use HC11 seed-dependent (sign and slope) Boolean effect rules, B is inverted A. C uses independent action-dependent affine/majority rule family from different seeded RNG; no learner receives phase or world function. OOD cubic is int(state==15) xor action sign.",
+  "physical_actions": "One shared physical trajectory per world: action (seed+step)%4 except at steps [5,13,21,29,37,45,53,61], which are paid exogenous bit flips (seed//4+step//8)%4. Eight flips cost physical actions and are never fitted. 64 total physical steps/world, 56 causal observations/world.",
+  "common_information": "Every arm sees only identical ordered paid physical observations; no oracle, no evaluator audit feedback, no direct access to seed/group/true regime. Memory of past events capped at 48 physical causal tuples in SL03 and competitors. Fixed rest/observer boundaries after steps 8,16,24,32,40,48,56,64.",
+  "arms": [
+    "frozen_sl03_selective_sleep (unchanged SL03 Learner selective_sleep, imported by path pinned to source)",
+    "sl03_native_no_sleep (unchanged SL03 native_no_sleep)",
+    "sl03_conventional_selective (unchanged SL03 conventional_selective_sleep, independent rule implementation)",
+    "sl03_online_same_compute (unchanged SL03 online_same_compute, timing ablation)",
+    "conventional_hmm_masks (independently coded two-bank finite-state HMM-style online change detector with exact 40-rule/action version spaces, 320 logical mask bits plus two posterior confidence scores; never access true context)",
+    "conventional_recent_window (simple strongest-recent-rule-version-space baseline, 48-event FIFO; report conditional abstentions)"
+  ],
+  "HMM_protocol": "Two hypothesis banks, 40-rule masks per action each. Introduce second bank after first contradiction; use pre-update contextual prediction mismatch to switch into alternate bank if that bank remains consistent, otherwise new bank only if unused, else flag mismatch and abstain. Maintain a bounded public transition mismatch counter with hazard=1/16 and prequential predictive likelihood from the uniform rule mask, to decide when changing active mode; hard masks retained. This is HMM-style but not full BOCPD and is disclosed as such.",
+  "recent_window_protocol": "Independent conventional 40-rule/action version-space predictor fitted only to the last 12 causal events per action within a maximum 48-event physical FIFO, no context labels. Conflicting evidence causes abstention; never access evaluator truth.",
+  "inference": "Abstain if evidence does not resolve unanimous next-state, mismatch unresolved, or context ambiguous. No evaluation labels leak to training. Prequential charged causal predictions and evaluator-only exhaustive 16 state x 4 actions at steps 20,40,64 (final 512 queries/cohort); never-trained query subset reported. Cold restore and tamper tests.",
+  "comparison_limits": "Matched physical actions/observations, same fixed rule grammar for relevant arms, capped 2x4x40 mask logical bits for dual-bank, 48-event bounded stream for all. HMM adds two float confidence scores; report actual snapshots/cpu time. Whole-process compute and capacity not exactly equal; no scientific PASS until matched-cost independent qualification.",
+  "primary": {
+    "ABA_correct_gain_over_best_conventional_min": 24,
+    "ABA_unseen_correct_gain_over_best_conventional_min": 16,
+    "ABA_wrong_confident_excess_vs_best_conventional_max": 4,
+    "ABC_wrong_confident_excess_vs_best_conventional_max": 4,
+    "OOD_wrong_confident_excess_vs_best_conventional_max": 4,
+    "no_more_than_8192_bytes_per_checkpoint": true,
+    "cross_platform_deterministic_outcomes": true,
+    "classification": "DEV_SIGNAL only if all criteria pass; otherwise MIXED_DEV for correctness gain but safety failure, NEGATIVE_DEV for no gain, INVALID for leakage/mismatched physical budgets",
+    "no_postresult_tuning": true
+  },
+  "boundaries": "Source-only external draft, no merge/accepted model/loop/controller, no protected science first-use, no live deployment, no unrelated project modifications. No tokens, gradient training or paid API; all evidence in GitHub repo, no ChatGPT file attachments."
+}
