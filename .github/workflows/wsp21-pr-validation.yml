@@ -50,6 +50,7 @@ on:
       - research/wsp69-residual-guided-neural-feature-growth-20261113
       - research/wsp70-causal-feature-imprinting-20261113
       - research/wsp71-weight-only-sleep-consolidation-20261113
+      - research/wsp72-committee-gated-neural-dreams-20261113
     paths:
       - 'research/contrib/chatgpt/WSP-21/**'
       - 'research/contrib/chatgpt/WSP-22/**'
@@ -99,6 +100,7 @@ on:
       - 'research/contrib/chatgpt/WSP-70/**'
       - 'research/contrib/chatgpt/WSP-71/**'
       - 'research/contrib/chatgpt/WSP-72/**'
+      - 'research/contrib/chatgpt/WSP-73/**'
       - '.github/workflows/wsp21-pr-validation.yml'
       - '.ice/code-atlas.*'
 permissions:
@@ -148,6 +150,10 @@ jobs:
           for offset in range(0,len(encoded),4096):
               print("WSP53_ATLAS_DELTA|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
           PY
+      - name: WSP73 post-write charged physics confidence auditor SELFTEST (no DEV or PRIMARY exposure)
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-73 -p 'test_*.py' -v
       - name: WSP72 dual-teacher trusted dream consolidation SELFTEST (no DEV or PRIMARY exposure)
         env:
           PYTHONDONTWRITEBYTECODE: '1'

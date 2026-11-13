@@ -1,0 +1,41 @@
+# WSP-73 — Physical post-write confidence calibration of directly programmed neural weights
+
+## Research custody, scope and inherited result
+- **Frozen before source, learner, test and outcomes:** first commit **`0dc63ce6a524d98d1de0a8e05e7446991da18505`**, `prereg.json`. Frozen numbers, seeds, physical charges, controls, thresholds and negative worlds cannot be adjusted after test outputs.
+- Parent [WSP72 draft #968](https://github.com/spoonman136668-ai/Yggdrasil/pull/968), SHA **`0a53d56576100bf2382444648767845e1bbeda7b`**, still unmerged. WSP72's frozen development science remained negative: committee dreams 238/240 truly correct versus unfiltered 223/240, but only 327/421 previously correct predictions retained (77.7% vs frozen ≥82%) and 25 confident errors in 256 4-way-parity challenge cases (frozen ≤12). WSP72 focused and G29 PASS both OS; full inherited regression **still in progress** when this successor branched.
+- Question: does a *post-consolidation* real-action audit reduce **confidently wrong predictions at equal coverage**, not simply because the model refuses more questions?
+
+## Unchanged learner and 224-charge source custody
+- Reuse the parent WSP72 teacher+committee and durable direct-numerical-weight-learning mechanism unchanged, with a **fresh preregistered source cohort**. The candidate's original Stage-A hidden neurons are actual source-blind numerical 8-input action-conditioned signed-conjunction ReLUs, selected from charged errors; Phase B student edits its numeric readout through rank-one ridge with up to 32 agreed synthetic memory records. No gradients, source physics import, hidden action roles, symbolic rule compiler or training lookup at inference.
+- New SELFTEST-only seeds **4701–4716**: twelve main worlds (four each parity/XOR, three-way AND, mixed negated/coupled rules) and four declared four-input-XOR challenge worlds. Each uses new SHA-salted sensor/action role permutations, still predesigned four-bit physics. This is *not* an independent natural-world physics family, human language or general intelligence.
+- Each world runs ONE physically continuous no-reset sequence of **224 paid source actions** from zero: **96 A** train two numerical teachers (with original 48/96 feature-growth milestones), **96 B** train the direct neural durable student and dream replay, then **32 C** real charged physical outcomes exclusively to calibrate the safety layer. The learner's numerical matrices MUST be unchanged across all 32 C actions. Controls receive identical source A/B/C labels at their relevant stages. All actual physical charges, no-reset continuity, source/task SHA and exact A/B/C ledgers have receipts.
+- Holdout scoring **AFTER all weights and C confidence gates are frozen** uses 12×16×4 = **768** physical input/action results, plus **384** two-action composed tasks, and 4×64 = **256** separate XOR negative-world audits. Genuinely never-physically-charged inputs are defined against **all 224 real actions**, not just Phase A.
+
+## Frozen post-write audit — no further weight edits
+- For each public action channel 0..3, score the student on the 32 real Phase-C input/action/consequence rows. Count only predictions that the UNCHANGED original numerical margin/covariance gate would confidently answer.
+- Mark an action **trusted** only if it has **≥3 confident predictions in C and zero confident C errors**; otherwise abstain on all predictions involving that public action. This is a fixed, very small-sample empirical safety heuristic, not guaranteed reliable uncertainty. Untrusted action channels may cause severe coverage collapse; this is explicitly tested.
+- Keep raw neural bit-margin/covariance confidence unchanged (each bit |output−0.5|≥0.27 and covariance leverage≤2.0). The output gate uses only the action ID, whether a trained neural prediction was confident, and the 32 paid C outcomes; no oracle labels or family identifiers.
+
+## Exact matched coverage, not a refusal-to-answer victory
+- On each world's 64 **public input/action identities**, calculate the number **m** of confident answers surviving the frozen C action audit. This selection sees NO evaluator physical truth.
+- Create two comparison predictors on the exact same numeric neural weights. **Global-score control:** among all baseline-confident contexts, choose **exactly m** highest in frozen numeric score `min_bit |output−0.5| − 0.02 * leverage`; deterministic public-state/action tie breaks. **Random-control:** choose **exactly m** previously confident contexts by independent seed-hashed uniform selection. A control never gains confidence on any input originally abstained by the neural model.
+- For each world, the candidate, global-score and random controls thus all answer **exactly m/64** queries. Score all physical truth **only after these selections are frozen**. This is an **offline equal-coverage evaluation on the 64 public unlabeled input identities**, not a deployable global threshold that already knows a future world's input set. The proper research comparison is confident errors at equal coverage, as well as retained and correct predictions.
+- Include the original ungated direct neural student (no extra post-write C information), WSP72 unfiltered dreams, B-only, and independently 3-start Adam trained full 8→32→4 neural MLP with ≥95% training exactness requirement. The MLP sees the same 96 B physical rows but lacks A knowledge; not a matched-total-information superiority comparison.
+
+## Frozen scientific criterion (every condition required)
+- On 12 main worlds: post-write model **≥260 correct** physical predictions; **≥65% of originally confident coverage** retained; **≤16 confidently wrong**; **≥8 fewer wrong than equal-coverage global score**, and **≥8 fewer wrong than equal-coverage random selection**; **≥12 correct on genuinely never physically charged inputs**; **≥70% of Stage-A truly correct confident predictions preserved**, **≥70** confidently correct two-action compositions; at least 12 primary worlds with some trusted public action; numerical cold snapshot parity on all 16 worlds; no more than **2× whole measured model training+calibration+inference CPU** against the ungated control audit.
+- On four preregistered quartic physics worlds (256 audit inputs): **≤8 confidently wrong** post-write, and **≥6 fewer wrong** than equal-coverage global-score control. All tests and thresholds are predeclared; the confidence/coverage controls never see hidden evaluator truth.
+- If **any** gate fails, result is **`SELFTEST_NEGATIVE_OR_INCONCLUSIVE`**, not a unit-test failure to hide or an opportunity to tune frozen thresholds. Always report exact correct/wrong/abstain, coverage, real calibration errors by action, cross-OS source/action hashes and critical scientific negatives.
+
+## Limitations and scientific decision
+- These are same-world C calibration actions, not detection of never-before-experienced physics BEFORE encountering it. Thirty-two paid C experiences are an information/computation expense that must be shown. No proof of distribution-free calibrated confidence or safe OOD generalization.
+- The action-level gate can overfit by suppressing entire channels and may not carry across a new mechanism, nor handle hidden-state aliasing, nonbinary sensor environments or real-world natural language. Equal-coverage evaluator controls are scored after using unlabeled identities, not deployment-ready.
+- The 224-action program differs materially from WSP72's 192-action program, so any comparison of absolute outcomes across WSP72/WSP73 is HISTORICAL and does not establish gain at matched physical action budget.
+- Passing a synthetic SELFTEST does not grant independent `SCIENTIFIC_PASS`, merge authority, integration into FORGE/Yggdrasil operational research loops, deployment, protected DEV/PRIMARY first-use or AGI claims.
+
+## Reproduce and qualify
+```sh
+python -m unittest discover -s research/contrib/chatgpt/WSP-73 -p 'test_*.py' -v
+```
+
+Require focused Ubuntu+Windows, source-anchored generated-only G29 and mandatory inherited full regression on exact source/candidate tree before final engineering closure. No duplicate running regressions, controller/runner/scheduler changes, paid APIs, merge or deployment.
