@@ -52,3 +52,19 @@ jobs:
             .ice/code-atlas.ice
           if-no-files-found: error
           retention-days: 3
+
+      - name: Emit bounded public atlas base64 chunks for candidate custody
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          for ext in ('json', 'html', 'ice'):
+              raw = Path('.ice/code-atlas.' + ext).read_bytes()
+              print('DG1_ATLAS_START:' + ext + ':' + str(len(raw)))
+              b64 = base64.b64encode(raw).decode('ascii')
+              for i in range(0, len(b64), 4096):
+                  print('DG1_ATLAS_CHUNK:' + ext + ':' + b64[i:i+4096])
+              print('DG1_ATLAS_END:' + ext)
+          PY
