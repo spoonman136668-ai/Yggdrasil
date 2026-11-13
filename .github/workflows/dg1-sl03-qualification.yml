@@ -1,0 +1,78 @@
+name: DG1-SL03 selective sleep consolidation DEV
+on:
+  pull_request:
+    paths:
+      - 'research/contrib/chatgpt/dg1-sl03-20261113/**'
+      - '.github/workflows/dg1-sl03-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify source and test syntax
+        run: python -m py_compile research/contrib/chatgpt/dg1-sl03-20261113/sl03.py research/contrib/chatgpt/dg1-sl03-20261113/test_sl03.py
+      - name: Focused scope, custody and negative tests
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/dg1-sl03-20261113 -p "test_*.py" -v
+      - name: Execute frozen prospective physical cohort
+        run: python research/contrib/chatgpt/dg1-sl03-20261113/sl03.py > sl03-result.json
+      - name: Report all frozen results and per-world receipts
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('sl03-result.json').read_text())
+          assert r['freeze_sha'] == '93f91491b6235945b16ab5928c06c64f8ca84581'
+          assert len(r['worlds']) == 24 and r['charged_actions_total'] == 1152
+          print('SL03_CLASSIFICATION='+r['classification'])
+          print('SL03_PRIMARY='+str(r['primary_pass']))
+          print('SL03_CONVENTIONAL_TIE='+str(r['conventional_sleep_tie']))
+          print('SL03_ONLINE_SAME_COMPUTE_TIE='+str(r['online_same_compute_tie']))
+          print('SL03_RESULT_JSON:'+json.dumps(r,sort_keys=True,separators=(',',':')))
+          PY
+      - name: Mandatory inherited regression on exact source
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: G29 exact-source source-atlas verification
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Remove generated result before custody check
+        if: always()
+        shell: bash
+        run: rm -f sl03-result.json
+      - name: Verify tracked source unchanged
+        if: always()
+        run: git diff --exit-code
+      - name: Generate bounded atlas payload for separate source-only repair
+        if: always() && matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+          python - <<'PY'
+          import base64
+          from pathlib import Path
+          for ext in ('json','html','ice'):
+              raw=Path('.ice/code-atlas.'+ext).read_bytes()
+              encoded=base64.b64encode(raw).decode('ascii')
+              print('SL03_ATLAS_START:'+ext+':'+str(len(raw)))
+              for i in range(0,len(encoded),4096):
+                  print('SL03_ATLAS_CHUNK:'+ext+':'+encoded[i:i+4096])
+              print('SL03_ATLAS_END:'+ext)
+          PY
