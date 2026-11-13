@@ -1,0 +1,30 @@
+name: WSP62 adaptive Boolean causal representation SELFTEST
+on:
+  pull_request:
+    branches:
+      - research/wsp61-reachable-state-causal-learning-20261113
+    paths:
+      - 'research/contrib/chatgpt/WSP-62/**'
+      - '.github/workflows/wsp62-selftest.yml'
+permissions:
+  contents: read
+jobs:
+  focused:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Frozen WSP62 same-ledger numerical representation SELFTEST, no protected data
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-62 -p 'test_*.py' -v

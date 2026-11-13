@@ -39,6 +39,7 @@ on:
       - research/wsp58-early-budget-active-probe-frontier-20261112
       - research/wsp59-unfamiliar-grounded-planning-20261112
       - research/wsp60-counterexample-causal-disambiguation-20261112
+      - research/wsp61-reachable-state-causal-learning-20261113
     paths:
       - 'research/contrib/chatgpt/WSP-21/**'
       - 'research/contrib/chatgpt/WSP-22/**'
@@ -77,6 +78,7 @@ on:
       - 'research/contrib/chatgpt/WSP-59/**'
       - 'research/contrib/chatgpt/WSP-60/**'
       - 'research/contrib/chatgpt/WSP-61/**'
+      - 'research/contrib/chatgpt/WSP-62/**'
       - '.github/workflows/wsp21-pr-validation.yml'
       - '.ice/code-atlas.*'
 permissions:
@@ -126,6 +128,10 @@ jobs:
           for offset in range(0,len(encoded),4096):
               print("WSP53_ATLAS_DELTA|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
           PY
+      - name: WSP62 expandable Boolean representation SELFTEST (no DEV or PRIMARY exposure)
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-62 -p 'test_*.py' -v
       - name: WSP61 no-reset causal learning SELFTEST (no DEV or PRIMARY exposure)
         env:
           PYTHONDONTWRITEBYTECODE: '1'
