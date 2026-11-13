@@ -33,6 +33,7 @@ on:
       - research/wsp52-unsegmented-grounded-stream-protocol-20261112
       - research/wsp53-causal-anchored-order-counterworld-20261112
       - research/wsp54-gradientless-causal-compiler-20261112
+      - research/wsp55-operator-identification-20261112
     paths:
       - 'research/contrib/chatgpt/WSP-21/**'
       - 'research/contrib/chatgpt/WSP-22/**'
@@ -65,6 +66,7 @@ on:
       - 'research/contrib/chatgpt/WSP-53/**'
       - 'research/contrib/chatgpt/WSP-54/**'
       - 'research/contrib/chatgpt/WSP-55/**'
+      - 'research/contrib/chatgpt/WSP-56/**'
       - '.github/workflows/wsp21-pr-validation.yml'
       - '.ice/code-atlas.*'
 permissions:
@@ -114,6 +116,10 @@ jobs:
           for offset in range(0,len(encoded),4096):
               print("WSP53_ATLAS_DELTA|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
           PY
+      - name: WSP56 nonlinear out-of-family SELFTEST (no DEV or PRIMARY exposure)
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-56 -p 'test_*.py' -v
       - name: WSP55 noncommuting SELFTEST (no DEV or PRIMARY exposure)
         env:
           PYTHONDONTWRITEBYTECODE: '1'
