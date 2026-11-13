@@ -1,0 +1,80 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-68",
+  "date": "2026-11-13",
+  "title": "Direct online neural weight-space edits without a symbolic compiler under unfamiliar XOR/high-order physics",
+  "status": "FROZEN_PROSPECTIVE_SELFTEST_NOT_INDEPENDENT_SCIENTIFIC_FIRST_USE",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 959,
+    "sha": "d1e4ece8700973ae9a6302e1b7c5ef72d2fdb6bb",
+    "finding": "WSP67 constructed real 8->H->13->5 weights using a symbolic <=2-literal compiler, achieved 405/512 and 97 unseen, tied independent symbolic control; previous SGD neural control unconverged in 8/8 worlds. Focused/G29 PASS Linux Windows, full inherited regression in progress. This result will not be relabeled or retuned."
+  },
+  "question": "Can a fixed, generic neural representation acquire unfamiliar causal physics by modifying its real readout weights directly after every observation, with no symbolic candidate enumeration or source-aligned rule compiler; preserve correct learned predictions after subsequent edits; and match an independently converged batch-trained neural readout using equal data?",
+  "hypothesis": "Online regularized least-squares rank-one edits to actual neural readout weights will transfer some causal behavior to never-observed physical transitions and two-action compositions, preserve >=90% previous confident-correct predictions, and converge to the same numerical optimum as a separately implemented batch-trained fixed-feature neural network. It may be worse than strong symbolic or decision-tree controls; no neural superiority expected without observed evidence.",
+  "source": {
+    "cohort": "SELFTEST only, no DEV/PRIMARY",
+    "seeds": [
+      4201,
+      4202,
+      4203,
+      4204,
+      4205,
+      4206,
+      4207,
+      4208,
+      4209,
+      4210,
+      4211,
+      4212
+    ],
+    "families": "4 worlds each of XOR/parity conditionals, triple-AND conditionals, and mixed parity-plus-negated-conjunction coupled effects. Four visible binary sensors, four unknown shuffled physical action channels and sensor roles. Deliberately contains XOR/high-order conjunctions outside WSP67's given single <=2-literal conjunction-per-bit rule class. This is still designed synthetic binary physics, not unrestricted natural-world transfer.",
+    "training": "Exactly one uninterrupted no-reset 96-action seeded-random physical trajectory/world, common public experience rows to all methods. Snapshot first Stage A 48 actions, then incremental Stage B +48 with no reset. No arbitrary-state source queries or hidden physics to learners.",
+    "test": "All 12×16×4=768 source state/action physical outcomes evaluated AFTER training, split by whether the particular (state,action) was ever charged during training. Also 32 independent heldout two-action composition tasks/world =384. Source is evaluator-only.",
+    "time": "Measure CPU+wall and memory/snapshot for actual acquisition, both training and evaluation, plus batch/decision-tree controls. Matched physical actions are not matched compute."
+  },
+  "direct_writer": {
+    "network": "Fixed random 8->32 ReLU feature bank plus deterministic raw sensor/action skip connections and bias, with 41-dimensional neural readout to four continuous sensor bits. The 8->32 feature weights are sampled with one preregistered source-independent seed; no hand-coded source predicate, symbolic compiler, causal rule enumeration, or hidden action bit role. Real neural W_readout updated after each actual charged consequence.",
+    "algorithm": "Recursive regularized least squares (Sherman-Morrison) for all four readout outputs; ridge lambda=0.5, initial weights zero, initial inverse covariance=2I, fixed feature map seed 68182026, direct weight edits use only state/action/next-state training observations. Every observation triggers a weight edit. No gradients, source import or lookup in neural prediction.",
+    "confidence": "Output nearest sensor bit after threshold at 0.5, but only confident when all four raw bit margins to 0.5 are >=0.27 and posterior feature leverage phi^T P phi <=2.0, using learned inverse covariance. Abstain otherwise. Confidence thresholds fixed before any source outcomes; forced predictions and raw residuals reported independently.",
+    "retention": "Snapshot only fixed feature parameters, edited readout weight matrix and learned inverse covariance (not evidence/source), tamper-check SHA256, restore prediction bit parity. Stage A vs Stage B compare previously confident-correct physical queries, changed weights and no source-derived rebuilding."
+  },
+  "controls": [
+    "Independently implemented converged batch ridge optimizer over EXACT SAME fixed random neural feature map, lambda and all same charged evidence. Separate Cholesky source and fixed optimality residual criterion; this is conventional fully optimized fixed-feature neural readout, NOT end-to-end trained MLP. It is expected to tie the online direct writer mathematically and should be labeled that way.",
+    "Independently implemented fully fitted depth-up-to-4 decision tree over public binary sensor input and action, same charged evidence; report train exact, heldout correct and wrong (not necessarily confident-safe).",
+    "Identical-evidence exact state/action lookup with abstention on unknown; strongest memory control with identical source/actions.",
+    "Frozen WSP67 independent symbolic compiler out-of-class diagnostic: explicitly report any inconsistency/rejection instead of using it to tune WSP68.",
+    "Ablate direct neural readout (zero matrix) and covariance-based confidence to verify nontrivial learned parameter importance."
+  ],
+  "primary": "SELFTEST_SIGNAL only if across all 12 worlds Stage B (A) >=40 correct confident physical predictions at genuine previously-unobserved state/action pairs, (B) >=160 correct confident physical predictions over all 768 audits and >=25 MORE than equal-evidence exact lookup, (C) <=16 confidently wrong physical outcomes over all 768, (D) >=96/384 two-action compositions exact with both direct neural steps confident, (E) >=90% retention of Stage A previously confident-correct physical cases after Stage B, (F) at least 10/12 worlds have nonzero changed actual neural readout parameters and all 12 cold-restored weight-only snapshots have exact raw predictions plus confidence parity and tamper rejection, (G) independently batch-trained same-feature neural readout has numerical optimum residual ||(lambda I+X^TX)W-X^TY||_infinity <=1e-7 AND agrees with online Stage B learned readout to max absolute coefficient difference <=2e-6 in all 12 worlds. Otherwise SELFTEST_NEGATIVE_OR_INCONCLUSIVE; even signal does NOT prove neural superiority.",
+  "secondary": [
+    "Forced and confident accuracy/false confidence/abstention, train residuals, genuinely unobserved source physical outcomes vs direct lookup",
+    "Independent decision-tree correctness and confidence errors, trained gradient baseline convergence status if available, batch ridge optimum cost and same-input tied predictions",
+    "Out-of-WSP67 symbolic prior rejection counts; do not call a rejecting comparator a weaker trained baseline",
+    "Stage A to B edits/retention/cold restore, rank/leverages and stored learned weight bytes, neuron count, hidden feature map fixed seed",
+    "Source/test/charged evidence SHA256; Linux/Windows deterministic science counts, latency/whole CPU and all applied physical actions"
+  ],
+  "limitations": [
+    "Fixed random features and linear readout are a very strong and limited architecture; equal-batch ridge equivalence tests engineering correctness, not the superiority of direct edits.",
+    "Source remains a designed four-bit physics family and test exposures from exhaustive evaluator calls; not human language, self-generated goals or open-world representation invention.",
+    "No fully optimized end-to-end gradient-trained MLP is provided by the batch ridge control. An independent trained full neural MLP with adequate convergence remains required before claiming superiority over conventional neural training.",
+    "Output uncertainty is heuristic margins+ridge leverage, not a proven safe confidence bound. Wrong-confidence must be counted, never dismissed.",
+    "Even fully meeting this synthetic prereg is not SCIENTIFIC_PASS or evidence of general intelligence."
+  ],
+  "governance": {
+    "merge": false,
+    "science_first_use": false,
+    "official_research_loop_change": false,
+    "deployment": false,
+    "controller_change": false,
+    "new_runner": false,
+    "scheduled_task": false,
+    "paid_api": false
+  },
+  "stop": [
+    "Freeze source seeds, physics classes, train actions, feature map seed/dim, lambda, calibration thresholds, baselines and success criteria BEFORE creating source or learner code and outcomes.",
+    "If scientific gate misses, report negative unchanged; mechanical faults can be repaired only without modifying frozen scientific semantics, else new prereg experiment.",
+    "Keep original WSP67 evidence unchanged, no merge/promotion/DEV/PRIMARY scientific first-use.",
+    "Final focused Linux+Windows, exact-source G29 and mandatory inherited full regression at exact candidate SHA before engineering closure."
+  ]
+}
