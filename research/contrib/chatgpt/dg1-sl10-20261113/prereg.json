@@ -1,0 +1,114 @@
+{
+  "schema": "ygg.dg1-sl10.paid-hypothesis-tournaments-prereg.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_PRIMARY_OUTCOMES",
+  "experiment": "DG1-SL10",
+  "date": "2026-11-13",
+  "parent_pr": 991,
+  "parent_sha": "59d7153290fb85b4170d8fb2709acc376b74ada5",
+  "hypothesis": "In an intervention-limited, non-token physical causal world, action choices that explicitly discriminate top plausible compositional causal rules and archived context hypotheses yield higher unfamiliar-composition held-out accuracy and cold-retained return-context accuracy than an equally paid passive policy and matched conventional Bayesian active-information policy, without raising confidently wrong predictions or whole-process CPU.",
+  "physics": {
+    "inherit": "Exactly the SL09 4-bit, 4-action, 6 Boolean gate grammar and phase structure; source imports the frozen SL09 truth-table primitives and program grammar from the exact parent. Each action can only flip its own state bit when its hidden causal predicate is true.",
+    "new_disjoint_seeds": {
+      "RETURN_A": [
+        103001,
+        103002,
+        103003,
+        103004,
+        103005,
+        103006,
+        103007,
+        103008
+      ],
+      "RETURN_B": [
+        103009,
+        103010,
+        103011,
+        103012,
+        103013,
+        103014,
+        103015,
+        103016
+      ],
+      "STABLE": [
+        103017,
+        103018,
+        103019,
+        103020,
+        103021,
+        103022,
+        103023,
+        103024
+      ],
+      "COMPOSITION_OOD": [
+        103025,
+        103026,
+        103027,
+        103028,
+        103029,
+        103030,
+        103031,
+        103032
+      ]
+    },
+    "phase": "A: steps 0–29, B: steps 30–59, then A/B/stationary A/unmodeled mixed composition for 60–79. Hidden generated programs use the same family-specific public seed construction as SL09 with newly disjoint seeds. Ten genuine charged exogenous perturbation flips at indices [6,14,22,30,38,46,54,62,70,78].",
+    "action_policy": "Step<60: fixed public causal action step%4 (except chargeable flips). Step>=60 and nonflip: policy may choose any 0..3 physically valid action before observing next state, charged once. A fresh world is physically stepped for every comparison arm; no evaluator truth, hidden program, seed, private phase, free reset, scripted post-observation action or imagined consequence is supplied to any learner or selector.",
+    "audit": "After steps 60,64,72,80 use uniform evaluator-only grid of 16 states × 4 actions; count correct, confidently wrong, abstentions and never-observed state/action pairs. No evaluator observation may update any learner."
+  },
+  "arms": [
+    "candidate_active: original unchanged SL09 compositional episodic learner with a novel disagreement/challenge action selector using top-six program witnesses from its own paid event bank(s).",
+    "bayes_on_candidate: independently implemented Bayesian full-grammar memory learner trained on a freshly paid exact physical replay of candidate_active's chosen actions. Same physical states/action identities/outcomes as candidate_active.",
+    "candidate_no_episodic_on_candidate: frozen SL09 no-episodic model on independently charged identical candidate_active trajectory, checks whether archive contributes.",
+    "bayes_active: independently implemented full-grammar Bayesian episodic control selecting paid action with maximum posterior predictive Bernoulli uncertainty.",
+    "candidate_on_bayes: frozen SL09 candidate learner trained from a freshly charged exact physical replay of bayes_active's chosen actions.",
+    "candidate_passive: unchanged SL09 compositional episodic learner with public postcold action step%4.",
+    "bayes_passive: Bayesian control freshly charged identical candidate_passive trajectory.",
+    "candidate_sham: same candidate learner but selects the smallest rule-disagreement score rather than most informative, with identical action count and tie logic.",
+    "bayes_on_sham: Bayesian control on freshly charged identical candidate_sham trajectory."
+  ],
+  "policy": "Candidate action score: among top six minimum-empirical-counterexample action-conditioned programs of active bank, maximize prediction split n0*n1; add weighted disagreement between two archived bank predictions and small bonus for physically unobserved state/action; choose deterministically, tie-break by public step rotation. Sham minimizes the same score. Bayesian action score: maximize p(flip)*(1-p(flip)) under a fully enumerated 216-program likelihood posterior per action, evidence from its own paid observations, deterministic tie-break. No hidden/evaluator labels used.",
+  "model_control": "New Bayesian control has an independently implemented posterior scorer, context banks and context switching; same publicly declared grammar and same actual paid physical histories within replay-paired arms. SL09 frozen candidate class is imported, no post-result modification to model source. Record epistemic limitation: active policies observe different physical traces despite equal paid counts; matched-trace paired learner comparisons are valid only within each replay group, whereas between active policies there is matched cost but not matched information.",
+  "budgets": {
+    "worlds": 32,
+    "arms": 9,
+    "steps_per_arm_world": 80,
+    "charged_physical_steps": 23040,
+    "charged_exogenous_flips": 2880,
+    "paid_causal_observations": 20160,
+    "max_cold_checkpoint_bytes": 8192,
+    "context_banks_max": 3,
+    "cold_restore_step": 60,
+    "eval_steps": [
+      60,
+      64,
+      72,
+      80
+    ],
+    "actions_after_cold": "18 actual causal action choices (other two of 20 steps are charged flips)",
+    "all_comparison_groups": "candidate_active paired with bayes_on_candidate and candidate_no_episodic_on_candidate; bayes_active paired with candidate_on_bayes; candidate_passive paired with bayes_passive; candidate_sham paired with bayes_on_sham. Require byte-identical per-world paid action/outcome traces within each pairing; all arms' first 60 physical steps identical. Different postcold policy traces are reported explicitly."
+  },
+  "primary": {
+    "candidate": "candidate_active",
+    "ood": "COMPOSITION_OOD",
+    "ood_correct_gain_vs_candidate_passive_min": 16,
+    "ood_unseen_correct_gain_vs_candidate_passive_min": 8,
+    "ood_confident_wrong_excess_vs_candidate_passive_max": 4,
+    "ood_correct_loss_vs_bayes_active_max": 8,
+    "ood_confident_wrong_excess_vs_bayes_active_max": 8,
+    "ood_correct_gain_vs_bayes_on_identical_candidate_trace_min": 8,
+    "ood_unseen_correct_gain_vs_bayes_on_identical_candidate_trace_min": 4,
+    "ood_correct_gain_vs_candidate_sham_min": 8,
+    "ood_correct_gain_vs_candidate_no_episodic_on_same_trace_min": 8,
+    "returnA_correct_loss_vs_candidate_passive_max": 16,
+    "returnB_correct_loss_vs_candidate_passive_max": 16,
+    "stable_correct_loss_vs_candidate_passive_max": 8,
+    "stable_confident_wrong_excess_vs_candidate_passive_max": 4,
+    "ood_worlds_with_nonpassive_action_choices_min": 4,
+    "median_candidate_cpu_ratio_vs_bayes_active_max": 2,
+    "hard_required": "All 32 seeds and 9 arms complete, 23,040 charged real steps and 20,160 causal events, correct per-pair trajectory SHA-256 and full shared pre60 SHA-256, cold restore and integrity checked at step 60, <=8192 checkpoint, no hidden inputs or free auditor observations, negative tests, final exact SHA full regression and dual OS deterministic scientific receipt equality.",
+    "classification": "If all thresholds and hard requirements hold: DEV_SIGNAL_NOT_SCIENCE. If some gain but one fails: MIXED_DEV. Otherwise: NEGATIVE_DEV. Invalid on rule leakage, retrofitted threshold/seed/model changes after outcomes, charge mismatch, failed scientific provenance or missing cross-platform equivalence. Synthetic DEV never automatically implies SCIENTIFIC_PASS, AGI or native integration."
+  },
+  "resource_accounting": "Measure learner+policy decision and observation CPU ns separately from world/audits and from total process; verify cold checkpoint size and memory. Action policies have identical physical step counts but not identical information content or necessarily identical compute; record both. CPU runs on Ubuntu and Windows may differ, do not require identical timing.",
+  "qualification": "Two operating systems, fixed Python 3.12, exact candidate source SHA; all focused/negative tests and mandatory inherited full regression; G29 code-atlas pinned candidate reanchor after generated index mismatch only (mechanical, no source/physics retune); record original per-world synthetic DEV outcomes and source custody in GitHub Actions. No post-result scientific retuning or seed recycling.",
+  "authority": "External branch-only draft PR. No ref edits to main/accepted, native model, Forge/Yggdrasil owner/controller/research loop, first-use scientific lane, Wingless, Hybrid or weight-programming source. No scheduled tasks, live experiments, paid APIs, local workstation or ChatGPT Library evidence uploads.",
+  "limitations": "Toy four-bit Boolean world, possible concentration of physical states and active-learning policy selection bias; finite family known to Bayesian comparator; neither tokenless AGI, broad causal transfer, independent replication nor numerical compute parity can be inferred from this synthetic test."
+}

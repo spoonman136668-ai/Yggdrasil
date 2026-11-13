@@ -1,0 +1,101 @@
+name: DG1-SL10 paid causal hypothesis tournaments DEV
+on:
+  pull_request:
+    paths:
+      - 'research/contrib/chatgpt/dg1-sl10-20261113/**'
+      - '.github/workflows/dg1-sl10-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact source Python syntax
+        run: python -m py_compile research/contrib/chatgpt/dg1-sl10-20261113/sl10.py research/contrib/chatgpt/dg1-sl10-20261113/test_sl10.py
+      - name: Focused paid-action physical intervention, replay and cold-checkpoint tests
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/dg1-sl10-20261113 -p 'test_*.py' -v
+      - name: Prospective 32-world nine-arm paid physical experiment
+        run: python research/contrib/chatgpt/dg1-sl10-20261113/sl10.py > sl10-original-result.json
+      - name: Enforce frozen budgets, replay identity and publish science verdict
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('sl10-original-result.json').read_text())
+          assert r['freeze_sha']=='43d7307c3bcaf2862c4312583c6b220766feb04e'
+          assert r['world_count']==32 and len(r['arms'])==9
+          assert r['paid_steps']==23040 and r['charged_flips']==2880
+          assert r['paid_causal_observations']==20160
+          groups=(
+            ('candidate_active','bayes_on_candidate','candidate_no_episodic_on_candidate'),
+            ('bayes_active','candidate_on_bayes'),
+            ('candidate_passive','bayes_passive'),
+            ('candidate_sham','bayes_on_sham'),
+          )
+          assert all(len({a['pre_cold_trace_sha256'] for a in w['arms'].values()})==1 for w in r['worlds'])
+          assert all(len({w['arms'][a]['trace_sha256'] for a in pair})==1 for w in r['worlds'] for pair in groups)
+          assert all(a['paid_steps']==80 and a['charged_flips']==10 and a['causal_observations']==70 and
+                     a['cold_checkpoint_bytes']<=8192 and a['final_checkpoint_bytes']<=8192
+                     for w in r['worlds'] for a in w['arms'].values())
+          assert all(sum(a['stage_audits']['80'][k] for k in ('correct','wrong_confident','abstained'))==64
+                     for w in r['worlds'] for a in w['arms'].values())
+          print('SL10_PRIMARY:'+str(r['primary_pass']))
+          print('SL10_CLASSIFICATION:'+r['classification'])
+          print('SL10_OOD:'+json.dumps(r['aggregate']['COMPOSITION_OOD'],sort_keys=True,separators=(',',':')))
+          print('SL10_RETURN:'+json.dumps({k:r['aggregate'][k] for k in ('RETURN_A','RETURN_B','STABLE')},sort_keys=True,separators=(',',':')))
+          print('SL10_CPU_RATIO:'+str(r['median_candidate_cpu_ratio_vs_bayes_active']))
+          print('SL10_ACTIVE_WORLD_COUNT:'+str(r['ood_worlds_nonpassive_selected']))
+          PY
+      - name: Mandatory full inherited regression on same source SHA
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: G29 pinned code atlas source acceptance
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Keep original full per-world synthetic DEV receipts in GitHub Actions
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-sl10-prospective-paid-worlds-${{ matrix.os }}
+          path: sl10-original-result.json
+          if-no-files-found: ignore
+      - name: Remove temporary result before tracked source check
+        if: always()
+        shell: bash
+        run: rm -f sl10-original-result.json
+      - name: Verify no tracked source changed
+        if: always()
+        run: git diff --exit-code
+      - name: Generate exact source G29 mechanical atlas reanchor payload
+        if: always() && matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,base64
+          for ext in ('json','html','ice'):
+              raw=Path('.ice/code-atlas.'+ext).read_bytes()
+              encoded=base64.b64encode(raw).decode('ascii')
+              print('SL10_ATLAS_START:'+ext+':'+str(len(raw))+':'+hashlib.sha256(raw).hexdigest())
+              for offset in range(0,len(encoded),4096):
+                  print('SL10_ATLAS_CHUNK:'+ext+':'+encoded[offset:offset+4096])
+              print('SL10_ATLAS_END:'+ext)
+          PY
