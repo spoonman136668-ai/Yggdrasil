@@ -1,0 +1,99 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment": "WSP-70",
+  "date": "2026-11-13",
+  "title": "Source-blind signed conjunction neural weight imprinting versus width-matched random and converged full neural training",
+  "parent": {
+    "pr": 962,
+    "sha": "3e16a34b888564e1ba316f3e5330c3851e69360e",
+    "status": "WSP69 negative: 279/768 correct-confident, 6/307 genuine unseen, 26 confidently wrong; 261 random-width control, 461 memory, qualified MLP 446 confident correct/122 wrong, 12/12 fully converged. WSP69 focused and G29 pass both; full inherited regression still in progress."
+  },
+  "scope": "SELFTEST development only, no protected first-use/merge/promotion/controller changes",
+  "question": "Can directly constructing action-conditioned reusable interaction ReLU features from the correlations of charged physical prediction errors provide genuine unseen-state generalization and safe knowledge retention beyond equal-capacity random interaction neurons, with competitive fully converged end-to-end neural baselines?",
+  "hypothesis": "Learned selection of action-conditioned 2-3-variable signed conjunction neural neurons will outperform equal-width randomly selected conjunction neurons on heldout physical action consequences, including truly unseen input-action pairs; this isolates reusable interaction structure from local experience-prototype interpolation.",
+  "source": {
+    "seeds_primary": [
+      4401,
+      4402,
+      4403,
+      4404,
+      4405,
+      4406,
+      4407,
+      4408,
+      4409,
+      4410,
+      4411,
+      4412
+    ],
+    "seeds_negative": [
+      4413,
+      4414
+    ],
+    "family": "Twelve fresh-salt/shuffled synthetic physical worlds: four each parity XOR, triple AND, mixed negated/coupled; two additional 4-way XOR negative-control physics worlds intentionally outside at-most-three-sensor-conjunction feature prior. Binary 4-sensor current state and 4 public action channels, hidden source roles. Families intentionally overlap WSP69 and this is NOT independent out-of-domain general intelligence.",
+    "training": "One source-hidden initial zero state and one uninterrupted sequential 96-action seeded-random physically charged trajectory/world. Stage A after 48, Stage B +48; all candidate and controls get the exact same ledger. No training reset, oracle query, privileged source roles, or heldout-label feedback.",
+    "evaluation": "Primary 12×16×4=768 physical state-action evaluator truths split exactly by whether that state/action pair was seen during training; 12×32=384 separately sampled evaluator-only two-action compositions. Additional 2×64 physical audits on deliberately out-of-basis quartic negative worlds. No evaluator labels may be used to select neural features or fit weights.",
+    "cost": "Track whole candidate/random action-independent training/replay/feature scoring/evaluation process CPU/wall and memory bytes; shared source generation, MLP comparator cost and model fitness separated; action counts matched not compute by assumption."
+  },
+  "candidate": {
+    "representation": "8 public binary inputs (4 state+4 action one-hot), fixed seed 68182026 source-independent 32-ReLU base bank + raw skips and bias, four neural readout outputs. Append up to 12 after Stage A and 12 after Stage B actual signed 2-3-sensor literal conjunction neurons gated by one public action. Each h=ReLU(sum of k literal matches + action_one_hot - k), with numeric hidden weights/bias written directly. Source dynamics/rule identities are never imported.",
+    "dictionary": "All public action-gated conjunctions of k=2 or k=3 sensor literals with arbitrary signs. This candidate grammar is PREPROGRAMMED and can encode AND/negation directly; parity can be represented by combinations but feature-selection is not guaranteed. NOT discovered unrestricted causal factors. Total 4*(6*4+4*8)=224 candidate neuron types.",
+    "selection": "At each milestone compute ordinary 4-output prediction residuals using only charged state/action/after records. For each eligible unseen dictionary neuron active on ≥1 legitimately charged context, compute sum over outputs of (Σ_train h*residual)^2 divided by (lambda+Σ_train h^2); choose 12 highest scores, deterministic action/literal tie break. After Stage A and B neuron additions refit readout exclusively by rank-one regularized ridge replay of the actually charged ledger. No source/oracle/heldout access.",
+    "numerical_update": "Ridge lambda 0.5 and initial inverse covariance 2I. Every charged observation directly edits current neural readout. Growth writes actual hidden input weights and biases (not just a list of rule IDs); no gradient for candidate. Stage A and B snapshots contain ONLY numerical hidden/readout/covariance parameters, with SHA256 tamper check and cold prediction parity.",
+    "confidence": "Exactly same frozen WSP69 binary-output minimum margin |raw−0.5|>=0.27 and covariance feature leverage<=2.0 for all direct-neural arms. Fully optimized gradient neural confidence threshold retains its own fixed ≥0.9 each bit, and forced metrics both logged.",
+    "retention": "Stage A physical predictions previously confident+correct should remain confident and correct after new world data and Stage B edits; report exact denominators and wrong confident."
+  },
+  "controls": [
+    "Identical-width random dictionary-neuron control: choose uniformly from same source-blind eligible 224 feature candidates without looking at residual or next-state labels; 12 new ReLU weights at each growth stage, identical readout/covariance updates, same confidence cutoff, same 96 charged evidence; independently seeded.",
+    "Fixed 32-ReLU readout-only ridge editor (WSP68 architecture) using same 96 charged observations. No growth.",
+    "Independent exact observation memory and independent depth-four decision tree trained on identical charged public rows.",
+    "Independently fully trainable 8→32 ReLU→4 sigmoid MLP with ordinary backpropagation/Adam, 3 independently seeded restarts up to 6000 steps each on the exact public ledger, requiring >=95% full-observation training accuracy to mark converged. Report both its forced and >=0.9 per-bit confidence-gated predictions and total learning CPU, and refuse claims of superiority over an unconverged baseline.",
+    "Zeroed/neuron-ablated readout control, cold snapshot tamper and same-sensor action-gating negative checks."
+  ],
+  "primary": {
+    "classification": "SELFTEST_SIGNAL if ALL predeclared thresholds met; otherwise SELFTEST_NEGATIVE_OR_INCONCLUSIVE with no retuning",
+    "seen_unseen_min_correct": 25,
+    "gain_vs_random_unseen_min": 12,
+    "all_domain_confident_correct_min": 300,
+    "gain_vs_random_all_min": 25,
+    "confident_wrong_max": 20,
+    "two_action_compositions_min": 100,
+    "stageA_retention_min": 0.85,
+    "feature_growth_and_readout_changes_min_worlds": 10,
+    "cold_restores_and_tamper_worlds": 12,
+    "cpu_ratio_max": 3,
+    "negative_quartic_wrong_confident_max": 6
+  },
+  "secondary": [
+    "All 768 primary physics and 128 quartic-negative results, 384 two-step compositions, truly unobserved pair split, false confidence, abstentions, forced scores",
+    "Prototype WSP69 comparison referenced as historical unequal seeds, NOT same-evidence primary comparator",
+    "Fully trained end-to-end baseline convergence and same-evidence physical/composition predictions, whole compute/cost",
+    "Stage A/B hidden and readout matrix parameter edits and weight-only cold retention; no symbolic memory in model",
+    "Source/private task/charged evidence SHA256 and OS matching numerical counts",
+    "New neuron identities used only as training selection provenance, absent from model inference snapshot"
+  ],
+  "limitations": [
+    "Reusable signed-conjunction basis is explicitly chosen in advance; this is not learned general feature grammar, language understanding, nonbinary perception or AGI.",
+    "Direct ReLU gates can interpolate observed feature conjunctions, and even unseen improvements may reflect a favorable handcoded inductive bias. Compare to random same dictionary and independent MLP.",
+    "In-family physics overlaps WSP69's broad types; negative quartic worlds only probe one nearby out-of-family failure class.",
+    "Training actions are matched, but whole-process compute is not automatically matched, requiring measured ratio.",
+    "A positive SELFTEST alone is not independent scientific confirmation or production acceptance."
+  ],
+  "authority": {
+    "research_artifact_pr_draft_allowed": true,
+    "merge": false,
+    "protected_first_use": false,
+    "owner_loop": false,
+    "accepted_ref": false,
+    "deployment": false,
+    "runner_changes": false,
+    "scheduled_tasks": false,
+    "paid_api": false
+  },
+  "stop": [
+    "Keep prereg commit before any new source/model/tests or results.",
+    "If frozen science misses, report NEGATIVE; do not tune thresholds, mechanism or world seed based on outcomes. Mechanical harness bugs may be repaired without changing science, with exact-SHA requalification.",
+    "Full exact candidate focused Linux+Windows, source-bound G29, and inherited full dual-platform regression required for engineering closure.",
+    "No duplicate regressions, no new controller, no DEV/PRIMARY scientific first use or merge."
+  ]
+}
