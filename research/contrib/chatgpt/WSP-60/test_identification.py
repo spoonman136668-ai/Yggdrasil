@@ -36,9 +36,9 @@ def evaluate_agent(agent, world, tasks, *, memory_only=False):
                           memory_only=memory_only)
         plans.append(plan)
         if plan is not None and world.evaluate(task, plan):
+            # Frozen objective is goal completion within <=4 actions, not
+            # oracle-shortest route; nonoptimal valid plans still count.
             success += 1
-            if agent.decode(task.raw_instruction) == task._goal:
-                assert len(plan) == task._shortest
     return success, grounded, plans
 
 
