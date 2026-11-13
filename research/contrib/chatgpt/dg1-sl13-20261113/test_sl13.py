@@ -19,8 +19,8 @@ class SL13Tests(unittest.TestCase):
         self.assertEqual(AUDITS,(40,44,56,60,64,72,80))
         self.assertEqual(COLD,(37,57,73))
         self.assertTrue(all(x not in (20,40,60) for x in COLD))
-        self.assertEqual(p["budgets"]["total_paid_steps"],15360)
-        self.assertEqual(p["budgets"]["total_causal_observations"],13440)
+        self.assertEqual(p["budget"]["total_paid_steps"],15360)
+        self.assertEqual(p["budget"]["paid_causal_observations"],13440)
 
     def test_world_physical_budget_and_private_phase(self):
         for cohort,seeds in COHORTS.items():
