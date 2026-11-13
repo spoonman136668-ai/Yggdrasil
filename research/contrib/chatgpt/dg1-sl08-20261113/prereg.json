@@ -1,0 +1,81 @@
+{
+  "schema": "ygg.dg1-sl08.physical-error-calibration-prereg.v1",
+  "status": "FROZEN_BEFORE_SOURCE_AND_PRIMARY_OUTCOME",
+  "project": "Yggdrasil",
+  "experiment_id": "DG1-SL08",
+  "parent_sha": "c67aca9eb03353bab5b581cbdfed63a7dc18b147",
+  "parent_pr": 989,
+  "hypothesis": "A bounded per-action physical prequential-error quarantine on unchanged three-bank native causal memory reduces confident out-of-grammar context errors while retaining return-context and stationary coverage, beating identical calibration on a separately implemented conventional three-bank HMM under exactly matched paid physical actions and context-exposure.",
+  "cohorts": {
+    "ABCA": [
+      101001,
+      101002,
+      101003,
+      101004,
+      101005,
+      101006,
+      101007,
+      101008
+    ],
+    "ABCB": [
+      101009,
+      101010,
+      101011,
+      101012,
+      101013,
+      101014,
+      101015,
+      101016
+    ],
+    "STABLE": [
+      101017,
+      101018,
+      101019,
+      101020,
+      101021,
+      101022,
+      101023,
+      101024
+    ],
+    "ABCD_OOD": [
+      101025,
+      101026,
+      101027,
+      101028,
+      101029,
+      101030,
+      101031,
+      101032
+    ]
+  },
+  "physics": "Inherit exactly frozen SL07/SL06 4-bit, 4-action, 40-rule grammar, 20-step hidden A/B/C then A/B/stable/unmodeled D transition, 10 paid bit flips at [6,14,22,30,38,46,54,62,70,78]. Only seed registration is new. Never reveal world regime/rules/seed/held-out audits to model. Learners get only actual public paid before/action/after consequences.",
+  "action_budget": "32 worlds x 6 arms x 80 actual paid physical actions = 15360 charged physical steps, including 1920 charged flips and 13440 actual causal observations. All six arms execute identical physical action schedule: before cold step 60 SL06 fixed step%4, after step 60 fixed step%4. The same per-world physical before/action/after event sequence must match across every arm. Independent worlds reset only at start of each arm's independent, paid trial. No oracle access, free resets, training on evaluator audits or policy interventions. Each arm gets exactly equal action identities, states, outcomes, and observation ordering. Compute measured, not assumed equal.",
+  "arms": [
+    "native_raw: frozen SL07 native_passive underlying ColdThreeBank(gate=True,evict=False), no confidence wrapper",
+    "native_action2: same native underlying learner, quarantine one action after its model's pre-update confident physical error until two subsequent distinct-in-time actually paid, confidently correct predictions of that action; raw abstentions do not count as correct",
+    "native_action1: same action-local quarantine but only one confident correct physical prediction needed to reopen",
+    "native_global2: same learning rule, but confident physical error quarantines all four actions, with each action requiring two subsequent confident correct physical observations to reopen (global contamination ablation)",
+    "conventional_raw: independently coded frozen SL07 ConventionalHMM3(replay=True), no wrapper",
+    "conventional_action2: identical action2 physical-error calibration wrapper on independent conventional HMM memory; same data and action stream"
+  ],
+  "learning_rule": "All score+gate updates are calculated from strictly pre-update raw underlying learner prediction and the paid physical next state, then model.observe is called exactly once. No program changes, new hypothesis grammar, phase labels, evaluator outcomes or post-hoc rule tuning. Initially trusted; a confident error for action a marks its gate untrusted, requiring two subsequent successful raw predictions for that same action at distinct paid steps; errors reset recovery, abstentions do not recover. Global control marks all four actions untrusted upon any confident error. Prediction gating only: physical action policy remains identical fixed cycle. Store 4 action gate flags and 4 bounded consecutive recovery counters plus underlying learner.",
+  "controls": "Native raw, lenient action1, global2, independent conventional raw and matching independent conventional action2. All share exact physical traces and same scoring queries. Cold-restore native/conventional and gates at step 60 with integrity hash, byte-identical continuation, <=8192 byte total checkpoint. Report when wrapper merely abstains, coverage losses, and errors on never-observed state/action pairs. A post-result source/policy/threshold change invalidates confirmatory results.",
+  "evaluation": "At step 60/64/72/80, evaluator-only uniform exhaustive 16 public states x 4 actions = 64 pairs per model, never shown to learners. For each of four cohorts: 8 worlds x 64 = 512 scored queries per arm at final. Correct, confidently wrong, abstained, unseen-pair metrics, actual paid prequential correctness and time/cpu, equal trace SHA256, cold snapshot digest/length. Score predictions after recorded charged history, never train on audit. Full exact-SHA Ubuntu and Windows deterministic equivalence and inherited repo regression required. No matched compute guarantee.",
+  "frozen_primary": {
+    "candidate": "native_action2",
+    "out_of_grammar_wrong_reduction_vs_native_raw_min": 16,
+    "out_of_grammar_wrong_reduction_vs_conventional_action2_min": 8,
+    "out_of_grammar_correct_loss_vs_conventional_action2_max": 8,
+    "ABCA_correct_loss_vs_stronger_native_raw_or_conventional_action2_max": 16,
+    "ABCB_correct_loss_vs_stronger_native_raw_or_conventional_action2_max": 16,
+    "STABLE_correct_loss_vs_stronger_native_raw_or_conventional_action2_max": 16,
+    "STABLE_wrong_confident_max": 0,
+    "all_worlds_cold_restore_exact": true,
+    "all_arms_equal_physical_trajectories": true,
+    "all_worlds_and_arms_complete": true,
+    "dual_platform_deterministic_science_equal": true,
+    "classification": "DEV_SIGNAL_NOT_SCIENCE iff all primary criteria hold including superiority against independent conventional action2; MIXED_DEV iff OOD wrong reduction >=16 vs native_raw and return-context correct loss both <=32 but another criterion fails; otherwise NEGATIVE_DEV. INVALID for any hidden/evaluator leak, changed source or budget, absent physical custody, wrong prereg order, failed final exact-source qualification. Engineering PASS is separate from science. Synthetic study cannot prove AGI, universal cognition, sleep benefit or integration."
+  },
+  "limitations": "Risk calibration is not genuinely novel program induction, may reduce wrong predictions only by abstaining, and the HMM may dominate. Uniform audit pair difficulty is exactly matched but real-world problem difficulty and compute are not. This is source-only development evidence.",
+  "boundaries": "External isolated contribution PR kept DRAFT and UNMERGED; no main/accepted ref/native model/Forge/Yggdrasil owner/loop/first-use/Wingless/Hybrid/weight-editing mutations; no gradient, transformer, language tokens, paid API or local user workstation access. Results and tests stored in GitHub only; negative results preserved."
+}

@@ -1,0 +1,90 @@
+name: DG1-SL08 matched-paid-trajectory confidence calibration DEV
+on:
+  pull_request:
+    paths:
+      - 'research/contrib/chatgpt/dg1-sl08-20261113/**'
+      - '.github/workflows/dg1-sl08-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact source Python syntax
+        run: python -m py_compile research/contrib/chatgpt/dg1-sl08-20261113/sl08.py research/contrib/chatgpt/dg1-sl08-20261113/test_sl08.py
+      - name: Focused paid-action safety and cold-restoration tests
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/dg1-sl08-20261113 -p 'test_*.py' -v
+      - name: Run prospective preregistered 32-world six-arm scientific DEV comparison
+        run: python research/contrib/chatgpt/dg1-sl08-20261113/sl08.py > sl08-result.json
+      - name: Verify frozen cohort, physical action equality and print primary result
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('sl08-result.json').read_text())
+          assert r['freeze_sha']=='66a64101af5c926f43a91e991409034b3b18be35'
+          assert len(r['worlds'])==32 and r['world_count']==32
+          assert r['charged_steps']==15360 and r['causal_observations']==13440
+          assert all(len(set(a['trace_sha256'] for a in w['arms'].values()))==1
+                     for w in r['worlds'])
+          assert all(a['paid_steps']==80 and a['causal_observations']==70 and
+                     a['flips']==10 and a['cold_checkpoint_bytes']<=8192
+                     for w in r['worlds'] for a in w['arms'].values())
+          print('SL08_PRIMARY:'+str(r['primary_pass']))
+          print('SL08_CLASSIFICATION:'+r['classification'])
+          print('SL08_AGGREGATES:'+json.dumps(r['aggregates'],sort_keys=True,separators=(',',':')))
+          PY
+      - name: Mandatory full inherited regression on exact source
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: G29 pinned atlas verification (separate from scientific result)
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Preserve prospectively executed original full results on GitHub Actions
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-sl08-paid-worlds-${{ matrix.os }}
+          path: sl08-result.json
+          if-no-files-found: ignore
+      - name: Remove transient generated outcome
+        if: always()
+        shell: bash
+        run: rm -f sl08-result.json
+      - name: Confirm tracked source clean
+        if: always()
+        run: git diff --exit-code
+      - name: Generate candidate-source atlas for separate G29 reanchor
+        if: always() && matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          for ext in ('json','html','ice'):
+              raw=Path('.ice/code-atlas.'+ext).read_bytes()
+              import base64
+              encoded=base64.b64encode(raw).decode('ascii')
+              print('SL08_ATLAS_START:'+ext+':'+str(len(raw))+':'+hashlib.sha256(raw).hexdigest())
+              for offset in range(0,len(encoded),4096):
+                  print('SL08_ATLAS_CHUNK:'+ext+':'+encoded[offset:offset+4096])
+              print('SL08_ATLAS_END:'+ext)
+          PY
