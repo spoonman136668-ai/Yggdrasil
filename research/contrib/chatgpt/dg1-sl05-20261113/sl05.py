@@ -451,6 +451,63 @@ def make_arm(arm):
         return sl04.new_learner("conventional_recent_window")
     raise ValueError("SL05_BAD_ARM")
 
+
+def restore_frozen_recent_80(raw):
+    """SL05 checkpoint adapter: counter-only extension for SL04's 64-step limit.
+
+    SL04's recent-window learner is UNCHANGED. Its original decoder caps the
+    observed-action counter at 64; SL05 lasts 80 paid actions. At <=64 use the
+    original exact decoder, and only for counts 65..80 validate the identical
+    SL04 canonical envelope, event window and derived masks. No model policy,
+    training, observations, confidence or memory capacity are changed.
+    """
+    try:
+        return sl04.restore_control(raw)
+    except ValueError:
+        pass
+    try:
+        if type(raw) is not bytes or not 0 < len(raw) <= 8192:
+            raise ValueError("SL05_RECENT_BYTES")
+        packet = json.loads(raw)
+        if type(packet) is not dict or set(packet) != {"payload","sha256"}:
+            raise ValueError("SL05_RECENT_PACKET")
+        p = packet["payload"]
+        if (type(p) is not dict or
+            set(p) != {"schema","kind","events","masks","observations"} or
+            p["schema"] != sl04.SCHEMA or p["kind"] != "recent" or
+            type(p["observations"]) is not int or
+            not 65 <= p["observations"] <= 80 or
+            packet["sha256"] != hashlib.sha256(sl04.encode(p)).hexdigest()):
+            raise ValueError("SL05_RECENT_BAD_SCHEMA")
+        sl04_events = p["events"]
+        if type(sl04_events) is not list or len(sl04_events)>48:
+            raise ValueError("SL05_RECENT_BAD_EVENTS")
+        for e in sl04_events:
+            if type(e) is not list or len(e)!=3:
+                raise ValueError("SL05_RECENT_EVENT_TYPE")
+            sl04.checked_event(*e)
+        masks=p["masks"]
+        if (type(masks) is not list or len(masks)!=4 or any(
+                type(m) is not int or not 0 <= m <= FULL for m in masks)):
+            raise ValueError("SL05_RECENT_BAD_MASKS")
+        derived=[]
+        for action in range(4):
+            mask=FULL
+            for before,_,after in [e for e in sl04_events if e[1]==action][-12:]:
+                mask=sl04.surviving(mask,before,int(before!=after))
+            derived.append(mask)
+        if derived!=masks:
+            raise ValueError("SL05_RECENT_MASKS_NOT_CAUSALLY_DERIVED")
+        out=sl04.RecentWindow()
+        out.events=[e[:] for e in sl04_events]
+        out.masks=masks[:]
+        out.observations=p["observations"]
+        if out.snapshot()!=raw:
+            raise ValueError("SL05_RECENT_NONCANONICAL")
+        return out
+    except (ValueError,TypeError,KeyError,UnicodeError,OverflowError) as exc:
+        raise ValueError("SL05_RECENT_CHECKPOINT_REJECTED") from exc
+
 def restore_arm(arm, raw):
     if arm in ("cold_three_bank","cold_three_bank_no_gate","three_bank_forgetful_fifo"):
         obj=ColdThreeBank.restore(raw)
@@ -466,7 +523,7 @@ def restore_arm(arm, raw):
     if arm=="frozen_sl04_two_bank":
         return sl04.sl03.Learner.restore(raw)
     if arm=="frozen_sl04_recent":
-        return sl04.restore_control(raw)
+        return restore_frozen_recent_80(raw)
     raise ValueError("SL05_BAD_ARM")
 
 def evaluate(agent, world, seen, point):

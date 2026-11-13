@@ -19,3 +19,7 @@ python scripts/build_code_atlas.py --check-if-present
 ```
 
 The prospective outcomes remain **UNVERIFIED** until executed. All source, results, trace digests, negative outcomes, formal classification and cross-platform qualification receipts will be stored directly in this GitHub repository, not ChatGPT file attachments. A synthetically positive outcome would remain DEV only; no training, AGI, autonomous self-improvement or scientific PASS may be inferred without independently qualified broader controls.
+
+### Frozen-control checkpoint compatibility
+
+The first SL05 focused run **failed before the prospective cohort executed**: SL04's frozen recent-window decoder limits the observation counter to 64 even though SL05 has 70 paid causal observations. The SL05-only `restore_frozen_recent_80` adapter retains the exact same SL04 predictor/training masks, validates its canonical SHA-256 checkpoint and reconstructs derived window masks for counters 65–80. It does not alter SL04 source, observations, training, or results. This is an engineering integration correction made *before* the first SL05 cohort results. The failing preflight is retained as a GitHub Actions receipt.

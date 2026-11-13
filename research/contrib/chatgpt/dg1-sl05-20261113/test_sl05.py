@@ -51,6 +51,24 @@ class ColdRetentionTests(unittest.TestCase):
             self.assertEqual(m.clock,prior)
             self.assertEqual(m.events,events)
 
+    def test_frozen_recent_long_horizon_compatibility_without_policy_change(self):
+        from sl05 import sl04
+        agent=sl04.RecentWindow()
+        for i in range(70):
+            before=i%16
+            agent.observe(before,i%4,before)
+        raw=agent.snapshot()
+        restored=restore_arm("frozen_sl04_recent",raw)
+        self.assertEqual(restored.snapshot(),raw)
+        self.assertEqual(agent.masks,restored.masks)
+        self.assertEqual(agent.observations,70)
+        for state in range(16):
+            for action in range(4):
+                self.assertEqual(agent.predict(state,action),
+                                 restored.predict(state,action))
+        with self.assertRaises(ValueError):
+            restore_arm("frozen_sl04_recent",raw+b" ")
+
     def test_world_cold_resume_and_audits(self):
         result=one_world(98001,"ABCA")
         self.assertEqual(result["paid_actions"],80)
