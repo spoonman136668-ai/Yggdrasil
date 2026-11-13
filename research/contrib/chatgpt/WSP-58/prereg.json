@@ -1,0 +1,88 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-58",
+  "title": "Early-budget active causal intervention advantage, prospective heldout curve",
+  "created": "2026-11-12",
+  "status": "EXPLORATORY_ENGINEERING_PROSPECTIVE_NOT_SCIENTIFICALLY_ADMITTED",
+  "parent": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "pr": 948,
+    "sha": "2f9e20406626fd6c06a14c8d9c3229e2f3b86076",
+    "prior_finding": "WSP57 active 262/262 vs random 245/262 at 24 pair probes, +6.48855 percentage points < frozen 10pp criterion; negative retained",
+    "parent_qualification": "focused Linux/Windows PASS, G29 Linux/Windows PASS, inherited full regression not yet terminal"
+  },
+  "hypothesis": "At eight additional charged causal pair probes, entropy-selected actions yield >=10 percentage points more exact predictions than uniformly random actions on shared unqueried queries, with at least 35% exact coverage and no confidently wrong predictions across either arm.",
+  "source": {
+    "path": "research/contrib/chatgpt/WSP-58/source.py, evaluator-only",
+    "type": "12 newly sampled deterministic nonaffine four-operation 7-state permutation worlds (same distribution family as WSP57, new WSP58 SHA256 salt; not independent external physics)",
+    "seeds": [
+      2401,
+      2402,
+      2403,
+      2404,
+      2405,
+      2406,
+      2407,
+      2408,
+      2409,
+      2410,
+      2411,
+      2412
+    ],
+    "cohort": "SELFTEST only; DEV/PRIMARY impossible through fixture API; no WSP57 source import in learner",
+    "actions": "Each arm receives 12 identical charged unary facts (input states 0,2,4 for each of four operators) then 24 sequential pair probes selected under its own history. At budget b both have 12+b charged actions. No extra queries.",
+    "oracle_boundary": "Evaluator source may reveal only output to an arm-chosen charged query, never latent tables or uncharged outcomes. Heldout truth is used only after training trace for scoring.",
+    "policy": "Active: reuse immutable WSP57 SparsePermutationWriter.select_active output-entropy query choice; control: fixed seed-hashed uniform sampling among unqueried actions using the same learner and budgets",
+    "heldout": "At each checkpoint, score only the intersection of unqueried pairs across the two arms; same shared subset and exact source outcomes for both, no adaptive use of these labels; total 84 possible ordered distinct operator-state queries per world.",
+    "checkpoints": [
+      0,
+      4,
+      8,
+      12,
+      16,
+      24
+    ],
+    "primary_checkpoint": 8,
+    "retention": "Cold restore at checkpoint 8 and checkpoint 24; canonical hash, tamper rejection and heldout parity",
+    "source_receipts": "Deterministic SHA256 of frozen generator output/source identity and selected charged-action ledgers, no source truth table passed to learner"
+  },
+  "learner": {
+    "source": "Unmodified WSP57 sparse_writer.py at parent SHA",
+    "prior": "four unknown permutation maps on seven physical states; three known unary input-output observations per operation; inherited prior remains privileged and is charged",
+    "gradient_steps": 0,
+    "search": "existing bounded arc-consistency candidate propagation; confident prediction only on unanimous candidate outputs"
+  },
+  "arms": [
+    "same-solver entropy-active-policy",
+    "same-solver seeded-random-policy",
+    "unary-only baseline for diagnostics; unmatched action budget"
+  ],
+  "primary_metric": "Aggregate exact coverage difference in percentage points (active minus random) at 8 pair probes, micro-weighted across 12 same-heldout world comparisons.",
+  "primary_criterion": "SELFTEST_SIGNAL if gain>=0.10 absolute, active coverage>=0.35, zero confidently wrong predictions in both arms across all 12 worlds at primary checkpoint, equal 20 charged actions/arm, exact cold-restored parity; otherwise preserve SELFTEST_NEGATIVE_OR_INCONCLUSIVE.",
+  "secondary_metrics": [
+    "Coverage and abstentions at 0,4,12,16,24 pair probes; no secondary threshold promotion",
+    "Per-seed matched accuracy and candidate counts",
+    "Action ledger SHA256, exact count 12+b per arm",
+    "Cumulative active selection CPU/wall versus random selection overhead and full arm process time",
+    "Snapshot memory bits and candidate search checks, zero gradient steps",
+    "Correctness under tampered snapshots and source/cohort refusal"
+  ],
+  "validation": "Frozen source-only SELFTEST first, Linux and Windows; then exact-source G29 and mandatory inherited full two-platform regression on final candidate tree. No protected science first-use.",
+  "scientific_limits": "Same finite permutation family and structural priors as WSP57; not unfamiliar world transfer or general intelligence. No independently fully trained conventional control, equal compute comparison, fully independent symbolic algorithm, or protected scientific admission. Even primary success is only exploratory SELFTEST.",
+  "boundaries": {
+    "merge": false,
+    "scientific_first_use": false,
+    "official_loop": false,
+    "deployment": false,
+    "paid_api": false,
+    "scheduled_tasks": false,
+    "new_runner": false
+  },
+  "stop_rules": [
+    "No metric/threshold/seed/primary checkpoint tuning after looking at outcomes",
+    "Do not modify WSP57 frozen code or existing world/receipts",
+    "Learner must never import evaluator source or receive hidden operator maps",
+    "Ambiguous predictions abstain, record wrong-confident if they occur",
+    "No merge, promotion, first-use, new controller, production action or autonomous loop integration"
+  ]
+}
