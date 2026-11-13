@@ -1,0 +1,82 @@
+name: DG1-SL07 contradiction-witness paid interventions DEV
+on:
+  pull_request:
+    paths:
+      - 'research/contrib/chatgpt/dg1-sl07-20261113/**'
+      - '.github/workflows/dg1-sl07-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact-source syntax
+        run: python -m py_compile research/contrib/chatgpt/dg1-sl07-20261113/sl07.py research/contrib/chatgpt/dg1-sl07-20261113/test_sl07.py
+      - name: Focused negative, paid-action and cold-custody controls
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/dg1-sl07-20261113 -p "test_*.py" -v
+      - name: Execute 32-world preregistered prospective study
+        run: python research/contrib/chatgpt/dg1-sl07-20261113/sl07.py > sl07-result.json
+      - name: Confirm frozen budget and print classification + per-world scientific receipts
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('sl07-result.json').read_text())
+          assert r['freeze_sha']=='27d0ad88fdb64dda815cfb248cf47faf8b2f8e5a'
+          assert len(r['worlds'])==32 and r['world_count']==32
+          assert r['physical_actions_all_arms']==17920
+          assert r['causal_observations_all_arms']==15680
+          assert all(len(set(w['arms'][arm]['pre_cold_trajectory_sha256']
+                             for arm in w['arms']))==1 for w in r['worlds'])
+          assert all(w['arms'][arm]['cold_restore_pass']
+                     for w in r['worlds'] for arm in w['arms'])
+          print('SL07_CLASSIFICATION:'+r['classification'])
+          print('SL07_PRIMARY:'+str(r['primary_pass']))
+          print('SL07_RESULT_JSON:'+json.dumps(r,sort_keys=True,separators=(',',':')))
+          PY
+      - name: Mandatory complete inherited source regression
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: G29 exact-source code atlas check
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Clean generated outcome
+        if: always()
+        shell: bash
+        run: rm -f sl07-result.json
+      - name: Tracked source custody
+        if: always()
+        run: git diff --exit-code
+      - name: Generate source-pinned bounded atlas for separate G29 reanchor
+        if: always() && matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+          python - <<'PY'
+          import base64
+          from pathlib import Path
+          for ext in ('json','html','ice'):
+              b=Path('.ice/code-atlas.'+ext).read_bytes()
+              encoded=base64.b64encode(b).decode('ascii')
+              print('SL07_ATLAS_START:'+ext+':'+str(len(b)))
+              for i in range(0,len(encoded),4096):
+                  print('SL07_ATLAS_CHUNK:'+ext+':'+encoded[i:i+4096])
+              print('SL07_ATLAS_END:'+ext)
+          PY
