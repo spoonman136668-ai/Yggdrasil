@@ -1,7 +1,7 @@
 name: WSP61 one-shot source atlas companion
 on:
   push:
-    branches: [research/wsp61-counterexample-causal-disambiguation-20261112]
+    branches: [research/wsp61-reachable-state-causal-learning-20261113]
 permissions:
   contents: read
 jobs:
@@ -39,6 +39,6 @@ jobs:
           test "$(git diff-tree --no-commit-id --name-only -r "$B" | wc -l | tr -d ' ')" = "3"
           python scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"
-          git push origin HEAD:refs/heads/research/wsp61-counterexample-causal-disambiguation-20261112
+          git push origin HEAD:refs/heads/research/wsp61-reachable-state-causal-learning-20261113
           echo "WSP61_G29_SOURCE=$A"
           echo "WSP61_G29_ATLAS_ONLY=$B"
