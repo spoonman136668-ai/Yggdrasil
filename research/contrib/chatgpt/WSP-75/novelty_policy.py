@@ -20,7 +20,7 @@ from repair import policy_action,random_policy,repair,fitted_readout
 
 ACTION_CHANNELS=tuple(range(4))
 B_CHARGES=48
-MAX_POLICY_SCORE=19.0
+MAX_POLICY_SCORE=20.0
 
 
 def _public_state(state):
