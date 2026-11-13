@@ -56,6 +56,21 @@ jobs:
       - name: Regenerate bounded G29 atlas for source-review artifact
         if: always() && matrix.os == 'ubuntu-latest'
         run: python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+      - name: Emit bounded exact G29 atlas chunks for commit review
+        if: always() && matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          for ext in ('json', 'html', 'ice'):
+              raw = Path('.ice/code-atlas.' + ext).read_bytes()
+              encoded = base64.b64encode(raw).decode('ascii')
+              print('SLEEP01_ATLAS_BEGIN:' + ext + ':' + str(len(raw)))
+              for pos in range(0, len(encoded), 4096):
+                  print('SLEEP01_ATLAS_CHUNK:' + ext + ':' + encoded[pos:pos+4096])
+              print('SLEEP01_ATLAS_END:' + ext)
+          PY
       - name: Preserve source atlas for exact-source review
         if: always() && matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -67,3 +82,4 @@ jobs:
             .ice/code-atlas.ice
           if-no-files-found: warn
           retention-days: 7
+
