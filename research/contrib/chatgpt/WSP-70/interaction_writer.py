@@ -87,6 +87,17 @@ class ReusableInteractionNeural(FeatureGrowthNeural):
             raw=self.raw(before,action)
             evidence.append((before,action,tuple(after[i]-raw[i] for i in range(4))))
         eligible=[]
+        if self.policy=="random":
+            # Random control never computes or reads outcome residuals.
+            # It only checks whether a candidate was activated by a public
+            # physically charged INPUT, with no knowledge of its label.
+            for key in DICTIONARY:
+                if key not in existing and any(
+                    activation(key,before,action)>0.5
+                    for before,action,after in self.ledger
+                ):
+                    eligible.append((0.0,key))
+            return eligible
         for key in DICTIONARY:
             if key in existing:
                 continue
