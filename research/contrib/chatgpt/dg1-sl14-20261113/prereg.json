@@ -1,0 +1,122 @@
+{
+  "schema": "ygg.dg1-sl14.causal-dna-mechanism-fingerprint-prereg.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_SCIENTIFIC_OUTCOME",
+  "experiment": "DG1-SL14",
+  "provenance": {
+    "parent_pr": 995,
+    "parent_sha": "318baa17dc239dc0f7c3851dba2c9b99afa3a6ac",
+    "parent_engineering": "42/42 exact-source checks PASS",
+    "parent_science": "MIXED_DEV/NO-GO"
+  },
+  "intent": "First deliberately different substrate-falsification probe after SL07-SL13 4-bit archive failures: encode an independent six-bit world as causal mechanism signatures rather than episodic full-program copies; test low-cost recognition of returning contexts and unseen input/action combinations.",
+  "hypothesis": "A compact action-conditioned causal DNA fingerprint consisting of six Boolean-rule evidence scores per physical mechanism, plus a small physical diagnostic contrast window, can recall prior A and B contexts and preserve action-consequence knowledge under A→B→A→B, while resisting false reuse on a recombined unseen C and costing no more than a small conventional online Bayesian learner.",
+  "physics": {
+    "state": "Six public bits: input bits x0,x1,x2 and outputs y0,y1,y2; three causal actions 0/1/2 each toggle its own y-bit if hidden Boolean rule for two specified x-bits is true, independent of current y bits; initial public state seed%64.",
+    "inputs": "action 0 uses x0,x1; action1 uses x1,x2; action2 uses x2,x0; each rule is one of AND, OR, XOR, NAND, NOR, XNOR (six genuine physical gates).",
+    "physical_input_changes": "Step indices t where t%5==4 are mandatory real charged exogenous input flip: toggle input bit (t//5)%3. The other steps select exactly one physical causal output action before observing the true consequence. No resetting or teleporting states; output flip and input flip are each charged one physical step.",
+    "context": "Four 24-paid-step hidden physical phases t[0,24),[24,48),[48,72),[72,96). ABAB=A,B,A,B; ABAC=A,B,A,C; MIXED=A,B,C,A; STABLE=A,A,A,A. A has three independent rule IDs from 0,1,2; B from 3,4,5; C chooses action0 rule from A, action1 from B and action2 from an independently drawn rule that does not make C identical to A or B. A/B/C are private to environment and evaluator, not the learner.",
+    "seeds": {
+      "ABAB": [
+        107001,
+        107002,
+        107003,
+        107004,
+        107005,
+        107006,
+        107007,
+        107008
+      ],
+      "ABAC": [
+        107009,
+        107010,
+        107011,
+        107012,
+        107013,
+        107014,
+        107015,
+        107016
+      ],
+      "MIXED": [
+        107017,
+        107018,
+        107019,
+        107020,
+        107021,
+        107022,
+        107023,
+        107024
+      ],
+      "STABLE": [
+        107025,
+        107026,
+        107027,
+        107028,
+        107029,
+        107030,
+        107031,
+        107032
+      ]
+    },
+    "seeds_disjoint_from_prior": "107001..107032 (never SL07-13 seeds). Same actual world/dynamics per cohort-seed across comparison arms.",
+    "audits": "Evaluator-only 8 input configurations ×3 causal actions =24 physically specified next-bit predictions per world at completed steps 24,48,54,72,78,96. Collect exact correctness and confidently wrong, plus never-physically-observed input/action pairs. Audits never update a learner.",
+    "cold": "Canonical verified snapshot after completed paid steps 43,67,89 (off each phase boundary) and at 96; all 24 audit predictions identical across restore; serialized <=8192 bytes.",
+    "observation_limit": "96 paid steps per arm/world = 19 physically charged input perturbations +77 actual causal action-consequences. All arms pay for a separate physical world; the first 48 physical steps and every full probe/replay arm step must match exactly, including physical state/action/consequence.",
+    "action_selection": "Before t48 public fixed action t%3; after t48 the candidate uses active-versus-archived gate fingerprints' next-bit disagreement at the current physically observed x plus top-two rule uncertainty and novelty for causal action ranking, then commits to the physical action. No hidden truth, phase clock or evaluator-grid access. Distinct passive policy always uses t%3; compares same action budget but not identical information."
+  },
+  "arms": [
+    "fingerprint_active: proposed bounded fingerprint archive learner choosing physically informative diagnostic actions after 48",
+    "no_retrieval_on_active: same fingerprint representation and paid physical trace, but archive reactivation disabled (new bank creation still allowed)",
+    "independent_bayes_on_active: separately coded six-rule per-action Bayesian evidence model with exponential paid-event forgetting, on identically charged physical trace",
+    "rolling_window_on_active: separately implemented strongest-empirical-gate per action using most recent 18 physically charged events, identically charged",
+    "flat_lookup_on_active: separate non-compositional per-(action,input pair) majority model over the same physically charged events, bounded recent 18, identical trace",
+    "fingerprint_passive: same proposed fingerprint learner, fixed post-48 action t%3, identical cost but different physical information"
+  ],
+  "fingerprint_algorithm": {
+    "memory": "At most three banks, each bank holds per-action six integer error counts derived only from actual physical causal events, per-action physical event counts and a four-event diagnostic window. Update scores by comparing six possible public Boolean predictions with the single real changed-bit outcome. One bank first present; new bank requires four-event window with >=3 physical disagreements, >=3 distinct (input-pair,action) witnesses and >=6 charged entries in current bank. Switching banks never resets or retrains old scores; no hidden labels.",
+    "recognition": "Any previously populated inactive bank (>=6 paid causal events) may reactivate when a four-event real causal window contains >=3 distinct action/input-pair witnesses; target bank predicts at least three of four real events correctly and at least two more correctly than active bank. Stable deterministic tie: largest hit advantage then lowest bank index. Increment true-retrieval ledger only if returned bank existed previously and was physically active; creating bank is not retrieval. Require a new charged observation after each decision; allow no same-step proof from hypothetical actions.",
+    "prediction": "Use unique minimum scored empirical six-rule gate per action in active bank (tie-break smallest rule ID), return its changed-bit result for public x and queried action; independent per-action fingerprint enables compositional predictions for input configurations not previously physically observed. Do not use raw full episodes or hidden context labels.",
+    "capacity": "Three banks × three modules × six score registers plus per-action counts; 4 physical witness records, small bank activation ledger and primitive provenance. Canonical SHA256 checkpoint integrity; <=8192 bytes.",
+    "control_details": "No-retrieval uses identical representation, capacity and new-bank criteria, only disables inactive-bank activation. Bayesian control uses independently coded exponentially decayed log likelihood over six possible Boolean laws per action (likelihood ratio 9:1 and decay 0.88 per observed causal event); full six-law support, no hidden regime. Rolling control fits minimum-error six-gate program per action to exactly last 18 paid causal events. Flat lookup control uses majority of last 18 observations with default 0. No control has extra physical information or free labeled training. These are fully specified online conventional controls, not pretrained foundation models.",
+    "snapshot_integrity": "Round-trip + tamper rejection + prediction equality at 43/67/89; original physical ledger hashes exact within candidate-selected trace paired arms. Replay arms each pay own independent physical actions, never receive post-result virtual training."
+  },
+  "budget": {
+    "worlds": 32,
+    "arms": 6,
+    "paid_steps_per_arm": 96,
+    "total_paid_steps": 18432,
+    "total_paid_input_perturbations": 3648,
+    "total_paid_causal_observations": 14784,
+    "post48_candidate_action_choices_per_world": 38,
+    "snapshot_bytes_max": 8192,
+    "os": [
+      "ubuntu-latest",
+      "windows-2022"
+    ],
+    "python": "3.12 stdlib-only",
+    "currency": "No paid APIs"
+  },
+  "primary": {
+    "ABAB_true_A2_archive_retrieval_worlds_min": 5,
+    "ABAB_true_B2_archive_retrieval_worlds_min": 5,
+    "ABAB_A2_step54_correct_gain_vs_no_retrieval_min": 12,
+    "ABAB_B2_step78_correct_gain_vs_no_retrieval_min": 12,
+    "ABAB_B2_step96_correct_gain_vs_no_retrieval_min": 16,
+    "ABAB_B2_step96_correct_gain_vs_rolling_min": 8,
+    "ABAB_B2_step96_correct_gain_vs_bayes_min": 8,
+    "ABAB_B2_step96_correct_gain_vs_flat_min": 8,
+    "ABAB_B2_step96_unseen_gain_vs_bayes_min": 4,
+    "ABAB_B2_step96_unseen_gain_vs_no_retrieval_min": 4,
+    "ABAC_false_C_archived_retrieval_worlds_max": 2,
+    "ABAC_final_correct_loss_vs_no_retrieval_max": 8,
+    "MIXED_true_final_A4_archive_retrieval_worlds_min": 4,
+    "MIXED_final_correct_gain_vs_no_retrieval_min": 8,
+    "STABLE_final_correct_loss_vs_no_retrieval_max": 8,
+    "STABLE_confident_wrong_excess_vs_no_retrieval_max": 8,
+    "median_candidate_cpu_ratio_vs_independent_bayes_max": 2,
+    "median_candidate_cpu_ratio_vs_no_retrieval_max": 2.5,
+    "must_preserve": "32x6x96 charged physical steps, all 14,784 real causal observations and 3,648 exogenous flips; full per-world paired paid action/state/outcome ledger hashes; exact true archive vs new bank provenance; cold restore and <=8192 bytes; negative leakage/tamper tests; cross-platform identical full nontiming original outcome SHA256; source pinned; final inherited full regression and G29 source atlas PASS on final exact SHA",
+    "classification": "If all prereg gates pass, DEV_SIGNAL_NOT_SCIENCE (still not SCIENTIFIC_PASS). If any primary fails but measurable return or retained-rule improvement, MIXED_DEV. Otherwise NEGATIVE_DEV. INVALID if custody/leakage/plan altered post-outcome; no re-tuning on observed outcome. Engineering PASS is not proof of native cognitive improvement."
+  },
+  "analysis_limitations": "This remains a toy, discrete binary causal environment, but is deliberately a different six-bit compositional substrate rather than a repeated four-bit program-archive tuning exercise. Modules have a fixed known six-gate grammar; staged hidden contexts and 32 seeds cannot establish general intelligence, real-world causal transfer, broadly useful human reasoning or independent scientific replication.",
+  "isolation": "Only new standalone external research contribution under draft PR stacked on #995. No changes to native Yggdrasil source/weights, main, accepted refs, research owner/controller/loop, protected first-use, Forge/Wingless/Hybrid/weight programming, scheduled tasks, user workstation, live effects or paid APIs. Store receipts in GitHub Actions/repository, not ChatGPT Library."
+}
