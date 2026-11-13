@@ -41,6 +41,7 @@ on:
       - research/wsp60-counterexample-causal-disambiguation-20261112
       - research/wsp61-reachable-state-causal-learning-20261113
       - research/wsp62-adaptive-boolean-representation-20261113
+      - research/wsp63-sparse-physical-rule-extrapolation-20261113
     paths:
       - 'research/contrib/chatgpt/WSP-21/**'
       - 'research/contrib/chatgpt/WSP-22/**'
@@ -81,6 +82,7 @@ on:
       - 'research/contrib/chatgpt/WSP-61/**'
       - 'research/contrib/chatgpt/WSP-62/**'
       - 'research/contrib/chatgpt/WSP-63/**'
+      - 'research/contrib/chatgpt/WSP-64/**'
       - '.github/workflows/wsp21-pr-validation.yml'
       - '.ice/code-atlas.*'
 permissions:
@@ -130,6 +132,10 @@ jobs:
           for offset in range(0,len(encoded),4096):
               print("WSP53_ATLAS_DELTA|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
           PY
+      - name: WSP64 variable-state hidden-mode SELFTEST (no DEV or PRIMARY exposure)
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-64 -p 'test_*.py' -v
       - name: WSP63 sparse physical-rule extrapolation SELFTEST (no DEV or PRIMARY exposure)
         env:
           PYTHONDONTWRITEBYTECODE: '1'

@@ -1,0 +1,61 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-64",
+  "created": "2026-11-13",
+  "title": "Variable-dimensional source-blind causal representations and latent-state identifiability",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 954,
+    "sha": "c32b1d9b7a75fae491948a2af0ea499c8d637519",
+    "WSP63": "Frozen SELFTEST_SIGNAL: 195/256 primary plans vs lookup 160, 132 correct unseen physical consequences, zero confidently wrong, focused/G29 Linux/Windows PASS; mandatory full two-platform regression still pending"
+  },
+  "status": "FROZEN_PROSPECTIVE_SELFTEST_NOT_SCIENTIFIC_FIRST_USE",
+  "question": "Can one numerical learner infer state dimensions and one- or multiple-output causal effects from no-reset actions, predict genuinely unobserved consequences, and detect when latent state makes observable Markov rules unidentifiable?",
+  "worlds": {
+    "source": "research/contrib/chatgpt/WSP-64/source.py evaluator-only, never imported by learner",
+    "seeds": [
+      3001,
+      3002,
+      3003,
+      3004,
+      3005,
+      3006,
+      3007,
+      3008,
+      3009,
+      3010,
+      3011,
+      3012
+    ],
+    "groups": {
+      "variable_3_bit": "seeds 3001-3004; three visible Boolean sensors, four shuffled primitive channels, conditional and two-output actions",
+      "variable_5_bit": "seeds 3005-3008; five visible Boolean sensors, four shuffled channels, two-output conditional action with distinct polynomial triggers, all modeled output-bit Boolean functions degree<=2 with at most three active monomials",
+      "latent_4_bit": "seeds 3009-3012; four visible Boolean sensors and one hidden mode. One channel toggles hidden mode without changing visible state; another action's visible effect depends on that mode, so observed state/action can have incompatible consequences. Evaluator audits both hidden modes independently; no hidden-mode flag is exposed to learner."
+    },
+    "training": "All policies start one all-zero visible state (latent mode zero). Eight Markov worlds: 48 chronologically consecutive charged actions/arm. Four latent worlds: 64 chronologically consecutive charged actions/arm. Session exposes only current observable state and the charged action consequence, no reset, oracle queries, or teleport.",
+    "tasks": "In 8 Markov worlds select 32 new evaluator-only source-reachable 2-6-step start-to-target tasks per world = 256; heldout source has oracle-shortest plans for task construction, not shared with learner. Latent group is audited for identifiability, not used for planning score.",
+    "evaluation": "For Markov worlds audit all 2^n*4 physical state/action pairs and score seen versus truly unseen pairs separately; for latent group audit 2^4*4*2 possible visible state/action + hidden-mode outcomes, and flag any visible pair whose two modes disagree."
+  },
+  "learner": {
+    "description": "Generic source-blind dynamically sized Boolean numerical causal writer. Determine number of visible bits from first charged observation (3,4,or5 not supplied as a family tag). For each action and each output bit, enumerate all GF(2) algebraic-normal-form functions of degree<=2 with <=3 nonzero monomials and retain every function consistent with observed transitions. No preselected affected bit or one-output assumption. Predict only on unanimous version-space outputs; otherwise abstain. Conflicting repeated visible state/action outcomes produce no model for the affected channel.",
+    "inductive_bias": "Boolean observable registers, degree<=2 and at most three terms are prospectively prewired and match the Markov source families; NOT unrestricted grammar or hidden-state learning.",
+    "policy": "Single source-blind non-oracular policy selects the current-state action based on new state-action coverage, balanced channel usage and recent self-loops. Seed-hashed uniform random action baseline has equal charged action budget.",
+    "controls": "Exact state/action lookup using same active physical ledger, deterministic independent depth-bounded decision-tree control with same evidence and no source knowledge (diagnostic only), and equal-action random trajectory using same sparse candidate learner.",
+    "retention": "Canonical SHA256 cold snapshot of the complete charged chronological ledger plus inferred dimensions; restore predictions/goals and reject altered snapshot. Zero gradient steps.",
+    "cost": "Record whole-world wall/CPU, policy and fitting CPU/wall, number of consistent models, stored numerical coefficients/bits, source and action ledger hashes; equal action budgets are not equal compute budgets."
+  },
+  "frozen_primary": "SELFTEST_SIGNAL only if among 8 Markov worlds the sparse learner (A) solves >=160/256 heldout goals, (B) exceeds same-ledger exact-lookup control by >=20 goals, (C) correctly predicts >=70 actually-unseen source state/action consequences with zero confidently incorrect among all Markov physical audits, and (D) complete cold restore and exact action custody. For the 4 hidden-mode worlds separately require >=3/4 worlds exhibit observed contradictory visible state/action outcomes and zero confident wrong predictions across both evaluator hidden modes (2^4*4*2 audits/world). Any missed item => SELFTEST_NEGATIVE_OR_INCONCLUSIVE, no threshold changes.",
+  "secondary": [
+    "Markov outcomes by 3bit/5bit family, action/visited-state coverage and reachable start-task integrity",
+    "Latent collision detection, conflicting-channel abstention and confident-wrong on hidden-mode audits",
+    "Same-ledger exact lookup and independent bounded decision tree plus random policy under equal observations",
+    "CPU/wall and snapshot memory including raw evidence, model candidate multiplicity",
+    "Negative results retained for out-of-prior latent dynamics; no post-hoc change to sensor dimensions, budgets, seeds, thresholds or architecture"
+  ],
+  "limits": [
+    "Strong explicit Boolean and at-most-quadratic sparse structure aligns with Markov sources, so new dimension adaptability is not unconstrained causal grammar discovery.",
+    "Hidden dynamics are observationally non-Markov. No finite passive evidence guarantees perfect safety without a hidden-state mechanism; this is a falsification test, not expected success.",
+    "No natural-language tasks or high-dimensional unstructured sensor learning, fully trained neural matched compute controls, or independent scientific acceptance.",
+    "No DEV/PRIMARY first-use, merge, promotion, deployment, official autonomous research-loop/owner changes, new runners, scheduled tasks or paid APIs."
+  ]
+}
