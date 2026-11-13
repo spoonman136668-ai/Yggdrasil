@@ -1,0 +1,96 @@
+{
+  "schema": "ygg.dg1-sl05.three-context-cold-retention-prereg.v1",
+  "status": "FROZEN_BEFORE_SL05_SOURCE_AND_PRIMARY_RESULTS",
+  "project": "Yggdrasil",
+  "track": "DG1 selective consolidation / non-token causal memory",
+  "source_parent_sha": "f440698b0d1e32bb029a43c204eb6fa3d189b236",
+  "SL04_draft_pr": 986,
+  "hypothesis": "A bounded three-bank causal version-space with contradiction-gated cold retrieval retains earlier causal context after A→B→C→A or A→B→C→B interference with fewer confident errors and more unseen-correct predictions than independently implemented three-bank conventional filters and the frozen two-bank substrate.",
+  "datasets": {
+    "ABCA": {
+      "seeds": [
+        98001,
+        98002,
+        98003,
+        98004,
+        98005,
+        98006,
+        98007,
+        98008
+      ],
+      "phase_steps": "A [0,20), B [20,40), C [40,60), A [60,80)"
+    },
+    "ABCB": {
+      "seeds": [
+        98009,
+        98010,
+        98011,
+        98012,
+        98013,
+        98014,
+        98015,
+        98016
+      ],
+      "phase_steps": "A [0,20), B [20,40), C [40,60), B [60,80)"
+    },
+    "STATIONARY": {
+      "seeds": [
+        98017,
+        98018,
+        98019,
+        98020,
+        98021,
+        98022,
+        98023,
+        98024
+      ],
+      "phase_steps": "A throughout [0,80)"
+    },
+    "ABCD_OOD": {
+      "seeds": [
+        98025,
+        98026,
+        98027,
+        98028,
+        98029,
+        98030,
+        98031,
+        98032
+      ],
+      "phase_steps": "A, B, C, D; D effect is (state==15) xor action sign; out of 40-rule grammar"
+    }
+  },
+  "world_and_actions": "4-bit physical state, 4 binary-effect physical actions. Regimes A/B/C independently sample one of the unchanged 40 affine/3-bit-majority causal rules per action from deterministic Python Random(seed*131 + phase*719 + action*47); ensure all 3 distinct for each action by fixed deterministic increment on any collision. Outcome state xor (effect << action). Exactly 80 physical steps/world, one shared state trajectory for all arms, deterministic actions (seed+step)%4 except paid exogenous flips at [6,14,22,30,38,46,54,62,70,78] bit (seed//7+step//8)%4. 10 flips not fitted; 70 real causal observations. Initial state seed%16; no evaluator resets or hidden phase input.",
+  "arms": [
+    "cold_three_bank: three 40-rule masks/action bank slots; contradiction-gated context reactivation, bounded real-event replay only at public eight-step rest; conservative prediction after two independent post-switch consistent events",
+    "cold_three_bank_no_gate: identical algorithm, replay and capacity without conservative confidence gate",
+    "three_bank_forgetful_fifo: same algorithm and capacity but evicts least recently used bank when all 3 occupied",
+    "conventional_three_bank_hmm: independently coded three-state Bayesian-style hazard/change-filter with three bank version spaces and three explicit posterior weights",
+    "conventional_three_bank_replay: conventional HMM plus bounded eight-event public replay at same rest boundaries",
+    "frozen_sl04_two_bank: unmodified SL04 version-space selective sleep control, imported from pinned parent",
+    "frozen_sl04_recent: unmodified SL04 conventional recent-window control"
+  ],
+  "cold_retention": "At physical step 60, serialize each learner, integrity check and cold restore before continuing to step 80; final result must equal uninterrupted digest-based reference on the same observations. Tamper, snapshot type, truncated and capacity-limit negative tests. Snapshot max 8192 bytes; physical event window max 48 actual causal tuples; three new banks * four actions * 40 rule hypotheses=480 logical rule bits, plus disclosed metadata; old two-bank controls retain original capacity. Report snapshot bytes and per-arm whole inference/update ns; capacity and CPU NOT claimed exact matched.",
+  "prediction": "Use only actually witnessed charged causal state/action/effect observations. Never fit to dream, synthetic counterfactuals, evaluator 64-pair audits, hidden regime identity, world generator or seed. If context ambiguous, abstain. No token or gradient learning.",
+  "measurement": "Prequential prediction on every paid causal action plus hidden-regime evaluator-only exhaustive 64-pair audits after steps 20,40,60,80 and novel unseen state/action subset not physically observed. Inspect final-phase A/B cold retention, stationary performance, out-of-grammar confident errors, stagewise conflicting outcomes and cold-restored equivalence. 8 seeds per cohort x 64 queries=512 audit queries/cohort. Preserve all negative outcomes.",
+  "frozen_primary": {
+    "ABCA_correct_gain_vs_best_three_bank_conventional_min": 16,
+    "ABCA_unseen_correct_gain_vs_best_three_bank_conventional_min": 8,
+    "ABCA_confident_wrong_excess_vs_least_wrong_conventional_max": 4,
+    "ABCB_correct_gain_vs_best_three_bank_conventional_min": 16,
+    "ABCB_confident_wrong_excess_max": 4,
+    "STATIONARY_correct_loss_vs_best_conventional_max": 16,
+    "STATIONARY_confident_wrong_excess_max": 4,
+    "ABCD_OOD_confident_wrong_excess_max": 4,
+    "exact_64_step_cold_resume_equivalence": true,
+    "all_32_worlds_complete": true,
+    "same_physical_trajectory_all_arms": true,
+    "cross_platform_deterministic_outcomes": true,
+    "classification": "DEV_SIGNAL_NOT_SCIENCE if ALL primary thresholds pass; MIXED_DEV if retained-context coverage improves vs both conventional baselines but error/cost controls fail; NEGATIVE_DEV otherwise. INVALID on evidence leakage, unbounded memory, unequal physical actions, changed seeds/thresholds or unverified source/provenance.",
+    "native_specific_gain_requires_beating_strongest_conventional": true,
+    "sleep_timing_claim_requires_beating_same_compute_replay_control": true,
+    "no_postresult_tuning": true
+  },
+  "authority": "External source-only preregistered synthetic research: draft PR only; no native Yggdrasil or main model integration, accepted ref, protected science first use, owner/CKB plane controller/autonomous loop, Wingless, FORGE, separate weight editing or runtime deployment. CI qualification allowed; repo evidence only, no ChatGPT artifacts.",
+  "reproducibility": "Python 3.12 stdlib; pinned git parent; dual Ubuntu/Windows; G29 indexed source reanchoring; full inherited regression on final candidate SHA, focused negative controls and integrity; no paid services."
+}
