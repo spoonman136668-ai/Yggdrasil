@@ -1,0 +1,94 @@
+{
+  "schema": "wsp84.learned-boolean-operator-development.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_FIRST_OUTCOME",
+  "goal": "Induce a reusable three-input Boolean operator truth table from charged public action-consequence data without being given a majority, XOR3, or explicit fixed operator. Compile its learned table into directly programmed numeric ReLU weights.",
+  "parent": {
+    "candidate_sha": "e75acd73e203dafc571a0aaec24d9775e9afe03d",
+    "tree_sha": "5293137d8a3e56042dbda3efe26e19ee03cd78bc",
+    "WSP83_feature_prereg_blob": "0dbf536d76e9c7827faa313178daa8ae15bf6faa",
+    "WSP83_weight_compiler_blob": "55f7f68ae83044345306140d0e0878ff45595178",
+    "WSP82_neural_reference_blob": "1c5b63c69a8cc6d1b1c1cb353347f0aa40deae5c",
+    "WSP80_registered_prereg_blob": "0e96f4e0eff1ced7f87b754a2ad4fbb75c7b3d58"
+  },
+  "source_private": {
+    "new_unregistered_cohort": [
+      {
+        "seed": 10011,
+        "family": "three_temporal_majority"
+      },
+      {
+        "seed": 10012,
+        "family": "three_temporal_majority"
+      },
+      {
+        "seed": 10013,
+        "family": "memoryless_control"
+      },
+      {
+        "seed": 10014,
+        "family": "memoryless_control"
+      }
+    ],
+    "hidden_masks": "For each new-family world three SHA256-seeded independent shuffled balanced 3-out-of-6 subsets: current action, most recent action, and second most recent action. Domain-separate each mask with SHA256('WSP84|DEV|seed|mask|slot-v1'). Hidden extra output bit is SHA256('WSP84|DEV|seed|target-v1') mod6.",
+    "hidden_physics": "Every action flips its own visible six-bit state bit. New-family world ALSO flips its private target output bit iff at least two of these THREE hidden binary membership indicators are 1. Missing history slots evaluate to 0. Memoryless control has only base action bit flip. Hidden masks, target and private transition unavailable to learner.",
+    "initial_visible_state": "six 0 bits",
+    "initial_history": [],
+    "paid_schedule": "At step 0..383 SHA256('WSP84|DEV|seed|action|step-v1') first8 big endian mod6, independent of world hidden truth; no reset or free actions.",
+    "actions_per_world": 384,
+    "worlds": 4,
+    "total_paid_actions": 1536,
+    "evaluator_contexts": "Exactly empty history, each of 6 one-action histories, and ALL ordered 36 two-action histories; 43 distinct contexts. Test all 64 visible states x6 actions per context per world, after sealed predictions.",
+    "query_count_per_world": 16512,
+    "query_count_total": 66048,
+    "source_protected_registered_seeds": "5601..5616 never instantiate or read",
+    "no_private_evaluation_before_frozen_predictions": true
+  },
+  "candidate": {
+    "inputs": "public action + up to two previous public actions, no hidden source parameters",
+    "primitive_feature_bank": "Generic all balanced 3-of-6 action membership tests across 3 independent slots: 20 masks per slot, 60 numeric indicator inputs; these candidate partition atoms are researcher-provided, not learned from raw sensors.",
+    "search": "Evaluate Boolean truth-table supports k=0,1,2,3; enumerate all combinations of up to three distinct balanced-partition atoms. For each k infer every observed truth-table entry from exact 384 charged residual XOR labels and reject incompatible supports. Require every 2^k cell observed for a selected support, to prevent inventing unobserved operator outputs. Choose minimal support cardinality, retain all equally minimal consistent models and abstain on disagreement; cap 64 models/output.",
+    "composition": "For learned k<=3 feature inputs and learned operator table, construct numeric ReLU minterms: for each observed table-1 input pattern, ReLU(sum matching positive literals and negative literals - (k-1)); sum minterms and XOR with action-toggled base bit through numeric ReLU parity. Freeze and cold restore numeric masks, support, table, weights. The truth table operator must be learned, not named or encoded in learner.",
+    "operator_discovery_receipt": "Report each selected feature input slot/mask, 2^k truth table, support size, number of surviving alternatives, and whether resulting function is one of the preexisting two-atom XOR outputs; never report secret evaluator masks in learner data."
+  },
+  "controls": {
+    "old_WSP83": "unchanged source-blind 135-atom and at-most-two-atom XOR composer from source Git blob; must FAIL its charged-data fit on both new worlds and fit both memoryless controls",
+    "symbolic": "separate implementation of same 60 balanced indicator support search and independent truth table estimator, same 384 observations, full cold public query prediction parity required",
+    "conventional": "genuine fully trained history-aware 25-input, 64-hidden ReLU, 6-output Adam MLP. Unchanged three independent restart and at most 6000 gradient updates per restart, >=95% train exact convergence. Use raw action/previous/penultimate one-hots and prior-equality indicator. This capacity is stronger than WSP83 baseline; if nonconverged report as incomplete and do not call it full control.",
+    "others": "fixed memoryless public base action toggle, exact paid 3-slot history lookup, and negative shuffled-public-ledger continuity refusal.",
+    "information": "All models receive exact same ONE physically paid 384-action continuous public history per world, no private labels, no free actions, independent masking/choice of evaluation contexts only in private harness."
+  },
+  "thresholds": {
+    "registered_WSP80_seed_consumption_exact": 0,
+    "paid_actions_exact": 1536,
+    "old_WSP83_rejected_novel_worlds_min": 2,
+    "old_WSP83_compatible_memoryless_controls_min": 2,
+    "numeric_novel_worlds_correct_each_min": 16000,
+    "numeric_novel_worlds_wrong_confident_each_max": 0,
+    "numeric_memoryless_controls_correct_each_min": 16512,
+    "numeric_3_input_operator_discovered_novel_worlds_min": 2,
+    "all_selected_input_operator_cells_observed": true,
+    "numeric_vs_independent_symbolic_query_parity_worlds_min": 4,
+    "numeric_genuinely_unpaid_new_worlds_correct_aggregate_min": 8000,
+    "novel_correct_gain_over_memoryless_aggregate_min": 8000,
+    "history_Adam_training_converged_worlds_min": 2,
+    "exact_numeric_cold_restore_all_queries": true,
+    "tampered_numeric_snapshots_rejected": true,
+    "all_predictions_frozen_before_private_source_truth": true
+  },
+  "negative_controls": "Shuffled/duplicated/unpaid charged rows fail continuity; exact memoryless negative worlds; unchanged WSP83 two-atom compiler fails novel worlds; symbolic equal capacity exact match expected. Explicitly report zero-shot cold model trained on seed10011 and tested on seed10012 as descriptive negative, NOT predeclared pass threshold; provide ground truth only after label-free freezing.",
+  "stop_conditions": "One preregistered four-world cohort, exact paid information, fixed source/thresholds. Preserve negative outcomes. Do not alter hypotheses or rules after first developer first-use. Engineering corrections allowed before first source use, retaining prospective freeze and full exact-source requalification.",
+  "meaning": "This tests operator truth-table construction from data outside WSP83's fixed XOR2 compositional language. The researcher still supplied Boolean sensor discretization, 60 balanced partition candidate inputs, maximum three variables, generic truth-table representation, and minterm/ReLU compiler, so this is NOT unrestricted primitive creation, novel perception, language, world model transfer, or AGI. Equal expressive symbolic solver tie is expected; no numerical superiority.",
+  "authority": {
+    "unregistered_development_only": true,
+    "registered_scientific_first_use": false,
+    "protected_data": false,
+    "merge": false,
+    "main_or_accepted_refs": false,
+    "controller": false,
+    "schedules": false,
+    "runner_creation": false,
+    "deployment": false,
+    "paid_APIs": false,
+    "library_mutation": false
+  }
+}
