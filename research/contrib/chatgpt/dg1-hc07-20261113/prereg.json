@@ -1,0 +1,113 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "DG1-HC07",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can direct non-token action-consequence learning identify an unknown changed four-node causal dependency graph, without oracle labels, and reduce false-confidence relative to a fixed local-ring learner while meeting an independently implemented expanded-graph Bayesian control?",
+  "hypothesis": "An affine-XOR causal-program version space over all subsets of the 4 visible state bits plus sign can learn rewired graph dependencies by eliminating inconsistent hypotheses from charged interventions. It will remove fixed-ring model's erroneous extrapolations on rewired worlds, but it may tie an equivalent conventional Bayesian learner and fail under non-affine worlds or rapid regime switches.",
+  "source_parent_sha": "3619bf342a4cc41890ac797208683e030ae6c6fa",
+  "predecessor_pr": 969,
+  "predecessor_classification": "HC06 MIXED_DEV: IID +10/512 below +32 threshold; rewired 186 confidently wrong; majority 98 confidently wrong; return A narrow 370/512 with conventional tie. Preserve exact previous outcome.",
+  "paths": [
+    "research/contrib/chatgpt/dg1-hc07-20261113/prereg.json",
+    "research/contrib/chatgpt/dg1-hc07-20261113/affine_cells.py",
+    "research/contrib/chatgpt/dg1-hc07-20261113/bayesian_graph_control.py",
+    "research/contrib/chatgpt/dg1-hc07-20261113/eval_dev.py",
+    "research/contrib/chatgpt/dg1-hc07-20261113/test_hc07.py",
+    "research/contrib/chatgpt/dg1-hc07-20261113/README.md",
+    "research/contrib/chatgpt/dg1-hc07-20261113/result.json",
+    "research/contrib/chatgpt/dg1-hc07-20261113/provenance.json",
+    ".github/workflows/dg1-hc07-qualification.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "frozen_source": {
+    "seeds": {
+      "rewired": [
+        51001,
+        51002,
+        51003,
+        51004,
+        51005,
+        51006,
+        51007,
+        51008
+      ],
+      "old_ring": [
+        51009,
+        51010,
+        51011,
+        51012,
+        51013,
+        51014,
+        51015,
+        51016
+      ],
+      "non_affine": [
+        51017,
+        51018,
+        51019,
+        51020,
+        51021,
+        51022,
+        51023,
+        51024
+      ],
+      "phase_switch": [
+        51025,
+        51026,
+        51027,
+        51028,
+        51029,
+        51030,
+        51031,
+        51032
+      ]
+    },
+    "state": "4 observed binary physical sites encoded by integer 0..15, actions 0..3 each address one bit, one physically continuous state per world and policy; no arbitrary-state training visits or resets",
+    "seeds_per_action": "r=random.Random(seed*101 + action*31); offset=r.randrange(2); extra_own=r.randrange(2).",
+    "physical_laws": {
+      "rewired": "effect = bit((a+1)%4) XOR bit((a+2)%4) XOR (extra_own & bit(a)) XOR offset",
+      "old_ring": "effect = bit((a-1)%4) XOR bit((a+1)%4) XOR (extra_own & bit(a)) XOR offset",
+      "non_affine": "effect = majority(bit((a+1)%4),bit((a+2)%4),bit(a)) XOR offset",
+      "phase_switch": "A uses rewired physical law; phase B toggles offset for all actions; final A restores offset, without labels"
+    },
+    "charging": "For each stationary world and each policy exactly 32 real physical actions, and for each phase-switch world 16 A + 8 B + 1 restored A = 25 actual steps. All controllers start seed%16 and naturally diverge. Candidate chooses each next action only from public state and its own learned hypotheses; baseline same.",
+    "evaluation": "After all real actions, frozen evaluator-only exhaustive 16 states ×4 actions, no learning from audits. Record correct, wrong-confident, abstained and unseen subset, with abstention = not-correct."
+  },
+  "models": {
+    "candidate": "One non-token four-action causal graph program per action, unknown rule effect = parity(state_bits & feature_mask) XOR sign. All 16 feature masks×2 signs=32 alternatives/action, represented by a 32-bit surviving mask/action. Update by elimination on public action consequences only. Prediction only on unanimous viable hypotheses, else abstain. Prospective intervention policy selects action maximizing immediate model disagreement (Gini); tie lowest action index. No hidden graph identifiers, gradients or custom learned features from evaluator.",
+    "independent_control": "Separately written BayesianGraphController (no import/subclass of candidate model) maintains exact 32-hypothesis/action uniform posterior and chooses action by Shannon outcome entropy; same 128 logical prior mask bits, same 32/25 physical actions, one-step planning. Report conventional tie or win honestly; do not claim novel mathematical approach.",
+    "fixed_prior_control": "Unmodified original HC05 CausalProbeCells from frozen predecessor, 24 logical bits/action six hypotheses, selected actions via its choose_greedy. Capacity smaller; not an equal-capacity scientific proof.",
+    "passive_control": "Same candidate masks/learning rule but round-robin actions t mod4, same 32/25 physical actions. No oracle.",
+    "capacity": "4 actions ×32 Boolean hypotheses =128 logical bits per candidate or independent control; no mask growth, canonical SHA-256 snapshot <=1024 bytes, exact cold restore; measure Python heap and wall-clock separately."
+  },
+  "frozen_success": {
+    "primary_rewired": "All 8 rewired seeds must have zero candidate confidently wrong predictions and at least 32 correct /64; aggregate candidate correct must exceed fixed-HC05 lower-capacity control by at least 128/512; if violated label REWIRED_NEGATIVE_DEV.",
+    "independent_conventional": "Report absolute difference in 512 queries against independent same-capacity Bayesian control. Claim no superiority if candidate tie/lose. 'SCIENTIFIC_PASS' never available from this source-only study.",
+    "in_family": "Old-ring cohort candidate >=256 correct/512 and zero confidently wrong. Report baseline and active/passive comparisons.",
+    "non_affine": "Non-affine majority errors reported as UNSAFE whenever any confident wrong; even no finite errors not safety evidence.",
+    "return_A": "No confident wrong and >=256/512 exact after 25 actions for limited return-A DEV; if fails, preserve as retention failure, do not change thresholds.",
+    "aggregate": "DEV_MECHANISM_SUPPORTED_NOT_SCIENCE only if primary rewired and old-ring and return-A pass and non-affine no confident errors; otherwise MIXED_DEV if any cohort positive, else NEGATIVE_DEV. No post-run changes to freeze.",
+    "invalid": "Source leak, hidden labels, uncharged physical actions, extra offline training, changed source/seed/test definitions or thresholds after inspecting any result, model capacity mismatch, noncanonical restore or mismatched hashes."
+  },
+  "metrics": [
+    "All arms 64 audit queries per seed and unseen subset, real-action ledger SHA256 and source action count, size of surviving causal hypothesis sets per action",
+    "Confidently wrong physical predictions including out-of-family; abstention rate and correct coverage",
+    "Cross-platform deterministic result hash excluding only measured wall clock and Python traced allocation",
+    "Executed action and policy wall-clock time, peak Python tracemalloc, logical mask bits and serialized checkpoint",
+    "G29 code-atlas exact SHA and complete inherited Linux/Windows regression"
+  ],
+  "authority": {
+    "advisory_research_only": true,
+    "native_runtime_changes": false,
+    "scientific_first_use": false,
+    "accepted_ref_changes": false,
+    "merge_approval": false,
+    "new_scheduler_or_owner": false,
+    "paid_api": false
+  },
+  "preregistration_note": "This commit precedes HC07 learner/evaluator/test code and any primary result inspection; later alterations require separate new DEV identity and cannot rewrite frozen outcomes."
+}
