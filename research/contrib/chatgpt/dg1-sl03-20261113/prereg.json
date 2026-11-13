@@ -1,0 +1,65 @@
+{
+  "schema": "ygg.dg1-sl03.selective-consolidation-prereg.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_OUTCOMES",
+  "parent_sl02": "868bebb5e2971d14e287336743c20abf61c56976",
+  "hypothesis": "Offline evidence-selected causal-memory consolidation preserves earlier causal competencies across unlabeled A→B→A interference better than no-sleep native and conventional online models without confident-error rebound.",
+  "worlds": {
+    "ABA": [
+      95001,
+      95002,
+      95003,
+      95004,
+      95005,
+      95006,
+      95007,
+      95008
+    ],
+    "majority": [
+      95009,
+      95010,
+      95011,
+      95012,
+      95013,
+      95014,
+      95015,
+      95016
+    ],
+    "cubic": [
+      95017,
+      95018,
+      95019,
+      95020,
+      95021,
+      95022,
+      95023,
+      95024
+    ]
+  },
+  "physics": "HC11 4-bit/4-action worlds with sign/slope from Python Random(seed*101+action*31); hidden ABA inversion at steps 16..31, zero-index; stationary three-bit majority and out-of-grammar cubic.",
+  "actions": "48 charged physical steps per world; shared deterministic learner-independent trajectory: flip bit (seed+step)%4 at step indices 6,13,20,27,34,41; all other steps execute causal action (seed+step)%4. Flips do not train mechanisms. No resets, no free simulator probes.",
+  "grammar": "HC09 40 affine/three-bit-majority candidate Boolean rules/action. Out-of-grammar errors are reported.",
+  "offline": "At steps 8,16,24,32,40,48 evaluate <=48 observed causal events with all 1, AB, and ABA contiguous unlabeled partitions (minimum 4 causal observations/segment), fit 1-2 banks with nonzero consistent rule masks, maximize log2 uniform-rule evidence with fixed complexity penalties, accept only if better than preserving current native bank state. Never fit from synthetic dreams, hidden phase, or evaluator audits.",
+  "arms": [
+    "native_no_sleep (frozen HC09 two-bank online)",
+    "conventional_online (separately coded two-context online)",
+    "selective_sleep (native + offline causal-partition selection)",
+    "conventional_selective_sleep (independently coded same-evidence offline optimization)",
+    "sham_sleep (native+readonly replay)",
+    "online_same_compute (same consolidation performed in online scheduled intervals)"
+  ],
+  "budget": "Identical paid physical event streams, <=48 physical event tuples/arm, 2 banks x 4 x 40 candidate rules, snapshot <=8192 bytes and SHA256; report compute and bytes separately.",
+  "evaluation": "Prequential real-action forecasts plus evaluator-only full 64 state/action audits at steps 16,32,48; final 8 worlds*64 queries/cohort, held-out unseen queries, context changes, confident errors, receipts and cold restore. No evaluator answers returned to learner.",
+  "primary": {
+    "aba_correct_gain_vs_best_online": 24,
+    "aba_unseen_correct_gain_vs_best_online": 16,
+    "aba_wrong_confident_excess_max": 8,
+    "stationary_correct_loss_max": 16,
+    "stationary_wrong_confident_excess_max": 4,
+    "cubic_wrong_confident_excess_max": 8,
+    "conventional_sleep_tie_blocks_native_superiority": true,
+    "online_same_compute_tie_blocks_sleep_timing_claim": true,
+    "classification": "DEV_SIGNAL only if all conditions pass; partial tradeoff MIXED_DEV, otherwise NEGATIVE_DEV; independent scientific acceptance UNVERIFIED.",
+    "no_postresult_tuning": true
+  },
+  "authority": "Source-only draft. No main merge, native integration, protected first-use, accepted ref, owner/autonomous controller/loop, Wingless, weight-editing, tokens, gradients or paid API. Preserve results in Yggdrasil repo only."
+}
