@@ -53,6 +53,7 @@ on:
       - research/wsp72-committee-gated-neural-dreams-20261113
       - research/wsp73-postwrite-physical-confidence-audit-20261113
       - research/wsp74-intervention-directed-neural-repair-20261113
+      - research/wsp75-reachable-novelty-active-interventions-20261113
     paths:
       - 'research/contrib/chatgpt/WSP-21/**'
       - 'research/contrib/chatgpt/WSP-22/**'
@@ -105,6 +106,7 @@ on:
       - 'research/contrib/chatgpt/WSP-73/**'
       - 'research/contrib/chatgpt/WSP-74/**'
       - 'research/contrib/chatgpt/WSP-75/**'
+      - 'research/contrib/chatgpt/WSP-76/**'
       - '.github/workflows/wsp21-pr-validation.yml'
       - '.ice/code-atlas.*'
 permissions:
@@ -154,6 +156,10 @@ jobs:
           for offset in range(0,len(encoded),4096):
               print("WSP53_ATLAS_DELTA|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
           PY
+      - name: WSP76 empirical real causal-intervention contrasts with full independent controls SELFTEST (no DEV or PRIMARY exposure)
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-76 -p 'test_*.py' -v
       - name: WSP75 three independently physically charged reachable novelty interventions SELFTEST (no DEV or PRIMARY exposure)
         env:
           PYTHONDONTWRITEBYTECODE: '1'
