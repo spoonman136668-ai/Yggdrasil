@@ -90,7 +90,7 @@ class FeatureGrowthNeural:
         self.w_readout=[]
         self.inverse_cov=[]
         self.ledger=[]
-        self.current=(0,0,0,0)
+        self.current=(0,0,0,0,0,0)
         self.charged_actions=0
         self.growth_rounds=0
         self._init_readout()
@@ -236,7 +236,7 @@ class FeatureGrowthNeural:
                     for x in self.hidden_biases)):
             raise ValueError("bad hidden biases")
         n=PARAM_FEATURES+n_hidden
-        _validate_matrix(self.w_readout,4,n)
+        _validate_matrix(self.w_readout,6,n)
         _validate_matrix(self.inverse_cov,n,n)
         if (type(self.charged_actions) is not int or
                 not 0<=self.charged_actions<=MAX_CHARGES or
