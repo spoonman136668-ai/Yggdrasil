@@ -1,0 +1,135 @@
+{
+  "schema": "ygg.dg1-sl11.evidence-gated-context-retrieval-prereg.v1",
+  "experiment": "DG1-SL11",
+  "status": "FROZEN_BEFORE_ANY_SOURCE_OR_OUTCOME",
+  "date": "2026-11-13",
+  "parent_sha": "40b5e879eea5c78cf84662bec116952dfdceab48",
+  "parent_pr": 992,
+  "objective": "Falsify whether physical-evidence-gated retrieval of archived causal programs prevents wrong-context activation and interference in the retained non-token causal learner, while maintaining original SL10 paid-intervention benefits on unseen compositions.",
+  "hypothesis": "A cold-restorable, bounded physical-witness gate that requires multiple distinct physically observed causal contradictions to leave the active program, and tests archived programs on recent paid evidence before retrieval, outperforms frozen original SL10 episodic memory and frozen no-episodic memory on matched physical trajectories in Return-B retention and unfamiliar-composition *unseen-pair* correctness, without stationary regression.",
+  "physics": {
+    "grammar": "Exactly frozen SL10/SL09 four public state bits, four charged causal actions and 216 Boolean programs per action; unchanged hidden A/B/mixed-grammar private rule draw, same fixed flip schedule and hidden phase durations.",
+    "seeds": {
+      "RETURN_A": [
+        104001,
+        104002,
+        104003,
+        104004,
+        104005,
+        104006,
+        104007,
+        104008
+      ],
+      "RETURN_B": [
+        104009,
+        104010,
+        104011,
+        104012,
+        104013,
+        104014,
+        104015,
+        104016
+      ],
+      "STABLE": [
+        104017,
+        104018,
+        104019,
+        104020,
+        104021,
+        104022,
+        104023,
+        104024
+      ],
+      "COMPOSITION_OOD": [
+        104025,
+        104026,
+        104027,
+        104028,
+        104029,
+        104030,
+        104031,
+        104032
+      ]
+    },
+    "steps_per_world_arm": 80,
+    "flips_zero_index": [
+      6,
+      14,
+      22,
+      30,
+      38,
+      46,
+      54,
+      62,
+      70,
+      78
+    ],
+    "pre_cold": "0..59 exactly fixed causal action step%4",
+    "post_cold": "60..79 exactly 17 charged selectable causal steps, and 3 charged physical flips at 62/70/78",
+    "audit": "Evaluator-only 16 states × 4 actions at 60/64/72/80, including action/state pairs never seen by that arm; audit truth inaccessible to learners and action selectors."
+  },
+  "arms": [
+    "gated_active: new physical-witness-gated episodic context learner with frozen SL10 compositional-disagreement action selector.",
+    "original_on_gated: unchanged SL10 candidate episodic learner on a fresh *paid physical* replay of gated_active actions, identical physical ledger.",
+    "noepisodic_on_gated: unchanged SL09 no-episodic memory on same separately charged gated_active trace.",
+    "bayes_on_gated: independently coded frozen SL10 full 216-program Bayesian episodic control on the same separately charged gated_active trace.",
+    "original_active: unchanged SL10 original candidate episodic learner selecting its own SL10 hypothesis tournament actions.",
+    "gated_on_original: new evidence-gated context memory on a physically paid replay of original_active selected actions.",
+    "gated_passive: new evidence-gated context memory on fixed public postcold action step%4.",
+    "original_on_passive: frozen SL10 original episodic memory on a separate paid replay of gated_passive trace."
+  ],
+  "matched_groups": [
+    [
+      "gated_active",
+      "original_on_gated",
+      "noepisodic_on_gated",
+      "bayes_on_gated"
+    ],
+    [
+      "original_active",
+      "gated_on_original"
+    ],
+    [
+      "gated_passive",
+      "original_on_passive"
+    ]
+  ],
+  "learning_rule": {
+    "candidate": "Wrap frozen SL09 `candidate_compositional_episodic` without calling its automatic context-switching `observe` method. Its existing `_predict_in_bank` and original `predict`/`rest`/action selector are unchanged. Physical evidence is a (public before state, action, 0|1 physical changed-bit) triple, stored after the pre-update prediction.",
+    "witness_window": "Keep exactly last <=6 paid causal events with a pre-update active-bank physical error flag; observation at paid action only; at least 3 distinct (state,action) physical witnesses in window, >=4 active model confident physical mistakes, current bank >=12 paid entries.",
+    "archived_retrieval": "For each inactive archived bank, score correct predictions over those same six previously paid events using frozen original `_predict_in_bank`. Switch only if an archived bank explains >=4 of six and improves over active by >=2 correct predictions. Otherwise, if active suffers >=5 of six physical errors and fewer than three bank slots exist, open a new bank. Otherwise retain active; allow at most one switch per six physical observations, after switching reset witness window. No hidden labels, phase time or evaluator audits used. Never replay, fabricating training observations or post-hoc threshold-tuning.",
+    "storage": "At most three frozen original compositional program banks; <8192-byte total canonical checkpoint containing original inner learner, bounded witness window, causal event count and switch count; check SHA-256 digest and reject tampering/mode mismatch.",
+    "ablations": "Frozen original SL09 no-episodic arm on exact candidate action stream; original SL10 active policy and original memory on exact candidate physical trace; independently coded Bayesian same grammar comparator; passive policy with matched trace."
+  },
+  "budgets": {
+    "worlds": 32,
+    "arms": 8,
+    "paid_steps": 20480,
+    "paid_flips": 2560,
+    "paid_causal_observations": 17920,
+    "action_policy_effort": "Measured policy+memory CPU ns per arm; no claim same compute across arms",
+    "cold_restore_at_paid_step": 60,
+    "max_snapshot_bytes": 8192
+  },
+  "frozen_primary": {
+    "candidate": "gated_active",
+    "RETURN_B_correct_gain_vs_original_on_same_trace_min": 16,
+    "RETURN_B_correct_loss_vs_noepisodic_same_trace_max": 8,
+    "STABLE_correct_loss_vs_noepisodic_same_trace_max": 8,
+    "STABLE_wrong_confident_excess_vs_noepisodic_same_trace_max": 8,
+    "RETURN_A_correct_loss_vs_original_on_same_trace_max": 16,
+    "COMPOSITION_OOD_correct_gain_vs_original_on_same_trace_min": 16,
+    "COMPOSITION_OOD_unseen_correct_gain_vs_original_on_same_trace_min": 8,
+    "COMPOSITION_OOD_unseen_correct_gain_vs_bayes_on_same_trace_min": 4,
+    "COMPOSITION_OOD_unseen_correct_loss_vs_noepisodic_same_trace_max": 4,
+    "COMPOSITION_OOD_wrong_confident_excess_vs_original_same_trace_max": 4,
+    "COMPOSITION_OOD_correct_gain_vs_gated_passive_min": 8,
+    "RETURN_B_gated_on_original_correct_gain_vs_original_active_min": 8,
+    "median_candidate_cpu_vs_original_on_same_trace_max": 2,
+    "require_distinct_paid_physical_policy_choices_in_OOD_worlds": 4,
+    "hard_reproducibility": "All 32 x 8 x 80 charged world.steps and all 17,920 actual causal observations; exact within-group before/action/after physical SHA256 matches, common pre-cold trace across all arms, checkpoint byte and prediction equivalence at 60 and final, zero hidden rule or evaluator as learner input, full original Ubuntu/Windows outcomes match excluding measured CPU timing, negative controls and mandatory exact-final-SHA inherited regression + code atlas.",
+    "classification": "Primary DEV_SIGNAL_NOT_SCIENCE only if all frozen gates and hard contracts pass. MIXED_DEV if one measurable benefit but a primary gate fails; otherwise NEGATIVE_DEV. Any missing custody or hidden-label leakage INVALID. Even primary pass requires independent replication and native model qualification; never AGI claim."
+  },
+  "constraints": "Isolated unmerged draft stacked on SL10. No native model change, accepted ref, main, owner, Forge, Wingless, Hybrid, weight programming, controller or scientific first-use. No paid API, scheduled task, local runner, live experiment or library uploads. Preserve negative outcomes, no tuning frozen study after first data.",
+  "limitations": "Toy public finite program grammar and only 32 synthetic seeds; control Bayesian model may be superior; same-trace replay controls physically pay for all actions; cross-policy comparisons match charged count but NOT information or compute. Uniform audits include held-out pairs; measure unseen-pair denominators to avoid misleading comparisons."
+}
