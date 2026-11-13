@@ -47,7 +47,7 @@ DEVELOPMENT = (
     (9105, "quartic_positive"), (9106, "quartic_positive"),
     (9107, "quartic_complemented"), (9108, "quartic_complemented"),
 )
-PROTECTED = frozenset(source.SEEDS)
+PROTECTED = frozenset(range(5601, 5617))
 if frozenset(seed for seed, _ in DEVELOPMENT) & PROTECTED:
     raise PermissionError("developer/protected cohort overlap")
 
@@ -67,9 +67,12 @@ def git(*args):
 
 def validate_source_custody():
     current = git("rev-parse", "HEAD")
-    if (len(current) != 40
-            or (os.getenv("GITHUB_SHA") and os.environ["GITHUB_SHA"] != current)
-            or git("status", "--porcelain")):
+    expected = os.getenv("GITHUB_SHA")
+    if os.getenv("GITHUB_EVENT_NAME") == "pull_request":
+        expected = os.getenv("WSP80_CHECKOUT_HEAD_SHA")
+        if not expected:
+            raise RuntimeError("explicit PR checkout head SHA missing")
+    if len(current) != 40 or (expected and current != expected) or git("status", "--porcelain"):
         raise RuntimeError("source SHA/clean checkout mismatch")
     files = {
         "research/contrib/chatgpt/WSP-80/dev_multi_prereg.json":
