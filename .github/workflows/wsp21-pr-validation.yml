@@ -55,6 +55,7 @@ on:
       - research/wsp74-intervention-directed-neural-repair-20261113
       - research/wsp75-reachable-novelty-active-interventions-20261113
       - research/wsp76-observed-causal-intervention-20261113
+      - research/wsp77-six-bit-heldout-weight-generalization-20261113
     paths:
       - 'research/contrib/chatgpt/WSP-21/**'
       - 'research/contrib/chatgpt/WSP-22/**'
@@ -109,6 +110,7 @@ on:
       - 'research/contrib/chatgpt/WSP-75/**'
       - 'research/contrib/chatgpt/WSP-76/**'
       - 'research/contrib/chatgpt/WSP-77/**'
+      - 'research/contrib/chatgpt/WSP-78/**'
       - '.github/workflows/wsp21-pr-validation.yml'
       - '.ice/code-atlas.*'
 permissions:
@@ -158,6 +160,10 @@ jobs:
           for offset in range(0,len(encoded),4096):
               print("WSP53_ATLAS_DELTA|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
           PY
+      - name: WSP78 experience-compiled numeric ReLU causal effects vs symbolic and MLP controls SELFTEST (no DEV or PRIMARY exposure)
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-78 -p 'test_*.py' -v
       - name: WSP77 six-bit paid physical extrapolation versus fully trained neural baselines SELFTEST (no DEV or PRIMARY exposure)
         env:
           PYTHONDONTWRITEBYTECODE: '1'
