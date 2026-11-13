@@ -13,7 +13,7 @@ import time
 import unittest
 
 from source import build_world, SEEDS, STATES, CHANNELS
-from identifying_agent import IdentifyingAgent, BaseAgent
+from identifying_agent import IdentifyingAgent, ExtendedMinAgent
 from agent import pairwise_coverage_probes
 
 PRIMARY = 44
@@ -96,7 +96,7 @@ class CounterexampleResearch(unittest.TestCase):
             with self.subTest(seed=seed):
                 world = build_world(seed)
                 active, random_arm = IdentifyingAgent(), IdentifyingAgent()
-                old, shuffled = BaseAgent(), IdentifyingAgent()
+                old, shuffled = ExtendedMinAgent(), IdentifyingAgent()
                 demos = world.demonstrations()
                 for idx, demo in enumerate(demos):
                     for agent in (active, random_arm, old):
