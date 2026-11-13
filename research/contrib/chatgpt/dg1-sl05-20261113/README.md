@@ -23,3 +23,22 @@ The prospective outcomes remain **UNVERIFIED** until executed. All source, resul
 ### Frozen-control checkpoint compatibility
 
 The first SL05 focused run **failed before the prospective cohort executed**: SL04's frozen recent-window decoder limits the observation counter to 64 even though SL05 has 70 paid causal observations. The SL05-only `restore_frozen_recent_80` adapter retains the exact same SL04 predictor/training masks, validates its canonical SHA-256 checkpoint and reconstructs derived window masks for counters 65–80. It does not alter SL04 source, observations, training, or results. This is an engineering integration correction made *before* the first SL05 cohort results. The failing preflight is retained as a GitHub Actions receipt.
+
+## Frozen SL05 prospective outcome — scientific NO-GO (2026-11-13)
+
+First **complete** prospective trial: [CI run 43502462131](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43502462131), original source commit `1a31e0b77f38bd45403e1dcc2c07d3eb424bcf48`. The earlier focused preflight failed **before** the full trial; its compatibility correction is described above. No thresholds, seeds, source learning policy or physical trajectories were changed after the first complete trial.
+
+**Scientific classification: NEGATIVE_DEV.** The frozen primary superiority threshold failed on the 32-world, seven-arm prospective synthetic challenge. All full 64-pair evaluators and paid-action outcomes matched on Ubuntu and Windows; the entire per-world ledger, prequential outcomes, checkpoint sizes and times are in `result.json` and source/protocol custody is in `provenance.json`.
+
+| Cohort (final audit, 512 queries) | Cold three-bank correct / wrong | Strong conventional three-bank controls |
+|---|---:|---:|
+| Return A after ABC | 260 / 17 | HMM replay 286 / 30; HMM online 264 / 27 |
+| Return B after ABC | 204 / 36 | HMM replay 254 / 76; HMM online 239 / 58 |
+| Stationary | 426 / 0 | Both conventional controls 426 / 0 |
+| New fourth OOD world | 107 / 20 | HMM replay 161 / 40; HMM online 137 / 38 |
+
+**Interpretation:** Conservative gating reduces confident errors against some conventional alternatives but also sharply decreases correct coverage. It does *not* meet the frozen requirement to improve both retained knowledge and safety. The no-gate and forgetful ablations, exact older two-bank controls, per-world seen/unseen classifications and action-consequence outcomes are preserved unfiltered. These are small symbolic rule-space synthetic worlds—not general intelligence, native substrate advancement, or evidence of sleep-specific benefit.
+
+**Cross-platform precision limit:** All 32 physical action SHA-256 traces, prediction counts, held-out evaluator answers and per-action prequential receipts matched between Ubuntu and Windows. One conventional HMM cold snapshot differed in **serialized length by one byte** on seed 98001 at step 80 (platform-dependent floating-point representation). Within-platform cold restore passed; **cross-platform byte-exact checkpoints are not qualified**. Do not overstate portability.
+
+**Engineering:** The inherited G29 source atlas is stale after new files; dual-platform full final regression/atlas qualification must be rerun on a separately constructed atlas-only candidate. This indexing failure is not a scientific failure. Research remains draft/unmerged and not integrated into Yggdrasil's native model or FORGE loop.
