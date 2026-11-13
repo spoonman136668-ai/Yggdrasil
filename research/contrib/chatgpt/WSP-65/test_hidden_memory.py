@@ -76,14 +76,14 @@ class HistoryConditionedQualification(unittest.TestCase):
     def test_twelve_world_mode_history_transfer(self):
         records=[]
         total={
-            "heldout":0,"candidate_correct":0,"candidate_wrong":0,
-            "candidate_abstain":0,"visible_correct":0,"visible_wrong":0,
-            "visible_abstain":0,"suffix2_correct":0,"suffix2_wrong":0,
+            "heldout":0,"candidate_correct":0,"candidate_wrong_confident":0,
+            "candidate_abstain":0,"visible_correct":0,"visible_wrong_confident":0,
+            "visible_abstain":0,"suffix2_correct":0,"suffix2_wrong_confident":0,
             "suffix2_abstain":0,"symbolic_mode_correct":0,
-            "symbolic_mode_wrong":0,"symbolic_mode_abstain":0,
-            "random_candidate_correct":0,"random_candidate_wrong":0,
+            "symbolic_mode_wrong_confident":0,"symbolic_mode_abstain":0,
+            "random_candidate_correct":0,"random_candidate_wrong_confident":0,
             "random_candidate_abstain":0,"history_scramble_correct":0,
-            "history_scramble_wrong":0,"history_scramble_abstain":0,
+            "history_scramble_wrong_confident":0,"history_scramble_abstain":0,
             "worlds_with_training_collision":0,
             "eval_public_context_steps":0,
             "test_private_modes_zero":0,"test_private_modes_one":0
@@ -190,14 +190,14 @@ class HistoryConditionedQualification(unittest.TestCase):
                     for metric,count in score.items():
                         total[f"{name}_{metric}"]+=count
                 family=by_family.setdefault(world.family,{
-                    "worlds":0,"candidate_correct":0,"candidate_wrong":0,
+                    "worlds":0,"candidate_correct":0,"candidate_wrong_confident":0,
                     "visible_correct":0,"suffix2_correct":0,
                     "symbolic_mode_correct":0,"random_candidate_correct":0,
                     "training_collisions":0
                 })
                 family["worlds"]+=1
                 family["candidate_correct"]+=scores["candidate"]["correct"]
-                family["candidate_wrong"]+=scores["candidate"]["wrong_confident"]
+                family["candidate_wrong_confident"]+=scores["candidate"]["wrong_confident"]
                 family["visible_correct"]+=scores["visible"]["correct"]
                 family["suffix2_correct"]+=scores["suffix2"]["correct"]
                 family["symbolic_mode_correct"]+=scores["symbolic_mode"]["correct"]
@@ -233,7 +233,7 @@ class HistoryConditionedQualification(unittest.TestCase):
                 total["candidate_correct"]-total["visible_correct"]>=154,
             "beats_two_action_suffix_by_77":
                 total["candidate_correct"]-total["suffix2_correct"]>=77,
-            "candidate_zero_wrong_confident":total["candidate_wrong"]==0,
+            "candidate_zero_wrong_confident":total["candidate_wrong_confident"]==0,
             "training_collisions_at_least_8_worlds":
                 total["worlds_with_training_collision"]>=8
         }
