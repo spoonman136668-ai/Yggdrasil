@@ -1,0 +1,99 @@
+{
+  "schema": "ygg.dg1-sleep01.prereg.v1",
+  "status": "FROZEN_FIRST_COMMIT_BEFORE_IMPLEMENTATION_OR_NEW_DATA",
+  "pinned_parent": "d36e4010709be8aa7907561e8312a3e9ddaf56f2",
+  "motivation": [
+    "Google Research sleep framework, arXiv:2606.03979",
+    "Yggdrasil HC11 abstention-heavy outcome on 91001..91024; HC11 preserved NO-GO"
+  ],
+  "hypothesis": "Deterministic offline consolidation of physical observations into protected two-context causal-rule memories can improve cold-restored return-to-A coverage and unseen-state transfer while keeping error costs bounded, beyond an awake-only model and a conventional equivalent.",
+  "mechanism": "No gradient, tokens, model calls, or new oracle. Retain bounded physically observed state-action-next-state stream, offline deterministic beam-segment allocation into at most 2 causal contexts (40 affine/majority rules per action), checkpoint protected masks; use prequential physical evidence as current-context confidence; dream proposes only unverified queries, never pseudo-labels for weight updates.",
+  "cohorts": {
+    "ABA": {
+      "seeds": [
+        93001,
+        93002,
+        93003,
+        93004,
+        93005,
+        93006,
+        93007,
+        93008
+      ],
+      "steps": 40,
+      "hidden_phase_b": "steps 16..31"
+    },
+    "stationary_majority": {
+      "seeds": [
+        93009,
+        93010,
+        93011,
+        93012,
+        93013,
+        93014,
+        93015,
+        93016
+      ],
+      "steps": 48
+    },
+    "OOD_cubic": {
+      "seeds": [
+        93017,
+        93018,
+        93019,
+        93020,
+        93021,
+        93022,
+        93023,
+        93024
+      ],
+      "steps": 48
+    }
+  },
+  "physics": "Reuse HC11 World physics exactly with new frozen seeds; only charged physical outcomes may train, max eight state flips, 4-bit 4-action state; evaluator-only full 64-pair audit (and ABA at steps 16,32).",
+  "action_policy": "One shared native HC10 physically charged action-policy shadow trained only from trajectory, each arm receives identical real observations, unchanged state/flip budget; forced flip never a training label. Sleep occurs at charged steps 8,16,24,32,40 (and 48), independent of hidden regime, each time after observation. All arms receive the same information.",
+  "arms": [
+    "sleep_native",
+    "awake_hc09",
+    "replay_no_context",
+    "conventional_sleep",
+    "bayes_runlength",
+    "sleep_no_dream"
+  ],
+  "metrics": [
+    "correct/wrong_confident/abstained in all 64 audited pairs",
+    "unseen pair correct/wrong_confident",
+    "ABA final return to A and intermediate B",
+    "cold checkpoint bytes SHA256 and deterministic replay",
+    "actual CPU and memory footprint",
+    "charged actions and active causal observations",
+    "self-generated dreams prohibited from training"
+  ],
+  "primary": {
+    "ABA": {
+      "correct_at_least": 64,
+      "wrong_confident_at_most": 8,
+      "unseen_correct_at_least": 24
+    },
+    "stationary_majority": {
+      "correct_at_least": 128,
+      "wrong_confident_at_most": 8
+    },
+    "OOD_cubic": {
+      "wrong_confident_at_most": 8
+    },
+    "comparisons": "Improvement must exceed awake_hc09 in ABA correct with no more wrong predictions; if conventional_sleep matches or exceeds candidate across cohorts, report no novel-mechanism superiority.",
+    "class": "DEV_SIGNAL only if all primary and process integrity checks pass; otherwise MIXED_DEV/NEGATIVE_DEV. Scientific acceptance stays UNVERIFIED regardless; no post-result tuning.",
+    "frozen": true
+  },
+  "safety": {
+    "external_synthetic_dev_only": true,
+    "no_protected_scientific_first_use": true,
+    "no_native_integration": true,
+    "no_main_merge_owner_loop_scheduler_wsp_mutation": true,
+    "no_paid_api": true,
+    "no_evaluator_feedback": true,
+    "no_new_controller": true
+  },
+  "qualification": "Focused negative controls + mandatory full inherited regression on exact SHA Ubuntu and Windows, G29 source atlas refresh, confirm cold restore and identical deterministic receipts."
+}
