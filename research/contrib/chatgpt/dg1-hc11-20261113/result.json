@@ -1,0 +1,124 @@
+{
+  "schema": "ygg.dg1-hc11.frozen-primary-dev-result.v1",
+  "experiment": "DG1-HC11",
+  "prereg_first_commit": "835c004206b6febde17a4bf3e14c6f541cf35ef0",
+  "source_under_test": "c935c9f623b42b3f1dbf4f179f7ff0cc8b1ff559",
+  "classification": "MIXED_DEV",
+  "scientific_acceptance": "UNVERIFIED",
+  "primary_pass": false,
+  "conventional_tie_or_better": true,
+  "output_order": [
+    "correct",
+    "wrong_confident",
+    "abstained"
+  ],
+  "ABA": {
+    "seeds": "91001-91008",
+    "native_gate2": [
+      8,
+      0,
+      504
+    ],
+    "conventional_gate2": [
+      8,
+      0,
+      504
+    ],
+    "native_gate1": [
+      14,
+      0,
+      498
+    ],
+    "native_ungated": [
+      294,
+      156,
+      62
+    ],
+    "conventional_ungated": [
+      294,
+      156,
+      62
+    ],
+    "threshold": "native_gate2 >=32 correct and zero wrong; FAIL coverage"
+  },
+  "stationary_majority": {
+    "seeds": "91009-91016",
+    "native_gate2": [
+      10,
+      0,
+      502
+    ],
+    "conventional_gate2": [
+      10,
+      0,
+      502
+    ],
+    "native_gate1": [
+      197,
+      0,
+      315
+    ],
+    "native_ungated": [
+      512,
+      0,
+      0
+    ],
+    "conventional_ungated": [
+      512,
+      0,
+      0
+    ],
+    "threshold": "native_gate2 >=64 correct and zero wrong; FAIL coverage"
+  },
+  "OOD_cubic": {
+    "seeds": "91017-91024",
+    "native_gate2": [
+      14,
+      0,
+      498
+    ],
+    "conventional_gate2": [
+      14,
+      0,
+      498
+    ],
+    "native_gate1": [
+      114,
+      0,
+      398
+    ],
+    "native_ungated": [
+      281,
+      44,
+      187
+    ],
+    "conventional_ungated": [
+      281,
+      44,
+      187
+    ],
+    "threshold": "zero wrong; PASS narrow abstention safety"
+  },
+  "budget": {
+    "new_worlds": 24,
+    "policy_arms": 5,
+    "charged_total": 5440,
+    "charged_steps_per_ABA_world_arm": 40,
+    "charged_steps_per_stationary_world_arm": 48,
+    "max_physical_flips_per_arm": 8,
+    "model_updates_on_flip": 0
+  },
+  "evidence": {
+    "ubuntu_run_id": 43468455539,
+    "ubuntu_artifact_id": 14059468165,
+    "windows_artifact_id": 14057719847,
+    "ubuntu_raw_sha256": "3cd1a825f4fc8e488f040c3d67085ea41bdda8d3e4a45d6aa8c638a337e9554c",
+    "windows_raw_sha256": "a390233e3fd855ae6ecd1fbc347128c833228f76ceef1005aa57be49e7a55310",
+    "deterministic_fields_equal": true,
+    "canonical_deterministic_sha256": "7a9339cea15df071272e0bb2dda9410ef5cb0f67e54f3a497e96c6aa9d011ae9",
+    "normalization": "Omit only top-level python_peak_traced_bytes and each arm's whole_learning_ns and decision_ns; all causal, audit, ledger receipts retained."
+  },
+  "engineering": "9/9 focused tests PASS each OS at c935c9f. Full inherited regression fails only stale G29 source atlas due added files; exact-source atlas regenerated separately before engineering PASS.",
+  "interpretation": "Two repeated physical witnesses eliminated confident mistakes on the tested worlds but caused severe coverage collapse (8/512 ABA; 10/512 stationary). Conventional two-context replay tied at identical physical budget and witness capacity. This is not a new generalizing learning result. No original-world or neural Yggdrasil integration.",
+  "decision": "NO MERGE, NO PROMOTION. Preserve adverse result. Next independently preregistered approach must infer hidden causal context from diagnostic action outcomes and generalize to unseen inputs under explicit OOD skepticism; compare matched conventional hidden-state/run-length models."
+}
