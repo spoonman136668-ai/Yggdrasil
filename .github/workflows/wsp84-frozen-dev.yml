@@ -1,0 +1,41 @@
+name: WSP84 one-shot frozen UNREGISTERED learned Boolean operator comparison
+on:
+  push:
+    branches: [research/wsp80-paid-novelty-structural-weight-repair-20261113]
+permissions:
+  contents: read
+jobs:
+  four-unregistered-operator-worlds:
+    if: "${{ github.event.head_commit.message == 'ci(wsp84): first frozen four-world operator induction experiment' }}"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact-source, static registered science fence and pinned G29 atlas
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+      - name: Four frozen UNREGISTERED worlds with 64-hidden genuine Adam and frozen prelabel controls
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: python research/contrib/chatgpt/WSP-84/experiment.py --frozen-unregistered-dev-only
+      - name: No mutated source or artifacts
+        shell: bash
+        run: git diff --exit-code
