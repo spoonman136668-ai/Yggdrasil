@@ -12,7 +12,7 @@ from hashlib import sha256
 from itertools import combinations, product
 import json
 
-from compiler import GradientlessCausalCompiler, grounded_entity, splits, validate_raw, validate_state, prefix_compatible
+from compiler import GradientlessCausalCompiler, BudgetExceeded, grounded_entity, splits, validate_raw, validate_state, prefix_compatible
 
 MAX_NODES = 300000
 MAX_MODELS = 512
@@ -204,7 +204,7 @@ class NoncommutingCompiler:
             if self.nodes > MAX_NODES:
                 raise SearchExceeded("lexical search budget")
             self.a_models = models
-        except SearchExceeded:
+        except (SearchExceeded, BudgetExceeded):
             self.incomplete = True
             self.a_models = []
             self.b_models = []
