@@ -1,0 +1,80 @@
+name: DG1-SL06 paid discriminating causal interventions DEV
+on:
+  pull_request:
+    paths:
+      - 'research/contrib/chatgpt/dg1-sl06-20261113/**'
+      - '.github/workflows/dg1-sl06-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compile frozen SL06 source
+        run: python -m py_compile research/contrib/chatgpt/dg1-sl06-20261113/sl06.py research/contrib/chatgpt/dg1-sl06-20261113/test_sl06.py
+      - name: Focused input isolation, physical billing and cold checkpoint guards
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/dg1-sl06-20261113 -p "test_*.py" -v
+      - name: Run preregistered 32-world seven-arm paid-intervention cohort
+        run: python research/contrib/chatgpt/dg1-sl06-20261113/sl06.py > sl06-result.json
+      - name: Report exact prospective classification and per-world evidence
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('sl06-result.json').read_text())
+          assert r['prereg_sha']=='2d3e530cf21e0a87596246eff648832c66737058'
+          assert r['world_count']==32 and len(r['worlds'])==32
+          assert r['physical_actions_total_all_arms']==17920
+          assert r['causal_observations_total_all_arms']==15680
+          assert all(len(set(x['arms'][a]['pre_cold_trajectory_sha256'] for a in x['arms']))==1 for x in r['worlds'])
+          assert all(x['arms'][a]['cold_restored'] for x in r['worlds'] for a in x['arms'])
+          print('SL06_CLASSIFICATION:'+r['classification'])
+          print('SL06_PRIMARY:'+str(r['primary_pass']))
+          print('SL06_RESULT_JSON:'+json.dumps(r,sort_keys=True,separators=(',',':')))
+          PY
+      - name: Mandatory complete inherited regression
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Verify G29 exact-source atlas
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Clean generated prospective result before source custody
+        if: always()
+        shell: bash
+        run: rm -f sl06-result.json
+      - name: Verify no tracked source mutation
+        if: always()
+        run: git diff --exit-code
+      - name: Emit complete bounded generated G29 atlas for repo-only repair
+        if: always() && matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+          python - <<'PY'
+          import base64
+          from pathlib import Path
+          for ext in ('json','html','ice'):
+              raw=Path('.ice/code-atlas.'+ext).read_bytes()
+              encoded=base64.b64encode(raw).decode('ascii')
+              print('SL06_ATLAS_START:'+ext+':'+str(len(raw)))
+              for i in range(0,len(encoded),4096):
+                  print('SL06_ATLAS_CHUNK:'+ext+':'+encoded[i:i+4096])
+              print('SL06_ATLAS_END:'+ext)
+          PY
