@@ -81,3 +81,20 @@ jobs:
         run: rm -rf _sl02_exec
       - name: Verify no tracked source mutations
         run: git diff --exit-code
+
+      - name: Produce source-pinned G29 atlas for separate review (not a code modification)
+        if: always() && matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+          python - <<'PY'
+          import base64
+          from pathlib import Path
+          for ext in ('json','html','ice'):
+              raw=Path('.ice/code-atlas.'+ext).read_bytes()
+              enc=base64.b64encode(raw).decode('ascii')
+              print('SL02_ATLAS_START:'+ext+':'+str(len(raw)))
+              for i in range(0,len(enc),4096):
+                  print('SL02_ATLAS_CHUNK:'+ext+':'+enc[i:i+4096])
+              print('SL02_ATLAS_END:'+ext)
+          PY
