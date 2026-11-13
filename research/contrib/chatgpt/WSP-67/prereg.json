@@ -1,0 +1,67 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-67",
+  "created": "2026-11-13",
+  "status": "FROZEN_PROSPECTIVE_SELFTEST",
+  "title": "Direct executable neural weight construction from charged experience with cumulative learning",
+  "parent": {
+    "PR": 957,
+    "SHA": "827e0682e7f57842eeb1cfc855a274e574fbec1a",
+    "prior": "WSP66 structured pair policy lost to random (169/1024 vs 489/1024); WSP53 direct acoustic writer had negative/tied controls; full inherited WSP66 pending."
+  },
+  "question": "Can source-blind, no-gradient learning write real executable neural weights from physical experience, generalize to unobserved action-state outcomes, compose unseen two-action sequences, retain skills across another learning phase, and compete with exact memory, independent symbolic inference and fully trained gradient neural controls?",
+  "source": {
+    "cohort": "SELFTEST only (no DEV/PRIMARY)",
+    "seeds": [
+      4101,
+      4102,
+      4103,
+      4104,
+      4105,
+      4106,
+      4107,
+      4108
+    ],
+    "physics": "Four binary visible sensors and four unknown permuted action channels; each action toggles one/two bits conditioned on constant or conjunction of at most two possibly negated input bits, with unknown randomly permuted causal roles. Strong source-aligned given hypothesis prior.",
+    "training": "Single seeded-uniform-random 96-action continuous no-reset charged source session per world; Stage A 64, Stage B +32; identical public rows to every arm; no arbitrary-state query or source import.",
+    "audit": "8 ×16 states×4 actions=512 exhaustive source transition audits, explicitly previously unseen vs trained observations. Additionally 32 independent evaluator-selected two-action sequences/world (256 composites), no source intermediate used by learner."
+  },
+  "learner": {
+    "writer": "Enumerate constant/at-most-two-input conjunctive candidate flip effects for each action/output from charged rows. Build real numeric W1,b1,W2,b2,W3,b3 three-affine-layer ReLU neural network with conjunction detectors and residual XOR; write a confidence head that encodes unanimous safe state/action contexts. Only the neural dense-matrix forward pass may predict heldout outputs; no candidate-table lookup/source access at inference. No gradients.",
+    "phases": "Store Stage A neural matrices, add Stage B observations, directly rewrite matrices from accumulated evidence; audit no forgetting of Stage A correct/confident predictions, real weight modifications, cold restore and tamper rejection.",
+    "controls": [
+      "Same-96-evidence direct state/action lookup with two-step composition",
+      "Independently implemented evidence-consistent symbolic causal predicate rule learner with same structural prior",
+      "Independent seeded 8-input, 24-hidden ReLU, four sigmoid output conventional SGD neural net; 8000 steps or ≥98% train-side exact observed accuracy after 2000 steps, report incomplete if unconverged; same source rows, no oracle",
+      "Unprogrammed and confidence-erased neural ablations"
+    ]
+  },
+  "score": "Direct learner confidently correct only when matrix confidence >=0.5 and four neural output bits exactly match source; otherwise wrong confident or abstain. Gradient baseline reports forced prediction and confident predictions at ≥0.9 per-bit probability. No heldout-driven calibration.",
+  "primary": "SELFTEST_SIGNAL if and only if Stage B (A) >=48 correct confident true UNOBSERVED action-state transitions across eight worlds, (B) zero wrong-confident across 512 source audits, (C) >=120/256 new two-action compositions solved with both neural steps confident, (D) >=20 more all-domain correct vs equal-evidence exact lookup, (E) no loss of Stage A correct/confident predictions, (F) nonzero neural weight changes in >=4/8 worlds, and (G) matrix cold restoration and tamper rejection pass all eight. Otherwise NEGATIVE_OR_INCONCLUSIVE; no after-result threshold tuning.",
+  "metrics": [
+    "Source/task/charged history SHA256, full 512 audit and 256 compositions",
+    "Stage A/B predictions, cold-retention, changed/nonzero neural parameters, memory and total CPU/wall",
+    "Independent symbolic result, gradient training convergence/update count, observed/heldout accuracy, costs",
+    "Zero-gradient count for direct writer; source isolation and abort on malformed/corrupt matrices"
+  ],
+  "limitations": [
+    "Predefined low-degree causal predicate family and Boolean sensors exactly match synthetic physics, so not open-world general intelligence or emergent representation learning.",
+    "Compiler does symbolic inference when writing neural parameters, although prediction must occur exclusively via matrix forward; no claim of fully neural autonomous weight synthesis.",
+    "No language, high dimensional input or unseen physics-family transfer; action budget matched, model computation may differ.",
+    "An unconverged SGD baseline cannot support superiority claims."
+  ],
+  "authority": {
+    "science_first_use": false,
+    "merge": false,
+    "deployment": false,
+    "official_loop": false,
+    "scheduled_tasks": false,
+    "paid_apis": false
+  },
+  "stop_rules": [
+    "Freeze BEFORE any WSP67 source/model/test code or outcomes",
+    "Do not change seeds, budgets, goal criteria or model prior after results; documented mechanical harness repairs only",
+    "Exact-source dual-OS focused, G29, and full regression before engineering closure",
+    "Do not change old WSP outcomes, merge, promote, or deploy"
+  ]
+}
