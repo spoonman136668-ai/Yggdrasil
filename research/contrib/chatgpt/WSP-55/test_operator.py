@@ -15,7 +15,7 @@ root = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(root / "WSP-53"))
 sys.path.insert(0, str(root / "WSP-54"))
 from source import build_world
-from operator import NoncommutingCompiler
+from wsp55_operator import NoncommutingCompiler
 
 
 def score(model, rows):
