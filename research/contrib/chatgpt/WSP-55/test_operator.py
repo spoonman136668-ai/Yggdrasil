@@ -9,6 +9,7 @@ import json
 from dataclasses import replace
 from pathlib import Path
 import sys
+import time
 import unittest
 
 root = Path(__file__).resolve().parents[1]
@@ -77,6 +78,7 @@ class OperatorEngineering(unittest.TestCase):
                 with self.subTest(seed=seed, encoding=encoding):
                     w = build_world("noncommuting_order", "SELFTEST", seed, encoding)
                     m = NoncommutingCompiler()
+                    wall_start, cpu_start = time.perf_counter(), time.process_time()
                     for row in w.phase_a:
                         m.observe(row)
                     a, ap = score(m, w.heldout_a)
@@ -84,6 +86,8 @@ class OperatorEngineering(unittest.TestCase):
                     for row in w.phase_b:
                         m.observe(row)
                     b, bp = score(m, w.heldout_b)
+                    wall_seconds = time.perf_counter() - wall_start
+                    cpu_seconds = time.process_time() - cpu_start
                     contrasts_b = swap_contrasts(w, w.heldout_b, bp, w._b_triples)
                     total_correct += a["correct"] + b["correct"]
                     total_wrong += a["wrong_confident"] + b["wrong_confident"]
@@ -101,13 +105,15 @@ class OperatorEngineering(unittest.TestCase):
                         self.assertEqual(cold.snapshot(), snap)
                         self.assertEqual(score(cold, w.heldout_b)[0], b)
                         with self.assertRaises(ValueError):
-                            NoncommutingCompiler.restore(snap.replace("9901", "9902"))
+                            NoncommutingCompiler.restore(snap.replace("wsp55.operator.v1", "wsp55.operator.v2"))
                     results.append({
                         "seed": seed, "encoding": encoding, "a": a, "b": b,
                         "swap_contrasts": contrasts_a + contrasts_b,
                         "hypotheses_a": len(m.a_models),
                         "hypotheses_b": len(m.b_models),
                         "search_nodes": m.nodes, "incomplete": m.incomplete,
+                        "wall_seconds": round(wall_seconds, 6),
+                        "cpu_seconds": round(cpu_seconds, 6),
                         "persistent_bits": m.capacity_bits(),
                         "source_a": w.source_receipt()["phase_a"][1]
                     })
