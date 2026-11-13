@@ -1,0 +1,106 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment": "WSP-75",
+  "date": "2026-11-13",
+  "status": "FROZEN_PROSPECTIVE_ISOLATED_SELFTEST",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 972,
+    "exact_head": "8b2f971869557a0337fe7dddac380e87d993b649",
+    "science": "WSP74 NEGATIVE: active disagreement+B hidden coordinate edits 281/768 confident correct, same active ledger readout-only 277, random hidden edits 270, equal paid random policy repair 299, 14 true unseen, 27 confident wrong, only 8/12 source worlds with hidden edits, high 256/272 old retention. Focused+atlas dual OS PASS; mandatory full ongoing. Never retune WSP74."
+  },
+  "hypothesis": "Under exactly matched paid real physical action budgets, a deterministic source-blind policy that rewards actually uncharged state/action contexts and the models' predicted reachable new states, with modest disagreement/diversity tie breakers, produces more distinct causal evidence and MORE correct predictions on genuinely never charged states than both pure disagreement and seeded uniform random action policies, using identical gradient-free neural weight repair and independently converged baseline controls.",
+  "source": {
+    "cohort": "SELFTEST only; DEV/PRIMARY forbidden",
+    "primary_seeds": [
+      4901,
+      4902,
+      4903,
+      4904,
+      4905,
+      4906,
+      4907,
+      4908,
+      4909,
+      4910,
+      4911,
+      4912
+    ],
+    "negative_seeds": [
+      4913,
+      4914,
+      4915,
+      4916
+    ],
+    "physics": "4 fresh role-shuffled XOR4, 4 majority-of-three, 4 coupled multi-effect; 4 nested Boolean adversarial negatives, separate WSP75 SHA-salt; same mathematical source-family catalog as WSP74, not independent family transfer.",
+    "physical": "For each of 16 source worlds, THREE independently initialized equal-source physical copies, one per novelty/disagreement/uniform random policy. Each pays 144 actions in an uninterrupted no-reset trajectory; independently charge identical first 96 A prefix and 48 policy-specific B actions. No physical reset, arbitrary-state paid-source query, hidden role, oracle answer or unpaid transition while training. 16*3*144=6912 paid real physical action/consequence transitions. All same-ledger ablations reuse the novelty arm evidence without additional paid actions.",
+    "heldout": "Only after all numeric neural weights/policy histories are frozen: per source 64 evaluator-private full physical input/action truths and 32 evaluator-private two-action tasks; primary 768 and 384; four nested-negative sources 256 physical truths. Classify truly never physically charged inputs against each arm's 144 real training observations."
+  },
+  "stageA": "Every arm trains identical source-blind WSP70 residual and random hidden-interaction numerical neural weights from its physically charged 96 A actions, growth at 48 and 96, then freezes both learned numerical matrices, biases and readout/covariance as Stage A. No gradients or source physics imported in learners.",
+  "B_policies": {
+    "candidate": "At each of 48 B actions, use CURRENT physically observed state and all previously paid A+B input/action/next-state rows. For each public action among four, compute forced four-bit next-state predictions of BOTH frozen Stage A neural teachers. Score = 8 if (current visible state,action) has NEVER been physically charged; +4 if predicted successor of primary has NEVER occurred as a visible state in the paid physical trajectory; +4 similarly for secondary predicted successor; +2 if the two teacher predicted successors differ; +2/(1+number of prior paid action uses in this B segment). Choose MAX score, resolve ties by SHA256(seed,Bstep,action). NO evaluator truth, source state or actual future consequence is used before the next paid source action. Update seen paid state/action and seen paid successor state AFTER every real charge.",
+    "control_disagreement": "Re-use exact WSP74 unchanged `policy_action` with frozen A teachers: maximize Hamming distance between their forced predicted four-bit outcomes from current visible state; SHA-tiebreak. Same 48 real paid actions, source-copy physically different trajectory.",
+    "control_random": "Independent SHA256-seeded uniform random among four action channels at each B step. Same 48 paid actions. No replacement/teleport/hidden source.",
+    "cost": "All three real physics streams are charged independently. Equal actions does NOT imply equal information, state distribution or compute. Separately report model prediction calls, action-policy CPU and actual distinct paid input/action context count."
+  },
+  "learning": "On each arm, use exactly unmodified WSP74 finite-difference direct `repair` on 96+48 physically charged public rows and the SAME frozen Stage A residual teacher matrix. At most four ±0.5 physical-data-driven SENSOR weights of existing 24 grown ReLU neurons can change, top eight candidate units via B error. Then exactly 144 charged examples reprogram numeric readout via rank-one ridge lambda=0.5. No new hidden capacity, loss backpropagation, source physics import or evaluator data. All arms share hyperparameters, initial frozen source model, size, learning budget and confidence.",
+  "controls": [
+    "Same candidate novelty A+B paid charged experience, no hidden edits, same 144-row numeric readout refit.",
+    "Same novelty A+B evidence, pre-seeded random ±0.5 grown hidden sensor-coordinate edits and identical 144-row readout refit, same neural capacity.",
+    "Pure WSP74 max-disagreement B policy followed by same coordinate repair on its separately paid 144-row physical A+B ledger.",
+    "Uniform random B policy followed by same coordinate repair on its separately paid 144-row physical A+B ledger.",
+    "Independent exact physically charged state/action memory and depth-four decision tree from exact novelty arm A+B training data, with false confidence/abstention/unseen.",
+    "Independently fully trainable end-to-end 8-input 32-ReLU 4-output MLP trained on exactly same novelty-arm 144 paid observations with three SHA-seeded Adam starts, max 6000 steps/start; >=95% TRAIN exact needed to label conventional baseline fully converged. Report confidence-gated and forced predictions, convergence, gradient steps, CPU, all information/compute differences.",
+    "Cold saved Stage-A teacher and all four neural models' numeric-only exact restore/tamper controls."
+  ],
+  "metrics": {
+    "source_hashes": "per world private roles and task SHA256, three independently paid A prefixes (identical outcomes), all B actual physical ledgers and SHA256, all three observed distinct paid input/action contexts, action-channel B counts, distinct public states, predicted-new vs ACTUAL newly visited state events.",
+    "weights": "source-blind learner hidden coordinate deltas, source-agnostic Stage A and learned numeric-only snapshot SHA, source-based overfitting/cold parity/tamper, numerical readout coefficient count.",
+    "generalization": "primary+negative evaluator physical confident correct/wrong/abstained, genuinely never paid state/action outcomes, heldout two-step compositions, old Stage-A confident-correct retention, by family.",
+    "cost": "ALL three independently paid physical trajectories, actual action steps, numerical policy selection CPU vs random, repair/refit CPU vs baselines and end-to-end traditional MLP training CPU."
+  },
+  "frozen_primary": {
+    "classification": "SELFTEST_SIGNAL only if ALL must pass; otherwise NEGATIVE_OR_INCONCLUSIVE without tuning",
+    "candidate_confident_correct_primary_min": 320,
+    "candidate_vs_equal_paid_random_policy_correct_gain_min": 20,
+    "candidate_vs_equal_paid_disagreement_policy_correct_gain_min": 20,
+    "candidate_vs_same_ledger_readout_refit_correct_gain_min": 15,
+    "candidate_vs_same_ledger_random_hidden_edits_gain_min": 15,
+    "novelty_unique_paid_contexts_vs_random_primary_gain_min": 24,
+    "novelty_unique_paid_contexts_vs_disagreement_primary_gain_min": 24,
+    "candidate_never_paid_physical_correct_min": 28,
+    "candidate_never_paid_physical_correct_vs_random_gain_min": 8,
+    "candidate_primary_wrong_confident_max": 24,
+    "retained_stageA_confident_true_fraction_min": 0.8,
+    "primary_two_action_correct_min": 110,
+    "nested_adversarial_confident_wrong_max_256": 16,
+    "hidden_coefficients_changed_in_primary_worlds_min": 10,
+    "cold_restore_tamper_worlds": 16,
+    "measured_candidate_policy_plus_repair_cpu_over_random_policy_plus_repair_max": 5
+  },
+  "limitations": [
+    "The novel-action score sees real paid A/B input identities and states only, and neural predictions. It does not know the hidden source oracle, actual future physical states, action consequences or physics family.",
+    "Three source-identical worlds require three separately charged streams. Policies induce different action histories; equal budgets not equal information. Candidate gain must be separated from representation repair gain using same-ledger ablations.",
+    "Four-bit Boolean source families and preprogrammed signed 2/3-literal hidden-neuron dictionary remain strong prior. A win cannot prove open-ended language/general intelligence, open-world causal transfer or universal neural weight learning.",
+    "Finite-difference hidden-neuron coordinate searching is explicit supervised numerical optimization on paid evidence, not a magic no-data programming technique. A fully trained conventional MLP must not be dismissed because its confidence calibration differs.",
+    "If novelty policy actually samples fewer new contexts than random, preserve this as falsification. Never optimize after seeing outcomes."
+  ],
+  "authority": {
+    "research_draft_only": true,
+    "protected_science_first_use": false,
+    "merge": false,
+    "promotion": false,
+    "official_owner_loop": false,
+    "controller_change": false,
+    "runner_change": false,
+    "paid_apis": false,
+    "scheduled_tasks": false,
+    "deployment": false
+  },
+  "engineering": [
+    "Freeze prereg FIRST BEFORE source code, new action policy, tests, and physics outcomes.",
+    "Focused same-source SHA both Linux and Windows, generated-only G29 source-pinned atlas and MANDATORY full inherited dual platform regression on final exact SHA.",
+    "Never duplicate already-running CI, change thresholds on result, or claim engineering CI passing equals scientific gain.",
+    "No owner permissions to integrate, merge, first-use, deploy or expand authority."
+  ]
+}
