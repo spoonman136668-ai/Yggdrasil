@@ -72,7 +72,8 @@ def audit_static_readonly():
     # Verify prospective prereg was committed alone immediately after frozen parent.
     if _git("rev-parse", PRE_COMMIT + "^") != PARENT:
         raise RuntimeError("prereg parent mismatch")
-    if _git("rev-parse", PRE_COMMIT + ":" + next(iter(PINN))) != PINNED[next(iter(PINN))]:
+    prereg_path = "research/contrib/chatgpt/WSP-80/prereg.json"
+    if _git("rev-parse", PRE_COMMIT + ":" + prereg_path) != PINNED[prereg_path]:
         raise RuntimeError("prereg original content mismatch")
     if _git("cat-file", "-e", PRE_COMMIT + ":research/contrib/chatgpt/WSP-80/source.py",
             check=False).returncode == 0:
