@@ -1,0 +1,84 @@
+name: DG1-HC10 Discriminating Causal Context Probes DEV
+on:
+  pull_request:
+    paths:
+      - 'research/contrib/chatgpt/dg1-hc10-20261113/**'
+      - '.github/workflows/dg1-hc10-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compile frozen policies and physical evaluator
+        run: |
+          python -m py_compile research/contrib/chatgpt/dg1-hc10-20261113/interbank_policy.py
+          python -m py_compile research/contrib/chatgpt/dg1-hc10-20261113/conventional_jsd.py
+          python -m py_compile research/contrib/chatgpt/dg1-hc10-20261113/eval_dev.py
+      - name: Focused physical action, context and negative custody tests
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/dg1-hc10-20261113 -p "test_*.py" -v
+      - name: Frozen phase-switch physical test, including adverse evidence
+        run: python research/contrib/chatgpt/dg1-hc10-20261113/eval_dev.py > hc10-result.json
+      - name: Report frozen development outcomes without retuning
+        run: python -c "import json; r=json.load(open('hc10-result.json')); print('HC10_DEV',r['classification'],'ABA',r['ABA_primary_pass'],'majority',r['majority_regression_pass'],'OOD_wrong',r['out_of_class_confident_wrong']); print(r['cohort_accuracy'])"
+      - name: Preserve all per-world traces and evaluator-only audit results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-hc10-dev-evidence-${{ matrix.os }}
+          path: hc10-result.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Mandatory inherited full Python regression
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Pinned G29 source graph
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Assert clean candidate source after audit
+        run: git diff --exit-code
+      - name: Generate exact-source G29 for atlas-only final commit
+        if: always() && matrix.os == 'ubuntu-latest'
+        run: python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+      - name: Emit bounded generated G29 data chunks
+        if: always() && matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          for ext in ('json','html','ice'):
+              raw=Path('.ice/code-atlas.'+ext).read_bytes()
+              print('DG1_HC10_ATLAS_START:'+ext+':'+str(len(raw)))
+              encoded=base64.b64encode(raw).decode('ascii')
+              for offset in range(0,len(encoded),4096):
+                  print('DG1_HC10_ATLAS_CHUNK:'+ext+':'+encoded[offset:offset+4096])
+              print('DG1_HC10_ATLAS_END:'+ext)
+          PY
+      - name: Retain generated atlas for source custody
+        if: always() && matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-hc10-G29-exact-atlas
+          path: |
+            .ice/code-atlas.json
+            .ice/code-atlas.html
+            .ice/code-atlas.ice
+          if-no-files-found: warn
+          retention-days: 7
