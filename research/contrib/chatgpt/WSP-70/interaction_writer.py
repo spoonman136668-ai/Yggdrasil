@@ -82,10 +82,6 @@ class ReusableInteractionNeural(FeatureGrowthNeural):
 
     def _rank_candidates(self):
         existing=set(self.centers)
-        evidence=[]
-        for before,action,after in self.ledger:
-            raw=self.raw(before,action)
-            evidence.append((before,action,tuple(after[i]-raw[i] for i in range(4))))
         eligible=[]
         if self.policy=="random":
             # Random control never computes or reads outcome residuals.
@@ -98,6 +94,10 @@ class ReusableInteractionNeural(FeatureGrowthNeural):
                 ):
                     eligible.append((0.0,key))
             return eligible
+        evidence=[]
+        for before,action,after in self.ledger:
+            raw=self.raw(before,action)
+            evidence.append((before,action,tuple(after[i]-raw[i] for i in range(4))))
         for key in DICTIONARY:
             if key in existing:
                 continue
