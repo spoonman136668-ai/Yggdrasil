@@ -1,0 +1,113 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "DG1-HC04",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can bounded competing causal microprogram hypotheses learn when to abstain under unfamiliar physics and retain older rules through unlabeled regime reversal?",
+  "hypothesis": "A four-hypothesis local Boolean version space for each action, covering two-neighbor parity and parity XOR own-bit, prevents confident errors on stationary own-bit-dependent physical worlds by abstention on ambiguous effects; retaining two banks may support return-to-A memory, but will not always have enough information to identify the regime.",
+  "exact_parent_sha": "f26efd4c01a3344f12ba2ec9bf8582aa25b99dfa",
+  "parent_HC03_model_blob": "79b6f1c2961e98d6edfef3cb7f1459c0587d1c11",
+  "predecessor": "DG1-HC03 PR#964 synthetic in-family 512/512 exact; unfamiliar own-bit worlds 128 confidently wrong /256; scientific superiority unverified",
+  "changed_paths": [
+    "research/contrib/chatgpt/dg1-hc04-20261113/prereg.json",
+    "research/contrib/chatgpt/dg1-hc04-20261113/model.py",
+    "research/contrib/chatgpt/dg1-hc04-20261113/eval_dev.py",
+    "research/contrib/chatgpt/dg1-hc04-20261113/test_hc04.py",
+    "research/contrib/chatgpt/dg1-hc04-20261113/README.md",
+    "research/contrib/chatgpt/dg1-hc04-20261113/result.json",
+    "research/contrib/chatgpt/dg1-hc04-20261113/provenance.json",
+    ".github/workflows/dg1-hc04-source-dev.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "source": {
+    "parity_seeds": [
+      22101,
+      22102,
+      22103,
+      22104
+    ],
+    "own_bit_seeds": [
+      22105,
+      22106,
+      22107,
+      22108
+    ],
+    "and_negative_seeds": [
+      22109,
+      22110,
+      22111,
+      22112
+    ],
+    "seeded_action_signs": "For action a: random.Random(seed*101+a*17).randrange(2)",
+    "public_state": "four bits, initial physical state seed%16",
+    "training_actions": "action=t%4, one physically contiguous trajectory (no resets or hidden physics access)",
+    "parity_phases": "16 A + 8 inverted-sign B + 1 A-return, 25 charged actions",
+    "own_bit_and_negative": "16 charged actions each, single unlabelled phase",
+    "physical_laws": [
+      "parity: left XOR right XOR sign XOR phase_B",
+      "own-bit: left XOR right XOR own_bit XOR sign",
+      "out-of-basis: left AND right XOR sign"
+    ],
+    "heldout": "After training, exhaustive evaluator-only 16 public states x4 actions, no learner feedback or training",
+    "learner_inputs": "Only before state, selected action and public after state; evaluator knows labels and true signs"
+  },
+  "candidate": {
+    "hypothesis_class": "For each action, 4 fixed candidates: left XOR right XOR (own_bit & slope) XOR sign; slope and sign in {0,1}",
+    "bank_budget": "two banks x 4 actions x 4-bit hypothesis masks = 32 logical learned bits (plus bounded counters and active selection)",
+    "update": "eliminate contradicted hypotheses per real public action; if none survive re-activate compatible prior bank, or allocate unused bank, or abstain when capacity reached",
+    "prediction": "only if all currently plausible hypotheses predict the same physical after-state, else abstain",
+    "ambiguous_bank": "when most recent observation compatible with multiple banks, consensus across them required to predict; never infer hidden regime labels",
+    "checkpoint": "SHA256 authenticated canonical JSON <=2048 bytes, strict validation and exact cold restore",
+    "no_gradient": true,
+    "no_transformer": true,
+    "no_token": true
+  },
+  "controls": [
+    "HC03 original 2-bank source-aligned learner on identical charged physical ledger",
+    "Single-bank same-prior version space with reset on contradiction",
+    "Two-bank same-prior version space with reactivation disabled",
+    "Same-ledger latest-state/action lookup",
+    "Conventional symbolic version-space equivalent algorithm, report tie and no superiority inference",
+    "Confidence-gate disabled: first viable program, report incorrect confident predictions",
+    "Out-of-basis AND cohort and all confident errors",
+    "Invalid public state/action/consequence and tampered checkpoint rejection"
+  ],
+  "metrics": [
+    "correct, confidently wrong, abstained per each 64-state/action audit; unseen subset separately",
+    "own-bit and parity return exact accuracy and abstention coverage versus HC03 and conventional controls",
+    "cross-platform exact per-seed result hashes excluding timing, exact source identities",
+    "charged actions, 32 logical rule bits, real Python peak tracked bytes, wall time, checkpoint bytes",
+    "total reactivations, ambiguity, unresolved and cold restore"
+  ],
+  "classification_rules": {
+    "ownbit_dev": "all four own-bit worlds 0 confident errors and >=32 correct/64, cold parity and exactly 16 charged source actions",
+    "parity_dev": "all four parity A/B/A worlds 0 confident errors and >=16 correct/64, cold parity and exactly 25 charged source actions",
+    "combined_dev": "both in-class predicates pass; this is DEV_SIGNAL_ONLY and not scientific success",
+    "mixed": "one cohort passes and another misses threshold",
+    "negative": "any in-class confident error or coverage below thresholds",
+    "out_of_basis": "all confident mistakes on four AND seeds reported; any such errors => UNSAFE_OUT_OF_BASIS",
+    "invalid": "any source leak, source/seed/protocol drift, oracle feedback, unmatched actions, checkpoint corruption, hidden compute/capacity increase",
+    "scientific_supported": "NOT CLAIMABLE: source-aligned synthetic data and a conventional version-space algorithm do not establish superiority or broad AGI"
+  },
+  "resource_envelope": {
+    "total_worlds": 12,
+    "per_world_test_pairs": 64,
+    "model_calls": 0,
+    "gradient_steps": 0,
+    "logical_hypothesis_bits": 32,
+    "max_checkpoint_bytes": 2048,
+    "python_time_and_heap": "measure and disclose"
+  },
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "scientific_first_use": false
+  },
+  "preregistration_note": "Committed before implementation and results; preserve all negative outcomes, no post-result tuning."
+}
