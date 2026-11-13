@@ -1,0 +1,81 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-63",
+  "created": "2026-11-13",
+  "title": "Sparse causal action-effect extrapolation and out-of-basis falsification",
+  "status": "PROSPECTIVE_ENGINEERING_SELFTEST_NOT_SCIENTIFICALLY_ADMITTED",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 953,
+    "sha": "ace34717ddc3bf4110e4ae0cd895a071c94ae7ca",
+    "prior_negative": "WSP62 351/384 vs fixed parent 156/384, exact memory 350/384; 11 correct unobserved vs frozen 25, so SELFTEST_NEGATIVE_OR_INCONCLUSIVE; focused Linux/Windows and G29 PASS; inherited regression pending"
+  },
+  "question": "Can a compressed action-effect representation use fewer no-reset physical actions to predict state-action outcomes absent from its experience, while maintaining safety when confronted with deliberately out-of-model rules?",
+  "hypothesis": "In frozen low-degree sources, factoring each action into one inferred affected sensor bit and its 3-input Boolean trigger will generalize across unobserved state-action contexts and outperform exact memorization at 48 charged actions; a distinct cubic source provides a failure diagnostic for underpowered rules.",
+  "source": {
+    "evaluator": "research/contrib/chatgpt/WSP-63/source.py, evaluator-only; learner cannot import",
+    "seeds": [
+      2901,
+      2902,
+      2903,
+      2904,
+      2905,
+      2906,
+      2907,
+      2908,
+      2909,
+      2910,
+      2911,
+      2912
+    ],
+    "families": "4 chain, 4 XOR-and-conjunction degree-two, 4 cubic-three-input AND negative-control worlds; different WSP63 SHA256 salt and newly shuffled sensor role/channel maps; not independent natural world transfer",
+    "physics": "Four binary physical registers, four hidden shuffled primitive action channels. Every action toggles exactly one hidden target register whenever a hidden Boolean trigger of the other three registers is true. Degree-two trigger for in-family, degree-three for negative-control. One root action always triggers, supporting physical reachability.",
+    "training": "48 chronological charged actions/arm from fixed all-zero state, no arbitrary-state query, teleport, reset, oracle action hints or evaluator source imports. Agent and controls are independently live stateful sessions.",
+    "testing": "32 oracle-reachable shortest 2–6-action start-to-goal sensor states/world, held out until evaluation, 384 goals total; all 64 state/action physical outcomes per world independently audited, explicitly separate previously observed vs unseen states.",
+    "cohort": "SELFTEST only; DEV/PRIMARY first use forbidden",
+    "action_policies": "Frozen WSP61 source-blind action-selection policy produces exact same 48 charged history for compressed WSP63, frozen WSP62 model, and exact lookup control. Separate random-action 48 transition history is diagnostic only.",
+    "whole_process": "Log action count, distinct source states and state/action pairs, model rank, confident errors, missing coverage, user-visible task plans, memory bytes, CPU/wall and source receipts."
+  },
+  "method": {
+    "representation": "Infer a unique affected output bit per action from nontrivial observed deltas (if none or contradictory changed bits, abstain). Other three register values are the input context of one Boolean action-trigger function. Fit degree<=2 GF(2) ANF of 3 bits by observed physical toggles; 7 coefficient dimensions per action versus 11 per output bit in WSP62. Preserve any model inconsistency as abstention.",
+    "zero_gradient": true,
+    "prediction_safety": "When the 7-dimensional degree<=2 version space uniquely determines a trigger, apply it to the affected bit and leave other bits unchanged. This is explicitly an aligned single-effect prior; not guaranteed safe on cubic out-of-basis physics.",
+    "cold_storage": "Persist full chronological public observations and derived affected-bit / coefficient rank with exact canonical SHA256 snapshot, cold restoration parity and tamper rejection. No source role import or heldout feedback.",
+    "controls": [
+      "Exact action/state history lookup on same 48 actions",
+      "Unchanged frozen WSP62 quadratic ANF learner on same 48 actions",
+      "Unchanged frozen WSP61 <=3-parent learner on same 48 actions",
+      "Seeded random 48-action compressed model; separate physically reachable state path"
+    ]
+  },
+  "primary": "SELFTEST_SIGNAL only if across the 8 preregistered degree<=2 worlds, (a) compressed agent solves >=180/256 heldout goals, (b) solves >=20 more goals than same-ledger exact memory lookup, (c) predicts >=35 correct previously unobserved physical action/state outcomes and has zero confidently wrong transitions in all 8x64 audits, (d) every arm has exactly 48 charged continuous transitions and 8 cold restores pass. In the 4 cubic out-of-family worlds, additionally require zero confidently wrong transitions across all 4x64 audit queries; otherwise preserve negative/inconclusive classification. No post-result family/threshold modification.",
+  "secondary": [
+    "All 12-world 384-task results and 12x64 physical transition audit",
+    "Source-family breakdown including cubic out-of-basis errors and contradiction abstentions",
+    "Compute comparison including action-policy overhead and whole test end-to-end cost; not only action count",
+    "Gradient=0, numerical table coefficients, snapshot bits, cold retention and tamper controls",
+    "Exact result on unseen state-action pairs; no task leakage or source import"
+  ],
+  "caveats": [
+    "The single-changed-bit mechanism and low-degree trigger hypothesis are explicitly source-aligned; success is not discovery of unbounded representation primitives.",
+    "The out-of-family cubic triggers may agree with degree-two rules on limited evidence, so confident errors are possible and must not be hidden.",
+    "The same original WSP61 action policy may undersample informative contexts; no post-hoc tuning based on results.",
+    "Strong independent neural and symbolic fully trained matched compute controls absent; no scientific superiority or general intelligence claim.",
+    "Goals are raw binary sensor vectors and tests use evaluator-selected reachable starts, not natural language or open-world autonomous goals."
+  ],
+  "boundaries": {
+    "science_first_use": false,
+    "merge": false,
+    "deployment": false,
+    "official_loop": false,
+    "controller_changes": false,
+    "schedules": false,
+    "paid_apis": false
+  },
+  "stop_rules": [
+    "Freeze source seeds, 48-action budget, success threshold and comparator set before new source/learner/tests/outcomes.",
+    "If mechanical harness fails, document/repair without changing scientific protocol, then requalify exact source.",
+    "Never alter WSP62 frozen outcomes or reclassify WSP61/WSP62 negatives.",
+    "Full focused Linux+Windows, G29 atlas and inherited full regression required before engineering acceptance."
+  ]
+}
