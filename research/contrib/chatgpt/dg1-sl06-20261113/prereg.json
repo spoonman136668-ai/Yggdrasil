@@ -1,0 +1,83 @@
+{
+  "schema": "ygg.dg1-sl06.paid-discriminating-causal-interventions-prereg.v1",
+  "experiment": "DG1-SL06",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_RESULTS",
+  "project": "Yggdrasil",
+  "parent_sha": "6e88c22f63ebd9bf3b69becf33a8d27ee447abe1",
+  "inherited_SL05": "research/contrib/chatgpt/dg1-sl05-20261113/sl05.py",
+  "hypothesis": "After cold restoration and an unlabeled causal-world return, choosing paid physical actions that discriminate retained causal-rule memories improves correct unseen-pair and early post-return forecasts versus passive, random and independently coded conventional active controls, without more confident errors.",
+  "cohorts": {
+    "ABCA": [
+      99001,
+      99002,
+      99003,
+      99004,
+      99005,
+      99006,
+      99007,
+      99008
+    ],
+    "ABCB": [
+      99009,
+      99010,
+      99011,
+      99012,
+      99013,
+      99014,
+      99015,
+      99016
+    ],
+    "STABLE": [
+      99017,
+      99018,
+      99019,
+      99020,
+      99021,
+      99022,
+      99023,
+      99024
+    ],
+    "ABCD_OOD": [
+      99025,
+      99026,
+      99027,
+      99028,
+      99029,
+      99030,
+      99031,
+      99032
+    ]
+  },
+  "world": "4-bit state, 4 causal actions. A,B,C are distinct 40-rule/physical-action effects generated from Python Random(seed*131 + phase*719 + action*47), resolving collisions by incrementation. A/B/C phases each 20 physical steps. Fourth 20-step phase returns A (ABCA), B (ABCB), remains stationary A (STABLE), or presents out-of-grammar D effect= int(state==15) xor ((seed+action)&1) (ABCD_OOD). Hidden regimes and seed stay evaluator-only; no environment oracle accessible to learners.",
+  "action_budget": "80 paid physical steps/arm/world. At indices [6,14,22,30,38,46,54,62,70,78] paid exogenous flips of bit (seed//7+step//8)%4, not mechanism observations. All other 70 steps are actual causal actions. Before index 60 all policies use fixed action (seed+step)%4? NO: fairness requires learner-independent action (step%4), so use step%4 for all arms 0..59. During steps 60..79 policies autonomously choose actions from only current physical state and learned masks; passive uses step%4, random uses private fixed RNG seed 777 plus step (not world seed).",
+  "paired_design": "Before 60, each arm receives identical physical trajectory, physical observations and learner-specific state updates. At physical step 60 each arm gets an integrity-checked cold checkpoint, is restored, and then acts independently in a cloned world with same regime rules/starting state. From 60 onward actions may diverge; compare matched budget 80/arm/world, not identical action trajectories. No extra free active probes or ground-truth state resets. Each 32-world arm costs 2560 paid steps; seven arms total 17920 paid steps (32*7*80), with 70 causal observations per arm/world.",
+  "arms": [
+    "native_active: frozen SL05 ColdThreeBank(gate=True, evict=False) with paid bank-disagreement intervention after cold restore",
+    "native_passive: identical frozen ColdThreeBank + action step%4 after restore",
+    "native_random: identical frozen ColdThreeBank + deterministic nonadaptive action RNG after restore",
+    "native_active_no_gate: frozen ColdThreeBank(gate=False) + same paid active intervention (confidence-gate ablation)",
+    "conventional_active: independent SL05 ConventionalHMM3(replay=True) plus separately coded posterior-weighted causal discrimination policy",
+    "conventional_passive: identical SL05 ConventionalHMM3(replay=True) with step%4 physical actions",
+    "two_bank_active: inherited frozen SL05 two-bank SL04 selective learner plus paid disagreement policy"
+  ],
+  "native_policy": "At each nonflip step>=60, for each of four actions calculate predictions of up to three retained memory banks using ONLY current physical state, no world knowledge. Priority1 number of disagreeing unanimous per-bank predictions (=n0*n1), priority2 sum of within-bank rule-posterior disagreement uncertainty (Gini as integer pair count z*o), tie lowest action index. If all priority1=0, priority2 encourages informative training. Fixed bounded 4*3*40 rule evaluations per decision. Predict pre-update action consequence once and update model only from actual physical consequence.",
+  "conventional_policy": "Independently coded 3-bank Bayesian-style HMM with its own masks, posteriors and same action budget. For each action, compute posterior-weighted Bernoulli effect uncertainty from its currently retained bank rule masks, score weighted predictive variance and bank-to-bank variance; select highest, ties lowest action index. It has 3 continuous weights, so logical capacity and CPU NOT exactly matched; report both and do not claim native superiority without true matched-cost control.",
+  "holdout": "No learner receives true phase, transition rule, seed, full audit labels or simulator calls. At exact steps 60,64,72,80, evaluator-only exhaustive all 16 states x4 causal actions (64 pairs); record correct/wrong/abstain plus unseen physically unobserved state/action pairs separately per arm. Before/after cold predictions and snapshots must match for all 64 pairs; on cold restore active branch continues using restored object.",
+  "primary": {
+    "ABCA_final_correct_vs_strongest_of_native_passive_native_random_conventional_active_min": 16,
+    "ABCA_final_unseen_correct_vs_strongest_min": 8,
+    "ABCA_final_confident_wrong_excess_vs_least_wrong_control_max": 4,
+    "ABCB_final_correct_vs_strongest_min": 16,
+    "ABCB_final_confident_wrong_excess_vs_least_wrong_control_max": 4,
+    "STABLE_final_correct_loss_vs_best_passive_conventional_max": 16,
+    "STABLE_final_confident_wrong_excess_max": 4,
+    "ABCD_OOD_final_wrong_confident_excess_max": 4,
+    "ABCA_early_return_prequential_correct_gain_vs_best_control_min": 8,
+    "require_exact_cold_restore_predictions_at_60": true,
+    "require_each_arm_80_charged_steps_each_world": true,
+    "cross_os_identical_deterministic_science_metrics": true,
+    "classification": "DEV_SIGNAL_NOT_SCIENCE only if ALL above; MIXED_DEV if ABCA+ABCB gains but failures on safety/cost controls, otherwise NEGATIVE_DEV. INVALID on leakage, uncharged probes, altered seeds, priors, actions or thresholds. No post-result threshold tuning."
+  },
+  "negative_controls": "No-gate ablation tests selective abstention; passive and random isolate intervention; conventional-active is independent strong competing selector; static 2-bank tests memory capacity. Entire cost, snapshot bytes, physical action counts and cross-platform deterministic receipts must be reported separately. Since world trajectories diverge after step 60, common-information content is not identical even though paid budgets match; disclose.",
+  "code_limits": "Python 3.12 standard library, no gradient, tokens, external paid API or special hardware. Experiments branch-only source, prereg and evidence; no main/native model/accepted-ref/owner-loop/controller or parallel research mutations. Repo evidence only, not ChatGPT storage."
+}
