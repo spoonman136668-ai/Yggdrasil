@@ -1,0 +1,47 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-60",
+  "date": "2026-11-12",
+  "title": "Causal hypothesis preservation and counterexample-driven intervention for grounded planning",
+  "status": "FROZEN_PROSPECTIVE_EXPLORATORY_SELFTEST_NOT_SCIENTIFIC_ADMISSION",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 950,
+    "sha": "6c4a5992bd796c1b71889a57bb39a85a8c6e3633",
+    "observed_negative": "WSP59 focused Linux/Windows engineering PASS but scientific SELFTEST_NEGATIVE: 19/256 multistep goals, 10 incorrect confident transitions, 256/256 taught conjunctions parsed. WSP59 10-state pairwise-coverage leaves confounded g,m conditional on p; minimal-parent rule selection discarded plausible alternatives. Frozen negative retained."
+  },
+  "question": "Can a generic table writer preserve all evidence-consistent <=2-parent causal explanations, refuse ambiguous predictions, and use the fewest additional experiments to disambiguate hidden causal variables and recover multistep grounded planning?",
+  "hypothesis": "After exactly one additional informative intervention per action channel, source-blind disagreement-driven probing will safely solve at least 65% of the 384 new multistep goals, outperform an equal-budget random-disambiguation control by 12 absolute percentage points, and make no confident wrong physical predictions.",
+  "source": {
+    "implementation": "Evaluator-only wrapper of exact pinned WSP59 SOURCE at parent, fresh WSP60 SELFTEST seeds 2601-2612; same conditional/independently sampled hidden nonlinear 3-register physics and nonce-grounding task distribution. This is a controlled replicated source family, NOT independent physics distribution.",
+    "cohort": "SELFTEST only; no DEV/PRIMARY calls. No evaluator or hidden source import in learner.",
+    "physical_state": "5-state position, binary gate and marker, 4 shuffled action channels; any state probe is available with free resetting, only selected action charged.",
+    "demo": "Same 9 fully labeled primitive byte-goal demonstration pairs per world, same fixed syntactic ` & ` conjunction. Neither learned natural language nor true open instruction grounding is claimed.",
+    "worlds": "12 fresh seeds × 32 heldout, source-achievable shortest 2–4 action tasks = 384 tasks. Train and source heldout traces SHA256 logged.",
+    "common_initial_evidence": "All arms observe the same 10 pairwise-covering starting states for each action channel (40 charged interventions), plus 9 demonstrations. The 10 chosen state combinations cover pairwise joint contexts but correlate gate/marker conditional on position.",
+    "intervention_checkpoint": "PRIMARY: one more state-action experiment PER action (4 additional total, 44 charged per arm); SECONDARY: one more per action (48 charged total). Each additional observation revealed by evaluator only after an arm chooses it.",
+    "comparators": "Source-blind candidate-disagreement information gain per channel vs seeded random choice among unqueried states per channel. Same all-hypothesis learner, same 44 primary interactions, demos, task set, planner. Diagnostic WSP59 minimum-parent learner at same active 44 interactions; no independent conventional baseline yet.",
+    "eval": "Common 384 independently heldout instructions; each agent sees only initial physical state + raw instruction bytes. All 80 source action transitions/world are used as separate evaluator-only safety/correctness audit. No test task feedback passed to learner."
+  },
+  "learner": {
+    "implementation": "Subclass/focused extension of WSP59 GroundedCausalAgent, with all fully covered consistent <=2-register-parent hypotheses retained instead of choosing the minimal parent count.",
+    "safety": "At prediction, if any consistent hypothesis differs, abstain rather than guess; all causal candidates share the same charged evidence. True source parent family is within the declared maximum-two-parent structural prior, so candidate elimination can be sound when context coverage is complete.",
+    "selection": "For a channel, score each uncharged state by the number/entropy of mutually inconsistent candidate next-register outcomes; choose the most discriminating with deterministic tie-break; no hidden source action roles, true maps, oracle goals, nor heldout labels.",
+    "planning": "Reuse exact existing breadth-first planning and taught byte-conjunction grounding contract, horizon=4, no gradients.",
+    "retention": "Canonical SHA256 full-observation+demo snapshot, restored as the extended all-hypothesis learner, exact prediction/planning parity, tampering rejected"
+  },
+  "frozen_primary_criterion": "SELFTEST_SIGNAL if active success >=65% (>=250/384), active-minus-random heldout task success >=12 absolute percentage points (>=47/384), ZERO active confidently wrong predictions over 12 x 80 states/actions, 384/384 exact grounded conjunction meanings, and cold-restored prediction/plan parity on all 12 worlds, each policy charged exactly 44 physical actions and nine demos. Otherwise SELFTEST_NEGATIVE_OR_INCONCLUSIVE; do not tune after outcomes.",
+  "secondary_diagnostics": [
+    "Checkpoints at 40,44,48 charged observations: planning success/abstention, same benchmark tasks, prediction safety and candidate counts; only 44 primary determines success",
+    "WSP59 minimum-parent ablation at 44 active-source observations to quantify effect of retaining alternate explanations",
+    "Random policy receives same initial 40 actions and fresh seed-hashed independent extra choices at 44/48",
+    "Source hash and action ledger SHA256, snapshot bits, table weights, process wall/CPU and comparison cost",
+    "Exact-only lookup baseline at 44 active evidence; independently trained conventional and symbolic controls not provided"
+  ],
+  "stop": [
+    "No modifying WSP59 frozen source/learner/tests/outcomes.",
+    "No threshold, seed, primary checkpoint, planner-depth or learned prior revisions after seeing results.",
+    "No protected first-use/merge/promotion/deployment/official-loop change/schedule/paid API.",
+    "Engineering final qualification requires both platforms focused + inherited full WSP regression on exact candidate SHA + G29 atlas."
+  ]
+}
