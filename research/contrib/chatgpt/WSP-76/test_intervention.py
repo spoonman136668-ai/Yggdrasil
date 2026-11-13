@@ -160,7 +160,7 @@ class FrozenReachableNoveltyIntervention(unittest.TestCase):
         family={}
         for seed in SEEDS:
             with self.subTest(seed=seed):
-                negative=seed>=4913
+                negative=seed>=5013
                 physics=build_world(seed)
                 copies={name:build_world(seed).training_session()
                         for name in ("contrast","balanced","random")}
