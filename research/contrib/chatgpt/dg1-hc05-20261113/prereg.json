@@ -1,0 +1,109 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "DG1-HC05",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Does a two-step information-seeking action policy learn a previously unknown causal program from real action–consequence observations more efficiently than single-step greedy, round-robin or seeded-random selection, at the same physical action budget?",
+  "hypothesis": "A two-step belief-space intervention policy chooses actions by expected reduction in physical-law ambiguity, including routing to future informative states. On source-only mixed local causal laws it might improve withheld physical next-state coverage over passive selection, but a conventional equivalent two-step belief planner must tie.",
+  "exact_parent_sha": "aa212b993b00fa752b7f12dbc9eb9384ce9d8a2e",
+  "parent_hc04_draft_pr": 965,
+  "parent_hc04_outcome": "MIXED_DEV: stationary own-bit 256/256 but parity return 200/256 due 56 abstentions, out-of-basis AND 72 confidently wrong, conventional version-space tied. Preserve all results; no retuning.",
+  "scope": "Research-only source candidate. No native runtime source changes; no protected scientific first use or integration.",
+  "changed_paths": [
+    "research/contrib/chatgpt/dg1-hc05-20261113/prereg.json",
+    "research/contrib/chatgpt/dg1-hc05-20261113/model.py",
+    "research/contrib/chatgpt/dg1-hc05-20261113/eval_dev.py",
+    "research/contrib/chatgpt/dg1-hc05-20261113/test_hc05.py",
+    "research/contrib/chatgpt/dg1-hc05-20261113/README.md",
+    "research/contrib/chatgpt/dg1-hc05-20261113/result.json",
+    "research/contrib/chatgpt/dg1-hc05-20261113/provenance.json",
+    ".github/workflows/dg1-hc05-source-dev.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "frozen_source": {
+    "stationary_mixture_seeds": [
+      31001,
+      31002,
+      31003,
+      31004,
+      31005,
+      31006,
+      31007,
+      31008
+    ],
+    "routing_seeds": [
+      31009,
+      31010,
+      31011,
+      31012
+    ],
+    "out_of_class_seeds": [
+      31013,
+      31014,
+      31015,
+      31016
+    ],
+    "state": "4 physical binary sites, initial state seed%16, 4 chosen actions, one contiguous physical trajectory per world, no resets",
+    "hidden_laws": "Each action independently draws one of parity(neighbors XOR), parity XOR own_bit, or neighbors AND; independently sampled sign. Draw via random.Random(seed*97 + action*37), family=randrange(3), sign=randrange(2). Learner never sees hidden law or family.",
+    "out_of_class_law": "majority(left_bit,own_bit,right_bit) XOR hidden per-action sign, outside candidate grammar for some but not all 4-bit cases",
+    "training_budget": "Exactly 12 physically executed one-step actions per world. One action selected per time step; model only observes the resulting public before/action/after. No hidden queries or oracle rollouts.",
+    "evaluation": "After training, evaluator-only 16 states×4 actions for 64 exact next-state queries; abstentions count as not correct. Report unseen subset excluding all trained state/action pairs. No evaluation answers in training.",
+    "physical_cost": "Each candidate and baseline acts on its own natural 12-step trajectory with same initial state and action allowance, not forcibly same ledger; report ledger sha256 per policy. An additional same-ledger model check validates update parity."
+  },
+  "causal_hypotheses": {
+    "action_programs": "Six fixed hypotheses per action: three public-local Boolean bases (neighbor XOR, neighbor XOR own_bit, neighbors AND), each XOR unknown sign 0/1",
+    "belief": "For each action a 6-bit surviving-version-space mask, initially all six. Public effects eliminate inconsistent bits without creating new hypotheses or data.",
+    "prediction": "Only when all surviving hypotheses for the selected public state/action agree on next state, else abstain; never guess when mask empty. Prediction is a side-effect-free readout.",
+    "no_regime_memory": "Static worlds only. HC04 A/B/A retention remains separate and unproven; do not claim HC05 solves it.",
+    "capacity": "4 x 6 =24 logical hypothesis bits plus counters, not actual Python allocation. Checkpoint canonical JSON with SHA256 max 1024 bytes and exact cold-restoration.",
+    "policy_candidate": "Two-step expectimax over physically possible next states, using uniform current surviving hypotheses and Gini disagreement (1 - p0^2 - p1^2) as value. For each first action, score Gini_now + (9/10)* expected max Gini of a second action under the posterior and simulated public next state. Choose max with lowest action index tie-break. A second action is hypothetical only: never actually queried during planning.",
+    "policy_controls": [
+      "Same-candidate grammar one-step max immediate Gini intervention policy, 12 actions",
+      "Same-candidate grammar round-robin action t%4, 12 actions",
+      "Same-candidate grammar seeded random.Random(seed+919).randrange(4), 12 actions",
+      "Equivalent conventional symbolic two-step version-space planner with identical action budget and same derived beliefs, reported as a capacity/algorithmic tie control",
+      "Ungated baseline selecting first plausible hypothesis to quantify confident false predictions",
+      "Out-of-grammar physical majority law negative cohort",
+      "Cold checkpoint, bad public delta, no hidden oracle, capacity and deterministic replay checks"
+    ]
+  },
+  "metrics": [
+    "mean exact heldout next-state correctness/64 and coverage, all wrong-confident and abstentions",
+    "per-seed natural 12-step action ledger hash, distinct observed state-action pairs and unseen correct/wrong/abstain",
+    "candidate vs one-step greedy, round robin, seeded random and equivalent conventional plan outcomes",
+    "out-of-class confidently wrong counts, no silent conversions into safety proof",
+    "cold restored snapshot parity, elapsed wall time and peak tracemalloc, 24 logical mask bits, no hidden growth",
+    "complete Linux and Windows final exact-SHA G29 and inherited full regression"
+  ],
+  "frozen_decision": {
+    "development_signal": "Across all 8 stationary mixture worlds candidate zero confidently wrong predictions; mean candidate exact fraction >= mean best of greedy and round-robin fractions + 0.0625 (4 of 64 per world); and mean candidate exact >= random; equal 12 real actions and cold restore. Conventional two-step should match exactly. This is source-only DEV signal.",
+    "routing_signal": "Across 4 routing seeds candidate mean exact fraction >= one-step greedy + 0.03125 (2 of 64 per world), with zero confident wrong. If absent, report negative.",
+    "mixed": "Some criteria met and others fail; no threshold changes",
+    "negative": "All main or routing criteria fail; report individual seeds and fail modes",
+    "out_of_class": "Any confident wrong on majority-negative cohort => UNSAFE_OUT_OF_CLASS; no zero-error claim without broader independent study",
+    "invalid": "Any data leakage, action budget breach, changed prereg/source after outcome, non-canonical checkpoint, inconsistent custody; no scientific claim",
+    "scientific_pass": "NOT AVAILABLE. Even developmental gains from source-aligned synthetic worlds with a conventional algorithmically equivalent controller do not prove independent intelligence, AGI, or superiority to strong conventional controls."
+  },
+  "resources": {
+    "model_calls": 0,
+    "gradient_steps": 0,
+    "action_budget_per_world": 12,
+    "total_worlds": 16,
+    "logical_model_bits": 24,
+    "max_checkpoint_bytes": 1024,
+    "lookahead_depth": 2,
+    "policy_compute_time": "measure; do not label matched compute against cheap passive control"
+  },
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "scientific_first_use": false
+  },
+  "note": "This preregistration is committed before implementation and any HC05 outcome inspection; previous HC03 and HC04 failures cannot be recast as prospective."
+}
