@@ -1,0 +1,95 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment": "WSP-77",
+  "date": "2026-11-13",
+  "status": "FROZEN_PROSPECTIVE_SELFTEST",
+  "parent": {
+    "pr": 975,
+    "head": "a413f4087fb9ee11ae21330fc7dde7c2e39487f3",
+    "science": "WSP76 frozen negative: physically observed paired contrasts 435 vs random244 vs balanced115, heldout correct 456/768 vs conventional trained 646, but 756/768 paid states/actions made only 12 actually unseen. Focused+G29 PASS both, full Linux PASS/Windows in progress. WSP75 full dual-OS PASS. No source retuning."
+  },
+  "hypothesis": "Six observable binary sensors and six physically controlled actions create 384 possible state/action contexts/world; 144 paid actions leave at least 240 genuinely unobserved contexts/world. Does source-blind observation-directed physical action selection plus gradient-free direct hidden ReLU coefficient repair predict more truly uncharged outcomes than matched-paid random/balanced action selection and same-evidence readout-only/random edits? Compare against a fully trained end-to-end gradient MLP receiving exactly same paid evidence.",
+  "worlds": {
+    "seeds_primary": [
+      5101,
+      5102,
+      5103,
+      5104,
+      5105,
+      5106,
+      5107,
+      5108,
+      5109,
+      5110,
+      5111,
+      5112
+    ],
+    "seeds_negative": [
+      5113,
+      5114,
+      5115,
+      5116
+    ],
+    "source": "new SHA salted shuffled 6 sensor roles/6 action roles, each public action unconditionally flips its own hidden-role bit and may conditionally flip lower-role bits. 4 primary conditional XOR6, 4 conditional AND6, 4 coupled six-bit; four nested conditional negative worlds. All 64 visible states structurally reachable via evaluator-only BFS.",
+    "paid": "THREE independently physically charged 144-action continuous no-reset source copies per seed, identical 96-action A prefix independently paid, then 48 actual physically executed B actions selected by observed contrast, uniform random or cyclic balanced. 16*3*144=6912 charged physical action consequences. No free resets/arbitrary state training queries/source lookups.",
+    "heldout": "64 six-bit states * 6 public actions =384 evaluator-private physical outcomes/world after learning. At most 144 distinct paid state/action contexts per arm; >=240 genuinely uncharged/world, >=2880 across 12 primary. 12*384=4608 primary physical labels, 4*384=1536 adversarial, 32 frozen two-action evaluator-only tasks/world (384 primary). Never query heldout oracle for training."
+  },
+  "physical_policies": {
+    "observed": "Direct port of WSP76 score fixed 12 for uncharged action at a state with other paid action, 8 for uncharged state/action, 4 if action has two distinct actually paid six-bit XOR effect signatures and uncharged, 4 if different already paid actions at this same state have different real outcomes and pair uncharged, 2/(1+paid B action count). Eligible action B counts <= minimum B count+1, SHA deterministic ties, act on current real state and append paid result.",
+    "random": "SHA-seeded independent uniform action over six each of 48 paid B steps.",
+    "balanced": "SHA seeded permutation of six action channels repeated exactly 8 times (48 paid actions). All three separately charge their physical source copies; equal actions != equal information."
+  },
+  "neural_substrate": {
+    "architecture": "Port WSP69 source-blind residual-selected gradientless real ReLU hidden-neuron growth to 12 numerical inputs (6 visible bits+6 one-hot action) and 6 output bits, base 32 ReLUs plus up to 12 grown at paid action 48 and 12 grown at paid action 96. Keep lambda0.5 recursive ridge numerical output editing and inverse covariance. Freeze Stage-A numerical matrix at 96. Same per-bit confidence abs(output−0.5)>=0.27 and posterior leverage<=2.",
+    "repair": "Port WSP74 original finite-difference direct hidden sensor coefficient edits to SIX sensor input coordinates; top eight source-blind grown neurons via charged B residual, at most four ±0.5 edits that improve 6-output A+B weighted squared-error >1e-9, followed by reset and exactly 144 paid rank-one output/covariance numerical edits. Do not use gradients/source rules/test outcomes or a symbolic rule table. Numerical matrix-only inference.",
+    "controls": "On same observed 144 paid ledger, readout-only refit without hidden edits; on same ledger four random ±0.5 hidden sensor-coordinate edits then identical refit; independent 144-action random and balanced paid trajectories with exactly same repair; exact-paid-lookup and simple source-blind decision-tree diagnostic; independently fully trained 12->32 ReLU->6 sigmoid MLP with 3 deterministic Adam restarts <=6000 updates per restart trained on exact same observed 144 rows, >=95% training exact needed for converged comparison. Record forced and confidence-gated evaluation. Cold numerical restores and tamper rejections.",
+    "retention": "Evaluate earlier true/confident Stage-A physical predictions after B; evaluator-only, never used as training label or intervention choice."
+  },
+  "frozen_science": {
+    "classification": "SELFTEST_SIGNAL only if ALL criteria pass; otherwise NEGATIVE_OR_INCONCLUSIVE",
+    "bfs_reachable_states_each_world_min": 64,
+    "primary_confident_correct_min": 600,
+    "gain_vs_equal_paid_random_min": 40,
+    "gain_vs_equal_paid_balanced_min": 40,
+    "gain_vs_same_ledger_readout_only_min": 35,
+    "gain_vs_same_ledger_random_hidden_edits_min": 35,
+    "primary_truly_never_paid_count_min": 2880,
+    "primary_never_paid_confident_correct_min": 250,
+    "primary_never_paid_correct_gain_vs_random_min": 40,
+    "primary_wrong_confident_max": 60,
+    "stageA_true_confident_retention_min": 0.8,
+    "primary_two_action_confident_correct_min": 90,
+    "nested_six_bit_negative_wrong_confident_max": 30,
+    "changed_hidden_coefficients_in_primary_worlds_min": 10,
+    "cold_numeric_restore_and_tamper_worlds": 16,
+    "fully_converged_end_to_end_MLP_primary_worlds_min": 10,
+    "candidate_policy_plus_repair_plus_eval_CPU_ratio_to_random_max": 8
+  },
+  "receipts": [
+    "All 16 source/heldout/composition SHA256, all three separately paid 144-action ledger SHA256 and no-reset continuity, source evaluator-only reachability.",
+    "Genuinely never paid input/action count per policy, public observed same-state action-contrast certificate counts before/after B, and actually visited states, six action channel B counts.",
+    "Original frozen 96-action true/confident retention, 6-output readout, 12-input numerical hidden weights, actual changed coefficients, exact cold numerical snapshot hashes and hash tamper rejection.",
+    "All 4608 primary and 1536 adversarial evaluator-only model predictions right/wrong confident/abstain and never paid subset with per-family and per-seed scores.",
+    "Full end-to-end gradient network train convergence and number of gradient steps/CPU, exact same paid source information, confidence-gated and forced heldout. Report model capacity difference.",
+    "Policy, repair and inference CPU with complete paid action count. No unsupported AGI/language or conventional training superiority."
+  ],
+  "limits": [
+    "This six-bit source remains synthetic and preprogrammed with structural priors; a positive SELFTEST alone is NOT SCIENTIFIC_PASS, open-world transfer, language or AGI.",
+    "Three separately paid policy streams have equal budgets but not equal acquired information; same-ledger readout and random-edit controls isolate representation edit value.",
+    "Finite-difference coordinate editing is supervised numerical optimization on paid experiences, not no-data programming of arbitrary AI weights.",
+    "No post-result source/seed/threshold or control retuning. Mechanical fixes only if frozen scientific semantics preserved and exact tree requalified."
+  ],
+  "authority": {
+    "draft_only": true,
+    "protected_first_use": false,
+    "merge": false,
+    "promotion": false,
+    "deploy": false,
+    "owner_loop": false,
+    "controller": false,
+    "runner_change": false,
+    "scheduled_tasks": false,
+    "paid_apis": false
+  },
+  "qualification": "Focused Ubuntu+Windows, source-pinned generated-only G29, inherited full mandatory regression both operating systems on exact final tree; no duplicate CI, no claim engineering PASS proves science."
+}
