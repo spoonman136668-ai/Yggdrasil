@@ -1,0 +1,109 @@
+{
+  "schema": "wsp66.prereg.v1",
+  "id": "WSP-66",
+  "timestamp": "2026-11-13",
+  "status": "FROZEN_PROSPECTIVE_DEV_SELFTEST",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 956,
+    "sha": "5fc18268bb75c3ef1b457ab84041f25ea23bd4b7",
+    "focused": "Linux and Windows PASS",
+    "atlas": "Linux and Windows PASS",
+    "full_regression": "in_progress",
+    "prior_finding": "WSP65 active 600/768 vs random 749/768, both zero confident errors, synthetic SELFTEST_SIGNAL. Do not revise history."
+  },
+  "hypothesis": "Under matched no-reset physical action budgets, a fixed ordered-pair covering intervention schedule may infer hidden parity-mode consequences more efficiently than seeded uniform random action selection.",
+  "cohort": {
+    "kind": "SELFTEST-only",
+    "seeds": [
+      3201,
+      3202,
+      3203,
+      3204,
+      3205,
+      3206,
+      3207,
+      3208,
+      3209,
+      3210,
+      3211,
+      3212,
+      3213,
+      3214,
+      3215,
+      3216
+    ],
+    "source": "WSP-66/source.py evaluator only, newly independently generated source salt",
+    "groups": "8 three-visible-sensor and 8 four-visible-sensor hidden-parity worlds; four shuffled unknown public action channels; one invisible mode toggle, one mode-dependent visible effect, one unconditional visible effect and one conditional visible effect, four-sensor version has coupled outputs. Source lies in WSP65 single-hidden-parity, degree<=2 sparse Boolean family."
+  },
+  "training": {
+    "budget": 48,
+    "unit": "charged chronological current-state action transitions per arm/world; 3 physically independent no-reset sessions",
+    "initial": "all zero visible and latent zero; source mode hidden",
+    "arms": [
+      "pairwise fixed order-two de Bruijn 4-channel cycle repeated thrice (16 pair contexts ×3), no outcome feedback",
+      "seed-hashed uniform random action selection, 48 steps",
+      "unchanged WSP65 active SourceBlindExplorer, 48 steps, diagnostic"
+    ],
+    "identical_learner": "ALL arms use unchanged WSP65 HiddenParityWriter and its cold snapshot, no source import or gradient training",
+    "reset": "forbidden during training",
+    "policy_scope": "Source blind; ordered-pair coverage is precommitted structured scheduling, NOT adaptive information gain."
+  },
+  "evaluation": {
+    "cases": 1024,
+    "per_world": 64,
+    "prefix": "8–16 publicly visible charged action/consequence prefix steps, distinct from persistent training observations",
+    "test_reset": "all-zero only for independent standardized test episodes, shared between all controls",
+    "final_query": "evaluator chooses hidden-dependent channel; public action ID seen by all controls, private mode never passed",
+    "reference": "physical source evaluator-only withheld truth, deterministic new seeds and SHA256 receipts"
+  },
+  "controls": [
+    "Same learner with random 48-charge trajectory, primary comparator",
+    "Unchanged WSP65 active policy with same 48 charged actions, diagnostic",
+    "Independent WSP65 latent parity empirical automaton fit only to paired-policy 48 observations",
+    "Visible-only same-ledger state/action lookup",
+    "Two-action-suffix same-ledger empirical lookup",
+    "Scrambled history diagnostic"
+  ],
+  "primary": {
+    "classification": "SELFTEST_SIGNAL only if ALL thresholds hold; otherwise SELFTEST_NEGATIVE_OR_INCONCLUSIVE, never SCIENTIFIC_PASS",
+    "correct_min": 650,
+    "gain_vs_random_min": 96,
+    "total_test_cases": 1024,
+    "active_wrong_confident_max": 0,
+    "observed_source_collisions_worlds_min": 12,
+    "debruijn_pairs_distinct_each_world": 16,
+    "charged_actions_each_arm_world": 48,
+    "cold_parity_tamper_worlds": 16,
+    "cpu_ratio_balanced_vs_random_max": 2
+  },
+  "secondary": [
+    "Per-world and 3/4-sensor subgroup accuracy, abstentions and confident errors",
+    "Every arm's action-pair and state/action coverage and hidden-hypothesis count",
+    "Public evaluation context steps charged and documented separately from training",
+    "Full CPU and wall of policy+training+fit+evaluation, snapshot bits, source/task/ledger SHA256",
+    "Independent empirical history-aware control, visible and short suffix controls; report stronger baselines even if primary met"
+  ],
+  "limitations": [
+    "Synthetic source is aligned with prewired one-latent parity hypothesis and quadratic sparse numerical law; not discovered arbitrary latent cognition",
+    "Known zero mode on independent evaluation episode resets and fully visible public evaluation histories; not fully autonomous or natural language",
+    "Only within-architecture matched actions and approximate process CPU; no fully trained conventional neural belief-state control",
+    "WSP65 historical 128-action results not equal-budget comparators",
+    "No general intelligence, independent science acceptance, merging, protected first use or deployment authority"
+  ],
+  "governance": {
+    "first_use": false,
+    "merge": false,
+    "deployment": false,
+    "owner_loop": false,
+    "new_controller": false,
+    "schedule": false,
+    "paid_api": false
+  },
+  "stop": [
+    "Freeze BEFORE implementing generator/policy/tests/outcomes; do not tune after result",
+    "Keep original WSP65 positive signal and random-over-active disadvantage unchanged",
+    "Mechanical harness fixes only without changing frozen scientific semantics; otherwise separate prospective experiment",
+    "Final qualification requires exact-source focused Linux+Windows, G29 and full inherited two-platform regression; no duplicate CI"
+  ]
+}
