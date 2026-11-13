@@ -83,8 +83,13 @@ class NoResetResearch(unittest.TestCase):
         self.assertEqual(len(a.ledger), 0)
         a.observe(first)
         self.assertEqual(a.state, session.state)
+        # A self-loop may legitimately repeat the same observation; prove
+        # sequential custody with a guaranteed mismatched prior state.
+        from source import PublicExperience
+        illegal = tuple(1 - x if i == 0 else x
+                        for i, x in enumerate(a.state))
         with self.assertRaises(ValueError):
-            a.observe(first)
+            a.observe(PublicExperience(illegal, 0, a.state))
         with self.assertRaises(ValueError):
             a.predict((0, 0, 0, 0), 4)
 
