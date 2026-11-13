@@ -15,9 +15,11 @@ import time
 import unittest
 
 from source import SEEDS,STATES,CHANNELS,TRAIN_ACTIONS,build_world
+# Import compressed learner first; it exposes the pinned unchanged WSP61/WSP62
+# modules for the exact-ledger controls (no evaluator imports in model).
+from compressed_effect import CompressedEffectLearner,trigger_features,TERMS
 from learner import ReachableCausalLearner
 from expanded_learner import ExpandedCausalLearner
-from compressed_effect import CompressedEffectLearner,trigger_features,TERMS
 
 
 def digest(ledger):
