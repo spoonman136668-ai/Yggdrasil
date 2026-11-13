@@ -1,0 +1,40 @@
+name: WSP80 bounded full developer pipeline and admission audit
+on:
+  push:
+    branches: [research/wsp80-paid-novelty-structural-weight-repair-20261113]
+permissions:
+  contents: read
+jobs:
+  developer-full-pipeline:
+    if: "${{ github.event.head_commit.message == 'ci(wsp80): run bounded full developer pipeline admission audit' }}"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Full Git provenance and prereg-only source admission (no registered execution)
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python research/contrib/chatgpt/WSP-80/scientific_admission.py --readonly
+      - name: Full developer-only ABBA matched-actions independent paid sessions
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: python research/contrib/chatgpt/WSP-80/developer_full_pipeline.py --developer-only
+      - name: Verify pinned source atlas and unchanged repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
