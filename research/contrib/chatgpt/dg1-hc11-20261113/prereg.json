@@ -1,0 +1,102 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment": "DG1-HC11",
+  "date": "2026-11-13",
+  "parent_sha": "c6a48d2d4460c85c428f97554b2e737e77ada52d",
+  "parent_pr": 977,
+  "kind": "external source-only prospective falsification",
+  "question": "Can exact repeated public action-consequence witnesses reduce HC10's overconfident causal predictions without hidden phase labels, while preserving useful coverage? Does a conventional two-context controller achieve the same result?",
+  "previous_outcome": "HC10 MIXED_DEV: ABA candidate 259/512 correct and 128 wrong, JSD conventional tie 259/512/128; stable majority 512/512; cubic OOD 438/512 and 74 wrong. These remain negatives.",
+  "hypothesis": "A bounded two-consistent-witness gate on each public state/action, cleared on observed contradiction, context switch or unresolved update, will decrease confident errors compared with ungated HC10 and one-witness ablation; however it may lose coverage and tie the conventional twin. No AGI/superiority inference from gate alone.",
+  "cohorts": {
+    "ABA": {
+      "seeds": [
+        91001,
+        91002,
+        91003,
+        91004,
+        91005,
+        91006,
+        91007,
+        91008
+      ],
+      "steps": 40,
+      "phase": "physical steps 16..31 invert causal effects and steps 32..39 restore A; never exposed to learner"
+    },
+    "stationary_majority": {
+      "seeds": [
+        91009,
+        91010,
+        91011,
+        91012,
+        91013,
+        91014,
+        91015,
+        91016
+      ],
+      "steps": 48
+    },
+    "OOD_cubic": {
+      "seeds": [
+        91017,
+        91018,
+        91019,
+        91020,
+        91021,
+        91022,
+        91023,
+        91024
+      ],
+      "steps": 48
+    }
+  },
+  "physics": "Exactly HC10 PhysicalWorld functions and seeds changed, state starts seed%16, 4 bits, 4 causal actions, public charged flips max 8, each causal action or flip costs 1; phase is evaluator-only; no free action and no reset.",
+  "actions": "Per world/arm, unchanged HC10 pure interbank policy for native candidate and a separately implemented HC10 JSD controller for conventional. Gate cannot influence action selection or learning. Include ungated HC10 and one-witness ablations using same physical policy, each independently run.",
+  "policy": {
+    "witness_state": "Per arm at most 64 public state/action slots; each holds last observed next state and saturating count 1 or 2. Clear all evidence on any observed conflicting next state for a slot, context bank change, or unresolved causal update. No training update on exogenous flips. Count/records are extra memory, not free matched capacity against ungated controls.",
+    "gate2": "Produce a prediction only when the raw model predicts a next state and current-epoch matching public state/action has at least two identical physical observations and the raw prediction equals the directly witnessed next state; otherwise abstain.",
+    "gate1": "Same with minimum one consistent physically observed transition.",
+    "conventional": "Independent HC09 ConventionalContextModel with HC10 JSD action chooser, using exactly the same two-witness evidence gate and 64-slot budget. Conventional tied or better -> no mechanism superiority."
+  },
+  "arms": [
+    "native_gate2",
+    "conventional_gate2",
+    "native_gate1",
+    "native_ungated",
+    "conventional_ungated"
+  ],
+  "metrics": [
+    "full 64 state/action evaluator-only audit at end; ABA also at 16,32,40",
+    "correct/wrong_confident/abstained, unseen accuracy and witnesses",
+    "charged physical actions, physical flips, causal observations, model context switches and unresolved events",
+    "canonical cold snapshot <=4096 bytes with SHA256; all action traces SHA256",
+    "whole-process measured time and traced peak Python heap, never assert compute equality from equal action count"
+  ],
+  "frozen_decisions": {
+    "primary": "native_gate2 at final ABA >=32/512 correct, zero confident wrong; majority >=64/512 correct, zero wrong; OOD zero confidently wrong. Must beat native_ungated on confident errors for ABA and OOD. Any failed condition -> no positive DEV mechanism result.",
+    "comparison": "If conventional_gate2 is equal or better on correct/wrong across each cohort, record conventional tie or advantage and no scientific superiority. Scientific pass unavailable regardless, owing synthetic source alignment and unmatched total compute.",
+    "classification": "DEV_SAFETY_COVERAGE_SIGNAL_NOT_SCIENCE only if all primary conditions pass; otherwise MIXED_DEV if confident-error reduction on ABA and OOD but insufficient safe coverage, else NEGATIVE_DEV. INVALID if labels leak, budgets violated, seeds shifted or results post-tuned.",
+    "adverse": "Any confidently wrong gate2 prediction on OOD, including witnessed transitions, must be retained and reported, not hidden.",
+    "no_post_outcome_tuning": true
+  },
+  "constraints": {
+    "python": "3.12 stdlib only",
+    "no_token_models": true,
+    "no_gradients": true,
+    "no_paid_api": true,
+    "external_research": true,
+    "no_owner_controller": true,
+    "no_scheduler": true,
+    "no_protected_first_use": true,
+    "no_main_or_accepted_ref_mutation": true,
+    "no_merge": true,
+    "no_native_integration": true,
+    "weight_programming_untouched": true
+  },
+  "scope": [
+    "research/contrib/chatgpt/dg1-hc11-20261113/**",
+    ".github/workflows/dg1-hc11-qualification.yml",
+    ".ice/code-atlas.*"
+  ],
+  "future_limitations": "Exact replay can ensure safety only for witnessed current-stationary transitions; it cannot prove unobserved counterfactual generalization, detect hidden context changes without evidence, or establish original-world intelligence."
+}
