@@ -1,0 +1,88 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "DG1-HC08",
+  "project": "Yggdrasil",
+  "date": "2026-11-13",
+  "contributor": "chatgpt",
+  "question": "Does charging for externally applied physical bit flips resolve otherwise unobservable causal-graph dynamics and improve retention/transfer over no-actuation and an equal-capacity conventional Bayesian controller?",
+  "parent": "d9873d19717d17e12683e81c9c4016a7c8438b61",
+  "prereg_before_implementation": true,
+  "prior_evidence": "HC07 #971 MIXED_DEV; 51001/51002/51007 initially absorbing under all causal actions. These three known witnesses are developmental replay, never untouched confirmatory evidence. Do not reclassify prior results.",
+  "seed_cohorts": {
+    "known_absorbing_dev": [
+      51001,
+      51002,
+      51007
+    ],
+    "unseen_rewired": [
+      61001,
+      61002,
+      61003,
+      61004,
+      61005,
+      61006,
+      61007,
+      61008
+    ],
+    "unseen_ring": [
+      61009,
+      61010,
+      61011,
+      61012
+    ],
+    "negative_majority": [
+      61013,
+      61014,
+      61015,
+      61016
+    ],
+    "unseen_ABA": [
+      61017,
+      61018,
+      61019,
+      61020
+    ]
+  },
+  "hidden_source": "Same original HC07 SourceWorld four-bit law. Each action uses Random(seed*101+action*31) for sign (randrange(2)) and own slope (randrange(2)). Rewired graph uses bit((a+1)%4), bit((a+2)%4); ring uses bit((a-1)%4), bit((a+1)%4). Effect=left XOR right XOR (own&slope) XOR sign. Majority negative replaces XOR with majority(left,right,own) XOR sign. A/B/A inverted sign in phase B (physical time 16..23), returns to original A at t24. No source labels supplied to model.",
+  "real_actions": {
+    "causal": "Action 0..3, costs 1 real step, produces before/action/after for fitted model.",
+    "actuator": "External do(flip public bit j), j=0..3, costs 1 real step; state becomes state XOR (1<<j), no hidden mechanism executed, no causal model learning update.",
+    "sham": "Costs 1 real step but no effect and no fit; available only for sham control.",
+    "budget": "Every stationary world receives 48 charged steps/arm, cap 8 real flips. A/B/A receives 25 charged steps/arm, cap 4 flips. Every arm begins state seed%16, no resets, arbitrary-state training visits, oracle calls or free causal queries."
+  },
+  "model_and_controls": {
+    "candidate": "Unmodified HC07 AffineCausalCells: 32 hypotheses/action, each parity(state&mask) XOR sign; 128 logical hypothesis bits. If any causal action has nonzero Gini disagreement at current state, choose max Gini (low index tie). Otherwise if flips remain, force bit flip maximizing total Gini after flip (lowest bit tie); otherwise choose max current action.",
+    "bayesian": "Unmodified separately coded HC07 BayesianGraphController with the same 32 programs/action and 128 logical bits, Shannon entropy instead of Gini to select causal or forced bit flip under exactly same public interface and action budget. Not independent natural-world science.",
+    "no_actuation": "Same HC07 affine learner / 128 bits, 48 regular causal action attempts and no external flip permission.",
+    "sham": "Same Gini candidate policy, charged attempted flips become no-ops, no fitted model update on sham.",
+    "round_robin_steer": "Same affine learner, force flip at t=4,9,14,19,24,29,34,39 (if legal and under cap), bit=flip_count%4; otherwise a=t%4. For 25-step A/B/A cap 4 and flip times 4,9,14,19."
+  },
+  "frozen_dev_decision": {
+    "known_dev": "All three known HC07 absorbing seeds >=16 correct/64, zero confident wrong, >1 visited state; no-actuator <=4 correct and 1 visited state. Explicit post-hoc mechanistic replay only.",
+    "new_primary": "All eight new rewired worlds >=16 correct/64 each, zero confident errors; aggregate >=no-actuator +64 correct/512. Must preserve any miss as NEW_PRIMARY_NEGATIVE.",
+    "ring": "Report all 4 ring accuracy/abstention/negative counts, zero confident wrong desired.",
+    "non_affine": "Report ALL 4 negative majority confident errors; any wrong => unsafe.",
+    "ABA": "Four return A worlds sum >=64/256 correct and zero confident wrong. Failure is retention negative.",
+    "classification": "DEV_ONLY if known and new_primary and ABA pass with zero negative confident wrong. MIXED_DEV if some criteria pass, else NEGATIVE_DEV. Invalid on any budget/seed/source leak or postresult science tuning. Never claim SCIENTIFIC_PASS."
+  },
+  "metrics": [
+    "64 evaluator-only state/action audit per world after all charged actions, no training on audit",
+    "correct/wrong-confident/abstain, unseen subset, number of distinct visited public states and state-action training pairs",
+    "real causal actions/perturbs/shams, 4x32 logical mask bits, checksum cold restore",
+    "Python wall time/tracemalloc, per-arm physical-action ledger SHA256, cross-OS matching",
+    "conventional equal-capacity Bayesian and no-actuation/sham/round-robin controls"
+  ],
+  "source_only": true,
+  "python": "3.12 standard library",
+  "gradient_steps": 0,
+  "model_calls": 0,
+  "paid_api": false,
+  "scope": "External research only. No native-runtime change, no merge, no accepted owner ref, no official controller/scheduler, no protected first scientific use, no weight-editing mutation.",
+  "changed_paths": [
+    "research/contrib/chatgpt/dg1-hc08-20261113/*",
+    ".github/workflows/dg1-hc08-qualification.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ]
+}

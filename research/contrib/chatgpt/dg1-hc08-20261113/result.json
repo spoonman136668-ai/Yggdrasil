@@ -1,0 +1,302 @@
+{
+  "schema": "ygg.dg1-hc08.primary-dev-evidence.v1",
+  "experiment": "DG1-HC08",
+  "prereg_commit": "63f5d0feb44ddb95a268c13a856167a578011282",
+  "first_testable_source_sha": "c78f9cbfe4eb0c588358839994e6ce67347b4049",
+  "classification": "MIXED_DEV",
+  "scientific_acceptance": "UNVERIFIED",
+  "frozen_gates": {
+    "known_absorbing_replay": true,
+    "new_rewired_primary": true,
+    "ABA_retention": false,
+    "outside_grammar_confident_wrong": 76
+  },
+  "score_tuple_definition": [
+    "correct",
+    "wrong_confident",
+    "abstained"
+  ],
+  "cohorts": {
+    "known_absorbing_dev": {
+      "seeds": [
+        51001,
+        51002,
+        51007
+      ],
+      "nonconfirmatory_replay": true,
+      "candidate": [
+        192,
+        0,
+        0
+      ],
+      "bayesian": [
+        192,
+        0,
+        0
+      ],
+      "no_actuator": [
+        12,
+        0,
+        180
+      ],
+      "sham": [
+        12,
+        0,
+        180
+      ],
+      "round_robin_steer": [
+        192,
+        0,
+        0
+      ],
+      "candidate_per_seed": [
+        [
+          51001,
+          64,
+          13
+        ],
+        [
+          51002,
+          64,
+          11
+        ],
+        [
+          51007,
+          64,
+          10
+        ]
+      ]
+    },
+    "unseen_rewired": {
+      "seeds": [
+        61001,
+        61002,
+        61003,
+        61004,
+        61005,
+        61006,
+        61007,
+        61008
+      ],
+      "candidate": [
+        512,
+        0,
+        0
+      ],
+      "bayesian": [
+        512,
+        0,
+        0
+      ],
+      "no_actuator": [
+        418,
+        0,
+        94
+      ],
+      "sham": [
+        418,
+        0,
+        94
+      ],
+      "round_robin_steer": [
+        424,
+        0,
+        88
+      ],
+      "candidate_per_seed": [
+        [
+          61001,
+          64,
+          12
+        ],
+        [
+          61002,
+          64,
+          10
+        ],
+        [
+          61003,
+          64,
+          13
+        ],
+        [
+          61004,
+          64,
+          10
+        ],
+        [
+          61005,
+          64,
+          11
+        ],
+        [
+          61006,
+          64,
+          10
+        ],
+        [
+          61007,
+          64,
+          11
+        ],
+        [
+          61008,
+          64,
+          11
+        ]
+      ],
+      "gain_over_no_actuator_correct": 94,
+      "frozen_required_gain": 64
+    },
+    "unseen_ring": {
+      "seeds": [
+        61009,
+        61010,
+        61011,
+        61012
+      ],
+      "candidate": [
+        256,
+        0,
+        0
+      ],
+      "bayesian": [
+        256,
+        0,
+        0
+      ],
+      "no_actuator": [
+        99,
+        0,
+        157
+      ],
+      "sham": [
+        99,
+        0,
+        157
+      ],
+      "round_robin_steer": [
+        248,
+        0,
+        8
+      ]
+    },
+    "negative_majority": {
+      "seeds": [
+        61013,
+        61014,
+        61015,
+        61016
+      ],
+      "candidate": [
+        132,
+        76,
+        48
+      ],
+      "bayesian": [
+        132,
+        76,
+        48
+      ],
+      "no_actuator": [
+        35,
+        7,
+        214
+      ],
+      "sham": [
+        35,
+        7,
+        214
+      ],
+      "round_robin_steer": [
+        116,
+        60,
+        80
+      ],
+      "interpretation": "UNSAFE: 76 confident errors outside fixed causal grammar"
+    },
+    "unseen_ABA": {
+      "seeds": [
+        61017,
+        61018,
+        61019,
+        61020
+      ],
+      "candidate": [
+        176,
+        80,
+        0
+      ],
+      "bayesian": [
+        176,
+        80,
+        0
+      ],
+      "no_actuator": [
+        73,
+        39,
+        144
+      ],
+      "sham": [
+        66,
+        24,
+        166
+      ],
+      "round_robin_steer": [
+        74,
+        74,
+        108
+      ],
+      "interpretation": "RETENTION NEGATIVE: 80 confidently wrong due unlabelled regime reversal"
+    }
+  },
+  "physical_action_cost": {
+    "worlds": 23,
+    "policies": 5,
+    "total_charged_steps": 5060,
+    "stationary_actions_per_arm": 48,
+    "ABA_actions_per_arm": 25,
+    "forced_flip_cap_stationary": 8,
+    "forced_flip_cap_ABA": 4,
+    "physical_flips_each_actuated_arm_across_all_seeds": 168,
+    "sham_actions_across_all_seeds": 168,
+    "causal_rule_learns_on_forced_flip": false
+  },
+  "learned_capacity_bits_per_control": 128,
+  "source_provenance": {
+    "run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43444319763",
+    "linux_artifact_id": 14046967976,
+    "windows_artifact_id": 14046617346,
+    "linux_raw_json_sha256": "9b4af4c4f783be34f1fe6c6fd83b5da2de4c4d0a0b2c45282c62903ea2387cae",
+    "windows_raw_json_sha256": "87a1cde97e4c008c666b9e07a15460d044dc8b5baa3c07671c9fd98e11cde61a",
+    "both_OS_stable_canonical_science_fields_sha256": "a691a8cdf7ca78ed5582d8720f5dd7f2ae851b22f3576bd929d6d61507c1b08d",
+    "stable_bytes": 62867,
+    "stable_exclusions": [
+      "full_process_peak_tracemalloc_bytes",
+      "worlds[*].arms[*].policy_decision_ns",
+      "worlds[*].arms[*].whole_training_ns"
+    ]
+  },
+  "runtime": {
+    "ubuntu": {
+      "candidate_training_ns": 113050127,
+      "bayesian_training_ns": 136496510,
+      "no_actuator_training_ns": 89933138,
+      "round_robin_training_ns": 17673547,
+      "sham_training_ns": 134718669,
+      "python_peak_tracemalloc_bytes": 121361
+    },
+    "windows": {
+      "candidate_training_ns": 147785200,
+      "bayesian_training_ns": 183803200,
+      "no_actuator_training_ns": 115413100,
+      "round_robin_training_ns": 23096900,
+      "sham_training_ns": 174438100,
+      "python_peak_tracemalloc_bytes": 121105
+    },
+    "compute_matched": false,
+    "physical_actions_matched": true
+  },
+  "interpretation": "Charged exogenous perturbations resolve prior absorbing states and allow full prediction on new synthetic rewired worlds under fixed affine grammar. A separately implemented Bayesian causal learner ties all predictions and trajectories. New actuator rights, not unique unconventional intelligence, explain the gain. Out-of-grammar and regime-switch confident errors prohibit promotion.",
+  "engineering_status": "Source-only 9/9 each platform PASS; inherited G29 failed due outdated atlas after new source. Exact final source atlas + cross-platform full regression required."
+}
