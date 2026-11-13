@@ -17,3 +17,21 @@ python scripts/build_code_atlas.py --check-if-present
 ```
 
 No source integration, merge, owner/loop scheduling, protected science first use, GPT/model training or deployment is authorized by this experiment.
+
+## Frozen SL03 outcome (prospective, Ubuntu + Windows)
+
+**Classification: DEV_SIGNAL_NOT_SCIENCE; frozen primary PASS.** Exact source was evaluated in [run 43495133883](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43495133883). The deterministic physical trajectory hashes, all 24 worlds' audit results and model-level metrics match across Ubuntu and Windows. Original per-world evaluator-only receipts and both platforms' wall times are preserved in [`result.json`](result.json).
+
+| Final cohort | Native no sleep: correct / confidently wrong | Selective consolidation: correct / confidently wrong |
+|---|---:|---:|
+| A→B→A return | 266 / 74 | 333 / 57 |
+| Stationary majority | 356 / 0 | 356 / 0 |
+| Out-of-grammar cubic | 102 / 23 | 189 / 25 |
+
+Return-to-A *never-observed-pair correct* increased from 114 to 153. The frozen coverage and confident-error thresholds all passed. **This is a synthetic DEVELOPMENT signal for evidence-selected replay over a naive online context update**, not a scientific validation of AGI.
+
+**Limits that block native/sleep-specific superiority:** a separately implemented conventional selective-consolidation model exactly tied the native candidate in all three cohorts; the same-compute online consolidation control also tied exactly. Therefore the observed gain cannot be attributed uniquely to sleep scheduling or the novel Yggdrasil substrate. The predefined 40-rule grammar favors in-family tests, and the out-of-grammar errors remain real. No gradients or tokens were used.
+
+The initial exact-source pull-request CI run passed syntax, focused tests, all 24 held-out cohorts, cross-platform deterministic checks and unchanged-source custody. Its inherited regression failed *only because the existing G29 source atlas was stale after adding source files*, a separate engineering indexing defect. G29 reanchoring and final full exact-SHA qualification must pass before marking engineering PASS.
+
+**Disposition:** Keep this contribution draft/unmerged, outside the native model, owner loop, protected science and parallel weight-programming line. Freeze the result and advance by testing selective retention against stronger independent context-inference and memory-consolidation controls, not by tuning SL03.
