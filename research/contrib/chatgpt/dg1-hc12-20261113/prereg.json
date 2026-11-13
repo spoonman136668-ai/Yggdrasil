@@ -1,0 +1,95 @@
+{
+  "schema": "ygg.dg1-hc12.preregistered-latent-context.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_HC12_OUTCOMES",
+  "source": "spoonman136668-ai/Yggdrasil@d36e4010709be8aa7907561e8312a3e9ddaf56f2",
+  "parent": "draft PR #980, HC11 MIXED_DEV/NO_GO; never reinterpret HC11",
+  "hypothesis": "A causal-program bank with prequential cross-state evidence for its current latent physical context can make some correct unseen-state predictions safely, unlike HC11's exact-pair twice-witness requirement, without recovering HC10's overconfidence.",
+  "methods": {
+    "native": "Frozen HC09 native two-bank 320 mask-bit causal program plus bounded 64 physical-event cross-state context-evidence log. Pre-update successful predictions from at least 2 distinct state/action pairs since last mismatch/switch are required to activate a context; a queried action additionally requires >=2 distinct prequentially validated states for that action and unanimous current-bank program output. Reset evidence on any local contradiction/unresolved observation or bank switch; never import hidden world phase. No free replay or evaluator fitting.",
+    "conventional": "Separately implemented HC09 conventional two-context control with the identical evidence filter; additionally independent empirical Bayesian run-length comparator with Beta(1,1) transition predictions and bounded observed-pair/run-length memory; report ties.",
+    "ablations": [
+      "native_hc11_gate2",
+      "native_hc10_ungated",
+      "conventional_hc11_gate2",
+      "conventional_context_evidence",
+      "bayesian_runlength"
+    ],
+    "action_comparison": "Same precommitted adaptive policy HC10, driven by one native shadow model from physically observed states, generates exactly one charged shared trajectory per world. All arms observe the identical transition stream, with no access to unused simulator actions. Compare model inference time and total process separately; label that control policy is common to all.",
+    "memory": "Native/conventional evidence <=64 physical event records each; no training from forced flips; cold canonical snapshot <=8192 bytes, SHA256 of physical trajectory; report model footprint and whole-process cost instead of claiming equal model capacity."
+  },
+  "worlds": {
+    "ABA": {
+      "seeds": [
+        92001,
+        92002,
+        92003,
+        92004,
+        92005,
+        92006,
+        92007,
+        92008
+      ],
+      "steps": 40,
+      "phase_b_steps": "16..31"
+    },
+    "stationary_majority": {
+      "seeds": [
+        92009,
+        92010,
+        92011,
+        92012,
+        92013,
+        92014,
+        92015,
+        92016
+      ],
+      "steps": 48
+    },
+    "OOD_cubic": {
+      "seeds": [
+        92017,
+        92018,
+        92019,
+        92020,
+        92021,
+        92022,
+        92023,
+        92024
+      ],
+      "steps": 48
+    },
+    "physics": "HC11 exact causal functions, including hidden sign/slope generation with seed*101+action*31; 4-bit states, 4 actions, at most eight charged exogenous flips, no reset and no hidden phase input to learners; distinct new seeds. Evaluate all 64 pairs only in evaluator, ABA additionally at step 16 and 32."
+  },
+  "primary": {
+    "ABA": {
+      "correct_at_least": 64,
+      "wrong_confident_at_most": 8,
+      "unseen_correct_at_least": 32,
+      "unseen_wrong_confident_at_most": 4
+    },
+    "stationary_majority": {
+      "correct_at_least": 128,
+      "wrong_confident_at_most": 4,
+      "unseen_correct_at_least": 64
+    },
+    "OOD_cubic": {
+      "wrong_confident_at_most": 8,
+      "unseen_wrong_confident_at_most": 4
+    },
+    "strict_superiority": "If the best independent conventional controller ties/beats native on both correctness and confident errors for any 2 of 3 cohorts, do not claim native mechanism superiority; scientific acceptance stays UNVERIFIED regardless.",
+    "classification": "DEV_SIGNAL if all thresholds pass and integrity controls pass; MIXED_DEV if some coverage increases but any safety bar fails; NEGATIVE_DEV if no coverage gain or safety dominates; INVALID if leakage/budget drift.",
+    "no_postresult_tuning": true
+  },
+  "controls": {
+    "no_oracle": true,
+    "no_evaluator_feedback": true,
+    "no_gradients": true,
+    "no_tokens": true,
+    "no_paid_api": true,
+    "no_external_model_training": true,
+    "no_mutation_to_main_native_owner_autonomous_loop_weight_research": true,
+    "no_scientific_first_use_without_separate_authority": true,
+    "deterministic_cross_os_regression_required": true,
+    "prereg_first_commit": true
+  }
+}
