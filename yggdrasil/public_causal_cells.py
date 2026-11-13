@@ -119,6 +119,30 @@ class PublicCausalCells:
             return 1
         return None
 
+    def consolidate_and_recycle(self, active_address: int,
+                                retained_address: int) -> None:
+        """Archive public action evidence before reusing one active cell.
+
+        This opt-in operation copies existing evidence; it never creates
+        synthetic observations, changes the chooser, expands storage, or
+        claims that action associations are causal laws. The retained
+        destination must be unused, and both action arms must have observed
+        outcomes. Validation completes before either slot is changed.
+        """
+        source = self._address(active_address, False)
+        destination = self._address(retained_address, True)
+        original = self._counts[source]
+        if any(sum(arm) == 0 for arm in original):
+            raise ValueError("PUBLIC_CAUSAL_CONSOLIDATION_INSUFFICIENT_EVIDENCE")
+        if any(any(arm) for arm in self._counts[destination]):
+            raise ValueError("PUBLIC_CAUSAL_RETAINED_DESTINATION_OCCUPIED")
+
+        # Build the complete replacement first; no public intervention is
+        # replayed or double-counted and no new storage slot is allocated.
+        archive = [list(arm) for arm in original]
+        empty = [[0, 0], [0, 0]]
+        self._counts[destination], self._counts[source] = archive, empty
+
     def snapshot(self) -> bytes:
         """One immutable, versioned 164-byte checkpoint with SHA-256 integrity."""
         raw = bytearray(self.MAGIC)
