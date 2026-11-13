@@ -1,0 +1,14 @@
+{
+  "schema": "ygg.dg1-sl01.wake-sleep-prereg.v1",
+  "source": "spoonman136668-ai/Yggdrasil@d36e4010709be8aa7907561e8312a3e9ddaf56f2",
+  "status": "FROZEN_BEFORE_SL01_IMPLEMENTATION_AND_OUTCOMES",
+  "hypothesis": "Bounded offline compression of physical episodes into causal rule masks improves cold-restored prediction on never-witnessed state-action pairs over equal-size episodic recall, without increasing confident errors or losing previously learned contexts.",
+  "design": "Synthetic, no-token, no-gradient, no-model; online physical experiences collected in two contexts, 16 distinct transitions per context, returned to first context for cold-retention. Sleep does not query simulator. Source rule family is fixed, so grammar novelty is not tested.",
+  "arms": ["episodic_fifo", "online_native_version_space", "sleep_native_compression", "conventional_batch_compression", "sleep_dream_ablation"],
+  "memory": "Each arm maximum 320 logical causal-program mask bits plus at most 32 physical episode tuples where relevant; compare actual serialized bytes separately. Offline sleep receives exactly the same transitions as controls; no extra action budget.",
+  "worlds": {"seeds": [93001,93002,93003,93004,93005,93006,93007,93008], "states": 16, "actions": 4, "contexts": 2, "physical_observations_per_context": 16, "return_to_A": true},
+  "primary": {"sleep_unseen_correct_excess_over_fifo": 16, "sleep_unseen_confident_error_max": 0, "return_A_correct_min": 16, "native_must_beat_conventional_for_mechanism_superiority": true},
+  "negative_controls": ["No sleep versus sleep; dream generated predictions not allowed to become empirical evidence; conventional exact same grammar and memory; prove evaluator outputs cannot influence updates; cold snapshot tamper rejection"],
+  "decision": "Development-only signal if thresholds reached; conventional tie or superior means no Yggdrasil-specific scientific advantage. Scientific acceptance remains unverified. Any failure stays negative; no tuning of seeds/thresholds after results.",
+  "boundaries": ["No merge, native model, main, controller, autonomous loop, first-use scientific data or weight-programming mutation", "No paid APIs, GPUs, gradient training or language-token foundation", "Existing HC11/HC12 research unchanged"]
+}
