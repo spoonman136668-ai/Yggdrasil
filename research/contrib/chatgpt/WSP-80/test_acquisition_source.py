@@ -19,6 +19,20 @@ class PrivateSourceAndActionPolicyTests(unittest.TestCase):
         self.assertEqual(len(session.ledger),20)
         self.assertEqual(policy.turn,20)
 
+    def test_registered_source_reachability_preflight_only(self):
+        # Evaluator-private generator validation; not a learner training query.
+        for seed in source.SEEDS:
+            world=source.build_world(seed)
+            seen={(0,)*6}
+            pending=[(0,)*6]
+            for state in pending:
+                for action in source.ACTIONS:
+                    after=world._step_oracle(state,action)
+                    if after not in seen:
+                        seen.add(after)
+                        pending.append(after)
+            self.assertEqual(len(seen),64,seed)
+
     def test_registered_access_disallows_non_selftest(self):
         with self.assertRaises(PermissionError):
             source.build_world(5609,'PRIMARY')
