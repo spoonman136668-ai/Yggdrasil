@@ -1,0 +1,93 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment": "DG1-HC10",
+  "parent_sha": "5913b9904f361f17216d931361baedeae5f65548",
+  "prior_pr": 976,
+  "date": "2026-11-13",
+  "kind": "external source-only falsification",
+  "hypothesis": "A physically charged intervention policy based on discrimination between retained banks may improve unlabeled A-B-A return-to-context over HC09's within-bank information policy. Conventional Jensen-Shannon context selection is a matched control, expected to tie in some settings.",
+  "previous_failure": "HC09 A-B-A only 68/512 correct, 32 confident errors, and 412 abstentions; prior majority tests 512/512 on hand-included grammar; cubic outside class 37 confident errors. Preserve.",
+  "seed_cohorts": {
+    "ABA": [
+      81001,
+      81002,
+      81003,
+      81004,
+      81005,
+      81006,
+      81007,
+      81008
+    ],
+    "stationary_majority": [
+      81009,
+      81010,
+      81011,
+      81012,
+      81013,
+      81014,
+      81015,
+      81016
+    ],
+    "OOD_cubic": [
+      81017,
+      81018,
+      81019,
+      81020,
+      81021,
+      81022,
+      81023,
+      81024
+    ]
+  },
+  "physics": {
+    "state": "4 physical binary sites, actions 0..3, starts at seed % 16, continuous physical evolution",
+    "generator": "For each action a use random.Random(seed*101+a*31), sign=randrange(2), slope=randrange(2)",
+    "ABA": "effect = left public bit((a+1)%4) XOR right bit((a+2)%4) XOR own_bit&slope XOR sign; invert effect in physical steps 16..31 inclusive, original effect in steps 0..15 and 32..39. No phase labels. 40 charged physical steps per arm, up to eight exogenous flips. Evaluator audits 16 states x4 actions at steps 16,32,40 only; never feeds answers to learner.",
+    "majority": "majority(bit((a+1)%4),bit((a+2)%4),own_bit) XOR sign, 48 physical steps, at most 8 flips",
+    "cubic": "int(state==15) XOR sign, outside fixed 40-rule grammar, 48 steps, at most 8 flips",
+    "costs": "Causal action costs one physical step, yields public before/action/after learner update. Forced public do(flip bit j) also costs one physical step and moves state xor(1<<j), NO causal update. No resets, arbitrary state training, physics oracle or evaluator answer."
+  },
+  "models": {
+    "candidate": "Use HC09 DualRegimeCausalCells source blob 0da60a400af412a9aeb1810f9e77b7c51e997625 without changes: two banks, 40 functions/action, 320 logical hypothesis bits. New pure policy when two banks available maximizes absolute difference of their predicted Bernoulli effect-1 probabilities at current state. If no disagreement there, affordable bit flip chosen to maximize maximum interbank disagreement at the hypothetical postflip state. If one bank or no possible positive separation, fallback to unchanged HC09 policy. All real actions charged. Low-index deterministic ties.",
+    "conventional": "Unmodified independently coded HC09 ConventionalContextModel blob 6da39592297c09aa33dc8d01885bafdc86a8de61, two contexts same 320 bits; independently coded pure Jensen-Shannon divergence for public intercontext action selection, same physical interface and caps, fallback its own Shannon within-context selector. No HC10 candidate code imported.",
+    "no_probe": "Unmodified HC09 dual bank and original policy; same 320 bits, budgets",
+    "no_reactivation": "Same 320-bit 2-bank HC09 with reactivate=False and candidate policy",
+    "single_bank": "Same family 160-bit 1-bank HC09, mechanistic unequal-capacity control",
+    "cyclic": "Two-bank 320-bit HC09 with physical forced bit flips at steps 4,9,14,19,24,29,34,39 and causal action step%4 otherwise"
+  },
+  "metrics": [
+    "post-training and phase-boundary 64-query evaluator-only accuracy/confident-wrong/abstention and unseen state-action breakdown",
+    "actual causal and flip charges, version space size, reactivation, bank switch counts, per-policy physical action ledger SHA256",
+    "exact cold-restored canonical <=4096-byte SHA256 checkpoint, observed training and decision duration, traced process memory"
+  ],
+  "freeze": {
+    "ABA": "Candidate >=160/512 correct, >=64/512 more than no_probe, zero confident-wrong. Any miss = A-B-A PRIMARY NEGATIVE.",
+    "majority": ">=384/512 correct and zero confident wrong in stationary majority source, otherwise STATIONARY NEGATIVE",
+    "cubic": "Any confident wrong in OOD cubic is unsafe, recorded as negative regardless of other successes",
+    "conventional": "Report independent conventional equal-capacity result. Any tie precludes superiority. Whole-process compute cannot be declared equal from equal physical action counts alone.",
+    "classification": "DEV_SIGNAL_ONLY_NOT_SCIENCE only if ABA+majority pass and cubic zero wrong, else MIXED_DEV if either ABA/majority pass, otherwise NEGATIVE_DEV. INVALID on leaked phase/oracle, extra/free actions, unregistered seeds, noncanonical snapshot or post-result change.",
+    "scientific_pass": "NOT AVAILABLE for synthetic source-aligned DEV; actual original-world external qualification needed."
+  },
+  "constraints": {
+    "python": "3.12 stdlib",
+    "models": 0,
+    "gradients": 0,
+    "paid_API": false,
+    "worlds": 24,
+    "policies": 6,
+    "external_research": true,
+    "no_accepted_refs": true,
+    "no_merge": true,
+    "no_native_runtime": true,
+    "no_owner_or_scheduler": true,
+    "no_protected_science_first_use": true,
+    "no_weight_editing_changes": true
+  },
+  "paths": [
+    "research/contrib/chatgpt/dg1-hc10-20261113/*",
+    ".github/workflows/dg1-hc10-qualification.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ]
+}
