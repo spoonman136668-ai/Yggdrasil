@@ -14,12 +14,35 @@ import sys
 
 _PARENT = Path(__file__).resolve().parents[1] / "WSP-59"
 sys.path.insert(0, str(_PARENT))
-from agent import GroundedCausalAgent, DOMAINS, STATES, CHANNELS, PARENT_SETS
+from agent import GroundedCausalAgent, DOMAINS, STATES, CHANNELS, PARENT_SETS, _valid_state
 
 BaseAgent = GroundedCausalAgent
 
 
-class IdentifyingAgent(BaseAgent):
+class ExtendedProbeBudget:
+    """WSP60-specific 10+2 charged observations per action; no WSP59 edits."""
+
+    def observe(self, before, action, after):
+        _valid_state(before)
+        _valid_state(after)
+        if type(action) is not int or action not in CHANNELS:
+            raise ValueError("invalid action channel")
+        if len(self.rows) >= 48:
+            raise ValueError("WSP60 total charged action ceiling")
+        if (before, action) in {(b, a) for b, a, _ in self.rows}:
+            raise ValueError("duplicate charged physical action")
+        if sum(a == action for _, a, _ in self.rows) >= 12:
+            raise ValueError("WSP60 per-action budget exceeded")
+        self.rows.append((before, action, after))
+        self._rules = None
+
+
+class ExtendedMinAgent(ExtendedProbeBudget, BaseAgent):
+    """Old WSP59 minimum-parent ablation at exactly the same WSP60 budget."""
+    pass
+
+
+class IdentifyingAgent(ExtendedProbeBudget, BaseAgent):
     gradient_updates = 0
 
     @staticmethod
