@@ -1,0 +1,30 @@
+name: WSP73 post-write real physical confidence at matched prediction coverage SELFTEST
+on:
+  pull_request:
+    branches:
+      - research/wsp73-committee-gated-neural-dreams-20261113
+    paths:
+      - 'research/contrib/chatgpt/WSP-73/**'
+      - '.github/workflows/wsp73-selftest.yml'
+permissions:
+  contents: read
+jobs:
+  focused:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: WSP73 physically charged C audit of neural confidence at source-blind equal coverage
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-73 -p 'test_*.py' -v
