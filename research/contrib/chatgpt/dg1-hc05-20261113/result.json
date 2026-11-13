@@ -1,0 +1,245 @@
+{
+  "schema": "yggdrasil.dg1-hc05.source-dev-result-summary.v1",
+  "experiment": "DG1-HC05",
+  "prereg_sha": "d856b93ecf3428c89662e476eb070b78a62f1dbd",
+  "first_test_source_sha": "a9136bf85a0e12efa95e97487ac462f42c6ed220",
+  "classification": "MIXED_DEV",
+  "scientific_acceptance": "UNVERIFIED",
+  "stationary_main_pass": false,
+  "routing_pass": true,
+  "out_of_grammar_status": "UNSAFE_OUT_OF_CLASS",
+  "frozen_thresholds": {
+    "stationary_candidate_above_max_greedy_round_robin": 0.0625,
+    "routing_candidate_above_greedy": 0.03125,
+    "within_class_confident_errors": 0
+  },
+  "observed_gain_vs_controls": {
+    "stationary_candidate_vs_strongest": 0.03125,
+    "stationary_below_frozen_threshold": 0.03125,
+    "routing_candidate_vs_greedy": 0.09375
+  },
+  "cohorts": {
+    "stationary": {
+      "worlds": 8,
+      "action_budget_per_policy_per_world": 12,
+      "queries": 512,
+      "lookahead": {
+        "correct": 436,
+        "wrong_confident": 0,
+        "abstained": 76
+      },
+      "greedy": {
+        "correct": 398,
+        "wrong_confident": 0,
+        "abstained": 114
+      },
+      "round_robin": {
+        "correct": 420,
+        "wrong_confident": 0,
+        "abstained": 92
+      },
+      "random": {
+        "correct": 334,
+        "wrong_confident": 0,
+        "abstained": 178
+      },
+      "algorithmically_equivalent_conventional": {
+        "correct": 436,
+        "wrong_confident": 0,
+        "abstained": 76
+      }
+    },
+    "routing": {
+      "worlds": 4,
+      "action_budget_per_policy_per_world": 12,
+      "queries": 256,
+      "lookahead": {
+        "correct": 234,
+        "wrong_confident": 0,
+        "abstained": 22
+      },
+      "greedy": {
+        "correct": 210,
+        "wrong_confident": 0,
+        "abstained": 46
+      },
+      "round_robin": {
+        "correct": 206,
+        "wrong_confident": 0,
+        "abstained": 50
+      },
+      "random": {
+        "correct": 166,
+        "wrong_confident": 0,
+        "abstained": 90
+      },
+      "algorithmically_equivalent_conventional": {
+        "correct": 234,
+        "wrong_confident": 0,
+        "abstained": 22
+      }
+    },
+    "out_of_grammar": {
+      "worlds": 4,
+      "action_budget_per_policy_per_world": 12,
+      "queries": 256,
+      "lookahead": {
+        "correct": 118,
+        "wrong_confident": 38,
+        "abstained": 100
+      },
+      "greedy": {
+        "correct": 134,
+        "wrong_confident": 46,
+        "abstained": 76
+      },
+      "round_robin": {
+        "correct": 110,
+        "wrong_confident": 34,
+        "abstained": 112
+      },
+      "random": {
+        "correct": 100,
+        "wrong_confident": 40,
+        "abstained": 116
+      },
+      "algorithmically_equivalent_conventional": {
+        "correct": 118,
+        "wrong_confident": 38,
+        "abstained": 100
+      }
+    }
+  },
+  "resource_metrics": {
+    "charged_real_actions_all_policies": 960,
+    "logical_mask_bits_per_model": 24,
+    "peak_tracemalloc_bytes_linux": 84183,
+    "peak_tracemalloc_bytes_windows": 84210,
+    "unmatched_computation": "Two-step planning requires more candidate evaluations than simple greedy or passive. No equal-compute advantage claimed.",
+    "no_gradient_steps": true,
+    "no_paid_model_calls": true,
+    "cold_restore_byte_identical": true
+  },
+  "per_seed_lookahead": [
+    {
+      "seed": 31001,
+      "cohort": "stationary",
+      "correct": 56,
+      "wrong_confident": 0,
+      "abstained": 8
+    },
+    {
+      "seed": 31002,
+      "cohort": "stationary",
+      "correct": 56,
+      "wrong_confident": 0,
+      "abstained": 8
+    },
+    {
+      "seed": 31003,
+      "cohort": "stationary",
+      "correct": 64,
+      "wrong_confident": 0,
+      "abstained": 0
+    },
+    {
+      "seed": 31004,
+      "cohort": "stationary",
+      "correct": 50,
+      "wrong_confident": 0,
+      "abstained": 14
+    },
+    {
+      "seed": 31005,
+      "cohort": "stationary",
+      "correct": 56,
+      "wrong_confident": 0,
+      "abstained": 8
+    },
+    {
+      "seed": 31006,
+      "cohort": "stationary",
+      "correct": 30,
+      "wrong_confident": 0,
+      "abstained": 34
+    },
+    {
+      "seed": 31007,
+      "cohort": "stationary",
+      "correct": 60,
+      "wrong_confident": 0,
+      "abstained": 4
+    },
+    {
+      "seed": 31008,
+      "cohort": "stationary",
+      "correct": 64,
+      "wrong_confident": 0,
+      "abstained": 0
+    },
+    {
+      "seed": 31009,
+      "cohort": "routing",
+      "correct": 60,
+      "wrong_confident": 0,
+      "abstained": 4
+    },
+    {
+      "seed": 31010,
+      "cohort": "routing",
+      "correct": 54,
+      "wrong_confident": 0,
+      "abstained": 10
+    },
+    {
+      "seed": 31011,
+      "cohort": "routing",
+      "correct": 60,
+      "wrong_confident": 0,
+      "abstained": 4
+    },
+    {
+      "seed": 31012,
+      "cohort": "routing",
+      "correct": 60,
+      "wrong_confident": 0,
+      "abstained": 4
+    },
+    {
+      "seed": 31013,
+      "cohort": "out_of_grammar",
+      "correct": 44,
+      "wrong_confident": 12,
+      "abstained": 8
+    },
+    {
+      "seed": 31014,
+      "cohort": "out_of_grammar",
+      "correct": 36,
+      "wrong_confident": 12,
+      "abstained": 16
+    },
+    {
+      "seed": 31015,
+      "cohort": "out_of_grammar",
+      "correct": 8,
+      "wrong_confident": 4,
+      "abstained": 52
+    },
+    {
+      "seed": 31016,
+      "cohort": "out_of_grammar",
+      "correct": 30,
+      "wrong_confident": 10,
+      "abstained": 24
+    }
+  ],
+  "independently_reproduced_linux_windows_stable_fields_sha256": "ec48adda871e5e7804b70b64280c82c4535fa7e6ed4f894a2c4317776503d4d8",
+  "full_artifacts": {
+    "linux": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43427559607/artifacts/14037527724",
+    "windows": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43427559607/artifacts/14036653832"
+  },
+  "interpretation": "A narrow 4-world routing cohort meets a preregistered 2-step probing development criterion (+9.38pp over one-step greedy), but eight-world stationary cohort fails stronger overall criterion (+3.125pp over round robin vs required +6.25pp). Equal conventional symbolic two-step algorithm ties exactly. 38 wrong-confident out-of-grammar predictions prohibit safety or AGI claims.",
+  "engineering": "source DEV 10/10 focused tests per platform; mandatory inherited full regression blocked by G29 stale indexed atlas before final pin; requalification required",
+  "decision": "Preserve mixed/negative and do not promote or merge into native Yggdrasil. Strong independent equal-compute controls required."
+}
