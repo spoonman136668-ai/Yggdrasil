@@ -1,0 +1,337 @@
+{
+  "schema": "ygg.dg1-sl11.original-prospective-result-summary.v1",
+  "experiment": "DG1-SL11",
+  "original_first_use": {
+    "run_id": 43521867159,
+    "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43521867159",
+    "source_sha": "d9401eb2547376a2ead958446096c367d10a50c7",
+    "original_ubuntu_artifact_id": 14083003331,
+    "original_windows_artifact_id": 14083331196,
+    "frozen_prereg_sha": "2717821accf3c22140b58859d7c8bc8c9fd5a2de"
+  },
+  "matched_platforms": [
+    "ubuntu-latest",
+    "windows-2022"
+  ],
+  "cross_platform_verification": "All four cohort × eight arm final audit aggregates, the frozen primary gate map, class, primary Boolean and intervention count were identical across original Ubuntu and Windows results. CPU ratio differs as allowed. Per-world cross-OS raw JSON hashes have not been independently compared; each OS's own CI passed paired physical trace checks and cold restore, but original overall workflow failed only due stale generated atlas.",
+  "design": {
+    "new_worlds": 32,
+    "arms": 8,
+    "actual_charged_physical_steps": 20480,
+    "actually_paid_causal_observations": 17920,
+    "charged_flip_actions": 2560,
+    "checkpoint_bytes_limit": 8192,
+    "paired_physical_replay": true,
+    "cross_policy_information_same": false
+  },
+  "scientific": {
+    "classification": "MIXED_DEV",
+    "primary_pass": false,
+    "scientific_acceptance": "UNVERIFIED",
+    "primary_gate_results": {
+      "cpu_vs_original_same_trace": false,
+      "nonpassive_in_ood_worlds": true,
+      "ood_confident_error_vs_original": true,
+      "ood_correct_gain_vs_original_same_trace": true,
+      "ood_policy_gain_vs_gated_passive": true,
+      "ood_unseen_gain_vs_original_same_trace": true,
+      "ood_unseen_noepisodic_nonregression": true,
+      "ood_unseen_vs_bayesian_same_trace": false,
+      "returnA_original_nonregression": true,
+      "returnB_gain_vs_original_same_trace": false,
+      "returnB_loss_vs_noepisodic_same_trace": true,
+      "stable_confident_error_vs_noepisodic": true,
+      "stable_loss_vs_noepisodic_same_trace": true,
+      "transport_to_original_policy_returnB": false
+    },
+    "measured_cpu_ratio_vs_original_same_physical_trace": {
+      "ubuntu-latest": 2.077996735746003,
+      "windows-2022": 2.320256459427573
+    },
+    "ood_worlds_with_nonpassive_actions": 8,
+    "final_uniform_512_pair_audit_aggregates": {
+      "COMPOSITION_OOD": {
+        "bayes_on_gated": {
+          "abstained": 0,
+          "correct": 291,
+          "unseen_abstained": 0,
+          "unseen_correct": 98,
+          "unseen_wrong_confident": 86,
+          "wrong_confident": 221
+        },
+        "gated_active": {
+          "abstained": 0,
+          "correct": 311,
+          "unseen_abstained": 0,
+          "unseen_correct": 100,
+          "unseen_wrong_confident": 84,
+          "wrong_confident": 201
+        },
+        "gated_on_original": {
+          "abstained": 0,
+          "correct": 314,
+          "unseen_abstained": 0,
+          "unseen_correct": 100,
+          "unseen_wrong_confident": 80,
+          "wrong_confident": 198
+        },
+        "gated_passive": {
+          "abstained": 0,
+          "correct": 300,
+          "unseen_abstained": 0,
+          "unseen_correct": 94,
+          "unseen_wrong_confident": 99,
+          "wrong_confident": 212
+        },
+        "noepisodic_on_gated": {
+          "abstained": 0,
+          "correct": 304,
+          "unseen_abstained": 0,
+          "unseen_correct": 103,
+          "unseen_wrong_confident": 81,
+          "wrong_confident": 208
+        },
+        "original_active": {
+          "abstained": 0,
+          "correct": 293,
+          "unseen_abstained": 0,
+          "unseen_correct": 92,
+          "unseen_wrong_confident": 88,
+          "wrong_confident": 219
+        },
+        "original_on_gated": {
+          "abstained": 0,
+          "correct": 272,
+          "unseen_abstained": 0,
+          "unseen_correct": 89,
+          "unseen_wrong_confident": 95,
+          "wrong_confident": 240
+        },
+        "original_on_passive": {
+          "abstained": 0,
+          "correct": 312,
+          "unseen_abstained": 0,
+          "unseen_correct": 102,
+          "unseen_wrong_confident": 91,
+          "wrong_confident": 200
+        }
+      },
+      "RETURN_A": {
+        "bayes_on_gated": {
+          "abstained": 0,
+          "correct": 396,
+          "unseen_abstained": 0,
+          "unseen_correct": 144,
+          "unseen_wrong_confident": 64,
+          "wrong_confident": 116
+        },
+        "gated_active": {
+          "abstained": 0,
+          "correct": 412,
+          "unseen_abstained": 0,
+          "unseen_correct": 160,
+          "unseen_wrong_confident": 48,
+          "wrong_confident": 100
+        },
+        "gated_on_original": {
+          "abstained": 0,
+          "correct": 401,
+          "unseen_abstained": 0,
+          "unseen_correct": 159,
+          "unseen_wrong_confident": 53,
+          "wrong_confident": 111
+        },
+        "gated_passive": {
+          "abstained": 0,
+          "correct": 394,
+          "unseen_abstained": 0,
+          "unseen_correct": 162,
+          "unseen_wrong_confident": 71,
+          "wrong_confident": 118
+        },
+        "noepisodic_on_gated": {
+          "abstained": 0,
+          "correct": 436,
+          "unseen_abstained": 0,
+          "unseen_correct": 166,
+          "unseen_wrong_confident": 42,
+          "wrong_confident": 76
+        },
+        "original_active": {
+          "abstained": 0,
+          "correct": 389,
+          "unseen_abstained": 0,
+          "unseen_correct": 153,
+          "unseen_wrong_confident": 59,
+          "wrong_confident": 123
+        },
+        "original_on_gated": {
+          "abstained": 0,
+          "correct": 390,
+          "unseen_abstained": 0,
+          "unseen_correct": 145,
+          "unseen_wrong_confident": 63,
+          "wrong_confident": 122
+        },
+        "original_on_passive": {
+          "abstained": 0,
+          "correct": 377,
+          "unseen_abstained": 0,
+          "unseen_correct": 162,
+          "unseen_wrong_confident": 71,
+          "wrong_confident": 135
+        }
+      },
+      "RETURN_B": {
+        "bayes_on_gated": {
+          "abstained": 0,
+          "correct": 381,
+          "unseen_abstained": 0,
+          "unseen_correct": 115,
+          "unseen_wrong_confident": 72,
+          "wrong_confident": 131
+        },
+        "gated_active": {
+          "abstained": 0,
+          "correct": 420,
+          "unseen_abstained": 0,
+          "unseen_correct": 140,
+          "unseen_wrong_confident": 47,
+          "wrong_confident": 92
+        },
+        "gated_on_original": {
+          "abstained": 0,
+          "correct": 418,
+          "unseen_abstained": 0,
+          "unseen_correct": 139,
+          "unseen_wrong_confident": 44,
+          "wrong_confident": 94
+        },
+        "gated_passive": {
+          "abstained": 0,
+          "correct": 419,
+          "unseen_abstained": 0,
+          "unseen_correct": 140,
+          "unseen_wrong_confident": 49,
+          "wrong_confident": 93
+        },
+        "noepisodic_on_gated": {
+          "abstained": 0,
+          "correct": 419,
+          "unseen_abstained": 0,
+          "unseen_correct": 139,
+          "unseen_wrong_confident": 48,
+          "wrong_confident": 93
+        },
+        "original_active": {
+          "abstained": 0,
+          "correct": 436,
+          "unseen_abstained": 0,
+          "unseen_correct": 145,
+          "unseen_wrong_confident": 38,
+          "wrong_confident": 76
+        },
+        "original_on_gated": {
+          "abstained": 0,
+          "correct": 432,
+          "unseen_abstained": 0,
+          "unseen_correct": 148,
+          "unseen_wrong_confident": 39,
+          "wrong_confident": 80
+        },
+        "original_on_passive": {
+          "abstained": 0,
+          "correct": 427,
+          "unseen_abstained": 0,
+          "unseen_correct": 148,
+          "unseen_wrong_confident": 41,
+          "wrong_confident": 85
+        }
+      },
+      "STABLE": {
+        "bayes_on_gated": {
+          "abstained": 0,
+          "correct": 403,
+          "unseen_abstained": 0,
+          "unseen_correct": 172,
+          "unseen_wrong_confident": 59,
+          "wrong_confident": 109
+        },
+        "gated_active": {
+          "abstained": 0,
+          "correct": 497,
+          "unseen_abstained": 0,
+          "unseen_correct": 216,
+          "unseen_wrong_confident": 15,
+          "wrong_confident": 15
+        },
+        "gated_on_original": {
+          "abstained": 0,
+          "correct": 500,
+          "unseen_abstained": 0,
+          "unseen_correct": 221,
+          "unseen_wrong_confident": 12,
+          "wrong_confident": 12
+        },
+        "gated_passive": {
+          "abstained": 0,
+          "correct": 457,
+          "unseen_abstained": 0,
+          "unseen_correct": 224,
+          "unseen_wrong_confident": 55,
+          "wrong_confident": 55
+        },
+        "noepisodic_on_gated": {
+          "abstained": 0,
+          "correct": 497,
+          "unseen_abstained": 0,
+          "unseen_correct": 216,
+          "unseen_wrong_confident": 15,
+          "wrong_confident": 15
+        },
+        "original_active": {
+          "abstained": 0,
+          "correct": 439,
+          "unseen_abstained": 0,
+          "unseen_correct": 193,
+          "unseen_wrong_confident": 40,
+          "wrong_confident": 73
+        },
+        "original_on_gated": {
+          "abstained": 0,
+          "correct": 432,
+          "unseen_abstained": 0,
+          "unseen_correct": 179,
+          "unseen_wrong_confident": 52,
+          "wrong_confident": 80
+        },
+        "original_on_passive": {
+          "abstained": 0,
+          "correct": 433,
+          "unseen_abstained": 0,
+          "unseen_correct": 217,
+          "unseen_wrong_confident": 62,
+          "wrong_confident": 79
+        }
+      }
+    },
+    "contrasts": {
+      "OOD_correct_gain_same_trace_vs_original": 39,
+      "OOD_unseen_gain_same_trace_vs_original": 11,
+      "OOD_unseen_gain_same_trace_vs_bayes": 2,
+      "RETURN_B_correct_gain_same_trace_vs_original": -12,
+      "RETURN_B_correct_gain_same_trace_vs_noepisodic": 1,
+      "STABLE_correct_gain_same_trace_vs_original": 65,
+      "STABLE_correct_gain_same_trace_vs_noepisodic": 0
+    },
+    "interpretation": "Physical-witness gating improved unfamiliar full-audit prediction and stationary full-audit against unmodified episodic learner on exact same charged physical trace. It failed preregistered return-B gain, unseen superiority over independent Bayesian, transfer of retention advantage on original policy, and CPU cap on both operating systems. On stationary gate equals frozen no-episodic correct (497), so evidence does not prove it retrieved the right old context versus simply suppressed wrong-context switching. No native or AGI claim.",
+    "limitations": "Synthetic four-bit world with public finite grammar; same-trajectory learner controls match paid actions and information, different policies do not. Full-audit correctness not sufficient to prove semantic causal transfer; no independent external scientific replication."
+  },
+  "engineering": {
+    "original_focused_tests_per_os": "PASS (7 tests each OS)",
+    "original_full_repo_regression": "FAIL only inherited G29 generated atlas indexed file set changed; not failure of original SL11 scientific/mechanism tests",
+    "final_exact_sha": "PENDING_GENERATED_ATLAS_REANCHOR",
+    "native_source_changed_after_original_outcome": false
+  },
+  "isolation": "Draft/unmerged, no change to main/native model/accepted refs, controller/research loop, Wingless/Forge/Hybrid/weight research; results kept in GitHub repo/Actions, no ChatGPT Library file."
+}
