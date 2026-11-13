@@ -1,0 +1,85 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "DG1-MC01-20261113",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can a fixed-budget native-local motif learner infer action-conditioned neighbor dependence from sequential public state/action/next-state, then predict unseen transitions and compose multiple steps more accurately than matched no-neighbor and exact-transition-memory controls?",
+  "hypothesis": "Local factorization allows transfer across global contexts without access to environment rules, but may underperform strong statistical or symbolic controls and is not general intelligence.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    "main yggdrasil/public_causal_cells.py fixed-count control at 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "WSP63 PR #954 is separate direct weight-editing research and is NOT a parent for this experiment"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/dg1-mc01-20261113/",
+    "yggdrasil/local_causal_motif_dev.py",
+    "tests/test_local_causal_motif_dev.py"
+  ],
+  "inputs": [
+    {
+      "name": "synthetic four-bit local-ring public step environment",
+      "source": "new fixed development-only generator in tests/test_local_causal_motif_dev.py; no outside data, hidden physics or model API exposed to learner",
+      "sha256": "to-be-replaced-by-final-exact-source-identity-before-any-primary-run"
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      71101,
+      71102,
+      71103,
+      71104,
+      71105,
+      71106,
+      71107,
+      71108
+    ],
+    "split": "71101-71104 in-family local binary neighbor gates, 71105-71108 deliberately out-of-family self-conditioned gates; all eight are DEV/SELFTEST only, never official protected sources",
+    "ordering": "one continuous zero-reset, 64 public action-consequence steps per seeded world with action=(step + seed)%4; metrics on all 16 states x 4 actions, strictly excluding observed state/action pairs; no arbitrary-state observations during fit",
+    "data_budget": "64 chronological public source steps per world per model; no labels, hidden gate codes, evaluator outcomes or extra synthetic counterfactuals exposed to learner",
+    "compute_budget": "fixed 64 updates and 64 one-step evaluation queries per world; two-step composition is evaluated from prediction only with no additional training",
+    "capacity": "four functional cells within 7 active + 9 retained hard-address envelope; exactly 4 learned float64 coefficients per active cell, fixed bounds; no growth, global transition table or external neural model",
+    "evaluator": "unseen state-action effect correctness and balanced accuracy, 2-action rollout exact-state accuracy on unseen first transitions, cold checkpoint parity and retained no-interference unit checks; record CPU time/peak Python tracked allocations separately",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "exact global (state,action)->next-state memory (same ledger) with abstention on unknown",
+    "no-neighbor same-capacity action-effect learner",
+    "always-no-change baseline",
+    "out-of-family self-conditioned negative control",
+    "trained cell ablative replacement by no-change behavior"
+  ],
+  "metrics": [
+    "unseen state/action count",
+    "unseen toggle balanced accuracy",
+    "two-action rollout exact-state accuracy",
+    "baseline accuracies",
+    "checkpoint exact parity",
+    "learned float64 count, bytes, steps and wall time"
+  ],
+  "classification_rules": {
+    "supported": "DEV_SIGNAL only if >=12 unseen state/action transitions per in-family world, learned unseen balanced accuracy >=0.70 in each of 4 worlds, >=0.10 absolute above strongest fair control (no-neighbor, always-no-change, exact observed lookup with abstentions scored as errors) averaged over 4, two-step rollout exact rate >=0.60, zero old-skill loss on cold restore and reproducible two-platform focused+full regression. Not a SCIENTIFIC_PASS.",
+    "mixed": "Any valid nontrivial advantage on a subset but one or more DEV_SIGNAL criteria missed; preserve all failed seed/world values.",
+    "negative": "Valid run that misses DEV_SIGNAL and does not meet mixed criteria, or is uniformly beaten by a matched control.",
+    "invalid": "Unfrozen code/identity, source-rule leakage, extra actions, altered seeds or thresholds, contradictory snapshots, missing per-world counts, missing required comparator, or violated fixed budget."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage",
+    "new schedule/controller/runner",
+    "WSP63 source edits",
+    "protected first-use"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "This commit freezes the prospective development experiment before adding code. No official science evaluation is authorized; stronger independent baselines and authentic-world tests remain mandatory before AGI-related conclusions."
+}
