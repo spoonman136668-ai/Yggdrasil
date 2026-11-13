@@ -36,6 +36,7 @@ on:
       - research/wsp55-operator-identification-20261112
       - research/wsp56-out-of-family-physical-rules-20261112
       - research/wsp57-sparse-active-causal-probes-20261112
+      - research/wsp58-early-budget-active-probe-frontier-20261112
     paths:
       - 'research/contrib/chatgpt/WSP-21/**'
       - 'research/contrib/chatgpt/WSP-22/**'
@@ -71,6 +72,7 @@ on:
       - 'research/contrib/chatgpt/WSP-56/**'
       - 'research/contrib/chatgpt/WSP-57/**'
       - 'research/contrib/chatgpt/WSP-58/**'
+      - 'research/contrib/chatgpt/WSP-59/**'
       - '.github/workflows/wsp21-pr-validation.yml'
       - '.ice/code-atlas.*'
 permissions:
@@ -120,6 +122,10 @@ jobs:
           for offset in range(0,len(encoded),4096):
               print("WSP53_ATLAS_DELTA|"+str(offset//4096)+"|"+encoded[offset:offset+4096])
           PY
+      - name: WSP59 cold-start grounded planning SELFTEST (no DEV or PRIMARY exposure)
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-59 -p 'test_*.py' -v
       - name: WSP58 early-budget active-probe SELFTEST (no DEV or PRIMARY exposure)
         env:
           PYTHONDONTWRITEBYTECODE: '1'
