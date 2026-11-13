@@ -1,0 +1,106 @@
+name: DG1-SL12 physical return archive retrieval DEV
+on:
+  pull_request:
+    paths:
+      - 'research/contrib/chatgpt/dg1-sl12-20261113/**'
+      - '.github/workflows/dg1-sl12-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Source and focused test syntax
+        run: python -m py_compile research/contrib/chatgpt/dg1-sl12-20261113/sl12.py research/contrib/chatgpt/dg1-sl12-20261113/test_sl12.py
+      - name: Frozen, physical-paid, replay, archive and cold tests
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/dg1-sl12-20261113 -p 'test_*.py' -v
+      - name: Prospective original 32-world six-arm physical archive research
+        run: python research/contrib/chatgpt/dg1-sl12-20261113/sl12.py > sl12-original-result.json
+      - name: Enforce physical custody and report frozen science independently
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('sl12-original-result.json').read_text())
+          assert d['freeze_sha']=='33f6cf977890033fa71398006d52a9808ce2e109'
+          assert d['world_count']==32 and len(d['arms'])==6
+          assert d['charged_steps']==15360 and d['charged_flips']==1920
+          assert d['paid_causal_observations']==13440
+          matched=('archive_probe','no_archive_on_probe','sl11_on_probe',
+                   'noepisodic_on_probe','bayes_on_probe')
+          assert all(len({w['arms'][a]['trace_sha256'] for a in matched})==1
+                     for w in d['worlds'])
+          assert all(len({z['trace_first40_sha256'] for z in w['arms'].values()})==1
+                     for w in d['worlds'])
+          assert all(z['charged_steps']==80 and z['flips']==10 and
+                     z['causal_observations']==70 and
+                     len(z['cold_snapshot_bytes'])==3 and
+                     max(z['cold_snapshot_bytes']+[z['final_snapshot_bytes']])<=8192
+                     for w in d['worlds'] for z in w['arms'].values())
+          assert all(sum(z['audits'][str(t)][k] for k in
+                     ('correct','wrong_confident','abstained'))==64
+                     for w in d['worlds'] for z in w['arms'].values()
+                     for t in (40,44,56,60,64,72,80))
+          assert all(not any(q['archived_reuse'] for q in
+                     w['arms']['no_archive_on_probe']['memory_transitions'])
+                     for w in d['worlds'])
+          print('SL12_PRIMARY:'+str(d['primary_pass']))
+          print('SL12_CLASSIFICATION:'+d['classification'])
+          print('SL12_RETRIEVAL:'+json.dumps(d['reused_archived_context_worlds'],sort_keys=True,separators=(',',':')))
+          print('SL12_GATES:'+json.dumps(d['primary_gates'],sort_keys=True,separators=(',',':')))
+          print('SL12_AUDITS:'+json.dumps(d['aggregates'],sort_keys=True,separators=(',',':')))
+          print('SL12_CPU_RATIO:'+str(d['median_candidate_cpu_ratio_vs_no_archive']))
+          PY
+      - name: Mandatory full inherited repository regression on original source
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Exact source G29 pinned atlas acceptance
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Preserve original per-world prospective outcome in GitHub Actions
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-sl12-original-paid-worlds-${{ matrix.os }}
+          path: sl12-original-result.json
+          if-no-files-found: ignore
+      - name: Remove transient result
+        if: always()
+        shell: bash
+        run: rm -f sl12-original-result.json
+      - name: Verify tracked source remains untouched
+        if: always()
+        run: git diff --exit-code
+      - name: Emit generated-only atlas from exact original source
+        if: always() && matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,base64
+          for ext in ('json','html','ice'):
+              raw=Path('.ice/code-atlas.'+ext).read_bytes()
+              print('SL12_ATLAS_START:'+ext+':'+str(len(raw))+':'+hashlib.sha256(raw).hexdigest())
+              b64=base64.b64encode(raw).decode('ascii')
+              for offset in range(0,len(b64),4096):
+                  print('SL12_ATLAS_CHUNK:'+ext+':'+b64[offset:offset+4096])
+              print('SL12_ATLAS_END:'+ext)
+          PY
