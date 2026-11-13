@@ -1,0 +1,63 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-62",
+  "created": "2026-11-13",
+  "title": "Adaptive low-degree Boolean numerical representation from physically reachable consequences",
+  "status": "FROZEN_PROSPECTIVE_ENGINEERING_SELFTEST_NOT_SCIENTIFIC_ACCEPTANCE",
+  "parent": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "PR": 952,
+    "SHA": "58f323dd65b9bd02854f5a8fd16b1cf0c4fb0c9b",
+    "prior_result": "WSP61 frozen negative: 210/384 active goals vs random 91/384, zero incorrect confident, original action-history exact observation lookup 380/384; old three-parent learner failed triple-XOR family; focused+G29 PASS; mandatory inherited full CI pending."
+  },
+  "question": "Can one source-blind causal learner promote its numerical representation from degree-one to degree-two interaction terms based on inconsistency evidence and predict never-observed physical transitions and longer-goal plans, rather than merely storing the training action ledger?",
+  "source": {
+    "path": "research/contrib/chatgpt/WSP-62/source.py evaluator-only; learner must not import",
+    "cohorts": "SELFTEST-only; fresh seeds 2801-2812; no DEV/PRIMARY",
+    "worlds": "Four binary sensor registers, four shuffled role/action channels. Four seeds of conditional-chain dynamics; four parity-XOR sources; four mixed parity-with-conjunction conditional sources. True next-bit functions use Boolean algebraic-normal-form polynomial degree <=2, a source-family aligned hypothesis-class prior. Distinct from WSP61 by mixed interaction worlds.",
+    "physical_budget": "Each policy executes exactly 80 sequential charged actions from single all-zero start; no arbitrary-state action consequence queries or free training reset.",
+    "task_budget": "32 evaluator-only source-reachable shortest 2-6-action goals per world; all 384 tasks evaluated identically against source from heldout start states. Raw sensor-vector targets; no language claim.",
+    "cold_transfer": "Snapshot after 80 sequential actions, restore with no extra observations, verify predictions and all 32 plans identical. Tampered snapshot must fail.",
+    "generator_receipts": "Independent hidden source and heldout-task SHA256, seed, family, action ledger SHA256, candidate source SHA.",
+    "no_exposure": "Learner cannot import source module or use oracle rule/channel/role maps. Source evaluator may audit predictions after training only."
+  },
+  "design": {
+    "controlled_policy": "Use the frozen WSP61 active action selector to produce exactly the SAME 80 chronological charged experiences for WSP61 fixed-three-parent learner and WSP62 expandable learner. This isolates representation from exploration. A second equal-action seeded-random trajectory feeds an identical WSP62 learner; no model-driven action selection modifications are allowed.",
+    "learned_representation": "Numerical Boolean Algebraic Normal Form (ANF) coefficients over four observed binary sensors; start with degree<=1, expand to degree<=2 for a next-bit/action whenever observed contradictions disprove every degree<=1 fit. The degree<=2 model is source-family-aligned and supports parity and binary interactions; the learner may never access the true source family.",
+    "safety": "Prediction only when all degree<=2 coefficient solutions consistent with the charged evidence agree on the requested outcome (GF(2) row-span test). If underdetermined, abstain. If evidence inconsistent with degree<=2, abstain rather than return wrong/confident. Lower-degree model is a diagnostic/expansion state and is NOT used to bypass the conservative degree<=2 uncertainty guard.",
+    "inference": "Exact GF(2) row reduction to infer a constrained system of up to 11 boolean coefficients for each output bit/action; zero gradient steps. Prediction follows if the query feature vector belongs to the observed row-space, independent of hidden truth.",
+    "change_receipts": "Record per-action/bit degree-one inconsistency witnesses and degree-two expansion events, number of resolved coefficient dimensions, numerical nonzero weights and memory bits.",
+    "comparisons": "Same charged active ledger fixed WSP61 three-parent baseline and exact state-action lookup, all evaluated on the same heldout goals. Independent active vs seeded-random equal 80-action WSP62 trajectory shows exploration impact, not isolated representation causality. Fixed degree-one ANF diagnostic ablation.",
+    "compute": "Report end-to-end test wall/CPU time, inference rows/compiled systems, active policy time, persistent bytes including raw evidence; equal actions do not imply equal computation."
+  },
+  "prereg_primary": "Exploratory SELFTEST_SIGNAL only if (A) adaptive learner solves >=300/384 heldout goals, (B) improves by >=50 solved goals over the frozen WSP61 fixed-three-parent learner using the EXACT SAME active 80-action ledger, (C) predicts >=25 TRUE source transitions at state-action combinations NOT present in the active training ledger (exact lookup necessarily abstains there), (D) active has ZERO incorrect confident source transitions over 12x64 audit, (E) >=4 observable degree-one inconsistency expansion events across mixed-interaction worlds, (F) all 12 have 80 continuous charged observations and snapshot parity. Otherwise retain SELFTEST_NEGATIVE_OR_INCONCLUSIVE, no retuning.",
+  "secondary": [
+    "Separate performance by chain, XOR and interaction families; fixed-degree1 and lookup controls; random-policy identical solver",
+    "Full 768 transition audit correct/wrong/abstain with unseen-condition counts",
+    "Source/task/action SHA256 custody, degree expansions, rank, weight counts, stored bits, wall/CPU",
+    "No causal grammar/language control in WSP62; isolated physics-learning measurement"
+  ],
+  "limitations": [
+    "Degree-2 Boolean ANF basis is chosen *before* experiments and aligns with all generated source laws, so this is not discovering an unrestricted representation language.",
+    "Sensor count/bit domains, action channels and fixed 6-step goal horizon are known; only source role relationships are hidden. All 12 sources belong to a designed synthetic family, not independent natural worlds.",
+    "ANF is an explicit numerical feature basis, not general-purpose neural network weight programming or language learning.",
+    "Evaluator chooses reachable task starts after training; no claim of autonomous free-world task selection.",
+    "No fully trained conventional neural and independent symbolic matched total-compute baseline, so SCIENTIFIC_PASS cannot be claimed even if development criterion passes."
+  ],
+  "boundaries": {
+    "scientific_first_use": false,
+    "merge": false,
+    "promotion": false,
+    "deployment": false,
+    "official_loop": false,
+    "controller_changes": false,
+    "new_schedules": false,
+    "paid_api": false
+  },
+  "stop_rules": [
+    "Freeze prereg before source/learner/tests/outcomes and do not alter scientific thresholds/seeds/families after observing results.",
+    "If source/test harness mechanics fail before complete result, repair only mechanics without changing frozen scientific semantics; requalify exact source.",
+    "Never edit WSP61 recorded source, negative result, prereg or PR; new branch and draft PR only.",
+    "Mandatory final focused Linux+Windows, G29 source atlas and full inherited regression at exact final SHA before engineering acceptance."
+  ]
+}
