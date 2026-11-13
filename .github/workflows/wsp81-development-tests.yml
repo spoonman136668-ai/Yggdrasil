@@ -1,0 +1,37 @@
+name: WSP81 history-dependent developer qualification
+on:
+  push:
+    branches: [research/wsp80-paid-novelty-structural-weight-repair-20261113]
+  pull_request:
+    paths:
+      - 'research/contrib/chatgpt/WSP-81/**'
+      - '.github/workflows/wsp81-development-tests.yml'
+permissions:
+  contents: read
+jobs:
+  history-dev:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Frozen protocol and WSP81 source-blind developer unit tests
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+          WSP81_CHECKOUT_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-81 -p 'test_*.py' -v
+      - name: Verify unchanged source
+        shell: bash
+        run: |
+          test -z "$(git status --porcelain)"
