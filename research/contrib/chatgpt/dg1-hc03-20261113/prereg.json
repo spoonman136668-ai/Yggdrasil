@@ -1,0 +1,95 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "DG1-HC03",
+  "contributor": "ChatGPT external research",
+  "contribution_class": "successor-proposal",
+  "created": "2026-11-13",
+  "question": "Can a fixed-capacity collection of non-token causal-program cells detect contradictions and autonomously reactivate an earlier learned rule after an unlabeled A→B→A environmental change, rather than overwrite it?",
+  "hypothesis": "On frozen paired parity-gate toy worlds, a two-cell contradiction-triggered program society will retain the first regime's 4 learned action-sign rules and reactivate them from one public intervention on return; a single-cell reset control loses three rules. The explicit parity structural prior makes this an in-family mechanistic development test, not AGI or superiority to equally capable conventional program-memory systems.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "parent_original_native_blob": "5c9a9904e31688bebc2e53723569e1fb988a981f",
+  "previous_results": [
+    "DG1-MC01 #958 INVALID_DEV untouched",
+    "DG1-NCM02 #961 at 01de83e7852e5d9285734f9717f2c9eaeb3f49fc engineering PASS but scientifically unverified; independent unmerged line",
+    "WSP63 weight-editing #954 independently frozen/unmerged"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/dg1-hc03-20261113/prereg.json",
+    "research/contrib/chatgpt/dg1-hc03-20261113/README.md",
+    "research/contrib/chatgpt/dg1-hc03-20261113/model.py",
+    "research/contrib/chatgpt/dg1-hc03-20261113/eval_dev.py",
+    "research/contrib/chatgpt/dg1-hc03-20261113/test_hc03.py",
+    ".github/workflows/dg1-hc03-source-dev.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "source": {
+    "in_family_seeds": [
+      12101,
+      12102,
+      12103,
+      12104,
+      12105,
+      12106,
+      12107,
+      12108
+    ],
+    "negative_seeds": [
+      12109,
+      12110,
+      12111,
+      12112
+    ],
+    "source_law": "4 public binary sites; 4 actions, action a toggles site a iff effect is XOR of its two ring neighbors and phase-specific per-action sign. A phase signs sampled by Random(seed) once; B flips all four signs; return A exactly, but no phase labels/times passed to learner.",
+    "negative_law": "single 16-action phase where effect is XOR of own, left and right bits plus a seeded action sign, deliberately outside model's two-neighbor program class",
+    "training": "One physically contiguous state per world; no episode resets, teleports, oracle queries or hidden rule fields in learner input. In-family phase lengths A=16, B=8, A-return=1; action channel t%4, initial physical state seed&15. Negative worlds 16 chronological charged actions.",
+    "scoring": "After all 25 (or negative 16) charged steps, evaluator-only exhaustive 16 raw states x4 action probes with no gradient, no learner writes, no score feedback. Count correct, wrong and abstained; uncertainty abstentions cost coverage. Out-of-family wrong confident predictions must be reported.",
+    "no_future_leakage": "World transition function and seed sign vectors live only in evaluator; class receives solely public before/action/after."
+  },
+  "capacity": {
+    "program_cells": 2,
+    "action_programs_per_cell": 4,
+    "learned_values_per_program": "unknown or Boolean XOR offset",
+    "logical_rule_storage_bits": 16,
+    "checkpoint_ceiling_bytes": 1024,
+    "no_gradient": true,
+    "no_transformer": true,
+    "no_tokens": true
+  },
+  "controls": [
+    "Single program cell with the identical source-aligned parity learner but reset on contradiction",
+    "Exact state/action lookup from identical 25 chronological public observations, latest observation wins",
+    "Two-bank conventional symbolic storage supplied with true regime labels, reported only as an unfair oracle upper bound",
+    "Structural-causal class matched two-bank conventional mechanism can be equivalent; no novelty/superiority claim against it",
+    "Candidate with reactivation disabled (causal ablation) using fixed two-bank budget",
+    "Out-of-family own-bit rules and all-source confidence error audit",
+    "Cold-restored checkpoint parity, invalid input, tamper, oversize and capacity hard stops"
+  ],
+  "metrics": [
+    "A-return accuracy measured as exact next-state among all 64 state/action pairs (abstentions count as not-correct)",
+    "Never-observed state/action accuracy and coverage, with observed keys determined from training ledger",
+    "Number of reactivations and allocated banks, current active bank learned flags and used logical bits",
+    "Baseline same-ledger correct/wrong/abstentions",
+    "Out-of-family confidently wrong count (cannot be hidden by perfect conditional accuracy)",
+    "Cold restore byte identity, 1024-byte cap, total source actions, Python execution time and peak tracemalloc bytes",
+    "Exact SHA and tree, dual-platform source qualification and inherited final regression"
+  ],
+  "frozen_success": {
+    "development_signal": "Across all 8 A/B/A worlds, every candidate predicts >=60/64 exact after return and all checkpoints restore; mean candidate exact >= mean single-bank exact +0.40; zero wrong confident in in-family evaluation; 25 charged physical actions per world and no labels. This is a source-only DEV signal, not scientific support.",
+    "scientific_pass": "NOT AVAILABLE from this synthetic source-aligned comparison. Would require matched strong conventional two-bank unlabeled controller, original/unfamiliar worlds, equal information/actions/whole-process compute, and independent qualified testing.",
+    "failure": "Any source world below 60/64 or insufficient mean margin or wrong-confident in in-family → NEGATIVE_DEV; negative out-of-family may expose safety failure and must be preserved",
+    "invalid": "budget/custody/seed/source/score leakage or abort, non-canonical checkpoint or hidden world information",
+    "no_postresult_changes": "No reseeding, threshold edits, extra actions, source-family substitution or result cherry-picking"
+  },
+  "authority": {
+    "research_only": true,
+    "scientific_first_use": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "production_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Committed before HC03 evaluator/learner/tests and before any HC03 primary DEV run; no protected scientific dataset or owner runner."
+}
