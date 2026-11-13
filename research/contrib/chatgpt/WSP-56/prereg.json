@@ -1,0 +1,80 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-56",
+  "title": "Out-of-family finite physical operator programming with phase-free contextual composition",
+  "status": "EXPLORATORY_ENGINEERING_PROSPECTIVE_NOT_SCIENTIFICALLY_ADMITTED",
+  "created": "2026-11-12",
+  "parent": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "pull_request": 946,
+    "sha": "a86ce905c31d4e68164a4ba799a7ae47bc68c87b",
+    "parent_status": "focused and G29 PASS, full regression pending"
+  },
+  "central_question": "Can a zero-gradient learner write exact, unknown discrete physical operator tables from charged unary actions, then reuse the tables in previously unseen noncommuting compositions after a grammar switch without any externally supplied phase selector?",
+  "falsifiable_hypothesis": "Given 28 function-identifying one-step actions and 32 ordered-composition examples, directly constructed table weights plus evidence-suffix grammar inference can predict unseen operations and state combinations for deterministic non-affine 7-state dynamics, while exact-utterance memory and the old affine family fail.",
+  "source": {
+    "path": "research/contrib/chatgpt/WSP-56/source.py",
+    "independence": "New deterministic source generator, not WSP53/WSP55 source functions; no model may import source.py or access evaluator-only codebook, operation tables, hidden roles or heldout labels.",
+    "cohorts": {
+      "SELFTEST": {
+        "seeds": [
+          2201,
+          2202
+        ],
+        "encodings": [
+          "identity",
+          "permuted",
+          "rotated"
+        ]
+      },
+      "DEV": "sealed; no generation",
+      "PRIMARY": "sealed; no generation"
+    },
+    "state": "8 named-by-position observable state registers in Z7; no oracle semantic labels.",
+    "operations": "four distinct independently sampled derangement permutations over Z7, each rejected if representable as any modular-affine map ax+b mod 7; discriminate operator composition order.",
+    "acoustic": "12 distinct deterministic 4-bit codewords, 8 entity identities and 4 operator identities; learner may infer 4-bit segments using declared fixed-length prior, receives only raw binary strings.",
+    "actions": "28 charged unary probes (4 operations x 7 input states), 20 charged phase-A ordered-composition observations, 12 charged phase-B ordered-composition observations. Every probe costs one action. No extra heldout adaptation.",
+    "grammar": "Phase A has a source-hidden unary entity/operation order and independent 3-segment pair order. Phase B switches pair order. Learner sees only chronological physical transitions, raw bits, and costs; no phase label or 48/12 boundary passed to prediction.",
+    "heldout": "96 independent excluded composition/context challenges for each grammar per world, generated before scoring; exactly 6 worlds × 192 = 1152 prospective heldout cases. Query-specific entity/first/second/x tuple disjoint from charged pair training for that phase.",
+    "isolation": "No DEV/PRIMARY exposure and no external physics source/unseen task-family claim."
+  },
+  "candidate": {
+    "algorithm": "Observe unary physical transitions to ground entity codewords and write one 7-cell truth table for each of 4 operator codes. Match ordered composition against A history and continuously infer the current order from the longest evidence-consistent recent suffix; zero gradients; abstain when no unique prediction.",
+    "numerical_weights": 28,
+    "gradient_updates": 0,
+    "max_actions": 60,
+    "max_snapshot_bytes": 1000000,
+    "priors": "8 entity registers, 4 latent unary operators, 7-state integer domain, fixed 4-bit codeword length and physical observation format. Unary intervention availability is an information and action advantage relative to WSP55; all controls receive it equally."
+  },
+  "comparators": [
+    "Exact observation lookup using same 60 public actions; no label/key leakage",
+    "Best-fit modular-affine projection onto the candidate's independently acquired codeword and grammar maps (privileged structural ablation, not independent scientific control)",
+    "A fully trained conventional neural baseline and independent exhaustive symbolic search with matched compute/information are required before any scientific superiority claim."
+  ],
+  "metrics": [
+    "A 96-heldout exact/wrong/abstain",
+    "B 96-heldout exact/wrong/abstain",
+    "aggregate 1152 heldout outcomes including all six fixtures",
+    "discriminative swapped operator order predictions",
+    "A snapshot before B and post-B cold restore exact parity",
+    "affine family representability negative and lookup comparator",
+    "wall/CPU time per world and model+raw-evidence persistent bytes",
+    "per-world raw action/heldout SHA256 custody and deterministic seed/encoding identity"
+  ],
+  "exploratory_success": "Prospective SELFTEST_SIGNAL if >=768/1152 correct heldout, zero wrong-confident, at least 24 correctly discriminated order swaps across aggregate, all six fixtures and cold restore valid, zero gradient updates. Otherwise preserve SELFTEST_NEGATIVE_OR_INCONCLUSIVE, never treat threshold as scientific acceptance.",
+  "guardrails": [
+    "No heldout gradients, direct corrections, search-guided tuning or post-result threshold changes",
+    "Unknown operations are not supplied as oracle functions; learner never imports source",
+    "Do not use any predictor phase switch or evaluator-supplied regime selector",
+    "Do not call a source-family-specific exact table learned from 28 unary probes general reasoning or language understanding",
+    "No first-use of WSP53/WSP54/WSP55 DEV or PRIMARY; no paid APIs, scheduled tasks, new autonomous controllers or unsanctioned runner usage",
+    "If source generation, model, or test code fails pre-observation implementation sanity, repair only mechanics without changing frozen semantics; any behavioral redesign becomes a new separately frozen experiment"
+  ],
+  "classification": "Engineering SELFTEST only. No scientific novelty/superiority, fully general cognition, autonomous learning, external transfer or deployment claims.",
+  "boundaries": {
+    "scientific_first_use": false,
+    "merge": false,
+    "deployment": false,
+    "official_loop": false
+  }
+}
