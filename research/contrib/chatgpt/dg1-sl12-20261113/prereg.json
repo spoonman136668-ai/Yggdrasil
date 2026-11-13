@@ -1,0 +1,107 @@
+{
+  "schema": "ygg.dg1-sl12.physical-archive-retrieval-prereg.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_OUTCOME",
+  "experiment": "DG1-SL12",
+  "parent_pr": 993,
+  "parent_exact_sha": "6ff9e5b4866b0f502bd1f968d6009e84493f84bd",
+  "goal": "Discriminate actual reactivation and transfer of an archived causal-rule bank after genuine A→B→A→B physical changes from the weaker mechanism of merely suppressing incorrect bank switching.",
+  "hypothesis": "A bounded tokenless learner that uses physically discriminating interventions and archives learned Boolean causal-rule programs can reactivate previously used causal banks on genuine returning A and B phases, improving *early and final* retained-rule predictions over an identical-action no-retrieval ablation and an independently implemented finite-grammar Bayesian comparator, with little false retrieval in an unfamiliar third context.",
+  "world": {
+    "state": "4 public binary state bits, four paid actions, action flips only own state bit iff hidden action-conditioned compositional Boolean predicate holds. Exact public grammar inherited from frozen SL09: three gates from AND/OR/XOR/NAND/NOR/XNOR; A family, B family and C mixed-family action programs; hidden programs and phase are environment-only.",
+    "new_seeds": {
+      "ABAB": [
+        105001,
+        105002,
+        105003,
+        105004,
+        105005,
+        105006,
+        105007,
+        105008
+      ],
+      "ABAA": [
+        105009,
+        105010,
+        105011,
+        105012,
+        105013,
+        105014,
+        105015,
+        105016
+      ],
+      "ABAC": [
+        105017,
+        105018,
+        105019,
+        105020,
+        105021,
+        105022,
+        105023,
+        105024
+      ],
+      "STABLE": [
+        105025,
+        105026,
+        105027,
+        105028,
+        105029,
+        105030,
+        105031,
+        105032
+      ]
+    },
+    "phase_clock": "Each 80-paid-step world has four 20-step hidden phases. ABAB: A[0,20),B[20,40),A[40,60),B[60,80). ABAA: A,B,A,A. ABAC: A,B,A,unseen mixed C. STABLE: A,A,A,A. No phase clock or context label is an input to models.",
+    "physical_budget": "Ten genuine mandatory exogenous flip steps [6,14,22,30,38,46,54,62,70,78]; all other steps causally query current real physical state with a chosen action. Public fixed action step%4 until step40; from step40, candidate probe selector may choose any action 0..3 before observation. All replay arms independently execute exactly the candidate chosen action on their own identical world and must have identical before/action/after trace hashes.",
+    "audits": "Evaluator-only complete 16-state ×4-action queries after steps 40,44,56,60,64,72,80 (truths/phase never used for model updates). Report unseen state/action pairs separately for each arm. Early return-A response audited at step44, return-B at step64; final A at 60 and B at 80.",
+    "cold_restore": "Take canonical <=8192-byte model snapshot after paid steps 37,57,73 (strictly NOT hidden phase boundaries), instantiate from bytes and confirm byte and all 64 prediction parity. Validate final snapshot at 80. Models do not see checkpoint schedule as context cues (checkpoint round-trip is observationally inert)."
+  },
+  "arms": [
+    "archive_probe: new physical-intervention-guided archived-rule reactivation model (candidate)",
+    "no_archive_on_probe: identical new router and physical trace but archive retrieval disabled",
+    "sl11_on_probe: untouched frozen SL11 EvidenceGated on independently charged identical probe physical trace",
+    "noepisodic_on_probe: untouched SL09 no-episodic model on identical paid trace",
+    "bayes_on_probe: separately coded frozen SL10 ExactBayes on identical paid trace",
+    "archive_passive: same archive model with public fixed post-40 physical action step%4 (action-policy ablation)"
+  ],
+  "algorithm": {
+    "representation": "Use frozen SL09 combinatorial program memory as an opaque inherited primitive; wrap instead of changing SL09/SL10/SL11 behavior. One actual paid causal observation per update; three bank limit; at most 70 causal observations; each bank stores real state/action/changed-bit triples.",
+    "witness": "Keep the last FOUR paid causal events, including frozen pre-update physical prediction miss for current active bank; require at least THREE distinct public state/action pairs, at least THREE misses, and at least EIGHT physically observed events in active bank before considering any switch. Do not pass hidden regime or step index to router.",
+    "retrieval": "For each INACTIVE bank with >=EIGHT physical causal observations, score its correctness on the last four real paid events using frozen SL09 compositional bank prediction; reactivate only if it correctly explains >=3 of 4 and explains >=2 more than active. Choose highest count and deterministic lower bank index on ties. Record archive-switch event and original bank provenance entirely from earned observations.",
+    "new_bank": "If 4/4 active physical predictions are wrong in current four-event window and no archived bank met the above retrieval gate, create one new empty bank, up to three banks. Reset witness window after any change. A new bank is NEVER counted as archive retrieval.",
+    "no_archive_ablation": "Same witness, creation, capacity, program-prediction and update algorithm as candidate, but no bank may be reactivated after becoming inactive; all other operations unchanged. This contrasts actual retrieval against conservative suppression/new learning.",
+    "action_policy": "After paid step40, when any archived bank contains >=8 observations, select a physical action with greatest number of different next-bit predictions between current and archived banks for current physical state (tie-break deterministic rotation from step). Otherwise select public step%4. This is an information-discriminating action, not a free evaluator query. Inactive memory may inform *what action to attempt* but no imagined consequence is counted as evidence.",
+    "archive_proof": "A true archived retrieval is a switch TO an inactive, previously physically populated bank (>=8 paid observations) with prior actual active history; it is counted only if it is *not* a new bank. Using environment-only audit labels after the run, count return-A and return-B reactivations separately. Active learner never receives labels or environment truth."
+  },
+  "budgets": {
+    "worlds": 32,
+    "arms": 6,
+    "paid_steps_per_arm": 80,
+    "total_paid_steps": 15360,
+    "total_charged_flips": 1920,
+    "total_causal_observations": 13440,
+    "max_serialized_checkpoint_bytes": 8192,
+    "python_version": "3.12",
+    "cpu_time": "Measure causal learner+action-selection runtime separately from world and evaluator, report Ubuntu/Windows medians; no claim exact compute equality."
+  },
+  "thresholds": {
+    "ABAB_true_archived_A2_worlds_min": 3,
+    "ABAB_true_archived_B2_worlds_min": 3,
+    "ABAB_A2_at60_correct_gain_vs_same_trace_no_archive_min": 8,
+    "ABAB_B2_at80_correct_gain_vs_same_trace_no_archive_min": 12,
+    "ABAB_B2_at80_unseen_correct_gain_vs_same_trace_no_archive_min": 6,
+    "ABAB_B2_at80_correct_gain_vs_same_trace_sl11_min": 8,
+    "ABAB_B2_at80_correct_gain_vs_same_trace_bayes_min": 8,
+    "ABAB_B2_at80_unseen_correct_gain_vs_same_trace_bayes_min": 4,
+    "ABAB_B2_early64_correct_gain_vs_no_archive_min": 8,
+    "ABAC_false_archived_C_worlds_max": 2,
+    "ABAC_full_audit_correct_loss_vs_no_archive_max": 8,
+    "ABAA_full_audit_correct_loss_vs_no_archive_max": 8,
+    "STABLE_full_audit_correct_loss_vs_no_archive_max": 8,
+    "STABLE_confident_error_excess_vs_no_archive_max": 8,
+    "median_candidate_cpu_ratio_vs_no_archive_max": 2.5,
+    "hard": "All physical steps and 32x6 arms complete with matched replay trajectories, uniform untouched evaluator, cold restoration, bounded checkpoint, negative controls, exact original source provenance and identical cross-OS non-time outcome aggregates, G29 reanchor and inherited full-regression on final SHA",
+    "scientific_classification": "DEV_SIGNAL_NOT_SCIENCE only if all frozen primary requirements and hard scientific provenance pass; MIXED_DEV for partial gains but any primary failure; otherwise NEGATIVE_DEV. INVALID for missing physical custody, evaluator leakage, changed thresholds/seed/source after outcome, or failed cross-platform reproducibility. Engineering PASS never equals SCIENTIFIC_PASS, native integration or AGI."
+  },
+  "limitations": "Synthetic toy finite-program physical world; four 20-step phases may be too short to earn convincing context witnesses. Same-paid-trace model comparisons match information; passive policy does not. Archived bank state is not equivalent to neural-native persistent cognition; scientific relevance is provisional even if DEV passes.",
+  "isolation": "Separate branch stacked on draft PR #993. No main, accepted native model, automated research owner/controller/loop or Forge/Wingless/Hybrid/weight research writes. No user workstation, scheduled tasks, first-use scientific qualification, live actions, paid APIs or ChatGPT Library artifacts. Preserve all outcomes in repository and original CI artifacts; never tune frozen study after observing result."
+}
