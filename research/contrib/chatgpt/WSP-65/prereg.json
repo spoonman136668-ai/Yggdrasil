@@ -1,0 +1,75 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-65",
+  "created": "2026-11-13",
+  "title": "Source-blind hidden-state inference from action history and cold memory",
+  "status": "FROZEN_PROSPECTIVE_ISOLATED_SELFTEST_NOT_SCIENTIFICALLY_ADMITTED",
+  "parent": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "pr": 955,
+    "sha": "d847dfc5364622ee92a61863cbe04ec0c5584efc",
+    "finding": "WSP64 preregistered negative: 111/256 Markov goals vs 103/256 same-history lookup; independent tree 119/256; 62 correct genuinely unseen transitions; eight wrong-confident across 512 two-hidden-mode audits; cold restore/focused+G29 PASS and full inherited regression unfinished."
+  },
+  "question": "Can a zero-gradient learner recover a predictive latent mode from full public action-consequence history and reliably transfer that latent representation to new action sequences, beyond visible-state and fixed short-suffix memorization?",
+  "worlds": {
+    "seeds": [
+      3101,
+      3102,
+      3103,
+      3104,
+      3105,
+      3106,
+      3107,
+      3108,
+      3109,
+      3110,
+      3111,
+      3112
+    ],
+    "family": "Six independently sampled 3-visible-bit worlds and six 4-visible-bit worlds with one hidden binary mode, four shuffled unknown action channels and shuffled visible sensor roles. Exactly one unobserved-mode-toggle channel, one unconditional visible toggle, one conditional visible toggle and one hidden-dependent visible toggle.",
+    "hidden_dynamics": "The hidden mode starts zero and flips whenever the (unknown) hidden-toggle action is executed; that channel has no observable effect. The hidden-dependent action flips a visible sensor according to h in 3-bit worlds and h XOR another visible bit in 4-bit worlds, so its effect genuinely depends on full prior action history.",
+    "other_physics": "The remaining two channels produce deterministic source-blind degree<=2 Boolean visible updates; the 4-bit world includes two-output behavior to avoid treating all physical effects as single-bit.",
+    "protocol": "SELFTEST only; fresh generator domain with no WSP64 source import. Source and hidden mode accessible only in evaluator module, never model.",
+    "training": "One no-reset chronological 128-charged-action stream from all-visible-zero and hidden-zero per world for each source-blind policy. All training interactions are sourced from stateful Session.step(current action); no arbitrary-state query or state reset; each observation costs exactly 1. This budget is greater than WSP64's 64 and cannot be compared as a matched WSP64 win.",
+    "test": "64 frozen independently generated public-action-history episodes/world, 768 mode-sensitive next-transition queries total. Test source initializes each episode at the known all-zero environment start solely for STANDARDIZED EVALUATION (never learner training); each 8-16-step prefix is physically replayed and public before/action/after history is visible to ALL controls as test context. The final queried channel is evaluator-chosen to be hidden-dependent, its identity is NOT supplied to learner as a special role, only as a public action ID.",
+    "heldout": "No test prefix consequences feed parameter estimation or persistent memory; only the trained candidate source and the public action history may be used at inference. New action sequences are disjoint from the single training stream; test labels and private hidden mode used only after prediction for audit.",
+    "source_receipts": "SHA256 source roles/physics, frozen 64 test prefixes + withheld answers, training action ledger, exact params, version-space and cold snapshots; compare byte-identical classification/counts on Linux and Windows."
+  },
+  "learner": {
+    "method": "Enumerate hypotheses for which of four public action channels toggles a *single* binary latent mode (plus an explicit no-latent control candidate), infer that mode's parity from the observed chronological action stream, and for each action/output visible bit fit all <=3-term degree<=2 GF(2) polynomial functions of visible sensors AND that candidate mode. Retain every entirely evidence-consistent global toggle-channel hypothesis, all fitted functions, and abstain unless ALL agree on the heldout context consequence.",
+    "limit": "This is an explicit, heavily source-aligned single-bit hidden parity prior, NOT autonomous latent cardinality/model-family invention; the true generator's hidden mode is in this candidate class by design.",
+    "online_policy": "Source-blind active coverage + deliberate repeated observable state/action experiments; deterministic tie break. Also a seeded uniform-random policy arm with same 128 actions/learner as diagnostic. Policy may use only public current observations and action-history counts, not hidden source labels or withheld outcomes.",
+    "controls": "(1) Visible-state/action empirical lookup with contradictory-output abstention from identical charged training ledger. (2) Independently implemented 2-previous-actions+visible-state/action empirical lookup with contradiction abstention. (3) A deliberately history-scrambled negative that destroys correct temporal parity while keeping current visible state; diagnostic. (4) Equal-budget seeded-random training trajectory with same model. No independent fully trained neural/belief-state baseline yet.",
+    "retention": "Serialize 128 charged public experiences and optionally derived mode-candidate receipts; frozen canonical SHA256 cold snapshot after training, cold reconstruction with exact predictions and candidate parity, tamper rejected; no gradients.",
+    "safety": "Consequence prediction ONLY if all source-blind global latent hypotheses and every consistent public numerical rule agree; otherwise abstain. All predictions are checked against physical source, and confidences/errors recorded separately for each new history."
+  },
+  "primary": "Prospective SELFTEST_SIGNAL only if on 768 frozen mode-sensitive heldout public-action-history queries, (A) history-conditioned learner achieves >=576/768 correct confident predictions, (B) beats same-ledger visible-state lookup by >=154 correct predictions and the two-action suffix lookup by >=77, (C) makes ZERO wrong-confident predictions, (D) at least 8/12 source worlds exhibit visible (state,action) contradictions during the actual 128-step training stream, and (E) 12/12 uninterrupted 128-action charged histories and cold snapshot prediction parity/tamper rejection PASS. Any miss => SELFTEST_NEGATIVE_OR_INCONCLUSIVE with no retuning.",
+  "diagnostics": [
+    "Per 3-bit and 4-bit family successes/abstentions, world-by-world and aggregate",
+    "Number of survived hidden-toggle channel hypotheses and per-bit ANF model counts, active learned numerical coefficients",
+    "Exact baseline-visible and short-suffix histories and random-trajectory control on same test prefixes",
+    "Test context steps charged as evaluation context (not free training observations), plus training action count and whole-process CPU/wall/memory including raw evidence",
+    "Observed training visible-state/action collisions, source-/test-/training-hash receipts and test history disjointness"
+  ],
+  "limitations": [
+    "Single hidden parity mode, known physical action IDs, known all-zero test reset and low-degree sparse Boolean functions are unusually strong priors; does not prove unfamiliar hidden-state discovery or AGI.",
+    "All heldout test episodes reveal complete PUBLIC history including visible consequences, are reset for evaluation, and final action targets the hidden-dependent channel. Those advantages are shared by controls and must not be presented as no-test-information generalization.",
+    "Dense neural model/independent learned state-space baseline and matched total compute absent; no scientific superiority or learning-efficiency proof beyond these selftests.",
+    "No deployed autonomous control, language, noisy stochastic physics or open-world perception; success is a falsifiable finite-state hidden-memory mechanism only."
+  ],
+  "bounds": {
+    "first_use": false,
+    "merge": false,
+    "deployment": false,
+    "owner_loop": false,
+    "scheduling": false,
+    "paid_apis": false,
+    "controller_changes": false
+  },
+  "stop_rules": [
+    "Protocol committed before first code/test/diagnostic; never change threshold, seeds or source mechanism to rescue missed result.",
+    "Do not revise WSP64's frozen negative or claim full engineering qualification until inherited two-platform regression finishes.",
+    "Harness defects may be repaired only with documented unchanged scientific semantics; qualify exact SHA with focused tests, G29 and inherited full regression.",
+    "No DEV/PRIMARY scientific first-use, merges, new controller or model-loop integration without separate scoped authority."
+  ]
+}
