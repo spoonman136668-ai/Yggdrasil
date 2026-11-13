@@ -68,8 +68,12 @@ def validate_frozen_protocol(data):
 
 def audit_static_readonly():
     sha = _git("rev-parse", "HEAD")
-    if len(sha) != 40 or (os.environ.get("GITHUB_SHA")
-                         and os.environ["GITHUB_SHA"] != sha):
+    expected = os.environ.get("GITHUB_SHA")
+    if os.environ.get("GITHUB_EVENT_NAME") == "pull_request":
+        expected = os.environ.get("WSP80_CHECKOUT_HEAD_SHA")
+        if not expected:
+            raise RuntimeError("explicit PR checkout head SHA missing")
+    if len(sha) != 40 or (expected and sha != expected):
         raise RuntimeError("exact checkout SHA mismatch")
     if _git("status", "--porcelain"):
         raise RuntimeError("dirty source checkout")

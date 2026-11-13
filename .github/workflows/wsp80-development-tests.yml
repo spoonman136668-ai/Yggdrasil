@@ -28,6 +28,7 @@ jobs:
       - name: WSP80 complete developer-only controls and no-reset smoke tests (NOT scientific SELFTEST)
         env:
           PYTHONDONTWRITEBYTECODE: '1'
+          WSP80_CHECKOUT_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: python -m unittest discover -s research/contrib/chatgpt/WSP-80 -p 'test_*.py' -v
       - name: Full inherited Yggdrasil root regression suite (non-scientific)
         env:

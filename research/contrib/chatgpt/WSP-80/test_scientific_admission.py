@@ -44,6 +44,14 @@ class StaticAdmissionTests(unittest.TestCase):
         self.assertFalse(audit["historic_consumption_ledger_authenticated"])
         self.assertFalse(audit["registered_source_first_use_authorized"])
 
+    def test_pr_checkout_head_mismatch_fails_closed(self):
+        import os
+        with patch.dict(os.environ, {
+                "GITHUB_EVENT_NAME": "pull_request",
+                "WSP80_CHECKOUT_HEAD_SHA": "0" * 40}):
+            with self.assertRaisesRegex(RuntimeError, "exact checkout SHA mismatch"):
+                audit_static_readonly()
+
     def test_never_imports_or_executes_registered_source_generator(self):
         code = Path(__file__).with_name("scientific_admission.py").read_text()
         self.assertNotIn("from source import", code)
