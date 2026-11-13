@@ -1,0 +1,101 @@
+{
+  "schema": "ygg.dg1-sl13.physical-bayes-factor-context-identification-prereg.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_OUTCOMES",
+  "experiment": "DG1-SL13",
+  "date": "2026-11-13",
+  "qualified_parent": {
+    "pr": 994,
+    "sha": "53b6658aba61746b6a45c08f4e739f07570144de",
+    "science": "MIXED_DEV/primary NO-GO",
+    "engineering": "40/40 PASS"
+  },
+  "hypothesis": "An explicit sequential physical-evidence Bayes-factor tournament, coupled with prospective paid interventions chosen to distinguish old causal programs from the active program, can genuinely and repeatedly reactivate learned A and B context memory after returns, outperforming never-retrieve and Bayesian controls on identical paid physical action/state/consequence streams.",
+  "disjoint_seeds": {
+    "ABAB": [
+      106001,
+      106002,
+      106003,
+      106004,
+      106005,
+      106006,
+      106007,
+      106008
+    ],
+    "ABAA": [
+      106009,
+      106010,
+      106011,
+      106012,
+      106013,
+      106014,
+      106015,
+      106016
+    ],
+    "ABAC": [
+      106017,
+      106018,
+      106019,
+      106020,
+      106021,
+      106022,
+      106023,
+      106024
+    ],
+    "STABLE": [
+      106025,
+      106026,
+      106027,
+      106028,
+      106029,
+      106030,
+      106031,
+      106032
+    ]
+  },
+  "physics": "Exactly frozen SL12 4-bit/4-action causal world, public complete Boolean program grammar, hidden A/B/C phases at paid indices [0,20,40,60], mandatory actual flips at [6,14,22,30,38,46,54,62,70,78]. SL13 world constructor accepts only the fresh registered seeds; no hidden labels or phase clocks passed to learners.",
+  "budget": {
+    "worlds": 32,
+    "arms": 6,
+    "paid_steps_per_arm": 80,
+    "total_paid_steps": 15360,
+    "paid_exogenous_flips": 1920,
+    "paid_causal_observations": 13440
+  },
+  "arms": [
+    "archive_probe: new physical Bayes-factor archival learner with physically charged context diagnostic action choices for steps >=40",
+    "no_archive_on_probe: same learning algorithm, physical event stream, capacity and likelihood gate with archival retrieval prohibited",
+    "sl11_on_probe: fully unchanged SL11 witness context learner, independently paid identical candidate trajectory",
+    "noepisodic_on_probe: fully unchanged SL09 no-episodic program learner, independently paid identical trajectory",
+    "bayes_on_probe: independently implemented SL10 full public-grammar exact finite Bayesian learner, independently paid identical trajectory",
+    "archive_passive: same new archive learner but public fixed policy step%4 after 40; not matched information across policies"
+  ],
+  "physical_inference": "Each action's result is an actual charged physical state transition; a selector commits before seeing it. For a completed physical event, update a bounded window of last four real (prestate,action,changedbit) results. For each INACTIVE bank containing at least six real observations, compare its predictive hits on this SAME window with active-bank hits. Each extra archived-bank hit contributes log2 Bayes factor +4, with prior archive penalty 2 bits; accept archived reactivation ONLY when at least three distinct state/action witnesses, active makes >=2 errors, inactive makes >=3 of four correct, and log2 odds advantage >=6 (equivalent to >=2 more hits). Never use evaluator label, programmed phase, audit queries or learned hidden rule. No imagined evidence.",
+  "new_context_rule": "When no previously populated archive clears the above physical-evidence gate and the active bank has >=6 genuine observations, two distinct (state,action) witnesses and >=2 misses among last 3 genuine physical events, create at most one NEW bank, bounded by three banks total. New bank is NOT counted as archive retrieval. Same criterion in no-archive arm. Clear physical witness window on retrieval or bank creation.",
+  "physical_probe_policy": "After step40 at each causal (not flip) action, choose among the four public actions the one maximizing independent active-vs-archived predictive disagreement weighted by genuine archived sample count (saturates at 8), plus within-active top-six grammar program disagreement under its observed paid error counts, plus novelty for physically unseen state/action, deterministic rotation tie break. Without archived banks use grammar uncertainty. Every chosen probe is paid. Passive control keeps step%4. No free query, future outcome, or audit truth is read by the learner.",
+  "retrieval_proof": "Archive retrieval requires a logged switch TO a previously active, already physically populated inactive bank with >=6 paid observations; document original physical birth step and read-only evaluator labels for phase of retrieval after execution. Count return-A and return-B events separately; creating a new bank or merely suppressing switches does not qualify.",
+  "audits": "Uniform 16 public states ×4 actions, evaluator-only truth after paid steps 40,44,56,60,64,72,80; never train on audit truth; report all 512 final-pair cohort scores plus never-observed state/action metrics and early B2 step64.",
+  "cold_checkpoint": "Full canonical <=8192-byte snapshots at paid steps 37,57,73 and end, restore into a separate instance and verify exact bytes and all 64 predictions; preserve witnessed history, real bank birth steps, accepted diagnostic reactivations, tamper detection. Checkpoint schedule not provided to learner.",
+  "comparators_and_cost": "Five probe/replay arms independently pay for exact same before/action/after sequence per world; compare strictly on matched physical information and action identities. Passive uses matched step count but different information. Measure physical inference/selector CPU separately from world/evaluator and report per OS. Bayesian control is independent implementation over identical disclosed public grammar and charged observations; no claimed equal CPU.",
+  "frozen_primary": {
+    "ABAB_A2_reactivated_worlds_min": 3,
+    "ABAB_B2_reactivated_worlds_min": 3,
+    "ABAB_A2_at60_correct_gain_vs_noarchive_min": 8,
+    "ABAB_B2_at64_early_correct_gain_vs_noarchive_min": 8,
+    "ABAB_B2_at80_final_correct_gain_vs_noarchive_min": 12,
+    "ABAB_B2_at80_final_unseen_gain_vs_noarchive_min": 5,
+    "ABAB_B2_at80_correct_gain_vs_SL11_min": 8,
+    "ABAB_B2_at80_correct_gain_vs_independent_bayes_min": 8,
+    "ABAB_B2_at80_unseen_gain_vs_bayes_min": 3,
+    "ABAC_false_C_archived_retrieval_worlds_max": 2,
+    "ABAC_final_correct_loss_vs_noarchive_max": 8,
+    "ABAA_final_correct_loss_vs_noarchive_max": 8,
+    "STABLE_final_correct_loss_vs_noarchive_max": 8,
+    "STABLE_final_confident_wrong_excess_vs_noarchive_max": 8,
+    "median_candidate_cpu_ratio_vs_noarchive_max": 4,
+    "hard": "All 32x6x80 real paid physical actions, 13,440 real causal observations, exact per-arm matched trace hashes, cold equality, within-8192 checkpoints, negative controls, cross-platform identical nontiming complete original raw results, mandatory full inherited regression on final exact SHA and G29 atlas check. Any hidden label leak, post-outcome threshold/seed retune or unqualified source makes INVALID.",
+    "classification": "Pass all frozen primary gates and integrity -> DEV_SIGNAL_NOT_SCIENCE, never direct SCIENTIFIC_PASS. Partial improvements with any failed gate -> MIXED_DEV. None -> NEGATIVE_DEV. Integrity/source defects -> INVALID. No unpreregistered promotion, AGI claim or production/native claims."
+  },
+  "anti_leakage": "Selector and agent access only public state, actual charged action, real observed next-state, and their own checkpoint bank. Physics program and schedule private. Access to static public grammar allowed equally for Bayesian control. Never infer hidden phase from clock; timestamps used only in offline evaluator to classify true retrieval.",
+  "limitations": "Small toy Boolean world, 32 fixed synthetic seeds and short 20-step phases; false contextual coincidence and overfitting possible. A positive DEV result still needs independently implemented replicate, adversarial task and native substrate tests.",
+  "isolation": "Separate draft PR stacked on #994; no main, accepted refs, native Yggdrasil model, owner/controller/loop, protected scientific first-use, Forge, Wingless, Hybrid, weight editing, workstation/WSL changes, scheduled tasks, live effects or paid APIs. All receipts GitHub repository/Actions only."
+}
