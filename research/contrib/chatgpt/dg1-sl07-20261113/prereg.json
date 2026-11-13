@@ -1,0 +1,84 @@
+{
+  "schema": "ygg.dg1-sl07.contradiction-witness-intervention-prereg.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_FIRST_PROSPECTIVE_RESULT",
+  "project": "Yggdrasil",
+  "parent_sha": "30f57be961c15915fd1ad1d58f2d39cadf93d581",
+  "inherited_candidate": "DG1-SL06 frozen source sha 30f57be961c15915fd1ad1d58f2d39cadf93d581; no change to SL05/SL06 model or world files",
+  "hypothesis": "Causal action selection triggered only by at least two distinct physical contradictions that independently favor a retained alternative context improves cold-return unseen-pair competence and decreases wrong-confident predictions relative to continuous disagreement maximization, passive actions, trigger-sham and independently coded conventional contradiction-triggered interventions.",
+  "cohorts": {
+    "ABCA": [
+      100101,
+      100102,
+      100103,
+      100104,
+      100105,
+      100106,
+      100107,
+      100108
+    ],
+    "ABCB": [
+      100109,
+      100110,
+      100111,
+      100112,
+      100113,
+      100114,
+      100115,
+      100116
+    ],
+    "STABLE": [
+      100117,
+      100118,
+      100119,
+      100120,
+      100121,
+      100122,
+      100123,
+      100124
+    ],
+    "ABCD_OOD": [
+      100125,
+      100126,
+      100127,
+      100128,
+      100129,
+      100130,
+      100131,
+      100132
+    ]
+  },
+  "physics": "Use exactly SL06 seed-specific 4-bit physical state/four-effect-action physics: each A/B/C regime samples a unique 40-rule grammar rule per action via Random(seed*131+phase*719+action*47), collision increment, ABA etc. Regimes switch at paid steps 20/40/60; ABCA return A, ABCB return B, STABLE remains A, ABCD_OOD fourth D is int(state==15) xor (seed+action)&1. The world generator, seed, hidden regime and evaluator 64-pair labels cannot be read by learners. No simulation trials or reset of physical state.",
+  "budget": "Each of 32 worlds × seven independent arms executes exactly 80 paid physical steps, 10 charged exogenous flips at [6,14,22,30,38,46,54,62,70,78] bit (seed//7+step//8)%4, leaving 70 genuine causal action consequences. All arms receive same first 60 paid physical events with action step%4 at every nonflip; cold serialize and verify/restore at 60 before they choose their own paid actions. Post-60 environment branches may differ by chosen action; equal 80 paid steps does NOT establish equal information obtained or computation. Total 17920 paid steps, 15680 causal observations; shared pre-cold trace SHA256/arm.",
+  "selection_rule": "For each real pre-update charged causal event, compare active-bank current-state unanimity against actual observed physical effect; a useful contradiction requires the active bank unanimously predict the *opposite effect* and at least one distinct retained bank unanimously predicts the observed effect, and the two memories' predictions are mutually exclusive on that witnessed state/action. Do not treat ambiguous outcomes, exogenous flips, hidden phase, evaluators or dreams as contradictions. Keep a bounded <=12 paid-causal-event rolling witness window of distinct (state,action) discriminants, require >=2 distinct witness pairs before arming a four-paid-causal-observation intervention window. Reset window after firing; do not infer which bank/phase is correct or change frozen memory update. While armed, choose the action maximizing between-bank mutually exclusive unanimous physical-effect predictions (n0*n1) with tie-break secondary within-bank rule disagreement z*o, final tie smallest action; otherwise choose fixed step%4. Four paid causal events count down only on real causal events. No extra actions are permitted. Witnesses are computed BEFORE the original learner updates its masks.",
+  "arms": [
+    "native_witness: frozen ColdThreeBank(gate=True) with selective witness-triggered action selection",
+    "native_always: exact frozen SL06 always-active native policy",
+    "native_passive: same frozen memory + step%4 action",
+    "native_sham: same frozen memory, fire four-action intervention window after any two distinct noncontradictory observations instead of meaningful contradictions; same selection policy when armed",
+    "native_witness_no_gate: identical witness selection, no confidence gate (ablation)",
+    "conventional_witness: frozen three-bank conventional HMM(replay=True) with independently implemented contradiction witnesses and posterior-weighted action choice when armed",
+    "conventional_always: frozen three-bank conventional HMM(replay=True) with always-active independent posterior-weighted policy"
+  ],
+  "negative_controls": "A passive and always-on arm isolate conditional intervention value. Trigger sham controls activity from ordinary observation surprises. Native no-gate tests prediction safety. Independent conventional witness/always policy uses HMM posterior, not native rule counts. Frozen models and world physics unchanged; trigger is a wrapper, not learning from evaluation outcomes. Report distinct witness events, armings, intervention actions, confident abstentions, costs/bytes, checkpoint behavior, unseen-pair coverage, prequential charged-action predictions. If intervention never fires, report null rather than rescuing by tuning.",
+  "evaluation": "After paid steps 60/64/72/80, evaluator-only fixed 16 states × four actions audit for each arm, from its local model and same hidden-world phase. Complete 64-pair audit queries on 8 worlds/cohort -> 512 per cohort; score correct, wrong_confident, abstained and never-physically-observed state/action queries. Track prequential scores separately; never compare on-policy returns as if same difficulty after trajectories diverge. All seed/rule/phase audit truth is evaluator-private; no feedback to learner or action policy. Cold serialise/restore original learner and wrapper state at step 60; identical pre/post predictions & trigger policy, tamper rejection. Max wrapper checkpoint 8192 bytes; <=12 witness events rolling. Report full per-arm CPU wall-time separately, never claim equal compute.",
+  "frozen_primary": {
+    "ABCA_final_correct_gain_over_best_native_always_native_passive_native_sham_conventional_witness_conventional_always_min": 16,
+    "ABCA_final_unseen_correct_gain_over_best_controls_min": 8,
+    "ABCA_wrong_confident_excess_over_least_wrong_control_max": 4,
+    "ABCB_final_correct_gain_over_best_controls_min": 16,
+    "ABCB_final_unseen_correct_gain_min": 8,
+    "ABCB_wrong_confident_excess_max": 4,
+    "STABLE_final_correct_loss_from_best_conventional_or_passive_max": 16,
+    "STABLE_wrong_confident_excess_max": 4,
+    "ABCD_OOD_wrong_confident_excess_max": 4,
+    "trigger_must_fire_on_at_least_four_of_eight_ABCA_worlds": true,
+    "trigger_must_fire_on_at_least_four_of_eight_ABCB_worlds": true,
+    "cold_restoration_exact": true,
+    "physical_budget_equal": true,
+    "linux_windows_deterministic_results_equal": true,
+    "classification": "DEV_SIGNAL_NOT_SCIENCE only if all gains, safety, firing and deterministic custody criteria pass. MIXED_DEV only if both return-context correctness gains versus strongest independent controls are positive but thresholds/safety fail; otherwise NEGATIVE_DEV; INVALID for source drift, oracle leak, uncharged actions, unbounded memory, altered frozen parameters or non-reproducible science.",
+    "no_post_result_tuning": true,
+    "native_superiority_requires_independent_conventional_outperformance": true
+  },
+  "boundaries": "Source-only external research branch; no native Yggdrasil model/main/accepted ref, owner/controller/scheduler/autonomous loop, protected scientific first-use, Wingless/FORGE/weight-editing edits, paid APIs, tokens or gradients. Development evidence and CI receipts stay on GitHub only; draft PR unmerged. No scientific PASS/AGI claim from synthetic toy worlds."
+}
