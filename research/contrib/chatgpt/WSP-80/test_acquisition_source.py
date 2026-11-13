@@ -36,6 +36,16 @@ class PrivateSourceAndActionPolicyTests(unittest.TestCase):
                 restored=structural_weights.PaidStructuralWeightEditor.restore(editor.snapshot())
                 self.assertEqual(restored.charges,i+1)
                 self.assertLessEqual(diag['learned_numerical_relu_features'],342)
+                # Same physical developer ledger, no private evaluator truth labels.
+                from independent_symbolic import IndependentConditionalSymbolic
+                control = IndependentConditionalSymbolic.from_paid_ledger(session.ledger)
+                self.assertEqual(control.paid_actions, i + 1)
+                for public_state in structural_weights.STATES:
+                    for public_action in structural_weights.ACTIONS:
+                        self.assertEqual(
+                            restored.predict(public_state, public_action),
+                            control.predict(public_state, public_action))
+
         self.assertEqual(len(session.ledger),384)
         self.assertEqual(policy.turn,384)
 
