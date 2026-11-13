@@ -1,0 +1,146 @@
+{
+  "schema": "yggdrasil.dg1-hc06.frozen-primary-result.v1",
+  "project": "Yggdrasil",
+  "experiment": "DG1-HC06",
+  "prereg_commit": "7aea3eed4f2091d6d4e78f1e82862b456092fec7",
+  "first_execution_source_commit": "9546990d9b39661fce47c4b63b83f88b54ed1bf7",
+  "classification": "MIXED_DEV",
+  "scientific_pass": "UNVERIFIED",
+  "iid_primary_pass": false,
+  "rewired_ood_pass": false,
+  "return_A_cold_retention_pass": true,
+  "majority_confident_wrong": 98,
+  "cohorts": {
+    "iid": {
+      "test_queries": 512,
+      "actual_actions_per_world_per_policy": 12,
+      "hc05_two_step": {
+        "correct": 452,
+        "wrong_confident": 0,
+        "abstained": 60,
+        "unseen_correct": 362
+      },
+      "independent_bayesian_entropy": {
+        "correct": 442,
+        "wrong_confident": 0,
+        "abstained": 70,
+        "unseen_correct": 355
+      },
+      "round_robin": {
+        "correct": 398,
+        "wrong_confident": 0,
+        "abstained": 114
+      },
+      "greedy": {
+        "correct": 352,
+        "wrong_confident": 0,
+        "abstained": 160
+      },
+      "random": {
+        "correct": 320,
+        "wrong_confident": 0,
+        "abstained": 192
+      },
+      "candidate_advantage_over_bayesian_correct": 10,
+      "frozen_min_required_advantage_correct": 32,
+      "verdict": "FAIL FROZEN PRIMARY THRESHOLD"
+    },
+    "rewired": {
+      "test_queries": 512,
+      "actual_actions_per_world_per_policy": 12,
+      "hc05_two_step": {
+        "correct": 216,
+        "wrong_confident": 186,
+        "abstained": 110,
+        "unseen_correct": 148,
+        "unseen_wrong_confident": 186
+      },
+      "independent_bayesian_entropy": {
+        "correct": 250,
+        "wrong_confident": 208,
+        "abstained": 54,
+        "unseen_correct": 175,
+        "unseen_wrong_confident": 208
+      },
+      "verdict": "OOD_NEGATIVE: confident extrapolation on structurally shifted physical causal graph"
+    },
+    "majority": {
+      "test_queries": 512,
+      "actual_actions_per_world_per_policy": 12,
+      "hc05_two_step": {
+        "correct": 212,
+        "wrong_confident": 98,
+        "abstained": 202
+      },
+      "independent_bayesian_entropy": {
+        "correct": 212,
+        "wrong_confident": 98,
+        "abstained": 202
+      },
+      "verdict": "OUT_OF_BASIS_UNSAFE: 98 confident mistakes, no model promotion"
+    },
+    "return_A": {
+      "test_queries": 512,
+      "actual_actions_per_world_per_policy": 25,
+      "hc05_two_step": {
+        "correct": 370,
+        "wrong_confident": 0,
+        "abstained": 142,
+        "unseen_correct": 300
+      },
+      "independent_bayesian_entropy": {
+        "correct": 370,
+        "wrong_confident": 0,
+        "abstained": 142,
+        "unseen_correct": 302
+      },
+      "verdict": "PASS FROZEN LIMITED DEV COVERAGE; does not prove robust retention or learned regime identity"
+    }
+  },
+  "budget": {
+    "physical_action_count_across_all_arms": 2440,
+    "policy_count": 5,
+    "world_count": 32,
+    "hypothesis_mask_bits_per_candidate": 24,
+    "matched_information_and_real_action_allowances": true,
+    "matched_planning_compute": false
+  },
+  "measured_runtime": {
+    "ubuntu": {
+      "candidate_whole_learning_ms_sum_32": 139.218,
+      "independent_bayesian_whole_learning_ms_sum_32": 122.947,
+      "one_step_greedy_ms_sum_32": 20.652,
+      "random_ms_sum_32": 7.146,
+      "peak_tracemalloc_bytes": 128516
+    },
+    "windows": {
+      "candidate_whole_learning_ms_sum_32": 158.76,
+      "independent_bayesian_whole_learning_ms_sum_32": 139.02,
+      "one_step_greedy_ms_sum_32": 22.607,
+      "random_ms_sum_32": 7.37,
+      "peak_tracemalloc_bytes": 128566
+    }
+  },
+  "source_only_provenance": {
+    "exact_prepared_source_sha": "9546990d9b39661fce47c4b63b83f88b54ed1bf7",
+    "first_ci_run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43437808096",
+    "ubuntu_artifact": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43437808096/artifacts/14044925012",
+    "windows_artifact": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43437808096/artifacts/14043649340",
+    "stable_per_seed_metrics_and_ledger_sha256": "80cf839823df26d53c462a6516e6149a5dd70e9be9bbf6562a1aad2fbe09249c",
+    "stable_fields_excluded_from_sha": [
+      "whole_process_peak_tracemalloc_bytes",
+      "worlds[*].arms[*].policy_decision_ns",
+      "worlds[*].arms[*].whole_learning_ms"
+    ],
+    "stable_byte_count": 65625,
+    "cross_platform_stable_equal": true,
+    "full_ubuntu_json_sha256": "2bf5a24a42bddf993ff136d1c2f6d04a802c08885c4d1f13bcf0e92c5fc1cda8",
+    "full_windows_json_sha256": "b7a96849afab69cba239f9ac6a9997a7e445910afc38cf8545a386c71d85f4f5"
+  },
+  "interpretation": "Exact prior and physical-action capacity matched; HC05's Gini lookahead is slightly better than independent entropy lookahead in IID but below frozen threshold. OOD causal wiring produces high-confidence wrong predictions in both, and Bayesian often higher coverage but also wrong. Limited return-A result ties conventional control. Not scientifically superior; planning cost is higher than one-step and passive controls.",
+  "science_status": "NEGATIVE on primary generalization and structural OOD; MIXED_DEV overall because narrow return-A coverage criterion passed; no adopted model",
+  "engineering_status": "New focused HC06 tests 10/10 PASS Linux/Windows; inherited regression initially blocked by stale pinned G29 atlas pending final three-file source atlas commit",
+  "no_model_runtime_mutation": true,
+  "no_scientific_first_use": true,
+  "prior_evidence_preserved": true
+}
