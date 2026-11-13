@@ -13,7 +13,7 @@ class SL13Tests(unittest.TestCase):
     def test_frozen_registration_custody(self):
         p=json.loads((Path(__file__).parent/"prereg.json").read_text())
         self.assertEqual(FREEZE,"7249e3b7256a77ce6b3c6949946be0d321223e7a")
-        self.assertEqual(p["status"],"FROZEN_BEFORE_IMPLEMENTATION_AND_OUTCOME")
+        self.assertEqual(p["status"],"FROZEN_BEFORE_IMPLEMENTATION_OR_OUTCOMES")
         self.assertEqual(len(ARMS),6)
         self.assertEqual(sum(map(len,COHORTS.values())),32)
         self.assertEqual(AUDITS,(40,44,56,60,64,72,80))
