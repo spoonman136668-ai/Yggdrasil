@@ -97,6 +97,7 @@ class HeadroomH01Tests(unittest.TestCase):
 
     def test_passive_and_hidden_causal_diagnostic(self):
         results = audit()
+        print("WSP101_H01_DEV_AUDIT=" + json.dumps(results, sort_keys=True, separators=(",", ":")), flush=True)
         self.assertIn(results["classification"], (
             "DEV_SYMBOLIC_CEILING", "DEV_SYMBOLIC_HEADROOM_OPEN"))
         self.assertEqual(results["evaluated_context_mode_pairs"], 16)
