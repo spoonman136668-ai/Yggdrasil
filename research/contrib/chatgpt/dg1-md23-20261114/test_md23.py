@@ -89,6 +89,26 @@ class RewardedBoxToyPrefirstuse(unittest.TestCase):
             data["teacher"], sort_keys=True), flush=True)
         print("MD23_TOY_LEARNED_EVENTS:" + json.dumps(
             data["learned_edges"], sort_keys=True), flush=True)
+        if data["teacher"]["box"]["goals"] == 0:
+            from minigrid.core.constants import OBJECT_TO_IDX
+            for seed in (11, 17):
+                episode = d.teacher_episode(d.BOX_ENV, seed)
+                pairs = episode["transitions"]
+                visible = [i for i, (before, act, _, after, _) in enumerate(pairs)
+                           if (m.objects(before) == OBJECT_TO_IDX["box"]).any()]
+                front_box = [i for i, (before, act, _, after, _) in enumerate(pairs)
+                             if m.front_type(before) == OBJECT_TO_IDX["box"]]
+                pickups = [i for i, (before, act, _, after, _) in enumerate(pairs)
+                           if act == 3 and m.front_type(before) == OBJECT_TO_IDX["box"]]
+                drop_actions = [i for i, (_, act, _, _, _) in enumerate(pairs) if act == 4]
+                print("MD23_BOX_TOY_DIAGNOSTIC:" + json.dumps({
+                    "seed": seed, "steps": episode["steps"], "box_visible": len(visible),
+                    "first_box_visible": visible[0] if visible else None,
+                    "box_front": len(front_box), "box_pickup_attempts": len(pickups),
+                    "drop_attempts": len(drop_actions),
+                    "last_16_action_and_front": [(a, m.front_type(b)) for b,a,_,_,_ in pairs[-16:]],
+                    "no_key_probe": episode["no_key_probe"],
+                    "with_key_unlock": episode["with_key_unlock"]}, sort_keys=True), flush=True)
         self.assertGreater(data["teacher"]["door"]["goals"], 0,
                            "MD23_TOY_DOOR_TEACHER_NO_OFFICIAL_REWARD")
         self.assertGreater(data["teacher"]["box"]["goals"], 0,
