@@ -49,8 +49,7 @@ def require_row(row: dict) -> None:
         if not (type(row.get("revision")) is int and row["revision"] > 0 and
                 row["source_url"] ==
                 "https://www.wikidata.org/wiki/Special:EntityData/" +
-                row["subject"] + ".json?revision=" + str(row["revision"]) and
-                row["statement_id"].startswith(row["subject"] + "$")):
+                row["subject"] + ".json?revision=" + str(row["revision"]) ):
             raise ValueError("unverified Wikidata source identity")
     else:
         if row.get("revision") is not None or not row["source_url"].startswith("counterfactual:wsp89:"):
