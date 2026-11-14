@@ -1,0 +1,64 @@
+{
+  "schema": "wsp100.broad-fixture-identifiability.v1",
+  "experiment_id": "WSP-100",
+  "status": "FROZEN_BEFORE_BROAD_CERTIFIER_IMPLEMENTATION_OR_DEV_METRICS",
+  "parent_sha": "6922f86947ef7b9754bab92eaaf87ca8ae348577",
+  "parent_ci": {
+    "full_dual_platform": 43612345953,
+    "g29_acceptance": 43612349621,
+    "original_first_use": false
+  },
+  "question": "Can a source-blind independent auditor certify observable future outcomes under a model class that is strictly larger than the exact generating family, without implying that a compact fixture catalogue proves broad scientific identifiability?",
+  "context": "Narrow 256-program DEV auditor previously saw exact four-parameter generating family; this widened DEV auditor explicitly includes alternate compositions and hidden memory mixing. WSP100 original scientific grammar remains unimplemented and unused.",
+  "prediction_before_run": "The broad 2048-member class contains the true 256-member fixture family, may lower identifiability relative to the narrow audit, and must flag missing/altered source or target binding. No minimum improvement or ceiling target is imposed.",
+  "scope": {
+    "dev_fixture_ids": "0..7 ONLY",
+    "unavailable_original": {
+      "fit": "100011..100034",
+      "transfer": "100101..100132",
+      "novel": "100201..100216",
+      "reserved": "100301..100332"
+    },
+    "untouched_prior_reserve": true,
+    "paid_api": false,
+    "controller": false,
+    "queue": false,
+    "scheduler": false,
+    "promotion": false,
+    "merge": false
+  },
+  "hypothesis_catalogue": {
+    "parameters": [
+      "family:0..3",
+      "wiring:0..3",
+      "trigger:0..3",
+      "phase:0..3",
+      "secondary_operator_shift:0..3",
+      "hidden_combiner:0..1"
+    ],
+    "cardinality": 2048,
+    "exact_fixture_embedding": "For every four-parameter fixture program, (family,wiring,trigger,phase,shift=0,combiner=0) is the original hypothesis. The broad family is a STRICT superset; all 256 exact fixture programs retained.",
+    "secondary_operator": "For output index i, secondary primitive is (family+1+(i%3)+secondary_operator_shift)%4; shift 0 recovers frozen WSP100 fixture transition.",
+    "hidden_combiner": "For i<4, hidden_combiner 0: y=(base+h_old[i%2])%4, hidden_combiner 1: y=base XOR h_old[i%2] (two-bit xor); outputs i>=4 use base. Hidden transition and reward unchanged.",
+    "primitives": "The existing independently reimplemented four public primitives add4, xor2, conditional, and mixedmul. The actual sampled fixture program is NEVER passed to the auditor or policy.",
+    "reset": "Each separate four-step episode starts with hidden=(0,0). All inputs (visible/action/reward) are the only evidence allowed."
+  },
+  "source_and_plan": {
+    "training": "All original-free DEV sources are 24 passive episodes +8 active episodes, each exactly four transitions. Random arm is validated but NOT passed as training data for this conditional source audit.",
+    "seal": "Recompute sorted compact JSON SHA256 over source bundle's five fields, check all action/reward/state continuity and arm budgets, audit initial active/random state equality.",
+    "target_plan": "Recompute 12 disjoint six-digit base4 heldout states, SHA256-ranked among 4096 states excluding ALL source-episode start states, plus paired three-action plans; never inspect heldout outcomes to select targets.",
+    "conditions": "Reject reused, mis-shaped, source-overlapping or modified plan; require hash matches. Never fetch environment hidden program, trigger or oracle heldout next-state.",
+    "repeatability": "Canonical hypothesis order is lexicographic across six dimensions; no unstable global random, no probabilistic approximation, no early-stopping search."
+  },
+  "validity_and_controls": {
+    "primary": "Exact complete 2048 hypothesis enumeration with observable source-only consistency filtering, exact invariant prediction-slot count among survivors, and report fraction without scoring target truths.",
+    "compare": "Compute narrow 256-family survivors using independent previous narrow module only in a diagnostic test. For identical observed source/plan, widened catalogue cannot identify MORE prediction cells than the narrow one.",
+    "empty_history": "2048 survive with no source and exhibit genuine prediction ambiguity; cannot silently call perfect identifiable.",
+    "alternate_law": "A separate fixture-only shifted-law synthetic probe (secondary_operator_shift=1) must be supported in broad catalogue but be rejected by the 256-program narrow class; no original data used.",
+    "negative": "Tampered source hash/episode/plan must fail closed, and no zero-survivor program may be labeled identified.",
+    "measurement": "Print fixture IDs and source hashes, counts of broad/narrow survivors, exact 432 prediction slots, identifiable slot fractions, timing. Store result as developmental, never proof of direct weight performance.",
+    "accept": "ENGINEERING PASS only if exact 2048 enumeration, source/plan binding, all negative controls, independent model soundness tests and two-platform fixture CI pass; subsequent exact-source full WSP80-98+root regression and G29 atlas mandatory.",
+    "scientific": "UNVERIFIED. Even if 100% of 432 slots identifiable under this 2048-program DEV catalogue, no original WSP100 scientific identifiability or mechanistic superiority is established."
+  },
+  "stop": "Preserve any low/high identifiability findings; do not tune post-result thresholds, select only favorable fixtures, or silently reinterpret engineering as science. Original-world generator and learning comparisons still require separate prospective design and authority."
+}
