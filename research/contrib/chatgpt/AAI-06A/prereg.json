@@ -1,0 +1,111 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "AAI-06A",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can a bounded incremental causal graph-growth algorithm construct unseen two-stage Boolean causal circuits from active interventions, approximate an exhaustive matched-prior program-search baseline at lower inference-development cost, and survive shared-memory capacity competition?",
+  "hypothesis": "A two-stage six-beam primitive-graph builder will approach exact full-grammar maximum likelihood on newly generated causal circuits with 16 interventions per world, while measuring real wall-clock and program-evaluation cost. Result may be negative; it is not presumed novel or superior to exact MAP.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    "AAI-05 draft PR #1031 exact HEAD 2fbc9a4bbb570d35b56cb06e1bbd96eeb508c17f",
+    "AAI-05 primary 43604165867 frozen numeric PASS but novelty audit: direct_fit=hard-MAP over predefined 60 rules, full Bayes same prior outperformed. No integration."
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/AAI-06A/**",
+    ".github/workflows/aai06a-one-shot.yml",
+    ".github/workflows/yggdrasil-g29-atlas.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "inputs": [
+    {
+      "name": "seeded, synthetic, multi-stage boolean causal worlds",
+      "sha256": "source-defined-deterministic-only-no-preexisting-dataset",
+      "source": "Pure standard-library SHA256 seeded generator in frozen evaluator source; no personal, private or external data"
+    }
+  ],
+  "frozen_design": {
+    "seeds": {
+      "mechanical": [
+        990000,
+        990001,
+        990002,
+        990003
+      ],
+      "dev": {
+        "start": 151000,
+        "count": 32
+      },
+      "transfer": {
+        "start": 152000,
+        "count": 64
+      },
+      "negative": {
+        "start": 153000,
+        "count": 32
+      },
+      "interference": {
+        "start": 154000,
+        "count": 32
+      }
+    },
+    "splits": "DEV root XOR, TRANSFER root AND/OR (selector seeded), all input gate pairs/gates unseen; each world independently sampled. No tuning against any scientific seed.",
+    "law": "Five binary inputs: three state bits and two action bits. Output consists of two bits; each bit is a freshly sampled two-level graph: first gate op_a(pair_a) and second gate op_b(pair_b), root op_r(gate_a,gate_b) then XOR bias. Gates from XOR/AND/OR; pair from ten input-bit pairs, op from three. Symmetric graph aliases accepted, exact MAP applies deterministic lexicographic tie.",
+    "observations": "Each learner receives 16 distinct do(state,action) observations sampled without replacement from 32 state/action possibilities. Two consequence bits independently flipped with p=.08 per do observation. No passive events accepted as do evidence.",
+    "terminal": "12 unseen do decision challenges each with state restricted to states not used in probe training, and random two-bit goal. Choose one of four actions and score 1-Hamming(causal_true_y,goal)/2.",
+    "candidate": "Two-stage graph construction (no pre-enumerated full program catalog): score all 30 primitive pair/gate nodes under noisy Bernoulli likelihood; take six highest-scoring first nodes per consequence bit; grow second node from all 30 choices with three root operators and two biases; rank completed synthesized graphs on all 16 given observations. Total 1080 completed per bit + 30 unary per bit. Deterministic tie.",
+    "controls": [
+      "Exact exhaustive full-grammar MAP with same 30 primitives and 3 root gates + two biases (5400 complete graphs/bit); same observations and noise",
+      "Fully trained conventional 300-epoch logistic (intercept+five singles+ten interactions) on identical do data",
+      "Frozen randomized-rule selection from same grammar; no use of observations",
+      "Shuffled-label candidate training on negative seeds",
+      "Identical learned store class for candidate and exact MAP; value-aware public priority retention and LRU negative control"
+    ],
+    "interference": "One real shared two-slot mutable store learns A(public priority=2), B(priority=1), then C(priority=1). With value-aware eviction, A and C must survive; LRU evicts A. Verify original A predictions after both interference updates without restoring any per-world model. Same value-aware policy and memory budget for candidate and exact MAP. This tests storage interference only; priority is hand-given, not learned.",
+    "capacity": "Per-world two 4-integer circuits (first-primitive,second-primitive,root-op,bias). Shared store exactly two world slots. Candidate beam width six and 1080 completed circuits per output bit; exhaustive 5400. Logistic 16 weights/output, 300 epochs. No hidden training examples.",
+    "evaluator": "Frozen mean terminal decision reward by cohort, 1024 paired-world bootstrap CI seed 16060, paired differences versus exhaustive MAP and logistic; completed graph evaluations and measured fit/eval wall time, bytes of serialized store and exact online A recall after B,C. No claimed general intelligence or unknown primitive discovery.",
+    "deterministic_expected": true,
+    "data_budget": "32 dev, 64 transfer, 32 negative; 16 do observations and 12 withheld terminal queries per world; separate 32 interference triples; no extra science first use after this primary.",
+    "compute_budget": "Candidate <=1110 graph/node score candidates per bit per world; exact 5400 completed per bit; logistic 300 epochs; 1024 bootstrap draws per pair. Python 3.12 stdlib and no paid API."
+  },
+  "controls": [
+    "Exact matched-prior exhaustive MAP with identical rule grammar, noise likelihood, action budget and no hidden answers",
+    "Fully trained logistic with pair interactions",
+    "Random program and shuffled outcome labels",
+    "Shared bounded memory store with same value-aware eviction for candidate and exhaustive MAP",
+    "LRU memory negative control"
+  ],
+  "metrics": [
+    "DEV/TRANSFER/NEGATIVE terminal reward",
+    "Paired candidate - exhaustive MAP and candidate - logistic reward (paired-world 95% CI)",
+    "Training graph-evaluation counts, wall time, cost and serialized inference bytes",
+    "Shared store A retention after B,C vs LRU",
+    "Determinism excluding wall time; SHA256 prediction receipt"
+  ],
+  "classification_rules": {
+    "supported": "Candidate on TRANSFER within -0.035 of matched exhaustive MAP, candidate versus fully trained logistic >= +0.03, completed graph evaluations <=0.25 of exact, measured fit time candidate/exact <=0.75, shared-store retention 100% for A under public priority and LRU A eviction as negative control, shuffled-label transfer gap >=0.08; score not scientific novelty or native model acceptance.",
+    "mixed": "Some performance/efficiency positive but at least one prereg gate fails. No promotion.",
+    "negative": "Sound and reproducible result fails performance, efficiency, shuffle or retention gate. Preserve as negative; never retune used seeds.",
+    "invalid": "Leakage, protocol/source/seed drift, evaluator implementation error, nonidentifiable generator, logic/cost counter mismatch, or nondeterminism; no claim on result."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result candidate selection",
+    "capacity changes",
+    "extra data/compute/claims",
+    "retrying consumed primary without a new prereg and disjoint splits"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "limitations": "Grammar still supplies XOR/AND/OR primitives and exact MAP matched vocabulary; online graph growth is structured search, not proof of an unprecedented learning algorithm. The value-aware memory-priority signal is explicitly provided; retention alone does not establish learned salience.",
+  "no_model_integration": true,
+  "no_post_result_tuning": true
+}
