@@ -1,0 +1,92 @@
+{
+  "schema": "yggdrasil.qtr.donor-source-intake.v1",
+  "experiment_id": "QTR-01",
+  "track": "representation-transplantation",
+  "stage": "SOURCE_INTAKE_ONLY",
+  "baseline_parent_sha": "ccb8692317c74db71f0f7b8f62fed21a2040ed2a",
+  "rationale": "Use public Qwen3.8-27B representation measurements as candidate donor evidence for native, tokenless causal learners. This manifest is not a scientific preregistration, fitted translator, transplant, or model edit.",
+  "sources": [
+    {
+      "id": "atlas",
+      "kind": "activation_census_and_feature_coactivation",
+      "repository": "juiceb0xc0de/qwen3.8-27b-atlas",
+      "commit": "25493cfe8f844ccae2e294778b47c56ed8ae1d66",
+      "url": "https://huggingface.co/datasets/juiceb0xc0de/qwen3.8-27b-atlas/tree/25493cfe8f844ccae2e294778b47c56ed8ae1d66",
+      "license_declared": "Apache-2.0",
+      "intended_inputs": [
+        "data/coactivation.parquet",
+        "data/features.parquet",
+        "data/layers.parquet",
+        "data/code_analysis.parquet"
+      ],
+      "notes": [
+        "64 text layers, 35.4k coactivation rows, feature taxonomy; no SAE pass in this atlas",
+        "Disregard the author's retracted corporate/authentic contrasts and near-ceiling layer classifier narrative",
+        "Coactivation is not causality or a labeled semantic association",
+        "Ablation safety fence was not passed for any direction in the author's Sub-Zero report"
+      ],
+      "local_binary_sha256": null,
+      "local_binary_verified": false
+    },
+    {
+      "id": "sae_code",
+      "kind": "code_domain_sparse_autoencoder_features",
+      "repository": "LeonInverse/qwen3.8-27b-scope-code",
+      "commit": "0f965454ffedb93e826546a7dc11b51a4622188e",
+      "url": "https://huggingface.co/LeonInverse/qwen3.8-27b-scope-code/tree/0f965454ffedb93e826546a7dc11b51a4622188e",
+      "license_declared": "Apache-2.0",
+      "intended_inputs": [
+        "scores/utility.jsonl",
+        "scores/overlap.jsonl",
+        "scores/group_mask.jsonl",
+        "interface/feature_list_1x.json"
+      ],
+      "notes": [
+        "SAE-derived feature IDs in code domain, all 64 layers",
+        "No verified mapping from these feature IDs to concepts in the atlas or recipient-native states",
+        "Do not download the full 108 GB checkpoints for this intake"
+      ],
+      "local_binary_sha256": null,
+      "local_binary_verified": false
+    }
+  ],
+  "donor_reference": {
+    "model": "Qwen/Qwen3.8-27B",
+    "model_card": "https://huggingface.co/Qwen/Qwen3.8-27B",
+    "license_declared": "Apache-2.0",
+    "capture_weights_sha": "UNVERIFIED",
+    "note": "The model card's current revision does not establish the exact source-weight SHA used by either independent contributor."
+  },
+  "allowed_now": [
+    "read_only_public_source_inspection",
+    "record_provenance_and_caveats",
+    "design_independent_semantic_feature_probe",
+    "design_recipient_native_alignment_and_negative_controls"
+  ],
+  "forbidden_now": [
+    "claim_transplantation",
+    "assume_shared_feature_indices_between_sources",
+    "infer_semantics_from_correlation_alone",
+    "consume_frozen_WSP99_public_or_reserved_worlds",
+    "run_donor_inference_or_paid_API",
+    "edit_Wingless_Yggdrasil_or_TTT_Hybrid_native_weights",
+    "modify_accepted_refs",
+    "merge_or_promote",
+    "deploy_or_change_controllers"
+  ],
+  "next_scientific_gate": {
+    "name": "QTR-01 prospective frozen preregistration BEFORE first primary evaluation",
+    "requirements": [
+      "Acquire and verify exact input-file SHA256 hashes, formats, and licenses for bounded file slices",
+      "Identify semantically interpretable features from independent, source-blind probes; no claims from bucket labels alone",
+      "Freeze source/recipient interface and a budget-matched shuffled-feature, random-graph, retrieval and native-learning baseline",
+      "Freeze disjoint calibration, test seeds, negative controls, retention/interference tasks, stop rules, compute/action budgets, and scientific success threshold",
+      "Keep all recipient native substrates independent, tokenless, and never copy donor attention/transformer substrate"
+    ]
+  },
+  "classification": {
+    "engineering": "SOURCE_IDENTITIES_VERIFIED_ONLY",
+    "scientific": "UNVERIFIED",
+    "deployment": "NONE"
+  }
+}
