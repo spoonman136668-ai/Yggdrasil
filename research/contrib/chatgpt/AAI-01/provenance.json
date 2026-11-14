@@ -1,0 +1,51 @@
+{
+  "schema": "aai01.provenance.v1",
+  "repository": "spoonman136668-ai/Yggdrasil",
+  "parent_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "preregistration_commit": "b9ad110a54e5e2a631270bf45409777de2973314",
+  "source_commit": "684295d8c6866d9ee3c0d2f99a7cf993b9b0970c",
+  "source_path": "research/contrib/chatgpt/AAI-01/run.py",
+  "source_git_blob_sha": "f34236375d4f62249361d6e147f37219be2be0a0",
+  "source_sha256": "2c5389ac1182742f1d8c6d182db0b250ce8b27d4583b7e3f3ebfbfaf16780964",
+  "test_commit": "11026e61f03040b4ff841788c1d0e324304e2fba",
+  "test_path": "research/contrib/chatgpt/AAI-01/test_aai01.py",
+  "local_result_commit": "e7af585fa4e7b2d6e73389a3b993a2787e0980aa",
+  "postcommit_result_sha256": "74833d449302d95c2300176669a735da4d6bb8339ee1374220c230e109fd49fe",
+  "environment": {
+    "os": "Linux container",
+    "python": "3.13.5",
+    "dependencies": "Python standard library only",
+    "gpu": "none",
+    "github_actions": "NOT_RUN",
+    "windows": "NOT_RUN"
+  },
+  "local_commands": [
+    "python -m py_compile research/contrib/chatgpt/AAI-01/run.py",
+    "python research/contrib/chatgpt/AAI-01/run.py",
+    "python -m unittest discover -s research/contrib/chatgpt/AAI-01 -p test_aai01.py -v"
+  ],
+  "focused_tests": {
+    "passed": 7,
+    "failed": 0
+  },
+  "repetition": "Two post-source-commit development invocations had byte-identical JSON metrics after excluding elapsed_seconds_local_development.",
+  "deviations": [
+    "The first local pre-source-commit implementation attempt stopped because the logistic comparator treated route-ambiguous demonstrations as irreducible contradictory labels, preventing BCE convergence. Fixed the comparator to exclude only non-discriminating demonstrations before committing final source. Frozen protocol, seeds, thresholds and candidate policy were not changed.",
+    "Implementation has only a two-float evidence gate over programmer-supplied relation compositions; not free-form learned association discovery or an integrated neural weight edit.",
+    "Extra unrelated facts are separately typed C edges and never compete for shared writable slots; robustness against true capacity interference is NOT established.",
+    "Worlds and answers are generated locally; first-use source privacy or external unseen data is not claimed. Development labels were produced in local pre-commit debugging and therefore these cohorts are consumed development cohorts."
+  ],
+  "classification": "DEV_MECHANISM_SUPPORTED_NO_SUPERIORITY",
+  "qualification": {
+    "engineering_focused_local": "PASS",
+    "full_repo_regression": "UNVERIFIED",
+    "windows": "UNVERIFIED",
+    "ubuntu_ci": "UNVERIFIED",
+    "source_atlas_g29": "UNVERIFIED",
+    "scientific_independent": "UNVERIFIED",
+    "model_integration": "NONE"
+  },
+  "parent_architecture_modified": false,
+  "protected_first_use": false,
+  "production_execution": false
+}
