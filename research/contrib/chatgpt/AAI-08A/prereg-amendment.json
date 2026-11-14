@@ -1,0 +1,14 @@
+{
+  "schema": "yggdrasil.contrib.aai08a.prereg-amendment-before-first-use.v1",
+  "original_prereg_commit": "db263b1de02fdaaec2152b44947a1e11b5305262",
+  "phase": "BEFORE EVALUATOR_AND_ALL_SCIENTIFIC_FIRST_USE",
+  "rationale": "Original shuffled-outcomes-negative description permuted feedback only within each phase. That preserves exactly the phase-level transition-law distribution being measured and would make the negative control incapable of falsifying temporally ordered learning. Correct before writing evaluator or using any scientific or development cohort.",
+  "binding_changes": {
+    "negative_shuffle": "Globally permute all 72 real training probe Bernoulli outcome labels across the three continuous A-B-A phases using random.Random(seed_from_world_and_'negative'+18181), then feed this corrupted-feedback sequence to a fresh candidate with the same public episode order/action/history length. This deliberately breaks time-local law information; never pass true source state/reward when substituting corrupted outcomes. Evaluate shuffled candidate at same exact separate negative seeds and official environment, do not change environment true reward.",
+    "negative_threshold": "Unchanged +0.10 proper minus shuffled on disjoint negative worlds.",
+    "original_core": "All other seed splits, interventions, baselines, budgets, threshold, source commit, authority and limitation language remain as in original frozen prereg."
+  },
+  "state": "VALID FROZEN AMENDMENT: issued before all scientific first use; no consumed result or post-result tuning",
+  "primary_first_use_authority": false,
+  "accepted_ref_or_native_model_change": false
+}
