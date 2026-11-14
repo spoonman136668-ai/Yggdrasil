@@ -66,7 +66,7 @@ class WSP89StructuralTests(unittest.TestCase):
         snap["payload"]["weights"]["Q1/P36"]["Q101"] = 4.0
         with self.assertRaises(ValueError):
             DirectEvidenceWeights.restore(json.dumps(snap))
-        bad = fake(obj="Q999", sid="not-a-source")
+        bad = fake(obj="Q999", sid="")
         with self.assertRaises(ValueError):
             mem.assert_evidence(bad)
         with self.assertRaises(ValueError):
