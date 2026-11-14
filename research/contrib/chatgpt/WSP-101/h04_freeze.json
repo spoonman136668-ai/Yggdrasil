@@ -1,0 +1,38 @@
+{
+  "schema": "yggdrasil.wsp101.h04.direct-boolean-causal-weight-programming.v1",
+  "stage": "SYNTHETIC_DEV_ONLY; no protected first-use, AGI, or accepted Yggdrasil modification",
+  "parent_sha": "a31156dde9d3aeb67617d8babd4fc008d8413788",
+  "parent_tree": "361e888de9010e30ca6050dfadad91d694fdc4b8",
+  "frozen_before_H04_code_and_source_reads": true,
+  "hypothesis": "For arbitrary 10-input quadratic GF(2) causal functions (2^56 possible rules rather than 4-operator labels), a native direct numerical weight writer can recover a compact 56-bit coefficient image from 56 delayed action-consequence interventions and predict all 968 unseen higher-weight action inputs; an independently implemented equally informed polynomial symbolic solver should tie perfectly. Out-of-family cubic effects must remain explicitly unidentifiable.",
+  "law": "f(x)=c0 XOR XOR_i(c_i*x_i) XOR XOR_{i<j}(c_ij*x_i*x_j), Boolean arithmetic GF(2), 10 binary intervention bits",
+  "worlds": "DEV_WORLD IDs 0..31, coefficient bits independently SHA256-derived from WSP101-H04|DEV|id|COEFF, no relation to WSP101 original or H02/H03 sources",
+  "groups": {
+    "fit_dev": "0..15",
+    "new_world_dev": "16..31 with independent coefficient seeds; same law class, no claim of unfamiliar family transfer"
+  },
+  "source_actions": "Exactly 56 unique 10-bit masks, 0; single bits 0..9; pairwise masks sorted lexicographically by (i,j). 56 delayed action/readout intervention episodes per world, each 2 action steps: 0<=intervention<1024 followed by READ_ACTION=1024; reset returns 0. Do not reveal coefficients to the writer.",
+  "target_actions": "All 10-bit masks with Hamming weight >=3, exactly 968 distinct targets per world, never observed at source. 32*968=30976 heldout predictions.",
+  "source_budget": "32*56=1792 intervention episodes, 3584 public intervention/readout actions; no passive hidden source. One observational bit per intervention, deterministic/no noise by design. Checkpoint and wall/CPU timings accounted.",
+  "hypothesis_class_identifiability": "The chosen source masks form a triangular basis: c0=f(0); ci=f(2^i) XOR c0; cij=f(2^i+2^j) XOR ci XOR cj XOR c0. This determines a unique quadratic polynomial. Verify independent equations against source observations.",
+  "comparators": [
+    "Independent full quadratic algebraic-normal-form symbolic solver with identical 56 source observations and known degree<=2 prior; predicts all heldouts",
+    "Exact raw-observation retrieval, abstains on all 968 unseen masks",
+    "Fixed-zero predictor, counts correct but cannot receive hidden coefficients",
+    "Out-of-class cubic augmentation g(x)=f(x) XOR x0*x1*x2, source-identical for all weight<=2 masks but disagreeing on heldout x with bits 0,1,2 all 1"
+  ],
+  "direct_writer": "Write only 56 Boolean numerical coefficients into 7 packed bytes per world from actual delayed public outcome observations, no SGD/gradient, no donor weights, no model checkpoint modification. Independent bank with per-world write-once, cold-restart integrity and disjoint-slot noninterference.",
+  "frozen_result_rules": {
+    "DEV_NATIVE_WEIGHT_PROGRAMMING_PARITY": "Direct writer and independently coded symbolic baseline each 30976/30976 heldout correct; exact lookup answers 0/30976; restore parity and disjoint-slot noninterference PASS; cubic negative confirms source underidentification outside quadratic class.",
+    "DEV_NATIVE_WEIGHT_PROGRAMMING_NEGATIVE": "Any frozen functional assertion fails; do not retune H04 source or polynomial degree after seeing result",
+    "SCIENTIFIC_PASS": "NOT_AVAILABLE: synthetic known-degree family with equivalent strong algebraic control, no fully-trained neural comparator or unseen-family performance."
+  },
+  "scientific_boundaries": [
+    "Does not prove advantage over symbolic, factual knowledge, causal law discovery beyond specified degree, learning from noise, natural-world transfer, AGI, or long-term continual learning",
+    "Cubic law cannot be distinguished by this source; preserve explicit negative",
+    "No weight modifications to accepted native models or official FORGE/Wingless/Yggdrasil/Hybrid loops",
+    "No protected FIT/TRANSFER/NOVEL/RESERVED WSP101 IDs, third party source data, paid inference, deployments, mergers, or scheduled tasks"
+  ],
+  "runtime": "Existing WSP101 DEV workflow Linux and Windows then mandatory exact-SHA full regression+G29; source atlas only via preexisting qualified workflow.",
+  "post_result": "Preserve success/tie or negative without post-result tuning; next scientific test only on a separately preregistered unfamiliar causal-family experiment with matched trained conventional and broad symbolic controls."
+}

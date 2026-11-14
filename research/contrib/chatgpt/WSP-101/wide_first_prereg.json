@@ -1,0 +1,60 @@
+{
+  "schema": "wsp101.wide-first-association-stress.v1",
+  "state": "FROZEN BEFORE CODE OR FIRST WIDE DEV EXECUTION",
+  "parent_sha": "38ff83105cb019ae77d1fc391020a390e1d7acee",
+  "goal": "Large-first direct numerical knowledge/association writing, cold retention, composition and unseen inputs; shrink only after a failing largest tier.",
+  "scientific_scope": "DEV fixture only, synthetic; original WSP101 FIT/TRANSFER/NOVEL/RESERVED untouched",
+  "max_tier": {
+    "domains": 64,
+    "relations": 64,
+    "bits": 12,
+    "possible_links": 16777216,
+    "observed_per_rule": 8,
+    "observed_total": 32768,
+    "heldout_per_rule": 128,
+    "heldout_total": 524288,
+    "two_hop_queries": 8192
+  },
+  "fallback_tiers": [
+    {
+      "domains": 32,
+      "relations": 32,
+      "bits": 11
+    },
+    {
+      "domains": 8,
+      "relations": 8,
+      "bits": 10
+    }
+  ],
+  "random": "SHA256 WSP101|WIDE|v1|domain|relation|purpose|index, signed big endian? NO: unsigned big endian. No global RNG.",
+  "relations": [
+    "ADD: y=(x+k) modulo 2^bits",
+    "XOR: y=x XOR k",
+    "ROT-XOR: rotate_left(x,r,bits) XOR k, 1<=r<bits",
+    "AFFINE-ODD: y=(a*x+k) modulo 2^bits with odd a"
+  ],
+  "source": "Each (domain,relation) exposes only eight observed (input,target) pairs; inputs 0,1, plus six SHA256-selected unique inputs >=2; generated relation family and coefficients evaluator-only.",
+  "heldout": "128 unique unseen inputs per rule plus 8192 two-hop compositions at max tier; fixed by hashed index not observed target; predictions and source receipts hashed before scorer reads truth.",
+  "direct_write": "Infer public four-family operator from the eight pairs, write 3 numeric integer slots (opcode,coefficient,k) per relation; no gradients; no hidden generator parameter access. This is rule compilation, not AGI.",
+  "symbolic_control": "Independent public-grammar operator fitting from same 8 examples; strongest valid control may tie, and a tie is not direct-write superiority.",
+  "retrieval_control": "Exact dictionary memorization of eight observed pairs; abstains on missing unseen keys.",
+  "cold_retention": "Freeze and restore numeric weight array after first half of relations; then add remaining relations, require prior associations unchanged; no capacity/overwrite collision inferred.",
+  "metrics": "Exact source/heldout/composition accuracy, source-fit, source size and SHA, predicted label seals, model slots, cold memory receipts, whole-process CPU/wall, source/action reads. Compare entire pipelines.",
+  "cutoff": "Top tier CPU-only bounded 180 seconds for experiment and 450s CI; if failure, diagnose then test smaller frozen tiers without changing algorithms. A failed tier must stay in record.",
+  "dev_pass": "Recognize or reject underidentifiable source; >=99% unseen/2-hop accuracy from direct writer and strong symbolic; cold exact restore; no oracle leakage. This is ENGINEERING only, not scientific superiority.",
+  "dev_invalid": "Wrong source/provenance, original worlds touched, strong control mismatched, hidden oracle data leaks, post-result tuning, fabricated end-to-end speedup.",
+  "important_limit": "This synthetic rule-learning task supplies a small exact grammar to learner and control, so even perfect performance is NOT novel causal learning, AGI, or broad human knowledge.",
+  "real_corpus_next": "Wikidata structured data CC0 snapshot under frozen provenance and independent property/composition splits; separately assess ConceptNet CC BY-SA 4.0 with attribution/share-alike obligations. No external data silently ingested during this development run.",
+  "authority": {
+    "research_only": true,
+    "original_first_use": false,
+    "main": false,
+    "merge": false,
+    "accepted_model": false,
+    "official_research_loop": false,
+    "controller": false,
+    "scheduler": false,
+    "paid_api": false
+  }
+}

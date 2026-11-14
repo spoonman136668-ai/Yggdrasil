@@ -1,0 +1,81 @@
+{
+  "schema": "yggdrasil.wsp101.h02.noisy-delayed-causal-program-dev-freeze.v1",
+  "locked_prior_to_implementation_and_first_read": true,
+  "parent_sha": "4fb4dd909091737bc5ac4df5b85c863275fa98c4",
+  "stage": "DEV TASK HEADROOM ONLY, NOT SCIENTIFIC FIRST-USE",
+  "hypothesis": "Four genuinely different six-bit causal families with hidden masks, delayed action effects, bounded observation noise, and no passive signal will be information identifiable after active interventions yet not saturated by the full known-grammar Bayesian symbolic control.",
+  "fixture_ids": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "hidden_program": "mask in 1..63, family in 0..3, source-only deterministic SHA256 of WSP101-H02/DEV/{id}/{MASK,FAMILY}. Never provide mode/mask/family or truth to learner.",
+  "families": [
+    "F0=parity(probe & mask)",
+    "F1=int(popcount(probe & mask)>=2)",
+    "F2=parity(probe & mask) XOR int((probe & 3)==3)",
+    "F3=int(popcount(probe & mask)==1)"
+  ],
+  "probe_actions": [
+    3,
+    5,
+    7,
+    11,
+    13,
+    17,
+    19,
+    23,
+    29,
+    37,
+    43,
+    53
+  ],
+  "heldout_actions": [
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    15,
+    21,
+    25,
+    33,
+    51
+  ],
+  "public_dynamics": "Each of 12 fresh-reset probe episodes uses action probe then action0, two actions, first output previous hidden zero and second output causal bit XOR observed independent noise. Passive action0 never updates hidden latch, yields all-zero traces across worlds. Reward equals observed output, no other fields.",
+  "source_observation_noise": "Deterministic source SHA256 pseudorandom bit flipped with p=1/8, keyed by (DEV id, probe, episode ordinal); symbolic posterior assumes known Bernoulli p=1/8. No persistent noise cache. Evaluator heldout bit is clean.",
+  "budgets": "16 worlds x 12 public probes x 2 steps=384 action steps, 192 heldout clean causal queries; no original worlds.",
+  "controls": [
+    "Exact 252-hypothesis Bayesian symbolic family+mask (4x63), uniform prior, same 12 public outcomes, known noise p=1/8",
+    "Passive-only prior prediction with zero active observation, same hypotheses",
+    "Exact raw probe lookup, abstain on unseen actions",
+    "Fixed all-zero prediction to benchmark accuracy",
+    "No-latch ablation and noisy source tampering negatives"
+  ],
+  "identifiability": "For each actual world, noiseless 12-probe fingerprint must imply identical heldout causal predictions for every 4x63 hypothesis with that fingerprint. Any conflicting alias causes NO_GO_SOURCE_UNDERIDENTIFIED, without tuning.",
+  "frozen_outcome_rules": {
+    "DEV_NONCEILING_HEADROOM": "All 16 worlds query-identifiable, passive source same across worlds, Bayesian accuracy between 0.60 and 0.92 inclusive, improvement over fixed all-zero >=0.10",
+    "DEV_SYMBOLIC_CEILING": "All query identifiable, Bayesian accuracy above 0.92",
+    "DEV_BOTH_CONTROLS_WEAK": "All query identifiable, Bayesian below 0.60 or advantage over all-zero below 0.10",
+    "DEV_SOURCE_UNDERIDENTIFIED": "At least one indistinguishable noiseless source hypothesis disagrees on a heldout query",
+    "DEV_INVALID": "passive leakage, any use of original worlds, source oracle hidden access, invalid actions/rows, source mutation"
+  },
+  "provenance": "Synthetic author-created DEV only; no donor materials, protected FIT/TRANSFER/NOVEL/RESERVED worlds, existing native model weights or controller changes.",
+  "after_result": "Preserve exact null or negative, do not retune this fixture after seeing outcomes. A scientific PASS cannot be issued from H02.",
+  "authority": "Use WSP101 branch and existing DEV CI only; no merge, deployment, scheduled tasks, external paid APIs or official loop."
+}

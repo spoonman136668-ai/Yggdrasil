@@ -1,0 +1,76 @@
+{
+  "schema": "wsp101.paired-dev-fixture-contract.v1",
+  "status": "FROZEN BEFORE IMPLEMENTATION / BEFORE ANY DEV OUTCOMES / NO ORIGINAL FIRST USE",
+  "parent": "2e7c31d8579efca478b883de5a4c60aa9af729f5",
+  "question": "Can observationally equivalent paired worlds be distinguished only by consequential interventions that change delayed hidden state, and can a source-only query interface prevent labels from leaking?",
+  "fixed_setup": {
+    "visible_channels": 6,
+    "visible_alphabet": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "hidden_latches": 2,
+    "hidden_alphabet": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "actions": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "episode_steps": 4,
+    "fixture_contexts": "0..7; each exactly two mode variants 0 and 1; context and mode are only auditor-known; all original cohorts strictly blocked",
+    "hash": "sha256 ASCII 'WSP101|v1|DEV|{context_id}|{stream}|{index}', big-endian integer; no process hash or mutable global RNG",
+    "parameters": {
+      "f": "rank('FAMILY',0)%4",
+      "w": "rank('WIRING',0)%6",
+      "p": "rank('PHASE',0)%4",
+      "trigger": "1+rank('TRIGGER',0)%3"
+    },
+    "operators": [
+      "add4(a,b)=(a+b)%4",
+      "xor2(a,b)=a XOR b on two-bit integers",
+      "conditional(a,b)= a if (b %2)==0 else 3-a",
+      "mixedmul(a,b)=(a*b+b)%4"
+    ],
+    "visible_rule": "For output i=0..5, a=x[(i+w)%6], b=x[(i+w+2)%6], c=operator[(f+i%4)%4](a,b), base=(c + x[(i+4)%6]+p*(i%3))%4. If i<4, y_i=(base + old_hidden[i%2])%4, otherwise y_i=base. Output depends only on OLD hidden.",
+    "hidden_rule": "After output, if action==trigger, h0=(h0+delta)%4, where delta=1 in mode0 and delta=2 in mode1; additionally if (x[0]+p)%2==1, h1=(h1+1)%4. If action==secondary=(trigger%3)+1, h1=(h1+1+(x[5]%2))%4. Passive action0 changes no latch. All updates use previous visible x.",
+    "reward": "int((next_visible[0]+next_visible[1])%4==3). Exactly observation and reward may be returned from step, never actual hidden or parameters.",
+    "reset": "Takes six explicitly provided valid visible integers, resets h=(0,0), episode step budget=4; invalid bool, nonint, wrong shapes, episode overrun fail closed.",
+    "classroom": "No external source; synthetic DEV fixture only. Public observer receives reset and step on opaque facade. Auditor may create two modes but must never pass mode, trigger or parameters to source policy/learner."
+  },
+  "source_policy": {
+    "passive_count": 16,
+    "steps_per_episode": 4,
+    "initial": "For episode i=0..15 choose six base-4 digits little-endian of rank(context,'PASSIVE-INIT',i)%4096. Same initial states in both modes.",
+    "action": "Always 0 in passive sources. No mode-dependent decisions, no hidden-state reads.",
+    "indistinguishability": "Assert exact full trajectory byte equality of mode0 and mode1, including observation and reward, across all 16 source episodes per fixture. Additionally test 32 extra reset states outside source.",
+    "active": "Reserved next gate: at most 2 four-step episodes, 8 action steps total per context; source policy must use observed histories only. Do not implement active policy in this first gate.",
+    "positive_causal_witness": "For each context and every chosen validation start, reset both modes to same visible state, step trigger once and assert immediate observation/reward equal. Then step action0 once and assert at least one delayed visible channel differs. Only auditor-only helper may read trigger; learner cannot.",
+    "negative_controls": "No-trigger action0 episodes remain equal at every step; no-latch ablation eliminates paired divergence for all tested intervention action sequences; changing mode is not visible in immediate output.",
+    "collision": "Source SHA computed over public rows alone, no mode or context labels embedded in learner source data; context ID used only for choosing mode-paired world and deterministic resets."
+  },
+  "qualifications": {
+    "DEV_FIXTURE_VALID": "All 8 pairs satisfy exact passive equivalence, delayed action witness, no-trigger control, no-latch ablation, deterministic replay, strict source budget, observer field isolation, original IDs disallowed, Linux and Windows fixture tests PASS.",
+    "DEV_FIXTURE_NEGATIVE": "Any pair not passive-equivalent or lacking delayed causal witness; stop, preserve negative, no post-result task-rule tuning.",
+    "INVALID": "Mode/trigger hidden parameter leaks to source learner, original first-use, inconsistent budgets, SHA/source drift or manipulated evaluation target.",
+    "engineering": "After fixture tests pass, pin source G29 and run full inherited regression cross-OS on exact candidate SHA. No scientific performance claim under this gate.",
+    "scientific": "NOT TESTABLE: requires independent strong symbolic and fully-trained conventional controls and paired unfamiliar-world transfer/retention under a frozen blind evaluator."
+  },
+  "authority": {
+    "research_only": true,
+    "first_use": false,
+    "merge": false,
+    "accepted_model": false,
+    "controller": false,
+    "runner_owner": false,
+    "scheduler": false,
+    "paid_api": false
+  }
+}
