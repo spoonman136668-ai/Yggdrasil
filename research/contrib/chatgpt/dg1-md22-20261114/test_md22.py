@@ -45,6 +45,11 @@ class PhysicalInterventionPrefirstuse(unittest.TestCase):
         self.assertTrue(all(0<e["steps"]<=256 for e in trials))
         self.assertTrue(all(e["steps"]==len(e["transitions"]) for e in trials))
         self.assertTrue(all(len(e["sha256"])==64 for e in trials))
+        print("MD22_TOY_PUBLIC_ACTION_COVERAGE:"+json.dumps({
+            "episodes":len(trials),
+            "official_goal_successes":sum(e["success"] for e in trials),
+            "negative_locked_door_probes":sum(e["failed_without_key_probe_count"] for e in trials),
+            "positive_with_key_unlocks":sum(e["unlocked_with_key_probe_count"] for e in trials)},sort_keys=True),flush=True)
         self.assertTrue(any(e["failed_without_key_probe_count"]>0 for e in trials),
                         "MD22_TOY_NO_NEGATIVE_INTERVENTION")
         self.assertTrue(any(e["unlocked_with_key_probe_count"]>0 for e in trials),
