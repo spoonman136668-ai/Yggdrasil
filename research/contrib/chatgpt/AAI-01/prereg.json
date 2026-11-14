@@ -1,0 +1,80 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "AAI-01",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Does accumulating verified relational knowledge improve unseen compositional answers more than accumulating equally accessible unrelated facts, and does direct-weight associative gating survive interference and a rule reversal?",
+  "hypothesis": "A numerical two-route associative gate learned only from observed training answers plus the same observed relation edges will answer novel entity compositions, resist unrelated facts, and adapt after paid reversal observations. It must be compared against a converged conventional gate and an exact symbolic rule learner, not only a flat-memory strawman.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    "spoonman136668-ai/Yggdrasil PR #921 WSP-31: acquired source fact increased unqueried composed answer on synthetic DEV; not independently accepted.",
+    "spoonman136668-ai/Yggdrasil PR #874 WSP-09: neural slot memory tied independent exact symbolic control on seen associations.",
+    "spoonman136668-ai/Yggdrasil PR #1010 WSP92: independent source-language QA is separately scoped and must remain untouched."
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/AAI-01/**"
+  ],
+  "inputs": [
+    {
+      "name": "AAI01 deterministic public synthetic family specification v1",
+      "sha256": "20374304cadffc431ce02b1843aabbfecce02b93c054cd696e360682355c93d7",
+      "source": "Canonical specification UTF-8: AAI01-SYNTH-V1|random.Random(seed)|nodes=24|train_seeds=1000..1015|dev_seeds=2000..2015|2_24_permutations|train_examples=6_per_world|heldout_queries=24_per_world|operation=compose_A_B|labels_not_exposed_in_dev|distractors=0_24_96|reversal_dev=seeds3000..3015; entirely generated public synthetic data; no externally protected world."
+    }
+  ],
+  "frozen_design": {
+    "seeds": {
+      "train": "1000..1015 inclusive",
+      "dev": "2000..2015 inclusive",
+      "reversal": "3000..3015 inclusive"
+    },
+    "split": "16 train worlds, 16 disjoint DEV worlds, 16 disjoint reversal worlds; 24 entities each; two independent random permutation relations A and B per world; shared latent rule A followed by B in training/DEV, opposite order after reversal; no world identity provided to learner.",
+    "ordering": "Python random.Random(world_seed), shuffle independently generated A and B successor permutations, then choose six source indices by local seeded permutation for training examples; DEV test source indices 0..23; distractors C sampled from a separate deterministically seeded stream.",
+    "data_budget": "96 train answered source queries, 384 DEV source queries, 16*4 paid reversal evidence queries and 16*20 post-reversal heldout queries; only public A/B edges and optional irrelevant C edges for every arm.",
+    "compute_budget": "All arms receive one pass over the same observed facts; numerical gate O(2*96) score updates, symbolic rule selection O(2*96), conventional two-class logistic gate exactly 500 full-batch epochs or converged earlier at BCE<=0.01; report wall time, updates, memory, direct and train cost separately.",
+    "capacity": "24 nodes x 2 typed successor relations per world; two learned scalar route weights for numerical gate, two integer vote counts for symbolic; no hidden table of DEV query answers; fixed across 0,24,96 distractor relation C fact conditions; count every stored/observed edge.",
+    "evaluator": "Exact one-hop A then B target for each DEV query and after reversal exact one-hop B then A; 384 DEV queries and 320 post-reversal queries; evaluate every arm on identical sources, no unobserved oracle inputs during inference.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Fully trained conventional 2-feature logistic route classifier trained on identical 96 demonstrated examples; check converged criterion and disclose failure as invalid comparator.",
+    "Exact symbolic vote learner on same examples and exact A/B graph search; ceiling control; any tie is NOT claimed superior.",
+    "Flat exact source-target answer memo with no composition; it must not see DEV labels.",
+    "Random route chosen by fixed SHA256-based deterministic bit per query, same facts.",
+    "Shuffled-answer training negative with identical observations and equal update count.",
+    "Counterfactual remove relation B and corrupt one observed edge; verify that asserted certainty drops or changed answer is observable, not simply memorized."
+  ],
+  "metrics": [
+    "unseen-composition exact-answer accuracy",
+    "difference from strongest converged/symbolic control",
+    "distractor-volume slope 0/24/96",
+    "cold-restore equality",
+    "post-reversal accuracy after 4 paid examples per world",
+    "old knowledge retention for unrelated edges",
+    "writable scalar count and matched action/data/whole-process timings"
+  ],
+  "classification_rules": {
+    "supported": "DEV_MECHANISM_SUPPORTED (not SCIENTIFIC_PASS) only if candidate DEV>=90%, candidate-flat>=30pp, candidate-random>=25pp, candidate no worse than exact symbolic or converged conventional by >1pp, >=90% post-reversal accuracy with four supervised examples per reversal world, <=1pp decline between 0 and 96 unrelated distractors, all cold/negative controls and exact input custody pass.",
+    "mixed": "Valid primary DEV>=90% but any retention/reversal/distractor/nonregression condition fails; classify MIXED_DEV and no integration.",
+    "negative": "Any other valid outcome; classify DEV_NEGATIVE and preserve negative receipts.",
+    "invalid": "Source mismatch, duplicated seeds, first-use of protected data, leaked DEV targets, strong control not converged, changed post-freeze thresholds, unequal information/action exposure, unqualified source, or missing output provenance; no scientific claims.",
+    "integration": "NO model integration from mechanism pass alone. A separately preregistered pilot must materially outperform best exact symbolic and trained alternative on unfamiliar tasks or demonstrate >=2x measured total memory/compute advantage with no accuracy/retention regression; then each target model owner must independently qualify."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage",
+    "model/loop integration or accepted-ref edit"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Commit this preregistration ALONE first. No outcome may be produced before its SHA. Never call this a validated improvement to Yggdrasil, Hybrid or weight-programming model absent independent candidate/regression/acceptance evidence."
+}
