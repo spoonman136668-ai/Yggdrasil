@@ -10,7 +10,7 @@ permissions:
   contents: read
 jobs:
   source:
-    if: github.event.head_commit.message != 'ci(md35): arm one-shot derived G29 atlas'
+    if: "${{ github.event.head_commit.message != 'ci(md35): arm one-shot derived G29 atlas' }}"
     name: MD35 no-first-use source gate (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 50
@@ -111,7 +111,7 @@ jobs:
           echo MD35_CROSS_OS_UNOPENED_SPLIT_PARITY_PASS
           echo MD35_SCIENCE_NOT_RUN
   derived_g29:
-    if: github.event.head_commit.message == 'ci(md35): arm one-shot derived G29 atlas'
+    if: "${{ github.event.head_commit.message == 'ci(md35): arm one-shot derived G29 atlas' }}"
     name: MD35 one-shot G29 derived companion (artifact-only)
     runs-on: ubuntu-latest
     timeout-minutes: 20
