@@ -154,6 +154,52 @@ jobs:
           print("MD30_TOY_BLIND_REWARD:",p["blind_mean_net_utility"])
           print("MD30_BAYES_TRAIN_CPU_SECONDS:",p["whole_process_fit_cpu_seconds"])
           PY
+      - name: Train and qualify recurrent world model and empirical model-based RL controls
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          f="research/contrib/chatgpt/dg1-md30-20261114/conventional_controls_lock.json"
+          p=json.loads(Path(f).read_text("utf-8"))
+          assert p["status"]=="FROZEN_BEFORE_NEW_CONVENTIONAL_CONTROL_SOURCE_OR_TRANSFER_OUTCOMES"
+          assert p["parent_commit"]=="69dc1a55e4577ef949e579bfc2ce618ef1cd5c68"
+          assert p["cohorts"]["training_actions_total"]==1920
+          assert p["cohorts"]["synthetic_transfer_seeds"]==[5301,5360]
+          subprocess.run(["git","merge-base","--is-ancestor",
+             "daa8ebf6fcbfa1d22752f1f4141f55f6deb34fb7","HEAD"],check=True)
+          subprocess.run(["git","diff","--exit-code",
+             "daa8ebf6fcbfa1d22752f1f4141f55f6deb34fb7","HEAD","--",f],check=True)
+          print("MD30_FROZEN_RNN_RL_CONTROL_PREREG_PASS")
+          PY
+          python -m py_compile research/contrib/chatgpt/dg1-md30-20261114/recurrent_control.py research/contrib/chatgpt/dg1-md30-20261114/model_rl_control.py research/contrib/chatgpt/dg1-md30-20261114/conventional_preflight.py research/contrib/chatgpt/dg1-md30-20261114/test_conventional_controls.py
+          python -m unittest discover -s research/contrib/chatgpt/dg1-md30-20261114 -p 'test_conventional_controls.py' -v
+          python research/contrib/chatgpt/dg1-md30-20261114/conventional_preflight.py > md30-conventional.json
+          python - <<'PY'
+          import json,sys
+          from pathlib import Path
+          sys.path.insert(0,"research/contrib/chatgpt/dg1-md30-20261114")
+          from conventional_preflight import portable_receipt
+          p=json.loads(Path("md30-conventional.json").read_text("utf-8"))
+          assert p["official_md30_science_first_use"] is False
+          assert p["status"]=="TOY_ENGINEERING_DIAGNOSTIC_NO_SCIENTIFIC_PASS"
+          assert p["physical_training"]["charged_steps"]==1920
+          controls=p["model_controls"]
+          assert set(controls)=={"recurrent_world_model","empirical_model_based_rl"}
+          for c in controls.values():
+              assert c["train"]["fit_episodes"]==192
+              assert c["train"]["validation_episodes"]==48
+              assert c["toy_episodes"]==60
+          Path("md30-conventional-parity.json").write_bytes(
+              (json.dumps(portable_receipt(p),sort_keys=True,separators=(",",":"),ensure_ascii=True)+chr(10)).encode("utf-8"))
+          print("MD30_CONVENTIONAL_CONTROLS_TOY_ONLY_PASS")
+          print("MD30_RNN_RL_NO_OFFICIAL_SCIENCE_FIRST_USE")
+          for name,c in controls.items():
+              print("MD30_CONTROL:",name,"TOY_MEAN:",c["toy_mean_net_utility"],
+                    "ACTIONS:",c["toy_charged_steps"])
+          PY
       - name: Full inherited regression and exact committed atlas
         shell: bash
         env:
@@ -172,6 +218,8 @@ jobs:
             md30-structural-distribution.json
             md30-bayes-toy.json
             md30-bayes-parity.json
+            md30-conventional.json
+            md30-conventional-parity.json
           if-no-files-found: error
   parity:
     name: MD30 cross-OS physical trace and headroom parity
@@ -193,6 +241,7 @@ jobs:
           cmp linux/md30-physical-fixture.json windows/md30-physical-fixture.json
           cmp linux/md30-structural-distribution.json windows/md30-structural-distribution.json
           cmp linux/md30-bayes-parity.json windows/md30-bayes-parity.json
+          cmp linux/md30-conventional-parity.json windows/md30-conventional-parity.json
           python - <<'PY'
           import json
           from pathlib import Path
@@ -208,6 +257,12 @@ jobs:
           assert bayes["official_first_use"] is False
           assert bayes["physical_training"]["charged_steps"]==1920
           assert bayes["toy_episodes"]==60
+          x=json.loads(Path("linux/md30-conventional-parity.json").read_text())
+          assert x["official_md30_science_first_use"] is False
+          assert x["physical_training"]["charged_steps"]==1920
+          assert x["model_controls"]["recurrent_world_model"]["toy_episodes"]==60
+          assert x["model_controls"]["empirical_model_based_rl"]["toy_episodes"]==60
+          print("MD30_RNN_RL_PUBLIC_MODEL_AND_TRACE_PARITY_PASS")
           print("MD30_BAYES_MODEL_AND_PUBLIC_RECEIPT_CROSS_OS_PARITY_PASS")
           print("MD30_SIX_MOTIF_STRUCTURAL_PARITY_PASS")
           print("MD30_PRE_FIRST_USE_CROSS_OS_PARITY_PASS")
