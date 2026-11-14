@@ -1,0 +1,106 @@
+name: DG1-CR16 continuous causal repair DEV
+on:
+  pull_request:
+    paths:
+      - 'research/contrib/chatgpt/dg1-cr16-20261113/**'
+      - '.github/workflows/dg1-cr16-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  original-prospective:
+    name: CR16 prospective and full regression (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify immutable preregistration ancestry
+        shell: bash
+        run: |
+          git merge-base --is-ancestor cd2823483a9d984915e887cd6a076a15c0a59b68 HEAD
+          test "$(git rev-parse cd2823483a9d984915e887cd6a076a15c0a59b68^)" = "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("research/contrib/chatgpt/dg1-cr16-20261113/prereg.json").read_text())
+          assert d["experiment_id"]=="DG1-CR16-20261113"
+          assert d["inputs"][0]["sha256"]=="24ad8baaca087042d75f04ac1bc64ab745de3dfbfbc2135a0733718b1d7e94d0"
+          assert d["exact_parent_sha"]=="5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+          print("CR16_FROZEN_PREREG_SOURCE:PASS")
+          PY
+      - name: Pre-first-use exact-source syntax and bounded negative controls
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -m py_compile research/contrib/chatgpt/dg1-cr16-20261113/cr16.py research/contrib/chatgpt/dg1-cr16-20261113/test_cr16.py
+          python -m unittest discover -s research/contrib/chatgpt/dg1-cr16-20261113 -p 'test_*.py' -v
+      - name: First-use 16-world original paid physical comparison
+        shell: bash
+        run: |
+          python research/contrib/chatgpt/dg1-cr16-20261113/cr16.py > cr16-firstuse.json
+      - name: Validate physical custody and publish frozen science verdict
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("cr16-firstuse.json").read_text())
+          assert d["schema"]=="yggdrasil.dg1-cr16-original.v1"
+          assert d["freeze_sha"]=="cd2823483a9d984915e887cd6a076a15c0a59b68"
+          assert d["world_count"]==16 and len(d["worlds"])==16
+          assert d["paid_steps"]==19200 and d["paid_training_steps"]==15360
+          assert d["paid_audit_steps"]==3840 and len(d["controls"])==5
+          for w in d["worlds"]:
+              arms=w["arms"]
+              assert len({v["train_trace_sha256"] for v in arms.values()})==1
+              for v in arms.values():
+                  assert v["paid_steps"]==240
+                  assert v["charged_observations"]==192
+                  assert len(v["cold_bytes"])==3 and max(v["cold_bytes"])<=65536
+                  assert all(len(v["audits"][str(t)]["choices"])==12
+                             for t in (72,144,168,192))
+          print("CR16_PHYSICAL_CUSTODY:PASS")
+          print("CR16_FREEZE:"+d["freeze_sha"])
+          print("CR16_CLASSIFICATION:"+d["classification"])
+          print("CR16_PRIMARY:"+str(d["primary_pass"]))
+          print("CR16_GATES:"+json.dumps(d["primary_gates"],sort_keys=True))
+          print("CR16_AGGREGATE:"+json.dumps(d["aggregate"],sort_keys=True))
+          print("CR16_CPU:"+json.dumps(d["cpu_median_ratio"],sort_keys=True))
+          PY
+      - name: Build transient G29 source atlas for inherited regression
+        shell: bash
+        run: python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+      - name: Mandatory complete inherited source regression
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Check transient G29 atlas integrity
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Verify no science or tracked non-atlas changes
+        shell: bash
+        run: |
+          python - <<'PY'
+          import subprocess
+          changed=subprocess.check_output(["git","diff","--name-only"],text=True).splitlines()
+          assert all(p in {".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"}
+                     for p in changed), changed
+          print("CR16_NONATLAS_SOURCE_IMMUTABLE:PASS")
+          PY
+      - name: Preserve first-use original full physical evidence in GitHub Actions only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-cr16-firstuse-${{ matrix.os }}
+          path: cr16-firstuse.json
+          if-no-files-found: ignore
