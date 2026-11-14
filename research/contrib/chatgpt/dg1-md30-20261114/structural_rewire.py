@@ -165,7 +165,8 @@ class World:
 
     def __init__(self, graph: Graph, *, next_graph: Graph | None = None,
                  roots: tuple[int, int] = (0, 0), target: int = 5,
-                 desired: int = 0, available: tuple[int, int] = (1, 1)):
+                 desired: int = 0, available: tuple[int, int] = (1, 1),
+                 diagnostic_nodes: tuple[int, ...] = (0, 1, 2, 3, 4)):
         if not isinstance(graph, Graph) or (next_graph is not None and
                                            not isinstance(next_graph, Graph)):
             raise ValueError("MD30_INVALID_GRAPH")
@@ -174,6 +175,11 @@ class World:
         if (len(available) != 2 or any(type(v) is not int or v not in (0, 1)
                                       for v in available) or not any(available)):
             raise ValueError("MD30_INVALID_AVAILABILITY")
+        if (not isinstance(diagnostic_nodes, tuple) or not diagnostic_nodes or
+            len(set(diagnostic_nodes)) != len(diagnostic_nodes) or
+            any(type(n) is not int or n not in range(5) for n in diagnostic_nodes)):
+            raise ValueError("MD30_INVALID_DIAGNOSTIC_MENU")
+        self._diagnostic_nodes = diagnostic_nodes
         self._graph = graph
         self._next_graph = next_graph
         self._roots = roots
@@ -190,6 +196,7 @@ class World:
         return {"phase": self._phase if self._phase < STAGES else "done",
                 "sensor_vector": list(self._sensor),
                 "actuator_availability": list(self._available),
+                "diagnostic_nodes": list(self._diagnostic_nodes),
                 "target_sensor": self._target, "desired_value": self._desired,
                 "remaining_diagnostics": MAX_DIAGNOSTICS - self._probes if self._phase < STAGES else 0,
                 "remaining_physical_steps": MAX_STEPS - len(self._ledger),
@@ -205,7 +212,7 @@ class World:
         if type(node) is not int or type(value) is not int or value not in (0, 1):
             raise AssertionError("MD30_INVALID_ACTION_TYPES")
         if kind == "diagnostic":
-            if self._probes >= MAX_DIAGNOSTICS or node not in range(5):
+            if self._probes >= MAX_DIAGNOSTICS or node not in self._diagnostic_nodes:
                 raise AssertionError("MD30_DIAGNOSTIC_CAP_OR_NODE")
             self._sensor = self._graph.respond(self._roots, (node, value))
             reward = -PROBE_COST
