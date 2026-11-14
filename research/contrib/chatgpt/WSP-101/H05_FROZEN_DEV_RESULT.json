@@ -1,0 +1,100 @@
+{
+  "schema": "yggdrasil.wsp101.h05.frozen-dev-result.v1",
+  "classification": "DEV_SPARSE_CUBIC_WEIGHT_REPAIR_PARITY",
+  "preregistration_sha": "853cf9577a466ae80955e333be86f8d932f9687b",
+  "implementation_sha": "70ea8503e39810b8a83f2fe2d227863cb3a57c87",
+  "implementation_tree": "2be5f2b9b2464562a8df09e3315fe7dfaf850d1a",
+  "workflow": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43634054813",
+  "run_id": 43634054813,
+  "linux_job_id": 132566849887,
+  "windows_job_id": 132566849770,
+  "focused_pass": "69/69 on each OS",
+  "public_source_sha256": "724f44ad51e134739fbbf498e3ef3646a6a3a05c20648138ace52c6ff8fedf13",
+  "cold_full_sha256": "87848fdc9a804b4b385fe28d73df610128c1a182ebf45ba582fe198e871d55f4",
+  "cold_half_sha256": "7b0ec3c67a64c95b3aa31561dfc35e4da3616b65892e101fd21277f7293e1e10",
+  "dev_worlds": 32,
+  "fit_worlds": 16,
+  "new_seeded_worlds_same_family": 16,
+  "heldout_queries": 29440,
+  "source_intervention_episodes": 3328,
+  "source_public_action_steps": 6656,
+  "numerical_weight_bytes_total": 704,
+  "per_world_weight_bytes": 22,
+  "total_cold_checkpoint_bytes": 776,
+  "learned_cubic_patterns": {
+    "zero": 11,
+    "single": 11,
+    "double": 10
+  },
+  "information_identifiability": {
+    "hypotheses": 7261,
+    "distinct_source_codewords": 7261,
+    "source_ambiguous_pairs": 0
+  },
+  "methods": {
+    "direct_repaired": {
+      "correct": 29440,
+      "covered": 29440
+    },
+    "independent_equal_information_symbolic": {
+      "correct": 29440,
+      "covered": 29440
+    },
+    "original_quadratic_only": {
+      "correct": 26345,
+      "covered": 29440,
+      "note": "base only fit to 56 quadratic source observations; unlike repaired and symbolic controls did not use 48 additional repair outcomes"
+    },
+    "fixed_zero": {
+      "correct": 14559,
+      "covered": 29440
+    },
+    "raw_source_lookup": {
+      "covered": 0
+    },
+    "cold_restored_repaired": {
+      "correct": 29440,
+      "covered": 29440
+    }
+  },
+  "functional_qualification": {
+    "quadratic_coefficients_byte_identical_after_cubic_repair": true,
+    "cold_exact_retention": true,
+    "unrelated_disjoint_world_weights_unchanged": true,
+    "passive_no_information": true
+  },
+  "out_of_family_high_degree_negative": {
+    "source_equivalent_worlds": 32,
+    "heldout_divergence_per_world": 1,
+    "explanation": "A ten-way conjunction on all ten input bits is zero on all 104 source probes, but flips action 1023. An arbitrarily unseen high-order effect cannot be inferred under this protocol, regardless of numerical/symbolic representational sophistication."
+  },
+  "timings": {
+    "linux": {
+      "numeric_quadratic_fit_cpu_ns": 12256008,
+      "numeric_cubic_repair_cpu_ns": 21965543,
+      "independent_symbolic_fit_cpu_ns": 93633375,
+      "whole_process_cpu_ns": 5354937975,
+      "whole_process_wall_ns": 5355398515
+    },
+    "windows": {
+      "numeric_quadratic_fit_cpu_ns": 62500000,
+      "numeric_cubic_repair_cpu_ns": 62500000,
+      "independent_symbolic_fit_cpu_ns": 15625000,
+      "whole_process_cpu_ns": 8453125000,
+      "whole_process_wall_ns": 8474053500
+    },
+    "qualification": "Unpaired sequential one-shot platform-dependent measurements, no scientific speed or cost advantage claimed."
+  },
+  "exclusions": {
+    "original_worlds_used": false,
+    "full_trained_conventional_baseline_run": false,
+    "previous_h04_source_retuned": false,
+    "accepted_native_model_modified": false,
+    "deployment": false,
+    "autonomous_loop_modified": false
+  },
+  "scientific_pass": false,
+  "interpretation": "A previously programmed 56-bit quadratic law can be incrementally repaired using 48 public intervention observations to write only new 120-bit sparse-cubic coefficients; identical-source symbolic inference ties in accuracy. This verifies mechanism feasibility and an observable gain against a *less-informed* unrepaired baseline, not unique intelligence or first-use research superiority.",
+  "post_result": "FREEZE H05, no source-probe/sparsity/world/threshold changes after result. Next study must test source-identifiable unfamiliar families and fully trained conventional controls with matched information, actions and compute.",
+  "final_regression": "PENDING_SEPARATE_EXACT_SHA"
+}
