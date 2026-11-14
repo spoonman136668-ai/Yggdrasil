@@ -78,7 +78,9 @@ def evaluate(*,reserved:bool)->dict:
         direct.observe(item,train_labels[item["qa_id"]])
     incremental_cpu=time.process_time_ns()-t
     first_after=[direct.answer(q) for q in first]
-    train_predictions=[direct.answer(q) for q in train]
+    # Reuse exactly identical deterministic post-update predictions for the
+    # first 96 source questions; avoid redundant document-span rescoring.
+    train_predictions=first_after+[direct.answer(q) for q in added]
     training_exact=sum(
         pred is not None and pred["answer"]==train_labels[q["qa_id"]]["answer_text"]
         for q,pred in zip(train,train_predictions))
