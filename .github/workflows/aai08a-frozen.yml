@@ -1,0 +1,134 @@
+name: AAI-08A returning transition laws (mechanical and frozen science)
+on:
+  push:
+    branches: [research/aai08a-returning-causal-laws-20261114]
+    paths: [.github/workflows/aai08a-frozen.yml]
+permissions:
+  contents: read
+jobs:
+  mechanical:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'AAI-08A mechanical checks only' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Source-locked mechanical only, no scientific first use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '50adb3f233844c967a71481094bf896481cad95f'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai08a-frozen.yml'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08A/prereg.json)" = "$(git rev-parse db263b1de02fdaaec2152b44947a1e11b5305262:research/contrib/chatgpt/AAI-08A/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08A/prereg-amendment.json)" = "$(git rev-parse 57e8933f0376c226a62ab7252bb395482fa41eb2:research/contrib/chatgpt/AAI-08A/prereg-amendment.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08A/evaluate.py)" = "$(git rev-parse 50adb3f233844c967a71481094bf896481cad95f:research/contrib/chatgpt/AAI-08A/evaluate.py)"
+          echo AAI08A_NO_SCIENTIFIC_FIRST_USE_PASS
+      - name: Install official immutable NS-Gym and pinned minimal runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init -q "$RUNNER_TEMP/nsgym"
+          git -C "$RUNNER_TEMP/nsgym" remote add origin https://github.com/scope-lab-vu/ns_gym.git
+          git -C "$RUNNER_TEMP/nsgym" fetch -q --no-tags --depth 1 origin 127df4b714fe4fcf680721d8e9278a96090acd7e
+          git -C "$RUNNER_TEMP/nsgym" checkout -q --detach FETCH_HEAD
+          test "$(git -C "$RUNNER_TEMP/nsgym" rev-parse HEAD)" = '127df4b714fe4fcf680721d8e9278a96090acd7e'
+          test "$(git -C "$RUNNER_TEMP/nsgym" rev-parse HEAD:ns_gym/envs/Bridge.py)" = '02415d65ff8a0c419d32f274e2669f9e54e8d29f'
+          test "$(git -C "$RUNNER_TEMP/nsgym" rev-parse HEAD:ns_gym/wrappers/toy_text.py)" = 'cd94311a4d312b9d8c35b7719207020150caa300'
+          python -m pip install --disable-pip-version-check --no-input --prefer-binary \
+            numpy==1.26.4 'gymnasium[mujoco]==1.2.2' scipy==1.15.3 PyYAML==6.0.2 \
+            mujoco==3.3.7 pygame==2.6.1
+          python -m pip install --disable-pip-version-check --no-input --no-deps -e "$RUNNER_TEMP/nsgym"
+          echo AAI08A_EXACT_UPSTREAM_RUNTIME_PASS
+      - name: Test only reserved mechanical seeds, synthetic models and no hidden state
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-08A -p 'test_aai08a.py' -v
+          test -z "$(git status --porcelain)"
+          test -z "$(git -C "$RUNNER_TEMP/nsgym" status --porcelain)"
+          echo AAI08A_MECHANICAL_SOURCE_PASS
+  primary:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'AAI-08A frozen primary first-use once' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify prereg and exact unaltered science source before consumption
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai08a-frozen.yml'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08A/prereg.json)" = "$(git rev-parse db263b1de02fdaaec2152b44947a1e11b5305262:research/contrib/chatgpt/AAI-08A/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08A/prereg-amendment.json)" = "$(git rev-parse 57e8933f0376c226a62ab7252bb395482fa41eb2:research/contrib/chatgpt/AAI-08A/prereg-amendment.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08A/evaluate.py)" = "$(git rev-parse 50adb3f233844c967a71481094bf896481cad95f:research/contrib/chatgpt/AAI-08A/evaluate.py)"
+          test -z "$(git status --porcelain)"
+          echo AAI08A_FIRST_USE_EXACT_SOURCE_PASS
+      - name: Pin unmodified NS-Gym source and runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init -q "$RUNNER_TEMP/nsgym"
+          git -C "$RUNNER_TEMP/nsgym" remote add origin https://github.com/scope-lab-vu/ns_gym.git
+          git -C "$RUNNER_TEMP/nsgym" fetch -q --no-tags --depth 1 origin 127df4b714fe4fcf680721d8e9278a96090acd7e
+          git -C "$RUNNER_TEMP/nsgym" checkout -q --detach FETCH_HEAD
+          test "$(git -C "$RUNNER_TEMP/nsgym" rev-parse HEAD)" = '127df4b714fe4fcf680721d8e9278a96090acd7e'
+          test "$(git -C "$RUNNER_TEMP/nsgym" rev-parse HEAD:ns_gym/envs/Bridge.py)" = '02415d65ff8a0c419d32f274e2669f9e54e8d29f'
+          test "$(git -C "$RUNNER_TEMP/nsgym" rev-parse HEAD:ns_gym/wrappers/toy_text.py)" = 'cd94311a4d312b9d8c35b7719207020150caa300'
+          python -m pip install --disable-pip-version-check --no-input --prefer-binary \
+            numpy==1.26.4 'gymnasium[mujoco]==1.2.2' scipy==1.15.3 PyYAML==6.0.2 \
+            mujoco==3.3.7 pygame==2.6.1
+          python -m pip install --disable-pip-version-check --no-input --no-deps -e "$RUNNER_TEMP/nsgym"
+          echo AAI08A_FIRST_USE_EXTERNAL_SOURCE_PASS
+      - name: Consume frozen A-B-A science worlds once with all controls
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/AAI-08A/evaluate.py > "$RUNNER_TEMP/aai08a-primary.json"
+          python - "$RUNNER_TEMP/aai08a-primary.json" <<'PY'
+          import hashlib,json,sys
+          raw=open(sys.argv[1],"rb").read()
+          x=json.loads(raw)
+          assert x["prereg_commit"]=="db263b1de02fdaaec2152b44947a1e11b5305262"
+          assert x["pre_first_use_amendment_commit"]=="57e8933f0376c226a62ab7252bb395482fa41eb2"
+          assert x["integration"]=="NONE"
+          print("AAI08A_SCIENCE_COMPACT="+json.dumps({k:v for k,v in x.items() if k!="world_records"},sort_keys=True,separators=(',',':')))
+          print("AAI08A_PRIMARY_RAW_SHA256="+hashlib.sha256(raw).hexdigest())
+          print("AAI08A_SCIENCE_CLASSIFICATION="+x["classification"])
+          PY
+          test -z "$(git status --porcelain)"
+          test -z "$(git -C "$RUNNER_TEMP/nsgym" status --porcelain)"
+          echo AAI08A_FIRST_USE_PRIMARY_CAPTURE_PASS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: aai08a-frozen-primary-raw
+          path: ${{ runner.temp }}/aai08a-primary.json
+          if-no-files-found: warn
+          retention-days: 14
