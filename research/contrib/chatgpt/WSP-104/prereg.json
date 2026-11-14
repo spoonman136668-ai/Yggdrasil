@@ -1,0 +1,74 @@
+{
+  "schema": "wsp104.train-only-baseline-first.v1",
+  "status": "FROZEN BEFORE ANY BASELINE CODE OR REAL DATA SCORE",
+  "parent": {
+    "sha": "b004935f24670b49f8b418964d6f325a9bc4c366",
+    "tree": "126d204135b9d2266b6326bfa1097701de669b1e",
+    "pr": 1051
+  },
+  "source": {
+    "archive_sha256": "ccda8bbcd3cf599b30dd3fd8979ac26e59b48fc53d23128882a044bfbb67f878",
+    "train_sha256": "2ef1a279f6393a8edfbb2b44114a2c97944272e5fe2a1bd2a7cbe48f94742f1a",
+    "train_rows": 21343681,
+    "train_bytes": 436189882,
+    "relation_types": 828,
+    "variant": "historical noncanonical Wikidata-derived mirror; DO NOT use original published benchmark comparisons"
+  },
+  "split": {
+    "method": "exact WSP103 1/32 group holdout by full (subject,predicate), 4096 lowest SHA256-derived-priority query groups",
+    "frozen_sample_answers_sha256": "008249f2c9731a426645c584e887bb056662c96f8c2385ba946b98ca3d9f49dc",
+    "all_heldout_groups_excluded_from_models": true,
+    "zero_label_feature_exposure": true
+  },
+  "experimental_question": "Is the WSP103 masked real-graph fact task immediately saturated by inexpensive retained-only relation-frequency controls? This is a dev diagnostic, not a test of a trained general KG model or direct-weight improvement.",
+  "controls": [
+    {
+      "name": "exact retained subject-predicate lookup",
+      "expected": "0 positives by construction",
+      "verify_zero_leakage": true
+    },
+    {
+      "name": "relation-conditioned frequent-object learner",
+      "method": "deterministic Misra-Gries capacity 64 objects for each predicate over all retained rows; second read counts those 64 candidates exactly and ranks descending frequency, ascending QID for ties",
+      "data_scope": "20,677,636 train-retained rows only",
+      "no_gradient": true,
+      "classification": "train-only non-neural learned heuristic"
+    },
+    {
+      "name": "frequency order negative control",
+      "method": "reverse-ranked same 64 object candidates, preserving candidate set but not strength order",
+      "classification": "order ablation"
+    }
+  ],
+  "measures": [
+    "macro any-answer Hits@1",
+    "macro any-answer Hits@10",
+    "macro best-answer reciprocal rank over at most 64 candidates",
+    "number of 4096 groups with no candidates",
+    "answer multiset group digests",
+    "wall CPU and source bytes and candidate counts"
+  ],
+  "admission": {
+    "expect_4096_groups": true,
+    "expect_train_rows": 21343681,
+    "expect_valid_full_train_sha": true,
+    "expect_sample_hash": "008249f2c9731a426645c584e887bb056662c96f8c2385ba946b98ca3d9f49dc",
+    "no_official_test_validation": true,
+    "max_runtime_seconds": 1200,
+    "max_source_compressed_bytes": 268435456,
+    "threads": 1,
+    "random_seeds": []
+  },
+  "stop": "If heuristic Hits@10 >=0.95, record DEV saturation and do not tune this split. Otherwise do not call it scientifically identifiable: next step is independent fully trained conventional KG control and exact path baseline under matched full whole-process budgets. All results are dev with known source, not original first-use or SCIENTIFIC_PASS.",
+  "authority": {
+    "isolated_draft": true,
+    "branch_stacked_on_wsp103": true,
+    "read_only_official_test": true,
+    "no_paid_api": true,
+    "no_scheduled_task": true,
+    "no_merge": true,
+    "no_model_promotion": true,
+    "no_controller_or_runner_control": true,
+    "no_private_runner": true
+  }
+}
