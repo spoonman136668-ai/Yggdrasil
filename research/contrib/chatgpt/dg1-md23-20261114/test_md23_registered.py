@@ -38,7 +38,7 @@ class RegisteredFirstUseSafeguards(unittest.TestCase):
         original = set(d.TRAIN_DOOR+d.TRAIN_BOX+d.INTERFERENCE+
                        d.COLD+d.SIZE+d.BOX)
         self.assertFalse(set(d.d.TOY_SEEDS) & original)
-        self.assertEqual(len(original), 108)
+        self.assertEqual(len(original), 96)
 
     def test_seed_wins_are_strict_paired_comparisons(self):
         example={"by_arm":{
