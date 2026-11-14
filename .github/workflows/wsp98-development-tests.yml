@@ -28,7 +28,8 @@ jobs:
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git merge-base --is-ancestor eee67aee99ae074b45cdf56b94ce1a133151d808 HEAD
           test -f research/contrib/chatgpt/WSP-98/prereg.json
-          test ! -e research/contrib/chatgpt/WSP-98/PUBLIC_PASS.json
+          test -f research/contrib/chatgpt/WSP-98/PUBLIC_PASS.json
+          python research/contrib/chatgpt/WSP-98/admission.py --public-pass
           test -z "$(git status --porcelain)"
       - name: Source-blind synthetic fixture tests (no public or reserved worlds)
         env:
