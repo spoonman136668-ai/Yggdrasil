@@ -1,0 +1,26 @@
+{
+  "schema": "wsp99.strong-recurrent-addendum.v1",
+  "experiment": "WSP-99",
+  "status": "FROZEN_BEFORE_GRU_IMPLEMENTATION_OR_ANY_ORIGINAL_FIRST_USE",
+  "parent": "a77212aac8f8ef37bb31cc7978a72e894312f758",
+  "previous_controls_prereg_commit": "42d0b79ef173b00c3a2b0270fadb80b30bcdf044",
+  "reason": "Original task prereg requires at least GRU-class recurrent capacity. Add independently trained GRU16 as stronger comparator; never weaken existing RNN16/symbolic controls and never select using original heldout outcomes.",
+  "architecture": "Input six signed visible bits plus four one-hot action bits. Hidden reset to zero per four-step episode. GRU16 with update/reset/candidate gates and a six-logit next-visible readout. 1398 trained floating scalars. No oracle or hidden latch input.",
+  "equations": "z=sigmoid(Wz*u+Uz*h+bz);r=sigmoid(Wr*u+Ur*h+br);n=tanh(Wn*u+Un*(r*h)+bn);h_next=z*h+(1-z)*n;p=sigmoid(Wo*h_next+bo).",
+  "seeds": [
+    11,
+    17,
+    23
+  ],
+  "train_epochs": 1800,
+  "train_source": "identical 24 four-step passive episodes plus eight four-step active episodes to all strong controls; teacher forcing for source-only training",
+  "optimizer": "Full-batch BPTT, Adam lr .01 beta1 .9 beta2 .999 epsilon 1e-8, L2 weight decay .0001 on matrices, gradient norm clipping 5, binary cross entropy averaged over six bits and all source steps; no early stopping, no hidden-accuracy tuning",
+  "initialization": "NumPy PCG64 per seed Gaussian N(0,.1) all matrices, biases zero, float64",
+  "freeze": "All three seeds always train 1800 epochs and return source-fit; select strongest only by source train loss (then train accuracy, then lowest seed). Unqualified if best source fit under 95% or divergence.",
+  "diagnostics": "On fixture IDs 0..7 only, tests may call <=24 epochs and source-blind finite-difference gradient checks. No DEV results permit original-world source/answers or threshold changes.",
+  "comparison": "GRU16 joins and dominates qualification requirement when stronger than RNN16, memoryless, or symbolic controls; direct-weight future mechanism cannot claim superiority unless it exceeds all qualified strong controls on fresh first-use after separate prereg. Always report whole-process cost.",
+  "original_public_disallowed": true,
+  "reserved_disallowed": true,
+  "integrates_accepted_model": false,
+  "runner_or_scheduler_authority": false
+}
