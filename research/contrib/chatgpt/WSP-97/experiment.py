@@ -114,6 +114,7 @@ def original_world(seed:int,regime:str)->dict:
         raise AssertionError("original hidden do-diagnostic target count")
     audit=source.audit()
     predictions["oracle_true_regime"]=true_outcomes
+    diagnostic_true_outcomes=tuple(y for y,flag in zip(true_outcomes,diagnostic) if flag)
     scores={
         name:{
             "full":sum(a==b for a,b in zip(p,true_outcomes)),
@@ -142,6 +143,7 @@ def original_world(seed:int,regime:str)->dict:
             "random_source":random.regime(),
         },
         "scores":scores,
+        "diagnostic_true_outcomes_after_scoring":diagnostic_true_outcomes,
         "cold_snapshot":snapshot,
         "cold_restore":cold_identical,
         "tamper_rejected":tamper_rejected,
@@ -172,6 +174,10 @@ def evaluate(*,reserved:bool)->dict:
             raise AssertionError("observationally indistinguishable SCM source differs")
         if worlds[0]["hidden_fingerprint_after_predictions"]!=worlds[1]["hidden_fingerprint_after_predictions"]:
             raise AssertionError("pair SCM function source does not match")
+        if not all(a!=b for a,b in zip(
+            worlds[0]["diagnostic_true_outcomes_after_scoring"],
+            worlds[1]["diagnostic_true_outcomes_after_scoring"])):
+            raise AssertionError("paired observational twins must diverge on every diagnostic do query")
         pairs.append(tuple(worlds))
     rows=[row for pair in pairs for row in pair]
     # A's cold memory must remain valid after all unrelated world/SCM updates.
@@ -196,7 +202,11 @@ def evaluate(*,reserved:bool)->dict:
         "source_fit_conventional":sum(r["training_fit_conventional"] for r in rows),
         "equal_passive_source_pairs":sum(
             pair[0]["passive_sha256"]==pair[1]["passive_sha256"] for pair in pairs),
-        "paired_do_disagreement_pairs":len(pairs), # audit true modes differ on six diagnostic queries by definition
+        "paired_do_disagreement_pairs":sum(
+            all(a!=b for a,b in zip(
+                pair[0]["diagnostic_true_outcomes_after_scoring"],
+                pair[1]["diagnostic_true_outcomes_after_scoring"]))
+            for pair in pairs),
         "correct_world_regime_direct":sum(r["learned_regimes"]["direct"]==r["regime_audit"] for r in rows),
         "correct_world_regime_ordinary":sum(r["learned_regimes"]["conventional"]==r["regime_audit"] for r in rows),
         "cold_restored_worlds":sum(r["cold_restore"] for r in rows),
