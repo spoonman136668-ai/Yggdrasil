@@ -1,0 +1,75 @@
+name: QTR-01 F19 lagged-nonlinear conventional DEV study
+
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+    paths:
+      - .github/workflows/qtr01-f19-temporal-dev.yml
+      - research/contrib/chatgpt/QTR-01/f19_temporal_challenge.py
+      - research/contrib/chatgpt/QTR-01/test_f19_temporal_challenge.py
+
+permissions:
+  contents: read
+
+jobs:
+  frozen-public-nonlinear-dev:
+    if: github.repository == 'spoonman136668-ai/Yggdrasil'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_TERMINAL_PROMPT: '0'
+      UPSTREAM_SHA: 51f1431515e310dec72e3f4b6db378df46f832ea
+      UPSTREAM_TREE: c1bf53ecf03ae326b69c0321f4412d81f3122894
+    steps:
+      - name: Checkout QTR candidate
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Python 3.13
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.13'
+      - name: Verify frozen F19 preregistration parent
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git show 0883ba9898ae95e814aa81d25424dac86d0d8ee1:research/contrib/chatgpt/QTR-01/f19_dev_prereg.json | python -c 'import json,sys; print(json.load(sys.stdin)["status"])')" = "FROZEN_DEV_ONLY_BEFORE_F19_SOURCE_RUN" || \
+          test "$(git show 0883ba9898ae95e814aa81d25424dac86d0d8ee1:research/contrib/chatgpt/QTR-01/f19_dev_prereg.json | python -c 'import json,sys; print(json.load(sys.stdin)["classification_before_first_result"])')" = "PREREGISTERED_DEVELOPMENT_ONLY"
+          test "$(git merge-base --is-ancestor 0883ba9898ae95e814aa81d25424dac86d0d8ee1 HEAD && echo yes)" = yes
+          echo "F19_PREREG_BEFORE_SOURCE_EXECUTION=PASS"
+      - name: Acquire and verify upstream source
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/qtr-f19-upstream"
+          git init -q "$root"
+          git -C "$root" remote add origin https://github.com/noumenal-ai/causal-worlds.git
+          git -C "$root" fetch --depth 1 origin "$UPSTREAM_SHA"
+          git -C "$root" -c advice.detachedHead=false checkout --detach FETCH_HEAD
+          test "$(git -C "$root" rev-parse HEAD)" = "$UPSTREAM_SHA"
+          test "$(git -C "$root" rev-parse 'HEAD^{tree}')" = "$UPSTREAM_TREE"
+      - name: Locked source-only core environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check uv==0.9.17
+          cd "$RUNNER_TEMP/qtr-f19-upstream"
+          uv sync --locked --no-dev
+      - name: Fixed conventional learner gradient/negative tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$RUNNER_TEMP/qtr-f19-upstream/.venv/bin/python" -m unittest discover \
+            -s research/contrib/chatgpt/QTR-01 -p 'test_f19_*.py' -v
+      - name: One preregistered original PUBLIC development evaluation
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$RUNNER_TEMP/qtr-f19-upstream/.venv/bin/python" \
+            research/contrib/chatgpt/QTR-01/f19_temporal_challenge.py \
+            --upstream-root "$RUNNER_TEMP/qtr-f19-upstream"
+      - name: Clean candidate source
+        shell: bash
+        run: git diff --exit-code
