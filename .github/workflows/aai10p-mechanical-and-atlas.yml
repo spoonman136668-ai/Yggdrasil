@@ -1,0 +1,95 @@
+name: AAI-10P frozen causal benchmark mechanical + generated-only atlas (NO science)
+on:
+  push:
+    branches: [research/aai10p-compositional-causal-intervention-20261114]
+    paths: [.github/workflows/aai10p-mechanical-and-atlas.yml]
+permissions:
+  contents: write
+concurrency:
+  group: aai10p-benchmark-once-20261114
+  cancel-in-progress: false
+jobs:
+  mechanical:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'AAI-10P source-pinned mechanical one-shot and atlas workflow' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pin original prereg, unchanged benchmark, and independent main baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '16536dbb15624ba9fdc0268dd88e1eddbe40627f'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai10p-mechanical-and-atlas.yml'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10P/prereg.json)" = 'f915033fce1b35aa816bf2b8cc6e79bf0689e35a'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10P/prereg.json)" = "$(git rev-parse c8c91565b7b08dbfa913fbbda0dc859a8b2bcd73:research/contrib/chatgpt/AAI-10P/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10P/benchmark.py)" = 'b2c58cb6c2f2d308cdd4da259db74547a27dfa3a'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10P/test_benchmark.py)" = 'aa61bd69bceedf4a4a297df6ead5e587758db81d'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10P/README.md)" = '0dd5c46084c404ff438e172418a41c615bf0ee21'
+          test "$(git rev-parse c8c91565b7b08dbfa913fbbda0dc859a8b2bcd73^)" = '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
+          test -z "$(git status --porcelain)"
+          echo AAI10P_PREREG_PRECODE_AND_SOURCE_CUSTODY_PASS
+      - name: Full standard regression and all focused source tests
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-10P -p 'test_*.py' -v
+          python -B research/contrib/chatgpt/AAI-10P/benchmark.py --mechanical
+          if python -B research/contrib/chatgpt/AAI-10P/benchmark.py --primary >/dev/null 2>&1; then
+            echo AAI10P_SCIENTIFIC_FIRST_USE_FENCE_FAIL >&2
+            exit 1
+          fi
+          test -z "$(git status --porcelain)"
+          echo AAI10P_NO_SCIENCE_FULL_REGRESSION_AND_MECHANICAL_PASS
+  source-atlas:
+    needs: mechanical
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate exactly the three existing atlas artifacts and nothing else
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '16536dbb15624ba9fdc0268dd88e1eddbe40627f'
+          test -z "$(git status --porcelain)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          test "$(git diff --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'AAI-10P generated source-pinned G29 atlas only'
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | wc -l | tr -d ' ')" = 3
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          test "$(git ls-remote origin refs/heads/research/aai10p-compositional-causal-intervention-20261114 | cut -f1)" = "$GITHUB_SHA"
+          git push origin HEAD:refs/heads/research/aai10p-compositional-causal-intervention-20261114
+          echo AAI10P_PINNED_GENERATED_ONLY_ATLAS_PASS
