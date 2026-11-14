@@ -1,0 +1,210 @@
+name: DG1-MG21 successful-demonstration reward control independent DEV
+on:
+  push:
+    branches: [research/dg1-mg21-rewarded-demonstrations-20261113]
+    paths:
+      - 'research/contrib/chatgpt/dg1-mg21-20261113/**'
+      - '.github/workflows/dg1-mg21-qualification.yml'
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'research/contrib/chatgpt/dg1-mg21-20261113/**'
+      - '.github/workflows/dg1-mg21-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    name: MG21 positive-teacher preflight and full regression (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Enforce new prereg-only ancestor and intact pinned MG20 algorithmic core
+        shell: bash
+        run: |
+          git merge-base --is-ancestor 36d6155a9b3c254f31c05bdb5f1e3469fcff616b HEAD
+          test "$(git rev-parse 36d6155a9b3c254f31c05bdb5f1e3469fcff616b^)" = "9477ea4b366f2287eb316460514726cd6d2dfa7e"
+          git diff --exit-code "9477ea4b366f2287eb316460514726cd6d2dfa7e" HEAD -- research/contrib/chatgpt/dg1-mg20-20261113/mg20.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path("research/contrib/chatgpt/dg1-mg21-20261113/prereg.json").read_text())
+          assert data["experiment_id"]=="DG1-MG21-20261113"
+          assert data["exact_parent_sha"]=="9477ea4b366f2287eb316460514726cd6d2dfa7e"
+          assert data["inputs"][2]["sha256"]=="2f254e2a115fee9bd7d68e130d013479acb3804fd584348cce980dba7802db7f"
+          assert len(data["controls"])==4
+          print("MG21_FROZEN_INDEPENDENT_PREREG_PASS")
+          PY
+      - name: Install pinned public real-action MiniGrid environment
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check "minigrid==3.2.0" "gymnasium==1.4.0" "numpy==2.3.4"
+          python -m pip freeze > mg21-packages.txt
+          python - <<'PY'
+          from importlib.metadata import version
+          for name,ver in (("minigrid","3.2.0"),("gymnasium","1.4.0"),("numpy","2.3.4")):
+              assert version(name)==ver,(name,version(name))
+          print("MG21_SOURCE_VERSION_PASS")
+          PY
+      - name: Pre-first-use 9 independent positive-demonstration toy controls
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+        run: |
+          python -m py_compile research/contrib/chatgpt/dg1-mg21-20261113/mg21.py research/contrib/chatgpt/dg1-mg21-20261113/test_mg21.py
+          python -m unittest discover -s research/contrib/chatgpt/dg1-mg21-20261113 -p 'test_*.py' -v
+      - name: Original once-only physical goal-reward replication after successful demonstrations
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+        run: |
+          python research/contrib/chatgpt/dg1-mg21-20261113/mg21.py > mg21-firstuse.json
+      - name: Verify paid physical action and source custody and publish scientific classification
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("mg21-firstuse.json").read_text())
+          assert d["schema"]=="yggdrasil.dg1-mg21-original.v1"
+          assert d["freeze_sha"]=="36d6155a9b3c254f31c05bdb5f1e3469fcff616b"
+          assert d["parent_sha"]=="9477ea4b366f2287eb316460514726cd6d2dfa7e"
+          assert d["manifest_sha256"]=="2f254e2a115fee9bd7d68e130d013479acb3804fd584348cce980dba7802db7f"
+          assert d["training_episodes"]==48 and d["interference_episodes"]==12
+          assert d["heldout_episodes"]==240 and d["total_episodes"]==300
+          assert d["charged_total_steps"]<=38400
+          assert d["charged_total_steps"]==sum(e["steps"] for e in d["training_traces"]+d["interference_traces"])+sum(
+              d[k]["counted_env_steps"] for k in ("cold_before","cold_after","unseen_size","unseen_family"))
+          for split in ("cold_before","cold_after","unseen_size","unseen_family"):
+              assert len(d[split]["episodes"])==5
+              assert all(len(eps)==12 for eps in d[split]["episodes"].values())
+          print("MG21_PHYSICAL_AND_TRAINING_CUSTODY_PASS")
+          print("MG21_CLASSIFICATION:"+d["classification"])
+          print("MG21_PRIMARY:"+str(d["primary_pass"]))
+          print("MG21_POSITIVE_TRAINING_SUCCESSES:"+str(d["training_teacher_goal_successes"]))
+          print("MG21_COVERAGE:"+json.dumps(d["heldout_goal_coverage"],sort_keys=True))
+          print("MG21_GOAL_SCORES:"+json.dumps({
+              s:{arm:{"success":v["success_count"],"return":v["mean_official_return"]}
+              for arm,v in d[s]["metrics"].items()} for s in
+              ("cold_before","cold_after","unseen_size","unseen_family")},sort_keys=True))
+          print("MG21_GATES:"+json.dumps(d["gates"],sort_keys=True))
+          print("MG21_ACTUAL_PAID_STEPS:"+str(d["charged_total_steps"]))
+          PY
+      - name: Generate pinned G29 atlas and emit source-derived bytes only before final atlas commit
+        id: atlas
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64,os,subprocess
+          from pathlib import Path
+          import sys
+          sys.path.insert(0,"scripts")
+          import build_code_atlas as atlas
+          def git(*args):
+              return subprocess.check_output(["git",*args],text=True).strip()
+          head=git("rev-parse","HEAD")
+          changed=set(git("diff","--name-only","HEAD^","HEAD").splitlines())
+          atlas_only=changed==set(atlas.OUT)
+          source=git("rev-parse","HEAD^") if atlas_only else head
+          subprocess.run(["python","scripts/build_code_atlas.py",
+                          "--source-commit",source,"--write"],check=True)
+          committed=atlas_only and all(
+              subprocess.check_output(["git","show","HEAD:"+name])==
+              Path(name).read_bytes() for name in atlas.OUT)
+          with open(os.environ["GITHUB_OUTPUT"],"a",encoding="utf-8") as f:
+              f.write("committed="+str(committed).lower()+"\n")
+              f.write("source="+source+"\n")
+          print("MG21_G29_SOURCE:"+source)
+          print("MG21_G29_COMMITTED:"+str(committed))
+          if not committed and os.environ.get("RUNNER_OS")=="Linux":
+              for name in atlas.OUT:
+                  b64=base64.b64encode(Path(name).read_bytes()).decode("ascii")
+                  chunks=[b64[k:k+1200] for k in range(0,len(b64),1200)]
+                  for n,part in enumerate(chunks):
+                      print("MG21_ATLAS_CHUNK|"+name+"|"+str(n)+"|"+
+                            str(len(chunks))+"|"+part)
+          PY
+      - name: Mandatory full inherited regression on committed, source-identical G29 atlas
+        if: steps.atlas.outputs.committed == 'true'
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -m unittest discover -s tests -p 'test_*.py' -v
+          python scripts/build_code_atlas.py --check-if-present
+      - name: Prove only derived atlas worktree files differ
+        shell: bash
+        run: |
+          python - <<'PY'
+          import subprocess
+          changed=set(subprocess.check_output(
+              ["git","diff","--name-only"],text=True).splitlines())
+          allowed={".ice/code-atlas.json",".ice/code-atlas.html",".ice/code-atlas.ice"}
+          assert changed.issubset(allowed), sorted(changed)
+          print("MG21_TRACKED_SCIENCE_SOURCE_UNMODIFIED_PASS")
+          PY
+      - name: Preserve original full rewarded action traces and source receipt in GitHub only
+        if: github.event_name == 'pull_request' && github.event.action == 'opened' && always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-mg21-original-${{ matrix.os }}
+          path: |
+            mg21-firstuse.json
+            mg21-packages.txt
+          if-no-files-found: ignore
+  original-cross-os-parity:
+    name: MG21 original successful-teacher action/reward and checkpoint parity
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    needs: qualification
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: dg1-mg21-original-ubuntu-latest
+          path: original-linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: dg1-mg21-original-windows-2022
+          path: original-windows
+      - name: Independently verify successful-source full goal/action and checkpoint parity
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          a=json.loads(Path("original-linux/mg21-firstuse.json").read_text())
+          b=json.loads(Path("original-windows/mg21-firstuse.json").read_text())
+          for k in ("classification","primary_pass","training_teacher_goal_successes",
+                    "heldout_goal_coverage","checkpoint_sha256","checkpoint_bytes",
+                    "charged_total_steps","training_traces","interference_traces","gates"):
+              assert a[k]==b[k],("MG21_ORIGINAL_CROSS_OS_INVARIANT",k)
+          def strip(x):
+              if isinstance(x,dict):
+                  return {k:strip(v) for k,v in x.items() if k not in ("decision_cpu_ns","cpu_ratio","cpu_ns")}
+              if isinstance(x,list):return [strip(v) for v in x]
+              return x
+          def eq(x,y):
+              if type(x)!=type(y):return False
+              if isinstance(x,dict):return x.keys()==y.keys() and all(eq(x[k],y[k]) for k in x)
+              if isinstance(x,list):return len(x)==len(y) and all(eq(a,b) for a,b in zip(x,y))
+              if type(x) is float:return math.isfinite(x) and math.isfinite(y) and abs(x-y)<=1e-8
+              return x==y
+          assert eq(strip(a),strip(b)),"MG21_ORIGINAL_ACTION_REWARD_OR_CHECKPOINT_DRIFT"
+          print("MG21_ORIGINAL_REWARDED_ACTION_AND_MODEL_PARITY_PASS")
+          PY
