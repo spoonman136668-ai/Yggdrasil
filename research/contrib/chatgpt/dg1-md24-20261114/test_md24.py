@@ -93,6 +93,10 @@ class BlockerCausalTransferToy(unittest.TestCase):
         print("MD24_TOY_TRAIN:"+json.dumps(data["training"],sort_keys=True),flush=True)
         print("MD24_TOY_EFFECTS:"+json.dumps(data["learned_effects"],sort_keys=True),flush=True)
         print("MD24_TOY_NOVEL:"+json.dumps(data["novel"],sort_keys=True),flush=True)
+        for name in ("learned_transfer","blind_generic"):
+            print("MD24_TOY_DEBUG_"+name+":"+json.dumps(
+                data["novel_traces"][name][0].get("toy_debug",[]),
+                sort_keys=True),flush=True)
         self.assertGreater(sum(x["goals"] for x in data["novel"].values()),0,
                            "MD24_NO_TOY_NOVEL_GOAL_COVERAGE")
 

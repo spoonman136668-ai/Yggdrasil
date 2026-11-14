@@ -114,8 +114,8 @@ class TransferPolicy(d.GraphPolicy):
         if self.kind=="blind_generic":return True
         if self.kind=="permuted_effect":
             return self.effects["toggle_shift"]>=8
-        return (self.effects["pickup_clear"]>=8 and
-                self.effects["drop_place"]>=8)
+        return (self.effects["pickup_clear"]>=6 and
+                self.effects["drop_place"]>=6)
 
     def feedback(self,before,action,after,reward,training=False):
         from minigrid.core.constants import OBJECT_TO_IDX
@@ -291,11 +291,21 @@ def score_toy(agents,env,seeds):
         rows=[]
         for seed in seeds:
             ep=m.make_trace(env,seed,agent)
-            rows.append({"seed":seed,"success":ep["success"],
-                         "discounted_reward":ep["discounted_reward"],
-                         "steps":ep["steps"],"sha256":ep["sha256"],
-                         "new_obstacle_cleared":getattr(agent,"new_obstacle_cleared",0),
-                         "causal_edge_uses":getattr(agent,"causal_transfer_uses",0)})
+            receipt={"seed":seed,"success":ep["success"],
+                     "discounted_reward":ep["discounted_reward"],
+                     "steps":ep["steps"],"sha256":ep["sha256"],
+                     "new_obstacle_cleared":getattr(agent,"new_obstacle_cleared",0),
+                     "causal_edge_uses":getattr(agent,"causal_transfer_uses",0)}
+            if seed==11 and name in ("blind_generic","learned_transfer"):
+                receipt["toy_debug"]=[
+                    {"t":i,"action":action,"front":m.front_type(before),
+                     "carry":int(m.objects(before)[3,6]),
+                     "front_after":m.front_type(after),
+                     "carry_after":int(m.objects(after)[3,6])}
+                    for i,(before,action,reward,after,done) in
+                    enumerate(ep["transitions"])
+                    if i<85 and (i<35 or action in (3,4,5))]
+            rows.append(receipt)
         if frozen[name]!=save(agent):raise AssertionError("MD24_HELDOUT_CHECKPOINT_DRIFT")
         metrics[name]=rows
     return metrics
