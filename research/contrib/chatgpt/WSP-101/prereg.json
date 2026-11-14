@@ -1,0 +1,67 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-101",
+  "contribution_class": "successor-proposal",
+  "status": "PROSPECTIVE_TASK_DESIGN_ONLY; NO ORIGINAL OR RESERVED FIRST_USE",
+  "exact_parent_sha": "a24c6ec7d23e56b6462dcf43cbd4a72256a35ff3",
+  "prior_evidence": {
+    "WSP98": "WSP98 public causal program learning ties strongest trained and exact symbolic baselines; science superiority not proven; candidate a24c6ec7d23e56b6462dcf43cbd4a72256a35ff3",
+    "WSP99": "WSP99 DEV full-budget benchmark ceiling: exact symbolic source-identification 100% all 8 practice worlds; closed PR #1030 without merge",
+    "WSP100": "WSP100 DEV wider 2048-program audit: 8/8 practices uniquely identified and all prediction cells invariant; qualified full regression both OS 237/237 at c5e4f0a5f71b6c0d04090ce336dd743b8d17d732, open draft #1036; no original first-use"
+  },
+  "question": "Do transferable causal mechanisms allow a persistent, directly weight-written learner to choose useful interventions and retain acquired knowledge across observationally indistinguishable worlds while exceeding strong trained and symbolic controls at matched information/compute?",
+  "plain_english": "Create pairs of machines that look exactly the same when watched passively, but react differently to particular actions. The learner must discover which machine is present through actual experiments and reuse what it learned in new machines. Do not mistake passive ambiguity or access to a supplied rulebook for intelligence.",
+  "core_design": {
+    "north_star": "Tokenless, non-autoregressive native causal learning with persistent representation and cold retention. No architectural transplant from transformer donors.",
+    "paired_worlds": "Each pair has byte-for-byte identical complete passive trajectories (all reset states under action 0, with hidden memory initially zero), yet a permitted intervention can produce different delayed consequences. The paired mechanism must be invisible to purely passive observation, not merely statistically similar.",
+    "family_diversity": "At least four composition families; training/FIT excludes a preregistered novel mechanism family and holds out unfamiliar recombinations of known primitives. Strong controls get a public broad operator superset but never oracle parameters/mode labels.",
+    "delayed_effect": "A valid discriminating action changes hidden memory but not immediate output; difference first becomes observable at a subsequent transition. Include null/shuffled-action negative control.",
+    "transfer": "Separate FIT, TRANSFER, NOVEL, and RESERVED contexts. FIT learning across multiple paired contexts must be assessed on totally disjoint context seeds, new wiring and family combinations, with a fixed small per-world intervention/action budget.",
+    "identifiability": "For every scored heldout output, independent broad causal auditor must certify invariance among all hypotheses consistent with all accessible histories, or exclude underidentified outputs before results. Do not quietly count impossible-to-predict outputs as failures.",
+    "consequential": "Evaluate achieved reward on chosen actions and terminal counterfactual prediction; intervention benefit must be linked to actual consequences and contrasted to random/passive policy.",
+    "memory": "Cold-restorable direct numerical weight state and FIT skill after NOVEL/TRANSFER interference, with no hidden replay outside matched budget."
+  },
+  "splits": {
+    "development_fixtures": "8 paired contexts, indexes 0..7, entirely separate hash stream; engineering checks only",
+    "fit": "16 paired contexts, IDs 101011..101026, two mechanisms each; not generated yet",
+    "transfer": "32 paired contexts, IDs 101101..101132, not generated yet",
+    "novel_family": "16 paired contexts, IDs 101201..101216, not generated yet",
+    "reserved": "32 paired contexts, IDs 101301..101332, no creation/read until separately scoped first-use"
+  },
+  "source_budget": "Each world: 16 four-step passive episodes plus at most 2 four-step intervention episodes (8 action steps), with paired contexts receiving identical reset starts. All methods same source histories, action opportunities, FIT pretraining and inferential read access; observed actions selected by policy counted and compared separately.",
+  "eval_plan": "Freeze exact seeds, action order, counterfactual targets, source and prediction SHA256, policies, costs, and independent auditor before running original public data. No primary original work under this concept document alone.",
+  "controls": [
+    "Fully trained recurrent/SSM under source-fit convergence/multiple seeds, including full training/adaptation time",
+    "Independent broad-grammar symbolic causal solver with fair search budget, no secret labels",
+    "No-write and cold-memory reset ablations",
+    "Passive-only, random-equal-action, shuffled-effect negatives",
+    "Capacity-matched replay/knowledge-transfer memory and strongest exact symbolic control"
+  ],
+  "metrics": [
+    "Identifiable heldout terminal four-step accuracy and confidence",
+    "Action consequence gain versus strongest random/symbolic policy",
+    "Novel-family transfer accuracy",
+    "Cold retention FIT before/after interference",
+    "All training and inference CPU/wall and parameter-memory/actions; report source-fit for all baselines"
+  ],
+  "stopping": {
+    "task_invalid": "No guaranteed passive indistinguishability; no positive discriminating intervention, mismatched sources/actions, output unidentifiable without labels, original first-use without separate authority or source/split/target leakage",
+    "development_ceiling": "Strongest symbolic or fully-trained conventional control has >=95% near-perfect performance with negligible intervention burden; preserve failure-to-differentiate without retuning",
+    "scientific_supported": "After separately authorized independent disjoint originals, exact prespecified positive gain over strongest fully trained and symbolic controls with matched information/actions/compute and reproducible retention. Numeric threshold frozen before any original use; engineering PASS alone insufficient.",
+    "negative": "Native weight writing fails to exceed strongest controls; preserve result, stop/post-result no-tune.",
+    "unverified": "Current design phase, no model training or outcomes."
+  },
+  "independent_authority": {
+    "research_only": true,
+    "original_first_use": false,
+    "merge": false,
+    "accepted_yggdrasil_state_change": false,
+    "official_loop": false,
+    "controller": false,
+    "scheduler": false,
+    "queue": false,
+    "paid_api": false
+  },
+  "next": "Freeze exact paired DEV fixture generator, passive-equivalence and delayed intervention witness tests BEFORE implementing them. Then qualify fixture-only code on Linux/Windows; next prefreeze strong control model/budgets and assess real headroom without original cohort use."
+}
