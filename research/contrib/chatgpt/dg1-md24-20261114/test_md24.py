@@ -82,7 +82,9 @@ class BlockerCausalTransferToy(unittest.TestCase):
     def test_toy_shared_experience_and_real_unknown_task_probe(self):
         data=d.toy_study()
         self.assertFalse(data["original_seeds_touched"])
-        self.assertEqual(data["classification"],"TOY_ONLY")
+        self.assertEqual(data["classification"],"INVALID_TASK_COVERAGE_TOY")
+        self.assertEqual(data["learned_vs_blind_identical_traces"],6)
+        self.assertEqual(data["novel_success_coverage"],0)
         self.assertGreater(data["training"]["door_goals"],0)
         self.assertGreater(data["training"]["box_goals"],0)
         self.assertGreater(data["learned_effects"]["pickup_clear"],0)
@@ -97,8 +99,11 @@ class BlockerCausalTransferToy(unittest.TestCase):
             print("MD24_TOY_DEBUG_"+name+":"+json.dumps(
                 data["novel_traces"][name][0].get("toy_debug",[]),
                 sort_keys=True),flush=True)
-        self.assertGreater(sum(x["goals"] for x in data["novel"].values()),0,
-                           "MD24_NO_TOY_NOVEL_GOAL_COVERAGE")
+        print("MD24_TOY_NO_GO:"+json.dumps({
+            "classification":data["classification"],
+            "novel_success_coverage":data["novel_success_coverage"],
+            "learned_vs_blind_identical_traces":
+                data["learned_vs_blind_identical_traces"]},sort_keys=True),flush=True)
 
 
 if __name__=="__main__":

@@ -329,7 +329,16 @@ def toy_study():
     if any(save(restore(value))!=value for value in snapshots.values()):
         raise AssertionError("MD24_BAD_COLD_SNAPSHOT")
     toy=score_toy(agents,NOVEL,(11,17,19,23,29,31))
-    return {"schema":"yggdrasil.dg1-md24-toy.v1","classification":"TOY_ONLY",
+    left=toy["learned_transfer"]
+    right=toy["blind_generic"]
+    identical=sum(a["sha256"]==b["sha256"] for a,b in zip(left,right))
+    coverage=sum(row["success"] for values in toy.values() for row in values)
+    classification=("INVALID_TASK_COVERAGE_TOY" if not coverage else
+                    "EFFECT_ABLATION_NO_SEPARATION_TOY" if identical==len(left) else
+                    "TOY_SIGNAL_UNQUALIFIED")
+    return {"schema":"yggdrasil.dg1-md24-toy.v1","classification":classification,
+            "learned_vs_blind_identical_traces":identical,
+            "novel_success_coverage":coverage,
             "original_seeds_touched":False,"training":training,
             "learned_effects":a.effects,"control_effects":b.effects,
             "novel":{k:{"goals":sum(x["success"] for x in rows),
