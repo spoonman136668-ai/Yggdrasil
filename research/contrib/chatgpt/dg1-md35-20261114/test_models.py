@@ -207,8 +207,19 @@ class MD35PublicControls(unittest.TestCase):
                 model = cls()
                 model.begin_block()
                 world = toy_world(0)
-                episode = one_public_episode(
-                    world, model, expected_context=0)
+                # The fitted-Q arm must fail closed if Bellman backups
+                # are not trained. The untrained toy mechanics can only be
+                # checked through its separate no-diagnostic route policy.
+                if cls is ModelBasedRL:
+                    with self.assertRaisesRegex(
+                            AssertionError, "BELLMAN_NOT_FITTED"):
+                        one_public_episode(world, model, expected_context=0)
+                    episode = one_public_episode(
+                        world, model, expected_context=0,
+                        arm="no_diagnostic")
+                else:
+                    episode = one_public_episode(
+                        world, model, expected_context=0)
                 receipt = world.receipt()
                 self.assertEqual(episode.trace_sha256,
                                  receipt["public_trace_sha256"])
