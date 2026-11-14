@@ -1,0 +1,98 @@
+{
+  "schema": "wsp108.prospective-typed-causal-rule-transfer-dev-prereg.v1",
+  "status": "PREREGISTERED BEFORE WORLD GENERATOR, MODEL CODE, TEST OR FIRST RUN; SYNTHETIC DEV; NOT PROTECTED SCIENTIFIC FIRST-USE",
+  "parent": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "pr": 1060,
+    "head": "f06b9e87417deb69a8f6e3995e27cc08909b934d",
+    "tree": "33156ebfe16b576af8d6ce917c7ebba5d1c199c3",
+    "parent_result": "WSP107 completed 4 fixed TransE epochs, 743/4096 Hits@10 vs WSP105 symbolic 2038/4096; negative fixed-budget result retained"
+  },
+  "question": "Can a directly programmable 3x3 real-weight relational-law memory learn action consequences from 10 real intervention-feedback observations per novel world, generalize to unfamiliar multi-path causal compositions, and preserve earlier laws across interference, compared with an independent exact symbolic control and a fully optimized regularized conventional logistic head on the identical observations?",
+  "frozen_world": {
+    "mechanisms": "3 ordered relation types x 3 ordered relation types = 9 possible two-hop causal path kinds; each world has exactly four active latent kinds selected by lowest SHA256('WSP108|LAW|v1|seed|kind') priorities. Latent table is held by oracle, never fed to models.",
+    "support": "For each world: 9 singleton before->after edge-add interventions, one for each path kind, with binary observed consequence, and one no-path negative control = 10 supervised action-outcome observations. All three arms see identical interventions and feedback.",
+    "query": "64 independent counterfactual add/remove interventions per world with 2..5 typed two-hop paths, each on distinct randomized midpoint identity; predictions include before, after and whether the action changes the outcome; no query feedback during evaluation.",
+    "fit_seeds": [
+      11001,
+      11002,
+      11003,
+      11004,
+      11005,
+      11006,
+      11007,
+      11008,
+      11009,
+      11010,
+      11011,
+      11012
+    ],
+    "transfer_seeds": [
+      21001,
+      21002,
+      21003,
+      21004,
+      21005,
+      21006,
+      21007,
+      21008,
+      21009,
+      21010,
+      21011,
+      21012
+    ],
+    "entity_ids": "SHA256-derived synthetic opaque identifiers for source/midpoint/target; all query entities disjoint from support and from other worlds; ordered relation roles stay known so this tests new entities/new latent mechanism settings, not unseen primitive relation semantics",
+    "feature": "9-bit indicator of existence of at least one two-hop path from source to target for each ordered relation pair, derived only from observed before/after edge facts",
+    "ground_truth": "Boolean OR of the 9 path features AND the private 9-bit latent law; evaluator computes oracle truth only after every model prediction for each frozen cohort is generated and SHA-sealed",
+    "source_restriction": "synthetic seeded worlds only; never touch historical Wikidata5M, original validation/test, WSP101 protected first-use or accepted Yggdrasil model"
+  },
+  "arms": {
+    "direct_numeric": "For each world, program a 3x3 float32 matrix from only the 9 singleton action-consequence observations. No SGD; directly set each kind weight 0.0 or 1.0. Predict OR via a numerical matrix dot product with the 9 path-presence indicators. Persist independently keyed world weights with SHA256 tamper-checked snapshot and cold restoration.",
+    "independent_symbolic": "Completely independent Python dict/set indexed by ordered relation pair, updated from the same 9 singleton observed outcomes. Query OR over supported path-kind membership. Zero protected latent-law access.",
+    "conventional": "Train an independent L2-regularized binary logistic regression per world on exactly the same ten (9 singleton and one zero-path) path-feature/feedback pairs. A convex Newton solver (max 100 iterations; gradient infinity norm <=1e-9; L2 coefficient 0.03 including intercept; deterministic zero initialization, objective-decreasing backtracking) must reach a stationary fit, and report train accuracy; no query labels or transfer-world oracle used in optimizing model.",
+    "no_update_negative": "Unprogrammed all-zero direct weights; no action-outcome support, scored on identical query data.",
+    "rotated_feedback_negative": "Numeric direct weights programmed with cyclically shifted (by one of 9 ordered kinds) singleton feedback labels, but same number of positive labels and observations; should fail more often than correct mapping."
+  },
+  "measures": {
+    "primary": [
+      "after-action outcome accuracy across 12 unfamiliar transfer worlds x 64 queries",
+      "action-causes-change accuracy (before vs after) across same examples",
+      "accuracy conditional on true action changes",
+      "accuracy conditional on no true action change",
+      "per-model predictions SHA256 sealed before query labels consulted"
+    ],
+    "secondary": [
+      "fit-world and unfamiliar transfer-world metrics separately",
+      "unfamiliar latent laws and synthetic entity disjointness asserted",
+      "cold exact restoration after 12 intervening world-law updates",
+      "tampered snapshot rejection",
+      "training observations and fully optimized logistic gradient residual and train accuracy",
+      "whole-process CPU, model wall times and learned parameter counts, no unsupported speedup"
+    ],
+    "frozen_dev_exit": "Independent numeric and symbolic must agree 100% with each other and oracle; negative controls must be strictly worse than numeric on transfer, intervention-positive and no-change groups must both be present, conventional solver must reach stationarity or FAIL; even passing these earns DEV_CAUSAL_RULE_COMPOSITION, never SCIENTIFIC_PASS or AGI."
+  },
+  "resource": {
+    "python": "3.12",
+    "numpy": "2.2.6",
+    "random": "Python Random seed derived solely from SHA256(query seed, index)",
+    "numpy_threads": 1,
+    "expected_total_episodes": 24,
+    "queries_per_episode": 64,
+    "max_solver_steps": 100,
+    "max_harness_wall_seconds": 120,
+    "max_rss_bytes": 1073741824
+  },
+  "authority": {
+    "research_branch_only": true,
+    "draft_unmerged": true,
+    "protected_first_use": false,
+    "live_model_promotion": false,
+    "accepted_ref_mutation": false,
+    "paid_api": false,
+    "private_runner": false,
+    "new_controller": false,
+    "new_scheduler": false,
+    "other_project_interference": false
+  },
+  "limits": "Deterministic synthetic causal composition is not real-world causal understanding, observationally unidentified external mechanisms, natural-language knowledge, broad AGI, robust novel relation vocabulary, or model superiority over the exact symbolic control. Don't claim independent science from this predeclared DEV experiment."
+}
