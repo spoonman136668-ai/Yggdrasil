@@ -1,0 +1,335 @@
+name: DG1-MD30 StructuralRewire pre-first-use task qualification
+on:
+  push:
+    branches: [research/dg1-md30-structural-causal-transfer-20261114]
+    paths:
+      - 'research/contrib/chatgpt/dg1-md30-20261114/**'
+      - '.github/workflows/dg1-md30-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  preflight-and-inherited:
+    name: MD30 physical fixtures + full inherited regression (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify immutable MD30 prereg and blocked scientific first-use
+        shell: bash
+        run: |
+          git merge-base --is-ancestor 1271c3401fc96af1ca4822deccb542bea93735eb HEAD
+          git diff --exit-code 1271c3401fc96af1ca4822deccb542bea93735eb HEAD -- research/contrib/chatgpt/dg1-md30-20261114/prereg.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("research/contrib/chatgpt/dg1-md30-20261114/prereg.json").read_text())
+          assert p["status"]=="PREREGISTRATION_ONLY__NO_CODE__NO_DATA_CONSUMED__NO_EVALUATION"
+          assert p["allocation"]["registered_seed_range"]==[4080001,4080256]
+          assert p["parent_sha"]=="b16e16221db8d4faf9b9af955caa5c7b7ea5a556"
+          print("MD30_FROZEN_PREREG_NO_SCIENTIFIC_FIRST_USE_PASS")
+          PY
+      - name: Pinned CPU dependencies for inherited tests only
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check "minigrid==3.2.0" "gymnasium==1.4.0" "numpy==2.3.4"
+          python - <<'PY'
+          from importlib.metadata import version
+          for name, want in (("minigrid","3.2.0"),("gymnasium","1.4.0"),("numpy","2.3.4")):
+              assert version(name)==want,(name,version(name))
+          PY
+      - name: Independent six-node physics, causal ambiguity and action custody
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -m py_compile research/contrib/chatgpt/dg1-md30-20261114/structural_rewire.py research/contrib/chatgpt/dg1-md30-20261114/test_structural_rewire.py
+          python -m unittest discover -s research/contrib/chatgpt/dg1-md30-20261114 -p 'test_structural_rewire.py' -v
+          python - <<'PY'
+          import json,sys
+          from pathlib import Path
+          sys.path.insert(0,"research/contrib/chatgpt/dg1-md30-20261114")
+          from structural_rewire import World, LEFT, RIGHT, canonical, preflight_headroom
+          w=World(LEFT,next_graph=RIGHT)
+          w.step({"kind":"diagnostic","node":0,"value":1})
+          w.step({"kind":"actuator","node":1,"value":1})
+          w.step({"kind":"diagnostic","node":0,"value":1})
+          w.step({"kind":"actuator","node":0,"value":1})
+          r=w.receipt()
+          assert r["paid_steps"]==4 and r["net_utility"]==1.86
+          proof={"schema":"yggdrasil.dg1-md30-physical-preflight.v1",
+                 "classification":"PREFLIGHT_ONLY_NO_LEARNER_NO_OFFICIAL_COHORT",
+                 "registered_first_use":False,
+                 "headroom":preflight_headroom(),
+                 "physical_sha256":r["physical_sha256"],
+                 "net_utility":r["net_utility"],"paid_steps":r["paid_steps"]}
+          Path("md30-physical-fixture.json").write_bytes((canonical(proof)+"\n").encode("utf-8"))
+          print("MD30_PRE_FIRST_USE_HEADROOM_AND_CHARGED_REWIRE_PASS")
+          print("MD30_REGISTERED_FIRST_USE_NEVER_EXECUTED")
+          PY
+      - name: Verify frozen generator source custody and synthetic structural distribution
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          lock=json.loads(Path("research/contrib/chatgpt/dg1-md30-20261114/task_generator_lock.json").read_text())
+          assert lock["status"]=="TASK_GENERATOR_ONLY__NO_LEARNERS__NO_OFFICIAL_COHORT_FIRST_USE"
+          for path,sha in lock["source_blob_git_shas"].items():
+              got=subprocess.check_output(["git","hash-object",path],text=True).strip()
+              assert got==sha,(path,got,sha)
+          print("MD30_PINNED_STRUCTURAL_GENERATOR_BLOBS_PASS")
+          PY
+          python -m py_compile research/contrib/chatgpt/dg1-md30-20261114/structural_catalog.py research/contrib/chatgpt/dg1-md30-20261114/test_structural_catalog.py
+          python -m unittest discover -s research/contrib/chatgpt/dg1-md30-20261114 -p 'test_structural_catalog.py' -v
+          python - <<'PY'
+          import json,sys
+          from pathlib import Path
+          sys.path.insert(0,"research/contrib/chatgpt/dg1-md30-20261114")
+          from structural_catalog import preflight_distribution
+          from structural_rewire import canonical
+          result=preflight_distribution()
+          lock=json.loads(Path("research/contrib/chatgpt/dg1-md30-20261114/task_generator_lock.json").read_text())
+          assert result["registered_first_use"] is False
+          assert result["topology_manifest"]["all_structure_sha256"]==lock["topology_contract"]["topology_commitment_sha256"]
+          assert result["topology_manifest"]["topology_sha256"]==lock["topology_contract"]["topology_hashes"]
+          for row in result["motifs"].values():
+              assert row["oracle_blind_utility_headroom"] >= lock["qualification_rule"]["preflight_each_motif_min_oracle_blind_utility_headroom"]
+          Path("md30-structural-distribution.json").write_bytes((canonical(result)+"\n").encode("utf-8"))
+          print("MD30_SYNTHETIC_STRUCTURAL_DISTRIBUTION_PREFLIGHT_PASS")
+          print("MD30_NO_OFFICIAL_COHORT_FIRST_USE_PASS")
+          PY
+      - name: Qualify source-locked synthetic Bayesian causal graph control
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          path=Path("research/contrib/chatgpt/dg1-md30-20261114/control_preflight_lock.json")
+          p=json.loads(path.read_text())
+          assert p["status"]=="PREREGISTERED_SYNTHETIC_DEVELOPMENT_ONLY__NO_OFFICIAL_COHORT"
+          assert p["base_commit"]=="468ab38712e2d21e63d7ceeed2f9495288f7027a"
+          assert p["physical_training"]["seeds"]==[3301,3540]
+          assert p["synthetic_toy_transfer"]["seeds"]==[5301,5360]
+          assert p["hypothesis_grammar"]["accepted_unique_hypotheses"]==768
+          subprocess.run(["git","merge-base","--is-ancestor","e4963b916a39a27d87e1d864b97ad68332375645","HEAD"],check=True)
+          subprocess.run(["git","diff","--exit-code","e4963b916a39a27d87e1d864b97ad68332375645","HEAD","--",str(path)],check=True)
+          print("MD30_FROZEN_BAYES_TOY_CONTROL_PREREG_PASS")
+          PY
+          python -m py_compile research/contrib/chatgpt/dg1-md30-20261114/bayesian_control.py research/contrib/chatgpt/dg1-md30-20261114/test_bayesian_control.py
+          python -m unittest discover -s research/contrib/chatgpt/dg1-md30-20261114 -p test_bayesian_control.py -v
+          python research/contrib/chatgpt/dg1-md30-20261114/bayesian_control.py > md30-bayes-toy.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("md30-bayes-toy.json").read_text("utf-8"))
+          assert p["official_first_use"] is False
+          assert p["hypothesis_count"]==768
+          assert p["physical_training"]["charged_steps"]==1920
+          assert p["toy_episodes"]==60
+          assert p["status"]=="TOY_CONTROL_DEVELOPMENT_ONLY__NOT_SCIENTIFIC_PASS"
+          # CPU-seconds are reported in original receipt, not falsely compared
+          # for exact equality across distinct Windows and Linux machines.
+          q={k:v for k,v in p.items() if k != "whole_process_fit_cpu_seconds"}
+          Path("md30-bayes-parity.json").write_bytes(
+              (json.dumps(q,sort_keys=True,separators=(",",":"),ensure_ascii=True)+chr(10)).encode("utf-8"))
+          print("MD30_CHARGED_BAYESIAN_TOY_CONTROL_PASS")
+          print("MD30_BAYES_OFFICIAL_FIRST_USE_NOT_EXECUTED")
+          print("MD30_TOY_REWARD:",p["toy_mean_net_utility"])
+          print("MD30_TOY_BLIND_REWARD:",p["blind_mean_net_utility"])
+          print("MD30_BAYES_TRAIN_CPU_SECONDS:",p["whole_process_fit_cpu_seconds"])
+          PY
+      - name: Train and qualify recurrent world model and empirical model-based RL controls
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          f="research/contrib/chatgpt/dg1-md30-20261114/conventional_controls_lock.json"
+          p=json.loads(Path(f).read_text("utf-8"))
+          assert p["status"]=="FROZEN_BEFORE_NEW_CONVENTIONAL_CONTROL_SOURCE_OR_TRANSFER_OUTCOMES"
+          assert p["parent_commit"]=="69dc1a55e4577ef949e579bfc2ce618ef1cd5c68"
+          assert p["cohorts"]["training_actions_total"]==1920
+          assert p["cohorts"]["synthetic_transfer_seeds"]==[5301,5360]
+          subprocess.run(["git","merge-base","--is-ancestor",
+             "daa8ebf6fcbfa1d22752f1f4141f55f6deb34fb7","HEAD"],check=True)
+          subprocess.run(["git","diff","--exit-code",
+             "daa8ebf6fcbfa1d22752f1f4141f55f6deb34fb7","HEAD","--",f],check=True)
+          print("MD30_FROZEN_RNN_RL_CONTROL_PREREG_PASS")
+          PY
+          python -m py_compile research/contrib/chatgpt/dg1-md30-20261114/recurrent_control.py research/contrib/chatgpt/dg1-md30-20261114/model_rl_control.py research/contrib/chatgpt/dg1-md30-20261114/conventional_preflight.py research/contrib/chatgpt/dg1-md30-20261114/test_conventional_controls.py
+          python -m unittest discover -s research/contrib/chatgpt/dg1-md30-20261114 -p 'test_conventional_controls.py' -v
+          python research/contrib/chatgpt/dg1-md30-20261114/conventional_preflight.py > md30-conventional.json
+          python - <<'PY'
+          import json,sys
+          from pathlib import Path
+          sys.path.insert(0,"research/contrib/chatgpt/dg1-md30-20261114")
+          from conventional_preflight import portable_receipt
+          p=json.loads(Path("md30-conventional.json").read_text("utf-8"))
+          assert p["official_md30_science_first_use"] is False
+          assert p["status"]=="TOY_ENGINEERING_DIAGNOSTIC_NO_SCIENTIFIC_PASS"
+          assert p["physical_training"]["charged_steps"]==1920
+          controls=p["model_controls"]
+          assert set(controls)=={"recurrent_world_model","empirical_model_based_rl"}
+          for c in controls.values():
+              assert c["train"]["fit_episodes"]==192
+              assert c["train"]["validation_episodes"]==48
+              assert c["toy_episodes"]==60
+          Path("md30-conventional-parity.json").write_bytes(
+              (json.dumps(portable_receipt(p),sort_keys=True,separators=(",",":"),ensure_ascii=True)+chr(10)).encode("utf-8"))
+          print("MD30_CONVENTIONAL_CONTROLS_TOY_ONLY_PASS")
+          print("MD30_RNN_RL_NO_OFFICIAL_SCIENCE_FIRST_USE")
+          for name,c in controls.items():
+              print("MD30_CONTROL:",name,"TOY_MEAN:",c["toy_mean_net_utility"],
+                    "ACTIONS:",c["toy_charged_steps"])
+          PY
+      - name: Qualify frozen native non-token hypothesis tournament and paired synthetic controls
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          f="research/contrib/chatgpt/dg1-md30-20261114/native_tournament_lock.json"
+          x=json.loads(Path(f).read_text("utf-8"))
+          assert x["status"]=="FROZEN_BEFORE_CANDIDATE_SOURCE__SYNTHETIC_DEVELOPMENT_ONLY"
+          assert x["source_parent_sha"]=="1c743ceea619ab1469be5eb511bf508d00275a6b"
+          assert x["evaluation"]["fresh_synthetic_diagnostic_seeds"]==[6301,6360]
+          assert x["train"]["credit_rule"].startswith("For each public response bit")
+          subprocess.run(["git","merge-base","--is-ancestor",
+             "242dd9f6c46ca895ec5a7e279a975ea5e980b087","HEAD"],check=True)
+          subprocess.run(["git","diff","--exit-code",
+             "242dd9f6c46ca895ec5a7e279a975ea5e980b087","HEAD","--",f],check=True)
+          print("MD30_FROZEN_NATIVE_TOURNAMENT_LOCK_PASS")
+          PY
+          python -m py_compile research/contrib/chatgpt/dg1-md30-20261114/native_tournament.py research/contrib/chatgpt/dg1-md30-20261114/native_tournament_preflight.py research/contrib/chatgpt/dg1-md30-20261114/test_native_tournament.py
+          python -m unittest discover -s research/contrib/chatgpt/dg1-md30-20261114 -p test_native_tournament.py -v
+          python research/contrib/chatgpt/dg1-md30-20261114/native_tournament_preflight.py > md30-native.json
+          python - <<'PY'
+          import json,sys
+          from pathlib import Path
+          sys.path.insert(0,"research/contrib/chatgpt/dg1-md30-20261114")
+          from native_tournament_preflight import parity_receipt
+          x=json.loads(Path("md30-native.json").read_text("utf-8"))
+          assert x["status"]=="PRECOMMITTED_SYNTHETIC_DIAGNOSTIC_ONLY"
+          assert x["official_first_use"] is False
+          assert x["train"]["charged_physical_actions"]==1920
+          assert x["source_hypothesis_count"]==768
+          assert x["cold"]["identical"] is True
+          assert x["known_previous_toy"]["episodes_per_arm"]==60
+          assert x["fresh_synthetic_diagnostic"]["episodes_per_arm"]==60
+          assert x["known_previous_toy"]["results"]["trained_bayesian"]["mean_net_utility"]==0.7525
+          for cohort in ("known_previous_toy","fresh_synthetic_diagnostic"):
+              assert set(x[cohort]["results"])=={
+                  "native_persistent_causal_tournament",
+                  "native_stateless_ablation",
+                  "native_change_agnostic_ablation",
+                  "trained_bayesian","blind_A"}
+          portable=parity_receipt(x)
+          Path("md30-native-parity.json").write_bytes(
+              (json.dumps(portable,sort_keys=True,separators=(",",":"),ensure_ascii=True)+chr(10)).encode("utf-8"))
+          print("MD30_NATIVE_PERSISTENT_CAUSAL_TOURNAMENT_EXECUTED_TOY_ONLY")
+          print("MD30_NATIVE_COLD_REPLAY_VERIFIED")
+          print("MD30_NATIVE_OFFICIAL_FIRST_USE_NOT_EXECUTED")
+          for cohort in ("known_previous_toy","fresh_synthetic_diagnostic"):
+              print("MD30_COHORT:",cohort)
+              for name,model in x[cohort]["results"].items():
+                  print("MD30_ARM:",name,"REWARD:",model["mean_net_utility"],
+                        "ACTIONS:",model["charged_physical_actions"])
+              print("MD30_NOVELTY_DIAGNOSTIC_ONLY:",
+                    x[cohort]["candidate_development_threshold_met"])
+          PY
+      - name: Full inherited regression and exact committed atlas
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+        run: |
+          python -m unittest discover -s tests -p 'test_*.py' -v
+          python scripts/build_code_atlas.py --check
+          git diff --exit-code
+      - name: Upload bounded fixture evidence for cross-OS parity
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: md30-physical-fixture-${{ matrix.os }}
+          path: |
+            md30-physical-fixture.json
+            md30-structural-distribution.json
+            md30-bayes-toy.json
+            md30-bayes-parity.json
+            md30-conventional.json
+            md30-conventional-parity.json
+            md30-native.json
+            md30-native-parity.json
+          if-no-files-found: error
+  parity:
+    name: MD30 cross-OS physical trace and headroom parity
+    needs: preflight-and-inherited
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: md30-physical-fixture-ubuntu-latest
+          path: linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: md30-physical-fixture-windows-2022
+          path: windows
+      - name: Byte-exact public fixture parity; no scientific data
+        shell: bash
+        run: |
+          cmp linux/md30-physical-fixture.json windows/md30-physical-fixture.json
+          cmp linux/md30-structural-distribution.json windows/md30-structural-distribution.json
+          cmp linux/md30-bayes-parity.json windows/md30-bayes-parity.json
+          cmp linux/md30-conventional-parity.json windows/md30-conventional-parity.json
+          cmp linux/md30-native-parity.json windows/md30-native-parity.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("linux/md30-physical-fixture.json").read_text())
+          assert p["registered_first_use"] is False
+          assert p["classification"]=="PREFLIGHT_ONLY_NO_LEARNER_NO_OFFICIAL_COHORT"
+          assert p["headroom"]["headroom"]==0.75
+          q=json.loads(Path("linux/md30-structural-distribution.json").read_text())
+          assert q["registered_first_use"] is False
+          assert len(q["motifs"])==6
+          assert all(x["oracle_blind_utility_headroom"]>=0.35 for x in q["motifs"].values())
+          bayes=json.loads(Path("linux/md30-bayes-parity.json").read_text())
+          assert bayes["official_first_use"] is False
+          assert bayes["physical_training"]["charged_steps"]==1920
+          assert bayes["toy_episodes"]==60
+          x=json.loads(Path("linux/md30-conventional-parity.json").read_text())
+          assert x["official_md30_science_first_use"] is False
+          assert x["physical_training"]["charged_steps"]==1920
+          assert x["model_controls"]["recurrent_world_model"]["toy_episodes"]==60
+          assert x["model_controls"]["empirical_model_based_rl"]["toy_episodes"]==60
+          p=json.loads(Path("linux/md30-native-parity.json").read_text())
+          assert p["official_first_use"] is False
+          assert p["cold"]["identical"] is True
+          assert p["fresh_synthetic_diagnostic"]["episodes_per_arm"]==60
+          assert p["source_hypothesis_count"]==768
+          print("MD30_NATIVE_HYPOTHESIS_MEMORY_AND_PHYSICAL_REPLAY_OS_PARITY_PASS")
+          print("MD30_RNN_RL_PUBLIC_MODEL_AND_TRACE_PARITY_PASS")
+          print("MD30_BAYES_MODEL_AND_PUBLIC_RECEIPT_CROSS_OS_PARITY_PASS")
+          print("MD30_SIX_MOTIF_STRUCTURAL_PARITY_PASS")
+          print("MD30_PRE_FIRST_USE_CROSS_OS_PARITY_PASS")
+          PY

@@ -1,0 +1,133 @@
+{
+  "schema": "yggdrasil.dg1-md30-task-generator-lock.v1",
+  "experiment_id": "DG1-MD30-20261114",
+  "status": "TASK_GENERATOR_ONLY__NO_LEARNERS__NO_OFFICIAL_COHORT_FIRST_USE",
+  "parent_pr": 1027,
+  "original_prereg_commit": "1271c3401fc96af1ca4822deccb542bea93735eb",
+  "original_prereg_blob": "b6c3567c5d1cba2b67995d8bd17bdfdd9b97ff39",
+  "source_blob_git_shas": {
+    "research/contrib/chatgpt/dg1-md30-20261114/structural_rewire.py": "3a21f5d7ece854987c588bef6971da0427190bad",
+    "research/contrib/chatgpt/dg1-md30-20261114/structural_catalog.py": "cc27fc3f31d516b2411837bc0305c4b8cd252762",
+    "research/contrib/chatgpt/dg1-md30-20261114/test_structural_catalog.py": "eb22da451a535c9863b228233e2fe14a7dcd81fe"
+  },
+  "topology_contract": {
+    "train_motifs": [
+      "chain",
+      "fork",
+      "collider"
+    ],
+    "transfer_motifs": [
+      "braided",
+      "crossfork",
+      "doublecollider"
+    ],
+    "topology_commitment_sha256": "24696dddb4c7e0b5f100112eb67c715ac981efe053d5dbe91f3785e36d1119ac",
+    "topology_hashes": {
+      "braided": "292a9b7042c2e695eb2020a3e36a09fc8a3b5a22fb65170f92268d0fea000aea",
+      "chain": "deb37625c3d7e2d4b399a949a3cce1f67c7778189a602a5eb45a96fb7d286fee",
+      "collider": "95fa90bfe96dbd77a22a5a76069d3ea6881076174ed1b73f4ea60ce1f34d1c3e",
+      "crossfork": "e40d56f98510c9c533e4459e0cd87db7da55a5107dd1537c3a3e850eaf547006",
+      "doublecollider": "d6243079b5dfcd5cb86840e27376126d62dc94b48f7b1bca1a5b1b67e206adad",
+      "fork": "01a2289f2abffac717fcfa4860591be9e302750041e1de9a50a19a6e57359ae0"
+    },
+    "topology_count": 12,
+    "training_holdout_parent_graph_overlap_allowed": false,
+    "graph_selection": "Deterministic SHA-256 domain StructuralRewire-v1|catalog-v1|seed|label. Enumerate PASS/AND/OR/XOR with independent binary inhibitions in sorted product order, filter ambient all-zero with exactly one of actuator A=1 or B=1 reaching target F=1, pair opposite winners from distinct parent-edge variants with at least one changed gate and identifying paid internal clamp. Select hashed starting indices; first qualifying pair in lexicographic wrap scan. Do not expose motif, seed, graph or rewire to policy.",
+    "synthetic_preflight_seeds": [
+      1201,
+      1248
+    ],
+    "synthetic_oracle_and_blind_only": true
+  },
+  "physical_contract": {
+    "six_binary_nodes": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "stage_count": 2,
+    "actuator_nodes": [
+      0,
+      1
+    ],
+    "diagnostic_nodes": [
+      2,
+      3,
+      4
+    ],
+    "ambient_roots": [
+      0,
+      0
+    ],
+    "target_node": 5,
+    "desired": 1,
+    "paid_diagnostics_per_stage_cap": 3,
+    "total_steps_cap": 8,
+    "diagnostic_cost": 0.05,
+    "actuator_cost": 0.02,
+    "goal_reward": 1,
+    "miss_reward": -0.5,
+    "charged_diagnostic": "Pulse internal node to 0/1 and observe six-bit downstream response; pulses are released between physical actions; never directly clamp actuator roots during diagnostics.",
+    "change": "At stage boundary graph may change both parent structure and gate; no public change flag; ambient all-zero sensors remain observationally ambiguous; paid internal interventions can distinguish.",
+    "no_hidden_access": "Public observation offers only sensor vector, phase, actuator availability, diagnostic menu, cost menu and charged action history."
+  },
+  "allocation_declaration_only": {
+    "training": {
+      "seed_range": [
+        1080001,
+        1080768
+      ],
+      "episodes": 768,
+      "stable_first": 384,
+      "rewire_last": 384,
+      "motif_index": "(seed-1080001)%3 across train_motifs"
+    },
+    "development": {
+      "seed_range": [
+        2080001,
+        2080128
+      ],
+      "episodes": 128,
+      "motif_index": "(seed-2080001)%3 across transfer_motifs",
+      "rewire": "(seed-2080001)%2==1"
+    },
+    "cold": {
+      "seed_range": [
+        3080001,
+        3080064
+      ],
+      "episodes": 64,
+      "motif_index": "(seed-3080001)%3 across transfer_motifs",
+      "rewire": "(seed-3080001)%2==1"
+    },
+    "registered": {
+      "seed_range": [
+        4080001,
+        4080256
+      ],
+      "episodes": 256,
+      "motif_index": "(seed-4080001)%3 across transfer_motifs",
+      "rewire": "(seed-4080001)%2==1"
+    },
+    "note": "These are frozen plans, not executed original data. synthetic_pair currently rejects all official seed ranges."
+  },
+  "qualification_rule": {
+    "preflight_each_motif_min_unique_graphs": 8,
+    "preflight_each_motif_min_distinct_first_internal_probes": 2,
+    "preflight_each_motif_min_oracle_blind_utility_headroom": 0.35,
+    "all_train_transfer_parent_topologies_disjoint": true,
+    "full_inherited_tests_required_per_os": 54,
+    "os": [
+      "windows-2022",
+      "ubuntu-latest"
+    ],
+    "cross_platform_receipt_parity_required": true,
+    "conventional_strong_control_headroom": "NOT YET PROVEN — required before any experiment",
+    "model_training_and_control_hyperparameter_lock": "NOT YET IMPLEMENTED — block DEV/original first-use",
+    "scientific_authority": "Separate explicit owner approval required; no present authorization implied."
+  },
+  "scope": "Research-only stacked draft PR; no main/accepted ref/model weights/controller/loop/runner/scheduler/merge/deploy changes. Negative outcomes remain first-class."
+}

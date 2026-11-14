@@ -1,0 +1,69 @@
+{
+  "schema": "yggdrasil.dg1-md30-native-causal-tournament-lock.v1",
+  "experiment_id": "DG1-MD30-20261114-TM1",
+  "parent_pr": 1027,
+  "source_parent_sha": "1c743ceea619ab1469be5eb511bf508d00275a6b",
+  "status": "FROZEN_BEFORE_CANDIDATE_SOURCE__SYNTHETIC_DEVELOPMENT_ONLY",
+  "architecture": "Independent bounded non-token causal-response hypothesis tournament with non-gradient integer credit assignment, evidence-triggered contradiction penalties, two protected stage memory banks, online hypothesis elimination, and cold rehydration; no graph objects or decoder-style next-token architecture",
+  "shared_source": "Use existing general-DAG response-signature grammar build_hypotheses() unmodified and frozen 768 source hypotheses so candidate does not receive privileged novel transfer graphs",
+  "train": {
+    "physical_custody": "Pre-existing paid_training_episodes() only; 240 synthetic episodes 3301-3540, 1920 paid action receipts, phase 0/1 visible; uses identical data to Bayes, RNN, RL",
+    "scored_segments": "480 four-action stage segments; per hypothesis each 6-bit physical response is compared for matches and contradictions",
+    "credit_rule": "For each public response bit: +1 if predicted bit equals observation, -2 otherwise; sum separately in phase-0 and phase-1 persistent banks; no reward or hidden-label leakage",
+    "freeze_before_results": true,
+    "phase_bank_keep": 96,
+    "global_recovery_keep": 32,
+    "carried_previous_phase_keep": 32,
+    "deterministic_rank": "decreasing integer score then increasing hypothesis index",
+    "learn_cycles": 1,
+    "update_after_official_eval": false,
+    "update_after_synthetic_eval": false
+  },
+  "online": {
+    "stage0_active": "top 96 learned phase-0 memory indices plus top 32 global recovery signatures; stable unique index order",
+    "stage1_active": "top 96 learned phase-1 memory indices, top 32 prior-phase selected indices, plus top 32 global recovery; canonical dedup",
+    "score": "base training credit transformed by dividing by 1920 and multiplying by 16, plus +1 for every matching public bit and -2 per contradictory public bit; online outcome evidence only from World.step receipt",
+    "stage_change": "after first physical actuator phase changes without indicator; restart online penalty, recall phase-1 memory without erasing phase-0 memory; retain top 32 prior-phase hypotheses as protected reservoir",
+    "winner_pool": 32,
+    "action_vote": "hard tournament active top-32 scored hypotheses, each one vote, best available actuator based on fraction predicting target; deterministic choose lower actuator index on ties",
+    "diagnostic_policy": "For each of six allowed internal-node pulse actions compute best post-pulse actuator success fraction by partitioning only the local hypothesis signatures; diagnostic expected utility = 1.5 * (expected post-probe winner fraction - current best fraction) - 0.05. If gain > 1e-9 select maximum, lexicographic tie; otherwise actuate",
+    "diagnostic_cap_per_stage": 2,
+    "per_episode_physical_max": 8,
+    "cost": "actual World.step diagnostic 0.05, actuator 0.02, goal +1, miss -0.5",
+    "public_interface": "Policy gets only observation dict, physically charged action return, signed public receipt; no private graph/seed/future; model simulation allowed on internal hypothesis signatures not physics oracle",
+    "threshold_adjustment": "Forbidden after any synthetic eval",
+    "rehydration": "JSON canonical integer stage-bank credits, graph signature digest, top-memory index sets and configuration; cold restoring MUST produce byte-identical public action traces, no refitting"
+  },
+  "arms": [
+    "native_persistent_causal_tournament",
+    "native_stateless_ablation_same_graph_hypotheses_no_learned_banks",
+    "native_change_agnostic_ablation_same_credits_using_stage0_bank_at_stage1",
+    "previously_frozen_trained_bayesian_graph_filter_control",
+    "existing fixed_action_A"
+  ],
+  "evaluation": {
+    "already_used_toy_seeds": [
+      5301,
+      5360
+    ],
+    "fresh_synthetic_diagnostic_seeds": [
+      6301,
+      6360
+    ],
+    "old_toy_role": "Reproducibility only, known 60-episode diagnostic; no primary inference",
+    "new_toy_role": "One-shot exploratory nonofficial check, 60 additional seeds with same 3 transfer motifs and parity-dependent rewire; freeze now before candidate exists",
+    "statistical_method": "paired difference in mean net utility candidate minus already-qualified Bayesian; per-motif and across rewired/stable breakdown; no p-hacking, no post-result selection",
+    "novelty_threshold": "Development-only threshold candidate >= Bayesian by 0.05 net utility plus no motif deficit > 0.03; cannot itself confer SCIENTIFIC_PASS",
+    "if_null": "REPORT DEVELOPMENT_NO_NOVEL_GAIN, retain code, source and outcomes, do not tune this line on observed result"
+  },
+  "qualification": {
+    "full_54_inherited_tests_both_OS": true,
+    "new_focused_and_negative_both_OS": true,
+    "exact_G29_atlas_both_OS": true,
+    "cross_OS_action_reward_checkpoint_byte_parity": true,
+    "freeze_original_MD30_prereg_and_earlier_controls": true,
+    "official_first_use": "NO; require separate explicit owner authority and independent source-locked original-cohort freeze",
+    "native_model_integration": "NO; requires independent scientific qualification and authority",
+    "scope": "research PR only, no main merge, accepted ref, local owner runner/controller, schedule, deployed learning or third party projects"
+  }
+}

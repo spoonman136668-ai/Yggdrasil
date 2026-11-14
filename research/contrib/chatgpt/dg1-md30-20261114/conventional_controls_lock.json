@@ -1,0 +1,107 @@
+{
+  "schema": "yggdrasil.dg1-md30-recurrent-rl-controls-lock.v1",
+  "experiment_id": "DG1-MD30-20261114",
+  "status": "FROZEN_BEFORE_NEW_CONVENTIONAL_CONTROL_SOURCE_OR_TRANSFER_OUTCOMES",
+  "parent_commit": "69dc1a55e4577ef949e579bfc2ce618ef1cd5c68",
+  "parent_pr": 1027,
+  "protocol_role": "RESEARCH_DEV_ONLY",
+  "question": "Do fully-trained conventional recurrent and empirical model-based controllers extract paid-action consequences from the same MD30 physical observations and provide a credible baseline for any future native non-token candidate?",
+  "cohorts": {
+    "physical_generator": "Existing unmodified structural_catalog.synthetic_world",
+    "shared_paid_training_episodes": [
+      3301,
+      3540
+    ],
+    "fit_seeds": [
+      3301,
+      3492
+    ],
+    "validation_seeds": [
+      3493,
+      3540
+    ],
+    "synthetic_transfer_seeds": [
+      5301,
+      5360
+    ],
+    "training_actions_total": 1920,
+    "fit_episodes": 192,
+    "validation_episodes": 48,
+    "fit_charged_actions": 1536,
+    "validation_charged_actions": 384,
+    "eval_episodes": 60,
+    "motifs_train": [
+      "chain",
+      "fork",
+      "collider"
+    ],
+    "motifs_toy_transfer": [
+      "braided",
+      "crossfork",
+      "doublecollider"
+    ],
+    "no_official_cohort_access": true,
+    "immutable_original_registered": [
+      4080001,
+      4080256
+    ],
+    "training_evidence": "Each episode's 8 physically charged World.step receipts, 4 per stage, no hidden graph access",
+    "eval_evidence": "Each control obtains a separate real World.step episode with up to 3 diagnostics per stage; no counterfactual oracle access",
+    "holdout_usage": "Fixed single diagnostic-only toy transfer readout, no post-score hyperparameter changes"
+  },
+  "recurrent": {
+    "method": "Conventional Elman tanh RNN world-model with fully trained input/recurrent/output weights, sequence cross-entropy optimized by full 8-step backpropagation through time and Adam",
+    "seed": 33119,
+    "input_width": 16,
+    "input_features": "One-hot action (8), last public sensor vector (6), current public phase one-hot (2), where stage reset ambient sensor is explicitly observed",
+    "hidden_width": 32,
+    "output_width": 6,
+    "trainable_parameters": 1766,
+    "optimizer": "Adam",
+    "learning_rate": 0.01,
+    "adam_betas": [
+      0.9,
+      0.999
+    ],
+    "adam_eps": 1e-8,
+    "l2_weight_decay": 0.0001,
+    "max_epochs": 80,
+    "min_epochs": 20,
+    "early_stop_patience": 12,
+    "validation_min_delta": 0.0001,
+    "batch_episodes": 16,
+    "gradient_clip_global_norm": 1,
+    "train_order": "Seeded epoch shuffles, exact original charge-order within episodes; no teacher hidden graph or uncharged physical actions",
+    "loss": "Six-bit next-observation BCE mean over time, episodes and six target bits",
+    "checkpoint": "Save validation-best network weights, epoch, val BCE, parameter counts and consumed physical trace hash",
+    "planning": "Model predicts physical effects of each available actuator and diagnostic from its own learned hidden state; one-step estimated diagnostic information-value heuristic, then reselect after each paid observation",
+    "max_planned_diagnostics_per_stage": 3,
+    "probe_threshold": "Best actuator expected target probability < 0.68 AND predicted diagnostic Bernoulli entropy > 0.75; no probe if unavailable",
+    "convergence_rule": "Report train and validation BCE, epoch, patience and whether validation stabilized; do not call fully qualified strong baseline if validation fails or undertrains"
+  },
+  "model_based_rl": {
+    "method": "Conventional empirical action-conditioned MDP learned from paid public sensor transitions with smoothed backoff; explicit Bellman action-value lookahead and diagnostic value-of-information",
+    "state": "(public phase, C,D,E,F sensor bits) plus spent-probe count",
+    "actions": "Available actuator intervention A/B to value=1; internal diagnostics C/D/E to 0 or 1",
+    "transition": "Fit empirical categorical distribution over full six-bit observed next sensor vectors by (phase,last CDEF bits,action), fallback to (phase,action); Laplace prior smoothing",
+    "smoothing_strength": 4,
+    "train_splits": "Only 192 fit episodes update transition/reward counts; 48 validation episodes for logloss report",
+    "reward": "Diagnostic -0.05, actuator +0.98 if target F=1 otherwise -0.52; all derived from paid receipts",
+    "planning": "One-step Bellman lookahead with expected distributional sensor updates and follow-up actuator selection; diagnostic cost charged, at most one planned diagnostic per stage to prevent free repeated adaptation",
+    "max_planned_diagnostics_per_stage": 1,
+    "top_outcomes_per_probe": 12,
+    "convergence_rule": "Report fitted observed state-action cells, coverage, training/validation negative log likelihood; fail closed on empty transition statistics or nonfinite values"
+  },
+  "fairness": {
+    "comparison": "Run Bayesian existing + the two new controls on same physical data seed set; compare to fixed blind only as synthetic engineering diagnostic; strongest model benchmark remains UNVERIFIED",
+    "compute": "Record training CPU seconds and decision CPU seconds for each; do not claim comparable accuracy at matched compute without measured normalization",
+    "prereg_locked_before_new_source": true,
+    "public_interface": "Only World.observe() and World.step() with charged histories, no read of world private graph, no future labels, no official seed use",
+    "first_use": "EXPLICIT_OWNER_SCIENTIFIC_AUTHORITY_REQUIRED; not implied by next gate"
+  },
+  "stop": {
+    "infra": "Any focusing/inherited test, code atlas, dual-OS parity or source custody failure -> ENGINEERING_FAIL, no promotion",
+    "science": "A toy transfer result alone is exploratory even with positive numbers; preserve negative or failed baselines, do not tune protocol based on outcomes",
+    "deployment": "No branch merge, accepted ref, main, native weights, owner controller, runner, scheduled tasks, or actual model learning claim"
+  }
+}
