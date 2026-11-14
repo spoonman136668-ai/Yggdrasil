@@ -1,0 +1,157 @@
+{
+  "schema": "yggdrasil.dg1-md35-strong-conventional-controls-prereg.v1",
+  "experiment_id": "DG1-MD35-20261114",
+  "status": "PREREGISTRATION_ONLY_BEFORE_MD35_MODEL_SOURCE_DATA_OR_SCORES",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "parent_pr": 1044,
+    "exact_parent_sha": "cd031504130732617e9ce55ee0da5476f559f59e",
+    "md34_prereg_sha": "665bd80646ae675d32f2a875dde72387be226d2d",
+    "md34_qualification_run": 43626480158,
+    "md34_atlas_run": 43626483997,
+    "task_classification": "TASK_PHYSICS_PREFLIGHT_PASS_ONLY",
+    "main_sha_at_registration": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "question": "Can genuinely trained conventional Bayesian, recurrent and model-based RL controllers acquire the partial three-stage law using ONLY charged public interventions, retain knowledge across four contextual episodes, and transfer to structurally unfamiliar law families? Does MD34 leave a meaningful decision-quality gap after the strongest admissible control?",
+  "scope": {
+    "permitted_changes": [
+      "research/contrib/chatgpt/dg1-md35-20261114/**",
+      ".github/workflows/dg1-md35-qualification.yml",
+      "derived G29 code-atlas files in a separate source-pinned qualification-only commit"
+    ],
+    "forbidden": "No edits to MD29-MD34 frozen source/fixtures/thresholds/outcomes, original registered datasets, native Yggdrasil weights, main, accepted refs, controller, runner, scheduler, autonomous loop, other models/projects or deployment.",
+    "first_use": "THIS COMMIT AUTHORIZES NO EXPERIMENT EXECUTION. Prospective synthetic data training, transfer/cold first-use, workflow dispatch and owner acceptance each require source and authority checks; official/registered first-use requires separate explicit owner authorization.",
+    "promotion": "No SCIENTIFIC_PASS or native integration may be inferred from MD35 control performance.",
+    "isolation": "Standalone external research-only branch stacked on MD34; no scheduled tasks or cross-project wiring."
+  },
+  "immutable_task": {
+    "physics": "Import only frozen MD34 PartialRouteWorld for charged public step(), observe() and receipt() from a harness; never change physical rules or use MD34 fixture_spec() for science cohorts.",
+    "law_contract": "Harness may reconstruct six existing MD34 law families exactly from frozen prereg; public policies/trainers MUST NOT import or access LAWS, hidden E/G/D, family, graph, seed, offset, rewire or counterfactual outcomes.",
+    "train_families": [
+      "relay",
+      "fork",
+      "collider"
+    ],
+    "unfamiliar_transfer_families": [
+      "braid",
+      "inhibitor",
+      "crossbridge"
+    ],
+    "each_episode": "Three irreversible causal steps (precursor actuator, route decision, four-choice terminal), at most one 0.09-reward diagnostic returning a single bit; obey frozen route0/route1 costs and terminal reward.",
+    "block": "Four episodes share a hidden law and stable/rewire condition; public context visits 0,1,2,3 in order; trainer sees only publicly announced block boundary, not hidden identities."
+  },
+  "reserved_cohorts_not_opened": {
+    "train": {
+      "first": 61000,
+      "last": 62535,
+      "episodes": 1536,
+      "blocks": 384,
+      "families": [
+        "relay",
+        "fork",
+        "collider"
+      ],
+      "research_only": true
+    },
+    "validation": {
+      "first": 63000,
+      "last": 63383,
+      "episodes": 384,
+      "blocks": 96,
+      "families": [
+        "relay",
+        "fork",
+        "collider"
+      ],
+      "research_only": true
+    },
+    "unfamiliar_transfer": {
+      "first": 64000,
+      "last": 64383,
+      "episodes": 384,
+      "blocks": 96,
+      "families": [
+        "braid",
+        "inhibitor",
+        "crossbridge"
+      ],
+      "unopened": true
+    },
+    "independent_cold": {
+      "first": 65000,
+      "last": 65191,
+      "episodes": 192,
+      "blocks": 48,
+      "families": [
+        "braid",
+        "inhibitor",
+        "crossbridge"
+      ],
+      "unopened": true
+    },
+    "preuse_collision_check": "Before any cohort generation, query authoritative consumed, reserved and official first-use ledgers for ALL four exact ranges; on collision FAIL CLOSED and make a NEW preregistration without inspecting outcomes.",
+    "per_cohort_formula": "block=(seed-first)//4; context=(seed-first)%4; family=families[block%3]; offset=(block//3)%4; rewire=((block//12)%2)==1. Harness computes private law. No policy sees seed/block/family/offset/rewire.",
+    "seeding": "Training and model initializations disjoint from cohort identifiers. All splits and model selection frozen before any unfamiliar transfer/cold evaluation.",
+    "restriction": "Never reuse fixture 15000..15095 or MD33 11000..14095 or protected official/registered MD29-MD34 cohorts."
+  },
+  "shared_physical_training": {
+    "demonstration": "Use a single replayable deterministic exploratory controller for ALL controls, acting only through real MD34 observe/step and actual terminal rewards. Rotate paid diagnostic phase across episodes within each law block (encoder, route0, route1, terminal) and vary route choice and terminal guesses by public context and a preregistered independent exploration seed; no oracle or law-based actions.",
+    "training_episodes": 1536,
+    "max_paid_actions_per_episode": 4,
+    "if_one_diagnostic_per_episode_paid_actions": 6144,
+    "equality": "Models train from identical public charged-action/reward transcripts in chronological order; no privately generated counterfactual labels, hallucinated observations, free probe, hidden-law teacher, or external model data.",
+    "heldout": "Evaluation policies choose their own legal interventions; every probe/action is recorded with physical reward and charged to utility. No adapting weights on transfer/cold; within-block updating of a persistent scratch memory from actual public observations and terminal rewards is permitted equally.",
+    "memory": "Global fit/checkpoint persists from training only; within-block state resets at declared block boundaries. Cold evaluation starts from independently restored training checkpoint and blank episodic state."
+  },
+  "mandatory_controls": {
+    "blind": "No diagnostic, fixed legal route and terminal action; frozen MD34 public_blind reference.",
+    "paid_one_bit": "One terminal-parity probe then legal terminal guess; frozen MD34 public_parity_only reference.",
+    "privileged_oracle": "Task ceiling only; excluded from model training, policy selection and legal comparison.",
+    "bayesian": "Train a genuine factorized, smoothing-calibrated Bayesian/Dirichlet latent transition belief on shared paid episodes. Maintain posterior over publicly identifiable encoder/route/decoder response hypotheses and possible change, marginalizing hidden state; maximum 4096 particles or exact collapsed posterior. Update only with observed charged physical outcomes. Precommit prior alpha=1, deterministic particle seed=35031 and selection rule maximizing expected net reward minus real diagnostic/route charges.",
+    "recurrent": "Train a 64-hidden-unit gated recurrent world model on full four-episode sequences of public action, one-bit diagnostic, reward and phase observations, using Adam lr=0.001, batch=16 blocks, at most 120 epochs, minimum 20, patience 20 on independent source-family validation only, clip norm 1, weight decay 0.0001, and fixed initialization/training seeds [35035,35036,35037]. All three seeds are reported; frozen validation chooses a single checkpoint prior to heldout. Terminal/route policy maximizes expected net utility under learned predictive distribution; no privileged teacher.",
+    "model_based_rl": "Train an empirical history-conditioned transition/reward model from the same charged sequences; estimate value of interventions with finite-horizon fitted-Q / Bellman backups from fitted public outcomes, 40 frozen backup sweeps, Dirichlet smoothing alpha=1, ensemble size=5, seed=35041. No future World.step, hidden-law lookup, free rollout, or unlabeled training examples; planned actions must be executed and charged.",
+    "negative_ablations": [
+      "recurrent hidden memory reset every episode",
+      "Bayesian posterior reset every episode",
+      "model-based planner without retained law belief",
+      "action/outcome correspondence shuffled within training blocks only",
+      "no diagnostic",
+      "no route-choice alternative"
+    ],
+    "no_posthoc_retraining": "Do not change capacities, seeds, early-stopping rules, controls, losses, selection criteria or thresholds in response to evaluation results. Failure is recorded and any redesigned controls require distinct preregistration and fresh heldouts."
+  },
+  "compute_and_fairness": {
+    "cap_cpu_seconds_per_control_family": 900,
+    "neural_all_seeds_included_in_budget": true,
+    "caps": "Same public data, maximum paid training actions and charged evaluation actions per episode; each model has a 900 CPU-second end-to-end fitting/selection budget on the same pinned single-thread CPU platform. Report actual wall/CPU for all data preparation, fitting, validation, inference, checkpointing and scoring; no uncharged external computation.",
+    "matching": "If the relevant model comparisons differ by >10% actual whole-process CPU or >10% information/actions available, no matched-compute superiority claim. Lower-compute models may still Pareto-dominate higher-compute models; report raw costs.",
+    "software": "Freeze exact source/dependency hashes before training, Python 3.12 and pinned CPU deps; never change science to repair test parity after first-use. Cross-platform numerical differences must be measured, not hidden."
+  },
+  "metrics": {
+    "primary": "Mean physically net charged utility on 384 structurally unfamiliar transfer episodes AND 192 independently cold-restored episodes; higher is better.",
+    "secondaries": [
+      "goal success",
+      "mean paid diagnostics and route1 fraction",
+      "retained-block later-episode gain versus first",
+      "source vs unfamiliar structural transfer",
+      "per-family and stable/rewire breakdown",
+      "false causal reuse after decoder rewire",
+      "per-control full-process CPU seconds and model sizes",
+      "checkpoint cold replay reproducibility"
+    ],
+    "uncertainty": "2000 deterministic bootstrap resamples over hidden-law blocks (not individual episodes), seed=35045; report 95% percentile bounds and all per-block receipts.",
+    "conventional_saturation": "If any fully trained admissible conventional control achieves mean net utility >=0.89 (within 0.05 of the 0.94 privileged task oracle) on BOTH independent unfamiliar transfer and cold, classify TRIVIAL_FOR_NOVEL_GAIN_STOP. Do not run a new native mechanism on MD34.",
+    "underqualification": "If no competent conventional control exceeds +0.10 mean utility on BOTH unfamiliar transfer and cold, classify CONTROLS_UNDERQUALIFIED_OR_UNIDENTIFIABLE_NO_NATIVE_GATE.",
+    "development_headroom": "If at least one independent trained conventional control beats +0.10 on transfer and cold but none saturates, classify DEVELOPING_TASK_HEADROOM_ONLY; this is not a native Yggdrasil scientific gain and does not authorize first-use.",
+    "invalidity": "Any seed ledger conflict, private information leakage, hidden-law shortcut, uncharged probe/counterfactual, invalid cold restore or failure of source/physics parity makes the study INVALID_NOT_SCIENCE."
+  },
+  "qualification": {
+    "required": "Source-pinned full inherited mandatory regression on Windows 2022 and Ubuntu, all MD30–MD34 frozen tests plus MD35 tests, exact-byte public physical action and reward receipts when deterministic, separate derived G29 atlas on exact final SHA, scientific provenance and negative/ablation receipts.",
+    "controls": "Tests must reject seed/graph access from policies, free environment stepping, reused consumed cohorts, model checkpoint contamination, within-heldout fitting, physical-cost omission, unreported neural seed, and perturbation of frozen MD34 physics.",
+    "evidence_destination": "Repository and GitHub Actions artifacts only; do not generate chat Library evidence files.",
+    "deployment": false,
+    "merge": false,
+    "main_mutation": false,
+    "owner_runner_controller_mutation": false
+  }
+}
