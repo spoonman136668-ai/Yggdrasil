@@ -47,7 +47,7 @@ def screen(payload: bytes) -> dict:
             raise InvalidInput("COMPLEXITY_LIMIT")
         if type(v) is dict:
             keys = {str(k).lower(): value for k, value in v.items()}
-            counts.update(keys)
+            counts.update(keys.keys())
             has_description = any(k in DESCRIPTORS and isinstance(value, str) and len(value.split()) >= 4
                                   for k, value in keys.items())
             if has_description:
