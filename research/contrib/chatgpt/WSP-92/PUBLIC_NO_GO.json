@@ -1,0 +1,86 @@
+{
+  "schema": "wsp92.original-cross-article-public-development-no-go.v1",
+  "protocol_commit": "a6f2824e9241f29034c19f058c59d205d5b6c4fb",
+  "original_source": {
+    "captured_at_commit": "031560aeb2139cd6d2be0d3dbc10fa96b8e2aff9",
+    "source_records_sha256": "d1f9e83236570785bee95ced62d37c546d5f19ed159eb5a361119fb117710ff8",
+    "source_labels_sha256": "ebfa67efd8fc9ccad72759dbc8c7773c6dbaacc2cbdb3d398d4d67490e38c9ab",
+    "official_train_raw_sha256": "3527663986b8295af4f7fcdff1ba1ff3f72d07d61a20f487cb238a6ef92fd955",
+    "official_dev_raw_sha256": "95aa6a52d5d6a735563366753ca50492a658031da74f301ac5238b03966972c9",
+    "license": "CC BY-SA 4.0",
+    "selected_questions": {
+      "train": 128,
+      "public": 24,
+      "reserved": 50
+    },
+    "article_disjoint": true
+  },
+  "original_public_negative": {
+    "run_id": 43577905447,
+    "sha": "bd3534e925b6c8e293de332a36e77d9dfcf7e9f9",
+    "ubuntu": "CI failure because hardcoded positive-only assert; actual public classification NEGATIVE",
+    "windows": "CI failure because hardcoded positive-only assert; actual public classification NEGATIVE",
+    "source_error": false
+  },
+  "requalified_public_negative": {
+    "run_id": 43578201924,
+    "sha": "0a122b3b3370f674f50262afc3977a554711034e",
+    "ubuntu": "ENGINEERING_PASS; PUBLIC_FIXTURE_NEGATIVE",
+    "windows": "ENGINEERING_PASS; PUBLIC_FIXTURE_NEGATIVE",
+    "scientific_result": "PUBLIC_FIXTURE_NEGATIVE",
+    "exact_answers": {
+      "direct_numeric": 0,
+      "fully_trained_logistic": 1,
+      "char_retrieval": 3,
+      "symbolic_cue": 0,
+      "shuffled_label_writer": 0,
+      "random_source_span": 0
+    },
+    "test_questions": 24,
+    "train_source_exact": {
+      "direct_numeric": 75,
+      "fully_trained_logistic": 109,
+      "total": 128
+    },
+    "old_answers_retained": {
+      "candidate": 55,
+      "original_questions": 96
+    },
+    "representable_gold_spans": {
+      "count": 20,
+      "total": 24
+    },
+    "checks": {
+      "passed": 10,
+      "total": 11,
+      "failed": "public_fixture_nontrivial"
+    },
+    "whole_cpu_s": {
+      "ubuntu": 78.849492411,
+      "windows": 116.9375
+    },
+    "source_tamper_controls": "PASS on both platforms",
+    "interpretation": "Direct numeric raw-character context weights did not transfer the learned answer-span mechanism to any of 24 human-written SQuAD public questions despite fitting 75/128 training questions. Conventional unpretrained logistic also generalized poorly at 1/24 while char-retrieval gave 3/24. This falsifies the preset public requirement of >=2/24. No AGI or general language gain; numerical weight editing is not shown to be superior. 20/24 answers are representable by raw candidate enumerator, so missing candidate coverage does not alone explain 0/24."
+  },
+  "final_science": "NO_GO: stop present WSP92 mechanism, no promotion or dev first-use",
+  "reserved_dev_first_use": {
+    "cohort_questions": 50,
+    "status": "UNCONSUMED",
+    "reason": "Public mechanism fails frozen threshold. Do not burn additional first-use labels or retune based on DEV."
+  },
+  "engineering_scope": "Dual-platform focused/source/negative tests qualified on 0a122b3b; mandatory full WSP80-WSP92 + root G29 final regression NOT attempted because the candidate was scientifically rejected at public DEV.",
+  "future_hypothesis": "A distinct, prospectively frozen question-to-evidence compositional routing or explicit source-grounded relational program mechanism is required before reconsidering unconsumed SQuAD DEV. Reuse of this PUBLIC fixture for calibration must be disclosed, not claimed as new independent novelty.",
+  "boundaries": {
+    "main_unchanged": true,
+    "pr_draft": true,
+    "merge": false,
+    "accepted_model": false,
+    "official_loop": false,
+    "protected_science": false,
+    "deploy": false,
+    "paid_api": false,
+    "schedule": false,
+    "new_runner": false,
+    "user_library": false
+  }
+}
