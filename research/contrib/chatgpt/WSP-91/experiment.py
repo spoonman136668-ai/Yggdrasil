@@ -120,7 +120,7 @@ def evaluate(corpus:dict,*,reserved:bool)->dict:
     conventional_training_exact=training_exact(conventional,docs,TRAIN)
     parser=SymbolicParser()
     retrieval=LexicalCue()
-    rng=RandomSpanControl(PROTOCOL["seeds"]["reserved" if reserved else "fixture"])
+    rng=RandomSpanControl(PROTOCOL["protocol"]["seeds"]["reserved" if reserved else "fixture"])
     pool=DEV if reserved else PUBLIC
     queries=questions(pool)
 
