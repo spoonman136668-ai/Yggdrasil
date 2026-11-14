@@ -1,0 +1,51 @@
+name: AAI-07B Windows byte-preserving evidence G29 generated atlas
+on:
+  push:
+    branches: [research/aai07b-learned-memory-associations-20261114]
+    paths: [.github/workflows/aai07b-windows-custody-atlas.yml]
+permissions:
+  contents: write
+jobs:
+  source-locked-atlas:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'AAI-07B refresh generated atlas after Windows evidence fix' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prove source freeze, raw evidence and generated-only update
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = 'ff45068bb66861f02c1ac944e738ea8092492f27'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai07b-windows-custody-atlas.yml'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-07B/prereg.json)" = "$(git rev-parse 10e0ad453454a0f85eafbda1c8618657979810bd:research/contrib/chatgpt/AAI-07B/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-07B/evaluate.py)" = "$(git rev-parse 87aaf5cd3bb26ee60a6525978e34e546e8b9bc34:research/contrib/chatgpt/AAI-07B/evaluate.py)"
+          test "$(git check-attr text -- research/contrib/chatgpt/AAI-07B/primary-original.json)" = 'research/contrib/chatgpt/AAI-07B/primary-original.json: text: unset'
+          test "$(sha256sum research/contrib/chatgpt/AAI-07B/primary-original.json | awk '{print $1}')" = 'a7dc6912854809d188ab0d3fe79c01c8a2e530f2ed0bc20a5171773b4ad4e796'
+          test -z "$(git status --porcelain)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          test "$(git diff --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'AAI-07B generated atlas after evidence-line-ending fix'
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | wc -l | tr -d ' ')" = 3
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-07B -p test_contract.py -v
+          test -z "$(git status --porcelain)"
+          git fetch origin research/aai07b-learned-memory-associations-20261114
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          git push origin HEAD:refs/heads/research/aai07b-learned-memory-associations-20261114
+          echo AAI07B_WINDOWS_BYTE_CUSTODY_G29_COMPANION_PASS
