@@ -1,0 +1,102 @@
+{
+  "schema": "yggdrasil.external-research.aai07b-prereg.v1",
+  "experiment": "AAI-07B",
+  "status": "FROZEN_PRE_SCIENTIFIC_FIRST_USE",
+  "parent_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "context": "AAI-07A draft PR #1034 benchmark admission PASS and isolated Linux+Windows engineering; hand-coded cue==upper is explicitly not learned, so AAI-07B tests reward-conditioned learned association on unchanged official MiniGrid memory environments.",
+  "external": {
+    "repo": "Farama-Foundation/Minigrid",
+    "source_git_commit": "64e1eaec904bc35e7de041167274e2c0dfe541d2",
+    "memory_py_blob": "660b0a1b769948034c87bb421759c2b9a4f24548",
+    "canonical_sha256": "d208b6b0cfb20a8ed00d55a0ea6012697f2a0da0e54e4da7d8378eb1da52df8c",
+    "package_version": "3.2.0",
+    "deps": [
+      "numpy==1.26.4",
+      "gymnasium==1.2.2",
+      "pygame-ce==2.5.8",
+      "networkx==3.4.2"
+    ],
+    "copyright": "Unmodified official upstream, downloaded at exact commit; no redistributed code"
+  },
+  "hypothesis": "An online non-gradient associative memory learned solely from action/reward episodes (no programmed matching relation) can solve held-out MiniGrid Memory episodes and retain this association after cold restart/continued updates. Strong matched-information conventional Beta-table and fully trained categorical logistic baselines may tie or beat it; scientific superiority is not assumed.",
+  "design": {
+    "navigation": "Reuse existing purely observation-based AAI-07P route to read entrance cue and upper branch object; selected up/down is learner decision, NEVER cue==upper or explicit matching relation. No env.unwrapped, hidden simulator state, or mission text. Single cue and upper public 7x7x3 numeric observation only.",
+    "train_env": "MiniGrid-MemoryS11-v0",
+    "train_seeds": {
+      "first": 981000,
+      "n": 48
+    },
+    "dev_env": "MiniGrid-MemoryS11-v0",
+    "dev_seeds": {
+      "first": 982000,
+      "n": 64
+    },
+    "transfer_env": "MiniGrid-MemoryS13Random-v0",
+    "transfer_seeds": {
+      "first": 983000,
+      "n": 64
+    },
+    "continuation_env": "MiniGrid-MemoryS13Random-v0",
+    "continuation_seeds": {
+      "first": 984000,
+      "n": 16
+    },
+    "negative_seeds": {
+      "first": 985000,
+      "n": 64,
+      "env": "MiniGrid-MemoryS13Random-v0"
+    },
+    "mechanical_seeds": [
+      980000,
+      980001,
+      980002,
+      980003
+    ],
+    "original_AAI07A_seeds": "970000..970007 and 971000..971063 and 972000..972063 must never be accessed in AAI-07B",
+    "training": "One deterministic common data-generating policy chooses upper branch by SHA256(seed,'behavior')%2; 48 actual official trials of valid environment actions and terminal success reward. Full single shared ledger (cue public integer category, upper public integer category, chosen branch, actual success boolean) provided unchanged to every candidate and baseline. Do not infer correct action using a hidden simulator label; two-branch complement from reward is a published task invariant, applied equally to all trained methods.",
+    "terminal": "A common score evaluates the learned branch choice on fresh 64 DEV and 64 transfer worlds, with actual official step reward, real termination, action count; no training/reward updates on evaluation splits. Negative applies response shuffle to same training ledger and scores 64 fresh negative worlds, compare proper versus shuffle under identical contexts.",
+    "data_and_compute": "48 true outcome-bearing training episodes, two cue-object types, two upper-object types, one binary terminal decision, max 120 primitive actions per episode. Every baseline uses same ledger, same allowed choices, same visual observations. Logistic is fully trained 2000 epochs with learning rate .25, 4 categorical context one-hot features with intercept; no hidden labels, no pretraining on evaluation cohorts. Standard library numerics, no paid APIs.",
+    "candidate": "Online signed association table indexed by observed cue category and upper-branch category (no equality comparator): each positive outcome supports chosen branch and each failure opposes it by additive +/-1; tie chooses upper. This is a conventional contextual-bandit association estimator, not a novel algorithm.",
+    "matched_strong": "Per-context Laplace/Beta Bernoulli posterior expected reward of upper vs lower, trained on same ledger (can be algebraically equivalent to signed association). No model advantage claims if ties.",
+    "logistic": "Supervised categorical four-context logistic fit 2000 full-batch iterations to inferred winning branch under the shared known two-branch complement; fully trained conventional baseline with matched observations and labels derived only from true trial consequences.",
+    "reactive": "No entrance cue retained, chooses upper for all episodes, same navigation and action availability. This ablates memory and intentionally differs in retained information, not a matched-method comparator.",
+    "negative": "Frozen random.Random(18081) permutation of success outcomes over the same training rows; same inputs and actions; learned candidate then evaluated on disjoint negative worlds.",
+    "persistent_state": "Candidate uses one mutable dict of associative weights, JSON serialized and restored; continue same model training with 16 new official environment trials from disjoint continuation seeds; evaluate frozen DEV/TRANSFER policies before/after only as a metric. This is shared online updating but not conflicting-task/catastrophic interference proof.",
+    "knowledge_boundary": "Cues are numeric object codes defined by upstream observations, not language tokens. Both learner and baselines know categorical feature identity and public navigation policy. They are not told the matching function.",
+    "statistics": "Paired per-seed success/reward/step counts and differences. Exact McNemar p and 1024 world bootstrap resamples seed 18181, paired by evaluation seed. SHA256 receipt all per-world outcomes.",
+    "budget": {
+      "development": 64,
+      "transfer": 64,
+      "negative": 64,
+      "training": 48,
+      "continuation": 16,
+      "bootstrap": 1024,
+      "logistic_epochs": 2000,
+      "primary_first_use_runs": 1,
+      "paid_api_calls": 0
+    }
+  },
+  "thresholds": {
+    "learning_benchmark_admission": "Candidate DEV and TRANSFER success >=.80, candidate improvement against cue-erasure reactive >=.20 in both DEV and TRANSFER with paired 95% bootstrap lower >0, proper candidate minus shuffled candidate negative >=.15, cold restore prediction equality 100%, no information leaks and source pin PASS.",
+    "scientific_superiority": "Candidate minus strongest of fully trained logistic and Beta-table >=.03 on TRANSFER, paired 95% bootstrap lower >0, plus all learning-benchmark-admission conditions, and candidate mean fit+decision cost not more than 1.5x fastest matched baseline. This would be a *candidate* requiring independent outside qualification, not native model approval.",
+    "negative": "Any learning-benchmark admission failure => VALID_NEGATIVE; if learning criteria pass but matched baseline superiority fails => LEARNING_DEMONSTRATED_NOT_SUPERIOR; preserve rather than retune.",
+    "invalid": "Source/seed drift, missing raw episode trace, different training information, terminal goals inferred from privileged env state, nondeterminism, extra rollout, mislabeled negative or changed thresholds => INVALID not negative."
+  },
+  "caveats": [
+    "Task matching mapping is the same upstream rule across training and heldout variants; size/length transfer does NOT represent unseen causal laws",
+    "Known visual/object type schema and hand-coded navigation mean this does not learn navigation or visual representation",
+    "Candidate and Beta are equivalent under uniform priors in deterministic two-choice bandit case; do not claim novelty by outperforming weaker logistic",
+    "Continued same-task learning is not a high-interference or genuinely conflicting-memory task",
+    "No native Yggdrasil, Wingless or Hybrid weights/loop/owner changes, no merge"
+  ],
+  "isolation": {
+    "research_only": true,
+    "owner_acceptance": false,
+    "scientific_promotion": false,
+    "native_model_integration": false,
+    "controller_updates": false,
+    "schedules": false,
+    "paid_api_calls": false
+  },
+  "no_post_result_tuning": true
+}
