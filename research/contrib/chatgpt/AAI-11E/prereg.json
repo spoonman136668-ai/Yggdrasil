@@ -1,0 +1,102 @@
+{
+  "schema": "yggdrasil.contrib.aai11e.posterior-risk-attribution.prereg.v1",
+  "id": "AAI-11E",
+  "phase": "SYNTHETIC_MECHANICAL_DIAGNOSIS_ONLY_NO_NEW_LEARNER",
+  "source_custody": {
+    "parent_pr": 1064,
+    "parent_sha": "56c6fd02d21a005708fa6998f2b3f2d056306f41",
+    "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "parent_prereg_blob": "19633a9328593eb566dfbf0ddec0073b24a5752a",
+    "model_blob": "49f7de063e3577ef8f0b4e42043a24581e6cd09c",
+    "evaluator_blob": "ce807c4fa3b7742b4299580087dc41b68359533e",
+    "world_blob": "88d220e94ccf736e490f20922f1c7f5d3c1d3746",
+    "controls_blob": "b554db7d8d25ae9b6a5f8bffb066181a00b35ffc",
+    "prior_source_run": 43654814640,
+    "prior_final_regression": 43654985848
+  },
+  "question": "On the frozen AAI-11D causal posterior model, does the uncertainty-risk penalty mainly suppress interventions that have helpful actual outcomes, or do it and the unpenalized posterior select similarly effective actions? Is the posterior benefit over MAP associated with improved causal probability calibration?",
+  "conditions": {
+    "fixtures": [
+      "mechanical:alpha",
+      "mechanical:beta",
+      "mechanical:gamma"
+    ],
+    "laws": [
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "budgets": [
+      2,
+      4
+    ],
+    "contexts_per_law_budget": 12,
+    "total_conditions": 24,
+    "total_episodes_per_arm": 288,
+    "arms": [
+      "graph_recent8",
+      "posterior_planner",
+      "risk_calibrated_planner"
+    ],
+    "public_train": "Same original 16 A + 16 B exogenous actual one-action trials, 64 public before/after observations, shared across arms; no phase label to learners.",
+    "challenge": "2 or 4 exogenous real do-action challenges per law, exact original AAI-11D fixture function and source; each arm independently restored.",
+    "evaluation": "Exactly original AAI-11P admitted 12 (x,goal) public contexts per condition. At initial state each actor receives public initial observation. Score initial action/STOP with native unchanged choose(row). Run each actor independently with <=2 actual own interventions and actual self-observed feedback, no counterfactual provided to any actor.",
+    "historical_strict_replay": {
+      "MAP_reward": 2.134027778,
+      "MAP_goal": 0.375,
+      "posterior_reward": 2.189756944,
+      "posterior_goal": 0.40625,
+      "risk_reward": 2.196701389,
+      "risk_goal": 0.388888889,
+      "absolute_tolerance": 0.000001,
+      "abort_on_drift": true
+    }
+  },
+  "diagnostics": {
+    "causal_bit_calibration": "At original frozen AFTER-CHALLENGE checkpoint, evaluate 64 six-bit public input states vs PRIVATE known-law mediator outcomes for each arm. Measure factual probability Brier mean over all x and mediator bits and log-loss with probability clipped to 1e-12/1-1e-12 for scoring only. No labels fed to learner. Include per-mediator breakdown and calibration histogram fixed 5 bins [0,.2),[.2,.4),[.4,.6),[.6,.8),[.8,1].",
+    "posterior_probability_identity": "Posterior and risk arms MUST give exactly identical 3-bit forecast probabilities for each of 64 x inputs at each of 24 after-challenge cold checkpoints. Fail closed if not; only decision policy can differ.",
+    "first_action_decision": "At each of 288 paired public initial states, separately cold restore each method, let it observe the same initial event, and record initial action or STOP. Must be precisely the same initial observation and no private information to learner.",
+    "suppression": "Risk STOP but posterior ACT (risk-suppressed) at shared first decision. Also record posterior STOP but risk ACT (unexpected) and both ACT different first action. Stable model action codes 0..11; STOP=-1.",
+    "suppressed_action_value": "For each risk STOP/posterior ACT, PRIVATE diagnostic-only eval actual one-step result of that posterior-selected action vs public no-action reward and best possible second action after that first action. Report count where one-step strictly helpful, where that first action has two-step positive attainable benefit, their mean benefits, and actual independent completed episode risk minus posterior reward. No private output is given to learner and no extra learner action is executed.",
+    "action_regret": "Aggregate original 288 independent episode rewards for each arm, exact all-three-goal fraction, average action count, oracle minus each achieved terminal reward, paired risk vs posterior wins/loss/ties; no post-result best-arm selection.",
+    "calibration_lift": "Separate MAP vs posterior averaged Brier and log loss on identical source heldout x grids. This is privileged diagnostic-only and NOT proof of unseen-world calibration or scientific transfer.",
+    "decision_categories": "Predeclared categories: SUPPRESSION_WITH_POSITIVE_TWO_STEP_HEADROOM if risk-suppressed count>=3 and >=50% of suppressed first actions have positive two-action available reward over STOP; else MOSTLY_ACTION_REPLACEMENT if both-act-different count>=3 and greater than suppressed count; else LOW_POLICY_DISAGREEMENT. Print all counts and aggregate results regardless of label.",
+    "fixed_metrics": "Print source-only exact JSON with deterministic score/action/calibration digest independent of OS; do not hash wall-time; no uploads or Library artifacts."
+  },
+  "authority": {
+    "new_native_model": false,
+    "change_old_model": false,
+    "change_baseline": false,
+    "science_cohorts": false,
+    "merge": false,
+    "main_edit": false,
+    "github_source_only_test": true,
+    "draft_PR": true,
+    "one_shot_cross_os": true,
+    "full_final_regression": true,
+    "owner_loop": false,
+    "controller_queue_scheduler_runner": false,
+    "paid_API": false,
+    "library_upload": false
+  },
+  "science": {
+    "reserved_DEV": [
+      994000,
+      994015
+    ],
+    "reserved_TRANSFER": [
+      995000,
+      995063
+    ],
+    "reserved_NEGATIVE": [
+      996000,
+      996031
+    ],
+    "used": 0,
+    "first_use_authorized": false,
+    "scientific_success": false
+  },
+  "stop": "This is only a frozen diagnostic. Do not tune AAI-11D posterior odds or lambda after seeing metrics; no new scientific training. A new candidate requires independent preregistration and separate authority for science first use.",
+  "no_post_result_tuning": true
+}
