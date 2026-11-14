@@ -116,7 +116,7 @@ def single_world(seed: int) -> dict:
         "unknown_confident": sum(x is not None for x in unknown),
         "unknown_total": len(unknown),
         "paid_actions": paid_actions,
-        "weight_count": WIDTH * 3,
+        "numeric_state_slots": WIDTH * 6,
         "softmax_epochs_per_stage": SGD_EPOCHS,
         "cold_bitwise_predictions_equal": cold_equal,
         "tamper_rejected": tamper_rejected,
