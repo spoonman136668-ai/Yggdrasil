@@ -92,7 +92,17 @@ class WSP92StructuralTests(unittest.TestCase):
             "source_sha":receipt["source_sha256"],
             "whole_cpu":receipt["whole_process_cpu_ns"],
         },sort_keys=True),flush=True)
-        self.assertEqual(receipt["classification"],"PUBLIC_FIXTURE_FEASIBLE")
+        # A scientifically negative public result is a qualified outcome,
+        # not a failing engineering harness. Do not change thresholds.
+        self.assertIn(receipt["classification"],
+                      ("PUBLIC_FIXTURE_FEASIBLE","PUBLIC_FIXTURE_NEGATIVE"))
+        self.assertEqual(receipt["classification"],
+                         "PUBLIC_FIXTURE_FEASIBLE" if all(receipt["checks"].values())
+                         else "PUBLIC_FIXTURE_NEGATIVE")
+        self.assertEqual(receipt["questions"],24)
+        self.assertEqual(receipt["checks"]["public_fixture_nontrivial"],
+                         receipt["correct_exact"]["direct_numeric"]>=
+                         json.loads((HERE/"prereg.json").read_text())["frozen"]["min_candidate_public_exact"])
 
 if __name__=="__main__":
     unittest.main()
