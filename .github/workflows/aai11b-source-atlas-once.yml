@@ -1,0 +1,102 @@
+name: AAI-11B frozen intervention-contrast source tests and early-stop fixture
+on:
+  push:
+    branches: [research/aai11b-interventional-contrast-20261114]
+    paths: [.github/workflows/aai11b-source-atlas-once.yml]
+permissions:
+  contents: write
+concurrency:
+  group: aai11b-source-once-20261114
+  cancel-in-progress: false
+jobs:
+  source:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'AAI-11B frozen source-only authority-schema correction before dev one-shot' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prereg-before-code, no source drift and pinned strong comparator
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '78df6df5d6774de9ad444cbcaf822345553a88ff'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai11b-source-atlas-once.yml'
+          test "$(git rev-parse ed2ba9b5b7d389c3616c44c425239c4d043e4942^)" = 'c3e2601695579690bf3b3e83b93050018d88725f'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11B/prereg.json)" = '3338bb28dc3a830b654ba76aa8bb3ed5a83d8fff'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11B/prereg.json)" = "$(git rev-parse ed2ba9b5b7d389c3616c44c425239c4d043e4942:research/contrib/chatgpt/AAI-11B/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11B/contrast.py)" = '69ff21daf627feeaaca6661f8f3c8096efbe4de8'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11B/dev.py)" = '05682c4b98747701b779d264bf18d7ee29e67b7f'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11B/test_contrast.py)" = 'a7380f239ea72c13836d8ded21faad2decced4f1'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11A/learner.py)" = '331a97b566d41785be06923a7acc63df6105cffd'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11P/world.py)" = '88d220e94ccf736e490f20922f1c7f5d3c1d3746'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11P/controls.py)" = 'b554db7d8d25ae9b6a5f8bffb066181a00b35ffc'
+          test -z "$(git status --porcelain)"
+          echo AAI11B_FROZEN_PREREG_AND_SAME_GRAMMAR_SOURCE_CUSTODY_PASS
+      - name: Equal public information, action consequence, cold and science-disarm tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-11B -p 'test_*.py' -v
+          if python -B research/contrib/chatgpt/AAI-11B/dev.py --primary >/dev/null 2>&1; then
+            echo AAI11B_FIRST_USE_DISARM_FAILED >&2
+            exit 1
+          fi
+          test -z "$(git status --porcelain)"
+          echo AAI11B_PUBLIC_CAUSAL_PAIR_FOCUSED_TESTS_PASS
+      - name: One pre-frozen synthetic development screen; stop if below existing strongest
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/AAI-11B/dev.py --fixture-admission
+          test -z "$(git status --porcelain)"
+          echo AAI11B_SEQUENTIAL_DEV_CLASSIFICATION_RECORDED_NO_SCIENCE
+  atlas:
+    needs: source
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate exactly the three G29 pinned code atlas artifacts
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '78df6df5d6774de9ad444cbcaf822345553a88ff'
+          test -z "$(git status --porcelain)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          test "$(git diff --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'AAI-11B source-pinned generated-only G29 atlas'
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | wc -l | tr -d ' ')" = 3
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          test "$(git ls-remote origin refs/heads/research/aai11b-interventional-contrast-20261114 | cut -f1)" = "$GITHUB_SHA"
+          git push origin HEAD:refs/heads/research/aai11b-interventional-contrast-20261114
+          echo AAI11B_G29_ATLAS_THREE_FILES_ONLY_PASS
