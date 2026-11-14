@@ -90,7 +90,7 @@ class MG19PreFirstUse(unittest.TestCase):
 
     def test_fully_trainable_recurrent_groups_and_cold_parity(self):
         model=m.Recurrent()
-        before=model.dump()
+        before=json.loads(json.dumps(model.dump(),sort_keys=True))
         initial=json.dumps(before,sort_keys=True)
         for i in range(45):
             x=[[round((i+j+k)%9/10,8) for k in range(m.DIMS)]
