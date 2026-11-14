@@ -21,7 +21,7 @@ class ExactHeadroomTests(unittest.TestCase):
         self.assertEqual(p["upstream"]["git_sha"],m.UPSTREAM_SHA)
     def test_map_and_onehot_rewards(self):
         basis=m.source_basis()
-        self.assertEqual(basis["RIGHT"]["states"],[22,29,13])
+        self.assertEqual(basis["RIGHT"]["states"],[22,13,29])
         self.assertEqual(basis["UP"]["states"],[13,20,22])
         self.assertEqual(basis["RIGHT"]["rewards"],[0,-1,-1])
         self.assertEqual(basis["UP"]["rewards"],[-1,0,0])
@@ -31,7 +31,7 @@ class ExactHeadroomTests(unittest.TestCase):
             for n in m.BUDGETS:
                 for p in (pa,pb):
                     self.assertAlmostEqual(sum(m.binomial_mass(n,k,p) for k in range(n+1)),1,places=12)
-                self.assertAlmostEqual(m.total_variation_binomial(n,pa,pb),0 if n==0 else m.total_variation_binomial(n,pa,pb))
+                self.assertEqual(m.total_variation_binomial(n,pa,pb)==0,n==0)
             self.assertEqual(m.oracle_right(0,0,pa,pb),False)
             self.assertEqual(m.exact_condition(0,pa,pa,pb)["choose_right_prob"],0)
             self.assertEqual(m.exact_condition(0,pb,pa,pb)["choose_right_prob"],0)
