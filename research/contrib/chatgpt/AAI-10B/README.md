@@ -1,0 +1,11 @@
+# AAI-10B — exact-state causal association inference caching
+
+**Frozen protocol first:** `research/contrib/chatgpt/AAI-10B/prereg.json` committed at `373800d13bdb8ba1d149c8b0bd3f2f4c98db824e`, before code. Standalone isolated contributor lane stacked onto immutable AAI-10A [PR #1050](https://github.com/spoonman136668-ai/Yggdrasil/pull/1050), at `64a585010e13519c6290cc8c406154e1f23b9e78`.
+
+AAI-10A has no scientific result, but an independent synthetic pre-first-use resource probe [43632863147](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43632863147) found it **129.10×** (Linux) and **200.84×** (Windows) slower than fastest eligible conventional tabular recent16. That negative is immutable. This is **not retuning AAI-10A**: AAI-10B has its own prereg, code and results.
+
+**Exact optimization hypothesis:** AAI-10A only has eight possible three-bit inputs. Save ephemeral predictions, priors, public-state plans and slot likelihood calls until learned knowledge actually changes. The original frozen learn/update/switch/novelty grammar, public information, tie-breaking, stored memory, serialization and shared planner must remain **semantically identical**, including final decisions. No altered model rule or claimed causal-learning gain.
+
+`test_cached.py` checks exact frozen state and every prediction for every public input across all 128 hand-constructed A/B/C/D prefix updates, exhaustive goals at selected checkpoints, independent cold restored forks, no stale state and invalid private fields. `profile_dev.py` repeats a small 128-public-event and 12-decision synthetic profile three times per OS comparing optimized/old candidates and **all** conventional controls, using real training + checkpoint + action time, reporting model sizes, performance and strongest-eligible control. The resource gate is a predeclared **<=2× fastest eligible matched conventional learner on BOTH OS**. Fail = NO-GO; no scientific cohort consumption or post-result tuning.
+
+No native Yggdrasil/Wingless/Hybrid changes, no owner research loop/controller/runner/queue/scheduler, no merge/deployment, paid API or ChatGPT Library artifacts. Fresh reserved AAI-10A science cohorts remain untouched. Engineering efficiency parity does not demonstrate unfamiliar causal transfer, intelligence or learning.
