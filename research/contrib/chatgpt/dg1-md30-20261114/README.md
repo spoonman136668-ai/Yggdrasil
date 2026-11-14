@@ -154,3 +154,44 @@ baseline, matched whole-process compute, intelligence improvement, or
 scientific superiority. Numeric performance, full CI and cross-OS parity
 must be reported from the actual run, including failures. Do not retune
 frozen hyperparameters after seeing synthetic transfer outcomes.
+
+## Native persistent causal tournament — frozen synthetic comparison
+
+The native candidate in `native_tournament.py` was preregistered in
+`native_tournament_lock.json` at commit
+`242dd9f6c46ca895ec5a7e279a975ea5e980b087` **before** candidate
+source or numerical results. It is an independent non-token, non-gradient,
+persistent physical hypothesis-tournament research mechanism, not a
+reimplementation of the conventional Bayesian probability filter.
+
+- It **shares** the existing 768 universal response signatures with the
+  Bayesian control (same hypothesis information; no privileged real
+  episode graph). It learns *integer* match/contradiction credits from
+  exactly the existing 240 physically charged training episodes. All
+  learners receive the same action consequences, and it never observes
+  a private graph, seed, change flag or future.
+- Its protected two-bank memory keeps stage-0 and stage-1 explanatory
+  hypotheses separately. At a possible unannounced graph change, it
+  recalls the stage-1 bank, preserves earlier high-ranking hypotheses
+  and reopens alternatives contradicted by paid observations. The
+  bounded 32-hypothesis active tournament votes on irreversible actions
+  and chooses an internal diagnostic only when its own expected gain
+  exceeds the *actual* 0.05 physical charge.
+- Two separately frozen ablations test (a) no persistent trained
+  credits and (b) no stage-specific change-aware bank. Cold checkpoint
+  restoration must reproduce identical physical action/reward traces.
+- The already-observed synthetic 5301–5360 cohort is used for
+  reproducibility **only**. The separately frozen **new synthetic**
+  6301–6360 cohort gets a one-shot paired, full-action-cost comparison
+  with all three tournament arms, the previously frozen Bayesian
+  controller and fixed action A. Per-motif comparisons and actual
+  charged physical action counts are retained.
+- These cohorts are not the official MD30 DEV, cold, or registered
+  first use. Passing engineering tests does **not** confer
+  `SCIENTIFIC_PASS`; a positive or null result is retained without
+  changing thresholds, training rules, or controls after outcomes.
+
+Qualification runs the new focused negative controls plus the complete
+54-test inherited suite on Windows and Linux, source-pinned G29 atlas
+acceptance and byte-identical action, memory and checkpoint parity.
+The branch remains draft and isolated from Yggdrasil main/native weights.
