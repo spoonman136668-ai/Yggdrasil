@@ -277,7 +277,12 @@ def choices(models):
 
 def evaluate_phase(models,world,phase,law,suffix):
     count={}
-    decisions=choices(models)
+    decisions={}
+    decision_seconds={}
+    for name,model in models.items():
+        begin=time.perf_counter()
+        decisions[name]=model.choose()
+        decision_seconds[name]=time.perf_counter()-begin
     rows=[]
     for i in range(TRIALS):
         seed=stable_seed(world,"eval",phase,i,suffix)
@@ -297,6 +302,7 @@ def evaluate_phase(models,world,phase,law,suffix):
         "decisions":decisions,
         "episodes":rows,
         "env_seconds":count,
+        "decision_seconds":decision_seconds,
     }
 
 
@@ -311,12 +317,12 @@ def world_record(world,law_map,negative=False):
                            "source_state":result["state"],"next_state":result["next_state"],
                            "reward":result["reward"],"terminal":result["terminal"]})
     assert len(common)==72
+    labels=[x["forward"] for x in common]
+    scrambled=list(labels)
     if negative:
-        labels=[x["forward"] for x in common]
-        random.Random(stable_seed(world,"negative",18181)).shuffle(labels)
-    else:
-        labels=[x["forward"] for x in common]
+        random.Random(stable_seed(world,"negative",18181)).shuffle(scrambled)
     models=new_models()
+    shuffled_model=RegimeCache(2) if negative else None
     phase_results=[]
     model_time={k:0.0 for k in METHODS}
     before_cold=None
@@ -329,6 +335,10 @@ def world_record(world,law_map,negative=False):
                 start=time.perf_counter()
                 model.learn(event)
                 model_time[name]+=time.perf_counter()-start
+            if negative:
+                start=time.perf_counter()
+                shuffled_model.learn(scrambled[k])
+                model_time["shuffled_candidate"]=model_time.get("shuffled_candidate",0.)+(time.perf_counter()-start)
         if phase==1:
             # Check cold deterministic restore at exactly the preregistered end-B state.
             before_cold={name:serial(model) for name,model in models.items()}
@@ -336,7 +346,14 @@ def world_record(world,law_map,negative=False):
             assert before_cold==after_cold
             assert choices(models)==choices({name:restore_model(name,raw)
                                             for name,raw in before_cold.items()})
-        result=evaluate_phase(models,world,phase,plans[phase],"negative" if negative else "original")
+            if negative:
+                assert serial(shuffled_model)==serial(restore_model("candidate",serial(shuffled_model)))
+        evaluated=dict(models)
+        if negative:
+            evaluated["shuffled_candidate"]=shuffled_model
+        result=evaluate_phase(evaluated,world,phase,plans[phase],"negative" if negative else "original")
+        for name,secs in result["decision_seconds"].items():
+            model_time[name]=model_time.get(name,0.)+secs
         phase_results.append(result)
     assert before_cold==after_cold
     return {"world":world,"negative":negative,"common_train":common,
@@ -349,7 +366,7 @@ def world_record(world,law_map,negative=False):
 def cohort(seeds,laws,negative=False):
     worlds=[world_record(seed,laws,negative) for seed in seeds]
     stats={}
-    for name in METHODS:
+    for name in list(METHODS)+(["shuffled_candidate"] if negative else []):
         rewards=[sample[name]["reward"]
                  for world in worlds for phase in world["phase_results"]
                  for sample in phase["episodes"]]
@@ -415,18 +432,20 @@ def main():
     diff=round(transfer["candidate"]["reward"]-transfer[controls]["reward"],8)
     ci=paired_ci(transfer_rows,"candidate",controls)
     ablated=round(transfer["candidate"]["reward"]-transfer["no_alt_memory"]["reward"],8)
-    shuffled=round(transfer["candidate"]["reward"]-neg["candidate"]["reward"],8)
-    # Negative and proper cohorts have disjoint world seeds; show a descriptive
-    # control gap, not a paired causal CI.
+    shuffled=round(neg["candidate"]["reward"]-neg["shuffled_candidate"]["reward"],8)
+    negative_ci=paired_ci(neg_rows,"candidate","shuffled_candidate")
+    # Proper and shuffled negative arms share identical official world seeds,
+    # train episode contexts and evaluation RNG; only scrambled feedback differs.
     gains={
         "candidate_minus_strongest_transfer_reward":diff,
         "candidate_minus_no_alt_memory_reward":ablated,
-        "candidate_transfer_minus_shuffled_negative_reward":shuffled,
+        "proper_minus_shuffled_negative_reward":shuffled,
+        "paired_negative_ci":negative_ci,
         "paired_transfer_ci_vs_strongest":ci,
     }
     fastest=min(transfer[name]["mean_learning_seconds"] for name in MATCHED)
-    # Logistic fits at phase checkpoint. All measured values are development
-    # learner update time only; no claim about whole-process cost.
+    # Model update plus decision-time compute is measured; common official
+    # environment wall time is excluded and no whole-process gain is claimed.
     cost_ratio=transfer["candidate"]["mean_learning_seconds"]/max(1e-9,fastest)
     checks={
         "positive_scientific_gain":diff>=.04 and ci[0]>0.,
@@ -458,7 +477,7 @@ def main():
         "candidate_gains":gains,
         "checks":checks,
         "candidate_update_time_ratio_to_fastest_nonoracle":round(cost_ratio,8),
-        "negative_cohort_is_disjoint_unpaired":True,
+        "negative_cohort_worlds_disjoint_from_transfer_but_paired_within_negative":True,
         "all_worlds_sha256":digest,
         "world_records":worlds,
         "science_limitations":"Fixed known map/prefix, experimenter-controlled A-B-A stochastic laws, simple binary forward/no-forward features, real outcomes and cached Beta counts. KnownLawBayes oracle has extra prior information and is not a matched control. No native model or unfamiliar environment transfer. Independent qualification required.",
