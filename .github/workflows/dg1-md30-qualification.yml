@@ -147,7 +147,7 @@ jobs:
           # for exact equality across distinct Windows and Linux machines.
           q={k:v for k,v in p.items() if k != "whole_process_fit_cpu_seconds"}
           Path("md30-bayes-parity.json").write_bytes(
-              (json.dumps(q,sort_keys=True,separators=(",",":"),ensure_ascii=True)+"\\n").encode("utf-8"))
+              (json.dumps(q,sort_keys=True,separators=(",",":"),ensure_ascii=True)+chr(10)).encode("utf-8"))
           print("MD30_CHARGED_BAYESIAN_TOY_CONTROL_PASS")
           print("MD30_BAYES_OFFICIAL_FIRST_USE_NOT_EXECUTED")
           print("MD30_TOY_REWARD:",p["toy_mean_net_utility"])
