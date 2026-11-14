@@ -173,7 +173,7 @@ def one_branch(world,laws,after_B,marker,condition,budget):
     challenge=[]
     oracle=KnownLawOracle(laws["A"][0],laws["B"][0],prior=.2)
     for i in range(budget):
-        obs=official_episode(law,seed_of(world,"challenge",condition,i),2)
+        obs=official_episode(law,seed_of(world,"challenge",i),2)
         update_all(models,obs["forward"],costs)
         oracle.learn(obs["forward"])
         challenge.append(public_evidence(obs))
