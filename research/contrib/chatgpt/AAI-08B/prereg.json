@@ -1,0 +1,141 @@
+{
+  "schema": "yggdrasil.external-research.aai08b-prereg.v1",
+  "experiment_id": "AAI-08B",
+  "phase": "FROZEN_PROTOCOL_AND_ENGINEERING_ONLY; NO SCIENTIFIC FIRST_USE AUTHORIZED",
+  "user_authority_scope": "Prior explicit approval was solely AAI-08A single frozen first use; AAI-08B is separate, and is not authorized to consume scientific first-use cohorts.",
+  "parent_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "basis": {
+    "frozen_negative": "AAI-08A draft PR #1041 exact SHA 869b70f7821cd49221e22429a31bf763a4100357; single science first use 43617835001; VALID_NEGATIVE_NO_INTEGRATION; final Windows/Linux 54/54+4/4 G29 PASS",
+    "original_result_sha256": "ac27b3230a325b2d1d10be1e2798cf5340ecd76856f3e51eae9e4162d7138f59",
+    "old_evaluator_git_blob": "a372635b843e285d2b37f5639b73ff44fd2fc0b7",
+    "posthoc_diagnostic": "Original 64 transfer worlds: 21 ended with one regime slot, 16 missed return A, of which 10 had one slot and 6 had two; recent missed only 4. Candidate predictions independently reproduced without new NS-Gym episodes. AAI-08A provided 24 returned-A probes before decision, confounding memory retrieval with relearning.",
+    "diagnostic_comment": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1041#issuecomment-6881530231"
+  },
+  "hypothesis": "An old regime's learned consequences may be more useful after a hidden return when new intervention evidence is scarce. This successor falsifies that claim with balanced A-return versus B-continues counterfactuals, source-preserved AAI-08A cache, strongest matched conventional recency and prior-aware oracle, and explicit stored-model retrieval measurements.",
+  "primary_goal": "Identify whether an external NS-Gym recurrence benchmark genuinely distinguishes model retrieval from repeated relearning, before developing another mechanism.",
+  "benchmark": {
+    "source_repo": "scope-lab-vu/ns_gym",
+    "git_sha": "127df4b714fe4fcf680721d8e9278a96090acd7e",
+    "bridge_blob": "02415d65ff8a0c419d32f274e2669f9e54e8d29f",
+    "wrapper_blob": "cd94311a4d312b9d8c35b7719207020150caa300",
+    "python": "3.12",
+    "deps": [
+      "numpy==1.26.4",
+      "gymnasium[mujoco]==1.2.2",
+      "scipy==1.15.3",
+      "PyYAML==6.0.2",
+      "mujoco==3.3.7",
+      "pygame==2.6.1"
+    ],
+    "observations": "Public state, chosen action, public next state, actual scalar reward, termination. No wrapper env_change/delta_change, info Ground Truth Env Change, env.unwrapped, hidden P distributions or labels passed to learners.",
+    "rng": "Serial, one episode at a time: save process-global np.random RandomState, SHA256 seeded episodes, env construction/reset/step then close and restore state. Reset seed alone does not guarantee Bridge RNG custody.",
+    "isolation": "No concurrent global NumPy RNG consumers; same seed reused across compared independent forks and actions. No paid APIs or native model changes."
+  },
+  "protocol": {
+    "cohorts": {
+      "mechanical_reserved": {
+        "first": 899000,
+        "count": 4
+      },
+      "dev": {
+        "first": 894000,
+        "count": 16
+      },
+      "transfer": {
+        "first": 895000,
+        "count": 64
+      },
+      "negative": {
+        "first": 896000,
+        "count": 32
+      }
+    },
+    "old_science_exclusion": "AAI-08A 891000..891031 / 892000..892063 / 893000..893031 and all AAI-08P 996xxx and AAI-08A mechanical 898xxx are excluded",
+    "prehistory": "Per world, train A for 24 official RIGHT do-interventions and B for 24 official RIGHT do-interventions. No experimenter-provided boundary marker to any learner. The same mutable model learns sequentially; capture source-only state after A and after B.",
+    "challenge": "After B, fork each frozen learned model into independent counterfactual continuing-world branches: either law A RETURNS or law B CONTINUES, with identical prehistory; challenge identity hidden from all methods. Forking clones state only once at B and is NOT an independent model retrain.",
+    "budgets": [
+      0,
+      1,
+      2,
+      4,
+      8
+    ],
+    "interventions": "At each budget N, give every method exactly N additional public RIGHT action-consequence observations under the hidden challenge law, with identical data and actions in a branch. Evaluate one independent real official environment action (RIGHT or UP chosen by learner) without updating weights. A model must choose using new observations, no oracle label or test seed.",
+    "law_families": {
+      "dev": {
+        "A": [
+          0.72,
+          0.18,
+          0.1
+        ],
+        "B": [
+          0.18,
+          0.72,
+          0.1
+        ]
+      },
+      "transfer": {
+        "A": [
+          0.63,
+          0.23,
+          0.14
+        ],
+        "B": [
+          0.23,
+          0.63,
+          0.14
+        ]
+      }
+    },
+    "controls": {
+      "candidate": "COPY the ORIGINAL AAI-08A RegimeCache(2) update equations and frozen BLOCK=5, THRESHOLD=ln3, without posthoc tuning. All learning data and fork protocol identical.",
+      "one_slot": "Original unchanged RegimeCache(1) no alternate memory ablation",
+      "recent": "Original matched Beta recent-window 8 with exactly same prehistory and challenge data",
+      "recent4": "Conventional Beta recent-window 4 (frozen)",
+      "recent16": "Conventional Beta recent-window 16 (frozen)",
+      "stationary": "Conventional fully trained all-history Beta, no forgetting",
+      "logistic": "Original fully fit intercept logistic with 1200 training epochs on the same cumulative common trials; report cost",
+      "always_right": "No-feedback reactive baseline",
+      "oracle": "Known-law Bayesian two-mode HMM with exact public experimenter A/B probabilities and prespecified hazard 0.05; a domain-informed prior, NOT matched baseline; separately reported",
+      "negative": "Permute the 48+N observed Boolean consequences globally via deterministic hash seed before giving them to an identical candidate, with same count but no temporal association. Only on disjoint negative cohort."
+    },
+    "fairness": "All nonoracle methods have same prehistory/challenge observations, executed RIGHT probes, environment action availability, call order, and downstream actual official rewards. Every model consumes the same N new observations; no phase labels, hidden probability, changed-flag, test rewards or oracle targets supplied. Candidate capacity 2 versus recent window 4/8/16 explicitly report memory bytes, do not claim matched capacity.",
+    "identifiability": "Zero-probe return vs hold has identical learner-visible histories; no method can infer the challenge from data. At N>0 compare balanced return/hold and both actions. Do not count 0-probe success as evidence of memory.",
+    "evaluation": "For each world and budget evaluate both mutually exclusive counterfactual branches from identical after-B checkpoint, using fresh same-seed official reward episodes. This is a paired counterfactual experiment; within each branch a single model continues from A/B prehistory without reset.",
+    "report": "DEV and TRANSFER at all five budgets, both return/hold conditions: official mean reward, fraction safe, A-vs-B decision accuracy, per-world paired gain candidate versus strongest baseline and one-slot, 95% bootstrap CI with 1024 draws and seed 28081; model slot count, source-model identity at after-A/B and decision time, number of successful old-slot retrievals; model and end-to-end environment wall time, serialized state bytes and maximum slots; cold JSON equivalence, deterministic source receipt.",
+    "budget": "16 DEV and 64 TRANSFER worlds, 32 negative worlds, 48 prehistory probes per world, max 8 challenge probes per fork, 2 conditions × 5 budgets × 1 heldout official evaluation per policy, Python stdlib+official pinned deps, 30-minute CPU limit, no paid APIs.",
+    "negative_controls": [
+      "Balanced A-return vs B-stays (identifiability/control for always predicting A)",
+      "0 probes = no new observable information (no return claim)",
+      "One-slot cache, stationary Beta, all recency lengths, properly fully trained logistic, oracle labeled separately",
+      "Shuffled outcomes on disjoint negative cohort",
+      "Common action sequence / same reward-generating official environment, no hidden notifications",
+      "Cold serialize exactly after B and restore to resume both distinct challenges"
+    ],
+    "statistical_primary": "TRANSFER A-return at N=2 and N=4 jointly: independently prespecified aggregate average per-world official reward across two budgets. Compare candidate to *best transfer-scoring* of recent4, recent8, recent16, stationary and fully trained logistic; Bayesian oracle reported separately. Also evaluate B-stays N=2 and N=4 to reject always-switch-to-A policies.",
+    "paired_bootstrap": "1024 paired resamplings of the 64 world IDs with RNG seed 28081; resample world as unit across all challenge budgets and model actions, never episodes as iid.",
+    "predeclared_tests": {
+      "benchmark_admission": "At N=2 or 4, a prereg conventional changed-dynamics predictor or prior-aware oracle must beat its own N=0 counterpart by >=0.08 reward in A-return without losing >0.03 in B-stays, paired CI lower>0. Report if no identifiable headroom; do not spend model first use on same inadequate challenge again.",
+      "learning_candidate": "Candidate A-return aggregate 2/4 reward minus best nonoracle >=+0.04 AND 95% paired CI lower >0; B-continues candidate reward must be >= strongest nonoracle minus 0.02; A-return candidate 2/4 success >=0.80; at least one actual stored-A slot recorded as the active retrieved slot on >=60% of A-return N=2/4 worlds and candidate vs one-slot reward >=+0.04 CI lower>0; correct negative shuffle gap >=0.10; exact cold restore; deterministic receipts; full model-side cost <=2x fastest matched, whole process cost reported. If all pass, mark candidate unqualified, not scientifically novel/native.",
+      "negative": "Any sound failed frozen threshold => VALID_NEGATIVE. No post-result tuning. If benchmark admission fails classify HEADROOM_INADEQUATE_NO_PROMOTION regardless learner scores.",
+      "invalid": "Source drift, hidden shift labels, consequence data mismatch between learners, loss of A/B balance, challenge branches with different prehistory, changed prior or budget after first-use, nondeterminism, incomplete original records => INVALID_PROTOCOL rather than negative."
+    },
+    "limitations": "The upstream Bridge map, three slip primitives and external experimenter A/B pairs are known to the environment; true unseen causal physics/independent foundation is not established. No copied native Yggdrasil architecture. Return regime identity hidden; no zero-probe inference from silence. Use prior single-first-use result only as historical design motivation, not tune on original transfer outcomes."
+  },
+  "source_qualification": {
+    "gate1": "Preregistration commit before any AAI-08B evaluator, source, seeds used.",
+    "gate2": "Source-only, deterministic synthetic mechanical tests and reserved official environment probes on both OS; no science seed consumption.",
+    "gate3": "Full original-repository and focused Windows+Linux regression on exact candidate SHA; code atlas source pinned, pure generated companion.",
+    "gate4": "Only separately authorized AAI-08B one-shot science with unchanged prereg, source and first-use seeds; separate acceptance remains outside scope."
+  },
+  "authority": {
+    "external_contributor_research_only": true,
+    "first_use_authorized": false,
+    "merge_authorized": false,
+    "owner_acceptance": false,
+    "native_model_integration": false,
+    "controller_or_scheduler_changed": false,
+    "paid_api": false
+  },
+  "no_post_primary_tuning": true
+}
