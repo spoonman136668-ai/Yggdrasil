@@ -155,3 +155,47 @@ jobs:
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           python scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"
+
+  wide-first-dev-stress:
+    needs: [dev-fixtures]
+    if: "github.event.head_commit.message == 'ci(wsp101): one-shot huge-first association DEV stress' && github.run_attempt == 1 && needs.dev-fixtures.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    concurrency:
+      group: wsp101-huge-first-association-dev
+      cancel-in-progress: false
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify prior science custody, first design lock and original-first-use fence
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 704d7d876ca1fea5a709a3614fd2afb31b951025 HEAD
+          git merge-base --is-ancestor 38ff83105cb019ae77d1fc391020a390e1d7acee HEAD
+          git diff --exit-code a24c6ec7d23e56b6462dcf43cbd4a72256a35ff3 HEAD -- research/contrib/chatgpt/WSP-98
+          test ! -f research/contrib/chatgpt/WSP-101/PUBLIC_PASS.json
+          test ! -f research/contrib/chatgpt/WSP-101/RESERVED_PASS.json
+          test -z "$(git status --porcelain)"
+      - name: One-shot maximal 64x64x4096 direct-write association capacity stress
+        run: python research/contrib/chatgpt/WSP-101/wide_stress.py
+      - name: Verify no original first use or changed artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test ! -f research/contrib/chatgpt/WSP-101/PUBLIC_PASS.json
+          test ! -f research/contrib/chatgpt/WSP-101/RESERVED_PASS.json
+          test -z "$(git status --porcelain)"
