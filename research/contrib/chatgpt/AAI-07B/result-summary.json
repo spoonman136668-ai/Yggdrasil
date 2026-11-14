@@ -1,0 +1,174 @@
+{
+  "classification": "LEARNING_DEMONSTRATED_NOT_SUPERIOR",
+  "cohorts": {
+    "dev": {
+      "beta": {
+        "mean_actions": 18.390625,
+        "mean_reward": 0.97264204,
+        "n": 64,
+        "success": 1
+      },
+      "direct": {
+        "mean_actions": 18.390625,
+        "mean_reward": 0.97264204,
+        "n": 64,
+        "success": 1
+      },
+      "logistic": {
+        "mean_actions": 18.390625,
+        "mean_reward": 0.97264204,
+        "n": 64,
+        "success": 1
+      },
+      "reactive": {
+        "mean_actions": 17.453125,
+        "mean_reward": 0.5175594,
+        "n": 64,
+        "success": 0.53125
+      }
+    },
+    "negative": {
+      "proper": {
+        "mean_actions": 17.078125,
+        "mean_reward": 0.98181028,
+        "n": 64,
+        "success": 1
+      },
+      "shuffled": {
+        "mean_actions": 17.171875,
+        "mean_reward": 0.41440274,
+        "n": 64,
+        "success": 0.421875
+      }
+    },
+    "transfer": {
+      "beta": {
+        "mean_actions": 16.78125,
+        "mean_reward": 0.98212648,
+        "n": 64,
+        "success": 1
+      },
+      "direct": {
+        "mean_actions": 16.78125,
+        "mean_reward": 0.98212648,
+        "n": 64,
+        "success": 1
+      },
+      "logistic": {
+        "mean_actions": 16.78125,
+        "mean_reward": 0.98212648,
+        "n": 64,
+        "success": 1
+      },
+      "reactive": {
+        "mean_actions": 15.6875,
+        "mean_reward": 0.44548632,
+        "n": 64,
+        "success": 0.453125
+      }
+    }
+  },
+  "cold_restore_exact": true,
+  "continuation_episodes": 16,
+  "continued_shared_model_stable": true,
+  "duration_seconds": 1.500162,
+  "fit_seconds": {
+    "beta": 0.00001914,
+    "direct": 0.00001727,
+    "logistic": 0.10761794
+  },
+  "gaps": {
+    "dev_direct_minus_reactive": 0.46875,
+    "negative_proper_minus_shuffled": 0.578125,
+    "transfer_direct_minus_reactive": 0.546875,
+    "transfer_direct_minus_strongest": 0
+  },
+  "integration": "NONE",
+  "learning_checks": {
+    "cold_restore": true,
+    "continued_model_retains_rule": true,
+    "dev_ablation_gap": true,
+    "dev_min_success": true,
+    "dev_paired_ci_positive": true,
+    "negative_shuffle_ablation": true,
+    "transfer_ablation_gap": true,
+    "transfer_min_success": true,
+    "transfer_paired_ci_positive": true
+  },
+  "limitations": "All methods know categorical observation types and task is the same equality-based goal in both environments; navigation is scripted. The direct association equals a standard Beta-table decision under these data and is not a new learning algorithm. No unknown dynamics or conflicting-task interference was measured. No native model changed.",
+  "paired_bootstrap_95": {
+    "dev_direct_vs_reactive": [
+      0.34375,
+      0.59375
+    ],
+    "negative_proper_vs_shuffled": [
+      0.453125,
+      0.703125
+    ],
+    "transfer_direct_vs_reactive": [
+      0.4375,
+      0.671875
+    ],
+    "transfer_direct_vs_strongest": [
+      0,
+      0
+    ]
+  },
+  "post_continuation_model_policy": {
+    "beta": [
+      true,
+      false,
+      false,
+      true
+    ],
+    "direct": [
+      true,
+      false,
+      false,
+      true
+    ],
+    "logistic": [
+      true,
+      false,
+      false,
+      true
+    ]
+  },
+  "pre_continuation_model_policy": {
+    "beta": [
+      true,
+      false,
+      false,
+      true
+    ],
+    "direct": [
+      true,
+      false,
+      false,
+      true
+    ],
+    "logistic": [
+      true,
+      false,
+      false,
+      true
+    ]
+  },
+  "prereg_commit": "10e0ad453454a0f85eafbda1c8618657979810bd",
+  "schema": "yggdrasil.aai07b.reward-trained-memory.v1",
+  "serialized_inference_bytes": {
+    "beta": 52,
+    "direct": 38,
+    "logistic": 96
+  },
+  "source_environment_commit": "64e1eaec904bc35e7de041167274e2c0dfe541d2",
+  "strongest_conventional": "beta",
+  "superiority_checks": {
+    "all_learning_checks": true,
+    "beats_strongest_trained_method": false,
+    "paired_ci_superior": false,
+    "training_time_ratio": true
+  },
+  "training_episodes": 48,
+  "world_records_sha256": "03fe2f603272bb6040a7607a872847c3624f49d47ede4b98a06448adf5d406a5"
+}
