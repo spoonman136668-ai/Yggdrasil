@@ -1,4 +1,4 @@
-name: QTR-01 F04 Semantic Metadata Admission
+name: QTR-01 F05 Interpreted Source Admission
 on:
   push:
     branches:
@@ -8,7 +8,7 @@ on:
 permissions:
   contents: read
 jobs:
-  metadata-admission:
+  metadata-availability:
     if: github.repository == 'spoonman136668-ai/Yggdrasil'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
@@ -19,9 +19,9 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: "3.12"
-      - name: Frozen fixture controls, no source labels consumed
-        run: python -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_semantic_preflight.py' -v
-      - name: Inspect only bounded pinned public SAE feature-list metadata
-        run: python research/contrib/chatgpt/QTR-01/semantic_preflight.py --pinned-source-readonly
-      - name: Confirm no checkout modifications
+      - name: Offline negative controls from frozen F05 source gate
+        run: python -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f05_probe.py' -v
+      - name: Two bounded metadata GETs, no model inference, no training text exported
+        run: python research/contrib/chatgpt/QTR-01/f05_probe.py --two-preregistered-reads
+      - name: Confirm checkout clean
         run: git diff --exit-code
