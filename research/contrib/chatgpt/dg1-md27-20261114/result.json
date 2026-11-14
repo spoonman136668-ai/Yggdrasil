@@ -1,0 +1,102 @@
+{
+  "schema": "yggdrasil.dg1-md27-toy-result.v1",
+  "experiment_id": "DG1-MD27-20261114",
+  "frozen_prereg_sha": "148e20fedcea143344a9c596dd84d7ebe8fa6c93",
+  "measured_code_sha": "7b094075d3c0b22a1c6352acf45268687e60c1b2",
+  "measured_tree_sha": "0694ee26f26f4dc9530b4ef4a1aaf415d4423fa0",
+  "stage": "TOY_PREFIRSTUSE",
+  "classification": "TOY_READY_FOR_FURTHER_QUALIFICATION",
+  "scientific_novelty": "NOT_DEMONSTRATED_STRONG_TRAINED_FACTORIZED_MODEL_TIES",
+  "registered_science": "NOT_RUN_OR_QUALIFIED",
+  "native_model_changed": false,
+  "run_id": 43587477914,
+  "run_status": "PASS_DUAL_OS_TOY_AND_TRAINING_TRACE_PARITY",
+  "toy_gates": {
+    "all_controls_trained": true,
+    "candidate_goals": true,
+    "charged_action_ledger": true,
+    "cold_checkpoint_and_trace": true,
+    "joint_utility_advantage": true,
+    "no_probe_utility_advantage": true,
+    "oracle_noninferiority": true,
+    "paired_goal_wins": true,
+    "trained_factorized_noninferiority": true,
+    "trainer_physical_coverage": true
+  },
+  "teacher": {
+    "episodes": 240,
+    "charged_actions": 480,
+    "counts_per_context": {
+      "(0, 0)": 80,
+      "(1, 0)": 80,
+      "(1, 1)": 80
+    },
+    "sha256": "e5973ce6d64db9db61b897064dcab6af004400af699b2495040ae8d3b43b93c9"
+  },
+  "heldout": {
+    "episodes_per_arm": 24,
+    "context_unseen": [
+      0,
+      1
+    ],
+    "scores": {
+      "causal_composition": {
+        "actual_probe_actions": 24,
+        "charged_steps": 48,
+        "episodes": 24,
+        "mean_utility": 0.89,
+        "official_goals": 24
+      },
+      "no_probe": {
+        "actual_probe_actions": 0,
+        "charged_steps": 24,
+        "episodes": 24,
+        "mean_utility": 0.38666667,
+        "official_goals": 14
+      },
+      "oracle_public": {
+        "actual_probe_actions": 24,
+        "charged_steps": 48,
+        "episodes": 24,
+        "mean_utility": 0.89,
+        "official_goals": 24
+      },
+      "probe_then_fixed": {
+        "actual_probe_actions": 24,
+        "charged_steps": 48,
+        "episodes": 24,
+        "mean_utility": -0.51,
+        "official_goals": 0
+      },
+      "trained_factorized_mle": {
+        "actual_probe_actions": 24,
+        "charged_steps": 48,
+        "episodes": 24,
+        "mean_utility": 0.89,
+        "official_goals": 24
+      },
+      "trained_joint_lookup": {
+        "actual_probe_actions": 24,
+        "charged_steps": 48,
+        "episodes": 24,
+        "mean_utility": -0.51,
+        "official_goals": 0
+      },
+      "trained_logistic": {
+        "actual_probe_actions": 24,
+        "charged_steps": 48,
+        "episodes": 24,
+        "mean_utility": -0.51,
+        "official_goals": 0
+      }
+    },
+    "paired_success_wins_over_joint_lookup": 24,
+    "net_utility_margin_over_lookup": 1.4,
+    "net_utility_margin_over_no_probe": 0.50333333,
+    "net_utility_margin_over_strong_factorized": 0,
+    "net_utility_margin_over_scripted_ceiling": 0
+  },
+  "cold_checkpoint_and_full_trace_parity": true,
+  "original_registered_seeds_executed": false,
+  "conclusion": "A paid physical probe identifies causally distinct hidden regimes; the explicit multiplicative memory generalizes to an unseen wiring combination, unlike joint lookup and non-interventional controls, but a conventional fully trained factorized maximum-likelihood model and scripted ceiling match it exactly. This is a validated diagnostic task and structural transfer developer signal, not a new intelligence mechanism or native substrate improvement."
+}
