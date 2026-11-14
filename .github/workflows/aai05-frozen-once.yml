@@ -89,3 +89,47 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 # AAI-05 one-shot arm; frozen source and prereg not modified
+
+  generated-atlas-companion:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.ref == 'refs/heads/research/aai05-causal-motif-cold-memory-20261114' &&
+      github.event.head_commit.message == 'AAI-05 generated atlas one-shot' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Source-locked G29 generated-only atlas
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai05-frozen-once.yml'
+          test -z "$(git status --porcelain)"
+          git merge-base --is-ancestor d417e2aff50db08d2b12af7d02ced094d17983cc HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-05/run.py)" = "$(git rev-parse cbfd611d173fee28070b5cf05c85765ad4ccd4c1:research/contrib/chatgpt/AAI-05/run.py)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-05/prereg.json)" = "$(git rev-parse d417e2aff50db08d2b12af7d02ced094d17983cc:research/contrib/chatgpt/AAI-05/prereg.json)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          test "$(git diff --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'AAI-05 generated G29 atlas companion only'
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | wc -l | tr -d ' ')" = 3
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git fetch origin research/aai05-causal-motif-cold-memory-20261114
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          git push origin HEAD:refs/heads/research/aai05-causal-motif-cold-memory-20261114
+          echo AAI05_ATLAS_GENERATED_COMPANION_PASS
