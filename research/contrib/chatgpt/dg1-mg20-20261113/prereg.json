@@ -1,0 +1,129 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "DG1-MG20-20261113",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can a token-free partially observable online causal-map policy use real action consequences to achieve more official MiniGrid goal rewards in unseen layouts/families than independently trained conventional policies and a strong non-learning goal-aware explorer, with cold retention after interference?",
+  "hypothesis": "After observing identical official MiniGrid behavior trajectories, an online episodic causal-map navigator will achieve at least 0.15 higher mean official goal-completion rate than every preregistered trained and nonlearning control in BOTH new Empty-8x8 layouts and DynamicObstacles-6x6 environments, without failure of cold retained performance, while recording actual paid decisions and strictly isolating holdout rewards.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "pr": 1004,
+      "sha": "30e8a4b750f45501aaf65d08e33fa753fdc4e88d",
+      "science": "VALID_MIXED_DEV_PRIMARY_NO_GO",
+      "note": "Prior MG19 action-consequence forecasting on genuine MiniGrid failed against zero-learning persistence; MG20 explicitly changes target to official reward and actual chosen actions. MG19 original seed identities and source remain untouched."
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/dg1-mg20-20261113/**",
+    ".github/workflows/dg1-mg20-qualification.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "inputs": [
+    {
+      "name": "Farama MiniGrid simulator",
+      "version": "3.2.0",
+      "source": "https://github.com/Farama-Foundation/Minigrid",
+      "license": "MIT",
+      "integrity": "Exact installed wheel provenance and package metadata captured before registered use via Python pip freeze and SHA-256 in Actions; no unverified package hash asserted here."
+    },
+    {
+      "name": "Gymnasium simulator interface",
+      "version": "1.4.0",
+      "source": "https://github.com/Farama-Foundation/Gymnasium",
+      "license": "MIT"
+    },
+    {
+      "name": "NumPy required by simulator",
+      "version": "2.3.4"
+    },
+    {
+      "name": "Frozen source-family/episode/action manifest",
+      "sha256": "c51855a9ab42e2bd5da848cd7eaa0db342fcf167dffa4d3237802d12d1096cff",
+      "source": "Canonical sorted-key compact JSON with exact manifest identity values; identical 300-episode/5-arm budget and source names precommitted."
+    }
+  ],
+  "frozen_design": {
+    "seed_ranges": {
+      "train": "730001–730024 inclusive on each of two train envs (48 distinct episodes)",
+      "interference": "740001–740012 inclusive on DoorKey-6x6 (12 shared episodes)",
+      "cold": "750001–750012 inclusive evaluated before and after interference per policy (24x5)",
+      "unseen_size": "760001–760012 inclusive Empty-8x8 per policy (12x5)",
+      "unseen_family": "770001–770012 inclusive Dynamic-Obstacles-6x6 per policy (12x5)"
+    },
+    "training_environments": [
+      "MiniGrid-Empty-5x5-v0",
+      "MiniGrid-Empty-6x6-v0"
+    ],
+    "interference_environment": "MiniGrid-DoorKey-6x6-v0",
+    "cold_environment": "MiniGrid-Empty-6x6-v0",
+    "unseen_size_environment": "MiniGrid-Empty-8x8-v0",
+    "unseen_family_environment": "MiniGrid-Dynamic-Obstacles-6x6-v0",
+    "episode_cap": 128,
+    "budget": "48 training + 12 interference common physical trajectories + (12 cold-before + 12 cold-after + 12 unseen-size + 12 unseen-family) * 5 policy arms = 300 independent episodes, <=38,400 physically charged env.step calls, fewer on terminal; no per-arm replayed training simulator steps.",
+    "action_interface": "Action indices 0=left,1=right,2=forward,3=pickup,5=toggle read from published MiniGrid action interface; every arm receives only actual official partial 7x7x3 local image, direction, last action and reward/termination after its action. Never inspect hidden agent position, grid map, env.unwrapped, oracle planner, agent path, mission text or evaluator goal state. No future observation available when deciding.",
+    "candidate": "Non-transformer, non-token coordinate-aligned online topological memory using public egocentric pixel grid, public direction and action-consequence-derived dead-reckoning; fixed bounded 256-cell working map per episode, learned cross-episode passability counts for public object categories (only training updates), shortest known-path to visually observed goal, frontier exploration for unseen areas. Absolutely no hidden world coords or goal locations. Reset ephemeral map per episode.",
+    "controls": [
+      {
+        "arm": "sham_map",
+        "detail": "Exactly the same capacity, online observation and implementation, but spatial evidence deliberately scattered deterministically during storage; cross-episode passability updates preserved."
+      },
+      {
+        "arm": "reactive",
+        "detail": "Strong non-learning goal-visible greedy exploration using current partial image and deterministic seeded wall avoidance, no map."
+      },
+      {
+        "arm": "tabular_q",
+        "detail": "Fully trained off-policy tabular Q learner with frozen feature abstraction from current image, direction, front cell and visible goal, all observed shared training rewards, gamma 0.95, learning rate 0.2; retains online learned Q values; uses reactive fallback when Q tied."
+      },
+      {
+        "arm": "recurrent_imitation",
+        "detail": "Fully trainable 12-hidden-unit recurrent policy imitating the same fixed behavior traces (only observed actions and official reward-weighted sequences), input/hidden/recurrent/output/bias weights updated by deterministic BPTT, 8-step observation-action history."
+      }
+    ],
+    "training": "One fixed observation-only goal-seeking exploratory behavior policy generates identical 48 physical training and 12 interference episodes for every arm. Tabular Q learns from actual transitions and official reward, recurrent policy uses same behavior action targets/reward-weighting, map policy learns spatial and passability from public transitions. No arm gets separate extra training interactions. Positive reward is official env reward>0, no shaped or hidden reward.",
+    "evaluation": "Each trained/frozen arm independently takes actual actions from the same held-out seed/environment initial states. Official goal success = reward>0 on at least one actual charged env.step before 128. Report mean goal success, discounted official return, median steps-to-success, per-seed goal wins against strongest comparator, cold pre/post success difference, all source/action/outcome hashes, live map size, CPU and checkpoint bytes; no reward shaping or simulator backdoor.",
+    "cold_and_interference": "Snapshot each training model before 12 shared DoorKey interference episodes, score cold seeds before; train interference on same physical trace once, score cold again on same seeds; candidate learned per-episode map reset but retained passability knowledge must still exist; all models use same runtime and action limits.",
+    "qualification": "Python 3.12 available on both Ubuntu and Windows with minigrid==3.2.0, gymnasium==1.4.0, numpy==2.3.4. Deterministic seeded RNG, quantize recurrent weights to 8 decimals each update. Strict cross-OS exact charged episode action/outcome trace SHA, action counts, success flags, model checkpoint SHA and any numeric score discrepancies <=1e-8. Record exact package versions, pip freeze, source SHA/tree; max 64KiB serialized stored model per arm.",
+    "coverage": "Require >=8 official-success events among 48 fixed behavior training episodes. Require >=3 official goal successes total ACROSS all policy arms on EACH of the two transfer families; otherwise classification INVALID_TASK_COVERAGE (independent of science performance). 128-step cap and event count externally verified.",
+    "first_use": "Commit prereg alone as ancestor of code. Before draft PR opens, test only non-registered seeds (11,17,19) and source/environment identities. Exactly one registered physical study per OS on PR opened event. All successor documentation/atlas synchronizations skip original first-use; no post-result tuning."
+  },
+  "metrics": [
+    "actual_goal_success_fraction_per_arm_per_split",
+    "mean_discounted_official_reward",
+    "median_charged_steps_to_goal",
+    "per_seed_success_count_and_action_trace_hash",
+    "train_reward_success_coverage",
+    "holdout_reward_coverage",
+    "physical_paid_env_steps_by_split",
+    "cold_pre_after_success_retention",
+    "model_checkpoint_and_compact_map_bytes",
+    "cross_os_original_result_parity",
+    "wall_clock_training_and_decision_cost"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SIGNAL_ONLY only if valid actual physical custody and positive-task coverage, candidate >=0.15 higher goal-success fraction than the best among all four controls in BOTH unfamiliar environments (at least 2 additional successes out of 12 per split), candidate strictly wins on >=5/12 seeds in each transfer against strongest control, candidate cold-after official success >=cold-before success -1/12, candidate at least as effective as reactive on cold-after, independent cross-OS exact trace and model checkpoint SHA parity, no eval training, all stored checkpoints <=65536 bytes and candidate total decision CPU <=3x trained recurrent inference. Even on PASS remains only development evidence; not native AGI or loop acceptance.",
+    "mixed": "MIXED_DEV iff valid actual reward/physical/portability coverage but primary fails and candidate has a nontrivial positive result (>=2 more official successes than at least one comparator on one transfer family, or <=1/12 cold success loss after interference together with nonzero goal completion).",
+    "negative": "NEGATIVE_DEV iff valid reward/physical/portability coverage and primary false without registered partial signal.",
+    "invalid": "INVALID_INFRASTRUCTURE, INVALID_REPRO or INVALID_TASK_COVERAGE if wrong prereg ancestry, source/package/seed drift, fewer than 8 behavior training successes, fewer than 3 transfer successes all arms in either family, missing real physical env.step receipts, hidden state/mission leakage, extra non-budget env calls, uncharged controls, failure to train recurrent/tabular, accidental eval training, missing or incorrect cold snapshot, cross-OS action/goal/checkpoint mismatch, over-capacity checkpoints. Performance failure is NEVER infrastructure failure unless an independent evidence defect is established."
+  },
+  "prohibited_after_primary_run": [
+    "changing seeds, training, controls, task identifiers, thresholds or actions after original outcome",
+    "replaying original heldout evaluation with tuned source",
+    "choosing post-hoc strongest benchmark",
+    "using private mission/agent position/grid",
+    "promoting synthetic result to native intelligence",
+    "modifying official accepted refs, autonomy loop or workstation"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "note": "Separate external research lane; no deployment, controller, model promotion or official policy change; preserve invalid/negative results exactly."
+}

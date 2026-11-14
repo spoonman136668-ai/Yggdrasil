@@ -1,0 +1,213 @@
+name: DG1-MG20 official-reward causal-map goal-policy DEV
+on:
+  push:
+    branches: [research/dg1-mg20-reward-action-policy-20261113]
+    paths:
+      - 'research/contrib/chatgpt/dg1-mg20-20261113/**'
+      - '.github/workflows/dg1-mg20-qualification.yml'
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+    paths:
+      - 'research/contrib/chatgpt/dg1-mg20-20261113/**'
+      - '.github/workflows/dg1-mg20-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    name: MG20 prefirst-use and full regression (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify immutable prereg ancestor and exact goal-action trial identity
+        shell: bash
+        run: |
+          git merge-base --is-ancestor 029bd7e8da15e0512c2a11bba90a9fb322bb751f HEAD
+          test "$(git rev-parse 029bd7e8da15e0512c2a11bba90a9fb322bb751f^)" = "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path("research/contrib/chatgpt/dg1-mg20-20261113/prereg.json").read_text())
+          assert x["experiment_id"]=="DG1-MG20-20261113"
+          assert x["exact_parent_sha"]=="5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+          assert x["inputs"][3]["sha256"]=="c51855a9ab42e2bd5da848cd7eaa0db342fcf167dffa4d3237802d12d1096cff"
+          assert len(x["frozen_design"]["controls"])==4
+          print("MG20_PREREG_ANCHOR_PASS")
+          PY
+      - name: Install source-version-frozen public MiniGrid environment
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check "minigrid==3.2.0" "gymnasium==1.4.0" "numpy==2.3.4"
+          python -m pip freeze > mg20-packages.txt
+          python - <<'PY'
+          from importlib.metadata import version
+          for name,expected in (("minigrid","3.2.0"),("gymnasium","1.4.0"),("numpy","2.3.4")):
+              assert version(name)==expected,(name,version(name))
+          print("MG20_PUBLIC_SIMULATOR_VERIFIED")
+          PY
+      - name: Pre-first-use source syntax, physical toy goals, learned controls, cold and leakage tests
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+        shell: bash
+        run: |
+          python -m py_compile research/contrib/chatgpt/dg1-mg20-20261113/mg20.py research/contrib/chatgpt/dg1-mg20-20261113/test_mg20.py
+          python -m unittest discover -s research/contrib/chatgpt/dg1-mg20-20261113 -p 'test_*.py' -v
+      - name: Original registered actual-reward action-policy study, on opening event only
+        if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.head_ref == 'research/dg1-mg20-reward-action-policy-20261113'
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+        shell: bash
+        run: |
+          python research/contrib/chatgpt/dg1-mg20-20261113/mg20.py > mg20-firstuse.json
+      - name: Check physical action and goal custody and publish primary result without tuning
+        if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.head_ref == 'research/dg1-mg20-reward-action-policy-20261113'
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path("mg20-firstuse.json").read_text())
+          assert x["schema"]=="yggdrasil.dg1-mg20-original.v1"
+          assert x["freeze_sha"]=="029bd7e8da15e0512c2a11bba90a9fb322bb751f"
+          assert x["manifest_sha256"]=="c51855a9ab42e2bd5da848cd7eaa0db342fcf167dffa4d3237802d12d1096cff"
+          assert x["training_episode_count"]==48 and x["interference_episode_count"]==12
+          assert x["heldout_episode_count"]==240 and x["total_episodes"]==300
+          assert len(x["train_and_interference_trace"])==60
+          assert x["charged_total_steps"]<=38400
+          assert x["charged_total_steps"]==sum(t["steps"] for t in x["train_and_interference_trace"])+sum(
+             x[n]["counted_env_steps"] for n in ("cold_before","cold_after","unseen_size","unseen_family"))
+          assert len(x["checkpoint_sha256"])==5
+          for name in ("cold_before","cold_after","unseen_size","unseen_family"):
+              assert x[name]["environment"].startswith("MiniGrid-")
+              assert len(x[name]["episodes"])==5
+              assert all(len(v)==12 for v in x[name]["episodes"].values())
+              assert all(0<e["steps"]<=128 for group in x[name]["episodes"].values() for e in group)
+          print("MG20_OFFICIAL_REWARD_ACTION_CUSTODY_PASS")
+          print("MG20_CLASSIFICATION:"+x["classification"])
+          print("MG20_PRIMARY:"+str(x["primary_pass"]))
+          print("MG20_TRAIN_SUCCESSES:"+str(x["training_official_successes"]))
+          print("MG20_HELDOUT_COVERAGE:"+json.dumps(x["heldout_success_coverage"],sort_keys=True))
+          print("MG20_GATES:"+json.dumps(x["gates"],sort_keys=True))
+          print("MG20_GOAL_SCORES:"+json.dumps({
+              n:{arm:v["success_count"] for arm,v in x[n]["metrics"].items()}
+              for n in ("cold_before","cold_after","unseen_size","unseen_family")},sort_keys=True))
+          print("MG20_PAID_STEPS:"+str(x["charged_total_steps"]))
+          PY
+      - name: Generate pinned G29 atlas and emit source-derived bytes only before final atlas commit
+        id: atlas
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64,os,subprocess
+          from pathlib import Path
+          import sys
+          sys.path.insert(0,"scripts")
+          import build_code_atlas as atlas
+          def git(*args):
+              return subprocess.check_output(["git",*args],text=True).strip()
+          head=git("rev-parse","HEAD")
+          changed=set(git("diff","--name-only","HEAD^","HEAD").splitlines())
+          atlas_only=changed==set(atlas.OUT)
+          source=git("rev-parse","HEAD^") if atlas_only else head
+          subprocess.run(["python","scripts/build_code_atlas.py",
+                          "--source-commit",source,"--write"],check=True)
+          committed=atlas_only and all(
+              subprocess.check_output(["git","show","HEAD:"+name])==
+              Path(name).read_bytes() for name in atlas.OUT)
+          with open(os.environ["GITHUB_OUTPUT"],"a",encoding="utf-8") as f:
+              f.write("committed="+str(committed).lower()+"\n")
+              f.write("source="+source+"\n")
+          print("MG20_G29_SOURCE:"+source)
+          print("MG20_G29_COMMITTED:"+str(committed))
+          if not committed and os.environ.get("RUNNER_OS")=="Linux":
+              for name in atlas.OUT:
+                  b64=base64.b64encode(Path(name).read_bytes()).decode("ascii")
+                  chunks=[b64[k:k+1200] for k in range(0,len(b64),1200)]
+                  for n,part in enumerate(chunks):
+                      print("MG20_ATLAS_CHUNK|"+name+"|"+str(n)+"|"+
+                            str(len(chunks))+"|"+part)
+          PY
+      - name: Mandatory full inherited regression on committed, source-identical G29 atlas
+        if: steps.atlas.outputs.committed == 'true'
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -m unittest discover -s tests -p 'test_*.py' -v
+          python scripts/build_code_atlas.py --check-if-present
+      - name: Prove only derived atlas worktree files differ
+        shell: bash
+        run: |
+          python - <<'PY'
+          import subprocess
+          changed=set(subprocess.check_output(
+              ["git","diff","--name-only"],text=True).splitlines())
+          allowed={".ice/code-atlas.json",".ice/code-atlas.html",".ice/code-atlas.ice"}
+          assert changed.issubset(allowed), sorted(changed)
+          print("MG20_TRACKED_SCIENCE_SOURCE_UNMODIFIED_PASS")
+          PY
+      - name: Preserve original full rewarded action traces and source receipt in GitHub only
+        if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.head_ref == 'research/dg1-mg20-reward-action-policy-20261113' && always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-mg20-original-${{ matrix.os }}
+          path: |
+            mg20-firstuse.json
+            mg20-packages.txt
+          if-no-files-found: ignore
+  original-cross-os-parity:
+    name: MG20 original real action+reward and checkpoint portability
+    if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.head_ref == 'research/dg1-mg20-reward-action-policy-20261113'
+    needs: qualification
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: dg1-mg20-original-ubuntu-latest
+          path: original-linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: dg1-mg20-original-windows-2022
+          path: original-windows
+      - name: Independently check original official reward, chosen actions and cold checkpoint parity
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          a=json.loads(Path("original-linux/mg20-firstuse.json").read_text())
+          b=json.loads(Path("original-windows/mg20-firstuse.json").read_text())
+          for k in ("classification","primary_pass","training_official_successes",
+                    "heldout_success_coverage","checkpoint_sha256","checkpoint_bytes",
+                    "charged_total_steps","train_and_interference_trace","gates"):
+              assert a[k]==b[k],("MG20_CROSS_OS_INVARIANT_FAIL",k)
+          def without_timing(x):
+              if isinstance(x,dict):
+                  return {k:without_timing(v) for k,v in x.items()
+                      if k not in ("decision_cpu_ns","cpu_ratio","cpu_ns")}
+              if isinstance(x,list): return [without_timing(v) for v in x]
+              return x
+          def same(a,b):
+              if type(a)!=type(b):return False
+              if isinstance(a,dict):return a.keys()==b.keys() and all(same(a[k],b[k]) for k in a)
+              if isinstance(a,list):return len(a)==len(b) and all(same(x,y) for x,y in zip(a,b))
+              if type(a) is float:return math.isfinite(a) and math.isfinite(b) and abs(a-b)<=1e-8
+              return a==b
+          assert same(without_timing(a),without_timing(b)),"MG20_CROSS_OS_ACTION_OR_GOAL_DRIFT"
+          print("MG20_ORIGINAL_OFFICIAL_GOAL_AND_ACTION_PARITY_PASS")
+          PY
