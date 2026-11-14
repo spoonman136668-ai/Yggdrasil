@@ -77,6 +77,8 @@ class GraphPolicy(d.AffordancePlanner):
         self.selected_learned_edge = False
         self.task_family_box = False
         self.key_dropped = False
+        self.box_release = False
+        self.box_heading = None
 
     def feedback(self, before, action, after, reward, training=False):
         from minigrid.core.constants import OBJECT_TO_IDX
@@ -114,15 +116,25 @@ class GraphPolicy(d.AffordancePlanner):
     def act(self, obs, t):
         from minigrid.core.constants import OBJECT_TO_IDX
         front = m.front_type(obs)
-        if self.opened_door and self.has_key and not self.key_dropped:
-            if front == OBJECT_TO_IDX["empty"]:
-                return 4  # real charged key drop, then free hands for box pickup
-            if front == OBJECT_TO_IDX["box"]:
-                return 1  # cannot pick up a box while still carrying the key
+        direction = int(obs["direction"])
+        # Action 4 is available to ALL arms. Only use it when physically
+        # necessary: at the target box, while still carrying the door key.
+        # Remember the public heading, turn to an actually empty adjacent
+        # cell, drop the key, and turn back without leaving the current tile.
+        if self.box_release:
+            if self.has_key:
+                return 4 if front == OBJECT_TO_IDX["empty"] else 1
+            delta = (self.box_heading - direction) % 4
+            if delta:
+                return 1 if delta in (1, 2) else 0
+            self.box_release = False
+        if self.opened_door and self.has_key and front == OBJECT_TO_IDX["box"]:
+            self.box_release = True
+            self.box_heading = direction
+            return 1
         action = super().act(obs, t)
-        # The inherited map can momentarily be stale immediately after a drop.
-        # Never reacquire the key after a verified unlock: the box needs free
-        # hands. This guard is based on the live public front observation.
+        # Do not reacquire an already-dropped key due to a momentarily stale
+        # topological map. Evidence is the actual public front observation.
         if self.opened_door and front == OBJECT_TO_IDX["key"] and action == 3:
             return 1
         return action
