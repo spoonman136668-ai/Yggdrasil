@@ -1,0 +1,47 @@
+{
+  "schema": "yggdrasil.qtr01.f06.alternate-donor-provenance.v1",
+  "experiment_id": "QTR-01-F06",
+  "state": "FROZEN_BEFORE_ONE_PUBLIC_GET",
+  "objective": "Determine whether the latest independently published open-weight Qwen3.6-27B ICA direction exposes a retrievable, exact-identity public interpretability artifact; distinguish such availability from causal semantic validation.",
+  "candidate": {
+    "model": "Qwen/Qwen3.6-27B",
+    "source": "qwen3.6-27b/32-icalens-res/77",
+    "kind": "independent_component_analysis_residual_direction",
+    "size": "27B parameters, 64 layers; 16 ICA layers sampled every fourth layer, 5120 directions per layer",
+    "model_license_declared": "Apache-2.0",
+    "ic_method_code_repo": "liusida/ica-lens-paper",
+    "ic_method_code_sha": "6704460349bdce27d4102f157a00abf2b228873b",
+    "ic_method_code_license": "MIT declared",
+    "lens_artifact_repo": "neuronpedia/icalens-qwen3.6-27b",
+    "lens_artifact_license_and_exact_revision": "UNVERIFIED: must not conflate code license with fitted lens artifacts",
+    "hosted_inference_availability": "Neuronpedia docs published TRUE for 32-icalens-res; no inference requested or performed"
+  },
+  "references": [
+    "https://docs.neuronpedia.org/research-releases/ica-lens",
+    "https://www.neuronpedia.org/available-resources",
+    "https://www.neuronpedia.org/qwen3.6-27b/32-icalens-res/77",
+    "https://huggingface.co/Qwen/Qwen3.6-27B",
+    "https://github.com/liusida/ica-lens-paper/tree/6704460349bdce27d4102f157a00abf2b228873b"
+  ],
+  "protocol": {
+    "public_get": "https://www.neuronpedia.org/api/feature/qwen3.6-27b/32-icalens-res/77",
+    "max_reads": 1,
+    "max_bytes": 1000000,
+    "timeout_seconds": 25,
+    "retries": 0,
+    "admit_only_if": "HTTP JSON object; exact modelId, source/sourceId and index 77; no oversized/malformed payload",
+    "success_interpretation": "SOURCE_RECORD_IDENTIFIABLE_ONLY",
+    "failure_interpretation": "NO_GO_METADATA_UNAVAILABLE; maintain existing donor intact",
+    "raw_data_policy": "Never write or log original explanations, text activations, logits, prompts, or provider payloads. Return count/field names and SHA256 only.",
+    "freeze": {
+      "prospective_control": "Identity-mismatched mock response and unrelated-feature/malformed-response negative controls",
+      "scientific_semantic_success": "NONE; source record inspection is NOT an experiment testing donor concept truth or native transfer",
+      "recipient_edits": false,
+      "donor_model_inference": false,
+      "paid_api": false,
+      "reserved_worlds_used": false
+    },
+    "stop": "If source absent or explanation sparse, do NOT tune candidate feature ID based on result; preserve negative feasibility outcome."
+  },
+  "own_execution_authority": "Public GitHub Actions one-shot metadata GET only; no right to schedule or steer models or run first-use experiments"
+}
