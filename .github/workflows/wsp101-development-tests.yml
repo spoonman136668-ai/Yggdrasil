@@ -96,7 +96,7 @@ jobs:
           test "$(git diff-tree --no-commit-id --name-only -r "$B" | wc -l | tr -d ' ')" = 3
           python scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"
-          git push origin HEAD:refs/heads/research/wsp101-transferable-causal-weights-20261114
+          git push origin HEAD:refs/heads/research/wsp101-paired-transfer-causal-probes-20261114
           echo "WSP101_G29_SOURCE=$S"
           echo "WSP101_G29_COMPANION=$B"
 
