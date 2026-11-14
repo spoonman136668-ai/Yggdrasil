@@ -93,7 +93,17 @@ jobs:
         run: |
           python -m py_compile research/contrib/chatgpt/dg1-md33-20261114/synthetic.py research/contrib/chatgpt/dg1-md33-20261114/categorical_controls.py research/contrib/chatgpt/dg1-md33-20261114/recurrent_control.py research/contrib/chatgpt/dg1-md33-20261114/evaluate.py research/contrib/chatgpt/dg1-md33-20261114/test_controls.py
           python -m unittest discover -s research/contrib/chatgpt/dg1-md33-20261114 -p 'test_*.py' -v
-          python research/contrib/chatgpt/dg1-md33-20261114/synthetic.py > md33-splits.json
+          python - <<'PY'
+          import json,sys
+          from pathlib import Path
+          sys.path.insert(0, "research/contrib/chatgpt/dg1-md33-20261114")
+          from synthetic import structural_split_audit
+          report=structural_split_audit()
+          assert report["official_first_use"] is False
+          Path("md33-splits.json").write_bytes(
+              (json.dumps(report,sort_keys=True,separators=(",",":"),ensure_ascii=True)+chr(10)).encode("utf-8"))
+          print("MD33_CANONICAL_LF_SPLIT_MANIFEST_PASS")
+          PY
           echo MD33_CHARGED_TRAIN_ONLY_AND_STRICT_SPLITS_PASS
       - name: Execute exactly one frozen synthetic trained-control transfer and cold evaluation
         shell: bash
