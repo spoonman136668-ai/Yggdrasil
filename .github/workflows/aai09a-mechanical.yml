@@ -1,0 +1,91 @@
+name: AAI-09A source-locked real NS-Gym reserved mechanical (NO science first use)
+on:
+  push:
+    branches: [research/aai09a-protected-regime-memory-20261114]
+    paths: [.github/workflows/aai09a-mechanical.yml]
+permissions:
+  contents: read
+jobs:
+  no-science-cross-platform:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'AAI-09A official reserved-mechanical one-shot without science' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pin all immutable source and assert no AAI-09A science first-use approval
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '162e2dc094ab4f79764e65e3c6cd50a4468b7bda'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai09a-mechanical.yml'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-09A/prereg.json)" = "$(git rev-parse d9e9f3f11d04cdcf99c5e5b1e0c7a5008e0c2026:research/contrib/chatgpt/AAI-09A/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-09A/models.py)" = "$(git rev-parse 8e9b6e6ba91b320ecfc36733eaa048895d99a948:research/contrib/chatgpt/AAI-09A/models.py)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-09A/evaluate.py)" = "$(git rev-parse 430d5b2571435d02b1de6c59ed134fd959594a55:research/contrib/chatgpt/AAI-09A/evaluate.py)"
+          python - <<'PY'
+          import json
+          p=json.load(open('research/contrib/chatgpt/AAI-09A/prereg.json'))
+          assert p['id']=='AAI-09A'
+          assert p['authority']['AAI09A_scientific_first_use_authorized'] is False
+          assert p['cohorts']['mechanical_reserved']=={'start':887950,'count':4}
+          assert p['cohorts']['transfer']=={'start':888000,'count':64}
+          assert p['no_post_outcome_tuning'] is True
+          print('AAI09A_FROZEN_SOURCE_AND_NO_SCIENCE_AUTHORITY_PASS')
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Pure frozen-model unit and information parity controls
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-09A -p 'test_*.py' -v
+          python -B research/contrib/chatgpt/AAI-09A/evaluate.py --source-only
+          if python -B research/contrib/chatgpt/AAI-09A/evaluate.py --primary >/dev/null 2>&1; then
+            echo 'FAIL: AAI09A scientific first-use CLI is not disarmed' >&2
+            exit 1
+          fi
+          echo AAI09A_PURE_MODEL_TESTS_AND_FIRST_USE_DISARM_PASS
+      - name: Fetch pinned original MIT NS-Gym Bridge (no modifications)
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init -q "$RUNNER_TEMP/aai09a-upstream"
+          git -C "$RUNNER_TEMP/aai09a-upstream" remote add origin https://github.com/scope-lab-vu/ns_gym.git
+          git -C "$RUNNER_TEMP/aai09a-upstream" fetch -q --no-tags --depth 1 origin 127df4b714fe4fcf680721d8e9278a96090acd7e
+          git -C "$RUNNER_TEMP/aai09a-upstream" checkout -q --detach FETCH_HEAD
+          test "$(git -C "$RUNNER_TEMP/aai09a-upstream" rev-parse HEAD)" = '127df4b714fe4fcf680721d8e9278a96090acd7e'
+          test "$(git -C "$RUNNER_TEMP/aai09a-upstream" rev-parse HEAD:ns_gym/envs/Bridge.py)" = '02415d65ff8a0c419d32f274e2669f9e54e8d29f'
+          test "$(git -C "$RUNNER_TEMP/aai09a-upstream" rev-parse HEAD:ns_gym/wrappers/toy_text.py)" = 'cd94311a4d312b9d8c35b7719207020150caa300'
+          echo AAI09A_ORIGINAL_OFFICIAL_SOURCE_PIN_PASS
+      - name: Pinned minimal original benchmark dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --no-input --prefer-binary \
+            numpy==1.26.4 'gymnasium[mujoco]==1.2.2' scipy==1.15.3 PyYAML==6.0.2 \
+            mujoco==3.3.7 pygame==2.6.1
+          python -m pip install --disable-pip-version-check --no-input --no-deps -e "$RUNNER_TEMP/aai09a-upstream"
+      - name: Exactly four reserved mechanical seeds, not scientific worlds
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/AAI-09A/evaluate.py --mechanical
+          test -z "$(git status --porcelain)"
+          test -z "$(git -C "$RUNNER_TEMP/aai09a-upstream" status --porcelain)"
+          echo AAI09A_REAL_BRIDGE_MECHANICAL_PASS_NO_SCIENCE_FIRST_USE

@@ -1,0 +1,156 @@
+{
+  "schema": "yggdrasil.contrib.aai09a.frozen-learner-prereg.v1",
+  "id": "AAI-09A",
+  "phase": "PRE_REGISTERED_DEVELOPMENT_ONLY_NOT_APPROVED_FOR_FIRST_USE",
+  "parent_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "admitted_benchmark": {
+    "source": "AAI-09P draft PR #1046",
+    "qualified_head": "addcf0be6b767157dd51b8b90085a63c6d63017f",
+    "run": 43625956845,
+    "exact_analytic_sha256": "c00bae0af0f8dbc9e463611145c2053118c71672bd4900045ed4969377ff8b7e",
+    "mechanical_trace_sha256": "91bdbd37bc7764926b4488b064fb822b869a7da3091a69f39437c3b95e825e02",
+    "interpretation": "Only privileged Bayesian-oracle *analytic* headroom and real deterministic source geometry were qualified; no learner has proven any advantage."
+  },
+  "upstream": {
+    "repo": "scope-lab-vu/ns_gym",
+    "sha": "127df4b714fe4fcf680721d8e9278a96090acd7e",
+    "bridge_blob": "02415d65ff8a0c419d32f274e2669f9e54e8d29f",
+    "wrapper_blob": "cd94311a4d312b9d8c35b7719207020150caa300",
+    "license": "MIT",
+    "python": "3.12",
+    "requirements": [
+      "numpy==1.26.4",
+      "gymnasium[mujoco]==1.2.2",
+      "scipy==1.15.3",
+      "PyYAML==6.0.2",
+      "mujoco==3.3.7",
+      "pygame==2.6.1"
+    ]
+  },
+  "hypothesis": "A small protected non-token associative regime bank, updated only using public action-consequence observations and an unlabelled contradiction gate, recalls persistent A knowledge at N=2 and N=4 after an A→B→A sequence faster and more reliably than strongest fully trained conventional online change-point, recency, stationary and logistic controls at matched action/information budgets.",
+  "candidate": {
+    "name": "ProtectedRegimeBank",
+    "representation": "Exactly two persistent non-token Beta-Bernoulli association cores (two integers yes/no plus stable ID), one active core, one uncommitted scratch list of up to 2 consecutive public RIGHT-action forward/nonforward observations.",
+    "prior": "Beta(1,1) each slot, no known A/B law, no hidden return prior, no labels, no thresholds learned on science cohorts.",
+    "parameter_freeze": {
+      "max_cores": 2,
+      "scratch_block": 2,
+      "log_likelihood_switch_margin": 1.3862943611198906,
+      "novelty_vs_fair_coin_log_margin": 1.3862943611198906,
+      "decision_threshold": 0.5,
+      "tie_break_right": true
+    },
+    "training_rule": "Append observed forward boolean to scratch; at exactly 2 observations compare sum log Bernoulli probabilities using the ACTIVE learned core against each OTHER stored core, clamp probabilities to [1e-4,1-1e-4]. If a different core has batch log-likelihood >= active + ln(4), set it active and update only the selected core by the two events. Otherwise if no other core qualifies and capacity<2 and (2*ln(0.5))>=active batch log-likelihood + ln(4), allocate a new Beta(1,1) core, set it active, update new only. Otherwise update active core with both. Empty scratch. Never edit inactive core or consult a hidden law label.",
+    "decision": "RIGHT action 2 if active core posterior mean >=0.5 else UP action 3, fixed tie RIGHT.",
+    "cold_restore": "Byte-exact canonical JSON state for cores, stable IDs, active ID, scratch and constants; compare all subsequent decisions and independent fork outputs; prevent mutating saved snapshot.",
+    "ablation": "Identical protected-core code but only capacity=1 (single mutable core, no retrieval), same scratch and update rule.",
+    "retrieval_metric": "At end of A, store the exact core ID and integer counts in EVALUATOR-ONLY metadata. At end of B, report whether original A core has exactly same counts. At A-return decision, distinguish choosing preserved original ID vs an updated/recreated core; strict retrieval requires preserved counts from end-A through B, activation at decision, and no operator labels consumed.",
+    "no_native_architecture_claim": "This is a tiny interpretable statistical association mechanism, NOT new artificial general intelligence and NOT Yggdrasil native substrate."
+  },
+  "matched_controls": {
+    "recent2": "Standard Beta(1,1) posterior on last 2 Boolean action outcomes.",
+    "recent4": "Standard Beta(1,1) posterior on last 4 Boolean action outcomes.",
+    "recent8": "Standard Beta(1,1) posterior on last 8 Boolean action outcomes.",
+    "recent16": "Standard Beta(1,1) posterior on last 16 Boolean action outcomes.",
+    "stationary": "Standard all-history Beta(1,1) posterior.",
+    "bocpd": "Conventional Beta-Bernoulli Bayesian online change point: fixed hazard 1/12 per observation, Beta(1,1) per run-length, exact run-length posterior updated with no regime labels; online decision from run-length-mixture posterior p>=0.5. No hidden law probabilities.",
+    "cusum": "Conventional one-sided change-point detector: fast=Beta posterior over last 4, slow=Beta over last 16, switch immediately to fast if |p_fast-p_slow|>=0.20, otherwise slow; use same seen events.",
+    "logistic": "Exactly 1200 epochs of intercept-only conventional logistic trained with full common observed history; learning rate .4 using full-batch gradient; fit after challenge using same data, no hidden labels; report training time.",
+    "one_slot": "Candidate ablation, capacity=1.",
+    "always_right": "Fixed RIGHT negative reactive control.",
+    "oracle": "Known-law A/B Bayesian with privileged exact probabilities and prior 0.2, updated on N new public RIGHT probe consequences only, not a matched learner and not eligible to be best-baseline selector."
+  },
+  "action_and_data": {
+    "official_env": "ns_gym/Bridge-v0 via NSBridgeWrapper without private state/changed flags/diagnostic info",
+    "start": "World reset starts at map state 20, fixed 3-step public action prefix RIGHT LEFT RIGHT, fourth action at junction = one probe RIGHT or one evaluation action RIGHT/UP. Each probe is an independent real official reset/episode; global NumPy RNG isolated serially save/seed/restore.",
+    "consequence": "Public next_state==previous_state+1 after RIGHT is the binary forward association; test reward is actual official scalar reward; model does not consume held-out final test consequence before choosing action.",
+    "train": "Exactly 32 independent real right-action probes under A, immediately followed by 32 under B for each world, SAME action sequence and observations supplied to every model, NO explicit boundary notification.",
+    "challenge": "Freeze one immutable common after-B state per model, fork two independent continuations from same snapshot: A returns OR B continues. For budgets N∈{0,1,2,4}, each continuation gets exactly N new RIGHT probe outcomes; no regime labels to any model.",
+    "laws": {
+      "dev": {
+        "A": [
+          0.94,
+          0.035,
+          0.025
+        ],
+        "B": [
+          0.03,
+          0.49,
+          0.48
+        ]
+      },
+      "transfer": {
+        "A": [
+          0.9,
+          0.06,
+          0.04
+        ],
+        "B": [
+          0.05,
+          0.47,
+          0.48
+        ]
+      }
+    },
+    "fairness": "Every nonoracle model receives identical ordered evidence, action availability and consequence/reward observations; decisions are made blind to condition, probability vectors and scenario seed; source evaluation may use those privately to evaluate but never supplies them to learner.",
+    "pairing": "Heldout official terminal reward sampled with a common independent seed per world/condition/budget/action, paired across models. Identical action yields identical reward. No counterfactual reweighting instead of real env for primary scores.",
+    "zero_probe": "For each world and all models, action after B is exactly identical in return-A and hold-B branches before new observations. Claiming ability to identify the hidden regime at 0 probes is INVALID.",
+    "negative": "Shuffled observed Boolean outcomes in independent NEGATIVE worlds only, same length and reward-generating official environment; show proper-minus-shuffled advantage with paired CI.",
+    "cold": "After B, serialize each model to byte-exact canonical JSON. Restore twice, branch independently, compare decisions/outputs, ensure untouched saved checkpoint remains unchanged."
+  },
+  "cohorts": {
+    "mechanical_reserved": {
+      "start": 887950,
+      "count": 4
+    },
+    "dev": {
+      "start": 887000,
+      "count": 16
+    },
+    "transfer": {
+      "start": 888000,
+      "count": 64
+    },
+    "negative": {
+      "start": 889000,
+      "count": 32
+    },
+    "explicit_no_reuse": "AAI-09P used 887900..887903 mechanical only; AAI-08B consumed 894xxx/895xxx/896xxx and past tests used 89/99/91/92/93xxx. AAI-09A science cohorts above are reserved but NOT consumed in this preparation phase."
+  },
+  "math": {
+    "baseline": "AAI-09P known-law privileged oracle theoretically yields transfer return gains +0.648 at N2 and +0.75816 at N4, B stays losses +0.00225/+0.000433125. This is benchmark design, not scientific outcome.",
+    "primary_budgets": [
+      2,
+      4
+    ],
+    "report_all_budgets": [
+      0,
+      1,
+      2,
+      4
+    ],
+    "bootstrap_seed": 39091,
+    "bootstrap_draws": 2048,
+    "unit_of_resampling": "World ID with its paired A-return/B-stays two-budget outcomes, not separate episodes; 2.5/97.5 empirical percentile bounds",
+    "selection": "Choose strongest matched baseline by TRANSFER return-A mean reward across 2/4; report selection and account for exploratory best-of-five-plus selection; comparison to fixed recent4 is a preregistered secondary control.",
+    "thresholds": {
+      "benchmark_qualification": "Predeclared oracle headroom from AAI-09P independently verified on upstream source. Scientific run requires exact source, cohort, negative controls, and empirical paired CI; benchmark admits only if known-law oracle on TRANSFER N2/4 improves return-A reward >=0.20 over N0 with CI lower>0 and hold B loss <=0.02; if not, HEADROOM_INADEQUATE.",
+      "candidate_superiority": "Aggregate per-world return-A N2/4 candidate minus strongest matched conventional >=0.04 AND paired bootstrap 95% lower bound>0; candidate B-continues score no worse than strongest baseline minus 0.02; return-A correct action >=0.80 at N2/4; true preserved A-core activation >=0.60 at N2/4; candidate minus one-slot >=0.04 with CI lower>0; negative shuffled feedback gain >=0.10 with paired CI lower>0; exact cold restores and no leaked boundaries; model update+decision time <=2x fastest matched nonoracle; report full-process wall-time and serialized bytes. No model promotion from this external toy benchmark even if it passes.",
+      "classification": "If headroom fails, HEADROOM_INADEQUATE_NO_PROMOTION. If any other threshold fails after valid data, VALID_NEGATIVE_NO_INTEGRATION. If all pass, EXTERNAL_CANDIDATE_BENEFIT_REQUIRES_INDEPENDENT_NATIVE_SCIENCE (NOT auto integration). Broken source/leak/data/seed => INVALID_PROTOCOL."
+    }
+  },
+  "delivery": {
+    "preprimary": "Commit exact prereg before code; implement disarmed evaluator and source-only mechanical tests; qualify Linux/Windows and full final regression; no scientific cohort access.",
+    "first_use": "Run exactly one source-locked first-use only after explicit new user authorization and verified unchanged frozen protocol, isolated runner and source; preserve original raw full per-world JSON and negative results; no repeat/retune.",
+    "native": "Yggdrasil native non-transformer/no-token model and owner research loop isolated; no commit/merge/integration/weight change."
+  },
+  "authority": {
+    "AAI09A_scientific_first_use_authorized": false,
+    "merge": false,
+    "owner_acceptance": false,
+    "model_integration": false,
+    "controller_or_scheduler_changes": false,
+    "paid_api": false
+  },
+  "no_post_outcome_tuning": true
+}
