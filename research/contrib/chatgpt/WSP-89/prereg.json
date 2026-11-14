@@ -1,0 +1,144 @@
+{
+  "schema": "wsp89.cc0-source-backed-claim-acquisition-development.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_SOURCE_CAPTURE_AND_OUTCOMES",
+  "parent": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "pr": 1001,
+    "head_sha": "f7b7cb1d7cbb2e49e2ec20d9866bd515e043fb33",
+    "known_wsp88_result": "DEV_GROUNDING_FEASIBLE; 8/8 synthetic worlds; fully trained conventional control tied exactly; no general intelligence claim"
+  },
+  "hypothesis": "Direct numerical relation weights plus a separate source evidence ledger can acquire true third-party CC0 factual claims, answer unseen claim queries with auditable revision-pinned attribution, reject weaker contradictory source assertions, handle explicit counterfactual correction/retraction in a simulated fork, and retain unaffected source facts without gradient learning.",
+  "scope": "Real Wikidata country-property statements with QID/PID and revision information as externally grounded input. Only country capital P36, official language P37, continent P30. This does NOT learn reading, entity resolution, raw text, open-domain QA, natural language comprehension, ontology discovery or broad factual transfer. A symbolic evidence-aware control is expected to tie. Counterfactual conflicts are artificial and must never be reported as real-world updates.",
+  "rights": "Wikidata main namespace structured data is CC0. Official source: https://www.wikidata.org/wiki/Wikidata:Licensing . Source records are attributed anyway and pinned to Wikidata entity revision URLs.",
+  "source_collection": {
+    "endpoint": "https://www.wikidata.org/w/api.php?action=wbgetentities&props=claims%7Clabels%7Cinfo&format=json",
+    "source_ids": [
+      "Q16",
+      "Q142",
+      "Q183",
+      "Q17",
+      "Q155",
+      "Q30",
+      "Q145",
+      "Q38",
+      "Q29",
+      "Q34",
+      "Q35",
+      "Q36",
+      "Q20",
+      "Q55",
+      "Q41",
+      "Q40",
+      "Q96",
+      "Q252",
+      "Q668",
+      "Q159",
+      "Q232",
+      "Q414",
+      "Q31",
+      "Q39"
+    ],
+    "predicates": [
+      "P36",
+      "P37",
+      "P30"
+    ],
+    "strategy": "Read-only public MediaWiki API, max 24 entity IDs, two batches of 12, no paid API; require request metadata and SHA256 of canonical source payload, response entity ID/lastrevid, nondeprecated entity-valued mainsnaks only, best rank per (entity,property). Commit a single immutable derived CC0 data snapshot with original claim IDs and per-entity revision URIs. Reject missing IDs, unexpected or malformed IDs, missing revision/label, or low corpus counts. No dynamic sources in experiments.",
+    "min_subjects": 20,
+    "min_total_claims": 32,
+    "min_predicates": 2,
+    "fixture_subjects": [
+      "Q16",
+      "Q142",
+      "Q183",
+      "Q17",
+      "Q155",
+      "Q30",
+      "Q145",
+      "Q38"
+    ],
+    "reserved_dev_subjects": [
+      "Q29",
+      "Q34",
+      "Q35",
+      "Q36",
+      "Q20",
+      "Q55",
+      "Q41",
+      "Q40",
+      "Q96",
+      "Q252",
+      "Q668",
+      "Q159",
+      "Q232",
+      "Q414",
+      "Q31",
+      "Q39"
+    ],
+    "source_qualification": "Collector commit and derived records hash must be frozen before any reserved-science scoring. All subsequent tests must pin this exact corpus bytes; no live API access during model evaluation."
+  },
+  "candidate": {
+    "representation": "Dynamic entity-id-indexed, property-indexed numeric adjacency scores with direct evidence-weight edits. Separate append-only evidence ledger maps candidate answers to revision-pinned Wikidata statement IDs and source URLs; not all knowledge/provenance exists solely in weights.",
+    "ingestion": "A verified Wikidata rank-active claim contributes weight +1; a lower-trust synthetic contradiction adds +0.1 to decoy value. Verify claim/value IDs and statement identity before edits. Simulated authoritative correction removes old source support and adds a new assertion in a fork; never modifies frozen real facts.",
+    "queries": "Externally supplied (subject QID, predicate PID), multivalued true answers allowed. Prediction is strongest supported claim set plus source references, abstain on unknown/unverified query.",
+    "confidence": "Only verified Wikidata or explicit simulated-authoritative source claims count as authoritative. Independent source ledger protects provenance; no web-search substitute for attribution."
+  },
+  "controls": {
+    "independent_symbolic": "Separate hash-map evidence-resolution model on exactly the same frozen source rows and counterfactual events; numerical predictions, citation IDs, correction behavior must match.",
+    "fully_trained_conventional": "One-hot (subject,predicate) input to multi-label sigmoid SGD head trained on identical authoritative source rows and all observed corrections to predefined 500 epochs or convergence (max training loss target 0.001). Report training fit, compute and candidate-specific costs separately; do not treat undertrained control as failure of conventional learning.",
+    "negative": [
+      "Strongly weighted false decoy source must not silently win; zero weights must erase positive predictions; missing QIDs/properties must abstain; corrupted snapshot must fail restore."
+    ],
+    "meaning": "Graph is the strongest exact-retrieval control; full-trained SGD control establishes an ordinary non-generative parametric baseline but is not a Claude/GPT benchmark."
+  },
+  "stage_design": {
+    "A": "Learn verified CC0 Wikidata country facts; freeze all predictions and attribution before evaluating known valid source claims. Public fixture uses first eight country QIDs and is non-novel. DEV uses 16 different country QIDs from one frozen snapshot.",
+    "B": "For each DEV country with a verified claim, inject one synthetic false lower-trust value borrowed from another country for the same predicate (not claimed by Wikidata). Model must preserve real answer and return real attribution. No forbidden source leakage.",
+    "C": "For up to 8 deterministic DEV claims create a separate counterfactual authoritative correction/retraction fork; test corrected answer and cold historical Stage A snapshot. Unaffected facts must retain original values and attribution.",
+    "unknown": "Probe unseen subject QIDs/property IDs and unsupported source IDs; zero confident unsupported answers."
+  },
+  "frozen_thresholds": {
+    "min_real_claim_predictions": 24,
+    "source_claim_precision": 1,
+    "source_revision_attribution_accuracy": 1,
+    "independent_symbolic_parity": 1,
+    "false_decoy_rejection": 1,
+    "simulated_correction_accuracy": 1,
+    "unaffected_fact_retention": 1,
+    "unknown_confident_answers": 0,
+    "cold_restore_exact": true,
+    "tamper_detection": true,
+    "trained_control_training_accuracy_min": 0.99,
+    "process_cpu_report": true,
+    "memory_weight_and_ledger_counts_report": true,
+    "development_classification_if_pass": "DEV_SOURCE_KNOWLEDGE_FEASIBLE",
+    "development_classification_if_fail": "DEV_SOURCE_KNOWLEDGE_NEGATIVE"
+  },
+  "seeds": {
+    "fixture": 92089,
+    "dev_first_use": 13089,
+    "synthetic_decoy_generation": "SHA256 fixed seed; decoys must derive from same observed relation values but different subject and not be present among verified values for that subject; no oracle query labels consulted until predictions freeze."
+  },
+  "qualifications": [
+    "Preregistration commit precedes any source, code or DEV results.",
+    "Source capture once from public Wikidata to a pinned immutable, revisioned, hashed derived file; no user data.",
+    "Run source-independent public fixture tests and fixture-source data tests only.",
+    "Full WSP80–WSP89 regression + root Yggdrasil tests + exact G29 source atlas on Ubuntu and Windows before reserved DEV first use.",
+    "One protected-from-reuse synthetic DEV-only local first-use after owner source checks; do not repeat, reselect, retune or call negative a pass.",
+    "Publish entire positive/negative development classification into GitHub PR with source, run, environment, CPU metrics."
+  ],
+  "boundaries": {
+    "owner": "Isolated Yggdrasil contribution research branch only; no accepted Yggdrasil model integration.",
+    "main": false,
+    "protected_science": false,
+    "official_loop": false,
+    "merge": false,
+    "deploy": false,
+    "paid_api": false,
+    "scheduled_tasks": false,
+    "new_runner": false,
+    "production": false,
+    "user_library": false
+  },
+  "future": "Separate preregistration needed for free-form raw-text factual ingestion, independently attested source disputes, temporal multi-revision update streams, cross-domain language transfer and real-world QA vs fully trained retrieval/neural baselines."
+}
