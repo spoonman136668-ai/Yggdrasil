@@ -129,10 +129,11 @@ class EvalArithmeticTests(unittest.TestCase):
     def test_harness_labels_never_become_model_inputs(self):
         # Non-reserved 96-block LABEL-SCHEMA toy fixture; not a score for
         # true braid/inhibitor/crossbridge laws.
-        labels = [(family, offset, changed)
-                  for family in ("braid", "inhibitor", "crossbridge")
-                  for offset in range(4)
-                  for changed in (False, True)] * 4
+        labels = [
+            (("braid", "inhibitor", "crossbridge")[i % 3],
+             (i // 3) % 4, ((i // 12) % 2) == 1)
+            for i in range(96)
+        ]
         score = harness_only_family_breakdown(
             self.toy_transfer_shape, labels, "unfamiliar_transfer")
         self.assertEqual(set(score), {"braid", "inhibitor", "crossbridge"})
@@ -142,9 +143,10 @@ class EvalArithmeticTests(unittest.TestCase):
             corrupt[0] = ("relay", 0, False)
             harness_only_family_breakdown(
                 self.toy_transfer_shape, corrupt, "unfamiliar_transfer")
-        with self.assertRaisesRegex(AssertionError, "FACTORIAL_IMBALANCE"):
+        with self.assertRaisesRegex(
+                AssertionError, "FROZEN_PRIVATE_LAW_ALLOCATION_DRIFT"):
             corrupt = labels.copy()
-            corrupt[0] = labels[1]
+            corrupt[0], corrupt[1] = corrupt[1], corrupt[0]
             harness_only_family_breakdown(
                 self.toy_transfer_shape, corrupt, "unfamiliar_transfer")
 
@@ -205,7 +207,7 @@ class EvalArithmeticTests(unittest.TestCase):
         self.assertFalse(parity["matched_compute"])
         self.assertFalse(parity["matched_superiority_claim_permitted"])
         changed = copy.deepcopy(rows)
-        changed["recurrent"]["paid_actions"] = 6000
+        changed["recurrent"]["paid_actions"] = 5400
         self.assertFalse(compute_parity_report(changed)["matched_paid_actions"])
         changed = copy.deepcopy(rows)
         changed["recurrent"]["public_episodes"] = 1400

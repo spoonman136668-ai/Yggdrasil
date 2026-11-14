@@ -216,12 +216,19 @@ def harness_only_family_breakdown(blocks, family_labels, cohort):
         raise AssertionError("MD35_EVAL_PRIVATE_LABELS_HARNESS_ONLY")
     buckets = {}
     factorial = Counter()
-    for block, label in zip(source, family_labels):
+    for block_index, (block, label) in enumerate(zip(source, family_labels)):
         if (type(label) not in (list, tuple) or len(label) != 3 or
                 label[0] not in PRESPECIFIED_FAMILIES or
                 type(label[1]) is not int or label[1] not in range(4) or
                 type(label[2]) is not bool):
             raise AssertionError("MD35_EVAL_PRIVATE_LABEL_SCHEMA")
+        expected = (
+            PRESPECIFIED_FAMILIES[block_index % 3],
+            (block_index // 3) % 4,
+            ((block_index // 12) % 2) == 1,
+        )
+        if tuple(label) != expected:
+            raise AssertionError("MD35_EVAL_FROZEN_PRIVATE_LAW_ALLOCATION_DRIFT")
         key = (label[0], label[1], label[2])
         factorial[key] += 1
         buckets.setdefault(label[0], []).append(
