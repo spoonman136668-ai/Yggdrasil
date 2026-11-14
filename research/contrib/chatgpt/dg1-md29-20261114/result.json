@@ -1,0 +1,116 @@
+{
+  "schema": "yggdrasil.dg1-md29-toy-result.v1",
+  "experiment_id": "DG1-MD29-20261114",
+  "classification": "DEVELOPMENT_VALID_TASK_NO_NOVEL_GAIN",
+  "stage": "PREFIRSTUSE_TOY_ONLY",
+  "prereg_frozen_before_source_SHA": "401a70dd89f5989c8a32943804d856705c06e7f8",
+  "source_sha": "efdb51658a09ee715fc9efb6957530e61437f0c0",
+  "source_tree": "b43c3f52e2e56200fe9b673c704bc180c476def0",
+  "qualification_run": 43592161360,
+  "frozen_task_gates": {
+    "all_arm_full_training": true,
+    "beats_always_reprobe": true,
+    "beats_interference_ablation": true,
+    "beats_never_reprobe": true,
+    "charged_action_ledger": true,
+    "cold_checkpoint_action_reward": true,
+    "heldout_successes": true,
+    "high_hazard_pays_post": true,
+    "low_hazard_skips_post": true,
+    "noninferior_oracle": true,
+    "noninferior_strong": true,
+    "strict_paired_interference_wins": true,
+    "training_coverage": true,
+    "training_real_actions": true
+  },
+  "frozen_novelty_gates": {
+    "strong_gain": false,
+    "strong_strict_reward_wins": false
+  },
+  "training": {
+    "coverage": {
+      "(0, (0, 0))": 80,
+      "(0, (1, 0))": 80,
+      "(0, (1, 1))": 80,
+      "(1, (0, 0))": 80,
+      "(1, (1, 0))": 80,
+      "(1, (1, 1))": 80
+    },
+    "episodes": 480,
+    "paid_steps": 1920,
+    "physical_sha256": "7f30bc0425b9a83ff1b66d9a2d303a443b6b001f4041d2c90c840ce5329c1b27"
+  },
+  "results_by_arm": {
+    "always_stage2_probe": {
+      "episodes": 32,
+      "goals": 64,
+      "mean_net_utility": 1.74,
+      "paid_steps": 128,
+      "stage2_probes": 32
+    },
+    "never_stage2_probe": {
+      "episodes": 32,
+      "goals": 57,
+      "mean_net_utility": 1.571875,
+      "paid_steps": 96,
+      "stage2_probes": 0
+    },
+    "nongated_global_memory": {
+      "episodes": 32,
+      "goals": 40,
+      "mean_net_utility": 0.695,
+      "paid_steps": 112,
+      "stage2_probes": 16
+    },
+    "regime_gated_memory": {
+      "episodes": 32,
+      "goals": 64,
+      "mean_net_utility": 1.82,
+      "paid_steps": 112,
+      "stage2_probes": 16
+    },
+    "scripted_physics_ceiling": {
+      "episodes": 32,
+      "goals": 64,
+      "mean_net_utility": 1.82,
+      "paid_steps": 112,
+      "stage2_probes": 16
+    },
+    "trained_factorized_bayes": {
+      "episodes": 32,
+      "goals": 64,
+      "mean_net_utility": 1.82,
+      "paid_steps": 112,
+      "stage2_probes": 16
+    },
+    "trained_joint_regime": {
+      "episodes": 32,
+      "goals": 16,
+      "mean_net_utility": -0.43,
+      "paid_steps": 112,
+      "stage2_probes": 16
+    },
+    "trained_logistic_regime": {
+      "episodes": 32,
+      "goals": 16,
+      "mean_net_utility": -0.43,
+      "paid_steps": 112,
+      "stage2_probes": 16
+    }
+  },
+  "mean_utility_margin_over_strongest": 0,
+  "mean_utility_margin_over_nongated": 1.125,
+  "mean_utility_margin_over_always_reprobe": 0.08,
+  "mean_utility_margin_over_never_reprobe": 0.248125,
+  "strict_paired_ablation_wins": 16,
+  "cold_restore_exact_action_reward_trace": true,
+  "dual_os_nontiming_parity": "PASS",
+  "strongest_control": "trained_factorized_bayes",
+  "scientific_interpretation": "Mode-gated event memory retained normal causal sign after contradictory interference and composed withheld wiring in a changing-polarity 2-stage environment, but the fully trained factorized Bayesian controller and physics oracle matched all 64/64 goals and 1.82 mean net reward exactly. No incremental model value, no demonstrated efficiency, no native intelligence gain.",
+  "registered_scientific_cohort_used": false,
+  "scientific_acceptance": "UNVERIFIED",
+  "native_weights_changed": false,
+  "accepted_refs_changed": false,
+  "main_changed": false,
+  "merge_or_deployment": "NONE"
+}
