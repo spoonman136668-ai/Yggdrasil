@@ -21,7 +21,7 @@ sys.path.insert(0, str(HERE.parent / "dg1-md34-20261114"))
 from partial_routes import PartialRouteWorld
 from public_actions import (EXPLORATION_SEED, PublicEpisode, admit_receipt,
                             explore_episode, require_public_blocks)
-from public_policy import choose_route, plan_terminal, route_value
+from public_policy import choose_route, plan_terminal, route_value, one_public_episode
 from bayesian_control import BayesianControl, PARTICLES
 from model_based_rl import ModelBasedRL, SWEEPS, ENSEMBLE
 from gated_recurrent import (GatedRecurrentControl, HIDDEN, SEEDS,
@@ -198,6 +198,31 @@ class MD35PublicControls(unittest.TestCase):
         self.assertGreater(
             route_value((1, 0, 0, 0), 0),
             route_value((1, 0, 0, 0), 1))
+
+    def test_each_untrained_model_uses_only_real_toy_world_actions(self):
+        # Engineering-only toy physics. This is not a model comparison or
+        # scientific qualification; no protected cohort and no training.
+        for cls in (BayesianControl, ModelBasedRL, GatedRecurrentControl):
+            with self.subTest(model=cls.__name__):
+                model = cls()
+                model.begin_block()
+                world = toy_world(0)
+                episode = one_public_episode(
+                    world, model, expected_context=0)
+                receipt = world.receipt()
+                self.assertEqual(episode.trace_sha256,
+                                 receipt["public_trace_sha256"])
+                self.assertEqual(episode.net_utility,
+                                 receipt["net_utility"])
+                self.assertEqual(len(episode.events),
+                                 receipt["paid_steps"])
+                self.assertEqual(
+                    receipt["charged_diagnostics"],
+                    int(episode.diagnostic() is not None))
+                self.assertEqual(model._block_episodes, 1)
+                self.assertEqual(
+                    [e[1] for e in episode.events if e[1] != "diagnostic"],
+                    ["actuator", "route", "terminal"])
 
     def test_no_model_can_read_world_seed_fixture_or_private_law(self):
         for cls in (BayesianControl, ModelBasedRL, GatedRecurrentControl):
