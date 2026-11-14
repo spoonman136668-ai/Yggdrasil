@@ -1,0 +1,48 @@
+name: WSP97 isolated source-pinned G29 atlas companion
+on:
+  push:
+    branches: [research/wsp97-observational-equivalence-20261114]
+permissions:
+  contents: read
+jobs:
+  reanchor:
+    if: "github.event.head_commit.message == 'ci(wsp97): source-pin G29 atlas'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Reanchor exact-source generated G29 only after real public eligibility
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          set -euo pipefail
+          A="$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$A"
+          test -z "$(git status --porcelain)"
+          git merge-base --is-ancestor 01315e8bcaa4b53c6ca83eb9c6e37037a68c0e97 "$A"
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = "cef1378fd3c47ebc74675bd9dde19a183775ceeb"
+          python research/contrib/chatgpt/WSP-97/admission.py --public-pass
+          python scripts/build_code_atlas.py --write --source-commit "$A"
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(wsp97): pin G29 source atlas at $A"
+          B="$(git rev-parse HEAD)"
+          test "$(git diff-tree --no-commit-id --name-only -r "$B" | wc -l | tr -d ' ')" = "3"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/wsp97-observational-equivalence-20261114
+          echo "WSP97_G29_SOURCE=$A"
+          echo "WSP97_G29_COMPANION=$B"
