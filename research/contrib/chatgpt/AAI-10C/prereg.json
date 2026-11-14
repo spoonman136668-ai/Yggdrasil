@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.contrib.aai10c.frozen-compact-causal-statistics.v1",
+  "id": "AAI-10C",
+  "phase": "PREFIRSTUSE_MECHANICAL_ONLY",
+  "lineage": {
+    "base_pr": 1050,
+    "base_sha": "64a585010e13519c6290cc8c406154e1f23b9e78",
+    "benchmark_pr": 1049,
+    "benchmark_blob": "b2c58cb6c2f2d308cdd4da259db74547a27dfa3a",
+    "original_AAI10A_models_blob": "9233ffaafe2f227de687116b0ed4204ee4e2b3a2",
+    "negative_cache_pr": 1052,
+    "negative_cache_sha": "fe09ece1c78ce2de926756301ddb730a01c22450",
+    "old_results": "AAI-10A 129.10x Linux/200.84x Windows vs fastest conventional; AAI-10B 16.048x Linux/22.921x Windows after 8.18x/8.69x old-source speedup. Both frozen negative. No retune/replay."
+  },
+  "hypothesis": "An independent tokenless causal learner using a fixed 3-slot bank of bounded 9-hypothesis operator mismatch sufficient statistics, causal contradiction gating and protected operator signatures can learn and retrieve explanatory causal laws from action consequences without rescanning old observations, at <=2.0x whole development-process cost of the fastest same-information conventional learner, and with lower stored bytes; any true transfer advantage remains unverified until separately authorized science.",
+  "frozen_candidate": {
+    "name": "BoundedCausalSignatureBank",
+    "architecture": "three protected causal-signature slots, 9 public two-input XOR/AND/OR hypotheses per each of two observed mediators; no tokens, transformers, labels or privileged simulator info",
+    "evidence": "only exact public x(3), mediator pair(2), goal(2), observed reward and action count; each observed pre-state and post-state counts as one public event",
+    "slot_state": "stable slot ID, exactly two length-9 integer mismatch counters, row_count, two length-9 small nonnegative prior penalties; zero raw stored observations",
+    "max_slots": 3,
+    "scratch": 2,
+    "max_evidence_per_slot": 96,
+    "hypothesis_selection": "MAP minimum (mismatches + prior_penalty), stable original public 9-operator order tie breaker; output prediction Bernoulli 0.95 for selected hypothesis output 1, 0.05 otherwise; no hidden-law lookups",
+    "switching": "on each pair of public observations, active and dormant slots evaluated on exactly 4 publicly observed mediator bits using their own MAP predictions; if a dormant slot has >=1 fewer mismatches than active, select lowest mismatches then oldest slot ID; do not allocate in same batch as recall",
+    "novelty": "only when no dormancy recall, active has >=8 learned observations, and active MAP predictions disagree on >=2 of the 4 observed outputs of current pair; if available, create fresh slot with operator-reuse prior; otherwise update active",
+    "operator_prior": "when creating new slot, for each output penalize hypotheses whose operator (XOR/AND/OR) differs from the best hypothesis on the oldest protected slot with >=8 observations by exactly +1 mismatch-equivalent; never use hidden-law labels; no prior if no eligible protected slot",
+    "updating": "upon pair commit, for each public (x,mediator) event increment total rows seen and for each of 2 outputs×9 hypotheses increment mismatch counter by 1 exactly when that publicly observed bit differs from hypothesized mediator; saturate at 96 by refusing excess training rows? Instead cap only by active slot final cap 96 events total per slot; if over cap, require explicit failure (no silent forgetting); retained inactive slots immutable",
+    "planning": "same shared AAI-10A `models.plan` planner on `predict` outputs, plus ephemeral per-version decision cache keyed by x,goal,actions_taken; deterministic stop/tie semantics unchanged; internal cache not in checkpoint",
+    "cold": "byte-canonical sorted JSON serializable source state; independent restore has empty ephemeral decision cache, strict state bounds, stable IDs and validated counters",
+    "ablation": "same source bank single-slot (max_slots=1) with no operator prior",
+    "timing": "full lifecycle train 128 explicit synthetic public events + cold canonical checkpoint restore + 12 shared planner decisions, median of 3 isolated repetitions; compare to all original matched controls on same events and machine, no speed tuning after result"
+  },
+  "admission": {
+    "semantic": "synthetic teacher-less exact public observation validation and no hidden fields; every slot counter reflects only public evidence",
+    "mechanistic": "on hand-built distinct A/B phases, ability to hold up to 3 slots and return to prior slot under contradictory input; no hardcoded law labels anywhere in model code",
+    "frozen_controls": "reuse all AAI-10A conventional controls exactly unchanged, including tabular_recent16 as old fastest, symbolic_all/recent8/recent16, tabular_all, logistic_interactions 1200-epoch, symbolic_bank; compare candidate and one-slot ablation, AAI-10A original candidate as separate diagnostic; privileged oracle excluded",
+    "dev_efficiency": "candidate whole seconds / fastest eligible matched conventional <=2.0 on both Ubuntu 24.04 and Windows 2022 (2× hard ceiling); candidate serialized bytes <= fastest conventional bytes on both",
+    "source": "cross-OS deterministic canonical checkpoint SHA256 and chosen policy trace identical on synthetic source; all data from public rows",
+    "science": "zero first-use cohorts consumed; runner disarmed and output labeled DEV mechanical; no post-result retune or replay",
+    "full_regression": "54/54 repo + 8/8 AAI-10P + 10/10 AAI-10A + new AAI-10C focused tests per OS on final candidate exact SHA with clean generated G29 atlas"
+  },
+  "future_science": {
+    "reserved_DEV": "991000..991015",
+    "reserved_TRANSFER": "992000..992063",
+    "reserved_NEGATIVE": "993000..993031",
+    "used": 0,
+    "first_use_authorized": false,
+    "minimum_gain_over_strongest_matched": "unfamiliar C/D transfer world-paired >=+0.08 with CI95 lower>0; compare matched fully trained controls and true process cost; require previously frozen prereg, first-use operator approval separately",
+    "candidate_promotion": false,
+    "native_model_integration": false
+  },
+  "scope": {
+    "allow_source_files": true,
+    "allow_public_one_shot_qualification": true,
+    "allow_dev_synthetic_only": true,
+    "modify_original_AAI10A": false,
+    "modify_AAI10B": false,
+    "modify_AAI10P": false,
+    "modify_main": false,
+    "merge": false,
+    "deploy": false,
+    "runner_controller_scheduler_changes": false,
+    "paid_API": false,
+    "files_library": false
+  },
+  "no_post_result_tuning": true,
+  "classifications": [
+    "ENGINEERING_INVALID",
+    "DEV_EFFICIENCY_NO_GO",
+    "DEV_EFFICIENCY_PASS_SCIENCE_UNVERIFIED"
+  ]
+}
