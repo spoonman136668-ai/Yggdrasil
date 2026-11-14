@@ -1,0 +1,168 @@
+name: DG1-MD32 compositional causal relay task-first preflight
+on:
+  push:
+    branches: [research/dg1-md32-compositional-causal-relay-task-20261114]
+    paths:
+      - 'research/contrib/chatgpt/dg1-md32-20261114/**'
+      - '.github/workflows/dg1-md32-task-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    name: MD32 causal physics and complete inherited qualification (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify original source, prereg-only commit and final G29 atlas
+        shell: bash
+        run: |
+          git merge-base --is-ancestor aedbe74d2b31ead5a0517ce3aa827df9e64abda9 HEAD
+          git merge-base --is-ancestor e8c6fd109941b91ae0829df1113de078fa986dda HEAD
+          git diff --exit-code e8c6fd109941b91ae0829df1113de078fa986dda HEAD -- research/contrib/chatgpt/dg1-md32-20261114/prereg.json
+          git diff --exit-code aedbe74d2b31ead5a0517ce3aa827df9e64abda9 HEAD -- research/contrib/chatgpt/dg1-md30-20261114 research/contrib/chatgpt/dg1-md31-20261114
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          p=json.loads(Path("research/contrib/chatgpt/dg1-md32-20261114/prereg.json").read_text("utf-8"))
+          assert p["status"]=="FROZEN_TASK_DESIGN_ONLY_BEFORE_GENERATOR_SOURCE_OR_FIXTURE_RESULTS"
+          assert p["allocation"]["synthetic_fixture_seeds"]==[9100,9195]
+          assert p["preflight"]["expected_two_probe_net_utility"]==0.8
+          assert p["preflight"]["strong_control_saturation_stop"].startswith("Next gate must")
+          a=json.loads(Path(".ice/code-atlas.json").read_text("utf-8"))
+          source=subprocess.check_output(["git","rev-parse","HEAD^"],text=True).strip()
+          assert a["source_commit"]==source,(a["source_commit"],source)
+          print("MD32_FROZEN_TASK_PREREG_BEFORE_SOURCE_PASS")
+          print("MD32_MD30_MD31_FROZEN_NEGATIVES_UNCHANGED_PASS")
+          PY
+          python scripts/build_code_atlas.py --check
+      - name: Pinned CPU dependencies for complete Yggdrasil regression
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check "minigrid==3.2.0" "gymnasium==1.4.0" "numpy==2.3.4"
+          python - <<'PY'
+          from importlib.metadata import version
+          for package,wanted in (("minigrid","3.2.0"),("gymnasium","1.4.0"),("numpy","2.3.4")):
+              assert version(package)==wanted,(package,version(package))
+          print("MD32_PINNED_CPU_DEPENDENCIES_PASS")
+          PY
+      - name: Mandatory full inherited regression (54 tests)
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+        run: |
+          python -m unittest discover -s tests -p 'test_*.py' -v
+          echo MD32_FULL_YGGDRASIL_INHERITED_REGRESSION_PASS
+      - name: Retain all frozen MD30 tests (32)
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -m unittest discover -s research/contrib/chatgpt/dg1-md30-20261114 -p 'test_*.py' -v
+          echo MD32_FROZEN_MD30_32_TESTS_PASS
+      - name: Retain all frozen MD31 fixture-only tests (7)
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -m unittest discover -s research/contrib/chatgpt/dg1-md31-20261114 -p 'test_*.py' -v
+          echo MD32_FROZEN_MD31_7_TESTS_PASS
+      - name: Qualify new split, physical interventions and independent reference audit
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -m py_compile research/contrib/chatgpt/dg1-md32-20261114/compositional_relay.py research/contrib/chatgpt/dg1-md32-20261114/test_compositional_relay.py
+          python -m unittest discover -s research/contrib/chatgpt/dg1-md32-20261114 -p 'test_*.py' -v
+          python research/contrib/chatgpt/dg1-md32-20261114/compositional_relay.py > md32-task.json
+          python - <<'PY'
+          import json,subprocess,platform
+          from pathlib import Path
+          from importlib.metadata import version
+          p=json.loads(Path("md32-task.json").read_text("utf-8"))
+          assert p["status"]=="TASK_PREFLIGHT_ONLY_NO_TRAINED_CONTROL_NO_SCIENCE"
+          assert p["official_first_use"] is False
+          assert p["learner_training_executed"] is False
+          assert p["fixture_seed_range"]==[9100,9195]
+          assert p["fixture_worlds"]==192
+          assert p["paired_stable_rewire_identifiability"]=="96/96"
+          assert len(p["structure"]["mechanism_sha256"])==6
+          assert p["oracle_mean_net_utility"]==0.96
+          assert p["blind_mean_net_utility"]==-0.165
+          assert p["public_two_probe_mean_net_utility"]==0.8
+          assert p["oracle_blind_headroom"]==1.125
+          assert p["oracle_two_probe_gap"]==0.16
+          assert p["fixed_action_success_fraction"]==0.25
+          assert p["strong_conventional_control_headroom"]=="UNVERIFIED"
+          Path("md32-parity.json").write_bytes(
+             (json.dumps(p,sort_keys=True,separators=(",",":"),ensure_ascii=True)+chr(10)).encode("utf-8"))
+          metadata={
+             "schema":"yggdrasil.dg1-md32-task-run-provenance.v1",
+             "exact_sha":subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip(),
+             "source_sha":subprocess.check_output(["git","rev-parse","HEAD^"],text=True).strip(),
+             "platform":platform.platform(),"python":platform.python_version(),
+             "numpy":version("numpy"),"gymnasium":version("gymnasium"),
+             "minigrid":version("minigrid"),
+             "official_first_use":False,"trained_control_evaluated":False,
+          }
+          Path("md32-provenance.json").write_bytes(
+             (json.dumps(metadata,sort_keys=True,indent=2)+chr(10)).encode("utf-8"))
+          print("MD32_TASK_PHYSICS_FIXTURE_PASS")
+          print("MD32_ORACLE_BLIND_GAP:",p["oracle_blind_headroom"])
+          print("MD32_ORACLE_PHYSICAL_REFERENCE_GAP:",p["oracle_two_probe_gap"])
+          print("MD32_NO_MODEL_LEARNING_OR_SCIENTIFIC_FIRST_USE")
+          PY
+          python scripts/build_code_atlas.py --check
+          git diff --exit-code
+      - name: Preserve detailed task audit/provenance as repo Actions artifact only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: md32-task-preflight-${{ matrix.os }}
+          path: |
+            md32-task.json
+            md32-parity.json
+            md32-provenance.json
+          if-no-files-found: error
+  parity:
+    name: MD32 byte-exact two-OS public physical fixture parity
+    needs: qualification
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: md32-task-preflight-ubuntu-latest
+          path: linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: md32-task-preflight-windows-2022
+          path: windows
+      - name: Compare exact action, causal response and nonlearning receipts
+        shell: bash
+        run: |
+          cmp linux/md32-parity.json windows/md32-parity.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("linux/md32-parity.json").read_text())
+          assert p["official_first_use"] is False
+          assert p["learner_training_executed"] is False
+          assert p["fixture_worlds"]==192
+          assert p["oracle_blind_headroom"]==1.125
+          assert p["oracle_two_probe_gap"]==0.16
+          print("MD32_CROSS_OS_EXACT_CAUSAL_PHYSICS_RECEIPT_PASS")
+          print("MD32_STRONG_TRAINED_CONTROL_HEADROOM_UNVERIFIED")
+          PY
