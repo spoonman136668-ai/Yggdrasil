@@ -1,0 +1,62 @@
+{
+  "schema": "yggdrasil.contrib.aai08p.external-nonstationarity-preflight.v1",
+  "id": "AAI-08P",
+  "phase": "mechanical external source admission; NO scientific primary",
+  "context": "After AAI-07B draft PR #1035 learning success but identical 64/64 with fully trained logistic and exact Beta. Target genuinely time-varying action-transition dynamics rather than cue-match repetition.",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "parent_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "upstream": {
+    "repo": "scope-lab-vu/ns_gym",
+    "commit": "127df4b714fe4fcf680721d8e9278a96090acd7e",
+    "license": "MIT",
+    "bridge_source": "ns_gym/envs/Bridge.py",
+    "bridge_blob": "02415d65ff8a0c419d32f274e2669f9e54e8d29f",
+    "wrapper_source": "ns_gym/wrappers/toy_text.py",
+    "wrapper_blob": "cd94311a4d312b9d8c35b7719207020150caa300",
+    "source_transfer": "git fetch exact immutable SHA, detached checkout, pip install -e --no-deps"
+  },
+  "dependencies": {
+    "python": "3.12",
+    "minimal": [
+      "numpy==1.26.4",
+      "gymnasium==1.2.2",
+      "scipy==1.15.3",
+      "PyYAML==6.0.2",
+      "mujoco==3.3.7"
+    ],
+    "note": "NS-Gym top-level wrapper imports MuJoCo even for non-MuJoCo Bridge; don't install torch/training stacks in mechanical preflight. `pip check` cannot pass with --no-deps due unrelated package declared dependencies. Exact runtime imports and API are the gate."
+  },
+  "mechanical": {
+    "environment": "ns_gym/Bridge-v0 with official NSBridgeWrapper and DistributionStepWiseUpdate at t=3",
+    "frozen_real_action_prefix": [
+      2,
+      0,
+      2,
+      2
+    ],
+    "baseline": "No transition change: scheduled non-event; [1,0,0] intended motion",
+    "intervention": "At third-to-fourth action change P from [1,0,0] to [0,1,0], deterministic perpendicular motion; not a manually altered reward",
+    "notification": "change_notification=False and delta_change_notification=False; agent receives only public state integer, scalar reward, terminated/truncated",
+    "seeds": [
+      996000,
+      996001,
+      996002,
+      996003
+    ],
+    "expected": "Action histories equal; state/consequence traces diverge following t=3 transition; real negative bridge outcome demonstrates causal nonstationarity; same seed repeat bit-exact (deterministic distributions); no learning performance claims",
+    "external_rng_warning": "Official Bridge.step uses global numpy.random.choice, not environment np_random. Preflight uses deterministic one-hot transition laws; do not claim stochastic reproducibility or science seeds verified by reset alone.",
+    "falsification": "If effect fails, preflight rejects external setup. Preserve failure and diagnose source/contract. No scientific first-use."
+  },
+  "next_science": {
+    "not_yet_authorized_first_use": "Separate scientific prereg after engineering passes",
+    "task": "Action-consequence online learner must identify shifts in actual NS-Gym transitions from observed (state,action,next_state,reward), then retain old regimes under returns/switchbacks",
+    "matched_controls": "Fully trained stationary model, sliding-window MLE, change-point Bayesian model, matched-context tabular counting, random/policy, exact model prior where applicable; identical online actions, data, compute and hidden shift schedule excluded from learner",
+    "metrics": "Causal prediction accuracy, intervention value, task reward, action and compute cost, cold replay and interference across multiple switches with disjoint seeds",
+    "no_oracle": "No official wrapper notifications, transition distributions, change timestamps, or planning env exposed to learner"
+  },
+  "isolated": true,
+  "no_native_yggdrasil_modifications": true,
+  "no_merge_authority": true,
+  "no_controller_or_scheduler_execution": true,
+  "no_paid_apis": true
+}
