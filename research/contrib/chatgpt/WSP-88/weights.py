@@ -38,11 +38,11 @@ def five_gram_bins(raw: str) -> tuple[int, ...]:
     # No lexical/word boundaries: these are raw overlapping character windows.
     features(raw)  # validate even for short text
     stream = "\u0002" + unicodedata.normalize("NFC", raw).casefold() + "\u0003"
-    return tuple(sorted({
+    return tuple(
         int.from_bytes(hashlib.blake2s(b"\x05" + stream[i:i + 5].encode("utf-8"),
                                        digest_size=4).digest(), "big") % WIDTH
         for i in range(max(0, len(stream) - 4))
-    }))
+    )
 
 
 class DirectWeights:
@@ -66,25 +66,38 @@ class DirectWeights:
         # Contrast against common framing/object grams; only features
         # concentrated in a grounded action class contribute strongly.
         total = {i: sum(row[i] for row in self.positive_support) for i, _ in f}
-        return tuple(
+        base = [
             sum(row[i] * v * (self.positive_support[c][i] / total[i]
                               if total[i] else 0.0) for i, v in f)
             for c, row in enumerate(self.weights)
-        )
+        ]
+        # Reward motifs that were consistently grounded to one actuator.
+        # A five-character window is not a word/token; all windows are used.
+        for idx in five_gram_bins(text):
+            counts = [row[idx] for row in self.positive_support]
+            denom = sum(counts)
+            if denom:
+                for c in range(3):
+                    if counts[c] >= 2 and counts[c] / denom >= SIGNAL_THRESHOLD:
+                        base[c] += 0.35 * math.log1p(counts[c])
+        return tuple(base)
 
     def predict(self, text: str) -> int | None:
         f = features(text)
         scores = self.scores(text)
         order = sorted(range(3), key=lambda i: (-scores[i], i))
         margin = scores[order[0]] - scores[order[1]]
-        signals = 0
+        run, max_run = 0, 0
         for idx in five_gram_bins(text):
             counts = [row[idx] for row in self.positive_support]
             total = sum(counts)
             if (counts[order[0]] >= 2 and total > 0 and
                     counts[order[0]] / total >= SIGNAL_THRESHOLD):
-                signals += 1
-        return order[0] if margin >= MARGIN and signals >= MIN_SIGNALS else None
+                run += 1
+                max_run = max(max_run, run)
+            else:
+                run = 0
+        return order[0] if margin >= MARGIN and max_run >= MIN_SIGNALS else None
 
     def snapshot(self) -> str:
         payload = {"width": WIDTH, "weights": self.weights,
