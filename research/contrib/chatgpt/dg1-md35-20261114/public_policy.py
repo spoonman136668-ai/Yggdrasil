@@ -3,15 +3,18 @@
 A controller sees exactly the public World.observe/step/receipt port and
 predictive model interface. No model fit or heldout first-use entrypoint.
 """
+import math
 from public_actions import admit_receipt, PublicEpisode
 
 ARMS = ("trained", "no_diagnostic", "route0_only")
 
 
 def plan_terminal(probabilities, parity=None):
-    if (len(probabilities) != 4 or any(
-            type(x) not in (float, int) or x < 0 or x > 1
-            for x in probabilities) or
+    if (type(probabilities) not in (tuple, list) or
+            len(probabilities) != 4 or any(
+                type(x) not in (float, int) or
+                not math.isfinite(x) or x < 0 or x > 1
+                for x in probabilities) or
             abs(sum(probabilities) - 1) > 1e-6):
         raise AssertionError("MD35_INVALID_PREDICTIVE_DISTRIBUTION")
     p = tuple(probabilities)
@@ -29,6 +32,8 @@ def plan_terminal(probabilities, parity=None):
 
 
 def route_value(probabilities, route, *, allow_diagnostic=True):
+    if type(route) is not int or route not in (0, 1):
+        raise AssertionError("MD35_INVALID_PHYSICAL_ROUTE")
     paid_probe, guess = plan_terminal(probabilities)
     if type(allow_diagnostic) is not bool:
         raise AssertionError("MD35_INVALID_ABLATION_MODE")
