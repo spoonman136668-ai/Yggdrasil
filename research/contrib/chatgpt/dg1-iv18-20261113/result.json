@@ -1,0 +1,121 @@
+{
+  "schema": "yggdrasil.dg1-iv18-qualified-result-summary.v1",
+  "experiment_id": "DG1-IV18-20261113",
+  "original_firstuse_sha": "d05ace991a6417532fd8603f273048d67ad2021d",
+  "original_run": 43541356818,
+  "classification": "MIXED_DEV",
+  "primary_pass": false,
+  "scientific_acceptance": "NOT_ESTABLISHED",
+  "scope": "Independent synthetic development research, original first-use frozen; no native Yggdrasil/AGI or controller claims",
+  "physical_custody": {
+    "worlds": 16,
+    "arms": 6,
+    "training_paid_actions": 15360,
+    "heldout_physical_probe_and_goal_actions": 9216,
+    "total_actions": 24576,
+    "identical_training_trace_all_arms": true
+  },
+  "frozen_gates": {
+    "C_factorized_known_reuse": true,
+    "C_false_novel_routes": false,
+    "cpu_vs_rls": true,
+    "cpu_vs_ungated": true,
+    "return_A_memory_recovery": true,
+    "return_A_vs_no_archive": true,
+    "return_A_vs_sham_route": true,
+    "return_A_vs_strong": true,
+    "return_A_vs_ungated_route": false,
+    "return_A_world_wins": true,
+    "unseen_C_vs_no_archive": true,
+    "unseen_C_vs_sham_route": false,
+    "unseen_C_vs_strong": false,
+    "unseen_C_vs_ungated_route": false,
+    "unseen_C_world_wins": false
+  },
+  "original_mean_goal_action_regret": {
+    "certified_gate": {
+      "128": {
+        "mse": 0.003036821468,
+        "regret": 0.006705636159
+      },
+      "160": {
+        "mse": 0.028085759324,
+        "regret": 0.055212400233
+      }
+    },
+    "forgetting_rls": {
+      "128": {
+        "mse": 0.012341162604,
+        "regret": 0.026292793453
+      },
+      "160": {
+        "mse": 0.030496519576,
+        "regret": 0.063579716099
+      }
+    },
+    "integer_recurrent": {
+      "128": {
+        "mse": 0.142236006653,
+        "regret": 0.397539837596
+      },
+      "160": {
+        "mse": 0.14680403233,
+        "regret": 0.351998268316
+      }
+    },
+    "no_archive": {
+      "128": {
+        "mse": 0.016480512813,
+        "regret": 0.038178225358
+      },
+      "160": {
+        "mse": 0.039146619538,
+        "regret": 0.082184829439
+      }
+    },
+    "sham_route": {
+      "128": {
+        "mse": 0.010966533795,
+        "regret": 0.021237563031
+      },
+      "160": {
+        "mse": 0.033680596596,
+        "regret": 0.062922718314
+      }
+    },
+    "ungated_route": {
+      "128": {
+        "mse": 0.00124304307,
+        "regret": 0.004528303631
+      },
+      "160": {
+        "mse": 0.026269615628,
+        "regret": 0.052616772242
+      }
+    }
+  },
+  "interpretation": "Two-probe certified veto underperformed equally trained ungated causal-memory retrieval on both cold-return A and nonlinear unfamiliar C, despite improving over forgetting RLS. Candidate did not reliably suppress false archived module routing; frozen primary hypothesis fails. No post-result tuning.",
+  "original_verification": {
+    "ubuntu_job": 132282411447,
+    "windows_job": 132282411074,
+    "strict_parity_job": 132282651803,
+    "full_regression_each_os": "54/54 PASS",
+    "pre_firstuse_each_os": "9/9 PASS",
+    "g29_run": 43541356821,
+    "g29_both_os": "PASS",
+    "cross_os_all_non_timing_fields": "PASS",
+    "cross_os_checkpoint_hashes": "PASS"
+  },
+  "artifacts": {
+    "ubuntu": {
+      "id": 14092391266,
+      "archive_sha256": "de14e4bc425cf062db6b79e93f863175cf6a10c6815c21bfa72e3e2b2abdb749"
+    },
+    "windows": {
+      "id": 14092022726,
+      "archive_sha256": "d2bc41bf520a09d1e4471be3b0ed4f4abcc371556ee67eaeb7e391d730fd263f"
+    }
+  },
+  "no_promote": true,
+  "deployment": "NONE"
+}
