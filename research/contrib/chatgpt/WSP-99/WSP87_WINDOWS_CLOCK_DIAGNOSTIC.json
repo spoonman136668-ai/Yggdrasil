@@ -1,0 +1,45 @@
+{
+  "schema": "wsp99.inherited-wsp87-clock-diagnostic.v1",
+  "scope": "Engineering-only read-only diagnosis; WSP87 source/fixtures/thresholds unchanged",
+  "diagnostic_source_sha": "46fc0ae6bf33c826b1d2acbd16d9464b70bf4678",
+  "diagnostic_run_id": 43610089298,
+  "diagnostic_run_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43610089298",
+  "failed_unchanged_windows_full_regression_runs": [
+    43609172187,
+    43609533371
+  ],
+  "windows": {
+    "replicates": 24,
+    "zero_cpu_worlds": 1,
+    "negative_replicates": 1,
+    "negative_checks": [
+      "whole_cpu_accounted"
+    ],
+    "distinct_cpu_ns": [
+      0,
+      15625000,
+      31250000
+    ],
+    "first_negative_example": {
+      "checks": [
+        "whole_cpu_accounted"
+      ],
+      "classification": "DEV_SUBSTRATE_NEGATIVE",
+      "cpu_ns": [
+        31250000,
+        0
+      ]
+    }
+  },
+  "ubuntu": {
+    "replicates": 24,
+    "zero_cpu_worlds": 0,
+    "negative_replicates": 0,
+    "negative_checks": []
+  },
+  "diagnosis": "Inherited WSP87 `whole_cpu_accounted` positive-CPU requirement occasionally fails on Windows when time.process_time_ns reports 0 for a short fixture due observed 15.625ms quantization; deterministic learning predictions and all eight other WSP87 checks remain correct. Prior Windows final regression failures were on this same WSP87 test. No WSP99 scientific failure.",
+  "remediation_boundary": "Do NOT change WSP87 frozen science source, thresholds, model or test expected classification to force PASS. Leave exact full final Windows regression unqualified; WSP99 ceiling result is negative DEV evidence, preserved without promotion. A distinct owner-qualified portability fix would be required for future full regression.",
+  "science": "UNVERIFIED; WSP99 independent symbolic control 100% DEV ceiling; no original public/reserved first-use",
+  "model_merged": false,
+  "accepted_model_edited": false
+}
