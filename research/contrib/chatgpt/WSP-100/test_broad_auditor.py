@@ -94,6 +94,7 @@ class BroadAuditDevelopmentTests(unittest.TestCase):
         b = sources(1)
         p = heldout_plan(b)
         changed = copy.deepcopy(b)
+        changed["passive"] = list(changed["passive"])
         changed["passive"][0] = changed["active"][0]
         with self.assertRaises((ValueError, PermissionError, TypeError)):
             audit(changed, p)
