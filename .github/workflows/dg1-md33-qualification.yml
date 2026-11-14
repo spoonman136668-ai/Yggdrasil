@@ -1,0 +1,200 @@
+name: DG1-MD33 trained conventional causal controls synthetic qualification
+on:
+  push:
+    branches: [research/dg1-md33-conventional-controls-20261114]
+    paths:
+      - 'research/contrib/chatgpt/dg1-md33-20261114/**'
+      - '.github/workflows/dg1-md33-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    name: MD33 full regression and trained controls (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Frozen prereg, original source custody and derived G29 atlas
+        shell: bash
+        run: |
+          git merge-base --is-ancestor 7551d15cafe9bf028242f009de2218773a7b40ba HEAD
+          git merge-base --is-ancestor fc827ffb0e1f1ec3095b535e3ae7a7c9ad9ac4f7 HEAD
+          git diff --exit-code fc827ffb0e1f1ec3095b535e3ae7a7c9ad9ac4f7 HEAD -- research/contrib/chatgpt/dg1-md33-20261114/prereg.json
+          git diff --exit-code 7551d15cafe9bf028242f009de2218773a7b40ba HEAD -- research/contrib/chatgpt/dg1-md30-20261114 research/contrib/chatgpt/dg1-md31-20261114 research/contrib/chatgpt/dg1-md32-20261114
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          lock=json.loads(Path("research/contrib/chatgpt/dg1-md33-20261114/prereg.json").read_text("utf-8"))
+          assert lock["status"]=="FROZEN_BEFORE_NEW_GENERATOR_BASELINES_OR_OUTCOMES"
+          assert lock["parent"]["source_sha"]=="7551d15cafe9bf028242f009de2218773a7b40ba"
+          assert lock["synthetic_cohorts"]["train"]["first"]==11000
+          assert lock["synthetic_cohorts"]["transfer"]["last"]==13191
+          assert lock["synthetic_cohorts"]["cold"]["last"]==14095
+          assert lock["paid_data"]["shared_train_physical_actions"]==3072
+          atlas=json.loads(Path(".ice/code-atlas.json").read_text("utf-8"))
+          source=subprocess.check_output(["git","rev-parse","HEAD^"],text=True).strip()
+          assert atlas["source_commit"]==source,(atlas["source_commit"],source)
+          print("MD33_FROZEN_ORIGINAL_PROTOCOL_AND_PARENT_SOURCE_PASS")
+          print("MD33_NO_OFFICIAL_FIRST_USE_SEEDS_PASS")
+          PY
+          python scripts/build_code_atlas.py --check
+      - name: Install fixed CPU runtime and full inherited regression requirements
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check "minigrid==3.2.0" "gymnasium==1.4.0" "numpy==2.3.4"
+          python - <<'PY'
+          from importlib.metadata import version
+          for package,want in (("minigrid","3.2.0"),("gymnasium","1.4.0"),("numpy","2.3.4")):
+              assert version(package)==want,(package,version(package))
+          print("MD33_PINNED_CPU_RUNTIME_PASS")
+          PY
+      - name: Mandatory complete inherited Yggdrasil tests (54)
+        shell: bash
+        env:
+          SDL_VIDEODRIVER: dummy
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -m unittest discover -s tests -p 'test_*.py' -v
+          echo MD33_FULL_INHERITED_54_PASS
+      - name: Retain every frozen MD30 focused test (32)
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -m unittest discover -s research/contrib/chatgpt/dg1-md30-20261114 -p 'test_*.py' -v
+          echo MD33_FROZEN_MD30_32_PASS
+      - name: Retain frozen MD31 and MD32 tests (7 and 8)
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -m unittest discover -s research/contrib/chatgpt/dg1-md31-20261114 -p 'test_*.py' -v
+          python -m unittest discover -s research/contrib/chatgpt/dg1-md32-20261114 -p 'test_*.py' -v
+          echo MD33_FROZEN_MD31_MD32_15_PASS
+      - name: MD33 training-only tests before any novel synthetic transfer use
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          OPENBLAS_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+        run: |
+          python -m py_compile research/contrib/chatgpt/dg1-md33-20261114/synthetic.py research/contrib/chatgpt/dg1-md33-20261114/categorical_controls.py research/contrib/chatgpt/dg1-md33-20261114/recurrent_control.py research/contrib/chatgpt/dg1-md33-20261114/evaluate.py research/contrib/chatgpt/dg1-md33-20261114/test_controls.py
+          python -m unittest discover -s research/contrib/chatgpt/dg1-md33-20261114 -p 'test_*.py' -v
+          python - <<'PY'
+          import json,sys
+          from pathlib import Path
+          sys.path.insert(0, "research/contrib/chatgpt/dg1-md33-20261114")
+          from synthetic import structural_split_audit
+          report=structural_split_audit()
+          assert report["official_first_use"] is False
+          Path("md33-splits.json").write_bytes(
+              (json.dumps(report,sort_keys=True,separators=(",",":"),ensure_ascii=True)+chr(10)).encode("utf-8"))
+          print("MD33_CANONICAL_LF_SPLIT_MANIFEST_PASS")
+          PY
+          echo MD33_CHARGED_TRAIN_ONLY_AND_STRICT_SPLITS_PASS
+      - name: Execute exactly one frozen synthetic trained-control transfer and cold evaluation
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          OPENBLAS_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+        run: |
+          python research/contrib/chatgpt/dg1-md33-20261114/evaluate.py > md33-result.json
+          python - <<'PY'
+          import json,platform,subprocess
+          from pathlib import Path
+          from importlib.metadata import version
+          import sys
+          sys.path.insert(0, "research/contrib/chatgpt/dg1-md33-20261114")
+          from evaluate import portable_receipt,ARMS,TRAINED
+          r=json.loads(Path("md33-result.json").read_text("utf-8"))
+          assert r["status"]=="SYNTHETIC_CONVENTIONAL_CONTROL_DIAGNOSTIC_NO_SCIENTIFIC_PASS"
+          assert r["official_first_use"] is False
+          assert r["shared_charged_training"]["charged_actions"]==3072
+          assert r["charged_validation"]["charged_actions"]==768
+          assert r["cold_replay_byte_equal"] is True
+          assert set(r["transfer"])==set(r["cold_restored"])==set(ARMS)
+          assert all(r["transfer"][a]["episodes"]==192 for a in ARMS)
+          assert all(r["cold_restored"][a]["episodes"]==96 for a in ARMS)
+          assert all(r["transfer"][a]["mean_net_utility"]<=0.96 for a in ARMS)
+          assert all(r["cold_restored"][a]["mean_net_utility"]<=0.96 for a in ARMS)
+          assert r["decision"]["scientific_pass"] is False
+          assert r["decision"]["native_model_integration_authorized"] is False
+          assert r["decision"]["compute_matched_scientifically"] is False
+          p=portable_receipt(r)
+          Path("md33-parity.json").write_bytes(
+              (json.dumps(p,sort_keys=True,separators=(",",":"),ensure_ascii=True)+chr(10)).encode("utf-8"))
+          provenance={
+              "schema":"md33.conventional-control-original-source.v1",
+              "sha":subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip(),
+              "source_sha":subprocess.check_output(["git","rev-parse","HEAD^"],text=True).strip(),
+              "python":platform.python_version(),
+              "platform":platform.platform(),
+              "numpy":version("numpy"),"gymnasium":version("gymnasium"),
+              "minigrid":version("minigrid"),"official_first_use":False,
+              "classification":r["decision"]["classification"],
+          }
+          Path("md33-provenance.json").write_bytes(
+              (json.dumps(provenance,sort_keys=True,indent=2)+chr(10)).encode("utf-8"))
+          print("MD33_SYNTHETIC_CONVENTIONAL_CLASSIFICATION:",r["decision"]["classification"])
+          for name in ARMS:
+              print("MD33_ARM:",name,"TRANSFER:",r["transfer"][name]["mean_net_utility"],"COLD:",r["cold_restored"][name]["mean_net_utility"],"CHARGED_TRANSFER_PROBES:",r["transfer"][name]["charged_physical_diagnostics"])
+          print("MD33_SHARED_PHYSICAL_TRAINING_ACTIONS:",r["shared_charged_training"]["charged_actions"])
+          print("MD33_NO_SCIENTIFIC_FIRST_USE_OR_PROMOTION")
+          PY
+          python scripts/build_code_atlas.py --check
+          git diff --exit-code
+      - name: Store complete source-locked evidence in GitHub Actions only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: md33-conventional-controls-${{ matrix.os }}
+          path: |
+            md33-splits.json
+            md33-result.json
+            md33-parity.json
+            md33-provenance.json
+          if-no-files-found: error
+  parity:
+    name: MD33 cross-platform exact paid-action and classification parity
+    needs: qualification
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: md33-conventional-controls-ubuntu-latest
+          path: linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: md33-conventional-controls-windows-2022
+          path: windows
+      - name: Byte-exact public physics and policy outcome parity
+        shell: bash
+        run: |
+          cmp linux/md33-splits.json windows/md33-splits.json
+          cmp linux/md33-parity.json windows/md33-parity.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("linux/md33-parity.json").read_text("utf-8"))
+          assert p["official_first_use"] is False
+          assert p["cold_replay_byte_equal"] is True
+          assert p["shared_charged_training"]["charged_actions"]==3072
+          assert p["decision"]["scientific_pass"] is False
+          print("MD33_CROSS_OS_EXACT_PAID_CAUSAL_ACTION_REWARD_PARITY_PASS")
+          print("MD33_ORIGINAL_SCIENTIFIC_FIRST_USE_NOT_EXECUTED")
+          PY

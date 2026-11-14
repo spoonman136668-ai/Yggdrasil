@@ -1,0 +1,199 @@
+{
+  "schema": "yggdrasil.dg1-md33-conventional-controls-result.v1",
+  "experiment_id": "DG1-MD33-20261114",
+  "status": "SYNTHETIC_DEVELOPMENT_HEADROOM_UNVERIFIED_NO_SCIENTIFIC_PASS",
+  "source_sha": "5e50528bb585b0a732b518400349408ab5d6b0ed",
+  "frozen_prereg_commit": "fc827ffb0e1f1ec3095b535e3ae7a7c9ad9ac4f7",
+  "prereg_blob_sha": "c78f9a3c8f9a1ee3cb815b3f757f5517a5352106",
+  "first_atlas_sha": "782f6755864108e792fc02a141c69c771e8aa797",
+  "parity_only_fix_commit": "d87110177ae48b2ba20485901ba6dcc8412d242b",
+  "qualified_exact_sha": "9dd04218a8c1ba4fc99e5be6678ad2351da5ad7c",
+  "official_first_use": false,
+  "original_md32_source_and_all_frozen_negatives_unchanged": true,
+  "cohorts": {
+    "train": {
+      "seeds": [
+        11000,
+        11767
+      ],
+      "episodes": 768,
+      "blocks": 192,
+      "paid_actions": 3072,
+      "public_trace_sha256": "c039483825b69eebca67fff903251c6c90e3221f3c98ff8e39de36c4dd8bdd75"
+    },
+    "validation": {
+      "seeds": [
+        12000,
+        12191
+      ],
+      "episodes": 192,
+      "blocks": 48,
+      "paid_actions": 768,
+      "public_trace_sha256": "e809a939b69a8475509643df03bd240de78817bfca2ac5d31af927f018e5a9f0"
+    },
+    "transfer": {
+      "seeds": [
+        13000,
+        13191
+      ],
+      "episodes": 192,
+      "blocks": 48,
+      "motifs": [
+        "braid",
+        "inhibitor",
+        "crossbridge"
+      ],
+      "source_disjoint": true
+    },
+    "cold": {
+      "seeds": [
+        14000,
+        14095
+      ],
+      "episodes": 96,
+      "blocks": 24,
+      "motifs": [
+        "braid",
+        "inhibitor",
+        "crossbridge"
+      ],
+      "cold_reloaded": true
+    }
+  },
+  "models": {
+    "trained_factorized_bayesian": {
+      "trained_public_probes": 1536,
+      "validation_nll": 1.18789211,
+      "checkpoint_sha256": "39dad3f8dbfb34fb6fec2f9a21f75789d09d89491addc399dc5621e5fc95d5de",
+      "checkpoint_bytes": 291
+    },
+    "trained_empirical_model_based_rl": {
+      "trained_public_probes": 1536,
+      "validation_nll": 1.19098852,
+      "checkpoint_sha256": "d4479cf5f5fbbbb65a1f514788333905235d8272b55bbf11fb8b349cfa1992f0",
+      "checkpoint_bytes": 295
+    },
+    "trained_recurrent_world_model": {
+      "architecture": [
+        10,
+        24,
+        4
+      ],
+      "trainable_parameters": 964,
+      "initial_train_cross_entropy": 1.4062039,
+      "final_train_cross_entropy": 0.3125366,
+      "validation_best_cross_entropy": 0.3125366,
+      "epochs_executed": 63,
+      "best_epoch": 51,
+      "checkpoint_sha256": "5db6018e14eeb4ca55209c3d1479a9b1cd1e41afe4fc642b3879174948b4757b",
+      "checkpoint_bytes": 12565
+    }
+  },
+  "scores": {
+    "trained_factorized_bayesian": {
+      "transfer_mean": 0.813333,
+      "cold_mean": 0.813333,
+      "transfer_success": 1,
+      "transfer_paid_diagnostics": 352,
+      "transfer_by_motif": {
+        "braid": 0.8,
+        "inhibitor": 0.82,
+        "crossbridge": 0.82
+      },
+      "transfer_stable_mean": 0.813333,
+      "transfer_rewire_mean": 0.813333,
+      "transfer_trace_sha256": "af50ba7547cd0bf875d12719868baf1f395418e1e119f0398b35616ddf5d49d7"
+    },
+    "trained_empirical_model_based_rl": {
+      "transfer_mean": 0.813333,
+      "cold_mean": 0.813333,
+      "transfer_success": 1,
+      "transfer_paid_diagnostics": 352,
+      "transfer_by_motif": {
+        "braid": 0.8,
+        "inhibitor": 0.82,
+        "crossbridge": 0.82
+      },
+      "transfer_stable_mean": 0.813333,
+      "transfer_rewire_mean": 0.813333,
+      "transfer_trace_sha256": "af50ba7547cd0bf875d12719868baf1f395418e1e119f0398b35616ddf5d49d7"
+    },
+    "trained_recurrent_world_model": {
+      "transfer_mean": 0.07625,
+      "cold_mean": 0.07625,
+      "transfer_success": 0.4375,
+      "transfer_paid_diagnostics": 96,
+      "transfer_by_motif": {
+        "braid": 0.07625,
+        "inhibitor": 0.07625,
+        "crossbridge": 0.07625
+      },
+      "transfer_trace_sha256": "f4fffe7178d1088ef0644c0059c517b0f66eb99ac5dc44257a384556333a0f02"
+    },
+    "handcoded_public_two_probe": {
+      "transfer_mean": 0.8,
+      "cold_mean": 0.8,
+      "transfer_success": 1,
+      "transfer_paid_diagnostics": 384
+    },
+    "blind_fixed_terminal_0": {
+      "transfer_mean": -0.165,
+      "cold_mean": -0.165,
+      "transfer_success": 0.25,
+      "transfer_paid_diagnostics": 0
+    },
+    "privileged_oracle_upper_bound": {
+      "transfer_mean": 0.96,
+      "cold_mean": 0.96,
+      "transfer_success": 1,
+      "transfer_paid_diagnostics": 0
+    }
+  },
+  "decision": {
+    "frozen_classification": "SYNTHETIC_DEVELOPMENT_HEADROOM_UNVERIFIED",
+    "strongest_trained_transfer_mean": 0.813333,
+    "strongest_trained_cold_mean": 0.813333,
+    "prespecified_saturation_threshold": 0.91,
+    "any_trained_control_saturates": false,
+    "oracle_minus_best_trained": 0.146667,
+    "best_trained_minus_handcoded_reference": 0.013333,
+    "saved_probes_versus_handcoded_on_192_episodes": 32,
+    "rnn_transfer_goal_failure_fraction": 0.5625,
+    "bayesian_and_empirical_rl_action_receipt_equal": true,
+    "strong_independent_control_diversity": "UNVERIFIED: Bayesian and empirical model-based RL generated exact-identical actions; recurrent model trained and validation-fit but unfamiliar-family transfer failed",
+    "compute_matched_scientifically": false,
+    "native_yggdrasil_mechanism_evaluated": false,
+    "scientific_pass": false,
+    "native_weights_promoted": false,
+    "interpretation": "A two-probe handcoded reference already achieves 100% goals. Bayes and empirical RL independently fit categorical tables but choose identical action traces; modest gain comes solely from 32 fewer paid probes. RNN fits train-family observations but misses 56.25% unfamiliar goals. Task not proven saturated at +0.91, but this result is not evidence of AGI, causal generalization of a native model, or rigorous matched-compute conventional-control adequacy."
+  },
+  "reproducibility": {
+    "first_execution_run": 43623070790,
+    "first_parity_failure": "ENGINEERING_ONLY_WINDOWS_CRLF_IN_SPLIT_JSON; both platforms' parsed split and exact portable model/action results were equal",
+    "changed_after_first_outcome": "Workflow-only LF serialization; no generator/model/optimizer/hyperparameter/cohort/threshold/code changes",
+    "final_qualification_run": 43623486120,
+    "final_qualification": "SUCCESS",
+    "platforms": [
+      "ubuntu-latest",
+      "windows-2022"
+    ],
+    "tests_per_platform": {
+      "inherited": 54,
+      "md30": 32,
+      "md31": 7,
+      "md32": 8,
+      "md33": 8,
+      "total": 109
+    },
+    "cross_os_public_trace_action_reward_and_classification_parity": "PASS_EXACT_BYTES",
+    "source_atlas_run": 43623628942,
+    "source_atlas": "SUCCESS_LINUX_WINDOWS",
+    "full_portable_parity_sha256": "591c4fb614d2c78ae29293536315c70bf21cbcb15540a37b044316eff593bb5f",
+    "full_linux_artifact_digest": "sha256:07b6994e3051e7d78bec029658241100c4a2a7a9c5d4e03c4ae445d5d6c574dd",
+    "full_windows_artifact_digest": "sha256:2b0c6758c53b95a41e49b38b9f58db732f9949189f4fa39942218b8a684b28f2",
+    "linux_result_sha256": "cd0d76ad004c90b13acf0eee164707f7d18380739ae14de0d915a9ef29873388",
+    "linux_train_and_validation_CPU_seconds": 0.7017,
+    "note": "Full-process CPU differs across platforms and compute budgets between models; this is measured and NOT a matched-compute scientific comparison."
+  },
+  "next_scientific_step": "Freeze another independent, harder causal task/control benchmark with genuinely consequential multi-step interventions, imperfect diagnostic identifiability and matched compute/strong recurrent baselines. Do not tune MD33 on observed transfer/cold or declare the native Yggdrasil learner superior."
+}
