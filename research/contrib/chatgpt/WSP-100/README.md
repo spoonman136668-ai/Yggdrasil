@@ -16,3 +16,13 @@ We are testing whether a six-channel, four-valued system with two hidden latches
 Development command: `PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s research/contrib/chatgpt/WSP-100 -p 'test_*.py' -v`
 
 The next research gate must first establish original-task identifiability against the full broad allowed grammar, freeze strong comparison models and budgets, and independently admit any original first-use. Never use fixture scores to claim intelligence.
+
+## Next gate: broader independent fixture identifiability audit
+
+Frozen **before implementation**: `4d80e9fc3872eb72e088a04befeb6455905adf0e` (`broad_audit_prereg.json`).
+
+The earlier 256-program DEV checker used exactly the generating family's hypothesis space. The separately implemented `broad_auditor.py` now uses **2,048** programs by considering four alternative second-stage compositions and two hidden-memory mixing laws. The true DEV programs remain embedded, but the checker must not assume the exact generating class. This is a stricter test of whether source observations genuinely determine an unseen outcome: a bigger hypothesis class can only maintain or reduce confidence.
+
+The independent audit validates original-free source and heldout-plan SHA256 receipts, source/action counts and trajectory continuity, and the precommitted 12 paired future plans, without reading target outcomes, hidden-state or oracle rules. Negatives require empty-history ambiguity, failure on tampering, and rejection by the narrower class of a fixture-only world with altered operator composition. `broad_dev_report.py` publishes DEV diagnostic counts, never scientific acceptance. Run `python research/contrib/chatgpt/WSP-100/broad_dev_report.py` on fixtures only.
+
+This remains a toy hypothesis catalogue, **not** the future full WSP-100 broad causal grammar; it cannot establish general intelligence, direct-weight learning benefits, or an eligible original first-use. Preserve any ceiling or underidentification observations without post-result tuning.
