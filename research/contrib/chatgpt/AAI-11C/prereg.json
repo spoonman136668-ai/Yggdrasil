@@ -1,0 +1,103 @@
+{
+  "schema": "yggdrasil.contrib.aai11c.causal-decision-attribution.v1",
+  "id": "AAI-11C",
+  "phase": "READ_ONLY_MODEL_DIAG_SOURCE_ONLY",
+  "source": {
+    "original_AAI11B_pr": 1061,
+    "original_AAI11B_final_sha": "425747038824324c161c4de5e960117c6be31145",
+    "AAI11B_prereg_blob": "3338bb28dc3a830b654ba76aa8bb3ed5a83d8fff",
+    "AAI11B_model_blob": "69ff21daf627feeaaca6661f8f3c8096efbe4de8",
+    "AAI11B_dev_blob": "05682c4b98747701b779d264bf18d7ee29e67b7f",
+    "AAI11A_graph_baseline_blob": "331a97b566d41785be06923a7acc63df6105cffd",
+    "AAI11P_world_blob": "88d220e94ccf736e490f20922f1c7f5d3c1d3746",
+    "AAI11P_controls_blob": "b554db7d8d25ae9b6a5f8bffb066181a00b35ffc",
+    "AAI11P_admission_blob": "0f921dfeebda9ad3a0e217747e4b0365ba9c655e",
+    "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "prev_dev_result": {
+      "candidate_reward": 2.084722222,
+      "conventional_graph_recent8": 2.134027778,
+      "goal_success": 0.368055556,
+      "score_gap": -0.049305556,
+      "previous_source_only_run": 43644865262,
+      "final_full_run": 43645038423
+    }
+  },
+  "question": "For frozen AAI-11B intervention-contrast vs same-information graph_recent8, is poor achieved action reward caused mainly by imperfect causal law/rule predictions or by the shared action planner despite correct predictions?",
+  "mechanics": {
+    "models": [
+      "aai11b_intervention_tournament",
+      "original_graph_recent8"
+    ],
+    "no_model_implementation_edit": true,
+    "same_grammar_and_planner": true,
+    "fixtures": [
+      "mechanical:alpha",
+      "mechanical:beta",
+      "mechanical:gamma"
+    ],
+    "shared_training": "16 A +16 B common actual one-action trials =64 public initial+result rows, no law/boundary/privileged fields to learner",
+    "challenge": "C,D,E,F unfamiliar laws, 2 or 4 common exogenous actual one-action challenge trials =4 or 8 public rows",
+    "contexts": "12 exact original AAI11P selected unique x/goal contexts per law,budget,fixture = 24 condition groups x12 =288 paired episodes",
+    "evaluation": "Independently cold restore each method per episode, issue public initial, 0-2 actual self-selected intervention actions, only own real do feedback. Never share between methods. All diagnostic oracle/private truth lives outside learner, never passed as learner observation.",
+    "factual_probe": "At each after-challenge frozen checkpoint score 64 binary inputs x 3 mediator bits per method against true hidden simulator structure via read-only simulator diagnostic; report overall and per mediator bit accuracy. No learning from probe x or true labels.",
+    "intervention_probe": "At each after-challenge checkpoint score all 64x12 do-actions; compare predicted causal mediator *flips* (3 bits) under setting x_i=v with actual counterfactual simulator flip, for each method. Probe private only and NEVER train learner or reward during episodes. Report flip exact 3-bit fraction and per-bit fraction. All actions enumerated equally.",
+    "selected_rules": "Count selected candidate vs baseline graph rule-index disagreements, count public consecutive actual do-action flip pairs retained within last eight rows. Model caches may be filled by read-only probes but no durable model state changes; restore from unchanged serialized state afterward.",
+    "action_regret": "For each independent episode, capture achieved terminal public reward vs exact two-action known-law oracle; report reward regret and actual action counts, zero oracle results to learners.",
+    "perfect_predictor_planner": "Create diagnostic-only adapter whose predict(x) returns actual privileged true-law mediator bits; use the UNMODIFIED shared AAI11P controls.plan and public action execution with 0-2 steps on exactly the original contexts. Compare perfect-predictor planner mean to exact two-action brute-force oracle. This is diagnostic upper bound, not an eligible learner.",
+    "matched_control_recheck": "Recompute ONLY frozen graph_recent8, not 11 conventional controls; require its aggregate realized reward equals historical 2.134027778 within 1e-6 and candidate equals 2.084722222 within 1e-6; otherwise INVALID_PROVENANCE. The previous exact-source 11-control qualification remains the strongest-control evidence.",
+    "no_new_science": "Only frozen mechanical fixture strings; not original 16 DEV/64 TRANSFER/32 NEGATIVE world seeds; no new training candidate, model update or first use."
+  },
+  "attribution": {
+    "source_frozen_no_post_result_tuning": true,
+    "plane": "Engineering diagnostic result, not causal experimental proof of model superiority or deep cognitive attribution.",
+    "predeclared_thresholds": {
+      "control_accuracy_advantage_min": 0.01,
+      "candidate_accuracy_advantage_min": 0.01,
+      "reward_gap_min": 0.03,
+      "perfect_planner_gap": 0.05
+    },
+    "decision_order": [
+      "If oracle over perfect predictor's shared planner >0.05 mean terminal reward: PLANNER_LIMITATION_DETECTED, because even correct causal predictions do not recover oracle actions.",
+      "Else if candidate factual or intervention-flip prediction accuracy lower than control by >=.01 and candidate reward lower by >=.03: HYPOTHESIS_SELECTION_LIMIT_DIAGNOSTIC.",
+      "Else if candidate causal-prediction accuracies both >=control-.01 and candidate reward lower by >=.03: POLICY_OR_CALIBRATION_MISMATCH_DIAGNOSTIC.",
+      "Else: MIXED_OR_INCONCLUSIVE_DIAGNOSTIC."
+    ],
+    "caveat": "Each method's own actions generate different subsequent observations and therefore different learning; no claim that pure prediction-vs-action causality is identified from this comparison alone. Perfect predictor is privileged reference only, never a learner. Results source-only synthetic, no confidence intervals."
+  },
+  "artifact": {
+    "file": "research/contrib/chatgpt/AAI-11C/",
+    "prereg_first": true,
+    "metrics": "Printed deterministic JSON with complete state/action/probe digest and aggregate rates per method; no user Library artifacts",
+    "tests": "Negative secret law injection, identical source checkpoints, frozen shared planner, perfect model upper bound, actual public intervention counts and cold independence, cohort disarm"
+  },
+  "science": {
+    "reserved_DEV": [
+      994000,
+      994015
+    ],
+    "reserved_TRANSFER": [
+      995000,
+      995063
+    ],
+    "reserved_NEGATIVE": [
+      996000,
+      996031
+    ],
+    "cohorts_consumed": 0,
+    "science_first_use_authorized": false
+  },
+  "authority": {
+    "source_only": true,
+    "draft_PR": true,
+    "one_shot_existing_GitHub_qualification": true,
+    "no_native_changes": true,
+    "no_model_promotion": true,
+    "no_main_or_accepted_refs": true,
+    "no_merge": true,
+    "no_queues_runners_schedulers_controllers": true,
+    "no_paid_API": true,
+    "no_library_files": true
+  },
+  "stop": "No learner tuning nor new scientific first-use even if diagnosis suggests actionable next hypothesis; a novel mechanism requires a separate prereg before code.",
+  "no_post_result_tuning": true
+}
