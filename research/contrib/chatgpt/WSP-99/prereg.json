@@ -1,0 +1,114 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-99",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "status": "FROZEN_TASK_CONSTRUCTION_ONLY; NO PUBLIC_OR_RESERVED_FIRST_USE; NO LEARNER_FITTING",
+  "question": "Can a reproducible, heterogeneous, partially observed multi-step causal environment expose information-identifiable delayed intervention effects with non-ceiling performance for independently trained strong controls, before introducing another direct-weight update mechanism?",
+  "hypothesis": "In independently generated six-visible/two-hidden-state worlds, changing an action can alter hidden memory without changing the immediate visible next state, while changing a later visible state. Histories must matter, and strong comparison models must have measurable but nonzero headroom.",
+  "exact_parent_sha": "a24c6ec7d23e56b6462dcf43cbd4a72256a35ff3",
+  "predecessor_evidence": [
+    "WSP-98 draft PR #1024 final exact-source Ubuntu/Windows regression 43598007444 PASS; G29 atlas 43598012497 PASS",
+    "WSP-98 original PUBLIC dual-platform run 43596821829: direct-active 2400/2400, fully trained polynomial 2400/2400, symbolic 2400/2400. Active intervention benefit established; intrinsic direct-edit superiority NOT established.",
+    "WSP-98 40 RESERVED worlds 98101..98140 remain untouched; must not be generated or re-used for this line."
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/WSP-99/**",
+    ".github/workflows/wsp99-development-tests.yml",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ],
+  "inputs": [
+    {
+      "name": "original synthetic delayed-effect causal programs",
+      "source": "SHA256 domain-separated WSP99 v1 generator authored only after this prereg commit; no external/private datasets",
+      "sha256": "NOT_YET_GENERATED; each original program and dataset must be hashed before disclosure"
+    }
+  ],
+  "task": {
+    "visible_bits": 6,
+    "hidden_bits": 2,
+    "actions": 4,
+    "episode_max_steps": 4,
+    "hidden_latch_rule": "At t, each hidden bit h_j may toggle only when a_t equals that latch's distinct hidden trigger and a fixed unknown parity condition on two distinct current visible bits is met. Hidden is initialized 00 at each episode reset. The action never directly overwrites visible state.",
+    "visible_rule": "All six next visible bits use independently seeded signed two-visible-parent Boolean gates from {AND,OR,XOR,XNOR,NAND,NOR}; the first four outputs also XOR one PREVIOUS hidden latch h_0/h_1 (two outputs per latch). Crucially, y_(t+1) depends on old h_t; the action can affect y_(t+2), not y_(t+1). No oracle program, hidden latch, trigger, or predicate is passed to learners.",
+    "reward": "Public binary reward is the AND of visible outputs 0 and 1 after each transition. Reward is not privileged extra oracle truth.",
+    "observable": "Learners see initial six-bit visible observation and each chosen action, next six-bit visible observation, and one reward bit only; no hidden state or causal program metadata.",
+    "fixture_ids": "FIXTURE-0..FIXTURE-7 only; DEV fixtures permit schema/causality tests without generating PUBLIC or RESERVED original worlds. The original-world source factory must remain disabled until a separately admitted one-shot first-use.",
+    "original_public_ids": "99011..99042 (32 disjoint worlds), untouched at prereg time",
+    "reserved_ids": "99101..99164 (64 disjoint worlds), no source construction before independently authorized admission",
+    "transition_budget": "Per original world: 24 passive four-step episodes (96 transitions) and 8 four-step investigative episodes (32 actions); active and random-policy arms share the identical passive episodes, distinct 32 costly actions, equal history budgets.",
+    "heldout": "24 reset-from-zero-hidden target initial visible states per world, with fixed counterfactual three-step action pairs. At first use freeze targets, action plans and all per-method predictions BEFORE reading heldout next-state/reward truths. Report per-step and delayed terminal six-bit accuracy, reward Brier, intervention regret, cold retention and cost.",
+    "causal_identifiability": "Auditor-only evaluate matched start-visible/hidden-zero intervention pairs whose first next visible observation is identical but second next observation differs, under common second action. Require at least 25% valid delayed-effect pairs across PUBLIC; if not, INVALID task rather than claim learning failure. The auditor cannot reveal witnesses to candidate or training planners.",
+    "falsification": "An observation-only Markov predictor must be evaluated against history-aware learners, plus no-latch and shuffled-action negative controls. Causal effects must vanish or deteriorate under the appropriate negative perturbation."
+  },
+  "frozen_design": {
+    "seeds": {
+      "fixture": "domain WSP99|v1|FIXTURE|0..7",
+      "public": "domain WSP99|v1|PUBLIC|99011..99042",
+      "reserved": "domain WSP99|v1|RESERVE|99101..99164",
+      "streams": [
+        "PROGRAM",
+        "PASSIVE",
+        "TRAIN-ACTION",
+        "RANDOM-ACTION",
+        "HELDOUT",
+        "TIE"
+      ]
+    },
+    "split": "Fixture IDs never counted as original evidence. Public and reserved domains, world IDs, and hashes distinct from WSP-97 and WSP-98. No reserved-world factory invocation before separate scientific authority.",
+    "ordering": "world_id then episode then step then output bit; SHA256 domain-separated deterministic choice, no global RNG and no runtime-dependent hash",
+    "data_budget": "No pretrained examples. 96 common passive transitions + 32 costly intervention transitions per world, identical active-vs-random nominal action count. 24 heldout initial states with fixed three-step counterfactual pairs, no training on their outcomes.",
+    "compute_budget": "CPU only; fully trained strong recurrent and symbolic controls use predeclared deterministic fixed budgets, three independent training seeds for recurrent method, source-fit audit, time/memory/operation counts; no paid APIs or GPU. Numerical budgets and convergence checks must be frozen in a second committed protocol before any learner/data first-use.",
+    "capacity": "Direct-write hypothesis and baseline architectures NOT selected at TASK_CONSTRUCTION stage; this prereg freezes the task and forbids treating task fixtures as confirmatory evidence. Future mechanism comparison must freeze all capacities/budgets/controls before PUBLIC first-use.",
+    "evaluator": "Blind original-outcome scoring only after source, action history, targets and predictions are hashed. Current gate only tests simulator structure and delayed-action witness integrity.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Oracle simulator accessible only to environment evaluator; never treated as a learner",
+    "History-erased visible-state-only predictor (required negative)",
+    "Action-label-shuffled source control (required negative)",
+    "No-hidden-latch environment ablation (causal-effect check)",
+    "Independent fully trained recurrent learner at least GRU-size capacity with fixed seeds and convergence/source-fit checks, budget and identity frozen BEFORE original use",
+    "Independent explicit finite-state/Bayesian symbolic system identification with identical observations/actions, budget frozen BEFORE original use",
+    "Equal-action-budget random exploration and strongest frozen feasible history-aware control"
+  ],
+  "metrics": [
+    "public delayed-pair validity fraction",
+    "final 2-step and 3-step six-bit heldout accuracy",
+    "reward Brier score",
+    "action-induced terminal-regret vs oracle",
+    "history-aware vs memoryless gain",
+    "source fit",
+    "cold retention and intervention replay guard",
+    "whole-process CPU/wall/capacity/operations",
+    "paired world-level confidence interval"
+  ],
+  "classification_rules": {
+    "supported": "TASK_ONLY supported only if fixture structural checks pass and, after independent preregistered originals, delayed-pair prevalence >=25%, history-aware strong-control gain over memoryless >=8 percentage points, and strongest independently trained source-matched learner heldout accuracy between 65% and 95% inclusive; no direct-weight learning or AGI claim.",
+    "mixed": "Delayed causal effects observed but strong controls tie at ceiling, lose to memoryless, or do not leave useful headroom. Do not tune outcomes after seeing them; successor task must be separately preregistered.",
+    "negative": "No meaningful delayed-action identifiability or no demonstrable history benefit despite validated simulator. Preserve results without retuning local update rule.",
+    "invalid": "Leaked hidden state, identifiability audit failure, source/target overlap, mismatched budgets, incomplete strong-control training, source/custody/provenance mismatch, or cross-platform integrity failure. Engineering failures never silently become scientific negatives."
+  },
+  "no_early_use": "No PUBLIC or RESERVED generation, scoring, adapter-training, hidden-target inspection, or CI science dispatch at this gate. DEV tests may operate only on FIXTURE IDs. Freeze the model/controls in a distinct pre-first-use commit.",
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage",
+    "tuning generator after viewing public results"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "external_first_use_authority": false
+  },
+  "preregistration_note": "This file must be committed as the first WSP99 commit before source generator, models, experiments or original outcomes. Do not run first-use cohorts automatically."
+}
