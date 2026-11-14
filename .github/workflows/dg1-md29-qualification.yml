@@ -77,7 +77,7 @@ jobs:
           def without_timing(x):
               if isinstance(x,dict):
                   return {k:without_timing(v) for k,v in x.items()
-                          if k not in ("decision_cpu_ns","cpu_ns")}
+                          if k not in ("decision_cpu_ns","cpu_ns","total_decision_cpu_ns")}
               if isinstance(x,list):return [without_timing(v) for v in x]
               return x
           out=without_timing(record)
