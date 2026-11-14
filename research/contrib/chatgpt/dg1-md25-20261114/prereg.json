@@ -1,0 +1,121 @@
+{
+  "schema": "yggdrasil.dg1-md25-prospective.v1",
+  "experiment_id": "DG1-MD25-20261114",
+  "status": "FROZEN_PREREGISTRATION_ONLY_NO_PRIMARY_EXECUTION",
+  "exact_parent_sha": "ea9ceca774a50bb3126bdf066120cb32ea4ddec5",
+  "predecessor": "DG1_MD24_TOY_INVALID_TASK_COVERAGE_AND_SIX_SIX_LEARNED_BLIND_IDENTICAL_ACTIONS",
+  "scientific_hypothesis": "A bounded tokenless public-observation action-effect memory learned from prior real pickup/drop experiments selects a better first physical intervention and relocation site in unfamiliar BlockedUnlockPickup than a matched same-information generic nonlearning route-repair policy. The route-repair scaffold is shared; merely reaching the goal or clearing obstacles does not demonstrate learning contribution.",
+  "task_family": "MiniGrid-BlockedUnlockPickup-v0",
+  "train_families": [
+    "MiniGrid-DoorKey-6x6-v0",
+    "MiniGrid-UnlockPickup-v0"
+  ],
+  "policy_inputs": "Only 7x7x3 local image and compass direction, own actions and charged feedback/rewards, within-episode estimated topological map and frozen learned counts. Never mission, environment id in policy, privileged hidden state, target coordinates, room grid or simulator oracle.",
+  "architecture": "Nontransformer non-next-token bounded event graph; fixed public-view navigator; synthetic MiniGrid study external research only. No native Yggdrasil weights, model integration or controller change.",
+  "toy_development_seeds": [
+    41,
+    43,
+    47,
+    53,
+    59,
+    61
+  ],
+  "registered_cohorts": {
+    "door_training": {
+      "env": "MiniGrid-DoorKey-6x6-v0",
+      "first": 996001,
+      "last": 996024,
+      "count": 24
+    },
+    "box_training": {
+      "env": "MiniGrid-UnlockPickup-v0",
+      "first": 997001,
+      "last": 997024,
+      "count": 24
+    },
+    "interference": {
+      "env": "MiniGrid-Empty-6x6-v0",
+      "first": 998001,
+      "last": 998012,
+      "count": 12
+    },
+    "cold_before_after": {
+      "env": "MiniGrid-DoorKey-6x6-v0",
+      "first": 999001,
+      "last": 999012,
+      "count": 12
+    },
+    "heldout_size": {
+      "env": "MiniGrid-DoorKey-8x8-v0",
+      "first": 1000001,
+      "last": 1000012,
+      "count": 12
+    },
+    "heldout_novel": {
+      "env": "MiniGrid-BlockedUnlockPickup-v0",
+      "first": 1001001,
+      "last": 1001012,
+      "count": 12
+    }
+  },
+  "arms": [
+    "causal_site",
+    "blind_site",
+    "permuted_site",
+    "md23_causal",
+    "tabular_q",
+    "recurrent_imitation"
+  ],
+  "budget": {
+    "episodes": 348,
+    "per_episode_env_steps": 256,
+    "total_physical_env_steps_max": 89088,
+    "checkpoint_bytes_max": 65536,
+    "all_controls_matched_paid_actions": true
+  },
+  "frozen_mechanism": {
+    "candidate": "Learn public-action pickup clears front and drop occupies front as conditional effects from common earlier-family paid actions. Use learned effects with a public-view topological map to choose obstacle removal and drop site by evaluating projected route obstruction. Unseen object type cannot be handled by literal ball ID. Key/door/box progression still uses inherited scripted navigator and must be credited to it.",
+    "blind": "Same fixed public-view navigator, same repaired post-obstacle state, same action budget and sensory information, generic pickup/drop heuristic chooses nearest empty drop site without using learned effect counts. Must be included as strong no-learning control; all other route repairs shared.",
+    "permuted": "Same model memory, shared training, and decision capacity as candidate, but learned action-effect identities permuted at prediction time. No special sabotaged environment or altered action space.",
+    "md23": "Frozen MD23 causal graph on identical new shared physical demonstrations but without unknown-object intervention handler.",
+    "conventional": "Identical frozen fully trained tabular-Q and 12-hidden recurrent imitation baselines, shared positive demonstration and interference trajectories, no new heldout learning.",
+    "pretrained_ceiling": "Do not claim superiority over fixed navigation scaffold even on success; no learned navigation assertion.",
+    "first_use_policy": "No official registered seed invocation until complete dual-OS prefirstuse toy proof of novel goal coverage, learning-specific route divergence, no cheating, frozen dependent atlas/full regression. Then unique exact draft PR opening once per OS, no synchronize/rerun. No registered first use from arbitrary push, local command, or toy smoke."
+  },
+  "toy_coverage_gates": {
+    "public_training_door_goals_min": 4,
+    "public_training_box_goals_min": 4,
+    "novel_any_arm_goals_min": 3,
+    "candidate_novel_goals_min": 3,
+    "learned_and_blind_trace_differences_min": 2,
+    "physical_pickup_and_drop_evidence_required": true,
+    "if_any_missing": "TOY_COVERAGE_NO_GO_DO_NOT_CONSUME_REGISTERED_SEEDS"
+  },
+  "registered_primary_gates": {
+    "coverage_novel_goals_all_arms_min": 3,
+    "teacher_door_goals_min": 12,
+    "teacher_box_goals_min": 12,
+    "candidate_novel_goals_min": 8,
+    "candidate_novel_goal_advantage_over_blind_min": 2,
+    "candidate_novel_goal_advantage_over_permuted_min": 4,
+    "candidate_novel_goal_advantage_over_best_conventional_min": 2,
+    "strict_paired_discounted_reward_wins_over_blind_min": 6,
+    "observed_learned_site_edge_uses_min": 8,
+    "candidate_cold_goal_loss_max": 1,
+    "candidate_heldout_size_goals_min": 8,
+    "checkpoints_byte_exact_on_heldout": true,
+    "full_54_test_inherited_regression_both_platforms": true,
+    "same_nontiming_action_traces_on_ubuntu_windows": true,
+    "cpu_ratio_to_recurrent_max": 5
+  },
+  "classifications": [
+    "INVALID_TASK_COVERAGE",
+    "DEVELOPMENT_SIGNAL_ONLY",
+    "MIXED_DEV",
+    "NEGATIVE_DEV"
+  ],
+  "no_post_outcome_retrofit": true,
+  "scientific_acceptance": "UNVERIFIED_NOT_NATIVE",
+  "deployment": "NONE",
+  "owner": "Yggdrasil independent research only"
+}
