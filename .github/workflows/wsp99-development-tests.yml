@@ -108,3 +108,23 @@ jobs:
           }, sort_keys=True), flush=True)
           PY
           test -z "$(git status --porcelain)"
+          python - <<'PY'
+          import json, sys
+          sys.path.insert(0, 'research/contrib/chatgpt/WSP-87')
+          from experiment import FIXTURE_SEEDS, single_world, classify
+          samples = []
+          for rep in range(24):
+              rows = [single_world(seed) for seed in FIXTURE_SEEDS]
+              grade = classify(rows, dev=False)
+              samples.append({'classification': grade['classification'],
+                  'cpu_ns': [r['whole_portfolio_process_cpu_ns'] for r in rows],
+                  'checks': [k for k,v in grade['checks'].items() if not v]})
+          print('WSP87_WINDOWS_CPU_TICK_DIAGNOSTIC=' + json.dumps({
+              'replicates': len(samples),
+              'zero_cpu_worlds': sum(sum(x == 0 for x in s['cpu_ns']) for s in samples),
+              'negative_replicates': sum(s['classification'] != 'DEV_SUBSTRATE_FEASIBLE' for s in samples),
+              'negative_checks': sorted(set(k for s in samples for k in s['checks'])),
+              'distinct_cpu_ns': sorted(set(x for s in samples for x in s['cpu_ns'])),
+              'samples': samples,
+          }, sort_keys=True), flush=True)
+          PY
