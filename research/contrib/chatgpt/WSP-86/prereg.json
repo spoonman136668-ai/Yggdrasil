@@ -1,0 +1,125 @@
+{
+  "schema": "wsp86.reachable-history-coverage-developer.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_DEVELOPMENT_OUTCOMES",
+  "parent": {
+    "commit_sha": "3fe5b6cd664f13bc2a98d22d54c34e00977df68a",
+    "branch": "research/wsp80-paid-novelty-structural-weight-repair-20261113",
+    "pr": 982,
+    "WSP85_prereg_blob": "24d2cfdbe9342168958308a2472b224f409d9003",
+    "WSP85_source_blob": "575cb3abfcacf277de6c358df12bee159dfdebe2",
+    "WSP85_policy_blob": "76104ff570a62062e66d713138fcd1ed3e4c399b",
+    "WSP84_numeric_blob": "474df711d2a7ea66b96595b3565940a242e20f73",
+    "WSP84_symbolic_blob": "66c10358ed2ea4c0833f51fc0e1b7d9689551dd3",
+    "WSP84_history_Adam64_blob": "5586b30add3f4c86c6183b9510f352507fad2860",
+    "registered_WSP80_prereg_blob": "0e96f4e0eff1ced7f87b754a2ad4fbb75c7b3d58"
+  },
+  "hypothesis": "Can an exactly complete physically paid 216-triple action-history cover, compared with individually paid feedback-active and hash-random controls, resolve WSP85's heldout causal-operator ambiguity on physically reachable >=2-action histories? Determine separately whether residual abstentions are confined to unrepeatable cold-start histories.",
+  "worlds": {
+    "unregistered_developer_seeds": [
+      10601,
+      10602,
+      10603,
+      10604,
+      10605,
+      10606
+    ],
+    "family_by_seed": {
+      "10601": "three_temporal_majority",
+      "10602": "three_temporal_majority",
+      "10603": "three_temporal_majority",
+      "10604": "three_temporal_majority",
+      "10605": "memoryless_control",
+      "10606": "memoryless_control"
+    },
+    "source": "Implement WSP85 causal mechanism unchanged (visible six-bit state; base action toggle and optional hidden three masked action-history majority with secret target), but use independently SHA256-derived WSP86|DEV|seed|slot/domain-v1 private parameters and new unregistered seeds. Source can only be imported by evaluator/harness, not by weight editor, selector, symbolic solver or neural baseline.",
+    "initial_visible_state": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "no_reset": true,
+    "actions_per_independently_paid_arm": 384,
+    "shared_stageA_actions": 144,
+    "stageB_actions": 240,
+    "arms": [
+      "debruijn_full_triple",
+      "WSP85_hypothesis_active",
+      "hash_random"
+    ],
+    "sessions_per_world": 3,
+    "total_physical_paid_actions": 6912,
+    "stageA": "All three arms independently pay identical 144 SHA256 WSP86|DEV|seed|stageA|step-v1 actions; identical public StageA trajectories and hashes required.",
+    "stageB": {
+      "debruijn_full_triple": "Source-blind deterministic 6-ary order-3 de Bruijn cycle via canonical lexicographically minimal construction; select lexicographically earliest cycle rotation matching the two already-paid StageA tail actions as its first two symbols, then take its subsequent 240 symbols cyclically, paying for each consequence. This must yield all 216 distinct ordered 3-action histories at least once within StageB alone.",
+      "WSP85_hypothesis_active": "Unmodified WSP85 HypothesisInterventionPolicy code, refit schedule, action-ranking constants and 512-hypothesis cap; train only on this arm's independently paid public ledger.",
+      "hash_random": "SHA256('WSP86|DEV|seed|random|step-v1') first8 bytes modulo6, independent of source; pay independently."
+    },
+    "evaluator_query_contexts": "Exactly WSP85 43 contexts: empty(), each of 6 single actions, and each of 36 action pairs. Every context x 64 visible states x 6 actions = 16512 queries per arm/world.",
+    "stratified_query_counts_per_arm_world": {
+      "cold_start_length_0_1": 2688,
+      "reachable_length_2": 13824,
+      "total": 16512
+    },
+    "source_private_labels": "Only after all numerical, symbolic and neural outputs across 18 sessions are SHA256 sealed; never pass private masks/target to any learning or action policy.",
+    "first_use": "Unregistered WSP86 DEV only. Never instantiate/read protected WSP80 registered 5601..5616, prior WSP85 10201..10206, or any other sealed scientific cohorts."
+  },
+  "controls": {
+    "primary": "Exactly unchanged source-blind WSP84 PaidOperatorInducer for every arm, cold-restore numerical weight inference and abstention.",
+    "matched_symbolic": "Exactly unchanged independent WSP84 symbolic truth-table solver, with parity across all 18 sessions required.",
+    "neural": "Unmodified WSP84 fully trained 25->64 ReLU->6 3-restart history-aware Adam 6000-step ceiling for all 18 sessions; report nonconvergence, never conceal it. All charge from identical arm-specific public observations, same action/time budget.",
+    "additional": "Original WSP83 XOR2, memoryless and paid-pair-lookup negative controls; identical paid ledgers per corresponding arm.",
+    "no_extra_label_access": true
+  },
+  "frozen_outcomes": {
+    "physical_actions_exact": 6912,
+    "full_triple_cover_each_debruijn_world": 216,
+    "source_private_lookups_in_policies_exact": 0,
+    "protected_registered_first_use_exact": 0,
+    "numeric_symbolic_prediction_parity_sessions_min": 18,
+    "debruijn_novel_reachable_correct_over_random_min": 96,
+    "debruijn_novel_reachable_correct_over_active_min": 96,
+    "debruijn_novel_reachable_confident_wrong_max": 0,
+    "debruijn_novel_reachable_wrong_increase_vs_random_max": 0,
+    "unique_operator_candidate_reduction_vs_random_min": 2,
+    "cold_start_and_reachable_score_both_reported": true,
+    "neural_baselines_fully_trained_sessions_min": 18,
+    "all_predictions_frozen_before_source_private_scoring": true,
+    "cold_snapshots_reproduce_and_tamper_refuse": true,
+    "max_cpu_seconds_developer_portfolio": 1800
+  },
+  "labels": {
+    "DEV_COVERAGE_CAUSAL_GAIN": "Only if all required criteria pass and debruijn yields >=96 novel-world reachable-history correct additional predictions compared to EACH matched paid control; symbolic parity means no neural-intelligence advantage.",
+    "DEV_REACHABILITY_BOUND_DIAGNOSIS": "If all debruijn worlds cover 216 triples and length2 abstentions vanish but cold-start abstentions remain, report that within-grammar, within-run evidence suggests cold-start unidentifiability; not a causality or universal bound proof.",
+    "DEV_COVERAGE_NEGATIVE": "If required gain, safe accuracy, source parity, coverage, or training criteria fail, preserve the negative. No threshold/seed/algorithm retuning after first world outcomes.",
+    "UNVERIFIED": "If pristine source identity, first-use, CI or outputs are missing, no experiment result or scientific claim."
+  },
+  "execution": {
+    "step1": "Commit this prospective protocol alone before any WSP86 code, tests, run or source parameters.",
+    "step2": "Implement source-blind de Bruijn coverage action policy, public-paid three-arm harness, independent exact-score stratification and negative/coverage unit tests, without touching earlier frozen WSP80..WSP85 sources.",
+    "step3": "Run new focused tests and all inherited WSP80..WSP85 focused/root tests on Ubuntu and Windows, plus pinned G29 source atlas; repair purely engineering defects and fully requalify before WSP86 DEV first use.",
+    "step4": "One sealed WSP86 DEV cohort execution per OS after exact SHA qualification and source/first-use audit; preserve positive/negative and per-arm whole-process compute.",
+    "step5": "Do not execute registered scientific WSP80 cohorts absent separate owner/source custody and scientific admission."
+  },
+  "interpretation": "Limited six-bit familiar synthetic causal grammar. At most identifies whether intervention-history coverage or information at unrepeatable cold start constrains the existing rule class. Not independent discovery of unfamiliar operators, lifelong learning, open-world transfer, language intelligence or AGI. Compare with same-expressivity symbolic and fully trained neural, no unsupported compute speedups.",
+  "authority": {
+    "draft_only": true,
+    "merge": false,
+    "accepted_ref": false,
+    "controller": false,
+    "official_loop": false,
+    "new_runner": false,
+    "scheduled_task": false,
+    "paid_API": false,
+    "deployment": false,
+    "user_Library": false,
+    "scientific_first_use": false
+  },
+  "preservation": {
+    "WSP85_negative_13_of_16": true,
+    "WSP84_negative_14_of_15": true,
+    "WSP79_scientific_negative_18_of_19": true
+  }
+}

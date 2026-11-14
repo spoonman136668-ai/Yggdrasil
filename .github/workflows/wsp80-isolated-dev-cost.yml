@@ -1,0 +1,36 @@
+name: WSP80 isolated developer-cost and source-custody audit
+on:
+  push:
+    branches: [research/wsp80-paid-novelty-structural-weight-repair-20261113]
+permissions:
+  contents: read
+jobs:
+  isolated-developer-cost:
+    if: "${{ github.event.head_commit.message == 'ci(wsp80): run isolated developer cost and custody audit' }}"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact-source pinned atlas validation
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Isolated fresh-process full-weight Adam vs programmed developer cost
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: python research/contrib/chatgpt/WSP-80/developer_cost_process.py --developer-only
+      - name: Prohibit any checkout mutation
+        shell: bash
+        run: git diff --exit-code

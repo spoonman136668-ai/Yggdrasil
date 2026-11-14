@@ -1,0 +1,104 @@
+{
+  "schema": "wsp82.temporal-feature-induction-dev-prereg.v1",
+  "status": "FROZEN_BEFORE_NEW_SOURCE_LEARNER_CONTROL_IMPLEMENTATION_OR_OUTCOMES",
+  "scope": "UNREGISTERED developer-only, not WSP80 16-world scientific SELFTEST",
+  "parent": {
+    "sha": "329990675dab926663aaf697383d812525b13600",
+    "tree": "024b2584cd8f3b2952f12ed9ef4c8704673acd46",
+    "original_registered_seeds": "5601-5616 forbidden",
+    "WSP80_prereg_blob": "0e96f4e0eff1ced7f87b754a2ad4fbb75c7b3d58",
+    "WSP81_prereg_blob": "954041015a52a3cc215964511be04abebec114fd",
+    "inherited_WSP77_Adam_blob": "90bca703948c71e482892d2be830682201342368"
+  },
+  "hypothesis": "Can direct numerical weight editing learn a history-conditioned causal dependency outside WSP81's 31-member trigger/offset hidden-state hypothesis family by choosing generic lagged Boolean features from paid observations, without hardcoding the new source equation into the learner?",
+  "source": {
+    "private_rule": "Visible state six binary bits; actions six. Every action flips its same-index visible state bit. Novel family additionally flips visible bit (action+secret_offset)%6 IF the previous TWO paid actions are equal and both exist; offset is hidden 1..5 chosen by SHA256('WSP82|DEV|seed|offset-v1') mod5+1. World initial state zeros, paid history empty; no reset. Control family has only base action bit flip. Learners see only (public_before,action,public_after,action_cost) and order, never private offset/source oracle.",
+    "cohort": [
+      {
+        "seed": 9701,
+        "family": "equal_lag_two"
+      },
+      {
+        "seed": 9702,
+        "family": "equal_lag_two"
+      },
+      {
+        "seed": 9703,
+        "family": "memoryless_control"
+      },
+      {
+        "seed": 9704,
+        "family": "memoryless_control"
+      }
+    ],
+    "fixed_action": "For each seed and paid step [0,383], use SHA256('WSP82|DEV|seed|action|step') first 8 bytes %6, no tuning, independent of private physics.",
+    "paid_actions_per_world": 384,
+    "total_paid_actions": 1536,
+    "stageA_paid_actions": 144,
+    "no_reset": true,
+    "evaluator_contexts": [
+      [],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        4,
+        4
+      ]
+    ],
+    "query_count_per_world": 1536,
+    "query_count_total": 6144,
+    "evaluator": "For each context independently initialize history with specified preceding public actions, and counterfactually evaluate every one of 64 public states times six actions. No arbitrary-state private oracle is available during fitting, weight editing or prediction freeze.",
+    "protected_source_first_use": false
+  },
+  "learners": {
+    "new_programmed": "Generic candidate Boolean temporal feature bank over current action, last action, penultimate action and equality primitives, including interaction gates; features are not expressed in terms of private offset or new-source rule. Select lowest-complexity exactly matching XOR residual for each output bit from paid trajectory; abstain when multiple minimal solutions give different prediction; compile recovered feature coefficients into numeric ReLU gates and cold-restorable weights.",
+    "independent_symbolic": "Independently coded same-expressivity Boolean-feature inference and confidence consensus from the identical paid ledger. If exact tie, do not call it numerical intelligence advantage.",
+    "prior_WSP81": "Source-blind old 31-mechanism learner from WSP81; catch incompatibility explicitly. No change to its source or algorithm.",
+    "markov": "Basic action-bit-flip predictor; expected negative control.",
+    "memorization": "Charged (public state, action, two prior actions) exact lookup, abstain when unseen/conflicting.",
+    "recurrent_neural": "Genuine fully trained three-restart Adam 25->32 ReLU->6 sigmoid model, including explicit history inputs (6 state,6 action,6 previous,6 penultimate,1 equality), original WSP77 frozen Adam optimizer, up to 6000 updates/restart, >=95% exact charged training accuracy target. If not converged report INCOMPLETE, not a matched strong neural loss.",
+    "same_budget": "All models receive exactly one 384-step continuously paid public source history per world; no free actions/truth/labels. No post-result changes."
+  },
+  "freeze": "Serialize and SHA256 bind every model's predictions, training/charge receipts and unlabeled confidences before ANY evaluator-private context transition truth is queried. Retain negative outcomes and separately report process CPU/wall/RSS.",
+  "thresholds": {
+    "new_worlds_with_old_WSP81_incompatible_min": 2,
+    "memoryless_controls_without_old_WSP81_incompatible_min": 2,
+    "new_worlds_correct_confident_per_world_min": 1400,
+    "new_worlds_wrong_confident_per_world_max": 0,
+    "new_worlds_aggregate_correct_gain_vs_markov_min": 1000,
+    "new_worlds_aggregate_correct_unpaid_min": 800,
+    "controls_perfect_1536_min": 2,
+    "numerical_symbolic_prediction_parity_worlds_min": 4,
+    "new_feature_nonconstant_selected_worlds_min": 2,
+    "cold_restore_full_query_match": true,
+    "snapshot_tamper_refused": true,
+    "paid_source_actions_exact": 1536,
+    "recurrent_Adam_converged_worlds_min": 2
+  },
+  "budget": {
+    "OS": "ubuntu-latest/windows-2022",
+    "timeout_minutes_per_OS": 45,
+    "checks": "focused new developer unit and full inherited suite, pinned G29 source atlas; no registered scientific run",
+    "one_shot": true,
+    "no_scheduler": true
+  },
+  "decision": "Pass only when all development thresholds pass, else NEGATIVE; never repair a failed scientific outcome by changing source/protocol/seeds after first execution. Implementation/CI bugs can be fixed with original prereg unchanged and all provisional outcomes preserved.",
+  "limit": "Source family uses a known synthetic six-bit simulator; researcher designed a feature bank containing a generic equality-of-lags operator. This is not unrestricted program synthesis, novel physics discovery, robust life-long learning, language or AGI. Strong recurrence baseline must be trained (or its failure clearly reported), independent symbolic control expected to tie.",
+  "authority": {
+    "PR_stays_draft": true,
+    "merge": false,
+    "accepted_refs": false,
+    "registered_first_use": false,
+    "controllers": false,
+    "deployment": false,
+    "live_actions": false,
+    "paid_APIs": false,
+    "schedules": false
+  }
+}
