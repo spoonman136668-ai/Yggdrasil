@@ -1,0 +1,99 @@
+{
+  "schema": "wsp93.character-evidence-binding-program-v1",
+  "status": "SOURCE_BLIND_PREREG_BEFORE_CODE_OR_CAPTURE",
+  "parent": {
+    "pr": 1010,
+    "source_sha": "ac4605ab494f1e1ded7b9568a025ee6867f6ab10",
+    "public_negative": "WSP92 0/24 public article-disjoint SQuAD QA vs 1/24 ordinary SGD, 3/24 retrieval; WSP92 50 reserved dev QAs unconsumed and ineligible for WSP93"
+  },
+  "hypothesis": "A small interpretable question-conditioned evidence-binding program, with directly edited integer operator weights for question intent, answer shape, and lexical evidence anchor-to-answer distance/direction, improves SQuAD public answer extraction against question-ablated and random controls; unlike raw hashed answer-context memorization, the operator explicitly binds a question's shared evidence anchors to a source answer candidate.",
+  "source": {
+    "dataset": "SQuAD v1.1 original TRAIN only (Wikipedia + crowdsourced QAs)",
+    "original_url": "https://rajpurkar.github.io/SQuAD-explorer/dataset/train-v1.1.json",
+    "original_raw_sha256": "3527663986b8295af4f7fcdff1ba1ff3f72d07d61a20f487cb238a6ef92fd955",
+    "max_download_bytes": 31000000,
+    "requests": 1,
+    "license": "CC BY-SA 4.0; retain SQuAD author attribution and article/source contributor links",
+    "sampling": "Reimplement WSP92 deterministic SQuAD select; compute eligibility from first groundtruth answer exact offset and context length 60..1900, 1..55 chars, at least 8 QAs per article, sort articles SHA256('WSP92/train/'+title), questions SHA256('WSP92/qa/'+qa_id); skip first 16 titles already used in WSP92 supervised source. THEN take 12 article titles at rank 16..27 for 6 QAs each training, 6 titles rank 28..33 for 4 QAs each public, next 8 titles rank 34..41 for 4 QAs each reserved. No posthoc title swap or source replacement.",
+    "cohorts": {
+      "train_articles": 12,
+      "train_questions": 72,
+      "public_articles": 6,
+      "public_questions": 24,
+      "reserved_articles": 8,
+      "reserved_questions": 32
+    },
+    "source_files": "Frozen exactly two derived files: context/questions/links WITHOUT answer fields and separately hashed answer labels; source-only GitHub commit; never use WSP92 original 50 DEV answers; source text copied under separate CC BY-SA attribution.",
+    "grounding": "Only candidate paragraph given; neither free document retrieval nor out-of-publisher novel knowledge is demonstrated. Original public source is development, not independent science."
+  },
+  "mechanism": {
+    "input": "raw natural language question, source paragraph, source IDs, no answer options",
+    "features": "Use raw character-substring anchors shared between question and paragraph (3..6 characters), select nearby anchor matches; derive question-start prefix character-class (who/when/where/how many/what/which/other) without token ID features; derive candidate answer shape (capitalized, numeric, mixed, other) and pointer relation (relative distance, before/after, character-based source context).",
+    "program": "Frozen answer candidate generator: WSP92 original whitespace-boundary spans 1..4 segments <=55 characters. Direct edit interpretable integer operator score tables only; for every supervised source, get answer's existing span and at most 12 deterministically SHA256 sampled negatives, increment positive feature counts and decrement negative feature counts at balanced mass. No numerical 16384-dimensional hashed cross-context fitting; no gradients or pretrained model.",
+    "inference": "Per candidate, compute nearest matching question/source character evidence anchor to its start and features question type × shape × distance × direction; score additive operator weights plus independent lexical-overlap anchor strength. Emit literal source span and character offsets/citation or abstain if source hash mismatched. No answer label access at prediction.",
+    "retention": "Train 48 original QAs then append 24 QAs with no old replay; count initial/retained exact answer predictions and full supervised fit.",
+    "limits": "This is guided span extraction with deterministic intent/shape priors and supplied paragraph, not general language learning, variable-binding proof under interventions, transfer to unseen publisher, intelligence or AGI."
+  },
+  "controls": {
+    "conventional": "Fully trained logistic SGD over EXACT SAME interpretable operator features and supplied labeled positive+negative source spans, 120 epochs lr=0.5 L2=0.002; report source exact fit, CPU, public predictions. Conventional control is not a modern pretrained QA reader.",
+    "lexical": "Independent question/context nearest shared 3..6-character anchor, no training",
+    "symbolic": "Independent manually coded who/when/where type and matching answer-shape candidate plus proximity",
+    "question_ablated": "Same directly edited operator weights but delete question-dependent shared anchor and intent features at inference; preserve all other weights, citation and answer candidates.",
+    "random": "Deterministic SHA256 selected candidate, same source",
+    "negative": "Source hash changed, empty question, source missing, cold restore, checksum tamper; no confident answer."
+  },
+  "criteria": {
+    "public_min_exact": 5,
+    "public_advantage_vs_random": 3,
+    "public_advantage_vs_question_ablated": 2,
+    "train_min_correct": 30,
+    "retention_min_correct": 8,
+    "strong_conventional_min_train_correct": 45,
+    "max_public_gap_to_conventional": 12,
+    "min_gold_span_coverage_fraction": 0.8,
+    "source_proof_accuracy_on_correct": 1,
+    "unknown_confident": 0,
+    "cold_restore": true,
+    "tamper_refusal": true,
+    "per_arm_resource_metrics": true,
+    "public_positive": "PUBLIC_BINDING_FEASIBLE",
+    "public_negative": "PUBLIC_BINDING_NEGATIVE",
+    "reserved_min_exact": 8,
+    "reserved_advantage_vs_ablated": 3,
+    "reserved_max_gap_to_conventional": 12,
+    "reserved_positive": "DEV_BINDING_FEASIBLE",
+    "reserved_negative": "DEV_BINDING_NEGATIVE",
+    "classification": "All public frozen criteria must PASS before any reserved DEV. A public negative stops evaluation, with 32 reserved WSP93 QAs left unconsumed. Public pass alone not SCIENTIFIC_PASS."
+  },
+  "negative_controls": [
+    "Independent pairwise question permutation with source fixed; source evidence binding scores should change, not remain invariant.",
+    "Question-ablated same-weights learner required; candidate must outperform it by frozen margin.",
+    "Wrong-label training results reported as a diagnostic if resources permit; never call it positive."
+  ],
+  "seeds": {
+    "subsampling": "sha256 WSP92 order",
+    "negatives": "sha256 WSP93/negative/<qa_id>/<span_start>",
+    "random": "sha256 WSP93/random/<qa_id>",
+    "no_posthoc_randomness": true
+  },
+  "qualification": [
+    "Exact preregistration single commit before model/source code; inspect AGENTS and parent source; do not use runtime/cross-project owner.",
+    "Source capture one public archival GET only, fail closed on SHA/coverage mismatch, two exact corpus/labels data files in source-only commit.",
+    "Public focused structural + outcome tests on Ubuntu & Windows. Tests accept negative classification as a valid engineering pass.",
+    "If public positive, mandatory complete source-pinned WSP80..WSP93 inherited focused, root Yggdrasil, G29 atlas on Ubuntu/Windows exact source; conditional one-shot reserved DEV. If public negative, stop, preserve original public outcome and prevent first-use.",
+    "Report candidate and strongest ordinary baseline, raw QA count, full CPU and source proofs. No accepted Yggdrasil/FORGE integration without separate independent qualification."
+  ],
+  "bounds": {
+    "draft": true,
+    "main": false,
+    "merge": false,
+    "promote": false,
+    "official_loop": false,
+    "protected_science": false,
+    "paid_api": false,
+    "new_runner": false,
+    "scheduled_tasks": false,
+    "deploy": false,
+    "user_library": false
+  }
+}
