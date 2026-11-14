@@ -44,7 +44,7 @@ jobs:
           lock=json.loads(Path('research/contrib/chatgpt/dg1-md35-20261114/prereg.json').read_text('utf-8'))
           assert lock['status']=='PREREGISTRATION_ONLY_BEFORE_MD35_MODEL_SOURCE_DATA_OR_SCORES'
           assert lock['parent']['exact_parent_sha']=='cd031504130732617e9ce55ee0da5476f559f59e'
-          assert lock['scope']['merge'] is False and lock['scope']['deployment'] is False
+          assert lock['qualification']['merge'] is False and lock['qualification']['deployment'] is False
           print('MD35_ORIGINAL_PREREG_FROZEN_PASS')
           print('MD35_MD30_MD34_INHERITED_SOURCE_UNMODIFIED_PASS')
           PY
