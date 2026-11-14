@@ -1,0 +1,123 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "DG1-MG21-20261113",
+  "contributor": "chatgpt",
+  "contribution_class": "disjoint-replication-and-control",
+  "question": "After demonstrably successful observation-only physical training, does a cumulative causal map reach MiniGrid goals faster or with higher official discounted reward than fully trained Q, recurrent imitation, reactive and spatial-memory-sham policies, at identical training and episode/action budgets?",
+  "hypothesis": "The preregistered causal-map policy will match the strongest comparator's official goal successes within one of 12 in each new held-out family, earn at least 0.04 higher mean official discounted environmental reward on BOTH unseen-size and unseen-obstacle families than the strongest control, and outperform that strongest control on at least five of twelve seed identities per family, while retaining cold goal performance after an interfering task.",
+  "exact_parent_sha": "9477ea4b366f2287eb316460514726cd6d2dfa7e",
+  "protected_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "pr": 1006,
+      "sha": "9477ea4b366f2287eb316460514726cd6d2dfa7e",
+      "science": "INVALID_TASK_COVERAGE",
+      "reason": "MG20 fixed reactive behavior achieved 0/48 official training successes; MG21 is a separately preregistered fresh-seed trial with positive-reward public-only teacher. Do NOT reinterpret MG20 invalid result as science."
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/dg1-mg21-20261113/**",
+    ".github/workflows/dg1-mg21-qualification.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "inputs": [
+    {
+      "name": "Pinned MG20 algorithmic substrate, reused without modifying original",
+      "sha": "9477ea4b366f2287eb316460514726cd6d2dfa7e",
+      "path": "research/contrib/chatgpt/dg1-mg20-20261113/mg20.py",
+      "source": "User-owned unmerged external research-only predecessor, not authority to promote."
+    },
+    {
+      "name": "Farama MiniGrid with gymnasium and NumPy",
+      "version": "minigrid 3.2.0; gymnasium 1.4.0; numpy 2.3.4",
+      "provenance": "Third-party MIT code, public partial image plus direction/reward/action only; runtime package hashes recorded by CI; no invented wheel hash."
+    },
+    {
+      "name": "Independent fresh source/split manifest",
+      "sha256": "2f254e2a115fee9bd7d68e130d013479acb3804fd584348cce980dba7802db7f",
+      "source": "Verified SHA-256 of sorted-key compact JSON of explicit MG21 training/reward protocol."
+    }
+  ],
+  "frozen_design": {
+    "train_envs": [
+      "MiniGrid-Empty-5x5-v0",
+      "MiniGrid-Empty-6x6-v0"
+    ],
+    "interference_env": "MiniGrid-DoorKey-6x6-v0",
+    "cold_env": "MiniGrid-Empty-6x6-v0",
+    "unseen_size_env": "MiniGrid-Empty-8x8-v0",
+    "unseen_family_env": "MiniGrid-Dynamic-Obstacles-6x6-v0",
+    "seed_ranges": {
+      "train": "830001-830024, each of 2 training environments (48 episodes)",
+      "interference": "840001-840012 (12 shared episodes)",
+      "cold": "850001-850012, independently scored pre/post interference on each arm",
+      "unseen_size": "860001-860012",
+      "unseen_family": "870001-870012"
+    },
+    "max_steps_per_episode": 128,
+    "training_behaviour": "Cold-start new instance of the frozen MG20 `causal_map` public-egocentric goal navigator for EACH of the 48 training and 12 interference episodes, initialized with no hidden map or preloaded passability; actor emits only chosen actions from returned image/direction/action history and real env reward. Each demonstration is charged once physically, identical shared trace for all five arms; only this train/teacher strategy differs from invalid MG20. No evaluator, oracle goal coordinates or supervised expert annotations.",
+    "same_source_five_arms": "causal_map, sham_map, reactive, tabular_q, recurrent_imitation. Identical architecture and hyperparameters as pinned MG20 original; trained Q and recurrent fully updated from same genuinely positive-reward physical episodes, candidate/sham observe identical public physical information; fixed heldout policy no training.",
+    "episodes_and_budget": "48 physical training episodes+12 shared interference episodes+four scored splits of 12 heldout seeds EACH per policy per split (240 heldout episodes) = exactly 300 real environment episodes and <=38400 env.step actions; no additional simulator work, paid inference or heldout fitting.",
+    "evaluator": "Official emitted reward>0 defines success; official reward discounted by 0.99^physical_action_step defines aggregate return. Compare arithmetic mean per 12-seed split; report successful goal counts, per-seed return difference against strongest control, steps to goal, cold before/after reward/success, full actual selected-action SHA and environment output hashes. No pretest or in-run peeking at heldout outcomes before all freezes.",
+    "training_coverage": "At least 24/48 shared teacher training episodes MUST earn official MiniGrid goal reward; both transfer families must contain >=3 completed goals total across 5 arms. If fewer, classify INVALID_TASK_COVERAGE and do not infer superiority.",
+    "cold_retention": "Score original 12 cold seeds before training on DoorKey interference, then score exact same cold episodes after interference; model checkpoint serialized at each stage (persistent state), identical seed resets, evaluation never trains.",
+    "comparators": "Strongest comparator selected ONLY by frozen per-split mean official discounted reward from sham_map, reactive, tabular_q, recurrent_imitation, not after hoc names. All controls see the same physical training observations/actions/rewards; no private agent position or mission. Explicit recurrent model update count and tabular positive reward update coverage.",
+    "source_and_portability": "Run one once-only registered study per OS on original draft-PR-open event. Require exact selected-action and reward hashes, model checkpoint digests, success flags and non-CPU numeric values across Linux and Windows; Python 3.12, frozen public dependency versions, CPU-only. Bound persistent model checkpoint to <=64KiB per arm.",
+    "original_run_timing": "New prereg commit precedes adapter/tests, only nonregistered toy 11/17/19 in prefirstuse. No original firstuse on synchronize, never tune using original data."
+  },
+  "controls": [
+    {
+      "name": "sham_map",
+      "design": "MG20 equal-capacity public-memory scrambled-spatial control; no learner update changes."
+    },
+    {
+      "name": "reactive",
+      "design": "Strong goal-aware nonlearning behavior explorer; same 128 action limit."
+    },
+    {
+      "name": "tabular_q",
+      "design": "MG20 fully trained off-policy reward Q with actual positive official rewards and same behavior episodes, gamma .95, fixed learning rate .2."
+    },
+    {
+      "name": "recurrent_imitation",
+      "design": "MG20 conventional 12-cell 8-step BPTT recurrent imitation, every trainable parameter group updated from positive and negative behavior actions with official episode-reward weighting, no hidden labels."
+    }
+  ],
+  "metrics": [
+    "official_goal_successes_out_of_12_per_split",
+    "official_mean_discounted_return_per_arm_per_split",
+    "per_seed_discounted_return_wins",
+    "charged_real_steps",
+    "training_teacher_successes",
+    "positive_training_action_reward_coverage",
+    "cold_retention_delta",
+    "checkpoint_sha_64kb",
+    "source_sample_and_action_trace_provenance",
+    "CPU_decision_ratio_vs_recurrent"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SIGNAL_ONLY iff actual shared teacher successes >=24/48; heldout goal event coverage >=3 per family; complete <=38400 charged actions and exactly 300 episodes; candidate goal completions >=best comparator successes -1 in both heldout families; candidate mean discounted official reward >=best single comparator in each family +0.04; candidate per-seed strictly higher official return than highest-mean control in at least 5/12 new seeds in EACH family; cold-after causal_map official goal successes >=cold-before -1 and >=reactive cold-after; all checkpoints <=64KiB; candidate total decision CPU <=3x recurrent; both OS exact original action/traces/checkpoint equality, no secret evaluator data or heldout training. A pass is external DEV only; further source-family challenge needed.",
+    "mixed": "MIXED_DEV when all training and evaluation custody, parity and task event coverage valid but primary fails and a registered positive signal exists (candidate >=2 official goals above one control in a transfer family OR candidate achieves >=9/12 heldout goals in one family and retains >=11/12 cold goals after interference).",
+    "negative": "NEGATIVE_DEV when valid coverage/parity but primary false with no registered partial signal.",
+    "invalid": "INVALID_TASK_COVERAGE if teacher <24 positive training episodes or any heldout family <3 goal completions across all arms. INVALID_INFRASTRUCTURE/INVALID_REPRO if prereg source/seed/capacity/controls drift, original no longer pinned, no genuine environment calls, untrained conventional control, heldout fitting, hidden-state/mission exposure, crossOS action/reward/primary gate/checkpoint mismatch, checkpoint corrupt or wrong charge counts. A performance failure with valid custody remains MIXED/NEGATIVE."
+  },
+  "prohibited_after_primary_run": [
+    "rerunning MG20 or MG21 registered seeds after outcome",
+    "postresult reward margin or baseline changes",
+    "taking hidden simulator agent/grid/mission state",
+    "strengthening/tuning teacher based on MG21 heldout",
+    "accepting or deploying native Yggdrasil model from external DEV results",
+    "changing official controller or runner scope"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "note": "Stacked provisional branch dependency on MG20 frozen SOURCE, not a merge approval. New independent seeds and reward-bearing teacher required. Preserve invalid/negative results, no GPT Library files."
+}
