@@ -1,0 +1,126 @@
+{
+  "schema": "yggdrasil.dg1-md31-frozen-synthetic-result.v1",
+  "experiment": "DG1-MD31-20261114",
+  "classification": "DEVELOPMENT_MIXED_NO_PROMOTION",
+  "source_commit": "d86d7d91b1312d69291a5d4389834f60d033deb4",
+  "qualified_commit": "5cb0ac1629a28daadc194b574e94ad8bb3218db7",
+  "prereg_commit": "5e8a99a172d978c3dc31241c5d0e7efb129fa3b4",
+  "prereg_git_blob": "2557a6583fa875144954ac31432291840589e833",
+  "prereg_canonical_sha256": "d06773c88df4cc9122a31ce05e287de12eef33c751859c2c2400a67ec799b493",
+  "official_first_use": false,
+  "cohorts": {
+    "physically_charged_training_episodes": 240,
+    "paid_training_actions": 1920,
+    "evaluation_seed_range": [
+      8301,
+      8420
+    ],
+    "evaluation_episodes": 120,
+    "transfer_motifs": [
+      "braided",
+      "crossfork",
+      "doublecollider"
+    ],
+    "stable": 60,
+    "rewired": 60
+  },
+  "task_preflight": {
+    "fixture_count": 12,
+    "unannounced_change_initially_observationally_indistinguishable": true,
+    "paid_internal_probe_identifies_pair": true,
+    "sha256": "58d3422170aa06ee68f1b299dc4fac7b59827352bf4a7034f9a35abdbdfe8f86"
+  },
+  "training_custody": {
+    "training_trace_sha256": "0aa99652f9fe38290351654e53a4afff2b229449b17cbfb6072912e64ae7de65",
+    "hypothesis_count": 768,
+    "native_checkpoint_bytes": 8909,
+    "native_checkpoint_sha256": "636554472a6d9e5e93cbd01cd87c2d574a0232e4863174c8321d57f7184a5eeb",
+    "bayesian_checkpoint_sha256": "cc31161ed7cfa540a5a965cac5a3baa87c707801f0d0ebb10921e03193c435ac"
+  },
+  "arms": {
+    "evidence_gate": {
+      "mean_reward": 0.375833,
+      "paid_actions": 622,
+      "paid_diagnostics": 382,
+      "stable_mean": 0.7525,
+      "rewire_mean": -0.000833,
+      "motifs": {
+        "braided": 0.48,
+        "crossfork": 0.25875,
+        "doublecollider": 0.38875
+      },
+      "change_detection_accuracy": 0.641667,
+      "confusion": {
+        "stable_stage0": 59,
+        "stable_stage1": 1,
+        "rewire_stage0": 42,
+        "rewire_stage1": 18
+      }
+    },
+    "sham_stage1_gate": {
+      "mean_reward": 0.356667,
+      "paid_actions": 608,
+      "paid_diagnostics": 368
+    },
+    "always_carry_gate": {
+      "mean_reward": 0.350833,
+      "paid_actions": 622,
+      "paid_diagnostics": 382
+    },
+    "frozen_md30_persistent": {
+      "mean_reward": 0.390417,
+      "paid_actions": 587,
+      "paid_diagnostics": 347
+    },
+    "frozen_md30_bayesian": {
+      "mean_reward": 0.477917,
+      "paid_actions": 497,
+      "paid_diagnostics": 257,
+      "stable_mean": 1.21,
+      "rewire_mean": -0.254167,
+      "motifs": {
+        "braided": 0.36375,
+        "crossfork": 0.725,
+        "doublecollider": 0.345
+      }
+    },
+    "fixed_A": {
+      "mean_reward": 0.46,
+      "paid_actions": 240,
+      "paid_diagnostics": 0
+    }
+  },
+  "contrast_vs_strongest_frozen_reference": {
+    "chosen_reference": "frozen_md30_bayesian",
+    "paired_mean_delta": -0.102083,
+    "paired_bootstrap_95pct_lower": -0.3525,
+    "motif_deltas": {
+      "braided": 0.11625,
+      "crossfork": -0.46625,
+      "doublecollider": 0.04375
+    },
+    "stable_rewire_deltas": {
+      "stable": -0.4575,
+      "rewire": 0.253333
+    },
+    "difference_vs_sham": 0.019166,
+    "difference_vs_always_carry": 0.025,
+    "change_identification_accuracy": 0.641667,
+    "all_preregistered_development_thresholds_met": false
+  },
+  "reproducibility": {
+    "cold_replay_identical": true,
+    "linux_93_tests": "PASS",
+    "windows_93_tests": "PASS",
+    "cross_os_byte_equal_portable_receipts": "PASS",
+    "g29_atlas_linux": "PASS",
+    "g29_atlas_windows": "PASS"
+  },
+  "sources": {
+    "complete_linux_result_ci_artifact": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43615658167/artifacts/14121559871",
+    "complete_windows_result_ci_artifact": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43615658167/artifacts/14122236500",
+    "qualification_run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43615658167",
+    "g29_run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43615718256"
+  },
+  "decision": "FROZEN_DEVELOPMENT_NO_GO. Neither a scientific gain nor deployment. Preserve source/negative; do not tune/retry same scored cohort."
+}
