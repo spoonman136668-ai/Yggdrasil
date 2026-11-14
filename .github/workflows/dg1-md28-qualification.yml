@@ -73,7 +73,7 @@ jobs:
           sys.path.insert(0,"research/contrib/chatgpt/dg1-md28-20261114")
           from shifting_relay import canon,toy_study
           record=toy_study()
-          assert record["registered_seeds_touched"] is False
+          assert record["registered_seeds_used"] is False
           def without_timing(x):
               if isinstance(x,dict):
                   return {k:without_timing(v) for k,v in x.items()
@@ -167,7 +167,7 @@ jobs:
           a=json.loads(Path("toy-linux/md28-toy-metrics.json").read_text())
           b=json.loads(Path("toy-windows/md28-toy-metrics.json").read_text())
           assert a==b,"MD28_TOY_NON_TIMING_CROSS_OS_PARITY_DRIFT"
-          assert a["registered_seeds_touched"] is False
+          assert a["registered_seeds_used"] is False
           assert len(a["physical_toy_traces"])==8
           assert all(len(x)==48 for x in a["physical_toy_traces"].values())
           assert all(len(x["trace_sha256"])==64 for row in a["physical_toy_traces"].values() for x in row)
