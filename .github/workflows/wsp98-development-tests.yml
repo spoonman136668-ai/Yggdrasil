@@ -125,3 +125,63 @@ jobs:
           git push origin HEAD:refs/heads/research/wsp98-unknown-causal-program-20261114
           echo "WSP98_G29_SOURCE=$A"
           echo "WSP98_G29_COMPANION=$B"
+
+  final-regression:
+    needs: [fixture-qualification]
+    if: "github.event.head_commit.message == 'ci(wsp98): exact-tree final dual-platform qualification' && github.run_attempt == 1 && needs.fixture-qualification.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 95
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Freeze exact public source, preserved first-use and current atlas
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor eee67aee99ae074b45cdf56b94ce1a133151d808 HEAD
+          git merge-base --is-ancestor 22da8ab85e4a4c5ee05ef03c2e56d704b4e5e4d0 HEAD
+          git diff --exit-code 22da8ab85e4a4c5ee05ef03c2e56d704b4e5e4d0 HEAD -- research/contrib/chatgpt/WSP-98/core.py research/contrib/chatgpt/WSP-98/controls.py research/contrib/chatgpt/WSP-98/experiment.py
+          python research/contrib/chatgpt/WSP-98/admission.py --public-pass
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+      - name: Original PUBLIC receipts, independent controls and fixture-only focused tests
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-98 -p 'test_*.py' -v
+      - name: Mandatory inherited WSP80-WSP97 complete focused regression
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          set -euo pipefail
+          for n in 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97; do
+            python -m unittest discover -s "research/contrib/chatgpt/WSP-$n" -p 'test_*.py' -v
+          done
+      - name: Mandatory complete Yggdrasil root regression on exact source
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Pinned G29 atlas, exact source and clean worktree post-regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
