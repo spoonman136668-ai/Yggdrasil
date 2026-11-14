@@ -104,7 +104,9 @@ class WSP97Tests(unittest.TestCase):
         self.assertEqual(set(spec["intervention_contexts"]),{0,1})
         self.assertEqual(set(spec["unprobed_eval_contexts"]),{2,3,4,5,6,7})
         code=(HERE/"experiment.py").read_text(encoding="utf-8")
-        self.assertIn("predictions_before",code if "predictions_before" in code else "predictions_before")
+        self.assertIn("all_model_predictions",code)
+        self.assertIn("pre_score_sha=sha(",code)
+        self.assertIn("source.majority_do_result(q)",code)
         self.assertIn("--reserved-dev-first-use",code)
 
     def test_original_public_result_and_negative_are_engineering_valid(self):
