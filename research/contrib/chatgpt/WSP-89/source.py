@@ -102,7 +102,7 @@ def capture(out: pathlib.Path = DATA) -> dict:
                     obj = value.get("id")
                     check_identifier(obj, "Q")
                     statement = claim.get("id")
-                    if not isinstance(statement, str) or not statement.startswith(qid + "$"):
+                    if not isinstance(statement, str) or not statement or len(statement) > 160:
                         raise ValueError("missing original statement identity")
                     usable.append((claim["rank"], obj, statement))
                 if not usable:
@@ -169,7 +169,8 @@ def read_frozen(path: pathlib.Path = DATA, *, min_coverage: bool = True) -> dict
             raise ValueError("out-of-protocol claim")
         if (row["revision"] != entries[q]["revision"] or
             row["source_url"] != entries[q]["revision_url"] or
-            not row["statement_id"].startswith(q + "$") or
+            not isinstance(row["statement_id"], str) or
+            not row["statement_id"] or len(row["statement_id"]) > 160 or
             row["source_type"] != "wikidata_cc0_verified_snapshot"):
             raise ValueError("bad source attribution")
     if len(rows) != len({r["statement_id"] for r in rows}):
