@@ -1,0 +1,281 @@
+{
+  "schema": "wsp91.wikipedia-free-span-reading-development.v1",
+  "status": "PREREGISTERED_BEFORE_SOURCE_CODE_AND_FIRST_USE",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1005,
+    "sha": "2d0eb824ae539bdd39a26358ec0e38a686f97cb0",
+    "prior": "WSP90 DEV_PROSE_RELATION_GROUNDING_FEASIBLE 10/12; trained logistic and handcoded parser both 10/12; curated two choices only"
+  },
+  "hypothesis": "Directly editing raw-character contextual numerical weights from explicit answer-string supervision can extract unseen chemical-symbol and atomic-number answer substrings from entirely new Wikipedia element article prose, rather than choose among externally supplied candidate answers, while retaining old reading skills when demonstrations are appended.",
+  "scope": "Two fixed question types about chemical elements, both with known answers in training. The model receives the source article and question type plus element name. It emits a source text span or abstains, never receives any answer choice. It scans character boundaries for 1–2 letter (symbol) or 1–3 digit (number) spans; these type priors are predeclared and make this easier than open QA. Training values and groundtruth are in this prereg file but not in the separate text-only source snapshot. Evaluation source family English Wikipedia, same publisher/topic across splits, not independent domain transfer.",
+  "source": {
+    "publisher": "English Wikipedia element article leads",
+    "endpoint": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts|revisions&exintro=1&explaintext=1&exchars=1500&rvprop=ids|timestamp&redirects=1&formatversion=2",
+    "license": "CC BY-SA 4.0 with per-article attribution and contributor history; text only under separate licensed source JSON",
+    "titles_first_use_count": 36,
+    "requests": 2,
+    "max_titles_per_request": 18,
+    "extract_chars": 1500,
+    "min_text_chars": 90,
+    "training": [
+      {
+        "title": "Hydrogen",
+        "symbol": "H",
+        "atomic_number": 1
+      },
+      {
+        "title": "Helium",
+        "symbol": "He",
+        "atomic_number": 2
+      },
+      {
+        "title": "Lithium",
+        "symbol": "Li",
+        "atomic_number": 3
+      },
+      {
+        "title": "Carbon",
+        "symbol": "C",
+        "atomic_number": 6
+      },
+      {
+        "title": "Nitrogen",
+        "symbol": "N",
+        "atomic_number": 7
+      },
+      {
+        "title": "Oxygen",
+        "symbol": "O",
+        "atomic_number": 8
+      },
+      {
+        "title": "Sodium",
+        "symbol": "Na",
+        "atomic_number": 11
+      },
+      {
+        "title": "Magnesium",
+        "symbol": "Mg",
+        "atomic_number": 12
+      },
+      {
+        "title": "Silicon",
+        "symbol": "Si",
+        "atomic_number": 14
+      },
+      {
+        "title": "Sulfur",
+        "symbol": "S",
+        "atomic_number": 16
+      },
+      {
+        "title": "Iron",
+        "symbol": "Fe",
+        "atomic_number": 26
+      },
+      {
+        "title": "Copper",
+        "symbol": "Cu",
+        "atomic_number": 29
+      }
+    ],
+    "public_fixture": [
+      {
+        "title": "Fluorine",
+        "symbol": "F",
+        "atomic_number": 9
+      },
+      {
+        "title": "Neon",
+        "symbol": "Ne",
+        "atomic_number": 10
+      },
+      {
+        "title": "Aluminium",
+        "symbol": "Al",
+        "atomic_number": 13
+      },
+      {
+        "title": "Phosphorus",
+        "symbol": "P",
+        "atomic_number": 15
+      },
+      {
+        "title": "Chlorine",
+        "symbol": "Cl",
+        "atomic_number": 17
+      },
+      {
+        "title": "Argon",
+        "symbol": "Ar",
+        "atomic_number": 18
+      },
+      {
+        "title": "Potassium",
+        "symbol": "K",
+        "atomic_number": 19
+      },
+      {
+        "title": "Calcium",
+        "symbol": "Ca",
+        "atomic_number": 20
+      }
+    ],
+    "reserved_dev": [
+      {
+        "title": "Scandium",
+        "symbol": "Sc",
+        "atomic_number": 21
+      },
+      {
+        "title": "Titanium",
+        "symbol": "Ti",
+        "atomic_number": 22
+      },
+      {
+        "title": "Vanadium",
+        "symbol": "V",
+        "atomic_number": 23
+      },
+      {
+        "title": "Chromium",
+        "symbol": "Cr",
+        "atomic_number": 24
+      },
+      {
+        "title": "Manganese",
+        "symbol": "Mn",
+        "atomic_number": 25
+      },
+      {
+        "title": "Cobalt",
+        "symbol": "Co",
+        "atomic_number": 27
+      },
+      {
+        "title": "Nickel",
+        "symbol": "Ni",
+        "atomic_number": 28
+      },
+      {
+        "title": "Zinc",
+        "symbol": "Zn",
+        "atomic_number": 30
+      },
+      {
+        "title": "Gallium",
+        "symbol": "Ga",
+        "atomic_number": 31
+      },
+      {
+        "title": "Germanium",
+        "symbol": "Ge",
+        "atomic_number": 32
+      },
+      {
+        "title": "Arsenic",
+        "symbol": "As",
+        "atomic_number": 33
+      },
+      {
+        "title": "Selenium",
+        "symbol": "Se",
+        "atomic_number": 34
+      },
+      {
+        "title": "Bromine",
+        "symbol": "Br",
+        "atomic_number": 35
+      },
+      {
+        "title": "Krypton",
+        "symbol": "Kr",
+        "atomic_number": 36
+      },
+      {
+        "title": "Rubidium",
+        "symbol": "Rb",
+        "atomic_number": 37
+      },
+      {
+        "title": "Strontium",
+        "symbol": "Sr",
+        "atomic_number": 38
+      }
+    ],
+    "rules": "Fetch exactly specified pages without substitution, preserve requested/resolved titles, page ID, reported latest revision, page URL, history/contributors URL, exact excerpt and SHA256, per-batch response hash; source file excludes every groundtruth symbol/number or role label. Fail closed on missing pages, missing revision, insufficient lead, redirect ambiguity or malformed API response. Freeze snapshot in one source-only GitHub commit before any scoring; code performs no network access during evaluations.",
+    "license_notice": "The TextExtracts API's captured prose cannot be assumed to be reconstructed from the reported revision; stored excerpt bytes/hash are experiment authority. Cite Wikipedia page and contributor history; keep CC BY-SA data separate."
+  },
+  "candidate": {
+    "type": "One numeric writer per question relation, 16,384-dimensional hashed overlapping raw Unicode 3-5-char context features surrounding every answer-span candidate. Never use a word tokenizer, transformer, trained LM or gradient updates in candidate.",
+    "span_enumerator": "For chemical_symbol enumerate case-sensitive alphabetic substrings of one or two chars bounded by nonletters; for atomic_number enumerate decimal 1–3 digit substrings bounded by nondigits. The enumerator operates on the article's actual characters and yields start/end offsets. No externally provided answer options or QID answer lookup.",
+    "supervision": "Initial 8 training articles then 4 additional articles (12 total). Each example provides two correct answer strings, not offsets. Enumerate all exact matching spans and train using averaged positive contexts and balanced negative candidate contexts; reserve all other pages and their answer labels from learner. Direct numerical additive difference-of-class features, no SGD or replay during Stage B.",
+    "output": "One extracted source span string, character start/end offsets, and source article/metadata; abstain if no candidate or insufficient score separation. Questions specified as relation ID plus article title; source article provided by evaluator. No arbitrary generative language.",
+    "unknown": "Unknown question relation, unknown/unprovided document, nonsensical article with no valid answer should abstain.",
+    "state": "Sparse direct numeric weights; deterministic schema-salted SHA256 snapshot with exact numerical restore and corruption rejection. Source attribution separate from weights.",
+    "hypothesis_failure": "If source lacks answer span, do not fabricate. Return abstention/error in evaluation report and count as wrong; do not alter frozen articles."
+  },
+  "controls": {
+    "fully_trained_conventional": "Independent logistic SGD/span ranker over exactly same raw-character contextual features, positive and negative training spans, 160 deterministic epochs with learning rate 0.75 L2 0.001. Confirm ≥98% training answer exact-match; if not, report underfit and invalidate superiority, rather than comparing to deliberately weak SGD.",
+    "symbolic": "Explicit regex for Wikipedia patterns 'symbol [A-Za-z]{1,2}' and 'atomic number [0-9]{1,3}', optionally 'chemical symbol'. Independent no-gradient parser, allowed to tie or win.",
+    "retrieval": "Nearest contextual substring after literal cue 'symbol' / 'atomic number' without supervision, report exact answer.",
+    "random": "Deterministic candidate span selected from in-article enumerator; report correct."
+  },
+  "protocol": {
+    "stageA": "Initial 8 articles ×2 labeled answers =16 supervised fields; score original 8 publicly, freeze snapshot.",
+    "stageB": "Four new articles ×2 fields =8 supervised fields. Add direct weights without replay of first 8; fully trained SGD control retrains on all 12 articles and associated labels. Verify cold retention on original 16 learned fields.",
+    "fixture": "8 wholly separate element articles, each two questions; public DEV calibration allowed only here and on 12 trained articles, never reserved titles/answers.",
+    "reserved": "16 different element articles ×2 question types =32 first-use QA questions. All models' outputs frozen and source span hashes computed before scoring against reserved labels. Never rerun these article questions as independent unseen results.",
+    "counts": {
+      "training_articles": 12,
+      "fixture_articles": 8,
+      "reserved_articles": 16,
+      "relations_per_article": 2,
+      "reserved_questions": 32
+    },
+    "thresholds": {
+      "min_initial_training_exact": 14,
+      "min_final_training_exact": 22,
+      "min_old_training_retention": 15,
+      "min_public_fixture_correct": 12,
+      "min_reserved_exact": 24,
+      "max_gap_vs_fully_trained_SGD_answers": 4,
+      "max_gap_vs_symbolic_answers": 8,
+      "min_reserved_advantage_vs_random_answers": 12,
+      "min_source_span_attribution_precision": 1,
+      "unknown_confident_answers": 0,
+      "cold_restore_exact": true,
+      "tamper_rejected": true,
+      "full_CPU_and_source_costs": true,
+      "trained_baseline_training_exact_min": 23,
+      "all_negative_controls_reported": true,
+      "success": "DEV_FREE_SPAN_READING_FEASIBLE",
+      "failure": "DEV_FREE_SPAN_READING_NEGATIVE",
+      "caveat": "Only a 2-relation chemical-element extractive reader. Cannot claim new knowledge beyond cited source, unseen-domain transfer, language fluency, AGI, GPT/Claude parity or numerical superiority if baselines tie."
+    }
+  },
+  "qualification": [
+    "Commit prereg independently before any source/algorithm code.",
+    "Fetch 36 predeclared public CC BY-SA Wikipedia articles in at most 2 requests, commit immutable text-only source snapshot and SHA in the isolated repo branch.",
+    "Public fixture focused+negative controls without touching any reserved outcomes; candidate tuning only on training and fixture, no edits to reserved source selection/threshold.",
+    "Mandatory inherited WSP80..WSP90 tests plus WSP91 focused tests, complete root regression and G29 exact-source atlas on Ubuntu and Windows at the same final SHA.",
+    "Only after BOTH OS passes, one original reserved first-use under SHA-pinned CI; publish success or failure with all baselines and resource receipts.",
+    "No accepted model/loop merge or promotion without separate authority and scientific independent corroboration."
+  ],
+  "isolation": {
+    "branch_only": true,
+    "draft_only": true,
+    "main": false,
+    "merge": false,
+    "official_yggdrasil_model": false,
+    "FORGE_loop": false,
+    "protected_first_use": false,
+    "paid_API": false,
+    "new_runner": false,
+    "schedule": false,
+    "deployment": false,
+    "user_library": false
+  },
+  "future": "To reach general knowledge, need unseen information across independent documents, questions with no predeclared relation/schema, temporal contradiction, long-term transfer, retrieval over a large corpus and strong fully trained retrieval-neural baselines."
+}
