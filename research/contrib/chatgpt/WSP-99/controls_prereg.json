@@ -1,0 +1,67 @@
+{
+  "schema": "wsp99.control-protocol.v1",
+  "experiment": "WSP-99",
+  "status": "FROZEN_BEFORE_CONTROL_IMPLEMENTATION_AND_BEFORE_ALL_ORIGINAL_FIRST_USE",
+  "task_prereg_commit": "babec7b7a352ab5f322217dac200dbf5591edee6",
+  "exact_parent_sha": "e37617cf5eb7827db1104fc83a8fe9b4ed9708a3",
+  "purpose": "Qualify information-identifiable delayed causal effects and strong conventional/symbolic headroom before a new direct weight-writing learner is specified.",
+  "source_usage": {
+    "fixture_ids": "0..7 only until separately admitted original PUBLIC",
+    "original_public": "99011..99042; do not instantiate for control development",
+    "original_reserved": "99101..99164; never instantiate without independent first-use authority",
+    "training": "24 passive episodes of 4 steps + 8 active/8 random four-step episodes per world, 128 total transitions per method, identical passive histories",
+    "test": "24 original heldout initial visible states, two counterfactual three-step sequences per state, no labels in training, no fitting using original heldout outcomes",
+    "fairness": "All controls and candidate receive same observation/action histories for their assigned arm; independent symbolic and recurrent strong controls receive ACTIVE arm observations.",
+    "negative": "Repeated snapshot, invalid action, history erase and shuffled-action binding must be reported distinctly."
+  },
+  "symbolic": {
+    "name": "Independent finite-state version-space causal inducer",
+    "grammar": "Per visible node enumerate ordered-equivalent 15 distinct visible-parent pairs, 4 sign flips, 6 Boolean gates (360 clauses). For hidden latch j enumerate 4 distinct trigger actions x 15 distinct visible-parent XOR predicates x 2 parity flips (120 candidates per latch), keeping only combinations consistent with full observed four-step reset episodes.",
+    "hidden_protocol": "Each episode starts hidden bits 00. Hidden h_j toggles after action iff action=trigger_j and XOR(x_p,x_q,flip)=1, using ONLY observed visible x, never oracle hidden.",
+    "consistency": "For outputs j=0..3, predicted next state is clause(x) XOR PREVIOUS h_(j mod 2); last two outputs are clause(x). Keep only latch candidates with at least one consistent clause for each linked output, and require distinct trigger actions for the two latched bits.",
+    "prediction": "From a new heldout reset, propagate each surviving candidate's two hidden bits using actions and the model's own predicted visible state. Score per output by posterior majority over consistent joint program hypotheses; exact tie predicts zero. Do not access hidden state, oracle program, target y or evaluator identifiability during prediction.",
+    "abstention": "When no consistent program, classify INVALID_MODEL_FIT; no nearest-truth fallback.",
+    "budget": "Max 120 latch candidates per latch, max 360 clauses per visible output, at most 120*120 pairings (valid distinct trigger only); fixed complete enumeration; report time and candidate counts.",
+    "expected": "Potentially perfect grammar-constrained strong control; if it reaches ceiling it is evidence task too easy for demonstrating direct-write superiority."
+  },
+  "recurrent": {
+    "name": "Conventional fully gradient-trained tanh RNN with BPTT and Adam",
+    "input": "Current six observed visible bits scaled to {-1,+1} concatenated with one-hot action of size 4 (10 inputs), teacher-forced source episodes only.",
+    "model": "Hidden 16 tanh units reset to zero every episode; h_t=tanh(W_x input_t + W_h h_prev + b_h), six output logits = W_out h_t+b_out; logistic next-bit prediction.",
+    "learned_parameters": 534,
+    "seeds": [
+      11,
+      17,
+      23
+    ],
+    "initialization": "NumPy Generator(PCG64(seed)), Gaussian N(0,0.10) for matrices, zero biases, float64; train each independent seed from scratch.",
+    "optimizer": "Full-batch exact backpropagation through all four steps, binary cross entropy all six bits, Adam beta1=0.9 beta2=0.999 epsilon=1e-8; initial LR=0.01, weight decay=0.0001, global norm gradient clip 5.0.",
+    "epochs": 1800,
+    "early_stopping": "None; no heldout feedback; all epochs mandatory unless divergence => INVALID.",
+    "source_fit": "Report train source output-bit exact threshold accuracy for each seed. If strongest seed fails >=95% train bit accuracy or if NaNs occur, overall science result is INVALID, not proof of direct write superiority.",
+    "ensemble": "Report each seed independently; strongest source-fit seed is selected solely by source training loss then source fit, before test labels, with tie-breaking by smallest seed. No heldout-driven selection.",
+    "cost": "Whole-process CPU + wall time and learned parameter count. No claim of matched FLOPs/cost with symbolic or direct-write model; report these separately."
+  },
+  "memoryless": {
+    "name": "History-erased tanh network negative comparator",
+    "input": "Current six visible bits and one-hot action only; no recurrent hidden state or earlier actions.",
+    "hidden": 16,
+    "seeds": [
+      11,
+      17,
+      23
+    ],
+    "epochs": 1800,
+    "optimizer": "Same loss, Adam parameters, initialization family and batch as recurrent; fresh models and frozen seeds, source-only selection.",
+    "purpose": "Tests whether agent history yields useful information beyond current observation."
+  },
+  "classification": {
+    "TASK_SCIENTIFIC_SUPPORTED": "After independent original PUBLIC only: >=25% valid same-immediate/different-later causal pairs; recurrent improves final bit accuracy >=8 percentage points versus memoryless control; strongest symbolic and recurrent each source-fit >=95%; strongest heldout accuracy among strong controls is 65..95% inclusive; no data leakage/custody violation. This qualifies challenge headroom, NOT weight programming advantage.",
+    "TASK_CEILING": "Strongest qualified control >95% heldout accuracy: the task leaves insufficient headroom to distinguish mechanisms; preserve result, do not tune after viewing it.",
+    "TASK_NEGATIVE": "History-aware best <= memoryless+8pp, or <25% valid delayed causal pairs despite valid source; preserve negative.",
+    "INVALID": "Strong control source-fit <95%, inconsistent symbolic version space, any original first-use before admission, hidden/oracle leakage, cross-OS mismatch, budget violation, or source identity issue.",
+    "DIRECT_WEIGHT_SUPERIORITY": "Not testable in this gate; requires separate candidate/prereg/independent first-use and exceeding strongest source-matched control with compute/action parity."
+  },
+  "technical_scope": "Only frozen control protocol and fixture-only comparators; no original world generation, no modification of accepted Yggdrasil substrate, no merging, deployment, schedule, runner/controller invocation, or paid APIs.",
+  "code_dependency": "Python 3.12, numpy==2.1.3 installed only by fixture-only CI workflow if needed; no GPU or network model service."
+}
