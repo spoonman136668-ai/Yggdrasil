@@ -1,0 +1,77 @@
+name: AAI-08B original scientific evidence durable archive and pinned G29 atlas
+on:
+  push:
+    branches: [research/aai08b-sparse-recurrence-falsification-20261114]
+    paths: [.github/workflows/aai08b-original-archive.yml]
+permissions:
+  actions: read
+  contents: write
+jobs:
+  frozen-original-only:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'AAI-08B archive original science and atlas once' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Archive already-executed first-use, NEVER rerun science
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = 'b28536a45f20ba3cdd7c08f55a407b90ab978e71'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai08b-original-archive.yml'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08B/prereg.json)" = "$(git rev-parse da868ed0438a2407a6523f5a8ac3040df892a350:research/contrib/chatgpt/AAI-08B/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08B/models.py)" = "$(git rev-parse 92cff577ce34561764b712d41675104762ed6976:research/contrib/chatgpt/AAI-08B/models.py)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08B/evaluate.py)" = "$(git rev-parse 10e25b6965de5e31fb1fcbed53608b44e49c2d36:research/contrib/chatgpt/AAI-08B/evaluate.py)"
+          test -z "$(git status --porcelain)"
+          mkdir -p "$RUNNER_TEMP/aai08b-original"
+          gh run download 43623979846 --repo "$GITHUB_REPOSITORY" --name aai08b-frozen-original-primary --dir "$RUNNER_TEMP/aai08b-original"
+          test "$(sha256sum "$RUNNER_TEMP/aai08b-original/aai08b-primary.json" | awk '{print $1}')" = 'f8f039302830e57d6b7e7634fd38b2be99b40dc0ffd3db6b5f53502190b9cbe0'
+          python - "$RUNNER_TEMP/aai08b-original/aai08b-primary.json" <<'PY'
+          import gzip,hashlib,json,pathlib,sys
+          root=pathlib.Path("research/contrib/chatgpt/AAI-08B")
+          raw=pathlib.Path(sys.argv[1]).read_bytes()
+          original=json.loads(raw)
+          summary=json.loads((root/"result-summary.json").read_text())
+          provenance=json.loads((root/"provenance.json").read_text())
+          assert hashlib.sha256(raw).hexdigest()==provenance["original_raw_json_sha256"]
+          assert original["classification"]==summary["classification"]=="HEADROOM_INADEQUATE_NO_PROMOTION"
+          assert original["raw_worlds_sha256"]==summary["raw_worlds_sha256"]
+          assert {k:len(v) for k,v in original["world_records"].items()}=={"dev":16,"transfer":64,"negative":32}
+          compact=gzip.compress(raw,compresslevel=9,mtime=0)
+          (root/"primary-original.json.gz").write_bytes(compact)
+          assert gzip.decompress(compact)==raw
+          print("AAI08B_ORIGINAL_RAW_SHA256="+hashlib.sha256(raw).hexdigest())
+          print("AAI08B_COMPRESSED_ARCHIVE_SHA256="+hashlib.sha256(compact).hexdigest())
+          print("AAI08B_ORIGINAL_EXACT_SCIENCE_CUSTODY_PASS")
+          PY
+          test "$(git check-attr binary -- research/contrib/chatgpt/AAI-08B/primary-original.json.gz)" = 'research/contrib/chatgpt/AAI-08B/primary-original.json.gz: binary: set'
+          git add -- research/contrib/chatgpt/AAI-08B/primary-original.json.gz
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'AAI-08B preserve exact compressed original scientific world records'
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD)" = 'research/contrib/chatgpt/AAI-08B/primary-original.json.gz'
+          python -B scripts/build_code_atlas.py --write --source-commit "$(git rev-parse HEAD)"
+          test "$(git diff --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git commit -m 'AAI-08B source-pinned generated G29 atlas only'
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | wc -l | tr -d ' ')" = 3
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-08B -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          git fetch origin research/aai08b-sparse-recurrence-falsification-20261114
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          git push origin HEAD:refs/heads/research/aai08b-sparse-recurrence-falsification-20261114
+          echo AAI08B_ORIGINAL_ARCHIVE_G29_PINNED_PASS
