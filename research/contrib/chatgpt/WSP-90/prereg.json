@@ -1,0 +1,189 @@
+{
+  "schema": "wsp90.wikipedia-prose-to-capital-grounding-development.v1",
+  "status": "FROZEN_PRIOR_TO_WSP90_CODE_AND_ANY_SOURCE_COLLECTION_OR_DEV",
+  "parent": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "draft_pr": 1003,
+    "head": "87852c2e5bac10dd57d99191da387b43dab9aec7",
+    "baseline": "WSP89 source-backed structured knowledge DEV pass; symbolic and trained control tie; WSP89 QID source cohort consumed"
+  },
+  "hypothesis": "Directly written fixed-width hashed raw-character feature weights learned from labeled Wikipedia lead excerpts can identify a country-capital relation in new natural prose from country-disjoint articles, distinguish municipal/regional capital references from national capital references, and retain old reading associations after new demonstrations without SGD updates.",
+  "limits": "This is CLOSED-WORLD candidate selection between two prechosen city pages per country, supplied with the country string. It is NOT freeform QA, open-world reading, unconstrained entity discovery, autonomous fact research, latent knowledge comparable to LLMs, or superior to fully trained conventional models. Supervised capital/not-capital demonstration labels are provided for training cities. Each candidate already has its title and country grouping; selecting one is not independent fact discovery.",
+  "source": {
+    "publisher": "English Wikipedia",
+    "source_api": "https://en.wikipedia.org/w/api.php",
+    "method": "action=query&prop=extracts|revisions&exintro=1&explaintext=1&exchars=1100&rvprop=ids|timestamp&redirects=1&formatversion=2",
+    "license": "CC BY-SA 4.0, separate attributed dataset files; https://en.wikipedia.org/wiki/Wikipedia:Copyrights",
+    "collection": "exactly 40 predeclared city article titles, fetched in two 20-title requests; source file stores no capital/control labels, article title, page ID, reported revision ID, page_url, per-page attribution and precise captured text, per-batch response SHA256 and canonical SHA256; reject missing/empty/redirect ambiguity, no replacement city or post-hoc source selection; source text frozen before DEV evaluation; no live source calls from model code.",
+    "max_extracted_chars": 1100,
+    "min_chars_each": 90,
+    "fixture_pairs": [
+      {
+        "country": "Peru",
+        "capital": "Lima",
+        "control": "Arequipa"
+      },
+      {
+        "country": "Chile",
+        "capital": "Santiago",
+        "control": "Valparaíso"
+      },
+      {
+        "country": "Uruguay",
+        "capital": "Montevideo",
+        "control": "Punta del Este"
+      },
+      {
+        "country": "Colombia",
+        "capital": "Bogotá",
+        "control": "Medellín"
+      },
+      {
+        "country": "Ecuador",
+        "capital": "Quito",
+        "control": "Guayaquil"
+      },
+      {
+        "country": "Cuba",
+        "capital": "Havana",
+        "control": "Santiago de Cuba"
+      },
+      {
+        "country": "Pakistan",
+        "capital": "Islamabad",
+        "control": "Lahore"
+      },
+      {
+        "country": "Egypt",
+        "capital": "Cairo",
+        "control": "Alexandria"
+      }
+    ],
+    "reserved_dev_pairs": [
+      {
+        "country": "Paraguay",
+        "capital": "Asunción",
+        "control": "Ciudad del Este"
+      },
+      {
+        "country": "Venezuela",
+        "capital": "Caracas",
+        "control": "Maracaibo"
+      },
+      {
+        "country": "Costa Rica",
+        "capital": "San José, Costa Rica",
+        "control": "Limón"
+      },
+      {
+        "country": "Panama",
+        "capital": "Panama City",
+        "control": "Colón, Panama"
+      },
+      {
+        "country": "Nicaragua",
+        "capital": "Managua",
+        "control": "León, Nicaragua"
+      },
+      {
+        "country": "Honduras",
+        "capital": "Tegucigalpa",
+        "control": "San Pedro Sula"
+      },
+      {
+        "country": "Guatemala",
+        "capital": "Guatemala City",
+        "control": "Quetzaltenango"
+      },
+      {
+        "country": "El Salvador",
+        "capital": "San Salvador",
+        "control": "Santa Ana, El Salvador"
+      },
+      {
+        "country": "Dominican Republic",
+        "capital": "Santo Domingo",
+        "control": "Santiago de los Caballeros"
+      },
+      {
+        "country": "Haiti",
+        "capital": "Port-au-Prince",
+        "control": "Cap-Haïtien"
+      },
+      {
+        "country": "Jamaica",
+        "capital": "Kingston, Jamaica",
+        "control": "Montego Bay"
+      },
+      {
+        "country": "Belize",
+        "capital": "Belmopan",
+        "control": "Belize City"
+      }
+    ],
+    "fixture_train_first_n": 6,
+    "fixture_additional_n": 2,
+    "reserved_source_status": "NOT_CONSUMED",
+    "novelty": "None of the 24 heldout wiki city pages are involved in label supervision, and no reserved scores may be inspected before exact-source final qualification. Wikimedia is a single publisher; input domains (country capital city entries) are closely related; not independent publisher transfer."
+  },
+  "candidate": {
+    "raw_signal": "Unicode NFC case-folded raw character overlapping 3-5grams hashed by stable Blake2 to 16,384 numeric dimensions; no word tokenizer, transformer, next-token model or pretrained text representations. Mask only explicit city title/country strings before feature extraction (using literal character replacement, not a source-specific regex grammar); do not mask capital cue words.",
+    "learning": "Fixed numerical bipolar class-association writes from 6 pairs of labeled Wikipedia city texts, then 2 extra pairs; no gradients, refit or past observation replay for candidate. Scores from weight dot product of source text features, choose top within each country pair, with abstention margin frozen.",
+    "state": "Sparse numeric relation weights and separately stored source citation records; exact cold-state serializable checksum; no claim all evidence resides solely in weights.",
+    "evaluation": "Provide candidate input as (country, [(title, raw lead excerpt, verified source reference) for two city pages]) in deterministic alphabetical title order. Never pass 'capital' or 'control' roles into predict(). Scoring manifest can be read by evaluator only AFTER output hash is committed."
+  },
+  "controls": {
+    "fully_trained": "Conventional supervised SGD logistic regression on identical raw-character features and labeled fixture examples; 120 full deterministic epochs, learning rate 1.0 and L2 0.01, report train accuracy, dev predictions, actual compute. Do not undertrain intentionally.",
+    "lexical": "Independent explicit same-country 'capital of' substring and pattern parser; no access to capital labels for DEV; report its ability even if it wins.",
+    "retrieval": "BM25-like lexical similarity of query 'capital of {country}' against both article texts, report dev wins (no training).",
+    "shuffled": "Direct-weight negative control trained with labels swapped independently across fixture pairs, preserving 50/50 class counts; report dev performance.",
+    "random": "Fixed seed random-choice control, no source use."
+  },
+  "metrics": {
+    "dev_country_queries": 12,
+    "min_dev_correct": 9,
+    "max_gap_to_conventional_correct": 2,
+    "min_dev_advantage_over_label_shuffled": 3,
+    "max_unrelated_command_confident": 0,
+    "min_initial_fixture_train_correct": 10,
+    "min_final_fixture_train_correct": 14,
+    "min_first_six_pairs_retained": 6,
+    "min_page_source_attribution_precision": 1,
+    "cold_restore_exact": true,
+    "tamper_rejected": true,
+    "whole_cpu_and_per_method_report": true,
+    "nonlabel_source_file": true,
+    "all_controls_reported": true,
+    "classification_success": "DEV_PROSE_RELATION_GROUNDING_FEASIBLE",
+    "classification_fail": "DEV_PROSE_RELATION_GROUNDING_NEGATIVE",
+    "meaning": "Even a full pass cannot claim general natural language understanding or independently acquired world knowledge. All models see source prose; two answer options and correct country grouping are preselected."
+  },
+  "seeds": {
+    "fixture": 92090,
+    "reserved": 13090,
+    "hash_seed": "WSP90/blake2s/v1",
+    "tie_break": "lexical alphabetical title",
+    "shuffled_feedback_seed": 22090
+  },
+  "qualification": [
+    "Preregistration committed before collector/experiment code or source capture.",
+    "Read-only one-shot source capture under 40-page ceiling, two requests and bounded bytes, with exact file hash/attribution; if any source missing fail closed and report, do not substitute post-hoc.",
+    "Public fixture train/validation only; no DEV first-use, no tuning or training on DEV labels.",
+    "Mandatory WSP80-WSP90 focused, full Yggdrasil root regression, exact source/G29 on Ubuntu+Windows; preserve original failed tests and measurements.",
+    "Dev group first-use once only after both OS qualification; preserve failure without retuning the reserved split or changing threshold, report baselines and whole-process costs.",
+    "Publish results in GitHub, leave accepted state untouched."
+  ],
+  "isolation": {
+    "draft_only": true,
+    "main": false,
+    "merge": false,
+    "accepted_ref": false,
+    "official_yggdrasil_or_forge_loop": false,
+    "protected_scientific_cohort": false,
+    "extra_runner": false,
+    "scheduled_tasks": false,
+    "paid_api": false,
+    "deployment": false,
+    "user_library": false
+  }
+}
