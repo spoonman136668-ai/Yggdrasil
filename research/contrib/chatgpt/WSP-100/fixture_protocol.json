@@ -1,0 +1,38 @@
+{
+  "schema": "wsp100.fixture-causal-audit-protocol.v1",
+  "status": "FROZEN_BEFORE_SIMULATOR_OR_AUDITOR_IMPLEMENTATION",
+  "exact_parent": "ac55988cbef6daafa5afd79c50bbf4ce6d5b243f",
+  "scope": "DEV fixture 0..7 ONLY; original FIT 100011..100034, TRANSFER 100101..100132, NOVEL 100201..100216, RESERVED 100301..100332 must never be instantiated.",
+  "hypothesis": "A deterministic six-visible-four-valued/two-hidden-four-valued system exhibits delayed causal action effects. A separate exact 256-program fixture catalogue can verify partial identifiability without accessing sampled source rules. This says nothing about broad original transfer task performance.",
+  "operators": [
+    "add4(a,b)=(a+b)%4",
+    "xor2(a,b)=a XOR b",
+    "conditional(a,b)=a if b even else 3-a",
+    "mixedmul(a,b)=(a*b+b)%4"
+  ],
+  "fixture_parameters": "Four integers (family,wiring,trigger,phase) in [0,3], enumerated exhaustively for AUDITOR only, 4^4=256 combinations. Fixture actual parameters are SHA256 rank('WSP100|v1|FIXTURE|id|PARAM-{FAMILY,WIRING,TRIGGER,PHASE}|0') modulo4.",
+  "visible_rule": "For output i=0..5: a=x[(i+wiring)%6], b=x[(i+1+wiring)%6], c=op[family](a,b), d=x[(i+3)%6], v=(op[(family+1+i%3)%4](c,d)+phase*(1+i%2))%4; y_i=(v+old_hidden[i%2])%4 for i<4 else y_i=v.",
+  "hidden_rule": "For latch j=0,1, action a=(trigger+j)%4 AND (x[(wiring+j)%6]+x[(wiring+j+2)%6]+phase+j)%2=1 toggles h_j=(h_j+1+(phase+j)%3)%4. Reset hidden=(0,0); outputs depend on OLD hidden, not new.",
+  "reward": "int((next_y[0]+next_y[1])%4 ==3). Observations expose only y tuple and reward, not hidden state or parameters.",
+  "episode": "Reset requires six explicit values in [0,3], four action steps 0..3 max. Double use and invalid action fail closed.",
+  "hash": "SHA256 domain-separated WSP100|v1|FIXTURE|fixture_id|stream|index, big endian; canonical sorted compact JSON.",
+  "sources": "24 passive four-step episodes, 8 active four-step episodes, 8 random four-step episodes. Passive initial state base4 digits of rank(PASSIVE-INIT,i)%4096; action rank(PASSIVE-ACT,4*i+t)%4. Active and random share initial state base4 digits rank(INVESTIGATE-INIT,i)%4096. Random action rank(RANDOM-ACT,4*i+t)%4. Active action selects least-seen (current-visible,action) pair, then least used action, then rank(ACTIVE-TIE,global_step*4+a). Coverage seeded by passive source; update after actual observation only.",
+  "heldout": "12 distinct six-channel initial states picked by rank(HELDOUT-INIT,base4_state_int) excluding all source episode start states. Each has paired three-action plans. First action a=rank(HELDOUT-A,i)%4 vs b=(a+1+rank(HELDOUT-B,i)%3)%4; second=rank(HELDOUT-C,3*i+1)%4 and third=rank(HELDOUT-C,3*i+2)%4 shared.",
+  "auditor": "Independent Python source module does not import simulator transition or parameters. Enumerate all 256 candidate programs, replay entire observed source episodes, discard inconsistent candidates, calculate exact heldout output-bit agreement among surviving candidates. Report #survivors and invariant/total cells; no sampled program ID passed to candidates.",
+  "audit_negative": "An empty observation history must retain all 256 candidates and produce less-than-perfect invariance on heldout targets. A world parameter perturbation must be detectable by observed trajectories; no-target-leak and immediate action-invariance tests.",
+  "stopping": "Fixture structural PASS only if determinism, budget, reward parity, delayed-effect witness, true generated candidate consistency and auditor negative checks pass. Source-limited fixture identifiability is NEVER claimed as ≥70% original-world identifiability or SCIENTIFIC_PASS.",
+  "software": "Python 3.12 standard library only. Dual-platform isolated DEV tests. No original or reserved cohort generation, no accepted-ref change, model adoption, or official loop.",
+  "classification": {
+    "supported": "DEV_STRUCTURE_ONLY; engineering only",
+    "negative": "DEV_TASK_NEGATIVE if interventions show no delayed causal differences or exhaustively enumerated fixture oracle and independent auditor disagree",
+    "invalid": "Original first-use, oracle leaks, source overlap/budget drift, non-exhaustive fixture catalogue or code/provenance mismatch"
+  },
+  "authority": {
+    "research_only": true,
+    "first_use": false,
+    "merge": false,
+    "accepted_model_change": false,
+    "controller": false,
+    "scheduler": false
+  }
+}
