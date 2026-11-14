@@ -1,0 +1,102 @@
+{
+  "schema": "yggdrasil.contrib.aai11a.frozen-protected-graph-prereg.v1",
+  "id": "AAI-11A",
+  "phase": "PRE_SCIENCE_SOURCE_ONLY",
+  "lineage": {
+    "benchmark_pr": 1057,
+    "benchmark_sha": "40062783d0aa0e06fbe93b3419291150b306562d",
+    "benchmark_prereg_blob": "d86b0f88d3d66e89ad14d0096751241fcc52a1d4",
+    "world_blob": "88d220e94ccf736e490f20922f1c7f5d3c1d3746",
+    "controls_blob": "b554db7d8d25ae9b6a5f8bffb066181a00b35ffc",
+    "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "prior_dev": "AAI-10D PR#1055 candidate below strongest by -.63125, headroom inadequate +.121875; AAI-11P source-only measured strong-control headroom +.467708333. Preserve, do not retune/replay science."
+  },
+  "hypothesis": "A tokenless protected bank of independently learned causal graph signatures (not donor model architecture) permits retaining and retrieving previous causal structures and adapts to genuinely unfamiliar composed mediator laws after common action-consequence evidence, beating strongest fully trained controls including SAME causal-graph grammar with a recency window. Without a win over matched structure-aware controls, NO scientific success.",
+  "candidate": {
+    "name": "ProtectedCausalGraphBank",
+    "max_slots": 3,
+    "ablation_slots": 1,
+    "training_group": 2,
+    "max_slot_rows": 96,
+    "confidence_on_MAP": 0.9,
+    "structure": "Each slot has a public-data mismatch vector over 45 XOR/AND/OR pair hypotheses of 6 public inputs for m0; 45 for m1; 84 over unordered two of (6 inputs, observed m0,m1) for m2; per-output MAP smallest mismatch + prior penalty with index tie break. No raw episode history in a slot.",
+    "graph_prediction": "At an unobserved intervention input x, compute m0/m1 MAP bits then compute m2 MAP bit using those two predicted mediator bits; return 0.9 for predicted 1 else 0.1, per bit; same prediction for candidate and all structure-matched controls.",
+    "public_update": "Observations only x six bits, mediators three bits, goal, actual reward, actions_taken; each new actual public state adds 3*45/84 mismatch counts to slot, with m2 hypotheses evaluated using OBSERVED m0,m1 for truthful structural fitting; no simulator law labels or unchosen action outcome.",
+    "recall": "After two PUBLIC observation rows, compare exact 6 public mediator bits of batch against each existing slot's current MAP structural graph (m2 evaluated with OBSERVED upstream mediators); if best inactive slot errors <= active errors-2, recall lowest-error inactive slot (tie smallest slot ID).",
+    "novelty": "Only if no recall, current active errors>=3/6, current active slot has >=8 public rows and an unused slot exists: allocate a slot with 1-unit mismatch-equivalent operator penalty for m0,m1,m2 rules whose operation differs from oldest protected slot with >=8 rows; no phase ID or hidden label. Else update active.",
+    "saturation": "Never allow >96 rows in any slot; fail closed before state mutation if selected slot+2>96. No implicit eviction, truncation, rehearsal or silent forgetting.",
+    "planner": "Exactly original AAI-11P controls.plan (same shared public state, STOP, deterministic two actual interventions); prediction cache invalidates after any learned batch. No other planner customization.",
+    "cold": "Exact canonical JSON sorted deterministic serialization, strict restore validation of slot counters, scratch, IDs and prior weights; ephemeral caches never serialized.",
+    "one_slot": "Same exact candidate with max_slots=1, no operator prior, same public budget <=64+8+3=75 rows, zero protected slots; both use identical planner."
+  },
+  "matched_structural_controls": {
+    "graph_recent8": "Same 45/45/84 public grammar and same MAP prediction/policy, sliding last 8 real public rows; exact sufficient statistic add/subtract and fully updated on all observed rows.",
+    "graph_recent16": "Same graph grammar/predictor/policy, last 16 public rows.",
+    "graph_all": "Same graph grammar/predictor/policy, all public rows; no regime segmentation or protected slot history."
+  },
+  "original_matched_controls": [
+    "tabular_all",
+    "tabular_recent16",
+    "knn_all",
+    "knn_recent32",
+    "symbolic_pair_recent16",
+    "symbolic_pair_all",
+    "id3_depth4_all",
+    "logistic_triple"
+  ],
+  "fairness": {
+    "same_observations": "ALL 11 matched controls, candidate, one-slot ablation, and original reactive diagnostic get exactly the same 64 public A/B pre/post states plus 2/4 public do-action challenge trials for a given fixture; the same 0-2 real action allowance and actual feedback per method. No phase/regime ID, simulator formula, reward of unchosen action or oracle leak.",
+    "train": "16 one-action A trials and 16 one-action B trials (64 public rows) identical to original AAI-11P admission fixture generator; boundaries private.",
+    "challenge": "2 and 4 exogenous one-action trials per law, 4/8 public rows; original A/B training checkpoint cold restored independently per C/D/E/F unfamiliar phase and A-return/B-hold diagnostics.",
+    "eval": "12 unique (x,goal) contexts per law from original AAI11P admission; independent cold restore for each method/condition/context, each may learn only its own actual consequence; evaluate terminal public reward and exactly correct three-goal success; same planner",
+    "strongest_selection": "Select maximum mean terminal reward over all 11 trained conventional matched eligible controls, not convenient original symbolic_recent16 alone; actual-law oracle is diagnostic excluded.",
+    "negative": "handcrafted synthetic public post-action mediator exchange across distinct challenge x, preserved x/action and mediator marginal frequencies; recomputed public reward, never an alternative physically coherent law; evaluation actual simulator remains true. Must not interpret negative as independent science.",
+    "future_science": "AAI-11P reserved 994000..994015 DEV, 995000..995063 TRANSFER, 996000..996031 NEGATIVE remain unused; do not generate or touch these here."
+  },
+  "dev_fixture_gate": {
+    "fixtures": [
+      "mechanical:alpha",
+      "mechanical:beta",
+      "mechanical:gamma"
+    ],
+    "no_science_seeds": true,
+    "admit_only_if": "Candidate vs strongest of 11 fully trained controls on 3 synthetic fixtures across four novel C/D/E/F laws at N=2,4 with 12 independent contexts each >=+0.08 terminal reward AND headroom known-law oracle vs strongest >=+0.25. Also candidate vs full-budget 1slot >=+0.05, unfamiliar three-goal success >=0.60; A/B retention floor candidate >= strongest-0.03. These are development ADMISSION thresholds only, not independent science CIs; any fail is recorded as candidate DEV_NO_GO, no post-result tuning or reuse of science cohorts.",
+    "cost": "Record candidate and every matched total train+checkpoint+challenge+action+restore walltime, serialized bytes; require candidate <=2.0x fastest matched whole process and no new native changes; if not measured or failed, no science first-use.",
+    "mechanical_negative": "Private-field rejection, no hidden law or oracle, legal do-actions only, no shared episode training, protected inactive slots never modified by active slot updates, single-slot cap no unfair abort, complete source-custody and exact cold restoration.",
+    "full_regression": "Final exact candidate SHA both Linux/Windows full native 54+ focused benchmark 10+ new tests and G29 generated code atlas source-pinned; no alternative runner or scheduler."
+  },
+  "future_science": {
+    "DEV": [
+      994000,
+      994015
+    ],
+    "TRANSFER": [
+      995000,
+      995063
+    ],
+    "NEGATIVE": [
+      996000,
+      996031
+    ],
+    "consumed": 0,
+    "first_use_authorized": false,
+    "scientific_PASS": false,
+    "promotion": false,
+    "model_integration": false
+  },
+  "authority": {
+    "create_isolated_candidate_branch": true,
+    "one_shot_source_tests": true,
+    "synthetic_dev_admission": true,
+    "draft_pr": true,
+    "merge": false,
+    "main_edit": false,
+    "native_weights": false,
+    "controller_runner_scheduler_queue": false,
+    "paid_API": false,
+    "science_first_use": false,
+    "model_promotion": false,
+    "files_library": false
+  },
+  "no_post_result_tuning": true
+}
