@@ -90,3 +90,48 @@ tests, eight new MD32 focused tests, byte-identical public physical
 receipts, and the separately generated G29 atlas on both operating
 systems. **Engineering PASS never implies scientific improvement or
 authorization to merge, promote, touch native weights or first-use.**
+
+## Completed MD32 task-physics preflight — November 14, 2026
+
+**ENGINEERING: PASS.** On exact SHA `1f6fb7986e510520406b13116dfdc33943f69a6f`,
+Linux and Windows each passed **101 tests** (54 inherited, 32 frozen MD30,
+seven frozen MD31 and eight MD32). Canonical public physical trace results
+matched byte-for-byte across operating systems, and G29 source-atlas
+acceptance passed both. [MD32 full qualification](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43618088832)
+· [G29 acceptance](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43618133588).
+
+The 96 synthetic fixture contexts evaluated in both hidden
+stable/rewire conditions (= **192 physical worlds**) passed the
+unannounced-change, charged diagnostic, no-free-preview and distinct
+mechanism tests. Results exactly matched the *precommitted* values:
+
+| Physics reference | Mean net reward |
+|---|---:|
+| Privileged oracle upper bound | **+0.960** |
+| Public two-paid-probe physical reference | **+0.800** |
+| No-probe fixed terminal action | **−0.165** |
+
+Blind success was 25% in *every* causal family and across both
+stable/rewired worlds. Oracle-minus-blind **+1.125** proves that action
+choice carries information. Oracle-minus-perfect-physical-reference
+**+0.160** is only an *upper bound for potential diagnostic-cost savings*,
+not evidence of learnable gain.
+
+**SCIENTIFIC: UNVERIFIED.** No agent weights, model learning, trained
+Bayesian/recurrent/RL conventional control, unfamiliar-policy transfer,
+cold retention, or registered experiment was run. Importantly, the
+fixed two-probe strategy already solves every fixture world; a fully
+trained conventional learner could saturate this benchmark. The
+mandatory next gate must independently establish nontrivial reward,
+transfer, retention and whole-process cost headroom over the strongest
+trained conventional model. If it closes to within 0.05 of oracle,
+freeze MD32 as **TRIVIAL_FOR_NOVEL_GAIN**.
+
+All details and provenance are retained under `result.json` and
+`provenance.json` (and the immutable GitHub Actions artifacts).
+No chat-library files were created.
+
+**DEPLOYMENT: NONE.** Original scientific cohorts unconsumed, draft
+PR unmerged; Yggdrasil native weights, main, accepted research
+references, runner/owner/controller and other research lines untouched.
+The independent CKB proxy-fanout workflow failure is not MD32 science.
