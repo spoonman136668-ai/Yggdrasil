@@ -1,0 +1,91 @@
+{
+  "schema": "wsp107.independent-projected-transe-dev-prereg.v1",
+  "status": "FROZEN BEFORE WSP107 IMPLEMENTATION, REAL REFERENCE GRAPH ALREADY KNOWN DEV SPLIT; NOT VIRGIN FIRST-USE OR SCIENTIFIC_PASS",
+  "parent": {
+    "sha": "89ebc7ea7424e8908e08ebb8ad0522d04139c274",
+    "tree_sha": "2724860922db51b504d475060be983d7acf1810a",
+    "pr": 1058,
+    "negative": "WSP106 original real full-source DistMult at frozen lr 0.08, 4 epochs aborted FloatingPointError nonfinite logits, job 132591972913, no learned score; WSP106 NEVER modified"
+  },
+  "distinct_architecture": "TransE, a translational metric-embedding knowledge-graph learner with margin-ranking objective and bounded unit-ball projected sparse SGD; NOT a parameter adjustment/retry of the failed DistMult bilinear classifier",
+  "data": {
+    "variant": "noncanonical historical Wikidata-derived mirror, not contemporary published Wikidata5M benchmark",
+    "archive_sha256": "ccda8bbcd3cf599b30dd3fd8979ac26e59b48fc53d23128882a044bfbb67f878",
+    "train_sha256": "2ef1a279f6393a8edfbb2b44114a2c97944272e5fe2a1bd2a7cbe48f94742f1a",
+    "train_rows": 21343681,
+    "retained_train_rows": 20677636,
+    "masked_train_rows": 666045,
+    "group_split": "exact original WSP103 whole (s,p) query group mask (SHA256 low five bits zero)",
+    "mask_group_count": 4096,
+    "mask_answers_sha256": "008249f2c9731a426645c584e887bb056662c96f8c2385ba946b98ca3d9f49dc",
+    "original_official_valid_test": "UNOPENED"
+  },
+  "controls": {
+    "WSP104": {
+      "hits1": 921,
+      "hits10": 1853,
+      "mrr": 0.2972134007379324,
+      "receipt_sha256": "4a4364b6c4a806d2b69e9bb329e70f6c1f7d3f39fbafb68bb536d22fb9e2259a"
+    },
+    "WSP105": {
+      "hits1": 1190,
+      "hits10": 2038,
+      "mrr": 0.3617429325369139,
+      "receipt_sha256": "990f1798f7cde37f5771491ee02dcdd19eecf1c8c41cb2d17fb18816ccfeb147"
+    },
+    "untrained": "same TransE initialized embeddings before any training, fixed seed, same candidate universe"
+  },
+  "fixed_learning": {
+    "full_mapping": "unique retained source Q entity and P predicate IDs, no hashing",
+    "dimension": 16,
+    "epochs": 4,
+    "batch_size": 4096,
+    "seed": 1076107,
+    "initializer": "PCG64 standard normal / sqrt(dim), project each entity/relation row to max L2 norm 1",
+    "score": "negative squared Euclidean norm of entity_s + relation_p - entity_o; higher is better",
+    "loss": "hinge max(0, margin + ||s+r-o||^2 - ||s+r-neg||^2)",
+    "margin": 1,
+    "negative_sampling": "one uniform negative object from retained entity ID mapping per positive edge (may equal true object), PCG64",
+    "optimizer": "one-sample sparse SGD updates np.add.at, learning rate 0.02 per active row gradient, project all touched E/R embedding rows to L2 unit ball after each minibatch",
+    "learning_rate": 0.02,
+    "shuffle": "seeded PCG64 permutation of full retained training row indices per epoch, each included once",
+    "regularization": "unit-norm projection only, no hidden validation tuning",
+    "epochs_stop": "exact 4 full passes; no early stopping or post-result tuning"
+  },
+  "metrics": [
+    "all-epoch mean hinge loss and active fraction",
+    "Hits@1 and Hits@10 and best-answer MRR of frozen 4096 groups for untrained and trained",
+    "actual full-source train rows/unique entities/relations",
+    "peak process RSS",
+    "scanner CPU and whole-process wall seconds",
+    "cold deterministic synthetic replay and invariance on seed",
+    "out-of-vocabulary missing candidate and negative controls"
+  ],
+  "candidates": "replay immutable WSP104 full-retained train-only Misra-Gries top 64 per predicate and exact prediction SHA before training; all models and controls score same frozen candidate universe",
+  "job": {
+    "python": "3.12",
+    "numpy": "2.2.6",
+    "runner": "public GitHub-hosted ephemeral CPU, no private runner",
+    "thread_count": 1,
+    "max_training_wall_seconds": 2700,
+    "max_total_job_minutes": 55,
+    "peak_memory_bytes": 5368709120,
+    "source_download_limit_bytes": 268435456
+  },
+  "rules": {
+    "original_validation_test": false,
+    "protected_WSP101": false,
+    "first_use_scientific": false,
+    "merge": false,
+    "model_promotion": false,
+    "controller": false,
+    "scheduler": false,
+    "paid_apis": false,
+    "source_write": false,
+    "algorithm_tuning_after_result": false,
+    "full_final_regression_both_os": true,
+    "independent_G29": true,
+    "no_artifact_upload": true
+  },
+  "decision": "Report even if TransE underperforms or fails, do not claim fully converged based solely on four fixed epochs. Already exposed WSP103 TRAIN-derived DEV labels imply exploratory metrics, not independent benchmark first use or SCIENTIFIC_PASS. Future separate qualified fully trained strongest model, matched compute, disjoint transfer and direct weight edit needed."
+}
