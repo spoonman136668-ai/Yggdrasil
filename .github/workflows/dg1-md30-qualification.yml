@@ -78,6 +78,40 @@ jobs:
           print("MD30_PRE_FIRST_USE_HEADROOM_AND_CHARGED_REWIRE_PASS")
           print("MD30_REGISTERED_FIRST_USE_NEVER_EXECUTED")
           PY
+      - name: Verify frozen generator source custody and synthetic structural distribution
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          lock=json.loads(Path("research/contrib/chatgpt/dg1-md30-20261114/task_generator_lock.json").read_text())
+          assert lock["status"]=="TASK_GENERATOR_ONLY__NO_LEARNERS__NO_OFFICIAL_COHORT_FIRST_USE"
+          for path,sha in lock["source_blob_git_shas"].items():
+              got=subprocess.check_output(["git","hash-object",path],text=True).strip()
+              assert got==sha,(path,got,sha)
+          print("MD30_PINNED_STRUCTURAL_GENERATOR_BLOBS_PASS")
+          PY
+          python -m py_compile research/contrib/chatgpt/dg1-md30-20261114/structural_catalog.py research/contrib/chatgpt/dg1-md30-20261114/test_structural_catalog.py
+          python -m unittest discover -s research/contrib/chatgpt/dg1-md30-20261114 -p 'test_structural_catalog.py' -v
+          python - <<'PY'
+          import json,sys
+          from pathlib import Path
+          sys.path.insert(0,"research/contrib/chatgpt/dg1-md30-20261114")
+          from structural_catalog import preflight_distribution
+          from structural_rewire import canonical
+          result=preflight_distribution()
+          lock=json.loads(Path("research/contrib/chatgpt/dg1-md30-20261114/task_generator_lock.json").read_text())
+          assert result["registered_first_use"] is False
+          assert result["topology_manifest"]["all_structure_sha256"]==lock["topology_contract"]["topology_commitment_sha256"]
+          assert result["topology_manifest"]["topology_sha256"]==lock["topology_contract"]["topology_hashes"]
+          for row in result["motifs"].values():
+              assert row["oracle_blind_utility_headroom"] >= lock["qualification_rule"]["preflight_each_motif_min_oracle_blind_utility_headroom"]
+          Path("md30-structural-distribution.json").write_bytes((canonical(result)+"\n").encode("utf-8"))
+          print("MD30_SYNTHETIC_STRUCTURAL_DISTRIBUTION_PREFLIGHT_PASS")
+          print("MD30_NO_OFFICIAL_COHORT_FIRST_USE_PASS")
+          PY
       - name: Full inherited regression and exact committed atlas
         shell: bash
         env:
@@ -91,7 +125,9 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: md30-physical-fixture-${{ matrix.os }}
-          path: md30-physical-fixture.json
+          path: |
+            md30-physical-fixture.json
+            md30-structural-distribution.json
           if-no-files-found: error
   parity:
     name: MD30 cross-OS physical trace and headroom parity
@@ -111,6 +147,7 @@ jobs:
         shell: bash
         run: |
           cmp linux/md30-physical-fixture.json windows/md30-physical-fixture.json
+          cmp linux/md30-structural-distribution.json windows/md30-structural-distribution.json
           python - <<'PY'
           import json
           from pathlib import Path
@@ -118,5 +155,10 @@ jobs:
           assert p["registered_first_use"] is False
           assert p["classification"]=="PREFLIGHT_ONLY_NO_LEARNER_NO_OFFICIAL_COHORT"
           assert p["headroom"]["headroom"]==0.75
+          q=json.loads(Path("linux/md30-structural-distribution.json").read_text())
+          assert q["registered_first_use"] is False
+          assert len(q["motifs"])==6
+          assert all(x["oracle_blind_utility_headroom"]>=0.35 for x in q["motifs"].values())
+          print("MD30_SIX_MOTIF_STRUCTURAL_PARITY_PASS")
           print("MD30_PRE_FIRST_USE_CROSS_OS_PARITY_PASS")
           PY
