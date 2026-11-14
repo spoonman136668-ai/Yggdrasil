@@ -1,0 +1,90 @@
+name: AAI-05 isolated causal motif mechanical + frozen one-shot
+on:
+  push:
+    branches: [research/aai05-causal-motif-cold-memory-20261114]
+    paths: [.github/workflows/aai05-frozen-once.yml]
+permissions:
+  contents: read
+
+jobs:
+  mechanical-preflight:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'AAI-05 mechanical preflight only' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Confirm prereg, evaluator and mechanical-only boundary
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = 'cbfd611d173fee28070b5cf05c85765ad4ccd4c1'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-05/run.py)" = "$(git rev-parse cbfd611d173fee28070b5cf05c85765ad4ccd4c1:research/contrib/chatgpt/AAI-05/run.py)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-05/prereg.json)" = "$(git rev-parse d417e2aff50db08d2b12af7d02ced094d17983cc:research/contrib/chatgpt/AAI-05/prereg.json)"
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai05-frozen-once.yml'
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-05 -p test_aai05.py -v
+          git diff --exit-code
+          echo AAI05_MECHANICAL_PREFLIGHT_ONLY_PASS
+
+  primary-frozen-once:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'Arm AAI-05 exact-source primary one-shot' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Confirm unchanged source and no prior evaluation step on this commit
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai05-frozen-once.yml'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-05/run.py)" = "$(git rev-parse cbfd611d173fee28070b5cf05c85765ad4ccd4c1:research/contrib/chatgpt/AAI-05/run.py)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-05/prereg.json)" = "$(git rev-parse d417e2aff50db08d2b12af7d02ced094d17983cc:research/contrib/chatgpt/AAI-05/prereg.json)"
+          test -z "$(git status --porcelain)"
+          echo AAI05_FIRST_USE_CUSTODY_PASS
+      - name: Execute original frozen science outcome exactly once
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/AAI-05/run.py > "$RUNNER_TEMP/aai05-primary.json"
+          python - "$RUNNER_TEMP/aai05-primary.json" <<'PY'
+          import hashlib,json,sys
+          raw=open(sys.argv[1],"rb").read()
+          x=json.loads(raw)
+          assert x["prereg_commit"]=="d417e2aff50db08d2b12af7d02ced094d17983cc"
+          assert x["integration"]=="NONE"
+          print("AAI05_PRIMARY_JSON="+json.dumps(x,sort_keys=True,separators=(',',':')))
+          print("AAI05_RAW_PRIMARY_SHA256="+hashlib.sha256(raw).hexdigest())
+          print("AAI05_CLASSIFICATION="+x["classification"])
+          PY
+          git diff --exit-code
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: aai05-primary-original
+          path: ${{ runner.temp }}/aai05-primary.json
+          if-no-files-found: warn
+          retention-days: 14
