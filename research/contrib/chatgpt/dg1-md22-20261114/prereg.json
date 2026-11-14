@@ -1,0 +1,112 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "DG1-MD22-20261114",
+  "contributor": "chatgpt",
+  "contribution_class": "new-independent-falsification",
+  "question": "Does learned cross-episode key-before-unlock intervention evidence add actual delayed-consequence goal reward over an identical-capacity planner with shuffled affordance relationships, and over fully trained reward Q/recurrent policies, in unseen DoorKey/UnlockPickup MiniGrid environments?",
+  "hypothesis": "Conditional action-consequence affordance evidence (locked door toggle fails before key, succeeds after key) improves two distinct held-out task families, yielding mean official discounted return at least 0.08 above the strongest preregistered comparator in BOTH DoorKey-8x8 and UnlockPickup, strict per-seed return wins at least 7/12 in each, and preservation of cold goal success after unrelated interference.",
+  "parent_commit": "8edf7b5563f5a37f3284a96354c9985266d58c18",
+  "protected_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor": [
+    {
+      "pr": 1007,
+      "sha": "8edf7b5563f5a37f3284a96354c9985266d58c18",
+      "science": "VALID_MIXED_DEV_PRIMARY_NO_GO",
+      "note": "Causal map reached held-out goals but was less reward-efficient than fully trained Q and recurrent controls; MG22 is not post-result tuning. Prior original seeds are never reused."
+    }
+  ],
+  "source_deps": [
+    {
+      "path": "research/contrib/chatgpt/dg1-mg20-20261113/mg20.py",
+      "exact_blob_from_parent": "read_only",
+      "purpose": "Official MiniGrid simulator adapter, baseline Q, recurrent, reactive, and map foundation; byte-identical."
+    },
+    {
+      "path": "research/contrib/chatgpt/dg1-mg21-20261113/mg21.py",
+      "exact_blob_from_parent": "read_only",
+      "purpose": "Frozen successful-rewarded training predecessor; original code not touched."
+    }
+  ],
+  "input_identity": {
+    "third_party_env": "Farama MiniGrid==3.2.0, Gymnasium==1.4.0, NumPy==2.3.4, Python 3.12",
+    "package_source": "https://minigrid.farama.org/environments/minigrid/DoorKeyEnv/",
+    "license": "MIT",
+    "source_model": "official 7x7x3 partial image, public direction, action and physical reward; mission string and hidden agent position, grid and planner information prohibited",
+    "source_repro": "Pin package versions, pip freeze SHA in GitHub Actions; no invented wheel hash"
+  },
+  "manifest_sha256": "839a7d4f6e6731d93b012527bb1fdde9ddeaa9f18d541f87d73a4a96f542fbb7",
+  "frozen_design": {
+    "train_seeds": "930001..930024 inclusive in each DoorKey-5x5 and DoorKey-6x6, 48 independent shared physical training episodes",
+    "interference_seeds": "940001..940012 on Empty-6x6, 12 common physical episodes",
+    "cold_seeds": "950001..950012 DoorKey-6x6 scored once before and after interference, independently charged per agent",
+    "transfer_size": "960001..960012 on DoorKey-8x8, once each per agent",
+    "transfer_family": "970001..970012 on UnlockPickup, once each per agent",
+    "train_envs": [
+      "MiniGrid-DoorKey-5x5-v0",
+      "MiniGrid-DoorKey-6x6-v0"
+    ],
+    "interference_env": "MiniGrid-Empty-6x6-v0",
+    "cold_env": "MiniGrid-DoorKey-6x6-v0",
+    "size_env": "MiniGrid-DoorKey-8x8-v0",
+    "family_env": "MiniGrid-UnlockPickup-v0",
+    "max_steps_per_episode": 256,
+    "total_episodes": 300,
+    "max_physical_env_steps": 76800,
+    "arms": [
+      "causal_affordance",
+      "sham_affordance",
+      "reactive",
+      "tabular_q",
+      "recurrent_imitation"
+    ],
+    "teacher": "Fresh cold-start teacher for each training episode, navigating only public partial images/direction and using two real paid interventions where encountered: toggling locked door without key (negative), obtaining key, toggling same door after key (positive), then reaching official task goal. Map/topology planning scaffold is explicitly hand-programmed, not itself learned. Exactly one shared charged teacher trajectory fed to all five models; no per-model training calls to simulator.",
+    "candidate": "256-cell bounded online topological memory and public-image-based subgoals. Training records real (door toggle, no key, fails) and (door toggle, key carried, succeeds) physical outcomes, with key carrying inferred from disappearance of visible key after pickup. At >=3 opposite-context direct intervention contrast pairs, prioritize key before locked door on new episodes. No environment hidden fields. Other navigation is deterministic fixed algorithm.",
+    "sham": "Identical scaffold, module capacity and charged training outcomes, all training counters retained, but temporal relationship between pickup and door outcome is deterministically ignored at subgoal selection (unconditional door-before-key probe); tests value of learned causal ordering rather than effect of mapping alone.",
+    "strong_controls": "Original fully trainable MG20 12-cell recurrent BPTT imitation learner and tabular Q gamma 0.95, lr .2 trained from identical successful shared teacher episodes; original reactive goal-aware no-memory; no extra actions or hidden information. Q and RNN are not necessarily state-of-the-art; do not claim superiority to all conventional methods.",
+    "audit": "At each held-out episode, each frozen agent must choose and pay for every actual action; score official reward>0 and discounted official return, steps to goal, per-seed wins, explicit no-key and with-key interventions, proof that learned edge actually triggered vs sham, 64KiB checkpoint cap, exact action/outcome trajectory SHA; audit outcomes never update training weights or persistent memory.",
+    "cold_memory": "Learnt link and passability persisted across training/interference, ephemeral pose, key, door state and map reset each held-out episode. Exact source/checkpoint snapshots before/after interference and no evaluation training. CPU wall time per OS reported separately.",
+    "coverage": "At least 24 of 48 teacher training episodes must achieve official goal, and at least 8 distinct charged failed no-key door toggles and 8 successful with-key door toggles in shared training; >=3 official goal successes across five arms in EACH heldout transfer family. Otherwise INVALID_TASK_COVERAGE regardless of candidate returns.",
+    "data_split": "Three toy-only seeds 11,17,19 for prefirstuse negative controls; registered 930001..970012 appear only on original PR opening event. No learning from test-world outcomes.",
+    "repro": "Original first use runs once on draft PR opened with exact registered SHA. Linux+Windows full original outcome fields/action SHA/checkpoints equal except explicit runtime timing (numeric <=1e-8, bytes identical for snapshots). Python 3.12, pinned package versions. Source commit and tree pinned; all science artifacts GitHub-only.",
+    "capacity": "Candidate/sham at most 256 cached coordinate tiles per episode and tiny learned conditional effects, persistent checkpoint <=65536 bytes; RNN 12 hidden state, fixed 8-step BPTT; same fixed source/compute protocol."
+  },
+  "metrics": [
+    "physical_train_positive_goal_count",
+    "physical_negative_no_key_toggle_count",
+    "physical_positive_with_key_toggle_count",
+    "official_goal_completion_out_of_12",
+    "official_mean_discounted_reward",
+    "per_seed_reward_wins_vs_strongest_control",
+    "cold_reward_retention",
+    "interference_link_custody",
+    "changed_action_sequence_causal_ablation",
+    "CPU_ratio_to_recurrent",
+    "checkpoint_and_trajectory_sha",
+    "fully_trainable_baselines_count",
+    "cross_platform_parity"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SIGNAL_ONLY only if complete valid physical/source/crossOS custody and coverage; candidate official goal success >=8/12 each heldout family and >=best control success -1, mean discounted official return >=best of ALL four controls +0.08 on EACH family, strictly higher actual official return on >=7 of 12 seeds per family vs frozen best-return control; score better than sham by >=0.08 in both; learned key-before-door module activated in >=8/12 episode starts and both recorded contrast event counts >=8; cold-after goal success >= cold-before -1; all checkpoint <=64KiB, candidate CPU <=5x trained recurrent, first-use exact source and no evaluation weight learning. Passing remains external DEV only, not native AGI or official acceptance.",
+    "mixed": "MIXED_DEV if valid physical and portability coverage but primary false, with candidate >=2 additional official goals vs at least one control on a heldout family, or candidate does >=8/12 official goals in one heldout family and learned intervention link actually activated on >=3 distinct heldout episodes.",
+    "negative": "NEGATIVE_DEV if valid physical/portability/coverage, primary false and no preregistered partial positive signal.",
+    "invalid": "INVALID_TASK_COVERAGE if teacher <24/48 successful or <8 failure-without-key and <8 success-with-key paid probes, or fewer than 3 heldout actual goal events in one transfer family. INVALID_INFRASTRUCTURE/INVALID_REPRO for source/seed/action-budget drift, missing actual env.step, hidden private map/goal/mission leakage, pretrained model reused from earlier registered datasets, mismatched crossOS original action/traces/checkpoint, unverifiable full control weight training, checkpoint corruption, missing cold audit or oracle reward leakage. Valid underperformance is not an infrastructure failure."
+  },
+  "post_result_prohibitions": [
+    "No tuning thresholds, environment split, teacher or navigation rule after original result",
+    "No repeats of registered firstuse after original PR opening",
+    "No reinterpretation of scripted planner as learned general intelligence",
+    "No native or accepted-model promotion on external DEV signal",
+    "No queue/controller/workstation changes"
+  ],
+  "authority": {
+    "external_research_only": true,
+    "merge": false,
+    "promotion": false,
+    "accepted_ref_mutation": false,
+    "controller": false,
+    "scheduler": false,
+    "live_deployment": false
+  },
+  "note": "Preregistration-only first commit. External stacked draft PR based on frozen MG21, no parent/native model changes, prior MG20/MG21 first-use explicitly guarded from descendant replay."
+}
