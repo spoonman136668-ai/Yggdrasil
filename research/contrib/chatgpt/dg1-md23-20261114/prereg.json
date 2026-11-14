@@ -1,0 +1,155 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "DG1-MD23-20261114",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "status": "PREREGISTRATION_ONLY_NO_EXPERIMENT_EXECUTED",
+  "question": "With authentic rewarded UnlockPickup demonstrations and identical navigation scaffolds, can a tokenless causal memory system learn and compose observed key acquisition -> door toggle -> rewarded box-pickup consequences and improve heldout physical goal reward beyond matched sham and trained conventional controls?",
+  "hypothesis": "After genuine shared physical reward-bearing training, the bounded learned causal graph earns at least 8/12 official goals in heldout UnlockPickup seeds, beats a capacity- and scaffold-matched shuffled-edge sham by >=0.06 mean official discounted reward and >=7/12 strict per-seed wins, and beats the strongest trained conventional Q/recurrent comparator by >=0.03 mean discounted reward, without degrading heldout DoorKey-8x8 performance or post-interference cold retention. Failure is reported without retuning.",
+  "exact_parent_sha": "155cb5c3c3f4802166ffb26695b7f7353384cb42",
+  "exact_parent_tree": "39c466cf810c8a68466765f3b93aab13ce8de8c8",
+  "protected_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "pr": 1009,
+      "sha": "155cb5c3c3f4802166ffb26695b7f7353384cb42",
+      "classification": "INVALID_TASK_COVERAGE",
+      "reason": "All five controllers scored 0/12 official goals on heldout UnlockPickup; 48 rewarded DoorKey training episodes did not create actual box-pickup teacher coverage.",
+      "original_run": 43577409758
+    },
+    {
+      "pr": 1007,
+      "sha": "8edf7b5563f5a37f3284a96354c9985266d58c18",
+      "classification": "MIXED_DEV_PRIMARY_NO_GO",
+      "reason": "Fully trained reward policies beat map policy on discounted return in at least one transfer setting."
+    }
+  ],
+  "prior_data_exclusion": "No reuse of MD22 registered 930001..970012 seeds, MG21 registered cohorts, or prior original first-use outcomes as prospective evidence. Prior negative results remain frozen.",
+  "changed_paths": [
+    "research/contrib/chatgpt/dg1-md23-20261114/**",
+    ".github/workflows/dg1-md23-qualification.yml",
+    ".ice/code-atlas.*"
+  ],
+  "immutable_dependencies": {
+    "research/contrib/chatgpt/dg1-mg20-20261113/mg20.py": "read_only_at_exact_parent",
+    "research/contrib/chatgpt/dg1-mg21-20261113/mg21.py": "read_only_at_exact_parent",
+    "research/contrib/chatgpt/dg1-md22-20261114/md22.py": "read_only_at_exact_parent",
+    "third_party": "Python 3.12; minigrid==3.2.0; gymnasium==1.4.0; numpy==2.3.4; package lock and pip freeze identity required in artifacts",
+    "license": "MiniGrid MIT; no external data, credentials, paid APIs or pretrained weights"
+  },
+  "frozen_design": {
+    "train_door": "MiniGrid-DoorKey-6x6-v0 seeds 980001..980024 (24)",
+    "train_box": "MiniGrid-UnlockPickup-v0 seeds 981001..981024 (24)",
+    "interference": "MiniGrid-Empty-6x6-v0 seeds 982001..982012 (12)",
+    "cold_before_and_after": "MiniGrid-DoorKey-6x6-v0 seeds 983001..983012 (12 per arm each occasion)",
+    "heldout_size": "MiniGrid-DoorKey-8x8-v0 seeds 984001..984012 (12 per arm)",
+    "heldout_box": "MiniGrid-UnlockPickup-v0 seeds 985001..985012 (12 per arm)",
+    "no_zero_shot_family_claim": "UnlockPickup is INCLUDED in training; heldout UnlockPickup tests new episodes/layouts of a trained task family, not novel-family zero-shot transfer.",
+    "toy_only_development_seeds": [
+      11,
+      17,
+      19,
+      23,
+      29,
+      31
+    ],
+    "common_training": "Exactly one public 7x7x3 image+public direction+charged action/reward trajectory per training episode from a freshly reset scripted teacher. Each of six arms gets the SAME exact 48 physical demonstrations and 12 interference episodes. No hidden grid/global pose/env.agent_pos/object positions, oracle information, future reward, mission string, or environment-specific access at inference.",
+    "teacher": "Fixed public-observation-only mapping/frontier search, object acquisition, locked-door interaction and rewarded terminal box pickup; may exploit ONLY image, direction, observed reward, own action history. The teacher's navigation/subgoal procedure is explicitly scripted, not learned. It is evaluated for reward-coverage on disjoint toy seeds before registered first use.",
+    "learner": "A bounded, tokenless event-graph of conditional observed effects: key pickup changes carry state, physical toggle before/after key changes door state, rewarded box pickup terminates task. Online counts are updated only from the shared charged training trajectory; at test time graph selects subgoals using observed conditional edges and recomposes them under a fixed public-view navigator. No pretrained language model or next-token learning.",
+    "sham": "Identical map/nav procedure, checkpoint capacity, training counts and training data, but deterministic permutation of conditional edges at subgoal-selection time. No hidden reward or use of heldout outcomes.",
+    "fixed_scripted": "Frozen equal-sensor public-view hand-scripted key -> door -> box-or-goal planner with no learning; included as an important ceiling/control, with no claim of superiority to this expert.",
+    "conventional": "Original fully trainable reward-tabular-Q and 12-hidden recurrent imitation with all trainable input, recurrent, bias and readout parameters and positive-reward shared trajectory updates; include original reactive policy. Training/steps/information matched. Existing baseline algorithms and hyperparameters remain frozen.",
+    "arms": [
+      "causal_graph",
+      "shuffled_graph",
+      "fixed_scripted",
+      "reactive",
+      "tabular_q",
+      "recurrent_imitation"
+    ],
+    "episode_count": 348,
+    "max_episode_actions": 256,
+    "maximum_charged_env_steps": 89088,
+    "accounting": "48 teacher train + 12 teacher interference + 4 evaluation phases x 12 seeds x 6 policies = 348 episodes. Training shared once, evaluation independent actual env.step for each arm. No simulated/oracle paid action.",
+    "checkpoint_byte_cap_each": 65536,
+    "known_map_cell_cap": 256,
+    "evaluation_freeze": "Full policy/checkpoint snapshot before each heldout suite. Heldout physical observations may update only within-episode map/pose, never the learned persistent graph/Q/recurrent weights. Serialized snapshots must be byte-identical afterward; checksum every action trajectory.",
+    "cross_platform": "Run first use once per OS only from frozen source SHA/branch and new draft PR opened event after prefirstuse tests. Full inherited regression and source-aligned G29 atlas on Ubuntu/Windows, strict same non-timing action/reward/checkpoint hashes, CPU recorded separately.",
+    "source_and_result_custody": "Prereg commit must precede learner source, any registered seed execution, and result. Registered first-use one-shot and never replayed on postresult commits. Original full receipts stored only in GitHub Actions, not ChatGPT Library.",
+    "accuracy_scope": "Claim narrow, reward-bearing within-task causal-composition DEV mechanism only; not native Yggdrasil, novel-family zero-shot transfer, fully learned exploration, AGI or scientific acceptance."
+  },
+  "gates": {
+    "coverage": {
+      "trainer_door_official_goals_min": 12,
+      "trainer_box_official_goals_min": 12,
+      "physical_no_key_door_failures_min": 8,
+      "physical_with_key_door_unlocks_min": 8,
+      "physical_rewarded_box_pickups_min": 8,
+      "heldout_box_goal_events_all_arms_min": 3,
+      "heldout_size_goal_events_all_arms_min": 3,
+      "if_unmet": "INVALID_TASK_COVERAGE"
+    },
+    "primary": {
+      "heldout_box_causal_goals_min": 8,
+      "heldout_box_mean_discounted_reward_advantage_over_sham_min": 0.06,
+      "heldout_box_reward_advantage_over_best_trained_Q_or_RNN_min": 0.03,
+      "heldout_box_strict_seed_wins_over_sham_min": 7,
+      "heldout_size_causal_goals_min": 8,
+      "heldout_size_sham_reward_advantage_min": 0.03,
+      "heldout_size_vs_best_trained_return_allowed_deficit_max": 0.03,
+      "heldout_size_strict_seed_wins_over_sham_min": 6,
+      "compared_to_fixed_scripted": "Report goal counts, reward gaps and steps in both families. No requirement to beat scripted ceiling, no superiority-to-scripted claim.",
+      "cold_after_vs_before_causal_goal_loss_max": 1,
+      "actual_learned_graph_edge_use_min_heldout_box": 8,
+      "actual_learned_graph_edge_use_min_heldout_size": 8,
+      "checkpoint_bytes_max": 65536,
+      "cpu_ratio_to_trained_recurrent_max": 5,
+      "no_evaluation_weight_update": true,
+      "ubuntu_windows_parity": true,
+      "full_final_regression": true
+    }
+  },
+  "metrics": [
+    "official_goal_counts",
+    "official_mean_discounted_reward",
+    "per_seed_pairwise_reward_wins",
+    "positive_reward_training_coverage",
+    "paid_key_door_box_action_event_counts",
+    "learned_graph_edge_utilization",
+    "cold_retention_after_interference",
+    "sham_graph_ablation",
+    "scripted_policy_ceiling",
+    "Q_RNN_trained_checkpoint_custody",
+    "CPU_ns",
+    "checkpoint_bytes_and_SHA256",
+    "charged_env_steps",
+    "crossOS_action_reward_parity"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SIGNAL_ONLY if and only if all validity, reproducibility, and primary gates hold. Remains external DEV; separate independent scientific acceptance still required.",
+    "mixed": "MIXED_DEV only if all coverage and custody gates hold but primary fails and causal_graph reaches >=8/12 goals on heldout box OR beats shuffled_graph in mean discounted reward by >=0.03 on heldout box.",
+    "negative": "NEGATIVE_DEV if all coverage/custody gates hold, primary false, and mixed predicate false.",
+    "invalid": "INVALID_TASK_COVERAGE for failed teacher/intervention/heldout positive-reward coverage. INVALID_REPRO/INVALID_INFRASTRUCTURE for source or dependency drift, hidden-data access, action-budget breach, seed reuse/firstuse replay, missing full regression, Q/RNN not actually trained, corrupt checkpoint, unequal shared training, after-result tuning or non-timing crossOS parity mismatch. Valid unfavorable reward is never infrastructure failure."
+  },
+  "prohibited_after_primary_run": [
+    "Changing seeds or train/heldout split",
+    "Changing teacher/nav policy, learner, controls, scores or thresholds using registered results",
+    "Replaying previously consumed registered seeds",
+    "Expanding capacity/data/compute or adding privileged observations",
+    "Treating a scripted planner or task-trained familiarity as learned general intelligence"
+  ],
+  "authority": {
+    "external_research_only": true,
+    "pr_draft": true,
+    "merge": false,
+    "accepted_ref_mutation": false,
+    "autonomous_loop": false,
+    "controller": false,
+    "scheduler": false,
+    "queue": false,
+    "live_deployment": false,
+    "workstation_change": false
+  },
+  "preregistration_note": "This commit is protocol-only: no registered environment execution, primary evidence, source implementation, workflow dispatch, integration, or model improvement is claimed."
+}
