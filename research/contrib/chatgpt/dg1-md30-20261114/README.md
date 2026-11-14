@@ -30,3 +30,49 @@ Cross-platform CI is defined in `.github/workflows/dg1-md30-qualification.yml` a
 ## Unfinished mandatory gates
 
 This preflight **does not** establish that the eventual task family is information-identifiable, sufficiently challenging, and compositional across training/heldout graphs. The next source-locked addendum must freeze the exact official family generator and motif split, graph/permutation hashes, rewiring schedule, trained control capacities/convergence, candidate hyperparameters, shared physical training trajectories, compute budget, and first-use guard. Independent oracle-vs-blind headroom must then pass **across the frozen distribution**, not just the pair above. Only after all controls are qualified and separately authorized may the disjoint scientific first-use occur. Preserve preregistration and any later null outcomes; never post-result tune.
+
+## MD30 six-motif distribution gate (next pre-first-use milestone)
+
+The initial LEFT/RIGHT fixture above intentionally permits a root diagnostic to
+prove charged-action bookkeeping. That fixture alone was **too easy to count as
+a substantive learning challenge**: probing an actuator root previews the
+irreversible choice. This is explicitly **not** the new transfer task.
+
+The newer source-locked distribution uses `structural_catalog.py` and the
+pre-first-use `task_generator_lock.json`:
+
+- **Train topology classes:** chain, fork, collider (six fixed parent-edge
+  templates, two per motif).
+- **Novel transfer classes:** braided, crossfork, doublecollider (six different,
+  composition-disjoint parent-edge templates).
+- Gate/inhibition variants are deterministically selected using SHA-256,
+  with a graph-pair construction requiring *identical ambient six-bit
+  observations*, opposite winning irreversible interventions, changed parent
+  structure **and** gate, plus at least one physically identifying clamp.
+- Crucially, official challenging tasks expose diagnostics **only at internal
+  nodes C, D and E**. Clamping actuator A or B as a cheap action preview is
+  rejected; the public action menu advertises the permitted nodes.
+- The original cohorts have **not** been generated. `synthetic_pair`
+  rejects seeds >=1,000,000 and only 48 synthetic preflight seeds
+  (1201–1248) per motif are used to inspect task construction.
+- The official four cohort ranges, motif allocation, change schedule,
+  allowed physical actions, and graph-topology SHA commitments are **declared
+  and frozen** in the lock file, but remain execution-disabled.
+
+The synthetic distribution check uses a **motif-aware blind fixed-actuator**
+comparator and a privileged physics oracle. This is a task-difficulty
+sanity check, **not a policy evaluation** and not proof Yggdrasil beats a
+trained conventional learner. Any actual learner or trained control has to
+consume the same paid observations, work under identical action/compute
+budgets and obey the independent registered first-use gate.
+
+```sh
+python -m unittest discover -s research/contrib/chatgpt/dg1-md30-20261114 -p test_structural_catalog.py -v
+```
+
+**Stop conditions:** mixed hidden graphs becoming publicly distinguishable
+without a paid diagnostic; train/transfer topology overlap; headroom below
+0.35 in any motif; failures of cross-OS determinism or inherited regression;
+or a strong conventional trained controller already saturating this task. The
+last condition is **unverified** until conventional baselines are implemented
+and trained, and cannot be waived by successful synthetic preflight.
