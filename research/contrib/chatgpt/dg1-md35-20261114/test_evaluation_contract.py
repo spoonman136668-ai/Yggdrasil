@@ -114,17 +114,47 @@ class EvalArithmeticTests(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "INVALID_BLOCKS"):
             block_bootstrap([])
 
-    def test_paired_bootstrap_uses_identical_block_order(self):
-        diff = paired_net_bootstrap(self.toy_transfer_shape,
-                                    self.toy_transfer_shape,
-                                    "unfamiliar_transfer")
+    def test_paired_bootstrap_requires_aligned_harness_private_world_identity(self):
+        # Synthetic, nonreserved bookkeeping digests only: this test neither
+        # authenticates a real harness nor opens any protected hidden cohort.
+        left = tuple(sha256_json({"toy": i, "cohort": "transfer"})
+                     for i in range(96))
+        diff = paired_net_bootstrap(
+            self.toy_transfer_shape, self.toy_transfer_shape,
+            "unfamiliar_transfer",
+            left_block_commitments=left, right_block_commitments=left)
         self.assertAlmostEqual(diff["mean_paired_delta"], 0)
         self.assertAlmostEqual(diff["block_bootstrap_95"]["low95"], 0)
         self.assertAlmostEqual(diff["block_bootstrap_95"]["high95"], 0)
+        self.assertTrue(diff["harness_only_commitments_shape_matched"])
+        self.assertFalse(diff["independent_harness_authenticity_verified"])
+        self.assertTrue(diff["not_scientific_admission"])
+        with self.assertRaisesRegex(AssertionError, "PAIRED_HARNESS_IDENTITY"):
+            paired_net_bootstrap(self.toy_transfer_shape,
+                                 self.toy_transfer_shape,
+                                 "unfamiliar_transfer")
+        for corrupted in (
+                tuple(reversed(left)), left[1:] + left[:1],
+                left[:-1] + (left[0],), left[:-1],
+                left[:-1] + ("invalid",),
+                left[:-1] + (left[-1].upper(),)):
+            with self.subTest(mismatch=corrupted[:2]):
+                with self.assertRaisesRegex(
+                        AssertionError,
+                        "PAIRED_HIDDEN_LAW_BLOCK_MISMATCH|PAIRED_HARNESS_IDENTITY"):
+                    paired_net_bootstrap(
+                        self.toy_transfer_shape, self.toy_transfer_shape,
+                        "unfamiliar_transfer",
+                        left_block_commitments=left,
+                        right_block_commitments=corrupted)
+        # Even identical public contexts and physically valid action receipts
+        # do not prove both models faced the same private laws.
         with self.assertRaisesRegex(AssertionError, "UNQUALIFIED_TRAIN"):
             paired_net_bootstrap(self.toy_transfer_shape,
                                  self.toy_cold_shape,
-                                 "unfamiliar_transfer")
+                                 "unfamiliar_transfer",
+                                 left_block_commitments=left,
+                                 right_block_commitments=left)
 
     def test_harness_labels_never_become_model_inputs(self):
         # Non-reserved 96-block LABEL-SCHEMA toy fixture; not a score for

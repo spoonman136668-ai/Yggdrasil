@@ -192,18 +192,50 @@ def summarize_unopened_shape_only(blocks, cohort):
     return _cohort_metrics(blocks, cohort)
 
 
-def paired_net_bootstrap(left_blocks, right_blocks, cohort):
-    """Matched *block* resampling for preregistered control-minus-negative."""
+def _require_matching_harness_block_commitments(left, right, count):
+    """Check opaque *harness-only* identity alignment, not authenticity.
+
+    Each commitment must originate from an independently source-pinned,
+    first-use-authorized trusted harness and bind exact prereg/cohort/block,
+    seed identities, private world law, and source. A caller can fabricate
+    matching hashes: the scorer is NOT a signer, ledger, or independent witness.
+    Never give these private commitments to policies, trainers or models.
+    """
+    for values in (left, right):
+        if (type(values) not in (tuple, list) or len(values) != count or
+                any(type(value) is not str or len(value) != 64 or
+                    any(c not in "0123456789abcdef" for c in value)
+                    for value in values) or
+                len(set(values)) != count):
+            raise AssertionError("MD35_PAIRED_HARNESS_IDENTITY_REQUIRED")
+    if tuple(left) != tuple(right):
+        raise AssertionError("MD35_PAIRED_HIDDEN_LAW_BLOCK_MISMATCH")
+
+
+def paired_net_bootstrap(left_blocks, right_blocks, cohort, *,
+                         left_block_commitments=None,
+                         right_block_commitments=None):
+    """Matched block resampling; never silently pair unrelated private laws.
+
+    Scoring arithmetic is NOT independent scientific admission. The harness
+    must also separately prove commitment authenticity, original source,
+    owner/ledger/first-use custody and identical physical world allocation.
+    """
     if cohort not in EVAL_COHORTS:
         raise AssertionError("MD35_EVAL_NOT_FROZEN_HELDOUT_COHORT")
     count = LOCK["reserved_cohorts_not_opened"][cohort]["blocks"]
     left = require_public_blocks(left_blocks, expected_count=count)
     right = require_public_blocks(right_blocks, expected_count=count)
+    _require_matching_harness_block_commitments(
+        left_block_commitments, right_block_commitments, count)
     diff = [_block_metrics(a)["block_net_utility"] -
             _block_metrics(b)["block_net_utility"]
             for a, b in zip(left, right)]
     return {"mean_paired_delta": sum(diff) / count,
-            "block_bootstrap_95": block_bootstrap(diff)}
+            "block_bootstrap_95": block_bootstrap(diff),
+            "harness_only_commitments_shape_matched": True,
+            "independent_harness_authenticity_verified": False,
+            "not_scientific_admission": True}
 
 
 def harness_only_family_breakdown(blocks, family_labels, cohort):
