@@ -1,0 +1,135 @@
+{
+  "schema": "yggdrasil.dg1-md28-prereg.v1",
+  "experiment_id": "DG1-MD28-20261114",
+  "status": "PREREGISTRATION_ONLY_NO_TOY_OR_REGISTERED_RUN",
+  "exact_parent_sha": "9f9cc2e50837f60945694473f4ae51621a0b19e2",
+  "previous_result": "MD27_TOY_PASS_COMPOSITION_24_OF_24_BUT_TIED_FULLY_TRAINED_FACTORIZED_MLE",
+  "objective": "Evaluate whether a bounded physical action-consequence memory can learn both compositional causal sign and a changing, partly stochastic latent regime and then choose which paid diagnostic intervention is worth performing on a completely withheld wiring combination.",
+  "original_world": {
+    "name": "ShiftingRelay-v1",
+    "runtime": "Python 3.12 standard library, deterministic SHA-derived seeds, no external services",
+    "public": [
+      "probe_wiring 0 or 1",
+      "actuator_wiring 0 or 1",
+      "hazard 0 or 1",
+      "goal_sign +/-1",
+      "phase",
+      "probe sign only after physical probe",
+      "last physical terminal effect only after charged apply"
+    ],
+    "hidden": [
+      "latent polarity",
+      "physical disturbance flip event"
+    ],
+    "initial_polarity": "sha256 seed role polarity -> +/-1 independent of goal",
+    "hazard": "seed parity",
+    "goal": "sha256 seed role goal -> +/-1",
+    "physical_probe": "pre_probe cost 0.03, returns polarity*(-1)**probe_wiring; only legal before disturbance",
+    "mandatory_disturb": "disturb cost 0.04, possibly changes hidden polarity once. Physical flip probability hazard=0 is 0.01 and hazard=1 is 0.50; event derived from SHA256(seed,role=flip), never returned free.",
+    "physical_reprobe": "post_probe cost 0.20, reveals current polarity*(-1)**probe_wiring; only legal once after disturbance",
+    "terminal": "apply_A effect=current_polarity*(-1)**actuator_wiring; apply_B inverse; official terminal reward +1 if effect==public target else -0.5, minus action cost 0.03; irreversible.",
+    "step_bound": 4,
+    "action_set": [
+      "pre_probe",
+      "disturb",
+      "post_probe",
+      "apply_A",
+      "apply_B"
+    ],
+    "without_probe": "Can disturb first, but any terminal guess has no access to latent polarity. Post probe is optionally available and paid.",
+    "no_privileged_access": "Agents only consume public observation and real env.step transitions/rewards, no hidden polarity, hidden flip indicator, full state, seed, or independent simulator copy at decision time."
+  },
+  "data": {
+    "training_contexts": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "heldout_context": [
+      0,
+      1
+    ],
+    "training_seeds": [
+      1040001,
+      1040240
+    ],
+    "training_episodes": 240,
+    "teacher_real_steps": 960,
+    "training_coverage": "80 episodes per visible pair, 40 low-hazard and 40 high-hazard each; physical teacher pre_probe, disturb, post_probe, fixed alternating apply_A/B; no hidden oracle, identical raw public trajectory for each fully trained arm",
+    "toy_eval_seeds": [
+      181,
+      228
+    ],
+    "toy_episodes_per_arm": 48,
+    "cold_replay_seeds": [
+      229,
+      240
+    ],
+    "cold_episodes_per_arm": 12,
+    "primary_seeds": [
+      1050001,
+      1050096
+    ],
+    "registered_episodes_per_arm": 96,
+    "disjoint": "All train/toy/cold/registered seeds mutually disjoint, heldout wiring pair 01 occurs in none of training trajectories."
+  },
+  "arms": [
+    "causal_adaptive",
+    "trained_factorized_adaptive_mle",
+    "trained_joint_adaptive",
+    "trained_logistic_adaptive",
+    "post_probe_always",
+    "pre_probe_skip_post_always",
+    "no_probe",
+    "oracle_public"
+  ],
+  "comparison": {
+    "candidate": "Learn physical signed probe→terminal effect for three observed wiring combinations from paid trajectories and compose withheld s01 = s00*s10*s11. Learn hazard-conditioned physical flip frequencies from true paid before/after probes, then choose pre_probe→disturb→terminal vs disturb→post_probe→terminal by comparing expected reward using learned rates. Explicit pre-specified multiplicative inductive prior and expected-value policy, NOT learned generic planning.",
+    "strongest_conventional": "Conventional fully trained factorized maximum-likelihood signed wiring model plus empirical hazard-conditioned flip rates trained on same 240 paid complete trajectories, chooses adaptive probes using same expected-value optimization and exact budget. Any tie means no demonstrated superiority.",
+    "joint": "Fully trained tabular per-public-wiring sign counts with heldout missing-key majority fallback, plus same learned hazard rates and expected-value probe decision.",
+    "logistic": "Fully trained L2 logistic sign predictor (fixed 120 epochs, learning rate 0.1, L2 .01; no interactions) plus same hazard estimates and value computation.",
+    "always_post": "Physically disturb→post_probe→apply once, no initial probe, perfect terminal sign only if learned public wiring relation valid; use trained conventional factorized MLE relation so isolating *probe policy*, not inadequate wiring knowledge.",
+    "always_pre": "Physically pre_probe→disturb→apply without post_probe, trained conventional factorized MLE relation; weak probe policy control.",
+    "no_probe": "Physically disturb→apply deterministic based on public goal, no hidden access.",
+    "oracle_public": "Scripted true signed physics and true hazard probabilities, chooses paid adaptive interventions under identical real actions, diagnostic ceiling not a learned model.",
+    "resource": "Exactly same shared physical teacher dataset; fit all conventional models to completion with fixed hyperparameters, same action space and reward; record seed-level action traces, reward, charged action count, checkpoint byte count and CPU."
+  },
+  "frozen_gates": {
+    "toy_train_real_coverage_min_per_pair_hazard": 35,
+    "hidden_regime_alias_negative_test": true,
+    "physical_shift_and_observation_negative_test": true,
+    "candidate_toy_correct_interventions_min": 44,
+    "candidate_toy_mean_utility_advantage_vs_post_probe_always_min": 0.02,
+    "candidate_toy_mean_utility_advantage_vs_no_probe_min": 0.2,
+    "candidate_toy_strict_reward_wins_vs_post_probe_always_min": 18,
+    "candidate_toy_low_hazard_pre_only_min": 18,
+    "candidate_toy_high_hazard_post_only_min": 18,
+    "candidate_toy_mean_utility_deficit_vs_trained_factorized_mle_max": 0.01,
+    "candidate_toy_mean_utility_deficit_vs_oracle_max": 0.03,
+    "cold_model_checkpoint_and_physical_trace_equal": true,
+    "original_toy_physical_step_budget_max": 4,
+    "no_heldout_persistent_training": true,
+    "dual_platform_full_inherited_regression_and_nontiming_parity_required": true
+  },
+  "primary_gates": {
+    "registered_candidate_success_min": 88,
+    "registered_candidate_utility_advantage_over_always_post_min": 0.02,
+    "registered_candidate_utility_advantage_over_no_probe_min": 0.2,
+    "registered_candidate_strict_reward_wins_over_always_post_min": 36,
+    "registered_candidate_utility_deficit_vs_factorized_mle_max": 0.01,
+    "registered_candidate_utility_deficit_vs_oracle_max": 0.03,
+    "independent_dual_os_full_source_regression": true
+  },
+  "stop_policy": "No original registered seed touches until frozen toy criteria, exact source full inherited regression Ubuntu/Windows, G29 and cross-OS non-timing parity pass; registered first use only via subsequently authorized single exact draft PR opened workflow, never replay on synchronize or push. If toy fails, classify NO-GO and preserve. No tuning frozen metrics or reusing consumed first-use data.",
+  "science_interpretation": "Success compared to fixed probes/no-probe and tie with fully trained factorized adaptive MLE validates an identifiable dynamic test and structural causal memory but not a novel intelligence mechanism, general transfer, native Yggdrasil improvement, autonomy, SCIENTIFIC_PASS or RSI.",
+  "authority": "external-research-only, no main, accepted ref, native model, research-loop, other project, controller, live trading, merge, paid API, deployment or scheduled task changes"
+}

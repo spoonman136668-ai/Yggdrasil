@@ -1,0 +1,116 @@
+{
+  "schema": "yggdrasil.dg1-md28-toy-result.v1",
+  "experiment_id": "DG1-MD28-20261114",
+  "stage": "TOY_PREFIRSTUSE_ONLY",
+  "frozen_prereg_sha": "3b89e764ee859cc17ebaeea7bef6403cb770e3ea",
+  "qualified_measured_source_sha": "ed7af495f54880cf9e1b7a98d96be75d21a12895",
+  "qualified_measured_tree": "f11ced1e7e4adc8e24e2e0a253c563d025b9966a",
+  "qualification_run": 43589257261,
+  "qualification": "PASS_UBUNTU_WINDOWS_STRICT_NONTIMING_PARITY",
+  "classification": "TOY_READY_FOR_FURTHER_QUALIFICATION",
+  "frozen_toy_gates": {
+    "candidate_goals": true,
+    "cold_checkpoint_trace": true,
+    "factorized_mle_noninferior": true,
+    "high_hazard_post": true,
+    "identical_trained_dataset": true,
+    "low_hazard_pre": true,
+    "no_probe_advantage": true,
+    "oracle_noninferior": true,
+    "post_probe_advantage": true,
+    "real_paid_budget": true,
+    "strict_reward_wins": true,
+    "teacher_coverage": true
+  },
+  "training": {
+    "coverage": {
+      "(0, 0):0": 40,
+      "(0, 0):1": 40,
+      "(1, 0):0": 40,
+      "(1, 0):1": 40,
+      "(1, 1):0": 40,
+      "(1, 1):1": 40
+    },
+    "episodes": 240,
+    "paid_steps": 960,
+    "sha256": "0f87740ccf58fcf169a9844caef365f88d55c8186f13250c150f832b68135dc7"
+  },
+  "result_by_arm": {
+    "causal_adaptive": {
+      "episodes": 48,
+      "goals": 48,
+      "mean_utility": 0.815,
+      "paid_steps": 144,
+      "post_probe_episodes": 24,
+      "pre_probe_episodes": 24
+    },
+    "no_probe": {
+      "episodes": 48,
+      "goals": 22,
+      "mean_utility": 0.1175,
+      "paid_steps": 96,
+      "post_probe_episodes": 0,
+      "pre_probe_episodes": 0
+    },
+    "oracle_public": {
+      "episodes": 48,
+      "goals": 48,
+      "mean_utility": 0.815,
+      "paid_steps": 144,
+      "post_probe_episodes": 24,
+      "pre_probe_episodes": 24
+    },
+    "post_probe_always": {
+      "episodes": 48,
+      "goals": 48,
+      "mean_utility": 0.73,
+      "paid_steps": 144,
+      "post_probe_episodes": 48,
+      "pre_probe_episodes": 0
+    },
+    "pre_probe_skip_post_always": {
+      "episodes": 48,
+      "goals": 31,
+      "mean_utility": 0.36875,
+      "paid_steps": 144,
+      "post_probe_episodes": 0,
+      "pre_probe_episodes": 48
+    },
+    "trained_factorized_adaptive_mle": {
+      "episodes": 48,
+      "goals": 48,
+      "mean_utility": 0.815,
+      "paid_steps": 144,
+      "post_probe_episodes": 24,
+      "pre_probe_episodes": 24
+    },
+    "trained_joint_adaptive": {
+      "episodes": 48,
+      "goals": 0,
+      "mean_utility": -0.685,
+      "paid_steps": 144,
+      "post_probe_episodes": 24,
+      "pre_probe_episodes": 24
+    },
+    "trained_logistic_adaptive": {
+      "episodes": 48,
+      "goals": 0,
+      "mean_utility": -0.685,
+      "paid_steps": 144,
+      "post_probe_episodes": 24,
+      "pre_probe_episodes": 24
+    }
+  },
+  "strict_paired_reward_wins_vs_always_post": 24,
+  "mean_utility_advantage_vs_always_post": 0.085,
+  "mean_utility_advantage_vs_no_probe": 0.6975,
+  "mean_utility_advantage_vs_fully_trained_factorized_mle": 0,
+  "cold_checkpoint_trace_parity": true,
+  "registered_heldout_seeds_used": false,
+  "official_registered_firstuse": "NOT_RUN",
+  "scientific_acceptance": "UNVERIFIED_NOT_NOVEL_SUPERIORITY",
+  "interpretation": "The causal-memory and a fully trained conventional factorized MLE each solved all 48 unseen two-bit wiring episodes with mean 0.815 net physical reward while choosing cost-effective initial/probe-after-disturbance. Both tied scripted physics oracle. +0.085 vs always-post and +0.6975 vs no probe, but zero value improvement over strongest trained baseline. A prespecified compositional prior and empirical hazard counts, not a new AGI mechanism.",
+  "native_weights_changed": false,
+  "main_changed": false,
+  "acceptance_merge_deployment": "NONE"
+}
