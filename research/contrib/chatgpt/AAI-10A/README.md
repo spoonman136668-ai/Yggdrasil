@@ -1,0 +1,9 @@
+# AAI-10A — Protected operator-association learner versus conventional controls
+
+This independent contributor candidate is stacked **only onto** the exact source-qualified [AAI-10P benchmark PR #1049](https://github.com/spoonman136668-ai/Yggdrasil/pull/1049), source `1deeb328abc478949b6d528e5cd2775c72021150`. The separate AAI-10A preregistration is committed before model implementation. Frozen AAI-09A failed and is never retuned, replayed or promoted.
+
+**Hypothesis to falsify:** a small protected memory of *learned component operators* can preserve older causal associations and reapply them in unseen structural law combinations with fewer action-consequence observations than the strongest matched conventional learner. Each learner has the exact same public data; each uses the same two-intervention planner. No hidden law label or simulator formula is supplied. Conventional matched controls include full/recency grammar, tabular, hazard-based segment, and fully trained 1200-epoch logistic with interaction features. The privileged actual-law oracle will be diagnostic only.
+
+**Current phase is strictly engineering/source preparation**. All tests and the source-only script use hand-constructed A/B examples and no reserved 991xxx/992xxx/993xxx science worlds. Scientific first-use is deliberately disabled, and this repository contains **no** runnable scientific first-use dispatcher. No native Yggdrasil model code or weights, owner autonomy loop, controller, runner, scheduler, queue, accepted ref, other research lanes, merge or deployment is changed. All qualification evidence remains in GitHub rather than the user's file library.
+
+Only a later separately authorized scientific first-use, following exact source qualification on Linux/Windows and pinned protocol custody, could test the proposed gain/retention/cost claim. A passing unit test is not a scientific result.

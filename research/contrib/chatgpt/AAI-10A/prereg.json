@@ -1,0 +1,100 @@
+{
+  "schema": "yggdrasil.contrib.aai10a.frozen-learner-prereg.v1",
+  "id": "AAI-10A",
+  "phase": "PREFIRSTUSE_SOURCE_PREPARATION_ONLY",
+  "base_pr": 1049,
+  "base_sha": "1deeb328abc478949b6d528e5cd2775c72021150",
+  "base_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "benchmark_source": "research/contrib/chatgpt/AAI-10P/benchmark.py",
+  "benchmark_blob": "b2c58cb6c2f2d308cdd4da259db74547a27dfa3a",
+  "benchmark_prereg_blob": "f915033fce1b35aa816bf2b8cc6e79bf0689e35a",
+  "prior_negative": {
+    "id": "AAI-09A",
+    "pr": 1048,
+    "run": 43629589166,
+    "classification": "HEADROOM_INADEQUATE_NO_PROMOTION",
+    "rule": "No retuning, replay or carrying over consumed 887xxx, 888xxx, 889xxx cohorts."
+  },
+  "hypothesis": "Without law labels, a protected three-slot operator-association bank will preserve old A/B associations, detect causal contradiction, and reuse component operators when learning unseen C/D structural compositions; on held-out goals and interventions it will beat strongest matched nonprivileged conventional learner at equal observation/action budgets and bounded compute.",
+  "candidate": {
+    "name": "ProtectedOperatorBank",
+    "type": "tokenless interpretable causal operator bank",
+    "grammar": "For EACH output mediator, exactly nine two-input hypotheses: XOR/AND/OR over all unordered pairs of x0,x1,x2; independent per mediator. This finite grammar is public also to all fair symbolic controls.",
+    "slots": 3,
+    "max_evidence_per_slot": 96,
+    "scratch": 2,
+    "likelihood_correct": 0.9,
+    "likelihood_incorrect": 0.1,
+    "switch_margin_log": 1.3862943611198906,
+    "novelty_margin_log": 1.3862943611198906,
+    "operators_reuse_prior_weight": 2,
+    "operator_prior_default": 1,
+    "decision": "All learned methods use the same deterministic two-step plan search (one-step rollout followed by a second intervention); tie smallest action index; compare no-op/STOP when valid. Any model may update on a publicly observed first intervention consequence; never use ground-truth law.",
+    "learning": "After each pair of common observations, compare average predictive log likelihood of active and protected slots (prior evidence only); switch when other slot advantage >=ln4, or allocate novel slot when active poorly predicts batch versus uniform fair-coin by ln4 and room exists; otherwise update active. Inactive slot counts/data immutable. Each slot assigns posterior over finite grammar from its own public evidence with Bernoulli .9/.1 error likelihood. Operator reuse prior computed only from previously observed protected slot evidence and never simulator labels.",
+    "cold": "Byte-exact canonical JSON checkpoint of all slot IDs/data/scratch/active counters. Restore independent forks without editing original saved snapshot.",
+    "ablation": "same candidate max_slots=1 and no operator prior reuse, other code identical",
+    "information": "Only public x, mediators, goal and reward after actual actions; NEVER law identifier, source law formula, unseen candidate reward, fork label, privileged oracle, or science seed."
+  },
+  "matched_conventional_controls": {
+    "symbolic_all": "Equal published nine-operator grammar and likelihood, all public observations pooled, no protected bank; same shared planner.",
+    "symbolic_recent8": "Same grammar posterior over most recent 8 observed public states; same planner.",
+    "symbolic_recent16": "Same grammar posterior over most recent 16 observations; same planner.",
+    "tabular_recent16": "Conventional Beta(1,1) per full 3-bit x per output, recent 16 observations; same planner.",
+    "tabular_all": "Conventional Beta(1,1) per full 3-bit x per output, all observations; same planner.",
+    "logistic_interactions": "Conventional logistic per output with intercept + x0,x1,x2 + x0x1,x0x2,x1x2 + x0x1x2, full-batch 1200 epochs, learning rate 0.20, L2 0.01; fit on common evidence after any update; same planner.",
+    "symbolic_bank": "Conventional two-slot finite-grammar version-space Bayesian change-point comparator (not identical to candidate): hazard 1/12, separate history/active segment, no archived operator prior; same planner.",
+    "reactive": "public-input-only fixed deterministic intervention, negative diagnostic.",
+    "one_slot": "Candidate ablation max_slots=1.",
+    "oracle": "Privileged actual-law two-step exhaustive planner, only diagnostic, excluded from baseline comparison."
+  },
+  "common_protocol": {
+    "worlds": {
+      "dev": {
+        "start": 991000,
+        "count": 16
+      },
+      "transfer": {
+        "start": 992000,
+        "count": 64
+      },
+      "negative": {
+        "start": 993000,
+        "count": 32
+      }
+    },
+    "train": "32 public action-consequence observations under A and 32 under B (fixed common x/goal/actions per world, same ordered observations for all models), no boundary labels; each observed pre-state and post-state can be supplied, and no extra interventions by candidates.",
+    "checkpoint": "Immediately after B, freeze state by canonical JSON for each method, then cold restore for A_returns, B_continues, unfamiliar_C, unfamiliar_D independently.",
+    "challenge": "For each branch, N public exogenous do-interventions (N=0,2,4,8) on independent states, action and goal determined by hash of world/phase/index, same actual public outcomes for every method. No privileged law label.",
+    "evaluate": "At N=2 and 4 primary, evaluate on 16 disjoint (x,goal) contexts per world using the public initial state then up to 2 sequential public actions with feedback; held-out context hash namespace; one model's actions do not leak to another. Learners all have equal two-action allowance and same initial public observation. No counterfactual training data.",
+    "no_label": "No label, hidden law, objective outcome of unchosen action or target-regime identity is ever provided. At N=0, model states before seeing the test context must be identical across forks; once initial x/output is observed, legal difference allowed.",
+    "pairing": "Whole WORLD is resampling unit; same contexts/goals across methods and same actual law within condition, but action-contingent public observations can legitimately differ.",
+    "cold_retention": "After evaluating each independent continuation, re-restore frozen after-B original A/B checkpoint and test A/B retention on a separate held-out diagnostic; verify preserved IDs/unchanged inactive data.",
+    "negative": "32 independent NEGATIVE worlds with challenge public-feedback order shuffled at equal observation count; candidate vs shuffled association accuracy and regret.",
+    "fair_compute": "Walltime update/inference, total process walltime, stored bytes, peak memory; no privileged oracle in fastest matched baseline."
+  },
+  "primary_metric": {
+    "transfer": "Mean reward over unfamiliar C and D combined at N2/N4, per-world paired differences candidate minus best matched conventional learner; bootstrap 2048 draws resampling whole world ID, seed 39092; baseline chosen by highest own transfer average (strongest-control selection is conservative, not corrected multiple comparison).",
+    "secondary": "Return-A recall, B hold nondegradation, original slot preservation/retrieval, one-slot ablation, shuffled negative, each actual policy two-action safety, compute and memory.",
+    "minimum_benchmark_headroom": "Known-law oracle over strongest matched learner on unfamiliar transfer N2/N4 >=0.15 reward with bootstrap CI lower >0, and matched learner not already >=95% of possible terminal reward. Otherwise HEADROOM_INADEQUATE_NO_PROMOTION.",
+    "candidate_superiority": "candidate minus strongest >=+0.08 reward with paired bootstrap 95% lower>0; candidate vs one_slot >=+0.05 with lower>0; unfamiliar goal correctness >=0.80; B-hold candidate minus strongest >=-0.02; return-A candidate minus strongest >=-0.02; original A-slot preservation/retrieval >=0.60; negative proper minus shuffled gain >=0.10 CI lower>0; compute <=2x fastest matched nonoracle; byte-exact cold checkpoints; no information leaks.",
+    "classifications": [
+      "INVALID_PROTOCOL",
+      "HEADROOM_INADEQUATE_NO_PROMOTION",
+      "VALID_NEGATIVE_NO_INTEGRATION",
+      "EXTERNAL_CANDIDATE_BENEFIT_REQUIRES_NATIVE_REPLICATION"
+    ]
+  },
+  "future_science": {
+    "mechanical_seed_policy": "Pre-science tests use only explicit synthetic handcrafted cases, never call world generator on 991xxx/992xxx/993xxx.",
+    "frozen_first_use": false,
+    "first_use_authorized": false,
+    "no_post_result_tuning": true,
+    "candidate_promotion": false,
+    "native_integration": false,
+    "merge": false,
+    "other_projects_unchanged": true,
+    "all_evidence_in_github_only": true,
+    "no_paid_api": true
+  },
+  "engineering_exit": "Exact pinned benchmark SHA, prereg blob unchanged, finite source-only controls and negative tests, full original 54/54 repository suite plus dedicated focused tests Linux and Windows on identical final candidate SHA; final code atlas current; source tree clean."
+}
