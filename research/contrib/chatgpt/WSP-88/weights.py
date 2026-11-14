@@ -100,9 +100,13 @@ class DirectWeights:
                     counts[order[0]] / total >= SIGNAL_THRESHOLD):
                 run += 1
                 if run >= MIN_SIGNALS:
-                    span = stream[i - run + 1:i + 5]
-                    if span.startswith(" ") and span.endswith(" "):
-                        grounded_span = True
+                    # A discriminative run may extend beyond the grounded
+                    # expression. Check all its contiguous suffixes rather
+                    # than requiring the *entire* run to start at a separator.
+                    for length in range(MIN_SIGNALS, run + 1):
+                        span = stream[i - length + 1:i + 5]
+                        if span.startswith(" ") and span.endswith(" "):
+                            grounded_span = True
             else:
                 run = 0
         return order[0] if margin >= MARGIN and grounded_span else None
