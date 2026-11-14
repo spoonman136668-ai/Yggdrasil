@@ -1,0 +1,131 @@
+{
+  "schema": "yggdrasil.dg1-md29-prereg.v1",
+  "experiment_id": "DG1-MD29-20261114",
+  "status": "PREREGISTERED_BEFORE_SOURCE_OR_TOY_FIRST_USE",
+  "parent_sha": "a50effb77d6b05d92207984344b9e8216db2aec1",
+  "prior_result": "MD28_TOY_PASS_BUT_STRONG_TRAINED_FACTORIZED_MLE_TIE_0_0",
+  "hypothesis": "A bounded regime-gated non-token causal-event memory retains a previously learned causal relation after contradictory intervening experience and uses it to compose an unseen wiring rule while choosing when to pay for a second probe after a hidden within-episode change. A scientifically interesting gain requires beating a fully trained factorized Bayesian adaptive controller, not only a nongated or lookup control.",
+  "world": {
+    "name": "SwitchbackRelay-v1",
+    "runtime": "original Python 3.12 standard-library deterministic simulator",
+    "public_initial": [
+      "probe_wiring bit",
+      "actuator_wiring bit",
+      "interference_mode 0 or 1",
+      "flip_hazard 0 or 1",
+      "stage 1 public goal_sign +/-1"
+    ],
+    "hidden": [
+      "stage 1 latent polarity",
+      "whether stage2 physical polarity flipped"
+    ],
+    "physics": "At both stages physical probe effect = hidden polarity * (-1)^probe_wiring. The apply_A effect = hidden polarity * (-1)^(probe_wiring XOR actuator_wiring XOR interference_mode) * (-1)^probe_wiring = hidden polarity * (-1)^(actuator_wiring XOR interference_mode); apply_B negates. After stage1 irreversible apply, polarity physically flips with hazard probability .01 or .50, and stage2 goal becomes public. No free flip event is revealed. Stage1 effect and previous action are public after stage1 paid apply; stage2 physical probe can reveal current polarity if chosen.",
+    "actions": [
+      "probe",
+      "apply_A",
+      "apply_B"
+    ],
+    "physical_budget": "per episode at most 4 paid env.step calls; stage1 probe optional cost .04; apply cost .03 per stage; stage2 probe optional cost .16; each of two successful terminal effects earns +1, failed -0.5; no uncharged world step, forward oracle or privileged hidden read",
+    "identifiability": "Identical initial public frames but opposite hidden polarities demand opposite stage1 interventions. After first apply, identical public stage2 observation but opposite flip histories demand different correct stage2 interventions. The costed probe distinguishes them.",
+    "context_train": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "context_holdout": [
+      0,
+      1
+    ],
+    "mode_training": "First train normal (interference_mode=0), then physically train conflicting sign-reversed mode=1; evaluate both without further persistent updates. Hidden source law is not in policy.",
+    "train_normal": [
+      1060001,
+      1060240
+    ],
+    "train_interference": [
+      1061001,
+      1061240
+    ],
+    "train_teacher": "Use one shared physically charged probe→apply on stage1 and probe→apply on stage2. Select terminal A/B via deterministic action parity (no privileged policy); expose only observed probe sign, actual charged actuator effect, reward and public mode/hazard to every learner. 480 episodes×4 physical actions = 1,920 training steps; 80 per wiring context in each mode and both hazard groups balanced.",
+    "toy_heldout": [
+      201,
+      232
+    ],
+    "cold_replay": [
+      233,
+      248
+    ],
+    "registered_heldout_reserved": [
+      1070001,
+      1070096
+    ],
+    "toy_episodes_per_arm": 32,
+    "cold_episodes_per_arm": 16,
+    "registered_episodes_per_arm": 96
+  },
+  "arms": [
+    "regime_gated_memory",
+    "trained_factorized_bayes",
+    "nongated_global_memory",
+    "trained_joint_regime",
+    "trained_logistic_regime",
+    "always_stage2_probe",
+    "never_stage2_probe",
+    "scripted_physics_ceiling"
+  ],
+  "model_predefinitions": {
+    "candidate": "Separate signed paid probe→actual action-effect events by public interference mode and context. Derive withheld (0,1) sign by fixed compositional prior s00*s10*s11 for each mode, plus empirical per-hazard stage1→stage2 observed flip counts, then use cost-aware stage2 probe selection. All observations paid; no privileged physics formula in decision logic; model uses fixed structural composition prior and explicit value-of-information computation, not free general reasoning.",
+    "strong": "Conventional fully trained factorized Bayesian/MLE baseline. Fit independent sign factors and a mode factor from the same 480 charged episodes by exhaustive likelihood, and Laplace-smoothed per-hazard flip rates from actual probes. Use exact two-state Bayesian filtering and optimize paid probe against official reward, with all physics and learner capacities disclosed. Must not use hidden state or heldout outcomes.",
+    "nongated": "Same causal-event sign counts/capacity but overwrite/aggregate contradictory normal and interference observations into single global sign counts, positive tie fallback, same hazard counts and action budget; an interference-ablation, not the strongest control.",
+    "joint": "Fully trained mode-specific context lookup with missing heldout context falling back to mode-wide majority signed outcome; full 480 paid traces and same probe policy.",
+    "logistic": "Fully trained two mode-specific regularized logistic models with only intercept and public probe/actuator input terms; 120 epochs LR .1 L2 .01; no hand-coded multiplicative interaction feature.",
+    "always_probe": "Fully trained factorized model but physically probes stage2 in all episodes, controls value-of-information.",
+    "never_probe": "Fully trained factorized model but skips stage2 probe in all episodes, controls economic threshold.",
+    "oracle": "Public-mode known-physics relations and true hazard probabilities, but must still pay for all physical probes/actions; ceiling not a trained baseline."
+  },
+  "qualifications": {
+    "frozen_data_seeds_disjoint": true,
+    "no_training_in_holdout_wiring": true,
+    "all_arms_same_teacher_data_and_real_action_budget": true,
+    "toy_training_actions_expected": 1920,
+    "toy_training_context_mode_pairs_min": 70,
+    "toy_candidate_correct_terminal_actions_min": 60,
+    "toy_candidate_mean_utility_advantage_over_nongated_min": 0.25,
+    "toy_candidate_mean_utility_advantage_over_always_stage2_probe_min": 0.04,
+    "toy_candidate_mean_utility_advantage_over_never_stage2_probe_min": 0.2,
+    "toy_candidate_mean_utility_deficit_vs_strong_max": 0.01,
+    "toy_candidate_mean_utility_deficit_vs_oracle_max": 0.03,
+    "toy_candidate_strict_paired_reward_wins_over_nongated_min": 12,
+    "toy_candidate_real_low_hazard_skip_probe_min": 15,
+    "toy_candidate_real_high_hazard_use_probe_min": 15,
+    "toy_cold_checkpoint_byte_identical": true,
+    "toy_cold_heldout_action_reward_trace_identical": true,
+    "toy_fully_trained_strong_control": true,
+    "toy_full_inherited_regression_dual_os_and_source_atlas": true,
+    "toy_non_timing_cross_os_parity": true
+  },
+  "novel_mechanism_gate": {
+    "candidate_mean_utility_margin_over_strong_min": 0.02,
+    "candidate_strict_paired_episode_reward_wins_over_strong_min": 8,
+    "required_for_registering_original_as_superiority_test": true
+  },
+  "primary_prespec": {
+    "registered_candidate_correct_terminal_actions_min": 182,
+    "registered_candidate_mean_utility_margin_over_strong_min": 0.02,
+    "registered_strict_paired_episode_reward_wins_over_strong_min": 24,
+    "registered_cold_restoration_and_interference_retention": true,
+    "registered_exact_source_ubuntu_windows_parity": true,
+    "registered_no_model_update_on_eval": true,
+    "registered_full_platform_regressions": true
+  },
+  "stop": "If task validation passes but strong trained controller ties, classify 'DEVELOPMENT_VALID_TASK_NO_NOVEL_GAIN' and do not run registered first use for novelty. If toy task coverage fails, TOY_NO_GO. No postresult tuning of frozen protocol, existing results or reused registered seeds. No official first-use workflow until full frozen preflight and exact one-shot PR-opened authorization.",
+  "scope": "External research only. No main, accepted refs, native Yggdrasil weights, owner loop, controller, scheduler, live execution, other repo, model integration, scientific acceptance, merge or deployment."
+}
