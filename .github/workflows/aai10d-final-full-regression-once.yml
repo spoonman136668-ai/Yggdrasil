@@ -1,0 +1,92 @@
+name: AAI-10D exact-final native + frozen science-fence regression (NO science)
+on:
+  push:
+    branches: [research/aai10d-final-regression-once-20261114]
+    paths: [.github/workflows/aai10d-final-full-regression-once.yml]
+permissions:
+  contents: read
+concurrency:
+  group: aai10d-exact-final-once-20261114
+  cancel-in-progress: false
+jobs:
+  exact-final:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'AAI-10D exact frozen final full regression one-shot' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout independent one-shot read-only harness
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: harness
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Harness isolates all edits from immutable candidate and main
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C harness rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git -C harness rev-parse HEAD^)" = '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
+          test "$(git -C harness diff --name-only HEAD^ HEAD)" = '.github/workflows/aai10d-final-full-regression-once.yml'
+          test -z "$(git -C harness status --porcelain)"
+          echo AAI10D_FINAL_HARNESS_ISOLATION_PASS
+      - name: Checkout exact original AAI-10D candidate
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: candidate
+          ref: 09a1bd45458811ed054161742c766110d636f5e7
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Readback immutable exact head, main, prereg and model source custody
+        shell: bash
+        working-directory: candidate
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = '09a1bd45458811ed054161742c766110d636f5e7'
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
+          test "$(git ls-remote origin refs/heads/research/aai10c-bounded-causal-statistics-20261114 | cut -f1)" = '58c0a3744e08e7547a85acdf88190decb6797584'
+          test "$(git ls-remote origin refs/heads/research/aai10d-causal-transfer-evaluator-20261114 | cut -f1)" = '09a1bd45458811ed054161742c766110d636f5e7'
+          test "$(git rev-parse 1f30ba538c3a363ba8ea3ac679d440bb6e70938b^)" = '58c0a3744e08e7547a85acdf88190decb6797584'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10D/prereg.json)" = '2a4c079396665c2737eb4208c4190a946100d496'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10D/prereg.json)" = "$(git rev-parse 1f30ba538c3a363ba8ea3ac679d440bb6e70938b:research/contrib/chatgpt/AAI-10D/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10D/protocol.py)" = '5acdddf375f0d4c6dd055362c36db61a4734f357'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10D/test_protocol.py)" = '8bd47d79a8564d1c9375ff4fb661667f9d177513'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10D/fixture_only.py)" = 'e32c0ec3233fe24993eb603c0b9638ee4a655514'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10C/compact.py)" = 'b8eb196fd923743f22d372135561f5c1a4f28982'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10A/models.py)" = '9233ffaafe2f227de687116b0ed4204ee4e2b3a2'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10P/benchmark.py)" = 'b2c58cb6c2f2d308cdd4da259db74547a27dfa3a'
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          echo AAI10D_PREREG_SOURCE_AND_ATLAS_FINAL_CUSTODY_PASS
+      - name: MANDATORY full original + AAI10P + AAI10A + AAI10C + AAI10D tests
+        shell: bash
+        working-directory: candidate
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-10P -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-10A -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-10C -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-10D -p 'test_*.py' -v
+          python -B research/contrib/chatgpt/AAI-10P/benchmark.py --mechanical
+          python -B research/contrib/chatgpt/AAI-10D/fixture_only.py --fixture handcrafted:one > "$RUNNER_TEMP/aai10d-source-fixture.json"
+          grep -F '"phase_independent_action_trace_sha256": "933753e0a1ec012d2d1f2cb2ecbb3231eb7d9d44886c5542098d4c16d14b5170"' "$RUNNER_TEMP/aai10d-source-fixture.json"
+          if python -B research/contrib/chatgpt/AAI-10D/fixture_only.py --primary >/dev/null 2>&1; then
+            echo AAI10D_SCIENCE_FIRST_USE_FENCE_FAILED >&2
+            exit 1
+          fi
+          test -z "$(git status --porcelain)"
+          git diff --exit-code
+          echo AAI10D_MANDATORY_EXACT_FINAL_NATIVE_REGRESSION_PASS_NO_SCIENCE
