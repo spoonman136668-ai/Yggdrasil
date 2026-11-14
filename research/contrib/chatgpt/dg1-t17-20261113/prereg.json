@@ -1,0 +1,115 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "DG1-T17-20261113",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can memory of factorized causal relationships use a paid diagnostic intervention to recover a previously learned dynamics regime and transfer to an unfamiliar recombination, beating independently trained conventional controls with matched information and action budgets?",
+  "hypothesis": "In a fresh integer-valued nonstationary intervention environment, the bounded causal-module learner will achieve lower actual goal-action regret on both cold-return-A and never-trained compositional-C audits than the strongest of forgetting-RLS and a fully trained deterministic integer recurrent predictor, while preserving unrelated learned relationships, performing no evaluator-label training, and keeping bounded CPU and model state.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "pr": 998,
+      "sha": "791858248992103f7f4f481507307c7db979f9d5",
+      "science": "PRIMARY_NO_GO_AND_INVALID_REPRO",
+      "note": "Historical CR16 results are negative; no reused first-use seeds, environment or post-result tuning."
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/dg1-t17-20261113/**",
+    ".github/workflows/dg1-t17-qualification.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "inputs": [
+    {
+      "name": "procedural integer causal-world identity manifest",
+      "sha256": "eb975980ff8fae294128cd651e1d04f3b373f2263cdecce21b4fdffc7c21a8c4",
+      "source": "Fresh self-created deterministic synthetic four-regime integer causal interventions; world seeds 410001..410016; no CR16/SL15 original data and no private data."
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      410001,
+      410002,
+      410003,
+      410004,
+      410005,
+      410006,
+      410007,
+      410008,
+      410009,
+      410010,
+      410011,
+      410012,
+      410013,
+      410014,
+      410015,
+      410016
+    ],
+    "split": "16 disjoint worlds. Fresh three-channel state and six signed interventions. A has 64 paid observations; B replaces one parent relation for 64; held-out cold return-A audit immediately after B, before A is retrained; then 32 paid A observations; never-trained C recombines one A row, one B row, and one novel causal row, followed by cold C audit. C regime outcomes never train during this frozen first-use.",
+    "ordering": "Five learners receive the identical 160-step physical training state/action/next-state trace. 16 paid goal episodes per arm at each of two marks (128 and 160); every episode consists of one fixed, charged diagnostic intervention with its observed consequence, then one separately charged learner-selected goal action. The diagnostic consequence is supplied equally to every arm for selection but is not used for training. Evaluator-only counterfactuals compute regret and never enter learner observations. Cold snapshots/restore after steps 64,128,160.",
+    "action_and_data_budget": "16 worlds x 5 arms x 160 independent charged training transitions = 12800; 16 worlds x 5 arms x 2 audits x 16 episodes x 2 charged actions = 5120; total 17920 independently charged actions; no private additional data.",
+    "compute_budget": "Python 3.12 stdlib CPU only, one original prospective evaluation on Ubuntu and Windows; no paid API or GPU. Integer-only environmental dynamics and integer recurrent baseline for cross-platform reproducible checkpoint bytes. All arms receive the same training trace, diagnostic states and consequences; model capacities and number of trainable weight updates reported.",
+    "capacity": "Candidate and random-route control: at most three causal modules per output of 3 channels. No-archive: one per output. Forgetting-RLS: one fully trainable conventional state/action regression per output. Recurrent: eight hidden cells with trained input, recurrent, hidden bias, output and output bias matrices; deterministic integer fixed-point updates. 64KiB maximum per checkpoint across all arms.",
+    "evaluator": "Primary is actual squared target-distance regret after learner-selected physically charged goal action minus the best of all six evaluator-only candidate actions. Evaluate 16 disjoint states/targets after one charged diagnostic intervention per episode. No learner receives evaluator-only loss, optimal-action labels, regime labels, source equation or counterfactual outcomes. Return-A and never-trained-C evaluated before any learning in those audit episodes.",
+    "deterministic_expected": true,
+    "portability": "All serialized non-timing fields, all cold checkpoint hashes, per-action predictions and selected actions must agree byte-for-byte across Ubuntu and Windows; wall-clock timing excluded only from equality comparison.",
+    "first_use": "Preregistration-only commit must be an ancestor of candidate implementation and first original study. Only a frozen candidate SHA may execute original registered seed identities. Toy/negative controls must use non-registered seed identities.",
+    "constraints": "Research contribution only, not native Yggdrasil integration or accepted research. Dataset/evaluator code cannot expose hidden regime labels to learners."
+  },
+  "controls": [
+    {
+      "name": "no_archive",
+      "description": "Identical causal regression/update/diagnostic information, but no stored prior causal modules."
+    },
+    {
+      "name": "random_route",
+      "description": "Same candidate model, capacity, data, and paid intervention information; deterministic sham route or replacement instead of evidential selection."
+    },
+    {
+      "name": "forgetting_rls",
+      "description": "Fully trainable conventional recency-weighted recursive least squares on the identical 160-step trace, with the same diagnostic observation before decision."
+    },
+    {
+      "name": "integer_recurrent",
+      "description": "Eight-cell fully trainable recurrent model with integer fixed-point input/recurrent/readout/bias weights, exposed recurrent state and identical trace; deterministic byte-identical cross-OS checkpoints."
+    }
+  ],
+  "metrics": [
+    "mean_return_A_regret",
+    "mean_unseen_C_regret",
+    "regret_per_seed",
+    "charged_action_accounting",
+    "recovered_causal_row_count",
+    "false_module_route_count",
+    "cold_checkpoint_portability",
+    "trained_parameter_coverage",
+    "checkpoint_bytes",
+    "wall_clock_update_decision_cpu_ratio"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SIGNAL_ONLY iff all 16 worlds and 17920 charges are complete, source/input hashes match, no evaluator leakage, both audit phases candidate mean regret at least 0.005 below min(forgetting_rls, integer_recurrent), also at least 0.005 below no_archive and random_route; candidate wins over both conventional controls in at least 12 of 16 worlds on each phase; cold return-A structural recovery in >=12/16, correct unseen-C factorized reuse in >=12/16, false module routes <=2/16 unseen-C, cross-OS non-timing and checkpoint parity 100%, checkpoint <=65536 bytes; per-OS median candidate CPU <=2.5x forgetting_rls and <=2.0x no_archive. Even success is DEV signal pending independent validation.",
+    "mixed": "MIXED_DEV when protocol/custody valid but primary false and candidate achieves a positive regret gain vs at least one control on at least one phase or reproducible correct structural reuse in >=1 world.",
+    "negative": "NEGATIVE_DEV when protocol/custody valid but all support gates fail and no qualifying partial signal is observed.",
+    "invalid": "INVALID_INFRASTRUCTURE only for violated prereg/data identities, changed first-use seed budget, source drift, missing fully trained baseline, cross-platform non-timing/checkpoint inequality, loss leakage, broken cold restore, unsigned/garbled receipts or uncharged environmental actions; performance failure alone is NOT infrastructure failure."
+  },
+  "prohibited_after_primary_run": [
+    "threshold or seed changes",
+    "post-result model selection",
+    "retroactive baseline choice",
+    "training on held-out audits",
+    "capacity or budget changes",
+    "repeat of original first-use on tuned source",
+    "promotion from synthetic-only evidence"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "This file is the preregistration-only first commit, before implementation and before any registered outcome. The synthetic successor remains external DEV research; no native model or loop authority."
+}

@@ -1,0 +1,106 @@
+{
+  "schema": "yggdrasil.dg1-t17-qualified-result-summary.v1",
+  "experiment_id": "DG1-T17-20261113",
+  "prereg_commit": "a4c0ee310f12f55535f8b5dea6ab2f0b190a6fe9",
+  "original_firstuse_pr_head": "30ea69b11544240fa6cb7fc123da972f06afef64",
+  "original_workflow_run_id": 43539743048,
+  "original_classification": "MIXED_DEV",
+  "primary_pass": false,
+  "scope": "Development-only synthetic causal-learning experiment; no native or deployed intelligence changes.",
+  "physical_custody": {
+    "worlds": 16,
+    "arms": 5,
+    "training_paid_actions": 12800,
+    "audit_paid_actions": 5120,
+    "total_paid_actions": 17920,
+    "verified_both_os": true
+  },
+  "evidence": {
+    "linux_job_id": 132277255958,
+    "windows_job_id": 132277256724,
+    "parity_job_id": 132277530365,
+    "linux_artifact_id": 14090979483,
+    "windows_artifact_id": 14091121901,
+    "actions_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43539743048",
+    "cross_platform_non_timing_parity": "PASS",
+    "cross_platform_checkpoint_identity": "PASS"
+  },
+  "primary_gates": {
+    "C_factorized_reuse": true,
+    "C_false_reuse": false,
+    "cpu_no_archive": true,
+    "cpu_rls": true,
+    "return_A_reuse": true,
+    "return_A_vs_no_archive": true,
+    "return_A_vs_random_route": true,
+    "return_A_vs_strong": true,
+    "return_A_world_wins": true,
+    "unseen_C_vs_no_archive": true,
+    "unseen_C_vs_random_route": false,
+    "unseen_C_vs_strong": false,
+    "unseen_C_world_wins": false
+  },
+  "mean_goal_action_regret": {
+    "causal_modules": {
+      "128": {
+        "mse": 0.001487493282,
+        "regret": 0.000529477838
+      },
+      "160": {
+        "mse": 0.014427874393,
+        "regret": 0.007491507567
+      }
+    },
+    "forgetting_rls": {
+      "128": {
+        "mse": 0.008278395127,
+        "regret": 0.009078669827
+      },
+      "160": {
+        "mse": 0.015688423223,
+        "regret": 0.009288426954
+      }
+    },
+    "integer_recurrent": {
+      "128": {
+        "mse": 0.117723415683,
+        "regret": 0.158090132754
+      },
+      "160": {
+        "mse": 0.12341144844,
+        "regret": 0.135667095892
+      }
+    },
+    "no_archive": {
+      "128": {
+        "mse": 0.011418941043,
+        "regret": 0.01550804358
+      },
+      "160": {
+        "mse": 0.028260635988,
+        "regret": 0.026168790646
+      }
+    },
+    "random_route": {
+      "128": {
+        "mse": 0.006805275645,
+        "regret": 0.010509467684
+      },
+      "160": {
+        "mse": 0.016603821501,
+        "regret": 0.012003828306
+      }
+    }
+  },
+  "engineering_at_original_sha": {
+    "pre_firstuse_toy_tests_each_os": 9,
+    "full_inherited_regression_each_os": 54,
+    "linux": "PASS",
+    "windows": "PASS",
+    "g29_acceptance_run": 43539743047,
+    "g29_both_os": "PASS"
+  },
+  "scientific_interpretation": "Cold return-A retrieval beat all controls, but unfamiliar C did not meet the frozen stronger-control advantage or per-world and false-reuse gates. This is a valid primary NO-GO; no post-result retuning or promotion.",
+  "deployment": "NONE",
+  "accepted_ref_modified": false
+}
