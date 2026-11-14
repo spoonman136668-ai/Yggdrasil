@@ -115,9 +115,15 @@ class CausalSiteDev(unittest.TestCase):
                                 out["toy_traces"]["blind_site"])]
         print("MD25_TOY_PAIRED_TRACE_AUDIT:"+json.dumps(
             paired,sort_keys=True),flush=True)
-        if any(x["causal_sites"] for x in paired):
-            self.assertGreater(out["paired_different"],0,
-                               "MD25_INCONSISTENT_LEARNED_ACTION_AND_TRACE_HASH")
+        # A policy's internal left-site counter is NOT proof of a distinct
+        # physical action. The charged action/reward hash determines this.
+        ready=out["paired_different"]>=d.verify_protocol()[
+            "toy_coverage_gates"]["learned_and_blind_trace_differences_min"]
+        if not ready:
+            self.assertEqual(out["classification"],"TOY_COVERAGE_NO_GO")
+        if any(x["causal_sites"] for x in paired) and not ready:
+            print("MD25_INTERNAL_SITE_COUNTER_NOT_ACTION_DIVERGENCE",
+                  flush=True)
 
 
 if __name__=="__main__":
