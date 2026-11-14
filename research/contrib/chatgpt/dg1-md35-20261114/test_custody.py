@@ -93,7 +93,7 @@ class MD35CustodyTests(unittest.TestCase):
         self.assertEqual(LOCK["parent"]["exact_parent_sha"],
                          "cd031504130732617e9ce55ee0da5476f559f59e")
         self.assertEqual(LOCK["qualification"]["merge"], False)
-        self.assertFalse(LOCK["scope"]["deployment"])
+        self.assertFalse(LOCK["qualification"]["deployment"])
 
 
 if __name__ == "__main__":
