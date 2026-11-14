@@ -52,7 +52,7 @@ jobs:
         run: |
           set -euo pipefail
           python -m pip install --disable-pip-version-check --no-input --prefer-binary \
-            numpy==1.26.4 gymnasium==1.2.2 scipy==1.15.3 PyYAML==6.0.2 \
+            numpy==1.26.4 'gymnasium[mujoco]==1.2.2' scipy==1.15.3 PyYAML==6.0.2 \
             mujoco==3.3.7 pygame==2.6.1
           python -m pip install --disable-pip-version-check --no-input --no-deps -e "$RUNNER_TEMP/aai08-upstream"
           python -c 'import ns_gym; from ns_gym.wrappers import NSBridgeWrapper; from ns_gym.schedulers import DiscreteScheduler; from ns_gym.update_functions import DistributionStepWiseUpdate; print("AAI08P_EXACT_RUNTIME_IMPORT_PASS")'
