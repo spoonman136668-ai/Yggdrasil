@@ -1,0 +1,104 @@
+{
+  "schema": "yggdrasil.dg1-md24-prospective.v1",
+  "experiment_id": "DG1-MD24-20261114",
+  "status": "PREREGISTRATION_ONLY_NO_PRIMARY_FIRST_USE",
+  "base_commit": "9b0557f2cfe829d7991fd41c9f131c41a141626f",
+  "parent_pr": 1013,
+  "prior_result": "MD23_DEVELOPMENT_SIGNAL_ONLY_NOT_NATIVE",
+  "hypothesis": "A bounded learned action-effect schema generalized from physical key pickup/drop will enable removal of a previously unseen movable obstruction in a withheld MiniGrid task family. Positive mechanism value requires strictly beating a matched generic nonlearned intervention control, not merely beating the prior MD23 rule-scaffolded planner.",
+  "input": "Only public MiniGrid 7x7x3 image, public direction, self-action/reward feedback, own checkpoint and within-episode transient map; no mission string, hidden room geometry, env.unwrapped, privileged grid or task family label at policy time.",
+  "north_star": "native nontransformer non-token, bounded causal-action-consequence retention and transfer; no LLM/transformer/next-token cognitive substrate",
+  "frozen_design": {
+    "train": [
+      "MiniGrid-DoorKey-6x6-v0",
+      "MiniGrid-UnlockPickup-v0"
+    ],
+    "train_seeds": [
+      990001,
+      990024
+    ],
+    "interference_env": "MiniGrid-Empty-6x6-v0",
+    "interference_seeds": [
+      991001,
+      991012
+    ],
+    "cold_env": "MiniGrid-DoorKey-6x6-v0",
+    "cold_seeds": [
+      992001,
+      992012
+    ],
+    "heldout_size_env": "MiniGrid-DoorKey-8x8-v0",
+    "heldout_size_seeds": [
+      993001,
+      993012
+    ],
+    "novel_family_env": "MiniGrid-BlockedUnlockPickup-v0",
+    "novel_family_seeds": [
+      994001,
+      994012
+    ],
+    "toy_development_seeds": [
+      11,
+      17,
+      19,
+      23,
+      29,
+      31
+    ],
+    "max_episode_actions": 256,
+    "total_original_episodes": 348,
+    "max_charged_env_steps": 89088,
+    "arms": [
+      "learned_transfer",
+      "permuted_effect",
+      "blind_generic",
+      "md23_causal",
+      "tabular_q",
+      "recurrent_imitation"
+    ],
+    "teacher": "Frozen MD23 public-view real-action teacher with no new task-family training: collect one identical physical trajectory on DoorKey and UnlockPickup per seed, shared with all arms; interference trajectory shared also; no blocked-family examples or trajectories may enter training.",
+    "learned_mechanism": "Candidate learns generic pickup->carry/front-clear and drop->front-place via actual shared sensor transitions (rather than ball-specific symbol). It can apply that effect schema to an untrained opaque movable obstruction, plan relocation using only public geometry and action consequences. The exact relocation scaffold itself is scripted and must be disclosed; learned effect gate is the test variable.",
+    "sham": "Same schema, observations, map, trajectory counts and branch capacity with deterministic edge permutation at decision time; independent of evaluator outcomes.",
+    "blind": "Same generic unknown-object relocation behavior activated without consulting physical training effect counts. This is the strongest ablation for the claim that learning added value beyond a generic hardcoded procedure.",
+    "predecessor": "MD23 learned causal graph trained on the identical new shared trajectories, no new unknown-object relocation extension.",
+    "conventional": "Original full-weight tabular Q and 12-hidden recurrent imitation trained on same shared actions/rewards with original frozen optimizers and objective.",
+    "evaluation": "Each independent learned policy uses its own paid physical env.step actions, full checkpoint byte-exact freeze across holdout; count real source-family success, strict paired wins, reward, action cost, and CPU. No training in blocked task family. Frozen train/interference traces record official rewards.",
+    "first_use": "Single original first-use per platform ONLY from exact draft PR opened after prefirstuse toy gates; no replay on push, synchronize, follow-up commits or failed qualification; original receipts GitHub Actions artifacts only.",
+    "conditional_reporting": "If any strong blind nonlearned generic control matches target outcomes, scientific incremental value is not proven even if candidate reaches the target. No out-of-sample claims if task coverage missing. Original source and result remain sealed."
+  },
+  "coverage": {
+    "door_train_goals_min": 12,
+    "box_train_goals_min": 12,
+    "observed_pickups_min": 12,
+    "observed_drops_min": 8,
+    "heldout_novel_goals_all_arms_min": 3,
+    "heldout_size_goals_all_arms_min": 3,
+    "fail_label": "INVALID_TASK_COVERAGE"
+  },
+  "primary": {
+    "novel_candidate_success_min": 8,
+    "novel_success_advantage_over_predecessor_min": 4,
+    "novel_success_advantage_over_permuted_min": 4,
+    "novel_success_advantage_over_blind_min": 2,
+    "novel_success_advantage_over_best_trained_min": 2,
+    "novel_paired_reward_wins_over_blind_min": 6,
+    "novel_learned_effect_executions_min": 8,
+    "cold_goal_loss_max": 1,
+    "known_size_goal_loss_vs_md23_max": 1,
+    "checkpoint_bytes_max": 65536,
+    "candidate_cpu_ratio_vs_recurrent_max": 5,
+    "must_use_no_env_id_or_mission": true,
+    "ubuntu_windows_strict_nontiming_parity": true,
+    "all_inherited_tests_required": true
+  },
+  "classification_priority": [
+    "INVALID_TASK_COVERAGE",
+    "DEVELOPMENT_SIGNAL_ONLY",
+    "MIXED_DEV",
+    "NEGATIVE_DEV"
+  ],
+  "scientific_acceptance": "UNVERIFIED_UNTIL_INDEPENDENT_QUALIFICATION",
+  "native_model_changed": false,
+  "deployment": "NONE",
+  "no_post_result_tuning": true
+}
