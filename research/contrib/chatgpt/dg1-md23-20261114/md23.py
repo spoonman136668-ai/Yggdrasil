@@ -119,7 +119,13 @@ class GraphPolicy(d.AffordancePlanner):
                 return 4  # real charged key drop, then free hands for box pickup
             if front == OBJECT_TO_IDX["box"]:
                 return 1  # cannot pick up a box while still carrying the key
-        return super().act(obs, t)
+        action = super().act(obs, t)
+        # The inherited map can momentarily be stale immediately after a drop.
+        # Never reacquire the key after a verified unlock: the box needs free
+        # hands. This guard is based on the live public front observation.
+        if self.opened_door and front == OBJECT_TO_IDX["key"] and action == 3:
+            return 1
+        return action
 
     def preferred_subgoal(self):
         from minigrid.core.constants import OBJECT_TO_IDX
