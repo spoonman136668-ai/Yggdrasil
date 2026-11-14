@@ -226,11 +226,6 @@ def toy_qualification(seeds=TOY_SEEDS):
                 part["rewarded_box"] += ep["rewarded_box"]
             traces[label + ":" + str(seed)] = ep["sha256"]
             train_shared(agents, ep)
-    if save(agents["causal_graph"]) != save(agents["shuffled_graph"]).replace(
-            b"not_a_real_identity", b"not_a_real_identity"):
-        # Canonical bytes contain policy kind; training observations/counters
-        # must be equal, not their model identities.
-        pass
     a, b = agents["causal_graph"], agents["shuffled_graph"]
     if (a.edges != b.edges or a.train_events != b.train_events
             or a.failed_without_key != b.failed_without_key
