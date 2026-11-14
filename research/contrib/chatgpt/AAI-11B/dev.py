@@ -103,7 +103,7 @@ def score_condition(postB,law,key,budget,corrupt=False):
 
 def measure_fixture():
     locked=json.loads((HERE/"prereg.json").read_text("utf8"))
-    if locked["id"]!="AAI-11B" or locked["future_science"]["consumed"] or locked["future_science"]["first_use_authorized"]:
+    if locked["id"]!="AAI-11B" or locked["authority"]["cohort_consumption"] or locked["authority"]["scientific_first_use"]:
         raise PermissionError("AAI11B SCIENTIFIC FIRST USE DISARMED")
     if locked["source_development"]["historical_mean_reward"]!=REFERENCE:
         raise ValueError("historical strongest source comparison changed")
