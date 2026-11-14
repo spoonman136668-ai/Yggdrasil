@@ -1,0 +1,101 @@
+name: AAI-08B frozen sparse-return original scientific first-use (one-shot)
+on:
+  push:
+    branches: [research/aai08b-sparse-recurrence-falsification-20261114]
+    paths: [.github/workflows/aai08b-first-use.yml]
+permissions:
+  contents: read
+jobs:
+  frozen-original-primary:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.ref == 'refs/heads/research/aai08b-sparse-recurrence-falsification-20261114' &&
+      github.event.head_commit.message == 'AAI-08B authorized frozen scientific first-use once' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify frozen source and prereg, exact trigger, and fresh one-shot
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '71a5042a2ef082129872a78e831f9f3bf036f1a0'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai08b-first-use.yml'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08B/prereg.json)" = "$(git rev-parse da868ed0438a2407a6523f5a8ac3040df892a350:research/contrib/chatgpt/AAI-08B/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08B/models.py)" = "$(git rev-parse 92cff577ce34561764b712d41675104762ed6976:research/contrib/chatgpt/AAI-08B/models.py)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08B/evaluate.py)" = "$(git rev-parse 10e25b6965de5e31fb1fcbed53608b44e49c2d36:research/contrib/chatgpt/AAI-08B/evaluate.py)"
+          python - <<'PY'
+          import json,pathlib
+          root=pathlib.Path('research/contrib/chatgpt/AAI-08B')
+          p=json.loads((root/'prereg.json').read_text())
+          assert p['experiment_id']=='AAI-08B'
+          assert p['authority']['first_use_authorized'] is False, 'Original prereg authority state must remain immutable; approval is in current owner conversation and separate trigger'
+          assert p['protocol']['cohorts']['transfer']=={'first':895000,'count':64}
+          assert p['protocol']['cohorts']['negative']=={'first':896000,'count':32}
+          assert p['protocol']['budgets']==[0,1,2,4,8]
+          assert p['no_post_primary_tuning'] is True
+          print('AAI08B_ORIGINAL_SOURCE_AND_PREREG_CUSTODY_PASS')
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Install exact unmodified official NS-Gym benchmark runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init -q "$RUNNER_TEMP/nsgym"
+          git -C "$RUNNER_TEMP/nsgym" remote add origin https://github.com/scope-lab-vu/ns_gym.git
+          git -C "$RUNNER_TEMP/nsgym" fetch -q --no-tags --depth 1 origin 127df4b714fe4fcf680721d8e9278a96090acd7e
+          git -C "$RUNNER_TEMP/nsgym" checkout -q --detach FETCH_HEAD
+          test "$(git -C "$RUNNER_TEMP/nsgym" rev-parse HEAD)" = '127df4b714fe4fcf680721d8e9278a96090acd7e'
+          test "$(git -C "$RUNNER_TEMP/nsgym" rev-parse HEAD:ns_gym/envs/Bridge.py)" = '02415d65ff8a0c419d32f274e2669f9e54e8d29f'
+          test "$(git -C "$RUNNER_TEMP/nsgym" rev-parse HEAD:ns_gym/wrappers/toy_text.py)" = 'cd94311a4d312b9d8c35b7719207020150caa300'
+          python -m pip install --disable-pip-version-check --no-input --prefer-binary \
+            numpy==1.26.4 'gymnasium[mujoco]==1.2.2' scipy==1.15.3 PyYAML==6.0.2 \
+            mujoco==3.3.7 pygame==2.6.1
+          python -m pip install --disable-pip-version-check --no-input --no-deps -e "$RUNNER_TEMP/nsgym"
+          echo AAI08B_EXTERNAL_OFFICIAL_SOURCE_PASS
+      - name: Consume exactly once frozen AAI-08B original scientific cohorts (no CLI edits)
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python - "$RUNNER_TEMP/aai08b-primary.json" <<'PY'
+          import hashlib,importlib,json,pathlib,sys
+          root=pathlib.Path('research/contrib/chatgpt/AAI-08B').resolve()
+          sys.path.insert(0,str(root))
+          import evaluate
+          assert evaluate.PREREG=='da868ed0438a2407a6523f5a8ac3040df892a350'
+          assert evaluate.UPSTREAM=='127df4b714fe4fcf680721d8e9278a96090acd7e'
+          assert (len(evaluate.DEV),len(evaluate.TRANSFER),len(evaluate.NEGATIVE))==(16,64,32)
+          assert tuple(evaluate.BUDGETS)==(0,1,2,4,8)
+          original=evaluate.primary()
+          assert original['prereg_commit']==evaluate.PREREG
+          assert original['integration']=='NONE'
+          assert len(original['world_records']['dev'])==16
+          assert len(original['world_records']['transfer'])==64
+          assert len(original['world_records']['negative'])==32
+          raw=(json.dumps(original,sort_keys=True,indent=2)+'\n').encode('utf-8')
+          pathlib.Path(sys.argv[1]).write_bytes(raw)
+          compressed={k:v for k,v in original.items() if k!='world_records'}
+          print('AAI08B_SCIENCE_COMPACT='+json.dumps(compressed,sort_keys=True,separators=(',',':')))
+          print('AAI08B_ORIGINAL_RAW_SHA256='+hashlib.sha256(raw).hexdigest())
+          print('AAI08B_FROZEN_SCIENCE_CLASSIFICATION='+original['classification'])
+          PY
+          test -z "$(git status --porcelain)"
+          test -z "$(git -C "$RUNNER_TEMP/nsgym" status --porcelain)"
+          echo AAI08B_ORIGINAL_FROZEN_PRIMARY_CAPTURE_PASS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: aai08b-frozen-original-primary
+          path: ${{ runner.temp }}/aai08b-primary.json
+          if-no-files-found: warn
+          retention-days: 14
