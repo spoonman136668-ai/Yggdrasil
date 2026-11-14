@@ -1,0 +1,40 @@
+name: WSP86 frozen one-shot unregistered 216-triple paid comparison
+on:
+  push:
+    branches: [research/wsp80-paid-novelty-structural-weight-repair-20261113]
+permissions:
+  contents: read
+jobs:
+  paid-sessions:
+    if: "github.event.head_commit.message == 'ci(wsp86): run one-shot frozen reachable-history comparison'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact SHA, pinned G29, pristine source before first DEV use
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+      - name: One cohort, equal physical actions, all-model SHA256 freeze before labels
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: python research/contrib/chatgpt/WSP-86/experiment.py --frozen-unregistered-dev-only
+      - name: No repository writes
+        shell: bash
+        run: git diff --exit-code
