@@ -1,0 +1,34 @@
+{
+  "schema": "yggdrasil.qtr01.f04.metadata-prereg.v1",
+  "objective": "Before inspecting pinned SAE feature-list contents, decide whether metadata contains interpretable per-feature associations or only unlabeled indices.",
+  "source_commit": "0f965454ffedb93e826546a7dc11b51a4622188e",
+  "source_file": "interface/feature_list_1x.json",
+  "max_bytes": 500000,
+  "expected_outcomes": {
+    "no_descriptors": "NO_GO_UNLABELLED_INTERFACE_FOR_SEMANTIC_TRANSPLANT",
+    "contains_descriptors": "DESCRIPTION_HINTS_ONLY_INDEPENDENT_CAUSAL_PROOF_REQUIRED",
+    "invalid_file": "FAIL_CLOSED_NO_INTERPRETATION"
+  },
+  "definition_of_descriptor": "A named explanation, description, concept, meaning or semantic_label field with at least four words; unlabeled numeric coordinates and code utility are not semantics.",
+  "qualification": "Source metadata only; NOT a test of causal features, recipient alignment, transfer, retention, native intelligence, or training; cannot be a scientific PASS.",
+  "negative_controls": [
+    "numeric-only feature-index fixture",
+    "long explanation with probe fields (still not causal proof)",
+    "short category fixture",
+    "invalid JSON",
+    "deep nesting"
+  ],
+  "forbidden": [
+    "WSP-99 public/reserved worlds",
+    "donor model inference",
+    "model weight edits",
+    "main/accepted ref mutation",
+    "merge",
+    "deployment",
+    "new scheduler",
+    "paid APIs"
+  ],
+  "next_if_no_go": "Close this Qwen3.8 metadata-only donor as insufficient for semantics; evaluate another source with actual interpreted features before any first-use or transplant.",
+  "next_if_hints": "Independently validate on preregistered held-out concept/counterfactual probes before computing native weight edits.",
+  "control_plane": "No CKB-plane execution required or claimed."
+}
