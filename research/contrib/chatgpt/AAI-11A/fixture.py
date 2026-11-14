@@ -21,22 +21,31 @@ def common_training(key,names=learner.NAMES):
     world.fixture(key)
     actors={name:learner.make(name) for name in names}
     evidence=[]
+    train_cost={name:0. for name in actors}
     for law,scope in (("A","train-initial"),("B","train-next")):
         for trial in range(16):
             pair=world.pair(law,key,scope,trial)
             evidence.extend(pair)
             for name,actor in actors.items():
+                tick=time.perf_counter()
                 for observed in pair:
                     actor.observe(world.copy_public(observed))
-    for actor in actors.values():
+                train_cost[name]+=time.perf_counter()-tick
+    for name,actor in actors.items():
+        tick=time.perf_counter()
         actor.fit_checkpoint()
+        train_cost[name]+=time.perf_counter()-tick
     if len(evidence)!=64 or any(frozenset(event)!=world.PUBLIC_KEYS for event in evidence):
         raise AssertionError("unequal public evidence or private field")
-    saved={name:learner.checkpoint(name,actor) for name,actor in actors.items()}
-    for name,blob in saved.items():
+    saved={}
+    for name,actor in actors.items():
+        tick=time.perf_counter()
+        blob=learner.checkpoint(name,actor)
         if learner.checkpoint(name,learner.restore(name,blob))!=blob:
             raise AssertionError("bad frozen post-B checkpoint")
-    return saved,tuple(evidence)
+        saved[name]=blob
+        train_cost[name]+=time.perf_counter()-tick
+    return saved,tuple(evidence),train_cost
 
 
 def challenge(name,initial,law,key,budget,corrupt=False):
@@ -90,13 +99,6 @@ def episode(name,checkpoint,law,x,goal):
 
 def score(name,postB,law,key,budget,corrupt=False):
     snap=challenge(name,postB,law,key,budget,corrupt)
-    contexts=tuple(sorted(
-        (x,g) for x,g in (
-            (world.INPUTS[world.index(key,"evaluate-"+law,k,"x",64)],
-             world.GOALS[world.index(key,"evaluate-"+law,k,"goal",8)])
-            for k in range(512)
-        )
-    ))
     # Reuse the ORIGINAL qualified unique twelve contexts, not replacements.
     from admission import contexts as admitted_contexts
     contexts=admitted_contexts(key,law,12)
@@ -126,13 +128,14 @@ def fixture_admission():
     fixtures={}
     for key in world.FIXTURES:
         tick=time.perf_counter()
-        saved,evidence=common_training(key)
+        saved,evidence,train_costs=common_training(key)
+        for name,t in train_costs.items():
+            times[name]+=t
         if len(evidence)!=64:
             raise AssertionError("public training mismatch")
         train_cost=time.perf_counter()-tick
         # Baseline initial common training measured jointly, report combined
         # but do NOT misallocate it to one learner.
-        fixture_times={}
         per={name:[] for name in learner.NAMES}
         local_oracle=[]
         for law in (*world.TRANSFER,*world.TRAIN):
@@ -197,8 +200,8 @@ def fixture_admission():
         "all_method_reward":means,
         "all_method_goal_success":success,
         "all_method_familiar":a_b,
-        "candidate_over_fastest_scoring_time":round(ratio,6),
-        "scoring_wall_seconds_by_method":{name:round(v,5) for name,v in times.items()},
+        "candidate_over_fastest_measured_whole_time":round(ratio,6),
+        "training_checkpoint_challenge_action_restore_wall_seconds_by_method":{name:round(v,5) for name,v in times.items()},
         "max_cold_checkpoint_bytes":memory,
         "oracle_mean":oracle_mean,
         "fixture_mean_results":fixtures,
