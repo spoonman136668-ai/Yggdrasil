@@ -21,6 +21,7 @@ class ModelBasedRL:
         self.diagnostic = np.zeros((ENSEMBLE, 3, 4, 2), dtype=np.float64)
         self.fitted_episodes = 0
         self.fitted_backups = 0
+        self._fitted_q = None
         self._local_success = np.zeros((4, 2, 4), dtype=np.float64)
         self._local_failure = np.zeros_like(self._local_success)
         self._local_probe = np.zeros((3, 4, 2), dtype=np.float64)
@@ -99,27 +100,53 @@ class ModelBasedRL:
         if self.fitted_episodes != 1536:
             raise AssertionError("MD35_RL_UNTRAINED_BACKUPS")
         self.begin_block()
-        v = np.zeros(4, dtype=np.float64)
+        # Terminal, optional paid terminal-parity intervention, route and
+        # precursor values are backed up through the finite physical horizon.
+        q_terminal = np.zeros((4, 2, 4), dtype=np.float64)
+        q_diagnostic = np.zeros((4, 2), dtype=np.float64)
+        q_route = np.zeros((4, 2), dtype=np.float64)
+        q_precursor = np.zeros(4, dtype=np.float64)
         for _ in range(SWEEPS):
-            future = np.array([
-                max(-0.02 + self._terminal_value(self.predict_target(c, 0)),
-                    -0.05 + self._terminal_value(self.predict_target(c, 1)))
-                for c in range(4)
-            ])
-            v = -0.02 + future  # irreversible precursor stage
-            if not np.isfinite(v).all():
+            for context in range(4):
+                for route in (0, 1):
+                    p = self.predict_target(context, route)
+                    q_terminal[context, route] = [
+                        1.5 * p[guess] - 0.52 for guess in range(4)
+                    ]
+                    # A real diagnostic costs 0.09 and reveals only parity.
+                    q_diagnostic[context, route] = (
+                        1.5 * (max(p[0], p[2]) + max(p[1], p[3]))
+                        - 0.52 - 0.09
+                    )
+                    continuation = max(
+                        float(q_terminal[context, route].max()),
+                        q_diagnostic[context, route],
+                    )
+                    q_route[context, route] = continuation - (
+                        0.02 if route == 0 else 0.05
+                    )
+                q_precursor[context] = -0.02 + q_route[context].max()
+            if (not np.isfinite(q_precursor).all() or
+                    not np.isfinite(q_route).all()):
                 raise AssertionError("MD35_RL_INVALID_BELLMAN_VALUE")
+        self._fitted_q = q_route.copy()
         self.fitted_backups = SWEEPS
         self.begin_block()
 
     def plan_route(self, context):
-        if self.fitted_backups != SWEEPS:
+        if self.fitted_backups != SWEEPS or self._fitted_q is None:
             raise AssertionError("MD35_RL_BELLMAN_NOT_FITTED")
-        values = [
-            (-0.02 if r == 0 else -0.05) +
-            self._terminal_value(self.predict_target(context, r))
-            for r in (0, 1)
-        ]
+        if type(context) is not int or context not in range(4):
+            raise AssertionError("MD35_RL_INVALID_PUBLIC_ACTION")
+        if self._block_episodes == 0:
+            values = self._fitted_q[context]
+        else:
+            # History-conditioned replanning from charged within-block data.
+            values = [
+                (-0.02 if r == 0 else -0.05) +
+                self._terminal_value(self.predict_target(context, r))
+                for r in (0, 1)
+            ]
         return int(values[1] > values[0])
 
     def plan_terminal(self, context, route, parity_bit=None):
