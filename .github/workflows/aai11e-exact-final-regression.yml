@@ -1,0 +1,93 @@
+name: AAI-11E exact-final full native + research regression — NO science
+on:
+  push:
+    branches: [research/aai11e-final-regression-once-20261114]
+    paths: [.github/workflows/aai11e-exact-final-regression.yml]
+permissions:
+  contents: read
+concurrency:
+  group: aai11e-final-one-20261114
+  cancel-in-progress: false
+jobs:
+  immutable-final:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'AAI-11E exact final 114-test per OS regression one-shot' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: harness
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Independent immutable source qualification harness with no write permissions
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C harness rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git -C harness rev-parse HEAD^)" = '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
+          test "$(git -C harness diff --name-only HEAD^ HEAD)" = '.github/workflows/aai11e-exact-final-regression.yml'
+          test -z "$(git -C harness status --porcelain)"
+          echo AAI11E_FINAL_INDEPENDENT_SOURCE_HARNESS_PASS
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: candidate
+          ref: f9429b90e35c6b98b85a328e8b5c6186519ea27d
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact immutable final candidate SHA, main, stacked refs, prereg and generated atlas
+        shell: bash
+        working-directory: candidate
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 'f9429b90e35c6b98b85a328e8b5c6186519ea27d'
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
+          test "$(git ls-remote origin refs/heads/research/aai11d-uncertainty-calibrated-decisions-20261114 | cut -f1)" = '56c6fd02d21a005708fa6998f2b3f2d056306f41'
+          test "$(git ls-remote origin refs/heads/research/aai11e-risk-suppression-diagnostic-20261114 | cut -f1)" = 'f9429b90e35c6b98b85a328e8b5c6186519ea27d'
+          test "$(git rev-parse a8c3461311d1d8aa4680d8c3d4a17735bf628fa5^)" = '56c6fd02d21a005708fa6998f2b3f2d056306f41'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11E/prereg.json)" = '454d0f960dfa6184177f687e12e72a3d1b49183c'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11E/prereg.json)" = "$(git rev-parse a8c3461311d1d8aa4680d8c3d4a17735bf628fa5:research/contrib/chatgpt/AAI-11E/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11E/diagnose.py)" = '07447fba4ebc4a3fa175f1a479a48424b793e11d'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11E/test_diagnose.py)" = '4dc2653245817bd8a45c09a32c4573d715046874'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11D/prereg.json)" = '19633a9328593eb566dfbf0ddec0073b24a5752a'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11D/calibration.py)" = '49f7de063e3577ef8f0b4e42043a24581e6cd09c'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11D/dev.py)" = 'ce807c4fa3b7742b4299580087dc41b68359533e'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11C/diagnose.py)" = '499662a5939796f502ccd47c97950a4d1fbd6b2f'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11B/contrast.py)" = '69ff21daf627feeaaca6661f8f3c8096efbe4de8'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11A/learner.py)" = '331a97b566d41785be06923a7acc63df6105cffd'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11P/world.py)" = '88d220e94ccf736e490f20922f1c7f5d3c1d3746'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11P/controls.py)" = 'b554db7d8d25ae9b6a5f8bffb066181a00b35ffc'
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          echo AAI11E_EXACT_FROZEN_PREREG_MODEL_AND_G29_ATLAS_PASS
+      - name: MANDATORY full original native repo and six independent AAI11 suites
+        shell: bash
+        working-directory: candidate
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-11P -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-11A -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-11B -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-11C -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-11D -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-11E -p 'test_*.py' -v
+          if python -B research/contrib/chatgpt/AAI-11E/diagnose.py --primary >/dev/null 2>&1; then
+            echo AAI11E_SCIENCE_FIRST_USE_DISARM_FAILURE >&2
+            exit 1
+          fi
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo AAI11E_EXACT_FINAL_ALL_REGRESSION_PASS_NO_SCIENCE
