@@ -127,9 +127,14 @@ jobs:
           python scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"
 
+  # PUBLIC_NO_GO: exact-source public scientific classifier was negative
+  # on BOTH Ubuntu and Windows at 0a122b3b; 0/24 direct, 3/24 char retrieval.
+  # No original 50-question DEV first use is authorized while this approach
+  # fails the frozen 2/24 public feasibility criterion. Preserve those
+  # article-disjoint questions for a newly preregistered scientific mechanism.
   frozen-dev-first-use:
     needs: [final-regression]
-    if: "github.event.head_commit.message == 'ci(wsp92): exact-tree final dual-platform regression' && needs.final-regression.result == 'success' && github.run_attempt == 1"
+    if: "false"
     runs-on: ubuntu-latest
     timeout-minutes: 60
     concurrency:
