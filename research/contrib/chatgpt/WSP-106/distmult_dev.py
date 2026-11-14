@@ -16,7 +16,6 @@ import json
 import math
 import os
 from pathlib import Path
-import resource
 import struct
 import sys
 import tempfile
@@ -51,7 +50,10 @@ MAX_RSS_BYTES = 5 * 1024**3
 
 
 def rss_max_bytes():
-    # CI real-data qualification runs on Linux only.
+    # Real-source qualification runs on Linux; Windows executes synthetic tests.
+    if sys.platform != "linux":
+        return 0
+    import resource
     return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024
 
 
