@@ -26,3 +26,13 @@ The earlier 256-program DEV checker used exactly the generating family's hypothe
 The independent audit validates original-free source and heldout-plan SHA256 receipts, source/action counts and trajectory continuity, and the precommitted 12 paired future plans, without reading target outcomes, hidden-state or oracle rules. Negatives require empty-history ambiguity, failure on tampering, and rejection by the narrower class of a fixture-only world with altered operator composition. `broad_dev_report.py` publishes DEV diagnostic counts, never scientific acceptance. Run `python research/contrib/chatgpt/WSP-100/broad_dev_report.py` on fixtures only.
 
 This remains a toy hypothesis catalogue, **not** the future full WSP-100 broad causal grammar; it cannot establish general intelligence, direct-weight learning benefits, or an eligible original first-use. Preserve any ceiling or underidentification observations without post-result tuning.
+
+## Original wider DEV diagnostic: all eight worlds uniquely identifiable
+
+- Frozen source: `fd152b20014fb6466d8c003fc583ae369b39cc2d`.
+- [One-shot full 2,048-program DEV audit](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43614683066): engineering SUCCESS.
+- Source/plan receipt: `3866022ac910b996ed0cd7c9e2f171fdda9898fdc42efd8c3864f025cb340111`.
+- On **all eight** fixture IDs 0..7, the full observed 24 passive + 8 active episodes reduced the broadened program set to exactly **one surviving explanation**. All 432 heldout visible components per world were invariant among that set (3,456/3,456 across eight).
+- Full per-world signed-by-source SHA256 receipts preserved after result in `BROAD_DEV_EVIDENCE.json`; narrow 256-program and broad 2,048-program certifiers both measured 100% DEV identifiability.
+
+**Meaning:** This synthetic *fixture class* remains easy to identify even after broadening the search space. It is a ceiling-risk diagnostic, not a direct-weight learning breakthrough, not a full original-grammar validity result, and not permission to inspect FIT, TRANSFER, NOVEL or RESERVED world outcomes. Preserve the result; do not retune these fixture rules, evidence thresholds or split based on it. A new independent original-world task design must demonstrate real unknown-composition transfer, matched strong-control headroom, and original-source identifiability before first use.
