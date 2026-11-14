@@ -87,28 +87,33 @@ class DirectWeights:
         scores = self.scores(text)
         order = sorted(range(3), key=lambda i: (-scores[i], i))
         margin = scores[order[0]] - scores[order[1]]
-        run = 0
         grounded_span = False
-        # The confidence gate requires consecutive, class-specific raw windows
-        # spanning both surrounding separators. This is not a word lookup:
-        # windows are numeric hashed signal features learned from outcomes.
+        # Test bounded raw-signal spans between observed separators. There
+        # is no word dictionary or tokenization: all 5-character numerical
+        # windows of each candidate span are scored as action evidence.
         stream = "\u0002" + unicodedata.normalize("NFC", text).casefold() + "\u0003"
-        for i, idx in enumerate(five_gram_bins(text)):
-            counts = [row[idx] for row in self.positive_support]
-            total = sum(counts)
-            if (counts[order[0]] >= 2 and total > 0 and
-                    counts[order[0]] / total >= SIGNAL_THRESHOLD):
-                run += 1
-                if run >= MIN_SIGNALS:
-                    # A discriminative run may extend beyond the grounded
-                    # expression. Check all its contiguous suffixes rather
-                    # than requiring the *entire* run to start at a separator.
-                    for length in range(MIN_SIGNALS, run + 1):
-                        span = stream[i - length + 1:i + 5]
-                        if span.startswith(" ") and span.endswith(" "):
-                            grounded_span = True
-            else:
-                run = 0
+        windows = five_gram_bins(text)
+        for i, ch in enumerate(stream):
+            if ch != " ":
+                continue
+            for j in range(i + 5, min(len(stream), i + 18)):
+                if stream[j] != " ":
+                    continue
+                region = windows[i:j - 3]
+                if len(region) < MIN_SIGNALS:
+                    continue
+                supported = 0
+                for idx in region:
+                    counts = [row[idx] for row in self.positive_support]
+                    total = sum(counts)
+                    if (counts[order[0]] >= 2 and total > 0 and
+                            counts[order[0]] / total >= SIGNAL_THRESHOLD):
+                        supported += 1
+                if supported >= MIN_SIGNALS and supported / len(region) >= 0.60:
+                    grounded_span = True
+                    break
+            if grounded_span:
+                break
         return order[0] if margin >= MARGIN and grounded_span else None
 
     def snapshot(self) -> str:
