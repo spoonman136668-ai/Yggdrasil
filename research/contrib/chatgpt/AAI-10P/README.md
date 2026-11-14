@@ -1,0 +1,9 @@
+# AAI-10P — compositional causal intervention benchmark (mechanical only)
+
+This independent contributor benchmark follows the AAI-09A preregistered NO-GO from [run 43629589166](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43629589166). AAI-09A was **not retuned**. The frozen benchmark-only `prereg.json` was committed first at `c8c91565b7b08dbfa913fbbda0dc859a8b2bcd73` on an independent branch derived directly from Yggdrasil `main=5e74f8db85b2f5839c42148c0dfba69a88b1a2c9`.
+
+Unlike a single Bernoulli association, AAI-10P has three observable input bits, two downstream causal mediators, four distinct structural laws (A/B familiar; C/D unfamiliar recombinations), two-component goals, and actual sequential `do(input_i := bit)` interventions. Each action permanently changes an input and recomputes both downstream mediators. The learner can see the resulting public consequences and rewards but must **never** be given the law label, structural equations, unseen counterfactuals, change point, or simulator internals.
+
+**Only benchmark construction and exhaustive source/geometry admission are allowed in AAI-10P.** The mechanical oracle is a privileged exact-law diagnostic to establish decision regret when a policy optimized for another law is carried forward. It is **not** a trained control or evidence of a superior learning mechanism. Real first-use must instead use independent matched trained conventional baselines, strict provenance, a stronger task than AAI-09A, predeclared gain/cost thresholds, and fresh disjoint cohorts with separate authority.
+
+No science first-use, candidate weight updates, native Yggdrasil integration, other research lane, runner/control-plane changes, merge, or deployment. Evidence stays in GitHub and none is written to the user's file library.
