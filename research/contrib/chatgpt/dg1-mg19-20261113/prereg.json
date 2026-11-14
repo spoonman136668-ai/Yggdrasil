@@ -1,0 +1,130 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "DG1-MG19-20261113",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can learned bounded episodic history improve twelve-step visual-action-consequence prediction after interference and across genuinely different partially observable MiniGrid task families, beyond a fully trained recurrent predictor, a current-observation conventional learner, persistence, and shuffled-history negative controls?",
+  "hypothesis": "A 256-slot episodic causal-history learner trained solely on genuine MiniGrid environment observations and charged env.step outcomes will produce a >=0.0001 lower twelve-step future-observation/reward MSE than all preregistered controls in BOTH held-out DoorKey-8x8 and UnlockPickup, win >=9/12 independent world seeds per transfer family against the strongest trained control, and retain cold DoorKey prediction after a distinct interfering environment with <=10% relative MSE degradation. All training and evaluation observations remain partial and tokenless.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "pr": 1002,
+      "sha": "a23c39d2ccfaab65875d3ce62702b531cdc13748",
+      "science": "VALID_MIXED_DEV_PRIMARY_NO_GO",
+      "note": "T17 and IV18 procedural causal-memory gate development studies are scientifically negative. This successor changes physical environment family and task, never retunes their original data or source."
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/dg1-mg19-20261113/**",
+    ".github/workflows/dg1-mg19-qualification.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "inputs": [
+    {
+      "name": "Farama Minigrid 3.2.0 MIT open-source wheel, PyPI verified",
+      "sha256": "9de2d46320357543e5f665ba0e8590f4d6ca3f4aa8c56562e7f1e506973a73f3",
+      "source": "https://pypi.org/project/minigrid/3.2.0/; identical official simulator on both OS; no source modifications or reward shaping"
+    },
+    {
+      "name": "Farama Gymnasium 1.4.0 wheel, MIT",
+      "sha256": "1cb947c59e7c72d8eabb2c2274c00cd20948e69f8452a9ef4092223be24fdf0e",
+      "source": "https://pypi.org/project/gymnasium/1.4.0/"
+    },
+    {
+      "name": "Fresh prospective episode/seed manifest",
+      "sha256": "e8b825254d1b7e90fe9c4eb6f12643f87066d50e1ee04970ca14a1fbd0400184",
+      "source": "Canonical JSON: schema yggdrasil.dg1-mg19-episode-plan.v1; train 630001..630012; interference 640001..640012; cold 650001..650012; transfer 660001..660012; larger 670001..670012; horizon 12; cap 128; five fixed arms."
+    }
+  ],
+  "frozen_design": {
+    "dataset": "Third-party Farama MiniGrid v3.2.0 actual gymnasium.make/reset/step environments. All models receive only official partial 7x7x3 image, discrete direction, previous action, and action-delayed outcome supervision derived strictly from future returned observation/reward; mission text excluded. Do not use env.unwrapped state/agent position/grid, hidden reward logic, oracle actions, counterfactual calls, or resets for training labels.",
+    "environment_splits": {
+      "train": [
+        "MiniGrid-DoorKey-5x5-v0",
+        "MiniGrid-DoorKey-6x6-v0"
+      ],
+      "interference": "MiniGrid-Dynamic-Obstacles-6x6-v0",
+      "cold_before_and_after": "MiniGrid-DoorKey-6x6-v0",
+      "unseen_size": "MiniGrid-DoorKey-8x8-v0",
+      "unseen_family": "MiniGrid-UnlockPickup-v0"
+    },
+    "seeds": {
+      "train": "630001..630012 inclusive, each on both training environments",
+      "interference": "640001..640012",
+      "cold": "650001..650012 evaluated twice without training on these episodes",
+      "unseen_family": "660001..660012",
+      "unseen_size": "670001..670012"
+    },
+    "chronology": "Train on 24 DoorKey episodes, snapshot; evaluate read-only cold 12 seeds; train on 12 Dynamic-Obstacles interference episodes; restore snapshot for exact cold roundtrip probe, but retain actively interfered models; evaluate read-only the same cold seeds and 12 each unseen-size/new-family seeds. Never train on evaluation episodes; cold before and after evaluation both independently charge actual env.step calls.",
+    "policy": "All episodes use a fixed precommitted observation-only exploration policy: front-cell key/box => pickup, front-cell door => toggle at bounded frequency, else forward/left/right chosen from local view and seeded RNG. No access to agent position, full map, mission text, hand-coded shortest-path solution or hidden action labels. All arms share identical charged trajectories.",
+    "prediction": "At each time t, predict normalized visible counts at t+12 of wall, door, key, goal, empty, open-door and box, plus binary positive reward occurring within the subsequent 12 charged steps. Each prediction uses only current local image/direction/last action and at most 8 earlier observations/actions. Supervised labels from future returned env observations become trainable only after that 12-step delay. Transfer/cold labels are evaluator-only.",
+    "budget": "84 independent third-party environment episodes maximum 128 env.step calls each = 10,752 maximum charged actions, dynamically fewer if terminal. All five arms consume the same one generated trajectory, no per-arm environment replay or additional model/API calls. Zero evaluation training; exact charged counts plus per-split SHA-256 state/action/outcome traces and nonempty dynamic-event coverage reported.",
+    "model_capacity": "Candidate and shuffled history: 256 records max with deterministic 256-slot reservoir, 8-step context of 12 input features, 8 output values. Trained current-observation SGD linear model (12x8 plus bias) and fully trained 8-hidden-unit recurrent sequence predictor (12x8 input, 8x8 recurrent, 8x8 readout plus biases), all weights updated from identical delayed labels; persistence zero-train control. Same fixed data and forecasts; no hidden model API.",
+    "evaluation": "Compare average 8-output-vector MSE on 12-seed cold-before, cold-after, unseen-size and unseen-family splits. Also report 12-step event Brier, changed-visual-state coverage, 12 independent per-seed differences, cold pre/post ratio, memory retention, checkpoint size, per-split exact step counts, CPU; no extra training on scoring episodes.",
+    "determinism": "Freeze Python 3.12, minigrid==3.2.0, gymnasium==1.4.0 and numpy==2.3.4; fix all RNG seeds. Numerical outputs/forecasts quantized to 8 decimal places and canonical checkpoints. Require exact per-split trajectory SHA and decision input hashes cross-platform, loss aggregates equal within 1e-8, checkpoint model numerical values equal within 1e-8 (byte-identical when serialized); otherwise INVALID_REPRO. Record full pip freeze and platform.",
+    "cold_checkpoint": "Snapshot and restore each trained arm before evaluation; compare serialized snapshot, predictions on a synthetic toy probe and retained record counts. Strict no re-training on cold evaluated seeds or any transfer labels.",
+    "positive_coverage": "Meaningful dynamic-transition coverage is >=5% of forecast windows with a change in normalized visible landmark counts between current and future image; require >=500 evaluation forecast windows across both transfer tasks. Lack of meaningful coverage classified INVALID_TASK_COVERAGE, never scientific failure.",
+    "original_firstuse_boundary": "First commit includes prereg only. Implement and preflight on nonregistered toy seeds 11,17,19. First registered run only on PR opened; all subsequent workflow synchronizations skip original first-use."
+  },
+  "controls": [
+    {
+      "name": "shuffled_history",
+      "description": "Equal-capacity episodic reservoir, same current-view features and labels; historical temporal context replaced with deterministic unrelated-context noise, as negative control."
+    },
+    {
+      "name": "memoryless_sgd",
+      "description": "Fully trained conventional 12-input by 8-output linear SGD predictor, no past observations."
+    },
+    {
+      "name": "recurrent_sgd",
+      "description": "Fully trainable 8-hidden-unit recurrent predictor, all input/recurrent/readout/bias matrices trained via bounded 8-step backpropagation through time on identical samples and fixed compute."
+    },
+    {
+      "name": "persistence",
+      "description": "No-training conventional forecast: assume each future visual feature equals its currently observed value and reward is zero."
+    }
+  ],
+  "metrics": [
+    "train_episodes",
+    "interference_episodes",
+    "cold_before_and_after_replay_counts",
+    "unseen_size_episode_counts",
+    "unseen_family_episode_counts",
+    "charged_env_steps",
+    "twelve_step_visual_reward_MSE_per_split",
+    "twelve_step_event_Brier_per_split",
+    "per_seed_win_count",
+    "cold_MSE_retention_ratio",
+    "event_coverage",
+    "trainable_weight_groups_updated",
+    "episodic_cold_sample_count",
+    "CPU_ratio_per_arm",
+    "source_and_package_sha",
+    "cross_os_checkpoint_numerical_parity"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SIGNAL_ONLY iff complete custody and >=500 transfer forecast windows, meaningful dynamic coverage >=5%, candidate mean MSE on BOTH unseen-size and unseen-family <= min(memoryless_sgd,recurrent_sgd,persistence,shuffled_history)-0.0001, candidate individually beats best trained conventional recurrent/memoryless in >=9/12 seeds in each unseen split, cold-after MSE <= 1.10*cold-before MSE, candidate MSE cold-after <= min(recurrent_sgd,memoryless_sgd)-0.0001, reward Brier no worse than best trained conventional by >0.001, cold checkpoint within 65536 bytes, 100% audit read-only, CPU <=3x recurrent_sgd on each OS; exact episode identities and reproducibility. Even fully passing is DEV only, not native AGI or control acceptance.",
+    "mixed": "MIXED_DEV iff valid physical/portability/coverage but primary false, and candidate wins vs at least one registered comparator in one heldout split or retains episodic sample after interference and has equal-or-better cold MSE than its own baseline.",
+    "negative": "NEGATIVE_DEV iff protocol/coverage valid, primary false, and no precommitted partial development signal.",
+    "invalid": "INVALID_INFRASTRUCTURE/INVALID_REPRO/INVALID_TASK_COVERAGE for dependency/source drift, absent real Minigrid env.step, seed/split or action accounting mismatch, identical-trace failure, eval label used in training, missing control training, cold snapshot corruption, mismatched exact trajectory hashes, >1e-8 cross-platform numerical loss/checkpoint discrepancies, insufficient >=500 transfer windows or <5% meaningful dynamic transition coverage. An unfavorable performance result with valid custody must remain NEGATIVE/MIXED, not infrastructure failure."
+  },
+  "prohibited_after_primary_run": [
+    "changing task splits, horizons, seeds, policy or source after first use",
+    "post-result thresholds or hand tuning",
+    "additional training on heldout evaluations",
+    "repeating original registered run on new source",
+    "accepted-ref or native runtime mutation",
+    "declaring AGI or autonomous planning from forecasting score"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Commit this file alone before implementation and primary outcome. External research only; no loop, scheduled task, workstation, native model or deployment mutation."
+}
