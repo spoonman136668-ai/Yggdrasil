@@ -7,9 +7,11 @@ knows synthetic seeds, structural motifs, or the hidden stable/rewire label.
 import json
 import math
 import random
+import sys
 import time
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "dg1-md30-20261114"))
 from bayesian_control import (BayesianGraphControl, paid_training_episodes)
 from native_tournament import (CausalTournament, PersistentCausalMemory,
                                trained_memory)
