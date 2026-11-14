@@ -179,8 +179,7 @@ class EffectBfsPolicy(p.SiteChoice):
     def load(self,x):
         if x["kind"]!=self.kind:
             raise AssertionError("MD26_ARM_CHECKPOINT_KIND")
-        original=dict(x,kind=self.source_kind)
-        super().load(original)
+        super().load(x)
 
 
 def make_agent(name):
