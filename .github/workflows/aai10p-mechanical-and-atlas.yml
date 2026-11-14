@@ -13,7 +13,7 @@ jobs:
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
       github.event_name == 'push' &&
-      github.event.head_commit.message == 'AAI-10P source-pinned mechanical one-shot and atlas workflow' &&
+      github.event.head_commit.message == 'AAI-10P qualification order correction - atlas after mechanics' &&
       github.run_attempt == 1
     strategy:
       fail-fast: false
@@ -34,7 +34,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = '16536dbb15624ba9fdc0268dd88e1eddbe40627f'
+          test "$(git rev-parse HEAD^)" = '4d4a4fedd6c44f8fd3b48e226fed03de0c8bfcf1'
           test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai10p-mechanical-and-atlas.yml'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10P/prereg.json)" = 'f915033fce1b35aa816bf2b8cc6e79bf0689e35a'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10P/prereg.json)" = "$(git rev-parse c8c91565b7b08dbfa913fbbda0dc859a8b2bcd73:research/contrib/chatgpt/AAI-10P/prereg.json)"
@@ -45,13 +45,12 @@ jobs:
           test "$(git ls-remote origin refs/heads/main | cut -f1)" = '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
           test -z "$(git status --porcelain)"
           echo AAI10P_PREREG_PRECODE_AND_SOURCE_CUSTODY_PASS
-      - name: Full standard regression and all focused source tests
+      - name: Focused mechanical tests before atlas; full regression runs on final generated head
         shell: bash
         env:
           PYTHONDONTWRITEBYTECODE: '1'
         run: |
           set -euo pipefail
-          python -B -m unittest discover -s tests -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/AAI-10P -p 'test_*.py' -v
           python -B research/contrib/chatgpt/AAI-10P/benchmark.py --mechanical
           if python -B research/contrib/chatgpt/AAI-10P/benchmark.py --primary >/dev/null 2>&1; then
@@ -59,7 +58,7 @@ jobs:
             exit 1
           fi
           test -z "$(git status --porcelain)"
-          echo AAI10P_NO_SCIENCE_FULL_REGRESSION_AND_MECHANICAL_PASS
+          echo AAI10P_NO_SCIENCE_FOCUSED_MECHANICAL_PASS_FULL_REGRESSION_AFTER_ATLAS
   source-atlas:
     needs: mechanical
     runs-on: ubuntu-24.04
@@ -79,7 +78,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = '16536dbb15624ba9fdc0268dd88e1eddbe40627f'
+          test "$(git rev-parse HEAD^)" = '4d4a4fedd6c44f8fd3b48e226fed03de0c8bfcf1'
           test -z "$(git status --porcelain)"
           python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
           test "$(git diff --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
