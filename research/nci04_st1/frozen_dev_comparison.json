@@ -1,0 +1,56 @@
+{
+  "schema": "yggdrasil.nci04.st1.frozen-original-native-development-comparison.v1",
+  "status": "FROZEN_BEFORE_NATIVE_COMPARISON_SOURCE_OR_OUTCOMES",
+  "base_st1_sha": "46d270da66084c6371fc52772ab6bd3c2f332a71",
+  "original_independent_farama_git_sha": "7f5853792ea7f04f75614661006d87fcf949f26d",
+  "origin": "S1 native_public source and S2 consumed development cohorts ONLY. None is a new, independent held-out scientific first-use.",
+  "task_families": [
+    "DoorKeyEnv(size=8)",
+    "EmptyEnv(size=8)"
+  ],
+  "source_training_previously_consumed": [
+    263,
+    269,
+    271,
+    277,
+    281,
+    283,
+    293,
+    307
+  ],
+  "topology_adaptation_previously_consumed": [
+    827,
+    829,
+    839
+  ],
+  "evaluation_previously_consumed": [
+    853,
+    857,
+    859
+  ],
+  "source_per_episode_action_cap": 256,
+  "source_actor": "Original MR26 BoundedPublicNoveltyExplorer from exact source, one authentic env.step per public native observation, action-policy independent of comparator",
+  "source_public_signals": "Original MR15 24-byte sampled public observation and eight past public delta bits; action 0..5 known before source step. Source-next 8 public delta bits only after executing authentic upstream env.step.",
+  "fitting_order": "Repeat original S1 pretrained weights once on 8 consumed TRAIN resets per family with existing models_new/native_episode, freeze core 45-coefficient weights and all controls; instantiate ST1 with frozen S1; adapt ONLY routing on 3 consumed S2 DEV resets/family while comparing stationary equal-trace alternatives; snapshot/cold restore; evaluate on 3 other consumed S2 DEV resets/family with ST1 train=False and every comparison frozen.",
+  "candidate_exact_contract": "ST1 existing frozen 32-event windows, 0.10 absolute margin, maximum two switches per cell, 4 two-link options per cell; MUST NOT tune schedule after outcome. 8 existing scalar states, 45 existing neural weights remain fixed during routing.",
+  "controls": {
+    "ring": "S1 same frozen weights original i-1,i+1 (no learned structural edits)",
+    "fixed_global_four": "Original same frozen S1 weights/state scored at each of 4 candidate global choices; no adaptation on held episodes.",
+    "fixed_per_cell_train_selected": "For each receiving cell, best of four full adaptation preaction cumulative Brier losses, selected only from first three DEV resets, then frozen for evaluation. Equal candidate scans and same public training evidence; this is the strong supervised topology-selection control.",
+    "deterministic_sham": "Preassigned per-cell graph option (3*i+1)%4, no DEV outcomes; same active two links/cell.",
+    "no_neighbor": "Original same S1 weights/state, messages set to zero.",
+    "no_state": "Original S1 weights and zero-valued prediction state ablation.",
+    "recurrent45": "S1 original separately trained Recurrent45 on same authentic S1 source training histories; weights frozen.",
+    "memoryless45": "S1 original separately trained Native45 on same source training histories; weights frozen.",
+    "count_unmatched": "S1 original fully trained PublicCount with unmatched additional capacity; disclose separately."
+  },
+  "measurements": "Per-source-family and per-eval-seed authentic original preaction Brier and paired differences, exact source event SHA receipts, graph switch count and winner per cell, source-native actions, pre-source prediction/response order, exact cold state, all-in source+models process CPU and peak RSS, isolated model-level CPU estimates labelled shared-process, model and structural persistent bytes, number of neighbor reads. No hidden world labels or evaluator truth to actors/learners.",
+  "dev_go": "For EACH original family: ≥1 real causal-error structural switch from adaptation; ST1 held DEV action-weighted Brier strictly at least 0.0001 better than BOTH original ring and strongest fixed-per-cell train-selected topology; ST1 better on >=2 of 3 independent held DEV reset seed clusters than fixed-per-cell train-selected; ST1 no worse than strongest fully trained conventional recurrent; all controls fit freeze/custody and exact restart; no source drift. Still insufficient for SCIENTIFIC_PASS.",
+  "dev_no_go": "Any failure is NEGATIVE; no postresult tuning, new seeds, repaired training signal or substituted oracle in this frozen experiment; preserve preexisting S1/S2/S3 failures and original 45-weight state.",
+  "science_limit": "Development-only same Farama source reused and examined by prior S2. No independent prospective unfamiliar transfer, original first-use, causal primitive discovery, physical distributed wiring, matched all-in cost, functional regeneration or intelligence qualification.",
+  "reserved_first_use_opened": false,
+  "native_main_modified": false,
+  "additional_learner_weights": 0,
+  "no_paid_api": true,
+  "no_new_controller_or_schedule": true
+}

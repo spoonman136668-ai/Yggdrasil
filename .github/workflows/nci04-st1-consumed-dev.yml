@@ -1,0 +1,140 @@
+name: NCI04 ST1 Original Native Consumed Development Falsification
+on:
+  push:
+    branches:
+      - research/nci04-st1-adaptive-local-topology-20261114
+permissions:
+  contents: read
+jobs:
+  authentic_native:
+    if: "${{ github.event.head_commit.message == 'science(st1): run frozen consumed DEV comparison' }}"
+    name: ST1 original native DEV (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - name: Original byte-stable Git on Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: yggdrasil
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Independently authored original native source exact SHA
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Original upstream Git/license/source manifest verification
+        shell: bash
+        run: python -B yggdrasil/research/mr14/verify_farama_native.py --manifest yggdrasil/research/mr14/farama_source_manifest.json --upstream external/minigrid
+      - name: Original native dependency pins from S2
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==2.1.3 gymnasium==1.1.1 pygame-ce==2.5.3 psutil==6.1.1
+      - name: Freeze-first prereg/source relationship and syntax
+        shell: bash
+        run: |
+          cd yggdrasil
+          test "$(git rev-parse HEAD:research/nci04_st1/frozen_dev_comparison.json)" = "6edcd39c117d6bbfdafa3286535e1fdf0706b2d1"
+          git merge-base --is-ancestor 71b8ac443a7c9460ee16ef751e6aa54e8bb62883 HEAD
+          python - <<'PY'
+          from pathlib import Path
+          script=Path('research/nci04_st1/consumed_native_comparison.py').read_text('utf-8')
+          compile(script, 'consumed_native_comparison.py', 'exec')
+          print('ST1_FROZEN_DEV_SOURCE_VALID')
+          PY
+      - name: Real source-native preaction outcome DEV comparison, consumed only
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+          OPENBLAS_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          set -o pipefail
+          cd yggdrasil
+          python -B -m research.nci04_st1.consumed_native_comparison ../external/minigrid --output ../st1-native-result.json | tee ../st1-native-receipt.log
+          grep -q '^ST1_NATIVE_DEV_AUTHENTIC_RESULT=' ../st1-native-receipt.log
+          grep -Eq '^ST1_NATIVE_DEV_DISPOSITION=(NO_GO|DEV_SIGNAL_NOT_SCIENCE)$' ../st1-native-receipt.log
+      - name: Source and original upstream immutability
+        shell: bash
+        run: |
+          git -C yggdrasil diff --exit-code
+          git -C external/minigrid diff --exit-code
+          test -z "$(git -C yggdrasil status --porcelain)"
+          test -z "$(git -C external/minigrid status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st1-authentic-consumed-native-${{ matrix.os }}
+          path: st1-native-result.json
+          if-no-files-found: error
+  authentic_parity:
+    if: "${{ github.event.head_commit.message == 'science(st1): run frozen consumed DEV comparison' }}"
+    name: ST1 same-original-action-source cross-OS parity
+    needs: authentic_native
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st1-authentic-consumed-native-ubuntu-latest
+          path: linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st1-authentic-consumed-native-windows-2022
+          path: windows
+      - name: Require identical original source actions, native training and graph selection
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path('linux/st1-native-result.json').read_text('utf-8'))
+          b=json.loads(Path('windows/st1-native-result.json').read_text('utf-8'))
+          for key in ('schema','source_original_git_sha','frozen_protocol_git_blob',
+                      'st1_initial_model_sha','native_training_source_digest',
+                      'original_dev_source_digests'):
+              if a[key]!=b[key]:
+                  raise SystemExit('ST1_ORIGINAL_SOURCE_CROSS_OS_MISMATCH_'+key)
+          for family in a['family_results']:
+              l,r=a['family_results'][family],b['family_results'][family]
+              for phase in ('adaptation','held_development'):
+                  left=[(v['seed'],v['original_native_steps'],
+                         v['source_public_actions_outcomes_sha256'])
+                        for v in l[phase]]
+                  right=[(v['seed'],v['original_native_steps'],
+                          v['source_public_actions_outcomes_sha256'])
+                         for v in r[phase]]
+                  if left!=right:
+                      raise SystemExit('ST1_ORIGINAL_WORLD_PUBLIC_OUTCOME_DRIFT')
+          print('ST1_ORIGINAL_SOURCE_CROSS_OS_PASS')
+          if a['frozen_native_45_weights_sha256']!=b['frozen_native_45_weights_sha256']:
+              raise SystemExit('ST1_NATIVE_TRAINED_WEIGHTS_NONPORTABLE_NO_GO')
+          for family in a['family_results']:
+              l,r=a['family_results'][family],b['family_results'][family]
+              for key in ('structural_choices_after_adaptation',
+                          'structural_switches_per_cell',
+                          'per_cell_adaptation_selected_fixed_controls'):
+                  if l[key]!=r[key]:
+                      raise SystemExit('ST1_ADAPTIVE_GRAPH_NONPORTABLE_NO_GO_'+key)
+          print('ST1_FROZEN_NATIVE_WEIGHTS_AND_TOPOLOGY_CROSS_OS_PASS')
+          print('ST1_DEV_DISPOSITION_LINUX='+a['development_disposition'])
+          print('ST1_DEV_DISPOSITION_WINDOWS='+b['development_disposition'])
+          print('ST1_PROTECTED_SCIENCE_NOT_RUN')
+          PY
