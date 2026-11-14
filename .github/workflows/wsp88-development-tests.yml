@@ -74,3 +74,39 @@ jobs:
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           python scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"
+
+  frozen-dev-first-use:
+    needs: [final-regression]
+    if: "github.event.head_commit.message == 'ci(wsp88): final dual-platform regression' && needs.final-regression.result == 'success' && github.run_attempt == 1"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    concurrency:
+      group: wsp88-one-shot-dev-first-use
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Recheck frozen source and pinned atlas without source mutation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 76e25e0fdc1a104d94c37592e9468c00d086ee41 HEAD
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+      - name: First and only frozen unregistered WSP88 development cohort
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: python research/contrib/chatgpt/WSP-88/experiment.py --reserved-dev-first-use
+      - name: Ensure no source or accepted state mutations
+        shell: bash
+        run: test -z "$(git status --porcelain)"
