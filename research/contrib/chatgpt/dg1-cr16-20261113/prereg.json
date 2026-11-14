@@ -1,0 +1,122 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "DG1-CR16-20261113",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can independently learned continuous causal relationships be selectively repaired and recalled after an intervening environment change while improving unseen recombination decisions over trained conventional controls?",
+  "hypothesis": "An independently updated three-channel structural causal model with evidence-triggered bounded module repair and preserved prior modules will produce lower held-out goal-action regret than a fully trained recurrent predictor, forgetting-RLS, no-archive, and randomized-repair controls on both returning-A and unfamiliar recombined-C contexts, without exceeding the CPU cap.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "pr": 997,
+      "sha": "3f394900d242eac62dbb5358679b9eed9f3e0997",
+      "science": "MIXED_DEV_PRIMARY_NO_GO",
+      "note": "Historical six-bit causal-memory archive, closed. Not reused or tuned."
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/dg1-cr16-20261113/**",
+    ".github/workflows/dg1-cr16-qualification.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "inputs": [
+    {
+      "name": "procedural continuous 3-state 6-action linear-intervention seed manifest",
+      "sha256": "24ad8baaca087042d75f04ac1bc64ab745de3dfbfbc2135a0733718b1d7e94d0",
+      "source": "Self-created deterministic synthetic equations, generated only by pinned experiment code; no real-world/private data."
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      310001,
+      310002,
+      310003,
+      310004,
+      310005,
+      310006,
+      310007,
+      310008,
+      310009,
+      310010,
+      310011,
+      310012,
+      310013,
+      310014,
+      310015,
+      310016
+    ],
+    "split": "Sixteen disjoint first-use evaluation worlds; each world has ordered A->B->A->C regimes, where B changes one causal row and unfamiliar C composes one A row, one B row, and one novel row. Never reuse SL15 physical worlds. Separate deterministic evaluator-only probe RNG.",
+    "ordering": "Exactly 72 A, 72 B, 24 return-A, 24 unseen-recombined-C paid intervention observations per world per arm. Same initial states, motor interventions, and resulting observations supplied to every arm. Evaluate after 72,144,168,192 with exactly 12 fresh action-consequence goal probes/arm/checkpoint. Three cold snapshots after observations 71,143,167.",
+    "data_budget": "16 worlds x 5 arms x 192 causal observations = 15360 paid training steps, plus 16 x 5 x 4 x 12 = 3840 actual audit action steps; total 19200 independently charged steps, no held-out audit feedback to learner.",
+    "compute_budget": "Pure Python 3.12 stdlib CPU on Ubuntu and Windows, one original 16-world prospective first-use per OS. No GPU, remote models or paid APIs; 10 feature causal rows, max three 3x10 RLS models per channel, conventional 8-hidden-unit trainable RNN (all weights updated), and 10-feature forgetting RLS.",
+    "capacity": "Candidate at most 3 archived RLS modules per output, 3 outputs, 10 input dimensions; negative randomized switch identical budget; no-archive at most one active RLS model per output. All learners start without learned weights or world labels.",
+    "evaluator": "At each audit, 12 unseen state/target pairs, 6 action counterfactuals evaluator-only; each model selects one action then physically observes its own action consequence for regret scoring, without training. Primary regret = mean (squared distance of actual next state to target minus minimum six-action squared distance). Score one-step prediction MSE. True A/B/C row lineage used only in evaluator's offline structural attribution.",
+    "deterministic_expected": true,
+    "checkpoint_bytes_max": 65536,
+    "phase_boundaries": [
+      72,
+      144,
+      168,
+      192
+    ],
+    "training_policy": "Identical fixed charged six-action cycling with deterministic exogenous state reseeds every eighth step; each state reset is visibly accounted in ledger; no selection of extra training actions.",
+    "note": "Synthetically compositional native-research proposal, not native Yggdrasil architecture integration, language understanding, or AGI evidence."
+  },
+  "controls": [
+    {
+      "name": "no_archive",
+      "description": "Same causal model and observations, at most one module per channel; detected contradictions repair in place."
+    },
+    {
+      "name": "random_repair",
+      "description": "Same three-module storage, event gate, and exposures as candidate, but chooses non-active archived module via deterministic random choice instead of residual evidence."
+    },
+    {
+      "name": "forgetting_rls",
+      "description": "Independent decayed recursive least squares, all ten features and all 192 observations per output, one shared model."
+    },
+    {
+      "name": "trained_recurrent",
+      "description": "Conventional 8-hidden-unit recurrent state predictor: all recurrent, input, output, and bias weights optimized online on the same 192 transitions, without freezing hidden layers."
+    }
+  ],
+  "metrics": [
+    "mean_return_A_regret_candidate",
+    "mean_C_regret_candidate",
+    "return_A_predictive_MSE",
+    "C_predictive_MSE",
+    "A_return_archival_recovery_count",
+    "C_compositional_correct_reuse_count",
+    "CPU_ratio_to_forgetting_RLS",
+    "CPU_ratio_to_no_archive",
+    "cold_snapshot_byte_identical",
+    "training_and_audit_paid_step_accounting"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SIGNAL_ONLY if ALL frozen gates: returned-A candidate mean regret <= min(forgetting_rls,trained_recurrent)-0.01; unfamiliar C candidate mean regret <= min(forgetting_rls,trained_recurrent)-0.01; both <= respective no_archive and random_repair -0.01; returned-A and C selected-action prediction MSE no greater than independent forgetting_rls; genuine offline A recall in >=8/16 worlds and correct C composition in >=8/16 worlds; 100% cold parity, <=65536 bytes, exact total 19200 paid steps, no evaluator leakage; median learner-update-and-selection CPU ratio <=2.5x forgetting_rls and <=2.0x no_archive on EACH OS. Engineering PASS does not establish science acceptance.",
+    "mixed": "MIXED_DEV if valid experiment fails one or more primary gates but has positive return-A or C regret advantage over at least one registered same-information control or genuine reuse in at least one world.",
+    "negative": "NEGATIVE_DEV if valid experiment fails primary gates and has no qualifying partial evidence; preserve all failures without retuning.",
+    "invalid": "INVALID_INFRASTRUCTURE if source/protocol/seed identity, exact steps, frozen controls, deterministic cross-OS non-timing parity, zero evaluator leakage, snapshot parity, or physical custody fails. Never convert an unfavorable valid outcome into infrastructure failure."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage",
+    "using primary outcome to retune CR16",
+    "promoting a synthetic development result to native scientific acceptance"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "This commit must be created before implementing CR16 source or producing any primary result. Original first-use will only occur on the exact implementation SHA after qualification and authorized Actions startup."
+}
