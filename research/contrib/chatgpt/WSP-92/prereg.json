@@ -1,0 +1,111 @@
+{
+  "schema": "wsp92.squad1.1-cross-article-direct-weight-question-answering-dev.v1",
+  "status": "FROZEN_BEFORE_COLLECTOR_AND_ALGORITHM_IMPLEMENTATION_OR_SQUAD_FIRST_USE",
+  "parent": {
+    "pr": 1008,
+    "source_sha": "c60d705b06926154b8c4a1c5b59cd79c479f7ab2",
+    "known_result": "WSP91 DEV_FREE_SPAN_READING_FEASIBLE 31/32, exact tied fully trained conventional ranker; remaining single Bromine grammar miss; no validated free-form question understanding or domain transfer"
+  },
+  "question": "Can raw-character numeric weight edits, supervised on diverse, human-written question-and-context pairs, select exact source answer spans on article-disjoint human-written development questions from the same source publisher, and how far behind strong trained and lexical baselines are they?",
+  "dataset": {
+    "name": "Stanford Question Answering Dataset v1.1 (SQuAD 1.1)",
+    "creator": "Rajpurkar et al., 2016; Wikipedia passages with crowdsourced answer-span questions",
+    "license": "CC BY-SA 4.0; keep exact source/attribution and share-alike notice in derived sample",
+    "urls": {
+      "train": "https://rajpurkar.github.io/SQuAD-explorer/dataset/train-v1.1.json",
+      "dev": "https://rajpurkar.github.io/SQuAD-explorer/dataset/dev-v1.1.json"
+    },
+    "raw_expected_sha256": {
+      "train": "3527663986b8295af4f7fcdff1ba1ff3f72d07d61a20f487cb238a6ef92fd955",
+      "dev": "95aa6a52d5d6a735563366753ca50492a658031da74f301ac5238b03966972c9"
+    },
+    "raw_max_bytes": {
+      "train": 31000000,
+      "dev": 5100000
+    },
+    "max_remote_requests": 2,
+    "selection_version": "sha256-article-ordered-single-qa-context-v1",
+    "selection_algorithm": "Select article titles by ascending SHA256('WSP92/'+split+'/'+title) from the official SQuAD train/dev sets, restricted to articles with >=8 eligible questions; each eligible QA has <=1900-character context and a FIRST answer exactly matching the context at its reported offset, 1<=answer length<=55. Within title select questions by ascending SHA256('WSP92/qa/'+id). Choose 16 train titles x 8 QAs, 6 dev titles x 4 QAs for public fixture, next 10 dev titles x5 QAs for reserved DEV. Require unique QA IDs, at least one unique paragraph per selected title and disjoint article sets. No result-dependent resampling, retuning, third publisher, or post-result manual title swap. The title SHA ordering is frozen before downloading either source.",
+    "sampling": {
+      "train_articles": 16,
+      "train_qa_per_article": 8,
+      "train_questions": 128,
+      "public_articles": 6,
+      "public_qa_per_article": 4,
+      "public_questions": 24,
+      "reserved_articles": 10,
+      "reserved_qa_per_article": 5,
+      "reserved_questions": 50
+    },
+    "source_output": "Commit *one* derived CC BY-SA corpus file containing source title, context, question, QA ID and source link, NO answer labels; *one* separately hashed groundtruth labels file listing train/public/reserved exact span and offsets, never loaded by numeric or control model prediction function; frozen source capture commit adds exactly two data files; no raw 35 MB full dataset retained, no automatic artifact upload.",
+    "limitations": "SQuAD has one publisher (Wikipedia), human-written questions/answers, and the provided relevant paragraph. Models do not locate documents from an external corpus. No multi-hop reasoning, unanswerable question robustness (SQuAD v1.1 has no unanswerable examples), real-world novel publishers, or LLM-equivalence. Article-disjoint DEV questions are still the published SQuAD development set, not a secret independent test."
+  },
+  "mechanism": {
+    "candidate": "Sparse 16384-dimensional Blake2s hashing of raw, length-marked 3–5-character n-grams of question text, candidate answer context before/after and 2-position cross features; no word tokenizer, pretrained weights or autoregressive token prediction. Enumerate candidate answer spans from character segment boundaries (not token vocabulary), max 4 contiguous segments / <=55 characters; compare supervised answer substring against candidate positions only during training. Direct additive numeric positive/negative context edits, no candidate gradients.",
+    "supervision": "Initial 96 training QAs then 32 new QAs additive without replay. Same observed answer offsets and in-context negatives provided to conventional gradient logistic baseline. Developer public fixtures only after training; reserved labels inaccessible to prediction method.",
+    "candidate_scoring": "Score source candidate spans by numeric dot product; exact source offsets plus source paragraph SHA256 and title/source URL required. Abstain on unknown source/question or when no candidates. Explicit normalized exact-match used only for reporting alongside strict exact.",
+    "counterfactual_unknown": "Probe empty paragraph, unregistered relation/request and altered source hash. Distinguish zero confidence from wrong plausible answer; no hidden answer oracle in candidate.",
+    "storage": "Weights represent candidate score; source attribution and question/answer IDs are separate. Deterministic SHA256 cold state checksum/restore. No hidden LLM calls."
+  },
+  "controls": {
+    "ordinary": "Fully trained conventional sparse logistic model on exactly same hashed character features and supervised examples: 60 deterministic SGD epochs, rate 0.35, L2 0.001; report actual source-level training span accuracy separately. Conventional baseline underfit means control invalid, not candidate superiority.",
+    "retrieval": "Independent query-context character 3gram overlap and proximity, no supervision; no tokenized vocabulary.",
+    "symbolic": "Independent string-cue nearest source span (question last fragment overlap with paragraph); report full outcomes; expected low on diverse SQuAD question types.",
+    "random": "Fixed SHA-derived seed random candidate span on each source paragraph; report.",
+    "shuffled": "Direct-writer negative labels from non-answer source spans for each train item, matched same amount of feedback; report.",
+    "same_information": "No pretrained neural embeddings, retrieval index, hidden human labels, or external model inference used in any arm. Caveat: not a fully trained *strong modern neural reader* comparison; final scientific success requires a separately authorized trained modern QA baseline. Do not call logistic a modern strong reader."
+  },
+  "frozen": {
+    "train_source_qa": 128,
+    "public_qa": 24,
+    "reserved_qa": 50,
+    "min_candidate_public_exact": 2,
+    "min_candidate_reserved_exact": 8,
+    "min_candidate_advantage_over_random": 5,
+    "max_candidate_gap_to_logistic": 20,
+    "min_candidate_training_fit": 32,
+    "min_conventional_training_fit": 75,
+    "min_old_answer_retention": 12,
+    "source_attribution_precision_on_correct": 1,
+    "source_alignment_coverage_min": 0.85,
+    "unknown_confident": 0,
+    "cold_restore_exact": true,
+    "tamper_reject": true,
+    "fully_report_all_arms": true,
+    "CPU_and_memory_report": true,
+    "development_pass": "DEV_CROSS_ARTICLE_QA_MECHANISM_FEASIBLE",
+    "development_fail": "DEV_CROSS_ARTICLE_QA_MECHANISM_NEGATIVE",
+    "interpretation": "Passing narrow thresholds is an incremental, NOT scientific or AGI pass. A negative is decisive evidence the present weight-writing rule lacks broad QA competence; pivot mechanism, never retune on consumed reserved."
+  },
+  "seeds": {
+    "article_hash_prefix": "WSP92/",
+    "qa_hash_prefix": "WSP92/qa/",
+    "negative_sampling": "SHA256('WSP92/neg/'+qa_id)",
+    "random": "SHA256('WSP92/random/'+qa_id)",
+    "heldout_only": "WSP92-original-first-use-on-source-locked-dev"
+  },
+  "qualifications": [
+    "Prereg commit alone before any WSP92 code or first data download; retain external source checksums.",
+    "One-shot bounded read-only official SQuAD source snapshot with both official raw SHA-256 verified; commit only derived two files and license/provenance, no labels in model input file.",
+    "Public QA development fixture and source invariants on Ubuntu+Windows with reserved unscored.",
+    "Generated G29 reanchor only the three original .ice atlas files, source-pinned to candidate.",
+    "Mandatory full focused WSP80-WSP92 and full root Yggdrasil regression on Ubuntu+Windows exact final candidate SHA and no dirt; source checksum and source/labels segregation checked.",
+    "One reserved first-use DEV run only after both OS passes, no reselection/retraining or threshold changes from the reserved results; preserve full negative and controls in GitHub.",
+    "Engineering pass cannot establish learning/retention/efficiency/AGI or independent science; no accepted integration."
+  ],
+  "boundaries": {
+    "branch_only": true,
+    "draft_PR": true,
+    "main_unchanged": true,
+    "accepted_yggdrasil_model_unchanged": true,
+    "forge_loop_unchanged": true,
+    "protected_science": false,
+    "first_use_original_dev_only": true,
+    "paid_API": false,
+    "new_runner": false,
+    "scheduled_tasks": false,
+    "deploy": false,
+    "user_library": false
+  },
+  "future": "Use stronger modern neural reader and independent source publishers in separately frozen evaluation; train a relation interpreter able to transfer to unregistered question forms and unfamiliar sourced knowledge, not simply a span classifier."
+}
