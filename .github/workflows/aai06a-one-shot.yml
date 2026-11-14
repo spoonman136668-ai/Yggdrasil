@@ -1,0 +1,69 @@
+name: AAI-06A frozen graph-growth contributor experiment (one-shot)
+on:
+  push:
+    branches: [research/aai06-novel-causal-graph-growth-20261114]
+    paths: [.github/workflows/aai06a-one-shot.yml]
+permissions:
+  contents: read
+jobs:
+  one-shot:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'AAI-06A first-use frozen experiment' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Confirm immutable prereg/source/first-use custody
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '43c09fdd087bf8f79ae4c072c351e5b5b084612e'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-06A/prereg.json)" = "$(git rev-parse 71941d3d825050977ab5fb8a4d8dd6489d5bd546:research/contrib/chatgpt/AAI-06A/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-06A/run.py)" = "$(git rev-parse 43c09fdd087bf8f79ae4c072c351e5b5b084612e:research/contrib/chatgpt/AAI-06A/run.py)"
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai06a-one-shot.yml'
+          test -z "$(git status --porcelain)"
+          echo AAI06A_EXACT_FIRST_USE_SOURCE_PASS
+      - name: Mechanical-only focused checks on reserved seeds
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-06A -p 'test_aai06a.py' -v
+          git diff --exit-code
+          echo AAI06A_MECHANICAL_PREFLIGHT_PASS
+      - name: Execute first-use frozen primary once
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/AAI-06A/run.py > "$RUNNER_TEMP/aai06a-result.json"
+          python - "$RUNNER_TEMP/aai06a-result.json" <<'PY'
+          import hashlib,json,sys
+          raw=open(sys.argv[1],"rb").read()
+          obj=json.loads(raw)
+          assert obj["prereg_commit"]=="71941d3d825050977ab5fb8a4d8dd6489d5bd546"
+          assert obj["integration"]=="NONE"
+          print("AAI06A_RESULT_COMPACT="+json.dumps(obj,sort_keys=True,separators=(',',':')))
+          print("AAI06A_RESULT_SHA256="+hashlib.sha256(raw).hexdigest())
+          print("AAI06A_RESULT_CLASS="+obj["classification"])
+          PY
+          git diff --exit-code
+          echo AAI06A_FIRST_USE_PRIMARY_CAPTURE_PASS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: aai06a-frozen-primary
+          path: ${{ runner.temp }}/aai06a-result.json
+          if-no-files-found: warn
+          retention-days: 14
