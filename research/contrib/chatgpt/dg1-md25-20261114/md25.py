@@ -64,7 +64,7 @@ class SiteChoice(d.TransferPolicy):
     Only the candidate consults previously trained drop-occupancy counts to
     project whether a site will interfere with approach to the nearest door.
     """
-    KINDS=("causal_site","blind_site","permuted_site")
+    KINDS=d.TransferPolicy.KINDS+("causal_site","blind_site","permuted_site")
     def __init__(self,kind):
         if kind not in self.KINDS:raise ValueError("MD25_UNKNOWN_SITE_ARM")
         base={"causal_site":"learned_transfer",
@@ -154,7 +154,7 @@ class SiteChoice(d.TransferPolicy):
         # for a second unknown object or re-intercepting key release.
         if self.complete_clearance and self.phase is None:
             self.nav_resume+=1
-            return graph.d.GraphPolicy.act(self,obs,t)
+            return graph.GraphPolicy.act(self,obs,t)
         if self.phase=="turn_right" and self.relobj is not None:
             choice=self.predicted_drop_side(obs)
             if choice=="left":
@@ -175,14 +175,14 @@ class SiteChoice(d.TransferPolicy):
 
 def make_agent(name):
     if name in ARMS[:3]:return SiteChoice(name)
-    if name=="md23_causal":return graph.d.GraphPolicy("causal_graph",probe_first=True)
+    if name=="md23_causal":return graph.GraphPolicy("causal_graph",probe_first=True)
     if name in ("tabular_q","recurrent_imitation"):return m.make_agent(name)
     raise ValueError("MD25_UNKNOWN_ARM")
 
 
 def save(agent):
     x=agent.dump()
-    if not isinstance(agent,SiteChoice) and isinstance(agent,graph.d.GraphPolicy):
+    if not isinstance(agent,SiteChoice) and isinstance(agent,graph.GraphPolicy):
         x=dict(x,kind="md23_causal")
     raw=zlib.compress(m.canon(x).encode(),9)
     if len(raw)>65536:raise AssertionError("MD25_CHECKPOINT_CAP")
@@ -201,7 +201,7 @@ def restore(raw):
 
 def physical_teacher(env,seed):
     guard_seeds((seed,))
-    policy=graph.d.GraphPolicy("fixed_scripted",probe_first=True)
+    policy=graph.GraphPolicy("fixed_scripted",probe_first=True)
     ep=m.make_trace(env,seed,policy)
     if ep["steps"]!=len(ep["transitions"]) or ep["steps"]>256:
         raise AssertionError("MD25_UNCHARGED_ACTION")
