@@ -6,6 +6,7 @@ No science first-use or hidden simulator-law inputs exist in this module.
 """
 from __future__ import annotations
 
+import base64
 import json
 from pathlib import Path
 import sys
@@ -73,7 +74,7 @@ class BoundedCausalSignatureBank:
     """Sufficient-statistic update, protected prior association and cold restore."""
 
     def __init__(self, max_slots=3):
-        if max_slots not in (1, 3):
+        if type(max_slots) is not int or max_slots not in (1, 3):
             raise ValueError("only frozen 1-slot and 3-slot capacities supported")
         self.max_slots = max_slots
         self.slots = [blank_slot(0)]
@@ -150,6 +151,8 @@ class BoundedCausalSignatureBank:
             target = active
         # Fail closed on saturation; never silently truncate or overwrite memory.
         if target["rows"] + 2 > MAX_ROWS:
+            # Preserve all prior durable state. The second input row is refused.
+            self.scratch.pop()
             raise ValueError("frozen 96-row slot saturation")
         self.active_id = target["id"]
         for key, m0, m1 in batch:
@@ -192,8 +195,44 @@ class BoundedCausalSignatureBank:
         }
 
 
+def _pack_slot(slot):
+    """Compact 23-byte fixed signature; no event history or label storage."""
+    _check_slot(slot)
+    bits = sum(v << i for i, v in enumerate(slot["prior"][0] + slot["prior"][1]))
+    data = bytes([slot["id"], slot["rows"],
+                  *slot["mismatches"][0], *slot["mismatches"][1],
+                  bits & 255, (bits >> 8) & 255, (bits >> 16) & 255])
+    if len(data) != 23:
+        raise ValueError("bad packed slot size")
+    return base64.b64encode(data).decode("ascii")
+
+
+def _unpack_slot(encoded):
+    if type(encoded) is not str or len(encoded) != 32:
+        raise ValueError("bad base64 slot")
+    try:
+        raw = base64.b64decode(encoded, validate=True)
+    except (ValueError, base64.binascii.Error) as exc:
+        raise ValueError("invalid slot base64") from exc
+    if len(raw) != 23 or base64.b64encode(raw).decode("ascii") != encoded:
+        raise ValueError("noncanonical slot encoding")
+    mask = raw[20] | (raw[21] << 8) | (raw[22] << 16)
+    if mask >> 18:
+        raise ValueError("slot prior unused bits nonzero")
+    slot = {
+        "id": raw[0], "rows": raw[1],
+        "mismatches": [list(raw[2:11]), list(raw[11:20])],
+        "prior": [[(mask >> i) & 1 for i in range(9)],
+                  [(mask >> (i + 9)) & 1 for i in range(9)]],
+    }
+    _check_slot(slot)
+    return slot
+
+
 def checkpoint(model):
-    return conventional.canonical(model.state())
+    state = model.state()
+    state["slots"] = [_pack_slot(slot) for slot in state["slots"]]
+    return conventional.canonical(state)
 
 
 def cold_restore(payload):
@@ -209,11 +248,9 @@ def cold_restore(payload):
         raise ValueError("wrong checkpoint type/version")
     model = BoundedCausalSignatureBank(state["max_slots"])
     slots = state["slots"]
-    if (type(slots) is not list or not 1 <= len(slots) <= model.max_slots or
-        any(type(s) is not dict for s in slots)):
+    if type(slots) is not list or not 1 <= len(slots) <= model.max_slots:
         raise ValueError("bad slot count")
-    for slot in slots:
-        _check_slot(slot)
+    slots = [_unpack_slot(s) for s in slots]
     ids = [s["id"] for s in slots]
     if sorted(ids) != list(range(len(ids))):
         raise ValueError("slot IDs must be dense and durable")
