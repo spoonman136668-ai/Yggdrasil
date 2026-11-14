@@ -1,0 +1,208 @@
+name: DG1-MG19 real MiniGrid partial-observation memory transfer DEV
+on:
+  push:
+    branches: [research/dg1-mg19-minigrid-pomdp-20261113]
+    paths:
+      - 'research/contrib/chatgpt/dg1-mg19-20261113/**'
+      - '.github/workflows/dg1-mg19-qualification.yml'
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'research/contrib/chatgpt/dg1-mg19-20261113/**'
+      - '.github/workflows/dg1-mg19-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    name: MG19 preflight and full regression (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12.16'
+      - name: Verify frozen preregistration-only ancestry and original suite identity
+        shell: bash
+        run: |
+          git merge-base --is-ancestor f9c531011f36d3a9150397f462a681f094657b28 HEAD
+          test "$(git rev-parse f9c531011f36d3a9150397f462a681f094657b28^)" = "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("research/contrib/chatgpt/dg1-mg19-20261113/prereg.json").read_text())
+          assert p["experiment_id"]=="DG1-MG19-20261113"
+          assert p["exact_parent_sha"]=="5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+          assert p["inputs"][0]["sha256"]=="9de2d46320357543e5f665ba0e8590f4d6ca3f4aa8c56562e7f1e506973a73f3"
+          assert p["inputs"][2]["sha256"]=="e8b825254d1b7e90fe9c4eb6f12643f87066d50e1ee04970ca14a1fbd0400184"
+          print("MG19_FROZEN_PREREG_PASS")
+          PY
+      - name: Install frozen open-source simulator and capture exact dependency receipt
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check "minigrid==3.2.0" "gymnasium==1.4.0" "numpy==2.3.4"
+          python -m pip freeze > mg19-packages.txt
+          python - <<'PY'
+          from importlib.metadata import version
+          for name,want in (("minigrid","3.2.0"),("gymnasium","1.4.0"),("numpy","2.3.4")):
+              assert version(name)==want,(name,version(name))
+          print("MG19_PINNED_ENVIRONMENT_PASS")
+          PY
+      - name: Pre-first-use genuine MiniGrid toy episodes and bounded negative controls
+        shell: bash
+        env:
+          SDL_VIDEODRIVER: dummy
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -m py_compile research/contrib/chatgpt/dg1-mg19-20261113/mg19.py research/contrib/chatgpt/dg1-mg19-20261113/test_mg19.py
+          python -m unittest discover -s research/contrib/chatgpt/dg1-mg19-20261113 -p 'test_*.py' -v
+      - name: Original registered independent partial-observation first-use on PR opening only
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        shell: bash
+        env:
+          SDL_VIDEODRIVER: dummy
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python research/contrib/chatgpt/dg1-mg19-20261113/mg19.py > mg19-firstuse.json
+      - name: Verify real Gymnasium action custody, read-only splits and publish frozen verdict
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("mg19-firstuse.json").read_text())
+          assert d["schema"]=="yggdrasil.dg1-mg19-original.v1"
+          assert d["freeze_sha"]=="f9c531011f36d3a9150397f462a681f094657b28"
+          assert d["manifest_sha256"]=="e8b825254d1b7e90fe9c4eb6f12643f87066d50e1ee04970ca14a1fbd0400184"
+          assert d["total_episodes"]==84 and len(d["recorded_episodes"])==84
+          assert d["charged_env_steps"]==sum(v["steps"] for v in d["recorded_episodes"])
+          assert 0<d["charged_env_steps"]<=10752
+          assert all(0<v["steps"]<=128 and len(v["trajectory_sha256"])==64 for v in d["recorded_episodes"])
+          names={"episodic_history","shuffled_history","memoryless_sgd","recurrent_sgd","persistence"}
+          for split in ("cold_before","cold_after","unseen_size","unseen_family"):
+              assert set(d[split]["metrics"])==names
+          print("MG19_ORIGINAL_PHYSICAL_CUSTODY_PASS")
+          print("MG19_CLASSIFICATION:"+d["classification"])
+          print("MG19_PRIMARY:"+str(d["primary_pass"]))
+          print("MG19_GATES:"+json.dumps(d["gates"],sort_keys=True))
+          print("MG19_SCORES:"+json.dumps({k:d[k]["metrics"] for k in (
+              "cold_before","cold_after","unseen_size","unseen_family")},sort_keys=True))
+          print("MG19_STEPS:"+str(d["charged_env_steps"]))
+          print("MG19_TRANSFER_WINDOWS:"+str(
+              d["unseen_size"]["forecast_count"]+d["unseen_family"]["forecast_count"]))
+          PY
+      - name: Generate pinned G29 atlas and emit source-derived bytes only before final atlas commit
+        id: atlas
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64,os,subprocess
+          from pathlib import Path
+          import sys
+          sys.path.insert(0,"scripts")
+          import build_code_atlas as atlas
+          def git(*args):
+              return subprocess.check_output(["git",*args],text=True).strip()
+          head=git("rev-parse","HEAD")
+          changed=set(git("diff","--name-only","HEAD^","HEAD").splitlines())
+          atlas_only=changed==set(atlas.OUT)
+          source=git("rev-parse","HEAD^") if atlas_only else head
+          subprocess.run(["python","scripts/build_code_atlas.py",
+                          "--source-commit",source,"--write"],check=True)
+          committed=atlas_only and all(
+              subprocess.check_output(["git","show","HEAD:"+name])==
+              Path(name).read_bytes() for name in atlas.OUT)
+          with open(os.environ["GITHUB_OUTPUT"],"a",encoding="utf-8") as f:
+              f.write("committed="+str(committed).lower()+"\n")
+              f.write("source="+source+"\n")
+          print("MG19_G29_SOURCE:"+source)
+          print("MG19_G29_COMMITTED:"+str(committed))
+          if not committed and os.environ.get("RUNNER_OS")=="Linux":
+              for name in atlas.OUT:
+                  b64=base64.b64encode(Path(name).read_bytes()).decode("ascii")
+                  chunks=[b64[k:k+1200] for k in range(0,len(b64),1200)]
+                  for n,part in enumerate(chunks):
+                      print("MG19_ATLAS_CHUNK|"+name+"|"+str(n)+"|"+
+                            str(len(chunks))+"|"+part)
+          PY
+      - name: Mandatory full inherited regression on committed, source-identical G29 atlas
+        if: steps.atlas.outputs.committed == 'true'
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -m unittest discover -s tests -p 'test_*.py' -v
+          python scripts/build_code_atlas.py --check-if-present
+      - name: Prove only derived atlas worktree files differ
+        shell: bash
+        run: |
+          python - <<'PY'
+          import subprocess
+          changed=set(subprocess.check_output(
+              ["git","diff","--name-only"],text=True).splitlines())
+          allowed={".ice/code-atlas.json",".ice/code-atlas.html",".ice/code-atlas.ice"}
+          assert changed.issubset(allowed), sorted(changed)
+          print("MG19_TRACKED_SCIENCE_SOURCE_UNMODIFIED_PASS")
+          PY
+      - name: Preserve original unabridged source-family evidence in GitHub Actions only
+        if: github.event_name == 'pull_request' && github.event.action == 'opened' && always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-mg19-original-${{ matrix.os }}
+          path: |
+            mg19-firstuse.json
+            mg19-packages.txt
+          if-no-files-found: ignore
+  original-cross-os-parity:
+    name: Original MG19 Linux Windows strict non-timing and checkpoint equality
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    needs: qualification
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: dg1-mg19-original-ubuntu-latest
+          path: original-linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: dg1-mg19-original-windows-2022
+          path: original-windows
+      - name: Independent real MiniGrid action-trace and checkpoint parity
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          a=json.loads(Path("original-linux/mg19-firstuse.json").read_text())
+          b=json.loads(Path("original-windows/mg19-firstuse.json").read_text())
+          assert a["classification"]==b["classification"]
+          assert a["primary_pass"]==b["primary_pass"]
+          assert a["recorded_episodes"]==b["recorded_episodes"]
+          assert a["charged_env_steps"]==b["charged_env_steps"]
+          assert a["checkpoint_sha256"]==b["checkpoint_sha256"]
+          assert a["gates"]==b["gates"]
+          def strip(x):
+              if isinstance(x,dict):
+                  return {k:strip(v) for k,v in x.items() if k not in ("raw_cpu_ns","CPU_ratio")}
+              if isinstance(x,list):
+                  return [strip(v) for v in x]
+              return x
+          def equal(x,y):
+              if type(x)!=type(y): return False
+              if isinstance(x,dict): return x.keys()==y.keys() and all(equal(x[k],y[k]) for k in x)
+              if isinstance(x,list): return len(x)==len(y) and all(equal(i,j) for i,j in zip(x,y))
+              if type(x) is float: return math.isfinite(x) and math.isfinite(y) and abs(x-y)<=1e-8
+              return x==y
+          assert equal(strip(a),strip(b)),"MG19_INVALID_CROSS_OS_PARITY"
+          print("MG19_ORIGINAL_REAL_WORLD_TRAJECTORY_AND_MODEL_PARITY_PASS")
+          PY
