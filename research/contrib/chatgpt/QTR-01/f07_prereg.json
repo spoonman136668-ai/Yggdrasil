@@ -1,0 +1,53 @@
+{
+  "schema": "yggdrasil.qtr01.f07.donor-matrix-source-eligibility.v1",
+  "study_id": "QTR-01-F07",
+  "status": "FROZEN_BEFORE_FIRST_HUGGINGFACE_METADATA_GET",
+  "objective": "Can the F06 ICA Qwen3.6-27B source provide verifiably identified fitted numerical direction files without executing Qwen, and does that alone meet requirements for recipient-native transplantation?",
+  "source": {
+    "repo": "neuronpedia/icalens-qwen3.6-27b",
+    "hub_api": "https://huggingface.co/api/models/neuronpedia/icalens-qwen3.6-27b",
+    "model": "Qwen/Qwen3.6-27B",
+    "tested_layer": 32,
+    "tested_feature": 77,
+    "model_ica_source": "32-icalens-res"
+  },
+  "allowed_operations": [
+    "1 unauthenticated bounded public JSON GET",
+    "extract metadata fields only",
+    "negative controls on synthetic fixtures",
+    "source metadata digest"
+  ],
+  "prohibited_operations": [
+    "donor inference",
+    "download model or SAE matrix bytes",
+    "write donor labels or activation examples",
+    "edit recipient models",
+    "use WSP-99 source/held-out",
+    "modify research controllers or schedule",
+    "paid API"
+  ],
+  "read_limit": {
+    "calls": 1,
+    "max_bytes": 1048576,
+    "timeout_seconds": 20,
+    "retries": 0
+  },
+  "eligibility_rules": {
+    "metadata_read_pass": "JSON object contains the exact requested id and 40-hex revision, bounded list of filenames; license presence recorded without assuming it conveys rights to third-party explanations",
+    "listed_matrix_candidate": "At least one .safetensors/.pt/.pth file with a path explicitly indicating target layer 32; listing only, no byte or coordinate verification",
+    "numerical_transplant_pass": "REQUIRES real pinned and hashed matrix bytes, source-model SHA mapping, independent causal feature semantics, paired native recipient observation/state interface, matched controls; NOT satisfied by this metadata-only operation",
+    "no_go": "If any numerical-transplant predicate remains absent, classify NO_GO_NUMERICAL_TRANSPLANT_WITH_NO_INFERENCE_METADATA; preserve existing result and do not promote source",
+    "source_error": "Missing/bad/oversized/inconsistent source is SOURCE_CUSTODY_BLOCKED, not evidence donor concepts fail"
+  },
+  "controls": [
+    "wrong model id",
+    "unversioned or malformed SHA",
+    "wrong layer path",
+    "absent/ambiguous license",
+    "metadata with matrix filename but no actual matrix bytes"
+  ],
+  "artifact_reuse_rights": "Model, ICA fitted artifact, dashboard-derived text and any output-source rights evaluated separately",
+  "post_result_rule": "No threshold edits or feature changes based on outcome; stop or separately preregister a different research mechanism",
+  "initial_baseline": "QTR-01 F06 exact source identity confirmed; zero explanations for feature 77; no donor inference or recipient alignment",
+  "scientific_first_use": false
+}
