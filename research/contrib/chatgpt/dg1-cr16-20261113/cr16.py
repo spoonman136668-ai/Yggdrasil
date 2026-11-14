@@ -165,7 +165,7 @@ class Repair:
 
     def dump(self):
         return {"kind":self.kind,"count":self.count,"switches":self.switches,
-                "rng":self.rng.getstate()[1][:5],  # record-only, never used to restore PRNG
+                "rng":list(self.rng.getstate()[1]),
                 "rows":[{"active":r["active"],"witness":r["witness"],
                          "slots":[vars(m) for m in r["slots"]]} for r in self.rows]}
 
@@ -266,10 +266,7 @@ def restore(payload):
                 slots.append(m)
             model.rows.append({"active":row["active"],
                                "slots":slots,"witness":row["witness"]})
-        # deterministic generator consumed only if randomized archived selection.
-        # Reconstruct via exact replay count would be unsafe; persist full RNG state below.
-        if kind=="random_repair":
-            raise AssertionError("CR16_RANDOM_REPAIR_CHECKPOINT_REQUIRES_RNG_STATE")
+        model.rng.setstate((3,tuple(data["rng"]),None))
     elif isinstance(model,Regression):
         model.count=data["count"]
         model.rows=[]
@@ -311,6 +308,7 @@ def one_arm(seed,arm):
     trace=[]
     metrics={}
     cold=[]
+    phase_births={}
     state=[0.0]*3
     cpu_ns=0
     for t in range(192):
@@ -337,6 +335,9 @@ def one_arm(seed,arm):
             cold.append(len(raw))
         mark=t+1
         if mark in AUDITS:
+            if isinstance(model,Repair):
+                phase_births[str(mark)]=[r["slots"][r["active"]].birth
+                                       for r in model.rows]
             start=time.perf_counter_ns()
             metrics[str(mark)]=audit(model,world,seed,mark)
             cpu_ns+=time.perf_counter_ns()-start
@@ -349,7 +350,8 @@ def one_arm(seed,arm):
             "charged_observations":192,"audits":metrics,
             "train_trace_sha256":digest(trace),"cold_bytes":cold,
             "final_checkpoint_sha256":hashlib.sha256(snapshot(model)).hexdigest(),
-            "active_slot_births":birth_info,"switches":getattr(model,"switches",[]),
+            "active_slot_births":birth_info,"phase_births":phase_births,
+            "switches":getattr(model,"switches",[]),
             "cpu_ns":cpu_ns}
 
 
@@ -372,12 +374,12 @@ def run():
         w["arms"][arm]["audits"][str(mark)][key] for w in worlds),12)
     aggregate={arm:{str(mark):{k:mean(arm,mark,k) for k in ("regret","mse")}
                      for mark in AUDITS} for arm in ARMS}
-    recall=sum(w["arms"]["selective"]["active_slot_births"][w["lesion"]]<72
+    recall=sum(w["arms"]["selective"]["phase_births"]["168"][w["lesion"]]<72
                for w in worlds)
     composed=sum(
-        72<=w["arms"]["selective"]["active_slot_births"][w["lesion"]]<144
-        and w["arms"]["selective"]["active_slot_births"][(w["lesion"]+1)%3]<72
-        and w["arms"]["selective"]["active_slot_births"][(w["lesion"]+2)%3]>=168
+        72<=w["arms"]["selective"]["phase_births"]["192"][w["lesion"]]<144
+        and w["arms"]["selective"]["phase_births"]["192"][(w["lesion"]+1)%3]<72
+        and w["arms"]["selective"]["phase_births"]["192"][(w["lesion"]+2)%3]>=168
         for w in worlds
     )
     ratios={
