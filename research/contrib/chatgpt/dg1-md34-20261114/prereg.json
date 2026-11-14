@@ -1,0 +1,289 @@
+{
+  "schema": "yggdrasil.dg1-md34-partially-observed-causal-routes-prereg.v1",
+  "experiment_id": "DG1-MD34-20261114",
+  "status": "TASK_ONLY_FROZEN_BEFORE_GENERATOR_OR_OUTCOMES",
+  "source_parent": "ba1ba1fc56a42e41913e6ecfaf2ab1f68de2642c",
+  "stacked_pr": 1042,
+  "research_north_star": "Independent non-transformer non-token causal action/consequence learning; zero native model integration and zero official first-use.",
+  "question": "Can a task be both physically information-identifiable and deliberately impossible to solve perfectly from a single paid local probe, requiring longer consequential causal decision chains and persistent inferred laws, unlike MD32 where a handcoded two-probe strategy already gets 100% success?",
+  "mechanisms": {
+    "types": [
+      "relay",
+      "fork",
+      "collider",
+      "braid",
+      "inhibitor",
+      "crossbridge"
+    ],
+    "train_mechanisms": [
+      "relay",
+      "fork",
+      "collider"
+    ],
+    "transfer_mechanisms": [
+      "braid",
+      "inhibitor",
+      "crossbridge"
+    ],
+    "law_contract": {
+      "relay": {
+        "E": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "G0": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "D": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "fork": {
+        "E": [
+          1,
+          2,
+          3,
+          0
+        ],
+        "G0": [
+          0,
+          2,
+          1,
+          3
+        ],
+        "D": [
+          0,
+          2,
+          1,
+          3
+        ]
+      },
+      "collider": {
+        "E": [
+          3,
+          1,
+          0,
+          2
+        ],
+        "G0": [
+          3,
+          2,
+          1,
+          0
+        ],
+        "D": [
+          3,
+          2,
+          1,
+          0
+        ]
+      },
+      "braid": {
+        "E": [
+          2,
+          0,
+          3,
+          1
+        ],
+        "G0": [
+          1,
+          3,
+          0,
+          2
+        ],
+        "D": [
+          1,
+          3,
+          0,
+          2
+        ]
+      },
+      "inhibitor": {
+        "E": [
+          0,
+          2,
+          3,
+          1
+        ],
+        "G0": [
+          2,
+          0,
+          3,
+          1
+        ],
+        "D": [
+          2,
+          0,
+          3,
+          1
+        ]
+      },
+      "crossbridge": {
+        "E": [
+          3,
+          2,
+          0,
+          1
+        ],
+        "G0": [
+          3,
+          1,
+          0,
+          2
+        ],
+        "D": [
+          2,
+          3,
+          1,
+          0
+        ]
+      }
+    },
+    "G1_rule": "G1[x]=(G0[x]+1) modulo 4, so route choice changes physical intermediate state for every context.",
+    "final_rule": "For public context a, physical encoder h=E[a]. At stage 1 irreversible route r in 0/1 sets x=Gr[h]. At stage 2 hidden output y=(D[x]+offset+int(rewire))%4. Final actuator guess g in 0,1,2,3 succeeds iff g==y; terminal reward only confirms success/failure, never the hidden answer.",
+    "rewire": "Rewire if enabled takes effect after stage 1 route commitment; source decision is not announced in observation. Physically paid stage 2 parity probe can distinguish paired stable/rewire worlds only after an actual intervention.",
+    "persistent_blocks": "Four context episodes share same motif, hidden offset and rewire. At block reset a new law and condition may appear, but neither index nor hidden labels are provided to the learner."
+  },
+  "observation_and_physics": {
+    "states": "Stages 0=context precursor, 1=route intervention, 2=terminal 4-action choice; done only after all 3 irreversible steps.",
+    "observation_fields": [
+      "phase",
+      "required_context",
+      "sensor_vector",
+      "remaining_diagnostics",
+      "diagnostic_menu",
+      "charged_history"
+    ],
+    "hidden_from_policy": [
+      "seed",
+      "motif",
+      "offset",
+      "E",
+      "G0",
+      "G1",
+      "D",
+      "rewire",
+      "latent h",
+      "latent x",
+      "actual y",
+      "counterfactual world state"
+    ],
+    "stage0": "Physically commit required_context a (no choice of another context); 0.02 charge. Optional encoder_parity probe on required a returns only E[a] mod 2, costs 0.09.",
+    "stage1": "Choose irreversible route r=0 or 1; r=0 costs 0.02, r=1 costs 0.05. Optional physical route_parity probe at r=0/1 returns G_r[E[a]] mod2 for queried candidate r, costs 0.09; this is not an uncharged simulation.",
+    "stage2": "Select terminal guess 0..3; correct final reward +0.98, incorrect -0.52. Optional physical terminal_parity probe returns y modulo 2, costs 0.09; never returns the full output.",
+    "global_probe_cap": 1,
+    "max_physical_steps": 4,
+    "no_free_state_leak": "Before any stage2 physical diagnostic, paired stable/rewire worlds must have identical publicly visible observations for identical actions; stage1 actuation cannot disclose hidden state/change.",
+    "partial_information": "One paid probe yields a binary value, never an entire four-way target; the context and route do not disclose any hidden mapping. Goal reward after final action is only one success/fail bit.",
+    "route_effect": "For all six families and four contexts, fixed offset/change, G1[E[a]] differs from G0[E[a]], so a different route changes the downstream causal variable and four-way goal.",
+    "rewards": "Correct route0 with no probe: +0.94 net; wrong route0 without probe: -0.56; correct route0 with one probe: +0.85; wrong route0 with one probe: -0.65. Route1 adds 0.03 cost.",
+    "physical_persistence": "Never mutate public sensor or history without a paid World.step; each probe consumes the only global physical diagnostic."
+  },
+  "fixture": {
+    "synthetic_only_seed_range": [
+      15000,
+      15095
+    ],
+    "blocks": 24,
+    "contexts_per_block": 4,
+    "episodes": 96,
+    "paired_stable_rewire_worlds": 192,
+    "motif_for_block": "types[block%6]",
+    "offset_for_block": "block//6 gives offsets 0,1,2,3 exactly once for each motif",
+    "context_for_seed": "(seed-15000)%4",
+    "paired_world_conditions": [
+      false,
+      true
+    ],
+    "official_md32_reserved": [
+      [
+        1900001,
+        1900960
+      ],
+      [
+        2900001,
+        2900128
+      ],
+      [
+        3900001,
+        3900064
+      ],
+      [
+        4900001,
+        4900256
+      ]
+    ],
+    "official_prior_MD29_MD30_MD31_AND_MD33": "PROHIBITED",
+    "future_official_first_use": "FORBIDDEN; this task supports fixture-only preflight and source freezing, not any new training or model execution.",
+    "labels": "Fixture harness can know labels for posthoc proof only; no model/policy may receive them."
+  },
+  "frozen_task_controls": {
+    "privileged_oracle": "Know hidden law, hidden rewire and offset; route0, no probes, exact final guess; diagnostic-only physics upper bound +0.94 mean.",
+    "public_blind_fixed": "Observe public context, physically commit it, select route0, guess terminal0 with no probes; 25% exact success across offsets per motif and per stable/rewire; expected mean -0.185.",
+    "public_one_parity_probe": "Observe public context; commit stage0, select route0, physically pay single stage2 terminal_parity probe; guess 0 if even, 1 if odd, no other input. Exactly 50% success across the balanced offsets; expected mean +0.100.",
+    "tied_vs_blind": "Oracle minus blind +1.125, oracle minus parity-only +0.840. These are fixture-only information stakes, NOT learned headroom over strong controls.",
+    "negative_null": "If one-probe public reference has >50% success, a free answer leaks or allocation is invalid; TASK_NO_GO. If any cost, action or parity cannot be verified, TASK_NO_GO."
+  },
+  "preflight": {
+    "expected_oracle_mean": 0.94,
+    "expected_blind_mean": -0.185,
+    "expected_parity_mean": 0.1,
+    "expected_blind_goal_success": 0.25,
+    "expected_parity_goal_success": 0.5,
+    "expected_oracle_blind_gap": 1.125,
+    "expected_oracle_parity_gap": 0.84,
+    "required_unique_mechanisms": 6,
+    "required_each_family_worlds": 32,
+    "required_stable_rewire_public_invariance": "96/96 until paid terminal parity",
+    "required_identifying_intervention": "For every paired stable/rewire episode, a physically charged terminal_parity probe shows opposite parity; no earlier public stage reveals the change.",
+    "required_route_causality": "Both route choices lead to distinct hidden intermediate and full terminal outcomes for all 96 fixture contexts.",
+    "structural_holdout": "Six families disjoint. Fitted conventional controls must be preregistered, fully trained, and evaluated on disjoint structural classes before any native learner. A physics-only fixture doesn't prove transfer or AGI.",
+    "strong_control_stop": "Freeze task as TRIVIAL_FOR_NOVEL_GAIN if independently trained conventional control reaches within 0.05 of privileged oracle on separate, unseen transfer and cold cohorts with legal equal physical action and compute budgets.",
+    "next_model_gate": "A later distinct preregistration must freeze independent train/dev/cold/transfer seeds, fully trained adaptive Bayes, recurrent (stronger than MD33), model-based RL, matched whole-process costs, learning retention, and negative controls BEFORE opening new science. No native mechanism until validated headroom.",
+    "go_no_go": "TASK_PREFLIGHT_PASS_ONLY if all physical negative/identifiability checks pass. Failure classified TASK_NO_GO. Never tune based on official or future holdout outcomes; science never promoted by task physics."
+  },
+  "qualification": {
+    "tests": [
+      "54 mandatory Yggdrasil inherited",
+      "32 frozen MD30",
+      "7 frozen MD31",
+      "8 frozen MD32",
+      "8 frozen MD33",
+      "new MD34 physics/negative controls"
+    ],
+    "platforms": [
+      "ubuntu-latest",
+      "windows-2022"
+    ],
+    "pinned_cpu_deps": {
+      "minigrid": "3.2.0",
+      "gymnasium": "1.4.0",
+      "numpy": "2.3.4",
+      "python": "3.12"
+    },
+    "parity": "Exact canonical UTF-8 LF public charged-action, reward and split physics receipts across Linux/Windows; no time/OS metadata in parity.",
+    "atlas": "G29 code atlas in separate derived atlas-only commit, source pinned preceding task source commit.",
+    "allowed_paths": [
+      "research/contrib/chatgpt/dg1-md34-20261114/**",
+      ".github/workflows/dg1-md34-qualification.yml",
+      ".ice/code-atlas.json",
+      ".ice/code-atlas.html",
+      ".ice/code-atlas.ice"
+    ],
+    "research_external_only": true,
+    "merge": false,
+    "accepted_ref_mutation": false,
+    "official_first_use": false,
+    "native_model_changes": false,
+    "controller_scheduler_runner_changes": false,
+    "science_claim": false
+  }
+}
