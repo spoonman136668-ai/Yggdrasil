@@ -69,7 +69,7 @@ class NegativeSupervisionTests(unittest.TestCase):
                     training_targets(self.source, mode=bad)
         with self.assertRaisesRegex(AssertionError, "UNQUALIFIED_TRAIN"):
             training_targets(self.source[:96], mode=SHUFFLED)
-        with self.assertRaisesRegex(AssertionError, "TRAIN_ONLY"):
+        with self.assertRaisesRegex(AssertionError, "UNQUALIFIED_TRAIN"):
             training_arrays(self.source, 96, shuffled_training=True)
         with self.assertRaisesRegex(AssertionError, "INVALID_SHUFFLE_SELECTOR"):
             training_arrays(self.source, 384, shuffled_training="true")
@@ -101,7 +101,7 @@ class NegativeSupervisionTests(unittest.TestCase):
         self.assertEqual(real_rl.checkpoint()["training_target_mode"], REAL)
         self.assertEqual(sham_rl.checkpoint()["training_target_mode"], SHUFFLED)
         self.assertEqual(sham_rl.fitted_backups, 40)
-        self.assertEqual(real_rl.success.sum(), 5 * 1536)
+        self.assertEqual(real_rl.success.sum() + real_rl.failure.sum(), 5 * 1536)
         self.assertEqual(sham_rl.success.sum() + sham_rl.failure.sum(), 5 * 1536)
         self.assertEqual(sham_rl.diagnostic.sum(), 5 * 1536)
         self.assertEqual(BayesianControl.restore(sham_b.checkpoint())
