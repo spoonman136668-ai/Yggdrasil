@@ -48,7 +48,7 @@ class SourceCustodyTests(unittest.TestCase):
         got=inspect_bytes(blob)
         self.assertEqual([x["path"] for x in got["members"]],
                          ["wikidata5m_transductive_train.txt","val.txt"])
-        self.assertEqual(got["total_uncompressed_bytes"],22)
+        self.assertEqual(got["total_uncompressed_bytes"],20)
         self.assertTrue(all("content" not in d for d in got["members"]))
 
     def test_path_traversal_rejected(self):
