@@ -43,7 +43,7 @@ class SourceCustody(unittest.TestCase):
         self.assertNotIn('seed_of(world,"challenge",condition,i)',source)
         self.assertIn('assert a["actions"]==b["actions"]',source)
         self.assertIn('assert a["oracle"]["action"]==b["oracle"]["action"]',source)
-        self.assertIn('model.learn(observation)',source)
+        self.assertIn('m.learn(observation)',source)
         self.assertIn('sample=official_episode(law,seed_of(world,"eval",condition,budget),action)',source)
 
     def test_official_env_no_privileged_policy_access(self):
