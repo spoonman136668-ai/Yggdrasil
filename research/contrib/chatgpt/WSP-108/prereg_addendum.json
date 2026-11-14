@@ -1,0 +1,16 @@
+{
+  "schema": "wsp108.preimplementation-conventional-control-extension.v1",
+  "status": "FROZEN BEFORE FIRST WORLD CODE OR ANY WORLD LABELS; EXTENDS ORIGINAL WSP108 PREREG WITHOUT RETUNING",
+  "original_prereg_commit": "8a82e952d7a4d00398fba9fee2f19c0806bef04d",
+  "rationale": "An independent strongest conventional max-pooling control that exactly matches the known OR inductive structure is required, otherwise raw additive logistic regression could be a strawman. This arm is declared before evaluating any world.",
+  "new_control": {
+    "name": "conventional_maxpool_logistic",
+    "training": "Use identical fully converged L2=0.03 Newton-solved 10-example conventional logistic model from prereg; no additional labels, training steps or hyperparameter tuning.",
+    "predict": "For each active path pair j, score its onehot feature vector with trained sigmoid(logit). Return True iff at least one active pair has sigmoid(logit_j) >= 0.5. An empty candidate set returns false. This is a frozen permutation-invariant learned OR-pooling inductive bias.",
+    "metrics": "Same post-action and counterfactual change accuracies, fit/transfer and cold exact replay as all other arms",
+    "interpretation": "If max-pooling equals numeric direct and independent symbolic, do not claim superior intelligence. Exact equality to a strong structural inductive baseline is a scientifically useful null."
+  },
+  "no_new_authority": true,
+  "no_original_first_use": true,
+  "no_post_result_tuning": true
+}
