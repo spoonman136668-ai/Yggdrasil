@@ -1,0 +1,84 @@
+{
+  "schema": "yggdrasil.dg1-md26-toy-result.v1",
+  "experiment_id": "DG1-MD26-20261114",
+  "stage": "TOY_PREFIRSTUSE_ONLY",
+  "status": "TOY_NO_GO_NO_REGISTERED_FIRST_USE",
+  "frozen_prereg_sha": "4c4d34f305278fde8132a7be35ecba1ba9baee0d",
+  "measured_candidate_sha": "58c41a1cb35ce81d03238d54f895b6207c161fc9",
+  "measured_candidate_tree": "56f418f94a135ded102487b263fe23d341aa48b9",
+  "qualification_run": 43585625297,
+  "toy_train_seeds": [
+    41,
+    43,
+    47,
+    53,
+    59,
+    61
+  ],
+  "toy_heldout_seeds": [
+    67,
+    71,
+    73,
+    79,
+    83,
+    89
+  ],
+  "actual_physical_steps": {
+    "teacher_training": 265,
+    "learned": 191,
+    "blind": 191,
+    "unchanged_md25": 191,
+    "permuted": 1536,
+    "tabular_q": 1536,
+    "recurrent_imitation": 1536
+  },
+  "official_goals": {
+    "teacher_door": 6,
+    "teacher_box": 6,
+    "learned": 6,
+    "blind": 6,
+    "unchanged_md25": 6,
+    "permuted": 0,
+    "tabular_q": 0,
+    "recurrent_imitation": 0
+  },
+  "training_effect_counts": {
+    "pickup_clear": 18,
+    "drop_place": 6,
+    "toggle_shift": 0
+  },
+  "paired_physical_trace_differences": 0,
+  "actual_learned_effect_site_turn_events": 0,
+  "paired_strict_step_wins_over_blind": 0,
+  "mean_paid_steps_saved_over_blind": 0,
+  "original_frozen_toy_gates": {
+    "actual_drop": true,
+    "actual_pickup": true,
+    "candidate_goals": true,
+    "decisive_learned_action": false,
+    "goal_nonregression": true,
+    "paid_action_divergence": false,
+    "paid_mean_step_gain": false,
+    "strict_step_wins": false,
+    "training_box": true,
+    "training_door": true
+  },
+  "platforms": {
+    "ubuntu": {
+      "toy_tests": "PASS_5_5",
+      "run_id": 43585625297
+    },
+    "windows": {
+      "toy_tests": "PASS_5_5",
+      "run_id": 43585625297
+    }
+  },
+  "registered_seed_cohorts_consumed": false,
+  "registered_original_experiment_executed": false,
+  "scientific_acceptance": "UNVERIFIED",
+  "mechanism_falsification": "Candidate action-effect counterfactual is available and manually realizable in a negative control but did not produce any distinct paid action or step advantage on disjoint physical heldout toy episodes; identical official goals cannot be attributed to learning-specific occupancy prediction.",
+  "next_direction": "stop MD26 registered first use; seek an environment with real decision-sensitive payoff and a strong identical-information nonlearning controller in separately frozen experiment",
+  "native_yggdrasil_changed": false,
+  "main_ref_changed": false,
+  "merge_or_deployment": false
+}
