@@ -1,0 +1,105 @@
+{
+  "schema": "yggdrasil.contrib.aai04r1.prereg.v1",
+  "experiment_id": "AAI-04R1",
+  "status": "FROZEN_PRE_RESULT_ON_FRESH_SPLITS",
+  "repository": "spoonman136668-ai/Yggdrasil",
+  "parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "prior_lessons": "AAI-02B INVALID because scrambled-label negative exceeded fixed ceiling; AAI-03A negative admission because Bayes utility matched privileged expert. Those results stay sealed, without post-result tuning. AAI-04A frozen primary run 43595975783 failed at negative sham because independent uniform outcomes had zero probability under every exact hypothesis after two probes; classified INVALID/EVALUATOR_SUPPORT, no completed primary result. Its DEV/TRANSFER cohorts were consumed in the failed run and are NOT reused.",
+  "hypothesis": "With 12 possible transition laws across four structurally different causal families, only two noisy interventions and a two-action irreversible decision, exact Bayes retains a measurable advantage over uninformative probing yet fails to reach privileged true-law performance, so the benchmark has scientific headroom.",
+  "world": {
+    "law_space": "4 families x 3 variants = 12 latent laws, all 12 considered by exact Bayes, including held-out families. Variant hidden from all nonexpert arms.",
+    "train_dev_families": "0-1 only; families are h(seed,'family')%2. Variant h(seed,'variant')%3.",
+    "transfer_negative_families": "2-3 only; family 2+h(seed,'family')%2. Variant h(seed,'variant')%3. No transfer training.",
+    "state": "three-bit unsigned integer 0..7",
+    "action": "0..3",
+    "context": "seed%16, observable but does not reveal hidden law.",
+    "transition": "L=3*family+variant; F0: next=rol3(state,variant+1) XOR [1,2,4,7][action]; F1: next=(state+(variant+1)*(action+1))%8; F2: next=(reverse3(state XOR [1,2,4,7][action])+variant+action+1)%8; F3: next=(((state*(2*variant+1))%8) XOR ((action+2*variant+1)%8))%8.",
+    "interventions": "Two independent diagnostic do(state,action) probes, chosen adaptively from 16 allowed state/action combinations: states [0,2,5,7] and all four actions. True successor returned with P=.65, otherwise exactly one of three successor bits flipped with equal probability. Independent SHA256 keyed noise per seed and probe index. Same noise and true causal law sampling for all ordinary probes.",
+    "decision": "After probes, 32 passive law-independent distractor records arrive; then choose an OPEN-LOOP TWO-ACTION PLAN (a1,a2) among 16. Compute s1=transition(law,s0,a1), s2=transition(law,s1,a2). Reward=1-hamming_bits(s2,target)/3; terminal s0 and target each drawn by independent SHA256 labels, not from hidden law.",
+    "passive": "32 records after probes, fields generated solely from seed,index,context, never from hidden law; positive control must retain do observations within 4-slot event memory; negative recent buffer loses them.",
+    "unobserved": "Hidden law/family/variant, noiseless probe result, alternative outcome for unchosen final plans, evaluation labels. Observable fields: context, intervention state/action/noisy 3-bit successor, do marker, timestamp, terminal initial state and target."
+  },
+  "splits": {
+    "train": {
+      "start": 91000,
+      "n": 512,
+      "families": [
+        0,
+        1
+      ]
+    },
+    "dev": {
+      "start": 92000,
+      "n": 256,
+      "families": [
+        0,
+        1
+      ]
+    },
+    "transfer": {
+      "start": 93000,
+      "n": 256,
+      "families": [
+        2,
+        3
+      ]
+    },
+    "negative": {
+      "start": 94000,
+      "n": 256,
+      "families": [
+        2,
+        3
+      ]
+    }
+  },
+  "methods": {
+    "bayes_utility": "Exact 12-law uniform prior with correct law/observation/noise likelihood; choose each probe maximizing expected *one-step lookahead terminal plan reward after hypothetical observation*, replan before second probe. MAP decoding prohibited; choose two-step terminal plan by maximum expected reward.",
+    "bayes_information_gain": "Same exact 12-law posterior but greedy conditional entropy reduction for probe choice, same terminal planner.",
+    "bayes_random": "Same exact posterior/terminal planner, SHA256-random probes from same 16 choices.",
+    "bayes_no_probe": "Same exact posterior/terminal planner with no do observations.",
+    "tabular_mle": "Fully fit Laplace-count model P(observed successor|law,state,action) using 512 train worlds, two deterministic random probes per training world. Same random probes, four-slot buffer and terminal planner at evaluation. No unseen family labels trained.",
+    "tabular_shuffled": "Identical trained tabular likelihood but TRAIN law labels deterministically permuted with random.Random(10337), evaluated only on negative cohort.",
+    "bayes_sham": "Same exact Bayesian inference but observations come from a single independently sampled pseudolaw h(seed,'sham_law')%12 shared by both probes (not necessarily the world's true law), with identically defined 35% one-bit-flip noise and independent SHA256 keys; provides guaranteed likelihood support while representing a genuinely misleading intervention. Test likelihood support on out-of-cohort seeds before first primary run.",
+    "recent": "Exact Bayesian posterior but keep only 4 most recent events including 32 passive events, losing causal probes.",
+    "expert": "Privileged true-law terminal two-action planner, upper bound excluded from scientific advantage comparator."
+  },
+  "budget": {
+    "worlds_train": 512,
+    "worlds_dev": 256,
+    "worlds_transfer": 256,
+    "worlds_negative": 256,
+    "probes_per_world": 2,
+    "passive_events": 32,
+    "memory_event_slots": 4,
+    "action_plan_length": 2,
+    "action_count": 4,
+    "training_data_two_probes_per_world": true,
+    "paid_api_calls": 0,
+    "standard_library_only": true
+  },
+  "controls": {
+    "identifiability": "Exhaustively assert 12 law functions distinguishable pairwise by some s,a over 8 states x 4 actions.",
+    "no_leakage": "Passive, goal and terminal start unchanged when hidden law swapped in same seed; no law fields appear in event buffer. Negative sham pseudo-law is not provided to any inference method and is sampled without using the actual world law. Pseudolaw is fixed across two sham probes so support remains nonzero.",
+    "cold_restore": "Serialized fitted tabular counts reload and reproduce predictions; deterministic reruns exclude runtime only.",
+    "cost": "Report model calls (0), probe counts, training event counts, wall time; strong Bayes prior family catalog is given structural information, not proof of generalization to unseen mechanism."
+  },
+  "admission": {
+    "min_utility_dev_reward": 0.53,
+    "max_utility_dev_reward": 0.91,
+    "min_expert_minus_utility_dev": 0.05,
+    "min_expert_minus_utility_transfer": 0.05,
+    "min_utility_minus_no_probe_dev": 0.035,
+    "min_utility_minus_no_probe_transfer": 0.02,
+    "min_utility_minus_random_dev": 0.005,
+    "max_tabular_shuffled_minus_no_probe_negative": 0.06,
+    "max_sham_minus_no_probe_negative": 0.06,
+    "pass_required": "All nine thresholds AND audit/custody/budget checks. Otherwise BENCHMARK_REJECTED_VALID_NEGATIVE, unless code/source/leakage invalidates primary. R1 revision preserves all prior frozen quantitative thresholds and fixed methods except the preannounced invalid-data sham generator. AAI-04A consumed cohorts never reused.",
+    "statistical_report": "Per-world paired differences vs Bayes random and no-probe, mean, deterministic empirical 95% bootstrap CI with frozen resample seed=10404, 1024 replicates; no post-result model choice.",
+    "science_status": "Only BENCHMARK_ADMITTED_DEV candidate if all requirements pass, NOT scientific improvement or native Yggdrasil acceptance. A novel associative mechanism remains separate AAI-04B requiring new prereg."
+  },
+  "integration": "NONE",
+  "authority": "External contributor experiment; no native model/weights/controller/runner/queue/accepted-ref/promotion/deployment; no scheduled tasks",
+  "no_post_result_tuning": true,
+  "provenance_first_use": "A new source commit with prereg SHA pinned precedes fresh one-shot. Original invalid run and exact software bug retained. Never replay original source or old evaluation seeds."
+}
