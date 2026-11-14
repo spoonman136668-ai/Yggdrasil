@@ -1,0 +1,220 @@
+name: DG1-MD22 locked-door physical intervention and learned affordance DEV
+on:
+  push:
+    branches: [research/dg1-md22-keydoor-intervention-20261114]
+    paths:
+      - 'research/contrib/chatgpt/dg1-md22-20261113/**'
+      - '.github/workflows/dg1-md22-qualification.yml'
+  pull_request:
+    branches: [research/dg1-mg21-rewarded-demonstrations-20261113]
+    types: [opened, synchronize]
+    paths:
+      - 'research/contrib/chatgpt/dg1-md22-20261113/**'
+      - '.github/workflows/dg1-md22-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    name: MD22 intervention prefirst-use and full regression (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify prereg-only ancestor, unaffected conventional source and frozen physical study
+        shell: bash
+        run: |
+          git merge-base --is-ancestor ada17791db5ba3892f2d8012e38dffd024b55dbb HEAD
+          test "$(git rev-parse ada17791db5ba3892f2d8012e38dffd024b55dbb^)" = "8edf7b5563f5a37f3284a96354c9985266d58c18"
+          git diff --exit-code "8edf7b5563f5a37f3284a96354c9985266d58c18" HEAD -- research/contrib/chatgpt/dg1-mg20-20261113/mg20.py research/contrib/chatgpt/dg1-mg21-20261113/mg21.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("research/contrib/chatgpt/dg1-md22-20261114/prereg.json").read_text())
+          assert p["experiment_id"]=="DG1-MD22-20261114"
+          assert p["parent_commit"]=="8edf7b5563f5a37f3284a96354c9985266d58c18"
+          assert p["manifest_sha256"]=="839a7d4f6e6731d93b012527bb1fdde9ddeaa9f18d541f87d73a4a96f542fbb7"
+          assert len(p["frozen_design"]["arms"])==5
+          print("MD22_PROSPECTIVE_PREREG_ONLY_ANCESTRY_PASS")
+          PY
+      - name: Install pinned public partial-view MiniGrid CPU environment
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check "minigrid==3.2.0" "gymnasium==1.4.0" "numpy==2.3.4"
+          python -m pip freeze > md22-packages.txt
+          python - <<'PY'
+          from importlib.metadata import version
+          for name,v in (("minigrid","3.2.0"),("gymnasium","1.4.0"),("numpy","2.3.4")):
+              assert version(name)==v,(name,version(name))
+          print("MD22_REAL_ENV_VERSION_PASS")
+          PY
+      - name: Pre-first-use nine disjoint paid-intervention and negative toy tests
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+        run: |
+          python -m py_compile research/contrib/chatgpt/dg1-md22-20261114/md22.py research/contrib/chatgpt/dg1-md22-20261114/test_md22.py
+          python -m unittest discover -s research/contrib/chatgpt/dg1-md22-20261114 -p 'test_*.py' -v
+      - name: Original paid key-no-key physical intervention study only on named first PR opening
+        if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.head_ref == 'research/dg1-md22-keydoor-intervention-20261114' && github.base_ref == 'research/dg1-mg21-rewarded-demonstrations-20261113'
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+        run: |
+          python research/contrib/chatgpt/dg1-md22-20261114/md22.py > md22-firstuse.json
+      - name: Verify paid real-world action and negative/positive intervention custody and frozen classification
+        if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.head_ref == 'research/dg1-md22-keydoor-intervention-20261114' && github.base_ref == 'research/dg1-mg21-rewarded-demonstrations-20261113'
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path("md22-firstuse.json").read_text())
+          assert x["schema"]=="yggdrasil.dg1-md22-original.v1"
+          assert x["freeze_sha"]=="ada17791db5ba3892f2d8012e38dffd024b55dbb"
+          assert x["parent_sha"]=="8edf7b5563f5a37f3284a96354c9985266d58c18"
+          assert x["manifest_sha256"]=="839a7d4f6e6731d93b012527bb1fdde9ddeaa9f18d541f87d73a4a96f542fbb7"
+          assert len(x["train"]["episodes"])==48 and len(x["interference"]["episodes"])==12
+          assert x["total_episodes"]==300 and 0<x["original_action_cost"]<=76800
+          assert x["original_action_cost"]==x["train"]["steps"]+x["interference"]["steps"]+sum(
+              x[z]["charged_env_steps"] for z in ("cold_before","cold_after","unseen_size","unseen_family"))
+          assert len(x["checkpoint_sha256"])==5
+          for split in ("cold_before","cold_after","unseen_size","unseen_family"):
+              assert x[split]["episode_count"]==60
+              assert len(x[split]["episodes"])==5
+              assert all(len(v)==12 for v in x[split]["episodes"].values())
+              assert all(0<e["steps"]<=256 and len(e["sha256"])==64
+                         for eps in x[split]["episodes"].values() for e in eps)
+          print("MD22_PHYSICAL_AND_INTERVENTION_CUSTODY_PASS")
+          print("MD22_CLASSIFICATION:"+x["classification"])
+          print("MD22_PRIMARY:"+str(x["primary_pass"]))
+          print("MD22_TRAIN_GOALS:"+str(x["train"]["goal_successes"]))
+          print("MD22_INTERVENTIONS:"+json.dumps({
+              "no_key_failed":x["train"]["no_key_failed_toggles"],
+              "with_key_success":x["train"]["with_key_successful_toggles"]},sort_keys=True))
+          print("MD22_COVERAGE:"+json.dumps(x["heldout_goal_coverage"],sort_keys=True))
+          print("MD22_SCORES:"+json.dumps({
+              split:{k:{"goal":v["success_count"],
+                        "reward":v["mean_discounted_official_reward"],
+                        "learned":v["learned_edge_episode_count"]}
+              for k,v in x[split]["metrics"].items()}
+              for split in ("cold_before","cold_after","unseen_size","unseen_family")},sort_keys=True))
+          print("MD22_GATES:"+json.dumps(x["gates"],sort_keys=True))
+          print("MD22_REAL_ACTIONS:"+str(x["original_action_cost"]))
+          PY
+      - name: Generate pinned G29 atlas and emit source-derived bytes only before final atlas commit
+        id: atlas
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64,os,subprocess
+          from pathlib import Path
+          import sys
+          sys.path.insert(0,"scripts")
+          import build_code_atlas as atlas
+          def git(*args):
+              return subprocess.check_output(["git",*args],text=True).strip()
+          head=git("rev-parse","HEAD")
+          changed=set(git("diff","--name-only","HEAD^","HEAD").splitlines())
+          atlas_only=changed==set(atlas.OUT)
+          source=git("rev-parse","HEAD^") if atlas_only else head
+          subprocess.run(["python","scripts/build_code_atlas.py",
+                          "--source-commit",source,"--write"],check=True)
+          committed=atlas_only and all(
+              subprocess.check_output(["git","show","HEAD:"+name])==
+              Path(name).read_bytes() for name in atlas.OUT)
+          with open(os.environ["GITHUB_OUTPUT"],"a",encoding="utf-8") as f:
+              f.write("committed="+str(committed).lower()+"\n")
+              f.write("source="+source+"\n")
+          print("MD22_G29_SOURCE:"+source)
+          print("MD22_G29_COMMITTED:"+str(committed))
+          if not committed and os.environ.get("RUNNER_OS")=="Linux":
+              for name in atlas.OUT:
+                  b64=base64.b64encode(Path(name).read_bytes()).decode("ascii")
+                  chunks=[b64[k:k+1200] for k in range(0,len(b64),1200)]
+                  for n,part in enumerate(chunks):
+                      print("MD22_ATLAS_CHUNK|"+name+"|"+str(n)+"|"+
+                            str(len(chunks))+"|"+part)
+          PY
+      - name: Mandatory full inherited regression on committed, source-identical G29 atlas
+        if: steps.atlas.outputs.committed == 'true'
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -m unittest discover -s tests -p 'test_*.py' -v
+          python scripts/build_code_atlas.py --check-if-present
+      - name: Prove only derived atlas worktree files differ
+        shell: bash
+        run: |
+          python - <<'PY'
+          import subprocess
+          changed=set(subprocess.check_output(
+              ["git","diff","--name-only"],text=True).splitlines())
+          allowed={".ice/code-atlas.json",".ice/code-atlas.html",".ice/code-atlas.ice"}
+          assert changed.issubset(allowed), sorted(changed)
+          print("MD22_TRACKED_SCIENCE_SOURCE_UNMODIFIED_PASS")
+          PY
+      - name: Preserve original full rewarded action traces and source receipt in GitHub only
+        if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.head_ref == 'research/dg1-md22-keydoor-intervention-20261114' && github.base_ref == 'research/dg1-mg21-rewarded-demonstrations-20261113' && always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-md22-original-${{ matrix.os }}
+          path: |
+            md22-firstuse.json
+            md22-packages.txt
+          if-no-files-found: ignore
+  original-cross-os-parity:
+    name: MD22 original paid intervention and goal parity
+    if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.head_ref == 'research/dg1-md22-keydoor-intervention-20261114' && github.base_ref == 'research/dg1-mg21-rewarded-demonstrations-20261113'
+    needs: qualification
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: dg1-md22-original-ubuntu-latest
+          path: original-linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: dg1-md22-original-windows-2022
+          path: original-windows
+      - name: Independent original no-key/with-key physical action and checkpoint parity
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          a=json.loads(Path("original-linux/md22-firstuse.json").read_text())
+          b=json.loads(Path("original-windows/md22-firstuse.json").read_text())
+          for k in ("classification","primary_pass","train","interference",
+                    "heldout_goal_coverage","checkpoint_sha256","checkpoint_bytes",
+                    "original_action_cost","gates"):
+              assert a[k]==b[k],("MD22_ORIGINAL_PARITY_INVARIANT",k)
+          def no_timing(x):
+              if isinstance(x,dict):
+                  return {k:no_timing(v) for k,v in x.items()
+                      if k not in ("cpu_ns","cpu_ratio")}
+              if isinstance(x,list):return [no_timing(v) for v in x]
+              return x
+          def equivalent(x,y):
+              if type(x)!=type(y):return False
+              if isinstance(x,dict):return x.keys()==y.keys() and all(equivalent(x[k],y[k]) for k in x)
+              if isinstance(x,list):return len(x)==len(y) and all(equivalent(i,j) for i,j in zip(x,y))
+              if type(x) is float:return math.isfinite(x) and math.isfinite(y) and abs(x-y)<=1e-8
+              return x==y
+          assert equivalent(no_timing(a),no_timing(b)),"MD22_ORIGINAL_REAL_ACTION_DRIFT"
+          print("MD22_ORIGINAL_KEY_DOOR_GOAL_AND_CHECKPOINT_PARITY_PASS")
+          PY
