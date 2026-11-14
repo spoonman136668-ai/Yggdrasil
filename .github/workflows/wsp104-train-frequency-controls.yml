@@ -1,0 +1,177 @@
+name: WSP104 frozen historical train-only relation-frequency DEV controls
+on:
+  push:
+    branches: [research/wsp104-frozen-real-graph-controls-20261114]
+permissions:
+  contents: read
+jobs:
+  dev-fixtures:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pin prereg before code, source parent and no original first use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor b004935f24670b49f8b418964d6f325a9bc4c366 HEAD
+          git merge-base --is-ancestor 84773389ce77107004a2bd93c2a01b147d0937b1 HEAD
+          git diff --exit-code b004935f24670b49f8b418964d6f325a9bc4c366 HEAD -- research/contrib/chatgpt/WSP-102 research/contrib/chatgpt/WSP-103
+          test ! -f research/contrib/chatgpt/WSP-104/SCIENTIFIC_PASS.json
+          test ! -f research/contrib/chatgpt/WSP-104/PROTECTED_FIRST_USE.json
+          test -z "$(git status --porcelain)"
+      - name: WSP104 retained-only frequency positives and negatives
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-104 -p 'test_*.py' -v
+      - name: Check no source mutation
+        shell: bash
+        run: test -z "$(git status --porcelain)"
+
+  one-shot-g29:
+    needs: [dev-fixtures]
+    if: "github.event.head_commit.message == 'ci(wsp104): source-pin G29 atlas' && github.run_attempt == 1 && needs.dev-fixtures.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    concurrency:
+      group: wsp104-source-pinned-atlas-once
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pin frozen design and generator, reanchor atlas only
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 84773389ce77107004a2bd93c2a01b147d0937b1 HEAD
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = cef1378fd3c47ebc74675bd9dde19a183775ceeb
+          git diff --exit-code b004935f24670b49f8b418964d6f325a9bc4c366 HEAD -- research/contrib/chatgpt/WSP-102 research/contrib/chatgpt/WSP-103
+          S="$GITHUB_SHA"
+          python scripts/build_code_atlas.py --write --source-commit "$S"
+          git add -- .ice/code-atlas.json .ice/code-atlas.ice .ice/code-atlas.html
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(wsp104): pin G29 source atlas at $S"
+          B="$(git rev-parse HEAD)"
+          test "$(git diff-tree --no-commit-id --name-only -r "$B" | wc -l | tr -d ' ')" = 3
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/wsp104-frozen-real-graph-controls-20261114
+          echo "WSP104_G29_SOURCE=$S"
+          echo "WSP104_G29_COMPANION=$B"
+
+  final-regression:
+    needs: [dev-fixtures]
+    if: "startsWith(github.event.head_commit.message, 'docs(wsp104): pin G29 source atlas at ') && github.run_attempt == 1 && needs.dev-fixtures.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 95
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact candidate, unchanged WSP102/WSP103, G29 and public admission
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 84773389ce77107004a2bd93c2a01b147d0937b1 HEAD
+          git diff --exit-code b004935f24670b49f8b418964d6f325a9bc4c366 HEAD -- research/contrib/chatgpt/WSP-102 research/contrib/chatgpt/WSP-103
+          python research/contrib/chatgpt/WSP-98/admission.py --public-pass
+          python scripts/build_code_atlas.py --check-if-present
+          test ! -f research/contrib/chatgpt/WSP-104/PROTECTED_FIRST_USE.json
+          test -z "$(git status --porcelain)"
+      - name: Complete WSP104 retained-only baseline unit regression
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-104 -p 'test_*.py' -v
+      - name: Complete inherited WSP103 WSP102 and WSP98 regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s research/contrib/chatgpt/WSP-103 -p 'test_*.py' -v
+          python -m unittest discover -s research/contrib/chatgpt/WSP-102 -p 'test_*.py' -v
+          python -m unittest discover -s research/contrib/chatgpt/WSP-98 -p 'test_*.py' -v
+      - name: Mandatory WSP80-97 focused regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97; do
+            python -m unittest discover -s "research/contrib/chatgpt/WSP-$n" -p 'test_*.py' -v
+          done
+      - name: Mandatory root regression and exact-tree cleanliness
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_*.py' -v
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+
+  train-only-frequency-baseline:
+    needs: [dev-fixtures, final-regression]
+    if: "startsWith(github.event.head_commit.message, 'docs(wsp104): pin G29 source atlas at ') && github.run_attempt == 1 && needs.final-regression.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    permissions:
+      contents: read
+    concurrency:
+      group: wsp104-historical-frequency-dev-one-shot
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Freeze exact source and enforce original-first-use prohibition
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 84773389ce77107004a2bd93c2a01b147d0937b1 HEAD
+          test ! -f research/contrib/chatgpt/WSP-104/PROTECTED_FIRST_USE.json
+          test ! -f research/contrib/chatgpt/WSP-104/SCIENTIFIC_PASS.json
+          test -z "$(git status --porcelain)"
+      - name: Original real TRAIN-only bounded frequency/ablation DEV scoring; no novel model
+        run: python research/contrib/chatgpt/WSP-104/frequency_controls.py --frozen-train-only-frequency-dev
+      - name: Verify checkout unchanged
+        shell: bash
+        run: test -z "$(git status --porcelain)"
