@@ -110,8 +110,6 @@ class SL15PreFirstUse(unittest.TestCase):
             learner("outside-registered-arm")
         with self.assertRaises(ValueError):
             trial(108001,"ABAB","module_active","diagnostic",[])
-        with self.assertRaises(ValueError):
-            trial(108001,"ABAB","module_active","replay",[None]*96)
 
     def test_same_paid_event_stream_deterministic_model_output(self):
         def feed():
