@@ -114,3 +114,43 @@ controllers, matched online physical information and compute, heldout
 nonregression, cold retention, and separately authorized original science.
 Preserve all null/negative results; do not change frozen parameters after
 observing synthetic transfer diagnostics.
+
+## New conventional controls (MD30, frozen before source)
+
+The independent `conventional_controls_lock.json` was committed before
+`recurrent_control.py`, `model_rl_control.py`, and any new-model toy results.
+Both controls receive the same existing 240 charged training episodes
+(1,920 total physical actions), with a fixed chronological 192-episode fit
+/ 48-episode validation split. Evaluations use only the already declared
+60 synthetic transfer seeds. These are **not** MD30 official or registered
+scientific first-use cohorts.
+
+- **Recurrent world model:** A conventional fully trainable 16-input,
+  32-hidden, 6-output Elman recurrent neural network (1,766 trainable
+  scalars), fitted with full eight-step BPTT and Adam. Its input combines
+  a physical-action one-hot, preceding observed six-bit sensor vector,
+  and public stage. Validation-best selection is restricted to the 48
+  charged training-holdout episodes, with fixed 80-epoch maximum and
+  12-epoch patience. The policy may simulate only its own learned dynamics,
+  never free `World.step` calls or actual graph lookahead.
+- **Empirical model-based RL:** Fits a conventional categorical MDP
+  transition and terminal reward model from *the same* paid public
+  experiences. The state includes the public stage and sensed C/D/E/F
+  bits; the model interpolates empirical state-action frequencies with
+  a frozen phase/action backoff. A Bellman information-value backup
+  can choose up to one paid internal diagnostic before a physical
+  irreversible actuator choice. A disjoint 48-episode validation split
+  reports categorical log-loss.
+- **Qualification:** `test_conventional_controls.py` enforces fully
+  trainable recurrent weights, data-custody limits, model loss/parameter
+  sanity, valid physical action menus, no private-graph access, official
+  seed fences, and equal physical training. The CI workflow runs both
+  conventional controls on Windows and Linux and compares all portable
+  model/checkpoint/action receipts on the exact committed SHA.
+
+These conventional controls are a **development benchmark**. A passing
+training test alone does not prove they are the *strongest* recurrent or RL
+baseline, matched whole-process compute, intelligence improvement, or
+scientific superiority. Numeric performance, full CI and cross-OS parity
+must be reported from the actual run, including failures. Do not retune
+frozen hyperparameters after seeing synthetic transfer outcomes.
