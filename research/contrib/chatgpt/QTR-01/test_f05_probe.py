@@ -54,7 +54,7 @@ class TestF05(unittest.TestCase):
     def test_bad_structure(self):
         for field in ("explanations","activations"):
             with self.assertRaises(m.InvalidInput):
-                m.summarize("37427", self.example(**{field:{"unexpected":"shape"}})
+                m.summarize("37427", self.example(**{field:{"unexpected":"shape"}}))
 
     def test_nonpreregistered_feature_fails(self):
         with self.assertRaises(m.InvalidInput):
