@@ -77,3 +77,42 @@ jobs:
         run: |
           test ! -e research/contrib/chatgpt/WSP-102/REAL_DATA_FIRST_USE.json
           test -z "$(git status --porcelain)"
+
+  train-source-audit-once:
+    needs: [custody-code]
+    if: "github.event.head_commit.message == 'ci(wsp102): one-shot full 20.6M source-train structural audit' && github.run_attempt == 1 && needs.custody-code.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    concurrency:
+      group: wsp102-real-train-source-audit-one-shot
+      cancel-in-progress: false
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prove immutable train-only source admission, no evaluator use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 8773288fe8152d23686eb216e5a22e83b875de7c HEAD
+          test -f research/contrib/chatgpt/WSP-102/source_seal.json
+          test ! -f research/contrib/chatgpt/WSP-102/REAL_DATA_FIRST_USE.json
+          test -z "$(git status --porcelain)"
+      - name: Verify pinned 174MB source and scan all 20.6M training triples only
+        run: python research/contrib/chatgpt/WSP-102/train_source_audit.py --full-source-audit
+      - name: Preserve original heldout and exact source
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
