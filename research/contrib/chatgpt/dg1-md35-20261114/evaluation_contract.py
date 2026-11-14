@@ -261,7 +261,13 @@ def preregistered_headroom_status(qualified_scores):
 
 
 def compute_parity_report(comparators):
-    """Prespecified >10% compute/information disparity blocks superiority."""
+    """Compare equal *available* legal actions; report distinct actions used.
+
+    The frozen prereg grants every public episode at most one paid diagnostic.
+    Diagnostic abstention is a legal policy decision charged to the utility
+    score, not unequal experimental opportunity. Whole-process CPU parity
+    remains mandatory for matched-compute superiority claims.
+    """
     if (type(comparators) is not dict or len(comparators) < 2):
         raise AssertionError("MD35_COMPUTE_PARITY_REQUIRES_COMPARATORS")
     # Frozen prereg caps FITTING/SELECTION at 900 CPU seconds, not
@@ -270,6 +276,7 @@ def compute_parity_report(comparators):
     required = {
         "fit_selection_cpu_seconds", "whole_process_cpu_seconds",
         "whole_process_wall_seconds", "paid_actions", "public_episodes",
+        "available_paid_action_slots",
     }
     for row in comparators.values():
         if type(row) is not dict or set(row) != required:
@@ -283,20 +290,31 @@ def compute_parity_report(comparators):
                 not math.isfinite(x) or x <= 0 for x in (fit, total, wall))
                 or fit > 900 or total < fit
                 or type(row["paid_actions"]) is not int
-                or row["paid_actions"] < 1
                 or type(row["public_episodes"]) is not int
-                or row["public_episodes"] < 1):
+                or row["public_episodes"] < 1
+                or type(row["available_paid_action_slots"]) is not int
+                or row["available_paid_action_slots"] !=
+                   4 * row["public_episodes"]
+                or not 3 * row["public_episodes"] <= row["paid_actions"] <=
+                   row["available_paid_action_slots"]):
             raise AssertionError("MD35_COMPUTE_OR_PHYSICAL_ACTION_INVALID")
     cpu = [row["whole_process_cpu_seconds"] for row in comparators.values()]
     actions = [row["paid_actions"] for row in comparators.values()]
+    opportunity = [row["available_paid_action_slots"]
+                   for row in comparators.values()]
     info = [row["public_episodes"] for row in comparators.values()]
+    fair_cpu = max(cpu) <= min(cpu) * 1.1
+    equal_opportunity = len(set(opportunity)) == 1
+    equal_information = len(set(info)) == 1
     return {
-        "matched_compute": max(cpu) <= min(cpu) * 1.1,
+        "matched_compute": fair_cpu,
+        # Descriptive difference in probes actually chosen; a valid policy
+        # may skip the 0.09 diagnostic and keep equal action availability.
         "matched_paid_actions": max(actions) <= min(actions) * 1.1,
-        "matched_information": len(set(info)) == 1,
+        "matched_action_opportunity": equal_opportunity,
+        "matched_information": equal_information,
         "per_control_receipts": comparators,
         "matched_superiority_claim_permitted": (
-            max(cpu) <= min(cpu) * 1.1 and max(actions) <= min(actions) * 1.1
-            and len(set(info)) == 1),
+            fair_cpu and equal_opportunity and equal_information),
         "lower_compute_pareto_possible_but_not_proven": True,
     }

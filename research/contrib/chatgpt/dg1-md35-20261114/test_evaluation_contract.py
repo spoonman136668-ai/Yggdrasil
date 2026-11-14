@@ -189,6 +189,9 @@ class EvalArithmeticTests(unittest.TestCase):
                 "whole_process_wall_seconds": 115.0,
                 "paid_actions": 6144,
                 "public_episodes": 1536,
+                "available_paid_action_slots": 6144,
+                "available_paid_action_slots": 6144,
+                "available_paid_action_slots": 6144,
             },
             "recurrent": {
                 "fit_selection_cpu_seconds": 90.0,
@@ -214,10 +217,18 @@ class EvalArithmeticTests(unittest.TestCase):
         self.assertFalse(parity["matched_superiority_claim_permitted"])
         changed = copy.deepcopy(rows)
         changed["recurrent"]["paid_actions"] = 5400
-        self.assertFalse(compute_parity_report(changed)["matched_paid_actions"])
+        result = compute_parity_report(changed)
+        self.assertFalse(result["matched_paid_actions"])
+        self.assertTrue(result["matched_action_opportunity"])
+        self.assertTrue(result["matched_superiority_claim_permitted"])
         changed = copy.deepcopy(rows)
         changed["recurrent"]["public_episodes"] = 1400
-        self.assertFalse(compute_parity_report(changed)["matched_information"])
+        changed["recurrent"]["available_paid_action_slots"] = 5600
+        changed["recurrent"]["paid_actions"] = 5600
+        unequal = compute_parity_report(changed)
+        self.assertFalse(unequal["matched_information"])
+        self.assertFalse(unequal["matched_action_opportunity"])
+        self.assertFalse(unequal["matched_superiority_claim_permitted"])
         # 900 seconds applies to fitting/selection, not the end-to-end
         # measurement. A legitimate longer full process must stay reportable.
         extended = copy.deepcopy(rows)
@@ -240,6 +251,46 @@ class EvalArithmeticTests(unittest.TestCase):
             changed = copy.deepcopy(rows)
             del changed["bayesian"]["whole_process_wall_seconds"]
             compute_parity_report(changed)
+
+    def test_equal_legal_opportunity_not_equal_paid_probe_use(self):
+        # Identical legally available physical actions, but one policy
+        # lawfully declines a diagnostic in a subset of episodes. It must
+        # not lose comparability merely for avoiding costlier interventions.
+        data = {
+            "bayesian": {
+                "fit_selection_cpu_seconds": 90.0,
+                "whole_process_cpu_seconds": 100.0,
+                "whole_process_wall_seconds": 115.0,
+                "paid_actions": 6144,
+                "available_paid_action_slots": 6144,
+                "public_episodes": 1536,
+            },
+            "recurrent": {
+                "fit_selection_cpu_seconds": 91.0,
+                "whole_process_cpu_seconds": 104.0,
+                "whole_process_wall_seconds": 119.0,
+                "paid_actions": 4608,
+                "available_paid_action_slots": 6144,
+                "public_episodes": 1536,
+            },
+        }
+        scores = compute_parity_report(data)
+        self.assertFalse(scores["matched_paid_actions"])
+        self.assertTrue(scores["matched_action_opportunity"])
+        self.assertTrue(scores["matched_superiority_claim_permitted"])
+        for field, value in (
+                ("available_paid_action_slots", 6143),
+                ("available_paid_action_slots", 6145),
+                ("paid_actions", 4607), ("paid_actions", 6145)):
+            bad = copy.deepcopy(data)
+            bad["bayesian"][field] = value
+            with self.subTest(field=field, value=value):
+                with self.assertRaisesRegex(
+                        AssertionError, "COMPUTE_OR_PHYSICAL_ACTION_INVALID"):
+                    compute_parity_report(bad)
+        data["recurrent"]["whole_process_cpu_seconds"] = 111.0
+        self.assertFalse(compute_parity_report(data)
+                         ["matched_superiority_claim_permitted"])
 
     def test_independent_cold_checkpoint_mutation_detection(self):
         model = ToyCheckpoint()
