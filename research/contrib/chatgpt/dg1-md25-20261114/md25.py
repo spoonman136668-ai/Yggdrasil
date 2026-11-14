@@ -163,6 +163,18 @@ class SiteChoice(d.TransferPolicy):
                 return 0
         return super().act(obs,t)
 
+    def preferred_subgoal(self):
+        # This identical navigation repair applies to ALL three new arms:
+        # MD24 used a newly named kind, and its inherited planner interpreted
+        # that kind as goal-seeking even after a rewarded box task was opened.
+        # Goal versus box destination here is a scripted affordance, NOT a
+        # learned causal effect and not credited as learning.
+        from minigrid.core.constants import OBJECT_TO_IDX
+        if self.opened_door:
+            return ("goal" if OBJECT_TO_IDX["goal"] in self.tiles.values()
+                    else "box")
+        return super().preferred_subgoal()
+
     def dump(self):
         x=super().dump()
         x["kind"]=self.kind
