@@ -50,8 +50,24 @@ def route_value(probabilities, route, *, allow_diagnostic=True):
 def choose_route(control, context, *, arm="trained"):
     if arm not in ARMS:
         raise AssertionError("MD35_INVALID_ABLATION_MODE")
+    if type(context) is not int or context not in range(4):
+        raise AssertionError("MD35_INVALID_PUBLIC_CONTEXT")
     if arm == "route0_only":
         return 0
+    # Fitted model-based RL owns its registered Bellman route plan. The
+    # ordinary arm must actually execute that plan, not silently substitute
+    # the generic Bayesian/GRU predictor policy. The no-diagnostic ablation
+    # deliberately replans without any paid information option, so it
+    # cannot reuse fitted Q values computed with optional diagnostics.
+    if arm == "trained":
+        planner = getattr(control, "plan_route", None)
+        if planner is not None:
+            if not callable(planner):
+                raise AssertionError("MD35_NONCALLABLE_FITTED_PLANNER")
+            chosen = planner(context)
+            if type(chosen) is not int or chosen not in (0, 1):
+                raise AssertionError("MD35_NONPHYSICAL_FITTED_ROUTE")
+            return chosen
     candidates = [
         route_value(control.predict_target(context, r), r,
                     allow_diagnostic=arm != "no_diagnostic") for r in (0, 1)

@@ -59,3 +59,10 @@ class ModelBasedWithoutRetainedBelief(ResetMemoryEachEpisode):
             "schema": "md35.rl-no-retained-law-belief-negative.v1",
             "base": self._model.checkpoint(),
         }
+
+    def plan_route(self, context):
+        """Keep the *same* trained Bellman planner; erase only law memory."""
+        if (self._position is None or self._position >= 4 or
+                type(context) is not int or context != self._position):
+            raise AssertionError("MD35_RL_NEGATIVE_PUBLIC_CONTEXT_ORDER")
+        return self._model.plan_route(context)
