@@ -13,7 +13,7 @@ jobs:
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
       github.event_name == 'push' &&
-      github.event.head_commit.message == 'AAI-11A frozen same-grammar candidate source-only one-shot' &&
+      github.event.head_commit.message == 'AAI-11A frozen source-only syntax repair and three-fixture admission one-shot' &&
       github.run_attempt == 1
     strategy:
       fail-fast: false
@@ -36,12 +36,12 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = 'd5a2e8498d02479f4c440c2ef681d0891336e132'
+          test "$(git rev-parse HEAD^)" = '4e8fbf0c9e7c32aff00602655d5dd16d9d4595cb'
           test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai11a-source-and-atlas-once.yml'
           test "$(git rev-parse a369f4eb2823a8c24dde110b49dc095142d4b7e0^)" = '40062783d0aa0e06fbe93b3419291150b306562d'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11A/prereg.json)" = '91324443d73a18a71484a8a7a7243184d60cc6db'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11A/prereg.json)" = "$(git rev-parse a369f4eb2823a8c24dde110b49dc095142d4b7e0:research/contrib/chatgpt/AAI-11A/prereg.json)"
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11A/learner.py)" = 'f162e684b226157bdf88798a0cee6899123a573b'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11A/learner.py)" = '331a97b566d41785be06923a7acc63df6105cffd'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11A/fixture.py)" = '191575e68f64858acf036cd1e10c1e266cf16692'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11A/test_learner.py)" = 'd1be60dff7304fbefc3861c46f58adee42acad9c'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11P/world.py)" = '88d220e94ccf736e490f20922f1c7f5d3c1d3746'
@@ -86,7 +86,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = 'd5a2e8498d02479f4c440c2ef681d0891336e132'
+          test "$(git rev-parse HEAD^)" = '4e8fbf0c9e7c32aff00602655d5dd16d9d4595cb'
           test -z "$(git status --porcelain)"
           python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
           test "$(git diff --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
