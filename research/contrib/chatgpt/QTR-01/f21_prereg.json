@@ -1,0 +1,52 @@
+{
+  "schema": "yggdrasil.qtr.f21.pinned-jepa-linear-equivalence.v1",
+  "experiment_id": "QTR-01-F21",
+  "classification": "PUBLIC_SOURCE_ONLY_DEVELOPMENT_CAPABILITY_AUDIT",
+  "hypothesis": "The actual independently pinned two-stage JEPA-style candidate has only linear encoder and linear predictor, so every trained prediction is exactly equivalent to a single 2x3 direct linear transformation. Its original public linear pilot cannot identify nonlinear action-conditioned causal associations beyond an equally informed direct linear learner.",
+  "candidate_source": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "branch": "dev/action-jepa-paired-view-pilot-20261107",
+    "commit": "a5ba7c7ee26b6818c8024861bdb2630c4c3b9a6a",
+    "tree": "0dee20efffc5de68cafe054eaee29eb85b96e924",
+    "path": "yggdrasil/paired_view_jepa.py",
+    "blob": "a535d22f6e206b90ddb93b720d5fb93294d4089e"
+  },
+  "qtr_parent": "3231378c7d9fd0e148874442ecb2b91caff704ef",
+  "cohorts": {
+    "training": "source-defined public development_pairs(start=0,count=180)",
+    "evaluation": "source-defined public development_pairs(start=5000,count=90)",
+    "ood_probes": "128 independent fixed-seed public float triples within source public range ±10",
+    "train_labels_or_other_view": "only paired public other_view, not private world formula",
+    "protected_first_use": false
+  },
+  "methods": {
+    "two_stage": "exact owner PairedViewJEPA.fit(epochs=170,lr=.025), frozen initial source weights, no changes",
+    "direct_sgd": "exact owner DirectLinearControl.fit(epochs=170,lr=.025) on identical pairs",
+    "direct_normal_equations": "independent full-rank 2x3 least-squares direct linear map from identical public training pairs, no hidden formulas, no post-fit eval adjustments"
+  },
+  "observations": "JEPA and direct linear compose exactly, y_i=sum_j P_ij*(sum_k E_jk*x_k). Test trained output parity on source-heldout and independent probes; calculate public heldout MSE for all comparators.",
+  "frozen_success_rule": "Source/tree/blob custody PASS and max_absolute_parity_gap <= 5e-12 and direct-least-squares heldout MSE <= JEPA heldout MSE +1e-10, with deterministic model weights under exact repeated training.",
+  "frozen_failure_rule": "If source drifts, linear parity fails, normal equations singular, or other controls invalid, classify ENGINEERING_INVALID, not scientific failure.",
+  "frozen_interpretation": "Even PASS is a capability ceiling (function class equivalence), not a model gain or causal learning proof. A nonlinear representational substrate change, separately owned/qualified, would be required before testing unknown nonlinear causal-law transfer.",
+  "budgets": {
+    "train_pairs": 180,
+    "heldout_pairs": 90,
+    "epochs": 170,
+    "learning_rate": 0.025,
+    "ood_probe_count": 128,
+    "seed": 211,
+    "model_owner_main_changes": 0
+  },
+  "conventional_prior": "All methods see same fixed train pairs and action coordinate; independent OLS is an exact fully trained linear control. Gradient path and number of parameters differ; no whole-process compute parity asserted.",
+  "fences": [
+    "No QTR donor hidden weights",
+    "No official Yggdrasil owner mutation",
+    "No protected science or original first-use",
+    "No official autonomous research loop",
+    "No merge or accepted model",
+    "No paid API, GPU, scheduler or queue",
+    "No post-outcome hyperparameter tuning"
+  ],
+  "expected_result_class": "DEV_LINEAR_REPRESENTATIONAL_CEILING_OR_ENGINEERING_INVALID",
+  "main_repo_accepted_model_changes": false
+}
