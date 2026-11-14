@@ -184,17 +184,23 @@ class EvalArithmeticTests(unittest.TestCase):
     def test_matched_cpu_and_paid_action_claims_are_separate(self):
         rows = {
             "bayesian": {
+                "fit_selection_cpu_seconds": 80.0,
                 "whole_process_cpu_seconds": 100.0,
+                "whole_process_wall_seconds": 115.0,
                 "paid_actions": 6144,
                 "public_episodes": 1536,
             },
             "recurrent": {
+                "fit_selection_cpu_seconds": 90.0,
                 "whole_process_cpu_seconds": 107.0,
+                "whole_process_wall_seconds": 127.0,
                 "paid_actions": 6144,
                 "public_episodes": 1536,
             },
             "model_based_rl": {
+                "fit_selection_cpu_seconds": 65.0,
                 "whole_process_cpu_seconds": 109.0,
+                "whole_process_wall_seconds": 119.0,
                 "paid_actions": 6144,
                 "public_episodes": 1536,
             },
@@ -212,9 +218,27 @@ class EvalArithmeticTests(unittest.TestCase):
         changed = copy.deepcopy(rows)
         changed["recurrent"]["public_episodes"] = 1400
         self.assertFalse(compute_parity_report(changed)["matched_information"])
+        # 900 seconds applies to fitting/selection, not the end-to-end
+        # measurement. A legitimate longer full process must stay reportable.
+        extended = copy.deepcopy(rows)
+        for v in extended.values():
+            v["fit_selection_cpu_seconds"] = 890.0
+            v["whole_process_cpu_seconds"] = 1050.0
+            v["whole_process_wall_seconds"] = 1250.0
+        self.assertTrue(compute_parity_report(extended)
+                        ["matched_superiority_claim_permitted"])
         with self.assertRaisesRegex(AssertionError, "COMPUTE_OR_PHYSICAL"):
             changed = copy.deepcopy(rows)
-            changed["recurrent"]["whole_process_cpu_seconds"] = 901.0
+            changed["recurrent"]["fit_selection_cpu_seconds"] = 901.0
+            compute_parity_report(changed)
+        with self.assertRaisesRegex(AssertionError, "COMPUTE_OR_PHYSICAL"):
+            changed = copy.deepcopy(rows)
+            changed["recurrent"]["fit_selection_cpu_seconds"] = 101.0
+            changed["recurrent"]["whole_process_cpu_seconds"] = 100.0
+            compute_parity_report(changed)
+        with self.assertRaisesRegex(AssertionError, "COMPUTE_RECEIPT_INCOMPLETE"):
+            changed = copy.deepcopy(rows)
+            del changed["bayesian"]["whole_process_wall_seconds"]
             compute_parity_report(changed)
 
     def test_independent_cold_checkpoint_mutation_detection(self):

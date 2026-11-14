@@ -264,16 +264,28 @@ def compute_parity_report(comparators):
     """Prespecified >10% compute/information disparity blocks superiority."""
     if (type(comparators) is not dict or len(comparators) < 2):
         raise AssertionError("MD35_COMPUTE_PARITY_REQUIRES_COMPARATORS")
+    # Frozen prereg caps FITTING/SELECTION at 900 CPU seconds, not
+    # whole-process CPU. Evaluation, checkpoint IO and scoring MUST also be
+    # counted in total CPU/wall receipts even if they exceed the fit cap.
+    required = {
+        "fit_selection_cpu_seconds", "whole_process_cpu_seconds",
+        "whole_process_wall_seconds", "paid_actions", "public_episodes",
+    }
     for row in comparators.values():
-        if (type(row) is not dict or set(row) !=
-                {"whole_process_cpu_seconds", "paid_actions", "public_episodes"}):
+        if type(row) is not dict or set(row) != required:
             raise AssertionError("MD35_COMPUTE_RECEIPT_INCOMPLETE")
-        if (type(row["whole_process_cpu_seconds"]) not in (float, int)
-                or not math.isfinite(row["whole_process_cpu_seconds"])
-                or row["whole_process_cpu_seconds"] <= 0 or
-                row["whole_process_cpu_seconds"] > 900 or
-                type(row["paid_actions"]) is not int or row["paid_actions"] < 1 or
-                type(row["public_episodes"]) is not int or row["public_episodes"] < 1):
+        fit, total, wall = (
+            row["fit_selection_cpu_seconds"],
+            row["whole_process_cpu_seconds"],
+            row["whole_process_wall_seconds"],
+        )
+        if (any(type(x) not in (float, int) or
+                not math.isfinite(x) or x <= 0 for x in (fit, total, wall))
+                or fit > 900 or total < fit
+                or type(row["paid_actions"]) is not int
+                or row["paid_actions"] < 1
+                or type(row["public_episodes"]) is not int
+                or row["public_episodes"] < 1):
             raise AssertionError("MD35_COMPUTE_OR_PHYSICAL_ACTION_INVALID")
     cpu = [row["whole_process_cpu_seconds"] for row in comparators.values()]
     actions = [row["paid_actions"] for row in comparators.values()]
