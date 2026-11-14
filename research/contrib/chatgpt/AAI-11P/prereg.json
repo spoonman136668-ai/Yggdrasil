@@ -1,0 +1,122 @@
+{
+  "schema": "yggdrasil.contrib.aai11p.harder-causal-task-prereg.v1",
+  "id": "AAI-11P",
+  "phase": "MECHANICAL_AND_FULLY_TRAINED_CONTROL_ADMISSION_ONLY",
+  "base_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "prior": {
+    "failed_science": "AAI-09A PR #1048, HEADROOM_INADEQUATE_NO_PROMOTION, consumed cohorts never replayed",
+    "failed_dev": "AAI-10A PR #1050 and AAI-10B PR #1052 efficiency NO-GO; do not edit/tune or replay",
+    "failed_task": "AAI-10D PR #1055 exact fixture headroom NO-GO, C/D 64 synthetic contexts candidate 1.1421875 vs best symbolic_recent8 1.7734375, oracle 1.8953125, headroom 0.121875 < 0.15; no scientific cohorts consumed",
+    "positive_but_insufficient": "AAI-10C PR #1054 source-only 1.86x/1.71x faster than fastest conventional and 195 vs 297 serialized bytes; does not prove causal learning"
+  },
+  "question": "Is a larger six-bit, three-mediator, hidden-structural-law causal intervention task identifiably difficult for strongest fully trained conventional same-information learners, before spending any scientific cohort on another unconventional mechanism?",
+  "task": {
+    "name": "SixBitCompositionalDoWorld",
+    "inputs": 6,
+    "mediators": 3,
+    "goal_bits": 3,
+    "actions": 12,
+    "max_action_steps": 2,
+    "immediate_reward": "Number of goal-matching mediator bits minus 0.05 times action count, including STOP; max 3.0.",
+    "laws": {
+      "A": "m0 = x0 XOR x1; m1 = x2 AND x3; m2 = m0 XOR x4",
+      "B": "m0 = x1 OR x2; m1 = x3 XOR x4; m2 = m1 AND x5",
+      "C": "m0 = x0 XOR x5; m1 = x1 AND x4; m2 = m0 XOR m1",
+      "D": "m0 = x0 AND x3; m1 = x2 XOR x5; m2 = m0 OR m1",
+      "E": "m0 = x0 OR x4; m1 = x1 AND x5; m2 = m0 XOR m1",
+      "F": "m0 = x1 XOR x3; m1 = x2 OR x4; m2 = m0 AND m1"
+    },
+    "train_laws": [
+      "A",
+      "B"
+    ],
+    "unfamiliar_laws": [
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "mechanics": "Hidden structural law fixed within one phase. All 6 inputs public and manipulable, all 3 mediators observed. A setting action do(x_i:=0 or 1) persists and all downstream mediators recompute. No hidden law or formula passed to learner.",
+    "change_from_prior": "64 input states vs 8, 8 goal configurations vs 4, 12 actions vs 6, 3 compositional mediators vs 2 pairwise mediators, 6 hidden structural laws vs 4, 4 novel structural transfer laws vs 2. These expand task space without by themselves proving difficulty."
+  },
+  "training": {
+    "public_initial_and_one_real_action_consequence_per_trial": true,
+    "phase_A_trials": 16,
+    "phase_B_trials": 16,
+    "common_train_rows": 64,
+    "no_phase_label_to_control": true,
+    "challenge_trials": [
+      2,
+      4
+    ],
+    "challenge_rows_per_trial": 2,
+    "one_episode_public_initial_then_0_to_2_actions": true,
+    "public_information": "Exact dict with x, mediators, goal, reward, actions_taken; no law label, phase label, benchmark oracle, unchosen action, or counterfactual reward; private simulator only for outcome generation.",
+    "independent_episode_cold_restore": true,
+    "underlying_trial_selection": "SHA256 deterministic namespace over fixture key, phase, trial index; no reserved science seed.",
+    "evaluation_contexts": 12,
+    "context_namespace_unique": "12 of 512 possible (x,goal), unique within each fixture-law; novel law is unfamiliar, not necessarily unseen inputs."
+  },
+  "matched_controls": {
+    "tabular_all": "Beta(1,1) per 6-bit x and mediator, all public observed evidence; common planner.",
+    "tabular_recent16": "Beta(1,1) per 6-bit x and mediator, most recent 16 public states; common planner.",
+    "knn_all": "Hamming k=3 nearest public x from all evidence; tie by recency; Laplace-smoothed mediator bit prediction; common planner.",
+    "knn_recent32": "Hamming k=3 from last 32 public observations; common planner.",
+    "symbolic_pair_recent16": "Bayesian posterior per mediator over all 45 (XOR,AND,OR) pairwise 6-input hypotheses; Bernoulli correct=.9, incorrect=.1, 16 recent public examples; common planner.",
+    "symbolic_pair_all": "Same 45-hypothesis pairwise posterior over all public examples; common planner.",
+    "id3_depth4_all": "Deterministic greedy information-gain binary decision tree depth <=4 with Laplace leaf predictions; fit on all public events; no hidden law; common planner.",
+    "logistic_triple": "Conventional logistic with all 42 monomial features through order 3 for each of three mediators; full-batch 160 epochs at challenge checkpoints, stable learning rate 0.15 and L2 0.01; between actions updates 8 online stochastic gradient steps per observed public row; common planner.",
+    "reactive": "Fixed no-learning 0.5 mediator probabilities, negative diagnostic only.",
+    "oracle": "Privileged exact-law exhaustive 0,1,2 action planner for admission only, never a competing learner."
+  },
+  "controls_fit_contract": "Fit all conventional controls on the entire permitted common training sequence; for recency controls retain only frozen declared window by design; no labels, no extra actions or privileged source formulas; never select oracle as baseline. Compare best achieved mean terminal reward across eight conventional controls.",
+  "planner": "Same deterministic up to-two-step exhaustive policy for every conventional learner; optimistic expected reward at each candidate final input x with cost 0.05/action. If no-action action wins, STOP; tie stable smallest action index. Episode learner may use its own actual public first do-action consequence before deciding second action; never sees counterfactual.",
+  "mechanical_admission": {
+    "test_fixture_ids": [
+      "mechanical:alpha",
+      "mechanical:beta",
+      "mechanical:gamma"
+    ],
+    "no_reservations": "No DEV/TRANSFER/NEGATIVE ids used. Exactly three named fixtures; forbidden science IDs error.",
+    "law_identifiable": "All 15 unordered law pairs distinguishable by at least one single public do-action from every original x; no formula or law label passed to learners.",
+    "consequential": "For each of six laws at least 20% of (x,goal) cases admit positive-reward one-step do-intervention and a changed observable mediator.",
+    "headroom": "On 3 frozen mechanical fixtures, four unfamiliar C/D/E/F laws and challenge N=2/4, 12 unique x/goal contexts each, with fully trained strongest conventional control selected by aggregate own scored reward. Overall exact-law oracle minus strongest >=0.25 terminal reward. Each fixture oracle-headroom >=0.10. Candidate learning gain is NOT tested.",
+    "baseline_control_quality": "After fully trained common A/B training, on held-out A and B fixtures at N=2/4, best conventional achieves >=1.70 terminal reward mean over 3 goals; helps rule out toy baselines that learn nothing.",
+    "resource_budget": "Single mechanical pre-admission run per OS, test runtime <=25min, deterministic policy and score traces match Linux/Windows; record walltime, stored bytes, process profile. No science acceptance from fixture.",
+    "decision": "If any mechanical fact, fully-trained baseline floor, headroom floor, public-input privacy, cold retention or source qualification fails -> BENCHMARK_INADEQUATE_NO_SCIENCE; preserve negatives without tuning the formulas or thresholds."
+  },
+  "future_science": {
+    "DEV": {
+      "start": 994000,
+      "count": 16
+    },
+    "TRANSFER": {
+      "start": 995000,
+      "count": 64
+    },
+    "NEGATIVE": {
+      "start": 996000,
+      "count": 32
+    },
+    "used": 0,
+    "primary_authorized": false,
+    "source_only_public_fixture_tests": true,
+    "new_learning_candidate": "NONE",
+    "promotion": false
+  },
+  "authority": {
+    "source_write": true,
+    "one_shot_public_GitHub_qualification": true,
+    "science_first_use": false,
+    "modify_Yggdrasil_native": false,
+    "merge": false,
+    "change_main": false,
+    "schedules": false,
+    "runner_controller": false,
+    "paid_API": false,
+    "other_tracks": false,
+    "files_library": false
+  },
+  "engineering_exit": "Exactly frozen prereg-first code, negative tests and privacy, cross-OS deterministic baseline fits and task checks, full repo native regression at final candidate SHA Linux+Windows with pinned code atlas, GitHub receipts only, PR draft/unmerged.",
+  "no_post_result_tuning": true
+}
