@@ -112,6 +112,13 @@ class RewardedBoxToyPrefirstuse(unittest.TestCase):
                          "before_carry_tile": int(m.objects(pairs[i][0])[3,6]),
                          "after_carry_tile": int(m.objects(pairs[i][3])[3,6])}
                         for i in drop_actions],
+                    "around_drop": [
+                        {"step": i, "action": pairs[i][1],
+                         "front": m.front_type(pairs[i][0]),
+                         "carry_before": int(m.objects(pairs[i][0])[3,6]),
+                         "carry_after": int(m.objects(pairs[i][3])[3,6])}
+                        for i in range(max(0, (drop_actions[0] if drop_actions else 0)-3),
+                                       min(len(pairs), (drop_actions[0] if drop_actions else 0)+12))],
                     "first_box_attempt": ({
                          "step": pickups[0],
                          "before_carry_tile": int(m.objects(pairs[pickups[0]][0])[3,6]),
