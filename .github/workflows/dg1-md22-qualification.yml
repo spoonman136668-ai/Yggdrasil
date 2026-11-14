@@ -68,7 +68,7 @@ jobs:
           python -m py_compile research/contrib/chatgpt/dg1-md22-20261114/md22.py research/contrib/chatgpt/dg1-md22-20261114/test_md22.py
           python -m unittest discover -s research/contrib/chatgpt/dg1-md22-20261114 -p 'test_*.py' -v
       - name: Original paid key-no-key physical intervention study only on named first PR opening
-        if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.head_ref == 'research/dg1-md22-keydoor-intervention-20261114' && github.base_ref == 'research/dg1-mg21-rewarded-demonstrations-20261113' && github.base_ref == 'research/dg1-mg21-rewarded-demonstrations-20261113'
+        if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.head_ref == 'research/dg1-md22-keydoor-intervention-20261114' && github.base_ref == 'research/dg1-mg21-rewarded-demonstrations-20261113'
         shell: bash
         env:
           PYTHONDONTWRITEBYTECODE: '1'
@@ -76,7 +76,7 @@ jobs:
         run: |
           python research/contrib/chatgpt/dg1-md22-20261114/md22.py > md22-firstuse.json
       - name: Verify paid real-world action and negative/positive intervention custody and frozen classification
-        if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.head_ref == 'research/dg1-md22-keydoor-intervention-20261114' && github.base_ref == 'research/dg1-mg21-rewarded-demonstrations-20261113' && github.base_ref == 'research/dg1-mg21-rewarded-demonstrations-20261113'
+        if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.head_ref == 'research/dg1-md22-keydoor-intervention-20261114' && github.base_ref == 'research/dg1-mg21-rewarded-demonstrations-20261113'
         shell: bash
         run: |
           python - <<'PY'
