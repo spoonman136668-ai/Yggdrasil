@@ -1,0 +1,69 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "AAI-02",
+  "contributor": "chatgpt",
+  "contribution_class": "benchmark-identifiability",
+  "stage": "AAI-02A frozen task and baseline admission (no candidate mechanism promoted)",
+  "question": "Can a bounded shared event memory preserve causally diagnostic interventions amid conflicting or distracting associations, and does the test actually leave room over strong exact and trained controls?",
+  "predecessor": {
+    "pr": 1018,
+    "head_sha": "db3766c6f4b11fd67bc0e0242600b97480c33898",
+    "finding": "AAI-01 tied exact symbolic and fully trained comparator; unrelated C facts occupied separate capacity, so no shared-memory interference was shown."
+  },
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "changed_paths": [
+    "research/contrib/chatgpt/AAI-02/**"
+  ],
+  "frozen_task": {
+    "generator": "Deterministic stdlib random.Random(seed). Each world: assign three distinct causal role IDs A,B,C among 8 IDs uniformly; latent FORK versus CHAIN with equal prior; passive records are (A,B,C)=(0,0,0) or (1,1,1), observationally indistinguishable. Under intervention do(C=1) starting A=0, FORK has B=0, CHAIN has B=1; do(A=1) produces B=1 under both laws. Reported B under active probes is independently flipped with probability 0.20. Score policy: choose do(A=1) if FORK, else do(C=1), with equal costs/reward for choosing correct law; no oracle at inference.",
+    "input": "Each episode gets exactly 4 passive observations and up to 3 probe actions, with output of each action made available only after it is selected. Three probe events then 0/16/64 timestamped irrelevant edge events arrive; all events compete for the same 8-slot capacity. Evaluation starts after distractions. No true law label during episode or test. Train worlds have full law labels after the episode; DEV/transfer worlds do not.",
+    "seeds": {
+      "train": "41000..41031 inclusive",
+      "dev": "42000..42031 inclusive",
+      "transfer": "43000..43031 inclusive",
+      "negative": "44000..44031 inclusive"
+    },
+    "relation_shift": "Transfer permutes visible node IDs and distractor timestamps independently; no repeated world seed.",
+    "memory": "Shared 8 event slots; each causal or distractor event counts 1; selection metadata and model parameters accounted separately; zero retrieval of evicted observations; no disconnected protected distractor store.",
+    "probes": "3 actions each with equal response budget; active informative policy can select do(C); passive comparator selects do(A); random comparator selects each equiprobably from keyed hash.",
+    "scoring": "Balanced accuracy on final law/policy decision, conditional on causal type and volume, plus three-probe informativeness and counterfactual role-swap consistency; report macroaverage by seed and cold-restore equality.",
+    "identifiability": "Check passive distributions identical under matched random choices, do(A) response equal under both laws, do(C) response differs pre-noise and post-noise identifiable above chance; exact Bayes has ceiling >50% with three do(C) probes.",
+    "budget": "No paid APIs, model calls, protected cohorts or first-use; 32 train + 32 DEV + 32 transfer +32 negative, 3 probes per episode, <=8 retained events; measure total generation, learning, test and serialization time; run two byte-identical repeats."
+  },
+  "controls": [
+    "Exact Bayesian evidence accumulator with same capacity (ceiling control).",
+    "Fully trained conventional 2-feature logistic classifier on the same labeled training worlds, documented convergence criterion BCE<=0.70 and exactly 2000 full-batch epochs max.",
+    "Event-relevance priority using hand-authored do(C) significance, same capacity.",
+    "Most-recent-eight eviction.",
+    "Seeded reservoir-of-eight.",
+    "Passive do(A) and random-action probe policies.",
+    "Counterfactual causal law swapped while observational samples remain identical.",
+    "Scrambled action labels and zero-probe negatives, expected at chance."
+  ],
+  "bench_admission": {
+    "identifiable": "Informative probe improves over passive by at least 20 percentage points averaged over DEV and TRANSFER.",
+    "nontrivial": "Strongest feasible, capacity-matched non-oracle control accuracy must be <0.95 and >0.55 in 64-distractor condition.",
+    "validity": "Identical equalized actions/observations across relevant arms, no leakage, source/memory accounting, all negative controls and convergence PASS.",
+    "on_no_go": "Preserve failed benchmark and do not optimize associative mechanism on this task; design a new separately frozen harder task."
+  },
+  "scientific_pass": "NONE at this gate: benchmark admission is not evidence of a superior associative mechanism. A separate candidate preregistration and independent qualifying experiment are required before target-model integration.",
+  "classification_rules": {
+    "pass": "BENCHMARK_ADMITTED_DEV only if all bench_admission criteria and controls pass; no model integration.",
+    "fail": "BENCHMARK_REJECTED_DEV if valid but saturated, too easy, or unidentifiable.",
+    "invalid": "INVALID if leakage, unequal exposure, control nonconvergence, missing provenance, or changed prereg after data."
+  },
+  "prohibited": [
+    "Post-outcome threshold/seed/task adjustment",
+    "Treat benchmark test as independent original scientific evidence",
+    "Model, main, production, accepted-ref, controller, runner, queue or loop writes",
+    "Use this branch to integrate into Wingless, Hybrid or weight-programming models"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Commit this file alone before generating any AAI-02 outcomes; post-freeze revisions only as separately versioned explicit new experiments."
+}
