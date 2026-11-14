@@ -1,0 +1,156 @@
+{
+  "schema": "yggdrasil.dg1-mg21-qualified-result-summary.v1",
+  "experiment_id": "DG1-MG21-20261113",
+  "preregistration_commit": "36d6155a9b3c254f31c05bdb5f1e3469fcff616b",
+  "original_candidate_sha": "3b3c7231199d810a5ddfbf7e77f8397fe8b3126e",
+  "original_workflow_run": 43549312541,
+  "original_g29_run": 43549312583,
+  "classification": "MIXED_DEV",
+  "primary_pass": false,
+  "scientific_acceptance": "NOT_ESTABLISHED",
+  "training": {
+    "positive_goal_demonstrations": 48,
+    "common_training_episodes": 48,
+    "common_interference_episodes": 12,
+    "trained_control_update_coverage": "PASS"
+  },
+  "physical_custody": {
+    "charged_env_step_actions": 11823,
+    "total_real_episodes": 300,
+    "evaluation_episodes": 240,
+    "source_version": "minigrid==3.2.0 gymnasium==1.4.0 numpy==2.3.4"
+  },
+  "holdout_total_goal_event_coverage": {
+    "unseen_family": 27,
+    "unseen_size": 57
+  },
+  "preregistered_primary_gates": {
+    "both_controls_trained": true,
+    "checkpoint_bounded": true,
+    "cold_success_retention": true,
+    "cold_vs_reactive": true,
+    "cpu_vs_recurrent": true,
+    "unseen_family_per_seed_reward_wins": false,
+    "unseen_family_reward_margin": false,
+    "unseen_family_success_nondegradation": true,
+    "unseen_size_per_seed_reward_wins": false,
+    "unseen_size_reward_margin": false,
+    "unseen_size_success_nondegradation": true
+  },
+  "per_split_success_and_discounted_official_return": {
+    "cold_after": {
+      "causal_map": {
+        "return": 0.90029039,
+        "success": 12
+      },
+      "reactive": {
+        "return": 0,
+        "success": 0
+      },
+      "recurrent_imitation": {
+        "return": 0.90029039,
+        "success": 12
+      },
+      "sham_map": {
+        "return": 0.48288809,
+        "success": 12
+      },
+      "tabular_q": {
+        "return": 0.90029039,
+        "success": 12
+      }
+    },
+    "cold_before": {
+      "causal_map": {
+        "return": 0.90029039,
+        "success": 12
+      },
+      "reactive": {
+        "return": 0,
+        "success": 0
+      },
+      "recurrent_imitation": {
+        "return": 0,
+        "success": 0
+      },
+      "sham_map": {
+        "return": 0.48288809,
+        "success": 12
+      },
+      "tabular_q": {
+        "return": 0.90029039,
+        "success": 12
+      }
+    },
+    "unseen_family": {
+      "causal_map": {
+        "return": 0.75964609,
+        "success": 12
+      },
+      "reactive": {
+        "return": 0,
+        "success": 0
+      },
+      "recurrent_imitation": {
+        "return": -0.51013416,
+        "success": 3
+      },
+      "sham_map": {
+        "return": -0.93980221,
+        "success": 0
+      },
+      "tabular_q": {
+        "return": 0.79922669,
+        "success": 12
+      }
+    },
+    "unseen_size": {
+      "causal_map": {
+        "return": 0.82293305,
+        "success": 12
+      },
+      "reactive": {
+        "return": 0.7669856,
+        "success": 12
+      },
+      "recurrent_imitation": {
+        "return": 0.86940792,
+        "success": 12
+      },
+      "sham_map": {
+        "return": 0.35433558,
+        "success": 9
+      },
+      "tabular_q": {
+        "return": 0.73138054,
+        "success": 12
+      }
+    }
+  },
+  "summary": "With 48/48 valid positive-reward demonstrations, the fully trained recurrent and reward-Q controls become meaningful. The causal map achieved 12/12 official goals in both transfer families but lost discounted official reward to recurrent on Empty-8x8 and Q on Dynamic Obstacles; heldout return-margin and per-seed win gates failed. Cold goal completion was preserved. Scientifically valid MIXED_DEV and primary NO-GO, not source-level native improvement.",
+  "original_cross_os": {
+    "ubuntu": "PASS",
+    "windows": "PASS",
+    "independent_action_goal_reward_checkpoint_parity": "PASS",
+    "full_inherited_regression_each_os": "54/54 PASS",
+    "toy_negative_preflight_each_os": "9/9 PASS",
+    "g29_both_os": "PASS"
+  },
+  "original_artifacts": {
+    "ubuntu": {
+      "id": 14095144186,
+      "zip_sha256": "040b336decd703f5a416656f569aa17c4b4ba3428e299eb306dd1a92ab49d129"
+    },
+    "windows": {
+      "id": 14095795395,
+      "zip_sha256": "2716a84d0650bb4ebbc74cc572e13e61bcc2bd21519830a0e518a3ac5280fa5c"
+    }
+  },
+  "custody_incident": {
+    "inherited_mg20_workflow_triggered_on_stacked_pr": 43549312528,
+    "status": "Unintended duplicate original MG20 registered-seed replay, not used as MG21 or other scientific evidence. Branch-specific first-use guards added subsequently on MG20 and MG21 research branches; original completed run cannot be undone."
+  },
+  "native_model_changed": false,
+  "accepted_ref_mutation": false,
+  "deployment": "NONE"
+}
