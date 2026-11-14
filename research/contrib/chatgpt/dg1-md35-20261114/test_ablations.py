@@ -16,7 +16,7 @@ sys.path.insert(0, str(HERE.parent / "dg1-md34-20261114"))
 from partial_routes import PartialRouteWorld
 from ablations import ResetMemoryEachEpisode
 from bayesian_control import BayesianControl
-from public_policy import one_public_episode, four_episode_block
+from public_policy import one_public_episode, four_episode_block, plan_terminal, route_value
 
 
 def toy_world(context):
@@ -106,6 +106,24 @@ class MD35AblationTests(unittest.TestCase):
         self.assertEqual(len(base.received), 4)
         self.assertEqual(base.received, list(episodes))
         self.assertEqual(base.block_resets, 1)
+
+    def test_predictive_distribution_and_route_reject_nan_and_infinity(self):
+        for bad in (
+            (float("nan"), 0.0, 0.0, 1.0),
+            (float("inf"), 0.0, 0.0, 1.0),
+            (float("-inf"), 0.0, 0.0, 1.0),
+            (1.1, 0.0, 0.0, -0.1),
+            (0.25, 0.25, 0.25, True),
+        ):
+            with self.subTest(bad=bad):
+                with self.assertRaisesRegex(
+                        AssertionError, "INVALID_PREDICTIVE_DISTRIBUTION"):
+                    plan_terminal(bad)
+        for invalid_route in (2, -1, False, "0"):
+            with self.subTest(route=invalid_route):
+                with self.assertRaisesRegex(
+                        AssertionError, "INVALID_PHYSICAL_ROUTE"):
+                    route_value((0.25, 0.25, 0.25, 0.25), invalid_route)
 
     def test_bayesian_cold_checkpoint_rejects_nonfinite_statistics(self):
         fake = {
