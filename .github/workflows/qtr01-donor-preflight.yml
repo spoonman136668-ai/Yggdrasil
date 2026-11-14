@@ -1,17 +1,24 @@
-name: QTR-01 F09 Fitted Artifact Rights and Provenance
+name: QTR-01 F10 Native Transfer DEV
 on:
   push:
     branches:
       - research/qtr01-qwen38-donor-intake-20261114
     paths:
       - .github/workflows/qtr01-donor-preflight.yml
+      - research/contrib/chatgpt/QTR-01/f10_*.py
 permissions:
   contents: read
 jobs:
-  rights-provenance:
+  native-fixture:
     if: github.repository == 'spoonman136668-ai/Yggdrasil'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -19,9 +26,11 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: "3.12"
-      - name: Eight fixture-only negative controls
-        run: python -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f09_provenance.py' -v
-      - name: Two pinned public metadata GETs, no matrices or model inference
-        run: python research/contrib/chatgpt/QTR-01/f09_provenance.py --fixed-readonly-metadata
-      - name: Verify clean checkout
+      - name: Fixed F10 native adapter tests
+        run: python -m unittest discover -s research/contrib/chatgpt/QTR-01 -p "test_f10_*.py" -v
+      - name: Native memory backward compatibility
+        run: python -m unittest discover -s tests -p "test_native_cells*.py" -v
+      - name: Frozen fixture results
+        run: python research/contrib/chatgpt/QTR-01/f10_experiment.py --fixed-dev-only
+      - name: Checkout integrity
         run: git diff --exit-code
