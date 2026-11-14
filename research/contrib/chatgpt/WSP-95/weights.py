@@ -226,15 +226,22 @@ class FullyTrainedLogistic:
                 raise ValueError("source action trial order invalid")
             counts[a]+=1
         self.records=len(records)
-        # Fully optimize independent one-hot action and channel parameters.
+        # Fully optimized full-batch logistic baseline from exactly the
+        # observed noisy intervention source, no extra data or source oracle.
+        targets={action:[0]*N_CHANNELS for action in self.actions}
+        for obs in records:
+            action=obs["action_id"]
+            diff=obs["sensor_before"]^obs["sensor_after"]
+            for bit in range(N_CHANNELS):
+                targets[action][bit]+=(diff>>bit)&1
         for _ in range(S):
-            for obs in records:
-                a=obs["action_id"]
-                diff=obs["sensor_before"]^obs["sensor_after"]
+            for action in self.actions:
+                n=counts[action]
                 for bit in range(N_CHANNELS):
-                    z=self.logits[a][bit]
-                    p=1.0/(1+math.exp(-max(-80,min(80,z))))
-                    self.logits[a][bit]+=SGD_LR*(((diff>>bit)&1)-p)
+                    z=self.logits[action][bit]
+                    p=1/(1+math.exp(-max(-80,min(80,z))))
+                    target=targets[action][bit]/n if n else 0.5
+                    self.logits[action][bit]+=SGD_LR*(target-p)
 
     def stable(self):
         vals=[]
