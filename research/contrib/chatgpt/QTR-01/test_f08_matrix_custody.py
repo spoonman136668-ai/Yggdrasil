@@ -13,7 +13,7 @@ s.loader.exec_module(m)
 
 def entry(path=None,sha=None,size=1024):
     return {"path":path or m.NAME,"size":size,"type":"file",
-            "lfs":{"oid":sha or "a"*64}}
+            "lfs":{"oid":sha if sha is not None else "a"*64}}
 
 
 class CustodyTests(unittest.TestCase):
