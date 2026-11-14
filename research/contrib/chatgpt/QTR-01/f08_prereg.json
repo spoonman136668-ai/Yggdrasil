@@ -1,0 +1,52 @@
+{
+  "schema": "yggdrasil.qtr01.f08.fitted-layer-rights-metadata.v1",
+  "experiment": "QTR-01-F08",
+  "state": "FROZEN_BEFORE_SOURCE_READ",
+  "source": {
+    "repo": "neuronpedia/icalens-qwen3.6-27b",
+    "revision": "3e83450ee5d6cb172ae11f2da06500be326c16ad",
+    "target": "blocks.32.hook_resid_post/sae_weights.safetensors"
+  },
+  "objective": "Without fetching model or matrix bytes, find pinned fitted-layer size/hash metadata and inspect license declaration on the fitted artifact's own README.",
+  "allowed": [
+    "two bounded unauthenticated public metadata GETs",
+    "validate exact revision/target path",
+    "collect only source metadata hashes and declared license"
+  ],
+  "blocked": [
+    "download fitted tensor or main 27B model",
+    "model inference",
+    "third-party text/activation copy",
+    "native weight edits",
+    "WSP-99 worlds",
+    "merge",
+    "paid API",
+    "controller/runner schedule changes"
+  ],
+  "request_limits": {
+    "requests": 2,
+    "max_directory_bytes": 131072,
+    "max_readme_bytes": 131072,
+    "timeout_seconds": 20,
+    "retries": 0
+  },
+  "outcome_rules": [
+    "Require exact path, positive file byte size, 64-hex LFS oid to classify PUBLISHED_MATRIX_CUSTODY_METADATA_AVAILABLE.",
+    "Only actual local SHA256 of complete bytes counts as independently verified matrix; metadata hash is publisher-declared.",
+    "Use only license declared in artifact repo README frontmatter; otherwise LICENSE_UNVERIFIED.",
+    "No source-to-recipient alignment or causal concept claim regardless of metadata completeness.",
+    "If any endpoint fails or mismatches source, SOURCE_PRECHECK_BLOCKED not a scientific negative."
+  ],
+  "negative_controls": [
+    "missing fitted file",
+    "wrong layer path",
+    "incorrect LFS SHA",
+    "missing artifact license",
+    "invalid/oversized README",
+    "no contributor model checkpoint SHA"
+  ],
+  "success_gate": "Published file-size/hash/rights audit only; numerical transplantation is NOT authorized or scientifically proven.",
+  "next_admissible": "If size and license allow, separately authorize/qualify bounded fitted-matrix byte hashing, then frozen source/recipient causal feature alignment with matched controls.",
+  "software_architecture": "Neither native Wingless nor Yggdrasil nor TTT-Hybrid cognitive architecture may be replaced by the donor transformer.",
+  "scientific_first_use": false
+}
