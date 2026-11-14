@@ -1,0 +1,120 @@
+{
+  "schema": "ygg.dg1-sl15.modulewise-causal-retrieval-prereg.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_FIRST_SCIENTIFIC_USE",
+  "experiment": "DG1-SL15",
+  "date": "2026-11-13",
+  "parent": {
+    "pr": 996,
+    "sha": "96a9e8af09cbc758d796005a32ea6bc85e4d229f",
+    "science": "MIXED_DEV/NO-GO",
+    "checks": "44/44 PASS"
+  },
+  "hypothesis": "Independent module-level causal-memory retrieval with real paid per-action witnesses and a wrong-module veto preserves B-return context learning while preventing whole-program false recall on genuinely unfamiliar compositional C; incremental cached gate signatures reduce end-to-end CPU relative to SL14.",
+  "change_from_sl14": "Three independently switched action modules rather than an all-or-nothing context-bank switch; each module has its own bounded 3-slot six-gate evidence archive and per-action witness queue. No native model or SL14 behavior is altered.",
+  "physical_contract": {
+    "world": "Reimplement exact SL14 six-public-bit physical dynamics: three input bits and three output bits; three actions each toggle own output on one of six hidden two-input Boolean gates; 19 charged input flips at t%5=4 and 77 paid causal actions per 96-step arm. Real action-consequence transitions, no virtual/oracle training.",
+    "cohort_phase": "ABAB: A/B/A/B; ABAC: A/B/A/C; MIXED: A/B/C/A; STABLE: A/A/A/A. Each phase 24 paid steps. C action0=A's rule0, action1=B's rule1, action2=new distinct rule. Hidden rule labels, seed and phase are evaluator-only.",
+    "seeds": {
+      "ABAB": [
+        108001,
+        108002,
+        108003,
+        108004,
+        108005,
+        108006,
+        108007,
+        108008
+      ],
+      "ABAC": [
+        108009,
+        108010,
+        108011,
+        108012,
+        108013,
+        108014,
+        108015,
+        108016
+      ],
+      "MIXED": [
+        108017,
+        108018,
+        108019,
+        108020,
+        108021,
+        108022,
+        108023,
+        108024
+      ],
+      "STABLE": [
+        108025,
+        108026,
+        108027,
+        108028,
+        108029,
+        108030,
+        108031,
+        108032
+      ]
+    },
+    "first_48": "Public fixed actions t%3 before step 48 on nonflip steps, identical actual physical trajectory for all arms. Starting state is seed%64.",
+    "post_48": "Physical candidate chooses action using only public state plus learned module cache novelty/disagreement, one charged action per nonflip step. Passive uses t%3, same cost but may obtain different physical information. All replay controls execute their own charged physical world from the exact candidate action plan.",
+    "audits": "Evaluator-only 8 input states x3 causal actions at completed steps 24,48,54,72,78,96; report correct/confident-wrong and pairs never observed physically, both full and action-local.",
+    "cold": "Canonical SHA256-sealed <=8192-byte snapshots at steps 43,67,89 and end. Byte-identical round trip, all 24 predictions identical, tamper rejection, no future information.",
+    "no_leakage": "No hidden gates, private phases, ground truth audit labels, causal source seed, or context labels may enter learning, choosing, module switching, snapshots or control updates."
+  },
+  "arms": [
+    "module_active: module-wise archive with active physical diagnostics",
+    "module_no_retrieval_on_active: same archive mechanism and paid candidate trace, but no archived slot reactivation",
+    "sl14_full_bank_on_active: frozen unmodified SL14 Fingerprint full-context bank on same actual candidate trace",
+    "independent_bayes_on_active: frozen independently coded SL14 six-gate decayed Bayesian control on candidate trace",
+    "rolling_window_on_active: frozen independent SL14 last-18-event causal gate fitter on candidate trace",
+    "module_passive: module-wise archive with fixed post-48 physical action t%3; equal charged budget, different information"
+  ],
+  "algorithm": {
+    "memory": "For each of 3 actions: <=3 archive slots; each stores six integer gate-error accumulators over genuinely observed outcomes, observation count, four-bit physical pair-coverage mask, and earliest causal-event index. Per-action bounded 4-event witness windows; total <=9 module slots. No full episodes, hidden labels or oracle truth.",
+    "update": "Only physical (public x, legal action a, observed changed-bit) updates exactly the corresponding module and increases a global paid causal-event count; input perturbations do not update a module. Current physical event may trigger switching before adding its outcome to the newly active slot; no retroactive training or repeated action.",
+    "selection": "On a full 4-event window for the same action with >=2 distinct actually observed action-local input pairs and >=3 physical mistakes by the current slot, compare archived slot hits. Reactivate an archived slot only if >=3/4 correct, >=2 more window hits than current and >=3 earlier actual charged observations; otherwise open a fresh slot if capacity remains. Tie: greatest hit advantage then lowest slot ID. No global bank switch and no other module's state changes. Failed conditions mean no switch.",
+    "safety_veto": "An archived slot's predictions must satisfy the full witness evidence thresholds separately for the affected action; shared A/B submodules cannot authorize retrieval of an unobserved C module. When no archive earns a witness, retain current or create a new module slot. Module switch identity never uses evaluator labels.",
+    "prediction": "Cached best-six-rule gate per active module slot, deterministic minimum accumulated mismatches then lowest rule ID, refreshed only on that module's genuine observation. Query of unseen action/input pair uses the learned rule, not a table lookup.",
+    "choice": "After t48 score each action from: 10*number of different cached predictions across non-active sufficiently observed slots + 2*ambiguity of best two cached rules in active slot + 1 if active slot has not physically seen the action-local pair. Break ties by fixed step-dependent cyclic ordering. Never consult evaluator truth or hidden labels.",
+    "provenance": "Log each genuinely earned per-action module reactivation and new-module birth; evaluator-only classify false retrieval if archived module prediction contradicts the actual hidden current action law for any of its four public input-pair patterns; count ABAB A2/B2/MIXED A4 separately only when a previously active earned module is reactivated after real physical witnesses.",
+    "efficiency": "Per-step action ranking uses cached active/archived gates and per-module state; avoid rescoring all six rules across all banks for every choice. Measure physical learner+selector CPU including actual observe/choose, excluding evaluator/serialization only as in SL14. Report whole-process cost separately."
+  },
+  "budgets": {
+    "worlds": 32,
+    "arms": 6,
+    "steps_per_arm": 96,
+    "total_charged_steps": 18432,
+    "total_causal_observations": 14784,
+    "total_input_perturbations": 3648,
+    "cold_bytes_max": 8192,
+    "os": [
+      "ubuntu-latest",
+      "windows-2022"
+    ],
+    "python": "3.12 stdlib only",
+    "paid_apis": false
+  },
+  "primary_frozen_thresholds": {
+    "ABAB_A2_true_module_reactivation_worlds_min": 5,
+    "ABAB_B2_true_module_reactivation_worlds_min": 5,
+    "ABAB_B2_final_correct_gain_vs_module_no_retrieval_min": 12,
+    "ABAB_B2_final_correct_gain_vs_SL14_full_bank_min": 6,
+    "ABAB_B2_final_correct_gain_vs_independent_bayes_min": 4,
+    "ABAB_B2_final_correct_gain_vs_rolling_min": 4,
+    "ABAB_B2_unseen_correct_gain_vs_independent_bayes_min": 2,
+    "ABAC_false_module_reactivation_worlds_max": 2,
+    "ABAC_final_correct_gain_vs_SL14_full_bank_min": 12,
+    "ABAC_final_correct_loss_vs_module_no_retrieval_max": 8,
+    "MIXED_true_A4_module_reactivation_worlds_min": 4,
+    "MIXED_final_correct_gain_vs_module_no_retrieval_min": 8,
+    "STABLE_final_correct_loss_vs_module_no_retrieval_max": 8,
+    "STABLE_confident_wrong_excess_vs_module_no_retrieval_max": 8,
+    "median_cpu_ratio_vs_independent_bayes_max": 2.5,
+    "median_cpu_ratio_vs_module_no_retrieval_max": 1.8,
+    "custody": "All 32x6x96 physical steps and exact paired state/action/after ledger SHA; cold checks; no hidden truth; no paid-action omissions; no prereg mutation; same non-timing JSON across Linux/Windows; mandatory final exact-SHA full regression and G29 atlas; original results in Actions not ChatGPT Library."
+  },
+  "classification": "PASS only if every frozen threshold and provenance/custody contract holds; even then DEV_SIGNAL_NOT_SCIENCE, not native model SCIENTIFIC_PASS. If measurable but thresholds fail: MIXED_DEV/NO-GO; otherwise NEGATIVE_DEV/NO-GO; invalid if physical or source custody violates freeze. Absolutely no post-result threshold/seed/mechanism retuning.",
+  "acceptance": "Only synthetic development. Scientific first-use is a separately controlled prospective event after prereg and implementation preflight; code/CI success is not acceptance. Any native integration requires independent replication, matched compute and new authorization.",
+  "isolation": "Draft unmerged descendant of PR #996. No main/accepted ref mutation, native Yggdrasil model/owner/loop, Forge, Wingless, Hybrid, weight programming, controllers, workstation, scheduled tasks, paid API or live data. Keep experimental receipts exclusively in GitHub Actions and repo."
+}

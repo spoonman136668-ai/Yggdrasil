@@ -1,0 +1,121 @@
+name: DG1-SL15 module-wise physical causal retrieval DEV
+on:
+  pull_request:
+    paths:
+      - 'research/contrib/chatgpt/dg1-sl15-20261113/**'
+      - '.github/workflows/dg1-sl15-qualification.yml'
+      - '.ice/code-atlas.*'
+permissions:
+  contents: read
+jobs:
+  qualification:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pre-first-use exact source syntax
+        run: python -m py_compile research/contrib/chatgpt/dg1-sl15-20261113/sl15.py research/contrib/chatgpt/dg1-sl15-20261113/test_sl15.py
+      - name: Pre-first-use frozen protocol, negative, and cold snapshot checks
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s research/contrib/chatgpt/dg1-sl15-20261113 -p 'test_*.py' -v
+      - name: Original prospective 32-world 6-arm physical intervention study
+        run: python research/contrib/chatgpt/dg1-sl15-20261113/sl15.py > sl15-original-result.json
+      - name: Enforce original physical custody and publish frozen science verdict
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib,json,copy
+          from pathlib import Path
+          d=json.loads(Path('sl15-original-result.json').read_text())
+          assert d['freeze_sha']=='54c6a289e2c4b862a026550624d0a6e585cade40'
+          assert d['parent_sha']=='96a9e8af09cbc758d796005a32ea6bc85e4d229f'
+          assert d['world_count']==32 and len(d['arms'])==6
+          assert d['charged_steps']==18432
+          assert d['paid_causal_observations']==14784
+          assert d['charged_input_perturbations']==3648
+          paired=(
+              'module_active','module_no_retrieval_on_active',
+              'sl14_full_bank_on_active','independent_bayes_on_active',
+              'rolling_window_on_active'
+          )
+          for w in d['worlds']:
+              arms=w['arms']
+              assert len({arms[a]['trace_sha256'] for a in paired})==1
+              assert len({r['trace_first48_sha256']
+                          for r in arms.values()})==1
+              for r in arms.values():
+                  assert r['charged_steps']==96 and r['causal_observations']==77
+                  assert r['charged_input_perturbations']==19
+                  assert len(r['snapshot_bytes'])==3
+                  assert max(r['snapshot_bytes']+
+                             [r['final_snapshot_bytes']])<=8192
+                  assert len(r['physical_ledger'])==96
+                  for t in (24,48,54,72,78,96):
+                      q=r['audits'][str(t)]
+                      assert q['correct']+q['wrong_confident']==24
+              assert not any(t['archived_reuse'] for t in
+                     arms['module_no_retrieval_on_active']['transitions'])
+          print('SL15_PRIMARY:'+str(d['primary_pass']))
+          print('SL15_CLASSIFICATION:'+d['classification'])
+          print('SL15_COUNTS:'+json.dumps(d['archive_reuse_counts'],sort_keys=True))
+          print('SL15_GATES:'+json.dumps(d['primary_gates'],sort_keys=True))
+          print('SL15_AGGREGATE:'+json.dumps(d['aggregate'],sort_keys=True))
+          print('SL15_CPU_BAYES:'+str(d['median_cpu_ratio_candidate_vs_bayes']))
+          print('SL15_CPU_NO:'+str(d['median_cpu_ratio_candidate_vs_no_retrieval']))
+          clean=copy.deepcopy(d)
+          clean.pop('median_cpu_ratio_candidate_vs_bayes')
+          clean.pop('median_cpu_ratio_candidate_vs_no_retrieval')
+          for w in clean['worlds']:
+              for arm in w['arms'].values():
+                  arm.pop('cpu_ns')
+          raw=json.dumps(clean,sort_keys=True,separators=(',',':')).encode()
+          print('SL15_NONTIMING_SHA256:'+hashlib.sha256(raw).hexdigest())
+          PY
+      - name: Mandatory complete inherited exact-source repository regression
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: G29 exact source index verification
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Keep first-use original physical receipts in GitHub Actions only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dg1-sl15-original-paid-worlds-${{ matrix.os }}
+          path: sl15-original-result.json
+          if-no-files-found: ignore
+      - name: Remove transient scientific result before cleanliness proof
+        if: always()
+        shell: bash
+        run: rm -f sl15-original-result.json
+      - name: Verify no tracked source mutated by original experiment
+        if: always()
+        run: git diff --exit-code
+      - name: Generate mechanical G29 index repair source, no commit or push
+        if: always() && matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          python scripts/build_code_atlas.py --source-commit ${{ github.event.pull_request.head.sha }} --write
+          python - <<'PY'
+          import base64,hashlib
+          from pathlib import Path
+          for ext in ('json','html','ice'):
+              raw=Path('.ice/code-atlas.'+ext).read_bytes()
+              print('SL15_ATLAS_START:'+ext+':'+str(len(raw))+':'+hashlib.sha256(raw).hexdigest())
+              encoded=base64.b64encode(raw).decode('ascii')
+              for pos in range(0,len(encoded),4096):
+                  print('SL15_ATLAS_CHUNK:'+ext+':'+encoded[pos:pos+4096])
+              print('SL15_ATLAS_END:'+ext)
+          PY
