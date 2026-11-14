@@ -166,10 +166,9 @@ class BayesianControl:
         if (obj.prior_success.shape != (4, 2, 4) or
                 obj.prior_failure.shape != (4, 2, 4) or
                 obj.prior_probe.shape != (3, 4, 2) or
-                np.any(obj.prior_success < 0) or
-                np.any(obj.prior_failure < 0) or
-                np.any(obj.prior_probe < 0) or
-                np.any(~np.isfinite(obj.prior_probe))):
+                any(np.any(counts < 0) or
+                    np.any(~np.isfinite(counts)) for counts in
+                    (obj.prior_success, obj.prior_failure, obj.prior_probe))):
             raise AssertionError("MD35_BAYES_COLD_COUNTS_INVALID")
         obj.fitted_episodes = 1536
         if obj.checkpoint() != checkpoint:
