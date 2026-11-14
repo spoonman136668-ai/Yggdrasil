@@ -1,0 +1,65 @@
+{
+  "schema": "yggdrasil.contrib.aai07.external-env-preflight.v1",
+  "experiment_id": "AAI-07P",
+  "classification": "ENGINEERING_PREP_ONLY_NOT_PRIMARY_SCIENCE",
+  "parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "external_repository": "Farama-Foundation/Minigrid",
+  "external_commit": "64e1eaec904bc35e7de041167274e2c0dfe541d2",
+  "external_source_file": "minigrid/envs/memory.py",
+  "external_source_blob": "660b0a1b769948034c87bb421759c2b9a4f24548",
+  "external_license": "Repository LICENSE Apache-2.0 at pinned commit; pyproject project license says MIT, so follow the repository LICENSE and do not copy upstream source into Yggdrasil",
+  "external_version": "3.2.0",
+  "source_acquisition": "git fetch --depth 1 origin exact 40-hex commit, checkout detached, pip install -e --no-deps",
+  "python": "3.12",
+  "dependencies": [
+    "numpy==1.26.4",
+    "gymnasium==1.2.2",
+    "pygame-ce==2.5.8",
+    "networkx==3.4.2"
+  ],
+  "os": [
+    "ubuntu-24.04",
+    "windows-2022"
+  ],
+  "environments": [
+    "MiniGrid-MemoryS11-v0",
+    "MiniGrid-MemoryS13Random-v0"
+  ],
+  "reserved_preflight_seeds": {
+    "first": 970000,
+    "count": 8
+  },
+  "future_scientific_seeds": "Not defined or used in preflight. A separately committed preregistration and full baseline protocol must precede any primary scientific evaluation.",
+  "observable_inputs": [
+    "image (7x7x3 integer object,color,state indices)",
+    "direction integer 0..3",
+    "reward",
+    "terminated",
+    "truncated"
+  ],
+  "forbidden_inputs_to_learning": [
+    "env.unwrapped.agent_pos",
+    "env.unwrapped.grid",
+    "env.unwrapped.success_pos",
+    "env.unwrapped.failure_pos",
+    "other hidden state",
+    "mission string/text"
+  ],
+  "checks": [
+    "Pinned exact external commit readback",
+    "package version and source file git blob",
+    "no text observation used by benchmark adapter",
+    "reset seed reproducibility",
+    "discrete action loop, reward and episode termination valid",
+    "no usage of scientific seeds",
+    "source files pristine after smoke",
+    "no external dataset or paid API"
+  ],
+  "evidence": [
+    "stdout compact preflight receipt",
+    "Actions Windows and Linux logs at exact source SHA",
+    "additional repo provenance after successful run"
+  ],
+  "constraints": "Engineering-only source qualification, no performance outcomes, no acceptance or integration, no native model/owner/controller/runner/scheduler/queue changes",
+  "mechanical_dependency_note": "Pygame-ce 2.5.8 selected before any preflight execution instead of older 2.5.5; newer release has published provenance; this is mechanical dependency selection, not scientific post-result tuning."
+}

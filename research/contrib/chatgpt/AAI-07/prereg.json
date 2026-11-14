@@ -1,0 +1,93 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "AAI-07A",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "project": "Yggdrasil",
+  "question": "Does retaining one prior partial-observation cue materially improve actual reward and termination success on independent upstream MiniGrid Memory tasks compared with the exact same hand-programmed navigation policy after the cue is discarded?",
+  "hypothesis": "Under equal navigation/action budget and deterministic simulator seeds, explicit one-item cue retention improves success >=25pp in both 11x11 fixed and 13x13 variable-length memory environments, while strictly using public observations and no simulator internals.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    "AAI-06A PR #1032 valid negative, source exact SHA eccf96d2bee7b97ec74591b9a07813d8c1eb6f08",
+    "AAI-07P source pinned at 64e1eaec904bc35e7de041167274e2c0dfe541d2, Git memory.py blob 660b0a1b769948034c87bb421759c2b9a4f24548",
+    "AAI-07P mechanical preflight run 43607704764 PASS Linux/Windows identical trace SHA256 444132c9e739a8eaf671d699c595c4bed5a03f4fdb14b5e3d07e74b5bd2a0cc6; original working-tree source text differed Windows CRLF/LF, canonical source Git blob same",
+    "AAI-07P navigator mechanical run 43608092293 PASS, 8 reserved seeds per environment. Memo+rule agent 8/8 versus reactive 4/8 in each; development-only, used for design, scientific seeds untouched."
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/AAI-07/**",
+    ".github/workflows/aai07-*.yml",
+    ".github/workflows/yggdrasil-g29-atlas.yml",
+    ".ice/code-atlas.*"
+  ],
+  "inputs": [
+    {
+      "name": "Upstream MiniGrid Memory benchmark canonical published Git content",
+      "repository": "Farama-Foundation/Minigrid",
+      "source_git_sha": "64e1eaec904bc35e7de041167274e2c0dfe541d2",
+      "source_path": "minigrid/envs/memory.py",
+      "source_git_blob": "660b0a1b769948034c87bb421759c2b9a4f24548",
+      "canonical_source_sha256": "d208b6b0cfb20a8ed00d55a0ea6012697f2a0da0e54e4da7d8378eb1da52df8c",
+      "acquisition": "git fetch --depth 1 exact commit then detached checkout; git show HEAD:path byte-SHA256; pinned dependencies"
+    }
+  ],
+  "frozen_design": {
+    "seeds": {
+      "reserved_mechanical": "970000..970007 (consumed; NOT used in science)",
+      "development": {
+        "start": 971000,
+        "count": 64,
+        "environment": "MiniGrid-MemoryS11-v0"
+      },
+      "transfer": {
+        "start": 972000,
+        "count": 64,
+        "environment": "MiniGrid-MemoryS13Random-v0"
+      }
+    },
+    "split": "Independent env sizes and world seeds. Never use reserved mechanical seeds for confirmatory measurements.",
+    "ordering": "For each seed, run observation-only remembered-cue and identical navigation with discarded cue on independent reset from same seed; no cross-arm learning; env reset and actions deterministic. Both evaluate actual official step reward, termination and fixed public action budget.",
+    "data_budget": "64 paired episodes in each of 2 upstream environments; each arm max 120 actions, 1 binary/key-ball cue accessible only to memory condition",
+    "compute_budget": "1024 paired bootstrap draws per environment, seed 17070; single first-use evaluation on Ubuntu Python 3.12; no training/paid API",
+    "capacity": "One key-or-ball cue retained by memory arm; reactive condition discards after initial observation. Same scripted navigator and action interfaces.",
+    "evaluator": "Unmodified navigator_probe.py git source from initial AAI-07 preflight; evaluate memory vs ablation, reward and success on held-out worlds with paired exact McNemar p and bootstrap 95% CI, deterministic result receipt hash.",
+    "deterministic_expected": true,
+    "source_sha": "edcac052aa4e587a5faf9cdf49293e86d4f23b18",
+    "no_hidden_data": "No use of env.unwrapped, grid, agent_pos, goal positions, secret cue or mission text; learner receives only image/direction/action/reward/termination. Public code constants allowed."
+  },
+  "controls": [
+    "Identical hand-coded navigation, reactive cue-erasure negative condition (cue not retained)",
+    "Common frozen episode seeds and observation/action policy; no extra environment samples or privileged labels",
+    "Original external environment unmodified; raw Git object source identity verified",
+    "State-space and variable hallway length transfer tested on a different environment"
+  ],
+  "metrics": [
+    "Per-environment success fraction, mean official reward and actions",
+    "Paired discordance/mcnemar exact two-sided p-value and seed-level bootstrap CI",
+    "Negative reactive baseline success fraction bounded 0.25..0.75",
+    "Reproducibility and action-budget compliance"
+  ],
+  "classification_rules": {
+    "supported": "Memory arm success >=0.85 and success improvement >=0.25 in BOTH cohorts; bootstrap 95% lower bound positive for both; combined exact McNemar p<0.01; reactive success each between 0.25 and 0.75; no hidden-state access; official source custody PASS. This only admits the benchmark as memory-sensitive, not a learning mechanism.",
+    "mixed": "Meaningful gain on only one environment or any other sound partial result fails benchmark-admission thresholds; no model integration.",
+    "negative": "Sound test shows <25pp in any environment, reactive saturates, or memory fails >=85%; preserve as negative, no post-result tuning.",
+    "invalid": "Unqualified source/input identity, hidden simulator state or hints, extra intervention budget, mismatched data, nondeterminism or changed source, thresholds or seeds; classify separately from negative."
+  },
+  "limitations": "The cue matching rule and route are explicitly human-programmed: success is NOT evidence of learned association, new causal mechanism, genuine unknown dynamics, autonomous navigation, long-run model interference resistance, or AGI.",
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "source edits",
+    "capacity growth",
+    "extra evaluation data or replay of consumed seeds"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "integration": "NONE",
+  "no_post_result_tuning": true
+}
