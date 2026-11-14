@@ -1,0 +1,148 @@
+{
+  "schema": "aai02a.dev-evidence-summary.v1",
+  "experiment": "AAI-02A",
+  "preregistration_commit": "b0a6922b67112eb4c47e8038cb44b6ec0c97d090",
+  "source_commit": "ff63fc630876a8dddf39110d6a692dba80adfa81",
+  "source_blob_sha1": "b2603d227ccb8003e3f5c273ec1225419d558a62",
+  "source_sha256": "7af540337b4beb6d23a9c2814902ae98ce436992e39fddbf20658c83efc6c081",
+  "test_blob_sha1": "c124b739401ce196e03fa2951e1f2c02d2e0c62d",
+  "test_sha256": "7b80bbb128496689a3824917402be67104f3f03d7b92fcb2c28bb6a6878910ff",
+  "environment": "Linux, Python 3.13.5, stdlib only; no GitHub CI qualification",
+  "run_repetitions": 2,
+  "repeat_wall_seconds": [
+    0.115205,
+    0.124443
+  ],
+  "repeat_equal_excluding_wall_time": true,
+  "canonical_result_sha256_excluding_wall_time": "38de680e88e77d97954c1d992f673e3faf7185990af126f2dc4da01277023496",
+  "local_focused_unittest": {
+    "tests": 5,
+    "pass": 5,
+    "fail": 0,
+    "elapsed_seconds": 0.249
+  },
+  "train": {
+    "worlds": 32,
+    "epochs": 2000,
+    "conventional_BCE": 0.18028487,
+    "converged": true,
+    "theta": [
+      2.2556996215771297,
+      2.962373346967771
+    ]
+  },
+  "arm_order": [
+    "bayes_recent_active",
+    "bayes_relevance_active",
+    "bayes_relevance_passive",
+    "bayes_relevance_random",
+    "bayes_reservoir_active",
+    "logistic_relevance_active"
+  ],
+  "units": "number correct out of 32 per split and distractor condition",
+  "scores": {
+    "dev": {
+      "0": [
+        29,
+        29,
+        21,
+        22,
+        29,
+        29
+      ],
+      "16": [
+        21,
+        29,
+        21,
+        22,
+        23,
+        29
+      ],
+      "64": [
+        21,
+        29,
+        21,
+        22,
+        20,
+        29
+      ]
+    },
+    "transfer": {
+      "0": [
+        28,
+        28,
+        18,
+        28,
+        28,
+        28
+      ],
+      "16": [
+        18,
+        28,
+        18,
+        28,
+        23,
+        28
+      ],
+      "64": [
+        18,
+        28,
+        18,
+        28,
+        21,
+        28
+      ]
+    },
+    "negative": {
+      "0": [
+        30,
+        30,
+        18,
+        27,
+        30,
+        30
+      ],
+      "16": [
+        18,
+        30,
+        18,
+        27,
+        19,
+        30
+      ],
+      "64": [
+        18,
+        30,
+        18,
+        27,
+        20,
+        30
+      ]
+    }
+  },
+  "negative_controls": {
+    "scrambled_probe_labels_correct": 18,
+    "zero_probe_correct": 18,
+    "n": 32
+  },
+  "admission": {
+    "active_64": 0.890625,
+    "passive_64": 0.609375,
+    "difference": 0.28125,
+    "strongest_arm_max_64": 0.90625,
+    "passed_frozen_dev_admission": true
+  },
+  "classification": "BENCHMARK_ADMITTED_DEV",
+  "controls_tie": "Bayesian relevance and fully trained logistic relevance are equal (29/32 DEV and 28/32 TRANSFER at 64 distractors).",
+  "scientific_pass": false,
+  "integration": "NONE",
+  "qualification": {
+    "source_exact_local": true,
+    "local_focused_tests": true,
+    "whole_repo_regression": false,
+    "linux_CI": false,
+    "windows_CI": false,
+    "independent_first_use": false
+  },
+  "limitations": "Known synthetic causal operators and hand-supplied event relevance; baseline calibration only. No novel learned associative memory mechanism; no general intelligence, model gain, or computational superiority demonstrated."
+}
