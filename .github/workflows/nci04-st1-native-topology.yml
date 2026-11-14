@@ -136,7 +136,7 @@ jobs:
           git merge-base --is-ancestor 43749c5ff285546afc0bae1a4848e48cbe23b6d1 HEAD
           test "$(git rev-parse HEAD:research/nci04_st1/frozen_protocol.json)" = "34d24983ac542e1a280fbe144e88b07b736c9d78"
           python scripts/build_code_atlas.py --check
-      - name: MANDATORY full inherited native test regression
+      - name: Full Linux and strictly Windows-applicable inherited native regression
         shell: bash
         env:
           PYTHONDONTWRITEBYTECODE: '1'
@@ -146,8 +146,40 @@ jobs:
           MKL_NUM_THREADS: '1'
           OMP_NUM_THREADS: '1'
         run: |
-          python -B -m unittest discover -s tests -p 'test_*.py' -v
-          echo ST1_FINAL_FULL_NATIVE_REGRESSION_PASS
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            python - <<'PY'
+          from pathlib import Path
+          import unittest
+          # These four frozen predecessor modules use POSIX-only Python
+          # import resource. Do NOT patch, stub, or reclassify their tests.
+          excluded = {
+              'test_free_fanout_sidecar.py',
+              'test_nci04g6_native_credit.py',
+              'test_nci04g7_source_producer.py',
+              'test_nci04g7a_environment.py',
+          }
+          files = sorted(Path('tests').glob('test_*.py'))
+          assert excluded.issubset({p.name for p in files})
+          for path in files:
+              if path.name in excluded:
+                  assert any(line.strip() == 'import resource'
+                             for line in path.read_text('utf-8').splitlines()), path
+          suite = unittest.TestSuite()
+          loader = unittest.TestLoader()
+          for path in files:
+              if path.name not in excluded:
+                  suite.addTests(loader.discover('tests', pattern=path.name))
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          if not result.wasSuccessful():
+              raise SystemExit(1)
+          print('ST1_WINDOWS_APPLICABLE_NATIVE_REGRESSION_PASS')
+          print('ST1_WINDOWS_UNAVAILABLE_POSIX_RESOURCE_MODULES=' +
+                ','.join(sorted(excluded)))
+          PY
+          else
+            python -B -m unittest discover -s tests -p 'test_*.py' -v
+            echo ST1_LINUX_FULL_NATIVE_REGRESSION_PASS
+          fi
       - name: All original source unchanged
         shell: bash
         run: |
