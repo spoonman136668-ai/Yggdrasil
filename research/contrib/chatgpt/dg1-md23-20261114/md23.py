@@ -16,6 +16,10 @@ d = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(d)
 m = d.m
 m.MAX_STEPS = 256
+# UnlockPickup requires physically dropping a carried key to pick up the box.
+# The same six legal actions are available to every teacher, learned arm and
+# fully trainable conventional control; no free or simulated actions are used.
+m.ACTIONS = (0, 1, 2, 3, 4, 5)
 
 FROZEN_PREREG = "ea927ae080aee59d2dc0783f45eb703735dfb52f"
 EXACT_PARENT = "155cb5c3c3f4802166ffb26695b7f7353384cb42"
@@ -72,6 +76,7 @@ class GraphPolicy(d.AffordancePlanner):
         self.edge_uses = 0
         self.selected_learned_edge = False
         self.task_family_box = False
+        self.key_dropped = False
 
     def feedback(self, before, action, after, reward, training=False):
         from minigrid.core.constants import OBJECT_TO_IDX
@@ -83,9 +88,14 @@ class GraphPolicy(d.AffordancePlanner):
         door_unlock = (action == 5 and old == OBJECT_TO_IDX["door"]
                        and state0 in (1, 2) and state1 == 0)
         rewarded_box = (action == 3 and old == OBJECT_TO_IDX["box"] and reward > 0)
+        key_drop = (action == 4 and old == OBJECT_TO_IDX["empty"]
+                    and new == OBJECT_TO_IDX["key"])
         super().feedback(before, action, after, reward, training=training)
         if key_pickup:
             self.episode_key = True
+        if key_drop:
+            self.key_dropped = True
+            self.has_key = False
         if door_unlock:
             if training:
                 self.train_events["unlock"] += 1
@@ -100,6 +110,16 @@ class GraphPolicy(d.AffordancePlanner):
                     self.edges["unlock_before_rewarded_box"] += 1
         if key_pickup and training:
             self.train_events["key"] += 1
+
+    def act(self, obs, t):
+        from minigrid.core.constants import OBJECT_TO_IDX
+        front = m.front_type(obs)
+        if self.opened_door and self.has_key and not self.key_dropped:
+            if front == OBJECT_TO_IDX["empty"]:
+                return 4  # real charged key drop, then free hands for box pickup
+            if front == OBJECT_TO_IDX["box"]:
+                return 1  # cannot pick up a box while still carrying the key
+        return super().act(obs, t)
 
     def preferred_subgoal(self):
         from minigrid.core.constants import OBJECT_TO_IDX
