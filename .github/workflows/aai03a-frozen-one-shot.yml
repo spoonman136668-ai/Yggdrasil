@@ -1,0 +1,61 @@
+name: AAI-03A isolated frozen benchmark one-shot
+on:
+  push:
+    branches: [research/aai03a-causal-intervention-admission-20261114]
+    paths: [.github/workflows/aai03a-frozen-one-shot.yml]
+permissions:
+  contents: read
+jobs:
+  frozen-once:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'Arm AAI-03A frozen one-shot'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Freeze source and prereg; fail closed before any outcomes
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = '688f83425b6c4c5277c9cfd63a5302424ded34ae'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-03A/prereg.json)" = "$(git rev-parse 7f5b8b7150446a7b54a9fd9bc962cd584b2c92a6:research/contrib/chatgpt/AAI-03A/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-03A/run.py)" = "$(git rev-parse 688f83425b6c4c5277c9cfd63a5302424ded34ae:research/contrib/chatgpt/AAI-03A/run.py)"
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai03a-frozen-one-shot.yml'
+          test -z "$(git status --porcelain)"
+          echo AAI03A_SOURCE_FROZEN=PASS
+      - name: Focused engineering tests before scientific scoring
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-03A -p 'test_aai03a.py' -v
+          git diff --exit-code
+      - name: Primary frozen benchmark evaluation
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/AAI-03A/run.py > "$RUNNER_TEMP/aai03a-primary.json"
+          python - "$RUNNER_TEMP/aai03a-primary.json" <<'PY'
+          import json,sys
+          x=json.load(open(sys.argv[1],encoding='utf-8'))
+          assert x['prereg_commit']=='7f5b8b7150446a7b54a9fd9bc962cd584b2c92a6' and x['integration']=='NONE'
+          print('AAI03A_PRIMARY_RESULT='+json.dumps(x,sort_keys=True,separators=(',',':')))
+          PY
+          echo AAI03A_PRIMARY_EXECUTED_ONCE=PASS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: aai03a-primary
+          path: ${{ runner.temp }}/aai03a-primary.json
+          if-no-files-found: warn
+          retention-days: 7
