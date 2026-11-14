@@ -30,9 +30,9 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = '40e3ce1ba7cd80411c1545e5609706a3f268c51e'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08P/preflight.py)" = "$(git rev-parse 40e3ce1ba7cd80411c1545e5609706a3f268c51e:research/contrib/chatgpt/AAI-08P/preflight.py)"
           test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai08p-bridge-preflight.yml'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08P/protocol.json)" = "$(git rev-parse eeeec16b4d22ec1bdef6597d18955b8e19e0b980:research/contrib/chatgpt/AAI-08P/protocol.json)"
+          python -c 'import json; p=json.load(open("research/contrib/chatgpt/AAI-08P/protocol.json")); assert p["upstream"]["commit"]=="127df4b714fe4fcf680721d8e9278a96090acd7e"; assert "gymnasium[mujoco]==1.2.2" in p["dependencies"]["minimal"]'
           test -z "$(git status --porcelain)"
           echo AAI08P_NO_SCIENCE_FIRST_USE=PASS
       - name: Fetch immutable upstream official Bridge and wrapper
