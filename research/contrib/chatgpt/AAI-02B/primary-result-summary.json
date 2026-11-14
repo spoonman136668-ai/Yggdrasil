@@ -1,0 +1,79 @@
+{
+  "schema": "aai02b.primary-evidence-summary.v1",
+  "classification": "INVALID_NEGATIVE_OR_CUSTODY",
+  "prereg_commit": "32f4b7f3c05bf29533b1e571270c8df4f820de08",
+  "source_commit": "6dc2ae482c83f29c0a9269496fa5191142ef0350",
+  "source_blob_sha": "6deacc44d1b14066fbaa22fd18660160ded1bdb4",
+  "workflow_commit": "8eb755122044f9e7e75c656162f3095828e88a81",
+  "execution": {
+    "run_id": 43592071967,
+    "primary_job_id": 132438719509,
+    "artifact_id": 14113200433,
+    "artifact_path": "aai02b.result.json",
+    "primary_artifact_sha256": "8f03678152e47e75c0c8f2f4bf7cac4ae2eeb6c6f55627f3104d3375fbddd50c",
+    "predictions_sha256": "5fa51b4d34783b49b5237feeb5e72715c7224ebf307a9461bedf7a2242a47aef",
+    "runtime": "ubuntu-24.04 / Python 3.12.16 / GitHub-hosted; no paid AI APIs",
+    "custody": "Prereg and frozen source SHA verified in one-shot before primary evaluation; result captured and uploaded before step exited 2 on prereg negative-control failure"
+  },
+  "paired": {
+    "direct_only": 0,
+    "logistic_only": 0,
+    "mcnemar_p": 1
+  },
+  "scores": {
+    "dev": {
+      "direct": 124,
+      "logistic": 124,
+      "expert": 124,
+      "active_recent": 84,
+      "n": 128
+    },
+    "transfer": {
+      "direct": 126,
+      "logistic": 126,
+      "expert": 126,
+      "active_recent": 92,
+      "n": 128
+    },
+    "dev_reversal": {
+      "direct": 120,
+      "logistic": 120,
+      "expert": 120,
+      "n": 128
+    },
+    "transfer_reversal": {
+      "direct": 123,
+      "logistic": 123,
+      "expert": 123,
+      "n": 128
+    },
+    "negative": {
+      "direct": 124,
+      "logistic": 124,
+      "expert": 124,
+      "scrambled": 92,
+      "n": 128
+    }
+  },
+  "negative_control": {
+    "scrambled_label_accuracy": 0.71875,
+    "preregistered_max": 0.65,
+    "passed": false
+  },
+  "training": {
+    "worlds": 512,
+    "logistic_epochs": 400,
+    "training_bce": 0.06592605,
+    "direct_edits_no_gradient": true
+  },
+  "conservation": {
+    "memory_slots": 8,
+    "learned_scalars_per_arm": 16,
+    "active_interventions_normal": 32,
+    "passive_events": 64
+  },
+  "conclusion": "No learned associative advantage. Direct and logistic tie on both DEV and transfer and reversal; shuffled-label control unexpectedly performs above prespecified ceiling; prereg invalid status preserved and no integration. The primary test was executed once; this summary records its original result without tuning or reclassification.",
+  "engineering": "Original one-shot primary job exited 2 due negative-control guard, not a Python crash; full source regression to be separately qualified",
+  "science": "INVALID; no scientific pass or model promotion",
+  "integration": "NONE"
+}
