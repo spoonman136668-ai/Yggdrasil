@@ -1,0 +1,100 @@
+{
+  "schema": "yggdrasil.dg1-md26-prereg.v1",
+  "experiment_id": "DG1-MD26-20261114",
+  "status": "PREREGISTRATION_ONLY_NO_PRIMARY_SEEDS_CONSUMED",
+  "parent_SHA": "563c805f8841e39a8363d76019e86996b611ae14",
+  "previous_science": "MD25_TOY_COVERAGE_NO_GO_DESPITE_6_6_BOTH_GOALS_PAIRED_SHA_IDENTICAL",
+  "hypothesis": "On independent unseen BlockedUnlockPickup seeds, a bounded learned drop-occupancy action-effect memory will select a physically different safer relocation action when both adjacent sites are available, with strictly fewer real paid actions or greater official reward than the strongest equally informed blind right-first site control. Merely incrementing site counters, matching action traces, or tying scripted ceiling falsifies learning-specific value.",
+  "limits": "Toy MiniGrid simulation, not learned general intelligence or native Yggdrasil advancement; inherited scripted navigation is identical for learned, blind and permuted arms; no token/transformer, no hidden MiniGrid state, no mission text, no environment identifiers at policy time, no free env.step.",
+  "design": {
+    "environment": "MiniGrid-BlockedUnlockPickup-v0 v3.2.0; gymnasium 1.4.0; numpy 2.3.4; Python 3.12; public 7x7x3 pixels/direction and actual paid actions/reward",
+    "training": "One shared physical public-view expert trajectory for each of DoorKey6x6 and UnlockPickup, seeds 41,43,47,53,59,61 (six each), provided to all six arms; no BlockedUnlockPickup example in training",
+    "toy_evaluation_seeds": [
+      67,
+      71,
+      73,
+      79,
+      83,
+      89
+    ],
+    "arms": [
+      "learned_effect_bfs",
+      "blind_site_bfs",
+      "permuted_effect_bfs",
+      "md25_causal_site",
+      "tabular_q",
+      "recurrent_imitation"
+    ],
+    "candidate": "Learn from real paid pickup-clear and drop-place transitions; use the effect that dropping occupies a cell to project each candidate occupied site into the local public-view map and evaluate shortest reachable path from current estimated pose to observed door using BFS; choose site with shorter reachable route, tie right; if edge evidence absent choose right. No invented object-specific ball rule; same fixed inherited navigator after obstacle.",
+    "blind": "Exact same public map/navigation, cost/actor capacity, shared training and actual actions; when both drop sides are free, take right-first physical site without consulting learned occupancy effect; forced side choices same as candidate.",
+    "permuted": "Same counts and observations, but swap relevant drop effect with missing toggle-shift effect at action-selection time; no artificially disabled movement or reduced dataset.",
+    "md25": "Unchanged actual prior MD25 learned site controller on same test cohort; no retroactive score editing.",
+    "conventional": "Original fully trained tabular-Q and 12-hidden recurrent imitation controls, fed the same physical teacher trajectories and action budget.",
+    "provenance": "At evaluation, capture exact per-env.step actions, public postaction observations, official reward and SHA. Decision counters only qualify if the next paid action visibly differs in independent trace. Cold model snapshot must be byte-identical. Do not inspect target seed outcomes before committing prereg and candidate code.",
+    "registered_unused_cohorts": {
+      "door_train": [
+        1014001,
+        1014024
+      ],
+      "box_train": [
+        1015001,
+        1015024
+      ],
+      "interference": [
+        1016001,
+        1016012
+      ],
+      "cold": [
+        1017001,
+        1017012
+      ],
+      "heldout_size": [
+        1018001,
+        1018012
+      ],
+      "heldout_unfamiliar": [
+        1019001,
+        1019012
+      ]
+    },
+    "max_step_per_episode": 256,
+    "original_registered_episode_budget": 348,
+    "original_registered_steps_max": 89088,
+    "forbidden": "No registered seed use on push/PR opened by default; no first-use workflow until full frozen preflight, no post-outcome threshold edits, no main or accepted refs updates"
+  },
+  "toy_gates": {
+    "teacher_door_goals_min": 4,
+    "teacher_box_goals_min": 4,
+    "known_pickup_effects_min": 6,
+    "known_drop_effects_min": 6,
+    "candidate_heldout_goals_min": 5,
+    "paired_action_trace_differences_min": 2,
+    "true_both_free_causal_site_decisions_min": 2,
+    "strict_fewer_paid_actions_vs_blind_seed_wins_min": 2,
+    "candidate_goal_regression_vs_blind_max": 0,
+    "mean_paid_step_saving_vs_blind_min": 0.5,
+    "full_inherited_regression_count_min": 54,
+    "ubuntu_windows_deterministic_non_timing_parity_required": true,
+    "classification_if_fail": "TOY_NO_GO_NO_REGISTERED_FIRST_USE"
+  },
+  "registered_primary_gates": {
+    "candidate_heldout_goals_min": 10,
+    "paired_trace_differences_min": 6,
+    "causal_decisive_site_events_min": 6,
+    "strict_step_wins_min": 6,
+    "strict_mean_paid_step_saving_min": 1,
+    "reward_not_worse_than_blind": true,
+    "full_regression_dual_platform_required": true
+  },
+  "first_use_guard": "When and only when every frozen toy/scoped CI gate passes: separately implement one-shot exact pre-registered draft PR opened registered study on exact source for both platforms; no automatic registered reruns; original artifacts only GitHub. No outcome-derived tuning.",
+  "classification_priority": [
+    "TOY_NO_GO_NO_REGISTERED_FIRST_USE",
+    "DEVELOPMENT_SIGNAL_ONLY",
+    "MIXED_DEV",
+    "NEGATIVE_DEV",
+    "INVALID_TASK_COVERAGE"
+  ],
+  "scientific_acceptance": "UNVERIFIED",
+  "deployment": "NONE",
+  "authority": "external_research_only_no_native_integration_merge_or_controller"
+}

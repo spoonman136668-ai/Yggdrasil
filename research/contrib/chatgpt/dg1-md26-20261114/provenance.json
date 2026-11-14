@@ -1,0 +1,29 @@
+{
+  "schema": "yggdrasil.dg1-md26-toy-provenance.v1",
+  "experiment_id": "DG1-MD26-20261114",
+  "parent_exact_sha": "563c805f8841e39a8363d76019e86996b611ae14",
+  "prereg_before_implementation_sha": "4c4d34f305278fde8132a7be35ecba1ba9baee0d",
+  "measured_code_source_sha": "58c41a1cb35ce81d03238d54f895b6207c161fc9",
+  "measured_code_tree": "56f418f94a135ded102487b263fe23d341aa48b9",
+  "github_workflow_run_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43585625297",
+  "dependencies": {
+    "python": "3.12",
+    "minigrid": "3.2.0",
+    "gymnasium": "1.4.0",
+    "numpy": "2.3.4"
+  },
+  "run_platforms": [
+    "ubuntu-latest",
+    "windows-2022"
+  ],
+  "run_scope": "read-only physical MiniGrid task simulation on locally frozen toy seeds; no registered cohort",
+  "event_source": "real gymnasium env.step; finite action limit 256 per episode; image/direction and paid reward only",
+  "candidate_checkpoint_limit_bytes": 65536,
+  "test_scope": "five new MD26 toy and negative-control tests per platform",
+  "known_limitation": "The action effect model's counterfactual site choice did not activate in actual heldout physical episodes; the episode reward wins belong to shared scripted navigation and do not prove learned intelligence.",
+  "original_first_use": null,
+  "qualifications": {
+    "code_atlas": "pending exact-source derived commit and final CI",
+    "inherited_regression": "pending final code-atlas commit"
+  }
+}
