@@ -87,17 +87,25 @@ class DirectWeights:
         scores = self.scores(text)
         order = sorted(range(3), key=lambda i: (-scores[i], i))
         margin = scores[order[0]] - scores[order[1]]
-        run, max_run = 0, 0
-        for idx in five_gram_bins(text):
+        run = 0
+        grounded_span = False
+        # The confidence gate requires consecutive, class-specific raw windows
+        # spanning both surrounding separators. This is not a word lookup:
+        # windows are numeric hashed signal features learned from outcomes.
+        stream = "\u0002" + unicodedata.normalize("NFC", text).casefold() + "\u0003"
+        for i, idx in enumerate(five_gram_bins(text)):
             counts = [row[idx] for row in self.positive_support]
             total = sum(counts)
             if (counts[order[0]] >= 2 and total > 0 and
                     counts[order[0]] / total >= SIGNAL_THRESHOLD):
                 run += 1
-                max_run = max(max_run, run)
+                if run >= MIN_SIGNALS:
+                    span = stream[i - run + 1:i + 5]
+                    if span.startswith(" ") and span.endswith(" "):
+                        grounded_span = True
             else:
                 run = 0
-        return order[0] if margin >= MARGIN and max_run >= MIN_SIGNALS else None
+        return order[0] if margin >= MARGIN and grounded_span else None
 
     def snapshot(self) -> str:
         payload = {"width": WIDTH, "weights": self.weights,
