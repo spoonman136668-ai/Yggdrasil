@@ -1,0 +1,52 @@
+{
+  "schema": "wsp103.train-only-headroom-audit-prereg.v1",
+  "status": "FROZEN_BEFORE_AUDITOR_IMPLEMENTATION; DEV_SOURCE_ONLY; NO MODEL TRAINING; NO PROTECTED_EVALUATION",
+  "parent_wsp102_sha": "b31875fa8306eb13a742d103cfb08f6273916e1e",
+  "parent_wsp102_tree": "9796106766b0a6ed844f90e254829f8988ca840e",
+  "dataset": {
+    "variant": "WSP102 independently sealed historical Wikidata-derived mirror, NOT canonical Wikidata5M",
+    "archive_sha256": "ccda8bbcd3cf599b30dd3fd8979ac26e59b48fc53d23128882a044bfbb67f878",
+    "train_sha256": "2ef1a279f6393a8edfbb2b44114a2c97944272e5fe2a1bd2a7cbe48f94742f1a",
+    "train_rows": 21343681,
+    "train_bytes": 436189882,
+    "relations": 828
+  },
+  "read_scope": "ONLY archived wikidata5m/train.txt, after exact archive metadata and source integrity. Never extract/read valid.txt, test.txt, WSP101 original/reserved, model accept sources.",
+  "group_split": {
+    "unit": "all objects belonging to the same Q-subject/P-predicate query group",
+    "serialization": "subject_id, predicate_id as little-endian uint32 pair",
+    "hash": "SHA256(UTF8('WSP103-TRAIN-GROUP-v1\\0') || little_endian_u32_subject || little_endian_u32_predicate)",
+    "heldout": "first digest byte low five bits are zero (1/32 group probability); never split a multi-valued subject-predicate group",
+    "query_priority": "unsigned 64-bit big-endian digest bytes [8:16], tie-break by subject_id then predicate_id ascending",
+    "query_count": 4096,
+    "source_rows": "all 21,343,681; no tuning based on sample difficulty or labels"
+  },
+  "measure": {
+    "primary": "source-integrity + determinism, heldout group sample SHA256, selected group and answer cardinalities, train-only edge coverage of selected subjects and their heldout target objects",
+    "secondary": "distribution of selected group multiplicity, source groups with no retained subject or object support, whole-process CPU/wall/peak numeric memory",
+    "classification": "DEV_TASK_HEADROOM_AUDIT_ONLY; train degrees do not establish causal identifiability or learner improvement"
+  },
+  "controls_not_yet_run": [
+    "exact symbolic triple retrieval/path-control",
+    "properly trained conventional knowledge graph representation model",
+    "random weight write and frozen old-weight control"
+  ],
+  "criteria": "Auditor PASS requires exact data SHA/row/bytes/relations, 4096 distinct deterministic withheld group keys, zero leaked heldout groups in retained-only scans, clean source, and immutable plan. It does not require favorable headroom counts.",
+  "stop": "If no enough source groups or integrity/resources fail: preserve engineering/source negative, do not select easier queries post hoc. If conventional fully trained control later saturates, preserve negative and stop new learning mechanism for this task.",
+  "bounds": {
+    "max_wall_seconds": 900,
+    "max_heldout_group_samples": 4096,
+    "source_download_bytes": 268435456,
+    "read_only_network": true,
+    "no_artifact_upload": true,
+    "ephemeral_cache_only": true
+  },
+  "scientific_first_use": false,
+  "original_val_test_first_use": false,
+  "merge": false,
+  "model_promotion": false,
+  "controller": false,
+  "scheduler": false,
+  "paid_api": false,
+  "follow_on": "Separate preregistration and authority required for fully trained controls, quantitative holdout prediction, claimed learning advantage, any protected benchmark labels, and scientific promotion."
+}
