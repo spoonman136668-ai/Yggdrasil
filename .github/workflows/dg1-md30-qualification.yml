@@ -112,6 +112,48 @@ jobs:
           print("MD30_SYNTHETIC_STRUCTURAL_DISTRIBUTION_PREFLIGHT_PASS")
           print("MD30_NO_OFFICIAL_COHORT_FIRST_USE_PASS")
           PY
+      - name: Qualify source-locked synthetic Bayesian causal graph control
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          path=Path("research/contrib/chatgpt/dg1-md30-20261114/control_preflight_lock.json")
+          p=json.loads(path.read_text())
+          assert p["status"]=="PREREGISTERED_SYNTHETIC_DEVELOPMENT_ONLY__NO_OFFICIAL_COHORT"
+          assert p["base_commit"]=="468ab38712e2d21e63d7ceeed2f9495288f7027a"
+          assert p["physical_training"]["seeds"]==[3301,3540]
+          assert p["synthetic_toy_transfer"]["seeds"]==[5301,5360]
+          assert p["hypothesis_grammar"]["accepted_unique_hypotheses"]==768
+          subprocess.run(["git","merge-base","--is-ancestor","e4963b916a39a27d87e1d864b97ad68332375645","HEAD"],check=True)
+          subprocess.run(["git","diff","--exit-code","e4963b916a39a27d87e1d864b97ad68332375645","HEAD","--",str(path)],check=True)
+          print("MD30_FROZEN_BAYES_TOY_CONTROL_PREREG_PASS")
+          PY
+          python -m py_compile research/contrib/chatgpt/dg1-md30-20261114/bayesian_control.py research/contrib/chatgpt/dg1-md30-20261114/test_bayesian_control.py
+          python -m unittest discover -s research/contrib/chatgpt/dg1-md30-20261114 -p test_bayesian_control.py -v
+          python research/contrib/chatgpt/dg1-md30-20261114/bayesian_control.py > md30-bayes-toy.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("md30-bayes-toy.json").read_text("utf-8"))
+          assert p["official_first_use"] is False
+          assert p["hypothesis_count"]==768
+          assert p["physical_training"]["charged_steps"]==1920
+          assert p["toy_episodes"]==60
+          assert p["status"]=="TOY_CONTROL_DEVELOPMENT_ONLY__NOT_SCIENTIFIC_PASS"
+          # CPU-seconds are reported in original receipt, not falsely compared
+          # for exact equality across distinct Windows and Linux machines.
+          q={k:v for k,v in p.items() if k != "whole_process_fit_cpu_seconds"}
+          Path("md30-bayes-parity.json").write_bytes(
+              (json.dumps(q,sort_keys=True,separators=(",",":"),ensure_ascii=True)+"\\n").encode("utf-8"))
+          print("MD30_CHARGED_BAYESIAN_TOY_CONTROL_PASS")
+          print("MD30_BAYES_OFFICIAL_FIRST_USE_NOT_EXECUTED")
+          print("MD30_TOY_REWARD:",p["toy_mean_net_utility"])
+          print("MD30_TOY_BLIND_REWARD:",p["blind_mean_net_utility"])
+          print("MD30_BAYES_TRAIN_CPU_SECONDS:",p["whole_process_fit_cpu_seconds"])
+          PY
       - name: Full inherited regression and exact committed atlas
         shell: bash
         env:
@@ -128,6 +170,8 @@ jobs:
           path: |
             md30-physical-fixture.json
             md30-structural-distribution.json
+            md30-bayes-toy.json
+            md30-bayes-parity.json
           if-no-files-found: error
   parity:
     name: MD30 cross-OS physical trace and headroom parity
@@ -148,6 +192,7 @@ jobs:
         run: |
           cmp linux/md30-physical-fixture.json windows/md30-physical-fixture.json
           cmp linux/md30-structural-distribution.json windows/md30-structural-distribution.json
+          cmp linux/md30-bayes-parity.json windows/md30-bayes-parity.json
           python - <<'PY'
           import json
           from pathlib import Path
@@ -159,6 +204,11 @@ jobs:
           assert q["registered_first_use"] is False
           assert len(q["motifs"])==6
           assert all(x["oracle_blind_utility_headroom"]>=0.35 for x in q["motifs"].values())
+          bayes=json.loads(Path("linux/md30-bayes-parity.json").read_text())
+          assert bayes["official_first_use"] is False
+          assert bayes["physical_training"]["charged_steps"]==1920
+          assert bayes["toy_episodes"]==60
+          print("MD30_BAYES_MODEL_AND_PUBLIC_RECEIPT_CROSS_OS_PARITY_PASS")
           print("MD30_SIX_MOTIF_STRUCTURAL_PARITY_PASS")
           print("MD30_PRE_FIRST_USE_CROSS_OS_PARITY_PASS")
           PY
