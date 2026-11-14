@@ -1,0 +1,54 @@
+{
+  "schema": "wsp99.fixture-source-evaluator-protocol.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-99",
+  "status": "FROZEN_BEFORE_SOURCE_AND_EVALUATOR_IMPLEMENTATION; DEV_FIXTURE_ONLY",
+  "exact_parent_sha": "ccb8692317c74db71f0f7b8f62fed21a2040ed2a",
+  "task_prereg_sha": "babec7b7a352ab5f322217dac200dbf5591edee6",
+  "strong_controls_prereg_sha": "42d0b79ef173b00c3a2b0270fadb80b30bcdf044",
+  "gru_prereg_sha": "9c0beaf1a55a7b1dd73e5e21d3936042f94d1788",
+  "question": "Can we collect source-matched causal episodes and freeze counterfactual three-step predictions with no hidden-oracle input, no target leakage, equal action budgets, and deterministic cross-platform receipts?",
+  "experiment_kind": "fixture-only data/evaluator engineering; never an original scientific result",
+  "allowed_ids": "Only FIXTURE IDs 0..7. The PUBLIC 99011..99042, RESERVED 99101..99164 and WSP98 reserved 98101..98140 must not be created, used, or inspected.",
+  "policy": {
+    "passive_count": 24,
+    "active_count": 8,
+    "random_count": 8,
+    "steps_per_episode": 4,
+    "passive_initial": "Take integer-valued six-bit initial state rank(fixture,'PASSIVE-INIT',episode_index)%64; observations reset hidden=0; passive action rank(fixture,'PASSIVE-ACT',4*episode+step)%4.",
+    "investigative_initial": "Both active/random arms get the SAME initial state rank(fixture,'INVESTIGATE-INIT',episode_index)%64. Hidden resets=00 before each episode.",
+    "random_actions": "Action rank(fixture,'RANDOM-ACT',4*episode+step)%4, independent of outcomes and active arm.",
+    "active_actions": "Sequential deterministic visible-only coverage policy, initialized from passive episode rows; for each candidate action 0..3 choose highest score 16*I[(visible,action) unseen] + 4*I[(previous_action, action) unseen] + I[action use count is minimum among 0..3]. Tie: ascending SHA256 rank(fixture,'ACTIVE-TIE',4*global_step+action), then smallest action. Update counts only AFTER real observation. Current source and past observed histories allowed, hidden program/target labels and auditor forbidden.",
+    "history": "Agent-facing rows contain only (previous visible state, selected action, next visible state), four transitions per episode; reward is redundant as next_visible[0]&next_visible[1] and may be audited but not privileged. Zero opportunity to view oracle internal parameters.",
+    "matching": "Both arms receive exact identical 24 passive episodes, exactly eight investigative episodes of four actions each, and shared investigative episode starts; no replay buffer or extra queries.",
+    "receipt": "Canonical sorted compact JSON source histories and policy-selected actions; SHA256 commit/hash receipt produced before heldout predictions. Do not log oracle hidden parameters.",
+    "no_actions_outside_budget": true
+  },
+  "heldout": {
+    "count": 24,
+    "branches": 2,
+    "steps": 3,
+    "selection": "Choose first 24 distinct initial six-bit states sorted by SHA256 rank(fixture,'HELDOUT-INIT',state_int) among 64 states excluding all PASSIVE and INVESTIGATIVE EPISODE INITIAL STATES for BOTH arms. Do not exclude all intermediate visible observations.",
+    "paired_actions": "For each target index use first action a=rank(fixture,'HELDOUT-A',idx)%4 and b=(a+1+rank(fixture,'HELDOUT-B',idx)%3)%4; common second and third actions rank(fixture,'HELDOUT-C',3*idx+offset)%4 for offset=1,2. The two branches differ ONLY in action 0. No lookahead or oracle-informed selection.",
+    "ordering": "Fixture ID, target index in SHA order, branch A then branch B, transition t=1..3, six visible bits output0..5.",
+    "predict_then_score": "Before requesting heldout environment step from the evaluator, candidate rollout returns predicted visible states for every target/branch using only its own state; evaluator computes and freezes SHA256 of source, target/action plan and all candidate predictions. Only after that read true heldout trajectories from fresh oracle resets. Never use heldout labels for model/policy selection.",
+    "accuracy": "For each method report per-step correct output bits over 24*2*6, delayed steps 2 and 3 separately, terminal 3-step bit accuracy, reward Brier of predicted y0*y1 on each predicted trajectory vs observed reward, and paired delayed-effect prevalence at step2 conditional on first-step effects equal.",
+    "tamper_negative": "Wrong-shape predictions, malformed actions, inconsistent source episode continuity, different initial start sets, and attempted original-world IDs fail closed.",
+    "time_cost": "Record end-to-end wall/CPU and source action counts separately, never infer a comparable acceleration without matched compute."
+  },
+  "rules": {
+    "fixture_pass": "Exact 24 passive and 8+8 investigative episodes, 128 transition rows each arm, equal starts/budgets, no oracle exposure, 24 targets non-overlap with all training initial states, paired action divergence only at step1, determinism and negative tests pass.",
+    "scientific_pass": "NOT AVAILABLE in fixture gate. No original SOURCE or targets, no scientific or direct-weight advantage claims.",
+    "invalid": "Any oracle data leaks, extra actions, original first-use, validation bypass, changed hashes, unpreregistered source/evaluation selection or incorrect action budget.",
+    "next": "After this gate independently freeze original-world generator, strong-control selection and blind evaluator first-use contract; require exact-tree full Ubuntu+Windows regression and G29 pinned atlas before original PUBLIC admission."
+  },
+  "authority": {
+    "research_only": true,
+    "merge": false,
+    "accepted_model_edit": false,
+    "runner_or_queue_authority": false,
+    "original_first_use": false,
+    "paid_apis": false
+  },
+  "no_model_selection": "Do not tune candidate weights, use oracle labels to adapt exploration, or select hyperparameters based on heldout scores after this first protocol. Fixture diagnostic only; preserve negatives."
+}
