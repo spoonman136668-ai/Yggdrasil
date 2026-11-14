@@ -268,3 +268,43 @@ jobs:
         run: |
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test -z "$(git status --porcelain)"
+
+  full-real-train-numeric-capacity-once:
+    needs: [custody-code]
+    if: "github.event.head_commit.message == 'ci(wsp102): one-shot 21.34M real-triple numeric weight capacity' && github.run_attempt == 1 && needs.custody-code.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    concurrency:
+      group: wsp102-21m-real-triples-numeric-width
+      cancel-in-progress: false
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Enforce frozen source variant, no original evaluation data, no model promotion
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor e5e4a38ea0997e7fba0a4bef735b33518e7bc490 HEAD
+          test -f research/contrib/chatgpt/WSP-102/HISTORICAL_VARIANT_SEAL.json
+          test -f research/contrib/chatgpt/WSP-102/weight_capacity_prereg.json
+          test ! -e research/contrib/chatgpt/WSP-102/REAL_DATA_FIRST_USE.json
+          test -z "$(git status --porcelain)"
+      - name: Full 21.343M real training fact numeric weight write with cold restore
+        run: python research/contrib/chatgpt/WSP-102/real_graph_weights.py --train-only-full-numeric-capacity
+      - name: Guarantee source-only data and clean worktree
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
