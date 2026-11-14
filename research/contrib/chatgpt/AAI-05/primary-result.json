@@ -1,0 +1,127 @@
+{
+  "checks": {
+    "bayes_near_parity": true,
+    "cold_and_interference_restoration": true,
+    "dev_nonregression": true,
+    "no_leakage_and_disjointness": true,
+    "shuffled_negative": true,
+    "transfer_gain": true,
+    "transfer_positive_ci": true
+  },
+  "classification": "SCIENTIFIC_PASS_CANDIDATE_UNQUALIFIED",
+  "cohorts": {
+    "development": {
+      "bayes": {
+        "mean_fit_eval_seconds": 0.00129,
+        "mean_reward": 0.72526042,
+        "mean_serialized_bytes": 2673.73,
+        "n": 64
+      },
+      "cart": {
+        "mean_fit_eval_seconds": 0.000295,
+        "mean_reward": 0.59049479,
+        "mean_serialized_bytes": 388.41,
+        "n": 64
+      },
+      "direct": {
+        "mean_fit_eval_seconds": 0.000458,
+        "mean_reward": 0.71289062,
+        "mean_serialized_bytes": 6.64,
+        "n": 64
+      },
+      "logistic": {
+        "mean_fit_eval_seconds": 0.024467,
+        "mean_reward": 0.61328125,
+        "mean_serialized_bytes": 866.81,
+        "n": 64
+      },
+      "lookup": {
+        "mean_fit_eval_seconds": 0.000173,
+        "mean_reward": 0.50585937,
+        "mean_serialized_bytes": 167.03,
+        "n": 64
+      }
+    },
+    "negative": {
+      "direct": {
+        "mean_fit_eval_seconds": 0.000461,
+        "mean_reward": 0.66210937,
+        "mean_serialized_bytes": 6.8,
+        "n": 64
+      },
+      "shuffled": {
+        "mean_fit_eval_seconds": 0.00047,
+        "mean_reward": 0.49414063,
+        "mean_serialized_bytes": 6.56,
+        "n": 64
+      }
+    },
+    "transfer": {
+      "bayes": {
+        "mean_fit_eval_seconds": 0.001293,
+        "mean_reward": 0.69108073,
+        "mean_serialized_bytes": 2677.24,
+        "n": 128
+      },
+      "cart": {
+        "mean_fit_eval_seconds": 0.000292,
+        "mean_reward": 0.59440104,
+        "mean_serialized_bytes": 387.35,
+        "n": 128
+      },
+      "direct": {
+        "mean_fit_eval_seconds": 0.000461,
+        "mean_reward": 0.68424479,
+        "mean_serialized_bytes": 6.65,
+        "n": 128
+      },
+      "logistic": {
+        "mean_fit_eval_seconds": 0.024518,
+        "mean_reward": 0.59082031,
+        "mean_serialized_bytes": 864.79,
+        "n": 128
+      },
+      "lookup": {
+        "mean_fit_eval_seconds": 0.000175,
+        "mean_reward": 0.49902344,
+        "mean_serialized_bytes": 167.22,
+        "n": 128
+      }
+    }
+  },
+  "cost_basis": "wall-clock fit plus terminal scoring; cold/interference extra work excluded from per-method fit time; memory report is serialized inference state only",
+  "differences": {
+    "dev_vs_strongest_conventional": 0.09960937,
+    "negative_proper_minus_shuffled": 0.16796874,
+    "transfer_vs_bayes": -0.00683594,
+    "transfer_vs_strongest_conventional": 0.08984375
+  },
+  "duration_seconds": 16.508013,
+  "integration": "NONE",
+  "limitations": "World generator and hypothesis catalog are known to the associator and exact Bayes; transfer involves operator combinations unseen in the development cohort, NOT arbitrary unknown causal physics. Test is synthetic and does not prove general intelligence or native Yggdrasil learning.",
+  "paired_bootstrap_95pct": {
+    "dev_vs_strongest_conventional": [
+      0.06640625,
+      0.1328125
+    ],
+    "negative_proper_minus_shuffled": [
+      0.13346354,
+      0.20768229
+    ],
+    "transfer_vs_bayes": [
+      -0.01269531,
+      -0.0016276
+    ],
+    "transfer_vs_strongest_conventional": [
+      0.06738281,
+      0.11328125
+    ]
+  },
+  "prediction_receipt_sha256": "d59339d0cdcf8dd30db785d70d241effb1d9c12fe377a34c9fae3b2ce100720d",
+  "prereg_commit": "d417e2aff50db08d2b12af7d02ced094d17983cc",
+  "schema": "yggdrasil.contrib.aai05.result.v1",
+  "strongest_conventional": {
+    "development": "logistic",
+    "transfer": "cart"
+  }
+}
