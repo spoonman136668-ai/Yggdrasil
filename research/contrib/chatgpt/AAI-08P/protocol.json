@@ -19,12 +19,13 @@
     "python": "3.12",
     "minimal": [
       "numpy==1.26.4",
-      "gymnasium==1.2.2",
+      "gymnasium[mujoco]==1.2.2",
       "scipy==1.15.3",
       "PyYAML==6.0.2",
       "mujoco==3.3.7"
     ],
-    "note": "NS-Gym top-level wrapper imports MuJoCo even for non-MuJoCo Bridge; don't install torch/training stacks in mechanical preflight. `pip check` cannot pass with --no-deps due unrelated package declared dependencies. Exact runtime imports and API are the gate."
+    "note": "NS-Gym top-level wrapper imports MuJoCo even for non-MuJoCo Bridge; don't install torch/training stacks in mechanical preflight. `pip check` cannot pass with --no-deps due unrelated package declared dependencies. Exact runtime imports and API are the gate.",
+    "mechanical_fix": "Initial CI run 43611962909 found upstream ns_gym imports optional Ant-v5 at module load; gymnasium plain install lacked imageio. Use pinned Gymnasium MuJoCo extra to obtain official runtime dependencies; science has NOT run. Repair does not edit vendor code or used science data."
   },
   "mechanical": {
     "environment": "ns_gym/Bridge-v0 with official NSBridgeWrapper and DistributionStepWiseUpdate at t=3",
