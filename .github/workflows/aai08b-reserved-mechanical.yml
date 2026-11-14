@@ -1,0 +1,73 @@
+name: AAI-08B pinned official NS-Gym reserved-seed mechanical qualification
+on:
+  push:
+    branches: [research/aai08b-sparse-recurrence-falsification-20261114]
+    paths: [.github/workflows/aai08b-reserved-mechanical.yml]
+permissions:
+  contents: read
+jobs:
+  source-locked-official-mechanical:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'AAI-08B official reserved-seed mechanical qualification' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Confirm frozen prereg and future science source, no permission for first-use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '04d63ff21421a25d6410bfe37e92c7842194c3ba'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai08b-reserved-mechanical.yml'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08B/prereg.json)" = "$(git rev-parse da868ed0438a2407a6523f5a8ac3040df892a350:research/contrib/chatgpt/AAI-08B/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08B/models.py)" = "$(git rev-parse 92cff577ce34561764b712d41675104762ed6976:research/contrib/chatgpt/AAI-08B/models.py)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08B/evaluate.py)" = "$(git rev-parse 10e25b6965de5e31fb1fcbed53608b44e49c2d36:research/contrib/chatgpt/AAI-08B/evaluate.py)"
+          test -z "$(git status --porcelain)"
+          echo AAI08B_NO_SCIENTIFIC_FIRST_USE=PASS
+      - name: Fetch exactly pinned official upstream Bridge without patching it
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init -q "$RUNNER_TEMP/nsgym"
+          git -C "$RUNNER_TEMP/nsgym" remote add origin https://github.com/scope-lab-vu/ns_gym.git
+          git -C "$RUNNER_TEMP/nsgym" fetch -q --no-tags --depth 1 origin 127df4b714fe4fcf680721d8e9278a96090acd7e
+          git -C "$RUNNER_TEMP/nsgym" checkout -q --detach FETCH_HEAD
+          test "$(git -C "$RUNNER_TEMP/nsgym" rev-parse HEAD)" = '127df4b714fe4fcf680721d8e9278a96090acd7e'
+          test "$(git -C "$RUNNER_TEMP/nsgym" rev-parse HEAD:ns_gym/envs/Bridge.py)" = '02415d65ff8a0c419d32f274e2669f9e54e8d29f'
+          test "$(git -C "$RUNNER_TEMP/nsgym" rev-parse HEAD:ns_gym/wrappers/toy_text.py)" = 'cd94311a4d312b9d8c35b7719207020150caa300'
+          echo AAI08B_EXTERNAL_BRIDGE_SOURCE_PIN_PASS
+      - name: Install pinned official runtime dependencies, no paid APIs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --no-input --prefer-binary \
+            numpy==1.26.4 'gymnasium[mujoco]==1.2.2' scipy==1.15.3 PyYAML==6.0.2 \
+            mujoco==3.3.7 pygame==2.6.1
+          python -m pip install --disable-pip-version-check --no-input --no-deps -e "$RUNNER_TEMP/nsgym"
+      - name: Reserved seeds ONLY, original cache and counterfactual controls
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-08B -p 'test_*.py' -v
+          python -B research/contrib/chatgpt/AAI-08B/evaluate.py --mechanical
+          if python -B research/contrib/chatgpt/AAI-08B/evaluate.py --primary >/dev/null 2>&1; then
+            echo 'FAIL: disarmed science primary path unexpectedly succeeded' >&2
+            exit 1
+          fi
+          test -z "$(git status --porcelain)"
+          echo AAI08B_OFFICIAL_RESERVED_MECHANICAL_PASS
