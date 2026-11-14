@@ -162,8 +162,18 @@ jobs:
           assert excluded.issubset({p.name for p in files})
           for path in files:
               if path.name in excluded:
-                  assert any(line.strip() == 'import resource'
-                             for line in path.read_text('utf-8').splitlines()), path
+                  text=path.read_text('utf-8')
+                  if path.name == 'test_free_fanout_sidecar.py':
+                      # The test dynamically imports the existing sidecar,
+                      # whose top-level resource import is POSIX-only.
+                      assert 'spec_from_file_location(' in text
+                      assert 'free_fanout_sidecar.py' in text
+                      assert any(line.strip() == 'import resource' for line in
+                          Path('scripts/free_fanout_sidecar.py')
+                          .read_text('utf-8').splitlines())
+                  else:
+                      assert any(line.strip() == 'import resource'
+                                 for line in text.splitlines()), path
           suite = unittest.TestSuite()
           loader = unittest.TestLoader()
           for path in files:
