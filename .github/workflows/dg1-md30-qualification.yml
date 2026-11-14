@@ -200,6 +200,63 @@ jobs:
               print("MD30_CONTROL:",name,"TOY_MEAN:",c["toy_mean_net_utility"],
                     "ACTIONS:",c["toy_charged_steps"])
           PY
+      - name: Qualify frozen native non-token hypothesis tournament and paired synthetic controls
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          f="research/contrib/chatgpt/dg1-md30-20261114/native_tournament_lock.json"
+          x=json.loads(Path(f).read_text("utf-8"))
+          assert x["status"]=="FROZEN_BEFORE_CANDIDATE_SOURCE__SYNTHETIC_DEVELOPMENT_ONLY"
+          assert x["source_parent_sha"]=="1c743ceea619ab1469be5eb511bf508d00275a6b"
+          assert x["evaluation"]["fresh_synthetic_diagnostic_seeds"]==[6301,6360]
+          assert x["train"]["credit_rule"].startswith("For each public response bit")
+          subprocess.run(["git","merge-base","--is-ancestor",
+             "242dd9f6c46ca895ec5a7e279a975ea5e980b087","HEAD"],check=True)
+          subprocess.run(["git","diff","--exit-code",
+             "242dd9f6c46ca895ec5a7e279a975ea5e980b087","HEAD","--",f],check=True)
+          print("MD30_FROZEN_NATIVE_TOURNAMENT_LOCK_PASS")
+          PY
+          python -m py_compile research/contrib/chatgpt/dg1-md30-20261114/native_tournament.py research/contrib/chatgpt/dg1-md30-20261114/native_tournament_preflight.py research/contrib/chatgpt/dg1-md30-20261114/test_native_tournament.py
+          python -m unittest discover -s research/contrib/chatgpt/dg1-md30-20261114 -p test_native_tournament.py -v
+          python research/contrib/chatgpt/dg1-md30-20261114/native_tournament_preflight.py > md30-native.json
+          python - <<'PY'
+          import json,sys
+          from pathlib import Path
+          sys.path.insert(0,"research/contrib/chatgpt/dg1-md30-20261114")
+          from native_tournament_preflight import parity_receipt
+          x=json.loads(Path("md30-native.json").read_text("utf-8"))
+          assert x["status"]=="PRECOMMITTED_SYNTHETIC_DIAGNOSTIC_ONLY"
+          assert x["official_first_use"] is False
+          assert x["train"]["charged_physical_actions"]==1920
+          assert x["source_hypothesis_count"]==768
+          assert x["cold"]["identical"] is True
+          assert x["known_previous_toy"]["episodes_per_arm"]==60
+          assert x["fresh_synthetic_diagnostic"]["episodes_per_arm"]==60
+          assert x["known_previous_toy"]["results"]["trained_bayesian"]["mean_net_utility"]==0.7525
+          for cohort in ("known_previous_toy","fresh_synthetic_diagnostic"):
+              assert set(x[cohort]["results"])=={
+                  "native_persistent_causal_tournament",
+                  "native_stateless_ablation",
+                  "native_change_agnostic_ablation",
+                  "trained_bayesian","blind_A"}
+          portable=parity_receipt(x)
+          Path("md30-native-parity.json").write_bytes(
+              (json.dumps(portable,sort_keys=True,separators=(",",":"),ensure_ascii=True)+chr(10)).encode("utf-8"))
+          print("MD30_NATIVE_PERSISTENT_CAUSAL_TOURNAMENT_EXECUTED_TOY_ONLY")
+          print("MD30_NATIVE_COLD_REPLAY_VERIFIED")
+          print("MD30_NATIVE_OFFICIAL_FIRST_USE_NOT_EXECUTED")
+          for cohort in ("known_previous_toy","fresh_synthetic_diagnostic"):
+              print("MD30_COHORT:",cohort)
+              for name,model in x[cohort]["results"].items():
+                  print("MD30_ARM:",name,"REWARD:",model["mean_net_utility"],
+                        "ACTIONS:",model["charged_physical_actions"])
+              print("MD30_NOVELTY_DIAGNOSTIC_ONLY:",
+                    x[cohort]["candidate_development_threshold_met"])
+          PY
       - name: Full inherited regression and exact committed atlas
         shell: bash
         env:
@@ -220,6 +277,8 @@ jobs:
             md30-bayes-parity.json
             md30-conventional.json
             md30-conventional-parity.json
+            md30-native.json
+            md30-native-parity.json
           if-no-files-found: error
   parity:
     name: MD30 cross-OS physical trace and headroom parity
@@ -242,6 +301,7 @@ jobs:
           cmp linux/md30-structural-distribution.json windows/md30-structural-distribution.json
           cmp linux/md30-bayes-parity.json windows/md30-bayes-parity.json
           cmp linux/md30-conventional-parity.json windows/md30-conventional-parity.json
+          cmp linux/md30-native-parity.json windows/md30-native-parity.json
           python - <<'PY'
           import json
           from pathlib import Path
@@ -262,6 +322,12 @@ jobs:
           assert x["physical_training"]["charged_steps"]==1920
           assert x["model_controls"]["recurrent_world_model"]["toy_episodes"]==60
           assert x["model_controls"]["empirical_model_based_rl"]["toy_episodes"]==60
+          p=json.loads(Path("linux/md30-native-parity.json").read_text())
+          assert p["official_first_use"] is False
+          assert p["cold"]["identical"] is True
+          assert p["fresh_synthetic_diagnostic"]["episodes_per_arm"]==60
+          assert p["source_hypothesis_count"]==768
+          print("MD30_NATIVE_HYPOTHESIS_MEMORY_AND_PHYSICAL_REPLAY_OS_PARITY_PASS")
           print("MD30_RNN_RL_PUBLIC_MODEL_AND_TRACE_PARITY_PASS")
           print("MD30_BAYES_MODEL_AND_PUBLIC_RECEIPT_CROSS_OS_PARITY_PASS")
           print("MD30_SIX_MOTIF_STRUCTURAL_PARITY_PASS")
