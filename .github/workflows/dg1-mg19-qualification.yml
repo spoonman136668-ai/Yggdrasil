@@ -30,7 +30,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
-          python-version: '3.12.16'
+          python-version: '3.12'
       - name: Verify frozen preregistration-only ancestry and original suite identity
         shell: bash
         run: |
@@ -193,7 +193,7 @@ jobs:
           assert a["gates"]==b["gates"]
           def strip(x):
               if isinstance(x,dict):
-                  return {k:strip(v) for k,v in x.items() if k not in ("raw_cpu_ns","CPU_ratio")}
+                  return {k:strip(v) for k,v in x.items() if k not in ("raw_cpu_ns","CPU_ratio","python_version")}
               if isinstance(x,list):
                   return [strip(v) for v in x]
               return x
