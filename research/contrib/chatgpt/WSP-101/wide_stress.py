@@ -190,19 +190,50 @@ def execute(domains, relations, bits):
     return report
 
 def main():
-    all_results=[]
-    for domains,relations,bits in TIERS:
-        result=execute(domains,relations,bits)
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--fallback-only", action="store_true",
+                        help="only the two preregistered smaller tiers; original max negative already consumed")
+    args = parser.parse_args()
+    tiers = TIERS[1:] if args.fallback_only else TIERS
+    failures = []
+    all_results = []
+    for domains, relations, bits in tiers:
+        try:
+            result = execute(domains, relations, bits)
+        except ValueError as exc:
+            # Frozen source-size/information failure, not permission to tune
+            # any generator or fitting rule after seeing the huge DEV result.
+            if str(exc) not in ("ambiguous underdetermined source",
+                                "symbolic source nonidentifiable",
+                                "no source-consistent numerical rule",
+                                "no symbolic explanation"):
+                raise
+            negative = {
+                "tier": [domains, relations, bits],
+                "classification": "DEV_SOURCE_UNDERIDENTIFIED",
+                "reason": str(exc),
+                "scientific_superiority": False,
+                "original_worlds_used": False
+            }
+            failures.append(negative)
+            print("WSP101_WIDE_DEV_TIER_NEGATIVE=" + json.dumps(
+                negative,sort_keys=True,separators=(",",":")),flush=True)
+            continue
         all_results.append(result)
-        print("WSP101_WIDE_DEV_TIER="+json.dumps(result,sort_keys=True,separators=(",",":")),flush=True)
-        if result["engineering_class"]=="DEV_BOUNDED_RULE_CAPACITY_PASS_WITH_STRONG_TIE":
+        print("WSP101_WIDE_DEV_TIER=" + json.dumps(
+            result,sort_keys=True,separators=(",",":")),flush=True)
+        if result["engineering_class"] == "DEV_BOUNDED_RULE_CAPACITY_PASS_WITH_STRONG_TIE":
             break
-    print("WSP101_WIDE_DEV_FINAL="+json.dumps({
-        "schema":"wsp101.wide-first-result.v1",
-        "attempted_tiers":all_results,
-        "scientific_superiority":False,
-        "original_worlds_used":False
+    print("WSP101_WIDE_DEV_FINAL=" + json.dumps({
+        "schema": "wsp101.wide-first-result.v1",
+        "fallback_only": args.fallback_only,
+        "preexisting_max_negative_run": 43623476680 if args.fallback_only else None,
+        "attempted_successful_tiers": all_results,
+        "underidentified_tiers": failures,
+        "scientific_superiority": False,
+        "original_worlds_used": False
     },sort_keys=True,separators=(",",":")),flush=True)
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()

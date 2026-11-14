@@ -199,3 +199,47 @@ jobs:
           test ! -f research/contrib/chatgpt/WSP-101/PUBLIC_PASS.json
           test ! -f research/contrib/chatgpt/WSP-101/RESERVED_PASS.json
           test -z "$(git status --porcelain)"
+
+  wide-fallback-dev-stress:
+    needs: [dev-fixtures]
+    if: "github.event.head_commit.message == 'ci(wsp101): one-shot frozen smaller breadth DEV tiers' && github.run_attempt == 1 && needs.dev-fixtures.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    concurrency:
+      group: wsp101-huge-first-frozen-fallback-once
+      cancel-in-progress: false
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify original max source failure and frozen tiers, unchanged task and original custody
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 704d7d876ca1fea5a709a3614fd2afb31b951025 HEAD
+          git merge-base --is-ancestor e5744b923ec875e31e64e6a749c0a0e16e96f54c HEAD
+          test -f research/contrib/chatgpt/WSP-101/WIDE_MAX_NEGATIVE.json
+          git diff --exit-code e5744b923ec875e31e64e6a749c0a0e16e96f54c HEAD -- research/contrib/chatgpt/WSP-101/wide_truth.py
+          git diff --exit-code e5744b923ec875e31e64e6a749c0a0e16e96f54c HEAD -- research/contrib/chatgpt/WSP-101/wide_models.py
+          git diff --exit-code a24c6ec7d23e56b6462dcf43cbd4a72256a35ff3 HEAD -- research/contrib/chatgpt/WSP-98
+          test ! -f research/contrib/chatgpt/WSP-101/PUBLIC_PASS.json
+          test ! -f research/contrib/chatgpt/WSP-101/RESERVED_PASS.json
+          test -z "$(git status --porcelain)"
+      - name: Execute only preregistered 32x32 and 8x8 DEV fallback tiers
+        run: python research/contrib/chatgpt/WSP-101/wide_stress.py --fallback-only
+      - name: Exact SHA, clean worktree, no original worlds
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
