@@ -165,19 +165,24 @@ class ProtectedGraphBank:
         current=slot_batch_errors(old,batch)
         others=[s for s in self.slots if s["id"]!=self.active_id]
         best=min(others,key=lambda s:(slot_batch_errors(s,batch),s["id"])) if others else None
-        if best is not None and slot_batch_errors(best,batch)<=current-2:
+        recalled=(best is not None and slot_batch_errors(best,batch)<=current-2)
+        created=False
+        if recalled:
             target=best
-            self.retrievals+=1
         elif len(self.slots)<self.max_slots and old["rows"]>=8 and current>=3:
             target=empty_slot(self.next_id,self._novel_prior())
-            self.next_id+=1
-            self.slots.append(target)
+            created=True
         else:
             target=old
         if target["rows"]+2>MAX_ROWS:
             self.scratch.pop()
-            # No sample nor any existing slot was changed; fail closed.
+            # No durable slot IDs/counters, recall metrics, or active context changed.
             raise ValueError("graph signature slot saturation")
+        if recalled:
+            self.retrievals+=1
+        if created:
+            self.next_id+=1
+            self.slots.append(target)
         self.active_id=target["id"]
         for sample in batch:
             apply_to_slot(target,sample,+1)
