@@ -190,8 +190,6 @@ class EvalArithmeticTests(unittest.TestCase):
                 "paid_actions": 6144,
                 "public_episodes": 1536,
                 "available_paid_action_slots": 6144,
-                "available_paid_action_slots": 6144,
-                "available_paid_action_slots": 6144,
             },
             "recurrent": {
                 "fit_selection_cpu_seconds": 90.0,
@@ -199,6 +197,7 @@ class EvalArithmeticTests(unittest.TestCase):
                 "whole_process_wall_seconds": 127.0,
                 "paid_actions": 6144,
                 "public_episodes": 1536,
+                "available_paid_action_slots": 6144,
             },
             "model_based_rl": {
                 "fit_selection_cpu_seconds": 65.0,
@@ -206,6 +205,7 @@ class EvalArithmeticTests(unittest.TestCase):
                 "whole_process_wall_seconds": 119.0,
                 "paid_actions": 6144,
                 "public_episodes": 1536,
+                "available_paid_action_slots": 6144,
             },
         }
         self.assertTrue(compute_parity_report(rows)
