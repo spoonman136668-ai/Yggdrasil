@@ -120,7 +120,13 @@ def evaluate(corpus:dict,*,reserved:bool)->dict:
     conventional_training_exact=training_exact(conventional,docs,TRAIN)
     parser=SymbolicParser()
     retrieval=LexicalCue()
-    rng=RandomSpanControl(PROTOCOL["protocol"]["seeds"]["reserved" if reserved else "fixture"])
+    # The preregistration freezes the protocol SHA but does not list
+    # a random-control seed. Derive it prospectively from that immutable
+    # commit and distinct cohort names; NEVER from outcomes or labels.
+    cohort_name="reserved" if reserved else "fixture"
+    seed_bytes=hashlib.sha256(("WSP91|span-control|"+cohort_name+
+                              "|698c3ba125b94880271d68713d20326ffeab95fe").encode("ascii")).digest()
+    rng=RandomSpanControl(int.from_bytes(seed_bytes[:8],"big"))
     pool=DEV if reserved else PUBLIC
     queries=questions(pool)
 
