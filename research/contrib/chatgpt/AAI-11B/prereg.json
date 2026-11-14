@@ -1,0 +1,89 @@
+{
+  "schema": "yggdrasil.contrib.aai11b.intervention-contrast-v1",
+  "id": "AAI-11B",
+  "stage": "SYNTHETIC_SOURCE_DEV_NOT_SCIENCE",
+  "parent": {
+    "branch": "research/aai11a-protected-causal-graph-20261114",
+    "sha": "c3e2601695579690bf3b3e83b93050018d88725f",
+    "pr": 1059,
+    "benchmark_pr": 1057,
+    "benchmark_sha": "40062783d0aa0e06fbe93b3419291150b306562d",
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "AAI11A_result": "DEV_NO_GO_NO_SCIENCE, loss -0.3640625 vs structural graph_recent8 and 3.166765x/3.800335x whole-process cost; locked, not modified",
+    "AAI11A_qualified_linux_windows_run": 43640947420,
+    "AAI11A_final_regression": 43641169582,
+    "AAI11A_model_blob": "331a97b566d41785be06923a7acc63df6105cffd",
+    "AAI11A_comparator_blob": "331a97b566d41785be06923a7acc63df6105cffd",
+    "AAI11P_world_blob": "88d220e94ccf736e490f20922f1c7f5d3c1d3746",
+    "AAI11P_controls_blob": "b554db7d8d25ae9b6a5f8bffb066181a00b35ffc"
+  },
+  "hypothesis": "Learning from actual intervention-induced mediator flips (do-action consequences), not passive state correlations or protected-slot recall, improves causal hypothesis selection under unfamiliar composed laws while using the exact same operator grammar, recent-8 public memory and common planner as strongest existing graph_recent8 control.",
+  "mechanism": {
+    "name": "InterventionalContrastTournament",
+    "independent_from_AAI11A_protected_slot_rule": true,
+    "operator_grammar": "Exactly AAI-11A graph_recent8 45+45+84 XOR/AND/OR hypotheses, no new rules or privileged formulas; reuse original public prediction grammar, original common planner, same recent-eight observed public events.",
+    "memory": "Retain exactly most recent eight public rows plus their actions_taken 0/1/2 markers to link consecutive actual do-action pre/post records; no historical protected slots, extra observations or simulator labels; at most 8 public rows, same length as graph_recent8.",
+    "static_evidence": "For each rule/output use the exact public-output mismatch count over the eight recent observations, as in graph_recent8.",
+    "interventional_contrast": "For each consecutive publicly observed pair where action count advances by 1 (0->1 or 1->2) AND public x actually changes, calculate whether the rule-predicted mediator flip matches the actual publicly observed mediator flip, using for mediator2 the PUBLICLY OBSERVED upstream mediators at each pair endpoint. Add exactly 2 mismatch-equivalent errors for each disagreement. Use only pairs fully present inside current recent-eight window. No action label or hidden counterfactual needed: compare public x and public m.",
+    "selection": "Minimize static_errors + 2 * contrast_flip_errors per mediator with exact original stable operator-index ties. Output 0.9 for MAP predicted 1, 0.1 for MAP predicted 0, composed downstream from model-predicted upstream. Re-evaluate/invalidate after every new actual public observation. No post hoc threshold tuning.",
+    "planning": "Original AAI-11P controls.plan, same 0 to 2 do-action episodes and public stop/ties; zero information-gain exploration bonus. Only intervention evidence changes association learning.",
+    "cold": "Canonical exact checkpoint, old eight public x/m evidence and action-count markers only; derived mismatch/error caches never serialized; no source change to original graph_recent8 or benchmark.",
+    "ablation": "Unmodified AAI-11A graph_recent8 same grammar, same eight public rows, no contrast term; original 11 fully matched controls retain eligibility; optional negative skip contrast within source test only.",
+    "novelty": "Different causal learning signal than failed protected slot memory; source can't import simulator privileged law formulas."
+  },
+  "source_development": {
+    "fixtures": [
+      "mechanical:alpha",
+      "mechanical:beta",
+      "mechanical:gamma"
+    ],
+    "same_64_train_rows": true,
+    "challenge_laws": [
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "challenge_trials": [
+      2,
+      4
+    ],
+    "context_count_per_law_budget": 12,
+    "independent_cold_per_episode": true,
+    "historical_strongest": "graph_recent8",
+    "historical_mean_reward": 2.134027778,
+    "historical_mean_goal_success": 0,
+    "historical_oracle": 2.448263889,
+    "historical_candidate_AAI11A": 1.769965278,
+    "historical_comparison_source_run": 43640947420,
+    "historical_comparison_trace_sha256": "578d311430c9b9a4037e045722f97dd57bac94cda96b177aefbe53ee7243946d",
+    "first_sequential_gate": "Evaluate new candidate ONLY, on exactly same 3 frozen mechanical fixtures/contexts and evidence as historical fully qualified AAI-11A graph_recent8. Require candidate reward >=2.214027778 (old strongest 2.134027778 +0.08) and exact 3-goal success >=0.60. A FAILURE ends DEV_NO_GO and prohibits new primary cohorts, any retune, and unnecessary repeat of old 11 controls.",
+    "if_first_pass": "Reexecute all 11 original fully trained conventional methods in same exact-source test to confirm strongest baseline, matched A/B retention within -0.03, real whole-process time <=2x fastest matched on both Linux/Windows, and negative causal pairing control, then full final cross-OS regression. No scientific first-use regardless.",
+    "independent_success": "Source fixture diagnostics are NOT scientific gain: no 64-world paired CI, no transfer claim, no neural/nontoken general-intelligence claim. Strongest control selected by achieved actual terminal reward.",
+    "cost_if_first_pass": "Wallclock train+checkpoint+challenge+actual intervention/restore time, same machine/inputs; avoid comparing timings across separate CI hosts.",
+    "disarm": "Reserved new 994000..994015, 995000..995063, 996000..996031 untouched; accept only the three literal mechanical fixture IDs; --primary and all science seeds fail closed.",
+    "equal_data": "every model sees its own consequences only, common training/challenge observations and identical action budget; no extra original dataset exposure beyond recent8."
+  },
+  "qualification": "Frozen prereg-before-code; source-only negative privacy and grammar-parity tests on each OS; source-pinned current G29 atlas; mandatory full exact-head native 54/54 + AAI11P 10/10 + AAI11A 10/10 + AAI11B focused tests both OS (even if dev NO-GO); record failure rather than tune.",
+  "authority": {
+    "development_branch": true,
+    "read_only_history": true,
+    "source_write": true,
+    "ci_source_only": true,
+    "merge": false,
+    "main_edit": false,
+    "scientific_first_use": false,
+    "cohort_consumption": 0,
+    "native_yggdrasil_integration": false,
+    "forgeloop_changes": false,
+    "controller_queue_scheduler_runner": false,
+    "paid_API": false,
+    "library_files": false
+  },
+  "result_classes": [
+    "INVALID_ENGINEERING",
+    "DEV_NO_GO_NO_SCIENCE",
+    "DEV_ADMITTED_SCIENCE_UNVERIFIED"
+  ],
+  "no_post_result_tuning": true
+}
