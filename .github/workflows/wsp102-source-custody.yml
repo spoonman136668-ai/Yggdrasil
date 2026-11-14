@@ -1,0 +1,79 @@
+name: WSP102 read-only real Wikidata5M archive provenance
+on:
+  push:
+    branches: [research/wsp102-real-knowledge-wide-first-20261114]
+permissions:
+  contents: read
+jobs:
+  custody-code:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prove source prereg before code, exact checkout, no heldout use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 94d7e527b2122722c998c0de627543ab6ec0270f HEAD
+          test ! -e research/contrib/chatgpt/WSP-102/REAL_DATA_FIRST_USE.json
+          test ! -e research/contrib/chatgpt/WSP-102/REAL_DATA_SCIENTIFIC_PASS.json
+          test -z "$(git status --porcelain)"
+      - name: Run archive-only negatives and strict source URL tests
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-102 -p 'test_*.py' -v
+      - name: Assert pristine source and unconsumed science
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+  source-custody-once:
+    needs: [custody-code]
+    if: "github.event.head_commit.message == 'ci(wsp102): one-shot real Wikidata5M metadata custody' && github.run_attempt == 1 && needs.custody-code.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: read
+    concurrency:
+      group: wsp102-real-source-custody-one-use
+      cancel-in-progress: false
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prove locked source and zero scientific first use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 94d7e527b2122722c998c0de627543ab6ec0270f HEAD
+          test ! -e research/contrib/chatgpt/WSP-102/REAL_DATA_FIRST_USE.json
+          test -z "$(git status --porcelain)"
+      - name: Bounded historical Wikidata5M source archive metadata only
+        run: python research/contrib/chatgpt/WSP-102/source_custody.py --source-custody-only
+      - name: No source upload, unconsumed original evaluator, clean tree
+        shell: bash
+        run: |
+          test ! -e research/contrib/chatgpt/WSP-102/REAL_DATA_FIRST_USE.json
+          test -z "$(git status --porcelain)"
