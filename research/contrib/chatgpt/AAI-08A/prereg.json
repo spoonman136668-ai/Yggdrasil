@@ -1,0 +1,123 @@
+{
+  "schema": "yggdrasil.contrib.external-science-prereg.v1",
+  "id": "AAI-08A",
+  "parent_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "previous_experiment": "AAI-08P PR #1037 final candidate 95e331092cfcb8ec3098ea83024fc3f24b67b14a, exact-source external deterministic and stochastic mechanical replay PASS. Scientific first-use not consumed.",
+  "question": "Can a single bounded associative regime-memory learned from actual official nonstationary Bridge transitions adapt to law A, law B, then recall A when it returns, while beating fully trained conventional stationary and recency/change-point estimators at equal observation/intervention budgets?",
+  "hypothesis": "A two-slot likelihood-gated reusable regime memory may reduce return-to-A decision mistakes versus recency-only estimation, but conventional change-point inference can tie or beat it. Only preregistered gains over the strongest matched conventional learner qualify as a candidate, not a novel-architecture proof.",
+  "benchmark": {
+    "repo": "scope-lab-vu/ns_gym",
+    "source_commit": "127df4b714fe4fcf680721d8e9278a96090acd7e",
+    "environment": "ns_gym/Bridge-v0",
+    "wrapper": "NSBridgeWrapper",
+    "bridge_git_blob": "02415d65ff8a0c419d32f274e2669f9e54e8d29f",
+    "wrapper_git_blob": "cd94311a4d312b9d8c35b7719207020150caa300",
+    "license": "MIT",
+    "dependencies": [
+      "Python 3.12",
+      "numpy==1.26.4",
+      "gymnasium[mujoco]==1.2.2",
+      "scipy==1.15.3",
+      "PyYAML==6.0.2",
+      "mujoco==3.3.7",
+      "pygame==2.6.1"
+    ]
+  },
+  "protocol": {
+    "seeds": {
+      "mechanical": [
+        898000,
+        898001,
+        898002,
+        898003
+      ],
+      "development": {
+        "start": 891000,
+        "count": 32
+      },
+      "transfer": {
+        "start": 892000,
+        "count": 64
+      },
+      "negative": {
+        "start": 893000,
+        "count": 32
+      }
+    },
+    "never_reuse": "No scientific seed may overlap prior AAI08P mechanical seeds 996000..996003, 996100..996115 or AAI07A/B science seeds.",
+    "regime_plan": "Within each world, three 24-episode training phases A→B→A, continuous mutable learner object and matched ledgers. No regime labels or timing markers to learners. Each episode follows same public 3-step navigation [right,left,right], then official NSBridgeWrapper DistributionStepWiseUpdate at t=3 before the fourth action. Each training probe at junction sends action RIGHT and records public next_state, official reward and terminal status.",
+    "dev_distributions": {
+      "A": [
+        0.75,
+        0.15,
+        0.1
+      ],
+      "B": [
+        0.15,
+        0.75,
+        0.1
+      ]
+    },
+    "transfer_distributions": {
+      "A": [
+        0.65,
+        0.2,
+        0.15
+      ],
+      "B": [
+        0.22,
+        0.63,
+        0.15
+      ]
+    },
+    "goal": "At junction, choose either RIGHT (action 2) or UP (action 3) to maximize immediate official Bridge reward and minimize terminal-hole risk. Under A, RIGHT is safer; under B, UP is safer. The causal effect is implemented by upstream transition action-slip distribution, not a user-manipulated reward label.",
+    "same_information": "All candidate/control methods update from the exact same real training probe outcomes; every trial emits (public prior state, action RIGHT, public next state, reward, terminal) and discards private simulator info/transition values and all change notifications.",
+    "evaluation": "After each completed 24-probe phase, evaluate each policy without updating on six independent official environment episodes. Every policy is evaluated on paired identical episode seeds with same original RNG, same prefix and allowed action set; rewards and actual terminating transitions are collected through official step().",
+    "models": {
+      "candidate": "Two-slot reusable Beta-binomial causal regime bank with active model, five-evidence buffered likelihood switch/novelty test, no context or regime oracle. Bound at two regime slots. One continuous object throughout A-B-A; after law return it must retrieve original A from preserved counts.",
+      "stationary": "Fully trained conventional stationary beta-binomial estimate with all previous real training data; no forgetting.",
+      "fully_trained_logistic": "Fully trained conventional intercept logistic on all preceding observed forward-move Bernoulli labels; full-batch 1200 epochs before each checkpoint, learning rate 0.4 (no hidden examples).",
+      "recent": "Sliding-window eight observed transitions beta-binomial recency estimate, equal observations and action budgets.",
+      "bayes_change_point": "Known-model Bayes/HMM upper-bound with A/B transition likelihoods and hazard=.05; its numeric law definitions are prior domain knowledge not available to other methods. Treated separately as oracle-reference, not as evidence candidate is better if it wins over weaker controls.",
+      "ablation": "Candidate with no retained alternate regime memory: on change, discard previous stored model instead of retrieving it.",
+      "negative": "Shuffled episode outcome labels within each phase on negative seeds, same action/observation counts, never used for candidate hyperparameter tuning."
+    },
+    "budget": {
+      "train_probes_per_world": 72,
+      "evaluation_trials_per_checkpoint_per_model": 6,
+      "checkpoints": 3,
+      "bootstrap_draws": 1024,
+      "bootstrap_rng_seed": 19812,
+      "logistic_epochs_per_checkpoint": 1200,
+      "compute_limit_minutes": 30,
+      "paid_api_calls": 0
+    },
+    "rng_custody": "For each independent episode, save legacy NumPy process-global RandomState, np.random.seed(sha256(world,phase,episode,trial)), construct/reset official env, execute publicly observed actions, close, and restore saved state in finally; single serial runner process. Prior Linux+Windows AAI08P exact replay 16/16, same trace. No native env.reset-only reproducibility claim.",
+    "cold_restore": "Snapshot full single candidate and conventional model state after end B, JSON deserialize and require exact prediction and value serialization equality. Then continue same original mutable object for returning A phase; no per-phase state reset.",
+    "metrics": "Actual mean official reward and successful escape from penalty across three phase checkpoints, per-phase correct safe action, A-return correct action, action counts, mean cost per fit + evaluation + serialization, exact source/seed/step SHA256 receipt, paired per-world bootstrap 95% CI candidate versus strongest nonoracle conventional, oracle gap reported separately.",
+    "negatives": "All policy strengths and thresholds frozen before primary; baseline output permuted and no-feedback policy should lose actionable association in disjoint negative worlds; no change-markers, probes beyond budget, or previously consumed seeds."
+  },
+  "classification": {
+    "scientific_candidate": "On 64 transfer worlds, candidate reward advantage >=+0.04 over strongest of stationary, fully trained logistic and recent (per-world paired CI lower >0); A-return safe action >=0.8; shuffled-outcome candidate accuracy loses >=0.10 versus correctly trained candidate; all cold restore, no leakage, matched budget and source checks PASS; per-world candidate compute <=2x fastest conventional. Still only external scientific candidate, no promotion.",
+    "learning_only": "Candidate can identify A/B shifts and return A at >=0.75 but no statistically supported >+0.04 over strongest nonoracle; preserve as learning demonstrated but no novelty or promotion.",
+    "negative": "Sound source-locked experiment misses above; retain negative without tuning or expanded seeds.",
+    "invalid": "Wrong official source or RNG isolation, hidden law/phase/simulator metadata to learner, reward rewriting, evaluator mismatch, unequal training actions, split contamination, source/threshold edits after outcome; invalid not negative."
+  },
+  "limitations": [
+    "Uses a known tiny Bridge map, hand-coded safe three-step route and 3-way slip primitives. Even a gain would be limited to this task, not open-world generalization.",
+    "The experimental regime intervention A/B/A is configured by experimenter from official NS-Gym change functions; not independently sampled natural dynamics.",
+    "The Bayesian known-law control is domain-informed ceiling and must not be confused with a matched-prior learner.",
+    "No native Yggdrasil model, non-token substrate, owner loop, weights or accepted science state is modified."
+  ],
+  "authority": {
+    "external_contributor_only": true,
+    "merge": false,
+    "scientific_promotion": false,
+    "owner_acceptance": false,
+    "model_integration": false,
+    "new_controller": false,
+    "scheduled_tasks": false,
+    "paid_api": false
+  },
+  "no_post_primary_tuning": true
+}
