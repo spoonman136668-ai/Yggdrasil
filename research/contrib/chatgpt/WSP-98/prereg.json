@@ -1,0 +1,117 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-98",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "status": "FROZEN_PREREG_ONLY_BEFORE_GENERATOR_LEARNER_PUBLIC_OR_RESERVED_FIRST_USE",
+  "question": "Can numerical weights written directly from observed action consequences learn a previously unspecified multi-node causal transition program, retain it, and predict unseen interventions? Is any advantage due to the weight-writing method rather than intervention selection?",
+  "hypothesis": "With hidden node dependencies and unknown Boolean transition rules (not just two predeclared causal hypotheses), direct recursive least-squares numerical weight writes from passive plus eight deliberately chosen interventions can outperform equal-budget random-probe and passive-only variants on novel counterfactual states, while fully trained gradient and independent symbolic learners given the same informative observations remain necessary strong controls. A tie with strong controls is feasibility only, not scientific superiority.",
+  "exact_parent_sha": "68e4a07dc94e5e29e6b2f38049fc706888d926df",
+  "predecessor_evidence": [
+    "WSP97 draft PR #1022, candidate 68e4a07dc94e5e29e6b2f38049fc706888d926df; one-shot full dual-platform and reserved experiment run 43589011168 SUCCESS",
+    "WSP97 original reserved 40 worlds: direct informative 240/240 diagnostic, random 174/240, passive-only 120/240, independent symbolic and fully gradient-trained 240/240 each. Science superiority UNVERIFIED; consumed seeds 97101..97120 MUST NOT be reused."
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/WSP-98/**",
+    ".github/workflows/wsp98-development-tests.yml",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ],
+  "inputs": [
+    {
+      "name": "original deterministic synthetic six-node binary dynamics",
+      "source": "new prospective SHA256-keyed generator; no external or previously consumed data",
+      "sha256": "UNGENERATED_BEFORE_PREREGISTRATION; hash exact source and every outcome/plan before evaluator disclosure"
+    }
+  ],
+  "world": {
+    "nodes": 6,
+    "observable_state": "x[0..5] binary at time t, full next-state y[0..5] after action",
+    "causal_program": "For each output node i, select two DISTINCT input parent indices from 0..5, two independent optional input negations, and one unknown gate from {AND,OR,XOR,XNOR,NAND,NOR}. y_i=gate(signed_x_parent1,signed_x_parent2). Program graph, gate, signed parent roles, and output labels are HIDDEN from learners. All six output programs generated independently from a domain-separated SHA256 seed. No model is given per-world gate/graph labels or a list of two candidate causal programs.",
+    "observational_sampling": "24 DISTINCT x states per world, SHA256-ranked from 32 states satisfying x0=x1; record corresponding y vectors. This biased observational support creates genuine parent-role aliases that raw correlation cannot resolve. Learners never receive hidden generator details or labels.",
+    "intervention": "Eight genuine do(x_j=v) experiments per world. Each starts from a specified original passive state, deterministically overwrites exactly one observed x bit, and reveals the ENTIRE six-bit next-state y. No action has hidden side effects. Each intervention costs one action regardless of result. Active policy ranks only permissible do queries by expected feature-Gram determinant increase from its own current source features, with deterministic SHA256 tie breaks; ZERO access to hidden rules or eval labels. Random policy samples original state, node, and forced bit uniformly from domain-separated seed without rejection of duplicates. Both receive exactly eight original action/outcome observations.",
+    "evaluation": "For each world, before scoring select 20 fixed unique x states by a different SHA256 stream from the 64 states, EXCLUDING all original passive states and both policy's queried intervention states; evaluate all six y_i counterfactual predictions, 120 per world. Evaluate all policies and all controls on EXACT SAME heldout targets and outcome labels. Freeze all predictions/source/plan/evaluator hashes before scoring. At least 10 of the 20 heldout x states must have x0 != x1; otherwise mark world INVALID rather than retune.",
+    "identifiability_audit": "Evaluator-only enumerator checks, for each heldout node-bit, if EVERY allowed two-parent signed-gate program consistent with all delivered original observations for a method predicts the same value. Report audit per policy, coverage, ambiguity and full original all-query accuracy separately; never give allowed-program list, true graph or identifiability outcomes to candidate. At least 25% of fixed heldout node-bits must be identifiable from ACTIVE source in aggregate, and active identifiability coverage must exceed passive-only by >=10 percentage points, or classify task INVALID/UNINFORMATIVE rather than a learner negative.",
+    "leakage_barrier": "Observe source/pre-scoring hashes, predictions and per-method budgets before oracle truth is read for scoring; evaluation and original heldout cohorts are never used to choose source, actions, model parameters, training stopping or thresholds.",
+    "scientific_scope": "Deterministic synthetic world, source-known grammar but per-world UNKNOWN laws and graph; zero label or truth-table injection. Not external-world causal discovery, language intelligence, AGI, or a claim of learning unlimited causal program families."
+  },
+  "candidate": {
+    "method": "Direct no-gradient numerical weight programming using fixed second-order real feature map phi(x) of 1 constant + 6 signed individual bits + 15 pairwise products (22 features). For each output bit y_i coded +/-1, initialize ridge recursive least-squares weights w_i=0 and shared inverse covariance P=(1/lambda) I, lambda=0.125. For each original source/action row, compute K=P phi/(1+phi^T P phi), overwrite each w_i <- w_i+K*(coded_y_i-phi^T w_i), then overwrite P <- P-K*(phi^T P). Predict sign(phi^T w_i), ties predict zero. Updates follow frozen row order, use double precision, NO gradient/transformer/tokens/lookup of true programs.",
+    "memory": "132 learned output weights + 484 shared covariance scalars per world, fixed maximum 616 numeric slots; no extra latent program table, metadata graph catalog, replay buffer, learned capacity or hidden source cache. Serializes with checksum, exact cold restoration, two-world interleaving, tamper rejection, unknown/out-of-domain refusal, immutable input/source hashes.",
+    "active_policy": "Feature leverage/Gram determinant only; identical independent-policy procedural rule across worlds, no outcome-lookahead. Query-selection computation included in whole-process cost."
+  },
+  "controls": [
+    "INDEPENDENT SYMBOLIC: enumerate source-consistent two-parent signed Boolean gates per output and predict by consensus, otherwise preregistered posterior majority. Same active eight DO rows; no true hidden graph. Report ambiguities and cost.",
+    "FULLY TRAINED CONVENTIONAL: ordinary gradient-trained 6x22 degree-two polynomial classifier with at least 2000 fixed deterministic epochs on exactly same 24 passive + eight active rows; fixed learning rate 0.03 and weight decay 0.125, all output heads trained, no eval early stopping; report source fit and whole-process cost.",
+    "ADDITIONAL NEURAL: ordinary 6->32->6 tanh neural net fixed 2500 gradient epochs, lr 0.01, same original source/action rows; separate higher-capacity comparator and no matched-capacity advantage claim.",
+    "RANDOM DO: exact same candidate numerical learner, passive rows, and eight-action budget but unrelated uniform random do queries; per-world heldout queries IDENTICAL to active.",
+    "PASSIVE ONLY: exact same learner but no interventions, all 24 original observations; negative control, not information-matched.",
+    "NO EDIT/SHUFFLED ACTION EFFECT: zero numerical updates or shuffle binding between do query/result before write. Never used as scientific comparator.",
+    "EVALUATOR-ONLY TRUE PROGRAM: hidden six-node generator truth as ceiling only; never exposed to learners or policy."
+  ],
+  "frozen_design": {
+    "seeds": {
+      "public_world_ids": "98011..98030 inclusive (20 distinct worlds)",
+      "reserved_world_ids": "98101..98140 inclusive (40 disjoint worlds)",
+      "hash_streams": "sha256('WSP98|v1|world_id|purpose|index'); purpose domains WORLD, OBS, ACT, RAND, EVAL, PROGRAM, TIE; separate from WSP97"
+    },
+    "split": "Only public 20 worlds can be generated/consumed before first-use admission; reserved 40 MUST stay completely uninstantiated until public feasibility and original exact-candidate full Ubuntu/Windows regression and G29 atlas custody pass.",
+    "ordering": "world_id ascending; source SHA256-ranked canonical order; eight interventions in index order; six next-state outputs in node index order; 20 heldout states in SHA256 rank order",
+    "data_budget": "Per world exactly 24 observational state->next-state rows and 8 costly one-bit interventions, providing 32 next-state vectors; 20 heldout x states, 120 next-node predictions. No pretrained task/world examples. Public 20, reserved 40.",
+    "compute_budget": "One fixed candidate update for each of 32 rows and one inference per heldout x; gradient polynomial 2000 fixed epochs and separate MLP 2500 fixed epochs per world; symbolic enumerate up to 6*15*4*6=2160 output clauses per world. Record CPU/wall-clock for every method and entire experiment; no paid APIs or GPU requirement. An exceeded budget invalidates comparison.",
+    "capacity": "Direct 6x22=132 output weights plus shared 22x22=484 inverse covariance; gradient control 132 trainable weights, MLP 422 trainable parameters. Freeze all counts.",
+    "evaluator": "Exact all-query bit accuracy (primary), per-world exact six-bit vector accuracy, heldout causal-role diagnostic subset x0!=x1, source-fit accuracy, intervention gain, auditable identifiability, memory/cold/interference/tamper, end-to-end CPU+actions.",
+    "deterministic_expected": true
+  },
+  "metrics": [
+    "Primary heldout node-bit accuracy on SAME 120 queries per world for all policies",
+    "Accuracy for x0!=x1 causal-role diagnostic queries",
+    "Active versus random action policy difference in percentage points and paired-world counts",
+    "Strongest source-matched conventional or symbolic accuracy difference",
+    "Identifiability coverage of primary targets and original source support",
+    "No-gradient direct-written 616-slot capacity and exact cold+interference recovery",
+    "All source/plan/prediction pre-scoring SHA256 receipts and real action counts",
+    "Whole-process CPU and wall-clock including action selection, fitting, scoring and all baselines"
+  ],
+  "classification_rules": {
+    "public_feasible": "20 original public worlds, 20/20 source and action budget valid, active identifiability coverage >=25% and >=10 percentage points more than passive. Direct accuracy on all original heldout bits >=80%, improves by >=5 percentage points vs passive and >=3 percentage points vs random, all 20 cold restores and tamper/replay negatives PASS. Both OS same predictions+classification. If absent stop before consuming reserved; record negative or invalid.",
+    "development_supported": "40 one-shot original reserved worlds at exact fully qualified candidate SHA: identifiability criteria preserved, direct all-query accuracy >=85%, active advantage >=5 percentage points over passive and >=3 percentage points over random, source/plan/score hashes valid, all cold/retention/corruption checks true. Report feasibility without claim of outperforming fully trained and symbolic if tied or worse.",
+    "scientific_supported": "Only with separate independent original admission and verified experiment: in addition to development_supported, >=5 percentage-point absolute improvement over EACH strong symbolic and capacity-matched fully gradient-trained control on SAME original queries/actions AND end-to-end comparable action/compute cost, independent disjoint replication, and no test leakage. This proposal CANNOT itself confer SCIENTIFIC_PASS.",
+    "mixed": "Feasibility thresholds pass but strong controls tie/beat candidate, or intervention choice improves while candidate accuracy or cold retention fails; retain exact subresults.",
+    "negative": "Frozen valid task with identifiable opportunity but direct fails public/reserved threshold; do not retune local rules based on results or rerun consumed sources as fresh.",
+    "invalid": "Dataset/source uniqueness, identifiability opportunity, independent source/eval split, controlled action budgets, complete baseline fit, hashes, custody, reproducibility or deterministic benchmark construction fails. Infrastructure/test invalidity NOT rebranded as a science negative."
+  },
+  "procedure": [
+    "Commit this JSON ALONE before implementing generator/learner/test or generating any WSP98 public or reserved source.",
+    "Implement source-blind world and learner under WSP-98 only, with scoped test and negative controls, preserving prerequisite sources and accepted state.",
+    "Run untouched original PUBLIC once on Ubuntu and Windows; if any frozen public failure, preserve negative and DO NOT access reserved.",
+    "Only after public positive: produce source-pinned three-file G29 atlas, mandatory inherited focused tests and full root Yggdrasil regression on Ubuntu and Windows SAME exact candidate SHA.",
+    "Only after both full platforms PASS: one reserved first-use; classify, record CPU and seeds in GitHub PR; no re-use of consumed reserved sources.",
+    "No source-changing fixes after any original reserved outcome; any successor is separately preregistered and genuinely disjoint."
+  ],
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split/seed changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls",
+    "held-out/evaluator leakage",
+    "uncertain-effect replay",
+    "turning scientific negative into infra issue"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "official_yggdrasil_loop": false,
+    "forge_loop": false,
+    "merge": false,
+    "protected_science": false,
+    "paid_api": false,
+    "library_artifact": false
+  }
+}
