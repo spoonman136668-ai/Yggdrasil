@@ -90,7 +90,7 @@ class TestTrainOnlyFrequency(unittest.TestCase):
         with self.assertRaises(ValueError):
             run(raw, rel, source_sha="0" * 64)
         with self.assertRaises(ValueError):
-            run(raw, rel, relations=rel + 1)
+            run(raw, rel + 1)
         with self.assertRaises(ValueError):
             train_candidates(lambda: BytesIO(raw),
                              expected_rows=len(raw.splitlines()), expected_bytes=len(raw),
