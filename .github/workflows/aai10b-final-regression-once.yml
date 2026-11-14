@@ -1,0 +1,88 @@
+name: AAI-10B exact-final full regression with frozen negative profile (NO science)
+on:
+  push:
+    branches: [research/aai10b-final-regression-once-20261114]
+    paths: [.github/workflows/aai10b-final-regression-once.yml]
+permissions:
+  contents: read
+concurrency:
+  group: aai10b-exact-final-regression-once-20261114
+  cancel-in-progress: false
+jobs:
+  exact-final:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'AAI-10B immutable candidate final full regression one-shot' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Read-only one-shot final qualification harness
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: harness
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Harness cannot alter candidate or main
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C harness rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git -C harness rev-parse HEAD^)" = '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
+          test "$(git -C harness diff --name-only HEAD^ HEAD)" = '.github/workflows/aai10b-final-regression-once.yml'
+          test -z "$(git -C harness status --porcelain)"
+          echo AAI10B_EXACT_FINAL_HARNESS_ISOLATION_PASS
+      - name: Checkout immutable AAI-10B draft PR head
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: fe09ece1c78ce2de926756301ddb730a01c22450
+          path: candidate
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact SHA/branch, original model, registered prereg and generated atlas
+        shell: bash
+        working-directory: candidate
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 'fe09ece1c78ce2de926756301ddb730a01c22450'
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
+          test "$(git ls-remote origin refs/heads/research/aai10a-operator-association-learner-20261114 | cut -f1)" = '64a585010e13519c6290cc8c406154e1f23b9e78'
+          test "$(git ls-remote origin refs/heads/research/aai10b-exact-association-cache-20261114 | cut -f1)" = 'fe09ece1c78ce2de926756301ddb730a01c22450'
+          test "$(git rev-parse 373800d13bdb8ba1d149c8b0bd3f2f4c98db824e^)" = '64a585010e13519c6290cc8c406154e1f23b9e78'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10B/prereg.json)" = '3dddd98d14d9c3941d542d06848e82c59c0a1dfd'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10B/prereg.json)" = "$(git rev-parse 373800d13bdb8ba1d149c8b0bd3f2f4c98db824e:research/contrib/chatgpt/AAI-10B/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10B/cached.py)" = 'b651931e7fdc5bcea1ce88954368e66655dda188'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10B/test_cached.py)" = '72a6ba32c0df9a394f0272cb7dfb9ef7825767ba'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10B/profile_dev.py)" = 'd4b4291fc5a554b44d83693302e83660cb8455ae'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10A/models.py)" = '9233ffaafe2f227de687116b0ed4204ee4e2b3a2'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10P/benchmark.py)" = 'b2c58cb6c2f2d308cdd4da259db74547a27dfa3a'
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          echo AAI10B_ORIGINAL_SOURCE_AND_G29_ATLAS_PIN_PASS
+      - name: Mandatory final full regression on exact candidate source SHA, both OS
+        shell: bash
+        working-directory: candidate
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-10P -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-10A -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-10B -p 'test_*.py' -v
+          python -B research/contrib/chatgpt/AAI-10P/benchmark.py --mechanical
+          if python -B research/contrib/chatgpt/AAI-10B/profile_dev.py --primary >/dev/null 2>&1; then
+            echo AAI10B_FIRST_USE_DISARM_FAIL >&2
+            exit 1
+          fi
+          test -z "$(git status --porcelain)"
+          git diff --exit-code
+          echo AAI10B_FULL_FINAL_REGRESSION_EXACT_HEAD_PASS_NO_SCIENCE
