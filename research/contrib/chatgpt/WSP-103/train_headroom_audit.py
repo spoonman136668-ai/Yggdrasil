@@ -196,8 +196,20 @@ def audit_streams(open_train, *, expected_rows=TRAIN_ROWS,
     }
 
 
+def load_custody_helpers():
+    """Load the immutable sibling WSP-102 custody implementation without network."""
+    import importlib.util
+    source = Path(__file__).resolve().parent.parent / "WSP-102" / "source_custody.py"
+    spec = importlib.util.spec_from_file_location("wsp102_source_custody", source)
+    if spec is None or spec.loader is None:
+        raise ImportError("sealed WSP-102 source custody helper unavailable")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module._download_once, module.inspect_members
+
+
 def run_train_only_source_audit() -> dict:
-    from source_custody import _download_once, inspect_members
+    _download_once, inspect_members = load_custody_helpers()
     with tempfile.TemporaryDirectory(prefix="wsp103-train-only-") as directory:
         archive_path = Path(directory) / "original-historical.tar.gz"
         custody = _download_once(archive_path)
