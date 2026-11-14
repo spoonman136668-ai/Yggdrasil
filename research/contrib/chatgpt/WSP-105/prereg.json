@@ -1,0 +1,89 @@
+{
+  "schema": "wsp105.train-only-subject-path-knowledge-control-prereg.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION; DEV_TRAIN_ONLY; NO OFFICIAL HELDOUT OR SCIENCE ACCEPTANCE",
+  "parent": {
+    "commit": "308aacf8c5dbae6d7bb8dfaa506db009a3a7b0fa",
+    "tree": "d4a3c955215663fc4ed4dfe26133d5c01f8be859",
+    "pr": 1053
+  },
+  "source": {
+    "kind": "historical noncanonical Wikidata-derived archive, not contemporary facts or the canonical Wikidata5M evaluation",
+    "archive_sha256": "ccda8bbcd3cf599b30dd3fd8979ac26e59b48fc53d23128882a044bfbb67f878",
+    "train_sha256": "2ef1a279f6393a8edfbb2b44114a2c97944272e5fe2a1bd2a7cbe48f94742f1a",
+    "rows": 21343681,
+    "bytes": 436189882,
+    "relations": 828
+  },
+  "mask": {
+    "recipe": "WSP103 (s,p)-group SHA256 mask: low five digest bits 0, lowest 4096 SHA priority across source, retain all nonmasked facts",
+    "withheld_rows": 666045,
+    "retained_rows": 20677636,
+    "frozen_query_answers_sha256": "008249f2c9731a426645c584e887bb056662c96f8c2385ba946b98ca3d9f49dc",
+    "group_count": 4096
+  },
+  "hypothesis": "With the same bounded relation-frequency candidate universe, subject-specific retained-only two-hop paths may change candidate ranks in predicting truly masked training graph relation values. No accuracy gain is guaranteed.",
+  "controls": {
+    "frequency": {
+      "source": "WSP104 retain-only Misra-Gries 64 candidate per relation; exact retained frequency recount; precommitted baseline Hits@1=921/4096, Hits@10=1853/4096, reverse Hits@1=2/4096, Hits@10=44/4096",
+      "score_receipt_sha256": "4a4364b6c4a806d2b69e9bb329e70f6c1f7d3f39fbafb68bb536d22fb9e2259a"
+    },
+    "path_only": "From retained outgoing neighbors of each masked-query subject, count all retained two-hop paths s--r1-->z--r2-->o with arbitrary r1,r2 but only within the WSP104 same 64 candidates of queried predicate; abstain when no positive paths.",
+    "path_first": "Rank the same WSP104 64 candidates by descending two-hop path votes, break ties using exact retained predicate-frequency ranking and ascending object ID. When no supported paths fallback to WSP104 order.",
+    "reverse": "Same candidate list, reverse WSP104 frequency ordering; reproduces its frozen receipt.",
+    "lookup": "Retained exact (s,p) masked query lookup must be zero by complete-group separation."
+  },
+  "neighbors": {
+    "limit_per_query_subject": 32,
+    "eligible": "outgoing retained records only, including any predicate r1; entire masked group excluded",
+    "sort": "smallest SHA256(UTF8('WSP105-NEIGHBOR-v1\\\\0') || little_endian uint32 subject, predicate r1, object z) first 64-bit unsigned big-endian; tiebreak predicate then object IDs ascending",
+    "dedup": "unique (r1,z) per query subject; dedup (z,query_key) when joining"
+  },
+  "representation": {
+    "no_prediction_labels_in_training_features": true,
+    "max_candidate_per_relation": 64,
+    "max_query_groups": 4096,
+    "max_path_join_updates": 30000000,
+    "read_only_files": [
+      "wikidata5m/train.txt"
+    ],
+    "no_official_validation_test": true,
+    "determinism": true,
+    "unit_test_synthetic_before_real": true
+  },
+  "metrics": [
+    "macro Hits@1 Hits@10 best-answer MRR frequency/path-only/path-first/reversed",
+    "number of queries with any supported two-hop path",
+    "zero-path fallbacks",
+    "path join updates",
+    "observed subject outgoing neighbor count",
+    "difference path-first vs frequency from same source",
+    "source/download/all CPU+wall memory where available",
+    "score SHA256"
+  ],
+  "negative_controls": [
+    "synthetic no paths => path-only abstains and path-first exactly falls back to frequency",
+    "synthetic context path directs correct answer other than popularity",
+    "source/heldout hash drift abort",
+    "masked query group never a trained edge",
+    "no post-result hyperparameter selection"
+  ],
+  "budget": {
+    "max_wall_scanner_seconds": 1200,
+    "max_job_minutes": 35,
+    "network": "allowlisted pinned HTTPS archive read only, no paid APIs",
+    "machine": "ephemeral public GitHub Actions runner",
+    "download_max_bytes": 268435456
+  },
+  "decision": "If path ranking improves, it is DEV association signal only; if null/regressive, preserve as negative without changing neighbors, scoring, split or thresholds. This does not substitute for a fully trained conventional KGE baseline or independent symbolic path-rule learner, let alone demonstrate direct weight superiority.",
+  "authority": {
+    "research_only": true,
+    "branch_isolation": true,
+    "merge": false,
+    "model_update": false,
+    "original_scientific_first_use": false,
+    "controller": false,
+    "scheduler": false,
+    "paid_api": false,
+    "production": false
+  }
+}
