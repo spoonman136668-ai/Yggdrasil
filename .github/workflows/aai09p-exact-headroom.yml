@@ -1,0 +1,87 @@
+name: AAI-09P official Bridge causal-headroom mechanical admission (no science)
+on:
+  push:
+    branches: [research/aai09p-identifiable-return-bridge-20261114]
+    paths: [.github/workflows/aai09p-exact-headroom.yml]
+permissions:
+  contents: read
+jobs:
+  exact-analytic-and-official-mechanical:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'AAI-09P cross-platform exact analytic and official causal headroom' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify preregistration and frozen mechanical/analytic source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '7ae89671d9061cf40d4b3d6d5131a5f4965eef24'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai09p-exact-headroom.yml'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-09P/prereg.json)" = "$(git rev-parse f19dd32f20bf05ae5e72fc913303843050a9217d:research/contrib/chatgpt/AAI-09P/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-09P/headroom.py)" = "$(git rev-parse b67969487c9de7f1ebd6b188cebf5b274e0b2fc4:research/contrib/chatgpt/AAI-09P/headroom.py)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-09P/official_probe.py)" = "$(git rev-parse b67969487c9de7f1ebd6b188cebf5b274e0b2fc4:research/contrib/chatgpt/AAI-09P/official_probe.py)"
+          python - <<'PY'
+          import json
+          p=json.load(open("research/contrib/chatgpt/AAI-09P/prereg.json"))
+          assert p["id"]=="AAI-09P"
+          assert not p["future"]["scientific_first_use_authorized"]
+          assert not p["authority"]["first_use"]
+          assert p["mechanical"]["reserved_seeds"]==[887900,887901,887902,887903]
+          assert p["laws"]["transfer"]["A"][0]==.9 and p["laws"]["transfer"]["B"][0]==.05
+          print("AAI09P_NO_SCIENTIFIC_FIRST_USE_PASS")
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Run pure source-derived analytic mathematics and conventional no-science tests
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-09P -p test_admission.py -v
+          python -B research/contrib/chatgpt/AAI-09P/headroom.py
+          echo AAI09P_EXACT_ANALYTIC_HEADROOM_PASS
+      - name: Fetch immutable upstream official Bridge and wrapper
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init -q "$RUNNER_TEMP/aai09-upstream"
+          git -C "$RUNNER_TEMP/aai09-upstream" remote add origin https://github.com/scope-lab-vu/ns_gym.git
+          git -C "$RUNNER_TEMP/aai09-upstream" fetch -q --no-tags --depth 1 origin 127df4b714fe4fcf680721d8e9278a96090acd7e
+          git -C "$RUNNER_TEMP/aai09-upstream" checkout -q --detach FETCH_HEAD
+          test "$(git -C "$RUNNER_TEMP/aai09-upstream" rev-parse HEAD)" = '127df4b714fe4fcf680721d8e9278a96090acd7e'
+          test "$(git -C "$RUNNER_TEMP/aai09-upstream" rev-parse HEAD:ns_gym/envs/Bridge.py)" = '02415d65ff8a0c419d32f274e2669f9e54e8d29f'
+          test "$(git -C "$RUNNER_TEMP/aai09-upstream" rev-parse HEAD:ns_gym/wrappers/toy_text.py)" = 'cd94311a4d312b9d8c35b7719207020150caa300'
+          echo AAI09P_UNMODIFIED_UPSTREAM_SOURCE_PASS
+      - name: Install minimal pinned official benchmark dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --no-input --prefer-binary \
+            numpy==1.26.4 'gymnasium[mujoco]==1.2.2' scipy==1.15.3 PyYAML==6.0.2 \
+            mujoco==3.3.7 pygame==2.6.1
+          python -m pip install --disable-pip-version-check --no-input --no-deps -e "$RUNNER_TEMP/aai09-upstream"
+      - name: Verify all three real one-hot transitions for both terminal actions on reserved seeds
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/AAI-09P/official_probe.py
+          test -z "$(git status --porcelain)"
+          test -z "$(git -C "$RUNNER_TEMP/aai09-upstream" status --porcelain)"
+          echo AAI09P_OFFICIAL_SOURCE_AND_ANALYTIC_ADMISSION_PASS
