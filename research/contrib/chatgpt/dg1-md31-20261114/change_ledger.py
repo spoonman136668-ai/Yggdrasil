@@ -6,8 +6,10 @@ graph, hidden rewire status, seed, motif, future, or a free World simulation.
 A charged internal-node probe is mandatory for all three matched gate arms.
 """
 import json
+import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "dg1-md30-20261114"))
 from native_tournament import (
     ACTION_INDEX, CausalTournament, evidence_score, _unique,
 )
