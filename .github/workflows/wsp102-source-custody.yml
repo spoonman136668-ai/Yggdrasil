@@ -228,3 +228,43 @@ jobs:
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           python scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"
+
+  source-count-diagnostic-once:
+    needs: [custody-code]
+    if: "github.event.head_commit.message == 'ci(wsp102): one-shot frozen source row-count provenance' && github.run_attempt == 1 && needs.custody-code.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    concurrency:
+      group: wsp102-original-count-provenance-once
+      cancel-in-progress: false
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify source-count failure and frozen source-only diagnostic protocol
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 7d17fec7542242aae886a3a5b87c70f67cb8bc30 HEAD
+          test -f research/contrib/chatgpt/WSP-102/SOURCE_COUNT_NEGATIVE.json
+          test -f research/contrib/chatgpt/WSP-102/count_diagnostic_prereg.json
+          test ! -e research/contrib/chatgpt/WSP-102/REAL_DATA_FIRST_USE.json
+          test -z "$(git status --porcelain)"
+      - name: Bounded frozen-source train-count diagnostic (no evaluator labels)
+        run: python research/contrib/chatgpt/WSP-102/count_diagnostic.py --source-count-diagnostic-only
+      - name: Source custody, no science acceptance
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
