@@ -1,0 +1,70 @@
+name: AAI-04A isolated frozen one-shot research (no promotion)
+on:
+  push:
+    branches: [research/aai04-four-family-multistep-admission-20261114]
+    paths: [.github/workflows/aai04a-frozen-one-shot.yml]
+permissions:
+  contents: read
+jobs:
+  primary-science-once:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'Arm AAI-04A immutable science one-shot' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify immutable prereg and evaluator source before first use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '29f6a37745d8651ca16765a03fa4486710a6b5df'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-04A/prereg.json)" = "$(git rev-parse 8bcf5aeb02003ea198c954461ab2532996815559:research/contrib/chatgpt/AAI-04A/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-04A/run.py)" = "$(git rev-parse 29f6a37745d8651ca16765a03fa4486710a6b5df:research/contrib/chatgpt/AAI-04A/run.py)"
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai04a-frozen-one-shot.yml'
+          test -z "$(git status --porcelain)"
+          echo AAI04A_FIRST_USE_CUSTODY_PASS
+      - name: Focused deterministic invariants before primary result
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-04A -p 'test_aai04.py' -v
+          git diff --exit-code
+          echo AAI04A_PREFLIGHT_INVARIANTS_PASS
+      - name: Execute sealed primary science one time
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/AAI-04A/run.py > "$RUNNER_TEMP/aai04a-primary.json"
+          python - "$RUNNER_TEMP/aai04a-primary.json" <<'PY'
+          import hashlib,json,sys
+          path=sys.argv[1]
+          payload=open(path, 'rb').read()
+          data=json.loads(payload)
+          assert data['prereg_commit']=='8bcf5aeb02003ea198c954461ab2532996815559'
+          assert data['integration']=='NONE'
+          print('AAI04A_PRIMARY_RESULT_COMPACT='+json.dumps(data,sort_keys=True,separators=(',',':')))
+          print('AAI04A_PRIMARY_JSON_SHA256='+hashlib.sha256(payload).hexdigest())
+          print('AAI04A_PRIMARY_CLASSIFICATION='+data['classification'])
+          PY
+          git diff --exit-code
+          echo AAI04A_PRIMARY_CAPTURE_PASS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: aai04a-primary-science-original
+          path: ${{ runner.temp }}/aai04a-primary.json
+          if-no-files-found: warn
+          retention-days: 14
