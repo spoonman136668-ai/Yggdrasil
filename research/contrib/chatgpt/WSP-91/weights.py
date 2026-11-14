@@ -95,11 +95,14 @@ class DirectSpanWriter:
         pairs=learning_examples(text,relation,answer)
         pos=[vec for vec,y in pairs if y]
         neg=[vec for vec,y in pairs if not y]
-        if not neg:
-            raise ValueError("no source-negative candidates")
+        # A short authentic article may expose only one digit span.
+        # In that case the single positive source observation remains valid;
+        # do not fabricate a negative example or drop the article.
         row=self.weights[relation]
         # Equal positive/negative total mass avoids easy class-imbalance wins.
         for examples,sign in ((pos,1.0),(neg,-1.0)):
+            if not examples:
+                continue
             for vec in examples:
                 for idx,value in vec:
                     row[idx]=row.get(idx,0.0)+sign*value/len(examples)
