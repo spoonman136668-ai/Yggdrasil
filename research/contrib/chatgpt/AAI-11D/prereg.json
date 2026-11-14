@@ -1,0 +1,82 @@
+{
+  "schema": "yggdrasil.contrib.aai11d.uncertainty-calibration.prereg.v1",
+  "id": "AAI-11D",
+  "stage": "PRE_SCIENCE_DEV_ONLY",
+  "base": {
+    "head": "44729734a17a658873b344024913587a596239b2",
+    "pr": 1062,
+    "branch": "research/aai11c-causal-decision-diagnostic-20261114",
+    "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "benchmark_sha": "40062783d0aa0e06fbe93b3419291150b306562d",
+    "source_blobs": {
+      "world": "88d220e94ccf736e490f20922f1c7f5d3c1d3746",
+      "controls": "b554db7d8d25ae9b6a5f8bffb066181a00b35ffc",
+      "graph_recent8": "331a97b566d41785be06923a7acc63df6105cffd",
+      "contrast": "69ff21daf627feeaaca6661f8f3c8096efbe4de8",
+      "AAI11C_diagnostic": "499662a5939796f502ccd47c97950a4d1fbd6b2f"
+    },
+    "historical": {
+      "best_graph_recent8_reward": 2.134027778,
+      "best_graph_recent8_goal": 0.375,
+      "AAI11B_reward": 2.084722222,
+      "diagnostic_run": 43645678671,
+      "final_regression_run": 43645864042,
+      "perfect_predictor_planner_oracle": 2.448263889,
+      "AAI11C_diag": "POLICY_OR_CALIBRATION_MISMATCH_DIAGNOSTIC",
+      "prediction_accuracy_graph_recent8": 0.678819444,
+      "AAI11B": 0.670138889
+    }
+  },
+  "hypothesis": "Posterior-weighted causal explanations plus a separately ablated uncertainty-aware decision rule can improve action outcomes in novel composed causal regimes over hard MAP graph_recent8 without additional observations, tokens, labels or hidden oracle access.",
+  "representation": {
+    "same_public_graph_grammar": "45 XOR/AND/OR pair rules for m0, 45 for m1, 84 rules over six public x and observed upstream mediator pairs for m2; EXACT original AAI11A graph rule enumeration",
+    "history": "8 most recent public observations; identical count and public fields to graph_recent8; do not store action count beyond original public stream",
+    "posterior": "For each of 3 outputs, integer mismatch counts over last 8 public x and 3 observed mediator bits as original graph_recent8. Weight each hypothesis proportional to exp(-ln(9)*errors), normalization via subtract-min mismatch. Fixed prior uniform, no regime label.",
+    "forecast": "At any requested unseen x: P(m0=1) weighted sum over 45 graph rules, P(m1=1) likewise, P(m2=1) expectation over 84 downstream graph rules and four possible jointly independent m0,m1 inputs using learned upstream marginals. Round probabilities to 12 decimals for deterministic cross-OS source. No private world law, no oracle, no unchosen observed action consequence."
+  },
+  "arms": {
+    "graph_recent8": "ORIGINAL unchanged strongest conventional (MAP rule, 0.1/0.9 bit forecast, shared original planner)",
+    "posterior_planner": "Matched conventional posterior predictive learner: same 8 public rows, grammar and uniform posterior as candidate, but EXACT original AAI11P controls.plan, no risk penalty.",
+    "risk_calibrated_planner": "Proposed novel uncertainty-aware decision: same posterior predictive learner; exhaustive original 0,1,2 do-step action enumeration, but score each forecast terminal value as expected correctly matched goal bits - 0.05*total_action_count - 0.5*sqrt(sum(p_j*(1-p_j)) over three bit forecasts). STOP compares against the actual current public reward without risk penalty. Tie handling the same original action order/1e-10 threshold. This is a fixed risk-averse disagreement gate, no tuning from results."
+  },
+  "requirements": {
+    "common_training": "16 A + 16 B actual one-step trials, 64 identical public rows; no stage labels to models",
+    "challenge": "2/4 actual do-action exogenous challenge trials from C/D/E/F; cold-restored independently",
+    "episodes": "12 original AAI11P x/goal contexts for each of C/D/E/F at N2/N4 across 3 exact mechanical fixtures; 288 independent actual consequence episodes per method, max 2 actual interventions; each method sees its own actions and consequences only",
+    "baseline": "strongest of original 11 conventional controls in exact original-source run 43640947420 was graph_recent8 2.134027778; verify graph_recent8 exact aggregate again on new run and preserve all source blobs",
+    "single_screen": "Run both fixed posterior_planner and risk_calibrated_planner once, same 288 fixture episodes. Admit risk_calibrated ONLY if reward >= old strongest+0.08 (2.214027778) AND exact 3-goal success >=0.60. Posterior_planner is ablation; risk must additionally beat posterior_planner >=+0.03 to attribute added value to risk decision rule.",
+    "next_gate_if_screen_passes": "Only after all 3 frozen screen thresholds pass: rerun all 11 existing fully trained conventional controls plus the posterior_planner ablation, confirm risk_candidate best+0.08 over strongest, return-A/B-hold >= strongest-.03, 2x total process cost vs fastest matched across both OS, exact-source final mandatory full regression; no scientific first-use regardless",
+    "if_fail": "DEV_NO_GO_NO_SCIENCE; stop after first frozen synthetic screen, do not retune beta=ln9, risk lambda=.5 or model rule code, preserve receipts, do not rerun previously qualified costly unrelated conventional benchmarks.",
+    "source_controls": "No privilege exposure, immutable prereg committed before candidate code, negative inputs and cold restoration, match public observation budget and action count, no branch/main accepted-ref changes, deterministic paired trace hashes Linux/Windows, source-pinned G29 atlas and full exact SHA repository regression even on development NO-GO."
+  },
+  "science": {
+    "original_DEV": [
+      994000,
+      994015
+    ],
+    "original_TRANSFER": [
+      995000,
+      995063
+    ],
+    "original_NEGATIVE": [
+      996000,
+      996031
+    ],
+    "used": 0,
+    "first_use_authorized": false,
+    "scientific_improvement": "UNVERIFIED"
+  },
+  "authority": {
+    "independent_branch": true,
+    "draft_pr": true,
+    "source_only_GitHub_actions": true,
+    "merge": false,
+    "native_Yggdrasil": false,
+    "Forge_Wingless_Hybrid": false,
+    "first_use": false,
+    "paid_API": false,
+    "controller_queue_scheduler_runner": false,
+    "user_Library": false
+  },
+  "no_post_result_tuning": true
+}
