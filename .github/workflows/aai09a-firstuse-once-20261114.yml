@@ -1,0 +1,149 @@
+name: AAI-09A exact-source authorized scientific first-use ONCE
+on:
+  push:
+    branches:
+      - research/aai09a-firstuse-once-20261114
+    paths:
+      - '.github/workflows/aai09a-firstuse-once-20261114.yml'
+permissions:
+  contents: read
+concurrency:
+  group: aai09a-one-use-frozen-20261114
+  cancel-in-progress: false
+jobs:
+  first-use:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.ref == 'refs/heads/research/aai09a-firstuse-once-20261114' &&
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'AAI-09A authorized exact-one first-use launch only' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout launcher without write credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: launcher
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Exact one-shot event and immutable launcher ancestry
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C launcher rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git -C launcher rev-parse HEAD^)" = '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
+          test "$(git -C launcher diff --name-only HEAD^ HEAD)" = '.github/workflows/aai09a-firstuse-once-20261114.yml'
+          test -z "$(git -C launcher status --porcelain)"
+          echo AAI09A_ONE_SHOT_LAUNCHER_PIN_PASS
+      - name: Checkout exact independently qualified original science source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ce16d7ae6c4303a48d9a81260e4b5d7473700923
+          path: science
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Frozen science custody, no drift, no privileged information
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C science rev-parse HEAD)" = 'ce16d7ae6c4303a48d9a81260e4b5d7473700923'
+          test "$(git -C science ls-remote origin refs/heads/main | cut -f1)" = '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
+          test "$(git -C science ls-remote origin refs/heads/research/aai09a-protected-regime-memory-20261114 | cut -f1)" = 'ce16d7ae6c4303a48d9a81260e4b5d7473700923'
+          test "$(git -C science rev-parse HEAD:research/contrib/chatgpt/AAI-09A/prereg.json)" = '0ac934a1efc808aa1c69e42e15dd6f683e6ba7f2'
+          test "$(git -C science rev-parse HEAD:research/contrib/chatgpt/AAI-09A/models.py)" = '6b0fe89d389c9fc3204881bb95741bf358a2c562'
+          test "$(git -C science rev-parse HEAD:research/contrib/chatgpt/AAI-09A/evaluate.py)" = '7a39871d12f0d961570dbddf4e0da71741ae89b5'
+          test -z "$(git -C science status --porcelain)"
+          echo AAI09A_FROZEN_PREREG_MODEL_EVALUATOR_AND_SOURCE_PIN_PASS
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Revalidate candidate unchanged (previous exact-source Windows/Linux regression success 43628554694)
+        shell: bash
+        working-directory: science
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-09A -p 'test_*.py' -v
+          if python -B research/contrib/chatgpt/AAI-09A/evaluate.py --primary >/dev/null 2>&1; then
+            echo AAI09A_CLI_DISARM_FAILED >&2
+            exit 1
+          fi
+          git diff --exit-code
+          echo AAI09A_G29_PREFIRSTUSE_LINUX_CONFIRM_PASS
+      - name: Fetch and inspect immutable original official NS-Gym benchmark
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init -q "$RUNNER_TEMP/aai09a-upstream"
+          git -C "$RUNNER_TEMP/aai09a-upstream" remote add origin https://github.com/scope-lab-vu/ns_gym.git
+          git -C "$RUNNER_TEMP/aai09a-upstream" fetch -q --no-tags --depth 1 origin 127df4b714fe4fcf680721d8e9278a96090acd7e
+          git -C "$RUNNER_TEMP/aai09a-upstream" checkout -q --detach FETCH_HEAD
+          test "$(git -C "$RUNNER_TEMP/aai09a-upstream" rev-parse HEAD)" = '127df4b714fe4fcf680721d8e9278a96090acd7e'
+          test "$(git -C "$RUNNER_TEMP/aai09a-upstream" rev-parse HEAD:ns_gym/envs/Bridge.py)" = '02415d65ff8a0c419d32f274e2669f9e54e8d29f'
+          test "$(git -C "$RUNNER_TEMP/aai09a-upstream" rev-parse HEAD:ns_gym/wrappers/toy_text.py)" = 'cd94311a4d312b9d8c35b7719207020150caa300'
+          echo AAI09A_UPSTREAM_OFFICIAL_BLOBS_PASS
+      - name: Install already-qualified exact benchmark dependency versions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --no-input --prefer-binary numpy==1.26.4 'gymnasium[mujoco]==1.2.2' scipy==1.15.3 PyYAML==6.0.2 mujoco==3.3.7 pygame==2.6.1
+          python -m pip install --disable-pip-version-check --no-input --no-deps -e "$RUNNER_TEMP/aai09a-upstream"
+      - name: CONSUME SCIENCE COHORTS EXACTLY ONCE - frozen first_use callable
+        id: actual_science
+        shell: bash
+        working-directory: science
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import hashlib, importlib.util, json, os, sys
+          from pathlib import Path
+          src=Path("research/contrib/chatgpt/AAI-09A/evaluate.py").resolve()
+          sys.path.insert(0,str(src.parent))
+          spec=importlib.util.spec_from_file_location("aai09a_frozen_evaluator",src)
+          evaluator=importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(evaluator)
+          assert evaluator.PREREG=="d9e9f3f11d04cdcf99c5e5b1e0c7a5008e0c2026"
+          assert evaluator.UPSTREAM=="127df4b714fe4fcf680721d8e9278a96090acd7e"
+          assert (len(evaluator.DEV),len(evaluator.TRANSFER),len(evaluator.NEGATIVE))==(16,64,32)
+          print("AAI09A_SCIENTIFIC_FIRST_USE_START",flush=True)
+          result=evaluator.first_use()
+          assert result["schema"]=="yggdrasil.contrib.aai09a.frozen-external-first-use.v1"
+          assert result["cohort_counts"]=={"dev":16,"transfer":64,"negative":32}
+          raw=(json.dumps(result,sort_keys=True,separators=(",",":"))+"\n").encode()
+          out=Path(os.environ["RUNNER_TEMP"])/"aai09a-firstuse-raw.json"
+          out.write_bytes(raw)
+          summary={key:value for key,value in result.items() if key not in ("world_records","dev","transfer")}
+          summary["raw_sha256"]=hashlib.sha256(raw).hexdigest()
+          summary["source_sha"]="ce16d7ae6c4303a48d9a81260e4b5d7473700923"
+          summary["original_G29_qualified_run"]=43628554694
+          receipt=Path(os.environ["RUNNER_TEMP"])/"aai09a-firstuse-summary.json"
+          receipt.write_text(json.dumps(summary,sort_keys=True,indent=2)+"\n",encoding="utf-8")
+          print("AAI09A_SCIENCE_CLASSIFICATION="+result["classification"],flush=True)
+          print("AAI09A_BEST_MATCHED="+result["strongest_matched_control"],flush=True)
+          print("AAI09A_GAINS="+json.dumps(result["gains"],sort_keys=True),flush=True)
+          print("AAI09A_CHECKS="+json.dumps(result["checks"],sort_keys=True),flush=True)
+          print("AAI09A_RAW_SHA256="+summary["raw_sha256"],flush=True)
+          print("AAI09A_FULL_WORLDS_SHA256="+result["full_world_records_sha256"],flush=True)
+          print("AAI09A_SCIENCE_FINISHED",flush=True)
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as fh:
+              fh.write("## AAI-09A frozen first-use\n\nSource: ce16d7ae6c4303a48d9a81260e4b5d7473700923\n\n")
+              fh.write("Classification: **"+result["classification"]+"**\n\n")
+              fh.write("Matched control: "+result["strongest_matched_control"]+"\n\n")
+              fh.write("World-record SHA256: "+result["full_world_records_sha256"]+"\n\n")
+              fh.write("Full raw receipt: Actions artifact attached to this exact run.\n")
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Preserve original per-world and summary evidence on GitHub (no Library upload)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aai09a-original-firstuse-exact-ce16d7ae
+          path: |
+            ${{ runner.temp }}/aai09a-firstuse-raw.json
+            ${{ runner.temp }}/aai09a-firstuse-summary.json
+          if-no-files-found: warn
+          retention-days: 90
