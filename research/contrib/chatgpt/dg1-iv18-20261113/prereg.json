@@ -1,0 +1,119 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "DG1-IV18-20261113",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can two independently paid diagnostic interventions validate retained causal relationships, abstain from unfamiliar ones and improve two-step goal-directed control when unseen nonlinear cross-coupling appears?",
+  "hypothesis": "A calibrated two-probe evidence gate with bounded abstention will recover return-A relationships and reject unfamiliar C memories, yielding lower physical two-step goal regret than same-capacity ungated, sham, no-archive, forgetting-RLS and fully trained integer recurrent controls, while retaining portable checkpoints and bounded inference cost.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "pr": 1000,
+      "sha": "096c0c23edc9f98cf2c06724cb56f5c6a91cd868",
+      "science": "VALID_MIXED_DEV_PRIMARY_NO_GO",
+      "note": "Historical T17 cold-retention signal with failed unfamiliar-context superiority and false routing; no re-use of T17 registered seeds, primary data, thresholds or hindsight tuning."
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/dg1-iv18-20261113/**",
+    ".github/workflows/dg1-iv18-qualification.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "inputs": [
+    {
+      "name": "fresh deterministic two-probe integer causal/nonlinear world manifest",
+      "sha256": "37b70a87720bfbc26a7fe05f6460cbf6c1607a7f07cdb2b04eb85c452f2a10fb",
+      "source": "Procedurally generated independent seeds 520001-520016, integer dynamics with a new bilinear C-only causal interaction; no T17 data, labels or first-use seeds."
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      520001,
+      520002,
+      520003,
+      520004,
+      520005,
+      520006,
+      520007,
+      520008,
+      520009,
+      520010,
+      520011,
+      520012,
+      520013,
+      520014,
+      520015,
+      520016
+    ],
+    "split": "Sixteen wholly new worlds with 64 A/64 B/32 returned-A paid training steps; cold returned-A audit at step 128, unfamiliar C audit at step 160 before any C training. C replaces two structural relations and adds a genuinely unseen bilinear parent interaction on the novel row, inaccessible to linear/archived models.",
+    "ordering": "Each arm gets exactly the same 160 paid fixed-action training transitions, with deterministic state reseeding every eighth training step. At the two audits, 12 episodes per arm/world. Each episode: two distinct reset-state diagnostic interventions, both charged and returned without training; then exactly two sequential charged chosen actions from a common held-out initial state/goal, without training. Every arm observes exactly the same diagnostics and training traces, but can select its own pair of actions. Evaluator computes best two-step outcome of all 36 plans without charging or sharing those potential outcomes. Cold snapshot+restore at 64,128,160 with identical predictions.",
+    "data_budget": "16 worlds * 6 arms * 160 training = 15360; 16 worlds * 6 arms * 2 audits * 12 episodes * (2 diagnostic + 2 goal actions) = 9216; exactly 24576 charged physical actions total. No extra active queries or held-out training.",
+    "compute_budget": "Python 3.12 pure-stdlib, single original prospective study on Linux and Windows, no GPU, paid model, live system, or training data outside frozen synthetic generator. Fixed-capacity three-channel causal memories, three RLS modules max per channel, fully trained 8-cell deterministic integer recurrent and fully trained forgetting-RLS. Record actual CPU wall-clock ratios by OS; timing excluded from cross-OS parity.",
+    "capacity": "The candidate, ungated and sham arms use identical learning updates and at most three causal modules per each of three continuous outputs; only diagnostic-time routing differs. No-archive uses one per output. Recurrent trains input, recurrent, output and bias weights; all arms are cold-started. Stored checkpoint <=65536 bytes.",
+    "evaluator": "Two-step actual terminal squared target distance regret against the best of all 36 two-step action pairs computed only by evaluator. One-step predictive MSE not the primary. Report per-world physical regrets and false route counts on unseen nonlinear row, cross-OS serialization parity, paid-step custody and CPU. No hidden world labels, true equations, evaluator outcomes or optimal action labels reach learners.",
+    "intervention_design": "First diagnostic uses state x; second uses independently generated contrasting x2, with two distinct actions. Both action consequences returned as evidence (read-only per episode); same evidence is available to all arms. Candidate ranks mature row modules by mean squared residual against both diagnostics, accepts only if mean squared normalized residual <=0.0049 (RMS <=0.07); otherwise abstains to median mature module prediction. Ungated chooses best matching mature module without threshold. Sham routes to a deterministic arbitrary mature module independent of outcomes. All arms may use the same two-probe global residual correction for decision prediction, computed without learner weight updates, to keep diagnostic information comparable.",
+    "precommitted_classifier": "Candidate gate RMS<=0.07; minimum mature observations >=12; no post-result changes. False route means the candidate assigns ANY mature archived module to the novel nonlinear row in C in >=1 episode per world. Return-A recall means assigning an A-born module on at least one A episode for changed row; factorized-C reuse means B-born module on changed row and A-born module on unchanged row in >=1 C episode.",
+    "deterministic_expected": true,
+    "original_first_use_boundary": "Separate prereg-only commit is the frozen ancestor before IV18 implementation. Workflow may execute original registered seeds ONLY on the opening event of its draft PR. Subsequent source and mechanical atlas commits must never rerun first-use."
+  },
+  "controls": [
+    {
+      "name": "ungated_route",
+      "description": "Identical modules/training and two physical diagnostics but always select lowest two-probe mismatch module, without novelty veto."
+    },
+    {
+      "name": "sham_route",
+      "description": "Identical modules/training/diagnostics but deterministic random selection of a mature module independent of causal evidence."
+    },
+    {
+      "name": "no_archive",
+      "description": "Same RLS learning and diagnostic information, one active module per channel; no older archives available."
+    },
+    {
+      "name": "forgetting_rls",
+      "description": "Fully trained conventional forgetting RLS on identical actions and diagnostic information, with shared read-only two-probe residual correction."
+    },
+    {
+      "name": "integer_recurrent",
+      "description": "Fully trained 8-cell integer fixed-point recurrent control with all weight groups updated and shared read-only diagnostic residual correction."
+    }
+  ],
+  "metrics": [
+    "actual_two_step_return_A_regret",
+    "actual_two_step_unfamiliar_C_regret",
+    "per_world_wins_against_strongest_control",
+    "returned_A_archive_reactivation",
+    "C_known_row_composition",
+    "C_false_module_routes",
+    "charged_train_probe_goal_counts",
+    "per_arm_training_trace_hash",
+    "cold_restore_byte_and_prediction_parity",
+    "cross_os_non_timing_json_and_checkpoint_sha_parity",
+    "CPU_ratios_to_forgetting_rls_and_ungated"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SIGNAL_ONLY iff original custody totals 24576 and all controls/anchors match, both OS exact non-timing and checkpoint parity, candidate mean two-step regret <= strongest conventional forgetting-RLS/integer-recurrent -0.01 AND <= ungated_route, sham_route and no_archive -0.01 on BOTH cold return-A and unfamiliar-C; candidate per-world lower regret than strongest conventional in >=12/16 worlds for each phase; valid A reactivation >=12/16; valid C factorization >=12/16; C false mature route <=2/16; no audit leakage, checkpoint <=64KiB, candidate CPU <=3x forgetting-RLS and <=2.5x ungated_route on each OS. A passing result remains development only.",
+    "mixed": "MIXED_DEV if custody/portability valid but primary fails, while a positive preregistered advantage over at least one control or genuine archive use >=1 world is observed.",
+    "negative": "NEGATIVE_DEV if custody/portability valid, primary fails, and no positive registered signal found.",
+    "invalid": "INVALID_INFRASTRUCTURE if missing/changed prereg or source identities, first-use seeds, budget, controls, fully trained recurrent parameter coverage, evaluator leakage, training/evaluation split violation, checkpoint cold parity or cross-OS non-timing JSON/checkpoint parity; valid unfavorable performance must not be reclassified as infra failure."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "policy or baseline changes",
+    "repeat first-use after results",
+    "additional action budget",
+    "hidden evaluator or provenance leakage",
+    "promotion of synthetic DEV evidence into accepted native model"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Commit alone before implementation and before any registered IV18 outcome. Research contribution only; no native acceptance, autonomous controller changes, scheduled tasks or model deployment."
+}
