@@ -1,0 +1,126 @@
+name: AAI-10D independent mechanical fixture HEADROOM pre-admission — NO science
+on:
+  push:
+    branches: [research/aai10d-fixture-headroom-once-20261114]
+    paths: [.github/workflows/aai10d-fixture-headroom-once.yml]
+permissions:
+  contents: read
+concurrency:
+  group: aai10d-fixture-headroom-once-20261114
+  cancel-in-progress: false
+jobs:
+  diagnostic:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'AAI-10D read-only frozen fixture headroom one-shot' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: harness
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate original main-pinned one-shot isolated harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C harness rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git -C harness rev-parse HEAD^)" = '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
+          test "$(git -C harness diff --name-only HEAD^ HEAD)" = '.github/workflows/aai10d-fixture-headroom-once.yml'
+          test -z "$(git -C harness status --porcelain)"
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: candidate
+          ref: 09a1bd45458811ed054161742c766110d636f5e7
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Confirm exact candidate/benchmark/models and disarmed science
+        shell: bash
+        working-directory: candidate
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = '09a1bd45458811ed054161742c766110d636f5e7'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10D/prereg.json)" = '2a4c079396665c2737eb4208c4190a946100d496'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10D/protocol.py)" = '5acdddf375f0d4c6dd055362c36db61a4734f357'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10C/compact.py)" = 'b8eb196fd923743f22d372135561f5c1a4f28982'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10A/models.py)" = '9233ffaafe2f227de687116b0ed4204ee4e2b3a2'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10P/benchmark.py)" = 'b2c58cb6c2f2d308cdd4da259db74547a27dfa3a'
+          test -z "$(git status --porcelain)"
+      - name: Full 16-context C-D diagnostic vs BEST trained control on reserved-free fixture
+        shell: bash
+        working-directory: candidate
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import sys, json, hashlib
+          from pathlib import Path
+          sys.path.insert(0,str(Path("research/contrib/chatgpt/AAI-10D").resolve()))
+          import protocol as p
+          from models import canonical
+          fixture="handcrafted:one"
+          snapshots, common=p.common_training(fixture,labels=(p.CANDIDATE,p.ABLATION,*p.MATCHED))
+          assert len(common)==64
+          rewards={n:[] for n in snapshots}
+          accuracy={n:[] for n in snapshots}
+          oracle=[]
+          for law in ("C","D"):
+              for n_trials in (2,4):
+                  for name,saved in snapshots.items():
+                      result=p.evaluate_branch(name,saved,law,fixture,n_trials,n_contexts=16)
+                      rewards[name].append(result["mean_reward"])
+                      accuracy[name].append(result["goal_correct"])
+                      if name==p.CANDIDATE:
+                          oracle.append(result["oracle_mean_reward"])
+          aggregate={name:sum(values)/len(values) for name,values in rewards.items()}
+          goal={name:sum(values)/len(values) for name,values in accuracy.items()}
+          strongest=max(p.MATCHED,key=lambda name:aggregate[name])
+          headroom=sum(oracle)/len(oracle)-aggregate[strongest]
+          candidate_gain=aggregate[p.CANDIDATE]-aggregate[strongest]
+          ablation_gain=aggregate[p.CANDIDATE]-aggregate[p.ABLATION]
+          after=hashlib.sha256(canonical(snapshots).encode()).hexdigest()
+          assert after==hashlib.sha256(canonical(snapshots).encode()).hexdigest()
+          output={
+            "schema":"aai10d.mechanical.fixture-headroom.v1",
+            "status":"FIXTURE_DIAGNOSTIC_NOT_SCIENCE",
+            "fixture":fixture,"n_contexts_per_law_budget":16,
+            "challenged_laws":["C","D"],"challenge_trial_counts":[2,4],
+            "matched_control_count":len(p.MATCHED),"total_public_train_rows":len(common),
+            "score_means":{name:round(v,8) for name,v in sorted(aggregate.items())},
+            "goal_means":{name:round(v,8) for name,v in sorted(goal.items())},
+            "strongest_control":strongest,
+            "privileged_oracle_mean_reward":round(sum(oracle)/len(oracle),8),
+            "headroom_oracle_minus_strongest":round(headroom,8),
+            "candidate_minus_strongest":round(candidate_gain,8),
+            "candidate_minus_full_budget_one_slot":round(ablation_gain,8),
+            "headroom_dev_0_15_provisional":headroom>=.15,
+            "candidate_dev_0_08_provisional":candidate_gain>=.08,
+            "science_cohorts_used":0,
+            "scientific_CI_calculated":False,
+            "native_model_edited":False,
+            "authorizes_science_firstuse":False
+          }
+          print("AAI10D_FIXTURE_HEADROOM="+json.dumps(output,sort_keys=True),flush=True)
+          assert set(aggregate)==set(snapshots)
+          assert set(p.MATCHED).issubset(aggregate)
+          assert all(-.1<=v<=2.0 for v in aggregate.values())
+          assert max(len(values) for values in rewards.values())==4
+          PY
+          if python -B research/contrib/chatgpt/AAI-10D/fixture_only.py --primary >/dev/null 2>&1; then
+            echo AAI10D_FIRST_USE_DISARM_FAILED >&2
+            exit 1
+          fi
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo AAI10D_FIXED_FIXTURE_HEADROOM_DIAGNOSTIC_DONE_NO_SCIENCE
