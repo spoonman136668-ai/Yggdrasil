@@ -1,0 +1,33 @@
+{
+  "schema": "yggdrasil.contrib.aai08p.stochastic-custody-qualification.v1",
+  "classification": "SCOPED_STOCHASTIC_SOURCE_REPLAY_MECHANICALLY_QUALIFIED",
+  "original_simulator_repo": "scope-lab-vu/ns_gym",
+  "original_simulator_commit": "127df4b714fe4fcf680721d8e9278a96090acd7e",
+  "source_adapter_commit": "b0d6b9bf4cd79ce492acb9b0f00b6422d8588757",
+  "source_adapter_blob": "e860ebe4cca9aa255058325e01f90938c16a9432",
+  "rng_method": "Within single-thread, isolated, one-runner serial rollouts, snapshot NumPy RandomState global RNG, np.random.seed(case_seed) before Gymnasium make/reset/step, finally restore snapshot. External NS-Gym Bridge uses legacy global numpy.random.choice. No simulator modification.",
+  "mechanical_seed_range": "996100..996115, 16 consumed reserved seeds not eligible for future science",
+  "original_execution_sha": "c9f71359cc83c5079b090f15ef8e74a897d62729",
+  "original_run_id": 43614285704,
+  "original_linux_job_id": 132505829024,
+  "original_windows_job_id": 132505828683,
+  "linux": {
+    "source": "PASS",
+    "runtime": "PASS",
+    "mechanical_unit": "4/4 PASS",
+    "stochastic_changed_cases": 15,
+    "trace_sha256": "bc44dfa295503eec35b504c2d9846200b98e7c777ba0f1fb6eb8d377f4dbbf4f"
+  },
+  "windows": {
+    "source": "PASS",
+    "runtime": "PASS",
+    "mechanical_unit": "4/4 PASS",
+    "stochastic_changed_cases": 15,
+    "trace_sha256": "bc44dfa295503eec35b504c2d9846200b98e7c777ba0f1fb6eb8d377f4dbbf4f"
+  },
+  "no_science_first_use": true,
+  "native_environment_seed_is_sufficient": false,
+  "qualified_use": "Future serial controlled offline stochastic benchmark rollouts if each rollout is fully scoped, and independent preregistered science split/first-use authority is verified.",
+  "unqualified_use": "Concurrent threads or shared process consumers of numpy.random; independent stochastic env.reset-only replay; scientific learning superiority; any model integration.",
+  "native_model_integration": "NONE"
+}

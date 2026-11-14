@@ -36,5 +36,26 @@ class BridgeContract(unittest.TestCase):
                              for v in ast.walk(tree)))
 
 
+    def test_stochastic_source_only_contract(self):
+        j=json.loads((HOME/"stochastic-receipt.json").read_text(encoding="utf-8"))
+        self.assertEqual(j["classification"],"SCOPED_STOCHASTIC_SOURCE_REPLAY_MECHANICALLY_QUALIFIED")
+        self.assertEqual(j["original_run_id"],43614285704)
+        self.assertTrue(j["no_science_first_use"])
+        self.assertFalse(j["native_environment_seed_is_sufficient"])
+
+    def test_stochastic_same_trace_dual_platform(self):
+        j=json.loads((HOME/"stochastic-receipt.json").read_text(encoding="utf-8"))
+        self.assertEqual(j["linux"]["trace_sha256"],j["windows"]["trace_sha256"])
+        self.assertEqual(j["linux"]["stochastic_changed_cases"],15)
+        self.assertEqual(j["windows"]["stochastic_changed_cases"],15)
+        self.assertEqual(j["source_adapter_blob"],"e860ebe4cca9aa255058325e01f90938c16a9432")
+
+    def test_stochastic_no_privileged_source(self):
+        t=ast.parse((HOME/"stochastic_custody.py").read_text(encoding="utf-8"))
+        blocked={"unwrapped","get_planning_env","transition_matrix"}
+        self.assertFalse(any(isinstance(n,ast.Attribute) and n.attr in blocked
+                             for n in ast.walk(t)))
+
+
 if __name__=="__main__":
     unittest.main()
