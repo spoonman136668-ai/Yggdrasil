@@ -106,3 +106,50 @@ atlas pinned to the preceding exact task commit. No official scientific
 cohorts, merges, weights, accepted refs, controllers, scheduled tasks,
 runner changes or cross-project integrations are authorized by this
 contribution.
+
+## Verified fixture-only result — November 14, 2026
+
+**ENGINEERING/TASK PHYSICS PASS. SCIENCE/LEARNING UNVERIFIED.**
+
+The exact preregistered physics matched all its prespecified bounds:
+**192 physically charged fixture worlds**, 96 stable/rewired
+counterfactual pairs, six causal families, 24 four-context hidden-law
+blocks. Both irreversible route choices change the downstream
+intermediate state and required four-way terminal result, and paired
+stable/rewired worlds expose identical public observations until an
+actual paid terminal-parity diagnostic.
+
+| Frozen reference | Mean net reward | Goal success |
+|---|---:|---:|
+| Privileged knowing-the-law oracle | **+0.940** | 100% |
+| Public one-bit physical probe (only one allowed) | +0.100 | 50% |
+| Blind no-probe terminal guess | −0.185 | 25% |
+
+Oracle minus one-paid-bit reference: **+0.840**. Oracle minus blind:
+**+1.125**. This is stronger task-level *information scarcity* than
+the saturated two-probe MD32 fixture. Nevertheless it is not a proven
+learner advantage: the two public reference policies are fixed,
+and the privileged oracle has illegal information for a real agent.
+A persistent, trained conventional learner **may** close this gap.
+
+On exact candidate `7c5837c1e3e07ba315499072f2cd51170222e5cf`,
+[MD34 qualification](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43626079864)
+passed Windows and Linux **119/119 tests each**: 54 inherited, 32
+MD30, seven MD31, eight MD32, eight MD33 and 10 new MD34. All
+public physical trace and net reward receipts matched byte-for-byte
+across operating systems; independent
+[G29 source atlas](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43626191075)
+also passed Windows and Linux.
+
+The frozen source/benchmark identity, physical SHA-256 and exact
+reproduction artifacts are preserved in `result.json` and
+`provenance.json` and in those GitHub Actions runs.
+**No trained Yggdrasil/native model was executed and none of the
+official training/DEV/cold/registered cohorts was opened.**
+The scientific go/no-go remains conditional on *independently fitted
+strong conventional controls* with matched information, real
+physical action costs, compute and independent cold/transfer cohorts.
+No merge, owner/runner/controller, accepted-ref or deployment action.
+
+The unrelated CKB proxy-fanout workflow remains a separate
+infrastructure failure, not MD34 science.
