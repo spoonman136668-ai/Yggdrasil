@@ -72,8 +72,8 @@ def grammar_posterior(samples, output, bias=None):
 
 def grammar_predict(samples, x, bias=None):
     return tuple(
-        sum(weight * pattern(h, x) for weight, h in
-            zip(grammar_posterior(samples, output, bias), GRAMMAR))
+        round(sum(weight * pattern(h, x) for weight, h in
+            zip(grammar_posterior(samples, output, bias), GRAMMAR)), 12)
         for output in (0, 1)
     )
 
@@ -214,14 +214,16 @@ class LogisticInteractions(Learner):
                 for o in (0, 1):
                     for j in range(8):
                         w = weights[o][j]
-                        weights[o][j] -= 0.20 * (gradients[o][j] / n +
-                                                    (0.01 * w if j else 0.))
+                        # Fixed precision prevents cross-OS libm drift in
+                        # 1200-epoch conventional-control checkpoints.
+                        weights[o][j] = round(w - 0.20 * (gradients[o][j] / n +
+                                            (0.01 * w if j else 0.)), 12)
         self.weights = weights
     def predict(self, x):
         self._fit()
         feats = features(x)
-        return tuple(1. / (1. + math.exp(-max(-35., min(35., sum(
-            a*b for a, b in zip(row, feats)))))) for row in self.weights)
+        return tuple(round(1. / (1. + math.exp(-max(-35., min(35., sum(
+            a*b for a, b in zip(row, feats)))))), 12) for row in self.weights)
     def state(self):
         self._fit()
         return {"type": "logistic", "samples": [[list(x), list(m)]
@@ -233,8 +235,8 @@ class ProtectedOperatorBank(Learner):
     """Frozen three-slot public-evidence bank, two-observation switch gate."""
     label = "candidate"
     def __init__(self, max_slots=3, reuse=True):
-        if max_slots not in (1, 3):
-            raise ValueError("approved capacities are 1 and 3")
+        if max_slots not in (1, 2, 3):
+            raise ValueError("approved capacities are 1, 2 and 3")
         self.max_slots = max_slots
         self.reuse = bool(reuse) and max_slots > 1
         self.slots = [{"id": 0, "samples": []}]
@@ -311,7 +313,7 @@ class ConventionalSegmentBank(ProtectedOperatorBank):
     """Two-slot conventional hazard-cost change-point comparator, no reuse."""
     label = "symbolic_bank"
     def __init__(self):
-        super().__init__(3, False)
+        super().__init__(2, False)
     def learn(self, row):
         # No retained grammar-operator prior. Use hazard 1/12 threshold ln(11).
         # Separate two active-state segments only (max 2 slots).
