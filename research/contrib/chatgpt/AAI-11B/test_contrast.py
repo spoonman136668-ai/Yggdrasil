@@ -25,8 +25,8 @@ class FrozenContrastiveAssociation(unittest.TestCase):
         self.assertEqual(p["source_development"]["historical_comparison_source_run"],
                          43640947420)
         self.assertEqual(p["mechanism"]["selection"].split(" + ")[1][:1],"2")
-        self.assertFalse(p["future_science"]["first_use_authorized"])
-        self.assertEqual(p["future_science"]["consumed"],0)
+        self.assertFalse(p["authority"]["scientific_first_use"])
+        self.assertEqual(p["authority"]["cohort_consumption"],0)
         self.assertTrue(p["no_post_result_tuning"])
 
     def test_model_and_baseline_use_exact_same_public_graph_grammar(self):
