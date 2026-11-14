@@ -1,0 +1,58 @@
+{
+  "schema": "yggdrasil.qtr01.f05.prospective-source-availability.v1",
+  "study": "QTR-01-F05",
+  "frozen_before_public_api_first_use": true,
+  "aim": "Inspect an existing interpreted SAE source for machine-readable identity, explanation and activation-evidence availability, without assuming those imply a correct or causal semantic feature.",
+  "fixed_provider": "Neuronpedia public GET; no generation, no inference and no paid API",
+  "candidate": {
+    "model_id": "qwen3-32b",
+    "source_id": "32-resid-batchtopk-65k",
+    "hf_sae_repo": "adamkarvonen/qwen3-32b-saes",
+    "hf_sae_declared_license": "MIT",
+    "qwen_model_declared_license": "Apache-2.0",
+    "publishers_source_terms": "Neuronpedia 2025 privacy and terms; exported annotations have no independently established universal redistribution or model-training license"
+  },
+  "fixed_indices": [
+    37427,
+    51972
+  ],
+  "source_urls": [
+    "https://www.neuronpedia.org/qwen3-32b/32-resid-batchtopk-65k/37427",
+    "https://www.neuronpedia.org/qwen3-32b/32-resid-batchtopk-65k/51972"
+  ],
+  "api_read_limit": {
+    "feature_requests": 2,
+    "public_api_bytes_per_feature": 2000000,
+    "request_timeout_seconds": 20,
+    "retries": 0
+  },
+  "outcome_rules": [
+    "Valid JSON with matching modelId/sourceId/index and at least one metadata explanation is EXPLANATION_CANDIDATE_ONLY; never SEMANTIC_PASS.",
+    "Absent, inconsistent or inaccessible API material is INSUFFICIENT_API_EVIDENCE. Do not infer absence of feature meanings.",
+    "Machine-readable activations or published scores are availability signals, not independent causal or behavioral validation.",
+    "Do not copy label text or copyrighted activation snippets into repo or use any auto-interp outputs as weight edits/training data.",
+    "Reject source identity drift, oversized responses, invalid JSON and malformed scores; do not accept as transplant-ready."
+  ],
+  "negative_controls": [
+    "mismatched model/source/index",
+    "malformed JSON",
+    "oversized response",
+    "auto-generated explanation without independent evidence",
+    "score/activation availability without source intervention proof"
+  ],
+  "status": "READ_ONLY_RESOURCE_FEASIBILITY; NO SCIENTIFIC FIRST_USE",
+  "recipient_scope": [
+    "Wingless independent tokenless native substrate",
+    "Yggdrasil independent tokenless native substrate",
+    "TTT-Hybrid independent tokenless objective"
+  ],
+  "reserved_exclusions": [
+    "WSP-99 public/reserved worlds",
+    "model inferencing",
+    "actual donor SAE weights or activations in this gate",
+    "recipient edits",
+    "model training",
+    "autonomous loop",
+    "merge/deploy"
+  ]
+}
