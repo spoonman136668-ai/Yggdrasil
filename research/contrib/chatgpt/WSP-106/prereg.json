@@ -1,0 +1,104 @@
+{
+  "schema": "wsp106.full-retained-distmult-dev-prereg.v1",
+  "status": "FROZEN BEFORE CODE AND REAL DATA TRAINING; DEV TRAIN-ONLY, NOT CLAIMED CONVERGED OR SCIENTIFIC PASS",
+  "parent": {
+    "sha": "c4f2021d0b1c3a774ec1486ab7ae16eca9f10b94",
+    "tree": "b7809a0ae55206af642184fc7573335090f0249c",
+    "pr": 1056
+  },
+  "original_dataset": {
+    "class": "independently sealed noncanonical historical Wikidata-derived mirror (NOT official canonical Wikidata5M benchmark)",
+    "archive_sha256": "ccda8bbcd3cf599b30dd3fd8979ac26e59b48fc53d23128882a044bfbb67f878",
+    "archive_bytes": 174515774,
+    "train_sha256": "2ef1a279f6393a8edfbb2b44114a2c97944272e5fe2a1bd2a7cbe48f94742f1a",
+    "train_bytes": 436189882,
+    "train_rows": 21343681,
+    "relation_types": 828,
+    "allow_read_members": [
+      "wikidata5m/train.txt"
+    ],
+    "other_member_stat_only": true
+  },
+  "heldout": {
+    "formula": "WSP103 full (subject,predicate) group SHA256 split low-5 digest bits zero, query 4096 lowest digest priority",
+    "masked_train_rows": 666045,
+    "retained_train_rows": 20677636,
+    "selected_group_answers_sha256": "008249f2c9731a426645c584e887bb056662c96f8c2385ba946b98ca3d9f49dc",
+    "all_group_masked_edges_excluded_from_fit": true
+  },
+  "strongest_predecessor": {
+    "control": "WSP105 subject-specific symbolic two-hop with frequency fallback, same subject–predicate masked DEV cohort",
+    "hits1": 1190,
+    "hits10": 2038,
+    "MRR": 0.3617429325369139,
+    "source_receipt_sha256": "990f1798f7cde37f5771491ee02dcdd19eecf1c8c41cb2d17fb18816ccfeb147",
+    "frequency": {
+      "hits1": 921,
+      "hits10": 1853,
+      "MRR": 0.2972134007379324,
+      "sha256": "4a4364b6c4a806d2b69e9bb329e70f6c1f7d3f39fbafb68bb536d22fb9e2259a"
+    }
+  },
+  "question": "Does a conventional, subject-sensitive learned KG embedding trained on every available retained historical TRAIN edge improve retrieval on the same known frozen masked DEV queries and identical WSP104 64-candidate-per-predicate universe?",
+  "model": {
+    "family": "DistMult knowledge graph embedding / negative logistic sampling",
+    "entities": "full ID mapping of every unique retained TRAIN Q-entity, no hashing or collision, unknown entity receives no rank",
+    "relation": "full mapping of every retained TRAIN P-predicate, no hashing",
+    "dimension": 16,
+    "initialization": "np.random.Generator(PCG64(41061)) Gaussian sigma=0.1 entities; relation Gaussian around 1.0 sigma=0.02",
+    "epochs": 4,
+    "optimizer": "minibatch full-retained-TRAIN SGD",
+    "learning_rate": 0.08,
+    "batch_size": 8192,
+    "negatives_per_positive": 1,
+    "negative_object_sampling": "PCG64 uniform over mapped retained entities, source row neg may coincide with positive, no resampling",
+    "shuffle": "PCG64 permutation of all retained TRAIN edge indices for each epoch",
+    "regularization": "none",
+    "nonlinearity": "binary negative sampling softplus; stable sigmoid clipped scores [-25,25]; cross-entropy reported per epoch",
+    "post_epoch_change": "none, no early stopping, no hidden-label selection or tuning",
+    "seed": 41061,
+    "repeat_seeds": 1
+  },
+  "scoring": {
+    "candidates": "exact WSP104 frozen relation-conditioned Misra–Gries top64 selected from retained TRAIN, reranked by DistMult score for each (s,p); retain same tie-break ascending QID",
+    "evaluation": "masked group any-answer Hits@1, Hits@10, best-match MRR across all 4096",
+    "witnesses": [
+      "exact train SHA, masked group SHA, WSP104 frequency baseline Hits@1=921 Hits@10=1853 and ranking SHA 4a4364b6..."
+    ],
+    "unknown_subject_or_candidate": "rank known candidates first by score, missing embeddings rank -infinity (ascending QID tie break)",
+    "untrained_negative": "same seeded embeddings before any updates, evaluated on identical sample/candidates",
+    "diagnostics": "epoch train logistic loss, trend, wall/cpu, training memory, full-process wall",
+    "scientific_status": "DEV_TRAINING_PILOT: an epoch-limited conventional baseline, NOT fully converged/strongest or SCIENTIFIC_PASS"
+  },
+  "qualification": {
+    "unit_fake_source_negative_controls": true,
+    "full_final_regression": true,
+    "independent_g29_both_os": true,
+    "source_sha_before_model_fit": true,
+    "no_data_persistence": true,
+    "source_read_once_custody": true,
+    "pin_exact_tree": true
+  },
+  "resource": {
+    "numpy_version": "2.2.6",
+    "python": "3.12",
+    "runner": "public ubuntu-latest",
+    "peak_memory_limit_bytes": 5368709120,
+    "wall_time_limit_seconds": 3000,
+    "original_job_timeout_minutes": 55,
+    "environment_threads": 1,
+    "persistent_downloads": false,
+    "paid_api": false
+  },
+  "fences": {
+    "original_valid_test_never_open": true,
+    "original_WSP101_protected_never_open": true,
+    "no_accepted_yggdrasil_weights_changed": true,
+    "no_research_owners_merged": true,
+    "no_scheduled_task": true,
+    "no_controller_action": true,
+    "no_auto_promotion": true,
+    "no_source_repair_based_on_metrics": true
+  },
+  "stop": "Preserve negative/positive results exactly, do not tune split, epochs, seed, embedding capacity or scoring after observing real heldout DEV metrics. Do not label fully converged if fixed epochs don't demonstrate convergence; matched independent strong baselines and cold-transfer still required."
+}
