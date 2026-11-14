@@ -1,0 +1,85 @@
+{
+  "schema": "yggdrasil.wsp101.h01.symbolic-dev-headroom-audit.v1",
+  "stage": "FROZEN_FOR_NEW_CI_AUDIT_AFTER_PRIOR_MANUAL_DEV_RECONSTRUCTION; NOT BLIND",
+  "parent_exact_sha": "8582e6f030f09dacdab388804c584e9e09695230",
+  "parent_tree": "78da1317631b8354e3874aaee62a3e9f6544a733",
+  "purpose": "Independently verify if the already-developed WSP101 DEV paired causal task provides any headroom against a fully source-informed broad-grammar symbolic model.",
+  "design_status": "DEVELOPMENT_DIAGNOSTIC_ONLY; ORIGINAL_FIRST_USE_FORBIDDEN",
+  "source": "research/contrib/chatgpt/WSP-101/paired_fixture.py at parent commit, DEV contexts 0..7 only",
+  "visible_model_control": "Enumerate all 4 operator families x 6 wiring shifts x 4 phases = 96 candidate visible programs. Keep only candidates exactly matching all public passive tuples, no imported oracle parameters.",
+  "hidden_model_control": "Enumerate all 3 possible trigger actions x 2 delayed-effect modes = 6 hidden program hypotheses; simulate publicly specified delayed h0/h1 transitions without reading implementation oracle hidden members.",
+  "active_policy": {
+    "reset_starts": [
+      17,
+      1234
+    ],
+    "episodes": [
+      [
+        1,
+        0,
+        2,
+        0
+      ],
+      [
+        3,
+        0,
+        0,
+        0
+      ]
+    ],
+    "total_active_steps": 8,
+    "same_for_all_contexts_and_modes": true,
+    "source_only_transcripts": true,
+    "reset_and_observe_only": true
+  },
+  "scope": {
+    "contexts": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "paired_modes": [
+      0,
+      1
+    ],
+    "passive_episodes_per_context": 16,
+    "passive_steps_per_episode": 4,
+    "probe_episodes": 2,
+    "probe_steps_per_episode": 4,
+    "original_ids_forbidden": [
+      "FIT",
+      "TRANSFER",
+      "NOVEL",
+      "RESERVED"
+    ],
+    "donor_data_forbidden": true
+  },
+  "frozen_outcomes": {
+    "DEV_SYMBOLIC_CEILING": "All eight DEV passive sets reduce 96 visible hypotheses to exactly one; for all 16 (context,mode) worlds the eight-action policy reduces six trigger/mode hypotheses to exactly one.",
+    "DEV_SYMBOLIC_HEADROOM_OPEN": "At least one context retains more than one passively consistent visible program or one live world leaves multiple hidden programs consistent with active histories.",
+    "DEV_INVALID": "Use of oracle internals, source-mode labels or public/reserved original worlds by symbolic learner; duplicate/overflow action steps, data-hash drift, malformed observations."
+  },
+  "sources_and_controls": [
+    "Separate symbolic source program with no import of paired_fixture, rank, private oracle objects or fixture truth",
+    "Collector may instantiate public observe_world endpoint per DEV fixture and pass only passive rows plus public active records",
+    "Matched, fixed active starts and eight actions across both hidden modes and all contexts",
+    "Positive delayed intervention and passive/ablation fixture controls remain untouched"
+  ],
+  "metrics": [
+    "visible-grammar survivors per context",
+    "hidden-grammar survivors per paired world",
+    "8-action budget",
+    "first-use fence",
+    "Linux and Windows focused tests",
+    "exact SHA custody"
+  ],
+  "stop_on_ceiling": "Do not spend original first-use or model training on this already-ceiling DEV task; design a genuinely harder mechanism family and source-identifiability check first. Preserve symbolic ceiling even if weight programmer can learn it.",
+  "science_status": "NOT A SCIENTIFIC CLAIM; prior manual DEV analysis motivated this audit; trained recurrent/SSM baseline not run",
+  "architecture": "No Yggdrasil / Wingless / TTT-Hybrid native substrate changes",
+  "authority": "Research-only WSP101 branch; no merge, accepted ref edit, loop/controller, scheduled task, paid API, model inference or donor reuse"
+}
