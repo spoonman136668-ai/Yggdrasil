@@ -1,0 +1,147 @@
+{
+  "schema": "yggdrasil.dg1-mg19-qualified-result-summary.v1",
+  "experiment_id": "DG1-MG19-20261113",
+  "original_first_use_sha": "2345e2d13f36f633e1b9b29bcf4aec2bd7cb453b",
+  "original_tree": "6f6953afd225076869c9d2c37577b7f1212e4024",
+  "original_workflow_run": 43543237149,
+  "classification": "MIXED_DEV",
+  "primary_pass": false,
+  "scientific_acceptance": "NOT_ESTABLISHED",
+  "engineering_at_original_sha": {
+    "linux": "PASS",
+    "windows": "PASS",
+    "focused_tests_each_os": 9,
+    "full_inherited_regression_each_os": 54,
+    "first_use": "ONCE_PER_OS",
+    "independent_G29_run": 43543237206,
+    "independent_G29_both_os": "PASS",
+    "strict_checkpoint_and_original_trajectory_parity": "PASS"
+  },
+  "original_real_minigrid_custody": {
+    "charged_env_steps": 8016,
+    "episodes": 84,
+    "transfer_forecast_windows": 2643,
+    "simulator": "Farama MiniGrid 3.2.0",
+    "gymnasium": "1.4.0",
+    "numpy": "2.3.4",
+    "mission_text_or_hidden_state_exposed": false,
+    "eval_labels_train": false
+  },
+  "frozen_gates": {
+    "checkpoint_bounded": true,
+    "cold_mse_retained": true,
+    "cold_vs_conventional": true,
+    "coverage": true,
+    "cpu_vs_recurrent": true,
+    "reward_brier_nondegradation": true,
+    "unseen_family_all_control_margin": false,
+    "unseen_family_seed_wins": true,
+    "unseen_size_all_control_margin": false,
+    "unseen_size_seed_wins": true
+  },
+  "heldout_scores": {
+    "cold_after": {
+      "episodic_history": {
+        "event_brier": 0.005252273759,
+        "mse": 0.001627626197
+      },
+      "memoryless_sgd": {
+        "event_brier": 0.00650047267,
+        "mse": 0.030424059099
+      },
+      "persistence": {
+        "event_brier": 0.004570383912,
+        "mse": 0.002073804529
+      },
+      "recurrent_sgd": {
+        "event_brier": 0.004579285735,
+        "mse": 0.004556377726
+      },
+      "shuffled_history": {
+        "event_brier": 0.004671895806,
+        "mse": 0.001732046611
+      }
+    },
+    "cold_before": {
+      "episodic_history": {
+        "event_brier": 0.005252273759,
+        "mse": 0.001622276186
+      },
+      "memoryless_sgd": {
+        "event_brier": 0.006332398895,
+        "mse": 0.001732033952
+      },
+      "persistence": {
+        "event_brier": 0.004570383912,
+        "mse": 0.002073804529
+      },
+      "recurrent_sgd": {
+        "event_brier": 0.004561086038,
+        "mse": 0.001454377364
+      },
+      "shuffled_history": {
+        "event_brier": 0.004671895806,
+        "mse": 0.001725547823
+      }
+    },
+    "unseen_family": {
+      "episodic_history": {
+        "event_brier": 0.000411528873,
+        "mse": 0.003576976809
+      },
+      "memoryless_sgd": {
+        "event_brier": 0.00257171786,
+        "mse": 0.031281611363
+      },
+      "persistence": {
+        "event_brier": 0,
+        "mse": 0.002468886165
+      },
+      "recurrent_sgd": {
+        "event_brier": 0.00009812513,
+        "mse": 0.005132969839
+      },
+      "shuffled_history": {
+        "event_brier": 0.000334171041,
+        "mse": 0.003669817791
+      }
+    },
+    "unseen_size": {
+      "episodic_history": {
+        "event_brier": 0.003567998838,
+        "mse": 0.005502353116
+      },
+      "memoryless_sgd": {
+        "event_brier": 0.00547553585,
+        "mse": 0.031322906557
+      },
+      "persistence": {
+        "event_brier": 0.003228410008,
+        "mse": 0.005016658109
+      },
+      "recurrent_sgd": {
+        "event_brier": 0.003247289716,
+        "mse": 0.006548529416
+      },
+      "shuffled_history": {
+        "event_brier": 0.003462493195,
+        "mse": 0.005525353019
+      }
+    }
+  },
+  "scientific_interpretation": "Episodic-history forecasts beat trained memoryless and recurrent predictors on both transfer families, with cold prediction MSE approximately unchanged after interference. However a zero-learning persistence control beat episodic history in both families; primary superiority is false. No autonomous planning or general intelligence demonstrated.",
+  "original_artifacts": {
+    "ubuntu": {
+      "id": 14092393852,
+      "archive_sha256": "853e73430536d5483dbbe47b5e6121c9b79b618a0fc1b6b2115df9a140d0e59a"
+    },
+    "windows": {
+      "id": 14093036124,
+      "archive_sha256": "1c29aae63ca72e0f3010b227354fca3583f4be4baa8bd989ef2ae00905bf4bc5"
+    }
+  },
+  "preserve_original": true,
+  "native_model_changed": false,
+  "accepted_ref_changed": false,
+  "deployment": "NONE"
+}
