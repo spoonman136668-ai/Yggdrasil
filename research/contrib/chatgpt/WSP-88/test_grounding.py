@@ -77,6 +77,8 @@ class GroundingStructuralTests(unittest.TestCase):
             "retained_correct": result["retained_correct"],
             "retained_total": result["retained_total"],
             "unknown_confident": [r["unknown_confident"] for r in rows],
+            "fixture_stageA_errors": [r["fixture_stageA_errors"] for r in rows],
+            "fixture_stageB_errors": [r["fixture_stageB_errors"] for r in rows],
             "softmax_training": [
                 (r["trained_softmax_train_correct"], r["trained_softmax_train_total"])
                 for r in rows
