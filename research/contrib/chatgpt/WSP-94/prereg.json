@@ -1,0 +1,130 @@
+{
+  "schema": "wsp94.intervention-learned-causal-slot-composition.v1",
+  "status": "PREREGISTRATION_ONLY__BEFORE_CODE_OR_WORLD_FIRST_USE",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1011,
+    "sha": "bcbf508759931ba05b6a9340c42778d1e14f491a",
+    "prior_science": "WSP93 public 1/24 with operator question-conditioning ablation 0/24 and poorly fitted 3/72 train; scientific PUBLIC_BINDING_NEGATIVE; WSP93 32 DEV and WSP92 50 DEV remain unconsumed"
+  },
+  "hypothesis": "Direct numerical weight programming from five genuine action-consequence interventions per new world can infer action-to-causal-output signatures, compose 2-3 independent unseen interventions to achieve unseen state goals, cold-retain the learned signatures across other worlds, and reject action-binding ablations. Independent symbolic and fully trained conventional controls see exactly the same interventions; any tie is a tie, not superiority or evidence of language understanding.",
+  "scope": {
+    "family": "Synthetic deterministic hidden linear binary causal dynamics, not actual physics or real online actions.",
+    "world_count": {
+      "public": 10,
+      "reserved_dev": 20
+    },
+    "public_world_seeds": [
+      94011,
+      94012,
+      94013,
+      94014,
+      94015,
+      94016,
+      94017,
+      94018,
+      94019,
+      94020
+    ],
+    "reserved_world_seeds": [
+      94101,
+      94102,
+      94103,
+      94104,
+      94105,
+      94106,
+      94107,
+      94108,
+      94109,
+      94110,
+      94111,
+      94112,
+      94113,
+      94114,
+      94115,
+      94116,
+      94117,
+      94118,
+      94119,
+      94120
+    ],
+    "world_generation": "Python random.Random(seed) fixed; for every world choose a uniformly sampled shuffled list of opaque action IDs derived by SHA256('WSP94/action/'+seed+'/'+index), choose five independent uniformly random nonzero 5-bit output signatures by rejecting matrices not full-rank over GF(2), limit 1024 draws; generate three independent nuisance bits per pre/post sensor read via seeded RNG. Output order fixed but opaque to candidate; world matrix never passed to model/controls.",
+    "dynamics": "Five opaque actions each XOR one hidden 5-bit signature into an observable 5-bit causal output state. Three extra nuisance bits change exogenously without dependence on action; they are explicitly marked nuisance in sensor schema and NOT part of the goal. A reset starts every independent probe at a random observed 5-bit state, then performs EXACTLY one intervention with before+after observations, yielding a 5-bit difference; learner cannot read signatures directly. Models see only records {action_id,causal_output_before,causal_output_after,nuisance_before,nuisance_after}, never the matrix, rank, seed or hidden mapping.",
+    "exploration": "Exactly five independently reset intervention probes, one per opaque action; no duplicated action, no target revealed until probes are complete, no compound/goal actions observed during training. Same five records, action IDs, and resource budget for all candidate and comparator models.",
+    "evaluation": "For each world, prepare all 10 unordered pairs and all 10 unordered triples of actions as 20 distinct NEW composition targets. Each goal request gives ONLY observable starting 5-bit state, requested final 5-bit output, and max three actions; the originating action subset and matrix are kept in the evaluator, not supplied to planners. Each model returns a 0..3 distinct-action plan; evaluator executes the plan against original hidden causal world and scores achieved final == requested goal. World goal starts are deterministic seed-derived fresh states and never used in probes. Order of commutative action sequences irrelevant. Goal outcomes not fed into weights before all plans are frozen.",
+    "counterfactuals": "Intervene on each action from reset state and observe changes, then predict state consequences from action combinations never executed during exploration. Test action-ID relabeling by independent world seeds; do NOT claim cross-world transfer without per-world probes.",
+    "first_use": "Only public seeds initially. The 20 reserved seeds are untouched until mandatory full Ubuntu and Windows exact-source qualification at original candidate SHA, conditional automated one-shot dev gate. Reserved DEV is not protected SCIENTIFIC_PASS, and deterministic synthetic seeds do not constitute independent external distribution."
+  },
+  "candidate": {
+    "representation": "Five-by-five directly editable numeric causal signature matrix W[action_id,output_slot], initialized to all zero, updated by the first real observed before XOR after of each action. No gradient, word/token vocabulary, transformer, language model, next-token prediction, synthetic hardcoding of actual world-specific signatures or hidden-world oracle access.",
+    "learning": "Use action identity and its observed output change only. Set each numeric bit weight to the measured GF(2) delta, commit snapshot; zero-confidence action excluded. If repeated conflicting data appear, reject rather than silently overwrite. World identification is a schema-scoped isolated snapshot, not a cross-project controller.",
+    "planning": "Enumerate all subsets of up to three distinct available actions (26 candidate plans total incl empty) against the numerical weights; choose lowest-cardinality exact predicted goal when available, otherwise abstain. The evaluator executes plan in hidden world and checks actual outcome. No calls into world generator, true matrix or evaluation target formation by candidate.",
+    "cold_retention": "After training distinct world A then world B, restore A snapshot and exactly reproduce A's predictions with no replay of A observations. Corrupted checksum must fail closed. Memory cost/CPU and per-world source/probe custody recorded.",
+    "interpretation": "An explicit learned causal lookup/transition table and fixed GF(2) subset planner, not a novel neuronal representation, autonomous intelligence or general language acquisition."
+  },
+  "controls": {
+    "symbolic": "Independent dictionary action ID -> observed XOR signature, independent planner enumerates action combinations; exact same five interventions. Expected exact tie, no numeric superiority claim.",
+    "fully_trained_conventional": "Ordinary 5-output logistic regression with one-hot action identity and independent output-bit heads, deterministic 350 epochs of full supervised gradient descent (learning rate 0.8, no extra data), threshold sigmoid logits at 0.5; plan via same maximum-three subset enumeration. Require 25/25 original observed signature bits fitted per world; report training fit and compute.",
+    "shuffled_action_binding": "Learn identical five observed outcome signatures but cyclically permute which opaque action receives each signature. No actual extra interventions; report goal failure (negative action-identity control).",
+    "passive_observation_ablation": "Use same five before/after output measurements but deliberately withhold action identity, pool their deltas as one fixed signature for every action. Not a matched-information superiority baseline; a causal action-label ablation diagnostic.",
+    "fixed_random_planner": "Uniform deterministic seeded selection among 26 subsets of cardinality <=3 using SHA256(world seed,goal index), without consulting probes; report goal success.",
+    "all_arms": "Exactly same target starts, goal requests, action catalogue and original intervention data where applicable; strong symbolic and trained models may tie. No additional world actions by either strong baseline.",
+    "resource": "Log whole experiment process CPU, each model fit CPU, each model planning CPU and direct storage size; do not compare direct editing to 350-epoch SGD as matched wall time or whole-process compute advantage."
+  },
+  "frozen": {
+    "public_worlds": 10,
+    "public_goals_per_world": 20,
+    "public_total_goals": 200,
+    "dev_worlds": 20,
+    "dev_goals_per_world": 20,
+    "dev_total_goals": 400,
+    "min_public_direct_success": 190,
+    "min_dev_direct_success": 380,
+    "min_direct_training_signature_bits_correct": 1,
+    "min_conventional_training_signature_bits_correct": 1,
+    "max_direct_gap_to_conventional_success": 0,
+    "exact_parity_with_symbolic": true,
+    "max_public_shuffled_success": 60,
+    "max_public_passive_success": 90,
+    "max_public_random_success": 80,
+    "minimum_public_advantage_over_shuffled": 100,
+    "minimum_dev_advantage_over_shuffled": 200,
+    "cold_retention_required": true,
+    "checksum_tamper_rejection_required": true,
+    "unknown_action_abstention_required": true,
+    "no_target_in_training": true,
+    "no_hidden_matrix_in_prediction": true,
+    "both_OS_full_regression_required": true,
+    "public_positive": "PUBLIC_CAUSAL_SLOT_FEASIBLE",
+    "public_negative": "PUBLIC_CAUSAL_SLOT_NEGATIVE",
+    "dev_positive": "DEV_CAUSAL_SLOT_FEASIBLE",
+    "dev_negative": "DEV_CAUSAL_SLOT_NEGATIVE",
+    "scientific_success": "UNVERIFIED unless independent stronger learned non-symbolic control is reproducibly beaten under matched information/actions/compute. Matching symbolic/conventional is mechanistic feasibility only, never SCIENTIFIC_PASS."
+  },
+  "provenance": {
+    "source": "Synthetic deterministic original world source code pinned to prereg+source SHA; no external publisher download, no user Library file.",
+    "fingerprints": "Each world public and reserved seed source set preregistered; world code and protocol must not inspect reserved seeds at public qualification. Corpus generator not accepted Yggdrasil substrate.",
+    "world_seeds_exposed": "Seeds known publicly; this is only prospective development, not a sealed independently withheld science test."
+  },
+  "qualification": [
+    "Preregistration-only SHA committed first, before causal world or learner code and any world generation.",
+    "Implement isolated modules and public-only fixture tests; no reserved first-use in ordinary tests or source-atlas generation.",
+    "Public exact-world tests + negative action-label/unknown/tamper controls on Linux+Windows; fail scientific negative without inventing threshold updates.",
+    "If public positive, source-only G29 atlas reanchor changing exactly the three generated .ice files.",
+    "Mandatory inherited focused WSP80..WSP94 suites plus full root Yggdrasil regression, source and G29, on Ubuntu+Windows at the exact final SHA; first-use reserved DEV only after both platform jobs pass, workflow attempt 1, not independently protected science. A failure must stop without retry to obtain a desired result.",
+    "Preserve negative results as GitHub PR source-controlled receipts; do not merge or integrate into accepted Yggdrasil/FORGE loop."
+  ],
+  "boundaries": {
+    "draft": true,
+    "main": false,
+    "merge": false,
+    "promote": false,
+    "official_loop": false,
+    "protected_science_first_use": false,
+    "paid_API": false,
+    "new_runner": false,
+    "schedule": false,
+    "deployment": false,
+    "user_Library": false
+  }
+}
