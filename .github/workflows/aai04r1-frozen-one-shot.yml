@@ -1,0 +1,113 @@
+name: AAI-04R1 frozen supported-sham primary (no promotion)
+on:
+  push:
+    branches: [research/aai04r1-supported-sham-fresh-splits-20261114]
+    paths: [.github/workflows/aai04r1-frozen-one-shot.yml]
+permissions:
+  contents: read
+jobs:
+  first-use-once:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'Arm AAI-04R1 immutable fresh-cohort one-shot' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Check prereg/source and protected first-use boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = 'fc141f9313bd724647316b1bd465f09d96c6d61b'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-04R1/prereg.json)" = "$(git rev-parse d9b8d86593a23b32dcf87e74490fb65f5dae8e6c:research/contrib/chatgpt/AAI-04R1/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-04R1/run.py)" = "$(git rev-parse fc141f9313bd724647316b1bd465f09d96c6d61b:research/contrib/chatgpt/AAI-04R1/run.py)"
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai04r1-frozen-one-shot.yml'
+          test -z "$(git status --porcelain)"
+          echo AAI04R1_FRESH_COHORT_SOURCE_CUSTODY_PASS
+      - name: Focused mechanical checks before scientific first use
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-04R1 -p test_aai04r1.py -v
+          git diff --exit-code
+          echo AAI04R1_FOCUSED_PREFLIGHT_PASS
+      - name: One-shot fully frozen AAI-04R1 primary
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/AAI-04R1/run.py > "$RUNNER_TEMP/aai04r1-primary.json"
+          python - "$RUNNER_TEMP/aai04r1-primary.json" <<'PY'
+          import json,hashlib,sys
+          raw=open(sys.argv[1],"rb").read()
+          data=json.loads(raw)
+          assert data["prereg_commit"] == "d9b8d86593a23b32dcf87e74490fb65f5dae8e6c"
+          assert data["integration"] == "NONE"
+          print("AAI04R1_PRIMARY_COMPACT="+json.dumps(data,sort_keys=True,separators=(",",":")))
+          print("AAI04R1_PRIMARY_JSON_SHA256="+hashlib.sha256(raw).hexdigest())
+          print("AAI04R1_PRIMARY_CLASSIFICATION="+data["classification"])
+          PY
+          git diff --exit-code
+          echo AAI04R1_PRIMARY_CAPTURE_PASS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: aai04r1-frozen-original
+          path: ${{ runner.temp }}/aai04r1-primary.json
+          if-no-files-found: warn
+          retention-days: 14
+
+  generated-atlas-companion:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.ref == 'refs/heads/research/aai04r1-supported-sham-fresh-splits-20261114' &&
+      github.event.head_commit.message == 'AAI-04R1 generated atlas one-shot' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Generate source-locked G29 atlas and push only those three files
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai04r1-frozen-one-shot.yml'
+          test -z "$(git status --porcelain)"
+          git merge-base --is-ancestor d9b8d86593a23b32dcf87e74490fb65f5dae8e6c HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-04R1/run.py)" = "$(git rev-parse fc141f9313bd724647316b1bd465f09d96c6d61b:research/contrib/chatgpt/AAI-04R1/run.py)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-04R1/prereg.json)" = "$(git rev-parse d9b8d86593a23b32dcf87e74490fb65f5dae8e6c:research/contrib/chatgpt/AAI-04R1/prereg.json)"
+          python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          test "$(git diff --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'AAI-04R1 generated G29 atlas companion only'
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | wc -l | tr -d ' ')" = 3
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git fetch origin research/aai04r1-supported-sham-fresh-splits-20261114
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          git push origin HEAD:refs/heads/research/aai04r1-supported-sham-fresh-splits-20261114
+          echo AAI04R1_G29_ATLAS_COMPANION_PASS
