@@ -41,7 +41,7 @@ def fixture():
 
 class TestIndependentProjectedTransE(unittest.TestCase):
     def test_synthetic_positive_margin_decreases_and_projection_is_bounded(self):
-        E = np.array([[0.50, 0.20], [0.40, 0.10], [-0.80, -0.10]],
+        E = np.array([[0.50, 0.20], [0.40, 0.10], [0.20, 0.10]],
                      dtype=np.float32)
         P = np.array([[0.10, 0.10]], dtype=np.float32)
         s = np.array([0], dtype=np.int32)
