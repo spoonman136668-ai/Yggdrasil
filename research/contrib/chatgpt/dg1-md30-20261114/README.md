@@ -76,3 +76,41 @@ without a paid diagnostic; train/transfer topology overlap; headroom below
 or a strong conventional trained controller already saturating this task. The
 last condition is **unverified** until conventional baselines are implemented
 and trained, and cannot be waived by successful synthetic preflight.
+
+## Conventional causal filter — synthetic control qualification
+
+The next step implements a **standard, explicitly non-novel** Bayesian
+causal-response filter in `bayesian_control.py`. It is a *control* against
+which the later unconventional learner must compete, not an intelligence
+achievement on its own.
+
+- Source prior: 768 distinct observable response hypotheses, drawn from a
+  universal seeded six-node binary-DAG grammar rather than from privileged
+  hidden episode graphs. The policy has no seed, motif label, graph object,
+  lookahead environment clone or future-action access.
+- Training: 240 previously unused **synthetic** train-motif episodes, seeds
+  3301–3540, with 1,920 charged world actions. Every stage produces three
+  paid internal diagnostic responses and one actual physical actuator
+  consequence. Training fits a graph prior for three preregistered
+  expectation-maximization passes.
+- Adaptation: a conventional posterior filter scores observed public
+  sensor/action receipts, and carries an explicit 50% change-point mixture
+  after the first irreversible act. The action planner evaluates its **own
+  learned hypotheses** to determine if one additional diagnostic is worth
+  its physical cost; a real action is never simulated for free.
+- Synthetic diagnostic-only transfer: seeds 5301–5360 from the three
+  unseen motif classes; the separate fixed-actuator comparator gets a new,
+  independently paid episode per matched seed.
+- Negative controls: no official seed access; source-locked data and
+  budget checks; cross-platform graph-model and physical-receipt parity;
+  immutable original preregistration; mandatory full inherited regression.
+  Model fitting and toy evaluation are *not* registered original scientific
+  first-use.
+
+A model that beats a fixed blind action is **not enough** to establish a
+strongest conventional baseline, scientific improvement or AGI. The remaining
+mandatory work includes sufficiently trained recurrent and model-based RL
+controllers, matched online physical information and compute, heldout
+nonregression, cold retention, and separately authorized original science.
+Preserve all null/negative results; do not change frozen parameters after
+observing synthetic transfer diagnostics.
