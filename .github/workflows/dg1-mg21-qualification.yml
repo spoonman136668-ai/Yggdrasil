@@ -6,6 +6,7 @@ on:
       - 'research/contrib/chatgpt/dg1-mg21-20261113/**'
       - '.github/workflows/dg1-mg21-qualification.yml'
   pull_request:
+    branches: [research/dg1-mg20-reward-action-policy-20261113]
     types: [opened, synchronize]
     paths:
       - 'research/contrib/chatgpt/dg1-mg21-20261113/**'
@@ -67,7 +68,7 @@ jobs:
           python -m py_compile research/contrib/chatgpt/dg1-mg21-20261113/mg21.py research/contrib/chatgpt/dg1-mg21-20261113/test_mg21.py
           python -m unittest discover -s research/contrib/chatgpt/dg1-mg21-20261113 -p 'test_*.py' -v
       - name: Original once-only physical goal-reward replication after successful demonstrations
-        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.head_ref == 'research/dg1-mg21-rewarded-demonstrations-20261113'
         shell: bash
         env:
           PYTHONDONTWRITEBYTECODE: '1'
@@ -75,7 +76,7 @@ jobs:
         run: |
           python research/contrib/chatgpt/dg1-mg21-20261113/mg21.py > mg21-firstuse.json
       - name: Verify paid physical action and source custody and publish scientific classification
-        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.head_ref == 'research/dg1-mg21-rewarded-demonstrations-20261113'
         shell: bash
         run: |
           python - <<'PY'
@@ -159,7 +160,7 @@ jobs:
           print("MG21_TRACKED_SCIENCE_SOURCE_UNMODIFIED_PASS")
           PY
       - name: Preserve original full rewarded action traces and source receipt in GitHub only
-        if: github.event_name == 'pull_request' && github.event.action == 'opened' && always()
+        if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.head_ref == 'research/dg1-mg21-rewarded-demonstrations-20261113' && always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: dg1-mg21-original-${{ matrix.os }}
@@ -169,7 +170,7 @@ jobs:
           if-no-files-found: ignore
   original-cross-os-parity:
     name: MG21 original successful-teacher action/reward and checkpoint parity
-    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    if: github.event_name == 'pull_request' && github.event.action == 'opened' && github.head_ref == 'research/dg1-mg21-rewarded-demonstrations-20261113'
     needs: qualification
     runs-on: ubuntu-latest
     timeout-minutes: 10
