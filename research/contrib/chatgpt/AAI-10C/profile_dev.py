@@ -71,7 +71,7 @@ def eval_method(name):
 def mechanical_profile():
     prereg=json.loads((HERE/"prereg.json").read_text("utf8"))
     assert prereg["id"]=="AAI-10C" and not prereg["future_science"]["first_use_authorized"]
-    names=(*conventional.NAMES,"aai10c","one_slot_c")
+    names=(*conventional.NAMES,"aai10c")
     output={n:eval_method(n) for n in names}
     fastest=min(conventional.MATCHED,key=lambda n:output[n]["median_whole_seconds"])
     base=output[fastest]["median_whole_seconds"]
@@ -91,7 +91,7 @@ def mechanical_profile():
             "development_admission":("DEV_EFFICIENCY_PASS_SCIENCE_UNVERIFIED" if ok
                                      else "DEV_EFFICIENCY_NO_GO"),
             "public_events":len(EVIDENCE),"decision_requests":len(TARGETS)*3,
-            "repetitions":REPS,
+            "repetitions":REPS,"one_slot_ablation":"SOURCE_TEST_ONLY_96_ROW_CAP_NO_UNEQUAL_EVIDENCE_TIMING",
             "science_cohorts_used":0,"native_model_modified":False}
 
 
