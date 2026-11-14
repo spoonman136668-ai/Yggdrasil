@@ -1,0 +1,140 @@
+{
+  "schema": "yggdrasil.contrib.aai10d.preregistered-transfer-evaluator.v1",
+  "id": "AAI-10D",
+  "stage": "SOURCE_ONLY_PRE_SCIENCE",
+  "basis": {
+    "source_pr": 1054,
+    "head_sha": "58c0a3744e08e7547a85acdf88190decb6797584",
+    "compact_blob": "b8eb196fd923743f22d372135561f5c1a4f28982",
+    "controls_blob": "9233ffaafe2f227de687116b0ed4204ee4e2b3a2",
+    "benchmark_blob": "b2c58cb6c2f2d308cdd4da259db74547a27dfa3a",
+    "frozen_AAI10C_dev_positive": "Linux candidate 0.0010241s vs matched 0.0019053s; Windows 0.0014762s vs matched 0.0025288s; only synthetic development efficiency, not science",
+    "prior_negatives": "AAI-09A scientific NO-GO; AAI-10A and AAI-10B development efficiency NO-GO; do not replay or tune"
+  },
+  "question": "Does independent compact causal signature bank learn causal action-consequence structure enabling out-of-regime C/D transfer while protecting A/B memory, beating the strongest fully trained same-information conventional control at whole-process cost parity?",
+  "train": {
+    "phases": [
+      "A",
+      "B"
+    ],
+    "trials_per_phase": 16,
+    "public_rows_per_trial": 2,
+    "rows_per_phase": 32,
+    "total_rows": 64,
+    "law_boundary_visible": false,
+    "trial": "One public initial (x,mediators,goal,reward,actions_taken=0), one publicly observed do-action consequence (actions_taken=1), both supplied to every learner in same deterministic order, no privileged formula/label",
+    "law_identical_to_current_benchmark": true,
+    "common_evidence": true
+  },
+  "fork": {
+    "checkpoint": "After 64 train rows, each learner makes byte-exact canonical checkpoint; A return, B continuation, C and D unfamiliar independently cold-restore each frozen checkpoint",
+    "challenge_trials": [
+      0,
+      2,
+      4,
+      8
+    ],
+    "challenge_rows_per_trial": 2,
+    "maximum_rows_per_method_before_evaluation": 80,
+    "model_slot_cap": 96,
+    "actions": "Common exogenous action determined by SHA256 world-scope and trial index without learner actions or hidden law; every learner sees same public initial+observed action consequence",
+    "no_condition_label_to_learners": true
+  },
+  "evaluate": {
+    "contexts": 16,
+    "phases": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "primary_challenge_trials": [
+      2,
+      4
+    ],
+    "max_actions_per_episode": 2,
+    "independent_episodes": "For each model/condition/N/context re-restore frozen after-challenge checkpoint and issue public initial state; let model observe first initial row and then its own actual consequence feedback; no feedback from other model's actions, no test episode knowledge carried into next context",
+    "no_label_to_learners": true,
+    "score": "Terminal actual public reward. No-op is allowed; if chosen action executed, update model only on actual public consequence. Also score terminal 2-bit goal match and actual intervention count",
+    "world_unit": "A single world ID is the bootstrap unit, not contexts, interventions or conditions"
+  },
+  "controls": {
+    "eligible_matched": [
+      "symbolic_all",
+      "symbolic_recent8",
+      "symbolic_recent16",
+      "tabular_recent16",
+      "tabular_all",
+      "logistic_interactions",
+      "symbolic_bank"
+    ],
+    "candidate": "AAI-10C three-slot",
+    "ablation": "AAI-10C single-slot full-budget (64+16 challenge+up to3 eval rows <=83, under frozen 96 cap) no operator reuse",
+    "reactive": "Original AAI10A negative diagnostic, not matched",
+    "oracle": "Privileged known-law actual rollout diagnostic only; NEVER a learner or fastest matched",
+    "unmodified_frozen_code": true,
+    "source_shas_checked": true
+  },
+  "metrics": {
+    "primary": "Average terminal reward over C/D worlds for challenge N=2 and N=4 (16 contexts each), candidate vs BEST matched conventional selected by its own mean C/D reward. World-paired bootstrap, 2048 resamples with fixed public bootstrap seed 39092; percentile 2.5/97.5 using entire world units (64 TRANSFER worlds). Candidate - strongest >=+0.08 and lower 95% >0.",
+    "ablation": "Candidate minus full-budget one-slot >=0.05 and paired lower95 >0",
+    "headroom": "Oracle minus best matched >=0.15 and paired lower95>0. If strongest conventional >=95% of maximum possible terminal reward (2.0) -> HEADROOM_INADEQUATE_NO_PROMOTION.",
+    "goal": "Unfamiliar C/D two-goal exact completion fraction >=0.80",
+    "cold_retention": "A return and B hold reward vs same strongest conventional within -0.02 each; saved original checkpoint unchanged; slot A preserved and retrievable >=0.60",
+    "negative": "32 independent NEGATIVE worlds; within public-feedback challenge phase, swap mediator observations of distinct trial x contexts preserving output-bit marginals, before model learn, while never changing a test outcome; actual-vs-corrupted candidate transfer reward >= +0.10 paired 95% lower>0",
+    "cost": "time.perf_counter process train+challenge+episode learning/planning plus checkpoint cold-restore total; peak memory tracemalloc, bytes of frozen checkpoints; candidate <=2x fastest eligible matched (not oracle/negative); independent cold restores included for both",
+    "winner": "If any mandatory threshold fails => VALID_NEGATIVE_NO_INTEGRATION; malformed information separation or incomplete comparator => INVALID_PROTOCOL. First verify headroom, matched goal reward, and cold/negative controls; never change prereg or model after primary results."
+  },
+  "seeds": {
+    "fixture_only": [
+      "handcrafted:one",
+      "handcrafted:two"
+    ],
+    "dev": {
+      "start": 991000,
+      "count": 16
+    },
+    "transfer": {
+      "start": 992000,
+      "count": 64
+    },
+    "negative": {
+      "start": 993000,
+      "count": 32
+    },
+    "science_seed_usage": 0,
+    "primary_authorized": false,
+    "one_shot_source_tests_only": true,
+    "source_only_requires": "Hardcoded fixture x/goal/action rows; NO call to reserved science world generator; --primary always rejected"
+  },
+  "statistical": {
+    "bootstrap_draws": 2048,
+    "bootstrap_seed": 39092,
+    "unit": "whole_world",
+    "limits": {
+      "max_public_training_rows": 64,
+      "max_challenge_rows": 16,
+      "max_episode_rows": 3,
+      "model_cap": 96
+    },
+    "negative_controls_are_diagnostic_not_empirical_results": true
+  },
+  "authority": {
+    "research_source_write": true,
+    "disarmed_fixture_tests": true,
+    "create_draft_pr": true,
+    "mandatory_linux_windows_full_regression": true,
+    "science_first_use": false,
+    "consume_cohorts": false,
+    "native_model_integration": false,
+    "merge": false,
+    "controller_runner_queue_scheduler_changes": false,
+    "paid_API": false,
+    "files_library": false
+  },
+  "exit": {
+    "engineering": "frozen prereg-before-code, source-bound fair comparator, no oracle leakage, equal rows/action allowance, cold restore independently, no shared episode state, disarmed primary, negative fixture tests; original 54 repo +8 benchmark +10 AAI10A +11 AAI10C +new AAI10D full final candidate tests on both OS; generated code atlas PASS; untouched main",
+    "scientific": "UNVERIFIED until separately scoped first-use authorization and source-qualified cohort runner, even if synthetic structural tests PASS"
+  },
+  "no_post_result_tuning": true
+}
