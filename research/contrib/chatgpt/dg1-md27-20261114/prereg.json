@@ -1,0 +1,120 @@
+{
+  "schema": "yggdrasil.dg1-md27-prereg.v1",
+  "experiment_id": "DG1-MD27-20261114",
+  "status": "PREREG_BEFORE_IMPLEMENTATION_AND_FIRST_USE",
+  "parent_sha": "66d2afffb1cdc7a00edbd4caa5c02302cf21224b",
+  "hypothesis": "A bounded learned causal sign composition from physically charged probes and actuator effects in observed contexts 00,10,11 will identify the entirely withheld 01 regime, choose the correct paid irreversible intervention, and beat noncompositional fully trained baselines. A fully trained factorized conventional MLE is the strongest comparator: equality with it means no novel-learning superiority.",
+  "world": {
+    "name": "CausalRelay-v1",
+    "kind": "original Python 3.12 stdlib deterministic simulator",
+    "public_initial": [
+      "probe_wiring_bit",
+      "actuator_wiring_bit",
+      "goal_sign"
+    ],
+    "hidden": [
+      "independently randomized latent polarity"
+    ],
+    "actions": [
+      "probe",
+      "apply_A",
+      "apply_B"
+    ],
+    "physics": "probe physical observed effect = polarity*(-1)**probe_wiring; apply_A physical effect = polarity*(-1)**actuator_wiring; apply_B is inverse; desired goal_sign public. No agent accesses polarity. Interventions terminal/irreversible.",
+    "rewards": "probe costs -0.08; terminal intervention costs -0.03 plus +1 goal effect match, or -0.4 mismatch. Maximum 2 paid env.step calls per episode, no free actions. Identical initial observation must admit opposite best physical intervention depending on latent polarity; only a paid probe identifies this.",
+    "training_contexts": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "unseen_context": [
+      0,
+      1
+    ],
+    "teacher": "Exactly one physical probe followed by predetermined alternating A/B (no hidden information, no oracle policy) per training seed. Same raw public observation, applied actions, observed physical consequences and rewards offered to every trained arm.",
+    "training_seeds": [
+      1020001,
+      1020240
+    ],
+    "toy_eval_seeds": [
+      121,
+      144
+    ],
+    "cold_replay_seeds": [
+      145,
+      156
+    ],
+    "registered_eval_seeds": [
+      1030001,
+      1030096
+    ]
+  },
+  "arms": [
+    "causal_composition",
+    "trained_factorized_mle",
+    "trained_joint_lookup",
+    "trained_logistic",
+    "probe_then_fixed",
+    "no_probe",
+    "oracle_public"
+  ],
+  "model_specs": {
+    "causal_composition": "Learn signed relative actuator effect for each observed public wiring pair from paid probe+apply; derive heldout (0,1) sign as s00*s10*s11, a frozen multiplicative prior rather than a preloaded physics lookup.",
+    "trained_factorized_mle": "Conventional factorized ML: exhaustive fit of 4 independent +/- probe/act wire sign parameter combinations from same physical training data; select best likelihood and use paid probe. Strongest trained model comparator.",
+    "trained_joint_lookup": "Fully trained cell count majority sign by public context; unseen cell uses global majority across three training contexts.",
+    "trained_logistic": "Full-batch regularized logistic regression, three weights (intercept and two public binary bits), fixed 120 epochs, learning rate 0.1, L2 0.01, training on same physical trace labels.",
+    "probe_then_fixed": "Use paid probe and observed training-set global majority relative sign; ignore context.",
+    "no_probe": "Act directly using public goal and deterministic tie breaker, with no access to hidden polarity or probe.",
+    "oracle_public": "Scripted known-physics relation using public wiring and paid physical probe; ceiling, not counted as learned achievement."
+  },
+  "budgets": {
+    "teacher_episodes": 240,
+    "teacher_paid_actions_max": 480,
+    "toy_episodes_per_arm": 24,
+    "cold_episodes_per_arm": 12,
+    "registered_episodes_per_arm": 96,
+    "max_paid_actions_per_episode": 2,
+    "max_checkpoint_bytes": 16384
+  },
+  "toy_gates": {
+    "per_training_context_real_probe_terminal_pairs_min": 70,
+    "candidate_success_min": 22,
+    "candidate_mean_utility_margin_over_joint_min": 0.25,
+    "candidate_mean_utility_margin_over_no_probe_min": 0.25,
+    "candidate_strict_paired_goal_wins_vs_joint_min": 8,
+    "candidate_mean_utility_deficit_vs_factorized_max": 0.01,
+    "candidate_mean_utility_deficit_vs_oracle_max": 0.01,
+    "all_action_ledgers_exact": true,
+    "cold_restored_checkpoint_and_trace_identical": true,
+    "hidden_cause_indistinguishable_before_probe": true
+  },
+  "registered_gates": {
+    "candidate_success_min": 88,
+    "margin_over_joint_min": 0.2,
+    "margin_over_no_probe_min": 0.2,
+    "strict_paired_wins_vs_joint_min": 32,
+    "deficit_to_strong_factorized_max": 0.01,
+    "deficit_to_oracle_max": 0.01,
+    "dual_os_full_regression_and_non_timing_parity": true
+  },
+  "stopping": "If frozen toy gates fail, do not execute registered cohorts, tune frozen protocol, claim intelligence improvement, or rerun first-use. Only permit exact guarded single PR-opened first-use after full qualified preflight and separate authorization boundaries.",
+  "classifications": [
+    "TOY_INVALID_COVERAGE",
+    "TOY_NO_GO",
+    "TOY_READY",
+    "REGISTERED_DEV_SIGNAL_NOT_NOVEL",
+    "REGISTERED_NO_GO",
+    "REGISTERED_INVALID"
+  ],
+  "limitations": "A positive versus lookup/no-probe but tie with strongly trained factorized MLE validates task identifiability and structural prior, not unconventional superiority, autonomous learning, native Yggdrasil advancement or AGI. No hidden state leak, acceptance, controller, merge, promotion or deployment.",
+  "research_scope": "external_contribution_only_preserve_separate_owner_authority"
+}
