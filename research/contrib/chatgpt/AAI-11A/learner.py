@@ -43,10 +43,13 @@ def x_key(x):
 # Fixed public grammar truth values only, no hidden simulator functions.
 TRUTH01=tuple(tuple(pattern(rule,x) for rule in GRAPH01)
               for x in world.INPUTS)
-TRUTH2=tuple(tuple(tuple(pattern(rule,(*x,m0,m1)) for rule in GRAPH2)
-                   for m1 in (0,1))
-              for m0 in (0,1))
-             for x in world.INPUTS)
+TRUTH2=tuple(
+    tuple(
+        tuple(tuple(pattern(rule, (*x,m0,m1)) for rule in GRAPH2)
+              for m1 in (0,1))
+        for m0 in (0,1))
+    for x in world.INPUTS
+)
 
 
 def public_sample(row):
