@@ -5,6 +5,8 @@ predictive model interface. No model fit or heldout first-use entrypoint.
 """
 from public_actions import admit_receipt, PublicEpisode
 
+ARMS = ("trained", "no_diagnostic", "route0_only")
+
 
 def plan_terminal(probabilities, parity=None):
     if (len(probabilities) != 4 or any(
@@ -26,8 +28,11 @@ def plan_terminal(probabilities, parity=None):
     return (1.5 * (with_probe_success - no_probe_success) > 0.09), guess
 
 
-def route_value(probabilities, route):
+def route_value(probabilities, route, *, allow_diagnostic=True):
     paid_probe, guess = plan_terminal(probabilities)
+    if type(allow_diagnostic) is not bool:
+        raise AssertionError("MD35_INVALID_ABLATION_MODE")
+    paid_probe = paid_probe and allow_diagnostic
     p = tuple(probabilities)
     if paid_probe:
         success = max(p[0], p[2]) + max(p[1], p[3])
@@ -37,15 +42,25 @@ def route_value(probabilities, route):
     return 1.5 * success - 0.52 - route_cost - (0.09 if paid_probe else 0.0)
 
 
-def choose_route(control, context):
+def choose_route(control, context, *, arm="trained"):
+    if arm not in ARMS:
+        raise AssertionError("MD35_INVALID_ABLATION_MODE")
+    if arm == "route0_only":
+        return 0
     candidates = [
-        route_value(control.predict_target(context, r), r) for r in (0, 1)
+        route_value(control.predict_target(context, r), r,
+                    allow_diagnostic=arm != "no_diagnostic") for r in (0, 1)
     ]
     return int(candidates[1] > candidates[0])
 
 
-def one_public_episode(world, control, *, expected_context):
-    """Charge every real action; update scratch only after public receipt."""
+def one_public_episode(world, control, *, expected_context, arm="trained"):
+    """Charge every real action; update scratch only after public receipt.
+
+    Registered negative arms only: no fake probes or privileged world steps.
+    """
+    if arm not in ARMS:
+        raise AssertionError("MD35_INVALID_ABLATION_MODE")
     if type(expected_context) is not int or expected_context not in range(4):
         raise AssertionError("MD35_PRIVATE_OR_INVALID_EVAL_CONTEXT")
     obs = world.observe()
@@ -54,10 +69,12 @@ def one_public_episode(world, control, *, expected_context):
             obs.get("charged_history") != []):
         raise AssertionError("MD35_EVAL_PUBLIC_OBSERVATION_DRIFT")
     context = obs["required_context"]
-    route = choose_route(control, context)
+    route = choose_route(control, context, arm=arm)
     world.step({"kind": "actuator", "channel": context})
     world.step({"kind": "route", "choice": route})
     pay_probe, best_guess = plan_terminal(control.predict_target(context, route))
+    if arm == "no_diagnostic":
+        pay_probe = False
     if pay_probe:
         before = world.observe()
         if before["remaining_diagnostics"] != 1 or before["phase"] != 2:
@@ -87,7 +104,7 @@ def one_public_episode(world, control, *, expected_context):
     return episode
 
 
-def four_episode_block(worlds, control):
+def four_episode_block(worlds, control, *, arm="trained"):
     """Harness supplies four independent world ports; no world construction."""
     if type(worlds) not in (tuple, list) or len(worlds) != 4:
         raise AssertionError("MD35_FOUR_CONTEXT_PORTS_REQUIRED")
@@ -95,5 +112,5 @@ def four_episode_block(worlds, control):
         raise AssertionError("MD35_EVAL_REQUIRES_TRAINED_CHECKPOINT")
     control.checkpoint()  # must be trained, source-only tests cannot fit.
     control.begin_block()
-    return tuple(one_public_episode(world, control, expected_context=i)
+    return tuple(one_public_episode(world, control, expected_context=i, arm=arm)
                  for i, world in enumerate(worlds))
