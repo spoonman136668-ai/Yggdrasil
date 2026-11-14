@@ -1,0 +1,123 @@
+{
+  "schema": "wsp88.direct-weight-raw-utterance-grounding-development.v1",
+  "status": "PREREGISTRATION_FROZEN_BEFORE_IMPLEMENTATION_OR_RESERVED_DEV",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 999,
+    "head_sha": "3a64e167fa33e846e999f907e42ec3e7461710e3",
+    "prior_class": "WSP87 DEV_SUBSTRATE_FEASIBLE; independent symbolic graph parity"
+  },
+  "purpose": "Test a non-token grounded raw-utterance-to-action association using direct numerical weight edits from paid binary intervention feedback; synthetic templated English only, not general language understanding or knowledge.",
+  "hypothesis": "Directly written hashed raw-character ngram to action weights generalize to withheld syntactic frames/nouns, support new verb aliases from a few grounded interventions, and retain old behavior without gradients.",
+  "cohorts": {
+    "dev_reserved": [
+      13011,
+      13012,
+      13013,
+      13014,
+      13015,
+      13016,
+      13017,
+      13018
+    ],
+    "fixtures": [
+      92001,
+      92002
+    ]
+  },
+  "stimulus": {
+    "intents": [
+      "raise",
+      "lower",
+      "hold"
+    ],
+    "old_verbs": [
+      [
+        "raise",
+        "lift",
+        "hoist"
+      ],
+      [
+        "lower",
+        "drop",
+        "sink"
+      ],
+      [
+        "hold",
+        "freeze",
+        "steady"
+      ]
+    ],
+    "new_verbs": [
+      "elevate",
+      "descend",
+      "maintain"
+    ],
+    "train_templates": [
+      "Please {verb} the {object}.",
+      "Could you {verb} the {object} now?",
+      "{verb} the {object} safely."
+    ],
+    "heldout_templates": [
+      "Kindly {verb} this {object} for me.",
+      "Before the next step, {verb} the {object}.",
+      "On my signal: {verb} the {object}."
+    ],
+    "train_objects": [
+      "panel",
+      "lever",
+      "gate",
+      "dial"
+    ],
+    "heldout_objects": [
+      "shutter",
+      "slider",
+      "cage",
+      "switch"
+    ],
+    "per_world": "SHA256-seeded permutation maps 3 intents to 3 actuators, concealed from learners. Each training utterance is probed on all 3 actuators; each probe returns only binary consequence. Inputs do not reveal true class, template IDs, verb/intent taxonomy or permutation.",
+    "stageA": "108 distinct utterances = 3 intents x 3 old verbs x 3 train templates x 4 train objects; 324 paid binary probes. Evaluate old verbs on heldout templates and objects, with no queries exposed before predictions freeze.",
+    "stageB": "3 new verb aliases x 3 supported training-template/object contexts, each against all 3 actuators = 27 additional paid probes. No replay of old learner observations. Evaluate new aliases and preserve old holdout predictions.",
+    "unknown": "Evaluate unrelated unsupported commands for abstention."
+  },
+  "learner": "Raw Unicode character 3-5 gram feature hashing directly to fixed-width numeric class-association matrix. No word splitting, discrete lexical vocabulary, LM, next-token objective, gradients or external model. Set width, exact hash, normalization and abstention threshold before first DEV.",
+  "controls": [
+    "Converged SGD softmax classifier trained on exact same features and observed paid intervention outcomes, fixed epochs/learning rate before DEV; report information/actions/parameters/compute, no artificial undertraining.",
+    "Independent exact-whole-utterance outcome lookup receiving same paid probes; no lexical parser.",
+    "Shuffled feedback negative using same feature machinery; shuffle independently and preserve class counts.",
+    "Zero numerical matrix and unrelated-command abstention."
+  ],
+  "fixed_thresholds": {
+    "stageA_heldout_accuracy_min": 0.9,
+    "stageB_new_alias_heldout_accuracy_min": 0.75,
+    "old_heldout_retention_min": 0.95,
+    "advantage_over_literal_pp_min": 30,
+    "shuffled_feedback_accuracy_max": 0.45,
+    "unsupported_command_confident_fraction_max": 0.05,
+    "gap_vs_fully_trained_SGD_pp_max": 10,
+    "worlds_required": 8,
+    "cold_restore_bitwise_equal": true,
+    "tampered_snapshot_must_reject": true,
+    "full_CPU_timing_required": true
+  },
+  "interpretation": "All checks PASS => DEV_GROUNDING_FEASIBLE only, NOT SCIENTIFIC_PASS; any miss => DEV_GROUNDING_NEGATIVE. Because all 3 actions are probed, feedback reveals class after paid trials; do not overstate causality or action efficiency. No claim of arbitrary-language transfer or factual knowledge.",
+  "sequence": [
+    "Preregister source alone before code/outcomes",
+    "Public fixture development only outside reserved seeds",
+    "Dual-platform exact-SHA WSP88 focused + inherited WSP80-87 + full root regression + pinned G29 atlas",
+    "After verified source qualification only, one frozen isolated DEV first-use by scoped owner",
+    "Publish all outcomes, including negatives, with source hash and costs"
+  ],
+  "boundaries": {
+    "protected_science": false,
+    "official_loop": false,
+    "accepted_ref": false,
+    "merge": false,
+    "paid_api": false,
+    "new_runner": false,
+    "scheduled_task": false,
+    "deployment": false,
+    "user_library": false
+  },
+  "future": "New separately preregistered experiments on untemplated natural utterances, unseen predicate induction, source-attributed real-world facts, conflict/correction, long-range memory, transfer and heldout QA with fully trained comparable controls."
+}
