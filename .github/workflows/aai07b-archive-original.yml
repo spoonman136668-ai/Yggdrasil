@@ -1,0 +1,74 @@
+name: AAI-07B original primary durable custody and pinned G29 atlas
+on:
+  push:
+    branches: [research/aai07b-learned-memory-associations-20261114]
+    paths: [.github/workflows/aai07b-archive-original.yml]
+permissions:
+  actions: read
+  contents: write
+jobs:
+  source-locked-archive-once:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'AAI-07B archive original primary and atlas one-shot' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pin contributor source and prereg and archive only prior original artifact
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '16d9275a3c498719b0a6623d65ef4d3745c6a06a'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai07b-archive-original.yml'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-07B/prereg.json)" = "$(git rev-parse 10e0ad453454a0f85eafbda1c8618657979810bd:research/contrib/chatgpt/AAI-07B/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-07B/evaluate.py)" = "$(git rev-parse 87aaf5cd3bb26ee60a6525978e34e546e8b9bc34:research/contrib/chatgpt/AAI-07B/evaluate.py)"
+          test -z "$(git status --porcelain)"
+          mkdir -p "$RUNNER_TEMP/aai07b-original"
+          gh run download 43610008504 --repo "$GITHUB_REPOSITORY" --name aai07b-original-primary --dir "$RUNNER_TEMP/aai07b-original"
+          test "$(sha256sum "$RUNNER_TEMP/aai07b-original/aai07b-primary.json" | awk '{print $1}')" = 'a7dc6912854809d188ab0d3fe79c01c8a2e530f2ed0bc20a5171773b4ad4e796'
+          cp "$RUNNER_TEMP/aai07b-original/aai07b-primary.json" research/contrib/chatgpt/AAI-07B/primary-original.json
+          python - <<'PY'
+          import hashlib,json,pathlib
+          base=pathlib.Path('research/contrib/chatgpt/AAI-07B')
+          raw=(base/'primary-original.json').read_bytes()
+          obj=json.loads(raw)
+          summary=json.loads((base/'result-summary.json').read_text())
+          provenance=json.loads((base/'provenance.json').read_text())
+          assert hashlib.sha256(raw).hexdigest()==provenance['original_raw_json_sha256']
+          assert obj['prereg_commit']==summary['prereg_commit']
+          assert obj['classification']==summary['classification']=='LEARNING_DEMONSTRATED_NOT_SUPERIOR'
+          assert obj['world_records_sha256']==summary['world_records_sha256']
+          assert len(obj['world_rows']['dev'])==64
+          assert len(obj['world_rows']['transfer'])==64
+          assert len(obj['world_rows']['negative'])==64
+          print('AAI07B_ORIGINAL_RAW_RECORD_CUSTODY_PASS')
+          PY
+          git add -- research/contrib/chatgpt/AAI-07B/primary-original.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'AAI-07B archive byte-identical original primary record'
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD)" = 'research/contrib/chatgpt/AAI-07B/primary-original.json'
+          python -B scripts/build_code_atlas.py --write --source-commit "$(git rev-parse HEAD)"
+          test "$(git diff --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git commit -m 'AAI-07B G29 generated atlas companion only'
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | wc -l | tr -d ' ')" = 3
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-07B -p test_contract.py -v
+          test -z "$(git status --porcelain)"
+          git fetch origin research/aai07b-learned-memory-associations-20261114
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          git push origin HEAD:refs/heads/research/aai07b-learned-memory-associations-20261114
+          echo AAI07B_ORIGINAL_ARTIFACT_AND_SOURCE_ATLAS_DURABLE_PASS
