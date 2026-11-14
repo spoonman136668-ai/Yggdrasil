@@ -1,0 +1,103 @@
+{
+  "schema": "wsp93.original-public-evidence-binding-negative.v1",
+  "pr_number": 1011,
+  "parent": {
+    "pr_number": 1010,
+    "head_sha": "ac4605ab494f1e1ded7b9568a025ee6867f6ab10",
+    "public_negative": "WSP92 direct numeric 0/24, ordinary logistic 1/24, lexical 3/24",
+    "reserved_dev_status": "WSP92 50 original DEV QA questions NOT consumed"
+  },
+  "preregistration": {
+    "commit": "3eb12021dc6954410b91becd785375ce60119887",
+    "timing": "Before WSP93 source/algorithm code and any first-use scoring",
+    "thresholds_unchanged": true
+  },
+  "source": {
+    "source_only_commit": "99980fae56082316400751a222404a7e1437c8fc",
+    "source_files": [
+      "research/contrib/chatgpt/WSP-93/data/binding-contexts-frozen.json",
+      "research/contrib/chatgpt/WSP-93/data/binding-labels-frozen.json"
+    ],
+    "published_squad_v1_train_raw_sha256": "3527663986b8295af4f7fcdff1ba1ff3f72d07d61a20f487cb238a6ef92fd955",
+    "derived_source_sha256": "0869bbb1b1e08e49a8bf30657bb53e7dec7f86ea92f7f0d7ff7d200e30b39733",
+    "derived_labels_sha256": "12ad5e59dd4ddba2c021d9129fb6e21cd6ef3118b8c26bdc349c0be79dbbb102",
+    "license": "CC BY-SA 4.0",
+    "cohorts": {
+      "train_articles": 12,
+      "train_questions": 72,
+      "public_articles": 6,
+      "public_questions": 24,
+      "reserved_articles": 8,
+      "reserved_questions": 32
+    },
+    "excludes": "WSP92 supervised 16 SQuAD TRAIN article titles and ALL WSP92 50 reserved SQuAD DEV questions"
+  },
+  "qualifier": {
+    "exact_candidate_sha": "8ffcbad381fce84f6ce56cb80e5200dab372f179",
+    "run_id": 43579448407,
+    "attempt": 1,
+    "overall_conclusion": "SUCCESS",
+    "windows": "ENGINEERING_PUBLIC_FIXTURE_PASS; SCIENTIFIC_PUBLIC_BINDING_NEGATIVE",
+    "ubuntu": "ENGINEERING_PUBLIC_FIXTURE_PASS; SCIENTIFIC_PUBLIC_BINDING_NEGATIVE",
+    "mandatory_full_final_regression": "NOT_RUN: rejected at public stage",
+    "g29_atlas_reanchor": "NOT_RUN: public mechanism was negative"
+  },
+  "original_science": {
+    "classification": "PUBLIC_BINDING_NEGATIVE",
+    "criteria_met": 9,
+    "criteria_total": 15,
+    "failed": [
+      "cold_retention",
+      "over_random",
+      "public_positive_transfer",
+      "question_conditioning_matters",
+      "train_learning",
+      "trained_control_fit"
+    ],
+    "public_questions": 24,
+    "exact_answers": {
+      "direct_binding": 1,
+      "symbolic_type": 1,
+      "ordinary_logistic": 0,
+      "anchor_retrieval": 0,
+      "question_ablated": 0,
+      "random_candidate": 0
+    },
+    "initial_training_source_questions": 48,
+    "additional_training_source_questions": 24,
+    "full_training_examples": 72,
+    "training_correct_direct": 3,
+    "training_correct_conventional": 7,
+    "retained_first48_exact": 2,
+    "source_answer_reachable_public": 22,
+    "cold_snapshot": "PASS",
+    "checksum_tamper": "PASS",
+    "source_proof_on_correct": "PASS",
+    "unknown_input": "PASS",
+    "whole_cpu_seconds": {
+      "ubuntu": 2.015591239,
+      "windows": 2.359375
+    },
+    "meaning": "Directly edited question/evidence operator did not acquire reliable binding even on supervised source examples, and did not transfer adequately. Conventional logistic on identical operator features was also strongly underfit. Public 1/24 vs WSP92 0/24 on different disjoint cohorts is NOT scientifically comparable progress; independent evidence binding/transfer unverified."
+  },
+  "stop": {
+    "action": "Do not execute reserved 32 first-use WSP93 QA",
+    "reserved_WSP93": "UNCONSUMED",
+    "reserved_WSP92": "UNCONSUMED",
+    "dev_workflow_fence": "IF FALSE",
+    "result_replayed_as_novel": false
+  },
+  "recommendation": "Do not retune these public questions or widen operator table as if a source-scored gain. Next distinct experiment must first show causal binding / explicit slot-based program induction on independently frozen minimal synthetic action-consequence test, then carry on new corpus under full-trained controls; question decoding, source evidence retrieval and answer extraction require separate falsifiable probes.",
+  "isolation": {
+    "accepted_source": false,
+    "scientific_pass": false,
+    "merge": false,
+    "main": false,
+    "official_loop": false,
+    "controller": false,
+    "paid_api": false,
+    "scheduled_tasks": false,
+    "deployment": false,
+    "user_library": false
+  }
+}
