@@ -6,11 +6,14 @@ Model/controls compare equal evidence and use the SAME action planner.
 """
 from __future__ import annotations
 
-from collections import deque
 from itertools import combinations
 import json
 import math
+from pathlib import Path
+import sys
 
+# Reuse the exact admitted AAI-10P benchmark; never copy/modify its laws.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'AAI-10P'))
 from benchmark import ACTIONS, COST, require_bits
 
 OPS = ("xor", "and", "or")
@@ -244,7 +247,7 @@ class ProtectedOperatorBank(Learner):
         return next(s for s in self.slots if s["id"] == self.active_id)
 
     def _prior(self, slot):
-        if not self.reuse or not slot["samples"]:
+        if not self.reuse:
             return None
         # Operator reuse comes ONLY from previously experienced PUBLIC evidence.
         # Never consults a hidden law identity or simulator equations.
@@ -270,25 +273,23 @@ class ProtectedOperatorBank(Learner):
         active = self.active()
         score = self._likelihood(active, batch)
         others = [slot for slot in self.slots if slot["id"] != self.active_id]
+        switched = False
         if others:
             target = max(others, key=lambda slot: self._likelihood(slot, batch))
             if self._likelihood(target, batch) >= score + LOG_MARGIN:
                 self.active_id = target["id"]
                 self.retrievals += 1
                 active = target
-        if active["id"] == self.active_id and active is not self.slots[-1]:
-            pass
-        # Only allocate if still on the originally active slot, not after recall.
-        if self.active_id == active["id"] and score > -float("inf"):
-            if (active is not self.slots[-1] or len(self.slots) < self.max_slots):
-                current_score = self._likelihood(active, batch)
-                uniform_score = 4 * math.log(0.5)
-                if (len(self.slots) < self.max_slots and
-                    uniform_score >= current_score + LOG_MARGIN):
-                    active = {"id": self.next_id, "samples": []}
-                    self.next_id += 1
-                    self.slots.append(active)
-                    self.active_id = active["id"]
+                switched = True
+        # Never create a novel slot in the same batch as a successful recall.
+        if not switched and len(self.slots) < self.max_slots:
+            current_score = self._likelihood(active, batch)
+            uniform_score = 4 * math.log(0.5)
+            if uniform_score >= current_score + LOG_MARGIN:
+                active = {"id": self.next_id, "samples": []}
+                self.next_id += 1
+                self.slots.append(active)
+                self.active_id = active["id"]
         active["samples"].extend(batch)
         active["samples"] = active["samples"][-MAX_SLOT_ROWS:]
         self.scratch.clear()
