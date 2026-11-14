@@ -302,6 +302,8 @@ class TabularQ:
         if state not in self.q:self.q[state]=[0.]*len(ACTIONS)
         return self.q[state]
     def feedback(self,obs,action,after,reward,training=False,terminal=False):
+        if action not in ACTIONS:
+            raise ValueError("MG20_INVALID_TRAIN_ACTION")
         if not training:return
         state=self.state(obs)
         nxt=self.state(after)
@@ -336,6 +338,7 @@ class RecurrentImitation:
 
     def start(self,seed):
         self.history=[]
+        self.prev_action=6
 
     def forward(self,seq):
         if not seq:raise ValueError("MG20_EMPTY_RECURRENT_CONTEXT")
