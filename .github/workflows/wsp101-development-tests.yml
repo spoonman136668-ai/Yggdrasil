@@ -45,3 +45,113 @@ jobs:
           test ! -f research/contrib/chatgpt/WSP-101/PUBLIC_PASS.json
           test ! -f research/contrib/chatgpt/WSP-101/RESERVED_PASS.json
           test -z "$(git status --porcelain)"
+
+  one-shot-g29:
+    needs: [dev-fixtures]
+    if: "github.event.head_commit.message == 'ci(wsp101): source-pin G29 atlas' && github.run_attempt == 1 && needs.dev-fixtures.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    concurrency:
+      group: wsp101-source-pinned-atlas-once
+      cancel-in-progress: false
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prove source, original-world custody and WSP98 public admission
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 2e7c31d8579efca478b883de5a4c60aa9af729f5 HEAD
+          git merge-base --is-ancestor 385b3a9b3dcbcf8509e7bc6609b3d3f4e74481a2 HEAD
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = cef1378fd3c47ebc74675bd9dde19a183775ceeb
+          git diff --exit-code a24c6ec7d23e56b6462dcf43cbd4a72256a35ff3 HEAD -- research/contrib/chatgpt/WSP-98
+          python research/contrib/chatgpt/WSP-98/admission.py --public-pass
+          test ! -f research/contrib/chatgpt/WSP-101/PUBLIC_PASS.json
+          test ! -f research/contrib/chatgpt/WSP-101/RESERVED_PASS.json
+          test -z "$(git status --porcelain)"
+      - name: Reanchor only G29 generated atlas files
+        shell: bash
+        run: |
+          set -euo pipefail
+          S="$GITHUB_SHA"
+          python scripts/build_code_atlas.py --write --source-commit "$S"
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(wsp101): pin G29 source atlas at $S"
+          B="$(git rev-parse HEAD)"
+          test "$(git diff-tree --no-commit-id --name-only -r "$B" | wc -l | tr -d ' ')" = 3
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/wsp101-transferable-causal-weights-20261114
+          echo "WSP101_G29_SOURCE=$S"
+          echo "WSP101_G29_COMPANION=$B"
+
+  final-regression:
+    needs: [dev-fixtures]
+    if: "github.event.head_commit.message == 'ci(wsp101): exact-tree final dual-platform qualification' && github.run_attempt == 1 && needs.dev-fixtures.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 95
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact SHA, prereg custody, unchanged WSP98, and current G29
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor a24c6ec7d23e56b6462dcf43cbd4a72256a35ff3 HEAD
+          git merge-base --is-ancestor 2e7c31d8579efca478b883de5a4c60aa9af729f5 HEAD
+          git merge-base --is-ancestor 385b3a9b3dcbcf8509e7bc6609b3d3f4e74481a2 HEAD
+          git diff --exit-code a24c6ec7d23e56b6462dcf43cbd4a72256a35ff3 HEAD -- research/contrib/chatgpt/WSP-98
+          python research/contrib/chatgpt/WSP-98/admission.py --public-pass
+          python scripts/build_code_atlas.py --check-if-present
+          test ! -f research/contrib/chatgpt/WSP-101/PUBLIC_PASS.json
+          test ! -f research/contrib/chatgpt/WSP-101/RESERVED_PASS.json
+          test -z "$(git status --porcelain)"
+      - name: Complete WSP101 original-free fixture regression
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-101 -p 'test_*.py' -v
+      - name: WSP98 preserved public-source and focused regression
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-98 -p 'test_*.py' -v
+      - name: Mandatory inherited WSP80-WSP97 focused regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97; do
+            python -m unittest discover -s "research/contrib/chatgpt/WSP-$n" -p 'test_*.py' -v
+          done
+      - name: Mandatory complete Yggdrasil root regression
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: G29 source pin, exact SHA and final clean checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
