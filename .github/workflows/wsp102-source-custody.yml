@@ -1,0 +1,310 @@
+name: WSP102 read-only real Wikidata5M archive provenance
+on:
+  push:
+    branches: [research/wsp102-real-knowledge-wide-first-20261114]
+permissions:
+  contents: read
+jobs:
+  custody-code:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prove source prereg before code, exact checkout, no heldout use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 94d7e527b2122722c998c0de627543ab6ec0270f HEAD
+          test ! -e research/contrib/chatgpt/WSP-102/REAL_DATA_FIRST_USE.json
+          test ! -e research/contrib/chatgpt/WSP-102/REAL_DATA_SCIENTIFIC_PASS.json
+          test -z "$(git status --porcelain)"
+      - name: Run archive-only negatives and strict source URL tests
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-102 -p 'test_*.py' -v
+      - name: Assert pristine source and unconsumed science
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+  source-custody-once:
+    needs: [custody-code]
+    if: "github.event.head_commit.message == 'ci(wsp102): one-shot real Wikidata5M metadata custody' && github.run_attempt == 1 && needs.custody-code.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: read
+    concurrency:
+      group: wsp102-real-source-custody-one-use
+      cancel-in-progress: false
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prove locked source and zero scientific first use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 94d7e527b2122722c998c0de627543ab6ec0270f HEAD
+          test ! -e research/contrib/chatgpt/WSP-102/REAL_DATA_FIRST_USE.json
+          test -z "$(git status --porcelain)"
+      - name: Bounded historical Wikidata5M source archive metadata only
+        run: python research/contrib/chatgpt/WSP-102/source_custody.py --source-custody-only
+      - name: No source upload, unconsumed original evaluator, clean tree
+        shell: bash
+        run: |
+          test ! -e research/contrib/chatgpt/WSP-102/REAL_DATA_FIRST_USE.json
+          test -z "$(git status --porcelain)"
+
+  train-source-audit-once:
+    needs: [custody-code]
+    if: "github.event.head_commit.message == 'ci(wsp102): one-shot full 20.6M source-train structural audit' && github.run_attempt == 1 && needs.custody-code.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    concurrency:
+      group: wsp102-real-train-source-audit-one-shot
+      cancel-in-progress: false
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prove immutable train-only source admission, no evaluator use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 8773288fe8152d23686eb216e5a22e83b875de7c HEAD
+          test -f research/contrib/chatgpt/WSP-102/source_seal.json
+          test ! -f research/contrib/chatgpt/WSP-102/REAL_DATA_FIRST_USE.json
+          test -z "$(git status --porcelain)"
+      - name: Verify pinned 174MB source and scan all 20.6M training triples only
+        run: python research/contrib/chatgpt/WSP-102/train_source_audit.py --full-source-audit
+      - name: Preserve original heldout and exact source
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+
+  one-shot-g29:
+    needs: [custody-code]
+    if: "github.event.head_commit.message == 'ci(wsp102): source-pin G29 atlas' && github.run_attempt == 1 && needs.custody-code.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    concurrency:
+      group: wsp102-source-pinned-atlas-once
+      cancel-in-progress: false
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prove source, original-world custody and WSP98 public admission
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 94d7e527b2122722c998c0de627543ab6ec0270f HEAD
+          git merge-base --is-ancestor 8773288fe8152d23686eb216e5a22e83b875de7c HEAD
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = cef1378fd3c47ebc74675bd9dde19a183775ceeb
+          git diff --exit-code a24c6ec7d23e56b6462dcf43cbd4a72256a35ff3 HEAD -- research/contrib/chatgpt/WSP-98
+          python research/contrib/chatgpt/WSP-98/admission.py --public-pass
+          test -f research/contrib/chatgpt/WSP-102/TRAIN_SOURCE_EVIDENCE.json
+          test ! -f research/contrib/chatgpt/WSP-102/REAL_DATA_SCIENTIFIC_PASS.json
+          test ! -f research/contrib/chatgpt/WSP-102/REAL_DATA_FIRST_USE.json
+          test -z "$(git status --porcelain)"
+      - name: Reanchor only G29 generated atlas files
+        shell: bash
+        run: |
+          set -euo pipefail
+          S="$GITHUB_SHA"
+          python scripts/build_code_atlas.py --write --source-commit "$S"
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(wsp102): pin G29 source atlas at $S"
+          B="$(git rev-parse HEAD)"
+          test "$(git diff-tree --no-commit-id --name-only -r "$B" | wc -l | tr -d ' ')" = 3
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/wsp102-real-knowledge-wide-first-20261114
+          echo "WSP102_G29_SOURCE=$S"
+          echo "WSP102_G29_COMPANION=$B"
+
+  final-regression:
+    needs: [custody-code]
+    if: "github.event.head_commit.message == 'ci(wsp102): exact-tree final dual-platform qualification' && github.run_attempt == 1 && needs.custody-code.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 95
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact SHA, prereg custody, unchanged WSP98, and current G29
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor a24c6ec7d23e56b6462dcf43cbd4a72256a35ff3 HEAD
+          git merge-base --is-ancestor 94d7e527b2122722c998c0de627543ab6ec0270f HEAD
+          git merge-base --is-ancestor 8773288fe8152d23686eb216e5a22e83b875de7c HEAD
+          git diff --exit-code a24c6ec7d23e56b6462dcf43cbd4a72256a35ff3 HEAD -- research/contrib/chatgpt/WSP-98
+          python research/contrib/chatgpt/WSP-98/admission.py --public-pass
+          python scripts/build_code_atlas.py --check-if-present
+          test -f research/contrib/chatgpt/WSP-102/TRAIN_SOURCE_EVIDENCE.json
+          test ! -f research/contrib/chatgpt/WSP-102/REAL_DATA_SCIENTIFIC_PASS.json
+          test ! -f research/contrib/chatgpt/WSP-102/REAL_DATA_FIRST_USE.json
+          test -z "$(git status --porcelain)"
+      - name: Complete WSP102 original-free fixture regression
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-102 -p 'test_*.py' -v
+      - name: WSP98 preserved public-source and focused regression
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-98 -p 'test_*.py' -v
+      - name: Mandatory inherited WSP80-WSP97 focused regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97; do
+            python -m unittest discover -s "research/contrib/chatgpt/WSP-$n" -p 'test_*.py' -v
+          done
+      - name: Mandatory complete Yggdrasil root regression
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: G29 source pin, exact SHA and final clean checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+
+  source-count-diagnostic-once:
+    needs: [custody-code]
+    if: "github.event.head_commit.message == 'ci(wsp102): one-shot frozen source row-count provenance' && github.run_attempt == 1 && needs.custody-code.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    concurrency:
+      group: wsp102-original-count-provenance-once
+      cancel-in-progress: false
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify source-count failure and frozen source-only diagnostic protocol
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 7d17fec7542242aae886a3a5b87c70f67cb8bc30 HEAD
+          test -f research/contrib/chatgpt/WSP-102/SOURCE_COUNT_NEGATIVE.json
+          test -f research/contrib/chatgpt/WSP-102/count_diagnostic_prereg.json
+          test ! -e research/contrib/chatgpt/WSP-102/REAL_DATA_FIRST_USE.json
+          test -z "$(git status --porcelain)"
+      - name: Bounded frozen-source train-count diagnostic (no evaluator labels)
+        run: python research/contrib/chatgpt/WSP-102/count_diagnostic.py --source-count-diagnostic-only
+      - name: Source custody, no science acceptance
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+
+  full-real-train-numeric-capacity-once:
+    needs: [custody-code]
+    if: "github.event.head_commit.message == 'ci(wsp102): one-shot 21.34M real-triple numeric weight capacity' && github.run_attempt == 1 && needs.custody-code.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    concurrency:
+      group: wsp102-21m-real-triples-numeric-width
+      cancel-in-progress: false
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Enforce frozen source variant, no original evaluation data, no model promotion
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor e5e4a38ea0997e7fba0a4bef735b33518e7bc490 HEAD
+          test -f research/contrib/chatgpt/WSP-102/HISTORICAL_VARIANT_SEAL.json
+          test -f research/contrib/chatgpt/WSP-102/weight_capacity_prereg.json
+          test ! -e research/contrib/chatgpt/WSP-102/REAL_DATA_FIRST_USE.json
+          test -z "$(git status --porcelain)"
+      - name: Full 21.343M real training fact numeric weight write with cold restore
+        run: python research/contrib/chatgpt/WSP-102/real_graph_weights.py --train-only-full-numeric-capacity
+      - name: Guarantee source-only data and clean worktree
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"

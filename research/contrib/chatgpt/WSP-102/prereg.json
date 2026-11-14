@@ -1,0 +1,61 @@
+{
+  "schema": "wsp102.knowledge-ingest-prereg.v1",
+  "status": "FROZEN_PRE_FIRST_USE; SOURCE_CUSTODY_ONLY; NO TRAINING OR SCIENTIFIC DATA USE",
+  "parent_sha": "a24c6ec7d23e56b6462dcf43cbd4a72256a35ff3",
+  "research_line": "Direct numeric weight-programming breadth, transfer, memory and real-world associations with independent strong controls",
+  "input_type": "Wikidata real structured QID/PID/QID triples, no tokenized natural-language corpus",
+  "source": {
+    "dataset": "Wikidata5M transductive and inductive splits; derived from historical Wikidata, not live 2026",
+    "publisher": "https://deepgraphlearning.github.io/project/wikidata5m",
+    "archive": "https://web.informatik.uni-mannheim.de/pi1/kge-datasets/wikidata5m.tar.gz",
+    "structured_data_license": "CC0 1.0 Wikidata statements; excludes Wikipedia text and media",
+    "untrusted_mirror": "Third-party published benchmark mirror; verify bytes/checksum and explicit provenance before admission.",
+    "expected_published_counts": {
+      "transductive_train": 20614279,
+      "transductive_validation": 5163,
+      "transductive_test": 5133,
+      "entities": 4594485,
+      "relations": 822,
+      "inductive_train": 20496514,
+      "inductive_validation": 6699,
+      "inductive_test": 6894
+    },
+    "cutoff_warning": "Wikidata5M snapshot is historical (circa July 2019) and not a verified Nov 2026 fact database"
+  },
+  "source_custody": {
+    "only_action": "Read-only HTTPS archive fetch once, strict bounded bytes, compute SHA256 and enumerate compressed tar member names and uncompressed sizes. NEVER parse graph row values or run a model in this gate.",
+    "network": "Only public, no paid APIs, no authentication, no scheduling, no persistent service, ephemeral GitHub runner",
+    "max_compressed_bytes": 268435456,
+    "max_archive_member_bytes": 1200000000,
+    "max_total_uncompressed_bytes": 1800000000,
+    "max_seconds": 600,
+    "no_artifact_upload": true,
+    "no_user_library_data": true,
+    "freeze_next": "After successful custody, separately commit verified immutable source hash, exact member-path allowlist and split protocol before any source/truth read",
+    "abort": "Reject HTML, redirect to unapproved host, oversized archive, unsafe path, symlink/hardlink, duplicate member names, non-TAR compressed bytes, unexpected file types. Preserve 404/403/timeout as custody not scientific failure."
+  },
+  "future_science_design": {
+    "large_first": "Prefer all 20,614,279 transductive train triples at full 822-relation breadth after provenance lock, and original disjoint heldout test; no first-use now.",
+    "predeclared_fallbacks": [
+      5000000,
+      1000000,
+      250000
+    ],
+    "fallback_selection": "Deterministic source-record hashing stratified across relation IDs; recompute budgets, never choose a subset based on heldout outcomes; retain original negative",
+    "measures": "Source fact recall with multisets; entity and relation heldout generalization; verified two-hop composition; contradictory version changes; uncertainty-calibrated abstention; cold retention and interference; total cost/CPU/memory/actions; data licensing/custody",
+    "leakage": "Do not touch published validation or test triples while source preprocessing and train split is frozen; do not use Wikipedia text as CC0 or train on the answers",
+    "independent_controls": "Exact symbolic graph lookup and path-query baseline, a fully trained conventional knowledge-graph representation model with matched data/time, negative randomly programmed weights and disjoint relation controls",
+    "success": "Independent improvement with equal evidence/actions/whole-process cost, multi-seed replication and held-out domains; ingestion success, storing facts or a rulebook do not prove AGI or scientific superiority"
+  },
+  "authority": {
+    "research_only": true,
+    "original_wsp101_science_used": false,
+    "model_acceptance": false,
+    "merge": false,
+    "controller": false,
+    "queue": false,
+    "scheduler": false,
+    "paid_api": false,
+    "official_yggdrasil_loop": false
+  }
+}

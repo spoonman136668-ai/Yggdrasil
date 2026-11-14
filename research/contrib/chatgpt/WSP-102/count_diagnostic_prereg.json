@@ -1,0 +1,13 @@
+{
+  "schema": "wsp102.count-diagnostic-prereg.v1",
+  "status": "FROZEN_AFTER_FAIL_BEFORE_SECOND SOURCE METADATA READ",
+  "first_failure_run": 43626765368,
+  "source_archive_sha256": "ccda8bbcd3cf599b30dd3fd8979ac26e59b48fc53d23128882a044bfbb67f878",
+  "source_member": "wikidata5m/train.txt",
+  "source_bytes": 436189882,
+  "published_count": 20614279,
+  "purpose": "Measure source discrepancy to reconcile documented published benchmark size with hash-pinned archive; not to tune a scientific procedure.",
+  "methods": "Second full read-only scan of TRAIN member only, compute raw byte SHA256, exact full row count, distinct PID count; no object lookup/latent truth or learning, no heldout/valid/test reads. Parse Q/P/Q shape to fail closed on invalid statements; cap 30 million rows and 600 s scan.",
+  "decision": "If full row count equals published count => matched. Otherwise preserve SOURCE_PUBLISHED_COUNT_MISMATCH and do NOT call this data standard published benchmark. May use separately described historical source for future independent prereg but never doctor performance.",
+  "authority": "Read-only provenance check; original WSP101 cohorts and valid/test untouched, no scientific first-use, model write, merge, controller, scheduler or paid API."
+}
