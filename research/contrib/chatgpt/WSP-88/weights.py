@@ -8,7 +8,7 @@ import json
 import math
 import unicodedata
 
-WIDTH = 2048
+WIDTH = 16384
 GRAMS = (3, 4, 5)
 MARGIN = 0.08
 SIGNAL_THRESHOLD = 0.80
@@ -27,7 +27,7 @@ def features(raw: str) -> tuple[tuple[int, float], ...]:
     for length in GRAMS:
         for i in range(len(stream) - length + 1):
             fragment = stream[i:i + length].encode("utf-8")
-            index = int.from_bytes(hashlib.blake2s(fragment, digest_size=4).digest(), "big") % WIDTH
+            index = int.from_bytes(hashlib.blake2s(bytes([length]) + fragment, digest_size=4).digest(), "big") % WIDTH
             bins[index] += 1
     scale = math.sqrt(sum(v * v for v in bins.values()))
     return tuple(sorted((i, float(v) / scale) for i, v in bins.items()))
@@ -39,7 +39,7 @@ def five_gram_bins(raw: str) -> tuple[int, ...]:
     features(raw)  # validate even for short text
     stream = "\u0002" + unicodedata.normalize("NFC", raw).casefold() + "\u0003"
     return tuple(sorted({
-        int.from_bytes(hashlib.blake2s(stream[i:i + 5].encode("utf-8"),
+        int.from_bytes(hashlib.blake2s(b"\x05" + stream[i:i + 5].encode("utf-8"),
                                        digest_size=4).digest(), "big") % WIDTH
         for i in range(max(0, len(stream) - 4))
     }))
