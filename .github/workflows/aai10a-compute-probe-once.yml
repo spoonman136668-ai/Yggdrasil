@@ -1,0 +1,118 @@
+name: AAI-10A independent source-only model compute profile (NO science)
+on:
+  push:
+    branches: [research/aai10a-preprimary-compute-probe-20261114]
+    paths: [.github/workflows/aai10a-compute-probe-once.yml]
+permissions:
+  contents: read
+concurrency:
+  group: aai10a-preprimary-compute-once
+  cancel-in-progress: false
+jobs:
+  dev-probe:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'AAI-10A mechanical compute profile one-shot' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: harness
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Confirm independent read-only once-only harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C harness rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git -C harness rev-parse HEAD^)" = '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
+          test "$(git -C harness diff --name-only HEAD^ HEAD)" = '.github/workflows/aai10a-compute-probe-once.yml'
+          test -z "$(git -C harness status --porcelain)"
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: candidate
+          ref: 64a585010e13519c6290cc8c406154e1f23b9e78
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact immutable AAI-10P+AAI-10A source and pre-science fence
+        shell: bash
+        working-directory: candidate
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = '64a585010e13519c6290cc8c406154e1f23b9e78'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10P/benchmark.py)" = 'b2c58cb6c2f2d308cdd4da259db74547a27dfa3a'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10A/prereg.json)" = 'a3ab22f7bed1d7a3510ab32af8f661d0d0e92643'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-10A/models.py)" = '9233ffaafe2f227de687116b0ed4204ee4e2b3a2'
+          test -z "$(git status --porcelain)"
+          echo AAI10A_DEV_SOURCE_PIN_PASS
+      - name: Synthetic-only whole-learner training and decision cost versus fastest matched
+        shell: bash
+        working-directory: candidate
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import json, os, sys, time
+          from pathlib import Path
+          sys.path.insert(0,str(Path("research/contrib/chatgpt/AAI-10A").resolve()))
+          sys.path.insert(0,str(Path("research/contrib/chatgpt/AAI-10P").resolve()))
+          import models as m
+          import benchmark as b
+          # Explicitly enumerated mechanical x values ONLY. No world IDs, seed
+          # generator, transfer cohorts, science simulator, or first_use callable.
+          evidence=[]
+          for law in ("A","B"):
+              for rep in range(4):
+                  for index,x in enumerate(b.INPUTS):
+                      initial=b.public_initial(law,x,((rep+index)%2,rep%2))
+                      action=b.ACTIONS[(rep+index)%6]
+                      evidence.extend((initial,b.public_step(law,initial,action)))
+          assert len(evidence)==128
+          targets=[b.public_initial("A",x,(1,0)) for x in b.INPUTS[:4]]
+          results={}
+          for name in m.NAMES:
+              model=m.create(name)
+              start=time.perf_counter()
+              for observed in evidence: model.learn(observed)
+              training=time.perf_counter()-start
+              start=time.perf_counter()
+              cp=m.checkpoint({name:model})
+              checkpoint_time=time.perf_counter()-start
+              cold=m.cold_restore(cp)[name]
+              start=time.perf_counter()
+              first=[cold.choose(s) for s in targets for _ in range(3)]
+              decision=time.perf_counter()-start
+              assert all(z is None or z in b.ACTIONS for z in first)
+              results[name]={"train_seconds":round(training,6),
+                             "fit_checkpoint_seconds":round(checkpoint_time,6),
+                             "decision_seconds":round(decision,6),
+                             "model_bytes":len(cp[name].encode()),
+                             "whole_seconds":round(training+checkpoint_time+decision,6)}
+          fastest=min(results[n]["whole_seconds"] for n in m.MATCHED)
+          ratio=results["candidate"]["whole_seconds"]/max(fastest,1e-9)
+          report={"phase":"MECHANICAL_ONLY_NOT_SCIENCE","source_sha":"64a585010e13519c6290cc8c406154e1f23b9e78",
+                  "public_evidence_rows":len(evidence),"fixed_decision_requests":12,
+                  "methods":results,"fastest_matched_seconds":fastest,
+                  "candidate_over_fastest_matched":round(ratio,6),
+                  "candidate_below_predeclared_2x":ratio<=2.,
+                  "science_cohorts_consumed":0,"native_model_changed":False}
+          print("AAI10A_DEV_PROFILE="+json.dumps(report,sort_keys=True),flush=True)
+          print("AAI10A_DEV_RESOURCE_"+("PASS" if ratio<=2 else "NO_GO"),flush=True)
+          PY
+          if python -B research/contrib/chatgpt/AAI-10A/source_only.py --primary >/dev/null 2>&1; then
+            echo AAI10A_SCIENCE_DISARM_FAILED >&2
+            exit 1
+          fi
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
