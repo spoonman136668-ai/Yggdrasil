@@ -74,7 +74,7 @@ jobs:
                  "headroom":preflight_headroom(),
                  "physical_sha256":r["physical_sha256"],
                  "net_utility":r["net_utility"],"paid_steps":r["paid_steps"]}
-          Path("md30-physical-fixture.json").write_text(canonical(proof)+"\n")
+          Path("md30-physical-fixture.json").write_bytes((canonical(proof)+"\n").encode("utf-8"))
           print("MD30_PRE_FIRST_USE_HEADROOM_AND_CHARGED_REWIRE_PASS")
           print("MD30_REGISTERED_FIRST_USE_NEVER_EXECUTED")
           PY
