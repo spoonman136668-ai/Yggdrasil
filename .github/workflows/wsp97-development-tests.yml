@@ -1,0 +1,135 @@
+name: WSP97 randomized-do hidden common cause intervention and exact-source qualification
+on:
+  push:
+    branches: [research/wsp97-observational-equivalence-20261114]
+permissions:
+  contents: read
+jobs:
+  public-worlds:
+    if: "github.event.head_commit.message == 'ci(wsp97): public causal development'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Frozen research prereg and source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 01315e8bcaa4b53c6ca83eb9c6e37037a68c0e97 "$GITHUB_SHA"
+          test ! -f research/contrib/chatgpt/WSP-97/PUBLIC_PASS.json
+          test -z "$(git status --porcelain)"
+      - name: Original public worlds, full negative controls and deterministic source proof
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-97 -p 'test_*.py' -v
+      - name: Must leave source unmodified
+        shell: bash
+        run: test -z "$(git status --porcelain)"
+
+  final-regression:
+    if: "github.event.head_commit.message == 'ci(wsp97): exact-tree final dual-platform qualification'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 95
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact-source frozen public-positive custody
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 01315e8bcaa4b53c6ca83eb9c6e37037a68c0e97 "$GITHUB_SHA"
+          python research/contrib/chatgpt/WSP-97/admission.py --public-pass
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+      - name: WSP97 source-blind randomized-do hidden confounder and public-only qualification
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-97 -p 'test_*.py' -v
+      - name: Mandatory inherited WSP80-WSP93 focused regression
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          set -euo pipefail
+          for n in 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96; do
+            python -m unittest discover -s "research/contrib/chatgpt/WSP-$n" -p 'test_*.py' -v
+          done
+      - name: Mandatory complete Yggdrasil root regression
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Source-pinned generated G29 atlas and clean exact checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+
+  frozen-dev-first-use:
+    needs: [final-regression]
+    if: "github.event.head_commit.message == 'ci(wsp97): exact-tree final dual-platform qualification' && needs.final-regression.result == 'success' && github.run_attempt == 1"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: wsp97-one-shot-reserved-dev-first-use
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Freeze original first-use eligibility, source, public admission and clean atlas
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 01315e8bcaa4b53c6ca83eb9c6e37037a68c0e97 HEAD
+          python research/contrib/chatgpt/WSP-97/admission.py --public-pass
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+      - name: ONE ORIGINAL FIRST USE - reserved observational equivalence pairs 97101 to 97120
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: python research/contrib/chatgpt/WSP-97/experiment.py --reserved-dev-first-use
+      - name: Preserve untouched research source after first-use
+        shell: bash
+        run: test -z "$(git status --porcelain)"
