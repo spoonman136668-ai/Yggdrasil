@@ -274,9 +274,13 @@ def classify(result: dict, *, dev: bool) -> dict:
             and result["SGD_stageA_correct"] == result["stageA_queries"]
             and result["SGD_stageC_correct"] == result["stageA_queries"]),
         "whole_CPU_and_state_report": (
+            # Windows CPU clocks can quantize sub-millisecond work to 0 ns.
+            # Preserve the reported zero as a measured resolution limit;
+            # require a positive entire-process measurement.
             result["whole_process_cpu_ns"] > 0 and
-            result["candidate_stageA_cpu_ns"] > 0 and
-            result["conventional_stageA_cpu_ns"] > 0 and
+            result["candidate_stageA_cpu_ns"] >= 0 and
+            result["conventional_stageA_cpu_ns"] >= 0 and
+            result["conventional_stageC_cpu_ns"] >= 0 and
             result["numerical_slots"] > 0 and
             result["source_ledger_events"] > 0)
     }
