@@ -106,6 +106,18 @@ class RewardedBoxToyPrefirstuse(unittest.TestCase):
                     "first_box_visible": visible[0] if visible else None,
                     "box_front": len(front_box), "box_pickup_attempts": len(pickups),
                     "drop_attempts": len(drop_actions),
+                    "drop_transitions": [
+                        {"step": i, "before_front": m.front_type(pairs[i][0]),
+                         "after_front": m.front_type(pairs[i][3]),
+                         "before_carry_tile": int(m.objects(pairs[i][0])[3,6]),
+                         "after_carry_tile": int(m.objects(pairs[i][3])[3,6])}
+                        for i in drop_actions],
+                    "first_box_attempt": ({
+                         "step": pickups[0],
+                         "before_carry_tile": int(m.objects(pairs[pickups[0]][0])[3,6]),
+                         "after_carry_tile": int(m.objects(pairs[pickups[0]][3])[3,6]),
+                         "front_after": m.front_type(pairs[pickups[0]][3])
+                    } if pickups else None),
                     "last_16_action_and_front": [(a, m.front_type(b)) for b,a,_,_,_ in pairs[-16:]],
                     "no_key_probe": episode["no_key_probe"],
                     "with_key_unlock": episode["with_key_unlock"]}, sort_keys=True), flush=True)
