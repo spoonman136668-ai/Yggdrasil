@@ -1,0 +1,100 @@
+{
+  "schema": "yggdrasil.contrib.aai02b.prereg.v1",
+  "experiment_id": "AAI-02B",
+  "classification": "FROZEN_BEFORE_PRIMARY_EVALUATION",
+  "source_project": "spoonman136668-ai/Yggdrasil",
+  "parent_experiment": "AAI-02A",
+  "exact_parent_sha": "4ba1daf265c2550cd9938b84e087ce3d73dba188",
+  "primary_question": "Can direct, nongradient associative value updates select causally informative interventions under an eight-event memory budget better than matched fully trained logistic relevance learning?",
+  "north_star": "Non-token, non-transformer associative memory research only. No Yggdrasil model or owner loop integration.",
+  "hypothesis": "Direct association scores estimated from causal action->consequence agreement achieve >=5 percentage-point paired gain over fully trained 16-weight logistic selection on both DEV and disjoint-context transfer with no reversal regression.",
+  "worlds": {
+    "train": {
+      "seed_start": 62000,
+      "count": 512,
+      "contexts": "seed%8 (0..7)"
+    },
+    "dev": {
+      "seed_start": 63000,
+      "count": 128,
+      "contexts": "seed%8 (0..7)"
+    },
+    "transfer": {
+      "seed_start": 64000,
+      "count": 128,
+      "contexts": "8+seed%8 (8..15), no transfer training"
+    },
+    "negative": {
+      "seed_start": 65000,
+      "count": 128,
+      "contexts": "8+seed%8 (8..15), shuffled-label learner"
+    },
+    "anti_leak": "Distinct hash-seeded worlds and nonoverlapping integer seeds. No evaluation-world labels in training/selector fitting."
+  },
+  "causal_process": {
+    "contexts": 16,
+    "context_group": "context%4",
+    "actions": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "diagnostic_action": "(3*(context%4)+1)%4",
+    "law": "sha256(seed+':law') first 64 bits mod 2",
+    "intervention_event": "For each action a, 8 do(a,input) records. For diagnostic action: response=input XOR law XOR independent p=0.20 bit flip; all other actions: response=independent uniform random bit.",
+    "distractors": "64 later passive events with independently uniform random action/input/response; passive records have no do authority. Fixed 8-slot memory shared by every arm.",
+    "event_order": "Round-robin by repeated action (8*4=32 intervention records), followed by 64 passive records. Retention decisions made online with no source-law access.",
+    "reversal": "Separate frozen contexts: the first 8 diagnostic actions encode old law, then 8 new diagnostic actions encode reversed law, with 64 later passive records; additional 8 diagnostic interventions granted equally to all arms in reversal condition. Label is the new law.",
+    "observed_features": "context, active-vs-passive event type, action index, input bit, response bit, and timestamp. No diagnostic-action or world-law key accessible at evaluation.",
+    "noise_randomization": "SHA256(seed:labels) independent of learner; deterministic per event and seed."
+  },
+  "methods": {
+    "direct_association": "16 trainable scalar values, indexed group*4+action. On TRAIN only, one-pass edit weight to absolute mean (2*signal-1)*(2*label-1) over active events, signal=input XOR response; no gradients.",
+    "conventional_logistic": "Matched 16 scalar weights; full-batch cross-entropy trained for exactly 400 epochs, learning rate 0.15, zero initialization, with 16 features equal active signed signal sums in each context group/action. Absolute per-channel coefficients define retention priority.",
+    "expert_oracle": "Knowledge of diagnostic action used ONLY as privileged upper bound, explicitly excluded from scientific superiority comparator.",
+    "active_recent": "Keep eight most recent active events and drop passive events; no learned parameters.",
+    "pure_recent": "Keep eight most recent events, including passive.",
+    "reservoir": "Uniform online reservoir of eight from all observed events.",
+    "label_scramble": "Direct associative update with deterministic shuffled training labels (not evaluation labels), verify chance-level control.",
+    "selection": "On each appended event, evict lowest priority; prioritize active events by frozen learned group/action weight, passive priority -1; equal priorities evict oldest. No access to unseen future events.",
+    "prediction": "Unweighted majority of retained active signal bits; ties deterministically choose 0. This fixed decoder is identical across arms. No full-stream scratch memory at inference.",
+    "recurrent_memory": "No online weight changes during evaluation; cold-restored JSON weights must reproduce predictions."
+  },
+  "capacity_and_budget": {
+    "memory_event_slots": 8,
+    "trainable_scalars_per_learned_method": 16,
+    "active_interventions_per_world": 32,
+    "passive_events_per_world": 64,
+    "train_worlds": 512,
+    "train_epochs_logistic": 400,
+    "train_epochs_direct": 1,
+    "transfer_updates": 0,
+    "no_paid_api": true,
+    "offline_python_stdlib_only": true
+  },
+  "primary_scores": [
+    "128-world binary-law accuracy at DEV and transfer after 64 passive distractors",
+    "paired win/loss counts against logistic",
+    "McNemar exact two-sided p-value",
+    "eight-slot compliance",
+    "cold-restore exact predictions",
+    "label-scramble negative check",
+    "reversal accuracy (same memory budget, same additional interventions)"
+  ],
+  "thresholds": {
+    "scientific_pass": "Direct accuracy minus logistic accuracy >=0.05 on BOTH DEV and transfer; paired McNemar p<0.05 on combined 256 worlds; reversal accuracy no >0.03 disadvantage vs logistic; cold restore exact; negative shuffled-label accuracy <=0.65; no oracle leakage or budget violations.",
+    "mixed": "Performance advantage on only one cohort OR non-significant positive paired advantage OR a reversal regression; no integration.",
+    "negative": "Equal or worse than logistic, or any non-passing scientific gate with sound evaluation. Preserve result without retuning.",
+    "invalid": "Leaked labels, changed split, incorrect budget, non-identifiability, source/CI failure, or uncontrolled nondeterminism; separate engineering from science."
+  },
+  "provenance_requirements": [
+    "Prereg separate commit precedes run.py, tests and first full-result evidence",
+    "Pin exact prereg, experiment source blob SHA256, source commit, evaluator and result SHA256",
+    "Keep full metrics and reproducibility notes under research/contrib/chatgpt/AAI-02B",
+    "Full final repo tests, focused tests and G29 atlas checks on Linux and Windows",
+    "No changes to native model, production, accepted refs, controllers, owners or queues"
+  ],
+  "no_post_result_tuning": true,
+  "no_model_integration_until_scientific_pass_and_independent_qualification": true
+}
