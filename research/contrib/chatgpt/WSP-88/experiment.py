@@ -100,6 +100,8 @@ def single_world(seed: int) -> dict:
 
     return {
         "seed": seed,
+        "fixture_stageA_errors": [(q, pred, truth) for q, pred, truth in zip(world.eval_a, qa_num, truth_a) if pred != truth][:40] if seed in FIXTURE_SEEDS else [],
+        "fixture_stageB_errors": [(q, pred, truth) for q, pred, truth in zip(world.eval_b, qb_num, truth_b) if pred != truth][:40] if seed in FIXTURE_SEEDS else [],
         "stageA_correct": sum(a == b for a, b in zip(qa_num, truth_a)),
         "stageA_total": len(truth_a),
         "stageB_new_correct": sum(a == b for a, b in zip(qb_num, truth_b)),
