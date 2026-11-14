@@ -104,6 +104,20 @@ class CausalSiteDev(unittest.TestCase):
             "identical":out["paired_identical"],
             "different":out["paired_different"],
             "total_goals":out["novel_goals_all_arms"]},sort_keys=True),flush=True)
+        paired=[{
+            "seed":left["seed"],
+            "causal_sha":left["sha256"],
+            "blind_sha":right["sha256"],
+            "causal_sites":left["site_left_choices"],
+            "blind_sites":right["site_left_choices"],
+            "causal_steps":left["steps"],"blind_steps":right["steps"]
+        } for left,right in zip(out["toy_traces"]["causal_site"],
+                                out["toy_traces"]["blind_site"])]
+        print("MD25_TOY_PAIRED_TRACE_AUDIT:"+json.dumps(
+            paired,sort_keys=True),flush=True)
+        if any(x["causal_sites"] for x in paired):
+            self.assertGreater(out["paired_different"],0,
+                               "MD25_INCONSISTENT_LEARNED_ACTION_AND_TRACE_HASH")
 
 
 if __name__=="__main__":
