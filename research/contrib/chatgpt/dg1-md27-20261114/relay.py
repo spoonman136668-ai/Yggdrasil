@@ -53,7 +53,7 @@ def validate():
         x["world"]["toy_eval_seeds"]!=[121,144] or
         x["world"]["cold_replay_seeds"]!=[145,156] or
         x["world"]["registered_eval_seeds"]!=[1030001,1030096] or
-        x["world"]["context_holdout"]!=[0,1] or
+        x["world"]["unseen_context"]!=[0,1] or
         x["budgets"]["toy_episodes_per_arm"]!=24):
         raise AssertionError("MD27_FROZEN_PROTOCOL_DRIFT")
     all_s=TRAIN_SEEDS+TOY_SEEDS+COLD_SEEDS+REGISTERED

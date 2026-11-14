@@ -15,7 +15,7 @@ class CausalRelayPhysicalScience(unittest.TestCase):
         x=r.validate()
         self.assertEqual(r.PREREG_SHA,"148e20fedcea143344a9c596dd84d7ebe8fa6c93")
         self.assertEqual(x["parent_sha"],r.EXACT_PARENT)
-        self.assertEqual(x["world"]["context_holdout"],[0,1])
+        self.assertEqual(x["world"]["unseen_context"],[0,1])
         self.assertEqual(len(r.TRAIN_SEEDS),240)
         self.assertEqual(len(r.TOY_SEEDS),24)
         self.assertEqual(len(r.REGISTERED),96)
