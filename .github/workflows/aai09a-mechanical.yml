@@ -30,7 +30,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = '7dbec5fb7cb855afd7bbd6284e583b822c42c09d'
+          test "$(git rev-parse HEAD^)" = '162e2dc094ab4f79764e65e3c6cd50a4468b7bda'
           test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai09a-mechanical.yml'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-09A/prereg.json)" = "$(git rev-parse d9e9f3f11d04cdcf99c5e5b1e0c7a5008e0c2026:research/contrib/chatgpt/AAI-09A/prereg.json)"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-09A/models.py)" = "$(git rev-parse 8e9b6e6ba91b320ecfc36733eaa048895d99a948:research/contrib/chatgpt/AAI-09A/models.py)"
