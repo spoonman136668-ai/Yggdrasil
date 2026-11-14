@@ -1,0 +1,109 @@
+{
+  "schema": "yggdrasil.qtr.f19.open-dev-temporal-nonlinear.v1",
+  "classification_before_first_result": "PREREGISTERED_DEVELOPMENT_ONLY",
+  "project": "Yggdrasil QTR-01 independent research contributor",
+  "parent_sha": "95eb3fc8f7c275a03adce184981b138492e7b14b",
+  "source_repo": "noumenal-ai/causal-worlds",
+  "source_commit": "51f1431515e310dec72e3f4b6db378df46f832ea",
+  "source_tree": "c1bf53ecf03ae326b69c0321f4412d81f3122894",
+  "purpose": "Determine whether new, source-defined, temporally delayed nonlinear public development causal laws leave headroom beyond fully trained conventional and disclosed symbolic prior controls; not recipient model science.",
+  "source_class": "new open deterministic WorldSpec composed under pinned independently implemented causal-worlds engine; authored public DEV, not independent novel scientific held-out families",
+  "laws": {
+    "lagged_gate": {
+      "outcome": "0.55*tanh(outcome[t-1]) + 0.85*relu(action[t-1]) - 0.35*abs(action[t-2]) + 0.28*hidden[t] + gaussian_noise(0.12)"
+    },
+    "lagged_saturator": {
+      "outcome": "-0.45*tanh(outcome[t-1]) + 0.90*tanh(action[t-2]) + 0.40*abs(action[t-1]) + 0.28*hidden[t] + gaussian_noise(0.12)"
+    },
+    "common": {
+      "indicator": "0.60*hidden[t] + gaussian_noise(0.18)",
+      "hidden": "gaussian root, never exposed to learner"
+    },
+    "observed_inputs": [
+      "action[t-1]",
+      "action[t-2]",
+      "outcome[t-1]",
+      "indicator[t]"
+    ],
+    "target": "outcome[t]"
+  },
+  "seeds": [
+    2011,
+    2012,
+    2013,
+    2014
+  ],
+  "intervention_design": {
+    "sequence_length_train": 258,
+    "sequence_length_evaluation": 194,
+    "train_intervention_values": [
+      -2,
+      -1,
+      0,
+      1,
+      2
+    ],
+    "test_intervention_values": [
+      -1.5,
+      -0.5,
+      0.5,
+      1.5
+    ],
+    "train_intervention_rng": "NumPy PCG64 seed s+1",
+    "test_intervention_rng": "NumPy PCG64 seed s+10001",
+    "training_world_sample_seed": "s",
+    "test_world_sample_seed": "s+10000",
+    "action_probe_levels": [
+      -1.5,
+      1.5
+    ],
+    "paired_probe_length": 80,
+    "paired_probe_seed": "s+22000"
+  },
+  "matched_methods": [
+    "linear_ols: intercept+four public features",
+    "quadratic_ols: intercept+four public features+their squares",
+    "symbolic_dictionary_ols: intercept+four public features+relu(abs,tanh) transformations of lag1 action, lag2 action and tanh past outcome; includes disclosed correct transform family as strong structural prior",
+    "knn8: exact F18 fixed k8 feature-normalized method",
+    "mlp24: exact F18 trained tanh 24, 600 Adam updates, lr .015, train-only standardization",
+    "elman_rnn16: fully train all input/recurrent/readout/bias weights on public sequence with full BPTT; 16 hidden, 240 Adam updates, lr .01, per-step gradient clip norm 5, training-only feature/target standardization, zero recurrent init, seed s+30300",
+    "shuffled_symbolic_negative: source training targets shuffled with RNG seed s+50500 then same symbolic OLS design",
+    "exact_tuple_retrieval: report coverage only, abstain on unseen continuous action/context"
+  ],
+  "metrics": [
+    "held-out MSE normalized by held-out target variance per law and seed",
+    "mean of per-seed ratios",
+    "strict source-bytes Git commit/tree custody",
+    "paired intervention action consequence magnitude",
+    "replay determinism",
+    "exact raw tuple retrieval coverage",
+    "RNN training steps/capacity and any overfitting warnings"
+  ],
+  "fixed_thresholds": {
+    "min_paired_action_intervention_mean_absolute_outcome_gap": 0.2,
+    "negative_control_must_lose_to_best_nonnegative_method": true,
+    "none_of_results_promotable_to_scientific_pass": true
+  },
+  "stop_conditions": [
+    "missing source custody",
+    "nonfinite signal or model parameters",
+    "zero evaluation target variance",
+    "failed deterministic replay",
+    "failed intervention separation threshold",
+    "failed negative control",
+    "model loss explosion",
+    "post-result design drift"
+  ],
+  "frozen_science_guardrails": [
+    "No protected FIT/TRANSFER/NOVEL/RESERVED first-use",
+    "No recipient weight edits or automatic acceptance",
+    "No donor LLM inference",
+    "No paid API",
+    "No official research loop or queue dispatch",
+    "No model family transfer claim",
+    "No post-result hyperparam or split changes",
+    "No external original source dataset"
+  ],
+  "notes": "This is not a compute-matched architecture comparison, not an independently generated unfamiliar family, not proof of learning by Yggdrasil; the symbolic hypothesis class has disclosed privileged transform candidates. Public-source development only.",
+  "expected_execution": "F19 focused public source workflow on GitHub Actions; no acceptance until required final regression independently passes."
+}
