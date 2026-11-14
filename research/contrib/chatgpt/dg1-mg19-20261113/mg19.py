@@ -84,10 +84,10 @@ def image_features(obs):
 
 
 def encoded(obs,prev_action):
-    im=image_features(obs)
     direction=int(obs["direction"])
     if direction not in range(4) or type(prev_action) is not int or prev_action not in range(7):
         raise ValueError("MG19_INVALID_PUBLIC_OBSERVATION")
+    im=image_features(obs)
     return im+tuple(float(int(direction==i)) for i in range(4))+(round(prev_action/6,8),)
 
 
