@@ -7,7 +7,8 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from train_headroom_audit import (
-    QUERY_COUNT, audit_streams, group_digest, heldout, parse_triple
+    QUERY_COUNT, audit_streams, group_digest, heldout, parse_triple,
+    load_custody_helpers
 )
 
 
@@ -96,6 +97,12 @@ class TrainOnlyHeadroomTests(unittest.TestCase):
             audit_streams(lambda: BytesIO(data), expected_rows=len(data.splitlines()),
                           expected_bytes=len(data), expected_sha=sha256(data).hexdigest(),
                           expected_relations=relations, query_count=QUERY_COUNT + 1)
+
+    def test_sealed_sibling_custody_import_works_without_network(self):
+        download, inspect = load_custody_helpers()
+        self.assertTrue(callable(download))
+        self.assertTrue(callable(inspect))
+        self.assertEqual(download.__module__, "wsp102_source_custody")
 
     def test_malformed_qids_never_enter_source(self):
         source, relations = fixture()
