@@ -1,0 +1,13 @@
+# AAI-08P — Official NS-Gym non-stationary Bridge source qualification
+
+We stopped building custom one-off Boolean worlds after AAI-06's negative result and AAI-07B's conventional-control tie. This preflight checks the *independently published, maintained* **NS-Gym** environment, pinned to `scope-lab-vu/ns_gym@127df4b714fe4fcf680721d8e9278a96090acd7e`. The official Bridge env uses action-consequence transitions and terminal rewards; the official NSBridgeWrapper changes the probability of the action's realized transition while preserving the agent's command. This is a real transition-law change, **not** a post-hoc flip of a reward label.
+
+**Scope is strictly mechanical.** Four reserved preflight seeds and exactly four public actions per run verify that a hidden scheduled transition change at t=3 diverts the resulting state and reward. A stationary policy run with identical actions is the negative. The result says nothing about the intelligence or learning of any model. Pinned upstream Git blob(s) are validated in CI; no upstream code copied to this repo.
+
+**Security and leakage:** NS-Gym exposes optional `env_change` and `delta_change` notifications and also populates a diagnostic `info["Ground Truth Env Change"]` field. The adapter forces user-visible notifications to zero and **deliberately never supplies** diagnostic info, env.unwrapped, transition probabilities, planning env, or hidden change times to a learning policy. All observed data are public scalar state, actual executed action, real reward and terminal. For this mechanical check, transition probabilities are deterministic one-hot values, because upstream Bridge.step uses a global NumPy RNG not fully controlled by `env.reset(seed)`. Future stochastic science must preflight RNG custody separately rather than assume seed determinism.
+
+**Runtime constraints:** Python 3.12, pinned NumPy/Gymnasium/SciPy/PyYAML/MuJoCo packages; `pip install -e --no-deps` allows a small run without the huge unrelated PyTorch/MuJoCo-learning stacks NS-Gym declares. MuJoCo is needed only for an import from the upstream top-level wrappers; it is not used for Bridge physics. No paid APIs.
+
+## Next scientific qualification
+
+Only after both Windows and Linux source/transition tests pass: preregister independent train/dev/transfer cohorts, real A-B-A shifting transition dynamics, matched-action and matched-information conventional change-point Bayes/MLE/sliding-window/recurrent controls, causal prediction and cumulative reward, cold retention/interference, full cost, negative controls. Do NOT claim a new learning mechanism or native Yggdrasil integration based on this smoke.
