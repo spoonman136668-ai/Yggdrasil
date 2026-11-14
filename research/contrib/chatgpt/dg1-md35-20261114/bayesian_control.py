@@ -8,6 +8,7 @@ import copy
 import numpy as np
 
 from public_actions import PublicEpisode, require_public_blocks
+from negative_supervision import REAL, SHUFFLED, training_targets
 
 PARTICLES = 4096
 PARTICLE_SEED = 35031
@@ -26,35 +27,41 @@ class BayesianControl:
         self.prior_failure = np.zeros((4, 2, 4), dtype=np.float64)
         self.prior_probe = np.zeros((3, 4, 2), dtype=np.float64)
         self.fitted_episodes = 0
+        self.training_target_mode = REAL
         self._rng = np.random.default_rng(PARTICLE_SEED)
         self._hypotheses = None
         self._weights = None
         self._block_episodes = 0
         self._last_block_events = ()
 
-    def fit(self, blocks):
+    def fit(self, blocks, *, shuffled_training=False):
         # The protected cohort is not created by this class; the entrypoint
         # and ledger/first-use custody must authorize collection separately.
         source = require_public_blocks(blocks, expected_count=384)
+        mode = SHUFFLED if shuffled_training is True else REAL
+        if type(shuffled_training) is not bool:
+            raise AssertionError("MD35_BAYES_INVALID_SHUFFLE_SELECTOR")
+        labels = training_targets(source, mode=mode)
         if self.fitted_episodes:
             raise AssertionError("MD35_BAYES_RETRAIN_FORBIDDEN")
-        for block in source:
-            for ep in block:
+        for block, label_block in zip(source, labels):
+            for ep, label in zip(block, label_block):
                 c, r = ep.context, ep.route()
                 guess = ep.terminal()[2]
-                if ep.terminal()[3] == 0.98:
+                if label.terminal_reward == 0.98:
                     self.prior_success[c, r, guess] += 1
-                elif ep.terminal()[3] == -0.52:
+                elif label.terminal_reward == -0.52:
                     self.prior_failure[c, r, guess] += 1
                 else:
                     raise AssertionError("MD35_BAYES_INVALID_TERMINAL_REWARD")
                 d = ep.diagnostic()
                 if d is not None:
                     key = (d[0], c if d[0] == 0 else d[2] if d[0] == 1 else r)
-                    self.prior_probe[key[0], key[1], d[4]] += 1
+                    self.prior_probe[key[0], key[1], label.diagnostic_bit] += 1
                 self.fitted_episodes += 1
         if self.fitted_episodes != 1536:
             raise AssertionError("MD35_BAYES_TRAIN_COUNT_MISMATCH")
+        self.training_target_mode = mode
         return self
 
     def begin_block(self):
@@ -145,6 +152,7 @@ class BayesianControl:
             "particle_cap": PARTICLES,
             "dirichlet_alpha": ALPHA,
             "fitted_public_episodes": self.fitted_episodes,
+            "training_target_mode": self.training_target_mode,
             "success": self.prior_success.tolist(),
             "failure": self.prior_failure.tolist(),
             "probe": self.prior_probe.tolist(),
@@ -157,7 +165,8 @@ class BayesianControl:
                 checkpoint.get("particle_seed") != PARTICLE_SEED or
                 checkpoint.get("particle_cap") != PARTICLES or
                 checkpoint.get("dirichlet_alpha") != ALPHA or
-                checkpoint.get("fitted_public_episodes") != 1536):
+                checkpoint.get("fitted_public_episodes") != 1536 or
+                checkpoint.get("training_target_mode") not in (REAL, SHUFFLED)):
             raise AssertionError("MD35_BAYES_COLD_CHECKPOINT_INVALID")
         obj = cls()
         obj.prior_success = np.asarray(checkpoint["success"], dtype=np.float64)
@@ -171,6 +180,7 @@ class BayesianControl:
                     (obj.prior_success, obj.prior_failure, obj.prior_probe))):
             raise AssertionError("MD35_BAYES_COLD_COUNTS_INVALID")
         obj.fitted_episodes = 1536
+        obj.training_target_mode = checkpoint["training_target_mode"]
         if obj.checkpoint() != checkpoint:
             raise AssertionError("MD35_BAYES_COLD_BYTES_DIFFER")
         return obj

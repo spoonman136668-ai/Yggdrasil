@@ -10,6 +10,7 @@ import math
 import time
 import numpy as np
 from public_actions import PublicEpisode, require_public_blocks
+from negative_supervision import REAL, SHUFFLED, training_targets
 
 HIDDEN = 64
 QUERY = 22
@@ -82,15 +83,21 @@ def observed_vector(query, event):
     return np.concatenate((query, extra))
 
 
-def training_arrays(blocks, expected):
+def training_arrays(blocks, expected, *, shuffled_training=False):
     source = require_public_blocks(blocks, expected_count=expected)
+    if type(shuffled_training) is not bool:
+        raise AssertionError("MD35_GRU_INVALID_SHUFFLE_SELECTOR")
+    if shuffled_training and expected != 384:
+        raise AssertionError("MD35_SHUFFLED_LABELS_TRAIN_ONLY")
+    labels = training_targets(source, mode=SHUFFLED) if shuffled_training else None
     queries = np.zeros((expected, 16, QUERY), dtype=np.float64)
     updates = np.zeros((expected, 16, WIDTH), dtype=np.float64)
     targets = np.zeros((expected, 16, 2), dtype=np.float64)
     masks = np.zeros((expected, 16, 2), dtype=np.float64)
     for b, block in enumerate(source):
         step = 0
-        for ep in block:
+        for i, ep in enumerate(block):
+            target_label = labels[b][i] if labels is not None else None
             if len(ep.events) != 4 or ep.diagnostic() is None:
                 raise AssertionError("MD35_GRU_SHARED_TRAINING_MUST_PAY_6144")
             for event in ep.events:
@@ -98,13 +105,22 @@ def training_arrays(blocks, expected):
                     raise AssertionError("MD35_GRU_TRAIN_SEQUENCE_OVERFLOW")
                 q = query_vector(ep.context, event)
                 queries[b, step] = q
-                updates[b, step] = observed_vector(q, event)
+                supervised = event
+                if target_label is not None and event[1] == "terminal":
+                    supervised = (event[0], event[1], event[2],
+                                  target_label.terminal_reward, event[4])
+                elif target_label is not None and event[1] == "diagnostic":
+                    supervised = (event[0], event[1], event[2],
+                                  event[3], target_label.diagnostic_bit)
+                # Only TRAINING tensors change. No PublicEpisode or physical
+                # charged receipt is rewritten by this negative control.
+                updates[b, step] = observed_vector(q, supervised)
                 if event[1] == "terminal":
                     masks[b, step, 0] = 1.0
-                    targets[b, step, 0] = float(event[3] == 0.98)
+                    targets[b, step, 0] = float(supervised[3] == 0.98)
                 if event[1] == "diagnostic":
                     masks[b, step, 1] = 1.0
-                    targets[b, step, 1] = event[4]
+                    targets[b, step, 1] = supervised[4]
                 step += 1
         if step != 16 or masks[b].sum() != 8:
             raise AssertionError("MD35_GRU_SHARED_PUBLIC_SUPERVISION_DRIFT")
@@ -217,7 +233,7 @@ class GatedRecurrentControl:
         if any(not np.isfinite(v).all() for v in w.values()):
             raise AssertionError("MD35_GRU_NONFINITE_TRAINING")
 
-    def _fit_one(self, train, valid, start_cpu):
+    def _fit_one(self, train, valid, start_cpu, training_mode):
         moments = {k: [np.zeros_like(v), np.zeros_like(v)]
                    for k, v in self.w.items()}
         rng = np.random.default_rng(self.seed + 1000)
@@ -247,6 +263,7 @@ class GatedRecurrentControl:
             raise AssertionError("MD35_GRU_NO_VALIDATION_CHECKPOINT")
         self.w = best_weights
         report = {
+            "training_target_mode": training_mode,
             "seed": self.seed, "epochs": epoch,
             "best_epoch": best_epoch,
             "initial_training_bce": initial_loss,
@@ -265,13 +282,17 @@ class GatedRecurrentControl:
         return self
 
     @classmethod
-    def train(cls, train_blocks, validation_blocks):
-        train = training_arrays(train_blocks, 384)
-        valid = training_arrays(validation_blocks, 96)
+    def train(cls, train_blocks, validation_blocks, *, shuffled_training=False):
+        if type(shuffled_training) is not bool:
+            raise AssertionError("MD35_GRU_INVALID_SHUFFLE_SELECTOR")
+        mode = SHUFFLED if shuffled_training else REAL
+        train = training_arrays(train_blocks, 384,
+                                shuffled_training=shuffled_training)
+        valid = training_arrays(validation_blocks, 96)  # NEVER shuffled
         started = time.process_time()
         trained = []
         for seed in SEEDS:
-            model = cls(seed)._fit_one(train, valid, started)
+            model = cls(seed)._fit_one(train, valid, started, mode)
             trained.append(model)
         chosen = min(trained, key=lambda model: (
             model.fit_report["selected_validation_bce"], model.seed))
@@ -340,7 +361,9 @@ class GatedRecurrentControl:
                 or data.get("hidden") != HIDDEN or data.get("seeds") != list(SEEDS)
                 or data.get("selected_seed") not in SEEDS
                 or type(data.get("all_seed_reports")) is not list
-                or [r.get("seed") for r in data["all_seed_reports"]] != list(SEEDS)):
+                or [r.get("seed") for r in data["all_seed_reports"]] != list(SEEDS)
+                or any(r.get("training_target_mode") not in (REAL, SHUFFLED)
+                       for r in data["all_seed_reports"])):
             raise AssertionError("MD35_GRU_INVALID_COLD_CHECKPOINT")
         obj = cls(data["selected_seed"], data["weights"])
         obj.fit_report = copy.deepcopy(data["fit_report"])

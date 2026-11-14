@@ -130,6 +130,7 @@ class MD35AblationTests(unittest.TestCase):
             "schema": "md35.bayes-4096-public-latent.v1",
             "particle_seed": 35031, "particle_cap": 4096,
             "dirichlet_alpha": 1.0, "fitted_public_episodes": 1536,
+            "training_target_mode": "charged_real",
             "success": [[[0.0] * 4 for _ in range(2)] for _ in range(4)],
             "failure": [[[0.0] * 4 for _ in range(2)] for _ in range(4)],
             "probe": [[[0.0] * 2 for _ in range(4)] for _ in range(3)],

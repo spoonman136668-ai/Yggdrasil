@@ -43,3 +43,19 @@ class ResetMemoryEachEpisode:
         # let the model's persistent scratch state learn this observation.
         self._model.begin_block()
         self._position += 1
+
+
+class ModelBasedWithoutRetainedBelief(ResetMemoryEachEpisode):
+    """Specific registered RL ablation: fitted dynamics, no local law memory."""
+
+    def __init__(self, trained_control):
+        from model_based_rl import ModelBasedRL
+        if type(trained_control) is not ModelBasedRL:
+            raise AssertionError("MD35_RL_ABLATION_REQUIRES_FITTED_MODEL_BASED")
+        super().__init__(trained_control)
+
+    def checkpoint(self):
+        return {
+            "schema": "md35.rl-no-retained-law-belief-negative.v1",
+            "base": self._model.checkpoint(),
+        }

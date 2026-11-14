@@ -6,6 +6,7 @@ backups over finite physical horizons. No future World.step() or oracle.
 import time
 import numpy as np
 from public_actions import PublicEpisode, require_public_blocks
+from negative_supervision import REAL, SHUFFLED, training_targets
 
 ENSEMBLE = 5
 SEED = 35041
@@ -20,6 +21,7 @@ class ModelBasedRL:
         self.failure = np.zeros_like(self.success)
         self.diagnostic = np.zeros((ENSEMBLE, 3, 4, 2), dtype=np.float64)
         self.fitted_episodes = 0
+        self.training_target_mode = REAL
         self.fitted_backups = 0
         self._fitted_q = None
         self._local_success = np.zeros((4, 2, 4), dtype=np.float64)
@@ -29,24 +31,29 @@ class ModelBasedRL:
         self.fitting_cpu_seconds = None
 
     @staticmethod
-    def _record(episode, success, failure, diagnostic):
+    def _record(episode, success, failure, diagnostic, label=None):
         if type(episode) is not PublicEpisode:
             raise AssertionError("MD35_RL_NONPUBLIC_PHYSICAL_EPISODE")
         c, route = episode.context, episode.route()
         terminal = episode.terminal()
-        if terminal[3] == 0.98:
+        reward = terminal[3] if label is None else label.terminal_reward
+        if reward == 0.98:
             success[c, route, terminal[2]] += 1
-        elif terminal[3] == -0.52:
+        elif reward == -0.52:
             failure[c, route, terminal[2]] += 1
         else:
             raise AssertionError("MD35_RL_NONPHYSICAL_TERMINAL")
         diag = episode.diagnostic()
         if diag is not None:
             index = c if diag[0] == 0 else diag[2] if diag[0] == 1 else route
-            diagnostic[diag[0], index, diag[4]] += 1
+            diagnostic[diag[0], index, diag[4] if label is None else label.diagnostic_bit] += 1
 
-    def fit(self, blocks):
+    def fit(self, blocks, *, shuffled_training=False):
         source = require_public_blocks(blocks, expected_count=384)
+        if type(shuffled_training) is not bool:
+            raise AssertionError("MD35_RL_INVALID_SHUFFLE_SELECTOR")
+        mode = SHUFFLED if shuffled_training else REAL
+        labels = training_targets(source, mode=mode)
         if self.fitted_episodes:
             raise AssertionError("MD35_RL_RETRAIN_FORBIDDEN")
         start = time.process_time()
@@ -55,12 +62,15 @@ class ModelBasedRL:
         for member in range(ENSEMBLE):
             indices = rng.integers(0, len(source), len(source))
             for idx in indices:
-                for episode in source[int(idx)]:
+                block_idx = int(idx)
+                for episode, label in zip(source[block_idx], labels[block_idx]):
                     self._record(episode, self.success[member],
-                                 self.failure[member], self.diagnostic[member])
+                                 self.failure[member], self.diagnostic[member],
+                                 label=label)
             if time.process_time() - start > FIT_CPU_CAP:
                 raise TimeoutError("MD35_RL_FITTING_CPU_CAP")
         self.fitted_episodes = 1536
+        self.training_target_mode = mode
         # Real finite-horizon Bellman backups are performed, rather than a
         # label-oracle action shortcut. They use fitted public reward rates.
         self._bellman()
@@ -176,6 +186,7 @@ class ModelBasedRL:
             "schema": "md35.empirical-fitted-q-public.v1",
             "ensemble": ENSEMBLE, "seed": SEED, "sweeps": SWEEPS,
             "smoothing": ALPHA, "fitted_episodes": self.fitted_episodes,
+            "training_target_mode": self.training_target_mode,
             "success": self.success.tolist(), "failure": self.failure.tolist(),
             "diagnostic": self.diagnostic.tolist(),
         }
@@ -188,7 +199,8 @@ class ModelBasedRL:
                 checkpoint.get("seed") != SEED or
                 checkpoint.get("sweeps") != SWEEPS or
                 checkpoint.get("smoothing") != ALPHA or
-                checkpoint.get("fitted_episodes") != 1536):
+                checkpoint.get("fitted_episodes") != 1536 or
+                checkpoint.get("training_target_mode") not in (REAL, SHUFFLED)):
             raise AssertionError("MD35_RL_COLD_CHECKPOINT_INVALID")
         obj = cls()
         obj.success = np.asarray(checkpoint["success"], dtype=np.float64)
@@ -201,6 +213,7 @@ class ModelBasedRL:
                     (obj.success, obj.failure, obj.diagnostic))):
             raise AssertionError("MD35_RL_COLD_MODEL_INVALID")
         obj.fitted_episodes = 1536
+        obj.training_target_mode = checkpoint["training_target_mode"]
         obj._bellman()
         if obj.checkpoint() != checkpoint:
             raise AssertionError("MD35_RL_COLD_BYTES_DIFFER")
