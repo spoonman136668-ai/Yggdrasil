@@ -9,7 +9,7 @@ jobs:
   generated-only:
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'AAI-08P create source-pinned G29 companion once' &&
+      github.event.head_commit.message == 'AAI-08P regenerate atlas for stochastic custody' &&
       github.run_attempt == 1
     runs-on: ubuntu-24.04
     timeout-minutes: 15
@@ -28,9 +28,10 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = '243cfa89248922b6c4f8df597379a12831b90d9d'
+          test "$(git rev-parse HEAD^)" = '8ec7b5b761a675cf3395cbd27b874f57be631d69'
           test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai08p-atlas.yml'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08P/preflight.py)" = "$(git rev-parse 40e3ce1ba7cd80411c1545e5609706a3f268c51e:research/contrib/chatgpt/AAI-08P/preflight.py)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-08P/stochastic_custody.py)" = "$(git rev-parse b0d6b9bf4cd79ce492acb9b0f00b6422d8588757:research/contrib/chatgpt/AAI-08P/stochastic_custody.py)"
           test -z "$(git status --porcelain)"
           python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
           test "$(git diff --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
