@@ -49,7 +49,11 @@ def summarize(index: str, raw: bytes) -> dict:
     def observed(k):
         v = obj.get(k)
         return None if v is None else str(v)
-    reported = {k: observed(k) for k in ("modelId", "sourceId", "index")}
+    # Neuronpedia's public feature API may use source instead of sourceId.
+    raw_source = obj.get("sourceId", obj.get("source"))
+    if isinstance(raw_source, dict):
+        raw_source = raw_source.get("id")
+    reported = {"modelId": observed("modelId"), "sourceId": None if raw_source is None else str(raw_source), "index": observed("index")}
     expected = {"modelId": MODEL, "sourceId": SOURCE, "index": index}
     if any(reported[k] != value for k, value in expected.items()):
         raise InvalidInput("SOURCE_IDENTITY_NOT_VERIFIED")
