@@ -1,0 +1,40 @@
+{
+  "schema": "wsp102.real-triples-numeric-weight-capacity-protocol.v1",
+  "status": "FROZEN_BEFORE_FIRST REAL GRAPH NUMERIC WEIGHT WRITE",
+  "parent_source_seal": "ccda8bbcd3cf599b30dd3fd8979ac26e59b48fc53d23128882a044bfbb67f878",
+  "train_content_sha": "2ef1a279f6393a8edfbb2b44114a2c97944272e5fe2a1bd2a7cbe48f94742f1a",
+  "source_rows": 21343681,
+  "source_properties": 828,
+  "purpose": "Largest-first encode ALL real structured TRAIN facts in a fixed endianness no-gradient numerical memory and cold restore, as an ENGINEERING capacity test. Not a learning/AGI/generalization claim.",
+  "max_stage": {
+    "triples": 21343681,
+    "packed_3x_uint32_little_endian_bytes": 256124172,
+    "format": "For each original train triple line in original source order, write little-endian UInt32 subject QID, property PID, object QID. This is known-fact direct weight programming, NOT a learned mapping.",
+    "read_scope": "Only train.txt after verifying archive SHA and exact train content; NEVER open validation/test graph records.",
+    "cold": "At approximately half the triples, snapshot the entire weight byte image, hash, release, restore exact bytes from ephemeral source-independent temporary cold file, verify hash, then append remaining triples and seal final weights.",
+    "wall_budget_seconds": 600,
+    "peak_numeric_memory_budget_bytes": 600000000,
+    "fallbacks": [
+      5000000,
+      1000000,
+      250000
+    ],
+    "fallback_policy": "Only after failing original full-tier resource/time bound; source-row hash selection must be declared in a separate pre-first-use commit, never take easiest rows after results"
+  },
+  "measurements": "actual source row count, property breadth, source train SHA, exact numeric slot count 3 per triple, cold snapshot digest, full packed digest, measured CPU/wall and numeric resident byte size, source bytes, first-use audit; no model accuracy or heldout scoring.",
+  "strong_baseline": "Exact graph retrieval from stored triples has equal source information and may be faster; no scientific superiority claim without matched query indexing, reasoning, model updates and heldout generalization.",
+  "no_shortcut": "Four-rule synthetic test from WSP101 was easier than real graph; 21.34m known triple direct storage is memorization, not causal transfer, new rule discovery, general reasoning or AGI.",
+  "criteria": "Engineering PASS only if all 21,343,681 train rows pack, byte count=256,124,172, cold-restored first half unchanged, source SHA remains identical and no original/heldout use. Otherwise engineering NEGATIVE; preserve failure.",
+  "authority": {
+    "research_only": true,
+    "first_real_data_weight_write": true,
+    "original_protected_cohort_use": false,
+    "valid_test_use": false,
+    "official_model": false,
+    "main": false,
+    "merge": false,
+    "controller": false,
+    "scheduler": false,
+    "paid_api": false
+  }
+}
