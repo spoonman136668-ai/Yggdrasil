@@ -31,3 +31,18 @@ The prospective fixture policy was frozen **before implementation** at `44099f87
 The full-budget DEV diagnostic was frozen at `7d7161b59169d44c32a317dbe028e5666170dd22`, before implementation of `fixture_headroom.py`. It trains the conventional RNN16, GRU16 and memoryless16 on the same source for all three preregistered seeds at 1,800 epochs each; selects by source training loss ONLY; and scores an independent symbolic system-identification control. All original PUBLIC and RESERVED worlds remain disabled. The test is intentionally expensive relative to the small fixture unit tests, so it runs only when the dedicated `ci(wsp99): original-free fixture headroom one-shot` commit is dispatched; it is **not** part of every push or full regression.
 
 **Interpretation:** A ceiling tie with the symbolic or trained controls means this task does not yet demonstrate unique direct-weight programming superiority. A neural source-fit failure is also not a direct-weight victory. Development fixture outcomes are not independently sealed novel science, and cannot justify tuning original-world rules after inspecting results. Preserve results including negatives. WSP-99's source-blind controls and evaluation code do **not** claim a SCIENTIFIC_PASS or accepted Yggdrasil change.
+
+## Full-budget DEV diagnostic — closed without tuning (November 14, 2026)
+
+**[Original DEV fixture pilot run 43608792565](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43608792565) SUCCESS**, source `f33f0aeba21944c262fcb7e12917cfe1c2a1f65c`. Prospective full-budget pilot protocol at `7d7161b59169d44c32a317dbe028e5666170dd22`, and all eight fixture source/prediction hashes sealed before the scorer first read target truths (`0c819d811598620d7d8163baff8e99b702b1e7a940134aa22e2c81bf238e70ac`). Complete source/seed/per-world receipts are preserved in `DEV_CEILING.json`, committed **after** the result. No original PUBLIC or RESERVED worlds were used.
+
+| Control (same 128 source transitions/world) | Mean source fit | Mean unseen three-step terminal bit accuracy |
+| --- | ---: | ---: |
+| Independent grammar-informed symbolic | 100% | **100%** |
+| Fully gradient-trained tanh RNN16, selected from seeds 11/17/23 by source loss | 100% | 72.48% |
+| Fully gradient-trained GRU16, same three seeds and selection | 100% | 68.75% |
+| Memoryless16, same three seeds and selection | 95.70% | 64.24% |
+
+Mean recurrent-over-memoryless benefit was +8.25 percentage points. The heldout pairs exhibited delayed action effects in 88/192 (45.83%) cases. Measured DEV pilot whole-process wall time was 30.4 seconds. Since the strongest independently implemented symbolic solver achieved ceiling accuracy on every fixture, this task **cannot demonstrate unique direct-weight programming superiority**. Neural history sensitivity is a useful mechanism observation, not AGI or independent scientific acceptance.
+
+**Stopping rule applied:** WSP99 DEV_CEILING; do not tune source laws, scoring, GRU/RNN budgets or direct-weight update rules to the observed results. WSP99 original PUBLIC `99011..99042`, RESERVED `99101..99164`, and WSP98 RESERVED `98101..98140` are not consumed. Next meaningful work must be a separately preregistered challenge whose true causal mechanism is not supplied as the symbolic solver's exact grammar, with clear information identifiability and strong controls. No accepted-model changes, official loop or deployment.
