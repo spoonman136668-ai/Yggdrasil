@@ -141,13 +141,32 @@ class CausalSufficientStats(unittest.TestCase):
         with self.assertRaises(ValueError):
             c.cold_restore(state+" ")
         d=json.loads(state)
-        d["slots"][0]["rows"]=97
+        bad=c._unpack_slot(d["slots"][0])
+        bad["rows"]=97
         with self.assertRaises(ValueError):
-            c.cold_restore(old.canonical(d))
+            c._pack_slot(bad)
         d=json.loads(state)
-        d["slots"][0]["prior"][0][1]=2
+        bad=c._unpack_slot(d["slots"][0])
+        bad["prior"][0][1]=2
+        with self.assertRaises(ValueError):
+            c._pack_slot(bad)
+        d=json.loads(state)
+        d["slots"][0]="!!!!"+d["slots"][0][4:]
         with self.assertRaises(ValueError):
             c.cold_restore(old.canonical(d))
+
+    def test_one_slot_capacity_refuses_excess_unmatched_evidence(self):
+        model=c.BoundedCausalSignatureBank(1)
+        rows=list(examples(laws=("A",),reps=7))
+        for event in rows[:96]:
+            model.learn(event)
+        self.assertEqual(model.slots[0]["rows"],96)
+        model.learn(rows[96])
+        before=c.checkpoint(model)
+        with self.assertRaisesRegex(ValueError,"saturation"):
+            model.learn(rows[97])
+        self.assertEqual(model.slots[0]["rows"],96)
+        self.assertEqual(c.checkpoint(model),before)
 
     def test_scientific_primary_cli_disarmed(self):
         done=subprocess.run([sys.executable,"-B",str(HERE/"profile_dev.py"),"--primary"],
