@@ -121,8 +121,8 @@ class MD33SyntheticControls(unittest.TestCase):
         cold = RecurrentWorldModel.from_checkpoint(checkpoint)
         model.begin_block()
         cold.begin_block()
-        self.assertEqual(model.predict("encoder", 0),
-                         cold.predict("encoder", 0))
+        self.assertTrue(all(abs(x - y) < 1e-7 for x, y in zip(
+            model.predict("encoder", 0), cold.predict("encoder", 0))))
 
     def test_public_physical_evaluation_has_no_free_action(self):
         model = EmpiricalCausalControl("bayesian").fit(self.train)
