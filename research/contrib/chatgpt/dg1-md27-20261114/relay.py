@@ -128,7 +128,7 @@ def train_teacher(seed,index):
     context=TRAIN_CONTEXTS[index%len(TRAIN_CONTEXTS)]
     env=RelayWorld(seed,context)
     initial=env.observe()
-    probe,-cost,done=env.step("probe")
+    probe,probe_reward,done=env.step("probe")
     if done:raise AssertionError("MD27_PROBE_TERMINAL")
     action="apply_A" if index%2==0 else "apply_B"
     terminal,reward,done=env.step(action)
