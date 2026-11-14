@@ -1,7 +1,7 @@
-name: WSP90 exact-source CC-BY-SA factual-knowledge research qualification
+name: WSP90 exact-source Wikipedia prose grounding qualification
 on:
   push:
-    branches: [research/wsp90-source-backed-knowledge-20261113]
+    branches: [research/wsp90-real-prose-weight-grounding-20261113]
 permissions:
   contents: read
 jobs:
@@ -12,7 +12,7 @@ jobs:
     permissions:
       contents: write
     concurrency:
-      group: wsp90-one-shot-cc0-source-capture
+      group: wsp90-one-shot-wikipedia-source-capture
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -49,7 +49,7 @@ jobs:
           B="$(git rev-parse HEAD)"
           test "$(git diff-tree --no-commit-id --name-only -r "$B" | wc -l | tr -d ' ')" = "1"
           test -z "$(git status --porcelain)"
-          git push origin HEAD:refs/heads/research/wsp90-source-backed-knowledge-20261113
+          git push origin HEAD:refs/heads/research/wsp90-real-prose-weight-grounding-20261113
           echo "WSP90_FROZEN_SOURCE_CAPTURE_COMMIT=$B"
 
   public-source-fixture:
