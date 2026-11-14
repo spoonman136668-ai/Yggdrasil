@@ -102,9 +102,9 @@ class TestIndependentProjectedTransE(unittest.TestCase):
                             for x in left["training_epoch_receipts"]))
 
     def test_translational_scoring_considers_subject_identity(self):
-        E = np.array([[0.0,0.0], [0.9,0.0], [-0.9,0.0]],
+        E = np.array([[0.9,0.0], [0.9,0.0], [-0.9,0.0]],
                      dtype=np.float32)
-        P = np.array([[0.9,0.0]], dtype=np.float32)
+        P = np.array([[0.0,0.0]], dtype=np.float32)
         ents = np.array([1,2,3],dtype=np.uint32)
         preds = np.array([7],dtype=np.uint32)
         selected = {(1,7):{2}, (3,7):{3}}
