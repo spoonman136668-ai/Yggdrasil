@@ -38,3 +38,41 @@ jobs:
       - name: Preserve clean exact checkout
         shell: bash
         run: test -z "$(git status --porcelain)"
+
+  public-first-use:
+    needs: [fixture-qualification]
+    if: "github.event.head_commit.message == 'ci(wsp98): original public first-use' && github.run_attempt == 1 && needs.fixture-qualification.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    concurrency:
+      group: wsp98-first-use-public-${{ matrix.os }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Recheck exact original prereg, isolated source and one-shot public boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor eee67aee99ae074b45cdf56b94ce1a133151d808 HEAD
+          test ! -f research/contrib/chatgpt/WSP-98/PUBLIC_PASS.json
+          test -z "$(git status --porcelain)"
+      - name: Original PUBLIC 20 worlds only - preserve scientific negatives
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: python research/contrib/chatgpt/WSP-98/experiment.py --public-only
+      - name: Source remains unchanged after first-use
+        shell: bash
+        run: test -z "$(git status --porcelain)"
