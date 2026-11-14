@@ -1,0 +1,71 @@
+{
+  "checks": {
+    "bounded_actions_and_real_rewards": true,
+    "combined_mcnemar_p": true,
+    "difference_minimum": true,
+    "memory_success_minimum": true,
+    "no_privileged_navigation_data": true,
+    "paired_bootstrap_lower_positive": true,
+    "reactive_control_nontrivial": true
+  },
+  "classification": "MEMORY_BENCHMARK_ADMITTED_DEVELOPMENT_ONLY",
+  "cohorts": {
+    "development": {
+      "environment": "MiniGrid-MemoryS11-v0",
+      "memory_mean_actions": 18.546875,
+      "memory_mean_reward": 0.972409606875,
+      "memory_success": 1,
+      "n": 64,
+      "paired_mcnemar_p": 5.820766091346741e-11,
+      "paired_memory_only": 35,
+      "paired_reactive_only": 0,
+      "reactive_mean_actions": 17.453125,
+      "reactive_mean_reward": 0.44101497890624997,
+      "reactive_success": 0.453125,
+      "reward_gain_ci_95": [
+        0.4102531,
+        0.65295454
+      ],
+      "success_gain": 0.546875,
+      "success_gain_ci_95": [
+        0.421875,
+        0.671875
+      ]
+    },
+    "transfer": {
+      "environment": "MiniGrid-MemoryS13Random-v0",
+      "memory_mean_actions": 17.359375,
+      "memory_mean_reward": 0.981510724375,
+      "memory_success": 1,
+      "n": 64,
+      "paired_mcnemar_p": 3.725290298461914e-9,
+      "paired_memory_only": 29,
+      "paired_reactive_only": 0,
+      "reactive_mean_actions": 16.453125,
+      "reactive_mean_reward": 0.5372059909375,
+      "reactive_success": 0.546875,
+      "reward_gain_ci_95": [
+        0.32130178,
+        0.55223188
+      ],
+      "success_gain": 0.453125,
+      "success_gain_ci_95": [
+        0.328125,
+        0.5625
+      ]
+    }
+  },
+  "combined": {
+    "mcnemar_exact_p": 1.0842021724855044e-19,
+    "memory_only": 64,
+    "reactive_only": 0
+  },
+  "elapsed_seconds": 0.514591,
+  "external_environment": "Farama-Foundation/Minigrid",
+  "external_source_commit": "64e1eaec904bc35e7de041167274e2c0dfe541d2",
+  "limits": "Scripted navigation and matching cue provided by programmer; no new learning mechanism, no native model, no training and no unknown dynamics solved.",
+  "native_integration": "NONE",
+  "prereg_commit": "e27dc3eb66171a96f55fa4cb0acc2cfff2695ea1",
+  "schema": "yggdrasil.contrib.aai07a.memory-necessity-result.v1",
+  "world_observation_receipt_sha256": "184fd6d9d256f73c79f3633c3a4bd8eb491ec3e739db78c5a13c334eef57d1a0"
+}
