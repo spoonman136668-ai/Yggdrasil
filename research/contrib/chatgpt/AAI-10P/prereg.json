@@ -1,0 +1,124 @@
+{
+  "schema": "yggdrasil.contrib.aai10p.frozen-benchmark-prereg.v1",
+  "id": "AAI-10P",
+  "purpose": "BENCHMARK CONSTRUCTION ONLY: a genuinely different causal task after AAI-09A no-go. No candidate learning algorithm, no scientific cohort access, no native Yggdrasil change.",
+  "parent_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "prior_negative": {
+    "pr": 1048,
+    "first_use_run": 43629589166,
+    "classification": "HEADROOM_INADEQUATE_NO_PROMOTION",
+    "rule": "Do not retune AAI-09A or reuse its consumed cohorts."
+  },
+  "hypothesis": "A two-stage intervention-and-planning task over two compositional causal mediators produces a distinguishable signal for each hidden law pair from public do-action consequences and meaningful goal-conditioned decision regret; unrelated withheld structural compositions test generalization rather than old-A memorization alone.",
+  "public_observation": {
+    "input_bits": 3,
+    "mediator_bits": 2,
+    "goal_bits": 2,
+    "description": "At start of each episode the learner sees x=(x0,x1,x2), the two outputs (m0,m1) of the current hidden law, and target g=(g0,g1). On each action learner chooses do(x_i:=0 or 1), observes the changed input and recomputed outputs and its numerical goal reward. The hidden law ID and formulas never enter observations.",
+    "actions": [
+      "set x0=0",
+      "set x0=1",
+      "set x1=0",
+      "set x1=1",
+      "set x2=0",
+      "set x2=1"
+    ],
+    "dynamics": "Deterministic, persistent input; each action sets a selected input bit, then recomputes the observable pair via the selected structural causal equations. Max two sequential interventions; second may use the first's public consequences.",
+    "terminal_reward": "number of mediator outputs matching corresponding goal bits (0,1,2), minus 0.05 per intervention chosen; exact diagnostic regret compared on same one-action cost.",
+    "cost": 0.05,
+    "intervention_horizon": 2,
+    "goal": "Maximize observable terminal reward; learner is penalized for irrelevant interventions and needs to plan causal effects across two outputs."
+  },
+  "frozen_laws": {
+    "A": {
+      "m0": "x0 XOR x1",
+      "m1": "x1 XOR x2"
+    },
+    "B": {
+      "m0": "x0 AND x2",
+      "m1": "x0 XOR x1"
+    },
+    "C": {
+      "m0": "x0 OR x1",
+      "m1": "x1 XOR x2"
+    },
+    "D": {
+      "m0": "x0 XOR x2",
+      "m1": "x1 AND x2"
+    }
+  },
+  "regime_pairs": {
+    "familiar": [
+      "A",
+      "B"
+    ],
+    "unfamiliar": [
+      "C",
+      "D"
+    ]
+  },
+  "fairness": {
+    "observational_boundary": "No law names, formula strings, phase boundaries, counterfactual candidate rewards, oracle choices or RNG seeds supplied to any learner.",
+    "mechanical_enumeration": "Enumerate all 8 public initial x, 4 public targets g, 6 one-step actions, and all 4 laws without invoking learner.first_use or touching held-out science seeds.",
+    "identifiability": "For each public initial x, at least one identical do-action yields different visible mediator outputs between A/B and C/D, establishing distinguishability using public intervention consequences.",
+    "headroom_reference": "Privileged law-aware exhaustive one-step oracle is diagnostic only. Compare to corresponding stale other-law optimal one-action intervention under the same context, target and fixed action cost; never treat oracle as a matched learner.",
+    "stale_policy_tie_break": "Lowest action index in [set x0=0, set x0=1, set x1=0, set x1=1, set x2=0, set x2=1] among maximizers.",
+    "two_step_causality": "By sequential application of two actual do-actions to persistent x, feedback after first step changes information available for second; never silently rewind state between interventions.",
+    "matched_baselines_to_qualify_before_science": [
+      "full tabular context-action outcome transition estimator",
+      "factorized Dirichlet/Beta causal-conditional learner",
+      "change-point-aware model-based learner",
+      "two-timescale recency learner",
+      "fully-trained conventional policy/value learner",
+      "blind/recency reactive policies",
+      "known-law diagnostic oracle excluded from matched comparison"
+    ],
+    "strongest_control": "Future first-use must beat the strongest matched learner on predeclared disjoint transfer; no cherry-picked weak baseline."
+  },
+  "mechanical_admission_gates": {
+    "exact_pairwise_public_do_distinguishability": "A/B and C/D identifiable for every x by at least one of six available actions",
+    "distinct_observed_laws": "Both pairs have distinct mediator outputs in >= 0.50 of public initial states",
+    "causal_intervention_effect": "Each pair contains at least 2 x/goal combinations with a do-action changing one or both mediator outputs and improving terminal goal reward vs the no-action state",
+    "oracle_stale_A_B_regret": "For both directions A vs stale B and B vs stale A, exhaustive expected one-action oracle reward advantage >= 0.50 goal-bit matches",
+    "oracle_stale_C_D_regret": "For both C vs stale D and D vs stale C, same exhaustive regret >= 0.50",
+    "sequential_action_semantics": "Two interventions persist, final public outputs exactly equal recomputation from resulting x, including overwrite and no-op cases",
+    "coupled_reward": "Same law, x, goal and action trace always yields exactly equal public rewards; no hidden fork labels",
+    "no_first_use": "No scientific seed from reserved ranges consumed, no candidate model invoked",
+    "resource_gate": "Standard-library mechanical enumeration completes under 5 s per platform, no GPU/paid APIs"
+  },
+  "reserved_unconsumed_science_cohorts": {
+    "dev": {
+      "start": 991000,
+      "count": 16
+    },
+    "transfer": {
+      "start": 992000,
+      "count": 64
+    },
+    "negative": {
+      "start": 993000,
+      "count": 32
+    },
+    "mechanical_reserved": {
+      "start": 990000,
+      "count": 8
+    },
+    "first_use_authorized": false,
+    "note": "Cohorts reserved for a separately preregistered learner comparison only after benchmark admission and owner first-use approval; do not touch them in AAI-10P."
+  },
+  "science_future_fences": {
+    "frozen_benchmark_not_a_claim": "An analytic oracle gap is not evidence that a trained learner has improved.",
+    "no_post_result_tuning": "Do not change AAI-09A or AAI-10P admission thresholds after inspecting results; preserve all negatives.",
+    "native_guard": "No Wingless/Yggdrasil/Hybrid model weights, accepted refs, owner loop, controller, queue, schedule, runner configuration or deployment changes.",
+    "novelty_guard": "External finite circuit mechanics are a benchmark, not AGI, a native substrate, or a claim of unfamiliar-physics learning.",
+    "future_science": "Only after mechanical admission: freeze a specific independent candidate hypothesis, fully trained matched controls, per-world outcomes, paired confidence bounds, memory/interference/novel-transfer tests and process-cost ceiling before fresh science first-use."
+  },
+  "authority": {
+    "benchmark_mechanical_source_and_tests": true,
+    "scientific_first_use": false,
+    "candidate_integration": false,
+    "merge": false,
+    "owner_acceptance": false,
+    "paid_API": false
+  }
+}
