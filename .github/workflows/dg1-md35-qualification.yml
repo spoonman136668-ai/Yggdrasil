@@ -10,6 +10,7 @@ permissions:
   contents: read
 jobs:
   source:
+    if: github.event.head_commit.message != 'ci(md35): arm one-shot derived G29 atlas'
     name: MD35 no-first-use source gate (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 50
@@ -109,3 +110,47 @@ jobs:
           cmp linux/md35-allocation.json windows/md35-allocation.json
           echo MD35_CROSS_OS_UNOPENED_SPLIT_PARITY_PASS
           echo MD35_SCIENCE_NOT_RUN
+  derived_g29:
+    if: github.event.head_commit.message == 'ci(md35): arm one-shot derived G29 atlas'
+    name: MD35 one-shot G29 derived companion (artifact-only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Rebuild exactly the three G29 files against unchanged source
+        shell: bash
+        run: |
+          set -euo pipefail
+          A="$GITHUB_SHA"
+          BRANCH="research/dg1-md35-strong-control-headroom-20261114"
+          test "$(git rev-parse HEAD)" = "$A"
+          test -z "$(git status --porcelain)"
+          git merge-base --is-ancestor 6b79f778a01372982d3ca3cf209a7a83508cc993 "$A"
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = "cef1378fd3c47ebc74675bd9dde19a183775ceeb"
+          git diff --exit-code 6b79f778a01372982d3ca3cf209a7a83508cc993 HEAD -- research/contrib/chatgpt/dg1-md35-20261114/prereg.json
+          git diff --exit-code cd031504130732617e9ce55ee0da5476f559f59e HEAD -- research/contrib/chatgpt/dg1-md34-20261114
+          python scripts/build_code_atlas.py --write --source-commit "$A"
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          EXPECT="$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          FOUND="$(git diff --cached --name-only | LC_ALL=C sort)"
+          test "$FOUND" = "$EXPECT"
+          git diff --cached --quiet && exit 1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "ci(md35): pin G29 source atlas to $A (three generated files)"
+          B="$(git rev-parse HEAD)"
+          test "$(git diff-tree --no-commit-id --name-only -r "$B" | wc -l | tr -d ' ')" = "3"
+          python scripts/build_code_atlas.py --check
+          test -z "$(git status --porcelain)"
+          git push origin "HEAD:refs/heads/$BRANCH"
+          echo "MD35_SOURCE_SHA=$A"
+          echo "MD35_G29_ATLAS_COMMIT=$B"
