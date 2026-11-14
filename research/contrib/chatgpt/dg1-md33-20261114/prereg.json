@@ -1,0 +1,208 @@
+{
+  "schema": "yggdrasil.dg1-md33-conventional-controls-prereg.v1",
+  "experiment_id": "DG1-MD33-20261114",
+  "status": "FROZEN_BEFORE_NEW_GENERATOR_BASELINES_OR_OUTCOMES",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1040,
+    "source_sha": "7551d15cafe9bf028242f009de2218773a7b40ba",
+    "md32_task": "TASK_PHYSICS_PREFLIGHT_PASS_ONLY",
+    "md31_md30": "FROZEN_NO_GO"
+  },
+  "question": "Does the task-first compositional relay retain substantial, information-identifiable value beyond fully trained conventional causal Bayesian, recurrent predictive, and empirical model-based RL controls with the same physically charged training experience, genuinely unseen causal-law families, and cold persistent-law restoration?",
+  "scope": {
+    "allowed_files": [
+      "research/contrib/chatgpt/dg1-md33-20261114/**",
+      ".github/workflows/dg1-md33-qualification.yml",
+      ".ice/code-atlas.json",
+      ".ice/code-atlas.html",
+      ".ice/code-atlas.ice"
+    ],
+    "forbidden": "Changes to existing MD29/MD30/MD31/MD32 sources/outcomes/thresholds, main, accepted refs, Yggdrasil native weights, loop/controller, runner, scheduler, official first-use, Wingless, Hybrid or FORGE.",
+    "authority": "External synthetic contribution and CI only; official/registered first-use separately owner-authorized, not covered by standing next gate."
+  },
+  "synthetic_cohorts": {
+    "generator": "Reuse immutable MD32 RelayWorld(spec, rewire) physics with a new synthetic-only wrapper that refuses any seed outside declared 11000..11767, 12000..12191, 13000..13191, 14000..14095 and never calls MD32.fixture_spec or official dataset generator.",
+    "train": {
+      "first": 11000,
+      "last": 11767,
+      "episodes": 768,
+      "blocks": 192,
+      "motifs": [
+        "relay",
+        "fork",
+        "collider"
+      ],
+      "replicate_count": 8
+    },
+    "validation": {
+      "first": 12000,
+      "last": 12191,
+      "episodes": 192,
+      "blocks": 48,
+      "motifs": [
+        "relay",
+        "fork",
+        "collider"
+      ],
+      "replicate_count": 2
+    },
+    "transfer": {
+      "first": 13000,
+      "last": 13191,
+      "episodes": 192,
+      "blocks": 48,
+      "motifs": [
+        "braid",
+        "inhibitor",
+        "crossbridge"
+      ],
+      "replicate_count": 2
+    },
+    "cold": {
+      "first": 14000,
+      "last": 14095,
+      "episodes": 96,
+      "blocks": 24,
+      "motifs": [
+        "braid",
+        "inhibitor",
+        "crossbridge"
+      ],
+      "replicate_count": 1
+    },
+    "allocation": "For each cohort, block=floor((seed-first)/4), context=(seed-first)%4; motif=cohort_motifs[block%3], offset=floor(block/3)%4, rewired=(floor(block/12)%2)==1. Four episodes per block share hidden law and change status; agents may reset at publicly declared block boundary, not see block index/seed/motif/offset/rewire. Every train and heldout block uses four different required precursors.",
+    "independent_cohort_names": true,
+    "no_official_seeds": true,
+    "no_previous_md32_fixture_9100_9195": true,
+    "no_previous_md31_scored_8301_8420": true,
+    "heldout_restriction": "Transfer and cold are separate synthetic research diagnostics; do not use them to choose thresholds, architecture, epochs, hyperparameters, or select policies after observing outcomes.",
+    "split_structural_disjointness": "train/val use relay, fork, collider; transfer/cold use braid, inhibitor, crossbridge; all six mechanism pairs source-frozen in MD32.",
+    "risk": "Law families and offsets are fixed; saturating the four-state task is possible. Identifiability does not prove learning/AGI."
+  },
+  "paid_data": {
+    "training_exposure": "Frozen public two-mechanism-probe demonstration policy only: for each of 768 training episodes, charge encoder probe, irreversible precursor actuator, decoder probe and terminal actuator. Each of 3072 action/observation/reward rows recorded in physical order; no private graph, motif, label, seed or offset returned to model.",
+    "shared_train_episodes": 768,
+    "shared_train_physical_actions": 3072,
+    "per_block_actions": 16,
+    "per_episode_action_cap": 4,
+    "probe_cost": 0.08,
+    "actuator_cost": 0.02,
+    "terminal_correct": 0.98,
+    "terminal_wrong": -0.52,
+    "memory_boundary": "reset per four-episode block, persistent within block; cold restoration must retain train-fitted parameters but reset current block state before new four-episode evaluation; no cumulative heldout learning of global weights.",
+    "equivalent_info": "All controls and reference get same live public obs, paid action menu, real step costs and episode/within-block boundaries, no metadata of hidden family/status.",
+    "equivalent_compute": "All process CPU seconds, training actions and per-decision model calls reported. Compute capacities are NOT assumed equal; any scientific superiority claim is prohibited without separately matched compute budget and independent qualifying strongest controls."
+  },
+  "controls": {
+    "handcoded_reference": "Use unchanged MD32 run_public_two_probe, exactly two charged probes per episode; expected +0.800 reward; privileged oracle only for posthoc task ceiling +0.960.",
+    "blind": "Use unchanged MD32 run_public_blind, no diagnostic, expected -0.165.",
+    "bayesian": {
+      "type": "Conventional factorized Dirichlet categorical response model for encoder[a] and effective decoder[h], global posterior trained on all paid training probes; independent memory counts for actual paid observations within each four-episode block. Never uses hidden episode mechanism.",
+      "prior_alpha": 1,
+      "observation_memory_weight": 128,
+      "probe_vs_actuator_threshold": 0.9466666666666667,
+      "training_epochs": 1,
+      "training_order": "ascending 11000..11767 with four actions per episode, only public encoder/decoder sensor receipts",
+      "planning": "For encoder and decoder independently, predict most probable output from fitted counts plus within-block paid-response memory. Physically probe if max predictive probability below 0.94666667. Never simulate World.step, and avoid actions based on hidden labels.",
+      "cold_checkpoint": "Serialize all 8x4 learned channel-counts and model contract, then reload for independent cold scoring; within-block memory reset."
+    },
+    "recurrent": {
+      "type": "Fully trainable Elman tanh recurrent categorical physical world model; public paid-probe sensor prediction with full BPTT, persistent hidden state across the four context-varied episodes of each block.",
+      "input_width": 10,
+      "hidden_width": 24,
+      "output_width": 4,
+      "trainable_parameters": 964,
+      "optimizer": "Adam",
+      "epochs_max": 80,
+      "epochs_min": 20,
+      "patience": 12,
+      "learning_rate": 0.01,
+      "weight_decay": 0.0001,
+      "clip_grad_norm": 1,
+      "adam_betas": [
+        0.9,
+        0.999
+      ],
+      "adam_eps": 1e-8,
+      "initialization_seed": 33033,
+      "training_shuffle_seed": 33034,
+      "batch_blocks": 16,
+      "validation_improvement_epsilon": 0.0001,
+      "training_data": "Train sees only 192 public four-episode (eight charged probes per block) response sequences, 48 separate public validation blocks; no graph labels, no future outcomes.",
+      "training_loss": "Cross-entropy over 4-way physical probe outputs; at each step predict from preceding hidden state + probe mechanism and channel, then update hidden only after actual observed public sensor, truncated only at block boundary.",
+      "action_policy": "Retain exact within-block memory of observed physical probe responses. If channel previously probed, skip diagnostic using paid memory. Otherwise use trained recurrent softmax, skip probe only if confidence>=0.94666667; if not, pay real diagnostic. No simulated observation inserted into hidden state.",
+      "stop": "Stop on frozen validation patience or 80 epochs; report train and validation cross-entropy and exact selected epoch. A finite but high loss is an engineering negative, not automatically strong baseline."
+    },
+    "model_based_rl": {
+      "type": "Conventional empirical action-conditioned finite-state world model and 1-step Bellman value-of-information planning; train maximum-likelihood categorical transition probabilities from the same 3072 paid training actions. Public block memory only from paid probes.",
+      "smoothing": 2,
+      "probability_features": "mechanism (encoder/decoder), channel 0..3; public predicted outcome one-hot 0..3; plus deterministic episodic paid-memory count for within-block previously observed mechanism/channel",
+      "training_epochs": 1,
+      "planning": "For each stage compare expected terminal correct-action value after a real paid diagnostic against immediate best actuarial decision, using no unrewarded simulated World.step. Probe if expected value of information exceeds cost 0.08. No more than one physical probe per mechanism.",
+      "cold_checkpoint": "Preserve fitted categorical table and audited physical trace SHA, reset episode/block transient memory."
+    }
+  },
+  "one_shot_protocol": {
+    "one_shot_transfer_seeds": [
+      13000,
+      13191
+    ],
+    "one_shot_cold_seeds": [
+      14000,
+      14095
+    ],
+    "evaluation_order": [
+      "train all controls",
+      "validate using validation only",
+      "seal all global checkpoints",
+      "transfer 192",
+      "cold 96 cold-reloaded checkpoints"
+    ],
+    "arms": [
+      "trained_factorized_bayesian",
+      "trained_recurrent_world_model",
+      "trained_empirical_model_based_rl",
+      "handcoded_public_two_probe",
+      "blind_fixed_terminal_0",
+      "privileged_oracle_upper_bound"
+    ],
+    "metrics": [
+      "net utility mean and paired episode-level delta",
+      "success rate",
+      "paid diagnostics and physical steps",
+      "per-motif utility",
+      "stable/rewire stratification",
+      "train validation CE/NLL",
+      "cold-restored trace identity",
+      "whole-process train/eval CPU and checkpoint size",
+      "model calls"
+    ],
+    "primary": "Task is TRIVIAL_FOR_NOVEL_GAIN if strongest fully trained conventional control mean net utility >=0.91 on BOTH transfer and cold (oracle 0.96 minus at most 0.05); retain evidence and stop novelty. Separately the handcoded reference +0.8 is non-learning; if no fully trained control beats it, control adequacy remains unverified.",
+    "otherwise": "If trained controls achieve mean score at least +0.05 over blind in all three transfer motifs and strong reference remains <=0.91, task shows exploratory room but not a scientific gain. May continue pre-first-use design work; no model promotion.",
+    "negative": "If heldout transfer of fully trained controls is weak, divergent, nonfinite or worse than handcoded in crucial motifs, classify CONTROLS_UNDERQUALIFIED/DEVELOPMENT_NO_GO and do not assert useful unconventional headroom.",
+    "science": "No original scientific first-use and NO SCIENTIFIC_PASS in this experiment. Do not tune on transfer/cold, even if negative."
+  },
+  "engineering": {
+    "source_lock": "Exact prereg-only SHA must precede source; no prereg modifications after it; preserve MD29/MD30/MD31/MD32 completely.",
+    "qualify": [
+      "54 inherited tests",
+      "32 MD30 tests",
+      "7 MD31 tests",
+      "8 MD32 tests",
+      "new MD33 focused tests",
+      "Windows/Linux exact final SHA",
+      "G29 code atlas only after source commit",
+      "cross-OS portable exact physical action traces and classifications, model numerical rounding called out if not equal"
+    ],
+    "python": "3.12",
+    "deps": {
+      "numpy": "2.3.4",
+      "gymnasium": "1.4.0",
+      "minigrid": "3.2.0"
+    },
+    "real_physical_action_only": true,
+    "no_native_model_integration": true,
+    "no_merge_or_scheduled_runner": true
+  }
+}
