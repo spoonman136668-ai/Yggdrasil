@@ -1,0 +1,175 @@
+{
+  "checks": {
+    "audit": true,
+    "cold_restore": true,
+    "dev_expert_headroom": false,
+    "dev_informative_vs_random": true,
+    "dev_intervention_value": true,
+    "memory_cap": true,
+    "negative_sham": true,
+    "negative_shuffled": true,
+    "transfer_expert_headroom": false,
+    "transfer_intervention_value": true,
+    "utility_dev_max": true,
+    "utility_dev_min": true
+  },
+  "classification": "BENCHMARK_REJECTED_VALID_NEGATIVE",
+  "cohorts": {
+    "dev": {
+      "eig": {
+        "mean_probes": 2,
+        "mean_retained_do": 2,
+        "mean_reward": 0.83072917,
+        "n": 256
+      },
+      "expert": {
+        "mean_probes": 0,
+        "mean_retained_do": 0,
+        "mean_reward": 0.875,
+        "n": 256
+      },
+      "no_probe": {
+        "mean_probes": 0,
+        "mean_retained_do": 0,
+        "mean_reward": 0.68619792,
+        "n": 256
+      },
+      "random": {
+        "mean_probes": 2,
+        "mean_retained_do": 2,
+        "mean_reward": 0.80208333,
+        "n": 256
+      },
+      "recent": {
+        "mean_probes": 2,
+        "mean_retained_do": 0,
+        "mean_reward": 0.68619792,
+        "n": 256
+      },
+      "tabular": {
+        "mean_probes": 2,
+        "mean_retained_do": 2,
+        "mean_reward": 0.78515625,
+        "n": 256
+      },
+      "utility": {
+        "mean_probes": 2,
+        "mean_retained_do": 2,
+        "mean_reward": 0.84375,
+        "n": 256
+      }
+    },
+    "negative": {
+      "no_probe": {
+        "mean_probes": 0,
+        "mean_retained_do": 0,
+        "mean_reward": 0.72395833,
+        "n": 256
+      },
+      "sham": {
+        "mean_probes": 2,
+        "mean_retained_do": 2,
+        "mean_reward": 0.63802083,
+        "n": 256
+      },
+      "shuffled": {
+        "mean_probes": 2,
+        "mean_retained_do": 2,
+        "mean_reward": 0.72395833,
+        "n": 256
+      }
+    },
+    "transfer": {
+      "eig": {
+        "mean_probes": 2,
+        "mean_retained_do": 2,
+        "mean_reward": 0.91666667,
+        "n": 256
+      },
+      "expert": {
+        "mean_probes": 0,
+        "mean_retained_do": 0,
+        "mean_reward": 0.97786458,
+        "n": 256
+      },
+      "no_probe": {
+        "mean_probes": 0,
+        "mean_retained_do": 0,
+        "mean_reward": 0.68880208,
+        "n": 256
+      },
+      "random": {
+        "mean_probes": 2,
+        "mean_retained_do": 2,
+        "mean_reward": 0.90234375,
+        "n": 256
+      },
+      "recent": {
+        "mean_probes": 2,
+        "mean_retained_do": 0,
+        "mean_reward": 0.68880208,
+        "n": 256
+      },
+      "tabular": {
+        "mean_probes": 2,
+        "mean_retained_do": 2,
+        "mean_reward": 0.68619792,
+        "n": 256
+      },
+      "utility": {
+        "mean_probes": 2,
+        "mean_retained_do": 2,
+        "mean_reward": 0.95052083,
+        "n": 256
+      }
+    }
+  },
+  "cost": {
+    "memory_slots": 4,
+    "paid_api_calls": 0,
+    "passive_events": 32,
+    "probe_budget": 2,
+    "two_step_plans": 16
+  },
+  "deltas": {
+    "dev_expert_minus_utility": 0.03125,
+    "dev_utility_minus_no_probe": 0.15755208,
+    "dev_utility_minus_random": 0.04166667,
+    "negative_sham_minus_no_probe": -0.0859375,
+    "negative_shuffled_minus_no_probe": 0,
+    "transfer_expert_minus_utility": 0.02734375,
+    "transfer_utility_minus_no_probe": 0.26171875
+  },
+  "elapsed_seconds": 4.472219,
+  "integration": "NONE",
+  "limitations": "Synthetic known twelve-law catalog gives exact Bayes structural prior, including unseen fitting families. Benchmark-only; does not demonstrate a novel model, autonomous association, AGI, or generalization to arbitrary new causal structures.",
+  "paired_bootstrap_95pct": {
+    "dev_utility_vs_no_probe": [
+      0.12760417,
+      0.19010417
+    ],
+    "dev_utility_vs_random": [
+      0.01692708,
+      0.06380208
+    ],
+    "transfer_utility_vs_no_probe": [
+      0.22005208,
+      0.30208333
+    ],
+    "transfer_utility_vs_random": [
+      0.02734375,
+      0.07161458
+    ]
+  },
+  "predictions_sha256": "71d686833bfd95abc8edcaf646f4b29ac563af169a1266d5b4e63dd3505946c5",
+  "prereg_commit": "d9b8d86593a23b32dcf87e74490fb65f5dae8e6c",
+  "schema": "yggdrasil.aai04r1.benchmark-admission-result.v1",
+  "train": {
+    "families": [
+      0,
+      1
+    ],
+    "n": 512,
+    "two_probe_training_events": 1024
+  }
+}
