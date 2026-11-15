@@ -55,6 +55,7 @@ def run():
             assert predicted==conventional_pred
             prefix_records.append((budget,status,rank,predicted))
         final=prefix_records[-1]
+        final_program=p  # retained frozen 128-action estimate; no second fit
         rank128.append((seed,final[1],final[2]))
         if seed in NEGATIVES:
             if final[1]=="INCONSISTENT" and final[3] is None:
@@ -69,9 +70,9 @@ def run():
                 old=None
             if seed == REVISIONS[0]:
                 unaffected_before={i:memory.program(i) for i in range(8,24)}
-            t=time.perf_counter();memory.update(slot,direct_solve(evidence)[1])
+            t=time.perf_counter();memory.update(slot,final_program)
             direct_update_wall+=time.perf_counter()-t
-            t=time.perf_counter();conventional.update(slot,final_program := direct_solve(evidence)[1])
+            t=time.perf_counter();conventional.update(slot,final_program)
             incremental_update_wall+=time.perf_counter()-t
             if old is not None and old!=final_program:
                 changed+=1
