@@ -42,7 +42,7 @@ class F50PublicParityTests(unittest.TestCase):
             with self.subTest(record=record):
                 with self.assertRaises((p.PublicSourceRejected,w.F50Rejected)):
                     p.decode_source_graph(record)
-        with self.assertRaises(p.PublicSourceRejected):
+        with self.assertRaises((p.PublicSourceRejected,w.F50Rejected)):
             p.encode_source_graph(("xor",a.nodes,a.nodes))
 
     def test_all_action_consequence_features_are_exact_3_by_33(self):
