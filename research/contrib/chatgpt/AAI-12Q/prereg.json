@@ -1,0 +1,89 @@
+{
+  "schema": "yggdrasil.aai12q.contrastive-intervention-invariant-substrate.v1",
+  "id": "AAI-12Q",
+  "status": "FROZEN_SOURCE_ONLY_MECHANISM_BEFORE_IMPLEMENTATION",
+  "source_custody": {
+    "parent_pr": 1074,
+    "parent_branch": "research/aai12p-diverse-causal-worlds-20261114",
+    "parent_sha": "abd374e7dc433981df991e103d8ebdff0b5eb093",
+    "parent_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "parent_original_final_ci": 43661424543,
+    "source_world_blob": "488c54aee283434599f106b22b6008cd596bac37",
+    "source_controls_blob": "042b36f66fa14e0c7c7f39fe709ed58df9776eed",
+    "source_evaluator_blob": "1aedb903e6c359c962b3d36009d78ce2d2f235b2",
+    "benchmark_prereg_blob": "74f57c2175e7ae87926e4f7fd985d741f719c0a9"
+  },
+  "hypothesis": "Instead of relying only on pointwise mediator prediction errors, an eight-row tokenless causal mechanism representation can learn reusable local intervention-effect invariants: its rule must predict not merely pre/post output bits but the direction of mediator changes from a witnessed actual do-action. With the identical eight public records, this contrastive do-response constraint should improve unfamiliar-family reward and exact attainable-goal recovery over the strongest fully trained pointwise grammar MAP conventional.",
+  "mechanism": {
+    "candidate": "invariant_contrast_recent8",
+    "same_information_ablation": "causal_structure_recent8",
+    "model": "Competing structural causal programs over the unchanged original AAI-12P public full generating grammar, decomposed into 4 causal mediator mechanisms, with explicit intervention-effect constraints on observed adjacent actual do transitions; predictors compose selected mechanisms in 4-stage DAG.",
+    "public_evidence": "retain exactly latest 8 public (x,mediators) pairs as strongest conventional, no extra source, source-world label, hidden equation, oracle, unchosen action, donor or prior finished world parameters.",
+    "original_grammar": "Use exact original AAI-12P controls.GRAMMARS 4 stages, including pair XOR/AND/OR, switch, flip, compensator and inhibitor; no rules added, removed or learned from generator.",
+    "pairs": "Derive adjacent observed transitions from last eight public row records, only if actions_taken changes by exactly +1, goal identical, Hamming(xpre,xpost)<=1 (real do bit set, including no-op). Store at most eight canonical public records including goal, reward and actions_taken for detecting actual interventions; prior conventional has all these fields in its observe calls but only persists (x,m); candidate may NOT retain >8 x,m and may NOT retain private action labels. A paired record may be recognized only if consecutive (pre,post) public action counts and same goal satisfy criteria; no implicit world boundary labels.",
+    "pointwise_loss": "Per hypothesis and output, sum mismatch of predicted m bit vs actual m bit on the latest eight observed public rows, under observed upstream mediators, exactly same as strongest original control.",
+    "effect_loss": "For each qualifying adjacent true do transition, predict mbit BEFORE and AFTER under each observed upstream mediator row, then penalize 1 if predicted XOR change differs from observed XOR change for that mediator. Do not use simulator to evaluate candidate rules.",
+    "frozen_total_loss": "pointwise_mismatches + 2 * intervention_effect_mismatches, tie-break smallest original grammar index, no tunable learning rates, no read of private structural specs.",
+    "forecast": "Use exactly original AAI-12P structural DAG probabilistic composition/smoothing and same controls.choose 0..2 actual action policy; ONLY causal structural-rule selection differs.",
+    "state": "Canonical checkpoint stores latest 8 public rows including only x, mediators, goal, reward and actions_taken (no derived weights/rules cache), verify stable cold restore and bounded memory; infer constraints afresh from public state.",
+    "same_data_negative": "On corrupted action/outcome association challenge pairs, performance must not increase relative to intact. The original conventional remains the negative/control counterfactual without intervention delta weight.",
+    "fixed_cost": "No outer loops or search over thresholds, windows, odds, methods. Fit on 64 original public common records, then 8 challenge records; source-only 192 C/D family unfamiliar episodes and 64 familiar independent cold-restart episodes."
+  },
+  "evaluation": {
+    "source_only_fixtures": [
+      "mechanical:alpha",
+      "mechanical:beta"
+    ],
+    "fit_worlds": 4,
+    "transfer_worlds": 12,
+    "transfer_episodes": 192,
+    "familiar_episodes": 64,
+    "controls": "All 8 AAI-12P fully fitted eligible conventional methods already qualified identical sources in 43661187182 and 43661424543; strongest original causal_structure_recent8 and causal_structure_recent16 re-executed source-exact against candidate in same source fixtures. No need full eight rerun if first screen fails; if first screen passes rerun all eight source controls.",
+    "source_baseline": {
+      "strongest": "causal_structure_recent8",
+      "reward": 2.673541667,
+      "reachable": 43,
+      "total_reachable": 97,
+      "reachable_rate": 0.443298969,
+      "unreachable_regret": 0.52,
+      "familiar_return": 2.545,
+      "fastest_reported": "tabular_recent16",
+      "oracle_reward": 3.342291667
+    },
+    "prespecified_go_no_go": {
+      "reward_vs_best_conventional_min_gain": 0.08,
+      "candidate_mean_reward_min": 2.753541667,
+      "reachable_exact_goal_recovery_min_gain": 0.05,
+      "candidate_reachable_goal_recovery_min": 0.493298969,
+      "minimum_integer_reachable_hits": 48,
+      "max_unreachable_regret": 0.55,
+      "min_familiar_A_B_cold_reward": 2.515,
+      "contrastive_effect_reward_gain_vs_same_8row_pointwise_min": 0.03,
+      "max_candidate_full_process_seconds_ratio_to_fastest_conventional": 2,
+      "all_required": true,
+      "stop": "One frozen source-only developmental screen. On any reward/recovery/regret/familiar/contrastive FAIL classify DEV_NO_GO_NO_SCIENCE; do not rerun 8 matched controls, no second algorithm/window/weight search, no first-use. If first screen all PASS only then independently re-run all 8 fully trained original controls and exact full training+fit+challenge+restore+action CPU time per OS and intervention association negative; final DEV is still not SCIENTIFIC PASS."
+    },
+    "scientific": "Not authorized; 192 fixed synthetic cases are not independent scientific 12-world evidence; independent fresh cohorts, seeds, negative controls, cold retention after interference and fully fitted conventional+matched end-to-end resource qualification required before science claim; no original first-use seeds or hidden worlds consumed."
+  },
+  "safety": {
+    "no_native_yggdrasil": true,
+    "no_merge": true,
+    "no_main_edit": true,
+    "no_Forge_Wingless_Hybrid": true,
+    "no_new_controller_runner_scheduler_queue": true,
+    "no_paid_API": true,
+    "no_ChatGPT_Library": true,
+    "no_primary_first_use": true,
+    "science_cohorts_used": 0,
+    "first_use_cli_disarmed": true,
+    "pr_draft": true,
+    "one_shot_GitHub_CI_only": true,
+    "exact_source_2_OS_native_regression_required": true,
+    "G29_generated_only": true
+  },
+  "interpretation": {
+    "comparable_to_prior_AAI11": "Different eight-input/four-mediator diverse worlds, so AAI-11 performance scores are NOT numerically comparable.",
+    "failure": "Any source score shortfall must be preserved as no-go; a priori synthetic source protocol was chosen with previous baseline outcomes visible and cannot independently prove science."
+  },
+  "no_post_result_tuning": true
+}
