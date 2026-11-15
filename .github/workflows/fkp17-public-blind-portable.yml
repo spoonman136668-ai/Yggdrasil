@@ -159,7 +159,6 @@ jobs:
       PYTHONDONTWRITEBYTECODE: '1'
       OMP_NUM_THREADS: '1'
       MKL_NUM_THREADS: '1'
-      FKP17_CHECKPOINT_PATH: ${{ runner.temp }}/fkp17-public-gru-f32.json
     steps:
       - name: Keep Git source byte parity
         shell: bash
@@ -179,6 +178,10 @@ jobs:
         run: |
           set -euo pipefail
           python -m pip install --extra-index-url https://download.pytorch.org/whl/cpu 'torch==2.5.1+cpu'
+      - name: Bind public output path after runner initialization
+        shell: bash
+        run: |
+          echo "FKP17_CHECKPOINT_PATH=$RUNNER_TEMP/fkp17-public-gru-f32.json" >> "$GITHUB_ENV"
       - name: Complete original FOUNDATION-only two-seed twenty-four-epoch training
         shell: bash
         run: |
