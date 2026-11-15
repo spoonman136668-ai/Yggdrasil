@@ -9,6 +9,7 @@ using seeds 1000..1063 or 2000..2015 for a primary result.
 from __future__ import annotations
 
 import hashlib
+import hmac
 import json
 import random
 from typing import NamedTuple
@@ -85,10 +86,26 @@ class PublicCausalWorld:
 
     __slots__ = ("_seed", "_cohort", "_maps", "_private_law", "_negative_map", "_probes")
 
-    def __init__(self, seed: int):
+    def __init__(self, seed: int, *, protected_key: bytes | None = None):
         cohort = cohort_for_seed(seed)
         maps = _public_maps(seed)
-        private_rng = random.Random(seed ^ 0x6D2B79F5)
+        if cohort in ("protected_primary", "protected_negative", "retention"):
+            # Source-owner evaluator provides a fresh 32+ byte private key.
+            # This key MUST stay outside candidate code/repo/CI/learner inputs.
+            # Otherwise public map facts let an arm identify the small known
+            # seed range and trivially reconstruct source-private rule labels.
+            if type(protected_key) is not bytes or len(protected_key) < 32:
+                raise PermissionError("FKP01_PROTECTED_EVALUATOR_KEY_REQUIRED")
+            law_digest = hmac.new(
+                protected_key, f"FKP01-LAW-V1:{seed}".encode("ascii"),
+                hashlib.sha256
+            ).digest()
+            private_seed = int.from_bytes(law_digest[:16], "big")
+        else:
+            if protected_key is not None:
+                raise ValueError("FKP01_DEV_MUST_NOT_RECEIVE_EVAL_KEY")
+            private_seed = seed ^ 0x6D2B79F5
+        private_rng = random.Random(private_seed)
         length = _private_rule_length(seed, cohort)
         private_law = tuple(private_rng.randrange(PRIMITIVES) for _ in range(length))
         negative_map = None
