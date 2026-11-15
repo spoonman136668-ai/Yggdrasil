@@ -111,6 +111,22 @@ class NativeCausalSourceFree(unittest.TestCase):
         self.assertIsNone(m.prior_action)
         self.assertGreater(sum(p is not None for p in m.profiles),0)
 
+    def test_observation_only_cold_retrieval_does_not_write_learned_counts(self):
+        model=NativeInterventionCredit8()
+        raw=public(0)
+        for i in range(20):
+            event(model,raw,i%4,0)
+        before=[canonical(p) if p else None for p in model.profiles]
+        trained_updates=model.updates
+        model.reset_episode()
+        for i in range(8):
+            event(model,raw,i%4,0,learn=False)
+        after=[canonical(p) if p else None for p in model.profiles]
+        self.assertEqual(before,after)
+        self.assertEqual(model.updates,trained_updates)
+        self.assertGreater(model.retrievals,0)
+        self.assertIsNotNone(model.active)
+
     def test_episode_erasure_is_actual_negative_control(self):
         m=NativeInterventionCredit8("episode_erase")
         x=public(11)
