@@ -149,7 +149,7 @@ class ST6NativeCompositionFixture(unittest.TestCase):
     def test_corrupted_cold_native_checkpoint_rejected(self):
         m=NativeOperator8();run_episode({"candidate":m},3,100,0)
         for patch in (
-            {"schema":"wrong"},{"step":6},{"mismatches":[2]*8},
+            {"schema":"wrong"},{"step":6},{"mismatches":[9]*8},
             {"support":[True]*8},{"r":4},{"training_probes":True}
         ):
             d=json.loads(m.snapshot());d.update(patch)
