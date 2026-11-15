@@ -242,7 +242,7 @@ def train_once(path):
         "alternative_rule_not_opened":True,
         "protected_scientific_first_use":False
     }
-    path.write_text(canonical(doc)+"\n",encoding="utf-8")
+    path.write_bytes((canonical(doc)+"\n").encode("utf-8"))
     print("ST9_EACH_ARM_ACTUAL_SOURCE_STEPS=16")
     print("ST9_NATIVE_REAL_CONTRADICTIONS="+str(c.contradictions))
     print("ST9_NATIVE_GROWTH_EVENTS="+str(c.growth_events))
@@ -532,7 +532,7 @@ def compare(checkpoint,out):
         "protocol_source_model_untuned_after_first_held":True,
         "development_disposition":scores["development_disposition"]
     }
-    out.write_text(canonical(evidence)+"\n",encoding="utf-8")
+    out.write_bytes((canonical(evidence)+"\n").encode("utf-8"))
     print("ST9_HELD_PREACTION_BRIER="+canonical(
         scores["pooled_held_preaction_Brier"]))
     print("ST9_NEW_RULE_NEGATIVE_BRIER="+canonical(
