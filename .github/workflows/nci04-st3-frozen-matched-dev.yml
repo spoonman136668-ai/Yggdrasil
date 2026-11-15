@@ -180,7 +180,7 @@ jobs:
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: st3-frozen-matched-inhouse-ubuntu-latest
-          path: linux
+          path: ${{ runner.temp }}/st3-linux
           run-id: 43662290316
           github-token: ${{ github.token }}
           repository: spoonman136668-ai/Yggdrasil
@@ -188,7 +188,7 @@ jobs:
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: st3-frozen-matched-inhouse-windows-2022
-          path: windows
+          path: ${{ runner.temp }}/st3-windows
           run-id: 43662290316
           github-token: ${{ github.token }}
           repository: spoonman136668-ai/Yggdrasil
@@ -203,10 +203,11 @@ jobs:
           import os
           from pathlib import Path
           from research.nci04_st3.receipts_parity import main
+          temp=Path(os.environ['RUNNER_TEMP'])
           doc=main(
-              Path('linux/st3-held-dev.json'),
-              Path('windows/st3-held-dev.json'),
-              Path(os.environ['RUNNER_TEMP'])/'st3-final-parity.json'
+              temp/'st3-linux/st3-held-dev.json',
+              temp/'st3-windows/st3-held-dev.json',
+              temp/'st3-final-parity.json'
           )
           assert doc['original_event_and_single_training_blob_exact']
           assert doc['external_protected_science_first_use'] is False
