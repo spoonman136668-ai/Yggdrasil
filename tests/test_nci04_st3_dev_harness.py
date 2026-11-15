@@ -7,7 +7,8 @@ not authentic reserved held development data or scientific results.
 import unittest
 
 from research.nci04_st3.dev_compare import (
-    NAMES, fresh_models, run_episode, score_results, load_checkpoint
+    NAMES, fresh_models, run_episode, score_results, load_checkpoint,
+    delay_retention_probe
 )
 
 
@@ -95,6 +96,16 @@ class ST3MatchedHarnessSourceFree(unittest.TestCase):
                          "DEV_SIGNAL_PENDING_PORTABILITY_NOT_SCIENCE")
         self.assertTrue(all(result["checks"].values()))
         self.assertEqual(result["preaction_eval_source_steps"],2048)
+
+    def test_frozen_retention_probe_executes_without_hidden_held_laws(self):
+        # This probes only predeclared training and negative in-house laws.
+        # It asserts custody/execution, NEVER that retention has a positive
+        # result. The scientific threshold remains immutable.
+        proof=delay_retention_probe()
+        self.assertEqual(len(proof["unrelated_law_episodes"]),8)
+        self.assertTrue(proof["no_original_law_retraining_during_recall"])
+        self.assertTrue(0<=proof["retained_chance_corrected_brier_gain_ratio"]<=1)
+        self.assertEqual(proof["frozen_threshold"],0.95)
 
     def test_refuse_fewer_than_frozen_2048_held_steps(self):
         accounts={
