@@ -1,0 +1,68 @@
+name: QTR-01 F17 bounded learner process isolation DEV
+
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+    paths:
+      - .github/workflows/qtr01-f17-isolation-dev.yml
+      - research/contrib/chatgpt/QTR-01/f17_isolation_smoke.py
+      - research/contrib/chatgpt/QTR-01/test_f17_isolation_smoke.py
+
+permissions:
+  contents: read
+
+jobs:
+  kernel-isolation-dev:
+    if: github.repository == 'spoonman136668-ai/Yggdrasil'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      GIT_TERMINAL_PROMPT: "0"
+      UPSTREAM_SHA: 51f1431515e310dec72e3f4b6db378df46f832ea
+      UPSTREAM_TREE: c1bf53ecf03ae326b69c0321f4412d81f3122894
+    steps:
+      - name: Checkout exact isolated QTR PR source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Setup Python 3.13
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.13'
+      - name: Source-free F17 IPC and fail-closed tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f17_*.py' -v
+      - name: Acquire pinned public causal-worlds source
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/qtr-f17-upstream"
+          git init -q "$root"
+          git -C "$root" remote add origin https://github.com/noumenal-ai/causal-worlds.git
+          git -C "$root" fetch --depth 1 origin "$UPSTREAM_SHA"
+          git -C "$root" -c advice.detachedHead=false checkout --detach FETCH_HEAD
+          test "$(git -C "$root" rev-parse HEAD)" = "$UPSTREAM_SHA"
+          test "$(git -C "$root" rev-parse 'HEAD^{tree}')" = "$UPSTREAM_TREE"
+          echo "F17_PINNED_UPSTREAM=PASS"
+      - name: Install pinned minimal DEV environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check uv==0.9.17
+          cd "$RUNNER_TEMP/qtr-f17-upstream"
+          uv sync --locked --no-dev --extra gym
+      - name: Kernel-isolated two-process public development smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$RUNNER_TEMP/qtr-f17-upstream/.venv/bin/python" \
+            research/contrib/chatgpt/QTR-01/f17_isolation_smoke.py \
+            --upstream-root "$RUNNER_TEMP/qtr-f17-upstream" \
+            --checkout-root "$GITHUB_WORKSPACE"
+      - name: Checkout integrity
+        shell: bash
+        run: git diff --exit-code

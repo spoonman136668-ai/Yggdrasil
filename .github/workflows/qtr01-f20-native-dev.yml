@@ -1,0 +1,51 @@
+name: QTR-01 F20 native context transfer DEV
+
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+    paths:
+      - .github/workflows/qtr01-f20-native-dev.yml
+      - research/contrib/chatgpt/QTR-01/f20_native_transfer_falsification.py
+      - research/contrib/chatgpt/QTR-01/test_f20_native_transfer_falsification.py
+
+permissions:
+  contents: read
+
+jobs:
+  f20-native-dev:
+    if: github.repository == 'spoonman136668-ai/Yggdrasil'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - name: Checkout exact contributor candidate
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 3
+          persist-credentials: false
+      - name: Setup Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify native source and frozen F20 prereg
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object yggdrasil/public_causal_cells.py)" = "5c9a9904e31688bebc2e53723569e1fb988a981f"
+          git merge-base --is-ancestor 8db53cb53b7f69f024a70b5e39c9d61123066926 HEAD
+          test "$(git show 8db53cb53b7f69f024a70b5e39c9d61123066926:research/contrib/chatgpt/QTR-01/f20_prereg.json | python -c 'import json,sys; print(json.load(sys.stdin)["status"])')" = "FROZEN_PRE_FIRST_EXECUTION"
+          echo "F20_NATIVE_SOURCE_AND_PREREG=PASS"
+      - name: F20 native-context tests
+        run: python -m unittest discover -s research/contrib/chatgpt/QTR-01 -p "test_f20_*.py" -v
+      - name: Native-cell legacy focused regression
+        run: python -m unittest discover -s tests -p "test_native_cells*.py" -v
+      - name: Frozen F20 development observation
+        run: python research/contrib/chatgpt/QTR-01/f20_native_transfer_falsification.py
+      - name: Verify clean checkout
+        run: git diff --exit-code

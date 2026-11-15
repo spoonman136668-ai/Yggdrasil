@@ -1,0 +1,76 @@
+{
+  "schema": "yggdrasil.qtr.f20.native-context-transfer-dev.v1",
+  "status": "FROZEN_PRE_FIRST_EXECUTION",
+  "experiment_id": "QTR-01-F20",
+  "scope": "PUBLIC DEVELOPMENT ONLY; falsification of 128-byte native public-causal-cell memory substrate",
+  "parent_sha": "38640dfc2821e28ee6bcb27f95ac3113b2ed4a43",
+  "native_module": "yggdrasil/public_causal_cells.py",
+  "native_module_blob": "5c9a9904e31688bebc2e53723569e1fb988a981f",
+  "native_interface": "PublicCausalCells.observe(address, action, public_outcome), choose(address), snapshot(), restore()",
+  "native_learned_bytes": 128,
+  "native_checkpoint_bytes": 164,
+  "context_public_encoding": "context id 0..7 exactly represents public bits (x0,x1,x2) in low-to-high order, with id7 stored in retained slot0 because active addresses 0..6; context is not the causal law or private label.",
+  "causal_law_candidate_class": [
+    "bit0",
+    "bit1",
+    "bit2",
+    "xor01",
+    "xor12",
+    "majority"
+  ],
+  "outcome": "public binary success reward = int(action == hidden optimal action fn(public_bits))",
+  "train_contexts": [
+    0,
+    1,
+    2,
+    4
+  ],
+  "heldout_contexts": [
+    3,
+    5,
+    6,
+    7
+  ],
+  "intervention_budget": "For each of 6 candidate laws, 8 public action-outcome trials per action per each of 4 training contexts = 64 events/world; no post-training updates before cold or transfer queries.",
+  "test_budget": "4 disjoint held-out context queries per law, 24 total. Both arms have never been observed at any held-out context.",
+  "controls": [
+    "Native PublicCausalCells, no source-provided semantic relation map",
+    "Exact raw-event retrieval from identical 64 public events/world",
+    "Symbolic full hypothesis class with precisely disclosed six-function prior (not a prior-matched control; intentionally advantaged)",
+    "Cold checkpoint restore repeat",
+    "Negative missing-arm abstention"
+  ],
+  "requirements": [
+    "6 law signatures uniquely identifiable from public TRAIN observations under the disclosed symbolic prior",
+    "No causal world law passed to native or raw retrieval learner",
+    "No source owner mutation",
+    "Check correct training-context preference for native; separate heldout abstention measurement",
+    "Freeze before outcome; preserve negatives"
+  ],
+  "metrics": [
+    "native_correct_on_observed_training_contexts",
+    "native_heldout_answer_coverage",
+    "native_heldout_accuracy_on_answers_only",
+    "exact_raw_event_heldout_coverage",
+    "symbolic_prior_heldout_correct",
+    "cold_checkpoint_unchanged",
+    "retained_slot_independence",
+    "learned/checkpoint bytes",
+    "focused CI regression"
+  ],
+  "classification_rules": {
+    "candidate_gain": "At least one correct native heldout answer that exact retrieval abstains on WITHOUT supplied relation map; requires independent strong prior-matched control and separate prospective validation before any scientific claim.",
+    "native_no_generalization": "Native heldout 0/24 coverage when symbolic-prior control uniquely identifies each law; this is DEV representation limit only, not generic impossibility or scientifically confirmatory evidence.",
+    "invalid": "Any nonunique training law signatures, private causal-law leak to native, changed budget, mismatched source module SHA, failed deterministic snapshot, executor source drift or failed tests.",
+    "scientific_pass": "FORBIDDEN FOR THIS OPEN DEV STUDY"
+  },
+  "notes": "This is the genuine existing native 128-byte histogram-memory component, NOT the full Yggdrasil native research architecture; hypothesis-library symbolic baseline has an explicit privileged structural prior. The example is intentionally limited and simple: it can reject claims that these cells autonomously learn invariants across new addresses, not prove an AGI substrate is impossible.",
+  "security": "No paid APIs, no Qwen weights, no LLM training, no original FIT/TRANSFER/RESERVED first use, no model weights, no promotion, no controller/queue/scheduler, no use of F19 data for tuning.",
+  "authority": {
+    "research_only": true,
+    "accepted_ref_mutation": false,
+    "production_authority": false,
+    "model_integration": false,
+    "scientific_first_use": false
+  }
+}

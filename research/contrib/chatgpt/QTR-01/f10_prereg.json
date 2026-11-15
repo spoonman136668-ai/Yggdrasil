@@ -1,0 +1,72 @@
+{
+  "schema": "yggdrasil.qtr01.f10.native-relation-transfer-prereg.v1",
+  "experiment_id": "QTR-01-F10",
+  "parent_source_sha": "ad6ce45eaed20e4715f3d14c7f03f47601694127",
+  "stage": "DEV_SYNTHETIC_INTERFACE_ONLY",
+  "hypothesis": "An externally supplied causal action-symmetry relation lets the existing fixed-budget PublicCausalCells reuse actual source interventions in untrained target contexts, but an exact raw-event retrieval comparator with the same information should match the transfer adapter.",
+  "substrate": "yggdrasil.public_causal_cells.PublicCausalCells",
+  "substrate_state": "16 addresses, 128 learned bytes, 164-byte integrity checkpoint, each action requires public outcome",
+  "transfer_admission": "Only an independent typed map (target retained address -> observed source active address, action flip bit), supplied with identical contents to all eligible methods. The map itself contains structural knowledge; its origin is synthetic authored fixture and must never be described as learned or Qwen-derived.",
+  "objective": "Check feasibility of read-only native source-to-target relation transfer without editing original model/checkpoints and measure whether any advantage survives information-matched retrieval.",
+  "fixtures": {
+    "seeds": [
+      7001,
+      7002,
+      7003,
+      7004,
+      7005,
+      7006,
+      7007,
+      7008
+    ],
+    "source_contexts": 4,
+    "target_contexts": 4,
+    "source_actions": [
+      0,
+      1
+    ],
+    "public_interventions_per_action": 4,
+    "target_observations": 0,
+    "action_effects": "deterministic binary reward with source-optimal action derived by SHA256 from seed/source index; target-optimal action source-optimal XOR externally supplied flip-bit; scoring evaluator only",
+    "relation": "source=(target+seed)%4, flip=(seed+target)%2",
+    "mixed_context_control": "two target flip-bits inverted per seed by fixed rule target%2==0",
+    "claims": "Synthetic intervention fixture; external labels are known from the generator but not accessible to adapter",
+    "license": "Author-created deterministic fixture with no third-party training text or model output"
+  },
+  "comparators": [
+    "native transfer via PublicCausalCells plus exact typed structural map",
+    "strong exact raw-event retrieval with identical map and all public events",
+    "native original independent retained cells with no source transfer",
+    "shuffled typed relation map (2 of 4 flip bits inverted)"
+  ],
+  "measured_metrics": [
+    "32 target actions per method across fixed seeds",
+    "accuracy and coverage, abstention counted incorrect for accuracy",
+    "cold snapshot restoration action parity",
+    "unrelated-address interference no-change",
+    "conflicting new source evidence updates target decision, no stale cache",
+    "128 learned bytes, 164 checkpoint bytes, external map bytes separately accounted",
+    "wall-clock and complete event counts, no performance win claimed from single timing"
+  ],
+  "fixed_classification": {
+    "DEV_INTERFACE_PARITY_ONLY": "native transfer=32/32 and exact retrieval=32/32, shuffled map<=16/32, native-no-transfer coverage=0/32, retention and interference=32/32, contradiction update changes mapped action. This is interface feasibility, NOT SCIENTIFIC_PASS.",
+    "DEV_NEGATIVE": "Any frozen functional criterion fails or transfer is worse than exact retrieval.",
+    "SCIENTIFIC_PASS": "NOT AVAILABLE on synthetic DEV fixtures even if accuracy=100%; no gain over strongest equal-information comparator"
+  },
+  "excluded": [
+    "WSP99 public or reserved worlds",
+    "Qwen-generated concept labels",
+    "donor inference",
+    "third-party restricted data",
+    "original Yggdrasil model edits",
+    "accepted state",
+    "autonomous loop",
+    "merge",
+    "deployment",
+    "new controller",
+    "scheduled tasks"
+  ],
+  "stop_rule": "Run the fixed fixtures once; preserve negative/parity outcomes; do not retune mapping/scoring after result. Further science must use independently sourced consequential causal relationships and disjoint worlds with a true learning baseline.",
+  "baseline_receipt": "F09 direct ICA numerical transfer NO_GO under unverified rights; this F10 is a different independently authored concept-graph transfer concept, not a numerical donor transplant.",
+  "authority": "External DEV contributor lane, read-only existing native learner with isolated wrapper and no official loop authority"
+}

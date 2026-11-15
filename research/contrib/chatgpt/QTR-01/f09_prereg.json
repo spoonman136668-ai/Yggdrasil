@@ -1,0 +1,30 @@
+{
+  "schema": "yggdrasil.qtr01.f09.rights-checkpoint-gate.v1",
+  "frozen_before_public_first_use": true,
+  "source": {
+    "repo": "neuronpedia/icalens-qwen3.6-27b",
+    "revision": "3e83450ee5d6cb172ae11f2da06500be326c16ad",
+    "model": "Qwen/Qwen3.6-27B",
+    "layer": 32,
+    "readme_sha256": "656f4a1e1a2243264ef270654ba1162cd392c301b363b57aeb885c46f5f52b5f",
+    "matrix_published_sha256": "972486064328f37c7c8d3483021b8d0ba7bac397c06978d371d178d977805a37"
+  },
+  "question": "Does the fitted artifact itself declare a usable license and identify a specific Qwen source checkpoint revision?",
+  "allowed": "Exactly two anonymous, bounded GETs for pinned README and root file listing. No tensor/model download.",
+  "rules": [
+    "Only explicit artifact license, not method code MIT or source model Apache, counts as a declaration",
+    "Only a full SHA-1-sized source checkpoint explicitly linked to Qwen/Qwen3.6-27B counts as a declaration",
+    "An indexed file is not byte verified; a declaration is not independently verified provenance",
+    "If either absent, classify NO_GO_SOURCE_RIGHTS_OR_CHECKPOINT for direct numeric transplant",
+    "No model inference, WSP99 heldouts, numeric edits, automated research loop changes, paid API, merge or deployment"
+  ],
+  "controls": [
+    "wrong pinned README hash",
+    "generic license prose not a declaration",
+    "wrong repo id or bad root listing",
+    "empty or malformed JSON",
+    "one missing gate",
+    "unrelated SHA"
+  ],
+  "next_if_no_go": "Preserve negative result and close direct ICA numerical transplantation under no-inference route. Pursue independently licensed causal knowledge graph with separate preregistered controls."
+}

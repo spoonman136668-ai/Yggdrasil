@@ -1,0 +1,95 @@
+{
+  "schema": "yggdrasil.qtr.f18.open-development-headroom.v1",
+  "status": "FROZEN_DEV_ONLY_BEFORE_F18_SOURCE_RUN",
+  "question": "On published upstream nonlinear and temporal environments, is there demonstrable predictive headroom over strong matched-observation controls under finite action-outcome data?",
+  "domain": "OPEN_PUBLIC_DEVELOPMENT_ONLY",
+  "upstream_repo": "noumenal-ai/causal-worlds",
+  "upstream_commit": "51f1431515e310dec72e3f4b6db378df46f832ea",
+  "upstream_tree": "c1bf53ecf03ae326b69c0321f4412d81f3122894",
+  "previous_qtr_head": "07b1f558a219579f4ad7b8d35d9faa068e20e745",
+  "worlds": [
+    {
+      "id": "braking",
+      "mechanism": "nonlinear speed-square action consequence",
+      "action": "do(speed) on each row",
+      "train_levels": [
+        -2,
+        -1,
+        1,
+        2
+      ],
+      "test_levels": [
+        -1.5,
+        -0.5,
+        0.5,
+        1.5
+      ],
+      "features": [
+        "speed",
+        "road_grip"
+      ],
+      "target": "braking_distance",
+      "train_rows": 480,
+      "test_rows": 240
+    },
+    {
+      "id": "supply",
+      "mechanism": "temporal lagged inventory consequences with hidden logistics",
+      "action": "do(order) over sequential timesteps",
+      "train_levels": [
+        -2,
+        0,
+        2
+      ],
+      "test_levels": [
+        -1.5,
+        0.5,
+        1.5
+      ],
+      "features": [
+        "inventory[t-1]",
+        "order[t-1]",
+        "leadtime[t-1]"
+      ],
+      "target": "inventory[t]",
+      "train_rows": 479,
+      "test_rows": 239
+    }
+  ],
+  "dev_seeds": [
+    1911,
+    1912,
+    1913,
+    1914
+  ],
+  "sampling": "Fixed train world sampling seed s and disjoint evaluation seed s+10000. Intervention levels selected by separate independent NumPy RNGs seeded with s+1 and s+10001; per-seed train/test sizes fixed.",
+  "methods": [
+    "OLS linear with intercept",
+    "OLS quadratic with diagonal squares (a conventional, disclosed polynomial law-family prior)",
+    "KNN 8-neighbor with train-only standardization",
+    "fully trained two-layer tanh MLP 24 hidden, Adam fixed 600 updates at lr 0.015, train-only standardization, no eval-driven tuning",
+    "OLS quadratic with shuffled training targets as negative",
+    "exact raw-event lookup with abstention and explicit coverage"
+  ],
+  "metrics": [
+    "mean-squared-error",
+    "MSE/heldout-target-variance per method",
+    "raw retrieval coverage (not accuracy)",
+    "per-world and seed-level retention of negatives"
+  ],
+  "decision": "If a strong, equally observed conventional control already explains the consequence well, report development ceiling and NO SCIENTIFIC ADMISSION. Regardless of headroom, published-world results cannot establish native intelligence, transfer or SCIENTIFIC_PASS.",
+  "forbidden": [
+    "native model modification",
+    "original sealed FIT/TRANSFER/RESERVED evaluation",
+    "hidden source oracle handed to test learner",
+    "model/loop integration",
+    "new controller or scheduler",
+    "paid API",
+    "post-outcome method/split/threshold tuning",
+    "claim exact compute parity across model classes"
+  ],
+  "first_use": false,
+  "native_model_used": false,
+  "science_confirmatory": false,
+  "status_requires": "F18 exact-source Linux runtime evidence distinct from stale G29 full check"
+}

@@ -1,0 +1,60 @@
+name: QTR-01 F21 pinned native JEPA linear-equivalence DEV
+
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+    paths:
+      - .github/workflows/qtr01-f21-jepa-dev.yml
+      - research/contrib/chatgpt/QTR-01/f21_jepa_linear_audit.py
+      - research/contrib/chatgpt/QTR-01/test_f21_jepa_linear_audit.py
+
+permissions:
+  contents: read
+
+jobs:
+  f21-pinned-jepa-dev:
+    if: github.repository == 'spoonman136668-ai/Yggdrasil'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      JEPA_SHA: a5ba7c7ee26b6818c8024861bdb2630c4c3b9a6a
+      JEPA_TREE: 0dee20efffc5de68cafe054eaee29eb85b96e924
+      JEPA_BLOB: a535d22f6e206b90ddb93b720d5fb93294d4089e
+    steps:
+      - name: Read-only QTR contributor checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 3
+          persist-credentials: false
+      - name: Read-only pinned owner JEPA development source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a5ba7c7ee26b6818c8024861bdb2630c4c3b9a6a
+          path: f21-owner-source
+          persist-credentials: false
+      - name: Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify preregistration and exact owner bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 71ce1fa8049112d3207a20e878549189d31d937a HEAD
+          test "$(git show 71ce1fa8049112d3207a20e878549189d31d937a:research/contrib/chatgpt/QTR-01/f21_prereg.json | python -c 'import json,sys; print(json.load(sys.stdin)["schema"])')" = "yggdrasil.qtr.f21.pinned-jepa-linear-equivalence.v1"
+          test "$(git -C f21-owner-source rev-parse HEAD)" = "$JEPA_SHA"
+          test "$(git -C f21-owner-source rev-parse 'HEAD^{tree}')" = "$JEPA_TREE"
+          test "$(git -C f21-owner-source hash-object yggdrasil/paired_view_jepa.py)" = "$JEPA_BLOB"
+          echo F21_PREREG_AND_OWNER_BYTES=PASS
+      - name: Focused algebra/linear-control negative tests
+        run: python -m unittest discover -s research/contrib/chatgpt/QTR-01 -p "test_f21_*.py" -v
+      - name: One frozen public development JEPA source-equivalence study
+        run: python research/contrib/chatgpt/QTR-01/f21_jepa_linear_audit.py --owner-root f21-owner-source
+      - name: QTR checkout tracked-file integrity
+        run: git diff --exit-code

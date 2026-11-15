@@ -1,0 +1,148 @@
+name: QTR-01 F24 source atlas custody and final regression
+
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+
+permissions:
+  contents: read
+
+jobs:
+  arm-source-pinned-atlas-once:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): arm one-shot G29 atlas'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout exact source with write-only branch permission
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Fail closed unless single-authorized-source workflow and empty arming commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          A="$GITHUB_SHA"
+          BASE="9ac214f975fbaf13cb970ad7ecdeb15054765424"
+          test "$(git rev-parse HEAD)" = "$A"
+          test -z "$(git status --porcelain)"
+          test "$(git rev-list --count "$BASE..$A")" = "2"
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          test "$(git diff --name-only "$BASE" "$A")" = ".github/workflows/qtr01-f24-qualification.yml"
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = "cef1378fd3c47ebc74675bd9dde19a183775ceeb"
+          git merge-base --is-ancestor "$BASE" "$A"
+          echo QTR_F24_ARM_SOURCE_IDENTITY_PASS
+      - name: Generate, validate and push exactly three derived G29 artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          A="$GITHUB_SHA"
+          python scripts/build_code_atlas.py --write --source-commit "$A"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          EXPECTED="$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          FOUND="$(git diff --cached --name-only | LC_ALL=C sort)"
+          test "$FOUND" = "$EXPECTED"
+          git diff --cached --quiet && exit 1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "ci(qtr): derive F24 exact-source G29 atlas"
+          COMPANION="$(git rev-parse HEAD)"
+          test "$(git diff-tree --no-commit-id --name-only -r "$COMPANION" | wc -l | tr -d ' ')" = "3"
+          python scripts/build_code_atlas.py --check
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/qtr01-qwen38-donor-intake-20261114
+          echo "QTR_F24_ARM_SOURCE=$A"
+          echo "QTR_F24_GENERATED_COMPANION=$COMPANION"
+          echo QTR_F24_SOURCE_PINNED_ATLAS_PUSH=PASS
+
+  full-final-qualification:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): qualify final F24 source'
+    name: QTR F24 final regression (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+      OMP_NUM_THREADS: "1"
+    steps:
+      - name: Windows Git byte-stable checkout
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Source scope and exact committed atlas pass
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 9ac214f975fbaf13cb970ad7ecdeb15054765424 HEAD
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = "cef1378fd3c47ebc74675bd9dde19a183775ceeb"
+          python scripts/build_code_atlas.py --check-if-present
+          python scripts/build_code_atlas.py --check
+      - name: Install pinned original native and contributor regression dependencies
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check numpy==2.1.3 gymnasium==1.1.1 pygame-ce==2.5.3 psutil==6.1.1 pyarrow==18.1.0
+      - name: Full inherited root regression, retain original POSIX-only exclusions on Windows
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            python - <<'PY'
+          from pathlib import Path
+          import unittest
+          original = Path('tests/test_free_fanout_sidecar.py')
+          sidecar = Path('scripts/free_fanout_sidecar.py')
+          assert original.exists() and sidecar.exists()
+          assert 'spec_from_file_location(' in original.read_text('utf-8')
+          assert any(line.strip() == 'import resource' for line in sidecar.read_text('utf-8').splitlines())
+          tests=sorted(Path('tests').glob('test_*.py'))
+          suite=unittest.TestSuite()
+          loader=unittest.TestLoader()
+          for file in tests:
+              if file.name != 'test_free_fanout_sidecar.py':
+                  suite.addTests(loader.discover('tests', pattern=file.name))
+          result=unittest.TextTestRunner(verbosity=2).run(suite)
+          if not result.wasSuccessful():
+              raise SystemExit(1)
+          print('QTR_F24_WINDOWS_APPLICABLE_ROOT_FULL_PASS')
+          print('QTR_F24_UNAVAILABLE_POSIX_RESOURCE_MODULE=test_free_fanout_sidecar.py')
+          PY
+          else
+            python -B -m unittest discover -s tests -p 'test_*.py' -v
+            echo QTR_F24_LINUX_ROOT_FULL_PASS
+          fi
+      - name: Full QTR F05-F21 contributor test regression, no protected science
+        shell: bash
+        run: |
+          python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_*.py' -v
+          echo QTR_F24_CONTRIBUTOR_FULL_PASS
+      - name: Final clean checkout
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
