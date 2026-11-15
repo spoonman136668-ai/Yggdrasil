@@ -45,7 +45,7 @@ def model_new(kind,torch):
     raise ValueError("FKP15_UNQUALIFIED_BASELINE")
 
 
-def batch_data(rows,kind,torch):
+def batch_data(rows,kind,torch,require_targets=True):
     if kind=="MLP":
         x=torch.from_numpy(np.stack([r["context"] for r in rows])).float()
         lengths=None
@@ -55,7 +55,8 @@ def batch_data(rows,kind,torch):
         lengths=torch.tensor([len(s) for s in seq],dtype=torch.long)
         x=pad_sequence(seq,batch_first=True)
     else:raise ValueError("FKP15_KIND")
-    y=torch.from_numpy(np.stack([r["returns"] for r in rows])).float()
+    y=(torch.from_numpy(np.stack([r["returns"] for r in rows])).float()
+       if require_targets else None)
     return x,lengths,y
 
 
@@ -66,7 +67,7 @@ def prediction(net,kind,rows,torch):
         out=[]
         for start in range(0,len(rows),BATCH):
             subset=rows[start:start+BATCH]
-            x,lengths,_y=batch_data(subset,kind,torch)
+            x,lengths,_y=batch_data(subset,kind,torch,require_targets=False)
             values=net(x,lengths) if kind=="GRU" else net(x)
             out.append(values.detach().cpu().numpy().astype(np.float64))
         return np.vstack(out)
