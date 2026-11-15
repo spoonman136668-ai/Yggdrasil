@@ -98,7 +98,7 @@ class ST6NativeCompositionFixture(unittest.TestCase):
         self.assertTrue(all(m.accounting()["private_source_or_law_access"] is False
                             for m in models.values()))
 
-    def test_public-only_frozen_st5_memory_and_recurrent_compatibility(self):
+    def test_public_only_frozen_st5_memory_and_recurrent_compatibility(self):
         models=create_models()
         self.assertEqual(set(models),{
             "candidate","symbolic8","st5_exact_key","recurrent45",
