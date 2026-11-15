@@ -1,0 +1,97 @@
+{
+  "schema": "yggdrasil.qtr01.f49.out-of-bank-causal-composition-dev.v1",
+  "status": "FROZEN_PRE_F49_IMPLEMENTATION_WORLD_GENERATION_AND_RESULTS",
+  "source_parent": "440518db7e4adc855841fe555c179db89f304b6c",
+  "research_track": "QTR-01 Trace Model Associations, not WSP substrate, Knowledge Associations, or Weight Programming",
+  "question": "Can a tokenless native structure-discovery learner form and retain a causally useful explanation of an unseen compositional law that is functionally absent from its initial source-law bank, and generalize to unseen intervention sequences better than the strongest equally informed trained conventional or Bayesian control?",
+  "predecessor": {
+    "experiment": "F48",
+    "prereg_commit": "c5f831ea4e5615c8d35d472ac24c40b78674786a",
+    "qualified_head": "440518db7e4adc855841fe555c179db89f304b6c",
+    "reason": "F48 one-hot actions reveal 8 index bits and identify the preset candidate; native 16-observation 88.55% trails random 94.44%; no scientific superiority."
+  },
+  "task": {
+    "source_bank_sizes_high_first": [
+      1024,
+      512,
+      256
+    ],
+    "development_seeds": [
+      163,
+      167,
+      173
+    ],
+    "family_by_seed": {
+      "163": "unseen_depth3_interaction",
+      "167": "unseen_delayed_cause",
+      "173": "unseen_context_conditional"
+    },
+    "worlds_total": 9,
+    "public_input": "Each intervention supplies an ordered two-step trajectory of 8 binary intervention bits per step and 2 binary context bits fixed for the trajectory. Both resulting public binary outcomes are observable; previous action is zero in the first step. No hidden AST/law ID, target label, outcome from another trial, or future step is shown to any learner.",
+    "source_training": "For each source-bank size, generate that many distinct depth <=2 source ASTs using SHA256 namespace F49/source/v1; only leaves a[0..7], previous_action[0..7], context[0..1], Boolean AND/OR/XOR/NOT are allowed. Evaluate exactly 64 predetermined two-step training trajectories per source AST, SHA256 namespace F49/train/v1. All arms see identical complete TRAIN-source action/outcome sequences, program vocabulary, and causal primitives. Target laws are excluded from every source bank and TRAIN trajectories. No learning from reserved evaluation worlds.",
+    "heldout_target_generator": "At each (bank size, development seed), SHA256(F49/target/v1|bank_size|seed) chooses leaf indices and signs with deterministic rejection of repeated leaves. Seed 163: y=(a_i AND (a_j XOR a_k)) XOR (context_0 AND a_l). Seed 167: y=(a_i AND previous_action_j) XOR (a_k XOR context_1). Seed 173: y=(context_0 ? (a_i XOR a_j) : (a_k AND a_l)) XOR (context_1 AND previous_action_m). Indices i,j,k,l,m are distinct in [0,7]. Outcome of each step is calculated with previous_action set to the preceding step's bits. No target AST/ID is provided to any arm, even during source training.",
+    "source_bank_and_target_admission": "The evaluator verifies source programs are functionally distinct and every target is functionally absent from its source bank over an evaluator-only canonical probe covering both context bits, immediate and delayed action interactions; reject TASK_INVALID on failure without regenerating, changing seed, or reporting a positive. Reject if one-hot-only or repeated same-action query identifies the target uniquely by trivial direct ID code. No F48 index-encoded direct pathway is permitted.",
+    "noise": "Public source and target outcomes independently flip with a deterministic SHA256(F49/obs/v1|world|trajectory|step|replicate) event when the first 64 PRF bits are less than floor(2^64/10), giving 10% bit-flip noise. Clean counterfactual truth is evaluator-only.",
+    "queries": "Fixed public query candidate pool of 256 distinct, nontrivial, two-step action-context trajectories per world from F49/queries/v1; all arms have identical candidates. Budget checkpoints high first [32,16,8] trajectory queries; exactly 2 public outcome bits per query. Choose adaptively only from public outcomes already observed. No hidden-evaluator feedback or free extra public query.",
+    "evaluation": "256 distinct evaluator-only counterfactual two-step trajectories per world from disjoint F49/eval/v1 namespace; exclude all public queried trajectories and TRAIN-source trajectories. Evaluate both clean step outcomes; report counterfactual binary prediction accuracy and Brier score using identical evaluator for all arms. Evaluator must never use a hidden AST as a model feature.",
+    "reserved_unopened": "All seeds outside the three development seeds, including 179 and 181, and any WSP99 protected/public reserved cohorts remain unqueried and unimplemented for F49. No protected scientific first-use."
+  },
+  "arms": {
+    "native": "Tokenless bounded direct discrete rule construction: initialize without any target-law AST/ID, update from public outcomes only, search depth<=4 Boolean grammar using a deterministic maximum of 1024 proposed AST expansions per observed trajectory with mismatch-penalty plus description-length tie-break, and retain local integer evidence plus exact cold checkpoint. No gradient updates or donor hidden states.",
+    "conventional_mlp": "Fully train a two-hidden-layer 64x64 ReLU Bernoulli predictor on the identical TRAIN-source observations; fixed Adam learning rate 0.001, batch 128, maximum 200 epochs, TRAIN-only 10% validation, patience 20, seed 11. For adaptation, use only the same budgeted target outcomes and 16 bounded optimizer steps per new trajectory. Include all pretraining and adaptation in cost.",
+    "conventional_logistic": "Fully train regularized Bernoulli logistic regression on the same TRAIN-source observations, fixed L2=0.001, deterministic LBFGS or explicit full-batch solver, maximum 500 iterations and tolerance 1e-8; refit on only public target outcomes under the same query budgets. Include all training in cost.",
+    "exact_bank_bayes": "Exact 10% observation-noise posterior over all 1024/512/256 known source-bank ASTs; deterministic maximum-entropy intervention selection from the same public query pool; no target identity oracle. Track every candidate evaluation and all cost.",
+    "compositional_bayes": "Bayesian grammar-search control over the same permitted Boolean primitives up to depth 4; 1024 proposed AST expansions per observed trajectory, Bernoulli 0.1 likelihood, prior exp(-1.5*AST node count), posterior predictive policy, no target AST oracle.",
+    "random": "Independent deterministic PRF-sampled selection from the same public query pool, trained native evaluator; no target labels.",
+    "uniform": "Deterministic cyclic query selection from the same public query pool, trained native evaluator; no target labels.",
+    "ablations": [
+      "native without retained cold memory",
+      "native shuffled public outcomes",
+      "native random rule proposals with equal 1024-expansion budget"
+    ]
+  },
+  "fairness": {
+    "actions_equal": true,
+    "public_outcome_bits_equal": true,
+    "source_training_data_equal": true,
+    "test_inputs_equal": true,
+    "report_complete_cost": "Training+adaptation+selection+evaluation time on the same declared hardware/OS plus candidate prediction accesses, AST proposals, peak RAM, checkpoint bytes, data observations and total CPU-seconds. Equal actions alone do not mean equal compute.",
+    "allowed_runtime": "CPU, pinned Python and dependency versions, deterministic PRF; Windows and Ubuntu qualification separately. No GPU required, paid inference, web fetching, live controller, queue or scheduler."
+  },
+  "prereg_metrics": {
+    "primary": "Mean over nine DEV worlds of unqueried two-step intervention accuracy at budget 16. Compare native with the maximum score achieved by any one of MLP, logistic, exact-bank Bayes, compositional Bayes, uniform and random, using their own equally budgeted queries.",
+    "requirements": {
+      "nine_complete_worlds": true,
+      "b16_gain_over_best_single_control_min": 0.05,
+      "b16_gain_each_unseen_family_min": 0.02,
+      "b32_native_vs_strongest_control_regression_floor": -0.01,
+      "cold_restore_bit_exact_all": true,
+      "corrupted_checkpoint_rejected_all": true,
+      "novel_target_functionally_outside_source_bank_all": true,
+      "intervention_and_outcome_accounting_exact_all": true,
+      "frozen_positive_criteria_verified_before_any_outcome": true,
+      "no_reserved_or_protected_world_first_use": true,
+      "max_native_total_cpu_seconds_over_fastest_control_within_1pp_of_best_accuracy": 2
+    },
+    "negative_controls": "Action/outcome permutation and null-action policies must not be awarded causal-discovery credit; adversarial malformed queries rejected; a genuine additional outcome on a separated clone may update that clone only. Report if any negative control unexpectedly performs comparably; do not silently retune.",
+    "admission": "If all arms exceed 95% B16 or the best conventional control is below 55% B16, classify TASK_HEADROOM_INVALID rather than GOOD/BAD, preserve evidence and stop. Do not reseed or change world construction after viewing outcomes.",
+    "decision": "DEV_F49_GO only if every requirement passes and task is admitted; otherwise DEV_F49_NO_GO or TASK_INVALID. No post-outcome parameter or threshold tuning. Nine development worlds cannot establish SCIENTIFIC_PASS; disjoint independent qualification, stronger controls if found, and separate main-model acceptance are mandatory."
+  },
+  "custody": {
+    "freeze_commit": "This JSON must be committed alone before world implementation or observation. The frozen blob identity is the Git tree blob SHA, never edited after results.",
+    "implementation_contract": "Before any first DEV outcome, implementation and its tests must enforce this exact prereg blob and pin known source paths. Implementation deficiencies are infrastructure failures, never retroactive science improvements.",
+    "first_use": "No protected cohorts, WSP99 reserved/public worlds, hidden evaluator future labels, external dataset, or accepted native weight edits. First use of a protected evaluation cohort requires its own independent recorded authorization and custody."
+  },
+  "safety": {
+    "no_main_or_accepted_ref_mutation": true,
+    "no_merge": true,
+    "no_accepted_native_model_edits": true,
+    "no_other_model_integration": true,
+    "no_paid_API": true,
+    "no_external_data": true,
+    "no_new_runner_controller_or_scheduler": true,
+    "no_deployment": true,
+    "no_protected_scientific_first_use": true,
+    "scientific_pass_always_false": true
+  }
+}
