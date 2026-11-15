@@ -1,0 +1,54 @@
+{
+  "schema": "yggdrasil.public-operator-admission-prereg.v1",
+  "study": "SFI-03-BITWISE-OPERATOR-ADMISSION",
+  "status": "FROZEN_BEFORE_SOURCE_IMPLEMENTATION_AND_OUTCOME",
+  "parent": "2287dd2c6b309966b2ed8ac1bfc576c04ddbcc9d",
+  "baseline": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "aim": "Test ability to induce unfamiliar *operator forms relative to SFI02's fixed 4096-expression grammar*, using internal earned action-consequence feedback, against an independently coded conventional learner with equally broad generic Boolean-table hypothesis class.",
+  "claim_limit": "All learners capable of new form induction receive a newly specified universal per-bit truth-table grammar; this cannot count as autonomous invention outside the new generic hypothesis class.",
+  "public_source": {
+    "domain": "new deterministic synthetic PUBLIC diagnostics seeds 880300..880331 inclusive, NOT SFI01 or FKP17 existing DEV/TRANSFER",
+    "worlds": 32,
+    "hidden_family_design": "four 3-bit bitwise source operations: p&q; p|q; p&(~q&7); ~(p&q)&7. Each combined with 8 hidden XOR output shifts and publicly observable context-dependent XOR 4.",
+    "transition": "8 visible 4-bit registers, actions [0..7], source-private operator/shift never in observed public step, and reward for action at t-2 based on its public predecessor action at t-3, older predecessor at t-4, and context bit at time t-2",
+    "goal": "three positive earned delayed consequences completes an episode; public done=true and reward 1.0; other positive +0.25, bad -0.25, unprimed first three after reset 0; new episode continues on next action",
+    "budget": "each arm 24 IDENTICAL public random exploration interventions then 16 actually earned scored interventions; 8 actions; 16 historical public steps max; no action outcome visible before choice",
+    "seed_generation": "SHA-256 domain SFI03-PUBLIC-v1 and fixed seed for exploration; ordered worlds 0..31 produce 4 families x 8 shifts",
+    "oracle": "source-owner-only headroom bound, never passed hidden law or alternative outcomes to an actual learner"
+  },
+  "representations": {
+    "old_fixed_grammar": "reuse SFI02 4096 public program hypotheses and clearly report when none are consistent (cannot call that native learning)",
+    "new_generic_truthbit_grammar": "per output bit an unconstrained Boolean truth table of two parent bits (16 options per bit); 4096 three-bit truth functions × 8 XOR-shift variants = 32768 possibilities, context toggles public high bit via XOR4; generic functions deliberately include four new source families",
+    "candidate": "DIRECT_BITWISE_MICROFEEDBACK: one byte per generic hypothesis, keep only hypotheses consistent with observed delayed positive/negative public action consequences; tie-broken by lowest action; candidate never imports generator",
+    "strong": "INDEPENDENT_EXACT_BOOLEAN: separate conventional enumerator over all 32768 hypotheses with identical data/actions; no candidate implementation reuse",
+    "controls": [
+      "SFI02_OLD_FIXED_BEST_EFFORT",
+      "EXACT_4PARENT_CONTEXT_TABLE",
+      "WRONG_DELAY_CREDIT",
+      "SEEDED_RANDOM",
+      "PRIVATE_SOURCE_ORACLE"
+    ],
+    "old_fixed_control": "if all original SFI02 hypotheses contradicted by positive+negative evidence, preserve observed failure and default to lowest action, do not silently reset old prior or relabel law as matched",
+    "memory_budget": "<=1MiB logical parameter arrays for each; report separately runtime heap/model-fit/entire process cost"
+  },
+  "before_outcome_tests": {
+    "geometry": "fixed code proof that each source law's 128-input mapping is not equal to any original SFI02 4096-rule program for >=24 of32 worlds; report full 32",
+    "source_goals": "oracle goal in >=24/32 worlds; source-blind random goal in <=8/32 worlds; oracle mean earned reward exceeds random by >=2.0",
+    "candidate_achievability": "candidate goals >=12/32 and earns mean reward >=0; +1.0 mean return vs old fixed control",
+    "strong_superiority": "candidate - independent equally informed exact Boolean mean earned reward >= +0.10 AND 1000 resample paired world bootstrap 95% lower >+0.02",
+    "basic_controls": "candidate/public control only receives observed histories, rejects oracle/private fields, deterministic replay, no source module import by learner, source world state/done continuity",
+    "source_difficulty": "after 8 public interventions at least 16/32 new worlds retain >=2 compatible generic truth-bit hypotheses",
+    "scientific_qualification": "only public developmental gate; new 32768-function generic induction is not source-private scientific novelty. Strong-control tie => NO_GO_UNIQUE_SUBSTRATE. Preserve negatives and do not retune after score."
+  },
+  "safety": {
+    "no_fkp17_protected_first_use": true,
+    "no_original_fkp17_dev_978500_978531": true,
+    "no_original_fkp17_transfer_978600_978663": true,
+    "no_native_yggdrasil_or_main_edit": true,
+    "no_merge_or_promotion": true,
+    "no_new_controller_runner_scheduler": true,
+    "no_paid_API_or_GPU": true,
+    "no_peer_repos": true,
+    "no_claim_of_spontaneous_agi": true
+  }
+}
