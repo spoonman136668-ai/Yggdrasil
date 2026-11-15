@@ -1,0 +1,93 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "FKP-17-128STEP-TEMPORAL-PLAN-HEADROOM",
+  "project": "Yggdrasil",
+  "research_line": "FKP-16 real Memory Gym action-value source successor",
+  "parent_evidence": {
+    "pr": 1107,
+    "source_run": 43760428106,
+    "final_qualified_sha": "2de698ceedb28572ebb535a956c7b7e66e2cedad",
+    "original_dev": "976500..976531 CONSUMED",
+    "classification": "DEV_MIXED_BEATS_WEAK_NOT_STRONG",
+    "direct_gain": 0,
+    "goals": 0,
+    "oracle_h16_mean": 0.15625
+  },
+  "question": "Can high-first real 128-step physical action schedules produce goal and delayed-action-value headroom unavailable to prior H16 fixed-macro controls, in already-consumed TRAIN/VALIDATION worlds, to justify a distinct later trained temporal world model?",
+  "hypothesis": "Longer public action sequences and reward-conditioned schedule switches may generate genuine goals where 16-step choices failed, but could also fail. Preserve null.",
+  "upstream": {
+    "repo": "MarcoMeter/endless-memory-gym",
+    "sha": "a94f2b60d1769ea44df3226561488768e1dff9f4",
+    "license": "MIT",
+    "environment": "MysteryPath-v0",
+    "options": {
+      "reward_fall_off": -0.05,
+      "max_steps": 512
+    },
+    "official_default_reward": false,
+    "source_private_fields_forbidden": true
+  },
+  "baseline": {
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "parent": "2de698ceedb28572ebb535a956c7b7e66e2cedad",
+    "source_module": "original FKP16 source.py, unchanged"
+  },
+  "cohorts": {
+    "fit": "975100..975107 (eight already-consumed TRAIN worlds)",
+    "audit": "975200..975207 (eight already-consumed VAL worlds)",
+    "anchors": [
+      0,
+      16,
+      32,
+      64
+    ],
+    "original_held_DEV": "976500..976531 CONSUMED AND DISARMED",
+    "transfer": "976600..976663 UNOPENED",
+    "owner_protected": "UNOPENED",
+    "policy": "All 16 selected world seeds consumed in FKP16 original training/validation. New H128 physical outcomes are public TRAIN/VAL development source exposure, NOT independent/blinded scientific DEV."
+  },
+  "actions": {
+    "first_high_horizon": 128,
+    "retrospective_readout": [
+      16,
+      32,
+      64,
+      128
+    ],
+    "source_rollouts_once": true,
+    "number_of_plans": 24,
+    "source_legal_actions": 9,
+    "families": {
+      "constant": 9,
+      "alternating8": 9,
+      "seed_blind_random8": 3,
+      "public_reward_feedback8": 3
+    },
+    "constant": "k in 0..8 holds action k",
+    "alternating": "k in 0..8 alternates k and (k+4)%9 every eight steps",
+    "blind_random": "3 fixed seed+anchor+plan numeric PRNG source-blind 8-step macro sequences",
+    "feedback": "3 public-feedback eight-step switch policies: init (seed+anchor//16+variant)%9, hold action for next block only if previous block contains positive reward, else rotate by 1+variant modulo9",
+    "physical": "Reset actual original source and replay exact same public prior prefix for EVERY plan, then execute up to 128 source.step actions. Readout 16/32/64/128 from one actual trajectory, stop at native terminated/truncated. No counterfactual predictions or privileged source info used by policy."
+  },
+  "metrics": {
+    "source_budget_max": 315000,
+    "fit_plan_selection": "best single global 128step return plan selected by mean on FIT eight worlds only, then frozen for AUDIT",
+    "source_blind_control": "plan index 18 (first seeded random plan)",
+    "upper_bounds": "best of nine constant and best of all24 per anchor AFTER public outcomes, explicitly privileged ORACLEs",
+    "primary": "on AUDIT eight previously consumed VAL worlds: real return, goal event and distinct goal worlds vs H16; oracle24−fit_selected_fixed_plan mean return, paired world bootstrap 10000 seed9090",
+    "positive_source_signal": "At H128 2 or more distinct AUDIT worlds, at least 4/32 AUDIT anchors with genuine native goal events among 24 physically tested policies, AND oracle24 minus FIT-best globally fixed plan >=+0.15 real return with world-cluster CI lower>0",
+    "secondary": "Positive/negative genuine public reward event counts, per-horizon physical action-count and survival, paired H16 vs H128 hindsight return and native goal fractions, exact source SHA/trace, cross-OS replay",
+    "no_go": "If no/too few goals, low recoverable action return, mismatched source, preserve negative; do not change actions/horizons/seeds or analysis after seeing outcomes",
+    "science_scope": "This is source-only and the global FIT-selected fixed macro is a conventional simple control. Even positive is SOURCE_HEADROOM_DEV_ONLY, NEVER SCIENTIFIC_PASS; no trained GRU parity, independent OOD, genuine native model learning, retention or efficient autonomous planning proof."
+  },
+  "qualification": "First Git commit prereg ONLY, then original source code/fixture tests. G29 generated artifacts and exact source SHA/tree pin. Both Ubuntu/Windows focused and FULL 54 root regression before original H128 source first-use; one original Linux source run and Windows deterministic replay of same already-consumed world seeds, no protected first-use.",
+  "authority": {
+    "research_only": true,
+    "accepted_main_write": false,
+    "protected_eval": false,
+    "scheduled_tasks": false,
+    "controller_changes": false,
+    "paid_api": false,
+    "native_promotion": false
+  }
+}
