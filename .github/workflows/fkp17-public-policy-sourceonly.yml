@@ -1,0 +1,124 @@
+name: FKP17 public policy source-safe G29 and two-OS regression
+on:
+  push:
+    branches: [ci/fkp17-public-policy-g29-once-20261115]
+    paths: [.github/workflows/fkp17-public-policy-sourceonly.yml]
+permissions:
+  contents: write
+concurrency:
+  group: fkp17-public-policy-g29-once-20261115
+  cancel-in-progress: false
+jobs:
+  source-only-atlas:
+    if: >-
+      github.event.head_commit.message == 'ci(FKP-17): one shot public policy controls and full source-safe qualification' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    outputs:
+      candidate: ${{ steps.publish.outputs.candidate }}
+    env:
+      SOURCE: c3936a6f9ea542df76377705b794dbe2d3697336
+      TARGET: research/fkp17-structured-prior-novel-causal-law-20261115
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Keep native Git line endings
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: c3936a6f9ea542df76377705b794dbe2d3697336
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Assert exact frozen source and preregistration before tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor fe5e259d24100c03b5de8184090e3d6f56fcb7e3 "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/prereg.json)" = 17d676c9374060515c7ebee2e2fdc262a884343c
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/source_fixture.py)" = c715da5200e64f4a6708bb8d68841b173fad7a62
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/test_source_fixture.py)" = 91af4b189ae748fa206020df1e4d25dc32255577
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/public_policies.py)" = a8837bf7edfc0a229b43c4bd97faa9de4bfadcf0
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/test_public_policies.py)" = ca3413d2105add3403dd8156dee90aa2e7c8f684
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/README.md)" = 13a4bb3785fede8fbc4c21c891bc94962ea2257f
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/test_prereg.py)" = 7f5b11339b4464459b7590a5fbd3b08cdae4aa53
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-17 -p 'test_*.py' -v
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP17_SOURCE_SAFE_FOCUSED_QUALIFIED=PASS
+      - name: Require all current model and control tests before derived-index publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-17 -p 'test_*.py' -v
+          echo FKP17_POLICY_PRE_ATLAS_FOCUSED=PASS
+      - name: Generate and publish only 3 derived G29 files to existing draft branch
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/actual"
+          printf "%s\n" .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected"
+          diff -u "$RUNNER_TEMP/expected" "$RUNNER_TEMP/actual"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'chore(FKP-17): exact-source G29 atlas only'
+          NEXT="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          diff -u "$RUNNER_TEMP/expected" <(git diff --name-only "$SOURCE" "$NEXT" | LC_ALL=C sort)
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git push origin "HEAD:refs/heads/$TARGET"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo "candidate=$NEXT" >> "$GITHUB_OUTPUT"
+          echo "FKP17_G29_GENERATED_ONLY_CANDIDATE=$NEXT"
+  qualification-two-os:
+    needs: source-only-atlas
+    if: needs.source-only-atlas.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Disable checkout line translation
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.source-only-atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Focused source-safe fixtures and negative held-seed controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-17 -p 'test_*.py' -v
+      - name: G29 source atlas and mandatory inherited complete regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP17_TWO_OS_SOURCE_SAFE_FULL_REGRESSION=PASS
