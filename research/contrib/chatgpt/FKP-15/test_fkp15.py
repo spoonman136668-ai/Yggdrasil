@@ -147,13 +147,14 @@ class TestFKP15(unittest.TestCase):
             return public_fixture(seed,anchor)
         with mock.patch.object(source,"real_prefix",side_effect=mocked_prefix),mock.patch.object(
             source,"collect_one",side_effect=mocked_branch):
-            result,cost=run_dev.dev_once(models)
+            result,cost,dev_sha=run_dev.dev_once(models)
         self.assertEqual(len(result),len(source.DEV)*len(source.ANCHORS))
         self.assertEqual(len(calls),len(result))
         self.assertTrue(all(r["valid"] for r in result))
         self.assertTrue(all(len(r["chosen_actions"])==9 for r in result))
         self.assertTrue(all(all(0<=x<9 for x in r["chosen_actions"].values()) for r in result))
         self.assertGreater(cost,0)
+        self.assertEqual(len(dev_sha),64)
         best,means,ci,n=run_dev.paired_bootstrap(result)
         self.assertIn(best,run_dev.STRONG)
         self.assertEqual(len(ci),2)
