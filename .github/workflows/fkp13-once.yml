@@ -11,7 +11,7 @@ concurrency:
 jobs:
   atlas-only:
     if: >-
-      github.event.head_commit.message == 'ci(FKP-13): one-shot 176k-source-action frozen closed-loop research' &&
+      github.event.head_commit.message == 'ci(FKP-13): fix preflight prereg key before source first-use' &&
       github.run_attempt == 1
     runs-on: ubuntu-24.04
     timeout-minutes: 20
@@ -57,7 +57,7 @@ jobs:
           root=pathlib.Path("research/contrib/chatgpt/FKP-13")
           for p in root.glob("*.py"):ast.parse(p.read_text(encoding="utf-8"))
           prereg=json.loads((root/"prereg.json").read_text(encoding="utf-8"))
-          assert prereg["budgets"]["total_real_actions_max"]==176128
+          assert prereg["budget"]["total_real_actions_max"]==176128
           assert prereg["experiment_id"]=="FKP-13"
           print("FKP13_PREREG_FIRST_AND_STATIC_AST=PASS")
           PY
