@@ -11,15 +11,15 @@ concurrency:
 jobs:
   derived-atlas:
     if: >-
-      github.event.head_commit.message == 'ci(WSP-117): source-safe unknown relation fixture and exact dual-OS QA' &&
+      github.event.head_commit.message == 'ci(WSP-117): rerun exact fixed bytes-negative fixture and dual-OS QA' &&
       github.run_attempt == 1
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     outputs:
       qualified: ${{ steps.seal.outputs.qualified }}
     env:
-      SRC: 131f97bd99e580a9584dbe29abd923c39fe7bc65
-      TREE: dff392e57d24f3cbf106fcaff3dcfd0ddafe4c78
+      SRC: 1009d0a2d357de05ef9fc04b314112287d02533b
+      TREE: 17b946d3e0e8783ec3fa441c5966ff1ebb8da18d
       TARGET: research/wsp117-novel-relation-discovery-fixture-20261115
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
@@ -30,7 +30,7 @@ jobs:
           git config --global core.eol lf
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: 131f97bd99e580a9584dbe29abd923c39fe7bc65
+          ref: 1009d0a2d357de05ef9fc04b314112287d02533b
           fetch-depth: 0
           persist-credentials: true
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -48,7 +48,7 @@ jobs:
           git merge-base --is-ancestor c252175e0d1bd308c24d01c5bf42a214edc1075b "$SRC"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-117/prereg.json)" = 0f8febcf7c5c7094ad8edb0d275d64decc3a0473
           test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-117/fixture.py)" = 894034d1d2f2731440d16e9f18e4e9978054c74b
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-117/test_wsp117.py)" = 6048eb8daab646517b9f4d703e6dffb59efbb75c
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-117/test_wsp117.py)" = f30280a73037d66a7e4838bde1dcfc2ffbf80d0a
           test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-117/README.md)" = 3e869e78c55801938b7d68479243d90f2b074d29
           python - <<'PY'
           import ast,json,pathlib
