@@ -111,6 +111,7 @@ def extract_seed_edges(entities):
         raise NotAdmitted("F26_SOURCE_SEED_SET_CHANGED")
     rows = []
     inspected = 0
+    excluded_unbound_claim_witnesses = 0
     for subject in SOURCE_ITEMS:
         source = entities[subject]
         if label_from_entity(source) is None:
@@ -130,7 +131,10 @@ def extract_seed_edges(entities):
                 if type(claim) is not dict or not isinstance(claim.get("id"), str):
                     raise NotAdmitted("INVALID_SOURCE_STATEMENT")
                 if not claim["id"].startswith(subject + "$") or len(claim["id"]) > 180:
-                    raise NotAdmitted("CLAIM_WITNESS_NOT_BOUND_TO_SUBJECT")
+                    # No claim without an identifiable first-party subject witness
+                    # can enter a source-supported knowledge/association mapping.
+                    excluded_unbound_claim_witnesses += 1
+                    continue
                 if claim.get("rank") not in ("normal", "preferred", "deprecated"):
                     raise NotAdmitted("INVALID_RANK")
                 if claim.get("rank") == "deprecated" or claim.get("qualifiers"):
@@ -161,6 +165,7 @@ def extract_seed_edges(entities):
             distinct.append(row)
     return distinct[:MAX_EDGES], {"claim_rows_inspected": inspected,
                                   "unqualified_item_edges": len(distinct),
+                                  "excluded_unbound_claim_witnesses": excluded_unbound_claim_witnesses,
                                   "truncated_to_frozen_budget": len(distinct) > MAX_EDGES}
 
 

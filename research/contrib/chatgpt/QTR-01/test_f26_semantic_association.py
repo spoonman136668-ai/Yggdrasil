@@ -82,6 +82,12 @@ class F26(unittest.TestCase):
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["o"], "Q5")
         self.assertEqual(info["claim_rows_inspected"], 2)
+        seeds["Q42"]["claims"]["P31"].append(
+            item_claim("Q99", "P31", "Q17", idx=3)
+        )
+        verified, audit = extract_seed_edges(seeds)
+        self.assertEqual(len(verified), 1)
+        self.assertEqual(audit["excluded_unbound_claim_witnesses"], 1)
         with self.assertRaises(NotAdmitted):
             extract_seed_edges({"Q42": seeds["Q42"]})
 
