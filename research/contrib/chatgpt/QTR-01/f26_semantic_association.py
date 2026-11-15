@@ -112,10 +112,14 @@ def extract_seed_edges(entities):
     rows = []
     inspected = 0
     excluded_unbound_claim_witnesses = 0
+    seeds_without_semantic_english_label = []
     for subject in SOURCE_ITEMS:
         source = entities[subject]
         if label_from_entity(source) is None:
-            raise NotAdmitted("SOURCE_SEED_NO_ENGLISH_LABEL")
+            # A source with no verified human-readable label cannot provide
+            # semantic concept associations; exclude all its statements.
+            seeds_without_semantic_english_label.append(subject)
+            continue
         revision = source.get("lastrevid")
         if type(revision) is not int or revision <= 0:
             raise NotAdmitted("SOURCE_REVISION_MISSING")
@@ -166,6 +170,7 @@ def extract_seed_edges(entities):
     return distinct[:MAX_EDGES], {"claim_rows_inspected": inspected,
                                   "unqualified_item_edges": len(distinct),
                                   "excluded_unbound_claim_witnesses": excluded_unbound_claim_witnesses,
+                                  "source_seeds_without_english_labels": seeds_without_semantic_english_label,
                                   "truncated_to_frozen_budget": len(distinct) > MAX_EDGES}
 
 

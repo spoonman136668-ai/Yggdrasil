@@ -88,6 +88,10 @@ class F26(unittest.TestCase):
         verified, audit = extract_seed_edges(seeds)
         self.assertEqual(len(verified), 1)
         self.assertEqual(audit["excluded_unbound_claim_witnesses"], 1)
+        seeds["Q5"]["labels"] = {}
+        still_admitted, excluded = extract_seed_edges(seeds)
+        self.assertEqual(len(still_admitted), 1)
+        self.assertEqual(excluded["source_seeds_without_english_labels"], ["Q5"])
         with self.assertRaises(NotAdmitted):
             extract_seed_edges({"Q42": seeds["Q42"]})
 
