@@ -27,11 +27,15 @@ Reproduce using Python 3.12 standard library, at an exact Git checkout:
 python -B -m unittest discover -s research/contrib/chatgpt/FKP-02 -p test_source.py -v
 python -B research/contrib/chatgpt/FKP-02/source.py
 python -B research/contrib/chatgpt/FKP-02/audit_headroom.py
+python -B -m unittest discover -s research/contrib/chatgpt/FKP-02 -p test_foundation.py -v
+python -B research/contrib/chatgpt/FKP-02/foundation.py
 ```
 
 The final command reports source feasibility, **not an implemented neural/native learner**. Its precommitted gate requires >=0.02 accuracy improvement from 16 to 64 source probes, >=0.98 reference accuracy at 64, and >=4/16 DEV worlds with ambiguous hypotheses at 16. On failure, preserve NO-GO, do not retune protected cohorts.
 
 ## Science, native integration and authority
+
+A separate **public-experience-only foundation acquisition** now fits two-input truth tables by searching the 256×64 prior intervention histories. Its generic compositor then forms three-input functions from the *learned* two-input table bank with no explicit hardcoded MUX/majority instructions. Constructibility is a representation feasibility check, **not** evidence that Yggdrasil autonomously discovers these new rules after 16 fresh actions.
 
 Stage0 source audit alone is not engineering+scientific acceptance. Stage1 still requires actual directly programmed native model, at least one fully trained strong neural/decision-tree/logical conventional comparator plus exact Bayesian/symbolic control, identical 16,384 foundation facts and 16 new-world interventions, locked capacity and whole-process budget, cold retention tests, external disjoint scientific source qualification and exact-SHA full Windows/Linux regression.
 
