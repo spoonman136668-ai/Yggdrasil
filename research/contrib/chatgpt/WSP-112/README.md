@@ -33,3 +33,7 @@ Fixture-only command:
 First-use-only entry point, forbidden until separate scientific admission:
 
     python research/contrib/chatgpt/WSP-112/experiment.py --frozen-unfamiliar-law-primary-dev
+
+## Qualification source-pin trigger
+
+The candidate implementation comprises only WSP-112-specific source and the branch-scoped GitHub fixture/regression workflow. This documented trigger requests a one-shot generated-G29 companion update after both fixture platforms pass. It does **not** run the transfer experiment or consume new first-use outcomes. The final candidate is the subsequent atlas-only companion commit, not this source trigger.
