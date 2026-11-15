@@ -56,6 +56,12 @@ jobs:
           PYTHONHASHSEED: '0'
         run: |
           python -B -m unittest discover -s tests -p 'test_nci04_st2_event_memory.py' -v
+          python -B -m unittest discover -s tests -p 'test_nci04_st2_matched_controls.py' -v
+          python - <<'PY'
+          from pathlib import Path
+          compile(Path('research/nci04_st2/consumed_matched_comparison.py').read_text('utf-8'),'consumed_matched_comparison.py','exec')
+          print('ST2_MATCHED_HARNESS_SYNTAX_PASS')
+          PY
           python -B -m unittest discover -s tests -p 'test_nci04d2_task.py' -v
           python -B -m unittest discover -s tests -p 'test_native_cells.py' -v
           echo ST2_SOURCE_FREE_MECHANICS_PASS
