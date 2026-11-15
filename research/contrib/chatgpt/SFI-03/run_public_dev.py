@@ -17,7 +17,7 @@ import time
 import operator_induction as learner
 
 HERE = Path(__file__).resolve().parent
-SOURCE_BLOB = "NEEDS_SOURCE_BLOB_REPLACEMENT"
+SOURCE_BLOB = "9aebb3e545783a677c3c2de69b97e87e7c74cf87"
 OLD_BLOB = "82367dd5fdcb76361a06caeec7da7c4b4dac86bb"
 ARMS = ("DIRECT_NEW", "SYMBOLIC_NEW", "OLD_FIXED", "EXACT_TABLE",
         "WRONG_CREDIT", "RANDOM", "ORACLE")
