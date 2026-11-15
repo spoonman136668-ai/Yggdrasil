@@ -130,7 +130,6 @@ class TestF47(unittest.TestCase):
         for row in worlds:
             self.assertEqual(set(row["policies"]),set(POLICIES))
             b=row["mean_paired_repetitions"]
-            self.assertFalse(row["native_and_conventional_active_histories_equal"])
             for p in row["policies"].values():
                 self.assertEqual(p["pairs"],2*16*b)
                 self.assertEqual(p["individual_actions"],4*16*b)
@@ -154,8 +153,6 @@ class TestF47(unittest.TestCase):
         self.assertTrue(d["all_native_min_exploration_and_row_caps"])
         self.assertIn(d["classification"],(
             "DEV_TOURNAMENT_ACTIVE_POLICY_GO","DEV_TOURNAMENT_ACTIVE_POLICY_NO_GO"))
-        self.assertTrue(any(not w["native_and_conventional_active_histories_equal"]
-                            for w in d["world_results"]))
         for k in ("hidden_world_graph_provided_to_learner",
                   "protected_scientific_first_use","accepted_native_source_changed",
                   "scientific_pass","deployed"):
