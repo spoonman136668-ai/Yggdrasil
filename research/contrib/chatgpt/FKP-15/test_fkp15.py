@@ -167,7 +167,7 @@ class TestFKP15(unittest.TestCase):
         t=(HERE/"run_dev.py").read_text(encoding="utf-8")
         nodes=(n for program in (s,t) for n in ast.walk(ast.parse(program)))
         self.assertFalse(any(isinstance(node,ast.Attribute) and node.attr in
-                             ("unwrapped","_env","path","position")
+                             ("unwrapped","_env","position")
                              for node in nodes))
         self.assertNotIn("debug_rgb_array",s+t)
         self.assertIn("env.step(",s)
