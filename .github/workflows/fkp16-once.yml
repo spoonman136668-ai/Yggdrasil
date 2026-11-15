@@ -165,8 +165,10 @@ jobs:
 
   first-public-source-dev:
     needs: [source-atlas-only,before-first-use-two-os]
-    # FKP-16 new DEV 976500..976531 remains unopened. Engineering-only QA; no first-use permission.
-    if: false
+    # One original PUBLIC DEV 976500..976531 only; never owner-protected/TRANSFER.
+    # Qualified exact source + complete both-OS regression required before first use.
+    # No rerun/alternate attempt is eligible as a new original science cohort.
+    if: needs.before-first-use-two-os.result == 'success' && github.run_attempt == 1
     runs-on: ubuntu-24.04
     timeout-minutes: 95
     permissions:
