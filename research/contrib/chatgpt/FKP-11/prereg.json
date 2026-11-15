@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "FKP-11",
+  "project": "Yggdrasil",
+  "type": "separate-original-public-source-identifiability-study",
+  "parent_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "question": "Do real, original partially observable Memory Gym tasks provide enough action-conditioned public observation and reward evidence to support a later frozen causal/temporal knowledge learner, and does public memory-guided state/action exploration produce more informative experience than equal-step random and balanced controls?",
+  "hypothesis": "A transparent tokenless action-conditioned transition memory that favors novel public visual state-action pairs may increase unique encountered observation signatures relative to both passive controls, but no improvement is assumed and this is not a trained policy superiority test. Absent robust reward or reproducible action-outcome signal, stop before any expensive GRU/model science.",
+  "frozen_protocol": "FKP11-MEMORYGYM-V1|upstream=a94f2b60d1769ea44df3226561488768e1dff9f4|tasks=MortarMayhem-v0,MysteryPath-v0|dev=971000..971007|maxsteps=64|arms=curiosity,balanced,random|public_observation_only|warmup=9|source-still-unchanged|no-protected-first-use",
+  "protocol_sha256": "c97dff4aa1b80b7fe8c0438a3960712224924d9475b85892f5718a1bd4c3c83e",
+  "prior_source_admission": {
+    "pr": 1100,
+    "branch": "research/fkp10-memorygym-source-admission-20261115",
+    "qualified_sha": "942181ce7bda76386226d203db62d9f46c9dd406",
+    "source_run": 43725716616,
+    "original_256_steps": 256,
+    "original_nonzero_reward_events": 2,
+    "upstream": "MarcoMeter/endless-memory-gym",
+    "upstream_git_sha": "a94f2b60d1769ea44df3226561488768e1dff9f4",
+    "license": "MIT",
+    "status": "ENGINEERING_SOURCE_ADMISSION_PASS_ONLY"
+  },
+  "avoid_overlap": "Do not modify FKP10 source/PR; pull pinned exact upstream benchmark independently on a fresh FKP11 branch. Do not duplicate the original FKP10 970100..970103 mechanical actions or claim source first-use.",
+  "source": {
+    "tasks": [
+      "MortarMayhem-v0",
+      "MysteryPath-v0"
+    ],
+    "original_dev_seeds": "971000..971007 (8 disjoint task episodes per arm)",
+    "held_science_seeds": "973000..973063 UNOPENED owner first-use",
+    "negative": "974000..974015 UNOPENED",
+    "source_sha": "a94f2b60d1769ea44df3226561488768e1dff9f4",
+    "upstream_git_blobs": {
+      "LICENSE": "71f0e4887c38776d7ed25bdbbd1c9f5a9156d9c5",
+      "setup.py": "fca17dd1d52d5c14839e20568a6d850bfeb30044",
+      "memory_gym/__init__.py": "1e0da856e084fd4a6c8a409c41182d10be7d5c13",
+      "memory_gym/mortar_mayhem.py": "5217196b9b4f1dfa9e67675c0ac1dbffe4b9d9a9",
+      "memory_gym/mystery_path.py": "2f80721f8dd33f4f438e07c42fa65b920fd301ed"
+    },
+    "dependency_versions": {
+      "python": "3.11",
+      "gymnasium": "0.29.0",
+      "pygame": "2.4.0",
+      "numpy": "1.26.4"
+    },
+    "caps": {
+      "per_episode_max_native_actions": 64,
+      "per_episode_warmup_actions": 9,
+      "per_task_seeds": 8,
+      "arms": [
+        "curiosity",
+        "balanced",
+        "random"
+      ],
+      "total_max_steps": 3072,
+      "expected_requested_episodes": 48
+    },
+    "observable_data": "Only reset()/step() returned public image array, selected valid MultiDiscrete([3,3]) action, finite reward and termination/truncation. No environment source-private targets, info, layouts, privileged orientation, hidden step counter or memory-gym internals into model."
+  },
+  "arms": {
+    "curiosity": "After 9 identical public warmup action-pairs per seed, use a bounded map of the last publicly observed state fingerprint and each of 9 actions to outcomes; prefer actions not yet tried at current fingerprint, with global source-action counts as deterministic tie-break. State fingerprint is 8x8 uint8 intensity grid derived from public observation only. No deep learned weights or advertised native integration.",
+    "balanced": "After identical 9-step warmup, cycle through all nine action pairs by public step number; never consult outcomes to choose the next action.",
+    "random": "After identical 9-step warmup, choose action pairs from a deterministic frozen independent per-seed PRNG, without public feedback or source-private state. Same maximum step cap."
+  },
+  "metrics": [
+    "Public source-native actual steps, nonzero reward events, total reward and terminal success per task and arm; zero reward is informative negative, never claim success from image novelty alone.",
+    "Per episode count of unique 8x8 public observation intensity fingerprints and repeated-state count; action–conditioned seen transition records vs held-out transitions, record state-action revisits; distinguish observation novelty from environment reward.",
+    "Paired-by-seed 10,000 fixed-seed-9090 bootstrap 95% CI on curiosity minus balanced and curiosity minus random for unique state fingerprints, and on reward sums, separately by task. No source-private labels.",
+    "End-to-end wall/CPU, memory keys/bytes, action counts and identical upstream SHA/Blobs/clean tree on each OS. Cross-platform per-policy action/reward/observation trace SHA-256 must match exactly or SOURCE/DETERMINISM_FAIL.",
+    "Strong-model comparison with fully trained conventional recurrent GRU, numerical memory ablations and real retention is NOT part of source admission and must be separately frozen & qualified before any claim of scientific superiority."
+  ],
+  "positive_development_signal": "Curiosity must improve mean unique public state fingerprints by >=10% relative to BOTH balanced and random on BOTH tasks, with context/seed-paired 95% CI lower >0, WITHOUT a lower reward rate/step on either task. This only classifies as DEV_SOURCE_INFORMATION_SIGNAL, NOT SCIENTIFIC_PASS. Source can be useful without hitting this threshold if environmental reward observations are adequate.",
+  "no_go": "If zero nonzero rewards on all three policies in a task, or public observation trace differs cross-OS after same pinned original upstream, stop causal learning first-use. If curiosity fails the positive threshold, log negative and do not tune it on exposed DEV seeds.",
+  "first_use_guard": "Only public DEV 971000..971007. Original FKP10 admission seeds 970100..970103 are consumed. Protected original training, transfer and negative worlds are NOT opened. Precommit exact code and methods before DEV runs; qualify fixture negative tests and root/G29 before original DEV.",
+  "qualification": "Exact research SHA/tree, prereg-first commit, unchanged upstream source+blobs, source fixture tests Linux/Windows, inherited 54 root and 4 G29 tests on both OS, one original DEV trial and Windows replay; never confuse science, CI, or deployment.",
+  "authority": {
+    "research_only": true,
+    "accepted_ref_mutation": false,
+    "owner_science_first_use": false,
+    "promotion": false,
+    "main_model_change": false,
+    "scheduler": false,
+    "controller": false,
+    "paid_apis": false
+  },
+  "conclusion_rule": "Interpret as source signal only. Real GRU/strong baseline science and actual Yggdrasil native integration remain separate. Do not post-score tune DEV or merge main merely for a source survey."
+}
