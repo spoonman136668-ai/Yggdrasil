@@ -1,0 +1,108 @@
+{
+  "schema": "yggdrasil.contrib.aai11i.action-consequence-belief-planner.prereg.v1",
+  "id": "AAI-11I",
+  "stage": "NEW_INDEPENDENT_CAUSAL_DECISION_MECHANISM_SOURCE_ONLY",
+  "parent": {
+    "pr": 1071,
+    "source_sha": "90e04193a50055b2154a1782ed5da21f0132a8ba",
+    "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "parent_11H_prereg": "487d2b90a723575eac1ba117d45baeb1dafee248",
+    "qualified_11G_prereg": "260c815900cc7f12aeab9a41a2caa6627482b6e9",
+    "qualified_11G_evaluator": "7fbeaf898d65cded838f74f1963da3b88af9604d",
+    "old_posterior_source": "49f7de063e3577ef8f0b4e42043a24581e6cd09c",
+    "strong_conventional_source": "331a97b566d41785be06923a7acc63df6105cffd",
+    "world_source": "88d220e94ccf736e490f20922f1c7f5d3c1d3746",
+    "original_11H_full_run": 43658508984
+  },
+  "hypothesis": "A two-action intervention should be valued by the actual causal observation it can produce, and its consequent effect on which second action becomes optimal; this outcome-conditioned value-of-information planning should improve reward and attainable-goal recovery beyond otherwise identical eight-row causal posterior with open-loop two-action planning.",
+  "distinct_mechanism": "Outcome-conditioned expectimax across REAL first-action learning feedback, not posterior risk penalty or memory-window/likelihood tuning. Uses the identical 8-row posterior from original AAI-11D as a belief state, but for deciding a FIRST intervention explicitly marginalizes 8 possible public mediator outcomes and Bayes-updates 45/45/84 causal hypotheses BEFORE choosing best contingent second action, rather than optimizing a fixed predetermined two-action sequence. At actual second decision, use original controls.plan unchanged. No hidden law, no privileged oracle, no extra real action, no donor. Rule posterior .9/.1 unmodified.",
+  "frozen_algorithm": {
+    "name": "causal_feedback_expectimax",
+    "candidate_public_history": "Exactly most recent eight public (x,mediators) rows as original posterior_planner; no protected slots, no extra capacity, no private phase labels.",
+    "ablation": "Original AAI-11D posterior_planner same 8 public rows, grammar, odds, actual online updates, final action policy from unchanged controls.plan; stronger conventionals original fully qualified eleven from AAI-11G.",
+    "rules": "Original three independent output distributions over 45,45,84 XOR/AND/OR structural rules; each posterior rule likelihood ratio correct/incorrect =9, uniform prior. For downstream m2 use original observed m0 and m1 in fitting, structural conditioning on hypothetical m0/m1 in outcome predictive distribution.",
+    "first_decision": "For each of 12 legal first do(x_i:=bit) actions, compute model-implied joint distribution P(m0,m1,m2|hypothetical first x). Enumerate all eight possible public mediator triples. For each triple, compute conditional posterior after appending hypothetical (x1,m) and dropping oldest if 8-row window full. Compute the larger of STOP reward after first action (observable bit reward-cost with hypothetical m) and maximal mean expected reward of any legal second action, given this updated posterior, with two real-action costs. Marginalize over eight mediator outcomes using model predictive joint distribution. Select highest expected first value if greater than ACTUAL public STOP reward by >1e-10, ties original action order. Nothing is actually learned from hypothetical outcomes: only observed REAL action consequence is added by normal online observe().",
+    "second_decision": "If actions_taken=1 use original controls.plan with the actual updated public posterior and remaining one action. If actions_taken>=2 STOP.",
+    "memory_update": "For posterior conditioned on hypothetical first outcome, explicitly reconstruct latest min(8,rows+1) public samples, recompute public mismatch counts, normalize exactly with frozen old calibration.posterior(), no hidden simulator calls, no extra observation to learner. At actual action, run original observe() and discard hypothetical state. Keep checkpoint only 8 canonical public samples.",
+    "optimization": "Cache only derived 64-input model forecasts for one finite method call if needed, not checkpoint/durable data; do not change algorithm, branch counts, rules or policy for speed after seeing outcomes. No paid API.",
+    "expected_tie_tolerance": 1e-10
+  },
+  "frozen_comparison": {
+    "fixtures": [
+      "mechanical:alpha",
+      "mechanical:beta",
+      "mechanical:gamma"
+    ],
+    "transfer": [
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "familiar": [
+      "A",
+      "B"
+    ],
+    "challenge_n": [
+      2,
+      4
+    ],
+    "evaluation_contexts_per_law": 12,
+    "transfer_episodes_per_arm": 288,
+    "familiar_episodes_per_arm": 144,
+    "oracle_reachable_denominator": 144,
+    "initial_public_training": "64 identical A/B public pre/post actual one-action observations, exactly original immutable training source; both arms 8-row public history",
+    "challenge": "Two or four original exogenous TRUE single-do-action pairs per transfer law; only their 4/8 public pre/post rows visible; cold restore independent per episode.",
+    "actual_actions": "Max two actual do interventions and only OWN observed consequence per model. No extra information, private law IDs, future labels or oracle actions.",
+    "arms": [
+      "graph_recent8",
+      "posterior_planner",
+      "causal_feedback_expectimax"
+    ],
+    "original_baseline_strongest": 2.134027778,
+    "original_posterior8_reward": 2.189756944,
+    "original_strongest_reachable": 0.75,
+    "original_posterior8_reachable": 0.8125,
+    "original_strongest_unreachable_regret": 0.185763889,
+    "original_strongest_familiar": 2.210416667,
+    "all_required_dev_gates": {
+      "candidate_reward_min": 2.214027778,
+      "candidate_reachable_goal_recovery_min": 0.8,
+      "candidate_gain_vs_same_belief_open_loop_posterior_min": 0.03,
+      "candidate_unreachable_regret_max": 0.215763889,
+      "candidate_familiar_return_min": 2.180416667
+    },
+    "early_stop": "If ANY of five source-only gates fail, classify DEV_NO_GO_NO_SCIENCE, stop before repeating full 11 qualified controls, before additional new science clusters, before hyperparameter tuning and before expensive matched whole-process cost requalification. Still run all original full exact-head native/unit suites on both OS.",
+    "if_first_gate_passes": "Re-qualify all 11 conventional fully matched source controls, proper strongest reward and separately strongest reachable recovery; verify no extra training/observations, negative/marginal controls and cold A/B and <=2x measured fastest fully trained conventional whole-process on each OS. Even pass is DEV only, no scientific first-use."
+  },
+  "science": {
+    "reserved_DEV": [
+      994000,
+      994015
+    ],
+    "reserved_TRANSFER": [
+      995000,
+      995063
+    ],
+    "reserved_NEGATIVE": [
+      996000,
+      996031
+    ],
+    "used": 0,
+    "first_use_authorized": false,
+    "scientific_gain_unverified": true
+  },
+  "governance": {
+    "same_current_owner_scope": "source-only bounded GitHub existing CI",
+    "draft_pr": true,
+    "no_merges": true,
+    "no_native_Yggdrasil": true,
+    "no_main_ref_edit": true,
+    "no_first_use": true,
+    "no_Forge_Wingless_Hybrid": true,
+    "no_controller_queue_scheduler_runner": true,
+    "no_paid_API": true,
+    "no_Library_artifact": true
+  },
+  "no_post_result_tuning": true
+}
