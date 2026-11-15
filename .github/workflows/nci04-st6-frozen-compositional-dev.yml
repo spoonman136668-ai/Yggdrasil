@@ -1,0 +1,259 @@
+name: NCI04 ST6 frozen genuine compositional transfer DEV
+on:
+  push:
+    branches:
+      - research/nci04-st6-compositional-causal-transfer-20261115
+permissions:
+  contents: read
+jobs:
+  train:
+    if: "github.event.head_commit.message == 'science(st6): run frozen compositional DEV comparison'"
+    name: ST6 original one-checkpoint public causal training (Linux)
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned wall/CPU/RSS receipt dependency
+        shell: bash
+        run: python -m pip install --disable-pip-version-check psutil==6.1.1
+      - name: Check exact frozen source/model/controls/evaluator and original ST5 ancestor BEFORE actions
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 5c1c8cebff688eb9042a68d72c96eec1d81e8c5d HEAD
+          git merge-base --is-ancestor 14070d749cdd0ee16faa41a78000d20bb481a4e1 HEAD
+          test "$(git rev-parse HEAD:research/nci04_st6/frozen_protocol.json)" = 86b2fa6bfce3333c68cffc44eea67e9904756b65
+          test "$(git rev-parse HEAD:research/nci04_st6/original_world.py)" = 99cbda9f502920b64ac4f44521d8c6e262e0e463
+          test "$(git rev-parse HEAD:research/nci04_st6/source_audit.py)" = b81334a0e62202b84bff2e9bc779321217a48140
+          test "$(git rev-parse HEAD:research/nci04_st6/native_operator.py)" = 06362fca957cb9cf42f6c8cf482c2e77c578803d
+          test "$(git rev-parse HEAD:research/nci04_st6/matched_controls.py)" = e1c49ad95a7017b1b1d11709a6fc160eb102dca5
+          test "$(git rev-parse HEAD:research/nci04_st6/dev_compare.py)" = 47e8f2c6e5ed74d9912196ca164a618cba4b9194
+          python -B - <<'PY'
+          from research.nci04_st6.dev_compare import guard
+          p=guard()
+          assert p['authority']['merge'] is False
+          assert p['authority']['independent_scientific_first_use'] is False
+          print('ST6_MODEL_SOURCE_CONTROL_EVALUATOR_PREHELD_GIT_FREEZE=PASS')
+          PY
+      - name: Run exact public source and frozen classifier negative fixtures BEFORE held
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          python -B -m unittest discover -s tests -p 'test_nci04_st6_dev_harness.py' -v
+      - name: Train ONCE seven variants on 7680 real source actions, keep held unopened
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+          OMP_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+          OPENBLAS_NUM_THREADS: '1'
+        run: |
+          python -B - <<'PY'
+          from pathlib import Path
+          import os
+          from research.nci04_st6.dev_compare import train_once,load_checkpoint
+          dest=Path(os.environ['RUNNER_TEMP'])/'st6-frozen-trained.json'
+          source=train_once(dest)
+          checked,sha=load_checkpoint(dest)
+          assert source==checked
+          assert source['original_training_actions']==7680
+          assert source['held_dev_unopened'] is True
+          assert source['negative_new_mechanism_unopened'] is True
+          assert source['protected_scientific_first_use'] is False
+          print('ST6_EXACT_TRAINED_PUBLIC_MODELS_SHA256='+sha)
+          print('ST6_ONE_TRAINING_CHECKPOINT_CUSTODY=PASS')
+          PY
+      - name: Require unchanged tracked and untracked source
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st6-one-original-validated-checkpoint
+          path: ${{ runner.temp }}/st6-frozen-trained.json
+          if-no-files-found: error
+          retention-days: 14
+  held_development:
+    if: "github.event.head_commit.message == 'science(st6): run frozen compositional DEV comparison'"
+    needs: train
+    name: ST6 new combinations, different rule and interference (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    steps:
+      - name: Windows source blob byte-preserving checkout
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pin process cost dependency
+        shell: bash
+        run: python -m pip install --disable-pip-version-check psutil==6.1.1
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st6-one-original-validated-checkpoint
+          path: ${{ runner.temp }}
+      - name: Verify exact original model bytes before any new law
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -B - <<'PY'
+          from pathlib import Path
+          import os
+          from research.nci04_st6.dev_compare import guard,load_checkpoint
+          guard()
+          data,sha=load_checkpoint(Path(os.environ['RUNNER_TEMP'])/'st6-frozen-trained.json')
+          assert data['held_dev_unopened'] is True
+          assert data['protected_scientific_first_use'] is False
+          print('ST6_EACH_OS_SAME_TRAINED_SHA256='+sha)
+          PY
+      - name: Consume ONLY in-house frozen new combination, alternate-rule and interference DEV
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+          OMP_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+          OPENBLAS_NUM_THREADS: '1'
+        run: |
+          python -B - <<'PY'
+          from pathlib import Path
+          import os
+          from research.nci04_st6.dev_compare import compare
+          folder=Path(os.environ['RUNNER_TEMP'])
+          result=compare(
+              folder/'st6-frozen-trained.json',
+              folder/'st6-original-held.json'
+          )
+          assert result['held_laws_read_once']==[29,31,37,41]
+          assert result['negative_rule_laws_read_once']==[43,47]
+          assert result['held']['original_source_steps']==2560
+          assert result['different_rule']['original_source_steps']==160
+          assert result['no_unfamiliar_law_fitting'] is True
+          assert result['protected_scientific_first_use'] is False
+          assert result['scientific_pass'] is False
+          print('ST6_GENUINE_FROZEN_DEV_OUTCOMES_RECORDED=PASS')
+          PY
+      - name: Original source files remain unchanged after DEV
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st6-original-frozen-held-${{ matrix.os }}
+          path: ${{ runner.temp }}/st6-original-held.json
+          if-no-files-found: error
+          retention-days: 14
+  source_and_model_parity:
+    if: "github.event.head_commit.message == 'science(st6): run frozen compositional DEV comparison'"
+    needs: held_development
+    name: ST6 exact source and native integer-state parity / independent wall cost
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st6-original-frozen-held-ubuntu-latest
+          path: linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st6-original-frozen-held-windows-2022
+          path: windows
+      - name: Require true original events, common checkpoint, native integer state and preaction scores
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json,math
+          a=json.loads(Path('linux/st6-original-held.json').read_text('utf-8'))
+          b=json.loads(Path('windows/st6-original-held.json').read_text('utf-8'))
+          frozen=('schema','evidence_class','frozen_protocol_git_blob',
+                  'original_source_blob','native_model_blob','strong_control_blob',
+                  'shared_training_sha256','held_laws_read_once',
+                  'negative_rule_laws_read_once','no_unfamiliar_law_fitting',
+                  'protected_scientific_first_use','scientific_pass',
+                  'source_or_model_tuned_after_held')
+          for key in frozen:
+              if a[key]!=b[key]:
+                  raise SystemExit('ST6_FROZEN_SHARED_CUSTODY_DRIFT_'+key)
+          source_exact=True;native_exact=True;scores_exact=True
+          for scope in ('held','different_rule'):
+              aa=a[scope]['source_receipts'];bb=b[scope]['source_receipts']
+              if len(aa)!=len(bb):raise SystemExit('ST6_SCOPE_COUNT_DIFFERENT_'+scope)
+              for x,y in zip(aa,bb):
+                  for name in ('law_evaluator_only','seed_evaluator_only',
+                               'source_actions','original_source_sha256',
+                               'all_model_cold_restarts','model_private_source_fields_received'):
+                      if x[name]!=y[name]:source_exact=False
+                  if x['native_integer_state_sha_chain']!=y['native_integer_state_sha_chain']:
+                      native_exact=False
+                  for model in x['preaction_probe_brier']:
+                      if not math.isclose(
+                          x['preaction_probe_brier'][model],
+                          y['preaction_probe_brier'][model],
+                          rel_tol=0,abs_tol=1e-12):
+                          scores_exact=False
+          ra=a['cold_retention'];rb=b['cold_retention']
+          for when in ('before','after'):
+              if ra[when]['original_source_sha256']!=rb[when]['original_source_sha256']:
+                  source_exact=False
+              if ra[when]['native_cold_state_sha256']!=rb[when]['native_cold_state_sha256']:
+                  native_exact=False
+              for n in ra[when]['probe_brier']:
+                  if not math.isclose(
+                      ra[when]['probe_brier'][n],
+                      rb[when]['probe_brier'][n],
+                      abs_tol=1e-12,rel_tol=0):
+                      scores_exact=False
+          if ra['interference_law_action_receipts']!=rb['interference_law_action_receipts']:
+              source_exact=False
+          if not source_exact:
+              raise SystemExit('ST6_ORIGINAL_SOURCE_ACTION_HISTORY_MISMATCH')
+          cost='whole_source_actor_model_wall_ratio_le_1_5'
+          checks_a=a['metrics']['frozen_checks']
+          checks_b=b['metrics']['frozen_checks']
+          if set(checks_a)!=set(checks_b):
+              raise SystemExit('ST6_FROZEN_SCIENCE_GATE_MISMATCH')
+          if any(checks_a[k]!=checks_b[k] for k in checks_a if k!=cost):
+              raise SystemExit('ST6_NONCOST_SCIENTIFIC_DISPOSITION_DRIFT')
+          cost_equal=checks_a[cost]==checks_b[cost]
+          qualifies=(native_exact and scores_exact and cost_equal and
+                     all(checks_a.values()) and all(checks_b.values()))
+          print('ST6_ORIGINAL_SOURCE_AND_COMMON_TRAINING_CROSS_OS=PASS')
+          print('ST6_TRAIN_CHECKPOINT_SHA256='+a['shared_training_sha256'])
+          print('ST6_NATIVE_INTEGER_STATE_CROSS_OS='+('PASS' if native_exact else 'FAIL'))
+          print('ST6_PREACTION_SCORES_CROSS_OS='+('PASS' if scores_exact else 'FAIL'))
+          print('ST6_LINUX_COMPLETE_PROCESS_WALL_RATIO='+str(a['metrics']['source_actor_and_training_charged_wall_ratio']))
+          print('ST6_WINDOWS_COMPLETE_PROCESS_WALL_RATIO='+str(b['metrics']['source_actor_and_training_charged_wall_ratio']))
+          print('ST6_COST_PREDICATE_AGREEMENT='+str(cost_equal))
+          print('ST6_DEV_DISPOSITION='+(
+              'COMPOSITIONAL_DEV_SIGNAL_NOT_INDEPENDENT_SCIENCE'
+              if qualifies else 'DEV_NO_GO'
+          ))
+          print('ST6_PROTECTED_FIRST_USE=NOT_RUN')
+          PY
