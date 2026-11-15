@@ -1,0 +1,177 @@
+name: NKR02 independent native contextual causal qualification
+on:
+  push:
+    branches: [research/nkr02-native-relations-independent-gates-20261115]
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  fixtures:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install exact CPU-only NumPy
+        run: |
+          python -m pip install --disable-pip-version-check --no-input numpy==2.2.6
+          python -c "import numpy as n; assert n.__version__=='2.2.6'"
+      - name: Verify frozen parent native implementation and prereg
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 2aedc2a5ab0da62563fca1c8dbd079a18a634f6d HEAD
+          git diff --exit-code dcbc41ca50d9913e682a24833ba0190c66be5ae0 HEAD -- yggdrasil/ tests/test_native_relation_memory.py tests/test_native_cells.py tests/test_native_cells_wilson.py
+          test -z "$(git status --porcelain)"
+      - name: Independent symbolic and real trained gradient fixture
+        run: python -m unittest discover -s research/contrib/chatgpt/NKR-02 -p 'test_*.py' -v
+      - name: Original native bridge compatibility
+        run: python -m unittest discover -s tests -p 'test_native*.py' -v
+      - name: Pristine checkout
+        shell: bash
+        run: test -z "$(git status --porcelain)"
+
+  source-pin:
+    needs: [fixtures]
+    if: "github.event.head_commit.message == 'ci(nkr02): arm source-pin G29' && github.run_attempt == 1 && needs.fixtures.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    concurrency:
+      group: nkr02-source-pin-once
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate exactly 3 source-pinned code-atlas artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = cef1378fd3c47ebc74675bd9dde19a183775ceeb
+          SOURCE="$GITHUB_SHA"
+          python scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git diff --cached --quiet && exit 1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(nkr02): pinned G29 source at $SOURCE"
+          C="$(git rev-parse HEAD)"
+          test "$(git diff-tree --no-commit-id --name-only -r "$C" | wc -l | tr -d ' ')" = 3
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/nkr02-native-relations-independent-gates-20261115
+          echo "NKR02_SOURCE_PIN=$SOURCE"
+          echo "NKR02_ATLAS_COMPANION=$C"
+
+  final-regression:
+    needs: [fixtures]
+    if: "startsWith(github.event.head_commit.message, 'docs(nkr02): pinned G29 source at ') && github.run_attempt == 1 && needs.fixtures.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install exact CPU-only numerical dependency
+        run: |
+          python -m pip install --disable-pip-version-check --no-input numpy==2.2.6
+          python -c "import numpy as np;assert np.__version__=='2.2.6'"
+      - name: Frozen parent, G29 and complete final regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git diff --exit-code dcbc41ca50d9913e682a24833ba0190c66be5ae0 HEAD -- yggdrasil/ tests/test_native_relation_memory.py tests/test_native_cells.py tests/test_native_cells_wilson.py
+          python -m unittest discover -s research/contrib/chatgpt/NKR-02 -p 'test_*.py' -v
+          python -m unittest discover -s tests -p 'test_*.py' -v
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+
+  independent-g29:
+    needs: [fixtures]
+    if: "startsWith(github.event.head_commit.message, 'docs(nkr02): pinned G29 source at ') && github.run_attempt == 1 && needs.fixtures.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Independently check generated graph/index and clean tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_code_atlas.py --check-if-present
+          python -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
+
+  independent-dev:
+    needs: [fixtures, final-regression, independent-g29]
+    if: "startsWith(github.event.head_commit.message, 'docs(nkr02): pinned G29 source at ') && github.run_attempt == 1 && needs.fixtures.result == 'success' && needs.final-regression.result == 'success' && needs.independent-g29.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    env:
+      NKR02_PROTECTED_ORIGINAL_FIRST_USE: 'not-applicable-public-synthetic'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install exact CPU-only NumPy
+        run: |
+          python -m pip install --disable-pip-version-check --no-input numpy==2.2.6
+          python -c "import numpy as np;assert np.__version__=='2.2.6'"
+      - name: Compare actual native path with independently fitted controls and new-family negative
+        run: python research/contrib/chatgpt/NKR-02/independent_evaluation.py
+      - name: Original source remains pristine and accepted model unmodified
+        shell: bash
+        run: test -z "$(git status --porcelain)"
