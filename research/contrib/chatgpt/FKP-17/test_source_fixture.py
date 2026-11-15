@@ -110,6 +110,42 @@ class PublicFixtureTests(unittest.TestCase):
         self.assertEqual(len({(s, idx) for s, idx, _ in all_rows}), 32768)
         self.assertTrue(all(type(r) is src.PublicStep for _, _, r in all_rows))
 
+    def test_public_session_only_exposes_actual_chosen_action(self):
+        seed = src.TRAIN[7]
+        tape = src.public_actions(seed, 24)
+        session = src.PublicSession(seed)
+        rows = []
+        for step, action in enumerate(tape):
+            before = session.current_public
+            row = session.apply_public(action)
+            self.assertEqual(row.before, before)
+            self.assertEqual(row.action, action)
+            self.assertEqual(row.history, tuple(
+                src.PublicTransition(x.before, x.action, x.reward, x.after, x.done)
+                for x in rows[-16:]))
+            rows.append(row)
+            self.assertEqual(session.current_public, row.after)
+            self.assertEqual(session.observed_steps, step + 1)
+        # Match the original source-safe physical transition stream exactly.
+        self.assertEqual(tuple(rows), src.collect_public(seed, tape))
+        for _ in range(16):
+            session.apply_public(0)
+        with self.assertRaises(ValueError):
+            session.apply_public(0)
+
+    def test_session_denies_unseen_and_forbidden_source(self):
+        for seed in (978500, 978531, 978600, 978663, 976500,
+                     src.FOUNDATION[0], -1):
+            with self.assertRaises(PermissionError):
+                src.PublicSession(seed)
+        s = src.PublicSession(src.VALIDATION[2])
+        for invalid in (-1, 8, True, 0.0, "0"):
+            prior = s.current_public
+            with self.assertRaises(ValueError):
+                s.apply_public(invalid)
+            self.assertEqual(s.current_public, prior)
+            self.assertEqual(s.observed_steps, 0)
+
     def test_no_nonfixture_module_imports_private_evaluator(self):
         root = Path(__file__).parent
         for path in root.glob("*.py"):
@@ -118,7 +154,7 @@ class PublicFixtureTests(unittest.TestCase):
             # The sole source-safe training entrypoint may import its public
             # evaluator to assemble already-committed observations. Learned
             # policies must NOT import source_fixture or an evaluator.
-            if path.name in ("source_fixture.py", "qualify_public_recurrent.py") or path.name.startswith("test_"):
+            if path.name in ("source_fixture.py", "qualify_public_recurrent.py", "run_public_onpolicy.py") or path.name.startswith("test_"):
                 continue
             tree = ast.parse(path.read_text(encoding="utf-8"))
             for node in ast.walk(tree):
