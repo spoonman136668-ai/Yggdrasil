@@ -1,0 +1,117 @@
+{
+  "schema": "yggdrasil.nci04.st4.balanced-intervention.dev.v1",
+  "status": "PREREG_FROZEN_BEFORE_SOURCE_MODEL_OR_OUTCOMES",
+  "source_parent_sha": "def4e3a9d803c80631c00b7e138a5c54cda349e9",
+  "main_sha_at_freeze": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "negative_predecessors": [
+    {
+      "pr": 1063,
+      "disposition": "ST1 NO_GO"
+    },
+    {
+      "pr": 1067,
+      "disposition": "ST2 NO_GO"
+    },
+    {
+      "pr": 1072,
+      "sha": "4aa61773f719be55f0de87dec766404ae0439ea9",
+      "disposition": "ST3 NO_GO; delayed-credit ablation null and interference retention 0%"
+    }
+  ],
+  "north_star": "Independent tokenless/native non-transformer causal cognition with persistent knowledge and low compute. In-house simulation is development evidence only.",
+  "hypothesis": "Balanced interventions independently varied before identical current public states and actions expose learnable delayed causal effects. A new native causally indexed memory may demonstrate improved unfamiliar-law predictions and cold retention versus strong same-information matched lag-aware conventional controls.",
+  "source": {
+    "type": "IN_HOUSE_DEV_SOURCE_NOT_INDEPENDENT_SCIENCE",
+    "law": "Private law_id sets rotation 1+SHA256(utf8('ST4-rot|'+law_id))[0]%3; action 0 or 1 applies immediate XOR SHA256(utf8('ST4-mask|'+law_id+'|'+action))[0]; action 2 schedules delayed XOR SHA256(utf8('ST4-delay|'+law_id))[0] for NEXT step only and no immediate action mask; action 3 no-op. Each step x_next = ROTL8(x,r) XOR immediate(action) XOR pending; pending_next=delay_mask iff action 2 else 0.",
+    "paired_trials": "For each seed/trial, independently reset both arms to public x0=SHA256(utf8('ST4-state|'+seed+'|'+trial))[0] with empty pending. First actual action differs: 2 in treatment arm, 3 in control arm. Public x1 must be identical. Second actual action is the SAME one of 0,1,3 in both arms, chosen by SHA256(utf8('ST4-actor|'+seed+'|'+trial))[0]%3, mapping 0->0,1->1,2->3. Arm execution order is digest byte[1]%2, independent of law and model. Final public effects can differ ONLY because first intervention scheduled a hidden delayed effect. Both arms each take two real original source steps; no fabricated labels.",
+    "model_public_interface": "8 public current bits, announced action 0..3, previous observed public outcome bits and previous announced action ONLY; no law ID, mask, hidden pending, source seed, actor entropy, trial ID, branch ID, reward or source oracle.",
+    "trial_count_per_law_seed": 16,
+    "arms_per_trial": 2,
+    "steps_per_arm": 2,
+    "train_laws": [
+      3,
+      5,
+      7,
+      11,
+      13,
+      17,
+      19,
+      23
+    ],
+    "train_seeds": [
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111
+    ],
+    "held_dev_laws": [
+      29,
+      31,
+      37,
+      41
+    ],
+    "held_dev_seeds": [
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207,
+      208
+    ],
+    "negative_laws": [
+      43,
+      47
+    ],
+    "frozen_training_action_steps": 6144,
+    "frozen_held_dev_action_steps": 2048,
+    "no_protected_first_use": true
+  },
+  "stage0_source_only": {
+    "before": "Before model fitting or held-development source exposure, audit TRAIN laws/seeds only: every paired trial must have same pre-probe public x and same probe action in both arms, and authentic public post-probe changes must differ in >=95% of paired trials per training law; at least 1500 pairs; all three blinded probe actions >=100 pair trials; both arm orders nonzero. No source-law or pending leakage; exact source action SHA stable across Windows and Linux.",
+    "fail": "SOURCE_COUNTERFACTUAL_IDENTIFIABILITY_NO_GO, preserve immutable negative, no law/seed/threshold retuning."
+  },
+  "mechanism": "New eight-cell native integer intervention-conditioned causal hypothesis and durable profile retrieval, source only public bits and actions; distinct from ST1 topology, ST2 appearance cache and ST3 deterministic actor confound. Model implementation and controls frozen before held outcomes.",
+  "controls": [
+    "Fully trained same-public-input 45-weight eight-state conventional recurrent with lagged action input",
+    "Fully trained same-learned-byte-budget lag-aware contextual count with previous action and current bits",
+    "Matched delayed-credit ablation",
+    "Matched fixed prior-intervention permutation sham",
+    "Episodic erasure and label-shuffled negative",
+    "Private source oracle for headroom diagnostic ONLY"
+  ],
+  "metric": "Original preaction eight-bit Brier per unseen law, pooled and intervention-probe slice; source action-consequence SHA and paired contrast; cold retention after eight unrelated laws, interference, exact integer cross-OS checkpoint, CPU/wall/RSS/bytes whole-process cost.",
+  "frozen_dev_go": [
+    "Candidate beats both fully trained matched controls by >=0.02 absolute pooled Brier and on >=3 of 4 held DEV laws",
+    "Candidate beats both causal ablations by >=0.02 absolute on intervention-probe slice",
+    "Chance-corrected learned Brier gain retained >=95% after eight unrelated laws, without relearning target law on revisit",
+    "Identical source/actions and shared exact trained checkpoint; native cold state byte-identical across OS",
+    "Whole-process source+actor+learner measured wall ratio <=1.5 against best control on both OS; resource parity measured and disclosed",
+    "All negative and paired contrast controls pass; source/private IDs never accessed by learner"
+  ],
+  "stop": "Any frozen failed predicate => DEV_NO_GO with negative preserved. No post-result retuning. In-house development cannot establish independent scientific first-use or general intelligence.",
+  "authority": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "branch": "research/nci04-st4-balanced-intervention-pairs-20261114",
+    "main_edit": false,
+    "merge": false,
+    "acceptance": false,
+    "new_controller": false,
+    "new_runner": false,
+    "new_schedule": false,
+    "paid_api": false,
+    "protected_first_use": false,
+    "other_repos": false,
+    "deploy": false
+  },
+  "scientific_status": "PREREG_ONLY"
+}

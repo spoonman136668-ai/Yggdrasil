@@ -1,0 +1,133 @@
+name: NCI04 ST4 frozen balanced source-only causal interventions
+on:
+  push:
+    branches:
+      - research/nci04-st4-balanced-intervention-pairs-20261114
+permissions:
+  contents: read
+jobs:
+  stage0:
+    name: ST4 source-only intervention evidence (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - name: Prevent CRLF in Windows Git blobs
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Checkout exact research branch (no credentials)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pinned Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned per-model process cost accounting dependency
+        shell: bash
+        run: python -m pip install --disable-pip-version-check psutil==6.1.1
+      - name: Verify scientific preregistration is an immutable ancestor
+        shell: bash
+        run: |
+          git merge-base --is-ancestor b03a33159905c1d0e8b2aa0965f418b9a35c455e HEAD
+          git merge-base --is-ancestor def4e3a9d803c80631c00b7e138a5c54cda349e9 HEAD
+          test "$(git rev-parse HEAD:research/nci04_st4/frozen_protocol.json)" = edaea790d3457bd91ea136a6b266c19e6dd61575
+          python -B - <<'PY'
+          from research.nci04_st4.source_audit import verify_freeze
+          p=verify_freeze()
+          assert p['scientific_status']=='PREREG_ONLY'
+          print('ST4_PREREG_BLOB_AND_ANCESTRY_PASS')
+          PY
+      - name: Source mechanics, negative controls and inherited native tests
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          python -B -m unittest discover -s tests -p 'test_nci04_st4_source.py' -v
+          python -B -m unittest discover -s tests -p 'test_nci04_st4_native_credit.py' -v
+          python -B -m unittest discover -s tests -p 'test_nci04_st4_dev_harness.py' -v
+          python -B -m unittest discover -s tests -p 'test_nci04d2_task.py' -v
+          python -B -m unittest discover -s tests -p 'test_native_cells.py' -v
+          echo ST4_FOCUSED_MECHANICS_PASS
+      - name: Evaluate ONLY predeclared training-law source pairs
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import os
+          from pathlib import Path
+          from research.nci04_st4.source_audit import audit
+          r=audit(Path(os.environ['RUNNER_TEMP'])/'st4-source-only.json')
+          assert r['result']['disposition'] in (
+              'SOURCE_BALANCED_INTERVENTIONS_IDENTIFIABLE_DEV_ONLY',
+              'SOURCE_COUNTERFACTUAL_IDENTIFIABILITY_NO_GO'
+          )
+          assert not r['trained_candidate_or_conventional']
+          assert r['held_development_source_unopened']
+          assert not r['protected_scientific_first_use']
+          print('ST4_REAL_SOURCE_RECEIPT_COMPLETE=PASS')
+          PY
+      - name: Repository stays completely unchanged
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - name: Persist unmodified original source-only receipt
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st4-source-preheld-${{ matrix.os }}
+          path: ${{ runner.temp }}/st4-source-only.json
+          if-no-files-found: error
+          retention-days: 7
+  parity:
+    name: ST4 source-only exact cross-platform causal evidence parity
+    needs: stage0
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st4-source-preheld-ubuntu-latest
+          path: linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st4-source-preheld-windows-2022
+          path: windows
+      - name: Require byte-matched source histories and frozen eligibility
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path('linux/st4-source-only.json').read_text('utf-8'))
+          b=json.loads(Path('windows/st4-source-only.json').read_text('utf-8'))
+          fields=(
+              'schema','frozen_protocol_git_blob','preregistration_commit',
+              'source_laws_used','source_seeds_used',
+              'held_development_source_unopened','source_only',
+              'trained_candidate_or_conventional','protected_scientific_first_use',
+              'original_public_real_paired_trials',
+              'original_public_real_source_actions','probe_action_pair_counts',
+              'first_arm_counts','source_law_receipts','result',
+              'scientific_qualification'
+          )
+          for key in fields:
+              if a[key]!=b[key]:
+                  raise SystemExit('ST4_CROSS_OS_SOURCE_DRIFT_'+key)
+          print('ST4_REAL_SOURCE_CROSS_OS_EXACT=PASS')
+          print('ST4_PAIRED_TRIALS='+str(a['original_public_real_paired_trials']))
+          print('ST4_ACTUAL_SOURCE_ACTIONS='+str(a['original_public_real_source_actions']))
+          print('ST4_SOURCE_DISPOSITION='+a['result']['disposition'])
+          print('ST4_SOURCE_CANDIDATE_NOT_TESTED=PASS')
+          PY
