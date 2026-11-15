@@ -1,0 +1,46 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "FKP-06-SRC-AUDIT",
+  "contribution_class": "source-identifiability-audit-only",
+  "purpose": "Before training another native learner, test whether a genuinely disjoint four-parent nonlinear causal source has enough observable intervention headroom to justify an independent matched-control experiment. The target mechanism remains unknown to all predictors.",
+  "baseline": {
+    "accepted_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "accepted_tree_sha": "180008502f6bdfe5a06c3d0d6f47f941dd01f20b",
+    "FKP05": "24 DEV worlds learned-active=0.9807942708333334; 64-probe reference=1; source-headroom 0.01920572916666663 < prereg 0.03; strong Bayesian exact prediction tie."
+  },
+  "constraints": {
+    "scope": "research/contrib/chatgpt/FKP-06/**",
+    "source_type": "self-contained, publicly generated DEV only; synthetic, not an external real-world causal environment",
+    "authoritative_model_mutation": false,
+    "do_not_touch": [
+      "main",
+      "native learned model",
+      "CKB-plane",
+      "controllers",
+      "schedulers",
+      "runners",
+      "other repos"
+    ],
+    "no_paid_APIs": true,
+    "protected_first_use": false
+  },
+  "frozen_protocol": {
+    "id": "FKP06-FOUR-PARENT-V1",
+    "input": "32 binary, externally intervenable causal inputs represented as a 32-bit nonlinguistic integer",
+    "effect": "one binary observed consequence: (x[a] AND x[b]) XOR (x[c] AND x[d]), with four distinct hidden parent IDs; no hidden parent/paired-term annotation shown to predictor",
+    "hypothesis_space": "All distinct unordered pair partitions of 4 among 32 inputs, 3 partitions per set; exactly 107880 candidate laws. Deterministic lexicographic combinations and three canonical pairings; equal prior.",
+    "novel_family": "Previously used FKP-05 laws had three essential parents; all FKP-06 laws have four essential parents and nonlinear conjunction interactions. Finite hypothesis class is publicly known to the strong reference and is not evidence of open-ended operator invention.",
+    "world_seeds": "24 public DEV world seeds 700..723; protected 1700..1763 and negative 2700..2715 ABSENT from implementation; no private evaluator or key",
+    "secret_selection": "For public DEV each world target hypothesis index equals int.from_bytes(sha256('FKP06_PUBLIC_DEV_ONLY|'+decimal world seed).digest()[:8], 'big') % 107880; this is reproducibility, not cryptographic blinding.",
+    "actions": "One globally shared, public fixed set of 128 distinct 32-bit action masks sampled without replacement with random.Random(606) using getrandbits(32). The held set is 256 further distinct masks from the same RNG; no overlap. All sample masks fixed before outcomes, never use outcome generation for selection.",
+    "budgets": "Each candidate policy can observe at most 12 genuine unique source consequences from 128 published candidate actions; the 64-action reference continues the identical first 12 observations up to 64 total. 64 is an intentionally stronger-information source-calibration ceiling, not an equally budgeted comparator.",
+    "exact_reference": "Set-valued unweighted Bayesian version space over all 107880 public hypotheses; for each non-repeated public action choose split maximizing min(remaining hypothesis predicts 0, predicts 1), earliest action index ties. Use observed source output ONLY for visited actions; posterior majority for held consequences (ties predict 0). The initial 12 actions are identical for 12 and 64 reference.",
+    "passive_control": "A separate deterministic source-public random.Random(1000+seed).sample(range(128),12) observer receives the same number of paid consequences; exact same full candidate hypothesis space, posterior voting and held scoring.",
+    "output": "Mean exact binary held prediction over 24 worlds ×256 distinct never-observed action masks for 12-active, 12-random, and 64-reference; count identified singleton posterior worlds; full per-world chosen-action receipts, source query counts, wall+CPU runtime, memory estimate. A strong full-family reference is a feasibility headroom check only.",
+    "decision": "SOURCE_HEADROOM_PASS only if (mean64-mean12)>=0.05 AND mean64>=0.98 AND mean12<=0.95, all fixed before result. Otherwise SOURCE_HEADROOM_NO_GO; do not tune same consumed worlds or call them pristine. Identifiability of four-parent source is only a prerequisite to future learner testing.",
+    "negative_tests": "4 distinct hidden parents and each is essential; input bounds; no action overlap; strict 12/64 paid budgets; fixed results replay; hidden law not in learner API; posterior consistency after every paid action; action and held prediction must be sealed before truth scoring.",
+    "statistical_limits": "DEV is open synthetic source, 24-world mean only, no protected science; all new scientific claims require independent owner source, disjoint held families, fully trained matched-information/compute conventional controls, retention/interference, and exact-source Windows/Linux full regression."
+  },
+  "admissible_next_step": "Only if source headroom PASS, freeze a separately preregistered train+transfer learner proposal; do not claim native benefit or merge this research source on headroom alone."
+}
