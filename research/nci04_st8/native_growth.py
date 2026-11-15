@@ -139,12 +139,17 @@ class NativeGrow8:
             raise ValueError("ST8_NATIVE_OUT_OF_ORDER_PUBLIC_ACTION")
         if self.step!=4 or None in (self.rotation,self.A,self.B):
             return [.5]*8
-        result,pivot,row=self._reduce(features(self.B,self.degree))
-        if result!="KNOWN":
-            return [.5]*8
-        predicted=x^rotate(x,self.rotation)^self.A^(
-            (row>>len(self.basis))&255
-        )
+        # Inference eliminates only PUBLIC feature bits. The residual
+        # output label is the learned prediction, not a contradiction.
+        n=len(self.basis)
+        mask=(1<<n)-1
+        row=features(self.B,self.degree)
+        while row&mask:
+            pivot=(row&mask).bit_length()-1
+            if not self.basis[pivot]:
+                return [.5]*8
+            row^=self.basis[pivot]
+        predicted=x^rotate(x,self.rotation)^self.A^((row>>n)&255)
         return [.99 if ((predicted>>j)&1) else .01 for j in range(8)]
 
     def observe(self,public,action,target,after,*,train=True):
