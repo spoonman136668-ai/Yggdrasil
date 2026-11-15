@@ -1,0 +1,72 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "FKP-15",
+  "project": "Yggdrasil",
+  "research_class": "original source-trained tokenless delayed-credit learning vs strong conventional controllers",
+  "baseline_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "parent_research_sha": "5d99679baaf5ea57b615ff07ec691159585ed02a",
+  "source_parent": "FKP-14 PR #1105 source-action headroom PASS, 95738 authentic actions, 128 matched-history anchors, oracle ceiling +0.23125 but only 1/128 goal-reaching branch within16",
+  "question": "Can non-gradient direct numerical memory learn to select beneficial 16-step macros from real public action consequences, improving true return over fully trained recurrent, MLP, ridge and conventional count controls on unseen worlds without privileged branch outcomes at test time?",
+  "hypothesis": "Physical source training outcomes expose delayed action effects, but immediate or hashed visual associations may fail to generalize or tie conventional regression, and reliably reaching goals may require horizons beyond16.",
+  "original_source": {
+    "repo": "MarcoMeter/endless-memory-gym",
+    "sha": "a94f2b60d1769ea44df3226561488768e1dff9f4",
+    "license": "MIT",
+    "env": "MysteryPath-v0",
+    "reset_options": {
+      "reward_fall_off": -0.05,
+      "max_steps": 512
+    },
+    "default_benchmark": false,
+    "allowed_obs": "returned public RGB, action, reward, done/trunc only; never info/hidden source fields"
+  },
+  "source_cohorts": {
+    "train": "975100..975147 (48 original worlds)",
+    "validation": "975200..975215 (16 original worlds)",
+    "original_dev": "975500..975523 (24 original worlds)",
+    "reserved_transfer": "975600..975631 UNOPENED",
+    "protected": "UNOPENED",
+    "previously_consumed": "FKP10-14 distinct source world seeds"
+  },
+  "protocol": "FKP15-V1|SOURCE=a94f2b60d1769ea44df3226561488768e1dff9f4|TRAIN975100..147|VAL975200..215|DEV975500..523|TRANSFER_UNOPENED|H16|ANCHOR0,16,32,64|NINE_SOURCE_ACTIONS|PUBLIC_TWO_RGB_FRAMES_8x8x3|ALL_ARMS_SOURCE_ACTIONS|NO_PROTECTED",
+  "frozen_actions": "Same publicly generated eight-step macro prefix from Random(seed xor 0xF15A0), 4 anchors (0,16,32,64); exact RGB/action/reward/done public replay checked. At each TRAIN and VALIDATION anchor physically reset/replay same prefix and choose every one of nine legal MultiDiscrete([3,3]) actions for up to16 actual env.step consequences: 9 real alternative returns exposed ONLY for TRAIN and VALIDATION. At each original DEV anchor, each controller chooses exactly ONE macro based only on public prefix and its learned state, then physically executes it; no unchosen DEV outcomes read. No cloning/teleportation/private source positions.",
+  "source_budget": {
+    "train_max": 138240,
+    "validation_max": 46080,
+    "dev_max": 61440,
+    "total_max": 245760,
+    "dev_worlds": 24,
+    "dev_anchors_per_world": 4,
+    "dev_arms": 8,
+    "source_horizon": 16
+  },
+  "shared_input": "Public last two sampled 8x8x3 frames, 8 public steps apart, 384 floats plus action one-hot 9 = 393 numeric features, with chronological two 192-float frames for GRU; no tokenization. All predictor controls receive identical public data.",
+  "candidate": "DIRECT_ONLINE: deterministic two independent 4096 numerical hash address streams storing genuine 16-step return sums/counts; pre-fit on ALL physically observed TRAIN returns, update after every OWN actual DEV 16-step return; fixed capacity 2x4096x(sum float64,count float64)=131072 raw bytes; no gradient, persistent across worlds, SHA256 cold resume/tamper reject.",
+  "comparators": [
+    "COUNT_ONLINE: independent one-hash conventional action-return count/mean, identical TRAIN and own DEV source history",
+    "MLP_FROZEN fully train 393→64→64→1 on all actual TRAIN 24 Adam epochs each of two fixed initial seeds1212,3434; validation-only select",
+    "GRU_FROZEN fully train 192RGB two-step→64 recurrent state then 9 action head, 24 Adam epochs each of 2 frozen seeds; validation-only select",
+    "RIDGE_FROZEN closed-form full linear 393-feature ridge trained on identical source outcomes, validation select alpha among (0.1,1,10)",
+    "SHUFFLED_FROZEN same capacity as direct but actual TRAIN return labels shuffled, frozen",
+    "RANDOM source-blind legal uniform action using seed-only deterministic RNG",
+    "FIXED_MACRO best constant nine-action choice using TRAIN only",
+    "Privileged best-of-nine TRAIN/VAL physical branch oracle is NOT a DEV policy or fair learned agent control"
+  ],
+  "methods": "All predictor models trained on exactly same 48×4×9 real TRAIN outcomes and VAL uses 16×4×9 source outcomes. Each DEV arm sees identical public prefix but generates its own action/outcome history; no false same-action or equal-FLOPs claim. Training cost wall/CPU and source actions included. Neural trains exactly24 epochs×2 seeds and uses validation only for checkpoint; no dev retuning.",
+  "decision_rule": {
+    "primary": "Mean actual publicly emitted source-native 16-step cumulative macro return over 24 DEV worlds×4 anchors each, paired by WORLD 10k bootstrap seed 9090, reselect the strongest control per bootstrap replicate",
+    "gain": "Direct ≥ strongest conventional/GRU/MLP/ridge/count/frozen/random controller by +0.05 real return per anchor, paired world-cluster 95% bootstrap lower >0 and no individual anchor-time mean worse than strongest by >0.01, with no more than one goal-event deficit",
+    "memory": "Same 131072 raw learned bytes; cold SHA256 exact restore and corruption reject after all worlds; validation return MSE regression ≤+0.01 from pre-DEV reference",
+    "observe": "Real progress events, negative reward events, true source terminal goals, per-action source counts/returns, checkpoint raw bytes and whole-process timings; heads-up FKP14 original found only 1/128 possible 16-step goals, so zero DEV goals is scientific limitation, not evidence of completion.",
+    "classify": "At best DEV_RETURN_SIGNAL_ONLY, never SCIENTIFIC_PASS from public-source DEV; if direct tied/loses to strong conventional or CI crosses zero classify DEV_NO_GO; if no goals do not call it goal learning; no post-score tuning of consumed cohort or threshold change."
+  },
+  "qualification": "Prereg only first commit before implementation and ANY original DEV. Exact research source SHA/tree/blobs, FKP15 fixture tests and full inherited tests + G29 dual platform must PASS BEFORE original Linux DEV first-use. Windows may replay consumed source-blind public trajectories only, not claim independent DEV science.",
+  "scientific_boundary": "Separate owner-protected first-use, out-of-source transfer, full matched training/actions/compute, actual goal-reaching and cold interference qualification required before any scientific promotion or native Yggdrasil main acceptance.",
+  "authority": {
+    "research_only": true,
+    "owner_protected_first_use": false,
+    "merge_or_accepted_ref_mutation": false,
+    "controller_or_scheduler_mutation": false,
+    "paid_api": false
+  }
+}
